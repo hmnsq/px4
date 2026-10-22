@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <matrix/math.hpp>
+#अन्तर्भाव <matrix/math.hpp>
 
 namespace sym {
 
@@ -29,35 +29,35 @@ namespace sym {
  *     P: Matrix22
  */
 template <typename Scalar>
-void InitWindUsingAirspeed(const matrix::Matrix<Scalar, 3, 1>& v_local, const Scalar heading,
-                           const Scalar airspeed, const Scalar v_var, const Scalar heading_var,
-                           const Scalar sideslip_var, const Scalar airspeed_var,
-                           matrix::Matrix<Scalar, 2, 1>* const wind = nullptr,
-                           matrix::Matrix<Scalar, 2, 2>* const P = nullptr) {
+शून्य InitWindUsingAirspeed(ध्रुव matrix::Matrix<Scalar, 3, 1>& v_local, ध्रुव Scalar heading,
+                           ध्रुव Scalar airspeed, ध्रुव Scalar v_var, ध्रुव Scalar heading_var,
+                           ध्रुव Scalar sideslip_var, ध्रुव Scalar airspeed_var,
+                           matrix::Matrix<Scalar, 2, 1>* ध्रुव wind = nullptr,
+                           matrix::Matrix<Scalar, 2, 2>* ध्रुव P = nullptr) {
   // Total ops: 29
 
   // Input arrays
 
   // Intermediate terms (9)
-  const Scalar _tmp0 = std::cos(heading);
-  const Scalar _tmp1 = std::sin(heading);
-  const Scalar _tmp2 = std::pow(_tmp1, Scalar(2));
-  const Scalar _tmp3 = std::pow(airspeed, Scalar(2));
-  const Scalar _tmp4 = _tmp3 * sideslip_var;
-  const Scalar _tmp5 = _tmp3 * heading_var;
-  const Scalar _tmp6 = std::pow(_tmp0, Scalar(2));
-  const Scalar _tmp7 = _tmp0 * _tmp1;
-  const Scalar _tmp8 = -_tmp4 * _tmp7 - _tmp5 * _tmp7 + _tmp7 * airspeed_var;
+  ध्रुव Scalar _tmp0 = std::cos(heading);
+  ध्रुव Scalar _tmp1 = std::sin(heading);
+  ध्रुव Scalar _tmp2 = std::pow(_tmp1, Scalar(2));
+  ध्रुव Scalar _tmp3 = std::pow(airspeed, Scalar(2));
+  ध्रुव Scalar _tmp4 = _tmp3 * sideslip_var;
+  ध्रुव Scalar _tmp5 = _tmp3 * heading_var;
+  ध्रुव Scalar _tmp6 = std::pow(_tmp0, Scalar(2));
+  ध्रुव Scalar _tmp7 = _tmp0 * _tmp1;
+  ध्रुव Scalar _tmp8 = -_tmp4 * _tmp7 - _tmp5 * _tmp7 + _tmp7 * airspeed_var;
 
   // Output terms (2)
-  if (wind != nullptr) {
+  जइ (wind != nullptr) {
     matrix::Matrix<Scalar, 2, 1>& _wind = (*wind);
 
     _wind(0, 0) = -_tmp0 * airspeed + v_local(0, 0);
     _wind(1, 0) = -_tmp1 * airspeed + v_local(1, 0);
   }
 
-  if (P != nullptr) {
+  जइ (P != nullptr) {
     matrix::Matrix<Scalar, 2, 2>& _p = (*P);
 
     _p(0, 0) = _tmp2 * _tmp4 + _tmp2 * _tmp5 + _tmp6 * airspeed_var + v_var;

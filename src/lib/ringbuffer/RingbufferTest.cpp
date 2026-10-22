@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <stdint.h>
-#include <string.h>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <stdint.h>
+#अन्तर्भाव <string.h>
 
 
-#include "Ringbuffer.hpp"
+#अन्तर्भाव "Ringbuffer.hpp"
 
-class TempData
+वर्ग TempData
 {
-public:
+सार्वजनिक:
 	TempData(size_t len)
 	{
 		_size = len;
-		_buf = new uint8_t[_size];
+		_buf = नूतन uint8_t[_size];
 	}
 
 	~TempData()
@@ -53,36 +53,36 @@ public:
 		_buf = nullptr;
 	}
 
-	uint8_t *buf() const
+	uint8_t *buf() ध्रुव
 	{
-		return _buf;
+		प्रत्यागम _buf;
 	}
 
-	size_t size() const
+	size_t size() ध्रुव
 	{
-		return _size;
+		प्रत्यागम _size;
 	}
 
-	void paint(unsigned offset = 0)
+	शून्य paint(unsigned offset = 0)
 	{
-		for (size_t i = 0; i < _size; ++i) {
+		प्रति (size_t i = 0; i < _size; ++i) {
 			_buf[i] = (uint8_t)((i + offset) % UINT8_MAX);
 		}
 	}
 
-private:
+गुप्त:
 	uint8_t *_buf {nullptr};
 	size_t _size{0};
 
 };
 
-bool operator==(const TempData &lhs, const TempData &rhs)
+तार्किक operator==(ध्रुव TempData &lhs, ध्रुव TempData &rhs)
 {
-	if (lhs.size() != rhs.size()) {
-		return false;
+	जइ (lhs.size() != rhs.size()) {
+		प्रत्यागम मिच्छ;
 	}
 
-	return memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
+	प्रत्यागम memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
 }
 
 
@@ -96,12 +96,12 @@ TEST(Ringbuffer, AllocateAndDeallocate)
 	// The second time we forget to clean up, but we expect no leak.
 }
 
-class RingbufferReallocation : public ::testing::TestWithParam<size_t>
+वर्ग RingbufferReallocation : सार्वजनिक ::testing::TestWithParam<size_t>
 {
-protected:
-	void check_reallocated(Ringbuffer &buf)
+रक्षित:
+	शून्य check_reallocated(Ringbuffer &buf)
 	{
-		const size_t capacity = GetParam();
+		ध्रुव size_t capacity = GetParam();
 		buf.deallocate();
 		ASSERT_TRUE(buf.allocate(capacity));
 		// Keep these non-fatal so stale indices still reach the sanitizer-backed
@@ -110,21 +110,21 @@ protected:
 		EXPECT_EQ(buf.space_available(), capacity - 1);
 
 		uint8_t byte = 0;
-		EXPECT_EQ(buf.pop_front(&byte, sizeof(byte)), 0u);
+		EXPECT_EQ(buf.निष्कासय_front(&byte, परिमाण(byte)), 0u);
 
 		TempData data{capacity - 1};
 		data.paint(41);
 		ASSERT_TRUE(buf.push_back(data.buf(), data.size()));
 		EXPECT_EQ(buf.space_used(), data.size());
 		EXPECT_EQ(buf.space_available(), 0u);
-		EXPECT_FALSE(buf.push_back(&byte, sizeof(byte)));
+		EXPECT_FALSE(buf.push_back(&byte, परिमाण(byte)));
 
 		TempData out{data.size()};
-		ASSERT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
+		ASSERT_EQ(buf.निष्कासय_front(out.buf(), out.size()), out.size());
 		EXPECT_EQ(data, out);
 		EXPECT_EQ(buf.space_used(), 0u);
 		EXPECT_EQ(buf.space_available(), capacity - 1);
-		EXPECT_EQ(buf.pop_front(&byte, sizeof(byte)), 0u);
+		EXPECT_EQ(buf.निष्कासय_front(&byte, परिमाण(byte)), 0u);
 	}
 };
 
@@ -136,7 +136,7 @@ TEST_P(RingbufferReallocation, PartiallyUsed)
 	data.paint();
 	ASSERT_TRUE(buf.push_back(data.buf(), data.size()));
 	TempData out{2};
-	ASSERT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
+	ASSERT_EQ(buf.निष्कासय_front(out.buf(), out.size()), out.size());
 	ASSERT_EQ(buf.space_used(), 2u);
 
 	check_reallocated(buf);
@@ -150,7 +150,7 @@ TEST_P(RingbufferReallocation, Drained)
 	data.paint();
 	ASSERT_TRUE(buf.push_back(data.buf(), data.size()));
 	TempData out{data.size()};
-	ASSERT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
+	ASSERT_EQ(buf.निष्कासय_front(out.buf(), out.size()), out.size());
 	ASSERT_EQ(data, out);
 	ASSERT_EQ(buf.space_used(), 0u);
 
@@ -165,7 +165,7 @@ TEST_P(RingbufferReallocation, Wrapped)
 	first.paint();
 	ASSERT_TRUE(buf.push_back(first.buf(), first.size()));
 	TempData out{10};
-	ASSERT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
+	ASSERT_EQ(buf.निष्कासय_front(out.buf(), out.size()), out.size());
 
 	// Wrap the tail while the head is still near the end of the old allocation.
 	TempData second{8};
@@ -176,9 +176,9 @@ TEST_P(RingbufferReallocation, Wrapped)
 	check_reallocated(buf);
 }
 
-INSTANTIATE_TEST_SUITE_P(NewCapacity, RingbufferReallocation, ::testing::Values(size_t{8}, size_t{32}));
+INSTANTIATE_TEST_SUITE_P(NewCapacity, RingbufferReallocation, ::testing::मानानि(size_t{8}, size_t{32}));
 
-TEST(Ringbuffer, PushATooBigMessage)
+TEST(Ringbuffer, प्रक्षिप_AToo_Big_Message)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
@@ -189,7 +189,7 @@ TEST(Ringbuffer, PushATooBigMessage)
 	EXPECT_FALSE(buf.push_back(data.buf(), data.size()));
 }
 
-TEST(Ringbuffer, PushAndPopOne)
+TEST(Ringbuffer, प्रक्षिप_And_निष्कासय_One)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
@@ -204,14 +204,14 @@ TEST(Ringbuffer, PushAndPopOne)
 
 	// Get everything
 	TempData out{20};
-	EXPECT_EQ(buf.pop_front(out.buf(), out.size()), 20);
+	EXPECT_EQ(buf.निष्कासय_front(out.buf(), out.size()), 20);
 	EXPECT_EQ(data, out);
 
 	// Nothing remaining
-	EXPECT_EQ(buf.pop_front(out.buf(), out.size()), 0);
+	EXPECT_EQ(buf.निष्कासय_front(out.buf(), out.size()), 0);
 }
 
-TEST(Ringbuffer, PushAndPopSeveral)
+TEST(Ringbuffer, प्रक्षिप_And_निष्कासय_Several)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
@@ -220,7 +220,7 @@ TEST(Ringbuffer, PushAndPopSeveral)
 	data.paint();
 
 	// 9 little chunks in
-	for (unsigned i = 0; i < 9; ++i) {
+	प्रति (unsigned i = 0; i < 9; ++i) {
 		EXPECT_TRUE(buf.push_back(data.buf() + i * 10, 10));
 	}
 
@@ -229,12 +229,12 @@ TEST(Ringbuffer, PushAndPopSeveral)
 
 	TempData out{90};
 	// Take it back out in 2 big steps
-	EXPECT_EQ(buf.pop_front(out.buf(), 50), 50);
-	EXPECT_EQ(buf.pop_front(out.buf() + 50, 40), 40);
+	EXPECT_EQ(buf.निष्कासय_front(out.buf(), 50), 50);
+	EXPECT_EQ(buf.निष्कासय_front(out.buf() + 50, 40), 40);
 	EXPECT_EQ(data, out);
 }
 
-TEST(Ringbuffer, PushAndTryToPopMore)
+TEST(Ringbuffer, प्रक्षिप_And_Try_To_निष्कासय_More)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
@@ -244,10 +244,10 @@ TEST(Ringbuffer, PushAndTryToPopMore)
 	EXPECT_TRUE(buf.push_back(data1.buf(), data1.size()));
 
 	TempData out1{80};
-	EXPECT_EQ(buf.pop_front(out1.buf(), out1.size()), data1.size());
+	EXPECT_EQ(buf.निष्कासय_front(out1.buf(), out1.size()), data1.size());
 }
 
-TEST(Ringbuffer, PushAndPopSeveralInterleaved)
+TEST(Ringbuffer, प्रक्षिप_And_निष्कासय_Several_Interleaved)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
@@ -261,7 +261,7 @@ TEST(Ringbuffer, PushAndPopSeveralInterleaved)
 	EXPECT_TRUE(buf.push_back(data2.buf(), data2.size()));
 
 	TempData out12{80};
-	EXPECT_EQ(buf.pop_front(out12.buf(), out12.size()), out12.size());
+	EXPECT_EQ(buf.निष्कासय_front(out12.buf(), out12.size()), out12.size());
 
 	TempData out12_ref{80};
 	out12_ref.paint();
@@ -272,11 +272,11 @@ TEST(Ringbuffer, PushAndPopSeveralInterleaved)
 	EXPECT_TRUE(buf.push_back(data3.buf(), data3.size()));
 
 	TempData out3{50};
-	EXPECT_EQ(buf.pop_front(out3.buf(), out3.size()), data3.size());
+	EXPECT_EQ(buf.निष्कासय_front(out3.buf(), out3.size()), data3.size());
 	EXPECT_EQ(data3, out3);
 }
 
-TEST(Ringbuffer, PushEmpty)
+TEST(Ringbuffer, प्रक्षिप_Empty)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
@@ -284,7 +284,7 @@ TEST(Ringbuffer, PushEmpty)
 	EXPECT_FALSE(buf.push_back(nullptr, 0));
 }
 
-TEST(Ringbuffer, PopWithoutBuffer)
+TEST(Ringbuffer, निष्कासय_Without_Buffer)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
@@ -297,7 +297,7 @@ TEST(Ringbuffer, PopWithoutBuffer)
 	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
 
 
-	EXPECT_EQ(buf.pop_front(nullptr, 50), 0);
+	EXPECT_EQ(buf.निष्कासय_front(nullptr, 50), 0);
 }
 
 TEST(Ringbuffer, EmptyAndNoSpaceForHeader)
@@ -314,7 +314,7 @@ TEST(Ringbuffer, EmptyAndNoSpaceForHeader)
 		data.paint();
 		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
 		TempData out{20};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
+		EXPECT_EQ(buf.निष्कासय_front(out.buf(), out.size()), out.size());
 		EXPECT_EQ(data, out);
 	}
 
@@ -323,7 +323,7 @@ TEST(Ringbuffer, EmptyAndNoSpaceForHeader)
 		data.paint();
 		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
 		TempData out{10};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
+		EXPECT_EQ(buf.निष्कासय_front(out.buf(), out.size()), out.size());
 		EXPECT_EQ(data, out);
 	}
 }

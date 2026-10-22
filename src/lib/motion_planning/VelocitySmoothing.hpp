@@ -33,11 +33,11 @@
 
 #pragma once
 
-struct Trajectory {
-	float j; //< jerk
-	float a; //< acceleration
-	float v; //< velocity
-	float x; //< position
+संरचना Trajectory {
+	भिन्न j; //< jerk
+	भिन्न a; //< acceleration
+	भिन्न v; //< velocity
+	भिन्न x; //< position
 };
 
 /**
@@ -58,11 +58,11 @@ struct Trajectory {
  *        ;
  *   ----"
  */
-class VelocitySmoothing
+वर्ग VelocitySmoothing
 {
-public:
-	VelocitySmoothing(float initial_accel = 0.f, float initial_vel = 0.f, float initial_pos = 0.f);
-	~VelocitySmoothing() = default;
+सार्वजनिक:
+	VelocitySmoothing(भिन्न initial_accel = 0.f, भिन्न initial_vel = 0.f, भिन्न initial_pos = 0.f);
+	~VelocitySmoothing() = स्वभाव;
 
 	/**
 	 * Reset the state.
@@ -70,14 +70,14 @@ public:
 	 * @param vel Current velocity
 	 * @param pos Current position
 	 */
-	void reset(float accel, float vel, float pos);
+	शून्य reset(भिन्न accel, भिन्न vel, भिन्न pos);
 
 	/**
 	 * Compute T1, T2, T3 depending on the current state and velocity setpoint. This should be called on every cycle
 	 * and before updateTraj().
 	 * @param vel_setpoint velocity setpoint input
 	 */
-	void updateDurations(float vel_setpoint);
+	शून्य updateDurations(भिन्न vel_setpoint);
 
 	/**
 	 * Generate the trajectory (acceleration, velocity and position) by integrating the current jerk
@@ -85,32 +85,32 @@ public:
 	 * @param time_stretch (optional) used to scale the integration period. This can be used to slow down
 	 * or fast-forward the trajectory
 	 */
-	void updateTraj(float dt, float time_stretch = 1.f);
+	शून्य updateTraj(भिन्न dt, भिन्न time_stretch = 1.f);
 
 	/**
 	 * Getters and setters
 	 */
-	float getMaxJerk() const { return _max_jerk; }
-	void setMaxJerk(float max_jerk) { _max_jerk = max_jerk; }
+	भिन्न getMaxJerk() ध्रुव { प्रत्यागम _max_jerk; }
+	शून्य setMaxJerk(भिन्न max_jerk) { _max_jerk = max_jerk; }
 
-	float getMaxAccel() const { return _max_accel; }
-	void setMaxAccel(float max_accel) { _max_accel = max_accel; }
+	भिन्न getMaxAccel() ध्रुव { प्रत्यागम _max_accel; }
+	शून्य setMaxAccel(भिन्न max_accel) { _max_accel = max_accel; }
 
-	float getMaxVel() const { return _max_vel; }
-	void setMaxVel(float max_vel) { _max_vel = max_vel; }
+	भिन्न getMaxVel() ध्रुव { प्रत्यागम _max_vel; }
+	शून्य setMaxVel(भिन्न max_vel) { _max_vel = max_vel; }
 
-	float getCurrentJerk() const { return _state.j; }
-	void setCurrentAcceleration(const float accel) { _state.a = _state_init.a = accel; }
-	float getCurrentAcceleration() const { return _state.a; }
-	void setCurrentVelocity(const float vel) { _state.v = _state_init.v = vel; }
-	float getCurrentVelocity() const { return _state.v; }
-	void setCurrentPosition(const float pos) { _state.x = _state_init.x = pos; }
-	float getCurrentPosition() const { return _state.x; }
+	भिन्न getCurrentJerk() ध्रुव { प्रत्यागम _state.j; }
+	शून्य setCurrentAcceleration(ध्रुव भिन्न accel) { _state.a = _state_init.a = accel; }
+	भिन्न getCurrentAcceleration() ध्रुव { प्रत्यागम _state.a; }
+	शून्य setCurrentVelocity(ध्रुव भिन्न vel) { _state.v = _state_init.v = vel; }
+	भिन्न getCurrentVelocity() ध्रुव { प्रत्यागम _state.v; }
+	शून्य setCurrentPosition(ध्रुव भिन्न pos) { _state.x = _state_init.x = pos; }
+	भिन्न getCurrentPosition() ध्रुव { प्रत्यागम _state.x; }
 
-	float getT1() const { return _T1; }
-	float getT2() const { return _T2; }
-	float getT3() const { return _T3; }
-	float getTotalTime() const { return _T1 + _T2 + _T3; }
+	भिन्न getT1() ध्रुव { प्रत्यागम _T1; }
+	भिन्न getT2() ध्रुव { प्रत्यागम _T2; }
+	भिन्न getT3() ध्रुव { प्रत्यागम _T3; }
+	भिन्न getTotalTime() ध्रुव { प्रत्यागम _T1 + _T2 + _T3; }
 
 	/**
 	 * Synchronize several trajectories to have the same total time. This is required to generate
@@ -119,63 +119,63 @@ public:
 	 * @param traj an array of VelocitySmoothing objects
 	 * @param n_traj the number of trajectories to be synchronized
 	 */
-	static void timeSynchronization(VelocitySmoothing *traj, int n_traj);
+	स्थिर शून्य timeSynchronization(VelocitySmoothing *traj, पूर्णाङ्क n_traj);
 
-private:
+गुप्त:
 
 	/**
 	 * Compute T1, T2, T3 depending on the current state and velocity setpoint.
 	 * Minimize the total time of the trajectory
 	 */
-	void updateDurationsMinimizeTotalTime();
+	शून्य updateDurationsMinimizeTotalTime();
 
 	/**
 	 * Compute T1, T2, T3 depending on the current state and velocity setpoint.
 	 * @param T123 desired total time of the trajectory
 	 */
-	void updateDurationsGivenTotalTime(float T123);
+	शून्य updateDurationsGivenTotalTime(भिन्न T123);
 
 	/**
 	 * Compute the direction of the jerk to be applied in order to drive the current state
 	 * to the desired one
 	 */
-	int computeDirection() const;
+	पूर्णाङ्क computeDirection() ध्रुव;
 
 	/**
 	 * Compute the velocity at which the trajectory will be if the maximum jerk is applied
 	 * during the time required to cancel the current acceleration
 	 */
-	float computeVelAtZeroAcc() const;
+	भिन्न computeVelAtZeroAcc() ध्रुव;
 
 	/**
 	 * Compute increasing acceleration time
 	 */
-	inline float computeT1(float a0, float v3, float j_max, float a_max) const;
+	अन्तःस्थ भिन्न computeT1(भिन्न a0, भिन्न v3, भिन्न j_max, भिन्न a_max) ध्रुव;
 
 	/**
 	 * Compute increasing acceleration time using total time constraint
 	 */
-	inline float computeT1(float T123, float a0, float v3, float j_max, float a_max) const;
+	अन्तःस्थ भिन्न computeT1(भिन्न T123, भिन्न a0, भिन्न v3, भिन्न j_max, भिन्न a_max) ध्रुव;
 
 	/**
 	 * Saturate T1 in order to respect the maximum acceleration constraint
 	 */
-	inline float saturateT1ForAccel(float a0, float j_max, float T1, float a_max) const;
+	अन्तःस्थ भिन्न saturateT1ForAccel(भिन्न a0, भिन्न j_max, भिन्न T1, भिन्न a_max) ध्रुव;
 
 	/**
 	 * Compute constant acceleration time
 	 */
-	inline float computeT2(float T1, float T3, float a0, float v3, float j_max) const;
+	अन्तःस्थ भिन्न computeT2(भिन्न T1, भिन्न T3, भिन्न a0, भिन्न v3, भिन्न j_max) ध्रुव;
 
 	/**
 	 * Compute constant acceleration time using total time constraint
 	 */
-	inline float computeT2(float T123, float T1, float T3) const;
+	अन्तःस्थ भिन्न computeT2(भिन्न T123, भिन्न T1, भिन्न T3) ध्रुव;
 
 	/**
 	 * Compute decreasing acceleration time
 	 */
-	inline float computeT3(float T1, float a0, float j_max) const;
+	अन्तःस्थ भिन्न computeT3(भिन्न T1, भिन्न a0, भिन्न j_max) ध्रुव;
 
 	/**
 	 * Compute the jerk, acceleration, velocity and position
@@ -187,27 +187,27 @@ private:
 	 * @param t current time
 	 * @param d direction
 	 */
-	inline Trajectory evaluatePoly(float j, float a0, float v0, float x0, float t, int d) const;
+	अन्तःस्थ Trajectory evaluatePoly(भिन्न j, भिन्न a0, भिन्न v0, भिन्न x0, भिन्न t, पूर्णाङ्क d) ध्रुव;
 
-	/* Input */
-	float _vel_sp{0.f};
+	/*निवेशः*/
+	भिन्न _vel_sp{0.f};
 
 	/* Constraints */
-	float _max_jerk{0.f};
-	float _max_accel{0.f};
-	float _max_vel{0.f};
+	भिन्न _max_jerk{0.f};
+	भिन्न _max_accel{0.f};
+	भिन्न _max_vel{0.f};
 
 	/* State (previous setpoints) */
 	Trajectory _state{};
-	int _direction{0};
+	पूर्णाङ्क _direction{0};
 
 	/* Initial conditions */
 	Trajectory _state_init{};
 
 	/* Duration of each phase */
-	float _T1{0.f}; ///< Increasing acceleration [s]
-	float _T2{0.f}; ///< Constant acceleration [s]
-	float _T3{0.f}; ///< Decreasing acceleration [s]
+	भिन्न _T1{0.f}; ///< Increasing acceleration [s]
+	भिन्न _T2{0.f}; ///< Constant acceleration [s]
+	भिन्न _T3{0.f}; ///< Decreasing acceleration [s]
 
-	float _local_time{0.f}; ///< Current local time
+	भिन्न _local_time{0.f}; ///< Current local time
 };

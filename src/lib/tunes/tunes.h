@@ -37,10 +37,10 @@
 
 #pragma once
 
-#include <errno.h>
-#include <uORB/uORB.h>
-#include <uORB/topics/tune_control.h>
-#include "tune_definition.h"
+#अन्तर्भाव <errno.h>
+#अन्तर्भाव <uORB/uORB.h>
+#अन्तर्भाव <uORB/topics/tune_control.h>
+#अन्तर्भाव "tune_definition.h"
 
 #define TUNE_DEFAULT_NOTE_LENGTH 4
 #define TUNE_DEFAULT_OCTAVE 4
@@ -56,16 +56,16 @@
  */
 class Tunes
 {
-public:
-	enum class NoteMode {NORMAL, LEGATO, STACCATO};
+सार्वजनिक:
+	गणना class NoteMode {NORMAL, LEGATO, STACCATO};
 
-	enum class Status {
+	गणना class Status {
 		Continue = 1,
 		Stop = 0,
 		Error = -1,
 	};
 
-	enum class ControlResult {
+	गणना class ControlResult {
 		Success = 0,
 		AlreadyPlaying = 1,
 		InvalidTune = -EINVAL,
@@ -84,7 +84,7 @@ public:
 	      unsigned default_octave      = TUNE_DEFAULT_OCTAVE,
 	      unsigned default_tempo       = TUNE_DEFAULT_TEMPO);
 
-	~Tunes() = default;
+	~Tunes() = स्वभाव;
 
 	/**
 	 * Set tune to be played using the message. If a tune is already being played
@@ -96,7 +96,7 @@ public:
 	 * 			ControlResult::AlreadyPlaying if same tune was already playing,
 	 * 			ControlResult::Success if new tune was set.
 	 */
-	ControlResult set_control(const tune_control_s &tune_control);
+	ControlResult set_control(ध्रुव tune_control_s &tune_control);
 
 	/**
 	 * Set tune to be played using a string.
@@ -106,7 +106,7 @@ public:
 	 *
 	 * @param  string    tune input string
 	 */
-	void set_string(const char *const string, uint8_t volume);
+	शून्य set_string(ध्रुव वर्ण *ध्रुव string, uint8_t volume);
 
 	/**
 	 * Get next note in the current tune, which has been provided by either
@@ -135,11 +135,11 @@ public:
 	 *  requested via its tune ID.
 	 *  @return             Number of default tunes accessible via tune ID
 	 */
-	unsigned int get_default_tunes_size() const {return _default_tunes_size;}
+	unsigned पूर्णाङ्क get_default_tunes_size() ध्रुव {प्रत्यागम _default_tunes_size;}
 
-	unsigned int get_maximum_update_interval() {return (unsigned int)TUNE_MAX_UPDATE_INTERVAL_US;}
+	unsigned पूर्णाङ्क get_maximum_update_interval() {प्रत्यागम (unsigned पूर्णाङ्क)TUNE_MAX_UPDATE_INTERVAL_US;}
 
-private:
+गुप्त:
 
 	/**
 	 * Convert note to frequency
@@ -147,7 +147,7 @@ private:
 	 * @param  note unsigned value of the semitone from C
 	 * @return      frequency (Hz)
 	 */
-	uint32_t note_to_frequency(unsigned note) const;
+	uint32_t note_to_frequency(unsigned note) ध्रुव;
 
 	/**
 	 * Calculate the duration in microseconds of play and silence for a
@@ -159,7 +159,7 @@ private:
 	 * @param  dots        extention of the note length
 	 * @return             duration of the note (us)
 	 */
-	unsigned note_duration(unsigned &silence, unsigned note_length, unsigned dots) const;
+	unsigned note_duration(unsigned &silence, unsigned note_length, unsigned dots) ध्रुव;
 
 	/**
 	 * Calculate the duration in microseconds of a rest corresponding to
@@ -169,21 +169,21 @@ private:
 	 * @param  dots        number of extension dots
 	 * @return             rest duration (us)
 	 */
-	unsigned rest_duration(unsigned rest_length, unsigned dots) const;
+	unsigned rest_duration(unsigned rest_length, unsigned dots) ध्रुव;
 
 	/**
 	 * Find the next character in the string, discard any whitespace.
 	 *
 	 * @return uppercase version of the char.
 	 */
-	int next_char();
+	पूर्णाङ्क next_char();
 
 	/**
 	 * Extract a number from the string, consuming all the digit characters.
 	 *
 	 * @return extracted number.
 	 */
-	unsigned next_number();
+	unsigned next_सङ्ख्या();
 
 	/**
 	 * Consume dot characters from the string
@@ -197,41 +197,41 @@ private:
 	 * one or more octaves up or down. reset() should always be called before
 	 * (re)-starting a tune.
 	 */
-	void reset(bool repeat_flag);
+	शून्य reset(bool repeat_flag);
 
 	Tunes::Status tune_end();
 
 	Tunes::Status tune_error();
 
-	static const char *const  _default_tunes[];
-	static const bool         _default_tunes_interruptable[];
-	static const unsigned int _default_tunes_size;
-	static const uint8_t      _note_tab[];
+	स्थिर ध्रुव वर्ण *ध्रुव  _default_tunes[];
+	स्थिर ध्रुव bool         _default_tunes_interruptable[];
+	स्थिर ध्रुव unsigned पूर्णाङ्क _default_tunes_size;
+	स्थिर ध्रुव uint8_t      _note_tab[];
 
-	const char *_next_tune      = nullptr; ///< next note in the string
-	const char *_tune           = nullptr; ///< current tune string
-	const char *_tune_start_ptr = nullptr; ///< pointer to repeat tune
+	ध्रुव वर्ण *_next_tune      = nullptr; ///< next note in the string
+	ध्रुव वर्ण *_tune           = nullptr; ///< current tune string
+	ध्रुव वर्ण *_tune_start_ptr = nullptr; ///< pointer to repeat tune
 
-	int _current_tune_id = static_cast<int>(TuneID::NONE);
+	पूर्णाङ्क _current_tune_id = static_cast<पूर्णाङ्क>(TuneID::NONE);
 
 	bool _repeat = false; ///< if true, tune restarts at end
 
-	unsigned int _default_note_length = TUNE_DEFAULT_NOTE_LENGTH;
+	unsigned पूर्णाङ्क _default_note_length = TUNE_DEFAULT_NOTE_LENGTH;
 	NoteMode     _default_note_mode   = NoteMode::NORMAL;
-	unsigned int _default_octave      = TUNE_DEFAULT_OCTAVE;
-	unsigned int _default_tempo       = TUNE_DEFAULT_TEMPO;
+	unsigned पूर्णाङ्क _default_octave      = TUNE_DEFAULT_OCTAVE;
+	unsigned पूर्णाङ्क _default_tempo       = TUNE_DEFAULT_TEMPO;
 
-	unsigned int _note_length         = TUNE_DEFAULT_NOTE_LENGTH;
+	unsigned पूर्णाङ्क _note_length         = TUNE_DEFAULT_NOTE_LENGTH;
 	NoteMode     _note_mode           = NoteMode::NORMAL;
-	unsigned int _octave              = TUNE_DEFAULT_OCTAVE;
-	unsigned int _tempo               = TUNE_DEFAULT_TEMPO;
+	unsigned पूर्णाङ्क _octave              = TUNE_DEFAULT_OCTAVE;
+	unsigned पूर्णाङ्क _tempo               = TUNE_DEFAULT_TEMPO;
 
-	unsigned int _duration  = 0;
-	unsigned int _frequency = 0;
-	unsigned int _silence   = 0;
+	unsigned पूर्णाङ्क _duration  = 0;
+	unsigned पूर्णाङ्क _frequency = 0;
+	unsigned पूर्णाङ्क _silence   = 0;
 	uint8_t      _volume    = 0;
 
-	bool  _using_custom_msg = false;
+	bool  using_custom_सन्देशः = false;
 
 	bool _tunes_disabled{false};
 };

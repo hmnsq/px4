@@ -35,29 +35,29 @@
  * Run this test only using make tests TESTFILTER=unit-test_airspeed_fusion
  */
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
-#include <mathlib/math/Functions.hpp>
-#include "../python/generated/fuse_airspeed.h"
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <matrix/math.hpp>
+#अन्तर्भाव <mathlib/math/Functions.hpp>
+#अन्तर्भाव "../python/generated/fuse_airspeed.h"
 
-using namespace matrix;
+using नामाकाश matrix;
 
 TEST(TestAirspeedFusion, SingularityHandling)
 {
 	// GIVEN: all inputs set to zero (singularity point)
-	const float true_airspeed = 0.f;
-	const Vector3f vel_i{0.f, 0.f, 0.f};
-	const Vector3f state{0.f, 0.f, 0.f};
-	const Matrix<float, 3, 3> P;
-	const float tas_var = 0.f;
+	ध्रुव भिन्न true_airspeed = 0.f;
+	ध्रुव Vector3f vel_i{0.f, 0.f, 0.f};
+	ध्रुव Vector3f state{0.f, 0.f, 0.f};
+	ध्रुव Matrix<भिन्न, 3, 3> P;
+	ध्रुव भिन्न tas_var = 0.f;
 
-	matrix::Matrix<float, 1, 3> H;
-	matrix::Matrix<float, 3, 1> K;
-	float innov_var;
-	float innov;
+	matrix::Matrix<भिन्न, 1, 3> H;
+	matrix::Matrix<भिन्न, 3, 1> K;
+	भिन्न innov_var;
+	भिन्न innov;
 
 	// WHEN: no singularity handling is done
-	float epsilon = 0.f;
+	भिन्न epsilon = 0.f;
 	sym::FuseAirspeed(vel_i, state, P, true_airspeed, tas_var, epsilon,
 			  &H, &K, &innov_var, &innov);
 

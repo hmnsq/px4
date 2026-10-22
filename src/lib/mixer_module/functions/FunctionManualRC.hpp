@@ -33,29 +33,29 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#अन्तर्भाव "FunctionProviderBase.hpp"
 
-#include <uORB/topics/manual_control_setpoint.h>
+#अन्तर्भाव <uORB/topics/manual_control_setpoint.h>
 
 /**
  * Functions: RC_Roll .. RCAUX_Max
  */
-class FunctionManualRC : public FunctionProviderBase
+वर्ग FunctionManualRC : सार्वजनिक FunctionProviderBase
 {
-public:
+सार्वजनिक:
 	FunctionManualRC()
 	{
-		resetAllToDisarmedValue();
+		reset_All_To_Disarmed_मानम्();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionManualRC(); }
+	स्थिर FunctionProviderBase *allocate(ध्रुव Context &context) { प्रत्यागम नूतन FunctionManualRC(); }
 
-	void update() override
+	शून्य update() override
 	{
 		manual_control_setpoint_s manual_control_setpoint;
 
-		if (_topic.update(&manual_control_setpoint)) {
-			if (manual_control_setpoint.valid) {
+		जइ (_topic.update(&manual_control_setpoint)) {
+			जइ (manual_control_setpoint.valid) {
 				_data[0] = manual_control_setpoint.roll;
 				_data[1] = manual_control_setpoint.pitch;
 				_data[2] = manual_control_setpoint.throttle;
@@ -68,27 +68,27 @@ public:
 				_data[9] = manual_control_setpoint.aux5;
 				_data[10] = manual_control_setpoint.aux6;
 
-			} else {
-				resetAllToDisarmedValue();
+			} अण्णहा {
+				reset_All_To_Disarmed_मानम्();
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::RC_Roll]; }
+	भिन्न value(OutputFunction func) override { प्रत्यागम _data[(पूर्णाङ्क)func - (पूर्णाङ्क)OutputFunction::RC_Roll]; }
 
-private:
-	static constexpr int num_data_points = 11;
+गुप्त:
+	स्थिर constexpr पूर्णाङ्क अङ्कः_data_points = 11;
 
-	void resetAllToDisarmedValue()
+	शून्य reset_All_To_Disarmed_मानम्()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
+		प्रति (पूर्णाङ्क i = 0; i < अङ्कः_data_points; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
+	static_assert(अङ्कः_data_points == (पूर्णाङ्क)OutputFunction::RC_AUXMax - (पूर्णाङ्क)OutputFunction::RC_Roll + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _topic{ORB_ID(manual_control_setpoint)};
-	float _data[num_data_points] {};
+	भिन्न _data[अङ्कः_data_points] {};
 };

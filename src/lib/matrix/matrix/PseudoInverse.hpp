@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include "SquareMatrix.hpp"
-#include "Vector.hpp"
+#अन्तर्भाव "SquareMatrix.hpp"
+#अन्तर्भाव "Vector.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
 /**
@@ -22,36 +22,36 @@ namespace matrix
  * Courrieu, P. (2008). Fast Computation of Moore-Penrose Inverse Matrices, 8(2), 25–29. http://arxiv.org/abs/0804.4809
  */
 template<typename Type, size_t M, size_t N>
-bool geninv(const Matrix<Type, M, N> &G, Matrix<Type, N, M> &res)
+तार्किक geninv(ध्रुव Matrix<Type, M, N> &G, Matrix<Type, N, M> &res)
 {
 	size_t rank;
 
-	if (M <= N) {
+	जइ (M <= N) {
 		SquareMatrix<Type, M> A = G * G.transpose();
 		SquareMatrix<Type, M> L = fullRankCholesky(A, rank);
 
 		A = L.transpose() * L;
 		SquareMatrix<Type, M> X;
 
-		if (!inv(A, X, rank)) {
+		जइ (!inv(A, X, rank)) {
 			res = Matrix<Type, N, M>();
-			return false; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
+			प्रत्यागम मिच्छ; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
 		}
 
 		// doing an intermediate assignment reduces stack usage
 		A = X * X * L.transpose();
 		res = G.transpose() * (L * A);
 
-	} else {
+	} अण्णहा {
 		SquareMatrix<Type, N> A = G.transpose() * G;
 		SquareMatrix<Type, N> L = fullRankCholesky(A, rank);
 
 		A = L.transpose() * L;
 		SquareMatrix<Type, N> X;
 
-		if (!inv(A, X, rank)) {
+		जइ (!inv(A, X, rank)) {
 			res = Matrix<Type, N, M>();
-			return false; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
+			प्रत्यागम मिच्छ; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
 		}
 
 		// doing an intermediate assignment reduces stack usage
@@ -59,46 +59,46 @@ bool geninv(const Matrix<Type, M, N> &G, Matrix<Type, N, M> &res)
 		res = (L * A) * G.transpose();
 	}
 
-	return true;
+	प्रत्यागम सच्च;
 }
 
 
 template<typename Type>
 Type typeEpsilon();
 
-template<> inline
-float typeEpsilon<float>()
+template<> अन्तःस्थ
+भिन्न typeEpsilon<भिन्न>()
 {
-	return FLT_EPSILON;
+	प्रत्यागम FLT_EPSILON;
 }
 
 /**
  * Full rank Cholesky factorization of A
  */
 template<typename Type, size_t N>
-SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
+SquareMatrix<Type, N> fullRankCholesky(ध्रुव SquareMatrix<Type, N> &A,
 				       size_t &rank)
 {
 	// Loses one ulp accuracy per row of diag, relative to largest magnitude
-	const Type tol = N * typeEpsilon<Type>() * A.diag().max();
+	ध्रुव Type tol = N * typeEpsilon<Type>() * A.diag().max();
 
 	Matrix<Type, N, N> L;
 
 	size_t r = 0;
 
-	for (size_t k = 0; k < N; k++) {
+	प्रति (size_t k = 0; k < N; k++) {
 
-		if (r == 0) {
-			for (size_t i = k; i < N; i++) {
+		जइ (r == 0) {
+			प्रति (size_t i = k; i < N; i++) {
 				L(i, r) = A(i, k);
 			}
 
-		} else {
-			for (size_t i = k; i < N; i++) {
+		} अण्णहा {
+			प्रति (size_t i = k; i < N; i++) {
 				// Compute LL = L[k:n, :r] * L[k, :r].T
 				Type LL = Type();
 
-				for (size_t j = 0; j < r; j++) {
+				प्रति (size_t j = 0; j < r; j++) {
 					LL += L(i, j) * L(k, j);
 				}
 
@@ -106,11 +106,11 @@ SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
 			}
 		}
 
-		if (L(k, r) > tol) {
+		जइ (L(k, r) > tol) {
 			L(k, r) = std::sqrt(L(k, r));
 
-			if (k < N - 1) {
-				for (size_t i = k + 1; i < N; i++) {
+			जइ (k < N - 1) {
+				प्रति (size_t i = k + 1; i < N; i++) {
 					L(i, r) = L(i, r) / L(k, r);
 				}
 			}
@@ -122,7 +122,7 @@ SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
 	// Return rank
 	rank = r;
 
-	return L;
+	प्रत्यागम L;
 }
 
 } // namespace matrix
