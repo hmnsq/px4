@@ -55,17 +55,17 @@ public:
 
 	uint8_t *buf() const
 	{
-		return _buf;
+		ལོག _buf;
 	}
 
 	size_t size() const
 	{
-		return _size;
+		ལོག _size;
 	}
 
 	void paint(unsigned offset = 0)
 	{
-		for (size_t i = 0; i < _size; ++i) {
+		དོན་ལུ (size_t i = 0; i < _size; ++i) {
 			_buf[i] = (uint8_t)((i + offset) % UINT8_MAX);
 		}
 	}
@@ -78,11 +78,11 @@ private:
 
 bool operator==(const TempData &lhs, const TempData &rhs)
 {
-	if (lhs.size() != rhs.size()) {
-		return false;
+	གལ་སྲིད (lhs.size() != rhs.size()) {
+		ལོག false;
 	}
 
-	return memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
+	ལོག memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
 }
 
 
@@ -150,7 +150,7 @@ TEST(VariableLengthRingbuffer, PushAndPopSeveral)
 	data.paint();
 
 	// 4 should fit
-	for (unsigned i = 0; i < 4; ++i) {
+	དོན་ལུ (unsigned i = 0; i < 4; ++i) {
 		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
 	}
 
@@ -158,7 +158,7 @@ TEST(VariableLengthRingbuffer, PushAndPopSeveral)
 	EXPECT_FALSE(buf.push_back(data.buf(), data.size()));
 
 	// Take 4 back out
-	for (unsigned i = 0; i < 4; ++i) {
+	དོན་ལུ (unsigned i = 0; i < 4; ++i) {
 		TempData out{20};
 		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), data.size());
 		EXPECT_EQ(data, out);

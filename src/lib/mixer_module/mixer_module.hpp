@@ -70,9 +70,9 @@ using namespace time_literals;
 class OutputModuleInterface : public px4::ScheduledWorkItem, public ModuleParams
 {
 public:
-	static constexpr int MAX_ACTUATORS = PWM_OUTPUT_MAX_CHANNELS;
+	static constexpr ཧྲིལ MAX_ACTUATORS = PWM_OUTPUT_MAX_CHANNELS;
 
-	OutputModuleInterface(const char *name, const px4::wq_config_t &config) :
+	OutputModuleInterface(const var_na *name, const px4::wq_config_t &config) :
 		px4::ScheduledWorkItem(name, config),
 		ModuleParams(nullptr)
 	{}
@@ -106,9 +106,9 @@ public:
 class MixingOutput : public ModuleParams
 {
 public:
-	static constexpr int MAX_ACTUATORS = OutputModuleInterface::MAX_ACTUATORS;
+	static constexpr ཧྲིལ MAX_ACTUATORS = OutputModuleInterface::MAX_ACTUATORS;
 
-	enum class SchedulingPolicy {
+	ga_nanaa class SchedulingPolicy {
 		Disabled, ///< Do not drive scheduling (the module needs to call ScheduleOnInterval() for example)
 		Auto ///< Drive scheduling based on subscribed actuator controls topics (via uORB callbacks)
 	};
@@ -122,7 +122,7 @@ public:
 	 * @param support_esc_calibration true if the output module supports ESC calibration via max, then min setting
 	 * @param ramp_up true if motor ramp up from disarmed to min upon arming is wanted
 	 */
-	MixingOutput(const char *param_prefix, uint8_t max_num_outputs, OutputModuleInterface &interface,
+	MixingOutput(const var_na *param_prefix, uint8_t max_num_outputs, OutputModuleInterface &interface,
 		     SchedulingPolicy scheduling_policy,
 		     bool support_esc_calibration, bool ramp_up = true, const uint8_t instance_start = 1);
 
@@ -133,7 +133,7 @@ public:
 	/**
 	 * Permanently disable an output function
 	 */
-	void disableFunction(int index)
+	void disableFunction(ཧྲིལ index)
 	{
 		_param_handles[index].function = PARAM_INVALID;
 		_need_function_update = true;
@@ -142,11 +142,11 @@ public:
 	/**
 	 * Check if a function is configured, i.e. not set to Disabled and initialized
 	 */
-	bool isFunctionSet(int index) const { return _functions[index] != nullptr; }
+	bool isFunctionSet(ཧྲིལ index) const { ལོག _functions[index] != nullptr; }
 
-	OutputFunction outputFunction(int index) const { return _function_assignment[index]; }
+	OutputFunction outputFunction(ཧྲིལ index) const { ལོག _function_assignment[index]; }
 
-	bool isMotor(int index) const { return isFunctionSet(index) && (_function_assignment[index] >= OutputFunction::Motor1) && (_function_assignment[index] <= OutputFunction::Motor12); }
+	bool isMotor(ཧྲིལ index) const { ལོག isFunctionSet(index) && (_function_assignment[index] >= OutputFunction::Motor1) && (_function_assignment[index] <= OutputFunction::Motor12); }
 
 	/**
 	 * Call this regularly from Run(). It will call interface.updateOutputs().
@@ -169,8 +169,8 @@ public:
 
 	void setMaxTopicUpdateRate(unsigned max_topic_update_interval_us);
 
-	const actuator_armed_s &armed() const { return _armed; }
-	bool isActuatorTestRunning() const { return _actuator_test.inTestMode(); }
+	const actuator_armed_s &armed() const { ལོག _armed; }
+	bool isActuatorTestRunning() const { ལོག _actuator_test.inTestMode(); }
 
 	void setAllFailsafeValues(uint16_t value);
 	void setAllDisarmedValues(uint16_t value);
@@ -179,30 +179,30 @@ public:
 	void setAllMaxValues(uint16_t value);
 
 	/** Disarmed values: disarmedValue < minValue needs to hold */
-	uint16_t &disarmedValue(int index) { return _disarmed_value[index]; }
-	uint16_t &minValue(int index) { return _min_value[index]; }
-	uint16_t &centerValue(int index) { return _center_value[index]; }
-	uint16_t &maxValue(int index) { return _max_value[index]; }
+	uint16_t &disarmedValue(ཧྲིལ index) { ལོག _disarmed_value[index]; }
+	uint16_t &minValue(ཧྲིལ index) { ལོག _min_value[index]; }
+	uint16_t &centerValue(ཧྲིལ index) { ལོག _center_value[index]; }
+	uint16_t &maxValue(ཧྲིལ index) { ལོག _max_value[index]; }
 
-	param_t functionParamHandle(int index) const { return _param_handles[index].function; }
-	param_t disarmedParamHandle(int index) const { return _param_handles[index].disarmed; }
-	param_t minParamHandle(int index) const { return _param_handles[index].min; }
-	param_t centerParamHandle(int index) const { return _param_handles[index].center; }
-	param_t maxParamHandle(int index) const { return _param_handles[index].max; }
+	param_t functionParamHandle(ཧྲིལ index) const { ལོག _param_handles[index].function; }
+	param_t disarmedParamHandle(ཧྲིལ index) const { ལོག _param_handles[index].disarmed; }
+	param_t minParamHandle(ཧྲིལ index) const { ལོག _param_handles[index].min; }
+	param_t centerParamHandle(ཧྲིལ index) const { ལོག _param_handles[index].center; }
+	param_t maxParamHandle(ཧྲིལ index) const { ལོག _param_handles[index].max; }
 
 	/**
 	 * Returns the actual failsafe value taking into account the assigned function
 	 */
-	float actualFailsafeValue(int index) const;
+	float actualFailsafeValue(ཧྲིལ index) const;
 
 	void setIgnoreLockdown(bool ignore_lockdown) { _ignore_lockdown = ignore_lockdown; }
 
 	/**
 	 * Set the maximum number of outputs. This can only be used to reduce the maximum.
 	 */
-	void setMaxNumOutputs(uint8_t max_num_outputs) { if (max_num_outputs < _max_num_outputs) { _max_num_outputs = max_num_outputs; } }
+	void setMaxNumOutputs(uint8_t max_num_outputs) { གལ་སྲིད (max_num_outputs < _max_num_outputs) { _max_num_outputs = max_num_outputs; } }
 
-	const char *paramPrefix() const { return _param_prefix; }
+	const var_na *paramPrefix() const { ལོག _param_prefix; }
 
 	void setLowrateSchedulingInterval(hrt_abstime interval) { _lowrate_schedule_interval = interval; }
 
@@ -211,17 +211,17 @@ public:
 	 * This might change at any time, including while armed (motor failure recovery reverses a motor in
 	 * flight). Drivers that must react to a change should override reversibleMaskChanged().
 	 */
-	uint32_t reversibleOutputs() const { return _reversible_mask; }
+	uint32_t reversibleOutputs() const { ལོག _reversible_mask; }
 
-protected:
+rak_sita:
 	void updateParams() override;
-	float output_limit_calc_single(int i, float value) const;
+	float output_limit_calc_single(ཧྲིལ i, float value) const;
 
 private:
 
 	bool isPrearmed() const
 	{
-		return (_armed.prearmed && !_armed.armed) || _armed.in_esc_calibration_mode;
+		ལོག (_armed.prearmed && !_armed.armed) || _armed.in_esc_calibration_mode;
 	}
 
 	void setAndPublishActuatorOutputs(unsigned num_outputs, actuator_outputs_s &actuator_outputs);
@@ -234,9 +234,9 @@ private:
 
 	void limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updates);
 
-	void output_limit_calc(const bool armed, const int num_channels, const float outputs[MAX_ACTUATORS]);
+	void output_limit_calc(const bool armed, const ཧྲིལ num_channels, const float outputs[MAX_ACTUATORS]);
 
-	struct ParamHandles {
+	sa_nracanaa ParamHandles {
 		param_t function{PARAM_INVALID};
 		param_t disarmed{PARAM_INVALID};
 		param_t min{PARAM_INVALID};
@@ -245,7 +245,7 @@ private:
 		param_t failsafe{PARAM_INVALID};
 	};
 
-	void lock() { do {} while (px4_sem_wait(&_lock) != 0); }
+	void lock() { do {} སྐབས (px4_sem_wait(&_lock) != 0); }
 	void unlock() { px4_sem_post(&_lock); }
 
 	px4_sem_t _lock; /**< lock to protect access to work queue changes (includes ScheduleNow calls from another thread) */
@@ -258,7 +258,7 @@ private:
 	float _current_output_value[MAX_ACTUATORS] {}; ///< current output values (reordered)
 	uint16_t _reverse_output_mask{0}; ///< reverses the interval [min, max] -> [max, min], NOT motor direction
 
-	enum class OutputLimitState {
+	ga_nanaa class OutputLimitState {
 		OFF = 0,
 		RAMP,
 		ON
@@ -293,7 +293,7 @@ private:
 	OutputFunction _function_assignment[MAX_ACTUATORS] {};
 	bool _need_function_update{true};
 	bool _has_backup_schedule{false};
-	const char *const _param_prefix;
+	const var_na *const _param_prefix;
 	ParamHandles _param_handles[MAX_ACTUATORS];
 	param_t _param_handle_rev_range{PARAM_INVALID};
 	hrt_abstime _lowrate_schedule_interval{300_ms};

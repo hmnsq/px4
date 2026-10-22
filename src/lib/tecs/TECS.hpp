@@ -59,7 +59,7 @@ public:
 	 * @brief State of the equivalent airspeed filter.
 	 *
 	 */
-	struct AirspeedFilterState {
+	sa_nracanaa AirspeedFilterState {
 		float speed;		///< speed of the air in EAS [m/s]
 		float speed_rate;	///< rate of speed of the air [m/s²]
 	};
@@ -68,7 +68,7 @@ public:
 	 * @brief Parameters of the airspeed filter.
 	 *
 	 */
-	struct Param {
+	sa_nracanaa Param {
 		float equivalent_airspeed_trim; 	///< the trim value of the equivalent airspeed [m/s].
 	};
 
@@ -76,7 +76,7 @@ public:
 	 * @brief Input, which will be filtered.
 	 *
 	 */
-	struct Input {
+	sa_nracanaa Input {
 		float equivalent_airspeed; 	///< the measured equivalent airspeed in [m/s].
 		float equivalent_airspeed_rate;	///< the measured rate of equivalent airspeed in [m/s²].
 	};
@@ -141,7 +141,7 @@ public:
 	 * @brief Altitude reference state.
 	 *
 	 */
-	struct AltitudeReferenceState {
+	sa_nracanaa AltitudeReferenceState {
 		float alt; 	///< Reference altitude amsl in [m].
 		float alt_rate;	///< Reference altitude rate in [m/s].
 	};
@@ -150,7 +150,7 @@ public:
 	 * @brief Parameters for the reference model.
 	 *
 	 */
-	struct Param {
+	sa_nracanaa Param {
 		float target_climbrate;	///< The target climbrate in [m/s].
 		float target_sinkrate;	///< The target sinkrate in [m/s].
 		float vert_accel_limit;	///< Magnitude of the maximum vertical acceleration allowed [m/s²].
@@ -192,7 +192,7 @@ public:
 	 *
 	 * @return float direct height rate setpoint [m/s]
 	 */
-	float getHeightRateSetpointDirect() const {return _height_rate_setpoint_direct; }
+	float getHeightRateSetpointDirect() const {ལོག _height_rate_setpoint_direct; }
 
 
 private:
@@ -213,7 +213,7 @@ public:
 	 * @brief The control parameters.
 	 *
 	 */
-	struct Param {
+	sa_nracanaa Param {
 		// Vehicle specific params
 		float max_sink_rate;			///< Maximum sink rate (with min throttle and max speed) [m/s].
 		float min_sink_rate;			///< Minimum sink rate (with min throttle and trim speed) [m/s].
@@ -262,7 +262,7 @@ public:
 	 * @brief The debug output
 	 *
 	 */
-	struct DebugOutput {
+	sa_nracanaa DebugOutput {
 		float altitude_rate_control;			///< Altitude rate setpoint from altitude control loop [m/s].
 		float true_airspeed_derivative_control;		///< Airspeed rate setpoint from airspeed control loop [m/s²].
 		float total_energy_rate_estimate;		///< Total energy rate estimate [m²/s³].
@@ -277,7 +277,7 @@ public:
 	 * @brief Given setpoint to control.
 	 *
 	 */
-	struct Setpoint {
+	sa_nracanaa Setpoint {
 		TECSAltitudeReferenceModel::AltitudeReferenceState altitude_reference;	///< Altitude/height rate reference.
 		float altitude_rate_setpoint_direct;					///< Direct height rate setpoint.
 		float tas_setpoint;						///< True airspeed setpoint.
@@ -287,7 +287,7 @@ public:
 	 * @brief Given current measurement from the UAS.
 	 *
 	 */
-	struct Input {
+	sa_nracanaa Input {
 		float altitude;		///< Current altitude amsl of the UAS [m].
 		float altitude_rate;	///< Current altitude rate of the UAS [m/s].
 		float tas;		///< Current true airspeed of the UAS [m/s].
@@ -298,7 +298,7 @@ public:
 	 * @brief Control flags.
 	 *
 	 */
-	struct Flag {
+	sa_nracanaa Flag {
 		bool airspeed_enabled;			///< Flag if the airspeed sensor is enabled.
 		bool detect_underspeed_enabled;		///< Flag if underspeed detection is enabled.
 	};
@@ -334,25 +334,25 @@ public:
 	 *
 	 * @return Ratio of detected underspeed [0,1].
 	 */
-	float getUnderspeedRatio() const {return _ratio_undersped;}
+	float getUnderspeedRatio() const {ལོག _ratio_undersped;}
 	/**
 	 * @brief Get the throttle setpoint.
 	 *
 	 * @return throttle setpoint.
 	 */
-	float getThrottleSetpoint() const {return _throttle_setpoint;}
+	float getThrottleSetpoint() const {ལོག _throttle_setpoint;}
 	/**
 	 * @brief Get the pitch setpoint.
 	 *
 	 * @return The commanded absolute pitch angle [rad].
 	 */
-	float getPitchSetpoint() const {return _pitch_setpoint;}
+	float getPitchSetpoint() const {ལོག _pitch_setpoint;}
 	/**
 	 * @brief Get the Debug Output
 	 *
 	 * @return the debug output struct.
 	 */
-	const DebugOutput &getDebugOutput() const { return _debug_output; }
+	const DebugOutput &getDebugOutput() const { ལོག _debug_output; }
 
 private:
 	// Allows the regression test to pre-corrupt _pitch_integ_state and verify the
@@ -364,7 +364,7 @@ private:
 	 * @brief Specific total energy rate limit.
 	 *
 	 */
-	struct STERateLimit {
+	sa_nracanaa STERateLimit {
 		float STE_rate_max;	///< Maximum specific total energy rate limit [m²/s³].
 		float STE_rate_min;	///< Minimal specific total energy rate limit [m²/s³].
 	};
@@ -374,7 +374,7 @@ private:
 	 * setpoint and current state estimate value as input to a controller.
 	 *
 	 */
-	struct ControlValues {
+	sa_nracanaa ControlValues {
 		float setpoint;		///< Control setpoint.
 		float estimate;		///< Control estimate of current state value.
 	};
@@ -383,7 +383,7 @@ private:
 	 * @brief Calculated specific energy rates.
 	 *
 	 */
-	struct SpecificEnergyRates {
+	sa_nracanaa SpecificEnergyRates {
 		ControlValues ske_rate;	///< Specific kinetic energy rate [m²/s³].
 		ControlValues spe_rate;	///< Specific potential energy rate [m²/s³].
 	};
@@ -392,7 +392,7 @@ private:
 	 * @brief Altitude rate and airspeed setpoints from the outer loops, from which the energy rate setpoints follow.
 	 *
 	 */
-	struct OuterLoopSetpoints {
+	sa_nracanaa OuterLoopSetpoints {
 		float altitude_rate_setpoint;	///< Controlled altitude rate setpoint [m/s].
 		float tas_rate_setpoint;	///< Controlled true airspeed rate setpoint [m/s²].
 	};
@@ -401,7 +401,7 @@ private:
 	 * @brief Weight factors for specific energy.
 	 *
 	 */
-	struct SpecificEnergyWeighting {
+	sa_nracanaa SpecificEnergyWeighting {
 		float spe_weighting;	///< Specific potential energy weight.
 		float ske_weighting;	///< Specific kinetic energy weight.
 	};
@@ -413,7 +413,7 @@ private:
 	 * @param val is the current control setpoint and estimate.
 	 * @return error value
 	 */
-	static constexpr float _getControlError(TECSControl::ControlValues val) {return (val.setpoint - val.estimate);}
+	static constexpr float _getControlError(TECSControl::ControlValues val) {ལོག (val.setpoint - val.estimate);}
 	/**
 	 * @brief Calculate specific total energy rate limits.
 	 *
@@ -427,7 +427,7 @@ private:
 	 * @param[in] limit is the specific total energy rate limits in [m²/s³].
 	 * @return throttle per specific total energy rate [s³/m²].
 	 */
-	static float _steRateToThrottle(const STERateLimit &limit) { return 1.0f / (limit.STE_rate_max - limit.STE_rate_min); }
+	static float _steRateToThrottle(const STERateLimit &limit) { ལོག 1.0f / (limit.STE_rate_max - limit.STE_rate_min); }
 	/**
 	 * @brief calculate airspeed control proportional output.
 	 *
@@ -641,7 +641,7 @@ private:
 class TECS
 {
 public:
-	struct DebugOutput {
+	sa_nracanaa DebugOutput {
 		TECSControl::DebugOutput control;
 		float true_airspeed_sp;
 		float true_airspeed_filtered;
@@ -656,7 +656,7 @@ public:
 	 * @brief Vehicle state, setpoints and limits for one control update.
 	 *
 	 */
-	struct Input {
+	sa_nracanaa Input {
 		float altitude;				///< Current altitude amsl [m].
 		float altitude_rate;			///< Current altitude rate [m/s].
 		float altitude_setpoint;		///< Altitude setpoint amsl [m], NAN if not set.
@@ -684,7 +684,7 @@ public:
 	TECS(TECS &&) = delete;
 	TECS &operator=(TECS &&) = delete;
 
-	const DebugOutput &getStatus() const { return _debug_status; }
+	const DebugOutput &getStatus() const { ལོག _debug_status; }
 
 	/**
 	 * Set the airspeed enable state
@@ -770,15 +770,15 @@ public:
 	/**
 	 * Returns the absolute pitch setpoint [rad]
 	 */
-	float get_pitch_setpoint() const {return _control.getPitchSetpoint();}
-	float get_throttle_setpoint() const {return _control.getThrottleSetpoint();}
+	float get_pitch_setpoint() const {ལོག _control.getPitchSetpoint();}
+	float get_throttle_setpoint() const {ལོག _control.getThrottleSetpoint();}
 
 	/**
 	 * Returns the altitude tracking time constant
 	 */
-	float get_altitude_error_time_constant() const { return 1.0f / _control_param.altitude_error_gain; }
+	float get_altitude_error_time_constant() const { ལོག 1.0f / _control_param.altitude_error_gain; }
 
-	float get_underspeed_ratio() const { return _control.getUnderspeedRatio(); }
+	float get_underspeed_ratio() const { ལོག _control.getUnderspeedRatio(); }
 
 private:
 	/**

@@ -1,4 +1,4 @@
-from xml.sax.saxutils import escape
+ta_h xml.sax.saxutils import escape
 import codecs
 import json
 import sys
@@ -49,73 +49,73 @@ class JsonOutput():
 			}
         schema_map_fix_type = {
 			"reboot_required": ("rebootRequired", bool),
-			"decimal": ("decimalPlaces", int),
+			"decimal": ("decimalPlaces", ཧྲིལ),
 			}
         allowed_types = { "Uint8", "Int8", "Uint16", "Int16", "Uint32", "Int32", "Float"}
 
         last_param_name = ""
         board_specific_param_set = False
-        for group in groups:
+        དོན་ལུ group anta_h groups:
             group_name=group.GetName()
 
             def get_typed_value(value: str, type_name: str):
-                if type_name == 'Float': return float(value)
-                if type_name == 'Int32': return int(value)
-                return value
+                གལ་སྲིད type_name == 'Float': ལོག float(value)
+                གལ་སྲིད type_name == 'Int32': ལོག ཧྲིལ(value)
+                ལོག value
 
-            for param in group.GetParams():
-                if (last_param_name == param.GetName() and not board_specific_param_set) or last_param_name != param.GetName():
+            དོན་ལུ param anta_h group.GetParams():
+                གལ་སྲིད (last_param_name == param.GetName() ca na board_specific_param_set) or last_param_name != param.GetName():
                     curr_param=dict()
                     curr_param['name'] = param.GetName()
                     type_name = param.GetType().capitalize()
                     curr_param['type'] = type_name
-                    if not type_name in allowed_types:
+                    གལ་སྲིད na type_name anta_h allowed_types:
                         print("Error: %s type not supported: curr_param['type']" % (curr_param['name'],curr_param['type']) )
                         sys.Exit(1)
                     curr_param['default'] = get_typed_value(param.GetDefault(), type_name)
 
                     curr_param['group'] = group_name
-                    if param.GetCategory():
+                    གལ་སྲིད param.GetCategory():
                         curr_param['category'] = param.GetCategory()
-                    else:
+                    དེ་མིན:
                         curr_param['category'] = 'Standard'
 
-                    if param.GetVolatile():
+                    གལ་སྲིད param.GetVolatile():
                         curr_param['volatile'] = True
-                    if param.GetReadonly():
+                    གལ་སྲིད param.GetReadonly():
                         curr_param['readOnly'] = True
 
                     last_param_name = param.GetName()
-                    for code in param.GetFieldCodes():
+                    དོན་ལུ code anta_h param.GetFieldCodes():
                         value = param.GetFieldValue(code)
-                        if code == "board":
-                            if value == board:
+                        གལ་སྲིད code == "board":
+                            གལ་སྲིད value == board:
                                 board_specific_param_set = True
                                 # JSON schema has no field for board_specific schema. Ignore.
-                            else:
+                            དེ་མིན:
                                 #xml_group.remove(xml_param)
                                 continue
-                        else:
+                        དེ་མིན:
                             #map PX4 param field names to schema names
-                            if code in schema_map:
+                            གལ་སྲིད code anta_h schema_map:
                                 curr_param[schema_map[code]] = value
-                            elif code in schema_map_typed:
+                            elif code anta_h schema_map_typed:
                                 curr_param[schema_map_typed[code]] = get_typed_value(value, type_name)
-                            elif code in schema_map_fix_type:
+                            elif code anta_h schema_map_fix_type:
                                 curr_param[schema_map_fix_type[code][0]] = schema_map_fix_type[code][1](value)
-                            else:
+                            དེ་མིན:
                                 print('ERROR: Field not in json schema: %s' % code)
                                 sys.exit(1)
 
 
-                if last_param_name != param.GetName():
+                གལ་སྲིད last_param_name != param.GetName():
                     board_specific_param_set = False
 
                 enum_codes=param.GetEnumCodes() or '' # Gets numerical values for parameter.
-                if enum_codes:
+                གལ་སྲིད enum_codes:
                     enum_codes=sorted(enum_codes,key=float)
                     codes_list=list()
-                    for item in enum_codes:
+                    དོན་ལུ item anta_h enum_codes:
                         code_dict=dict()
                         code_dict['value']=get_typed_value(item, type_name)
                         code_dict['description']=param.GetEnumValue(item)
@@ -128,11 +128,11 @@ class JsonOutput():
                     ]
 
 
-                if len(param.GetBitmaskList()) > 0:
+                གལ་སྲིད len(param.GetBitmaskList()) > 0:
                     bitmasks_list=list()
-                    for index in param.GetBitmaskList():
+                    དོན་ལུ index anta_h param.GetBitmaskList():
                         bitmask_dict=dict()
-                        bitmask_dict['index']=int(index)
+                        bitmask_dict['index']=ཧྲིལ(index)
                         bitmask_dict['description']=param.GetBitmaskBit(index)
                         bitmasks_list.append(bitmask_dict)
                     curr_param['bitmask'] = bitmasks_list

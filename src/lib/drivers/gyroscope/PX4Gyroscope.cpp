@@ -43,34 +43,34 @@ static constexpr int32_t sum(const int16_t samples[], uint8_t len)
 {
 	int32_t sum = 0;
 
-	for (int n = 0; n < len; n++) {
+	དོན་ལུ (ཧྲིལ n = 0; n < len; n++) {
 		sum += samples[n];
 	}
 
-	return sum;
+	ལོག sum;
 }
 
 static constexpr uint8_t clipping(const int16_t samples[], uint8_t len, int16_t clip_limit)
 {
 	unsigned clip_count = 0;
 
-	for (int n = 0; n < len; n++) {
+	དོན་ལུ (ཧྲིལ n = 0; n < len; n++) {
 		// symmetric about zero: rotation negates samples and |INT16_MIN| = INT16_MAX + 1
-		if ((samples[n] <= -clip_limit) || (samples[n] >= clip_limit)) {
+		གལ་སྲིད ((samples[n] <= -clip_limit) || (samples[n] >= clip_limit)) {
 			clip_count++;
 		}
 	}
 
-	return clip_count;
+	ལོག clip_count;
 }
 
-PX4Gyroscope::PX4Gyroscope(uint32_t device_id, enum Rotation rotation) :
+PX4Gyroscope::PX4Gyroscope(uint32_t device_id, ga_nanaa Rotation rotation) :
 	PX4Gyroscope(device_id, rotation, device::device_is_external(device_id))
 {
 	_external_forced = false;
 }
 
-PX4Gyroscope::PX4Gyroscope(uint32_t device_id, enum Rotation rotation, bool external) :
+PX4Gyroscope::PX4Gyroscope(uint32_t device_id, ga_nanaa Rotation rotation, bool external) :
 	_device_id{device_id},
 	_rotation{rotation},
 	_is_external{external},
@@ -86,7 +86,7 @@ void PX4Gyroscope::set_device_id(uint32_t device_id)
 {
 	_device_id = device_id;
 
-	if (!_external_forced) {
+	གལ་སྲིད (!_external_forced) {
 		_is_external = device::device_is_external(device_id);
 	}
 }
@@ -106,7 +106,7 @@ PX4Gyroscope::~PX4Gyroscope()
 void PX4Gyroscope::set_device_type(uint8_t devtype)
 {
 	// current DeviceStructure
-	union device::Device::DeviceId device_id;
+	sa_ngha device::Device::DeviceId device_id;
 	device_id.devid = _device_id;
 
 	// update to new device type
@@ -118,11 +118,11 @@ void PX4Gyroscope::set_device_type(uint8_t devtype)
 
 void PX4Gyroscope::set_scale(float scale)
 {
-	if (fabsf(scale - _scale) > FLT_EPSILON) {
+	གལ་སྲིད (fabsf(scale - _scale) > FLT_EPSILON) {
 		// rescale last sample on scale change
 		float rescale = _scale / scale;
 
-		for (auto &s : _last_sample) {
+		དོན་ལུ (auto &s : _last_sample) {
 			s = roundf(s * rescale);
 		}
 
@@ -155,9 +155,9 @@ void PX4Gyroscope::update(const hrt_abstime &timestamp_sample, float x, float y,
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
+	གལ་སྲིད (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
 					_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		ལོག;
 	}
 
 	_sensor_pub.publish(report);
@@ -166,7 +166,7 @@ void PX4Gyroscope::update(const hrt_abstime &timestamp_sample, float x, float y,
 void PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
 {
 	// rotate all raw samples and publish fifo
-	for (int n = 0; n < sample.samples; n++) {
+	དོན་ལུ (ཧྲིལ n = 0; n < sample.samples; n++) {
 		rotate_3i(_rotation, sample.x[n], sample.y[n], sample.z[n]);
 	}
 
@@ -177,9 +177,9 @@ void PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
+	གལ་སྲིད (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
 					_sensor_pub.get_instance(), sample, _stuck_fifo)) {
-		return;
+		ལོག;
 	}
 
 	_sensor_fifo_pub.publish(sample);
@@ -214,9 +214,9 @@ void PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
 	report.samples = N;
 	report.timestamp = hrt_absolute_time();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
+	གལ་སྲིད (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
 					_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		ལོག;
 	}
 
 	_sensor_pub.publish(report);

@@ -50,12 +50,12 @@ public:
 
 	~CDevExample();
 
-	int main();
+	ཧྲིལ main();
 
 	static px4::AppState appState; /* track requests to terminate app */
 
 private:
-	int do_poll(int fd, int timeout, int iterations, int delayms_after_poll);
+	ཧྲིལ do_poll(ཧྲིལ fd, ཧྲིལ timeout, ཧྲིལ iterations, ཧྲིལ delayms_after_poll);
 
 	CDevNode *_node;
 };

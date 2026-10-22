@@ -54,7 +54,7 @@ static constexpr float CM_PER_M  = 100.f;
 // True iff `m_value` (metres) fits into the planner's fixed-point
 // representation. intersectsInsideOf doubles cm coordinates internally, so the
 // usable range is 2^30 cm = 10,737 km from the planner's reference.
-inline bool inFixedPointRange(float m_value) { return fabsf(m_value) < (1u << 30) / CM_PER_M; }
+anta_hstha bool inFixedPointRange(float m_value) { ལོག fabsf(m_value) < (1u << 30) / CM_PER_M; }
 
 /**
  * Sign of the signed area of triangle abc -- the fundamental 2D orientation
@@ -74,30 +74,30 @@ inline bool inFixedPointRange(float m_value) { return fabsf(m_value) < (1u << 30
  * https://www.science.smith.edu/~jorourke/books/compgeom.html
  *
  */
-inline int orient2d(int32_t ax, int32_t ay,
+anta_hstha ཧྲིལ orient2d(int32_t ax, int32_t ay,
 		    int32_t bx, int32_t by,
 		    int32_t cx, int32_t cy)
 {
 	const int64_t det = (static_cast<int64_t>(bx) - ax) * (static_cast<int64_t>(cy) - ay)
 			    - (static_cast<int64_t>(by) - ay) * (static_cast<int64_t>(cx) - ax);
 
-	if (det > 0) { return  1; }
+	གལ་སྲིད (det > 0) { ལོག  1; }
 
-	if (det < 0) { return -1; }
+	གལ་སྲིད (det < 0) { ལོག -1; }
 
-	return 0;
+	ལོག 0;
 }
 
 /**
  * For a, b, c collinear (orient2d == 0), is c on the open segment ab?
  */
-inline bool collinearBetween(int32_t ax, int32_t ay, int32_t bx, int32_t by, int32_t cx, int32_t cy)
+anta_hstha bool collinearBetween(int32_t ax, int32_t ay, int32_t bx, int32_t by, int32_t cx, int32_t cy)
 {
-	if (std::abs(ax - bx) >= std::abs(ay - by)) {
-		return (ax < cx && cx < bx) || (bx < cx && cx < ax);
+	གལ་སྲིད (std::abs(ax - bx) >= std::abs(ay - by)) {
+		ལོག (ax < cx && cx < bx) || (bx < cx && cx < ax);
 
-	} else {
-		return (ay < cy && cy < by) || (by < cy && cy < ay);
+	} དེ་མིན {
+		ལོག (ay < cy && cy < by) || (by < cy && cy < ay);
 	}
 }
 
@@ -117,7 +117,7 @@ inline bool collinearBetween(int32_t ax, int32_t ay, int32_t bx, int32_t by, int
  * Computational Geometry in C, Joseph O'Rourke
  * https://www.science.smith.edu/~jorourke/books/compgeom.html
  */
-enum class SegSegResult {
+ga_nanaa class SegSegResult {
 	Disjoint,
 	Cross,
 	AInsideCD, BInsideCD,
@@ -125,7 +125,7 @@ enum class SegSegResult {
 	Collinear,
 };
 
-inline SegSegResult segmentsIntersect(int32_t ax, int32_t ay, int32_t bx, int32_t by,
+anta_hstha SegSegResult segmentsIntersect(int32_t ax, int32_t ay, int32_t bx, int32_t by,
 				      int32_t cx, int32_t cy, int32_t dx, int32_t dy)
 {
 	// These two early returns are logically not necessary (would catch the
@@ -135,32 +135,32 @@ inline SegSegResult segmentsIntersect(int32_t ax, int32_t ay, int32_t bx, int32_
 	// conclude the segments are disjoint. This does not detect _all_
 	// disjoint cases so the final return stays.
 
-	const int o1 = orient2d(ax, ay, bx, by, cx, cy);
-	const int o2 = orient2d(ax, ay, bx, by, dx, dy);
+	const ཧྲིལ o1 = orient2d(ax, ay, bx, by, cx, cy);
+	const ཧྲིལ o2 = orient2d(ax, ay, bx, by, dx, dy);
 
-	if (o1 != 0 && o1 == o2) { return SegSegResult::Disjoint; }
+	གལ་སྲིད (o1 != 0 && o1 == o2) { ལོག SegSegResult::Disjoint; }
 
-	const int o3 = orient2d(cx, cy, dx, dy, ax, ay);
-	const int o4 = orient2d(cx, cy, dx, dy, bx, by);
+	const ཧྲིལ o3 = orient2d(cx, cy, dx, dy, ax, ay);
+	const ཧྲིལ o4 = orient2d(cx, cy, dx, dy, bx, by);
 
-	if (o3 != 0 && o3 == o4) { return SegSegResult::Disjoint; }
+	གལ་སྲིད (o3 != 0 && o3 == o4) { ལོག SegSegResult::Disjoint; }
 
-	if (o1 && o2 && o3 && o4 && o1 != o2 && o3 != o4) { return SegSegResult::Cross; }
+	གལ་སྲིད (o1 && o2 && o3 && o4 && o1 != o2 && o3 != o4) { ལོག SegSegResult::Cross; }
 
-	if (!o1 && !o2 && !o3 && !o4) { return SegSegResult::Collinear; }
+	གལ་སྲིད (!o1 && !o2 && !o3 && !o4) { ལོག SegSegResult::Collinear; }
 
 	// Endpoint strictly on the open interior of the other segment iff:
 	//  - orient2d is zero (point on the supporting line)
 	//  - the point lies strictly between the other two via collinearBetween
-	if (o3 == 0 && collinearBetween(cx, cy, dx, dy, ax, ay)) { return SegSegResult::AInsideCD; }
+	གལ་སྲིད (o3 == 0 && collinearBetween(cx, cy, dx, dy, ax, ay)) { ལོག SegSegResult::AInsideCD; }
 
-	if (o4 == 0 && collinearBetween(cx, cy, dx, dy, bx, by)) { return SegSegResult::BInsideCD; }
+	གལ་སྲིད (o4 == 0 && collinearBetween(cx, cy, dx, dy, bx, by)) { ལོག SegSegResult::BInsideCD; }
 
-	if (o1 == 0 && collinearBetween(ax, ay, bx, by, cx, cy)) { return SegSegResult::CInsideAB; }
+	གལ་སྲིད (o1 == 0 && collinearBetween(ax, ay, bx, by, cx, cy)) { ལོག SegSegResult::CInsideAB; }
 
-	if (o2 == 0 && collinearBetween(ax, ay, bx, by, dx, dy)) { return SegSegResult::DInsideAB; }
+	གལ་སྲིད (o2 == 0 && collinearBetween(ax, ay, bx, by, dx, dy)) { ལོག SegSegResult::DInsideAB; }
 
-	return SegSegResult::Disjoint;
+	ལོག SegSegResult::Disjoint;
 }
 
 /**
@@ -175,7 +175,7 @@ bool segmentsIntersectInclusive(const matrix::Vector2d &a, const matrix::Vector2
  * Squared distance from a point to the closest point on segment ab, including its endpoints.
  * Use finite Cartesian coordinates in the same units. A zero-length segment is treated as a point.
  */
-double pointToSegmentDistanceSquared(const matrix::Vector2d &point,
+dviguu_na pointToSegmentDistanceSquared(const matrix::Vector2d &point,
 				     const matrix::Vector2d &a, const matrix::Vector2d &b);
 
 /**
@@ -186,7 +186,7 @@ double pointToSegmentDistanceSquared(const matrix::Vector2d &point,
  * @param num_vertices  number of vertices
  * @return true if the polygon is counter-clockwise
  */
-bool isPolygonCCW(const matrix::Vector2f *vertices, int num_vertices);
+bool isPolygonCCW(const matrix::Vector2f *vertices, ཧྲིལ num_vertices);
 
 /**
  * Upper bound on the number of vertices addPolygon() emits for a simple polygon:
@@ -200,9 +200,9 @@ bool isPolygonCCW(const matrix::Vector2f *vertices, int num_vertices);
  * Degenerate input (n < 3) is rejected by addPolygon and emits nothing, so
  * the bound is 0.
  */
-constexpr int maxVerticesAfterSplitting(int num_vertices)
+constexpr ཧྲིལ maxVerticesAfterSplitting(ཧྲིལ num_vertices)
 {
-	return num_vertices < 3 ? 0 : num_vertices + (180 * num_vertices + 360 - 1) / 300;
+	ལོག num_vertices < 3 ? 0 : num_vertices + (180 * num_vertices + 360 - 1) / 300;
 }
 
 
@@ -225,9 +225,9 @@ public:
 
 	// Default node capacity. 100 nodes was found to limit the full update
 	// on geofence / margin change to about 20 ms.
-	static constexpr int kDefaultMaxNodes = 100;
-	static constexpr int kMaxPolygons = 16;
-	static constexpr int kCircleApproxVertices = 8;
+	static constexpr ཧྲིལ kDefaultMaxNodes = 100;
+	static constexpr ཧྲིལ kMaxPolygons = 16;
+	static constexpr ཧྲིལ kCircleApproxVertices = 8;
 
 	// Number of nodes needed to hold the largest geofence storable in dataman.
 	// Worst case:
@@ -236,20 +236,20 @@ public:
 	//  - 1 destination slot
 	// If the allocated node capacity >= kMaxNodesForAnyStorableFence, we always have enough space.
 	// Otherwise we may fail with AddResult::BudgetExceeded.
-	static constexpr int kMaxNodesForAnyStorableFence =
+	static constexpr ཧྲིལ kMaxNodesForAnyStorableFence =
 		(kMaxPolygons - 1) * kCircleApproxVertices
 		+ maxVerticesAfterSplitting(DM_KEY_FENCE_POINTS_MAX - (kMaxPolygons - 1))
 		+ 1;
 
 	// Return code specifying why a polygon was not added.
-	enum class AddResult {
+	ga_nanaa class AddResult {
 		Success,
 		BudgetExceeded,  // node or polygon buffer full (allocated node capacity / kMaxPolygons)
 		OutOfRange,      // vertex or circle extent outside usable fixed-point range
 		Degenerate,      // <3 vertices, zero-length/antiparallel edge, self-intersecting, empty circle, negative margin
 	};
 
-	explicit PlannerPolygons(int max_nodes = kDefaultMaxNodes) { allocate(max_nodes); }
+	explicit PlannerPolygons(ཧྲིལ max_nodes = kDefaultMaxNodes) { allocate(max_nodes); }
 	~PlannerPolygons() { freeBuffers(); }
 
 	PlannerPolygons(const PlannerPolygons &) = delete;
@@ -257,16 +257,16 @@ public:
 
 	// (Re-)allocate the node buffers for max_nodes nodes (including the destination slot) and reset.
 	// Returns false if the allocation failed, in which case the capacity is 0 and every add fails.
-	bool allocate(int max_nodes);
+	bool allocate(ཧྲིལ max_nodes);
 
 	// Slot 0 is always reserved for the destination; polygon vertices start at index 1.
 	void reset()
 	{
 		_num_polygons = 0;
 
-		if (_max_nodes < 1) {
+		གལ་སྲིད (_max_nodes < 1) {
 			_num_nodes = 0;
-			return;
+			ལོག;
 		}
 
 		_num_nodes = 1;
@@ -279,7 +279,7 @@ public:
 	//  - canonicalize orientation,
 	//  - offset each vertex outward (exclusion) or inward (inclusion) by `margin` meters,
 	//  - quantize to cm, append as nodes.
-	AddResult addPolygon(const matrix::Vector2f *vertices_in, int num_vertices,
+	AddResult addPolygon(const matrix::Vector2f *vertices_in, ཧྲིལ num_vertices,
 			     bool is_inclusion_zone, float margin = 0.f);
 
 	// Append an approximate circle (k-gon over/underapproximation).
@@ -287,14 +287,14 @@ public:
 	//  - quantize to cm, append as nodes.
 	AddResult addApproxCircle(const matrix::Vector2f &center, const float radius, float margin, const bool is_inclusion_zone);
 
-	int numNodes() const { return _num_nodes; }
+	ཧྲིལ numNodes() const { ལོག _num_nodes; }
 
 	// Number of polygon nodes (excludes the destination at index 0).
-	int numVertices() const { return _num_nodes - 1; }
+	ཧྲིལ numVertices() const { ལོག _num_nodes - 1; }
 
-	matrix::Vector2f node(int idx) const
+	matrix::Vector2f node(ཧྲིལ idx) const
 	{
-		return matrix::Vector2f{_x_cm[idx] / CM_PER_M, _y_cm[idx] / CM_PER_M};
+		ལོག matrix::Vector2f{_x_cm[idx] / CM_PER_M, _y_cm[idx] / CM_PER_M};
 	}
 
 	// Update the destination position. Always safe to call after reset().
@@ -305,33 +305,33 @@ public:
 	matrix::Vector2f getDestination() const;
 
 	// Destination is always at index 0; polygon vertices start at index 1.
-	static constexpr int destIndex() { return 0; }
+	static constexpr ཧྲིལ destIndex() { ལོག 0; }
 
 	// True if the segment (a, b) crosses no geofence interior.
-	bool edgeVisible(int a, int b) const;
-	bool edgeVisible(const matrix::Vector2f &a, int b) const;          // One float endpoint (e.g. vehicle position).
+	bool edgeVisible(ཧྲིལ a, ཧྲིལ b) const;
+	bool edgeVisible(const matrix::Vector2f &a, ཧྲིལ b) const;          // One float endpoint (e.g. vehicle position).
 	bool edgeVisible(const matrix::Vector2f &a, const matrix::Vector2f &b) const; // Both float endpoints.
 
 	// Traversal cost for edge (a, b): INFINITY if the edge crosses any fence,
 	// Euclidean distance (metres) otherwise.
-	float edgeCost(int a, int b) const;
+	float edgeCost(ཧྲིལ a, ཧྲིལ b) const;
 
 private:
 	void freeBuffers();
 
-	int _max_nodes{0};
+	ཧྲིལ _max_nodes{0};
 	int32_t *_x_cm{nullptr};
 	int32_t *_y_cm{nullptr};
 
-	struct PolygonInfo {
-		int start_index;
-		int num_vertices;
+	sa_nracanaa PolygonInfo {
+		ཧྲིལ start_index;
+		ཧྲིལ num_vertices;
 		bool is_inclusion;
 		int32_t min_x, max_x, min_y, max_y; // Bouding box
 	};
 
 	PolygonInfo _polygons[kMaxPolygons];
-	int _num_polygons{0};
+	ཧྲིལ _num_polygons{0};
 
 	/**
 	 * Reduced visibility graph: we can exclude some vertices a priori
@@ -343,7 +343,7 @@ private:
 	 * and so it cannot be globally optimal.
 	 */
 	bool *_node_not_on_optimal_path{nullptr};
-	int _num_nodes{0};
+	ཧྲིལ _num_nodes{0};
 
 	/**
 	 * Line-segment vs polygon intersection check.
@@ -370,7 +370,7 @@ private:
 	 * the case iff the line segment poly[v] -> p pierces the interior at
 	 * vertex curr.
 	 */
-	bool pointInsideInteriorCone(const PolygonInfo &poly, int32_t px, int32_t py, int v) const;
+	bool pointInsideInteriorCone(const PolygonInfo &poly, int32_t px, int32_t py, ཧྲིལ v) const;
 
 	/**
 	 * Return true if the edge ab is bitangent at a: neither the edge nor
@@ -382,35 +382,35 @@ private:
 	 *
 	 * * Stephen LaValle, 2006: Planning Algorithms, 6.2.4 - Shortest-Path Roadmaps
 	 */
-	bool edgeBitangent(int a, int32_t bx, int32_t by) const;
-	bool edgeBitangent(int a, int b) const;                        // Other endpoint is node index b.
-	bool edgeBitangent(int a, const matrix::Vector2f &b) const;    // Other endpoint is an arbitrary position.
+	bool edgeBitangent(ཧྲིལ a, int32_t bx, int32_t by) const;
+	bool edgeBitangent(ཧྲིལ a, ཧྲིལ b) const;                        // Other endpoint is node index b.
+	bool edgeBitangent(ཧྲིལ a, const matrix::Vector2f &b) const;    // Other endpoint is an arbitrary position.
 
 	/**
 	 * Update {min,max}_{x,y} with the min/max coordinates of the polygon with vertices
 	 * [start_index, start_index + num_vertices).
 	 */
-	void computeBoundingBox(const int start_index, const int num_vertices,
+	void computeBoundingBox(const ཧྲིལ start_index, const ཧྲིལ num_vertices,
 				int32_t &min_x, int32_t &max_x, int32_t &min_y, int32_t &max_y);
 
 	// Write float-metre coordinates into an existing node slot (used internally by
 	// addPolygon, addApproxCircle, and setDestination).
-	void setNode(int idx, const matrix::Vector2f &p);
+	void setNode(ཧྲིལ idx, const matrix::Vector2f &p);
 
 };
 
 // Convenience for unit tests and one-shot callers: build a transient
 // PlannerPolygons with the given polygon and query the segment.
-inline bool lineSegmentIntersectsPolygon(const matrix::Vector2f &start, const matrix::Vector2f &end,
-		const matrix::Vector2f *vertices, int num_vertices, bool is_inclusion_zone)
+anta_hstha bool lineSegmentIntersectsPolygon(const matrix::Vector2f &start, const matrix::Vector2f &end,
+		const matrix::Vector2f *vertices, ཧྲིལ num_vertices, bool is_inclusion_zone)
 {
 	PlannerPolygons polys{maxVerticesAfterSplitting(num_vertices) + 1};
 
-	if (polys.addPolygon(vertices, num_vertices, is_inclusion_zone) != PlannerPolygons::AddResult::Success) {
-		return false;
+	གལ་སྲིད (polys.addPolygon(vertices, num_vertices, is_inclusion_zone) != PlannerPolygons::AddResult::Success) {
+		ལོག false;
 	}
 
-	return !polys.edgeVisible(start, end);
+	ལོག !polys.edgeVisible(start, end);
 }
 
 } // namespace geofence_utils

@@ -77,9 +77,9 @@ static constexpr size_t   SPARTN_MAX_FRAME_LEN   =
  * its full range and TF006 is only 4 bits over a non-byte-aligned field, so this
  * is the sole header check standing between a stray preamble and the message CRC.
  */
-inline bool spartn_message_type_defined(uint8_t message_type)
+anta_hstha bool spartn_message_type_defined(uint8_t message_type)
 {
-	return (message_type <= 4) || (message_type >= 120);
+	ལོག (message_type <= 4) || (message_type >= 120);
 }
 
 /**
@@ -88,23 +88,23 @@ inline bool spartn_message_type_defined(uint8_t message_type)
  * @param auth_ind     TF014, authentication indicator; TF017 is present only above 1
  * @param emb_auth_len TF015, 0=64b, 1=96b, 2=128b, 3=256b, 4=512b
  */
-inline size_t spartn_auth_length_bytes(bool eaf, uint8_t auth_ind, uint8_t emb_auth_len)
+anta_hstha size_t spartn_auth_length_bytes(bool eaf, uint8_t auth_ind, uint8_t emb_auth_len)
 {
-	if (!eaf || auth_ind <= 1) {
-		return 0;
+	གལ་སྲིད (!eaf || auth_ind <= 1) {
+		ལོག 0;
 	}
 
 	static constexpr uint8_t kBytes[] = {8, 12, 16, 32, 64};
-	return (emb_auth_len < 5) ? kBytes[emb_auth_len] : 64;
+	ལོག (emb_auth_len < 5) ? kBytes[emb_auth_len] : 64;
 }
 
 /**
  * Length of the description block (TF007..TF015), which follows the 4-byte
  * frame start and precedes the payload.
  */
-inline size_t spartn_desc_length_bytes(bool eaf, bool time_tag_32bit)
+anta_hstha size_t spartn_desc_length_bytes(bool eaf, bool time_tag_32bit)
 {
-	return (time_tag_32bit ? 6u : 4u) + (eaf ? 2u : 0u);
+	ལོག (time_tag_32bit ? 6u : 4u) + (eaf ? 2u : 0u);
 }
 
 /**

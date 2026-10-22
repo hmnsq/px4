@@ -48,10 +48,10 @@
 using atmosphere::getDensityFromPressureAndTemp;
 using atmosphere::kAirDensitySeaLevelStandardAtmos;
 
-float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel, enum AIRSPEED_SENSOR_MODEL smodel,
+float calc_IAS_corrected(ga_nanaa AIRSPEED_COMPENSATION_MODEL pmodel, ga_nanaa AIRSPEED_SENSOR_MODEL smodel,
 			 float tube_len, float tube_dia_mm, float differential_pressure, float pressure_ambient, float temperature_celsius)
 {
-	if (!PX4_ISFINITE(temperature_celsius)) {
+	གལ་སྲིད (!PX4_ISFINITE(temperature_celsius)) {
 		temperature_celsius = 15.f; // ICAO Standard Atmosphere 15 degrees Celsius
 	}
 
@@ -65,37 +65,37 @@ float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel, enum AIRSPEED_
 
 	switch (smodel) {
 
-	case AIRSPEED_SENSOR_MODEL_MEMBRANE: {
+	pak_sa AIRSPEED_SENSOR_MODEL_MEMBRANE: {
 			// do nothing
 		}
-		break;
+		bha_nga;
 
-	case AIRSPEED_SENSOR_MODEL_SDP3X: {
+	pak_sa AIRSPEED_SENSOR_MODEL_SDP3X: {
 			// assumes a metal pitot tube with round tip as here: https://drotek.com/shop/2986-large_default/sdp3x-airspeed-sensor-kit-sdp31.jpg
 			// and tubing as provided by px4/drotek (1.5 mm diameter)
 			// The tube_len represents the length of the tubes connecting the pitot to the sensor.
 			switch (pmodel) {
-			case AIRSPEED_COMPENSATION_MODEL_PITOT:
-			case AIRSPEED_COMPENSATION_MODEL_NO_PITOT: {
+			pak_sa AIRSPEED_COMPENSATION_MODEL_PITOT:
+			pak_sa AIRSPEED_COMPENSATION_MODEL_NO_PITOT: {
 					const float dp_corr = dp * 96600.0f / pressure_ambient;
 					// flow through sensor
 					float flow_SDP33 = (300.805f - 300.878f / (0.00344205f * powf(dp_corr, 0.68698f) + 1.0f)) * 1.29f / rho_air;
 
 					// for too small readings the compensation might result in a negative flow which causes numerical issues
-					if (flow_SDP33 < 0.0f) {
+					གལ་སྲིད (flow_SDP33 < 0.0f) {
 						flow_SDP33 = 0.0f;
 					}
 
 					float dp_pitot = 0.0f;
 
 					switch (pmodel) {
-					case AIRSPEED_COMPENSATION_MODEL_PITOT:
+					pak_sa AIRSPEED_COMPENSATION_MODEL_PITOT:
 						dp_pitot = (0.0032f * flow_SDP33 * flow_SDP33 + 0.0123f * flow_SDP33 + 1.0f) * 1.29f / rho_air;
-						break;
+						bha_nga;
 
 					default:
 						// do nothing
-						break;
+						bha_nga;
 					}
 
 					// pressure drop through tube
@@ -107,22 +107,22 @@ float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel, enum AIRSPEED_
 					// sum of all pressure drops
 					dp_tot = dp_corr + dp_tube + dp_pitot;
 				}
-				break;
+				bha_nga;
 
-			case AIRSPEED_COMPENSATION_TUBE_PRESSURE_LOSS: {
+			pak_sa AIRSPEED_COMPENSATION_TUBE_PRESSURE_LOSS: {
 					// Pressure loss compensation as defined in https://goo.gl/UHV1Vv.
 					// tube_dia_mm: Diameter in mm of the pitot and tubes, must have the same diameter.
 					// tube_len: Length of the tubes connecting the pitot to the sensor and the static + dynamic port length of the pitot.
 
 					// check if the tube diameter and dp is nonzero to avoid division by 0
-					if ((tube_dia_mm > 0.0f) && (dp > 0.0f)) {
+					གལ་སྲིད ((tube_dia_mm > 0.0f) && (dp > 0.0f)) {
 						const float d_tubePow4 = powf(tube_dia_mm * 1e-3f, 4);
 						const float denominator = M_PI_F * d_tubePow4 * rho_air * dp;
 
 						// avoid division by 0
 						float eps = 0.0f;
 
-						if (fabsf(denominator) > 1e-32f) {
+						གལ་སྲིད (fabsf(denominator) > 1e-32f) {
 							const float viscosity = (18.205f + 0.0484f * (temperature_celsius - 20.0f)) * 1e-6f;
 
 							// 4.79 * 1e-7 -> mass flow through sensor
@@ -131,7 +131,7 @@ float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel, enum AIRSPEED_
 						}
 
 						// range check on eps
-						if (fabsf(eps) >= 1.0f) {
+						གལ་སྲིད (fabsf(eps) >= 1.0f) {
 							eps = 0.0f;
 						}
 
@@ -139,21 +139,21 @@ float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel, enum AIRSPEED_
 						dp_tot = dp / (1.0f + eps);
 					}
 				}
-				break;
+				bha_nga;
 
 			default: {
 					// do nothing
 				}
-				break;
+				bha_nga;
 			}
 
 		}
-		break;
+		bha_nga;
 
 	default: {
 			// do nothing
 		}
-		break;
+		bha_nga;
 	}
 
 	// computed airspeed without correction for inflow-speed at tip of pitot-tube
@@ -163,59 +163,59 @@ float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel, enum AIRSPEED_
 	const float airspeed_corrected = airspeed_uncorrected + dv;
 
 	// return result with correct sign
-	return (differential_pressure > 0.0f) ? airspeed_corrected : -airspeed_corrected;
+	ལོག (differential_pressure > 0.0f) ? airspeed_corrected : -airspeed_corrected;
 }
 
 float calc_IAS(float differential_pressure)
 {
-	if (differential_pressure > 0.0f) {
-		return sqrtf((2.0f * differential_pressure) / kAirDensitySeaLevelStandardAtmos);
+	གལ་སྲིད (differential_pressure > 0.0f) {
+		ལོག sqrtf((2.0f * differential_pressure) / kAirDensitySeaLevelStandardAtmos);
 
-	} else {
-		return -sqrtf((2.0f * fabsf(differential_pressure)) / kAirDensitySeaLevelStandardAtmos);
+	} དེ་མིན {
+		ལོག -sqrtf((2.0f * fabsf(differential_pressure)) / kAirDensitySeaLevelStandardAtmos);
 	}
 
 }
 
 float calc_TAS_from_CAS(float speed_calibrated, float pressure_ambient, float temperature_celsius)
 {
-	if (!PX4_ISFINITE(temperature_celsius)) {
+	གལ་སྲིད (!PX4_ISFINITE(temperature_celsius)) {
 		temperature_celsius = 15.f; // ICAO Standard Atmosphere 15 degrees Celsius
 	}
 
-	return speed_calibrated * sqrtf(kAirDensitySeaLevelStandardAtmos / getDensityFromPressureAndTemp(pressure_ambient,
+	ལོག speed_calibrated * sqrtf(kAirDensitySeaLevelStandardAtmos / getDensityFromPressureAndTemp(pressure_ambient,
 					temperature_celsius));
 }
 
 float calc_CAS_from_IAS(float speed_indicated, float scale)
 {
-	return speed_indicated * scale;
+	ལོག speed_indicated * scale;
 }
 
 float calc_TAS(float total_pressure, float static_pressure, float temperature_celsius)
 {
 	float density = getDensityFromPressureAndTemp(static_pressure, temperature_celsius);
 
-	if (density < 0.0001f || !PX4_ISFINITE(density)) {
+	གལ་སྲིད (density < 0.0001f || !PX4_ISFINITE(density)) {
 		density = kAirDensitySeaLevelStandardAtmos;
 	}
 
 	float pressure_difference = total_pressure - static_pressure;
 
-	if (pressure_difference > 0) {
-		return sqrtf((2.0f * (pressure_difference)) / density);
+	གལ་སྲིད (pressure_difference > 0) {
+		ལོག sqrtf((2.0f * (pressure_difference)) / density);
 
-	} else {
-		return -sqrtf((2.0f * fabsf(pressure_difference)) / density);
+	} དེ་མིན {
+		ལོག -sqrtf((2.0f * fabsf(pressure_difference)) / density);
 	}
 }
 
 float calc_calibrated_from_true_airspeed(float speed_true, float air_density)
 {
-	return speed_true * sqrtf(air_density / kAirDensitySeaLevelStandardAtmos);
+	ལོག speed_true * sqrtf(air_density / kAirDensitySeaLevelStandardAtmos);
 }
 
 float calc_true_from_calibrated_airspeed(float speed_calibrated, float air_density)
 {
-	return speed_calibrated * sqrtf(kAirDensitySeaLevelStandardAtmos / air_density);
+	ལོག speed_calibrated * sqrtf(kAirDensitySeaLevelStandardAtmos / air_density);
 }

@@ -60,18 +60,18 @@
 #include "flashfs.h"
 #include "../param_translation.h"
 
-#if 0
-# define debug(fmt, args...)            do { warnx(fmt, ##args); } while(0)
-#else
-# define debug(fmt, args...)            do { } while(0)
+#གལ་སྲིད 0
+# define debug(fmt, args...)            do { warnx(fmt, ##args); } སྐབས(0)
+#དེ་མིན
+# define debug(fmt, args...)            do { } སྐབས(0)
 #endif
 
 
 /**
  * Storage for modified parameters.
  */
-struct param_wbuf_s {
-	union param_value_u     val;
+sa_nracanaa param_wbuf_s {
+	sa_ngha param_value_u     val;
 	param_t                 param;
 };
 
@@ -105,13 +105,13 @@ static bool log_unreadable;
 static bool
 any_unsaved(param_filter_func filter)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if ((filter == nullptr || filter(param)) && param_value_unsaved(param)) {
-			return true;
+	དོན་ལུ (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
+		གལ་སྲིད ((filter == nullptr || filter(param)) && param_value_unsaved(param)) {
+			ལོག true;
 		}
 	}
 
-	return false;
+	ལོག false;
 }
 
 /*
@@ -122,28 +122,28 @@ any_unsaved(param_filter_func filter)
  * default in force, is written as a BSON null so replay drops it, which is
  * what the file backend's "don't export defaults" gives after a reload.
  */
-static int
+static ཧྲིལ
 encode_params(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if (filter && !filter(param)) {
+	དོན་ལུ (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
+		གལ་སྲིད (filter && !filter(param)) {
 			continue;
 		}
 
-		if (snapshot) {
-			if (!user_config.contains(param)) {
+		གལ་སྲིད (snapshot) {
+			གལ་སྲིད (!user_config.contains(param)) {
 				continue;
 			}
 
-		} else {
-			if (!param_value_unsaved(param)) {
+		} དེ་མིན {
+			གལ་སྲིད (!param_value_unsaved(param)) {
 				continue;
 			}
 
-			if (!user_config.contains(param) || param_value_is_default(param)) {
-				if (bson_encoder_append_null(encoder, param_name(param))) {
+			གལ་སྲིད (!user_config.contains(param) || param_value_is_default(param)) {
+				གལ་སྲིད (bson_encoder_append_null(encoder, param_name(param))) {
 					debug("BSON append failed for '%s'", param_name(param));
-					return -1;
+					ལོག -1;
 				}
 
 				continue;
@@ -151,173 +151,173 @@ encode_params(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
 		}
 
 		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			if (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
+		pak_sa PARAM_TYPE_INT32:
+			གལ་སྲིད (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				ལོག -1;
 			}
 
-			break;
+			bha_nga;
 
-		case PARAM_TYPE_FLOAT:
-			if (bson_encoder_append_double(encoder, param_name(param), (double)user_config.get(param).f)) {
+		pak_sa PARAM_TYPE_FLOAT:
+			གལ་སྲིད (bson_encoder_append_double(encoder, param_name(param), (dviguu_na)user_config.get(param).f)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				ལོག -1;
 			}
 
-			break;
+			bha_nga;
 
 		default:
 			debug("unrecognized parameter type");
-			return -1;
+			ལོག -1;
 		}
 	}
 
-	return 0;
+	ལོག 0;
 }
 
 /* The caller frees bson_encoder_buf_data() whatever the result. */
-static int
+static ཧྲིལ
 encode_document(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
 {
 	bson_encoder_init_buf(encoder, nullptr, 0);
 
-	int result = encode_params(encoder, filter, snapshot);
+	ཧྲིལ result = encode_params(encoder, filter, snapshot);
 
-	if (result == 0) {
+	གལ་སྲིད (result == 0) {
 		result = bson_encoder_fini(encoder);
 	}
 
-	return result;
+	ལོག result;
 }
 
-static int
+static ཧྲིལ
 stage_write_buffer(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
 {
 	void *enc_buff = bson_encoder_buf_data(encoder);
 	*enc_size = bson_encoder_buf_size(encoder);
 
-	if (enc_buff == nullptr) {
-		return -ENOMEM;
+	གལ་སྲིད (enc_buff == nullptr) {
+		ལོག -ENOMEM;
 	}
 
 	size_t alloc_size = *enc_size;
-	int result = parameter_flashfs_alloc(parameters_token, buffer, &alloc_size);
+	ཧྲིལ result = parameter_flashfs_alloc(parameters_token, buffer, &alloc_size);
 
-	if (result != OK) {
-		return result;
+	གལ་སྲིད (result != OK) {
+		ལོག result;
 	}
 
-	if (alloc_size < *enc_size) {
+	གལ་སྲིད (alloc_size < *enc_size) {
 		parameter_flashfs_free();
-		return -ENOMEM;
+		ལོག -ENOMEM;
 	}
 
 	memcpy(*buffer, enc_buff, *enc_size);
-	return OK;
+	ལོག OK;
 }
 
-static int
+static ཧྲིལ
 commit_append(uint8_t *buffer, size_t enc_size)
 {
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	ཧྲིལ result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	གལ་སྲིད (result == (ཧྲིལ)enc_size) {
+		ལོག OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	ལོག result < 0 ? result : -EFBIG;
 }
 
-static int
+static ཧྲིལ
 export_delta(param_filter_func filter)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, filter, false);
+	ཧྲིལ result = encode_document(&encoder, filter, false);
 
-	if (result == 0) {
+	གལ་སྲིད (result == 0) {
 		uint8_t *buffer;
 		size_t enc_size;
 		result = stage_write_buffer(&encoder, &buffer, &enc_size);
 
-		if (result == OK) {
+		གལ་སྲིད (result == OK) {
 			result = commit_append(buffer, enc_size);
 		}
 	}
 
 	free(bson_encoder_buf_data(&encoder));
-	return result;
+	ལོག result;
 }
 
 /* Everything that can fail before the erase, so a failure here leaves the
  * log untouched and still loadable. */
-static int
+static ཧྲིལ
 stage_snapshot(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
 {
-	int result = stage_write_buffer(encoder, buffer, enc_size);
+	ཧྲིལ result = stage_write_buffer(encoder, buffer, enc_size);
 
-	if (result != OK) {
-		return result;
+	གལ་སྲིད (result != OK) {
+		ལོག result;
 	}
 
-	if (*enc_size > parameter_flashfs_max_payload()) {
+	གལ་སྲིད (*enc_size > parameter_flashfs_max_payload()) {
 		parameter_flashfs_free();
-		return -ENOSPC;
+		ལོག -ENOSPC;
 	}
 
-	return OK;
+	ལོག OK;
 }
 
-static int
+static ཧྲིལ
 commit_snapshot(uint8_t *buffer, size_t enc_size)
 {
-	if (parameter_flashfs_blank() != 1) {
-		int rv = parameter_flashfs_erase();
+	གལ་སྲིད (parameter_flashfs_blank() != 1) {
+		ཧྲིལ rv = parameter_flashfs_erase();
 
-		if (rv < 0) {
+		གལ་སྲིད (rv < 0) {
 			parameter_flashfs_free();
-			return rv;
+			ལོག rv;
 		}
 	}
 
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	ཧྲིལ result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 
-	if (result != (int)enc_size && parameter_flashfs_blank() == 1) {
+	གལ་སྲིད (result != (ཧྲིལ)enc_size && parameter_flashfs_blank() == 1) {
 		result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 	}
 
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	གལ་སྲིད (result == (ཧྲིལ)enc_size) {
+		ལོག OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	ལོག result < 0 ? result : -EFBIG;
 }
 
-static int
+static ཧྲིལ
 compact_to_snapshot()
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	ཧྲིལ result = encode_document(&encoder, nullptr, true);
 
-	if (result == 0) {
+	གལ་སྲིད (result == 0) {
 		uint8_t *buffer;
 		size_t enc_size;
 		result = stage_snapshot(&encoder, &buffer, &enc_size);
 
-		if (result == OK) {
+		གལ་སྲིད (result == OK) {
 			result = commit_snapshot(buffer, enc_size);
 		}
 	}
 
-	if (result == OK) {
+	གལ་སྲིད (result == OK) {
 		log_unreadable = false;
 	}
 
 	free(bson_encoder_buf_data(&encoder));
-	return result;
+	ལོག result;
 }
 
 static bool
@@ -325,34 +325,34 @@ has_record(flash_file_token_t token)
 {
 	uint8_t *buffer = nullptr;
 	size_t buf_size = 0;
-	return parameter_flashfs_read(token, &buffer, &buf_size) >= 0;
+	ལོག parameter_flashfs_read(token, &buffer, &buf_size) >= 0;
 }
 
-static int
+static ཧྲིལ
 param_export_internal(param_filter_func filter)
 {
 	/* A delta only means something behind a snapshot that replays. A legacy
 	 * record still present means the boot migration did not run; replay
 	 * would take it over any delta appended behind it. */
-	if (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
-		return compact_to_snapshot();
+	གལ་སྲིད (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
+		ལོག compact_to_snapshot();
 	}
 
-	if (!any_unsaved(filter)) {
-		return 0;
+	གལ་སྲིད (!any_unsaved(filter)) {
+		ལོག 0;
 	}
 
-	int result = export_delta(filter);
+	ཧྲིལ result = export_delta(filter);
 
-	if (result != -ENOSPC) {
-		return result;
+	གལ་སྲིད (result != -ENOSPC) {
+		ལོག result;
 	}
 
 	/* Same-bank erase stalls the CPU for ~1 s; last resort when a single
 	 * save does not fit the tail. Compact writes the full RAM snapshot so a
 	 * filtered save cannot drop params not in the delta. */
 	PX4_WARN("flashparams: param sector full, compacting");
-	return compact_to_snapshot();
+	ལོག compact_to_snapshot();
 }
 
 
@@ -361,50 +361,50 @@ record_is_stale(bson_node_t node)
 {
 	const param_t param = param_find_no_notification(node->name);
 
-	if (param == PARAM_INVALID) {
-		return true;
+	གལ་སྲིད (param == PARAM_INVALID) {
+		ལོག true;
 	}
 
 	switch (node->type) {
-	case BSON_INT32:
-		return param_type(param) != PARAM_TYPE_INT32;
+	pak_sa BSON_INT32:
+		ལོག param_type(param) != PARAM_TYPE_INT32;
 
-	case BSON_DOUBLE:
-		return param_type(param) != PARAM_TYPE_FLOAT;
+	pak_sa BSON_DOUBLE:
+		ལོག param_type(param) != PARAM_TYPE_FLOAT;
 
 	default:
-		return false;
+		ལོག false;
 	}
 }
 
-static int
+static ཧྲིལ
 param_import_callback(bson_decoder_t decoder, bson_node_t node)
 {
 	float f;
 	int32_t i;
 	void *v = nullptr;
-	int result = -1;
+	ཧྲིལ result = -1;
 
 	/*
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	གལ་སྲིད (node->type == BSON_EOO) {
 		debug("end of parameters");
-		return 0;
+		ལོག 0;
 	}
 
 	/* A tombstone has no value. The decoder leaves the previous node's in
 	 * the union and the translations read it without a type check. */
 	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
 
-	if (!tombstone) {
-		if (record_is_stale(node)) {
+	གལ་སྲིད (!tombstone) {
+		གལ་སྲིད (record_is_stale(node)) {
 			log_stale = true;
 		}
 
-		if (param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
-			return 1;
+		གལ་སྲིད (param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+			ལོག 1;
 		}
 	}
 
@@ -414,9 +414,9 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	 */
 	param_t param = param_find_no_notification(node->name);
 
-	if (param == PARAM_INVALID) {
+	གལ་སྲིད (param == PARAM_INVALID) {
 		debug("ignoring unrecognised parameter '%s'", node->name);
-		return 1;
+		ལོག 1;
 	}
 
 	/*
@@ -424,14 +424,14 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	 */
 
 	switch (node->type) {
-	case BSON_nullptr:
-	case BSON_UNDEFINED:
+	pak_sa BSON_nullptr:
+	pak_sa BSON_UNDEFINED:
 		user_config.reset(param);
 		result = 1;
 		goto out;
 
-	case BSON_INT32:
-		if (param_type(param) != PARAM_TYPE_INT32) {
+	pak_sa BSON_INT32:
+		གལ་སྲིད (param_type(param) != PARAM_TYPE_INT32) {
 			PX4_WARN("unexpected type for %s", node->name);
 			result = 1; // just skip this entry
 			goto out;
@@ -439,10 +439,10 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 
 		i = node->i32;
 		v = &i;
-		break;
+		bha_nga;
 
-	case BSON_DOUBLE:
-		if (param_type(param) != PARAM_TYPE_FLOAT) {
+	pak_sa BSON_DOUBLE:
+		གལ་སྲིད (param_type(param) != PARAM_TYPE_FLOAT) {
 			PX4_WARN("unexpected type for %s", node->name);
 			result = 1; // just skip this entry
 			goto out;
@@ -450,7 +450,7 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 
 		f = node->d;
 		v = &f;
-		break;
+		bha_nga;
 
 	default:
 		PX4_ERR("%s unrecognised node type %d", node->name, node->type);
@@ -458,7 +458,7 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 		goto out;
 	}
 
-	if (param_set_external(param, v, true, true)) {
+	གལ་སྲིད (param_set_external(param, v, true, true)) {
 		debug("error setting value for '%s'", node->name);
 		goto out;
 	}
@@ -467,67 +467,67 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	result = 1;
 
 out:
-	return result;
+	ལོག result;
 }
 
-static int
+static ཧྲིལ
 import_one_entry(uint8_t *buffer, size_t buf_size, void *arg)
 {
-	int *result = static_cast<int *>(arg);
+	ཧྲིལ *result = static_cast<ཧྲིལ *>(arg);
 	bson_decoder_s decoder{};
 
-	if (bson_decoder_init_buf(&decoder, buffer, buf_size, param_import_callback)) {
+	གལ་སྲིད (bson_decoder_init_buf(&decoder, buffer, buf_size, param_import_callback)) {
 		debug("decoder init failed");
 		*result = -1;
-		return -1;
+		ལོག -1;
 	}
 
 	do {
 		*result = bson_decoder_next(&decoder);
 
-	} while (*result > 0);
+	} སྐབས (*result > 0);
 
-	return *result < 0 ? *result : 0;
+	ལོག *result < 0 ? *result : 0;
 }
 
-static int
+static ཧྲིལ
 param_import_internal(bool *legacy)
 {
-	int result = 0;
+	ཧྲིལ result = 0;
 	log_stale = false;
-	int n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &result);
+	ཧྲིལ n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &result);
 	*legacy = n > 0;
 
-	if (n == 0) {
+	གལ་སྲིད (n == 0) {
 		n = parameter_flashfs_walk(parameters_token, import_one_entry, &result);
 	}
 
-	if (n < 0) {
+	གལ་སྲིད (n < 0) {
 		debug("flash walk failed (%d)", n);
 		log_unreadable = true;
-		return n;
+		ལོག n;
 	}
 
-	if (n == 0) {
+	གལ་སྲིད (n == 0) {
 		/* No valid entry found. A fully erased store is blank (first boot, or
 		 * after switching firmware): report "not yet stored" (1), matching the
 		 * convention used by param_load_default(). A store that holds data but
 		 * no valid entry (torn write, bit-rot, or foreign data) is corrupt and
 		 * must not be silently reseeded - report it so the boot recovery runs. */
-		if (parameter_flashfs_blank() == 1) {
-			return 1;
+		གལ་སྲིད (parameter_flashfs_blank() == 1) {
+			ལོག 1;
 		}
 
 		debug("flash holds data but no valid entry");
-		return -EILSEQ;
+		ལོག -EILSEQ;
 	}
 
-	if (result < 0) {
+	གལ་སྲིད (result < 0) {
 		debug("BSON error decoding parameters");
-		return result;
+		ལོག result;
 	}
 
-	return 0;
+	ལོག 0;
 }
 
 /*
@@ -538,58 +538,58 @@ param_import_internal(bool *legacy)
  * the erase is an error: until then the log is intact and RAM holds what it
  * said, so the boot must not be reported as a corrupt store.
  */
-static int
+static ཧྲིལ
 compact_after_import(bool legacy)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	ཧྲིལ result = encode_document(&encoder, nullptr, true);
 
-	if (result != 0) {
+	གལ་སྲིད (result != 0) {
 		PX4_ERR("flashparams: snapshot encode failed (%d), log kept", result);
 		free(bson_encoder_buf_data(&encoder));
-		return 0;
+		ལོག 0;
 	}
 
 	const size_t enc_size = bson_encoder_buf_size(&encoder);
-	int need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_size);
+	ཧྲིལ need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_size);
 	result = 0;
 
-	if (need > 0) {
+	གལ་སྲིད (need > 0) {
 		uint8_t *buffer;
 		size_t staged_size;
 		result = stage_snapshot(&encoder, &buffer, &staged_size);
 
-		if (result != OK) {
+		གལ་སྲིད (result != OK) {
 			PX4_ERR("flashparams: cannot stage snapshot (%d), log kept", result);
 			result = 0;
 
-		} else {
+		} དེ་མིན {
 			PX4_INFO("flashparams: compacting param sector%s", legacy ? " (legacy layout)" : "");
 			result = commit_snapshot(buffer, staged_size);
 
-			if (result != OK) {
+			གལ་སྲིད (result != OK) {
 				PX4_ERR("flashparams: compact failed (%d)", result);
 			}
 		}
 	}
 
 	free(bson_encoder_buf_data(&encoder));
-	return result;
+	ལོག result;
 }
 
-int flash_param_save(param_filter_func filter)
+ཧྲིལ flash_param_save(param_filter_func filter)
 {
-	return param_export_internal(filter);
+	ལོག param_export_internal(filter);
 }
 
-int flash_param_import()
+ཧྲིལ flash_param_import()
 {
 	bool legacy = false;
-	int result = param_import_internal(&legacy);
+	ཧྲིལ result = param_import_internal(&legacy);
 
-	if (result != 0) {
-		return result;
+	གལ་སྲིད (result != 0) {
+		ལོག result;
 	}
 
-	return compact_after_import(legacy);
+	ལོག compact_after_import(legacy);
 }

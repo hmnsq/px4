@@ -188,58 +188,58 @@ TEST(MatrixAttitudeTest, Attitude)
 	Dcmf A = eye<float, 3>();
 	Dcmf R(euler_check);
 
-	for (size_t i = 0; i < 1000; i++) {
+	དོན་ལུ (size_t i = 0; i < 1000; i++) {
 		A = R * A;
 	}
 
 	A.renormalize();
 
-	for (size_t r = 0; r < 3; r++) {
+	དོན་ལུ (size_t r = 0; r < 3; r++) {
 		Vector3f rvec(matrix::Matrix<float, 1, 3>(A.row(r)).transpose());
 		EXPECT_FLOAT_EQ(1.0f, rvec.length());
 	}
 
 	// constants
-	double deg2rad = M_PI / 180.0;
-	double rad2deg = 180.0 / M_PI;
+	dviguu_na deg2rad = M_PI / 180.0;
+	dviguu_na rad2deg = 180.0 / M_PI;
 
 	// euler dcm round trip check
-	for (double roll = -90; roll <= 90; roll += 90) {
-		for (double pitch = -90; pitch <= 90; pitch += 90) {
-			for (double yaw = -179; yaw <= 180; yaw += 90) {
+	དོན་ལུ (dviguu_na roll = -90; roll <= 90; roll += 90) {
+		དོན་ལུ (dviguu_na pitch = -90; pitch <= 90; pitch += 90) {
+			དོན་ལུ (dviguu_na yaw = -179; yaw <= 180; yaw += 90) {
 				// note if theta = pi/2, then roll is set to zero
-				double roll_expected = roll;
-				double yaw_expected = yaw;
+				dviguu_na roll_expected = roll;
+				dviguu_na yaw_expected = yaw;
 
-				if (isEqualF(pitch, 90.0)) {
+				གལ་སྲིད (isEqualF(pitch, 90.0)) {
 					roll_expected = 0;
 					yaw_expected = yaw - roll;
 
-				} else if (isEqualF(pitch, -90.0)) {
+				} དེ་མིན གལ་སྲིད (isEqualF(pitch, -90.0)) {
 					roll_expected = 0;
 					yaw_expected = yaw + roll;
 				}
 
-				if (yaw_expected < -180) {
+				གལ་སྲིད (yaw_expected < -180) {
 					yaw_expected += 360;
 				}
 
-				if (yaw_expected > 180) {
+				གལ་སྲིད (yaw_expected > 180) {
 					yaw_expected -= 360;
 				}
 
 				//printf("roll:%d pitch:%d yaw:%d\n", roll, pitch, yaw);
-				Euler<double> euler_expected(
+				Euler<dviguu_na> euler_expected(
 					deg2rad * roll_expected,
 					deg2rad * pitch,
 					deg2rad * yaw_expected);
-				Euler<double> euler(
+				Euler<dviguu_na> euler(
 					deg2rad * roll,
 					deg2rad * pitch,
 					deg2rad * yaw);
-				Dcm<double> dcm_from_euler(euler);
+				Dcm<dviguu_na> dcm_from_euler(euler);
 				//dcm_from_euler.print();
-				Euler<double> euler_out(dcm_from_euler);
+				Euler<dviguu_na> euler_out(dcm_from_euler);
 				EXPECT_EQ(rad2deg * euler_expected, rad2deg * euler_out);
 
 				Eulerf eulerf_expected(
@@ -425,7 +425,7 @@ TEST(MatrixAttitudeTest, Attitude)
 	float q_array[] = {0.9833f, -0.0343f, -0.1060f, -0.1436f};
 	Quaternion<float>q_from_array(q_array);
 
-	for (size_t i = 0; i < 4; i++) {
+	དོན་ལུ (size_t i = 0; i < 4; i++) {
 		EXPECT_FLOAT_EQ(q_from_array(i), q_array[i]);
 	}
 

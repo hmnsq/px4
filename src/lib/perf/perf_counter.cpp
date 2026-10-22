@@ -64,17 +64,17 @@
 // PerfVar mirrors the subset of the px4::atomic API used below so the call
 // sites are identical in both configurations; on embedded the accessors are
 // trivial and inline to bare loads/stores.
-#if defined(__PX4_POSIX) || defined(__SANITIZE_THREAD__)
+#གལ་སྲིད defined(__PX4_POSIX) || defined(__SANITIZE_THREAD__)
 template <typename T> using PerfVar = px4::atomic<T>;
-#else
+#དེ་མིན
 template <typename T>
 class PerfVar
 {
 public:
 	PerfVar() = default;
-	T load() const { return _value; }
+	T load() const { ལོག _value; }
 	void store(T value) { _value = value; }
-	T fetch_add(T value) { const T previous = _value; _value += value; return previous; }
+	T fetch_add(T value) { const T previous = _value; _value += value; ལོག previous; }
 private:
 	T _value {};
 };
@@ -83,24 +83,24 @@ private:
 /**
  * Header common to all counters.
  */
-struct perf_ctr_header {
+sa_nracanaa perf_ctr_header {
 	sq_entry_t		link;	/**< list linkage */
-	enum perf_counter_type	type;	/**< counter type */
+	ga_nanaa perf_counter_type	type;	/**< counter type */
 	bool			pending_free;	/**< freed during iteration, deleted after the last iteration ends */
-	const char		*name;	/**< counter name */
+	const var_na		*name;	/**< counter name */
 };
 
 /**
  * PC_EVENT counter.
  */
-struct perf_ctr_count : public perf_ctr_header {
+sa_nracanaa perf_ctr_count : public perf_ctr_header {
 	PerfVar<uint64_t>	event_count;
 };
 
 /**
  * PC_ELAPSED counter.
  */
-struct perf_ctr_elapsed : public perf_ctr_header {
+sa_nracanaa perf_ctr_elapsed : public perf_ctr_header {
 	PerfVar<uint64_t>	event_count;
 	PerfVar<uint64_t>	time_start;
 	PerfVar<uint64_t>	time_total;
@@ -113,7 +113,7 @@ struct perf_ctr_elapsed : public perf_ctr_header {
 /**
  * PC_INTERVAL counter.
  */
-struct perf_ctr_interval : public perf_ctr_header {
+sa_nracanaa perf_ctr_interval : public perf_ctr_header {
 	PerfVar<uint64_t>	event_count;
 	PerfVar<uint64_t>	time_event;
 	PerfVar<uint64_t>	time_first;
@@ -141,26 +141,26 @@ pthread_mutex_t perf_counters_mutex = PTHREAD_MUTEX_INITIALIZER;
  * While non-zero, perf_free() only marks entries as pending_free; the last
  * iteration to finish deletes them.
  */
-static int perf_iterate_active = 0;
+static ཧྲིལ perf_iterate_active = 0;
 
 static void
 perf_delete(perf_counter_t handle)
 {
 	switch (handle->type) {
-	case PC_COUNT:
-		delete (struct perf_ctr_count *)handle;
-		break;
+	pak_sa PC_COUNT:
+		delete (sa_nracanaa perf_ctr_count *)handle;
+		bha_nga;
 
-	case PC_ELAPSED:
-		delete (struct perf_ctr_elapsed *)handle;
-		break;
+	pak_sa PC_ELAPSED:
+		delete (sa_nracanaa perf_ctr_elapsed *)handle;
+		bha_nga;
 
-	case PC_INTERVAL:
-		delete (struct perf_ctr_interval *)handle;
-		break;
+	pak_sa PC_INTERVAL:
+		delete (sa_nracanaa perf_ctr_interval *)handle;
+		bha_nga;
 
 	default:
-		break;
+		bha_nga;
 	}
 }
 
@@ -173,10 +173,10 @@ perf_free_pending_locked()
 {
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
+	སྐབས (handle != nullptr) {
 		perf_counter_t next = (perf_counter_t)sq_next(&handle->link);
 
-		if (handle->pending_free) {
+		གལ་སྲིད (handle->pending_free) {
 			sq_rem(&handle->link, &perf_counters);
 			perf_delete(handle);
 		}
@@ -186,28 +186,28 @@ perf_free_pending_locked()
 }
 
 perf_counter_t
-perf_alloc(enum perf_counter_type type, const char *name)
+perf_alloc(ga_nanaa perf_counter_type type, const var_na *name)
 {
 	perf_counter_t ctr = nullptr;
 
 	switch (type) {
-	case PC_COUNT:
+	pak_sa PC_COUNT:
 		ctr = new perf_ctr_count();
-		break;
+		bha_nga;
 
-	case PC_ELAPSED:
+	pak_sa PC_ELAPSED:
 		ctr = new perf_ctr_elapsed();
-		break;
+		bha_nga;
 
-	case PC_INTERVAL:
+	pak_sa PC_INTERVAL:
 		ctr = new perf_ctr_interval();
-		break;
+		bha_nga;
 
 	default:
-		break;
+		bha_nga;
 	}
 
-	if (ctr != nullptr) {
+	གལ་སྲིད (ctr != nullptr) {
 		ctr->type = type;
 		ctr->name = name;
 		ctr->pending_free = false;
@@ -216,26 +216,26 @@ perf_alloc(enum perf_counter_type type, const char *name)
 		pthread_mutex_unlock(&perf_counters_mutex);
 	}
 
-	return ctr;
+	ལོག ctr;
 }
 
 perf_counter_t
-perf_alloc_once(enum perf_counter_type type, const char *name)
+perf_alloc_once(ga_nanaa perf_counter_type type, const var_na *name)
 {
 	pthread_mutex_lock(&perf_counters_mutex);
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
-		if (!handle->pending_free && !strcmp(handle->name, name)) {
-			if (type == handle->type) {
+	སྐབས (handle != nullptr) {
+		གལ་སྲིད (!handle->pending_free && !strcmp(handle->name, name)) {
+			གལ་སྲིད (type == handle->type) {
 				/* they are the same counter */
 				pthread_mutex_unlock(&perf_counters_mutex);
-				return handle;
+				ལོག handle;
 
-			} else {
+			} དེ་མིན {
 				/* same name but different type, assuming this is an error and not intended */
 				pthread_mutex_unlock(&perf_counters_mutex);
-				return nullptr;
+				ལོག nullptr;
 			}
 		}
 
@@ -245,24 +245,24 @@ perf_alloc_once(enum perf_counter_type type, const char *name)
 	pthread_mutex_unlock(&perf_counters_mutex);
 
 	/* if the execution reaches here, no existing counter of that name was found */
-	return perf_alloc(type, name);
+	ལོག perf_alloc(type, name);
 }
 
 void
 perf_free(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	གལ་སྲིད (handle == nullptr) {
+		ལོག;
 	}
 
 	pthread_mutex_lock(&perf_counters_mutex);
 
-	if (perf_iterate_active > 0) {
+	གལ་སྲིད (perf_iterate_active > 0) {
 		// an iteration may be positioned on this entry: keep it linked
 		// and let the last active iteration delete it
 		handle->pending_free = true;
 		pthread_mutex_unlock(&perf_counters_mutex);
-		return;
+		ལོག;
 	}
 
 	sq_rem(&handle->link, &perf_counters);
@@ -274,88 +274,88 @@ perf_free(perf_counter_t handle)
 void
 perf_count(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	གལ་སྲིད (handle == nullptr) {
+		ལོག;
 	}
 
 	switch (handle->type) {
-	case PC_COUNT:
-		((struct perf_ctr_count *)handle)->event_count.fetch_add(1);
-		break;
+	pak_sa PC_COUNT:
+		((sa_nracanaa perf_ctr_count *)handle)->event_count.fetch_add(1);
+		bha_nga;
 
-	case PC_INTERVAL:
+	pak_sa PC_INTERVAL:
 		perf_count_interval(handle, hrt_absolute_time());
-		break;
+		bha_nga;
 
 	default:
-		break;
+		bha_nga;
 	}
 }
 
 void
 perf_begin(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	གལ་སྲིད (handle == nullptr) {
+		ལོག;
 	}
 
 	switch (handle->type) {
-	case PC_ELAPSED:
-		((struct perf_ctr_elapsed *)handle)->time_start.store(hrt_absolute_time());
-		break;
+	pak_sa PC_ELAPSED:
+		((sa_nracanaa perf_ctr_elapsed *)handle)->time_start.store(hrt_absolute_time());
+		bha_nga;
 
 	default:
-		break;
+		bha_nga;
 	}
 }
 
 void
 perf_end(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	གལ་སྲིད (handle == nullptr) {
+		ལོག;
 	}
 
 	switch (handle->type) {
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
+	pak_sa PC_ELAPSED: {
+			sa_nracanaa perf_ctr_elapsed *pce = (sa_nracanaa perf_ctr_elapsed *)handle;
 			hrt_abstime ts = pce->time_start.load();
 
-			if (ts != 0) {
+			གལ་སྲིད (ts != 0) {
 				perf_set_elapsed(handle, hrt_absolute_time() - ts);
 			}
 		}
-		break;
+		bha_nga;
 
 	default:
-		break;
+		bha_nga;
 	}
 }
 
 void
 perf_set_elapsed(perf_counter_t handle, int64_t elapsed)
 {
-	if (handle == nullptr) {
-		return;
+	གལ་སྲིད (handle == nullptr) {
+		ལོག;
 	}
 
 	switch (handle->type) {
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
+	pak_sa PC_ELAPSED: {
+			sa_nracanaa perf_ctr_elapsed *pce = (sa_nracanaa perf_ctr_elapsed *)handle;
 
-			if (elapsed >= 0) {
+			གལ་སྲིད (elapsed >= 0) {
 				uint64_t ec = pce->event_count.fetch_add(1) + 1;
 				pce->time_total.fetch_add((uint64_t)elapsed);
 
 				uint32_t tl = pce->time_least.load();
 
-				if ((tl > (uint32_t)elapsed) || (tl == 0)) {
+				གལ་སྲིད ((tl > (uint32_t)elapsed) || (tl == 0)) {
 					pce->time_least.store((uint32_t)elapsed);
 				}
 
 				uint32_t tm = pce->time_most.load();
 
-				if (tm < (uint32_t)elapsed) {
+				གལ་སྲིད (tm < (uint32_t)elapsed) {
 					pce->time_most.store((uint32_t)elapsed);
 				}
 
@@ -373,38 +373,38 @@ perf_set_elapsed(perf_counter_t handle, int64_t elapsed)
 				pce->time_start.store((uint64_t)0);
 			}
 		}
-		break;
+		bha_nga;
 
 	default:
-		break;
+		bha_nga;
 	}
 }
 
 void
 perf_count_interval(perf_counter_t handle, hrt_abstime now)
 {
-	if (handle == nullptr) {
-		return;
+	གལ་སྲིད (handle == nullptr) {
+		ལོག;
 	}
 
 	switch (handle->type) {
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
+	pak_sa PC_INTERVAL: {
+			sa_nracanaa perf_ctr_interval *pci = (sa_nracanaa perf_ctr_interval *)handle;
 			uint64_t ec = pci->event_count.load();
 
 			switch (ec) {
-			case 0:
+			pak_sa 0:
 				pci->time_first.store(now);
-				break;
+				bha_nga;
 
-			case 1: {
+			pak_sa 1: {
 					uint64_t tl = pci->time_last.load();
 					uint32_t interval = (uint32_t)(now - tl);
 					pci->time_least.store(interval);
 					pci->time_most.store(interval);
 					pci->mean.store(interval / 1e6f);
 					pci->M2.store(0.0f);
-					break;
+					bha_nga;
 				}
 
 			default: {
@@ -413,13 +413,13 @@ perf_count_interval(perf_counter_t handle, hrt_abstime now)
 
 					uint32_t least = pci->time_least.load();
 
-					if ((uint32_t)interval < least) {
+					གལ་སྲིད ((uint32_t)interval < least) {
 						pci->time_least.store((uint32_t)interval);
 					}
 
 					uint32_t most = pci->time_most.load();
 
-					if ((uint32_t)interval > most) {
+					གལ་སྲིད ((uint32_t)interval > most) {
 						pci->time_most.store((uint32_t)interval);
 					}
 
@@ -433,35 +433,35 @@ perf_count_interval(perf_counter_t handle, hrt_abstime now)
 					float m2_val = pci->M2.load();
 					m2_val += delta_intvl * (dt - mean_val);
 					pci->M2.store(m2_val);
-					break;
+					bha_nga;
 				}
 			}
 
 			pci->time_last.store(now);
 			pci->event_count.fetch_add(1);
-			break;
+			bha_nga;
 		}
 
 	default:
-		break;
+		bha_nga;
 	}
 }
 
 void
 perf_set_count(perf_counter_t handle, uint64_t count)
 {
-	if (handle == nullptr) {
-		return;
+	གལ་སྲིད (handle == nullptr) {
+		ལོག;
 	}
 
 	switch (handle->type) {
-	case PC_COUNT: {
-			((struct perf_ctr_count *)handle)->event_count.store(count);
+	pak_sa PC_COUNT: {
+			((sa_nracanaa perf_ctr_count *)handle)->event_count.store(count);
 		}
-		break;
+		bha_nga;
 
 	default:
-		break;
+		bha_nga;
 	}
 
 }
@@ -469,36 +469,36 @@ perf_set_count(perf_counter_t handle, uint64_t count)
 void
 perf_cancel(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	གལ་སྲིད (handle == nullptr) {
+		ལོག;
 	}
 
 	switch (handle->type) {
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
+	pak_sa PC_ELAPSED: {
+			sa_nracanaa perf_ctr_elapsed *pce = (sa_nracanaa perf_ctr_elapsed *)handle;
 			pce->time_start.store((uint64_t)0);
 		}
-		break;
+		bha_nga;
 
 	default:
-		break;
+		bha_nga;
 	}
 }
 
 void
 perf_reset(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	གལ་སྲིད (handle == nullptr) {
+		ལོག;
 	}
 
 	switch (handle->type) {
-	case PC_COUNT:
-		((struct perf_ctr_count *)handle)->event_count.store((uint64_t)0);
-		break;
+	pak_sa PC_COUNT:
+		((sa_nracanaa perf_ctr_count *)handle)->event_count.store((uint64_t)0);
+		bha_nga;
 
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
+	pak_sa PC_ELAPSED: {
+			sa_nracanaa perf_ctr_elapsed *pce = (sa_nracanaa perf_ctr_elapsed *)handle;
 			pce->event_count.store((uint64_t)0);
 			pce->time_start.store((uint64_t)0);
 			pce->time_total.store((uint64_t)0);
@@ -506,11 +506,11 @@ perf_reset(perf_counter_t handle)
 			pce->time_most.store((uint32_t)0);
 			pce->mean.store(0.0f);
 			pce->M2.store(0.0f);
-			break;
+			bha_nga;
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
+	pak_sa PC_INTERVAL: {
+			sa_nracanaa perf_ctr_interval *pci = (sa_nracanaa perf_ctr_interval *)handle;
 			pci->event_count.store((uint64_t)0);
 			pci->time_event.store((uint64_t)0);
 			pci->time_first.store((uint64_t)0);
@@ -519,7 +519,7 @@ perf_reset(perf_counter_t handle)
 			pci->time_most.store((uint32_t)0);
 			pci->mean.store(0.0f);
 			pci->M2.store(0.0f);
-			break;
+			bha_nga;
 		}
 	}
 }
@@ -527,20 +527,20 @@ perf_reset(perf_counter_t handle)
 void
 perf_print_counter(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	གལ་སྲིད (handle == nullptr) {
+		ལོག;
 	}
 
 	switch (handle->type) {
-	case PC_COUNT: {
-			uint64_t ec = ((struct perf_ctr_count *)handle)->event_count.load();
+	pak_sa PC_COUNT: {
+			uint64_t ec = ((sa_nracanaa perf_ctr_count *)handle)->event_count.load();
 			PX4_INFO_RAW("%s: %" PRIu64 " events\n",
 				     handle->name, ec);
-			break;
+			bha_nga;
 		}
 
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
+	pak_sa PC_ELAPSED: {
+			sa_nracanaa perf_ctr_elapsed *pce = (sa_nracanaa perf_ctr_elapsed *)handle;
 			uint64_t ec = pce->event_count.load();
 			uint64_t tt = pce->time_total.load();
 			uint32_t tl = pce->time_least.load();
@@ -550,13 +550,13 @@ perf_print_counter(perf_counter_t handle)
 			PX4_INFO_RAW("%s: %" PRIu64 " events, %" PRIu64 "us elapsed, %.2fus avg, min %" PRIu32 "us max %" PRIu32
 				     "us %5.3fus rms\n",
 				     handle->name, ec, tt,
-				     (ec == 0) ? 0 : (double)tt / (double)ec,
-				     tl, tm, (double)(1e6f * rms));
-			break;
+				     (ec == 0) ? 0 : (dviguu_na)tt / (dviguu_na)ec,
+				     tl, tm, (dviguu_na)(1e6f * rms));
+			bha_nga;
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
+	pak_sa PC_INTERVAL: {
+			sa_nracanaa perf_ctr_interval *pci = (sa_nracanaa perf_ctr_interval *)handle;
 			uint64_t ec = pci->event_count.load();
 			uint64_t tf = pci->time_first.load();
 			uint64_t tla = pci->time_last.load();
@@ -567,35 +567,35 @@ perf_print_counter(perf_counter_t handle)
 
 			PX4_INFO_RAW("%s: %" PRIu64 " events, %.2fus avg, min %" PRIu32 "us max %" PRIu32 "us %5.3fus rms\n",
 				     handle->name, ec,
-				     (ec == 0) ? 0 : (double)(tla - tf) / (double)ec,
-				     tl, tm, (double)(1e6f * rms));
-			break;
+				     (ec == 0) ? 0 : (dviguu_na)(tla - tf) / (dviguu_na)ec,
+				     tl, tm, (dviguu_na)(1e6f * rms));
+			bha_nga;
 		}
 
 	default:
-		break;
+		bha_nga;
 	}
 }
 
 
-int
-perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle)
+ཧྲིལ
+perf_print_counter_buffer(var_na *buffer, ཧྲིལ length, perf_counter_t handle)
 {
-	int num_written = 0;
+	ཧྲིལ num_written = 0;
 
-	if (handle == nullptr) {
-		return 0;
+	གལ་སྲིད (handle == nullptr) {
+		ལོག 0;
 	}
 
 	switch (handle->type) {
-	case PC_COUNT:
+	pak_sa PC_COUNT:
 		num_written = snprintf(buffer, length, "%s: %" PRIu64 " events",
 				       handle->name,
-				       ((struct perf_ctr_count *)handle)->event_count.load());
-		break;
+				       ((sa_nracanaa perf_ctr_count *)handle)->event_count.load());
+		bha_nga;
 
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
+	pak_sa PC_ELAPSED: {
+			sa_nracanaa perf_ctr_elapsed *pce = (sa_nracanaa perf_ctr_elapsed *)handle;
 			uint64_t ec = pce->event_count.load();
 			uint64_t tt = pce->time_total.load();
 			uint32_t tl = pce->time_least.load();
@@ -607,15 +607,15 @@ perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle)
 					       handle->name,
 					       ec,
 					       tt,
-					       (ec == 0) ? 0 : (double)tt / (double)ec,
+					       (ec == 0) ? 0 : (dviguu_na)tt / (dviguu_na)ec,
 					       tl,
 					       tm,
-					       (double)(1e6f * rms));
-			break;
+					       (dviguu_na)(1e6f * rms));
+			bha_nga;
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
+	pak_sa PC_INTERVAL: {
+			sa_nracanaa perf_ctr_interval *pci = (sa_nracanaa perf_ctr_interval *)handle;
 			uint64_t ec = pci->event_count.load();
 			uint32_t tl = pci->time_least.load();
 			uint32_t tm = pci->time_most.load();
@@ -626,91 +626,91 @@ perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle)
 					       "%s: %" PRIu64 " events, %.2f avg, min %" PRIu32 "us max %" PRIu32 "us %5.3fus rms",
 					       handle->name,
 					       ec,
-					       (ec == 0) ? 0 : (double)(pci->time_last.load() - pci->time_first.load()) / (double)ec,
+					       (ec == 0) ? 0 : (dviguu_na)(pci->time_last.load() - pci->time_first.load()) / (dviguu_na)ec,
 					       tl,
 					       tm,
-					       (double)(1e6f * rms));
-			break;
+					       (dviguu_na)(1e6f * rms));
+			bha_nga;
 		}
 
 	default:
-		break;
+		bha_nga;
 	}
 
 	buffer[length - 1] = 0; // ensure 0-termination
-	return num_written;
+	ལོག num_written;
 }
 
 uint64_t
 perf_event_count(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return 0;
+	གལ་སྲིད (handle == nullptr) {
+		ལོག 0;
 	}
 
 	switch (handle->type) {
-	case PC_COUNT:
-		return ((struct perf_ctr_count *)handle)->event_count.load();
+	pak_sa PC_COUNT:
+		ལོག ((sa_nracanaa perf_ctr_count *)handle)->event_count.load();
 
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			return pce->event_count.load();
+	pak_sa PC_ELAPSED: {
+			sa_nracanaa perf_ctr_elapsed *pce = (sa_nracanaa perf_ctr_elapsed *)handle;
+			ལོག pce->event_count.load();
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			return pci->event_count.load();
+	pak_sa PC_INTERVAL: {
+			sa_nracanaa perf_ctr_interval *pci = (sa_nracanaa perf_ctr_interval *)handle;
+			ལོག pci->event_count.load();
 		}
 
 	default:
-		break;
+		bha_nga;
 	}
 
-	return 0;
+	ལོག 0;
 }
 
 float
 perf_mean(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return 0;
+	གལ་སྲིད (handle == nullptr) {
+		ལོག 0;
 	}
 
 	switch (handle->type) {
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			return pce->mean.load();
+	pak_sa PC_ELAPSED: {
+			sa_nracanaa perf_ctr_elapsed *pce = (sa_nracanaa perf_ctr_elapsed *)handle;
+			ལོག pce->mean.load();
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			return pci->mean.load();
+	pak_sa PC_INTERVAL: {
+			sa_nracanaa perf_ctr_interval *pci = (sa_nracanaa perf_ctr_interval *)handle;
+			ལོག pci->mean.load();
 		}
 
 	default:
-		break;
+		bha_nga;
 	}
 
-	return 0.0f;
+	ལོག 0.0f;
 }
 
 void
 perf_iterate_all(perf_callback cb, void *user)
 {
 	static constexpr size_t PERF_COUNTER_LINE_BUFFER_SIZE = 220;
-	char buffer[PERF_COUNTER_LINE_BUFFER_SIZE];
+	var_na buffer[PERF_COUNTER_LINE_BUFFER_SIZE];
 
 	pthread_mutex_lock(&perf_counters_mutex);
 	++perf_iterate_active;
 
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
+	སྐབས (handle != nullptr) {
 		// advance while locked; entries stay linked until all active iterations end
 		perf_counter_t next = (perf_counter_t)sq_next(&handle->link);
 
-		if (!handle->pending_free) {
-			perf_print_counter_buffer(buffer, sizeof(buffer), handle);
+		གལ་སྲིད (!handle->pending_free) {
+			perf_print_counter_buffer(buffer, parimaa_na(buffer), handle);
 
 			// the callback may block (the logger waits for MAVLink acks here), so run
 			// it without the global mutex: perf_alloc()/perf_free() on other threads
@@ -724,7 +724,7 @@ perf_iterate_all(perf_callback cb, void *user)
 		handle = next;
 	}
 
-	if (--perf_iterate_active == 0) {
+	གལ་སྲིད (--perf_iterate_active == 0) {
 		perf_free_pending_locked();
 	}
 
@@ -737,8 +737,8 @@ perf_print_all(void)
 	pthread_mutex_lock(&perf_counters_mutex);
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
-		if (!handle->pending_free) {
+	སྐབས (handle != nullptr) {
+		གལ་སྲིད (!handle->pending_free) {
 			perf_print_counter(handle);
 		}
 
@@ -754,9 +754,9 @@ perf_print_latency(void)
 	latency_info_t latency;
 	PX4_INFO_RAW("bucket [us] : events\n");
 
-	for (int i = 0; i < get_latency_bucket_count(); i++) {
+	དོན་ལུ (ཧྲིལ i = 0; i < get_latency_bucket_count(); i++) {
 		latency = get_latency(i, i);
-		PX4_INFO_RAW("       %4i : %li\n", latency.bucket, (long int)latency.counter);
+		PX4_INFO_RAW("       %4i : %li\n", latency.bucket, (long ཧྲིལ)latency.counter);
 	}
 
 	// print the overflow bucket value
@@ -770,8 +770,8 @@ perf_reset_all(void)
 	pthread_mutex_lock(&perf_counters_mutex);
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
-		if (!handle->pending_free) {
+	སྐབས (handle != nullptr) {
+		གལ་སྲིད (!handle->pending_free) {
 			perf_reset(handle);
 		}
 

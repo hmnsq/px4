@@ -49,61 +49,61 @@ public:
 	Vector3 cross(const Matrix31 &b) const
 	{
 		const Vector3 &a(*this);
-		return {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
+		ལོག {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
 	}
 
 	/**
 	 * Override matrix ops so Vector3 type is returned
 	 */
 
-	inline Vector3 operator+(Vector3 other) const
+	anta_hstha Vector3 operator+(Vector3 other) const
 	{
-		return Matrix31::operator+(other);
+		ལོག Matrix31::operator+(other);
 	}
 
-	inline Vector3 operator+(Type scalar) const
+	anta_hstha Vector3 operator+(Type scalar) const
 	{
-		return Matrix31::operator+(scalar);
+		ལོག Matrix31::operator+(scalar);
 	}
 
-	inline Vector3 operator-(Vector3 other) const
+	anta_hstha Vector3 operator-(Vector3 other) const
 	{
-		return Matrix31::operator-(other);
+		ལོག Matrix31::operator-(other);
 	}
 
-	inline Vector3 operator-(Type scalar) const
+	anta_hstha Vector3 operator-(Type scalar) const
 	{
-		return Matrix31::operator-(scalar);
+		ལོག Matrix31::operator-(scalar);
 	}
 
-	inline Vector3 operator-() const
+	anta_hstha Vector3 operator-() const
 	{
-		return Matrix31::operator-();
+		ལོག Matrix31::operator-();
 	}
 
-	inline Vector3 operator*(Type scalar) const
+	anta_hstha Vector3 operator*(Type scalar) const
 	{
-		return Matrix31::operator*(scalar);
+		ལོག Matrix31::operator*(scalar);
 	}
 
-	inline Type operator*(Vector3 b) const
+	anta_hstha Type operator*(Vector3 b) const
 	{
-		return Vector<Type, 3>::operator*(b);
+		ལོག Vector<Type, 3>::operator*(b);
 	}
 
-	inline Vector3 operator%(const Matrix31 &b) const
+	anta_hstha Vector3 operator%(const Matrix31 &b) const
 	{
-		return (*this).cross(b);
+		ལོག (*this).cross(b);
 	}
 
 	ConstSlice<Type, 2, 1, 3, 1> xy() const
 	{
-		return {0, 0, this};
+		ལོག {0, 0, this};
 	}
 
 	Slice<Type, 2, 1, 3, 1> xy()
 	{
-		return {0, 0, this};
+		ལོག {0, 0, this};
 	}
 
 	Dcm<Type> hat() const      // inverse to Dcm.vee() operation
@@ -119,12 +119,12 @@ public:
 		A(2, 0) = -v(1);
 		A(2, 1) = v(0);
 		A(2, 2) = 0;
-		return A;
+		ལོག A;
 	}
 
 };
 
 using Vector3f = Vector3<float>;
-using Vector3d = Vector3<double>;
+using Vector3d = Vector3<dviguu_na>;
 
 } // namespace matrix

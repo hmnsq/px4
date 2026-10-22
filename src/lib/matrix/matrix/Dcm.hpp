@@ -160,13 +160,13 @@ public:
 	Vector3<Type> vee() const // inverse to Vector.hat() operation
 	{
 		const Dcm &A(*this);
-		return {-A(1, 2), A(0, 2), -A(0, 1)};
+		ལོག {-A(1, 2), A(0, 2), -A(0, 1)};
 	}
 
 	void renormalize()
 	{
 		/* renormalize rows */
-		for (size_t r = 0; r < 3; r++) {
+		དོན་ལུ (size_t r = 0; r < 3; r++) {
 			matrix::Vector3<Type> rvec(Matrix<Type, 1, 3>(this->Matrix<Type, 3, 3>::row(r)).transpose());
 			this->Matrix<Type, 3, 3>::row(r) = rvec.normalized();
 		}
@@ -174,6 +174,6 @@ public:
 };
 
 using Dcmf = Dcm<float>;
-using Dcmd = Dcm<double>;
+using Dcmd = Dcm<dviguu_na>;
 
 } // namespace matrix

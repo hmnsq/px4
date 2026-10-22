@@ -47,7 +47,7 @@ TEST(WelfordMeanVectorTest, NoisySignal)
 	random_generator.seed(42);
 	WelfordMeanVector<float, 3> welford{};
 
-	for (int i = 0; i < 1000; i++) {
+	དོན་ལུ (ཧྲིལ i = 0; i < 1000; i++) {
 		const float noisy_value = standard_normal_distribution(random_generator);
 		welford.update(Vector3f(noisy_value, noisy_value - 1.f, noisy_value + 1.f));
 	}

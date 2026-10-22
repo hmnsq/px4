@@ -42,12 +42,12 @@ static constexpr uint8_t UAS_ID_SIZE = 20;
 static constexpr uint8_t UAS_ID_TYPE_SERIAL_NUMBER = 1;
 static constexpr int32_t UAS_ID_MODE_LOCK_FIRST_BASIC_ID = 1;
 
-struct UasId {
+sa_nracanaa UasId {
 	uint8_t ua_type{0};
 	uint8_t uas_id[UAS_ID_SIZE] {};
 };
 
-enum class BidLockState {
+ga_nanaa class BidLockState {
 	Empty,
 	Locked,
 	InvalidRecord,
@@ -56,14 +56,14 @@ enum class BidLockState {
 	Unsupported,
 };
 
-struct BidLockInfo {
+sa_nracanaa BidLockInfo {
 	BidLockState state{BidLockState::Unsupported};
 	UasId id{};
 
-	bool locked() const { return state == BidLockState::Locked; }
+	bool locked() const { ལོག state == BidLockState::Locked; }
 };
 
-enum class BidStoreResult {
+ga_nanaa class BidStoreResult {
 	Stored,
 	AlreadyLocked,
 	AlreadyLockedDifferent,

@@ -55,12 +55,12 @@ TerrainEstimator::TerrainEstimator() :
 
 bool TerrainEstimator::is_distance_valid(float distance)
 {
-	return (distance < 40.0f && distance > 0.00001f);
+	ལོག (distance < 40.0f && distance > 0.00001f);
 }
 
-void TerrainEstimator::predict(float dt, const struct vehicle_attitude_s *attitude,
-			       const struct sensor_combined_s *sensor,
-			       const struct distance_sensor_s *distance)
+void TerrainEstimator::predict(float dt, const sa_nracanaa vehicle_attitude_s *attitude,
+			       const sa_nracanaa sensor_combined_s *sensor,
+			       const sa_nracanaa distance_sensor_s *distance)
 {
 	matrix::Dcmf R_att = matrix::Quatf(attitude->q);
 	matrix::Vector3f a{sensor->accelerometer_m_s2[0], sensor->accelerometer_m_s2[1], sensor->accelerometer_m_s2[2]};
@@ -97,16 +97,16 @@ void TerrainEstimator::predict(float dt, const struct vehicle_attitude_s *attitu
 	       B * R * B.transpose() + Q) * dt;
 }
 
-void TerrainEstimator::measurement_update(uint64_t time_ref, const struct sensor_gnss_s *gnss,
-		const struct distance_sensor_s *distance,
-		const struct vehicle_attitude_s *attitude)
+void TerrainEstimator::measurement_update(uint64_t time_ref, const sa_nracanaa sensor_gnss_s *gnss,
+		const sa_nracanaa distance_sensor_s *distance,
+		const sa_nracanaa vehicle_attitude_s *attitude)
 {
 	// terrain estimate is invalid if we have range sensor timeout
-	if (time_ref - distance->timestamp > DISTANCE_TIMEOUT) {
+	གལ་སྲིད (time_ref - distance->timestamp > DISTANCE_TIMEOUT) {
 		_terrain_valid = false;
 	}
 
-	if (distance->timestamp > _time_last_distance) {
+	གལ་སྲིད (distance->timestamp > _time_last_distance) {
 		matrix::Quatf q(attitude->q);
 		matrix::Eulerf euler(q);
 		float d = distance->current_distance;
@@ -128,17 +128,17 @@ void TerrainEstimator::measurement_update(uint64_t time_ref, const struct sensor
 		matrix::Matrix<float, n_x, 1> K = _P * C.transpose() * S_I;
 
 		// some sort of outlayer rejection
-		if (fabsf(distance->current_distance - _distance_last) < 1.0f) {
+		གལ་སྲིད (fabsf(distance->current_distance - _distance_last) < 1.0f) {
 			_x += K * r;
 			_P -= K * C * _P;
 		}
 
 		// if the current and the last range measurement are bad then we consider the terrain
 		// estimate to be invalid
-		if (!is_distance_valid(distance->current_distance) && !is_distance_valid(_distance_last)) {
+		གལ་སྲིད (!is_distance_valid(distance->current_distance) && !is_distance_valid(_distance_last)) {
 			_terrain_valid = false;
 
-		} else {
+		} དེ་མིན {
 			_terrain_valid = true;
 		}
 
@@ -146,7 +146,7 @@ void TerrainEstimator::measurement_update(uint64_t time_ref, const struct sensor
 		_distance_last = distance->current_distance;
 	}
 
-	if (gnss->timestamp > _time_last_gnss && gnss->fix_type >= 3) {
+	གལ་སྲིད (gnss->timestamp > _time_last_gnss && gnss->fix_type >= 3) {
 		matrix::Matrix<float, 1, n_x> C;
 		C(0, 1) = 1;
 
@@ -169,7 +169,7 @@ void TerrainEstimator::measurement_update(uint64_t time_ref, const struct sensor
 	}
 
 	// reinitialise filter if we find bad data
-	if (!_x.isAllFinite() || !_P.isAllFinite()) {
+	གལ་སྲིད (!_x.isAllFinite() || !_P.isAllFinite()) {
 		_x.zero();
 		_P.setZero();
 		_P(0, 0) = _P(1, 1) = _P(2, 2) = 0.1f;

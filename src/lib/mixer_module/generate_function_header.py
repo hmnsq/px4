@@ -28,7 +28,7 @@ output_file = args.output_file
 def load_yaml_file(file_name):
     with open(file_name, 'r') as stream:
         try:
-            return yaml.safe_load(stream)
+            ལོག yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
             raise
@@ -40,23 +40,23 @@ function_defs = ''
 
 def add_function(index, name, check_duplicate=True):
     global all_indexes, function_defs
-    if check_duplicate and index in all_indexes:
+    གལ་སྲིད check_duplicate ca index anta_h all_indexes:
         raise Exception('Duplicate function with index {0} ({1})'.format(index, name))
     all_indexes.add(index)
 
     function_defs += '\t{0} = {1},\n'.format(name, index)
 
-for group_key in functions:
+དོན་ལུ group_key anta_h functions:
     group = functions[group_key]
-    for function_name in group:
-        if isinstance(group[function_name], int):
+    དོན་ལུ function_name anta_h group:
+        གལ་སྲིད isinstance(group[function_name], ཧྲིལ):
             add_function(group[function_name], function_name)
-        elif not 'count' in group[function_name]:
+        elif na 'count' anta_h group[function_name]:
             add_function(group[function_name]['start'], function_name)
-        else:
+        དེ་མིན:
             start = group[function_name]['start']
             count = group[function_name]['count']
-            for i in range(count):
+            དོན་ལུ i anta_h range(count):
                 add_function(start+i, function_name+str(i+1))
             add_function(start+count-1, function_name+'Max', False)
             function_defs += '\n'

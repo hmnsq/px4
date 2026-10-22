@@ -51,7 +51,7 @@ ControlAllocation::ControlAllocation()
 void
 ControlAllocation::setEffectivenessMatrix(
 	const matrix::Matrix<float, ControlAllocation::NUM_AXES, ControlAllocation::NUM_ACTUATORS> &effectiveness,
-	const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
+	const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, ཧྲིལ num_actuators,
 	bool update_normalization_scale)
 {
 	_effectiveness = effectiveness;
@@ -77,14 +77,14 @@ ControlAllocation::setActuatorSetpoint(
 void
 ControlAllocation::clipActuatorSetpoint(matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator) const
 {
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_max(i) < _actuator_min(i)) {
+	དོན་ལུ (ཧྲིལ i = 0; i < _num_actuators; i++) {
+		གལ་སྲིད (_actuator_max(i) < _actuator_min(i)) {
 			actuator(i) = _actuator_trim(i);
 
-		} else if (actuator(i) < _actuator_min(i)) {
+		} དེ་མིན གལ་སྲིད (actuator(i) < _actuator_min(i)) {
 			actuator(i) = _actuator_min(i);
 
-		} else if (actuator(i) > _actuator_max(i)) {
+		} དེ་མིན གལ་སྲིད (actuator(i) > _actuator_max(i)) {
 			actuator(i) = _actuator_max(i);
 		}
 	}
@@ -96,16 +96,16 @@ const
 {
 	matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> actuator_normalized;
 
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_min(i) < _actuator_max(i)) {
+	དོན་ལུ (ཧྲིལ i = 0; i < _num_actuators; i++) {
+		གལ་སྲིད (_actuator_min(i) < _actuator_max(i)) {
 			actuator_normalized(i) = (actuator(i) - _actuator_min(i)) / (_actuator_max(i) - _actuator_min(i));
 
-		} else {
+		} དེ་མིན {
 			actuator_normalized(i) = (_actuator_trim(i) - _actuator_min(i)) / (_actuator_max(i) - _actuator_min(i));
 		}
 	}
 
-	return actuator_normalized;
+	ལོག actuator_normalized;
 }
 
 void ControlAllocation::applySlewRateLimit(float dt)
@@ -122,8 +122,8 @@ void ControlAllocation::applySlewRateLimit(float dt)
 	//  - NaN to nonzero: replace NaN by zero, then rise with slew rate to input
 	//  - between nonzero and 0: slew limit, then match input
 
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_slew_rate_limit(i) > FLT_EPSILON) {
+	དོན་ལུ (ཧྲིལ i = 0; i < _num_actuators; i++) {
+		གལ་སྲིད (_actuator_slew_rate_limit(i) > FLT_EPSILON) {
 
 			float input = _actuator_sp(i);
 			float previous = _prev_actuator_sp(i);
@@ -131,11 +131,11 @@ void ControlAllocation::applySlewRateLimit(float dt)
 			// Before slew limiting, transform NaN to 0, but remember if the input was NaN
 			const bool input_is_nan = !PX4_ISFINITE(input);
 
-			if (input_is_nan) {
+			གལ་སྲིད (input_is_nan) {
 				input = 0.f;
 			}
 
-			if (!PX4_ISFINITE(previous)) {
+			གལ་སྲིད (!PX4_ISFINITE(previous)) {
 				previous = 0.f;
 			}
 
@@ -145,15 +145,15 @@ void ControlAllocation::applySlewRateLimit(float dt)
 
 			float output = input;
 
-			if (delta_sp > delta_sp_max) {
+			གལ་སྲིད (delta_sp > delta_sp_max) {
 				output = previous + delta_sp_max;
 
-			} else if (delta_sp < -delta_sp_max) {
+			} དེ་མིན གལ་སྲིད (delta_sp < -delta_sp_max) {
 				output = previous - delta_sp_max;
 			}
 
 			// Transform back to NaN if appropriate
-			if (input_is_nan && fabsf(output) < FLT_EPSILON) {
+			གལ་སྲིད (input_is_nan && fabsf(output) < FLT_EPSILON) {
 				output = NAN;
 			}
 

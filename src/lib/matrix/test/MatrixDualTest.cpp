@@ -43,7 +43,7 @@ template <typename T>
 T testFunction(const Vector<T, 3> &point)
 {
 	// function is f(x,y,z) = x^2 + 2xy + 3y^2 + z
-	return point(0) * point(0)
+	ལོག point(0) * point(0)
 	       + 2.f * point(0) * point(1)
 	       + 3.f * point(1) * point(1)
 	       + point(2);
@@ -57,7 +57,7 @@ Vector<Scalar, 3> positionError(const Vector<Scalar, 3> &positionState,
 				Scalar dt
 			       )
 {
-	return positionMeasurement - (positionState +  bodyOrientation.rotateVector(velocityStateBody) * dt);
+	ལོག positionMeasurement - (positionState +  bodyOrientation.rotateVector(velocityStateBody) * dt);
 }
 
 TEST(MatrixDualTest, Dual)
@@ -296,7 +296,7 @@ TEST(MatrixDualTest, Dual)
 						     dt);
 			float h = 0.001f;
 
-			for (size_t i = 0; i < 4; i++) {
+			དོན་ལུ (size_t i = 0; i < 4; i++) {
 				Quaternion<float> h4 = velocityOrientation;
 				h4(i) += h;
 				numerical_jacobian.col(i) = (positionError(positionState,

@@ -79,17 +79,17 @@ public:
 	 * return the vector of estimated parameters
 	 * [a_1 .. a_n b_0 .. b_m]'
 	 */
-	const matrix::Vector < float, N + M + 1 > &getCoefficients() const { return _theta_hat; }
-	const matrix::Vector < float, N + M + 1 > getVariances() const { return _P.diag(); }
-	float getInnovation() const { return _innovation; }
-	const matrix::Vector < float, N + M + 1 > &getDiffEstimate() const { return _diff_theta_hat; }
+	const matrix::Vector < float, N + M + 1 > &getCoefficients() const { ལོག _theta_hat; }
+	const matrix::Vector < float, N + M + 1 > getVariances() const { ལོག _P.diag(); }
+	float getInnovation() const { ལོག _innovation; }
+	const matrix::Vector < float, N + M + 1 > &getDiffEstimate() const { ལོག _diff_theta_hat; }
 
 	void reset(const matrix::Vector < float, N + M + 1 > &theta_init = {})
 	{
 		/* _P.uncorrelateCovarianceSetVariance<N + M + 1>(0, 10e3f); // does not work */
 		_P.setZero();
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
+		དོན་ལུ (size_t i = 0; i < (N + M + 1); i++) {
 			_P(i, i) = 10e3f;
 		}
 
@@ -97,11 +97,11 @@ public:
 
 		_theta_hat = theta_init;
 
-		for (size_t i = 0; i < M + D + 1; i++) {
+		དོན་ལུ (size_t i = 0; i < M + D + 1; i++) {
 			_u[i] = 0.f;
 		}
 
-		for (size_t i = 0; i < N + 1; i++) {
+		དོན་ལུ (size_t i = 0; i < N + 1; i++) {
 			_y[i] = 0.f;
 		}
 
@@ -115,10 +115,10 @@ public:
 
 		addInputOutput(u, y);
 
-		if (!isBufferFull()) {
+		གལ་སྲིད (!isBufferFull()) {
 			// Do not start to update the RLS algorithm when the
 			// buffer still contains zeros
-			return;
+			ལོག;
 		}
 
 		const matrix::Vector < float, N + M + 1 > phi = constructDesignVector();
@@ -128,7 +128,7 @@ public:
 		_innovation = _y[N] - (phi_t * _theta_hat)(0, 0);
 		_theta_hat = _theta_hat + _P * phi * _innovation;
 
-		for (size_t i = 0; i < N + M + 1; i++) {
+		དོན་ལུ (size_t i = 0; i < N + M + 1; i++) {
 			_diff_theta_hat(i) = fabsf(_theta_hat(i) - theta_prev(i));
 		}
 
@@ -142,56 +142,56 @@ private:
 		_u[M + D] = u;
 		_y[N] = y;
 
-		if (!isBufferFull()) {
+		གལ་སྲིད (!isBufferFull()) {
 			_nb_samples++;
 		}
 	}
 
 	void shiftRegisters()
 	{
-		for (size_t i = 0; i < N; i++) {
+		དོན་ལུ (size_t i = 0; i < N; i++) {
 			_y[i] = _y[i + 1];
 		}
 
-		for (size_t i = 0; i < (M + D); i++) {
+		དོན་ལུ (size_t i = 0; i < (M + D); i++) {
 			_u[i] = _u[i + 1];
 		}
 	}
 
-	bool isBufferFull() const { return _nb_samples > (M + N + D); }
+	bool isBufferFull() const { ལོག _nb_samples > (M + N + D); }
 
 	matrix::Vector < float, N + M + 1 > constructDesignVector() const
 	{
 		matrix::Vector < float, N + M + 1 > phi;
 
-		for (size_t i = 0; i < N; i++) {
+		དོན་ལུ (size_t i = 0; i < N; i++) {
 			phi(i) = -_y[N - i - 1];
 		}
 
-		int j = 0;
+		ཧྲིལ j = 0;
 
-		for (size_t i = N; i < (N + M + 1); i++) {
+		དོན་ལུ (size_t i = N; i < (N + M + 1); i++) {
 			phi(i) = _u[M - j];
 			j++;
 		}
 
-		return phi;
+		ལོག phi;
 	}
 
 	void fixCovarianceErrors()
 	{
 		float max_var = 0.f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) > max_var) {
+		དོན་ལུ (size_t i = 0; i < (N + M + 1); i++) {
+			གལ་སྲིད (_P(i, i) > max_var) {
 				max_var = _P(i, i);
 			}
 		}
 
 		const float min_var_allowed = max_var * 0.1f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) < min_var_allowed) {
+		དོན་ལུ (size_t i = 0; i < (N + M + 1); i++) {
+			གལ་སྲིད (_P(i, i) < min_var_allowed) {
 				_P(i, i) = min_var_allowed;
 			}
 		}

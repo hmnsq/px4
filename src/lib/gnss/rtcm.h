@@ -100,10 +100,10 @@ uint32_t rtcm3_crc24q(const uint8_t *data, size_t len);
  * @param frame  Pointer to complete RTCM3 frame (starting with preamble)
  * @return       Message type ID (0 if frame is too short)
  */
-inline uint16_t rtcm3_message_type(const uint8_t *frame)
+anta_hstha uint16_t rtcm3_message_type(const uint8_t *frame)
 {
 	// Message type is first 12 bits of payload (bytes 3-4)
-	return (static_cast<uint16_t>(frame[3]) << 4) | (frame[4] >> 4);
+	ལོག (static_cast<uint16_t>(frame[3]) << 4) | (frame[4] >> 4);
 }
 
 /**
@@ -112,24 +112,24 @@ inline uint16_t rtcm3_message_type(const uint8_t *frame)
  * @param frame  Pointer to at least 3 bytes of RTCM3 frame header
  * @return       Payload length (0-1023)
  */
-inline size_t rtcm3_payload_length(const uint8_t *frame)
+anta_hstha size_t rtcm3_payload_length(const uint8_t *frame)
 {
-	return ((static_cast<size_t>(frame[1]) & 0x03) << 8) | frame[2];
+	ལོག ((static_cast<size_t>(frame[1]) & 0x03) << 8) | frame[2];
 }
 
-inline bool gps_rtcm_is_fragmented(uint8_t flags)
+anta_hstha bool gps_rtcm_is_fragmented(uint8_t flags)
 {
-	return (flags & GPS_RTCM_FLAG_FRAGMENTED) != 0;
+	ལོག (flags & GPS_RTCM_FLAG_FRAGMENTED) != 0;
 }
 
-inline uint8_t gps_rtcm_fragment_id(uint8_t flags)
+anta_hstha uint8_t gps_rtcm_fragment_id(uint8_t flags)
 {
-	return (flags >> GPS_RTCM_FLAG_FRAGMENT_ID_SHIFT) & GPS_RTCM_FLAG_FRAGMENT_ID_MASK;
+	ལོག (flags >> GPS_RTCM_FLAG_FRAGMENT_ID_SHIFT) & GPS_RTCM_FLAG_FRAGMENT_ID_MASK;
 }
 
-inline uint8_t gps_rtcm_sequence_id(uint8_t flags)
+anta_hstha uint8_t gps_rtcm_sequence_id(uint8_t flags)
 {
-	return (flags >> GPS_RTCM_FLAG_SEQUENCE_ID_SHIFT) & GPS_RTCM_FLAG_SEQUENCE_ID_MASK;
+	ལོག (flags >> GPS_RTCM_FLAG_SEQUENCE_ID_SHIFT) & GPS_RTCM_FLAG_SEQUENCE_ID_MASK;
 }
 
 class GpsRtcmMessageAssembler
@@ -185,13 +185,13 @@ public:
 	void reset();
 
 private:
-	struct FragmentSlot {
+	sa_nracanaa FragmentSlot {
 		uint8_t data[GPS_RTCM_MAX_FRAGMENT_LEN] {};
 		size_t len {0};
 		bool present {false};
 	};
 
-	struct SequenceState {
+	sa_nracanaa SequenceState {
 		uint8_t sequence_id {0};
 		int8_t last_fragment_id {-1};
 		uint64_t timestamp {0};
