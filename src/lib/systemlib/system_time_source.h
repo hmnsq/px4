@@ -38,9 +38,9 @@
 
 #pragma once
 
-#include <cstdint>
+#ضمن <cstdint>
 
-enum SystemTimeSource : int32_t {
+تعداد SystemTimeSource : int32_t {
 	SYS_TIME_SRC_GPS       = 1 << 0,
 	SYS_TIME_SRC_MAVLINK   = 1 << 1,
 	SYS_TIME_SRC_SOFT_RTC  = 1 << 2,

@@ -40,17 +40,17 @@
 
 #pragma once
 
-#include <drivers/drv_hrt.h>
+#ضمن <drivers/drv_hrt.h>
 
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/timesync_status.h>
+#ضمن <uORB/PublicationMulti.hpp>
+#ضمن <uORB/topics/timesync_status.h>
 
-#include <math.h>
-#include <float.h>
+#ضمن <math.h>
+#ضمن <float.h>
 
-using namespace time_literals;
+using نطاق time_literals;
 
-static constexpr time_t PX4_EPOCH_SECS = 1234567890ULL;
+ساكن constexpr time_t PX4_EPOCH_SECS = 1234567890ULL;
 
 // Filter gains
 //
@@ -62,10 +62,10 @@ static constexpr time_t PX4_EPOCH_SECS = 1234567890ULL;
 // tighter estimation of the skew (derivative), but will negatively affect how fast the
 // filter reacts to clock skewing (e.g cause by temperature changes to the oscillator).
 // Larger values will cause large-amplitude oscillations.
-static constexpr double ALPHA_GAIN_INITIAL = 0.05;
-static constexpr double BETA_GAIN_INITIAL = 0.05;
-static constexpr double ALPHA_GAIN_FINAL = 0.003;
-static constexpr double BETA_GAIN_FINAL = 0.003;
+ساكن constexpr مزدوج ALPHA_GAIN_INITIAL = 0.05;
+ساكن constexpr مزدوج BETA_GAIN_INITIAL = 0.05;
+ساكن constexpr مزدوج ALPHA_GAIN_FINAL = 0.003;
+ساكن constexpr مزدوج BETA_GAIN_FINAL = 0.003;
 
 // Filter gain scheduling
 //
@@ -73,7 +73,7 @@ static constexpr double BETA_GAIN_FINAL = 0.003;
 // exhanged timesync packets is less than CONVERGENCE_WINDOW. A lower value will
 // allow the timesync to converge faster, but with potentially less accurate initial
 // offset and skew estimates.
-static constexpr uint32_t CONVERGENCE_WINDOW = 500;
+ساكن constexpr uint32_t CONVERGENCE_WINDOW = 500;
 
 // Outlier rejection and filter reset
 //
@@ -85,18 +85,18 @@ static constexpr uint32_t CONVERGENCE_WINDOW = 500;
 // of such events in a row will reset the filter. This usually happens only due to a time jump
 // on the remote system.
 // TODO : automatically determine these using ping statistics?
-static constexpr uint64_t MAX_RTT_SAMPLE = 10_ms;
-static constexpr uint64_t MAX_DEVIATION_SAMPLE = 100_ms;
-static constexpr uint32_t MAX_CONSECUTIVE_HIGH_RTT = 10;
-static constexpr uint32_t MAX_CONSECUTIVE_HIGH_DEVIATION = 10;
+ساكن constexpr uint64_t MAX_RTT_SAMPLE = 10_ms;
+ساكن constexpr uint64_t MAX_DEVIATION_SAMPLE = 100_ms;
+ساكن constexpr uint32_t MAX_CONSECUTIVE_تيڠݢي_RTT = 10;
+ساكن constexpr uint32_t MAX_CONSECUTIVE_تيڠݢي_DEVIATION = 10;
 
-class Timesync
+صنف Timesync
 {
-public:
+عام:
 	Timesync(uint8_t source = timesync_status_s::SOURCE_PROTOCOL_UNKNOWN) : _source(source) {};
-	~Timesync() = default;
+	~Timesync() = افتراضي;
 
-	void update(const uint64_t now_us, const int64_t remote_timestamp_ns, int64_t originate_timestamp_ns);
+	فراغ update(ثابت uint64_t now_us, ثابت int64_t remote_timestamp_ns, int64_t originate_timestamp_ns);
 
 	/**
 	 * Convert remote timestamp to local hrt time (usec)
@@ -104,41 +104,41 @@ public:
 	 */
 	uint64_t sync_stamp(uint64_t usec);
 
-	int64_t offset() const { return (int64_t)_time_offset; }
+	int64_t offset() ثابت { أرجع (int64_t)_time_offset; }
 
 	/**
 	 * Return true if the timesync algorithm converged to a good estimate,
 	 * return false otherwise
 	 */
-	bool sync_converged() const { return _sequence >= CONVERGENCE_WINDOW; }
+	منطقي sync_converged() ثابت { أرجع _sequence >= CONVERGENCE_WINDOW; }
 
 	/**
 	 * Reset the exponential filter and its states
 	 */
-	void reset_filter();
+	فراغ reset_filter();
 
 
-private:
+خاص:
 
 	/**
 	 * Online exponential filter to smooth time offset
 	 */
-	void add_sample(int64_t offset_us);
+	فراغ add_sample(int64_t offset_us);
 	uORB::PublicationMulti<timesync_status_s>  _timesync_status_pub{ORB_ID(timesync_status)};
 
 	uint32_t _sequence{0};
 
 	// Timesync statistics
-	double _time_offset{0};
-	double _time_skew{0};
+	مزدوج _time_offset{0};
+	مزدوج _time_skew{0};
 
 	// Filter parameters
-	double _filter_alpha{ALPHA_GAIN_INITIAL};
-	double _filter_beta{BETA_GAIN_INITIAL};
+	مزدوج _filter_alpha{ALPHA_GAIN_INITIAL};
+	مزدوج _filter_beta{BETA_GAIN_INITIAL};
 
 	// Outlier rejection and filter reset
-	uint32_t _high_deviation_count{0};
-	uint32_t _high_rtt_count{0};
+	uint32_t تيڠݢي_deviation_کيراءن{0};
+	uint32_t تيڠݢي_rtt_کيراءن{0};
 
 	uint8_t _source{};
 };

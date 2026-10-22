@@ -37,34 +37,34 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#ضمن <math.h>
+#ضمن <float.h>
 
-#include "blocks.hpp"
+#ضمن "blocks.hpp"
 
-namespace control
+نطاق control
 {
 
-float BlockDerivative::update(float input)
+عائم BlockDerivative::update(عائم ماسوقن)
 {
-	float output;
+	عائم output;
 
-	if (_initialized) {
-		output = _lowPass.update((input - getU()) / getDt());
+	إذا (_initialized) {
+		output = رنده_Pass.update((ماسوقن - getU()) / getDt());
 
-	} else {
+	} وإلا {
 		// if this is the first call to update
 		// we have no valid derivative
 		// and so we use the assumption the
 		// input value is not changing much,
 		// which is the best we can do here.
-		_lowPass.update(0.0f);
+		رنده_Pass.update(0.0f);
 		output = 0.0f;
 		_initialized = true;
 	}
 
-	setU(input);
-	return output;
+	setU(ماسوقن);
+	أرجع output;
 }
 
 } // namespace control

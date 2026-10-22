@@ -37,21 +37,21 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#ضمن <math.h>
+#ضمن <float.h>
 
-#include "blocks.hpp"
+#ضمن "blocks.hpp"
 
-namespace control
+نطاق control
 {
 
-float BlockHighPass::update(float input)
+عائم Block_تيڠݢي_Pass::update(عائم ماسوقن)
 {
-	float b = 2 * M_PI_F * getFCut() * getDt();
-	float a = 1 / (1 + b);
-	setY(a * (getY() + input - getU()));
-	setU(input);
-	return getY();
+	عائم b = 2 * M_PI_F * getFCut() * getDt();
+	عائم a = 1 / (1 + b);
+	setY(a * (getY() + ماسوقن - getU()));
+	setU(ماسوقن);
+	أرجع getY();
 }
 
 } // namespace control
