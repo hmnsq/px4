@@ -41,34 +41,34 @@
 
 #pragma once
 
-#include <mathlib/mathlib.h>
-#include <matrix/math.hpp>
+#अन्तर्भाव <mathlib/mathlib.h>
+#अन्तर्भाव <matrix/math.hpp>
 
-template<typename Type>
-class SlewRate
+ढाँचा<typename Type>
+वर्ग SlewRate
 {
-public:
-	SlewRate() = default;
-	SlewRate(Type initial_value) { setForcedValue(initial_value); }
-	~SlewRate() = default;
+सार्वजनिक:
+	SlewRate() = स्वभाव;
+	SlewRate(Type initial_मूल्य) { set_Forced_मूल्य(initial_मूल्य); }
+	~SlewRate() = स्वभाव;
 
 	/**
 	 * Set maximum rate of change for the value
 	 * @param slew_rate maximum rate of change
 	 */
-	void setSlewRate(const Type slew_rate) { _slew_rate = slew_rate; }
+	शून्य setSlewRate(ध्रुव Type slew_rate) { _slew_rate = slew_rate; }
 
 	/**
 	 * Set value ignoring slew rate for initialization purpose
 	 * @param value new applied value
 	 */
-	void setForcedValue(const Type value) { _value = value; }
+	शून्य set_Forced_मूल्य(ध्रुव Type value) { मूल्य_2 = value; }
 
 	/**
 	 * Get value from last update of the slew rate
 	 * @return current value the slew rate is at
 	 */
-	Type getState() const { return _value; }
+	Type getState() ध्रुव { प्रत्यागम मूल्य_2; }
 
 	/**
 	 * Update slewrate
@@ -76,17 +76,17 @@ public:
 	 * @param deltatime time in seconds since last update
 	 * @return actual value that complies with the slew rate
 	 */
-	Type update(const Type new_value, const float deltatime)
+	Type update(ध्रुव Type new_मूल्य, ध्रुव भिन्न deltatime)
 	{
 		// Limit the rate of change of the value
-		const Type dvalue_desired = new_value - _value;
-		const Type dvalue_max = _slew_rate * deltatime;
-		const Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
-		_value += dvalue;
-		return _value;
+		ध्रुव Type dvalue_desired = new_मूल्य - मूल्य_2;
+		ध्रुव Type dvalue_max = _slew_rate * deltatime;
+		ध्रुव Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
+		मूल्य_2 += dvalue;
+		प्रत्यागम मूल्य_2;
 	}
 
-protected:
+रक्षित:
 	Type _slew_rate{}; ///< maximum rate of change for the value
-	Type _value{}; ///< state to keep last value of the slew rate
+	Type मूल्य_2{}; ///< state to keep last value of the slew rate
 };

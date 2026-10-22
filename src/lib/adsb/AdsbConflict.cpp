@@ -31,74 +31,74 @@
  *
  ****************************************************************************/
 
-#include "AdsbConflict.h"
+#अन्तर्भाव "AdsbConflict.h"
 
-#include <cmath>
+#अन्तर्भाव <cmath>
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <px4_platform_common/log.h>
 
-bool AdsbConflict::valid_wgs84_coordinates(const double latitude, const double longitude)
+तार्किक AdsbConflict::valid_wgs84_coordinates(ध्रुव द्विगुण latitude, ध्रुव द्विगुण longitude)
 {
-	return PX4_ISFINITE(latitude) && PX4_ISFINITE(longitude)
-	       && fabs(latitude) <= 90.0
-	       && fabs(longitude) <= 180.0;
+	प्रत्यागम PX4_ISFINITE(latitude) && PX4_ISFINITE(longitude)
+	       && भ_असल(latitude) <= 90.0
+	       && भ_असल(longitude) <= 180.0;
 }
 
-bool AdsbConflict::calculate_daa_output(const daa_input_s &daa_input, detect_and_avoid_s &daa_output)
+तार्किक AdsbConflict::calculate_daa_output(ध्रुव daa_निवेश_s &daa_निवेश, detect_and_avoid_s &daa_output)
 {
-	const transponder_report_s &transponder_report = daa_input.transponder_report;
+	ध्रुव transponder_report_s &transponder_report = daa_निवेश.transponder_report;
 
-	const matrix::Vector2d traffic_lat_lon{transponder_report.lat, transponder_report.lon};
+	ध्रुव matrix::Vector2d traffic_lat_lon{transponder_report.lat, transponder_report.lon};
 
-	if (!valid_wgs84_coordinates(daa_input.uav_lat_lon(0), daa_input.uav_lat_lon(1))
+	यदि (!valid_wgs84_coordinates(daa_निवेश.uav_lat_lon(0), daa_निवेश.uav_lat_lon(1))
 	    || !valid_wgs84_coordinates(traffic_lat_lon(0), traffic_lat_lon(1))) {
 		PX4_DEBUG("DAA lib: invalid coordinates");
-		return false;
+		प्रत्यागम असत्य;
 	}
 
-	if (!PX4_ISFINITE(daa_input.uav_alt) || !PX4_ISFINITE(transponder_report.altitude)) {
+	यदि (!PX4_ISFINITE(daa_निवेश.uav_alt) || !PX4_ISFINITE(transponder_report.altitude)) {
 		PX4_DEBUG("DAA lib: invalid altitude");
-		return false;
+		प्रत्यागम असत्य;
 	}
 
-	if (!(PX4_ISFINITE(transponder_report.hor_velocity) && transponder_report.hor_velocity >= 0.f
+	यदि (!(PX4_ISFINITE(transponder_report.hor_velocity) && transponder_report.hor_velocity >= 0.f
 	      && PX4_ISFINITE(transponder_report.ver_velocity))) {
 		PX4_DEBUG("DAA lib: invalid traffic velocity");
-		return false;
+		प्रत्यागम असत्य;
 	}
 
-	if (!daa_input.uav_vel_ned.isAllFinite()) {
+	यदि (!daa_निवेश.uav_vel_ned.isAllFinite()) {
 		PX4_DEBUG("DAA lib: invalid ownship velocity");
-		return false;
+		प्रत्यागम असत्य;
 	}
 
-#if !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
+#यदि !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
 
-	if (!PX4_ISFINITE(transponder_report.heading)) {
+	यदि (!PX4_ISFINITE(transponder_report.heading)) {
 		PX4_DEBUG("DAA lib: invalid traffic heading");
-		return false;
+		प्रत्यागम असत्य;
 	}
 
 #endif // !CONFIG_NAVIGATOR_ADSB_F3442
 
 	aircraft_state_s uav_state{};
-	uav_state.lat_lon = daa_input.uav_lat_lon;
-	uav_state.altitude = daa_input.uav_alt;
-	uav_state.velocity_ned = daa_input.uav_vel_ned;
+	uav_state.lat_lon = daa_निवेश.uav_lat_lon;
+	uav_state.altitude = daa_निवेश.uav_alt;
+	uav_state.velocity_ned = daa_निवेश.uav_vel_ned;
 
 	aircraft_state_s traffic_state{};
 	traffic_state.lat_lon = traffic_lat_lon;
 	traffic_state.altitude = transponder_report.altitude;
 	traffic_state.heading = transponder_report.heading;
 
-	if (PX4_ISFINITE(transponder_report.heading)) {
+	यदि (PX4_ISFINITE(transponder_report.heading)) {
 		traffic_state.velocity_ned = matrix::Vector3f(
 						     cosf(transponder_report.heading) * transponder_report.hor_velocity,
 						     sinf(transponder_report.heading) * transponder_report.hor_velocity,
 						     -transponder_report.ver_velocity);
 
-	} else {
+	} अन्यथा {
 		traffic_state.velocity_ned = matrix::Vector3f(transponder_report.hor_velocity, 0.f, -transponder_report.ver_velocity);
 	}
 
@@ -109,10 +109,10 @@ bool AdsbConflict::calculate_daa_output(const daa_input_s &daa_input, detect_and
 	daa_output.aircraft_dist_vert = daa_stats.aircraft_dist_vert;
 	daa_output.expected_min_dist_time = daa_stats.expected_min_dist_time_sec;
 
-	return true;
+	प्रत्यागम सत्य;
 }
 
-bool AdsbConflict::try_updating_params()
+तार्किक AdsbConflict::try_updating_params()
 {
-	return _daa.try_setting_params();
+	प्रत्यागम _daa.try_setting_params();
 }

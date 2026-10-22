@@ -39,65 +39,65 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
-class __EXPORT BlockRandGauss: public Block
+वर्ग __EXPORT BlockRandGauss: सार्वजनिक Block
 {
-public:
+सार्वजनिक:
 // methods
 	BlockRandGauss(SuperBlock *parent,
-		       const char *name) :
+		       ध्रुव वर्ण *name) :
 		Block(parent, name),
-		_mean(this, "MEAN"),
-		_stdDev(this, "DEV")
+		_mean(एतत्, "MEAN"),
+		_stdDev(एतत्, "DEV")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandGauss() = default;
-	float update()
+	आभास ~BlockRandGauss() = स्वभाव;
+	भिन्न update()
 	{
-		static float V1, V2, S;
-		static int phase = 0;
-		float X;
+		स्थिर भिन्न V1, V2, S;
+		स्थिर पूर्णाङ्क phase = 0;
+		भिन्न X;
 
-		if (phase == 0) {
-			do {
-				float U1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-				float U2 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		यदि (phase == 0) {
+			कुरु {
+				भिन्न U1 = static_cast<भिन्न>(अक्रम()) / static_cast<भिन्न>(अक्रम_उच्च);
+				भिन्न U2 = static_cast<भिन्न>(अक्रम()) / static_cast<भिन्न>(अक्रम_उच्च);
 				V1 = 2 * U1 - 1;
 				V2 = 2 * U2 - 1;
 				S = V1 * V1 + V2 * V2;
-			} while (S >= 1 || fabsf(S) < 1e-8f);
+			} यावत् (S >= 1 || fabsf(S) < 1e-8f);
 
-			X = V1 * float(sqrtf(-2 * float(logf(S)) / S));
+			X = V1 * भिन्न(sqrtf(-2 * भिन्न(logf(S)) / S));
 
-		} else {
-			X = V2 * float(sqrtf(-2 * float(logf(S)) / S));
+		} अन्यथा {
+			X = V2 * भिन्न(sqrtf(-2 * भिन्न(logf(S)) / S));
 		}
 
 		phase = 1 - phase;
-		return X * getStdDev() + getMean();
+		प्रत्यागम X * getStdDev() + getMean();
 	}
 // accessors
-	float getMean() { return _mean.get(); }
-	float getStdDev() { return _stdDev.get(); }
-private:
+	भिन्न getMean() { प्रत्यागम _mean.get(); }
+	भिन्न getStdDev() { प्रत्यागम _stdDev.get(); }
+गुप्त:
 // attributes
 	control::BlockParamFloat _mean;
 	control::BlockParamFloat _stdDev;
