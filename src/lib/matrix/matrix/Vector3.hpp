@@ -8,36 +8,36 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#अन्तर्भाव "Vector.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
-template <typename Type>
-class Dcm;
+ढाँचा <typename Type>
+वर्ग Dcm;
 
-template<typename Type>
-class Vector3 : public Vector<Type, 3>
+ढाँचा<typename Type>
+वर्ग Vector3 : सार्वजनिक Vector<Type, 3>
 {
-public:
+सार्वजनिक:
 
 	using Matrix31 = Matrix<Type, 3, 1>;
 
-	Vector3() = default;
+	Vector3() = स्वभाव;
 
-	Vector3(const Matrix31 &other) :
+	Vector3(अचर Matrix31 &other) :
 		Vector<Type, 3>(other)
 	{
 	}
 
-	explicit Vector3(const Type data_[3]) :
+	explicit Vector3(अचर Type data_[3]) :
 		Vector<Type, 3>(data_)
 	{
 	}
 
 	Vector3(Type x, Type y, Type z)
 	{
-		Vector3 &v(*this);
+		Vector3 &v(*एतत्);
 		v(0) = x;
 		v(1) = y;
 		v(2) = z;
@@ -46,69 +46,69 @@ public:
 	using base = Vector<Type, 3>;
 	using base::base;
 
-	Vector3 cross(const Matrix31 &b) const
+	Vector3 cross(अचर Matrix31 &b) अचर
 	{
-		const Vector3 &a(*this);
-		return {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
+		अचर Vector3 &a(*एतत्);
+		फर्काऊ {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
 	}
 
 	/**
 	 * Override matrix ops so Vector3 type is returned
 	 */
 
-	inline Vector3 operator+(Vector3 other) const
+	अन्तःस्थ Vector3 चालक+(Vector3 other) अचर
 	{
-		return Matrix31::operator+(other);
+		फर्काऊ Matrix31::चालक+(other);
 	}
 
-	inline Vector3 operator+(Type scalar) const
+	अन्तःस्थ Vector3 चालक+(Type scalar) अचर
 	{
-		return Matrix31::operator+(scalar);
+		फर्काऊ Matrix31::चालक+(scalar);
 	}
 
-	inline Vector3 operator-(Vector3 other) const
+	अन्तःस्थ Vector3 चालक-(Vector3 other) अचर
 	{
-		return Matrix31::operator-(other);
+		फर्काऊ Matrix31::चालक-(other);
 	}
 
-	inline Vector3 operator-(Type scalar) const
+	अन्तःस्थ Vector3 चालक-(Type scalar) अचर
 	{
-		return Matrix31::operator-(scalar);
+		फर्काऊ Matrix31::चालक-(scalar);
 	}
 
-	inline Vector3 operator-() const
+	अन्तःस्थ Vector3 चालक-() अचर
 	{
-		return Matrix31::operator-();
+		फर्काऊ Matrix31::चालक-();
 	}
 
-	inline Vector3 operator*(Type scalar) const
+	अन्तःस्थ Vector3 चालक*(Type scalar) अचर
 	{
-		return Matrix31::operator*(scalar);
+		फर्काऊ Matrix31::चालक*(scalar);
 	}
 
-	inline Type operator*(Vector3 b) const
+	अन्तःस्थ Type चालक*(Vector3 b) अचर
 	{
-		return Vector<Type, 3>::operator*(b);
+		फर्काऊ Vector<Type, 3>::चालक*(b);
 	}
 
-	inline Vector3 operator%(const Matrix31 &b) const
+	अन्तःस्थ Vector3 चालक%(अचर Matrix31 &b) अचर
 	{
-		return (*this).cross(b);
+		फर्काऊ (*एतत्).cross(b);
 	}
 
-	ConstSlice<Type, 2, 1, 3, 1> xy() const
+	ConstSlice<Type, 2, 1, 3, 1> xy() अचर
 	{
-		return {0, 0, this};
+		फर्काऊ {0, 0, एतत्};
 	}
 
 	Slice<Type, 2, 1, 3, 1> xy()
 	{
-		return {0, 0, this};
+		फर्काऊ {0, 0, एतत्};
 	}
 
-	Dcm<Type> hat() const      // inverse to Dcm.vee() operation
+	Dcm<Type> hat() अचर      // inverse to Dcm.vee() operation
 	{
-		const Vector3 &v(*this);
+		अचर Vector3 &v(*एतत्);
 		Dcm<Type> A;
 		A(0, 0) = 0;
 		A(0, 1) = -v(2);
@@ -119,12 +119,12 @@ public:
 		A(2, 0) = -v(1);
 		A(2, 1) = v(0);
 		A(2, 2) = 0;
-		return A;
+		फर्काऊ A;
 	}
 
 };
 
-using Vector3f = Vector3<float>;
-using Vector3d = Vector3<double>;
+using Vector3f = Vector3<भिन्न>;
+using Vector3d = Vector3<द्विगुण>;
 
 } // namespace matrix

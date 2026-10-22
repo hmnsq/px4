@@ -36,21 +36,21 @@
  * Run this test only using "make tests TESTFILTER=RoverControl"
 ******************************************************************/
 
-#include <gtest/gtest.h>
-#include "RoverControl.hpp"
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव "RoverControl.hpp"
 
 TEST(calcWaypointTransitionAngle, invalidInputs)
 {
-	Vector2f prev_wp_ned(NAN, NAN);
+	Vector2f prev_wp_ned(न_अंक, न_अंक);
 	Vector2f curr_wp_ned(10.f, 10.f);
 	Vector2f next_wp_ned(10.f, 10.f);
-	float prevInvalid = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	भिन्न prevInvalid = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
 	prev_wp_ned = Vector2f(10.f, 10.f);
-	curr_wp_ned = Vector2f(NAN, NAN);
-	float currInvalid = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	curr_wp_ned = Vector2f(न_अंक, न_अंक);
+	भिन्न currInvalid = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
 	curr_wp_ned = Vector2f(10.f, 10.f);
-	next_wp_ned = Vector2f(NAN, NAN);
-	float nextInvalid = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	next_wp_ned = Vector2f(न_अंक, न_अंक);
+	भिन्न nextInvalid = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
 	EXPECT_FALSE(PX4_ISFINITE(prevInvalid));
 	EXPECT_FALSE(PX4_ISFINITE(currInvalid));
 	EXPECT_FALSE(PX4_ISFINITE(nextInvalid));
@@ -63,7 +63,7 @@ TEST(calcWaypointTransitionAngle, validInputs)
 	Vector2f prev_wp_ned(0.f, 0.f);
 	Vector2f curr_wp_ned(10.f, 0.f);
 	Vector2f next_wp_ned(20.f, 0.f);
-	const float angle1 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	अचर भिन्न angle1 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
 	EXPECT_FLOAT_EQ(angle1, M_PI_F);
 
 	/**
@@ -74,7 +74,7 @@ TEST(calcWaypointTransitionAngle, validInputs)
 	prev_wp_ned = Vector2f(0.f, 0.f);
 	curr_wp_ned = Vector2f(10.f, 0.f);
 	next_wp_ned = Vector2f(20.f, 10.f);
-	const float angle2 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	अचर भिन्न angle2 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
 	EXPECT_FLOAT_EQ(angle2, M_PI_F - M_PI_4_F);
 
 	/**
@@ -85,7 +85,7 @@ TEST(calcWaypointTransitionAngle, validInputs)
 	prev_wp_ned = Vector2f(0.f, 0.f);
 	curr_wp_ned = Vector2f(10.f, 0.f);
 	next_wp_ned = Vector2f(10.f, 10.f);
-	const float angle3 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	अचर भिन्न angle3 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
 	EXPECT_FLOAT_EQ(angle3, M_PI_2_F);
 
 	/**
@@ -96,20 +96,20 @@ TEST(calcWaypointTransitionAngle, validInputs)
 	prev_wp_ned = Vector2f(0.f, 0.f);
 	curr_wp_ned = Vector2f(10.f, 0.f);
 	next_wp_ned = Vector2f(0.f, 10.f);
-	const float angle4 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	अचर भिन्न angle4 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
 	EXPECT_FLOAT_EQ(angle4, M_PI_4_F);
 
 	// P/C -- N
 	prev_wp_ned = Vector2f(0.f, 0.f);
 	curr_wp_ned = Vector2f(0.f, 0.f);
 	next_wp_ned = Vector2f(10.f, 0.f);
-	const float angle5 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	अचर भिन्न angle5 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
 	EXPECT_FALSE(PX4_ISFINITE(angle5));
 
 	// P -- C/N
 	prev_wp_ned = Vector2f(0.f, 0.f);
 	curr_wp_ned = Vector2f(10.f, 0.f);
 	next_wp_ned = Vector2f(10.f, 0.f);
-	const float angle6 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	अचर भिन्न angle6 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
 	EXPECT_FALSE(PX4_ISFINITE(angle6));
 }

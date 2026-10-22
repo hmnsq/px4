@@ -37,24 +37,24 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <float.h>
 
-#include "blocks.hpp"
+#अन्तर्भाव "blocks.hpp"
 
-namespace control
+नामाकाश control
 {
 
-float BlockLimitSym::update(float input)
+भिन्न BlockLimitSym::update(भिन्न आगत)
 {
-	if (input > getMax()) {
-		input = _max.get();
+	यदि (आगत > getMax()) {
+		आगत = _max.get();
 
-	} else if (input < -getMax()) {
-		input = -getMax();
+	} अन्यथा यदि (आगत < -getMax()) {
+		आगत = -getMax();
 	}
 
-	return input;
+	फर्काऊ आगत;
 }
 
 } // namespace control

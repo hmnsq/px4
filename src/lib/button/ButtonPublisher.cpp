@@ -38,27 +38,27 @@
  *
  */
 
-#include <button/ButtonPublisher.hpp>
+#अन्तर्भाव <button/ButtonPublisher.hpp>
 
-using namespace time_literals;
+using नामाकाश time_literals;
 
 ButtonPublisher::ButtonPublisher()
 {
 	_safety_button_pub.advertise();
 }
 
-void ButtonPublisher::safetyButtonTriggerEvent()
+शून्य ButtonPublisher::safetyButtonTriggerEvent()
 {
 
 
 	button_event_s safety_button{};
-	safety_button.triggered = true;
+	safety_button.triggered = सत्य;
 	safety_button.timestamp = hrt_absolute_time();
 
 	_safety_button_pub.publish(safety_button);
 }
 
-void ButtonPublisher::pairingButtonTriggerEvent()
+शून्य ButtonPublisher::pairingButtonTriggerEvent()
 {
 	vehicle_command_s vcmd{};
 	vcmd.command = vehicle_command_s::VEHICLE_CMD_START_RX_PAIR;
@@ -71,7 +71,7 @@ void ButtonPublisher::pairingButtonTriggerEvent()
 	led_control.led_mask = 0xff;
 	led_control.mode = led_control_s::MODE_BLINK_FAST;
 	led_control.color = led_control_s::COLOR_WHITE;
-	led_control.num_blinks = 20;
+	led_control.अङ्क_blinks = 20;
 	led_control.priority = 2;
 	led_control.timestamp = hrt_absolute_time();
 	_led_control_pub.publish(led_control);

@@ -31,10 +31,10 @@
  *
  ****************************************************************************/
 
-#include "param_translation.h"
+#अन्तर्भाव "param_translation.h"
 
-param_modify_on_import_ret param_modify_on_import(bson_node_t node)
+param_modify_on_import_ret param_modify_on_import(bson_गाँठो_t गाँठो_2)
 {
 	// don't modify params for unit tests
-	return param_modify_on_import_ret::PARAM_NOT_MODIFIED;
+	फर्काऊ param_modify_on_import_ret::PARAM_NOT_MODIFIED;
 }

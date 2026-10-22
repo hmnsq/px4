@@ -31,23 +31,23 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <matrix/math.hpp>
 
-using namespace matrix;
+using नामाकाश matrix;
 
 TEST(NanToZeroTest, NanToZero)
 {
-	const float data[9]     = {-1.f, 0.f, +INFINITY, NAN, 0.f, -INFINITY, 1.f, 0.f, -NAN};
-	const float expected[9] = {-1.f, 0.f, +INFINITY, 0.f, 0.f, -INFINITY, 1.f, 0.f, 0.f};
+	अचर भिन्न data[9]     = {-1.f, 0.f, +अनन्त, न_अंक, 0.f, -अनन्त, 1.f, 0.f, -न_अंक};
+	अचर भिन्न expected[9] = {-1.f, 0.f, +अनन्त, 0.f, 0.f, -अनन्त, 1.f, 0.f, 0.f};
 
-	Matrix<float, 3, 3> mat(data);
+	Matrix<भिन्न, 3, 3> mat(data);
 	mat.nanToZero();
 
-	const Matrix<float, 3, 3> mat_expected(expected);
+	अचर Matrix<भिन्न, 3, 3> mat_expected(expected);
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
+	लागि (माप_प्रकार i = 0; i < 3; i++) {
+		लागि (माप_प्रकार j = 0; j < 3; j++) {
 			EXPECT_FLOAT_EQ(mat(i, j), mat_expected(i, j));
 		}
 	}
@@ -55,15 +55,15 @@ TEST(NanToZeroTest, NanToZero)
 
 TEST(NanToZeroTest, NoNanUnchanged)
 {
-	const float data[4] = {-2.5f, 0.f, 3.14f, +INFINITY};
+	अचर भिन्न data[4] = {-2.5f, 0.f, 3.14f, +अनन्त};
 
-	Matrix<float, 2, 2> mat(data);
+	Matrix<भिन्न, 2, 2> mat(data);
 	mat.nanToZero();
 
-	const Matrix<float, 2, 2> mat_orig(data);
+	अचर Matrix<भिन्न, 2, 2> mat_orig(data);
 
-	for (size_t i = 0; i < 2; i++) {
-		for (size_t j = 0; j < 2; j++) {
+	लागि (माप_प्रकार i = 0; i < 2; i++) {
+		लागि (माप_प्रकार j = 0; j < 2; j++) {
 			EXPECT_FLOAT_EQ(mat(i, j), mat_orig(i, j));
 		}
 	}

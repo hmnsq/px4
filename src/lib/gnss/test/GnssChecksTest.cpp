@@ -31,14 +31,14 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
+#अन्तर्भाव <gtest/gtest.h>
 
-#include "../gnss_checks.hpp"
+#अन्तर्भाव "../gnss_checks.hpp"
 
-class GnssChecksTest : public ::testing::Test
+वर्ग GnssChecksTest : सार्वजनिक ::testing::Test
 {
-public:
-	void SetUp() override
+सार्वजनिक:
+	शून्य SetUp() override
 	{
 		GnssChecks::Params params{};
 		params.min_health_time_us = 1'000'000;
@@ -55,14 +55,14 @@ public:
 		_sample.pdop = 1.f;
 	}
 
-	void setParams(GnssChecks::Params params)
+	शून्य setParams(GnssChecks::Params params)
 	{
 		_checks.setParams(params);
 	}
 
-	void runSeconds(float duration_s, bool armed, bool in_air)
+	शून्य runSeconds(भिन्न duration_s, तार्किक armed, तार्किक in_air)
 	{
-		for (int k = 0; k < static_cast<int>(duration_s * 10.f); k++) {
+		लागि (पूर्णाङ्क k = 0; k < static_cast<पूर्णाङ्क>(duration_s * 10.f); k++) {
 			_sample.time_us += 100'000;
 			_checks.run(_sample, armed, in_air, !in_air);
 		}
@@ -75,12 +75,12 @@ public:
 TEST_F(GnssChecksTest, passesAfterHealthTime)
 {
 	// WHEN: a receiver passes the strict checks on the ground
-	runSeconds(0.5f, false, false);
+	runSeconds(0.5f, असत्य, असत्य);
 
 	// THEN: it passes once they held for the health time
 	EXPECT_FALSE(_checks.passed());
 
-	runSeconds(1.f, false, false);
+	runSeconds(1.f, असत्य, असत्य);
 
 	EXPECT_TRUE(_checks.passed());
 	EXPECT_TRUE(_checks.strict());
@@ -92,7 +92,7 @@ TEST_F(GnssChecksTest, relaxedOnlyAfterStrictPass)
 	_sample.hacc = 10.f;
 
 	// WHEN: it publishes for longer than the health time
-	runSeconds(5.f, true, true);
+	runSeconds(5.f, सत्य, सत्य);
 
 	// THEN: the strict checks still apply, and it doesn't pass
 	EXPECT_FALSE(_checks.passed());
@@ -100,14 +100,14 @@ TEST_F(GnssChecksTest, relaxedOnlyAfterStrictPass)
 
 	// WHEN: it passes the strict checks for the health time
 	_sample.hacc = 1.f;
-	runSeconds(1.5f, true, true);
+	runSeconds(1.5f, सत्य, सत्य);
 
 	// THEN: it passes, and the relaxed checks apply from then on
 	EXPECT_TRUE(_checks.passed());
 	EXPECT_TRUE(_checks.strict());
 
 	_sample.hacc = 10.f;
-	runSeconds(1.f, true, true);
+	runSeconds(1.f, सत्य, सत्य);
 
 	EXPECT_TRUE(_checks.passed());
 	EXPECT_FALSE(_checks.strict());
@@ -116,12 +116,12 @@ TEST_F(GnssChecksTest, relaxedOnlyAfterStrictPass)
 TEST_F(GnssChecksTest, relaxedWhileArmedOnGround)
 {
 	// GIVEN: a receiver that passed the strict checks, on a vehicle that armed and hasn't taken off
-	runSeconds(2.f, false, false);
-	runSeconds(1.f, true, false);
+	runSeconds(2.f, असत्य, असत्य);
+	runSeconds(1.f, सत्य, असत्य);
 
 	// WHEN: its accuracy degrades beyond the strict threshold but within the relaxed one
 	_sample.hacc = 10.f;
-	runSeconds(1.f, true, false);
+	runSeconds(1.f, सत्य, असत्य);
 
 	// THEN: it still passes
 	EXPECT_TRUE(_checks.passed());
@@ -132,12 +132,12 @@ TEST_F(GnssChecksTest, relaxedWhileArmedOnGround)
 TEST_F(GnssChecksTest, strictFailureOfOneSample)
 {
 	// GIVEN: a receiver that passed the strict checks, then took off
-	runSeconds(2.f, false, false);
-	runSeconds(1.f, true, true);
+	runSeconds(2.f, असत्य, असत्य);
+	runSeconds(1.f, सत्य, सत्य);
 
 	// WHEN: a single sample has too few satellites for the strict checks
 	_sample.nsats = 4;
-	runSeconds(0.1f, true, true);
+	runSeconds(0.1f, सत्य, सत्य);
 
 	// THEN: that sample doesn't pass the strict checks, but still passes the relaxed ones that decide
 	EXPECT_FALSE(_checks.passedStrict());
@@ -147,7 +147,7 @@ TEST_F(GnssChecksTest, strictFailureOfOneSample)
 
 	// WHEN: the next sample has enough again
 	_sample.nsats = 10;
-	runSeconds(0.1f, true, true);
+	runSeconds(0.1f, सत्य, सत्य);
 
 	// THEN: it passes them again at once, as only a failure of the relaxed checks restarts the required pass duration
 	EXPECT_TRUE(_checks.passedStrict());
@@ -156,8 +156,8 @@ TEST_F(GnssChecksTest, strictFailureOfOneSample)
 TEST_F(GnssChecksTest, strictInFlight)
 {
 	// GIVEN: a receiver that passed the strict checks, then took off
-	runSeconds(2.f, false, false);
-	runSeconds(1.f, true, true);
+	runSeconds(2.f, असत्य, असत्य);
+	runSeconds(1.f, सत्य, सत्य);
 
 	EXPECT_TRUE(_checks.passed());
 	EXPECT_TRUE(_checks.strict());
@@ -165,7 +165,7 @@ TEST_F(GnssChecksTest, strictInFlight)
 
 	// WHEN: its accuracy degrades beyond the strict threshold but within the relaxed one
 	_sample.hacc = 10.f;
-	runSeconds(1.f, true, true);
+	runSeconds(1.f, सत्य, सत्य);
 
 	// THEN: it still passes, but no longer passes the strict checks
 	EXPECT_TRUE(_checks.passed());
@@ -181,14 +181,14 @@ TEST_F(GnssChecksTest, strictFixType)
 	setParams(params);
 	_sample.fix_type = 4;
 
-	runSeconds(20.f, false, false);
-	runSeconds(1.f, true, true);
+	runSeconds(20.f, असत्य, असत्य);
+	runSeconds(1.f, सत्य, सत्य);
 
 	EXPECT_TRUE(_checks.passedStrict());
 
 	// WHEN: it drops to a 3D fix, which the relaxed checks accept
 	_sample.fix_type = 3;
-	runSeconds(1.f, true, true);
+	runSeconds(1.f, सत्य, सत्य);
 
 	// THEN: it no longer passes the strict checks
 	EXPECT_TRUE(_checks.passed());
@@ -204,14 +204,14 @@ TEST_F(GnssChecksTest, strictFollowsCheckMask)
 
 	// WHEN: the horizontal accuracy exceeds its threshold
 	_sample.hacc = 10.f;
-	runSeconds(15.f, false, false);
+	runSeconds(15.f, असत्य, असत्य);
 
 	// THEN: it passes the strict checks
 	EXPECT_TRUE(_checks.passedStrict());
 
 	// WHEN: the speed accuracy exceeds its enabled threshold
 	_sample.sacc = 1.f;
-	runSeconds(1.f, false, false);
+	runSeconds(1.f, असत्य, असत्य);
 
 	// THEN: they aren't
 	EXPECT_FALSE(_checks.passedStrict());

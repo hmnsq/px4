@@ -40,32 +40,32 @@
 
 #pragma once
 
-namespace math
+नामाकाश math
 {
-static constexpr double GOLDEN_RATIO = 1.6180339887; //(sqrt(5)+1)/2
+स्थिर constexpr द्विगुण GOLDEN_RATIO = 1.6180339887; //(sqrt(5)+1)/2
 
 // Type-safe abs
-template<typename _Tp>
+ढाँचा<typename _Tp>
 _Tp abs_t(_Tp val)
 {
-	return ((val > (_Tp)0) ? val : -val);
+	फर्काऊ ((val > (_Tp)0) ? val : -val);
 }
 
 // golden section search to find extremeum for function with minimum
-template<typename _Tp>
-inline const _Tp goldensection(const _Tp &arg1, const _Tp &arg2, _Tp(*fun)(_Tp), const _Tp &tol)
+ढाँचा<typename _Tp>
+अन्तःस्थ अचर _Tp goldensection(अचर _Tp &arg1, अचर _Tp &arg2, _Tp(*fun)(_Tp), अचर _Tp &tol)
 {
 	_Tp a = arg1;
 	_Tp b = arg2;
 	_Tp c = b - (b - a) / GOLDEN_RATIO;
 	_Tp d = a + (b - a) / GOLDEN_RATIO;
 
-	while (abs_t(c - d) > tol) {
+	जबसम्म (abs_t(c - d) > tol) {
 
-		if (fun(c) < fun(d)) {
+		यदि (fun(c) < fun(d)) {
 			b = d;
 
-		} else {
+		} अन्यथा {
 			a = c;
 		}
 
@@ -74,6 +74,6 @@ inline const _Tp goldensection(const _Tp &arg1, const _Tp &arg2, _Tp(*fun)(_Tp),
 
 	}
 
-	return ((b + a) / (_Tp)2);
+	फर्काऊ ((b + a) / (_Tp)2);
 }
 }

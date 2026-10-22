@@ -8,34 +8,34 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#अन्तर्भाव "Vector.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
-template<typename Type>
-class Vector2 : public Vector<Type, 2>
+ढाँचा<typename Type>
+वर्ग Vector2 : सार्वजनिक Vector<Type, 2>
 {
-public:
+सार्वजनिक:
 
 	using Matrix21 = Matrix<Type, 2, 1>;
 	using Vector3 = Vector<Type, 3>;
 
-	Vector2() = default;
+	Vector2() = स्वभाव;
 
-	Vector2(const Matrix21 &other) :
+	Vector2(अचर Matrix21 &other) :
 		Vector<Type, 2>(other)
 	{
 	}
 
-	explicit Vector2(const Type data_[2]) :
+	explicit Vector2(अचर Type data_[2]) :
 		Vector<Type, 2>(data_)
 	{
 	}
 
 	Vector2(Type x, Type y)
 	{
-		Vector2 &v(*this);
+		Vector2 &v(*एतत्);
 		v(0) = x;
 		v(1) = y;
 	}
@@ -43,66 +43,66 @@ public:
 	using base = Vector<Type, 2>;
 	using base::base;
 
-	explicit Vector2(const Vector3 &other)
+	explicit Vector2(अचर Vector3 &other)
 	{
-		Vector2 &v(*this);
+		Vector2 &v(*एतत्);
 		v(0) = other(0);
 		v(1) = other(1);
 	}
 
-	Type cross(const Matrix21 &b) const
+	Type cross(अचर Matrix21 &b) अचर
 	{
-		const Vector2 &a(*this);
-		return a(0) * b(1, 0) - a(1) * b(0, 0);
+		अचर Vector2 &a(*एतत्);
+		फर्काऊ a(0) * b(1, 0) - a(1) * b(0, 0);
 	}
 
 	/**
 	 * Override matrix ops so Vector2 type is returned
 	 */
 
-	Vector2 operator+(Vector2 other) const
+	Vector2 चालक+(Vector2 other) अचर
 	{
-		return Matrix21::operator+(other);
+		फर्काऊ Matrix21::चालक+(other);
 	}
 
-	Vector2 operator+(Type scalar) const
+	Vector2 चालक+(Type scalar) अचर
 	{
-		return Matrix21::operator+(scalar);
+		फर्काऊ Matrix21::चालक+(scalar);
 	}
 
-	Vector2 operator-(Vector2 other) const
+	Vector2 चालक-(Vector2 other) अचर
 	{
-		return Matrix21::operator-(other);
+		फर्काऊ Matrix21::चालक-(other);
 	}
 
-	Vector2 operator-(Type scalar) const
+	Vector2 चालक-(Type scalar) अचर
 	{
-		return Matrix21::operator-(scalar);
+		फर्काऊ Matrix21::चालक-(scalar);
 	}
 
-	Vector2 operator-() const
+	Vector2 चालक-() अचर
 	{
-		return Matrix21::operator-();
+		फर्काऊ Matrix21::चालक-();
 	}
 
-	Vector2 operator*(Type scalar) const
+	Vector2 चालक*(Type scalar) अचर
 	{
-		return Matrix21::operator*(scalar);
+		फर्काऊ Matrix21::चालक*(scalar);
 	}
 
-	Type operator*(Vector2 b) const
+	Type चालक*(Vector2 b) अचर
 	{
-		return Vector<Type, 2>::operator*(b);
+		फर्काऊ Vector<Type, 2>::चालक*(b);
 	}
 
-	Type operator%(const Matrix21 &b) const
+	Type चालक%(अचर Matrix21 &b) अचर
 	{
-		return (*this).cross(b);
+		फर्काऊ (*एतत्).cross(b);
 	}
 
 };
 
-using Vector2f = Vector2<float>;
-using Vector2d = Vector2<double>;
+using Vector2f = Vector2<भिन्न>;
+using Vector2d = Vector2<द्विगुण>;
 
 } // namespace matrix

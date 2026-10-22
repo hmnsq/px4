@@ -37,107 +37,107 @@
  * Controller library code
  */
 
-#include "Block.hpp"
-#include "BlockParam.hpp"
+#अन्तर्भाव "Block.hpp"
+#अन्तर्भाव "BlockParam.hpp"
 
-#include <cstdio>
-#include <cstring>
+#अन्तर्भाव <cstdio>
+#अन्तर्भाव <cstring>
 
-#include <containers/List.hpp>
+#अन्तर्भाव <containers/List.hpp>
 
-#include <px4_platform_common/log.h>
+#अन्तर्भाव <px4_platform_common/log.h>
 
-namespace control
+नामाकाश control
 {
 
-BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_prefix)
+BlockParamBase::BlockParamBase(Block *parent, अचर वर्ण *name, तार्किक parent_prefix)
 {
-	char fullname[blockNameLengthMax];
+	वर्ण fullname[blockNameLengthMax];
 
-	if (parent == nullptr) {
-		strncpy(fullname, name, blockNameLengthMax - 1);
-		fullname[sizeof(fullname) - 1] = '\0';
+	यदि (parent == nullptr) {
+		म_नकलन(fullname, name, blockNameLengthMax - 1);
+		fullname[परिमाण(fullname) - 1] = '\0';
 
-	} else {
-		char parentName[blockNameLengthMax];
+	} अन्यथा {
+		वर्ण parentName[blockNameLengthMax];
 		parent->getName(parentName, blockNameLengthMax);
 
-		if (strcmp(name, "") == 0) {
-			strncpy(fullname, parentName, blockNameLengthMax);
+		यदि (म_भेद(name, "") == 0) {
+			म_नकलन(fullname, parentName, blockNameLengthMax);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[परिमाण(fullname) - 1] = '\0';
 
-		} else if (parent_prefix) {
-			if (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
+		} अन्यथा यदि (parent_prefix) {
+			यदि (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
 				PX4_ERR("param too long: %s", name);
 			}
 
-		} else {
-			strncpy(fullname, name, blockNameLengthMax);
+		} अन्यथा {
+			म_नकलन(fullname, name, blockNameLengthMax);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[परिमाण(fullname) - 1] = '\0';
 		}
 
-		parent->getParams().add(this);
+		parent->getParams().add(एतत्);
 	}
 
 	_handle = param_find(fullname);
 
-	if (_handle == PARAM_INVALID) {
+	यदि (_handle == PARAM_INVALID) {
 		PX4_ERR("error finding param: %s", fullname);
 	}
 };
 
-template <>
-BlockParam<bool>::BlockParam(Block *block, const char *name, bool parent_prefix) :
+ढाँचा <>
+BlockParam<तार्किक>::BlockParam(Block *block, अचर वर्ण *name, तार्किक parent_prefix) :
 	BlockParamBase(block, name, parent_prefix),
 	_val()
 {
 	update();
 }
 
-template <>
-bool BlockParam<bool>::update()
+ढाँचा <>
+तार्किक BlockParam<तार्किक>::update()
 {
 	int32_t tmp = 0;
-	int ret = param_get(_handle, &tmp);
+	पूर्णाङ्क ret = param_get(_handle, &tmp);
 
-	if (tmp == 1) {
-		_val = true;
+	यदि (tmp == 1) {
+		_val = सत्य;
 
-	} else {
-		_val = false;
+	} अन्यथा {
+		_val = असत्य;
 	}
 
-	return (ret == PX4_OK);
+	फर्काऊ (ret == PX4_OK);
 }
 
-template <>
-BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_prefix) :
+ढाँचा <>
+BlockParam<int32_t>::BlockParam(Block *block, अचर वर्ण *name, तार्किक parent_prefix) :
 	BlockParamBase(block, name, parent_prefix),
 	_val()
 {
 	update();
 }
 
-template <>
-BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix) :
+ढाँचा <>
+BlockParam<भिन्न>::BlockParam(Block *block, अचर वर्ण *name, तार्किक parent_prefix) :
 	BlockParamBase(block, name, parent_prefix),
 	_val()
 {
 	update();
 }
 
-template <>
-BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_prefix, int32_t &extern_val) :
+ढाँचा <>
+BlockParam<int32_t &>::BlockParam(Block *block, अचर वर्ण *name, तार्किक parent_prefix, int32_t &extern_val) :
 	BlockParamBase(block, name, parent_prefix),
 	_val(extern_val)
 {
 	update();
 }
 
-template <>
-BlockParam<float &>::BlockParam(Block *block, const char *name, bool parent_prefix, float &extern_val) :
+ढाँचा <>
+BlockParam<भिन्न &>::BlockParam(Block *block, अचर वर्ण *name, तार्किक parent_prefix, भिन्न &extern_val) :
 	BlockParamBase(block, name, parent_prefix),
 	_val(extern_val)
 {

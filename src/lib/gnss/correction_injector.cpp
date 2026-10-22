@@ -32,45 +32,45 @@
  ****************************************************************************/
 
 
-#include "correction_injector.h"
+#अन्तर्भाव "correction_injector.h"
 
-#include <errno.h>
-#include <fcntl.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
+#अन्तर्भाव <errno.h>
+#अन्तर्भाव <fcntl.h>
+#अन्तर्भाव <string.h>
+#अन्तर्भाव <sys/ioctl.h>
+#अन्तर्भाव <unistd.h>
 
-#include <mathlib/mathlib.h>
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/time.h>
+#अन्तर्भाव <mathlib/mathlib.h>
+#अन्तर्भाव <px4_platform_common/log.h>
+#अन्तर्भाव <px4_platform_common/posix.h>
+#अन्तर्भाव <px4_platform_common/time.h>
 
-using namespace time_literals;
+using नामाकाश time_literals;
 
-namespace gnss
+नामाकाश gnss
 {
 
 // Without a chunk from the selected source for this long, another source may be taken
-static constexpr hrt_abstime kSourceTimeout = 5_s;
+स्थिर constexpr hrt_abstime kSourceTimeout = 5_s;
 // The injection rate is frames per second over windows this long
-static constexpr hrt_abstime kRateWindow = 5_s;
+स्थिर constexpr hrt_abstime kRateWindow = 5_s;
 // Start bit, eight data bits, stop bit
-static constexpr uint32_t kBitsPerByteOnTheWire = 10;
+स्थिर constexpr uint32_t kBitsPerByteOnTheWire = 10;
 // A full TX buffer is retried no sooner than this, and this late when the baudrate is unknown
-static constexpr uint32_t kMinRetryDelayUs = 1_ms;
-static constexpr uint32_t kFallbackRetryDelayUs = 10_ms;
+स्थिर constexpr uint32_t kMinRetryDelayUs = 1_ms;
+स्थिर constexpr uint32_t kFallbackRetryDelayUs = 10_ms;
 
-CorrectionInjector::CorrectionInjector(const char *name, const char *port) :
+CorrectionInjector::CorrectionInjector(अचर वर्ण *name, अचर वर्ण *port) :
 	ScheduledWorkItem(name, px4::serial_port_to_wq(port))
 {
-	strncpy(_port, port, sizeof(_port) - 1);
+	म_नकलन(_port, port, परिमाण(_port) - 1);
 }
 
 CorrectionInjector::~CorrectionInjector()
 {
 	_moving_baseline_sub.unregisterCallback();
 
-	for (auto &sub : _corrections_sub) {
+	लागि (स्वतः &sub : _corrections_sub) {
 		sub.unregisterCallback();
 	}
 
@@ -85,101 +85,101 @@ CorrectionInjector::~CorrectionInjector()
 	perf_free(_short_write);
 }
 
-void CorrectionInjector::start(const Config &config)
+शून्य CorrectionInjector::start(अचर Config &config)
 {
 	_rate_window_start = hrt_absolute_time();
-	_rate_window_count = perf_event_count(_injected);
+	rate_window_गन्ती = perf_event_गन्ती(_injected);
 	_injection_rate_hz = 0.f;
 
 	// Only the stream in use schedules runs: a base would otherwise wake for each moving-baseline chunk it publishes
-	if (config.stream == Stream::MovingBaseline) {
+	यदि (config.stream == Stream::MovingBaseline) {
 		_moving_baseline_sub.registerCallback();
 
-	} else {
-		for (auto &sub : _corrections_sub) {
+	} अन्यथा {
+		लागि (स्वतः &sub : _corrections_sub) {
 			sub.registerCallback();
 		}
 	}
 
 	pthread_mutex_lock(&_mutex);
 	_config = config;
-	_active = true;
-	_write_error_reported = false;
+	_active = सत्य;
+	_write_error_reported = असत्य;
 	pthread_mutex_unlock(&_mutex);
 
 	// What queued up during configuration still goes out: a base sends its position (1005/1006) only every few seconds
 	ScheduleNow();
 }
 
-void CorrectionInjector::stop()
+शून्य CorrectionInjector::stop()
 {
 	// Returns only after a write in progress, so the owner's next command can't land inside an RTCM frame
 	pthread_mutex_lock(&_mutex);
-	_active = false;
+	_active = असत्य;
 	pthread_mutex_unlock(&_mutex);
 
 	// Chunks still queue up until start(), which drains them
 	_moving_baseline_sub.unregisterCallback();
 
-	for (auto &sub : _corrections_sub) {
+	लागि (स्वतः &sub : _corrections_sub) {
 		sub.unregisterCallback();
 	}
 
 	// The descriptor is closed where it was opened. Bounded: a starved work queue leaks it rather than blocking the owner.
 	ScheduleNow();
 
-	for (int i = 0; i < 20; i++) {
+	लागि (पूर्णाङ्क i = 0; i < 20; i++) {
 		pthread_mutex_lock(&_mutex);
-		const bool closed = (_fd < 0);
+		अचर तार्किक closed = (_fd < 0);
 		pthread_mutex_unlock(&_mutex);
 
-		if (closed) {
-			break;
+		यदि (closed) {
+			रोक;
 		}
 
 		px4_usleep(5_ms);
 	}
 }
 
-float CorrectionInjector::injection_rate_hz()
+भिन्न CorrectionInjector::injection_rate_hz()
 {
-	const hrt_abstime now = hrt_absolute_time();
+	अचर hrt_abstime now = hrt_absolute_time();
 
-	if (now - _rate_window_start >= kRateWindow) {
-		const uint64_t count = perf_event_count(_injected);
-		_injection_rate_hz = (float)(count - _rate_window_count) * 1e6f / (float)(now - _rate_window_start);
-		_rate_window_count = count;
+	यदि (now - _rate_window_start >= kRateWindow) {
+		अचर uint64_t गन्ती = perf_event_गन्ती(_injected);
+		_injection_rate_hz = (भिन्न)(गन्ती - rate_window_गन्ती) * 1e6f / (भिन्न)(now - _rate_window_start);
+		rate_window_गन्ती = गन्ती;
 		_rate_window_start = now;
 	}
 
-	return _injection_rate_hz;
+	फर्काऊ _injection_rate_hz;
 }
 
-void CorrectionInjector::Run()
+शून्य CorrectionInjector::Run()
 {
 	pthread_mutex_lock(&_mutex);
 
-	if (!_active) {
-		if (_fd >= 0) {
-			::close(_fd);
+	यदि (!_active) {
+		यदि (_fd >= 0) {
+			::बंद(_fd);
 			_fd = -1;
 		}
 
-	} else {
-		if (_fd < 0) {
-			_fd = ::open(_port, O_WRONLY | O_NONBLOCK | O_NOCTTY);
+	} अन्यथा {
+		यदि (_fd < 0) {
+			_fd = ::खोलो(_port, O_WRONLY | O_NONBLOCK | O_NOCTTY);
 
-			if (_fd < 0 && !_write_error_reported) {
-				PX4_ERR("%s open for injection failed: %d", _port, errno);
-				_write_error_reported = true;
+			यदि (_fd < 0 && !_write_error_reported) {
+				PX4_ERR("%s open for injection failed: %d", _port, त्रुटि_सं);
+				_write_error_reported = सत्य;
 			}
 		}
 
-		if (_fd >= 0) {
-			if (_config.stream == Stream::MovingBaseline) {
+		यदि (_fd >= 0) {
+			यदि (_config.stream == Stream::MovingBaseline) {
 				drain_moving_baseline();
 
-			} else {
+			} अन्यथा {
 				drain_corrections();
 			}
 
@@ -190,33 +190,33 @@ void CorrectionInjector::Run()
 	pthread_mutex_unlock(&_mutex);
 }
 
-void CorrectionInjector::drain_corrections()
+शून्य CorrectionInjector::drain_corrections()
 {
 	rtcm_data_s chunk;
 
-	if (select_corrections_instance(chunk)) {
+	यदि (select_corrections_instance(chunk)) {
 		add_chunk(chunk);
 	}
 
-	const int8_t selected = _selected_instance.load();
+	अचर int8_t selected = _selected_instance.load();
 
-	if (selected < 0) {
-		return;
+	यदि (selected < 0) {
+		फर्काऊ;
 	}
 
-	for (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _corrections_sub[selected].update(&chunk); n++) {
-		if (chunk.device_id != _config.own_device_id) {
+	लागि (अचिन्हित n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _corrections_sub[selected].update(&chunk); n++) {
+		यदि (chunk.device_id != _config.own_device_id) {
 			add_chunk(chunk);
 		}
 	}
 }
 
-void CorrectionInjector::drain_moving_baseline()
+शून्य CorrectionInjector::drain_moving_baseline()
 {
 	rtcm_data_s chunk;
 
-	for (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _moving_baseline_sub.update(&chunk); n++) {
-		if (chunk.device_id != _config.own_device_id) {
+	लागि (अचिन्हित n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _moving_baseline_sub.update(&chunk); n++) {
+		यदि (chunk.device_id != _config.own_device_id) {
 			add_chunk(chunk);
 		}
 	}
@@ -225,123 +225,123 @@ void CorrectionInjector::drain_moving_baseline()
 // Once the selected source has gone quiet, takes the first instance with a fresh chunk from another device. update()
 // hands out the oldest queued chunk, so a backlog from before start() is walked through here in one go rather than
 // one chunk per publication. Returns true with the chunk that selected the source, which goes out like any other.
-bool CorrectionInjector::select_corrections_instance(rtcm_data_s &chunk)
+तार्किक CorrectionInjector::select_corrections_instance(rtcm_data_s &chunk)
 {
-	if (_selected_instance.load() >= 0 && hrt_elapsed_time(&_last_chunk_time) < kSourceTimeout) {
-		return false;
+	यदि (_selected_instance.load() >= 0 && hrt_elapsed_time(&_last_chunk_time) < kSourceTimeout) {
+		फर्काऊ असत्य;
 	}
 
 	_selected_instance.store(-1);
 
-	for (int8_t instance = 0; instance < rtcm_data_s::MAX_INSTANCES; instance++) {
-		for (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _corrections_sub[instance].update(&chunk); n++) {
-			if (chunk.device_id != _config.own_device_id && hrt_elapsed_time(&chunk.timestamp) < kSourceTimeout) {
+	लागि (int8_t instance = 0; instance < rtcm_data_s::MAX_INSTANCES; instance++) {
+		लागि (अचिन्हित n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _corrections_sub[instance].update(&chunk); n++) {
+			यदि (chunk.device_id != _config.own_device_id && hrt_elapsed_time(&chunk.timestamp) < kSourceTimeout) {
 				_selected_instance.store(instance);
-				return true;
+				फर्काऊ सत्य;
 			}
 		}
 	}
 
-	return false;
+	फर्काऊ असत्य;
 }
 
-void CorrectionInjector::add_chunk(const rtcm_data_s &chunk)
+शून्य CorrectionInjector::add_chunk(अचर rtcm_data_s &chunk)
 {
-	const size_t len = math::min<size_t>(chunk.len, sizeof(chunk.data));
+	अचर माप_प्रकार len = math::min<माप_प्रकार>(chunk.len, परिमाण(chunk.data));
 
-	if (_framer.addData(chunk.data, len) < len) {
-		perf_count(_framer_full);
+	यदि (_framer.addData(chunk.data, len) < len) {
+		perf_गन्ती(_framer_full);
 	}
 
 	_last_chunk_time = hrt_absolute_time();
 }
 
-void CorrectionInjector::inject_frames()
+शून्य CorrectionInjector::inject_frames()
 {
-	size_t frame_len = 0;
+	माप_प्रकार frame_len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-	const uint8_t *frame = nullptr;
+	अचर uint8_t *frame = nullptr;
 
-	while ((frame = _framer.getNextMessage(&frame_len, &protocol)) != nullptr) {
-		if ((_config.protocols & protocol_bit(protocol)) == 0) {
+	जबसम्म ((frame = _framer.getNextMessage(&frame_len, &protocol)) != nullptr) {
+		यदि ((_config.protocols & protocol_bit(protocol)) == 0) {
 			_framer.consumeMessage(frame_len);
-			perf_count(_unsupported);
-			continue;
+			perf_गन्ती(_unsupported);
+			जारी;
 		}
 
-		const ssize_t tx_space = tx_space_available();
+		अचर ssize_t tx_space = tx_space_available();
 
 		// Unknown on POSIX, where the write itself is the check
-		if (tx_space >= 0 && tx_space < (ssize_t)frame_len) {
-			perf_count(_tx_buffer_full);
+		यदि (tx_space >= 0 && tx_space < (ssize_t)frame_len) {
+			perf_गन्ती(_tx_buffer_full);
 			ScheduleDelayed(drain_time_us(frame_len - tx_space));
-			break;
+			रोक;
 		}
 
-		const ssize_t written = ::write(_fd, frame, frame_len);
+		अचर ssize_t written = ::लिख(_fd, frame, frame_len);
 
-		if (written < 0 && errno == EAGAIN) {
+		यदि (written < 0 && त्रुटि_सं == EAGAIN) {
 			// The buffer filled between the check and the write: the frame stays for the retry
-			perf_count(_tx_buffer_full);
+			perf_गन्ती(_tx_buffer_full);
 			ScheduleDelayed(drain_time_us(frame_len));
-			break;
+			रोक;
 		}
 
-		if (written != (ssize_t)frame_len) {
-			perf_count(_short_write);
+		यदि (written != (ssize_t)frame_len) {
+			perf_गन्ती(_short_write);
 
-			if (written < 0 && !_write_error_reported) {
-				PX4_ERR("%s injection write failed: %d", _port, errno);
-				_write_error_reported = true;
+			यदि (written < 0 && !_write_error_reported) {
+				PX4_ERR("%s injection write failed: %d", _port, त्रुटि_सं);
+				_write_error_reported = सत्य;
 			}
 		}
 
 		_framer.consumeMessage(frame_len);
-		perf_count(_injected);
+		perf_गन्ती(_injected);
 	}
 }
 
-ssize_t CorrectionInjector::tx_space_available() const
+ssize_t CorrectionInjector::tx_space_available() अचर
 {
-#if defined(FIONSPACE)
-	int space = 0;
+#यदि defined(FIONSPACE)
+	पूर्णाङ्क space = 0;
 
-	if (::ioctl(_fd, FIONSPACE, &space) == 0) {
-		return space;
+	यदि (::ioctl(_fd, FIONSPACE, &space) == 0) {
+		फर्काऊ space;
 	}
 
 #endif
-	return -1;
+	फर्काऊ -1;
 }
 
-uint32_t CorrectionInjector::drain_time_us(size_t bytes) const
+uint32_t CorrectionInjector::drain_time_us(माप_प्रकार bytes) अचर
 {
-	const uint32_t baudrate = _config.baudrate;
+	अचर uint32_t baudrate = _config.baudrate;
 
-	if (baudrate == 0) {
-		return kFallbackRetryDelayUs;
+	यदि (baudrate == 0) {
+		फर्काऊ kFallbackRetryDelayUs;
 	}
 
-	return math::max<uint32_t>(kMinRetryDelayUs, (uint64_t)bytes * kBitsPerByteOnTheWire * 1_s / baudrate);
+	फर्काऊ math::max<uint32_t>(kMinRetryDelayUs, (uint64_t)bytes * kBitsPerByteOnTheWire * 1_s / baudrate);
 }
 
-void CorrectionInjector::print_status() const
+शून्य CorrectionInjector::print_status() अचर
 {
 	PX4_INFO("injecting %s: %6.2f Hz, source instance %d",
-		 _config.stream == Stream::MovingBaseline ? "moving baseline" : "corrections", (double)_injection_rate_hz,
-		 (int)_selected_instance.load());
+		 _config.stream == Stream::MovingBaseline ? "moving baseline" : "corrections", (द्विगुण)_injection_rate_hz,
+		 (पूर्णाङ्क)_selected_instance.load());
 	perf_print_counter(_injected);
 	perf_print_counter(_tx_buffer_full);
 	perf_print_counter(_framer_full);
 	perf_print_counter(_unsupported);
 	perf_print_counter(_short_write);
 
-	const CorrectionFramerStats stats = _framer.getStats();
+	अचर CorrectionFramerStats stats = _framer.getStats();
 
-	if (stats.messages_parsed > 0 || stats.crc_errors > 0 || stats.bytes_discarded > 0) {
+	यदि (stats.messages_parsed > 0 || stats.crc_errors > 0 || stats.bytes_discarded > 0) {
 		PX4_INFO("framed: %u RTCM3, %u SPARTN, %u UBX, %u CRC errors, %u bytes discarded",
-			 (unsigned)stats.rtcm3_messages, (unsigned)stats.spartn_messages, (unsigned)stats.ubx_messages,
-			 (unsigned)stats.crc_errors, (unsigned)stats.bytes_discarded);
+			 (अचिन्हित)stats.rtcm3_messages, (अचिन्हित)stats.spartn_messages, (अचिन्हित)stats.ubx_messages,
+			 (अचिन्हित)stats.crc_errors, (अचिन्हित)stats.bytes_discarded);
 	}
 }
 

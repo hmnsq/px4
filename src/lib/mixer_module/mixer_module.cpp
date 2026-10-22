@@ -31,16 +31,16 @@
  *
  ****************************************************************************/
 
-#include "mixer_module.hpp"
+#अन्तर्भाव "mixer_module.hpp"
 
-#include <uORB/Publication.hpp>
-#include <px4_platform_common/log.h>
+#अन्तर्भाव <uORB/Publication.hpp>
+#अन्तर्भाव <px4_platform_common/log.h>
 
-using namespace time_literals;
+using नामाकाश time_literals;
 
 
-struct FunctionProvider {
-	using Constructor = FunctionProviderBase * (*)(const FunctionProviderBase::Context &context);
+संरचना FunctionProvider {
+	using Constructor = FunctionProviderBase * (*)(अचर FunctionProviderBase::Context &context);
 	constexpr FunctionProvider(OutputFunction min_func_, OutputFunction max_func_, Constructor constructor_)
 		: min_func(min_func_), max_func(max_func_), constructor(constructor_) {}
 	constexpr FunctionProvider(OutputFunction func, Constructor constructor_)
@@ -51,7 +51,7 @@ struct FunctionProvider {
 	Constructor constructor;
 };
 
-static constexpr FunctionProvider all_function_providers[] = {
+स्थिर constexpr FunctionProvider all_function_providers[] = {
 	// Providers higher up take precedence for subscription callback in case there are multiple
 	{OutputFunction::Constant_Min, &FunctionConstantMin::allocate},
 	{OutputFunction::Constant_Max, &FunctionConstantMax::allocate},
@@ -67,31 +67,31 @@ static constexpr FunctionProvider all_function_providers[] = {
 	{OutputFunction::IC_Engine_Ignition, OutputFunction::IC_Engine_Starter, &FunctionICEControl::allocate},
 };
 
-MixingOutput::MixingOutput(const char *param_prefix, uint8_t max_num_outputs, OutputModuleInterface &interface,
-			   SchedulingPolicy scheduling_policy, bool support_esc_calibration, bool ramp_up, const uint8_t instance_start) :
+MixingOutput::MixingOutput(अचर वर्ण *param_prefix, uint8_t max_अङ्क_outputs, OutputModuleInterface &interface,
+			   SchedulingPolicy scheduling_policy, तार्किक support_esc_calibration, तार्किक ramp_up, अचर uint8_t instance_start) :
 	ModuleParams(&interface),
 	_output_ramp_up(ramp_up),
 	_scheduling_policy(scheduling_policy),
 	_support_esc_calibration(support_esc_calibration),
-	_max_num_outputs(max_num_outputs < MAX_ACTUATORS ? max_num_outputs : MAX_ACTUATORS),
+	max_अङ्क_outputs_2(max_अङ्क_outputs < MAX_ACTUATORS ? max_अङ्क_outputs : MAX_ACTUATORS),
 	_interface(interface),
 	_control_latency_perf(perf_alloc(PC_ELAPSED, "control latency")),
 	_param_prefix(param_prefix)
 {
 	/* Safely initialize armed flags */
-	_armed.armed = false;
-	_armed.prearmed = false;
-	_armed.ready_to_arm = false;
-	_armed.lockdown = false;
-	_armed.termination = false;
-	_armed.in_esc_calibration_mode = false;
+	_armed.armed = असत्य;
+	_armed.prearmed = असत्य;
+	_armed.ready_to_arm = असत्य;
+	_armed.lockdown = असत्य;
+	_armed.termination = असत्य;
+	_armed.in_esc_calibration_mode = असत्य;
 
 	px4_sem_init(&_lock, 0, 1);
 
 	initParamHandles(instance_start);
 
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
-		_failsafe_value[i] = UINT16_MAX;
+	लागि (अचिन्हित i = 0; i < MAX_ACTUATORS; i++) {
+		failsafe_मान[i] = UINT16_MAX;
 	}
 
 	updateParams();
@@ -109,155 +109,155 @@ MixingOutput::~MixingOutput()
 	_outputs_pub.unadvertise();
 }
 
-void MixingOutput::initParamHandles(const uint8_t instance_start)
+शून्य MixingOutput::initParamHandles(अचर uint8_t instance_start)
 {
-	char param_name[17];
+	वर्ण param_name[17];
 
-	for (unsigned i = 0; i < _max_num_outputs; ++i) {
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "FUNC", i + instance_start);
+	लागि (अचिन्हित i = 0; i < max_अङ्क_outputs_2; ++i) {
+		snprintf(param_name, परिमाण(param_name), "%s_%s%d", _param_prefix, "FUNC", i + instance_start);
 		_param_handles[i].function = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "DIS", i + instance_start);
+		snprintf(param_name, परिमाण(param_name), "%s_%s%d", _param_prefix, "DIS", i + instance_start);
 		_param_handles[i].disarmed = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "MIN", i + instance_start);
+		snprintf(param_name, परिमाण(param_name), "%s_%s%d", _param_prefix, "MIN", i + instance_start);
 		_param_handles[i].min = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "CENT", i + instance_start);
+		snprintf(param_name, परिमाण(param_name), "%s_%s%d", _param_prefix, "CENT", i + instance_start);
 		_param_handles[i].center = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "MAX", i + instance_start);
+		snprintf(param_name, परिमाण(param_name), "%s_%s%d", _param_prefix, "MAX", i + instance_start);
 		_param_handles[i].max = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "FAIL", i + instance_start);
+		snprintf(param_name, परिमाण(param_name), "%s_%s%d", _param_prefix, "FAIL", i + instance_start);
 		_param_handles[i].failsafe = param_find(param_name);
 	}
 
-	snprintf(param_name, sizeof(param_name), "%s_%s", _param_prefix, "REV");
+	snprintf(param_name, परिमाण(param_name), "%s_%s", _param_prefix, "REV");
 	_param_handle_rev_range = param_find(param_name);
 }
 
-void MixingOutput::printStatus() const
+शून्य MixingOutput::printStatus() अचर
 {
 	PX4_INFO("Param prefix: %s", _param_prefix);
 	perf_print_counter(_control_latency_perf);
 
-	if (_wq_switched) {
+	यदि (_wq_switched) {
 		PX4_INFO("Switched to rate_ctrl work queue");
 	}
 
 	PX4_INFO_RAW("Channel Configuration:\n");
 
-	for (unsigned i = 0; i < _max_num_outputs; i++) {
+	लागि (अचिन्हित i = 0; i < max_अङ्क_outputs_2; i++) {
 		PX4_INFO_RAW("Channel %2d: func: %3d, value: %.2f, failsafe: %.2f, disarmed: %d, min: %d, max: %d, center: %d\n",
-			     i, (int)_function_assignment[i], (double)_current_output_value[i], (double)actualFailsafeValue(i),
-			     _disarmed_value[i], _min_value[i], _max_value[i], _center_value[i]);
+			     i, (पूर्णाङ्क)_function_assignment[i], (द्विगुण)current_output_मान[i], (द्विगुण)actual_Failsafe_मान(i),
+			     disarmed_मान[i], min_मान[i], max_मान[i], center_मान[i]);
 	}
 }
 
-void MixingOutput::updateParams()
+शून्य MixingOutput::updateParams()
 {
 	ModuleParams::updateParams();
 
-	bool function_changed = false;
+	तार्किक function_changed = असत्य;
 
-	for (unsigned i = 0; i < _max_num_outputs; i++) {
+	लागि (अचिन्हित i = 0; i < max_अङ्क_outputs_2; i++) {
 		int32_t val;
 
-		if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
-			if (val != (int32_t)_function_assignment[i]) {
-				function_changed = true;
+		यदि (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
+			यदि (val != (int32_t)_function_assignment[i]) {
+				function_changed = सत्य;
 			}
 
 			// we set _function_assignment[i] later to ensure _functions[i] is updated at the same time
 		}
 
-		if (_param_handles[i].disarmed != PARAM_INVALID && param_get(_param_handles[i].disarmed, &val) == 0) {
-			_disarmed_value[i] = val;
+		यदि (_param_handles[i].disarmed != PARAM_INVALID && param_get(_param_handles[i].disarmed, &val) == 0) {
+			disarmed_मान[i] = val;
 		}
 
-		if (_param_handles[i].min != PARAM_INVALID && param_get(_param_handles[i].min, &val) == 0) {
-			_min_value[i] = val;
+		यदि (_param_handles[i].min != PARAM_INVALID && param_get(_param_handles[i].min, &val) == 0) {
+			min_मान[i] = val;
 		}
 
-		if (_param_handles[i].center != PARAM_INVALID && param_get(_param_handles[i].center, &val) == 0) {
-			_center_value[i] = val;
+		यदि (_param_handles[i].center != PARAM_INVALID && param_get(_param_handles[i].center, &val) == 0) {
+			center_मान[i] = val;
 		}
 
-		if (_param_handles[i].max != PARAM_INVALID && param_get(_param_handles[i].max, &val) == 0) {
-			_max_value[i] = val;
+		यदि (_param_handles[i].max != PARAM_INVALID && param_get(_param_handles[i].max, &val) == 0) {
+			max_मान[i] = val;
 		}
 
-		if (_min_value[i] > _max_value[i]) {
-			uint16_t tmp = _min_value[i];
-			_min_value[i] = _max_value[i];
-			_max_value[i] = tmp;
+		यदि (min_मान[i] > max_मान[i]) {
+			uint16_t tmp = min_मान[i];
+			min_मान[i] = max_मान[i];
+			max_मान[i] = tmp;
 		}
 
 
-		if (_param_handles[i].failsafe != PARAM_INVALID && param_get(_param_handles[i].failsafe, &val) == 0) {
-			_failsafe_value[i] = val;
+		यदि (_param_handles[i].failsafe != PARAM_INVALID && param_get(_param_handles[i].failsafe, &val) == 0) {
+			failsafe_मान[i] = val;
 		}
 	}
 
 	_reverse_output_mask = 0;
 	int32_t rev_range_param;
 
-	if (_param_handle_rev_range != PARAM_INVALID && param_get(_param_handle_rev_range, &rev_range_param) == 0) {
+	यदि (_param_handle_rev_range != PARAM_INVALID && param_get(_param_handle_rev_range, &rev_range_param) == 0) {
 		_reverse_output_mask = rev_range_param;
 	}
 
-	if (function_changed) {
-		_need_function_update = true;
+	यदि (function_changed) {
+		_need_function_update = सत्य;
 	}
 }
 
-void MixingOutput::cleanupFunctions()
+शून्य MixingOutput::cleanupFunctions()
 {
-	if (_subscription_callback) {
+	यदि (_subscription_callback) {
 		_subscription_callback->unregisterCallback();
 		_subscription_callback = nullptr;
 	}
 
-	for (int i = 0; i < MAX_ACTUATORS; ++i) {
+	लागि (पूर्णाङ्क i = 0; i < MAX_ACTUATORS; ++i) {
 		delete _function_allocated[i];
 		_function_allocated[i] = nullptr;
 		_functions[i] = nullptr;
 	}
 }
 
-bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
+तार्किक MixingOutput::updateSubscriptions(तार्किक allow_wq_switch)
 {
-	if (!_need_function_update || _armed.armed) {
-		return false;
+	यदि (!_need_function_update || _armed.armed) {
+		फर्काऊ असत्य;
 	}
 
 	// must be locked to potentially change WorkQueue
 	lock();
 
-	_has_backup_schedule = false;
+	_has_backup_schedule = असत्य;
 
-	if (_scheduling_policy == SchedulingPolicy::Auto) {
+	यदि (_scheduling_policy == SchedulingPolicy::Auto) {
 		// first clear everything
 		unregister();
 		_interface.ScheduleClear();
 
-		bool switch_requested = false;
+		तार्किक switch_requested = असत्य;
 
 		// potentially switch work queue if we run motor outputs
-		for (unsigned i = 0; i < _max_num_outputs; i++) {
+		लागि (अचिन्हित i = 0; i < max_अङ्क_outputs_2; i++) {
 			// read function directly from param, as _function_assignment[i] is updated later
 			int32_t function;
 
-			if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &function) == 0) {
-				if (function >= (int32_t)OutputFunction::Motor1 && function <= (int32_t)OutputFunction::MotorMax) {
-					switch_requested = true;
+			यदि (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &function) == 0) {
+				यदि (function >= (int32_t)OutputFunction::Motor1 && function <= (int32_t)OutputFunction::MotorMax) {
+					switch_requested = सत्य;
 				}
 			}
 		}
 
-		if (allow_wq_switch && !_wq_switched && switch_requested) {
-			if (_interface.ChangeWorkQueue(px4::wq_configurations::rate_ctrl)) {
+		यदि (allow_wq_switch && !_wq_switched && switch_requested) {
+			यदि (_interface.ChangeWorkQueue(px4::wq_configurations::rate_ctrl)) {
 				// let the new WQ handle the subscribe update
-				_wq_switched = true;
+				_wq_switched = सत्य;
 				_interface.ScheduleNow();
 				unlock();
-				return false;
+				फर्काऊ असत्य;
 			}
 		}
 	}
@@ -267,91 +267,91 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 
 	cleanupFunctions();
 
-	const FunctionProviderBase::Context context{_interface, _param_thr_mdl_fac.reference()};
-	int provider_indexes[MAX_ACTUATORS] {};
-	int next_provider = 0;
-	int subscription_callback_provider_index = INT_MAX;
-	bool all_disabled = true;
+	अचर FunctionProviderBase::Context context{_interface, _param_thr_mdl_fac.reference()};
+	पूर्णाङ्क provider_indexes[MAX_ACTUATORS] {};
+	पूर्णाङ्क next_provider = 0;
+	पूर्णाङ्क subscription_callback_provider_index = पूर्णांक_उच्च;
+	तार्किक all_disabled = सत्य;
 
-	for (int i = 0; i < _max_num_outputs; ++i) {
+	लागि (पूर्णाङ्क i = 0; i < max_अङ्क_outputs_2; ++i) {
 		int32_t val;
 
-		if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
+		यदि (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
 			_function_assignment[i] = (OutputFunction)val;
 
-		} else {
+		} अन्यथा {
 			_function_assignment[i] = OutputFunction::Disabled;
 		}
 
-		for (int p = 0; p < (int)(sizeof(all_function_providers) / sizeof(all_function_providers[0])); ++p) {
-			if (_function_assignment[i] >= all_function_providers[p].min_func &&
+		लागि (पूर्णाङ्क p = 0; p < (पूर्णाङ्क)(परिमाण(all_function_providers) / परिमाण(all_function_providers[0])); ++p) {
+			यदि (_function_assignment[i] >= all_function_providers[p].min_func &&
 			    _function_assignment[i] <= all_function_providers[p].max_func) {
-				all_disabled = false;
-				int found_index = -1;
+				all_disabled = असत्य;
+				पूर्णाङ्क found_index = -1;
 
-				for (int existing = 0; existing < next_provider; ++existing) {
-					if (provider_indexes[existing] == p) {
+				लागि (पूर्णाङ्क existing = 0; existing < next_provider; ++existing) {
+					यदि (provider_indexes[existing] == p) {
 						found_index = existing;
-						break;
+						रोक;
 					}
 				}
 
-				if (found_index >= 0) {
+				यदि (found_index >= 0) {
 					_functions[i] = _function_allocated[found_index];
 
-				} else {
+				} अन्यथा {
 					_function_allocated[next_provider] = all_function_providers[p].constructor(context);
 
-					if (_function_allocated[next_provider]) {
+					यदि (_function_allocated[next_provider]) {
 						_functions[i] = _function_allocated[next_provider];
 						provider_indexes[next_provider++] = p;
 
 						// lowest provider takes precedence for scheduling
-						if (p < subscription_callback_provider_index && _functions[i]->subscriptionCallback()) {
+						यदि (p < subscription_callback_provider_index && _functions[i]->subscriptionCallback()) {
 							subscription_callback_provider_index = p;
 							_subscription_callback = _functions[i]->subscriptionCallback();
 						}
 
-					} else {
+					} अन्यथा {
 						PX4_ERR("function alloc failed");
 					}
 				}
 
-				break;
+				रोक;
 			}
 		}
 	}
 
 	hrt_abstime fixed_rate_scheduling_interval = 4_ms; // schedule at 250Hz
 
-	if (_max_topic_update_interval_us > fixed_rate_scheduling_interval) {
+	यदि (_max_topic_update_interval_us > fixed_rate_scheduling_interval) {
 		fixed_rate_scheduling_interval = _max_topic_update_interval_us;
 	}
 
-	if (_scheduling_policy == SchedulingPolicy::Auto) {
-		if (_subscription_callback) {
-			if (_subscription_callback->registerCallback()) {
+	यदि (_scheduling_policy == SchedulingPolicy::Auto) {
+		यदि (_subscription_callback) {
+			यदि (_subscription_callback->registerCallback()) {
 				PX4_DEBUG("Scheduling via callback");
-				_has_backup_schedule = true;
+				_has_backup_schedule = सत्य;
 				_interface.ScheduleDelayed(50_ms);
 
-			} else {
+			} अन्यथा {
 				PX4_ERR("registerCallback failed, scheduling at fixed rate");
 				_interface.ScheduleOnInterval(fixed_rate_scheduling_interval);
 			}
 
-		} else if (all_disabled) {
+		} अन्यथा यदि (all_disabled) {
 			_interface.ScheduleOnInterval(_lowrate_schedule_interval);
 			PX4_DEBUG("Scheduling at low rate");
 
-		} else {
+		} अन्यथा {
 			_interface.ScheduleOnInterval(fixed_rate_scheduling_interval);
 			PX4_DEBUG("Scheduling at fixed rate");
 		}
 	}
 
 	setMaxTopicUpdateRate(_max_topic_update_interval_us);
-	_need_function_update = false;
+	_need_function_update = असत्य;
 
 	_actuator_test.reset();
 
@@ -359,73 +359,73 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 
 	_interface.mixerChanged();
 
-	return true;
+	फर्काऊ सत्य;
 }
 
-void MixingOutput::setMaxTopicUpdateRate(unsigned max_topic_update_interval_us)
+शून्य MixingOutput::setMaxTopicUpdateRate(अचिन्हित max_topic_update_interval_us)
 {
 	_max_topic_update_interval_us = max_topic_update_interval_us;
 
-	if (_subscription_callback) {
+	यदि (_subscription_callback) {
 		_subscription_callback->set_interval_us(_max_topic_update_interval_us);
 	}
 }
 
-void MixingOutput::setAllMinValues(uint16_t value)
+शून्य MixingOutput::set_All_Min_मानहरू(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	लागि (अचिन्हित i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].min = PARAM_INVALID;
-		_min_value[i] = value;
+		min_मान[i] = value;
 	}
 }
 
-void MixingOutput::setAllCenterValues(uint16_t value)
+शून्य MixingOutput::set_All_Center_मानहरू(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	लागि (अचिन्हित i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].center = PARAM_INVALID;
-		_center_value[i] = value;
+		center_मान[i] = value;
 	}
 }
 
-void MixingOutput::setAllMaxValues(uint16_t value)
+शून्य MixingOutput::set_All_Max_मानहरू(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	लागि (अचिन्हित i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].max = PARAM_INVALID;
-		_max_value[i] = value;
+		max_मान[i] = value;
 	}
 }
 
-void MixingOutput::setAllFailsafeValues(uint16_t value)
+शून्य MixingOutput::set_All_Failsafe_मानहरू(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	लागि (अचिन्हित i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].failsafe = PARAM_INVALID;
-		_failsafe_value[i] = value;
+		failsafe_मान[i] = value;
 	}
 }
 
-void MixingOutput::setAllDisarmedValues(uint16_t value)
+शून्य MixingOutput::set_All_Disarmed_मानहरू(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	लागि (अचिन्हित i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].disarmed = PARAM_INVALID;
-		_disarmed_value[i] = value;
+		disarmed_मान[i] = value;
 	}
 }
 
-void MixingOutput::unregister()
+शून्य MixingOutput::unregister()
 {
-	if (_subscription_callback) {
+	यदि (_subscription_callback) {
 		_subscription_callback->unregisterCallback();
 	}
 }
 
-bool MixingOutput::update()
+तार्किक MixingOutput::update()
 {
 	// check arming state
-	if (_armed_sub.update(&_armed)) {
+	यदि (_armed_sub.update(&_armed)) {
 		_armed.in_esc_calibration_mode &= _support_esc_calibration;
 
-		if (_ignore_lockdown) {
-			_armed.lockdown = false;
+		यदि (_ignore_lockdown) {
+			_armed.lockdown = असत्य;
 		}
 
 		/* Update the armed status and check that we're not locked down.
@@ -434,52 +434,52 @@ bool MixingOutput::update()
 	}
 
 	// only used for sitl with lockstep
-	bool has_updates = _subscription_callback && _subscription_callback->updated();
+	तार्किक has_updates = _subscription_callback && _subscription_callback->updated();
 
 	// update topics
-	for (int i = 0; i < MAX_ACTUATORS && _function_allocated[i]; ++i) {
+	लागि (पूर्णाङ्क i = 0; i < MAX_ACTUATORS && _function_allocated[i]; ++i) {
 		_function_allocated[i]->update();
 	}
 
-	if (_has_backup_schedule) {
+	यदि (_has_backup_schedule) {
 		_interface.ScheduleDelayed(50_ms);
 	}
 
 	// check for actuator test
-	_actuator_test.update(_max_num_outputs, _param_thr_mdl_fac.get());
+	_actuator_test.update(max_अङ्क_outputs_2, _param_thr_mdl_fac.get());
 
 	// get output values
-	float outputs[MAX_ACTUATORS];
-	bool all_disabled = true;
-	const uint32_t reversible_mask_prev = _reversible_mask;
+	भिन्न outputs[MAX_ACTUATORS];
+	तार्किक all_disabled = सत्य;
+	अचर uint32_t reversible_mask_prev = _reversible_mask;
 	_reversible_mask = 0;
 
-	for (int i = 0; i < _max_num_outputs; ++i) {
-		if (_functions[i]) {
-			all_disabled = false;
+	लागि (पूर्णाङ्क i = 0; i < max_अङ्क_outputs_2; ++i) {
+		यदि (_functions[i]) {
+			all_disabled = असत्य;
 
-			if (_armed.armed || (_armed.prearmed && _functions[i]->allowPrearmControl())) {
+			यदि (_armed.armed || (_armed.prearmed && _functions[i]->allowPrearmControl())) {
 				outputs[i] = _functions[i]->value(_function_assignment[i]);
 
-			} else {
-				outputs[i] = NAN;
+			} अन्यथा {
+				outputs[i] = न_अंक;
 			}
 
 			_reversible_mask |= (uint32_t)_functions[i]->reversible(_function_assignment[i]) << i;
 
-		} else {
-			outputs[i] = NAN;
+		} अन्यथा {
+			outputs[i] = न_अंक;
 		}
 	}
 
-	if (_reversible_mask != reversible_mask_prev) {
+	यदि (_reversible_mask != reversible_mask_prev) {
 		_interface.reversibleMaskChanged(_reversible_mask);
 	}
 
 	// Send output if any function mapped or one last disabling sample
-	if (!all_disabled || !_was_all_disabled) {
-		if (!_armed.armed && !_armed.kill) {
-			_actuator_test.overrideValues(outputs, _max_num_outputs);
+	यदि (!all_disabled || !_was_all_disabled) {
+		यदि (!_armed.armed && !_armed.समाप्त) {
+			_actuator_test.override_मानहरू(outputs, max_अङ्क_outputs_2);
 		}
 
 		limitAndUpdateOutputs(outputs, has_updates);
@@ -487,101 +487,101 @@ bool MixingOutput::update()
 
 	_was_all_disabled = all_disabled;
 
-	return true;
+	फर्काऊ सत्य;
 }
 
-void
-MixingOutput::limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updates)
+शून्य
+MixingOutput::limitAndUpdateOutputs(भिन्न outputs[MAX_ACTUATORS], तार्किक has_updates)
 {
-	if (_armed.lockdown || _armed.kill) {
+	यदि (_armed.lockdown || _armed.समाप्त) {
 		// overwrite outputs in case of lockdown with disarmed values
-		for (size_t i = 0; i < _max_num_outputs; i++) {
-			_current_output_value[i] = _disarmed_value[i];
+		लागि (माप_प्रकार i = 0; i < max_अङ्क_outputs_2; i++) {
+			current_output_मान[i] = disarmed_मान[i];
 		}
 
-	} else if (_armed.termination) {
+	} अन्यथा यदि (_armed.termination) {
 		// Overwrite outputs with _failsafe_value when terminated
-		for (size_t i = 0; i < _max_num_outputs; i++) {
-			_current_output_value[i] = actualFailsafeValue(i);
+		लागि (माप_प्रकार i = 0; i < max_अङ्क_outputs_2; i++) {
+			current_output_मान[i] = actual_Failsafe_मान(i);
 		}
 
-	} else {
+	} अन्यथा {
 		// the output limit call takes care of out of band errors, NaN and constrains
-		output_limit_calc(_throttle_armed || _actuator_test.inTestMode(), _max_num_outputs, outputs);
+		output_limit_calc(_throttle_armed || _actuator_test.inTestMode(), max_अङ्क_outputs_2, outputs);
 	}
 
 	// We must calibrate the PWM and Oneshot ESCs to a consistent range of 1000-2000us (gets mapped to 125-250us for Oneshot)
 	// Doing so makes calibrations consistent among different configurations and hence PWM minimum and maximum have a consistent effect
 	// hence the defaults for these parameters also make most setups work out of the box
-	if (_armed.in_esc_calibration_mode) {
-		static constexpr float PWM_CALIBRATION_LOW = 1000.f;
-		static constexpr float PWM_CALIBRATION_HIGH = 2000.f;
+	यदि (_armed.in_esc_calibration_mode) {
+		स्थिर constexpr भिन्न PWM_CALIBRATION_तल्लो = 1000.f;
+		स्थिर constexpr भिन्न PWM_CALIBRATION_माथिल्लो = 2000.f;
 
-		for (int i = 0; i < _max_num_outputs; i++) {
-			if (fabsf(_current_output_value[i] - (float)_min_value[i]) < 0.5f) {
-				_current_output_value[i] = PWM_CALIBRATION_LOW;
+		लागि (पूर्णाङ्क i = 0; i < max_अङ्क_outputs_2; i++) {
+			यदि (fabsf(current_output_मान[i] - (भिन्न)min_मान[i]) < 0.5f) {
+				current_output_मान[i] = PWM_CALIBRATION_तल्लो;
 			}
 
-			if (fabsf(_current_output_value[i] - (float)_max_value[i]) < 0.5f) {
-				_current_output_value[i] = PWM_CALIBRATION_HIGH;
+			यदि (fabsf(current_output_मान[i] - (भिन्न)max_मान[i]) < 0.5f) {
+				current_output_मान[i] = PWM_CALIBRATION_माथिल्लो;
 			}
 		}
 	}
 
 	/* now return the outputs to the driver */
-	if (_interface.updateOutputs(_current_output_value, _max_num_outputs, has_updates)) {
+	यदि (_interface.updateOutputs(current_output_मान, max_अङ्क_outputs_2, has_updates)) {
 		actuator_outputs_s actuator_outputs{};
-		setAndPublishActuatorOutputs(_max_num_outputs, actuator_outputs);
+		setAndPublishActuatorOutputs(max_अङ्क_outputs_2, actuator_outputs);
 
 		updateLatencyPerfCounter(actuator_outputs);
 	}
 }
 
-float MixingOutput::output_limit_calc_single(int i, float value) const
+भिन्न MixingOutput::output_limit_calc_single(पूर्णाङ्क i, भिन्न value) अचर
 {
 	// check for invalid / disabled channels
-	if (!PX4_ISFINITE(value)) {
-		return _disarmed_value[i];
+	यदि (!PX4_ISFINITE(value)) {
+		फर्काऊ disarmed_मान[i];
 	}
 
-	if (_reverse_output_mask & (1 << i)) {
+	यदि (_reverse_output_mask & (1 << i)) {
 		value = -1.f * value;
 	}
 
-	float output = _disarmed_value[i];
+	भिन्न output = disarmed_मान[i];
 
-	if (((_function_assignment[i] >= OutputFunction::Servo1
+	यदि (((_function_assignment[i] >= OutputFunction::Servo1
 	      && _function_assignment[i] <= OutputFunction::ServoMax) || _function_assignment[i] == OutputFunction::Landing_Gear_Wheel
 	     || (_function_assignment[i] >= OutputFunction::Gimbal_Roll
 		 && _function_assignment[i] <= OutputFunction::Gimbal_Yaw))
 	    && _param_handles[i].center != PARAM_INVALID
-	    && _center_value[i] >= _min_value[i]
-	    && _center_value[i] <= _max_value[i]) {
-		output = math::interpolateNXY(value, {-1.f, 0.f, 1.f}, {(float)_min_value[i], (float)_center_value[i], (float)_max_value[i]});
+	    && center_मान[i] >= min_मान[i]
+	    && center_मान[i] <= max_मान[i]) {
+		output = math::interpolateNXY(value, {-1.f, 0.f, 1.f}, {(भिन्न)min_मान[i], (भिन्न)center_मान[i], (भिन्न)max_मान[i]});
 	}
 
 	// Everything except servos, or if center is not set
-	else {
-		output = math::interpolate(value, -1.f, 1.f, static_cast<float>(_min_value[i]), static_cast<float>(_max_value[i]));
+	अन्यथा {
+		output = math::interpolate(value, -1.f, 1.f, static_cast<भिन्न>(min_मान[i]), static_cast<भिन्न>(max_मान[i]));
 	}
 
-	return output;
+	फर्काऊ output;
 }
 
-void
-MixingOutput::output_limit_calc(const bool armed, const int num_channels, const float output[MAX_ACTUATORS])
+शून्य
+MixingOutput::output_limit_calc(अचर तार्किक armed, अचर पूर्णाङ्क अङ्क_channels, अचर भिन्न output[MAX_ACTUATORS])
 {
 	// time to slowly ramp up the ESCs
-	static constexpr hrt_abstime RAMP_TIME_US = 500_ms;
+	स्थिर constexpr hrt_abstime RAMP_TIME_US = 500_ms;
 
 	/* first evaluate state changes */
-	switch (_output_state) {
-	case OutputLimitState::OFF:
-		if (armed) {
-			if (_output_ramp_up) {
+	विकल्प (_output_state) {
+	पक्ष OutputLimitState::OFF:
+		यदि (armed) {
+			यदि (_output_ramp_up) {
 				_output_state = OutputLimitState::RAMP;
 
-			} else {
+			} अन्यथा {
 				_output_state = OutputLimitState::ON;
 			}
 
@@ -589,24 +589,24 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 			_output_time_armed = hrt_absolute_time();
 		}
 
-		break;
+		रोक;
 
-	case OutputLimitState::RAMP:
-		if (!armed) {
+	पक्ष OutputLimitState::RAMP:
+		यदि (!armed) {
 			_output_state = OutputLimitState::OFF;
 
-		} else if (hrt_elapsed_time(&_output_time_armed) >= RAMP_TIME_US) {
+		} अन्यथा यदि (hrt_elapsed_time(&_output_time_armed) >= RAMP_TIME_US) {
 			_output_state = OutputLimitState::ON;
 		}
 
-		break;
+		रोक;
 
-	case OutputLimitState::ON:
-		if (!armed) {
+	पक्ष OutputLimitState::ON:
+		यदि (!armed) {
 			_output_state = OutputLimitState::OFF;
 		}
 
-		break;
+		रोक;
 	}
 
 	/* if the system is pre-armed, the limit state is temporarily on,
@@ -615,88 +615,88 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 	 * as the throttle channels need to go through the ramp at
 	 * regular arming time.
 	 */
-	auto local_limit_state = _output_state;
+	स्वतः local_limit_state = _output_state;
 
-	if (isPrearmed()) {
+	यदि (isPrearmed()) {
 		local_limit_state = OutputLimitState::ON;
 	}
 
 	// then set _current_output_value based on state
-	switch (local_limit_state) {
-	case OutputLimitState::OFF:
-		for (int i = 0; i < num_channels; i++) {
-			_current_output_value[i] = _disarmed_value[i];
+	विकल्प (local_limit_state) {
+	पक्ष OutputLimitState::OFF:
+		लागि (पूर्णाङ्क i = 0; i < अङ्क_channels; i++) {
+			current_output_मान[i] = disarmed_मान[i];
 		}
 
-		break;
+		रोक;
 
-	case OutputLimitState::RAMP: {
+	पक्ष OutputLimitState::RAMP: {
 			hrt_abstime diff = hrt_elapsed_time(&_output_time_armed);
-			float progress = static_cast<float>(diff) / RAMP_TIME_US;
+			भिन्न progress = static_cast<भिन्न>(diff) / RAMP_TIME_US;
 
-			if (progress > 1.f) {
+			यदि (progress > 1.f) {
 				progress = 1.f;
 			}
 
-			for (int i = 0; i < num_channels; i++) {
+			लागि (पूर्णाङ्क i = 0; i < अङ्क_channels; i++) {
 				// Ramp from disarmed value to currently desired output that would apply without ramp
-				float desired_output = output_limit_calc_single(i, output[i]);
-				_current_output_value[i] = _disarmed_value[i] + progress * (desired_output - _disarmed_value[i]);
+				भिन्न desired_output = output_limit_calc_single(i, output[i]);
+				current_output_मान[i] = disarmed_मान[i] + progress * (desired_output - disarmed_मान[i]);
 			}
 		}
-		break;
+		रोक;
 
-	case OutputLimitState::ON:
-		for (int i = 0; i < num_channels; i++) {
-			_current_output_value[i] = output_limit_calc_single(i, output[i]);
+	पक्ष OutputLimitState::ON:
+		लागि (पूर्णाङ्क i = 0; i < अङ्क_channels; i++) {
+			current_output_मान[i] = output_limit_calc_single(i, output[i]);
 		}
 
-		break;
+		रोक;
 	}
 }
 
-void
-MixingOutput::setAndPublishActuatorOutputs(unsigned num_outputs, actuator_outputs_s &actuator_outputs)
+शून्य
+MixingOutput::setAndPublishActuatorOutputs(अचिन्हित अङ्क_outputs, actuator_outputs_s &actuator_outputs)
 {
-	actuator_outputs.noutputs = num_outputs;
+	actuator_outputs.noutputs = अङ्क_outputs;
 
-	for (size_t i = 0; i < num_outputs; ++i) {
-		actuator_outputs.output[i] = _current_output_value[i];
+	लागि (माप_प्रकार i = 0; i < अङ्क_outputs; ++i) {
+		actuator_outputs.output[i] = current_output_मान[i];
 	}
 
 	actuator_outputs.timestamp = hrt_absolute_time();
 	_outputs_pub.publish(actuator_outputs);
 }
 
-void
-MixingOutput::updateLatencyPerfCounter(const actuator_outputs_s &actuator_outputs)
+शून्य
+MixingOutput::updateLatencyPerfCounter(अचर actuator_outputs_s &actuator_outputs)
 {
 	// Just check the first function. It means we only get the latency if motors are assigned first, which is the default
-	if (_function_allocated[0]) {
+	यदि (_function_allocated[0]) {
 		hrt_abstime timestamp_sample;
 
-		if (_function_allocated[0]->getLatestSampleTimestamp(timestamp_sample)) {
+		यदि (_function_allocated[0]->getLatestSampleTimestamp(timestamp_sample)) {
 			perf_set_elapsed(_control_latency_perf, actuator_outputs.timestamp - timestamp_sample);
 		}
 	}
 }
 
-float MixingOutput::actualFailsafeValue(int index) const
+भिन्न MixingOutput::actual_Failsafe_मान(पूर्णाङ्क index) अचर
 {
-	float value = 0;
+	भिन्न value = 0;
 
-	if (_failsafe_value[index] == UINT16_MAX) { // if set to default, use the one provided by the function
-		float default_failsafe = NAN;
+	यदि (failsafe_मान[index] == UINT16_MAX) { // if set to default, use the one provided by the function
+		भिन्न default_failsafe = न_अंक;
 
-		if (_functions[index]) {
-			default_failsafe = _functions[index]->defaultFailsafeValue(_function_assignment[index]);
+		यदि (_functions[index]) {
+			default_failsafe = _functions[index]->default_Failsafe_मान(_function_assignment[index]);
 		}
 
 		value = output_limit_calc_single(index, default_failsafe);
 
-	} else {
-		value = static_cast<float>(_failsafe_value[index]);
+	} अन्यथा {
+		value = static_cast<भिन्न>(failsafe_मान[index]);
 	}
 
-	return value;
+	फर्काऊ value;
 }

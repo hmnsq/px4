@@ -8,56 +8,56 @@
 
 #pragma once
 
-#include "Matrix.hpp"
+#अन्तर्भाव "Matrix.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
-template<typename Type>
-class Scalar
+ढाँचा<typename Type>
+वर्ग Scalar
 {
-public:
+सार्वजनिक:
 	Scalar() = delete;
 
-	Scalar(const Matrix<Type, 1, 1> &other) :
-		_value{other(0, 0)}
+	Scalar(अचर Matrix<Type, 1, 1> &other) :
+		मान_2{other(0, 0)}
 	{
 	}
 
-	Scalar(Type other) : _value(other)
+	Scalar(Type other) : मान_2(other)
 	{
 	}
 
-	operator const Type &()
+	चालक अचर Type &()
 	{
-		return _value;
+		फर्काऊ मान_2;
 	}
 
-	operator Matrix<Type, 1, 1>() const
+	चालक Matrix<Type, 1, 1>() अचर
 	{
 		Matrix<Type, 1, 1> m;
-		m(0, 0) = _value;
-		return m;
+		m(0, 0) = मान_2;
+		फर्काऊ m;
 	}
 
-	operator Vector<Type, 1>() const
+	चालक Vector<Type, 1>() अचर
 	{
 		Vector<Type, 1> m;
-		m(0) = _value;
-		return m;
+		m(0) = मान_2;
+		फर्काऊ m;
 	}
 
-	bool operator==(const float other) const
+	तार्किक चालक==(अचर भिन्न other) अचर
 	{
-		return isEqualF(_value, other);
+		फर्काऊ isEqualF(मान_2, other);
 	}
 
-private:
-	const Type _value;
+गुप्त:
+	अचर Type मान_2;
 
 };
 
-using Scalarf = Scalar<float>;
-using Scalard = Scalar<double>;
+using Scalarf = Scalar<भिन्न>;
+using Scalard = Scalar<द्विगुण>;
 
 } // namespace matrix

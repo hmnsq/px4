@@ -38,9 +38,9 @@
  * Included Files
  ****************************************************************************/
 
-#include <stdint.h>
-#include <stdlib.h>
-#include "crc.h"
+#अन्तर्भाव <stdint.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव "crc.h"
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -86,22 +86,22 @@
  *
  ****************************************************************************/
 
-uint16_t crc16_add(uint16_t crc, uint8_t value)
+uint16_t crc16_add(uint16_t crc, uint8_t मान)
 {
 	uint32_t i;
-	const uint16_t poly = 0x1021u;
-	crc ^= (uint16_t)((uint16_t) value << 8u);
+	अचर uint16_t poly = 0x1021u;
+	crc ^= (uint16_t)((uint16_t) मान << 8u);
 
-	for (i = 0; i < 8; i++) {
-		if (crc & (1u << 15u)) {
+	लागि (i = 0; i < 8; i++) {
+		यदि (crc & (1u << 15u)) {
 			crc = (uint16_t)((crc << 1u) ^ poly);
 
-		} else {
+		} अन्यथा {
 			crc = (uint16_t)(crc << 1u);
 		}
 	}
 
-	return crc;
+	फर्काऊ crc;
 }
 
 /****************************************************************************
@@ -121,15 +121,15 @@ uint16_t crc16_add(uint16_t crc, uint8_t value)
  *
  ****************************************************************************/
 
-uint16_t crc16_signature(uint16_t initial, size_t length, const uint8_t *bytes)
+uint16_t crc16_signature(uint16_t initial, माप_प्रकार length, अचर uint8_t *bytes)
 {
-	size_t i;
+	माप_प्रकार i;
 
-	for (i = 0u; i < length; i++) {
+	लागि (i = 0u; i < length; i++) {
 		initial = crc16_add(initial, bytes[i]);
 	}
 
-	return initial ^ CRC16_OUTPUT_XOR;
+	फर्काऊ initial ^ CRC16_OUTPUT_XOR;
 }
 
 /****************************************************************************
@@ -148,25 +148,25 @@ uint16_t crc16_signature(uint16_t initial, size_t length, const uint8_t *bytes)
  *
  ****************************************************************************/
 
-uint32_t crc32_signature(uint32_t acc, size_t length, const uint8_t *bytes)
+uint32_t crc32_signature(uint32_t acc, माप_प्रकार length, अचर uint8_t *bytes)
 {
-	size_t i;
-	const uint32_t poly = 0xedb88320u;
-	const uint8_t  bits = 8u;
+	माप_प्रकार i;
+	अचर uint32_t poly = 0xedb88320u;
+	अचर uint8_t  bits = 8u;
 	uint8_t        w = bits;
 
-	for (i = 0u; i < length; i++) {
+	लागि (i = 0u; i < length; i++) {
 		acc ^= bytes[i];
 		w = bits;
 
-		while (w--) {
-			const uint32_t xor = -(acc & 1);
+		जबसम्म (w--) {
+			अचर uint32_t xor = -(acc & 1);
 			acc >>= 1;
 			acc ^= (poly & xor);
 		}
 	}
 
-	return acc;
+	फर्काऊ acc;
 }
 
 
@@ -187,25 +187,25 @@ uint32_t crc32_signature(uint32_t acc, size_t length, const uint8_t *bytes)
  *
  ****************************************************************************/
 __EXPORT
-uint64_t crc64_add_word(uint64_t crc, uint32_t value)
+uint64_t crc64_add_word(uint64_t crc, uint32_t मान)
 {
 	uint32_t i, j;
 	uint8_t byte;
-	const uint64_t poly = 0x42F0E1EBA9EA3693ull;
+	अचर uint64_t poly = 0x42F0E1EBA9EA3693ull;
 
-	for (j = 0; j < 4; j++) {
-		byte = ((uint8_t *) &value)[j];
+	लागि (j = 0; j < 4; j++) {
+		byte = ((uint8_t *) &मान)[j];
 		crc ^= (uint64_t) byte << 56u;
 
-		for (i = 0; i < 8; i++) {
-			if (crc & (1ull << 63u)) {
+		लागि (i = 0; i < 8; i++) {
+			यदि (crc & (1ull << 63u)) {
 				crc = (uint64_t)(crc << 1u) ^ poly;
 
-			} else {
+			} अन्यथा {
 				crc = (uint64_t)(crc << 1u);
 			}
 		}
 	}
 
-	return crc;
+	फर्काऊ crc;
 }

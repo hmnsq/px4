@@ -36,19 +36,19 @@
  * A wind and airspeed scale estimator.
  */
 
-#include "WindEstimator.hpp"
-#include "python/generated/init_wind_using_airspeed.h"
+#अन्तर्भाव "WindEstimator.hpp"
+#अन्तर्भाव "python/generated/init_wind_using_airspeed.h"
 
-bool
-WindEstimator::initialise(const matrix::Vector3f &velI, const float hor_vel_variance, const float heading_rad,
-			  const float tas_meas, const float tas_variance)
+तार्किक
+WindEstimator::initialise(अचर matrix::Vector3f &velI, अचर भिन्न hor_vel_variance, अचर भिन्न heading_rad,
+			  अचर भिन्न tas_meas, अचर भिन्न tas_variance)
 {
-	if (PX4_ISFINITE(tas_meas) && PX4_ISFINITE(tas_variance)) {
+	यदि (PX4_ISFINITE(tas_meas) && PX4_ISFINITE(tas_variance)) {
 
-		constexpr float initial_heading_var = sq(math::radians(kInitialHeadingErrorDeg));
-		constexpr float initial_sideslip_var = sq(math::radians(kInitialBetaErrorDeg));
+		constexpr भिन्न initial_heading_var = sq(math::radians(kInitialHeadingErrorDeg));
+		constexpr भिन्न initial_sideslip_var = sq(math::radians(kInitialBetaErrorDeg));
 
-		matrix::SquareMatrix<float, 2> P_wind_init;
+		matrix::SquareMatrix<भिन्न, 2> P_wind_init;
 		matrix::Vector2f wind_init;
 
 		sym::InitWindUsingAirspeed(velI, heading_rad, tas_meas, hor_vel_variance, initial_heading_var, initial_sideslip_var,
@@ -59,7 +59,7 @@ WindEstimator::initialise(const matrix::Vector3f &velI, const float hor_vel_vari
 		_state(INDEX_TAS_SCALE) = _scale_init;
 		_P.slice<2, 2>(0, 0) = P_wind_init;
 
-	} else {
+	} अन्यथा {
 		// no airspeed available
 		_state.setZero();
 		_state(INDEX_TAS_SCALE) = 1.0f;
@@ -67,36 +67,36 @@ WindEstimator::initialise(const matrix::Vector3f &velI, const float hor_vel_vari
 		_P(INDEX_W_N, INDEX_W_N) = _P(INDEX_W_E, INDEX_W_E) = sq(kInitialWindError);
 	}
 
-	_wind_estimator_reset = true;
+	_wind_estimator_reset = सत्य;
 	_time_initialised = hrt_absolute_time();
 
-	return true;
+	फर्काऊ सत्य;
 }
 
-void
+शून्य
 WindEstimator::update(uint64_t time_now)
 {
-	if (!_initialised) {
-		return;
+	यदि (!_initialised) {
+		फर्काऊ;
 	}
 
 	// set reset state to false (is set to true when initialise fuction is called later)
-	_wind_estimator_reset = false;
+	_wind_estimator_reset = असत्य;
 
 	// run covariance prediction at 1Hz
-	if (time_now - _time_last_update < 1_s || _time_last_update == 0) {
-		if (_time_last_update == 0) {
+	यदि (time_now - _time_last_update < 1_s || _time_last_update == 0) {
+		यदि (_time_last_update == 0) {
 			_time_last_update = time_now;
 		}
 
-		return;
+		फर्काऊ;
 	}
 
-	const float dt = (float)(time_now - _time_last_update) * 1e-6f;
+	अचर भिन्न dt = (भिन्न)(time_now - _time_last_update) * 1e-6f;
 	_time_last_update = time_now;
 
 	// if airspeed scale is at default (1.0) and we are in the first 5 minutes of flight time, multiply kTasScalePsd by 100 for faster learning
-	const float tas_psd_multiplier = (fabsf(_scale_init - 1.0f) < FLT_EPSILON && (time_now - _time_initialised < kTASScaleFastLearnTime)) ?
+	अचर भिन्न tas_psd_multiplier = (fabsf(_scale_init - 1.0f) < भग्न_अंतर && (time_now - _time_initialised < kTASScaleFastLearnTime)) ?
 					 kTASScalePSDMultiplier : 1.f;
 
 	matrix::Matrix3f Qk;
@@ -106,39 +106,39 @@ WindEstimator::update(uint64_t time_now)
 	_P += Qk;
 }
 
-void
-WindEstimator::fuse_airspeed(uint64_t time_now, const float true_airspeed, const matrix::Vector3f &velI,
-			     const float hor_vel_variance, const matrix::Quatf &q_att)
+शून्य
+WindEstimator::fuse_airspeed(uint64_t time_now, अचर भिन्न true_airspeed, अचर matrix::Vector3f &velI,
+			     अचर भिन्न hor_vel_variance, अचर matrix::Quatf &q_att)
 {
 
-	if (!_initialised) {
+	यदि (!_initialised) {
 		// try to initialise
 		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi(), true_airspeed, _tas_var);
-		return;
+		फर्काऊ;
 	}
 
 	// don't fuse faster than 10Hz
-	if (time_now - _time_last_airspeed_fuse < 100_ms) {
-		return;
+	यदि (time_now - _time_last_airspeed_fuse < 100_ms) {
+		फर्काऊ;
 	}
 
 	_time_last_airspeed_fuse = time_now;
 
-	matrix::Matrix<float, 1, 3> H_tas;
-	matrix::Matrix<float, 3, 1> K;
+	matrix::Matrix<भिन्न, 1, 3> H_tas;
+	matrix::Matrix<भिन्न, 3, 1> K;
 
-	sym::FuseAirspeed(velI, _state, _P, true_airspeed, _tas_var, FLT_EPSILON,
+	sym::FuseAirspeed(velI, _state, _P, true_airspeed, _tas_var, भग्न_अंतर,
 			  &H_tas, &K, &_tas_innov_var, &_tas_innov);
 
-	const bool meas_is_rejected = check_if_meas_is_rejected(_tas_innov, _tas_innov_var, kTasGate);
+	अचर तार्किक meas_is_rejected = check_if_meas_is_rejected(_tas_innov, _tas_innov_var, kTasGate);
 
-	if (_tas_innov_var < FLT_EPSILON) {
+	यदि (_tas_innov_var < भग्न_अंतर) {
 		// re init filter in case of a negative variance, and trigger early return to not fuse measurement
 		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi(), true_airspeed, _tas_var);
-		return;
+		फर्काऊ;
 
-	} else if (meas_is_rejected) {
-		return;
+	} अन्यथा यदि (meas_is_rejected) {
+		फर्काऊ;
 	}
 
 	// apply correction to state
@@ -152,38 +152,38 @@ WindEstimator::fuse_airspeed(uint64_t time_now, const float true_airspeed, const
 	run_sanity_checks();
 }
 
-void
-WindEstimator::fuse_beta(uint64_t time_now, const matrix::Vector3f &velI, const float hor_vel_variance,
-			 const matrix::Quatf &q_att)
+शून्य
+WindEstimator::fuse_beta(uint64_t time_now, अचर matrix::Vector3f &velI, अचर भिन्न hor_vel_variance,
+			 अचर matrix::Quatf &q_att)
 {
-	if (!_initialised) {
+	यदि (!_initialised) {
 		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi());
-		return;
+		फर्काऊ;
 	}
 
 	// don't fuse faster than 10Hz
-	if (time_now - _time_last_beta_fuse < 100_ms) {
-		return;
+	यदि (time_now - _time_last_beta_fuse < 100_ms) {
+		फर्काऊ;
 	}
 
 	_time_last_beta_fuse = time_now;
 
 
-	matrix::Matrix<float, 1, 3> H_beta;
-	matrix::Matrix<float, 3, 1> K;
+	matrix::Matrix<भिन्न, 1, 3> H_beta;
+	matrix::Matrix<भिन्न, 3, 1> K;
 
-	sym::FuseBeta(velI, _state, _P, q_att, kBetaVar, FLT_EPSILON,
+	sym::FuseBeta(velI, _state, _P, q_att, kBetaVar, भग्न_अंतर,
 		      &H_beta, &K, &_beta_innov_var, &_beta_innov);
 
-	const bool meas_is_rejected = check_if_meas_is_rejected(_beta_innov, _beta_innov_var, kBetaGate);
+	अचर तार्किक meas_is_rejected = check_if_meas_is_rejected(_beta_innov, _beta_innov_var, kBetaGate);
 
-	if (_beta_innov_var < FLT_EPSILON) {
+	यदि (_beta_innov_var < भग्न_अंतर) {
 		// re init filter in case of a negative variance, and trigger early return to not fuse measurement
 		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi());
-		return;
+		फर्काऊ;
 
-	} else if (meas_is_rejected) {
-		return;
+	} अन्यथा यदि (meas_is_rejected) {
+		फर्काऊ;
 	}
 
 	// apply correction to state
@@ -197,42 +197,42 @@ WindEstimator::fuse_beta(uint64_t time_now, const matrix::Vector3f &velI, const 
 	run_sanity_checks();
 }
 
-void
+शून्य
 WindEstimator::run_sanity_checks()
 {
-	for (unsigned i = 0; i < 3; i++) {
-		if (_P(i, i) < 0.0f) {
+	लागि (अचिन्हित i = 0; i < 3; i++) {
+		यदि (_P(i, i) < 0.0f) {
 			// ill-conditioned covariance matrix, reset filter
-			_initialised = false;
-			return;
+			_initialised = असत्य;
+			फर्काऊ;
 		}
 
 		// limit covariance diagonals if they grow too large
-		if (i < 2) {
+		यदि (i < 2) {
 			_P(i, i) = _P(i, i) > 25.0f ? 25.0f : _P(i, i);
 
-		} else if (i == 2) {
+		} अन्यथा यदि (i == 2) {
 			_P(i, i) = _P(i, i) > 0.1f ? 0.1f : _P(i, i);
 		}
 	}
 
-	if (!_state.isAllFinite()) {
-		_initialised = false;
-		return;
+	यदि (!_state.isAllFinite()) {
+		_initialised = असत्य;
+		फर्काऊ;
 	}
 
 	// attain symmetry
-	for (unsigned row = 0; row < 3; row++) {
-		for (unsigned column = 0; column < row; column++) {
-			const float tmp = (_P(row, column) + _P(column, row)) * 0.5f;
+	लागि (अचिन्हित row = 0; row < 3; row++) {
+		लागि (अचिन्हित column = 0; column < row; column++) {
+			अचर भिन्न tmp = (_P(row, column) + _P(column, row)) * 0.5f;
 			_P(row, column) = tmp;
 			_P(column, row) = tmp;
 		}
 	}
 }
 
-bool
-WindEstimator::check_if_meas_is_rejected(float innov, float innov_var, uint8_t gate_size)
+तार्किक
+WindEstimator::check_if_meas_is_rejected(भिन्न innov, भिन्न innov_var, uint8_t gate_size)
 {
-	return (innov * innov > gate_size * gate_size * innov_var);
+	फर्काऊ (innov * innov > gate_size * gate_size * innov_var);
 }

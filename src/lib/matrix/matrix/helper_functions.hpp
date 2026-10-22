@@ -1,10 +1,10 @@
 #pragma once
 
-#include <cmath>
+#अन्तर्भाव <cmath>
 
-#include <px4_platform_common/defines.h>
+#अन्तर्भाव <px4_platform_common/defines.h>
 
-namespace matrix
+नामाकाश matrix
 {
 
 /**
@@ -18,29 +18,29 @@ namespace matrix
  * @param eps numerical tolerance of the check
  * @return true if the two values are considered equal, false otherwise
  */
-template<typename Type>
-bool isEqualF(const Type x, const Type y, const Type eps = Type(1e-4f))
+ढाँचा<typename Type>
+तार्किक isEqualF(अचर Type x, अचर Type y, अचर Type eps = Type(1e-4f))
 {
-	return (std::fabs(x - y) <= eps)
+	फर्काऊ (std::भ_असल(x - y) <= eps)
 	       || (std::isnan(x) && std::isnan(y))
 	       || (std::isinf(x) && std::isinf(y) && std::isnan(x - y));
 }
 
-namespace detail
+नामाकाश detail
 {
 
-template<typename Floating>
-Floating wrap_floating(Floating x, Floating low, Floating high)
+ढाँचा<typename Floating>
+Floating wrap_floating(Floating x, Floating तल्लो, Floating माथिल्लो)
 {
 	// already in range
-	if (low <= x && x < high) {
-		return x;
+	यदि (तल्लो <= x && x < माथिल्लो) {
+		फर्काऊ x;
 	}
 
-	const auto range = high - low;
-	const auto inv_range = Floating(1) / range; // should evaluate at compile time, multiplies below at runtime
-	const auto num_wraps = std::floor((x - low) * inv_range);
-	return x - range * num_wraps;
+	अचर स्वतः range = माथिल्लो - तल्लो;
+	अचर स्वतः inv_range = Floating(1) / range; // should evaluate at compile time, multiplies below at runtime
+	अचर स्वतः अङ्क_wraps = std::न्यूनमान((x - तल्लो) * inv_range);
+	फर्काऊ x - range * अङ्क_wraps;
 }
 
 } // namespace detail
@@ -53,9 +53,9 @@ Floating wrap_floating(Floating x, Floating low, Floating high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline float wrap(float x, float low, float high)
+अन्तःस्थ भिन्न wrap(भिन्न x, भिन्न तल्लो, भिन्न माथिल्लो)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	फर्काऊ matrix::detail::wrap_floating(x, तल्लो, माथिल्लो);
 }
 
 /**
@@ -66,9 +66,9 @@ inline float wrap(float x, float low, float high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline double wrap(double x, double low, double high)
+अन्तःस्थ द्विगुण wrap(द्विगुण x, द्विगुण तल्लो, द्विगुण माथिल्लो)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	फर्काऊ matrix::detail::wrap_floating(x, तल्लो, माथिल्लो);
 }
 
 /**
@@ -79,34 +79,34 @@ inline double wrap(double x, double low, double high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-template<typename Integer>
-Integer wrap(Integer x, Integer low, Integer high)
+ढाँचा<typename Integer>
+Integer wrap(Integer x, Integer तल्लो, Integer माथिल्लो)
 {
-	const auto range = high - low;
+	अचर स्वतः range = माथिल्लो - तल्लो;
 
-	if (x < low) {
-		x += range * ((low - x) / range + 1);
+	यदि (x < तल्लो) {
+		x += range * ((तल्लो - x) / range + 1);
 	}
 
-	return low + (x - low) % range;
+	फर्काऊ तल्लो + (x - तल्लो) % range;
 }
 
 /**
  * Wrap value in range [-π, π)
  */
-template<typename Type>
+ढाँचा<typename Type>
 Type wrap_pi(Type x)
 {
-	return wrap(x, Type(-M_PI), Type(M_PI));
+	फर्काऊ wrap(x, Type(-M_PI), Type(M_PI));
 }
 
 /**
  * Wrap value in range [0, 2π)
  */
-template<typename Type>
+ढाँचा<typename Type>
 Type wrap_2pi(Type x)
 {
-	return wrap(x, Type(0), Type((2 * M_PI)));
+	फर्काऊ wrap(x, Type(0), Type((2 * M_PI)));
 }
 
 /**
@@ -118,10 +118,10 @@ Type wrap_2pi(Type x)
  * @param high upper limit of the wrapping range
  * @return New unwrapped value
  */
-template<typename Type>
-Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high)
+ढाँचा<typename Type>
+Type unwrap(अचर Type last_x, अचर Type new_x, अचर Type तल्लो, अचर Type माथिल्लो)
 {
-	return last_x + wrap(new_x - last_x, low, high);
+	फर्काऊ last_x + wrap(new_x - last_x, तल्लो, माथिल्लो);
 }
 
 /**
@@ -131,10 +131,10 @@ Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high
  * @param[in] new_angle New angle in [-pi, pi] [rad]
  * @return New unwrapped angle [rad]
  */
-template<typename Type>
-Type unwrap_pi(const Type last_angle, const Type new_angle)
+ढाँचा<typename Type>
+Type unwrap_pi(अचर Type last_angle, अचर Type new_angle)
 {
-	return unwrap(last_angle, new_angle, Type(-M_PI), Type(M_PI));
+	फर्काऊ unwrap(last_angle, new_angle, Type(-M_PI), Type(M_PI));
 }
 
 /**
@@ -143,10 +143,10 @@ Type unwrap_pi(const Type last_angle, const Type new_angle)
  * @param[in] val Number to take the sign from
  * @return -1 if val < 0, 0 if val == 0, 1 if val > 0
  */
-template<typename T>
-int sign(T val)
+ढाँचा<typename T>
+पूर्णाङ्क sign(T val)
 {
-	return (T(0) < val) - (val < T(0));
+	फर्काऊ (T(0) < val) - (val < T(0));
 }
 
 } // namespace matrix

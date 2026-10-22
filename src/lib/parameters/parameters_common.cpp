@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#include <string.h>
+#अन्तर्भाव <string.h>
 
 /**
  * @file parameters_common.cpp
@@ -40,7 +40,7 @@
  *
  */
 
-static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(param_info_s);
+स्थिर constexpr uint16_t param_info_गन्ती = परिमाण(px4::parameters) / परिमाण(param_info_s);
 
 /**
  * Test whether a param_t is value.
@@ -48,119 +48,119 @@ static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(pa
  * @param param			The parameter handle to test.
  * @return			True if the handle is valid.
  */
-static constexpr bool handle_in_range(param_t param) { return (param < param_info_count); }
+स्थिर constexpr तार्किक handle_in_range(param_t param) { फर्काऊ (param < param_info_गन्ती); }
 
-unsigned param_count()
+अचिन्हित param_गन्ती()
 {
-	return param_info_count;
+	फर्काऊ param_info_गन्ती;
 }
 
-int param_get_index(param_t param)
+पूर्णाङ्क param_get_index(param_t param)
 {
-	if (handle_in_range(param)) {
-		return (unsigned)param;
+	यदि (handle_in_range(param)) {
+		फर्काऊ (अचिन्हित)param;
 	}
 
-	return -1;
+	फर्काऊ -1;
 }
 
-param_t param_for_index(unsigned index)
+param_t param_for_index(अचिन्हित index)
 {
-	if (index < param_info_count) {
-		return (param_t)index;
+	यदि (index < param_info_गन्ती) {
+		फर्काऊ (param_t)index;
 	}
 
-	return PARAM_INVALID;
+	फर्काऊ PARAM_INVALID;
 }
 
-const char *param_name(param_t param)
+अचर वर्ण *param_name(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters[param].name : nullptr;
+	फर्काऊ handle_in_range(param) ? px4::parameters[param].name : nullptr;
 }
 
 param_type_t param_type(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
+	फर्काऊ handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
 }
 
-bool param_is_volatile(param_t param)
+तार्किक param_is_volatile(param_t param)
 {
-	if (handle_in_range(param)) {
-		for (const auto &p : px4::parameters_volatile) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	यदि (handle_in_range(param)) {
+		लागि (अचर स्वतः &p : px4::parameters_volatile) {
+			यदि (static_cast<px4::params>(param) == p) {
+				फर्काऊ सत्य;
 			}
 		}
 	}
 
-	return false;
+	फर्काऊ असत्य;
 }
 
-static bool params_locked = false;
+स्थिर तार्किक params_locked = असत्य;
 
-bool param_is_readonly(param_t param)
+तार्किक param_is_readonly(param_t param)
 {
-	if (params_locked && handle_in_range(param)) {
-		for (const auto &p : px4::parameters_readonly) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	यदि (params_locked && handle_in_range(param)) {
+		लागि (अचर स्वतः &p : px4::parameters_readonly) {
+			यदि (static_cast<px4::params>(param) == p) {
+				फर्काऊ सत्य;
 			}
 		}
 	}
 
-	return false;
+	फर्काऊ असत्य;
 }
 
-void param_lock_readonly()
+शून्य param_lock_readonly()
 {
-	params_locked = true;
+	params_locked = सत्य;
 }
 
-size_t param_size(param_t param)
+माप_प्रकार param_size(param_t param)
 {
-	if (handle_in_range(param)) {
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-		case PARAM_TYPE_FLOAT:
-			return 4;
+	यदि (handle_in_range(param)) {
+		विकल्प (param_type(param)) {
+		पक्ष PARAM_TYPE_INT32:
+		पक्ष PARAM_TYPE_FLOAT:
+			फर्काऊ 4;
 
-		default:
-			return 0;
+		स्वभाव:
+			फर्काऊ 0;
 		}
 	}
 
-	return 0;
+	फर्काऊ 0;
 }
 
-int
-param_get_system_default_value(param_t param, void *default_val)
+पूर्णाङ्क
+param_get_system_default_मान(param_t param, शून्य *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	यदि (!handle_in_range(param)) {
+		फर्काऊ PX4_ERROR;
 	}
 
-	int ret = PX4_OK;
+	पूर्णाङ्क ret = PX4_OK;
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
-		memcpy(default_val, &px4::parameters[param].val.i, param_size(param));
-		break;
+	विकल्प (param_type(param)) {
+	पक्ष PARAM_TYPE_INT32:
+		स_नकल(default_val, &px4::parameters[param].val.i, param_size(param));
+		रोक;
 
-	case PARAM_TYPE_FLOAT:
-		memcpy(default_val, &px4::parameters[param].val.f, param_size(param));
-		break;
+	पक्ष PARAM_TYPE_FLOAT:
+		स_नकल(default_val, &px4::parameters[param].val.f, param_size(param));
+		रोक;
 
-	default:
+	स्वभाव:
 		ret = PX4_ERROR;
-		break;
+		रोक;
 	}
 
-	return ret;
+	फर्काऊ ret;
 }
 
-int
-param_get_mark_used(param_t param, void *val)
+पूर्णाङ्क
+param_get_mark_used(param_t param, शून्य *val)
 {
 	param_set_used(param);
-	return param_get(param, val);
+	फर्काऊ param_get(param, val);
 }

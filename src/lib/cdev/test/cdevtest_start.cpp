@@ -37,32 +37,32 @@
  * @author Thomas Gubler <thomasgubler@gmail.com>
  * @author Mark Charlebois <mcharleb@gmail.com>
  */
-#include "cdevtest_example.h"
+#अन्तर्भाव "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/tasks.h>
-#include <stdio.h>
-#include <string.h>
+#अन्तर्भाव <px4_platform_common/app.h>
+#अन्तर्भाव <px4_platform_common/tasks.h>
+#अन्तर्भाव <stdio.h>
+#अन्तर्भाव <string.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+स्थिर पूर्णाङ्क daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-extern "C" __EXPORT int cdev_test_main(int argc, char *argv[]);
-int cdev_test_main(int argc, char *argv[])
+बाह्य "C" __EXPORT पूर्णाङ्क cdev_test_main(पूर्णाङ्क argc, वर्ण *argv[]);
+पूर्णाङ्क cdev_test_main(पूर्णाङ्क argc, वर्ण *argv[])
 {
 
-	if (argc < 2) {
-		printf("usage: cdevtest {start|stop|status}\n");
-		return 1;
+	यदि (argc < 2) {
+		म_लिखो("usage: cdevtest {start|stop|status}\n");
+		फर्काऊ 1;
 	}
 
-	if (!strcmp(argv[1], "start")) {
+	यदि (!म_भेद(argv[1], "start")) {
 
-		if (CDevExample::appState.isRunning()) {
-			printf("already running\n");
+		यदि (CDevExample::appState.isRunning()) {
+			म_लिखो("already running\n");
 			/* this is not an error */
-			return 0;
+			फर्काऊ 0;
 		}
 
 		daemon_task = px4_task_spawn_cmd("cdevtest",
@@ -70,27 +70,27 @@ int cdev_test_main(int argc, char *argv[])
 						 SCHED_PRIORITY_MAX - 5,
 						 2000,
 						 PX4_MAIN,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+						 (argv) ? (वर्ण *अचर *)&argv[2] : (वर्ण *अचर *)nullptr);
 
-		return 0;
+		फर्काऊ 0;
 	}
 
-	if (!strcmp(argv[1], "stop")) {
+	यदि (!म_भेद(argv[1], "stop")) {
 		CDevExample::appState.requestExit();
-		return 0;
+		फर्काऊ 0;
 	}
 
-	if (!strcmp(argv[1], "status")) {
-		if (CDevExample::appState.isRunning()) {
-			printf("is running\n");
+	यदि (!म_भेद(argv[1], "status")) {
+		यदि (CDevExample::appState.isRunning()) {
+			म_लिखो("is running\n");
 
-		} else {
-			printf("not started\n");
+		} अन्यथा {
+			म_लिखो("not started\n");
 		}
 
-		return 0;
+		फर्काऊ 0;
 	}
 
-	printf("usage: cdevtest_main {start|stop|status}\n");
-	return 1;
+	म_लिखो("usage: cdevtest_main {start|stop|status}\n");
+	फर्काऊ 1;
 }

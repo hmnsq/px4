@@ -38,14 +38,14 @@
  * @author Mohammed Kabir <mhkabir98@gmail.com>
  */
 
-#include "Timesync.hpp"
+#अन्तर्भाव "Timesync.hpp"
 
-#include <stdlib.h>
+#अन्तर्भाव <stdlib.h>
 
-void Timesync::update(const uint64_t now_us, const int64_t remote_timestamp_ns, const int64_t originate_timestamp_ns)
+शून्य Timesync::update(अचर uint64_t now_us, अचर int64_t remote_timestamp_ns, अचर int64_t originate_timestamp_ns)
 {
 	// Message originating from this system, compute time offset from it
-	if (remote_timestamp_ns > 0) {
+	यदि (remote_timestamp_ns > 0) {
 		// Calculate time offset between this system and the remote system, assuming RTT for
 		// the timesync packet is roughly equal both ways.
 		int64_t offset_us = (int64_t)((originate_timestamp_ns / 1000ULL) + now_us - (remote_timestamp_ns / 1000ULL) * 2) / 2 ;
@@ -56,32 +56,32 @@ void Timesync::update(const uint64_t now_us, const int64_t remote_timestamp_ns, 
 		// Calculate the difference of this sample from the current estimate
 		uint64_t deviation = llabs((int64_t)_time_offset - offset_us);
 
-		if (rtt_us < MAX_RTT_SAMPLE) {	// Only use samples with low RTT
+		यदि (rtt_us < MAX_RTT_SAMPLE) {	// Only use samples with low RTT
 
-			if (sync_converged() && (deviation > MAX_DEVIATION_SAMPLE)) {
+			यदि (sync_converged() && (deviation > MAX_DEVIATION_SAMPLE)) {
 
 				// Increment the counter if we have a good estimate and are getting samples far from the estimate
-				_high_deviation_count++;
+				माथिल्लो_deviation_गन्ती++;
 
 				// We reset the filter if we received 5 consecutive samples which violate our present estimate.
 				// This is most likely due to a time jump on the offboard system.
-				if (_high_deviation_count > MAX_CONSECUTIVE_HIGH_DEVIATION) {
+				यदि (माथिल्लो_deviation_गन्ती > MAX_CONSECUTIVE_माथिल्लो_DEVIATION) {
 					PX4_DEBUG("time jump detected. Resetting time synchroniser.");
 					// Reset the filter
 					reset_filter();
 				}
 
-			} else {
+			} अन्यथा {
 
 				// Filter gain scheduling
-				if (!sync_converged()) {
+				यदि (!sync_converged()) {
 					// Interpolate with a sigmoid function
-					const float progress = (float) _sequence / (float) CONVERGENCE_WINDOW;
-					double p = (double)(1.f - expf(0.5f * (1.f - 1.f / (1.f - progress))));
+					अचर भिन्न progress = (भिन्न) _sequence / (भिन्न) CONVERGENCE_WINDOW;
+					द्विगुण p = (द्विगुण)(1.f - expf(0.5f * (1.f - 1.f / (1.f - progress))));
 					_filter_alpha = p * ALPHA_GAIN_FINAL + (1.0 - p) * ALPHA_GAIN_INITIAL;
 					_filter_beta = p * BETA_GAIN_FINAL + (1.0 - p) * BETA_GAIN_INITIAL;
 
-				} else {
+				} अन्यथा {
 					_filter_alpha = ALPHA_GAIN_FINAL;
 					_filter_beta = BETA_GAIN_FINAL;
 				}
@@ -93,17 +93,17 @@ void Timesync::update(const uint64_t now_us, const int64_t remote_timestamp_ns, 
 				_sequence++;
 
 				// Reset high deviation count after filter update
-				_high_deviation_count = 0;
+				माथिल्लो_deviation_गन्ती = 0;
 
 				// Reset high RTT count after filter update
-				_high_rtt_count = 0;
+				माथिल्लो_rtt_गन्ती = 0;
 			}
 
-		} else {
+		} अन्यथा {
 			// Increment counter if round trip time is too high for accurate timesync
-			_high_rtt_count++;
+			माथिल्लो_rtt_गन्ती++;
 
-			if (_high_rtt_count == MAX_CONSECUTIVE_HIGH_RTT) {
+			यदि (माथिल्लो_rtt_गन्ती == MAX_CONSECUTIVE_माथिल्लो_RTT) {
 				PX4_DEBUG("RTT too high for timesync: %llu ms", rtt_us / 1000ULL);
 			}
 		}
@@ -124,26 +124,26 @@ void Timesync::update(const uint64_t now_us, const int64_t remote_timestamp_ns, 
 uint64_t Timesync::sync_stamp(uint64_t usec)
 {
 	// Only return synchronised stamp if we have converged to a good value
-	if (sync_converged()) {
-		return usec + (int64_t)_time_offset;
+	यदि (sync_converged()) {
+		फर्काऊ usec + (int64_t)_time_offset;
 
-	} else {
-		return hrt_absolute_time();
+	} अन्यथा {
+		फर्काऊ hrt_absolute_time();
 	}
 }
 
-void Timesync::add_sample(int64_t offset_us)
+शून्य Timesync::add_sample(int64_t offset_us)
 {
 	// Online exponential smoothing filter. The derivative of the estimate is also
 	// estimated in order to produce an estimate without steady state lag:
 	// https://en.wikipedia.org/wiki/Exponential_smoothing#Double_exponential_smoothing
-	double time_offset_prev = _time_offset;
+	द्विगुण time_offset_prev = _time_offset;
 
-	if (_sequence == 0) {
+	यदि (_sequence == 0) {
 		// First offset sample
 		_time_offset = offset_us;
 
-	} else {
+	} अन्यथा {
 		// Update the clock offset estimate
 		_time_offset = _filter_alpha * offset_us + (1.0 - _filter_alpha) * (_time_offset + _time_skew);
 
@@ -152,7 +152,7 @@ void Timesync::add_sample(int64_t offset_us)
 	}
 }
 
-void Timesync::reset_filter()
+शून्य Timesync::reset_filter()
 {
 	// Do a full reset of all statistics and parameters
 	_sequence = 0;
@@ -160,6 +160,6 @@ void Timesync::reset_filter()
 	_time_skew = 0.0;
 	_filter_alpha = ALPHA_GAIN_INITIAL;
 	_filter_beta = BETA_GAIN_INITIAL;
-	_high_deviation_count = 0;
-	_high_rtt_count = 0;
+	माथिल्लो_deviation_गन्ती = 0;
+	माथिल्लो_rtt_गन्ती = 0;
 }

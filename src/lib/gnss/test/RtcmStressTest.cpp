@@ -31,31 +31,31 @@
  *
  ****************************************************************************/
 
-#include "RtcmTestCommon.hpp"
+#अन्तर्भाव "RtcmTestCommon.hpp"
 
 TEST_F(RtcmTest, Stress_ManySmallValidFrames)
 {
 	// Simulate a good sender sending many small messages
 	// Process as we go to avoid buffer overflow
-	const int num_frames = 1000;
-	int count = 0;
+	अचर पूर्णाङ्क अङ्क_frames = 1000;
+	पूर्णाङ्क गन्ती = 0;
 
-	for (int i = 0; i < num_frames; i++) {
-		auto frame = buildValidFrame(1005 + (i % 100), {static_cast<uint8_t>(i & 0xFF)});
+	लागि (पूर्णाङ्क i = 0; i < अङ्क_frames; i++) {
+		स्वतः frame = buildValidFrame(1005 + (i % 100), {static_cast<uint8_t>(i & 0xFF)});
 		parser.addData(frame.data(), frame.size());
 
 		// Consume available messages after each add
-		size_t len;
+		माप_प्रकार len;
 
-		while (parser.getNextMessage(&len) != nullptr) {
+		जबसम्म (parser.getNextMessage(&len) != nullptr) {
 			parser.consumeMessage(len);
-			count++;
+			गन्ती++;
 		}
 	}
 
-	EXPECT_EQ(count, num_frames);
-	auto stats = parser.getStats();
-	EXPECT_EQ(stats.messages_parsed, static_cast<uint32_t>(num_frames));
+	EXPECT_EQ(गन्ती, अङ्क_frames);
+	स्वतः stats = parser.getStats();
+	EXPECT_EQ(stats.messages_parsed, static_cast<uint32_t>(अङ्क_frames));
 	EXPECT_EQ(stats.bytes_discarded, 0u);
 	EXPECT_EQ(stats.crc_errors, 0u);
 }
@@ -64,11 +64,11 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 {
 	// This tests the pathological case Alex mentioned: lots of invalid data
 	// causing many memmove operations during preamble search
-	const size_t garbage_size = 10000;
+	अचर माप_प्रकार garbage_size = 10000;
 	std::vector<uint8_t> garbage(garbage_size);
 	std::mt19937 rng(99);
 
-	for (auto &byte : garbage) {
+	लागि (स्वतः &byte : garbage) {
 		// Avoid every protocol preamble to ensure maximum discards: 0xD3 (RTCM3)
 		// and 0x73 (SPARTN), which the framer also treats as a frame start when
 		// CONFIG_GPS_SPARTN is enabled.
@@ -76,28 +76,28 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 	}
 
 	// Add in chunks to simulate streaming
-	size_t offset = 0;
+	माप_प्रकार offset = 0;
 
-	while (offset < garbage.size()) {
-		size_t chunk = std::min<size_t>(256, garbage.size() - offset);
+	जबसम्म (offset < garbage.size()) {
+		माप_प्रकार chunk = std::min<माप_प्रकार>(256, garbage.size() - offset);
 		parser.addData(&garbage[offset], chunk);
 
 		// Try to parse (forces discarding)
-		size_t len;
+		माप_प्रकार len;
 		parser.getNextMessage(&len);
 		offset += chunk;
 	}
 
 	// Now add a valid frame
-	auto valid = buildValidFrame(1005, {0x01, 0x02, 0x03});
+	स्वतः valid = buildValidFrame(1005, {0x01, 0x02, 0x03});
 	parser.addData(valid.data(), valid.size());
 
-	size_t len;
-	const uint8_t *msg = parser.getNextMessage(&len);
-	ASSERT_NE(msg, nullptr);
+	माप_प्रकार len;
+	अचर uint8_t *सन्देश = parser.getNextMessage(&len);
+	ASSERT_NE(सन्देश, nullptr);
 
 	parser.consumeMessage(len);
-	auto stats = parser.getStats();
+	स्वतः stats = parser.getStats();
 	EXPECT_EQ(stats.messages_parsed, 1u);
 	EXPECT_EQ(stats.bytes_discarded, garbage_size);
 }
@@ -105,26 +105,26 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 TEST_F(RtcmTest, Stress_InterleavedGarbageAndValid)
 {
 	// Simulate a flaky sender that mixes garbage with valid frames
-	const int num_valid = 100;
-	int parsed = 0;
+	अचर पूर्णाङ्क अङ्क_valid = 100;
+	पूर्णाङ्क parsed = 0;
 
-	for (int i = 0; i < num_valid; i++) {
+	लागि (पूर्णाङ्क i = 0; i < अङ्क_valid; i++) {
 		// Add some garbage (variable amount)
 		std::vector<uint8_t> garbage(10 + (i % 50), 0xAA);
 		parser.addData(garbage.data(), garbage.size());
 
 		// Add valid frame
-		auto frame = buildValidFrame(1005, {static_cast<uint8_t>(i)});
+		स्वतः frame = buildValidFrame(1005, {static_cast<uint8_t>(i)});
 		parser.addData(frame.data(), frame.size());
 
 		// Parse what we can
-		size_t len;
+		माप_प्रकार len;
 
-		while (parser.getNextMessage(&len) != nullptr) {
+		जबसम्म (parser.getNextMessage(&len) != nullptr) {
 			parser.consumeMessage(len);
 			parsed++;
 		}
 	}
 
-	EXPECT_EQ(parsed, num_valid);
+	EXPECT_EQ(parsed, अङ्क_valid);
 }

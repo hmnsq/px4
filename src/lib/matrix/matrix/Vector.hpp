@@ -8,181 +8,181 @@
 
 #pragma once
 
-#include "Matrix.hpp"
+#अन्तर्भाव "Matrix.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
-template<typename Type, size_t M>
-class Vector : public Matrix<Type, M, 1>
+ढाँचा<typename Type, माप_प्रकार M>
+वर्ग Vector : सार्वजनिक Matrix<Type, M, 1>
 {
-public:
+सार्वजनिक:
 	using MatrixM1 = Matrix<Type, M, 1>;
 
-	Vector() = default;
+	Vector() = स्वभाव;
 
-	Vector(const MatrixM1 &other) :
+	Vector(अचर MatrixM1 &other) :
 		MatrixM1(other)
 	{
 	}
 
-	explicit Vector(const Type data_[M]) :
+	explicit Vector(अचर Type data_[M]) :
 		MatrixM1(data_)
 	{
 	}
 
-	template<size_t P, size_t Q>
-	Vector(const Slice<Type, M, 1, P, Q> &slice_in) :
+	ढाँचा<माप_प्रकार P, माप_प्रकार Q>
+	Vector(अचर Slice<Type, M, 1, P, Q> &slice_in) :
 		Matrix<Type, M, 1>(slice_in)
 	{
 	}
 
-	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const Slice<Type, 1, M, P, Q> &slice_in)
+	ढाँचा<माप_प्रकार P, माप_प्रकार Q, माप_प्रकार DUMMY = 1>
+	Vector(अचर Slice<Type, 1, M, P, Q> &slice_in)
 	{
-		Vector &self(*this);
+		Vector &self(*एतत्);
 
-		for (size_t i = 0; i < M; i++) {
+		लागि (माप_प्रकार i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
 
-	template<size_t P, size_t Q>
-	Vector(const ConstSlice<Type, M, 1, P, Q> &slice_in) :
+	ढाँचा<माप_प्रकार P, माप_प्रकार Q>
+	Vector(अचर ConstSlice<Type, M, 1, P, Q> &slice_in) :
 		Matrix<Type, M, 1>(slice_in)
 	{
 	}
 
-	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const ConstSlice<Type, 1, M, P, Q> &slice_in)
+	ढाँचा<माप_प्रकार P, माप_प्रकार Q, माप_प्रकार DUMMY = 1>
+	Vector(अचर ConstSlice<Type, 1, M, P, Q> &slice_in)
 	{
-		Vector &self(*this);
+		Vector &self(*एतत्);
 
-		for (size_t i = 0; i < M; i++) {
+		लागि (माप_प्रकार i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	अन्तःस्थ अचर Type &चालक()(माप_प्रकार i) अचर
 	{
-		assert(i < M);
+		प्रतिज्ञा(i < M);
 
-		const MatrixM1 &v = *this;
-		return v(i, 0);
+		अचर MatrixM1 &v = *एतत्;
+		फर्काऊ v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	अन्तःस्थ Type &चालक()(माप_प्रकार i)
 	{
-		assert(i < M);
+		प्रतिज्ञा(i < M);
 
-		MatrixM1 &v = *this;
-		return v(i, 0);
+		MatrixM1 &v = *एतत्;
+		फर्काऊ v(i, 0);
 	}
 
-	Type dot(const MatrixM1 &b) const
+	Type dot(अचर MatrixM1 &b) अचर
 	{
-		const Vector &a(*this);
+		अचर Vector &a(*एतत्);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		लागि (माप_प्रकार i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		फर्काऊ r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	अन्तःस्थ Type चालक*(अचर MatrixM1 &b) अचर
 	{
-		const Vector &a(*this);
-		return a.dot(b);
+		अचर Vector &a(*एतत्);
+		फर्काऊ a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	अन्तःस्थ Vector चालक*(Type b) अचर
 	{
-		return Vector(MatrixM1::operator*(b));
+		फर्काऊ Vector(MatrixM1::चालक*(b));
 	}
 
-	Type norm() const
+	Type norm() अचर
 	{
-		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		अचर Vector &a(*एतत्);
+		फर्काऊ Type(std::वर्ग_मूल(a.dot(a)));
 	}
 
-	Type norm_squared() const
+	Type norm_squared() अचर
 	{
-		const Vector &a(*this);
-		return a.dot(a);
+		अचर Vector &a(*एतत्);
+		फर्काऊ a.dot(a);
 	}
 
-	inline Type length() const
+	अन्तःस्थ Type length() अचर
 	{
-		return norm();
+		फर्काऊ norm();
 	}
 
-	inline void normalize()
+	अन्तःस्थ शून्य normalize()
 	{
-		(*this) /= norm();
+		(*एतत्) /= norm();
 	}
 
-	Vector unit() const
+	Vector unit() अचर
 	{
-		return (*this) / norm();
+		फर्काऊ (*एतत्) / norm();
 	}
 
-	Vector unit_or_zero(const Type eps = Type(1e-5)) const
+	Vector unit_or_zero(अचर Type eps = Type(1e-5)) अचर
 	{
-		const Type n = norm();
+		अचर Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		यदि (n > eps) {
+			फर्काऊ (*एतत्) / n;
 		}
 
-		return Vector();
+		फर्काऊ Vector();
 	}
 
-	inline Vector normalized() const
+	अन्तःस्थ Vector normalized() अचर
 	{
-		return unit();
+		फर्काऊ unit();
 	}
 
-	bool longerThan(Type testVal) const
+	तार्किक longerThan(Type testVal) अचर
 	{
-		return norm_squared() > testVal * testVal;
+		फर्काऊ norm_squared() > testVal * testVal;
 	}
 
-	Vector sqrt() const
+	Vector वर्ग_मूल() अचर
 	{
-		const Vector &a(*this);
+		अचर Vector &a(*एतत्);
 		Vector r;
 
-		for (size_t i = 0; i < M; i++) {
-			r(i) = Type(std::sqrt(a(i)));
+		लागि (माप_प्रकार i = 0; i < M; i++) {
+			r(i) = Type(std::वर्ग_मूल(a(i)));
 		}
 
-		return r;
+		फर्काऊ r;
 	}
 
-	void print() const
+	शून्य print() अचर
 	{
-		(*this).transpose().print();
+		(*एतत्).transpose().print();
 	}
 
-	static size_t size()
+	स्थिर माप_प्रकार size()
 	{
-		return M;
+		फर्काऊ M;
 	}
 };
 
-template<typename OStream, typename Type, size_t M>
-OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
+ढाँचा<typename OStream, typename Type, माप_प्रकार M>
+OStream &चालक<<(OStream &os, अचर matrix::Vector<Type, M> &vector)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
-	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
+	constexpr माप_प्रकार n = 15 * M * 1 + 1 + 1;
+	वर्ण string[n];
 	vector.transpose().write_string(string, n);
 	os << string;
-	return os;
+	फर्काऊ os;
 }
 
 } // namespace matrix

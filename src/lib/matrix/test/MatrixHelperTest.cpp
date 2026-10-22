@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <matrix/math.hpp>
 
-using namespace matrix;
+using नामाकाश matrix;
 
 TEST(MatrixHelperTest, SignFloat)
 {
 	EXPECT_FLOAT_EQ(sign(-100.f), -1.f);
-	EXPECT_FLOAT_EQ(sign(-FLT_EPSILON), -1.f);
+	EXPECT_FLOAT_EQ(sign(-भग्न_अंतर), -1.f);
 	EXPECT_FLOAT_EQ(sign(0.f), 0.f);
-	EXPECT_FLOAT_EQ(sign(FLT_EPSILON), 1.f);
+	EXPECT_FLOAT_EQ(sign(भग्न_अंतर), 1.f);
 	EXPECT_FLOAT_EQ(sign(100.f), 1.f);
 }
 
@@ -66,11 +66,11 @@ TEST(MatrixHelperTest, Helper)
 	EXPECT_FLOAT_EQ(wrap(-1., 30., 40.), 39.);
 	EXPECT_FLOAT_EQ(wrap(-8000., -555., 1.), -216.);
 	EXPECT_FLOAT_EQ(wrap(0., 0., 360.), 0.);
-	EXPECT_FLOAT_EQ(wrap(0. - FLT_EPSILON, 0., 360.), 360. - FLT_EPSILON);
-	EXPECT_FLOAT_EQ(wrap(0. + FLT_EPSILON, 0., 360.), FLT_EPSILON);
+	EXPECT_FLOAT_EQ(wrap(0. - भग्न_अंतर, 0., 360.), 360. - भग्न_अंतर);
+	EXPECT_FLOAT_EQ(wrap(0. + भग्न_अंतर, 0., 360.), भग्न_अंतर);
 	EXPECT_FLOAT_EQ(wrap(360., 0., 360.), 0.);
-	EXPECT_FLOAT_EQ(wrap(360. - FLT_EPSILON, 0., 360.), 360. - FLT_EPSILON);
-	EXPECT_FLOAT_EQ(wrap(360. + FLT_EPSILON, 0., 360.), FLT_EPSILON);
+	EXPECT_FLOAT_EQ(wrap(360. - भग्न_अंतर, 0., 360.), 360. - भग्न_अंतर);
+	EXPECT_FLOAT_EQ(wrap(360. + भग्न_अंतर, 0., 360.), भग्न_अंतर);
 
 	// integer wraps
 	EXPECT_EQ(wrap(-10, 0, 10), 0);
@@ -87,7 +87,7 @@ TEST(MatrixHelperTest, Helper)
 	EXPECT_FLOAT_EQ(wrap_pi(100.), (100. - 32. * M_PI));
 	EXPECT_FLOAT_EQ(wrap_pi(-100.), (-100. + 32. * M_PI));
 	EXPECT_FLOAT_EQ(wrap_pi(-101.), (-101. + 32. * M_PI));
-	EXPECT_FALSE(std::isfinite(wrap_pi(NAN)));
+	EXPECT_FALSE(std::है_सीमित(wrap_pi(न_अंक)));
 
 	// wrap 2pi
 	EXPECT_FLOAT_EQ(wrap_2pi(0.), 0.);
@@ -95,22 +95,22 @@ TEST(MatrixHelperTest, Helper)
 	EXPECT_FLOAT_EQ(wrap_2pi(3.), (3.));
 	EXPECT_FLOAT_EQ(wrap_2pi(200.), (200. - 31. * (2 * M_PI)));
 	EXPECT_FLOAT_EQ(wrap_2pi(-201.), (-201. + 32. * (2 * M_PI)));
-	EXPECT_FALSE(std::isfinite(wrap_2pi(NAN)));
+	EXPECT_FALSE(std::है_सीमित(wrap_2pi(न_अंक)));
 
 	// Equality checks
 	EXPECT_TRUE(isEqualF(1., 1.));
 	EXPECT_FALSE(isEqualF(1., 2.));
-	EXPECT_FALSE(isEqualF(NAN, 1.f));
-	EXPECT_FALSE(isEqualF(1.f, NAN));
-	EXPECT_FALSE(isEqualF(INFINITY, 1.f));
-	EXPECT_FALSE(isEqualF(1.f, INFINITY));
-	EXPECT_TRUE(isEqualF(NAN, NAN));
-	EXPECT_TRUE(isEqualF(NAN, -NAN));
-	EXPECT_TRUE(isEqualF(-NAN, NAN));
-	EXPECT_TRUE(isEqualF(INFINITY, INFINITY));
-	EXPECT_FALSE(isEqualF(INFINITY, -INFINITY));
-	EXPECT_FALSE(isEqualF(-INFINITY, INFINITY));
-	EXPECT_TRUE(isEqualF(-INFINITY, -INFINITY));
+	EXPECT_FALSE(isEqualF(न_अंक, 1.f));
+	EXPECT_FALSE(isEqualF(1.f, न_अंक));
+	EXPECT_FALSE(isEqualF(अनन्त, 1.f));
+	EXPECT_FALSE(isEqualF(1.f, अनन्त));
+	EXPECT_TRUE(isEqualF(न_अंक, न_अंक));
+	EXPECT_TRUE(isEqualF(न_अंक, -न_अंक));
+	EXPECT_TRUE(isEqualF(-न_अंक, न_अंक));
+	EXPECT_TRUE(isEqualF(अनन्त, अनन्त));
+	EXPECT_FALSE(isEqualF(अनन्त, -अनन्त));
+	EXPECT_FALSE(isEqualF(-अनन्त, अनन्त));
+	EXPECT_TRUE(isEqualF(-अनन्त, -अनन्त));
 
 	Vector3f a(1, 2, 3);
 	Vector3f b(4, 5, 6);
@@ -118,7 +118,7 @@ TEST(MatrixHelperTest, Helper)
 	EXPECT_TRUE(isEqual(a, a));
 
 	Vector3f c(1, 2, 3);
-	Vector3f d(1, 2, NAN);
+	Vector3f d(1, 2, न_अंक);
 	EXPECT_FALSE(isEqual(c, d));
 	EXPECT_TRUE(isEqual(c, c));
 	EXPECT_TRUE(isEqual(d, d));

@@ -39,56 +39,56 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
-template<class Type, size_t M>
-class __EXPORT BlockLowPassVector: public Block
+ढाँचा<वर्ग Type, माप_प्रकार M>
+वर्ग __EXPORT Block_तल्लो_Pass_Vector: सार्वजनिक Block
 {
-public:
+सार्वजनिक:
 // methods
-	BlockLowPassVector(SuperBlock *parent,
-			   const char *name) :
+	Block_तल्लो_Pass_Vector(SuperBlock *parent,
+			   अचर वर्ण *name) :
 		Block(parent, name),
 		_state(),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(एतत्, "") // only one parameter, no need to name
 	{
-		for (size_t i = 0; i < M; i++) {
+		लागि (माप_प्रकार i = 0; i < M; i++) {
 			_state(i) = 0.0f / 0.0f;
 		}
 	}
-	virtual ~BlockLowPassVector() = default;
-	matrix::Vector<Type, M> update(const matrix::Matrix<Type, M, 1> &input)
+	आभास ~Block_तल्लो_Pass_Vector() = स्वभाव;
+	matrix::Vector<Type, M> update(अचर matrix::Matrix<Type, M, 1> &आगत)
 	{
-		for (size_t i = 0; i < M; i++) {
-			if (!PX4_ISFINITE(getState()(i))) {
-				setState(input);
+		लागि (माप_प्रकार i = 0; i < M; i++) {
+			यदि (!PX4_ISFINITE(getState()(i))) {
+				setState(आगत);
 			}
 		}
 
-		float b = 2 * M_PI_F * getFCut() * getDt();
-		float a = b / (1 + b);
-		setState(input * a + getState() * (1 - a));
-		return getState();
+		भिन्न b = 2 * M_PI_F * getFCut() * getDt();
+		भिन्न a = b / (1 + b);
+		setState(आगत * a + getState() * (1 - a));
+		फर्काऊ getState();
 	}
 // accessors
-	matrix::Vector<Type, M> getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(const matrix::Vector<Type, M> &state) { _state = state; }
-private:
+	matrix::Vector<Type, M> getState() { फर्काऊ _state; }
+	भिन्न getFCut() { फर्काऊ _fCut.get(); }
+	शून्य setState(अचर matrix::Vector<Type, M> &state) { _state = state; }
+गुप्त:
 // attributes
 	matrix::Vector<Type, M> _state;
 	control::BlockParamFloat _fCut;
