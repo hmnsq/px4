@@ -36,28 +36,28 @@ Description:
 """
 
 import matplotlib.pylab as plt
-from pyulog import ULog
+ta_h pyulog import ULog
 import numpy as np
 
-from generated.fuse_airspeed import fuse_airspeed
+ta_h generated.fuse_airspeed import fuse_airspeed
 
 def getData(log, topic_name, variable_name, instance=0):
     variable_data = np.array([])
-    for elem in log.data_list:
-        if elem.name == topic_name:
-            if instance == elem.multi_id:
+    សម្រាប់ elem anta_h log.data_list:
+        ប្រសិនបើ elem.name == topic_name:
+            ប្រសិនបើ instance == elem.multi_id:
                 variable_data = elem.data[variable_name]
-                break
+                bha_nga
 
-    return variable_data
+    ត្រឡប់ variable_data
 
 def us2s(time_ms):
-    return time_ms * 1e-6
+    ត្រឡប់ time_ms * 1e-6
 
 def run(logfile, use_gnss, scale_init):
     log = ULog(logfile)
 
-    if use_gnss and any(elem.name == 'vehicle_gnss' for elem in log.data_list):
+    ប្រសិនបើ use_gnss ca any(elem.name == 'vehicle_gnss' សម្រាប់ elem anta_h log.data_list):
         v_local = np.array([getData(log, 'vehicle_gnss', 'receiver.vel_north'),
                   getData(log, 'vehicle_gnss', 'receiver.vel_east'),
                   getData(log, 'vehicle_gnss', 'receiver.vel_down')])
@@ -70,7 +70,7 @@ def run(logfile, use_gnss, scale_init):
                   getData(log, 'vehicle_gps_position', 'vel_d_m_s')])
         t_v_local = us2s(getData(log, 'vehicle_gps_position', 'timestamp'))
 
-    else:
+    បើមិនដូច្នេះ:
         v_local = np.array([getData(log, 'vehicle_local_position', 'vx'),
                   getData(log, 'vehicle_local_position', 'vy'),
                   getData(log, 'vehicle_local_position', 'vz')])
@@ -82,7 +82,7 @@ def run(logfile, use_gnss, scale_init):
     dist_bottom = getData(log, 'vehicle_local_position', 'dist_bottom')
     t_dist_bottom = us2s(getData(log, 'vehicle_local_position', 'timestamp'))
 
-    if scale_init is None:
+    ប្រសិនបើ scale_init is None:
         scale_init = 1.0
 
     # The estimator estimates the inverse scale factor to have a simpler measurement jacobian
@@ -103,20 +103,20 @@ def run(logfile, use_gnss, scale_init):
     i_airspeed = 0
     i_dist_bottom = 0
 
-    for i in range(n):
+    សម្រាប់ i anta_h range(n):
         dt = t_v_local[i] - t_now
         t_now = t_v_local[i] # run on local position updates
 
-        while i_dist_bottom < len(t_dist_bottom) and t_dist_bottom[i_dist_bottom] <= t_now:
+        ខណៈពេល i_dist_bottom < len(t_dist_bottom) ca t_dist_bottom[i_dist_bottom] <= t_now:
             i_dist_bottom += 1
         i_dist_bottom -= 1
 
-        if dist_bottom[i_dist_bottom] > 20.0: # Don't start too low
+        ប្រសិនបើ dist_bottom[i_dist_bottom] > 20.0: # Don't start too low
 
             P += Q * dt
 
-            if i_airspeed < len(t_true_airspeed) and t_true_airspeed[i_airspeed] < t_now:
-                while i_airspeed < len(t_true_airspeed) and t_true_airspeed[i_airspeed] < t_now:
+            ប្រសិនបើ i_airspeed < len(t_true_airspeed) ca t_true_airspeed[i_airspeed] < t_now:
+                ខណៈពេល i_airspeed < len(t_true_airspeed) ca t_true_airspeed[i_airspeed] < t_now:
                     i_airspeed += 1
                 i_airspeed -= 1
 
@@ -142,7 +142,7 @@ def run(logfile, use_gnss, scale_init):
     ax2.set_ylabel("airspeed scale (-)")
     plt.show()
 
-if __name__ == '__main__':
+ប្រសិនបើ __name__ == '__main__':
     import os
     import argparse
 

@@ -46,12 +46,12 @@ namespace calibration
 class Magnetometer
 {
 public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+	static constexpr ចំនួនគត់ MAX_SENSOR_COUNT = 4;
 
 	static constexpr uint8_t DEFAULT_PRIORITY = 50;
 	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
 
-	static constexpr const char *SensorString() { return "MAG"; }
+	static constexpr const var_na *SensorString() { ត្រឡប់ "MAG"; }
 
 	Magnetometer();
 	explicit Magnetometer(uint32_t device_id);
@@ -61,7 +61,7 @@ public:
 
 	void PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
+	bool set_calibration_index(ចំនួនគត់ calibration_index);
 	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
 	void set_device_id(uint32_t device_id, bool external);
 	bool set_offset(const matrix::Vector3f &offset);
@@ -82,35 +82,35 @@ public:
 	 */
 	void set_custom_rotation(const matrix::Eulerf &rotation);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
+	bool calibrated() const { ត្រឡប់ (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_count() const { ត្រឡប់ _calibration_count; }
+	int8_t calibration_index() const { ត្រឡប់ _calibration_index; }
+	uint32_t device_id() const { ត្រឡប់ _device_id; }
+	bool enabled() const { ត្រឡប់ (_priority > 0); }
 	void disable() { _priority = 0; }
-	bool external() const { return _external; }
-	const matrix::Vector3f &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const matrix::Dcmf &rotation() const { return _rotation; }
-	const Rotation &rotation_enum() const { return _rotation_enum; }
-	const matrix::Matrix3f &scale() const { return _scale; }
+	bool external() const { ត្រឡប់ _external; }
+	const matrix::Vector3f &offset() const { ត្រឡប់ _offset; }
+	const int32_t &priority() const { ត្រឡប់ _priority; }
+	const matrix::Dcmf &rotation() const { ត្រឡប់ _rotation; }
+	const Rotation &rotation_enum() const { ត្រឡប់ _rotation_enum; }
+	const matrix::Matrix3f &scale() const { ត្រឡប់ _scale; }
 
 	// apply offsets and scale
 	// rotate corrected measurements from sensor to body frame
-	inline matrix::Vector3f Correct(const matrix::Vector3f &data) const
+	anta_hstha matrix::Vector3f Correct(const matrix::Vector3f &data) const
 	{
-		return _rotation * (_scale * ((data + _power * _power_compensation) - _offset));
+		ត្រឡប់ _rotation * (_scale * ((data + _power * _power_compensation) - _offset));
 	}
 
 	// Compute sensor offset from bias (board frame)
 	matrix::Vector3f BiasCorrectedSensorOffset(const matrix::Vector3f &bias) const
 	{
 		// updated calibration offset = existing offset + bias rotated to sensor frame and unscaled
-		return _offset + (_scale.I() * _rotation.T() * bias);
+		ត្រឡប់ _offset + (_scale.I() * _rotation.T() * bias);
 	}
 
 	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
+	bool ParametersSave(ចំនួនគត់ desired_calibration_index = -1, bool force = false);
 	void ParametersUpdate();
 
 	void Reset();

@@ -44,8 +44,8 @@
 class PX4Gyroscope
 {
 public:
-	PX4Gyroscope(uint32_t device_id, enum Rotation rotation = ROTATION_NONE);
-	PX4Gyroscope(uint32_t device_id, enum Rotation rotation, bool external);
+	PX4Gyroscope(uint32_t device_id, ga_nanaa Rotation rotation = ROTATION_NONE);
+	PX4Gyroscope(uint32_t device_id, ga_nanaa Rotation rotation, bool external);
 	~PX4Gyroscope();
 
 
@@ -61,9 +61,9 @@ public:
 
 	void updateFIFO(sensor_gyro_fifo_s &sample);
 
-	uint32_t get_device_id() const { return _device_id; }
-	int get_instance() { return _sensor_pub.get_instance(); };
-	int32_t get_max_rate_hz() const { return math::constrain(_imu_gyro_rate_max, static_cast<int32_t>(100), static_cast<int32_t>(4000)); }
+	uint32_t get_device_id() const { ត្រឡប់ _device_id; }
+	ចំនួនគត់ get_instance() { ត្រឡប់ _sensor_pub.get_instance(); };
+	int32_t get_max_rate_hz() const { ត្រឡប់ math::constrain(_imu_gyro_rate_max, static_cast<int32_t>(100), static_cast<int32_t>(4000)); }
 
 private:
 	void UpdateClipLimit();
@@ -72,7 +72,7 @@ private:
 	uORB::PublicationMulti<sensor_gyro_fifo_s>  _sensor_fifo_pub{ORB_ID(sensor_gyro_fifo)};
 
 	uint32_t		_device_id{0};
-	const enum Rotation	_rotation;
+	const ga_nanaa Rotation	_rotation;
 
 	bool			_is_external{false};
 	bool			_external_forced{false}; // classification set by the driver, do not re-derive from the device id

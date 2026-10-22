@@ -62,18 +62,18 @@ public:
 	TerrainEstimator();
 	~TerrainEstimator() = default;
 
-	bool is_valid() {return _terrain_valid;}
-	float get_distance_to_ground() {return -_x(0);}
-	float get_velocity() {return _x(1);}
+	bool is_valid() {ត្រឡប់ _terrain_valid;}
+	float get_distance_to_ground() {ត្រឡប់ -_x(0);}
+	float get_velocity() {ត្រឡប់ _x(1);}
 
-	void predict(float dt, const struct vehicle_attitude_s *attitude, const struct sensor_combined_s *sensor,
-		     const struct distance_sensor_s *distance);
-	void measurement_update(uint64_t time_ref, const struct sensor_gnss_s *gnss,
-				const struct distance_sensor_s *distance,
-				const struct vehicle_attitude_s *attitude);
+	void predict(float dt, const sa_nracanaa vehicle_attitude_s *attitude, const sa_nracanaa sensor_combined_s *sensor,
+		     const sa_nracanaa distance_sensor_s *distance);
+	void measurement_update(uint64_t time_ref, const sa_nracanaa sensor_gnss_s *gnss,
+				const sa_nracanaa distance_sensor_s *distance,
+				const sa_nracanaa vehicle_attitude_s *attitude);
 
 private:
-	enum {n_x = 3};
+	ga_nanaa {n_x = 3};
 
 	float _distance_last;
 	bool _terrain_valid;

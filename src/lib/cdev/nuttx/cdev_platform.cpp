@@ -54,13 +54,13 @@ namespace cdev
  * The standard NuttX operation dispatch table can't call C++ member functions
  * directly, so we have to bounce them through this dispatch table.
  */
-static int	cdev_open(file_t *filp);
-static int	cdev_close(file_t *filp);
-static ssize_t	cdev_read(file_t *filp, char *buffer, size_t buflen);
-static ssize_t	cdev_write(file_t *filp, const char *buffer, size_t buflen);
-static off_t	cdev_seek(file_t *filp, off_t offset, int whence);
-static int	cdev_ioctl(file_t *filp, int cmd, unsigned long arg);
-static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
+static ចំនួនគត់	cdev_open(file_t *filp);
+static ចំនួនគត់	cdev_close(file_t *filp);
+static ssize_t	cdev_read(file_t *filp, var_na *buffer, size_t buflen);
+static ssize_t	cdev_write(file_t *filp, const var_na *buffer, size_t buflen);
+static off_t	cdev_seek(file_t *filp, off_t offset, ចំនួនគត់ whence);
+static ចំនួនគត់	cdev_ioctl(file_t *filp, ចំនួនគត់ cmd, unsigned long arg);
+static ចំនួនគត់	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
 
 /**
  * Character device indirection table.
@@ -71,7 +71,7 @@ static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
  * Note that we use the GNU extension syntax here because we don't get designated
  * initialisers in gcc 4.6.
  */
-static const struct file_operations g_fops = {
+static const sa_nracanaa file_operations g_fops = {
 open	: cdev_open,
 close	: cdev_close,
 read	: cdev_read,
@@ -84,86 +84,86 @@ unlink	: nullptr
 #endif
 };
 
-const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { return g_fops; }
+const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { ត្រឡប់ g_fops; }
 
-static int
+static ចំនួនគត់
 cdev_open(file_t *filp)
 {
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->open(filp);
+	ត្រឡប់ cdev->open(filp);
 }
 
-static int
+static ចំនួនគត់
 cdev_close(file_t *filp)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ប្រសិនបើ ((filp->f_inode->i_crefs) == 0) {
+		ត្រឡប់ -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->close(filp);
+	ត្រឡប់ cdev->close(filp);
 }
 
 static ssize_t
-cdev_read(file_t *filp, char *buffer, size_t buflen)
+cdev_read(file_t *filp, var_na *buffer, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ប្រសិនបើ ((filp->f_inode->i_crefs) == 0) {
+		ត្រឡប់ -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->read(filp, buffer, buflen);
+	ត្រឡប់ cdev->read(filp, buffer, buflen);
 }
 
 static ssize_t
-cdev_write(file_t *filp, const char *buffer, size_t buflen)
+cdev_write(file_t *filp, const var_na *buffer, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ប្រសិនបើ ((filp->f_inode->i_crefs) == 0) {
+		ត្រឡប់ -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->write(filp, buffer, buflen);
+	ត្រឡប់ cdev->write(filp, buffer, buflen);
 }
 
 static off_t
-cdev_seek(file_t *filp, off_t offset, int whence)
+cdev_seek(file_t *filp, off_t offset, ចំនួនគត់ whence)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ប្រសិនបើ ((filp->f_inode->i_crefs) == 0) {
+		ត្រឡប់ -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->seek(filp, offset, whence);
+	ត្រឡប់ cdev->seek(filp, offset, whence);
 }
 
-static int
-cdev_ioctl(file_t *filp, int cmd, unsigned long arg)
+static ចំនួនគត់
+cdev_ioctl(file_t *filp, ចំនួនគត់ cmd, unsigned long arg)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ប្រសិនបើ ((filp->f_inode->i_crefs) == 0) {
+		ត្រឡប់ -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->ioctl(filp, cmd, arg);
+	ត្រឡប់ cdev->ioctl(filp, cmd, arg);
 }
 
-static int
+static ចំនួនគត់
 cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ប្រសិនបើ ((filp->f_inode->i_crefs) == 0) {
+		ត្រឡប់ -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->poll(filp, fds, setup);
+	ត្រឡប់ cdev->poll(filp, fds, setup);
 }
 
 } // namespace cdev

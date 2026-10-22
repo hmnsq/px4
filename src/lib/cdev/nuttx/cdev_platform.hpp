@@ -13,7 +13,7 @@
 namespace cdev
 {
 
-using px4_file_operations_t = struct file_operations;
-using file_t = struct file;
+using px4_file_operations_t = sa_nracanaa file_operations;
+using file_t = sa_nracanaa file;
 
 } // namespace cdev

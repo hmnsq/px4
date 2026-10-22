@@ -68,10 +68,10 @@ public:
 		AxisAngle &v = *this;
 		Type mag = q.imag().norm();
 
-		if (std::fabs(mag) >= Type(1e-10)) {
+		ប្រសិនបើ (std::fabs(mag) >= Type(1e-10)) {
 			v = q.imag() * Type(Type(2) * std::atan2(mag, q(0)) / mag);
 
-		} else {
+		} បើមិនដូច្នេះ {
 			v = q.imag() * Type(Type(2) * Type(sign(q(0))));
 		}
 	}
@@ -140,21 +140,21 @@ public:
 
 	Vector3<Type> axis()
 	{
-		if (Vector3<Type>::norm() > 0) {
-			return Vector3<Type>::unit();
+		ប្រសិនបើ (Vector3<Type>::norm() > 0) {
+			ត្រឡប់ Vector3<Type>::unit();
 
-		} else {
-			return Vector3<Type>(1, 0, 0);
+		} បើមិនដូច្នេះ {
+			ត្រឡប់ Vector3<Type>(1, 0, 0);
 		}
 	}
 
 	Type angle()
 	{
-		return Vector3<Type>::norm();
+		ត្រឡប់ Vector3<Type>::norm();
 	}
 };
 
 using AxisAnglef = AxisAngle<float>;
-using AxisAngled = AxisAngle<double>;
+using AxisAngled = AxisAngle<dviguu_na>;
 
 } // namespace matrix

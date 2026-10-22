@@ -37,17 +37,17 @@ TEST_F(RtcmTest, Stress_ManySmallValidFrames)
 {
 	// Simulate a good sender sending many small messages
 	// Process as we go to avoid buffer overflow
-	const int num_frames = 1000;
-	int count = 0;
+	const ចំនួនគត់ num_frames = 1000;
+	ចំនួនគត់ count = 0;
 
-	for (int i = 0; i < num_frames; i++) {
+	សម្រាប់ (ចំនួនគត់ i = 0; i < num_frames; i++) {
 		auto frame = buildValidFrame(1005 + (i % 100), {static_cast<uint8_t>(i & 0xFF)});
 		parser.addData(frame.data(), frame.size());
 
 		// Consume available messages after each add
 		size_t len;
 
-		while (parser.getNextMessage(&len) != nullptr) {
+		ខណៈពេល (parser.getNextMessage(&len) != nullptr) {
 			parser.consumeMessage(len);
 			count++;
 		}
@@ -68,7 +68,7 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 	std::vector<uint8_t> garbage(garbage_size);
 	std::mt19937 rng(99);
 
-	for (auto &byte : garbage) {
+	សម្រាប់ (auto &byte : garbage) {
 		// Avoid every protocol preamble to ensure maximum discards: 0xD3 (RTCM3)
 		// and 0x73 (SPARTN), which the framer also treats as a frame start when
 		// CONFIG_GPS_SPARTN is enabled.
@@ -78,7 +78,7 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 	// Add in chunks to simulate streaming
 	size_t offset = 0;
 
-	while (offset < garbage.size()) {
+	ខណៈពេល (offset < garbage.size()) {
 		size_t chunk = std::min<size_t>(256, garbage.size() - offset);
 		parser.addData(&garbage[offset], chunk);
 
@@ -105,10 +105,10 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 TEST_F(RtcmTest, Stress_InterleavedGarbageAndValid)
 {
 	// Simulate a flaky sender that mixes garbage with valid frames
-	const int num_valid = 100;
-	int parsed = 0;
+	const ចំនួនគត់ num_valid = 100;
+	ចំនួនគត់ parsed = 0;
 
-	for (int i = 0; i < num_valid; i++) {
+	សម្រាប់ (ចំនួនគត់ i = 0; i < num_valid; i++) {
 		// Add some garbage (variable amount)
 		std::vector<uint8_t> garbage(10 + (i % 50), 0xAA);
 		parser.addData(garbage.data(), garbage.size());
@@ -120,7 +120,7 @@ TEST_F(RtcmTest, Stress_InterleavedGarbageAndValid)
 		// Parse what we can
 		size_t len;
 
-		while (parser.getNextMessage(&len) != nullptr) {
+		ខណៈពេល (parser.getNextMessage(&len) != nullptr) {
 			parser.consumeMessage(len);
 			parsed++;
 		}

@@ -36,10 +36,10 @@
 
 using namespace matrix;
 
-int test_4x3(void);
-template<typename Type> int test_4x4(void);
-int test_4x4_type_double(void);
-int test_div_zero(void);
+ចំនួនគត់ test_4x3(void);
+template<typename Type> ចំនួនគត់ test_4x4(void);
+ចំនួនគត់ test_4x4_type_double(void);
+ចំនួនគត់ test_div_zero(void);
 
 TEST(MatrixLeastSquaresTest, 4x3)
 {

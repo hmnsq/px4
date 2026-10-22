@@ -49,88 +49,88 @@ bool __EXPORT equal(float a, float b, float epsilon)
 {
 	float diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	ប្រសិនបើ (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ត្រឡប់ false;
 
-	} else { return true; }
+	} បើមិនដូច្នេះ { ត្រឡប់ true; }
 }
 
 bool __EXPORT greater_than(float a, float b)
 {
-	if (a > b) {
-		return true;
+	ប្រសិនបើ (a > b) {
+		ត្រឡប់ true;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} បើមិនដូច្នេះ {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ត្រឡប់ false;
 	}
 }
 
 bool __EXPORT less_than(float a, float b)
 {
-	if (a < b) {
-		return true;
+	ប្រសិនបើ (a < b) {
+		ត្រឡប់ true;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} បើមិនដូច្នេះ {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ត្រឡប់ false;
 	}
 }
 
 bool __EXPORT greater_than_or_equal(float a, float b)
 {
-	if (a >= b) {
-		return true;
+	ប្រសិនបើ (a >= b) {
+		ត្រឡប់ true;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} បើមិនដូច្នេះ {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ត្រឡប់ false;
 	}
 }
 
 bool __EXPORT less_than_or_equal(float a, float b)
 {
-	if (a <= b) {
-		return true;
+	ប្រសិនបើ (a <= b) {
+		ត្រឡប់ true;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} បើមិនដូច្នេះ {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ត្រឡប់ false;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+void __EXPORT float2SigExp(const float &num, float &sig, ចំនួនគត់ &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	ប្រសិនបើ (!PX4_ISFINITE(num)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		ត្រឡប់;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	ប្រសិនបើ (fabsf(num) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		ត្រឡប់;
 	}
 
 	exp = log10f(fabsf(num));
 
-	if (exp > 0) {
+	ប្រសិនបើ (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} បើមិនដូច្នេះ {
 		exp = floor(exp);
 	}
 
 	sig = num;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	ប្រសិនបើ (exp > 0) {
+		សម្រាប់ (ចំនួនគត់ i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} បើមិនដូច្នេះ {
+		សម្រាប់ (ចំនួនគត់ i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

@@ -44,25 +44,25 @@
 #include <stdio.h>
 #include <string.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+static ចំនួនគត់ daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-extern "C" __EXPORT int cdev_test_main(int argc, char *argv[]);
-int cdev_test_main(int argc, char *argv[])
+extern "C" __EXPORT ចំនួនគត់ cdev_test_main(ចំនួនគត់ argc, var_na *argv[]);
+ចំនួនគត់ cdev_test_main(ចំនួនគត់ argc, var_na *argv[])
 {
 
-	if (argc < 2) {
+	ប្រសិនបើ (argc < 2) {
 		printf("usage: cdevtest {start|stop|status}\n");
-		return 1;
+		ត្រឡប់ 1;
 	}
 
-	if (!strcmp(argv[1], "start")) {
+	ប្រសិនបើ (!strcmp(argv[1], "start")) {
 
-		if (CDevExample::appState.isRunning()) {
+		ប្រសិនបើ (CDevExample::appState.isRunning()) {
 			printf("already running\n");
 			/* this is not an error */
-			return 0;
+			ត្រឡប់ 0;
 		}
 
 		daemon_task = px4_task_spawn_cmd("cdevtest",
@@ -70,27 +70,27 @@ int cdev_test_main(int argc, char *argv[])
 						 SCHED_PRIORITY_MAX - 5,
 						 2000,
 						 PX4_MAIN,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+						 (argv) ? (var_na *const *)&argv[2] : (var_na *const *)nullptr);
 
-		return 0;
+		ត្រឡប់ 0;
 	}
 
-	if (!strcmp(argv[1], "stop")) {
+	ប្រសិនបើ (!strcmp(argv[1], "stop")) {
 		CDevExample::appState.requestExit();
-		return 0;
+		ត្រឡប់ 0;
 	}
 
-	if (!strcmp(argv[1], "status")) {
-		if (CDevExample::appState.isRunning()) {
+	ប្រសិនបើ (!strcmp(argv[1], "status")) {
+		ប្រសិនបើ (CDevExample::appState.isRunning()) {
 			printf("is running\n");
 
-		} else {
+		} បើមិនដូច្នេះ {
 			printf("not started\n");
 		}
 
-		return 0;
+		ត្រឡប់ 0;
 	}
 
 	printf("usage: cdevtest_main {start|stop|status}\n");
-	return 1;
+	ត្រឡប់ 1;
 }

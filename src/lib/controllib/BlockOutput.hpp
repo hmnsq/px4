@@ -61,7 +61,7 @@ class __EXPORT BlockOutput: public SuperBlock
 {
 public:
 // methods
-	BlockOutput(SuperBlock *parent, const char *name) :
+	BlockOutput(SuperBlock *parent, const var_na *name) :
 		SuperBlock(parent, name),
 		_trim(this, "TRIM"),
 		_limit(this, ""),
@@ -76,10 +76,10 @@ public:
 		_val = _limit.update(input + getTrim());
 	}
 // accessors
-	float getMin() { return _limit.getMin(); }
-	float getMax() { return _limit.getMax(); }
-	float getTrim() { return _trim.get(); }
-	float get() { return _val; }
+	float getMin() { ត្រឡប់ _limit.getMin(); }
+	float getMax() { ត្រឡប់ _limit.getMax(); }
+	float getTrim() { ត្រឡប់ _trim.get(); }
+	float get() { ត្រឡប់ _val; }
 private:
 // attributes
 	control::BlockParamFloat _trim;

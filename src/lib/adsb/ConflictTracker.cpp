@@ -48,7 +48,7 @@ namespace
 
 void append_change(conflict_tracker_changes_s &changes, const conflict_tracker_change_s &change)
 {
-	if (!changes.push_back(change)) {
+	ប្រសិនបើ (!changes.push_back(change)) {
 		PX4_ERR("DAA: conflict changes overflow");
 	}
 }
@@ -75,45 +75,45 @@ void record_removed(conflict_tracker_changes_s &changes, const conflict_info_s &
 
 bool ConflictTracker::apply_conflict(const conflict_info_s &conflict, conflict_tracker_changes_s &changes)
 {
-	if (conflict.encoded_id.id == 0
+	ប្រសិនបើ (conflict.encoded_id.id == 0
 	    || conflict.conflict_level > detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL
 	    || !PX4_ISFINITE(conflict.aircraft_dist)
 	    || conflict.aircraft_dist < 0.f) {
 		PX4_ERR("DAA: invalid conflict");
-		return false;
+		ត្រឡប់ false;
 	}
 
-	const int conflict_idx = find_conflict_idx(conflict.encoded_id);
+	const ចំនួនគត់ conflict_idx = find_conflict_idx(conflict.encoded_id);
 
-	if (conflict_idx < 0) {
-		if (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
-			return false;
+	ប្រសិនបើ (conflict_idx < 0) {
+		ប្រសិនបើ (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
+			ត្រឡប់ false;
 		}
 
-		return add_conflict(conflict, changes);
+		ត្រឡប់ add_conflict(conflict, changes);
 	}
 
-	return update_conflict(conflict, conflict_idx, changes);
+	ត្រឡប់ update_conflict(conflict, conflict_idx, changes);
 }
 
 bool ConflictTracker::add_conflict(const conflict_info_s &conflict, conflict_tracker_changes_s &changes)
 {
-	if (_buffer.size() < _buffer.max_size()) {
+	ប្រសិនបើ (_buffer.size() < _buffer.max_size()) {
 		_buffer.push_back(conflict);
 
 		conflict_tracker_change_s change{};
 		change.type = ConflictTrackerChangeType::kConflictAdded;
 		change.conflict = conflict;
 		append_change(changes, change);
-		return true;
+		ត្រឡប់ true;
 	}
 
-	const int least_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kLeastUrgent);
+	const ចំនួនគត់ least_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kLeastUrgent);
 
-	if (!is_conflict_more_important(conflict, _buffer[least_urgent_conflict_idx])) {
+	ប្រសិនបើ (!is_conflict_more_important(conflict, _buffer[least_urgent_conflict_idx])) {
 		PX4_DEBUG("DAA: new conflict does not outrank tracked conflicts, ignoring.");
 		record_ignored(changes, conflict, IgnoreTrafficCause::kBufferFull);
-		return false;
+		ត្រឡប់ false;
 	}
 
 	const conflict_info_s removed_conflict = _buffer[least_urgent_conflict_idx];
@@ -124,29 +124,29 @@ bool ConflictTracker::add_conflict(const conflict_info_s &conflict, conflict_tra
 	change.type = ConflictTrackerChangeType::kConflictAdded;
 	change.conflict = conflict;
 	append_change(changes, change);
-	return true;
+	ត្រឡប់ true;
 }
 
-bool ConflictTracker::update_conflict(const conflict_info_s &conflict, const int conflict_idx,
+bool ConflictTracker::update_conflict(const conflict_info_s &conflict, const ចំនួនគត់ conflict_idx,
 				      conflict_tracker_changes_s &changes)
 {
 	const uint8_t previous_conflict_level = _buffer[conflict_idx].conflict_level;
 
-	if (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
+	ប្រសិនបើ (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
 		PX4_DEBUG("DAA: Conflict avoided");
 		_buffer.remove(conflict_idx);
 
-	} else {
+	} បើមិនដូច្នេះ {
 		_buffer[conflict_idx] = conflict;
 	}
 
-	if (conflict.conflict_level != previous_conflict_level) {
+	ប្រសិនបើ (conflict.conflict_level != previous_conflict_level) {
 		conflict_tracker_change_s change{};
 		change.type = ConflictTrackerChangeType::kConflictLevelChanged;
 		change.conflict = conflict;
 		change.previous_level = previous_conflict_level;
 
-		const int most_urgent_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
+		const ចំនួនគត់ most_urgent_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
 		change.conflict_is_most_urgent = (_most_urgent.encoded_id == conflict.encoded_id)
 						 || (is_valid_idx(most_urgent_idx)
 						     && _buffer[most_urgent_idx].encoded_id == conflict.encoded_id);
@@ -154,19 +154,19 @@ bool ConflictTracker::update_conflict(const conflict_info_s &conflict, const int
 		append_change(changes, change);
 	}
 
-	return true;
+	ត្រឡប់ true;
 }
 
 bool ConflictTracker::remove_stale_conflicts(const hrt_abstime now, const hrt_abstime timeout_us,
 		conflict_tracker_changes_s &changes)
 {
-	int nb_conflicts_removed = 0;
+	ចំនួនគត់ nb_conflicts_removed = 0;
 
 	// Iterate backwards because Array::remove() shifts later entries left.
-	for (int idx = (static_cast<int>(_buffer.size()) - 1); idx >= 0; --idx) {
+	សម្រាប់ (ចំនួនគត់ idx = (static_cast<ចំនួនគត់>(_buffer.size()) - 1); idx >= 0; --idx) {
 		const hrt_abstime latest_update = _buffer[idx].latest_update_timestamp;
 
-		if (latest_update == 0 || latest_update > now || (now - latest_update) > timeout_us) {
+		ប្រសិនបើ (latest_update == 0 || latest_update > now || (now - latest_update) > timeout_us) {
 			const conflict_info_s removed_conflict = _buffer[idx];
 			_buffer.remove(idx);
 			record_removed(changes, removed_conflict, RemoveBufferCause::kStaleConflict);
@@ -174,11 +174,11 @@ bool ConflictTracker::remove_stale_conflicts(const hrt_abstime now, const hrt_ab
 		}
 	}
 
-	if (nb_conflicts_removed > 0) {
+	ប្រសិនបើ (nb_conflicts_removed > 0) {
 		PX4_DEBUG("DAA: removed %d stale conflicts from buffer", nb_conflicts_removed);
 	}
 
-	return nb_conflicts_removed > 0;
+	ត្រឡប់ nb_conflicts_removed > 0;
 }
 
 void ConflictTracker::clear()
@@ -197,10 +197,10 @@ void ConflictTracker::reset_most_urgent()
 
 void ConflictTracker::refresh_most_urgent()
 {
-	if (_buffer.empty()) {
+	ប្រសិនបើ (_buffer.empty()) {
 		PX4_DEBUG("DAA: refresh_most_urgent empty buffer.");
 		reset_most_urgent();
-		return;
+		ត្រឡប់;
 	}
 
 	_most_urgent = find_most_urgent();
@@ -208,76 +208,76 @@ void ConflictTracker::refresh_most_urgent()
 
 conflict_info_s ConflictTracker::find_most_urgent() const
 {
-	const int most_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
+	const ចំនួនគត់ most_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
 
-	if (!is_valid_idx(most_urgent_conflict_idx)) {
-		return {};
+	ប្រសិនបើ (!is_valid_idx(most_urgent_conflict_idx)) {
+		ត្រឡប់ {};
 	}
 
-	return _buffer[most_urgent_conflict_idx];
+	ត្រឡប់ _buffer[most_urgent_conflict_idx];
 }
 
 conflict_info_s ConflictTracker::get_conflict(const DaaEncodedId &encoded_id) const
 {
-	const int conflict_idx = find_conflict_idx(encoded_id);
+	const ចំនួនគត់ conflict_idx = find_conflict_idx(encoded_id);
 
-	if (!is_valid_idx(conflict_idx)) {
-		return {};
+	ប្រសិនបើ (!is_valid_idx(conflict_idx)) {
+		ត្រឡប់ {};
 	}
 
-	return _buffer[conflict_idx];
+	ត្រឡប់ _buffer[conflict_idx];
 }
 
-int ConflictTracker::find_conflict_idx_by_priority(const ConflictPriority priority) const
+ចំនួនគត់ ConflictTracker::find_conflict_idx_by_priority(const ConflictPriority priority) const
 {
-	const int buff_size = static_cast<int>(_buffer.size());
+	const ចំនួនគត់ buff_size = static_cast<ចំនួនគត់>(_buffer.size());
 
-	if (buff_size < 1) {
-		return -1;
+	ប្រសិនបើ (buff_size < 1) {
+		ត្រឡប់ -1;
 	}
 
-	int best_idx = 0;
+	ចំនួនគត់ best_idx = 0;
 
-	for (int i = 1; i < buff_size; ++i) {
+	សម្រាប់ (ចំនួនគត់ i = 1; i < buff_size; ++i) {
 		const bool is_better = (priority == ConflictPriority::kMostUrgent)
 				       ? is_conflict_more_important(_buffer[i], _buffer[best_idx])
 				       : is_conflict_less_important(_buffer[i], _buffer[best_idx]);
 
-		if (is_better) {
+		ប្រសិនបើ (is_better) {
 			best_idx = i;
 		}
 	}
 
-	return best_idx;
+	ត្រឡប់ best_idx;
 }
 
-int ConflictTracker::find_conflict_idx(const DaaEncodedId &encoded_id) const
+ចំនួនគត់ ConflictTracker::find_conflict_idx(const DaaEncodedId &encoded_id) const
 {
-	for (size_t i = 0; i < _buffer.size(); i++) {
-		if (_buffer[i].encoded_id == encoded_id) {
-			return static_cast<int>(i);
+	សម្រាប់ (size_t i = 0; i < _buffer.size(); i++) {
+		ប្រសិនបើ (_buffer[i].encoded_id == encoded_id) {
+			ត្រឡប់ static_cast<ចំនួនគត់>(i);
 		}
 	}
 
-	return -1;
+	ត្រឡប់ -1;
 }
 
 bool ConflictTracker::is_conflict_less_important(const conflict_info_s &new_conflict,
 		const conflict_info_s &base_conflict)
 {
-	if (new_conflict.conflict_level != base_conflict.conflict_level) {
-		return new_conflict.conflict_level < base_conflict.conflict_level;
+	ប្រសិនបើ (new_conflict.conflict_level != base_conflict.conflict_level) {
+		ត្រឡប់ new_conflict.conflict_level < base_conflict.conflict_level;
 	}
 
-	return new_conflict.aircraft_dist > base_conflict.aircraft_dist;
+	ត្រឡប់ new_conflict.aircraft_dist > base_conflict.aircraft_dist;
 }
 
 bool ConflictTracker::is_conflict_more_important(const conflict_info_s &new_conflict,
 		const conflict_info_s &base_conflict)
 {
-	if (new_conflict.conflict_level != base_conflict.conflict_level) {
-		return new_conflict.conflict_level > base_conflict.conflict_level;
+	ប្រសិនបើ (new_conflict.conflict_level != base_conflict.conflict_level) {
+		ត្រឡប់ new_conflict.conflict_level > base_conflict.conflict_level;
 	}
 
-	return new_conflict.aircraft_dist < base_conflict.aircraft_dist;
+	ត្រឡប់ new_conflict.aircraft_dist < base_conflict.aircraft_dist;
 }

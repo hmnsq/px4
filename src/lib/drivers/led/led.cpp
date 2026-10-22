@@ -52,9 +52,9 @@
  */
 __BEGIN_DECLS
 extern void led_init();
-extern void led_on(int led);
-extern void led_off(int led);
-extern void led_toggle(int led);
+extern void led_on(ចំនួនគត់ led);
+extern void led_off(ចំនួនគត់ led);
+extern void led_toggle(ចំនួនគត់ led);
 __END_DECLS
 
 class LED : cdev::CDev
@@ -63,8 +63,8 @@ public:
 	LED();
 	~LED() override = default;
 
-	int	init() override;
-	int	ioctl(cdev::file_t *filp, int cmd, unsigned long arg) override;
+	ចំនួនគត់	init() override;
+	ចំនួនគត់	ioctl(cdev::file_t *filp, ចំនួនគត់ cmd, unsigned long arg) override;
 };
 
 LED::LED() : CDev(LED0_DEVICE_PATH)
@@ -73,7 +73,7 @@ LED::LED() : CDev(LED0_DEVICE_PATH)
 	init();
 }
 
-int
+ចំនួនគត់
 LED::init()
 {
 	PX4_DEBUG("LED::init");
@@ -82,32 +82,32 @@ LED::init()
 
 	led_init();
 
-	return 0;
+	ត្រឡប់ 0;
 }
 
-int
-LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
+ចំនួនគត់
+LED::ioctl(cdev::file_t *filp, ចំនួនគត់ cmd, unsigned long arg)
 {
-	int result = OK;
+	ចំនួនគត់ result = OK;
 
 	switch (cmd) {
-	case LED_ON:
+	pak_sa LED_ON:
 		led_on(arg);
-		break;
+		bha_nga;
 
-	case LED_OFF:
+	pak_sa LED_OFF:
 		led_off(arg);
-		break;
+		bha_nga;
 
-	case LED_TOGGLE:
+	pak_sa LED_TOGGLE:
 		led_toggle(arg);
-		break;
+		bha_nga;
 
 	default:
 		result = CDev::ioctl(filp, cmd, arg);
 	}
 
-	return result;
+	ត្រឡប់ result;
 }
 
 namespace
@@ -118,7 +118,7 @@ LED	*gLED;
 void
 drv_led_start(void)
 {
-	if (gLED == nullptr) {
+	ប្រសិនបើ (gLED == nullptr) {
 		gLED = new LED;
 	}
 }

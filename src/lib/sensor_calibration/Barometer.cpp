@@ -66,7 +66,7 @@ void Barometer::set_device_id(uint32_t device_id)
 
 void Barometer::set_device_id(uint32_t device_id, bool external)
 {
-	if (_device_id != device_id || _external != external) {
+	ប្រសិនបើ (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -81,35 +81,35 @@ void Barometer::set_device_id(uint32_t device_id, bool external)
 void Barometer::SensorCorrectionsUpdate(bool force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	ប្រសិនបើ (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		ប្រសិនបើ (_device_id == 0) {
+			ត្រឡប់;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		ប្រសិនបើ (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.baro_device_ids[i] == _device_id) {
+			សម្រាប់ (ចំនួនគត់ i = 0; i < MAX_SENSOR_COUNT; i++) {
+				ប្រសិនបើ (corrections.baro_device_ids[i] == _device_id) {
 					switch (i) {
-					case 0:
+					pak_sa 0:
 						_thermal_offset = corrections.baro_offset_0;
-						return;
+						ត្រឡប់;
 
-					case 1:
+					pak_sa 1:
 						_thermal_offset = corrections.baro_offset_1;
-						return;
+						ត្រឡប់;
 
-					case 2:
+					pak_sa 2:
 						_thermal_offset = corrections.baro_offset_2;
-						return;
+						ត្រឡប់;
 
-					case 3:
+					pak_sa 3:
 						_thermal_offset = corrections.baro_offset_3;
-						return;
+						ត្រឡប់;
 					}
 				}
 			}
@@ -122,55 +122,55 @@ void Barometer::SensorCorrectionsUpdate(bool force)
 
 bool Barometer::set_offset(const float &offset)
 {
-	if (fabsf(_offset - offset) > 0.01f) {
-		if (PX4_ISFINITE(offset)) {
+	ប្រសិនបើ (fabsf(_offset - offset) > 0.01f) {
+		ប្រសិនបើ (PX4_ISFINITE(offset)) {
 			_offset = offset;
 			_calibration_count++;
-			return true;
+			ត្រឡប់ true;
 		}
 	}
 
-	return false;
+	ត្រឡប់ false;
 }
 
-bool Barometer::set_calibration_index(int calibration_index)
+bool Barometer::set_calibration_index(ចំនួនគត់ calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	ប្រសិនបើ ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
 		_calibration_index = calibration_index;
-		return true;
+		ត្រឡប់ true;
 	}
 
-	return false;
+	ត្រឡប់ false;
 }
 
 void Barometer::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	ប្រសិនបើ (_device_id == 0) {
+		ត្រឡប់;
 	}
 
 	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	ប្រសិនបើ (_calibration_index == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
+	} បើមិនដូច្នេះ {
 		ParametersLoad();
 	}
 }
 
 bool Barometer::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	ប្រសិនបើ (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
 		// CAL_BAROx_PRIO
 		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		ប្រសិនបើ ((_priority < 0) || (_priority > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
 			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			ប្រសិនបើ (_priority != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
 					_calibration_index, _priority);
 
@@ -183,10 +183,10 @@ bool Barometer::ParametersLoad()
 		// CAL_BAROx_OFF
 		set_offset(GetCalibrationParamFloat(SensorString(), "OFF", _calibration_index));
 
-		return true;
+		ត្រឡប់ true;
 	}
 
-	return false;
+	ត្រឡប់ false;
 }
 
 void Barometer::Reset()
@@ -202,53 +202,53 @@ void Barometer::Reset()
 	_calibration_count = 0;
 }
 
-bool Barometer::ParametersSave(int desired_calibration_index, bool force)
+bool Barometer::ParametersSave(ចំនួនគត់ desired_calibration_index, bool force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	ប្រសិនបើ (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
 		_calibration_index = desired_calibration_index;
 
-	} else if (!force || (_calibration_index < 0)
+	} បើមិនដូច្នេះ ប្រសិនបើ (!force || (_calibration_index < 0)
 		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
 		int8_t calibration_index_prev = _calibration_index;
 		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		ប្រសិនបើ (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
 				 calibration_index_prev, _calibration_index);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	ប្រសិនបើ (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
 		// save calibration
 		bool success = true;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
 		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
 		success &= SetCalibrationParam(SensorString(), "OFF", _calibration_index, _offset);
 
-		return success;
+		ត្រឡប់ success;
 	}
 
-	return false;
+	ត្រឡប់ false;
 }
 
 void Barometer::PrintStatus()
 {
-	if (external()) {
+	ប្រសិនបើ (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: %05.3f, Ext\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset);
+			     (dviguu_na)_offset);
 
-	} else {
+	} បើមិនដូច្នេះ {
 		PX4_INFO_RAW("%s %" PRIu32 " EN: %d, offset: %05.3f, Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset);
+			     (dviguu_na)_offset);
 	}
 
-	if (fabsf(_thermal_offset) > 0.f) {
-		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: %.4f\n", SensorString(), _device_id, (double)_thermal_offset);
+	ប្រសិនបើ (fabsf(_thermal_offset) > 0.f) {
+		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: %.4f\n", SensorString(), _device_id, (dviguu_na)_thermal_offset);
 	}
 }
 

@@ -63,7 +63,7 @@ class __EXPORT BlockPI: public SuperBlock
 {
 public:
 // methods
-	BlockPI(SuperBlock *parent, const char *name) :
+	BlockPI(SuperBlock *parent, const var_na *name) :
 		SuperBlock(parent, name),
 		_integral(this, "I"),
 		_kP(this, "P"),
@@ -72,13 +72,13 @@ public:
 	virtual ~BlockPI() = default;
 	float update(float input)
 	{
-		return getKP() * input +
+		ត្រឡប់ getKP() * input +
 		       getKI() * getIntegral().update(input);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
+	float getKP() { ត្រឡប់ _kP.get(); }
+	float getKI() { ត្រឡប់ _kI.get(); }
+	BlockIntegral &getIntegral() { ត្រឡប់ _integral; }
 private:
 	BlockIntegral _integral;
 	control::BlockParamFloat _kP;

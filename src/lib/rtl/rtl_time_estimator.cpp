@@ -63,25 +63,25 @@ rtl_time_estimate_s RtlTimeEstimator::getEstimate() const
 {
 	rtl_time_estimate_s time_estimate{};
 
-	if (_is_valid && PX4_ISFINITE(_time_estimate)) {
+	ប្រសិនបើ (_is_valid && PX4_ISFINITE(_time_estimate)) {
 		time_estimate.valid = true;
 		time_estimate.time_estimate = _time_estimate;
 		// Use actual time estimate to compute the safer time estimate with additional scale factor and a margin
 		time_estimate.safe_time_estimate = _param_rtl_time_factor.get() * _time_estimate + _param_rtl_time_margin.get();
 
-	} else {
+	} បើមិនដូច្នេះ {
 		time_estimate.valid = false;
 	}
 
 	time_estimate.timestamp = hrt_absolute_time();
-	return time_estimate;
+	ត្រឡប់ time_estimate;
 }
 
 void RtlTimeEstimator::update()
 {
 	_wind_sub.update();
 
-	if (_parameter_update_sub.updated()) {
+	ប្រសិនបើ (_parameter_update_sub.updated()) {
 		parameter_update_s param_update;
 		_parameter_update_sub.copy(&param_update);
 
@@ -93,7 +93,7 @@ void RtlTimeEstimator::update()
 
 void RtlTimeEstimator::addVertDistance(float alt)
 {
-	if (PX4_ISFINITE(alt)) {
+	ប្រសិនបើ (PX4_ISFINITE(alt)) {
 		_is_valid = true;
 
 		_time_estimate += calcVertTimeEstimate(alt);
@@ -102,12 +102,12 @@ void RtlTimeEstimator::addVertDistance(float alt)
 
 void RtlTimeEstimator::addDistance(float hor_dist, const matrix::Vector2f &direction, float vert_dist)
 {
-	if (PX4_ISFINITE(hor_dist) && PX4_ISFINITE(vert_dist)) {
+	ប្រសិនបើ (PX4_ISFINITE(hor_dist) && PX4_ISFINITE(vert_dist)) {
 		_is_valid = true;
 
 		float hor_time_estimate{0.f};
 
-		if (hor_dist > FLT_EPSILON && PX4_ISFINITE(hor_dist)) {
+		ប្រសិនបើ (hor_dist > FLT_EPSILON && PX4_ISFINITE(hor_dist)) {
 			hor_time_estimate = hor_dist / getCruiseGroundSpeed(direction.normalized());
 		}
 
@@ -120,10 +120,10 @@ void RtlTimeEstimator::addDistance(float hor_dist, const matrix::Vector2f &direc
 
 void RtlTimeEstimator::addWait(float time_s)
 {
-	if (PX4_ISFINITE(time_s)) {
+	ប្រសិនបើ (PX4_ISFINITE(time_s)) {
 		_is_valid = true;
 
-		if (time_s > FLT_EPSILON) {
+		ប្រសិនបើ (time_s > FLT_EPSILON) {
 			_time_estimate += time_s;
 		}
 	}
@@ -133,7 +133,7 @@ float RtlTimeEstimator::getCruiseGroundSpeed(const matrix::Vector2f &direction_n
 {
 	float cruise_speed = getCruiseSpeed();
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+	ប្រសិនបើ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
 		matrix::Vector2f wind = get_wind();
 
 		const float wind_along_dir = wind.dot(direction_norm);
@@ -150,14 +150,14 @@ float RtlTimeEstimator::getCruiseGroundSpeed(const matrix::Vector2f &direction_n
 
 		float fw_gnd_spd_min = 5.0f;
 
-		if (_param_fw_gnd_spd_min != PARAM_INVALID) {
+		ប្រសិនបើ (_param_fw_gnd_spd_min != PARAM_INVALID) {
 			param_get(_param_fw_gnd_spd_min, &fw_gnd_spd_min);
 		}
 
 		cruise_speed = fmaxf(ground_speed, fw_gnd_spd_min);
 	}
 
-	return cruise_speed;
+	ត្រឡប់ cruise_speed;
 }
 
 float RtlTimeEstimator::calcVertTimeEstimate(float alt)
@@ -165,43 +165,43 @@ float RtlTimeEstimator::calcVertTimeEstimate(float alt)
 	float vertical_rate{0.1f};
 	float time_estimate{0.f};
 
-	if (alt > FLT_EPSILON) {
+	ប្រសិនបើ (alt > FLT_EPSILON) {
 		vertical_rate = getClimbRate();
 
-	} else {
+	} បើមិនដូច្នេះ {
 		vertical_rate = getDescendRate();
 	}
 
 	float abs_alt = fabsf(alt);
 
-	if (abs_alt > FLT_EPSILON) {
+	ប្រសិនបើ (abs_alt > FLT_EPSILON) {
 		time_estimate = abs_alt / vertical_rate;
 	}
 
-	return time_estimate;
+	ត្រឡប់ time_estimate;
 }
 
 float RtlTimeEstimator::getCruiseSpeed()
 {
 	float ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_xy_cruise == PARAM_INVALID || param_get(_param_mpc_xy_cruise, &ret) != PX4_OK) {
+	ប្រសិនបើ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+		ប្រសិនបើ (_param_mpc_xy_cruise == PARAM_INVALID || param_get(_param_mpc_xy_cruise, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		if (_param_fw_airspeed_trim == PARAM_INVALID || param_get(_param_fw_airspeed_trim, &ret) != PX4_OK) {
+	} បើមិនដូច្នេះ ប្រសិនបើ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+		ប្រសិនបើ (_param_fw_airspeed_trim == PARAM_INVALID || param_get(_param_fw_airspeed_trim, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROVER) {
-		if (_param_rover_cruise_speed == PARAM_INVALID || param_get(_param_rover_cruise_speed, &ret) != PX4_OK) {
+	} បើមិនដូច្នេះ ប្រសិនបើ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROVER) {
+		ប្រសិនបើ (_param_rover_cruise_speed == PARAM_INVALID || param_get(_param_rover_cruise_speed, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	ត្រឡប់ ret;
 }
 
 matrix::Vector2f RtlTimeEstimator::get_wind()
@@ -209,47 +209,47 @@ matrix::Vector2f RtlTimeEstimator::get_wind()
 	_wind_sub.update();
 	matrix::Vector2f wind{};
 
-	if (hrt_absolute_time() - _wind_sub.get().timestamp < 1_s) {
+	ប្រសិនបើ (hrt_absolute_time() - _wind_sub.get().timestamp < 1_s) {
 		wind(0) = _wind_sub.get().windspeed_north;
 		wind(1) = _wind_sub.get().windspeed_east;
 	}
 
-	return wind;
+	ត្រឡប់ wind;
 }
 
 float RtlTimeEstimator::getClimbRate()
 {
 	float ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_z_v_auto_up == PARAM_INVALID || param_get(_param_mpc_z_v_auto_up, &ret) != PX4_OK) {
+	ប្រសិនបើ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+		ប្រសិនបើ (_param_mpc_z_v_auto_up == PARAM_INVALID || param_get(_param_mpc_z_v_auto_up, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+	} បើមិនដូច្នេះ ប្រសិនបើ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
 
-		if (_param_fw_climb_rate == PARAM_INVALID || param_get(_param_fw_climb_rate, &ret) != PX4_OK) {
+		ប្រសិនបើ (_param_fw_climb_rate == PARAM_INVALID || param_get(_param_fw_climb_rate, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	ត្រឡប់ ret;
 }
 
 float RtlTimeEstimator::getDescendRate()
 {
 	float ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_z_v_auto_dn == PARAM_INVALID || param_get(_param_mpc_z_v_auto_dn, &ret) != PX4_OK) {
+	ប្រសិនបើ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+		ប្រសិនបើ (_param_mpc_z_v_auto_dn == PARAM_INVALID || param_get(_param_mpc_z_v_auto_dn, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		if (_param_fw_sink_rate == PARAM_INVALID || param_get(_param_fw_sink_rate, &ret) != PX4_OK) {
+	} បើមិនដូច្នេះ ប្រសិនបើ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+		ប្រសិនបើ (_param_fw_sink_rate == PARAM_INVALID || param_get(_param_fw_sink_rate, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	ត្រឡប់ ret;
 }

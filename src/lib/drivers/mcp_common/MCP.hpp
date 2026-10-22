@@ -47,20 +47,20 @@
 static constexpr uint8_t I2C_ADDRESS_MCP23009 = 0x25;
 static constexpr uint8_t I2C_ADDRESS_MCP23017 = 0x27;
 
-enum class
+ga_nanaa class
 PinType : uint8_t {
 	Output,
 	Input,
 	InputPullUp,
 };
 
-struct MCP230XX_config_t {
+sa_nracanaa MCP230XX_config_t {
 	uint16_t device_type;
 	uint8_t i2c_addr = 0;
 	uint8_t i2c_bus = 0;
 	uint8_t first_minor = 0;
 	uint8_t num_pins = 8;
-	int num_banks = 1;
+	ចំនួនគត់ num_banks = 1;
 	uint16_t interval = 10;
 	mcp_gpio_dev_s _gpio_handle[16];
 	CallbackHandler *_callback_handler = nullptr;
@@ -75,16 +75,16 @@ class MCP230XX :  public device::I2C, public I2CSPIDriver<MCP230XX>
 public:
 	MCP230XX(const I2CSPIDriverConfig &config);
 	virtual ~MCP230XX();
-	static I2CSPIDriverBase *instantiate(const I2CSPIDriverConfig &config, int runtime_instance);
+	static I2CSPIDriverBase *instantiate(const I2CSPIDriverConfig &config, ចំនួនគត់ runtime_instance);
 	static void print_usage();
 
 	void RunImpl();
 	void print_status() override;
 	void custom_method(const BusCLIArguments &cli) override;
-	int probe();
-	virtual int init();
+	ចំនួនគត់ probe();
+	virtual ចំនួនគត់ init();
 
-protected:
+rak_sita:
 	MCP230XX_config_t mcp_config;
 
 private:
@@ -96,31 +96,31 @@ private:
 	perf_counter_t _comms_errors;
 	perf_counter_t _register_check;
 
-	virtual int configure(uint16_t mask, PinType type);
-	virtual int read(uint16_t *mask);
-	int read_reg(uint8_t address, uint8_t &data);
-	int write(uint16_t mask_set, uint16_t mask_clear);
-	int write_reg(uint8_t address, uint8_t value);
-	int set_up();
-	int sanity_check();
-	int init_communication();
-	int init_uorb();
+	virtual ចំនួនគត់ configure(uint16_t mask, PinType type);
+	virtual ចំនួនគត់ read(uint16_t *mask);
+	ចំនួនគត់ read_reg(uint8_t address, uint8_t &data);
+	ចំនួនគត់ write(uint16_t mask_set, uint16_t mask_clear);
+	ចំនួនគត់ write_reg(uint8_t address, uint8_t value);
+	ចំនួនគត់ set_up();
+	ចំនួនគត់ sanity_check();
+	ចំនួនគត់ init_communication();
+	ចំនួនគត់ init_uorb();
 	void cleanup_uorb();
 
-	virtual int get_olat(int bank, uint8_t *addr) = 0;
-	virtual int get_gppu(int bank, uint8_t *addr) = 0;
-	virtual int get_iodir(int bank, uint8_t *addr) = 0;
-	virtual int get_gpio(int bank, uint8_t *addr) = 0;
-	virtual int get_probe_reg(uint8_t *addr) = 0;
+	virtual ចំនួនគត់ get_olat(ចំនួនគត់ bank, uint8_t *addr) = 0;
+	virtual ចំនួនគត់ get_gppu(ចំនួនគត់ bank, uint8_t *addr) = 0;
+	virtual ចំនួនគត់ get_iodir(ចំនួនគត់ bank, uint8_t *addr) = 0;
+	virtual ចំនួនគត់ get_gpio(ចំនួនគត់ bank, uint8_t *addr) = 0;
+	virtual ចំនួនគត់ get_probe_reg(uint8_t *addr) = 0;
 
 	uint16_t _olat;
 	uint16_t _iodir;
 	uint16_t _gppu;
 
 	uint16_t _checking_freq = 10;
-	int _count = 0;
+	ចំនួនគត់ _count = 0;
 
-	enum class STATE : uint8_t {
+	ga_nanaa class STATE : uint8_t {
 		INIT_COMMUNICATION,
 		CONFIGURE,
 		CHECK,

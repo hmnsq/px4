@@ -42,9 +42,9 @@ class FunctionParachute : public FunctionProviderBase
 {
 public:
 	FunctionParachute() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionParachute(); }
+	static FunctionProviderBase *allocate(const Context &context) { ត្រឡប់ new FunctionParachute(); }
 
 	void update() override {}
-	float value(OutputFunction func) override { return -1.f; }
-	float defaultFailsafeValue(OutputFunction func) const override { return 1.f; }
+	float value(OutputFunction func) override { ត្រឡប់ -1.f; }
+	float defaultFailsafeValue(OutputFunction func) const override { ត្រឡប់ 1.f; }
 };

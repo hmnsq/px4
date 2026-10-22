@@ -49,13 +49,13 @@ public:
 	// For a new value, compute the new count, new mean, the new M2.
 	bool update(const matrix::Vector<Type, N> &new_value)
 	{
-		if (_count == 0) {
+		ប្រសិនបើ (_count == 0) {
 			reset();
 			_count = 1;
 			_mean = new_value;
-			return false;
+			ត្រឡប់ false;
 
-		} else if (_count == UINT16_MAX) {
+		} បើមិនដូច្នេះ ប្រសិនបើ (_count == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
 			_M2 = _M2 / _count;
@@ -63,7 +63,7 @@ public:
 
 			_count = 1;
 
-		} else {
+		} បើមិនដូច្នេះ {
 			_count++;
 		}
 
@@ -78,9 +78,9 @@ public:
 			_mean = t;
 		}
 
-		if (!_mean.isAllFinite()) {
+		ប្រសិនបើ (!_mean.isAllFinite()) {
 			reset();
-			return false;
+			ត្រឡប់ false;
 		}
 
 		// covariance
@@ -89,14 +89,14 @@ public:
 			// eg C(x,y) += dx * (y - mean_y)
 			matrix::SquareMatrix<Type, N> m2_change{};
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
+			សម្រាប់ (size_t r = 0; r < N; r++) {
+				សម្រាប់ (size_t c = r; c < N; c++) {
 					m2_change(r, c) = delta(r) * (new_value(c) - _mean(c));
 				}
 			}
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
+			សម្រាប់ (size_t r = 0; r < N; r++) {
+				សម្រាប់ (size_t c = r; c < N; c++) {
 
 					const Type y = m2_change(r, c) - _M2_accum(r, c);
 					const Type t = _M2(r, c) + y;
@@ -106,29 +106,29 @@ public:
 				}
 
 				// protect against floating point precision causing negative variances
-				if (_M2(r, r) < 0) {
+				ប្រសិនបើ (_M2(r, r) < 0) {
 					_M2(r, r) = 0;
 				}
 			}
 
 			// make symmetric
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r + 1; c < N; c++) {
+			សម្រាប់ (size_t r = 0; r < N; r++) {
+				សម្រាប់ (size_t c = r + 1; c < N; c++) {
 					_M2(c, r) = _M2(r, c);
 				}
 			}
 		}
 
-		if (!_M2.isAllFinite()) {
+		ប្រសិនបើ (!_M2.isAllFinite()) {
 			reset();
-			return false;
+			ត្រឡប់ false;
 		}
 
-		return valid();
+		ត្រឡប់ valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	bool valid() const { ត្រឡប់ _count > 2; }
+	auto count() const { ត្រឡប់ _count; }
 
 	void reset()
 	{
@@ -140,11 +140,11 @@ public:
 		_M2_accum.zero();
 	}
 
-	matrix::Vector<Type, N> mean() const { return _mean; }
-	matrix::Vector<Type, N> variance() const { return _M2.diag() / (_count - 1); }
-	matrix::SquareMatrix<Type, N> covariance() const { return _M2 / (_count - 1); }
+	matrix::Vector<Type, N> mean() const { ត្រឡប់ _mean; }
+	matrix::Vector<Type, N> variance() const { ត្រឡប់ _M2.diag() / (_count - 1); }
+	matrix::SquareMatrix<Type, N> covariance() const { ត្រឡប់ _M2 / (_count - 1); }
 
-	Type covariance(int x, int y) const { return _M2(x, y) / (_count - 1); }
+	Type covariance(ចំនួនគត់ x, ចំនួនគត់ y) const { ត្រឡប់ _M2(x, y) / (_count - 1); }
 
 private:
 

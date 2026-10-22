@@ -42,9 +42,9 @@
 #include "../CDev.hpp"
 #include <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#ប្រសិនបើ defined(CONFIG_I2C)
 
-struct I2CSPIDriverConfig;
+sa_nracanaa I2CSPIDriverConfig;
 
 namespace device __EXPORT
 {
@@ -63,9 +63,9 @@ public:
 	I2C(I2C &&) = delete;
 	I2C &operator=(I2C &&) = delete;
 
-	virtual int	init() override;
+	virtual ចំនួនគត់	init() override;
 
-protected:
+rak_sita:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -81,14 +81,14 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
+	I2C(uint8_t device_type, const var_na *name, const ចំនួនគត់ bus, const uint16_t address, const uint32_t frequency);
 	I2C(const I2CSPIDriverConfig &config);
 	virtual ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	virtual ចំនួនគត់	probe() { ត្រឡប់ PX4_OK; }
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -102,10 +102,10 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	ចំនួនគត់		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
 
 private:
-	int			_fd{-1};
+	ចំនួនគត់			_fd{-1};
 
 };
 

@@ -136,7 +136,7 @@ TEST(ObstacleMathTest, GetBinAtAngle)
 TEST(ObstacleMathTest, GetLowerBound)
 {
 	// GIVEN: an invalid bin index, non-integer bin width, and a negative non-integer angle offset
-	int      bin          = -1;
+	ចំនួនគត់      bin          = -1;
 	float    bin_width    =  7.5f;
 	float    angle_offset = -4.3f;
 
@@ -184,11 +184,11 @@ TEST(ObstacleMathTest, OffsetBinIndex)
 TEST(ObstacleMathTest, WrapBin)
 {
 	// GIVEN: a bin index within bounds and the number of bins
-	int bin = 0;
-	int bin_count = 72;
+	ចំនួនគត់ bin = 0;
+	ចំនួនគត់ bin_count = 72;
 
 	// WHEN: we wrap a bin index within the bounds
-	int wrapped_bin = ObstacleMath::wrap_bin(bin, bin_count);
+	ចំនួនគត់ wrapped_bin = ObstacleMath::wrap_bin(bin, bin_count);
 
 	// THEN: the wrapped bin index should stay 0
 	EXPECT_EQ(wrapped_bin, 0);
@@ -222,25 +222,25 @@ TEST(ObstacleMathTest, HandleMissedBins)
 
 	// GIVEN: measurements, current bin, previous bin, bin width, and field of view offset
 	float measurements[8] = {0, 0, 1, 0, 0, 2, 0, 0};
-	int   current_bin     = 2;
-	int   previous_bin    = 5;
-	int   bin_width       = 45.0f;
+	ចំនួនគត់   current_bin     = 2;
+	ចំនួនគត់   previous_bin    = 5;
+	ចំនួនគត់   bin_width       = 45.0f;
 	float fov             = 270.0f;
 	float fov_offset      = 360.0f - fov / 2;
 
 	float measurement     = measurements[current_bin];
 
 	// WHEN: we handle missed bins
-	int current_bin_offset  = ObstacleMath::get_offset_bin_index(current_bin,  bin_width, fov_offset);
-	int previous_bin_offset = ObstacleMath::get_offset_bin_index(previous_bin, bin_width, fov_offset);
+	ចំនួនគត់ current_bin_offset  = ObstacleMath::get_offset_bin_index(current_bin,  bin_width, fov_offset);
+	ចំនួនគត់ previous_bin_offset = ObstacleMath::get_offset_bin_index(previous_bin, bin_width, fov_offset);
 
-	int start = math::min(current_bin_offset, previous_bin_offset) + 1;
-	int end   = math::max(current_bin_offset, previous_bin_offset);
+	ចំនួនគត់ start = math::min(current_bin_offset, previous_bin_offset) + 1;
+	ចំនួនគត់ end   = math::max(current_bin_offset, previous_bin_offset);
 
 	EXPECT_EQ(start, 1);
 	EXPECT_EQ(end,   5);
 
-	for (uint16_t i = start; i < end; i++) {
+	សម្រាប់ (uint16_t i = start; i < end; i++) {
 		uint16_t bin_index = ObstacleMath::get_offset_bin_index(i, bin_width, -fov_offset);
 		measurements[bin_index] = measurement;
 	}

@@ -36,7 +36,7 @@
 namespace ObstacleMath
 {
 
-enum SensorOrientation {
+ga_nanaa SensorOrientation {
 	ROTATION_YAW_0   = 0,     // MAV_SENSOR_ROTATION_NONE
 	ROTATION_YAW_45  = 1,	  // MAV_SENSOR_ROTATION_YAW_45
 	ROTATION_YAW_90  = 2,	  // MAV_SENSOR_ROTATION_YAW_90
@@ -72,7 +72,7 @@ void project_distance_on_horizontal_plane(float &distance, const float yaw, cons
  * @param bin_width width of a bin in degrees
  * @param angle clockwise angle from start bin in degrees
  */
-int get_bin_at_angle(float bin_width, float angle);
+ចំនួនគត់ get_bin_at_angle(float bin_width, float angle);
 
 /**
  * Returns lower bound angle of a bin
@@ -80,7 +80,7 @@ int get_bin_at_angle(float bin_width, float angle);
  * @param bin_width width of a bin in degrees
  * @param angle_offset clockwise angle offset in degrees
  */
-float get_lower_bound_angle(int bin, float bin_width, float angle_offset);
+float get_lower_bound_angle(ចំនួនគត់ bin, float bin_width, float angle_offset);
 
 /**
  * Returns bin index for the current bin after an angle offset
@@ -88,14 +88,14 @@ float get_lower_bound_angle(int bin, float bin_width, float angle_offset);
  * @param bin_width width of a bin in degrees
  * @param angle_offset clockwise angle offset in degrees
  */
-int get_offset_bin_index(int bin, float bin_width, float angle_offset);
+ចំនួនគត់ get_offset_bin_index(ចំនួនគត់ bin, float bin_width, float angle_offset);
 
 /**
  * Wraps a bin index to the range [0, bin_count)
  * @param bin bin index
  * @param bin_count number of bins
  */
-int wrap_bin(int bin, int bin_count);
+ចំនួនគត់ wrap_bin(ចំនួនគត់ bin, ចំនួនគត់ bin_count);
 
 /**
  * Wraps an angle to the range [0, 360)

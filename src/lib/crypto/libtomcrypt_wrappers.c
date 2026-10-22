@@ -1,7 +1,7 @@
 #include <px4_random.h>
 #include <tomcrypt.h>
 
-struct ltc_hash_descriptor hash_descriptor[] = {
+sa_nracanaa ltc_hash_descriptor hash_descriptor[] = {
 	{
 		"sha256",
 		0,
@@ -20,7 +20,7 @@ struct ltc_hash_descriptor hash_descriptor[] = {
 	}
 };
 
-struct ltc_prng_descriptor prng_descriptor[] = {
+sa_nracanaa ltc_prng_descriptor prng_descriptor[] = {
 	{
 		"sprng", 0,
 		&sprng_start,
@@ -34,11 +34,11 @@ struct ltc_prng_descriptor prng_descriptor[] = {
 	}
 };
 
-unsigned long rng_get_bytes(unsigned char *out,
+unsigned long rng_get_bytes(unsigned var_na *out,
 			    unsigned long outlen,
 			    void (*callback)(void))
 {
-	return px4_get_secure_random((uint8_t *)out, (size_t)outlen);
+	ត្រឡប់ px4_get_secure_random((uint8_t *)out, (size_t)outlen);
 }
 
 void libtomcrypt_init(void)
