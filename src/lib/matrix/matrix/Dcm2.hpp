@@ -46,31 +46,31 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#సూచన once
 
-#include "SquareMatrix.hpp"
-#include "Vector2.hpp"
+#అన్తర్భావ "SquareMatrix.hpp"
+#అన్తర్భావ "Vector2.hpp"
 
-namespace matrix
+నామాకాశ మాతృక
 {
 
-template<typename Type>
-class Dcm2 : public SquareMatrix<Type, 2>
+మూస<రకం_పేరు Type>
+తరగతి Dcm2 : బహిరంగ వర్గం_మాతృక<Type, 2>
 {
-public:
+బహిరంగ:
 	/**
 	 * Standard constructor
 	 *
 	 * Initializes to identity
 	 */
-	Dcm2() : SquareMatrix<Type, 2>(eye<Type, 2>()) {}
+	Dcm2() : వర్గం_మాతృక<Type, 2>(eye<Type, 2>()) {}
 
 	/**
 	 * Constructor from array
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm2(const Type data_[2][2]) : SquareMatrix<Type, 2>(data_)
+	స్పష్టమైన Dcm2(స్థిరరాశి Type దత్తాంశం_2[2][2]) : వర్గం_మాతృక<Type, 2>(దత్తాంశం_2)
 	{
 	}
 
@@ -79,7 +79,7 @@ public:
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm2(const Type data_[4]) : SquareMatrix<Type, 2>(data_)
+	స్పష్టమైన Dcm2(స్థిరరాశి Type దత్తాంశం_2[4]) : వర్గం_మాతృక<Type, 2>(దత్తాంశం_2)
 	{
 	}
 
@@ -88,7 +88,7 @@ public:
 	 *
 	 * @param other Matrix22 to set dcm to
 	 */
-	Dcm2(const Matrix<Type, 2, 2> &other) : SquareMatrix<Type, 2>(other)
+	Dcm2(స్థిరరాశి మాతృక_2<Type, 2, 2> &other) : వర్గం_మాతృక<Type, 2>(other)
 	{
 	}
 
@@ -100,11 +100,11 @@ public:
 	 *
 	 * @param angle from frame 1 to frame 2 in radians
 	 */
-	Dcm2(const Type angle)
+	Dcm2(స్థిరరాశి Type angle)
 	{
-		Dcm2 &dcm = *this;
-		Type sin_angle = std::sin(angle);
-		Type cos_angle = std::cos(angle);
+		Dcm2 &dcm = *ఇది;
+		Type sin_angle = std::జ్యా(angle);
+		Type cos_angle = std::కోజ్యా(angle);
 
 		dcm(0, 0) = cos_angle;
 		dcm(0, 1) = -sin_angle;
@@ -112,17 +112,17 @@ public:
 		dcm(1, 1) = cos_angle;
 	}
 
-	void renormalize()
+	శూన్య renormalize()
 	{
 		// renormalize rows
-		for (size_t r = 0; r < 2; r++) {
-			Vector2<Type> rvec(Matrix<Type, 1, 2>(this->row(r)).transpose());
-			this->row(r) = rvec.normalized();
+		కొరకు (size_t r = 0; r < 2; r++) {
+			Vector2<Type> rvec(మాతృక_2<Type, 1, 2>(ఇది->అడ్డువరుస(r)).transpose());
+			ఇది->అడ్డువరుస(r) = rvec.normalized();
 		}
 	}
 };
 
-using Dcm2f = Dcm2<float>;
-using Dcm2d = Dcm2<double>;
+ఉపయోగించి Dcm2f = Dcm2<దశాంశం>;
+ఉపయోగించి Dcm2d = Dcm2<ద్విగుణ>;
 
 } // namespace matrix

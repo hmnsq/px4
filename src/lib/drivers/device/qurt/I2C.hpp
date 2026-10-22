@@ -37,48 +37,48 @@
  * Base class for devices connected via I2C.
  */
 
-#pragma once
+#సూచన once
 
-#include "../CDev.hpp"
-#include <px4_platform_common/i2c.h>
+#అన్తర్భావ "../CDev.hpp"
+#అన్తర్భావ <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#ఒకవేళ defined(CONFIG_I2C)
 
-struct I2CSPIDriverConfig;
+నిర్మాణం I2CSPIDriverConfig;
 
-namespace device __EXPORT
+నామాకాశ device __EXPORT
 {
 
 /**
  * Abstract class for character device on I2C
  */
-class __EXPORT I2C : public CDev
+తరగతి __EXPORT I2C : బహిరంగ CDev
 {
 
-public:
+బహిరంగ:
 
 	// no copy, assignment, move, move assignment
-	I2C(const I2C &) = delete;
-	I2C &operator=(const I2C &) = delete;
-	I2C(I2C &&) = delete;
-	I2C &operator=(I2C &&) = delete;
+	I2C(స్థిరరాశి I2C &) = తొలగించు;
+	I2C &క్రియాకారకం=(స్థిరరాశి I2C &) = తొలగించు;
+	I2C(I2C &&) = తొలగించు;
+	I2C &క్రియాకారకం=(I2C &&) = తొలగించు;
 
-	virtual int	init() override;
+	మాయా పూర్ణాంకం	init() override;
 
-	typedef int (*_config_i2c_bus_func_t)(uint8_t, uint8_t, uint32_t);
-	typedef int (*_set_i2c_address_func_t)(int, uint8_t);
-	typedef int (*_i2c_transfer_func_t)(int, const uint8_t *, const unsigned, uint8_t *, const unsigned);
+	రకనిర్వచనం పూర్ణాంకం (*_config_i2c_bus_func_t)(uint8_t, uint8_t, uint32_t);
+	రకనిర్వచనం పూర్ణాంకం (*సమితి_i2c_చిరునామా_func_t)(పూర్ణాంకం, uint8_t);
+	రకనిర్వచనం పూర్ణాంకం (*_i2c_transfer_func_t)(పూర్ణాంకం, స్థిరరాశి uint8_t *, స్థిరరాశి గుర్తులేని, uint8_t *, స్థిరరాశి గుర్తులేని);
 
-	static void configure_callbacks(_config_i2c_bus_func_t config_func,
-					_set_i2c_address_func_t addr_func,
+	స్థిర శూన్య configure_callbacks(_config_i2c_bus_func_t config_func,
+					సమితి_i2c_చిరునామా_func_t addr_func,
 					_i2c_transfer_func_t transfer_func)
 	{
 		_config_i2c_bus = config_func;
-		_set_i2c_address = addr_func;
+		సమితి_i2c_చిరునామా = addr_func;
 		_i2c_transfer = transfer_func;
 	}
 
-protected:
+రక్షిత:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -94,16 +94,16 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
-	I2C(const I2CSPIDriverConfig &config);
-	virtual ~I2C();
+	I2C(uint8_t device_type, స్థిరరాశి అక్షరం *name, స్థిరరాశి పూర్ణాంకం bus, స్థిరరాశి uint16_t చిరునామా, స్థిరరాశి uint32_t frequency);
+	I2C(స్థిరరాశి I2CSPIDriverConfig &config);
+	మాయా ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	మాయా పూర్ణాంకం	probe() { తిరిగి PX4_OK; }
 
-	virtual void set_device_address(int address, bool log = true);
+	మాయా శూన్య సమితి_device_చిరునామా(పూర్ణాంకం చిరునామా, తార్కిక సంవర్గమానం = నిజం);
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -117,25 +117,25 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	పూర్ణాంకం		transfer(స్థిరరాశి uint8_t *send, స్థిరరాశి గుర్తులేని send_len, uint8_t *recv, స్థిరరాశి గుర్తులేని recv_len);
 
-private:
+అంతరంగ:
 	uint32_t		               _frequency{0};
-	int                            _i2c_fd{-1};
-	pthread_mutex_t               *_mutex{nullptr};
+	పూర్ణాంకం                            _i2c_fd{-1};
+	pthread_mutex_t               *_mutex{శూన్యసూచిక};
 
-	static const int MAX_I2C_BUS{4};
+	స్థిర స్థిరరాశి పూర్ణాంకం MAX_I2C_BUS{4};
 
-	static _config_i2c_bus_func_t  _config_i2c_bus;
-	static _set_i2c_address_func_t _set_i2c_address;
-	static _i2c_transfer_func_t    _i2c_transfer;
+	స్థిర _config_i2c_bus_func_t  _config_i2c_bus;
+	స్థిర సమితి_i2c_చిరునామా_func_t సమితి_i2c_చిరునామా;
+	స్థిర _i2c_transfer_func_t    _i2c_transfer;
 
-	static struct _bus_mutex_t {
-		int _bus;
+	స్థిర నిర్మాణం _bus_mutex_t {
+		పూర్ణాంకం _bus;
 		pthread_mutex_t _mutex{PTHREAD_MUTEX_INITIALIZER};
 	} _bus_mutex[MAX_I2C_BUS];
 };
 
 } // namespace device
 
-#endif /* _DEVICE_I2C_H */
+#అయితే_ముగింపు /* _DEVICE_I2C_H */

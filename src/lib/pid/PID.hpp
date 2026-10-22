@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <cmath>
+#అన్తర్భావ <cmath>
 
-class PID
+తరగతి PID
 {
-public:
-	PID() = default;
-	virtual ~PID() = default;
-	void setOutputLimit(const float limit) {setOutputLimit(-limit, limit);}
-	void setOutputLimit(const float lower_limit, const float upper_limit);
-	void setIntegralLimit(const float limit) { _limit_integral = limit; }
-	void setGains(const float P, const float I, const float D);
-	void setSetpoint(const float setpoint) { _setpoint = setpoint; }
-	void setFeedForwardGain(const float feedforward_gain) { _gain_feedforward = feedforward_gain; }
-	float update(const float feedback, const float dt, const bool update_integral = true);
-	float getIntegral() { return _integral; }
-	void resetIntegral() { _integral = 0.f; }
-	void resetDerivative() { _last_feedback = NAN; }
-private:
-	void updateIntegral(float error, const float saturation, const float dt);
-	float updateDerivative(float feedback, const float dt);
+బహిరంగ:
+	PID() = అప్రమేయ;
+	మాయా ~PID() = అప్రమేయ;
+	శూన్య సమితి_Output_హద్దు(స్థిరరాశి దశాంశం హద్దు_2) {సమితి_Output_హద్దు(-హద్దు_2, హద్దు_2);}
+	శూన్య సమితి_Output_హద్దు(స్థిరరాశి దశాంశం క్రింది_హద్దు, స్థిరరాశి దశాంశం పై_హద్దు);
+	శూన్య సమితి_Integral_హద్దు(స్థిరరాశి దశాంశం హద్దు_2) { హద్దు_integral = హద్దు_2; }
+	శూన్య సమితి_Gains(స్థిరరాశి దశాంశం P, స్థిరరాశి దశాంశం I, స్థిరరాశి దశాంశం D);
+	శూన్య సమితి_Setpoint(స్థిరరాశి దశాంశం setpoint) { _setpoint = setpoint; }
+	శూన్య సమితి_Feed_Forward_Gain(స్థిరరాశి దశాంశం feedforward_gain) { _gain_feedforward = feedforward_gain; }
+	దశాంశం update(స్థిరరాశి దశాంశం feedback, స్థిరరాశి దశాంశం dt, స్థిరరాశి తార్కిక update_integral = నిజం);
+	దశాంశం getIntegral() { తిరిగి _integral; }
+	శూన్య resetIntegral() { _integral = 0.f; }
+	శూన్య resetDerivative() { చివరి_feedback = NAN; }
+అంతరంగ:
+	శూన్య updateIntegral(దశాంశం error, స్థిరరాశి దశాంశం saturation, స్థిరరాశి దశాంశం dt);
+	దశాంశం updateDerivative(దశాంశం feedback, స్థిరరాశి దశాంశం dt);
 
-	float _setpoint{0.f}; ///< current setpoint to track
-	float _integral{0.f}; ///< integral state
-	float _last_feedback{NAN};
+	దశాంశం _setpoint{0.f}; ///< current setpoint to track
+	దశాంశం _integral{0.f}; ///< integral state
+	దశాంశం చివరి_feedback{NAN};
 
 	// Gains, Limits
-	float _gain_feedforward{0.f};
-	float _gain_proportional{0.f};
-	float _gain_integral{0.f};
-	float _gain_derivative{0.f};
-	float _limit_integral{0.f};
-	float _lower_limit_output{0.f};
-	float _upper_limit_output{0.f};
+	దశాంశం _gain_feedforward{0.f};
+	దశాంశం _gain_proportional{0.f};
+	దశాంశం _gain_integral{0.f};
+	దశాంశం _gain_derivative{0.f};
+	దశాంశం హద్దు_integral{0.f};
+	దశాంశం క్రింది_హద్దు_output{0.f};
+	దశాంశం పై_హద్దు_output{0.f};
 };

@@ -42,26 +42,26 @@
  * @author Beat Küng <beat-kueng@gmx.net>
  */
 
-#pragma once
+#సూచన once
 
-#include <stdint.h>
-#include <px4_platform_common/defines.h>
+#అన్తర్భావ <stdint.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
 
 __BEGIN_DECLS
 
-#define CRSF_FRAME_SIZE_MAX 30 // the actual maximum length is 64, but we're only interested in RC channels and want to minimize buffer size
-#define CRSF_PAYLOAD_SIZE_MAX (CRSF_FRAME_SIZE_MAX-4)
+#నిర్వచించు CRSF_చట్రం_కొలత_MAX 30 // the actual maximum length is 64, but we're only interested in RC channels and want to minimize buffer size
+#నిర్వచించు CRSF_PAYLOAD_కొలత_MAX (CRSF_చట్రం_కొలత_MAX-4)
 
 
-struct crsf_frame_header_t {
-	uint8_t device_address;             ///< @see crsf_address_t
-	uint8_t length;                     ///< length of crsf_frame_t (including CRC) minus sizeof(crsf_frame_header_t)
+నిర్మాణం crsf_చట్రం_శీర్షిక_t {
+	uint8_t device_చిరునామా;             ///< @see crsf_address_t
+	uint8_t నిడివి;                     ///< length of crsf_frame_t (including CRC) minus sizeof(crsf_frame_header_t)
 };
 
-struct crsf_frame_t {
-	crsf_frame_header_t header;
+నిర్మాణం crsf_చట్రం_t {
+	crsf_చట్రం_శీర్షిక_t శీర్షిక;
 	uint8_t type;                       ///< @see crsf_frame_type_t
-	uint8_t payload[CRSF_PAYLOAD_SIZE_MAX + 1]; ///< payload data including 1 byte CRC at end
+	uint8_t payload[CRSF_PAYLOAD_కొలత_MAX + 1]; ///< payload data including 1 byte CRC at end
 };
 
 /**
@@ -69,7 +69,7 @@ struct crsf_frame_t {
  * @param uart_fd UART file descriptor
  * @return 0 on success, -errno otherwise
  */
-__EXPORT int	crsf_config(int uart_fd);
+__EXPORT పూర్ణాంకం	crsf_config(పూర్ణాంకం uart_fd);
 
 
 /**
@@ -83,8 +83,8 @@ __EXPORT int	crsf_config(int uart_fd);
  * @param max_channels maximum length of values
  * @return true if channels successfully decoded
  */
-__EXPORT bool	crsf_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *values,
-			   uint16_t *num_values, uint16_t max_channels);
+__EXPORT bool	crsf_parse(స్థిరరాశి uint64_t now, స్థిరరాశి uint8_t *చట్రం, గుర్తులేని len, uint16_t *విలువలు_2,
+			   uint16_t *అంకె_విలువలు, uint16_t max_channels);
 
 
 /**
@@ -96,7 +96,7 @@ __EXPORT bool	crsf_parse(const uint64_t now, const uint8_t *frame, unsigned len,
  * @param remaining battery remaining [%]
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_battery(int uart_fd, uint16_t voltage, uint16_t current, int fuel, uint8_t remaining);
+__EXPORT bool crsf_send_telemetry_battery(పూర్ణాంకం uart_fd, uint16_t voltage, uint16_t current, పూర్ణాంకం fuel, uint8_t మిగిలిన);
 
 /**
  * Send telemetry GPS information
@@ -109,8 +109,8 @@ __EXPORT bool crsf_send_telemetry_battery(int uart_fd, uint16_t voltage, uint16_
  * @param num_satellites number of satellites used
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_gps(int uart_fd, int32_t latitude, int32_t longitude, uint16_t groundspeed,
-				      uint16_t gps_heading, uint16_t altitude, uint8_t num_satellites);
+__EXPORT bool crsf_send_telemetry_gps(పూర్ణాంకం uart_fd, int32_t latitude, int32_t longitude, uint16_t groundspeed,
+				      uint16_t gps_heading, uint16_t altitude, uint8_t అంకె_satellites);
 
 /**
  * Send telemetry barometric altitude information
@@ -119,7 +119,7 @@ __EXPORT bool crsf_send_telemetry_gps(int uart_fd, int32_t latitude, int32_t lon
  * @param vertical_speed Vertical speed [cm/s]
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_baro_altitude(int uart_fd, uint16_t altitude, int16_t vertical_speed);
+__EXPORT bool crsf_send_telemetry_baro_altitude(పూర్ణాంకం uart_fd, uint16_t altitude, int16_t vertical_వేగం);
 
 
 /**
@@ -130,7 +130,7 @@ __EXPORT bool crsf_send_telemetry_baro_altitude(int uart_fd, uint16_t altitude, 
  * @param yaw Yaw angle [rad * 1e4]
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_attitude(int uart_fd, int16_t pitch, int16_t roll, int16_t yaw);
+__EXPORT bool crsf_send_telemetry_attitude(పూర్ణాంకం uart_fd, int16_t pitch, int16_t roll, int16_t yaw);
 
 /**
  * Send telemetry Flight Mode information
@@ -138,6 +138,6 @@ __EXPORT bool crsf_send_telemetry_attitude(int uart_fd, int16_t pitch, int16_t r
  * @param flight_mode Flight Mode string (max length = 15)
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_flight_mode(int uart_fd, const char *flight_mode);
+__EXPORT bool crsf_send_telemetry_flight_బహుళకం(పూర్ణాంకం uart_fd, స్థిరరాశి అక్షరం *flight_బహుళకం);
 
 __END_DECLS

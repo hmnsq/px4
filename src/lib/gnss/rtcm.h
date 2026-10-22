@@ -46,21 +46,21 @@
  * Maximum frame size: 6 + 1023 = 1029 bytes
  */
 
-#pragma once
+#సూచన once
 
-#include <cstdint>
-#include <cstddef>
+#అన్తర్భావ <cstdint>
+#అన్తర్భావ <cstddef>
 
 namespace gnss
 {
 
 // RTCM3 protocol constants
-static constexpr uint8_t  RTCM3_PREAMBLE        = 0xD3;
-static constexpr size_t   RTCM3_HEADER_LEN      = 3;   // Preamble + 2 bytes reserved/length
-static constexpr size_t   RTCM3_CRC_LEN         = 3;
-static constexpr size_t   RTCM3_MAX_PAYLOAD_LEN = 1023;
-static constexpr size_t   RTCM3_MAX_FRAME_LEN   = RTCM3_HEADER_LEN + RTCM3_MAX_PAYLOAD_LEN + RTCM3_CRC_LEN; // 1029
-static constexpr uint32_t RTCM3_CRC24Q_POLY     = 0x1864CFB;
+స్థిర constexpr uint8_t  RTCM3_PREAMBLE        = 0xD3;
+స్థిర constexpr size_t   RTCM3_శీర్షిక_LEN      = 3;   // Preamble + 2 bytes reserved/length
+స్థిర constexpr size_t   RTCM3_చక్రీయ_తనిఖీ_LEN         = 3;
+స్థిర constexpr size_t   RTCM3_MAX_PAYLOAD_LEN = 1023;
+స్థిర constexpr size_t   RTCM3_MAX_చట్రం_LEN   = RTCM3_శీర్షిక_LEN + RTCM3_MAX_PAYLOAD_LEN + RTCM3_చక్రీయ_తనిఖీ_LEN; // 1029
+స్థిర constexpr uint32_t RTCM3_CRC24Q_POLY     = 0x1864CFB;
 
 // MAVLink GPS_RTCM_DATA fragmentation constants.
 // Spec: https://mavlink.io/en/messages/common.html#GPS_RTCM_DATA
@@ -74,15 +74,15 @@ static constexpr uint32_t RTCM3_CRC24Q_POLY     = 0x1864CFB;
 // reconstructed. A buffer is complete once either all 4 fragments are present,
 // or the first fragment with a non-full payload has been received and every
 // lower fragment ID is present.
-static constexpr size_t   GPS_RTCM_MAX_FRAGMENT_LEN         = 180;
-static constexpr size_t   GPS_RTCM_MAX_FRAGMENTS            = 4;
-static constexpr size_t   GPS_RTCM_MAX_MESSAGE_LEN          = GPS_RTCM_MAX_FRAGMENT_LEN * GPS_RTCM_MAX_FRAGMENTS;
-static constexpr uint64_t GPS_RTCM_FRAGMENT_TIMEOUT_US      = 1000000;
-static constexpr uint8_t  GPS_RTCM_FLAG_FRAGMENTED          = 1 << 0;
-static constexpr uint8_t  GPS_RTCM_FLAG_FRAGMENT_ID_SHIFT   = 1;
-static constexpr uint8_t  GPS_RTCM_FLAG_FRAGMENT_ID_MASK    = 0x03;
-static constexpr uint8_t  GPS_RTCM_FLAG_SEQUENCE_ID_SHIFT   = 3;
-static constexpr uint8_t  GPS_RTCM_FLAG_SEQUENCE_ID_MASK    = 0x1f;
+స్థిర constexpr size_t   GPS_RTCM_MAX_FRAGMENT_LEN         = 180;
+స్థిర constexpr size_t   GPS_RTCM_MAX_FRAGMENTS            = 4;
+స్థిర constexpr size_t   GPS_RTCM_MAX_సందేశం_LEN          = GPS_RTCM_MAX_FRAGMENT_LEN * GPS_RTCM_MAX_FRAGMENTS;
+స్థిర constexpr uint64_t GPS_RTCM_FRAGMENT_TIMEOUT_US      = 1000000;
+స్థిర constexpr uint8_t  GPS_RTCM_FLAG_FRAGMENTED          = 1 << 0;
+స్థిర constexpr uint8_t  GPS_RTCM_FLAG_FRAGMENT_ID_జరుపు   = 1;
+స్థిర constexpr uint8_t  GPS_RTCM_FLAG_FRAGMENT_ID_ముసుగు    = 0x03;
+స్థిర constexpr uint8_t  GPS_RTCM_FLAG_SEQUENCE_ID_జరుపు   = 3;
+స్థిర constexpr uint8_t  GPS_RTCM_FLAG_SEQUENCE_ID_ముసుగు    = 0x1f;
 
 /**
  * Calculate CRC-24Q checksum for RTCM3 messages.
@@ -91,7 +91,7 @@ static constexpr uint8_t  GPS_RTCM_FLAG_SEQUENCE_ID_MASK    = 0x1f;
  * @param len    Length of data
  * @return       24-bit CRC value
  */
-uint32_t rtcm3_crc24q(const uint8_t *data, size_t len);
+uint32_t rtcm3_crc24q(స్థిరరాశి uint8_t *దత్తాంశం, size_t len);
 
 /**
  * Extract RTCM3 message type from a frame buffer.
@@ -100,10 +100,10 @@ uint32_t rtcm3_crc24q(const uint8_t *data, size_t len);
  * @param frame  Pointer to complete RTCM3 frame (starting with preamble)
  * @return       Message type ID (0 if frame is too short)
  */
-inline uint16_t rtcm3_message_type(const uint8_t *frame)
+అంతఃవరుస uint16_t rtcm3_సందేశం_type(స్థిరరాశి uint8_t *చట్రం)
 {
 	// Message type is first 12 bits of payload (bytes 3-4)
-	return (static_cast<uint16_t>(frame[3]) << 4) | (frame[4] >> 4);
+	తిరిగి (static_cast<uint16_t>(చట్రం[3]) << 4) | (చట్రం[4] >> 4);
 }
 
 /**
@@ -112,30 +112,30 @@ inline uint16_t rtcm3_message_type(const uint8_t *frame)
  * @param frame  Pointer to at least 3 bytes of RTCM3 frame header
  * @return       Payload length (0-1023)
  */
-inline size_t rtcm3_payload_length(const uint8_t *frame)
+అంతఃవరుస size_t rtcm3_payload_నిడివి(స్థిరరాశి uint8_t *చట్రం)
 {
-	return ((static_cast<size_t>(frame[1]) & 0x03) << 8) | frame[2];
+	తిరిగి ((static_cast<size_t>(చట్రం[1]) & 0x03) << 8) | చట్రం[2];
 }
 
-inline bool gps_rtcm_is_fragmented(uint8_t flags)
+అంతఃవరుస bool gps_rtcm_is_fragmented(uint8_t flags)
 {
-	return (flags & GPS_RTCM_FLAG_FRAGMENTED) != 0;
+	తిరిగి (flags & GPS_RTCM_FLAG_FRAGMENTED) != 0;
 }
 
-inline uint8_t gps_rtcm_fragment_id(uint8_t flags)
+అంతఃవరుస uint8_t gps_rtcm_fragment_id(uint8_t flags)
 {
-	return (flags >> GPS_RTCM_FLAG_FRAGMENT_ID_SHIFT) & GPS_RTCM_FLAG_FRAGMENT_ID_MASK;
+	తిరిగి (flags >> GPS_RTCM_FLAG_FRAGMENT_ID_జరుపు) & GPS_RTCM_FLAG_FRAGMENT_ID_ముసుగు;
 }
 
-inline uint8_t gps_rtcm_sequence_id(uint8_t flags)
+అంతఃవరుస uint8_t gps_rtcm_sequence_id(uint8_t flags)
 {
-	return (flags >> GPS_RTCM_FLAG_SEQUENCE_ID_SHIFT) & GPS_RTCM_FLAG_SEQUENCE_ID_MASK;
+	తిరిగి (flags >> GPS_RTCM_FLAG_SEQUENCE_ID_జరుపు) & GPS_RTCM_FLAG_SEQUENCE_ID_ముసుగు;
 }
 
-class GpsRtcmMessageAssembler
+class Gps_Rtcm_సందేశం_Assembler
 {
-public:
-	GpsRtcmMessageAssembler() = default;
+బహిరంగ:
+	Gps_Rtcm_సందేశం_Assembler() = అప్రమేయ;
 
 	/**
 	 * Add a MAVLink GPS_RTCM_DATA packet.
@@ -168,7 +168,7 @@ public:
 	 * @param out_len     Set to the reassembled message length, or 0 if incomplete/invalid
 	 * @return            Pointer to a complete message, or nullptr if the message is incomplete or invalid
 	 */
-	const uint8_t *addPacket(uint8_t flags, const uint8_t *data, size_t len, uint64_t timestamp, size_t &out_len);
+	స్థిరరాశి uint8_t *కూడు_Packet(uint8_t flags, స్థిరరాశి uint8_t *దత్తాంశం, size_t len, uint64_t timestamp, size_t &బహిర్గతం_len);
 
 	/**
 	 * Retrieve the single deferred message queued by addPacket().
@@ -180,26 +180,26 @@ public:
 	 * @param out_len     Set to the queued message length, or 0 if none is queued
 	 * @return            Pointer to the queued message, or nullptr if none is queued
 	 */
-	const uint8_t *takeDeferredMessage(size_t &out_len);
+	స్థిరరాశి uint8_t *take_Deferred_సందేశం(size_t &బహిర్గతం_len);
 
-	void reset();
+	శూన్య reset();
 
-private:
-	struct FragmentSlot {
-		uint8_t data[GPS_RTCM_MAX_FRAGMENT_LEN] {};
+అంతరంగ:
+	నిర్మాణం Fragment_స్థానం {
+		uint8_t దత్తాంశం[GPS_RTCM_MAX_FRAGMENT_LEN] {};
 		size_t len {0};
 		bool present {false};
 	};
 
-	struct SequenceState {
+	నిర్మాణం SequenceState {
 		uint8_t sequence_id {0};
-		int8_t last_fragment_id {-1};
+		int8_t చివరి_fragment_id {-1};
 		uint64_t timestamp {0};
-		bool active {false};
+		bool చురుకైన_2 {false};
 	};
 
-	void resetActiveState();
-	bool hasFragmentAfter(uint8_t fragment_id) const;
+	శూన్య reset_చురుకైన_State();
+	bool hasFragmentAfter(uint8_t fragment_id) స్థిరరాశి;
 
 	/**
 	 * Compatibility fallback for older QGroundControl builds that omit the
@@ -211,18 +211,18 @@ private:
 	 * @return Length of the assembled message, or 0 if the fallback does not apply
 	 *
 	 */
-	size_t assembleLegacyExactMultipleMessage(uint8_t *destination) const;
+	size_t assemble_Legacy_Exact_గుణిజం_సందేశం(uint8_t *destination) స్థిరరాశి;
 
-	bool isComplete() const;
-	size_t lastFragmentIndex() const;
+	bool isComplete() స్థిరరాశి;
+	size_t చివరి_Fragment_సూచీ() స్థిరరాశి;
 
-	FragmentSlot _fragments[GPS_RTCM_MAX_FRAGMENTS] {};
-	uint8_t _assembled_message[GPS_RTCM_MAX_MESSAGE_LEN] {};
-	uint8_t _deferred_message[GPS_RTCM_MAX_MESSAGE_LEN] {};
-	size_t _deferred_message_len {0};
-	bool _deferred_message_valid {false};
+	Fragment_స్థానం _fragments[GPS_RTCM_MAX_FRAGMENTS] {};
+	uint8_t assembled_సందేశం[GPS_RTCM_MAX_సందేశం_LEN] {};
+	uint8_t deferred_సందేశం[GPS_RTCM_MAX_సందేశం_LEN] {};
+	size_t deferred_సందేశం_len {0};
+	bool deferred_సందేశం_valid {false};
 	// State for the sequence that is currently being assembled.
-	SequenceState _active_sequence {};
+	SequenceState చురుకైన_sequence {};
 };
 
 } // namespace gnss

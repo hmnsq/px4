@@ -31,34 +31,34 @@
  *
  ****************************************************************************/
 
-#include "AirspeedDirectionController.hpp"
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
+#అన్తర్భావ "AirspeedDirectionController.hpp"
+#అన్తర్భావ <matrix/math.hpp>
+#అన్తర్భావ <lib/mathlib/mathlib.h>
 
-using matrix::Vector2f;
+ఉపయోగించి మాతృక::Vector2f;
 AirspeedDirectionController::AirspeedDirectionController()
 {
 	// Constructor
 }
 
-float AirspeedDirectionController::controlHeading(const float heading_sp, const float heading,
-		const float airspeed) const
+దశాంశం AirspeedDirectionController::controlHeading(స్థిరరాశి దశాంశం heading_sp, స్థిరరాశి దశాంశం heading,
+		స్థిరరాశి దశాంశం airspeed) స్థిరరాశి
 {
 
-	const Vector2f airspeed_vector = Vector2f{cosf(heading), sinf(heading)} * airspeed;
-	const Vector2f airspeed_sp_vector_unit = Vector2f{cosf(heading_sp), sinf(heading_sp)};
+	స్థిరరాశి Vector2f airspeed_సదిశ = Vector2f{cosf(heading), sinf(heading)} * airspeed;
+	స్థిరరాశి Vector2f airspeed_sp_సదిశ_unit = Vector2f{cosf(heading_sp), sinf(heading_sp)};
 
-	const float dot_air_vel_err = airspeed_vector.dot(airspeed_sp_vector_unit);
-	const float cross_air_vel_err = airspeed_vector.cross(airspeed_sp_vector_unit);
+	స్థిరరాశి దశాంశం dot_air_vel_err = airspeed_సదిశ.dot(airspeed_sp_సదిశ_unit);
+	స్థిరరాశి దశాంశం cross_air_vel_err = airspeed_సదిశ.cross(airspeed_sp_సదిశ_unit);
 
-	if (dot_air_vel_err < 0.0f) {
+	ఒకవేళ (dot_air_vel_err < 0.0f) {
 		// hold max lateral acceleration command above 90 deg heading error
-		return p_gain_ * ((cross_air_vel_err < 0.0f) ? -airspeed : airspeed);
+		తిరిగి p_gain_ * ((cross_air_vel_err < 0.0f) ? -airspeed : airspeed);
 
-	} else {
+	} లేకపోతే {
 		// airspeed/airspeed_ref is used to scale any incremented airspeed reference back to the current airspeed
 		// for acceleration commands in a "feedback" sense (i.e. at the current vehicle airspeed)
 		// todo use airspeed_ref or adapt comment
-		return p_gain_ * cross_air_vel_err;
+		తిరిగి p_gain_ * cross_air_vel_err;
 	}
 }

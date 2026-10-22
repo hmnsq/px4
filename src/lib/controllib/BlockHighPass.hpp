@@ -37,51 +37,51 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <time.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <mathlib/math/test/test.hpp>
+#అన్తర్భావ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
 
 /**
  * A high pass filter as described here:
  * http://en.wikipedia.org/wiki/High-pass_filter.
  */
-class __EXPORT BlockHighPass : public Block
+తరగతి __EXPORT ఖండం_ఎగువ_Pass : బహిరంగ ఖండం
 {
-public:
+బహిరంగ:
 // methods
-	BlockHighPass(SuperBlock *parent, const char *name) :
-		Block(parent, name),
+	ఖండం_ఎగువ_Pass(Super_ఖండం *మాతృ, స్థిరరాశి అక్షరం *name) :
+		ఖండం(మాతృ, name),
 		_u(0),
 		_y(0),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(ఇది, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockHighPass() = default;
-	float update(float input);
+	మాయా ~ఖండం_ఎగువ_Pass() = అప్రమేయ;
+	దశాంశం update(దశాంశం ఆదానం);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getFCut() {return _fCut.get();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
-// attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
-	control::BlockParamFloat _fCut; /**< cut-off frequency, Hz */
+	దశాంశం getU() {తిరిగి _u;}
+	దశాంశం getY() {తిరిగి _y;}
+	దశాంశం getFCut() {తిరిగి _fCut.get();}
+	శూన్య సమితి_U(దశాంశం u) {_u = u;}
+	శూన్య సమితి_Y(దశాంశం y) {_y = y;}
+రక్షిత:
+//లక్షణాలు
+	దశాంశం _u; /**< previous input */
+	దశాంశం _y; /**< previous output */
+	control::ఖండం_Param_Float _fCut; /**< cut-off frequency, Hz */
 };
 
 } // namespace control

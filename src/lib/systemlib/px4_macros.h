@@ -51,66 +51,66 @@
  * CCASSERT(predicate) Will generate a compile time error it the
  * predicate is false
  */
-#include <assert.h>
+#అన్తర్భావ <assert.h>
 
-#ifndef _PX4_MACROS_H
-#define _PX4_MACROS_H
+#నిర్వచితం_కాకపోతే _PX4_MACROS_H
+#నిర్వచించు _PX4_MACROS_H
 
 
-#if !defined(arraySize)
-#define arraySize(a) (sizeof((a))/sizeof((a[0])))
-#endif
+#ఒకవేళ !defined(array_కొలత)
+#నిర్వచించు array_కొలత(a) (పరిమాణం((a))/పరిమాణం((a[0])))
+#అయితే_ముగింపు
 
-#if !defined(NO_BLOAT)
-#if defined(__BASE_FILE__)
-#define _FILE_NAME_ __BASE_FILE__
-#else
-#define _FILE_NAME_ __FILE__
-#endif
-#else
-#define _FILE_NAME_ ""
-#endif
+#ఒకవేళ !defined(NO_BLOAT)
+#ఒకవేళ defined(__BASE_FILE__)
+#నిర్వచించు _FILE_NAME_ __BASE_FILE__
+#లేకపోతే
+#నిర్వచించు _FILE_NAME_ __FILE__
+#అయితే_ముగింపు
+#లేకపోతే
+#నిర్వచించు _FILE_NAME_ ""
+#అయితే_ముగింపు
 
-#if !defined(INVALID_CASE)
-#define INVALID_CASE(c) printf("Invalid Case %d, %s:%d",(c),__BASE_FILE__,__LINE__) /* todo use PANIC */
-#endif
+#ఒకవేళ !defined(INVALID_CASE)
+#నిర్వచించు INVALID_CASE(c) రాయి("Invalid Case %d, %s:%d",(c),__BASE_FILE__,__LINE__) /* todo use PANIC */
+#అయితే_ముగింపు
 
-#if !defined(UNUSED)
-#define UNUSED(var) (void)(var)
-#endif
+#ఒకవేళ !defined(వాడని_2)
+#నిర్వచించు వాడని_2(var) (శూన్య)(var)
+#అయితే_ముగింపు
 
-#if !defined(CAT)
-#if !defined(_CAT)
-#define _CAT(a, b) a ## b
-#endif
-#define CAT(a, b) _CAT(a, b)
-#endif
+#ఒకవేళ !defined(CAT)
+#ఒకవేళ !defined(_CAT)
+#నిర్వచించు _CAT(a, b) a ## b
+#అయితే_ముగింపు
+#నిర్వచించు CAT(a, b) _CAT(a, b)
+#అయితే_ముగింపు
 
-#if !defined(FREEZE_STR)
+#ఒకవేళ !defined(FREEZE_STR)
 #  define FREEZE_STR(s) #s
-#endif
+#అయితే_ముగింపు
 
-#if !defined(STRINGIFY)
-#define STRINGIFY(s) FREEZE_STR(s)
-#endif
+#ఒకవేళ !defined(STRINGIFY)
+#నిర్వచించు STRINGIFY(s) FREEZE_STR(s)
+#అయితే_ముగింపు
 
-#if !defined(CCASSERT)
-#if defined(static_assert)
+#ఒకవేళ !defined(CCASSERT)
+#ఒకవేళ defined(static_assert)
 #		define CCASSERT(predicate) static_assert(predicate, STRINGIFY(predicate))
-#	else
-#		define CCASSERT(predicate) _x_CCASSERT_LINE(predicate, __LINE__)
-#		if !defined(_x_CCASSERT_LINE)
-#			define _x_CCASSERT_LINE(predicate, line) typedef char CAT(constraint_violated_on_line_,line)[2*((predicate)!=0)-1] __attribute__ ((unused)) ;
+#	లేకపోతే
+#		define CCASSERT(predicate) x_CCASSERT_పంక్తి(predicate, __LINE__)
+#		ఒకవేళ !defined(x_CCASSERT_పంక్తి)
+#			define x_CCASSERT_పంక్తి(predicate, పంక్తి) రకనిర్వచనం అక్షరం CAT(constraint_violated_on_పంక్తి,పంక్తి)[2*((predicate)!=0)-1] __attribute__ ((వాడని)) ;
 #		endif
 #	endif
-#endif
+#అయితే_ముగింపు
 
-#if !defined(DO_PRAGMA)
+#ఒకవేళ !defined(DO_PRAGMA)
 #  define DO_PRAGMA(x) _Pragma (#x)
-#endif
+#అయితే_ముగింపు
 
-#if !defined(TODO)
-#  define TODO(x) DO_PRAGMA(message ("TODO - " #x))
-#endif
+#ఒకవేళ !defined(TODO)
+#  define TODO(x) DO_PRAGMA(సందేశం_3 ("TODO - " #x))
+#అయితే_ముగింపు
 
-#endif /* _PX4_MACROS_H */
+#అయితే_ముగింపు /* _PX4_MACROS_H */

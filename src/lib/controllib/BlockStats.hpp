@@ -37,65 +37,65 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <time.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <mathlib/math/test/test.hpp>
+#అన్తర్భావ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
-template<class Type, size_t M>
-class __EXPORT BlockStats: public Block
+మూస<తరగతి Type, size_t M>
+తరగతి __EXPORT ఖండం_Stats: బహిరంగ ఖండం
 {
 
-public:
+బహిరంగ:
 // methods
-	BlockStats(SuperBlock *parent,
-		   const char *name) :
-		Block(parent, name),
-		_sum(),
-		_sumSq(),
-		_count(0)
+	ఖండం_Stats(Super_ఖండం *మాతృ,
+		   స్థిరరాశి అక్షరం *name) :
+		ఖండం(మాతృ, name),
+		కూడిక_2(),
+		కూడిక_Sq(),
+		లెక్క_3(0)
 	{}
-	virtual ~BlockStats() = default;
-	void update(const matrix::Vector<Type, M> &u)
+	మాయా ~ఖండం_Stats() = అప్రమేయ;
+	శూన్య update(స్థిరరాశి మాతృక::సదిశ<Type, M> &u)
 	{
-		_sum += u;
-		_sumSq += u.emult(u);
-		_count += 1;
+		కూడిక_2 += u;
+		కూడిక_Sq += u.emult(u);
+		లెక్క_3 += 1;
 	}
-	void reset()
+	శూన్య reset()
 	{
-		_sum.setZero();
-		_sumSq.setZero();
-		_count = 0;
+		కూడిక_2.సమితి_Zero();
+		కూడిక_Sq.సమితి_Zero();
+		లెక్క_3 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
-	matrix::Vector<Type, M> getVar()
+	size_t get_లెక్క() { తిరిగి లెక్క_3; }
+	మాతృక::సదిశ<Type, M> get_సగటు() { తిరిగి కూడిక_2 / లెక్క_3; }
+	మాతృక::సదిశ<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		తిరిగి (కూడిక_Sq - కూడిక_2.emult(కూడిక_2) / లెక్క_3) / లెక్క_3;
 	}
-	matrix::Vector<Type, M> getStdDev()
+	మాతృక::సదిశ<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		తిరిగి getVar().వర్గమూలం();
 	}
-private:
-// attributes
-	matrix::Vector<Type, M> _sum;
-	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+అంతరంగ:
+//లక్షణాలు
+	మాతృక::సదిశ<Type, M> కూడిక_2;
+	మాతృక::సదిశ<Type, M> కూడిక_Sq;
+	size_t లెక్క_3;
 };
 
 } // namespace control

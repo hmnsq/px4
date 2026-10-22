@@ -35,7 +35,7 @@
  * @file DatamanClient.cpp
  */
 
-#include <dataman_client/DatamanClient.hpp>
+#అన్తర్భావ <dataman_client/DatamanClient.hpp>
 
 DatamanClient::DatamanClient()
 {
@@ -44,10 +44,10 @@ DatamanClient::DatamanClient()
 	_dataman_request_pub.advertise();
 	_dataman_response_sub = orb_subscribe(ORB_ID(dataman_response));
 
-	if (!orb_sub_valid(_dataman_response_sub)) {
+	ఒకవేళ (!orb_sub_valid(_dataman_response_sub)) {
 		PX4_ERR("Failed to subscribe (%i)", errno);
 
-	} else {
+	} లేకపోతే {
 		// make sure we don't get any stale response by doing an orb_copy
 		dataman_response_s response{};
 		orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
@@ -55,20 +55,20 @@ DatamanClient::DatamanClient()
 		_fds.fd = _dataman_response_sub;
 		_fds.events = POLLIN;
 
-		hrt_abstime timestamp = hrt_absolute_time();
+		hrt_abstime timestamp = hrt_absolute_సమయం();
 
 		dataman_request_s request;
 		request.timestamp = timestamp;
 		request.request_type = DM_GET_ID;
-		request.client_id = CLIENT_ID_NOT_SET;
+		request.client_id = CLIENT_ID_NOT_సమితి;
 
-		bool success = syncHandler(request, response, timestamp, 1000_ms);
+		తార్కిక success = syncHandler(request, response, timestamp, 1000_ms);
 
-		if (success && (response.client_id > CLIENT_ID_NOT_SET)) {
+		ఒకవేళ (success && (response.client_id > CLIENT_ID_NOT_సమితి)) {
 
 			_client_id = response.client_id;
 
-		} else {
+		} లేకపోతే {
 			PX4_ERR("Failed to get client ID!");
 		}
 	}
@@ -78,428 +78,428 @@ DatamanClient::~DatamanClient()
 {
 	perf_free(_sync_perf);
 
-	if (orb_sub_valid(_dataman_response_sub)) {
+	ఒకవేళ (orb_sub_valid(_dataman_response_sub)) {
 		orb_unsubscribe(_dataman_response_sub);
 	}
 }
 
-bool DatamanClient::syncHandler(const dataman_request_s &request, dataman_response_s &response,
-				const hrt_abstime &start_time, hrt_abstime timeout)
+తార్కిక DatamanClient::syncHandler(స్థిరరాశి dataman_request_s &request, dataman_response_s &response,
+				స్థిరరాశి hrt_abstime &ప్రారంభం_సమయం, hrt_abstime timeout)
 {
-	bool response_received = false;
+	తార్కిక response_received = అబద్ధం;
 	int32_t ret = 0;
-	hrt_abstime time_elapsed = hrt_elapsed_time(&start_time);
+	hrt_abstime సమయం_elapsed = hrt_elapsed_సమయం(&ప్రారంభం_సమయం);
 	perf_begin(_sync_perf);
 	clearPendingResponse();
 
 	_dataman_request_pub.publish(request);
 
-	while (!response_received && (time_elapsed < timeout)) {
+	అయితే (!response_received && (సమయం_elapsed < timeout)) {
 
 		uint32_t timeout_ms = 100;
 		ret = px4_poll(&_fds, 1, timeout_ms);
 
-		if (ret < 0) {
+		ఒకవేళ (ret < 0) {
 			PX4_ERR("px4_poll returned error: %" PRIu32, ret);
-			break;
+			ఆపు;
 
-		} else if (ret == 0) {
+		} లేకపోతే ఒకవేళ (ret == 0) {
 
 			// No response received, send new request
 			_dataman_request_pub.publish(request);
 
-		} else {
+		} లేకపోతే {
 
-			bool updated = false;
+			తార్కిక updated = అబద్ధం;
 			orb_check(_dataman_response_sub, &updated);
 
-			if (updated) {
+			ఒకవేళ (updated) {
 				orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
 
-				if (response.client_id == request.client_id) {
+				ఒకవేళ (response.client_id == request.client_id) {
 
-					if ((response.request_type == request.request_type) &&
-					    (response.item == request.item) &&
-					    (response.index == request.index)) {
-						response_received = true;
-						break;
+					ఒకవేళ ((response.request_type == request.request_type) &&
+					    (response.అంశం == request.అంశం) &&
+					    (response.సూచీ == request.సూచీ)) {
+						response_received = నిజం;
+						ఆపు;
 					}
 
-				} else if (request.client_id == CLIENT_ID_NOT_SET) {
+				} లేకపోతే ఒకవేళ (request.client_id == CLIENT_ID_NOT_సమితి) {
 
 					// validate timestamp from response.data
-					if (0 == memcmp(&(request.timestamp), &(response.data), sizeof(hrt_abstime))) {
-						response_received = true;
-						break;
+					ఒకవేళ (0 == memcmp(&(request.timestamp), &(response.దత్తాంశం), పరిమాణం(hrt_abstime))) {
+						response_received = నిజం;
+						ఆపు;
 					}
 				}
 			}
 		}
 
-		time_elapsed = hrt_elapsed_time(&start_time);
+		సమయం_elapsed = hrt_elapsed_సమయం(&ప్రారంభం_సమయం);
 	}
 
-	perf_end(_sync_perf);
+	perf_చివర(_sync_perf);
 
-	if (!response_received && ret >= 0) {
+	ఒకవేళ (!response_received && ret >= 0) {
 		PX4_ERR("timeout after %" PRIu32 " ms!", static_cast<uint32_t>(timeout / 1000));
 	}
 
-	return response_received;
+	తిరిగి response_received;
 }
 
-bool DatamanClient::readSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
+తార్కిక DatamanClient::readSync(dm_అంశం_t అంశం, uint32_t సూచీ, uint8_t *బఫరు_2, uint32_t నిడివి, hrt_abstime timeout)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	ఒకవేళ (_client_id == CLIENT_ID_NOT_సమితి) {
+		తిరిగి అబద్ధం;
 	}
 
-	if (length > g_per_item_size[item]) {
-		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+	ఒకవేళ (నిడివి > g_చొప్పున_అంశం_కొలత[అంశం]) {
+		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, నిడివి, static_cast<uint8_t>(అంశం));
+		తిరిగి అబద్ధం;
 	}
 
-	hrt_abstime timestamp = hrt_absolute_time();
+	hrt_abstime timestamp = hrt_absolute_సమయం();
 
 	dataman_request_s request;
 	request.timestamp = timestamp;
-	request.index = index;
-	request.data_length = length;
+	request.సూచీ = సూచీ;
+	request.దత్తాంశం_నిడివి = నిడివి;
 	request.client_id = _client_id;
 	request.request_type = DM_READ;
-	request.item = static_cast<uint8_t>(item);
+	request.అంశం = static_cast<uint8_t>(అంశం);
 
 	dataman_response_s response{};
-	bool success = syncHandler(request, response, timestamp, timeout);
+	తార్కిక success = syncHandler(request, response, timestamp, timeout);
 
-	if (success) {
+	ఒకవేళ (success) {
 
-		if (response.status != dataman_response_s::STATUS_SUCCESS) {
+		ఒకవేళ (response.స్థితి_2 != dataman_response_s::స్థితి_SUCCESS) {
 
-			success = false;
+			success = అబద్ధం;
 			PX4_ERR("readSync failed! status=%" PRIu8 ", item=%" PRIu8 ", index=%" PRIu32 ", length=%" PRIu32,
-				response.status, static_cast<uint8_t>(item), index, length);
+				response.స్థితి_2, static_cast<uint8_t>(అంశం), సూచీ, నిడివి);
 
-		} else {
-			memcpy(buffer, response.data, length);
+		} లేకపోతే {
+			జ్ఞాపకం_నకలు(బఫరు_2, response.దత్తాంశం, నిడివి);
 		}
 	}
 
-	return success;
+	తిరిగి success;
 }
 
-bool DatamanClient::writeSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
+తార్కిక DatamanClient::writeSync(dm_అంశం_t అంశం, uint32_t సూచీ, uint8_t *బఫరు_2, uint32_t నిడివి, hrt_abstime timeout)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	ఒకవేళ (_client_id == CLIENT_ID_NOT_సమితి) {
+		తిరిగి అబద్ధం;
 	}
 
-	if (length > g_per_item_size[item]) {
-		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+	ఒకవేళ (నిడివి > g_చొప్పున_అంశం_కొలత[అంశం]) {
+		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, నిడివి, static_cast<uint8_t>(అంశం));
+		తిరిగి అబద్ధం;
 	}
 
-	hrt_abstime timestamp = hrt_absolute_time();
+	hrt_abstime timestamp = hrt_absolute_సమయం();
 
 	dataman_request_s request;
 	request.timestamp = timestamp;
-	request.index = index;
-	request.data_length = length;
+	request.సూచీ = సూచీ;
+	request.దత్తాంశం_నిడివి = నిడివి;
 	request.client_id = _client_id;
 	request.request_type = DM_WRITE;
-	request.item = static_cast<uint8_t>(item);
+	request.అంశం = static_cast<uint8_t>(అంశం);
 
-	memcpy(request.data, buffer, length);
+	జ్ఞాపకం_నకలు(request.దత్తాంశం, బఫరు_2, నిడివి);
 
 	dataman_response_s response{};
-	bool success = syncHandler(request, response, timestamp, timeout);
+	తార్కిక success = syncHandler(request, response, timestamp, timeout);
 
-	if (success) {
+	ఒకవేళ (success) {
 
-		if (response.status != dataman_response_s::STATUS_SUCCESS) {
+		ఒకవేళ (response.స్థితి_2 != dataman_response_s::స్థితి_SUCCESS) {
 
-			success = false;
+			success = అబద్ధం;
 			PX4_ERR("writeSync failed! status=%" PRIu8 ", item=%" PRIu8 ", index=%" PRIu32 ", length=%" PRIu32,
-				response.status, static_cast<uint8_t>(item), index, length);
+				response.స్థితి_2, static_cast<uint8_t>(అంశం), సూచీ, నిడివి);
 		}
 	}
 
-	return success;
+	తిరిగి success;
 }
 
-bool DatamanClient::clearSync(dm_item_t item, hrt_abstime timeout)
+తార్కిక DatamanClient::clearSync(dm_అంశం_t అంశం, hrt_abstime timeout)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	ఒకవేళ (_client_id == CLIENT_ID_NOT_సమితి) {
+		తిరిగి అబద్ధం;
 	}
 
-	hrt_abstime timestamp = hrt_absolute_time();
+	hrt_abstime timestamp = hrt_absolute_సమయం();
 
 	dataman_request_s request;
 	request.timestamp = timestamp;
 	request.client_id = _client_id;
 	request.request_type = DM_CLEAR;
-	request.item = static_cast<uint8_t>(item);
+	request.అంశం = static_cast<uint8_t>(అంశం);
 
 	dataman_response_s response{};
-	bool success = syncHandler(request, response, timestamp, timeout);
+	తార్కిక success = syncHandler(request, response, timestamp, timeout);
 
-	if (success) {
+	ఒకవేళ (success) {
 
-		if (response.status != dataman_response_s::STATUS_SUCCESS) {
+		ఒకవేళ (response.స్థితి_2 != dataman_response_s::స్థితి_SUCCESS) {
 
-			success = false;
+			success = అబద్ధం;
 			PX4_ERR("clearSync failed! status=%" PRIu8 ", item=%" PRIu8,
-				response.status, static_cast<uint8_t>(item));
+				response.స్థితి_2, static_cast<uint8_t>(అంశం));
 		}
 	}
 
-	return success;
+	తిరిగి success;
 }
 
-void DatamanClient::clearPendingResponse()
+శూన్య DatamanClient::clearPendingResponse()
 {
-	if (_dataman_response_sub < 0) {
-		return;
+	ఒకవేళ (_dataman_response_sub < 0) {
+		తిరిగి;
 	}
 
 	// Drain queued replies first so a response from an aborted or timed-out
 	// operation cannot be matched to the next request.
-	bool updated = false;
+	తార్కిక updated = అబద్ధం;
 	orb_check(_dataman_response_sub, &updated);
 
-	while (updated) {
+	అయితే (updated) {
 		dataman_response_s response{};
 		orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
 		orb_check(_dataman_response_sub, &updated);
 	}
 }
 
-bool DatamanClient::readAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length)
+తార్కిక DatamanClient::readAsync(dm_అంశం_t అంశం, uint32_t సూచీ, uint8_t *బఫరు_2, uint32_t నిడివి)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	ఒకవేళ (_client_id == CLIENT_ID_NOT_సమితి) {
+		తిరిగి అబద్ధం;
 	}
 
-	if (length > g_per_item_size[item]) {
-		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+	ఒకవేళ (నిడివి > g_చొప్పున_అంశం_కొలత[అంశం]) {
+		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, నిడివి, static_cast<uint8_t>(అంశం));
+		తిరిగి అబద్ధం;
 	}
 
-	bool success = false;
+	తార్కిక success = అబద్ధం;
 
-	if (_state == State::Idle) {
+	ఒకవేళ (_state == State::Idle) {
 		// Drop any queued stale replies before publishing a fresh async request.
 		clearPendingResponse();
 
-		hrt_abstime timestamp = hrt_absolute_time();
+		hrt_abstime timestamp = hrt_absolute_సమయం();
 
 		dataman_request_s request;
 		request.timestamp = timestamp;
-		request.index = index;
-		request.data_length = length;
+		request.సూచీ = సూచీ;
+		request.దత్తాంశం_నిడివి = నిడివి;
 		request.client_id = _client_id;
 		request.request_type = DM_READ;
-		request.item = static_cast<uint8_t>(item);
+		request.అంశం = static_cast<uint8_t>(అంశం);
 
-		_active_request.timestamp = timestamp;
-		_active_request.request_type = DM_READ;
-		_active_request.item = item;
-		_active_request.index = index;
-		_active_request.buffer = buffer;
-		_active_request.length = length;
+		చురుకైన_request.timestamp = timestamp;
+		చురుకైన_request.request_type = DM_READ;
+		చురుకైన_request.అంశం = అంశం;
+		చురుకైన_request.సూచీ = సూచీ;
+		చురుకైన_request.బఫరు_2 = బఫరు_2;
+		చురుకైన_request.నిడివి = నిడివి;
 
-		_state = State::RequestSent;
+		_state = State::Request_పంపిన;
 
 		_dataman_request_pub.publish(request);
 
-		success = true;
+		success = నిజం;
 	}
 
-	return success;
+	తిరిగి success;
 }
 
-bool DatamanClient::writeAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length)
+తార్కిక DatamanClient::writeAsync(dm_అంశం_t అంశం, uint32_t సూచీ, uint8_t *బఫరు_2, uint32_t నిడివి)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	ఒకవేళ (_client_id == CLIENT_ID_NOT_సమితి) {
+		తిరిగి అబద్ధం;
 	}
 
-	if (length > g_per_item_size[item]) {
-		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+	ఒకవేళ (నిడివి > g_చొప్పున_అంశం_కొలత[అంశం]) {
+		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, నిడివి, static_cast<uint8_t>(అంశం));
+		తిరిగి అబద్ధం;
 	}
 
-	bool success = false;
+	తార్కిక success = అబద్ధం;
 
-	if (_state == State::Idle) {
+	ఒకవేళ (_state == State::Idle) {
 		// Drop any queued stale replies before publishing a fresh async request.
 		clearPendingResponse();
 
-		hrt_abstime timestamp = hrt_absolute_time();
+		hrt_abstime timestamp = hrt_absolute_సమయం();
 
 		dataman_request_s request;
 		request.timestamp = timestamp;
-		request.index = index;
-		request.data_length = length;
+		request.సూచీ = సూచీ;
+		request.దత్తాంశం_నిడివి = నిడివి;
 		request.client_id = _client_id;
 		request.request_type = DM_WRITE;
-		request.item = static_cast<uint8_t>(item);
+		request.అంశం = static_cast<uint8_t>(అంశం);
 
-		memcpy(request.data, buffer, length);
+		జ్ఞాపకం_నకలు(request.దత్తాంశం, బఫరు_2, నిడివి);
 
-		_active_request.timestamp = timestamp;
-		_active_request.request_type = DM_WRITE;
-		_active_request.item = item;
-		_active_request.index = index;
-		_active_request.buffer = buffer;
-		_active_request.length = length;
+		చురుకైన_request.timestamp = timestamp;
+		చురుకైన_request.request_type = DM_WRITE;
+		చురుకైన_request.అంశం = అంశం;
+		చురుకైన_request.సూచీ = సూచీ;
+		చురుకైన_request.బఫరు_2 = బఫరు_2;
+		చురుకైన_request.నిడివి = నిడివి;
 
-		_state = State::RequestSent;
+		_state = State::Request_పంపిన;
 
 		_dataman_request_pub.publish(request);
 
-		success = true;
+		success = నిజం;
 	}
 
-	return success;
+	తిరిగి success;
 }
 
-bool DatamanClient::clearAsync(dm_item_t item)
+తార్కిక DatamanClient::clearAsync(dm_అంశం_t అంశం)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	ఒకవేళ (_client_id == CLIENT_ID_NOT_సమితి) {
+		తిరిగి అబద్ధం;
 	}
 
-	bool success = false;
+	తార్కిక success = అబద్ధం;
 
-	if (_state == State::Idle) {
+	ఒకవేళ (_state == State::Idle) {
 		// Drop any queued stale replies before publishing a fresh async request.
 		clearPendingResponse();
 
-		hrt_abstime timestamp = hrt_absolute_time();
+		hrt_abstime timestamp = hrt_absolute_సమయం();
 
 		dataman_request_s request;
 		request.timestamp = timestamp;
 		request.client_id = _client_id;
 		request.request_type = DM_CLEAR;
-		request.item = static_cast<uint8_t>(item);
-		request.index = 0;
+		request.అంశం = static_cast<uint8_t>(అంశం);
+		request.సూచీ = 0;
 
-		_active_request.timestamp = timestamp;
-		_active_request.request_type = DM_CLEAR;
-		_active_request.item = item;
-		_active_request.index = request.index;
-		_state = State::RequestSent;
+		చురుకైన_request.timestamp = timestamp;
+		చురుకైన_request.request_type = DM_CLEAR;
+		చురుకైన_request.అంశం = అంశం;
+		చురుకైన_request.సూచీ = request.సూచీ;
+		_state = State::Request_పంపిన;
 
 		_dataman_request_pub.publish(request);
 
-		success = true;
+		success = నిజం;
 	}
 
-	return success;
+	తిరిగి success;
 }
 
-void DatamanClient::update()
+శూన్య DatamanClient::update()
 {
-	if (_state == State::RequestSent) {
+	ఒకవేళ (_state == State::Request_పంపిన) {
 
-		bool updated = false;
+		తార్కిక updated = అబద్ధం;
 		orb_check(_dataman_response_sub, &updated);
 
 		dataman_response_s response;
 
-		if (updated) {
+		ఒకవేళ (updated) {
 			orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
 
-			if ((response.client_id == _client_id) &&
-			    (response.request_type == _active_request.request_type) &&
-			    (response.item == _active_request.item) &&
-			    (response.index == _active_request.index)) {
+			ఒకవేళ ((response.client_id == _client_id) &&
+			    (response.request_type == చురుకైన_request.request_type) &&
+			    (response.అంశం == చురుకైన_request.అంశం) &&
+			    (response.సూచీ == చురుకైన_request.సూచీ)) {
 
-				if (response.request_type == DM_READ) {
-					memcpy(_active_request.buffer, response.data, _active_request.length);
+				ఒకవేళ (response.request_type == DM_READ) {
+					జ్ఞాపకం_నకలు(చురుకైన_request.బఫరు_2, response.దత్తాంశం, చురుకైన_request.నిడివి);
 				}
 
-				_response_status = response.status;
+				response_స్థితి = response.స్థితి_2;
 
-				if (_response_status != dataman_response_s::STATUS_SUCCESS) {
+				ఒకవేళ (response_స్థితి != dataman_response_s::స్థితి_SUCCESS) {
 
 					PX4_ERR("Async request type %" PRIu8 " failed! status=%" PRIu8 " item=%" PRIu8 " index=%" PRIu32,
-						response.request_type, response.status, static_cast<uint8_t>(_active_request.item), _active_request.index);
+						response.request_type, response.స్థితి_2, static_cast<uint8_t>(చురుకైన_request.అంశం), చురుకైన_request.సూచీ);
 				}
 
 				_state = State::ResponseReceived;
 			}
 		}
 
-		if (_state == State::RequestSent) {
+		ఒకవేళ (_state == State::Request_పంపిన) {
 
 			/* Retry the request if there is no answer */
-			if (((_active_request.request_type != DM_CLEAR) && (hrt_elapsed_time(&_active_request.timestamp) > 100_ms)) ||
-			    (hrt_elapsed_time(&_active_request.timestamp) > 1000_ms)
+			ఒకవేళ (((చురుకైన_request.request_type != DM_CLEAR) && (hrt_elapsed_సమయం(&చురుకైన_request.timestamp) > 100_ms)) ||
+			    (hrt_elapsed_సమయం(&చురుకైన_request.timestamp) > 1000_ms)
 			   ) {
 
-				hrt_abstime timestamp = hrt_absolute_time();
+				hrt_abstime timestamp = hrt_absolute_సమయం();
 
-				_active_request.timestamp = timestamp;
+				చురుకైన_request.timestamp = timestamp;
 
 				dataman_request_s request;
 				request.timestamp = timestamp;
-				request.index = _active_request.index;
-				request.data_length = _active_request.length;
+				request.సూచీ = చురుకైన_request.సూచీ;
+				request.దత్తాంశం_నిడివి = చురుకైన_request.నిడివి;
 				request.client_id = _client_id;
-				request.request_type = static_cast<uint8_t>(_active_request.request_type);
-				request.item = static_cast<uint8_t>(_active_request.item);
+				request.request_type = static_cast<uint8_t>(చురుకైన_request.request_type);
+				request.అంశం = static_cast<uint8_t>(చురుకైన_request.అంశం);
 
-				if (_active_request.request_type == DM_WRITE) {
-					memcpy(request.data, _active_request.buffer, _active_request.length);
+				ఒకవేళ (చురుకైన_request.request_type == DM_WRITE) {
+					జ్ఞాపకం_నకలు(request.దత్తాంశం, చురుకైన_request.బఫరు_2, చురుకైన_request.నిడివి);
 				}
 
 				_dataman_request_pub.publish(request);
 
-				_state = State::RequestSent;
+				_state = State::Request_పంపిన;
 			}
 		}
 	}
 }
 
-bool DatamanClient::lastOperationCompleted(bool &success)
+తార్కిక DatamanClient::చివరి_Operation_Completed(తార్కిక &success)
 {
-	bool completed = false;
-	success = false;
+	తార్కిక completed = అబద్ధం;
+	success = అబద్ధం;
 
-	if (_state == State::ResponseReceived) {
+	ఒకవేళ (_state == State::ResponseReceived) {
 
-		if (_response_status == dataman_response_s::STATUS_SUCCESS) {
-			success = true;
+		ఒకవేళ (response_స్థితి == dataman_response_s::స్థితి_SUCCESS) {
+			success = నిజం;
 		}
 
 		_state = State::Idle;
-		completed = true;
+		completed = నిజం;
 	}
 
-	return completed;
+	తిరిగి completed;
 }
 
-void DatamanClient::abortCurrentOperation()
+శూన్య DatamanClient::abortCurrentOperation()
 {
 	_state = State::Idle;
 }
 
-DatamanCache::DatamanCache(const char *cache_miss_perf_counter_name, uint32_t num_items)
-	: _cache_miss_perf(perf_alloc(PC_COUNT, cache_miss_perf_counter_name))
+DatamanCache::DatamanCache(స్థిరరాశి అక్షరం *cache_తప్పిపోవు_perf_counter_name, uint32_t అంకె_వస్తువులు)
+	: cache_తప్పిపోవు_perf(perf_alloc(PC_లెక్క, cache_తప్పిపోవు_perf_counter_name))
 {
-	if (num_items == 0) {
-		return;
+	ఒకవేళ (అంకె_వస్తువులు == 0) {
+		తిరిగి;
 	}
 
-	_items = new Item[num_items] {};
+	వస్తువులు = కొత్త అంశం_2[అంకె_వస్తువులు] {};
 
-	if (_items != nullptr) {
-		_num_items = num_items;
+	ఒకవేళ (వస్తువులు != శూన్యసూచిక) {
+		అంకె_వస్తువులు_2 = అంకె_వస్తువులు;
 
-	} else {
+	} లేకపోతే {
 		PX4_ERR("alloc failed");
 	}
 }
@@ -507,281 +507,281 @@ DatamanCache::DatamanCache(const char *cache_miss_perf_counter_name, uint32_t nu
 DatamanCache::~DatamanCache()
 {
 	_client.abortCurrentOperation();
-	delete[] _items;
-	perf_free(_cache_miss_perf);
+	తొలగించు[] వస్తువులు;
+	perf_free(cache_తప్పిపోవు_perf);
 }
 
-void DatamanCache::resize(uint32_t num_items)
+శూన్య DatamanCache::resize(uint32_t అంకె_వస్తువులు)
 {
-	if (num_items == 0) {
+	ఒకవేళ (అంకె_వస్తువులు == 0) {
 		// Allow callers to explicitly disable caching while leaving the DatamanClient usable.
 		_client.abortCurrentOperation();
-		delete[] _items;
-		_items = nullptr;
+		తొలగించు[] వస్తువులు;
+		వస్తువులు = శూన్యసూచిక;
 		resetCacheState();
-		_num_items = 0;
-		return;
+		అంకె_వస్తువులు_2 = 0;
+		తిరిగి;
 	}
 
-	Item *new_items = new Item[num_items] {};
+	అంశం_2 *new_వస్తువులు = కొత్త అంశం_2[అంకె_వస్తువులు] {};
 
-	if (new_items != nullptr) {
+	ఒకవేళ (new_వస్తువులు != శూన్యసూచిక) {
 		_client.abortCurrentOperation();
 
-		uint32_t num_min = num_items < _num_items ? num_items : _num_items;
+		uint32_t అంకె_min = అంకె_వస్తువులు < అంకె_వస్తువులు_2 ? అంకె_వస్తువులు : అంకె_వస్తువులు_2;
 
-		for (uint32_t i = 0; i < num_min; ++i) {
-			new_items[i] = _items[i];
+		కొరకు (uint32_t i = 0; i < అంకె_min; ++i) {
+			new_వస్తువులు[i] = వస్తువులు[i];
 
-			if (new_items[i].cache_state == State::RequestSent) {
-				new_items[i].cache_state = State::RequestPrepared;
+			ఒకవేళ (new_వస్తువులు[i].cache_state == State::Request_పంపిన) {
+				new_వస్తువులు[i].cache_state = State::RequestPrepared;
 			}
 		}
 
-		delete[] _items;
-		_items = new_items;
-		_num_items = num_items;
+		తొలగించు[] వస్తువులు;
+		వస్తువులు = new_వస్తువులు;
+		అంకె_వస్తువులు_2 = అంకె_వస్తువులు;
 
 		// ensure new bounds are respected after resize
-		_load_index = (_load_index < _num_items) ? _load_index : 0;
-		_update_index = (_update_index < _num_items) ? _update_index : 0;
-		_item_counter = (_item_counter < _num_items) ? _item_counter : _num_items;
+		ఎక్కించు_సూచీ = (ఎక్కించు_సూచీ < అంకె_వస్తువులు_2) ? ఎక్కించు_సూచీ : 0;
+		update_సూచీ = (update_సూచీ < అంకె_వస్తువులు_2) ? update_సూచీ : 0;
+		అంశం_counter = (అంశం_counter < అంకె_వస్తువులు_2) ? అంశం_counter : అంకె_వస్తువులు_2;
 
-	} else {
+	} లేకపోతే {
 		PX4_ERR("alloc failed");
 	}
 }
 
-bool DatamanCache::load(dm_item_t item, uint32_t index)
+తార్కిక DatamanCache::ఎక్కించు(dm_అంశం_t అంశం, uint32_t సూచీ)
 {
-	if (!_items) {
-		return false;
+	ఒకవేళ (!వస్తువులు) {
+		తిరిగి అబద్ధం;
 	}
 
-	bool success = false;
-	bool duplicate = false;
+	తార్కిక success = అబద్ధం;
+	తార్కిక duplicate = అబద్ధం;
 
 	//Prevent duplicates
-	for (uint32_t i = 0; i < _num_items; ++i) {
+	కొరకు (uint32_t i = 0; i < అంకె_వస్తువులు_2; ++i) {
 
-		if (_items[i].cache_state != State::Idle &&
-		    _items[i].cache_state != State::Error &&
-		    _items[i].response.item == item &&
-		    _items[i].response.index == index) {
-			duplicate = true;
-			break;
+		ఒకవేళ (వస్తువులు[i].cache_state != State::Idle &&
+		    వస్తువులు[i].cache_state != State::Error &&
+		    వస్తువులు[i].response.అంశం == అంశం &&
+		    వస్తువులు[i].response.సూచీ == సూచీ) {
+			duplicate = నిజం;
+			ఆపు;
 		}
 	}
 
-	if (!duplicate && (_item_counter < _num_items)) {
+	ఒకవేళ (!duplicate && (అంశం_counter < అంకె_వస్తువులు_2)) {
 
-		_items[_load_index].cache_state = State::RequestPrepared;
-		_items[_load_index].response.item = item;
-		_items[_load_index].response.index = index;
+		వస్తువులు[ఎక్కించు_సూచీ].cache_state = State::RequestPrepared;
+		వస్తువులు[ఎక్కించు_సూచీ].response.అంశం = అంశం;
+		వస్తువులు[ఎక్కించు_సూచీ].response.సూచీ = సూచీ;
 
-		_load_index = (_load_index + 1) % _num_items;
+		ఎక్కించు_సూచీ = (ఎక్కించు_సూచీ + 1) % అంకె_వస్తువులు_2;
 
-		++_item_counter;
+		++అంశం_counter;
 
-		success = true;
+		success = నిజం;
 	}
 
-	return success;
+	తిరిగి success;
 }
 
-bool DatamanCache::loadWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
+తార్కిక DatamanCache::ఎక్కించు_Wait(dm_అంశం_t అంశం, uint32_t సూచీ, uint8_t *బఫరు_2, uint32_t నిడివి, hrt_abstime timeout)
 {
-	if (length > g_per_item_size[item]) {
-		PX4_ERR("Length %" PRIu32 " can't fit in data size for item %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+	ఒకవేళ (నిడివి > g_చొప్పున_అంశం_కొలత[అంశం]) {
+		PX4_ERR("Length %" PRIu32 " can't fit in data size for item %" PRIi8, నిడివి, static_cast<uint8_t>(అంశం));
+		తిరిగి అబద్ధం;
 	}
 
-	bool success = false;
-	bool item_found = false;
+	తార్కిక success = అబద్ధం;
+	తార్కిక అంశం_దొరికింది = అబద్ధం;
 
-	if (_items) {
-		for (uint32_t i = 0; i < _num_items; ++i) {
-			if ((_items[i].response.item == item) &&
-			    (_items[i].response.index == index)) {
-				item_found = true;
+	ఒకవేళ (వస్తువులు) {
+		కొరకు (uint32_t i = 0; i < అంకె_వస్తువులు_2; ++i) {
+			ఒకవేళ ((వస్తువులు[i].response.అంశం == అంశం) &&
+			    (వస్తువులు[i].response.సూచీ == సూచీ)) {
+				అంశం_దొరికింది = నిజం;
 
-				if (_items[i].cache_state == State::ResponseReceived) {
-					memcpy(buffer, _items[i].response.data, length);
-					success = true;
-					break;
+				ఒకవేళ (వస్తువులు[i].cache_state == State::ResponseReceived) {
+					జ్ఞాపకం_నకలు(బఫరు_2, వస్తువులు[i].response.దత్తాంశం, నిడివి);
+					success = నిజం;
+					ఆపు;
 				}
 			}
 		}
 	}
 
-	if (!success) {
-		perf_count(_cache_miss_perf);
+	ఒకవేళ (!success) {
+		perf_లెక్క(cache_తప్పిపోవు_perf);
 	}
 
-	if (!success && (timeout > 0)) {
-		success = _client.readSync(item, index, buffer, length, timeout);
+	ఒకవేళ (!success && (timeout > 0)) {
+		success = _client.readSync(అంశం, సూచీ, బఫరు_2, నిడివి, timeout);
 
 		// Cache the item if not found already (it could be in the process of being loaded)
-		if (success && !item_found && _items && (_item_counter < _num_items)) {
-			_items[_load_index].cache_state = State::ResponseReceived;
-			_items[_load_index].response.item = item;
-			_items[_load_index].response.index = index;
-			memcpy(_items[_load_index].response.data, buffer, length);
+		ఒకవేళ (success && !అంశం_దొరికింది && వస్తువులు && (అంశం_counter < అంకె_వస్తువులు_2)) {
+			వస్తువులు[ఎక్కించు_సూచీ].cache_state = State::ResponseReceived;
+			వస్తువులు[ఎక్కించు_సూచీ].response.అంశం = అంశం;
+			వస్తువులు[ఎక్కించు_సూచీ].response.సూచీ = సూచీ;
+			జ్ఞాపకం_నకలు(వస్తువులు[ఎక్కించు_సూచీ].response.దత్తాంశం, బఫరు_2, నిడివి);
 
-			_load_index = (_load_index + 1) % _num_items;
+			ఎక్కించు_సూచీ = (ఎక్కించు_సూచీ + 1) % అంకె_వస్తువులు_2;
 
-			++_item_counter; // Still increase the counter here
+			++అంశం_counter; // Still increase the counter here
 		}
 	}
 
-	return success;
+	తిరిగి success;
 }
 
-bool DatamanCache::writeWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
+తార్కిక DatamanCache::writeWait(dm_అంశం_t అంశం, uint32_t సూచీ, uint8_t *బఫరు_2, uint32_t నిడివి, hrt_abstime timeout)
 {
-	if (length > g_per_item_size[item]) {
-		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+	ఒకవేళ (నిడివి > g_చొప్పున_అంశం_కొలత[అంశం]) {
+		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, నిడివి, static_cast<uint8_t>(అంశం));
+		తిరిగి అబద్ధం;
 	}
 
-	bool success = _client.writeSync(item, index, buffer, length, timeout);
+	తార్కిక success = _client.writeSync(అంశం, సూచీ, బఫరు_2, నిడివి, timeout);
 
-	if (success && _items) {
-		for (uint32_t i = 0; i < _num_items; ++i) {
-			if ((_items[i].response.item == item) &&
-			    (_items[i].response.index == index) &&
-			    ((_items[i].cache_state == State::ResponseReceived) ||
-			     (_items[i].cache_state == State::RequestPrepared))) {
+	ఒకవేళ (success && వస్తువులు) {
+		కొరకు (uint32_t i = 0; i < అంకె_వస్తువులు_2; ++i) {
+			ఒకవేళ ((వస్తువులు[i].response.అంశం == అంశం) &&
+			    (వస్తువులు[i].response.సూచీ == సూచీ) &&
+			    ((వస్తువులు[i].cache_state == State::ResponseReceived) ||
+			     (వస్తువులు[i].cache_state == State::RequestPrepared))) {
 
-				memcpy(_items[i].response.data, buffer, length);
-				_items[i].cache_state = State::ResponseReceived;
-				break;
+				జ్ఞాపకం_నకలు(వస్తువులు[i].response.దత్తాంశం, బఫరు_2, నిడివి);
+				వస్తువులు[i].cache_state = State::ResponseReceived;
+				ఆపు;
 			}
 		}
 	}
 
-	return success;
+	తిరిగి success;
 }
 
-bool DatamanCache::updateCachedItem(dm_item_t item, uint32_t index, const uint8_t *buffer, uint32_t length)
+తార్కిక DatamanCache::update_Cached_అంశం(dm_అంశం_t అంశం, uint32_t సూచీ, స్థిరరాశి uint8_t *బఫరు_2, uint32_t నిడివి)
 {
-	if (!_items || buffer == nullptr || _num_items == 0) {
-		return false;
+	ఒకవేళ (!వస్తువులు || బఫరు_2 == శూన్యసూచిక || అంకె_వస్తువులు_2 == 0) {
+		తిరిగి అబద్ధం;
 	}
 
-	if (length > g_per_item_size[item]) {
-		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+	ఒకవేళ (నిడివి > g_చొప్పున_అంశం_కొలత[అంశం]) {
+		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, నిడివి, static_cast<uint8_t>(అంశం));
+		తిరిగి అబద్ధం;
 	}
 
 	// Only patch data that is fully received and stable. Slots in other states are skipped:
 	// an in-flight async read will fetch the new SD card data shortly anyway, and invalidated
 	// slots can still carry a stale key match for the same item/index.
-	for (uint32_t i = 0; i < _num_items; ++i) {
-		if ((_items[i].response.item == item) && (_items[i].response.index == index)
-		    && (_items[i].cache_state == State::ResponseReceived)) {
-			memcpy(_items[i].response.data, buffer, length);
-			return true;
+	కొరకు (uint32_t i = 0; i < అంకె_వస్తువులు_2; ++i) {
+		ఒకవేళ ((వస్తువులు[i].response.అంశం == అంశం) && (వస్తువులు[i].response.సూచీ == సూచీ)
+		    && (వస్తువులు[i].cache_state == State::ResponseReceived)) {
+			జ్ఞాపకం_నకలు(వస్తువులు[i].response.దత్తాంశం, బఫరు_2, నిడివి);
+			తిరిగి నిజం;
 		}
 	}
 
-	return false;
+	తిరిగి అబద్ధం;
 }
 
-void DatamanCache::update()
+శూన్య DatamanCache::update()
 {
-	if (_item_counter > 0) {
+	ఒకవేళ (అంశం_counter > 0) {
 
 		_client.update();
 
-		bool success = false;
-		bool response_success = false;
+		తార్కిక success = అబద్ధం;
+		తార్కిక response_success = అబద్ధం;
 
-		switch (_items[_update_index].cache_state) {
-		case State::Idle:
-			break;
+		ఎంపిక (వస్తువులు[update_సూచీ].cache_state) {
+		స్థితి State::Idle:
+			ఆపు;
 
-		case State::ResponseReceived:
+		స్థితి State::ResponseReceived:
 			// Skip it
-			changeUpdateIndex();
-			break;
+			change_Update_సూచీ();
+			ఆపు;
 
-		case State::RequestPrepared:
+		స్థితి State::RequestPrepared:
 
-			success = _client.readAsync(static_cast<dm_item_t>(_items[_update_index].response.item),
-						    _items[_update_index].response.index,
-						    _items[_update_index].response.data,
-						    g_per_item_size[_items[_update_index].response.item]);
+			success = _client.readAsync(static_cast<dm_అంశం_t>(వస్తువులు[update_సూచీ].response.అంశం),
+						    వస్తువులు[update_సూచీ].response.సూచీ,
+						    వస్తువులు[update_సూచీ].response.దత్తాంశం,
+						    g_చొప్పున_అంశం_కొలత[వస్తువులు[update_సూచీ].response.అంశం]);
 
-			if (success) {
-				_items[_update_index].cache_state = State::RequestSent;
+			ఒకవేళ (success) {
+				వస్తువులు[update_సూచీ].cache_state = State::Request_పంపిన;
 
-			} else {
-				_items[_update_index].cache_state = State::Error;
+			} లేకపోతే {
+				వస్తువులు[update_సూచీ].cache_state = State::Error;
 			}
 
-			break;
+			ఆపు;
 
-		case State::RequestSent:
+		స్థితి State::Request_పంపిన:
 
-			if (_client.lastOperationCompleted(response_success)) {
+			ఒకవేళ (_client.చివరి_Operation_Completed(response_success)) {
 
-				if (response_success) {
+				ఒకవేళ (response_success) {
 
-					_items[_update_index].cache_state = State::ResponseReceived;
-					changeUpdateIndex();
+					వస్తువులు[update_సూచీ].cache_state = State::ResponseReceived;
+					change_Update_సూచీ();
 
-				} else {
-					_items[_update_index].cache_state = State::Error;
+				} లేకపోతే {
+					వస్తువులు[update_సూచీ].cache_state = State::Error;
 				}
 			}
 
-			break;
+			ఆపు;
 
-		case State::Error:
+		స్థితి State::Error:
 			// Handled below
-			break;
+			ఆపు;
 		}
 
-		if (_items[_update_index].cache_state == State::Error) {
+		ఒకవేళ (వస్తువులు[update_సూచీ].cache_state == State::Error) {
 			PX4_ERR("Caching: item %" PRIu8 ", index %" PRIu32", status %" PRIu8,
-				_items[_update_index].response.item, _items[_update_index].response.index,
-				_items[_update_index].response.status);
+				వస్తువులు[update_సూచీ].response.అంశం, వస్తువులు[update_సూచీ].response.సూచీ,
+				వస్తువులు[update_సూచీ].response.స్థితి_2);
 
-			changeUpdateIndex();
+			change_Update_సూచీ();
 		}
 
 	}
 }
 
-void DatamanCache::resetCacheState()
+శూన్య DatamanCache::resetCacheState()
 {
-	_update_index = 0;
-	_item_counter = 0;
-	_load_index = 0;
+	update_సూచీ = 0;
+	అంశం_counter = 0;
+	ఎక్కించు_సూచీ = 0;
 }
 
-void DatamanCache::invalidate()
+శూన్య DatamanCache::invalidate()
 {
-	for (uint32_t i = 0; i < _num_items; ++i) {
-		_items[i].cache_state = State::Idle;
+	కొరకు (uint32_t i = 0; i < అంకె_వస్తువులు_2; ++i) {
+		వస్తువులు[i].cache_state = State::Idle;
 	}
 
 	resetCacheState();
 	_client.abortCurrentOperation();
 }
 
-inline void DatamanCache::changeUpdateIndex()
+అంతఃవరుస శూన్య DatamanCache::change_Update_సూచీ()
 {
-	if (_num_items == 0) {
-		_update_index = 0;
-		_item_counter = 0;
-		return;
+	ఒకవేళ (అంకె_వస్తువులు_2 == 0) {
+		update_సూచీ = 0;
+		అంశం_counter = 0;
+		తిరిగి;
 	}
 
-	_update_index = (_update_index + 1) % _num_items;
+	update_సూచీ = (update_సూచీ + 1) % అంకె_వస్తువులు_2;
 
-	if (_item_counter > 0) {
-		--_item_counter;
+	ఒకవేళ (అంశం_counter > 0) {
+		--అంశం_counter;
 	}
 }

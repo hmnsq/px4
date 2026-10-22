@@ -37,22 +37,22 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <time.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <mathlib/math/test/test.hpp>
+#అన్తర్భావ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
 
 /**
@@ -60,21 +60,21 @@ namespace control
  * Same as limiter but with only a max, is used for
  * upper limit of +max, and lower limit of -max
  */
-class __EXPORT BlockLimitSym : public Block
+తరగతి __EXPORT ఖండం_హద్దు_Sym : బహిరంగ ఖండం
 {
-public:
+బహిరంగ:
 // methods
-	BlockLimitSym(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_max(this, "MAX")
+	ఖండం_హద్దు_Sym(Super_ఖండం *మాతృ, స్థిరరాశి అక్షరం *name) :
+		ఖండం(మాతృ, name),
+		_max(ఇది, "MAX")
 	{}
-	virtual ~BlockLimitSym() = default;
-	float update(float input);
+	మాయా ~ఖండం_హద్దు_Sym() = అప్రమేయ;
+	దశాంశం update(దశాంశం ఆదానం);
 // accessors
-	float getMax() { return _max.get(); }
-protected:
-// attributes
-	control::BlockParamFloat _max;
+	దశాంశం getMax() { తిరిగి _max.get(); }
+రక్షిత:
+//లక్షణాలు
+	control::ఖండం_Param_Float _max;
 };
 
 } // namespace control

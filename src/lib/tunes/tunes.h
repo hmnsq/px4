@@ -35,18 +35,18 @@
  * @file tunes.h
  */
 
-#pragma once
+#సూచన once
 
-#include <errno.h>
-#include <uORB/uORB.h>
-#include <uORB/topics/tune_control.h>
-#include "tune_definition.h"
+#అన్తర్భావ <errno.h>
+#అన్తర్భావ <uORB/uORB.h>
+#అన్తర్భావ <uORB/topics/tune_control.h>
+#అన్తర్భావ "tune_definition.h"
 
-#define TUNE_DEFAULT_NOTE_LENGTH 4
-#define TUNE_DEFAULT_OCTAVE 4
-#define TUNE_DEFAULT_TEMPO 120
+#నిర్వచించు TUNE_DEFAULT_NOTE_నిడివి 4
+#నిర్వచించు TUNE_DEFAULT_OCTAVE 4
+#నిర్వచించు TUNE_DEFAULT_TEMPO 120
 
-#define TUNE_MAX_UPDATE_INTERVAL_US 100000
+#నిర్వచించు TUNE_MAX_UPDATE_INTERVAL_US 100000
 
 
 /**
@@ -56,20 +56,20 @@
  */
 class Tunes
 {
-public:
-	enum class NoteMode {NORMAL, LEGATO, STACCATO};
+బహిరంగ:
+	గణన class Note_బహుళకం {సాధారణ, LEGATO, STACCATO};
 
-	enum class Status {
+	గణన class స్థితి_3 {
 		Continue = 1,
 		Stop = 0,
 		Error = -1,
 	};
 
-	enum class ControlResult {
+	గణన class Control_ఫలితం {
 		Success = 0,
 		AlreadyPlaying = 1,
 		InvalidTune = -EINVAL,
-		WouldInterrupt = -EBUSY,
+		Would_అంతరాయం = -EBUSY,
 	};
 
 	/**
@@ -79,12 +79,12 @@ public:
 	 * default_note_length: TUNE_DEFAULT_NOTE_LENGTH
 	 * default_mode: NORMAL
 	 */
-	Tunes(unsigned default_note_length = TUNE_DEFAULT_NOTE_LENGTH,
-	      NoteMode default_note_mode   = NoteMode::NORMAL,
-	      unsigned default_octave      = TUNE_DEFAULT_OCTAVE,
-	      unsigned default_tempo       = TUNE_DEFAULT_TEMPO);
+	Tunes(గుర్తులేని default_note_నిడివి = TUNE_DEFAULT_NOTE_నిడివి,
+	      Note_బహుళకం default_note_బహుళకం   = Note_బహుళకం::సాధారణ,
+	      గుర్తులేని default_octave      = TUNE_DEFAULT_OCTAVE,
+	      గుర్తులేని default_tempo       = TUNE_DEFAULT_TEMPO);
 
-	~Tunes() = default;
+	~Tunes() = అప్రమేయ;
 
 	/**
 	 * Set tune to be played using the message. If a tune is already being played
@@ -96,7 +96,7 @@ public:
 	 * 			ControlResult::AlreadyPlaying if same tune was already playing,
 	 * 			ControlResult::Success if new tune was set.
 	 */
-	ControlResult set_control(const tune_control_s &tune_control);
+	Control_ఫలితం సమితి_control(స్థిరరాశి tune_control_s &tune_control);
 
 	/**
 	 * Set tune to be played using a string.
@@ -106,7 +106,7 @@ public:
 	 *
 	 * @param  string    tune input string
 	 */
-	void set_string(const char *const string, uint8_t volume);
+	శూన్య సమితి_string(స్థిరరాశి అక్షరం *స్థిరరాశి string, uint8_t volume);
 
 	/**
 	 * Get next note in the current tune, which has been provided by either
@@ -116,7 +116,7 @@ public:
 	 * @param  silence   return silence duration (us)
 	 * @return           -1 for error, 0 for play one tone and 1 for continue a sequence
 	 */
-	Tunes::Status get_next_note(unsigned &frequency, unsigned &duration, unsigned &silence);
+	Tunes::స్థితి_3 get_తదుపరి_note(గుర్తులేని &frequency, గుర్తులేని &duration, గుర్తులేని &silence);
 
 	/**
 	 * Get next note in the current tune, which has been provided by either
@@ -127,19 +127,19 @@ public:
 	 * @param  volume    return the volume level of the note (between 0-100)
 	 * @return           -1 for no tune available/error, 0 to not play anything and 1 to play
 	 */
-	Tunes::Status get_next_note(unsigned &frequency, unsigned &duration,
-				    unsigned &silence, uint8_t &volume);
+	Tunes::స్థితి_3 get_తదుపరి_note(గుర్తులేని &frequency, గుర్తులేని &duration,
+				    గుర్తులేని &silence, uint8_t &volume);
 
 	/**
 	 *  Get the number of default tunes. This is useful for when a tune is
 	 *  requested via its tune ID.
 	 *  @return             Number of default tunes accessible via tune ID
 	 */
-	unsigned int get_default_tunes_size() const {return _default_tunes_size;}
+	గుర్తులేని పూర్ణాంకం get_default_tunes_కొలత() స్థిరరాశి {తిరిగి default_tunes_కొలత;}
 
-	unsigned int get_maximum_update_interval() {return (unsigned int)TUNE_MAX_UPDATE_INTERVAL_US;}
+	గుర్తులేని పూర్ణాంకం get_గరిష్ఠ_update_interval() {తిరిగి (గుర్తులేని పూర్ణాంకం)TUNE_MAX_UPDATE_INTERVAL_US;}
 
-private:
+అంతరంగ:
 
 	/**
 	 * Convert note to frequency
@@ -147,7 +147,7 @@ private:
 	 * @param  note unsigned value of the semitone from C
 	 * @return      frequency (Hz)
 	 */
-	uint32_t note_to_frequency(unsigned note) const;
+	uint32_t note_గమ్యం_frequency(గుర్తులేని note) స్థిరరాశి;
 
 	/**
 	 * Calculate the duration in microseconds of play and silence for a
@@ -159,7 +159,7 @@ private:
 	 * @param  dots        extention of the note length
 	 * @return             duration of the note (us)
 	 */
-	unsigned note_duration(unsigned &silence, unsigned note_length, unsigned dots) const;
+	గుర్తులేని note_duration(గుర్తులేని &silence, గుర్తులేని note_నిడివి_2, గుర్తులేని dots) స్థిరరాశి;
 
 	/**
 	 * Calculate the duration in microseconds of a rest corresponding to
@@ -169,69 +169,69 @@ private:
 	 * @param  dots        number of extension dots
 	 * @return             rest duration (us)
 	 */
-	unsigned rest_duration(unsigned rest_length, unsigned dots) const;
+	గుర్తులేని rest_duration(గుర్తులేని rest_నిడివి, గుర్తులేని dots) స్థిరరాశి;
 
 	/**
 	 * Find the next character in the string, discard any whitespace.
 	 *
 	 * @return uppercase version of the char.
 	 */
-	int next_char();
+	పూర్ణాంకం తదుపరి_char();
 
 	/**
 	 * Extract a number from the string, consuming all the digit characters.
 	 *
 	 * @return extracted number.
 	 */
-	unsigned next_number();
+	గుర్తులేని తదుపరి_సంఖ్య();
 
 	/**
 	 * Consume dot characters from the string
 	 *
 	 * @return number of consumed dots
 	 */
-	unsigned next_dots();
+	గుర్తులేని తదుపరి_dots();
 
 	/**
 	 * Reset the tune parameters. This is necessary when for example a tune moved
 	 * one or more octaves up or down. reset() should always be called before
 	 * (re)-starting a tune.
 	 */
-	void reset(bool repeat_flag);
+	శూన్య reset(bool repeat_flag);
 
-	Tunes::Status tune_end();
+	Tunes::స్థితి_3 tune_చివర();
 
-	Tunes::Status tune_error();
+	Tunes::స్థితి_3 tune_error();
 
-	static const char *const  _default_tunes[];
-	static const bool         _default_tunes_interruptable[];
-	static const unsigned int _default_tunes_size;
-	static const uint8_t      _note_tab[];
+	స్థిర స్థిరరాశి అక్షరం *స్థిరరాశి  _default_tunes[];
+	స్థిర స్థిరరాశి bool         _default_tunes_interruptable[];
+	స్థిర స్థిరరాశి గుర్తులేని పూర్ణాంకం default_tunes_కొలత;
+	స్థిర స్థిరరాశి uint8_t      _note_tab[];
 
-	const char *_next_tune      = nullptr; ///< next note in the string
-	const char *_tune           = nullptr; ///< current tune string
-	const char *_tune_start_ptr = nullptr; ///< pointer to repeat tune
+	స్థిరరాశి అక్షరం *తదుపరి_tune      = nullptr; ///< next note in the string
+	స్థిరరాశి అక్షరం *_tune           = nullptr; ///< current tune string
+	స్థిరరాశి అక్షరం *tune_ప్రారంభం_ptr = nullptr; ///< pointer to repeat tune
 
-	int _current_tune_id = static_cast<int>(TuneID::NONE);
+	పూర్ణాంకం _current_tune_id = static_cast<పూర్ణాంకం>(TuneID::NONE);
 
 	bool _repeat = false; ///< if true, tune restarts at end
 
-	unsigned int _default_note_length = TUNE_DEFAULT_NOTE_LENGTH;
-	NoteMode     _default_note_mode   = NoteMode::NORMAL;
-	unsigned int _default_octave      = TUNE_DEFAULT_OCTAVE;
-	unsigned int _default_tempo       = TUNE_DEFAULT_TEMPO;
+	గుర్తులేని పూర్ణాంకం default_note_నిడివి_2 = TUNE_DEFAULT_NOTE_నిడివి;
+	Note_బహుళకం     default_note_బహుళకం_2   = Note_బహుళకం::సాధారణ;
+	గుర్తులేని పూర్ణాంకం _default_octave      = TUNE_DEFAULT_OCTAVE;
+	గుర్తులేని పూర్ణాంకం _default_tempo       = TUNE_DEFAULT_TEMPO;
 
-	unsigned int _note_length         = TUNE_DEFAULT_NOTE_LENGTH;
-	NoteMode     _note_mode           = NoteMode::NORMAL;
-	unsigned int _octave              = TUNE_DEFAULT_OCTAVE;
-	unsigned int _tempo               = TUNE_DEFAULT_TEMPO;
+	గుర్తులేని పూర్ణాంకం note_నిడివి         = TUNE_DEFAULT_NOTE_నిడివి;
+	Note_బహుళకం     note_బహుళకం           = Note_బహుళకం::సాధారణ;
+	గుర్తులేని పూర్ణాంకం _octave              = TUNE_DEFAULT_OCTAVE;
+	గుర్తులేని పూర్ణాంకం _tempo               = TUNE_DEFAULT_TEMPO;
 
-	unsigned int _duration  = 0;
-	unsigned int _frequency = 0;
-	unsigned int _silence   = 0;
+	గుర్తులేని పూర్ణాంకం _duration  = 0;
+	గుర్తులేని పూర్ణాంకం _frequency = 0;
+	గుర్తులేని పూర్ణాంకం _silence   = 0;
 	uint8_t      _volume    = 0;
 
-	bool  _using_custom_msg = false;
+	bool  using_custom_సందేశం = false;
 
 	bool _tunes_disabled{false};
 };

@@ -31,63 +31,63 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "ParamLayer.h"
+#అన్తర్భావ "ParamLayer.h"
 
-class ConstLayer : public ParamLayer
+class ConstLayer : బహిరంగ ParamLayer
 {
-public:
+బహిరంగ:
 
-	ConstLayer() = default;
+	ConstLayer() = అప్రమేయ;
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_విలువ_u విలువ) override
 	{
-		return false;
+		తిరిగి false;
 	}
 
-	bool contains(param_t param) const override
+	bool కలిగియుంది(param_t param) స్థిరరాశి override
 	{
-		return param < PARAM_COUNT;
+		తిరిగి param < PARAM_లెక్క;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_లెక్క> containedAsBitset() స్థిరరాశి override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
+		px4::AtomicBitset<PARAM_లెక్క> సమితి;
 
-		for (int i = 0; i < PARAM_COUNT; i++) {
-			set.set(i);
+		కొరకు (పూర్ణాంకం i = 0; i < PARAM_లెక్క; i++) {
+			సమితి.సమితి(i);
 		}
 
-		return set;
+		తిరిగి సమితి;
 	}
 
-	param_value_u get(param_t param) const override
+	param_విలువ_u get(param_t param) స్థిరరాశి override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		ఒకవేళ (param >= PARAM_లెక్క) {
+			తిరిగి {0};
 		}
 
-		return px4::parameters[param].val;
+		తిరిగి px4::parameters[param].val;
 	}
 
-	void reset(param_t param) override
+	శూన్య reset(param_t param) override
 	{
 		// Do nothing
 	}
 
-	void refresh(param_t param) override
+	శూన్య refresh(param_t param) override
 	{
 		// Do nothing
 	}
 
-	int size() const override
+	పూర్ణాంకం కొలత() స్థిరరాశి override
 	{
-		return PARAM_COUNT;
+		తిరిగి PARAM_లెక్క;
 	}
 
-	int byteSize() const override
+	పూర్ణాంకం byte_కొలత() స్థిరరాశి override
 	{
-		return PARAM_COUNT * sizeof(param_info_s);
+		తిరిగి PARAM_లెక్క * పరిమాణం(param_info_s);
 	}
 };

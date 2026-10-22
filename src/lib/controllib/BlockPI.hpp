@@ -37,52 +37,52 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <time.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <mathlib/math/test/test.hpp>
+#అన్తర్భావ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
 
 /**
  * A proportional-integral controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPI: public SuperBlock
+తరగతి __EXPORT ఖండం_PI: బహిరంగ Super_ఖండం
 {
-public:
+బహిరంగ:
 // methods
-	BlockPI(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_kP(this, "P"),
-		_kI(this, "I")
+	ఖండం_PI(Super_ఖండం *మాతృ, స్థిరరాశి అక్షరం *name) :
+		Super_ఖండం(మాతృ, name),
+		_integral(ఇది, "I"),
+		_kP(ఇది, "P"),
+		_kI(ఇది, "I")
 	{}
-	virtual ~BlockPI() = default;
-	float update(float input)
+	మాయా ~ఖండం_PI() = అప్రమేయ;
+	దశాంశం update(దశాంశం ఆదానం)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input);
+		తిరిగి getKP() * ఆదానం +
+		       getKI() * getIntegral().update(ఆదానం);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-private:
-	BlockIntegral _integral;
-	control::BlockParamFloat _kP;
-	control::BlockParamFloat _kI;
+	దశాంశం getKP() { తిరిగి _kP.get(); }
+	దశాంశం getKI() { తిరిగి _kI.get(); }
+	ఖండం_Integral &getIntegral() { తిరిగి _integral; }
+అంతరంగ:
+	ఖండం_Integral _integral;
+	control::ఖండం_Param_Float _kP;
+	control::ఖండం_Param_Float _kI;
 };
 
 } // namespace control

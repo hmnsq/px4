@@ -39,280 +39,280 @@
 * Note: This is not the same as `Ringbuffer` (byte FIFO) in `src/lib/ringbuffer/Ringbuffer.hpp`.
 */
 
-#pragma once
+#సూచన once
 
-#include <climits>
-#include <cstddef>
-#include <inttypes.h>
+#అన్తర్భావ <climits>
+#అన్తర్భావ <cstddef>
+#అన్తర్భావ <inttypes.h>
 
-template <typename data_type, size_t SIZE = 0>
-class TimestampedRingBuffer;
+మూస <రకం_పేరు దత్తాంశం_type, size_t కొలత_3 = 0>
+తరగతి Timestamped_Ring_బఫరు;
 
 /**
  * Static-size ring buffer specialization (SIZE > 0).
  */
-template <typename data_type, size_t SIZE>
-class TimestampedRingBuffer
+మూస <రకం_పేరు దత్తాంశం_type, size_t కొలత_3>
+తరగతి Timestamped_Ring_బఫరు
 {
-public:
-	static_assert(SIZE > 0, "SIZE must be > 0");
-	static_assert(SIZE <= UINT8_MAX, "SIZE must fit in uint8_t");
-	static constexpr uint8_t kSize = static_cast<uint8_t>(SIZE);
+బహిరంగ:
+	static_assert(కొలత_3 > 0, "SIZE must be > 0");
+	static_assert(కొలత_3 <= UINT8_MAX, "SIZE must fit in uint8_t");
+	స్థిర constexpr uint8_t k_కొలత = static_cast<uint8_t>(కొలత_3);
 
-	TimestampedRingBuffer() = default;
-	~TimestampedRingBuffer() = default;
+	Timestamped_Ring_బఫరు() = అప్రమేయ;
+	~Timestamped_Ring_బఫరు() = అప్రమేయ;
 
 	// no copy, assignment, move, move assignment
-	TimestampedRingBuffer(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer &operator=(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
-	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
+	Timestamped_Ring_బఫరు(స్థిరరాశి Timestamped_Ring_బఫరు &) = తొలగించు;
+	Timestamped_Ring_బఫరు &క్రియాకారకం=(స్థిరరాశి Timestamped_Ring_బఫరు &) = తొలగించు;
+	Timestamped_Ring_బఫరు(Timestamped_Ring_బఫరు &&) = తొలగించు;
+	Timestamped_Ring_బఫరు &క్రియాకారకం=(Timestamped_Ring_బఫరు &&) = తొలగించు;
 
-	bool allocate(size_t size) { return size == SIZE; }
+	తార్కిక allocate(size_t కొలత) { తిరిగి కొలత == కొలత_3; }
 
-	bool valid() const { return SIZE > 0; }
+	తార్కిక valid() స్థిరరాశి { తిరిగి కొలత_3 > 0; }
 
-	void push(const data_type &sample)
+	శూన్య నెట్టు(స్థిరరాశి దత్తాంశం_type &sample)
 	{
-		_buffer[_head] = sample;
-		_head = next(_head);
+		బఫరు[తల] = sample;
+		తల = తదుపరి(తల);
 
-		if (_entries < kSize) {
+		ఒకవేళ (_entries < k_కొలత) {
 			_entries++;
 		}
 	}
 
-	uint8_t get_length() const { return kSize; }
+	uint8_t get_నిడివి() స్థిరరాశి { తిరిగి k_కొలత; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	దత్తాంశం_type &క్రియాకారకం[](స్థిరరాశి uint8_t సూచీ) { తిరిగి బఫరు[సూచీ]; }
 
-	const data_type &get_newest() const { return _buffer[get_newest_index()]; }
-	const data_type &get_oldest() const { return _buffer[get_oldest_index()]; }
+	స్థిరరాశి దత్తాంశం_type &get_newest() స్థిరరాశి { తిరిగి బఫరు[get_newest_సూచీ()]; }
+	స్థిరరాశి దత్తాంశం_type &get_oldest() స్థిరరాశి { తిరిగి బఫరు[get_oldest_సూచీ()]; }
 
-	uint8_t get_newest_index() const { return (_entries > 0) ? prev(_head) : 0; }
-	uint8_t get_oldest_index() const
+	uint8_t get_newest_సూచీ() స్థిరరాశి { తిరిగి (_entries > 0) ? prev(తల) : 0; }
+	uint8_t get_oldest_సూచీ() స్థిరరాశి
 	{
-		if (_entries == 0) {
-			return 0;
+		ఒకవేళ (_entries == 0) {
+			తిరిగి 0;
 		}
 
-		const uint16_t idx = static_cast<uint16_t>(_head) + static_cast<uint16_t>(kSize) - static_cast<uint16_t>(_entries);
-		return (idx >= kSize) ? static_cast<uint8_t>(idx - kSize) : static_cast<uint8_t>(idx);
+		స్థిరరాశి uint16_t idx = static_cast<uint16_t>(తల) + static_cast<uint16_t>(k_కొలత) - static_cast<uint16_t>(_entries);
+		తిరిగి (idx >= k_కొలత) ? static_cast<uint8_t>(idx - k_కొలత) : static_cast<uint8_t>(idx);
 	}
 
-	uint8_t next(uint8_t i) const { return (i + 1 >= kSize) ? 0 : i + 1; }
-	uint8_t prev(uint8_t i) const { return (i == 0) ? kSize - 1 : i - 1; }
+	uint8_t తదుపరి(uint8_t i) స్థిరరాశి { తిరిగి (i + 1 >= k_కొలత) ? 0 : i + 1; }
+	uint8_t prev(uint8_t i) స్థిరరాశి { తిరిగి (i == 0) ? k_కొలత - 1 : i - 1; }
 
-	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
+	తార్కిక తీయి_మొదటి_older_than(స్థిరరాశి uint64_t &timestamp, దత్తాంశం_type *sample)
 	{
 		// start looking from newest observation data
-		const uint8_t newest_idx = get_newest_index();
-		const uint8_t oldest_idx = get_oldest_index();
+		స్థిరరాశి uint8_t newest_idx = get_newest_సూచీ();
+		స్థిరరాశి uint8_t oldest_idx = get_oldest_సూచీ();
 
-		for (uint8_t i = 0; i < _entries; i++) {
-			int index = (newest_idx - i);
-			index = index < 0 ? kSize + index : index;
+		కొరకు (uint8_t i = 0; i < _entries; i++) {
+			పూర్ణాంకం సూచీ = (newest_idx - i);
+			సూచీ = సూచీ < 0 ? k_కొలత + సూచీ : సూచీ;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
-				*sample = _buffer[index];
+			ఒకవేళ (timestamp >= బఫరు[సూచీ].సమయం_us && timestamp < బఫరు[సూచీ].సమయం_us + (uint64_t)1e5) {
+				*sample = బఫరు[సూచీ];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				const uint8_t index_u = static_cast<uint8_t>(index);
-				const uint8_t distance = (index_u >= oldest_idx) ? (index_u - oldest_idx) : (index_u + kSize - oldest_idx);
-				const uint8_t discard_count = distance + 1;
-				_entries = (_entries > discard_count) ? (_entries - discard_count) : 0;
-				_buffer[index].time_us = 0;
+				స్థిరరాశి uint8_t సూచీ_u = static_cast<uint8_t>(సూచీ);
+				స్థిరరాశి uint8_t దూరం = (సూచీ_u >= oldest_idx) ? (సూచీ_u - oldest_idx) : (సూచీ_u + k_కొలత - oldest_idx);
+				స్థిరరాశి uint8_t discard_లెక్క = దూరం + 1;
+				_entries = (_entries > discard_లెక్క) ? (_entries - discard_లెక్క) : 0;
+				బఫరు[సూచీ].సమయం_us = 0;
 
-				return true;
+				తిరిగి నిజం;
 			}
 		}
 
-		return false;
+		తిరిగి అబద్ధం;
 	}
 
-	int get_total_size() const
+	పూర్ణాంకం get_మొత్తం_కొలత() స్థిరరాశి
 	{
-		static_assert(sizeof(TimestampedRingBuffer<data_type, SIZE>) <= static_cast<size_t>(INT_MAX),
+		static_assert(పరిమాణం(Timestamped_Ring_బఫరు<దత్తాంశం_type, కొలత_3>) <= static_cast<size_t>(గరిష్ఠ_పూర్ణాంకం),
 			      "static ring buffer size must fit in int");
-		return static_cast<int>(sizeof(TimestampedRingBuffer<data_type, SIZE>));
+		తిరిగి static_cast<పూర్ణాంకం>(పరిమాణం(Timestamped_Ring_బఫరు<దత్తాంశం_type, కొలత_3>));
 	}
 
-	int entries() const { return _entries; }
-	bool empty() const { return _entries == 0; }
+	పూర్ణాంకం entries() స్థిరరాశి { తిరిగి _entries; }
+	తార్కిక ఖాళీలు() స్థిరరాశి { తిరిగి _entries == 0; }
 
-	void reset()
+	శూన్య reset()
 	{
-		for (uint8_t i = 0; i < kSize; i++) {
-			_buffer[i].time_us = 0;
+		కొరకు (uint8_t i = 0; i < k_కొలత; i++) {
+			బఫరు[i].సమయం_us = 0;
 		}
 
-		_head = 0;
+		తల = 0;
 		_entries = 0;
 	}
 
-private:
-	data_type _buffer[SIZE] {};
+అంతరంగ:
+	దత్తాంశం_type బఫరు[కొలత_3] {};
 
-	uint8_t _head{0};
+	uint8_t తల{0};
 	uint8_t _entries{0};
 };
 
 /**
  * Dynamic-size ring buffer specialization (SIZE == 0).
  */
-template <typename data_type>
-class TimestampedRingBuffer<data_type, 0>
+మూస <రకం_పేరు దత్తాంశం_type>
+తరగతి Timestamped_Ring_బఫరు<దత్తాంశం_type, 0>
 {
-public:
-	explicit TimestampedRingBuffer(size_t size) { allocate(size); }
-	TimestampedRingBuffer() = delete;
-	~TimestampedRingBuffer() { delete[] _buffer; }
+బహిరంగ:
+	స్పష్టమైన Timestamped_Ring_బఫరు(size_t కొలత) { allocate(కొలత); }
+	Timestamped_Ring_బఫరు() = తొలగించు;
+	~Timestamped_Ring_బఫరు() { తొలగించు[] బఫరు; }
 
 	// no copy, assignment, move, move assignment
-	TimestampedRingBuffer(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer &operator=(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
-	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
+	Timestamped_Ring_బఫరు(స్థిరరాశి Timestamped_Ring_బఫరు &) = తొలగించు;
+	Timestamped_Ring_బఫరు &క్రియాకారకం=(స్థిరరాశి Timestamped_Ring_బఫరు &) = తొలగించు;
+	Timestamped_Ring_బఫరు(Timestamped_Ring_బఫరు &&) = తొలగించు;
+	Timestamped_Ring_బఫరు &క్రియాకారకం=(Timestamped_Ring_బఫరు &&) = తొలగించు;
 
-	bool allocate(size_t size)
+	తార్కిక allocate(size_t కొలత)
 	{
-		if (valid() && (size == _size)) {
+		ఒకవేళ (valid() && (కొలత == కొలత_2)) {
 			// no change
-			return true;
+			తిరిగి నిజం;
 		}
 
-		if (size == 0 || size > UINT8_MAX) {
-			return false;
+		ఒకవేళ (కొలత == 0 || కొలత > UINT8_MAX) {
+			తిరిగి అబద్ధం;
 		}
 
-		delete[] _buffer;
+		తొలగించు[] బఫరు;
 
-		_buffer = new data_type[size] {};
+		బఫరు = కొత్త దత్తాంశం_type[కొలత] {};
 
-		if (_buffer == nullptr) {
-			return false;
+		ఒకవేళ (బఫరు == శూన్యసూచిక) {
+			తిరిగి అబద్ధం;
 		}
 
-		_size = static_cast<uint8_t>(size);
+		కొలత_2 = static_cast<uint8_t>(కొలత);
 
 		// new[]{} already zeroed time_us, only reset the indices
-		_head = 0;
-		_tail = 0;
-		_first_write = true;
+		తల = 0;
+		తోక_2 = 0;
+		మొదటి_write = నిజం;
 
-		return true;
+		తిరిగి నిజం;
 	}
 
-	bool valid() const { return (_buffer != nullptr) && (_size > 0); }
+	తార్కిక valid() స్థిరరాశి { తిరిగి (బఫరు != శూన్యసూచిక) && (కొలత_2 > 0); }
 
-	void push(const data_type &sample)
+	శూన్య నెట్టు(స్థిరరాశి దత్తాంశం_type &sample)
 	{
-		uint8_t head_new = _head;
+		uint8_t తల_new = తల;
 
-		if (!_first_write) {
-			head_new = next(_head);
+		ఒకవేళ (!మొదటి_write) {
+			తల_new = తదుపరి(తల);
 		}
 
-		_buffer[head_new] = sample;
-		_head = head_new;
+		బఫరు[తల_new] = sample;
+		తల = తల_new;
 
 		// move tail if we overwrite it
-		if (_head == _tail && !_first_write) {
-			_tail = next(_tail);
+		ఒకవేళ (తల == తోక_2 && !మొదటి_write) {
+			తోక_2 = తదుపరి(తోక_2);
 
-		} else {
-			_first_write = false;
+		} లేకపోతే {
+			మొదటి_write = అబద్ధం;
 		}
 	}
 
-	uint8_t get_length() const { return _size; }
+	uint8_t get_నిడివి() స్థిరరాశి { తిరిగి కొలత_2; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	దత్తాంశం_type &క్రియాకారకం[](స్థిరరాశి uint8_t సూచీ) { తిరిగి బఫరు[సూచీ]; }
 
-	const data_type &get_newest() const { return _buffer[_head]; }
-	const data_type &get_oldest() const { return _buffer[_tail]; }
+	స్థిరరాశి దత్తాంశం_type &get_newest() స్థిరరాశి { తిరిగి బఫరు[తల]; }
+	స్థిరరాశి దత్తాంశం_type &get_oldest() స్థిరరాశి { తిరిగి బఫరు[తోక_2]; }
 
-	uint8_t get_newest_index() const { return _head; }
-	uint8_t get_oldest_index() const { return _tail; }
+	uint8_t get_newest_సూచీ() స్థిరరాశి { తిరిగి తల; }
+	uint8_t get_oldest_సూచీ() స్థిరరాశి { తిరిగి తోక_2; }
 
-	uint8_t next(uint8_t i) const { return (_size > 0) ? ((i + 1 >= _size) ? 0 : i + 1) : 0; }
-	uint8_t prev(uint8_t i) const { return (_size > 0) ? ((i == 0) ? (_size - 1) : (i - 1)) : 0; }
+	uint8_t తదుపరి(uint8_t i) స్థిరరాశి { తిరిగి (కొలత_2 > 0) ? ((i + 1 >= కొలత_2) ? 0 : i + 1) : 0; }
+	uint8_t prev(uint8_t i) స్థిరరాశి { తిరిగి (కొలత_2 > 0) ? ((i == 0) ? (కొలత_2 - 1) : (i - 1)) : 0; }
 
-	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
+	తార్కిక తీయి_మొదటి_older_than(స్థిరరాశి uint64_t &timestamp, దత్తాంశం_type *sample)
 	{
 		// start looking from newest observation data
-		for (uint8_t i = 0; i < _size; i++) {
-			int index = (_head - i);
-			index = index < 0 ? _size + index : index;
+		కొరకు (uint8_t i = 0; i < కొలత_2; i++) {
+			పూర్ణాంకం సూచీ = (తల - i);
+			సూచీ = సూచీ < 0 ? కొలత_2 + సూచీ : సూచీ;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
-				*sample = _buffer[index];
+			ఒకవేళ (timestamp >= బఫరు[సూచీ].సమయం_us && timestamp < బఫరు[సూచీ].సమయం_us + (uint64_t)1e5) {
+				*sample = బఫరు[సూచీ];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				if (index == _head) {
-					_tail = _head;
-					_first_write = true;
+				ఒకవేళ (సూచీ == తల) {
+					తోక_2 = తల;
+					మొదటి_write = నిజం;
 
-				} else {
-					_tail = next(static_cast<uint8_t>(index));
+				} లేకపోతే {
+					తోక_2 = తదుపరి(static_cast<uint8_t>(సూచీ));
 				}
 
-				_buffer[index].time_us = 0;
+				బఫరు[సూచీ].సమయం_us = 0;
 
-				return true;
+				తిరిగి నిజం;
 			}
 
-			if (index == _tail) {
+			ఒకవేళ (సూచీ == తోక_2) {
 				// we have reached the tail and haven't got a
-				// match
-				return false;
+				//సరిపోలిక
+				తిరిగి అబద్ధం;
 			}
 		}
 
-		return false;
+		తిరిగి అబద్ధం;
 	}
 
-	int get_used_size() const { return sizeof(*this) + sizeof(data_type) * entries(); }
-	int get_total_size() const { return sizeof(*this) + sizeof(data_type) * _size; }
+	పూర్ణాంకం get_వాడిన_కొలత() స్థిరరాశి { తిరిగి పరిమాణం(*ఇది) + పరిమాణం(దత్తాంశం_type) * entries(); }
+	పూర్ణాంకం get_మొత్తం_కొలత() స్థిరరాశి { తిరిగి పరిమాణం(*ఇది) + పరిమాణం(దత్తాంశం_type) * కొలత_2; }
 
-	int entries() const
+	పూర్ణాంకం entries() స్థిరరాశి
 	{
-		int count = 0;
+		పూర్ణాంకం లెక్క = 0;
 
-		for (uint8_t i = 0; i < _size; i++) {
-			if (_buffer[i].time_us != 0) {
-				count++;
+		కొరకు (uint8_t i = 0; i < కొలత_2; i++) {
+			ఒకవేళ (బఫరు[i].సమయం_us != 0) {
+				లెక్క++;
 			}
 		}
 
-		return count;
+		తిరిగి లెక్క;
 	}
 
-	bool empty() const { return entries() == 0; }
+	తార్కిక ఖాళీలు() స్థిరరాశి { తిరిగి entries() == 0; }
 
-	void reset()
+	శూన్య reset()
 	{
-		if (_buffer) {
-			for (uint8_t i = 0; i < _size; i++) {
-				_buffer[i].time_us = 0;
+		ఒకవేళ (బఫరు) {
+			కొరకు (uint8_t i = 0; i < కొలత_2; i++) {
+				బఫరు[i].సమయం_us = 0;
 			}
 
-			_head = 0;
-			_tail = 0;
-			_first_write = true;
+			తల = 0;
+			తోక_2 = 0;
+			మొదటి_write = నిజం;
 		}
 	}
 
-private:
-	data_type *_buffer{nullptr};
+అంతరంగ:
+	దత్తాంశం_type *బఫరు{శూన్యసూచిక};
 
-	uint8_t _head{0};
-	uint8_t _tail{0};
-	uint8_t _size{0};
+	uint8_t తల{0};
+	uint8_t తోక_2{0};
+	uint8_t కొలత_2{0};
 
-	bool _first_write{true};
+	తార్కిక మొదటి_write{నిజం};
 };

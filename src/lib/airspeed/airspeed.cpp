@@ -40,66 +40,66 @@
  *
  */
 
-#include "airspeed.h"
+#అన్తర్భావ "airspeed.h"
 
-#include <px4_platform_common/defines.h>
-#include <lib/atmosphere/atmosphere.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <lib/atmosphere/atmosphere.h>
 
-using atmosphere::getDensityFromPressureAndTemp;
-using atmosphere::kAirDensitySeaLevelStandardAtmos;
+ఉపయోగించి atmosphere::get_Density_From_Pressure_And_తాత్కాలిక;
+ఉపయోగించి atmosphere::kAirDensitySeaLevelStandardAtmos;
 
-float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel, enum AIRSPEED_SENSOR_MODEL smodel,
-			 float tube_len, float tube_dia_mm, float differential_pressure, float pressure_ambient, float temperature_celsius)
+దశాంశం calc_IAS_corrected(గణన AIRSPEED_COMPENSATION_MODEL pmodel, గణన AIRSPEED_SENSOR_MODEL smodel,
+			 దశాంశం tube_len, దశాంశం tube_dia_mm, దశాంశం differential_pressure, దశాంశం pressure_ambient, దశాంశం temperature_celsius)
 {
-	if (!PX4_ISFINITE(temperature_celsius)) {
+	ఒకవేళ (!PX4_ISFINITE(temperature_celsius)) {
 		temperature_celsius = 15.f; // ICAO Standard Atmosphere 15 degrees Celsius
 	}
 
 	// air density in kg/m3
-	const float rho_air = getDensityFromPressureAndTemp(pressure_ambient, temperature_celsius);
+	స్థిరరాశి దశాంశం rho_air = get_Density_From_Pressure_And_తాత్కాలిక(pressure_ambient, temperature_celsius);
 
-	const float dp = fabsf(differential_pressure);
-	float dp_tot = dp;
+	స్థిరరాశి దశాంశం dp = fabsf(differential_pressure);
+	దశాంశం dp_tot = dp;
 
-	float dv = 0.0f;
+	దశాంశం dv = 0.0f;
 
-	switch (smodel) {
+	ఎంపిక (smodel) {
 
-	case AIRSPEED_SENSOR_MODEL_MEMBRANE: {
+	స్థితి AIRSPEED_SENSOR_MODEL_MEMBRANE: {
 			// do nothing
 		}
-		break;
+		ఆపు;
 
-	case AIRSPEED_SENSOR_MODEL_SDP3X: {
+	స్థితి AIRSPEED_SENSOR_MODEL_SDP3X: {
 			// assumes a metal pitot tube with round tip as here: https://drotek.com/shop/2986-large_default/sdp3x-airspeed-sensor-kit-sdp31.jpg
 			// and tubing as provided by px4/drotek (1.5 mm diameter)
 			// The tube_len represents the length of the tubes connecting the pitot to the sensor.
-			switch (pmodel) {
-			case AIRSPEED_COMPENSATION_MODEL_PITOT:
-			case AIRSPEED_COMPENSATION_MODEL_NO_PITOT: {
-					const float dp_corr = dp * 96600.0f / pressure_ambient;
+			ఎంపిక (pmodel) {
+			స్థితి AIRSPEED_COMPENSATION_MODEL_PITOT:
+			స్థితి AIRSPEED_COMPENSATION_MODEL_NO_PITOT: {
+					స్థిరరాశి దశాంశం dp_corr = dp * 96600.0f / pressure_ambient;
 					// flow through sensor
-					float flow_SDP33 = (300.805f - 300.878f / (0.00344205f * powf(dp_corr, 0.68698f) + 1.0f)) * 1.29f / rho_air;
+					దశాంశం flow_SDP33 = (300.805f - 300.878f / (0.00344205f * powf(dp_corr, 0.68698f) + 1.0f)) * 1.29f / rho_air;
 
 					// for too small readings the compensation might result in a negative flow which causes numerical issues
-					if (flow_SDP33 < 0.0f) {
+					ఒకవేళ (flow_SDP33 < 0.0f) {
 						flow_SDP33 = 0.0f;
 					}
 
-					float dp_pitot = 0.0f;
+					దశాంశం dp_pitot = 0.0f;
 
-					switch (pmodel) {
-					case AIRSPEED_COMPENSATION_MODEL_PITOT:
+					ఎంపిక (pmodel) {
+					స్థితి AIRSPEED_COMPENSATION_MODEL_PITOT:
 						dp_pitot = (0.0032f * flow_SDP33 * flow_SDP33 + 0.0123f * flow_SDP33 + 1.0f) * 1.29f / rho_air;
-						break;
+						ఆపు;
 
-					default:
+					అప్రమేయ:
 						// do nothing
-						break;
+						ఆపు;
 					}
 
 					// pressure drop through tube
-					const float dp_tube = (flow_SDP33 * 0.674f) / 450.0f * tube_len * rho_air / 1.29f;
+					స్థిరరాశి దశాంశం dp_tube = (flow_SDP33 * 0.674f) / 450.0f * tube_len * rho_air / 1.29f;
 
 					// speed at pitot-tube tip due to flow through sensor
 					dv = 0.125f * flow_SDP33;
@@ -107,23 +107,23 @@ float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel, enum AIRSPEED_
 					// sum of all pressure drops
 					dp_tot = dp_corr + dp_tube + dp_pitot;
 				}
-				break;
+				ఆపు;
 
-			case AIRSPEED_COMPENSATION_TUBE_PRESSURE_LOSS: {
+			స్థితి AIRSPEED_COMPENSATION_TUBE_PRESSURE_LOSS: {
 					// Pressure loss compensation as defined in https://goo.gl/UHV1Vv.
 					// tube_dia_mm: Diameter in mm of the pitot and tubes, must have the same diameter.
 					// tube_len: Length of the tubes connecting the pitot to the sensor and the static + dynamic port length of the pitot.
 
 					// check if the tube diameter and dp is nonzero to avoid division by 0
-					if ((tube_dia_mm > 0.0f) && (dp > 0.0f)) {
-						const float d_tubePow4 = powf(tube_dia_mm * 1e-3f, 4);
-						const float denominator = M_PI_F * d_tubePow4 * rho_air * dp;
+					ఒకవేళ ((tube_dia_mm > 0.0f) && (dp > 0.0f)) {
+						స్థిరరాశి దశాంశం d_tubePow4 = powf(tube_dia_mm * 1e-3f, 4);
+						స్థిరరాశి దశాంశం denominator = M_PI_F * d_tubePow4 * rho_air * dp;
 
 						// avoid division by 0
-						float eps = 0.0f;
+						దశాంశం eps = 0.0f;
 
-						if (fabsf(denominator) > 1e-32f) {
-							const float viscosity = (18.205f + 0.0484f * (temperature_celsius - 20.0f)) * 1e-6f;
+						ఒకవేళ (fabsf(denominator) > 1e-32f) {
+							స్థిరరాశి దశాంశం viscosity = (18.205f + 0.0484f * (temperature_celsius - 20.0f)) * 1e-6f;
 
 							// 4.79 * 1e-7 -> mass flow through sensor
 							// 59.5 -> dp sensor constant where linear and quadratic contribution to dp vs flow is equal
@@ -131,7 +131,7 @@ float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel, enum AIRSPEED_
 						}
 
 						// range check on eps
-						if (fabsf(eps) >= 1.0f) {
+						ఒకవేళ (fabsf(eps) >= 1.0f) {
 							eps = 0.0f;
 						}
 
@@ -139,83 +139,83 @@ float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel, enum AIRSPEED_
 						dp_tot = dp / (1.0f + eps);
 					}
 				}
-				break;
+				ఆపు;
 
-			default: {
+			అప్రమేయ: {
 					// do nothing
 				}
-				break;
+				ఆపు;
 			}
 
 		}
-		break;
+		ఆపు;
 
-	default: {
+	అప్రమేయ: {
 			// do nothing
 		}
-		break;
+		ఆపు;
 	}
 
 	// computed airspeed without correction for inflow-speed at tip of pitot-tube
-	const float airspeed_uncorrected = sqrtf(2.0f * dp_tot / kAirDensitySeaLevelStandardAtmos);
+	స్థిరరాశి దశాంశం airspeed_uncorrected = sqrtf(2.0f * dp_tot / kAirDensitySeaLevelStandardAtmos);
 
 	// corrected airspeed
-	const float airspeed_corrected = airspeed_uncorrected + dv;
+	స్థిరరాశి దశాంశం airspeed_corrected = airspeed_uncorrected + dv;
 
 	// return result with correct sign
-	return (differential_pressure > 0.0f) ? airspeed_corrected : -airspeed_corrected;
+	తిరిగి (differential_pressure > 0.0f) ? airspeed_corrected : -airspeed_corrected;
 }
 
-float calc_IAS(float differential_pressure)
+దశాంశం calc_IAS(దశాంశం differential_pressure)
 {
-	if (differential_pressure > 0.0f) {
-		return sqrtf((2.0f * differential_pressure) / kAirDensitySeaLevelStandardAtmos);
+	ఒకవేళ (differential_pressure > 0.0f) {
+		తిరిగి sqrtf((2.0f * differential_pressure) / kAirDensitySeaLevelStandardAtmos);
 
-	} else {
-		return -sqrtf((2.0f * fabsf(differential_pressure)) / kAirDensitySeaLevelStandardAtmos);
+	} లేకపోతే {
+		తిరిగి -sqrtf((2.0f * fabsf(differential_pressure)) / kAirDensitySeaLevelStandardAtmos);
 	}
 
 }
 
-float calc_TAS_from_CAS(float speed_calibrated, float pressure_ambient, float temperature_celsius)
+దశాంశం calc_TAS_from_CAS(దశాంశం వేగం_calibrated, దశాంశం pressure_ambient, దశాంశం temperature_celsius)
 {
-	if (!PX4_ISFINITE(temperature_celsius)) {
+	ఒకవేళ (!PX4_ISFINITE(temperature_celsius)) {
 		temperature_celsius = 15.f; // ICAO Standard Atmosphere 15 degrees Celsius
 	}
 
-	return speed_calibrated * sqrtf(kAirDensitySeaLevelStandardAtmos / getDensityFromPressureAndTemp(pressure_ambient,
+	తిరిగి వేగం_calibrated * sqrtf(kAirDensitySeaLevelStandardAtmos / get_Density_From_Pressure_And_తాత్కాలిక(pressure_ambient,
 					temperature_celsius));
 }
 
-float calc_CAS_from_IAS(float speed_indicated, float scale)
+దశాంశం calc_CAS_from_IAS(దశాంశం వేగం_indicated, దశాంశం scale)
 {
-	return speed_indicated * scale;
+	తిరిగి వేగం_indicated * scale;
 }
 
-float calc_TAS(float total_pressure, float static_pressure, float temperature_celsius)
+దశాంశం calc_TAS(దశాంశం మొత్తం_pressure, దశాంశం static_pressure, దశాంశం temperature_celsius)
 {
-	float density = getDensityFromPressureAndTemp(static_pressure, temperature_celsius);
+	దశాంశం density = get_Density_From_Pressure_And_తాత్కాలిక(static_pressure, temperature_celsius);
 
-	if (density < 0.0001f || !PX4_ISFINITE(density)) {
+	ఒకవేళ (density < 0.0001f || !PX4_ISFINITE(density)) {
 		density = kAirDensitySeaLevelStandardAtmos;
 	}
 
-	float pressure_difference = total_pressure - static_pressure;
+	దశాంశం pressure_difference = మొత్తం_pressure - static_pressure;
 
-	if (pressure_difference > 0) {
-		return sqrtf((2.0f * (pressure_difference)) / density);
+	ఒకవేళ (pressure_difference > 0) {
+		తిరిగి sqrtf((2.0f * (pressure_difference)) / density);
 
-	} else {
-		return -sqrtf((2.0f * fabsf(pressure_difference)) / density);
+	} లేకపోతే {
+		తిరిగి -sqrtf((2.0f * fabsf(pressure_difference)) / density);
 	}
 }
 
-float calc_calibrated_from_true_airspeed(float speed_true, float air_density)
+దశాంశం calc_calibrated_from_true_airspeed(దశాంశం వేగం_true, దశాంశం air_density)
 {
-	return speed_true * sqrtf(air_density / kAirDensitySeaLevelStandardAtmos);
+	తిరిగి వేగం_true * sqrtf(air_density / kAirDensitySeaLevelStandardAtmos);
 }
 
-float calc_true_from_calibrated_airspeed(float speed_calibrated, float air_density)
+దశాంశం calc_true_from_calibrated_airspeed(దశాంశం వేగం_calibrated, దశాంశం air_density)
 {
-	return speed_calibrated * sqrtf(kAirDensitySeaLevelStandardAtmos / air_density);
+	తిరిగి వేగం_calibrated * sqrtf(kAirDensitySeaLevelStandardAtmos / air_density);
 }

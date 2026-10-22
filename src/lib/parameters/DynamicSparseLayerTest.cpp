@@ -41,48 +41,48 @@
  * to catch use-after-free or data races.
  */
 
-#include <gtest/gtest.h>
+#అన్తర్భావ <gtest/gtest.h>
 
-#include <parameters/px4_parameters.hpp>
-#include "DynamicSparseLayer.h"
+#అన్తర్భావ <parameters/px4_parameters.hpp>
+#అన్తర్భావ "DynamicSparseLayer.h"
 
-#include <atomic>
-#include <thread>
-#include <vector>
+#అన్తర్భావ <atomic>
+#అన్తర్భావ <thread>
+#అన్తర్భావ <vector>
 
 /**
  * Minimal ParamLayer parent that returns a default zero value for all params.
  */
-class StubParamLayer : public ParamLayer
+తరగతి StubParamLayer : బహిరంగ ParamLayer
 {
-public:
-	StubParamLayer() : ParamLayer(nullptr) {}
-	virtual ~StubParamLayer() = default;
+బహిరంగ:
+	StubParamLayer() : ParamLayer(శూన్యసూచిక) {}
+	మాయా ~StubParamLayer() = అప్రమేయ;
 
-	bool store(param_t, param_value_u) override { return false; }
-	bool contains(param_t) const override { return false; }
+	తార్కిక store(param_t, param_విలువ_u) override { తిరిగి అబద్ధం; }
+	తార్కిక కలిగియుంది(param_t) స్థిరరాశి override { తిరిగి అబద్ధం; }
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_లెక్క> containedAsBitset() స్థిరరాశి override
 	{
-		return px4::AtomicBitset<PARAM_COUNT>();
+		తిరిగి px4::AtomicBitset<PARAM_లెక్క>();
 	}
 
-	param_value_u get(param_t) const override
+	param_విలువ_u get(param_t) స్థిరరాశి override
 	{
-		param_value_u v{};
+		param_విలువ_u v{};
 		v.i = 0;
-		return v;
+		తిరిగి v;
 	}
 
-	void reset(param_t) override {}
-	void refresh(param_t) override {}
-	int size() const override { return 0; }
-	int byteSize() const override { return 0; }
+	శూన్య reset(param_t) override {}
+	శూన్య refresh(param_t) override {}
+	పూర్ణాంకం కొలత() స్థిరరాశి override { తిరిగి 0; }
+	పూర్ణాంకం byte_కొలత() స్థిరరాశి override { తిరిగి 0; }
 };
 
-class DynamicSparseLayerConcurrentTest : public ::testing::Test
+తరగతి DynamicSparseLayerConcurrentTest : బహిరంగ ::testing::Test
 {
-protected:
+రక్షిత:
 	StubParamLayer stub;
 };
 
@@ -91,31 +91,31 @@ protected:
 // this safely stresses the read-side during buffer reallocation.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 {
-	for (int rep = 0; rep < 50; rep++) {
+	కొరకు (పూర్ణాంకం rep = 0; rep < 50; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/2, /*n_grow=*/1);
 
-		constexpr int NUM_PARAMS = 100;
-		std::atomic<bool> stop{false};
+		constexpr పూర్ణాంకం అంకె_PARAMS = 100;
+		std::atomic<తార్కిక> stop{అబద్ధం};
 
 		std::thread writer([&]() {
-			for (int i = 0; i < NUM_PARAMS; i++) {
-				param_value_u v{};
+			కొరకు (పూర్ణాంకం i = 0; i < అంకె_PARAMS; i++) {
+				param_విలువ_u v{};
 				v.i = i * 10;
 				layer.store(static_cast<param_t>(i), v);
 			}
 
-			stop.store(true, std::memory_order_release);
+			stop.store(నిజం, std::జ్ఞాపకం_క్రమం_release);
 		});
 
-		std::vector<std::thread> readers;
+		std::సదిశ_2<std::thread> readers;
 
-		for (int r = 0; r < 4; r++) {
-			readers.emplace_back([&]() {
-				while (!stop.load(std::memory_order_acquire)) {
-					int current_size = layer.size();
+		కొరకు (పూర్ణాంకం r = 0; r < 4; r++) {
+			readers.emplace_వెనుక([&]() {
+				అయితే (!stop.ఎక్కించు(std::జ్ఞాపకం_క్రమం_acquire)) {
+					పూర్ణాంకం current_కొలత = layer.కొలత();
 
-					for (int i = 0; i < current_size && i < NUM_PARAMS; i++) {
-						layer.contains(static_cast<param_t>(i));
+					కొరకు (పూర్ణాంకం i = 0; i < current_కొలత && i < అంకె_PARAMS; i++) {
+						layer.కలిగియుంది(static_cast<param_t>(i));
 						layer.get(static_cast<param_t>(i));
 					}
 				}
@@ -124,19 +124,19 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 
 		writer.join();
 
-		for (auto &t : readers) {
+		కొరకు (స్వయంచాలక &t : readers) {
 			t.join();
 		}
 
-		for (int i = 0; i < NUM_PARAMS; i++) {
-			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
+		కొరకు (పూర్ణాంకం i = 0; i < అంకె_PARAMS; i++) {
+			ASSERT_TRUE(layer.కలిగియుంది(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_విలువ_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}
 
-		ASSERT_EQ(layer.size(), NUM_PARAMS);
+		ASSERT_EQ(layer.కొలత(), అంకె_PARAMS);
 	}
 }
 
@@ -144,39 +144,39 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 // Pre-allocated to avoid concurrent _grow() which has a known ABA
 // limitation in the CAS retry loop (see _grow() implementation).
 // This test validates concurrent store correctness.
-TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
+TEST_F(DynamicSparseLayerConcurrentTest, Concurrent_గుణిజం_Writers)
 {
-	constexpr int PARAMS_PER_WRITER = 50;
-	constexpr int NUM_WRITERS = 4;
-	constexpr int TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
+	constexpr పూర్ణాంకం PARAMS_చొప్పున_WRITER = 50;
+	constexpr పూర్ణాంకం అంకె_WRITERS = 4;
+	constexpr పూర్ణాంకం మొత్తం = అంకె_WRITERS * PARAMS_చొప్పున_WRITER;
 
-	for (int rep = 0; rep < 20; rep++) {
-		DynamicSparseLayer layer(&stub, /*n_prealloc=*/TOTAL, /*n_grow=*/1);
+	కొరకు (పూర్ణాంకం rep = 0; rep < 20; rep++) {
+		DynamicSparseLayer layer(&stub, /*n_prealloc=*/మొత్తం, /*n_grow=*/1);
 
-		std::vector<std::thread> writers;
+		std::సదిశ_2<std::thread> writers;
 
-		for (int w = 0; w < NUM_WRITERS; w++) {
-			writers.emplace_back([&layer, w]() {
-				int base = w * PARAMS_PER_WRITER;
+		కొరకు (పూర్ణాంకం w = 0; w < అంకె_WRITERS; w++) {
+			writers.emplace_వెనుక([&layer, w]() {
+				పూర్ణాంకం base = w * PARAMS_చొప్పున_WRITER;
 
-				for (int i = 0; i < PARAMS_PER_WRITER; i++) {
-					param_value_u v{};
+				కొరకు (పూర్ణాంకం i = 0; i < PARAMS_చొప్పున_WRITER; i++) {
+					param_విలువ_u v{};
 					v.i = (base + i) * 10;
 					layer.store(static_cast<param_t>(base + i), v);
 				}
 			});
 		}
 
-		for (auto &t : writers) {
+		కొరకు (స్వయంచాలక &t : writers) {
 			t.join();
 		}
 
-		ASSERT_EQ(layer.size(), TOTAL) << "rep=" << rep;
+		ASSERT_EQ(layer.కొలత(), మొత్తం) << "rep=" << rep;
 
-		for (int i = 0; i < TOTAL; i++) {
-			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
+		కొరకు (పూర్ణాంకం i = 0; i < మొత్తం; i++) {
+			ASSERT_TRUE(layer.కలిగియుంది(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_విలువ_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}
@@ -186,59 +186,59 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
 // Combined stress: writers store while readers access concurrently.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 {
-	constexpr int PARAMS_PER_WRITER = 50;
-	constexpr int NUM_WRITERS = 2;
-	constexpr int TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
+	constexpr పూర్ణాంకం PARAMS_చొప్పున_WRITER = 50;
+	constexpr పూర్ణాంకం అంకె_WRITERS = 2;
+	constexpr పూర్ణాంకం మొత్తం = అంకె_WRITERS * PARAMS_చొప్పున_WRITER;
 
-	for (int rep = 0; rep < 20; rep++) {
+	కొరకు (పూర్ణాంకం rep = 0; rep < 20; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/2, /*n_grow=*/1);
-		std::atomic<bool> stop{false};
+		std::atomic<తార్కిక> stop{అబద్ధం};
 
-		std::vector<std::thread> writers;
+		std::సదిశ_2<std::thread> writers;
 
-		for (int w = 0; w < NUM_WRITERS; w++) {
-			writers.emplace_back([&layer, w]() {
-				int base = w * PARAMS_PER_WRITER;
+		కొరకు (పూర్ణాంకం w = 0; w < అంకె_WRITERS; w++) {
+			writers.emplace_వెనుక([&layer, w]() {
+				పూర్ణాంకం base = w * PARAMS_చొప్పున_WRITER;
 
-				for (int i = 0; i < PARAMS_PER_WRITER; i++) {
-					param_value_u v{};
+				కొరకు (పూర్ణాంకం i = 0; i < PARAMS_చొప్పున_WRITER; i++) {
+					param_విలువ_u v{};
 					v.i = (base + i) * 10;
 					layer.store(static_cast<param_t>(base + i), v);
 				}
 			});
 		}
 
-		std::vector<std::thread> readers;
+		std::సదిశ_2<std::thread> readers;
 
-		for (int r = 0; r < 4; r++) {
-			readers.emplace_back([&]() {
-				while (!stop.load(std::memory_order_acquire)) {
-					int current_size = layer.size();
+		కొరకు (పూర్ణాంకం r = 0; r < 4; r++) {
+			readers.emplace_వెనుక([&]() {
+				అయితే (!stop.ఎక్కించు(std::జ్ఞాపకం_క్రమం_acquire)) {
+					పూర్ణాంకం current_కొలత = layer.కొలత();
 
-					for (int i = 0; i < current_size && i < TOTAL; i++) {
-						layer.contains(static_cast<param_t>(i));
+					కొరకు (పూర్ణాంకం i = 0; i < current_కొలత && i < మొత్తం; i++) {
+						layer.కలిగియుంది(static_cast<param_t>(i));
 						layer.get(static_cast<param_t>(i));
 					}
 				}
 			});
 		}
 
-		for (auto &t : writers) {
+		కొరకు (స్వయంచాలక &t : writers) {
 			t.join();
 		}
 
-		stop.store(true, std::memory_order_release);
+		stop.store(నిజం, std::జ్ఞాపకం_క్రమం_release);
 
-		for (auto &t : readers) {
+		కొరకు (స్వయంచాలక &t : readers) {
 			t.join();
 		}
 
-		ASSERT_EQ(layer.size(), TOTAL) << "rep=" << rep;
+		ASSERT_EQ(layer.కొలత(), మొత్తం) << "rep=" << rep;
 
-		for (int i = 0; i < TOTAL; i++) {
-			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
+		కొరకు (పూర్ణాంకం i = 0; i < మొత్తం; i++) {
+			ASSERT_TRUE(layer.కలిగియుంది(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_విలువ_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}

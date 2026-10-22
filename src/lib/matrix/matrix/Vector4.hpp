@@ -39,47 +39,47 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#సూచన once
 
-#include "Vector.hpp"
+#అన్తర్భావ "Vector.hpp"
 
-namespace matrix
+నామాకాశ మాతృక
 {
 
-template<typename Type>
-class Vector4 : public Vector<Type, 4>
+మూస<రకం_పేరు Type>
+తరగతి Vector4 : బహిరంగ సదిశ<Type, 4>
 {
-public:
-	using Matrix41 = Matrix<Type, 4, 1>;
+బహిరంగ:
+	ఉపయోగించి Matrix41 = మాతృక_2<Type, 4, 1>;
 
-	Vector4() = default;
+	Vector4() = అప్రమేయ;
 
-	Vector4(const Matrix41 &other) :
-		Vector<Type, 4>(other)
+	Vector4(స్థిరరాశి Matrix41 &other) :
+		సదిశ<Type, 4>(other)
 	{
 	}
 
-	explicit Vector4(const Type data_[3]) :
-		Vector<Type, 4>(data_)
+	స్పష్టమైన Vector4(స్థిరరాశి Type దత్తాంశం_2[3]) :
+		సదిశ<Type, 4>(దత్తాంశం_2)
 	{
 	}
 
 	Vector4(Type x1, Type x2, Type x3, Type x4)
 	{
-		Vector4 &v(*this);
+		Vector4 &v(*ఇది);
 		v(0) = x1;
 		v(1) = x2;
 		v(2) = x3;
 		v(3) = x4;
 	}
 
-	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 4, 1, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	మూస<size_t P, size_t Q>
+	Vector4(స్థిరరాశి ముక్క_2<Type, 4, 1, P, Q> &ముక్క_లోపల) : సదిశ<Type, 4>(ముక్క_లోపల)
 	{
 	}
 
-	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 1, 4, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	మూస<size_t P, size_t Q>
+	Vector4(స్థిరరాశి ముక్క_2<Type, 1, 4, P, Q> &ముక్క_లోపల) : సదిశ<Type, 4>(ముక్క_లోపల)
 	{
 	}
 
@@ -87,43 +87,43 @@ public:
 	 * Override matrix ops so Vector4 type is returned
 	 */
 
-	Vector4 operator+(Vector4 other) const
+	Vector4 క్రియాకారకం+(Vector4 other) స్థిరరాశి
 	{
-		return Matrix41::operator+(other);
+		తిరిగి Matrix41::క్రియాకారకం+(other);
 	}
 
-	Vector4 operator+(Type scalar) const
+	Vector4 క్రియాకారకం+(Type scalar) స్థిరరాశి
 	{
-		return Matrix41::operator+(scalar);
+		తిరిగి Matrix41::క్రియాకారకం+(scalar);
 	}
 
-	Vector4 operator-(Vector4 other) const
+	Vector4 క్రియాకారకం-(Vector4 other) స్థిరరాశి
 	{
-		return Matrix41::operator-(other);
+		తిరిగి Matrix41::క్రియాకారకం-(other);
 	}
 
-	Vector4 operator-(Type scalar) const
+	Vector4 క్రియాకారకం-(Type scalar) స్థిరరాశి
 	{
-		return Matrix41::operator-(scalar);
+		తిరిగి Matrix41::క్రియాకారకం-(scalar);
 	}
 
-	Vector4 operator-() const
+	Vector4 క్రియాకారకం-() స్థిరరాశి
 	{
-		return Matrix41::operator-();
+		తిరిగి Matrix41::క్రియాకారకం-();
 	}
 
-	Vector4 operator*(Type scalar) const
+	Vector4 క్రియాకారకం*(Type scalar) స్థిరరాశి
 	{
-		return Matrix41::operator*(scalar);
+		తిరిగి Matrix41::క్రియాకారకం*(scalar);
 	}
 
-	Type operator*(Vector4 b) const
+	Type క్రియాకారకం*(Vector4 b) స్థిరరాశి
 	{
-		return Vector<Type, 4>::operator*(b);
+		తిరిగి సదిశ<Type, 4>::క్రియాకారకం*(b);
 	}
 
 };
 
-using Vector4f = Vector4<float>;
+ఉపయోగించి Vector4f = Vector4<దశాంశం>;
 
 } // namespace matrix

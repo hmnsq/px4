@@ -37,101 +37,101 @@
  *
  */
 
-#include "DaaCrosstrack.h"
+#అన్తర్భావ "DaaCrosstrack.h"
 
-#include <float.h>
+#అన్తర్భావ <float.h>
 
-#include <lib/geo/geo.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
-#include <uORB/topics/detect_and_avoid.h>
+#అన్తర్భావ <lib/geo/geo.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <px4_platform_common/log.h>
+#అన్తర్భావ <uORB/topics/detect_and_avoid.h>
 
 DaaCrosstrack::DaaCrosstrack() :
-	ModuleParams(nullptr)
+	ModuleParams(శూన్యసూచిక)
 {
 }
 
-bool DaaCrosstrack::try_setting_params()
+తార్కిక DaaCrosstrack::try_setting_params()
 {
 	updateParams();
 
-	const float crosstrack_sep = _param_nav_traff_a_hor.get();
-	const float vertical_sep = _param_nav_traff_a_ver.get();
-	const int32_t collision_time = _param_nav_traff_coll_t.get();
+	స్థిరరాశి దశాంశం crosstrack_sep = _param_nav_traff_a_hor.get();
+	స్థిరరాశి దశాంశం vertical_sep = _param_nav_traff_a_ver.get();
+	స్థిరరాశి int32_t collision_సమయం = _param_nav_traff_coll_t.get();
 
-	const bool crosstrack_ok = PX4_ISFINITE(crosstrack_sep) && crosstrack_sep > 0.f;
-	const bool vertical_ok = PX4_ISFINITE(vertical_sep) && vertical_sep > 0.f;
-	const bool collision_time_ok = collision_time > 0;
+	స్థిరరాశి తార్కిక crosstrack_ok = PX4_ISFINITE(crosstrack_sep) && crosstrack_sep > 0.f;
+	స్థిరరాశి తార్కిక vertical_ok = PX4_ISFINITE(vertical_sep) && vertical_sep > 0.f;
+	స్థిరరాశి తార్కిక collision_సమయం_ok = collision_సమయం > 0;
 
-	if (!(crosstrack_ok && vertical_ok && collision_time_ok)) {
+	ఒకవేళ (!(crosstrack_ok && vertical_ok && collision_సమయం_ok)) {
 		PX4_ERR("DAA: invalid crosstrack parameters");
-		return false;
+		తిరిగి అబద్ధం;
 	}
 
 	_crosstrack_separation_m = crosstrack_sep;
 	_vertical_separation_m = vertical_sep;
-	_collision_time_threshold_s = collision_time;
-	return true;
+	collision_సమయం_పరిమితి_s = collision_సమయం;
+	తిరిగి నిజం;
 }
 
-uint8_t DaaCrosstrack::calculate_daa_stats(const aircraft_state_s &uav_state, const aircraft_state_s &traffic_state,
-		daa_stats_s &daa_stats) const
+uint8_t DaaCrosstrack::calculate_daa_stats(స్థిరరాశి aircraft_state_s &uav_state, స్థిరరాశి aircraft_state_s &traffic_state,
+		daa_stats_s &daa_stats) స్థిరరాశి
 {
-	if (!PX4_ISFINITE(traffic_state.heading)) {
+	ఒకవేళ (!PX4_ISFINITE(traffic_state.heading)) {
 		PX4_DEBUG("CRT lib: invalid traffic heading");
 		daa_stats = {};
-		return detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
+		తిరిగి detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
 	}
 
-	float d_hor{0.f};
-	float d_vert{0.f};
-	get_distance_to_point_global_wgs84(uav_state.lat_lon(0), uav_state.lat_lon(1), uav_state.altitude,
+	దశాంశం d_hor{0.f};
+	దశాంశం d_vert{0.f};
+	get_దూరం_గమ్యం_బిందువు_global_wgs84(uav_state.lat_lon(0), uav_state.lat_lon(1), uav_state.altitude,
 					   traffic_state.lat_lon(0), traffic_state.lat_lon(1), traffic_state.altitude, &d_hor, &d_vert);
 
-	const float relative_uav_traffic_speed = calculate_relative_uav_traffic_speed(uav_state, traffic_state);
+	స్థిరరాశి దశాంశం relative_uav_traffic_వేగం = calculate_relative_uav_traffic_వేగం(uav_state, traffic_state);
 
 	// Predict until the vehicle would have passed this system at its current speed
-	const float prediction_distance = d_hor + kTrafficToUavDistanceExtension;
+	స్థిరరాశి దశాంశం prediction_దూరం = d_hor + k_Traffic_గమ్యం_Uav_దూరం_Extension;
 
-	double end_lat{0.0};
-	double end_lon{0.0};
-	waypoint_from_heading_and_distance(traffic_state.lat_lon(0), traffic_state.lat_lon(1),
-					   traffic_state.heading, prediction_distance, &end_lat, &end_lon);
+	ద్విగుణ చివర_lat{0.0};
+	ద్విగుణ చివర_lon{0.0};
+	waypoint_from_heading_and_దూరం(traffic_state.lat_lon(0), traffic_state.lat_lon(1),
+					   traffic_state.heading, prediction_దూరం, &చివర_lat, &చివర_lon);
 
 	crosstrack_error_s crosstrack_error{};
-	const bool line_distance_valid = !get_distance_to_line(crosstrack_error, uav_state.lat_lon(0),
+	స్థిరరాశి తార్కిక పంక్తి_దూరం_valid = !get_దూరం_గమ్యం_పంక్తి(crosstrack_error, uav_state.lat_lon(0),
 					 uav_state.lat_lon(1), traffic_state.lat_lon(0),
-					 traffic_state.lat_lon(1), end_lat,
-					 end_lon);
+					 traffic_state.lat_lon(1), చివర_lat,
+					 చివర_lon);
 
-	const bool cs_distance_conflict_threshold = line_distance_valid
-			&& (!crosstrack_error.past_end)
-			&& (fabsf(crosstrack_error.distance) < _crosstrack_separation_m);
+	స్థిరరాశి తార్కిక cs_దూరం_conflict_పరిమితి = పంక్తి_దూరం_valid
+			&& (!crosstrack_error.past_చివర)
+			&& (fabsf(crosstrack_error.దూరం) < _crosstrack_separation_m);
 
-	const float vertical_separation = fabsf(uav_state.altitude - traffic_state.altitude);
-	const bool vertical_separation_conflict = vertical_separation < _vertical_separation_m;
+	స్థిరరాశి దశాంశం vertical_separation = fabsf(uav_state.altitude - traffic_state.altitude);
+	స్థిరరాశి తార్కిక vertical_separation_conflict = vertical_separation < _vertical_separation_m;
 
-	bool collision_time_check = false;
+	తార్కిక collision_సమయం_check = అబద్ధం;
 
-	const float d_xyz = hypotf(d_hor, d_vert);
-	float time_to_collision = 0.f;
+	స్థిరరాశి దశాంశం d_xyz = hypotf(d_hor, d_vert);
+	దశాంశం సమయం_గమ్యం_collision = 0.f;
 
-	if (relative_uav_traffic_speed > FLT_EPSILON) {
-		time_to_collision = d_xyz / relative_uav_traffic_speed;
-		collision_time_check = time_to_collision < _collision_time_threshold_s;
+	ఒకవేళ (relative_uav_traffic_వేగం > FLT_EPSILON) {
+		సమయం_గమ్యం_collision = d_xyz / relative_uav_traffic_వేగం;
+		collision_సమయం_check = సమయం_గమ్యం_collision < collision_సమయం_పరిమితి_s;
 	}
 
 	daa_stats.aircraft_dist = d_xyz;
-	daa_stats.aircraft_dist_hor = line_distance_valid ? crosstrack_error.distance : d_hor;
+	daa_stats.aircraft_dist_hor = పంక్తి_దూరం_valid ? crosstrack_error.దూరం : d_hor;
 	daa_stats.aircraft_dist_vert = vertical_separation;
-	daa_stats.expected_min_dist_time_sec = time_to_collision;
+	daa_stats.expected_min_dist_సమయం_sec = సమయం_గమ్యం_collision;
 
-	const bool conflict_detected = cs_distance_conflict_threshold && vertical_separation_conflict && collision_time_check;
+	స్థిరరాశి తార్కిక conflict_detected = cs_దూరం_conflict_పరిమితి && vertical_separation_conflict && collision_సమయం_check;
 
-	if (!conflict_detected) {
-		return detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
+	ఒకవేళ (!conflict_detected) {
+		తిరిగి detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
 	}
 
 	// Crosstrack mode has one conflict level, mapped to HIGH for compatibility.
-	return detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH;
+	తిరిగి detect_and_avoid_s::DAA_CONFLICT_LVL_ఎగువ;
 }

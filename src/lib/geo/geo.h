@@ -43,25 +43,25 @@
  * Additional functions - @author Doug Weibel <douglas.weibel@colorado.edu>
  */
 
-#pragma once
+#సూచన once
 
-#include <stdbool.h>
-#include <stdint.h>
+#అన్తర్భావ <stdbool.h>
+#అన్తర్భావ <stdint.h>
 
-#include <lib/mathlib/mathlib.h>
-#include <lib/matrix/matrix/math.hpp>
+#అన్తర్భావ <lib/mathlib/mathlib.h>
+#అన్తర్భావ <lib/matrix/matrix/math.hpp>
 
-static constexpr float CONSTANTS_ONE_G = 9.80665f;						// m/s^2
-static constexpr double CONSTANTS_RADIUS_OF_EARTH = 6371000;					// meters (m)
-static constexpr float  CONSTANTS_RADIUS_OF_EARTH_F = CONSTANTS_RADIUS_OF_EARTH;		// meters (m)
-static constexpr float CONSTANTS_EARTH_SPIN_RATE = 7.2921150e-5f;				// radians/second (rad/s)
+స్థిర constexpr దశాంశం CONSTANTS_ONE_G = 9.80665f;						// m/s^2
+స్థిర constexpr ద్విగుణ CONSTANTS_RADIUS_యొక్క_EARTH = 6371000;					// meters (m)
+స్థిర constexpr దశాంశం  CONSTANTS_RADIUS_యొక్క_EARTH_F = CONSTANTS_RADIUS_యొక్క_EARTH;		// meters (m)
+స్థిర constexpr దశాంశం CONSTANTS_EARTH_SPIN_రేటు = 7.2921150e-5f;				// radians/second (rad/s)
 
 
 // XXX remove
-struct crosstrack_error_s {
-	bool past_end;		// Flag indicating we are past the end of the line/arc segment
-	float distance;		// Distance in meters to closest point on line/arc
-	float bearing;		// Bearing in radians to closest point on line/arc
+నిర్మాణం crosstrack_error_s {
+	bool past_చివర;		// Flag indicating we are past the end of the line/arc segment
+	దశాంశం దూరం;		// Distance in meters to closest point on line/arc
+	దశాంశం bearing;		// Bearing in radians to closest point on line/arc
 } ;
 
 
@@ -73,7 +73,7 @@ struct crosstrack_error_s {
  * @param lat_next next waypoint position in degrees (47.1234567°, not 471234567°)
  * @param lon_next next waypoint position in degrees (8.1234567°, not 81234567°)
  */
-float get_distance_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next);
+దశాంశం get_దూరం_గమ్యం_తదుపరి_waypoint(ద్విగుణ lat_now, ద్విగుణ lon_now, ద్విగుణ lat_తదుపరి, ద్విగుణ lon_తదుపరి);
 
 /**
  * Creates a new waypoint C on the line of two given waypoints (A, B) at certain distance
@@ -87,8 +87,8 @@ float get_distance_to_next_waypoint(double lat_now, double lon_now, double lat_n
  * @param lat_target latitude of target waypoint C in degrees (47.1234567°, not 471234567°)
  * @param lon_target longitude of target waypoint C in degrees (47.1234567°, not 471234567°)
  */
-void create_waypoint_from_line_and_dist(double lat_A, double lon_A, double lat_B, double lon_B, float dist,
-					double *lat_target, double *lon_target);
+శూన్య create_waypoint_from_పంక్తి_and_dist(ద్విగుణ lat_A, ద్విగుణ lon_A, ద్విగుణ lat_B, ద్విగుణ lon_B, దశాంశం dist,
+					ద్విగుణ *lat_లక్ష్యం, ద్విగుణ *lon_లక్ష్యం);
 
 /**
  * Creates a waypoint from given waypoint, distance and bearing
@@ -101,8 +101,8 @@ void create_waypoint_from_line_and_dist(double lat_A, double lon_A, double lat_B
  * @param lat_target latitude of target waypoint in degrees (47.1234567°, not 471234567°)
  * @param lon_target longitude of target waypoint in degrees (47.1234567°, not 471234567°)
  */
-void waypoint_from_heading_and_distance(double lat_start, double lon_start, float bearing, float dist,
-					double *lat_target, double *lon_target);
+శూన్య waypoint_from_heading_and_దూరం(ద్విగుణ lat_ప్రారంభం, ద్విగుణ lon_ప్రారంభం, దశాంశం bearing, దశాంశం dist,
+					ద్విగుణ *lat_లక్ష్యం, ద్విగుణ *lon_లక్ష్యం);
 
 /**
  * Returns the bearing to the next waypoint in radians.
@@ -112,37 +112,37 @@ void waypoint_from_heading_and_distance(double lat_start, double lon_start, floa
  * @param lat_next next waypoint position in degrees (47.1234567°, not 471234567°)
  * @param lon_next next waypoint position in degrees (8.1234567°, not 81234567°)
  */
-float get_bearing_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next);
+దశాంశం get_bearing_గమ్యం_తదుపరి_waypoint(ద్విగుణ lat_now, ద్విగుణ lon_now, ద్విగుణ lat_తదుపరి, ద్విగుణ lon_తదుపరి);
 
-void get_vector_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next, float *v_n,
-				 float *v_e);
+శూన్య get_సదిశ_గమ్యం_తదుపరి_waypoint(ద్విగుణ lat_now, ద్విగుణ lon_now, ద్విగుణ lat_తదుపరి, ద్విగుణ lon_తదుపరి, దశాంశం *v_n,
+				 దశాంశం *v_e);
 
-void get_vector_to_next_waypoint_fast(double lat_now, double lon_now, double lat_next, double lon_next, float *v_n,
-				      float *v_e);
+శూన్య get_సదిశ_గమ్యం_తదుపరి_waypoint_fast(ద్విగుణ lat_now, ద్విగుణ lon_now, ద్విగుణ lat_తదుపరి, ద్విగుణ lon_తదుపరి, దశాంశం *v_n,
+				      దశాంశం *v_e);
 
-void add_vector_to_global_position(double lat_now, double lon_now, float v_n, float v_e, double *lat_res,
-				   double *lon_res);
+శూన్య కూడు_సదిశ_గమ్యం_global_position(ద్విగుణ lat_now, ద్విగుణ lon_now, దశాంశం v_n, దశాంశం v_e, ద్విగుణ *lat_res,
+				   ద్విగుణ *lon_res);
 
-int get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat_now, double lon_now,
-			 double lat_start, double lon_start, double lat_end, double lon_end);
+పూర్ణాంకం get_దూరం_గమ్యం_పంక్తి(నిర్మాణం crosstrack_error_s &crosstrack_error, ద్విగుణ lat_now, ద్విగుణ lon_now,
+			 ద్విగుణ lat_ప్రారంభం, ద్విగుణ lon_ప్రారంభం, ద్విగుణ lat_చివర, ద్విగుణ lon_చివర);
 
-int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_now, double lon_now,
-			double lat_center, double lon_center,
-			float radius, float arc_start_bearing, float arc_sweep);
+పూర్ణాంకం get_దూరం_గమ్యం_arc(నిర్మాణం crosstrack_error_s *crosstrack_error, ద్విగుణ lat_now, ద్విగుణ lon_now,
+			ద్విగుణ lat_center, ద్విగుణ lon_center,
+			దశాంశం radius, దశాంశం arc_ప్రారంభం_bearing, దశాంశం arc_sweep);
 
 /*
  * Calculate distance in global frame
  */
-float get_distance_to_point_global_wgs84(double lat_now, double lon_now, float alt_now,
-		double lat_next, double lon_next, float alt_next,
-		float *dist_xy, float *dist_z);
+దశాంశం get_దూరం_గమ్యం_బిందువు_global_wgs84(ద్విగుణ lat_now, ద్విగుణ lon_now, దశాంశం alt_now,
+		ద్విగుణ lat_తదుపరి, ద్విగుణ lon_తదుపరి, దశాంశం alt_తదుపరి,
+		దశాంశం *dist_xy, దశాంశం *dist_z);
 
 /*
  * Calculate distance in local frame (NED)
  */
-float mavlink_wpm_distance_to_point_local(float x_now, float y_now, float z_now,
-		float x_next, float y_next, float z_next,
-		float *dist_xy, float *dist_z);
+దశాంశం mavlink_wpm_దూరం_గమ్యం_బిందువు_local(దశాంశం x_now, దశాంశం y_now, దశాంశం z_now,
+		దశాంశం x_తదుపరి, దశాంశం y_తదుపరి, దశాంశం z_తదుపరి,
+		దశాంశం *dist_xy, దశాంశం *dist_z);
 
 
 /**
@@ -150,26 +150,26 @@ float mavlink_wpm_distance_to_point_local(float x_now, float y_now, float z_now,
  */
 class MapProjection final
 {
-private:
+అంతరంగ:
 	uint64_t _ref_timestamp{0};
-	double _ref_lat{0.0};
-	double _ref_lon{0.0};
-	double _ref_sin_lat{0.0};
-	double _ref_cos_lat{0.0};
-	bool _ref_init_done{false};
+	ద్విగుణ _ref_lat{0.0};
+	ద్విగుణ _ref_lon{0.0};
+	ద్విగుణ _ref_sin_lat{0.0};
+	ద్విగుణ _ref_cos_lat{0.0};
+	bool ref_init_పూర్తి{false};
 
-public:
+బహిరంగ:
 	/**
 	 * @brief Construct a new Map Projection object
 	 * The generated object will be uninitialized.
 	 * To initialize, use the `initReference` function
 	 */
-	MapProjection() = default;
+	MapProjection() = అప్రమేయ;
 
 	/**
 	 * @brief Construct and initialize a new Map Projection object
 	 */
-	MapProjection(double lat_0, double lon_0, uint64_t timestamp = 0)
+	MapProjection(ద్విగుణ lat_0, ద్విగుణ lon_0, uint64_t timestamp = 0)
 	{
 		initReference(lat_0, lon_0, timestamp);
 	}
@@ -182,27 +182,27 @@ public:
 	 * @param lat in degrees (47.1234567°, not 471234567°)
 	 * @param lon in degrees (8.1234567°, not 81234567°)
 	 */
-	void initReference(double lat_0, double lon_0, uint64_t timestamp = 0);
+	శూన్య initReference(ద్విగుణ lat_0, ద్విగుణ lon_0, uint64_t timestamp = 0);
 
 	/**
 	 * @return true, if the map reference has been initialized before
 	 */
-	bool isInitialized() const { return _ref_init_done; };
+	bool isInitialized() స్థిరరాశి { తిరిగి ref_init_పూర్తి; };
 
 	/**
 	 * @return the timestamp of the reference which the map projection was initialized with
 	 */
-	uint64_t getProjectionReferenceTimestamp() const { return _ref_timestamp; };
+	uint64_t getProjectionReferenceTimestamp() స్థిరరాశి { తిరిగి _ref_timestamp; };
 
 	/**
 	 * @return the projection reference latitude in degrees
 	 */
-	double getProjectionReferenceLat() const { return math::degrees(_ref_lat); };
+	ద్విగుణ getProjectionReferenceLat() స్థిరరాశి { తిరిగి math::degrees(_ref_lat); };
 
 	/**
 	 * @return the projection reference longitude in degrees
 	 */
-	double getProjectionReferenceLon() const { return math::degrees(_ref_lon); };
+	ద్విగుణ getProjectionReferenceLon() స్థిరరాశి { తిరిగి math::degrees(_ref_lon); };
 
 	/**
 	 * Transform a point in the geographic coordinate system to the local
@@ -212,7 +212,7 @@ public:
 	 * @param x north
 	 * @param y east
 	 */
-	void project(double lat, double lon, float &x, float &y) const;
+	శూన్య project(ద్విగుణ lat, ద్విగుణ lon, దశాంశం &x, దశాంశం &y) స్థిరరాశి;
 
 	/**
 	 * Transform a point in the geographic coordinate system to the local
@@ -221,11 +221,11 @@ public:
 	 * @param lon in degrees (8.1234567°, not 81234567°)
 	 * @return the point in local coordinates as north / east
 	 */
-	inline matrix::Vector2f project(double lat, double lon) const
+	అంతఃవరుస మాతృక::Vector2f project(ద్విగుణ lat, ద్విగుణ lon) స్థిరరాశి
 	{
-		matrix::Vector2f res;
+		మాతృక::Vector2f res;
 		project(lat, lon, res(0), res(1));
-		return res;
+		తిరిగి res;
 	}
 
 	/**
@@ -237,5 +237,5 @@ public:
 	 * @param lat in degrees (47.1234567°, not 471234567°)
 	 * @param lon in degrees (8.1234567°, not 81234567°)
 	 */
-	void reproject(float x, float y, double &lat, double &lon) const;
+	శూన్య reproject(దశాంశం x, దశాంశం y, ద్విగుణ &lat, ద్విగుణ &lon) స్థిరరాశి;
 };

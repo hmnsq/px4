@@ -36,112 +36,112 @@
  * Run exclusively this test with the command "make tests TESTFILTER=HeadingSmoothing"
  */
 
-#include "mathlib/math/Limits.hpp"
-#include <gtest/gtest.h>
+#అన్తర్భావ "mathlib/math/Limits.hpp"
+#అన్తర్భావ <gtest/gtest.h>
 
-#include <motion_planning/HeadingSmoothing.hpp>
+#అన్తర్భావ <motion_planning/HeadingSmoothing.hpp>
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-class HeadingSmoothingTest : public ::testing::Test
+తరగతి HeadingSmoothingTest : బహిరంగ ::testing::Test
 {
-public:
+బహిరంగ:
 	HeadingSmoothingTest()
 	{
-		_smoothing.setMaxHeadingRate(15.f);
-		_smoothing.setMaxHeadingAccel(1.f);
+		_smoothing.సమితి_Max_Heading_రేటు(15.f);
+		_smoothing.సమితి_Max_Heading_Accel(1.f);
 	}
 
 	HeadingSmoothing _smoothing;
-	float _dt{.1f};
+	దశాంశం _dt{.1f};
 };
 
 TEST_F(HeadingSmoothingTest, convergence)
 {
-	const float heading_current = math::radians(0.f);
-	const float heading_target = math::radians(5.f);
+	స్థిరరాశి దశాంశం heading_current = math::radians(0.f);
+	స్థిరరాశి దశాంశం heading_లక్ష్యం = math::radians(5.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(1.f / _dt);
+	స్థిరరాశి పూర్ణాంకం nb_అడుగులు = ceilf(1.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	కొరకు (పూర్ణాంకం i = 0; i < nb_అడుగులు; i++) {
+		_smoothing.update(heading_లక్ష్యం, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
-	EXPECT_EQ(heading_rate, 0.f);
+	స్థిరరాశి దశాంశం heading = _smoothing.getSmoothedHeading();
+	స్థిరరాశి దశాంశం heading_రేటు = _smoothing.get_Smoothed_Heading_రేటు();
+	EXPECT_EQ(heading, heading_లక్ష్యం) << "heading (deg): " << math::degrees(heading);
+	EXPECT_EQ(heading_రేటు, 0.f);
 }
 
-TEST_F(HeadingSmoothingTest, zero_crossing)
+TEST_F(HeadingSmoothingTest, zero_దాటడం)
 {
-	const float heading_current = math::radians(-95.f);
-	const float heading_target = math::radians(5.f);
+	స్థిరరాశి దశాంశం heading_current = math::radians(-95.f);
+	స్థిరరాశి దశాంశం heading_లక్ష్యం = math::radians(5.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(4.f / _dt);
+	స్థిరరాశి పూర్ణాంకం nb_అడుగులు = ceilf(4.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	కొరకు (పూర్ణాంకం i = 0; i < nb_అడుగులు; i++) {
+		_smoothing.update(heading_లక్ష్యం, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
-	EXPECT_EQ(heading_rate, 0.f);
+	స్థిరరాశి దశాంశం heading = _smoothing.getSmoothedHeading();
+	స్థిరరాశి దశాంశం heading_రేటు = _smoothing.get_Smoothed_Heading_రేటు();
+	EXPECT_EQ(heading, heading_లక్ష్యం) << "heading (deg): " << math::degrees(heading);
+	EXPECT_EQ(heading_రేటు, 0.f);
 }
 
 TEST_F(HeadingSmoothingTest, wrap_pi)
 {
-	const float heading_current = math::radians(-170.f);
-	const float heading_target = math::radians(170.f);
+	స్థిరరాశి దశాంశం heading_current = math::radians(-170.f);
+	స్థిరరాశి దశాంశం heading_లక్ష్యం = math::radians(170.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	స్థిరరాశి పూర్ణాంకం nb_అడుగులు = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	కొరకు (పూర్ణాంకం i = 0; i < nb_అడుగులు; i++) {
+		_smoothing.update(heading_లక్ష్యం, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
-	EXPECT_EQ(heading_rate, 0.f);
+	స్థిరరాశి దశాంశం heading = _smoothing.getSmoothedHeading();
+	స్థిరరాశి దశాంశం heading_రేటు = _smoothing.get_Smoothed_Heading_రేటు();
+	EXPECT_EQ(heading, heading_లక్ష్యం) << "heading (deg): " << math::degrees(heading);
+	EXPECT_EQ(heading_రేటు, 0.f);
 }
 
-TEST_F(HeadingSmoothingTest, positive_rate)
+TEST_F(HeadingSmoothingTest, ధనాత్మక_రేటు)
 {
-	const float max_heading_rate = .15f;
-	_smoothing.setMaxHeadingRate(max_heading_rate);
-	const float heading_current = math::radians(-170.f);
-	const float heading_target = math::radians(-20.f);
+	స్థిరరాశి దశాంశం max_heading_రేటు = .15f;
+	_smoothing.సమితి_Max_Heading_రేటు(max_heading_రేటు);
+	స్థిరరాశి దశాంశం heading_current = math::radians(-170.f);
+	స్థిరరాశి దశాంశం heading_లక్ష్యం = math::radians(-20.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	స్థిరరాశి పూర్ణాంకం nb_అడుగులు = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	కొరకు (పూర్ణాంకం i = 0; i < nb_అడుగులు; i++) {
+		_smoothing.update(heading_లక్ష్యం, _dt);
 	}
 
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading_rate, max_heading_rate);
+	స్థిరరాశి దశాంశం heading_రేటు = _smoothing.get_Smoothed_Heading_రేటు();
+	EXPECT_EQ(heading_రేటు, max_heading_రేటు);
 }
 
-TEST_F(HeadingSmoothingTest, negative_rate)
+TEST_F(HeadingSmoothingTest, negative_రేటు)
 {
-	const float max_heading_rate = 0.15;
-	_smoothing.setMaxHeadingRate(max_heading_rate);
-	const float heading_current = math::radians(-20.f);
-	const float heading_target = math::radians(-140.f);
+	స్థిరరాశి దశాంశం max_heading_రేటు = 0.15;
+	_smoothing.సమితి_Max_Heading_రేటు(max_heading_రేటు);
+	స్థిరరాశి దశాంశం heading_current = math::radians(-20.f);
+	స్థిరరాశి దశాంశం heading_లక్ష్యం = math::radians(-140.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	స్థిరరాశి పూర్ణాంకం nb_అడుగులు = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	కొరకు (పూర్ణాంకం i = 0; i < nb_అడుగులు; i++) {
+		_smoothing.update(heading_లక్ష్యం, _dt);
 	}
 
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading_rate, -max_heading_rate);
+	స్థిరరాశి దశాంశం heading_రేటు = _smoothing.get_Smoothed_Heading_రేటు();
+	EXPECT_EQ(heading_రేటు, -max_heading_రేటు);
 }

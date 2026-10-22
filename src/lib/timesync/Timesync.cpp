@@ -38,128 +38,128 @@
  * @author Mohammed Kabir <mhkabir98@gmail.com>
  */
 
-#include "Timesync.hpp"
+#అన్తర్భావ "Timesync.hpp"
 
-#include <stdlib.h>
+#అన్తర్భావ <stdlib.h>
 
-void Timesync::update(const uint64_t now_us, const int64_t remote_timestamp_ns, const int64_t originate_timestamp_ns)
+శూన్య Timesync::update(స్థిరరాశి uint64_t now_us, స్థిరరాశి int64_t remote_timestamp_ns, స్థిరరాశి int64_t originate_timestamp_ns)
 {
 	// Message originating from this system, compute time offset from it
-	if (remote_timestamp_ns > 0) {
+	ఒకవేళ (remote_timestamp_ns > 0) {
 		// Calculate time offset between this system and the remote system, assuming RTT for
 		// the timesync packet is roughly equal both ways.
-		int64_t offset_us = (int64_t)((originate_timestamp_ns / 1000ULL) + now_us - (remote_timestamp_ns / 1000ULL) * 2) / 2 ;
+		int64_t స్థానభ్రంశం_us = (int64_t)((originate_timestamp_ns / 1000ULL) + now_us - (remote_timestamp_ns / 1000ULL) * 2) / 2 ;
 
 		// Calculate the round trip time (RTT) it took the timesync packet to bounce back to us from remote system
 		uint64_t rtt_us = now_us - (originate_timestamp_ns / 1000ULL);
 
 		// Calculate the difference of this sample from the current estimate
-		uint64_t deviation = llabs((int64_t)_time_offset - offset_us);
+		uint64_t deviation = llabs((int64_t)సమయం_స్థానభ్రంశం - స్థానభ్రంశం_us);
 
-		if (rtt_us < MAX_RTT_SAMPLE) {	// Only use samples with low RTT
+		ఒకవేళ (rtt_us < MAX_RTT_SAMPLE) {	// Only use samples with low RTT
 
-			if (sync_converged() && (deviation > MAX_DEVIATION_SAMPLE)) {
+			ఒకవేళ (sync_converged() && (deviation > MAX_DEVIATION_SAMPLE)) {
 
 				// Increment the counter if we have a good estimate and are getting samples far from the estimate
-				_high_deviation_count++;
+				ఎగువ_deviation_లెక్క++;
 
 				// We reset the filter if we received 5 consecutive samples which violate our present estimate.
 				// This is most likely due to a time jump on the offboard system.
-				if (_high_deviation_count > MAX_CONSECUTIVE_HIGH_DEVIATION) {
+				ఒకవేళ (ఎగువ_deviation_లెక్క > MAX_CONSECUTIVE_ఎగువ_DEVIATION) {
 					PX4_DEBUG("time jump detected. Resetting time synchroniser.");
 					// Reset the filter
 					reset_filter();
 				}
 
-			} else {
+			} లేకపోతే {
 
 				// Filter gain scheduling
-				if (!sync_converged()) {
+				ఒకవేళ (!sync_converged()) {
 					// Interpolate with a sigmoid function
-					const float progress = (float) _sequence / (float) CONVERGENCE_WINDOW;
-					double p = (double)(1.f - expf(0.5f * (1.f - 1.f / (1.f - progress))));
+					స్థిరరాశి దశాంశం పురోగతి = (దశాంశం) _sequence / (దశాంశం) CONVERGENCE_కిటికీ;
+					ద్విగుణ p = (ద్విగుణ)(1.f - expf(0.5f * (1.f - 1.f / (1.f - పురోగతి))));
 					_filter_alpha = p * ALPHA_GAIN_FINAL + (1.0 - p) * ALPHA_GAIN_INITIAL;
 					_filter_beta = p * BETA_GAIN_FINAL + (1.0 - p) * BETA_GAIN_INITIAL;
 
-				} else {
+				} లేకపోతే {
 					_filter_alpha = ALPHA_GAIN_FINAL;
 					_filter_beta = BETA_GAIN_FINAL;
 				}
 
 				// Perform filter update
-				add_sample(offset_us);
+				కూడు_sample(స్థానభ్రంశం_us);
 
 				// Increment sequence counter after filter update
 				_sequence++;
 
 				// Reset high deviation count after filter update
-				_high_deviation_count = 0;
+				ఎగువ_deviation_లెక్క = 0;
 
 				// Reset high RTT count after filter update
-				_high_rtt_count = 0;
+				ఎగువ_rtt_లెక్క = 0;
 			}
 
-		} else {
+		} లేకపోతే {
 			// Increment counter if round trip time is too high for accurate timesync
-			_high_rtt_count++;
+			ఎగువ_rtt_లెక్క++;
 
-			if (_high_rtt_count == MAX_CONSECUTIVE_HIGH_RTT) {
+			ఒకవేళ (ఎగువ_rtt_లెక్క == MAX_CONSECUTIVE_ఎగువ_RTT) {
 				PX4_DEBUG("RTT too high for timesync: %llu ms", rtt_us / 1000ULL);
 			}
 		}
 
 		// Publish status message
-		timesync_status_s tsync_status{};
-		tsync_status.source_protocol = _source;
-		tsync_status.remote_timestamp = remote_timestamp_ns / 1000ULL;
-		tsync_status.observed_offset = offset_us;
-		tsync_status.estimated_offset = (int64_t)_time_offset;
-		tsync_status.round_trip_time = rtt_us;
-		tsync_status.timestamp = hrt_absolute_time();
+		timesync_స్థితి_s tsync_స్థితి{};
+		tsync_స్థితి.ఆధారం_protocol = ఆధారం_2;
+		tsync_స్థితి.remote_timestamp = remote_timestamp_ns / 1000ULL;
+		tsync_స్థితి.observed_స్థానభ్రంశం = స్థానభ్రంశం_us;
+		tsync_స్థితి.estimated_స్థానభ్రంశం = (int64_t)సమయం_స్థానభ్రంశం;
+		tsync_స్థితి.విడత_trip_సమయం = rtt_us;
+		tsync_స్థితి.timestamp = hrt_absolute_సమయం();
 
-		_timesync_status_pub.publish(tsync_status);
+		timesync_స్థితి_pub.publish(tsync_స్థితి);
 	}
 }
 
 uint64_t Timesync::sync_stamp(uint64_t usec)
 {
 	// Only return synchronised stamp if we have converged to a good value
-	if (sync_converged()) {
-		return usec + (int64_t)_time_offset;
+	ఒకవేళ (sync_converged()) {
+		తిరిగి usec + (int64_t)సమయం_స్థానభ్రంశం;
 
-	} else {
-		return hrt_absolute_time();
+	} లేకపోతే {
+		తిరిగి hrt_absolute_సమయం();
 	}
 }
 
-void Timesync::add_sample(int64_t offset_us)
+శూన్య Timesync::కూడు_sample(int64_t స్థానభ్రంశం_us)
 {
 	// Online exponential smoothing filter. The derivative of the estimate is also
 	// estimated in order to produce an estimate without steady state lag:
 	// https://en.wikipedia.org/wiki/Exponential_smoothing#Double_exponential_smoothing
-	double time_offset_prev = _time_offset;
+	ద్విగుణ సమయం_స్థానభ్రంశం_prev = సమయం_స్థానభ్రంశం;
 
-	if (_sequence == 0) {
+	ఒకవేళ (_sequence == 0) {
 		// First offset sample
-		_time_offset = offset_us;
+		సమయం_స్థానభ్రంశం = స్థానభ్రంశం_us;
 
-	} else {
+	} లేకపోతే {
 		// Update the clock offset estimate
-		_time_offset = _filter_alpha * offset_us + (1.0 - _filter_alpha) * (_time_offset + _time_skew);
+		సమయం_స్థానభ్రంశం = _filter_alpha * స్థానభ్రంశం_us + (1.0 - _filter_alpha) * (సమయం_స్థానభ్రంశం + సమయం_skew);
 
 		// Update the clock skew estimate
-		_time_skew = _filter_beta * (_time_offset - time_offset_prev) + (1.0 - _filter_beta) * _time_skew;
+		సమయం_skew = _filter_beta * (సమయం_స్థానభ్రంశం - సమయం_స్థానభ్రంశం_prev) + (1.0 - _filter_beta) * సమయం_skew;
 	}
 }
 
-void Timesync::reset_filter()
+శూన్య Timesync::reset_filter()
 {
 	// Do a full reset of all statistics and parameters
 	_sequence = 0;
-	_time_offset = 0.0;
-	_time_skew = 0.0;
+	సమయం_స్థానభ్రంశం = 0.0;
+	సమయం_skew = 0.0;
 	_filter_alpha = ALPHA_GAIN_INITIAL;
 	_filter_beta = BETA_GAIN_INITIAL;
-	_high_deviation_count = 0;
-	_high_rtt_count = 0;
+	ఎగువ_deviation_లెక్క = 0;
+	ఎగువ_rtt_లెక్క = 0;
 }

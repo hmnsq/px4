@@ -37,11 +37,11 @@
  * LED driver to control the onboard LED(s) via ioctl interface.
  */
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/px4_config.h>
-#include <lib/cdev/CDev.hpp>
-#include <drivers/drv_board_led.h>
-#include <stdio.h>
+#అన్తర్భావ <px4_platform_common/log.h>
+#అన్తర్భావ <px4_platform_common/px4_config.h>
+#అన్తర్భావ <lib/cdev/CDev.hpp>
+#అన్తర్భావ <drivers/drv_board_led.h>
+#అన్తర్భావ <stdio.h>
 
 /*
  * Ideally we'd be able to get these from arm_internal.h,
@@ -51,29 +51,29 @@
  * CONFIG_ARCH_LEDS configuration switch.
  */
 __BEGIN_DECLS
-extern void led_init();
-extern void led_on(int led);
-extern void led_off(int led);
-extern void led_toggle(int led);
+బాహ్య శూన్య led_init();
+బాహ్య శూన్య led_on(పూర్ణాంకం led);
+బాహ్య శూన్య led_off(పూర్ణాంకం led);
+బాహ్య శూన్య led_toggle(పూర్ణాంకం led);
 __END_DECLS
 
-class LED : cdev::CDev
+తరగతి LED : cdev::CDev
 {
-public:
+బహిరంగ:
 	LED();
-	~LED() override = default;
+	~LED() override = అప్రమేయ;
 
-	int	init() override;
-	int	ioctl(cdev::file_t *filp, int cmd, unsigned long arg) override;
+	పూర్ణాంకం	init() override;
+	పూర్ణాంకం	ioctl(cdev::file_t *filp, పూర్ణాంకం cmd, గుర్తులేని దీర్ఘ arg) override;
 };
 
-LED::LED() : CDev(LED0_DEVICE_PATH)
+LED::LED() : CDev(LED0_DEVICE_మార్గం)
 {
 	// force immediate init/device registration
 	init();
 }
 
-int
+పూర్ణాంకం
 LED::init()
 {
 	PX4_DEBUG("LED::init");
@@ -82,43 +82,43 @@ LED::init()
 
 	led_init();
 
-	return 0;
+	తిరిగి 0;
 }
 
-int
-LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
+పూర్ణాంకం
+LED::ioctl(cdev::file_t *filp, పూర్ణాంకం cmd, గుర్తులేని దీర్ఘ arg)
 {
-	int result = OK;
+	పూర్ణాంకం ఫలితం = OK;
 
-	switch (cmd) {
-	case LED_ON:
+	ఎంపిక (cmd) {
+	స్థితి LED_ON:
 		led_on(arg);
-		break;
+		ఆపు;
 
-	case LED_OFF:
+	స్థితి LED_OFF:
 		led_off(arg);
-		break;
+		ఆపు;
 
-	case LED_TOGGLE:
+	స్థితి LED_TOGGLE:
 		led_toggle(arg);
-		break;
+		ఆపు;
 
-	default:
-		result = CDev::ioctl(filp, cmd, arg);
+	అప్రమేయ:
+		ఫలితం = CDev::ioctl(filp, cmd, arg);
 	}
 
-	return result;
+	తిరిగి ఫలితం;
 }
 
-namespace
+నామాకాశ
 {
 LED	*gLED;
 }
 
-void
-drv_led_start(void)
+శూన్య
+drv_led_ప్రారంభం(శూన్య)
 {
-	if (gLED == nullptr) {
-		gLED = new LED;
+	ఒకవేళ (gLED == శూన్యసూచిక) {
+		gLED = కొత్త LED;
 	}
 }

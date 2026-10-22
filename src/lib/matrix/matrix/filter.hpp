@@ -1,28 +1,28 @@
-#pragma once
+#సూచన once
 
-#include "Scalar.hpp"
-#include "SquareMatrix.hpp"
+#అన్తర్భావ "Scalar.hpp"
+#అన్తర్భావ "SquareMatrix.hpp"
 
-namespace matrix
+నామాకాశ మాతృక
 {
 
-template<typename Type, size_t M, size_t N>
-int kalman_correct(
-	const Matrix<Type, M, M> &P,
-	const Matrix<Type, N, M> &C,
-	const Matrix<Type, N, N> &R,
-	const Matrix<Type, N, 1> &r,
-	Matrix<Type, M, 1> &dx,
-	Matrix<Type, M, M> &dP,
+మూస<రకం_పేరు Type, size_t M, size_t N>
+పూర్ణాంకం kalman_correct(
+	స్థిరరాశి మాతృక_2<Type, M, M> &P,
+	స్థిరరాశి మాతృక_2<Type, N, M> &C,
+	స్థిరరాశి మాతృక_2<Type, N, N> &R,
+	స్థిరరాశి మాతృక_2<Type, N, 1> &r,
+	మాతృక_2<Type, M, 1> &dx,
+	మాతృక_2<Type, M, M> &dP,
 	Type &beta
 )
 {
-	SquareMatrix<Type, N> S_I = SquareMatrix<Type, N>(C * P * C.T() + R).I();
-	Matrix<Type, M, N> K = P * C.T() * S_I;
+	వర్గం_మాతృక<Type, N> S_I = వర్గం_మాతృక<Type, N>(C * P * C.T() + R).I();
+	మాతృక_2<Type, M, N> K = P * C.T() * S_I;
 	dx = K * r;
 	beta = Scalar<Type>(r.T() * S_I * r);
 	dP = K * C * P * (-1);
-	return 0;
+	తిరిగి 0;
 }
 
 } // namespace matrix

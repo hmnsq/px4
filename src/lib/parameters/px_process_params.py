@@ -43,155 +43,155 @@
 #   * Human-readable description in Markdown page format for the PX4 dev guide
 #
 
-from __future__ import print_function
-import sys
-import os
-import argparse
-from px4params import srcscanner, srcparser, injectxmlparams, xmlout, markdownout, jsonout, readonly_config
+తః __future__ దిగుమతి print_function
+దిగుమతి sys
+దిగుమతి os
+దిగుమతి argparse
+తః px4params దిగుమతి srcscanner, srcparser, injectxmlparams, xmlout, markdownout, jsonout, readonly_config
 
-import lzma #to create .xz file
-import json
+దిగుమతి lzma #to create .xz file
+దిగుమతి json
 
-def save_compressed(filename):
+నిర్వచనం save_compressed(filename):
     #create lzma compressed version
     xz_filename=filename+'.xz'
-    with lzma.open(xz_filename, 'wt', preset=9) as f:
-        with open(filename, 'r') as content_file:
-            f.write(content_file.read())
+    తోడుగా lzma.open(xz_filename, 'wt', preset=9) ఇవ f:
+        తోడుగా open(filename, 'r') ఇవ content_file:
+            f.లిఖ(content_file.పఠ())
 
 
 
-def main():
+నిర్వచనం ప్రధాన():
     # Parse command line arguments
-    parser = argparse.ArgumentParser(description="Process parameter documentation.")
-    parser.add_argument("-s", "--src-path",
-                        default=["../src"],
+    parser = argparse.వాదం_Parser(description="Process parameter documentation.")
+    parser.కూడు_వాదం("-s", "--src-path",
+                        అప్రమేయ=["../src"],
                         metavar="PATH",
                         nargs='*',
                         help="one or more paths to source files to scan for parameters")
-    parser.add_argument("-x", "--xml",
+    parser.కూడు_వాదం("-x", "--xml",
                         nargs='?',
-                        const="parameters.xml",
+                        స్థిరరాశి="parameters.xml",
                         metavar="FILENAME",
                         help="Create XML file"
                              " (default FILENAME: parameters.xml)")
-    parser.add_argument("-b", "--board",
+    parser.కూడు_వాదం("-b", "--board",
                         nargs='?',
-                        const="",
+                        స్థిరరాశి="",
                         metavar="BOARD",
                         help="Board to create xml parameter xml for")
-    parser.add_argument("-m", "--markdown",
+    parser.కూడు_వాదం("-m", "--markdown",
                         nargs='?',
-                        const="parameters.md",
+                        స్థిరరాశి="parameters.md",
                         metavar="FILENAME",
                         help="Create Markdown file"
                              " (default FILENAME: parameters.md)")
-    parser.add_argument("-j", "--json",
+    parser.కూడు_వాదం("-j", "--json",
                         nargs='?',
-                        const="parameters.json",
+                        స్థిరరాశి="parameters.json",
                         metavar="FILENAME",
                         help="Create Json file"
                              " (default FILENAME: parameters.json)")
-    parser.add_argument('-v', '--verbose',
+    parser.కూడు_వాదం('-v', '--verbose',
                         action='store_true',
                         help="verbose output")
-    parser.add_argument('-c', '--compress',
+    parser.కూడు_వాదం('-c', '--compress',
                         action='store_true',
                         help="compress parameter file")
-    parser.add_argument("-o", "--overrides",
-                        default="{}",
+    parser.కూడు_వాదం("-o", "--overrides",
+                        అప్రమేయ="{}",
                         metavar="OVERRIDES",
                         help="a dict of overrides in the form of a json string")
-    parser.add_argument("--readonly-config",
-                        default=None,
+    parser.కూడు_వాదం("--readonly-config",
+                        అప్రమేయ=ఏమీలేదు,
                         metavar="FILENAME",
                         help="path to readonly_params.yaml")
 
-    args = parser.parse_args()
+    వాదనలు = parser.parse_వాదనలు()
 
     # Check for valid command
-    if not (args.xml or args.markdown or args.json):
-        print("Error: You need to specify at least one output method!\n")
+    ఒకవేళ కాదు (వాదనలు.xml లేదా వాదనలు.markdown లేదా వాదనలు.json):
+        ముద్రించు("Error: You need to specify at least one output method!\n")
         parser.print_usage()
         sys.exit(1)
 
     # Initialize source scanner and parser
-    scanner = srcscanner.SourceScanner()
-    parser = srcparser.SourceParser()
+    scanner = srcscanner.ఆధారం_Scanner()
+    parser = srcparser.ఆధారం_Parser()
 
     # Scan directories, and parse the files
-    if (args.verbose):
-        print("Scanning source path " + str(args.src_path))
+    ఒకవేళ (వాదనలు.verbose):
+        ముద్రించు("Scanning source path " + str(వాదనలు.src_మార్గం))
 
-    if not scanner.ScanDir(args.src_path, parser):
+    ఒకవేళ కాదు scanner.పరిశీలన_Dir(వాదనలు.src_మార్గం, parser):
         sys.exit(1)
 
-    if not parser.Validate():
+    ఒకవేళ కాదు parser.Validate():
         sys.exit(1)
     param_groups = parser.GetParamGroups()
 
-    if len(param_groups) == 0:
-        print("Warning: no parameters found")
+    ఒకవేళ పొడవు(param_groups) == 0:
+        ముద్రించు("Warning: no parameters found")
 
 
     #inject parameters at front of set
-    cur_dir = os.path.dirname(os.path.realpath(__file__))
+    cur_dir = os.మార్గం.dirname(os.మార్గం.realpath(__file__))
 
-    override_dict = json.loads(args.overrides)
-    if len(override_dict.keys()) > 0:
-        for group in param_groups:
-            for param in group.GetParams():
+    override_dict = json.loads(వాదనలు.overrides)
+    ఒకవేళ పొడవు(override_dict.కీలకాలు()) > 0:
+        కొరకు సమూహం లో param_groups:
+            కొరకు param లో సమూహం.GetParams():
                 name = param.GetName()
-                if name in override_dict.keys():
+                ఒకవేళ name లో override_dict.కీలకాలు():
                     val = str(override_dict[param.GetName()])
-                    param.default = val
-                    print("OVERRIDING {:s} to {:s}!!!!!".format(name, val))
+                    param.అప్రమేయ = val
+                    ముద్రించు("OVERRIDING {:s} to {:s}!!!!!".format(name, val))
 
     # Mark readonly parameters
-    if args.readonly_config:
-        all_param_names = set()
-        for group in param_groups:
-            for param in group.GetParams():
-                all_param_names.add(param.GetName())
-        readonly_params = readonly_config.load_readonly_params(args.readonly_config, all_param_names)
-        for group in param_groups:
-            for param in group.GetParams():
-                if param.GetName() in readonly_params:
-                    param.SetReadonly()
+    ఒకవేళ వాదనలు.readonly_config:
+        all_param_పేర్లు = సమితి()
+        కొరకు సమూహం లో param_groups:
+            కొరకు param లో సమూహం.GetParams():
+                all_param_పేర్లు.కూడు(param.GetName())
+        readonly_params = readonly_config.ఎక్కించు_readonly_params(వాదనలు.readonly_config, all_param_పేర్లు)
+        కొరకు సమూహం లో param_groups:
+            కొరకు param లో సమూహం.GetParams():
+                ఒకవేళ param.GetName() లో readonly_params:
+                    param.సమితి_Readonly()
 
     output_files = []
 
     # Output to XML file
-    if args.xml:
-        if args.verbose:
-            print("Creating XML file " + args.xml)
-        out = xmlout.XMLOutput(param_groups, args.board)
-        out.Save(args.xml)
-        output_files.append(args.xml)
+    ఒకవేళ వాదనలు.xml:
+        ఒకవేళ వాదనలు.verbose:
+            ముద్రించు("Creating XML file " + వాదనలు.xml)
+        బహిర్గతం = xmlout.XMLOutput(param_groups, వాదనలు.board)
+        బహిర్గతం.Save(వాదనలు.xml)
+        output_files.append(వాదనలు.xml)
 
     # Output to Markdown/HTML tables
-    if args.markdown:
-        if args.verbose:
-            print("Creating markdown file " + args.markdown)
-        out = markdownout.MarkdownTablesOutput(param_groups)
-        out.Save(args.markdown)
-        output_files.append(args.markdown)
+    ఒకవేళ వాదనలు.markdown:
+        ఒకవేళ వాదనలు.verbose:
+            ముద్రించు("Creating markdown file " + వాదనలు.markdown)
+        బహిర్గతం = markdownout.MarkdownTablesOutput(param_groups)
+        బహిర్గతం.Save(వాదనలు.markdown)
+        output_files.append(వాదనలు.markdown)
 
     # Output to JSON file
-    if args.json:
-        if args.verbose:
-            print("Creating Json file " + args.json)
-        cur_dir = os.path.dirname(os.path.realpath(__file__))
-        out = jsonout.JsonOutput(param_groups, args.board)
-        out.Save(args.json)
-        output_files.append(args.json)
+    ఒకవేళ వాదనలు.json:
+        ఒకవేళ వాదనలు.verbose:
+            ముద్రించు("Creating Json file " + వాదనలు.json)
+        cur_dir = os.మార్గం.dirname(os.మార్గం.realpath(__file__))
+        బహిర్గతం = jsonout.JsonOutput(param_groups, వాదనలు.board)
+        బహిర్గతం.Save(వాదనలు.json)
+        output_files.append(వాదనలు.json)
 
-    if args.compress:
-        for f in output_files:
-            if args.verbose:
-                print("Compressing file " + f)
+    ఒకవేళ వాదనలు.compress:
+        కొరకు f లో output_files:
+            ఒకవేళ వాదనలు.verbose:
+                ముద్రించు("Compressing file " + f)
             save_compressed(f)
 
 
-if __name__ == "__main__":
-    main()
+ఒకవేళ __name__ == "__main__":
+    ప్రధాన()

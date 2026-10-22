@@ -37,89 +37,89 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <containers/List.hpp>
-#include <controllib/block/BlockParam.hpp>
-#include <cstdint>
+#అన్తర్భావ <containers/List.hpp>
+#అన్తర్భావ <controllib/block/BlockParam.hpp>
+#అన్తర్భావ <cstdint>
 
-namespace control
+నామాకాశ control
 {
 
-static constexpr uint8_t maxChildrenPerBlock = 100;
-static constexpr uint8_t maxParamsPerBlock = 110;
-static constexpr uint8_t blockNameLengthMax = 40;
+స్థిర constexpr uint8_t max_Children_చొప్పున_ఖండం = 100;
+స్థిర constexpr uint8_t max_Params_చొప్పున_ఖండం = 110;
+స్థిర constexpr uint8_t ఖండం_Name_నిడివి_Max = 40;
 
 // forward declaration
-class BlockParamBase;
-class SuperBlock;
+తరగతి ఖండం_Param_పునాది;
+తరగతి Super_ఖండం;
 
 /**
  */
-class __EXPORT Block : public ListNode<Block *>
+తరగతి __EXPORT ఖండం : బహిరంగ List_కణుపు<ఖండం *>
 {
-public:
-	friend class BlockParamBase;
+బహిరంగ:
+	మిత్ర తరగతి ఖండం_Param_పునాది;
 
-	Block(SuperBlock *parent, const char *name);
-	virtual ~Block() = default;
+	ఖండం(Super_ఖండం *మాతృ, స్థిరరాశి అక్షరం *name);
+	మాయా ~ఖండం() = అప్రమేయ;
 
 	// no copy, assignment, move, move assignment
-	Block(const Block &) = delete;
-	Block &operator=(const Block &) = delete;
-	Block(Block &&) = delete;
-	Block &operator=(Block &&) = delete;
+	ఖండం(స్థిరరాశి ఖండం &) = తొలగించు;
+	ఖండం &క్రియాకారకం=(స్థిరరాశి ఖండం &) = తొలగించు;
+	ఖండం(ఖండం &&) = తొలగించు;
+	ఖండం &క్రియాకారకం=(ఖండం &&) = తొలగించు;
 
-	void getName(char *name, size_t n);
+	శూన్య getName(అక్షరం *name, size_t n);
 
-	virtual void updateParams();
+	మాయా శూన్య updateParams();
 
-	virtual void setDt(float dt) { _dt = dt; }
-	float getDt() { return _dt; }
+	మాయా శూన్య సమితి_Dt(దశాంశం dt) { _dt = dt; }
+	దశాంశం getDt() { తిరిగి _dt; }
 
-protected:
+రక్షిత:
 
-	virtual void updateParamsSubclass() {}
+	మాయా శూన్య updateParamsSubclass() {}
 
-	SuperBlock *getParent() { return _parent; }
-	List<BlockParamBase *> &getParams() { return _params; }
+	Super_ఖండం *get_మాతృ() { తిరిగి మాతృ_2; }
+	List<ఖండం_Param_పునాది *> &getParams() { తిరిగి _params; }
 
-	const char *_name;
-	SuperBlock *_parent;
-	float _dt{0.0f};
+	స్థిరరాశి అక్షరం *_name;
+	Super_ఖండం *మాతృ_2;
+	దశాంశం _dt{0.0f};
 
-	List<BlockParamBase *> _params;
+	List<ఖండం_Param_పునాది *> _params;
 };
 
-class __EXPORT SuperBlock :
-	public Block
+తరగతి __EXPORT Super_ఖండం :
+	బహిరంగ ఖండం
 {
-public:
-	friend class Block;
+బహిరంగ:
+	మిత్ర తరగతి ఖండం;
 
-	SuperBlock(SuperBlock *parent, const char *name) : Block(parent, name) {}
-	~SuperBlock() = default;
+	Super_ఖండం(Super_ఖండం *మాతృ, స్థిరరాశి అక్షరం *name) : ఖండం(మాతృ, name) {}
+	~Super_ఖండం() = అప్రమేయ;
 
 	// no copy, assignment, move, move assignment
-	SuperBlock(const SuperBlock &) = delete;
-	SuperBlock &operator=(const SuperBlock &) = delete;
-	SuperBlock(SuperBlock &&) = delete;
-	SuperBlock &operator=(SuperBlock &&) = delete;
+	Super_ఖండం(స్థిరరాశి Super_ఖండం &) = తొలగించు;
+	Super_ఖండం &క్రియాకారకం=(స్థిరరాశి Super_ఖండం &) = తొలగించు;
+	Super_ఖండం(Super_ఖండం &&) = తొలగించు;
+	Super_ఖండం &క్రియాకారకం=(Super_ఖండం &&) = తొలగించు;
 
-	void setDt(float dt) override;
+	శూన్య సమితి_Dt(దశాంశం dt) override;
 
-	void updateParams() override
+	శూన్య updateParams() override
 	{
-		Block::updateParams();
+		ఖండం::updateParams();
 
-		if (getChildren().getHead() != nullptr) { updateChildParams(); }
+		ఒకవేళ (getChildren().get_తల() != శూన్యసూచిక) { update_బిడ్డ_Params(); }
 	}
 
-protected:
-	List<Block *> &getChildren() { return _children; }
-	void updateChildParams();
+రక్షిత:
+	List<ఖండం *> &getChildren() { తిరిగి _children; }
+	శూన్య update_బిడ్డ_Params();
 
-	List<Block *> _children;
+	List<ఖండం *> _children;
 };
 
 

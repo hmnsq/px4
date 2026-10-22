@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ <matrix/math.hpp>
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-TEST(MatrixScalarMultiplicationTest, ScalarMultiplication)
+TEST(మాతృక_Scalar_Multiplication_Test, ScalarMultiplication)
 {
-	float data[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-	Matrix3f A(data);
+	దశాంశం దత్తాంశం[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+	Matrix3f A(దత్తాంశం);
 	A = A * 2;
-	float data_check[9] = {2, 4, 6, 8, 10, 12, 14, 16, 18};
-	Matrix3f A_check(data_check);
+	దశాంశం దత్తాంశం_check[9] = {2, 4, 6, 8, 10, 12, 14, 16, 18};
+	Matrix3f A_check(దత్తాంశం_check);
 	EXPECT_EQ(A, A_check);
 }

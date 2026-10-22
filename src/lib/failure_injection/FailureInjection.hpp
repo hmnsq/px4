@@ -44,21 +44,21 @@
  * value-mutating and multi-instance cases are driver-specific.
  */
 
-#pragma once
+#సూచన once
 
-#include <cstdint>
+#అన్తర్భావ <cstdint>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/esc_status.h>
-#include <uORB/topics/failure_injection.h>
+#అన్తర్భావ <uORB/Subscription.hpp>
+#అన్తర్భావ <uORB/topics/esc_status.h>
+#అన్తర్భావ <uORB/topics/failure_injection.h>
 
-struct battery_status_s;
-struct sensor_gnss_s;
+నిర్మాణం battery_స్థితి_s;
+నిర్మాణం sensor_gnss_s;
 
-namespace failure_injection
+నామాకాశ failure_injection
 {
 
-enum class Mode : uint8_t {
+గణన తరగతి బహుళకం_2 : uint8_t {
 	Ok           = failure_injection_s::FAILURE_TYPE_OK,
 	Off          = failure_injection_s::FAILURE_TYPE_OFF,
 	Stuck        = failure_injection_s::FAILURE_TYPE_STUCK,
@@ -70,66 +70,66 @@ enum class Mode : uint8_t {
 };
 
 /** Masks of motors failed by injection, bit i = motor instance i+1. */
-struct MotorFailureMasks {
-	uint16_t stop_mask{0};    ///< motor wrong: outputs stopped without informing the allocator
-	uint16_t failure_mask{0}; ///< motor off: reported as failed motors, removed from the allocation
+నిర్మాణం MotorFailureMasks {
+	uint16_t stop_ముసుగు{0};    ///< motor wrong: outputs stopped without informing the allocator
+	uint16_t failure_ముసుగు{0}; ///< motor off: reported as failed motors, removed from the allocation
 };
 
-#if defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
+#ఒకవేళ defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
 
-class Config
+తరగతి Config
 {
-public:
+బహిరంగ:
 	/**
 	 * Poll the failure_injection subscription and, when a new failure_injection
 	 * message arrives, refresh the cached failure config that mode() / any_active()
 	 * read. Call once per loop iteration.
 	 * @return true if an updated failure config was applied, false if unchanged.
 	 */
-	bool update();
+	తార్కిక update();
 
 	/** Cache a failure_injection message directly (used by tests). */
-	void set(const failure_injection_s &cfg);
+	శూన్య సమితి(స్థిరరాశి failure_injection_s &cfg);
 
 	/**
 	 * Active failure mode for a (unit, instance), or Mode::Ok if none.
 	 * @param unit     one of failure_injection_s::FAILURE_UNIT_*
 	 * @param instance 1-based instance, or 0 to match any instance of the unit
 	 */
-	Mode mode(uint8_t unit, uint8_t instance) const;
+	బహుళకం_2 బహుళకం(uint8_t unit, uint8_t instance) స్థిరరాశి;
 
 	/** True if any failure is currently active (free no-failure early-out). */
-	bool any_active() const { return _count > 0; }
+	తార్కిక any_చురుకైన() స్థిరరాశి { తిరిగి లెక్క_3 > 0; }
 
-private:
+అంతరంగ:
 	uORB::Subscription _sub{ORB_ID(failure_injection)};
 
-	uint8_t  _count{0};
+	uint8_t  లెక్క_3{0};
 	uint8_t  _unit[failure_injection_s::MAX_FAILURES] {};
-	uint16_t _instance_mask[failure_injection_s::MAX_FAILURES] {};
-	Mode     _failure_type[failure_injection_s::MAX_FAILURES] {};
+	uint16_t instance_ముసుగు[failure_injection_s::MAX_FAILURES] {};
+	బహుళకం_2     _failure_type[failure_injection_s::MAX_FAILURES] {};
 };
 
 /**
  * Per-(consumer, instance) state for stateful failures. Holds the last good
  * sample so Stuck can replay it.
  */
-template<typename MsgT>
-struct Stuck {
-	bool valid{false};
-	MsgT value{};
+మూస<రకం_పేరు సందేశం_T>
+నిర్మాణం Stuck {
+	తార్కిక valid{అబద్ధం};
+	సందేశం_T value{};
 };
 
-template<typename...>
-using void_t = void;
+మూస<రకం_పేరు...>
+ఉపయోగించి void_t = శూన్య;
 
-template<typename T, typename = void>
-struct has_timestamp_sample {
-	static constexpr bool value = false;
+మూస<రకం_పేరు T, రకం_పేరు = శూన్య>
+నిర్మాణం has_timestamp_sample {
+	స్థిర constexpr తార్కిక value = అబద్ధం;
 };
-template<typename T>
-struct has_timestamp_sample<T, void_t<decltype(T::timestamp_sample)>> {
-	static constexpr bool value = true;
+మూస<రకం_పేరు T>
+నిర్మాణం has_timestamp_sample<T, void_t<decltype(T::timestamp_sample)>> {
+	స్థిర constexpr తార్కిక value = నిజం;
 };
 
 /**
@@ -139,45 +139,45 @@ struct has_timestamp_sample<T, void_t<decltype(T::timestamp_sample)>> {
  * @return false if the message must be suppressed (Off); true otherwise. For
  *         Stuck the message is overwritten with the last good sample.
  */
-template<typename MsgT>
-bool process(Mode mode, MsgT &msg, Stuck<MsgT> &stuck)
+మూస<రకం_పేరు సందేశం_T>
+తార్కిక process(బహుళకం_2 బహుళకం, సందేశం_T &సందేశం_2, Stuck<సందేశం_T> &stuck)
 {
-	switch (mode) {
-	case Mode::Off:
-		return false;
+	ఎంపిక (బహుళకం) {
+	స్థితి బహుళకం_2::Off:
+		తిరిగి అబద్ధం;
 
-	case Mode::Stuck:
-		if (stuck.valid) {
-			const uint64_t timestamp = msg.timestamp;
+	స్థితి బహుళకం_2::Stuck:
+		ఒకవేళ (stuck.valid) {
+			స్థిరరాశి uint64_t timestamp = సందేశం_2.timestamp;
 
-			if constexpr(has_timestamp_sample<MsgT>::value) {
-				const uint64_t timestamp_sample = msg.timestamp_sample;
-				msg = stuck.value;
-				msg.timestamp_sample = timestamp_sample;
+			ఒకవేళ constexpr(has_timestamp_sample<సందేశం_T>::value) {
+				స్థిరరాశి uint64_t timestamp_sample = సందేశం_2.timestamp_sample;
+				సందేశం_2 = stuck.value;
+				సందేశం_2.timestamp_sample = timestamp_sample;
 
-			} else {
-				msg = stuck.value;
+			} లేకపోతే {
+				సందేశం_2 = stuck.value;
 			}
 
-			msg.timestamp = timestamp;
+			సందేశం_2.timestamp = timestamp;
 		}
 
-		return true;
+		తిరిగి నిజం;
 
-	default:
-		stuck.value = msg;
-		stuck.valid = true;
-		return true;
+	అప్రమేయ:
+		stuck.value = సందేశం_2;
+		stuck.valid = నిజం;
+		తిరిగి నిజం;
 	}
 }
 
 /**
  * Convenience overload to fix the fact that the uORB instance is 0-based but the failure_injection instance is 1-based.
  */
-template<typename MsgT>
-bool process(const Config &config, uint8_t unit, uint8_t uorb_instance, MsgT &msg, Stuck<MsgT> &stuck)
+మూస<రకం_పేరు సందేశం_T>
+తార్కిక process(స్థిరరాశి Config &config, uint8_t unit, uint8_t uorb_instance, సందేశం_T &సందేశం_2, Stuck<సందేశం_T> &stuck)
 {
-	return process(config.mode(unit, uorb_instance + 1), msg, stuck);
+	తిరిగి process(config.బహుళకం(unit, uorb_instance + 1), సందేశం_2, stuck);
 }
 
 /**
@@ -185,15 +185,15 @@ bool process(const Config &config, uint8_t unit, uint8_t uorb_instance, MsgT &ms
  *
  * @return false if the signal must be treated as failed/suppressed (Off), true otherwise.
  */
-inline bool process(Mode mode)
+అంతఃవరుస తార్కిక process(బహుళకం_2 బహుళకం)
 {
-	return mode != Mode::Off;
+	తిరిగి బహుళకం != బహుళకం_2::Off;
 }
 
 /** Convenience overload, same 0-based to 1-based instance mapping as the generic process(). */
-inline bool process(const Config &config, uint8_t unit, uint8_t uorb_instance)
+అంతఃవరుస తార్కిక process(స్థిరరాశి Config &config, uint8_t unit, uint8_t uorb_instance)
 {
-	return process(config.mode(unit, uorb_instance + 1));
+	తిరిగి process(config.బహుళకం(unit, uorb_instance + 1));
 }
 
 /**
@@ -204,7 +204,7 @@ inline bool process(const Config &config, uint8_t unit, uint8_t uorb_instance)
  *
  * @return false if the battery_status publication must be suppressed (Off), true otherwise.
  */
-bool process_battery(const Config &config, uint8_t instance, battery_status_s &battery_status);
+తార్కిక process_battery(స్థిరరాశి Config &config, uint8_t instance, battery_స్థితి_s &battery_స్థితి);
 
 /**
  * GNSS counterpart to process(): on FAILURE_UNIT_SENSOR_GPS for the receiver publishing on the
@@ -215,7 +215,7 @@ bool process_battery(const Config &config, uint8_t instance, battery_status_s &b
  * @param uorb_instance 0-based uORB instance of the publisher (not the 1-based failure instance).
  * @return false if the sensor_gnss publication must be suppressed (Off), true otherwise.
  */
-bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
+తార్కిక process_gnss(స్థిరరాశి Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
 		  Stuck<sensor_gnss_s> &stuck);
 
 /**
@@ -226,7 +226,7 @@ bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &se
  * can't accidentally apply it in place to a persistent status, which would compound Wrong across
  * calls. Call after Config::update().
  */
-esc_status_s process_esc(const Config &config, const esc_status_s &status);
+esc_స్థితి_s process_esc(స్థిరరాశి Config &config, స్థిరరాశి esc_స్థితి_s &స్థితి_2);
 
 /**
  * Motor counterpart to process(): derive the masks of motors failed by
@@ -235,41 +235,41 @@ esc_status_s process_esc(const Config &config, const esc_status_s &status);
  * undetected one (stop_mask: outputs stopped without informing the allocator).
  * Call after Config::update().
  */
-MotorFailureMasks process_motor(const Config &config);
+MotorFailureMasks process_motor(స్థిరరాశి Config &config);
 
-#else // !CONFIG_MODULES_FAILURE_INJECTION_MANAGER
+#లేకపోతే // !CONFIG_MODULES_FAILURE_INJECTION_MANAGER
 
-class Config
+తరగతి Config
 {
-public:
-	bool update() { return false; }
-	void set(const failure_injection_s &) {}
-	Mode mode(uint8_t, uint8_t) const { return Mode::Ok; }
-	bool any_active() const { return false; }
+బహిరంగ:
+	తార్కిక update() { తిరిగి అబద్ధం; }
+	శూన్య సమితి(స్థిరరాశి failure_injection_s &) {}
+	బహుళకం_2 బహుళకం(uint8_t, uint8_t) స్థిరరాశి { తిరిగి బహుళకం_2::Ok; }
+	తార్కిక any_చురుకైన() స్థిరరాశి { తిరిగి అబద్ధం; }
 };
 
-template<typename MsgT>
-struct Stuck {
+మూస<రకం_పేరు సందేశం_T>
+నిర్మాణం Stuck {
 };
 
-template<typename MsgT>
-bool process(Mode, MsgT &, Stuck<MsgT> &) { return true; }
+మూస<రకం_పేరు సందేశం_T>
+తార్కిక process(బహుళకం_2, సందేశం_T &, Stuck<సందేశం_T> &) { తిరిగి నిజం; }
 
-template<typename MsgT>
-bool process(const Config &, uint8_t, uint8_t, MsgT &, Stuck<MsgT> &) { return true; }
+మూస<రకం_పేరు సందేశం_T>
+తార్కిక process(స్థిరరాశి Config &, uint8_t, uint8_t, సందేశం_T &, Stuck<సందేశం_T> &) { తిరిగి నిజం; }
 
-inline bool process(Mode) { return true; }
+అంతఃవరుస తార్కిక process(బహుళకం_2) { తిరిగి నిజం; }
 
-inline bool process(const Config &, uint8_t, uint8_t) { return true; }
+అంతఃవరుస తార్కిక process(స్థిరరాశి Config &, uint8_t, uint8_t) { తిరిగి నిజం; }
 
-inline bool process_battery(const Config &, uint8_t, battery_status_s &) { return true; }
+అంతఃవరుస తార్కిక process_battery(స్థిరరాశి Config &, uint8_t, battery_స్థితి_s &) { తిరిగి నిజం; }
 
-inline bool process_gnss(const Config &, uint8_t, sensor_gnss_s &, Stuck<sensor_gnss_s> &) { return true; }
+అంతఃవరుస తార్కిక process_gnss(స్థిరరాశి Config &, uint8_t, sensor_gnss_s &, Stuck<sensor_gnss_s> &) { తిరిగి నిజం; }
 
-inline esc_status_s process_esc(const Config &, const esc_status_s &status) { return status; }
+అంతఃవరుస esc_స్థితి_s process_esc(స్థిరరాశి Config &, స్థిరరాశి esc_స్థితి_s &స్థితి_2) { తిరిగి స్థితి_2; }
 
-inline MotorFailureMasks process_motor(const Config &) { return {}; }
+అంతఃవరుస MotorFailureMasks process_motor(స్థిరరాశి Config &) { తిరిగి {}; }
 
-#endif // CONFIG_MODULES_FAILURE_INJECTION_MANAGER
+#అయితే_ముగింపు // CONFIG_MODULES_FAILURE_INJECTION_MANAGER
 
 } // namespace failure_injection

@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "Device.hpp"
-#include "CDev.hpp"
+#అన్తర్భావ "Device.hpp"
+#అన్తర్భావ "CDev.hpp"

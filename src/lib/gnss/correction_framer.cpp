@@ -37,286 +37,286 @@
  * GNSS correction stream framing implementation.
  */
 
-#include "correction_framer.h"
+#అన్తర్భావ "correction_framer.h"
 
-#include <cstring>
+#అన్తర్భావ <cstring>
 
-namespace gnss
+నామాకాశ gnss
 {
 
-bool CorrectionFramer::isPreamble(uint8_t byte)
+తార్కిక CorrectionFramer::isPreamble(uint8_t byte)
 {
-	if (byte == RTCM3_PREAMBLE) {
-		return true;
+	ఒకవేళ (byte == RTCM3_PREAMBLE) {
+		తిరిగి నిజం;
 	}
 
-	if (byte == UBX_SYNC1) {
-		return true;
+	ఒకవేళ (byte == UBX_SYNC1) {
+		తిరిగి నిజం;
 	}
 
-#if defined(CONFIG_GPS_SPARTN)
+#ఒకవేళ defined(CONFIG_GPS_SPARTN)
 
-	if (byte == SPARTN_PREAMBLE) {
-		return true;
+	ఒకవేళ (byte == SPARTN_PREAMBLE) {
+		తిరిగి నిజం;
 	}
 
-#endif
+#అయితే_ముగింపు
 
-	return false;
+	తిరిగి అబద్ధం;
 }
 
-size_t CorrectionFramer::addData(const uint8_t *data, size_t len)
+size_t CorrectionFramer::కూడు_దత్తాంశం(స్థిరరాశి uint8_t *దత్తాంశం, size_t len)
 {
-	const size_t space_available = BUFFER_SIZE - _buffer_len;
-	const size_t to_copy = (len < space_available) ? len : space_available;
+	స్థిరరాశి size_t space_అందుబాటు = బఫరు_కొలత_2 - బఫరు_len;
+	స్థిరరాశి size_t గమ్యం_copy = (len < space_అందుబాటు) ? len : space_అందుబాటు;
 
-	if (to_copy > 0) {
-		memcpy(&_buffer[_buffer_len], data, to_copy);
-		_buffer_len += to_copy;
+	ఒకవేళ (గమ్యం_copy > 0) {
+		జ్ఞాపకం_నకలు(&బఫరు[బఫరు_len], దత్తాంశం, గమ్యం_copy);
+		బఫరు_len += గమ్యం_copy;
 	}
 
-	return to_copy;
+	తిరిగి గమ్యం_copy;
 }
 
-CorrectionFramer::Probe CorrectionFramer::probeRtcm3(size_t *frame_len) const
+CorrectionFramer::Probe CorrectionFramer::probeRtcm3(size_t *చట్రం_len) స్థిరరాశి
 {
 	// Need at least the header to read the length
-	if (_buffer_len < RTCM3_HEADER_LEN) {
-		return Probe::NeedMoreData;
+	ఒకవేళ (బఫరు_len < RTCM3_శీర్షిక_LEN) {
+		తిరిగి Probe::Need_మరిన్ని_దత్తాంశం;
 	}
 
 	// The 10-bit field cannot exceed RTCM3_MAX_PAYLOAD_LEN, so the length alone
 	// never rejects a candidate: CRC-24Q is what validates the frame.
-	const size_t payload_len = rtcm3_payload_length(_buffer);
-	const size_t len = RTCM3_HEADER_LEN + payload_len + RTCM3_CRC_LEN;
+	స్థిరరాశి size_t payload_len = rtcm3_payload_నిడివి(బఫరు);
+	స్థిరరాశి size_t len = RTCM3_శీర్షిక_LEN + payload_len + RTCM3_చక్రీయ_తనిఖీ_LEN;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	ఒకవేళ (బఫరు_len < len) {
+		తిరిగి Probe::Need_మరిన్ని_దత్తాంశం;
 	}
 
-	const uint32_t calculated_crc = rtcm3_crc24q(_buffer, RTCM3_HEADER_LEN + payload_len);
-	const uint32_t received_crc = (static_cast<uint32_t>(_buffer[len - 3]) << 16) |
-				      (static_cast<uint32_t>(_buffer[len - 2]) << 8) |
-				      _buffer[len - 1];
+	స్థిరరాశి uint32_t calculated_చక్రీయ_తనిఖీ = rtcm3_crc24q(బఫరు, RTCM3_శీర్షిక_LEN + payload_len);
+	స్థిరరాశి uint32_t received_చక్రీయ_తనిఖీ = (static_cast<uint32_t>(బఫరు[len - 3]) << 16) |
+				      (static_cast<uint32_t>(బఫరు[len - 2]) << 8) |
+				      బఫరు[len - 1];
 
-	if (calculated_crc != received_crc) {
-		return Probe::CrcError;
+	ఒకవేళ (calculated_చక్రీయ_తనిఖీ != received_చక్రీయ_తనిఖీ) {
+		తిరిగి Probe::చక్రీయ_తనిఖీ_Error;
 	}
 
-	*frame_len = len;
-	return Probe::Complete;
+	*చట్రం_len = len;
+	తిరిగి Probe::Complete;
 }
 
-CorrectionFramer::Probe CorrectionFramer::probeUbx(size_t *frame_len) const
+CorrectionFramer::Probe CorrectionFramer::probeUbx(size_t *చట్రం_len) స్థిరరాశి
 {
 	// Need sync1 + sync2 at minimum to reject a false preamble quickly
-	if (_buffer_len < 2) {
-		return Probe::NeedMoreData;
+	ఒకవేళ (బఫరు_len < 2) {
+		తిరిగి Probe::Need_మరిన్ని_దత్తాంశం;
 	}
 
-	if (_buffer[1] != UBX_SYNC2) {
-		return Probe::InvalidHeader;
+	ఒకవేళ (బఫరు[1] != UBX_SYNC2) {
+		తిరిగి Probe::Invalid_శీర్షిక;
 	}
 
-	if (_buffer_len < UBX_HEADER_LEN) {
-		return Probe::NeedMoreData;
+	ఒకవేళ (బఫరు_len < UBX_శీర్షిక_LEN) {
+		తిరిగి Probe::Need_మరిన్ని_దత్తాంశం;
 	}
 
-	const size_t payload_len = static_cast<size_t>(_buffer[4]) |
-				   (static_cast<size_t>(_buffer[5]) << 8);
+	స్థిరరాశి size_t payload_len = static_cast<size_t>(బఫరు[4]) |
+				   (static_cast<size_t>(బఫరు[5]) << 8);
 
 	// Protocol allows larger payloads; reject beyond the injection cap so a
 	// garbage length cannot pin the buffer waiting for thousands of bytes.
-	if (payload_len > UBX_MAX_PAYLOAD_LEN) {
-		return Probe::InvalidHeader;
+	ఒకవేళ (payload_len > UBX_MAX_PAYLOAD_LEN) {
+		తిరిగి Probe::Invalid_శీర్షిక;
 	}
 
-	const size_t len = UBX_HEADER_LEN + payload_len + UBX_CK_LEN;
+	స్థిరరాశి size_t len = UBX_శీర్షిక_LEN + payload_len + UBX_CK_LEN;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	ఒకవేళ (బఫరు_len < len) {
+		తిరిగి Probe::Need_మరిన్ని_దత్తాంశం;
 	}
 
 	// CK_A/CK_B cover Class..end of payload (not the sync bytes)
 	uint8_t ck_a = 0;
 	uint8_t ck_b = 0;
-	ubx_checksum(&_buffer[2], UBX_HEADER_LEN - 2 + payload_len, &ck_a, &ck_b);
+	ubx_checksum(&బఫరు[2], UBX_శీర్షిక_LEN - 2 + payload_len, &ck_a, &ck_b);
 
-	if ((ck_a != _buffer[len - 2]) || (ck_b != _buffer[len - 1])) {
-		return Probe::CrcError;
+	ఒకవేళ ((ck_a != బఫరు[len - 2]) || (ck_b != బఫరు[len - 1])) {
+		తిరిగి Probe::చక్రీయ_తనిఖీ_Error;
 	}
 
-	*frame_len = len;
-	return Probe::Complete;
+	*చట్రం_len = len;
+	తిరిగి Probe::Complete;
 }
 
-#if defined(CONFIG_GPS_SPARTN)
-CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *frame_len) const
+#ఒకవేళ defined(CONFIG_GPS_SPARTN)
+CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *చట్రం_len) స్థిరరాశి
 {
 	// Need TF002..TF006 to read the length and CRC type
-	if (_buffer_len < SPARTN_FRAME_START_LEN) {
-		return Probe::NeedMoreData;
+	ఒకవేళ (బఫరు_len < SPARTN_చట్రం_ప్రారంభం_LEN) {
+		తిరిగి Probe::Need_మరిన్ని_దత్తాంశం;
 	}
 
-	const uint8_t b1 = _buffer[1];
-	const uint8_t b2 = _buffer[2];
-	const uint8_t b3 = _buffer[3];
+	స్థిరరాశి uint8_t b1 = బఫరు[1];
+	స్థిరరాశి uint8_t b2 = బఫరు[2];
+	స్థిరరాశి uint8_t b3 = బఫరు[3];
 
 	// TF002 is the only header field with a checkable range. The 10-bit length
 	// spans its full range and TF006 is a 4-bit CRC over a non-byte-aligned
 	// field, so this is the only cheap guard before the message CRC.
-	if (!spartn_message_type_defined(b1 >> 1)) {
-		return Probe::InvalidHeader;
+	ఒకవేళ (!spartn_సందేశం_type_defined(b1 >> 1)) {
+		తిరిగి Probe::Invalid_శీర్షిక;
 	}
 
-	const uint16_t payload_len = static_cast<uint16_t>(((b1 & 0x01) << 9) | (b2 << 1) | (b3 >> 7));
-	const bool eaf = ((b3 >> 6) & 0x01) != 0;
-	const uint8_t crc_type = (b3 >> 4) & 0x03;
-	const size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
+	స్థిరరాశి uint16_t payload_len = static_cast<uint16_t>(((b1 & 0x01) << 9) | (b2 << 1) | (b3 >> 7));
+	స్థిరరాశి తార్కిక eaf = ((b3 >> 6) & 0x01) != 0;
+	స్థిరరాశి uint8_t చక్రీయ_తనిఖీ_type = (b3 >> 4) & 0x03;
+	స్థిరరాశి size_t చక్రీయ_తనిఖీ_బైట్లు = static_cast<size_t>(చక్రీయ_తనిఖీ_type) + 1;
 
 	// TF008 (time tag type) sets the description block length
-	if (_buffer_len < SPARTN_FRAME_START_LEN + 1) {
-		return Probe::NeedMoreData;
+	ఒకవేళ (బఫరు_len < SPARTN_చట్రం_ప్రారంభం_LEN + 1) {
+		తిరిగి Probe::Need_మరిన్ని_దత్తాంశం;
 	}
 
-	const bool time_tag_32bit = ((_buffer[4] >> 3) & 0x01) != 0;
-	const size_t desc_len = spartn_desc_length_bytes(eaf, time_tag_32bit);
+	స్థిరరాశి తార్కిక సమయం_ట్యాగ్_32bit = ((బఫరు[4] >> 3) & 0x01) != 0;
+	స్థిరరాశి size_t desc_len = spartn_desc_నిడివి_బైట్లు(eaf, సమయం_ట్యాగ్_32bit);
 
-	if (_buffer_len < SPARTN_FRAME_START_LEN + desc_len) {
-		return Probe::NeedMoreData;
+	ఒకవేళ (బఫరు_len < SPARTN_చట్రం_ప్రారంభం_LEN + desc_len) {
+		తిరిగి Probe::Need_మరిన్ని_దత్తాంశం;
 	}
 
-	size_t auth_bytes = 0;
+	size_t auth_బైట్లు = 0;
 
-	if (eaf) {
+	ఒకవేళ (eaf) {
 		// TF014/TF015 occupy the low 6 bits of the last description byte
-		const uint8_t last = _buffer[SPARTN_FRAME_START_LEN + desc_len - 1];
-		auth_bytes = spartn_auth_length_bytes(true, (last >> 3) & 0x07, last & 0x07);
+		స్థిరరాశి uint8_t చివరి = బఫరు[SPARTN_చట్రం_ప్రారంభం_LEN + desc_len - 1];
+		auth_బైట్లు = spartn_auth_నిడివి_బైట్లు(నిజం, (చివరి >> 3) & 0x07, చివరి & 0x07);
 	}
 
-	const size_t len = SPARTN_FRAME_START_LEN + desc_len + payload_len + auth_bytes + crc_bytes;
+	స్థిరరాశి size_t len = SPARTN_చట్రం_ప్రారంభం_LEN + desc_len + payload_len + auth_బైట్లు + చక్రీయ_తనిఖీ_బైట్లు;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	ఒకవేళ (బఫరు_len < len) {
+		తిరిగి Probe::Need_మరిన్ని_దత్తాంశం;
 	}
 
 	// Message CRC (TF018) covers TF002..TF017
-	const size_t core_len = len - 1 - crc_bytes;
-	const uint32_t calculated_crc = spartn_message_crc(&_buffer[1], core_len, crc_type);
-	uint32_t received_crc = 0;
+	స్థిరరాశి size_t core_len = len - 1 - చక్రీయ_తనిఖీ_బైట్లు;
+	స్థిరరాశి uint32_t calculated_చక్రీయ_తనిఖీ = spartn_సందేశం_చక్రీయ_తనిఖీ(&బఫరు[1], core_len, చక్రీయ_తనిఖీ_type);
+	uint32_t received_చక్రీయ_తనిఖీ = 0;
 
-	for (size_t i = 0; i < crc_bytes; i++) {
-		received_crc = (received_crc << 8) | _buffer[len - crc_bytes + i];
+	కొరకు (size_t i = 0; i < చక్రీయ_తనిఖీ_బైట్లు; i++) {
+		received_చక్రీయ_తనిఖీ = (received_చక్రీయ_తనిఖీ << 8) | బఫరు[len - చక్రీయ_తనిఖీ_బైట్లు + i];
 	}
 
-	if (calculated_crc != received_crc) {
-		return Probe::CrcError;
+	ఒకవేళ (calculated_చక్రీయ_తనిఖీ != received_చక్రీయ_తనిఖీ) {
+		తిరిగి Probe::చక్రీయ_తనిఖీ_Error;
 	}
 
-	*frame_len = len;
-	return Probe::Complete;
+	*చట్రం_len = len;
+	తిరిగి Probe::Complete;
 }
-#endif // CONFIG_GPS_SPARTN
+#అయితే_ముగింపు // CONFIG_GPS_SPARTN
 
-const uint8_t *CorrectionFramer::getNextMessage(size_t *out_len, CorrectionProtocol *out_protocol)
+స్థిరరాశి uint8_t *CorrectionFramer::get_తదుపరి_సందేశం(size_t *బహిర్గతం_len, CorrectionProtocol *బహిర్గతం_protocol)
 {
-	while (_buffer_len > 0) {
+	అయితే (బఫరు_len > 0) {
 		// Drop everything that cannot start a frame of any supported protocol
-		size_t to_drop = 0;
+		size_t గమ్యం_drop = 0;
 
-		while ((to_drop < _buffer_len) && !isPreamble(_buffer[to_drop])) {
-			to_drop++;
+		అయితే ((గమ్యం_drop < బఫరు_len) && !isPreamble(బఫరు[గమ్యం_drop])) {
+			గమ్యం_drop++;
 		}
 
-		if (to_drop > 0) {
-			_bytes_discarded += to_drop;
-			discardBytes(to_drop);
+		ఒకవేళ (గమ్యం_drop > 0) {
+			బైట్లు_discarded += గమ్యం_drop;
+			discard_బైట్లు(గమ్యం_drop);
 		}
 
-		if (_buffer_len == 0) {
-			return nullptr;
+		ఒకవేళ (బఫరు_len == 0) {
+			తిరిగి శూన్యసూచిక;
 		}
 
-		size_t frame_len = 0;
+		size_t చట్రం_len = 0;
 		CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-		Probe result;
+		Probe ఫలితం;
 
-		if (_buffer[0] == UBX_SYNC1) {
+		ఒకవేళ (బఫరు[0] == UBX_SYNC1) {
 			protocol = CorrectionProtocol::Ubx;
-			result = probeUbx(&frame_len);
+			ఫలితం = probeUbx(&చట్రం_len);
 
-#if defined(CONFIG_GPS_SPARTN)
+#ఒకవేళ defined(CONFIG_GPS_SPARTN)
 
-		} else if (_buffer[0] == SPARTN_PREAMBLE) {
+		} లేకపోతే ఒకవేళ (బఫరు[0] == SPARTN_PREAMBLE) {
 			protocol = CorrectionProtocol::Spartn;
-			result = probeSpartn(&frame_len);
+			ఫలితం = probeSpartn(&చట్రం_len);
 
-#endif
+#అయితే_ముగింపు
 
-		} else {
+		} లేకపోతే {
 			// RTCM3 preamble (isPreamble already filtered other bytes)
 			protocol = CorrectionProtocol::Rtcm3;
-			result = probeRtcm3(&frame_len);
+			ఫలితం = probeRtcm3(&చట్రం_len);
 		}
 
-		switch (result) {
-		case Probe::NeedMoreData:
-			return nullptr;
+		ఎంపిక (ఫలితం) {
+		స్థితి Probe::Need_మరిన్ని_దత్తాంశం:
+			తిరిగి శూన్యసూచిక;
 
-		case Probe::InvalidHeader:
-			_bytes_discarded++;
-			discardBytes(1);
-			continue;
+		స్థితి Probe::Invalid_శీర్షిక:
+			బైట్లు_discarded++;
+			discard_బైట్లు(1);
+			కొనసాగు;
 
-		case Probe::CrcError:
-			_crc_errors++;
-			discardBytes(1);
-			continue;
+		స్థితి Probe::చక్రీయ_తనిఖీ_Error:
+			చక్రీయ_తనిఖీ_errors++;
+			discard_బైట్లు(1);
+			కొనసాగు;
 
-		case Probe::Complete:
+		స్థితి Probe::Complete:
 			_pending_protocol = protocol;
-			*out_len = frame_len;
+			*బహిర్గతం_len = చట్రం_len;
 
-			if (out_protocol != nullptr) {
-				*out_protocol = protocol;
+			ఒకవేళ (బహిర్గతం_protocol != శూన్యసూచిక) {
+				*బహిర్గతం_protocol = protocol;
 			}
 
-			return _buffer;
+			తిరిగి బఫరు;
 		}
 	}
 
-	return nullptr;
+	తిరిగి శూన్యసూచిక;
 }
 
-void CorrectionFramer::consumeMessage(size_t len)
+శూన్య CorrectionFramer::consume_సందేశం(size_t len)
 {
-	discardBytes(len);
+	discard_బైట్లు(len);
 	_messages_parsed++;
-	_total_frame_bytes += len;
+	మొత్తం_చట్రం_బైట్లు += len;
 
-	switch (_pending_protocol) {
-	case CorrectionProtocol::Rtcm3:
+	ఎంపిక (_pending_protocol) {
+	స్థితి CorrectionProtocol::Rtcm3:
 		_rtcm3_messages++;
-		break;
+		ఆపు;
 
-	case CorrectionProtocol::Spartn:
+	స్థితి CorrectionProtocol::Spartn:
 		_spartn_messages++;
-		break;
+		ఆపు;
 
-	case CorrectionProtocol::Ubx:
+	స్థితి CorrectionProtocol::Ubx:
 		_ubx_messages++;
-		break;
+		ఆపు;
 	}
 }
 
-void CorrectionFramer::discardBytes(size_t count)
+శూన్య CorrectionFramer::discard_బైట్లు(size_t లెక్క)
 {
-	if (count >= _buffer_len) {
-		_buffer_len = 0;
+	ఒకవేళ (లెక్క >= బఫరు_len) {
+		బఫరు_len = 0;
 
-	} else {
-		memmove(_buffer, &_buffer[count], _buffer_len - count);
-		_buffer_len -= count;
+	} లేకపోతే {
+		memmove(బఫరు, &బఫరు[లెక్క], బఫరు_len - లెక్క);
+		బఫరు_len -= లెక్క;
 	}
 }
 

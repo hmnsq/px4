@@ -31,126 +31,126 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
-#include "ObstacleMath.hpp"
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ <matrix/math.hpp>
+#అన్తర్భావ <lib/mathlib/mathlib.h>
+#అన్తర్భావ "ObstacleMath.hpp"
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-TEST(ObstacleMathTest, ProjectDistanceOnHorizontalPlane)
+TEST(ObstacleMathTest, Project_దూరం_On_Horizontal_Plane)
 {
 	// standard vehicle orientation inputs
-	Quatf vehicle_pitch_up_45(Eulerf(0.0f, M_PI_4_F, 0.0f));
-	Quatf vehicle_roll_right_45(Eulerf(M_PI_4_F, 0.0f, 0.0f));
+	Quatf vehicle_pitch_పైకి_45(Eulerf(0.0f, M_PI_4_F, 0.0f));
+	Quatf vehicle_roll_కుడి_45(Eulerf(M_PI_4_F, 0.0f, 0.0f));
 
 	// GIVEN: a distance, sensor orientation, and quaternion representing the vehicle's orientation
-	float distance = 1.0f;
-	float sensor_orientation = 0; // radians (forward facing)
+	దశాంశం దూరం = 1.0f;
+	దశాంశం sensor_orientation = 0; // radians (forward facing)
 
 	// WHEN: we project the distance onto the horizontal plane
-	ObstacleMath::project_distance_on_horizontal_plane(distance, sensor_orientation, vehicle_pitch_up_45);
+	ObstacleMath::project_దూరం_on_horizontal_plane(దూరం, sensor_orientation, vehicle_pitch_పైకి_45);
 
 	// THEN: the distance should be scaled correctly
-	float expected_scale    = sqrtf(2) / 2;
-	float expected_distance = 1.0f * expected_scale;
+	దశాంశం expected_scale    = sqrtf(2) / 2;
+	దశాంశం expected_దూరం = 1.0f * expected_scale;
 
-	EXPECT_NEAR(distance, expected_distance, 1e-5);
+	EXPECT_NEAR(దూరం, expected_దూరం, 1e-5);
 
 	// GIVEN: a distance, sensor orientation, and quaternion representing the vehicle's orientation
-	distance = 1.0f;
+	దూరం = 1.0f;
 
-	ObstacleMath::project_distance_on_horizontal_plane(distance, sensor_orientation, vehicle_roll_right_45);
+	ObstacleMath::project_దూరం_on_horizontal_plane(దూరం, sensor_orientation, vehicle_roll_కుడి_45);
 
 	// THEN: the distance should be scaled correctly
 	expected_scale     = 1.f;
-	expected_distance  = 1.0f * expected_scale;
+	expected_దూరం  = 1.0f * expected_scale;
 
-	EXPECT_NEAR(distance, expected_distance, 1e-5);
+	EXPECT_NEAR(దూరం, expected_దూరం, 1e-5);
 
 	// GIVEN: a distance, sensor orientation, and quaternion representing the vehicle's orientation
-	distance = 1.0f;
+	దూరం = 1.0f;
 	sensor_orientation = M_PI_2_F; // radians (right facing)
 
-	ObstacleMath::project_distance_on_horizontal_plane(distance, sensor_orientation, vehicle_roll_right_45);
+	ObstacleMath::project_దూరం_on_horizontal_plane(దూరం, sensor_orientation, vehicle_roll_కుడి_45);
 
 	// THEN: the distance should be scaled correctly
 	expected_scale     = sqrtf(2) / 2;
-	expected_distance  = 1.0f * expected_scale;
+	expected_దూరం  = 1.0f * expected_scale;
 
-	EXPECT_NEAR(distance, expected_distance, 1e-5);
+	EXPECT_NEAR(దూరం, expected_దూరం, 1e-5);
 
 	// GIVEN: a distance, sensor orientation, and quaternion representing the vehicle's orientation
-	distance = 1.0f;
+	దూరం = 1.0f;
 
-	ObstacleMath::project_distance_on_horizontal_plane(distance, sensor_orientation, vehicle_pitch_up_45);
+	ObstacleMath::project_దూరం_on_horizontal_plane(దూరం, sensor_orientation, vehicle_pitch_పైకి_45);
 
 	// THEN: the distance should be scaled correctly
 	expected_scale     = 1.f;
-	expected_distance  = 1.0f * expected_scale;
+	expected_దూరం  = 1.0f * expected_scale;
 
-	EXPECT_NEAR(distance, expected_distance, 1e-5);
+	EXPECT_NEAR(దూరం, expected_దూరం, 1e-5);
 }
 
 TEST(ObstacleMathTest, GetBinAtAngle)
 {
-	float bin_width = 5.0f;
+	దశాంశం bin_వెడల్పు = 5.0f;
 
 	// GIVEN: a start bin, bin width, and angle
-	float angle = 0.0f;
+	దశాంశం angle = 0.0f;
 
 	// WHEN: we calculate the bin index at the angle
-	uint16_t bin_index = ObstacleMath::get_bin_at_angle(bin_width, angle);
+	uint16_t bin_సూచీ = ObstacleMath::get_bin_at_angle(bin_వెడల్పు, angle);
 
 	// THEN: the bin index should be correct
-	EXPECT_EQ(bin_index, 0);
+	EXPECT_EQ(bin_సూచీ, 0);
 
 	// GIVEN: a start bin, bin width, and angle
 	angle = 90.0f;
 
 	// WHEN: we calculate the bin index at the angle
-	bin_index = ObstacleMath::get_bin_at_angle(bin_width, angle);
+	bin_సూచీ = ObstacleMath::get_bin_at_angle(bin_వెడల్పు, angle);
 
 	// THEN: the bin index should be correct
-	EXPECT_EQ(bin_index, 18);
+	EXPECT_EQ(bin_సూచీ, 18);
 
 	// GIVEN: a start bin, bin width, and angle
 	angle = -90.0f;
 
 	// WHEN: we calculate the bin index at the angle
-	bin_index = ObstacleMath::get_bin_at_angle(bin_width, angle);
+	bin_సూచీ = ObstacleMath::get_bin_at_angle(bin_వెడల్పు, angle);
 
 	// THEN: the bin index should be correct
-	EXPECT_EQ(bin_index, 54);
+	EXPECT_EQ(bin_సూచీ, 54);
 
 	// GIVEN: a start bin, bin width, and angle
 	angle = 450.0f;
 
 	// WHEN: we calculate the bin index at the angle
-	bin_index = ObstacleMath::get_bin_at_angle(bin_width, angle);
+	bin_సూచీ = ObstacleMath::get_bin_at_angle(bin_వెడల్పు, angle);
 
 	// THEN: the bin index should be correct
-	EXPECT_EQ(bin_index, 18);
+	EXPECT_EQ(bin_సూచీ, 18);
 }
 
-TEST(ObstacleMathTest, GetLowerBound)
+TEST(ObstacleMathTest, Get_క్రింది_Bound)
 {
 	// GIVEN: an invalid bin index, non-integer bin width, and a negative non-integer angle offset
-	int      bin          = -1;
-	float    bin_width    =  7.5f;
-	float    angle_offset = -4.3f;
+	పూర్ణాంకం      bin          = -1;
+	దశాంశం    bin_వెడల్పు    =  7.5f;
+	దశాంశం    angle_స్థానభ్రంశం = -4.3f;
 
 	// WHEN: we calculate the lower bound angle of the bin
-	float lower_bound = ObstacleMath::get_lower_bound_angle(bin, bin_width, angle_offset);
+	దశాంశం క్రింది_bound = ObstacleMath::get_క్రింది_bound_angle(bin, bin_వెడల్పు, angle_స్థానభ్రంశం);
 
 	// THEN: the lower bound angle should be correct. The bin index is wrapped to the end and
 	// the angle offset is applied in the counter-clockwise direction.
-	EXPECT_FLOAT_EQ(lower_bound, 344.45);
+	EXPECT_FLOAT_EQ(క్రింది_bound, 344.45);
 
 }
 
 
-TEST(ObstacleMathTest, OffsetBinIndex)
+TEST(ObstacleMathTest, స్థానభ్రంశం_Bin_సూచీ)
 {
 	// In this test, we want to offset the bin index by a negative and positive angle.
 	// We take the output of the first offset and offset it by the same angle in the
@@ -158,57 +158,57 @@ TEST(ObstacleMathTest, OffsetBinIndex)
 
 	// GIVEN: a bin index, bin width, and a negative angle offset
 	uint16_t bin = 0;
-	float bin_width = 5.0f;
-	float angle_offset = -120.0f;
+	దశాంశం bin_వెడల్పు = 5.0f;
+	దశాంశం angle_స్థానభ్రంశం = -120.0f;
 
 	// WHEN: we offset the bin index by the negative angle
-	uint16_t new_bin_index = ObstacleMath::get_offset_bin_index(bin, bin_width, angle_offset);
+	uint16_t new_bin_సూచీ = ObstacleMath::get_స్థానభ్రంశం_bin_సూచీ(bin, bin_వెడల్పు, angle_స్థానభ్రంశం);
 
 	// THEN: the new bin index should be correctly offset by the wrapped angle
-	EXPECT_EQ(new_bin_index, 24);
+	EXPECT_EQ(new_bin_సూచీ, 24);
 
 	// GIVEN: the output bin index of the previous offset, bin width, and the same angle
 	// offset in positive direction
 	bin = 24;
-	bin_width = 5.0f;
-	angle_offset = 120.0f;
+	bin_వెడల్పు = 5.0f;
+	angle_స్థానభ్రంశం = 120.0f;
 
 	// WHEN: we offset the bin index by the positive angle
-	new_bin_index = ObstacleMath::get_offset_bin_index(bin, bin_width, angle_offset);
+	new_bin_సూచీ = ObstacleMath::get_స్థానభ్రంశం_bin_సూచీ(bin, bin_వెడల్పు, angle_స్థానభ్రంశం);
 
 	// THEN: the new bin index should return back to the original bin index
-	EXPECT_EQ(new_bin_index, 0);
+	EXPECT_EQ(new_bin_సూచీ, 0);
 }
 
 
 TEST(ObstacleMathTest, WrapBin)
 {
 	// GIVEN: a bin index within bounds and the number of bins
-	int bin = 0;
-	int bin_count = 72;
+	పూర్ణాంకం bin = 0;
+	పూర్ణాంకం bin_లెక్క = 72;
 
 	// WHEN: we wrap a bin index within the bounds
-	int wrapped_bin = ObstacleMath::wrap_bin(bin, bin_count);
+	పూర్ణాంకం wrapped_bin = ObstacleMath::wrap_bin(bin, bin_లెక్క);
 
 	// THEN: the wrapped bin index should stay 0
 	EXPECT_EQ(wrapped_bin, 0);
 
 	// GIVEN: a bin index that is out of bounds, and the number of bins
 	bin = 73;
-	bin_count = 72;
+	bin_లెక్క = 72;
 
 	// WHEN: we wrap a bin index that is larger than the number of bins
-	wrapped_bin = ObstacleMath::wrap_bin(bin, bin_count);
+	wrapped_bin = ObstacleMath::wrap_bin(bin, bin_లెక్క);
 
 	// THEN: the wrapped bin index should be wrapped back to the beginning
 	EXPECT_EQ(wrapped_bin, 1);
 
 	// GIVEN: a negative bin index and the number of bins
 	bin = -1;
-	bin_count = 72;
+	bin_లెక్క = 72;
 
 	// WHEN: we wrap a bin index that is negative
-	wrapped_bin = ObstacleMath::wrap_bin(bin, bin_count);
+	wrapped_bin = ObstacleMath::wrap_bin(bin, bin_లెక్క);
 
 	// THEN: the wrapped bin index should be wrapped back to the end
 	EXPECT_EQ(wrapped_bin, 71);
@@ -221,28 +221,28 @@ TEST(ObstacleMathTest, HandleMissedBins)
 	// data should be filled in the bins outside the FOV.
 
 	// GIVEN: measurements, current bin, previous bin, bin width, and field of view offset
-	float measurements[8] = {0, 0, 1, 0, 0, 2, 0, 0};
-	int   current_bin     = 2;
-	int   previous_bin    = 5;
-	int   bin_width       = 45.0f;
-	float fov             = 270.0f;
-	float fov_offset      = 360.0f - fov / 2;
+	దశాంశం measurements[8] = {0, 0, 1, 0, 0, 2, 0, 0};
+	పూర్ణాంకం   current_bin     = 2;
+	పూర్ణాంకం   మునుపటి_bin    = 5;
+	పూర్ణాంకం   bin_వెడల్పు       = 45.0f;
+	దశాంశం fov             = 270.0f;
+	దశాంశం fov_స్థానభ్రంశం      = 360.0f - fov / 2;
 
-	float measurement     = measurements[current_bin];
+	దశాంశం measurement     = measurements[current_bin];
 
 	// WHEN: we handle missed bins
-	int current_bin_offset  = ObstacleMath::get_offset_bin_index(current_bin,  bin_width, fov_offset);
-	int previous_bin_offset = ObstacleMath::get_offset_bin_index(previous_bin, bin_width, fov_offset);
+	పూర్ణాంకం current_bin_స్థానభ్రంశం  = ObstacleMath::get_స్థానభ్రంశం_bin_సూచీ(current_bin,  bin_వెడల్పు, fov_స్థానభ్రంశం);
+	పూర్ణాంకం మునుపటి_bin_స్థానభ్రంశం = ObstacleMath::get_స్థానభ్రంశం_bin_సూచీ(మునుపటి_bin, bin_వెడల్పు, fov_స్థానభ్రంశం);
 
-	int start = math::min(current_bin_offset, previous_bin_offset) + 1;
-	int end   = math::max(current_bin_offset, previous_bin_offset);
+	పూర్ణాంకం ప్రారంభం = math::min(current_bin_స్థానభ్రంశం, మునుపటి_bin_స్థానభ్రంశం) + 1;
+	పూర్ణాంకం చివర   = math::max(current_bin_స్థానభ్రంశం, మునుపటి_bin_స్థానభ్రంశం);
 
-	EXPECT_EQ(start, 1);
-	EXPECT_EQ(end,   5);
+	EXPECT_EQ(ప్రారంభం, 1);
+	EXPECT_EQ(చివర,   5);
 
-	for (uint16_t i = start; i < end; i++) {
-		uint16_t bin_index = ObstacleMath::get_offset_bin_index(i, bin_width, -fov_offset);
-		measurements[bin_index] = measurement;
+	కొరకు (uint16_t i = ప్రారంభం; i < చివర; i++) {
+		uint16_t bin_సూచీ = ObstacleMath::get_స్థానభ్రంశం_bin_సూచీ(i, bin_వెడల్పు, -fov_స్థానభ్రంశం);
+		measurements[bin_సూచీ] = measurement;
 	}
 
 	// THEN: the correct missed bins should be populated with the measurement

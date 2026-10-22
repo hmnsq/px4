@@ -37,108 +37,108 @@
  * Controller library code
  */
 
-#include "Block.hpp"
-#include "BlockParam.hpp"
+#అన్తర్భావ "Block.hpp"
+#అన్తర్భావ "BlockParam.hpp"
 
-#include <cstdio>
-#include <cstring>
+#అన్తర్భావ <cstdio>
+#అన్తర్భావ <cstring>
 
-#include <containers/List.hpp>
+#అన్తర్భావ <containers/List.hpp>
 
-#include <px4_platform_common/log.h>
+#అన్తర్భావ <px4_platform_common/log.h>
 
-namespace control
+నామాకాశ control
 {
 
-BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_prefix)
+ఖండం_Param_పునాది::ఖండం_Param_పునాది(ఖండం *మాతృ, స్థిరరాశి అక్షరం *name, తార్కిక మాతృ_ఉపసర్గ)
 {
-	char fullname[blockNameLengthMax];
+	అక్షరం fullname[ఖండం_Name_నిడివి_Max];
 
-	if (parent == nullptr) {
-		strncpy(fullname, name, blockNameLengthMax - 1);
-		fullname[sizeof(fullname) - 1] = '\0';
+	ఒకవేళ (మాతృ == శూన్యసూచిక) {
+		strncpy(fullname, name, ఖండం_Name_నిడివి_Max - 1);
+		fullname[పరిమాణం(fullname) - 1] = '\0';
 
-	} else {
-		char parentName[blockNameLengthMax];
-		parent->getName(parentName, blockNameLengthMax);
+	} లేకపోతే {
+		అక్షరం మాతృ_Name[ఖండం_Name_నిడివి_Max];
+		మాతృ->getName(మాతృ_Name, ఖండం_Name_నిడివి_Max);
 
-		if (strcmp(name, "") == 0) {
-			strncpy(fullname, parentName, blockNameLengthMax);
+		ఒకవేళ (strcmp(name, "") == 0) {
+			strncpy(fullname, మాతృ_Name, ఖండం_Name_నిడివి_Max);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[పరిమాణం(fullname) - 1] = '\0';
 
-		} else if (parent_prefix) {
-			if (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
+		} లేకపోతే ఒకవేళ (మాతృ_ఉపసర్గ) {
+			ఒకవేళ (snprintf(fullname, ఖండం_Name_నిడివి_Max, "%s_%s", మాతృ_Name, name) >= ఖండం_Name_నిడివి_Max) {
 				PX4_ERR("param too long: %s", name);
 			}
 
-		} else {
-			strncpy(fullname, name, blockNameLengthMax);
+		} లేకపోతే {
+			strncpy(fullname, name, ఖండం_Name_నిడివి_Max);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[పరిమాణం(fullname) - 1] = '\0';
 		}
 
-		parent->getParams().add(this);
+		మాతృ->getParams().కూడు(ఇది);
 	}
 
-	_handle = param_find(fullname);
+	_handle = param_కనుగొను(fullname);
 
-	if (_handle == PARAM_INVALID) {
+	ఒకవేళ (_handle == PARAM_INVALID) {
 		PX4_ERR("error finding param: %s", fullname);
 	}
 };
 
-template <>
-BlockParam<bool>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+మూస <>
+ఖండం_Param<తార్కిక>::ఖండం_Param(ఖండం *ఖండం_2, స్థిరరాశి అక్షరం *name, తార్కిక మాతృ_ఉపసర్గ) :
+	ఖండం_Param_పునాది(ఖండం_2, name, మాతృ_ఉపసర్గ),
 	_val()
 {
 	update();
 }
 
-template <>
-bool BlockParam<bool>::update()
+మూస <>
+తార్కిక ఖండం_Param<తార్కిక>::update()
 {
 	int32_t tmp = 0;
-	int ret = param_get(_handle, &tmp);
+	పూర్ణాంకం ret = param_get(_handle, &tmp);
 
-	if (tmp == 1) {
-		_val = true;
+	ఒకవేళ (tmp == 1) {
+		_val = నిజం;
 
-	} else {
-		_val = false;
+	} లేకపోతే {
+		_val = అబద్ధం;
 	}
 
-	return (ret == PX4_OK);
+	తిరిగి (ret == PX4_OK);
 }
 
-template <>
-BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+మూస <>
+ఖండం_Param<int32_t>::ఖండం_Param(ఖండం *ఖండం_2, స్థిరరాశి అక్షరం *name, తార్కిక మాతృ_ఉపసర్గ) :
+	ఖండం_Param_పునాది(ఖండం_2, name, మాతృ_ఉపసర్గ),
 	_val()
 {
 	update();
 }
 
-template <>
-BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+మూస <>
+ఖండం_Param<దశాంశం>::ఖండం_Param(ఖండం *ఖండం_2, స్థిరరాశి అక్షరం *name, తార్కిక మాతృ_ఉపసర్గ) :
+	ఖండం_Param_పునాది(ఖండం_2, name, మాతృ_ఉపసర్గ),
 	_val()
 {
 	update();
 }
 
-template <>
-BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_prefix, int32_t &extern_val) :
-	BlockParamBase(block, name, parent_prefix),
+మూస <>
+ఖండం_Param<int32_t &>::ఖండం_Param(ఖండం *ఖండం_2, స్థిరరాశి అక్షరం *name, తార్కిక మాతృ_ఉపసర్గ, int32_t &extern_val) :
+	ఖండం_Param_పునాది(ఖండం_2, name, మాతృ_ఉపసర్గ),
 	_val(extern_val)
 {
 	update();
 }
 
-template <>
-BlockParam<float &>::BlockParam(Block *block, const char *name, bool parent_prefix, float &extern_val) :
-	BlockParamBase(block, name, parent_prefix),
+మూస <>
+ఖండం_Param<దశాంశం &>::ఖండం_Param(ఖండం *ఖండం_2, స్థిరరాశి అక్షరం *name, తార్కిక మాతృ_ఉపసర్గ, దశాంశం &extern_val) :
+	ఖండం_Param_పునాది(ఖండం_2, name, మాతృ_ఉపసర్గ),
 	_val(extern_val)
 {
 	update();

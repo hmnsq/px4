@@ -31,137 +31,137 @@
  *
  ****************************************************************************/
 
-#include "lat_lon_alt.hpp"
+#అన్తర్భావ "lat_lon_alt.hpp"
 
-using matrix::Vector3f;
-using matrix::Vector3d;
-using matrix::Vector2d;
+ఉపయోగించి మాతృక::Vector3f;
+ఉపయోగించి మాతృక::Vector3d;
+ఉపయోగించి మాతృక::Vector2d;
 
-LatLonAlt LatLonAlt::fromEcef(const Vector3d &p_ecef)
+LatLonAlt LatLonAlt::fromEcef(స్థిరరాశి Vector3d &p_ecef)
 {
 	// Convert position using Borkowski closed-form exact solution
 	// P. D. Groves, "Principles of GNSS, inertial, and multisensor integrated navigation systems, 2nd edition (appendix C)
-	const double k1 = sqrt(1 - Wgs84::eccentricity2) * fabs(p_ecef(2));
-	const double k2 = Wgs84::eccentricity2 * Wgs84::equatorial_radius;
-	const double beta = sqrt(p_ecef(0) * p_ecef(0) + p_ecef(1) * p_ecef(1));
-	const double E = (k1 - k2) / beta;
-	const double F = (k1 + k2) / beta;
+	స్థిరరాశి ద్విగుణ k1 = వర్గమూలం(1 - Wgs84::eccentricity2) * fabs(p_ecef(2));
+	స్థిరరాశి ద్విగుణ k2 = Wgs84::eccentricity2 * Wgs84::equatorial_radius;
+	స్థిరరాశి ద్విగుణ beta = వర్గమూలం(p_ecef(0) * p_ecef(0) + p_ecef(1) * p_ecef(1));
+	స్థిరరాశి ద్విగుణ E = (k1 - k2) / beta;
+	స్థిరరాశి ద్విగుణ F = (k1 + k2) / beta;
 
-	const double P = 4.0 / 3.0 * (E * F + 1);
-	const double Q = 2 * (E * E - F * F);
-	const double D = P * P * P + Q * Q;
-	const double V = cbrt(sqrt(D) - Q) - cbrt(sqrt(D) + Q);
-	const double G = 0.5 * (sqrt(E * E + V) + E);
-	const double T = sqrt(G * G + (F - V * G) / (2 * G - E)) - G;
+	స్థిరరాశి ద్విగుణ P = 4.0 / 3.0 * (E * F + 1);
+	స్థిరరాశి ద్విగుణ Q = 2 * (E * E - F * F);
+	స్థిరరాశి ద్విగుణ D = P * P * P + Q * Q;
+	స్థిరరాశి ద్విగుణ V = cbrt(వర్గమూలం(D) - Q) - cbrt(వర్గమూలం(D) + Q);
+	స్థిరరాశి ద్విగుణ G = 0.5 * (వర్గమూలం(E * E + V) + E);
+	స్థిరరాశి ద్విగుణ T = వర్గమూలం(G * G + (F - V * G) / (2 * G - E)) - G;
 
-	const double lon = atan2(p_ecef(1), p_ecef(0));
-	const double lat = matrix::sign(p_ecef(2)) * atan((1.0 - T * T) / (2.0 * T * sqrt(1.0 - Wgs84::eccentricity2)));
-	const double alt = (beta - Wgs84::equatorial_radius * T) * cos(lat) +
-			   (p_ecef(2) - matrix::sign(p_ecef(2)) * Wgs84::equatorial_radius * sqrt(1.0 - Wgs84::eccentricity2)) * sin(lat);
+	స్థిరరాశి ద్విగుణ lon = atan2(p_ecef(1), p_ecef(0));
+	స్థిరరాశి ద్విగుణ lat = మాతృక::sign(p_ecef(2)) * atan((1.0 - T * T) / (2.0 * T * వర్గమూలం(1.0 - Wgs84::eccentricity2)));
+	స్థిరరాశి ద్విగుణ alt = (beta - Wgs84::equatorial_radius * T) * కోజ్యా(lat) +
+			   (p_ecef(2) - మాతృక::sign(p_ecef(2)) * Wgs84::equatorial_radius * వర్గమూలం(1.0 - Wgs84::eccentricity2)) * జ్యా(lat);
 
 	LatLonAlt lla;
-	lla.setLatLonRad(lat, lon);
-	lla.setAltitude(static_cast<float>(alt));
-	return lla;
+	lla.సమితి_Lat_Lon_Rad(lat, lon);
+	lla.సమితి_Altitude(static_cast<దశాంశం>(alt));
+	తిరిగి lla;
 }
 
-Vector3d LatLonAlt::toEcef() const
+Vector3d LatLonAlt::గమ్యం_Ecef() స్థిరరాశి
 {
-	const double cos_lat = cos(_latitude_rad);
-	const double sin_lat = sin(_latitude_rad);
-	const double cos_lon = cos(_longitude_rad);
-	const double sin_lon = sin(_longitude_rad);
+	స్థిరరాశి ద్విగుణ cos_lat = కోజ్యా(_latitude_rad);
+	స్థిరరాశి ద్విగుణ sin_lat = జ్యా(_latitude_rad);
+	స్థిరరాశి ద్విగుణ cos_lon = కోజ్యా(_longitude_rad);
+	స్థిరరాశి ద్విగుణ sin_lon = జ్యా(_longitude_rad);
 
-	const double r_e = Wgs84::equatorial_radius / sqrt(1.0 - std::pow(Wgs84::eccentricity * sin_lat, 2.0));
-	const double r_total = r_e + static_cast<double>(_altitude);
+	స్థిరరాశి ద్విగుణ r_e = Wgs84::equatorial_radius / వర్గమూలం(1.0 - std::ఘాతం(Wgs84::eccentricity * sin_lat, 2.0));
+	స్థిరరాశి ద్విగుణ r_మొత్తం = r_e + static_cast<ద్విగుణ>(_altitude);
 
-	return Vector3d(r_total * cos_lat * cos_lon,
-			r_total * cos_lat * sin_lon,
-			((1.0 - Wgs84::eccentricity2) * r_e + static_cast<double>(_altitude)) * sin_lat);
+	తిరిగి Vector3d(r_మొత్తం * cos_lat * cos_lon,
+			r_మొత్తం * cos_lat * sin_lon,
+			((1.0 - Wgs84::eccentricity2) * r_e + static_cast<ద్విగుణ>(_altitude)) * sin_lat);
 }
 
-Vector3f LatLonAlt::computeAngularRateNavFrame(const Vector3f &v_ned) const
+Vector3f LatLonAlt::compute_Angular_రేటు_Nav_చట్రం(స్థిరరాశి Vector3f &v_ned) స్థిరరాశి
 {
-	double r_n;
-	double r_e;
-	computeRadiiOfCurvature(_latitude_rad, r_n, r_e);
-	return Vector3f(
-		       v_ned(1) / (static_cast<float>(r_e) + _altitude),
-		       -v_ned(0) / (static_cast<float>(r_n) + _altitude),
-		       -v_ned(1) * tanf(_latitude_rad) / (static_cast<float>(r_e) + _altitude));
+	ద్విగుణ r_n;
+	ద్విగుణ r_e;
+	compute_Radii_యొక్క_Curvature(_latitude_rad, r_n, r_e);
+	తిరిగి Vector3f(
+		       v_ned(1) / (static_cast<దశాంశం>(r_e) + _altitude),
+		       -v_ned(0) / (static_cast<దశాంశం>(r_n) + _altitude),
+		       -v_ned(1) * tanf(_latitude_rad) / (static_cast<దశాంశం>(r_e) + _altitude));
 }
 
-Vector2d LatLonAlt::deltaLatLonToDeltaXY(const double latitude, const float altitude)
+Vector2d LatLonAlt::delta_Lat_Lon_గమ్యం_Delta_XY(స్థిరరాశి ద్విగుణ latitude, స్థిరరాశి దశాంశం altitude)
 {
-	double r_n;
-	double r_e;
-	computeRadiiOfCurvature(latitude, r_n, r_e);
-	const double dn_dlat = r_n + static_cast<double>(altitude);
-	const double de_dlon = (r_e + static_cast<double>(altitude)) * cos(latitude);
+	ద్విగుణ r_n;
+	ద్విగుణ r_e;
+	compute_Radii_యొక్క_Curvature(latitude, r_n, r_e);
+	స్థిరరాశి ద్విగుణ dn_dlat = r_n + static_cast<ద్విగుణ>(altitude);
+	స్థిరరాశి ద్విగుణ de_dlon = (r_e + static_cast<ద్విగుణ>(altitude)) * కోజ్యా(latitude);
 
-	return Vector2d(dn_dlat, de_dlon);
+	తిరిగి Vector2d(dn_dlat, de_dlon);
 }
 
-void LatLonAlt::computeRadiiOfCurvature(const double latitude, double &meridian_radius_of_curvature,
-					double &transverse_radius_of_curvature)
+శూన్య LatLonAlt::compute_Radii_యొక్క_Curvature(స్థిరరాశి ద్విగుణ latitude, ద్విగుణ &meridian_radius_యొక్క_curvature,
+					ద్విగుణ &transverse_radius_యొక్క_curvature)
 {
-	const double tmp = 1.0 - pow(Wgs84::eccentricity * sin(latitude), 2);
-	const double sqrt_tmp = std::sqrt(tmp);
-	meridian_radius_of_curvature = Wgs84::meridian_radius_of_curvature_numerator / (tmp * sqrt_tmp);
-	transverse_radius_of_curvature = Wgs84::equatorial_radius / sqrt_tmp;
+	స్థిరరాశి ద్విగుణ tmp = 1.0 - ఘాతం(Wgs84::eccentricity * జ్యా(latitude), 2);
+	స్థిరరాశి ద్విగుణ sqrt_tmp = std::వర్గమూలం(tmp);
+	meridian_radius_యొక్క_curvature = Wgs84::meridian_radius_యొక్క_curvature_numerator / (tmp * sqrt_tmp);
+	transverse_radius_యొక్క_curvature = Wgs84::equatorial_radius / sqrt_tmp;
 }
 
-matrix::Dcmf LatLonAlt::computeRotEcefToNed() const
+మాతృక::Dcmf LatLonAlt::compute_Rot_Ecef_గమ్యం_Ned() స్థిరరాశి
 {
-	const double cos_lat = cos(_latitude_rad);
-	const double sin_lat = sin(_latitude_rad);
-	const double cos_lon = cos(_longitude_rad);
-	const double sin_lon = sin(_longitude_rad);
+	స్థిరరాశి ద్విగుణ cos_lat = కోజ్యా(_latitude_rad);
+	స్థిరరాశి ద్విగుణ sin_lat = జ్యా(_latitude_rad);
+	స్థిరరాశి ద్విగుణ cos_lon = కోజ్యా(_longitude_rad);
+	స్థిరరాశి ద్విగుణ sin_lon = జ్యా(_longitude_rad);
 
-	const float val[] = {(float)(-sin_lat * cos_lon), (float)(-sin_lat * sin_lon), (float)cos_lat,
-			     (float) - sin_lon, (float)cos_lon, 0.f,
-			     (float)(-cos_lat * cos_lon), (float)(-cos_lat * sin_lon), (float) - sin_lat
+	స్థిరరాశి దశాంశం val[] = {(దశాంశం)(-sin_lat * cos_lon), (దశాంశం)(-sin_lat * sin_lon), (దశాంశం)cos_lat,
+			     (దశాంశం) - sin_lon, (దశాంశం)cos_lon, 0.f,
+			     (దశాంశం)(-cos_lat * cos_lon), (దశాంశం)(-cos_lat * sin_lon), (దశాంశం) - sin_lat
 			    };
 
-	return matrix::Dcmf(val);
+	తిరిగి మాతృక::Dcmf(val);
 }
 
-LatLonAlt LatLonAlt::operator+(const matrix::Vector3f &delta_pos) const
+LatLonAlt LatLonAlt::క్రియాకారకం+(స్థిరరాశి మాతృక::Vector3f &delta_pos) స్థిరరాశి
 {
-	const matrix::Vector2d d_lat_lon_to_d_xy = deltaLatLonToDeltaXY(latitude_rad(), altitude());
-	const double latitude_rad = matrix::wrap_pi(_latitude_rad + static_cast<double>(delta_pos(0)) / d_lat_lon_to_d_xy(0));
-	const double longitude_rad = matrix::wrap_pi(_longitude_rad + static_cast<double>(delta_pos(1)) / d_lat_lon_to_d_xy(1));
-	const float altitude = _altitude - delta_pos(2);
+	స్థిరరాశి మాతృక::Vector2d d_lat_lon_గమ్యం_d_xy = delta_Lat_Lon_గమ్యం_Delta_XY(latitude_rad(), altitude());
+	స్థిరరాశి ద్విగుణ latitude_rad = మాతృక::wrap_pi(_latitude_rad + static_cast<ద్విగుణ>(delta_pos(0)) / d_lat_lon_గమ్యం_d_xy(0));
+	స్థిరరాశి ద్విగుణ longitude_rad = మాతృక::wrap_pi(_longitude_rad + static_cast<ద్విగుణ>(delta_pos(1)) / d_lat_lon_గమ్యం_d_xy(1));
+	స్థిరరాశి దశాంశం altitude = _altitude - delta_pos(2);
 
 	LatLonAlt lla_new;
-	lla_new.setLatLonRad(latitude_rad, longitude_rad);
-	lla_new.setAltitude(altitude);
-	return lla_new;
+	lla_new.సమితి_Lat_Lon_Rad(latitude_rad, longitude_rad);
+	lla_new.సమితి_Altitude(altitude);
+	తిరిగి lla_new;
 }
 
-void LatLonAlt::operator+=(const matrix::Vector3f &delta_pos)
+శూన్య LatLonAlt::క్రియాకారకం+=(స్థిరరాశి మాతృక::Vector3f &delta_pos)
 {
-	matrix::Vector2d d_lat_lon_to_d_xy = deltaLatLonToDeltaXY(_latitude_rad, _altitude);
-	_latitude_rad = matrix::wrap_pi(_latitude_rad + static_cast<double>(delta_pos(0)) / d_lat_lon_to_d_xy(0));
-	_longitude_rad = matrix::wrap_pi(_longitude_rad + static_cast<double>(delta_pos(1)) / d_lat_lon_to_d_xy(1));
+	మాతృక::Vector2d d_lat_lon_గమ్యం_d_xy = delta_Lat_Lon_గమ్యం_Delta_XY(_latitude_rad, _altitude);
+	_latitude_rad = మాతృక::wrap_pi(_latitude_rad + static_cast<ద్విగుణ>(delta_pos(0)) / d_lat_lon_గమ్యం_d_xy(0));
+	_longitude_rad = మాతృక::wrap_pi(_longitude_rad + static_cast<ద్విగుణ>(delta_pos(1)) / d_lat_lon_గమ్యం_d_xy(1));
 	_altitude -= delta_pos(2);
 }
 
-void LatLonAlt::operator+=(const matrix::Vector2f &delta_pos)
+శూన్య LatLonAlt::క్రియాకారకం+=(స్థిరరాశి మాతృక::Vector2f &delta_pos)
 {
-	matrix::Vector2d d_lat_lon_to_d_xy = deltaLatLonToDeltaXY(_latitude_rad, _altitude);
-	_latitude_rad = matrix::wrap_pi(_latitude_rad + static_cast<double>(delta_pos(0)) / d_lat_lon_to_d_xy(0));
-	_longitude_rad = matrix::wrap_pi(_longitude_rad + static_cast<double>(delta_pos(1)) / d_lat_lon_to_d_xy(1));
+	మాతృక::Vector2d d_lat_lon_గమ్యం_d_xy = delta_Lat_Lon_గమ్యం_Delta_XY(_latitude_rad, _altitude);
+	_latitude_rad = మాతృక::wrap_pi(_latitude_rad + static_cast<ద్విగుణ>(delta_pos(0)) / d_lat_lon_గమ్యం_d_xy(0));
+	_longitude_rad = మాతృక::wrap_pi(_longitude_rad + static_cast<ద్విగుణ>(delta_pos(1)) / d_lat_lon_గమ్యం_d_xy(1));
 }
 
-matrix::Vector3f LatLonAlt::operator-(const LatLonAlt &lla) const
+మాతృక::Vector3f LatLonAlt::క్రియాకారకం-(స్థిరరాశి LatLonAlt &lla) స్థిరరాశి
 {
-	const double delta_lat = matrix::wrap_pi(_latitude_rad - lla.latitude_rad());
-	const double delta_lon = matrix::wrap_pi(_longitude_rad - lla.longitude_rad());
-	const float delta_alt = _altitude - lla.altitude();
+	స్థిరరాశి ద్విగుణ delta_lat = మాతృక::wrap_pi(_latitude_rad - lla.latitude_rad());
+	స్థిరరాశి ద్విగుణ delta_lon = మాతృక::wrap_pi(_longitude_rad - lla.longitude_rad());
+	స్థిరరాశి దశాంశం delta_alt = _altitude - lla.altitude();
 
-	const matrix::Vector2d d_lat_lon_to_d_xy = deltaLatLonToDeltaXY(_latitude_rad, _altitude);
-	return matrix::Vector3f(static_cast<float>(delta_lat * d_lat_lon_to_d_xy(0)),
-				static_cast<float>(delta_lon * d_lat_lon_to_d_xy(1)),
+	స్థిరరాశి మాతృక::Vector2d d_lat_lon_గమ్యం_d_xy = delta_Lat_Lon_గమ్యం_Delta_XY(_latitude_rad, _altitude);
+	తిరిగి మాతృక::Vector3f(static_cast<దశాంశం>(delta_lat * d_lat_lon_గమ్యం_d_xy(0)),
+				static_cast<దశాంశం>(delta_lon * d_lat_lon_గమ్యం_d_xy(1)),
 				-delta_alt);
 }

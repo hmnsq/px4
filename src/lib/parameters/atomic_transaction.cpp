@@ -31,9 +31,9 @@
  *
  ****************************************************************************/
 
-#include "atomic_transaction.h"
+#అన్తర్భావ "atomic_transaction.h"
 
-#ifdef __PX4_POSIX
+#నిర్వచితమైతే __PX4_POSIX
 // The mutex is recursive because a param lookup walks the layered param stack
 // holding the lock and delegates to the parent layer (Layer::get() ->
 // _parent->get()), which takes the same mutex again on the same thread.
@@ -43,9 +43,9 @@
 // (unavailable on e.g. QURT, and gated behind _GNU_SOURCE elsewhere). initialize()
 // is called from param_init(), before any thread accesses parameters, so there is
 // no lazy-init race.
-static pthread_mutex_t _param_mutex;
+స్థిర pthread_mutex_t _param_mutex;
 
-void AtomicTransaction::initialize()
+శూన్య AtomicTransaction::initialize()
 {
 	pthread_mutexattr_t attr;
 	pthread_mutexattr_init(&attr);
@@ -56,6 +56,6 @@ void AtomicTransaction::initialize()
 
 pthread_mutex_t *AtomicTransaction::_get_mutex()
 {
-	return &_param_mutex;
+	తిరిగి &_param_mutex;
 }
-#endif
+#అయితే_ముగింపు

@@ -37,41 +37,41 @@
  * Performance model.
  */
 
-#include <float.h>
-#include <math.h>
-#include <px4_platform_common/module_params.h>
-#include <uORB/topics/fuel_tank_status.h>
+#అన్తర్భావ <float.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <px4_platform_common/module_params.h>
+#అన్తర్భావ <uORB/topics/fuel_tank_status.h>
 
-#ifndef PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
-#define PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
+#నిర్వచితం_కాకపోతే PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
+#నిర్వచించు PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
 
-class PerformanceModel : public ModuleParams
+తరగతి PerformanceModel : బహిరంగ ModuleParams
 {
-public:
+బహిరంగ:
 	PerformanceModel();
-	~PerformanceModel() = default;
+	~PerformanceModel() = అప్రమేయ;
 
-	void updateParameters();
+	శూన్య updateParameters();
 
 	/**
 	 * Get the maximum climb rate (true airspeed) expected for current air density and weight.
 	 * @param air_density in kg/m^3
 	 * @return maximum climb rate in m/s
 	 */
-	float getMaximumClimbRate(float air_density) const;
+	దశాంశం get_గరిష్ఠ_Climb_రేటు(దశాంశం air_density) స్థిరరాశి;
 
 	/**
 	 * Get the minimum sink rate (true airspeed) expected for current air density and weight.
 	 * @param air_density in kg/m^3
 	 * @return minimum sink rate in m/s
 	 */
-	float getMinimumSinkRate(float air_density) const;
+	దశాంశం get_Minimum_Sink_రేటు(దశాంశం air_density) స్థిరరాశి;
 
 	/**
 	 * Get the ration of actual weight to base weight
 	 * @return weight ratio
 	 */
-	float getWeightRatio() const;
+	దశాంశం get_బరువు_నిష్పత్తి() స్థిరరాశి;
 
 	/**
 	 * Set the fraction of fuel remaining, used to reduce the vehicle weight by the burned fuel mass
@@ -79,13 +79,13 @@ public:
 	 * Non-finite input is ignored and the last known fuel fraction is kept.
 	 * @param fuel_fraction_remaining fraction of fuel remaining in range [0,1]
 	 */
-	void setFuelFractionRemaining(float fuel_fraction_remaining);
+	శూన్య సమితి_Fuel_Fraction_మిగిలిన(దశాంశం fuel_fraction_మిగిలిన);
 
 	/**
 	 * Check if fuel-based weight compensation is enabled.
 	 * @return true if WEIGHT_FUEL is set to a valid fuel weight
 	 */
-	bool isFuelCompensationEnabled() const { return _param_weight_fuel.get() > FLT_EPSILON; }
+	తార్కిక isFuelCompensationEnabled() స్థిరరాశి { తిరిగి param_బరువు_fuel.get() > FLT_EPSILON; }
 
 	/**
 	 * Extract the fraction of fuel remaining from a fuel tank status message, preferring the
@@ -94,7 +94,7 @@ public:
 	 * @param fuel_tank_status fuel tank status message
 	 * @return fraction of fuel remaining in range [0,1], NAN if not available
 	 */
-	static float getFuelFractionRemaining(const fuel_tank_status_s &fuel_tank_status);
+	స్థిర దశాంశం get_Fuel_Fraction_మిగిలిన(స్థిరరాశి fuel_tank_స్థితి_s &fuel_tank_స్థితి);
 
 	/**
 	 * Get the trim throttle for the current airspeed setpoint as well as air density and weight.
@@ -104,20 +104,20 @@ public:
 	 * @param air_density air density in kg/m^3
 	 * @return trim throttle in range [0,1]
 	 */
-	float getTrimThrottle(float throttle_min, float throttle_max, float airspeed_sp, float air_density) const;
+	దశాంశం getTrimThrottle(దశాంశం throttle_min, దశాంశం throttle_max, దశాంశం airspeed_sp, దశాంశం air_density) స్థిరరాశి;
 
 	/**
 	 * Get the throttle scale factor for the current air density.
 	 * @param air_density in kg/m^3
 	 * @return throttle scale factor for air density
 	 */
-	float getAirDensityThrottleScale(float air_density) const;
+	దశాంశం getAirDensityThrottleScale(దశాంశం air_density) స్థిరరాశి;
 
 	/**
 	 * Get the trim airspeed compensated for weight.
 	 * @return calibrated trim airspeed in m/s
 	 */
-	float getCalibratedTrimAirspeed() const;
+	దశాంశం getCalibratedTrimAirspeed() స్థిరరాశి;
 
 	/**
 	 * Get the minimum airspeed compensated for weight, load factor due to bank angle and flaps.
@@ -125,13 +125,13 @@ public:
 	 * @param flaps_setpoint Flaps setpoint, normalized in range [0,1]
 	 * @return calibrated minimum airspeed in m/s
 	 */
-	float getMinimumCalibratedAirspeed(float load_factor, float flaps_setpoint) const;
+	దశాంశం getMinimumCalibratedAirspeed(దశాంశం ఎక్కించు_గుణకం, దశాంశం flaps_setpoint) స్థిరరాశి;
 
 	/**
 	 * Get the maximum airspeed.
 	 * @return calibrated maximum airspeed in m/s
 	 */
-	float getMaximumCalibratedAirspeed() const;
+	దశాంశం get_గరిష్ఠ_Calibrated_Airspeed() స్థిరరాశి;
 
 	/**
 	 * get the stall airspeed compensated for load factor due to bank angle.
@@ -139,15 +139,15 @@ public:
 	 * @param flaps_setpoint Flaps setpoint, normalized in range [0,1]
 	 * @return calibrated stall airspeed in m/s
 	 */
-	float getCalibratedStallAirspeed(float load_factor, float flaps_setpoint) const;
+	దశాంశం getCalibratedStallAirspeed(దశాంశం ఎక్కించు_గుణకం, దశాంశం flaps_setpoint) స్థిరరాశి;
 
 	/**
 	 * Run some checks on parameters and detect unfeasible combinations.
 	 * @return true if all checks pass
 	 */
-	bool runSanityChecks() const;
+	తార్కిక నిరంతరం_Sanity_Checks() స్థిరరాశి;
 
-private:
+అంతరంగ:
 	DEFINE_PARAMETERS(
 		(ParamFloat<px4::params::FW_AIRSPD_MAX>) _param_fw_airspd_max,
 		(ParamFloat<px4::params::FW_AIRSPD_MIN>) _param_fw_airspd_min,
@@ -155,9 +155,9 @@ private:
 		(ParamFloat<px4::params::FW_AIRSPD_STALL>) _param_fw_airspd_stall,
 		(ParamFloat<px4::params::FW_T_CLMB_MAX>) _param_fw_t_clmb_max,
 		(ParamFloat<px4::params::FW_T_SINK_MIN>) _param_fw_t_sink_min,
-		(ParamFloat<px4::params::WEIGHT_BASE>) _param_weight_base,
-		(ParamFloat<px4::params::WEIGHT_GROSS>) _param_weight_gross,
-		(ParamFloat<px4::params::WEIGHT_FUEL>) _param_weight_fuel,
+		(ParamFloat<px4::params::బరువు_పునాది>) param_బరువు_పునాది,
+		(ParamFloat<px4::params::బరువు_GROSS>) param_బరువు_gross,
+		(ParamFloat<px4::params::బరువు_FUEL>) param_బరువు_fuel,
 		(ParamFloat<px4::params::FW_SERVICE_CEIL>) _param_service_ceiling,
 		(ParamFloat<px4::params::FW_THR_TRIM>) _param_fw_thr_trim,
 		(ParamFloat<px4::params::FW_THR_MAX>) _param_fw_thr_max,
@@ -173,12 +173,12 @@ private:
 	 * @param calibrated_airspeed_sp [m/s] calibrated
 	 * @return trim throttle [0, 1] at sea level
 	 */
-	float getTrimThrottleForCalibratedAirspeed(float calibrated_airspeed_sp) const;
+	దశాంశం getTrimThrottleForCalibratedAirspeed(దశాంశం calibrated_airspeed_sp) స్థిరరాశి;
 
 
-	static float sanitiseAirDensity(float air_density);
+	స్థిర దశాంశం sanitiseAirDensity(దశాంశం air_density);
 
-	float _fuel_fraction_remaining{NAN}; ///< fraction of fuel remaining in range [0,1], NAN if unknown
+	దశాంశం fuel_fraction_మిగిలిన_2{NAN}; ///< fraction of fuel remaining in range [0,1], NAN if unknown
 };
 
-#endif //PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
+#అయితే_ముగింపు //PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_

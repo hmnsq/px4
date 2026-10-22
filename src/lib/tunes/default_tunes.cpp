@@ -35,21 +35,21 @@
  * @file default_tunes.cpp
  */
 
-#include "tunes.h"
+#అన్తర్భావ "tunes.h"
 
-#define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) tune,
+#నిర్వచించు PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) tune,
 // Initialize default tunes
-const char *const Tunes::_default_tunes[] = {
-#include "tune_definition.desc"
+స్థిరరాశి అక్షరం *స్థిరరాశి Tunes::_default_tunes[] = {
+#అన్తర్భావ "tune_definition.desc"
 };
-#undef PX4_DEFINE_TUNE
+#నిర్వచనం_రద్దు PX4_DEFINE_TUNE
 
-#define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) interruptable,
+#నిర్వచించు PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) interruptable,
 // Initialize default tunes
-const bool Tunes::_default_tunes_interruptable[] = {
-#include "tune_definition.desc"
+స్థిరరాశి తార్కిక Tunes::_default_tunes_interruptable[] = {
+#అన్తర్భావ "tune_definition.desc"
 };
-#undef PX4_DEFINE_TUNE
+#నిర్వచనం_రద్దు PX4_DEFINE_TUNE
 
 // set default_tunes array size
-const unsigned int Tunes::_default_tunes_size =  sizeof(_default_tunes) / sizeof(_default_tunes[0]);
+స్థిరరాశి గుర్తులేని పూర్ణాంకం Tunes::default_tunes_కొలత =  పరిమాణం(_default_tunes) / పరిమాణం(_default_tunes[0]);

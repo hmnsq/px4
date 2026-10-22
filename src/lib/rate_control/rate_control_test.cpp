@@ -31,14 +31,14 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <lib/rate_control/rate_control.hpp>
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ <lib/rate_control/rate_control.hpp>
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-TEST(RateControlTest, AllZeroCase)
+TEST(రేటు_Control_Test, AllZeroCase)
 {
-	RateControl rate_control;
-	Vector3f torque = rate_control.update(Vector3f(), Vector3f(), Vector3f(), 0.f, false);
+	రేటు_Control రేటు_control;
+	Vector3f torque = రేటు_control.update(Vector3f(), Vector3f(), Vector3f(), 0.f, అబద్ధం);
 	EXPECT_EQ(torque, Vector3f());
 }

@@ -37,19 +37,19 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include "BlockLowPass.hpp"
+#అన్తర్భావ "BlockLowPass.hpp"
 
-#include <px4_platform_common/defines.h>
-#include <math.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <math.h>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
 
 /**
@@ -58,17 +58,17 @@ namespace control
  * This has a built in low pass filter.
  * @see LowPass
  */
-class __EXPORT BlockDerivative : public SuperBlock
+తరగతి __EXPORT ఖండం_Derivative : బహిరంగ Super_ఖండం
 {
-public:
+బహిరంగ:
 // methods
-	BlockDerivative(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
+	ఖండం_Derivative(Super_ఖండం *మాతృ, స్థిరరాశి అక్షరం *name) :
+		Super_ఖండం(మాతృ, name),
 		_u(0),
-		_initialized(false),
-		_lowPass(this, "LP")
+		_initialized(అబద్ధం),
+		దిగువ_Pass(ఇది, "LP")
 	{}
-	virtual ~BlockDerivative() = default;
+	మాయా ~ఖండం_Derivative() = అప్రమేయ;
 
 	/**
 	 * Update the state and get current derivative
@@ -84,18 +84,18 @@ public:
 	 * @param input the variable to calculate the derivative of
 	 * @return the current derivative
 	 */
-	float update(float input);
+	దశాంశం update(దశాంశం ఆదానం);
 // accessors
-	void setU(float u) {_u = u;}
-	void reset() { _initialized = false; };
-	float getU() {return _u;}
-	float getLP() {return _lowPass.getFCut();}
-	float getO() { return _lowPass.getState(); }
-protected:
-// attributes
-	float _u; /**< previous input */
-	bool _initialized;
-	BlockLowPass _lowPass; /**< low pass filter */
+	శూన్య సమితి_U(దశాంశం u) {_u = u;}
+	శూన్య reset() { _initialized = అబద్ధం; };
+	దశాంశం getU() {తిరిగి _u;}
+	దశాంశం getLP() {తిరిగి దిగువ_Pass.getFCut();}
+	దశాంశం getO() { తిరిగి దిగువ_Pass.getState(); }
+రక్షిత:
+//లక్షణాలు
+	దశాంశం _u; /**< previous input */
+	తార్కిక _initialized;
+	ఖండం_దిగువ_Pass దిగువ_Pass; /**< low pass filter */
 };
 
 } // namespace control

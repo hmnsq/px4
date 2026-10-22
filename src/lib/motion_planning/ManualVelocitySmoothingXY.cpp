@@ -31,45 +31,45 @@
  *
  ****************************************************************************/
 
-#include "ManualVelocitySmoothingXY.hpp"
+#అన్తర్భావ "ManualVelocitySmoothingXY.hpp"
 
-#include <mathlib/mathlib.h>
-#include <float.h>
+#అన్తర్భావ <mathlib/mathlib.h>
+#అన్తర్భావ <float.h>
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-void ManualVelocitySmoothingXY::reset(const Vector2f &accel, const Vector2f &vel, const Vector2f &pos)
+శూన్య ManualVelocitySmoothingXY::reset(స్థిరరాశి Vector2f &accel, స్థిరరాశి Vector2f &vel, స్థిరరాశి Vector2f &pos)
 {
-	for (int i = 0; i < 2; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < 2; i++) {
 		_trajectory[i].reset(accel(i), vel(i), pos(i));
 	}
 
-	resetPositionLock();
+	reset_Position_తాళం();
 }
 
-void ManualVelocitySmoothingXY::resetPositionLock()
+శూన్య ManualVelocitySmoothingXY::reset_Position_తాళం()
 {
-	_position_lock_active = false;
+	position_తాళం_చురుకైన = అబద్ధం;
 	_position_setpoint_locked(0) = NAN;
 	_position_setpoint_locked(1) = NAN;
 }
 
-void ManualVelocitySmoothingXY::update(float dt, const Vector2f &velocity_target)
+శూన్య ManualVelocitySmoothingXY::update(దశాంశం dt, స్థిరరాశి Vector2f &velocity_లక్ష్యం)
 {
 	// Update state
 	updateTrajectories(dt);
 
 	// Lock or unlock position
 	// Has to be done before _updateTrajDurations()
-	checkPositionLock(velocity_target);
+	check_Position_తాళం(velocity_లక్ష్యం);
 
 	// Update durations and sync XY
-	updateTrajDurations(velocity_target);
+	updateTrajDurations(velocity_లక్ష్యం);
 }
 
-void ManualVelocitySmoothingXY::updateTrajectories(float dt)
+శూన్య ManualVelocitySmoothingXY::updateTrajectories(దశాంశం dt)
 {
-	for (int i = 0; i < 2; ++i) {
+	కొరకు (పూర్ణాంకం i = 0; i < 2; ++i) {
 		_trajectory[i].updateTraj(dt);
 
 		_state.j(i) = _trajectory[i].getCurrentJerk();
@@ -79,16 +79,16 @@ void ManualVelocitySmoothingXY::updateTrajectories(float dt)
 	}
 }
 
-void ManualVelocitySmoothingXY::updateTrajDurations(const Vector2f &velocity_target)
+శూన్య ManualVelocitySmoothingXY::updateTrajDurations(స్థిరరాశి Vector2f &velocity_లక్ష్యం)
 {
-	for (int i = 0; i < 2; ++i) {
-		_trajectory[i].updateDurations(velocity_target(i));
+	కొరకు (పూర్ణాంకం i = 0; i < 2; ++i) {
+		_trajectory[i].updateDurations(velocity_లక్ష్యం(i));
 	}
 
-	VelocitySmoothing::timeSynchronization(_trajectory, 2);
+	VelocitySmoothing::సమయం_Synchronization(_trajectory, 2);
 }
 
-void ManualVelocitySmoothingXY::checkPositionLock(const Vector2f &velocity_target)
+శూన్య ManualVelocitySmoothingXY::check_Position_తాళం(స్థిరరాశి Vector2f &velocity_లక్ష్యం)
 {
 	/**
 	 * During a position lock -> position unlock transition, we have to make sure that the velocity setpoint
@@ -98,24 +98,24 @@ void ManualVelocitySmoothingXY::checkPositionLock(const Vector2f &velocity_targe
 	 * This is why the previous input of the velocity controller
 	 * is used to set current velocity of the trajectory.
 	 */
-	if (_state.v.length() < 0.1f &&
-	    _state.a.length() < .2f &&
-	    velocity_target.length() <= FLT_EPSILON) {
+	ఒకవేళ (_state.v.నిడివి() < 0.1f &&
+	    _state.a.నిడివి() < .2f &&
+	    velocity_లక్ష్యం.నిడివి() <= FLT_EPSILON) {
 		// Lock position
-		_position_lock_active = true;
+		position_తాళం_చురుకైన = నిజం;
 		_position_setpoint_locked = _state.x;
 
-	} else {
+	} లేకపోతే {
 		// Unlock position
-		if (_position_lock_active) {
+		ఒకవేళ (position_తాళం_చురుకైన) {
 			// Start the trajectory at the current velocity setpoint
-			_trajectory[0].setCurrentVelocity(_velocity_setpoint_feedback(0));
-			_trajectory[1].setCurrentVelocity(_velocity_setpoint_feedback(1));
+			_trajectory[0].సమితి_Current_Velocity(_velocity_setpoint_feedback(0));
+			_trajectory[1].సమితి_Current_Velocity(_velocity_setpoint_feedback(1));
 			_state.v = _velocity_setpoint_feedback;
-			resetPositionLock();
+			reset_Position_తాళం();
 		}
 
-		_trajectory[0].setCurrentPosition(_position_estimate(0));
-		_trajectory[1].setCurrentPosition(_position_estimate(1));
+		_trajectory[0].సమితి_Current_Position(_position_estimate(0));
+		_trajectory[1].సమితి_Current_Position(_position_estimate(1));
 	}
 }

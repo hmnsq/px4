@@ -32,24 +32,24 @@
  ****************************************************************************/
 
 
-#pragma once
+#సూచన once
 
-#include <pthread.h>
+#అన్తర్భావ <pthread.h>
 
-#include <drivers/drv_hrt.h>
-#include <lib/perf/perf_counter.h>
-#include <px4_platform_common/atomic.h>
-#include <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
-#include <uORB/SubscriptionCallback.hpp>
-#include <uORB/topics/rtcm_data.h>
+#అన్తర్భావ <drivers/drv_hrt.h>
+#అన్తర్భావ <lib/perf/perf_counter.h>
+#అన్తర్భావ <px4_platform_common/atomic.h>
+#అన్తర్భావ <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
+#అన్తర్భావ <uORB/SubscriptionCallback.hpp>
+#అన్తర్భావ <uORB/topics/rtcm_data.h>
 
-#include "correction_framer.h"
+#అన్తర్భావ "correction_framer.h"
 
 namespace gnss
 {
 
 // A protocol's bit in a set of accepted protocols
-constexpr uint8_t protocol_bit(CorrectionProtocol protocol) { return 1u << static_cast<uint8_t>(protocol); }
+constexpr uint8_t protocol_బిట్టు(CorrectionProtocol protocol) { తిరిగి 1u << static_cast<uint8_t>(protocol); }
 
 // Writes corrections to a receiver as they are published, from the serial port's work queue. A driver's reader thread
 // blocks on the UART between epochs, so injecting from it would hold corrections back by up to one output interval.
@@ -60,83 +60,83 @@ constexpr uint8_t protocol_bit(CorrectionProtocol protocol) { return 1u << stati
 // Chunks are reassembled into frames, and a frame is written only once the TX buffer has room for all of it: a frame
 // cut short would fail its CRC at the receiver. Until then it waits in the framer, and the injector comes back once
 // the buffer has drained.
-class CorrectionInjector : public px4::ScheduledWorkItem
+class CorrectionInjector : బహిరంగ px4::Scheduled_Work_అంశం
 {
-public:
+బహిరంగ:
 	// The one stream a receiver takes. An RTK engine works against one reference station, so a rover offered a fixed
 	// base beside its moving base can settle on the fixed base and lose the heading. The fixed-base corrections go to
 	// the moving base instead, whose absolute fix the rover inherits (u-blox UBX-19009093 figure 2). A receiver that
 	// takes neither, such as a rover wired to its moving base, never starts the injector.
-	enum class Stream : uint8_t {
+	గణన class ప్రవాహం_2 : uint8_t {
 		Corrections,	// Fixed-base corrections, rtcm_corrections: every receiver but a moving-base rover
 		MovingBaseline,	// A moving base's stream, rtcm_moving_baseline: its rover, when the baseline comes through PX4
 	};
 
-	struct Config {
+	నిర్మాణం Config {
 		uint32_t own_device_id{0};	// Chunks this device published are never written back
-		Stream stream{Stream::Corrections};
+		ప్రవాహం_2 ప్రవాహం{ప్రవాహం_2::Corrections};
 		// protocol_bit()s the receiver accepts; frames of any other protocol are dropped
-		uint8_t protocols{protocol_bit(CorrectionProtocol::Rtcm3)};
+		uint8_t protocols{protocol_బిట్టు(CorrectionProtocol::Rtcm3)};
 		// The port's baudrate, fixed while injecting; paces retries while the TX buffer is full. 0 if unknown.
 		uint32_t baudrate{0};
 	};
 
 	// name labels the work item; port selects its work queue and is what the injector opens
-	CorrectionInjector(const char *name, const char *port);
+	CorrectionInjector(స్థిరరాశి అక్షరం *name, స్థిరరాశి అక్షరం *పోర్టు);
 	~CorrectionInjector() override;
 
 	// Injects only between start() and stop(): outside them the owner configures the receiver on the same port.
 	// stop() also has the work queue close the injector's descriptor, so call it before destruction.
-	void start(const Config &config);
-	void stop();
+	శూన్య ప్రారంభం(స్థిరరాశి Config &config);
+	శూన్య stop();
 
 	// rtcm_corrections instance in use, -1 for none
-	int8_t selected_instance() const { return _selected_instance.load(); }
+	int8_t selected_instance() స్థిరరాశి { తిరిగి _selected_instance.ఎక్కించు(); }
 	// Frames written per second over the last window. Owner thread only.
-	float injection_rate_hz();
-	void print_status() const;
+	దశాంశం injection_రేటు_hz_2();
+	శూన్య print_స్థితి() స్థిరరాశి;
 
-private:
-	void Run() override;
-	void drain_corrections();
-	void drain_moving_baseline();
-	bool select_corrections_instance(rtcm_data_s &chunk);
-	void add_chunk(const rtcm_data_s &chunk);
-	void inject_frames();
-	ssize_t tx_space_available() const;
-	uint32_t drain_time_us(size_t bytes) const;
+అంతరంగ:
+	శూన్య నిరంతరం() override;
+	శూన్య drain_corrections();
+	శూన్య drain_moving_baseline();
+	bool select_corrections_instance(rtcm_దత్తాంశం_s &chunk);
+	శూన్య కూడు_chunk(స్థిరరాశి rtcm_దత్తాంశం_s &chunk);
+	శూన్య inject_చట్రాలు();
+	ssize_t tx_space_అందుబాటు() స్థిరరాశి;
+	uint32_t drain_సమయం_us(size_t బైట్లు) స్థిరరాశి;
 
-	char _port[32] {};
+	అక్షరం పోర్టు_2[32] {};
 
 	pthread_mutex_t _mutex = PTHREAD_MUTEX_INITIALIZER;
 	// Guarded by _mutex
-	bool _active{false};
-	int _fd{-1};	// opened and closed on the work queue
+	bool చురుకైన{false};
+	పూర్ణాంకం _fd{-1};	// opened and closed on the work queue
 	bool _write_error_reported{false};
 	Config _config{};
-	hrt_abstime _last_chunk_time{0};
+	hrt_abstime చివరి_chunk_సమయం{0};
 	CorrectionFramer _framer;
 
 	px4::atomic<int8_t> _selected_instance{-1};
 
 	// Owner thread only
-	hrt_abstime _rate_window_start{0};
-	uint64_t _rate_window_count{0};
-	float _injection_rate_hz{0.f};
+	hrt_abstime రేటు_కిటికీ_ప్రారంభం{0};
+	uint64_t రేటు_కిటికీ_లెక్క{0};
+	దశాంశం injection_రేటు_hz{0.f};
 
-	uORB::SubscriptionCallbackWorkItem _moving_baseline_sub{this, ORB_ID(rtcm_moving_baseline)};
-	uORB::SubscriptionCallbackWorkItem _corrections_sub[rtcm_data_s::MAX_INSTANCES] {
+	uORB::Subscription_Callback_Work_అంశం _moving_baseline_sub{this, ORB_ID(rtcm_moving_baseline)};
+	uORB::Subscription_Callback_Work_అంశం _corrections_sub[rtcm_దత్తాంశం_s::MAX_INSTANCES] {
 		{this, ORB_ID(rtcm_corrections), 0},
 		{this, ORB_ID(rtcm_corrections), 1},
 		{this, ORB_ID(rtcm_corrections), 2},
 		{this, ORB_ID(rtcm_corrections), 3},
 	};
 
-	perf_counter_t _injected{perf_alloc(PC_COUNT, "gnss_injector: frames")};
-	perf_counter_t _tx_buffer_full{perf_alloc(PC_COUNT, "gnss_injector: tx buf full")};
-	perf_counter_t _framer_full{perf_alloc(PC_COUNT, "gnss_injector: framer full")};
-	perf_counter_t _unsupported{perf_alloc(PC_COUNT, "gnss_injector: unsupported protocol")};
-	perf_counter_t _short_write{perf_alloc(PC_COUNT, "gnss_injector: short write")};
+	perf_counter_t _injected{perf_alloc(PC_లెక్క, "gnss_injector: frames")};
+	perf_counter_t tx_బఫరు_నిండిన{perf_alloc(PC_లెక్క, "gnss_injector: tx buf full")};
+	perf_counter_t framer_నిండిన{perf_alloc(PC_లెక్క, "gnss_injector: framer full")};
+	perf_counter_t _unsupported{perf_alloc(PC_లెక్క, "gnss_injector: unsupported protocol")};
+	perf_counter_t _short_write{perf_alloc(PC_లెక్క, "gnss_injector: short write")};
 };
 
 } // namespace gnss

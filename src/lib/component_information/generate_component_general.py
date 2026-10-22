@@ -1,80 +1,80 @@
 #!/usr/bin/env python
 
-import argparse
-import json
-import lzma #to create .xz file
-import re
+దిగుమతి argparse
+దిగుమతి json
+దిగుమతి lzma #to create .xz file
+దిగుమతి re
 
-parser = argparse.ArgumentParser(description="""Generate the COMPONENT_GENERAL json file""")
-parser.add_argument('filename', metavar='component_general.json', help='JSON output file')
-parser.add_argument('--compress', action='store_true', help='Add a compressed output file')
-parser.add_argument('--type', metavar='type', action="append", default=[],
+parser = argparse.వాదం_Parser(description="""Generate the COMPONENT_GENERAL json file""")
+parser.కూడు_వాదం('filename', metavar='component_general.json', help='JSON output file')
+parser.కూడు_వాదం('--compress', action='store_true', help='Add a compressed output file')
+parser.కూడు_వాదం('--type', metavar='type', action="append", అప్రమేయ=[],
         help='Metadata type (<type>,<metadata file>,<uri>,<fallback uri>,[translation uri])')
-parser.add_argument('--version-file', metavar='build_git_version.h', help='Git version file')
+parser.కూడు_వాదం('--version-file', metavar='build_git_version.h', help='Git version file')
 
-args = parser.parse_args()
-filename = args.filename
-compress = args.compress
-version_file = args.version_file
+వాదనలు = parser.parse_వాదనలు()
+filename = వాదనలు.filename
+compress = వాదనలు.compress
+సంస్కరణ_file = వాదనలు.సంస్కరణ_file
 
-version_dir = ''
-if version_file is not None:
-    for line in open(version_file, "r"):
-        version_search = re.search(r'PX4_GIT_TAG_OR_BRANCH_NAME\s+"(.+)"', line)
-        if version_search:
-            version_dir = version_search.group(1)
-            break
+సంస్కరణ_dir = ''
+ఒకవేళ సంస్కరణ_file అయిన కాదు ఏమీలేదు:
+    కొరకు పంక్తి లో open(సంస్కరణ_file, "r"):
+        సంస్కరణ_శోధన = re.శోధన(r'PX4_GIT_TAG_OR_BRANCH_NAME\s+"(.+)"', పంక్తి)
+        ఒకవేళ సంస్కరణ_శోధన:
+            సంస్కరణ_dir = సంస్కరణ_శోధన.సమూహం(1)
+            ఆపు
 
 
-def save_compressed(filename):
+నిర్వచనం save_compressed(filename):
     #create lzma compressed version
     xz_filename=filename+'.xz'
-    with lzma.open(xz_filename, 'wt', preset=9) as f:
-        with open(filename, 'r') as content_file:
-            f.write(content_file.read())
+    తోడుగా lzma.open(xz_filename, 'wt', preset=9) ఇవ f:
+        తోడుగా open(filename, 'r') ఇవ content_file:
+            f.లిఖ(content_file.పఠ())
 
 component_general = {}
 component_general['version'] = 1
 
-def create_table():
+నిర్వచనం create_పట్టిక():
     a = []
-    for i in range(256):
+    కొరకు i లో శ్రేణి(256):
         k = i
-        for j in range(8):
-            if k & 1:
+        కొరకు j లో శ్రేణి(8):
+            ఒకవేళ k & 1:
                 k ^= 0x1db710640
             k >>= 1
         a.append(k)
-    return a
+    తిరిగి a
 
 # MAVLink's CRC32
-def crc_update(buf, crc_table, crc):
-    for k in buf:
-        crc = (crc >> 8) ^ crc_table[(crc & 0xff) ^ k]
-    return crc
+నిర్వచనం చక్రీయ_తనిఖీ_update(buf, చక్రీయ_తనిఖీ_పట్టిక, చక్రీయ_తనిఖీ):
+    కొరకు k లో buf:
+        చక్రీయ_తనిఖీ = (చక్రీయ_తనిఖీ >> 8) ^ చక్రీయ_తనిఖీ_పట్టిక[(చక్రీయ_తనిఖీ & 0xff) ^ k]
+    తిరిగి చక్రీయ_తనిఖీ
 
-crc_table = create_table()
+చక్రీయ_తనిఖీ_పట్టిక = create_పట్టిక()
 
 metadata_types = []
-for metadata_type_tuple in args.type:
-    type_id, metadata_file, uri, fallback_uri, translation_uri = metadata_type_tuple.split(',')
-    file_crc = 0
-    for line in open(metadata_file, "rb"):
-        file_crc = crc_update(line, crc_table, file_crc)
+కొరకు metadata_type_tuple లో వాదనలు.type:
+    type_id, metadata_file, uri, fallback_uri, translation_uri = metadata_type_tuple.విభజించు(',')
+    file_చక్రీయ_తనిఖీ = 0
+    కొరకు పంక్తి లో open(metadata_file, "rb"):
+        file_చక్రీయ_తనిఖీ = చక్రీయ_తనిఖీ_update(పంక్తి, చక్రీయ_తనిఖీ_పట్టిక, file_చక్రీయ_తనిఖీ)
     json_type = {
-            'type': int(type_id),
-            'uri': uri.replace('{version}', version_dir),
-            'fileCrc': file_crc,
+            'type': పూర్ణాంకం(type_id),
+            'uri': uri.replace('{version}', సంస్కరణ_dir),
+            'fileCrc': file_చక్రీయ_తనిఖీ,
             }
-    if len(fallback_uri) > 0:
-        json_type['uriFallback'] = fallback_uri.replace('{version}', version_dir)
-    if len(translation_uri) > 0:
+    ఒకవేళ పొడవు(fallback_uri) > 0:
+        json_type['uriFallback'] = fallback_uri.replace('{version}', సంస్కరణ_dir)
+    ఒకవేళ పొడవు(translation_uri) > 0:
         json_type['translationUri'] = translation_uri
     metadata_types.append(json_type)
 component_general['metadataTypes'] = metadata_types
 
-with open(filename, 'w') as outfile:
-    json.dump(component_general, outfile, sort_keys=True)
+తోడుగా open(filename, 'w') ఇవ outfile:
+    json.dump(component_general, outfile, క్రమీకరించు_కీలకాలు=నిజం)
 
-if compress:
+ఒకవేళ compress:
     save_compressed(filename)

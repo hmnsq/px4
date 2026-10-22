@@ -39,43 +39,43 @@
  * @author Julien Lecoeur <julien.lecoeur@gmail.com>
  */
 
-#pragma once
+#సూచన once
 
-#include <cstdint>
+#అన్తర్భావ <cstdint>
 
-#include <matrix/matrix/math.hpp>
-#include <uORB/topics/control_allocator_status.h>
+#అన్తర్భావ <matrix/matrix/math.hpp>
+#అన్తర్భావ <uORB/topics/control_allocator_status.h>
 
-enum class AllocationMethod {
+గణన తరగతి కేటాయింపు_పద్ధతి {
 	NONE = -1,
 	PSEUDO_INVERSE = 0,
 	SEQUENTIAL_DESATURATION = 1,
 	AUTO = 2,
 };
 
-enum class ActuatorType {
+గణన తరగతి ActuatorType {
 	MOTORS = 0,
 	SERVOS,
 
-	COUNT
+	లెక్క_2
 };
 
-enum class EffectivenessUpdateReason {
+గణన తరగతి EffectivenessUpdateReason {
 	NO_EXTERNAL_UPDATE = 0,
 	CONFIGURATION_UPDATE = 1, ///< config changes (parameter)
 	MOTOR_ACTIVATION_UPDATE = 2, ///< motor failure detected or certain redundant motors are switched off to save energy
 };
 
-class ActuatorEffectiveness
+తరగతి ActuatorEffectiveness
 {
-public:
-	ActuatorEffectiveness() = default;
-	virtual ~ActuatorEffectiveness() = default;
+బహిరంగ:
+	ActuatorEffectiveness() = అప్రమేయ;
+	మాయా ~ActuatorEffectiveness() = అప్రమేయ;
 
-	static constexpr int NUM_ACTUATORS = 16;
-	static constexpr int NUM_AXES = 6;
+	స్థిర constexpr పూర్ణాంకం అంకె_ACTUATORS = 16;
+	స్థిర constexpr పూర్ణాంకం అంకె_AXES = 6;
 
-	enum ControlAxis {
+	గణన ControlAxis {
 		ROLL = 0,
 		PITCH,
 		YAW,
@@ -84,47 +84,47 @@ public:
 		THRUST_Z
 	};
 
-	static constexpr int MAX_NUM_MATRICES = 2;
+	స్థిర constexpr పూర్ణాంకం MAX_అంకె_MATRICES = 2;
 
-	using EffectivenessMatrix = matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS>;
-	using ActuatorVector = matrix::Vector<float, NUM_ACTUATORS>;
-	using ActuatorBitmask = uint32_t;
+	ఉపయోగించి Effectiveness_మాతృక = మాతృక::మాతృక_2<దశాంశం, అంకె_AXES, అంకె_ACTUATORS>;
+	ఉపయోగించి Actuator_సదిశ = మాతృక::సదిశ<దశాంశం, అంకె_ACTUATORS>;
+	ఉపయోగించి ActuatorBitmask = uint32_t;
 
-	static_assert(NUM_ACTUATORS <= 8 * sizeof(ActuatorBitmask),
+	static_assert(అంకె_ACTUATORS <= 8 * పరిమాణం(ActuatorBitmask),
 		      "NUM_ACTUATORS exceeds the number of bits available in the mask type.");
 
-	enum class FlightPhase {
+	గణన తరగతి FlightPhase {
 		HOVER_FLIGHT = 0,
 		FORWARD_FLIGHT = 1,
-		TRANSITION_HF_TO_FF = 2,
-		TRANSITION_FF_TO_HF = 3
+		TRANSITION_HF_గమ్యం_FF = 2,
+		TRANSITION_FF_గమ్యం_HF = 3
 	};
 
-	struct Configuration {
+	నిర్మాణం Configuration {
 		/**
 		 * Add an actuator to the selected matrix, returning the index, or -1 on error
 		 */
-		int addActuator(ActuatorType type, const matrix::Vector3f &torque, const matrix::Vector3f &thrust);
+		పూర్ణాంకం కూడు_Actuator(ActuatorType type, స్థిరరాశి మాతృక::Vector3f &torque, స్థిరరాశి మాతృక::Vector3f &thrust);
 
 		/**
 		 * Call this after manually adding N actuators to the selected matrix
 		 */
-		void actuatorsAdded(ActuatorType type, int count);
+		శూన్య actuatorsAdded(ActuatorType type, పూర్ణాంకం లెక్క);
 
-		int totalNumActuators() const;
+		పూర్ణాంకం మొత్తం_అంకె_Actuators() స్థిరరాశి;
 
 		/// Configured effectiveness matrix. Actuators are expected to be filled in order, motors first, then servos
-		EffectivenessMatrix effectiveness_matrices[MAX_NUM_MATRICES];
+		Effectiveness_మాతృక effectiveness_matrices[MAX_అంకె_MATRICES];
 
-		int num_actuators_matrix[MAX_NUM_MATRICES]; ///< current amount, and next actuator index to fill in to effectiveness_matrices
-		ActuatorVector trim[MAX_NUM_MATRICES];
+		పూర్ణాంకం అంకె_actuators_మాతృక[MAX_అంకె_MATRICES]; ///< current amount, and next actuator index to fill in to effectiveness_matrices
+		Actuator_సదిశ trim[MAX_అంకె_MATRICES];
 
-		ActuatorVector linearization_point[MAX_NUM_MATRICES];
+		Actuator_సదిశ linearization_బిందువు[MAX_అంకె_MATRICES];
 
-		int selected_matrix;
+		పూర్ణాంకం selected_మాతృక;
 
-		uint8_t matrix_selection_indexes[NUM_ACTUATORS * MAX_NUM_MATRICES];
-		int num_actuators[(int)ActuatorType::COUNT];
+		uint8_t మాతృక_selection_indexes[అంకె_ACTUATORS * MAX_అంకె_MATRICES];
+		పూర్ణాంకం అంకె_actuators[(పూర్ణాంకం)ActuatorType::లెక్క_2];
 	};
 
 	/**
@@ -132,7 +132,7 @@ public:
 	 *
 	 * @param Flight phase
 	 */
-	virtual void setFlightPhase(const FlightPhase &flight_phase)
+	మాయా శూన్య సమితి_Flight_Phase(స్థిరరాశి FlightPhase &flight_phase)
 	{
 		_flight_phase = flight_phase;
 	}
@@ -141,25 +141,25 @@ public:
 	 * Get the number of effectiveness matrices. Must be <= MAX_NUM_MATRICES.
 	 * This is expected to stay constant.
 	 */
-	virtual int numMatrices() const { return 1; }
+	మాయా పూర్ణాంకం అంకె_Matrices() స్థిరరాశి { తిరిగి 1; }
 
 	/**
 	 * Get the desired allocation method(s) for each matrix, if configured as AUTO
 	 */
-	virtual void getDesiredAllocationMethod(AllocationMethod allocation_method_out[MAX_NUM_MATRICES]) const
+	మాయా శూన్య get_Desired_కేటాయింపు_పద్ధతి(కేటాయింపు_పద్ధతి కేటాయింపు_పద్ధతి_బహిర్గతం[MAX_అంకె_MATRICES]) స్థిరరాశి
 	{
-		for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
-			allocation_method_out[i] = AllocationMethod::PSEUDO_INVERSE;
+		కొరకు (పూర్ణాంకం i = 0; i < MAX_అంకె_MATRICES; ++i) {
+			కేటాయింపు_పద్ధతి_బహిర్గతం[i] = కేటాయింపు_పద్ధతి::PSEUDO_INVERSE;
 		}
 	}
 
 	/**
 	 * Query if the roll, pitch and yaw columns of the mixing matrix should be normalized
 	 */
-	virtual void getNormalizeRPY(bool normalize[MAX_NUM_MATRICES]) const
+	మాయా శూన్య getNormalizeRPY(తార్కిక normalize[MAX_అంకె_MATRICES]) స్థిరరాశి
 	{
-		for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
-			normalize[i] = false;
+		కొరకు (పూర్ణాంకం i = 0; i < MAX_అంకె_MATRICES; ++i) {
+			normalize[i] = అబద్ధం;
 		}
 	}
 
@@ -168,22 +168,22 @@ public:
 	 *
 	 * @return true if updated and matrix is set
 	 */
-	virtual bool getEffectivenessMatrix(Configuration &configuration, EffectivenessUpdateReason external_update) { return false;}
+	మాయా తార్కిక get_Effectiveness_మాతృక(Configuration &configuration, EffectivenessUpdateReason external_update) { తిరిగి అబద్ధం;}
 
 	/**
 	 * Get the current flight phase
 	 *
 	 * @return Flight phase
 	 */
-	const FlightPhase &getFlightPhase() const
+	స్థిరరాశి FlightPhase &getFlightPhase() స్థిరరాశి
 	{
-		return _flight_phase;
+		తిరిగి _flight_phase;
 	}
 
 	/**
 	 * Display name
 	 */
-	virtual const char *name() const = 0;
+	మాయా స్థిరరాశి అక్షరం *name() స్థిరరాశి = 0;
 
 	/**
 	 * Callback from the control allocation, allowing to manipulate the setpoint.
@@ -191,7 +191,7 @@ public:
 	 *
 	 * @param actuator_sp input & output setpoint
 	 */
-	virtual void allocateAuxilaryControls(const float dt, int matrix_index, ActuatorVector &actuator_sp) {}
+	మాయా శూన్య allocateAuxilaryControls(స్థిరరాశి దశాంశం dt, పూర్ణాంకం మాతృక_సూచీ, Actuator_సదిశ &actuator_sp) {}
 
 	/**
 	 * Callback from the control allocation, allowing to manipulate the setpoint.
@@ -199,19 +199,19 @@ public:
 	 * It is called after the matrix multiplication and before final clipping.
 	 * @param actuator_sp input & output setpoint
 	 */
-	virtual void updateSetpoint(const matrix::Vector<float, NUM_AXES> &control_sp, int matrix_index,
-				    ActuatorVector &actuator_sp, const ActuatorVector &actuator_min, const ActuatorVector &actuator_max) {}
+	మాయా శూన్య updateSetpoint(స్థిరరాశి మాతృక::సదిశ<దశాంశం, అంకె_AXES> &control_sp, పూర్ణాంకం మాతృక_సూచీ,
+				    Actuator_సదిశ &actuator_sp, స్థిరరాశి Actuator_సదిశ &actuator_min, స్థిరరాశి Actuator_సదిశ &actuator_max) {}
 
 	/**
 	 * Get a bitmask of motors to be stopped
 	 */
-	ActuatorBitmask getStoppedMotors() const;
+	ActuatorBitmask getStoppedMotors() స్థిరరాశి;
 
 	/**
 	 * Fill in the unallocated torque and thrust, customized by effectiveness type.
 	 * Can be implemented for every type separately. If not implemented then the effectivenes matrix is used instead.
 	 */
-	virtual void getUnallocatedControl(int matrix_index, control_allocator_status_s &status) {}
+	మాయా శూన్య getUnallocatedControl(పూర్ణాంకం మాతృక_సూచీ, control_allocator_స్థితి_s &స్థితి_2) {}
 
 	/**
 	 * Override the collective tilt setpoint that would normally come from
@@ -220,33 +220,33 @@ public:
 	 * @param do_override When true, use @p collective_tilt instead of the uORB value.
 	 * @param collective_tilt Normalised setpoint in [0, 1]. 0: vertical, 1: horizontal.
 	 */
-	virtual void overrideCollectiveTilt(bool /*do_override*/, float /*collective_tilt*/) {}
+	మాయా శూన్య overrideCollectiveTilt(తార్కిక /*do_override*/, దశాంశం /*collective_tilt*/) {}
 
 	/**
 	 * Record which components of the thrust setpoint are NaN, so that motors in that direction are stopped.
 	 *
 	 * @param thrust_sp The thrust setpoint as received by the allocator (instance zero - multicopter only)
 	 */
-	void stopMotorsBasedOnThrustSetpoint(const matrix::Vector3f &thrust_sp)
+	శూన్య stopMotorsBasedOnThrustSetpoint(స్థిరరాశి మాతృక::Vector3f &thrust_sp)
 	{
 		_longitudinal_motors_stopped_by_thrust = !PX4_ISFINITE(thrust_sp(0));
 		_lateral_motors_stopped_by_thrust = !PX4_ISFINITE(thrust_sp(1));
 		_vertical_motors_stopped_by_thrust = !PX4_ISFINITE(thrust_sp(2));
 	}
 
-protected:
+రక్షిత:
 
-	struct MotorDirectionBitmasks {
+	నిర్మాణం MotorDirectionBitmasks {
 		ActuatorBitmask longitudinal{};
 		ActuatorBitmask lateral{};
 		ActuatorBitmask vertical{};
 	} _motor_direction_bitmasks;
 
 	FlightPhase _flight_phase{FlightPhase::HOVER_FLIGHT};
-	ActuatorBitmask _stopped_motors_mask_due_to_flight_phase{};
+	ActuatorBitmask stopped_motors_ముసుగు_due_గమ్యం_flight_phase{};
 
-	bool _longitudinal_motors_stopped_by_thrust{false};
-	bool _vertical_motors_stopped_by_thrust{false};
-	bool _lateral_motors_stopped_by_thrust{false};
+	తార్కిక _longitudinal_motors_stopped_by_thrust{అబద్ధం};
+	తార్కిక _vertical_motors_stopped_by_thrust{అబద్ధం};
+	తార్కిక _lateral_motors_stopped_by_thrust{అబద్ధం};
 
 };

@@ -31,38 +31,38 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "FunctionProviderBase.hpp"
+#అన్తర్భావ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear.h>
+#అన్తర్భావ <uORB/topics/landing_gear.h>
 
 /**
  * Functions: Landing_Gear
  */
-class FunctionLandingGear : public FunctionProviderBase
+తరగతి FunctionLandingGear : బహిరంగ Function_Provider_పునాది
 {
-public:
-	FunctionLandingGear() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGear(); }
+బహిరంగ:
+	FunctionLandingGear() = అప్రమేయ;
+	స్థిర Function_Provider_పునాది *allocate(స్థిరరాశి Context &context) { తిరిగి కొత్త FunctionLandingGear(); }
 
-	void update() override
+	శూన్య update() override
 	{
 		landing_gear_s landing_gear;
 
-		if (_topic.update(&landing_gear)) {
-			if (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
-				_data = -1.f;
+		ఒకవేళ (_topic.update(&landing_gear)) {
+			ఒకవేళ (landing_gear.landing_gear == landing_gear_s::GEAR_కిందికి) {
+				దత్తాంశం_3 = -1.f;
 
-			} else if (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
-				_data = 1.f;
+			} లేకపోతే ఒకవేళ (landing_gear.landing_gear == landing_gear_s::GEAR_పైకి) {
+				దత్తాంశం_3 = 1.f;
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	దశాంశం value(OutputFunction func) override { తిరిగి దత్తాంశం_3; }
 
-private:
+అంతరంగ:
 	uORB::Subscription _topic{ORB_ID(landing_gear)};
-	float _data{-1.f};
+	దశాంశం దత్తాంశం_3{-1.f};
 };

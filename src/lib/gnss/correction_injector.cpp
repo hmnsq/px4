@@ -32,192 +32,192 @@
  ****************************************************************************/
 
 
-#include "correction_injector.h"
+#అన్తర్భావ "correction_injector.h"
 
-#include <errno.h>
-#include <fcntl.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
+#అన్తర్భావ <errno.h>
+#అన్తర్భావ <fcntl.h>
+#అన్తర్భావ <string.h>
+#అన్తర్భావ <sys/ioctl.h>
+#అన్తర్భావ <unistd.h>
 
-#include <mathlib/mathlib.h>
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/time.h>
+#అన్తర్భావ <mathlib/mathlib.h>
+#అన్తర్భావ <px4_platform_common/log.h>
+#అన్తర్భావ <px4_platform_common/posix.h>
+#అన్తర్భావ <px4_platform_common/time.h>
 
-using namespace time_literals;
+ఉపయోగించి నామాకాశ సమయం_literals;
 
-namespace gnss
+నామాకాశ gnss
 {
 
 // Without a chunk from the selected source for this long, another source may be taken
-static constexpr hrt_abstime kSourceTimeout = 5_s;
+స్థిర constexpr hrt_abstime k_ఆధారం_Timeout = 5_s;
 // The injection rate is frames per second over windows this long
-static constexpr hrt_abstime kRateWindow = 5_s;
+స్థిర constexpr hrt_abstime k_రేటు_కిటికీ = 5_s;
 // Start bit, eight data bits, stop bit
-static constexpr uint32_t kBitsPerByteOnTheWire = 10;
+స్థిర constexpr uint32_t k_బిట్లు_చొప్పున_Byte_On_The_Wire = 10;
 // A full TX buffer is retried no sooner than this, and this late when the baudrate is unknown
-static constexpr uint32_t kMinRetryDelayUs = 1_ms;
-static constexpr uint32_t kFallbackRetryDelayUs = 10_ms;
+స్థిర constexpr uint32_t kMinRetryDelayUs = 1_ms;
+స్థిర constexpr uint32_t kFallbackRetryDelayUs = 10_ms;
 
-CorrectionInjector::CorrectionInjector(const char *name, const char *port) :
-	ScheduledWorkItem(name, px4::serial_port_to_wq(port))
+CorrectionInjector::CorrectionInjector(స్థిరరాశి అక్షరం *name, స్థిరరాశి అక్షరం *పోర్టు) :
+	Scheduled_Work_అంశం(name, px4::serial_పోర్టు_గమ్యం_wq(పోర్టు))
 {
-	strncpy(_port, port, sizeof(_port) - 1);
+	strncpy(పోర్టు_2, పోర్టు, పరిమాణం(పోర్టు_2) - 1);
 }
 
 CorrectionInjector::~CorrectionInjector()
 {
 	_moving_baseline_sub.unregisterCallback();
 
-	for (auto &sub : _corrections_sub) {
+	కొరకు (స్వయంచాలక &sub : _corrections_sub) {
 		sub.unregisterCallback();
 	}
 
 	// Cancels a pending retry, then waits for a Run() in progress, which uses the members destroyed after this body
-	ScheduleClear();
+	కాలపట్టిక_Clear();
 	Deinit();
 
 	perf_free(_injected);
-	perf_free(_tx_buffer_full);
-	perf_free(_framer_full);
+	perf_free(tx_బఫరు_నిండిన);
+	perf_free(framer_నిండిన);
 	perf_free(_unsupported);
 	perf_free(_short_write);
 }
 
-void CorrectionInjector::start(const Config &config)
+శూన్య CorrectionInjector::ప్రారంభం(స్థిరరాశి Config &config)
 {
-	_rate_window_start = hrt_absolute_time();
-	_rate_window_count = perf_event_count(_injected);
-	_injection_rate_hz = 0.f;
+	రేటు_కిటికీ_ప్రారంభం = hrt_absolute_సమయం();
+	రేటు_కిటికీ_లెక్క = perf_event_లెక్క(_injected);
+	injection_రేటు_hz = 0.f;
 
 	// Only the stream in use schedules runs: a base would otherwise wake for each moving-baseline chunk it publishes
-	if (config.stream == Stream::MovingBaseline) {
-		_moving_baseline_sub.registerCallback();
+	ఒకవేళ (config.ప్రవాహం == ప్రవాహం_2::MovingBaseline) {
+		_moving_baseline_sub.రిజిస్టరు_Callback();
 
-	} else {
-		for (auto &sub : _corrections_sub) {
-			sub.registerCallback();
+	} లేకపోతే {
+		కొరకు (స్వయంచాలక &sub : _corrections_sub) {
+			sub.రిజిస్టరు_Callback();
 		}
 	}
 
 	pthread_mutex_lock(&_mutex);
 	_config = config;
-	_active = true;
-	_write_error_reported = false;
+	చురుకైన = నిజం;
+	_write_error_reported = అబద్ధం;
 	pthread_mutex_unlock(&_mutex);
 
 	// What queued up during configuration still goes out: a base sends its position (1005/1006) only every few seconds
-	ScheduleNow();
+	కాలపట్టిక_Now();
 }
 
-void CorrectionInjector::stop()
+శూన్య CorrectionInjector::stop()
 {
 	// Returns only after a write in progress, so the owner's next command can't land inside an RTCM frame
 	pthread_mutex_lock(&_mutex);
-	_active = false;
+	చురుకైన = అబద్ధం;
 	pthread_mutex_unlock(&_mutex);
 
 	// Chunks still queue up until start(), which drains them
 	_moving_baseline_sub.unregisterCallback();
 
-	for (auto &sub : _corrections_sub) {
+	కొరకు (స్వయంచాలక &sub : _corrections_sub) {
 		sub.unregisterCallback();
 	}
 
 	// The descriptor is closed where it was opened. Bounded: a starved work queue leaks it rather than blocking the owner.
-	ScheduleNow();
+	కాలపట్టిక_Now();
 
-	for (int i = 0; i < 20; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < 20; i++) {
 		pthread_mutex_lock(&_mutex);
-		const bool closed = (_fd < 0);
+		స్థిరరాశి తార్కిక closed = (_fd < 0);
 		pthread_mutex_unlock(&_mutex);
 
-		if (closed) {
-			break;
+		ఒకవేళ (closed) {
+			ఆపు;
 		}
 
 		px4_usleep(5_ms);
 	}
 }
 
-float CorrectionInjector::injection_rate_hz()
+దశాంశం CorrectionInjector::injection_రేటు_hz_2()
 {
-	const hrt_abstime now = hrt_absolute_time();
+	స్థిరరాశి hrt_abstime now = hrt_absolute_సమయం();
 
-	if (now - _rate_window_start >= kRateWindow) {
-		const uint64_t count = perf_event_count(_injected);
-		_injection_rate_hz = (float)(count - _rate_window_count) * 1e6f / (float)(now - _rate_window_start);
-		_rate_window_count = count;
-		_rate_window_start = now;
+	ఒకవేళ (now - రేటు_కిటికీ_ప్రారంభం >= k_రేటు_కిటికీ) {
+		స్థిరరాశి uint64_t లెక్క = perf_event_లెక్క(_injected);
+		injection_రేటు_hz = (దశాంశం)(లెక్క - రేటు_కిటికీ_లెక్క) * 1e6f / (దశాంశం)(now - రేటు_కిటికీ_ప్రారంభం);
+		రేటు_కిటికీ_లెక్క = లెక్క;
+		రేటు_కిటికీ_ప్రారంభం = now;
 	}
 
-	return _injection_rate_hz;
+	తిరిగి injection_రేటు_hz;
 }
 
-void CorrectionInjector::Run()
+శూన్య CorrectionInjector::నిరంతరం()
 {
 	pthread_mutex_lock(&_mutex);
 
-	if (!_active) {
-		if (_fd >= 0) {
+	ఒకవేళ (!చురుకైన) {
+		ఒకవేళ (_fd >= 0) {
 			::close(_fd);
 			_fd = -1;
 		}
 
-	} else {
-		if (_fd < 0) {
-			_fd = ::open(_port, O_WRONLY | O_NONBLOCK | O_NOCTTY);
+	} లేకపోతే {
+		ఒకవేళ (_fd < 0) {
+			_fd = ::open(పోర్టు_2, O_WRONLY | O_NONBLOCK | O_NOCTTY);
 
-			if (_fd < 0 && !_write_error_reported) {
-				PX4_ERR("%s open for injection failed: %d", _port, errno);
-				_write_error_reported = true;
+			ఒకవేళ (_fd < 0 && !_write_error_reported) {
+				PX4_ERR("%s open for injection failed: %d", పోర్టు_2, errno);
+				_write_error_reported = నిజం;
 			}
 		}
 
-		if (_fd >= 0) {
-			if (_config.stream == Stream::MovingBaseline) {
+		ఒకవేళ (_fd >= 0) {
+			ఒకవేళ (_config.ప్రవాహం == ప్రవాహం_2::MovingBaseline) {
 				drain_moving_baseline();
 
-			} else {
+			} లేకపోతే {
 				drain_corrections();
 			}
 
-			inject_frames();
+			inject_చట్రాలు();
 		}
 	}
 
 	pthread_mutex_unlock(&_mutex);
 }
 
-void CorrectionInjector::drain_corrections()
+శూన్య CorrectionInjector::drain_corrections()
 {
-	rtcm_data_s chunk;
+	rtcm_దత్తాంశం_s chunk;
 
-	if (select_corrections_instance(chunk)) {
-		add_chunk(chunk);
+	ఒకవేళ (select_corrections_instance(chunk)) {
+		కూడు_chunk(chunk);
 	}
 
-	const int8_t selected = _selected_instance.load();
+	స్థిరరాశి int8_t selected = _selected_instance.ఎక్కించు();
 
-	if (selected < 0) {
-		return;
+	ఒకవేళ (selected < 0) {
+		తిరిగి;
 	}
 
-	for (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _corrections_sub[selected].update(&chunk); n++) {
-		if (chunk.device_id != _config.own_device_id) {
-			add_chunk(chunk);
+	కొరకు (గుర్తులేని n = 0; n < rtcm_దత్తాంశం_s::ORB_వరుస_నిడివి && _corrections_sub[selected].update(&chunk); n++) {
+		ఒకవేళ (chunk.device_id != _config.own_device_id) {
+			కూడు_chunk(chunk);
 		}
 	}
 }
 
-void CorrectionInjector::drain_moving_baseline()
+శూన్య CorrectionInjector::drain_moving_baseline()
 {
-	rtcm_data_s chunk;
+	rtcm_దత్తాంశం_s chunk;
 
-	for (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _moving_baseline_sub.update(&chunk); n++) {
-		if (chunk.device_id != _config.own_device_id) {
-			add_chunk(chunk);
+	కొరకు (గుర్తులేని n = 0; n < rtcm_దత్తాంశం_s::ORB_వరుస_నిడివి && _moving_baseline_sub.update(&chunk); n++) {
+		ఒకవేళ (chunk.device_id != _config.own_device_id) {
+			కూడు_chunk(chunk);
 		}
 	}
 }
@@ -225,123 +225,123 @@ void CorrectionInjector::drain_moving_baseline()
 // Once the selected source has gone quiet, takes the first instance with a fresh chunk from another device. update()
 // hands out the oldest queued chunk, so a backlog from before start() is walked through here in one go rather than
 // one chunk per publication. Returns true with the chunk that selected the source, which goes out like any other.
-bool CorrectionInjector::select_corrections_instance(rtcm_data_s &chunk)
+తార్కిక CorrectionInjector::select_corrections_instance(rtcm_దత్తాంశం_s &chunk)
 {
-	if (_selected_instance.load() >= 0 && hrt_elapsed_time(&_last_chunk_time) < kSourceTimeout) {
-		return false;
+	ఒకవేళ (_selected_instance.ఎక్కించు() >= 0 && hrt_elapsed_సమయం(&చివరి_chunk_సమయం) < k_ఆధారం_Timeout) {
+		తిరిగి అబద్ధం;
 	}
 
 	_selected_instance.store(-1);
 
-	for (int8_t instance = 0; instance < rtcm_data_s::MAX_INSTANCES; instance++) {
-		for (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _corrections_sub[instance].update(&chunk); n++) {
-			if (chunk.device_id != _config.own_device_id && hrt_elapsed_time(&chunk.timestamp) < kSourceTimeout) {
+	కొరకు (int8_t instance = 0; instance < rtcm_దత్తాంశం_s::MAX_INSTANCES; instance++) {
+		కొరకు (గుర్తులేని n = 0; n < rtcm_దత్తాంశం_s::ORB_వరుస_నిడివి && _corrections_sub[instance].update(&chunk); n++) {
+			ఒకవేళ (chunk.device_id != _config.own_device_id && hrt_elapsed_సమయం(&chunk.timestamp) < k_ఆధారం_Timeout) {
 				_selected_instance.store(instance);
-				return true;
+				తిరిగి నిజం;
 			}
 		}
 	}
 
-	return false;
+	తిరిగి అబద్ధం;
 }
 
-void CorrectionInjector::add_chunk(const rtcm_data_s &chunk)
+శూన్య CorrectionInjector::కూడు_chunk(స్థిరరాశి rtcm_దత్తాంశం_s &chunk)
 {
-	const size_t len = math::min<size_t>(chunk.len, sizeof(chunk.data));
+	స్థిరరాశి size_t len = math::min<size_t>(chunk.len, పరిమాణం(chunk.దత్తాంశం));
 
-	if (_framer.addData(chunk.data, len) < len) {
-		perf_count(_framer_full);
+	ఒకవేళ (_framer.కూడు_దత్తాంశం(chunk.దత్తాంశం, len) < len) {
+		perf_లెక్క(framer_నిండిన);
 	}
 
-	_last_chunk_time = hrt_absolute_time();
+	చివరి_chunk_సమయం = hrt_absolute_సమయం();
 }
 
-void CorrectionInjector::inject_frames()
+శూన్య CorrectionInjector::inject_చట్రాలు()
 {
-	size_t frame_len = 0;
+	size_t చట్రం_len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-	const uint8_t *frame = nullptr;
+	స్థిరరాశి uint8_t *చట్రం = శూన్యసూచిక;
 
-	while ((frame = _framer.getNextMessage(&frame_len, &protocol)) != nullptr) {
-		if ((_config.protocols & protocol_bit(protocol)) == 0) {
-			_framer.consumeMessage(frame_len);
-			perf_count(_unsupported);
-			continue;
+	అయితే ((చట్రం = _framer.get_తదుపరి_సందేశం(&చట్రం_len, &protocol)) != శూన్యసూచిక) {
+		ఒకవేళ ((_config.protocols & protocol_బిట్టు(protocol)) == 0) {
+			_framer.consume_సందేశం(చట్రం_len);
+			perf_లెక్క(_unsupported);
+			కొనసాగు;
 		}
 
-		const ssize_t tx_space = tx_space_available();
+		స్థిరరాశి ssize_t tx_space = tx_space_అందుబాటు();
 
 		// Unknown on POSIX, where the write itself is the check
-		if (tx_space >= 0 && tx_space < (ssize_t)frame_len) {
-			perf_count(_tx_buffer_full);
-			ScheduleDelayed(drain_time_us(frame_len - tx_space));
-			break;
+		ఒకవేళ (tx_space >= 0 && tx_space < (ssize_t)చట్రం_len) {
+			perf_లెక్క(tx_బఫరు_నిండిన);
+			కాలపట్టిక_Delayed(drain_సమయం_us(చట్రం_len - tx_space));
+			ఆపు;
 		}
 
-		const ssize_t written = ::write(_fd, frame, frame_len);
+		స్థిరరాశి ssize_t written = ::లిఖ(_fd, చట్రం, చట్రం_len);
 
-		if (written < 0 && errno == EAGAIN) {
+		ఒకవేళ (written < 0 && errno == EAGAIN) {
 			// The buffer filled between the check and the write: the frame stays for the retry
-			perf_count(_tx_buffer_full);
-			ScheduleDelayed(drain_time_us(frame_len));
-			break;
+			perf_లెక్క(tx_బఫరు_నిండిన);
+			కాలపట్టిక_Delayed(drain_సమయం_us(చట్రం_len));
+			ఆపు;
 		}
 
-		if (written != (ssize_t)frame_len) {
-			perf_count(_short_write);
+		ఒకవేళ (written != (ssize_t)చట్రం_len) {
+			perf_లెక్క(_short_write);
 
-			if (written < 0 && !_write_error_reported) {
-				PX4_ERR("%s injection write failed: %d", _port, errno);
-				_write_error_reported = true;
+			ఒకవేళ (written < 0 && !_write_error_reported) {
+				PX4_ERR("%s injection write failed: %d", పోర్టు_2, errno);
+				_write_error_reported = నిజం;
 			}
 		}
 
-		_framer.consumeMessage(frame_len);
-		perf_count(_injected);
+		_framer.consume_సందేశం(చట్రం_len);
+		perf_లెక్క(_injected);
 	}
 }
 
-ssize_t CorrectionInjector::tx_space_available() const
+ssize_t CorrectionInjector::tx_space_అందుబాటు() స్థిరరాశి
 {
-#if defined(FIONSPACE)
-	int space = 0;
+#ఒకవేళ defined(FIONSPACE)
+	పూర్ణాంకం space = 0;
 
-	if (::ioctl(_fd, FIONSPACE, &space) == 0) {
-		return space;
+	ఒకవేళ (::ioctl(_fd, FIONSPACE, &space) == 0) {
+		తిరిగి space;
 	}
 
-#endif
-	return -1;
+#అయితే_ముగింపు
+	తిరిగి -1;
 }
 
-uint32_t CorrectionInjector::drain_time_us(size_t bytes) const
+uint32_t CorrectionInjector::drain_సమయం_us(size_t బైట్లు) స్థిరరాశి
 {
-	const uint32_t baudrate = _config.baudrate;
+	స్థిరరాశి uint32_t baudrate = _config.baudrate;
 
-	if (baudrate == 0) {
-		return kFallbackRetryDelayUs;
+	ఒకవేళ (baudrate == 0) {
+		తిరిగి kFallbackRetryDelayUs;
 	}
 
-	return math::max<uint32_t>(kMinRetryDelayUs, (uint64_t)bytes * kBitsPerByteOnTheWire * 1_s / baudrate);
+	తిరిగి math::max<uint32_t>(kMinRetryDelayUs, (uint64_t)బైట్లు * k_బిట్లు_చొప్పున_Byte_On_The_Wire * 1_s / baudrate);
 }
 
-void CorrectionInjector::print_status() const
+శూన్య CorrectionInjector::print_స్థితి() స్థిరరాశి
 {
 	PX4_INFO("injecting %s: %6.2f Hz, source instance %d",
-		 _config.stream == Stream::MovingBaseline ? "moving baseline" : "corrections", (double)_injection_rate_hz,
-		 (int)_selected_instance.load());
+		 _config.ప్రవాహం == ప్రవాహం_2::MovingBaseline ? "moving baseline" : "corrections", (ద్విగుణ)injection_రేటు_hz,
+		 (పూర్ణాంకం)_selected_instance.ఎక్కించు());
 	perf_print_counter(_injected);
-	perf_print_counter(_tx_buffer_full);
-	perf_print_counter(_framer_full);
+	perf_print_counter(tx_బఫరు_నిండిన);
+	perf_print_counter(framer_నిండిన);
 	perf_print_counter(_unsupported);
 	perf_print_counter(_short_write);
 
-	const CorrectionFramerStats stats = _framer.getStats();
+	స్థిరరాశి CorrectionFramerStats stats = _framer.getStats();
 
-	if (stats.messages_parsed > 0 || stats.crc_errors > 0 || stats.bytes_discarded > 0) {
+	ఒకవేళ (stats.messages_parsed > 0 || stats.చక్రీయ_తనిఖీ_errors_2 > 0 || stats.బైట్లు_discarded_2 > 0) {
 		PX4_INFO("framed: %u RTCM3, %u SPARTN, %u UBX, %u CRC errors, %u bytes discarded",
-			 (unsigned)stats.rtcm3_messages, (unsigned)stats.spartn_messages, (unsigned)stats.ubx_messages,
-			 (unsigned)stats.crc_errors, (unsigned)stats.bytes_discarded);
+			 (గుర్తులేని)stats.rtcm3_messages, (గుర్తులేని)stats.spartn_messages, (గుర్తులేని)stats.ubx_messages,
+			 (గుర్తులేని)stats.చక్రీయ_తనిఖీ_errors_2, (గుర్తులేని)stats.బైట్లు_discarded_2);
 	}
 }
 

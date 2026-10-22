@@ -31,140 +31,140 @@
  *
  ****************************************************************************/
 
-#ifndef GNSS_CHECKS_H
-#define GNSS_CHECKS_H
+#నిర్వచితం_కాకపోతే GNSS_CHECKS_H
+#నిర్వచించు GNSS_CHECKS_H
 
-#include <lib/geo/geo.h>
-#include <lib/mathlib/mathlib.h>
-#include <lib/matrix/matrix/math.hpp>
-#include <uORB/topics/vehicle_gnss.h>
+#అన్తర్భావ <lib/geo/geo.h>
+#అన్తర్భావ <lib/mathlib/mathlib.h>
+#అన్తర్భావ <lib/matrix/matrix/math.hpp>
+#అన్తర్భావ <uORB/topics/vehicle_gnss.h>
 
-struct gnssChecksSample {
-	uint64_t time_us{};     ///< measurement time (us)
-	double lat{};           ///< latitude (deg)
-	double lon{};           ///< longitude (deg)
-	float alt{};            ///< altitude above MSL (m)
-	matrix::Vector3f vel{}; ///< NED velocity (m/s)
-	float hacc{};           ///< 1-std horizontal position error (m)
-	float vacc{};           ///< 1-std vertical position error (m)
-	float sacc{};           ///< 1-std speed error (m/s)
+నిర్మాణం gnssChecksSample {
+	uint64_t సమయం_us{};     ///< measurement time (us)
+	ద్విగుణ lat{};           ///< latitude (deg)
+	ద్విగుణ lon{};           ///< longitude (deg)
+	దశాంశం alt{};            ///< altitude above MSL (m)
+	మాతృక::Vector3f vel{}; ///< NED velocity (m/s)
+	దశాంశం hacc{};           ///< 1-std horizontal position error (m)
+	దశాంశం vacc{};           ///< 1-std vertical position error (m)
+	దశాంశం sacc{};           ///< 1-std speed error (m/s)
 	uint8_t fix_type{};     ///< 0-1: no fix, 2: 2D fix, 3: 3D fix, 4: RTCM code differential, 5: RTK float, 6: RTK fixed
 	uint8_t nsats{};        ///< number of satellites used
-	float pdop{};           ///< position dilution of precision
-	bool spoofed{};         ///< the receiver reports spoofing
-	bool jammed{};          ///< the receiver reports jamming
+	దశాంశం pdop{};           ///< position dilution of precision
+	తార్కిక spoofed{};         ///< the receiver reports spoofing
+	తార్కిక jammed{};          ///< the receiver reports jamming
 };
 
-class GnssChecks final
+తరగతి GnssChecks final
 {
-public:
-	struct Params {
-		int32_t check_mask{2047};
+బహిరంగ:
+	నిర్మాణం Params {
+		int32_t check_ముసుగు{2047};
 		int32_t req_nsats{6};
-		float req_pdop{2.5f};
-		float req_eph{3.f};
-		float req_epv{5.f};
-		float req_sacc{0.5f};
-		float req_hdrift{0.1f};
-		float req_vdrift{0.2f};
+		దశాంశం req_pdop{2.5f};
+		దశాంశం req_eph{3.f};
+		దశాంశం req_epv{5.f};
+		దశాంశం req_sacc{0.5f};
+		దశాంశం req_hdrift{0.1f};
+		దశాంశం req_vdrift{0.2f};
 		int32_t req_fix{3};
-		uint64_t min_health_time_us{10'000'000};
+		uint64_t min_health_సమయం_us{10'000'000};
 	};
 
-	void setParams(const Params &params) { _params = params; }
+	శూన్య సమితి_Params(స్థిరరాశి Params &params) { _params = params; }
 
 	/*
 	 * Return true if the sample may be used. The strict checks (the GNSS_REQ_* thresholds, satellite count, PDOP, and
 	 * drift at rest on the ground) decide until they pass and again whenever the vehicle is disarmed on the ground. The
 	 * relaxed checks (fixed, looser limits) decide otherwise while the strict ones fail. Both run on every sample.
 	*/
-	bool run(const gnssChecksSample &gnss, bool armed, bool in_air, bool vehicle_at_rest);
-	bool passed() const { return _passed; }
+	తార్కిక నిరంతరం_2(స్థిరరాశి gnssChecksSample &gnss, తార్కిక armed, తార్కిక లోపల_air, తార్కిక vehicle_at_rest);
+	తార్కిక passed() స్థిరరాశి { తిరిగి _passed; }
 
 	// The strict checks decided the last run: they haven't passed since the vehicle was disarmed on the ground, or they
 	// pass
-	bool strict() const { return _strict; }
+	తార్కిక strict() స్థిరరాశి { తిరిగి _strict; }
 
 	// The last sample passed the strict checks, and no check that decided passed() failed for the required pass
 	// duration. Once the relaxed checks decide, a sample that fails only the strict ones doesn't restart that duration,
 	// so that a single one doesn't drop the receiver's rank for GNSS_REQ_TIME: the selection's own hold rides through it.
-	bool passedStrict() const { return _passed_strict; }
+	తార్కిక passedStrict() స్థిరరాశి { తిరిగి _passed_strict; }
 
 	// The enabled checks the last sample failed at the strict thresholds, as vehicle_gnss_s::CHECK_* bits
-	uint16_t getStrictFailFlags() const { return _strict_fail_flags & getEnabledChecks(); }
+	uint16_t getStrictFailFlags() స్థిరరాశి { తిరిగి _strict_fail_flags & getEnabledChecks(); }
 
 	// The enabled checks the last sample failed at the relaxed thresholds, as vehicle_gnss_s::CHECK_* bits
-	uint16_t getRelaxedFailFlags() const { return _relaxed_fail_flags & getEnabledChecks(); }
+	uint16_t getRelaxedFailFlags() స్థిరరాశి { తిరిగి _relaxed_fail_flags & getEnabledChecks(); }
 
 	// The checks enabled in GNSS_CHECK, as vehicle_gnss_s::CHECK_* bits
-	uint16_t getEnabledChecks() const { return static_cast<uint16_t>(_params.check_mask) & kAllChecks; }
+	uint16_t getEnabledChecks() స్థిరరాశి { తిరిగి static_cast<uint16_t>(_params.check_ముసుగు) & kAllChecks; }
 
-	float horizontal_position_drift_rate_m_s() const { return _horizontal_position_drift_rate_m_s; }
-	float vertical_position_drift_rate_m_s() const { return _vertical_position_drift_rate_m_s; }
-	float filtered_horizontal_velocity_m_s() const { return _filtered_horizontal_velocity_m_s; }
+	దశాంశం horizontal_position_drift_రేటు_m_s_2() స్థిరరాశి { తిరిగి horizontal_position_drift_రేటు_m_s; }
+	దశాంశం vertical_position_drift_రేటు_m_s_2() స్థిరరాశి { తిరిగి vertical_position_drift_రేటు_m_s; }
+	దశాంశం filtered_horizontal_velocity_m_s() స్థిరరాశి { తిరిగి _filtered_horizontal_velocity_m_s; }
 
-private:
-	static constexpr uint16_t kAllChecks = vehicle_gnss_s::CHECK_NSATS | vehicle_gnss_s::CHECK_PDOP | vehicle_gnss_s::CHECK_EPH
+అంతరంగ:
+	స్థిర constexpr uint16_t kAllChecks = vehicle_gnss_s::CHECK_NSATS | vehicle_gnss_s::CHECK_PDOP | vehicle_gnss_s::CHECK_EPH
 					       | vehicle_gnss_s::CHECK_EPV | vehicle_gnss_s::CHECK_SACC | vehicle_gnss_s::CHECK_HDRIFT
 					       | vehicle_gnss_s::CHECK_VDRIFT | vehicle_gnss_s::CHECK_HSPEED | vehicle_gnss_s::CHECK_VSPEED
 					       | vehicle_gnss_s::CHECK_SPOOFED | vehicle_gnss_s::CHECK_FIX | vehicle_gnss_s::CHECK_JAMMED;
 
 	// A receiver that has not passed for this long qualifies from scratch again, as after a failure. 7 s is the
 	// outage after which the EKF stops using GNSS, and after which it used to reset these checks.
-	static constexpr uint64_t kPassTimeoutUs = 7'000'000;
+	స్థిర constexpr uint64_t kPassTimeoutUs = 7'000'000;
 
-	void reset()
+	శూన్య reset()
 	{
-		_passed = false;
-		_time_last_pass_us = 0;
-		_time_last_fail_us = 0;
+		_passed = అబద్ధం;
+		సమయం_చివరి_pass_us = 0;
+		సమయం_చివరి_fail_us = 0;
 		resetDriftFilters();
 	}
 
 	// How long the checks must pass after a failure before passed() is true
-	uint64_t getRequiredPassDurationUs(bool relaxed) const
+	uint64_t getRequiredPassDurationUs(తార్కిక relaxed) స్థిరరాశి
 	{
-		return relaxed ? math::max((uint64_t)1e6, (uint64_t)_params.min_health_time_us / 10)
-		       : (uint64_t)_params.min_health_time_us;
+		తిరిగి relaxed ? math::max((uint64_t)1e6, (uint64_t)_params.min_health_సమయం_us / 10)
+		       : (uint64_t)_params.min_health_సమయం_us;
 	}
 
-	static void setFail(uint16_t &fail_flags, uint16_t check, bool failed);
-	bool enabledChecksPass(uint16_t fail_flags, uint16_t checks) const { return (fail_flags & checks & getEnabledChecks()) == 0; }
+	స్థిర శూన్య సమితి_Fail(uint16_t &fail_flags, uint16_t check, తార్కిక failed);
+	తార్కిక enabledChecksPass(uint16_t fail_flags, uint16_t checks) స్థిరరాశి { తిరిగి (fail_flags & checks & getEnabledChecks()) == 0; }
 
-	bool runRelaxedChecks(const gnssChecksSample &gnss);
-	bool runStrictChecks(const gnssChecksSample &gnss, bool in_air, bool vehicle_at_rest);
-	void runOnGroundGnssChecks(const gnssChecksSample &gnss, bool in_air, bool vehicle_at_rest);
+	తార్కిక నిరంతరం_Relaxed_Checks(స్థిరరాశి gnssChecksSample &gnss);
+	తార్కిక నిరంతరం_Strict_Checks(స్థిరరాశి gnssChecksSample &gnss, తార్కిక లోపల_air, తార్కిక vehicle_at_rest);
+	శూన్య నిరంతరం_On_Ground_Gnss_Checks(స్థిరరాశి gnssChecksSample &gnss, తార్కిక లోపల_air, తార్కిక vehicle_at_rest);
 
-	void clearDriftChecks();
-	void resetDriftFilters();
+	శూన్య clearDriftChecks();
+	శూన్య resetDriftFilters();
 
-	bool isTimedOut(uint64_t timestamp_to_check_us, uint64_t now_us, uint64_t timeout_period) const
+	తార్కిక is_Timed_బహిర్గతం(uint64_t timestamp_గమ్యం_check_us, uint64_t now_us, uint64_t timeout_period) స్థిరరాశి
 	{
-		return (timestamp_to_check_us == 0) || (timestamp_to_check_us + timeout_period < now_us);
+		తిరిగి (timestamp_గమ్యం_check_us == 0) || (timestamp_గమ్యం_check_us + timeout_period < now_us);
 	}
 
 	uint16_t _strict_fail_flags{0};
 	uint16_t _relaxed_fail_flags{0};
 
-	float _horizontal_position_drift_rate_m_s{NAN};
-	float _vertical_position_drift_rate_m_s{NAN};
-	float _filtered_horizontal_velocity_m_s{NAN};
+	దశాంశం horizontal_position_drift_రేటు_m_s{NAN};
+	దశాంశం vertical_position_drift_రేటు_m_s{NAN};
+	దశాంశం _filtered_horizontal_velocity_m_s{NAN};
 
 	MapProjection lat_lon_prev{};
-	float _alt_prev{0.0f};
+	దశాంశం _alt_prev{0.0f};
 
-	matrix::Vector3f _lat_lon_alt_deriv_filt{};
-	matrix::Vector2f _vel_ne_filt{};
+	మాతృక::Vector3f _lat_lon_alt_deriv_filt{};
+	మాతృక::Vector2f _vel_ne_filt{};
 
-	float _vel_d_filt{0.0f};		///< GNSS filtered Down velocity (m/sec)
-	uint64_t _time_last_fail_us{0};
-	uint64_t _time_last_pass_us{0};
-	bool _initial_strict_checks_passed{false};
-	bool _strict{true};
-	bool _passed{false};
-	bool _passed_strict{false};
+	దశాంశం _vel_d_filt{0.0f};		///< GNSS filtered Down velocity (m/sec)
+	uint64_t సమయం_చివరి_fail_us{0};
+	uint64_t సమయం_చివరి_pass_us{0};
+	తార్కిక _initial_strict_checks_passed{అబద్ధం};
+	తార్కిక _strict{నిజం};
+	తార్కిక _passed{అబద్ధం};
+	తార్కిక _passed_strict{అబద్ధం};
 
 	Params _params{};
 };
 
-#endif // !GNSS_CHECKS_H
+#అయితే_ముగింపు // !GNSS_CHECKS_H

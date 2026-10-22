@@ -35,67 +35,67 @@
  * @file rate_control.cpp
  */
 
-#include "rate_control.hpp"
-#include <px4_platform_common/defines.h>
+#అన్తర్భావ "rate_control.hpp"
+#అన్తర్భావ <px4_platform_common/defines.h>
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-void RateControl::setPidGains(const Vector3f &P, const Vector3f &I, const Vector3f &D)
+శూన్య రేటు_Control::సమితి_Pid_Gains(స్థిరరాశి Vector3f &P, స్థిరరాశి Vector3f &I, స్థిరరాశి Vector3f &D)
 {
 	_gain_p = P;
 	_gain_i = I;
 	_gain_d = D;
 }
 
-void RateControl::setSaturationStatus(const Vector3<bool> &saturation_positive,
-				      const Vector3<bool> &saturation_negative)
+శూన్య రేటు_Control::సమితి_Saturation_స్థితి(స్థిరరాశి Vector3<తార్కిక> &saturation_ధనాత్మక,
+				      స్థిరరాశి Vector3<తార్కిక> &saturation_negative)
 {
-	_control_allocator_saturation_positive = saturation_positive;
+	control_allocator_saturation_ధనాత్మక = saturation_ధనాత్మక;
 	_control_allocator_saturation_negative = saturation_negative;
 }
 
-void RateControl::setPositiveSaturationFlag(size_t axis, bool is_saturated)
+శూన్య రేటు_Control::సమితి_ధనాత్మక_Saturation_Flag(size_t axis, తార్కిక is_saturated)
 {
-	if (axis < 3) {
-		_control_allocator_saturation_positive(axis) = is_saturated;
+	ఒకవేళ (axis < 3) {
+		control_allocator_saturation_ధనాత్మక(axis) = is_saturated;
 	}
 }
 
-void RateControl::setNegativeSaturationFlag(size_t axis, bool is_saturated)
+శూన్య రేటు_Control::సమితి_Negative_Saturation_Flag(size_t axis, తార్కిక is_saturated)
 {
-	if (axis < 3) {
+	ఒకవేళ (axis < 3) {
 		_control_allocator_saturation_negative(axis) = is_saturated;
 	}
 }
 
-Vector3f RateControl::update(const Vector3f &rate, const Vector3f &rate_sp, const Vector3f &angular_accel,
-			     const float dt, const bool landed)
+Vector3f రేటు_Control::update(స్థిరరాశి Vector3f &రేటు, స్థిరరాశి Vector3f &రేటు_sp, స్థిరరాశి Vector3f &angular_accel,
+			     స్థిరరాశి దశాంశం dt, స్థిరరాశి తార్కిక landed)
 {
 	// angular rates error
-	Vector3f rate_error = rate_sp - rate;
+	Vector3f రేటు_error = రేటు_sp - రేటు;
 
 	// PID control with feed forward
-	Vector3f torque = _gain_p.emult(rate_error) + _rate_int - _gain_d.emult(angular_accel) + _gain_ff.emult(rate_sp);
+	Vector3f torque = _gain_p.emult(రేటు_error) + రేటు_int - _gain_d.emult(angular_accel) + _gain_ff.emult(రేటు_sp);
 
 	// update integral only if we are not landed
-	if (!landed) {
-		updateIntegral(rate_error, dt);
+	ఒకవేళ (!landed) {
+		updateIntegral(రేటు_error, dt);
 	}
 
-	return torque;
+	తిరిగి torque;
 }
 
-void RateControl::updateIntegral(Vector3f &rate_error, const float dt)
+శూన్య రేటు_Control::updateIntegral(Vector3f &రేటు_error, స్థిరరాశి దశాంశం dt)
 {
-	for (int i = 0; i < 3; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < 3; i++) {
 		// prevent further positive control saturation
-		if (_control_allocator_saturation_positive(i)) {
-			rate_error(i) = math::min(rate_error(i), 0.f);
+		ఒకవేళ (control_allocator_saturation_ధనాత్మక(i)) {
+			రేటు_error(i) = math::min(రేటు_error(i), 0.f);
 		}
 
 		// prevent further negative control saturation
-		if (_control_allocator_saturation_negative(i)) {
-			rate_error(i) = math::max(rate_error(i), 0.f);
+		ఒకవేళ (_control_allocator_saturation_negative(i)) {
+			రేటు_error(i) = math::max(రేటు_error(i), 0.f);
 		}
 
 		// I term factor: reduce the I gain with increasing rate error.
@@ -104,22 +104,22 @@ void RateControl::updateIntegral(Vector3f &rate_error, const float dt)
 		// The formula leads to a gradual decrease w/o steps, while only affecting the cases where it should:
 		// with the parameter set to 400 degrees, up to 100 deg rate error, i_factor is almost 1 (having no effect),
 		// and up to 200 deg error leads to <25% reduction of I.
-		float i_factor = rate_error(i) / math::radians(400.f);
-		i_factor = math::max(0.0f, 1.f - i_factor * i_factor);
+		దశాంశం i_గుణకం = రేటు_error(i) / math::radians(400.f);
+		i_గుణకం = math::max(0.0f, 1.f - i_గుణకం * i_గుణకం);
 
 		// Perform the integration using a first order method
-		float rate_i = _rate_int(i) + i_factor * _gain_i(i) * rate_error(i) * dt;
+		దశాంశం రేటు_i = రేటు_int(i) + i_గుణకం * _gain_i(i) * రేటు_error(i) * dt;
 
 		// do not propagate the result if out of range or invalid
-		if (PX4_ISFINITE(rate_i)) {
-			_rate_int(i) = math::constrain(rate_i, -_lim_int(i), _lim_int(i));
+		ఒకవేళ (PX4_ISFINITE(రేటు_i)) {
+			రేటు_int(i) = math::constrain(రేటు_i, -_lim_int(i), _lim_int(i));
 		}
 	}
 }
 
-void RateControl::getRateControlStatus(rate_ctrl_status_s &rate_ctrl_status)
+శూన్య రేటు_Control::get_రేటు_Control_స్థితి(రేటు_ctrl_స్థితి_s &రేటు_ctrl_స్థితి)
 {
-	rate_ctrl_status.rollspeed_integ = _rate_int(0);
-	rate_ctrl_status.pitchspeed_integ = _rate_int(1);
-	rate_ctrl_status.yawspeed_integ = _rate_int(2);
+	రేటు_ctrl_స్థితి.rollspeed_integ = రేటు_int(0);
+	రేటు_ctrl_స్థితి.pitchspeed_integ = రేటు_int(1);
+	రేటు_ctrl_స్థితి.yawspeed_integ = రేటు_int(2);
 }

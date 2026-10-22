@@ -35,14 +35,14 @@
  * @file terrain_estimator.h
  */
 
-#pragma once
+#సూచన once
 
-#include <lib/mathlib/mathlib.h>
-#include <matrix/math.hpp>
-#include <uORB/topics/sensor_combined.h>
-#include <uORB/topics/sensor_gnss.h>
-#include <uORB/topics/vehicle_attitude.h>
-#include <uORB/topics/distance_sensor.h>
+#అన్తర్భావ <lib/mathlib/mathlib.h>
+#అన్తర్భావ <matrix/math.hpp>
+#అన్తర్భావ <uORB/topics/sensor_combined.h>
+#అన్తర్భావ <uORB/topics/sensor_gnss.h>
+#అన్తర్భావ <uORB/topics/vehicle_attitude.h>
+#అన్తర్భావ <uORB/topics/distance_sensor.h>
 
 
 /*
@@ -58,34 +58,34 @@
 
 class __EXPORT TerrainEstimator
 {
-public:
+బహిరంగ:
 	TerrainEstimator();
-	~TerrainEstimator() = default;
+	~TerrainEstimator() = అప్రమేయ;
 
-	bool is_valid() {return _terrain_valid;}
-	float get_distance_to_ground() {return -_x(0);}
-	float get_velocity() {return _x(1);}
+	bool is_valid() {తిరిగి _terrain_valid;}
+	దశాంశం get_దూరం_గమ్యం_ground() {తిరిగి -_x(0);}
+	దశాంశం get_velocity() {తిరిగి _x(1);}
 
-	void predict(float dt, const struct vehicle_attitude_s *attitude, const struct sensor_combined_s *sensor,
-		     const struct distance_sensor_s *distance);
-	void measurement_update(uint64_t time_ref, const struct sensor_gnss_s *gnss,
-				const struct distance_sensor_s *distance,
-				const struct vehicle_attitude_s *attitude);
+	శూన్య predict(దశాంశం dt, స్థిరరాశి నిర్మాణం vehicle_attitude_s *attitude, స్థిరరాశి నిర్మాణం sensor_combined_s *sensor,
+		     స్థిరరాశి నిర్మాణం దూరం_sensor_s *దూరం);
+	శూన్య measurement_update(uint64_t సమయం_ref, స్థిరరాశి నిర్మాణం sensor_gnss_s *gnss,
+				స్థిరరాశి నిర్మాణం దూరం_sensor_s *దూరం,
+				స్థిరరాశి నిర్మాణం vehicle_attitude_s *attitude);
 
-private:
-	enum {n_x = 3};
+అంతరంగ:
+	గణన {n_x = 3};
 
-	float _distance_last;
+	దశాంశం దూరం_చివరి;
 	bool _terrain_valid;
 
 	// kalman filter variables
-	matrix::Vector<float, n_x> _x;		// state: ground distance, velocity, accel bias in z direction
-	float  _u_z;			// acceleration in earth z direction
-	matrix::Matrix<float, 3, 3> _P;	// covariance matrix
+	మాతృక::సదిశ<దశాంశం, n_x> _x;		// state: ground distance, velocity, accel bias in z direction
+	దశాంశం  _u_z;			// acceleration in earth z direction
+	మాతృక::మాతృక_2<దశాంశం, 3, 3> _P;	// covariance matrix
 
 	// timestamps
-	uint64_t _time_last_distance;
-	uint64_t _time_last_gnss;
+	uint64_t సమయం_చివరి_దూరం;
+	uint64_t సమయం_చివరి_gnss;
 
 	/*
 	struct {
@@ -97,6 +97,6 @@ private:
 	} _params;
 	*/
 
-	bool is_distance_valid(float distance);
+	bool is_దూరం_valid(దశాంశం దూరం);
 
 };

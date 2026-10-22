@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "FunctionProviderBase.hpp"
+#అన్తర్భావ "FunctionProviderBase.hpp"
 
 /**
  * Functions: Constant_Max
  */
-class FunctionConstantMax : public FunctionProviderBase
+తరగతి FunctionConstantMax : బహిరంగ Function_Provider_పునాది
 {
-public:
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionConstantMax(); }
+బహిరంగ:
+	స్థిర Function_Provider_పునాది *allocate(స్థిరరాశి Context &context) { తిరిగి కొత్త FunctionConstantMax(); }
 
-	float value(OutputFunction func) override { return 1.f; }
-	void update() override { }
+	దశాంశం value(OutputFunction func) override { తిరిగి 1.f; }
+	శూన్య update() override { }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 1.f; }
+	దశాంశం default_Failsafe_విలువ(OutputFunction func) స్థిరరాశి override { తిరిగి 1.f; }
 };

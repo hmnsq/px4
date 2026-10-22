@@ -40,38 +40,38 @@
  *       that is supplied.  Should we just depend on the bus knowing?
  */
 
-#include "I2C.hpp"
+#అన్తర్భావ "I2C.hpp"
 
-#if defined(CONFIG_I2C)
+#ఒకవేళ defined(CONFIG_I2C)
 
-#include <px4_platform_common/time.h>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/i2c_spi_buses.h>
+#అన్తర్భావ <px4_platform_common/time.h>
+#అన్తర్భావ <px4_platform_common/px4_config.h>
+#అన్తర్భావ <px4_platform_common/i2c_spi_buses.h>
 
-extern "C" {
-	__EXPORT void fc_uninitialize_i2c_bus(int fd);
+బాహ్య "C" {
+	__EXPORT శూన్య fc_uninitialize_i2c_bus(పూర్ణాంకం fd);
 }
 
-namespace device
+నామాకాశ device
 {
 
-I2C::_config_i2c_bus_func_t  I2C::_config_i2c_bus  = NULL;
-I2C::_set_i2c_address_func_t I2C::_set_i2c_address = NULL;
-I2C::_i2c_transfer_func_t    I2C::_i2c_transfer    = NULL;
+I2C::_config_i2c_bus_func_t  I2C::_config_i2c_bus  = ఖాళీ;
+I2C::సమితి_i2c_చిరునామా_func_t I2C::సమితి_i2c_చిరునామా = ఖాళీ;
+I2C::_i2c_transfer_func_t    I2C::_i2c_transfer    = ఖాళీ;
 
 // There is a mutex per I2C bus. A mutex isn't required with normal
 // use since per bus I2C accesses are made via work item tied to a per bus thread.
 // But it is here anyways in case someone decides to use the bus in some different
 // custom code that has a separate thread.
-struct I2C::_bus_mutex_t I2C::_bus_mutex[I2C::MAX_I2C_BUS] = {
+నిర్మాణం I2C::_bus_mutex_t I2C::_bus_mutex[I2C::MAX_I2C_BUS] = {
 	{1, PTHREAD_MUTEX_INITIALIZER},
 	{2, PTHREAD_MUTEX_INITIALIZER},
 	{4, PTHREAD_MUTEX_INITIALIZER},
 	{5, PTHREAD_MUTEX_INITIALIZER}
 };
 
-I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency) :
-	CDev(name, nullptr),
+I2C::I2C(uint8_t device_type, స్థిరరాశి అక్షరం *name, స్థిరరాశి పూర్ణాంకం bus, స్థిరరాశి uint16_t చిరునామా, స్థిరరాశి uint32_t frequency) :
+	CDev(name, శూన్యసూచిక),
 	_frequency(frequency / 1000)
 {
 	_device_id.devid = 0;
@@ -80,129 +80,129 @@ I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t ad
 	_device_id.devid_s.devtype = device_type;
 	_device_id.devid_s.bus_type = DeviceBusType_I2C;
 	_device_id.devid_s.bus = bus;
-	_device_id.devid_s.address = address;
+	_device_id.devid_s.చిరునామా = చిరునామా;
 
 	PX4_INFO("*** I2C Device ID 0x%x %d", _device_id.devid, _device_id.devid);
 }
 
-I2C::I2C(const I2CSPIDriverConfig &config)
-	: I2C(config.devid_driver_index, config.module_name, config.bus, config.i2c_address, config.bus_frequency)
+I2C::I2C(స్థిరరాశి I2CSPIDriverConfig &config)
+	: I2C(config.devid_driver_సూచీ, config.module_name, config.bus, config.i2c_చిరునామా, config.bus_frequency)
 {
-	set_external(config.external);
+	సమితి_external(config.external);
 }
 
 I2C::~I2C()
 {
 }
 
-int
+పూర్ణాంకం
 I2C::init()
 {
-	int ret = PX4_ERROR;
+	పూర్ణాంకం ret = PX4_ERROR;
 
-	if (_i2c_fd != -1) {
-		return PX4_OK;
+	ఒకవేళ (_i2c_fd != -1) {
+		తిరిగి PX4_OK;
 	}
 
-	if (_config_i2c_bus == NULL) {
+	ఒకవేళ (_config_i2c_bus == ఖాళీ) {
 		PX4_ERR("NULL i2c init function");
-		goto out;
+		వెళ్ళు బహిర్గతం;
 	}
 
-	if (_mutex == nullptr) {
-		for (int i = 0; i < MAX_I2C_BUS; i++) {
-			if (get_device_bus() == _bus_mutex[i]._bus) {
+	ఒకవేళ (_mutex == శూన్యసూచిక) {
+		కొరకు (పూర్ణాంకం i = 0; i < MAX_I2C_BUS; i++) {
+			ఒకవేళ (get_device_bus() == _bus_mutex[i]._bus) {
 				_mutex = &_bus_mutex[i]._mutex;
-				break;
+				ఆపు;
 			}
 		}
 
-		if (_mutex == nullptr) {
+		ఒకవేళ (_mutex == శూన్యసూచిక) {
 			PX4_ERR("NULL i2c bus mutex");
-			goto out;
+			వెళ్ళు బహిర్గతం;
 
-		} else {
+		} లేకపోతే {
 			PX4_INFO("Set up I2C bus mutex for bus %d", get_device_bus());
 		}
 	}
 
 	pthread_mutex_lock(_mutex);
 	// Open the actual I2C device
-	_i2c_fd = _config_i2c_bus(get_device_bus(), get_device_address(), _frequency);
+	_i2c_fd = _config_i2c_bus(get_device_bus(), get_device_చిరునామా(), _frequency);
 	pthread_mutex_unlock(_mutex);
 
-	if (_i2c_fd == -1) {
+	ఒకవేళ (_i2c_fd == -1) {
 		PX4_ERR("i2c init failed");
-		goto out;
+		వెళ్ళు బహిర్గతం;
 	}
 
 	// call the probe function to check whether the device is present
 	ret = probe();
 
-	if (ret != OK) {
+	ఒకవేళ (ret != OK) {
 		PX4_ERR("i2c probe failed");
 		fc_uninitialize_i2c_bus(_i2c_fd);
 		_i2c_fd = -1;
-		goto out;
+		వెళ్ళు బహిర్గతం;
 	}
 
 	// do base class init, which will create device node, etc
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ఒకవేళ (ret != OK) {
 		PX4_ERR("i2c cdev init failed");
-		goto out;
+		వెళ్ళు బహిర్గతం;
 	}
 
 	// tell the world where we are
 	// PX4_INFO("on I2C bus %d at 0x%02x", get_device_bus(), get_device_address());
 
-out:
+బహిర్గతం:
 
-	return ret;
+	తిరిగి ret;
 }
 
-void
-I2C::set_device_address(int address, bool log)
+శూన్య
+I2C::సమితి_device_చిరునామా(పూర్ణాంకం చిరునామా, తార్కిక సంవర్గమానం)
 {
-	if ((_i2c_fd != PX4_ERROR) && (_set_i2c_address != NULL)) {
-		if (log) {
-			PX4_INFO("Set i2c address 0x%x, fd %d", address, _i2c_fd);
+	ఒకవేళ ((_i2c_fd != PX4_ERROR) && (సమితి_i2c_చిరునామా != ఖాళీ)) {
+		ఒకవేళ (సంవర్గమానం) {
+			PX4_INFO("Set i2c address 0x%x, fd %d", చిరునామా, _i2c_fd);
 		}
 
 		pthread_mutex_lock(_mutex);
-		_set_i2c_address(_i2c_fd, address);
+		సమితి_i2c_చిరునామా(_i2c_fd, చిరునామా);
 		pthread_mutex_unlock(_mutex);
 
-		Device::set_device_address(address);
+		Device::సమితి_device_చిరునామా(చిరునామా);
 	}
 }
 
 
-int
-I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
+పూర్ణాంకం
+I2C::transfer(స్థిరరాశి uint8_t *send, స్థిరరాశి గుర్తులేని send_len, uint8_t *recv, స్థిరరాశి గుర్తులేని recv_len)
 {
-	int ret = PX4_ERROR;
-	unsigned retry_count = 1;
+	పూర్ణాంకం ret = PX4_ERROR;
+	గుర్తులేని retry_లెక్క = 1;
 
-	if ((_i2c_fd != PX4_ERROR) && (_i2c_transfer != NULL)) {
-		do {
+	ఒకవేళ ((_i2c_fd != PX4_ERROR) && (_i2c_transfer != ఖాళీ)) {
+		చేయి {
 			// PX4_INFO("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
 			pthread_mutex_lock(_mutex);
 			ret = _i2c_transfer(_i2c_fd, send, send_len, recv, recv_len);
 			pthread_mutex_unlock(_mutex);
 
-			if (ret != PX4_ERROR) { break; }
+			ఒకవేళ (ret != PX4_ERROR) { ఆపు; }
 
 			px4_usleep(1000);
 
-		} while (retry_count++ < _retries);
+		} అయితే (retry_లెక్క++ < _retries);
 	}
 
-	return ret;
+	తిరిగి ret;
 }
 
 } // namespace device
 
-#endif
+#అయితే_ముగింపు

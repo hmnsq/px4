@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#include <string.h>
+#అన్తర్భావ <string.h>
 
 /**
  * @file parameters_common.cpp
@@ -40,7 +40,7 @@
  *
  */
 
-static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(param_info_s);
+స్థిర constexpr uint16_t param_info_లెక్క = పరిమాణం(px4::parameters) / పరిమాణం(param_info_s);
 
 /**
  * Test whether a param_t is value.
@@ -48,119 +48,119 @@ static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(pa
  * @param param			The parameter handle to test.
  * @return			True if the handle is valid.
  */
-static constexpr bool handle_in_range(param_t param) { return (param < param_info_count); }
+స్థిర constexpr తార్కిక handle_లోపల_range(param_t param) { తిరిగి (param < param_info_లెక్క); }
 
-unsigned param_count()
+గుర్తులేని param_లెక్క()
 {
-	return param_info_count;
+	తిరిగి param_info_లెక్క;
 }
 
-int param_get_index(param_t param)
+పూర్ణాంకం param_get_సూచీ(param_t param)
 {
-	if (handle_in_range(param)) {
-		return (unsigned)param;
+	ఒకవేళ (handle_లోపల_range(param)) {
+		తిరిగి (గుర్తులేని)param;
 	}
 
-	return -1;
+	తిరిగి -1;
 }
 
-param_t param_for_index(unsigned index)
+param_t param_for_సూచీ(గుర్తులేని సూచీ)
 {
-	if (index < param_info_count) {
-		return (param_t)index;
+	ఒకవేళ (సూచీ < param_info_లెక్క) {
+		తిరిగి (param_t)సూచీ;
 	}
 
-	return PARAM_INVALID;
+	తిరిగి PARAM_INVALID;
 }
 
-const char *param_name(param_t param)
+స్థిరరాశి అక్షరం *param_name(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters[param].name : nullptr;
+	తిరిగి handle_లోపల_range(param) ? px4::parameters[param].name : శూన్యసూచిక;
 }
 
 param_type_t param_type(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
+	తిరిగి handle_లోపల_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
 }
 
-bool param_is_volatile(param_t param)
+తార్కిక param_is_volatile(param_t param)
 {
-	if (handle_in_range(param)) {
-		for (const auto &p : px4::parameters_volatile) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	ఒకవేళ (handle_లోపల_range(param)) {
+		కొరకు (స్థిరరాశి స్వయంచాలక &p : px4::parameters_volatile) {
+			ఒకవేళ (static_cast<px4::params>(param) == p) {
+				తిరిగి నిజం;
 			}
 		}
 	}
 
-	return false;
+	తిరిగి అబద్ధం;
 }
 
-static bool params_locked = false;
+స్థిర తార్కిక params_locked = అబద్ధం;
 
-bool param_is_readonly(param_t param)
+తార్కిక param_is_readonly(param_t param)
 {
-	if (params_locked && handle_in_range(param)) {
-		for (const auto &p : px4::parameters_readonly) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	ఒకవేళ (params_locked && handle_లోపల_range(param)) {
+		కొరకు (స్థిరరాశి స్వయంచాలక &p : px4::parameters_readonly) {
+			ఒకవేళ (static_cast<px4::params>(param) == p) {
+				తిరిగి నిజం;
 			}
 		}
 	}
 
-	return false;
+	తిరిగి అబద్ధం;
 }
 
-void param_lock_readonly()
+శూన్య param_తాళం_readonly()
 {
-	params_locked = true;
+	params_locked = నిజం;
 }
 
-size_t param_size(param_t param)
+size_t param_కొలత(param_t param)
 {
-	if (handle_in_range(param)) {
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-		case PARAM_TYPE_FLOAT:
-			return 4;
+	ఒకవేళ (handle_లోపల_range(param)) {
+		ఎంపిక (param_type(param)) {
+		స్థితి PARAM_TYPE_INT32:
+		స్థితి PARAM_TYPE_FLOAT:
+			తిరిగి 4;
 
-		default:
-			return 0;
+		అప్రమేయ:
+			తిరిగి 0;
 		}
 	}
 
-	return 0;
+	తిరిగి 0;
 }
 
-int
-param_get_system_default_value(param_t param, void *default_val)
+పూర్ణాంకం
+param_get_system_default_విలువ(param_t param, శూన్య *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	ఒకవేళ (!handle_లోపల_range(param)) {
+		తిరిగి PX4_ERROR;
 	}
 
-	int ret = PX4_OK;
+	పూర్ణాంకం ret = PX4_OK;
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
-		memcpy(default_val, &px4::parameters[param].val.i, param_size(param));
-		break;
+	ఎంపిక (param_type(param)) {
+	స్థితి PARAM_TYPE_INT32:
+		జ్ఞాపకం_నకలు(default_val, &px4::parameters[param].val.i, param_కొలత(param));
+		ఆపు;
 
-	case PARAM_TYPE_FLOAT:
-		memcpy(default_val, &px4::parameters[param].val.f, param_size(param));
-		break;
+	స్థితి PARAM_TYPE_FLOAT:
+		జ్ఞాపకం_నకలు(default_val, &px4::parameters[param].val.f, param_కొలత(param));
+		ఆపు;
 
-	default:
+	అప్రమేయ:
 		ret = PX4_ERROR;
-		break;
+		ఆపు;
 	}
 
-	return ret;
+	తిరిగి ret;
 }
 
-int
-param_get_mark_used(param_t param, void *val)
+పూర్ణాంకం
+param_get_mark_వాడిన(param_t param, శూన్య *val)
 {
-	param_set_used(param);
-	return param_get(param, val);
+	param_సమితి_వాడిన(param);
+	తిరిగి param_get(param, val);
 }

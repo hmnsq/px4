@@ -6,85 +6,85 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#సూచన once
 
-#include <cmath>
-#include <cstdio>
-#include <cstring>
+#అన్తర్భావ <cmath>
+#అన్తర్భావ <cstdio>
+#అన్తర్భావ <cstring>
 
-#include "helper_functions.hpp"
-#include "Slice.hpp"
+#అన్తర్భావ "helper_functions.hpp"
+#అన్తర్భావ "Slice.hpp"
 
-namespace matrix
+నామాకాశ మాతృక
 {
 
-template<typename Type, size_t M, size_t N>
-class Matrix
+మూస<రకం_పేరు Type, size_t M, size_t N>
+తరగతి మాతృక_2
 {
-	Type _data[M][N] {};
+	Type దత్తాంశం_3[M][N] {};
 
-public:
+బహిరంగ:
 
 	// Constructors
-	Matrix() = default;
+	మాతృక_2() = అప్రమేయ;
 
-	explicit Matrix(const Type data_[M * N])
+	స్పష్టమైన మాతృక_2(స్థిరరాశి Type దత్తాంశం_2[M * N])
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				_data[i][j] = data_[N * i + j];
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
+				దత్తాంశం_3[i][j] = దత్తాంశం_2[N * i + j];
 			}
 		}
 	}
 
-	explicit Matrix(const Type data_[M][N])
+	స్పష్టమైన మాతృక_2(స్థిరరాశి Type దత్తాంశం_2[M][N])
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				_data[i][j] = data_[i][j];
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
+				దత్తాంశం_3[i][j] = దత్తాంశం_2[i][j];
 			}
 		}
 	}
 
-	Matrix(const Matrix &other)
+	మాతృక_2(స్థిరరాశి మాతృక_2 &other)
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				_data[i][j] = other(i, j);
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
+				దత్తాంశం_3[i][j] = other(i, j);
 			}
 		}
 	}
 
-	template<typename S>
-	Matrix(const Matrix<S, M, N> &aa)
+	మూస<రకం_పేరు S>
+	మాతృక_2(స్థిరరాశి మాతృక_2<S, M, N> &aa)
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				_data[i][j] = static_cast<Type>(aa(i, j));
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
+				దత్తాంశం_3[i][j] = static_cast<Type>(aa(i, j));
 			}
 		}
 	}
 
-	template<size_t P, size_t Q>
-	Matrix(const Slice<Type, M, N, P, Q> &in_slice)
+	మూస<size_t P, size_t Q>
+	మాతృక_2(స్థిరరాశి ముక్క_2<Type, M, N, P, Q> &లోపల_ముక్క)
 	{
-		Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				self(i, j) = in_slice(i, j);
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
+				self(i, j) = లోపల_ముక్క(i, j);
 			}
 		}
 	}
 
-	template<size_t P, size_t Q>
-	Matrix(const ConstSlice<Type, M, N, P, Q> &in_slice)
+	మూస<size_t P, size_t Q>
+	మాతృక_2(స్థిరరాశి Const_ముక్క<Type, M, N, P, Q> &లోపల_ముక్క)
 	{
-		Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				self(i, j) = in_slice(i, j);
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
+				self(i, j) = లోపల_ముక్క(i, j);
 			}
 		}
 	}
@@ -94,54 +94,54 @@ public:
 	 */
 
 
-	inline const Type &operator()(size_t i, size_t j) const
+	అంతఃవరుస స్థిరరాశి Type &క్రియాకారకం()(size_t i, size_t j) స్థిరరాశి
 	{
-		assert(i < M);
-		assert(j < N);
+		ప్రతిజ్ఞా(i < M);
+		ప్రతిజ్ఞా(j < N);
 
-		return _data[i][j];
+		తిరిగి దత్తాంశం_3[i][j];
 	}
 
-	inline Type &operator()(size_t i, size_t j)
+	అంతఃవరుస Type &క్రియాకారకం()(size_t i, size_t j)
 	{
-		assert(i < M);
-		assert(j < N);
+		ప్రతిజ్ఞా(i < M);
+		ప్రతిజ్ఞా(j < N);
 
-		return _data[i][j];
+		తిరిగి దత్తాంశం_3[i][j];
 	}
 
-	Matrix<Type, M, N> &operator=(const Matrix<Type, M, N> &other)
+	మాతృక_2<Type, M, N> &క్రియాకారకం=(స్థిరరాశి మాతృక_2<Type, M, N> &other)
 	{
-		if (this != &other) {
-			Matrix<Type, M, N> &self = *this;
+		ఒకవేళ (ఇది != &other) {
+			మాతృక_2<Type, M, N> &self = *ఇది;
 
-			for (size_t i = 0; i < M; i++) {
-				for (size_t j = 0; j < N; j++) {
+			కొరకు (size_t i = 0; i < M; i++) {
+				కొరకు (size_t j = 0; j < N; j++) {
 					self(i, j) = other(i, j);
 				}
 			}
 		}
 
-		return (*this);
+		తిరిగి (*ఇది);
 	}
 
-	void copyTo(Type dst[M * N]) const
+	శూన్య copy_గమ్యం(Type dst[M * N]) స్థిరరాశి
 	{
-		const Matrix<Type, M, N> &self = *this;
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				dst[N * i + j] = self(i, j);
 			}
 		}
 	}
 
-	void copyToColumnMajor(Type dst[M * N]) const
+	శూన్య copy_గమ్యం_స్తంభం_Major(Type dst[M * N]) స్థిరరాశి
 	{
-		const Matrix<Type, M, N> &self = *this;
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				dst[i + (j * M)] = self(i, j);
 			}
 		}
@@ -155,140 +155,140 @@ public:
 	// since it instantiates a class for every
 	// required mult pair, but it provides
 	// compile time size_t checking
-	template<size_t P>
-	Matrix<Type, M, P> operator*(const Matrix<Type, N, P> &other) const
+	మూస<size_t P>
+	మాతృక_2<Type, M, P> క్రియాకారకం*(స్థిరరాశి మాతృక_2<Type, N, P> &other) స్థిరరాశి
 	{
-		const Matrix<Type, M, N> &self = *this;
-		Matrix<Type, M, P> res{};
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
+		మాతృక_2<Type, M, P> res{};
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t k = 0; k < P; k++) {
-				for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t k = 0; k < P; k++) {
+				కొరకు (size_t j = 0; j < N; j++) {
 					res(i, k) += self(i, j) * other(j, k);
 				}
 			}
 		}
 
-		return res;
+		తిరిగి res;
 	}
 
 	// Using this function reduces the number of temporary variables needed to compute A * B.T
-	template<size_t P>
-	Matrix<Type, M, M> multiplyByTranspose(const Matrix<Type, P, N> &other) const
+	మూస<size_t P>
+	మాతృక_2<Type, M, M> multiplyByTranspose(స్థిరరాశి మాతృక_2<Type, P, N> &other) స్థిరరాశి
 	{
-		Matrix<Type, M, P> res;
-		const Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, P> res;
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t k = 0; k < P; k++) {
-				for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t k = 0; k < P; k++) {
+				కొరకు (size_t j = 0; j < N; j++) {
 					res(i, k) += self(i, j) * other(k, j);
 				}
 			}
 		}
 
-		return res;
+		తిరిగి res;
 	}
 
 	// Element-wise multiplication
-	Matrix<Type, M, N> emult(const Matrix<Type, M, N> &other) const
+	మాతృక_2<Type, M, N> emult(స్థిరరాశి మాతృక_2<Type, M, N> &other) స్థిరరాశి
 	{
-		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> res;
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) * other(i, j);
 			}
 		}
 
-		return res;
+		తిరిగి res;
 	}
 
 	// Element-wise division
-	Matrix<Type, M, N> edivide(const Matrix<Type, M, N> &other) const
+	మాతృక_2<Type, M, N> edivide(స్థిరరాశి మాతృక_2<Type, M, N> &other) స్థిరరాశి
 	{
-		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> res;
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) / other(i, j);
 			}
 		}
 
-		return res;
+		తిరిగి res;
 	}
 
-	Matrix<Type, M, N> operator+(const Matrix<Type, M, N> &other) const
+	మాతృక_2<Type, M, N> క్రియాకారకం+(స్థిరరాశి మాతృక_2<Type, M, N> &other) స్థిరరాశి
 	{
-		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> res;
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) + other(i, j);
 			}
 		}
 
-		return res;
+		తిరిగి res;
 	}
 
-	Matrix<Type, M, N> operator-(const Matrix<Type, M, N> &other) const
+	మాతృక_2<Type, M, N> క్రియాకారకం-(స్థిరరాశి మాతృక_2<Type, M, N> &other) స్థిరరాశి
 	{
-		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> res;
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) - other(i, j);
 			}
 		}
 
-		return res;
+		తిరిగి res;
 	}
 
 	// unary minus
-	Matrix<Type, M, N> operator-() const
+	మాతృక_2<Type, M, N> క్రియాకారకం-() స్థిరరాశి
 	{
-		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> res;
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				res(i, j) = -self(i, j);
 			}
 		}
 
-		return res;
+		తిరిగి res;
 	}
 
-	void operator+=(const Matrix<Type, M, N> &other)
+	శూన్య క్రియాకారకం+=(స్థిరరాశి మాతృక_2<Type, M, N> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
 	}
 
-	void operator-=(const Matrix<Type, M, N> &other)
+	శూన్య క్రియాకారకం-=(స్థిరరాశి మాతృక_2<Type, M, N> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
 	}
 
-	template<size_t P>
-	void operator*=(const Matrix<Type, N, P> &other)
+	మూస<size_t P>
+	శూన్య క్రియాకారకం*=(స్థిరరాశి మాతృక_2<Type, N, P> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> &self = *ఇది;
 		self = self * other;
 	}
 
@@ -296,620 +296,620 @@ public:
 	 * Scalar Operations
 	 */
 
-	Matrix<Type, M, N> operator*(Type scalar) const
+	మాతృక_2<Type, M, N> క్రియాకారకం*(Type scalar) స్థిరరాశి
 	{
-		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> res;
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) * scalar;
 			}
 		}
 
-		return res;
+		తిరిగి res;
 	}
 
-	inline Matrix<Type, M, N> operator/(Type scalar) const
+	అంతఃవరుస మాతృక_2<Type, M, N> క్రియాకారకం/(Type scalar) స్థిరరాశి
 	{
-		return (*this) * (1 / scalar);
+		తిరిగి (*ఇది) * (1 / scalar);
 	}
 
-	Matrix<Type, M, N> operator+(Type scalar) const
+	మాతృక_2<Type, M, N> క్రియాకారకం+(Type scalar) స్థిరరాశి
 	{
-		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> res;
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) + scalar;
 			}
 		}
 
-		return res;
+		తిరిగి res;
 	}
 
-	inline Matrix<Type, M, N> operator-(Type scalar) const
+	అంతఃవరుస మాతృక_2<Type, M, N> క్రియాకారకం-(Type scalar) స్థిరరాశి
 	{
-		return (*this) + (-1 * scalar);
+		తిరిగి (*ఇది) + (-1 * scalar);
 	}
 
-	void operator*=(Type scalar)
+	శూన్య క్రియాకారకం*=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				self(i, j) *= scalar;
 			}
 		}
 	}
 
-	void operator/=(Type scalar)
+	శూన్య క్రియాకారకం/=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> &self = *ఇది;
 		self *= (Type(1) / scalar);
 	}
 
-	inline void operator+=(Type scalar)
+	అంతఃవరుస శూన్య క్రియాకారకం+=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				self(i, j) += scalar;
 			}
 		}
 	}
 
-	inline void operator-=(Type scalar)
+	అంతఃవరుస శూన్య క్రియాకారకం-=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> &self = *ఇది;
 		self += (-scalar);
 	}
 
-	bool operator==(const Matrix<Type, M, N> &other) const
+	తార్కిక క్రియాకారకం==(స్థిరరాశి మాతృక_2<Type, M, N> &other) స్థిరరాశి
 	{
-		return isEqual(*this, other);
+		తిరిగి isEqual(*ఇది, other);
 	}
 
-	bool operator!=(const Matrix<Type, M, N> &other) const
+	తార్కిక క్రియాకారకం!=(స్థిరరాశి మాతృక_2<Type, M, N> &other) స్థిరరాశి
 	{
-		const Matrix<Type, M, N> &self = *this;
-		return !(self == other);
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
+		తిరిగి !(self == other);
 	}
 
 	/**
 	 * Misc. Functions
 	 */
 
-	void write_string(char *buf, size_t n) const
+	శూన్య write_string(అక్షరం *buf, size_t n) స్థిరరాశి
 	{
 		buf[0] = '\0'; // make an empty string to begin with (we need the '\0' for strlen to work)
-		const Matrix<Type, M, N> &self = *this;
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				snprintf(buf + strlen(buf), n - strlen(buf), "\t%8.8g", double(self(i, j))); // directly append to the string buffer
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
+				snprintf(buf + అక్షరశ్రేణి_పొడవు(buf), n - అక్షరశ్రేణి_పొడవు(buf), "\t%8.8g", ద్విగుణ(self(i, j))); // directly append to the string buffer
 			}
 
-			snprintf(buf + strlen(buf), n - strlen(buf), "\n");
+			snprintf(buf + అక్షరశ్రేణి_పొడవు(buf), n - అక్షరశ్రేణి_పొడవు(buf), "\n");
 		}
 	}
 
-	void print(float eps = 1e-9) const
+	శూన్య print(దశాంశం eps = 1e-9) స్థిరరాశి
 	{
 		// print column numbering
-		if (N > 1) {
-			printf("  ");
+		ఒకవేళ (N > 1) {
+			రాయి("  ");
 
-			for (unsigned i = 0; i < N; i++) {
-				printf("|%2u      ", i);
+			కొరకు (గుర్తులేని i = 0; i < N; i++) {
+				రాయి("|%2u      ", i);
 
 			}
 
-			printf("\n");
+			రాయి("\n");
 		}
 
-		const Matrix<Type, M, N> &self = *this;
-		bool is_prev_symmetric = true; // assume symmetric until one element is not
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
+		తార్కిక is_prev_సౌష్ఠవ = నిజం; // assume symmetric until one element is not
 
-		for (unsigned i = 0; i < M; i++) {
-			printf("%2u|", i); // print row numbering
+		కొరకు (గుర్తులేని i = 0; i < M; i++) {
+			రాయి("%2u|", i); // print row numbering
 
-			for (unsigned j = 0; j < N; j++) {
-				double d = static_cast<double>(self(i, j));
+			కొరకు (గుర్తులేని j = 0; j < N; j++) {
+				ద్విగుణ d = static_cast<ద్విగుణ>(self(i, j));
 
 				// if symmetric don't print upper triangular elements
-				if (is_prev_symmetric && (M == N) && (j > i) && (i < N) && (j < M)
-				    && (fabs(d - static_cast<double>(self(j, i))) < (double)eps)
+				ఒకవేళ (is_prev_సౌష్ఠవ && (M == N) && (j > i) && (i < N) && (j < M)
+				    && (fabs(d - static_cast<ద్విగుణ>(self(j, i))) < (ద్విగుణ)eps)
 				   ) {
 					// print empty space
-					printf("         ");
+					రాయి("         ");
 
-				} else {
+				} లేకపోతే {
 					// avoid -0.0 for display
-					if (fabs(d - 0.0) < (double)eps) {
+					ఒకవేళ (fabs(d - 0.0) < (ద్విగుణ)eps) {
 						// print fixed width zero
-						printf(" 0       ");
+						రాయి(" 0       ");
 
-					} else if ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
-						printf("% .1e ", d);
+					} లేకపోతే ఒకవేళ ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
+						రాయి("% .1e ", d);
 
-					} else {
-						printf("% 6.5f ", d);
+					} లేకపోతే {
+						రాయి("% 6.5f ", d);
 					}
 
-					is_prev_symmetric = false; // not symmetric if once inside here
+					is_prev_సౌష్ఠవ = అబద్ధం; // not symmetric if once inside here
 				}
 			}
 
-			printf("\n");
+			రాయి("\n");
 		}
 	}
 
-	Matrix<Type, N, M> transpose() const
+	మాతృక_2<Type, N, M> transpose() స్థిరరాశి
 	{
-		Matrix<Type, N, M> res;
-		const Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, N, M> res;
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				res(j, i) = self(i, j);
 			}
 		}
 
-		return res;
+		తిరిగి res;
 	}
 
 	// tranpose alias
-	inline Matrix<Type, N, M> T() const
+	అంతఃవరుస మాతృక_2<Type, N, M> T() స్థిరరాశి
 	{
-		return transpose();
+		తిరిగి transpose();
 	}
 
-	template<size_t P, size_t Q>
-	ConstSlice<Type, P, Q, M, N> slice(size_t x0, size_t y0) const
+	మూస<size_t P, size_t Q>
+	Const_ముక్క<Type, P, Q, M, N> ముక్క(size_t x0, size_t y0) స్థిరరాశి
 	{
-		return {x0, y0, this};
+		తిరిగి {x0, y0, ఇది};
 	}
 
-	template<size_t P, size_t Q>
-	Slice<Type, P, Q, M, N> slice(size_t x0, size_t y0)
+	మూస<size_t P, size_t Q>
+	ముక్క_2<Type, P, Q, M, N> ముక్క(size_t x0, size_t y0)
 	{
-		return {x0, y0, this};
+		తిరిగి {x0, y0, ఇది};
 	}
 
-	ConstSlice<Type, 1, N, M, N> row(size_t i) const
+	Const_ముక్క<Type, 1, N, M, N> అడ్డువరుస(size_t i) స్థిరరాశి
 	{
-		return slice<1, N>(i, 0);
+		తిరిగి ముక్క<1, N>(i, 0);
 	}
 
-	Slice<Type, 1, N, M, N> row(size_t i)
+	ముక్క_2<Type, 1, N, M, N> అడ్డువరుస(size_t i)
 	{
-		return slice<1, N>(i, 0);
+		తిరిగి ముక్క<1, N>(i, 0);
 	}
 
-	ConstSlice<Type, M, 1, M, N> col(size_t j) const
+	Const_ముక్క<Type, M, 1, M, N> నిలువు(size_t j) స్థిరరాశి
 	{
-		return slice<M, 1>(0, j);
+		తిరిగి ముక్క<M, 1>(0, j);
 	}
 
-	Slice<Type, M, 1, M, N> col(size_t j)
+	ముక్క_2<Type, M, 1, M, N> నిలువు(size_t j)
 	{
-		return slice<M, 1>(0, j);
+		తిరిగి ముక్క<M, 1>(0, j);
 	}
 
-	void setRow(size_t i, const Matrix<Type, N, 1> &row_in)
+	శూన్య సమితి_అడ్డువరుస(size_t i, స్థిరరాశి మాతృక_2<Type, N, 1> &అడ్డువరుస_లోపల)
 	{
-		slice<1, N>(i, 0) = row_in.transpose();
+		ముక్క<1, N>(i, 0) = అడ్డువరుస_లోపల.transpose();
 	}
 
-	void setRow(size_t i, Type val)
+	శూన్య సమితి_అడ్డువరుస(size_t i, Type val)
 	{
-		slice<1, N>(i, 0) = val;
+		ముక్క<1, N>(i, 0) = val;
 	}
 
-	void setCol(size_t j, const Matrix<Type, M, 1> &column)
+	శూన్య సమితి_నిలువు(size_t j, స్థిరరాశి మాతృక_2<Type, M, 1> &స్తంభం)
 	{
-		slice<M, 1>(0, j) = column;
+		ముక్క<M, 1>(0, j) = స్తంభం;
 	}
 
-	void setCol(size_t j, Type val)
+	శూన్య సమితి_నిలువు(size_t j, Type val)
 	{
-		slice<M, 1>(0, j) = val;
+		ముక్క<M, 1>(0, j) = val;
 	}
 
-	void setZero()
+	శూన్య సమితి_Zero()
 	{
-		memset(_data, 0, sizeof(_data));
+		memset(దత్తాంశం_3, 0, పరిమాణం(దత్తాంశం_3));
 	}
 
-	inline void zero()
+	అంతఃవరుస శూన్య zero()
 	{
-		setZero();
+		సమితి_Zero();
 	}
 
-	void setAll(Type val)
+	శూన్య సమితి_All(Type val)
 	{
-		Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
 				self(i, j) = val;
 			}
 		}
 	}
 
-	inline void setOne()
+	అంతఃవరుస శూన్య సమితి_One()
 	{
-		setAll(1);
+		సమితి_All(1);
 	}
 
-	inline void setNaN()
+	అంతఃవరుస శూన్య సమితి_Na_N()
 	{
-		setAll(NAN);
+		సమితి_All(NAN);
 	}
 
-	void setIdentity()
+	శూన్య సమితి_తటస్థం()
 	{
-		setZero();
-		Matrix<Type, M, N> &self = *this;
+		సమితి_Zero();
+		మాతృక_2<Type, M, N> &self = *ఇది;
 
-		const size_t min_i = M > N ? N : M;
+		స్థిరరాశి size_t min_i = M > N ? N : M;
 
-		for (size_t i = 0; i < min_i; i++) {
+		కొరకు (size_t i = 0; i < min_i; i++) {
 			self(i, i) = 1;
 		}
 	}
 
-	inline void identity()
+	అంతఃవరుస శూన్య తటస్థం()
 	{
-		setIdentity();
+		సమితి_తటస్థం();
 	}
 
-	inline void swapRows(size_t a, size_t b)
+	అంతఃవరుస శూన్య మార్పిడి_అడ్డువరుసలు(size_t a, size_t b)
 	{
-		assert(a < M);
-		assert(b < M);
+		ప్రతిజ్ఞా(a < M);
+		ప్రతిజ్ఞా(b < M);
 
-		if (a == b) {
-			return;
+		ఒకవేళ (a == b) {
+			తిరిగి;
 		}
 
-		Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t j = 0; j < N; j++) {
+		కొరకు (size_t j = 0; j < N; j++) {
 			Type tmp = self(a, j);
 			self(a, j) = self(b, j);
 			self(b, j) = tmp;
 		}
 	}
 
-	inline void swapCols(size_t a, size_t b)
+	అంతఃవరుస శూన్య మార్పిడి_నిలువుల_సంఖ్య(size_t a, size_t b)
 	{
-		assert(a < N);
-		assert(b < N);
+		ప్రతిజ్ఞా(a < N);
+		ప్రతిజ్ఞా(b < N);
 
-		if (a == b) {
-			return;
+		ఒకవేళ (a == b) {
+			తిరిగి;
 		}
 
-		Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
+		కొరకు (size_t i = 0; i < M; i++) {
 			Type tmp = self(i, a);
 			self(i, a) = self(i, b);
 			self(i, b) = tmp;
 		}
 	}
 
-	inline void nanToZero()
+	అంతఃవరుస శూన్య nan_గమ్యం_Zero()
 	{
 
-		Matrix<Type, M, N> &self = *this;
+		మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				if (std::isnan(self(i, j))) {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
+				ఒకవేళ (std::isnan(self(i, j))) {
 					self(i, j) = static_cast<Type>(0.0f);
 				}
 			}
 		}
 	}
 
-	Matrix<Type, M, N> abs() const
+	మాతృక_2<Type, M, N> నిరపేక్ష() స్థిరరాశి
 	{
-		Matrix<Type, M, N> r;
+		మాతృక_2<Type, M, N> r;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				r(i, j) = Type(std::fabs((*this)(i, j)));
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
+				r(i, j) = Type(std::fabs((*ఇది)(i, j)));
 			}
 		}
 
-		return r;
+		తిరిగి r;
 	}
 
-	Type max() const
+	Type max() స్థిరరాశి
 	{
-		Type max_val = (*this)(0, 0);
+		Type max_val = (*ఇది)(0, 0);
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				Type val = (*this)(i, j);
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
+				Type val = (*ఇది)(i, j);
 
-				if (val > max_val) {
+				ఒకవేళ (val > max_val) {
 					max_val = val;
 				}
 			}
 		}
 
-		return max_val;
+		తిరిగి max_val;
 	}
 
-	Type min() const
+	Type min() స్థిరరాశి
 	{
-		Type min_val = (*this)(0, 0);
+		Type min_val = (*ఇది)(0, 0);
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				Type val = (*this)(i, j);
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
+				Type val = (*ఇది)(i, j);
 
-				if (val < min_val) {
+				ఒకవేళ (val < min_val) {
 					min_val = val;
 				}
 			}
 		}
 
-		return min_val;
+		తిరిగి min_val;
 	}
 
-	bool isAllNan() const
+	తార్కిక isAllNan() స్థిరరాశి
 	{
-		const Matrix<Type, M, N> &self = *this;
-		bool result = true;
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
+		తార్కిక ఫలితం = నిజం;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				result = result && std::isnan(self(i, j));
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
+				ఫలితం = ఫలితం && std::isnan(self(i, j));
 			}
 		}
 
-		return result;
+		తిరిగి ఫలితం;
 	}
 
-	bool isAllFinite() const
+	తార్కిక isAllFinite() స్థిరరాశి
 	{
-		const Matrix<Type, M, N> &self = *this;
+		స్థిరరాశి మాతృక_2<Type, M, N> &self = *ఇది;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				if (!std::isfinite(self(i, j))) {
-					return false;
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
+				ఒకవేళ (!std::isfinite(self(i, j))) {
+					తిరిగి అబద్ధం;
 				}
 			}
 		}
 
-		return true;
+		తిరిగి నిజం;
 	}
 };
 
-template<typename Type, size_t M, size_t N>
-Matrix<Type, M, N> zeros()
+మూస<రకం_పేరు Type, size_t M, size_t N>
+మాతృక_2<Type, M, N> zeros()
 {
-	Matrix<Type, M, N> m;
-	m.setZero();
-	return m;
+	మాతృక_2<Type, M, N> m;
+	m.సమితి_Zero();
+	తిరిగి m;
 }
 
-template<typename Type, size_t M, size_t N>
-Matrix<Type, M, N> ones()
+మూస<రకం_పేరు Type, size_t M, size_t N>
+మాతృక_2<Type, M, N> ones()
 {
-	Matrix<Type, M, N> m;
-	m.setOne();
-	return m;
+	మాతృక_2<Type, M, N> m;
+	m.సమితి_One();
+	తిరిగి m;
 }
 
-template<size_t M, size_t N>
-Matrix<float, M, N> nans()
+మూస<size_t M, size_t N>
+మాతృక_2<దశాంశం, M, N> nans()
 {
-	Matrix<float, M, N> m;
-	m.setNaN();
-	return m;
+	మాతృక_2<దశాంశం, M, N> m;
+	m.సమితి_Na_N();
+	తిరిగి m;
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> operator*(Type scalar, const Matrix<Type, M, N> &other)
+మూస<రకం_పేరు Type, size_t  M, size_t N>
+మాతృక_2<Type, M, N> క్రియాకారకం*(Type scalar, స్థిరరాశి మాతృక_2<Type, M, N> &other)
 {
-	return other * scalar;
+	తిరిగి other * scalar;
 }
 
-template<typename Type, size_t  M, size_t N>
-bool isEqual(const Matrix<Type, M, N> &x,
-	     const Matrix<Type, M, N> &y, const Type eps = Type(1e-4f))
+మూస<రకం_పేరు Type, size_t  M, size_t N>
+తార్కిక isEqual(స్థిరరాశి మాతృక_2<Type, M, N> &x,
+	     స్థిరరాశి మాతృక_2<Type, M, N> &y, స్థిరరాశి Type eps = Type(1e-4f))
 {
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			if (!isEqualF(x(i, j), y(i, j), eps)) {
-				return false;
+	కొరకు (size_t i = 0; i < M; i++) {
+		కొరకు (size_t j = 0; j < N; j++) {
+			ఒకవేళ (!isEqualF(x(i, j), y(i, j), eps)) {
+				తిరిగి అబద్ధం;
 			}
 		}
 	}
 
-	return true;
+	తిరిగి నిజం;
 }
 
-namespace typeFunction
+నామాకాశ typeFunction
 {
-template<typename Type>
-Type min(const Type x, const Type y)
+మూస<రకం_పేరు Type>
+Type min(స్థిరరాశి Type x, స్థిరరాశి Type y)
 {
-	bool x_is_nan = std::isnan(x);
-	bool y_is_nan = std::isnan(y);
+	తార్కిక x_is_nan = std::isnan(x);
+	తార్కిక y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	ఒకవేళ (x_is_nan || y_is_nan) {
+		ఒకవేళ (x_is_nan && !y_is_nan) {
+			తిరిగి y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		తిరిగి x;
 	}
 
-	return (x < y) ? x : y;
+	తిరిగి (x < y) ? x : y;
 }
 
-template<typename Type>
-Type max(const Type x, const Type y)
+మూస<రకం_పేరు Type>
+Type max(స్థిరరాశి Type x, స్థిరరాశి Type y)
 {
-	bool x_is_nan = std::isnan(x);
-	bool y_is_nan = std::isnan(y);
+	తార్కిక x_is_nan = std::isnan(x);
+	తార్కిక y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	ఒకవేళ (x_is_nan || y_is_nan) {
+		ఒకవేళ (x_is_nan && !y_is_nan) {
+			తిరిగి y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		తిరిగి x;
 	}
 
-	return (x > y) ? x : y;
+	తిరిగి (x > y) ? x : y;
 }
 
-template<typename Type>
-Type constrain(const Type x, const Type lower_bound, const Type upper_bound)
+మూస<రకం_పేరు Type>
+Type constrain(స్థిరరాశి Type x, స్థిరరాశి Type క్రింది_bound, స్థిరరాశి Type పై_bound)
 {
-	if (lower_bound > upper_bound) {
-		return NAN;
+	ఒకవేళ (క్రింది_bound > పై_bound) {
+		తిరిగి NAN;
 
-	} else if (std::isnan(x)) {
-		return NAN;
+	} లేకపోతే ఒకవేళ (std::isnan(x)) {
+		తిరిగి NAN;
 
-	} else {
-		return typeFunction::max(lower_bound, typeFunction::min(upper_bound, x));
+	} లేకపోతే {
+		తిరిగి typeFunction::max(క్రింది_bound, typeFunction::min(పై_bound, x));
 	}
 }
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Matrix<Type, M, N> &x, const Type scalar_upper_bound)
+మూస<రకం_పేరు Type, size_t  M, size_t N>
+మాతృక_2<Type, M, N> min(స్థిరరాశి మాతృక_2<Type, M, N> &x, స్థిరరాశి Type scalar_పై_bound)
 {
-	Matrix<Type, M, N> m;
+	మాతృక_2<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			m(i, j) = typeFunction::min(x(i, j), scalar_upper_bound);
+	కొరకు (size_t i = 0; i < M; i++) {
+		కొరకు (size_t j = 0; j < N; j++) {
+			m(i, j) = typeFunction::min(x(i, j), scalar_పై_bound);
 		}
 	}
 
-	return m;
+	తిరిగి m;
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Type scalar_upper_bound, const Matrix<Type, M, N> &x)
+మూస<రకం_పేరు Type, size_t  M, size_t N>
+మాతృక_2<Type, M, N> min(స్థిరరాశి Type scalar_పై_bound, స్థిరరాశి మాతృక_2<Type, M, N> &x)
 {
-	return min(x, scalar_upper_bound);
+	తిరిగి min(x, scalar_పై_bound);
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x2)
+మూస<రకం_పేరు Type, size_t  M, size_t N>
+మాతృక_2<Type, M, N> min(స్థిరరాశి మాతృక_2<Type, M, N> &x1, స్థిరరాశి మాతృక_2<Type, M, N> &x2)
 {
-	Matrix<Type, M, N> m;
+	మాతృక_2<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	కొరకు (size_t i = 0; i < M; i++) {
+		కొరకు (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::min(x1(i, j), x2(i, j));
 		}
 	}
 
-	return m;
+	తిరిగి m;
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Matrix<Type, M, N> &x, const Type scalar_lower_bound)
+మూస<రకం_పేరు Type, size_t  M, size_t N>
+మాతృక_2<Type, M, N> max(స్థిరరాశి మాతృక_2<Type, M, N> &x, స్థిరరాశి Type scalar_క్రింది_bound)
 {
-	Matrix<Type, M, N> m;
+	మాతృక_2<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			m(i, j) = typeFunction::max(x(i, j), scalar_lower_bound);
+	కొరకు (size_t i = 0; i < M; i++) {
+		కొరకు (size_t j = 0; j < N; j++) {
+			m(i, j) = typeFunction::max(x(i, j), scalar_క్రింది_bound);
 		}
 	}
 
-	return m;
+	తిరిగి m;
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Type scalar_lower_bound, const Matrix<Type, M, N> &x)
+మూస<రకం_పేరు Type, size_t  M, size_t N>
+మాతృక_2<Type, M, N> max(స్థిరరాశి Type scalar_క్రింది_bound, స్థిరరాశి మాతృక_2<Type, M, N> &x)
 {
-	return max(x, scalar_lower_bound);
+	తిరిగి max(x, scalar_క్రింది_bound);
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x2)
+మూస<రకం_పేరు Type, size_t  M, size_t N>
+మాతృక_2<Type, M, N> max(స్థిరరాశి మాతృక_2<Type, M, N> &x1, స్థిరరాశి మాతృక_2<Type, M, N> &x2)
 {
-	Matrix<Type, M, N> m;
+	మాతృక_2<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	కొరకు (size_t i = 0; i < M; i++) {
+		కొరకు (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::max(x1(i, j), x2(i, j));
 		}
 	}
 
-	return m;
+	తిరిగి m;
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
-			     const Type scalar_lower_bound,
-			     const Type scalar_upper_bound)
+మూస<రకం_పేరు Type, size_t  M, size_t N>
+మాతృక_2<Type, M, N> constrain(స్థిరరాశి మాతృక_2<Type, M, N> &x,
+			     స్థిరరాశి Type scalar_క్రింది_bound,
+			     స్థిరరాశి Type scalar_పై_bound)
 {
-	Matrix<Type, M, N> m;
+	మాతృక_2<Type, M, N> m;
 
-	if (scalar_lower_bound > scalar_upper_bound) {
-		m.setNaN();
+	ఒకవేళ (scalar_క్రింది_bound > scalar_పై_bound) {
+		m.సమితి_Na_N();
 
-	} else {
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				m(i, j) = typeFunction::constrain(x(i, j), scalar_lower_bound, scalar_upper_bound);
+	} లేకపోతే {
+		కొరకు (size_t i = 0; i < M; i++) {
+			కొరకు (size_t j = 0; j < N; j++) {
+				m(i, j) = typeFunction::constrain(x(i, j), scalar_క్రింది_bound, scalar_పై_bound);
 			}
 		}
 	}
 
-	return m;
+	తిరిగి m;
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
-			     const Matrix<Type, M, N> &x_lower_bound,
-			     const Matrix<Type, M, N> &x_upper_bound)
+మూస<రకం_పేరు Type, size_t  M, size_t N>
+మాతృక_2<Type, M, N> constrain(స్థిరరాశి మాతృక_2<Type, M, N> &x,
+			     స్థిరరాశి మాతృక_2<Type, M, N> &x_క్రింది_bound,
+			     స్థిరరాశి మాతృక_2<Type, M, N> &x_పై_bound)
 {
-	Matrix<Type, M, N> m;
+	మాతృక_2<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			m(i, j) = typeFunction::constrain(x(i, j), x_lower_bound(i, j), x_upper_bound(i, j));
+	కొరకు (size_t i = 0; i < M; i++) {
+		కొరకు (size_t j = 0; j < N; j++) {
+			m(i, j) = typeFunction::constrain(x(i, j), x_క్రింది_bound(i, j), x_పై_bound(i, j));
 		}
 	}
 
-	return m;
+	తిరిగి m;
 }
 
-template<typename OStream, typename Type, size_t M, size_t N>
-OStream &operator<<(OStream &os, const matrix::Matrix<Type, M, N> &matrix)
+మూస<రకం_పేరు OStream, రకం_పేరు Type, size_t M, size_t N>
+OStream &క్రియాకారకం<<(OStream &os, స్థిరరాశి మాతృక::మాతృక_2<Type, M, N> &మాతృక)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * N * M + M + 1;
-	char string[n];
-	matrix.write_string(string, n);
+	అక్షరం string[n];
+	మాతృక.write_string(string, n);
 	os << string;
-	return os;
+	తిరిగి os;
 }
 
 } // namespace matrix

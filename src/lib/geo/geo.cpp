@@ -42,226 +42,226 @@
  * @author Anton Babushkin <anton.babushkin@me.com>
  */
 
-#include "geo.h"
+#అన్తర్భావ "geo.h"
 
-#include <float.h>
+#అన్తర్భావ <float.h>
 
-using matrix::wrap_pi;
-using matrix::wrap_2pi;
+ఉపయోగించి మాతృక::wrap_pi;
+ఉపయోగించి మాతృక::wrap_2pi;
 
 /*
  * Azimuthal Equidistant Projection
  * formulas according to: http://mathworld.wolfram.com/AzimuthalEquidistantProjection.html
  */
 
-void MapProjection::initReference(double lat_0, double lon_0, uint64_t timestamp)
+శూన్య MapProjection::initReference(ద్విగుణ lat_0, ద్విగుణ lon_0, uint64_t timestamp)
 {
 	_ref_timestamp = timestamp;
 	_ref_lat = math::radians(lat_0);
 	_ref_lon = math::radians(lon_0);
-	_ref_sin_lat = sin(_ref_lat);
-	_ref_cos_lat = cos(_ref_lat);
-	_ref_init_done = true;
+	_ref_sin_lat = జ్యా(_ref_lat);
+	_ref_cos_lat = కోజ్యా(_ref_lat);
+	ref_init_పూర్తి = నిజం;
 }
 
-void MapProjection::project(double lat, double lon, float &x, float &y) const
+శూన్య MapProjection::project(ద్విగుణ lat, ద్విగుణ lon, దశాంశం &x, దశాంశం &y) స్థిరరాశి
 {
-	const double lat_rad = math::radians(lat);
-	const double lon_rad = math::radians(lon);
+	స్థిరరాశి ద్విగుణ lat_rad = math::radians(lat);
+	స్థిరరాశి ద్విగుణ lon_rad = math::radians(lon);
 
-	const double sin_lat = sin(lat_rad);
-	const double cos_lat = cos(lat_rad);
+	స్థిరరాశి ద్విగుణ sin_lat = జ్యా(lat_rad);
+	స్థిరరాశి ద్విగుణ cos_lat = కోజ్యా(lat_rad);
 
-	const double cos_d_lon = cos(lon_rad - _ref_lon);
+	స్థిరరాశి ద్విగుణ cos_d_lon = కోజ్యా(lon_rad - _ref_lon);
 
-	const double arg = math::constrain(_ref_sin_lat * sin_lat + _ref_cos_lat * cos_lat * cos_d_lon, -1.0,  1.0);
-	const double c = acos(arg);
+	స్థిరరాశి ద్విగుణ arg = math::constrain(_ref_sin_lat * sin_lat + _ref_cos_lat * cos_lat * cos_d_lon, -1.0,  1.0);
+	స్థిరరాశి ద్విగుణ c = acos(arg);
 
-	double k = 1.0;
+	ద్విగుణ k = 1.0;
 
-	if (fabs(c) > 0) {
-		k = (c / sin(c));
+	ఒకవేళ (fabs(c) > 0) {
+		k = (c / జ్యా(c));
 	}
 
-	x = static_cast<float>(k * (_ref_cos_lat * sin_lat - _ref_sin_lat * cos_lat * cos_d_lon) * CONSTANTS_RADIUS_OF_EARTH);
-	y = static_cast<float>(k * cos_lat * sin(lon_rad - _ref_lon) * CONSTANTS_RADIUS_OF_EARTH);
+	x = static_cast<దశాంశం>(k * (_ref_cos_lat * sin_lat - _ref_sin_lat * cos_lat * cos_d_lon) * CONSTANTS_RADIUS_యొక్క_EARTH);
+	y = static_cast<దశాంశం>(k * cos_lat * జ్యా(lon_rad - _ref_lon) * CONSTANTS_RADIUS_యొక్క_EARTH);
 }
 
-void MapProjection::reproject(float x, float y, double &lat, double &lon) const
+శూన్య MapProjection::reproject(దశాంశం x, దశాంశం y, ద్విగుణ &lat, ద్విగుణ &lon) స్థిరరాశి
 {
-	const double x_rad = (double)x / CONSTANTS_RADIUS_OF_EARTH;
-	const double y_rad = (double)y / CONSTANTS_RADIUS_OF_EARTH;
-	const double c = sqrt(x_rad * x_rad + y_rad * y_rad);
+	స్థిరరాశి ద్విగుణ x_rad = (ద్విగుణ)x / CONSTANTS_RADIUS_యొక్క_EARTH;
+	స్థిరరాశి ద్విగుణ y_rad = (ద్విగుణ)y / CONSTANTS_RADIUS_యొక్క_EARTH;
+	స్థిరరాశి ద్విగుణ c = వర్గమూలం(x_rad * x_rad + y_rad * y_rad);
 
-	if (fabs(c) > 0) {
-		const double sin_c = sin(c);
-		const double cos_c = cos(c);
+	ఒకవేళ (fabs(c) > 0) {
+		స్థిరరాశి ద్విగుణ sin_c = జ్యా(c);
+		స్థిరరాశి ద్విగుణ cos_c = కోజ్యా(c);
 
-		const double lat_rad = asin(cos_c * _ref_sin_lat + (x_rad * sin_c * _ref_cos_lat) / c);
-		const double lon_rad = (_ref_lon + atan2(y_rad * sin_c, c * _ref_cos_lat * cos_c - x_rad * _ref_sin_lat * sin_c));
+		స్థిరరాశి ద్విగుణ lat_rad = asin(cos_c * _ref_sin_lat + (x_rad * sin_c * _ref_cos_lat) / c);
+		స్థిరరాశి ద్విగుణ lon_rad = (_ref_lon + atan2(y_rad * sin_c, c * _ref_cos_lat * cos_c - x_rad * _ref_sin_lat * sin_c));
 
 		lat = math::degrees(lat_rad);
 		lon = math::degrees(lon_rad);
 
-	} else {
+	} లేకపోతే {
 		lat = math::degrees(_ref_lat);
 		lon = math::degrees(_ref_lon);
 	}
 }
 
-float get_distance_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next)
+దశాంశం get_దూరం_గమ్యం_తదుపరి_waypoint(ద్విగుణ lat_now, ద్విగుణ lon_now, ద్విగుణ lat_తదుపరి, ద్విగుణ lon_తదుపరి)
 {
-	const double lat_now_rad = math::radians(lat_now);
-	const double lat_next_rad = math::radians(lat_next);
+	స్థిరరాశి ద్విగుణ lat_now_rad = math::radians(lat_now);
+	స్థిరరాశి ద్విగుణ lat_తదుపరి_rad = math::radians(lat_తదుపరి);
 
-	const double d_lat = lat_next_rad - lat_now_rad;
-	const double d_lon = math::radians(lon_next) - math::radians(lon_now);
+	స్థిరరాశి ద్విగుణ d_lat = lat_తదుపరి_rad - lat_now_rad;
+	స్థిరరాశి ద్విగుణ d_lon = math::radians(lon_తదుపరి) - math::radians(lon_now);
 
-	const double a = sin(d_lat / 2.0) * sin(d_lat / 2.0) + sin(d_lon / 2.0) * sin(d_lon / 2.0) * cos(lat_now_rad) * cos(
-				 lat_next_rad);
+	స్థిరరాశి ద్విగుణ a = జ్యా(d_lat / 2.0) * జ్యా(d_lat / 2.0) + జ్యా(d_lon / 2.0) * జ్యా(d_lon / 2.0) * కోజ్యా(lat_now_rad) * కోజ్యా(
+				 lat_తదుపరి_rad);
 
-	const double c = atan2(sqrt(a), sqrt(1.0 - a));
+	స్థిరరాశి ద్విగుణ c = atan2(వర్గమూలం(a), వర్గమూలం(1.0 - a));
 
-	return static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * 2.0 * c);
+	తిరిగి static_cast<దశాంశం>(CONSTANTS_RADIUS_యొక్క_EARTH * 2.0 * c);
 }
 
-void create_waypoint_from_line_and_dist(double lat_A, double lon_A, double lat_B, double lon_B, float dist,
-					double *lat_target, double *lon_target)
+శూన్య create_waypoint_from_పంక్తి_and_dist(ద్విగుణ lat_A, ద్విగుణ lon_A, ద్విగుణ lat_B, ద్విగుణ lon_B, దశాంశం dist,
+					ద్విగుణ *lat_లక్ష్యం, ద్విగుణ *lon_లక్ష్యం)
 {
-	if (fabsf(dist) < FLT_EPSILON) {
-		*lat_target = lat_A;
-		*lon_target = lon_A;
+	ఒకవేళ (fabsf(dist) < FLT_EPSILON) {
+		*lat_లక్ష్యం = lat_A;
+		*lon_లక్ష్యం = lon_A;
 
-	} else {
-		float heading = get_bearing_to_next_waypoint(lat_A, lon_A, lat_B, lon_B);
-		waypoint_from_heading_and_distance(lat_A, lon_A, heading, dist, lat_target, lon_target);
+	} లేకపోతే {
+		దశాంశం heading = get_bearing_గమ్యం_తదుపరి_waypoint(lat_A, lon_A, lat_B, lon_B);
+		waypoint_from_heading_and_దూరం(lat_A, lon_A, heading, dist, lat_లక్ష్యం, lon_లక్ష్యం);
 	}
 }
 
-void waypoint_from_heading_and_distance(double lat_start, double lon_start, float bearing, float dist,
-					double *lat_target, double *lon_target)
+శూన్య waypoint_from_heading_and_దూరం(ద్విగుణ lat_ప్రారంభం, ద్విగుణ lon_ప్రారంభం, దశాంశం bearing, దశాంశం dist,
+					ద్విగుణ *lat_లక్ష్యం, ద్విగుణ *lon_లక్ష్యం)
 {
 	bearing = wrap_2pi(bearing);
 
-	double radius_ratio = static_cast<double>(dist) / CONSTANTS_RADIUS_OF_EARTH;
+	ద్విగుణ radius_నిష్పత్తి = static_cast<ద్విగుణ>(dist) / CONSTANTS_RADIUS_యొక్క_EARTH;
 
-	double lat_start_rad = math::radians(lat_start);
-	double lon_start_rad = math::radians(lon_start);
+	ద్విగుణ lat_ప్రారంభం_rad = math::radians(lat_ప్రారంభం);
+	ద్విగుణ lon_ప్రారంభం_rad = math::radians(lon_ప్రారంభం);
 
-	*lat_target = asin(sin(lat_start_rad) * cos(radius_ratio) + cos(lat_start_rad) * sin(radius_ratio) * cos((
-				   double)bearing));
-	*lon_target = lon_start_rad + atan2(sin((double)bearing) * sin(radius_ratio) * cos(lat_start_rad),
-					    cos(radius_ratio) - sin(lat_start_rad) * sin(*lat_target));
+	*lat_లక్ష్యం = asin(జ్యా(lat_ప్రారంభం_rad) * కోజ్యా(radius_నిష్పత్తి) + కోజ్యా(lat_ప్రారంభం_rad) * జ్యా(radius_నిష్పత్తి) * కోజ్యా((
+				   ద్విగుణ)bearing));
+	*lon_లక్ష్యం = lon_ప్రారంభం_rad + atan2(జ్యా((ద్విగుణ)bearing) * జ్యా(radius_నిష్పత్తి) * కోజ్యా(lat_ప్రారంభం_rad),
+					    కోజ్యా(radius_నిష్పత్తి) - జ్యా(lat_ప్రారంభం_rad) * జ్యా(*lat_లక్ష్యం));
 
-	*lat_target = math::degrees(*lat_target);
-	*lon_target = math::degrees(*lon_target);
+	*lat_లక్ష్యం = math::degrees(*lat_లక్ష్యం);
+	*lon_లక్ష్యం = math::degrees(*lon_లక్ష్యం);
 }
 
-float get_bearing_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next)
+దశాంశం get_bearing_గమ్యం_తదుపరి_waypoint(ద్విగుణ lat_now, ద్విగుణ lon_now, ద్విగుణ lat_తదుపరి, ద్విగుణ lon_తదుపరి)
 {
-	const double lat_now_rad = math::radians(lat_now);
-	const double lat_next_rad = math::radians(lat_next);
+	స్థిరరాశి ద్విగుణ lat_now_rad = math::radians(lat_now);
+	స్థిరరాశి ద్విగుణ lat_తదుపరి_rad = math::radians(lat_తదుపరి);
 
-	const double cos_lat_next = cos(lat_next_rad);
-	const double d_lon = math::radians(lon_next - lon_now);
+	స్థిరరాశి ద్విగుణ cos_lat_తదుపరి = కోజ్యా(lat_తదుపరి_rad);
+	స్థిరరాశి ద్విగుణ d_lon = math::radians(lon_తదుపరి - lon_now);
 
 	/* conscious mix of double and float trig function to maximize speed and efficiency */
 
-	const float y = static_cast<float>(sin(d_lon) * cos_lat_next);
-	const float x = static_cast<float>(cos(lat_now_rad) * sin(lat_next_rad) - sin(lat_now_rad) * cos_lat_next * cos(d_lon));
+	స్థిరరాశి దశాంశం y = static_cast<దశాంశం>(జ్యా(d_lon) * cos_lat_తదుపరి);
+	స్థిరరాశి దశాంశం x = static_cast<దశాంశం>(కోజ్యా(lat_now_rad) * జ్యా(lat_తదుపరి_rad) - జ్యా(lat_now_rad) * cos_lat_తదుపరి * కోజ్యా(d_lon));
 
-	return wrap_pi(atan2f(y, x));
+	తిరిగి wrap_pi(atan2f(y, x));
 }
 
-void
-get_vector_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next, float *v_n, float *v_e)
+శూన్య
+get_సదిశ_గమ్యం_తదుపరి_waypoint(ద్విగుణ lat_now, ద్విగుణ lon_now, ద్విగుణ lat_తదుపరి, ద్విగుణ lon_తదుపరి, దశాంశం *v_n, దశాంశం *v_e)
 {
-	const double lat_now_rad = math::radians(lat_now);
-	const double lat_next_rad = math::radians(lat_next);
-	const double d_lon = math::radians(lon_next) - math::radians(lon_now);
+	స్థిరరాశి ద్విగుణ lat_now_rad = math::radians(lat_now);
+	స్థిరరాశి ద్విగుణ lat_తదుపరి_rad = math::radians(lat_తదుపరి);
+	స్థిరరాశి ద్విగుణ d_lon = math::radians(lon_తదుపరి) - math::radians(lon_now);
 
 	/* conscious mix of double and float trig function to maximize speed and efficiency */
-	*v_n = static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * (cos(lat_now_rad) * sin(lat_next_rad) - sin(lat_now_rad) * cos(
-					  lat_next_rad) * cos(d_lon)));
-	*v_e = static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * sin(d_lon) * cos(lat_next_rad));
+	*v_n = static_cast<దశాంశం>(CONSTANTS_RADIUS_యొక్క_EARTH * (కోజ్యా(lat_now_rad) * జ్యా(lat_తదుపరి_rad) - జ్యా(lat_now_rad) * కోజ్యా(
+					  lat_తదుపరి_rad) * కోజ్యా(d_lon)));
+	*v_e = static_cast<దశాంశం>(CONSTANTS_RADIUS_యొక్క_EARTH * జ్యా(d_lon) * కోజ్యా(lat_తదుపరి_rad));
 }
 
-void
-get_vector_to_next_waypoint_fast(double lat_now, double lon_now, double lat_next, double lon_next, float *v_n,
-				 float *v_e)
+శూన్య
+get_సదిశ_గమ్యం_తదుపరి_waypoint_fast(ద్విగుణ lat_now, ద్విగుణ lon_now, ద్విగుణ lat_తదుపరి, ద్విగుణ lon_తదుపరి, దశాంశం *v_n,
+				 దశాంశం *v_e)
 {
-	double lat_now_rad = math::radians(lat_now);
-	double lon_now_rad = math::radians(lon_now);
-	double lat_next_rad = math::radians(lat_next);
-	double lon_next_rad = math::radians(lon_next);
+	ద్విగుణ lat_now_rad = math::radians(lat_now);
+	ద్విగుణ lon_now_rad = math::radians(lon_now);
+	ద్విగుణ lat_తదుపరి_rad = math::radians(lat_తదుపరి);
+	ద్విగుణ lon_తదుపరి_rad = math::radians(lon_తదుపరి);
 
-	double d_lat = lat_next_rad - lat_now_rad;
-	double d_lon = lon_next_rad - lon_now_rad;
+	ద్విగుణ d_lat = lat_తదుపరి_rad - lat_now_rad;
+	ద్విగుణ d_lon = lon_తదుపరి_rad - lon_now_rad;
 
 	/* conscious mix of double and float trig function to maximize speed and efficiency */
-	*v_n = static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * d_lat);
-	*v_e = static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * d_lon * cos(lat_now_rad));
+	*v_n = static_cast<దశాంశం>(CONSTANTS_RADIUS_యొక్క_EARTH * d_lat);
+	*v_e = static_cast<దశాంశం>(CONSTANTS_RADIUS_యొక్క_EARTH * d_lon * కోజ్యా(lat_now_rad));
 }
 
-void add_vector_to_global_position(double lat_now, double lon_now, float v_n, float v_e, double *lat_res,
-				   double *lon_res)
+శూన్య కూడు_సదిశ_గమ్యం_global_position(ద్విగుణ lat_now, ద్విగుణ lon_now, దశాంశం v_n, దశాంశం v_e, ద్విగుణ *lat_res,
+				   ద్విగుణ *lon_res)
 {
-	double lat_now_rad = math::radians(lat_now);
-	double lon_now_rad = math::radians(lon_now);
+	ద్విగుణ lat_now_rad = math::radians(lat_now);
+	ద్విగుణ lon_now_rad = math::radians(lon_now);
 
-	*lat_res = math::degrees(lat_now_rad + (double)v_n / CONSTANTS_RADIUS_OF_EARTH);
-	*lon_res = math::degrees(lon_now_rad + (double)v_e / (CONSTANTS_RADIUS_OF_EARTH * cos(lat_now_rad)));
+	*lat_res = math::degrees(lat_now_rad + (ద్విగుణ)v_n / CONSTANTS_RADIUS_యొక్క_EARTH);
+	*lon_res = math::degrees(lon_now_rad + (ద్విగుణ)v_e / (CONSTANTS_RADIUS_యొక్క_EARTH * కోజ్యా(lat_now_rad)));
 }
 
 // Additional functions - @author Doug Weibel <douglas.weibel@colorado.edu>
 
-int get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat_now, double lon_now,
-			 double lat_start, double lon_start, double lat_end, double lon_end)
+పూర్ణాంకం get_దూరం_గమ్యం_పంక్తి(నిర్మాణం crosstrack_error_s &crosstrack_error, ద్విగుణ lat_now, ద్విగుణ lon_now,
+			 ద్విగుణ lat_ప్రారంభం, ద్విగుణ lon_ప్రారంభం, ద్విగుణ lat_చివర, ద్విగుణ lon_చివర)
 {
 	// This function returns the distance to the nearest point on the track line.  Distance is positive if current
 	// position is right of the track and negative if left of the track as seen from a point on the track line
 	// headed towards the end point.
 
-	int return_value = -1;	// Set error flag, cleared when valid result calculated.
-	crosstrack_error.past_end = false;
-	crosstrack_error.distance = 0.0f;
+	పూర్ణాంకం return_విలువ = -1;	// Set error flag, cleared when valid result calculated.
+	crosstrack_error.past_చివర = అబద్ధం;
+	crosstrack_error.దూరం = 0.0f;
 	crosstrack_error.bearing = 0.0f;
 
-	float dist_to_end = get_distance_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
+	దశాంశం dist_గమ్యం_చివర = get_దూరం_గమ్యం_తదుపరి_waypoint(lat_now, lon_now, lat_చివర, lon_చివర);
 
 	// Return error if arguments are bad
-	if (dist_to_end < 0.1f) {
-		return -1;
+	ఒకవేళ (dist_గమ్యం_చివర < 0.1f) {
+		తిరిగి -1;
 	}
 
-	float bearing_end = get_bearing_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
-	float bearing_track = get_bearing_to_next_waypoint(lat_start, lon_start, lat_end, lon_end);
-	float bearing_diff = wrap_pi(bearing_track - bearing_end);
+	దశాంశం bearing_చివర = get_bearing_గమ్యం_తదుపరి_waypoint(lat_now, lon_now, lat_చివర, lon_చివర);
+	దశాంశం bearing_track = get_bearing_గమ్యం_తదుపరి_waypoint(lat_ప్రారంభం, lon_ప్రారంభం, lat_చివర, lon_చివర);
+	దశాంశం bearing_diff = wrap_pi(bearing_track - bearing_చివర);
 
 	// Return past_end = true if past end point of line
-	if (bearing_diff > M_PI_2_F || bearing_diff < -M_PI_2_F) {
-		crosstrack_error.past_end = true;
-		return_value = 0;
-		return return_value;
+	ఒకవేళ (bearing_diff > M_PI_2_F || bearing_diff < -M_PI_2_F) {
+		crosstrack_error.past_చివర = నిజం;
+		return_విలువ = 0;
+		తిరిగి return_విలువ;
 	}
 
-	crosstrack_error.distance = (dist_to_end) * sinf(bearing_diff);
+	crosstrack_error.దూరం = (dist_గమ్యం_చివర) * sinf(bearing_diff);
 
-	if (sinf(bearing_diff) >= 0) {
+	ఒకవేళ (sinf(bearing_diff) >= 0) {
 		crosstrack_error.bearing = wrap_pi(bearing_track - M_PI_2_F);
 
-	} else {
+	} లేకపోతే {
 		crosstrack_error.bearing = wrap_pi(bearing_track + M_PI_2_F);
 	}
 
-	return_value = 0;
+	return_విలువ = 0;
 
-	return return_value;
+	తిరిగి return_విలువ;
 }
 
-int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_now, double lon_now,
-			double lat_center, double lon_center,
-			float radius, float arc_start_bearing, float arc_sweep)
+పూర్ణాంకం get_దూరం_గమ్యం_arc(నిర్మాణం crosstrack_error_s *crosstrack_error, ద్విగుణ lat_now, ద్విగుణ lon_now,
+			ద్విగుణ lat_center, ద్విగుణ lon_center,
+			దశాంశం radius, దశాంశం arc_ప్రారంభం_bearing, దశాంశం arc_sweep)
 {
 	// This function returns the distance to the nearest point on the track arc.  Distance is positive if current
 	// position is right of the arc and negative if left of the arc as seen from the closest point on the arc and
@@ -269,113 +269,113 @@ int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_
 
 	// Determine if the current position is inside or outside the sector between the line from the center
 	// to the arc start and the line from the center to the arc end
-	const float bearing_now = get_bearing_to_next_waypoint(lat_now, lon_now, lat_center, lon_center);
+	స్థిరరాశి దశాంశం bearing_now = get_bearing_గమ్యం_తదుపరి_waypoint(lat_now, lon_now, lat_center, lon_center);
 
-	int return_value = -1;		// Set error flag, cleared when valid result calculated.
-	crosstrack_error->past_end = false;
-	crosstrack_error->distance = 0.0f;
+	పూర్ణాంకం return_విలువ = -1;		// Set error flag, cleared when valid result calculated.
+	crosstrack_error->past_చివర = అబద్ధం;
+	crosstrack_error->దూరం = 0.0f;
 	crosstrack_error->bearing = 0.0f;
 
 	// Return error if arguments are bad
-	if (radius < 0.1f) {
-		return return_value;
+	ఒకవేళ (radius < 0.1f) {
+		తిరిగి return_విలువ;
 	}
 
 	// arc_start_bearing and arc_sweep are referenced to the center, so test membership with the
 	// center->vehicle bearing. Measuring it in the direction of the sweep handles either sign and
 	// any zero crossing without special cases.
 	// NOLINTNEXTLINE(readability-suspicious-call-argument) intentional reverse bearing: center -> vehicle
-	const float bearing_center_to_now = get_bearing_to_next_waypoint(lat_center, lon_center, lat_now, lon_now);
-	const float bearing_from_start = wrap_2pi((bearing_center_to_now - arc_start_bearing) * (arc_sweep < 0.0f ? -1.0f :
+	స్థిరరాశి దశాంశం bearing_center_గమ్యం_now = get_bearing_గమ్యం_తదుపరి_waypoint(lat_center, lon_center, lat_now, lon_now);
+	స్థిరరాశి దశాంశం bearing_from_ప్రారంభం = wrap_2pi((bearing_center_గమ్యం_now - arc_ప్రారంభం_bearing) * (arc_sweep < 0.0f ? -1.0f :
 					 1.0f));
-	const bool in_sector = bearing_from_start <= fabsf(arc_sweep);
+	స్థిరరాశి తార్కిక లోపల_sector = bearing_from_ప్రారంభం <= fabsf(arc_sweep);
 
 	// If in the sector then calculate distance and bearing to closest point
-	if (in_sector) {
-		crosstrack_error->past_end = false;
-		float dist_to_center = get_distance_to_next_waypoint(lat_now, lon_now, lat_center, lon_center);
+	ఒకవేళ (లోపల_sector) {
+		crosstrack_error->past_చివర = అబద్ధం;
+		దశాంశం dist_గమ్యం_center = get_దూరం_గమ్యం_తదుపరి_waypoint(lat_now, lon_now, lat_center, lon_center);
 
-		if (dist_to_center <= radius) {
-			crosstrack_error->distance = radius - dist_to_center;
+		ఒకవేళ (dist_గమ్యం_center <= radius) {
+			crosstrack_error->దూరం = radius - dist_గమ్యం_center;
 			crosstrack_error->bearing = bearing_now + M_PI_F;
 
-		} else {
-			crosstrack_error->distance = dist_to_center - radius;
+		} లేకపోతే {
+			crosstrack_error->దూరం = dist_గమ్యం_center - radius;
 			crosstrack_error->bearing = bearing_now;
 		}
 
 		// If out of the sector then calculate dist and bearing to start or end point
 
-	} else {
+	} లేకపోతే {
 
 		// Use the approximation  that 111,111 meters in the y direction is 1 degree (of latitude)
 		// and 111,111 * cos(latitude) meters in the x direction is 1 degree (of longitude) to
 		// calculate the position of the start and end points.  We should not be doing this often
 		// as this function generally will not be called repeatedly when we are out of the sector.
 
-		double start_disp_x = (double)radius * sin((double)arc_start_bearing);
-		double start_disp_y = (double)radius * cos((double)arc_start_bearing);
-		double end_disp_x = (double)radius * sin((double)wrap_pi(arc_start_bearing + arc_sweep));
-		double end_disp_y = (double)radius * cos((double)wrap_pi(arc_start_bearing + arc_sweep));
-		const double cos_lat_center = cos(math::radians(lat_center));
-		double lon_start = lon_center + start_disp_x / (111111.0 * cos_lat_center);
-		double lat_start = lat_center + start_disp_y / 111111.0;
-		double lon_end = lon_center + end_disp_x / (111111.0 * cos_lat_center);
-		double lat_end = lat_center + end_disp_y / 111111.0;
-		float dist_to_start = get_distance_to_next_waypoint(lat_now, lon_now, lat_start, lon_start);
-		float dist_to_end = get_distance_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
+		ద్విగుణ ప్రారంభం_disp_x = (ద్విగుణ)radius * జ్యా((ద్విగుణ)arc_ప్రారంభం_bearing);
+		ద్విగుణ ప్రారంభం_disp_y = (ద్విగుణ)radius * కోజ్యా((ద్విగుణ)arc_ప్రారంభం_bearing);
+		ద్విగుణ చివర_disp_x = (ద్విగుణ)radius * జ్యా((ద్విగుణ)wrap_pi(arc_ప్రారంభం_bearing + arc_sweep));
+		ద్విగుణ చివర_disp_y = (ద్విగుణ)radius * కోజ్యా((ద్విగుణ)wrap_pi(arc_ప్రారంభం_bearing + arc_sweep));
+		స్థిరరాశి ద్విగుణ cos_lat_center = కోజ్యా(math::radians(lat_center));
+		ద్విగుణ lon_ప్రారంభం = lon_center + ప్రారంభం_disp_x / (111111.0 * cos_lat_center);
+		ద్విగుణ lat_ప్రారంభం = lat_center + ప్రారంభం_disp_y / 111111.0;
+		ద్విగుణ lon_చివర = lon_center + చివర_disp_x / (111111.0 * cos_lat_center);
+		ద్విగుణ lat_చివర = lat_center + చివర_disp_y / 111111.0;
+		దశాంశం dist_గమ్యం_ప్రారంభం = get_దూరం_గమ్యం_తదుపరి_waypoint(lat_now, lon_now, lat_ప్రారంభం, lon_ప్రారంభం);
+		దశాంశం dist_గమ్యం_చివర = get_దూరం_గమ్యం_తదుపరి_waypoint(lat_now, lon_now, lat_చివర, lon_చివర);
 
-		if (dist_to_start < dist_to_end) {
-			crosstrack_error->distance = dist_to_start;
-			crosstrack_error->bearing = get_bearing_to_next_waypoint(lat_now, lon_now, lat_start, lon_start);
+		ఒకవేళ (dist_గమ్యం_ప్రారంభం < dist_గమ్యం_చివర) {
+			crosstrack_error->దూరం = dist_గమ్యం_ప్రారంభం;
+			crosstrack_error->bearing = get_bearing_గమ్యం_తదుపరి_waypoint(lat_now, lon_now, lat_ప్రారంభం, lon_ప్రారంభం);
 
-		} else {
-			crosstrack_error->past_end = true;
-			crosstrack_error->distance = dist_to_end;
-			crosstrack_error->bearing = get_bearing_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
+		} లేకపోతే {
+			crosstrack_error->past_చివర = నిజం;
+			crosstrack_error->దూరం = dist_గమ్యం_చివర;
+			crosstrack_error->bearing = get_bearing_గమ్యం_తదుపరి_waypoint(lat_now, lon_now, lat_చివర, lon_చివర);
 		}
 	}
 
 	crosstrack_error->bearing = wrap_pi(crosstrack_error->bearing);
-	return_value = 0;
+	return_విలువ = 0;
 
-	return return_value;
+	తిరిగి return_విలువ;
 }
 
-float get_distance_to_point_global_wgs84(double lat_now, double lon_now, float alt_now,
-		double lat_next, double lon_next, float alt_next,
-		float *dist_xy, float *dist_z)
+దశాంశం get_దూరం_గమ్యం_బిందువు_global_wgs84(ద్విగుణ lat_now, ద్విగుణ lon_now, దశాంశం alt_now,
+		ద్విగుణ lat_తదుపరి, ద్విగుణ lon_తదుపరి, దశాంశం alt_తదుపరి,
+		దశాంశం *dist_xy, దశాంశం *dist_z)
 {
-	double current_x_rad = math::radians(lat_next);
-	double current_y_rad = math::radians(lon_next);
-	double x_rad = math::radians(lat_now);
-	double y_rad = math::radians(lon_now);
+	ద్విగుణ current_x_rad = math::radians(lat_తదుపరి);
+	ద్విగుణ current_y_rad = math::radians(lon_తదుపరి);
+	ద్విగుణ x_rad = math::radians(lat_now);
+	ద్విగుణ y_rad = math::radians(lon_now);
 
-	double d_lat = x_rad - current_x_rad;
-	double d_lon = y_rad - current_y_rad;
+	ద్విగుణ d_lat = x_rad - current_x_rad;
+	ద్విగుణ d_lon = y_rad - current_y_rad;
 
-	double a = sin(d_lat / 2.0) * sin(d_lat / 2.0) + sin(d_lon / 2.0) * sin(d_lon / 2.0) * cos(current_x_rad) * cos(x_rad);
-	double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+	ద్విగుణ a = జ్యా(d_lat / 2.0) * జ్యా(d_lat / 2.0) + జ్యా(d_lon / 2.0) * జ్యా(d_lon / 2.0) * కోజ్యా(current_x_rad) * కోజ్యా(x_rad);
+	ద్విగుణ c = 2 * atan2(వర్గమూలం(a), వర్గమూలం(1 - a));
 
-	const float dxy = static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * c);
-	const float dz = static_cast<float>(alt_now - alt_next);
+	స్థిరరాశి దశాంశం dxy = static_cast<దశాంశం>(CONSTANTS_RADIUS_యొక్క_EARTH * c);
+	స్థిరరాశి దశాంశం dz = static_cast<దశాంశం>(alt_now - alt_తదుపరి);
 
 	*dist_xy = fabsf(dxy);
 	*dist_z = fabsf(dz);
 
-	return sqrtf(dxy * dxy + dz * dz);
+	తిరిగి sqrtf(dxy * dxy + dz * dz);
 }
 
-float mavlink_wpm_distance_to_point_local(float x_now, float y_now, float z_now,
-		float x_next, float y_next, float z_next,
-		float *dist_xy, float *dist_z)
+దశాంశం mavlink_wpm_దూరం_గమ్యం_బిందువు_local(దశాంశం x_now, దశాంశం y_now, దశాంశం z_now,
+		దశాంశం x_తదుపరి, దశాంశం y_తదుపరి, దశాంశం z_తదుపరి,
+		దశాంశం *dist_xy, దశాంశం *dist_z)
 {
-	float dx = x_now - x_next;
-	float dy = y_now - y_next;
-	float dz = z_now - z_next;
+	దశాంశం dx = x_now - x_తదుపరి;
+	దశాంశం dy = y_now - y_తదుపరి;
+	దశాంశం dz = z_now - z_తదుపరి;
 
 	*dist_xy = sqrtf(dx * dx + dy * dy);
 	*dist_z = fabsf(dz);
 
-	return sqrtf(dx * dx + dy * dy + dz * dz);
+	తిరిగి sqrtf(dx * dx + dy * dy + dz * dz);
 }

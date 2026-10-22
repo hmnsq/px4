@@ -31,13 +31,13 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-struct Trajectory {
-	float j; //< jerk
-	float a; //< acceleration
-	float v; //< velocity
-	float x; //< position
+నిర్మాణం Trajectory {
+	దశాంశం j; //< jerk
+	దశాంశం a; //< acceleration
+	దశాంశం v; //< velocity
+	దశాంశం x; //< position
 };
 
 /**
@@ -58,11 +58,11 @@ struct Trajectory {
  *        ;
  *   ----"
  */
-class VelocitySmoothing
+తరగతి VelocitySmoothing
 {
-public:
-	VelocitySmoothing(float initial_accel = 0.f, float initial_vel = 0.f, float initial_pos = 0.f);
-	~VelocitySmoothing() = default;
+బహిరంగ:
+	VelocitySmoothing(దశాంశం initial_accel = 0.f, దశాంశం initial_vel = 0.f, దశాంశం initial_pos = 0.f);
+	~VelocitySmoothing() = అప్రమేయ;
 
 	/**
 	 * Reset the state.
@@ -70,14 +70,14 @@ public:
 	 * @param vel Current velocity
 	 * @param pos Current position
 	 */
-	void reset(float accel, float vel, float pos);
+	శూన్య reset(దశాంశం accel, దశాంశం vel, దశాంశం pos);
 
 	/**
 	 * Compute T1, T2, T3 depending on the current state and velocity setpoint. This should be called on every cycle
 	 * and before updateTraj().
 	 * @param vel_setpoint velocity setpoint input
 	 */
-	void updateDurations(float vel_setpoint);
+	శూన్య updateDurations(దశాంశం vel_setpoint);
 
 	/**
 	 * Generate the trajectory (acceleration, velocity and position) by integrating the current jerk
@@ -85,32 +85,32 @@ public:
 	 * @param time_stretch (optional) used to scale the integration period. This can be used to slow down
 	 * or fast-forward the trajectory
 	 */
-	void updateTraj(float dt, float time_stretch = 1.f);
+	శూన్య updateTraj(దశాంశం dt, దశాంశం సమయం_stretch = 1.f);
 
 	/**
 	 * Getters and setters
 	 */
-	float getMaxJerk() const { return _max_jerk; }
-	void setMaxJerk(float max_jerk) { _max_jerk = max_jerk; }
+	దశాంశం getMaxJerk() స్థిరరాశి { తిరిగి _max_jerk; }
+	శూన్య సమితి_Max_Jerk(దశాంశం max_jerk) { _max_jerk = max_jerk; }
 
-	float getMaxAccel() const { return _max_accel; }
-	void setMaxAccel(float max_accel) { _max_accel = max_accel; }
+	దశాంశం getMaxAccel() స్థిరరాశి { తిరిగి _max_accel; }
+	శూన్య సమితి_Max_Accel(దశాంశం max_accel) { _max_accel = max_accel; }
 
-	float getMaxVel() const { return _max_vel; }
-	void setMaxVel(float max_vel) { _max_vel = max_vel; }
+	దశాంశం getMaxVel() స్థిరరాశి { తిరిగి _max_vel; }
+	శూన్య సమితి_Max_Vel(దశాంశం max_vel) { _max_vel = max_vel; }
 
-	float getCurrentJerk() const { return _state.j; }
-	void setCurrentAcceleration(const float accel) { _state.a = _state_init.a = accel; }
-	float getCurrentAcceleration() const { return _state.a; }
-	void setCurrentVelocity(const float vel) { _state.v = _state_init.v = vel; }
-	float getCurrentVelocity() const { return _state.v; }
-	void setCurrentPosition(const float pos) { _state.x = _state_init.x = pos; }
-	float getCurrentPosition() const { return _state.x; }
+	దశాంశం getCurrentJerk() స్థిరరాశి { తిరిగి _state.j; }
+	శూన్య సమితి_Current_Acceleration(స్థిరరాశి దశాంశం accel) { _state.a = _state_init.a = accel; }
+	దశాంశం getCurrentAcceleration() స్థిరరాశి { తిరిగి _state.a; }
+	శూన్య సమితి_Current_Velocity(స్థిరరాశి దశాంశం vel) { _state.v = _state_init.v = vel; }
+	దశాంశం getCurrentVelocity() స్థిరరాశి { తిరిగి _state.v; }
+	శూన్య సమితి_Current_Position(స్థిరరాశి దశాంశం pos) { _state.x = _state_init.x = pos; }
+	దశాంశం getCurrentPosition() స్థిరరాశి { తిరిగి _state.x; }
 
-	float getT1() const { return _T1; }
-	float getT2() const { return _T2; }
-	float getT3() const { return _T3; }
-	float getTotalTime() const { return _T1 + _T2 + _T3; }
+	దశాంశం getT1() స్థిరరాశి { తిరిగి _T1; }
+	దశాంశం getT2() స్థిరరాశి { తిరిగి _T2; }
+	దశాంశం getT3() స్థిరరాశి { తిరిగి _T3; }
+	దశాంశం get_మొత్తం_సమయం() స్థిరరాశి { తిరిగి _T1 + _T2 + _T3; }
 
 	/**
 	 * Synchronize several trajectories to have the same total time. This is required to generate
@@ -119,63 +119,63 @@ public:
 	 * @param traj an array of VelocitySmoothing objects
 	 * @param n_traj the number of trajectories to be synchronized
 	 */
-	static void timeSynchronization(VelocitySmoothing *traj, int n_traj);
+	స్థిర శూన్య సమయం_Synchronization(VelocitySmoothing *traj, పూర్ణాంకం n_traj);
 
-private:
+అంతరంగ:
 
 	/**
 	 * Compute T1, T2, T3 depending on the current state and velocity setpoint.
 	 * Minimize the total time of the trajectory
 	 */
-	void updateDurationsMinimizeTotalTime();
+	శూన్య update_Durations_Minimize_మొత్తం_సమయం();
 
 	/**
 	 * Compute T1, T2, T3 depending on the current state and velocity setpoint.
 	 * @param T123 desired total time of the trajectory
 	 */
-	void updateDurationsGivenTotalTime(float T123);
+	శూన్య update_Durations_Given_మొత్తం_సమయం(దశాంశం T123);
 
 	/**
 	 * Compute the direction of the jerk to be applied in order to drive the current state
 	 * to the desired one
 	 */
-	int computeDirection() const;
+	పూర్ణాంకం computeDirection() స్థిరరాశి;
 
 	/**
 	 * Compute the velocity at which the trajectory will be if the maximum jerk is applied
 	 * during the time required to cancel the current acceleration
 	 */
-	float computeVelAtZeroAcc() const;
+	దశాంశం computeVelAtZeroAcc() స్థిరరాశి;
 
 	/**
 	 * Compute increasing acceleration time
 	 */
-	inline float computeT1(float a0, float v3, float j_max, float a_max) const;
+	అంతఃవరుస దశాంశం computeT1(దశాంశం a0, దశాంశం v3, దశాంశం j_max, దశాంశం a_max) స్థిరరాశి;
 
 	/**
 	 * Compute increasing acceleration time using total time constraint
 	 */
-	inline float computeT1(float T123, float a0, float v3, float j_max, float a_max) const;
+	అంతఃవరుస దశాంశం computeT1(దశాంశం T123, దశాంశం a0, దశాంశం v3, దశాంశం j_max, దశాంశం a_max) స్థిరరాశి;
 
 	/**
 	 * Saturate T1 in order to respect the maximum acceleration constraint
 	 */
-	inline float saturateT1ForAccel(float a0, float j_max, float T1, float a_max) const;
+	అంతఃవరుస దశాంశం saturateT1ForAccel(దశాంశం a0, దశాంశం j_max, దశాంశం T1, దశాంశం a_max) స్థిరరాశి;
 
 	/**
 	 * Compute constant acceleration time
 	 */
-	inline float computeT2(float T1, float T3, float a0, float v3, float j_max) const;
+	అంతఃవరుస దశాంశం computeT2(దశాంశం T1, దశాంశం T3, దశాంశం a0, దశాంశం v3, దశాంశం j_max) స్థిరరాశి;
 
 	/**
 	 * Compute constant acceleration time using total time constraint
 	 */
-	inline float computeT2(float T123, float T1, float T3) const;
+	అంతఃవరుస దశాంశం computeT2(దశాంశం T123, దశాంశం T1, దశాంశం T3) స్థిరరాశి;
 
 	/**
 	 * Compute decreasing acceleration time
 	 */
-	inline float computeT3(float T1, float a0, float j_max) const;
+	అంతఃవరుస దశాంశం computeT3(దశాంశం T1, దశాంశం a0, దశాంశం j_max) స్థిరరాశి;
 
 	/**
 	 * Compute the jerk, acceleration, velocity and position
@@ -187,27 +187,27 @@ private:
 	 * @param t current time
 	 * @param d direction
 	 */
-	inline Trajectory evaluatePoly(float j, float a0, float v0, float x0, float t, int d) const;
+	అంతఃవరుస Trajectory evaluatePoly(దశాంశం j, దశాంశం a0, దశాంశం v0, దశాంశం x0, దశాంశం t, పూర్ణాంకం d) స్థిరరాశి;
 
-	/* Input */
-	float _vel_sp{0.f};
+	/*ఆదానం*/
+	దశాంశం _vel_sp{0.f};
 
 	/* Constraints */
-	float _max_jerk{0.f};
-	float _max_accel{0.f};
-	float _max_vel{0.f};
+	దశాంశం _max_jerk{0.f};
+	దశాంశం _max_accel{0.f};
+	దశాంశం _max_vel{0.f};
 
 	/* State (previous setpoints) */
 	Trajectory _state{};
-	int _direction{0};
+	పూర్ణాంకం _direction{0};
 
 	/* Initial conditions */
 	Trajectory _state_init{};
 
 	/* Duration of each phase */
-	float _T1{0.f}; ///< Increasing acceleration [s]
-	float _T2{0.f}; ///< Constant acceleration [s]
-	float _T3{0.f}; ///< Decreasing acceleration [s]
+	దశాంశం _T1{0.f}; ///< Increasing acceleration [s]
+	దశాంశం _T2{0.f}; ///< Constant acceleration [s]
+	దశాంశం _T3{0.f}; ///< Decreasing acceleration [s]
 
-	float _local_time{0.f}; ///< Current local time
+	దశాంశం local_సమయం{0.f}; ///< Current local time
 };

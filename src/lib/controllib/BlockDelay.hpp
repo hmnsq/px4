@@ -37,78 +37,78 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <time.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <mathlib/math/test/test.hpp>
+#అన్తర్భావ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
 
-template<class Type, size_t M, size_t N, size_t LEN>
-class __EXPORT BlockDelay: public Block
+మూస<తరగతి Type, size_t M, size_t N, size_t LEN>
+తరగతి __EXPORT ఖండం_Delay: బహిరంగ ఖండం
 {
-public:
+బహిరంగ:
 // methods
-	BlockDelay(SuperBlock *parent, const char *name) :
-		Block(parent, name),
+	ఖండం_Delay(Super_ఖండం *మాతృ, స్థిరరాశి అక్షరం *name) :
+		ఖండం(మాతృ, name),
 		_h(),
-		_index(0),
+		సూచీ_2(0),
 		_delay(-1)
 	{}
-	virtual ~BlockDelay() = default;
-	matrix::Matrix<Type, M, N> update(const matrix::Matrix<Type, M, N> &u)
+	మాయా ~ఖండం_Delay() = అప్రమేయ;
+	మాతృక::మాతృక_2<Type, M, N> update(స్థిరరాశి మాతృక::మాతృక_2<Type, M, N> &u)
 	{
 		// store current value
-		_h[_index] = u;
+		_h[సూచీ_2] = u;
 
 		// delay starts at zero, then increases to LEN
 		_delay += 1;
 
-		if (_delay > (int)(LEN - 1)) {
+		ఒకవేళ (_delay > (పూర్ణాంకం)(LEN - 1)) {
 			_delay = LEN - 1;
 		}
 
 		// compute position of delayed value
-		int j = _index - _delay;
+		పూర్ణాంకం j = సూచీ_2 - _delay;
 
-		if (j < 0) {
+		ఒకవేళ (j < 0) {
 			j += LEN;
 		}
 
 		// increment storage position
-		_index += 1;
+		సూచీ_2 += 1;
 
-		if (_index > (LEN - 1)) {
-			_index  = 0;
+		ఒకవేళ (సూచీ_2 > (LEN - 1)) {
+			సూచీ_2  = 0;
 		}
 
 		// get delayed value
-		return _h[j];
+		తిరిగి _h[j];
 	}
-	matrix::Matrix<Type, M, N> get(size_t delay)
+	మాతృక::మాతృక_2<Type, M, N> get(size_t delay)
 	{
-		int j = _index - delay;
+		పూర్ణాంకం j = సూచీ_2 - delay;
 
-		if (j < 0) { j += LEN; }
+		ఒకవేళ (j < 0) { j += LEN; }
 
-		return _h[j];
+		తిరిగి _h[j];
 	}
-private:
-// attributes
-	matrix::Matrix<Type, M, N> _h[LEN];
-	size_t _index;
-	int _delay;
+అంతరంగ:
+//లక్షణాలు
+	మాతృక::మాతృక_2<Type, M, N> _h[LEN];
+	size_t సూచీ_2;
+	పూర్ణాంకం _delay;
 };
 
 } // namespace control

@@ -36,56 +36,56 @@
  * @author Paul Riseborough
  */
 
-#include "TECS.hpp"
+#అన్తర్భావ "TECS.hpp"
 
-#include <lib/geo/geo.h>
+#అన్తర్భావ <lib/geo/geo.h>
 
-#include <px4_platform_common/defines.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
 
-using math::constrain;
-using math::max;
-using math::min;
+ఉపయోగించి math::constrain;
+ఉపయోగించి math::max;
+ఉపయోగించి math::min;
 
-static constexpr bool isValidTimeStep(float dt) { return (PX4_ISFINITE(dt) && dt > FLT_EPSILON);}
-static constexpr bool fastDescendFullyEngaged(float fast_descend) { return 1.f - fast_descend < FLT_EPSILON; }
+స్థిర constexpr తార్కిక is_Valid_సమయం_అడుగు(దశాంశం dt) { తిరిగి (PX4_ISFINITE(dt) && dt > FLT_EPSILON);}
+స్థిర constexpr తార్కిక fastDescendFullyEngaged(దశాంశం fast_descend) { తిరిగి 1.f - fast_descend < FLT_EPSILON; }
 
-void TECSAirspeedFilter::initialize(const float equivalent_airspeed, const float equivalent_airspeed_trim,
-				    const bool airspeed_sensor_available)
+శూన్య TECSAirspeedFilter::initialize(స్థిరరాశి దశాంశం equivalent_airspeed, స్థిరరాశి దశాంశం equivalent_airspeed_trim,
+				    స్థిరరాశి తార్కిక airspeed_sensor_అందుబాటు)
 {
-	if (airspeed_sensor_available && PX4_ISFINITE(equivalent_airspeed)) {
-		_airspeed_state.speed = equivalent_airspeed;
+	ఒకవేళ (airspeed_sensor_అందుబాటు && PX4_ISFINITE(equivalent_airspeed)) {
+		_airspeed_state.వేగం = equivalent_airspeed;
 
-	} else {
-		_airspeed_state.speed = equivalent_airspeed_trim;
+	} లేకపోతే {
+		_airspeed_state.వేగం = equivalent_airspeed_trim;
 	}
 
-	_airspeed_state.speed_rate = 0.f;
+	_airspeed_state.వేగం_రేటు = 0.f;
 }
 
-void TECSAirspeedFilter::update(const float dt, const Input &input, const Param &param,
-				const bool airspeed_sensor_available)
+శూన్య TECSAirspeedFilter::update(స్థిరరాశి దశాంశం dt, స్థిరరాశి ఆదానం_2 &ఆదానం, స్థిరరాశి Param &param,
+				స్థిరరాశి తార్కిక airspeed_sensor_అందుబాటు)
 {
 	// Input checking
-	if (!isValidTimeStep(dt)) {
+	ఒకవేళ (!is_Valid_సమయం_అడుగు(dt)) {
 		// Do not update the states.
-		return;
+		తిరిగి;
 	}
 
-	float airspeed;
+	దశాంశం airspeed;
 
-	if (PX4_ISFINITE(input.equivalent_airspeed) && airspeed_sensor_available) {
-		airspeed = input.equivalent_airspeed;
+	ఒకవేళ (PX4_ISFINITE(ఆదానం.equivalent_airspeed) && airspeed_sensor_అందుబాటు) {
+		airspeed = ఆదానం.equivalent_airspeed;
 
-	} else {
+	} లేకపోతే {
 		airspeed = param.equivalent_airspeed_trim;
 	}
 
-	float airspeed_derivative;
+	దశాంశం airspeed_derivative;
 
-	if (PX4_ISFINITE(input.equivalent_airspeed_rate) && airspeed_sensor_available) {
-		airspeed_derivative = input.equivalent_airspeed_rate;
+	ఒకవేళ (PX4_ISFINITE(ఆదానం.equivalent_airspeed_రేటు) && airspeed_sensor_అందుబాటు) {
+		airspeed_derivative = ఆదానం.equivalent_airspeed_రేటు;
 
-	} else {
+	} లేకపోతే {
 		airspeed_derivative = 0.0f;
 	}
 
@@ -94,303 +94,303 @@ void TECSAirspeedFilter::update(const float dt, const Input &input, const Param 
 	 since the continuous algebraic Riccatti equation is easier to solve.
 	*/
 
-	matrix::Vector2f new_state_predicted;
+	మాతృక::Vector2f new_state_predicted;
 
-	new_state_predicted(0) = _airspeed_state.speed + dt * _airspeed_state.speed_rate;
-	new_state_predicted(1) = _airspeed_state.speed_rate;
+	new_state_predicted(0) = _airspeed_state.వేగం + dt * _airspeed_state.వేగం_రేటు;
+	new_state_predicted(1) = _airspeed_state.వేగం_రేటు;
 
-	const matrix::Vector2f innovation{(airspeed - new_state_predicted(0)), (airspeed_derivative - new_state_predicted(1))};
+	స్థిరరాశి మాతృక::Vector2f innovation{(airspeed - new_state_predicted(0)), (airspeed_derivative - new_state_predicted(1))};
 
-	matrix::Vector2f new_state;
+	మాతృక::Vector2f new_state;
 	new_state(0) = new_state_predicted(0) + dt * (kKg00 * innovation(0) + kKg01 * innovation(1));
 	new_state(1) = new_state_predicted(1) + dt * (kKg10 * innovation(0) + kKg11 * innovation(1));
 
 	// Clip airspeed at zero
-	if (new_state(0) < FLT_EPSILON) {
+	ఒకవేళ (new_state(0) < FLT_EPSILON) {
 		new_state(0) = 0.0f;
 		// calculate input that would result in zero speed.
-		const float desired_airspeed_innovation = (-new_state_predicted(0) / dt - kKg01 * innovation(1)) / kKg00;
+		స్థిరరాశి దశాంశం desired_airspeed_innovation = (-new_state_predicted(0) / dt - kKg01 * innovation(1)) / kKg00;
 		new_state(1) = new_state_predicted(1) + dt * (kKg10 * desired_airspeed_innovation + kKg11 * innovation(1));
 	}
 
 	// Update states
-	_airspeed_state.speed = new_state(0);
-	_airspeed_state.speed_rate = new_state(1);
+	_airspeed_state.వేగం = new_state(0);
+	_airspeed_state.వేగం_రేటు = new_state(1);
 }
 
-TECSAirspeedFilter::AirspeedFilterState TECSAirspeedFilter::getState() const
+TECSAirspeedFilter::AirspeedFilterState TECSAirspeedFilter::getState() స్థిరరాశి
 {
-	return _airspeed_state;
+	తిరిగి _airspeed_state;
 }
 
-void TECSAltitudeReferenceModel::update(const float dt, const AltitudeReferenceState &setpoint, float altitude,
-					float height_rate, const Param &param)
+శూన్య TECSAltitudeReferenceModel::update(స్థిరరాశి దశాంశం dt, స్థిరరాశి AltitudeReferenceState &setpoint, దశాంశం altitude,
+					దశాంశం ఎత్తు_రేటు, స్థిరరాశి Param &param)
 {
 	// Input checks
-	if (!isValidTimeStep(dt)) {
+	ఒకవేళ (!is_Valid_సమయం_అడుగు(dt)) {
 		// Do not update the states.
-		return;
+		తిరిగి;
 	}
 
-	const float current_alt = PX4_ISFINITE(altitude) ? altitude : 0.f;
+	స్థిరరాశి దశాంశం current_alt = PX4_ISFINITE(altitude) ? altitude : 0.f;
 
-	_velocity_control_traj_generator.setMaxJerk(JERK_MAX);
-	_velocity_control_traj_generator.setMaxAccelUp(param.vert_accel_limit);
-	_velocity_control_traj_generator.setMaxAccelDown(param.vert_accel_limit);
-	_velocity_control_traj_generator.setMaxVelUp(param.max_sink_rate); // different convention for FW than for MC
-	_velocity_control_traj_generator.setMaxVelDown(param.max_climb_rate); // different convention for FW than for MC
+	_velocity_control_traj_generator.సమితి_Max_Jerk(JERK_MAX);
+	_velocity_control_traj_generator.సమితి_Max_Accel_పైకి(param.vert_accel_హద్దు);
+	_velocity_control_traj_generator.సమితి_Max_Accel_కిందికి(param.vert_accel_హద్దు);
+	_velocity_control_traj_generator.సమితి_Max_Vel_పైకి(param.max_sink_రేటు); // different convention for FW than for MC
+	_velocity_control_traj_generator.సమితి_Max_Vel_కిందికి(param.max_climb_రేటు); // different convention for FW than for MC
 
 	// Altitude setpoint reference
-	_alt_control_traj_generator.setMaxJerk(JERK_MAX);
-	_alt_control_traj_generator.setMaxAccel(param.vert_accel_limit);
-	_alt_control_traj_generator.setMaxVel(fmaxf(param.max_climb_rate, param.max_sink_rate));
+	_alt_control_traj_generator.సమితి_Max_Jerk(JERK_MAX);
+	_alt_control_traj_generator.సమితి_Max_Accel(param.vert_accel_హద్దు);
+	_alt_control_traj_generator.సమితి_Max_Vel(fmaxf(param.max_climb_రేటు, param.max_sink_రేటు));
 
 	// XXX: this is a bit risky.. .alt_rate here could be NAN (by interface design) - and is only ok to input to the
 	// setVelSpFeedback() method because it calls the reset in the logic below when it is NAN.
 	// TODO: stop it with the NAN interfaces, make sure to take care of this when refactoring and separating altitude
 	// and height rate control loops.
-	_velocity_control_traj_generator.setVelSpFeedback(setpoint.alt_rate);
+	_velocity_control_traj_generator.సమితి_Vel_Sp_Feedback(setpoint.alt_రేటు);
 
-	bool control_altitude = true;
-	float altitude_setpoint = setpoint.alt;
+	తార్కిక control_altitude = నిజం;
+	దశాంశం altitude_setpoint = setpoint.alt;
 
-	if (!PX4_ISFINITE(setpoint.alt) && !PX4_ISFINITE(setpoint.alt_rate)) {
+	ఒకవేళ (!PX4_ISFINITE(setpoint.alt) && !PX4_ISFINITE(setpoint.alt_రేటు)) {
 		// neither altitude nor altitude rate is set - reset to current altitude
 		_velocity_control_traj_generator.reset(0.f, 0, current_alt);
 		altitude_setpoint = current_alt;
 
-	} else if (PX4_ISFINITE(setpoint.alt_rate)) {
+	} లేకపోతే ఒకవేళ (PX4_ISFINITE(setpoint.alt_రేటు)) {
 		// input is height rate (not altitude)
-		_velocity_control_traj_generator.setCurrentPositionEstimate(current_alt);
-		_velocity_control_traj_generator.update(dt, setpoint.alt_rate);
+		_velocity_control_traj_generator.సమితి_Current_Position_Estimate(current_alt);
+		_velocity_control_traj_generator.update(dt, setpoint.alt_రేటు);
 		altitude_setpoint = _velocity_control_traj_generator.getCurrentPosition();
 		control_altitude = PX4_ISFINITE(altitude_setpoint); // returns true if altitude is locked
 
-	} else {
+	} లేకపోతే {
 		// input is altitude
-		_velocity_control_traj_generator.reset(0, height_rate, altitude_setpoint);
+		_velocity_control_traj_generator.reset(0, ఎత్తు_రేటు, altitude_setpoint);
 	}
 
-	if (control_altitude) {
-		const float target_climbrate_m_s = math::min(param.target_climbrate, param.max_climb_rate);
-		const float target_sinkrate_m_s = math::min(param.target_sinkrate, param.max_sink_rate);
+	ఒకవేళ (control_altitude) {
+		స్థిరరాశి దశాంశం లక్ష్యం_climbrate_m_s = math::min(param.లక్ష్యం_climbrate, param.max_climb_రేటు);
+		స్థిరరాశి దశాంశం లక్ష్యం_sinkrate_m_s = math::min(param.లక్ష్యం_sinkrate, param.max_sink_రేటు);
 
-		const float delta_trajectory_to_target_m = altitude_setpoint - _alt_control_traj_generator.getCurrentPosition();
+		స్థిరరాశి దశాంశం delta_trajectory_గమ్యం_లక్ష్యం_m = altitude_setpoint - _alt_control_traj_generator.getCurrentPosition();
 
-		float height_rate_target = math::signNoZero<float>(delta_trajectory_to_target_m) *
-					   math::trajectory::computeMaxSpeedFromDistance(
-						   JERK_MAX, param.vert_accel_limit, fabsf(delta_trajectory_to_target_m), 0.f);
+		దశాంశం ఎత్తు_రేటు_లక్ష్యం = math::signNoZero<దశాంశం>(delta_trajectory_గమ్యం_లక్ష్యం_m) *
+					   math::trajectory::compute_Max_వేగం_From_దూరం(
+						   JERK_MAX, param.vert_accel_హద్దు, fabsf(delta_trajectory_గమ్యం_లక్ష్యం_m), 0.f);
 
-		height_rate_target = math::constrain(height_rate_target, -target_sinkrate_m_s, target_climbrate_m_s);
+		ఎత్తు_రేటు_లక్ష్యం = math::constrain(ఎత్తు_రేటు_లక్ష్యం, -లక్ష్యం_sinkrate_m_s, లక్ష్యం_climbrate_m_s);
 
-		_alt_control_traj_generator.updateDurations(height_rate_target);
+		_alt_control_traj_generator.updateDurations(ఎత్తు_రేటు_లక్ష్యం);
 		_alt_control_traj_generator.updateTraj(dt);
-		_height_rate_setpoint_direct = NAN;
+		ఎత్తు_రేటు_setpoint_ప్రత్యక్ష = NAN;
 
-	} else {
-		_alt_control_traj_generator.setCurrentVelocity(_velocity_control_traj_generator.getCurrentVelocity());
-		_alt_control_traj_generator.setCurrentPosition(current_alt);
-		_height_rate_setpoint_direct = _velocity_control_traj_generator.getCurrentVelocity();
+	} లేకపోతే {
+		_alt_control_traj_generator.సమితి_Current_Velocity(_velocity_control_traj_generator.getCurrentVelocity());
+		_alt_control_traj_generator.సమితి_Current_Position(current_alt);
+		ఎత్తు_రేటు_setpoint_ప్రత్యక్ష = _velocity_control_traj_generator.getCurrentVelocity();
 	}
 }
 
-TECSAltitudeReferenceModel::AltitudeReferenceState TECSAltitudeReferenceModel::getAltitudeReference() const
+TECSAltitudeReferenceModel::AltitudeReferenceState TECSAltitudeReferenceModel::getAltitudeReference() స్థిరరాశి
 {
 	TECSAltitudeReferenceModel::AltitudeReferenceState ref{
 		.alt = _alt_control_traj_generator.getCurrentPosition(),
-		.alt_rate = _alt_control_traj_generator.getCurrentVelocity(),
+		.alt_రేటు = _alt_control_traj_generator.getCurrentVelocity(),
 	};
 
-	return ref;
+	తిరిగి ref;
 }
 
-void TECSAltitudeReferenceModel::initialize(const AltitudeReferenceState &state)
+శూన్య TECSAltitudeReferenceModel::initialize(స్థిరరాశి AltitudeReferenceState &state)
 {
-	const float init_state_alt = PX4_ISFINITE(state.alt) ? state.alt : 0.f;
-	const float init_state_alt_rate = PX4_ISFINITE(state.alt_rate) ? state.alt_rate : 0.f;
+	స్థిరరాశి దశాంశం init_state_alt = PX4_ISFINITE(state.alt) ? state.alt : 0.f;
+	స్థిరరాశి దశాంశం init_state_alt_రేటు = PX4_ISFINITE(state.alt_రేటు) ? state.alt_రేటు : 0.f;
 
-	_alt_control_traj_generator.reset(0.0f, init_state_alt_rate, init_state_alt);
-	_velocity_control_traj_generator.reset(0.f, init_state_alt_rate, init_state_alt);
+	_alt_control_traj_generator.reset(0.0f, init_state_alt_రేటు, init_state_alt);
+	_velocity_control_traj_generator.reset(0.f, init_state_alt_రేటు, init_state_alt);
 }
 
-void TECSControl::initialize(const Setpoint &setpoint, const Input &input, const Param &param, const Flag &flag)
+శూన్య TECSControl::initialize(స్థిరరాశి Setpoint &setpoint, స్థిరరాశి ఆదానం_2 &ఆదానం, స్థిరరాశి Param &param, స్థిరరాశి Flag &flag)
 {
 	resetIntegrals();
 
 	// Initialization always goes through the altitude loop, even if a direct height rate setpoint is given
 	Setpoint altitude_loop_setpoint{setpoint};
-	altitude_loop_setpoint.altitude_rate_setpoint_direct = NAN;
+	altitude_loop_setpoint.altitude_రేటు_setpoint_ప్రత్యక్ష = NAN;
 
-	const STERateLimit limit{_calculateTotalEnergyRateLimit(param)};
-	const SpecificEnergyRates specific_energy_rate{_updateOuterLoops(altitude_loop_setpoint, input, limit, param, flag)};
+	స్థిరరాశి STERate_హద్దు హద్దు_2{calculate_మొత్తం_Energy_రేటు_హద్దు(param)};
+	స్థిరరాశి SpecificEnergyRates specific_energy_రేటు{_updateOuterLoops(altitude_loop_setpoint, ఆదానం, హద్దు_2, param, flag)};
 
-	const SpecificEnergyWeighting weight{_updateSpeedAltitudeWeights(param, flag)};
-	const SpecificEnergyRates pitch_specific_energy_rate{_calcPitchControlEnergyRates(setpoint, input, limit,
-			specific_energy_rate, param, flag, weight)};
-	ControlValues seb_rate{_calcPitchControlSebRate(weight, pitch_specific_energy_rate)};
+	స్థిరరాశి SpecificEnergyWeighting బరువు{update_వేగం_Altitude_Weights(param, flag)};
+	స్థిరరాశి SpecificEnergyRates pitch_specific_energy_రేటు{_calcPitchControlEnergyRates(setpoint, ఆదానం, హద్దు_2,
+			specific_energy_రేటు, param, flag, బరువు)};
+	Control_విలువలు seb_రేటు{calc_Pitch_Control_Seb_రేటు(బరువు, pitch_specific_energy_రేటు)};
 
-	_pitch_setpoint = _calcPitchControlOutput(input, seb_rate, param);
+	_pitch_setpoint = _calcPitchControlOutput(ఆదానం, seb_రేటు, param);
 
-	_ste_rate_estimate_filter.reset(specific_energy_rate.spe_rate.estimate + specific_energy_rate.ske_rate.estimate);
+	ste_రేటు_estimate_filter.reset(specific_energy_రేటు.spe_రేటు.estimate + specific_energy_రేటు.ske_రేటు.estimate);
 
-	ControlValues ste_rate{_calcThrottleControlSteRate(limit, specific_energy_rate, param)};
+	Control_విలువలు ste_రేటు{calc_Throttle_Control_Ste_రేటు(హద్దు_2, specific_energy_రేటు, param)};
 
-	_throttle_setpoint = _calcThrottleControlOutput(limit, ste_rate, param, flag);
+	_throttle_setpoint = _calcThrottleControlOutput(హద్దు_2, ste_రేటు, param, flag);
 
 	// Debug output
-	_debug_output.total_energy_rate_estimate = ste_rate.estimate;
-	_debug_output.total_energy_rate_sp = ste_rate.setpoint;
+	_debug_output.మొత్తం_energy_రేటు_estimate = ste_రేటు.estimate;
+	_debug_output.మొత్తం_energy_రేటు_sp = ste_రేటు.setpoint;
 	_debug_output.throttle_integrator = _throttle_integ_state;
-	_debug_output.energy_balance_rate_estimate = seb_rate.estimate;
-	_debug_output.energy_balance_rate_sp = seb_rate.setpoint;
+	_debug_output.energy_balance_రేటు_estimate = seb_రేటు.estimate;
+	_debug_output.energy_balance_రేటు_sp = seb_రేటు.setpoint;
 	_debug_output.pitch_integrator = _pitch_integ_state;
 }
 
-void TECSControl::update(const float dt, const Setpoint &setpoint, const Input &input, const Param &param,
-			 const Flag &flag)
+శూన్య TECSControl::update(స్థిరరాశి దశాంశం dt, స్థిరరాశి Setpoint &setpoint, స్థిరరాశి ఆదానం_2 &ఆదానం, స్థిరరాశి Param &param,
+			 స్థిరరాశి Flag &flag)
 {
 	// Input checking
-	if (!isValidTimeStep(dt)) {
+	ఒకవేళ (!is_Valid_సమయం_అడుగు(dt)) {
 		// Do not update the states and output.
-		return;
+		తిరిగి;
 	}
 
-	const STERateLimit limit{_calculateTotalEnergyRateLimit(param)};
-	const SpecificEnergyRates specific_energy_rate{_updateOuterLoops(setpoint, input, limit, param, flag)};
+	స్థిరరాశి STERate_హద్దు హద్దు_2{calculate_మొత్తం_Energy_రేటు_హద్దు(param)};
+	స్థిరరాశి SpecificEnergyRates specific_energy_రేటు{_updateOuterLoops(setpoint, ఆదానం, హద్దు_2, param, flag)};
 
-	_calcPitchControl(dt, setpoint, input, limit, specific_energy_rate, param, flag);
+	_calcPitchControl(dt, setpoint, ఆదానం, హద్దు_2, specific_energy_రేటు, param, flag);
 
-	_calcThrottleControl(dt, limit, specific_energy_rate, param, flag);
+	_calcThrottleControl(dt, హద్దు_2, specific_energy_రేటు, param, flag);
 }
 
-TECSControl::SpecificEnergyRates TECSControl::_updateOuterLoops(const Setpoint &setpoint, const Input &input,
-		const STERateLimit &limit, const Param &param, const Flag &flag)
+TECSControl::SpecificEnergyRates TECSControl::_updateOuterLoops(స్థిరరాశి Setpoint &setpoint, స్థిరరాశి ఆదానం_2 &ఆదానం,
+		స్థిరరాశి STERate_హద్దు &హద్దు_2, స్థిరరాశి Param &param, స్థిరరాశి Flag &flag)
 {
 	OuterLoopSetpoints control_setpoint;
 
-	control_setpoint.tas_rate_setpoint = _calcAirspeedControlOutput(setpoint, input, limit, param, flag);
+	control_setpoint.tas_రేటు_setpoint = _calcAirspeedControlOutput(setpoint, ఆదానం, హద్దు_2, param, flag);
 
-	if (PX4_ISFINITE(setpoint.altitude_rate_setpoint_direct)) {
+	ఒకవేళ (PX4_ISFINITE(setpoint.altitude_రేటు_setpoint_ప్రత్యక్ష)) {
 		// direct height rate control
-		control_setpoint.altitude_rate_setpoint = setpoint.altitude_rate_setpoint_direct;
+		control_setpoint.altitude_రేటు_setpoint = setpoint.altitude_రేటు_setpoint_ప్రత్యక్ష;
 
-	} else {
+	} లేకపోతే {
 		// altitude is locked, go through altitude outer loop
-		control_setpoint.altitude_rate_setpoint = _calcAltitudeControlOutput(setpoint, input, param);
+		control_setpoint.altitude_రేటు_setpoint = _calcAltitudeControlOutput(setpoint, ఆదానం, param);
 	}
 
-	const SpecificEnergyRates specific_energy_rate{_calcSpecificEnergyRates(control_setpoint, input)};
+	స్థిరరాశి SpecificEnergyRates specific_energy_రేటు{_calcSpecificEnergyRates(control_setpoint, ఆదానం)};
 
-	_detectUnderspeed(input, param, flag);
+	_detectUnderspeed(ఆదానం, param, flag);
 
-	_debug_output.altitude_rate_control = control_setpoint.altitude_rate_setpoint;
-	_debug_output.true_airspeed_derivative_control = control_setpoint.tas_rate_setpoint;
+	_debug_output.altitude_రేటు_control = control_setpoint.altitude_రేటు_setpoint;
+	_debug_output.true_airspeed_derivative_control = control_setpoint.tas_రేటు_setpoint;
 
-	return specific_energy_rate;
+	తిరిగి specific_energy_రేటు;
 }
 
-TECSControl::STERateLimit TECSControl::_calculateTotalEnergyRateLimit(const Param &param) const
+TECSControl::STERate_హద్దు TECSControl::calculate_మొత్తం_Energy_రేటు_హద్దు(స్థిరరాశి Param &param) స్థిరరాశి
 {
-	TECSControl::STERateLimit limit;
+	TECSControl::STERate_హద్దు హద్దు_2;
 	// Calculate the specific total energy rate limits from the max throttle limits
-	limit.STE_rate_max = math::max(param.max_climb_rate, FLT_EPSILON) * CONSTANTS_ONE_G;
-	limit.STE_rate_min = - math::max(param.min_sink_rate, FLT_EPSILON) * CONSTANTS_ONE_G;
+	హద్దు_2.STE_రేటు_max = math::max(param.max_climb_రేటు, FLT_EPSILON) * CONSTANTS_ONE_G;
+	హద్దు_2.STE_రేటు_min = - math::max(param.min_sink_రేటు, FLT_EPSILON) * CONSTANTS_ONE_G;
 
-	return limit;
+	తిరిగి హద్దు_2;
 }
 
-float TECSControl::_calcAirspeedControlOutput(const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
-		const Param &param, const Flag &flag) const
+దశాంశం TECSControl::_calcAirspeedControlOutput(స్థిరరాశి Setpoint &setpoint, స్థిరరాశి ఆదానం_2 &ఆదానం, స్థిరరాశి STERate_హద్దు &హద్దు_2,
+		స్థిరరాశి Param &param, స్థిరరాశి Flag &flag) స్థిరరాశి
 {
-	float airspeed_rate_output{0.0f};
+	దశాంశం airspeed_రేటు_output{0.0f};
 
 	// calculate the demanded true airspeed rate of change based on first order response of true airspeed error
 	// if airspeed measurement is not enabled then always set the rate setpoint to zero in order to avoid constant rate setpoints
-	if (flag.airspeed_enabled) {
+	ఒకవేళ (flag.airspeed_enabled) {
 		// Calculate limits for the demanded rate of change of speed based on physical performance limits
 		// with a 50% margin to allow the total energy controller to correct for errors. Increase it in case of fast descend
-		const float max_tas_rate_sp = (param.fast_descend * 0.5f + 0.5f) * limit.STE_rate_max / math::max(input.tas,
+		స్థిరరాశి దశాంశం max_tas_రేటు_sp = (param.fast_descend * 0.5f + 0.5f) * హద్దు_2.STE_రేటు_max / math::max(ఆదానం.tas,
 					      FLT_EPSILON);
-		const float min_tas_rate_sp = (param.fast_descend * 0.5f + 0.5f) * limit.STE_rate_min / math::max(input.tas,
+		స్థిరరాశి దశాంశం min_tas_రేటు_sp = (param.fast_descend * 0.5f + 0.5f) * హద్దు_2.STE_రేటు_min / math::max(ఆదానం.tas,
 					      FLT_EPSILON);
-		airspeed_rate_output = constrain((setpoint.tas_setpoint - input.tas) * param.airspeed_error_gain, min_tas_rate_sp,
-						 max_tas_rate_sp);
+		airspeed_రేటు_output = constrain((setpoint.tas_setpoint - ఆదానం.tas) * param.airspeed_error_gain, min_tas_రేటు_sp,
+						 max_tas_రేటు_sp);
 	}
 
-	return airspeed_rate_output;
+	తిరిగి airspeed_రేటు_output;
 }
 
-float TECSControl::_calcAltitudeControlOutput(const Setpoint &setpoint, const Input &input, const Param &param) const
+దశాంశం TECSControl::_calcAltitudeControlOutput(స్థిరరాశి Setpoint &setpoint, స్థిరరాశి ఆదానం_2 &ఆదానం, స్థిరరాశి Param &param) స్థిరరాశి
 {
-	float altitude_rate_output;
-	altitude_rate_output = (setpoint.altitude_reference.alt - input.altitude) * param.altitude_error_gain
-			       + param.altitude_setpoint_gain_ff * setpoint.altitude_reference.alt_rate;
+	దశాంశం altitude_రేటు_output;
+	altitude_రేటు_output = (setpoint.altitude_reference.alt - ఆదానం.altitude) * param.altitude_error_gain
+			       + param.altitude_setpoint_gain_ff * setpoint.altitude_reference.alt_రేటు;
 
-	altitude_rate_output = math::constrain(altitude_rate_output, -param.max_sink_rate, param.max_climb_rate);
+	altitude_రేటు_output = math::constrain(altitude_రేటు_output, -param.max_sink_రేటు, param.max_climb_రేటు);
 
-	return altitude_rate_output;
+	తిరిగి altitude_రేటు_output;
 }
 
-TECSControl::SpecificEnergyRates TECSControl::_calcSpecificEnergyRates(const OuterLoopSetpoints &control_setpoint,
-		const Input &input) const
+TECSControl::SpecificEnergyRates TECSControl::_calcSpecificEnergyRates(స్థిరరాశి OuterLoopSetpoints &control_setpoint,
+		స్థిరరాశి ఆదానం_2 &ఆదానం) స్థిరరాశి
 {
 	SpecificEnergyRates specific_energy_rates;
 	// Calculate specific energy rate demands in units of (m**2/sec**3)
-	specific_energy_rates.spe_rate.setpoint = control_setpoint.altitude_rate_setpoint *
+	specific_energy_rates.spe_రేటు.setpoint = control_setpoint.altitude_రేటు_setpoint *
 			CONSTANTS_ONE_G; // potential energy rate of change
 
 	// d/dt(0.5 V^2) = V * dV/dt: use measured TAS, not the TAS setpoint, to keep the airspeed loop linear
-	specific_energy_rates.ske_rate.setpoint = input.tas *
-			control_setpoint.tas_rate_setpoint; // kinetic energy rate of change
+	specific_energy_rates.ske_రేటు.setpoint = ఆదానం.tas *
+			control_setpoint.tas_రేటు_setpoint; // kinetic energy rate of change
 
 	// Calculate specific energy rates in units of (m**2/sec**3)
-	specific_energy_rates.spe_rate.estimate = input.altitude_rate * CONSTANTS_ONE_G; // potential energy rate of change
-	specific_energy_rates.ske_rate.estimate = input.tas * input.tas_rate;// kinetic energy rate of change
+	specific_energy_rates.spe_రేటు.estimate = ఆదానం.altitude_రేటు * CONSTANTS_ONE_G; // potential energy rate of change
+	specific_energy_rates.ske_రేటు.estimate = ఆదానం.tas * ఆదానం.tas_రేటు;// kinetic energy rate of change
 
-	return specific_energy_rates;
+	తిరిగి specific_energy_rates;
 }
 
-void TECSControl::_detectUnderspeed(const Input &input, const Param &param, const Flag &flag)
+శూన్య TECSControl::_detectUnderspeed(స్థిరరాశి ఆదానం_2 &ఆదానం, స్థిరరాశి Param &param, స్థిరరాశి Flag &flag)
 {
-	if (!flag.detect_underspeed_enabled || !flag.airspeed_enabled) {
-		_ratio_undersped = 0.0f;
-		return;
+	ఒకవేళ (!flag.detect_underspeed_enabled || !flag.airspeed_enabled) {
+		నిష్పత్తి_undersped = 0.0f;
+		తిరిగి;
 	}
 
 	// Ramp underspeed ratio from 0 at tas_min to 1 at 90% of tas_min, or halfway to tas_stall if that is higher
-	const float tas_fully_undersped = math::min(param.tas_min,
+	స్థిరరాశి దశాంశం tas_fully_undersped = math::min(param.tas_min,
 					  math::max(0.9f * param.tas_min, 0.5f * (param.tas_min + param.tas_stall)));
-	const float underspeed_ramp_width = param.tas_min - tas_fully_undersped;
+	స్థిరరాశి దశాంశం underspeed_ramp_వెడల్పు = param.tas_min - tas_fully_undersped;
 
-	_ratio_undersped = math::constrain((param.tas_min - input.tas) / math::max(underspeed_ramp_width, FLT_EPSILON),
+	నిష్పత్తి_undersped = math::constrain((param.tas_min - ఆదానం.tas) / math::max(underspeed_ramp_వెడల్పు, FLT_EPSILON),
 					   0.0f, 1.0f);
 }
 
-TECSControl::SpecificEnergyWeighting TECSControl::_updateSpeedAltitudeWeights(const Param &param, const Flag &flag)
+TECSControl::SpecificEnergyWeighting TECSControl::update_వేగం_Altitude_Weights(స్థిరరాశి Param &param, స్థిరరాశి Flag &flag)
 {
 
-	SpecificEnergyWeighting weight;
+	SpecificEnergyWeighting బరువు;
 	// Calculate the weight applied to control of specific kinetic energy error
-	float pitch_speed_weight = constrain(param.pitch_speed_weight, 0.0f, 2.0f);
+	దశాంశం pitch_వేగం_బరువు = constrain(param.pitch_వేగం_బరువు, 0.0f, 2.0f);
 
 	// Underspeed or fast descend: interpolate speed weight from nominal
 	// towards max. We take the maximum of the two - this keeps the speed
 	// weight continuous, even when underspeed and fast descend are combined
-	const float max_ratio = fmaxf(_ratio_undersped, param.fast_descend);
-	pitch_speed_weight = max_ratio * 2.0f + (1.0f - max_ratio) * pitch_speed_weight;
+	స్థిరరాశి దశాంశం max_నిష్పత్తి = fmaxf(నిష్పత్తి_undersped, param.fast_descend);
+	pitch_వేగం_బరువు = max_నిష్పత్తి * 2.0f + (1.0f - max_నిష్పత్తి) * pitch_వేగం_బరువు;
 
-	if (!flag.airspeed_enabled) {
-		pitch_speed_weight = 0.0f;
+	ఒకవేళ (!flag.airspeed_enabled) {
+		pitch_వేగం_బరువు = 0.0f;
 	}
 
-	weight.spe_weighting = constrain(2.0f - pitch_speed_weight, 0.f, 2.f);
-	weight.ske_weighting = constrain(pitch_speed_weight, 0.f, 2.f);
+	బరువు.spe_weighting = constrain(2.0f - pitch_వేగం_బరువు, 0.f, 2.f);
+	బరువు.ske_weighting = constrain(pitch_వేగం_బరువు, 0.f, 2.f);
 
-	return weight;
+	తిరిగి బరువు;
 }
 
-float TECSControl::_calcPitchControlSkeRateSetpoint(const Setpoint &setpoint, const Input &input,
-		const STERateLimit &limit, const Param &param, const Flag &flag, const SpecificEnergyWeighting &weight) const
+దశాంశం TECSControl::calc_Pitch_Control_Ske_రేటు_Setpoint(స్థిరరాశి Setpoint &setpoint, స్థిరరాశి ఆదానం_2 &ఆదానం,
+		స్థిరరాశి STERate_హద్దు &హద్దు_2, స్థిరరాశి Param &param, స్థిరరాశి Flag &flag, స్థిరరాశి SpecificEnergyWeighting &బరువు) స్థిరరాశి
 {
 	// Trading altitude for speed with pitch is only wanted up to trim airspeed. Above trim, accelerating is left to
 	// the throttle loop: if it saturates, the vehicle settles at a lower airspeed instead of below the altitude setpoint.
@@ -398,66 +398,66 @@ float TECSControl::_calcPitchControlSkeRateSetpoint(const Setpoint &setpoint, co
 	// and the setpoint the pitch loop holds altitude, while an overspeed above the setpoint is still corrected.
 	// With a speed weight of 2 (speed priority, e.g. gliders, fast descend or underspeed) pitch is the only way to
 	// track the setpoint, so the cap is faded out as the weight goes from 1 to 2.
-	const float tas_setpoint_capped = min(setpoint.tas_setpoint, max(param.tas_trim, input.tas));
+	స్థిరరాశి దశాంశం tas_setpoint_capped = min(setpoint.tas_setpoint, max(param.tas_trim, ఆదానం.tas));
 
 	Setpoint pitch_control_setpoint{setpoint};
 	pitch_control_setpoint.tas_setpoint = lerp(tas_setpoint_capped, setpoint.tas_setpoint,
-					      constrain(weight.ske_weighting - 1.f, 0.f, 1.f));
+					      constrain(బరువు.ske_weighting - 1.f, 0.f, 1.f));
 
 	// d/dt(0.5 V^2) = V * dV/dt: the measured airspeed, not the setpoint, keeps the airspeed loop linear
-	return input.tas * _calcAirspeedControlOutput(pitch_control_setpoint, input, limit, param, flag);
+	తిరిగి ఆదానం.tas * _calcAirspeedControlOutput(pitch_control_setpoint, ఆదానం, హద్దు_2, param, flag);
 }
 
-TECSControl::SpecificEnergyRates TECSControl::_calcPitchControlEnergyRates(const Setpoint &setpoint,
-		const Input &input, const STERateLimit &limit, const SpecificEnergyRates &specific_energy_rates,
-		const Param &param, const Flag &flag, const SpecificEnergyWeighting &weight) const
+TECSControl::SpecificEnergyRates TECSControl::_calcPitchControlEnergyRates(స్థిరరాశి Setpoint &setpoint,
+		స్థిరరాశి ఆదానం_2 &ఆదానం, స్థిరరాశి STERate_హద్దు &హద్దు_2, స్థిరరాశి SpecificEnergyRates &specific_energy_rates,
+		స్థిరరాశి Param &param, స్థిరరాశి Flag &flag, స్థిరరాశి SpecificEnergyWeighting &బరువు) స్థిరరాశి
 {
 	SpecificEnergyRates pitch_specific_energy_rates{specific_energy_rates};
-	pitch_specific_energy_rates.ske_rate.setpoint = _calcPitchControlSkeRateSetpoint(setpoint, input, limit, param, flag,
-			weight);
+	pitch_specific_energy_rates.ske_రేటు.setpoint = calc_Pitch_Control_Ske_రేటు_Setpoint(setpoint, ఆదానం, హద్దు_2, param, flag,
+			బరువు);
 
 	// Between trim airspeed and the airspeed setpoint the throttle alone accelerates the vehicle. The capped setpoint
 	// above already removes the kinetic setpoint of the pitch loop there, faded in with speed priority. But the
 	// throttle's acceleration would still show up in the kinetic energy rate estimate, and the pitch loop would pitch
 	// up to turn it into height. Remove the estimate from the pitch loop in this band as well, with the same fade, so
 	// that pitch controls height only. The setpoint must not be scaled again, or it would be faded twice.
-	const bool throttle_accelerates = input.tas > param.tas_trim && input.tas < setpoint.tas_setpoint;
-	const float kinetic_estimate_gain = throttle_accelerates ? constrain(weight.ske_weighting - 1.f, 0.f, 1.f) : 1.f;
-	pitch_specific_energy_rates.ske_rate.estimate *= kinetic_estimate_gain;
+	స్థిరరాశి తార్కిక throttle_accelerates = ఆదానం.tas > param.tas_trim && ఆదానం.tas < setpoint.tas_setpoint;
+	స్థిరరాశి దశాంశం kinetic_estimate_gain = throttle_accelerates ? constrain(బరువు.ske_weighting - 1.f, 0.f, 1.f) : 1.f;
+	pitch_specific_energy_rates.ske_రేటు.estimate *= kinetic_estimate_gain;
 
-	return pitch_specific_energy_rates;
+	తిరిగి pitch_specific_energy_rates;
 }
 
-void TECSControl::_calcPitchControl(float dt, const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
-				    const SpecificEnergyRates &specific_energy_rates, const Param &param, const Flag &flag)
+శూన్య TECSControl::_calcPitchControl(దశాంశం dt, స్థిరరాశి Setpoint &setpoint, స్థిరరాశి ఆదానం_2 &ఆదానం, స్థిరరాశి STERate_హద్దు &హద్దు_2,
+				    స్థిరరాశి SpecificEnergyRates &specific_energy_rates, స్థిరరాశి Param &param, స్థిరరాశి Flag &flag)
 {
-	const SpecificEnergyWeighting weight{_updateSpeedAltitudeWeights(param, flag)};
+	స్థిరరాశి SpecificEnergyWeighting బరువు{update_వేగం_Altitude_Weights(param, flag)};
 
-	const SpecificEnergyRates pitch_specific_energy_rates{_calcPitchControlEnergyRates(setpoint, input, limit,
-			specific_energy_rates, param, flag, weight)};
+	స్థిరరాశి SpecificEnergyRates pitch_specific_energy_rates{_calcPitchControlEnergyRates(setpoint, ఆదానం, హద్దు_2,
+			specific_energy_rates, param, flag, బరువు)};
 
-	ControlValues seb_rate{_calcPitchControlSebRate(weight, pitch_specific_energy_rates)};
+	Control_విలువలు seb_రేటు{calc_Pitch_Control_Seb_రేటు(బరువు, pitch_specific_energy_rates)};
 
-	_calcPitchControlUpdate(dt, input, seb_rate, param);
-	const float pitch_setpoint{_calcPitchControlOutput(input, seb_rate, param)};
+	_calcPitchControlUpdate(dt, ఆదానం, seb_రేటు, param);
+	స్థిరరాశి దశాంశం pitch_setpoint{_calcPitchControlOutput(ఆదానం, seb_రేటు, param)};
 
 	// Comply with the specified vertical acceleration limit by applying a pitch rate limit
 	// NOTE: at zero airspeed, the pitch increment is unbounded
-	const float pitch_increment = dt * param.vert_accel_limit / math::max(input.tas, FLT_EPSILON);
+	స్థిరరాశి దశాంశం pitch_increment = dt * param.vert_accel_హద్దు / math::max(ఆదానం.tas, FLT_EPSILON);
 	_pitch_setpoint = constrain(pitch_setpoint, _pitch_setpoint - pitch_increment,
 				    _pitch_setpoint + pitch_increment);
 	_pitch_setpoint = constrain(_pitch_setpoint, param.pitch_min, param.pitch_max);
 
 	//Debug Output
-	_debug_output.energy_balance_rate_estimate = seb_rate.estimate;
-	_debug_output.energy_balance_rate_sp = seb_rate.setpoint;
+	_debug_output.energy_balance_రేటు_estimate = seb_రేటు.estimate;
+	_debug_output.energy_balance_రేటు_sp = seb_రేటు.setpoint;
 	_debug_output.pitch_integrator = _pitch_integ_state;
 }
 
-TECSControl::ControlValues TECSControl::_calcPitchControlSebRate(const SpecificEnergyWeighting &weight,
-		const SpecificEnergyRates &specific_energy_rates) const
+TECSControl::Control_విలువలు TECSControl::calc_Pitch_Control_Seb_రేటు(స్థిరరాశి SpecificEnergyWeighting &బరువు,
+		స్థిరరాశి SpecificEnergyRates &specific_energy_rates) స్థిరరాశి
 {
-	ControlValues seb_rate;
+	Control_విలువలు seb_రేటు;
 	/*
 	 * The SKE_weighting variable controls how speed and altitude control are prioritized by the pitch demand calculation.
 	 * A weighting of 1 gives equal speed and altitude priority
@@ -468,182 +468,182 @@ TECSControl::ControlValues TECSControl::_calcPitchControlSebRate(const SpecificE
 	 * rises above the demanded value, the pitch angle demand is increased by the TECS controller to prevent the vehicle overspeeding.
 	 * The weighting can be adjusted between 0 and 2 depending on speed and altitude accuracy requirements.
 	*/
-	seb_rate.setpoint = specific_energy_rates.spe_rate.setpoint * weight.spe_weighting -
-			    specific_energy_rates.ske_rate.setpoint *
-			    weight.ske_weighting;
+	seb_రేటు.setpoint = specific_energy_rates.spe_రేటు.setpoint * బరువు.spe_weighting -
+			    specific_energy_rates.ske_రేటు.setpoint *
+			    బరువు.ske_weighting;
 
-	seb_rate.estimate = (specific_energy_rates.spe_rate.estimate * weight.spe_weighting) -
-			    (specific_energy_rates.ske_rate.estimate * weight.ske_weighting);
+	seb_రేటు.estimate = (specific_energy_rates.spe_రేటు.estimate * బరువు.spe_weighting) -
+			    (specific_energy_rates.ske_రేటు.estimate * బరువు.ske_weighting);
 
-	return seb_rate;
+	తిరిగి seb_రేటు;
 }
 
-void TECSControl::_calcPitchControlUpdate(float dt, const Input &input, const ControlValues &seb_rate,
-		const Param &param)
+శూన్య TECSControl::_calcPitchControlUpdate(దశాంశం dt, స్థిరరాశి ఆదానం_2 &ఆదానం, స్థిరరాశి Control_విలువలు &seb_రేటు,
+		స్థిరరాశి Param &param)
 {
 
 	// In fast descend, the pitch integrator converges to the (substantially
 	// negative) pitch. Ramp it down with decreasing fast descend ratio,
 	// such that it is zero when the ratio becomes 0 again.
-	if (param.fast_descend < _fast_descend_prev && _fast_descend_prev > FLT_EPSILON) {
+	ఒకవేళ (param.fast_descend < _fast_descend_prev && _fast_descend_prev > FLT_EPSILON) {
 		_pitch_integ_state *= param.fast_descend / _fast_descend_prev;
 	}
 
 	_fast_descend_prev = param.fast_descend;
 
-	if (param.integrator_gain_pitch > FLT_EPSILON) {
+	ఒకవేళ (param.integrator_gain_pitch > FLT_EPSILON) {
 
-		const float climb_angle_to_SEB_rate = _climbAngleToSebRate(input, param);
+		స్థిరరాశి దశాంశం climb_angle_గమ్యం_SEB_రేటు = climb_Angle_గమ్యం_Seb_రేటు(ఆదానం, param);
 
 		// Calculate pitch integrator input term
-		float pitch_integ_input = _getControlError(seb_rate) * param.integrator_gain_pitch / climb_angle_to_SEB_rate;
+		దశాంశం pitch_integ_ఆదానం = _getControlError(seb_రేటు) * param.integrator_gain_pitch / climb_angle_గమ్యం_SEB_రేటు;
 
 		// Guard against NaN integrator input - discard bad input sample (e.g., exiting offboard velocity mode)
-		if (!PX4_ISFINITE(pitch_integ_input)) {
-			pitch_integ_input = 0.f;
+		ఒకవేళ (!PX4_ISFINITE(pitch_integ_ఆదానం)) {
+			pitch_integ_ఆదానం = 0.f;
 		}
 
 		// Prevent the integrator changing in a direction that will increase pitch demand saturation
-		if (_pitch_setpoint >= param.pitch_max) {
-			pitch_integ_input = min(pitch_integ_input, 0.f);
+		ఒకవేళ (_pitch_setpoint >= param.pitch_max) {
+			pitch_integ_ఆదానం = min(pitch_integ_ఆదానం, 0.f);
 
-		} else if (_pitch_setpoint <= param.pitch_min) {
-			pitch_integ_input = max(pitch_integ_input, 0.f);
+		} లేకపోతే ఒకవేళ (_pitch_setpoint <= param.pitch_min) {
+			pitch_integ_ఆదానం = max(pitch_integ_ఆదానం, 0.f);
 		}
 
 		// Update the pitch integrator state
-		_pitch_integ_state = _pitch_integ_state + pitch_integ_input * dt;
+		_pitch_integ_state = _pitch_integ_state + pitch_integ_ఆదానం * dt;
 
 		// Safety check: reset integrator if state became corrupted
-		if (!PX4_ISFINITE(_pitch_integ_state)) {
+		ఒకవేళ (!PX4_ISFINITE(_pitch_integ_state)) {
 			_pitch_integ_state = 0.f;
 		}
 
-	} else {
+	} లేకపోతే {
 		_pitch_integ_state = 0.0f;
 	}
 }
 
-float TECSControl::_climbAngleToSebRate(const Input &input, const Param &param)
+దశాంశం TECSControl::climb_Angle_గమ్యం_Seb_రేటు(స్థిరరాశి ఆదానం_2 &ఆదానం, స్థిరరాశి Param &param)
 {
 	// max() returns its second argument for a NaN first one, so a NaN airspeed falls back to the minimum airspeed
-	return max(input.tas, param.tas_min, FLT_EPSILON) * CONSTANTS_ONE_G;
+	తిరిగి max(ఆదానం.tas, param.tas_min, FLT_EPSILON) * CONSTANTS_ONE_G;
 }
 
-float TECSControl::_calcPitchControlOutput(const Input &input, const ControlValues &seb_rate, const Param &param) const
+దశాంశం TECSControl::_calcPitchControlOutput(స్థిరరాశి ఆదానం_2 &ఆదానం, స్థిరరాశి Control_విలువలు &seb_రేటు, స్థిరరాశి Param &param) స్థిరరాశి
 {
 	// Calculate a specific energy correction that doesn't include the integrator contribution
-	float SEB_rate_correction = _getControlError(seb_rate) * param.pitch_damping_gain +
-				    param.seb_rate_ff *
-				    seb_rate.setpoint;
+	దశాంశం SEB_రేటు_correction = _getControlError(seb_రేటు) * param.pitch_damping_gain +
+				    param.seb_రేటు_ff *
+				    seb_రేటు.setpoint;
 
 	// Convert the specific energy balance rate correction to a climb angle and add the level-flight pitch, the angle
 	// of attack at zero climb angle, to get the absolute pitch setpoint. This calculation assumes:
 	// a) The climb angle follows pitch angle with a lag that is small enough not to destabilise the control loop.
 	// b) The offset between climb angle and pitch angle (angle of attack) is constant and equal to the level-flight
 	// pitch, excluding the effect of pitch transients due to control action or turbulence.
-	float pitch_setpoint_unc = SEB_rate_correction / _climbAngleToSebRate(input, param) + _pitch_integ_state
+	దశాంశం pitch_setpoint_unc = SEB_రేటు_correction / climb_Angle_గమ్యం_Seb_రేటు(ఆదానం, param) + _pitch_integ_state
 				   + param.level_flight_pitch;
 
 	// Guard against a non-finite feedforward/damping contribution (e.g. seb_rate going NaN on the energy/speed
 	// side when exiting offboard velocity mode). constrain() does not reject NaN, so fall back to the integrator
 	// state, which is kept finite by _calcPitchControlUpdate, to avoid latching a NaN pitch demand.
-	if (!PX4_ISFINITE(pitch_setpoint_unc)) {
+	ఒకవేళ (!PX4_ISFINITE(pitch_setpoint_unc)) {
 		pitch_setpoint_unc = _pitch_integ_state + param.level_flight_pitch;
 	}
 
-	return constrain(pitch_setpoint_unc, param.pitch_min, param.pitch_max);
+	తిరిగి constrain(pitch_setpoint_unc, param.pitch_min, param.pitch_max);
 }
 
-void TECSControl::_calcThrottleControl(float dt, const STERateLimit &limit,
-				       const SpecificEnergyRates &specific_energy_rates, const Param &param, const Flag &flag)
+శూన్య TECSControl::_calcThrottleControl(దశాంశం dt, స్థిరరాశి STERate_హద్దు &హద్దు_2,
+				       స్థిరరాశి SpecificEnergyRates &specific_energy_rates, స్థిరరాశి Param &param, స్థిరరాశి Flag &flag)
 {
 	// Update STE rate estimate LP filter
-	const float STE_rate_estimate_raw = specific_energy_rates.spe_rate.estimate + specific_energy_rates.ske_rate.estimate;
-	_ste_rate_estimate_filter.setParameters(dt, param.ste_rate_time_const);
-	_ste_rate_estimate_filter.update(STE_rate_estimate_raw);
-	ControlValues ste_rate{_calcThrottleControlSteRate(limit, specific_energy_rates, param)};
+	స్థిరరాశి దశాంశం STE_రేటు_estimate_raw = specific_energy_rates.spe_రేటు.estimate + specific_energy_rates.ske_రేటు.estimate;
+	ste_రేటు_estimate_filter.సమితి_Parameters(dt, param.ste_రేటు_సమయం_const);
+	ste_రేటు_estimate_filter.update(STE_రేటు_estimate_raw);
+	Control_విలువలు ste_రేటు{calc_Throttle_Control_Ste_రేటు(హద్దు_2, specific_energy_rates, param)};
 	// During fast descend, we control airspeed over the pitch control loop. Give minimal thrust as soon as we are descending
-	float throttle_setpoint{param.throttle_min};
+	దశాంశం throttle_setpoint{param.throttle_min};
 
-	if (!fastDescendFullyEngaged(param.fast_descend)) {
-		_calcThrottleControlUpdate(dt, limit, ste_rate, param, flag);
-		throttle_setpoint = (1.f - param.fast_descend) * _calcThrottleControlOutput(limit, ste_rate, param,
+	ఒకవేళ (!fastDescendFullyEngaged(param.fast_descend)) {
+		_calcThrottleControlUpdate(dt, హద్దు_2, ste_రేటు, param, flag);
+		throttle_setpoint = (1.f - param.fast_descend) * _calcThrottleControlOutput(హద్దు_2, ste_రేటు, param,
 				    flag) + param.fast_descend * param.throttle_min;
 	}
 
 	// Rate limit the throttle demand
-	if (fabsf(param.throttle_slewrate) > FLT_EPSILON) {
-		const float throttle_increment_limit = dt * (param.throttle_max - param.throttle_min) * param.throttle_slewrate;
-		throttle_setpoint = constrain(throttle_setpoint, _throttle_setpoint - throttle_increment_limit,
-					      _throttle_setpoint + throttle_increment_limit);
+	ఒకవేళ (fabsf(param.throttle_slewrate) > FLT_EPSILON) {
+		స్థిరరాశి దశాంశం throttle_increment_హద్దు = dt * (param.throttle_max - param.throttle_min) * param.throttle_slewrate;
+		throttle_setpoint = constrain(throttle_setpoint, _throttle_setpoint - throttle_increment_హద్దు,
+					      _throttle_setpoint + throttle_increment_హద్దు);
 	}
 
 	_throttle_setpoint = constrain(throttle_setpoint, param.throttle_min, param.throttle_max);
 
 	// Debug output
-	_debug_output.total_energy_rate_estimate = ste_rate.estimate;
-	_debug_output.total_energy_rate_sp = ste_rate.setpoint;
+	_debug_output.మొత్తం_energy_రేటు_estimate = ste_రేటు.estimate;
+	_debug_output.మొత్తం_energy_రేటు_sp = ste_రేటు.setpoint;
 	_debug_output.throttle_integrator = _throttle_integ_state;
 }
 
-TECSControl::ControlValues TECSControl::_calcThrottleControlSteRate(const STERateLimit &limit,
-		const SpecificEnergyRates &specific_energy_rates,
-		const Param &param) const
+TECSControl::Control_విలువలు TECSControl::calc_Throttle_Control_Ste_రేటు(స్థిరరాశి STERate_హద్దు &హద్దు_2,
+		స్థిరరాశి SpecificEnergyRates &specific_energy_rates,
+		స్థిరరాశి Param &param) స్థిరరాశి
 {
 	// Output ste rate values
-	ControlValues ste_rate;
-	ste_rate.setpoint = specific_energy_rates.spe_rate.setpoint + specific_energy_rates.ske_rate.setpoint;
+	Control_విలువలు ste_రేటు;
+	ste_రేటు.setpoint = specific_energy_rates.spe_రేటు.setpoint + specific_energy_rates.ske_రేటు.setpoint;
 
 	// Adjust the demanded total energy rate to compensate for induced drag rise in turns.
 	// Assume induced drag scales linearly with normal load factor.
 	// The additional normal load factor is given by (1/cos(bank angle) - 1)
-	ste_rate.setpoint += param.load_factor_correction * (param.load_factor - 1.f);
+	ste_రేటు.setpoint += param.ఎక్కించు_గుణకం_correction * (param.ఎక్కించు_గుణకం - 1.f);
 
-	ste_rate.setpoint = constrain(ste_rate.setpoint, limit.STE_rate_min, limit.STE_rate_max);
-	ste_rate.estimate = _ste_rate_estimate_filter.getState();
+	ste_రేటు.setpoint = constrain(ste_రేటు.setpoint, హద్దు_2.STE_రేటు_min, హద్దు_2.STE_రేటు_max);
+	ste_రేటు.estimate = ste_రేటు_estimate_filter.getState();
 
-	return ste_rate;
+	తిరిగి ste_రేటు;
 }
 
-void TECSControl::_calcThrottleControlUpdate(float dt, const STERateLimit &limit, const ControlValues &ste_rate,
-		const Param &param, const Flag &flag)
+శూన్య TECSControl::_calcThrottleControlUpdate(దశాంశం dt, స్థిరరాశి STERate_హద్దు &హద్దు_2, స్థిరరాశి Control_విలువలు &ste_రేటు,
+		స్థిరరాశి Param &param, స్థిరరాశి Flag &flag)
 {
-	const float STE_rate_to_throttle = _steRateToThrottle(limit);
+	స్థిరరాశి దశాంశం STE_రేటు_గమ్యం_throttle = ste_రేటు_గమ్యం_Throttle(హద్దు_2);
 
 	// Integral handling
-	if (flag.airspeed_enabled) {
-		if (param.integrator_gain_throttle > FLT_EPSILON) {
+	ఒకవేళ (flag.airspeed_enabled) {
+		ఒకవేళ (param.integrator_gain_throttle > FLT_EPSILON) {
 			// underspeed conditions zero out integration
-			float throttle_integ_input = (_getControlError(ste_rate) * param.integrator_gain_throttle) * dt *
-						     STE_rate_to_throttle * (1.0f - _ratio_undersped);
+			దశాంశం throttle_integ_ఆదానం = (_getControlError(ste_రేటు) * param.integrator_gain_throttle) * dt *
+						     STE_రేటు_గమ్యం_throttle * (1.0f - నిష్పత్తి_undersped);
 
 			// only allow integrator propagation into direction which unsaturates throttle
-			if (_throttle_setpoint >= param.throttle_max) {
-				throttle_integ_input = math::min(0.f, throttle_integ_input);
+			ఒకవేళ (_throttle_setpoint >= param.throttle_max) {
+				throttle_integ_ఆదానం = math::min(0.f, throttle_integ_ఆదానం);
 
 			}
 
-			if (_throttle_setpoint <= param.throttle_min) {
-				throttle_integ_input = math::max(0.f, throttle_integ_input);
+			ఒకవేళ (_throttle_setpoint <= param.throttle_min) {
+				throttle_integ_ఆదానం = math::max(0.f, throttle_integ_ఆదానం);
 			}
 
 			// Calculate a throttle demand from the integrated total energy rate error
 			// This will be added to the total throttle demand to compensate for steady state errors
-			_throttle_integ_state = PX4_ISFINITE(throttle_integ_input) ? _throttle_integ_state + throttle_integ_input : 0.f;
+			_throttle_integ_state = PX4_ISFINITE(throttle_integ_ఆదానం) ? _throttle_integ_state + throttle_integ_ఆదానం : 0.f;
 
-		} else {
+		} లేకపోతే {
 			_throttle_integ_state = 0.0f;
 		}
 
 	}
 }
 
-float TECSControl::_calcThrottleControlOutput(const STERateLimit &limit, const ControlValues &ste_rate,
-		const Param &param,
-		const Flag &flag) const
+దశాంశం TECSControl::_calcThrottleControlOutput(స్థిరరాశి STERate_హద్దు &హద్దు_2, స్థిరరాశి Control_విలువలు &ste_రేటు,
+		స్థిరరాశి Param &param,
+		స్థిరరాశి Flag &flag) స్థిరరాశి
 {
-	const float STE_rate_to_throttle = _steRateToThrottle(limit);
+	స్థిరరాశి దశాంశం STE_రేటు_గమ్యం_throttle = ste_రేటు_గమ్యం_Throttle(హద్దు_2);
 
 	// Calculate a predicted throttle from the demanded rate of change of energy, using the cruise throttle
 	// as the starting point. Assume:
@@ -653,30 +653,30 @@ float TECSControl::_calcThrottleControlOutput(const STERateLimit &limit, const C
 
 	// assume airspeed and density-independent delta_throttle to sink/climb rate mapping
 	// TODO: include air density for thrust mappings
-	const float throttle_above_trim_per_ste_rate = (param.throttle_max - param.throttle_trim) / limit.STE_rate_max;
-	const float throttle_below_trim_per_ste_rate = (param.throttle_trim - param.throttle_min) / limit.STE_rate_min;
+	స్థిరరాశి దశాంశం throttle_above_trim_చొప్పున_ste_రేటు = (param.throttle_max - param.throttle_trim) / హద్దు_2.STE_రేటు_max;
+	స్థిరరాశి దశాంశం throttle_క్రింద_trim_చొప్పున_ste_రేటు = (param.throttle_trim - param.throttle_min) / హద్దు_2.STE_రేటు_min;
 
-	float throttle_predicted = 0.0f;
+	దశాంశం throttle_predicted = 0.0f;
 
-	if (ste_rate.setpoint >= FLT_EPSILON) {
+	ఒకవేళ (ste_రేటు.setpoint >= FLT_EPSILON) {
 		// throttle is between trim and maximum
-		throttle_predicted = param.throttle_trim + ste_rate.setpoint * throttle_above_trim_per_ste_rate;
+		throttle_predicted = param.throttle_trim + ste_రేటు.setpoint * throttle_above_trim_చొప్పున_ste_రేటు;
 
-	} else {
+	} లేకపోతే {
 		// throttle is between trim and minimum
-		throttle_predicted = param.throttle_trim - ste_rate.setpoint * throttle_below_trim_per_ste_rate;
+		throttle_predicted = param.throttle_trim - ste_రేటు.setpoint * throttle_క్రింద_trim_చొప్పున_ste_రేటు;
 
 	}
 
 	// Add proportional and derivative control feedback to the predicted throttle and constrain to throttle limits
-	float throttle_setpoint = (_getControlError(ste_rate) * param.throttle_damping_gain) * STE_rate_to_throttle +
+	దశాంశం throttle_setpoint = (_getControlError(ste_రేటు) * param.throttle_damping_gain) * STE_రేటు_గమ్యం_throttle +
 				  throttle_predicted;
 
-	if (flag.airspeed_enabled) {
+	ఒకవేళ (flag.airspeed_enabled) {
 		// Add the integrator feedback during closed loop operation with an airspeed sensor
 		throttle_setpoint += _throttle_integ_state;
 
-	} else {
+	} లేకపోతే {
 		/* We want to avoid reducing the throttle output when switching from airspeed enabled mode into airspeedless mode.
 		  Thus, if the throttle integrator has a positive value, add it still to the throttle setpoint. */
 		throttle_setpoint += math::max(0.0f, _throttle_integ_state);
@@ -684,174 +684,174 @@ float TECSControl::_calcThrottleControlOutput(const STERateLimit &limit, const C
 
 
 	// ramp in max throttle setting with underspeediness value
-	throttle_setpoint = _ratio_undersped * param.throttle_max + (1.0f - _ratio_undersped) * throttle_setpoint;
+	throttle_setpoint = నిష్పత్తి_undersped * param.throttle_max + (1.0f - నిష్పత్తి_undersped) * throttle_setpoint;
 
-	return constrain(throttle_setpoint, param.throttle_min, param.throttle_max);
+	తిరిగి constrain(throttle_setpoint, param.throttle_min, param.throttle_max);
 }
 
-void TECSControl::resetIntegrals()
+శూన్య TECSControl::resetIntegrals()
 {
 	_pitch_integ_state = 0.0f;
 	_throttle_integ_state = 0.0f;
 }
 
-void TECS::initControlParams(const Input &input)
+శూన్య TECS::initControlParams(స్థిరరాశి ఆదానం_2 &ఆదానం)
 {
 	// Update parameters from input
 	// Reference model
-	_reference_param.target_climbrate = input.target_climbrate;
-	_reference_param.target_sinkrate = input.target_sinkrate;
+	_reference_param.లక్ష్యం_climbrate = ఆదానం.లక్ష్యం_climbrate;
+	_reference_param.లక్ష్యం_sinkrate = ఆదానం.లక్ష్యం_sinkrate;
 	// Control
-	_control_param.tas_min = input.eas_to_tas * _equivalent_airspeed_min;
-	_control_param.tas_stall = input.eas_to_tas * _equivalent_airspeed_stall;
-	_control_param.tas_max = input.eas_to_tas * _equivalent_airspeed_max;
-	_control_param.tas_trim = input.eas_to_tas * _control_param.equivalent_airspeed_trim;
-	_control_param.pitch_max = input.pitch_max;
-	_control_param.pitch_min = input.pitch_min;
-	_control_param.throttle_trim = input.throttle_trim;
-	_control_param.throttle_max = input.throttle_max;
-	_control_param.throttle_min = input.throttle_min;
+	_control_param.tas_min = ఆదానం.eas_గమ్యం_tas * _equivalent_airspeed_min;
+	_control_param.tas_stall = ఆదానం.eas_గమ్యం_tas * _equivalent_airspeed_stall;
+	_control_param.tas_max = ఆదానం.eas_గమ్యం_tas * _equivalent_airspeed_max;
+	_control_param.tas_trim = ఆదానం.eas_గమ్యం_tas * _control_param.equivalent_airspeed_trim;
+	_control_param.pitch_max = ఆదానం.pitch_max;
+	_control_param.pitch_min = ఆదానం.pitch_min;
+	_control_param.throttle_trim = ఆదానం.throttle_trim;
+	_control_param.throttle_max = ఆదానం.throttle_max;
+	_control_param.throttle_min = ఆదానం.throttle_min;
 }
 
-float TECS::calcTrueAirspeedSetpoint(float eas_to_tas, float eas_setpoint)
+దశాంశం TECS::calcTrueAirspeedSetpoint(దశాంశం eas_గమ్యం_tas, దశాంశం eas_setpoint)
 {
-	return lerp(eas_to_tas * eas_setpoint, _control_param.tas_max, _fast_descend);
+	తిరిగి lerp(eas_గమ్యం_tas * eas_setpoint, _control_param.tas_max, _fast_descend);
 }
 
-void TECS::initialize(const Input &input)
+శూన్య TECS::initialize(స్థిరరాశి ఆదానం_2 &ఆదానం)
 {
 	// Init subclasses
-	TECSAltitudeReferenceModel::AltitudeReferenceState current_state{.alt = input.altitude,
-			.alt_rate = input.altitude_rate};
+	TECSAltitudeReferenceModel::AltitudeReferenceState current_state{.alt = ఆదానం.altitude,
+			.alt_రేటు = ఆదానం.altitude_రేటు};
 	_altitude_reference_model.initialize(current_state);
-	_airspeed_filter.initialize(input.equivalent_airspeed, _airspeed_filter_param.equivalent_airspeed_trim,
+	_airspeed_filter.initialize(ఆదానం.equivalent_airspeed, _airspeed_filter_param.equivalent_airspeed_trim,
 				    _control_flag.airspeed_enabled);
 
 	// Seed the controller from the filter, which falls back to trim airspeed without a valid measurement,
 	// so the controller sees the same airspeed on reset as on every following update
-	const float true_airspeed = input.eas_to_tas * _airspeed_filter.getState().speed;
+	స్థిరరాశి దశాంశం true_airspeed = ఆదానం.eas_గమ్యం_tas * _airspeed_filter.getState().వేగం;
 
 	TECSControl::Setpoint control_setpoint;
 	control_setpoint.altitude_reference = _altitude_reference_model.getAltitudeReference();
-	control_setpoint.altitude_rate_setpoint_direct = NAN; // initialization always goes through the altitude loop
+	control_setpoint.altitude_రేటు_setpoint_ప్రత్యక్ష = NAN; // initialization always goes through the altitude loop
 	control_setpoint.tas_setpoint = true_airspeed;
 
-	const TECSControl::Input control_input{ .altitude = input.altitude,
-						.altitude_rate = input.altitude_rate,
+	స్థిరరాశి TECSControl::ఆదానం_2 control_ఆదానం{ .altitude = ఆదానం.altitude,
+						.altitude_రేటు = ఆదానం.altitude_రేటు,
 						.tas = true_airspeed,
-						.tas_rate = 0.0f};
+						.tas_రేటు = 0.0f};
 
-	_control.initialize(control_setpoint, control_input, _control_param, _control_flag);
+	_control.initialize(control_setpoint, control_ఆదానం, _control_param, _control_flag);
 
 	_fast_descend = 0.f;
 	_enabled_fast_descend_timestamp = 0U;
 }
 
-void TECS::update(const Input &input)
+శూన్య TECS::update(స్థిరరాశి ఆదానం_2 &ఆదానం)
 {
 	// Calculate the time since last update (seconds)
-	const hrt_abstime now = hrt_absolute_time();
-	const float dt = static_cast<float>(now - _update_timestamp) * 1e-6f;
+	స్థిరరాశి hrt_abstime now = hrt_absolute_సమయం();
+	స్థిరరాశి దశాంశం dt = static_cast<దశాంశం>(now - _update_timestamp) * 1e-6f;
 
-	initControlParams(input);
+	initControlParams(ఆదానం);
 
-	if (dt < DT_MIN) {
+	ఒకవేళ (dt < DT_MIN) {
 		// Update interval too small, do not update. Assume constant states/output in this case.
-		return;
+		తిరిగి;
 	}
 
-	float true_airspeed_setpoint;
+	దశాంశం true_airspeed_setpoint;
 
-	if (dt > DT_MAX || _update_timestamp == 0UL) {
+	ఒకవేళ (dt > DT_MAX || _update_timestamp == 0UL) {
 		// Update time interval too large, can't guarantee sanity of state updates anymore. reset the control loop.
-		initialize(input);
-		true_airspeed_setpoint = calcTrueAirspeedSetpoint(input.eas_to_tas, input.equivalent_airspeed_setpoint);
+		initialize(ఆదానం);
+		true_airspeed_setpoint = calcTrueAirspeedSetpoint(ఆదానం.eas_గమ్యం_tas, ఆదానం.equivalent_airspeed_setpoint);
 
-	} else {
+	} లేకపోతే {
 		/* Check if we want to fast descend. On fast descend, we set the throttle to min, and use the altitude control
 		loop to control the speed to the maximum airspeed. */
-		_setFastDescend(input.altitude_setpoint, input.altitude);
+		సమితి_Fast_Descend(ఆదానం.altitude_setpoint, ఆదానం.altitude);
 		_control_param.fast_descend = _fast_descend;
 
 		// Update airspeedfilter submodule
-		const TECSAirspeedFilter::Input airspeed_input{ .equivalent_airspeed = input.equivalent_airspeed,
-				.equivalent_airspeed_rate = input.speed_deriv_forward / input.eas_to_tas};
+		స్థిరరాశి TECSAirspeedFilter::ఆదానం_2 airspeed_ఆదానం{ .equivalent_airspeed = ఆదానం.equivalent_airspeed,
+				.equivalent_airspeed_రేటు = ఆదానం.వేగం_deriv_forward / ఆదానం.eas_గమ్యం_tas};
 
-		_airspeed_filter.update(dt, airspeed_input, _airspeed_filter_param, _control_flag.airspeed_enabled);
+		_airspeed_filter.update(dt, airspeed_ఆదానం, _airspeed_filter_param, _control_flag.airspeed_enabled);
 
 		// Update Reference model submodule
-		if (fastDescendFullyEngaged(_fast_descend)) {
+		ఒకవేళ (fastDescendFullyEngaged(_fast_descend)) {
 			// Reset the altitude reference model, while we are in fast descend.
-			const TECSAltitudeReferenceModel::AltitudeReferenceState init_state{
-				.alt = input.altitude,
-				.alt_rate = input.altitude_rate};
+			స్థిరరాశి TECSAltitudeReferenceModel::AltitudeReferenceState init_state{
+				.alt = ఆదానం.altitude,
+				.alt_రేటు = ఆదానం.altitude_రేటు};
 			_altitude_reference_model.initialize(init_state);
 
-		} else if (_control.getUnderspeedRatio() > 0.5f) {
+		} లేకపోతే ఒకవేళ (_control.get_Underspeed_నిష్పత్తి() > 0.5f) {
 			// Reset altitude reference during underspeed to prevent altitude error accumulation
 			// that would cause aggressive pitch-up (and potential secondary stall) on recovery.
-			const TECSAltitudeReferenceModel::AltitudeReferenceState init_state{
-				.alt = input.altitude,
-				.alt_rate = input.altitude_rate};
+			స్థిరరాశి TECSAltitudeReferenceModel::AltitudeReferenceState init_state{
+				.alt = ఆదానం.altitude,
+				.alt_రేటు = ఆదానం.altitude_రేటు};
 			_altitude_reference_model.initialize(init_state);
 
-		} else {
-			const TECSAltitudeReferenceModel::AltitudeReferenceState setpoint{ .alt = input.altitude_setpoint,
-					.alt_rate = input.altitude_rate_setpoint};
+		} లేకపోతే {
+			స్థిరరాశి TECSAltitudeReferenceModel::AltitudeReferenceState setpoint{ .alt = ఆదానం.altitude_setpoint,
+					.alt_రేటు = ఆదానం.altitude_రేటు_setpoint};
 
-			_altitude_reference_model.update(dt, setpoint, input.altitude, input.altitude_rate, _reference_param);
+			_altitude_reference_model.update(dt, setpoint, ఆదానం.altitude, ఆదానం.altitude_రేటు, _reference_param);
 		}
 
 		TECSControl::Setpoint control_setpoint;
 		control_setpoint.altitude_reference = _altitude_reference_model.getAltitudeReference();
-		control_setpoint.altitude_rate_setpoint_direct = _altitude_reference_model.getHeightRateSetpointDirect();
-		true_airspeed_setpoint = calcTrueAirspeedSetpoint(input.eas_to_tas, input.equivalent_airspeed_setpoint);
+		control_setpoint.altitude_రేటు_setpoint_ప్రత్యక్ష = _altitude_reference_model.get_ఎత్తు_రేటు_Setpoint_ప్రత్యక్ష();
+		true_airspeed_setpoint = calcTrueAirspeedSetpoint(ఆదానం.eas_గమ్యం_tas, ఆదానం.equivalent_airspeed_setpoint);
 		control_setpoint.tas_setpoint = true_airspeed_setpoint;
 
-		const TECSAirspeedFilter::AirspeedFilterState airspeed_state{_airspeed_filter.getState()};
-		const TECSControl::Input control_input{ .altitude = input.altitude,
-							.altitude_rate = input.altitude_rate,
-							.tas = input.eas_to_tas * airspeed_state.speed,
-							.tas_rate = input.eas_to_tas * airspeed_state.speed_rate};
+		స్థిరరాశి TECSAirspeedFilter::AirspeedFilterState airspeed_state{_airspeed_filter.getState()};
+		స్థిరరాశి TECSControl::ఆదానం_2 control_ఆదానం{ .altitude = ఆదానం.altitude,
+							.altitude_రేటు = ఆదానం.altitude_రేటు,
+							.tas = ఆదానం.eas_గమ్యం_tas * airspeed_state.వేగం,
+							.tas_రేటు = ఆదానం.eas_గమ్యం_tas * airspeed_state.వేగం_రేటు};
 
-		_control.update(dt, control_setpoint, control_input, _control_param, _control_flag);
+		_control.update(dt, control_setpoint, control_ఆదానం, _control_param, _control_flag);
 	}
 
-	_debug_status.control = _control.getDebugOutput();
-	_debug_status.true_airspeed_sp = true_airspeed_setpoint;
-	const TECSAirspeedFilter::AirspeedFilterState airspeed_state{_airspeed_filter.getState()};
-	const TECSAltitudeReferenceModel::AltitudeReferenceState altitude_reference{_altitude_reference_model.getAltitudeReference()};
-	_debug_status.true_airspeed_filtered = input.eas_to_tas * airspeed_state.speed;
-	_debug_status.true_airspeed_derivative = input.eas_to_tas * airspeed_state.speed_rate;
-	_debug_status.altitude_reference = altitude_reference.alt;
-	_debug_status.height_rate_reference = altitude_reference.alt_rate;
-	_debug_status.height_rate_direct = _altitude_reference_model.getHeightRateSetpointDirect();
-	_debug_status.fast_descend = _fast_descend;
+	debug_స్థితి.control = _control.getDebugOutput();
+	debug_స్థితి.true_airspeed_sp = true_airspeed_setpoint;
+	స్థిరరాశి TECSAirspeedFilter::AirspeedFilterState airspeed_state{_airspeed_filter.getState()};
+	స్థిరరాశి TECSAltitudeReferenceModel::AltitudeReferenceState altitude_reference{_altitude_reference_model.getAltitudeReference()};
+	debug_స్థితి.true_airspeed_filtered = ఆదానం.eas_గమ్యం_tas * airspeed_state.వేగం;
+	debug_స్థితి.true_airspeed_derivative = ఆదానం.eas_గమ్యం_tas * airspeed_state.వేగం_రేటు;
+	debug_స్థితి.altitude_reference = altitude_reference.alt;
+	debug_స్థితి.ఎత్తు_రేటు_reference = altitude_reference.alt_రేటు;
+	debug_స్థితి.ఎత్తు_రేటు_ప్రత్యక్ష = _altitude_reference_model.get_ఎత్తు_రేటు_Setpoint_ప్రత్యక్ష();
+	debug_స్థితి.fast_descend = _fast_descend;
 
 	_update_timestamp = now;
 }
 
-void TECS::_setFastDescend(const float alt_setpoint, const float alt)
+శూన్య TECS::సమితి_Fast_Descend(స్థిరరాశి దశాంశం alt_setpoint, స్థిరరాశి దశాంశం alt)
 {
 	// disable fast descend if we are close to the target altitude or the altitude setpoint is not finite
 
-	if (PX4_ISFINITE(alt_setpoint) && _control_flag.airspeed_enabled && (_fast_descend_alt_err > FLT_EPSILON)
+	ఒకవేళ (PX4_ISFINITE(alt_setpoint) && _control_flag.airspeed_enabled && (_fast_descend_alt_err > FLT_EPSILON)
 	    && ((alt_setpoint + _fast_descend_alt_err) < alt)) {
-		auto now = hrt_absolute_time();
+		స్వయంచాలక now = hrt_absolute_సమయం();
 
-		if (_enabled_fast_descend_timestamp == 0U) {
+		ఒకవేళ (_enabled_fast_descend_timestamp == 0U) {
 			_enabled_fast_descend_timestamp = now;
 		}
 
-		_fast_descend = constrain(max(_fast_descend, static_cast<float>(now - _enabled_fast_descend_timestamp) /
-					      static_cast<float>(FAST_DESCEND_RAMP_UP_TIME)), 0.f, 1.f);
+		_fast_descend = constrain(max(_fast_descend, static_cast<దశాంశం>(now - _enabled_fast_descend_timestamp) /
+					      static_cast<దశాంశం>(FAST_DESCEND_RAMP_పైకి_సమయం)), 0.f, 1.f);
 
-	} else if (PX4_ISFINITE(alt_setpoint) && (_fast_descend > FLT_EPSILON) && (_fast_descend_alt_err > FLT_EPSILON)) {
+	} లేకపోతే ఒకవేళ (PX4_ISFINITE(alt_setpoint) && (_fast_descend > FLT_EPSILON) && (_fast_descend_alt_err > FLT_EPSILON)) {
 		// We're in fast descend, scale it down until FAST_DESCEND_HEIGHT_MARGIN above target altitude
-		_fast_descend = constrain((alt - alt_setpoint - FAST_DESCEND_HEIGHT_MARGIN) / _fast_descend_alt_err, 0.f, 1.f);
+		_fast_descend = constrain((alt - alt_setpoint - FAST_DESCEND_ఎత్తు_MARGIN) / _fast_descend_alt_err, 0.f, 1.f);
 		_enabled_fast_descend_timestamp = 0U;
 
-	} else {
+	} లేకపోతే {
 		_fast_descend = 0.f;
 		_enabled_fast_descend_timestamp = 0U;
 	}

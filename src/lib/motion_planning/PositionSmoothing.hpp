@@ -31,16 +31,16 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <cmath>
-#include <motion_planning/VelocitySmoothing.hpp>
+#అన్తర్భావ <cmath>
+#అన్తర్భావ <motion_planning/VelocitySmoothing.hpp>
 
-#include <matrix/matrix/math.hpp>
-#include <px4_defines.h>
+#అన్తర్భావ <matrix/matrix/math.hpp>
+#అన్తర్భావ <px4_defines.h>
 
-using matrix::Vector2f;
-using matrix::Vector3f;
+ఉపయోగించి మాతృక::Vector2f;
+ఉపయోగించి మాతృక::Vector3f;
 
 /**
  * @brief Class that generates setpoints for a smooth trajectory
@@ -49,16 +49,16 @@ using matrix::Vector3f;
  * This is achieved by first generating an unsmoothed velocity setpoint
  * which then gets smoothed using the VelocitySmoothing library.
  */
-class PositionSmoothing
+తరగతి PositionSmoothing
 {
 
-public:
+బహిరంగ:
 	/**
 	 * @brief Result type of the position smoothing algorithm.
 	 * The included values shall then be used as setpoints for
 	 * the controllers.
 	 */
-	struct PositionSmoothingSetpoints {
+	నిర్మాణం PositionSmoothingSetpoints {
 		Vector3f jerk;
 		Vector3f acceleration;
 		Vector3f velocity;
@@ -77,17 +77,17 @@ public:
 	 * @param force_zero_velocity_setpoint Force vehicle to stop. Generate trajectory that ends with still vehicle.
 	 * @param out_setpoints Output of the generated setpoints
 	 */
-	inline void generateSetpoints(
-		const Vector3f &position,
-		const Vector3f(&waypoints)[3],
-		const Vector3f &feedforward_velocity,
-		float delta_time,
-		bool force_zero_velocity_setpoint,
-		PositionSmoothingSetpoints &out_setpoints
+	అంతఃవరుస శూన్య generateSetpoints(
+		స్థిరరాశి Vector3f &position,
+		స్థిరరాశి Vector3f(&waypoints)[3],
+		స్థిరరాశి Vector3f &feedforward_velocity,
+		దశాంశం delta_సమయం,
+		తార్కిక force_zero_velocity_setpoint,
+		PositionSmoothingSetpoints &బహిర్గతం_setpoints
 	)
 	{
-		_generateSetpoints(position, waypoints, false, feedforward_velocity, delta_time, force_zero_velocity_setpoint,
-				   out_setpoints);
+		_generateSetpoints(position, waypoints, అబద్ధం, feedforward_velocity, delta_సమయం, force_zero_velocity_setpoint,
+				   బహిర్గతం_setpoints);
 	}
 
 	/**
@@ -101,18 +101,18 @@ public:
 	 * @param force_zero_velocity_setpoint Force vehicle to stop. Generate trajectory that ends with still vehicle.
 	 * @param out_setpoints Output of the generated setpoints
 	 */
-	inline void generateSetpoints(
-		const Vector3f &position,
-		const Vector3f &waypoint,
-		const Vector3f &feedforward_velocity,
-		float delta_time,
-		bool force_zero_velocity_setpoint,
-		PositionSmoothingSetpoints &out_setpoints
+	అంతఃవరుస శూన్య generateSetpoints(
+		స్థిరరాశి Vector3f &position,
+		స్థిరరాశి Vector3f &waypoint,
+		స్థిరరాశి Vector3f &feedforward_velocity,
+		దశాంశం delta_సమయం,
+		తార్కిక force_zero_velocity_setpoint,
+		PositionSmoothingSetpoints &బహిర్గతం_setpoints
 	)
 	{
 		Vector3f waypoints[3] = {waypoint, waypoint, waypoint};
-		_generateSetpoints(position, waypoints, true, feedforward_velocity, delta_time, force_zero_velocity_setpoint,
-				   out_setpoints);
+		_generateSetpoints(position, waypoints, నిజం, feedforward_velocity, delta_సమయం, force_zero_velocity_setpoint,
+				   బహిర్గతం_setpoints);
 	}
 
 
@@ -123,9 +123,9 @@ public:
 	 * @param velocity current velocity
 	 * @param position current position
 	 */
-	void reset(const Vector3f &acceleration, const Vector3f &velocity, const Vector3f &position)
+	శూన్య reset(స్థిరరాశి Vector3f &acceleration, స్థిరరాశి Vector3f &velocity, స్థిరరాశి Vector3f &position)
 	{
-		for (size_t i = 0; i < 3; i++) {
+		కొరకు (size_t i = 0; i < 3; i++) {
 			_trajectory[i].reset(acceleration(i), velocity(i), position(i));
 		}
 	}
@@ -133,200 +133,200 @@ public:
 	/**
 	 * @return float Current trajectory acceleration in X
 	 */
-	inline float getCurrentAccelerationX() const
+	అంతఃవరుస దశాంశం getCurrentAccelerationX() స్థిరరాశి
 	{
-		return _trajectory[0].getCurrentAcceleration();
+		తిరిగి _trajectory[0].getCurrentAcceleration();
 	}
 
 	/**
 	 * @return float Current trajectory acceleration in Y
 	 */
-	inline float getCurrentAccelerationY() const
+	అంతఃవరుస దశాంశం getCurrentAccelerationY() స్థిరరాశి
 	{
-		return _trajectory[1].getCurrentAcceleration();
+		తిరిగి _trajectory[1].getCurrentAcceleration();
 	}
 
 	/**
 	 * @return float Current trajectory acceleration in Z
 	 */
-	inline float getCurrentAccelerationZ() const
+	అంతఃవరుస దశాంశం getCurrentAccelerationZ() స్థిరరాశి
 	{
-		return _trajectory[2].getCurrentAcceleration();
+		తిరిగి _trajectory[2].getCurrentAcceleration();
 	}
 
 	/**
 	 * @return float Current trajectory acceleration
 	 */
-	inline Vector3f getCurrentAcceleration() const
+	అంతఃవరుస Vector3f getCurrentAcceleration() స్థిరరాశి
 	{
-		return {getCurrentAccelerationX(), getCurrentAccelerationY(), getCurrentAccelerationZ()};
+		తిరిగి {getCurrentAccelerationX(), getCurrentAccelerationY(), getCurrentAccelerationZ()};
 	}
 
 	/**
 	 * @return float Current trajectory acceleration in X and Y
 	 */
-	inline Vector2f getCurrentAccelerationXY() const
+	అంతఃవరుస Vector2f getCurrentAccelerationXY() స్థిరరాశి
 	{
-		return {getCurrentAccelerationX(), getCurrentAccelerationY()};
+		తిరిగి {getCurrentAccelerationX(), getCurrentAccelerationY()};
 	}
 
 	/**
 	 * @return float Current trajectory velocity in X
 	 */
-	inline float getCurrentVelocityX() const
+	అంతఃవరుస దశాంశం getCurrentVelocityX() స్థిరరాశి
 	{
-		return _trajectory[0].getCurrentVelocity();
+		తిరిగి _trajectory[0].getCurrentVelocity();
 	}
 
 	/**
 	 * @return float Current trajectory velocity in Y
 	 */
-	inline float getCurrentVelocityY() const
+	అంతఃవరుస దశాంశం getCurrentVelocityY() స్థిరరాశి
 	{
-		return _trajectory[1].getCurrentVelocity();
+		తిరిగి _trajectory[1].getCurrentVelocity();
 	}
 
 	/**
 	 * @return float Current trajectory velocity in Z
 	 */
-	inline float getCurrentVelocityZ() const
+	అంతఃవరుస దశాంశం getCurrentVelocityZ() స్థిరరాశి
 	{
-		return _trajectory[2].getCurrentVelocity();
+		తిరిగి _trajectory[2].getCurrentVelocity();
 	}
 
 	/**
 	 * @return float Current trajectory velocity
 	 */
-	inline Vector3f getCurrentVelocity() const
+	అంతఃవరుస Vector3f getCurrentVelocity() స్థిరరాశి
 	{
-		return {getCurrentVelocityX(), getCurrentVelocityY(), getCurrentVelocityZ()};
+		తిరిగి {getCurrentVelocityX(), getCurrentVelocityY(), getCurrentVelocityZ()};
 	}
 
 	/**
 	 * @return float Current trajectory velocity in X and Y
 	 */
-	inline Vector2f getCurrentVelocityXY() const
+	అంతఃవరుస Vector2f getCurrentVelocityXY() స్థిరరాశి
 	{
-		return {getCurrentVelocityX(), getCurrentVelocityY()};
+		తిరిగి {getCurrentVelocityX(), getCurrentVelocityY()};
 	}
 
 	/**
 	 * @return float Current trajectory position in X
 	 */
-	inline float getCurrentPositionX() const
+	అంతఃవరుస దశాంశం getCurrentPositionX() స్థిరరాశి
 	{
-		return _trajectory[0].getCurrentPosition();
+		తిరిగి _trajectory[0].getCurrentPosition();
 	}
 
 	/**
 	 * @return float Current trajectory position in Y
 	 */
-	inline float getCurrentPositionY() const
+	అంతఃవరుస దశాంశం getCurrentPositionY() స్థిరరాశి
 	{
-		return _trajectory[1].getCurrentPosition();
+		తిరిగి _trajectory[1].getCurrentPosition();
 	}
 
 	/**
 	 * @return float Current trajectory position in Z
 	 */
-	inline float getCurrentPositionZ() const
+	అంతఃవరుస దశాంశం getCurrentPositionZ() స్థిరరాశి
 	{
-		return _trajectory[2].getCurrentPosition();
+		తిరిగి _trajectory[2].getCurrentPosition();
 	}
 
 	/**
 	 * @return float Current trajectory position
 	 */
-	inline Vector3f getCurrentPosition() const
+	అంతఃవరుస Vector3f getCurrentPosition() స్థిరరాశి
 	{
-		return {getCurrentPositionX(), getCurrentPositionY(), getCurrentPositionZ()};
+		తిరిగి {getCurrentPositionX(), getCurrentPositionY(), getCurrentPositionZ()};
 	}
 
 	/**
 	 * @param jerk maximum jerk for generated trajectory
 	 */
-	inline void setMaxJerkXY(float jerk)
+	అంతఃవరుస శూన్య సమితి_Max_Jerk_XY(దశాంశం jerk)
 	{
-		_trajectory[0].setMaxJerk(jerk);
-		_trajectory[1].setMaxJerk(jerk);
+		_trajectory[0].సమితి_Max_Jerk(jerk);
+		_trajectory[1].సమితి_Max_Jerk(jerk);
 	}
 
 	/**
 	 * @param jerk maximum jerk for generated trajectory
 	 */
-	inline void setMaxJerkZ(float jerk)
+	అంతఃవరుస శూన్య సమితి_Max_Jerk_Z(దశాంశం jerk)
 	{
-		_trajectory[2].setMaxJerk(jerk);
+		_trajectory[2].సమితి_Max_Jerk(jerk);
 	}
 
 	/**
 	 * @param jerk maximum jerk for generated trajectory
 	 */
-	inline void setMaxJerk(const float jerk)
+	అంతఃవరుస శూన్య సమితి_Max_Jerk(స్థిరరాశి దశాంశం jerk)
 	{
-		_trajectory[0].setMaxJerk(jerk);
-		_trajectory[1].setMaxJerk(jerk);
-		_trajectory[2].setMaxJerk(jerk);
+		_trajectory[0].సమితి_Max_Jerk(jerk);
+		_trajectory[1].సమితి_Max_Jerk(jerk);
+		_trajectory[2].సమితి_Max_Jerk(jerk);
 	}
 
 	/**
 	 * @param accel maximum acceleration for generated trajectory
 	 */
-	inline void setMaxAccelerationXY(float accel)
+	అంతఃవరుస శూన్య సమితి_Max_Acceleration_XY(దశాంశం accel)
 	{
-		_trajectory[0].setMaxAccel(accel);
-		_trajectory[1].setMaxAccel(accel);
+		_trajectory[0].సమితి_Max_Accel(accel);
+		_trajectory[1].సమితి_Max_Accel(accel);
 	}
 
 	/**
 	 * @param accel maximum acceleration for generated trajectory
 	 */
-	inline void setMaxAccelerationZ(float accel)
+	అంతఃవరుస శూన్య సమితి_Max_Acceleration_Z(దశాంశం accel)
 	{
-		_trajectory[2].setMaxAccel(accel);
+		_trajectory[2].సమితి_Max_Accel(accel);
 	}
 
 	/**
 	 * @param accel maximum acceleration for generated trajectory
 	 */
-	inline void setMaxAcceleration(const Vector3f &accel)
+	అంతఃవరుస శూన్య సమితి_Max_Acceleration(స్థిరరాశి Vector3f &accel)
 	{
-		_trajectory[0].setMaxAccel(accel(0));
-		_trajectory[1].setMaxAccel(accel(1));
-		_trajectory[2].setMaxAccel(accel(2));
+		_trajectory[0].సమితి_Max_Accel(accel(0));
+		_trajectory[1].సమితి_Max_Accel(accel(1));
+		_trajectory[2].సమితి_Max_Accel(accel(2));
 	}
 
 	/**
 	 * @param vel maximum velocity for generated trajectory
 	 */
-	inline void setMaxVelocityXY(float vel)
+	అంతఃవరుస శూన్య సమితి_Max_Velocity_XY(దశాంశం vel)
 	{
-		_trajectory[0].setMaxVel(vel);
-		_trajectory[1].setMaxVel(vel);
+		_trajectory[0].సమితి_Max_Vel(vel);
+		_trajectory[1].సమితి_Max_Vel(vel);
 	}
 
 	/**
 	 * @param vel maximum velocity for generated trajectory
 	 */
-	inline void setMaxVelocityZ(float vel)
+	అంతఃవరుస శూన్య సమితి_Max_Velocity_Z(దశాంశం vel)
 	{
-		_trajectory[2].setMaxVel(vel);
+		_trajectory[2].సమితి_Max_Vel(vel);
 	}
 
 	/**
 	 * @param vel maximum velocity for generated trajectory
 	 */
-	inline void setMaxVelocity(const Vector3f &vel)
+	అంతఃవరుస శూన్య సమితి_Max_Velocity(స్థిరరాశి Vector3f &vel)
 	{
-		_trajectory[0].setMaxVel(vel(0));
-		_trajectory[1].setMaxVel(vel(1));
-		_trajectory[2].setMaxVel(vel(2));
+		_trajectory[0].సమితి_Max_Vel(vel(0));
+		_trajectory[1].సమితి_Max_Vel(vel(1));
+		_trajectory[2].సమితి_Max_Vel(vel(2));
 	}
 
 	/**
 	 * @param error Maximum horizontal error allowed by the trajectory generator. Often set to param MPC_XY_ERR_MAX
 	 */
-	inline void setMaxAllowedHorizontalError(float error)
+	అంతఃవరుస శూన్య సమితి_Max_Allowed_Horizontal_Error(దశాంశం error)
 	{
 		_max_allowed_horizontal_error = error;
 	}
@@ -337,7 +337,7 @@ public:
 	 * A finite value (param default is 1 m) makes the smoother slow down when the virtual trajectory leads
 	 * the drone in Z, preventing a noisy altitude reference from walking the commanded z away from the drone.
 	 */
-	inline void setMaxAllowedVerticalError(float error)
+	అంతఃవరుస శూన్య సమితి_Max_Allowed_Vertical_Error(దశాంశం error)
 	{
 		_max_allowed_vertical_error = error;
 	}
@@ -345,7 +345,7 @@ public:
 	/**
 	 * @param radius  Altitude Acceptance Radius. Often set to NAV_MC_ALT_RAD
 	 */
-	inline void setVerticalAcceptanceRadius(float radius)
+	అంతఃవరుస శూన్య సమితి_Vertical_Acceptance_Radius(దశాంశం radius)
 	{
 		_vertical_acceptance_radius = radius;
 	}
@@ -353,15 +353,15 @@ public:
 	/**
 	 * @param speed vehicle cruise speed
 	 */
-	inline void setCruiseSpeed(float speed)
+	అంతఃవరుస శూన్య సమితి_Cruise_వేగం(దశాంశం వేగం)
 	{
-		_cruise_speed = speed;
+		cruise_వేగం = వేగం;
 	}
 
 	/**
 	 * @param gain Proportional gain for horizontal trajectory position error. Set to MPC_XY_TRAJ_P
 	 */
-	inline void setHorizontalTrajectoryGain(float gain)
+	అంతఃవరుస శూన్య సమితి_Horizontal_Trajectory_Gain(దశాంశం gain)
 	{
 		_horizontal_trajectory_gain = gain;
 	}
@@ -369,9 +369,9 @@ public:
 	/**
 	 * @param radius target acceptance radius
 	 */
-	inline void setTargetAcceptanceRadius(float radius)
+	అంతఃవరుస శూన్య సమితి_లక్ష్యం_Acceptance_Radius(దశాంశం radius)
 	{
-		_target_acceptance_radius = radius;
+		లక్ష్యం_acceptance_radius = radius;
 	}
 
 	/**
@@ -380,11 +380,11 @@ public:
 	 *
 	 * @param position
 	 */
-	void forceSetPosition(const Vector3f &position)
+	శూన్య force_సమితి_Position(స్థిరరాశి Vector3f &position)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(position(i))) {
-				_trajectory[i].setCurrentPosition(position(i));
+		కొరకు (size_t i = 0; i < 3; i++) {
+			ఒకవేళ (PX4_ISFINITE(position(i))) {
+				_trajectory[i].సమితి_Current_Position(position(i));
 			}
 		}
 	}
@@ -395,11 +395,11 @@ public:
 	 *
 	 * @param velocity
 	 */
-	void forceSetVelocity(const Vector3f &velocity)
+	శూన్య force_సమితి_Velocity(స్థిరరాశి Vector3f &velocity)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(velocity(i))) {
-				_trajectory[i].setCurrentVelocity(velocity(i));
+		కొరకు (size_t i = 0; i < 3; i++) {
+			ఒకవేళ (PX4_ISFINITE(velocity(i))) {
+				_trajectory[i].సమితి_Current_Velocity(velocity(i));
 			}
 		}
 	}
@@ -410,54 +410,54 @@ public:
 	 *
 	 * @param acceleration
 	 */
-	void forceSetAcceleration(const Vector3f &acceleration)
+	శూన్య force_సమితి_Acceleration(స్థిరరాశి Vector3f &acceleration)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(acceleration(i))) {
-				_trajectory[i].setCurrentAcceleration(acceleration(i));
+		కొరకు (size_t i = 0; i < 3; i++) {
+			ఒకవేళ (PX4_ISFINITE(acceleration(i))) {
+				_trajectory[i].సమితి_Current_Acceleration(acceleration(i));
 			}
 		}
 	}
 
 
-private:
+అంతరంగ:
 	/* params, only modified from external */
-	float _max_allowed_horizontal_error{0.f};
-	float _max_allowed_vertical_error{0.f};
-	float _vertical_acceptance_radius{0.f};
-	float _cruise_speed{0.f};
-	float _horizontal_trajectory_gain{0.f};
-	float _target_acceptance_radius{0.f};
+	దశాంశం _max_allowed_horizontal_error{0.f};
+	దశాంశం _max_allowed_vertical_error{0.f};
+	దశాంశం _vertical_acceptance_radius{0.f};
+	దశాంశం cruise_వేగం{0.f};
+	దశాంశం _horizontal_trajectory_gain{0.f};
+	దశాంశం లక్ష్యం_acceptance_radius{0.f};
 
 
 	/* Internal state */
 	VelocitySmoothing _trajectory[3]; ///< Trajectories in x, y and z directions
-	float _max_speed_previous{0.f};
+	దశాంశం max_వేగం_మునుపటి{0.f};
 
 	/* Internal functions */
-	bool _isTurning(const Vector3f &target) const;
+	తార్కిక _isTurning(స్థిరరాశి Vector3f &లక్ష్యం) స్థిరరాశి;
 
-	void _generateSetpoints(
-		const Vector3f &position,
-		const Vector3f(&waypoints)[3],
-		bool is_single_waypoint,
-		const Vector3f &feedforward_velocity,
-		float delta_time,
-		bool force_zero_velocity_setpoint,
-		PositionSmoothingSetpoints &out_setpoints
+	శూన్య _generateSetpoints(
+		స్థిరరాశి Vector3f &position,
+		స్థిరరాశి Vector3f(&waypoints)[3],
+		తార్కిక is_single_waypoint,
+		స్థిరరాశి Vector3f &feedforward_velocity,
+		దశాంశం delta_సమయం,
+		తార్కిక force_zero_velocity_setpoint,
+		PositionSmoothingSetpoints &బహిర్గతం_setpoints
 	);
 
-	const Vector3f _generateVelocitySetpoint(const Vector3f &position, const Vector3f(&waypoints)[3],
-			bool is_single_waypoint,
-			const Vector3f &feedforward_velocity_setpoint);
-	const Vector3f _getL1Point(const Vector3f &position, const Vector3f(&waypoints)[3]) const;
-	const Vector3f _getCrossingPoint(const Vector3f &position, const Vector3f(&waypoints)[3]) const;
-	float _getMaxXYSpeed(const Vector3f(&waypoints)[3]) const;
-	float _getMaxZSpeed(const Vector3f(&waypoints)[3]) const;
+	స్థిరరాశి Vector3f _generateVelocitySetpoint(స్థిరరాశి Vector3f &position, స్థిరరాశి Vector3f(&waypoints)[3],
+			తార్కిక is_single_waypoint,
+			స్థిరరాశి Vector3f &feedforward_velocity_setpoint);
+	స్థిరరాశి Vector3f get_L1_బిందువు(స్థిరరాశి Vector3f &position, స్థిరరాశి Vector3f(&waypoints)[3]) స్థిరరాశి;
+	స్థిరరాశి Vector3f get_దాటడం_బిందువు(స్థిరరాశి Vector3f &position, స్థిరరాశి Vector3f(&waypoints)[3]) స్థిరరాశి;
+	దశాంశం _getMaxXYSpeed(స్థిరరాశి Vector3f(&waypoints)[3]) స్థిరరాశి;
+	దశాంశం _getMaxZSpeed(స్థిరరాశి Vector3f(&waypoints)[3]) స్థిరరాశి;
 
-	void _generateTrajectory(
-		const Vector3f &position,
-		const Vector3f &velocity_setpoint,
-		float delta_time,
-		PositionSmoothingSetpoints &out_setpoints);
+	శూన్య _generateTrajectory(
+		స్థిరరాశి Vector3f &position,
+		స్థిరరాశి Vector3f &velocity_setpoint,
+		దశాంశం delta_సమయం,
+		PositionSmoothingSetpoints &బహిర్గతం_setpoints);
 };

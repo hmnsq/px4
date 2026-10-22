@@ -62,38 +62,38 @@
  *
  */
 
-#ifndef _SYSTEMLIB_ERR_H
-#define _SYSTEMLIB_ERR_H
+#నిర్వచితం_కాకపోతే _SYSTEMLIB_ERR_H
+#నిర్వచించు _SYSTEMLIB_ERR_H
 
-#include <px4_platform_common/log.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <stdlib.h>
+#అన్తర్భావ <px4_platform_common/log.h>
+#అన్తర్భావ <stdarg.h>
+#అన్తర్భావ <errno.h>
+#అన్తర్భావ <stdlib.h>
 
 __BEGIN_DECLS
 
 
-#ifdef __PX4_NUTTX
-#define EXIT(eval) exit(eval)
-#else
-#define EXIT(eval) px4_task_exit(eval)
-#endif
+#నిర్వచితమైతే __PX4_NUTTX
+#నిర్వచించు EXIT(eval) నిష్క్రమించు(eval)
+#లేకపోతే
+#నిర్వచించు EXIT(eval) px4_task_exit(eval)
+#అయితే_ముగింపు
 
 
-#define err(eval, ...)		do { \
+#నిర్వచించు err(eval, ...)		చేయి { \
 		PX4_ERR(__VA_ARGS__); \
 		PX4_ERR("Task exited with errno=%i\n", errno); \
 		EXIT(eval); \
-	} while(0)
+	} అయితే(0)
 
-#define errx(eval, ...)		do { \
+#నిర్వచించు errx(eval, ...)		చేయి { \
 		PX4_ERR(__VA_ARGS__); \
 		EXIT(eval); \
-	} while(0)
+	} అయితే(0)
 
-#define warn(...) 		PX4_WARN(__VA_ARGS__)
-#define warnx(...) 		PX4_WARN(__VA_ARGS__)
+#నిర్వచించు warn(...) 		PX4_WARN(__VA_ARGS__)
+#నిర్వచించు warnx(...) 		PX4_WARN(__VA_ARGS__)
 
 __END_DECLS
 
-#endif
+#అయితే_ముగింపు

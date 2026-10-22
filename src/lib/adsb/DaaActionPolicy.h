@@ -39,44 +39,44 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#pragma once
+#సూచన once
 
-#include <stdint.h>
+#అన్తర్భావ <stdint.h>
 
-#include <px4_platform_common/defines.h> // Provides CONFIG_NAVIGATOR_ADSB_F3442
+#అన్తర్భావ <px4_platform_common/defines.h> // Provides CONFIG_NAVIGATOR_ADSB_F3442
 
 // Internal action priority order used for escalation comparisons.
 // User-facing parameter values are translated separately so DAA_LVL_*_ACT can
 // share the NAV_TRAFF_AVOID convention without changing the priority ladder.
-enum class DaaAction : uint8_t {
+గణన class DaaAction : uint8_t {
 	kDisabled = 0,
 	kWarnOnly = 1,
-	kPositionHoldMode = 2,
-	kReturnMode = 3,
-	kLandMode = 4,
+	k_Position_Hold_బహుళకం = 2,
+	k_Return_బహుళకం = 3,
+	k_Land_బహుళకం = 4,
 	kTerminate = 5,
-	kMaxActionValue = 6
+	k_Max_Action_విలువ = 6
 };
 
-enum class NotifyLandedActCause : uint8_t {
+గణన class NotifyLandedActCause : uint8_t {
 	kConflictAndArmed = 0,
 	kConflictAndDisarmed = 1
 };
 
 // Action parameter values (NAV_TRAFF_AVOID / DAA_LVL_*_ACT convention), read by the caller.
-struct daa_action_params_s {
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
-	int32_t lvl_low_act {0};
+నిర్మాణం daa_action_params_s {
+#ఒకవేళ defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+	int32_t lvl_దిగువ_act {0};
 	int32_t lvl_med_act{0};
-	int32_t lvl_high_act{0};
+	int32_t lvl_ఎగువ_act{0};
 	int32_t lvl_crit_act{0};
-#else
+#లేకపోతే
 	int32_t traff_avoid {0};
-#endif // CONFIG_NAVIGATOR_ADSB_F3442
+#అయితే_ముగింపు // CONFIG_NAVIGATOR_ADSB_F3442
 };
 
 // A command is only requested in the air; a ground warning is only requested when landed.
-struct daa_action_decision_s {
+నిర్మాణం daa_action_decision_s {
 	DaaAction action_command{DaaAction::kDisabled};
 	bool announce_action{false};
 	bool warn_on_ground{false};
@@ -85,7 +85,7 @@ struct daa_action_decision_s {
 
 class DaaActionPolicy
 {
-public:
+బహిరంగ:
 	/**
 	 * @brief Decide the automated response to a most urgent conflict level escalation.
 	 *
@@ -95,9 +95,9 @@ public:
 	 * In the air, commands are requested only on level escalation and only when stronger
 	 * than the current navigator state. Unchanged levels and de-escalations do not act.
 	 */
-	static daa_action_decision_s decide(const uint8_t conflict_level, const uint8_t prev_conflict_level,
-					    const uint8_t nav_state, const bool landed, const bool armed,
-					    const DaaAction previous_action, const daa_action_params_s &params);
+	స్థిర daa_action_decision_s decide(స్థిరరాశి uint8_t conflict_level, స్థిరరాశి uint8_t prev_conflict_level,
+					    స్థిరరాశి uint8_t nav_state, స్థిరరాశి bool landed, స్థిరరాశి bool armed,
+					    స్థిరరాశి DaaAction మునుపటి_action, స్థిరరాశి daa_action_params_s &params);
 
 	/**
 	 * @brief Map a conflict level to a DAA action.
@@ -105,17 +105,17 @@ public:
 	 * For F3442, a disabled level falls back only to zones guaranteed to contain
 	 * the reported zone.
 	 */
-	static DaaAction action_from_conflict_level(const uint8_t conflict_level, const daa_action_params_s &params);
+	స్థిర DaaAction action_from_conflict_level(స్థిరరాశి uint8_t conflict_level, స్థిరరాశి daa_action_params_s &params);
 
 	// True if requested_action is more urgent than the mode equivalent of nav_state.
-	static bool action_escalates_above_nav_state(const DaaAction requested_action, const uint8_t nav_state);
+	స్థిర bool action_escalates_above_nav_state(స్థిరరాశి DaaAction requested_action, స్థిరరాశి uint8_t nav_state);
 
 	// DAA action equivalent to a navigation state (used to gate escalation).
-	static DaaAction nav_state_to_equivalent_daa_action(const uint8_t nav_state);
+	స్థిర DaaAction nav_state_గమ్యం_equivalent_daa_action(స్థిరరాశి uint8_t nav_state);
 
 	// Convert a user-facing action param value into the internal DaaAction enum.
-	static DaaAction action_param_to_daa_action(const int32_t action_param);
+	స్థిర DaaAction action_param_గమ్యం_daa_action(స్థిరరాశి int32_t action_param);
 
 	// Inverse of action_param_to_daa_action.
-	static uint8_t daa_action_to_action_param(const DaaAction action);
+	స్థిర uint8_t daa_action_గమ్యం_action_param(స్థిరరాశి DaaAction action);
 };

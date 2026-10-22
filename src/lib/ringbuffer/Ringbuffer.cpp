@@ -34,11 +34,11 @@
 
 
 
-#include "Ringbuffer.hpp"
+#అన్తర్భావ "Ringbuffer.hpp"
 
-#include <mathlib/mathlib.h>
-#include <assert.h>
-#include <string.h>
+#అన్తర్భావ <mathlib/mathlib.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <string.h>
 
 
 Ringbuffer::~Ringbuffer()
@@ -46,137 +46,137 @@ Ringbuffer::~Ringbuffer()
 	deallocate();
 }
 
-bool Ringbuffer::allocate(size_t buffer_size)
+తార్కిక Ringbuffer::allocate(size_t బఫరు_కొలత)
 {
-	assert(_ringbuffer == nullptr);
+	ప్రతిజ్ఞా(_ringbuffer == శూన్యసూచిక);
 
-	_size = buffer_size;
-	_ringbuffer = new uint8_t[_size];
-	return _ringbuffer != nullptr;
+	కొలత_2 = బఫరు_కొలత;
+	_ringbuffer = కొత్త uint8_t[కొలత_2];
+	తిరిగి _ringbuffer != శూన్యసూచిక;
 }
 
-void Ringbuffer::deallocate()
+శూన్య Ringbuffer::deallocate()
 {
-	delete[] _ringbuffer;
-	_ringbuffer = nullptr;
-	_size = 0;
-	_start = 0;
-	_end = 0;
+	తొలగించు[] _ringbuffer;
+	_ringbuffer = శూన్యసూచిక;
+	కొలత_2 = 0;
+	ప్రారంభం_3 = 0;
+	చివర_2 = 0;
 }
 
-size_t Ringbuffer::space_available() const
+size_t Ringbuffer::space_అందుబాటు() స్థిరరాశి
 {
-	if (_start > _end) {
-		return _start - _end - 1;
+	ఒకవేళ (ప్రారంభం_3 > చివర_2) {
+		తిరిగి ప్రారంభం_3 - చివర_2 - 1;
 
-	} else {
-		return _start - _end - 1 + _size;
+	} లేకపోతే {
+		తిరిగి ప్రారంభం_3 - చివర_2 - 1 + కొలత_2;
 	}
 }
 
-size_t Ringbuffer::space_used() const
+size_t Ringbuffer::space_వాడిన() స్థిరరాశి
 {
-	if (_start <= _end) {
-		return _end - _start;
+	ఒకవేళ (ప్రారంభం_3 <= చివర_2) {
+		తిరిగి చివర_2 - ప్రారంభం_3;
 
-	} else {
+	} లేకపోతే {
 		// Potential wrap around.
-		return _end - _start + _size;
+		తిరిగి చివర_2 - ప్రారంభం_3 + కొలత_2;
 	}
 }
 
 
-bool Ringbuffer::push_back(const uint8_t *buf, size_t buf_len)
+తార్కిక Ringbuffer::push_back(స్థిరరాశి uint8_t *buf, size_t buf_len)
 {
-	if (buf_len == 0 || buf == nullptr) {
+	ఒకవేళ (buf_len == 0 || buf == శూన్యసూచిక) {
 		// Nothing to add, we better don't try.
-		return false;
+		తిరిగి అబద్ధం;
 	}
 
-	if (_start > _end) {
+	ఒకవేళ (ప్రారంభం_3 > చివర_2) {
 		// Add after end up to start, no wrap around.
 
 		// Leave one byte free so that start don't end up the same
 		// which signals empty.
-		const size_t available = _start - _end - 1;
+		స్థిరరాశి size_t అందుబాటు = ప్రారంభం_3 - చివర_2 - 1;
 
-		if (available < buf_len) {
-			return false;
+		ఒకవేళ (అందుబాటు < buf_len) {
+			తిరిగి అబద్ధం;
 		}
 
-		memcpy(&_ringbuffer[_end], buf, buf_len);
-		_end += buf_len;
+		జ్ఞాపకం_నకలు(&_ringbuffer[చివర_2], buf, buf_len);
+		చివర_2 += buf_len;
 
-	} else {
+	} లేకపోతే {
 		// Add after end, maybe wrap around.
-		const size_t available = _start - _end - 1 + _size;
+		స్థిరరాశి size_t అందుబాటు = ప్రారంభం_3 - చివర_2 - 1 + కొలత_2;
 
-		if (available < buf_len) {
-			return false;
+		ఒకవేళ (అందుబాటు < buf_len) {
+			తిరిగి అబద్ధం;
 		}
 
-		const size_t remaining_packet_len = _size - _end;
+		స్థిరరాశి size_t మిగిలిన_packet_len = కొలత_2 - చివర_2;
 
-		if (buf_len > remaining_packet_len) {
-			memcpy(&_ringbuffer[_end], buf, remaining_packet_len);
-			_end = 0;
+		ఒకవేళ (buf_len > మిగిలిన_packet_len) {
+			జ్ఞాపకం_నకలు(&_ringbuffer[చివర_2], buf, మిగిలిన_packet_len);
+			చివర_2 = 0;
 
-			memcpy(&_ringbuffer[_end], buf + remaining_packet_len, buf_len - remaining_packet_len);
-			_end += buf_len - remaining_packet_len;
+			జ్ఞాపకం_నకలు(&_ringbuffer[చివర_2], buf + మిగిలిన_packet_len, buf_len - మిగిలిన_packet_len);
+			చివర_2 += buf_len - మిగిలిన_packet_len;
 
-		} else {
-			memcpy(&_ringbuffer[_end], buf, buf_len);
-			_end += buf_len;
+		} లేకపోతే {
+			జ్ఞాపకం_నకలు(&_ringbuffer[చివర_2], buf, buf_len);
+			చివర_2 += buf_len;
 		}
 	}
 
-	return true;
+	తిరిగి నిజం;
 }
 
-size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
+size_t Ringbuffer::తీయి_front(uint8_t *buf, size_t buf_max_len)
 {
-	if (buf == nullptr) {
+	ఒకవేళ (buf == శూన్యసూచిక) {
 		// User needs to supply a valid pointer.
-		return 0;
+		తిరిగి 0;
 	}
 
-	if (_start == _end) {
+	ఒకవేళ (ప్రారంభం_3 == చివర_2) {
 		// Empty
-		return 0;
+		తిరిగి 0;
 	}
 
-	if (_start < _end) {
+	ఒకవేళ (ప్రారంభం_3 < చివర_2) {
 
 		// No wrap around.
-		size_t to_copy_len = math::min(_end - _start, buf_max_len);
+		size_t గమ్యం_copy_len = math::min(చివర_2 - ప్రారంభం_3, buf_max_len);
 
-		memcpy(buf, &_ringbuffer[_start], to_copy_len);
-		_start += to_copy_len;
+		జ్ఞాపకం_నకలు(buf, &_ringbuffer[ప్రారంభం_3], గమ్యం_copy_len);
+		ప్రారంభం_3 += గమ్యం_copy_len;
 
-		return to_copy_len;
+		తిరిగి గమ్యం_copy_len;
 
-	} else {
+	} లేకపోతే {
 		// Potential wrap around.
-		size_t to_copy_len = _end - _start + _size;
+		size_t గమ్యం_copy_len = చివర_2 - ప్రారంభం_3 + కొలత_2;
 
-		if (to_copy_len > buf_max_len) {
-			to_copy_len = buf_max_len;
+		ఒకవేళ (గమ్యం_copy_len > buf_max_len) {
+			గమ్యం_copy_len = buf_max_len;
 		}
 
-		const size_t remaining_buf_len = _size - _start;
+		స్థిరరాశి size_t మిగిలిన_buf_len = కొలత_2 - ప్రారంభం_3;
 
-		if (to_copy_len > remaining_buf_len) {
+		ఒకవేళ (గమ్యం_copy_len > మిగిలిన_buf_len) {
 
-			memcpy(buf, &_ringbuffer[_start], remaining_buf_len);
-			_start = 0;
-			memcpy(buf + remaining_buf_len, &_ringbuffer[_start], to_copy_len - remaining_buf_len);
-			_start += to_copy_len - remaining_buf_len;
+			జ్ఞాపకం_నకలు(buf, &_ringbuffer[ప్రారంభం_3], మిగిలిన_buf_len);
+			ప్రారంభం_3 = 0;
+			జ్ఞాపకం_నకలు(buf + మిగిలిన_buf_len, &_ringbuffer[ప్రారంభం_3], గమ్యం_copy_len - మిగిలిన_buf_len);
+			ప్రారంభం_3 += గమ్యం_copy_len - మిగిలిన_buf_len;
 
-		} else {
-			memcpy(buf, &_ringbuffer[_start], to_copy_len);
-			_start += to_copy_len;
+		} లేకపోతే {
+			జ్ఞాపకం_నకలు(buf, &_ringbuffer[ప్రారంభం_3], గమ్యం_copy_len);
+			ప్రారంభం_3 += గమ్యం_copy_len;
 		}
 
-		return to_copy_len;
+		తిరిగి గమ్యం_copy_len;
 	}
 }

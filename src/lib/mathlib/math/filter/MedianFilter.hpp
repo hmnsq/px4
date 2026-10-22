@@ -38,83 +38,83 @@
  *
  */
 
-#pragma once
+#సూచన once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#అన్తర్భావ <stdio.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <stdint.h>
+#అన్తర్భావ <string.h>
 
-namespace math
+నామాకాశ math
 {
 
-template<typename U> struct is_floating_point { static constexpr bool value = false; };
-template<> struct is_floating_point<float> { static constexpr bool value = true; };
-template<> struct is_floating_point<double> { static constexpr bool value = true; };
-template<> struct is_floating_point<long double> { static constexpr bool value = true; };
+మూస<రకం_పేరు U> నిర్మాణం is_floating_point { స్థిర constexpr తార్కిక value = అబద్ధం; };
+మూస<> నిర్మాణం is_floating_point<దశాంశం> { స్థిర constexpr తార్కిక value = నిజం; };
+మూస<> నిర్మాణం is_floating_point<ద్విగుణ> { స్థిర constexpr తార్కిక value = నిజం; };
+మూస<> నిర్మాణం is_floating_point<దీర్ఘ ద్విగుణ> { స్థిర constexpr తార్కిక value = నిజం; };
 
-template<typename T, int WINDOW = 3>
-class MedianFilter
+మూస<రకం_పేరు T, పూర్ణాంకం కిటికీ = 3>
+తరగతి MedianFilter
 {
-public:
-	static_assert(WINDOW >= 3, "MedianFilter window size must be >= 3");
-	static_assert(WINDOW % 2, "MedianFilter window size must be odd"); // odd
+బహిరంగ:
+	static_assert(కిటికీ >= 3, "MedianFilter window size must be >= 3");
+	static_assert(కిటికీ % 2, "MedianFilter window size must be odd"); // odd
 
-	MedianFilter() = default;
+	MedianFilter() = అప్రమేయ;
 
-	void insert(const T &sample)
+	శూన్య చొప్పించు(స్థిరరాశి T &sample)
 	{
-		_head = (_head + 1) % WINDOW;
-		_buffer[_head] = sample;
+		తల = (తల + 1) % కిటికీ;
+		బఫరు[తల] = sample;
 	}
 
 	T median()
 	{
-		T sorted[WINDOW];
-		memcpy(sorted, _buffer, sizeof(_buffer));
-		qsort(&sorted, WINDOW, sizeof(T), cmp);
+		T sorted[కిటికీ];
+		జ్ఞాపకం_నకలు(sorted, బఫరు, పరిమాణం(బఫరు));
+		qsort(&sorted, కిటికీ, పరిమాణం(T), cmp);
 
-		return sorted[WINDOW / 2];
+		తిరిగి sorted[కిటికీ / 2];
 	}
 
-	T apply(const T &sample)
+	T apply(స్థిరరాశి T &sample)
 	{
-		insert(sample);
-		return median();
+		చొప్పించు(sample);
+		తిరిగి median();
 	}
 
-private:
+అంతరంగ:
 
-	static int cmp(const void *a, const void *b)
+	స్థిర పూర్ణాంకం cmp(స్థిరరాశి శూన్య *a, స్థిరరాశి శూన్య *b)
 	{
-		const T va = *(const T *)a;
-		const T vb = *(const T *)b;
+		స్థిరరాశి T va = *(స్థిరరాశి T *)a;
+		స్థిరరాశి T vb = *(స్థిరరాశి T *)b;
 
-		if constexpr(is_floating_point<T>::value) {
-			if (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
-				return 0;
+		ఒకవేళ constexpr(is_floating_point<T>::value) {
+			ఒకవేళ (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
+				తిరిగి 0;
 
-			} else if (!__builtin_isfinite(va)) {
-				return  1;
+			} లేకపోతే ఒకవేళ (!__builtin_isfinite(va)) {
+				తిరిగి  1;
 
-			} else if (!__builtin_isfinite(vb)) {
-				return -1;
+			} లేకపోతే ఒకవేళ (!__builtin_isfinite(vb)) {
+				తిరిగి -1;
 			}
 		}
 
-		if (va < vb) {
-			return -1;
+		ఒకవేళ (va < vb) {
+			తిరిగి -1;
 		}
 
-		if (va > vb) {
-			return  1;
+		ఒకవేళ (va > vb) {
+			తిరిగి  1;
 		}
 
-		return 0;
+		తిరిగి 0;
 	}
 
-	T _buffer[WINDOW] {};
-	uint8_t _head{0};
+	T బఫరు[కిటికీ] {};
+	uint8_t తల{0};
 };
 
 } // namespace math

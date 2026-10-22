@@ -39,20 +39,20 @@
  * @author Silvan Fuhrer <silvan@auterion.com>
  */
 
-#pragma once
+#సూచన once
 
 // #include <float.h>
 // #include <mathlib/math/Functions.hpp>
-#include <mathlib/math/filter/AlphaFilter.hpp>
+#అన్తర్భావ <mathlib/math/filter/AlphaFilter.hpp>
 
-using namespace math;
+ఉపయోగించి నామాకాశ math;
 
-template <typename T>
-class FilteredDerivative
+మూస <రకం_పేరు T>
+తరగతి FilteredDerivative
 {
-public:
-	FilteredDerivative() = default;
-	~FilteredDerivative() = default;
+బహిరంగ:
+	FilteredDerivative() = అప్రమేయ;
+	~FilteredDerivative() = అప్రమేయ;
 
 	/**
 	 * Set filter parameters for time abstraction
@@ -60,9 +60,9 @@ public:
 	 * @param sample_interval_s interval between two samples in seconds
 	 * @param time_constant_s filter time constant determining convergence in seconds
 	 */
-	void setParameters(float sample_interval_s, float time_constant_s)
+	శూన్య సమితి_Parameters(దశాంశం sample_interval_s, దశాంశం సమయం_constant_s)
 	{
-		_alpha_filter.setParameters(sample_interval_s, time_constant_s);
+		_alpha_filter.సమితి_Parameters(sample_interval_s, సమయం_constant_s);
 		_sample_interval = sample_interval_s;
 	}
 
@@ -70,10 +70,10 @@ public:
 	 * @param sample_interval_us interval between two samples in microseconds
 	 * @param time_constant_us filter time constant determining convergence in microseconds
 	 */
-	void setParameters(uint64_t sample_interval_us, uint64_t time_constant_us)
+	శూన్య సమితి_Parameters(uint64_t sample_interval_us, uint64_t సమయం_constant_us)
 	{
-		_alpha_filter.setParameters(sample_interval_us, time_constant_us);
-		_sample_interval = static_cast<float>(sample_interval_us) * 1e-6f;
+		_alpha_filter.సమితి_Parameters(sample_interval_us, సమయం_constant_us);
+		_sample_interval = static_cast<దశాంశం>(sample_interval_us) * 1e-6f;
 	}
 
 	/**
@@ -81,10 +81,10 @@ public:
 	 *
 	 * @param sample new initial value
 	 */
-	void reset(const T &sample)
+	శూన్య reset(స్థిరరాశి T &sample)
 	{
 		_alpha_filter.reset(sample);
-		_initialized = false;
+		_initialized = అబద్ధం;
 	}
 
 	/**
@@ -92,34 +92,34 @@ public:
 	 *
 	 * @return retrieve the filtered result
 	 */
-	const T &update(const T &sample)
+	స్థిరరాశి T &update(స్థిరరాశి T &sample)
 	{
-		if (_initialized) {
-			if (_sample_interval > FLT_EPSILON) {
-				_alpha_filter.update((sample - _previous_sample) / _sample_interval);
+		ఒకవేళ (_initialized) {
+			ఒకవేళ (_sample_interval > FLT_EPSILON) {
+				_alpha_filter.update((sample - మునుపటి_sample) / _sample_interval);
 
-			} else {
-				_initialized = false;
+			} లేకపోతే {
+				_initialized = అబద్ధం;
 			}
 
-		} else {
+		} లేకపోతే {
 			// don't update in the first iteration
-			_initialized = true;
+			_initialized = నిజం;
 		}
 
-		_previous_sample = sample;
-		return _alpha_filter.getState();
+		మునుపటి_sample = sample;
+		తిరిగి _alpha_filter.getState();
 	}
 
-	const T &getState() const { return _alpha_filter.getState(); }
+	స్థిరరాశి T &getState() స్థిరరాశి { తిరిగి _alpha_filter.getState(); }
 
 	// delete mixing seconds with microseconds explicitly -> better compiler error
-	void setParameters(uint64_t sample_interval_us, float time_constant_s) = delete;
-	void setParameters(float sample_interval_s, uint64_t time_constant_us) = delete;
+	శూన్య సమితి_Parameters(uint64_t sample_interval_us, దశాంశం సమయం_constant_s) = తొలగించు;
+	శూన్య సమితి_Parameters(దశాంశం sample_interval_s, uint64_t సమయం_constant_us) = తొలగించు;
 
-private:
+అంతరంగ:
 	AlphaFilter<T> _alpha_filter;
-	float _sample_interval{0.f};
-	T _previous_sample{0.f};
-	bool _initialized{false};
+	దశాంశం _sample_interval{0.f};
+	T మునుపటి_sample{0.f};
+	తార్కిక _initialized{అబద్ధం};
 };

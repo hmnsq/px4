@@ -37,50 +37,50 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <time.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <mathlib/math/test/test.hpp>
+#అన్తర్భావ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
 
 /**
  * A 2nd order low pass filter block which uses the default px4 2nd order low pass filter
  */
-class __EXPORT BlockLowPass2 : public Block
+తరగతి __EXPORT ఖండం_దిగువ_Pass2 : బహిరంగ ఖండం
 {
-public:
+బహిరంగ:
 // methods
-	BlockLowPass2(SuperBlock *parent, const char *name, float sample_freq) :
-		Block(parent, name),
+	ఖండం_దిగువ_Pass2(Super_ఖండం *మాతృ, స్థిరరాశి అక్షరం *name, దశాంశం sample_freq) :
+		ఖండం(మాతృ, name),
 		_state(0.0 / 0.0 /* initialize to invalid val, force into is_finite() check on first call */),
-		_fCut(this, ""), // only one parameter, no need to name
+		_fCut(ఇది, ""), // only one parameter, no need to name
 		_fs(sample_freq),
 		_lp(_fs, _fCut.get())
 	{}
-	virtual ~BlockLowPass2() = default;
-	float update(float input);
+	మాయా ~ఖండం_దిగువ_Pass2() = అప్రమేయ;
+	దశాంశం update(దశాంశం ఆదానం);
 // accessors
-	float getState() { return _state; }
-	float getFCutParam() { return _fCut.get(); }
-	void setState(float state) { _state = _lp.reset(state); }
-protected:
-// attributes
-	float _state;
-	control::BlockParamFloat _fCut;
-	float _fs;
-	math::LowPassFilter2p<float> _lp;
+	దశాంశం getState() { తిరిగి _state; }
+	దశాంశం getFCutParam() { తిరిగి _fCut.get(); }
+	శూన్య సమితి_State(దశాంశం state) { _state = _lp.reset(state); }
+రక్షిత:
+//లక్షణాలు
+	దశాంశం _state;
+	control::ఖండం_Param_Float _fCut;
+	దశాంశం _fs;
+	math::దిగువ_Pass_Filter2p<దశాంశం> _lp;
 };
 
 } // namespace control

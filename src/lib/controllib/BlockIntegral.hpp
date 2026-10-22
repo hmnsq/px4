@@ -37,16 +37,16 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include "BlockLimitSym.hpp"
+#అన్తర్భావ "BlockLimitSym.hpp"
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
 
 /**
@@ -56,24 +56,24 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegral: public SuperBlock
+తరగతి __EXPORT ఖండం_Integral: బహిరంగ Super_ఖండం
 {
-public:
+బహిరంగ:
 // methods
-	BlockIntegral(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
+	ఖండం_Integral(Super_ఖండం *మాతృ, స్థిరరాశి అక్షరం *name) :
+		Super_ఖండం(మాతృ, name),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegral() = default;
-	float update(float input);
+		హద్దు(ఇది, "") {}
+	మాయా ~ఖండం_Integral() = అప్రమేయ;
+	దశాంశం update(దశాంశం ఆదానం);
 // accessors
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setY(float y) {_y = y;}
-protected:
-// attributes
-	float _y; /**< previous output */
-	BlockLimitSym _limit; /**< limiter */
+	దశాంశం getY() {తిరిగి _y;}
+	దశాంశం getMax() {తిరిగి హద్దు.getMax();}
+	శూన్య సమితి_Y(దశాంశం y) {_y = y;}
+రక్షిత:
+//లక్షణాలు
+	దశాంశం _y; /**< previous output */
+	ఖండం_హద్దు_Sym హద్దు; /**< limiter */
 };
 
 } // namespace control

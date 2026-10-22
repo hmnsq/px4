@@ -32,12 +32,12 @@
 #
 ############################################################################
 
-import math
-import numpy
-import json
-import statistics
-import sys
-import urllib.request
+దిగుమతి math
+దిగుమతి numpy
+దిగుమతి json
+దిగుమతి statistics
+దిగుమతి sys
+దిగుమతి urllib.request
 
 SAMPLING_RES = 10
 SAMPLING_MIN_LAT = -90
@@ -45,10 +45,10 @@ SAMPLING_MAX_LAT = 90
 SAMPLING_MIN_LON = -180
 SAMPLING_MAX_LON = 180
 
-def constrain(n, nmin, nmax):
-    return max(min(nmin, n), nmax)
+నిర్వచనం constrain(n, nmin, nmax):
+    తిరిగి max(min(nmin, n), nmax)
 
-header = """/****************************************************************************
+శీర్షిక = """/****************************************************************************
  *
  *   Copyright (c) 2020-2024 PX4 Development Team. All rights reserved.
  *
@@ -82,26 +82,26 @@ header = """/*******************************************************************
  ****************************************************************************/
 """
 
-key=sys.argv[1] # NOAA key (https://www.ngdc.noaa.gov/geomag/CalcSurvey.shtml)
+కీలకం=sys.argv[1] # NOAA key (https://www.ngdc.noaa.gov/geomag/CalcSurvey.shtml)
 
-print(header)
+ముద్రించు(శీర్షిక)
 
-print('#include <stdint.h>\n')
+ముద్రించు('#include <stdint.h>\n')
 
-LAT_DIM=int((SAMPLING_MAX_LAT-SAMPLING_MIN_LAT)/SAMPLING_RES)+1
-LON_DIM=int((SAMPLING_MAX_LON-SAMPLING_MIN_LON)/SAMPLING_RES)+1
+LAT_DIM=పూర్ణాంకం((SAMPLING_MAX_LAT-SAMPLING_MIN_LAT)/SAMPLING_RES)+1
+LON_DIM=పూర్ణాంకం((SAMPLING_MAX_LON-SAMPLING_MIN_LON)/SAMPLING_RES)+1
 
-print('static constexpr float SAMPLING_RES = {}'.format(SAMPLING_RES) + ';')
-print('static constexpr float SAMPLING_MIN_LAT = {}'.format(SAMPLING_MIN_LAT) + ';')
-print('static constexpr float SAMPLING_MAX_LAT = {}'.format(SAMPLING_MAX_LAT) + ';')
-print('static constexpr float SAMPLING_MIN_LON = {}'.format(SAMPLING_MIN_LON) + ';')
-print('static constexpr float SAMPLING_MAX_LON = {}'.format(SAMPLING_MAX_LON) + ';')
-print('')
-print('static constexpr int LAT_DIM = {}'.format(LAT_DIM) + ';')
-print('static constexpr int LON_DIM = {}'.format(LON_DIM) + ';')
-print('\n')
+ముద్రించు('static constexpr float SAMPLING_RES = {}'.format(SAMPLING_RES) + ';')
+ముద్రించు('static constexpr float SAMPLING_MIN_LAT = {}'.format(SAMPLING_MIN_LAT) + ';')
+ముద్రించు('static constexpr float SAMPLING_MAX_LAT = {}'.format(SAMPLING_MAX_LAT) + ';')
+ముద్రించు('static constexpr float SAMPLING_MIN_LON = {}'.format(SAMPLING_MIN_LON) + ';')
+ముద్రించు('static constexpr float SAMPLING_MAX_LON = {}'.format(SAMPLING_MAX_LON) + ';')
+ముద్రించు('')
+ముద్రించు('static constexpr int LAT_DIM = {}'.format(LAT_DIM) + ';')
+ముద్రించు('static constexpr int LON_DIM = {}'.format(LON_DIM) + ';')
+ముద్రించు('\n')
 
-print('// *INDENT-OFF*\n\n\n')
+ముద్రించు('// *INDENT-OFF*\n\n\n')
 
 
 
@@ -109,98 +109,98 @@ print('// *INDENT-OFF*\n\n\n')
 world_magnitude_model = {} # lat/lon dictionary with grid result
 
 params = urllib.parse.urlencode({'lat1': 0, 'lon1': 0, 'resultFormat': 'json'})
-f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (key, params))
-data = json.loads(f.read())
+f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (కీలకం, params))
+దత్తాంశం = json.loads(f.పఠ())
 
-world_magnitude_model_units = data['units']
+world_magnitude_model_units = దత్తాంశం['units']
 
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+కొరకు latitude లో శ్రేణి(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     world_magnitude_model[latitude] = {}
 
-    for longitude in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
+    కొరకు longitude లో శ్రేణి(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
         params = urllib.parse.urlencode({'lat1': latitude, 'lon1': longitude, 'lon2': SAMPLING_MAX_LON, 'resultFormat': 'json'})
-        f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (key, params))
-        data = json.loads(f.read())
+        f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (కీలకం, params))
+        దత్తాంశం = json.loads(f.పఠ())
         #print(json.dumps(data, indent = 4)) # debugging
 
-        world_magnitude_model[latitude][longitude] = data['result'][0]
+        world_magnitude_model[latitude][longitude] = దత్తాంశం['result'][0]
         #print(world_magnitude_model[latitude][longitude])
 
 
-def print_wmm_table(key_name):
+నిర్వచనం print_wmm_పట్టిక(కీలకం_name):
 
-    value_min = float('inf')
-    value_min_lat_lon = ()
+    విలువ_min = దశాంశం('inf')
+    విలువ_min_lat_lon = ()
 
-    value_max = float('-inf')
-    value_max_lat_lon = ()
+    విలువ_max = దశాంశం('-inf')
+    విలువ_max_lat_lon = ()
 
-    for latitude, lat_row in world_magnitude_model.items():
+    కొరకు latitude, lat_అడ్డువరుస లో world_magnitude_model.వస్తువులు_2():
         #print(latitude, lat_row)
-        for longitude, result in lat_row.items():
+        కొరకు longitude, ఫలితం లో lat_అడ్డువరుస.వస్తువులు_2():
             #print(result)
 
-            value = float(result[key_name])
+            విలువ = దశాంశం(ఫలితం[కీలకం_name])
 
-            if (value > value_max):
-                value_max = value
-                value_max_lat_lon = (latitude, longitude)
+            ఒకవేళ (విలువ > విలువ_max):
+                విలువ_max = విలువ
+                విలువ_max_lat_lon = (latitude, longitude)
 
-            if (value < value_min):
-                value_min = value
-                value_min_lat_lon = (latitude, longitude)
+            ఒకవేళ (విలువ < విలువ_min):
+                విలువ_min = విలువ
+                విలువ_min_lat_lon = (latitude, longitude)
 
     # scale the values to fit into int16_t
-    value_scale_max = abs(numpy.iinfo(numpy.int16).max) / abs(value_max)
-    value_scale_min = abs(numpy.iinfo(numpy.int16).min) / abs(value_min)
-    value_scale = min(value_scale_max, value_scale_min)
+    విలువ_scale_max = abs(numpy.iinfo(numpy.int16).max) / abs(విలువ_max)
+    విలువ_scale_min = abs(numpy.iinfo(numpy.int16).min) / abs(విలువ_min)
+    విలువ_scale = min(విలువ_scale_max, విలువ_scale_min)
 
-    units_str = world_magnitude_model_units[key_name].split(' ')[0]
+    units_str = world_magnitude_model_units[కీలకం_name].విభజించు(' ')[0]
 
     # print the table
-    print('// Magnetic {} data in {:.4g} {}'.format(key_name, 1.0 / value_scale, units_str))
-    print('// Model: {},'.format(data['model']))
-    print('// Version: {},'.format(data['version']))
-    print('// Date: {},'.format(data['result'][0]['date']))
-    print('static constexpr const int16_t {}_table[{}][{}]'.format(key_name, LAT_DIM, LON_DIM) + " {")
-    print('\t//    LONGITUDE: ', end='')
-    for l in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
-        print('{0:6d},'.format(l), end='')
-    print('')
+    ముద్రించు('// Magnetic {} data in {:.4g} {}'.format(కీలకం_name, 1.0 / విలువ_scale, units_str))
+    ముద్రించు('// Model: {},'.format(దత్తాంశం['model']))
+    ముద్రించు('// Version: {},'.format(దత్తాంశం['version']))
+    ముద్రించు('// Date: {},'.format(దత్తాంశం['result'][0]['date']))
+    ముద్రించు('static constexpr const int16_t {}_table[{}][{}]'.format(కీలకం_name, LAT_DIM, LON_DIM) + " {")
+    ముద్రించు('\t//    LONGITUDE: ', చివర='')
+    కొరకు l లో శ్రేణి(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
+        ముద్రించు('{0:6d},'.format(l), చివర='')
+    ముద్రించు('')
 
-    for latitude, lat_row in world_magnitude_model.items():
-        print('\t/* LAT: {0:3d} */'.format(latitude) + ' { ', end='')
-        latitude_blackout_zone = False
+    కొరకు latitude, lat_అడ్డువరుస లో world_magnitude_model.వస్తువులు_2():
+        ముద్రించు('\t/* LAT: {0:3d} */'.format(latitude) + ' { ', చివర='')
+        latitude_blackout_zone = అబద్ధం
 
-        for longitude, result in lat_row.items():
+        కొరకు longitude, ఫలితం లో lat_అడ్డువరుస.వస్తువులు_2():
 
-            value = float(result[key_name])
+            విలువ = దశాంశం(ఫలితం[కీలకం_name])
 
             # value scaled to fit into int16_t
-            value_int = int(round(value * value_scale))
-            print('{0:6d},'.format(value_int), end='')
+            విలువ_int = పూర్ణాంకం(round(విలువ * విలువ_scale))
+            ముద్రించు('{0:6d},'.format(విలువ_int), చివర='')
 
             # blackout warning at this latitude
-            try:
-                if result['warning']:
-                    latitude_blackout_zone = True
+            ప్రయత్నించు:
+                ఒకవేళ ఫలితం['warning']:
+                    latitude_blackout_zone = నిజం
 
-            except:
-                pass
+            మినహాయింపు:
+                దాటు
 
-        if latitude_blackout_zone:
-            print(' }, // WARNING! black out zone')
-        else:
-            print(' },')
+        ఒకవేళ latitude_blackout_zone:
+            ముద్రించు(' }, // WARNING! black out zone')
+        లేకపోతే:
+            ముద్రించు(' },')
 
-    print("};")
+    ముద్రించు("};")
 
-    print('static constexpr float WMM_{}_SCALE_TO_{} = {:.9g}f;'.format(key_name.upper(), units_str.upper(), 1.0 / value_scale))
-    print('static constexpr float WMM_{}_MIN_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(key_name.upper(), units_str.upper(), value_min, value_min_lat_lon[0], value_min_lat_lon[1]))
-    print('static constexpr float WMM_{}_MAX_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(key_name.upper(), units_str.upper(), value_max, value_max_lat_lon[0], value_max_lat_lon[1]))
-    print("\n")
+    ముద్రించు('static constexpr float WMM_{}_SCALE_TO_{} = {:.9g}f;'.format(కీలకం_name.పై(), units_str.పై(), 1.0 / విలువ_scale))
+    ముద్రించు('static constexpr float WMM_{}_MIN_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(కీలకం_name.పై(), units_str.పై(), విలువ_min, విలువ_min_lat_lon[0], విలువ_min_lat_lon[1]))
+    ముద్రించు('static constexpr float WMM_{}_MAX_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(కీలకం_name.పై(), units_str.పై(), విలువ_max, విలువ_max_lat_lon[0], విలువ_max_lat_lon[1]))
+    ముద్రించు("\n")
 
 
-print_wmm_table('declination')
-print_wmm_table('inclination')
-print_wmm_table('totalintensity')
+print_wmm_పట్టిక('declination')
+print_wmm_పట్టిక('inclination')
+print_wmm_పట్టిక('totalintensity')

@@ -31,38 +31,38 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <math.h>
+#అన్తర్భావ <math.h>
 
-#include <drivers/drv_hrt.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/sensor_baro.h>
+#అన్తర్భావ <drivers/drv_hrt.h>
+#అన్తర్భావ <uORB/PublicationMulti.hpp>
+#అన్తర్భావ <uORB/topics/sensor_baro.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#అన్తర్భావ <lib/failure_injection/FailureInjection.hpp>
 
-class PX4Barometer
+తరగతి PX4Barometer
 {
-public:
+బహిరంగ:
 	PX4Barometer(uint32_t device_id);
-	PX4Barometer(uint32_t device_id, bool external);
+	PX4Barometer(uint32_t device_id, తార్కిక external);
 
-	void set_device_id(uint32_t device_id);
-	void set_external(bool external);
-	void set_error_count(uint32_t error_count) { _report.error_count = error_count; }
-	void set_temperature(float temperature) { _report.temperature = temperature; }
+	శూన్య సమితి_device_id(uint32_t device_id);
+	శూన్య సమితి_external(తార్కిక external);
+	శూన్య సమితి_error_లెక్క(uint32_t error_లెక్క) { _report.error_లెక్క = error_లెక్క; }
+	శూన్య సమితి_temperature(దశాంశం temperature) { _report.temperature = temperature; }
 
-	void update(const hrt_abstime &timestamp_sample, float pressure);
+	శూన్య update(స్థిరరాశి hrt_abstime &timestamp_sample, దశాంశం pressure);
 
-	int get_instance() { return _sensor_pub.get_instance(); };
-	uint32_t get_device_id() const { return _report.device_id; }
+	పూర్ణాంకం get_instance() { తిరిగి _sensor_pub.get_instance(); };
+	uint32_t get_device_id() స్థిరరాశి { తిరిగి _report.device_id; }
 
-private:
+అంతరంగ:
 	uORB::PublicationMulti<sensor_baro_s> _sensor_pub{ORB_ID(sensor_baro)};
 
 	sensor_baro_s	_report{};
 
-	bool		_external_forced{false}; // classification set by the driver, do not re-derive from the device id
+	తార్కిక		_external_forced{అబద్ధం}; // classification set by the driver, do not re-derive from the device id
 
 	failure_injection::Config _failure_config;
 	failure_injection::Stuck<sensor_baro_s> _stuck;

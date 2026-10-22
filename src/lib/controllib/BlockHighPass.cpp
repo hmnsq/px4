@@ -37,21 +37,21 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <float.h>
 
-#include "blocks.hpp"
+#అన్తర్భావ "blocks.hpp"
 
-namespace control
+నామాకాశ control
 {
 
-float BlockHighPass::update(float input)
+దశాంశం ఖండం_ఎగువ_Pass::update(దశాంశం ఆదానం)
 {
-	float b = 2 * M_PI_F * getFCut() * getDt();
-	float a = 1 / (1 + b);
-	setY(a * (getY() + input - getU()));
-	setU(input);
-	return getY();
+	దశాంశం b = 2 * M_PI_F * getFCut() * getDt();
+	దశాంశం a = 1 / (1 + b);
+	సమితి_Y(a * (getY() + ఆదానం - getU()));
+	సమితి_U(ఆదానం);
+	తిరిగి getY();
 }
 
 } // namespace control

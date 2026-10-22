@@ -39,20 +39,20 @@
  * @author Lorenz Meier <lorenz@px4.io>
  */
 
-#pragma once
+#సూచన once
 
-#include <stdint.h>
-#include <stdbool.h>
+#అన్తర్భావ <stdint.h>
+#అన్తర్భావ <stdbool.h>
 
 __BEGIN_DECLS
 
-#define SBUS_FRAME_SIZE			25
-#define SBUS_BUFFER_SIZE		(SBUS_FRAME_SIZE + SBUS_FRAME_SIZE / 2)
+#నిర్వచించు SBUS_చట్రం_కొలత			25
+#నిర్వచించు SBUS_బఫరు_కొలత		(SBUS_చట్రం_కొలత + SBUS_చట్రం_కొలత / 2)
 
-typedef   uint8_t sbus_frame_t[SBUS_FRAME_SIZE + (SBUS_FRAME_SIZE / 2)];
+రకనిర్వచనం   uint8_t sbus_చట్రం_t[SBUS_చట్రం_కొలత + (SBUS_చట్రం_కొలత / 2)];
 
 
-__EXPORT int	sbus_init(const char *device, bool singlewire);
+__EXPORT పూర్ణాంకం	sbus_init(స్థిరరాశి అక్షరం *device, bool singlewire);
 
 /**
  * Parse serial bytes on the S.BUS bus
@@ -71,19 +71,19 @@ __EXPORT int	sbus_init(const char *device, bool singlewire);
  * provides a degree of protection. Of course, it would be better
  * if we didn't drop bytes...
  */
-__EXPORT int	sbus_config(int sbus_fd, bool singlewire);
-__EXPORT bool	sbus_input(int sbus_fd, uint16_t *values, uint16_t *num_values, bool *sbus_failsafe,
-			   bool *sbus_frame_drop,
+__EXPORT పూర్ణాంకం	sbus_config(పూర్ణాంకం sbus_fd, bool singlewire);
+__EXPORT bool	sbus_ఆదానం(పూర్ణాంకం sbus_fd, uint16_t *విలువలు_2, uint16_t *అంకె_విలువలు, bool *sbus_failsafe,
+			   bool *sbus_చట్రం_drop,
 			   uint16_t max_channels);
-__EXPORT bool	sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
-			   uint16_t *num_values, bool *sbus_failsafe, bool *sbus_frame_drop, unsigned *frame_drops, uint16_t max_channels);
-__EXPORT void	sbus1_output(int sbus_fd, uint16_t *values, uint16_t num_values);
-__EXPORT void	sbus2_output(int sbus_fd, uint16_t *values, uint16_t num_values);
-__EXPORT void	sbus1_set_output_rate_hz(uint16_t rate_hz);
+__EXPORT bool	sbus_parse(uint64_t now, uint8_t *చట్రం, గుర్తులేని len, uint16_t *విలువలు_2,
+			   uint16_t *అంకె_విలువలు, bool *sbus_failsafe, bool *sbus_చట్రం_drop, గుర్తులేని *చట్రం_drops, uint16_t max_channels);
+__EXPORT శూన్య	sbus1_output(పూర్ణాంకం sbus_fd, uint16_t *విలువలు_2, uint16_t అంకె_విలువలు);
+__EXPORT శూన్య	sbus2_output(పూర్ణాంకం sbus_fd, uint16_t *విలువలు_2, uint16_t అంకె_విలువలు);
+__EXPORT శూన్య	sbus1_సమితి_output_రేటు_hz(uint16_t రేటు_hz);
 
 /**
  * The number of incomplete frames we encountered
  */
-__EXPORT unsigned	sbus_dropped_frames(void);
+__EXPORT గుర్తులేని	sbus_dropped_చట్రాలు(శూన్య);
 
 __END_DECLS

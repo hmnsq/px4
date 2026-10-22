@@ -31,8 +31,8 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <PID.hpp>
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ <PID.hpp>
 
 // Run all PID unit tests:
 //   make tests TESTFILTER=unit-PID
@@ -42,46 +42,46 @@
 TEST(PIDTest, AllZeroCase)
 {
 	PID pid;
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, false), 0.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, అబద్ధం), 0.f);
 }
 
-TEST(PIDTest, OutputLimit)
+TEST(PIDTest, Output_హద్దు)
 {
 	PID pid;
-	pid.setOutputLimit(.01f);
-	pid.setGains(.1f, 0.f, 0.f);
-	pid.setSetpoint(1.f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, false), .01f);
-	EXPECT_FLOAT_EQ(pid.update(.9f, 0.f, false), .01f);
-	EXPECT_NEAR(pid.update(.95f, 0.f, false), .005f, 1e-6f);
-	EXPECT_FLOAT_EQ(pid.update(1.f, 0.f, false), 0.f);
-	EXPECT_NEAR(pid.update(1.05f, 0.f, false), -.005f, 1e-6f);
-	EXPECT_FLOAT_EQ(pid.update(1.1f, 0.f, false), -.01f);
-	EXPECT_FLOAT_EQ(pid.update(1.15f, 0.f, false), -.01f);
-	EXPECT_FLOAT_EQ(pid.update(2.f, 0.f, false), -.01f);
+	pid.సమితి_Output_హద్దు(.01f);
+	pid.సమితి_Gains(.1f, 0.f, 0.f);
+	pid.సమితి_Setpoint(1.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, అబద్ధం), .01f);
+	EXPECT_FLOAT_EQ(pid.update(.9f, 0.f, అబద్ధం), .01f);
+	EXPECT_NEAR(pid.update(.95f, 0.f, అబద్ధం), .005f, 1e-6f);
+	EXPECT_FLOAT_EQ(pid.update(1.f, 0.f, అబద్ధం), 0.f);
+	EXPECT_NEAR(pid.update(1.05f, 0.f, అబద్ధం), -.005f, 1e-6f);
+	EXPECT_FLOAT_EQ(pid.update(1.1f, 0.f, అబద్ధం), -.01f);
+	EXPECT_FLOAT_EQ(pid.update(1.15f, 0.f, అబద్ధం), -.01f);
+	EXPECT_FLOAT_EQ(pid.update(2.f, 0.f, అబద్ధం), -.01f);
 }
 
 TEST(PIDTest, ProportinalOnly)
 {
 	PID pid;
-	pid.setOutputLimit(1.f);
-	pid.setGains(.1f, 0.f, 0.f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, false), 0.f);
-	pid.setSetpoint(1.f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, false), .1f);
-	EXPECT_FLOAT_EQ(pid.update(1.f, 0.f, false), 0.f);
+	pid.సమితి_Output_హద్దు(1.f);
+	pid.సమితి_Gains(.1f, 0.f, 0.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, అబద్ధం), 0.f);
+	pid.సమితి_Setpoint(1.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, అబద్ధం), .1f);
+	EXPECT_FLOAT_EQ(pid.update(1.f, 0.f, అబద్ధం), 0.f);
 
-	float plant = 0.f;
-	float output = 10000.f;
-	int i; // need function scope to check how many steps
+	దశాంశం plant = 0.f;
+	దశాంశం output = 10000.f;
+	పూర్ణాంకం i; // need function scope to check how many steps
 
-	for (i = 1000; i > 0; i--) {
-		const float output_new = pid.update(plant, 0.f, false);
+	కొరకు (i = 1000; i > 0; i--) {
+		స్థిరరాశి దశాంశం output_new = pid.update(plant, 0.f, అబద్ధం);
 		plant += output_new;
 
 		// expect the output to get smaller with each iteration
-		if (output_new >= output) {
-			break;
+		ఒకవేళ (output_new >= output) {
+			ఆపు;
 		}
 
 		output = output_new;
@@ -94,89 +94,89 @@ TEST(PIDTest, ProportinalOnly)
 TEST(PIDTest, InteralOpenLoop)
 {
 	PID pid;
-	pid.setOutputLimit(1.f);
-	pid.setGains(0.f, .1f, 0.f);
-	pid.setIntegralLimit(.05f);
-	pid.setSetpoint(1.f);
+	pid.సమితి_Output_హద్దు(1.f);
+	pid.సమితి_Gains(0.f, .1f, 0.f);
+	pid.సమితి_Integral_హద్దు(.05f);
+	pid.సమితి_Setpoint(1.f);
 
 	// Zero error
-	EXPECT_FLOAT_EQ(pid.update(1.f, 0.f, true), 0.f);
-	EXPECT_FLOAT_EQ(pid.update(1.f, 0.f, true), 0.f);
-	EXPECT_FLOAT_EQ(pid.update(1.f, 0.f, true), 0.f);
+	EXPECT_FLOAT_EQ(pid.update(1.f, 0.f, నిజం), 0.f);
+	EXPECT_FLOAT_EQ(pid.update(1.f, 0.f, నిజం), 0.f);
+	EXPECT_FLOAT_EQ(pid.update(1.f, 0.f, నిజం), 0.f);
 
 	// Open loop ramp up
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), 0.f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), .01f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), .02f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), .03f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), .04f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), .05f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), .05f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), .05f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), 0.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), .01f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), .02f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), .03f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), .04f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), .05f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), .05f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), .05f);
 
 	// Open loop ramp down
-	pid.setSetpoint(-1.f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), .05f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), .04f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), .03f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), .02f);
-	EXPECT_NEAR(pid.update(0.f, 0.1f, true), .01f, 1e-6f);
-	EXPECT_NEAR(pid.update(0.f, 0.1f, true), 0.f, 1e-6f);
-	EXPECT_NEAR(pid.update(0.f, 0.1f, true), -.01f, 1e-6f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), -.02f);
-	EXPECT_NEAR(pid.update(0.f, 0.1f, true), -.03f, 1e-6f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), -.04f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), -.05f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), -.05f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), -.05f);
+	pid.సమితి_Setpoint(-1.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), .05f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), .04f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), .03f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), .02f);
+	EXPECT_NEAR(pid.update(0.f, 0.1f, నిజం), .01f, 1e-6f);
+	EXPECT_NEAR(pid.update(0.f, 0.1f, నిజం), 0.f, 1e-6f);
+	EXPECT_NEAR(pid.update(0.f, 0.1f, నిజం), -.01f, 1e-6f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), -.02f);
+	EXPECT_NEAR(pid.update(0.f, 0.1f, నిజం), -.03f, 1e-6f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), -.04f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), -.05f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), -.05f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), -.05f);
 	pid.resetIntegral();
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), 0.f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), -.01f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), 0.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, నిజం), -.01f);
 }
 
-TEST(PIDTest, AntiWindupHighSaturation)
+TEST(PIDTest, Anti_Windup_ఎగువ_Saturation)
 {
 	// Integrator-only controller whose output saturates before the integral limit.
 	PID pid;
-	pid.setGains(0.f, .1f, 0.f);
-	pid.setIntegralLimit(1.f); // large, so the output limit saturates first
-	pid.setOutputLimit(.05f);
-	pid.setSetpoint(1.f);
+	pid.సమితి_Gains(0.f, .1f, 0.f);
+	pid.సమితి_Integral_హద్దు(1.f); // large, so the output limit saturates first
+	pid.సమితి_Output_హద్దు(.05f);
+	pid.సమితి_Setpoint(1.f);
 
 	// Output uses the pre-update integral, so the first step is not yet saturated.
-	EXPECT_FLOAT_EQ(pid.update(0.f, 1.f, true), 0.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 1.f, నిజం), 0.f);
 	EXPECT_FLOAT_EQ(pid.getIntegral(), .1f);
 
 	// Output now saturates high; integrating further up would wind up -> frozen.
-	EXPECT_FLOAT_EQ(pid.update(0.f, 1.f, true), .05f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 1.f, నిజం), .05f);
 	EXPECT_FLOAT_EQ(pid.getIntegral(), .1f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 1.f, true), .05f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 1.f, నిజం), .05f);
 	EXPECT_FLOAT_EQ(pid.getIntegral(), .1f);
 
 	// Error reverses: still saturated high, but integrating down unwinds -> allowed.
-	pid.setSetpoint(-1.f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 1.f, true), .05f);
+	pid.సమితి_Setpoint(-1.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 1.f, నిజం), .05f);
 	EXPECT_FLOAT_EQ(pid.getIntegral(), 0.f);
 }
 
-TEST(PIDTest, AntiWindupLowSaturation)
+TEST(PIDTest, Anti_Windup_దిగువ_Saturation)
 {
 	PID pid;
-	pid.setGains(0.f, .1f, 0.f);
-	pid.setIntegralLimit(1.f);
-	pid.setOutputLimit(.05f);
-	pid.setSetpoint(-1.f);
+	pid.సమితి_Gains(0.f, .1f, 0.f);
+	pid.సమితి_Integral_హద్దు(1.f);
+	pid.సమితి_Output_హద్దు(.05f);
+	pid.సమితి_Setpoint(-1.f);
 
-	EXPECT_FLOAT_EQ(pid.update(0.f, 1.f, true), 0.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 1.f, నిజం), 0.f);
 	EXPECT_FLOAT_EQ(pid.getIntegral(), -.1f);
 
 	// Output saturates low; integrating further down would wind up -> frozen.
-	EXPECT_FLOAT_EQ(pid.update(0.f, 1.f, true), -.05f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 1.f, నిజం), -.05f);
 	EXPECT_FLOAT_EQ(pid.getIntegral(), -.1f);
 
 	// Error reverses: still saturated low, but integrating up unwinds -> allowed.
-	pid.setSetpoint(1.f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 1.f, true), -.05f);
+	pid.సమితి_Setpoint(1.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 1.f, నిజం), -.05f);
 	EXPECT_FLOAT_EQ(pid.getIntegral(), 0.f);
 }
 
@@ -185,18 +185,18 @@ TEST(PIDTest, DerivativeOnlyDampsFeedbackMotion)
 	// Derivative-on-measurement: the D term must oppose feedback motion so the
 	// output damps the plant rather than reinforcing its movement.
 	PID pid;
-	pid.setOutputLimit(100.f);
-	pid.setGains(0.f, 0.f, 1.f);
-	pid.setSetpoint(0.f);
+	pid.సమితి_Output_హద్దు(100.f);
+	pid.సమితి_Gains(0.f, 0.f, 1.f);
+	pid.సమితి_Setpoint(0.f);
 
 	// First sample seeds _last_feedback; derivative contribution is zero.
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, false), 0.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, అబద్ధం), 0.f);
 
 	// Feedback rises by 1.0 over dt = 0.1 -> d(feedback)/dt = +10.
 	// Expected output = -Kd * d(feedback)/dt = -10.
-	EXPECT_FLOAT_EQ(pid.update(1.f, 0.1f, false), -10.f);
+	EXPECT_FLOAT_EQ(pid.update(1.f, 0.1f, అబద్ధం), -10.f);
 
 	// Feedback falls by 1.0 over dt = 0.1 -> d(feedback)/dt = -10.
 	// Expected output = +10 (still damping).
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, false), 10.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, అబద్ధం), 10.f);
 }

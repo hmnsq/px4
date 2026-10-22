@@ -33,41 +33,41 @@
 #
 ############################################################################
 
-import argparse
-import builtins
-import pathlib
-import sys
+దిగుమతి argparse
+దిగుమతి builtins
+దిగుమతి pathlib
+దిగుమతి sys
 
-from rosidl_adapter.msg import convert_msg_to_idl
+తః rosidl_adapter.సందేశం_2 దిగుమతి convert_సందేశం_గమ్యం_idl
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
+ఒకవేళ __name__ == '__main__':
+    parser = argparse.వాదం_Parser(
         description=f'Convert px4 .msg files to .idl')
-    parser.add_argument(
+    parser.కూడు_వాదం(
         'interface_files', nargs='+',
         help='The interface files to convert')
-    args = parser.parse_args(sys.argv[1:])
+    వాదనలు = parser.parse_వాదనలు(sys.argv[1:])
 
     # convert_msg_to_idl prints a Reading/Writing line per file. Filter those
     # via builtins.print instead of redirecting stdout, which the empy template
     # engine relies on and breaks if replaced. Errors still surface on stderr.
-    real_print = builtins.print
+    real_print = builtins.ముద్రించు
 
-    def quiet_print(*pargs, **kwargs):
-        if pargs and isinstance(pargs[0], str) and \
+    నిర్వచనం quiet_print(*pargs, **kwargs):
+        ఒకవేళ pargs మరియు isinstance(pargs[0], str) మరియు \
                 pargs[0].startswith(('Reading input file:', 'Writing output file:')):
-            return
+            తిరిగి
         real_print(*pargs, **kwargs)
 
-    builtins.print = quiet_print
-    try:
-        for interface_file in args.interface_files:
-            interface_file = pathlib.Path(interface_file)
-            package_dir = interface_file.parent.absolute()
+    builtins.ముద్రించు = quiet_print
+    ప్రయత్నించు:
+        కొరకు interface_file లో వాదనలు.interface_files:
+            interface_file = pathlib.మార్గం_2(interface_file)
+            package_dir = interface_file.మాతృ.absolute()
 
-            convert_msg_to_idl(
+            convert_సందేశం_గమ్యం_idl(
                 package_dir, 'px4_msgs',
-                interface_file.absolute().relative_to(package_dir),
-                interface_file.parent)
-    finally:
-        builtins.print = real_print
+                interface_file.absolute().relative_గమ్యం(package_dir),
+                interface_file.మాతృ)
+    చివరగా:
+        builtins.ముద్రించు = real_print

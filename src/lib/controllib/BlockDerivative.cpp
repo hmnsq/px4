@@ -37,34 +37,34 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <float.h>
 
-#include "blocks.hpp"
+#అన్తర్భావ "blocks.hpp"
 
-namespace control
+నామాకాశ control
 {
 
-float BlockDerivative::update(float input)
+దశాంశం ఖండం_Derivative::update(దశాంశం ఆదానం)
 {
-	float output;
+	దశాంశం output;
 
-	if (_initialized) {
-		output = _lowPass.update((input - getU()) / getDt());
+	ఒకవేళ (_initialized) {
+		output = దిగువ_Pass.update((ఆదానం - getU()) / getDt());
 
-	} else {
+	} లేకపోతే {
 		// if this is the first call to update
 		// we have no valid derivative
 		// and so we use the assumption the
 		// input value is not changing much,
 		// which is the best we can do here.
-		_lowPass.update(0.0f);
+		దిగువ_Pass.update(0.0f);
 		output = 0.0f;
-		_initialized = true;
+		_initialized = నిజం;
 	}
 
-	setU(input);
-	return output;
+	సమితి_U(ఆదానం);
+	తిరిగి output;
 }
 
 } // namespace control

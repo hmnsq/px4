@@ -31,50 +31,50 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#అన్తర్భావ <px4_platform_common/px4_config.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <px4_platform_common/log.h>
 
-#include <inttypes.h>
-#include <math.h>
+#అన్తర్భావ <inttypes.h>
+#అన్తర్భావ <math.h>
 
-namespace calibration
+నామాకాశ calibration
 {
-class DifferentialPressure
+తరగతి DifferentialPressure
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 3; ///< also the airspeed selector's sensor limit
+బహిరంగ:
+	స్థిర constexpr పూర్ణాంకం MAX_SENSOR_లెక్క = 3; ///< also the airspeed selector's sensor limit
 
-	static constexpr const char *SensorString() { return "DPRES"; }
+	స్థిర constexpr స్థిరరాశి అక్షరం *SensorString() { తిరిగి "DPRES"; }
 
 	DifferentialPressure();
-	explicit DifferentialPressure(uint32_t device_id);
+	స్పష్టమైన DifferentialPressure(uint32_t device_id);
 
-	~DifferentialPressure() = default;
+	~DifferentialPressure() = అప్రమేయ;
 
-	void PrintStatus();
+	శూన్య Print_స్థితి();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id);
-	bool set_offset(const float &offset);
+	తార్కిక సమితి_calibration_సూచీ(పూర్ణాంకం calibration_సూచీ);
+	శూన్య సమితి_device_id(uint32_t device_id);
+	తార్కిక సమితి_స్థానభ్రంశం(స్థిరరాశి దశాంశం &స్థానభ్రంశం);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
+	తార్కిక calibrated() స్థిరరాశి { తిరిగి (_device_id != 0) && (calibration_సూచీ_2 >= 0); }
+	uint8_t calibration_లెక్క_2() స్థిరరాశి { తిరిగి calibration_లెక్క; }
+	int8_t calibration_సూచీ() స్థిరరాశి { తిరిగి calibration_సూచీ_2; }
+	uint32_t device_id() స్థిరరాశి { తిరిగి _device_id; }
+	తార్కిక external() స్థిరరాశి { తిరిగి _external; }
+	స్థిరరాశి దశాంశం &స్థానభ్రంశం() స్థిరరాశి { తిరిగి స్థానభ్రంశం_2; }
 
 	/// remove the zero offset from a raw differential pressure reading [Pa]
-	inline float Correct(const float &data) const { return data - _offset; }
+	అంతఃవరుస దశాంశం Correct(స్థిరరాశి దశాంశం &దత్తాంశం) స్థిరరాశి { తిరిగి దత్తాంశం - స్థానభ్రంశం_2; }
 
-	inline float Uncorrect(const float &corrected_data) const { return corrected_data + _offset; }
+	అంతఃవరుస దశాంశం Uncorrect(స్థిరరాశి దశాంశం &corrected_దత్తాంశం) స్థిరరాశి { తిరిగి corrected_దత్తాంశం + స్థానభ్రంశం_2; }
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	తార్కిక Parameters_ఎక్కించు();
+	తార్కిక ParametersSave(పూర్ణాంకం desired_calibration_సూచీ = -1, తార్కిక force = అబద్ధం);
+	శూన్య ParametersUpdate();
 
 	/**
 	 * Take over the offset left in SENS_DPRES_OFF, using slot 0.
@@ -82,23 +82,23 @@ public:
 	 *
 	 * @return true if the offset was adopted (the caller should save)
 	 */
-	bool AdoptLegacyOffset();
+	తార్కిక Adopt_Legacy_స్థానభ్రంశం();
 
 	/** mirror slot 0's offset into SENS_DPRES_OFF for ground stations that still read it */
-	void UpdateLegacyOffset() const;
+	శూన్య Update_Legacy_స్థానభ్రంశం() స్థిరరాశి;
 
-	void Reset();
+	శూన్య Reset();
 
-private:
-	static constexpr int kLegacyIndex{0};
-	static constexpr const char *kLegacyOffsetParam{"SENS_DPRES_OFF"};
+అంతరంగ:
+	స్థిర constexpr పూర్ణాంకం k_Legacy_సూచీ{0};
+	స్థిర constexpr స్థిరరాశి అక్షరం *k_Legacy_స్థానభ్రంశం_Param{"SENS_DPRES_OFF"};
 
-	float _offset{0};
+	దశాంశం స్థానభ్రంశం_2{0};
 
-	int8_t _calibration_index{-1};
+	int8_t calibration_సూచీ_2{-1};
 	uint32_t _device_id{0};
-	uint8_t _calibration_count{0};
+	uint8_t calibration_లెక్క{0};
 
-	bool _external{false};
+	తార్కిక _external{అబద్ధం};
 };
 } // namespace calibration

@@ -31,51 +31,51 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <gtest/gtest.h>
-#include "correction_framer.h"
-#include <vector>
-#include <cstring>
-#include <numeric>
-#include <random>
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ "correction_framer.h"
+#అన్తర్భావ <vector>
+#అన్తర్భావ <cstring>
+#అన్తర్భావ <numeric>
+#అన్తర్భావ <random>
 
-using namespace gnss;
+ఉపయోగించి నామాకాశ gnss;
 
-class RtcmTest : public ::testing::Test
+తరగతి RtcmTest : బహిరంగ ::testing::Test
 {
-protected:
+రక్షిత:
 	CorrectionFramer parser;
-	GpsRtcmMessageAssembler gps_rtcm_assembler;
+	Gps_Rtcm_సందేశం_Assembler gps_rtcm_assembler;
 
-	uint8_t buildGpsRtcmFlags(bool fragmented, uint8_t fragment_id = 0, uint8_t sequence_id = 0)
+	uint8_t buildGpsRtcmFlags(తార్కిక fragmented, uint8_t fragment_id = 0, uint8_t sequence_id = 0)
 	{
 		uint8_t flags = fragmented ? GPS_RTCM_FLAG_FRAGMENTED : 0;
-		flags |= (fragment_id & GPS_RTCM_FLAG_FRAGMENT_ID_MASK) << GPS_RTCM_FLAG_FRAGMENT_ID_SHIFT;
-		flags |= (sequence_id & GPS_RTCM_FLAG_SEQUENCE_ID_MASK) << GPS_RTCM_FLAG_SEQUENCE_ID_SHIFT;
-		return flags;
+		flags |= (fragment_id & GPS_RTCM_FLAG_FRAGMENT_ID_ముసుగు) << GPS_RTCM_FLAG_FRAGMENT_ID_జరుపు;
+		flags |= (sequence_id & GPS_RTCM_FLAG_SEQUENCE_ID_ముసుగు) << GPS_RTCM_FLAG_SEQUENCE_ID_జరుపు;
+		తిరిగి flags;
 	}
 
 	// Helper to build a valid RTCM3 frame with proper CRC
-	std::vector<uint8_t> buildValidFrame(uint16_t msg_type, const std::vector<uint8_t> &payload_data)
+	std::సదిశ_2<uint8_t> build_Valid_చట్రం(uint16_t సందేశం_type_2, స్థిరరాశి std::సదిశ_2<uint8_t> &payload_దత్తాంశం)
 	{
 		// Payload = 12-bit message type + rest of payload_data
 		// Message type is stored in first 12 bits of payload
-		std::vector<uint8_t> payload;
-		payload.push_back((msg_type >> 4) & 0xFF);
-		payload.push_back(((msg_type & 0x0F) << 4) | (payload_data.empty() ? 0 : (payload_data[0] >> 4)));
+		std::సదిశ_2<uint8_t> payload;
+		payload.push_back((సందేశం_type_2 >> 4) & 0xFF);
+		payload.push_back(((సందేశం_type_2 & 0x0F) << 4) | (payload_దత్తాంశం.ఖాళీలు() ? 0 : (payload_దత్తాంశం[0] >> 4)));
 
-		for (size_t i = 0; i < payload_data.size(); i++) {
-			uint8_t current = (payload_data[i] << 4) & 0xF0;
+		కొరకు (size_t i = 0; i < payload_దత్తాంశం.కొలత(); i++) {
+			uint8_t current = (payload_దత్తాంశం[i] << 4) & 0xF0;
 
-			if (i + 1 < payload_data.size()) {
-				current |= (payload_data[i + 1] >> 4) & 0x0F;
+			ఒకవేళ (i + 1 < payload_దత్తాంశం.కొలత()) {
+				current |= (payload_దత్తాంశం[i + 1] >> 4) & 0x0F;
 			}
 
 			payload.push_back(current);
 		}
 
-		return buildRawFrame(payload);
+		తిరిగి build_Raw_చట్రం(payload);
 	}
 
 	// Helper to build a frame with raw payload bytes (no message type encoding)
@@ -83,34 +83,34 @@ protected:
 	// Keep this helper out-of-line to avoid a GCC false positive on the
 	// inlined std::vector::push_back.
 	// See https://github.com/PX4/PX4-Autopilot/issues/26875 for details.
-	__attribute__((noinline)) std::vector<uint8_t> buildRawFrame(const std::vector<uint8_t> &payload)
+	__attribute__((noinline)) std::సదిశ_2<uint8_t> build_Raw_చట్రం(స్థిరరాశి std::సదిశ_2<uint8_t> &payload)
 	{
-		std::vector<uint8_t> frame;
-		size_t payload_len = payload.size();
+		std::సదిశ_2<uint8_t> చట్రం;
+		size_t payload_len = payload.కొలత();
 
 		// Header: preamble + length
-		frame.push_back(RTCM3_PREAMBLE);
-		frame.push_back((payload_len >> 8) & 0x03);  // Upper 2 bits of length (reserved bits = 0)
-		frame.push_back(payload_len & 0xFF);         // Lower 8 bits of length
+		చట్రం.push_back(RTCM3_PREAMBLE);
+		చట్రం.push_back((payload_len >> 8) & 0x03);  // Upper 2 bits of length (reserved bits = 0)
+		చట్రం.push_back(payload_len & 0xFF);         // Lower 8 bits of length
 
 		// Payload
-		frame.insert(frame.end(), payload.begin(), payload.end());
+		చట్రం.చొప్పించు(చట్రం.చివర(), payload.begin(), payload.చివర());
 
-		// CRC
-		uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
-		frame.push_back((crc >> 16) & 0xFF);
-		frame.push_back((crc >> 8) & 0xFF);
-		frame.push_back(crc & 0xFF);
+		//చక్రీయ_తనిఖీ
+		uint32_t చక్రీయ_తనిఖీ = rtcm3_crc24q(చట్రం.దత్తాంశం(), చట్రం.కొలత());
+		చట్రం.push_back((చక్రీయ_తనిఖీ >> 16) & 0xFF);
+		చట్రం.push_back((చక్రీయ_తనిఖీ >> 8) & 0xFF);
+		చట్రం.push_back(చక్రీయ_తనిఖీ & 0xFF);
 
-		return frame;
+		తిరిగి చట్రం;
 	}
 
 	// Helper to build a frame with bad CRC
-	std::vector<uint8_t> buildBadCrcFrame(const std::vector<uint8_t> &payload)
+	std::సదిశ_2<uint8_t> build_Bad_చక్రీయ_తనిఖీ_చట్రం(స్థిరరాశి std::సదిశ_2<uint8_t> &payload)
 	{
-		auto frame = buildRawFrame(payload);
+		స్వయంచాలక చట్రం = build_Raw_చట్రం(payload);
 		// Corrupt the CRC
-		frame[frame.size() - 1] ^= 0xFF;
-		return frame;
+		చట్రం[చట్రం.కొలత() - 1] ^= 0xFF;
+		తిరిగి చట్రం;
 	}
 };

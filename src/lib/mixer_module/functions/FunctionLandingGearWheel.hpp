@@ -31,33 +31,33 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "FunctionProviderBase.hpp"
+#అన్తర్భావ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear_wheel.h>
+#అన్తర్భావ <uORB/topics/landing_gear_wheel.h>
 
 /**
  * Functions: Landing_Gear_Wheel
  */
-class FunctionLandingGearWheel : public FunctionProviderBase
+తరగతి FunctionLandingGearWheel : బహిరంగ Function_Provider_పునాది
 {
-public:
-	FunctionLandingGearWheel() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGearWheel(); }
+బహిరంగ:
+	FunctionLandingGearWheel() = అప్రమేయ;
+	స్థిర Function_Provider_పునాది *allocate(స్థిరరాశి Context &context) { తిరిగి కొత్త FunctionLandingGearWheel(); }
 
-	void update() override
+	శూన్య update() override
 	{
 		landing_gear_wheel_s landing_gear_wheel;
 
-		if (_topic.update(&landing_gear_wheel)) {
-			_data = landing_gear_wheel.normalized_wheel_setpoint;
+		ఒకవేళ (_topic.update(&landing_gear_wheel)) {
+			దత్తాంశం_3 = landing_gear_wheel.normalized_wheel_setpoint;
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	దశాంశం value(OutputFunction func) override { తిరిగి దత్తాంశం_3; }
 
-private:
+అంతరంగ:
 	uORB::Subscription _topic{ORB_ID(landing_gear_wheel)};
-	float _data{0.f};
+	దశాంశం దత్తాంశం_3{0.f};
 };

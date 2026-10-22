@@ -31,64 +31,64 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "FunctionProviderBase.hpp"
+#అన్తర్భావ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/manual_control_setpoint.h>
+#అన్తర్భావ <uORB/topics/manual_control_setpoint.h>
 
 /**
  * Functions: RC_Roll .. RCAUX_Max
  */
-class FunctionManualRC : public FunctionProviderBase
+తరగతి FunctionManualRC : బహిరంగ Function_Provider_పునాది
 {
-public:
+బహిరంగ:
 	FunctionManualRC()
 	{
-		resetAllToDisarmedValue();
+		reset_All_గమ్యం_Disarmed_విలువ();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionManualRC(); }
+	స్థిర Function_Provider_పునాది *allocate(స్థిరరాశి Context &context) { తిరిగి కొత్త FunctionManualRC(); }
 
-	void update() override
+	శూన్య update() override
 	{
 		manual_control_setpoint_s manual_control_setpoint;
 
-		if (_topic.update(&manual_control_setpoint)) {
-			if (manual_control_setpoint.valid) {
-				_data[0] = manual_control_setpoint.roll;
-				_data[1] = manual_control_setpoint.pitch;
-				_data[2] = manual_control_setpoint.throttle;
-				_data[3] = manual_control_setpoint.yaw;
-				_data[4] = manual_control_setpoint.flaps;
-				_data[5] = manual_control_setpoint.aux1;
-				_data[6] = manual_control_setpoint.aux2;
-				_data[7] = manual_control_setpoint.aux3;
-				_data[8] = manual_control_setpoint.aux4;
-				_data[9] = manual_control_setpoint.aux5;
-				_data[10] = manual_control_setpoint.aux6;
+		ఒకవేళ (_topic.update(&manual_control_setpoint)) {
+			ఒకవేళ (manual_control_setpoint.valid) {
+				దత్తాంశం_3[0] = manual_control_setpoint.roll;
+				దత్తాంశం_3[1] = manual_control_setpoint.pitch;
+				దత్తాంశం_3[2] = manual_control_setpoint.throttle;
+				దత్తాంశం_3[3] = manual_control_setpoint.yaw;
+				దత్తాంశం_3[4] = manual_control_setpoint.flaps;
+				దత్తాంశం_3[5] = manual_control_setpoint.aux1;
+				దత్తాంశం_3[6] = manual_control_setpoint.aux2;
+				దత్తాంశం_3[7] = manual_control_setpoint.aux3;
+				దత్తాంశం_3[8] = manual_control_setpoint.aux4;
+				దత్తాంశం_3[9] = manual_control_setpoint.aux5;
+				దత్తాంశం_3[10] = manual_control_setpoint.aux6;
 
-			} else {
-				resetAllToDisarmedValue();
+			} లేకపోతే {
+				reset_All_గమ్యం_Disarmed_విలువ();
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::RC_Roll]; }
+	దశాంశం value(OutputFunction func) override { తిరిగి దత్తాంశం_3[(పూర్ణాంకం)func - (పూర్ణాంకం)OutputFunction::RC_Roll]; }
 
-private:
-	static constexpr int num_data_points = 11;
+అంతరంగ:
+	స్థిర constexpr పూర్ణాంకం అంకె_దత్తాంశం_points = 11;
 
-	void resetAllToDisarmedValue()
+	శూన్య reset_All_గమ్యం_Disarmed_విలువ()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
-			_data[i] = NAN;
+		కొరకు (పూర్ణాంకం i = 0; i < అంకె_దత్తాంశం_points; ++i) {
+			దత్తాంశం_3[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
+	static_assert(అంకె_దత్తాంశం_points == (పూర్ణాంకం)OutputFunction::RC_AUXMax - (పూర్ణాంకం)OutputFunction::RC_Roll + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _topic{ORB_ID(manual_control_setpoint)};
-	float _data[num_data_points] {};
+	దశాంశం దత్తాంశం_3[అంకె_దత్తాంశం_points] {};
 };

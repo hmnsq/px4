@@ -31,12 +31,12 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ <matrix/math.hpp>
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-TEST(MatrixHelperTest, SignFloat)
+TEST(మాతృక_Helper_Test, SignFloat)
 {
 	EXPECT_FLOAT_EQ(sign(-100.f), -1.f);
 	EXPECT_FLOAT_EQ(sign(-FLT_EPSILON), -1.f);
@@ -45,7 +45,7 @@ TEST(MatrixHelperTest, SignFloat)
 	EXPECT_FLOAT_EQ(sign(100.f), 1.f);
 }
 
-TEST(MatrixHelperTest, SignInt)
+TEST(మాతృక_Helper_Test, SignInt)
 {
 	EXPECT_FLOAT_EQ(sign(-100), -1);
 	EXPECT_FLOAT_EQ(sign(-1), -1);
@@ -54,7 +54,7 @@ TEST(MatrixHelperTest, SignInt)
 	EXPECT_FLOAT_EQ(sign(100), 1);
 }
 
-TEST(MatrixHelperTest, Helper)
+TEST(మాతృక_Helper_Test, Helper)
 {
 	// general wraps
 	EXPECT_FLOAT_EQ(wrap(4., 0., 10.), 4.);

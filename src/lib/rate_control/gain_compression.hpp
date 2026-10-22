@@ -41,83 +41,83 @@
  * https://ntrs.nasa.gov/api/citations/20120015662/downloads/20120015662.pdf
  */
 
-#pragma once
+#సూచన once
 
 // PX4 includes
-#include <drivers/drv_hrt.h>
+#అన్తర్భావ <drivers/drv_hrt.h>
 
 // Libraries
-#include <math.h>
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <matrix/matrix/math.hpp>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <lib/mathlib/math/filter/AlphaFilter.hpp>
+#అన్తర్భావ <matrix/matrix/math.hpp>
 
 // uORB includes
-#include <uORB/Publication.hpp>
-#include <uORB/topics/gain_compression.h>
+#అన్తర్భావ <uORB/Publication.hpp>
+#అన్తర్భావ <uORB/topics/gain_compression.h>
 
-class GainCompression
+తరగతి GainCompression
 {
-public:
-	void reset()
+బహిరంగ:
+	శూన్య reset()
 	{
 		_compression_gain = 1.f;
 		_hpf = 0.f;
 		_lpf.reset(0.f);
-		_input_initialized = false;
+		ఆదానం_initialized = అబద్ధం;
 	}
-	float update(float input, float dt);
+	దశాంశం update(దశాంశం ఆదానం, దశాంశం dt);
 
-	void setLpfCutoffFrequency(float sample_freq, float cutoff)
+	శూన్య సమితి_Lpf_Cutoff_Frequency(దశాంశం sample_freq, దశాంశం cutoff)
 	{
-		_lpf.setCutoffFreq(sample_freq, cutoff);
+		_lpf.సమితి_Cutoff_Freq(sample_freq, cutoff);
 	}
-	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
+	శూన్య సమితి_Hpf_Cutoff_Frequency(దశాంశం sample_freq, దశాంశం cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	float getSpectralDamperHpf() const { return _hpf * _hpf; }
-	float getSpectralDamperLpf() const { return _lpf.getState(); }
-	void setCompressionGainMin(float gain_min) { _compression_gain_min = gain_min; }
+	దశాంశం getSpectralDamperHpf() స్థిరరాశి { తిరిగి _hpf * _hpf; }
+	దశాంశం getSpectralDamperLpf() స్థిరరాశి { తిరిగి _lpf.getState(); }
+	శూన్య సమితి_Compression_Gain_Min(దశాంశం gain_min) { _compression_gain_min = gain_min; }
 
-private:
-	float _compression_gain{1.f};
-	float _compression_gain_min{0.3f};
+అంతరంగ:
+	దశాంశం _compression_gain{1.f};
+	దశాంశం _compression_gain_min{0.3f};
 
-	float _alpha_hpf{0.f};
-	float _hpf{0.f};
+	దశాంశం _alpha_hpf{0.f};
+	దశాంశం _hpf{0.f};
 
-	float _input_prev{0.f};
-	bool _input_initialized{false};
+	దశాంశం ఆదానం_prev{0.f};
+	తార్కిక ఆదానం_initialized{అబద్ధం};
 
-	AlphaFilter<float> _lpf;
+	AlphaFilter<దశాంశం> _lpf;
 
-	static constexpr float _kSpectralDamperGain{200.f}; // tuned based on flight test data to obtain a quick response
-	static constexpr float _kLeakageGain{0.1f}; // 1/time_constant, slow enough to not interfere with the controller
+	స్థిర constexpr దశాంశం _kSpectralDamperGain{200.f}; // tuned based on flight test data to obtain a quick response
+	స్థిర constexpr దశాంశం _kLeakageGain{0.1f}; // 1/time_constant, slow enough to not interfere with the controller
 
 };
 
-class GainCompression3d
+తరగతి GainCompression3d
 {
-public:
+బహిరంగ:
 	GainCompression3d();
-	~GainCompression3d() = default;
+	~GainCompression3d() = అప్రమేయ;
 
-	void reset();
-	void update(const matrix::Vector3f &input, float dt);
-	const matrix::Vector3f &getGains() const { return _gains; };
+	శూన్య reset();
+	శూన్య update(స్థిరరాశి మాతృక::Vector3f &ఆదానం, దశాంశం dt);
+	స్థిరరాశి మాతృక::Vector3f &getGains() స్థిరరాశి { తిరిగి _gains; };
 
-	void setEnabled(bool enabled) { _enabled = enabled; }
-	void setCompressionGainMin(float gain_min);
+	శూన్య సమితి_Enabled(తార్కిక enabled) { _enabled = enabled; }
+	శూన్య సమితి_Compression_Gain_Min(దశాంశం gain_min);
 
-private:
+అంతరంగ:
 	// uORB publications
 	uORB::Publication<gain_compression_s> _gain_compression_pub{ORB_ID(gain_compression)};
 
 	GainCompression _compression_gains[3];
-	matrix::Vector3f _gains{1.f, 1.f, 1.f};
+	మాతృక::Vector3f _gains{1.f, 1.f, 1.f};
 
-	bool _enabled{false};
+	తార్కిక _enabled{అబద్ధం};
 
-	hrt_abstime _time_last_publication{0};
+	hrt_abstime సమయం_చివరి_publication{0};
 
-	static constexpr float _kLpfCutoffFrequency{5.f}; // Just above the control bandwidth of most UAVs
-	static constexpr float _kHpfCutoffFrequency{2.f * _kLpfCutoffFrequency}; // 1 Octave above LPF cutoff, as recommended by the reference paper
+	స్థిర constexpr దశాంశం _kLpfCutoffFrequency{5.f}; // Just above the control bandwidth of most UAVs
+	స్థిర constexpr దశాంశం _kHpfCutoffFrequency{2.f * _kLpfCutoffFrequency}; // 1 Octave above LPF cutoff, as recommended by the reference paper
 };

@@ -64,34 +64,34 @@
  *   }
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_boardconfig.h> // CONFIG_GPS_SPARTN
+#అన్తర్భావ <px4_boardconfig.h> // CONFIG_GPS_SPARTN
 
-#include <cstdint>
-#include <cstddef>
+#అన్తర్భావ <cstdint>
+#అన్తర్భావ <cstddef>
 
-#include "rtcm.h"
-#include "ubx.h"
+#అన్తర్భావ "rtcm.h"
+#అన్తర్భావ "ubx.h"
 
-#if defined(CONFIG_GPS_SPARTN)
+#ఒకవేళ defined(CONFIG_GPS_SPARTN)
 # include "spartn.h"
-#endif
+#అయితే_ముగింపు
 
 namespace gnss
 {
 
-enum class CorrectionProtocol : uint8_t {
+గణన class CorrectionProtocol : uint8_t {
 	Rtcm3,
 	Spartn,
 	Ubx,
 };
 
-struct CorrectionFramerStats {
+నిర్మాణం CorrectionFramerStats {
 	uint32_t messages_parsed;   ///< Frames successfully parsed and consumed
-	uint32_t crc_errors;        ///< Frames rejected by their CRC / checksum
-	uint32_t bytes_discarded;   ///< Bytes discarded while searching for a frame
-	uint32_t total_frame_bytes; ///< Total bytes in successfully parsed frames
+	uint32_t చక్రీయ_తనిఖీ_errors_2;        ///< Frames rejected by their CRC / checksum
+	uint32_t బైట్లు_discarded_2;   ///< Bytes discarded while searching for a frame
+	uint32_t మొత్తం_చట్రం_బైట్లు_2; ///< Total bytes in successfully parsed frames
 	uint32_t rtcm3_messages;    ///< Subset of messages_parsed that were RTCM3
 	uint32_t spartn_messages;   ///< Subset of messages_parsed that were SPARTN
 	uint32_t ubx_messages;      ///< Subset of messages_parsed that were UBX
@@ -99,20 +99,20 @@ struct CorrectionFramerStats {
 
 class CorrectionFramer
 {
-public:
-	static constexpr size_t MAX_FRAME_LEN =
-#if defined(CONFIG_GPS_SPARTN)
-		(SPARTN_MAX_FRAME_LEN > RTCM3_MAX_FRAME_LEN)
-		? ((SPARTN_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? SPARTN_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN)
-		: ((RTCM3_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? RTCM3_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN);
-#else
-		(RTCM3_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? RTCM3_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN;
-#endif
+బహిరంగ:
+	స్థిర constexpr size_t MAX_చట్రం_LEN =
+#ఒకవేళ defined(CONFIG_GPS_SPARTN)
+		(SPARTN_MAX_చట్రం_LEN > RTCM3_MAX_చట్రం_LEN)
+		? ((SPARTN_MAX_చట్రం_LEN > UBX_MAX_చట్రం_LEN) ? SPARTN_MAX_చట్రం_LEN : UBX_MAX_చట్రం_LEN)
+		: ((RTCM3_MAX_చట్రం_LEN > UBX_MAX_చట్రం_LEN) ? RTCM3_MAX_చట్రం_LEN : UBX_MAX_చట్రం_LEN);
+#లేకపోతే
+		(RTCM3_MAX_చట్రం_LEN > UBX_MAX_చట్రం_LEN) ? RTCM3_MAX_చట్రం_LEN : UBX_MAX_చట్రం_LEN;
+#అయితే_ముగింపు
 
 	// Enough for 2 max-size frames to handle overlap
-	static constexpr size_t BUFFER_SIZE = MAX_FRAME_LEN * 2;
+	స్థిర constexpr size_t బఫరు_కొలత_2 = MAX_చట్రం_LEN * 2;
 
-	CorrectionFramer() = default;
+	CorrectionFramer() = అప్రమేయ;
 
 	/**
 	 * Add data to the framer buffer.
@@ -121,7 +121,7 @@ public:
 	 * @param len  Number of bytes to add
 	 * @return     Number of bytes actually added (may be less if the buffer is full)
 	 */
-	size_t addData(const uint8_t *data, size_t len);
+	size_t కూడు_దత్తాంశం(స్థిరరాశి uint8_t *దత్తాంశం, size_t len);
 
 	/**
 	 * Get a pointer to the next complete frame without consuming it.
@@ -135,43 +135,43 @@ public:
 	 * @return             Pointer to the frame, or nullptr if no complete valid
 	 *                     frame is available
 	 */
-	const uint8_t *getNextMessage(size_t *out_len, CorrectionProtocol *out_protocol = nullptr);
+	స్థిరరాశి uint8_t *get_తదుపరి_సందేశం(size_t *బహిర్గతం_len, CorrectionProtocol *బహిర్గతం_protocol = nullptr);
 
 	/**
 	 * Consume (remove) the frame returned by the preceding getNextMessage().
 	 *
 	 * @param len Number of bytes to remove, as returned by getNextMessage()
 	 */
-	void consumeMessage(size_t len);
+	శూన్య consume_సందేశం(size_t len);
 
-	size_t bufferedBytes() const { return _buffer_len; }
+	size_t buffered_బైట్లు() స్థిరరాశి { తిరిగి బఫరు_len; }
 
-	CorrectionFramerStats getStats() const
+	CorrectionFramerStats getStats() స్థిరరాశి
 	{
-		return {_messages_parsed, _crc_errors, _bytes_discarded, _total_frame_bytes,
+		తిరిగి {_messages_parsed, చక్రీయ_తనిఖీ_errors, బైట్లు_discarded, మొత్తం_చట్రం_బైట్లు,
 			_rtcm3_messages, _spartn_messages, _ubx_messages};
 	}
 
-private:
-	enum class Probe {
-		NeedMoreData,  ///< Could still become a valid frame, wait for more bytes
-		InvalidHeader, ///< Cannot be a frame start
-		CrcError,      ///< Frame is complete but failed its CRC / checksum
+అంతరంగ:
+	గణన class Probe {
+		Need_మరిన్ని_దత్తాంశం,  ///< Could still become a valid frame, wait for more bytes
+		Invalid_శీర్షిక, ///< Cannot be a frame start
+		చక్రీయ_తనిఖీ_Error,      ///< Frame is complete but failed its CRC / checksum
 		Complete,
 	};
 
-	static bool isPreamble(uint8_t byte);
+	స్థిర bool isPreamble(uint8_t byte);
 
-	Probe probeRtcm3(size_t *frame_len) const;
-	Probe probeUbx(size_t *frame_len) const;
-#if defined(CONFIG_GPS_SPARTN)
-	Probe probeSpartn(size_t *frame_len) const;
-#endif
+	Probe probeRtcm3(size_t *చట్రం_len) స్థిరరాశి;
+	Probe probeUbx(size_t *చట్రం_len) స్థిరరాశి;
+#ఒకవేళ defined(CONFIG_GPS_SPARTN)
+	Probe probeSpartn(size_t *చట్రం_len) స్థిరరాశి;
+#అయితే_ముగింపు
 
-	void discardBytes(size_t count);
+	శూన్య discard_బైట్లు(size_t లెక్క);
 
-	uint8_t  _buffer[BUFFER_SIZE] {};
-	size_t   _buffer_len {0};
+	uint8_t  బఫరు[బఫరు_కొలత_2] {};
+	size_t   బఫరు_len {0};
 
 	// Protocol of the frame returned by the last getNextMessage(), applied to
 	// the per-protocol counters once consumeMessage() commits it.
@@ -179,9 +179,9 @@ private:
 
 	// Statistics
 	uint32_t _messages_parsed {0};
-	uint32_t _crc_errors {0};
-	uint32_t _bytes_discarded {0};
-	uint32_t _total_frame_bytes {0};
+	uint32_t చక్రీయ_తనిఖీ_errors {0};
+	uint32_t బైట్లు_discarded {0};
+	uint32_t మొత్తం_చట్రం_బైట్లు {0};
 	uint32_t _rtcm3_messages {0};
 	uint32_t _spartn_messages {0};
 	uint32_t _ubx_messages {0};

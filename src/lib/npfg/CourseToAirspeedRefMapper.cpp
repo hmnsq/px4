@@ -31,84 +31,84 @@
  *
  ****************************************************************************/
 
-#include "CourseToAirspeedRefMapper.hpp"
-using matrix::Vector2f;
+#అన్తర్భావ "CourseToAirspeedRefMapper.hpp"
+ఉపయోగించి మాతృక::Vector2f;
 
-float
-CourseToAirspeedRefMapper::mapCourseSetpointToHeadingSetpoint(const float bearing_setpoint, const Vector2f &wind_vel,
-		float airspeed_sp) const
+దశాంశం
+కోర్సు_గమ్యం_Airspeed_Ref_Mapper::map_కోర్సు_Setpoint_గమ్యం_Heading_Setpoint(స్థిరరాశి దశాంశం bearing_setpoint, స్థిరరాశి Vector2f &wind_vel,
+		దశాంశం airspeed_sp) స్థిరరాశి
 {
-	const Vector2f bearing_vector = Vector2f{cosf(bearing_setpoint), sinf(bearing_setpoint)};
-	const float wind_cross_bearing = wind_vel.cross(bearing_vector);
-	const float wind_dot_bearing = wind_vel.dot(bearing_vector);
+	స్థిరరాశి Vector2f bearing_సదిశ = Vector2f{cosf(bearing_setpoint), sinf(bearing_setpoint)};
+	స్థిరరాశి దశాంశం wind_cross_bearing = wind_vel.cross(bearing_సదిశ);
+	స్థిరరాశి దశాంశం wind_dot_bearing = wind_vel.dot(bearing_సదిశ);
 
 	Vector2f air_vel_ref;
 
-	if (bearingIsFeasible(wind_cross_bearing, wind_dot_bearing, airspeed_sp, wind_vel.norm())) {
+	ఒకవేళ (bearingIsFeasible(wind_cross_bearing, wind_dot_bearing, airspeed_sp, wind_vel.norm())) {
 
-		const float airsp_dot_bearing = projectAirspOnBearing(airspeed_sp, wind_cross_bearing);
-		air_vel_ref = solveWindTriangle(wind_cross_bearing, airsp_dot_bearing, bearing_vector);
+		స్థిరరాశి దశాంశం airsp_dot_bearing = projectAirspOnBearing(airspeed_sp, wind_cross_bearing);
+		air_vel_ref = solveWindTriangle(wind_cross_bearing, airsp_dot_bearing, bearing_సదిశ);
 
-	} else {
-		air_vel_ref = infeasibleAirVelRef(wind_vel, bearing_vector, wind_vel.norm(), airspeed_sp);
+	} లేకపోతే {
+		air_vel_ref = infeasibleAirVelRef(wind_vel, bearing_సదిశ, wind_vel.norm(), airspeed_sp);
 	}
 
-	return atan2f(air_vel_ref(1), air_vel_ref(0));
+	తిరిగి atan2f(air_vel_ref(1), air_vel_ref(0));
 }
 
-float
-CourseToAirspeedRefMapper::getMinAirspeedForCurrentBearing(const float bearing_setpoint, const Vector2f &wind_vel,
-		float airspeed_max, float min_ground_speed) const
+దశాంశం
+కోర్సు_గమ్యం_Airspeed_Ref_Mapper::getMinAirspeedForCurrentBearing(స్థిరరాశి దశాంశం bearing_setpoint, స్థిరరాశి Vector2f &wind_vel,
+		దశాంశం airspeed_max, దశాంశం min_ground_వేగం) స్థిరరాశి
 {
-	const Vector2f bearing_vector = Vector2f{cosf(bearing_setpoint), sinf(bearing_setpoint)};
-	const float wind_cross_bearing = wind_vel.cross(bearing_vector);
-	const float wind_dot_bearing = wind_vel.dot(bearing_vector);
+	స్థిరరాశి Vector2f bearing_సదిశ = Vector2f{cosf(bearing_setpoint), sinf(bearing_setpoint)};
+	స్థిరరాశి దశాంశం wind_cross_bearing = wind_vel.cross(bearing_సదిశ);
+	స్థిరరాశి దశాంశం wind_dot_bearing = wind_vel.dot(bearing_సదిశ);
 
-	const bool wind_along_bearing_is_below_min_ground_speed = min_ground_speed > wind_dot_bearing;
+	స్థిరరాశి తార్కిక wind_along_bearing_is_క్రింద_min_ground_వేగం = min_ground_వేగం > wind_dot_bearing;
 
-	float airspeed_min = 0.f; // return 0 if no min airspeed is necessary
+	దశాంశం airspeed_min = 0.f; // return 0 if no min airspeed is necessary
 
-	if (wind_along_bearing_is_below_min_ground_speed) {
+	ఒకవేళ (wind_along_bearing_is_క్రింద_min_ground_వేగం) {
 		// airspeed required to achieve minimum ground speed along bearing vector (5.18)
-		airspeed_min = sqrtf((min_ground_speed - wind_dot_bearing) * (min_ground_speed - wind_dot_bearing) +
+		airspeed_min = sqrtf((min_ground_వేగం - wind_dot_bearing) * (min_ground_వేగం - wind_dot_bearing) +
 				     wind_cross_bearing * wind_cross_bearing);
 
 	}
 
-	return math::min(airspeed_min, airspeed_max);
+	తిరిగి math::min(airspeed_min, airspeed_max);
 }
 
-float CourseToAirspeedRefMapper::projectAirspOnBearing(const float airspeed_true, const float wind_cross_bearing) const
+దశాంశం కోర్సు_గమ్యం_Airspeed_Ref_Mapper::projectAirspOnBearing(స్థిరరాశి దశాంశం airspeed_true, స్థిరరాశి దశాంశం wind_cross_bearing) స్థిరరాశి
 {
 	// NOTE: wind_cross_bearing must be less than airspeed to use this function
 	// it is assumed that bearing feasibility is checked and found feasible (e.g. bearingIsFeasible() = true) prior to entering this method
 	// otherwise the return will be erroneous
 
 	// 3.5.8
-	return sqrtf(math::max(airspeed_true * airspeed_true - wind_cross_bearing * wind_cross_bearing, 0.0f));
+	తిరిగి sqrtf(math::max(airspeed_true * airspeed_true - wind_cross_bearing * wind_cross_bearing, 0.0f));
 }
 
-int CourseToAirspeedRefMapper::bearingIsFeasible(const float wind_cross_bearing, const float wind_dot_bearing,
-		const float airspeed, const float wind_speed) const
+పూర్ణాంకం కోర్సు_గమ్యం_Airspeed_Ref_Mapper::bearingIsFeasible(స్థిరరాశి దశాంశం wind_cross_bearing, స్థిరరాశి దశాంశం wind_dot_bearing,
+		స్థిరరాశి దశాంశం airspeed, స్థిరరాశి దశాంశం wind_వేగం) స్థిరరాశి
 {
-	return (fabsf(wind_cross_bearing) < airspeed) && ((wind_dot_bearing > 0.0f) || (wind_speed < airspeed));
+	తిరిగి (fabsf(wind_cross_bearing) < airspeed) && ((wind_dot_bearing > 0.0f) || (wind_వేగం < airspeed));
 }
 
-matrix::Vector2f
-CourseToAirspeedRefMapper::solveWindTriangle(const float wind_cross_bearing, const float airsp_dot_bearing,
-		const Vector2f &bearing_vec) const
+మాతృక::Vector2f
+కోర్సు_గమ్యం_Airspeed_Ref_Mapper::solveWindTriangle(స్థిరరాశి దశాంశం wind_cross_bearing, స్థిరరాశి దశాంశం airsp_dot_bearing,
+		స్థిరరాశి Vector2f &bearing_vec) స్థిరరాశి
 {
 	// essentially a 2D rotation with the speeds (magnitudes) baked in
-	return Vector2f{airsp_dot_bearing * bearing_vec(0) - wind_cross_bearing * bearing_vec(1),
+	తిరిగి Vector2f{airsp_dot_bearing * bearing_vec(0) - wind_cross_bearing * bearing_vec(1),
 			wind_cross_bearing * bearing_vec(0) + airsp_dot_bearing * bearing_vec(1)};
 }
 
-matrix::Vector2f CourseToAirspeedRefMapper::infeasibleAirVelRef(const Vector2f &wind_vel, const Vector2f &bearing_vec,
-		const float wind_speed, const float airspeed) const
+మాతృక::Vector2f కోర్సు_గమ్యం_Airspeed_Ref_Mapper::infeasibleAirVelRef(స్థిరరాశి Vector2f &wind_vel, స్థిరరాశి Vector2f &bearing_vec,
+		స్థిరరాశి దశాంశం wind_వేగం, స్థిరరాశి దశాంశం airspeed) స్థిరరాశి
 {
 	// NOTE: wind speed must be greater than airspeed, and airspeed must be greater than zero to use this function
 	// it is assumed that bearing feasibility is checked and found infeasible (e.g. bearingIsFeasible() = false) prior to entering this method
 	// otherwise the normalization of the air velocity vector could have a division by zero
-	Vector2f air_vel_ref = sqrtf(math::max(wind_speed * wind_speed - airspeed * airspeed, 0.0f)) * bearing_vec - wind_vel;
-	return air_vel_ref.normalized() * airspeed;
+	Vector2f air_vel_ref = sqrtf(math::max(wind_వేగం * wind_వేగం - airspeed * airspeed, 0.0f)) * bearing_vec - wind_vel;
+	తిరిగి air_vel_ref.normalized() * airspeed;
 }

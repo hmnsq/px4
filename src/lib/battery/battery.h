@@ -40,26 +40,26 @@
  * @author Timothy Scott <timothy@auterion.com>
  */
 
-#pragma once
+#సూచన once
 
-#include <math.h>
-#include <float.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <float.h>
 
-#include <board_config.h>
-#include <px4_platform_common/board_common.h>
-#include <px4_platform_common/module_params.h>
-#include <matrix/math.hpp>
+#అన్తర్భావ <board_config.h>
+#అన్తర్భావ <px4_platform_common/board_common.h>
+#అన్తర్భావ <px4_platform_common/module_params.h>
+#అన్తర్భావ <matrix/math.hpp>
 
-#include <drivers/drv_hrt.h>
-#include <lib/parameters/param.h>
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/battery_status.h>
-#include <uORB/topics/flight_phase_estimation.h>
-#include <uORB/topics/vehicle_status.h>
+#అన్తర్భావ <drivers/drv_hrt.h>
+#అన్తర్భావ <lib/parameters/param.h>
+#అన్తర్భావ <lib/mathlib/math/filter/AlphaFilter.hpp>
+#అన్తర్భావ <uORB/PublicationMulti.hpp>
+#అన్తర్భావ <uORB/Subscription.hpp>
+#అన్తర్భావ <uORB/topics/battery_status.h>
+#అన్తర్భావ <uORB/topics/flight_phase_estimation.h>
+#అన్తర్భావ <uORB/topics/vehicle_status.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#అన్తర్భావ <lib/failure_injection/FailureInjection.hpp>
 
 /**
  * BatteryBase is a base class for any type of battery.
@@ -67,52 +67,52 @@
  * You can use this class on its own. Or, if you need to implement a custom battery type,
  * you can inherit from this class. See, for example, src/modules/battery_status/AnalogBattery.h
  */
-class Battery : public ModuleParams
+class Battery : బహిరంగ ModuleParams
 {
-public:
-	Battery(int index, ModuleParams *parent, const int sample_interval_us, const uint8_t source);
-	~Battery() = default;
+బహిరంగ:
+	Battery(పూర్ణాంకం సూచీ, ModuleParams *మాతృ, స్థిరరాశి పూర్ణాంకం sample_interval_us, స్థిరరాశి uint8_t ఆధారం);
+	~Battery() = అప్రమేయ;
 
 	/**
 	 * Get the battery cell count
 	 */
-	int cell_count() { return _params.n_cells; }
+	పూర్ణాంకం cell_లెక్క() { తిరిగి _params.n_cells; }
 
 	/**
 	 * Get the empty voltage per cell
 	 */
-	float empty_cell_voltage() { return _params.v_empty; }
+	దశాంశం ఖాళీలు_cell_voltage() { తిరిగి _params.v_ఖాళీలు; }
 
 	/**
 	 * Get the full voltage per cell
 	 */
-	float full_cell_voltage() { return _params.v_charged; }
+	దశాంశం నిండిన_cell_voltage() { తిరిగి _params.v_charged; }
 
-	void setPriority(const uint8_t priority) { _priority = priority; }
-	void setConnected(const bool connected) { _connected = connected; }
-	void setStateOfCharge(const float soc) { _state_of_charge = math::constrain(soc, 0.f, 1.f); _external_state_of_charge = true; }
-	void setCapacityMah(const float capacity) { _capacity_mah = math::max(capacity, 0.f); }
-	void updateVoltage(const float voltage_v);
-	void updateCurrent(const float current_a);
-	void updateTemperature(const float temperature_c);
+	శూన్య సమితి_ప్రాధాన్యత(స్థిరరాశి uint8_t ప్రాధాన్యత) { ప్రాధాన్యత_2 = ప్రాధాన్యత; }
+	శూన్య సమితి_Connected(స్థిరరాశి bool connected) { _connected = connected; }
+	శూన్య సమితి_State_యొక్క_Charge(స్థిరరాశి దశాంశం soc) { state_యొక్క_charge = math::constrain(soc, 0.f, 1.f); external_state_యొక్క_charge = true; }
+	శూన్య సమితి_సామర్థ్యం_Mah(స్థిరరాశి దశాంశం సామర్థ్యం) { సామర్థ్యం_mah = math::max(సామర్థ్యం, 0.f); }
+	శూన్య updateVoltage(స్థిరరాశి దశాంశం voltage_v);
+	శూన్య updateCurrent(స్థిరరాశి దశాంశం current_a);
+	శూన్య updateTemperature(స్థిరరాశి దశాంశం temperature_c);
 
 	/**
 	 * Update state of charge calculations
 	 *
 	 * @param timestamp Time at which the battery data sample was measured
 	 */
-	void updateBatteryStatus(const hrt_abstime &timestamp);
+	శూన్య update_Battery_స్థితి(స్థిరరాశి hrt_abstime &timestamp);
 
-	battery_status_s getBatteryStatus();
-	float getCurrentAverage() const { return PX4_ISFINITE(_current_average_filter_a.getState()) ? _current_average_filter_a.getState() : -1.f; }
-	void publishBatteryStatus(const battery_status_s &battery_status);
+	battery_స్థితి_s get_Battery_స్థితి();
+	దశాంశం get_Current_సరాసరి() స్థిరరాశి { తిరిగి PX4_ISFINITE(current_సరాసరి_filter_a.getState()) ? current_సరాసరి_filter_a.getState() : -1.f; }
+	శూన్య publish_Battery_స్థితి(స్థిరరాశి battery_స్థితి_s &battery_స్థితి);
 
 	/**
 	 * Convenience function for combined update and publication
 	 * @see updateBatteryStatus()
 	 * @see publishBatteryStatus()
 	 */
-	void updateAndPublishBatteryStatus(const hrt_abstime &timestamp);
+	శూన్య update_And_Publish_Battery_స్థితి(స్థిరరాశి hrt_abstime &timestamp);
 
 	/**
 	 * Calculates how much time is left before the battery is depleted,
@@ -122,7 +122,7 @@ public:
 	 * @param current_a The current draw from the battery in amperes.
 	 * @return Estimated remaining time in seconds.
 	 */
-	float computeRemainingTime(float current_a);
+	దశాంశం compute_మిగిలిన_సమయం(దశాంశం current_a);
 
 	/**
 	 * Updates coulomb counting
@@ -131,104 +131,104 @@ public:
 	 * @param current_a Positive current draw in A
 	 * @return Accumulated used capacity in mAh
 	 */
-	float sumDischarged(float current_a);
-	uint8_t determineWarning(float state_of_charge);
-	void updateDt(const hrt_abstime &timestamp);
+	దశాంశం కూడిక_Discharged(దశాంశం current_a);
+	uint8_t determineWarning(దశాంశం state_యొక్క_charge_2);
+	శూన్య updateDt(స్థిరరాశి hrt_abstime &timestamp);
 
-protected:
-	static constexpr float LITHIUM_BATTERY_RECOGNITION_VOLTAGE = 2.1f;
+రక్షిత:
+	స్థిర constexpr దశాంశం LITHIUM_BATTERY_RECOGNITION_VOLTAGE = 2.1f;
 
-	struct {
-		param_t v_empty;
+	నిర్మాణం {
+		param_t v_ఖాళీలు;
 		param_t v_charged;
 		param_t n_cells;
-		param_t capacity;
-		param_t r_internal;
-		param_t low_thr;
+		param_t సామర్థ్యం;
+		param_t r_అంతర్గత;
+		param_t దిగువ_thr;
 		param_t crit_thr;
 		param_t emergen_thr;
-		param_t source;
+		param_t ఆధారం;
 		param_t bat_avrg_current;
 		param_t i_overwrite;
 	} _param_handles{};
 
-	struct {
-		float v_empty;
-		float v_charged;
+	నిర్మాణం {
+		దశాంశం v_ఖాళీలు;
+		దశాంశం v_charged;
 		int32_t  n_cells;
-		float r_internal;
-		float low_thr;
-		float crit_thr;
-		float emergen_thr;
-		int32_t source;
-		float bat_avrg_current;
-		float i_overwrite;
+		దశాంశం r_అంతర్గత;
+		దశాంశం దిగువ_thr;
+		దశాంశం crit_thr;
+		దశాంశం emergen_thr;
+		int32_t ఆధారం;
+		దశాంశం bat_avrg_current;
+		దశాంశం i_overwrite;
 	} _params{};
 
-	const int _index;
+	స్థిరరాశి పూర్ణాంకం సూచీ_2;
 
-	bool _first_parameter_update{true};
-	void updateParams() override;
+	bool మొదటి_parameter_update{true};
+	శూన్య updateParams() override;
 
-private:
-	float calculateStateOfChargeVoltageBased(const float voltage_v, const float current_a);
-	void estimateStateOfCharge();
-	uint16_t determineFaults();
-	void computeScale();
+అంతరంగ:
+	దశాంశం calculate_State_యొక్క_Charge_Voltage_Based(స్థిరరాశి దశాంశం voltage_v, స్థిరరాశి దశాంశం current_a);
+	శూన్య estimate_State_యొక్క_Charge();
+	uint16_t determine_దోషాలు();
+	శూన్య computeScale();
 
-	uORB::Subscription _vehicle_status_sub{ORB_ID(vehicle_status)};
-	uORB::SubscriptionData<flight_phase_estimation_s> _flight_phase_estimation_sub{ORB_ID(flight_phase_estimation)};
-	uORB::PublicationMulti<battery_status_s> _battery_status_pub{ORB_ID(battery_status)};
+	uORB::Subscription vehicle_స్థితి_sub{ORB_ID(vehicle_స్థితి)};
+	uORB::Subscription_దత్తాంశం<flight_phase_estimation_s> _flight_phase_estimation_sub{ORB_ID(flight_phase_estimation)};
+	uORB::PublicationMulti<battery_స్థితి_s> battery_స్థితి_pub{ORB_ID(battery_స్థితి)};
 
 	failure_injection::Config _failure_config;
 
-	bool _external_state_of_charge{false}; ///< inticates that the soc is injected and not updated by this library
+	bool external_state_యొక్క_charge{false}; ///< inticates that the soc is injected and not updated by this library
 
 	bool _connected{false};
-	const uint8_t _source;
-	uint8_t _priority{0};
+	స్థిరరాశి uint8_t ఆధారం_2;
+	uint8_t ప్రాధాన్యత_2{0};
 	bool _battery_initialized{false};
-	float _voltage_v{0.f};
-	AlphaFilter<float> _ocv_filter_v;
-	AlphaFilter<float> _cell_voltage_filter_v;
-	float _current_a{-1};
-	AlphaFilter<float>
-	_current_average_filter_a; ///< averaging filter for current. For FW, it is the current in level flight.
-	float _temperature_c{NAN};
-	float _discharged_mah{0.f};
-	float _discharged_mah_loop{0.f};
-	float _state_of_charge_volt_based{-1.f}; // [0,1]
-	float _state_of_charge{-1.f}; // [0,1]
-	float _scale{1.f};
-	uint8_t _warning{battery_status_s::WARNING_NONE};
-	float _dt{0.f};
-	float _dt_discharge{0.f}; // unclamped dt, used for the discharged_mah coulomb count
-	float _capacity_mah{0.f};
-	hrt_abstime _last_timestamp{0};
+	దశాంశం _voltage_v{0.f};
+	AlphaFilter<దశాంశం> _ocv_filter_v;
+	AlphaFilter<దశాంశం> _cell_voltage_filter_v;
+	దశాంశం _current_a{-1};
+	AlphaFilter<దశాంశం>
+	current_సరాసరి_filter_a; ///< averaging filter for current. For FW, it is the current in level flight.
+	దశాంశం _temperature_c{NAN};
+	దశాంశం _discharged_mah{0.f};
+	దశాంశం _discharged_mah_loop{0.f};
+	దశాంశం state_యొక్క_charge_volt_based{-1.f}; // [0,1]
+	దశాంశం state_యొక్క_charge{-1.f}; // [0,1]
+	దశాంశం _scale{1.f};
+	uint8_t _warning{battery_స్థితి_s::WARNING_NONE};
+	దశాంశం _dt{0.f};
+	దశాంశం _dt_discharge{0.f}; // unclamped dt, used for the discharged_mah coulomb count
+	దశాంశం సామర్థ్యం_mah{0.f};
+	hrt_abstime చివరి_timestamp{0};
 	bool _armed{false};
-	bool _vehicle_status_is_fw{false};
-	bool _vehicle_status_was_fw{false};
-	hrt_abstime _last_unconnected_timestamp{0};
+	bool vehicle_స్థితి_is_fw{false};
+	bool vehicle_స్థితి_was_fw{false};
+	hrt_abstime చివరి_unconnected_timestamp{0};
 
 	// Internal Resistance estimation
-	void updateInternalResistanceEstimation(const float voltage_v, const float current_a);
-	void resetInternalResistanceEstimation(const float voltage_v, const float current_a);
-	matrix::Vector2f _RLS_est; // [Open circuit voltage estimate [V], Total internal resistance estimate [Ohm]]^T
-	matrix::Matrix2f _estimation_covariance;
-	bool _internal_resistance_initialized{false};
-	float _estimation_covariance_norm{0.f};
-	float _internal_resistance_estimate{0.005f}; // [Ohm] Per cell estimate of the internal resistance
-	float _voltage_prediction{0.f}; // [V] Predicted voltage of the estimator
-	float _prediction_error{0.f}; // [V] Error between the predicted and measured voltage
-	static constexpr float LAMBDA = 0.95f; 	// [0, 1] Forgetting factor (Tuning parameter for the RLS algorithm)
-	static constexpr float R_DEFAULT = 0.005f; // [Ohm] Initial per cell estimate of the internal resistance
-	static constexpr float OCV_DEFAULT = 4.2f; // [V] Initial per cell estimate of the open circuit voltage
-	static constexpr float R_COVARIANCE = 0.1f; // Initial per cell covariance of the internal resistance
-	static constexpr float OCV_COVARIANCE = 1.5f; // Initial per cell covariance of the open circuit voltage
+	శూన్య update_అంతర్గత_Resistance_Estimation(స్థిరరాశి దశాంశం voltage_v, స్థిరరాశి దశాంశం current_a);
+	శూన్య reset_అంతర్గత_Resistance_Estimation(స్థిరరాశి దశాంశం voltage_v, స్థిరరాశి దశాంశం current_a);
+	మాతృక::Vector2f _RLS_est; // [Open circuit voltage estimate [V], Total internal resistance estimate [Ohm]]^T
+	మాతృక::Matrix2f _estimation_covariance;
+	bool అంతర్గత_resistance_initialized{false};
+	దశాంశం _estimation_covariance_norm{0.f};
+	దశాంశం అంతర్గత_resistance_estimate_2{0.005f}; // [Ohm] Per cell estimate of the internal resistance
+	దశాంశం _voltage_prediction{0.f}; // [V] Predicted voltage of the estimator
+	దశాంశం _prediction_error{0.f}; // [V] Error between the predicted and measured voltage
+	స్థిర constexpr దశాంశం LAMBDA = 0.95f; 	// [0, 1] Forgetting factor (Tuning parameter for the RLS algorithm)
+	స్థిర constexpr దశాంశం R_DEFAULT = 0.005f; // [Ohm] Initial per cell estimate of the internal resistance
+	స్థిర constexpr దశాంశం OCV_DEFAULT = 4.2f; // [V] Initial per cell estimate of the open circuit voltage
+	స్థిర constexpr దశాంశం R_COVARIANCE = 0.1f; // Initial per cell covariance of the internal resistance
+	స్థిర constexpr దశాంశం OCV_COVARIANCE = 1.5f; // Initial per cell covariance of the open circuit voltage
 
 	// Temperature [degC] above which an overtemperature fault is declared,
 	// leading to a failsafe warning recommending immediate landing. Note
 	// that depending on the setup this may be measured in/close to the
 	// battery (smart battery) or from a separate power monitor module.
-	static constexpr float BAT_TEMP_MAX = 100.0f;
+	స్థిర constexpr దశాంశం BAT_తాత్కాలిక_MAX = 100.0f;
 };

@@ -32,326 +32,326 @@
  *
  ****************************************************************************/
 
-#include "cdev_platform.hpp"
+#అన్తర్భావ "cdev_platform.hpp"
 
-#include "../CDev.hpp"
+#అన్తర్భావ "../CDev.hpp"
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/time.h>
+#అన్తర్భావ <px4_platform_common/log.h>
+#అన్తర్భావ <px4_platform_common/posix.h>
+#అన్తర్భావ <px4_platform_common/time.h>
 
-#include <stdlib.h>
+#అన్తర్భావ <stdlib.h>
 
-static const cdev::px4_file_operations_t g_fops = {};
-const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { return g_fops; }
+స్థిర స్థిరరాశి cdev::px4_file_operations_t g_fops = {};
+స్థిరరాశి cdev::px4_file_operations_t &cdev::CDev::fops_ref() { తిరిగి g_fops; }
 
 pthread_mutex_t devmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t filemutex = PTHREAD_MUTEX_INITIALIZER;
 
-struct px4_dev_t {
-	char *name{nullptr};
-	cdev::CDev *cdev{nullptr};
+నిర్మాణం px4_dev_t {
+	అక్షరం *name{శూన్యసూచిక};
+	cdev::CDev *cdev{శూన్యసూచిక};
 
-	px4_dev_t(const char *n, cdev::CDev *c) : cdev(c)
+	px4_dev_t(స్థిరరాశి అక్షరం *n, cdev::CDev *c) : cdev(c)
 	{
 		name = strdup(n);
 	}
 
 	~px4_dev_t()
 	{
-		free(name);
+		విడుదల(name);
 	}
-private:
-	px4_dev_t() = default;
+అంతరంగ:
+	px4_dev_t() = అప్రమేయ;
 };
 
-#define PX4_MAX_FD 512
-static px4_dev_t *devmap[PX4_MAX_FD] {};
-static cdev::file_t filemap[PX4_MAX_FD] {};
+#నిర్వచించు PX4_MAX_FD 512
+స్థిర px4_dev_t *devmap[PX4_MAX_FD] {};
+స్థిర cdev::file_t filemap[PX4_MAX_FD] {};
 
-class VFile : public cdev::CDev
+తరగతి VFile : బహిరంగ cdev::CDev
 {
-public:
-	VFile(const char *fname, mode_t mode) : cdev::CDev(fname) {}
-	~VFile() override = default;
+బహిరంగ:
+	VFile(స్థిరరాశి అక్షరం *fname, mode_t బహుళకం) : cdev::CDev(fname) {}
+	~VFile() override = అప్రమేయ;
 
-	ssize_t write(cdev::file_t *handlep, const char *buffer, size_t buflen) override
+	ssize_t లిఖ(cdev::file_t *handlep, స్థిరరాశి అక్షరం *బఫరు_2, size_t buflen) override
 	{
 		// ignore what was written, but let pollers know something was written
 		poll_notify(POLLIN);
-		return buflen;
+		తిరిగి buflen;
 	}
 };
 
-static cdev::CDev *getDev(const char *path)
+స్థిర cdev::CDev *getDev(స్థిరరాశి అక్షరం *మార్గం)
 {
 	pthread_mutex_lock(&devmutex);
 
-	for (const auto &dev : devmap) {
-		if (dev && (strcmp(dev->name, path) == 0)) {
+	కొరకు (స్థిరరాశి స్వయంచాలక &dev : devmap) {
+		ఒకవేళ (dev && (strcmp(dev->name, మార్గం) == 0)) {
 			pthread_mutex_unlock(&devmutex);
-			return dev->cdev;
+			తిరిగి dev->cdev;
 		}
 	}
 
 	pthread_mutex_unlock(&devmutex);
 
-	return nullptr;
+	తిరిగి శూన్యసూచిక;
 }
 
-static cdev::CDev *getFile(int fd)
+స్థిర cdev::CDev *getFile(పూర్ణాంకం fd)
 {
 	pthread_mutex_lock(&filemutex);
-	cdev::CDev *dev = nullptr;
+	cdev::CDev *dev = శూన్యసూచిక;
 
-	if (fd < PX4_MAX_FD && fd >= 0) {
+	ఒకవేళ (fd < PX4_MAX_FD && fd >= 0) {
 		dev = filemap[fd].cdev;
 	}
 
 	pthread_mutex_unlock(&filemutex);
-	return dev;
+	తిరిగి dev;
 }
 
-extern "C" {
+బాహ్య "C" {
 
-	int register_driver(const char *name, const cdev::px4_file_operations_t *fops, cdev::mode_t mode, void *data)
+	పూర్ణాంకం రిజిస్టరు_driver(స్థిరరాశి అక్షరం *name, స్థిరరాశి cdev::px4_file_operations_t *fops, cdev::mode_t బహుళకం, శూన్య *దత్తాంశం)
 	{
 		PX4_DEBUG("CDev::register_driver %s", name);
-		int ret = -ENOSPC;
+		పూర్ణాంకం ret = -ENOSPC;
 
-		if (name == nullptr || data == nullptr) {
-			return -EINVAL;
+		ఒకవేళ (name == శూన్యసూచిక || దత్తాంశం == శూన్యసూచిక) {
+			తిరిగి -EINVAL;
 		}
 
 		pthread_mutex_lock(&devmutex);
 
 		// Make sure the device does not already exist
-		for (const auto &dev : devmap) {
-			if (dev && (strcmp(dev->name, name) == 0)) {
+		కొరకు (స్థిరరాశి స్వయంచాలక &dev : devmap) {
+			ఒకవేళ (dev && (strcmp(dev->name, name) == 0)) {
 				pthread_mutex_unlock(&devmutex);
-				return -EEXIST;
+				తిరిగి -EEXIST;
 			}
 		}
 
-		for (auto &dev : devmap) {
-			if (dev == nullptr) {
-				dev = new px4_dev_t(name, (cdev::CDev *)data);
+		కొరకు (స్వయంచాలక &dev : devmap) {
+			ఒకవేళ (dev == శూన్యసూచిక) {
+				dev = కొత్త px4_dev_t(name, (cdev::CDev *)దత్తాంశం);
 				PX4_DEBUG("Registered DEV %s", name);
 				ret = PX4_OK;
-				break;
+				ఆపు;
 			}
 		}
 
 		pthread_mutex_unlock(&devmutex);
 
-		if (ret != PX4_OK) {
+		ఒకవేళ (ret != PX4_OK) {
 			PX4_ERR("No free devmap entries - increase devmap size");
 		}
 
-		return ret;
+		తిరిగి ret;
 	}
 
-	int unregister_driver(const char *name)
+	పూర్ణాంకం unregister_driver(స్థిరరాశి అక్షరం *name)
 	{
 		PX4_DEBUG("CDev::unregister_driver %s", name);
-		int ret = -EINVAL;
+		పూర్ణాంకం ret = -EINVAL;
 
-		if (name == nullptr) {
-			return -EINVAL;
+		ఒకవేళ (name == శూన్యసూచిక) {
+			తిరిగి -EINVAL;
 		}
 
 		pthread_mutex_lock(&devmutex);
 
-		for (auto &dev : devmap) {
-			if (dev && (strcmp(name, dev->name) == 0)) {
-				delete dev;
-				dev = nullptr;
+		కొరకు (స్వయంచాలక &dev : devmap) {
+			ఒకవేళ (dev && (strcmp(name, dev->name) == 0)) {
+				తొలగించు dev;
+				dev = శూన్యసూచిక;
 				PX4_DEBUG("Unregistered DEV %s", name);
 				ret = PX4_OK;
-				break;
+				ఆపు;
 			}
 		}
 
 		pthread_mutex_unlock(&devmutex);
 
-		return ret;
+		తిరిగి ret;
 	}
 
-	int px4_open(const char *path, int flags, ...)
+	పూర్ణాంకం px4_open(స్థిరరాశి అక్షరం *మార్గం, పూర్ణాంకం flags, ...)
 	{
 		PX4_DEBUG("px4_open");
-		cdev::CDev *dev = getDev(path);
-		int ret = 0;
-		int i;
-		mode_t mode;
+		cdev::CDev *dev = getDev(మార్గం);
+		పూర్ణాంకం ret = 0;
+		పూర్ణాంకం i;
+		mode_t బహుళకం;
 
-		if (!dev && (flags & PX4_F_WRONLY) != 0 &&
-		    strncmp(path, "/obj/", 5) != 0 &&
-		    strncmp(path, "/dev/", 5) != 0) {
+		ఒకవేళ (!dev && (flags & PX4_F_WRONLY) != 0 &&
+		    అక్షరశ్రేణి_పోలిక(మార్గం, "/obj/", 5) != 0 &&
+		    అక్షరశ్రేణి_పోలిక(మార్గం, "/dev/", 5) != 0) {
 			va_list p;
-			va_start(p, flags);
-			mode = va_arg(p, int);
-			va_end(p);
+			va_ప్రారంభం(p, flags);
+			బహుళకం = va_arg(p, పూర్ణాంకం);
+			va_చివర(p);
 
 			// Create the file
-			PX4_DEBUG("Creating virtual file %s", path);
-			dev = new VFile(path, mode);
-			register_driver(path, nullptr, 0666, (void *)dev);
+			PX4_DEBUG("Creating virtual file %s", మార్గం);
+			dev = కొత్త VFile(మార్గం, బహుళకం);
+			రిజిస్టరు_driver(మార్గం, శూన్యసూచిక, 0666, (శూన్య *)dev);
 		}
 
-		if (dev) {
+		ఒకవేళ (dev) {
 			pthread_mutex_lock(&filemutex);
 
-			for (i = 0; i < PX4_MAX_FD; ++i) {
-				if (filemap[i].cdev == nullptr) {
+			కొరకు (i = 0; i < PX4_MAX_FD; ++i) {
+				ఒకవేళ (filemap[i].cdev == శూన్యసూచిక) {
 					filemap[i] = cdev::file_t(flags, dev);
-					break;
+					ఆపు;
 				}
 			}
 
 			pthread_mutex_unlock(&filemutex);
 
-			if (i < PX4_MAX_FD) {
+			ఒకవేళ (i < PX4_MAX_FD) {
 				ret = dev->open(&filemap[i]);
 
-			} else {
+			} లేకపోతే {
 
-				const unsigned NAMELEN = 32;
-				char thread_name[NAMELEN] {};
+				స్థిరరాశి గుర్తులేని NAMELEN = 32;
+				అక్షరం thread_name[NAMELEN] {};
 
-				PX4_WARN("%s: exceeded maximum number of file descriptors, accessing %s", thread_name, path);
-#ifndef __PX4_QURT
-				int nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
+				PX4_WARN("%s: exceeded maximum number of file descriptors, accessing %s", thread_name, మార్గం);
+#నిర్వచితం_కాకపోతే __PX4_QURT
+				పూర్ణాంకం nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
 
-				if (nret || thread_name[0] == 0) {
+				ఒకవేళ (nret || thread_name[0] == 0) {
 					PX4_WARN("failed getting thread name");
 				}
 
-#endif
+#అయితే_ముగింపు
 
 				ret = -ENOENT;
 			}
 
-		} else {
+		} లేకపోతే {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		ఒకవేళ (ret < 0) {
 			errno = -ret;
-			return -1;
+			తిరిగి -1;
 		}
 
 		PX4_DEBUG("px4_open fd = %d", i);
-		return i;
+		తిరిగి i;
 	}
 
-	int px4_close(int fd)
+	పూర్ణాంకం px4_close(పూర్ణాంకం fd)
 	{
-		int ret;
+		పూర్ణాంకం ret;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		ఒకవేళ (dev) {
 			pthread_mutex_lock(&filemutex);
 			ret = dev->close(&filemap[fd]);
 
-			filemap[fd].cdev = nullptr;
+			filemap[fd].cdev = శూన్యసూచిక;
 
 			pthread_mutex_unlock(&filemutex);
 			PX4_DEBUG("px4_close fd = %d", fd);
 
-		} else {
+		} లేకపోతే {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		ఒకవేళ (ret < 0) {
 			ret = PX4_ERROR;
 		}
 
-		return ret;
+		తిరిగి ret;
 	}
 
-	ssize_t px4_read(int fd, void *buffer, size_t buflen)
+	ssize_t px4_read(పూర్ణాంకం fd, శూన్య *బఫరు_2, size_t buflen)
 	{
-		int ret;
+		పూర్ణాంకం ret;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		ఒకవేళ (dev) {
 			PX4_DEBUG("px4_read fd = %d", fd);
-			ret = dev->read(&filemap[fd], (char *)buffer, buflen);
+			ret = dev->పఠ(&filemap[fd], (అక్షరం *)బఫరు_2, buflen);
 
-		} else {
+		} లేకపోతే {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		ఒకవేళ (ret < 0) {
 			ret = PX4_ERROR;
 		}
 
-		return ret;
+		తిరిగి ret;
 	}
 
-	ssize_t px4_write(int fd, const void *buffer, size_t buflen)
+	ssize_t px4_write(పూర్ణాంకం fd, స్థిరరాశి శూన్య *బఫరు_2, size_t buflen)
 	{
-		int ret;
+		పూర్ణాంకం ret;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		ఒకవేళ (dev) {
 			PX4_DEBUG("px4_write fd = %d", fd);
-			ret = dev->write(&filemap[fd], (const char *)buffer, buflen);
+			ret = dev->లిఖ(&filemap[fd], (స్థిరరాశి అక్షరం *)బఫరు_2, buflen);
 
-		} else {
+		} లేకపోతే {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		ఒకవేళ (ret < 0) {
 			ret = PX4_ERROR;
 		}
 
-		return ret;
+		తిరిగి ret;
 	}
 
-	int px4_ioctl(int fd, int cmd, unsigned long arg)
+	పూర్ణాంకం px4_ioctl(పూర్ణాంకం fd, పూర్ణాంకం cmd, గుర్తులేని దీర్ఘ arg)
 	{
 		PX4_DEBUG("px4_ioctl fd = %d", fd);
-		int ret = 0;
+		పూర్ణాంకం ret = 0;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		ఒకవేళ (dev) {
 			ret = dev->ioctl(&filemap[fd], cmd, arg);
 
-		} else {
+		} లేకపోతే {
 			ret = -EINVAL;
 		}
 
-		return ret;
+		తిరిగి ret;
 	}
 
-	int px4_poll(px4_pollfd_struct_t *fds, unsigned int nfds, int timeout)
+	పూర్ణాంకం px4_poll(px4_pollfd_struct_t *fds, గుర్తులేని పూర్ణాంకం nfds, పూర్ణాంకం timeout)
 	{
-		if (nfds == 0) {
+		ఒకవేళ (nfds == 0) {
 			PX4_WARN("px4_poll with no fds");
-			return -1;
+			తిరిగి -1;
 		}
 
 		px4_sem_t sem;
-		int count = 0;
-		int ret = -1;
+		పూర్ణాంకం లెక్క = 0;
+		పూర్ణాంకం ret = -1;
 
-		const unsigned NAMELEN = 32;
-		char thread_name[NAMELEN] {};
+		స్థిరరాశి గుర్తులేని NAMELEN = 32;
+		అక్షరం thread_name[NAMELEN] {};
 
-#ifndef __PX4_QURT
-		int nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
+#నిర్వచితం_కాకపోతే __PX4_QURT
+		పూర్ణాంకం nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
 
-		if (nret || thread_name[0] == 0) {
+		ఒకవేళ (nret || thread_name[0] == 0) {
 			PX4_WARN("failed getting thread name");
 		}
 
-#endif
+#అయితే_ముగింపు
 
 		PX4_DEBUG("Called px4_poll timeout = %d", timeout);
 
@@ -361,51 +361,51 @@ extern "C" {
 		px4_sem_setprotocol(&sem, SEM_PRIO_NONE);
 
 		// Go through all fds and check them for a pollable state
-		bool fd_pollable = false;
+		తార్కిక fd_pollable = అబద్ధం;
 
-		for (unsigned int i = 0; i < nfds; ++i) {
+		కొరకు (గుర్తులేని పూర్ణాంకం i = 0; i < nfds; ++i) {
 			fds[i].sem     = &sem;
 			fds[i].revents = 0;
-			fds[i].priv    = nullptr;
+			fds[i].priv    = శూన్యసూచిక;
 
 			cdev::CDev *dev = getFile(fds[i].fd);
 
 			// If fd is valid
-			if (dev) {
+			ఒకవేళ (dev) {
 				PX4_DEBUG("%s: px4_poll: CDev->poll(setup) %d", thread_name, fds[i].fd);
-				ret = dev->poll(&filemap[fds[i].fd], &fds[i], true);
+				ret = dev->poll(&filemap[fds[i].fd], &fds[i], నిజం);
 
-				if (ret < 0) {
+				ఒకవేళ (ret < 0) {
 					PX4_WARN("%s: px4_poll() error: %s", thread_name, strerror(errno));
-					break;
+					ఆపు;
 				}
 
-				if (ret >= 0) {
-					fd_pollable = true;
+				ఒకవేళ (ret >= 0) {
+					fd_pollable = నిజం;
 				}
 			}
 		}
 
 		// If any FD can be polled, lock the semaphore and
 		// check for new data
-		if (fd_pollable) {
-			if (timeout > 0) {
+		ఒకవేళ (fd_pollable) {
+			ఒకవేళ (timeout > 0) {
 				// Get the current time
-				struct timespec ts;
-#if defined(__PX4_DARWIN) && !defined(ENABLE_LOCKSTEP_SCHEDULER)
+				నిర్మాణం timespec ts;
+#ఒకవేళ defined(__PX4_DARWIN) && !defined(ENABLE_LOCKSTEP_SCHEDULER)
 				// macOS has no pthread_condattr_setclock(), so px4_sem_t's condition
 				// variable waits on CLOCK_REALTIME (px4_sem_init()). Use that clock here
 				// too. CLOCK_MONOTONIC counts from boot, so the deadline would land
 				// decades in the past and px4_sem_timedwait() would return immediately.
 				px4_clock_gettime(CLOCK_REALTIME, &ts);
-#else
+#లేకపోతే
 				// Note, we can't actually use CLOCK_MONOTONIC on macOS
 				// but that's hidden and implemented in px4_clock_gettime.
 				px4_clock_gettime(CLOCK_MONOTONIC, &ts);
-#endif
+#అయితే_ముగింపు
 
 				// Calculate an absolute time in the future
-				const unsigned billion = (1000 * 1000 * 1000);
+				స్థిరరాశి గుర్తులేని billion = (1000 * 1000 * 1000);
 				uint64_t nsecs = ts.tv_nsec + ((uint64_t)timeout * 1000 * 1000);
 				ts.tv_sec += nsecs / billion;
 				nsecs -= (nsecs / billion) * billion;
@@ -413,32 +413,32 @@ extern "C" {
 
 				ret = px4_sem_timedwait(&sem, &ts);
 
-				if (ret && errno != ETIMEDOUT) {
+				ఒకవేళ (ret && errno != ETIMEDOUT) {
 					PX4_WARN("%s: px4_poll() sem error: %s", thread_name, strerror(errno));
 				}
 
-			} else if (timeout < 0) {
+			} లేకపోతే ఒకవేళ (timeout < 0) {
 				px4_sem_wait(&sem);
 			}
 
 			// We have waited now (or not, depending on timeout),
 			// go through all fds and count how many have data
-			for (unsigned int i = 0; i < nfds; ++i) {
+			కొరకు (గుర్తులేని పూర్ణాంకం i = 0; i < nfds; ++i) {
 
 				cdev::CDev *dev = getFile(fds[i].fd);
 
 				// If fd is valid
-				if (dev) {
+				ఒకవేళ (dev) {
 					PX4_DEBUG("%s: px4_poll: CDev->poll(teardown) %d", thread_name, fds[i].fd);
-					ret = dev->poll(&filemap[fds[i].fd], &fds[i], false);
+					ret = dev->poll(&filemap[fds[i].fd], &fds[i], అబద్ధం);
 
-					if (ret < 0) {
+					ఒకవేళ (ret < 0) {
 						PX4_WARN("%s: px4_poll() 2nd poll fail", thread_name);
-						break;
+						ఆపు;
 					}
 
-					if (fds[i].revents) {
-						count += 1;
+					ఒకవేళ (fds[i].revents) {
+						లెక్క += 1;
 					}
 				}
 			}
@@ -448,28 +448,28 @@ extern "C" {
 
 		// Return the positive count if present,
 		// return the negative error number if failed
-		return (count) ? count : ret;
+		తిరిగి (లెక్క) ? లెక్క : ret;
 	}
 
-	int px4_access(const char *pathname, int mode)
+	పూర్ణాంకం px4_access(స్థిరరాశి అక్షరం *pathname, పూర్ణాంకం బహుళకం)
 	{
-		if (mode != F_OK) {
+		ఒకవేళ (బహుళకం != F_OK) {
 			errno = EINVAL;
-			return -1;
+			తిరిగి -1;
 		}
 
 		cdev::CDev *dev = getDev(pathname);
-		return (dev != nullptr) ? 0 : -1;
+		తిరిగి (dev != శూన్యసూచిక) ? 0 : -1;
 	}
 
-	void px4_show_files()
+	శూన్య px4_show_files()
 	{
 		PX4_INFO("Files:");
 
 		pthread_mutex_lock(&devmutex);
 
-		for (const auto &dev : devmap) {
-			if (dev) {
+		కొరకు (స్థిరరాశి స్వయంచాలక &dev : devmap) {
+			ఒకవేళ (dev) {
 				PX4_INFO_RAW("   %s\n", dev->name);
 			}
 		}

@@ -37,52 +37,52 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <time.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <mathlib/math/test/test.hpp>
+#అన్తర్భావ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
 
 /**
  * A proportional-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPD: public SuperBlock
+తరగతి __EXPORT ఖండం_PD: బహిరంగ Super_ఖండం
 {
-public:
+బహిరంగ:
 // methods
-	BlockPD(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kD(this, "D")
+	ఖండం_PD(Super_ఖండం *మాతృ, స్థిరరాశి అక్షరం *name) :
+		Super_ఖండం(మాతృ, name),
+		_derivative(ఇది, "D"),
+		_kP(ఇది, "P"),
+		_kD(ఇది, "D")
 	{}
-	virtual ~BlockPD() = default;
-	float update(float input)
+	మాయా ~ఖండం_PD() = అప్రమేయ;
+	దశాంశం update(దశాంశం ఆదానం)
 	{
-		return getKP() * input +
-		       getKD() * getDerivative().update(input);
+		తిరిగి getKP() * ఆదానం +
+		       getKD() * getDerivative().update(ఆదానం);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKD() { return _kD.get(); }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
-	BlockDerivative _derivative;
-	control::BlockParamFloat _kP;
-	control::BlockParamFloat _kD;
+	దశాంశం getKP() { తిరిగి _kP.get(); }
+	దశాంశం getKD() { తిరిగి _kD.get(); }
+	ఖండం_Derivative &getDerivative() { తిరిగి _derivative; }
+అంతరంగ:
+	ఖండం_Derivative _derivative;
+	control::ఖండం_Param_Float _kP;
+	control::ఖండం_Param_Float _kD;
 };
 
 } // namespace control

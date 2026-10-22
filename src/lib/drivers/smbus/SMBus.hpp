@@ -39,18 +39,18 @@
  * @author Bazooka Joe <BazookaJoe1900@gmail.com>
  */
 
-#include <drivers/device/i2c.h>
-#include <perf/perf_counter.h>
-#include <string.h>
+#అన్తర్భావ <drivers/device/i2c.h>
+#అన్తర్భావ <perf/perf_counter.h>
+#అన్తర్భావ <string.h>
 
-#define SMBUS_PEC_POLYNOMIAL	0x07	///< Polynomial for calculating PEC
+#నిర్వచించు SMBUS_PEC_POLYNOMIAL	0x07	///< Polynomial for calculating PEC
 
-class SMBus : public device::I2C
+తరగతి SMBus : బహిరంగ device::I2C
 {
-public:
-	static constexpr uint8_t MAX_BLOCK_LEN = 34;
+బహిరంగ:
+	స్థిర constexpr uint8_t MAX_ఖండం_LEN = 34;
 
-	SMBus(uint8_t device_id, int bus_num, uint16_t address);
+	SMBus(uint8_t device_id, పూర్ణాంకం bus_అంకె, uint16_t చిరునామా);
 	~SMBus() override;
 
 	/**
@@ -60,7 +60,7 @@ public:
 	 * @param length The number of bytes being written. Maximum is SMBus::MAX_BLOCK_LEN.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	int block_write(const uint8_t cmd_code, const void *data, uint8_t byte_count, const bool use_pec);
+	పూర్ణాంకం ఖండం_write(స్థిరరాశి uint8_t cmd_సంకేతం, స్థిరరాశి శూన్య *దత్తాంశం, uint8_t byte_లెక్క, స్థిరరాశి తార్కిక use_pec);
 
 	/**
 	 * @brief Sends a block read command.
@@ -69,7 +69,7 @@ public:
 	 * @param length The number of bytes being read. Maximum is SMBus::MAX_BLOCK_LEN.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	int block_read(const uint8_t cmd_code, void *data, const uint8_t length, const bool use_pec);
+	పూర్ణాంకం ఖండం_read(స్థిరరాశి uint8_t cmd_సంకేతం, శూన్య *దత్తాంశం, స్థిరరాశి uint8_t నిడివి, స్థిరరాశి తార్కిక use_pec);
 
 	/**
 	 * @brief Sends a read word command.
@@ -77,7 +77,7 @@ public:
 	 * @param data The 2 bytes of returned data plus a 1 byte CRC if used.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	int read_word(const uint8_t cmd_code, uint16_t &data);
+	పూర్ణాంకం read_మాట(స్థిరరాశి uint8_t cmd_సంకేతం, uint16_t &దత్తాంశం);
 
 	/**
 	 * @brief Sends a write word command.
@@ -85,7 +85,7 @@ public:
 	 * @param data The 2 bytes of data to be transfered.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	int write_word(const uint8_t cmd_code, uint16_t data);
+	పూర్ణాంకం write_మాట(స్థిరరాశి uint8_t cmd_సంకేతం, uint16_t దత్తాంశం);
 
 	/**
 	 * @brief Calculates the PEC from the data.
@@ -93,8 +93,8 @@ public:
 	 * @param length The number of bytes being written.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	uint8_t get_pec(uint8_t *buffer, uint8_t length);
+	uint8_t get_pec(uint8_t *బఫరు_2, uint8_t నిడివి);
 
-	perf_counter_t _interface_errors{perf_alloc(PC_COUNT, MODULE_NAME": errors")};
+	perf_counter_t _interface_errors{perf_alloc(PC_లెక్క, MODULE_NAME": errors")};
 
 };

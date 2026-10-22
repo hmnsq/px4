@@ -39,14 +39,14 @@
 *
 */
 
-#pragma once
+#సూచన once
 
 // Return magnetic declination in degrees
-float get_mag_declination_degrees(float latitude_deg, float longitude_deg);
+దశాంశం get_mag_declination_degrees(దశాంశం latitude_deg, దశాంశం longitude_deg);
 
 // Return magnetic field inclination in degrees
-float get_mag_inclination_degrees(float latitude_deg, float longitude_deg);
+దశాంశం get_mag_inclination_degrees(దశాంశం latitude_deg, దశాంశం longitude_deg);
 
 // return magnetic field strength in Gauss or Tesla
-float get_mag_strength_gauss(float latitude_deg, float longitude_deg);
-float get_mag_strength_tesla(float latitude_deg, float longitude_deg);
+దశాంశం get_mag_strength_gauss(దశాంశం latitude_deg, దశాంశం longitude_deg);
+దశాంశం get_mag_strength_tesla(దశాంశం latitude_deg, దశాంశం longitude_deg);

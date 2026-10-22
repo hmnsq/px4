@@ -30,97 +30,97 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#pragma once
+#సూచన once
 
-#include <stdint.h>
-#include <drivers/device/i2c.h>
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <uORB/topics/gpio_config.h>
-#include <uORB/topics/gpio_in.h>
-#include <uORB/topics/gpio_out.h>
-#include <uORB/PublicationMulti.hpp>
-#include <lib/perf/perf_counter.h>
-#include <drivers/drv_hrt.h>
-#include <px4_platform/gpio/mcp.hpp>
-#include <px4_platform_common/module.h>
+#అన్తర్భావ <stdint.h>
+#అన్తర్భావ <drivers/device/i2c.h>
+#అన్తర్భావ <px4_platform_common/i2c_spi_buses.h>
+#అన్తర్భావ <uORB/topics/gpio_config.h>
+#అన్తర్భావ <uORB/topics/gpio_in.h>
+#అన్తర్భావ <uORB/topics/gpio_out.h>
+#అన్తర్భావ <uORB/PublicationMulti.hpp>
+#అన్తర్భావ <lib/perf/perf_counter.h>
+#అన్తర్భావ <drivers/drv_hrt.h>
+#అన్తర్భావ <px4_platform/gpio/mcp.hpp>
+#అన్తర్భావ <px4_platform_common/module.h>
 
-static constexpr uint8_t I2C_ADDRESS_MCP23009 = 0x25;
-static constexpr uint8_t I2C_ADDRESS_MCP23017 = 0x27;
+స్థిర constexpr uint8_t I2_C_చిరునామా_MCP23009 = 0x25;
+స్థిర constexpr uint8_t I2_C_చిరునామా_MCP23017 = 0x27;
 
-enum class
+గణన తరగతి
 PinType : uint8_t {
 	Output,
-	Input,
-	InputPullUp,
+	ఆదానం_2,
+	ఆదానం_Pull_పైకి,
 };
 
-struct MCP230XX_config_t {
+నిర్మాణం MCP230XX_config_t {
 	uint16_t device_type;
 	uint8_t i2c_addr = 0;
 	uint8_t i2c_bus = 0;
-	uint8_t first_minor = 0;
-	uint8_t num_pins = 8;
-	int num_banks = 1;
+	uint8_t మొదటి_minor = 0;
+	uint8_t అంకె_pins = 8;
+	పూర్ణాంకం అంకె_banks = 1;
 	uint16_t interval = 10;
 	mcp_gpio_dev_s _gpio_handle[16];
-	CallbackHandler *_callback_handler = nullptr;
+	CallbackHandler *_callback_handler = శూన్యసూచిక;
 
 	uint16_t direction = 0xFFFF;
 	uint16_t state = 0x0000;
 	uint16_t pullup = 0x0000;
 };
 
-class MCP230XX :  public device::I2C, public I2CSPIDriver<MCP230XX>
+తరగతి MCP230XX :  బహిరంగ device::I2C, బహిరంగ I2CSPIDriver<MCP230XX>
 {
-public:
-	MCP230XX(const I2CSPIDriverConfig &config);
-	virtual ~MCP230XX();
-	static I2CSPIDriverBase *instantiate(const I2CSPIDriverConfig &config, int runtime_instance);
-	static void print_usage();
+బహిరంగ:
+	MCP230XX(స్థిరరాశి I2CSPIDriverConfig &config);
+	మాయా ~MCP230XX();
+	స్థిర I2_CSPIDriver_పునాది *instantiate(స్థిరరాశి I2CSPIDriverConfig &config, పూర్ణాంకం runtime_instance);
+	స్థిర శూన్య print_usage();
 
-	void RunImpl();
-	void print_status() override;
-	void custom_method(const BusCLIArguments &cli) override;
-	int probe();
-	virtual int init();
+	శూన్య నిరంతరం_Impl();
+	శూన్య print_స్థితి() override;
+	శూన్య custom_పద్ధతి(స్థిరరాశి BusCLIArguments &cli) override;
+	పూర్ణాంకం probe();
+	మాయా పూర్ణాంకం init();
 
-protected:
+రక్షిత:
 	MCP230XX_config_t mcp_config;
 
-private:
-	uORB::SubscriptionCallbackWorkItem _gpio_out_sub{this, ORB_ID(gpio_out)};
-	uORB::SubscriptionCallbackWorkItem _gpio_config_sub{this, ORB_ID(gpio_config)};
-	uORB::PublicationMulti<gpio_in_s> _to_gpio_in{ORB_ID(gpio_in)};
+అంతరంగ:
+	uORB::Subscription_Callback_Work_అంశం gpio_బహిర్గతం_sub{ఇది, ORB_ID(gpio_బహిర్గతం)};
+	uORB::Subscription_Callback_Work_అంశం _gpio_config_sub{ఇది, ORB_ID(gpio_config)};
+	uORB::PublicationMulti<gpio_లోపల_s> గమ్యం_gpio_లోపల{ORB_ID(gpio_లోపల_2)};
 
-	perf_counter_t _cycle_perf;
+	perf_counter_t చక్రం_perf;
 	perf_counter_t _comms_errors;
-	perf_counter_t _register_check;
+	perf_counter_t రిజిస్టరు_check;
 
-	virtual int configure(uint16_t mask, PinType type);
-	virtual int read(uint16_t *mask);
-	int read_reg(uint8_t address, uint8_t &data);
-	int write(uint16_t mask_set, uint16_t mask_clear);
-	int write_reg(uint8_t address, uint8_t value);
-	int set_up();
-	int sanity_check();
-	int init_communication();
-	int init_uorb();
-	void cleanup_uorb();
+	మాయా పూర్ణాంకం configure(uint16_t ముసుగు, PinType type);
+	మాయా పూర్ణాంకం పఠ(uint16_t *ముసుగు);
+	పూర్ణాంకం read_reg(uint8_t చిరునామా, uint8_t &దత్తాంశం);
+	పూర్ణాంకం లిఖ(uint16_t ముసుగు_సమితి, uint16_t ముసుగు_clear);
+	పూర్ణాంకం write_reg(uint8_t చిరునామా, uint8_t value);
+	పూర్ణాంకం సమితి_పైకి_2();
+	పూర్ణాంకం sanity_check();
+	పూర్ణాంకం init_communication();
+	పూర్ణాంకం init_uorb();
+	శూన్య cleanup_uorb();
 
-	virtual int get_olat(int bank, uint8_t *addr) = 0;
-	virtual int get_gppu(int bank, uint8_t *addr) = 0;
-	virtual int get_iodir(int bank, uint8_t *addr) = 0;
-	virtual int get_gpio(int bank, uint8_t *addr) = 0;
-	virtual int get_probe_reg(uint8_t *addr) = 0;
+	మాయా పూర్ణాంకం get_olat(పూర్ణాంకం bank, uint8_t *addr) = 0;
+	మాయా పూర్ణాంకం get_gppu(పూర్ణాంకం bank, uint8_t *addr) = 0;
+	మాయా పూర్ణాంకం get_iodir(పూర్ణాంకం bank, uint8_t *addr) = 0;
+	మాయా పూర్ణాంకం get_gpio(పూర్ణాంకం bank, uint8_t *addr) = 0;
+	మాయా పూర్ణాంకం get_probe_reg(uint8_t *addr) = 0;
 
 	uint16_t _olat;
 	uint16_t _iodir;
 	uint16_t _gppu;
 
 	uint16_t _checking_freq = 10;
-	int _count = 0;
+	పూర్ణాంకం లెక్క_3 = 0;
 
-	enum class STATE : uint8_t {
+	గణన తరగతి STATE : uint8_t {
 		INIT_COMMUNICATION,
 		CONFIGURE,
 		CHECK,

@@ -36,186 +36,186 @@
  *
  * Protected build user space interface to global parameter store.
  */
-#define PARAM_IMPLEMENTATION
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <parameters/px4_parameters.hpp>
-#include <sys/boardctl.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#నిర్వచించు PARAM_IMPLEMENTATION
+#అన్తర్భావ "param.h"
+#అన్తర్భావ "parameters_ioctl.h"
+#అన్తర్భావ <parameters/px4_parameters.hpp>
+#అన్తర్భావ <sys/boardctl.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <px4_platform_common/log.h>
 
-#include "parameters_common.cpp"
+#అన్తర్భావ "parameters_common.cpp"
 
-void
+శూన్య
 param_notify_changes()
 {
-	boardctl(PARAMIOCNOTIFY, NULL);
+	boardctl(PARAMIOCNOTIFY, ఖాళీ);
 }
 
-param_t param_find(const char *name)
+param_t param_కనుగొను(స్థిరరాశి అక్షరం *name)
 {
-	paramiocfind_t data = {name, true, PARAM_INVALID};
-	boardctl(PARAMIOCFIND, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocfind_t దత్తాంశం = {name, నిజం, PARAM_INVALID};
+	boardctl(PARAMIOCFIND, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-param_t param_find_no_notification(const char *name)
+param_t param_కనుగొను_no_notification(స్థిరరాశి అక్షరం *name)
 {
-	paramiocfind_t data = {name, false, PARAM_INVALID};
-	boardctl(PARAMIOCFIND, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocfind_t దత్తాంశం = {name, అబద్ధం, PARAM_INVALID};
+	boardctl(PARAMIOCFIND, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-unsigned param_count_used()
+గుర్తులేని param_లెక్క_వాడిన()
 {
-	paramioccountused_t data = {0};
-	boardctl(PARAMIOCCOUNTUSED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramioccountused_t దత్తాంశం = {0};
+	boardctl(PARAMIOCCOUNTUSED, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-param_t param_for_used_index(unsigned index)
+param_t param_for_వాడిన_సూచీ(గుర్తులేని సూచీ)
 {
-	paramiocforusedindex_t data = {index, 0};
-	boardctl(PARAMIOCFORUSEDINDEX, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocforusedindex_t దత్తాంశం = {సూచీ, 0};
+	boardctl(PARAMIOCFORUSEDINDEX, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-int param_get_used_index(param_t param)
+పూర్ణాంకం param_get_వాడిన_సూచీ(param_t param)
 {
-	paramiocgetusedindex_t data = {param, 0};
-	boardctl(PARAMIOCGETUSEDINDEX, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocgetusedindex_t దత్తాంశం = {param, 0};
+	boardctl(PARAMIOCGETUSEDINDEX, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-bool
-param_value_unsaved(param_t param)
+తార్కిక
+param_విలువ_unsaved(param_t param)
 {
-	paramiocunsaved_t data = {param, false};
-	boardctl(PARAMIOCUNSAVED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocunsaved_t దత్తాంశం = {param, అబద్ధం};
+	boardctl(PARAMIOCUNSAVED, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-int
-param_get(param_t param, void *val)
+పూర్ణాంకం
+param_get(param_t param, శూన్య *val)
 {
-	paramiocget_t data = {param, false, val, PX4_ERROR};
-	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocget_t దత్తాంశం = {param, అబద్ధం, val, PX4_ERROR};
+	boardctl(PARAMIOCGET, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-int
-param_get_default_value(param_t param, void *default_val)
+పూర్ణాంకం
+param_get_default_విలువ(param_t param, శూన్య *default_val)
 {
-	paramiocget_t data = {param, true, default_val, PX4_ERROR};
-	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocget_t దత్తాంశం = {param, నిజం, default_val, PX4_ERROR};
+	boardctl(PARAMIOCGET, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-void
-param_control_autosave(bool enable)
+శూన్య
+param_control_autosave(తార్కిక enable)
 {
-	paramiocautosave_t data = {enable};
-	boardctl(PARAMIOCAUTOSAVE, reinterpret_cast<unsigned long>(&data));
+	paramiocautosave_t దత్తాంశం = {enable};
+	boardctl(PARAMIOCAUTOSAVE, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
 }
 
-int param_set(param_t param, const void *val)
+పూర్ణాంకం param_సమితి(param_t param, స్థిరరాశి శూన్య *val)
 {
-	paramiocset_t data = {param, true, val, PX4_ERROR};
-	boardctl(PARAMIOCSET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocset_t దత్తాంశం = {param, నిజం, val, PX4_ERROR};
+	boardctl(PARAMIOCSET, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-int param_set_no_notification(param_t param, const void *val)
+పూర్ణాంకం param_సమితి_no_notification(param_t param, స్థిరరాశి శూన్య *val)
 {
-	paramiocset_t data = {param, false, val, PX4_ERROR};
-	boardctl(PARAMIOCSET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocset_t దత్తాంశం = {param, అబద్ధం, val, PX4_ERROR};
+	boardctl(PARAMIOCSET, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-bool param_used(param_t param)
+తార్కిక param_వాడిన(param_t param)
 {
-	paramiocused_t data = {param, false};
-	boardctl(PARAMIOCUSED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocused_t దత్తాంశం = {param, అబద్ధం};
+	boardctl(PARAMIOCUSED, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-void param_set_used(param_t param)
+శూన్య param_సమితి_వాడిన(param_t param)
 {
-	paramiocsetused_t data = {param};
-	boardctl(PARAMIOCSETUSED, reinterpret_cast<unsigned long>(&data));
+	paramiocsetused_t దత్తాంశం = {param};
+	boardctl(PARAMIOCSETUSED, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
 }
 
-int param_set_default_value(param_t param, const void *val)
+పూర్ణాంకం param_సమితి_default_విలువ(param_t param, స్థిరరాశి శూన్య *val)
 {
-	paramiocsetdefault_t data = {param, val, PX4_ERROR};
-	boardctl(PARAMIOCSETDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocsetdefault_t దత్తాంశం = {param, val, PX4_ERROR};
+	boardctl(PARAMIOCSETDEFAULT, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-int param_reset(param_t param)
+పూర్ణాంకం param_reset(param_t param)
 {
-	paramiocreset_t data = {param, true, PX4_ERROR};
-	boardctl(PARAMIOCRESET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocreset_t దత్తాంశం = {param, నిజం, PX4_ERROR};
+	boardctl(PARAMIOCRESET, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-int param_reset_no_notification(param_t param)
+పూర్ణాంకం param_reset_no_notification(param_t param)
 {
-	paramiocreset_t data = {param, false, PX4_ERROR};
-	boardctl(PARAMIOCRESET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocreset_t దత్తాంశం = {param, అబద్ధం, PX4_ERROR};
+	boardctl(PARAMIOCRESET, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-void
+శూన్య
 param_reset_all()
 {
-	paramiocresetgroup_t data = {PARAM_RESET_ALL, nullptr, 0};
-	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
+	paramiocresetgroup_t దత్తాంశం = {PARAM_RESET_ALL, శూన్యసూచిక, 0};
+	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
 }
 
-void
-param_reset_excludes(const char *excludes[], int num_excludes)
+శూన్య
+param_reset_excludes(స్థిరరాశి అక్షరం *excludes[], పూర్ణాంకం అంకె_excludes)
 {
-	paramiocresetgroup_t data = {PARAM_RESET_EXCLUDES, excludes, num_excludes};
-	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
+	paramiocresetgroup_t దత్తాంశం = {PARAM_RESET_EXCLUDES, excludes, అంకె_excludes};
+	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
 }
 
-void
-param_reset_specific(const char *resets[], int num_resets)
+శూన్య
+param_reset_specific(స్థిరరాశి అక్షరం *resets[], పూర్ణాంకం అంకె_resets)
 {
-	paramiocresetgroup_t data = {PARAM_RESET_SPECIFIC, resets, num_resets};
-	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
+	paramiocresetgroup_t దత్తాంశం = {PARAM_RESET_SPECIFIC, resets, అంకె_resets};
+	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
 }
 
-int param_save_default(bool blocking)
+పూర్ణాంకం param_save_default(తార్కిక blocking)
 {
-	paramiocsavedefault_t data = {blocking, PX4_ERROR};
-	boardctl(PARAMIOCSAVEDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocsavedefault_t దత్తాంశం = {blocking, PX4_ERROR};
+	boardctl(PARAMIOCSAVEDEFAULT, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-int
-param_load_default()
+పూర్ణాంకం
+param_ఎక్కించు_default()
 {
-	paramiocloaddefault_t data = {PX4_ERROR};
-	boardctl(PARAMIOCLOADDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocloaddefault_t దత్తాంశం = {PX4_ERROR};
+	boardctl(PARAMIOCLOADDEFAULT, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
-int
-param_export(const char *filename, param_filter_func filter)
+పూర్ణాంకం
+param_export(స్థిరరాశి అక్షరం *filename, param_filter_func filter)
 {
-	paramiocexport_t data = {filename, PX4_ERROR};
+	paramiocexport_t దత్తాంశం = {filename, PX4_ERROR};
 
-	if (filter) { PX4_ERR("ERROR: filter not supported in userside blob"); }
+	ఒకవేళ (filter) { PX4_ERR("ERROR: filter not supported in userside blob"); }
 
-	boardctl(PARAMIOCEXPORT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	boardctl(PARAMIOCEXPORT, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }
 
 uint32_t param_hash_check()
 {
-	paramiochash_t data = {0};
-	boardctl(PARAMIOCHASH, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiochash_t దత్తాంశం = {0};
+	boardctl(PARAMIOCHASH, reinterpret_cast<గుర్తులేని దీర్ఘ>(&దత్తాంశం));
+	తిరిగి దత్తాంశం.ret;
 }

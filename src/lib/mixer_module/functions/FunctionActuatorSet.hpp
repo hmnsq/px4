@@ -31,58 +31,58 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "FunctionProviderBase.hpp"
+#అన్తర్భావ "FunctionProviderBase.hpp"
 
-#include <math.h>
-#include <uORB/topics/vehicle_command.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <uORB/topics/vehicle_command.h>
 
 /**
  * Functions: Peripheral_via_Actuator_Set1 ... Peripheral_via_Actuator_Set6
  */
-class FunctionActuatorSet : public FunctionProviderBase
+తరగతి Function_Actuator_సమితి : బహిరంగ Function_Provider_పునాది
 {
-public:
-	FunctionActuatorSet()
+బహిరంగ:
+	Function_Actuator_సమితి()
 	{
-		for (int i = 0; i < max_num_actuators; ++i) {
-			_data[i] = NAN;
+		కొరకు (పూర్ణాంకం i = 0; i < max_అంకె_actuators; ++i) {
+			దత్తాంశం_3[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionActuatorSet(); }
+	స్థిర Function_Provider_పునాది *allocate(స్థిరరాశి Context &context) { తిరిగి కొత్త Function_Actuator_సమితి(); }
 
-	void update() override
+	శూన్య update() override
 	{
 		vehicle_command_s vehicle_command;
 
-		while (_topic.update(&vehicle_command)) {
-			if (vehicle_command.command == vehicle_command_s::VEHICLE_CMD_DO_SET_ACTUATOR) {
-				int index = static_cast<int>(lroundf(vehicle_command.param7));
+		అయితే (_topic.update(&vehicle_command)) {
+			ఒకవేళ (vehicle_command.command == vehicle_command_s::VEHICLE_CMD_DO_సమితి_ACTUATOR) {
+				పూర్ణాంకం సూచీ = static_cast<పూర్ణాంకం>(lroundf(vehicle_command.param7));
 
-				if (index == 0) {
-					if (PX4_ISFINITE(vehicle_command.param1)) { _data[0] = vehicle_command.param1; }
+				ఒకవేళ (సూచీ == 0) {
+					ఒకవేళ (PX4_ISFINITE(vehicle_command.param1)) { దత్తాంశం_3[0] = vehicle_command.param1; }
 
-					if (PX4_ISFINITE(vehicle_command.param2)) {_data[1] = vehicle_command.param2; }
+					ఒకవేళ (PX4_ISFINITE(vehicle_command.param2)) {దత్తాంశం_3[1] = vehicle_command.param2; }
 
-					if (PX4_ISFINITE(vehicle_command.param3)) {_data[2] = vehicle_command.param3; }
+					ఒకవేళ (PX4_ISFINITE(vehicle_command.param3)) {దత్తాంశం_3[2] = vehicle_command.param3; }
 
-					if (PX4_ISFINITE(vehicle_command.param4)) {_data[3] = vehicle_command.param4; }
+					ఒకవేళ (PX4_ISFINITE(vehicle_command.param4)) {దత్తాంశం_3[3] = vehicle_command.param4; }
 
-					if (PX4_ISFINITE(vehicle_command.param5)) {_data[4] = vehicle_command.param5; }
+					ఒకవేళ (PX4_ISFINITE(vehicle_command.param5)) {దత్తాంశం_3[4] = vehicle_command.param5; }
 
-					if (PX4_ISFINITE(vehicle_command.param6)) {_data[5] = vehicle_command.param6; }
+					ఒకవేళ (PX4_ISFINITE(vehicle_command.param6)) {దత్తాంశం_3[5] = vehicle_command.param6; }
 				}
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Peripheral_via_Actuator_Set1]; }
+	దశాంశం value(OutputFunction func) override { తిరిగి దత్తాంశం_3[(పూర్ణాంకం)func - (పూర్ణాంకం)OutputFunction::Peripheral_ద్వారా_Actuator_Set1]; }
 
-private:
-	static constexpr int max_num_actuators = 6;
+అంతరంగ:
+	స్థిర constexpr పూర్ణాంకం max_అంకె_actuators = 6;
 
 	uORB::Subscription _topic{ORB_ID(vehicle_command)};
-	float _data[max_num_actuators] {};
+	దశాంశం దత్తాంశం_3[max_అంకె_actuators] {};
 };

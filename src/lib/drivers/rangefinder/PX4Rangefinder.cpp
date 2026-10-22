@@ -31,68 +31,68 @@
  *
  ****************************************************************************/
 
-#include "PX4Rangefinder.hpp"
+#అన్తర్భావ "PX4Rangefinder.hpp"
 
-#include <lib/drivers/device/Device.hpp>
+#అన్తర్భావ <lib/drivers/device/Device.hpp>
 
-using namespace time_literals;
+ఉపయోగించి నామాకాశ సమయం_literals;
 
-PX4Rangefinder::PX4Rangefinder(const uint32_t device_id, const uint8_t device_orientation)
+PX4Rangefinder::PX4Rangefinder(స్థిరరాశి uint32_t device_id, స్థిరరాశి uint8_t device_orientation)
 {
-	set_device_id(device_id);
-	set_orientation(device_orientation);
-	set_rangefinder_type(distance_sensor_s::MAV_DISTANCE_SENSOR_LASER);
-	set_mode(distance_sensor_s::MODE_UNKNOWN);
+	సమితి_device_id(device_id);
+	సమితి_orientation(device_orientation);
+	సమితి_rangefinder_type(దూరం_sensor_s::MAV_దూరం_SENSOR_LASER);
+	సమితి_బహుళకం(దూరం_sensor_s::బహుళకం_UNKNOWN);
 }
 
 PX4Rangefinder::~PX4Rangefinder()
 {
-	_distance_sensor_pub.unadvertise();
+	దూరం_sensor_pub_2.unadvertise();
 }
 
-void PX4Rangefinder::set_device_type(uint8_t device_type)
+శూన్య PX4Rangefinder::సమితి_device_type(uint8_t device_type)
 {
 	// current DeviceStructure
-	union device::Device::DeviceId device_id;
-	device_id.devid = _distance_sensor_pub.get().device_id;
+	సంఘం device::Device::DeviceId device_id;
+	device_id.devid = దూరం_sensor_pub_2.get().device_id;
 
 	// update to new device type
 	device_id.devid_s.devtype = device_type;
 
 	// copy back to report
-	_distance_sensor_pub.get().device_id = device_id.devid;
+	దూరం_sensor_pub_2.get().device_id = device_id.devid;
 }
 
-void PX4Rangefinder::set_orientation(const uint8_t device_orientation)
+శూన్య PX4Rangefinder::సమితి_orientation(స్థిరరాశి uint8_t device_orientation)
 {
-	_distance_sensor_pub.get().orientation = device_orientation;
+	దూరం_sensor_pub_2.get().orientation = device_orientation;
 }
 
-void PX4Rangefinder::update(const hrt_abstime &timestamp_sample, const float distance, const int8_t quality, const float *q, uint8_t q_len)
+శూన్య PX4Rangefinder::update(స్థిరరాశి hrt_abstime &timestamp_sample, స్థిరరాశి దశాంశం దూరం, స్థిరరాశి int8_t quality, స్థిరరాశి దశాంశం *q, uint8_t q_len)
 {
-	distance_sensor_s &report = _distance_sensor_pub.get();
+	దూరం_sensor_s &report = దూరం_sensor_pub_2.get();
 	report.timestamp = timestamp_sample;
-	report.current_distance = distance;
+	report.current_దూరం = దూరం;
 	report.signal_quality = quality;
 
 	// if quality is unavailable (-1) set to 0 if distance is outside bounds
-	if (quality < 0) {
-		if ((distance < report.min_distance) || (distance > report.max_distance)) {
+	ఒకవేళ (quality < 0) {
+		ఒకవేళ ((దూరం < report.min_దూరం) || (దూరం > report.max_దూరం)) {
 			report.signal_quality = 0;
 		}
 	}
 
 	// Update the quaternion in the sample update
-	if (q != nullptr) {
-		memcpy(report.q, q, sizeof(float) * q_len);
+	ఒకవేళ (q != శూన్యసూచిక) {
+		జ్ఞాపకం_నకలు(report.q, q, పరిమాణం(దశాంశం) * q_len);
 	}
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_DISTANCE_SENSOR,
-					_distance_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+	ఒకవేళ (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_దూరం_SENSOR,
+					దూరం_sensor_pub_2.get_instance(), report, _stuck)) {
+		తిరిగి;
 	}
 
-	_distance_sensor_pub.update();
+	దూరం_sensor_pub_2.update();
 }

@@ -31,35 +31,35 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "FunctionProviderBase.hpp"
+#అన్తర్భావ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gimbal_controls.h>
+#అన్తర్భావ <uORB/topics/gimbal_controls.h>
 
 /**
  * Functions: Gimbal_Roll .. Gimbal_Yaw
  */
-class FunctionGimbal : public FunctionProviderBase
+తరగతి FunctionGimbal : బహిరంగ Function_Provider_పునాది
 {
-public:
-	FunctionGimbal() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGimbal(); }
+బహిరంగ:
+	FunctionGimbal() = అప్రమేయ;
+	స్థిర Function_Provider_పునాది *allocate(స్థిరరాశి Context &context) { తిరిగి కొత్త FunctionGimbal(); }
 
-	void update() override
+	శూన్య update() override
 	{
 		gimbal_controls_s gimbal_controls;
 
-		if (_topic.update(&gimbal_controls)) {
-			_data[0] = gimbal_controls.control[gimbal_controls_s::INDEX_ROLL];
-			_data[1] = gimbal_controls.control[gimbal_controls_s::INDEX_PITCH];
-			_data[2] = gimbal_controls.control[gimbal_controls_s::INDEX_YAW];
+		ఒకవేళ (_topic.update(&gimbal_controls)) {
+			దత్తాంశం_3[0] = gimbal_controls.control[gimbal_controls_s::సూచీ_ROLL];
+			దత్తాంశం_3[1] = gimbal_controls.control[gimbal_controls_s::సూచీ_PITCH];
+			దత్తాంశం_3[2] = gimbal_controls.control[gimbal_controls_s::సూచీ_YAW];
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Gimbal_Roll]; }
+	దశాంశం value(OutputFunction func) override { తిరిగి దత్తాంశం_3[(పూర్ణాంకం)func - (పూర్ణాంకం)OutputFunction::Gimbal_Roll]; }
 
-private:
+అంతరంగ:
 	uORB::Subscription _topic{ORB_ID(gimbal_controls)};
-	float _data[3] { NAN, NAN, NAN };
+	దశాంశం దత్తాంశం_3[3] { NAN, NAN, NAN };
 };

@@ -1,23 +1,23 @@
-#pragma once
+#సూచన once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#నిర్వచితమైతే __cplusplus
+బాహ్య "C" {
+#అయితే_ముగింపు
 
-#include <stdbool.h>
-#include <termios.h>
+#అన్తర్భావ <stdbool.h>
+#అన్తర్భావ <termios.h>
 
-int qurt_uart_get_port(const char *dev);
-int qurt_uart_open(const char *dev, speed_t speed);
-int qurt_uart_write(int fd, const char *buf, size_t len);
-int qurt_uart_read(int fd, char *buf, size_t len, uint32_t timeout_us);
+పూర్ణాంకం qurt_uart_get_పోర్టు(స్థిరరాశి అక్షరం *dev);
+పూర్ణాంకం qurt_uart_open(స్థిరరాశి అక్షరం *dev, speed_t వేగం);
+పూర్ణాంకం qurt_uart_write(పూర్ణాంకం fd, స్థిరరాశి అక్షరం *buf, size_t len);
+పూర్ణాంకం qurt_uart_read(పూర్ణాంకం fd, అక్షరం *buf, size_t len, uint32_t timeout_us);
 
-typedef int (*open_uart_func_t)(uint8_t, speed_t);
-typedef int (*write_uart_func_t)(int, const void *, size_t);
-typedef int (*read_uart_func_t)(int,  void *, size_t);
+రకనిర్వచనం పూర్ణాంకం (*open_uart_func_t)(uint8_t, speed_t);
+రకనిర్వచనం పూర్ణాంకం (*write_uart_func_t)(పూర్ణాంకం, స్థిరరాశి శూన్య *, size_t);
+రకనిర్వచనం పూర్ణాంకం (*read_uart_func_t)(పూర్ణాంకం,  శూన్య *, size_t);
 
-void configure_uart_callbacks(open_uart_func_t, write_uart_func_t, read_uart_func_t);
+శూన్య configure_uart_callbacks(open_uart_func_t, write_uart_func_t, read_uart_func_t);
 
-#ifdef __cplusplus
+#నిర్వచితమైతే __cplusplus
 }
-#endif // __cplusplus
+#అయితే_ముగింపు // __cplusplus

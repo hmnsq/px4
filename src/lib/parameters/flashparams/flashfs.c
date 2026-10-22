@@ -42,21 +42,21 @@
  * foot print device.
  */
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/posix.h>
-#include <nuttx/crc32.h>
-#include <stddef.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <errno.h>
-#include "flashfs.h"
-#include <nuttx/compiler.h>
-#include <nuttx/progmem.h>
-#include <board_config.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <px4_platform_common/posix.h>
+#అన్తర్భావ <nuttx/crc32.h>
+#అన్తర్భావ <stddef.h>
+#అన్తర్భావ <string.h>
+#అన్తర్భావ <stdbool.h>
+#అన్తర్భావ <stdint.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <errno.h>
+#అన్తర్భావ "flashfs.h"
+#అన్తర్భావ <nuttx/compiler.h>
+#అన్తర్భావ <nuttx/progmem.h>
+#అన్తర్భావ <board_config.h>
 
-#if defined(CONFIG_ARCH_HAVE_PROGMEM) || defined(BOARD_USE_EXTERNAL_FLASH)
+#ఒకవేళ defined(CONFIG_ARCH_HAVE_PROGMEM) || defined(BOARD_USE_EXTERNAL_FLASH)
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -66,23 +66,23 @@
  * Private Types
  ****************************************************************************/
 
-typedef uint32_t h_magic_t;
-typedef uint16_t h_size_t;
-typedef uint16_t h_flag_t;
-typedef uint16_t data_size_t;
+రకనిర్వచనం uint32_t h_magic_t;
+రకనిర్వచనం uint16_t h_కొలత_t;
+రకనిర్వచనం uint16_t h_flag_t;
+రకనిర్వచనం uint16_t దత్తాంశం_కొలత_t;
 
-typedef enum  flash_config_t {
-	LargestBlock = 2 * 1024, // This represents the size need for backing store
+రకనిర్వచనం గణన  flash_config_t {
+	అతిపెద్ద_ఖండం = 2 * 1024, // This represents the size need for backing store
 	MagicSig     = 0xaa553cc3,
 	BlankSig     = 0xffffffff
 } flash_config_t;
 
-typedef enum  flash_flags_t {
-	SizeMask      = 0x0003,
-	MaskEntry     = ~SizeMask,
-	BlankEntry    = (h_flag_t)BlankSig,
-	ValidEntry    = (0xa5ac & ~SizeMask),
-	ErasedEntry   = 0x0000,
+రకనిర్వచనం గణన  flash_flags_t {
+	కొలత_ముసుగు      = 0x0003,
+	ముసుగు_నమోదు     = ~కొలత_ముసుగు,
+	Blank_నమోదు    = (h_flag_t)BlankSig,
+	Valid_నమోదు    = (0xa5ac & ~కొలత_ముసుగు),
+	Erased_నమోదు   = 0x0000,
 } flash_flags_t;
 
 
@@ -91,18 +91,18 @@ typedef enum  flash_flags_t {
  * and any padding needed to have the size be an even multiple of
  * sizeof(uint32_t)
  */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wattributes"
-typedef begin_packed_struct struct flash_entry_header_t {
+#సూచన GCC diagnostic నెట్టు
+#సూచన GCC diagnostic ignored "-Wattributes"
+రకనిర్వచనం begin_packed_struct నిర్మాణం flash_నమోదు_శీర్షిక_t {
 	h_magic_t            magic;           /* Used to ID files*/
 	h_flag_t             flag;            /* Used to erase this entry */
-	uint32_t             crc;             /* Calculated over the size - end of data */
-	h_size_t             size;            /* When added to a byte pointer to flash_entry_header_t
+	uint32_t             చక్రీయ_తనిఖీ;             /* Calculated over the size - end of data */
+	h_కొలత_t             కొలత;            /* When added to a byte pointer to flash_entry_header_t
                                                * Will result the offset of the next active file or
                                                * free space. */
 	flash_file_token_t   file_token;      /* file token type - essentially the name/type */
-} end_packed_struct flash_entry_header_t __attribute__((aligned(sizeof(uint32_t))));
-#pragma GCC diagnostic pop
+} చివర_packed_struct flash_నమోదు_శీర్షిక_t __attribute__((aligned(పరిమాణం(uint32_t))));
+#సూచన GCC diagnostic తీయి
 
 /****************************************************************************
  * Private Function Prototypes
@@ -111,21 +111,21 @@ typedef begin_packed_struct struct flash_entry_header_t {
 /****************************************************************************
  * Private Data
  ****************************************************************************/
-static uint8_t *working_buffer;
-static size_t working_buffer_size;
-static bool working_buffer_static;
-static sector_descriptor_t *sector_map;
-static int last_erased;
+స్థిర uint8_t *working_బఫరు;
+స్థిర size_t working_బఫరు_కొలత;
+స్థిర bool working_బఫరు_static;
+స్థిర sector_descriptor_t *sector_map;
+స్థిర పూర్ణాంకం చివరి_erased;
 
 /****************************************************************************
  * Public Data
  ****************************************************************************/
 
-const flash_file_token_t parameters_token = {
+స్థిరరాశి flash_file_token_t parameters_token = {
 	.n = {'p', 'l', 'o', 'g'},
 };
 
-const flash_file_token_t parameters_legacy_token = {
+స్థిరరాశి flash_file_token_t parameters_legacy_token = {
 	.n = {'p', 'a', 'r', 'm'},
 };
 
@@ -142,12 +142,12 @@ const flash_file_token_t parameters_legacy_token = {
  *
  ****************************************************************************/
 
-void parameter_flashfs_free(void)
+శూన్య parameter_flashfs_free(శూన్య)
 {
-	if (!working_buffer_static && working_buffer != NULL) {
-		free(working_buffer);
-		working_buffer = NULL;
-		working_buffer_size = 0;
+	ఒకవేళ (!working_బఫరు_static && working_బఫరు != ఖాళీ) {
+		విడుదల(working_బఫరు);
+		working_బఫరు = ఖాళీ;
+		working_బఫరు_కొలత = 0;
 	}
 }
 
@@ -167,9 +167,9 @@ void parameter_flashfs_free(void)
  *
  ****************************************************************************/
 
-static inline int blank_flash(uint32_t *pf)
+స్థిర అంతఃవరుస పూర్ణాంకం blank_flash(uint32_t *pf)
 {
-	return *pf == BlankSig;
+	తిరిగి *pf == BlankSig;
 }
 
 /****************************************************************************
@@ -187,20 +187,20 @@ static inline int blank_flash(uint32_t *pf)
  *
  ****************************************************************************/
 
-static bool blank_check(flash_entry_header_t *pf,
-			size_t new_size)
+స్థిర bool blank_check(flash_నమోదు_శీర్షిక_t *pf,
+			size_t new_కొలత)
 {
 	bool rv = true;
 	uint32_t *pm = (uint32_t *) pf;
-	new_size /= sizeof(uint32_t);
+	new_కొలత /= పరిమాణం(uint32_t);
 
-	while (new_size-- && rv) {
-		if (!blank_flash(pm++)) {
+	అయితే (new_కొలత-- && rv) {
+		ఒకవేళ (!blank_flash(pm++)) {
 			rv = false;
 		}
 	}
 
-	return rv;
+	తిరిగి rv;
 }
 
 /****************************************************************************
@@ -219,9 +219,9 @@ static bool blank_check(flash_entry_header_t *pf,
  *
  ****************************************************************************/
 
-static inline int valid_magic(h_magic_t *pm)
+స్థిర అంతఃవరుస పూర్ణాంకం valid_magic(h_magic_t *pm)
 {
-	return *pm == MagicSig;
+	తిరిగి *pm == MagicSig;
 }
 
 /****************************************************************************
@@ -239,9 +239,9 @@ static inline int valid_magic(h_magic_t *pm)
  *
  ****************************************************************************/
 
-static inline int blank_entry(flash_entry_header_t *fi)
+స్థిర అంతఃవరుస పూర్ణాంకం blank_నమోదు(flash_నమోదు_శీర్షిక_t *fi)
 {
-	return fi->magic == BlankSig  &&  fi->flag == BlankEntry;
+	తిరిగి fi->magic == BlankSig  &&  fi->flag == Blank_నమోదు;
 }
 
 /****************************************************************************
@@ -259,9 +259,9 @@ static inline int blank_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline int valid_entry(flash_entry_header_t *fi)
+స్థిర అంతఃవరుస పూర్ణాంకం valid_నమోదు(flash_నమోదు_శీర్షిక_t *fi)
 {
-	return (fi->flag & MaskEntry) == ValidEntry;
+	తిరిగి (fi->flag & ముసుగు_నమోదు) == Valid_నమోదు;
 }
 
 /****************************************************************************
@@ -279,9 +279,9 @@ static inline int valid_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline int entry_size_adjust(flash_entry_header_t *fi)
+స్థిర అంతఃవరుస పూర్ణాంకం నమోదు_కొలత_adjust(flash_నమోదు_శీర్షిక_t *fi)
 {
-	return fi->flag & SizeMask;
+	తిరిగి fi->flag & కొలత_ముసుగు;
 }
 
 /****************************************************************************
@@ -300,10 +300,10 @@ static inline int entry_size_adjust(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline flash_entry_header_t *next_entry(flash_entry_header_t *fi)
+స్థిర అంతఃవరుస flash_నమోదు_శీర్షిక_t *తదుపరి_నమోదు(flash_నమోదు_శీర్షిక_t *fi)
 {
 	uint8_t *pb = (uint8_t *)fi;
-	return (flash_entry_header_t *)(pb + fi->size);
+	తిరిగి (flash_నమోదు_శీర్షిక_t *)(pb + fi->కొలత);
 }
 
 /****************************************************************************
@@ -321,9 +321,9 @@ static inline flash_entry_header_t *next_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline uint8_t *entry_data(flash_entry_header_t *fi)
+స్థిర అంతఃవరుస uint8_t *నమోదు_దత్తాంశం(flash_నమోదు_శీర్షిక_t *fi)
 {
-	return ((uint8_t *)fi) + sizeof(flash_entry_header_t);
+	తిరిగి ((uint8_t *)fi) + పరిమాణం(flash_నమోదు_శీర్షిక_t);
 }
 
 /****************************************************************************
@@ -341,9 +341,9 @@ static inline uint8_t *entry_data(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline data_size_t entry_data_length(flash_entry_header_t *fi)
+స్థిర అంతఃవరుస దత్తాంశం_కొలత_t నమోదు_దత్తాంశం_నిడివి(flash_నమోదు_శీర్షిక_t *fi)
 {
-	return fi->size - (sizeof(flash_entry_header_t) + entry_size_adjust(fi));
+	తిరిగి fi->కొలత - (పరిమాణం(flash_నమోదు_శీర్షిక_t) + నమోదు_కొలత_adjust(fi));
 }
 
 /****************************************************************************
@@ -362,9 +362,9 @@ static inline data_size_t entry_data_length(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline const uint8_t *entry_crc_start(flash_entry_header_t *fi)
+స్థిర అంతఃవరుస స్థిరరాశి uint8_t *నమోదు_చక్రీయ_తనిఖీ_ప్రారంభం(flash_నమోదు_శీర్షిక_t *fi)
 {
-	return (const uint8_t *)&fi->size;
+	తిరిగి (స్థిరరాశి uint8_t *)&fi->కొలత;
 }
 
 /****************************************************************************
@@ -383,80 +383,80 @@ static inline const uint8_t *entry_crc_start(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline data_size_t entry_crc_length(flash_entry_header_t *fi)
+స్థిర అంతఃవరుస దత్తాంశం_కొలత_t నమోదు_చక్రీయ_తనిఖీ_నిడివి(flash_నమోదు_శీర్షిక_t *fi)
 {
-	return fi->size - offsetof(flash_entry_header_t, size);
+	తిరిగి fi->కొలత - offsetof(flash_నమోదు_శీర్షిక_t, కొలత);
 }
 
 /* The parameter sector can be the last one on the chip, so no header
  * field may be read until the whole header is known to lie inside it. */
-static inline bool header_fits(flash_entry_header_t *pf, h_magic_t *pe)
+స్థిర అంతఃవరుస bool శీర్షిక_సరిపోతుంది(flash_నమోదు_శీర్షిక_t *pf, h_magic_t *pe)
 {
-	return pf + 1 <= (flash_entry_header_t *)pe;
+	తిరిగి pf + 1 <= (flash_నమోదు_శీర్షిక_t *)pe;
 }
 
-static bool crc_header_ok(flash_entry_header_t *pf, h_magic_t *pe)
+స్థిర bool చక్రీయ_తనిఖీ_శీర్షిక_ok(flash_నమోదు_శీర్షిక_t *pf, h_magic_t *pe)
 {
-	if (!header_fits(pf, pe)) {
-		return false;
+	ఒకవేళ (!శీర్షిక_సరిపోతుంది(pf, pe)) {
+		తిరిగి false;
 	}
 
-	if (pf->size < sizeof(flash_entry_header_t)) {
-		return false;
+	ఒకవేళ (pf->కొలత < పరిమాణం(flash_నమోదు_శీర్షిక_t)) {
+		తిరిగి false;
 	}
 
-	const uint8_t *crc_start = entry_crc_start(pf);
-	data_size_t crc_length = entry_crc_length(pf);
+	స్థిరరాశి uint8_t *చక్రీయ_తనిఖీ_ప్రారంభం = నమోదు_చక్రీయ_తనిఖీ_ప్రారంభం(pf);
+	దత్తాంశం_కొలత_t చక్రీయ_తనిఖీ_నిడివి = నమోదు_చక్రీయ_తనిఖీ_నిడివి(pf);
 
-	if (crc_start + crc_length > (uint8_t *)pe) {
-		return false;
+	ఒకవేళ (చక్రీయ_తనిఖీ_ప్రారంభం + చక్రీయ_తనిఖీ_నిడివి > (uint8_t *)pe) {
+		తిరిగి false;
 	}
 
-	return pf->crc == crc32(crc_start, crc_length);
+	తిరిగి pf->చక్రీయ_తనిఖీ == చక్రీయ_తనిఖీ_32(చక్రీయ_తనిఖీ_ప్రారంభం, చక్రీయ_తనిఖీ_నిడివి);
 }
 
 /* The walkers stop at the last word of a sector and reject a record that
  * ends beyond it, so nothing may be written into that word. */
-static inline size_t sector_usable(int s)
+స్థిర అంతఃవరుస size_t sector_usable(పూర్ణాంకం s)
 {
-	return sector_map[s].size - sizeof(h_magic_t);
+	తిరిగి sector_map[s].కొలత - పరిమాణం(h_magic_t);
 }
 
-static bool slot_is_free(flash_entry_header_t *pf, int s, size_t required)
+స్థిర bool స్థానం_is_free(flash_నమోదు_శీర్షిక_t *pf, పూర్ణాంకం s, size_t required)
 {
-	uint8_t *begin = (uint8_t *)sector_map[s].address;
-	uint8_t *end = begin + sector_usable(s);
+	uint8_t *begin = (uint8_t *)sector_map[s].చిరునామా;
+	uint8_t *చివర = begin + sector_usable(s);
 
-	if ((uint8_t *)pf < begin || required == 0 || (uint8_t *)pf + required > end) {
-		return false;
+	ఒకవేళ ((uint8_t *)pf < begin || required == 0 || (uint8_t *)pf + required > చివర) {
+		తిరిగి false;
 	}
 
 	/* Entries start on a flash row. up_progmem_write only asserts that in
 	 * debug builds, so a slot found by the word-wise scan behind a torn
 	 * record would otherwise be programmed misaligned. */
-	if (((uintptr_t)pf & SizeMask) != 0) {
-		return false;
+	ఒకవేళ (((uintptr_t)pf & కొలత_ముసుగు) != 0) {
+		తిరిగి false;
 	}
 
-	return blank_entry(pf) && blank_check(pf, required);
+	తిరిగి blank_నమోదు(pf) && blank_check(pf, required);
 }
 
-static int for_each_valid_entry(flash_file_token_t token,
-				int (*cb)(flash_entry_header_t *pf, void *arg),
-				void *arg);
+స్థిర పూర్ణాంకం for_each_valid_నమోదు(flash_file_token_t token,
+				పూర్ణాంకం (*cb)(flash_నమోదు_శీర్షిక_t *pf, శూన్య *arg),
+				శూన్య *arg);
 
-static int stop_at_first(flash_entry_header_t *pf, void *arg)
+స్థిర పూర్ణాంకం stop_at_మొదటి(flash_నమోదు_శీర్షిక_t *pf, శూన్య *arg)
 {
-	*(flash_entry_header_t **)arg = pf;
-	return -ECANCELED;
+	*(flash_నమోదు_శీర్షిక_t **)arg = pf;
+	తిరిగి -ECANCELED;
 }
 
 /* Oldest valid entry for token, or NULL. */
-static flash_entry_header_t *find_entry(flash_file_token_t token)
+స్థిర flash_నమోదు_శీర్షిక_t *కనుగొను_నమోదు(flash_file_token_t token)
 {
-	flash_entry_header_t *pf = NULL;
-	for_each_valid_entry(token, stop_at_first, &pf);
-	return pf;
+	flash_నమోదు_శీర్షిక_t *pf = ఖాళీ;
+	for_each_valid_నమోదు(token, stop_at_మొదటి, &pf);
+	తిరిగి pf;
 }
 
 /****************************************************************************
@@ -469,85 +469,85 @@ static flash_entry_header_t *find_entry(flash_file_token_t token)
  *
  ****************************************************************************/
 
-static flash_entry_header_t *find_append(size_t required)
+స్థిర flash_నమోదు_శీర్షిక_t *కనుగొను_append(size_t required)
 {
-	if (sector_map == NULL || required == 0) {
-		return NULL;
+	ఒకవేళ (sector_map == ఖాళీ || required == 0) {
+		తిరిగి ఖాళీ;
 	}
 
-	flash_entry_header_t *last = NULL;
-	int last_s = -1;
+	flash_నమోదు_శీర్షిక_t *చివరి = ఖాళీ;
+	పూర్ణాంకం చివరి_s = -1;
 
-	for (int s = 0; sector_map[s].address; s++) {
-		h_magic_t *pmagic = (h_magic_t *) sector_map[s].address;
-		h_magic_t *pe = pmagic + (sector_map[s].size / sizeof(h_magic_t)) - 1;
+	కొరకు (పూర్ణాంకం s = 0; sector_map[s].చిరునామా; s++) {
+		h_magic_t *pmagic = (h_magic_t *) sector_map[s].చిరునామా;
+		h_magic_t *pe = pmagic + (sector_map[s].కొలత / పరిమాణం(h_magic_t)) - 1;
 
-		while (pmagic < pe) {
-			if (!valid_magic(pmagic)) {
+		అయితే (pmagic < pe) {
+			ఒకవేళ (!valid_magic(pmagic)) {
 				pmagic++;
-				continue;
+				కొనసాగు;
 			}
 
-			flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
+			flash_నమోదు_శీర్షిక_t *pf = (flash_నమోదు_శీర్షిక_t *) pmagic;
 
-			if (crc_header_ok(pf, pe)) {
-				last = pf;
-				last_s = s;
-				pmagic = (h_magic_t *) next_entry(pf);
-				pf = (flash_entry_header_t *) pmagic;
+			ఒకవేళ (చక్రీయ_తనిఖీ_శీర్షిక_ok(pf, pe)) {
+				చివరి = pf;
+				చివరి_s = s;
+				pmagic = (h_magic_t *) తదుపరి_నమోదు(pf);
+				pf = (flash_నమోదు_శీర్షిక_t *) pmagic;
 
 				/* Same stop rule as for_each_valid_entry: a record behind a
 				 * blank header is invisible to replay, so it must not anchor
 				 * the append point either. */
-				if (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
-					break;
+				ఒకవేళ (pmagic >= pe || !శీర్షిక_సరిపోతుంది(pf, pe) || blank_నమోదు(pf)) {
+					ఆపు;
 				}
 
-			} else {
+			} లేకపోతే {
 				pmagic++;
 			}
 		}
 	}
 
-	const int start_s = (last == NULL) ? 0 : last_s;
-	h_magic_t *pmagic = (last == NULL)
-			    ? (h_magic_t *) sector_map[0].address
-			    : (h_magic_t *) next_entry(last);
+	స్థిరరాశి పూర్ణాంకం ప్రారంభం_s = (చివరి == ఖాళీ) ? 0 : చివరి_s;
+	h_magic_t *pmagic = (చివరి == ఖాళీ)
+			    ? (h_magic_t *) sector_map[0].చిరునామా
+			    : (h_magic_t *) తదుపరి_నమోదు(చివరి);
 
-	for (int s = start_s; sector_map[s].address; s++) {
-		if (s != start_s) {
-			pmagic = (h_magic_t *) sector_map[s].address;
+	కొరకు (పూర్ణాంకం s = ప్రారంభం_s; sector_map[s].చిరునామా; s++) {
+		ఒకవేళ (s != ప్రారంభం_s) {
+			pmagic = (h_magic_t *) sector_map[s].చిరునామా;
 		}
 
-		h_magic_t *pe = (h_magic_t *) sector_map[s].address
-				+ (sector_map[s].size / sizeof(h_magic_t)) - 1;
+		h_magic_t *pe = (h_magic_t *) sector_map[s].చిరునామా
+				+ (sector_map[s].కొలత / పరిమాణం(h_magic_t)) - 1;
 
-		if ((uint8_t *)pmagic < (uint8_t *)sector_map[s].address
-		    || (uint8_t *)pmagic >= (uint8_t *)sector_map[s].address + sector_map[s].size) {
-			if (s == start_s) {
-				continue;
+		ఒకవేళ ((uint8_t *)pmagic < (uint8_t *)sector_map[s].చిరునామా
+		    || (uint8_t *)pmagic >= (uint8_t *)sector_map[s].చిరునామా + sector_map[s].కొలత) {
+			ఒకవేళ (s == ప్రారంభం_s) {
+				కొనసాగు;
 			}
 
-			pmagic = (h_magic_t *) sector_map[s].address;
+			pmagic = (h_magic_t *) sector_map[s].చిరునామా;
 		}
 
-		while (pmagic < pe) {
-			flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
+		అయితే (pmagic < pe) {
+			flash_నమోదు_శీర్షిక_t *pf = (flash_నమోదు_శీర్షిక_t *) pmagic;
 
-			if (valid_magic(pmagic) && crc_header_ok(pf, pe)) {
-				pmagic = (h_magic_t *) next_entry(pf);
-				continue;
+			ఒకవేళ (valid_magic(pmagic) && చక్రీయ_తనిఖీ_శీర్షిక_ok(pf, pe)) {
+				pmagic = (h_magic_t *) తదుపరి_నమోదు(pf);
+				కొనసాగు;
 			}
 
-			if (slot_is_free(pf, s, required)) {
-				return pf;
+			ఒకవేళ (స్థానం_is_free(pf, s, required)) {
+				తిరిగి pf;
 			}
 
 			pmagic++;
 		}
 	}
 
-	return NULL;
+	తిరిగి ఖాళీ;
 }
 
 /****************************************************************************
@@ -561,60 +561,60 @@ static flash_entry_header_t *find_append(size_t required)
  *
  ****************************************************************************/
 
-static int for_each_valid_entry(flash_file_token_t token,
-				int (*cb)(flash_entry_header_t *pf, void *arg),
-				void *arg)
+స్థిర పూర్ణాంకం for_each_valid_నమోదు(flash_file_token_t token,
+				పూర్ణాంకం (*cb)(flash_నమోదు_శీర్షిక_t *pf, శూన్య *arg),
+				శూన్య *arg)
 {
-	int n = 0;
+	పూర్ణాంకం n = 0;
 
-	if (sector_map == NULL) {
-		return -ENXIO;
+	ఒకవేళ (sector_map == ఖాళీ) {
+		తిరిగి -ENXIO;
 	}
 
-	for (int s = 0; sector_map[s].address; s++) {
+	కొరకు (పూర్ణాంకం s = 0; sector_map[s].చిరునామా; s++) {
 
-		h_magic_t *pmagic = (h_magic_t *) sector_map[s].address;
-		h_magic_t *pe = pmagic + (sector_map[s].size / sizeof(h_magic_t)) - 1;
+		h_magic_t *pmagic = (h_magic_t *) sector_map[s].చిరునామా;
+		h_magic_t *pe = pmagic + (sector_map[s].కొలత / పరిమాణం(h_magic_t)) - 1;
 
 cont:
 
-		while (pmagic < pe && !valid_magic(pmagic)) {
+		అయితే (pmagic < pe && !valid_magic(pmagic)) {
 			pmagic++;
 		}
 
-		if (pmagic >= pe) { continue; }
+		ఒకవేళ (pmagic >= pe) { కొనసాగు; }
 
-		flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
+		flash_నమోదు_శీర్షిక_t *pf = (flash_నమోదు_శీర్షిక_t *) pmagic;
 
-		if (crc_header_ok(pf, pe)) {
+		ఒకవేళ (చక్రీయ_తనిఖీ_శీర్షిక_ok(pf, pe)) {
 
-			if (valid_entry(pf) && pf->file_token.t == token.t) {
-				if (cb != NULL) {
-					int rv = cb(pf, arg);
+			ఒకవేళ (valid_నమోదు(pf) && pf->file_token.t == token.t) {
+				ఒకవేళ (cb != ఖాళీ) {
+					పూర్ణాంకం rv = cb(pf, arg);
 
-					if (rv < 0) {
-						return rv;
+					ఒకవేళ (rv < 0) {
+						తిరిగి rv;
 					}
 				}
 
 				n++;
 			}
 
-			pf = next_entry(pf);
+			pf = తదుపరి_నమోదు(pf);
 			pmagic = (h_magic_t *) pf;
 
-			if (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
-				continue;
+			ఒకవేళ (pmagic >= pe || !శీర్షిక_సరిపోతుంది(pf, pe) || blank_నమోదు(pf)) {
+				కొనసాగు;
 			}
 
-		} else {
+		} లేకపోతే {
 			pmagic++;
 		}
 
-		goto cont;
+		వెళ్ళు cont;
 	}
 
-	return n;
+	తిరిగి n;
 }
 
 /****************************************************************************
@@ -635,29 +635,29 @@ cont:
  *
  ****************************************************************************/
 
-static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
+స్థిర పూర్ణాంకం erase_sector(sector_descriptor_t *sm, flash_నమోదు_శీర్షిక_t *pf)
 {
-	int rv = 0;
-#if defined(BOARD_USE_EXTERNAL_FLASH)
-	ssize_t block = up_progmem_ext_getpage((size_t)pf);
-#else
-	ssize_t block = up_progmem_getpage((size_t)pf);
-#endif
+	పూర్ణాంకం rv = 0;
+#ఒకవేళ defined(BOARD_USE_EXTERNAL_FLASH)
+	ssize_t ఖండం_2 = పైకి_progmem_ext_getpage((size_t)pf);
+#లేకపోతే
+	ssize_t ఖండం_2 = పైకి_progmem_getpage((size_t)pf);
+#అయితే_ముగింపు
 
-	if (block > 0 && block == sm->page) {
-		last_erased = sm->page;
-#if defined(BOARD_USE_EXTERNAL_FLASH)
-		ssize_t size = up_progmem_ext_eraseblock(block);
-#else
-		ssize_t size = up_progmem_eraseblock(block);
-#endif
+	ఒకవేళ (ఖండం_2 > 0 && ఖండం_2 == sm->పుట) {
+		చివరి_erased = sm->పుట;
+#ఒకవేళ defined(BOARD_USE_EXTERNAL_FLASH)
+		ssize_t కొలత = పైకి_progmem_ext_eraseblock(ఖండం_2);
+#లేకపోతే
+		ssize_t కొలత = పైకి_progmem_eraseblock(ఖండం_2);
+#అయితే_ముగింపు
 
-		if (size < 0 || size != (ssize_t)sm->size) {
-			rv = size;
+		ఒకవేళ (కొలత < 0 || కొలత != (ssize_t)sm->కొలత) {
+			rv = కొలత;
 		}
 	}
 
-	return rv;
+	తిరిగి rv;
 }
 
 /****************************************************************************
@@ -683,24 +683,24 @@ static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
  *
  ****************************************************************************/
 
-int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
-			   *buf_size)
+పూర్ణాంకం parameter_flashfs_read(flash_file_token_t token, uint8_t **బఫరు_2, size_t
+			   *buf_కొలత)
 {
-	int rv = -ENXIO;
+	పూర్ణాంకం rv = -ENXIO;
 
-	if (sector_map) {
+	ఒకవేళ (sector_map) {
 
 		rv = -ENOENT;
-		flash_entry_header_t *pf = find_entry(token);
+		flash_నమోదు_శీర్షిక_t *pf = కనుగొను_నమోదు(token);
 
-		if (pf) {
-			(*buffer) = entry_data(pf);
-			rv = entry_data_length(pf);
-			*buf_size = rv;
+		ఒకవేళ (pf) {
+			(*బఫరు_2) = నమోదు_దత్తాంశం(pf);
+			rv = నమోదు_దత్తాంశం_నిడివి(pf);
+			*buf_కొలత = rv;
 		}
 	}
 
-	return rv;
+	తిరిగి rv;
 }
 
 /****************************************************************************
@@ -712,24 +712,24 @@ int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
  *
  ****************************************************************************/
 
-int parameter_flashfs_blank(void)
+పూర్ణాంకం parameter_flashfs_blank(శూన్య)
 {
-	if (sector_map == NULL) {
-		return -ENXIO;
+	ఒకవేళ (sector_map == ఖాళీ) {
+		తిరిగి -ENXIO;
 	}
 
-	for (int s = 0; sector_map[s].address; s++) {
-		uint32_t *pm = (uint32_t *) sector_map[s].address;
-		uint32_t *pe = pm + (sector_map[s].size / sizeof(uint32_t));
+	కొరకు (పూర్ణాంకం s = 0; sector_map[s].చిరునామా; s++) {
+		uint32_t *pm = (uint32_t *) sector_map[s].చిరునామా;
+		uint32_t *pe = pm + (sector_map[s].కొలత / పరిమాణం(uint32_t));
 
-		while (pm < pe) {
-			if (!blank_flash(pm++)) {
-				return 0;
+		అయితే (pm < pe) {
+			ఒకవేళ (!blank_flash(pm++)) {
+				తిరిగి 0;
 			}
 		}
 	}
 
-	return 1;
+	తిరిగి 1;
 }
 
 /****************************************************************************
@@ -750,155 +750,155 @@ int parameter_flashfs_blank(void)
  *
  ****************************************************************************/
 
-int
-parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_size)
+పూర్ణాంకం
+parameter_flashfs_write(flash_file_token_t token, uint8_t *బఫరు_2, size_t buf_కొలత)
 {
-	int rv = -ENXIO;
+	పూర్ణాంకం rv = -ENXIO;
 
-	if (sector_map) {
+	ఒకవేళ (sector_map) {
 
 		rv = 0;
 
 		/* Calculate the total space needed */
 
-		size_t total_size = buf_size + sizeof(flash_entry_header_t);
-		size_t alignment = sizeof(h_magic_t) - 1;
-		size_t  size_adjust = ((total_size + alignment) & ~alignment) - total_size;
-		total_size += size_adjust;
+		size_t మొత్తం_కొలత = buf_కొలత + పరిమాణం(flash_నమోదు_శీర్షిక_t);
+		size_t alignment = పరిమాణం(h_magic_t) - 1;
+		size_t  కొలత_adjust = ((మొత్తం_కొలత + alignment) & ~alignment) - మొత్తం_కొలత;
+		మొత్తం_కొలత += కొలత_adjust;
 
-		if (total_size > UINT16_MAX) {
-			return -EFBIG;
+		ఒకవేళ (మొత్తం_కొలత > UINT16_MAX) {
+			తిరిగి -EFBIG;
 		}
 
 		/* Append after the last CRC-valid record. Compaction is the caller's job. */
-		flash_entry_header_t *pf = find_append(total_size);
+		flash_నమోదు_శీర్షిక_t *pf = కనుగొను_append(మొత్తం_కొలత);
 
-		if (pf == 0) {
-			return -ENOSPC;
+		ఒకవేళ (pf == 0) {
+			తిరిగి -ENOSPC;
 		}
 
-		flash_entry_header_t *pn = (flash_entry_header_t *)(buffer - sizeof(flash_entry_header_t));
+		flash_నమోదు_శీర్షిక_t *pn = (flash_నమోదు_శీర్షిక_t *)(బఫరు_2 - పరిమాణం(flash_నమోదు_శీర్షిక_t));
 		pn->magic = MagicSig;
 		pn->file_token.t = token.t;
-		pn->flag = ValidEntry + size_adjust;
-		pn->size = total_size;
+		pn->flag = Valid_నమోదు + కొలత_adjust;
+		pn->కొలత = మొత్తం_కొలత;
 
-		for (size_t a = 0; a < size_adjust; a++) {
-			buffer[buf_size + a] = (uint8_t)BlankSig;
+		కొరకు (size_t a = 0; a < కొలత_adjust; a++) {
+			బఫరు_2[buf_కొలత + a] = (uint8_t)BlankSig;
 		}
 
-		pn->crc = crc32(entry_crc_start(pn), entry_crc_length(pn));
-#if defined(BOARD_USE_EXTERNAL_FLASH)
-		rv = up_progmem_ext_write((size_t) pf, pn, pn->size);
-#else
-		rv = up_progmem_write((size_t) pf, pn, pn->size);
-#endif
-		int system_bytes = (sizeof(flash_entry_header_t) + size_adjust);
+		pn->చక్రీయ_తనిఖీ = చక్రీయ_తనిఖీ_32(నమోదు_చక్రీయ_తనిఖీ_ప్రారంభం(pn), నమోదు_చక్రీయ_తనిఖీ_నిడివి(pn));
+#ఒకవేళ defined(BOARD_USE_EXTERNAL_FLASH)
+		rv = పైకి_progmem_ext_write((size_t) pf, pn, pn->కొలత);
+#లేకపోతే
+		rv = పైకి_progmem_write((size_t) pf, pn, pn->కొలత);
+#అయితే_ముగింపు
+		పూర్ణాంకం system_బైట్లు = (పరిమాణం(flash_నమోదు_శీర్షిక_t) + కొలత_adjust);
 
-		if (rv >= system_bytes) {
-			rv -= system_bytes;
+		ఒకవేళ (rv >= system_బైట్లు) {
+			rv -= system_బైట్లు;
 		}
 	}
 
-	return rv;
+	తిరిగి rv;
 }
 
 /****************************************************************************
  * Name: parameter_flashfs_walk
  ****************************************************************************/
 
-struct walk_pack {
+నిర్మాణం walk_pack {
 	parameter_flashfs_walk_cb cb;
-	void *arg;
+	శూన్య *arg;
 };
 
-static int walk_one(flash_entry_header_t *pf, void *arg)
+స్థిర పూర్ణాంకం walk_one(flash_నమోదు_శీర్షిక_t *pf, శూన్య *arg)
 {
-	struct walk_pack *w = (struct walk_pack *)arg;
-	return w->cb(entry_data(pf), entry_data_length(pf), w->arg);
+	నిర్మాణం walk_pack *w = (నిర్మాణం walk_pack *)arg;
+	తిరిగి w->cb(నమోదు_దత్తాంశం(pf), నమోదు_దత్తాంశం_నిడివి(pf), w->arg);
 }
 
-int parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb cb, void *arg)
+పూర్ణాంకం parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb cb, శూన్య *arg)
 {
-	struct walk_pack w = { cb, arg };
-	return for_each_valid_entry(token, walk_one, &w);
+	నిర్మాణం walk_pack w = { cb, arg };
+	తిరిగి for_each_valid_నమోదు(token, walk_one, &w);
 }
 
 /****************************************************************************
  * Name: parameter_flashfs_needs_compact
  ****************************************************************************/
 
-size_t parameter_flashfs_max_payload(void)
+size_t parameter_flashfs_max_payload(శూన్య)
 {
-	if (sector_map == NULL) {
-		return 0;
+	ఒకవేళ (sector_map == ఖాళీ) {
+		తిరిగి 0;
 	}
 
-	size_t max_total = 0;
+	size_t max_మొత్తం = 0;
 
-	for (int s = 0; sector_map[s].address; s++) {
-		if (sector_usable(s) > max_total) {
-			max_total = sector_usable(s);
+	కొరకు (పూర్ణాంకం s = 0; sector_map[s].చిరునామా; s++) {
+		ఒకవేళ (sector_usable(s) > max_మొత్తం) {
+			max_మొత్తం = sector_usable(s);
 		}
 	}
 
 	/* h_size_t holds the record size */
-	if (max_total > UINT16_MAX) {
-		max_total = UINT16_MAX;
+	ఒకవేళ (max_మొత్తం > UINT16_MAX) {
+		max_మొత్తం = UINT16_MAX;
 	}
 
-	max_total &= ~(size_t)SizeMask;
+	max_మొత్తం &= ~(size_t)కొలత_ముసుగు;
 
-	if (max_total <= sizeof(flash_entry_header_t)) {
-		return 0;
+	ఒకవేళ (max_మొత్తం <= పరిమాణం(flash_నమోదు_శీర్షిక_t)) {
+		తిరిగి 0;
 	}
 
-	return max_total - sizeof(flash_entry_header_t);
+	తిరిగి max_మొత్తం - పరిమాణం(flash_నమోదు_శీర్షిక_t);
 }
 
-int parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_size)
+పూర్ణాంకం parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_కొలత)
 {
-	if (sector_map == NULL) {
-		return -ENXIO;
+	ఒకవేళ (sector_map == ఖాళీ) {
+		తిరిగి -ENXIO;
 	}
 
-	flash_entry_header_t *first = find_entry(token);
+	flash_నమోదు_శీర్షిక_t *మొదటి = కనుగొను_నమోదు(token);
 
-	if (first == NULL) {
-		return 0;
+	ఒకవేళ (మొదటి == ఖాళీ) {
+		తిరిగి 0;
 	}
 
 	/* Dead records ahead of the live data (a torn write, or the erased
 	 * prefix the single-snapshot writer left) only go away with an erase. */
-	if ((uintptr_t)first != (uintptr_t)sector_map[0].address) {
-		return 1;
+	ఒకవేళ ((uintptr_t)మొదటి != (uintptr_t)sector_map[0].చిరునామా) {
+		తిరిగి 1;
 	}
 
 	/* Keep room after the log for a burst the size of the snapshot
 	 * (reset-all tombstones, airframe PARAM_SET), floored so a UUID append
 	 * does not force a boot erase. */
-	const size_t align = sizeof(h_magic_t) - 1;
-	const size_t snapshot_total = (snapshot_size + sizeof(flash_entry_header_t) + align) & ~align;
-	const size_t headroom = snapshot_total > 8192 ? snapshot_total : 8192;
+	స్థిరరాశి size_t align = పరిమాణం(h_magic_t) - 1;
+	స్థిరరాశి size_t snapshot_మొత్తం = (snapshot_కొలత + పరిమాణం(flash_నమోదు_శీర్షిక_t) + align) & ~align;
+	స్థిరరాశి size_t headroom = snapshot_మొత్తం > 8192 ? snapshot_మొత్తం : 8192;
 
-	if (find_append(headroom) != NULL) {
-		return 0;
+	ఒకవేళ (కనుగొను_append(headroom) != ఖాళీ) {
+		తిరిగి 0;
 	}
 
 	/* Compaction leaves the snapshot at the start of sector 0 and every
 	 * other sector blank. Erase only if that layout has the room this one
 	 * lacks, or every boot would pay the erase for nothing. */
-	if (sector_usable(0) >= snapshot_total + headroom) {
-		return 1;
+	ఒకవేళ (sector_usable(0) >= snapshot_మొత్తం + headroom) {
+		తిరిగి 1;
 	}
 
-	for (int s = 1; sector_map[s].address; s++) {
-		if (sector_usable(s) >= headroom) {
-			return 1;
+	కొరకు (పూర్ణాంకం s = 1; sector_map[s].చిరునామా; s++) {
+		ఒకవేళ (sector_usable(s) >= headroom) {
+			తిరిగి 1;
 		}
 	}
 
-	return 0;
+	తిరిగి 0;
 }
 
 /****************************************************************************
@@ -923,40 +923,40 @@ int parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_si
  *
  ****************************************************************************/
 
-int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *buf_size)
+పూర్ణాంకం parameter_flashfs_alloc(flash_file_token_t token, uint8_t **బఫరు_2, size_t *buf_కొలత)
 {
-	int rv = -ENXIO;
+	పూర్ణాంకం rv = -ENXIO;
 
-	if (sector_map) {
+	ఒకవేళ (sector_map) {
 
 		rv = -ENOMEM;
 
-		if (!working_buffer_static) {
+		ఒకవేళ (!working_బఫరు_static) {
 
 			/* parameter_flashfs_write pads the entry to a word in place */
-			working_buffer_size = *buf_size + sizeof(flash_entry_header_t) + SizeMask;
-			working_buffer = malloc(working_buffer_size);
+			working_బఫరు_కొలత = *buf_కొలత + పరిమాణం(flash_నమోదు_శీర్షిక_t) + కొలత_ముసుగు;
+			working_బఫరు = జ్ఞాపకం_ఇవ్వు(working_బఫరు_కొలత);
 
 		}
 
 		/* Allocation failed or not provided */
 
-		if (working_buffer == NULL) {
+		ఒకవేళ (working_బఫరు == ఖాళీ) {
 
-			working_buffer_size = 0;
+			working_బఫరు_కొలత = 0;
 
-		} else {
+		} లేకపోతే {
 
 			/* We have a buffer reserve space and init it */
-			*buffer = &working_buffer[sizeof(flash_entry_header_t)];
-			*buf_size = working_buffer_size - sizeof(flash_entry_header_t) - SizeMask;
-			memset(working_buffer, 0xff, working_buffer_size);
+			*బఫరు_2 = &working_బఫరు[పరిమాణం(flash_నమోదు_శీర్షిక_t)];
+			*buf_కొలత = working_బఫరు_కొలత - పరిమాణం(flash_నమోదు_శీర్షిక_t) - కొలత_ముసుగు;
+			memset(working_బఫరు, 0xff, working_బఫరు_కొలత);
 			rv = 0;
 
 		}
 	}
 
-	return rv;
+	తిరిగి rv;
 }
 
 /****************************************************************************
@@ -973,25 +973,25 @@ int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *
  *
  ****************************************************************************/
 
-int parameter_flashfs_erase(void)
+పూర్ణాంకం parameter_flashfs_erase(శూన్య)
 {
-	int rv = -ENXIO;
+	పూర్ణాంకం rv = -ENXIO;
 
-	if (sector_map) {
+	ఒకవేళ (sector_map) {
 		rv = 0;
 
-		for (int s = 0; sector_map[s].address; s++) {
-			int sz = erase_sector(&sector_map[s], (flash_entry_header_t *)sector_map[s].address);
+		కొరకు (పూర్ణాంకం s = 0; sector_map[s].చిరునామా; s++) {
+			పూర్ణాంకం sz = erase_sector(&sector_map[s], (flash_నమోదు_శీర్షిక_t *)sector_map[s].చిరునామా);
 
-			if (sz != 0) {
-				return sz;
+			ఒకవేళ (sz != 0) {
+				తిరిగి sz;
 			}
 
-			rv += sector_map[s].size;
+			rv += sector_map[s].కొలత;
 		}
 	}
 
-	return rv;
+	తిరిగి rv;
 }
 
 /****************************************************************************
@@ -1022,19 +1022,19 @@ int parameter_flashfs_erase(void)
  *
  ****************************************************************************/
 
-int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16_t size)
+పూర్ణాంకం parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *బఫరు_2, uint16_t కొలత)
 {
-	int rv = 0;
+	పూర్ణాంకం rv = 0;
 	sector_map = fconfig;
-	working_buffer_static = buffer != NULL;
+	working_బఫరు_static = బఫరు_2 != ఖాళీ;
 
-	if (!working_buffer_static) {
-		size = 0;
+	ఒకవేళ (!working_బఫరు_static) {
+		కొలత = 0;
 	}
 
-	working_buffer = buffer;
-	working_buffer_size = size;
-	last_erased = -1;
+	working_బఫరు = బఫరు_2;
+	working_బఫరు_కొలత = కొలత;
+	చివరి_erased = -1;
 
 	/* Sanity check */
 
@@ -1042,76 +1042,76 @@ int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16
 	 * reports -EILSEQ. Erasing here would hide a successful retry after
 	 * a torn write. */
 
-	return rv;
+	తిరిగి rv;
 }
 
-#if defined(FLASH_UNIT_TEST)
+#ఒకవేళ defined(FLASH_UNIT_TEST)
 
-static sector_descriptor_t  test_sector_map[] = {
+స్థిర sector_descriptor_t  test_sector_map[] = {
 	{1, 16 * 1024, 0x08004000},
 	{2, 16 * 1024, 0x08008000},
 	{0, 0, 0},
 };
 
-__EXPORT void test(void);
+__EXPORT శూన్య test(శూన్య);
 
 uint8_t test_buf[32 * 1024];
 
-__EXPORT void test(void)
+__EXPORT శూన్య test(శూన్య)
 {
-	uint16_t largest_block = (32 * 1024) + 32;
-	uint8_t *buffer = malloc(largest_block);
+	uint16_t అతిపెద్ద_ఖండం_2 = (32 * 1024) + 32;
+	uint8_t *బఫరు_2 = జ్ఞాపకం_ఇవ్వు(అతిపెద్ద_ఖండం_2);
 
-	parameter_flashfs_init(test_sector_map, buffer, largest_block);
+	parameter_flashfs_init(test_sector_map, బఫరు_2, అతిపెద్ద_ఖండం_2);
 
-	for (int t = 0; t < sizeof(test_buf); t++) {
+	కొరకు (పూర్ణాంకం t = 0; t < పరిమాణం(test_buf); t++) {
 		test_buf[t] = (uint8_t) t;
 	}
 
-	int er = parameter_flashfs_erase();
+	పూర్ణాంకం er = parameter_flashfs_erase();
 	uint8_t *fbuffer;
-	size_t buf_size;
-	int written = 0;
-	int read = 0;
-	int rv = 0;
+	size_t buf_కొలత;
+	పూర్ణాంకం written = 0;
+	పూర్ణాంకం పఠ = 0;
+	పూర్ణాంకం rv = 0;
 
-	for (int a = 0; a <= 4; a++) {
+	కొరకు (పూర్ణాంకం a = 0; a <= 4; a++) {
 		parameter_flashfs_erase();
-		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
-		memcpy(fbuffer, test_buf, a);
-		buf_size = a;
-		written = parameter_flashfs_write(parameters_token, fbuffer, buf_size);
-		read = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
+		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_కొలత);
+		జ్ఞాపకం_నకలు(fbuffer, test_buf, a);
+		buf_కొలత = a;
+		written = parameter_flashfs_write(parameters_token, fbuffer, buf_కొలత);
+		పఠ = parameter_flashfs_read(parameters_token, &fbuffer, &buf_కొలత);
 		parameter_flashfs_free();
 
-		if (read != written) {
-			static volatile int j;
+		ఒకవేళ (పఠ != written) {
+			స్థిర అస్థిర పూర్ణాంకం j;
 			j++;
 		}
 	}
 
-	int block = 2048;
+	పూర్ణాంకం ఖండం_2 = 2048;
 
-	for (int a = 0; a <= 8; a++) {
+	కొరకు (పూర్ణాంకం a = 0; a <= 8; a++) {
 		parameter_flashfs_erase();
-		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
-		memcpy(fbuffer, test_buf, block);
-		buf_size = block;
-		written = parameter_flashfs_write(parameters_token, fbuffer, buf_size);
-		read = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
+		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_కొలత);
+		జ్ఞాపకం_నకలు(fbuffer, test_buf, ఖండం_2);
+		buf_కొలత = ఖండం_2;
+		written = parameter_flashfs_write(parameters_token, fbuffer, buf_కొలత);
+		పఠ = parameter_flashfs_read(parameters_token, &fbuffer, &buf_కొలత);
 		parameter_flashfs_free();
 
-		if (read != written) {
-			static volatile int j;
+		ఒకవేళ (పఠ != written) {
+			స్థిర అస్థిర పూర్ణాంకం j;
 			j++;
 		}
 
-		block += 2048;
+		ఖండం_2 += 2048;
 	}
 
 	rv++;
 	er++;
-	free(buffer);
+	విడుదల(బఫరు_2);
 }
-#endif /* FLASH_UNIT_TEST */
-#endif /* CONFIG_ARCH_HAVE_PROGMEM */
+#అయితే_ముగింపు /* FLASH_UNIT_TEST */
+#అయితే_ముగింపు /* CONFIG_ARCH_HAVE_PROGMEM */

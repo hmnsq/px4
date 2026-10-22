@@ -32,69 +32,69 @@
  ****************************************************************************/
 
 
-#include "PX4Accelerometer.hpp"
+#అన్తర్భావ "PX4Accelerometer.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#అన్తర్భావ <lib/drivers/device/Device.hpp>
+#అన్తర్భావ <lib/parameters/param.h>
 
-using namespace time_literals;
+ఉపయోగించి నామాకాశ సమయం_literals;
 
-static constexpr int32_t sum(const int16_t samples[], uint8_t len)
+స్థిర constexpr int32_t కూడిక(స్థిరరాశి int16_t samples[], uint8_t len)
 {
-	int32_t sum = 0;
+	int32_t కూడిక = 0;
 
-	for (int n = 0; n < len; n++) {
-		sum += samples[n];
+	కొరకు (పూర్ణాంకం n = 0; n < len; n++) {
+		కూడిక += samples[n];
 	}
 
-	return sum;
+	తిరిగి కూడిక;
 }
 
-static constexpr uint8_t clipping(const int16_t samples[], uint8_t len, int16_t clip_limit)
+స్థిర constexpr uint8_t clipping(స్థిరరాశి int16_t samples[], uint8_t len, int16_t clip_హద్దు)
 {
-	unsigned clip_count = 0;
+	గుర్తులేని clip_లెక్క = 0;
 
-	for (int n = 0; n < len; n++) {
+	కొరకు (పూర్ణాంకం n = 0; n < len; n++) {
 		// symmetric about zero: rotation negates samples and |INT16_MIN| = INT16_MAX + 1
-		if ((samples[n] <= -clip_limit) || (samples[n] >= clip_limit)) {
-			clip_count++;
+		ఒకవేళ ((samples[n] <= -clip_హద్దు) || (samples[n] >= clip_హద్దు)) {
+			clip_లెక్క++;
 		}
 	}
 
-	return clip_count;
+	తిరిగి clip_లెక్క;
 }
 
-PX4Accelerometer::PX4Accelerometer(uint32_t device_id, enum Rotation rotation) :
+PX4Accelerometer::PX4Accelerometer(uint32_t device_id, గణన Rotation rotation) :
 	PX4Accelerometer(device_id, rotation, device::device_is_external(device_id))
 {
-	_external_forced = false;
+	_external_forced = అబద్ధం;
 }
 
-PX4Accelerometer::PX4Accelerometer(uint32_t device_id, enum Rotation rotation, bool external) :
+PX4Accelerometer::PX4Accelerometer(uint32_t device_id, గణన Rotation rotation, తార్కిక external) :
 	_device_id{device_id},
 	_rotation{rotation},
 	_is_external{external},
-	_external_forced{true}
+	_external_forced{నిజం}
 {
 	// advertise immediately to keep instance numbering in sync
 	_sensor_pub.advertise();
 
-	param_get(param_find("IMU_GYRO_RATEMAX"), &_imu_gyro_rate_max);
+	param_get(param_కనుగొను("IMU_GYRO_RATEMAX"), &imu_gyro_రేటు_max);
 }
 
-void PX4Accelerometer::set_device_id(uint32_t device_id)
+శూన్య PX4Accelerometer::సమితి_device_id(uint32_t device_id)
 {
 	_device_id = device_id;
 
-	if (!_external_forced) {
+	ఒకవేళ (!_external_forced) {
 		_is_external = device::device_is_external(device_id);
 	}
 }
 
-void PX4Accelerometer::set_external(bool external)
+శూన్య PX4Accelerometer::సమితి_external(తార్కిక external)
 {
 	_is_external = external;
-	_external_forced = true;
+	_external_forced = నిజం;
 }
 
 PX4Accelerometer::~PX4Accelerometer()
@@ -103,10 +103,10 @@ PX4Accelerometer::~PX4Accelerometer()
 	_sensor_fifo_pub.unadvertise();
 }
 
-void PX4Accelerometer::set_device_type(uint8_t devtype)
+శూన్య PX4Accelerometer::సమితి_device_type(uint8_t devtype)
 {
 	// current DeviceStructure
-	union device::Device::DeviceId device_id;
+	సంఘం device::Device::DeviceId device_id;
 	device_id.devid = _device_id;
 
 	// update to new device type
@@ -116,23 +116,23 @@ void PX4Accelerometer::set_device_type(uint8_t devtype)
 	_device_id = device_id.devid;
 }
 
-void PX4Accelerometer::set_scale(float scale)
+శూన్య PX4Accelerometer::సమితి_scale(దశాంశం scale)
 {
-	if (fabsf(scale - _scale) > FLT_EPSILON) {
+	ఒకవేళ (fabsf(scale - _scale) > FLT_EPSILON) {
 		// rescale last sample on scale change
-		float rescale = _scale / scale;
+		దశాంశం rescale = _scale / scale;
 
-		for (auto &s : _last_sample) {
+		కొరకు (స్వయంచాలక &s : చివరి_sample) {
 			s = roundf(s * rescale);
 		}
 
 		_scale = scale;
 
-		UpdateClipLimit();
+		Update_Clip_హద్దు();
 	}
 }
 
-void PX4Accelerometer::update(const hrt_abstime &timestamp_sample, float x, float y, float z)
+శూన్య PX4Accelerometer::update(స్థిరరాశి hrt_abstime &timestamp_sample, దశాంశం x, దశాంశం y, దశాంశం z)
 {
 	// Apply rotation (before scaling)
 	rotate_3f(_rotation, x, y, z);
@@ -144,48 +144,48 @@ void PX4Accelerometer::update(const hrt_abstime &timestamp_sample, float x, floa
 	report.device_id = _device_id;
 	report.is_external = _is_external;
 	report.temperature = _temperature;
-	report.error_count = _error_count;
+	report.error_లెక్క = error_లెక్క_2;
 	report.x = x * _scale;
 	report.y = y * _scale;
 	report.z = z * _scale;
-	report.clip_counter[0] = (fabsf(x) >= _clip_limit);
-	report.clip_counter[1] = (fabsf(y) >= _clip_limit);
-	report.clip_counter[2] = (fabsf(z) >= _clip_limit);
+	report.clip_counter[0] = (fabsf(x) >= clip_హద్దు_2);
+	report.clip_counter[1] = (fabsf(y) >= clip_హద్దు_2);
+	report.clip_counter[2] = (fabsf(z) >= clip_హద్దు_2);
 	report.samples = 1;
-	report.timestamp = hrt_absolute_time();
+	report.timestamp = hrt_absolute_సమయం();
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_ACCEL,
+	ఒకవేళ (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_ACCEL,
 					_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		తిరిగి;
 	}
 
 	_sensor_pub.publish(report);
 }
 
-void PX4Accelerometer::updateFIFO(sensor_accel_fifo_s &sample)
+శూన్య PX4Accelerometer::updateFIFO(sensor_accel_fifo_s &sample)
 {
 	// rotate all raw samples and publish fifo
-	for (int n = 0; n < sample.samples; n++) {
+	కొరకు (పూర్ణాంకం n = 0; n < sample.samples; n++) {
 		rotate_3i(_rotation, sample.x[n], sample.y[n], sample.z[n]);
 	}
 
 	sample.device_id = _device_id;
 	sample.is_external = _is_external;
 	sample.scale = _scale;
-	sample.timestamp = hrt_absolute_time();
+	sample.timestamp = hrt_absolute_సమయం();
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_ACCEL,
+	ఒకవేళ (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_ACCEL,
 					_sensor_pub.get_instance(), sample, _stuck_fifo)) {
-		return;
+		తిరిగి;
 	}
 
 	_sensor_fifo_pub.publish(sample);
 
-	const uint8_t N = sample.samples;
+	స్థిరరాశి uint8_t N = sample.samples;
 
 	// publish
 	sensor_accel_s report;
@@ -193,38 +193,38 @@ void PX4Accelerometer::updateFIFO(sensor_accel_fifo_s &sample)
 	report.device_id = _device_id;
 	report.is_external = _is_external;
 	report.temperature = _temperature;
-	report.error_count = _error_count;
+	report.error_లెక్క = error_లెక్క_2;
 
 	// trapezoidal integration (equally spaced)
-	const float scale = _scale / (float)N;
-	report.x = (0.5f * (_last_sample[0] + sample.x[N - 1]) + sum(sample.x, N - 1)) * scale;
-	report.y = (0.5f * (_last_sample[1] + sample.y[N - 1]) + sum(sample.y, N - 1)) * scale;
-	report.z = (0.5f * (_last_sample[2] + sample.z[N - 1]) + sum(sample.z, N - 1)) * scale;
+	స్థిరరాశి దశాంశం scale = _scale / (దశాంశం)N;
+	report.x = (0.5f * (చివరి_sample[0] + sample.x[N - 1]) + కూడిక(sample.x, N - 1)) * scale;
+	report.y = (0.5f * (చివరి_sample[1] + sample.y[N - 1]) + కూడిక(sample.y, N - 1)) * scale;
+	report.z = (0.5f * (చివరి_sample[2] + sample.z[N - 1]) + కూడిక(sample.z, N - 1)) * scale;
 
-	_last_sample[0] = sample.x[N - 1];
-	_last_sample[1] = sample.y[N - 1];
-	_last_sample[2] = sample.z[N - 1];
+	చివరి_sample[0] = sample.x[N - 1];
+	చివరి_sample[1] = sample.y[N - 1];
+	చివరి_sample[2] = sample.z[N - 1];
 
 	// The declared range is not the int16 rail on every part (ST high-g and dps scales leave
 	// headroom in the word), so clip against range/scale like update() does. The 0.999 margin
 	// in _clip_limit also covers sensors that reuse the lowest bit for a sync flag.
-	const int16_t clip_limit = static_cast<int16_t>(math::min(_clip_limit, (float)(INT16_MAX - 1)));
-	report.clip_counter[0] = clipping(sample.x, N, clip_limit);
-	report.clip_counter[1] = clipping(sample.y, N, clip_limit);
-	report.clip_counter[2] = clipping(sample.z, N, clip_limit);
+	స్థిరరాశి int16_t clip_హద్దు = static_cast<int16_t>(math::min(clip_హద్దు_2, (దశాంశం)(INT16_MAX - 1)));
+	report.clip_counter[0] = clipping(sample.x, N, clip_హద్దు);
+	report.clip_counter[1] = clipping(sample.y, N, clip_హద్దు);
+	report.clip_counter[2] = clipping(sample.z, N, clip_హద్దు);
 	report.samples = N;
-	report.timestamp = hrt_absolute_time();
+	report.timestamp = hrt_absolute_సమయం();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_ACCEL,
+	ఒకవేళ (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_ACCEL,
 					_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		తిరిగి;
 	}
 
 	_sensor_pub.publish(report);
 }
 
-void PX4Accelerometer::UpdateClipLimit()
+శూన్య PX4Accelerometer::Update_Clip_హద్దు()
 {
 	// 99.9% of potential max
-	_clip_limit = fabsf(_range / _scale * 0.999f);
+	clip_హద్దు_2 = fabsf(_range / _scale * 0.999f);
 }

@@ -1,31 +1,31 @@
 
-#include "common_rc.h"
+#అన్తర్భావ "common_rc.h"
 
 __EXPORT rc_decode_buf_t rc_decode_buf;
 
-uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a)
+uint8_t crc8_dvb_s2(uint8_t చక్రీయ_తనిఖీ, uint8_t a)
 {
-	crc ^= a;
+	చక్రీయ_తనిఖీ ^= a;
 
-	for (int i = 0; i < 8; ++i) {
-		if (crc & 0x80) {
-			crc = (crc << 1) ^ 0xD5;
+	కొరకు (పూర్ణాంకం i = 0; i < 8; ++i) {
+		ఒకవేళ (చక్రీయ_తనిఖీ & 0x80) {
+			చక్రీయ_తనిఖీ = (చక్రీయ_తనిఖీ << 1) ^ 0xD5;
 
-		} else {
-			crc = crc << 1;
+		} లేకపోతే {
+			చక్రీయ_తనిఖీ = చక్రీయ_తనిఖీ << 1;
 		}
 	}
 
-	return crc;
+	తిరిగి చక్రీయ_తనిఖీ;
 }
 
-uint8_t crc8_dvb_s2_buf(uint8_t *buf, int len)
+uint8_t crc8_dvb_s2_buf(uint8_t *buf, పూర్ణాంకం len)
 {
-	uint8_t crc = 0;
+	uint8_t చక్రీయ_తనిఖీ = 0;
 
-	for (int i = 0; i < len; ++i) {
-		crc = crc8_dvb_s2(crc, buf[i]);
+	కొరకు (పూర్ణాంకం i = 0; i < len; ++i) {
+		చక్రీయ_తనిఖీ = crc8_dvb_s2(చక్రీయ_తనిఖీ, buf[i]);
 	}
 
-	return crc;
+	తిరిగి చక్రీయ_తనిఖీ;
 }

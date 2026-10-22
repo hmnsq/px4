@@ -40,58 +40,58 @@
  *
  */
 
-#ifndef OTP_H_
-#define OTP_H_
+#నిర్వచితం_కాకపోతే OTP_H_
+#నిర్వచించు OTP_H_
 
-#define ADDR_OTP_START			0x1FFF7800
-#define ADDR_OTP_LOCK_START		0x1FFF7A00
+#నిర్వచించు ADDR_OTP_ప్రారంభం			0x1FFF7800
+#నిర్వచించు ADDR_OTP_తాళం_ప్రారంభం		0x1FFF7A00
 
-#define OTP_LOCK_LOCKED			0x00
-#define OTP_LOCK_UNLOCKED		0xFF
+#నిర్వచించు OTP_తాళం_LOCKED			0x00
+#నిర్వచించు OTP_తాళం_UNLOCKED		0xFF
 
 
 
-#include <unistd.h>
-#include <stdint.h>
-#include <stdio.h>
+#అన్తర్భావ <unistd.h>
+#అన్తర్భావ <stdint.h>
+#అన్తర్భావ <stdio.h>
 
 // possible flash statuses
-#define F_BUSY 1
-#define F_ERROR_WRP 2
-#define F_ERROR_PROGRAM 3
-#define F_ERROR_OPERATION 4
-#define F_COMPLETE 5
+#నిర్వచించు F_BUSY 1
+#నిర్వచించు F_ERROR_WRP 2
+#నిర్వచించు F_ERROR_కార్యక్రమం 3
+#నిర్వచించు F_ERROR_OPERATION 4
+#నిర్వచించు F_COMPLETE 5
 
-typedef struct {
-	volatile unsigned long accesscontrol;      // 0x00
-	volatile unsigned long key;     //  0x04
-	volatile unsigned long optionkey;  //  0x08
-	volatile unsigned long status;       // 0x0C
-	volatile unsigned long control;       // 0x10
-	volatile unsigned long optioncontrol;    //0x14
+రకనిర్వచనం నిర్మాణం {
+	అస్థిర గుర్తులేని దీర్ఘ accesscontrol;      // 0x00
+	అస్థిర గుర్తులేని దీర్ఘ కీలకం;     //  0x04
+	అస్థిర గుర్తులేని దీర్ఘ optionkey;  //  0x08
+	అస్థిర గుర్తులేని దీర్ఘ స్థితి_2;       // 0x0C
+	అస్థిర గుర్తులేని దీర్ఘ control;       // 0x10
+	అస్థిర గుర్తులేని దీర్ఘ optioncontrol;    //0x14
 } flash_registers;
 
-#define PERIPH_BASE           ((unsigned long)0x40000000) //Peripheral base address
-#define AHB1PERIPH_BASE       (PERIPH_BASE + 0x00020000)
-#define F_R_BASE          (AHB1PERIPH_BASE + 0x3C00)
-#define FLASH               ((flash_registers *) F_R_BASE)
+#నిర్వచించు PERIPH_పునాది           ((గుర్తులేని దీర్ఘ)0x40000000) //Peripheral base address
+#నిర్వచించు AHB1_PERIPH_పునాది       (PERIPH_పునాది + 0x00020000)
+#నిర్వచించు F_R_పునాది          (AHB1_PERIPH_పునాది + 0x3C00)
+#నిర్వచించు FLASH               ((flash_registers *) F_R_పునాది)
 
-#define F_BSY ((unsigned long)0x00010000) //FLASH Busy flag bit
-#define F_OPERR ((unsigned long)0x00000002) //FLASH operation Error flag bit
-#define F_WRPERR ((unsigned long)0x00000010) //FLASH Write protected error flag bit
-#define CR_PSIZE_MASK ((unsigned long)0xFFFFFCFF)
-#define F_PSIZE_WORD ((unsigned long)0x00000200)
-#define F_PSIZE_BYTE ((unsigned long)0x00000000)
-#define F_CR_PG ((unsigned long)0x00000001) // a bit in the F_CR register
-#define F_CR_LOCK ((unsigned long)0x80000000) // also another bit.
+#నిర్వచించు F_BSY ((గుర్తులేని దీర్ఘ)0x00010000) //FLASH Busy flag bit
+#నిర్వచించు F_OPERR ((గుర్తులేని దీర్ఘ)0x00000002) //FLASH operation Error flag bit
+#నిర్వచించు F_WRPERR ((గుర్తులేని దీర్ఘ)0x00000010) //FLASH Write protected error flag bit
+#నిర్వచించు CR_PSIZE_ముసుగు ((గుర్తులేని దీర్ఘ)0xFFFFFCFF)
+#నిర్వచించు F_PSIZE_మాట ((గుర్తులేని దీర్ఘ)0x00000200)
+#నిర్వచించు F_PSIZE_BYTE ((గుర్తులేని దీర్ఘ)0x00000000)
+#నిర్వచించు F_CR_PG ((గుర్తులేని దీర్ఘ)0x00000001) // a bit in the F_CR register
+#నిర్వచించు F_CR_తాళం ((గుర్తులేని దీర్ఘ)0x80000000) // also another bit.
 
-#define F_KEY1 ((unsigned long)0x45670123)
-#define F_KEY2 ((unsigned long)0xCDEF89AB)
-#define IS_F_ADDRESS(ADDRESS) ((((ADDRESS) >= 0x08000000) && ((ADDRESS) < 0x080FFFFF)) || (((ADDRESS) >= 0x1FFF7800) && ((ADDRESS) < 0x1FFF7A0F)))
+#నిర్వచించు F_KEY1 ((గుర్తులేని దీర్ఘ)0x45670123)
+#నిర్వచించు F_KEY2 ((గుర్తులేని దీర్ఘ)0xCDEF89AB)
+#నిర్వచించు IS_F_చిరునామా(చిరునామా_3) ((((చిరునామా_3) >= 0x08000000) && ((చిరునామా_3) < 0x080FFFFF)) || (((చిరునామా_3) >= 0x1FFF7800) && ((చిరునామా_3) < 0x1FFF7A0F)))
 
 
 
-#pragma pack(push, 1)
+#సూచన pack(నెట్టు, 1)
 
 /*
  * The OTP area is divided into 16 OTP data blocks of 32 bytes and one lock OTP block of 16 bytes.
@@ -101,46 +101,46 @@ typedef struct {
  * contain 0x00 and 0xFF values, otherwise the OTP bytes might not be taken into account correctly.
  */
 
-struct otp {
+నిర్మాణం otp {
 	// first 32 bytes =  the '0' Block
-	char		id[4];		///4 bytes < 'P' 'X' '4' '\n'
+	అక్షరం		id[4];		///4 bytes < 'P' 'X' '4' '\n'
 	uint8_t		id_type;	///1 byte < 0 for USB VID, 1 for generic VID
 	uint32_t	vid;        ///4 bytes
 	uint32_t	pid;        ///4 bytes
-	char        unused[19];  ///19 bytes
+	అక్షరం        వాడని[19];  ///19 bytes
 	// Cert-of-Auth is next 4 blocks ie 1-4  ( where zero is first block )
-	char        signature[128];
+	అక్షరం        signature[128];
 	// insert extras here
-	uint32_t	lock_bytes[4];
+	uint32_t	తాళం_బైట్లు[4];
 };
 
-struct otp_lock {
-	uint8_t		lock_bytes[16];
+నిర్మాణం otp_తాళం {
+	uint8_t		తాళం_బైట్లు[16];
 };
-#pragma pack(pop)
+#సూచన pack(తీయి)
 
-#define ADDR_F_SIZE		0x1FFF7A22
+#నిర్వచించు ADDR_F_కొలత		0x1FFF7A22
 
-#pragma pack(push, 1)
-union udid {
+#సూచన pack(నెట్టు, 1)
+సంఘం udid {
 	uint32_t	serial[3];
-	uint8_t  data[12];
+	uint8_t  దత్తాంశం[12];
 };
-#pragma pack(pop)
+#సూచన pack(తీయి)
 
 __BEGIN_DECLS
 
-__EXPORT void F_unlock(void);
-__EXPORT void F_lock(void);
-__EXPORT int val_read(void *dest, volatile const void *src, int bytes);
-__EXPORT int val_write(volatile void *dest, const void *src, int bytes);
-__EXPORT int write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, char *signature);
-__EXPORT int lock_otp(void);
+__EXPORT శూన్య F_unlock(శూన్య);
+__EXPORT శూన్య F_తాళం(శూన్య);
+__EXPORT పూర్ణాంకం val_read(శూన్య *dest, అస్థిర స్థిరరాశి శూన్య *src, పూర్ణాంకం బైట్లు);
+__EXPORT పూర్ణాంకం val_write(అస్థిర శూన్య *dest, స్థిరరాశి శూన్య *src, పూర్ణాంకం బైట్లు);
+__EXPORT పూర్ణాంకం write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, అక్షరం *signature);
+__EXPORT పూర్ణాంకం తాళం_otp(శూన్య);
 
 
-__EXPORT int F_write_byte(unsigned long Address, uint8_t Data);
-__EXPORT int F_write_word(unsigned long Address, uint32_t Data);
+__EXPORT పూర్ణాంకం F_write_byte(గుర్తులేని దీర్ఘ చిరునామా_2, uint8_t దత్తాంశం_4);
+__EXPORT పూర్ణాంకం F_write_మాట(గుర్తులేని దీర్ఘ చిరునామా_2, uint32_t దత్తాంశం_4);
 
 __END_DECLS
 
-#endif
+#అయితే_ముగింపు

@@ -41,55 +41,55 @@
  * @author Nick Belanger <nbelanger@mail.skymul.com>
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <lib/drivers/smbus/SMBus.hpp>
-#include <uORB/topics/battery_info.h>
-#include <uORB/topics/battery_status.h>
-#include <px4_platform_common/param.h>
-#include <lib/atmosphere/atmosphere.h>
+#అన్తర్భావ <px4_platform_common/i2c_spi_buses.h>
+#అన్తర్భావ <lib/drivers/smbus/SMBus.hpp>
+#అన్తర్భావ <uORB/topics/battery_info.h>
+#అన్తర్భావ <uORB/topics/battery_status.h>
+#అన్తర్భావ <px4_platform_common/param.h>
+#అన్తర్భావ <lib/atmosphere/atmosphere.h>
 
-using namespace time_literals;
+ఉపయోగించి నామాకాశ సమయం_literals;
 
-#define SBS_MEASUREMENT_INTERVAL_US             	100_ms          ///< time in microseconds, measure at 10Hz (not part of SBS spec)
+#నిర్వచించు SBS_MEASUREMENT_INTERVAL_US             	100_ms          ///< time in microseconds, measure at 10Hz (not part of SBS spec)
 
-template<class T>
-class SMBUS_SBS_BaseClass : public I2CSPIDriver<T>
+మూస<తరగతి T>
+తరగతి SMBUS_SBS_పునాది_Class : బహిరంగ I2CSPIDriver<T>
 {
-public:
-	SMBUS_SBS_BaseClass(const I2CSPIDriverConfig &config, SMBus *interface);
-	SMBUS_SBS_BaseClass();
+బహిరంగ:
+	SMBUS_SBS_పునాది_Class(స్థిరరాశి I2CSPIDriverConfig &config, SMBus *interface);
+	SMBUS_SBS_పునాది_Class();
 
-	~SMBUS_SBS_BaseClass();
+	~SMBUS_SBS_పునాది_Class();
 
-	static void print_usage();
+	స్థిర శూన్య print_usage();
 
-	friend SMBus;
+	మిత్ర SMBus;
 
-	int populate_smbus_data(battery_status_s &msg, battery_info_s &battery_info);
+	పూర్ణాంకం populate_smbus_దత్తాంశం(battery_స్థితి_s &సందేశం_2, battery_info_s &battery_info);
 
-	virtual void RunImpl(); // Can be overridden by derived implimentation
+	మాయా శూన్య నిరంతరం_Impl(); // Can be overridden by derived implimentation
 
-	virtual void custom_method(const BusCLIArguments &cli) = 0; //Has be overriden by derived implimentation
+	మాయా శూన్య custom_పద్ధతి(స్థిరరాశి BusCLIArguments &cli) = 0; //Has be overriden by derived implimentation
 
 	/**
 	 * @brief Returns the SBS serial number of the battery device.
 	 * @return Returns the SBS serial number of the battery device.
 	 */
-	uint16_t get_serial_number();
+	uint16_t get_serial_సంఖ్య();
 
 	/**
 	* @brief Read info from battery on startup.
 	* @return Returns PX4_OK on success, PX4_ERROR on failure. Can be overridden by derived implimentation
 	*/
-	virtual int get_startup_info();
+	మాయా పూర్ణాంకం get_startup_info();
 
 	/**
 	 * @brief Gets the SBS manufacture date of the battery.
 	 * @return Returns PX4_OK on success, PX4_ERROR on failure.
 	 */
-	int manufacture_date();
+	పూర్ణాంకం manufacture_date();
 
 	/**
 	 * @brief Gets the SBS manufacturer name of the battery device.
@@ -98,234 +98,234 @@ public:
 	 *                   including the null character that is appended to the end.
 	 * @return Returns PX4_OK on success, PX4_ERROR on failure.
 	 */
-	int manufacturer_name(uint8_t *manufacturer_name, const uint8_t length);
+	పూర్ణాంకం manufacturer_name(uint8_t *manufacturer_name, స్థిరరాశి uint8_t నిడివి);
 
 	/**
 	 * @brief Enables or disables the cell under voltage protection emergency shut off.
 	 */
 
-	void suspend();
+	శూన్య suspend();
 
-	void resume();
-	enum {
-		BATT_SMBUS_TEMP                         =	0x08,           ///< temperature register
+	శూన్య resume();
+	గణన {
+		BATT_SMBUS_తాత్కాలిక                         =	0x08,           ///< temperature register
 		BATT_SMBUS_VOLTAGE                      =       0x09,           ///< voltage register
 		BATT_SMBUS_CURRENT                      =       0x0A,           ///< current register
-		BATT_SMBUS_AVERAGE_CURRENT              =       0x0B,           ///< average current register
+		BATT_SMBUS_సరాసరి_CURRENT              =       0x0B,           ///< average current register
 		BATT_SMBUS_MAX_ERROR                    =       0x0C,           ///< max error
 		BATT_SMBUS_RELATIVE_SOC                 =       0x0D,           ///< Relative State Of Charge
 		BATT_SMBUS_ABSOLUTE_SOC                 =       0x0E,           ///< Absolute State of charge
-		BATT_SMBUS_REMAINING_CAPACITY           =       0x0F,           ///< predicted remaining battery capacity as a percentage
-		BATT_SMBUS_FULL_CHARGE_CAPACITY         =       0x10,           ///< capacity when fully charged
-		BATT_SMBUS_RUN_TIME_TO_EMPTY            =       0x11,           ///< predicted remaining battery capacity based on the present rate of discharge in min
-		BATT_SMBUS_AVERAGE_TIME_TO_EMPTY        =       0x12,           ///< predicted remaining battery capacity based on the present rate of discharge in min
-		BATT_SMBUS_CYCLE_COUNT                  =       0x17,           ///< number of cycles the battery has experienced
-		BATT_SMBUS_DESIGN_CAPACITY              =       0x18,           ///< design capacity register
+		BATT_SMBUS_మిగిలిన_సామర్థ్యం           =       0x0F,           ///< predicted remaining battery capacity as a percentage
+		BATT_SMBUS_నిండిన_CHARGE_సామర్థ్యం         =       0x10,           ///< capacity when fully charged
+		BATT_SMBUS_నిరంతరం_సమయం_గమ్యం_ఖాళీలు            =       0x11,           ///< predicted remaining battery capacity based on the present rate of discharge in min
+		BATT_SMBUS_సరాసరి_సమయం_గమ్యం_ఖాళీలు        =       0x12,           ///< predicted remaining battery capacity based on the present rate of discharge in min
+		BATT_SMBUS_చక్రం_లెక్క                  =       0x17,           ///< number of cycles the battery has experienced
+		BATT_SMBUS_DESIGN_సామర్థ్యం              =       0x18,           ///< design capacity register
 		BATT_SMBUS_DESIGN_VOLTAGE               =       0x19,           ///< design voltage register
 		BATT_SMBUS_MANUFACTURER_NAME            =       0x20,           ///< manufacturer name
-		BATT_SMBUS_MANUFACTURER_NAME_SIZE       =       21,             ///< manufacturer name data size (not part of SBS spec)
+		BATT_SMBUS_MANUFACTURER_NAME_కొలత       =       21,             ///< manufacturer name data size (not part of SBS spec)
 		BATT_SMBUS_DEVICE_NAME			=	0x21,		///< character string that contains the battery's name
 		BATT_SMBUS_MANUFACTURE_DATE             =       0x1B,           ///< manufacture date register
-		BATT_SMBUS_SERIAL_NUMBER                =       0x1C,           ///< serial number register
+		BATT_SMBUS_SERIAL_సంఖ్య                =       0x1C,           ///< serial number register
 		BATT_SMBUS_MANUFACTURER_ACCESS          =       0x00,
-		BATT_SMBUS_MANUFACTURER_DATA            =       0x23
+		BATT_SMBUS_MANUFACTURER_దత్తాంశం            =       0x23
 	} SBS_REGISTERS;
 
-protected:
+రక్షిత:
 
 	SMBus *_interface;
 
-	perf_counter_t _cycle{perf_alloc(PC_ELAPSED, "batmon_cycle")}; // TODO
+	perf_counter_t చక్రం{perf_alloc(PC_ELAPSED, "batmon_cycle")}; // TODO
 
-	orb_advert_t _battery_info_topic{nullptr};
-	orb_advert_t _batt_topic{nullptr};
+	orb_advert_t _battery_info_topic{శూన్యసూచిక};
+	orb_advert_t _batt_topic{శూన్యసూచిక};
 
 	/** @param _cell_count Number of series cell (retrieved from cell_count PX4 params) */
-	uint8_t _cell_count{0};
+	uint8_t cell_లెక్క_2{0};
 
 	/** @param _batt_capacity Battery design capacity in mAh (0 means unknown). */
-	uint16_t _batt_capacity{0};
+	uint16_t batt_సామర్థ్యం{0};
 
 	/** @param _batt_startup_capacity Battery remaining capacity in mAh on startup. */
-	uint16_t _batt_startup_capacity{0};
+	uint16_t batt_startup_సామర్థ్యం{0};
 
 	/** @param _cycle_count The number of cycles the battery has experienced. */
-	uint16_t _cycle_count{0};
+	uint16_t చక్రం_లెక్క{0};
 
 	/** @param _serial_number Serial number register. */
-	uint16_t _serial_number{0};
+	uint16_t serial_సంఖ్య{0};
 
 	/** @param _manufacturer_name Name of the battery manufacturer. */
-	char _manufacturer_name[BATT_SMBUS_MANUFACTURER_NAME_SIZE + 1] {};	// Plus one for terminator
+	అక్షరం _manufacturer_name[BATT_SMBUS_MANUFACTURER_NAME_కొలత + 1] {};	// Plus one for terminator
 
 	/** @param _manufacture_date Date of the battery manufacturing. */
 	uint16_t _manufacture_date{0};
 
 	/** @param _state_of_health state of health as read on connection  */
-	float _state_of_health{0.f}; // Not part of SBS, can be calculated from FullChargeCapacity
+	దశాంశం state_యొక్క_health{0.f}; // Not part of SBS, can be calculated from FullChargeCapacity
 	// and DesignCapacity
 
-	void print_man_info();
+	శూన్య print_man_info();
 
 };
 
-template<class T>
-SMBUS_SBS_BaseClass<T>::SMBUS_SBS_BaseClass(const I2CSPIDriverConfig &config, SMBus *interface):
+మూస<తరగతి T>
+SMBUS_SBS_పునాది_Class<T>::SMBUS_SBS_పునాది_Class(స్థిరరాశి I2CSPIDriverConfig &config, SMBus *interface):
 	I2CSPIDriver<T>(config),
 	_interface(interface)
 {
 	battery_info_s battery_info{};
-	battery_status_s new_report = {};
-	int SBS_instance_number = 0;
-	_battery_info_topic = orb_advertise_multi(ORB_ID(battery_info), &battery_info, &SBS_instance_number);
-	_batt_topic = orb_advertise_multi(ORB_ID(battery_status), &new_report, &SBS_instance_number);
+	battery_స్థితి_s new_report = {};
+	పూర్ణాంకం SBS_instance_సంఖ్య = 0;
+	_battery_info_topic = orb_advertise_multi(ORB_ID(battery_info), &battery_info, &SBS_instance_సంఖ్య);
+	_batt_topic = orb_advertise_multi(ORB_ID(battery_స్థితి), &new_report, &SBS_instance_సంఖ్య);
 	_interface->init();
 }
 
-template<class T>
-SMBUS_SBS_BaseClass<T>::~SMBUS_SBS_BaseClass()
+మూస<తరగతి T>
+SMBUS_SBS_పునాది_Class<T>::~SMBUS_SBS_పునాది_Class()
 {
 	orb_unadvertise(_batt_topic);
-	perf_free(_cycle); // TODO
+	perf_free(చక్రం); // TODO
 
-	if (_interface != nullptr) {
-		delete _interface;
+	ఒకవేళ (_interface != శూన్యసూచిక) {
+		తొలగించు _interface;
 	}
 
 }
 
-template<class T>
-void SMBUS_SBS_BaseClass<T>::suspend()
+మూస<తరగతి T>
+శూన్య SMBUS_SBS_పునాది_Class<T>::suspend()
 {
-	this->ScheduleClear();
+	ఇది->కాలపట్టిక_Clear();
 }
 
-template<class T>
-void SMBUS_SBS_BaseClass<T>::resume()
+మూస<తరగతి T>
+శూన్య SMBUS_SBS_పునాది_Class<T>::resume()
 {
-	this->ScheduleOnInterval(SBS_MEASUREMENT_INTERVAL_US);
+	ఇది->కాలపట్టిక_On_Interval(SBS_MEASUREMENT_INTERVAL_US);
 }
 
-template<class T>
-uint16_t SMBUS_SBS_BaseClass<T>::get_serial_number()
+మూస<తరగతి T>
+uint16_t SMBUS_SBS_పునాది_Class<T>::get_serial_సంఖ్య()
 {
-	uint16_t serial_num = 0;
+	uint16_t serial_అంకె = 0;
 
-	if (_interface->read_word(BATT_SMBUS_SERIAL_NUMBER, serial_num) == PX4_OK) {
-		return serial_num;
+	ఒకవేళ (_interface->read_మాట(BATT_SMBUS_SERIAL_సంఖ్య, serial_అంకె) == PX4_OK) {
+		తిరిగి serial_అంకె;
 	}
 
-	return PX4_ERROR;
+	తిరిగి PX4_ERROR;
 }
 
-template<class T>
-int SMBUS_SBS_BaseClass<T>::get_startup_info()
+మూస<తరగతి T>
+పూర్ణాంకం SMBUS_SBS_పునాది_Class<T>::get_startup_info()
 {
-	int ret = PX4_OK;
+	పూర్ణాంకం ret = PX4_OK;
 
-	ret |= _interface->block_read(BATT_SMBUS_MANUFACTURER_NAME, _manufacturer_name, BATT_SMBUS_MANUFACTURER_NAME_SIZE,
-				      true);
-	_manufacturer_name[sizeof(_manufacturer_name) - 1] = '\0';
+	ret |= _interface->ఖండం_read(BATT_SMBUS_MANUFACTURER_NAME, _manufacturer_name, BATT_SMBUS_MANUFACTURER_NAME_కొలత,
+				      నిజం);
+	_manufacturer_name[పరిమాణం(_manufacturer_name) - 1] = '\0';
 
-	uint16_t serial_num;
-	ret |= _interface->read_word(BATT_SMBUS_SERIAL_NUMBER, serial_num);
+	uint16_t serial_అంకె;
+	ret |= _interface->read_మాట(BATT_SMBUS_SERIAL_సంఖ్య, serial_అంకె);
 
-	uint16_t remaining_cap;
-	ret |= _interface->read_word(BATT_SMBUS_REMAINING_CAPACITY, remaining_cap);
+	uint16_t మిగిలిన_cap;
+	ret |= _interface->read_మాట(BATT_SMBUS_మిగిలిన_సామర్థ్యం, మిగిలిన_cap);
 
-	uint16_t cycle_count;
-	ret |= _interface->read_word(BATT_SMBUS_CYCLE_COUNT, cycle_count);
+	uint16_t చక్రం_లెక్క_2;
+	ret |= _interface->read_మాట(BATT_SMBUS_చక్రం_లెక్క, చక్రం_లెక్క_2);
 
-	uint16_t full_cap;
-	ret |= _interface->read_word(BATT_SMBUS_FULL_CHARGE_CAPACITY, full_cap);
+	uint16_t నిండిన_cap;
+	ret |= _interface->read_మాట(BATT_SMBUS_నిండిన_CHARGE_సామర్థ్యం, నిండిన_cap);
 
 	uint16_t manufacture_date;
-	ret |= _interface->read_word(BATT_SMBUS_MANUFACTURE_DATE, manufacture_date);
+	ret |= _interface->read_మాట(BATT_SMBUS_MANUFACTURE_DATE, manufacture_date);
 
-	if (!ret) {
-		_serial_number = serial_num;
-		_batt_startup_capacity = (uint16_t)((float)remaining_cap);
-		_cycle_count = cycle_count;
-		_batt_capacity = (uint16_t)((float)full_cap);
+	ఒకవేళ (!ret) {
+		serial_సంఖ్య = serial_అంకె;
+		batt_startup_సామర్థ్యం = (uint16_t)((దశాంశం)మిగిలిన_cap);
+		చక్రం_లెక్క = చక్రం_లెక్క_2;
+		batt_సామర్థ్యం = (uint16_t)((దశాంశం)నిండిన_cap);
 		_manufacture_date = manufacture_date;
 	}
 
-	return ret;
+	తిరిగి ret;
 }
 
-template<class T>
-int SMBUS_SBS_BaseClass<T>::populate_smbus_data(battery_status_s &data, battery_info_s &battery_info)
+మూస<తరగతి T>
+పూర్ణాంకం SMBUS_SBS_పునాది_Class<T>::populate_smbus_దత్తాంశం(battery_స్థితి_s &దత్తాంశం, battery_info_s &battery_info)
 {
 
 	// Temporary variable for storing SMBUS reads.
-	uint16_t result;
+	uint16_t ఫలితం;
 
-	int ret = _interface->read_word(BATT_SMBUS_VOLTAGE, result);
+	పూర్ణాంకం ret = _interface->read_మాట(BATT_SMBUS_VOLTAGE, ఫలితం);
 
 	// Convert millivolts to volts.
-	data.voltage_v = ((float)result) * 0.001f;
+	దత్తాంశం.voltage_v = ((దశాంశం)ఫలితం) * 0.001f;
 
 	// Read current.
-	ret |= _interface->read_word(BATT_SMBUS_CURRENT, result);
+	ret |= _interface->read_మాట(BATT_SMBUS_CURRENT, ఫలితం);
 
-	data.current_a = (-1.0f * ((float)(*(int16_t *)&result)) * 0.001f);
-
-	// Read remaining capacity.
-	ret |= _interface->read_word(BATT_SMBUS_RELATIVE_SOC, result);
-	data.remaining = (float)result * 0.01f;
+	దత్తాంశం.current_a = (-1.0f * ((దశాంశం)(*(int16_t *)&ఫలితం)) * 0.001f);
 
 	// Read remaining capacity.
-	ret |= _interface->read_word(BATT_SMBUS_REMAINING_CAPACITY, result);
-	data.discharged_mah = _batt_startup_capacity - result;
+	ret |= _interface->read_మాట(BATT_SMBUS_RELATIVE_SOC, ఫలితం);
+	దత్తాంశం.మిగిలిన = (దశాంశం)ఫలితం * 0.01f;
+
+	// Read remaining capacity.
+	ret |= _interface->read_మాట(BATT_SMBUS_మిగిలిన_సామర్థ్యం, ఫలితం);
+	దత్తాంశం.discharged_mah = batt_startup_సామర్థ్యం - ఫలితం;
 
 	// Read full capacity.
-	ret |= _interface->read_word(BATT_SMBUS_FULL_CHARGE_CAPACITY, result);
-	data.capacity = result;
+	ret |= _interface->read_మాట(BATT_SMBUS_నిండిన_CHARGE_సామర్థ్యం, ఫలితం);
+	దత్తాంశం.సామర్థ్యం = ఫలితం;
 
 	// Read cycle count.
-	ret |= _interface->read_word(BATT_SMBUS_CYCLE_COUNT, result);
-	data.cycle_count = result;
+	ret |= _interface->read_మాట(BATT_SMBUS_చక్రం_లెక్క, ఫలితం);
+	దత్తాంశం.చక్రం_లెక్క_2 = ఫలితం;
 
 	// Read serial number.
-	ret |= _interface->read_word(BATT_SMBUS_SERIAL_NUMBER, result);
-	snprintf(battery_info.serial_number, sizeof(battery_info.serial_number), "%" PRIu16, result);
+	ret |= _interface->read_మాట(BATT_SMBUS_SERIAL_సంఖ్య, ఫలితం);
+	snprintf(battery_info.serial_సంఖ్య_2, పరిమాణం(battery_info.serial_సంఖ్య_2), "%" PRIu16, ఫలితం);
 
 	// Read battery temperature and covert to Celsius.
-	ret |= _interface->read_word(BATT_SMBUS_TEMP, result);
-	data.temperature = ((float)result * 0.1f) + atmosphere::kAbsoluteNullCelsius;
+	ret |= _interface->read_మాట(BATT_SMBUS_తాత్కాలిక, ఫలితం);
+	దత్తాంశం.temperature = ((దశాంశం)ఫలితం * 0.1f) + atmosphere::kAbsoluteNullCelsius;
 
-	return ret;
+	తిరిగి ret;
 
 }
 
-template<class T>
-void SMBUS_SBS_BaseClass<T>::RunImpl()
+మూస<తరగతి T>
+శూన్య SMBUS_SBS_పునాది_Class<T>::నిరంతరం_Impl()
 {
 
 	// Get the current time.
-	uint64_t now = hrt_absolute_time();
+	uint64_t now = hrt_absolute_సమయం();
 
 	// Read data from sensor.
-	battery_status_s new_report = {};
+	battery_స్థితి_s new_report = {};
 
 	new_report.id = 1;
 
 	// Set time of reading.
 	new_report.timestamp = now;
 
-	new_report.connected = true;
+	new_report.connected = నిజం;
 
 	battery_info_s battery_info{};
 	battery_info.timestamp = now;
 	battery_info.id = new_report.id;
 
-	int ret = populate_smbus_data(new_report, battery_info);
+	పూర్ణాంకం ret = populate_smbus_దత్తాంశం(new_report, battery_info);
 
-	new_report.cell_count = _cell_count;
+	new_report.cell_లెక్క = cell_లెక్క_2;
 
 	// Only publish if no errors.
-	if (!ret) {
-		orb_publish(ORB_ID(battery_status), _batt_topic, &new_report);
+	ఒకవేళ (!ret) {
+		orb_publish(ORB_ID(battery_స్థితి), _batt_topic, &new_report);
 		orb_publish(ORB_ID(battery_info), _battery_info_topic, &battery_info);
 	}
 }

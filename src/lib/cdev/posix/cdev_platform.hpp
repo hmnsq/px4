@@ -1,35 +1,35 @@
 
-#pragma once
+#సూచన once
 
-#include <inttypes.h>
-#include <string.h>
+#అన్తర్భావ <inttypes.h>
+#అన్తర్భావ <string.h>
 
-#define ATOMIC_ENTER lock()
-#define ATOMIC_LEAVE unlock()
+#నిర్వచించు ATOMIC_ENTER తాళం()
+#నిర్వచించు ATOMIC_LEAVE unlock()
 
-namespace cdev
+నామాకాశ cdev
 {
 
-struct file_operations {
-	void *op;
+నిర్మాణం file_operations {
+	శూన్య *op;
 };
 
-using px4_file_operations_t = struct file_operations;
-using mode_t = uint32_t;
+ఉపయోగించి px4_file_operations_t = నిర్మాణం file_operations;
+ఉపయోగించి mode_t = uint32_t;
 
-class CDev;
+తరగతి CDev;
 
-struct file_t {
-	int f_oflags{0};
-	void *f_priv{nullptr};
-	CDev *cdev{nullptr};
+నిర్మాణం file_t {
+	పూర్ణాంకం f_oflags{0};
+	శూన్య *f_priv{శూన్యసూచిక};
+	CDev *cdev{శూన్యసూచిక};
 
-	file_t() = default;
-	file_t(int f, CDev *c) : f_oflags(f), cdev(c) {}
+	file_t() = అప్రమేయ;
+	file_t(పూర్ణాంకం f, CDev *c) : f_oflags(f), cdev(c) {}
 };
 
 } // namespace cdev
 
-extern "C" __EXPORT int register_driver(const char *name, const cdev::px4_file_operations_t *fops,
-					cdev::mode_t mode, void *data);
-extern "C" __EXPORT int unregister_driver(const char *path);
+బాహ్య "C" __EXPORT పూర్ణాంకం రిజిస్టరు_driver(స్థిరరాశి అక్షరం *name, స్థిరరాశి cdev::px4_file_operations_t *fops,
+					cdev::mode_t బహుళకం, శూన్య *దత్తాంశం);
+బాహ్య "C" __EXPORT పూర్ణాంకం unregister_driver(స్థిరరాశి అక్షరం *మార్గం);

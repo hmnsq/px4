@@ -31,19 +31,19 @@
  *
  ****************************************************************************/
 
-#ifndef MATH_UTILITIES_H
-#define MATH_UTILITIES_H
+#నిర్వచితం_కాకపోతే MATH_UTILITIES_H
+#నిర్వచించు MATH_UTILITIES_H
 
-#include <matrix/math.hpp>
+#అన్తర్భావ <matrix/math.hpp>
 
-namespace math
+నామాకాశ math
 {
 
-namespace Utilities
+నామాకాశ Utilities
 {
 
 // return the square of two floating point numbers - used in auto coded sections
-static constexpr float sq(float var) { return var * var; }
+స్థిర constexpr దశాంశం sq(దశాంశం var) { తిరిగి var * var; }
 
 // converts Tait-Bryan 312 sequence of rotations from frame 1 to frame 2
 // to the corresponding rotation matrix that rotates from frame 2 to frame 1
@@ -51,18 +51,18 @@ static constexpr float sq(float var) { return var * var; }
 // rot312(1) - Second rotation is a RH rotation about the X axis (rad)
 // rot312(2) - Third rotation is a RH rotation about the Y axis (rad)
 // See http://www.atacolorado.com/eulersequences.doc
-template<typename T = float>
-inline matrix::Dcm<T> taitBryan312ToRotMat(const matrix::Vector3<T> &rot312)
+మూస<రకం_పేరు T = దశాంశం>
+అంతఃవరుస మాతృక::Dcm<T> tait_Bryan312_గమ్యం_Rot_Mat(స్థిరరాశి మాతృక::Vector3<T> &rot312)
 {
 	// Calculate the frame2 to frame 1 rotation matrix from a 312 Tait-Bryan rotation sequence
-	const T c2 = cosf(rot312(2)); // third rotation is pitch
-	const T s2 = sinf(rot312(2));
-	const T s1 = sinf(rot312(1)); // second rotation is roll
-	const T c1 = cosf(rot312(1));
-	const T s0 = sinf(rot312(0)); // first rotation is yaw
-	const T c0 = cosf(rot312(0));
+	స్థిరరాశి T c2 = cosf(rot312(2)); // third rotation is pitch
+	స్థిరరాశి T s2 = sinf(rot312(2));
+	స్థిరరాశి T s1 = sinf(rot312(1)); // second rotation is roll
+	స్థిరరాశి T c1 = cosf(rot312(1));
+	స్థిరరాశి T s0 = sinf(rot312(0)); // first rotation is yaw
+	స్థిరరాశి T c0 = cosf(rot312(0));
 
-	matrix::Dcm<T> R;
+	మాతృక::Dcm<T> R;
 	R(0, 0) = c0 * c2 - s0 * s1 * s2;
 	R(1, 1) = c0 * c1;
 	R(2, 2) = c2 * c1;
@@ -73,24 +73,24 @@ inline matrix::Dcm<T> taitBryan312ToRotMat(const matrix::Vector3<T> &rot312)
 	R(2, 0) = -s2 * c1;
 	R(2, 1) = s1;
 
-	return R;
+	తిరిగి R;
 }
 
-template<typename T = float>
-inline matrix::Dcm<T> quatToInverseRotMat(const matrix::Quaternion<T> &quat)
+మూస<రకం_పేరు T = దశాంశం>
+అంతఃవరుస మాతృక::Dcm<T> quat_గమ్యం_Inverse_Rot_Mat(స్థిరరాశి మాతృక::Quaternion<T> &quat)
 {
-	const T q00 = quat(0) * quat(0);
-	const T q11 = quat(1) * quat(1);
-	const T q22 = quat(2) * quat(2);
-	const T q33 = quat(3) * quat(3);
-	const T q01 = quat(0) * quat(1);
-	const T q02 = quat(0) * quat(2);
-	const T q03 = quat(0) * quat(3);
-	const T q12 = quat(1) * quat(2);
-	const T q13 = quat(1) * quat(3);
-	const T q23 = quat(2) * quat(3);
+	స్థిరరాశి T q00 = quat(0) * quat(0);
+	స్థిరరాశి T q11 = quat(1) * quat(1);
+	స్థిరరాశి T q22 = quat(2) * quat(2);
+	స్థిరరాశి T q33 = quat(3) * quat(3);
+	స్థిరరాశి T q01 = quat(0) * quat(1);
+	స్థిరరాశి T q02 = quat(0) * quat(2);
+	స్థిరరాశి T q03 = quat(0) * quat(3);
+	స్థిరరాశి T q12 = quat(1) * quat(2);
+	స్థిరరాశి T q13 = quat(1) * quat(3);
+	స్థిరరాశి T q23 = quat(2) * quat(3);
 
-	matrix::Dcm<T> dcm;
+	మాతృక::Dcm<T> dcm;
 	dcm(0, 0) = q00 + q11 - q22 - q33;
 	dcm(1, 1) = q00 - q11 + q22 - q33;
 	dcm(2, 2) = q00 - q11 - q22 + q33;
@@ -101,97 +101,97 @@ inline matrix::Dcm<T> quatToInverseRotMat(const matrix::Quaternion<T> &quat)
 	dcm(0, 2) = 2.0f * (q13 - q02);
 	dcm(1, 2) = 2.0f * (q23 + q01);
 
-	return dcm;
+	తిరిగి dcm;
 }
 
 // We should use a 3-2-1 Tait-Bryan (yaw-pitch-roll) rotation sequence
 // when there is more roll than pitch tilt and a 3-1-2 rotation sequence
 // when there is more pitch than roll tilt to avoid gimbal lock.
-template<typename T = float>
-inline bool shouldUse321RotationSequence(const matrix::Dcm<T> &R)
+మూస<రకం_పేరు T = దశాంశం>
+అంతఃవరుస తార్కిక shouldUse321RotationSequence(స్థిరరాశి మాతృక::Dcm<T> &R)
 {
-	return fabsf(R(2, 0)) < fabsf(R(2, 1));
+	తిరిగి fabsf(R(2, 0)) < fabsf(R(2, 1));
 }
 
-template<typename T = float>
-inline float getEuler321Yaw(const matrix::Dcm<T> &R)
+మూస<రకం_పేరు T = దశాంశం>
+అంతఃవరుస దశాంశం getEuler321Yaw(స్థిరరాశి మాతృక::Dcm<T> &R)
 {
-	return atan2f(R(1, 0), R(0, 0));
+	తిరిగి atan2f(R(1, 0), R(0, 0));
 }
 
-template<typename T = float>
-inline float getEuler312Yaw(const matrix::Dcm<T> &R)
+మూస<రకం_పేరు T = దశాంశం>
+అంతఃవరుస దశాంశం getEuler312Yaw(స్థిరరాశి మాతృక::Dcm<T> &R)
 {
-	return atan2f(-R(0, 1), R(1, 1));
+	తిరిగి atan2f(-R(0, 1), R(1, 1));
 }
 
-template<typename T = float>
-inline T getEuler321Yaw(const matrix::Quaternion<T> &q)
+మూస<రకం_పేరు T = దశాంశం>
+అంతఃవరుస T getEuler321Yaw(స్థిరరాశి మాతృక::Quaternion<T> &q)
 {
 	// Values from yaw_input_321.c file produced by
 	// https://github.com/PX4/ecl/blob/master/matlab/scripts/Inertial%20Nav%20EKF/quat2yaw321.m
-	const T a = static_cast<T>(2.) * (q(0) * q(3) + q(1) * q(2));
-	const T b = sq(q(0)) + sq(q(1)) - sq(q(2)) - sq(q(3));
-	return atan2f(a, b);
+	స్థిరరాశి T a = static_cast<T>(2.) * (q(0) * q(3) + q(1) * q(2));
+	స్థిరరాశి T b = sq(q(0)) + sq(q(1)) - sq(q(2)) - sq(q(3));
+	తిరిగి atan2f(a, b);
 }
 
-template<typename T = float>
-inline T getEuler312Yaw(const matrix::Quaternion<T> &q)
+మూస<రకం_పేరు T = దశాంశం>
+అంతఃవరుస T getEuler312Yaw(స్థిరరాశి మాతృక::Quaternion<T> &q)
 {
 	// Values from yaw_input_312.c file produced by
 	// https://github.com/PX4/ecl/blob/master/matlab/scripts/Inertial%20Nav%20EKF/quat2yaw312.m
-	const T a = static_cast<T>(2.) * (q(0) * q(3) - q(1) * q(2));
-	const T b = sq(q(0)) - sq(q(1)) + sq(q(2)) - sq(q(3));
-	return atan2f(a, b);
+	స్థిరరాశి T a = static_cast<T>(2.) * (q(0) * q(3) - q(1) * q(2));
+	స్థిరరాశి T b = sq(q(0)) - sq(q(1)) + sq(q(2)) - sq(q(3));
+	తిరిగి atan2f(a, b);
 }
 
-template<typename T = float>
-inline T getEulerYaw(const matrix::Dcm<T> &R)
+మూస<రకం_పేరు T = దశాంశం>
+అంతఃవరుస T getEulerYaw(స్థిరరాశి మాతృక::Dcm<T> &R)
 {
-	if (shouldUse321RotationSequence(R)) {
-		return getEuler321Yaw(R);
+	ఒకవేళ (shouldUse321RotationSequence(R)) {
+		తిరిగి getEuler321Yaw(R);
 
-	} else {
-		return getEuler312Yaw(R);
+	} లేకపోతే {
+		తిరిగి getEuler312Yaw(R);
 	}
 }
 
-template<typename T = float>
-inline T getEulerYaw(const matrix::Quaternion<T> &q)
+మూస<రకం_పేరు T = దశాంశం>
+అంతఃవరుస T getEulerYaw(స్థిరరాశి మాతృక::Quaternion<T> &q)
 {
-	return getEulerYaw(matrix::Dcm<T>(q));
+	తిరిగి getEulerYaw(మాతృక::Dcm<T>(q));
 }
 
-template<typename T = float>
-inline matrix::Dcm<T> updateEuler321YawInRotMat(T yaw, const matrix::Dcm<T> &rot_in)
+మూస<రకం_పేరు T = దశాంశం>
+అంతఃవరుస మాతృక::Dcm<T> update_Euler321_Yaw_లోపల_Rot_Mat(T yaw, స్థిరరాశి మాతృక::Dcm<T> &rot_లోపల)
 {
-	matrix::Euler<T> euler321(rot_in);
+	మాతృక::Euler<T> euler321(rot_లోపల);
 	euler321(2) = yaw;
-	return matrix::Dcm<T>(euler321);
+	తిరిగి మాతృక::Dcm<T>(euler321);
 }
 
-template<typename T = float>
-inline matrix::Dcm<T> updateEuler312YawInRotMat(T yaw, const matrix::Dcm<T> &rot_in)
+మూస<రకం_పేరు T = దశాంశం>
+అంతఃవరుస మాతృక::Dcm<T> update_Euler312_Yaw_లోపల_Rot_Mat(T yaw, స్థిరరాశి మాతృక::Dcm<T> &rot_లోపల)
 {
-	const matrix::Vector3<T> rotVec312(yaw,                                  // yaw
-					   asinf(rot_in(2, 1)),                  // roll
-					   atan2f(-rot_in(2, 0), rot_in(2, 2))); // pitch
-	return taitBryan312ToRotMat(rotVec312);
+	స్థిరరాశి మాతృక::Vector3<T> rotVec312(yaw,                                  // yaw
+					   asinf(rot_లోపల(2, 1)),                  // roll
+					   atan2f(-rot_లోపల(2, 0), rot_లోపల(2, 2))); // pitch
+	తిరిగి tait_Bryan312_గమ్యం_Rot_Mat(rotVec312);
 }
 
 // Checks which euler rotation sequence to use and update yaw in rotation matrix
-template<typename T = float>
-inline matrix::Dcm<T> updateYawInRotMat(T yaw, const matrix::Dcm<T> &rot_in)
+మూస<రకం_పేరు T = దశాంశం>
+అంతఃవరుస మాతృక::Dcm<T> update_Yaw_లోపల_Rot_Mat(T yaw, స్థిరరాశి మాతృక::Dcm<T> &rot_లోపల)
 {
-	if (shouldUse321RotationSequence(rot_in)) {
-		return updateEuler321YawInRotMat(yaw, rot_in);
+	ఒకవేళ (shouldUse321RotationSequence(rot_లోపల)) {
+		తిరిగి update_Euler321_Yaw_లోపల_Rot_Mat(yaw, rot_లోపల);
 
-	} else {
-		return updateEuler312YawInRotMat(yaw, rot_in);
+	} లేకపోతే {
+		తిరిగి update_Euler312_Yaw_లోపల_Rot_Mat(yaw, rot_లోపల);
 	}
 }
 
 } // namespace Utilities
 } // namespace math
 
-#endif // MATH_UTILITIES_H
+#అయితే_ముగింపు // MATH_UTILITIES_H

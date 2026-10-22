@@ -1,46 +1,46 @@
-import sys
-import re
-import math
+దిగుమతి sys
+దిగుమతి re
+దిగుమతి math
 
-global default_var
+వైశ్విక default_var
 default_var = {}
 
-class ParameterGroup(object):
+తరగతి Parameter_సమూహం(object):
     """
     Single parameter group
     """
-    def __init__(self, name):
+    నిర్వచనం __init__(self, name):
         self.name = name
-        self.no_code_generation = False #for injected parameters
+        self.no_సంకేతం_generation = అబద్ధం #for injected parameters
         self.params = []
 
-    def AddParameter(self, param):
+    నిర్వచనం కూడు_Parameter(self, param):
         """
         Add parameter to the group
         """
         self.params.append(param)
 
-    def GetName(self):
+    నిర్వచనం GetName(self):
         """
         Get parameter group name
         """
-        return self.name
+        తిరిగి self.name
 
-    def GetParams(self):
+    నిర్వచనం GetParams(self):
         """
         Returns the parsed list of parameters. Every parameter is a Parameter
         object. Note that returned object is not a copy. Modifications affect
         state of the parser.
         """
-        return sorted(self.params, key=lambda param: param.name)
+        తిరిగి sorted(self.params, కీలకం=అజ్ఞాత param: param.name)
 
-class Parameter(object):
+తరగతి Parameter(object):
     """
     Single parameter
     """
 
     # Define sorting order of the fields
-    priority = {
+    ప్రాధాన్యత = {
         "board": 9,
         "short_desc": 8,
         "long_desc": 7,
@@ -51,162 +51,162 @@ class Parameter(object):
         # all others == 0 (sorted alphabetically)
     }
 
-    def __init__(self, name, type, default = ""):
+    నిర్వచనం __init__(self, name, type, అప్రమేయ = ""):
         self.fields = {}
-        self.values = {}
+        self.విలువలు_2 = {}
         self.bitmask = {}
         self.name = name
         self.type = type
-        self.default = default
+        self.అప్రమేయ = అప్రమేయ
         self.category = ""
-        self.volatile = False
-        self.boolean = False
-        self.readonly = False
+        self.అస్థిర = అబద్ధం
+        self.తార్కిక = అబద్ధం
+        self.readonly = అబద్ధం
 
-    def GetName(self):
-        return self.name
+    నిర్వచనం GetName(self):
+        తిరిగి self.name
 
-    def GetType(self):
-        return self.type
+    నిర్వచనం GetType(self):
+        తిరిగి self.type
 
-    def GetDefault(self):
-        return self.default
+    నిర్వచనం GetDefault(self):
+        తిరిగి self.అప్రమేయ
 
-    def GetCategory(self):
-        return self.category.title()
+    నిర్వచనం GetCategory(self):
+        తిరిగి self.category.title()
 
-    def GetVolatile(self):
-        return self.volatile
+    నిర్వచనం GetVolatile(self):
+        తిరిగి self.అస్థిర
 
-    def GetBoolean(self):
-        return self.boolean
+    నిర్వచనం GetBoolean(self):
+        తిరిగి self.తార్కిక
 
-    def GetReadonly(self):
-        return self.readonly
+    నిర్వచనం GetReadonly(self):
+        తిరిగి self.readonly
 
-    def SetField(self, code, value):
+    నిర్వచనం సమితి_క్షేత్రం_2(self, సంకేతం_2, విలువ):
         """
         Set named field value
         """
-        self.fields[code] = value
+        self.fields[సంకేతం_2] = విలువ
 
-    def SetEnumValue(self, code, value):
+    నిర్వచనం సమితి_Enum_విలువ(self, సంకేతం_2, విలువ):
         """
         Set named enum value
         """
-        self.values[code] = value
+        self.విలువలు_2[సంకేతం_2] = విలువ
 
-    def SetBitmaskBit(self, index, bit):
+    నిర్వచనం సమితి_Bitmask_బిట్టు(self, సూచీ, బిట్టు):
         """
         Set named enum value
         """
-        self.bitmask[index] = bit
+        self.bitmask[సూచీ] = బిట్టు
 
-    def SetVolatile(self):
+    నిర్వచనం సమితి_Volatile(self):
         """
         Set volatile flag
         """
-        self.volatile = True
+        self.అస్థిర = నిజం
 
-    def SetBoolean(self):
+    నిర్వచనం సమితి_Boolean(self):
         """
         Set boolean flag
         """
-        self.boolean = True
+        self.తార్కిక = నిజం
 
-    def SetReadonly(self):
+    నిర్వచనం సమితి_Readonly(self):
         """
         Set readonly flag
         """
-        self.readonly = True
+        self.readonly = నిజం
 
-    def SetCategory(self, category):
+    నిర్వచనం సమితి_Category(self, category):
         """
         Set param category
         """
         self.category = category
 
-    def GetFieldCodes(self):
+    నిర్వచనం Get_క్షేత్రం_Codes(self):
         """
         Return list of existing field codes in convenient order
         """
-        keys = self.fields.keys()
-        keys = sorted(keys)
-        keys = sorted(keys, key=lambda x: self.priority.get(x, 0), reverse=True)
-        return keys
+        కీలకాలు = self.fields.కీలకాలు()
+        కీలకాలు = sorted(కీలకాలు)
+        కీలకాలు = sorted(కీలకాలు, కీలకం=అజ్ఞాత x: self.ప్రాధాన్యత.get(x, 0), తిరగేయి=నిజం)
+        తిరిగి కీలకాలు
 
-    def GetFieldValue(self, code):
+    నిర్వచనం Get_క్షేత్రం_విలువ(self, సంకేతం_2):
         """
         Return value of the given field code or None if not found.
         """
-        fv =  self.fields.get(code)
-        if not fv:
+        fv =  self.fields.get(సంకేతం_2)
+        ఒకవేళ కాదు fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv
+                తిరిగి ""
+        తిరిగి fv
 
-    def GetEnumCodes(self):
+    నిర్వచనం GetEnumCodes(self):
         """
         Return list of existing value codes in convenient order
         """
-        return sorted(self.values.keys(), key=float)
+        తిరిగి sorted(self.విలువలు_2.కీలకాలు(), కీలకం=దశాంశం)
 
-    def GetEnumValue(self, code):
+    నిర్వచనం Get_Enum_విలువ(self, సంకేతం_2):
         """
         Return value of the given enum code or None if not found.
         """
-        fv =  self.values.get(code)
-        if not fv:
+        fv =  self.విలువలు_2.get(సంకేతం_2)
+        ఒకవేళ కాదు fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv
+                తిరిగి ""
+        తిరిగి fv
 
-    def GetBitmaskList(self):
+    నిర్వచనం GetBitmaskList(self):
         """
         Return list of existing bitmask codes in convenient order
         """
-        keys = self.bitmask.keys()
-        return sorted(keys, key=float)
+        కీలకాలు = self.bitmask.కీలకాలు()
+        తిరిగి sorted(కీలకాలు, కీలకం=దశాంశం)
 
-    def GetBitmaskBit(self, index):
+    నిర్వచనం Get_Bitmask_బిట్టు(self, సూచీ):
         """
         Return value of the given bitmask code or None if not found.
         """
-        fv = self.bitmask.get(index)
-        if not fv:
+        fv = self.bitmask.get(సూచీ)
+        ఒకవేళ కాదు fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv.strip()
+                తిరిగి ""
+        తిరిగి fv.strip()
 
-class SourceParser(object):
+తరగతి ఆధారం_Parser(object):
     """
     Parses provided data and stores all found parameters internally.
     """
 
-    re_split_lines = re.compile(r'[\r\n]+')
-    re_comment_start = re.compile(r'^\/\*\*')
+    re_విభజించు_పంక్తులు = re.compile(r'[\r\n]+')
+    re_comment_ప్రారంభం = re.compile(r'^\/\*\*')
     re_comment_content = re.compile(r'^\*\s*(.*)')
-    re_comment_tag = re.compile(r'@([a-zA-Z][a-zA-Z0-9_]*)\s*(.*)')
-    re_comment_end = re.compile(r'(.*?)\s*\*\/')
+    re_comment_ట్యాగ్ = re.compile(r'@([a-zA-Z][a-zA-Z0-9_]*)\s*(.*)')
+    re_comment_చివర = re.compile(r'(.*?)\s*\*\/')
     re_parameter_definition = re.compile(r'PARAM_DEFINE_([A-Z_][A-Z0-9_]*)\s*\(([A-Z_][A-Z0-9_]*)\s*,\s*([^ ,\)]+)\s*\)\s*;')
     re_px4_parameter_definition = re.compile(r'PX4_PARAM_DEFINE_([A-Z_][A-Z0-9_]*)\s*\(([A-Z_][A-Z0-9_]*)\s*\)\s*;')
     re_px4_param_default_definition = re.compile(r'#define\s*PARAM_([A-Z_][A-Z0-9_]*)\s*([^ ,\)]+)\s*')
     re_cut_type_specifier = re.compile(r'[a-z]+$')
-    re_is_a_number = re.compile(r'^-?[0-9\.]')
+    re_is_a_సంఖ్య = re.compile(r'^-?[0-9\.]')
     re_remove_dots = re.compile(r'\.+$')
 
-    valid_tags = set(["group", "board", "min", "max", "unit", "decimal", "increment", "reboot_required", "value", "boolean", "bit", "category", "volatile"])
+    valid_ట్యాగులు = సమితి(["group", "board", "min", "max", "unit", "decimal", "increment", "reboot_required", "value", "boolean", "bit", "category", "volatile"])
 
     # Order of parameter groups
-    priority = {
+    ప్రాధాన్యత = {
         # All other groups = 0 (sort alphabetically)
         "Miscellaneous": -10
     }
 
-    def __init__(self):
+    నిర్వచనం __init__(self):
         self.param_groups = {}
 
-    def Parse(self, contents):
+    నిర్వచనం Parse(self, contents):
         """
         Incrementally parse program contents and append all found parameters
         to the list.
@@ -214,155 +214,155 @@ class SourceParser(object):
         # This code is essentially a comment-parsing grammar. "state"
         # represents parser state. It contains human-readable state
         # names.
-        state = None
-        for line in self.re_split_lines.split(contents):
-            line = line.strip()
+        state = ఏమీలేదు
+        కొరకు పంక్తి లో self.re_విభజించు_పంక్తులు.విభజించు(contents):
+            పంక్తి = పంక్తి.strip()
             # Ignore empty lines
-            if line == "":
-                continue
-            if self.re_comment_start.match(line):
+            ఒకవేళ పంక్తి == "":
+                కొనసాగు
+            ఒకవేళ self.re_comment_ప్రారంభం.సరిపోలిక(పంక్తి):
                 state = "wait-short"
-                short_desc = None
-                long_desc = None
-                tags = {}
-                def_values = {}
+                short_desc = ఏమీలేదు
+                long_desc = ఏమీలేదు
+                ట్యాగులు = {}
+                def_విలువలు = {}
                 def_bitmask = {}
-            elif state is not None and state != "comment-processed":
-                m = self.re_comment_end.search(line)
-                if m:
-                    line = m.group(1)
-                    last_comment_line = True
-                else:
-                    last_comment_line = False
-                m = self.re_comment_content.match(line)
-                if m:
-                    comment_content = m.group(1)
-                    if comment_content == "":
+            లేదావేళ state అయిన కాదు ఏమీలేదు మరియు state != "comment-processed":
+                m = self.re_comment_చివర.శోధన(పంక్తి)
+                ఒకవేళ m:
+                    పంక్తి = m.సమూహం(1)
+                    చివరి_comment_పంక్తి = నిజం
+                లేకపోతే:
+                    చివరి_comment_పంక్తి = అబద్ధం
+                m = self.re_comment_content.సరిపోలిక(పంక్తి)
+                ఒకవేళ m:
+                    comment_content = m.సమూహం(1)
+                    ఒకవేళ comment_content == "":
                         # When short comment ends with empty comment line,
                         # start waiting for the next part - long comment.
-                        if state == "wait-short-end":
+                        ఒకవేళ state == "wait-short-end":
                             state = "wait-long"
-                        if state == "wait-long-end":
+                        ఒకవేళ state == "wait-long-end":
                             # Long description includes empty lines
                             long_desc += "\n"
-                    else:
-                        m = self.re_comment_tag.match(comment_content)
-                        if m:
-                            tag, desc = m.group(1, 2)
-                            if (tag == "value"):
+                    లేకపోతే:
+                        m = self.re_comment_ట్యాగ్.సరిపోలిక(comment_content)
+                        ఒకవేళ m:
+                            ట్యాగ్, desc = m.సమూహం(1, 2)
+                            ఒకవేళ (ట్యాగ్ == "value"):
                                 # Take the meta info string and split the code and description
-                                metainfo = desc.split(" ",  1)
-                                def_values[metainfo[0]] = metainfo[1]
-                            elif (tag == "bit"):
+                                metainfo = desc.విభజించు(" ",  1)
+                                def_విలువలు[metainfo[0]] = metainfo[1]
+                            లేదావేళ (ట్యాగ్ == "bit"):
                                 # Take the meta info string and split the code and description
-                                metainfo = desc.split(" ",  1)
+                                metainfo = desc.విభజించు(" ",  1)
                                 def_bitmask[metainfo[0]] = metainfo[1]
-                            else:
-                                tags[tag] = desc
-                            current_tag = tag
+                            లేకపోతే:
+                                ట్యాగులు[ట్యాగ్] = desc
+                            current_ట్యాగ్ = ట్యాగ్
                             state = "wait-tag-end"
-                        elif state == "wait-short":
+                        లేదావేళ state == "wait-short":
                             # Store first line of the short description
                             short_desc = comment_content
                             state = "wait-short-end"
-                        elif state == "wait-short-end":
+                        లేదావేళ state == "wait-short-end":
                             # Append comment line to the short description
                             short_desc += "\n" + comment_content
-                        elif state == "wait-long":
+                        లేదావేళ state == "wait-long":
                             # Store first line of the long description
                             long_desc = comment_content
                             state = "wait-long-end"
-                        elif state == "wait-long-end":
+                        లేదావేళ state == "wait-long-end":
                             # Append comment line to the long description
                             long_desc += "\n" + comment_content
-                        elif state == "wait-tag-end":
+                        లేదావేళ state == "wait-tag-end":
                             # Append comment line to the tag text
-                            tags[current_tag] += "\n" + comment_content
-                        else:
-                            raise AssertionError(
+                            ట్యాగులు[current_ట్యాగ్] += "\n" + comment_content
+                        లేకపోతే:
+                            లేపు AssertionError(
                                     "Invalid parser state: %s" % state)
-                elif not last_comment_line:
+                లేదావేళ కాదు చివరి_comment_పంక్తి:
                     # Invalid comment line (inside comment, but not starting with
                     # "*" or "*/". Reset parsed content.
-                    state = None
-                if last_comment_line:
+                    state = ఏమీలేదు
+                ఒకవేళ చివరి_comment_పంక్తి:
                     state = "comment-processed"
-            else:
-                tp = None
-                name = None
+            లేకపోతే:
+                tp = ఏమీలేదు
+                name = ఏమీలేదు
                 defval = ""
                 # Non-empty line outside the comment
-                m = self.re_px4_param_default_definition.match(line)
+                m = self.re_px4_param_default_definition.సరిపోలిక(పంక్తి)
                 # Default value handling
-                if m:
-                    name_m, defval_m = m.group(1,2)
+                ఒకవేళ m:
+                    name_m, defval_m = m.సమూహం(1,2)
                     default_var[name_m] = defval_m
-                m = self.re_parameter_definition.match(line)
-                if m:
-                    tp, name, defval = m.group(1, 2, 3)
-                else:
-                    m = self.re_px4_parameter_definition.match(line)
-                    if m:
-                        tp, name = m.group(1, 2)
-                        if (name+'_DEFAULT') in default_var:
+                m = self.re_parameter_definition.సరిపోలిక(పంక్తి)
+                ఒకవేళ m:
+                    tp, name, defval = m.సమూహం(1, 2, 3)
+                లేకపోతే:
+                    m = self.re_px4_parameter_definition.సరిపోలిక(పంక్తి)
+                    ఒకవేళ m:
+                        tp, name = m.సమూహం(1, 2)
+                        ఒకవేళ (name+'_DEFAULT') లో default_var:
                             defval = default_var[name+'_DEFAULT']
-                if tp is not None:
+                ఒకవేళ tp అయిన కాదు ఏమీలేదు:
                     # Remove trailing type specifier from numbers: 0.1f => 0.1
-                    if defval != "" and self.re_is_a_number.match(defval):
+                    ఒకవేళ defval != "" మరియు self.re_is_a_సంఖ్య.సరిపోలిక(defval):
                         defval = self.re_cut_type_specifier.sub('', defval)
                     param = Parameter(name, tp, defval)
-                    param.SetField("short_desc", name)
+                    param.సమితి_క్షేత్రం_2("short_desc", name)
                     # If comment was found before the parameter declaration,
                     # inject its data into the newly created parameter.
-                    group = "Miscellaneous"
-                    if state == "comment-processed":
-                        if short_desc is not None:
-                            if '\n' in short_desc:
-                                raise Exception('short description must be a single line (parameter: {:})'.format(name))
-                            if len(short_desc) > 150:
-                                raise Exception('short description too long (150 max, is {:}, parameter: {:})'.format(len(short_desc), name))
-                            param.SetField("short_desc", self.re_remove_dots.sub('', short_desc))
-                        if long_desc is not None:
-                            param.SetField("long_desc", long_desc)
-                        for tag in tags:
-                            if tag == "group":
-                                group = tags[tag]
-                            elif tag == "volatile":
-                                param.SetVolatile()
-                            elif tag == "category":
-                                param.SetCategory(tags[tag])
-                            elif tag == "boolean":
-                                param.SetBoolean()
-                            elif tag not in self.valid_tags:
-                                sys.stderr.write("Skipping invalid documentation tag: '%s'\n" % tag)
-                                return False
-                            else:
-                                param.SetField(tag, tags[tag])
-                        for def_value in def_values:
-                            param.SetEnumValue(def_value, def_values[def_value])
-                        for def_bit in def_bitmask:
-                            param.SetBitmaskBit(def_bit, def_bitmask[def_bit])
+                    సమూహం = "Miscellaneous"
+                    ఒకవేళ state == "comment-processed":
+                        ఒకవేళ short_desc అయిన కాదు ఏమీలేదు:
+                            ఒకవేళ '\n' లో short_desc:
+                                లేపు Exception('short description must be a single line (parameter: {:})'.format(name))
+                            ఒకవేళ పొడవు(short_desc) > 150:
+                                లేపు Exception('short description too long (150 max, is {:}, parameter: {:})'.format(పొడవు(short_desc), name))
+                            param.సమితి_క్షేత్రం_2("short_desc", self.re_remove_dots.sub('', short_desc))
+                        ఒకవేళ long_desc అయిన కాదు ఏమీలేదు:
+                            param.సమితి_క్షేత్రం_2("long_desc", long_desc)
+                        కొరకు ట్యాగ్ లో ట్యాగులు:
+                            ఒకవేళ ట్యాగ్ == "group":
+                                సమూహం = ట్యాగులు[ట్యాగ్]
+                            లేదావేళ ట్యాగ్ == "volatile":
+                                param.సమితి_Volatile()
+                            లేదావేళ ట్యాగ్ == "category":
+                                param.సమితి_Category(ట్యాగులు[ట్యాగ్])
+                            లేదావేళ ట్యాగ్ == "boolean":
+                                param.సమితి_Boolean()
+                            లేదావేళ ట్యాగ్ కాదు లో self.valid_ట్యాగులు:
+                                sys.stderr.లిఖ("Skipping invalid documentation tag: '%s'\n" % ట్యాగ్)
+                                తిరిగి అబద్ధం
+                            లేకపోతే:
+                                param.సమితి_క్షేత్రం_2(ట్యాగ్, ట్యాగులు[ట్యాగ్])
+                        కొరకు def_విలువ లో def_విలువలు:
+                            param.సమితి_Enum_విలువ(def_విలువ, def_విలువలు[def_విలువ])
+                        కొరకు def_బిట్టు లో def_bitmask:
+                            param.సమితి_Bitmask_బిట్టు(def_బిట్టు, def_bitmask[def_బిట్టు])
                     # Store the parameter
-                    if group not in self.param_groups:
-                        self.param_groups[group] = ParameterGroup(group)
-                    self.param_groups[group].AddParameter(param)
-                state = None
-        return True
+                    ఒకవేళ సమూహం కాదు లో self.param_groups:
+                        self.param_groups[సమూహం] = Parameter_సమూహం(సమూహం)
+                    self.param_groups[సమూహం].కూడు_Parameter(param)
+                state = ఏమీలేదు
+        తిరిగి నిజం
 
-    def IsNumber(self, numberString):
-        try:
-            float(numberString)
-            return True
-        except ValueError:
-            return False
+    నిర్వచనం Is_సంఖ్య(self, సంఖ్య_String):
+        ప్రయత్నించు:
+            దశాంశం(సంఖ్య_String)
+            తిరిగి నిజం
+        మినహాయింపు విలువ_Error:
+            తిరిగి అబద్ధం
 
-    def Validate(self):
+    నిర్వచనం Validate(self):
         """
         Validates the parameter meta data.
         """
-        seenParamNames = []
+        చూసిన_Param_పేర్లు = []
         #allowedUnits should match set defined in /Firmware/validation/module_schema.yaml
-        allowedUnits = set ([
+        allowedUnits = సమితి ([
                                 '%', 'Hz', '1/s', 'mAh',
                                 'rad', '%/rad', 'rad/s', 'rad/s^2', '%/rad/s', 'rad s^2/m', 'rad s/m',
                                 'bit/s', 'B/s', 'MiB',
@@ -377,75 +377,75 @@ class SourceParser(object):
                                 'N/(m/s)', 'Nm/rad', 'Nm/(rad/s)', 'Nm', 'N',
                                 'rpm',
                                 'normalized_thrust/s', 'normalized_thrust', 'norm', 'SD', 'dBHz', ''])
-        for group in self.GetParamGroups():
-            for param in group.GetParams():
+        కొరకు సమూహం లో self.GetParamGroups():
+            కొరకు param లో సమూహం.GetParams():
                 name  = param.GetName()
-                if len(name) > 16:
-                    sys.stderr.write("Parameter Name {0} is too long (Limit is 16)\n".format(name))
-                    return False
-                board = param.GetFieldValue("board")
+                ఒకవేళ పొడవు(name) > 16:
+                    sys.stderr.లిఖ("Parameter Name {0} is too long (Limit is 16)\n".format(name))
+                    తిరిగి అబద్ధం
+                board = param.Get_క్షేత్రం_విలువ("board")
                 # Check for duplicates
                 name_plus_board = name + "+" + board
-                for seenParamName in seenParamNames:
-                    if seenParamName == name_plus_board:
-                        sys.stderr.write("Duplicate parameter definition: {0}\n".format(name_plus_board))
-                        return False
-                seenParamNames.append(name_plus_board)
+                కొరకు చూసిన_Param_Name లో చూసిన_Param_పేర్లు:
+                    ఒకవేళ చూసిన_Param_Name == name_plus_board:
+                        sys.stderr.లిఖ("Duplicate parameter definition: {0}\n".format(name_plus_board))
+                        తిరిగి అబద్ధం
+                చూసిన_Param_పేర్లు.append(name_plus_board)
                 # Validate values
-                default = param.GetDefault()
-                min = param.GetFieldValue("min")
-                max = param.GetFieldValue("max")
-                units = param.GetFieldValue("unit")
-                if units not in allowedUnits:
-                    sys.stderr.write("Invalid unit in {0}: {1}\n".format(name, units))
-                    return False
+                అప్రమేయ = param.GetDefault()
+                min = param.Get_క్షేత్రం_విలువ("min")
+                max = param.Get_క్షేత్రం_విలువ("max")
+                units = param.Get_క్షేత్రం_విలువ("unit")
+                ఒకవేళ units కాదు లో allowedUnits:
+                    sys.stderr.లిఖ("Invalid unit in {0}: {1}\n".format(name, units))
+                    తిరిగి అబద్ధం
                 #sys.stderr.write("{0} default:{1} min:{2} max:{3}\n".format(name, default, min, max))
-                if default != "" and not self.IsNumber(default):
-                    sys.stderr.write("Default value not number: {0} {1}\n".format(name, default))
-                    return False
+                ఒకవేళ అప్రమేయ != "" మరియు కాదు self.Is_సంఖ్య(అప్రమేయ):
+                    sys.stderr.లిఖ("Default value not number: {0} {1}\n".format(name, అప్రమేయ))
+                    తిరిగి అబద్ధం
                 # if default != "" and "." not in default:
                 #     sys.stderr.write("Default value does not contain dot (e.g. 10 needs to be written as 10.0): {0} {1}\n".format(name, default))
                 #     return False
-                if min != "":
-                    if not self.IsNumber(min):
-                        sys.stderr.write("Min value not number: {0} {1}\n".format(name, min))
-                        return False
-                    if default != "" and float(default) < float(min):
-                        sys.stderr.write("Default value is smaller than min: {0} default:{1} min:{2}\n".format(name, default, min))
-                        return False
-                if max != "":
-                    if not self.IsNumber(max):
-                        sys.stderr.write("Max value not number: {0} {1}\n".format(name, max))
-                        return False
-                    if default != "" and float(default) > float(max):
-                        sys.stderr.write("Default value is larger than max: {0} default:{1} max:{2}\n".format(name, default, max))
-                        return False
-                for code in param.GetEnumCodes():
-                        if not self.IsNumber(code):
-                            sys.stderr.write("Min value not number: {0} {1}\n".format(name, code))
-                            return False
-                        if param.GetEnumValue(code) == "":
-                            sys.stderr.write("Description for enum value is empty: {0} {1}\n".format(name, code))
-                            return False
-                for index in param.GetBitmaskList():
-                        if not self.IsNumber(index):
-                            sys.stderr.write("bit value not number: {0} {1}\n".format(name, index))
-                            return False
-                        if not int(min) <= math.pow(2, int(index)) <= int(max):
-                            sys.stderr.write("Bitmask bit must be between {0} and {1}: {2} {3}\n".format(min, max, name, math.pow(2, int(index))))
-                            return False
-                        if param.GetBitmaskBit(index) == "":
-                            sys.stderr.write("Description for bitmask bit is empty: {0} {1}\n".format(name, index))
-                            return False
-        return True
+                ఒకవేళ min != "":
+                    ఒకవేళ కాదు self.Is_సంఖ్య(min):
+                        sys.stderr.లిఖ("Min value not number: {0} {1}\n".format(name, min))
+                        తిరిగి అబద్ధం
+                    ఒకవేళ అప్రమేయ != "" మరియు దశాంశం(అప్రమేయ) < దశాంశం(min):
+                        sys.stderr.లిఖ("Default value is smaller than min: {0} default:{1} min:{2}\n".format(name, అప్రమేయ, min))
+                        తిరిగి అబద్ధం
+                ఒకవేళ max != "":
+                    ఒకవేళ కాదు self.Is_సంఖ్య(max):
+                        sys.stderr.లిఖ("Max value not number: {0} {1}\n".format(name, max))
+                        తిరిగి అబద్ధం
+                    ఒకవేళ అప్రమేయ != "" మరియు దశాంశం(అప్రమేయ) > దశాంశం(max):
+                        sys.stderr.లిఖ("Default value is larger than max: {0} default:{1} max:{2}\n".format(name, అప్రమేయ, max))
+                        తిరిగి అబద్ధం
+                కొరకు సంకేతం_2 లో param.GetEnumCodes():
+                        ఒకవేళ కాదు self.Is_సంఖ్య(సంకేతం_2):
+                            sys.stderr.లిఖ("Min value not number: {0} {1}\n".format(name, సంకేతం_2))
+                            తిరిగి అబద్ధం
+                        ఒకవేళ param.Get_Enum_విలువ(సంకేతం_2) == "":
+                            sys.stderr.లిఖ("Description for enum value is empty: {0} {1}\n".format(name, సంకేతం_2))
+                            తిరిగి అబద్ధం
+                కొరకు సూచీ లో param.GetBitmaskList():
+                        ఒకవేళ కాదు self.Is_సంఖ్య(సూచీ):
+                            sys.stderr.లిఖ("bit value not number: {0} {1}\n".format(name, సూచీ))
+                            తిరిగి అబద్ధం
+                        ఒకవేళ కాదు పూర్ణాంకం(min) <= math.pow(2, పూర్ణాంకం(సూచీ)) <= పూర్ణాంకం(max):
+                            sys.stderr.లిఖ("Bitmask bit must be between {0} and {1}: {2} {3}\n".format(min, max, name, math.pow(2, పూర్ణాంకం(సూచీ))))
+                            తిరిగి అబద్ధం
+                        ఒకవేళ param.Get_Bitmask_బిట్టు(సూచీ) == "":
+                            sys.stderr.లిఖ("Description for bitmask bit is empty: {0} {1}\n".format(name, సూచీ))
+                            తిరిగి అబద్ధం
+        తిరిగి నిజం
 
-    def GetParamGroups(self):
+    నిర్వచనం GetParamGroups(self):
         """
         Returns the parsed list of parameters. Every parameter is a Parameter
         object. Note that returned object is not a copy. Modifications affect
         state of the parser.
         """
-        groups = self.param_groups.values()
-        groups = sorted(groups, key=lambda x: x.GetName())
-        groups = sorted(groups, key=lambda x: self.priority.get(x.GetName(), 0), reverse=True)
-        return groups
+        groups = self.param_groups.విలువలు_2()
+        groups = sorted(groups, కీలకం=అజ్ఞాత x: x.GetName())
+        groups = sorted(groups, కీలకం=అజ్ఞాత x: self.ప్రాధాన్యత.get(x.GetName(), 0), తిరగేయి=నిజం)
+        తిరిగి groups

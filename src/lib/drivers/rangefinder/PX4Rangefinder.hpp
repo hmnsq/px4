@@ -31,51 +31,51 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <drivers/drv_hrt.h>
-#include <lib/conversion/rotation.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/distance_sensor.h>
+#అన్తర్భావ <drivers/drv_hrt.h>
+#అన్తర్భావ <lib/conversion/rotation.h>
+#అన్తర్భావ <uORB/PublicationMulti.hpp>
+#అన్తర్భావ <uORB/topics/distance_sensor.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#అన్తర్భావ <lib/failure_injection/FailureInjection.hpp>
 
-class PX4Rangefinder
+తరగతి PX4Rangefinder
 {
-public:
-	PX4Rangefinder(const uint32_t device_id,
-		       const uint8_t device_orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING);
+బహిరంగ:
+	PX4Rangefinder(స్థిరరాశి uint32_t device_id,
+		       స్థిరరాశి uint8_t device_orientation = దూరం_sensor_s::ROTATION_DOWNWARD_FACING);
 	~PX4Rangefinder();
 
 	// Set the MAV_DISTANCE_SENSOR type (LASER, ULTRASOUND, INFRARED, RADAR)
-	void set_rangefinder_type(uint8_t rangefinder_type) { _distance_sensor_pub.get().type = rangefinder_type; };
+	శూన్య సమితి_rangefinder_type(uint8_t rangefinder_type) { దూరం_sensor_pub_2.get().type = rangefinder_type; };
 
-	void set_device_id(const uint32_t device_id) { _distance_sensor_pub.get().device_id = device_id; };
-	void set_device_type(const uint8_t device_type);
+	శూన్య సమితి_device_id(స్థిరరాశి uint32_t device_id) { దూరం_sensor_pub_2.get().device_id = device_id; };
+	శూన్య సమితి_device_type(స్థిరరాశి uint8_t device_type);
 
-	void set_fov(const float fov) { set_hfov(fov); set_vfov(fov); }
-	void set_hfov(const float fov) { _distance_sensor_pub.get().h_fov = fov; }
-	void set_vfov(const float fov) { _distance_sensor_pub.get().v_fov = fov; }
+	శూన్య సమితి_fov(స్థిరరాశి దశాంశం fov) { సమితి_hfov(fov); సమితి_vfov(fov); }
+	శూన్య సమితి_hfov(స్థిరరాశి దశాంశం fov) { దూరం_sensor_pub_2.get().h_fov = fov; }
+	శూన్య సమితి_vfov(స్థిరరాశి దశాంశం fov) { దూరం_sensor_pub_2.get().v_fov = fov; }
 
-	void set_max_distance(const float distance) { _distance_sensor_pub.get().max_distance = distance; }
-	void set_min_distance(const float distance) { _distance_sensor_pub.get().min_distance = distance; }
+	శూన్య సమితి_max_దూరం(స్థిరరాశి దశాంశం దూరం) { దూరం_sensor_pub_2.get().max_దూరం = దూరం; }
+	శూన్య సమితి_min_దూరం(స్థిరరాశి దశాంశం దూరం) { దూరం_sensor_pub_2.get().min_దూరం = దూరం; }
 
-	void set_variance(const float variance) { _distance_sensor_pub.get().variance = variance; }
+	శూన్య సమితి_variance(స్థిరరాశి దశాంశం variance) { దూరం_sensor_pub_2.get().variance = variance; }
 
-	void set_orientation(const uint8_t device_orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING);
+	శూన్య సమితి_orientation(స్థిరరాశి uint8_t device_orientation = దూరం_sensor_s::ROTATION_DOWNWARD_FACING);
 
-	void set_mode(const uint8_t mode) { _distance_sensor_pub.get().mode = mode; }
+	శూన్య సమితి_బహుళకం(స్థిరరాశి uint8_t బహుళకం) { దూరం_sensor_pub_2.get().బహుళకం = బహుళకం; }
 
 	// update with quaterion sensor orientation with respect to the vehicle body frame
-	void update(const hrt_abstime &timestamp_sample, const float distance, const int8_t quality = -1, const float *q = nullptr,
+	శూన్య update(స్థిరరాశి hrt_abstime &timestamp_sample, స్థిరరాశి దశాంశం దూరం, స్థిరరాశి int8_t quality = -1, స్థిరరాశి దశాంశం *q = శూన్యసూచిక,
 		    uint8_t q_len = 4);
 
-	int get_instance() { return _distance_sensor_pub.get_instance(); };
-	uint32_t get_device_id() { return _distance_sensor_pub.get().device_id; };
+	పూర్ణాంకం get_instance() { తిరిగి దూరం_sensor_pub_2.get_instance(); };
+	uint32_t get_device_id() { తిరిగి దూరం_sensor_pub_2.get().device_id; };
 
-private:
-	uORB::PublicationMultiData<distance_sensor_s> _distance_sensor_pub{ORB_ID(distance_sensor)};
+అంతరంగ:
+	uORB::Publication_Multi_దత్తాంశం<దూరం_sensor_s> దూరం_sensor_pub_2{ORB_ID(దూరం_sensor)};
 
 	failure_injection::Config _failure_config;
-	failure_injection::Stuck<distance_sensor_s> _stuck;
+	failure_injection::Stuck<దూరం_sensor_s> _stuck;
 };

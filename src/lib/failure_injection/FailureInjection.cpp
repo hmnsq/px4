@@ -31,199 +31,199 @@
  *
  ****************************************************************************/
 
-#include "FailureInjection.hpp"
+#అన్తర్భావ "FailureInjection.hpp"
 
-#if defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
+#ఒకవేళ defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
 
-#include <parameters/param.h>
-#include <uORB/topics/battery_status.h>
-#include <uORB/topics/sensor_gnss.h>
+#అన్తర్భావ <parameters/param.h>
+#అన్తర్భావ <uORB/topics/battery_status.h>
+#అన్తర్భావ <uORB/topics/sensor_gnss.h>
 
-namespace failure_injection
+నామాకాశ failure_injection
 {
 
-bool Config::update()
+తార్కిక Config::update()
 {
 	failure_injection_s cfg;
 
-	if (_sub.update(&cfg)) {
-		set(cfg);
-		return true;
+	ఒకవేళ (_sub.update(&cfg)) {
+		సమితి(cfg);
+		తిరిగి నిజం;
 	}
 
-	return false;
+	తిరిగి అబద్ధం;
 }
 
-void Config::set(const failure_injection_s &cfg)
+శూన్య Config::సమితి(స్థిరరాశి failure_injection_s &cfg)
 {
-	_count = (cfg.count <= failure_injection_s::MAX_FAILURES) ? cfg.count : failure_injection_s::MAX_FAILURES;
+	లెక్క_3 = (cfg.లెక్క <= failure_injection_s::MAX_FAILURES) ? cfg.లెక్క : failure_injection_s::MAX_FAILURES;
 
-	for (uint8_t i = 0; i < _count; i++) {
+	కొరకు (uint8_t i = 0; i < లెక్క_3; i++) {
 		_unit[i] = cfg.unit[i];
-		_instance_mask[i] = cfg.instance_mask[i];
-		_failure_type[i] = static_cast<Mode>(cfg.failure_type[i]);
+		instance_ముసుగు[i] = cfg.instance_ముసుగు_2[i];
+		_failure_type[i] = static_cast<బహుళకం_2>(cfg.failure_type[i]);
 	}
 }
 
-Mode Config::mode(uint8_t unit, uint8_t instance) const
+బహుళకం_2 Config::బహుళకం(uint8_t unit, uint8_t instance) స్థిరరాశి
 {
-	for (uint8_t i = 0; i < _count; i++) {
-		if (_unit[i] != unit) {
-			continue;
+	కొరకు (uint8_t i = 0; i < లెక్క_3; i++) {
+		ఒకవేళ (_unit[i] != unit) {
+			కొనసాగు;
 		}
 
 		// instance == 0 matches any instance of the unit; otherwise match the
 		// 1-based instance against the bitmask (0xFFFF covers all instances).
-		if (instance == 0 || (instance <= 16 && (_instance_mask[i] & (1u << (instance - 1))))) {
-			return _failure_type[i];
+		ఒకవేళ (instance == 0 || (instance <= 16 && (instance_ముసుగు[i] & (1u << (instance - 1))))) {
+			తిరిగి _failure_type[i];
 		}
 	}
 
-	return Mode::Ok;
+	తిరిగి బహుళకం_2::Ok;
 }
 
-bool process_battery(const Config &config, uint8_t instance, battery_status_s &battery_status)
+తార్కిక process_battery(స్థిరరాశి Config &config, uint8_t instance, battery_స్థితి_s &battery_స్థితి)
 {
-	const Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_BATTERY, instance);
-	static constexpr float trigger_margin = 0.01f; // report remaining charge just below the threshold
+	స్థిరరాశి బహుళకం_2 బహుళకం = config.బహుళకం(failure_injection_s::FAILURE_UNIT_SYSTEM_BATTERY, instance);
+	స్థిర constexpr దశాంశం trigger_margin = 0.01f; // report remaining charge just below the threshold
 
-	if (mode == Mode::Off) {
+	ఒకవేళ (బహుళకం == బహుళకం_2::Off) {
 		// Suppress the publication so the pack reads disconnected.
-		return false;
+		తిరిగి అబద్ధం;
 	}
 
-	if (mode != Mode::Wrong) {
-		return true;
+	ఒకవేళ (బహుళకం != బహుళకం_2::Wrong) {
+		తిరిగి నిజం;
 	}
 
-	static const param_t level_handle = param_find("SYS_FAIL_BAT_LVL");
-	static const param_t low_thr_handle = param_find("BAT_LOW_THR");
-	static const param_t crit_thr_handle = param_find("BAT_CRIT_THR");
-	static const param_t emergen_thr_handle = param_find("BAT_EMERGEN_THR");
+	స్థిర స్థిరరాశి param_t level_handle = param_కనుగొను("SYS_FAIL_BAT_LVL");
+	స్థిర స్థిరరాశి param_t దిగువ_thr_handle = param_కనుగొను("BAT_LOW_THR");
+	స్థిర స్థిరరాశి param_t crit_thr_handle = param_కనుగొను("BAT_CRIT_THR");
+	స్థిర స్థిరరాశి param_t emergen_thr_handle = param_కనుగొను("BAT_EMERGEN_THR");
 
-	int32_t level = battery_status_s::WARNING_CRITICAL;
+	int32_t level = battery_స్థితి_s::WARNING_CRITICAL;
 	param_get(level_handle, &level);
 
-	param_t threshold_handle = crit_thr_handle;
+	param_t పరిమితి_handle = crit_thr_handle;
 
-	switch (level) {
-	case battery_status_s::WARNING_LOW:
-		threshold_handle = low_thr_handle;
-		break;
+	ఎంపిక (level) {
+	స్థితి battery_స్థితి_s::WARNING_దిగువ:
+		పరిమితి_handle = దిగువ_thr_handle;
+		ఆపు;
 
-	case battery_status_s::WARNING_EMERGENCY:
-		threshold_handle = emergen_thr_handle;
-		break;
+	స్థితి battery_స్థితి_s::WARNING_EMERGENCY:
+		పరిమితి_handle = emergen_thr_handle;
+		ఆపు;
 
-	case battery_status_s::WARNING_CRITICAL:
-	default:
-		level = battery_status_s::WARNING_CRITICAL;
-		threshold_handle = crit_thr_handle;
-		break;
+	స్థితి battery_స్థితి_s::WARNING_CRITICAL:
+	అప్రమేయ:
+		level = battery_స్థితి_s::WARNING_CRITICAL;
+		పరిమితి_handle = crit_thr_handle;
+		ఆపు;
 	}
 
-	battery_status.warning = level;
+	battery_స్థితి.warning = level;
 
 
 	// Report the remaining charge just below the selected threshold so the
 	// matching stage of the low-battery failsafe triggers.
-	float threshold = 0.f;
-	param_get(threshold_handle, &threshold);
-	battery_status.remaining = (threshold > trigger_margin) ? (threshold - trigger_margin) : 0.f;
+	దశాంశం పరిమితి = 0.f;
+	param_get(పరిమితి_handle, &పరిమితి);
+	battery_స్థితి.మిగిలిన = (పరిమితి > trigger_margin) ? (పరిమితి - trigger_margin) : 0.f;
 
-	return true;
+	తిరిగి నిజం;
 }
 
-bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
+తార్కిక process_gnss(స్థిరరాశి Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
 		  Stuck<sensor_gnss_s> &stuck)
 {
-	const Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SENSOR_GPS, uorb_instance + 1);
+	స్థిరరాశి బహుళకం_2 బహుళకం = config.బహుళకం(failure_injection_s::FAILURE_UNIT_SENSOR_GPS, uorb_instance + 1);
 
 	// Off and Stuck are message-agnostic; run them first so the Stuck cache keeps the
 	// uncorrupted sample and a later Stuck replays a healthy fix.
-	if (!process(mode, sensor_gnss, stuck)) {
-		return false;
+	ఒకవేళ (!process(బహుళకం, sensor_gnss, stuck)) {
+		తిరిగి అబద్ధం;
 	}
 
-	if (mode == Mode::Wrong) {
-		static const param_t fix_type_handle = param_find("SYS_FAIL_GPS_WRG");
+	ఒకవేళ (బహుళకం == బహుళకం_2::Wrong) {
+		స్థిర స్థిరరాశి param_t fix_type_handle = param_కనుగొను("SYS_FAIL_GPS_WRG");
 
 		int32_t fix_type = sensor_gnss_s::FIX_TYPE_2D;
 		param_get(fix_type_handle, &fix_type);
 		sensor_gnss.fix_type = (uint8_t)fix_type;
 
-		static const param_t jamming_state_handle = param_find("SYS_FAIL_GPS_JAM");
+		స్థిర స్థిరరాశి param_t jamming_state_handle = param_కనుగొను("SYS_FAIL_GPS_JAM");
 
 		int32_t jamming_state = sensor_gnss_s::JAMMING_STATE_UNKNOWN;
 		param_get(jamming_state_handle, &jamming_state);
 
-		if (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
+		ఒకవేళ (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
 			sensor_gnss.jamming_state = (uint8_t)jamming_state;
 		}
 	}
 
-	return true;
+	తిరిగి నిజం;
 }
 
-esc_status_s process_esc(const Config &config, const esc_status_s &status)
+esc_స్థితి_s process_esc(స్థిరరాశి Config &config, స్థిరరాశి esc_స్థితి_s &స్థితి_2)
 {
-	esc_status_s result = status;
+	esc_స్థితి_s ఫలితం = స్థితి_2;
 
-	for (int i = 0; i < result.esc_count && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
-		const uint8_t function = result.esc[i].actuator_function;
+	కొరకు (పూర్ణాంకం i = 0; i < ఫలితం.esc_లెక్క && i < esc_స్థితి_s::CONNECTED_ESC_MAX; i++) {
+		స్థిరరాశి uint8_t function = ఫలితం.esc[i].actuator_function;
 
-		if (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
-			continue; // not a motor output
+		ఒకవేళ (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
+			కొనసాగు; // not a motor output
 		}
 
-		const uint8_t instance = function - esc_report_s::ACTUATOR_FUNCTION_MOTOR1 + 1; // 1-based ESC instance
+		స్థిరరాశి uint8_t instance = function - esc_report_s::ACTUATOR_FUNCTION_MOTOR1 + 1; // 1-based ESC instance
 
-		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_ESC, instance)) {
-		case Mode::Off:
-			result.esc_online_flags &= ~(1u << i);
-			result.esc_armed_flags &= ~(1u << i);
-			result.esc[i] = esc_report_s{};
-			result.esc[i].actuator_function = function;
-			break;
+		ఎంపిక (config.బహుళకం(failure_injection_s::FAILURE_UNIT_SYSTEM_ESC, instance)) {
+		స్థితి బహుళకం_2::Off:
+			ఫలితం.esc_online_flags &= ~(1u << i);
+			ఫలితం.esc_armed_flags &= ~(1u << i);
+			ఫలితం.esc[i] = esc_report_s{};
+			ఫలితం.esc[i].actuator_function = function;
+			ఆపు;
 
-		case Mode::Wrong:
-			result.esc[i].esc_voltage *= 0.1f;
-			result.esc[i].esc_current *= 0.1f;
-			result.esc[i].esc_rpm *= 10;
-			break;
+		స్థితి బహుళకం_2::Wrong:
+			ఫలితం.esc[i].esc_voltage *= 0.1f;
+			ఫలితం.esc[i].esc_current *= 0.1f;
+			ఫలితం.esc[i].esc_rpm *= 10;
+			ఆపు;
 
-		default:
-			break;
+		అప్రమేయ:
+			ఆపు;
 		}
 	}
 
-	return result;
+	తిరిగి ఫలితం;
 }
 
-MotorFailureMasks process_motor(const Config &config)
+MotorFailureMasks process_motor(స్థిరరాశి Config &config)
 {
 	MotorFailureMasks masks{};
 
-	for (int i = 0; i < esc_status_s::CONNECTED_ESC_MAX; i++) {
-		const uint16_t bit = 1u << i;
+	కొరకు (పూర్ణాంకం i = 0; i < esc_స్థితి_s::CONNECTED_ESC_MAX; i++) {
+		స్థిరరాశి uint16_t bit = 1u << i;
 
-		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_MOTOR, i + 1)) {
-		case Mode::Off:
-			masks.failure_mask |= bit;
-			break;
+		ఎంపిక (config.బహుళకం(failure_injection_s::FAILURE_UNIT_SYSTEM_MOTOR, i + 1)) {
+		స్థితి బహుళకం_2::Off:
+			masks.failure_ముసుగు |= bit;
+			ఆపు;
 
-		case Mode::Wrong:
-			masks.stop_mask |= bit;
-			break;
+		స్థితి బహుళకం_2::Wrong:
+			masks.stop_ముసుగు |= bit;
+			ఆపు;
 
-		default:
-			break;
+		అప్రమేయ:
+			ఆపు;
 		}
 	}
 
-	return masks;
+	తిరిగి masks;
 }
 
 } // namespace failure_injection
 
-#endif // CONFIG_MODULES_FAILURE_INJECTION_MANAGER
+#అయితే_ముగింపు // CONFIG_MODULES_FAILURE_INJECTION_MANAGER

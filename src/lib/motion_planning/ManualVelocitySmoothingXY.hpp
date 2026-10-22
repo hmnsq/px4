@@ -36,88 +36,88 @@
  *
  */
 
-#pragma once
+#సూచన once
 
-#include <motion_planning/VelocitySmoothing.hpp>
+#అన్తర్భావ <motion_planning/VelocitySmoothing.hpp>
 
-#include <matrix/matrix/math.hpp>
+#అన్తర్భావ <matrix/matrix/math.hpp>
 
-using matrix::Vector2f;
+ఉపయోగించి మాతృక::Vector2f;
 
-class ManualVelocitySmoothingXY final
+తరగతి ManualVelocitySmoothingXY final
 {
-public:
-	ManualVelocitySmoothingXY() = default;
-	~ManualVelocitySmoothingXY() = default;
+బహిరంగ:
+	ManualVelocitySmoothingXY() = అప్రమేయ;
+	~ManualVelocitySmoothingXY() = అప్రమేయ;
 
-	void reset(const Vector2f &accel, const Vector2f &vel, const Vector2f &pos);
-	void update(float dt, const Vector2f &velocity_target);
+	శూన్య reset(స్థిరరాశి Vector2f &accel, స్థిరరాశి Vector2f &vel, స్థిరరాశి Vector2f &pos);
+	శూన్య update(దశాంశం dt, స్థిరరాశి Vector2f &velocity_లక్ష్యం);
 
-	void setVelSpFeedback(const Vector2f &fb) { _velocity_setpoint_feedback = fb; }
+	శూన్య సమితి_Vel_Sp_Feedback(స్థిరరాశి Vector2f &fb) { _velocity_setpoint_feedback = fb; }
 
-	void setMaxJerk(const float max_jerk)
+	శూన్య సమితి_Max_Jerk(స్థిరరాశి దశాంశం max_jerk)
 	{
-		_trajectory[0].setMaxJerk(max_jerk);
-		_trajectory[1].setMaxJerk(max_jerk);
+		_trajectory[0].సమితి_Max_Jerk(max_jerk);
+		_trajectory[1].సమితి_Max_Jerk(max_jerk);
 	}
-	float getMaxJerk() const { return _trajectory[0].getMaxJerk(); }
+	దశాంశం getMaxJerk() స్థిరరాశి { తిరిగి _trajectory[0].getMaxJerk(); }
 
-	void setMaxAccel(const float max_accel)
+	శూన్య సమితి_Max_Accel(స్థిరరాశి దశాంశం max_accel)
 	{
-		_trajectory[0].setMaxAccel(max_accel);
-		_trajectory[1].setMaxAccel(max_accel);
+		_trajectory[0].సమితి_Max_Accel(max_accel);
+		_trajectory[1].సమితి_Max_Accel(max_accel);
 	}
-	float getMaxAccel() const { return _trajectory[0].getMaxAccel(); }
+	దశాంశం getMaxAccel() స్థిరరాశి { తిరిగి _trajectory[0].getMaxAccel(); }
 
-	void setMaxVel(const float max_vel)
+	శూన్య సమితి_Max_Vel(స్థిరరాశి దశాంశం max_vel)
 	{
-		_trajectory[0].setMaxVel(max_vel);
-		_trajectory[1].setMaxVel(max_vel);
+		_trajectory[0].సమితి_Max_Vel(max_vel);
+		_trajectory[1].సమితి_Max_Vel(max_vel);
 	}
-	float getMaxVel() const { return _trajectory[0].getMaxVel(); }
+	దశాంశం getMaxVel() స్థిరరాశి { తిరిగి _trajectory[0].getMaxVel(); }
 
-	Vector2f getCurrentJerk() const { return _state.j; }
-	Vector2f getCurrentAcceleration() const { return _state.a; }
+	Vector2f getCurrentJerk() స్థిరరాశి { తిరిగి _state.j; }
+	Vector2f getCurrentAcceleration() స్థిరరాశి { తిరిగి _state.a; }
 
-	void setCurrentVelocity(const Vector2f &vel)
+	శూన్య సమితి_Current_Velocity(స్థిరరాశి Vector2f &vel)
 	{
 		_state.v = vel;
-		_trajectory[0].setCurrentVelocity(vel(0));
-		_trajectory[1].setCurrentVelocity(vel(1));
+		_trajectory[0].సమితి_Current_Velocity(vel(0));
+		_trajectory[1].సమితి_Current_Velocity(vel(1));
 	}
-	Vector2f getCurrentVelocity() const { return _state.v; }
+	Vector2f getCurrentVelocity() స్థిరరాశి { తిరిగి _state.v; }
 
-	void setCurrentPosition(const Vector2f &pos)
+	శూన్య సమితి_Current_Position(స్థిరరాశి Vector2f &pos)
 	{
 		_state.x = pos;
-		_trajectory[0].setCurrentPosition(pos(0));
-		_trajectory[1].setCurrentPosition(pos(1));
+		_trajectory[0].సమితి_Current_Position(pos(0));
+		_trajectory[1].సమితి_Current_Position(pos(1));
 		_position_estimate = pos;
 
-		if (_position_lock_active) {
+		ఒకవేళ (position_తాళం_చురుకైన) {
 			_position_setpoint_locked = pos;
 		}
 	}
-	Vector2f getCurrentPosition() const { return _position_setpoint_locked; }
+	Vector2f getCurrentPosition() స్థిరరాశి { తిరిగి _position_setpoint_locked; }
 
-	void setCurrentPositionEstimate(const Vector2f &pos) { _position_estimate = pos; }
+	శూన్య సమితి_Current_Position_Estimate(స్థిరరాశి Vector2f &pos) { _position_estimate = pos; }
 
-private:
-	void resetPositionLock();
-	void updateTrajectories(float dt);
-	void checkPositionLock(const Vector2f &velocity_target);
-	void updateTrajDurations(const Vector2f &velocity_target);
+అంతరంగ:
+	శూన్య reset_Position_తాళం();
+	శూన్య updateTrajectories(దశాంశం dt);
+	శూన్య check_Position_తాళం(స్థిరరాశి Vector2f &velocity_లక్ష్యం);
+	శూన్య updateTrajDurations(స్థిరరాశి Vector2f &velocity_లక్ష్యం);
 
 	VelocitySmoothing _trajectory[2]; ///< Trajectory in x and y directions
 
-	bool _position_lock_active{false};
+	తార్కిక position_తాళం_చురుకైన{అబద్ధం};
 
 	Vector2f _position_setpoint_locked{};
 
 	Vector2f _velocity_setpoint_feedback{};
 	Vector2f _position_estimate{};
 
-	struct {
+	నిర్మాణం {
 		Vector2f j;
 		Vector2f a;
 		Vector2f v;

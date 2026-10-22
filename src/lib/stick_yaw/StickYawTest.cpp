@@ -31,22 +31,22 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "StickYaw.hpp"
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ "StickYaw.hpp"
 
-#include <px4_platform_common/defines.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
 
 TEST(StickYawTest, ResetClearsYawspeedFilter)
 {
-	param_control_autosave(false);
+	param_control_autosave(అబద్ధం);
 
-	StickYaw stick_yaw{nullptr};
-	float yawspeed_sp = 0.f;
-	float yaw_sp = NAN;
-	const float dt = 0.01f;
+	StickYaw stick_yaw{శూన్యసూచిక};
+	దశాంశం yawspeed_sp = 0.f;
+	దశాంశం yaw_sp = NAN;
+	స్థిరరాశి దశాంశం dt = 0.01f;
 
 	// GIVEN: the filter charged up by a sustained full-deflection yaw stick
-	for (int i = 0; i < 500; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < 500; i++) {
 		stick_yaw.generateYawSetpoint(yawspeed_sp, yaw_sp, 1.f, 0.f, dt);
 	}
 
@@ -60,28 +60,28 @@ TEST(StickYawTest, ResetClearsYawspeedFilter)
 	EXPECT_EQ(yawspeed_sp, 0.f);
 }
 
-TEST(StickYawTest, ResetYawspeedClearsChargeButKeepsHeadingLock)
+TEST(StickYawTest, Reset_Yawspeed_Clears_Charge_But_Keeps_Heading_తాళం)
 {
 	// Gating the yaw rate during the arming gesture needs the command at zero immediately and the
 	// heading lock intact.
-	param_control_autosave(false);
+	param_control_autosave(అబద్ధం);
 
-	StickYaw stick_yaw{nullptr};
-	float yawspeed_sp = 0.f;
-	float yaw_sp = NAN;
-	const float dt = 0.01f;
+	StickYaw stick_yaw{శూన్యసూచిక};
+	దశాంశం yawspeed_sp = 0.f;
+	దశాంశం yaw_sp = NAN;
+	స్థిరరాశి దశాంశం dt = 0.01f;
 
 	// GIVEN: a heading locked at 0 and the yawspeed filter charged by a full-deflection stick
 	stick_yaw.reset(0.f, 0.f);
 
-	for (int i = 0; i < 500; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < 500; i++) {
 		stick_yaw.generateYawSetpoint(yawspeed_sp, yaw_sp, 1.f, 0.f, dt, 0.f);
 	}
 
 	EXPECT_GT(yawspeed_sp, 0.1f);
 
 	// WHEN: the gesture gate clears the charge and holds the stick input at zero
-	for (int i = 0; i < 5; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < 5; i++) {
 		stick_yaw.resetYawspeed();
 		stick_yaw.generateYawSetpoint(yawspeed_sp, yaw_sp, 0.f, 0.f, dt, 0.f);
 		EXPECT_EQ(yawspeed_sp, 0.f);
@@ -101,17 +101,17 @@ TEST(StickYawTest, UnaidedYawNanTransitionNoYawJump)
 	// the yaw setpoint must not jump discontinuously.
 	// See: https://github.com/PX4/PX4-Autopilot/pull/25710
 
-	param_control_autosave(false);
+	param_control_autosave(అబద్ధం);
 
-	StickYaw stick_yaw{nullptr};
-	float yawspeed_sp = 0.f;
-	float yaw_sp = NAN;
-	const float dt = 0.01f;
+	StickYaw stick_yaw{శూన్యసూచిక};
+	దశాంశం yawspeed_sp = 0.f;
+	దశాంశం yaw_sp = NAN;
+	స్థిరరాశి దశాంశం dt = 0.01f;
 
 	// Phase 1: Establish yaw lock at yaw=0 with unaided_yaw=0
 	stick_yaw.reset(0.f, 0.f);
 
-	for (int i = 0; i < 10; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < 10; i++) {
 		stick_yaw.generateYawSetpoint(yawspeed_sp, yaw_sp, 0.f, 0.f, dt, 0.f);
 	}
 
@@ -120,11 +120,11 @@ TEST(StickYawTest, UnaidedYawNanTransitionNoYawJump)
 	// Phase 2: Simulate EKF yaw correction — yaw jumps to 0.3 rad while
 	// unaided_yaw stays at 0. This creates a yaw_error of 0.3 and triggers
 	// the convergence detector, building up _yaw_correction ≈ 0.3.
-	for (int i = 0; i < 5; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < 5; i++) {
 		stick_yaw.generateYawSetpoint(yawspeed_sp, yaw_sp, 0.f, 0.3f, dt, 0.f);
 	}
 
-	const float yaw_sp_before = yaw_sp;
+	స్థిరరాశి దశాంశం yaw_sp_before = yaw_sp;
 	ASSERT_TRUE(PX4_ISFINITE(yaw_sp_before));
 
 	// Phase 3: unaided_yaw becomes NAN — yaw setpoint must not jump.
@@ -135,29 +135,29 @@ TEST(StickYawTest, UnaidedYawNanTransitionNoYawJump)
 			<< " when unaided_yaw became NAN";
 }
 
-TEST(StickYawTest, UnaidedYawNanToFiniteTransitionResetsYawLock)
+TEST(StickYawTest, Unaided_Yaw_Nan_గమ్యం_Finite_Transition_Resets_Yaw_తాళం)
 {
 	// When unaided_yaw recovers from NAN, stale yaw correction state from before
 	// the outage must not be applied to the locked yaw setpoint.
 
-	param_control_autosave(false);
+	param_control_autosave(అబద్ధం);
 
-	StickYaw stick_yaw{nullptr};
-	float yawspeed_sp = 0.f;
-	float yaw_sp = NAN;
-	const float dt = 0.01f;
+	StickYaw stick_yaw{శూన్యసూచిక};
+	దశాంశం yawspeed_sp = 0.f;
+	దశాంశం yaw_sp = NAN;
+	స్థిరరాశి దశాంశం dt = 0.01f;
 
 	// Phase 1: Establish yaw lock at yaw=0 with unaided_yaw=0.
 	stick_yaw.reset(0.f, 0.f);
 
-	for (int i = 0; i < 10; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < 10; i++) {
 		stick_yaw.generateYawSetpoint(yawspeed_sp, yaw_sp, 0.f, 0.f, dt, 0.f);
 	}
 
 	EXPECT_NEAR(yaw_sp, 0.f, 0.01f);
 
 	// Phase 2: Simulate a yaw estimate correction while unaided_yaw is valid.
-	for (int i = 0; i < 20; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < 20; i++) {
 		stick_yaw.generateYawSetpoint(yawspeed_sp, yaw_sp, 0.f, 0.3f, dt, 0.f);
 	}
 

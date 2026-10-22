@@ -37,56 +37,56 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <time.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <mathlib/math/test/test.hpp>
+#అన్తర్భావ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
 
 /**
  * A uniform random number generator
  */
-class __EXPORT BlockRandUniform: public Block
+తరగతి __EXPORT ఖండం_Rand_ఏకరీతి: బహిరంగ ఖండం
 {
-public:
+బహిరంగ:
 // methods
-	BlockRandUniform(SuperBlock *parent,
-			 const char *name) :
-		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+	ఖండం_Rand_ఏకరీతి(Super_ఖండం *మాతృ,
+			 స్థిరరాశి అక్షరం *name) :
+		ఖండం(మాతృ, name),
+		_min(ఇది, "MIN"),
+		_max(ఇది, "MAX")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandUniform() = default;
-	float update()
+	మాయా ~ఖండం_Rand_ఏకరీతి() = అప్రమేయ;
+	దశాంశం update()
 	{
-		static float rand_max = static_cast<float>(RAND_MAX);
-		float rand_val = rand();
-		float bounds = getMax() - getMin();
-		return getMin() + (rand_val * bounds) / rand_max;
+		స్థిర దశాంశం rand_max = static_cast<దశాంశం>(RAND_MAX);
+		దశాంశం rand_val = rand();
+		దశాంశం bounds = getMax() - getMin();
+		తిరిగి getMin() + (rand_val * bounds) / rand_max;
 	}
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-private:
-// attributes
-	control::BlockParamFloat _min;
-	control::BlockParamFloat _max;
+	దశాంశం getMin() { తిరిగి _min.get(); }
+	దశాంశం getMax() { తిరిగి _max.get(); }
+అంతరంగ:
+//లక్షణాలు
+	control::ఖండం_Param_Float _min;
+	control::ఖండం_Param_Float _max;
 };
 
 } // namespace control

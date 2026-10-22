@@ -31,23 +31,23 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "mathlib/math/Limits.hpp"
-#include <matrix/math.hpp>
+#అన్తర్భావ "mathlib/math/Limits.hpp"
+#అన్తర్భావ <matrix/math.hpp>
 
-class LatLonAlt
+తరగతి LatLonAlt
 {
-public:
-	LatLonAlt() = default;
-	LatLonAlt(const LatLonAlt &lla)
+బహిరంగ:
+	LatLonAlt() = అప్రమేయ;
+	LatLonAlt(స్థిరరాశి LatLonAlt &lla)
 	{
 		_latitude_rad = lla.latitude_rad();
 		_longitude_rad = lla.longitude_rad();
 		_altitude = lla.altitude();
 	}
 
-	LatLonAlt(const double latitude_deg, const double longitude_deg, const float altitude_m)
+	LatLonAlt(స్థిరరాశి ద్విగుణ latitude_deg, స్థిరరాశి ద్విగుణ longitude_deg, స్థిరరాశి దశాంశం altitude_m)
 	{
 		_latitude_rad = math::radians(latitude_deg);
 		_longitude_rad = math::radians(longitude_deg);
@@ -55,41 +55,41 @@ public:
 	}
 
 
-	static LatLonAlt fromEcef(const matrix::Vector3d &p_ecef);
-	matrix::Vector3d toEcef() const;
+	స్థిర LatLonAlt fromEcef(స్థిరరాశి మాతృక::Vector3d &p_ecef);
+	మాతృక::Vector3d గమ్యం_Ecef() స్థిరరాశి;
 
-	void setZero() { _latitude_rad = 0.0; _longitude_rad = 0.0; _altitude = 0.f; }
+	శూన్య సమితి_Zero() { _latitude_rad = 0.0; _longitude_rad = 0.0; _altitude = 0.f; }
 
-	double latitude_deg() const { return math::degrees(latitude_rad()); }
-	double longitude_deg() const { return math::degrees(longitude_rad()); }
+	ద్విగుణ latitude_deg() స్థిరరాశి { తిరిగి math::degrees(latitude_rad()); }
+	ద్విగుణ longitude_deg() స్థిరరాశి { తిరిగి math::degrees(longitude_rad()); }
 
-	const double &latitude_rad() const { return _latitude_rad; }
-	const double &longitude_rad() const { return _longitude_rad; }
-	float altitude() const { return _altitude; }
+	స్థిరరాశి ద్విగుణ &latitude_rad() స్థిరరాశి { తిరిగి _latitude_rad; }
+	స్థిరరాశి ద్విగుణ &longitude_rad() స్థిరరాశి { తిరిగి _longitude_rad; }
+	దశాంశం altitude() స్థిరరాశి { తిరిగి _altitude; }
 
-	void setLatitudeDeg(const double &latitude_deg) { _latitude_rad = math::radians(latitude_deg); }
-	void setLongitudeDeg(const double &longitude_deg) { _longitude_rad = math::radians(longitude_deg); }
-	void setAltitude(const float altitude) { _altitude = altitude; }
+	శూన్య సమితి_Latitude_Deg(స్థిరరాశి ద్విగుణ &latitude_deg) { _latitude_rad = math::radians(latitude_deg); }
+	శూన్య సమితి_Longitude_Deg(స్థిరరాశి ద్విగుణ &longitude_deg) { _longitude_rad = math::radians(longitude_deg); }
+	శూన్య సమితి_Altitude(స్థిరరాశి దశాంశం altitude) { _altitude = altitude; }
 
-	void setLatLon(const LatLonAlt &lla) { _latitude_rad = lla.latitude_rad(); _longitude_rad = lla.longitude_rad(); }
-	void setLatLonDeg(const double latitude, const double longitude) { _latitude_rad = math::radians(latitude); _longitude_rad = math::radians(longitude); }
-	void setLatLonRad(const double latitude, const double longitude) { _latitude_rad = latitude; _longitude_rad = longitude; }
+	శూన్య సమితి_Lat_Lon(స్థిరరాశి LatLonAlt &lla) { _latitude_rad = lla.latitude_rad(); _longitude_rad = lla.longitude_rad(); }
+	శూన్య సమితి_Lat_Lon_Deg(స్థిరరాశి ద్విగుణ latitude, స్థిరరాశి ద్విగుణ longitude) { _latitude_rad = math::radians(latitude); _longitude_rad = math::radians(longitude); }
+	శూన్య సమితి_Lat_Lon_Rad(స్థిరరాశి ద్విగుణ latitude, స్థిరరాశి ద్విగుణ longitude) { _latitude_rad = latitude; _longitude_rad = longitude; }
 
-	void print() const { printf("latitude = %f (deg), longitude = %f (deg), altitude = %f (m)\n", _latitude_rad, _longitude_rad, (double)_altitude); }
+	శూన్య print() స్థిరరాశి { రాయి("latitude = %f (deg), longitude = %f (deg), altitude = %f (m)\n", _latitude_rad, _longitude_rad, (ద్విగుణ)_altitude); }
 
 	/*
 	 * The plus and minus operators below use approximations and should only be used when the Cartesian component is small
 	 */
-	LatLonAlt operator+(const matrix::Vector3f &delta_pos) const;
-	void operator+=(const matrix::Vector3f &delta_pos);
-	void operator+=(const matrix::Vector2f &delta_pos);
-	matrix::Vector3f operator-(const LatLonAlt &lla) const;
+	LatLonAlt క్రియాకారకం+(స్థిరరాశి మాతృక::Vector3f &delta_pos) స్థిరరాశి;
+	శూన్య క్రియాకారకం+=(స్థిరరాశి మాతృక::Vector3f &delta_pos);
+	శూన్య క్రియాకారకం+=(స్థిరరాశి మాతృక::Vector2f &delta_pos);
+	మాతృక::Vector3f క్రియాకారకం-(స్థిరరాశి LatLonAlt &lla) స్థిరరాశి;
 
-	void operator=(const LatLonAlt &lla)
+	శూన్య క్రియాకారకం=(స్థిరరాశి LatLonAlt &lla)
 	{
 		// Protect against self-assignment
-		if (this == &lla) {
-			return;
+		ఒకవేళ (ఇది == &lla) {
+			తిరిగి;
 		}
 
 		_latitude_rad = lla.latitude_rad();
@@ -101,39 +101,39 @@ public:
 	 * Compute the angular rate of the local navigation frame at the current latitude and height
 	 * with respect to an inertial frame and resolved in the navigation frame
 	 */
-	matrix::Vector3f computeAngularRateNavFrame(const matrix::Vector3f &v_ned) const;
+	మాతృక::Vector3f compute_Angular_రేటు_Nav_చట్రం(స్థిరరాశి మాతృక::Vector3f &v_ned) స్థిరరాశి;
 
 	// Compute the ECEF to NED coordinate transformation matrix at the current position
-	matrix::Dcmf computeRotEcefToNed() const;
+	మాతృక::Dcmf compute_Rot_Ecef_గమ్యం_Ned() స్థిరరాశి;
 
-	struct Wgs84 {
-		static constexpr double equatorial_radius = 6378137.0;
-		static constexpr double eccentricity = 0.0818191908425;
-		static constexpr double eccentricity2 = eccentricity * eccentricity;
-		static constexpr double meridian_radius_of_curvature_numerator = equatorial_radius * (1.0 - eccentricity2);
-		static constexpr double gravity_equator = 9.7803253359;
-		static constexpr double somigliana_coefficient = 0.001931851353;
+	నిర్మాణం Wgs84 {
+		స్థిర constexpr ద్విగుణ equatorial_radius = 6378137.0;
+		స్థిర constexpr ద్విగుణ eccentricity = 0.0818191908425;
+		స్థిర constexpr ద్విగుణ eccentricity2 = eccentricity * eccentricity;
+		స్థిర constexpr ద్విగుణ meridian_radius_యొక్క_curvature_numerator = equatorial_radius * (1.0 - eccentricity2);
+		స్థిర constexpr ద్విగుణ gravity_equator = 9.7803253359;
+		స్థిర constexpr ద్విగుణ somigliana_coefficient = 0.001931851353;
 
 		// Normal gravity at the ellipsoid surface as a function of latitude (Somigliana formula).
 		// Captures the ~9.780 (equator) to ~9.832 m/s^2 (pole) variation. Input in radians.
-		static float gravity(const double latitude_rad)
+		స్థిర దశాంశం gravity(స్థిరరాశి ద్విగుణ latitude_rad)
 		{
-			const double sin_lat = sin(latitude_rad);
-			const double sin_lat2 = sin_lat * sin_lat;
-			const double g = gravity_equator * (1.0 + somigliana_coefficient * sin_lat2)
-					 / std::sqrt(1.0 - eccentricity2 * sin_lat2);
-			return static_cast<float>(g);
+			స్థిరరాశి ద్విగుణ sin_lat = జ్యా(latitude_rad);
+			స్థిరరాశి ద్విగుణ sin_lat2 = sin_lat * sin_lat;
+			స్థిరరాశి ద్విగుణ g = gravity_equator * (1.0 + somigliana_coefficient * sin_lat2)
+					 / std::వర్గమూలం(1.0 - eccentricity2 * sin_lat2);
+			తిరిగి static_cast<దశాంశం>(g);
 		}
 	};
 
-private:
+అంతరంగ:
 	// Convert between curvilinear and cartesian errors
-	static matrix::Vector2d deltaLatLonToDeltaXY(const double latitude, const float altitude);
+	స్థిర మాతృక::Vector2d delta_Lat_Lon_గమ్యం_Delta_XY(స్థిరరాశి ద్విగుణ latitude, స్థిరరాశి దశాంశం altitude);
 
-	static void computeRadiiOfCurvature(const double latitude, double &meridian_radius_of_curvature,
-					    double &transverse_radius_of_curvature);
+	స్థిర శూన్య compute_Radii_యొక్క_Curvature(స్థిరరాశి ద్విగుణ latitude, ద్విగుణ &meridian_radius_యొక్క_curvature,
+					    ద్విగుణ &transverse_radius_యొక్క_curvature);
 
-	double _latitude_rad{0.0};
-	double _longitude_rad{0.0};
-	float _altitude{0.0};
+	ద్విగుణ _latitude_rad{0.0};
+	ద్విగుణ _longitude_rad{0.0};
+	దశాంశం _altitude{0.0};
 };

@@ -31,91 +31,91 @@
  *
  ****************************************************************************/
 
-#include "gain_compression.hpp"
+#అన్తర్భావ "gain_compression.hpp"
 
-using matrix::Vector3f;
-using namespace time_literals;
+ఉపయోగించి మాతృక::Vector3f;
+ఉపయోగించి నామాకాశ సమయం_literals;
 
 GainCompression3d::GainCompression3d()
 {
 	_gain_compression_pub.advertise();
 }
 
-void GainCompression3d::reset()
+శూన్య GainCompression3d::reset()
 {
-	for (unsigned i = 0; i < 3; i++) {
+	కొరకు (గుర్తులేని i = 0; i < 3; i++) {
 		_compression_gains[i].reset();
 	}
 
-	_gains.setOne();
+	_gains.సమితి_One();
 }
 
-void GainCompression3d::setCompressionGainMin(const float gain_min)
+శూన్య GainCompression3d::సమితి_Compression_Gain_Min(స్థిరరాశి దశాంశం gain_min)
 {
-	for (unsigned i = 0; i < 3; i++) {
-		_compression_gains[i].setCompressionGainMin(gain_min);
+	కొరకు (గుర్తులేని i = 0; i < 3; i++) {
+		_compression_gains[i].సమితి_Compression_Gain_Min(gain_min);
 	}
 }
 
-void GainCompression3d::update(const Vector3f &input, const float dt)
+శూన్య GainCompression3d::update(స్థిరరాశి Vector3f &ఆదానం, స్థిరరాశి దశాంశం dt)
 {
-	if (!_enabled) {
+	ఒకవేళ (!_enabled) {
 		reset();
-		return;
+		తిరిగి;
 	}
 
 	Vector3f hpf;
 	Vector3f lpf;
-	const float sample_freq = 1.f / math::constrain(dt, 0.125e-3f, 100e-3f); // supports rate loops up to 8kHz
+	స్థిరరాశి దశాంశం sample_freq = 1.f / math::constrain(dt, 0.125e-3f, 100e-3f); // supports rate loops up to 8kHz
 
-	for (unsigned i = 0; i < 3; i++) {
-		_compression_gains[i].setLpfCutoffFrequency(sample_freq, _kLpfCutoffFrequency);
-		_compression_gains[i].setHpfCutoffFrequency(sample_freq, _kHpfCutoffFrequency);
+	కొరకు (గుర్తులేని i = 0; i < 3; i++) {
+		_compression_gains[i].సమితి_Lpf_Cutoff_Frequency(sample_freq, _kLpfCutoffFrequency);
+		_compression_gains[i].సమితి_Hpf_Cutoff_Frequency(sample_freq, _kHpfCutoffFrequency);
 
-		_gains(i) = _compression_gains[i].update(input(i), dt);
+		_gains(i) = _compression_gains[i].update(ఆదానం(i), dt);
 
 		hpf(i) = _compression_gains[i].getSpectralDamperHpf();
 		lpf(i) = _compression_gains[i].getSpectralDamperLpf();
 	}
 
-	const hrt_abstime now = hrt_absolute_time();
+	స్థిరరాశి hrt_abstime now = hrt_absolute_సమయం();
 
-	if ((now - _time_last_publication) > 100_ms) {
-		gain_compression_s msg;
-		msg.timestamp = now;
-		_gains.copyTo(msg.compression_gains);
-		hpf.copyTo(msg.spectral_damper_hpf);
-		lpf.copyTo(msg.spectral_damper_out);
-		_gain_compression_pub.publish(msg);
+	ఒకవేళ ((now - సమయం_చివరి_publication) > 100_ms) {
+		gain_compression_s సందేశం_2;
+		సందేశం_2.timestamp = now;
+		_gains.copy_గమ్యం(సందేశం_2.compression_gains);
+		hpf.copy_గమ్యం(సందేశం_2.spectral_damper_hpf);
+		lpf.copy_గమ్యం(సందేశం_2.spectral_damper_బహిర్గతం);
+		_gain_compression_pub.publish(సందేశం_2);
 
-		_time_last_publication = now;
+		సమయం_చివరి_publication = now;
 	}
 }
 
-float GainCompression::update(const float input, const float dt)
+దశాంశం GainCompression::update(స్థిరరాశి దశాంశం ఆదానం, స్థిరరాశి దశాంశం dt)
 {
-	if (!PX4_ISFINITE(input)) {
-		return _compression_gain;
+	ఒకవేళ (!PX4_ISFINITE(ఆదానం)) {
+		తిరిగి _compression_gain;
 	}
 
-	if (!_input_initialized) {
+	ఒకవేళ (!ఆదానం_initialized) {
 		// seed the high-pass filter to avoid detecting a step on the first sample after a reset
-		_input_prev = input;
-		_input_initialized = true;
+		ఆదానం_prev = ఆదానం;
+		ఆదానం_initialized = నిజం;
 	}
 
-	_hpf = _alpha_hpf * _hpf + _alpha_hpf * (input - _input_prev);
+	_hpf = _alpha_hpf * _hpf + _alpha_hpf * (ఆదానం - ఆదానం_prev);
 	_lpf.update(_hpf * _hpf);
 
-	_input_prev = input;
+	ఆదానం_prev = ఆదానం;
 
-	const float ka = fmaxf(_compression_gain - _compression_gain_min, 0.f);
-	const float spectral_damping = -_kSpectralDamperGain * ka * _lpf.getState();
+	స్థిరరాశి దశాంశం ka = fmaxf(_compression_gain - _compression_gain_min, 0.f);
+	స్థిరరాశి దశాంశం spectral_damping = -_kSpectralDamperGain * ka * _lpf.getState();
 
-	const float leakage = _kLeakageGain * (1.f - _compression_gain);
+	స్థిరరాశి దశాంశం leakage = _kLeakageGain * (1.f - _compression_gain);
 
-	const float ka_dot = spectral_damping + leakage;
+	స్థిరరాశి దశాంశం ka_dot = spectral_damping + leakage;
 	_compression_gain = math::constrain(_compression_gain + ka_dot * dt, _compression_gain_min, 1.f);
 
-	return _compression_gain;
+	తిరిగి _compression_gain;
 }

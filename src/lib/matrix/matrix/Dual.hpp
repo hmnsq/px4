@@ -11,367 +11,367 @@
  * @author Julian Kent <julian@auterion.com>
  */
 
-#pragma once
+#సూచన once
 
-#include <cmath>
+#అన్తర్భావ <cmath>
 
-#include "Scalar.hpp"
-#include "Vector.hpp"
+#అన్తర్భావ "Scalar.hpp"
+#అన్తర్భావ "Vector.hpp"
 
-namespace matrix
+నామాకాశ మాతృక
 {
 
-template <typename Scalar, size_t N>
-struct Dual {
-	enum : size_t { WIDTH = N };
+మూస <రకం_పేరు Scalar, size_t N>
+నిర్మాణం Dual {
+	గణన : size_t { వెడల్పు = N };
 
 	Scalar value {};
-	Vector<Scalar, N> derivative;
+	సదిశ<Scalar, N> derivative;
 
-	Dual() = default;
+	Dual() = అప్రమేయ;
 
-	explicit Dual(Scalar v, size_t inputDimension = 65535)
+	స్పష్టమైన Dual(Scalar v, size_t ఆదానం_Dimension = 65535)
 	{
 		value = v;
 
-		if (inputDimension < N) {
-			derivative(inputDimension) = Scalar(1);
+		ఒకవేళ (ఆదానం_Dimension < N) {
+			derivative(ఆదానం_Dimension) = Scalar(1);
 		}
 	}
 
-	explicit Dual(Scalar v, const Vector<Scalar, N> &d) :
+	స్పష్టమైన Dual(Scalar v, స్థిరరాశి సదిశ<Scalar, N> &d) :
 		value(v), derivative(d)
 	{}
 
-	Dual<Scalar, N> &operator=(const Scalar &a)
+	Dual<Scalar, N> &క్రియాకారకం=(స్థిరరాశి Scalar &a)
 	{
-		derivative.setZero();
+		derivative.సమితి_Zero();
 		value = a;
-		return *this;
+		తిరిగి *ఇది;
 	}
 
-	Dual<Scalar, N> &operator +=(const Dual<Scalar, N> &a)
+	Dual<Scalar, N> &క్రియాకారకం +=(స్థిరరాశి Dual<Scalar, N> &a)
 	{
-		return (*this = *this + a);
+		తిరిగి (*ఇది = *ఇది + a);
 	}
 
-	Dual<Scalar, N> &operator *=(const Dual<Scalar, N> &a)
+	Dual<Scalar, N> &క్రియాకారకం *=(స్థిరరాశి Dual<Scalar, N> &a)
 	{
-		return (*this = *this * a);
+		తిరిగి (*ఇది = *ఇది * a);
 	}
 
-	Dual<Scalar, N> &operator -=(const Dual<Scalar, N> &a)
+	Dual<Scalar, N> &క్రియాకారకం -=(స్థిరరాశి Dual<Scalar, N> &a)
 	{
-		return (*this = *this - a);
+		తిరిగి (*ఇది = *ఇది - a);
 	}
 
-	Dual<Scalar, N> &operator /=(const Dual<Scalar, N> &a)
+	Dual<Scalar, N> &క్రియాకారకం /=(స్థిరరాశి Dual<Scalar, N> &a)
 	{
-		return (*this = *this / a);
+		తిరిగి (*ఇది = *ఇది / a);
 	}
 
-	Dual<Scalar, N> &operator +=(Scalar a)
+	Dual<Scalar, N> &క్రియాకారకం +=(Scalar a)
 	{
-		return (*this = *this + a);
+		తిరిగి (*ఇది = *ఇది + a);
 	}
 
-	Dual<Scalar, N> &operator -=(Scalar a)
+	Dual<Scalar, N> &క్రియాకారకం -=(Scalar a)
 	{
-		return (*this = *this - a);
+		తిరిగి (*ఇది = *ఇది - a);
 	}
 
-	Dual<Scalar, N> &operator *=(Scalar a)
+	Dual<Scalar, N> &క్రియాకారకం *=(Scalar a)
 	{
-		return (*this = *this * a);
+		తిరిగి (*ఇది = *ఇది * a);
 	}
 
-	Dual<Scalar, N> &operator /=(Scalar a)
+	Dual<Scalar, N> &క్రియాకారకం /=(Scalar a)
 	{
-		return (*this = *this / a);
+		తిరిగి (*ఇది = *ఇది / a);
 	}
 
-	bool operator==(const Dual<Scalar, N> &other) const
+	తార్కిక క్రియాకారకం==(స్థిరరాశి Dual<Scalar, N> &other) స్థిరరాశి
 	{
-		return isEqualF(value, other.value) && (derivative == other.derivative);
+		తిరిగి isEqualF(value, other.value) && (derivative == other.derivative);
 	}
 
-	bool operator!=(const Dual<Scalar, N> &other) const
+	తార్కిక క్రియాకారకం!=(స్థిరరాశి Dual<Scalar, N> &other) స్థిరరాశి
 	{
-		const Dual<Scalar, N> &self = *this;
-		return !(self == other);
+		స్థిరరాశి Dual<Scalar, N> &self = *ఇది;
+		తిరిగి !(self == other);
 	}
 };
 
 // operators
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator+(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> క్రియాకారకం+(స్థిరరాశి Dual<Scalar, N> &a)
 {
-	return a;
+	తిరిగి a;
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator-(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> క్రియాకారకం-(స్థిరరాశి Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(-a.value, -a.derivative);
+	తిరిగి Dual<Scalar, N>(-a.value, -a.derivative);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator+(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> క్రియాకారకం+(స్థిరరాశి Dual<Scalar, N> &a, స్థిరరాశి Dual<Scalar, N> &b)
 {
-	return Dual<Scalar, N>(a.value + b.value, a.derivative + b.derivative);
+	తిరిగి Dual<Scalar, N>(a.value + b.value, a.derivative + b.derivative);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator-(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> క్రియాకారకం-(స్థిరరాశి Dual<Scalar, N> &a, స్థిరరాశి Dual<Scalar, N> &b)
 {
-	return a + (-b);
+	తిరిగి a + (-b);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator+(const Dual<Scalar, N> &a, Scalar b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> క్రియాకారకం+(స్థిరరాశి Dual<Scalar, N> &a, Scalar b)
 {
-	return Dual<Scalar, N>(a.value + b, a.derivative);
+	తిరిగి Dual<Scalar, N>(a.value + b, a.derivative);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator-(const Dual<Scalar, N> &a, Scalar b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> క్రియాకారకం-(స్థిరరాశి Dual<Scalar, N> &a, Scalar b)
 {
-	return a + (-b);
+	తిరిగి a + (-b);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator+(Scalar a, const Dual<Scalar, N> &b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> క్రియాకారకం+(Scalar a, స్థిరరాశి Dual<Scalar, N> &b)
 {
-	return Dual<Scalar, N>(a + b.value, b.derivative);
+	తిరిగి Dual<Scalar, N>(a + b.value, b.derivative);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator-(Scalar a, const Dual<Scalar, N> &b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> క్రియాకారకం-(Scalar a, స్థిరరాశి Dual<Scalar, N> &b)
 {
-	return a + (-b);
+	తిరిగి a + (-b);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator*(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> క్రియాకారకం*(స్థిరరాశి Dual<Scalar, N> &a, స్థిరరాశి Dual<Scalar, N> &b)
 {
-	return Dual<Scalar, N>(a.value * b.value, a.value * b.derivative + b.value * a.derivative);
+	తిరిగి Dual<Scalar, N>(a.value * b.value, a.value * b.derivative + b.value * a.derivative);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator*(const Dual<Scalar, N> &a, Scalar b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> క్రియాకారకం*(స్థిరరాశి Dual<Scalar, N> &a, Scalar b)
 {
-	return Dual<Scalar, N>(a.value * b, a.derivative * b);
+	తిరిగి Dual<Scalar, N>(a.value * b, a.derivative * b);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator*(Scalar a, const Dual<Scalar, N> &b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> క్రియాకారకం*(Scalar a, స్థిరరాశి Dual<Scalar, N> &b)
 {
-	return b * a;
+	తిరిగి b * a;
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator/(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> క్రియాకారకం/(స్థిరరాశి Dual<Scalar, N> &a, స్థిరరాశి Dual<Scalar, N> &b)
 {
-	const Scalar inv_b_real = Scalar(1) / b.value;
-	return Dual<Scalar, N>(a.value * inv_b_real, a.derivative * inv_b_real -
+	స్థిరరాశి Scalar inv_b_real = Scalar(1) / b.value;
+	తిరిగి Dual<Scalar, N>(a.value * inv_b_real, a.derivative * inv_b_real -
 			       a.value * b.derivative * inv_b_real * inv_b_real);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator/(const Dual<Scalar, N> &a, Scalar b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> క్రియాకారకం/(స్థిరరాశి Dual<Scalar, N> &a, Scalar b)
 {
-	return a * (Scalar(1) / b);
+	తిరిగి a * (Scalar(1) / b);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator/(Scalar a, const Dual<Scalar, N> &b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> క్రియాకారకం/(Scalar a, స్థిరరాశి Dual<Scalar, N> &b)
 {
-	const Scalar inv_b_real = Scalar(1) / b.value;
-	return Dual<Scalar, N>(a * inv_b_real, (-inv_b_real * a * inv_b_real) * b.derivative);
+	స్థిరరాశి Scalar inv_b_real = Scalar(1) / b.value;
+	తిరిగి Dual<Scalar, N>(a * inv_b_real, (-inv_b_real * a * inv_b_real) * b.derivative);
 }
 
 // basic math
 
 // sqrt
-template <typename Scalar, size_t N>
-Dual<Scalar, N> sqrt(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> వర్గమూలం(స్థిరరాశి Dual<Scalar, N> &a)
 {
-	Scalar real = std::sqrt(a.value);
-	return Dual<Scalar, N>(real, a.derivative * (Scalar(1) / (Scalar(2) * real)));
+	Scalar real = std::వర్గమూలం(a.value);
+	తిరిగి Dual<Scalar, N>(real, a.derivative * (Scalar(1) / (Scalar(2) * real)));
 }
 
 // abs
-template <typename Scalar, size_t N>
-Dual<Scalar, N> abs(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> నిరపేక్ష(స్థిరరాశి Dual<Scalar, N> &a)
 {
-	return a.value >= Scalar(0) ? a : -a;
+	తిరిగి a.value >= Scalar(0) ? a : -a;
 }
 
 // ceil
-template <typename Scalar, size_t N>
-Dual<Scalar, N> ceil(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> ceil(స్థిరరాశి Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(std::ceil(a.value));
+	తిరిగి Dual<Scalar, N>(std::ceil(a.value));
 }
 
 // floor
-template <typename Scalar, size_t N>
-Dual<Scalar, N> floor(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> floor(స్థిరరాశి Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(std::floor(a.value));
+	తిరిగి Dual<Scalar, N>(std::floor(a.value));
 }
 
 // fmod
-template <typename Scalar, size_t N>
-Dual<Scalar, N> fmod(const Dual<Scalar, N> &a, Scalar mod)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> fmod(స్థిరరాశి Dual<Scalar, N> &a, Scalar mod)
 {
-	return Dual<Scalar, N>(a.value - Scalar(size_t(a.value / mod)) * mod, a.derivative);
+	తిరిగి Dual<Scalar, N>(a.value - Scalar(size_t(a.value / mod)) * mod, a.derivative);
 }
 
 // max
-template <typename Scalar, size_t N>
-Dual<Scalar, N> max(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> max(స్థిరరాశి Dual<Scalar, N> &a, స్థిరరాశి Dual<Scalar, N> &b)
 {
-	return a.value >= b.value ? a : b;
+	తిరిగి a.value >= b.value ? a : b;
 }
 
 // min
-template <typename Scalar, size_t N>
-Dual<Scalar, N> min(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> min(స్థిరరాశి Dual<Scalar, N> &a, స్థిరరాశి Dual<Scalar, N> &b)
 {
-	return a.value < b.value ? a : b;
+	తిరిగి a.value < b.value ? a : b;
 }
 
 // isnan
-template <typename Scalar>
-bool IsNan(Scalar a)
+మూస <రకం_పేరు Scalar>
+తార్కిక IsNan(Scalar a)
 {
-	return std::isnan(a);
+	తిరిగి std::isnan(a);
 }
 
-template <typename Scalar, size_t N>
-bool IsNan(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+తార్కిక IsNan(స్థిరరాశి Dual<Scalar, N> &a)
 {
-	return IsNan(a.value);
+	తిరిగి IsNan(a.value);
 }
 
 // isfinite
-template <typename Scalar>
-bool IsFinite(Scalar a)
+మూస <రకం_పేరు Scalar>
+తార్కిక IsFinite(Scalar a)
 {
-	return std::isfinite(a);
+	తిరిగి std::isfinite(a);
 }
 
-template <typename Scalar, size_t N>
-bool IsFinite(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+తార్కిక IsFinite(స్థిరరాశి Dual<Scalar, N> &a)
 {
-	return IsFinite(a.value);
+	తిరిగి IsFinite(a.value);
 }
 
 // isinf
-template <typename Scalar>
-bool IsInf(Scalar a)
+మూస <రకం_పేరు Scalar>
+తార్కిక IsInf(Scalar a)
 {
-	return std::isinf(a);
+	తిరిగి std::isinf(a);
 }
 
-template <typename Scalar, size_t N>
-bool IsInf(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+తార్కిక IsInf(స్థిరరాశి Dual<Scalar, N> &a)
 {
-	return IsInf(a.value);
+	తిరిగి IsInf(a.value);
 }
 
 // trig
 
 // sin
-template <typename Scalar, size_t N>
-Dual<Scalar, N> sin(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> జ్యా(స్థిరరాశి Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(std::sin(a.value), std::cos(a.value) * a.derivative);
+	తిరిగి Dual<Scalar, N>(std::జ్యా(a.value), std::కోజ్యా(a.value) * a.derivative);
 }
 
 // cos
-template <typename Scalar, size_t N>
-Dual<Scalar, N> cos(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> కోజ్యా(స్థిరరాశి Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(std::cos(a.value), -std::sin(a.value) * a.derivative);
+	తిరిగి Dual<Scalar, N>(std::కోజ్యా(a.value), -std::జ్యా(a.value) * a.derivative);
 }
 
 // tan
-template <typename Scalar, size_t N>
-Dual<Scalar, N> tan(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> tan(స్థిరరాశి Dual<Scalar, N> &a)
 {
 	Scalar real = std::tan(a.value);
-	return Dual<Scalar, N>(real, (Scalar(1) + real * real) * a.derivative);
+	తిరిగి Dual<Scalar, N>(real, (Scalar(1) + real * real) * a.derivative);
 }
 
 // asin
-template <typename Scalar, size_t N>
-Dual<Scalar, N> asin(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> asin(స్థిరరాశి Dual<Scalar, N> &a)
 {
-	Scalar asin_d = Scalar(1) / std::sqrt(Scalar(1) - a.value * a.value);
-	return Dual<Scalar, N>(std::asin(a.value), asin_d * a.derivative);
+	Scalar asin_d = Scalar(1) / std::వర్గమూలం(Scalar(1) - a.value * a.value);
+	తిరిగి Dual<Scalar, N>(std::asin(a.value), asin_d * a.derivative);
 }
 
 // acos
-template <typename Scalar, size_t N>
-Dual<Scalar, N> acos(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> acos(స్థిరరాశి Dual<Scalar, N> &a)
 {
-	Scalar acos_d = -Scalar(1) / std::sqrt(Scalar(1) - a.value * a.value);
-	return Dual<Scalar, N>(std::acos(a.value), acos_d * a.derivative);
+	Scalar acos_d = -Scalar(1) / std::వర్గమూలం(Scalar(1) - a.value * a.value);
+	తిరిగి Dual<Scalar, N>(std::acos(a.value), acos_d * a.derivative);
 }
 
 // atan
-template <typename Scalar, size_t N>
-Dual<Scalar, N> atan(const Dual<Scalar, N> &a)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> atan(స్థిరరాశి Dual<Scalar, N> &a)
 {
 	Scalar atan_d = Scalar(1) / (Scalar(1) + a.value * a.value);
-	return Dual<Scalar, N>(std::atan(a.value), atan_d * a.derivative);
+	తిరిగి Dual<Scalar, N>(std::atan(a.value), atan_d * a.derivative);
 }
 
 // atan2
-template <typename Scalar, size_t N>
-Dual<Scalar, N> atan2(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+మూస <రకం_పేరు Scalar, size_t N>
+Dual<Scalar, N> atan2(స్థిరరాశి Dual<Scalar, N> &a, స్థిరరాశి Dual<Scalar, N> &b)
 {
 	// derivative is equal to that of atan(a/b), so substitute a/b into atan and simplify
 	Scalar atan_d = Scalar(1) / (a.value * a.value + b.value * b.value);
-	return Dual<Scalar, N>(std::atan2(a.value, b.value), (a.derivative * b.value - a.value * b.derivative) * atan_d);
+	తిరిగి Dual<Scalar, N>(std::atan2(a.value, b.value), (a.derivative * b.value - a.value * b.derivative) * atan_d);
 }
 
 // retrieve the derivative elements of a vector of Duals into a matrix
-template <typename Scalar, size_t M, size_t N>
-Matrix<Scalar, M, N> collectDerivatives(const Matrix<Dual<Scalar, N>, M, 1> &input)
+మూస <రకం_పేరు Scalar, size_t M, size_t N>
+మాతృక_2<Scalar, M, N> collectDerivatives(స్థిరరాశి మాతృక_2<Dual<Scalar, N>, M, 1> &ఆదానం)
 {
-	Matrix<Scalar, M, N> jac;
+	మాతృక_2<Scalar, M, N> jac;
 
-	for (size_t i = 0; i < M; i++) {
-		jac.row(i) = input(i, 0).derivative;
+	కొరకు (size_t i = 0; i < M; i++) {
+		jac.అడ్డువరుస(i) = ఆదానం(i, 0).derivative;
 	}
 
-	return jac;
+	తిరిగి jac;
 }
 
 // retrieve the real (non-derivative) elements of a matrix of Duals into an equally sized matrix
-template <typename Scalar, size_t M, size_t N, size_t D>
-Matrix<Scalar, M, N> collectReals(const Matrix<Dual<Scalar, D>, M, N> &input)
+మూస <రకం_పేరు Scalar, size_t M, size_t N, size_t D>
+మాతృక_2<Scalar, M, N> collectReals(స్థిరరాశి మాతృక_2<Dual<Scalar, D>, M, N> &ఆదానం)
 {
-	Matrix<Scalar, M, N> r;
+	మాతృక_2<Scalar, M, N> r;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			r(i, j) = input(i, j).value;
+	కొరకు (size_t i = 0; i < M; i++) {
+		కొరకు (size_t j = 0; j < N; j++) {
+			r(i, j) = ఆదానం(i, j).value;
 		}
 	}
 
-	return r;
+	తిరిగి r;
 }
 
-template<typename OStream, typename Type, size_t N>
-OStream &operator<<(OStream &os, const matrix::Dual<Type, N> &dual)
+మూస<రకం_పేరు OStream, రకం_పేరు Type, size_t N>
+OStream &క్రియాకారకం<<(OStream &os, స్థిరరాశి మాతృక::Dual<Type, N> &dual)
 {
 	os << "\nValue: " << dual.value << "\nDerivative:" << dual.derivative;
-	return os;
+	తిరిగి os;
 }
 
 }

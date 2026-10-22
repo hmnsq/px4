@@ -31,94 +31,94 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/atomic_bitset.h>
-#include "ParamLayer.h"
+#అన్తర్భావ <px4_platform_common/atomic_bitset.h>
+#అన్తర్భావ "ParamLayer.h"
 
-class ExhaustiveLayer : public ParamLayer
+class ExhaustiveLayer : బహిరంగ ParamLayer
 {
-public:
-	ExhaustiveLayer(ParamLayer *parent) : ParamLayer(parent)
+బహిరంగ:
+	ExhaustiveLayer(ParamLayer *మాతృ) : ParamLayer(మాతృ)
 	{
 		// refresh all values
-		for (param_t i = 0; i < PARAM_COUNT; i++) {
-			_values[i] = parent->get(i);
+		కొరకు (param_t i = 0; i < PARAM_లెక్క; i++) {
+			విలువలు_3[i] = మాతృ->get(i);
 		}
 	}
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_విలువ_u విలువ) override
 	{
-		if (param >= PARAM_COUNT) {
-			return false;
+		ఒకవేళ (param >= PARAM_లెక్క) {
+			తిరిగి false;
 		}
 
 		{
-			const AtomicTransaction transaction;
-			_values[param] = value;
-			_ownership_set.set(param);
+			స్థిరరాశి AtomicTransaction transaction;
+			విలువలు_3[param] = విలువ;
+			ownership_సమితి.సమితి(param);
 		}
 
-		return true;
+		తిరిగి true;
 	}
 
-	bool contains(param_t param) const override
+	bool కలిగియుంది(param_t param) స్థిరరాశి override
 	{
-		return param < PARAM_COUNT && _ownership_set[param];
+		తిరిగి param < PARAM_లెక్క && ownership_సమితి[param];
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_లెక్క> containedAsBitset() స్థిరరాశి override
 	{
-		return _ownership_set;
+		తిరిగి ownership_సమితి;
 	}
 
-	param_value_u get(param_t param) const override
+	param_విలువ_u get(param_t param) స్థిరరాశి override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		ఒకవేళ (param >= PARAM_లెక్క) {
+			తిరిగి {0};
 		}
 
-		const AtomicTransaction transaction;
+		స్థిరరాశి AtomicTransaction transaction;
 		// We assume to have the correct values for all params, even without ownership.
 		// We expect that refresh was called when underlying defaults changed
-		return _values[param];
+		తిరిగి విలువలు_3[param];
 	}
 
-	void reset(param_t param) override
+	శూన్య reset(param_t param) override
 	{
-		if (param >= PARAM_COUNT) {
-			return;
+		ఒకవేళ (param >= PARAM_లెక్క) {
+			తిరిగి;
 		}
 
-		const AtomicTransaction transaction;
-		_values[param] = _parent->get(param);
-		_ownership_set.set(param, false);
+		స్థిరరాశి AtomicTransaction transaction;
+		విలువలు_3[param] = మాతృ_2->get(param);
+		ownership_సమితి.సమితి(param, false);
 	}
 
-	void refresh(param_t param) override
+	శూన్య refresh(param_t param) override
 	{
-		_parent->refresh(param);
+		మాతృ_2->refresh(param);
 		// in case we don't have ownership, and it changed below, we have to refresh our cache.
 		{
-			const AtomicTransaction transaction;
+			స్థిరరాశి AtomicTransaction transaction;
 
-			if (!contains(param)) {
-				_values[param] = _parent->get(param);
+			ఒకవేళ (!కలిగియుంది(param)) {
+				విలువలు_3[param] = మాతృ_2->get(param);
 			}
 		}
 	}
 
-	int size() const override
+	పూర్ణాంకం కొలత() స్థిరరాశి override
 	{
-		return _ownership_set.count();
+		తిరిగి ownership_సమితి.లెక్క();
 	}
 
-	int byteSize() const override
+	పూర్ణాంకం byte_కొలత() స్థిరరాశి override
 	{
-		return PARAM_COUNT * sizeof(param_value_u);
+		తిరిగి PARAM_లెక్క * పరిమాణం(param_విలువ_u);
 	}
 
-private:
-	param_value_u _values[PARAM_COUNT];
-	px4::AtomicBitset<PARAM_COUNT> _ownership_set;
+అంతరంగ:
+	param_విలువ_u విలువలు_3[PARAM_లెక్క];
+	px4::AtomicBitset<PARAM_లెక్క> ownership_సమితి;
 };

@@ -39,26 +39,26 @@
  * @author Beat Küng <beat-kueng@gmx.net>
  */
 
-#pragma once
+#సూచన once
 
-#include <drivers/drv_hrt.h>
-#include <drivers/drv_led.h>
-#include <px4_platform_common/module_params.h>
-#include <lib/parameters/param.h>
-#include <lib/perf/perf_counter.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionInterval.hpp>
-#include <uORB/topics/led_control.h>
-#include <uORB/topics/parameter_update.h>
+#అన్తర్భావ <drivers/drv_hrt.h>
+#అన్తర్భావ <drivers/drv_led.h>
+#అన్తర్భావ <px4_platform_common/module_params.h>
+#అన్తర్భావ <lib/parameters/param.h>
+#అన్తర్భావ <lib/perf/perf_counter.h>
+#అన్తర్భావ <uORB/Subscription.hpp>
+#అన్తర్భావ <uORB/SubscriptionInterval.hpp>
+#అన్తర్భావ <uORB/topics/led_control.h>
+#అన్తర్భావ <uORB/topics/parameter_update.h>
 
-using namespace time_literals;
+using namespace సమయం_literals;
 
-struct LedControlDataSingle {
+నిర్మాణం Led_Control_దత్తాంశం_Single {
 	uint8_t color{led_control_s::COLOR_OFF}; ///< one of led_control_s::COLOR_*
 	uint8_t brightness{0}; ///< brightness in [0, 255]
 };
-struct LedControlData {
-	LedControlDataSingle leds[BOARD_MAX_LEDS] {};
+నిర్మాణం Led_Control_దత్తాంశం {
+	Led_Control_దత్తాంశం_Single leds[BOARD_MAX_LEDS] {};
 };
 
 
@@ -66,21 +66,21 @@ struct LedControlData {
  ** class LedController
  * Handles the led_control topic: blinking, priorities and state updates.
  */
-class LedController : public ModuleParams
+class LedController : బహిరంగ ModuleParams
 {
-public:
+బహిరంగ:
 	LedController() : ModuleParams(nullptr) {}
 	~LedController() override
 	{
-		perf_free(_led_control_sub_lost_perf);
+		perf_free(led_control_sub_కోల్పోయిన_perf);
 	}
 
 	/**
 	 * get maximum time between two consecutive calls to update() in us.
 	 */
-	int maximum_update_interval() const
+	పూర్ణాంకం గరిష్ఠ_update_interval() స్థిరరాశి
 	{
-		return _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
+		తిరిగి _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
 	}
 
 	/**
@@ -89,104 +89,104 @@ public:
 	 * @param control_data output structure (will always be set)
 	 * @return 1 if control_data set (state changed), 0 if control_data not changed (state did not change), <0 error otherwise
 	 */
-	int update(LedControlData &control_data);
+	పూర్ణాంకం update(Led_Control_దత్తాంశం &control_దత్తాంశం);
 
-	static constexpr int BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
-	static constexpr int BREATHE_STEPS = 64; /**< number of steps in breathe mode for a full on-off cycle */
+	స్థిర constexpr పూర్ణాంకం BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
+	స్థిర constexpr పూర్ణాంకం BREATHE_అడుగులు = 64; /**< number of steps in breathe mode for a full on-off cycle */
 
-	static constexpr int BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
+	స్థిర constexpr పూర్ణాంకం BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
-	static constexpr int BLINK_NORMAL_DURATION = 500 * 1000; /**< duration of half a blinking cycle
+	స్థిర constexpr పూర్ణాంకం BLINK_సాధారణ_DURATION = 500 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
-	static constexpr int BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
+	స్థిర constexpr పూర్ణాంకం BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
 
-private:
+అంతరంగ:
 
 	/** set control_data based on current Led states */
-	inline void get_control_data(LedControlData &control_data);
+	అంతఃవరుస శూన్య get_control_దత్తాంశం(Led_Control_దత్తాంశం &control_దత్తాంశం);
 
-	struct PerPriorityData {
+	నిర్మాణం చొప్పున_ప్రాధాన్యత_దత్తాంశం {
 		uint8_t color = 0; ///< one of led_control_s::COLOR_*
-		uint8_t mode = led_control_s::MODE_DISABLED; ///< one of led_control_s::MODE_*
-		uint8_t blink_times_left = 0; /**< how many times left to blink (MSB bit is used for infinite case).
+		uint8_t బహుళకం = led_control_s::బహుళకం_DISABLED; ///< one of led_control_s::MODE_*
+		uint8_t blink_times_ఎడమ = 0; /**< how many times left to blink (MSB bit is used for infinite case).
 									This limits the number of complete blink cycles to 64 (if not infinite) */
 	};
 
-	struct NextState {
+	నిర్మాణం తదుపరి_State {
 		uint8_t color;
-		uint8_t mode;
-		uint8_t num_blinks;
-		uint8_t priority = led_control_s::MAX_PRIORITY + 1;
+		uint8_t బహుళకం;
+		uint8_t అంకె_blinks;
+		uint8_t ప్రాధాన్యత = led_control_s::MAX_ప్రాధాన్యత + 1;
 
-		void set(const led_control_s &led_control)
+		శూన్య సమితి(స్థిరరాశి led_control_s &led_control)
 		{
 			color = led_control.color;
-			mode = led_control.mode;
-			num_blinks = led_control.num_blinks;
-			priority = led_control.priority;
+			బహుళకం = led_control.బహుళకం;
+			అంకె_blinks = led_control.అంకె_blinks;
+			ప్రాధాన్యత = led_control.ప్రాధాన్యత;
 
-			if (priority > led_control_s::MAX_PRIORITY) {
-				priority = led_control_s::MAX_PRIORITY;
+			ఒకవేళ (ప్రాధాన్యత > led_control_s::MAX_ప్రాధాన్యత) {
+				ప్రాధాన్యత = led_control_s::MAX_ప్రాధాన్యత;
 			}
 		}
-		void reset() { priority = led_control_s::MAX_PRIORITY + 1; }
-		bool is_valid() const { return priority != led_control_s::MAX_PRIORITY + 1; }
+		శూన్య reset() { ప్రాధాన్యత = led_control_s::MAX_ప్రాధాన్యత + 1; }
+		bool is_valid() స్థిరరాశి { తిరిగి ప్రాధాన్యత != led_control_s::MAX_ప్రాధాన్యత + 1; }
 	};
 
-	struct PerLedData {
-		PerPriorityData priority[led_control_s::MAX_PRIORITY + 1];
-		uint16_t current_blinking_time = 0; ///< how long the Led was in current state (in 0.1 ms, wraps if > 6.5s)
-		NextState next_state;
+	నిర్మాణం చొప్పున_Led_దత్తాంశం {
+		చొప్పున_ప్రాధాన్యత_దత్తాంశం ప్రాధాన్యత[led_control_s::MAX_ప్రాధాన్యత + 1];
+		uint16_t current_blinking_సమయం = 0; ///< how long the Led was in current state (in 0.1 ms, wraps if > 6.5s)
+		తదుపరి_State తదుపరి_state;
 
-		void set(const led_control_s &led_control)
+		శూన్య సమితి(స్థిరరాశి led_control_s &led_control)
 		{
-			int next_priority = (int)led_control.priority;
-			priority[next_priority].color = led_control.color;
-			priority[next_priority].mode = led_control.mode;
+			పూర్ణాంకం తదుపరి_ప్రాధాన్యత = (పూర్ణాంకం)led_control.ప్రాధాన్యత;
+			ప్రాధాన్యత[తదుపరి_ప్రాధాన్యత].color = led_control.color;
+			ప్రాధాన్యత[తదుపరి_ప్రాధాన్యత].బహుళకం = led_control.బహుళకం;
 
 			// initialise the flash counter
-			if (led_control.mode == led_control_s::MODE_FLASH) {
-				priority[next_priority].blink_times_left = led_control.num_blinks * 10;
+			ఒకవేళ (led_control.బహుళకం == led_control_s::బహుళకం_FLASH) {
+				ప్రాధాన్యత[తదుపరి_ప్రాధాన్యత].blink_times_ఎడమ = led_control.అంకె_blinks * 10;
 
-			} else {
-				priority[next_priority].blink_times_left = led_control.num_blinks * 2;
+			} లేకపోతే {
+				ప్రాధాన్యత[తదుపరి_ప్రాధాన్యత].blink_times_ఎడమ = led_control.అంకె_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			ఒకవేళ (ప్రాధాన్యత[తదుపరి_ప్రాధాన్యత].blink_times_ఎడమ == 0) {
 				// handle infinite case
-				priority[next_priority].blink_times_left = 246;
+				ప్రాధాన్యత[తదుపరి_ప్రాధాన్యత].blink_times_ఎడమ = 246;
 			}
 		}
 
-		void apply_next_state()
+		శూన్య apply_తదుపరి_state()
 		{
-			int next_priority = (int)next_state.priority;
-			priority[next_priority].color = next_state.color;
-			priority[next_priority].mode = next_state.mode;
+			పూర్ణాంకం తదుపరి_ప్రాధాన్యత = (పూర్ణాంకం)తదుపరి_state.ప్రాధాన్యత;
+			ప్రాధాన్యత[తదుపరి_ప్రాధాన్యత].color = తదుపరి_state.color;
+			ప్రాధాన్యత[తదుపరి_ప్రాధాన్యత].బహుళకం = తదుపరి_state.బహుళకం;
 
-			if (next_state.mode == led_control_s::MODE_FLASH) {
-				priority[next_priority].blink_times_left = next_state.num_blinks * 10;
+			ఒకవేళ (తదుపరి_state.బహుళకం == led_control_s::బహుళకం_FLASH) {
+				ప్రాధాన్యత[తదుపరి_ప్రాధాన్యత].blink_times_ఎడమ = తదుపరి_state.అంకె_blinks * 10;
 
-			} else {
-				priority[next_priority].blink_times_left = next_state.num_blinks * 2;
+			} లేకపోతే {
+				ప్రాధాన్యత[తదుపరి_ప్రాధాన్యత].blink_times_ఎడమ = తదుపరి_state.అంకె_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			ఒకవేళ (ప్రాధాన్యత[తదుపరి_ప్రాధాన్యత].blink_times_ఎడమ == 0) {
 				// handle infinite case
-				priority[next_priority].blink_times_left = 254;
+				ప్రాధాన్యత[తదుపరి_ప్రాధాన్యత].blink_times_ఎడమ = 254;
 			}
 		}
 	};
 
-	PerLedData _states[BOARD_MAX_LEDS]; ///< keep current LED states
+	చొప్పున_Led_దత్తాంశం స్థితులు[BOARD_MAX_LEDS]; ///< keep current LED states
 
 	uORB::Subscription _led_control_sub{ORB_ID(led_control)}; ///< uorb subscription
 	uORB::SubscriptionInterval _parameter_update_sub{ORB_ID(parameter_update), 1_s};
 
-	hrt_abstime _last_update_call{0};
+	hrt_abstime చివరి_update_call{0};
 
-	perf_counter_t _led_control_sub_lost_perf{perf_alloc(PC_COUNT, MODULE_NAME": led_control message missed")};
+	perf_counter_t led_control_sub_కోల్పోయిన_perf{perf_alloc(PC_లెక్క, MODULE_NAME": led_control message missed")};
 
 	uint8_t _max_brightness{UINT8_MAX};
 

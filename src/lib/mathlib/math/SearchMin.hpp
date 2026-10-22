@@ -38,42 +38,42 @@
  * - Golden Section Search
  */
 
-#pragma once
+#సూచన once
 
-namespace math
+నామాకాశ math
 {
-static constexpr double GOLDEN_RATIO = 1.6180339887; //(sqrt(5)+1)/2
+స్థిర constexpr ద్విగుణ GOLDEN_నిష్పత్తి = 1.6180339887; //(sqrt(5)+1)/2
 
 // Type-safe abs
-template<typename _Tp>
+మూస<రకం_పేరు _Tp>
 _Tp abs_t(_Tp val)
 {
-	return ((val > (_Tp)0) ? val : -val);
+	తిరిగి ((val > (_Tp)0) ? val : -val);
 }
 
 // golden section search to find extremeum for function with minimum
-template<typename _Tp>
-inline const _Tp goldensection(const _Tp &arg1, const _Tp &arg2, _Tp(*fun)(_Tp), const _Tp &tol)
+మూస<రకం_పేరు _Tp>
+అంతఃవరుస స్థిరరాశి _Tp goldensection(స్థిరరాశి _Tp &arg1, స్థిరరాశి _Tp &arg2, _Tp(*fun)(_Tp), స్థిరరాశి _Tp &tol)
 {
 	_Tp a = arg1;
 	_Tp b = arg2;
-	_Tp c = b - (b - a) / GOLDEN_RATIO;
-	_Tp d = a + (b - a) / GOLDEN_RATIO;
+	_Tp c = b - (b - a) / GOLDEN_నిష్పత్తి;
+	_Tp d = a + (b - a) / GOLDEN_నిష్పత్తి;
 
-	while (abs_t(c - d) > tol) {
+	అయితే (abs_t(c - d) > tol) {
 
-		if (fun(c) < fun(d)) {
+		ఒకవేళ (fun(c) < fun(d)) {
 			b = d;
 
-		} else {
+		} లేకపోతే {
 			a = c;
 		}
 
-		c = b - (b - a) / GOLDEN_RATIO;
-		d = a + (b - a) / GOLDEN_RATIO;
+		c = b - (b - a) / GOLDEN_నిష్పత్తి;
+		d = a + (b - a) / GOLDEN_నిష్పత్తి;
 
 	}
 
-	return ((b + a) / (_Tp)2);
+	తిరిగి ((b + a) / (_Tp)2);
 }
 }

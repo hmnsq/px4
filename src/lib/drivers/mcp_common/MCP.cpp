@@ -30,137 +30,137 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#include "MCP.hpp"
-#include <drivers/gpio/mcp23009/MCP23009.hpp>
-#include <drivers/gpio/mcp23017/MCP23017.hpp>
+#అన్తర్భావ "MCP.hpp"
+#అన్తర్భావ <drivers/gpio/mcp23009/MCP23009.hpp>
+#అన్తర్భావ <drivers/gpio/mcp23017/MCP23017.hpp>
 
-MCP230XX::MCP230XX(const I2CSPIDriverConfig &config) :
+MCP230XX::MCP230XX(స్థిరరాశి I2CSPIDriverConfig &config) :
 	I2C(config),
 	I2CSPIDriver(config),
-	_cycle_perf(perf_alloc(PC_ELAPSED, MODULE_NAME": single-sample")),
-	_comms_errors(perf_alloc(PC_COUNT, MODULE_NAME": comms errors")),
-	_register_check(perf_alloc(PC_COUNT, MODULE_NAME": register check"))
+	చక్రం_perf(perf_alloc(PC_ELAPSED, MODULE_NAME": single-sample")),
+	_comms_errors(perf_alloc(PC_లెక్క, MODULE_NAME": comms errors")),
+	రిజిస్టరు_check(perf_alloc(PC_లెక్క, MODULE_NAME": register check"))
 {
 }
 
 MCP230XX::~MCP230XX()
 {
-	ScheduleClear();
-	perf_free(_cycle_perf);
+	కాలపట్టిక_Clear();
+	perf_free(చక్రం_perf);
 	perf_free(_comms_errors);
-	perf_free(_register_check);
+	perf_free(రిజిస్టరు_check);
 }
 
-int MCP230XX::init_uorb()
+పూర్ణాంకం MCP230XX::init_uorb()
 {
-	if (!_gpio_config_sub.registerCallback() ||
-	    !_gpio_out_sub.registerCallback()) {
+	ఒకవేళ (!_gpio_config_sub.రిజిస్టరు_Callback() ||
+	    !gpio_బహిర్గతం_sub.రిజిస్టరు_Callback()) {
 		PX4_ERR("callback registration failed");
-		return PX4_ERROR;
+		తిరిగి PX4_ERROR;
 	}
 
-	return PX4_OK;
+	తిరిగి PX4_OK;
 }
 
-void MCP230XX::cleanup_uorb()
+శూన్య MCP230XX::cleanup_uorb()
 {
 	_gpio_config_sub.unregisterCallback();
-	_gpio_out_sub.unregisterCallback();
-	mcp230XX_unregister_gpios(mcp_config.first_minor, mcp_config.num_pins, mcp_config._gpio_handle);
+	gpio_బహిర్గతం_sub.unregisterCallback();
+	mcp230XX_unregister_gpios(mcp_config.మొదటి_minor, mcp_config.అంకె_pins, mcp_config._gpio_handle);
 }
 
-int MCP230XX::read(uint16_t *mask)
+పూర్ణాంకం MCP230XX::పఠ(uint16_t *ముసుగు)
 {
-	*mask = 0;
-	int ret = PX4_OK;
+	*ముసుగు = 0;
+	పూర్ణాంకం ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < mcp_config.అంకె_banks; i++) {
 		uint8_t gpio_addr;
-		uint8_t data;
+		uint8_t దత్తాంశం;
 
 		ret |= get_gpio(i, &gpio_addr);
-		ret |= read_reg(gpio_addr, data);
+		ret |= read_reg(gpio_addr, దత్తాంశం);
 
-		*mask |= (((uint16_t) data) << (8 * i));
+		*ముసుగు |= (((uint16_t) దత్తాంశం) << (8 * i));
 	}
 
-	return ret;
+	తిరిగి ret;
 }
 
-int MCP230XX::write(const uint16_t mask_set, const uint16_t mask_clear)
+పూర్ణాంకం MCP230XX::లిఖ(స్థిరరాశి uint16_t ముసుగు_సమితి, స్థిరరాశి uint16_t ముసుగు_clear)
 {
-	int ret = PX4_OK;
-	_olat = (_olat & ~mask_clear) | mask_set;
+	పూర్ణాంకం ret = PX4_OK;
+	_olat = (_olat & ~ముసుగు_clear) | ముసుగు_సమితి;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < mcp_config.అంకె_banks; i++) {
 		uint8_t reg_addr;
-		uint8_t data;
+		uint8_t దత్తాంశం;
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 
 		ret = get_olat(i, &reg_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		ఒకవేళ (ret != PX4_OK) {
+			తిరిగి ret;
 		}
 
 		ret |= write_reg(reg_addr, curr_olat);
-		ret |= read_reg(reg_addr, data);
+		ret |= read_reg(reg_addr, దత్తాంశం);
 
-		if (ret != PX4_OK || data != curr_olat) {
-			return PX4_ERROR;
+		ఒకవేళ (ret != PX4_OK || దత్తాంశం != curr_olat) {
+			తిరిగి PX4_ERROR;
 		}
 	}
 
-	return ret;
+	తిరిగి ret;
 }
 
-int MCP230XX::read_reg(const uint8_t address, uint8_t &data)
+పూర్ణాంకం MCP230XX::read_reg(స్థిరరాశి uint8_t చిరునామా, uint8_t &దత్తాంశం)
 {
-	int ret = transfer(&address, 1, &data, 1);
+	పూర్ణాంకం ret = transfer(&చిరునామా, 1, &దత్తాంశం, 1);
 
-	if (ret != PX4_OK) {
-		perf_count(_comms_errors);
+	ఒకవేళ (ret != PX4_OK) {
+		perf_లెక్క(_comms_errors);
 	}
 
-	return ret;
+	తిరిగి ret;
 }
 
-int MCP230XX::write_reg(const uint8_t address, const uint8_t value)
+పూర్ణాంకం MCP230XX::write_reg(స్థిరరాశి uint8_t చిరునామా, స్థిరరాశి uint8_t value)
 {
-	uint8_t data[2] = {address, value};
-	int ret = transfer(data, 2, nullptr, 0);
+	uint8_t దత్తాంశం[2] = {చిరునామా, value};
+	పూర్ణాంకం ret = transfer(దత్తాంశం, 2, శూన్యసూచిక, 0);
 
-	if (ret != PX4_OK) {
-		perf_count(_comms_errors);
+	ఒకవేళ (ret != PX4_OK) {
+		perf_లెక్క(_comms_errors);
 	}
 
-	return ret;
+	తిరిగి ret;
 }
 
-int MCP230XX::configure(const uint16_t mask, PinType type)
+పూర్ణాంకం MCP230XX::configure(స్థిరరాశి uint16_t ముసుగు, PinType type)
 {
-	switch (type) {
-	case PinType::Input:
-		_iodir |= mask;
-		_gppu &= ~mask;
-		break;
+	ఎంపిక (type) {
+	స్థితి PinType::ఆదానం_2:
+		_iodir |= ముసుగు;
+		_gppu &= ~ముసుగు;
+		ఆపు;
 
-	case PinType::InputPullUp:
-		_iodir |= mask;
-		_gppu |= mask;
-		break;
+	స్థితి PinType::ఆదానం_Pull_పైకి:
+		_iodir |= ముసుగు;
+		_gppu |= ముసుగు;
+		ఆపు;
 
-	case PinType::Output:
-		_iodir &= ~mask;
-		break;
+	స్థితి PinType::Output:
+		_iodir &= ~ముసుగు;
+		ఆపు;
 
-	default:
-		return -EINVAL;
+	అప్రమేయ:
+		తిరిగి -EINVAL;
 	}
 
-	int ret = PX4_OK;
+	పూర్ణాంకం ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < mcp_config.అంకె_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
 		uint8_t iodir_addr;
@@ -169,51 +169,51 @@ int MCP230XX::configure(const uint16_t mask, PinType type)
 		ret = get_iodir(i, &iodir_addr);
 		ret |= get_gppu(i, &gppu_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		ఒకవేళ (ret != PX4_OK) {
+			తిరిగి ret;
 		}
 
 		ret = write_reg(iodir_addr, curr_iodir);
 		ret |= write_reg(gppu_addr, curr_gppu);
 
-		if (ret != PX4_OK) {
+		ఒకవేళ (ret != PX4_OK) {
 			PX4_ERR("MCP configure failed");
-			return ret;
+			తిరిగి ret;
 		}
 	}
 
-	return PX4_OK;
+	తిరిగి PX4_OK;
 }
 
-int MCP230XX::init()
+పూర్ణాంకం MCP230XX::init()
 {
-	int ret = I2C::init();
+	పూర్ణాంకం ret = I2C::init();
 
-	if (ret != PX4_OK) {
+	ఒకవేళ (ret != PX4_OK) {
 		PX4_ERR("I2C init failed");
-		return ret;
+		తిరిగి ret;
 	}
 
-	ScheduleNow();
-	return PX4_OK;
+	కాలపట్టిక_Now();
+	తిరిగి PX4_OK;
 }
 
-int MCP230XX::init_communication()
+పూర్ణాంకం MCP230XX::init_communication()
 {
-	int ret = mcp230XX_register_gpios(mcp_config.i2c_bus, mcp_config.i2c_addr, mcp_config.first_minor, _iodir, mcp_config.num_pins,
+	పూర్ణాంకం ret = mcp230_XX_రిజిస్టరు_gpios(mcp_config.i2c_bus, mcp_config.i2c_addr, mcp_config.మొదటి_minor, _iodir, mcp_config.అంకె_pins,
 					  mcp_config.device_type, mcp_config._gpio_handle);
 	ret |= init_uorb();
-	return ret;
+	తిరిగి ret;
 }
 
-int MCP230XX::set_up()
+పూర్ణాంకం MCP230XX::సమితి_పైకి_2()
 {
-	int ret = PX4_OK;
+	పూర్ణాంకం ret = PX4_OK;
 	uint8_t iodir_addr;
 	uint8_t olat_addr;
 	uint8_t gppu_addr;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < mcp_config.అంకె_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
@@ -222,27 +222,27 @@ int MCP230XX::set_up()
 		ret |= get_iodir(i, &iodir_addr);
 		ret |= get_gppu(i, &gppu_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		ఒకవేళ (ret != PX4_OK) {
+			తిరిగి ret;
 		}
 
 		ret |= write_reg(iodir_addr, curr_iodir);
 		ret |= write_reg(olat_addr, curr_olat);
 		ret |= write_reg(gppu_addr, curr_gppu);
 
-		if (ret != PX4_OK) {
-			return ret;
+		ఒకవేళ (ret != PX4_OK) {
+			తిరిగి ret;
 		}
 	}
 
-	return ret;
+	తిరిగి ret;
 }
 
-int MCP230XX::sanity_check()
+పూర్ణాంకం MCP230XX::sanity_check()
 {
-	int ret = PX4_OK;
+	పూర్ణాంకం ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < mcp_config.అంకె_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
@@ -263,214 +263,214 @@ int MCP230XX::sanity_check()
 		ret |= read_reg(olat_addr, read_olat);
 		ret |= read_reg(gppu_addr, read_gppu);
 
-		if (read_iodir != curr_iodir || read_olat != curr_olat || read_gppu != curr_gppu) {
-			perf_count(_register_check);
-			return PX4_ERROR;
+		ఒకవేళ (read_iodir != curr_iodir || read_olat != curr_olat || read_gppu != curr_gppu) {
+			perf_లెక్క(రిజిస్టరు_check);
+			తిరిగి PX4_ERROR;
 		}
 	}
 
-	return ret;
+	తిరిగి ret;
 }
 
-int MCP230XX::probe()
+పూర్ణాంకం MCP230XX::probe()
 {
 	// no whoami, try to read IOCONA
-	uint8_t data;
+	uint8_t దత్తాంశం;
 	uint8_t addr;
-	int ret = PX4_OK;
+	పూర్ణాంకం ret = PX4_OK;
 
-	for (int i = 0; i < 10; i++) {
+	కొరకు (పూర్ణాంకం i = 0; i < 10; i++) {
 		ret = get_probe_reg(&addr);
 
-		if (ret == PX4_OK) {
-			ret = read_reg(addr, data);
+		ఒకవేళ (ret == PX4_OK) {
+			ret = read_reg(addr, దత్తాంశం);
 
-			if (ret == PX4_OK) {
-				return PX4_OK;
+			ఒకవేళ (ret == PX4_OK) {
+				తిరిగి PX4_OK;
 			}
 		}
 
 		px4_usleep(10'000);
 	}
 
-	return PX4_ERROR;
+	తిరిగి PX4_ERROR;
 }
 
-void MCP230XX::RunImpl()
+శూన్య MCP230XX::నిరంతరం_Impl()
 {
-	if (should_exit()) {
+	ఒకవేళ (should_exit()) {
 		cleanup_uorb();
 		exit_and_cleanup();
-		return;
+		తిరిగి;
 	}
 
-	int ret = PX4_OK;
+	పూర్ణాంకం ret = PX4_OK;
 
-	switch (_curr_state) {
-	case STATE::INIT_COMMUNICATION:
+	ఎంపిక (_curr_state) {
+	స్థితి STATE::INIT_COMMUNICATION:
 		ret = init_communication();
 
-		if (ret == PX4_OK) {
+		ఒకవేళ (ret == PX4_OK) {
 			_curr_state = STATE::CONFIGURE;
-			ScheduleNow();
+			కాలపట్టిక_Now();
 
-		} else {
-			ScheduleDelayed(mcp_config.interval * 1000);
+		} లేకపోతే {
+			కాలపట్టిక_Delayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		ఆపు;
 
-	case STATE::CONFIGURE:
-		ret = set_up();
+	స్థితి STATE::CONFIGURE:
+		ret = సమితి_పైకి_2();
 
-		if (ret == PX4_OK) {
+		ఒకవేళ (ret == PX4_OK) {
 			_curr_state = STATE::CHECK;
-			ScheduleNow();
+			కాలపట్టిక_Now();
 
-		} else {
-			ScheduleDelayed(mcp_config.interval * 1000);
+		} లేకపోతే {
+			కాలపట్టిక_Delayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		ఆపు;
 
-	case STATE::CHECK:
+	స్థితి STATE::CHECK:
 		ret = sanity_check();
 
-		if (ret == PX4_OK) {
+		ఒకవేళ (ret == PX4_OK) {
 			_curr_state = STATE::RUNNING;
-			ScheduleOnInterval(mcp_config.interval * 1000);
+			కాలపట్టిక_On_Interval(mcp_config.interval * 1000);
 
-		} else {
+		} లేకపోతే {
 			_curr_state = STATE::CONFIGURE;
-			ScheduleDelayed(mcp_config.interval * 1000);
+			కాలపట్టిక_Delayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		ఆపు;
 
-	case STATE::RUNNING:
-		perf_begin(_cycle_perf);
+	స్థితి STATE::RUNNING:
+		perf_begin(చక్రం_perf);
 		gpio_config_s config;
 
-		if (_gpio_config_sub.update(&config) && config.device_id == get_device_id()) {
-			PinType type = PinType::Input;
+		ఒకవేళ (_gpio_config_sub.update(&config) && config.device_id == get_device_id()) {
+			PinType type = PinType::ఆదానం_2;
 
-			switch (config.config) {
-			case config.INPUT_PULLUP:	type = PinType::InputPullUp; break;
+			ఎంపిక (config.config) {
+			స్థితి config.ఆదానం_PULLUP:	type = PinType::ఆదానం_Pull_పైకి; ఆపు;
 
-			case config.OUTPUT:		type = PinType::Output; break;
+			స్థితి config.OUTPUT:		type = PinType::Output; ఆపు;
 			}
 
-			ret |= write(config.state, config.mask);
-			ret |= configure(config.mask, type);
+			ret |= లిఖ(config.state, config.ముసుగు);
+			ret |= configure(config.ముసుగు, type);
 		}
 
-		gpio_out_s output;
+		gpio_బహిర్గతం_s output;
 
-		if (_gpio_out_sub.update(&output) && output.device_id == get_device_id()) {
-			ret |= write(output.state, output.mask);
+		ఒకవేళ (gpio_బహిర్గతం_sub.update(&output) && output.device_id == get_device_id()) {
+			ret |= లిఖ(output.state, output.ముసుగు);
 		}
 
 		{
-			gpio_in_s _gpio_in;
-			_gpio_in.timestamp = hrt_absolute_time();
-			_gpio_in.device_id = get_device_id();
-			uint16_t input = 0;
+			gpio_లోపల_s gpio_లోపల;
+			gpio_లోపల.timestamp = hrt_absolute_సమయం();
+			gpio_లోపల.device_id = get_device_id();
+			uint16_t ఆదానం = 0;
 
-			if (read(&input) == PX4_OK) {
-				_gpio_in.state = input;
-				_to_gpio_in.publish(_gpio_in);
+			ఒకవేళ (పఠ(&ఆదానం) == PX4_OK) {
+				gpio_లోపల.state = ఆదానం;
+				గమ్యం_gpio_లోపల.publish(gpio_లోపల);
 			}
 		}
 
-		_count++;
+		లెక్క_3++;
 
-		if (_count >= _checking_freq || ret != PX4_OK) {
+		ఒకవేళ (లెక్క_3 >= _checking_freq || ret != PX4_OK) {
 			_curr_state = STATE::CHECK;
-			_count = 0;
-			ScheduleClear();
-			ScheduleNow();
+			లెక్క_3 = 0;
+			కాలపట్టిక_Clear();
+			కాలపట్టిక_Now();
 		}
 
-		perf_end(_cycle_perf);
+		perf_చివర(చక్రం_perf);
 	}
 }
 
-void MCP230XX::print_status()
+శూన్య MCP230XX::print_స్థితి()
 {
-	I2CSPIDriverBase::print_status();
-	perf_print_counter(_cycle_perf);
+	I2_CSPIDriver_పునాది::print_స్థితి();
+	perf_print_counter(చక్రం_perf);
 	perf_print_counter(_comms_errors);
-	perf_print_counter(_register_check);
+	perf_print_counter(రిజిస్టరు_check);
 }
 
-void MCP230XX::custom_method(const BusCLIArguments &cli)
+శూన్య MCP230XX::custom_పద్ధతి(స్థిరరాశి BusCLIArguments &cli)
 {
-	switch (cli.custom1) {
-	case 0: {
+	ఎంపిక (cli.custom1) {
+	స్థితి 0: {
 			// write: only pins configured as outputs are affected
-			const uint16_t outputs = (uint16_t)~_iodir;
-			const uint16_t state = (uint16_t)cli.custom2;
+			స్థిరరాశి uint16_t outputs = (uint16_t)~_iodir;
+			స్థిరరాశి uint16_t state = (uint16_t)cli.custom2;
 
-			if (write(state & outputs, (uint16_t)~state & outputs) != PX4_OK) {
+			ఒకవేళ (లిఖ(state & outputs, (uint16_t)~state & outputs) != PX4_OK) {
 				PX4_ERR("write failed");
 			}
 
-			break;
+			ఆపు;
 		}
 	}
 }
 
-void MCP230XX::print_usage()
+శూన్య MCP230XX::print_usage()
 {
 	PRINT_MODULE_USAGE_NAME("mcp230xx", "driver");
 	PRINT_MODULE_USAGE_COMMAND("start");
-	PRINT_MODULE_USAGE_PARAMS_I2C_SPI_DRIVER(true, false);
-	PRINT_MODULE_USAGE_PARAMS_I2C_ADDRESS(0x27);
-	PRINT_MODULE_USAGE_PARAM_INT('D', 0, 0, 65535, "Direction (1=Input, 0=Output)", true);
-	PRINT_MODULE_USAGE_PARAM_INT('O', 0, 0, 65535, "Output", true);
-	PRINT_MODULE_USAGE_PARAM_INT('P', 0, 0, 65535, "Pullups", true);
-	PRINT_MODULE_USAGE_PARAM_INT('U', 0, 0, 1000, "Update Interval [ms]", true);
-	PRINT_MODULE_USAGE_PARAM_INT('M', 0, 0, 255, "First minor number", true);
+	PRINT_MODULE_USAGE_PARAMS_I2C_SPI_DRIVER(నిజం, అబద్ధం);
+	PRINT_MODULE_USAGE_PARAMS_I2_C_చిరునామా(0x27);
+	PRINT_MODULE_USAGE_PARAM_INT('D', 0, 0, 65535, "Direction (1=Input, 0=Output)", నిజం);
+	PRINT_MODULE_USAGE_PARAM_INT('O', 0, 0, 65535, "Output", నిజం);
+	PRINT_MODULE_USAGE_PARAM_INT('P', 0, 0, 65535, "Pullups", నిజం);
+	PRINT_MODULE_USAGE_PARAM_INT('U', 0, 0, 1000, "Update Interval [ms]", నిజం);
+	PRINT_MODULE_USAGE_PARAM_INT('M', 0, 0, 255, "First minor number", నిజం);
 	PRINT_MODULE_USAGE_COMMAND_DESCR("write", "Set the output pins to the state given with -O");
 	PRINT_MODULE_USAGE_DEFAULT_COMMANDS();
 }
 
-I2CSPIDriverBase *MCP230XX::instantiate(const I2CSPIDriverConfig &config, int runtime_instance)
+I2_CSPIDriver_పునాది *MCP230XX::instantiate(స్థిరరాశి I2CSPIDriverConfig &config, పూర్ణాంకం runtime_instance)
 {
-	MCP230XX *instance = nullptr;
+	MCP230XX *instance = శూన్యసూచిక;
 
-	switch (config.devid_driver_index) {
-	case DRV_GPIO_DEVTYPE_MCP23009:
-		instance = new MCP23009(config);
-		break;
+	ఎంపిక (config.devid_driver_సూచీ) {
+	స్థితి DRV_GPIO_DEVTYPE_MCP23009:
+		instance = కొత్త MCP23009(config);
+		ఆపు;
 
-	case DRV_GPIO_DEVTYPE_MCP23017:
-		instance = new MCP23017(config);
-		break;
+	స్థితి DRV_GPIO_DEVTYPE_MCP23017:
+		instance = కొత్త MCP23017(config);
+		ఆపు;
 
-	default:
-		instance = nullptr;
-		break;
+	అప్రమేయ:
+		instance = శూన్యసూచిక;
+		ఆపు;
 	}
 
-	if (!instance) {
+	ఒకవేళ (!instance) {
 		PX4_ERR("alloc failed");
-		return nullptr;
+		తిరిగి శూన్యసూచిక;
 	}
 
-	MCP230XX_config_t tmp_config = *static_cast<const MCP230XX_config_t *>(config.custom_data);
+	MCP230XX_config_t tmp_config = *static_cast<స్థిరరాశి MCP230XX_config_t *>(config.custom_దత్తాంశం);
 	instance->mcp_config = tmp_config;
 	instance->mcp_config.i2c_bus = config.bus;
-	instance->mcp_config.i2c_addr = config.i2c_address;
+	instance->mcp_config.i2c_addr = config.i2c_చిరునామా;
 
-	if (OK != instance->init()) {
-		delete instance;
-		return nullptr;
+	ఒకవేళ (OK != instance->init()) {
+		తొలగించు instance;
+		తిరిగి శూన్యసూచిక;
 	}
 
 	instance->_iodir = instance->mcp_config.direction;
 	instance->_olat = instance->mcp_config.state;
 	instance->_gppu = instance->mcp_config.pullup;
 
-	return instance;
+	తిరిగి instance;
 }

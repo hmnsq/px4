@@ -42,36 +42,36 @@
  * foot print device.
  */
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/shutdown.h>
-#include <parameters/px4_parameters.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <px4_platform_common/log.h>
+#అన్తర్భావ <px4_platform_common/posix.h>
+#అన్తర్భావ <px4_platform_common/shutdown.h>
+#అన్తర్భావ <parameters/px4_parameters.hpp>
 
-#include <string.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <errno.h>
+#అన్తర్భావ <string.h>
+#అన్తర్భావ <stdbool.h>
+#అన్తర్భావ <stdint.h>
+#అన్తర్భావ <errno.h>
 
-#include <parameters/param.h>
+#అన్తర్భావ <parameters/param.h>
 
-#include <lib/tinybson/tinybson.h>
-#include "flashparams.h"
-#include "flashfs.h"
-#include "../param_translation.h"
+#అన్తర్భావ <lib/tinybson/tinybson.h>
+#అన్తర్భావ "flashparams.h"
+#అన్తర్భావ "flashfs.h"
+#అన్తర్భావ "../param_translation.h"
 
-#if 0
-# define debug(fmt, args...)            do { warnx(fmt, ##args); } while(0)
-#else
-# define debug(fmt, args...)            do { } while(0)
-#endif
+#ఒకవేళ 0
+# define debug(fmt, వాదనలు...)            చేయి { warnx(fmt, ##args); } అయితే(0)
+#లేకపోతే
+# define debug(fmt, వాదనలు...)            చేయి { } అయితే(0)
+#అయితే_ముగింపు
 
 
 /**
  * Storage for modified parameters.
  */
-struct param_wbuf_s {
-	union param_value_u     val;
+నిర్మాణం param_wbuf_s {
+	సంఘం param_విలువ_u     val;
 	param_t                 param;
 };
 
@@ -96,22 +96,22 @@ struct param_wbuf_s {
  * drops those on its next save; here they stay until a compaction, and a
  * translation is only kept for a few releases. A snapshot cannot hold such a
  * record, so compacting for it does not repeat. */
-static bool log_stale;
+స్థిర తార్కిక log_stale;
 
 /* Replay failed inside a CRC-valid record. A delta appended behind it would
  * never be reached, so the next save rewrites the store. */
-static bool log_unreadable;
+స్థిర తార్కిక log_unreadable;
 
-static bool
+స్థిర తార్కిక
 any_unsaved(param_filter_func filter)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if ((filter == nullptr || filter(param)) && param_value_unsaved(param)) {
-			return true;
+	కొరకు (param_t param = 0; param < user_config.PARAM_లెక్క; param++) {
+		ఒకవేళ ((filter == శూన్యసూచిక || filter(param)) && param_విలువ_unsaved(param)) {
+			తిరిగి నిజం;
 		}
 	}
 
-	return false;
+	తిరిగి అబద్ధం;
 }
 
 /*
@@ -122,289 +122,289 @@ any_unsaved(param_filter_func filter)
  * default in force, is written as a BSON null so replay drops it, which is
  * what the file backend's "don't export defaults" gives after a reload.
  */
-static int
-encode_params(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
+స్థిర పూర్ణాంకం
+encode_params(bson_encoder_s *encoder, param_filter_func filter, తార్కిక snapshot)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if (filter && !filter(param)) {
-			continue;
+	కొరకు (param_t param = 0; param < user_config.PARAM_లెక్క; param++) {
+		ఒకవేళ (filter && !filter(param)) {
+			కొనసాగు;
 		}
 
-		if (snapshot) {
-			if (!user_config.contains(param)) {
-				continue;
+		ఒకవేళ (snapshot) {
+			ఒకవేళ (!user_config.కలిగియుంది(param)) {
+				కొనసాగు;
 			}
 
-		} else {
-			if (!param_value_unsaved(param)) {
-				continue;
+		} లేకపోతే {
+			ఒకవేళ (!param_విలువ_unsaved(param)) {
+				కొనసాగు;
 			}
 
-			if (!user_config.contains(param) || param_value_is_default(param)) {
-				if (bson_encoder_append_null(encoder, param_name(param))) {
+			ఒకవేళ (!user_config.కలిగియుంది(param) || param_విలువ_is_default(param)) {
+				ఒకవేళ (bson_encoder_append_null(encoder, param_name(param))) {
 					debug("BSON append failed for '%s'", param_name(param));
-					return -1;
+					తిరిగి -1;
 				}
 
-				continue;
+				కొనసాగు;
 			}
 		}
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			if (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
+		ఎంపిక (param_type(param)) {
+		స్థితి PARAM_TYPE_INT32:
+			ఒకవేళ (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				తిరిగి -1;
 			}
 
-			break;
+			ఆపు;
 
-		case PARAM_TYPE_FLOAT:
-			if (bson_encoder_append_double(encoder, param_name(param), (double)user_config.get(param).f)) {
+		స్థితి PARAM_TYPE_FLOAT:
+			ఒకవేళ (bson_encoder_append_double(encoder, param_name(param), (ద్విగుణ)user_config.get(param).f)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				తిరిగి -1;
 			}
 
-			break;
+			ఆపు;
 
-		default:
+		అప్రమేయ:
 			debug("unrecognized parameter type");
-			return -1;
+			తిరిగి -1;
 		}
 	}
 
-	return 0;
+	తిరిగి 0;
 }
 
 /* The caller frees bson_encoder_buf_data() whatever the result. */
-static int
-encode_document(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
+స్థిర పూర్ణాంకం
+encode_document(bson_encoder_s *encoder, param_filter_func filter, తార్కిక snapshot)
 {
-	bson_encoder_init_buf(encoder, nullptr, 0);
+	bson_encoder_init_buf(encoder, శూన్యసూచిక, 0);
 
-	int result = encode_params(encoder, filter, snapshot);
+	పూర్ణాంకం ఫలితం = encode_params(encoder, filter, snapshot);
 
-	if (result == 0) {
-		result = bson_encoder_fini(encoder);
+	ఒకవేళ (ఫలితం == 0) {
+		ఫలితం = bson_encoder_fini(encoder);
 	}
 
-	return result;
+	తిరిగి ఫలితం;
 }
 
-static int
-stage_write_buffer(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
+స్థిర పూర్ణాంకం
+stage_write_బఫరు(bson_encoder_s *encoder, uint8_t **బఫరు_2, size_t *enc_కొలత)
 {
-	void *enc_buff = bson_encoder_buf_data(encoder);
-	*enc_size = bson_encoder_buf_size(encoder);
+	శూన్య *enc_buff = bson_encoder_buf_దత్తాంశం(encoder);
+	*enc_కొలత = bson_encoder_buf_కొలత(encoder);
 
-	if (enc_buff == nullptr) {
-		return -ENOMEM;
+	ఒకవేళ (enc_buff == శూన్యసూచిక) {
+		తిరిగి -ENOMEM;
 	}
 
-	size_t alloc_size = *enc_size;
-	int result = parameter_flashfs_alloc(parameters_token, buffer, &alloc_size);
+	size_t alloc_కొలత = *enc_కొలత;
+	పూర్ణాంకం ఫలితం = parameter_flashfs_alloc(parameters_token, బఫరు_2, &alloc_కొలత);
 
-	if (result != OK) {
-		return result;
+	ఒకవేళ (ఫలితం != OK) {
+		తిరిగి ఫలితం;
 	}
 
-	if (alloc_size < *enc_size) {
+	ఒకవేళ (alloc_కొలత < *enc_కొలత) {
 		parameter_flashfs_free();
-		return -ENOMEM;
+		తిరిగి -ENOMEM;
 	}
 
-	memcpy(*buffer, enc_buff, *enc_size);
-	return OK;
+	జ్ఞాపకం_నకలు(*బఫరు_2, enc_buff, *enc_కొలత);
+	తిరిగి OK;
 }
 
-static int
-commit_append(uint8_t *buffer, size_t enc_size)
+స్థిర పూర్ణాంకం
+commit_append(uint8_t *బఫరు_2, size_t enc_కొలత)
 {
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	పూర్ణాంకం ఫలితం = parameter_flashfs_write(parameters_token, బఫరు_2, enc_కొలత);
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	ఒకవేళ (ఫలితం == (పూర్ణాంకం)enc_కొలత) {
+		తిరిగి OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	తిరిగి ఫలితం < 0 ? ఫలితం : -EFBIG;
 }
 
-static int
+స్థిర పూర్ణాంకం
 export_delta(param_filter_func filter)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, filter, false);
+	పూర్ణాంకం ఫలితం = encode_document(&encoder, filter, అబద్ధం);
 
-	if (result == 0) {
-		uint8_t *buffer;
-		size_t enc_size;
-		result = stage_write_buffer(&encoder, &buffer, &enc_size);
+	ఒకవేళ (ఫలితం == 0) {
+		uint8_t *బఫరు_2;
+		size_t enc_కొలత;
+		ఫలితం = stage_write_బఫరు(&encoder, &బఫరు_2, &enc_కొలత);
 
-		if (result == OK) {
-			result = commit_append(buffer, enc_size);
+		ఒకవేళ (ఫలితం == OK) {
+			ఫలితం = commit_append(బఫరు_2, enc_కొలత);
 		}
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	విడుదల(bson_encoder_buf_దత్తాంశం(&encoder));
+	తిరిగి ఫలితం;
 }
 
 /* Everything that can fail before the erase, so a failure here leaves the
  * log untouched and still loadable. */
-static int
-stage_snapshot(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
+స్థిర పూర్ణాంకం
+stage_snapshot(bson_encoder_s *encoder, uint8_t **బఫరు_2, size_t *enc_కొలత)
 {
-	int result = stage_write_buffer(encoder, buffer, enc_size);
+	పూర్ణాంకం ఫలితం = stage_write_బఫరు(encoder, బఫరు_2, enc_కొలత);
 
-	if (result != OK) {
-		return result;
+	ఒకవేళ (ఫలితం != OK) {
+		తిరిగి ఫలితం;
 	}
 
-	if (*enc_size > parameter_flashfs_max_payload()) {
+	ఒకవేళ (*enc_కొలత > parameter_flashfs_max_payload()) {
 		parameter_flashfs_free();
-		return -ENOSPC;
+		తిరిగి -ENOSPC;
 	}
 
-	return OK;
+	తిరిగి OK;
 }
 
-static int
-commit_snapshot(uint8_t *buffer, size_t enc_size)
+స్థిర పూర్ణాంకం
+commit_snapshot(uint8_t *బఫరు_2, size_t enc_కొలత)
 {
-	if (parameter_flashfs_blank() != 1) {
-		int rv = parameter_flashfs_erase();
+	ఒకవేళ (parameter_flashfs_blank() != 1) {
+		పూర్ణాంకం rv = parameter_flashfs_erase();
 
-		if (rv < 0) {
+		ఒకవేళ (rv < 0) {
 			parameter_flashfs_free();
-			return rv;
+			తిరిగి rv;
 		}
 	}
 
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	పూర్ణాంకం ఫలితం = parameter_flashfs_write(parameters_token, బఫరు_2, enc_కొలత);
 
-	if (result != (int)enc_size && parameter_flashfs_blank() == 1) {
-		result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	ఒకవేళ (ఫలితం != (పూర్ణాంకం)enc_కొలత && parameter_flashfs_blank() == 1) {
+		ఫలితం = parameter_flashfs_write(parameters_token, బఫరు_2, enc_కొలత);
 	}
 
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	ఒకవేళ (ఫలితం == (పూర్ణాంకం)enc_కొలత) {
+		తిరిగి OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	తిరిగి ఫలితం < 0 ? ఫలితం : -EFBIG;
 }
 
-static int
-compact_to_snapshot()
+స్థిర పూర్ణాంకం
+compact_గమ్యం_snapshot()
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	పూర్ణాంకం ఫలితం = encode_document(&encoder, శూన్యసూచిక, నిజం);
 
-	if (result == 0) {
-		uint8_t *buffer;
-		size_t enc_size;
-		result = stage_snapshot(&encoder, &buffer, &enc_size);
+	ఒకవేళ (ఫలితం == 0) {
+		uint8_t *బఫరు_2;
+		size_t enc_కొలత;
+		ఫలితం = stage_snapshot(&encoder, &బఫరు_2, &enc_కొలత);
 
-		if (result == OK) {
-			result = commit_snapshot(buffer, enc_size);
+		ఒకవేళ (ఫలితం == OK) {
+			ఫలితం = commit_snapshot(బఫరు_2, enc_కొలత);
 		}
 	}
 
-	if (result == OK) {
-		log_unreadable = false;
+	ఒకవేళ (ఫలితం == OK) {
+		log_unreadable = అబద్ధం;
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	విడుదల(bson_encoder_buf_దత్తాంశం(&encoder));
+	తిరిగి ఫలితం;
 }
 
-static bool
-has_record(flash_file_token_t token)
+స్థిర తార్కిక
+has_రికార్డు(flash_file_token_t token)
 {
-	uint8_t *buffer = nullptr;
-	size_t buf_size = 0;
-	return parameter_flashfs_read(token, &buffer, &buf_size) >= 0;
+	uint8_t *బఫరు_2 = శూన్యసూచిక;
+	size_t buf_కొలత = 0;
+	తిరిగి parameter_flashfs_read(token, &బఫరు_2, &buf_కొలత) >= 0;
 }
 
-static int
-param_export_internal(param_filter_func filter)
+స్థిర పూర్ణాంకం
+param_export_అంతర్గత(param_filter_func filter)
 {
 	/* A delta only means something behind a snapshot that replays. A legacy
 	 * record still present means the boot migration did not run; replay
 	 * would take it over any delta appended behind it. */
-	if (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
-		return compact_to_snapshot();
+	ఒకవేళ (log_unreadable || has_రికార్డు(parameters_legacy_token) || !has_రికార్డు(parameters_token)) {
+		తిరిగి compact_గమ్యం_snapshot();
 	}
 
-	if (!any_unsaved(filter)) {
-		return 0;
+	ఒకవేళ (!any_unsaved(filter)) {
+		తిరిగి 0;
 	}
 
-	int result = export_delta(filter);
+	పూర్ణాంకం ఫలితం = export_delta(filter);
 
-	if (result != -ENOSPC) {
-		return result;
+	ఒకవేళ (ఫలితం != -ENOSPC) {
+		తిరిగి ఫలితం;
 	}
 
 	/* Same-bank erase stalls the CPU for ~1 s; last resort when a single
 	 * save does not fit the tail. Compact writes the full RAM snapshot so a
 	 * filtered save cannot drop params not in the delta. */
 	PX4_WARN("flashparams: param sector full, compacting");
-	return compact_to_snapshot();
+	తిరిగి compact_గమ్యం_snapshot();
 }
 
 
-static bool
-record_is_stale(bson_node_t node)
+స్థిర తార్కిక
+రికార్డు_is_stale(bson_కణుపు_t కణుపు_2)
 {
-	const param_t param = param_find_no_notification(node->name);
+	స్థిరరాశి param_t param = param_కనుగొను_no_notification(కణుపు_2->name);
 
-	if (param == PARAM_INVALID) {
-		return true;
+	ఒకవేళ (param == PARAM_INVALID) {
+		తిరిగి నిజం;
 	}
 
-	switch (node->type) {
-	case BSON_INT32:
-		return param_type(param) != PARAM_TYPE_INT32;
+	ఎంపిక (కణుపు_2->type) {
+	స్థితి BSON_INT32:
+		తిరిగి param_type(param) != PARAM_TYPE_INT32;
 
-	case BSON_DOUBLE:
-		return param_type(param) != PARAM_TYPE_FLOAT;
+	స్థితి BSON_DOUBLE:
+		తిరిగి param_type(param) != PARAM_TYPE_FLOAT;
 
-	default:
-		return false;
+	అప్రమేయ:
+		తిరిగి అబద్ధం;
 	}
 }
 
-static int
-param_import_callback(bson_decoder_t decoder, bson_node_t node)
+స్థిర పూర్ణాంకం
+param_import_callback(bson_decoder_t decoder, bson_కణుపు_t కణుపు_2)
 {
-	float f;
+	దశాంశం f;
 	int32_t i;
-	void *v = nullptr;
-	int result = -1;
+	శూన్య *v = శూన్యసూచిక;
+	పూర్ణాంకం ఫలితం = -1;
 
 	/*
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	ఒకవేళ (కణుపు_2->type == BSON_EOO) {
 		debug("end of parameters");
-		return 0;
+		తిరిగి 0;
 	}
 
 	/* A tombstone has no value. The decoder leaves the previous node's in
 	 * the union and the translations read it without a type check. */
-	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
+	స్థిరరాశి తార్కిక tombstone = కణుపు_2->type == BSON_nullptr || కణుపు_2->type == BSON_UNDEFINED;
 
-	if (!tombstone) {
-		if (record_is_stale(node)) {
-			log_stale = true;
+	ఒకవేళ (!tombstone) {
+		ఒకవేళ (రికార్డు_is_stale(కణుపు_2)) {
+			log_stale = నిజం;
 		}
 
-		if (param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
-			return 1;
+		ఒకవేళ (param_modify_on_import(కణుపు_2) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+			తిరిగి 1;
 		}
 	}
 
@@ -412,122 +412,122 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	 * Find the parameter this node represents.  If we don't know it,
 	 * ignore the node.
 	 */
-	param_t param = param_find_no_notification(node->name);
+	param_t param = param_కనుగొను_no_notification(కణుపు_2->name);
 
-	if (param == PARAM_INVALID) {
-		debug("ignoring unrecognised parameter '%s'", node->name);
-		return 1;
+	ఒకవేళ (param == PARAM_INVALID) {
+		debug("ignoring unrecognised parameter '%s'", కణుపు_2->name);
+		తిరిగి 1;
 	}
 
 	/*
 	 * Handle setting the parameter from the node
 	 */
 
-	switch (node->type) {
-	case BSON_nullptr:
-	case BSON_UNDEFINED:
+	ఎంపిక (కణుపు_2->type) {
+	స్థితి BSON_nullptr:
+	స్థితి BSON_UNDEFINED:
 		user_config.reset(param);
-		result = 1;
-		goto out;
+		ఫలితం = 1;
+		వెళ్ళు బహిర్గతం;
 
-	case BSON_INT32:
-		if (param_type(param) != PARAM_TYPE_INT32) {
-			PX4_WARN("unexpected type for %s", node->name);
-			result = 1; // just skip this entry
-			goto out;
+	స్థితి BSON_INT32:
+		ఒకవేళ (param_type(param) != PARAM_TYPE_INT32) {
+			PX4_WARN("unexpected type for %s", కణుపు_2->name);
+			ఫలితం = 1; // just skip this entry
+			వెళ్ళు బహిర్గతం;
 		}
 
-		i = node->i32;
+		i = కణుపు_2->i32;
 		v = &i;
-		break;
+		ఆపు;
 
-	case BSON_DOUBLE:
-		if (param_type(param) != PARAM_TYPE_FLOAT) {
-			PX4_WARN("unexpected type for %s", node->name);
-			result = 1; // just skip this entry
-			goto out;
+	స్థితి BSON_DOUBLE:
+		ఒకవేళ (param_type(param) != PARAM_TYPE_FLOAT) {
+			PX4_WARN("unexpected type for %s", కణుపు_2->name);
+			ఫలితం = 1; // just skip this entry
+			వెళ్ళు బహిర్గతం;
 		}
 
-		f = node->d;
+		f = కణుపు_2->d;
 		v = &f;
-		break;
+		ఆపు;
 
-	default:
-		PX4_ERR("%s unrecognised node type %d", node->name, node->type);
-		result = 1; // just skip this entry
-		goto out;
+	అప్రమేయ:
+		PX4_ERR("%s unrecognised node type %d", కణుపు_2->name, కణుపు_2->type);
+		ఫలితం = 1; // just skip this entry
+		వెళ్ళు బహిర్గతం;
 	}
 
-	if (param_set_external(param, v, true, true)) {
-		debug("error setting value for '%s'", node->name);
-		goto out;
+	ఒకవేళ (param_సమితి_external(param, v, నిజం, నిజం)) {
+		debug("error setting value for '%s'", కణుపు_2->name);
+		వెళ్ళు బహిర్గతం;
 	}
 
 	/* don't return zero, that means EOF */
-	result = 1;
+	ఫలితం = 1;
 
-out:
-	return result;
+బహిర్గతం:
+	తిరిగి ఫలితం;
 }
 
-static int
-import_one_entry(uint8_t *buffer, size_t buf_size, void *arg)
+స్థిర పూర్ణాంకం
+import_one_నమోదు(uint8_t *బఫరు_2, size_t buf_కొలత, శూన్య *arg)
 {
-	int *result = static_cast<int *>(arg);
+	పూర్ణాంకం *ఫలితం = static_cast<పూర్ణాంకం *>(arg);
 	bson_decoder_s decoder{};
 
-	if (bson_decoder_init_buf(&decoder, buffer, buf_size, param_import_callback)) {
+	ఒకవేళ (bson_decoder_init_buf(&decoder, బఫరు_2, buf_కొలత, param_import_callback)) {
 		debug("decoder init failed");
-		*result = -1;
-		return -1;
+		*ఫలితం = -1;
+		తిరిగి -1;
 	}
 
-	do {
-		*result = bson_decoder_next(&decoder);
+	చేయి {
+		*ఫలితం = bson_decoder_తదుపరి(&decoder);
 
-	} while (*result > 0);
+	} అయితే (*ఫలితం > 0);
 
-	return *result < 0 ? *result : 0;
+	తిరిగి *ఫలితం < 0 ? *ఫలితం : 0;
 }
 
-static int
-param_import_internal(bool *legacy)
+స్థిర పూర్ణాంకం
+param_import_అంతర్గత(తార్కిక *legacy)
 {
-	int result = 0;
-	log_stale = false;
-	int n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &result);
+	పూర్ణాంకం ఫలితం = 0;
+	log_stale = అబద్ధం;
+	పూర్ణాంకం n = parameter_flashfs_walk(parameters_legacy_token, import_one_నమోదు, &ఫలితం);
 	*legacy = n > 0;
 
-	if (n == 0) {
-		n = parameter_flashfs_walk(parameters_token, import_one_entry, &result);
+	ఒకవేళ (n == 0) {
+		n = parameter_flashfs_walk(parameters_token, import_one_నమోదు, &ఫలితం);
 	}
 
-	if (n < 0) {
+	ఒకవేళ (n < 0) {
 		debug("flash walk failed (%d)", n);
-		log_unreadable = true;
-		return n;
+		log_unreadable = నిజం;
+		తిరిగి n;
 	}
 
-	if (n == 0) {
+	ఒకవేళ (n == 0) {
 		/* No valid entry found. A fully erased store is blank (first boot, or
 		 * after switching firmware): report "not yet stored" (1), matching the
 		 * convention used by param_load_default(). A store that holds data but
 		 * no valid entry (torn write, bit-rot, or foreign data) is corrupt and
 		 * must not be silently reseeded - report it so the boot recovery runs. */
-		if (parameter_flashfs_blank() == 1) {
-			return 1;
+		ఒకవేళ (parameter_flashfs_blank() == 1) {
+			తిరిగి 1;
 		}
 
 		debug("flash holds data but no valid entry");
-		return -EILSEQ;
+		తిరిగి -EILSEQ;
 	}
 
-	if (result < 0) {
+	ఒకవేళ (ఫలితం < 0) {
 		debug("BSON error decoding parameters");
-		return result;
+		తిరిగి ఫలితం;
 	}
 
-	return 0;
+	తిరిగి 0;
 }
 
 /*
@@ -538,58 +538,58 @@ param_import_internal(bool *legacy)
  * the erase is an error: until then the log is intact and RAM holds what it
  * said, so the boot must not be reported as a corrupt store.
  */
-static int
-compact_after_import(bool legacy)
+స్థిర పూర్ణాంకం
+compact_after_import(తార్కిక legacy)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	పూర్ణాంకం ఫలితం = encode_document(&encoder, శూన్యసూచిక, నిజం);
 
-	if (result != 0) {
-		PX4_ERR("flashparams: snapshot encode failed (%d), log kept", result);
-		free(bson_encoder_buf_data(&encoder));
-		return 0;
+	ఒకవేళ (ఫలితం != 0) {
+		PX4_ERR("flashparams: snapshot encode failed (%d), log kept", ఫలితం);
+		విడుదల(bson_encoder_buf_దత్తాంశం(&encoder));
+		తిరిగి 0;
 	}
 
-	const size_t enc_size = bson_encoder_buf_size(&encoder);
-	int need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_size);
-	result = 0;
+	స్థిరరాశి size_t enc_కొలత = bson_encoder_buf_కొలత(&encoder);
+	పూర్ణాంకం need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_కొలత);
+	ఫలితం = 0;
 
-	if (need > 0) {
-		uint8_t *buffer;
-		size_t staged_size;
-		result = stage_snapshot(&encoder, &buffer, &staged_size);
+	ఒకవేళ (need > 0) {
+		uint8_t *బఫరు_2;
+		size_t staged_కొలత;
+		ఫలితం = stage_snapshot(&encoder, &బఫరు_2, &staged_కొలత);
 
-		if (result != OK) {
-			PX4_ERR("flashparams: cannot stage snapshot (%d), log kept", result);
-			result = 0;
+		ఒకవేళ (ఫలితం != OK) {
+			PX4_ERR("flashparams: cannot stage snapshot (%d), log kept", ఫలితం);
+			ఫలితం = 0;
 
-		} else {
+		} లేకపోతే {
 			PX4_INFO("flashparams: compacting param sector%s", legacy ? " (legacy layout)" : "");
-			result = commit_snapshot(buffer, staged_size);
+			ఫలితం = commit_snapshot(బఫరు_2, staged_కొలత);
 
-			if (result != OK) {
-				PX4_ERR("flashparams: compact failed (%d)", result);
+			ఒకవేళ (ఫలితం != OK) {
+				PX4_ERR("flashparams: compact failed (%d)", ఫలితం);
 			}
 		}
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	విడుదల(bson_encoder_buf_దత్తాంశం(&encoder));
+	తిరిగి ఫలితం;
 }
 
-int flash_param_save(param_filter_func filter)
+పూర్ణాంకం flash_param_save(param_filter_func filter)
 {
-	return param_export_internal(filter);
+	తిరిగి param_export_అంతర్గత(filter);
 }
 
-int flash_param_import()
+పూర్ణాంకం flash_param_import()
 {
-	bool legacy = false;
-	int result = param_import_internal(&legacy);
+	తార్కిక legacy = అబద్ధం;
+	పూర్ణాంకం ఫలితం = param_import_అంతర్గత(&legacy);
 
-	if (result != 0) {
-		return result;
+	ఒకవేళ (ఫలితం != 0) {
+		తిరిగి ఫలితం;
 	}
 
-	return compact_after_import(legacy);
+	తిరిగి compact_after_import(legacy);
 }

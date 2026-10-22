@@ -31,36 +31,36 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ <matrix/math.hpp>
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-TEST(MatrixSetIdentityTest, SetIdentity)
+TEST(మాతృక_సమితి_తటస్థం_Test, సమితి_తటస్థం_2)
 {
 	Matrix3f A;
-	A.setIdentity();
+	A.సమితి_తటస్థం();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	కొరకు (size_t i = 0; i < 3; i++) {
+		కొరకు (size_t j = 0; j < 3; j++) {
+			ఒకవేళ (i == j) {
 				EXPECT_FLOAT_EQ(A(i, j), 1);
 
-			} else {
+			} లేకపోతే {
 				EXPECT_FLOAT_EQ(A(i, j), 0);
 			}
 		}
 	}
 
 	Matrix3f B;
-	B.identity();
+	B.తటస్థం();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	కొరకు (size_t i = 0; i < 3; i++) {
+		కొరకు (size_t j = 0; j < 3; j++) {
+			ఒకవేళ (i == j) {
 				EXPECT_FLOAT_EQ(B(i, j), 1);
 
-			} else {
+			} లేకపోతే {
 				EXPECT_FLOAT_EQ(B(i, j), 0);
 			}
 		}

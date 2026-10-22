@@ -37,8 +37,8 @@
  * Circuit breaker functionality.
  */
 
-#ifndef CIRCUIT_BREAKER_H_
-#define CIRCUIT_BREAKER_H_
+#నిర్వచితం_కాకపోతే CIRCUIT_BREAKER_H_
+#నిర్వచించు CIRCUIT_BREAKER_H_
 
 /* SAFETY WARNING  --  SAFETY WARNING  --  SAFETY WARNING
  *
@@ -50,24 +50,24 @@
  * AND MAY DISABLE CHECKS THAT ARE VITAL FOR SAFE FLIGHT.
  */
 
-#define CBRK_BUZZER_KEY         782097
-#define CBRK_SUPPLY_CHK_KEY	894281
-#define CBRK_FLIGHTTERM_KEY	121212
-#define CBRK_USB_CHK_KEY	197848
-#define CBRK_VTOLARMING_KEY	159753
-#define CBRK_UAVCAN_FW_KEY	5318008
+#నిర్వచించు CBRK_BUZZER_కీలకం         782097
+#నిర్వచించు CBRK_SUPPLY_CHK_కీలకం	894281
+#నిర్వచించు CBRK_FLIGHTTERM_కీలకం	121212
+#నిర్వచించు CBRK_USB_CHK_కీలకం	197848
+#నిర్వచించు CBRK_VTOLARMING_కీలకం	159753
+#నిర్వచించు CBRK_UAVCAN_FW_కీలకం	5318008
 
-#include <stdint.h>
+#అన్తర్భావ <stdint.h>
 
 __BEGIN_DECLS
 
-extern "C" __EXPORT bool circuit_breaker_enabled(const char *breaker, int32_t magic);
+బాహ్య "C" __EXPORT bool circuit_breaker_enabled(స్థిరరాశి అక్షరం *breaker, int32_t magic);
 
-static inline bool circuit_breaker_enabled_by_val(int32_t breaker_val, int32_t magic)
+స్థిర అంతఃవరుస bool circuit_breaker_enabled_by_val(int32_t breaker_val, int32_t magic)
 {
-	return breaker_val == magic;
+	తిరిగి breaker_val == magic;
 }
 
 __END_DECLS
 
-#endif /* CIRCUIT_BREAKER_H_ */
+#అయితే_ముగింపు /* CIRCUIT_BREAKER_H_ */

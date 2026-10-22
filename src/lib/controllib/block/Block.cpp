@@ -37,59 +37,59 @@
  * Controller library code
  */
 
-#include "Block.hpp"
-#include "BlockParam.hpp"
+#అన్తర్భావ "Block.hpp"
+#అన్తర్భావ "BlockParam.hpp"
 
-#include <cstdio>
-#include <cstring>
+#అన్తర్భావ <cstdio>
+#అన్తర్భావ <cstring>
 
-#include <px4_platform_common/log.h>
+#అన్తర్భావ <px4_platform_common/log.h>
 
-namespace control
+నామాకాశ control
 {
 
-Block::Block(SuperBlock *parent, const char *name) :
+ఖండం::ఖండం(Super_ఖండం *మాతృ, స్థిరరాశి అక్షరం *name) :
 	_name(name),
-	_parent(parent)
+	మాతృ_2(మాతృ)
 {
-	if (getParent() != nullptr) {
-		getParent()->getChildren().add(this);
+	ఒకవేళ (get_మాతృ() != శూన్యసూచిక) {
+		get_మాతృ()->getChildren().కూడు(ఇది);
 	}
 }
 
-void Block::getName(char *buf, size_t n)
+శూన్య ఖండం::getName(అక్షరం *buf, size_t n)
 {
-	if (getParent() == nullptr) {
+	ఒకవేళ (get_మాతృ() == శూన్యసూచిక) {
 		strncpy(buf, _name, n);
 		// ensure string is terminated
 		buf[n - 1] = '\0';
 
-	} else {
-		char parentName[blockNameLengthMax];
-		getParent()->getName(parentName, n);
+	} లేకపోతే {
+		అక్షరం మాతృ_Name[ఖండం_Name_నిడివి_Max];
+		get_మాతృ()->getName(మాతృ_Name, n);
 
-		if (!strcmp(_name, "")) {
-			strncpy(buf, parentName, n);
+		ఒకవేళ (!strcmp(_name, "")) {
+			strncpy(buf, మాతృ_Name, n);
 			// ensure string is terminated
 			buf[n - 1] = '\0';
 
-		} else {
-			snprintf(buf, n, "%s_%s", parentName, _name);
+		} లేకపోతే {
+			snprintf(buf, n, "%s_%s", మాతృ_Name, _name);
 		}
 	}
 }
 
-void Block::updateParams()
+శూన్య ఖండం::updateParams()
 {
-	BlockParamBase *param = getParams().getHead();
-	int count = 0;
+	ఖండం_Param_పునాది *param = getParams().get_తల();
+	పూర్ణాంకం లెక్క = 0;
 
-	while (param != nullptr) {
-		if (count++ > maxParamsPerBlock) {
-			char name[blockNameLengthMax];
-			getName(name, blockNameLengthMax);
+	అయితే (param != శూన్యసూచిక) {
+		ఒకవేళ (లెక్క++ > max_Params_చొప్పున_ఖండం) {
+			అక్షరం name[ఖండం_Name_నిడివి_Max];
+			getName(name, ఖండం_Name_నిడివి_Max);
 			PX4_ERR("exceeded max params for block: %s", name);
-			break;
+			ఆపు;
 		}
 
 		//printf("updating param: %s\n", param->getName());
@@ -100,43 +100,43 @@ void Block::updateParams()
 	updateParamsSubclass();
 }
 
-void SuperBlock::setDt(float dt)
+శూన్య Super_ఖండం::సమితి_Dt(దశాంశం dt)
 {
-	Block::setDt(dt);
-	Block *child = getChildren().getHead();
-	int count = 0;
+	ఖండం::సమితి_Dt(dt);
+	ఖండం *బిడ్డ = getChildren().get_తల();
+	పూర్ణాంకం లెక్క = 0;
 
-	while (child != nullptr) {
-		if (count++ > maxChildrenPerBlock) {
-			char name[blockNameLengthMax];
-			getName(name, blockNameLengthMax);
+	అయితే (బిడ్డ != శూన్యసూచిక) {
+		ఒకవేళ (లెక్క++ > max_Children_చొప్పున_ఖండం) {
+			అక్షరం name[ఖండం_Name_నిడివి_Max];
+			getName(name, ఖండం_Name_నిడివి_Max);
 			PX4_ERR("exceeded max children for block: %s", name);
-			break;
+			ఆపు;
 		}
 
-		child->setDt(dt);
-		child = child->getSibling();
+		బిడ్డ->సమితి_Dt(dt);
+		బిడ్డ = బిడ్డ->getSibling();
 	}
 }
 
-void SuperBlock::updateChildParams()
+శూన్య Super_ఖండం::update_బిడ్డ_Params()
 {
-	Block *child = getChildren().getHead();
-	int count = 0;
+	ఖండం *బిడ్డ = getChildren().get_తల();
+	పూర్ణాంకం లెక్క = 0;
 
-	while (child != nullptr) {
-		if (count++ > maxChildrenPerBlock) {
-			char name[blockNameLengthMax];
-			getName(name, blockNameLengthMax);
+	అయితే (బిడ్డ != శూన్యసూచిక) {
+		ఒకవేళ (లెక్క++ > max_Children_చొప్పున_ఖండం) {
+			అక్షరం name[ఖండం_Name_నిడివి_Max];
+			getName(name, ఖండం_Name_నిడివి_Max);
 			PX4_ERR("exceeded max children for block: %s", name);
-			break;
+			ఆపు;
 		}
 
-		child->updateParams();
-		child = child->getSibling();
+		బిడ్డ->updateParams();
+		బిడ్డ = బిడ్డ->getSibling();
 	}
 }
 
 } // namespace control
 
-template class List<control::BlockParamBase *>;
+మూస తరగతి List<control::ఖండం_Param_పునాది *>;

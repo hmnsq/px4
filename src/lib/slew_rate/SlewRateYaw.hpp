@@ -39,16 +39,16 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#సూచన once
 
-#include "SlewRate.hpp"
+#అన్తర్భావ "SlewRate.hpp"
 
-template<typename Type>
-class SlewRateYaw : public SlewRate<Type>
+మూస<రకం_పేరు Type>
+తరగతి Slew_రేటు_Yaw : బహిరంగ Slew_రేటు<Type>
 {
-public:
-	SlewRateYaw() = default;
-	~SlewRateYaw() = default;
+బహిరంగ:
+	Slew_రేటు_Yaw() = అప్రమేయ;
+	~Slew_రేటు_Yaw() = అప్రమేయ;
 
 	/**
 	 * Update slewrate with yaw wrapping [-pi,pi]
@@ -56,9 +56,9 @@ public:
 	 * @param deltatime time in seconds since last update
 	 * @return actual value that complies with the slew rate
 	 */
-	Type update(const Type new_value, const float deltatime)
+	Type update(స్థిరరాశి Type new_విలువ, స్థిరరాశి దశాంశం deltatime)
 	{
-		const Type d_wrapped = matrix::wrap_pi(new_value - this->_value);
-		return matrix::wrap_pi(SlewRate<Type>::update(this->_value + d_wrapped, deltatime));
+		స్థిరరాశి Type d_wrapped = మాతృక::wrap_pi(new_విలువ - ఇది->విలువ_2);
+		తిరిగి మాతృక::wrap_pi(Slew_రేటు<Type>::update(ఇది->విలువ_2 + d_wrapped, deltatime));
 	}
 };

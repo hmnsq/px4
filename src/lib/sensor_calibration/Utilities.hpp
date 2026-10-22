@@ -31,16 +31,16 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <lib/conversion/rotation.h>
-#include <lib/mathlib/mathlib.h>
-#include <lib/parameters/param.h>
-#include <matrix/math.hpp>
+#అన్తర్భావ <px4_platform_common/px4_config.h>
+#అన్తర్భావ <px4_platform_common/log.h>
+#అన్తర్భావ <lib/conversion/rotation.h>
+#అన్తర్భావ <lib/mathlib/mathlib.h>
+#అన్తర్భావ <lib/parameters/param.h>
+#అన్తర్భావ <matrix/math.hpp>
 
-namespace calibration
+నామాకాశ calibration
 {
 
 /**
@@ -50,7 +50,7 @@ namespace calibration
  * @param device_id
  * @return int8_t Valid calibration index on success, -1 otherwise
  */
-int8_t FindCurrentCalibrationIndex(const char *sensor_type, uint32_t device_id);
+int8_t కనుగొను_Current_Calibration_సూచీ(స్థిరరాశి అక్షరం *sensor_type, uint32_t device_id);
 
 /**
  * @brief Find sensor's calibration index if it exists, otherwise select an available slot.
@@ -60,7 +60,7 @@ int8_t FindCurrentCalibrationIndex(const char *sensor_type, uint32_t device_id);
  * @param preferred_index preferred index (optional)
  * @return int8_t Valid calibration index on success, -1 otherwise
  */
-int8_t FindAvailableCalibrationIndex(const char *sensor_type, uint32_t device_id, int8_t preferred_index = -1);
+int8_t కనుగొను_అందుబాటు_Calibration_సూచీ(స్థిరరాశి అక్షరం *sensor_type, uint32_t device_id, int8_t preferred_సూచీ = -1);
 
 /**
  * @brief Get sensor calibration parameter value.
@@ -70,8 +70,8 @@ int8_t FindAvailableCalibrationIndex(const char *sensor_type, uint32_t device_id
  * @param instance
  * @return int32_t The calibration value.
  */
-int32_t GetCalibrationParamInt32(const char *sensor_type, const char *cal_type, uint8_t instance);
-float GetCalibrationParamFloat(const char *sensor_type, const char *cal_type, uint8_t instance);
+int32_t GetCalibrationParamInt32(స్థిరరాశి అక్షరం *sensor_type, స్థిరరాశి అక్షరం *cal_type, uint8_t instance);
+దశాంశం GetCalibrationParamFloat(స్థిరరాశి అక్షరం *sensor_type, స్థిరరాశి అక్షరం *cal_type, uint8_t instance);
 
 /**
  * @brief Set a single calibration parameter.
@@ -82,21 +82,21 @@ float GetCalibrationParamFloat(const char *sensor_type, const char *cal_type, ui
  * @param value int32_t parameter value
  * @return true if the parameter name was valid and value saved successfully, false otherwise.
  */
-template<typename T>
-bool SetCalibrationParam(const char *sensor_type, const char *cal_type, uint8_t instance, T value)
+మూస<రకం_పేరు T>
+తార్కిక సమితి_Calibration_Param(స్థిరరాశి అక్షరం *sensor_type, స్థిరరాశి అక్షరం *cal_type, uint8_t instance, T value)
 {
-	char str[20] {};
+	అక్షరం str[20] {};
 
 	// eg CAL_MAGn_ID/CAL_MAGn_ROT
-	snprintf(str, sizeof(str), "CAL_%s%u_%s", sensor_type, instance, cal_type);
+	snprintf(str, పరిమాణం(str), "CAL_%s%u_%s", sensor_type, instance, cal_type);
 
-	int ret = param_set_no_notification(param_find(str), &value);
+	పూర్ణాంకం ret = param_సమితి_no_notification(param_కనుగొను(str), &value);
 
-	if (ret != PX4_OK) {
+	ఒకవేళ (ret != PX4_OK) {
 		PX4_ERR("failed to set %s", str);
 	}
 
-	return ret == PX4_OK;
+	తిరిగి ret == PX4_OK;
 }
 
 /**
@@ -107,7 +107,7 @@ bool SetCalibrationParam(const char *sensor_type, const char *cal_type, uint8_t 
  * @param instance Calibration index (0 - 3)
  * @return matrix::Vector3f Vector of calibration values.
  */
-matrix::Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance);
+మాతృక::Vector3f GetCalibrationParamsVector3f(స్థిరరాశి అక్షరం *sensor_type, స్థిరరాశి అక్షరం *cal_type, uint8_t instance);
 
 /**
  * @brief Set the Calibration Params Vector 3f object
@@ -118,15 +118,15 @@ matrix::Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const cha
  * @param values Vector of calibration values x, y, z.
  * @return true if the parameter name was valid and all values saved successfully, false otherwise.
  */
-bool SetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance,
-				  matrix::Vector3f values);
+తార్కిక సమితి_Calibration_Params_Vector3f(స్థిరరాశి అక్షరం *sensor_type, స్థిరరాశి అక్షరం *cal_type, uint8_t instance,
+				  మాతృక::Vector3f విలువలు_2);
 
 /**
  * @brief Get the board sensor level adjustment (SENS_BOARD_X_OFF, SENS_BOARD_Y_OFF, SENS_BOARD_Z_OFF).
  *
  * @return matrix::Eulerf
  */
-matrix::Eulerf GetSensorLevelAdjustment();
+మాతృక::Eulerf GetSensorLevelAdjustment();
 
 /**
  * @brief Get the board rotation.
@@ -140,6 +140,6 @@ Rotation GetBoardRotation();
  *
  * @return matrix::Dcmf
  */
-matrix::Dcmf GetBoardRotationMatrix();
+మాతృక::Dcmf Get_Board_Rotation_మాతృక();
 
 } // namespace calibration

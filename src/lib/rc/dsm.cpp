@@ -39,57 +39,57 @@
  * Decodes into the global PPM buffer and updates accordingly.
  */
 
-#include <px4_platform_common/px4_config.h>
-#include <board_config.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#అన్తర్భావ <px4_platform_common/px4_config.h>
+#అన్తర్భావ <board_config.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <px4_platform_common/log.h>
 
-#include <fcntl.h>
-#include <math.h>
-#include <unistd.h>
-#include <termios.h>
-#include <string.h>
+#అన్తర్భావ <fcntl.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <unistd.h>
+#అన్తర్భావ <termios.h>
+#అన్తర్భావ <string.h>
 
-#include "dsm.h"
-#include "spektrum_rssi.h"
-#include "common_rc.h"
-#include <drivers/drv_hrt.h>
+#అన్తర్భావ "dsm.h"
+#అన్తర్భావ "spektrum_rssi.h"
+#అన్తర్భావ "common_rc.h"
+#అన్తర్భావ <drivers/drv_hrt.h>
 
-#include <include/containers/Bitset.hpp>
+#అన్తర్భావ <include/containers/Bitset.hpp>
 
-#if defined(__PX4_NUTTX)
-#include <nuttx/arch.h>
-#define dsm_udelay(arg)    up_udelay(arg)
-#else
-#define dsm_udelay(arg) px4_usleep(arg)
-#endif
+#ఒకవేళ defined(__PX4_NUTTX)
+#అన్తర్భావ <nuttx/arch.h>
+#నిర్వచించు dsm_udelay(arg)    పైకి_udelay(arg)
+#లేకపోతే
+#నిర్వచించు dsm_udelay(arg) px4_usleep(arg)
+#అయితే_ముగింపు
 
 // #define DSM_DEBUG
 
-static enum DSM_DECODE_STATE {
+స్థిర గణన DSM_DECODE_STATE {
 	DSM_DECODE_STATE_DESYNC = 0,
 	DSM_DECODE_STATE_SYNC
 } dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 
-typedef struct {
-	hrt_abstime last_seen;
+రకనిర్వచనం నిర్మాణం {
+	hrt_abstime చివరి_చూసిన;
 	uint16_t value;
 } dsm_channel_t;
 
-static dsm_channel_t channel_buffer[DSM_MAX_CHANNEL_COUNT];
+స్థిర dsm_channel_t channel_బఫరు[DSM_MAX_CHANNEL_లెక్క];
 
-static int dsm_fd = -1;						/**< File handle to the DSM UART */
-static hrt_abstime dsm_last_rx_time;            /**< Timestamp when we last received data */
-static hrt_abstime dsm_last_frame_time;		/**< Timestamp for start of last valid dsm frame */
-static dsm_frame_t &dsm_frame = rc_decode_buf.dsm.frame;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
-static dsm_buf_t &dsm_buf = rc_decode_buf.dsm.buf;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
+స్థిర పూర్ణాంకం dsm_fd = -1;						/**< File handle to the DSM UART */
+స్థిర hrt_abstime dsm_చివరి_rx_సమయం;            /**< Timestamp when we last received data */
+స్థిర hrt_abstime dsm_చివరి_చట్రం_సమయం;		/**< Timestamp for start of last valid dsm frame */
+స్థిర dsm_చట్రం_t &dsm_చట్రం = rc_decode_buf.dsm.చట్రం;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
+స్థిర dsm_buf_t &dsm_buf = rc_decode_buf.dsm.buf;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
 
-static unsigned dsm_partial_frame_count;	/**< Count of bytes received for current dsm frame */
-static unsigned dsm_channel_shift = 0;			/**< Channel resolution, 0=unknown, 10=10 bit (1024), 11=11 bit (2048) */
-static unsigned dsm_frame_drops = 0;			/**< Count of incomplete DSM frames */
-static uint16_t dsm_chan_count = 0;         /**< DSM channel count */
+స్థిర గుర్తులేని dsm_partial_చట్రం_లెక్క;	/**< Count of bytes received for current dsm frame */
+స్థిర గుర్తులేని dsm_channel_జరుపు = 0;			/**< Channel resolution, 0=unknown, 10=10 bit (1024), 11=11 bit (2048) */
+స్థిర గుర్తులేని dsm_చట్రం_drops = 0;			/**< Count of incomplete DSM frames */
+స్థిర uint16_t dsm_chan_లెక్క = 0;         /**< DSM channel count */
 
-static constexpr uint8_t CHANNEL_UNUSED = 0xFF;
+స్థిర constexpr uint8_t CHANNEL_వాడని = 0xFF;
 
 /**
  * Attempt to decode a single channel raw channel datum
@@ -116,31 +116,31 @@ static constexpr uint8_t CHANNEL_UNUSED = 0xFF;
  * @param[out] value pointer to returned channel value
  * @return true=raw value successfully decoded
  */
-static bool dsm_decode_channel(uint16_t raw, unsigned shift, uint8_t &channel, uint16_t &value)
+స్థిర తార్కిక dsm_decode_channel(uint16_t raw, గుర్తులేని జరుపు, uint8_t &channel, uint16_t &value)
 {
-	if (shift == 10) {
+	ఒకవేళ (జరుపు == 10) {
 		// 1024 Mode: This format is used only by DSM2/22ms mode. All other modes use 2048 data.
 		//  Bits 15-10 Channel ID
 		//  Bits 9-0   Servo Position
-		static constexpr uint16_t MASK_1024_CHANID = 0xFC00;
-		static constexpr uint16_t MASK_1024_SXPOS = 0x03FF;
+		స్థిర constexpr uint16_t ముసుగు_1024_CHANID = 0xFC00;
+		స్థిర constexpr uint16_t ముసుగు_1024_SXPOS = 0x03FF;
 
-		channel = (raw & MASK_1024_CHANID) >> 10; // 6 bits
+		channel = (raw & ముసుగు_1024_CHANID) >> 10; // 6 bits
 
-		const uint16_t servo_position = (raw & MASK_1024_SXPOS); // 10 bits
+		స్థిరరాశి uint16_t servo_position = (raw & ముసుగు_1024_SXPOS); // 10 bits
 
-		if (channel >= DSM_MAX_CHANNEL_COUNT) {
+		ఒకవేళ (channel >= DSM_MAX_CHANNEL_లెక్క) {
 			PX4_DEBUG("invalid channel: %d\n", channel);
-			return false;
+			తిరిగి అబద్ధం;
 		}
 
 		// PWM_OUT = (ServoPosition x 1.166μs) + Offset
-		static constexpr uint16_t offset = 903; // microseconds
-		value = roundf(servo_position * 1.166f) + offset;
+		స్థిర constexpr uint16_t స్థానభ్రంశం = 903; // microseconds
+		value = roundf(servo_position * 1.166f) + స్థానభ్రంశం;
 
-		return true;
+		తిరిగి నిజం;
 
-	} else if (shift == 11) {
+	} లేకపోతే ఒకవేళ (జరుపు == 11) {
 		// 2048 Mode
 		//  Bits 15    Servo Phase
 		//  Bits 14-11 Channel ID
@@ -149,53 +149,53 @@ static bool dsm_decode_channel(uint16_t raw, unsigned shift, uint8_t &channel, u
 		uint16_t servo_position = 0;
 
 		// from Spektrum Remote Receiver Interfacing Rev G Page 6
-		const bool phase = (raw >> 15) & 0x01; // the phase is part of the X-Plus address (bit 15)
+		స్థిరరాశి తార్కిక phase = (raw >> 15) & 0x01; // the phase is part of the X-Plus address (bit 15)
 		uint8_t chan = (raw >> 11) & 0x0F;
 
-		if (chan < 12) {
+		ఒకవేళ (chan < 12) {
 			// Normal channels
-			static constexpr uint16_t MASK_2048_SXPOS = 0x07FF;
-			servo_position = (raw & MASK_2048_SXPOS);
+			స్థిర constexpr uint16_t ముసుగు_2048_SXPOS = 0x07FF;
+			servo_position = (raw & ముసుగు_2048_SXPOS);
 
-		} else if (chan == 12) {
+		} లేకపోతే ఒకవేళ (chan == 12) {
 			// XPlus channels
 			chan += ((raw >> 9) & 0x03);
 
-			if (phase) {
+			ఒకవేళ (phase) {
 				chan += 4;
 			}
 
-			if (chan >= DSM_MAX_CHANNEL_COUNT) {
-				return false;
+			ఒకవేళ (chan >= DSM_MAX_CHANNEL_లెక్క) {
+				తిరిగి అబద్ధం;
 			}
 
 			servo_position = (raw & 0x01FF) << 2;
 
 			channel = chan;
 
-		} else if (chan == 0x0F && phase) {
+		} లేకపోతే ఒకవేళ (chan == 0x0F && phase) {
 			// When the channel content is all bits set, and the phase is also set, this is the blank channel
-			channel = CHANNEL_UNUSED;
-			return true;
+			channel = CHANNEL_వాడని;
+			తిరిగి నిజం;
 
-		} else {
+		} లేకపోతే {
 			// This will be the case for an unused channel (raw 16bit content will be 0xffff)
 			PX4_DEBUG("invalid: %d %d\n", chan, phase);
-			return false;
+			తిరిగి అబద్ధం;
 		}
 
 		channel = chan;
 
 		// PWM_OUT = (ServoPosition x 0.583μs) + Offset
-		static constexpr uint16_t offset = 903; // microseconds
-		value = roundf(servo_position * 0.583f) + offset;
+		స్థిర constexpr uint16_t స్థానభ్రంశం = 903; // microseconds
+		value = roundf(servo_position * 0.583f) + స్థానభ్రంశం;
 
 		PX4_DEBUG(stderr, "CH%d=%d(0x%02x), ", channel, value, raw);
 
-		return true;
+		తిరిగి నిజం;
 	}
 
-	return false;
+	తిరిగి అబద్ధం;
 }
 
 /**
@@ -203,100 +203,100 @@ static bool dsm_decode_channel(uint16_t raw, unsigned shift, uint8_t &channel, u
  *
  * @param[in] reset true=reset the 10/11 bit state to unknown
  */
-static bool dsm_guess_format(bool reset)
+స్థిర తార్కిక dsm_guess_format(తార్కిక reset)
 {
-	static uint32_t cs10 = 0;
-	static uint32_t cs11 = 0;
-	static uint16_t good_cs10_frame_count = 0;
-	static uint16_t good_cs11_frame_count = 0;
-	static uint16_t samples = 0;
-	static uint16_t seen_channels_count_cs11[DSM_MAX_CHANNEL_COUNT] {};
-	static uint16_t seen_channels_count_cs10[DSM_MAX_CHANNEL_COUNT] {};
+	స్థిర uint32_t cs10 = 0;
+	స్థిర uint32_t cs11 = 0;
+	స్థిర uint16_t good_cs10_చట్రం_లెక్క = 0;
+	స్థిర uint16_t good_cs11_చట్రం_లెక్క = 0;
+	స్థిర uint16_t samples = 0;
+	స్థిర uint16_t చూసిన_channels_లెక్క_cs11[DSM_MAX_CHANNEL_లెక్క] {};
+	స్థిర uint16_t చూసిన_channels_లెక్క_cs10[DSM_MAX_CHANNEL_లెక్క] {};
 
 	/* reset the 10/11 bit sniffed channel masks */
-	if (reset) {
+	ఒకవేళ (reset) {
 		PX4_DEBUG("dsm_guess_format reset");
 		cs10 = 0;
 		cs11 = 0;
 		samples = 0;
 
-		dsm_channel_shift = 0;
-		good_cs10_frame_count = 0;
-		good_cs11_frame_count = 0;
+		dsm_channel_జరుపు = 0;
+		good_cs10_చట్రం_లెక్క = 0;
+		good_cs11_చట్రం_లెక్క = 0;
 
-		for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
-			seen_channels_count_cs10[i] = 0;
-			seen_channels_count_cs11[i] = 0;
+		కొరకు (గుర్తులేని i = 0; i < DSM_MAX_CHANNEL_లెక్క; i++) {
+			చూసిన_channels_లెక్క_cs10[i] = 0;
+			చూసిన_channels_లెక్క_cs11[i] = 0;
 		}
 
-		return false;
+		తిరిగి అబద్ధం;
 	}
 
-	px4::Bitset<DSM_MAX_CHANNEL_COUNT> channels_found_10;
-	px4::Bitset<DSM_MAX_CHANNEL_COUNT> channels_found_11;
+	px4::Bitset<DSM_MAX_CHANNEL_లెక్క> channels_దొరికింది_10;
+	px4::Bitset<DSM_MAX_CHANNEL_లెక్క> channels_దొరికింది_11;
 
-	bool cs10_frame_valid = true;
-	bool cs11_frame_valid = true;
+	తార్కిక cs10_చట్రం_valid = నిజం;
+	తార్కిక cs11_చట్రం_valid = నిజం;
 
 	/* scan the channels in the current dsm_frame in both 10- and 11-bit mode */
-	for (unsigned i = 0; i < DSM_FRAME_CHANNELS; i++) {
+	కొరకు (గుర్తులేని i = 0; i < DSM_చట్రం_CHANNELS; i++) {
 
-		uint8_t *dp = &dsm_frame[2 + (2 * i)];
+		uint8_t *dp = &dsm_చట్రం[2 + (2 * i)];
 		uint16_t raw = (dp[0] << 8) | dp[1];
 
 		uint8_t channel = 0;
 		uint16_t value = 0;
 
 		/* if the channel decodes, remember the assigned number */
-		if (dsm_decode_channel(raw, 10, channel, value)) {
-			if (channel == CHANNEL_UNUSED) {
-				continue;
+		ఒకవేళ (dsm_decode_channel(raw, 10, channel, value)) {
+			ఒకవేళ (channel == CHANNEL_వాడని) {
+				కొనసాగు;
 			}
 
 			// invalidate entire frame (for 1024) if channel already found, no duplicate channels per DSM frame
-			if (channels_found_10[channel]) {
-				cs10_frame_valid = false;
+			ఒకవేళ (channels_దొరికింది_10[channel]) {
+				cs10_చట్రం_valid = అబద్ధం;
 
-			} else {
-				seen_channels_count_cs10[channel]++;
-				channels_found_10.set(channel);
+			} లేకపోతే {
+				చూసిన_channels_లెక్క_cs10[channel]++;
+				channels_దొరికింది_10.సమితి(channel);
 			}
 		}
 
-		if (dsm_decode_channel(raw, 11, channel, value)) {
-			if (channel == CHANNEL_UNUSED) {
-				continue;
+		ఒకవేళ (dsm_decode_channel(raw, 11, channel, value)) {
+			ఒకవేళ (channel == CHANNEL_వాడని) {
+				కొనసాగు;
 			}
 
 			// invalidate entire frame (for 2048) if channel already found, no duplicate channels per DSM frame
-			if (channels_found_11[channel]) {
-				cs11_frame_valid = false;
+			ఒకవేళ (channels_దొరికింది_11[channel]) {
+				cs11_చట్రం_valid = అబద్ధం;
 
-			} else {
-				seen_channels_count_cs11[channel]++;
+			} లేకపోతే {
+				చూసిన_channels_లెక్క_cs11[channel]++;
 
-				channels_found_11.set(channel);
+				channels_దొరికింది_11.సమితి(channel);
 			}
 		}
 	}
 
 	// add valid cs10 channels
-	if (cs10_frame_valid) {
-		good_cs10_frame_count++;
+	ఒకవేళ (cs10_చట్రం_valid) {
+		good_cs10_చట్రం_లెక్క++;
 
-		for (unsigned channel = 0; channel < DSM_MAX_CHANNEL_COUNT; channel++) {
-			if (channels_found_10[channel]) {
+		కొరకు (గుర్తులేని channel = 0; channel < DSM_MAX_CHANNEL_లెక్క; channel++) {
+			ఒకవేళ (channels_దొరికింది_10[channel]) {
 				cs10 |= 1 << channel;
 			}
 		}
 	}
 
 	// add valid cs11 channels
-	if (cs11_frame_valid) {
-		good_cs11_frame_count++;
+	ఒకవేళ (cs11_చట్రం_valid) {
+		good_cs11_చట్రం_లెక్క++;
 
-		for (unsigned channel = 0; channel < DSM_MAX_CHANNEL_COUNT; channel++) {
-			if (channels_found_11[channel]) {
+		కొరకు (గుర్తులేని channel = 0; channel < DSM_MAX_CHANNEL_లెక్క; channel++) {
+			ఒకవేళ (channels_దొరికింది_11[channel]) {
 				cs11 |= 1 << channel;
 			}
 		}
@@ -305,8 +305,8 @@ static bool dsm_guess_format(bool reset)
 	samples++;
 
 	/* wait until we have seen plenty of frames */
-	if (samples < 15) {
-		return false;
+	ఒకవేళ (samples < 15) {
+		తిరిగి అబద్ధం;
 	}
 
 	/*
@@ -317,138 +317,138 @@ static bool dsm_guess_format(bool reset)
 	*  Channels must begin at 0 and no channel gaps after that (ie, the last channel is the one before the first unseen channel starting from zero)
 	 */
 
-	bool cs10_channel_gap_found = false;
-	bool cs11_channel_gap_found = false;
-	bool valid_channel_counts_cs10 = false;
-	bool valid_channel_counts_cs11 = false;
-	uint32_t cs10_channel_count = 0;
-	uint32_t cs11_channel_count = 0;
-	bool found_channels_end = false;
+	తార్కిక cs10_channel_gap_దొరికింది = అబద్ధం;
+	తార్కిక cs11_channel_gap_దొరికింది = అబద్ధం;
+	తార్కిక valid_channel_counts_cs10 = అబద్ధం;
+	తార్కిక valid_channel_counts_cs11 = అబద్ధం;
+	uint32_t cs10_channel_లెక్క = 0;
+	uint32_t cs11_channel_లెక్క = 0;
+	తార్కిక దొరికింది_channels_చివర = అబద్ధం;
 
 	// Count of allowed bad frames
-	static constexpr uint16_t bad_samples_allowance = 5;
-	static constexpr uint16_t minimum_channel_count = 5;
-	static constexpr uint16_t minimum_channel_seen_count = 4;
+	స్థిర constexpr uint16_t bad_samples_allowance = 5;
+	స్థిర constexpr uint16_t minimum_channel_లెక్క = 5;
+	స్థిర constexpr uint16_t minimum_channel_చూసిన_లెక్క = 4;
 
 	// Check for continous channels in 10bit decoding
-	found_channels_end = false;
+	దొరికింది_channels_చివర = అబద్ధం;
 
-	for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
+	కొరకు (గుర్తులేని i = 0; i < DSM_MAX_CHANNEL_లెక్క; i++) {
 		// This bit is set
-		if (cs10 & (1 << i)) {
-			if (found_channels_end) {
+		ఒకవేళ (cs10 & (1 << i)) {
+			ఒకవేళ (దొరికింది_channels_చివర) {
 				// Channel gap found
-				cs10_channel_gap_found = true;
-				break;
+				cs10_channel_gap_దొరికింది = నిజం;
+				ఆపు;
 			}
 
-		} else {
-			if (!found_channels_end) {
-				cs10_channel_count = i;
+		} లేకపోతే {
+			ఒకవేళ (!దొరికింది_channels_చివర) {
+				cs10_channel_లెక్క = i;
 			}
 
-			found_channels_end = true;
+			దొరికింది_channels_చివర = నిజం;
 		}
 	}
 
 	// Check for continous channels in 11bit decoding
-	found_channels_end = false;
+	దొరికింది_channels_చివర = అబద్ధం;
 
-	for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
+	కొరకు (గుర్తులేని i = 0; i < DSM_MAX_CHANNEL_లెక్క; i++) {
 		// This bit is set
-		if (cs11 & (1 << i)) {
-			if (found_channels_end) {
+		ఒకవేళ (cs11 & (1 << i)) {
+			ఒకవేళ (దొరికింది_channels_చివర) {
 				// Channel gap found
-				cs11_channel_gap_found = true;
-				break;
+				cs11_channel_gap_దొరికింది = నిజం;
+				ఆపు;
 			}
 
-		} else {
-			if (!found_channels_end) {
-				cs11_channel_count = i;
+		} లేకపోతే {
+			ఒకవేళ (!దొరికింది_channels_చివర) {
+				cs11_channel_లెక్క = i;
 			}
 
-			found_channels_end = true;
+			దొరికింది_channels_చివర = నిజం;
 		}
 	}
 
 	// Check channel seen counts C10
-	if (cs10_channel_count && !cs10_channel_gap_found) {
-		valid_channel_counts_cs10 = true;
+	ఒకవేళ (cs10_channel_లెక్క && !cs10_channel_gap_దొరికింది) {
+		valid_channel_counts_cs10 = నిజం;
 
-		for (unsigned i = 0; i < ((cs10_channel_count > 12) ? 12 : cs10_channel_count); i++) {
-			if (seen_channels_count_cs10[i] < minimum_channel_seen_count) {
-				valid_channel_counts_cs10 = false;
-				break;
+		కొరకు (గుర్తులేని i = 0; i < ((cs10_channel_లెక్క > 12) ? 12 : cs10_channel_లెక్క); i++) {
+			ఒకవేళ (చూసిన_channels_లెక్క_cs10[i] < minimum_channel_చూసిన_లెక్క) {
+				valid_channel_counts_cs10 = అబద్ధం;
+				ఆపు;
 			}
 
 		}
 	}
 
 	// Check channel seen counts C11
-	if (cs11_channel_count && !cs11_channel_gap_found) {
-		valid_channel_counts_cs11 = true;
+	ఒకవేళ (cs11_channel_లెక్క && !cs11_channel_gap_దొరికింది) {
+		valid_channel_counts_cs11 = నిజం;
 
-		for (unsigned i = 0; i < ((cs11_channel_count > 12) ? 12 : cs11_channel_count); i++) {
-			if (seen_channels_count_cs11[i] < minimum_channel_seen_count) {
-				valid_channel_counts_cs11 = false;
-				break;
+		కొరకు (గుర్తులేని i = 0; i < ((cs11_channel_లెక్క > 12) ? 12 : cs11_channel_లెక్క); i++) {
+			ఒకవేళ (చూసిన_channels_లెక్క_cs11[i] < minimum_channel_చూసిన_లెక్క) {
+				valid_channel_counts_cs11 = అబద్ధం;
+				ఆపు;
 			}
 
 		}
 	}
 
-#ifdef DSM_DEBUG
-	printf("DSM guess: CS10 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs10_frame_count,
-	       cs10_channel_gap_found, cs10_channel_count, valid_channel_counts_cs10);
-	printf("DSM guess: CS11 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs11_frame_count,
-	       cs11_channel_gap_found, cs11_channel_count, valid_channel_counts_cs11);
-#endif
+#నిర్వచితమైతే DSM_DEBUG
+	రాయి("DSM guess: CS10 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs10_చట్రం_లెక్క,
+	       cs10_channel_gap_దొరికింది, cs10_channel_లెక్క, valid_channel_counts_cs10);
+	రాయి("DSM guess: CS11 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs11_చట్రం_లెక్క,
+	       cs11_channel_gap_దొరికింది, cs11_channel_లెక్క, valid_channel_counts_cs11);
+#అయితే_ముగింపు
 
-	if (good_cs11_frame_count > samples - bad_samples_allowance && !cs11_channel_gap_found
-	    && cs11_channel_count >= minimum_channel_count && valid_channel_counts_cs11) {
-#ifdef DSM_DEBUG
-		printf("DSM guess: CS11 guessed!\n");
-#endif
-		dsm_chan_count = cs11_channel_count;
-		dsm_channel_shift = 11;
-		return true;
+	ఒకవేళ (good_cs11_చట్రం_లెక్క > samples - bad_samples_allowance && !cs11_channel_gap_దొరికింది
+	    && cs11_channel_లెక్క >= minimum_channel_లెక్క && valid_channel_counts_cs11) {
+#నిర్వచితమైతే DSM_DEBUG
+		రాయి("DSM guess: CS11 guessed!\n");
+#అయితే_ముగింపు
+		dsm_chan_లెక్క = cs11_channel_లెక్క;
+		dsm_channel_జరుపు = 11;
+		తిరిగి నిజం;
 	}
 
-	if (good_cs10_frame_count > samples - bad_samples_allowance && !cs10_channel_gap_found
-	    && cs10_channel_count >= minimum_channel_count && valid_channel_counts_cs10) {
-#ifdef DSM_DEBUG
-		printf("DSM guess: CS10 guessed!\n");
-#endif
-		dsm_chan_count = cs10_channel_count;
-		dsm_channel_shift = 10;
-		return true;
+	ఒకవేళ (good_cs10_చట్రం_లెక్క > samples - bad_samples_allowance && !cs10_channel_gap_దొరికింది
+	    && cs10_channel_లెక్క >= minimum_channel_లెక్క && valid_channel_counts_cs10) {
+#నిర్వచితమైతే DSM_DEBUG
+		రాయి("DSM guess: CS10 guessed!\n");
+#అయితే_ముగింపు
+		dsm_chan_లెక్క = cs10_channel_లెక్క;
+		dsm_channel_జరుపు = 10;
+		తిరిగి నిజం;
 	}
 
 	/* call ourselves to reset our state ... we have to try again */
-#ifdef DSM_DEBUG
-	printf("DSM: format detect fail\n");
-#endif
-	dsm_guess_format(true);
-	return false;
+#నిర్వచితమైతే DSM_DEBUG
+	రాయి("DSM: format detect fail\n");
+#అయితే_ముగింపు
+	dsm_guess_format(నిజం);
+	తిరిగి అబద్ధం;
 }
 
-int dsm_config(int fd)
+పూర్ణాంకం dsm_config(పూర్ణాంకం fd)
 {
-#ifdef SPEKTRUM_POWER_CONFIG
+#నిర్వచితమైతే SPEKTRUM_POWER_CONFIG
 	// Enable power controls for Spektrum receiver
 	SPEKTRUM_POWER_CONFIG();
-#endif
-#ifdef SPEKTRUM_POWER
+#అయితే_ముగింపు
+#నిర్వచితమైతే SPEKTRUM_POWER
 	// enable power on DSM connector
-	SPEKTRUM_POWER(true);
-#endif
+	SPEKTRUM_POWER(నిజం);
+#అయితే_ముగింపు
 
-	int ret = -1;
+	పూర్ణాంకం ret = -1;
 
-	if (fd >= 0) {
+	ఒకవేళ (fd >= 0) {
 
-		struct termios t;
+		నిర్మాణం termios t;
 
 		/* 115200bps, no parity, one stop bit */
 		tcgetattr(fd, &t);
@@ -457,33 +457,33 @@ int dsm_config(int fd)
 		tcsetattr(fd, TCSANOW, &t);
 
 		/* initialise the decoder */
-		dsm_partial_frame_count = 0;
-		dsm_last_rx_time = hrt_absolute_time();
+		dsm_partial_చట్రం_లెక్క = 0;
+		dsm_చివరి_rx_సమయం = hrt_absolute_సమయం();
 
 		/* reset the format detector */
-		dsm_guess_format(true);
+		dsm_guess_format(నిజం);
 
 		ret = 0;
 	}
 
-	return ret;
+	తిరిగి ret;
 }
 
-void dsm_proto_init()
+శూన్య dsm_proto_init()
 {
-	dsm_channel_shift = 0;
-	dsm_frame_drops = 0;
-	dsm_chan_count = 0;
+	dsm_channel_జరుపు = 0;
+	dsm_చట్రం_drops = 0;
+	dsm_chan_లెక్క = 0;
 
 	dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 
-	for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
-		channel_buffer[i].last_seen = 0;
-		channel_buffer[i].value = 0;
+	కొరకు (గుర్తులేని i = 0; i < DSM_MAX_CHANNEL_లెక్క; i++) {
+		channel_బఫరు[i].చివరి_చూసిన = 0;
+		channel_బఫరు[i].value = 0;
 	}
 
 	/* reset the format detector */
-	dsm_guess_format(true);
+	dsm_guess_format(నిజం);
 }
 
 /**
@@ -493,103 +493,103 @@ void dsm_proto_init()
  *
  * @param[in] device Device name of DSM UART
  */
-int dsm_init(const char *device)
+పూర్ణాంకం dsm_init(స్థిరరాశి అక్షరం *device)
 {
-	if (dsm_fd < 0) {
+	ఒకవేళ (dsm_fd < 0) {
 		dsm_fd = open(device, O_RDWR | O_NONBLOCK);
 	}
 
 	dsm_proto_init();
 
-	int ret = dsm_config(dsm_fd);
+	పూర్ణాంకం ret = dsm_config(dsm_fd);
 
-	if (!ret) {
-		return dsm_fd;
+	ఒకవేళ (!ret) {
+		తిరిగి dsm_fd;
 
-	} else {
-		return -1;
+	} లేకపోతే {
+		తిరిగి -1;
 	}
 }
 
-void dsm_deinit()
+శూన్య dsm_deinit()
 {
-#ifdef SPEKTRUM_POWER_PASSIVE
+#నిర్వచితమైతే SPEKTRUM_POWER_PASSIVE
 	// Turn power controls to passive
 	SPEKTRUM_POWER_PASSIVE();
-#endif
+#అయితే_ముగింపు
 
-	if (dsm_fd >= 0) {
+	ఒకవేళ (dsm_fd >= 0) {
 		close(dsm_fd);
 	}
 
 	dsm_fd = -1;
 }
 
-#if defined(SPEKTRUM_POWER)
+#ఒకవేళ defined(SPEKTRUM_POWER)
 /**
  * Handle DSM satellite receiver bind mode handler
  *
  * @param[in] cmd commands - dsm_bind_power_down, dsm_bind_power_up, dsm_bind_set_rx_out, dsm_bind_send_pulses, dsm_bind_reinit_uart
  * @param[in] pulses Number of pulses for dsm_bind_send_pulses command
  */
-void dsm_bind(uint16_t cmd, int pulses)
+శూన్య dsm_bind(uint16_t cmd, పూర్ణాంకం pulses)
 {
-	if (dsm_fd < 0) {
-		return;
+	ఒకవేళ (dsm_fd < 0) {
+		తిరిగి;
 	}
 
-	switch (cmd) {
-	case DSM_CMD_BIND_POWER_DOWN:
+	ఎంపిక (cmd) {
+	స్థితి DSM_CMD_BIND_POWER_కిందికి:
 		// power down DSM satellite
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_POWER_DOWN\n");
-#endif
-		SPEKTRUM_POWER(false);
-		break;
+#ఒకవేళ defined(DSM_DEBUG)
+		రాయి("DSM: DSM_CMD_BIND_POWER_DOWN\n");
+#అయితే_ముగింపు
+		SPEKTRUM_POWER(అబద్ధం);
+		ఆపు;
 
-	case DSM_CMD_BIND_POWER_UP:
+	స్థితి DSM_CMD_BIND_POWER_పైకి:
 		// power up DSM satellite
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_POWER_UP\n");
-#endif
-		SPEKTRUM_POWER(true);
-		dsm_guess_format(true);
-		break;
+#ఒకవేళ defined(DSM_DEBUG)
+		రాయి("DSM: DSM_CMD_BIND_POWER_UP\n");
+#అయితే_ముగింపు
+		SPEKTRUM_POWER(నిజం);
+		dsm_guess_format(నిజం);
+		ఆపు;
 
-	case DSM_CMD_BIND_SET_RX_OUT:
+	స్థితి DSM_CMD_BIND_సమితి_RX_బహిర్గతం:
 		// Set UART RX pin to active output mode
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_SET_RX_OUT\n");
-#endif
+#ఒకవేళ defined(DSM_DEBUG)
+		రాయి("DSM: DSM_CMD_BIND_SET_RX_OUT\n");
+#అయితే_ముగింపు
 		SPEKTRUM_RX_AS_GPIO_OUTPUT();
-		break;
+		ఆపు;
 
-	case DSM_CMD_BIND_SEND_PULSES:
+	స్థితి DSM_CMD_BIND_SEND_PULSES:
 		// Pulse RX pin a number of times
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_SEND_PULSES\n");
-#endif
+#ఒకవేళ defined(DSM_DEBUG)
+		రాయి("DSM: DSM_CMD_BIND_SEND_PULSES\n");
+#అయితే_ముగింపు
 
-		for (int i = 0; i < pulses; i++) {
+		కొరకు (పూర్ణాంకం i = 0; i < pulses; i++) {
 			dsm_udelay(120);
-			SPEKTRUM_OUT(false);
+			SPEKTRUM_బహిర్గతం(అబద్ధం);
 			dsm_udelay(120);
-			SPEKTRUM_OUT(true);
+			SPEKTRUM_బహిర్గతం(నిజం);
 		}
 
-		break;
+		ఆపు;
 
-	case DSM_CMD_BIND_REINIT_UART:
+	స్థితి DSM_CMD_BIND_REINIT_UART:
 		// Restore USART RX pin to RS232 receive mode
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_REINIT_UART\n");
-#endif
+#ఒకవేళ defined(DSM_DEBUG)
+		రాయి("DSM: DSM_CMD_BIND_REINIT_UART\n");
+#అయితే_ముగింపు
 		SPEKTRUM_RX_AS_UART();
-		break;
+		ఆపు;
 
 	}
 }
-#endif
+#అయితే_ముగింపు
 
 /**
  * Decode the entire dsm frame (all contained channels)
@@ -598,22 +598,22 @@ void dsm_bind(uint16_t cmd, int pulses)
  * @param[out] num_values pointer to number of raw channel values returned
  * @return true=DSM frame successfully decoded, false=no update
  */
-bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count,
+తార్కిక dsm_decode(hrt_abstime చట్రం_సమయం, తార్కిక *dsm_11_బిట్టు, గుర్తులేని channel_లెక్క,
 		int8_t *rssi_percent)
 {
 	// If we haven't seen a new frame recently or haven't guessed the DSM encoding, try to guess
-	if (((frame_time - dsm_last_frame_time) > 1000000) && (dsm_channel_shift != 0)) {
-		dsm_guess_format(true);
+	ఒకవేళ (((చట్రం_సమయం - dsm_చివరి_చట్రం_సమయం) > 1000000) && (dsm_channel_జరుపు != 0)) {
+		dsm_guess_format(నిజం);
 	}
 
 	/* if we don't know the dsm_frame format, update the guessing state machine */
-	if (dsm_channel_shift == 0) {
-		if (!dsm_guess_format(false)) {
-			return false;
+	ఒకవేళ (dsm_channel_జరుపు == 0) {
+		ఒకవేళ (!dsm_guess_format(అబద్ధం)) {
+			తిరిగి అబద్ధం;
 		}
 
 		// We have our first packet so we're in sync
-		dsm_last_rx_time = hrt_absolute_time();
+		dsm_చివరి_rx_సమయం = hrt_absolute_సమయం();
 	}
 
 	/*
@@ -624,22 +624,22 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
 	 */
 
 	// The SPM4649T with firmware version 1.1RC9 or later will have RSSI in place of fades
-	if (rssi_percent) {
-		if (((int8_t *)dsm_frame)[0] < 0) {
+	ఒకవేళ (rssi_percent) {
+		ఒకవేళ (((int8_t *)dsm_చట్రం)[0] < 0) {
 			/*
 			 * RSSI is a signed integer between -42dBm and -92dBm
 			 * If signal is lost, the value is -128
 			 */
-			int8_t dbm = (int8_t)dsm_frame[0];
+			int8_t dbm = (int8_t)dsm_చట్రం[0];
 
-			if (dbm == -128) {
+			ఒకవేళ (dbm == -128) {
 				*rssi_percent = 0;
 
-			} else {
-				*rssi_percent = spek_dbm_to_percent(dbm);
+			} లేకపోతే {
+				*rssi_percent = spek_dbm_గమ్యం_percent(dbm);
 			}
 
-		} else {
+		} లేకపోతే {
 			/* if we don't know the rssi, anything over 100 will invalidate it */
 			*rssi_percent = 127;
 		}
@@ -653,42 +653,42 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
 	 * seven channels are being transmitted.
 	 */
 
-	px4::Bitset<DSM_MAX_CHANNEL_COUNT> channels_found;
+	px4::Bitset<DSM_MAX_CHANNEL_లెక్క> channels_దొరికింది;
 
-	for (unsigned i = 0; i < DSM_FRAME_CHANNELS; i++) {
+	కొరకు (గుర్తులేని i = 0; i < DSM_చట్రం_CHANNELS; i++) {
 
-		uint8_t *dp = &dsm_frame[2 + (2 * i)];
+		uint8_t *dp = &dsm_చట్రం[2 + (2 * i)];
 		uint16_t raw = (dp[0] << 8) | dp[1];
 
 		uint8_t channel = 0;
 		uint16_t value = 0;
 
-		if (!dsm_decode_channel(raw, dsm_channel_shift, channel, value)) {
-			dsm_frame_drops++;
-			return false;
+		ఒకవేళ (!dsm_decode_channel(raw, dsm_channel_జరుపు, channel, value)) {
+			dsm_చట్రం_drops++;
+			తిరిగి అబద్ధం;
 		}
 
-		if (channel == CHANNEL_UNUSED) {
-			continue;
+		ఒకవేళ (channel == CHANNEL_వాడని) {
+			కొనసాగు;
 		}
 
 		// abort if channel already found, no duplicate channels per DSM frame
-		if (channels_found[channel]) {
+		ఒకవేళ (channels_దొరికింది[channel]) {
 			PX4_DEBUG("duplicate channel %d\n\n", channel);
-			dsm_guess_format(true);
-			dsm_frame_drops++;
-			return false;
+			dsm_guess_format(నిజం);
+			dsm_చట్రం_drops++;
+			తిరిగి అబద్ధం;
 
-		} else {
-			channels_found.set(channel);
+		} లేకపోతే {
+			channels_దొరికింది.సమితి(channel);
 		}
 
 		/* reset bit guessing state machine if the channel index is out of bounds */
-		if (channel >= DSM_MAX_CHANNEL_COUNT || channel >= channel_count) {
-			PX4_DEBUG("channel %d > %d (DSM_MAX_CHANNEL_COUNT)", channel, DSM_MAX_CHANNEL_COUNT);
-			dsm_guess_format(true);
-			dsm_frame_drops++;
-			return false;
+		ఒకవేళ (channel >= DSM_MAX_CHANNEL_లెక్క || channel >= channel_లెక్క) {
+			PX4_DEBUG("channel %d > %d (DSM_MAX_CHANNEL_COUNT)", channel, DSM_MAX_CHANNEL_లెక్క);
+			dsm_guess_format(నిజం);
+			dsm_చట్రం_drops++;
+			తిరిగి అబద్ధం;
 		}
 
 		/*
@@ -698,37 +698,37 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
 		 * Specifically, the first four channels in rc_channel_data are roll, pitch, thrust, yaw,
 		 * but the first four channels from the DSM receiver are thrust, roll, pitch, yaw.
 		 */
-		switch (channel) {
-		case 0:
+		ఎంపిక (channel) {
+		స్థితి 0:
 			channel = 2; // Spektrum Throttle (0) -> 2
-			break;
+			ఆపు;
 
-		case 1:
+		స్థితి 1:
 			channel = 0; // Spektrum Aileron (1) -> 0
-			break;
+			ఆపు;
 
-		case 2:
+		స్థితి 2:
 			channel = 1; // Spektrum Elevator (2) -> 1
 
-		default:
-			break;
+		అప్రమేయ:
+			ఆపు;
 		}
 
-		channel_buffer[channel].value = value;
-		channel_buffer[channel].last_seen = frame_time;
+		channel_బఫరు[channel].value = value;
+		channel_బఫరు[channel].చివరి_చూసిన = చట్రం_సమయం;
 	}
 
 	/* Set the 11-bit data indicator */
-	*dsm_11_bit = (dsm_channel_shift == 11);
+	*dsm_11_బిట్టు = (dsm_channel_జరుపు == 11);
 
 	/* we have received something we think is a dsm_frame */
-	dsm_last_frame_time = frame_time;
+	dsm_చివరి_చట్రం_సమయం = చట్రం_సమయం;
 
-#ifdef DSM_DEBUG
-	printf("PARSED PACKET\n");
-#endif
+#నిర్వచితమైతే DSM_DEBUG
+	రాయి("PARSED PACKET\n");
+#అయితే_ముగింపు
 
-	return true;
+	తిరిగి నిజం;
 }
 
 /**
@@ -755,8 +755,8 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
  * @param[in] max_values maximum number of channels the receiver can process
  * @return true=decoded raw channel values updated, false=no update
  */
-bool dsm_input(int fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit, uint8_t *n_bytes, uint8_t **bytes,
-	       int8_t *rssi, unsigned *frame_drops, unsigned max_values)
+తార్కిక dsm_ఆదానం(పూర్ణాంకం fd, uint16_t *విలువలు_2, uint16_t *అంకె_విలువలు, తార్కిక *dsm_11_బిట్టు, uint8_t *n_బైట్లు, uint8_t **బైట్లు,
+	       int8_t *rssi, గుర్తులేని *చట్రం_drops, గుర్తులేని max_విలువలు)
 {
 	/*
 	 * The DSMX/2 protocol doesn't provide reliable framing,
@@ -770,165 +770,165 @@ bool dsm_input(int fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit,
 	 * provides a degree of protection. Of course, it would be better
 	 * if we didn't drop bytes...
 	 */
-	const hrt_abstime now = hrt_absolute_time();
+	స్థిరరాశి hrt_abstime now = hrt_absolute_సమయం();
 
 	/*
 	 * Fetch bytes, but no more than we would need to complete
 	 * a complete frame.
 	 */
 
-	int ret = read(fd, &dsm_buf[0], sizeof(dsm_buf) / sizeof(dsm_buf[0]));
+	పూర్ణాంకం ret = పఠ(fd, &dsm_buf[0], పరిమాణం(dsm_buf) / పరిమాణం(dsm_buf[0]));
 
 	/* if the read failed for any reason, just give up here */
-	if (ret < 1) {
-		return false;
+	ఒకవేళ (ret < 1) {
+		తిరిగి అబద్ధం;
 
-	} else {
-		*n_bytes = ret;
-		*bytes = &dsm_buf[0];
+	} లేకపోతే {
+		*n_బైట్లు = ret;
+		*బైట్లు = &dsm_buf[0];
 	}
 
 	/*
 	 * Try to decode something with what we got
 	 */
-	return dsm_parse(now, &dsm_buf[0], ret, values, num_values, dsm_11_bit, &dsm_frame_drops, rssi, max_values);
+	తిరిగి dsm_parse(now, &dsm_buf[0], ret, విలువలు_2, అంకె_విలువలు, dsm_11_బిట్టు, &dsm_చట్రం_drops, rssi, max_విలువలు);
 }
 
-bool dsm_parse(const uint64_t now, const uint8_t *frame, const unsigned len, uint16_t *values,
-	       uint16_t *num_values, bool *dsm_11_bit, unsigned *frame_drops, int8_t *rssi_percent, uint16_t max_channels)
+తార్కిక dsm_parse(స్థిరరాశి uint64_t now, స్థిరరాశి uint8_t *చట్రం, స్థిరరాశి గుర్తులేని len, uint16_t *విలువలు_2,
+	       uint16_t *అంకె_విలువలు, తార్కిక *dsm_11_బిట్టు, గుర్తులేని *చట్రం_drops, int8_t *rssi_percent, uint16_t max_channels)
 {
 	/* this is set by the decoding state machine and will default to false
 	 * once everything that was decodable has been decoded.
 	 */
-	bool channel_data_available = false;
-	unsigned channel_output_count;
+	తార్కిక channel_దత్తాంశం_అందుబాటు = అబద్ధం;
+	గుర్తులేని channel_output_లెక్క;
 
 	/* keep decoding until we have consumed the buffer */
-	for (unsigned d = 0; d < len; d++) {
+	కొరకు (గుర్తులేని d = 0; d < len; d++) {
 
 		/* overflow check */
-		if (dsm_partial_frame_count == sizeof(dsm_frame) / sizeof(dsm_frame[0])) {
-			dsm_partial_frame_count = 0;
+		ఒకవేళ (dsm_partial_చట్రం_లెక్క == పరిమాణం(dsm_చట్రం) / పరిమాణం(dsm_చట్రం[0])) {
+			dsm_partial_చట్రం_లెక్క = 0;
 			dsm_decode_state = DSM_DECODE_STATE_DESYNC;
-#ifdef DSM_DEBUG
-			printf("DSM: RESET (BUF LIM)\n");
-#endif
+#నిర్వచితమైతే DSM_DEBUG
+			రాయి("DSM: RESET (BUF LIM)\n");
+#అయితే_ముగింపు
 		}
 
-		if (dsm_partial_frame_count == DSM_FRAME_SIZE) {
-			dsm_partial_frame_count = 0;
+		ఒకవేళ (dsm_partial_చట్రం_లెక్క == DSM_చట్రం_కొలత) {
+			dsm_partial_చట్రం_లెక్క = 0;
 			dsm_decode_state = DSM_DECODE_STATE_DESYNC;
-#ifdef DSM_DEBUG
-			printf("DSM: RESET (PACKET LIM)\n");
-#endif
+#నిర్వచితమైతే DSM_DEBUG
+			రాయి("DSM: RESET (PACKET LIM)\n");
+#అయితే_ముగింపు
 		}
 
-#ifdef DSM_DEBUG
-#if 0
-		printf("dsm state: %s%s, count: %d, val: %02x\n",
+#నిర్వచితమైతే DSM_DEBUG
+#ఒకవేళ 0
+		రాయి("dsm state: %s%s, count: %d, val: %02x\n",
 		       (dsm_decode_state == DSM_DECODE_STATE_DESYNC) ? "DSM_DECODE_STATE_DESYNC" : "",
 		       (dsm_decode_state == DSM_DECODE_STATE_SYNC) ? "DSM_DECODE_STATE_SYNC" : "",
-		       dsm_partial_frame_count,
-		       (unsigned)frame[d]);
-#endif
-#endif
+		       dsm_partial_చట్రం_లెక్క,
+		       (గుర్తులేని)చట్రం[d]);
+#అయితే_ముగింపు
+#అయితే_ముగింపు
 
-		switch (dsm_decode_state) {
-		case DSM_DECODE_STATE_DESYNC:
+		ఎంపిక (dsm_decode_state) {
+		స్థితి DSM_DECODE_STATE_DESYNC:
 
 			/* we are de-synced and only interested in the frame marker */
-			if ((now - dsm_last_rx_time) > 5000) {
+			ఒకవేళ ((now - dsm_చివరి_rx_సమయం) > 5000) {
 				dsm_decode_state = DSM_DECODE_STATE_SYNC;
-				dsm_partial_frame_count = 0;
-				dsm_frame[dsm_partial_frame_count++] = frame[d];
+				dsm_partial_చట్రం_లెక్క = 0;
+				dsm_చట్రం[dsm_partial_చట్రం_లెక్క++] = చట్రం[d];
 			}
 
-			break;
+			ఆపు;
 
-		case DSM_DECODE_STATE_SYNC: {
-				dsm_frame[dsm_partial_frame_count++] = frame[d];
+		స్థితి DSM_DECODE_STATE_SYNC: {
+				dsm_చట్రం[dsm_partial_చట్రం_లెక్క++] = చట్రం[d];
 
 				/* decode whatever we got and expect */
-				if (dsm_partial_frame_count < DSM_FRAME_SIZE) {
-					break;
+				ఒకవేళ (dsm_partial_చట్రం_లెక్క < DSM_చట్రం_కొలత) {
+					ఆపు;
 				}
 
 				// We've collected a full frame, parse it
-				channel_data_available = dsm_decode(now, dsm_11_bit, dsm_chan_count, rssi_percent);
+				channel_దత్తాంశం_అందుబాటు = dsm_decode(now, dsm_11_బిట్టు, dsm_chan_లెక్క, rssi_percent);
 
 				// Frame consumed, reset the buffer count
-				dsm_partial_frame_count = 0;
+				dsm_partial_చట్రం_లెక్క = 0;
 
 				/* if decoding failed, set proto to desync */
-				if (!channel_data_available) {
+				ఒకవేళ (!channel_దత్తాంశం_అందుబాటు) {
 					dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 				}
 			}
-			break;
+			ఆపు;
 
-		default:
-#ifdef DSM_DEBUG
-			printf("UNKNOWN PROTO STATE");
-#endif
-			channel_data_available = false;
+		అప్రమేయ:
+#నిర్వచితమైతే DSM_DEBUG
+			రాయి("UNKNOWN PROTO STATE");
+#అయితే_ముగింపు
+			channel_దత్తాంశం_అందుబాటు = అబద్ధం;
 		}
 	}
 
-	if (frame_drops) {
-		*frame_drops = dsm_frame_drops;
+	ఒకవేళ (చట్రం_drops) {
+		*చట్రం_drops = dsm_చట్రం_drops;
 	}
 
-	if (channel_data_available) {
+	ఒకవేళ (channel_దత్తాంశం_అందుబాటు) {
 		// Check if any channels have been absent for too long
-		for (unsigned i = 0; i < dsm_chan_count; i++) {
-			if (now - channel_buffer[i].last_seen > 50 * 1000) {
-				return false;
+		కొరకు (గుర్తులేని i = 0; i < dsm_chan_లెక్క; i++) {
+			ఒకవేళ (now - channel_బఫరు[i].చివరి_చూసిన > 50 * 1000) {
+				తిరిగి అబద్ధం;
 			}
 		}
 
 		// Overflow protect
-		if (max_channels >= DSM_MAX_CHANNEL_COUNT) {
-			max_channels = DSM_MAX_CHANNEL_COUNT;
+		ఒకవేళ (max_channels >= DSM_MAX_CHANNEL_లెక్క) {
+			max_channels = DSM_MAX_CHANNEL_లెక్క;
 		}
 
 		// Cap returned channels to max_channels if we've seen more
-		if (dsm_chan_count > max_channels) {
-			channel_output_count = max_channels;
+		ఒకవేళ (dsm_chan_లెక్క > max_channels) {
+			channel_output_లెక్క = max_channels;
 
-		} else {
-			channel_output_count = dsm_chan_count;
+		} లేకపోతే {
+			channel_output_లెక్క = dsm_chan_లెక్క;
 		}
 
-		*num_values = channel_output_count;
+		*అంకె_విలువలు = channel_output_లెక్క;
 
 		// Copy the full list of collected channels
-		for (unsigned i = 0; i < channel_output_count; i++) {
+		కొరకు (గుర్తులేని i = 0; i < channel_output_లెక్క; i++) {
 			// Channels which do not have a value yet (because their frame has not been seen yet)
 			// will have a zero. If we come across a blank channel, keep storing values, but we
 			// won't return that we have a valid frame just yet.
-			if (channel_buffer[i].value) {
-				values[i] = channel_buffer[i].value;
+			ఒకవేళ (channel_బఫరు[i].value) {
+				విలువలు_2[i] = channel_బఫరు[i].value;
 
-			} else {
-				channel_data_available = false;
+			} లేకపోతే {
+				channel_దత్తాంశం_అందుబాటు = అబద్ధం;
 			}
 		}
 	}
 
-#ifdef DSM_DEBUG
+#నిర్వచితమైతే DSM_DEBUG
 
-	if (channel_data_available) {
-		printf("frame drops: %u, chan #: %u\n", dsm_frame_drops, dsm_chan_count);
+	ఒకవేళ (channel_దత్తాంశం_అందుబాటు) {
+		రాయి("frame drops: %u, chan #: %u\n", dsm_చట్రం_drops, dsm_chan_లెక్క);
 
-		for (unsigned i = 0; i < dsm_chan_count; i++) {
-			printf("dsm_decode: #CH %02u: %u\n", i + 1, values[i]);
+		కొరకు (గుర్తులేని i = 0; i < dsm_chan_లెక్క; i++) {
+			రాయి("dsm_decode: #CH %02u: %u\n", i + 1, విలువలు_2[i]);
 		}
 	}
 
-#endif
+#అయితే_ముగింపు
 
-	dsm_last_rx_time = now;
+	dsm_చివరి_rx_సమయం = now;
 
 	/* return false as default */
-	return channel_data_available;
+	తిరిగి channel_దత్తాంశం_అందుబాటు;
 }

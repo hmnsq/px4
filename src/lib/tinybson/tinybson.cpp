@@ -37,124 +37,124 @@
  * A simple subset SAX-style BSON parser and generator.
  */
 
-#include <px4_platform_common/posix.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdlib.h>
-#include <systemlib/err.h>
+#అన్తర్భావ <px4_platform_common/posix.h>
+#అన్తర్భావ <unistd.h>
+#అన్తర్భావ <string.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <systemlib/err.h>
 
-#include "tinybson.h"
+#అన్తర్భావ "tinybson.h"
 
-#if 0
-# define debug(fmt, args...)		do { PX4_INFO("BSON: " fmt, ##args); } while(0)
-#else
-# define debug(fmt, args...)		do { } while(0)
-#endif
+#ఒకవేళ 0
+# define debug(fmt, వాదనలు...)		చేయి { PX4_INFO("BSON: " fmt, ##args); } అయితే(0)
+#లేకపోతే
+# define debug(fmt, వాదనలు...)		చేయి { } అయితే(0)
+#అయితే_ముగింపు
 
-#define CODER_CHECK(_c)		do { if ((_c)->dead) { PX4_ERR("coder dead"); return -1; }} while(0)
-#define CODER_KILL(_c, _reason)	do { PX4_ERR("killed: %s", _reason); (_c)->dead = true; return -1; } while(0)
+#నిర్వచించు CODER_CHECK(_c)		చేయి { ఒకవేళ ((_c)->dead) { PX4_ERR("coder dead"); తిరిగి -1; }} అయితే(0)
+#నిర్వచించు CODER_KILL(_c, _reason)	చేయి { PX4_ERR("killed: %s", _reason); (_c)->dead = నిజం; తిరిగి -1; } అయితే(0)
 
-static int
-read_x(bson_decoder_t decoder, void *p, size_t s)
+స్థిర పూర్ణాంకం
+read_x(bson_decoder_t decoder, శూన్య *p, size_t s)
 {
 	CODER_CHECK(decoder);
 
-	if (decoder->fd > -1) {
-		int ret = ::read(decoder->fd, p, s);
+	ఒకవేళ (decoder->fd > -1) {
+		పూర్ణాంకం ret = ::పఠ(decoder->fd, p, s);
 
-		if (ret == s) {
-			decoder->total_decoded_size += ret;
-			return 0;
+		ఒకవేళ (ret == s) {
+			decoder->మొత్తం_decoded_కొలత += ret;
+			తిరిగి 0;
 		}
 
-		return -1;
+		తిరిగి -1;
 	}
 
-	if (decoder->buf != nullptr) {
+	ఒకవేళ (decoder->buf != శూన్యసూచిక) {
 		/* staged operations to avoid integer overflow for corrupt data */
-		if (s >= decoder->bufsize) {
+		ఒకవేళ (s >= decoder->bufsize) {
 			CODER_KILL(decoder, "buffer too small for read");
 		}
 
-		if ((decoder->bufsize - s) < decoder->bufpos) {
+		ఒకవేళ ((decoder->bufsize - s) < decoder->bufpos) {
 			CODER_KILL(decoder, "not enough data for read");
 		}
 
-		memcpy(p, (decoder->buf + decoder->bufpos), s);
+		జ్ఞాపకం_నకలు(p, (decoder->buf + decoder->bufpos), s);
 		decoder->bufpos += s;
-		decoder->total_decoded_size += s;
-		return 0;
+		decoder->మొత్తం_decoded_కొలత += s;
+		తిరిగి 0;
 	}
 
 	debug("no source");
-	return -1;
+	తిరిగి -1;
 }
 
-static int
+స్థిర పూర్ణాంకం
 read_int8(bson_decoder_t decoder, int8_t *b)
 {
-	return read_x(decoder, b, sizeof(*b));
+	తిరిగి read_x(decoder, b, పరిమాణం(*b));
 }
 
-static int
+స్థిర పూర్ణాంకం
 read_int32(bson_decoder_t decoder, int32_t *i)
 {
-	return read_x(decoder, i, sizeof(*i));
+	తిరిగి read_x(decoder, i, పరిమాణం(*i));
 }
 
-static int
+స్థిర పూర్ణాంకం
 read_int64(bson_decoder_t decoder, int64_t *i)
 {
-	return read_x(decoder, i, sizeof(*i));
+	తిరిగి read_x(decoder, i, పరిమాణం(*i));
 }
 
-static int
-read_double(bson_decoder_t decoder, double *d)
+స్థిర పూర్ణాంకం
+read_double(bson_decoder_t decoder, ద్విగుణ *d)
 {
-	return read_x(decoder, d, sizeof(*d));
+	తిరిగి read_x(decoder, d, పరిమాణం(*d));
 }
 
-int
-bson_decoder_init_file(bson_decoder_t decoder, int fd, bson_decoder_callback callback)
+పూర్ణాంకం
+bson_decoder_init_file(bson_decoder_t decoder, పూర్ణాంకం fd, bson_decoder_callback callback)
 {
 	decoder->fd = fd;
 	decoder->callback = callback;
 	decoder->nesting = 1;
-	decoder->node.type = BSON_UNDEFINED;
+	decoder->కణుపు_2.type = BSON_UNDEFINED;
 
 	// read document size
-	if (read_int32(decoder, &decoder->total_document_size)) {
+	ఒకవేళ (read_int32(decoder, &decoder->మొత్తం_document_కొలత)) {
 		CODER_KILL(decoder, "failed reading length");
 	}
 
-	debug("total document size = %" PRIi32, decoder->total_document_size);
+	debug("total document size = %" PRIi32, decoder->మొత్తం_document_కొలత);
 
 	// The length is signed and comes from the document itself
-	if (decoder->total_document_size < 0) {
+	ఒకవేళ (decoder->మొత్తం_document_కొలత < 0) {
 		CODER_KILL(decoder, "negative document length");
 	}
 
 	/* ready for decoding */
-	return 0;
+	తిరిగి 0;
 }
 
-int
-bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_decoder_callback callback)
+పూర్ణాంకం
+bson_decoder_init_buf(bson_decoder_t decoder, శూన్య *buf, గుర్తులేని bufsize, bson_decoder_callback callback)
 {
 	/* argument sanity */
-	if ((buf == nullptr) || (callback == nullptr)) {
-		return -1;
+	ఒకవేళ ((buf == శూన్యసూచిక) || (callback == శూన్యసూచిక)) {
+		తిరిగి -1;
 	}
 
 	decoder->fd = -1;
 	decoder->buf = (uint8_t *)buf;
-	decoder->dead = false;
+	decoder->dead = అబద్ధం;
 
-	if (bufsize == 0) {
+	ఒకవేళ (bufsize == 0) {
 		decoder->bufsize = *(uint32_t *)buf;
 		debug("auto-detected %zu byte object", decoder->bufsize);
 
-	} else {
+	} లేకపోతే {
 		decoder->bufsize = bufsize;
 	}
 
@@ -162,60 +162,60 @@ bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_
 	decoder->callback = callback;
 	decoder->nesting = 1;
 	decoder->pending = 0;
-	decoder->node.type = BSON_UNDEFINED;
-	decoder->total_decoded_size = 0;
+	decoder->కణుపు_2.type = BSON_UNDEFINED;
+	decoder->మొత్తం_decoded_కొలత = 0;
 
 	// read document size
-	decoder->total_document_size = 0;
+	decoder->మొత్తం_document_కొలత = 0;
 
-	if (read_int32(decoder, &decoder->total_document_size)) {
+	ఒకవేళ (read_int32(decoder, &decoder->మొత్తం_document_కొలత)) {
 		CODER_KILL(decoder, "failed reading length");
 	}
 
-	debug("total document size = %" PRIi32, decoder->total_document_size);
+	debug("total document size = %" PRIi32, decoder->మొత్తం_document_కొలత);
 
 	// A negative length would skip the size check below, which only rejects lengths above
 	// the buffer
-	if (decoder->total_document_size < 0) {
+	ఒకవేళ (decoder->మొత్తం_document_కొలత < 0) {
 		CODER_KILL(decoder, "negative document length");
 	}
 
-	if ((decoder->total_document_size > 0) && (decoder->total_document_size > (int)decoder->bufsize)) {
+	ఒకవేళ ((decoder->మొత్తం_document_కొలత > 0) && (decoder->మొత్తం_document_కొలత > (పూర్ణాంకం)decoder->bufsize)) {
 		CODER_KILL(decoder, "document length larger than buffer");
 	}
 
 	/* ready for decoding */
-	return 0;
+	తిరిగి 0;
 }
 
-int
-bson_decoder_next(bson_decoder_t decoder)
+పూర్ణాంకం
+bson_decoder_తదుపరి(bson_decoder_t decoder)
 {
 	int8_t	tbyte;
-	unsigned nlen;
+	గుర్తులేని nlen;
 
 	CODER_CHECK(decoder);
 
 	/* if the previous node was EOO, pop a nesting level */
-	if (decoder->node.type == BSON_EOO) {
-		if (decoder->nesting > 0) {
+	ఒకవేళ (decoder->కణుపు_2.type == BSON_EOO) {
+		ఒకవేళ (decoder->nesting > 0) {
 			decoder->nesting--;
 		}
 
 		/* if the nesting level is now zero, the top-level document is done */
-		if (decoder->nesting == 0) {
+		ఒకవేళ (decoder->nesting == 0) {
 			/* like kill but not an error */
 			debug("nesting is zero, document is done");
 			decoder->fd = -1;
 
 			/* return end-of-file to the caller */
-			return 0;
+			తిరిగి 0;
 		}
 	}
 
 	/* if there are unread bytes pending in the stream, discard them */
-	while (decoder->pending > 0) {
-		if (read_int8(decoder, &tbyte)) {
+	అయితే (decoder->pending > 0) {
+		ఒకవేళ (read_int8(decoder, &tbyte)) {
 			CODER_KILL(decoder, "read error discarding pending bytes");
 		}
 
@@ -223,191 +223,191 @@ bson_decoder_next(bson_decoder_t decoder)
 	}
 
 	/* get the type byte */
-	if (read_int8(decoder, &tbyte)) {
+	ఒకవేళ (read_int8(decoder, &tbyte)) {
 		CODER_KILL(decoder, "read error on type byte");
 	}
 
-	decoder->node.type = (bson_type_t)tbyte;
+	decoder->కణుపు_2.type = (bson_type_t)tbyte;
 	decoder->pending = 0;
 
-	debug("got type byte 0x%02x", decoder->node.type);
+	debug("got type byte 0x%02x", decoder->కణుపు_2.type);
 
 	/* EOO is special; it has no name/data following */
-	if (decoder->node.type == BSON_EOO) {
-		decoder->node.name[0] = '\0';
+	ఒకవేళ (decoder->కణుపు_2.type == BSON_EOO) {
+		decoder->కణుపు_2.name[0] = '\0';
 
-	} else if ((int)decoder->node.type == 0xff) { // indicates erased FLASH
-		decoder->dead = true;
-		return -ENODATA;
+	} లేకపోతే ఒకవేళ ((పూర్ణాంకం)decoder->కణుపు_2.type == 0xff) { // indicates erased FLASH
+		decoder->dead = నిజం;
+		తిరిగి -ENODATA;
 
-	} else {
+	} లేకపోతే {
 
 		/* get the node name */
 		nlen = 0;
 
-		for (;;) {
-			if (nlen >= BSON_MAXNAME) {
-				PX4_ERR("node name overflow, type:0x%02x, name:%.32s", decoder->node.type, decoder->node.name);
+		కొరకు (;;) {
+			ఒకవేళ (nlen >= BSON_MAXNAME) {
+				PX4_ERR("node name overflow, type:0x%02x, name:%.32s", decoder->కణుపు_2.type, decoder->కణుపు_2.name);
 				CODER_KILL(decoder, "node name overflow");
 			}
 
-			if (read_int8(decoder, (int8_t *)&decoder->node.name[nlen])) {
+			ఒకవేళ (read_int8(decoder, (int8_t *)&decoder->కణుపు_2.name[nlen])) {
 				CODER_KILL(decoder, "read error on node name");
 			}
 
-			if (decoder->node.name[nlen] == '\0') {
-				break;
+			ఒకవేళ (decoder->కణుపు_2.name[nlen] == '\0') {
+				ఆపు;
 			}
 
 			nlen++;
 		}
 
-		debug("got name '%s'", decoder->node.name);
+		debug("got name '%s'", decoder->కణుపు_2.name);
 
-		switch (decoder->node.type) {
-		case BSON_DOUBLE:
-			if (read_double(decoder, &decoder->node.d)) {
+		ఎంపిక (decoder->కణుపు_2.type) {
+		స్థితి BSON_DOUBLE:
+			ఒకవేళ (read_double(decoder, &decoder->కణుపు_2.d)) {
 				CODER_KILL(decoder, "read error on BSON_DOUBLE");
 			}
 
-			decoder->count_node_double++;
-			break;
+			decoder->లెక్క_కణుపు_double++;
+			ఆపు;
 
-		case BSON_STRING:
-			if (read_int32(decoder, &decoder->pending)) {
+		స్థితి BSON_STRING:
+			ఒకవేళ (read_int32(decoder, &decoder->pending)) {
 				CODER_KILL(decoder, "read error on BSON_STRING length");
 			}
 
-			decoder->count_node_string++;
-			break;
+			decoder->లెక్క_కణుపు_string++;
+			ఆపు;
 
-		case BSON_BINDATA:
-			if (read_int32(decoder, &decoder->pending)) {
+		స్థితి BSON_BINDATA:
+			ఒకవేళ (read_int32(decoder, &decoder->pending)) {
 				CODER_KILL(decoder, "read error on BSON_BINDATA size");
 			}
 
-			if (read_int8(decoder, &tbyte)) {
+			ఒకవేళ (read_int8(decoder, &tbyte)) {
 				CODER_KILL(decoder, "read error on BSON_BINDATA subtype");
 			}
 
-			decoder->node.subtype = (bson_binary_subtype_t)tbyte;
-			decoder->count_node_bindata++;
-			break;
+			decoder->కణుపు_2.subtype = (bson_ద్విమాన_subtype_t)tbyte;
+			decoder->లెక్క_కణుపు_bindata++;
+			ఆపు;
 
-		case BSON_BOOL:
-			if (read_int8(decoder, &tbyte)) {
+		స్థితి BSON_BOOL:
+			ఒకవేళ (read_int8(decoder, &tbyte)) {
 				CODER_KILL(decoder, "read error on BSON_BOOL");
 			}
 
-			decoder->node.b = (tbyte != 0);
-			decoder->count_node_bool++;
-			break;
+			decoder->కణుపు_2.b = (tbyte != 0);
+			decoder->లెక్క_కణుపు_bool++;
+			ఆపు;
 
-		case BSON_INT32:
-			if (read_int32(decoder, &decoder->node.i32)) {
+		స్థితి BSON_INT32:
+			ఒకవేళ (read_int32(decoder, &decoder->కణుపు_2.i32)) {
 				CODER_KILL(decoder, "read error on BSON_INT");
 			}
 
-			decoder->count_node_int32++;
-			break;
+			decoder->లెక్క_కణుపు_int32++;
+			ఆపు;
 
-		case BSON_INT64:
-			if (read_int64(decoder, &decoder->node.i64)) {
+		స్థితి BSON_INT64:
+			ఒకవేళ (read_int64(decoder, &decoder->కణుపు_2.i64)) {
 				CODER_KILL(decoder, "read error on BSON_INT");
 			}
 
-			decoder->count_node_int64++;
-			break;
+			decoder->లెక్క_కణుపు_int64++;
+			ఆపు;
 
-		case BSON_nullptr:
-		case BSON_UNDEFINED:
-			break;
+		స్థితి BSON_nullptr:
+		స్థితి BSON_UNDEFINED:
+			ఆపు;
 
 		/* XXX currently not supporting other types */
-		default:
+		అప్రమేయ:
 			CODER_KILL(decoder, "unsupported node type");
 		}
 	}
 
 	/* call the callback and pass its results back */
-	return decoder->callback(decoder, &decoder->node);
+	తిరిగి decoder->callback(decoder, &decoder->కణుపు_2);
 }
 
-int
-bson_decoder_copy_data(bson_decoder_t decoder, void *buf)
+పూర్ణాంకం
+bson_decoder_copy_దత్తాంశం(bson_decoder_t decoder, శూన్య *buf)
 {
-	int result;
+	పూర్ణాంకం ఫలితం;
 
 	CODER_CHECK(decoder);
 
 	/* copy data */
-	result = read_x(decoder, buf, decoder->pending);
+	ఫలితం = read_x(decoder, buf, decoder->pending);
 
-	if (result != 0) {
+	ఒకవేళ (ఫలితం != 0) {
 		CODER_KILL(decoder, "read error on copy_data");
 	}
 
 	/* pending count is discharged */
 	decoder->pending = 0;
-	return 0;
+	తిరిగి 0;
 }
 
 size_t
-bson_decoder_data_pending(bson_decoder_t decoder)
+bson_decoder_దత్తాంశం_pending(bson_decoder_t decoder)
 {
-	return decoder->pending;
+	తిరిగి decoder->pending;
 }
 
-static int
-write_x(bson_encoder_t encoder, const void *p, size_t s)
+స్థిర పూర్ణాంకం
+write_x(bson_encoder_t encoder, స్థిరరాశి శూన్య *p, size_t s)
 {
 	CODER_CHECK(encoder);
 
 	/* bson file encoder (non-buffered) */
-	if (encoder->fd > -1 && encoder->buf == nullptr) {
-		int ret = ::write(encoder->fd, p, s);
+	ఒకవేళ (encoder->fd > -1 && encoder->buf == శూన్యసూచిక) {
+		పూర్ణాంకం ret = ::లిఖ(encoder->fd, p, s);
 
-		if (ret == s) {
-			encoder->total_document_size += ret;
-			return 0;
+		ఒకవేళ (ret == s) {
+			encoder->మొత్తం_document_కొలత += ret;
+			తిరిగి 0;
 		}
 
-		return -1;
+		తిరిగి -1;
 	}
 
 	/* do we need to extend the buffer? */
-	while ((encoder->bufpos + s) > encoder->bufsize) {
+	అయితే ((encoder->bufpos + s) > encoder->bufsize) {
 
 		/* bson buffered file encoder */
-		if (encoder->fd > -1) {
+		ఒకవేళ (encoder->fd > -1) {
 			// write to disk
 			debug("writing buffer (%d) to disk", encoder->bufpos);
-			int ret = ::write(encoder->fd, encoder->buf, encoder->bufpos);
+			పూర్ణాంకం ret = ::లిఖ(encoder->fd, encoder->buf, encoder->bufpos);
 
-			if (ret == (int)encoder->bufpos) {
+			ఒకవేళ (ret == (పూర్ణాంకం)encoder->bufpos) {
 				// reset buffer to beginning and continue
 				encoder->bufpos = 0;
-				encoder->total_document_size += ret;
+				encoder->మొత్తం_document_కొలత += ret;
 
-				if ((encoder->bufpos + s) > encoder->bufsize) {
+				ఒకవేళ ((encoder->bufpos + s) > encoder->bufsize) {
 					CODER_KILL(encoder, "fixed-size buffer overflow");
 				}
 
-				break;
+				ఆపు;
 
-			} else {
+			} లేకపోతే {
 				PX4_ERR("file write error %d, errno:%d (%s)", ret, errno, strerror(errno));
 				CODER_KILL(encoder, "file write error");
 			}
 		}
 
-		if (!encoder->realloc_ok) {
+		ఒకవేళ (!encoder->realloc_ok) {
 			CODER_KILL(encoder, "fixed-size buffer overflow");
 		}
 
 		uint8_t *newbuf = (uint8_t *)realloc(encoder->buf, encoder->bufsize + BSON_BUF_INCREMENT);
 
-		if (newbuf == nullptr) {
+		ఒకవేళ (newbuf == శూన్యసూచిక) {
 			CODER_KILL(encoder, "could not grow buffer");
 		}
 
@@ -416,267 +416,267 @@ write_x(bson_encoder_t encoder, const void *p, size_t s)
 		debug("allocated %d bytes", BSON_BUF_INCREMENT);
 	}
 
-	memcpy(encoder->buf + encoder->bufpos, p, s);
+	జ్ఞాపకం_నకలు(encoder->buf + encoder->bufpos, p, s);
 	encoder->bufpos += s;
 	debug("appended %zu bytes", s);
 
-	return 0;
+	తిరిగి 0;
 }
 
-static int
+స్థిర పూర్ణాంకం
 write_int8(bson_encoder_t encoder, int8_t b)
 {
-	return write_x(encoder, &b, sizeof(b));
+	తిరిగి write_x(encoder, &b, పరిమాణం(b));
 }
 
-static int
+స్థిర పూర్ణాంకం
 write_int32(bson_encoder_t encoder, int32_t i)
 {
-	return write_x(encoder, &i, sizeof(i));
+	తిరిగి write_x(encoder, &i, పరిమాణం(i));
 }
 
-static int
+స్థిర పూర్ణాంకం
 write_int64(bson_encoder_t encoder, int64_t i)
 {
-	return write_x(encoder, &i, sizeof(i));
+	తిరిగి write_x(encoder, &i, పరిమాణం(i));
 }
 
-static int
-write_double(bson_encoder_t encoder, double d)
+స్థిర పూర్ణాంకం
+write_double(bson_encoder_t encoder, ద్విగుణ d)
 {
-	return write_x(encoder, &d, sizeof(d));
+	తిరిగి write_x(encoder, &d, పరిమాణం(d));
 }
 
-static int
-write_name(bson_encoder_t encoder, const char *name)
+స్థిర పూర్ణాంకం
+write_name(bson_encoder_t encoder, స్థిరరాశి అక్షరం *name)
 {
-	size_t len = strlen(name);
+	size_t len = అక్షరశ్రేణి_పొడవు(name);
 
-	if (len > BSON_MAXNAME) {
+	ఒకవేళ (len > BSON_MAXNAME) {
 		CODER_KILL(encoder, "node name too long");
 	}
 
-	return write_x(encoder, name, len + 1);
+	తిరిగి write_x(encoder, name, len + 1);
 }
 
-int
-bson_encoder_init_file(bson_encoder_t encoder, int fd)
+పూర్ణాంకం
+bson_encoder_init_file(bson_encoder_t encoder, పూర్ణాంకం fd)
 {
 	encoder->fd = fd;
-	encoder->buf = nullptr;
-	encoder->dead = false;
-	encoder->total_document_size = 0;
+	encoder->buf = శూన్యసూచిక;
+	encoder->dead = అబద్ధం;
+	encoder->మొత్తం_document_కొలత = 0;
 
-	if (write_int32(encoder, 0)) {
+	ఒకవేళ (write_int32(encoder, 0)) {
 		CODER_KILL(encoder, "write error on document length");
 	}
 
-	return 0;
+	తిరిగి 0;
 }
 
-int
-bson_encoder_init_buf_file(bson_encoder_t encoder, int fd, void *buf, unsigned bufsize)
+పూర్ణాంకం
+bson_encoder_init_buf_file(bson_encoder_t encoder, పూర్ణాంకం fd, శూన్య *buf, గుర్తులేని bufsize)
 {
 	encoder->fd = fd;
 	encoder->buf = (uint8_t *)buf;
 	encoder->bufpos = 0;
 	encoder->bufsize = bufsize;
-	encoder->dead = false;
-	encoder->realloc_ok = false;
-	encoder->total_document_size = 0;
+	encoder->dead = అబద్ధం;
+	encoder->realloc_ok = అబద్ధం;
+	encoder->మొత్తం_document_కొలత = 0;
 
-	if (write_int32(encoder, 0)) {
+	ఒకవేళ (write_int32(encoder, 0)) {
 		CODER_KILL(encoder, "write error on document length");
 	}
 
-	return 0;
+	తిరిగి 0;
 }
 
-int
-bson_encoder_init_buf(bson_encoder_t encoder, void *buf, unsigned bufsize)
+పూర్ణాంకం
+bson_encoder_init_buf(bson_encoder_t encoder, శూన్య *buf, గుర్తులేని bufsize)
 {
 	encoder->buf = (uint8_t *)buf;
 
-	if (encoder->buf == nullptr) {
-		encoder->realloc_ok = true;
+	ఒకవేళ (encoder->buf == శూన్యసూచిక) {
+		encoder->realloc_ok = నిజం;
 
-	} else {
+	} లేకపోతే {
 		encoder->bufsize = bufsize;
 	}
 
-	if (write_int32(encoder, 0)) {
+	ఒకవేళ (write_int32(encoder, 0)) {
 		CODER_KILL(encoder, "write error on document length");
 	}
 
-	return 0;
+	తిరిగి 0;
 }
 
-int
+పూర్ణాంకం
 bson_encoder_fini(bson_encoder_t encoder)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_EOO)) {
+	ఒకవేళ (write_int8(encoder, BSON_EOO)) {
 		CODER_KILL(encoder, "write error on document terminator");
 	}
 
-	if (encoder->fd > -1 && encoder->buf != nullptr && encoder->bufpos > 0) {
+	ఒకవేళ (encoder->fd > -1 && encoder->buf != శూన్యసూచిక && encoder->bufpos > 0) {
 		/* write final buffer to disk */
-		int ret = ::write(encoder->fd, encoder->buf, encoder->bufpos);
+		పూర్ణాంకం ret = ::లిఖ(encoder->fd, encoder->buf, encoder->bufpos);
 
-		if (ret == (int)encoder->bufpos) {
-			encoder->total_document_size += ret;
+		ఒకవేళ (ret == (పూర్ణాంకం)encoder->bufpos) {
+			encoder->మొత్తం_document_కొలత += ret;
 
-		} else {
+		} లేకపోతే {
 			CODER_KILL(encoder, "write error");
 		}
 	}
 
 	// record document size; total_document_size only counts what went to a file
-	const int32_t bson_doc_bytes = (encoder->fd > -1) ? encoder->total_document_size : (int32_t)encoder->bufpos;
-	debug("writing document size %" PRIi32, bson_doc_bytes);
+	స్థిరరాశి int32_t bson_doc_బైట్లు = (encoder->fd > -1) ? encoder->మొత్తం_document_కొలత : (int32_t)encoder->bufpos;
+	debug("writing document size %" PRIi32, bson_doc_బైట్లు);
 
-	if (encoder->fd > -1) {
-		if ((lseek(encoder->fd, 0, SEEK_SET) != 0)
-		    || (::write(encoder->fd, &bson_doc_bytes, sizeof(bson_doc_bytes)) != sizeof(bson_doc_bytes))) {
+	ఒకవేళ (encoder->fd > -1) {
+		ఒకవేళ ((lseek(encoder->fd, 0, SEEK_SET) != 0)
+		    || (::లిఖ(encoder->fd, &bson_doc_బైట్లు, పరిమాణం(bson_doc_బైట్లు)) != పరిమాణం(bson_doc_బైట్లు))) {
 
 			CODER_KILL(encoder, "write error on document length");
 		}
 
 		::fsync(encoder->fd);
 
-	} else if (encoder->buf != nullptr) {
+	} లేకపోతే ఒకవేళ (encoder->buf != శూన్యసూచిక) {
 		/* update buffer length */
-		memcpy(encoder->buf, &bson_doc_bytes, sizeof(bson_doc_bytes));
+		జ్ఞాపకం_నకలు(encoder->buf, &bson_doc_బైట్లు, పరిమాణం(bson_doc_బైట్లు));
 	}
 
-	return 0;
+	తిరిగి 0;
 }
 
-int
-bson_encoder_buf_size(bson_encoder_t encoder)
+పూర్ణాంకం
+bson_encoder_buf_కొలత(bson_encoder_t encoder)
 {
 	CODER_CHECK(encoder);
 
-	if (encoder->fd > -1) {
-		return -1;
+	ఒకవేళ (encoder->fd > -1) {
+		తిరిగి -1;
 	}
 
-	return encoder->bufpos;
+	తిరిగి encoder->bufpos;
 }
 
-void *
-bson_encoder_buf_data(bson_encoder_t encoder)
+శూన్య *
+bson_encoder_buf_దత్తాంశం(bson_encoder_t encoder)
 {
 	/* note, no CODER_CHECK here as the caller has to clean up dead buffers */
 
-	if (encoder->fd > -1) {
-		return nullptr;
+	ఒకవేళ (encoder->fd > -1) {
+		తిరిగి శూన్యసూచిక;
 	}
 
-	return encoder->buf;
+	తిరిగి encoder->buf;
 }
 
-int bson_encoder_append_bool(bson_encoder_t encoder, const char *name, bool value)
+పూర్ణాంకం bson_encoder_append_bool(bson_encoder_t encoder, స్థిరరాశి అక్షరం *name, తార్కిక value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_BOOL) ||
+	ఒకవేళ (write_int8(encoder, BSON_BOOL) ||
 	    write_name(encoder, name) ||
 	    write_int8(encoder, value ? 1 : 0)) {
 		CODER_KILL(encoder, "write error on BSON_BOOL");
 	}
 
-	return 0;
+	తిరిగి 0;
 }
 
-int
-bson_encoder_append_int32(bson_encoder_t encoder, const char *name, int32_t value)
+పూర్ణాంకం
+bson_encoder_append_int32(bson_encoder_t encoder, స్థిరరాశి అక్షరం *name, int32_t value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_INT32) ||
+	ఒకవేళ (write_int8(encoder, BSON_INT32) ||
 	    write_name(encoder, name) ||
 	    write_int32(encoder, value)) {
 		CODER_KILL(encoder, "write error on BSON_INT32");
 	}
 
-	return 0;
+	తిరిగి 0;
 }
 
-int
-bson_encoder_append_int64(bson_encoder_t encoder, const char *name, int64_t value)
+పూర్ణాంకం
+bson_encoder_append_int64(bson_encoder_t encoder, స్థిరరాశి అక్షరం *name, int64_t value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_INT64) ||
+	ఒకవేళ (write_int8(encoder, BSON_INT64) ||
 	    write_name(encoder, name) ||
 	    write_int64(encoder, value)) {
 		CODER_KILL(encoder, "write error on BSON_INT64");
 	}
 
-	return 0;
+	తిరిగి 0;
 }
 
-int
-bson_encoder_append_double(bson_encoder_t encoder, const char *name, double value)
+పూర్ణాంకం
+bson_encoder_append_double(bson_encoder_t encoder, స్థిరరాశి అక్షరం *name, ద్విగుణ value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_DOUBLE) ||
+	ఒకవేళ (write_int8(encoder, BSON_DOUBLE) ||
 	    write_name(encoder, name) ||
 	    write_double(encoder, value)) {
 		CODER_KILL(encoder, "write error on BSON_DOUBLE");
 	}
 
-	return 0;
+	తిరిగి 0;
 }
 
-int
-bson_encoder_append_string(bson_encoder_t encoder, const char *name, const char *string)
+పూర్ణాంకం
+bson_encoder_append_string(bson_encoder_t encoder, స్థిరరాశి అక్షరం *name, స్థిరరాశి అక్షరం *string)
 {
 	size_t len;
 
 	CODER_CHECK(encoder);
 
-	len = strlen(string) + 1;	/* include trailing nul */
+	len = అక్షరశ్రేణి_పొడవు(string) + 1;	/* include trailing nul */
 
-	if (write_int8(encoder, BSON_STRING) ||
+	ఒకవేళ (write_int8(encoder, BSON_STRING) ||
 	    write_name(encoder, name) ||
 	    write_int32(encoder, len) ||
 	    write_x(encoder, string, len)) {
 		CODER_KILL(encoder, "write error on BSON_STRING");
 	}
 
-	return 0;
+	తిరిగి 0;
 }
 
-int
-bson_encoder_append_binary(bson_encoder_t encoder, const char *name, bson_binary_subtype_t subtype, size_t size,
-			   const void *data)
+పూర్ణాంకం
+bson_encoder_append_ద్విమాన(bson_encoder_t encoder, స్థిరరాశి అక్షరం *name, bson_ద్విమాన_subtype_t subtype, size_t కొలత,
+			   స్థిరరాశి శూన్య *దత్తాంశం)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_BINDATA) ||
+	ఒకవేళ (write_int8(encoder, BSON_BINDATA) ||
 	    write_name(encoder, name) ||
-	    write_int32(encoder, size) ||
+	    write_int32(encoder, కొలత) ||
 	    write_int8(encoder, subtype) ||
-	    write_x(encoder, data, size)) {
+	    write_x(encoder, దత్తాంశం, కొలత)) {
 		CODER_KILL(encoder, "write error on BSON_BINDATA");
 	}
 
-	return 0;
+	తిరిగి 0;
 }
 
-int
-bson_encoder_append_null(bson_encoder_t encoder, const char *name)
+పూర్ణాంకం
+bson_encoder_append_null(bson_encoder_t encoder, స్థిరరాశి అక్షరం *name)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_nullptr) ||
+	ఒకవేళ (write_int8(encoder, BSON_nullptr) ||
 	    write_name(encoder, name)) {
 		CODER_KILL(encoder, "write error on BSON_nullptr");
 	}
 
-	return 0;
+	తిరిగి 0;
 }

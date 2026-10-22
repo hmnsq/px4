@@ -36,31 +36,31 @@
  *
  * NuttX Character device functions
  */
-#include <errno.h>
+#అన్తర్భావ <errno.h>
 
-#include "cdev_platform.hpp"
-#include "../CDev.hpp"
+#అన్తర్భావ "cdev_platform.hpp"
+#అన్తర్భావ "../CDev.hpp"
 
-#include <sys/ioctl.h>
+#అన్తర్భావ <sys/ioctl.h>
 
-#ifdef CONFIG_DISABLE_POLL
+#నిర్వచితమైతే CONFIG_DISABLE_POLL
 # error This driver is not compatible with CONFIG_DISABLE_POLL
-#endif
+#అయితే_ముగింపు
 
-namespace cdev
+నామాకాశ cdev
 {
 
 /*
  * The standard NuttX operation dispatch table can't call C++ member functions
  * directly, so we have to bounce them through this dispatch table.
  */
-static int	cdev_open(file_t *filp);
-static int	cdev_close(file_t *filp);
-static ssize_t	cdev_read(file_t *filp, char *buffer, size_t buflen);
-static ssize_t	cdev_write(file_t *filp, const char *buffer, size_t buflen);
-static off_t	cdev_seek(file_t *filp, off_t offset, int whence);
-static int	cdev_ioctl(file_t *filp, int cmd, unsigned long arg);
-static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
+స్థిర పూర్ణాంకం	cdev_open(file_t *filp);
+స్థిర పూర్ణాంకం	cdev_close(file_t *filp);
+స్థిర ssize_t	cdev_read(file_t *filp, అక్షరం *బఫరు_2, size_t buflen);
+స్థిర ssize_t	cdev_write(file_t *filp, స్థిరరాశి అక్షరం *బఫరు_2, size_t buflen);
+స్థిర off_t	cdev_seek(file_t *filp, off_t స్థానభ్రంశం, పూర్ణాంకం whence);
+స్థిర పూర్ణాంకం	cdev_ioctl(file_t *filp, పూర్ణాంకం cmd, గుర్తులేని దీర్ఘ arg);
+స్థిర పూర్ణాంకం	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, తార్కిక అమరిక);
 
 /**
  * Character device indirection table.
@@ -71,99 +71,99 @@ static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
  * Note that we use the GNU extension syntax here because we don't get designated
  * initialisers in gcc 4.6.
  */
-static const struct file_operations g_fops = {
+స్థిర స్థిరరాశి నిర్మాణం file_operations g_fops = {
 open	: cdev_open,
 close	: cdev_close,
-read	: cdev_read,
-write	: cdev_write,
+పఠ	: cdev_read,
+లిఖ	: cdev_write,
 seek	: cdev_seek,
 ioctl	: cdev_ioctl,
 poll	: cdev_poll,
-#ifndef CONFIG_DISABLE_PSEUDOFS_OPERATIONS
-unlink	: nullptr
-#endif
+#నిర్వచితం_కాకపోతే CONFIG_DISABLE_PSEUDOFS_OPERATIONS
+unlink	: శూన్యసూచిక
+#అయితే_ముగింపు
 };
 
-const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { return g_fops; }
+స్థిరరాశి cdev::px4_file_operations_t &cdev::CDev::fops_ref() { తిరిగి g_fops; }
 
-static int
+స్థిర పూర్ణాంకం
 cdev_open(file_t *filp)
 {
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_వ్యక్తిగత);
 
-	return cdev->open(filp);
+	తిరిగి cdev->open(filp);
 }
 
-static int
+స్థిర పూర్ణాంకం
 cdev_close(file_t *filp)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ఒకవేళ ((filp->f_inode->i_crefs) == 0) {
+		తిరిగి -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_వ్యక్తిగత);
 
-	return cdev->close(filp);
+	తిరిగి cdev->close(filp);
 }
 
-static ssize_t
-cdev_read(file_t *filp, char *buffer, size_t buflen)
+స్థిర ssize_t
+cdev_read(file_t *filp, అక్షరం *బఫరు_2, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ఒకవేళ ((filp->f_inode->i_crefs) == 0) {
+		తిరిగి -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_వ్యక్తిగత);
 
-	return cdev->read(filp, buffer, buflen);
+	తిరిగి cdev->పఠ(filp, బఫరు_2, buflen);
 }
 
-static ssize_t
-cdev_write(file_t *filp, const char *buffer, size_t buflen)
+స్థిర ssize_t
+cdev_write(file_t *filp, స్థిరరాశి అక్షరం *బఫరు_2, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ఒకవేళ ((filp->f_inode->i_crefs) == 0) {
+		తిరిగి -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_వ్యక్తిగత);
 
-	return cdev->write(filp, buffer, buflen);
+	తిరిగి cdev->లిఖ(filp, బఫరు_2, buflen);
 }
 
-static off_t
-cdev_seek(file_t *filp, off_t offset, int whence)
+స్థిర off_t
+cdev_seek(file_t *filp, off_t స్థానభ్రంశం, పూర్ణాంకం whence)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ఒకవేళ ((filp->f_inode->i_crefs) == 0) {
+		తిరిగి -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_వ్యక్తిగత);
 
-	return cdev->seek(filp, offset, whence);
+	తిరిగి cdev->seek(filp, స్థానభ్రంశం, whence);
 }
 
-static int
-cdev_ioctl(file_t *filp, int cmd, unsigned long arg)
+స్థిర పూర్ణాంకం
+cdev_ioctl(file_t *filp, పూర్ణాంకం cmd, గుర్తులేని దీర్ఘ arg)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ఒకవేళ ((filp->f_inode->i_crefs) == 0) {
+		తిరిగి -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_వ్యక్తిగత);
 
-	return cdev->ioctl(filp, cmd, arg);
+	తిరిగి cdev->ioctl(filp, cmd, arg);
 }
 
-static int
-cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup)
+స్థిర పూర్ణాంకం
+cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, తార్కిక అమరిక)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ఒకవేళ ((filp->f_inode->i_crefs) == 0) {
+		తిరిగి -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_వ్యక్తిగత);
 
-	return cdev->poll(filp, fds, setup);
+	తిరిగి cdev->poll(filp, fds, అమరిక);
 }
 
 } // namespace cdev

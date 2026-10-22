@@ -6,109 +6,109 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#సూచన once
 
-#include "Vector.hpp"
+#అన్తర్భావ "Vector.hpp"
 
-namespace matrix
+నామాకాశ మాతృక
 {
 
-template <typename Type>
-class Dcm;
+మూస <రకం_పేరు Type>
+తరగతి Dcm;
 
-template<typename Type>
-class Vector3 : public Vector<Type, 3>
+మూస<రకం_పేరు Type>
+తరగతి Vector3 : బహిరంగ సదిశ<Type, 3>
 {
-public:
+బహిరంగ:
 
-	using Matrix31 = Matrix<Type, 3, 1>;
+	ఉపయోగించి Matrix31 = మాతృక_2<Type, 3, 1>;
 
-	Vector3() = default;
+	Vector3() = అప్రమేయ;
 
-	Vector3(const Matrix31 &other) :
-		Vector<Type, 3>(other)
+	Vector3(స్థిరరాశి Matrix31 &other) :
+		సదిశ<Type, 3>(other)
 	{
 	}
 
-	explicit Vector3(const Type data_[3]) :
-		Vector<Type, 3>(data_)
+	స్పష్టమైన Vector3(స్థిరరాశి Type దత్తాంశం_2[3]) :
+		సదిశ<Type, 3>(దత్తాంశం_2)
 	{
 	}
 
 	Vector3(Type x, Type y, Type z)
 	{
-		Vector3 &v(*this);
+		Vector3 &v(*ఇది);
 		v(0) = x;
 		v(1) = y;
 		v(2) = z;
 	}
 
-	using base = Vector<Type, 3>;
-	using base::base;
+	ఉపయోగించి base = సదిశ<Type, 3>;
+	ఉపయోగించి base::base;
 
-	Vector3 cross(const Matrix31 &b) const
+	Vector3 cross(స్థిరరాశి Matrix31 &b) స్థిరరాశి
 	{
-		const Vector3 &a(*this);
-		return {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
+		స్థిరరాశి Vector3 &a(*ఇది);
+		తిరిగి {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
 	}
 
 	/**
 	 * Override matrix ops so Vector3 type is returned
 	 */
 
-	inline Vector3 operator+(Vector3 other) const
+	అంతఃవరుస Vector3 క్రియాకారకం+(Vector3 other) స్థిరరాశి
 	{
-		return Matrix31::operator+(other);
+		తిరిగి Matrix31::క్రియాకారకం+(other);
 	}
 
-	inline Vector3 operator+(Type scalar) const
+	అంతఃవరుస Vector3 క్రియాకారకం+(Type scalar) స్థిరరాశి
 	{
-		return Matrix31::operator+(scalar);
+		తిరిగి Matrix31::క్రియాకారకం+(scalar);
 	}
 
-	inline Vector3 operator-(Vector3 other) const
+	అంతఃవరుస Vector3 క్రియాకారకం-(Vector3 other) స్థిరరాశి
 	{
-		return Matrix31::operator-(other);
+		తిరిగి Matrix31::క్రియాకారకం-(other);
 	}
 
-	inline Vector3 operator-(Type scalar) const
+	అంతఃవరుస Vector3 క్రియాకారకం-(Type scalar) స్థిరరాశి
 	{
-		return Matrix31::operator-(scalar);
+		తిరిగి Matrix31::క్రియాకారకం-(scalar);
 	}
 
-	inline Vector3 operator-() const
+	అంతఃవరుస Vector3 క్రియాకారకం-() స్థిరరాశి
 	{
-		return Matrix31::operator-();
+		తిరిగి Matrix31::క్రియాకారకం-();
 	}
 
-	inline Vector3 operator*(Type scalar) const
+	అంతఃవరుస Vector3 క్రియాకారకం*(Type scalar) స్థిరరాశి
 	{
-		return Matrix31::operator*(scalar);
+		తిరిగి Matrix31::క్రియాకారకం*(scalar);
 	}
 
-	inline Type operator*(Vector3 b) const
+	అంతఃవరుస Type క్రియాకారకం*(Vector3 b) స్థిరరాశి
 	{
-		return Vector<Type, 3>::operator*(b);
+		తిరిగి సదిశ<Type, 3>::క్రియాకారకం*(b);
 	}
 
-	inline Vector3 operator%(const Matrix31 &b) const
+	అంతఃవరుస Vector3 క్రియాకారకం%(స్థిరరాశి Matrix31 &b) స్థిరరాశి
 	{
-		return (*this).cross(b);
+		తిరిగి (*ఇది).cross(b);
 	}
 
-	ConstSlice<Type, 2, 1, 3, 1> xy() const
+	Const_ముక్క<Type, 2, 1, 3, 1> xy() స్థిరరాశి
 	{
-		return {0, 0, this};
+		తిరిగి {0, 0, ఇది};
 	}
 
-	Slice<Type, 2, 1, 3, 1> xy()
+	ముక్క_2<Type, 2, 1, 3, 1> xy()
 	{
-		return {0, 0, this};
+		తిరిగి {0, 0, ఇది};
 	}
 
-	Dcm<Type> hat() const      // inverse to Dcm.vee() operation
+	Dcm<Type> hat() స్థిరరాశి      // inverse to Dcm.vee() operation
 	{
-		const Vector3 &v(*this);
+		స్థిరరాశి Vector3 &v(*ఇది);
 		Dcm<Type> A;
 		A(0, 0) = 0;
 		A(0, 1) = -v(2);
@@ -119,12 +119,12 @@ public:
 		A(2, 0) = -v(1);
 		A(2, 1) = v(0);
 		A(2, 2) = 0;
-		return A;
+		తిరిగి A;
 	}
 
 };
 
-using Vector3f = Vector3<float>;
-using Vector3d = Vector3<double>;
+ఉపయోగించి Vector3f = Vector3<దశాంశం>;
+ఉపయోగించి Vector3d = Vector3<ద్విగుణ>;
 
 } // namespace matrix

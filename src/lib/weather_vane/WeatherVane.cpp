@@ -37,58 +37,58 @@
  *
  */
 
-#include "WeatherVane.hpp"
-#include <mathlib/mathlib.h>
+#అన్తర్భావ "WeatherVane.hpp"
+#అన్తర్భావ <mathlib/mathlib.h>
 
 
-WeatherVane::WeatherVane(ModuleParams *parent) :
-	ModuleParams(parent)
+WeatherVane::WeatherVane(ModuleParams *మాతృ) :
+	ModuleParams(మాతృ)
 { }
 
-void WeatherVane::update()
+శూన్య WeatherVane::update()
 {
-	vehicle_control_mode_s vehicle_control_mode;
+	vehicle_control_బహుళకం_s vehicle_control_బహుళకం;
 
-	if (_vehicle_control_mode_sub.update(&vehicle_control_mode)) {
-		_flag_control_manual_enabled = vehicle_control_mode.flag_control_manual_enabled;
-		_flag_control_position_enabled = vehicle_control_mode.flag_control_position_enabled;
+	ఒకవేళ (vehicle_control_బహుళకం_sub.update(&vehicle_control_బహుళకం)) {
+		_flag_control_manual_enabled = vehicle_control_బహుళకం.flag_control_manual_enabled;
+		_flag_control_position_enabled = vehicle_control_బహుళకం.flag_control_position_enabled;
 	}
 
 	// Weathervane needs to be enabled by parameter
 	// in manual we use weathervane just if position is controlled as well
 	// in mission we use weathervane except for when navigator disables it
-	_is_active = _param_wv_en.get()
+	is_చురుకైన_2 = _param_wv_en.get()
 		     && ((_flag_control_manual_enabled && _flag_control_position_enabled)
 			 || (!_flag_control_manual_enabled && !_navigator_force_disabled));
 }
 
-float WeatherVane::getWeathervaneYawrate()
+దశాంశం WeatherVane::getWeathervaneYawrate()
 {
 	// direction of desired body z axis represented in earth frame
 	vehicle_attitude_setpoint_s vehicle_attitude_setpoint;
 	_vehicle_attitude_setpoint_sub.copy(&vehicle_attitude_setpoint);
-	matrix::Vector3f body_z_sp(matrix::Quatf(vehicle_attitude_setpoint.q_d).dcm_z()); // attitude setpoint body z axis
+	మాతృక::Vector3f body_z_sp(మాతృక::Quatf(vehicle_attitude_setpoint.q_d).dcm_z()); // attitude setpoint body z axis
 
 	// rotate desired body z axis into new frame which is rotated in z by the current
 	// heading of the vehicle. we refer to this as the heading frame.
 	vehicle_local_position_s vehicle_local_position{};
 	_vehicle_local_position_sub.copy(&vehicle_local_position);
-	matrix::Dcmf R_yaw = matrix::Eulerf(0.0f, 0.0f, -vehicle_local_position.heading);
+	మాతృక::Dcmf R_yaw = మాతృక::Eulerf(0.0f, 0.0f, -vehicle_local_position.heading);
 	body_z_sp = R_yaw * body_z_sp;
 	body_z_sp.normalize();
 
-	float roll_sp = -asinf(body_z_sp(1));
+	దశాంశం roll_sp = -asinf(body_z_sp(1));
 
-	float roll_exceeding_treshold = 0.0f;
-	float min_roll_rad = math::radians(_param_wv_roll_min.get());
+	దశాంశం roll_exceeding_treshold = 0.0f;
+	దశాంశం min_roll_rad = math::radians(_param_wv_roll_min.get());
 
-	if (roll_sp > min_roll_rad) {
+	ఒకవేళ (roll_sp > min_roll_rad) {
 		roll_exceeding_treshold = roll_sp - min_roll_rad;
 
-	} else if (roll_sp < -min_roll_rad) {
+	} లేకపోతే ఒకవేళ (roll_sp < -min_roll_rad) {
 		roll_exceeding_treshold = roll_sp + min_roll_rad;
 	}
 
-	return math::constrain(roll_exceeding_treshold * _param_wv_gain.get(), -math::radians(_param_wv_yrate_max.get()),
+	తిరిగి math::constrain(roll_exceeding_treshold * _param_wv_gain.get(), -math::radians(_param_wv_yrate_max.get()),
 			       math::radians(_param_wv_yrate_max.get()));
 }

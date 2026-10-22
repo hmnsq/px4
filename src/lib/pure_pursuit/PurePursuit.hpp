@@ -72,15 +72,15 @@
  * Output: Calculates the intersection points as described above and returns the bearing towards the point that is closer to the current waypoint.
  */
 
-#pragma once
-#include <matrix/math.hpp>
-#include <mathlib/mathlib.h>
-#include <px4_platform_common/module_params.h>
-#include <uORB/topics/pure_pursuit_status.h>
+#సూచన once
+#అన్తర్భావ <matrix/math.hpp>
+#అన్తర్భావ <mathlib/mathlib.h>
+#అన్తర్భావ <px4_platform_common/module_params.h>
+#అన్తర్భావ <uORB/topics/pure_pursuit_status.h>
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-namespace PurePursuit
+నామాకాశ శుద్ధ_Pursuit
 {
 /**
  * @brief Return bearing towards the intersection point between a circle with a radius of
@@ -99,7 +99,7 @@ namespace PurePursuit
  * @param vehicle_speed Vehicle speed [m/s].
  * @return Target bearing [rad]
  */
-float calcTargetBearing(pure_pursuit_status_s &pure_pursuit_status, float lookahead_gain, float lookahead_max,
-			float lookahead_min, const Vector2f &curr_wp_ned, const Vector2f &prev_wp_ned, const Vector2f &curr_pos_ned,
-			float vehicle_speed);
+దశాంశం calc_లక్ష్యం_Bearing(శుద్ధ_pursuit_స్థితి_s &శుద్ధ_pursuit_స్థితి, దశాంశం lookahead_gain, దశాంశం lookahead_max,
+			దశాంశం lookahead_min, స్థిరరాశి Vector2f &curr_wp_ned, స్థిరరాశి Vector2f &prev_wp_ned, స్థిరరాశి Vector2f &curr_pos_ned,
+			దశాంశం vehicle_వేగం);
 }

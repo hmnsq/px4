@@ -37,47 +37,47 @@
  * Vector rotation library
  */
 
-#include "rotation.h"
+#అన్తర్భావ "rotation.h"
 
-__EXPORT matrix::Dcmf
-get_rot_matrix(enum Rotation rot)
+__EXPORT మాతృక::Dcmf
+get_rot_మాతృక(గణన Rotation rot)
 {
-	return matrix::Dcmf{matrix::Eulerf{
-			math::radians((float)rot_lookup[rot].roll),
-			math::radians((float)rot_lookup[rot].pitch),
-			math::radians((float)rot_lookup[rot].yaw)}};
+	తిరిగి మాతృక::Dcmf{మాతృక::Eulerf{
+			math::radians((దశాంశం)rot_lookup[rot].roll),
+			math::radians((దశాంశం)rot_lookup[rot].pitch),
+			math::radians((దశాంశం)rot_lookup[rot].yaw)}};
 }
 
-__EXPORT matrix::Quatf
-get_rot_quaternion(enum Rotation rot)
+__EXPORT మాతృక::Quatf
+get_rot_quaternion(గణన Rotation rot)
 {
-	return matrix::Quatf{matrix::Eulerf{
-			math::radians((float)rot_lookup[rot].roll),
-			math::radians((float)rot_lookup[rot].pitch),
-			math::radians((float)rot_lookup[rot].yaw)}};
+	తిరిగి మాతృక::Quatf{మాతృక::Eulerf{
+			math::radians((దశాంశం)rot_lookup[rot].roll),
+			math::radians((దశాంశం)rot_lookup[rot].pitch),
+			math::radians((దశాంశం)rot_lookup[rot].yaw)}};
 }
 
-__EXPORT void
-rotate_3i(enum Rotation rot, int16_t &x, int16_t &y, int16_t &z)
+__EXPORT శూన్య
+rotate_3i(గణన Rotation rot, int16_t &x, int16_t &y, int16_t &z)
 {
-	if (!rotate_3(rot, x, y, z)) {
+	ఒకవేళ (!rotate_3(rot, x, y, z)) {
 		// otherwise use full rotation matrix for valid rotations
-		if (rot < ROTATION_MAX) {
-			const matrix::Vector3f r{get_rot_matrix(rot) *matrix::Vector3f{(float)x, (float)y, (float)z}};
-			x = math::constrain(roundf(r(0)), (float)INT16_MIN, (float)INT16_MAX);
-			y = math::constrain(roundf(r(1)), (float)INT16_MIN, (float)INT16_MAX);
-			z = math::constrain(roundf(r(2)), (float)INT16_MIN, (float)INT16_MAX);
+		ఒకవేళ (rot < ROTATION_MAX) {
+			స్థిరరాశి మాతృక::Vector3f r{get_rot_మాతృక(rot) *మాతృక::Vector3f{(దశాంశం)x, (దశాంశం)y, (దశాంశం)z}};
+			x = math::constrain(roundf(r(0)), (దశాంశం)INT16_MIN, (దశాంశం)INT16_MAX);
+			y = math::constrain(roundf(r(1)), (దశాంశం)INT16_MIN, (దశాంశం)INT16_MAX);
+			z = math::constrain(roundf(r(2)), (దశాంశం)INT16_MIN, (దశాంశం)INT16_MAX);
 		}
 	}
 }
 
-__EXPORT void
-rotate_3f(enum Rotation rot, float &x, float &y, float &z)
+__EXPORT శూన్య
+rotate_3f(గణన Rotation rot, దశాంశం &x, దశాంశం &y, దశాంశం &z)
 {
-	if (!rotate_3(rot, x, y, z)) {
+	ఒకవేళ (!rotate_3(rot, x, y, z)) {
 		// otherwise use full rotation matrix for valid rotations
-		if (rot < ROTATION_MAX) {
-			const matrix::Vector3f r{get_rot_matrix(rot) *matrix::Vector3f{x, y, z}};
+		ఒకవేళ (rot < ROTATION_MAX) {
+			స్థిరరాశి మాతృక::Vector3f r{get_rot_మాతృక(rot) *మాతృక::Vector3f{x, y, z}};
 			x = r(0);
 			y = r(1);
 			z = r(2);

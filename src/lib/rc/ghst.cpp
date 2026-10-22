@@ -40,71 +40,71 @@
  * @author Juraj Ciberlin <jciberlin1@gmail.com>
  */
 
-#if 0 // enable non-verbose debugging
-#define GHST_DEBUG PX4_WARN
-#else
-#define GHST_DEBUG(...)
-#endif
+#ఒకవేళ 0 // enable non-verbose debugging
+#నిర్వచించు GHST_DEBUG PX4_WARN
+#లేకపోతే
+#నిర్వచించు GHST_DEBUG(...)
+#అయితే_ముగింపు
 
-#if 0 // verbose debugging. Careful when enabling: it leads to too much output, causing dropped bytes
-#define GHST_VERBOSE PX4_WARN
-#else
-#define GHST_VERBOSE(...)
-#endif
+#ఒకవేళ 0 // verbose debugging. Careful when enabling: it leads to too much output, causing dropped bytes
+#నిర్వచించు GHST_VERBOSE PX4_WARN
+#లేకపోతే
+#నిర్వచించు GHST_VERBOSE(...)
+#అయితే_ముగింపు
 
-#include <drivers/drv_hrt.h>
-#include <termios.h>
-#include <string.h>
-#include <unistd.h>
-#include <math.h>
+#అన్తర్భావ <drivers/drv_hrt.h>
+#అన్తర్భావ <termios.h>
+#అన్తర్భావ <string.h>
+#అన్తర్భావ <unistd.h>
+#అన్తర్భావ <math.h>
 
 // TODO: include RSSI dBm to percentage conversion for ghost receiver
-#include "spektrum_rssi.h"
+#అన్తర్భావ "spektrum_rssi.h"
 
-#include "ghst.hpp"
-#include "common_rc.h"
+#అన్తర్భావ "ghst.hpp"
+#అన్తర్భావ "common_rc.h"
 
-#define MIN(a,b) (((a)<(b))?(a):(b))
+#నిర్వచించు MIN(a,b) (((a)<(b))?(a):(b))
 
-#define GHST_FRAME_PAYLOAD_SIZE_TELEMETRY	(10U)
-#define GHST_FRAME_CRC_SIZE			(1U)
-#define GHST_FRAME_TYPE_SIZE			(1U)
-#define GHST_TYPE_DATA_CRC_SIZE			(12U)
-#define GHST_ADDR_FC				(130U)
-#define GHST_MAX_NUM_CHANNELS			(16)
+#నిర్వచించు GHST_చట్రం_PAYLOAD_కొలత_TELEMETRY	(10U)
+#నిర్వచించు GHST_చట్రం_చక్రీయ_తనిఖీ_కొలత			(1U)
+#నిర్వచించు GHST_చట్రం_TYPE_కొలత			(1U)
+#నిర్వచించు GHST_TYPE_దత్తాంశం_చక్రీయ_తనిఖీ_కొలత			(12U)
+#నిర్వచించు GHST_ADDR_FC				(130U)
+#నిర్వచించు GHST_MAX_అంకె_CHANNELS			(16)
 
-enum class ghst_parser_state_t : uint8_t {
+గణన తరగతి ghst_parser_state_t : uint8_t {
 	unsynced = 0U,
 	synced
 };
 
 // only RSSI frame contains value of RSSI, if it is not received, send last received RSSI/LQ
-static ghstLinkStatistics_t last_link_stats = { .rssi_pct = -1, .rssi_dbm = NAN, .link_quality = 0 };
+స్థిర ghstLinkStatistics_t చివరి_link_stats = { .rssi_pct = -1, .rssi_dbm = NAN, .link_quality = 0 };
 
-static ghst_frame_t &ghst_frame = rc_decode_buf.ghst_frame;
-static uint32_t current_frame_position = 0U;
-static ghst_parser_state_t parser_state = ghst_parser_state_t::unsynced;
+స్థిర ghst_చట్రం_t &ghst_చట్రం = rc_decode_buf.ghst_చట్రం;
+స్థిర uint32_t current_చట్రం_position = 0U;
+స్థిర ghst_parser_state_t parser_state = ghst_parser_state_t::unsynced;
 
-static uint16_t prev_rc_vals[GHST_MAX_NUM_CHANNELS];
+స్థిర uint16_t prev_rc_vals[GHST_MAX_అంకె_CHANNELS];
 
 /**
  * parse the current ghst_frame buffer
  */
-static bool ghst_parse_buffer(uint16_t *values, ghstLinkStatistics_t *link_stats, uint16_t *num_values,
+స్థిర తార్కిక ghst_parse_బఫరు(uint16_t *విలువలు_2, ghstLinkStatistics_t *link_stats, uint16_t *అంకె_విలువలు,
 			      uint16_t max_channels);
 
-int ghst_config(int uart_fd)
+పూర్ణాంకం ghst_config(పూర్ణాంకం uart_fd)
 {
-	struct termios t;
-	int ret_val;
+	నిర్మాణం termios t;
+	పూర్ణాంకం ret_val;
 
 	// no parity, one stop bit
 	tcgetattr(uart_fd, &t);
 	cfsetspeed(&t, GHST_BAUDRATE);
 	t.c_cflag &= ~(CSTOPB | PARENB);
-	memset(prev_rc_vals, static_cast<int>(UINT16_MAX), sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+	memset(prev_rc_vals, static_cast<పూర్ణాంకం>(UINT16_MAX), పరిమాణం(uint16_t) * GHST_MAX_అంకె_CHANNELS);
 	ret_val = tcsetattr(uart_fd, TCSANOW, &t);
-	return ret_val;
+	తిరిగి ret_val;
 }
 
 /**
@@ -112,62 +112,62 @@ int ghst_config(int uart_fd)
  * @param chan_value channel value in [172, 1811]
  * @return PWM channel value in [1000, 2000]
  */
-static uint16_t convert_channel_value(unsigned chan_value);
+స్థిర uint16_t convert_channel_విలువ(గుర్తులేని chan_విలువ);
 
 
-bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *values,
-		ghstLinkStatistics_t *link_stats, uint16_t *num_values, uint16_t max_channels)
+తార్కిక ghst_parse(స్థిరరాశి uint64_t now, స్థిరరాశి uint8_t *చట్రం, గుర్తులేని len, uint16_t *విలువలు_2,
+		ghstLinkStatistics_t *link_stats, uint16_t *అంకె_విలువలు, uint16_t max_channels)
 {
-	bool success = false;
-	uint8_t *ghst_frame_ptr = (uint8_t *)&ghst_frame;
+	తార్కిక success = అబద్ధం;
+	uint8_t *ghst_చట్రం_ptr = (uint8_t *)&ghst_చట్రం;
 
-	memcpy(values, prev_rc_vals, sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+	జ్ఞాపకం_నకలు(విలువలు_2, prev_rc_vals, పరిమాణం(uint16_t) * GHST_MAX_అంకె_CHANNELS);
 
-	while (len > 0U) {
+	అయితే (len > 0U) {
 
 		// fill in the ghst_buffer, as much as we can
-		const uint32_t current_len = MIN(len, sizeof(ghst_frame_t) - current_frame_position);
-		memcpy(ghst_frame_ptr + current_frame_position, frame, current_len);
-		current_frame_position += current_len;
+		స్థిరరాశి uint32_t current_len = MIN(len, పరిమాణం(ghst_చట్రం_t) - current_చట్రం_position);
+		జ్ఞాపకం_నకలు(ghst_చట్రం_ptr + current_చట్రం_position, చట్రం, current_len);
+		current_చట్రం_position += current_len;
 
 		// protection to guarantee parsing progress
-		if (current_len == 0U) {
+		ఒకవేళ (current_len == 0U) {
 			GHST_DEBUG("========== parser bug: no progress (%u) ===========", len);
 
-			for (uint32_t i = 0U; i < current_frame_position; ++i) {
-				GHST_DEBUG("ghst_frame_ptr[%u]: 0x%x", i, ghst_frame_ptr[i]);
+			కొరకు (uint32_t i = 0U; i < current_చట్రం_position; ++i) {
+				GHST_DEBUG("ghst_frame_ptr[%u]: 0x%x", i, ghst_చట్రం_ptr[i]);
 			}
 
 			// reset the parser
-			current_frame_position = 0U;
+			current_చట్రం_position = 0U;
 			parser_state = ghst_parser_state_t::unsynced;
-			success = false;
+			success = అబద్ధం;
 
-		} else {
+		} లేకపోతే {
 			len -= current_len;
-			frame += current_len;
+			చట్రం += current_len;
 
-			if (ghst_parse_buffer(values, link_stats, num_values, max_channels)) {
-				success = true;
+			ఒకవేళ (ghst_parse_బఫరు(విలువలు_2, link_stats, అంకె_విలువలు, max_channels)) {
+				success = నిజం;
 			}
 		}
 	}
 
-	return success;
+	తిరిగి success;
 }
 
-uint8_t ghst_frame_CRC(const ghst_frame_t &frame)
+uint8_t ghst_చట్రం_చక్రీయ_తనిఖీ(స్థిరరాశి ghst_చట్రం_t &చట్రం)
 {
-	uint8_t crc = crc8_dvb_s2(0U, frame.type);
+	uint8_t చక్రీయ_తనిఖీ = crc8_dvb_s2(0U, చట్రం.type);
 
-	for (uint32_t i = 0U; i < frame.header.length - GHST_FRAME_CRC_SIZE - GHST_FRAME_TYPE_SIZE; ++i) {
-		crc = crc8_dvb_s2(crc, frame.payload[i]);
+	కొరకు (uint32_t i = 0U; i < చట్రం.శీర్షిక.నిడివి - GHST_చట్రం_చక్రీయ_తనిఖీ_కొలత - GHST_చట్రం_TYPE_కొలత; ++i) {
+		చక్రీయ_తనిఖీ = crc8_dvb_s2(చక్రీయ_తనిఖీ, చట్రం.payload[i]);
 	}
 
-	return crc;
+	తిరిగి చక్రీయ_తనిఖీ;
 }
 
-static uint16_t convert_channel_value(unsigned int chan_value)
+స్థిర uint16_t convert_channel_విలువ(గుర్తులేని పూర్ణాంకం chan_విలువ)
 {
 	/*
 	 *       RC     PWM
@@ -175,264 +175,264 @@ static uint16_t convert_channel_value(unsigned int chan_value)
 	 * mid  992 -> 1500us
 	 * max 1811 -> 2012us
 	 */
-	static constexpr float scale = (2012.0F - 988.0F) / (1811.0F - 172.0F);
-	static constexpr float offset = 988.0F - (172.0F * scale);
-	float scaled_chan_value = scale * static_cast<float>(chan_value);
-	float scaled_chan_value_with_offset = scaled_chan_value + offset;
-	uint16_t converted_chan_value = static_cast<uint16_t>(scaled_chan_value_with_offset);
+	స్థిర constexpr దశాంశం scale = (2012.0F - 988.0F) / (1811.0F - 172.0F);
+	స్థిర constexpr దశాంశం స్థానభ్రంశం = 988.0F - (172.0F * scale);
+	దశాంశం scaled_chan_విలువ = scale * static_cast<దశాంశం>(chan_విలువ);
+	దశాంశం scaled_chan_విలువ_with_స్థానభ్రంశం = scaled_chan_విలువ + స్థానభ్రంశం;
+	uint16_t converted_chan_విలువ = static_cast<uint16_t>(scaled_chan_విలువ_with_స్థానభ్రంశం);
 
-	return converted_chan_value;
+	తిరిగి converted_chan_విలువ;
 }
 
-static bool ghst_parse_buffer(uint16_t *values, ghstLinkStatistics_t *link_stats, uint16_t *num_values,
+స్థిర తార్కిక ghst_parse_బఫరు(uint16_t *విలువలు_2, ghstLinkStatistics_t *link_stats, uint16_t *అంకె_విలువలు,
 			      uint16_t max_channels)
 {
-	uint8_t *ghst_frame_ptr = (uint8_t *)&ghst_frame;
+	uint8_t *ghst_చట్రం_ptr = (uint8_t *)&ghst_చట్రం;
 
-	if (parser_state == ghst_parser_state_t::unsynced) {
+	ఒకవేళ (parser_state == ghst_parser_state_t::unsynced) {
 		// there is no sync yet, try to find an RC packet by searching for a matching frame length and type
-		for (uint32_t i = 1U; i < current_frame_position - 1U; ++i) {
-			if ((ghst_frame_ptr[i + 1U] >= static_cast<uint8_t>(ghstFrameType::frameTypeFirst)) &&
-			    (ghst_frame_ptr[i + 1U] <= static_cast<uint8_t>(ghstFrameType::frameTypeLast))) {
-				if (ghst_frame_ptr[i] == GHST_TYPE_DATA_CRC_SIZE) {
+		కొరకు (uint32_t i = 1U; i < current_చట్రం_position - 1U; ++i) {
+			ఒకవేళ ((ghst_చట్రం_ptr[i + 1U] >= static_cast<uint8_t>(ghst_చట్రం_Type::చట్రం_Type_మొదటి)) &&
+			    (ghst_చట్రం_ptr[i + 1U] <= static_cast<uint8_t>(ghst_చట్రం_Type::చట్రం_Type_చివరి))) {
+				ఒకవేళ (ghst_చట్రం_ptr[i] == GHST_TYPE_దత్తాంశం_చక్రీయ_తనిఖీ_కొలత) {
 					parser_state = ghst_parser_state_t::synced;
-					uint32_t frame_offset = i - 1U;
-					GHST_VERBOSE("RC channels found at offset %u", frame_offset);
+					uint32_t చట్రం_స్థానభ్రంశం = i - 1U;
+					GHST_VERBOSE("RC channels found at offset %u", చట్రం_స్థానభ్రంశం);
 
 					// move the rest of the buffer to the beginning
-					if (frame_offset != 0U) {
-						memmove(ghst_frame_ptr, ghst_frame_ptr + frame_offset, current_frame_position - frame_offset);
-						current_frame_position -= frame_offset;
+					ఒకవేళ (చట్రం_స్థానభ్రంశం != 0U) {
+						memmove(ghst_చట్రం_ptr, ghst_చట్రం_ptr + చట్రం_స్థానభ్రంశం, current_చట్రం_position - చట్రం_స్థానభ్రంశం);
+						current_చట్రం_position -= చట్రం_స్థానభ్రంశం;
 					}
 
-					break;
+					ఆపు;
 				}
 			}
 		}
 	}
 
-	if (parser_state != ghst_parser_state_t::synced) {
-		if (current_frame_position >= sizeof(ghst_frame_t)) {
+	ఒకవేళ (parser_state != ghst_parser_state_t::synced) {
+		ఒకవేళ (current_చట్రం_position >= పరిమాణం(ghst_చట్రం_t)) {
 			// discard most of the data, but keep the last 3 bytes (otherwise we could miss the frame start)
-			current_frame_position = 3U;
+			current_చట్రం_position = 3U;
 
-			memcpy(ghst_frame_ptr, ghst_frame_ptr + sizeof(ghst_frame_t) - current_frame_position, current_frame_position);
+			జ్ఞాపకం_నకలు(ghst_చట్రం_ptr, ghst_చట్రం_ptr + పరిమాణం(ghst_చట్రం_t) - current_చట్రం_position, current_చట్రం_position);
 
 			GHST_VERBOSE("Discarding buffer");
 		}
 
-		return false;
+		తిరిగి అబద్ధం;
 	}
 
 
-	if (current_frame_position < 3U) {
+	ఒకవేళ (current_చట్రం_position < 3U) {
 		// wait until we have the address, length and type
-		return false;
+		తిరిగి అబద్ధం;
 	}
 
 	// now we have at least the header and the type
 
-	const unsigned current_frame_length = ghst_frame.header.length + sizeof(ghst_frame_header_t);
+	స్థిరరాశి గుర్తులేని current_చట్రం_నిడివి = ghst_చట్రం.శీర్షిక.నిడివి + పరిమాణం(ghst_చట్రం_శీర్షిక_t);
 
-	if ((current_frame_length > sizeof(ghst_frame_t)) || (current_frame_length < 4U)) {
+	ఒకవేళ ((current_చట్రం_నిడివి > పరిమాణం(ghst_చట్రం_t)) || (current_చట్రం_నిడివి < 4U)) {
 		// frame too long or bogus (frame length should be longer than 4, at least 1 address, 1 length, 1 type, 1 data, 1 crc)
 		// discard everything and go into unsynced state
-		current_frame_position = 0U;
+		current_చట్రం_position = 0U;
 		parser_state = ghst_parser_state_t::unsynced;
-		GHST_DEBUG("Frame too long/bogus (%u, type=%u) -> unsync", current_frame_length, ghst_frame.type);
-		return false;
+		GHST_DEBUG("Frame too long/bogus (%u, type=%u) -> unsync", current_చట్రం_నిడివి, ghst_చట్రం.type);
+		తిరిగి అబద్ధం;
 	}
 
-	if (current_frame_position < current_frame_length) {
+	ఒకవేళ (current_చట్రం_position < current_చట్రం_నిడివి) {
 		// we do not have the full frame yet -> wait for more data
-		GHST_VERBOSE("waiting for more data (%u < %u)", current_frame_position, current_frame_length);
-		return false;
+		GHST_VERBOSE("waiting for more data (%u < %u)", current_చట్రం_position, current_చట్రం_నిడివి);
+		తిరిగి అబద్ధం;
 	}
 
-	bool ret = false;
+	తార్కిక ret = అబద్ధం;
 
 	// now we have the full frame
 
-	if ((ghst_frame.type >= static_cast<uint8_t>(ghstFrameType::frameTypeFirst)) &&
-	    (ghst_frame.type <= static_cast<uint8_t>(ghstFrameType::frameTypeLast)) &&
-	    (ghst_frame.header.length == GHST_TYPE_DATA_CRC_SIZE) &&
-	    (ghst_frame.header.device_address == GHST_ADDR_FC)) {
-		const uint8_t crc = ghst_frame.payload[ghst_frame.header.length - 2U];
+	ఒకవేళ ((ghst_చట్రం.type >= static_cast<uint8_t>(ghst_చట్రం_Type::చట్రం_Type_మొదటి)) &&
+	    (ghst_చట్రం.type <= static_cast<uint8_t>(ghst_చట్రం_Type::చట్రం_Type_చివరి)) &&
+	    (ghst_చట్రం.శీర్షిక.నిడివి == GHST_TYPE_దత్తాంశం_చక్రీయ_తనిఖీ_కొలత) &&
+	    (ghst_చట్రం.శీర్షిక.device_చిరునామా == GHST_ADDR_FC)) {
+		స్థిరరాశి uint8_t చక్రీయ_తనిఖీ = ghst_చట్రం.payload[ghst_చట్రం.శీర్షిక.నిడివి - 2U];
 
-		if (crc == ghst_frame_CRC(ghst_frame)) {
-			const ghstPayloadData_t *const rcChannels = (ghstPayloadData_t *)&ghst_frame.payload;
-			*num_values = MIN(max_channels, GHST_MAX_NUM_CHANNELS);
+		ఒకవేళ (చక్రీయ_తనిఖీ == ghst_చట్రం_చక్రీయ_తనిఖీ(ghst_చట్రం)) {
+			స్థిరరాశి ghst_Payload_దత్తాంశం_t *స్థిరరాశి rcChannels = (ghst_Payload_దత్తాంశం_t *)&ghst_చట్రం.payload;
+			*అంకె_విలువలు = MIN(max_channels, GHST_MAX_అంకె_CHANNELS);
 
 			// all frames contain data from chan1to4
-			if (max_channels > 0U) { values[0] = convert_channel_value(rcChannels->chan1to4.chan1 >> 1U); }
+			ఒకవేళ (max_channels > 0U) { విలువలు_2[0] = convert_channel_విలువ(rcChannels->chan1to4.chan1 >> 1U); }
 
-			if (max_channels > 1U) { values[1] = convert_channel_value(rcChannels->chan1to4.chan2 >> 1U); }
+			ఒకవేళ (max_channels > 1U) { విలువలు_2[1] = convert_channel_విలువ(rcChannels->chan1to4.chan2 >> 1U); }
 
-			if (max_channels > 2U) { values[2] = convert_channel_value(rcChannels->chan1to4.chan3 >> 1U); }
+			ఒకవేళ (max_channels > 2U) { విలువలు_2[2] = convert_channel_విలువ(rcChannels->chan1to4.chan3 >> 1U); }
 
-			if (max_channels > 3U) { values[3] = convert_channel_value(rcChannels->chan1to4.chan4 >> 1U); }
+			ఒకవేళ (max_channels > 3U) { విలువలు_2[3] = convert_channel_విలువ(rcChannels->chan1to4.chan4 >> 1U); }
 
-			if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType5to8)) {
-				if (max_channels > 4U) { values[4] = convert_channel_value(rcChannels->chanA << 3U); }
+			ఒకవేళ (ghst_చట్రం.type == static_cast<uint8_t>(ghst_చట్రం_Type::చట్రం_Type5to8)) {
+				ఒకవేళ (max_channels > 4U) { విలువలు_2[4] = convert_channel_విలువ(rcChannels->chanA << 3U); }
 
-				if (max_channels > 5U) { values[5] = convert_channel_value(rcChannels->chanB << 3U); }
+				ఒకవేళ (max_channels > 5U) { విలువలు_2[5] = convert_channel_విలువ(rcChannels->chanB << 3U); }
 
-				if (max_channels > 6U) { values[6] = convert_channel_value(rcChannels->chanC << 3U); }
+				ఒకవేళ (max_channels > 6U) { విలువలు_2[6] = convert_channel_విలువ(rcChannels->chanC << 3U); }
 
-				if (max_channels > 7U) { values[7] = convert_channel_value(rcChannels->chanD << 3U); }
+				ఒకవేళ (max_channels > 7U) { విలువలు_2[7] = convert_channel_విలువ(rcChannels->chanD << 3U); }
 
-			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType9to12)) {
-				if (max_channels > 8U) { values[8] = convert_channel_value(rcChannels->chanA << 3U); }
+			} లేకపోతే ఒకవేళ (ghst_చట్రం.type == static_cast<uint8_t>(ghst_చట్రం_Type::చట్రం_Type9to12)) {
+				ఒకవేళ (max_channels > 8U) { విలువలు_2[8] = convert_channel_విలువ(rcChannels->chanA << 3U); }
 
-				if (max_channels > 9U) { values[9] = convert_channel_value(rcChannels->chanB << 3U); }
+				ఒకవేళ (max_channels > 9U) { విలువలు_2[9] = convert_channel_విలువ(rcChannels->chanB << 3U); }
 
-				if (max_channels > 10U) { values[10] = convert_channel_value(rcChannels->chanC << 3U); }
+				ఒకవేళ (max_channels > 10U) { విలువలు_2[10] = convert_channel_విలువ(rcChannels->chanC << 3U); }
 
-				if (max_channels > 11U) { values[11] = convert_channel_value(rcChannels->chanD << 3U); }
+				ఒకవేళ (max_channels > 11U) { విలువలు_2[11] = convert_channel_విలువ(rcChannels->chanD << 3U); }
 
-			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType13to16)) {
-				if (max_channels > 12U) { values[12] = convert_channel_value(rcChannels->chanA << 3U); }
+			} లేకపోతే ఒకవేళ (ghst_చట్రం.type == static_cast<uint8_t>(ghst_చట్రం_Type::చట్రం_Type13to16)) {
+				ఒకవేళ (max_channels > 12U) { విలువలు_2[12] = convert_channel_విలువ(rcChannels->chanA << 3U); }
 
-				if (max_channels > 13U) { values[13] = convert_channel_value(rcChannels->chanB << 3U); }
+				ఒకవేళ (max_channels > 13U) { విలువలు_2[13] = convert_channel_విలువ(rcChannels->chanB << 3U); }
 
-				if (max_channels > 14U) { values[14] = convert_channel_value(rcChannels->chanC << 3U); }
+				ఒకవేళ (max_channels > 14U) { విలువలు_2[14] = convert_channel_విలువ(rcChannels->chanC << 3U); }
 
-				if (max_channels > 15U) { values[15] = convert_channel_value(rcChannels->chanD << 3U); }
+				ఒకవేళ (max_channels > 15U) { విలువలు_2[15] = convert_channel_విలువ(rcChannels->chanD << 3U); }
 
-			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameTypeRssi)) {
-				const ghstPayloadRssi_t *const rssiValues = (ghstPayloadRssi_t *)&ghst_frame.payload;
+			} లేకపోతే ఒకవేళ (ghst_చట్రం.type == static_cast<uint8_t>(ghst_చట్రం_Type::చట్రం_Type_Rssi)) {
+				స్థిరరాశి ghstPayloadRssi_t *స్థిరరాశి rssi_విలువలు = (ghstPayloadRssi_t *)&ghst_చట్రం.payload;
 				// TODO: call function for RSSI dBm to percentage conversion for ghost receiver
-				last_link_stats.rssi_pct = spek_dbm_to_percent(static_cast<int8_t>
-							   (rssiValues->rssidBm));	// rssidBm sign inverted (90 = -90dBm)
-				last_link_stats.rssi_dbm = -rssiValues->rssidBm;
-				last_link_stats.link_quality = rssiValues->lq;						// 0 - 100
+				చివరి_link_stats.rssi_pct = spek_dbm_గమ్యం_percent(static_cast<int8_t>
+							   (rssi_విలువలు->rssidBm));	// rssidBm sign inverted (90 = -90dBm)
+				చివరి_link_stats.rssi_dbm = -rssi_విలువలు->rssidBm;
+				చివరి_link_stats.link_quality = rssi_విలువలు->lq;						// 0 - 100
 
-			} else {
-				GHST_DEBUG("Frame type: %u", ghst_frame.type);
+			} లేకపోతే {
+				GHST_DEBUG("Frame type: %u", ghst_చట్రం.type);
 			}
 
-			*link_stats = last_link_stats;
+			*link_stats = చివరి_link_stats;
 
-			memcpy(prev_rc_vals, values, sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+			జ్ఞాపకం_నకలు(prev_rc_vals, విలువలు_2, పరిమాణం(uint16_t) * GHST_MAX_అంకె_CHANNELS);
 
 			GHST_VERBOSE("Got Channels");
 
-			ret = true;
+			ret = నిజం;
 
-		} else {
+		} లేకపోతే {
 			GHST_DEBUG("CRC check failed");
 		}
 
-	} else {
-		GHST_DEBUG("Got Non-RC frame (len=%u, type=%u)", current_frame_length, ghst_frame.type);
+	} లేకపోతే {
+		GHST_DEBUG("Got Non-RC frame (len=%u, type=%u)", current_చట్రం_నిడివి, ghst_చట్రం.type);
 	}
 
 	// either reset or move the rest of the buffer
-	if (current_frame_position > current_frame_length) {
-		GHST_VERBOSE("Moving buffer (%u > %u)", current_frame_position, current_frame_length);
-		memmove(ghst_frame_ptr, ghst_frame_ptr + current_frame_length, current_frame_position - current_frame_length);
-		current_frame_position -= current_frame_length;
+	ఒకవేళ (current_చట్రం_position > current_చట్రం_నిడివి) {
+		GHST_VERBOSE("Moving buffer (%u > %u)", current_చట్రం_position, current_చట్రం_నిడివి);
+		memmove(ghst_చట్రం_ptr, ghst_చట్రం_ptr + current_చట్రం_నిడివి, current_చట్రం_position - current_చట్రం_నిడివి);
+		current_చట్రం_position -= current_చట్రం_నిడివి;
 
-	} else {
-		current_frame_position = 0U;
+	} లేకపోతే {
+		current_చట్రం_position = 0U;
 	}
 
-	return ret;
+	తిరిగి ret;
 }
 
 /**
  * write an uint8_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint8_t(uint8_t *buf, int &offset, uint8_t value)
+స్థిర అంతఃవరుస శూన్య write_uint8_t(uint8_t *buf, పూర్ణాంకం &స్థానభ్రంశం, uint8_t value)
 {
-	buf[offset++] = value;
+	buf[స్థానభ్రంశం++] = value;
 }
 
 /**
  * write an uint16_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint16_t(uint8_t *buf, int &offset, uint16_t value)
+స్థిర అంతఃవరుస శూన్య write_uint16_t(uint8_t *buf, పూర్ణాంకం &స్థానభ్రంశం, uint16_t value)
 {
-	buf[offset] = value & 0xFFU;
-	buf[offset + 1] = value >> 8U;
-	offset += 2;
+	buf[స్థానభ్రంశం] = value & 0xFFU;
+	buf[స్థానభ్రంశం + 1] = value >> 8U;
+	స్థానభ్రంశం += 2;
 }
 
 /**
  * write an uint32_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint32_t(uint8_t *buf, int &offset, uint32_t value)
+స్థిర అంతఃవరుస శూన్య write_uint32_t(uint8_t *buf, పూర్ణాంకం &స్థానభ్రంశం, uint32_t value)
 {
 	// Little Endian
-	buf[offset] = value & 0xFFU;
-	buf[offset + 1] = (value & 0xFF00) >> 8U;
-	buf[offset + 2] = (value & 0xFF0000) >> 16U;
-	buf[offset + 3] = (value & 0xFF000000) >> 24U;
-	offset += 4;
+	buf[స్థానభ్రంశం] = value & 0xFFU;
+	buf[స్థానభ్రంశం + 1] = (value & 0xFF00) >> 8U;
+	buf[స్థానభ్రంశం + 2] = (value & 0xFF0000) >> 16U;
+	buf[స్థానభ్రంశం + 3] = (value & 0xFF000000) >> 24U;
+	స్థానభ్రంశం += 4;
 }
 
 /**
  * write frame header
  */
-static inline void write_frame_header(uint8_t *buf, int &offset, ghstTelemetryType type, uint8_t payload_size)
+స్థిర అంతఃవరుస శూన్య write_చట్రం_శీర్షిక(uint8_t *buf, పూర్ణాంకం &స్థానభ్రంశం, ghstTelemetryType type, uint8_t payload_కొలత)
 {
-	write_uint8_t(buf, offset, static_cast<uint8_t>(ghstAddress::rxAddress));
-	write_uint8_t(buf, offset, payload_size + GHST_FRAME_CRC_SIZE + GHST_FRAME_TYPE_SIZE);
-	write_uint8_t(buf, offset, static_cast<uint8_t>(type));
+	write_uint8_t(buf, స్థానభ్రంశం, static_cast<uint8_t>(ghst_చిరునామా::rx_చిరునామా));
+	write_uint8_t(buf, స్థానభ్రంశం, payload_కొలత + GHST_చట్రం_చక్రీయ_తనిఖీ_కొలత + GHST_చట్రం_TYPE_కొలత);
+	write_uint8_t(buf, స్థానభ్రంశం, static_cast<uint8_t>(type));
 }
 
 /**
  * write frame CRC
  */
-static inline void write_frame_crc(uint8_t *buf, int &offset, int buf_size)
+స్థిర అంతఃవరుస శూన్య write_చట్రం_చక్రీయ_తనిఖీ(uint8_t *buf, పూర్ణాంకం &స్థానభ్రంశం, పూర్ణాంకం buf_కొలత)
 {
-	write_uint8_t(buf, offset, crc8_dvb_s2_buf(buf + 2U, buf_size - 3));
+	write_uint8_t(buf, స్థానభ్రంశం, crc8_dvb_s2_buf(buf + 2U, buf_కొలత - 3));
 }
 
-bool ghst_send_telemetry_battery_status(int uart_fd, uint16_t voltage_in_10mV,
-					uint16_t current_in_10mA, uint16_t fuel_in_10mAh)
+తార్కిక ghst_send_telemetry_battery_స్థితి(పూర్ణాంకం uart_fd, uint16_t voltage_లోపల_10m_V,
+					uint16_t current_లోపల_10m_A, uint16_t fuel_లోపల_10m_Ah)
 {
-	uint8_t buf[GHST_FRAME_PAYLOAD_SIZE_TELEMETRY + 4U]; // address, frame length, type, crc
-	int offset = 0;
-	write_frame_header(buf, offset, ghstTelemetryType::batteryPack, GHST_FRAME_PAYLOAD_SIZE_TELEMETRY);
-	write_uint16_t(buf, offset, voltage_in_10mV);
-	write_uint16_t(buf, offset, current_in_10mA);
-	write_uint16_t(buf, offset, fuel_in_10mAh);
-	write_uint8_t(buf, offset, 0x00U); // empty
-	write_uint8_t(buf, offset, 0x00U); // empty
-	write_uint8_t(buf, offset, 0x00U); // empty
-	write_uint8_t(buf, offset, 0x00U); // empty
-	write_frame_crc(buf, offset, sizeof(buf));
+	uint8_t buf[GHST_చట్రం_PAYLOAD_కొలత_TELEMETRY + 4U]; // address, frame length, type, crc
+	పూర్ణాంకం స్థానభ్రంశం = 0;
+	write_చట్రం_శీర్షిక(buf, స్థానభ్రంశం, ghstTelemetryType::batteryPack, GHST_చట్రం_PAYLOAD_కొలత_TELEMETRY);
+	write_uint16_t(buf, స్థానభ్రంశం, voltage_లోపల_10m_V);
+	write_uint16_t(buf, స్థానభ్రంశం, current_లోపల_10m_A);
+	write_uint16_t(buf, స్థానభ్రంశం, fuel_లోపల_10m_Ah);
+	write_uint8_t(buf, స్థానభ్రంశం, 0x00U); //ఖాళీలు
+	write_uint8_t(buf, స్థానభ్రంశం, 0x00U); //ఖాళీలు
+	write_uint8_t(buf, స్థానభ్రంశం, 0x00U); //ఖాళీలు
+	write_uint8_t(buf, స్థానభ్రంశం, 0x00U); //ఖాళీలు
+	write_చట్రం_చక్రీయ_తనిఖీ(buf, స్థానభ్రంశం, పరిమాణం(buf));
 
-	return write(uart_fd, buf, offset) == offset;
+	తిరిగి లిఖ(uart_fd, buf, స్థానభ్రంశం) == స్థానభ్రంశం;
 }
 
-bool ghst_send_telemetry_gps1_status(int uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude)
+తార్కిక ghst_send_telemetry_gps1_స్థితి(పూర్ణాంకం uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude)
 {
-	uint8_t buf[GHST_FRAME_PAYLOAD_SIZE_TELEMETRY + 4U]; // address, frame length, type, crc
-	int offset = 0;
-	write_frame_header(buf, offset, ghstTelemetryType::gpsPrimary, GHST_FRAME_PAYLOAD_SIZE_TELEMETRY);
-	write_uint32_t(buf, offset, latitude);
-	write_uint32_t(buf, offset, longitude);
-	write_uint16_t(buf, offset, altitude);
-	write_frame_crc(buf, offset, sizeof(buf));
+	uint8_t buf[GHST_చట్రం_PAYLOAD_కొలత_TELEMETRY + 4U]; // address, frame length, type, crc
+	పూర్ణాంకం స్థానభ్రంశం = 0;
+	write_చట్రం_శీర్షిక(buf, స్థానభ్రంశం, ghstTelemetryType::gpsPrimary, GHST_చట్రం_PAYLOAD_కొలత_TELEMETRY);
+	write_uint32_t(buf, స్థానభ్రంశం, latitude);
+	write_uint32_t(buf, స్థానభ్రంశం, longitude);
+	write_uint16_t(buf, స్థానభ్రంశం, altitude);
+	write_చట్రం_చక్రీయ_తనిఖీ(buf, స్థానభ్రంశం, పరిమాణం(buf));
 
-	return write(uart_fd, buf, offset) == offset;
+	తిరిగి లిఖ(uart_fd, buf, స్థానభ్రంశం) == స్థానభ్రంశం;
 }
 
-bool ghst_send_telemetry_gps2_status(int uart_fd, uint16_t ground_speed, uint16_t ground_course, uint8_t numSats,
+తార్కిక ghst_send_telemetry_gps2_స్థితి(పూర్ణాంకం uart_fd, uint16_t ground_వేగం, uint16_t ground_కోర్సు, uint8_t అంకె_Sats,
 				     uint16_t home_dist, uint16_t home_dir, uint8_t flags)
 {
-	uint8_t buf[GHST_FRAME_PAYLOAD_SIZE_TELEMETRY + 4U]; // address, frame length, type, crc
-	int offset = 0;
-	write_frame_header(buf, offset, ghstTelemetryType::gpsSecondary, GHST_FRAME_PAYLOAD_SIZE_TELEMETRY);
-	write_uint16_t(buf, offset, ground_speed);
-	write_uint16_t(buf, offset, ground_course);
-	write_uint8_t(buf, offset, numSats);
-	write_uint16_t(buf, offset, home_dist);
-	write_uint16_t(buf, offset, home_dir);
-	write_uint8_t(buf, offset, flags);
-	write_frame_crc(buf, offset, sizeof(buf));
+	uint8_t buf[GHST_చట్రం_PAYLOAD_కొలత_TELEMETRY + 4U]; // address, frame length, type, crc
+	పూర్ణాంకం స్థానభ్రంశం = 0;
+	write_చట్రం_శీర్షిక(buf, స్థానభ్రంశం, ghstTelemetryType::gpsSecondary, GHST_చట్రం_PAYLOAD_కొలత_TELEMETRY);
+	write_uint16_t(buf, స్థానభ్రంశం, ground_వేగం);
+	write_uint16_t(buf, స్థానభ్రంశం, ground_కోర్సు);
+	write_uint8_t(buf, స్థానభ్రంశం, అంకె_Sats);
+	write_uint16_t(buf, స్థానభ్రంశం, home_dist);
+	write_uint16_t(buf, స్థానభ్రంశం, home_dir);
+	write_uint8_t(buf, స్థానభ్రంశం, flags);
+	write_చట్రం_చక్రీయ_తనిఖీ(buf, స్థానభ్రంశం, పరిమాణం(buf));
 
-	return write(uart_fd, buf, offset) == offset;
+	తిరిగి లిఖ(uart_fd, buf, స్థానభ్రంశం) == స్థానభ్రంశం;
 }

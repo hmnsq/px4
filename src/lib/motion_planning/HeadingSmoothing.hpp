@@ -31,11 +31,11 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <float.h>
-#include <matrix/matrix/helper_functions.hpp>
-#include "VelocitySmoothing.hpp"
+#అన్తర్భావ <float.h>
+#అన్తర్భావ <matrix/matrix/helper_functions.hpp>
+#అన్తర్భావ "VelocitySmoothing.hpp"
 
 /**
  * @brief Wrapper class for smoothing heading via maximum angular acceleration limited trajectories.
@@ -51,17 +51,17 @@
  *
  * Use the getters to retrieve the current smoothed setpoints.
  */
-class HeadingSmoothing
+తరగతి HeadingSmoothing
 {
-public:
+బహిరంగ:
 	HeadingSmoothing();
-	~HeadingSmoothing() = default;
+	~HeadingSmoothing() = అప్రమేయ;
 
 	/** @param max_heading_rate [rad/s] */
-	void setMaxHeadingRate(const float max_heading_rate) { _velocity_smoothing.setMaxAccel(max_heading_rate); }
+	శూన్య సమితి_Max_Heading_రేటు(స్థిరరాశి దశాంశం max_heading_రేటు) { _velocity_smoothing.సమితి_Max_Accel(max_heading_రేటు); }
 
 	/** @param max_heading_accel [rad/s^2] */
-	void setMaxHeadingAccel(const float max_heading_accel) { _velocity_smoothing.setMaxJerk(max_heading_accel); }
+	శూన్య సమితి_Max_Heading_Accel(స్థిరరాశి దశాంశం max_heading_accel) { _velocity_smoothing.సమితి_Max_Jerk(max_heading_accel); }
 
 	/**
 	 * @brief resets internal trajectory states, handles heading wrap
@@ -69,7 +69,7 @@ public:
 	 * @param heading [rad] [-pi,pi]
 	 * @param heading_rate [rad/s]
 	 */
-	void reset(const float heading, const float heading_rate = NAN);
+	శూన్య reset(స్థిరరాశి దశాంశం heading, స్థిరరాశి దశాంశం heading_రేటు = NAN);
 
 	/**
 	 * @brief updates the heading setpoint, re-calculates trajectory, and takes an integration step
@@ -77,14 +77,14 @@ public:
 	 * @param heading_setpoint [rad]
 	 * @param time_elapsed [s]
 	 */
-	void update(const float heading_setpoint, const float time_elapsed);
+	శూన్య update(స్థిరరాశి దశాంశం heading_setpoint, స్థిరరాశి దశాంశం సమయం_elapsed);
 
 	/** @return [rad] [-pi,pi] smoothed heading setpoint to retreive after update */
-	float getSmoothedHeading() const { return _velocity_smoothing.getCurrentVelocity(); }
+	దశాంశం getSmoothedHeading() స్థిరరాశి { తిరిగి _velocity_smoothing.getCurrentVelocity(); }
 
 	/** @return [rad/s] smoothed heading rate setpoint to retreive after update */
-	float getSmoothedHeadingRate() const { return _velocity_smoothing.getCurrentAcceleration(); }
+	దశాంశం get_Smoothed_Heading_రేటు() స్థిరరాశి { తిరిగి _velocity_smoothing.getCurrentAcceleration(); }
 
-private:
+అంతరంగ:
 	VelocitySmoothing _velocity_smoothing;
 };

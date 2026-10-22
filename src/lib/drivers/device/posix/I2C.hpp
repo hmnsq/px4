@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
 /**
  * @file I2C.hpp
@@ -39,33 +39,33 @@
  * Base class for devices connected via I2C.
  */
 
-#include "../CDev.hpp"
-#include <px4_platform_common/i2c.h>
+#అన్తర్భావ "../CDev.hpp"
+#అన్తర్భావ <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#ఒకవేళ defined(CONFIG_I2C)
 
-struct I2CSPIDriverConfig;
+నిర్మాణం I2CSPIDriverConfig;
 
-namespace device __EXPORT
+నామాకాశ device __EXPORT
 {
 
 /**
  * Abstract class for character device on I2C
  */
-class __EXPORT I2C : public CDev
+తరగతి __EXPORT I2C : బహిరంగ CDev
 {
 
-public:
+బహిరంగ:
 
 	// no copy, assignment, move, move assignment
-	I2C(const I2C &) = delete;
-	I2C &operator=(const I2C &) = delete;
-	I2C(I2C &&) = delete;
-	I2C &operator=(I2C &&) = delete;
+	I2C(స్థిరరాశి I2C &) = తొలగించు;
+	I2C &క్రియాకారకం=(స్థిరరాశి I2C &) = తొలగించు;
+	I2C(I2C &&) = తొలగించు;
+	I2C &క్రియాకారకం=(I2C &&) = తొలగించు;
 
-	virtual int	init() override;
+	మాయా పూర్ణాంకం	init() override;
 
-protected:
+రక్షిత:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -81,14 +81,14 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
-	I2C(const I2CSPIDriverConfig &config);
-	virtual ~I2C();
+	I2C(uint8_t device_type, స్థిరరాశి అక్షరం *name, స్థిరరాశి పూర్ణాంకం bus, స్థిరరాశి uint16_t చిరునామా, స్థిరరాశి uint32_t frequency);
+	I2C(స్థిరరాశి I2CSPIDriverConfig &config);
+	మాయా ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	మాయా పూర్ణాంకం	probe() { తిరిగి PX4_OK; }
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -102,13 +102,13 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	పూర్ణాంకం		transfer(స్థిరరాశి uint8_t *send, స్థిరరాశి గుర్తులేని send_len, uint8_t *recv, స్థిరరాశి గుర్తులేని recv_len);
 
-private:
-	int			_fd{-1};
+అంతరంగ:
+	పూర్ణాంకం			_fd{-1};
 
 };
 
 } // namespace device
 
-#endif // CONFIG_I2C
+#అయితే_ముగింపు // CONFIG_I2C

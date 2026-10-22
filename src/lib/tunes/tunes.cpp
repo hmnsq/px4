@@ -35,481 +35,481 @@
  * @file tunes.cpp
  */
 
-#include "tunes.h"
+#అన్తర్భావ "tunes.h"
 
-#include <px4_platform_common/log.h>
+#అన్తర్భావ <px4_platform_common/log.h>
 
-#include <lib/circuit_breaker/circuit_breaker.h>
+#అన్తర్భావ <lib/circuit_breaker/circuit_breaker.h>
 
-#include <math.h>
-#include <ctype.h>
-#include <errno.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <ctype.h>
+#అన్తర్భావ <errno.h>
 
-#define BEAT_TIME_CONVERSION_MS (60 * 1000 * 4)
-#define BEAT_TIME_CONVERSION_US (BEAT_TIME_CONVERSION_MS * 1000)
-#define BEAT_TIME_CONVERSION    BEAT_TIME_CONVERSION_US
+#నిర్వచించు BEAT_సమయం_CONVERSION_MS (60 * 1000 * 4)
+#నిర్వచించు BEAT_సమయం_CONVERSION_US (BEAT_సమయం_CONVERSION_MS * 1000)
+#నిర్వచించు BEAT_సమయం_CONVERSION    BEAT_సమయం_CONVERSION_US
 
 // semitone offsets from C for the characters 'A'-'G'
-const uint8_t Tunes::_note_tab[] = {9, 11, 0, 2, 4, 5, 7};
+స్థిరరాశి uint8_t Tunes::_note_tab[] = {9, 11, 0, 2, 4, 5, 7};
 
-Tunes::Tunes(unsigned default_note_length, NoteMode default_note_mode,
-	     unsigned default_octave, unsigned default_tempo):
-	_default_note_length(default_note_length),
-	_default_note_mode(default_note_mode),
+Tunes::Tunes(గుర్తులేని default_note_నిడివి, Note_బహుళకం default_note_బహుళకం,
+	     గుర్తులేని default_octave, గుర్తులేని default_tempo):
+	default_note_నిడివి_2(default_note_నిడివి),
+	default_note_బహుళకం_2(default_note_బహుళకం),
 	_default_octave(default_octave),
 	_default_tempo(default_tempo)
 {
-	if (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_KEY)) {
-		_tunes_disabled = true;
+	ఒకవేళ (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_కీలకం)) {
+		_tunes_disabled = నిజం;
 	}
 
-	reset(false);
+	reset(అబద్ధం);
 }
 
-void Tunes::reset(bool repeat_flag)
+శూన్య Tunes::reset(తార్కిక repeat_flag)
 {
 	// reset pointer
-	if (!repeat_flag)	{
-		_tune = nullptr;
-		_next_tune = nullptr;
+	ఒకవేళ (!repeat_flag)	{
+		_tune = శూన్యసూచిక;
+		తదుపరి_tune = శూన్యసూచిక;
 
-	} else {
-		_tune = _tune_start_ptr;
-		_next_tune = _tune;
+	} లేకపోతే {
+		_tune = tune_ప్రారంభం_ptr;
+		తదుపరి_tune = _tune;
 	}
 
 	// reset music parameter
-	_note_length = _default_note_length;
-	_note_mode   = _default_note_mode;
+	note_నిడివి = default_note_నిడివి_2;
+	note_బహుళకం   = default_note_బహుళకం_2;
 	_octave      = _default_octave;
 	_tempo       = _default_tempo;
 }
 
-Tunes::ControlResult Tunes::set_control(const tune_control_s &tune_control)
+Tunes::Control_ఫలితం Tunes::సమితి_control(స్థిరరాశి tune_control_s &tune_control)
 {
 	// Sanity check
-	if (tune_control.tune_id >= _default_tunes_size) {
-		return ControlResult::InvalidTune;
+	ఒకవేళ (tune_control.tune_id >= default_tunes_కొలత) {
+		తిరిగి Control_ఫలితం::InvalidTune;
 	}
 
 	// Accept new tune or a stop?
-	if (_tune == nullptr ||  	   // No tune is currently being played
+	ఒకవేళ (_tune == శూన్యసూచిక ||  	   // No tune is currently being played
 	    tune_control.tune_override ||  // Override interrupts everything
 	    _default_tunes_interruptable[_current_tune_id]) {
 
 		// Check if this exact tune is already being played back
-		if (tune_control.tune_id != static_cast<int>(TuneID::CUSTOM) &&
+		ఒకవేళ (tune_control.tune_id != static_cast<పూర్ణాంకం>(TuneID::CUSTOM) &&
 		    _tune == _default_tunes[tune_control.tune_id]) {
-			return ControlResult::AlreadyPlaying; // Nothing to do
+			తిరిగి Control_ఫలితం::AlreadyPlaying; // Nothing to do
 		}
 
 		// Reset repeat flag. Can jump to true again while tune is being parsed later
-		_repeat = false;
+		_repeat = అబద్ధం;
 
 		// Reset octave, tempo etc.
 		reset(_repeat);
 
 		// Volume will remain valid for the entire tune, unless interrupted.
-		if (tune_control.volume <= tune_control_s::VOLUME_LEVEL_MAX) {
+		ఒకవేళ (tune_control.volume <= tune_control_s::VOLUME_LEVEL_MAX) {
 			_volume = tune_control.volume;
 
-		} else {
+		} లేకపోతే {
 			_volume = tune_control_s::VOLUME_LEVEL_MAX;
 		}
 
 
 		// Special treatment for custom tunes
-		if (tune_control.tune_id == static_cast<int>(TuneID::CUSTOM)) {
-			_using_custom_msg = true;
-			_frequency        = (unsigned)tune_control.frequency;
-			_duration         = (unsigned)tune_control.duration;
-			_silence          = (unsigned)tune_control.silence;
+		ఒకవేళ (tune_control.tune_id == static_cast<పూర్ణాంకం>(TuneID::CUSTOM)) {
+			using_custom_సందేశం = నిజం;
+			_frequency        = (గుర్తులేని)tune_control.frequency;
+			_duration         = (గుర్తులేని)tune_control.duration;
+			_silence          = (గుర్తులేని)tune_control.silence;
 
-		} else {
-			_using_custom_msg = false;
+		} లేకపోతే {
+			using_custom_సందేశం = అబద్ధం;
 			_tune             = _default_tunes[tune_control.tune_id];
-			_tune_start_ptr   = _tune;
-			_next_tune        = _tune;
+			tune_ప్రారంభం_ptr   = _tune;
+			తదుపరి_tune        = _tune;
 		}
 
 		_current_tune_id = tune_control.tune_id;
-		return ControlResult::Success;
+		తిరిగి Control_ఫలితం::Success;
 	}
 
-	return ControlResult::WouldInterrupt;
+	తిరిగి Control_ఫలితం::Would_అంతరాయం;
 }
 
-void Tunes::set_string(const char *const string, uint8_t volume)
+శూన్య Tunes::సమితి_string(స్థిరరాశి అక్షరం *స్థిరరాశి string, uint8_t volume)
 {
 	// Only play new tune if nothing is being played currently.
-	if (_tune == nullptr) {
+	ఒకవేళ (_tune == శూన్యసూచిక) {
 		// Set tune string the first time.
 		_tune           = string;
-		_tune_start_ptr = string;
-		_next_tune      = _tune;
+		tune_ప్రారంభం_ptr = string;
+		తదుపరి_tune      = _tune;
 
-		if (volume <= tune_control_s::VOLUME_LEVEL_MAX) {
+		ఒకవేళ (volume <= tune_control_s::VOLUME_LEVEL_MAX) {
 			_volume = volume;
 
-		} else {
+		} లేకపోతే {
 			_volume = tune_control_s::VOLUME_LEVEL_MAX;
 		}
 	}
 }
 
-Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsigned &silence, uint8_t &volume)
+Tunes::స్థితి_3 Tunes::get_తదుపరి_note(గుర్తులేని &frequency, గుర్తులేని &duration, గుర్తులేని &silence, uint8_t &volume)
 {
-	if (_tunes_disabled) {
+	ఒకవేళ (_tunes_disabled) {
 		frequency = 0;
 		duration = 0;
 		silence = 0;
 		volume = 0;
-		return Tunes::Status::Stop;
+		తిరిగి Tunes::స్థితి_3::Stop;
 	}
 
-	Tunes::Status ret = get_next_note(frequency, duration, silence);
+	Tunes::స్థితి_3 ret = get_తదుపరి_note(frequency, duration, silence);
 
 	// Check if note should not be heard -> adjust volume to 0 to be safe.
-	if (frequency == 0 || duration == 0) {
+	ఒకవేళ (frequency == 0 || duration == 0) {
 		volume = 0;
 
-	} else {
+	} లేకపోతే {
 		volume = _volume;
 	}
 
-	return ret;
+	తిరిగి ret;
 }
 
-Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsigned &silence)
+Tunes::స్థితి_3 Tunes::get_తదుపరి_note(గుర్తులేని &frequency, గుర్తులేని &duration, గుర్తులేని &silence)
 {
-	if (_tunes_disabled) {
+	ఒకవేళ (_tunes_disabled) {
 		frequency = 0;
 		duration = 0;
 		silence = 0;
-		return Tunes::Status::Stop;
+		తిరిగి Tunes::స్థితి_3::Stop;
 	}
 
 	// Return the values for frequency and duration if the custom msg was received.
-	if (_using_custom_msg) {
-		_using_custom_msg = false;
+	ఒకవేళ (using_custom_సందేశం) {
+		using_custom_సందేశం = అబద్ధం;
 		duration  = _duration;
 		frequency = _frequency;
 		silence   = _silence;
-		return Tunes::Status::Continue;
+		తిరిగి Tunes::స్థితి_3::Continue;
 	}
 
 	// Make sure we still have a tune.
-	if ((_next_tune == nullptr) || (_tune == nullptr)) {
-		return tune_error();
+	ఒకవేళ ((తదుపరి_tune == శూన్యసూచిక) || (_tune == శూన్యసూచిక)) {
+		తిరిగి tune_error();
 	}
 
 	// Parse characters out of the string until we have resolved a note.
-	unsigned note = 0;
-	unsigned note_length = _note_length;
+	గుర్తులేని note = 0;
+	గుర్తులేని note_నిడివి_2 = note_నిడివి;
 
-	while (note == 0) {
+	అయితే (note == 0) {
 		// we always need at least one character from the string.
-		int c = next_char();
+		పూర్ణాంకం c = తదుపరి_char();
 
-		if (c == 0) {
+		ఒకవేళ (c == 0) {
 			silence = 0;
-			return tune_end();
+			తిరిగి tune_చివర();
 		}
 
-		_next_tune++;
+		తదుపరి_tune++;
 
-		switch (c) {
+		ఎంపిక (c) {
 
-		case 'V':	// Select volume.
+		స్థితి 'V':	// Select volume.
 			// Consume volume if specified in tune but ignore
 			// MML compatibility
-			next_number();
-			break;
+			తదుపరి_సంఖ్య();
+			ఆపు;
 
-		case 'L':	// Select note length.
-			_note_length = next_number();
+		స్థితి 'L':	// Select note length.
+			note_నిడివి = తదుపరి_సంఖ్య();
 
-			if (_note_length < 1) {
-				return tune_error();
+			ఒకవేళ (note_నిడివి < 1) {
+				తిరిగి tune_error();
 			}
 
-			break;
+			ఆపు;
 
-		case 'O':	// Select octave.
-			_octave = next_number();
+		స్థితి 'O':	// Select octave.
+			_octave = తదుపరి_సంఖ్య();
 
-			if (_octave > 6) {
+			ఒకవేళ (_octave > 6) {
 				_octave = 6;
 			}
 
-			break;
+			ఆపు;
 
-		case '<':	// Decrease octave.
-			if (_octave > 0) {
+		స్థితి '<':	// Decrease octave.
+			ఒకవేళ (_octave > 0) {
 				_octave--;
 			}
 
-			break;
+			ఆపు;
 
-		case '>':	// Increase octave.
-			if (_octave < 6) {
+		స్థితి '>':	// Increase octave.
+			ఒకవేళ (_octave < 6) {
 				_octave++;
 			}
 
-			break;
+			ఆపు;
 
-		case 'M':	// Select inter-note gap.
-			c = next_char();
+		స్థితి 'M':	// Select inter-note gap.
+			c = తదుపరి_char();
 
-			if (c == 0) {
-				return tune_error();
+			ఒకవేళ (c == 0) {
+				తిరిగి tune_error();
 			}
 
-			_next_tune++;
+			తదుపరి_tune++;
 
-			switch (c) {
-			case 'N':
-				_note_mode = NoteMode::NORMAL;
-				break;
+			ఎంపిక (c) {
+			స్థితి 'N':
+				note_బహుళకం = Note_బహుళకం::సాధారణ;
+				ఆపు;
 
-			case 'L':
-				_note_mode = NoteMode::LEGATO;
-				break;
+			స్థితి 'L':
+				note_బహుళకం = Note_బహుళకం::LEGATO;
+				ఆపు;
 
-			case 'S':
-				_note_mode = NoteMode::STACCATO;
-				break;
+			స్థితి 'S':
+				note_బహుళకం = Note_బహుళకం::STACCATO;
+				ఆపు;
 
-			case 'F':
-				_repeat = false;
-				break;
+			స్థితి 'F':
+				_repeat = అబద్ధం;
+				ఆపు;
 
-			case 'B':
-				_repeat = true;
-				break;
+			స్థితి 'B':
+				_repeat = నిజం;
+				ఆపు;
 
-			default:
-				return tune_error();
+			అప్రమేయ:
+				తిరిగి tune_error();
 			}
 
-			break;
+			ఆపు;
 
-		case 'P':	// Pause for a note length.
-		case 'R':
+		స్థితి 'P':	// Pause for a note length.
+		స్థితి 'R':
 			frequency = 0;
 			duration = 0;
-			note_length = next_number();
-			silence = rest_duration(note_length, next_dots());
-			return Tunes::Status::Continue;
+			note_నిడివి_2 = తదుపరి_సంఖ్య();
+			silence = rest_duration(note_నిడివి_2, తదుపరి_dots());
+			తిరిగి Tunes::స్థితి_3::Continue;
 
-		case 'T': {	// Change tempo.
-				unsigned nt = next_number();
+		స్థితి 'T': {	// Change tempo.
+				గుర్తులేని nt = తదుపరి_సంఖ్య();
 
-				if ((nt >= 32) && (nt <= 255)) {
+				ఒకవేళ ((nt >= 32) && (nt <= 255)) {
 					_tempo = nt;
 
-				} else {
-					return tune_error();
+				} లేకపోతే {
+					తిరిగి tune_error();
 				}
 
-				break;
+				ఆపు;
 			}
 
-		case 'N':	// Play an arbitrary note.
-			note = next_number();
+		స్థితి 'N':	// Play an arbitrary note.
+			note = తదుపరి_సంఖ్య();
 
-			if (note > 84) {
-				return tune_error();
+			ఒకవేళ (note > 84) {
+				తిరిగి tune_error();
 			}
 
-			if (note == 0) {
+			ఒకవేళ (note == 0) {
 				// This is a rest - pause for the current note length.
-				silence = rest_duration(_note_length, next_dots());
-				return Tunes::Status::Continue;
+				silence = rest_duration(note_నిడివి, తదుపరి_dots());
+				తిరిగి Tunes::స్థితి_3::Continue;
 			}
 
-			break;
+			ఆపు;
 
-		case 'A'...'G':	// Play a note in the current octave.
+		స్థితి 'A'...'G':	// Play a note in the current octave.
 			note = _note_tab[c - 'A'] + (_octave * 12) + 1;
-			c = next_char();
+			c = తదుపరి_char();
 
-			switch (c) {
-			case '#':	// Up a semitone.
-			case '+':
-				if (note < 84) {
+			ఎంపిక (c) {
+			స్థితి '#':	// Up a semitone.
+			స్థితి '+':
+				ఒకవేళ (note < 84) {
 					note++;
 				}
 
-				_next_tune++;
-				break;
+				తదుపరి_tune++;
+				ఆపు;
 
-			case '-':	// Down a semitone.
-				if (note > 1) {
+			స్థితి '-':	// Down a semitone.
+				ఒకవేళ (note > 1) {
 					note--;
 				}
 
-				_next_tune++;
-				break;
+				తదుపరి_tune++;
+				ఆపు;
 
-			default:
+			అప్రమేయ:
 				// 0 / No next char here is OK.
-				break;
+				ఆపు;
 			}
 
 			// Shorthand length notation.
-			note_length = next_number();
+			note_నిడివి_2 = తదుపరి_సంఖ్య();
 
-			if (note_length == 0) {
-				note_length = _note_length;
+			ఒకవేళ (note_నిడివి_2 == 0) {
+				note_నిడివి_2 = note_నిడివి;
 			}
 
-			break;
+			ఆపు;
 
-		default:
-			return tune_error();
+		అప్రమేయ:
+			తిరిగి tune_error();
 		}
 	}
 
 	// Compute the duration of the note and the following silence (if any).
-	duration = note_duration(silence, note_length, next_dots());
+	duration = note_duration(silence, note_నిడివి_2, తదుపరి_dots());
 
 	// Compute the note frequency.
-	frequency = note_to_frequency(note);
-	return Tunes::Status::Continue;
+	frequency = note_గమ్యం_frequency(note);
+	తిరిగి Tunes::స్థితి_3::Continue;
 }
 
-Tunes::Status Tunes::tune_end()
+Tunes::స్థితి_3 Tunes::tune_చివర()
 {
-	if (_tunes_disabled) {
-		return Tunes::Status::Stop;
+	ఒకవేళ (_tunes_disabled) {
+		తిరిగి Tunes::స్థితి_3::Stop;
 	}
 
 	// Restore intial parameters.
 	reset(_repeat);
 
 	// Stop or restart the tune.
-	if (_repeat) {
-		return Tunes::Status::Continue;
+	ఒకవేళ (_repeat) {
+		తిరిగి Tunes::స్థితి_3::Continue;
 
-	} else {
-		return Tunes::Status::Stop;
+	} లేకపోతే {
+		తిరిగి Tunes::స్థితి_3::Stop;
 	}
 }
 
-Tunes::Status Tunes::tune_error()
+Tunes::స్థితి_3 Tunes::tune_error()
 {
-	if (_tunes_disabled) {
-		return Tunes::Status::Stop;
+	ఒకవేళ (_tunes_disabled) {
+		తిరిగి Tunes::స్థితి_3::Stop;
 	}
 
 	// The tune appears to be bad (unexpected EOF, bad character, etc.).
-	if (_next_tune != nullptr) {
-		PX4_WARN("Tune error at: %s", _next_tune);
+	ఒకవేళ (తదుపరి_tune != శూన్యసూచిక) {
+		PX4_WARN("Tune error at: %s", తదుపరి_tune);
 	}
 
-	_repeat = false;	// Don't loop on error.
+	_repeat = అబద్ధం;	// Don't loop on error.
 	reset(_repeat);
-	return Tunes::Status::Error;
+	తిరిగి Tunes::స్థితి_3::Error;
 }
 
-uint32_t Tunes::note_to_frequency(unsigned note) const
+uint32_t Tunes::note_గమ్యం_frequency(గుర్తులేని note) స్థిరరాశి
 {
 	// Compute the frequency (Hz).
-	return (unsigned)(880.0f * powf(2.0f, ((int)note - 46) / 12.0f));
+	తిరిగి (గుర్తులేని)(880.0f * powf(2.0f, ((పూర్ణాంకం)note - 46) / 12.0f));
 }
 
-unsigned Tunes::note_duration(unsigned &silence, unsigned note_length, unsigned dots) const
+గుర్తులేని Tunes::note_duration(గుర్తులేని &silence, గుర్తులేని note_నిడివి_2, గుర్తులేని dots) స్థిరరాశి
 {
-	unsigned whole_note_period = BEAT_TIME_CONVERSION / _tempo;
+	గుర్తులేని సంపూర్ణ_note_period = BEAT_సమయం_CONVERSION / _tempo;
 
-	if (note_length == 0) {
-		note_length = 1;
+	ఒకవేళ (note_నిడివి_2 == 0) {
+		note_నిడివి_2 = 1;
 	}
 
-	unsigned note_period = whole_note_period / note_length;
+	గుర్తులేని note_period = సంపూర్ణ_note_period / note_నిడివి_2;
 
-	switch (_note_mode) {
-	case NoteMode::NORMAL:
+	ఎంపిక (note_బహుళకం) {
+	స్థితి Note_బహుళకం::సాధారణ:
 		silence = note_period / 8;
-		break;
+		ఆపు;
 
-	case NoteMode::STACCATO:
+	స్థితి Note_బహుళకం::STACCATO:
 		silence = note_period / 4;
-		break;
+		ఆపు;
 
-	case NoteMode::LEGATO:
-	default:
+	స్థితి Note_బహుళకం::LEGATO:
+	అప్రమేయ:
 		silence = 0;
-		break;
+		ఆపు;
 	}
 
 	note_period -= silence;
 
-	unsigned dot_extension = note_period / 2;
+	గుర్తులేని dot_extension = note_period / 2;
 
-	while (dots--) {
+	అయితే (dots--) {
 		note_period += dot_extension;
 		dot_extension /= 2;
 	}
 
-	return note_period;
+	తిరిగి note_period;
 }
 
-unsigned Tunes::rest_duration(unsigned rest_length, unsigned dots) const
+గుర్తులేని Tunes::rest_duration(గుర్తులేని rest_నిడివి, గుర్తులేని dots) స్థిరరాశి
 {
-	unsigned whole_note_period = BEAT_TIME_CONVERSION / _tempo;
+	గుర్తులేని సంపూర్ణ_note_period = BEAT_సమయం_CONVERSION / _tempo;
 
-	if (rest_length == 0) {
-		rest_length = 1;
+	ఒకవేళ (rest_నిడివి == 0) {
+		rest_నిడివి = 1;
 	}
 
-	unsigned rest_period = whole_note_period / rest_length;
+	గుర్తులేని rest_period = సంపూర్ణ_note_period / rest_నిడివి;
 
-	unsigned dot_extension = rest_period / 2;
+	గుర్తులేని dot_extension = rest_period / 2;
 
-	while (dots--) {
+	అయితే (dots--) {
 		rest_period += dot_extension;
 		dot_extension /= 2;
 	}
 
-	return rest_period;
+	తిరిగి rest_period;
 }
 
-int Tunes::next_char()
+పూర్ణాంకం Tunes::తదుపరి_char()
 {
-	while (isspace(*_next_tune)) {
-		_next_tune++;
+	అయితే (ఖాళీనా(*తదుపరి_tune)) {
+		తదుపరి_tune++;
 	}
 
-	return toupper(*_next_tune);
+	తిరిగి పెద్ద_అక్షరం(*తదుపరి_tune);
 }
 
-unsigned Tunes::next_number()
+గుర్తులేని Tunes::తదుపరి_సంఖ్య()
 {
-	unsigned number = 0;
-	int next_character;
+	గుర్తులేని సంఖ్య = 0;
+	పూర్ణాంకం తదుపరి_character;
 
-	for (;;) {
-		next_character = next_char();
+	కొరకు (;;) {
+		తదుపరి_character = తదుపరి_char();
 
-		if (!isdigit(next_character)) {
-			return number;
+		ఒకవేళ (!అంకెనా(తదుపరి_character)) {
+			తిరిగి సంఖ్య;
 		}
 
-		_next_tune++;
-		number = (number * 10) + (next_character - '0');
+		తదుపరి_tune++;
+		సంఖ్య = (సంఖ్య * 10) + (తదుపరి_character - '0');
 	}
 }
 
-unsigned Tunes::next_dots()
+గుర్తులేని Tunes::తదుపరి_dots()
 {
-	unsigned dots = 0;
+	గుర్తులేని dots = 0;
 
-	while (next_char() == '.') {
-		_next_tune++;
+	అయితే (తదుపరి_char() == '.') {
+		తదుపరి_tune++;
 		dots++;
 	}
 
-	return dots;
+	తిరిగి dots;
 }

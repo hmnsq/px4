@@ -8,223 +8,223 @@
  *
  */
 
-#pragma once
+#సూచన once
 
-#include "Vector.hpp"
+#అన్తర్భావ "Vector.hpp"
 
-namespace matrix
+నామాకాశ మాతృక
 {
 // Vector that only store nonzero elements,
 // which indices are specified as parameter pack
-template<typename Type, size_t M, size_t... Idxs>
-class SparseVector
+మూస<రకం_పేరు Type, size_t M, size_t... Idxs>
+తరగతి Sparse_సదిశ
 {
-private:
-	enum : size_t { N = sizeof...(Idxs) };
+అంతరంగ:
+	గణన : size_t { N = పరిమాణం...(Idxs) };
 
-	static constexpr bool duplicateIndices()
+	స్థిర constexpr తార్కిక duplicateIndices()
 	{
 		constexpr size_t indicies[] {Idxs...};
 
-		for (size_t i = 0; i < N; i++) {
-			for (size_t j = 0; j < i; j++) {
-				if (indicies[i] == indicies[j]) {
-					return true;
+		కొరకు (size_t i = 0; i < N; i++) {
+			కొరకు (size_t j = 0; j < i; j++) {
+				ఒకవేళ (indicies[i] == indicies[j]) {
+					తిరిగి నిజం;
 				}
 			}
 		}
 
-		return false;
+		తిరిగి అబద్ధం;
 	}
 
-	static constexpr size_t findMaxIndex()
+	స్థిర constexpr size_t కనుగొను_Max_సూచీ()
 	{
 		constexpr size_t indicies[] {Idxs...};
-		size_t maxIndex = 0;
+		size_t max_సూచీ = 0;
 
-		for (size_t i = 0; i < N; i++) {
-			if (maxIndex < indicies[i]) {
-				maxIndex = indicies[i];
+		కొరకు (size_t i = 0; i < N; i++) {
+			ఒకవేళ (max_సూచీ < indicies[i]) {
+				max_సూచీ = indicies[i];
 			}
 		}
 
-		return maxIndex;
+		తిరిగి max_సూచీ;
 	}
 
-	static constexpr size_t indexAt(size_t i)
+	స్థిర constexpr size_t సూచీ_At(size_t i)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		return indicies[i];
+		తిరిగి indicies[i];
 	}
 
 	static_assert(!duplicateIndices(), "Duplicate indices");
 	static_assert(N < M, "More entries than elements, use a dense vector");
 	static_assert(N > 0, "A sparse vector needs at least one element");
-	static_assert(findMaxIndex() < M, "Largest entry doesn't fit in sparse vector");
+	static_assert(కనుగొను_Max_సూచీ() < M, "Largest entry doesn't fit in sparse vector");
 
-	Type _data[N] {};
+	Type దత్తాంశం_3[N] {};
 
-	static constexpr int findCompressedIndex(size_t index)
+	స్థిర constexpr పూర్ణాంకం కనుగొను_Compressed_సూచీ(size_t సూచీ)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		int compressedIndex = -1;
+		పూర్ణాంకం compressed_సూచీ = -1;
 
-		for (size_t i = 0; i < N; i++) {
-			if (index == indicies[i]) {
-				compressedIndex = static_cast<int>(i);
+		కొరకు (size_t i = 0; i < N; i++) {
+			ఒకవేళ (సూచీ == indicies[i]) {
+				compressed_సూచీ = static_cast<పూర్ణాంకం>(i);
 			}
 		}
 
-		return compressedIndex;
+		తిరిగి compressed_సూచీ;
 	}
 
-public:
-	constexpr size_t non_zeros() const
+బహిరంగ:
+	constexpr size_t non_zeros() స్థిరరాశి
 	{
-		return N;
+		తిరిగి N;
 	}
 
-	constexpr size_t index(size_t i) const
+	constexpr size_t సూచీ(size_t i) స్థిరరాశి
 	{
-		return indexAt(i);
+		తిరిగి సూచీ_At(i);
 	}
 
-	SparseVector() = default;
+	Sparse_సదిశ() = అప్రమేయ;
 
-	SparseVector(const matrix::Vector<Type, M> &data)
+	Sparse_సదిశ(స్థిరరాశి మాతృక::సదిశ<Type, M> &దత్తాంశం)
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] = data(indexAt(i));
+		కొరకు (size_t i = 0; i < N; i++) {
+			దత్తాంశం_3[i] = దత్తాంశం(సూచీ_At(i));
 		}
 	}
 
-	explicit SparseVector(const Type data[N])
+	స్పష్టమైన Sparse_సదిశ(స్థిరరాశి Type దత్తాంశం[N])
 	{
-		memcpy(_data, data, sizeof(_data));
+		జ్ఞాపకం_నకలు(దత్తాంశం_3, దత్తాంశం, పరిమాణం(దత్తాంశం_3));
 	}
 
-	template <size_t i>
-	inline Type at() const
+	మూస <size_t i>
+	అంతఃవరుస Type at() స్థిరరాశి
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
-		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		constexpr పూర్ణాంకం compressed_సూచీ_2 = కనుగొను_Compressed_సూచీ(i);
+		static_assert(compressed_సూచీ_2 >= 0, "cannot access unpopulated indices");
+		తిరిగి దత్తాంశం_3[compressed_సూచీ_2];
 	}
 
-	template <size_t i>
-	inline Type &at()
+	మూస <size_t i>
+	అంతఃవరుస Type &at()
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
-		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		constexpr పూర్ణాంకం compressed_సూచీ_2 = కనుగొను_Compressed_సూచీ(i);
+		static_assert(compressed_సూచీ_2 >= 0, "cannot access unpopulated indices");
+		తిరిగి దత్తాంశం_3[compressed_సూచీ_2];
 	}
 
-	inline Type atCompressedIndex(size_t i) const
+	అంతఃవరుస Type at_Compressed_సూచీ(size_t i) స్థిరరాశి
 	{
-		assert(i < N);
-		return _data[i];
+		ప్రతిజ్ఞా(i < N);
+		తిరిగి దత్తాంశం_3[i];
 	}
 
-	inline Type &atCompressedIndex(size_t i)
+	అంతఃవరుస Type &at_Compressed_సూచీ(size_t i)
 	{
-		assert(i < N);
-		return _data[i];
+		ప్రతిజ్ఞా(i < N);
+		తిరిగి దత్తాంశం_3[i];
 	}
 
-	void setZero()
+	శూన్య సమితి_Zero()
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] = Type(0);
+		కొరకు (size_t i = 0; i < N; i++) {
+			దత్తాంశం_3[i] = Type(0);
 		}
 	}
 
-	Type dot(const matrix::Vector<Type, M> &other) const
+	Type dot(స్థిరరాశి మాతృక::సదిశ<Type, M> &other) స్థిరరాశి
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
-			accum += _data[i] * other(indexAt(i));
+		కొరకు (size_t i = 0; i < N; i++) {
+			accum += దత్తాంశం_3[i] * other(సూచీ_At(i));
 		}
 
-		return accum;
+		తిరిగి accum;
 	}
 
-	matrix::Vector<Type, M> operator+(const matrix::Vector<Type, M> &other) const
+	మాతృక::సదిశ<Type, M> క్రియాకారకం+(స్థిరరాశి మాతృక::సదిశ<Type, M> &other) స్థిరరాశి
 	{
-		matrix::Vector<Type, M> vec = other;
+		మాతృక::సదిశ<Type, M> vec = other;
 
-		for (size_t i = 0; i < N; i++) {
-			vec(indexAt(i)) +=  _data[i];
+		కొరకు (size_t i = 0; i < N; i++) {
+			vec(సూచీ_At(i)) +=  దత్తాంశం_3[i];
 		}
 
-		return vec;
+		తిరిగి vec;
 	}
 
-	SparseVector &operator+=(Type t)
+	Sparse_సదిశ &క్రియాకారకం+=(Type t)
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] += t;
+		కొరకు (size_t i = 0; i < N; i++) {
+			దత్తాంశం_3[i] += t;
 		}
 
-		return *this;
+		తిరిగి *ఇది;
 	}
 
-	Type norm_squared() const
+	Type norm_squared() స్థిరరాశి
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
-			accum += _data[i] * _data[i];
+		కొరకు (size_t i = 0; i < N; i++) {
+			accum += దత్తాంశం_3[i] * దత్తాంశం_3[i];
 		}
 
-		return accum;
+		తిరిగి accum;
 	}
 
-	Type norm() const
+	Type norm() స్థిరరాశి
 	{
-		return std::sqrt(norm_squared());
+		తిరిగి std::వర్గమూలం(norm_squared());
 	}
 
-	bool longerThan(Type testVal) const
+	తార్కిక longerThan(Type testVal) స్థిరరాశి
 	{
-		return norm_squared() > testVal * testVal;
+		తిరిగి norm_squared() > testVal * testVal;
 	}
 };
 
-template<typename Type, size_t Q, size_t M, size_t ... Idxs>
-matrix::Vector<Type, Q> operator*(const matrix::Matrix<Type, Q, M> &mat,
-				  const matrix::SparseVector<Type, M, Idxs...> &vec)
+మూస<రకం_పేరు Type, size_t Q, size_t M, size_t ... Idxs>
+మాతృక::సదిశ<Type, Q> క్రియాకారకం*(స్థిరరాశి మాతృక::మాతృక_2<Type, Q, M> &mat,
+				  స్థిరరాశి మాతృక::Sparse_సదిశ<Type, M, Idxs...> &vec)
 {
-	matrix::Vector<Type, Q> res;
+	మాతృక::సదిశ<Type, Q> res;
 
-	for (size_t i = 0; i < Q; i++) {
-		const Vector<Type, M> row = mat.row(i);
-		res(i) = vec.dot(row);
+	కొరకు (size_t i = 0; i < Q; i++) {
+		స్థిరరాశి సదిశ<Type, M> అడ్డువరుస = mat.అడ్డువరుస(i);
+		res(i) = vec.dot(అడ్డువరుస);
 	}
 
-	return res;
+	తిరిగి res;
 }
 
 // returns x.T * A * x
-template<typename Type, size_t M, size_t ... Idxs>
-Type quadraticForm(const matrix::SquareMatrix<Type, M> &A, const matrix::SparseVector<Type, M, Idxs...> &x)
+మూస<రకం_పేరు Type, size_t M, size_t ... Idxs>
+Type quadraticForm(స్థిరరాశి మాతృక::వర్గం_మాతృక<Type, M> &A, స్థిరరాశి మాతృక::Sparse_సదిశ<Type, M, Idxs...> &x)
 {
 	Type res = Type(0);
 
-	for (size_t i = 0; i < x.non_zeros(); i++) {
+	కొరకు (size_t i = 0; i < x.non_zeros(); i++) {
 		Type tmp = Type(0);
 
-		for (size_t j = 0; j < x.non_zeros(); j++) {
-			tmp += A(x.index(i), x.index(j)) * x.atCompressedIndex(j);
+		కొరకు (size_t j = 0; j < x.non_zeros(); j++) {
+			tmp += A(x.సూచీ(i), x.సూచీ(j)) * x.at_Compressed_సూచీ(j);
 		}
 
-		res += x.atCompressedIndex(i) * tmp;
+		res += x.at_Compressed_సూచీ(i) * tmp;
 	}
 
-	return res;
+	తిరిగి res;
 }
 
-template<size_t M, size_t ... Idxs>
-using SparseVectorf = SparseVector<float, M, Idxs...>;
+మూస<size_t M, size_t ... Idxs>
+ఉపయోగించి SparseVectorf = Sparse_సదిశ<దశాంశం, M, Idxs...>;
 
 }

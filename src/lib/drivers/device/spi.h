@@ -30,12 +30,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#pragma once
+#సూచన once
 
-#ifdef __PX4_NUTTX
-#include "nuttx/SPI.hpp"
-#elif defined(__PX4_QURT)
-#include "qurt/SPI.hpp"
-#else
-#include "posix/SPI.hpp"
-#endif
+#నిర్వచితమైతే __PX4_NUTTX
+#అన్తర్భావ "nuttx/SPI.hpp"
+#లేదావేళ defined(__PX4_QURT)
+#అన్తర్భావ "qurt/SPI.hpp"
+#లేకపోతే
+#అన్తర్భావ "posix/SPI.hpp"
+#అయితే_ముగింపు

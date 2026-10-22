@@ -39,56 +39,56 @@
  * @author Lorenz Meier <lorenz@px4.io>
  */
 
-#pragma once
+#సూచన once
 
-#include <stdint.h>
+#అన్తర్భావ <stdint.h>
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/defines.h>
+#అన్తర్భావ <px4_platform_common/px4_config.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
 
 __BEGIN_DECLS
 
-#define DSM_FRAME_SIZE		16		/**< DSM frame size in bytes */
-#define DSM_FRAME_CHANNELS	7		/**< Max supported DSM channels per frame */
-#define DSM_MAX_CHANNEL_COUNT   20  /**< Max channel count of any DSM RC */
-#define DSM_BUFFER_SIZE		(DSM_FRAME_SIZE + DSM_FRAME_SIZE / 2)
+#నిర్వచించు DSM_చట్రం_కొలత		16		/**< DSM frame size in bytes */
+#నిర్వచించు DSM_చట్రం_CHANNELS	7		/**< Max supported DSM channels per frame */
+#నిర్వచించు DSM_MAX_CHANNEL_లెక్క   20  /**< Max channel count of any DSM RC */
+#నిర్వచించు DSM_బఫరు_కొలత		(DSM_చట్రం_కొలత + DSM_చట్రం_కొలత / 2)
 
 
-#pragma pack(push, 1)
-typedef   uint8_t dsm_frame_t[DSM_BUFFER_SIZE]; /**< DSM dsm frame receive buffer */
-typedef   uint8_t dsm_buf_t[DSM_FRAME_SIZE * 2]; // Define working buffer
+#సూచన pack(నెట్టు, 1)
+రకనిర్వచనం   uint8_t dsm_చట్రం_t[DSM_బఫరు_కొలత]; /**< DSM dsm frame receive buffer */
+రకనిర్వచనం   uint8_t dsm_buf_t[DSM_చట్రం_కొలత * 2]; // Define working buffer
 
-typedef  struct dsm_decode_t {
-	dsm_frame_t frame;
+రకనిర్వచనం  నిర్మాణం dsm_decode_t {
+	dsm_చట్రం_t చట్రం;
 	dsm_buf_t buf;
 } dsm_decode_t;
 
-#pragma pack(pop)
+#సూచన pack(తీయి)
 
-__EXPORT int	dsm_init(const char *device);
-__EXPORT void	dsm_deinit(void);
-__EXPORT void	dsm_proto_init(void);
-__EXPORT int	dsm_config(int dsm_fd);
-__EXPORT bool	dsm_input(int dsm_fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit, uint8_t *n_bytes,
-			  uint8_t **bytes, int8_t *rssi, unsigned *frame_drops, unsigned max_values);
+__EXPORT పూర్ణాంకం	dsm_init(స్థిరరాశి అక్షరం *device);
+__EXPORT శూన్య	dsm_deinit(శూన్య);
+__EXPORT శూన్య	dsm_proto_init(శూన్య);
+__EXPORT పూర్ణాంకం	dsm_config(పూర్ణాంకం dsm_fd);
+__EXPORT bool	dsm_ఆదానం(పూర్ణాంకం dsm_fd, uint16_t *విలువలు_2, uint16_t *అంకె_విలువలు, bool *dsm_11_బిట్టు, uint8_t *n_బైట్లు,
+			  uint8_t **బైట్లు, int8_t *rssi, గుర్తులేని *చట్రం_drops, గుర్తులేని max_విలువలు);
 
-__EXPORT bool	dsm_parse(const uint64_t now, const uint8_t *frame, const unsigned len, uint16_t *values,
-			  uint16_t *num_values, bool *dsm_11_bit, unsigned *frame_drops, int8_t *rssi_percent, uint16_t max_channels);
+__EXPORT bool	dsm_parse(స్థిరరాశి uint64_t now, స్థిరరాశి uint8_t *చట్రం, స్థిరరాశి గుర్తులేని len, uint16_t *విలువలు_2,
+			  uint16_t *అంకె_విలువలు, bool *dsm_11_బిట్టు, గుర్తులేని *చట్రం_drops, int8_t *rssi_percent, uint16_t max_channels);
 
-#ifdef SPEKTRUM_POWER
-__EXPORT void	dsm_bind(uint16_t cmd, int pulses);
-#endif
+#నిర్వచితమైతే SPEKTRUM_POWER
+__EXPORT శూన్య	dsm_bind(uint16_t cmd, పూర్ణాంకం pulses);
+#అయితే_ముగింపు
 
-enum DSM_CMD {							/* DSM bind states */
-	DSM_CMD_BIND_POWER_DOWN = 0,
-	DSM_CMD_BIND_POWER_UP,
-	DSM_CMD_BIND_SET_RX_OUT,
+గణన DSM_CMD {							/* DSM bind states */
+	DSM_CMD_BIND_POWER_కిందికి = 0,
+	DSM_CMD_BIND_POWER_పైకి,
+	DSM_CMD_BIND_సమితి_RX_బహిర్గతం,
 	DSM_CMD_BIND_SEND_PULSES,
 	DSM_CMD_BIND_REINIT_UART
 };
 
-#define DSM2_BIND_PULSES 3	/* DSM_BIND_START parameter, pulses required to start pairing DSM2 22ms */
-#define DSMX_BIND_PULSES 7	/* DSM_BIND_START parameter, pulses required to start pairing DSMx 22ms */
-#define DSMX8_BIND_PULSES 9     /* DSM_BIND_START parameter, pulses required to start pairing DSMx 11ms */
+#నిర్వచించు DSM2_BIND_PULSES 3	/* DSM_BIND_START parameter, pulses required to start pairing DSM2 22ms */
+#నిర్వచించు DSMX_BIND_PULSES 7	/* DSM_BIND_START parameter, pulses required to start pairing DSMx 22ms */
+#నిర్వచించు DSMX8_BIND_PULSES 9     /* DSM_BIND_START parameter, pulses required to start pairing DSMx 11ms */
 
 __END_DECLS

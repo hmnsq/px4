@@ -31,194 +31,194 @@
  *
  ****************************************************************************/
 
-#include "bl_update_flash.h"
+#అన్తర్భావ "bl_update_flash.h"
 
-#include <px4_platform_common/px4_config.h>
+#అన్తర్భావ <px4_platform_common/px4_config.h>
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sched.h>
-#include <sys/stat.h>
+#అన్తర్భావ <stdint.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <string.h>
+#అన్తర్భావ <unistd.h>
+#అన్తర్భావ <fcntl.h>
+#అన్తర్భావ <sched.h>
+#అన్తర్భావ <sys/stat.h>
 
-#include <arch/board/board.h>
+#అన్తర్భావ <arch/board/board.h>
 
-#include <nuttx/progmem.h>
+#అన్తర్భావ <nuttx/progmem.h>
 
-#if defined(BL_UPDATE_WATCHDOG)
+#ఒకవేళ defined(BL_UPDATE_WATCHDOG)
 #  include <drivers/drv_watchdog.h>
-#else
+#లేకపోతే
 #  define watchdog_pet()
-#endif
+#అయితే_ముగింపు
 
-#if defined(CONFIG_ARCH_CHIP_STM32H7)
-#  define BL_FILE_SIZE_LIMIT	128*1024
-#  define STM_RAM_BASE        STM32_AXISRAM_BASE
-#  define PAGE_SIZE_MATTERS   1
-#elif defined(CONFIG_ARCH_CHIP_STM32F7)
-#  define BL_FILE_SIZE_LIMIT	32*1024
-#  define STM_RAM_BASE        STM32_SRAM_BASE
-#else
-#  define BL_FILE_SIZE_LIMIT  16384
-#  define STM_RAM_BASE        STM32_SRAM_BASE
-#endif
+#ఒకవేళ defined(CONFIG_ARCH_CHIP_STM32H7)
+#  define BL_FILE_కొలత_హద్దు	128*1024
+#  define STM_RAM_పునాది        STM32_AXISRAM_పునాది
+#  define పుట_కొలత_MATTERS   1
+#లేదావేళ defined(CONFIG_ARCH_CHIP_STM32F7)
+#  define BL_FILE_కొలత_హద్దు	32*1024
+#  define STM_RAM_పునాది        STM32_SRAM_పునాది
+#లేకపోతే
+#  define BL_FILE_కొలత_హద్దు  16384
+#  define STM_RAM_పునాది        STM32_SRAM_పునాది
+#అయితే_ముగింపు
 
-namespace bl_update
+నామాకాశ bl_update
 {
 
-#if defined (CONFIG_STM32_STM32F4XXX) || defined (CONFIG_ARCH_CHIP_STM32F7) || \
+#ఒకవేళ defined (CONFIG_STM32_STM32F4XXX) || defined (CONFIG_ARCH_CHIP_STM32F7) || \
     defined (CONFIG_ARCH_CHIP_STM32H7)
 
-static Result write_flash(const uint8_t *buf, size_t image_size)
+స్థిర ఫలితం_2 write_flash(స్థిరరాశి uint8_t *buf, size_t image_కొలత)
 {
-	uint8_t *base = (uint8_t *) PX4_FLASH_BASE;
+	uint8_t *base = (uint8_t *) PX4_FLASH_పునాది;
 
-	if (memcmp(base, buf, image_size) == 0) {
-		return Result::Unchanged;
+	ఒకవేళ (memcmp(base, buf, image_కొలత) == 0) {
+		తిరిగి ఫలితం_2::Unchanged;
 	}
 
 	/* prevent other tasks from running while we do this */
-	sched_lock();
+	sched_తాళం();
 
 	/* The IWDG may already be running (CAN nodes start it in the bootloader)
 	 * and nothing else gets to pet it while the scheduler is locked. */
 	watchdog_pet();
-	const bool erased = up_progmem_eraseblock(0) >= 0;
+	స్థిరరాశి తార్కిక erased = పైకి_progmem_eraseblock(0) >= 0;
 	watchdog_pet();
 
 	/* Program even if the erase reported an error: the old bootloader is
 	 * already damaged, and a failed program reports it below. */
-	const ssize_t size = up_progmem_write((size_t) base, buf, image_size);
+	స్థిరరాశి ssize_t కొలత = పైకి_progmem_write((size_t) base, buf, image_కొలత);
 	watchdog_pet();
 
 	/* re-lock the flash control register */
-	stm32_flash_lock();
+	stm32_flash_తాళం();
 
 	sched_unlock();
 
-	if (size != (ssize_t) image_size) {
-		return erased ? Result::ProgramFailed : Result::EraseFailed;
+	ఒకవేళ (కొలత != (ssize_t) image_కొలత) {
+		తిరిగి erased ? ఫలితం_2::కార్యక్రమం_Failed : ఫలితం_2::EraseFailed;
 	}
 
-	if (memcmp(base, buf, image_size) != 0) {
-		return Result::VerifyFailed;
+	ఒకవేళ (memcmp(base, buf, image_కొలత) != 0) {
+		తిరిగి ఫలితం_2::VerifyFailed;
 	}
 
-	return Result::Updated;
+	తిరిగి ఫలితం_2::Updated;
 }
 
-Result flash(const char *path)
+ఫలితం_2 flash(స్థిరరాశి అక్షరం *మార్గం)
 {
-	int fd = open(path, O_RDONLY);
+	పూర్ణాంకం fd = open(మార్గం, O_RDONLY);
 
-	if (fd < 0) {
-		return Result::OpenFailed;
+	ఒకవేళ (fd < 0) {
+		తిరిగి ఫలితం_2::OpenFailed;
 	}
 
-	struct stat s;
+	నిర్మాణం stat s;
 
-	if (fstat(fd, &s) != 0) {
+	ఒకవేళ (fstat(fd, &s) != 0) {
 		close(fd);
-		return Result::OpenFailed;
+		తిరిగి ఫలితం_2::OpenFailed;
 	}
 
-	if (s.st_size > BL_FILE_SIZE_LIMIT) {
+	ఒకవేళ (s.st_size > BL_FILE_కొలత_హద్దు) {
 		close(fd);
-		return Result::TooLarge;
+		తిరిగి ఫలితం_2::TooLarge;
 	}
 
-	const size_t file_size = s.st_size;
+	స్థిరరాశి size_t file_కొలత = s.st_size;
 
 	/* up_progmem_write() rejects a size that is not a multiple of its
 	 * program unit, and by then the old bootloader is erased. */
-#if defined(PAGE_SIZE_MATTERS)
-	const size_t align_mask = up_progmem_pagesize(0) - 1;
-#else
-	const size_t align_mask = sizeof(uint32_t) - 1;
-#endif
-	const size_t image_size = (file_size + align_mask) & ~align_mask;
+#ఒకవేళ defined(పుట_కొలత_MATTERS)
+	స్థిరరాశి size_t align_ముసుగు = పైకి_progmem_pagesize(0) - 1;
+#లేకపోతే
+	స్థిరరాశి size_t align_ముసుగు = పరిమాణం(uint32_t) - 1;
+#అయితే_ముగింపు
+	స్థిరరాశి size_t image_కొలత = (file_కొలత + align_ముసుగు) & ~align_ముసుగు;
 
-	uint8_t *buf = (uint8_t *)malloc(image_size);
+	uint8_t *buf = (uint8_t *)జ్ఞాపకం_ఇవ్వు(image_కొలత);
 
-	if (buf == nullptr) {
+	ఒకవేళ (buf == శూన్యసూచిక) {
 		close(fd);
-		return Result::NoMemory;
+		తిరిగి ఫలితం_2::No_జ్ఞాపకం;
 	}
 
-	memset(buf, 0xff, image_size);
+	memset(buf, 0xff, image_కొలత);
 
-	const ssize_t bytes_read = read(fd, buf, file_size);
+	స్థిరరాశి ssize_t బైట్లు_read = పఠ(fd, buf, file_కొలత);
 	close(fd);
 
-	if (bytes_read != (ssize_t) file_size) {
-		free(buf);
-		return Result::ReadFailed;
+	ఒకవేళ (బైట్లు_read != (ssize_t) file_కొలత) {
+		విడుదల(buf);
+		తిరిగి ఫలితం_2::ReadFailed;
 	}
 
-	const uint32_t *hdr = (const uint32_t *)buf;
+	స్థిరరాశి uint32_t *hdr = (స్థిరరాశి uint32_t *)buf;
 
-	if ((hdr[0] < STM_RAM_BASE) ||			/* stack not below RAM */
-	    (hdr[0] > (STM_RAM_BASE + (128 * 1024))) ||	/* stack not above RAM */
-	    (hdr[1] < PX4_FLASH_BASE) ||			/* entrypoint not below flash */
-	    ((hdr[1] - PX4_FLASH_BASE) > BL_FILE_SIZE_LIMIT)) {	/* entrypoint not outside bootloader */
-		free(buf);
-		return Result::InvalidImage;
+	ఒకవేళ ((hdr[0] < STM_RAM_పునాది) ||			/* stack not below RAM */
+	    (hdr[0] > (STM_RAM_పునాది + (128 * 1024))) ||	/* stack not above RAM */
+	    (hdr[1] < PX4_FLASH_పునాది) ||			/* entrypoint not below flash */
+	    ((hdr[1] - PX4_FLASH_పునాది) > BL_FILE_కొలత_హద్దు)) {	/* entrypoint not outside bootloader */
+		విడుదల(buf);
+		తిరిగి ఫలితం_2::InvalidImage;
 	}
 
-	const Result result = write_flash(buf, image_size);
-	free(buf);
-	return result;
+	స్థిరరాశి ఫలితం_2 ఫలితం = write_flash(buf, image_కొలత);
+	విడుదల(buf);
+	తిరిగి ఫలితం;
 }
 
-#else
+#లేకపోతే
 
-Result flash(const char *path)
+ఫలితం_2 flash(స్థిరరాశి అక్షరం *మార్గం)
 {
-	return Result::NotSupported;
+	తిరిగి ఫలితం_2::NotSupported;
 }
 
-#endif
+#అయితే_ముగింపు
 
-const char *result_str(Result result)
+స్థిరరాశి అక్షరం *ఫలితం_str(ఫలితం_2 ఫలితం)
 {
-	switch (result) {
-	case Result::Updated:
-		return "bootloader updated";
+	ఎంపిక (ఫలితం) {
+	స్థితి ఫలితం_2::Updated:
+		తిరిగి "bootloader updated";
 
-	case Result::Unchanged:
-		return "bootloader unchanged";
+	స్థితి ఫలితం_2::Unchanged:
+		తిరిగి "bootloader unchanged";
 
-	case Result::NotSupported:
-		return "not supported on this hardware";
+	స్థితి ఫలితం_2::NotSupported:
+		తిరిగి "not supported on this hardware";
 
-	case Result::OpenFailed:
-		return "cannot open bootloader file";
+	స్థితి ఫలితం_2::OpenFailed:
+		తిరిగి "cannot open bootloader file";
 
-	case Result::TooLarge:
-		return "bootloader file too large";
+	స్థితి ఫలితం_2::TooLarge:
+		తిరిగి "bootloader file too large";
 
-	case Result::NoMemory:
-		return "out of memory";
+	స్థితి ఫలితం_2::No_జ్ఞాపకం:
+		తిరిగి "out of memory";
 
-	case Result::ReadFailed:
-		return "bootloader file read error";
+	స్థితి ఫలితం_2::ReadFailed:
+		తిరిగి "bootloader file read error";
 
-	case Result::InvalidImage:
-		return "not a bootloader image";
+	స్థితి ఫలితం_2::InvalidImage:
+		తిరిగి "not a bootloader image";
 
-	case Result::EraseFailed:
-		return "flash erase failed, retry before rebooting";
+	స్థితి ఫలితం_2::EraseFailed:
+		తిరిగి "flash erase failed, retry before rebooting";
 
-	case Result::ProgramFailed:
-		return "flash program failed, retry before rebooting";
+	స్థితి ఫలితం_2::కార్యక్రమం_Failed:
+		తిరిగి "flash program failed, retry before rebooting";
 
-	case Result::VerifyFailed:
-		return "verify failed, retry before rebooting";
+	స్థితి ఫలితం_2::VerifyFailed:
+		తిరిగి "verify failed, retry before rebooting";
 	}
 
-	return "unknown error";
+	తిరిగి "unknown error";
 }
 
 } // namespace bl_update

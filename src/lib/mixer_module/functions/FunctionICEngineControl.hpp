@@ -31,54 +31,54 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "FunctionProviderBase.hpp"
+#అన్తర్భావ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/internal_combustion_engine_control.h>
+#అన్తర్భావ <uORB/topics/internal_combustion_engine_control.h>
 
 /**
  * Functions: ICE...
  */
-class FunctionICEControl : public FunctionProviderBase
+తరగతి FunctionICEControl : బహిరంగ Function_Provider_పునాది
 {
-public:
+బహిరంగ:
 	FunctionICEControl()
 	{
-		resetAllToDisarmedValue();
+		reset_All_గమ్యం_Disarmed_విలువ();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionICEControl(); }
+	స్థిర Function_Provider_పునాది *allocate(స్థిరరాశి Context &context) { తిరిగి కొత్త FunctionICEControl(); }
 
-	void update() override
+	శూన్య update() override
 	{
-		internal_combustion_engine_control_s internal_combustion_engine_control;
+		అంతర్గత_combustion_engine_control_s అంతర్గత_combustion_engine_control;
 
 		// map [0, 1] to [-1, 1] which is the interface for non-motor PWM channels
 		// NAN is mapped to disarmed
-		if (_internal_combustion_engine_control_sub.update(&internal_combustion_engine_control)) {
-			_data[0] = internal_combustion_engine_control.ignition_on * 2.f - 1.f;
-			_data[1] = internal_combustion_engine_control.throttle_control * 2.f - 1.f;
-			_data[2] = internal_combustion_engine_control.choke_control * 2.f - 1.f;
-			_data[3] = internal_combustion_engine_control.starter_engine_control * 2.f - 1.f;
+		ఒకవేళ (అంతర్గత_combustion_engine_control_sub.update(&అంతర్గత_combustion_engine_control)) {
+			దత్తాంశం_3[0] = అంతర్గత_combustion_engine_control.ignition_on * 2.f - 1.f;
+			దత్తాంశం_3[1] = అంతర్గత_combustion_engine_control.throttle_control * 2.f - 1.f;
+			దత్తాంశం_3[2] = అంతర్గత_combustion_engine_control.choke_control * 2.f - 1.f;
+			దత్తాంశం_3[3] = అంతర్గత_combustion_engine_control.starter_engine_control * 2.f - 1.f;
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::IC_Engine_Ignition]; }
+	దశాంశం value(OutputFunction func) override { తిరిగి దత్తాంశం_3[(పూర్ణాంకం)func - (పూర్ణాంకం)OutputFunction::IC_Engine_Ignition]; }
 
-private:
-	static constexpr int num_data_points = 4;
+అంతరంగ:
+	స్థిర constexpr పూర్ణాంకం అంకె_దత్తాంశం_points = 4;
 
-	void resetAllToDisarmedValue()
+	శూన్య reset_All_గమ్యం_Disarmed_విలువ()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
-			_data[i] = NAN;
+		కొరకు (పూర్ణాంకం i = 0; i < అంకె_దత్తాంశం_points; ++i) {
+			దత్తాంశం_3[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::IC_Engine_Starter - (int)OutputFunction::IC_Engine_Ignition + 1,
+	static_assert(అంకె_దత్తాంశం_points == (పూర్ణాంకం)OutputFunction::IC_Engine_Starter - (పూర్ణాంకం)OutputFunction::IC_Engine_Ignition + 1,
 		      "number of functions mismatch");
 
-	uORB::Subscription _internal_combustion_engine_control_sub{ORB_ID(internal_combustion_engine_control)};
-	float _data[num_data_points] {};
+	uORB::Subscription అంతర్గత_combustion_engine_control_sub{ORB_ID(అంతర్గత_combustion_engine_control)};
+	దశాంశం దత్తాంశం_3[అంకె_దత్తాంశం_points] {};
 };

@@ -37,40 +37,40 @@
  * Definitions for the generic base classes in the device framework.
  */
 
-#ifndef _DEVICE_CDEV_HPP
-#define _DEVICE_CDEV_HPP
+#నిర్వచితం_కాకపోతే _DEVICE_CDEV_HPP
+#నిర్వచించు _DEVICE_CDEV_HPP
 
-#include "Device.hpp"
-#include <lib/cdev/CDev.hpp>
+#అన్తర్భావ "Device.hpp"
+#అన్తర్భావ <lib/cdev/CDev.hpp>
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/posix.h>
+#అన్తర్భావ <px4_platform_common/px4_config.h>
+#అన్తర్భావ <px4_platform_common/posix.h>
 
 /**
  * Namespace encapsulating all device framework classes, functions and data.
  */
-namespace device
+నామాకాశ device
 {
 
-using file_t = cdev::file_t;
+ఉపయోగించి file_t = cdev::file_t;
 
 /**
  * Abstract class for any character device
  */
-class __EXPORT CDev : public Device, public cdev::CDev
+తరగతి __EXPORT CDev : బహిరంగ Device, బహిరంగ cdev::CDev
 {
-public:
+బహిరంగ:
 	/**
 	 * Constructor
 	 *
 	 * @param name		Driver name
 	 * @param devname	Device node name
 	 */
-	CDev(const char *name, const char *devname); // TODO: dagar remove name and Device inheritance
+	CDev(స్థిరరాశి అక్షరం *name, స్థిరరాశి అక్షరం *devname); // TODO: dagar remove name and Device inheritance
 
-	virtual ~CDev() = default;
+	మాయా ~CDev() = అప్రమేయ;
 
-	virtual int	init();
+	మాయా పూర్ణాంకం	init();
 
 	/**
 	 * Perform an ioctl operation on the device.
@@ -80,17 +80,17 @@ public:
 	 * @param arg		The ioctl argument value.
 	 * @return		OK on success, or -errno otherwise.
 	 */
-	virtual int	ioctl(file_t *filep, int cmd, unsigned long arg) { return -ENOTTY; }
+	మాయా పూర్ణాంకం	ioctl(file_t *filep, పూర్ణాంకం cmd, గుర్తులేని దీర్ఘ arg) { తిరిగి -ENOTTY; }
 
 };
 
 } // namespace device
 
 // class instance for primary driver of each class
-enum CLASS_DEVICE {
+గణన CLASS_DEVICE {
 	CLASS_DEVICE_PRIMARY = 0,
 	CLASS_DEVICE_SECONDARY = 1,
 	CLASS_DEVICE_TERTIARY = 2
 };
 
-#endif /* _DEVICE_CDEV_HPP */
+#అయితే_ముగింపు /* _DEVICE_CDEV_HPP */

@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ <matrix/math.hpp>
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-TEST(MatrixTransposeTest, Transpose)
+TEST(మాతృక_Transpose_Test, Transpose)
 {
-	float data[6] = {1, 2, 3, 4, 5, 6};
-	Matrix<float, 2, 3> A(data);
-	Matrix<float, 3, 2> A_T = A.transpose();
-	float data_check[6] = {1, 4, 2, 5, 3, 6};
-	Matrix<float, 3, 2> A_T_check(data_check);
+	దశాంశం దత్తాంశం[6] = {1, 2, 3, 4, 5, 6};
+	మాతృక_2<దశాంశం, 2, 3> A(దత్తాంశం);
+	మాతృక_2<దశాంశం, 3, 2> A_T = A.transpose();
+	దశాంశం దత్తాంశం_check[6] = {1, 4, 2, 5, 3, 6};
+	మాతృక_2<దశాంశం, 3, 2> A_T_check(దత్తాంశం_check);
 	EXPECT_EQ(A_T, A_T_check);
 }

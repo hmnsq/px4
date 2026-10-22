@@ -31,31 +31,31 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <px4_defines.h>
+#అన్తర్భావ <px4_defines.h>
 
-#include <matrix/math.hpp>
-#include <mathlib/mathlib.h>
+#అన్తర్భావ <matrix/math.hpp>
+#అన్తర్భావ <mathlib/mathlib.h>
 
-namespace math
+నామాకాశ math
 {
-namespace trajectory
+నామాకాశ trajectory
 {
-using matrix::Vector3f;
-using matrix::Vector2f;
+ఉపయోగించి మాతృక::Vector3f;
+ఉపయోగించి మాతృక::Vector2f;
 
-struct VehicleDynamicLimits {
-	float z_accept_rad;
-	float xy_accept_rad;
+నిర్మాణం VehicleDynamicLimits {
+	దశాంశం z_accept_rad;
+	దశాంశం xy_accept_rad;
 
-	float max_acc_xy;
-	float max_jerk;
+	దశాంశం max_acc_xy;
+	దశాంశం max_jerk;
 
-	float max_speed_xy;
+	దశాంశం max_వేగం_xy;
 
 	// TODO: remove this
-	float max_acc_xy_radius_scale;
+	దశాంశం max_acc_xy_radius_scale;
 };
 
 /*
@@ -67,33 +67,33 @@ struct VehicleDynamicLimits {
  * the real acceptance radius is smaller.
  *
  */
-inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, const Vector3f &target,
-		const Vector3f &next_target, float exit_speed, const VehicleDynamicLimits &config)
+అంతఃవరుస దశాంశం compute_ప్రారంభం_XYSpeed_From_Waypoints(స్థిరరాశి Vector3f &ప్రారంభం_position, స్థిరరాశి Vector3f &లక్ష్యం,
+		స్థిరరాశి Vector3f &తదుపరి_లక్ష్యం, దశాంశం exit_వేగం, స్థిరరాశి VehicleDynamicLimits &config)
 {
-	const float distance_target_next = (target - next_target).xy().norm();
+	స్థిరరాశి దశాంశం దూరం_లక్ష్యం_తదుపరి = (లక్ష్యం - తదుపరి_లక్ష్యం).xy().norm();
 
-	const bool target_next_different = distance_target_next  > 0.001f;
-	const bool waypoint_overlap = distance_target_next < config.xy_accept_rad;
+	స్థిరరాశి తార్కిక లక్ష్యం_తదుపరి_different = దూరం_లక్ష్యం_తదుపరి  > 0.001f;
+	స్థిరరాశి తార్కిక waypoint_overlap = దూరం_లక్ష్యం_తదుపరి < config.xy_accept_rad;
 
-	float speed_at_target = 0.0f;
+	దశాంశం వేగం_at_లక్ష్యం = 0.0f;
 
-	if (target_next_different &&
+	ఒకవేళ (లక్ష్యం_తదుపరి_different &&
 	    !waypoint_overlap
 	   ) {
 		// rounding can push the dot product of two unit vectors past 1, which acosf turns into NaN
-		const float cos_alpha = constrain(Vector2f((target - start_position).xy()).unit_or_zero().dot(
-				Vector2f((target - next_target).xy()).unit_or_zero()), -1.f, 1.f);
-		const float alpha = acosf(cos_alpha);
-		const float safe_alpha = constrain(alpha, 0.f, M_PI_F - FLT_EPSILON);
-		float accel_tmp = config.max_acc_xy_radius_scale * config.max_acc_xy;
-		float max_speed_in_turn = computeMaxSpeedInWaypoint(safe_alpha, accel_tmp, config.xy_accept_rad);
-		speed_at_target = min(max_speed_in_turn, exit_speed, config.max_speed_xy);
+		స్థిరరాశి దశాంశం cos_alpha = constrain(Vector2f((లక్ష్యం - ప్రారంభం_position).xy()).unit_or_zero().dot(
+				Vector2f((లక్ష్యం - తదుపరి_లక్ష్యం).xy()).unit_or_zero()), -1.f, 1.f);
+		స్థిరరాశి దశాంశం alpha = acosf(cos_alpha);
+		స్థిరరాశి దశాంశం సురక్షిత_alpha = constrain(alpha, 0.f, M_PI_F - FLT_EPSILON);
+		దశాంశం accel_tmp = config.max_acc_xy_radius_scale * config.max_acc_xy;
+		దశాంశం max_వేగం_లోపల_turn = compute_Max_వేగం_లోపల_Waypoint(సురక్షిత_alpha, accel_tmp, config.xy_accept_rad);
+		వేగం_at_లక్ష్యం = min(max_వేగం_లోపల_turn, exit_వేగం, config.max_వేగం_xy);
 	}
 
-	float start_to_target = (start_position - target).xy().norm();
-	float max_speed = computeMaxSpeedFromDistance(config.max_jerk, config.max_acc_xy, start_to_target, speed_at_target);
+	దశాంశం ప్రారంభం_గమ్యం_లక్ష్యం = (ప్రారంభం_position - లక్ష్యం).xy().norm();
+	దశాంశం max_వేగం = compute_Max_వేగం_From_దూరం(config.max_jerk, config.max_acc_xy, ప్రారంభం_గమ్యం_లక్ష్యం, వేగం_at_లక్ష్యం);
 
-	return min(config.max_speed_xy, max_speed);
+	తిరిగి min(config.max_వేగం_xy, max_వేగం);
 }
 
 /*
@@ -106,22 +106,22 @@ inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, co
  *
  * @return the maximum speed at waypoint[0] which allows it to follow the trajectory while respecting the dynamic limits
  */
-template <int N>
-float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDynamicLimits &config)
+మూస <పూర్ణాంకం N>
+దశాంశం computeXYSpeedFromWaypoints(స్థిరరాశి Vector3f waypoints[N], స్థిరరాశి VehicleDynamicLimits &config)
 {
 	static_assert(N >= 2, "Need at least 2 points to compute speed");
 
-	float max_speed = 0.f;
+	దశాంశం max_వేగం = 0.f;
 
 	// go backwards through the waypoints
-	for (int i = (N - 2); i >= 0; i--) {
-		max_speed = computeStartXYSpeedFromWaypoints(waypoints[i],
+	కొరకు (పూర్ణాంకం i = (N - 2); i >= 0; i--) {
+		max_వేగం = compute_ప్రారంభం_XYSpeed_From_Waypoints(waypoints[i],
 				waypoints[i + 1],
 				waypoints[min(i + 2, N - 1)],
-				max_speed, config);
+				max_వేగం, config);
 	}
 
-	return max_speed;
+	తిరిగి max_వేగం;
 }
 
 /*
@@ -132,19 +132,19 @@ float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDyna
  * only the XY components are scaled down to avoid affecting
  * Z in case of numerical issues
  */
-inline void clampToXYNorm(Vector3f &target, float max_xy_norm, float accuracy = FLT_EPSILON)
+అంతఃవరుస శూన్య clamp_గమ్యం_XYNorm(Vector3f &లక్ష్యం, దశాంశం max_xy_norm, దశాంశం accuracy = FLT_EPSILON)
 {
-	const float xynorm = target.xy().norm();
-	const float scale_factor = (xynorm > FLT_EPSILON)
+	స్థిరరాశి దశాంశం xynorm = లక్ష్యం.xy().norm();
+	స్థిరరాశి దశాంశం scale_గుణకం = (xynorm > FLT_EPSILON)
 				   ? max_xy_norm / xynorm
 				   : 1.f;
 
-	if (scale_factor < 1.f) {
-		if (max_xy_norm < accuracy && xynorm < accuracy) {
-			target.xy() = Vector2f(target) * scale_factor;
+	ఒకవేళ (scale_గుణకం < 1.f) {
+		ఒకవేళ (max_xy_norm < accuracy && xynorm < accuracy) {
+			లక్ష్యం.xy() = Vector2f(లక్ష్యం) * scale_గుణకం;
 
-		} else {
-			target *= scale_factor;
+		} లేకపోతే {
+			లక్ష్యం *= scale_గుణకం;
 		}
 	}
 }
@@ -157,19 +157,19 @@ inline void clampToXYNorm(Vector3f &target, float max_xy_norm, float accuracy = 
  * only the Z component is scaled down to avoid affecting
  * XY in case of numerical issues
  */
-inline void clampToZNorm(Vector3f &target, float max_z_norm, float accuracy = FLT_EPSILON)
+అంతఃవరుస శూన్య clamp_గమ్యం_ZNorm(Vector3f &లక్ష్యం, దశాంశం max_z_norm, దశాంశం accuracy = FLT_EPSILON)
 {
-	const float znorm = fabs(target(2));
-	const float scale_factor = (znorm > FLT_EPSILON)
+	స్థిరరాశి దశాంశం znorm = fabs(లక్ష్యం(2));
+	స్థిరరాశి దశాంశం scale_గుణకం = (znorm > FLT_EPSILON)
 				   ? max_z_norm / znorm
 				   : 1.f;
 
-	if (scale_factor < 1.f) {
-		if (max_z_norm < accuracy && znorm < accuracy) {
-			target(2) *= scale_factor;
+	ఒకవేళ (scale_గుణకం < 1.f) {
+		ఒకవేళ (max_z_norm < accuracy && znorm < accuracy) {
+			లక్ష్యం(2) *= scale_గుణకం;
 
-		} else {
-			target *= scale_factor;
+		} లేకపోతే {
+			లక్ష్యం *= scale_గుణకం;
 		}
 	}
 }

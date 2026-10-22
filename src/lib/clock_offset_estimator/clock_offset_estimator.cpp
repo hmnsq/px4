@@ -31,40 +31,40 @@
  *
  ****************************************************************************/
 
-#include "clock_offset_estimator.hpp"
+#అన్తర్భావ "clock_offset_estimator.hpp"
 
-hrt_abstime ClockOffsetEstimator::toLocal(uint64_t remote_us, hrt_abstime local_us)
+hrt_abstime Clock_స్థానభ్రంశం_Estimator::గమ్యం_Local(uint64_t remote_us, hrt_abstime local_us)
 {
-	if (remote_us == 0) {
-		return 0;
+	ఒకవేళ (remote_us == 0) {
+		తిరిగి 0;
 	}
 
-	const int64_t lag = static_cast<int64_t>(local_us) - static_cast<int64_t>(remote_us);
+	స్థిరరాశి int64_t lag = static_cast<int64_t>(local_us) - static_cast<int64_t>(remote_us);
 
-	if (!_initialized || lag > _link_offset_us + kResetThresholdUs) {
+	ఒకవేళ (!_initialized || lag > link_స్థానభ్రంశం_us + k_Reset_పరిమితి_Us) {
 		// Bootstrap, or remote-clock discontinuity.
-		_link_offset_us = lag;
-		_initialized = true;
+		link_స్థానభ్రంశం_us = lag;
+		_initialized = నిజం;
 
-	} else {
+	} లేకపోతే {
 		// Drift the floor up at the worst-case relative clock rate so we don't
 		// pin below the true offset when HRT runs faster than the remote.
-		const hrt_abstime dt = (local_us > _last_update_us) ? (local_us - _last_update_us) : 0;
-		_link_offset_us += static_cast<int64_t>(dt) * kMaxClockDriftPpm / 1'000'000;
+		స్థిరరాశి hrt_abstime dt = (local_us > చివరి_update_us) ? (local_us - చివరి_update_us) : 0;
+		link_స్థానభ్రంశం_us += static_cast<int64_t>(dt) * kMaxClockDriftPpm / 1'000'000;
 
-		if (lag < _link_offset_us) {
-			_link_offset_us = lag;
+		ఒకవేళ (lag < link_స్థానభ్రంశం_us) {
+			link_స్థానభ్రంశం_us = lag;
 		}
 	}
 
-	_last_update_us = local_us;
+	చివరి_update_us = local_us;
 
-	const int64_t result = static_cast<int64_t>(remote_us) + _link_offset_us;
+	స్థిరరాశి int64_t ఫలితం = static_cast<int64_t>(remote_us) + link_స్థానభ్రంశం_us;
 
 	// Mapped HRT cannot lie after receipt.
-	if (result <= 0 || result > static_cast<int64_t>(local_us)) {
-		return 0;
+	ఒకవేళ (ఫలితం <= 0 || ఫలితం > static_cast<int64_t>(local_us)) {
+		తిరిగి 0;
 	}
 
-	return static_cast<hrt_abstime>(result);
+	తిరిగి static_cast<hrt_abstime>(ఫలితం);
 }

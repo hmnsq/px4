@@ -37,54 +37,54 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <time.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <mathlib/math/test/test.hpp>
+#అన్తర్భావ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
 /**
  * An output trim/ saturation block
  */
-class __EXPORT BlockOutput: public SuperBlock
+తరగతి __EXPORT ఖండం_Output: బహిరంగ Super_ఖండం
 {
-public:
+బహిరంగ:
 // methods
-	BlockOutput(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_trim(this, "TRIM"),
-		_limit(this, ""),
+	ఖండం_Output(Super_ఖండం *మాతృ, స్థిరరాశి అక్షరం *name) :
+		Super_ఖండం(మాతృ, name),
+		_trim(ఇది, "TRIM"),
+		హద్దు(ఇది, ""),
 		_val(0)
 	{
 		update(0);
 	}
 
-	virtual ~BlockOutput() = default;
-	void update(float input)
+	మాయా ~ఖండం_Output() = అప్రమేయ;
+	శూన్య update(దశాంశం ఆదానం)
 	{
-		_val = _limit.update(input + getTrim());
+		_val = హద్దు.update(ఆదానం + getTrim());
 	}
 // accessors
-	float getMin() { return _limit.getMin(); }
-	float getMax() { return _limit.getMax(); }
-	float getTrim() { return _trim.get(); }
-	float get() { return _val; }
-private:
-// attributes
-	control::BlockParamFloat _trim;
-	BlockLimit _limit;
-	float _val;
+	దశాంశం getMin() { తిరిగి హద్దు.getMin(); }
+	దశాంశం getMax() { తిరిగి హద్దు.getMax(); }
+	దశాంశం getTrim() { తిరిగి _trim.get(); }
+	దశాంశం get() { తిరిగి _val; }
+అంతరంగ:
+//లక్షణాలు
+	control::ఖండం_Param_Float _trim;
+	ఖండం_హద్దు హద్దు;
+	దశాంశం _val;
 };
 
 } // namespace control

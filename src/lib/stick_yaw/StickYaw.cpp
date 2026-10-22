@@ -31,108 +31,108 @@
  *
  ****************************************************************************/
 
-#include "StickYaw.hpp"
+#అన్తర్భావ "StickYaw.hpp"
 
-#include <px4_platform_common/defines.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
 
-using matrix::wrap_pi;
+ఉపయోగించి మాతృక::wrap_pi;
 
-StickYaw::StickYaw(ModuleParams *parent) :
-	ModuleParams(parent)
+StickYaw::StickYaw(ModuleParams *మాతృ) :
+	ModuleParams(మాతృ)
 {}
 
-void StickYaw::reset(const float yaw, const float unaided_yaw)
+శూన్య StickYaw::reset(స్థిరరాశి దశాంశం yaw, స్థిరరాశి దశాంశం unaided_yaw)
 {
 	// The filter state outlives deactivation; a reset means there is no stick history to carry over.
 	resetYawspeed();
 
-	if (PX4_ISFINITE(unaided_yaw)) {
+	ఒకవేళ (PX4_ISFINITE(unaided_yaw)) {
 		_yaw_error_lpf.reset(wrap_pi(yaw - unaided_yaw));
 	}
 }
 
-void StickYaw::ekfResetHandler(const float delta_yaw)
+శూన్య StickYaw::ekfResetHandler(స్థిరరాశి దశాంశం delta_yaw)
 {
 	_yaw_error_lpf.reset(wrap_pi(_yaw_error_lpf.getState() + delta_yaw));
 	_yaw_error_ref = wrap_pi(_yaw_error_ref + delta_yaw);
 }
 
-void StickYaw::generateYawSetpoint(float &yawspeed_setpoint, float &yaw_setpoint, const float stick_yaw,
-				   const float yaw, const float deltatime, const float unaided_yaw)
+శూన్య StickYaw::generateYawSetpoint(దశాంశం &yawspeed_setpoint, దశాంశం &yaw_setpoint, స్థిరరాశి దశాంశం stick_yaw,
+				   స్థిరరాశి దశాంశం yaw, స్థిరరాశి దశాంశం deltatime, స్థిరరాశి దశాంశం unaided_yaw)
 {
-	const float yaw_correction_prev = _yaw_correction;
-	const bool reset_setpoint = updateYawCorrection(yaw, unaided_yaw, deltatime);
+	స్థిరరాశి దశాంశం yaw_correction_prev = _yaw_correction;
+	స్థిరరాశి తార్కిక reset_setpoint = updateYawCorrection(yaw, unaided_yaw, deltatime);
 
-	if (reset_setpoint) {
+	ఒకవేళ (reset_setpoint) {
 		yaw_setpoint = NAN;
 	}
 
-	_yawspeed_filter.setParameters(deltatime, _param_mpc_man_y_tau.get());
-	const float yawspeed_scale = math::min(math::radians(_param_mpc_man_y_max.get()), _yawspeed_constraint);
+	_yawspeed_filter.సమితి_Parameters(deltatime, _param_mpc_man_y_tau.get());
+	స్థిరరాశి దశాంశం yawspeed_scale = math::min(math::radians(_param_mpc_man_y_max.get()), _yawspeed_constraint);
 	yawspeed_setpoint = _yawspeed_filter.update(stick_yaw * yawspeed_scale);
-	yaw_setpoint = updateYawLock(yaw, yawspeed_setpoint, yaw_setpoint, yaw_correction_prev);
+	yaw_setpoint = update_Yaw_తాళం(yaw, yawspeed_setpoint, yaw_setpoint, yaw_correction_prev);
 }
 
-bool StickYaw::updateYawCorrection(const float yaw, const float unaided_yaw, const float deltatime)
+తార్కిక StickYaw::updateYawCorrection(స్థిరరాశి దశాంశం yaw, స్థిరరాశి దశాంశం unaided_yaw, స్థిరరాశి దశాంశం deltatime)
 {
-	if (!PX4_ISFINITE(unaided_yaw)) {
-		_unaided_yaw_was_invalid = true;
+	ఒకవేళ (!PX4_ISFINITE(unaided_yaw)) {
+		_unaided_yaw_was_invalid = నిజం;
 		// If unaided yaw is not available we leave yaw_correction_ unchanged
 		// Meaning yaw_setpoint - yaw_correction_prev + _yaw_correction = yaw_setpoint
-		return false;
+		తిరిగి అబద్ధం;
 	}
 
 	// Detect the convergence phase of the yaw estimate by monitoring its relative
 	// distance from an unaided yaw source.
-	const float yaw_error = wrap_pi(yaw - unaided_yaw);
+	స్థిరరాశి దశాంశం yaw_error = wrap_pi(yaw - unaided_yaw);
 
-	if (_unaided_yaw_was_invalid) {
-		_unaided_yaw_was_invalid = false;
+	ఒకవేళ (_unaided_yaw_was_invalid) {
+		_unaided_yaw_was_invalid = అబద్ధం;
 		_yaw_error_lpf.reset(yaw_error);
 		_yaw_error_ref = yaw_error;
 		_yaw_correction = 0.f;
-		_yaw_estimate_converging = false;
-		return true;
+		_yaw_estimate_converging = అబద్ధం;
+		తిరిగి నిజం;
 	}
 
 	// Run it through a high-pass filter to detect transients
-	const float yaw_error_hpf = wrap_pi(yaw_error - _yaw_error_lpf.getState());
+	స్థిరరాశి దశాంశం yaw_error_hpf = wrap_pi(yaw_error - _yaw_error_lpf.getState());
 	_yaw_error_lpf.update(yaw_error, deltatime);
 
-	const bool was_converging = _yaw_estimate_converging;
-	_yaw_estimate_converging = fabsf(yaw_error_hpf) > _kYawErrorChangeThreshold;
+	స్థిరరాశి తార్కిక was_converging = _yaw_estimate_converging;
+	_yaw_estimate_converging = fabsf(yaw_error_hpf) > k_Yaw_Error_Change_పరిమితి;
 
-	bool reset_setpoint = false;
+	తార్కిక reset_setpoint = అబద్ధం;
 
-	if (!_yaw_estimate_converging) {
+	ఒకవేళ (!_yaw_estimate_converging) {
 		_yaw_error_ref = yaw_error;
 
-		if (was_converging) {
+		ఒకవేళ (was_converging) {
 			// Force a reset of the locking mechanism
-			reset_setpoint = true;
+			reset_setpoint = నిజం;
 		}
 	}
 
 	_yaw_correction = wrap_pi(yaw_error - _yaw_error_ref);
 
-	return reset_setpoint;
+	తిరిగి reset_setpoint;
 }
 
-float StickYaw::updateYawLock(const float yaw, const float yawspeed_setpoint, const float yaw_setpoint,
-			      const float yaw_correction_prev) const
+దశాంశం StickYaw::update_Yaw_తాళం(స్థిరరాశి దశాంశం yaw, స్థిరరాశి దశాంశం yawspeed_setpoint, స్థిరరాశి దశాంశం yaw_setpoint,
+			      స్థిరరాశి దశాంశం yaw_correction_prev) స్థిరరాశి
 {
 	// Yaw-lock depends on desired yawspeed input. If not locked, yaw_sp is set to NAN.
-	if (fabsf(yawspeed_setpoint) > FLT_EPSILON) {
+	ఒకవేళ (fabsf(yawspeed_setpoint) > FLT_EPSILON) {
 		// no fixed heading when rotating around yaw by stick
-		return NAN;
+		తిరిగి NAN;
 
-	} else {
+	} లేకపోతే {
 		// slow down and hold the current heading when no more rotation commanded
-		if (!PX4_ISFINITE(yaw_setpoint)) {
-			return yaw;
+		ఒకవేళ (!PX4_ISFINITE(yaw_setpoint)) {
+			తిరిగి yaw;
 
-		} else {
-			return wrap_pi(yaw_setpoint - yaw_correction_prev + _yaw_correction);
+		} లేకపోతే {
+			తిరిగి wrap_pi(yaw_setpoint - yaw_correction_prev + _yaw_correction);
 		}
 	}
 }

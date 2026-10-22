@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "FunctionProviderBase.hpp"
+#అన్తర్భావ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gripper.h>
+#అన్తర్భావ <uORB/topics/gripper.h>
 
 /**
  * @brief Function: Gripper (Used for actuating a Gripper)
  */
-class FunctionGripper : public FunctionProviderBase
+తరగతి FunctionGripper : బహిరంగ Function_Provider_పునాది
 {
-public:
-	FunctionGripper() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGripper(); }
+బహిరంగ:
+	FunctionGripper() = అప్రమేయ;
+	స్థిర Function_Provider_పునాది *allocate(స్థిరరాశి Context &context) { తిరిగి కొత్త FunctionGripper(); }
 
-	void update() override
+	శూన్య update() override
 	{
 		gripper_s gripper;
 
-		if (_gripper_sub.update(&gripper)) {
-			if (gripper.command == gripper_s::COMMAND_RELEASE) {
-				_data = -1.f; // Minimum command for release
+		ఒకవేళ (_gripper_sub.update(&gripper)) {
+			ఒకవేళ (gripper.command == gripper_s::COMMAND_RELEASE) {
+				దత్తాంశం_3 = -1.f; // Minimum command for release
 
-			} else if (gripper.command == gripper_s::COMMAND_GRAB) {
-				_data = 1.f; // Maximum command for grab
+			} లేకపోతే ఒకవేళ (gripper.command == gripper_s::COMMAND_GRAB) {
+				దత్తాంశం_3 = 1.f; // Maximum command for grab
 
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	దశాంశం value(OutputFunction func) override { తిరిగి దత్తాంశం_3; }
 
-private:
+అంతరంగ:
 	uORB::Subscription _gripper_sub{ORB_ID(gripper)};
-	float _data{-1.f};
+	దశాంశం దత్తాంశం_3{-1.f};
 };

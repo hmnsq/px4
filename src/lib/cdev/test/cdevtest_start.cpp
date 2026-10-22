@@ -37,60 +37,60 @@
  * @author Thomas Gubler <thomasgubler@gmail.com>
  * @author Mark Charlebois <mcharleb@gmail.com>
  */
-#include "cdevtest_example.h"
+#అన్తర్భావ "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/tasks.h>
-#include <stdio.h>
-#include <string.h>
+#అన్తర్భావ <px4_platform_common/app.h>
+#అన్తర్భావ <px4_platform_common/tasks.h>
+#అన్తర్భావ <stdio.h>
+#అన్తర్భావ <string.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+స్థిర పూర్ణాంకం daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-extern "C" __EXPORT int cdev_test_main(int argc, char *argv[]);
-int cdev_test_main(int argc, char *argv[])
+బాహ్య "C" __EXPORT పూర్ణాంకం cdev_test_main(పూర్ణాంకం argc, అక్షరం *argv[]);
+పూర్ణాంకం cdev_test_main(పూర్ణాంకం argc, అక్షరం *argv[])
 {
 
-	if (argc < 2) {
-		printf("usage: cdevtest {start|stop|status}\n");
-		return 1;
+	ఒకవేళ (argc < 2) {
+		రాయి("usage: cdevtest {start|stop|status}\n");
+		తిరిగి 1;
 	}
 
-	if (!strcmp(argv[1], "start")) {
+	ఒకవేళ (!strcmp(argv[1], "start")) {
 
-		if (CDevExample::appState.isRunning()) {
-			printf("already running\n");
+		ఒకవేళ (CDevExample::appState.isRunning()) {
+			రాయి("already running\n");
 			/* this is not an error */
-			return 0;
+			తిరిగి 0;
 		}
 
 		daemon_task = px4_task_spawn_cmd("cdevtest",
 						 SCHED_DEFAULT,
-						 SCHED_PRIORITY_MAX - 5,
+						 SCHED_ప్రాధాన్యత_MAX - 5,
 						 2000,
 						 PX4_MAIN,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+						 (argv) ? (అక్షరం *స్థిరరాశి *)&argv[2] : (అక్షరం *స్థిరరాశి *)శూన్యసూచిక);
 
-		return 0;
+		తిరిగి 0;
 	}
 
-	if (!strcmp(argv[1], "stop")) {
+	ఒకవేళ (!strcmp(argv[1], "stop")) {
 		CDevExample::appState.requestExit();
-		return 0;
+		తిరిగి 0;
 	}
 
-	if (!strcmp(argv[1], "status")) {
-		if (CDevExample::appState.isRunning()) {
-			printf("is running\n");
+	ఒకవేళ (!strcmp(argv[1], "status")) {
+		ఒకవేళ (CDevExample::appState.isRunning()) {
+			రాయి("is running\n");
 
-		} else {
-			printf("not started\n");
+		} లేకపోతే {
+			రాయి("not started\n");
 		}
 
-		return 0;
+		తిరిగి 0;
 	}
 
-	printf("usage: cdevtest_main {start|stop|status}\n");
-	return 1;
+	రాయి("usage: cdevtest_main {start|stop|status}\n");
+	తిరిగి 1;
 }

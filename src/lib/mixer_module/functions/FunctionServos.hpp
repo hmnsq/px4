@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "FunctionProviderBase.hpp"
+#అన్తర్భావ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/actuator_servos.h>
+#అన్తర్భావ <uORB/topics/actuator_servos.h>
 
 /**
  * Functions: Servo1 ... ServoMax
  */
-class FunctionServos : public FunctionProviderBase
+తరగతి FunctionServos : బహిరంగ Function_Provider_పునాది
 {
-public:
-	static_assert(actuator_servos_s::NUM_CONTROLS == (int)OutputFunction::ServoMax - (int)OutputFunction::Servo1 + 1,
+బహిరంగ:
+	static_assert(actuator_servos_s::అంకె_CONTROLS == (పూర్ణాంకం)OutputFunction::ServoMax - (పూర్ణాంకం)OutputFunction::Servo1 + 1,
 		      "Unexpected num servos");
 
-	FunctionServos(const Context &context) :
-		_topic(&context.work_item, ORB_ID(actuator_servos))
+	FunctionServos(స్థిరరాశి Context &context) :
+		_topic(&context.work_అంశం, ORB_ID(actuator_servos))
 	{
-		for (int i = 0; i < actuator_servos_s::NUM_CONTROLS; ++i) {
-			_data.control[i] = NAN;
+		కొరకు (పూర్ణాంకం i = 0; i < actuator_servos_s::అంకె_CONTROLS; ++i) {
+			దత్తాంశం_3.control[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionServos(context); }
+	స్థిర Function_Provider_పునాది *allocate(స్థిరరాశి Context &context) { తిరిగి కొత్త FunctionServos(context); }
 
-	void update() override { _topic.update(&_data); }
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Servo1]; }
+	శూన్య update() override { _topic.update(&దత్తాంశం_3); }
+	దశాంశం value(OutputFunction func) override { తిరిగి దత్తాంశం_3.control[(పూర్ణాంకం)func - (పూర్ణాంకం)OutputFunction::Servo1]; }
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::Subscription_Callback_Work_అంశం *subscriptionCallback() override { తిరిగి &_topic; }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 0.f; }
+	దశాంశం default_Failsafe_విలువ(OutputFunction func) స్థిరరాశి override { తిరిగి 0.f; }
 
-private:
-	uORB::SubscriptionCallbackWorkItem _topic;
-	actuator_servos_s _data{};
+అంతరంగ:
+	uORB::Subscription_Callback_Work_అంశం _topic;
+	actuator_servos_s దత్తాంశం_3{};
 };

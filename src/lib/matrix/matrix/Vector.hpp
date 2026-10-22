@@ -6,183 +6,183 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#సూచన once
 
-#include "Matrix.hpp"
+#అన్తర్భావ "Matrix.hpp"
 
-namespace matrix
+నామాకాశ మాతృక
 {
 
-template<typename Type, size_t M>
-class Vector : public Matrix<Type, M, 1>
+మూస<రకం_పేరు Type, size_t M>
+తరగతి సదిశ : బహిరంగ మాతృక_2<Type, M, 1>
 {
-public:
-	using MatrixM1 = Matrix<Type, M, 1>;
+బహిరంగ:
+	ఉపయోగించి మాతృక_M1 = మాతృక_2<Type, M, 1>;
 
-	Vector() = default;
+	సదిశ() = అప్రమేయ;
 
-	Vector(const MatrixM1 &other) :
-		MatrixM1(other)
+	సదిశ(స్థిరరాశి మాతృక_M1 &other) :
+		మాతృక_M1(other)
 	{
 	}
 
-	explicit Vector(const Type data_[M]) :
-		MatrixM1(data_)
+	స్పష్టమైన సదిశ(స్థిరరాశి Type దత్తాంశం_2[M]) :
+		మాతృక_M1(దత్తాంశం_2)
 	{
 	}
 
-	template<size_t P, size_t Q>
-	Vector(const Slice<Type, M, 1, P, Q> &slice_in) :
-		Matrix<Type, M, 1>(slice_in)
+	మూస<size_t P, size_t Q>
+	సదిశ(స్థిరరాశి ముక్క_2<Type, M, 1, P, Q> &ముక్క_లోపల) :
+		మాతృక_2<Type, M, 1>(ముక్క_లోపల)
 	{
 	}
 
-	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const Slice<Type, 1, M, P, Q> &slice_in)
+	మూస<size_t P, size_t Q, size_t DUMMY = 1>
+	సదిశ(స్థిరరాశి ముక్క_2<Type, 1, M, P, Q> &ముక్క_లోపల)
 	{
-		Vector &self(*this);
+		సదిశ &self(*ఇది);
 
-		for (size_t i = 0; i < M; i++) {
-			self(i) = slice_in(0, i);
+		కొరకు (size_t i = 0; i < M; i++) {
+			self(i) = ముక్క_లోపల(0, i);
 		}
 	}
 
-	template<size_t P, size_t Q>
-	Vector(const ConstSlice<Type, M, 1, P, Q> &slice_in) :
-		Matrix<Type, M, 1>(slice_in)
+	మూస<size_t P, size_t Q>
+	సదిశ(స్థిరరాశి Const_ముక్క<Type, M, 1, P, Q> &ముక్క_లోపల) :
+		మాతృక_2<Type, M, 1>(ముక్క_లోపల)
 	{
 	}
 
-	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const ConstSlice<Type, 1, M, P, Q> &slice_in)
+	మూస<size_t P, size_t Q, size_t DUMMY = 1>
+	సదిశ(స్థిరరాశి Const_ముక్క<Type, 1, M, P, Q> &ముక్క_లోపల)
 	{
-		Vector &self(*this);
+		సదిశ &self(*ఇది);
 
-		for (size_t i = 0; i < M; i++) {
-			self(i) = slice_in(0, i);
+		కొరకు (size_t i = 0; i < M; i++) {
+			self(i) = ముక్క_లోపల(0, i);
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	అంతఃవరుస స్థిరరాశి Type &క్రియాకారకం()(size_t i) స్థిరరాశి
 	{
-		assert(i < M);
+		ప్రతిజ్ఞా(i < M);
 
-		const MatrixM1 &v = *this;
-		return v(i, 0);
+		స్థిరరాశి మాతృక_M1 &v = *ఇది;
+		తిరిగి v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	అంతఃవరుస Type &క్రియాకారకం()(size_t i)
 	{
-		assert(i < M);
+		ప్రతిజ్ఞా(i < M);
 
-		MatrixM1 &v = *this;
-		return v(i, 0);
+		మాతృక_M1 &v = *ఇది;
+		తిరిగి v(i, 0);
 	}
 
-	Type dot(const MatrixM1 &b) const
+	Type dot(స్థిరరాశి మాతృక_M1 &b) స్థిరరాశి
 	{
-		const Vector &a(*this);
+		స్థిరరాశి సదిశ &a(*ఇది);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		కొరకు (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		తిరిగి r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	అంతఃవరుస Type క్రియాకారకం*(స్థిరరాశి మాతృక_M1 &b) స్థిరరాశి
 	{
-		const Vector &a(*this);
-		return a.dot(b);
+		స్థిరరాశి సదిశ &a(*ఇది);
+		తిరిగి a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	అంతఃవరుస సదిశ క్రియాకారకం*(Type b) స్థిరరాశి
 	{
-		return Vector(MatrixM1::operator*(b));
+		తిరిగి సదిశ(మాతృక_M1::క్రియాకారకం*(b));
 	}
 
-	Type norm() const
+	Type norm() స్థిరరాశి
 	{
-		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		స్థిరరాశి సదిశ &a(*ఇది);
+		తిరిగి Type(std::వర్గమూలం(a.dot(a)));
 	}
 
-	Type norm_squared() const
+	Type norm_squared() స్థిరరాశి
 	{
-		const Vector &a(*this);
-		return a.dot(a);
+		స్థిరరాశి సదిశ &a(*ఇది);
+		తిరిగి a.dot(a);
 	}
 
-	inline Type length() const
+	అంతఃవరుస Type నిడివి() స్థిరరాశి
 	{
-		return norm();
+		తిరిగి norm();
 	}
 
-	inline void normalize()
+	అంతఃవరుస శూన్య normalize()
 	{
-		(*this) /= norm();
+		(*ఇది) /= norm();
 	}
 
-	Vector unit() const
+	సదిశ unit() స్థిరరాశి
 	{
-		return (*this) / norm();
+		తిరిగి (*ఇది) / norm();
 	}
 
-	Vector unit_or_zero(const Type eps = Type(1e-5)) const
+	సదిశ unit_or_zero(స్థిరరాశి Type eps = Type(1e-5)) స్థిరరాశి
 	{
-		const Type n = norm();
+		స్థిరరాశి Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		ఒకవేళ (n > eps) {
+			తిరిగి (*ఇది) / n;
 		}
 
-		return Vector();
+		తిరిగి సదిశ();
 	}
 
-	inline Vector normalized() const
+	అంతఃవరుస సదిశ normalized() స్థిరరాశి
 	{
-		return unit();
+		తిరిగి unit();
 	}
 
-	bool longerThan(Type testVal) const
+	తార్కిక longerThan(Type testVal) స్థిరరాశి
 	{
-		return norm_squared() > testVal * testVal;
+		తిరిగి norm_squared() > testVal * testVal;
 	}
 
-	Vector sqrt() const
+	సదిశ వర్గమూలం() స్థిరరాశి
 	{
-		const Vector &a(*this);
-		Vector r;
+		స్థిరరాశి సదిశ &a(*ఇది);
+		సదిశ r;
 
-		for (size_t i = 0; i < M; i++) {
-			r(i) = Type(std::sqrt(a(i)));
+		కొరకు (size_t i = 0; i < M; i++) {
+			r(i) = Type(std::వర్గమూలం(a(i)));
 		}
 
-		return r;
+		తిరిగి r;
 	}
 
-	void print() const
+	శూన్య print() స్థిరరాశి
 	{
-		(*this).transpose().print();
+		(*ఇది).transpose().print();
 	}
 
-	static size_t size()
+	స్థిర size_t కొలత()
 	{
-		return M;
+		తిరిగి M;
 	}
 };
 
-template<typename OStream, typename Type, size_t M>
-OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
+మూస<రకం_పేరు OStream, రకం_పేరు Type, size_t M>
+OStream &క్రియాకారకం<<(OStream &os, స్థిరరాశి మాతృక::సదిశ<Type, M> &సదిశ_2)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
-	vector.transpose().write_string(string, n);
+	అక్షరం string[n];
+	సదిశ_2.transpose().write_string(string, n);
 	os << string;
-	return os;
+	తిరిగి os;
 }
 
 } // namespace matrix

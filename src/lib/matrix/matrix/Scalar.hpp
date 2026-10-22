@@ -6,58 +6,58 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#సూచన once
 
-#include "Matrix.hpp"
+#అన్తర్భావ "Matrix.hpp"
 
-namespace matrix
+నామాకాశ మాతృక
 {
 
-template<typename Type>
-class Scalar
+మూస<రకం_పేరు Type>
+తరగతి Scalar
 {
-public:
-	Scalar() = delete;
+బహిరంగ:
+	Scalar() = తొలగించు;
 
-	Scalar(const Matrix<Type, 1, 1> &other) :
-		_value{other(0, 0)}
+	Scalar(స్థిరరాశి మాతృక_2<Type, 1, 1> &other) :
+		విలువ_2{other(0, 0)}
 	{
 	}
 
-	Scalar(Type other) : _value(other)
+	Scalar(Type other) : విలువ_2(other)
 	{
 	}
 
-	operator const Type &()
+	క్రియాకారకం స్థిరరాశి Type &()
 	{
-		return _value;
+		తిరిగి విలువ_2;
 	}
 
-	operator Matrix<Type, 1, 1>() const
+	క్రియాకారకం మాతృక_2<Type, 1, 1>() స్థిరరాశి
 	{
-		Matrix<Type, 1, 1> m;
-		m(0, 0) = _value;
-		return m;
+		మాతృక_2<Type, 1, 1> m;
+		m(0, 0) = విలువ_2;
+		తిరిగి m;
 	}
 
-	operator Vector<Type, 1>() const
+	క్రియాకారకం సదిశ<Type, 1>() స్థిరరాశి
 	{
-		Vector<Type, 1> m;
-		m(0) = _value;
-		return m;
+		సదిశ<Type, 1> m;
+		m(0) = విలువ_2;
+		తిరిగి m;
 	}
 
-	bool operator==(const float other) const
+	తార్కిక క్రియాకారకం==(స్థిరరాశి దశాంశం other) స్థిరరాశి
 	{
-		return isEqualF(_value, other);
+		తిరిగి isEqualF(విలువ_2, other);
 	}
 
-private:
-	const Type _value;
+అంతరంగ:
+	స్థిరరాశి Type విలువ_2;
 
 };
 
-using Scalarf = Scalar<float>;
-using Scalard = Scalar<double>;
+ఉపయోగించి Scalarf = Scalar<దశాంశం>;
+ఉపయోగించి Scalard = Scalar<ద్విగుణ>;
 
 } // namespace matrix

@@ -38,16 +38,16 @@
  * Also includes the parameters that are shared among the rover modules.
  */
 
-#pragma once
-#include <lib/slew_rate/SlewRate.hpp>
-#include <lib/slew_rate/SlewRateYaw.hpp>
-#include <lib/pid/PID.hpp>
-#include <matrix/matrix/math.hpp>
-#include <uORB/topics/position_setpoint_triplet.h>
-#include <lib/geo/geo.h>
+#సూచన once
+#అన్తర్భావ <lib/slew_rate/SlewRate.hpp>
+#అన్తర్భావ <lib/slew_rate/SlewRateYaw.hpp>
+#అన్తర్భావ <lib/pid/PID.hpp>
+#అన్తర్భావ <matrix/matrix/math.hpp>
+#అన్తర్భావ <uORB/topics/position_setpoint_triplet.h>
+#అన్తర్భావ <lib/geo/geo.h>
 
-using namespace matrix;
-namespace RoverControl
+ఉపయోగించి నామాకాశ మాతృక;
+నామాకాశ RoverControl
 {
 /**
  * Applies acceleration/deceleration slew rate to a throttle setpoint.
@@ -60,8 +60,8 @@ namespace RoverControl
  * @param dt Time since last update [s]
  * @return Motor Setpoint [-1, 1]
  */
-float throttleControl(SlewRate<float> &motor_setpoint, float throttle_setpoint, float current_motor_setpoint,
-		      float max_accel, float max_decel, float max_thr_spd, float dt);
+దశాంశం throttleControl(Slew_రేటు<దశాంశం> &motor_setpoint, దశాంశం throttle_setpoint, దశాంశం current_motor_setpoint,
+		      దశాంశం max_accel, దశాంశం max_decel, దశాంశం max_thr_spd, దశాంశం dt);
 
 /**
  * Applies yaw rate slew rate to a yaw setpoint and calculates the necessary yaw rate setpoint
@@ -74,8 +74,8 @@ float throttleControl(SlewRate<float> &motor_setpoint, float throttle_setpoint, 
  * @param dt Time since last update [s]
  * @return Yaw rate setpoint [rad/s]
  */
-float attitudeControl(SlewRateYaw<float> &adjusted_yaw_setpoint, PID &pid_yaw, float yaw_slew_rate,
-		      float vehicle_yaw, float yaw_setpoint, float dt);
+దశాంశం attitudeControl(Slew_రేటు_Yaw<దశాంశం> &adjusted_yaw_setpoint, PID &pid_yaw, దశాంశం yaw_slew_రేటు,
+		      దశాంశం vehicle_yaw, దశాంశం yaw_setpoint, దశాంశం dt);
 /**
  * Applies acceleration/deceleration slew rate to a speed setpoint and calculates the necessary throttle setpoint
  * using a feed forward term and PID controller.
@@ -89,8 +89,8 @@ float attitudeControl(SlewRateYaw<float> &adjusted_yaw_setpoint, PID &pid_yaw, f
  * @param dt Time since last update [s]
  * @return Throttle setpoint [-1, 1]
  */
-float speedControl(SlewRate<float> &speed_with_rate_limit, PID &pid_speed, float speed_setpoint,
-		   float vehicle_speed, float max_accel, float max_decel, float max_thr_speed, float dt);
+దశాంశం వేగం_Control(Slew_రేటు<దశాంశం> &వేగం_with_రేటు_హద్దు, PID &pid_వేగం, దశాంశం వేగం_setpoint,
+		   దశాంశం vehicle_వేగం, దశాంశం max_accel, దశాంశం max_decel, దశాంశం max_thr_వేగం, దశాంశం dt);
 
 /**
  * Applies yaw acceleration slew rate to a yaw rate setpoint and calculates the necessary speed diff setpoint
@@ -108,10 +108,10 @@ float speedControl(SlewRate<float> &speed_with_rate_limit, PID &pid_speed, float
  * @param dt Time since last update [s].
  * @return Normalized speed difference setpoint [-1, 1].
  */
-float rateControl(SlewRate<float> &adjusted_yaw_rate_setpoint, PID &pid_yaw_rate,
-		  float yaw_rate_setpoint, float vehicle_yaw_rate, float max_thr_speed, float yaw_rate_corr, float max_yaw_accel,
-		  float max_yaw_decel,
-		  float wheel_track, float dt);
+దశాంశం రేటు_Control_2(Slew_రేటు<దశాంశం> &adjusted_yaw_రేటు_setpoint, PID &pid_yaw_రేటు,
+		  దశాంశం yaw_రేటు_setpoint, దశాంశం vehicle_yaw_రేటు, దశాంశం max_thr_వేగం, దశాంశం yaw_రేటు_corr, దశాంశం max_yaw_accel,
+		  దశాంశం max_yaw_decel,
+		  దశాంశం wheel_track, దశాంశం dt);
 
 /**
  * Projects positionSetpointTriplet waypoints from global to ned frame.
@@ -122,7 +122,7 @@ float rateControl(SlewRate<float> &adjusted_yaw_rate_setpoint, PID &pid_yaw_rate
  * @param curr_pos Current position of the rover in global frame
  * @param global_ned_proj_ref Global to ned projection
  */
-void globalToLocalSetpointTriplet(Vector2f &curr_wp_ned, Vector2f &prev_wp_ned, Vector2f &next_wp_ned,
+శూన్య global_గమ్యం_Local_Setpoint_Triplet(Vector2f &curr_wp_ned, Vector2f &prev_wp_ned, Vector2f &తదుపరి_wp_ned,
 				  position_setpoint_triplet_s position_setpoint_triplet, Vector2f &curr_pos_ned,
 				  MapProjection &global_ned_proj_ref);
 
@@ -133,6 +133,6 @@ void globalToLocalSetpointTriplet(Vector2f &curr_wp_ned, Vector2f &prev_wp_ned, 
  * @param next_wp_ned Next waypoint in NED frame
  * @return Waypoint transition angle [rad]
  */
-float calcWaypointTransitionAngle(Vector2f &prev_wp_ned, Vector2f &curr_wp_ned, Vector2f &next_wp_ned);
+దశాంశం calcWaypointTransitionAngle(Vector2f &prev_wp_ned, Vector2f &curr_wp_ned, Vector2f &తదుపరి_wp_ned);
 
 }

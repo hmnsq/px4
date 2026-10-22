@@ -38,25 +38,25 @@
  *
  */
 
-#include "SPI.hpp"
+#అన్తర్భావ "SPI.hpp"
 
-#if defined(CONFIG_SPI)
+#ఒకవేళ defined(CONFIG_SPI)
 
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <px4_platform_common/px4_config.h>
-#include <nuttx/arch.h>
+#అన్తర్భావ <px4_platform_common/i2c_spi_buses.h>
+#అన్తర్భావ <px4_platform_common/px4_config.h>
+#అన్తర్భావ <nuttx/arch.h>
 
-#ifndef CONFIG_SPI_EXCHANGE
+#నిర్వచితం_కాకపోతే CONFIG_SPI_EXCHANGE
 # error This driver requires CONFIG_SPI_EXCHANGE
-#endif
+#అయితే_ముగింపు
 
-namespace device
+నామాకాశ device
 {
 
-SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
-	CDev(name, nullptr),
+SPI::SPI(uint8_t device_type, స్థిరరాశి అక్షరం *name, పూర్ణాంకం bus, uint32_t device, గణన spi_బహుళకం_e బహుళకం, uint32_t frequency) :
+	CDev(name, శూన్యసూచిక),
 	_device(device),
-	_mode(mode),
+	_mode(బహుళకం),
 	_frequency(frequency)
 {
 	_device_id.devid_s.devtype = device_type;
@@ -64,18 +64,18 @@ SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum s
 	_device_id.devid_s.bus_type = DeviceBusType_SPI;
 	_device_id.devid_s.bus = bus;
 	// Use the 2. LSB byte as SPI address, which is non-zero for multiple instances of the same device on a bus
-	_device_id.devid_s.address = (uint8_t)(device >> 8);
+	_device_id.devid_s.చిరునామా = (uint8_t)(device >> 8);
 
-	if (!px4_spi_bus_requires_locking(bus)) {
-		_locking_mode = LOCK_NONE;
+	ఒకవేళ (!px4_spi_bus_requires_locking(bus)) {
+		locking_బహుళకం = తాళం_NONE;
 	}
 }
 
-SPI::SPI(const I2CSPIDriverConfig &config)
-	: SPI(config.devid_driver_index, config.module_name, config.bus, config.spi_devid, config.spi_mode,
+SPI::SPI(స్థిరరాశి I2CSPIDriverConfig &config)
+	: SPI(config.devid_driver_సూచీ, config.module_name, config.bus, config.spi_devid, config.spi_బహుళకం,
 	      config.bus_frequency)
 {
-	set_external(config.external);
+	సమితి_external(config.external);
 }
 
 SPI::~SPI()
@@ -83,154 +83,154 @@ SPI::~SPI()
 	// XXX no way to let go of the bus...
 }
 
-int
+పూర్ణాంకం
 SPI::init()
 {
 	/* attach to the spi bus */
-	if (_dev == nullptr) {
-		int bus = get_device_bus();
+	ఒకవేళ (_dev == శూన్యసూచిక) {
+		పూర్ణాంకం bus = get_device_bus();
 
-		if (!board_has_bus(BOARD_SPI_BUS, bus)) {
-			return -ENOENT;
+		ఒకవేళ (!board_has_bus(BOARD_SPI_BUS, bus)) {
+			తిరిగి -ENOENT;
 		}
 
 		_dev = px4_spibus_initialize(bus);
 	}
 
-	if (_dev == nullptr) {
+	ఒకవేళ (_dev == శూన్యసూచిక) {
 		DEVICE_DEBUG("failed to init SPI");
-		return -ENOENT;
+		తిరిగి -ENOENT;
 	}
 
 	/* deselect device to ensure high to low transition of pin select */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, అబద్ధం);
 
 	/* call the probe function to check whether the device is present */
-	int ret = probe();
+	పూర్ణాంకం ret = probe();
 
-	if (ret != OK) {
+	ఒకవేళ (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		return ret;
+		తిరిగి ret;
 	}
 
 	/* do base class init, which will create the device node, etc. */
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ఒకవేళ (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		return ret;
+		తిరిగి ret;
 	}
 
 	/* tell the world where we are */
 	DEVICE_DEBUG("on SPI bus %d at %"  PRId32 " (%"  PRId32 " KHz)", get_device_bus(), PX4_SPI_DEV_ID(_device),
 		     _frequency / 1000);
 
-	return PX4_OK;
+	తిరిగి PX4_OK;
 }
 
-int
-SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
+పూర్ణాంకం
+SPI::transfer(uint8_t *send, uint8_t *recv, గుర్తులేని len)
 {
-	int result;
+	పూర్ణాంకం ఫలితం;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	ఒకవేళ ((send == శూన్యసూచిక) && (recv == శూన్యసూచిక)) {
+		తిరిగి -EINVAL;
 	}
 
-	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
+	తాళం_బహుళకం బహుళకం = పైకి_అంతరాయం_context() ? తాళం_NONE : locking_బహుళకం;
 
 	/* lock the bus as required */
-	switch (mode) {
-	default:
-	case LOCK_PREEMPTION: {
+	ఎంపిక (బహుళకం) {
+	అప్రమేయ:
+	స్థితి తాళం_PREEMPTION: {
 			irqstate_t state = px4_enter_critical_section();
-			result = _transfer(send, recv, len);
+			ఫలితం = _transfer(send, recv, len);
 			px4_leave_critical_section(state);
 		}
-		break;
+		ఆపు;
 
-	case LOCK_THREADS:
-		SPI_LOCK(_dev, true);
-		result = _transfer(send, recv, len);
-		SPI_LOCK(_dev, false);
-		break;
+	స్థితి తాళం_దారాలు:
+		SPI_తాళం(_dev, నిజం);
+		ఫలితం = _transfer(send, recv, len);
+		SPI_తాళం(_dev, అబద్ధం);
+		ఆపు;
 
-	case LOCK_NONE:
-		result = _transfer(send, recv, len);
-		break;
+	స్థితి తాళం_NONE:
+		ఫలితం = _transfer(send, recv, len);
+		ఆపు;
 	}
 
-	return result;
+	తిరిగి ఫలితం;
 }
 
-int
-SPI::_transfer(uint8_t *send, uint8_t *recv, unsigned len)
+పూర్ణాంకం
+SPI::_transfer(uint8_t *send, uint8_t *recv, గుర్తులేని len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
 	SPI_SETMODE(_dev, _mode);
 	SPI_SETBITS(_dev, 8);
-	SPI_SELECT(_dev, _device, true);
+	SPI_SELECT(_dev, _device, నిజం);
 
 	/* do the transfer */
 	SPI_EXCHANGE(_dev, send, recv, len);
 
 	/* and clean up */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, అబద్ధం);
 
-	return PX4_OK;
+	తిరిగి PX4_OK;
 }
 
-int
-SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
+పూర్ణాంకం
+SPI::transferhword(uint16_t *send, uint16_t *recv, గుర్తులేని len)
 {
-	int result;
+	పూర్ణాంకం ఫలితం;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	ఒకవేళ ((send == శూన్యసూచిక) && (recv == శూన్యసూచిక)) {
+		తిరిగి -EINVAL;
 	}
 
-	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
+	తాళం_బహుళకం బహుళకం = పైకి_అంతరాయం_context() ? తాళం_NONE : locking_బహుళకం;
 
 	/* lock the bus as required */
-	switch (mode) {
-	default:
-	case LOCK_PREEMPTION: {
+	ఎంపిక (బహుళకం) {
+	అప్రమేయ:
+	స్థితి తాళం_PREEMPTION: {
 			irqstate_t state = px4_enter_critical_section();
-			result = _transferhword(send, recv, len);
+			ఫలితం = _transferhword(send, recv, len);
 			px4_leave_critical_section(state);
 		}
-		break;
+		ఆపు;
 
-	case LOCK_THREADS:
-		SPI_LOCK(_dev, true);
-		result = _transferhword(send, recv, len);
-		SPI_LOCK(_dev, false);
-		break;
+	స్థితి తాళం_దారాలు:
+		SPI_తాళం(_dev, నిజం);
+		ఫలితం = _transferhword(send, recv, len);
+		SPI_తాళం(_dev, అబద్ధం);
+		ఆపు;
 
-	case LOCK_NONE:
-		result = _transferhword(send, recv, len);
-		break;
+	స్థితి తాళం_NONE:
+		ఫలితం = _transferhword(send, recv, len);
+		ఆపు;
 	}
 
-	return result;
+	తిరిగి ఫలితం;
 }
 
-int
-SPI::_transferhword(uint16_t *send, uint16_t *recv, unsigned len)
+పూర్ణాంకం
+SPI::_transferhword(uint16_t *send, uint16_t *recv, గుర్తులేని len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
 	SPI_SETMODE(_dev, _mode);
 	SPI_SETBITS(_dev, 16);			/* 16 bit transfer */
-	SPI_SELECT(_dev, _device, true);
+	SPI_SELECT(_dev, _device, నిజం);
 
 	/* do the transfer */
 	SPI_EXCHANGE(_dev, send, recv, len);
 
 	/* and clean up */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, అబద్ధం);
 
-	return PX4_OK;
+	తిరిగి PX4_OK;
 }
 
 } // namespace device
-#endif // CONFIG_SPI
+#అయితే_ముగింపు // CONFIG_SPI

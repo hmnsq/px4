@@ -36,203 +36,203 @@
  * A wind and airspeed scale estimator.
  */
 
-#include "WindEstimator.hpp"
-#include "python/generated/init_wind_using_airspeed.h"
+#అన్తర్భావ "WindEstimator.hpp"
+#అన్తర్భావ "python/generated/init_wind_using_airspeed.h"
 
-bool
-WindEstimator::initialise(const matrix::Vector3f &velI, const float hor_vel_variance, const float heading_rad,
-			  const float tas_meas, const float tas_variance)
+తార్కిక
+WindEstimator::initialise(స్థిరరాశి మాతృక::Vector3f &velI, స్థిరరాశి దశాంశం hor_vel_variance, స్థిరరాశి దశాంశం heading_rad,
+			  స్థిరరాశి దశాంశం tas_meas, స్థిరరాశి దశాంశం tas_variance)
 {
-	if (PX4_ISFINITE(tas_meas) && PX4_ISFINITE(tas_variance)) {
+	ఒకవేళ (PX4_ISFINITE(tas_meas) && PX4_ISFINITE(tas_variance)) {
 
-		constexpr float initial_heading_var = sq(math::radians(kInitialHeadingErrorDeg));
-		constexpr float initial_sideslip_var = sq(math::radians(kInitialBetaErrorDeg));
+		constexpr దశాంశం initial_heading_var = sq(math::radians(kInitialHeadingErrorDeg));
+		constexpr దశాంశం initial_sideslip_var = sq(math::radians(kInitialBetaErrorDeg));
 
-		matrix::SquareMatrix<float, 2> P_wind_init;
-		matrix::Vector2f wind_init;
+		మాతృక::వర్గం_మాతృక<దశాంశం, 2> P_wind_init;
+		మాతృక::Vector2f wind_init;
 
 		sym::InitWindUsingAirspeed(velI, heading_rad, tas_meas, hor_vel_variance, initial_heading_var, initial_sideslip_var,
 					   tas_variance,
 					   &wind_init, &P_wind_init);
 
 		_state.xy() = wind_init;
-		_state(INDEX_TAS_SCALE) = _scale_init;
-		_P.slice<2, 2>(0, 0) = P_wind_init;
+		_state(సూచీ_TAS_SCALE) = _scale_init;
+		_P.ముక్క<2, 2>(0, 0) = P_wind_init;
 
-	} else {
+	} లేకపోతే {
 		// no airspeed available
-		_state.setZero();
-		_state(INDEX_TAS_SCALE) = 1.0f;
-		_P.setZero();
-		_P(INDEX_W_N, INDEX_W_N) = _P(INDEX_W_E, INDEX_W_E) = sq(kInitialWindError);
+		_state.సమితి_Zero();
+		_state(సూచీ_TAS_SCALE) = 1.0f;
+		_P.సమితి_Zero();
+		_P(సూచీ_W_N, సూచీ_W_N) = _P(సూచీ_W_E, సూచీ_W_E) = sq(kInitialWindError);
 	}
 
-	_wind_estimator_reset = true;
-	_time_initialised = hrt_absolute_time();
+	_wind_estimator_reset = నిజం;
+	సమయం_initialised = hrt_absolute_సమయం();
 
-	return true;
+	తిరిగి నిజం;
 }
 
-void
-WindEstimator::update(uint64_t time_now)
+శూన్య
+WindEstimator::update(uint64_t సమయం_now)
 {
-	if (!_initialised) {
-		return;
+	ఒకవేళ (!_initialised) {
+		తిరిగి;
 	}
 
 	// set reset state to false (is set to true when initialise fuction is called later)
-	_wind_estimator_reset = false;
+	_wind_estimator_reset = అబద్ధం;
 
 	// run covariance prediction at 1Hz
-	if (time_now - _time_last_update < 1_s || _time_last_update == 0) {
-		if (_time_last_update == 0) {
-			_time_last_update = time_now;
+	ఒకవేళ (సమయం_now - సమయం_చివరి_update < 1_s || సమయం_చివరి_update == 0) {
+		ఒకవేళ (సమయం_చివరి_update == 0) {
+			సమయం_చివరి_update = సమయం_now;
 		}
 
-		return;
+		తిరిగి;
 	}
 
-	const float dt = (float)(time_now - _time_last_update) * 1e-6f;
-	_time_last_update = time_now;
+	స్థిరరాశి దశాంశం dt = (దశాంశం)(సమయం_now - సమయం_చివరి_update) * 1e-6f;
+	సమయం_చివరి_update = సమయం_now;
 
 	// if airspeed scale is at default (1.0) and we are in the first 5 minutes of flight time, multiply kTasScalePsd by 100 for faster learning
-	const float tas_psd_multiplier = (fabsf(_scale_init - 1.0f) < FLT_EPSILON && (time_now - _time_initialised < kTASScaleFastLearnTime)) ?
+	స్థిరరాశి దశాంశం tas_psd_multiplier = (fabsf(_scale_init - 1.0f) < FLT_EPSILON && (సమయం_now - సమయం_initialised < k_TASScale_Fast_Learn_సమయం)) ?
 					 kTASScalePSDMultiplier : 1.f;
 
-	matrix::Matrix3f Qk;
-	Qk(INDEX_W_N, INDEX_W_N) = _wind_psd * dt;
-	Qk(INDEX_W_E, INDEX_W_E) = Qk(INDEX_W_N, INDEX_W_N);
-	Qk(INDEX_TAS_SCALE, INDEX_TAS_SCALE) = kTasScalePsd * tas_psd_multiplier * dt;
+	మాతృక::Matrix3f Qk;
+	Qk(సూచీ_W_N, సూచీ_W_N) = _wind_psd * dt;
+	Qk(సూచీ_W_E, సూచీ_W_E) = Qk(సూచీ_W_N, సూచీ_W_N);
+	Qk(సూచీ_TAS_SCALE, సూచీ_TAS_SCALE) = kTasScalePsd * tas_psd_multiplier * dt;
 	_P += Qk;
 }
 
-void
-WindEstimator::fuse_airspeed(uint64_t time_now, const float true_airspeed, const matrix::Vector3f &velI,
-			     const float hor_vel_variance, const matrix::Quatf &q_att)
+శూన్య
+WindEstimator::fuse_airspeed(uint64_t సమయం_now, స్థిరరాశి దశాంశం true_airspeed, స్థిరరాశి మాతృక::Vector3f &velI,
+			     స్థిరరాశి దశాంశం hor_vel_variance, స్థిరరాశి మాతృక::Quatf &q_att)
 {
 
-	if (!_initialised) {
+	ఒకవేళ (!_initialised) {
 		// try to initialise
-		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi(), true_airspeed, _tas_var);
-		return;
+		_initialised = initialise(velI, hor_vel_variance, మాతృక::Eulerf(q_att).psi(), true_airspeed, _tas_var);
+		తిరిగి;
 	}
 
 	// don't fuse faster than 10Hz
-	if (time_now - _time_last_airspeed_fuse < 100_ms) {
-		return;
+	ఒకవేళ (సమయం_now - సమయం_చివరి_airspeed_fuse < 100_ms) {
+		తిరిగి;
 	}
 
-	_time_last_airspeed_fuse = time_now;
+	సమయం_చివరి_airspeed_fuse = సమయం_now;
 
-	matrix::Matrix<float, 1, 3> H_tas;
-	matrix::Matrix<float, 3, 1> K;
+	మాతృక::మాతృక_2<దశాంశం, 1, 3> H_tas;
+	మాతృక::మాతృక_2<దశాంశం, 3, 1> K;
 
 	sym::FuseAirspeed(velI, _state, _P, true_airspeed, _tas_var, FLT_EPSILON,
 			  &H_tas, &K, &_tas_innov_var, &_tas_innov);
 
-	const bool meas_is_rejected = check_if_meas_is_rejected(_tas_innov, _tas_innov_var, kTasGate);
+	స్థిరరాశి తార్కిక meas_is_rejected = check_if_meas_is_rejected(_tas_innov, _tas_innov_var, kTasGate);
 
-	if (_tas_innov_var < FLT_EPSILON) {
+	ఒకవేళ (_tas_innov_var < FLT_EPSILON) {
 		// re init filter in case of a negative variance, and trigger early return to not fuse measurement
-		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi(), true_airspeed, _tas_var);
-		return;
+		_initialised = initialise(velI, hor_vel_variance, మాతృక::Eulerf(q_att).psi(), true_airspeed, _tas_var);
+		తిరిగి;
 
-	} else if (meas_is_rejected) {
-		return;
+	} లేకపోతే ఒకవేళ (meas_is_rejected) {
+		తిరిగి;
 	}
 
 	// apply correction to state
-	_state(INDEX_W_N) += _tas_innov * K(INDEX_W_N, 0);
-	_state(INDEX_W_E) += _tas_innov * K(INDEX_W_E, 0);
-	_state(INDEX_TAS_SCALE) += _tas_innov * K(INDEX_TAS_SCALE, 0);
+	_state(సూచీ_W_N) += _tas_innov * K(సూచీ_W_N, 0);
+	_state(సూచీ_W_E) += _tas_innov * K(సూచీ_W_E, 0);
+	_state(సూచీ_TAS_SCALE) += _tas_innov * K(సూచీ_TAS_SCALE, 0);
 
 	// update covariance matrix
 	_P = _P - K * H_tas * _P;
 
-	run_sanity_checks();
+	నిరంతరం_sanity_checks();
 }
 
-void
-WindEstimator::fuse_beta(uint64_t time_now, const matrix::Vector3f &velI, const float hor_vel_variance,
-			 const matrix::Quatf &q_att)
+శూన్య
+WindEstimator::fuse_beta(uint64_t సమయం_now, స్థిరరాశి మాతృక::Vector3f &velI, స్థిరరాశి దశాంశం hor_vel_variance,
+			 స్థిరరాశి మాతృక::Quatf &q_att)
 {
-	if (!_initialised) {
-		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi());
-		return;
+	ఒకవేళ (!_initialised) {
+		_initialised = initialise(velI, hor_vel_variance, మాతృక::Eulerf(q_att).psi());
+		తిరిగి;
 	}
 
 	// don't fuse faster than 10Hz
-	if (time_now - _time_last_beta_fuse < 100_ms) {
-		return;
+	ఒకవేళ (సమయం_now - సమయం_చివరి_beta_fuse < 100_ms) {
+		తిరిగి;
 	}
 
-	_time_last_beta_fuse = time_now;
+	సమయం_చివరి_beta_fuse = సమయం_now;
 
 
-	matrix::Matrix<float, 1, 3> H_beta;
-	matrix::Matrix<float, 3, 1> K;
+	మాతృక::మాతృక_2<దశాంశం, 1, 3> H_beta;
+	మాతృక::మాతృక_2<దశాంశం, 3, 1> K;
 
 	sym::FuseBeta(velI, _state, _P, q_att, kBetaVar, FLT_EPSILON,
 		      &H_beta, &K, &_beta_innov_var, &_beta_innov);
 
-	const bool meas_is_rejected = check_if_meas_is_rejected(_beta_innov, _beta_innov_var, kBetaGate);
+	స్థిరరాశి తార్కిక meas_is_rejected = check_if_meas_is_rejected(_beta_innov, _beta_innov_var, kBetaGate);
 
-	if (_beta_innov_var < FLT_EPSILON) {
+	ఒకవేళ (_beta_innov_var < FLT_EPSILON) {
 		// re init filter in case of a negative variance, and trigger early return to not fuse measurement
-		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi());
-		return;
+		_initialised = initialise(velI, hor_vel_variance, మాతృక::Eulerf(q_att).psi());
+		తిరిగి;
 
-	} else if (meas_is_rejected) {
-		return;
+	} లేకపోతే ఒకవేళ (meas_is_rejected) {
+		తిరిగి;
 	}
 
 	// apply correction to state
-	_state(INDEX_W_N) += _beta_innov * K(INDEX_W_N, 0);
-	_state(INDEX_W_E) += _beta_innov * K(INDEX_W_E, 0);
-	_state(INDEX_TAS_SCALE) += _beta_innov * K(INDEX_TAS_SCALE, 0);
+	_state(సూచీ_W_N) += _beta_innov * K(సూచీ_W_N, 0);
+	_state(సూచీ_W_E) += _beta_innov * K(సూచీ_W_E, 0);
+	_state(సూచీ_TAS_SCALE) += _beta_innov * K(సూచీ_TAS_SCALE, 0);
 
 	// update covariance matrix
 	_P = _P - K * H_beta * _P;
 
-	run_sanity_checks();
+	నిరంతరం_sanity_checks();
 }
 
-void
-WindEstimator::run_sanity_checks()
+శూన్య
+WindEstimator::నిరంతరం_sanity_checks()
 {
-	for (unsigned i = 0; i < 3; i++) {
-		if (_P(i, i) < 0.0f) {
+	కొరకు (గుర్తులేని i = 0; i < 3; i++) {
+		ఒకవేళ (_P(i, i) < 0.0f) {
 			// ill-conditioned covariance matrix, reset filter
-			_initialised = false;
-			return;
+			_initialised = అబద్ధం;
+			తిరిగి;
 		}
 
 		// limit covariance diagonals if they grow too large
-		if (i < 2) {
+		ఒకవేళ (i < 2) {
 			_P(i, i) = _P(i, i) > 25.0f ? 25.0f : _P(i, i);
 
-		} else if (i == 2) {
+		} లేకపోతే ఒకవేళ (i == 2) {
 			_P(i, i) = _P(i, i) > 0.1f ? 0.1f : _P(i, i);
 		}
 	}
 
-	if (!_state.isAllFinite()) {
-		_initialised = false;
-		return;
+	ఒకవేళ (!_state.isAllFinite()) {
+		_initialised = అబద్ధం;
+		తిరిగి;
 	}
 
 	// attain symmetry
-	for (unsigned row = 0; row < 3; row++) {
-		for (unsigned column = 0; column < row; column++) {
-			const float tmp = (_P(row, column) + _P(column, row)) * 0.5f;
-			_P(row, column) = tmp;
-			_P(column, row) = tmp;
+	కొరకు (గుర్తులేని అడ్డువరుస = 0; అడ్డువరుస < 3; అడ్డువరుస++) {
+		కొరకు (గుర్తులేని స్తంభం = 0; స్తంభం < అడ్డువరుస; స్తంభం++) {
+			స్థిరరాశి దశాంశం tmp = (_P(అడ్డువరుస, స్తంభం) + _P(స్తంభం, అడ్డువరుస)) * 0.5f;
+			_P(అడ్డువరుస, స్తంభం) = tmp;
+			_P(స్తంభం, అడ్డువరుస) = tmp;
 		}
 	}
 }
 
-bool
-WindEstimator::check_if_meas_is_rejected(float innov, float innov_var, uint8_t gate_size)
+తార్కిక
+WindEstimator::check_if_meas_is_rejected(దశాంశం innov, దశాంశం innov_var, uint8_t gate_కొలత)
 {
-	return (innov * innov > gate_size * gate_size * innov_var);
+	తిరిగి (innov * innov > gate_కొలత * gate_కొలత * innov_var);
 }

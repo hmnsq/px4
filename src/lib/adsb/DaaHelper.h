@@ -37,34 +37,34 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#pragma once
+#సూచన once
 
-#include <cstdint>
+#అన్తర్భావ <cstdint>
 
-#include <lib/mathlib/mathlib.h>
-#include <matrix/math.hpp>
+#అన్తర్భావ <lib/mathlib/mathlib.h>
+#అన్తర్భావ <matrix/math.hpp>
 
-struct aircraft_state_s {
-	matrix::Vector2d lat_lon{};
-	float altitude{0.f};
-	matrix::Vector3f velocity_ned{};
-	float heading{0.f};
+నిర్మాణం aircraft_state_s {
+	మాతృక::Vector2d lat_lon{};
+	దశాంశం altitude{0.f};
+	మాతృక::Vector3f velocity_ned{};
+	దశాంశం heading{0.f};
 };
 
-struct daa_stats_s {
-	float aircraft_dist{0.f};
-	float aircraft_dist_hor{0.f};
-	float aircraft_dist_vert{0.f};
-	float expected_min_dist_time_sec{0.f};
+నిర్మాణం daa_stats_s {
+	దశాంశం aircraft_dist{0.f};
+	దశాంశం aircraft_dist_hor{0.f};
+	దశాంశం aircraft_dist_vert{0.f};
+	దశాంశం expected_min_dist_సమయం_sec{0.f};
 };
 
-inline matrix::Vector2f calculate_horizontal_vertical_speed_magnitudes(const aircraft_state_s &aircraft_state)
+అంతఃవరుస మాతృక::Vector2f calculate_horizontal_vertical_వేగం_magnitudes(స్థిరరాశి aircraft_state_s &aircraft_state)
 {
-	return matrix::Vector2f(aircraft_state.velocity_ned.xy().norm(), fabsf(aircraft_state.velocity_ned(2)));
+	తిరిగి మాతృక::Vector2f(aircraft_state.velocity_ned.xy().norm(), fabsf(aircraft_state.velocity_ned(2)));
 }
 
 // Worst-case closing speed (UAV and traffic flying straight at each other).
-inline float calculate_relative_uav_traffic_speed(const aircraft_state_s &uav_state, const aircraft_state_s &traffic_state)
+అంతఃవరుస దశాంశం calculate_relative_uav_traffic_వేగం(స్థిరరాశి aircraft_state_s &uav_state, స్థిరరాశి aircraft_state_s &traffic_state)
 {
-	return traffic_state.velocity_ned.norm() + uav_state.velocity_ned.norm();
+	తిరిగి traffic_state.velocity_ned.norm() + uav_state.velocity_ned.norm();
 }

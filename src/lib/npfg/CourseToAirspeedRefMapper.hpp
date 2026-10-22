@@ -56,27 +56,27 @@
  *     https://tstastny.github.io/pdf/tstastny_phd_thesis_wcover.pdf
  */
 
-#ifndef PX4_COURSETOAIRSPEEDREFMAPPER_HPP
-#define PX4_COURSETOAIRSPEEDREFMAPPER_HPP
+#నిర్వచితం_కాకపోతే PX4_COURSETOAIRSPEEDREFMAPPER_HPP
+#నిర్వచించు PX4_COURSETOAIRSPEEDREFMAPPER_HPP
 
 
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
+#అన్తర్భావ <matrix/math.hpp>
+#అన్తర్భావ <lib/mathlib/mathlib.h>
 
-class CourseToAirspeedRefMapper
+తరగతి కోర్సు_గమ్యం_Airspeed_Ref_Mapper
 {
-public:
+బహిరంగ:
 
-	CourseToAirspeedRefMapper() {};
+	కోర్సు_గమ్యం_Airspeed_Ref_Mapper() {};
 
-	~CourseToAirspeedRefMapper() = default;
+	~కోర్సు_గమ్యం_Airspeed_Ref_Mapper() = అప్రమేయ;
 
-	float mapCourseSetpointToHeadingSetpoint(const float bearing_setpoint,
-			const matrix::Vector2f &wind_vel, float airspeed_sp) const;
-	float getMinAirspeedForCurrentBearing(const float bearing_setpoint,
-					      const matrix::Vector2f &wind_vel, float max_airspeed, float min_ground_speed) const;
+	దశాంశం map_కోర్సు_Setpoint_గమ్యం_Heading_Setpoint(స్థిరరాశి దశాంశం bearing_setpoint,
+			స్థిరరాశి మాతృక::Vector2f &wind_vel, దశాంశం airspeed_sp) స్థిరరాశి;
+	దశాంశం getMinAirspeedForCurrentBearing(స్థిరరాశి దశాంశం bearing_setpoint,
+					      స్థిరరాశి మాతృక::Vector2f &wind_vel, దశాంశం max_airspeed, దశాంశం min_ground_వేగం) స్థిరరాశి;
 
-private:
+అంతరంగ:
 	/*
 	 * Projection of the air velocity vector onto the bearing line considering
 	 * a connected wind triangle.
@@ -85,7 +85,7 @@ private:
 	 * @param[in] wind_cross_bearing 2D cross product of wind velocity and bearing vector [m/s]
 	 * @return Projection of air velocity vector on bearing vector [m/s]
 	 */
-	float projectAirspOnBearing(const float airspeed, const float wind_cross_bearing) const;
+	దశాంశం projectAirspOnBearing(స్థిరరాశి దశాంశం airspeed, స్థిరరాశి దశాంశం wind_cross_bearing) స్థిరరాశి;
 	/*
 	 * Check for binary bearing feasibility.
 	 *
@@ -95,8 +95,8 @@ private:
 	 * @param[in] wind_speed Wind speed [m/s]
 	 * @return Binary bearing feasibility: 1 if feasible, 0 if infeasible
 	 */
-	int bearingIsFeasible(const float wind_cross_bearing, const float wind_dot_bearing, const float airspeed,
-			      const float wind_speed) const;
+	పూర్ణాంకం bearingIsFeasible(స్థిరరాశి దశాంశం wind_cross_bearing, స్థిరరాశి దశాంశం wind_dot_bearing, స్థిరరాశి దశాంశం airspeed,
+			      స్థిరరాశి దశాంశం wind_వేగం) స్థిరరాశి;
 	/*
 	 * Air velocity solution for a given wind velocity and bearing vector assuming
 	 * a "high speed" (not backwards) solution in the excess wind case.
@@ -106,8 +106,8 @@ private:
 	 * @param[in] bearing_vec Bearing vector
 	 * @return Air velocity reference vector [m/s]
 	 */
-	matrix::Vector2f solveWindTriangle(const float wind_cross_bearing, const float airsp_dot_bearing,
-					   const matrix::Vector2f &bearing_vec) const;
+	మాతృక::Vector2f solveWindTriangle(స్థిరరాశి దశాంశం wind_cross_bearing, స్థిరరాశి దశాంశం airsp_dot_bearing,
+					   స్థిరరాశి మాతృక::Vector2f &bearing_vec) స్థిరరాశి;
 	/*
 	 * Air velocity solution for an infeasible bearing.
 	 *
@@ -117,8 +117,8 @@ private:
 	 * @param[in] airspeed Vehicle true airspeed [m/s]
 	 * @return Air velocity vector [m/s]
 	 */
-	matrix::Vector2f infeasibleAirVelRef(const matrix::Vector2f &wind_vel, const matrix::Vector2f &bearing_vec,
-					     const float wind_speed, const float airspeed) const;
+	మాతృక::Vector2f infeasibleAirVelRef(స్థిరరాశి మాతృక::Vector2f &wind_vel, స్థిరరాశి మాతృక::Vector2f &bearing_vec,
+					     స్థిరరాశి దశాంశం wind_వేగం, స్థిరరాశి దశాంశం airspeed) స్థిరరాశి;
 };
 
-#endif //PX4_COURSETOAIRSPEEDREFMAPPER_HPP
+#అయితే_ముగింపు //PX4_COURSETOAIRSPEEDREFMAPPER_HPP

@@ -31,100 +31,100 @@
  *
  ****************************************************************************/
 
-#include "ObstacleMath.hpp"
-#include <mathlib/math/Limits.hpp>
+#అన్తర్భావ "ObstacleMath.hpp"
+#అన్తర్భావ <mathlib/math/Limits.hpp>
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-namespace ObstacleMath
+నామాకాశ ObstacleMath
 {
 
-void project_distance_on_horizontal_plane(float &distance, const float yaw, const matrix::Quatf &q_world_vehicle)
+శూన్య project_దూరం_on_horizontal_plane(దశాంశం &దూరం, స్థిరరాశి దశాంశం yaw, స్థిరరాశి మాతృక::Quatf &q_world_vehicle)
 {
-	const Quatf q_vehicle_sensor(Quatf(cosf(yaw / 2.f), 0.f, 0.f, sinf(yaw / 2.f)));
-	const Quatf q_world_sensor = q_world_vehicle * q_vehicle_sensor;
-	const Vector3f forward(1.f, 0.f, 0.f);
-	const Vector3f sensor_direction_in_world = q_world_sensor.rotateVector(forward);
+	స్థిరరాశి Quatf q_vehicle_sensor(Quatf(cosf(yaw / 2.f), 0.f, 0.f, sinf(yaw / 2.f)));
+	స్థిరరాశి Quatf q_world_sensor = q_world_vehicle * q_vehicle_sensor;
+	స్థిరరాశి Vector3f forward(1.f, 0.f, 0.f);
+	స్థిరరాశి Vector3f sensor_direction_లోపల_world = q_world_sensor.rotate_సదిశ(forward);
 
-	float horizontal_projection_scale = sensor_direction_in_world.xy().norm();
+	దశాంశం horizontal_projection_scale = sensor_direction_లోపల_world.xy().norm();
 	horizontal_projection_scale = math::constrain(horizontal_projection_scale, FLT_EPSILON, 1.0f);
-	distance *= horizontal_projection_scale;
+	దూరం *= horizontal_projection_scale;
 }
 
-int get_bin_at_angle(float bin_width, float angle)
+పూర్ణాంకం get_bin_at_angle(దశాంశం bin_వెడల్పు, దశాంశం angle)
 {
-	int bin_at_angle = (int)round(matrix::wrap(angle, 0.f, 360.f) / bin_width);
-	return wrap_bin(bin_at_angle, 360 / bin_width);
+	పూర్ణాంకం bin_at_angle = (పూర్ణాంకం)round(మాతృక::wrap(angle, 0.f, 360.f) / bin_వెడల్పు);
+	తిరిగి wrap_bin(bin_at_angle, 360 / bin_వెడల్పు);
 }
 
-float get_lower_bound_angle(int bin, float bin_width, float angle_offset)
+దశాంశం get_క్రింది_bound_angle(పూర్ణాంకం bin, దశాంశం bin_వెడల్పు, దశాంశం angle_స్థానభ్రంశం)
 {
-	bin = wrap_bin(bin, 360 / bin_width);
-	return wrap_360(bin * bin_width + angle_offset - bin_width / 2.f);
+	bin = wrap_bin(bin, 360 / bin_వెడల్పు);
+	తిరిగి wrap_360(bin * bin_వెడల్పు + angle_స్థానభ్రంశం - bin_వెడల్పు / 2.f);
 }
 
-int get_offset_bin_index(int bin, float bin_width, float angle_offset)
+పూర్ణాంకం get_స్థానభ్రంశం_bin_సూచీ(పూర్ణాంకం bin, దశాంశం bin_వెడల్పు, దశాంశం angle_స్థానభ్రంశం)
 {
-	int offset = get_bin_at_angle(bin_width, angle_offset);
-	return wrap_bin(bin - offset, 360 / bin_width);
+	పూర్ణాంకం స్థానభ్రంశం = get_bin_at_angle(bin_వెడల్పు, angle_స్థానభ్రంశం);
+	తిరిగి wrap_bin(bin - స్థానభ్రంశం, 360 / bin_వెడల్పు);
 }
 
-float sensor_orientation_to_yaw_offset(const SensorOrientation orientation, const float q[4])
+దశాంశం sensor_orientation_గమ్యం_yaw_స్థానభ్రంశం(స్థిరరాశి SensorOrientation orientation, స్థిరరాశి దశాంశం q[4])
 {
-	float offset = 0.0f;
+	దశాంశం స్థానభ్రంశం = 0.0f;
 
-	switch (orientation) {
-	case SensorOrientation::ROTATION_YAW_0:
-		offset = 0.0f;
-		break;
+	ఎంపిక (orientation) {
+	స్థితి SensorOrientation::ROTATION_YAW_0:
+		స్థానభ్రంశం = 0.0f;
+		ఆపు;
 
-	case SensorOrientation::ROTATION_YAW_45:
-		offset = M_PI_F / 4.0f;
-		break;
+	స్థితి SensorOrientation::ROTATION_YAW_45:
+		స్థానభ్రంశం = M_PI_F / 4.0f;
+		ఆపు;
 
-	case SensorOrientation::ROTATION_YAW_90:
-		offset = M_PI_F / 2.0f;
-		break;
+	స్థితి SensorOrientation::ROTATION_YAW_90:
+		స్థానభ్రంశం = M_PI_F / 2.0f;
+		ఆపు;
 
-	case SensorOrientation::ROTATION_YAW_135:
-		offset = 3.0f * M_PI_F / 4.0f;
-		break;
+	స్థితి SensorOrientation::ROTATION_YAW_135:
+		స్థానభ్రంశం = 3.0f * M_PI_F / 4.0f;
+		ఆపు;
 
-	case SensorOrientation::ROTATION_YAW_180:
-		offset = M_PI_F;
-		break;
+	స్థితి SensorOrientation::ROTATION_YAW_180:
+		స్థానభ్రంశం = M_PI_F;
+		ఆపు;
 
-	case SensorOrientation::ROTATION_YAW_225:
-		offset = -3.0f * M_PI_F / 4.0f;
-		break;
+	స్థితి SensorOrientation::ROTATION_YAW_225:
+		స్థానభ్రంశం = -3.0f * M_PI_F / 4.0f;
+		ఆపు;
 
-	case SensorOrientation::ROTATION_YAW_270:
-		offset = -M_PI_F / 2.0f;
-		break;
+	స్థితి SensorOrientation::ROTATION_YAW_270:
+		స్థానభ్రంశం = -M_PI_F / 2.0f;
+		ఆపు;
 
-	case SensorOrientation::ROTATION_YAW_315:
-		offset = -M_PI_F / 4.0f;
-		break;
+	స్థితి SensorOrientation::ROTATION_YAW_315:
+		స్థానభ్రంశం = -M_PI_F / 4.0f;
+		ఆపు;
 
-	case SensorOrientation::ROTATION_CUSTOM:
-		if (q != nullptr) {
-			offset = Eulerf(Quatf(q)).psi();
+	స్థితి SensorOrientation::ROTATION_CUSTOM:
+		ఒకవేళ (q != శూన్యసూచిక) {
+			స్థానభ్రంశం = Eulerf(Quatf(q)).psi();
 		}
 
-		break;
+		ఆపు;
 	}
 
-	return offset;
+	తిరిగి స్థానభ్రంశం;
 }
 
-int wrap_bin(int bin, int bin_count)
+పూర్ణాంకం wrap_bin(పూర్ణాంకం bin, పూర్ణాంకం bin_లెక్క)
 {
-	return (bin + bin_count) % bin_count;
+	తిరిగి (bin + bin_లెక్క) % bin_లెక్క;
 }
 
-float wrap_360(const float angle)
+దశాంశం wrap_360(స్థిరరాశి దశాంశం angle)
 {
-	return matrix::wrap(angle, 0.0f, 360.0f);
+	తిరిగి మాతృక::wrap(angle, 0.0f, 360.0f);
 }
 
 } // ObstacleMath

@@ -31,128 +31,128 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
+#అన్తర్భావ <gtest/gtest.h>
 
-#include <atomic>
-#include <chrono>
-#include <cstring>
-#include <string>
-#include <thread>
+#అన్తర్భావ <atomic>
+#అన్తర్భావ <chrono>
+#అన్తర్భావ <cstring>
+#అన్తర్భావ <string>
+#అన్తర్భావ <thread>
 
-#include "perf_counter.h"
+#అన్తర్భావ "perf_counter.h"
 
-namespace
+నామాకాశ
 {
 
-bool wait_until(const std::atomic<bool> &condition)
+తార్కిక wait_until(స్థిరరాశి std::atomic<తార్కిక> &condition)
 {
-	const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+	స్థిరరాశి స్వయంచాలక deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
 
-	while (!condition.load() && std::chrono::steady_clock::now() < deadline) {
+	అయితే (!condition.ఎక్కించు() && std::chrono::steady_clock::now() < deadline) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 
-	return condition.load();
+	తిరిగి condition.ఎక్కించు();
 }
 
 } // namespace
 
-TEST(PerfCounter, IterateLineContent)
+TEST(PerfCounter, Iterate_పంక్తి_Content)
 {
-	perf_counter_t counter = perf_alloc(PC_COUNT, "test_perf_line_content");
-	ASSERT_NE(counter, nullptr);
+	perf_counter_t counter = perf_alloc(PC_లెక్క, "test_perf_line_content");
+	ASSERT_NE(counter, శూన్యసూచిక);
 
-	perf_count(counter);
-	perf_count(counter);
-	perf_count(counter);
+	perf_లెక్క(counter);
+	perf_లెక్క(counter);
+	perf_లెక్క(counter);
 
-	struct Context {
-		std::string line;
+	నిర్మాణం Context {
+		std::string పంక్తి;
 	} context;
 
-	perf_iterate_all([](const char *counter_line, void *user) {
-		if (strstr(counter_line, "test_perf_line_content") != nullptr) {
-			static_cast<Context *>(user)->line = counter_line;
+	perf_iterate_all([](స్థిరరాశి అక్షరం *counter_పంక్తి, శూన్య *user) {
+		ఒకవేళ (అక్షరశ్రేణి_శోధన(counter_పంక్తి, "test_perf_line_content") != శూన్యసూచిక) {
+			static_cast<Context *>(user)->పంక్తి = counter_పంక్తి;
 		}
 	}, &context);
 
-	EXPECT_EQ(context.line, "test_perf_line_content: 3 events");
+	EXPECT_EQ(context.పంక్తి, "test_perf_line_content: 3 events");
 
 	perf_free(counter);
 }
 
-TEST(PerfCounter, ConcurrentAllocDoesNotBlockOnSlowCallback)
+TEST(PerfCounter, Concurrent_Alloc_Does_Not_ఖండం_On_Slow_Callback)
 {
-	perf_counter_t counter = perf_alloc(PC_COUNT, "test_perf_slow_callback");
-	ASSERT_NE(counter, nullptr);
+	perf_counter_t counter = perf_alloc(PC_లెక్క, "test_perf_slow_callback");
+	ASSERT_NE(counter, శూన్యసూచిక);
 
 	// while the first callback is running, another thread must be able to
 	// allocate and free a counter without waiting for the iteration to finish
-	struct Context {
-		std::atomic<bool> first{true};
-		std::atomic<bool> alloc_done{false};
-		std::atomic<bool> alloc_succeeded{false};
+	నిర్మాణం Context {
+		std::atomic<తార్కిక> first{నిజం};
+		std::atomic<తార్కిక> alloc_పూర్తి{అబద్ధం};
+		std::atomic<తార్కిక> alloc_succeeded{అబద్ధం};
 		std::thread alloc_thread;
 	} context;
 
-	perf_iterate_all([](const char *, void *user) {
+	perf_iterate_all([](స్థిరరాశి అక్షరం *, శూన్య *user) {
 		Context *ctx = static_cast<Context *>(user);
 
-		if (ctx->first.exchange(false)) {
+		ఒకవేళ (ctx->first.exchange(అబద్ధం)) {
 			ctx->alloc_thread = std::thread([ctx]() {
-				perf_counter_t other = perf_alloc(PC_COUNT, "test_perf_concurrent_alloc");
-				ctx->alloc_succeeded.store(other != nullptr);
+				perf_counter_t other = perf_alloc(PC_లెక్క, "test_perf_concurrent_alloc");
+				ctx->alloc_succeeded.store(other != శూన్యసూచిక);
 				perf_free(other);
-				ctx->alloc_done.store(true);
+				ctx->alloc_పూర్తి.store(నిజం);
 			});
 
-			EXPECT_TRUE(wait_until(ctx->alloc_done));
+			EXPECT_TRUE(wait_until(ctx->alloc_పూర్తి));
 		}
 	}, &context);
 
-	if (context.alloc_thread.joinable()) {
+	ఒకవేళ (context.alloc_thread.joinable()) {
 		context.alloc_thread.join();
 	}
 
-	EXPECT_TRUE(context.alloc_done.load());
-	EXPECT_TRUE(context.alloc_succeeded.load());
+	EXPECT_TRUE(context.alloc_పూర్తి.ఎక్కించు());
+	EXPECT_TRUE(context.alloc_succeeded.ఎక్కించు());
 
 	perf_free(counter);
 }
 
 TEST(PerfCounter, AllocFromCallbackDoesNotDeadlock)
 {
-	perf_counter_t counter = perf_alloc(PC_COUNT, "test_perf_callback_alloc");
-	ASSERT_NE(counter, nullptr);
+	perf_counter_t counter = perf_alloc(PC_లెక్క, "test_perf_callback_alloc");
+	ASSERT_NE(counter, శూన్యసూచిక);
 
 	// calling perf_alloc() from inside the callback self-deadlocked when the
 	// iteration held the mutex; run the iteration on its own thread so a
 	// regression fails the test instead of hanging it
-	struct Context {
-		std::atomic<bool> first{true};
-		std::atomic<bool> done{false};
-		perf_counter_t allocated{nullptr};
+	నిర్మాణం Context {
+		std::atomic<తార్కిక> first{నిజం};
+		std::atomic<తార్కిక> పూర్తి{అబద్ధం};
+		perf_counter_t allocated{శూన్యసూచిక};
 	} context;
 
 	std::thread iterate_thread([&]() {
-		perf_iterate_all([](const char *, void *user) {
+		perf_iterate_all([](స్థిరరాశి అక్షరం *, శూన్య *user) {
 			Context *ctx = static_cast<Context *>(user);
 
-			if (ctx->first.exchange(false)) {
-				ctx->allocated = perf_alloc(PC_COUNT, "test_perf_callback_alloc_inner");
+			ఒకవేళ (ctx->first.exchange(అబద్ధం)) {
+				ctx->allocated = perf_alloc(PC_లెక్క, "test_perf_callback_alloc_inner");
 			}
 		}, &context);
 
-		context.done.store(true);
+		context.పూర్తి.store(నిజం);
 	});
 
-	if (!wait_until(context.done)) {
+	ఒకవేళ (!wait_until(context.పూర్తి)) {
 		iterate_thread.detach();
 		FAIL() << "perf_alloc() from the callback deadlocked";
 	}
 
 	iterate_thread.join();
-	EXPECT_NE(context.allocated, nullptr);
+	EXPECT_NE(context.allocated, శూన్యసూచిక);
 
 	perf_free(context.allocated);
 	perf_free(counter);
@@ -161,156 +161,156 @@ TEST(PerfCounter, AllocFromCallbackDoesNotDeadlock)
 TEST(PerfCounter, FreeDuringIterationIsDeferred)
 {
 	// allocation order puts counter_b at the list head, so it is visited first
-	perf_counter_t counter_a = perf_alloc(PC_COUNT, "test_perf_free_defer_a");
-	perf_counter_t counter_b = perf_alloc(PC_COUNT, "test_perf_free_defer_b");
-	ASSERT_NE(counter_a, nullptr);
-	ASSERT_NE(counter_b, nullptr);
+	perf_counter_t counter_a = perf_alloc(PC_లెక్క, "test_perf_free_defer_a");
+	perf_counter_t counter_b = perf_alloc(PC_లెక్క, "test_perf_free_defer_b");
+	ASSERT_NE(counter_a, శూన్యసూచిక);
+	ASSERT_NE(counter_b, శూన్యసూచిక);
 
-	struct Context {
+	నిర్మాణం Context {
 		perf_counter_t counter_a;
-		std::atomic<bool> free_done{false};
+		std::atomic<తార్కిక> free_పూర్తి{అబద్ధం};
 		std::thread free_thread;
-		int lines_a{0};
+		పూర్ణాంకం పంక్తులు_a{0};
 	} context{counter_a};
 
-	perf_iterate_all([](const char *counter_line, void *user) {
+	perf_iterate_all([](స్థిరరాశి అక్షరం *counter_పంక్తి, శూన్య *user) {
 		Context *ctx = static_cast<Context *>(user);
 
-		if (!ctx->free_thread.joinable() && strstr(counter_line, "test_perf_free_defer_b") != nullptr) {
+		ఒకవేళ (!ctx->free_thread.joinable() && అక్షరశ్రేణి_శోధన(counter_పంక్తి, "test_perf_free_defer_b") != శూన్యసూచిక) {
 			// free a not-yet-visited counter while the iteration is running
 			ctx->free_thread = std::thread([ctx]() {
 				perf_free(ctx->counter_a);
-				ctx->free_done.store(true);
+				ctx->free_పూర్తి.store(నిజం);
 			});
 
-			EXPECT_TRUE(wait_until(ctx->free_done));
+			EXPECT_TRUE(wait_until(ctx->free_పూర్తి));
 		}
 
-		if (strstr(counter_line, "test_perf_free_defer_a") != nullptr) {
-			ctx->lines_a++;
+		ఒకవేళ (అక్షరశ్రేణి_శోధన(counter_పంక్తి, "test_perf_free_defer_a") != శూన్యసూచిక) {
+			ctx->పంక్తులు_a++;
 		}
 	}, &context);
 
-	if (context.free_thread.joinable()) {
+	ఒకవేళ (context.free_thread.joinable()) {
 		context.free_thread.join();
 	}
 
-	EXPECT_TRUE(context.free_done.load());
-	EXPECT_EQ(context.lines_a, 0);
+	EXPECT_TRUE(context.free_పూర్తి.ఎక్కించు());
+	EXPECT_EQ(context.పంక్తులు_a, 0);
 
 	// the freed entry must not reappear after deferred cleanup
-	struct CountContext {
-		int lines_a{0};
-	} count_context;
+	నిర్మాణం లెక్క_Context {
+		పూర్ణాంకం పంక్తులు_a{0};
+	} లెక్క_context;
 
-	perf_iterate_all([](const char *counter_line, void *user) {
-		if (strstr(counter_line, "test_perf_free_defer_a") != nullptr) {
-			static_cast<CountContext *>(user)->lines_a++;
+	perf_iterate_all([](స్థిరరాశి అక్షరం *counter_పంక్తి, శూన్య *user) {
+		ఒకవేళ (అక్షరశ్రేణి_శోధన(counter_పంక్తి, "test_perf_free_defer_a") != శూన్యసూచిక) {
+			static_cast<లెక్క_Context *>(user)->పంక్తులు_a++;
 		}
-	}, &count_context);
+	}, &లెక్క_context);
 
-	EXPECT_EQ(count_context.lines_a, 0);
+	EXPECT_EQ(లెక్క_context.పంక్తులు_a, 0);
 
 	perf_free(counter_b);
 }
 
-TEST(PerfCounter, FreeIsDeferredUntilLastOverlappingIterationEnds)
+TEST(PerfCounter, Free_Is_Deferred_Until_చివరి_Overlapping_Iteration_చివర్లు)
 {
 	// Both iterators stop on counter_b with counter_a cached as their next entry.
-	perf_counter_t counter_a = perf_alloc(PC_COUNT, "test_perf_overlap_a");
-	perf_counter_t counter_b = perf_alloc(PC_COUNT, "test_perf_overlap_b");
-	ASSERT_NE(counter_a, nullptr);
-	ASSERT_NE(counter_b, nullptr);
+	perf_counter_t counter_a = perf_alloc(PC_లెక్క, "test_perf_overlap_a");
+	perf_counter_t counter_b = perf_alloc(PC_లెక్క, "test_perf_overlap_b");
+	ASSERT_NE(counter_a, శూన్యసూచిక);
+	ASSERT_NE(counter_b, శూన్యసూచిక);
 
-	struct IterateContext {
-		std::atomic<bool> entered{false};
-		std::atomic<bool> release{false};
-		std::atomic<bool> timed_out{false};
-		int lines_a{0};
-		int replacement_lines{0};
-	} first_context, second_context;
+	నిర్మాణం IterateContext {
+		std::atomic<తార్కిక> entered{అబద్ధం};
+		std::atomic<తార్కిక> release{అబద్ధం};
+		std::atomic<తార్కిక> timed_బహిర్గతం{అబద్ధం};
+		పూర్ణాంకం పంక్తులు_a{0};
+		పూర్ణాంకం replacement_పంక్తులు{0};
+	} మొదటి_context, రెండవ_context;
 
-	perf_callback callback = [](const char *counter_line, void *user) {
+	perf_callback callback = [](స్థిరరాశి అక్షరం *counter_పంక్తి, శూన్య *user) {
 		IterateContext *ctx = static_cast<IterateContext *>(user);
 
-		if (strstr(counter_line, "test_perf_overlap_b") != nullptr) {
-			ctx->entered.store(true);
+		ఒకవేళ (అక్షరశ్రేణి_శోధన(counter_పంక్తి, "test_perf_overlap_b") != శూన్యసూచిక) {
+			ctx->entered.store(నిజం);
 
-			if (!wait_until(ctx->release)) {
-				ctx->timed_out.store(true);
+			ఒకవేళ (!wait_until(ctx->release)) {
+				ctx->timed_బహిర్గతం.store(నిజం);
 			}
 		}
 
-		if (strstr(counter_line, "test_perf_overlap_a") != nullptr) {
-			ctx->lines_a++;
+		ఒకవేళ (అక్షరశ్రేణి_శోధన(counter_పంక్తి, "test_perf_overlap_a") != శూన్యసూచిక) {
+			ctx->పంక్తులు_a++;
 		}
 
-		if (strstr(counter_line, "test_perf_overlap_replacement") != nullptr) {
-			ctx->replacement_lines++;
+		ఒకవేళ (అక్షరశ్రేణి_శోధన(counter_పంక్తి, "test_perf_overlap_replacement") != శూన్యసూచిక) {
+			ctx->replacement_పంక్తులు++;
 		}
 	};
 
-	std::thread first_thread([&]() { perf_iterate_all(callback, &first_context); });
+	std::thread మొదటి_thread([&]() { perf_iterate_all(callback, &మొదటి_context); });
 
-	if (!wait_until(first_context.entered)) {
-		first_context.release.store(true);
-		first_thread.join();
+	ఒకవేళ (!wait_until(మొదటి_context.entered)) {
+		మొదటి_context.release.store(నిజం);
+		మొదటి_thread.join();
 		perf_free(counter_a);
 		perf_free(counter_b);
 		FAIL() << "first iterator did not reach the blocking callback";
 	}
 
-	std::thread second_thread([&]() { perf_iterate_all(callback, &second_context); });
+	std::thread రెండవ_thread([&]() { perf_iterate_all(callback, &రెండవ_context); });
 
-	if (!wait_until(second_context.entered)) {
-		first_context.release.store(true);
-		second_context.release.store(true);
-		first_thread.join();
-		second_thread.join();
+	ఒకవేళ (!wait_until(రెండవ_context.entered)) {
+		మొదటి_context.release.store(నిజం);
+		రెండవ_context.release.store(నిజం);
+		మొదటి_thread.join();
+		రెండవ_thread.join();
 		perf_free(counter_a);
 		perf_free(counter_b);
 		FAIL() << "second iterator did not reach the blocking callback";
 	}
 
-	std::atomic<bool> free_done{false};
+	std::atomic<తార్కిక> free_పూర్తి{అబద్ధం};
 	std::thread free_thread([&]() {
 		perf_free(counter_a);
-		free_done.store(true);
+		free_పూర్తి.store(నిజం);
 	});
 
-	if (!wait_until(free_done)) {
-		first_context.release.store(true);
-		second_context.release.store(true);
-		first_thread.join();
-		second_thread.join();
+	ఒకవేళ (!wait_until(free_పూర్తి)) {
+		మొదటి_context.release.store(నిజం);
+		రెండవ_context.release.store(నిజం);
+		మొదటి_thread.join();
+		రెండవ_thread.join();
 		free_thread.join();
 		perf_free(counter_b);
 		FAIL() << "perf_free() blocked on active callbacks";
 	}
 
 	free_thread.join();
-	first_context.release.store(true);
-	first_thread.join();
+	మొదటి_context.release.store(నిజం);
+	మొదటి_thread.join();
 
 	// If the first iterator incorrectly reclaimed counter_a, a same-sized
 	// allocation is likely to reuse the entry cached by the second iterator.
-	perf_counter_t replacement = perf_alloc(PC_COUNT, "test_perf_overlap_replacement");
+	perf_counter_t replacement = perf_alloc(PC_లెక్క, "test_perf_overlap_replacement");
 
-	if (replacement == nullptr) {
-		second_context.release.store(true);
-		second_thread.join();
+	ఒకవేళ (replacement == శూన్యసూచిక) {
+		రెండవ_context.release.store(నిజం);
+		రెండవ_thread.join();
 		perf_free(counter_b);
 		FAIL() << "replacement counter allocation failed";
 	}
 
-	second_context.release.store(true);
-	second_thread.join();
+	రెండవ_context.release.store(నిజం);
+	రెండవ_thread.join();
 
-	EXPECT_FALSE(first_context.timed_out.load());
-	EXPECT_FALSE(second_context.timed_out.load());
-	EXPECT_EQ(first_context.lines_a, 0);
-	EXPECT_EQ(second_context.lines_a, 0);
-	EXPECT_EQ(second_context.replacement_lines, 0);
+	EXPECT_FALSE(మొదటి_context.timed_బహిర్గతం.ఎక్కించు());
+	EXPECT_FALSE(రెండవ_context.timed_బహిర్గతం.ఎక్కించు());
+	EXPECT_EQ(మొదటి_context.పంక్తులు_a, 0);
+	EXPECT_EQ(రెండవ_context.పంక్తులు_a, 0);
+	EXPECT_EQ(రెండవ_context.replacement_పంక్తులు, 0);
 
 	perf_free(replacement);
 	perf_free(counter_b);

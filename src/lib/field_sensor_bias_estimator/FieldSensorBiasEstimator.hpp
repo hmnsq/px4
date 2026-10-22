@@ -46,20 +46,20 @@
  * http://www.roboticsproceedings.org/rss09/p50.pdf
  */
 
-#pragma once
+#సూచన once
 
-#include <matrix/matrix/math.hpp>
+#అన్తర్భావ <matrix/matrix/math.hpp>
 
-class FieldSensorBiasEstimator
+తరగతి క్షేత్రం_Sensor_Bias_Estimator
 {
-public:
-	FieldSensorBiasEstimator() = default;
-	~FieldSensorBiasEstimator() = default;
+బహిరంగ:
+	క్షేత్రం_Sensor_Bias_Estimator() = అప్రమేయ;
+	~క్షేత్రం_Sensor_Bias_Estimator() = అప్రమేయ;
 
 	// Set initial states
-	void setField(const matrix::Vector3f &field) { _field_prev = field; }
-	void setBias(const matrix::Vector3f &bias) { _state_bias = bias; }
-	void setLearningGain(float learning_gain) { _learning_gain = learning_gain; }
+	శూన్య సమితి_క్షేత్రం(స్థిరరాశి మాతృక::Vector3f &క్షేత్రం) { క్షేత్రం_prev = క్షేత్రం; }
+	శూన్య సమితి_Bias(స్థిరరాశి మాతృక::Vector3f &bias) { _state_bias = bias; }
+	శూన్య సమితి_Learning_Gain(దశాంశం learning_gain) { _learning_gain = learning_gain; }
 
 	/**
 	 * Update the estimator and extract updated biases.
@@ -67,20 +67,20 @@ public:
 	 * @param field biased field sensor data
 	 * @param dt time in seconds since the last update
 	 */
-	void updateEstimate(const matrix::Vector3f &gyro, const matrix::Vector3f &field, const float dt)
+	శూన్య updateEstimate(స్థిరరాశి మాతృక::Vector3f &gyro, స్థిరరాశి మాతృక::Vector3f &క్షేత్రం, స్థిరరాశి దశాంశం dt)
 	{
-		const matrix::Vector3f field_pred = _field_prev + (-gyro % (_field_prev - _state_bias)) * dt;
-		const matrix::Vector3f field_innov = field - field_pred;
-		_state_bias += _learning_gain * (-gyro % field_innov) * dt;
-		_field_prev = field;
+		స్థిరరాశి మాతృక::Vector3f క్షేత్రం_pred = క్షేత్రం_prev + (-gyro % (క్షేత్రం_prev - _state_bias)) * dt;
+		స్థిరరాశి మాతృక::Vector3f క్షేత్రం_innov = క్షేత్రం - క్షేత్రం_pred;
+		_state_bias += _learning_gain * (-gyro % క్షేత్రం_innov) * dt;
+		క్షేత్రం_prev = క్షేత్రం;
 	}
 
-	const matrix::Vector3f &getField() { return _field_prev; }
-	const matrix::Vector3f &getBias() { return _state_bias; }
+	స్థిరరాశి మాతృక::Vector3f &get_క్షేత్రం() { తిరిగి క్షేత్రం_prev; }
+	స్థిరరాశి మాతృక::Vector3f &getBias() { తిరిగి _state_bias; }
 
-private:
-	// states
-	matrix::Vector3f _field_prev{};
-	matrix::Vector3f _state_bias{};
-	float _learning_gain{20.f};
+అంతరంగ:
+	//స్థితులు
+	మాతృక::Vector3f క్షేత్రం_prev{};
+	మాతృక::Vector3f _state_bias{};
+	దశాంశం _learning_gain{20.f};
 };

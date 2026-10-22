@@ -39,95 +39,95 @@
  * mountpoints.
  */
 
-#include <gtest/gtest.h>
-#include "correction_framer.h"
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ "correction_framer.h"
 
-#include <vector>
-#include <cstring>
-#include <random>
+#అన్తర్భావ <vector>
+#అన్తర్భావ <cstring>
+#అన్తర్భావ <random>
 
-using namespace gnss;
+ఉపయోగించి నామాకాశ gnss;
 
-class UbxTest : public ::testing::Test
+తరగతి UbxTest : బహిరంగ ::testing::Test
 {
-protected:
+రక్షిత:
 	CorrectionFramer parser;
 
 	// Build a valid UBX frame (class/id arbitrary; content not decoded).
-	std::vector<uint8_t> buildUbxFrame(uint8_t msg_class, uint8_t msg_id,
-					   const std::vector<uint8_t> &payload)
+	std::సదిశ_2<uint8_t> build_Ubx_చట్రం(uint8_t సందేశం_class, uint8_t సందేశం_id,
+					   స్థిరరాశి std::సదిశ_2<uint8_t> &payload)
 	{
-		const size_t payload_len = payload.size();
-		std::vector<uint8_t> frame;
-		frame.push_back(UBX_SYNC1);
-		frame.push_back(UBX_SYNC2);
-		frame.push_back(msg_class);
-		frame.push_back(msg_id);
-		frame.push_back(static_cast<uint8_t>(payload_len & 0xFF));
-		frame.push_back(static_cast<uint8_t>((payload_len >> 8) & 0xFF));
-		frame.insert(frame.end(), payload.begin(), payload.end());
+		స్థిరరాశి size_t payload_len = payload.కొలత();
+		std::సదిశ_2<uint8_t> చట్రం;
+		చట్రం.push_back(UBX_SYNC1);
+		చట్రం.push_back(UBX_SYNC2);
+		చట్రం.push_back(సందేశం_class);
+		చట్రం.push_back(సందేశం_id);
+		చట్రం.push_back(static_cast<uint8_t>(payload_len & 0xFF));
+		చట్రం.push_back(static_cast<uint8_t>((payload_len >> 8) & 0xFF));
+		చట్రం.చొప్పించు(చట్రం.చివర(), payload.begin(), payload.చివర());
 
 		uint8_t ck_a = 0;
 		uint8_t ck_b = 0;
-		ubx_checksum(&frame[2], UBX_HEADER_LEN - 2 + payload_len, &ck_a, &ck_b);
-		frame.push_back(ck_a);
-		frame.push_back(ck_b);
-		return frame;
+		ubx_checksum(&చట్రం[2], UBX_శీర్షిక_LEN - 2 + payload_len, &ck_a, &ck_b);
+		చట్రం.push_back(ck_a);
+		చట్రం.push_back(ck_b);
+		తిరిగి చట్రం;
 	}
 
-	std::vector<uint8_t> buildRtcmFrame(std::mt19937 &rng, size_t payload_len)
+	std::సదిశ_2<uint8_t> build_Rtcm_చట్రం(std::mt19937 &rng, size_t payload_len)
 	{
-		std::vector<uint8_t> frame;
-		frame.push_back(RTCM3_PREAMBLE);
-		frame.push_back(static_cast<uint8_t>((payload_len >> 8) & 0x03));
-		frame.push_back(static_cast<uint8_t>(payload_len & 0xFF));
+		std::సదిశ_2<uint8_t> చట్రం;
+		చట్రం.push_back(RTCM3_PREAMBLE);
+		చట్రం.push_back(static_cast<uint8_t>((payload_len >> 8) & 0x03));
+		చట్రం.push_back(static_cast<uint8_t>(payload_len & 0xFF));
 
-		std::uniform_int_distribution<int> byte(0, 255);
+		std::ఏకరీతి_int_distribution<పూర్ణాంకం> byte(0, 255);
 
-		for (size_t i = 0; i < payload_len; i++) {
-			frame.push_back(static_cast<uint8_t>(byte(rng)));
+		కొరకు (size_t i = 0; i < payload_len; i++) {
+			చట్రం.push_back(static_cast<uint8_t>(byte(rng)));
 		}
 
-		const uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
-		frame.push_back((crc >> 16) & 0xFF);
-		frame.push_back((crc >> 8) & 0xFF);
-		frame.push_back(crc & 0xFF);
-		return frame;
+		స్థిరరాశి uint32_t చక్రీయ_తనిఖీ = rtcm3_crc24q(చట్రం.దత్తాంశం(), చట్రం.కొలత());
+		చట్రం.push_back((చక్రీయ_తనిఖీ >> 16) & 0xFF);
+		చట్రం.push_back((చక్రీయ_తనిఖీ >> 8) & 0xFF);
+		చట్రం.push_back(చక్రీయ_తనిఖీ & 0xFF);
+		తిరిగి చట్రం;
 	}
 
-#if defined(CONFIG_GPS_SPARTN)
-	std::vector<uint8_t> buildSpartnFrame(uint8_t msg_type, const std::vector<uint8_t> &payload,
-					      uint8_t crc_type = 0)
+#ఒకవేళ defined(CONFIG_GPS_SPARTN)
+	std::సదిశ_2<uint8_t> build_Spartn_చట్రం(uint8_t సందేశం_type_2, స్థిరరాశి std::సదిశ_2<uint8_t> &payload,
+					      uint8_t చక్రీయ_తనిఖీ_type = 0)
 	{
-		const size_t payload_len = payload.size();
-		std::vector<uint8_t> frame;
-		frame.push_back(SPARTN_PREAMBLE);
+		స్థిరరాశి size_t payload_len = payload.కొలత();
+		std::సదిశ_2<uint8_t> చట్రం;
+		చట్రం.push_back(SPARTN_PREAMBLE);
 
-		uint8_t b1 = static_cast<uint8_t>(((msg_type & 0x7F) << 1) | ((payload_len >> 9) & 0x01));
+		uint8_t b1 = static_cast<uint8_t>(((సందేశం_type_2 & 0x7F) << 1) | ((payload_len >> 9) & 0x01));
 		uint8_t b2 = static_cast<uint8_t>((payload_len >> 1) & 0xFF);
-		uint8_t b3 = static_cast<uint8_t>(((payload_len & 0x01) << 7) | ((crc_type & 0x03) << 4));
-		frame.push_back(b1);
-		frame.push_back(b2);
-		frame.push_back(b3);
+		uint8_t b3 = static_cast<uint8_t>(((payload_len & 0x01) << 7) | ((చక్రీయ_తనిఖీ_type & 0x03) << 4));
+		చట్రం.push_back(b1);
+		చట్రం.push_back(b2);
+		చట్రం.push_back(b3);
 
 		// 4-byte description, 16-bit time tag
-		frame.push_back(0x00);
-		frame.push_back(0x00);
-		frame.push_back(0x00);
-		frame.push_back(0x00);
+		చట్రం.push_back(0x00);
+		చట్రం.push_back(0x00);
+		చట్రం.push_back(0x00);
+		చట్రం.push_back(0x00);
 
-		frame.insert(frame.end(), payload.begin(), payload.end());
+		చట్రం.చొప్పించు(చట్రం.చివర(), payload.begin(), payload.చివర());
 
-		const uint32_t crc = spartn_message_crc(&frame[1], frame.size() - 1, crc_type);
-		const size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
+		స్థిరరాశి uint32_t చక్రీయ_తనిఖీ = spartn_సందేశం_చక్రీయ_తనిఖీ(&చట్రం[1], చట్రం.కొలత() - 1, చక్రీయ_తనిఖీ_type);
+		స్థిరరాశి size_t చక్రీయ_తనిఖీ_బైట్లు = static_cast<size_t>(చక్రీయ_తనిఖీ_type) + 1;
 
-		for (int i = static_cast<int>(crc_bytes) - 1; i >= 0; i--) {
-			frame.push_back(static_cast<uint8_t>((crc >>(8 * i)) & 0xFF));
+		కొరకు (పూర్ణాంకం i = static_cast<పూర్ణాంకం>(చక్రీయ_తనిఖీ_బైట్లు) - 1; i >= 0; i--) {
+			చట్రం.push_back(static_cast<uint8_t>((చక్రీయ_తనిఖీ >>(8 * i)) & 0xFF));
 		}
 
-		return frame;
+		తిరిగి చట్రం;
 	}
-#endif
+#అయితే_ముగింపు
 };
 
 // =============================================================================
@@ -136,12 +136,12 @@ protected:
 
 // Empty ACK-ACK (class=0x05, id=0x01, length=0): covered bytes 05 01 00 00.
 // 8-bit Fletcher: a runs 5,6,6,6 and b runs 5,11,17,23 → CK_A=0x06, CK_B=0x17.
-TEST_F(UbxTest, ChecksumKnownVector)
+TEST_F(UbxTest, Checksum_తెలిసిన_సదిశ)
 {
-	const uint8_t covered[] = {0x05, 0x01, 0x00, 0x00};
+	స్థిరరాశి uint8_t covered[] = {0x05, 0x01, 0x00, 0x00};
 	uint8_t ck_a = 0;
 	uint8_t ck_b = 0;
-	ubx_checksum(covered, sizeof(covered), &ck_a, &ck_b);
+	ubx_checksum(covered, పరిమాణం(covered), &ck_a, &ck_b);
 	EXPECT_EQ(ck_a, 0x06u);
 	EXPECT_EQ(ck_b, 0x17u);
 }
@@ -150,134 +150,134 @@ TEST_F(UbxTest, ChecksumKnownVector)
 // Framing
 // =============================================================================
 
-TEST_F(UbxTest, SingleMinimalFrame)
+TEST_F(UbxTest, Single_కనీస_చట్రం)
 {
 	// UBX-MGA class is 0x13; any class/id is fine for framing
-	auto frame = buildUbxFrame(0x13, 0x00, {0xAA, 0xBB});
-	parser.addData(frame.data(), frame.size());
+	స్వయంచాలక చట్రం = build_Ubx_చట్రం(0x13, 0x00, {0xAA, 0xBB});
+	parser.కూడు_దత్తాంశం(చట్రం.దత్తాంశం(), చట్రం.కొలత());
 
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-	const uint8_t *msg = parser.getNextMessage(&len, &protocol);
-	ASSERT_NE(msg, nullptr);
+	స్థిరరాశి uint8_t *సందేశం_2 = parser.get_తదుపరి_సందేశం(&len, &protocol);
+	ASSERT_NE(సందేశం_2, శూన్యసూచిక);
 	EXPECT_EQ(protocol, CorrectionProtocol::Ubx);
-	EXPECT_EQ(len, frame.size());
-	EXPECT_EQ(0, memcmp(msg, frame.data(), frame.size()));
-	parser.consumeMessage(len);
+	EXPECT_EQ(len, చట్రం.కొలత());
+	EXPECT_EQ(0, memcmp(సందేశం_2, చట్రం.దత్తాంశం(), చట్రం.కొలత()));
+	parser.consume_సందేశం(len);
 	EXPECT_EQ(parser.getStats().messages_parsed, 1u);
 	EXPECT_EQ(parser.getStats().ubx_messages, 1u);
-	EXPECT_EQ(parser.getStats().crc_errors, 0u);
+	EXPECT_EQ(parser.getStats().చక్రీయ_తనిఖీ_errors_2, 0u);
 }
 
-TEST_F(UbxTest, EmptyPayloadFrame)
+TEST_F(UbxTest, ఖాళీలు_Payload_చట్రం)
 {
-	auto frame = buildUbxFrame(0x05, 0x01, {});
-	parser.addData(frame.data(), frame.size());
+	స్వయంచాలక చట్రం = build_Ubx_చట్రం(0x05, 0x01, {});
+	parser.కూడు_దత్తాంశం(చట్రం.దత్తాంశం(), చట్రం.కొలత());
 
 	size_t len = 0;
-	ASSERT_NE(parser.getNextMessage(&len), nullptr);
-	EXPECT_EQ(len, UBX_HEADER_LEN + UBX_CK_LEN);
-	parser.consumeMessage(len);
+	ASSERT_NE(parser.get_తదుపరి_సందేశం(&len), శూన్యసూచిక);
+	EXPECT_EQ(len, UBX_శీర్షిక_LEN + UBX_CK_LEN);
+	parser.consume_సందేశం(len);
 	EXPECT_EQ(parser.getStats().ubx_messages, 1u);
 }
 
-TEST_F(UbxTest, MultipleFrames)
+TEST_F(UbxTest, గుణిజం_చట్రాలు)
 {
-	auto f1 = buildUbxFrame(0x13, 0x00, {0x01});
-	auto f2 = buildUbxFrame(0x13, 0x02, {0x02, 0x03, 0x04});
-	std::vector<uint8_t> stream;
-	stream.insert(stream.end(), f1.begin(), f1.end());
-	stream.insert(stream.end(), f2.begin(), f2.end());
-	parser.addData(stream.data(), stream.size());
+	స్వయంచాలక f1 = build_Ubx_చట్రం(0x13, 0x00, {0x01});
+	స్వయంచాలక f2 = build_Ubx_చట్రం(0x13, 0x02, {0x02, 0x03, 0x04});
+	std::సదిశ_2<uint8_t> ప్రవాహం;
+	ప్రవాహం.చొప్పించు(ప్రవాహం.చివర(), f1.begin(), f1.చివర());
+	ప్రవాహం.చొప్పించు(ప్రవాహం.చివర(), f2.begin(), f2.చివర());
+	parser.కూడు_దత్తాంశం(ప్రవాహం.దత్తాంశం(), ప్రవాహం.కొలత());
 
-	int count = 0;
+	పూర్ణాంకం లెక్క = 0;
 	size_t len = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
-		parser.consumeMessage(len);
-		count++;
+	అయితే (parser.get_తదుపరి_సందేశం(&len) != శూన్యసూచిక) {
+		parser.consume_సందేశం(len);
+		లెక్క++;
 	}
 
-	EXPECT_EQ(count, 2);
+	EXPECT_EQ(లెక్క, 2);
 	EXPECT_EQ(parser.getStats().ubx_messages, 2u);
 }
 
-TEST_F(UbxTest, ChunkedArrival)
+TEST_F(UbxTest, Chunked_రాక)
 {
-	auto frame = buildUbxFrame(0x13, 0x01, {0x10, 0x20, 0x30, 0x40});
+	స్వయంచాలక చట్రం = build_Ubx_చట్రం(0x13, 0x01, {0x10, 0x20, 0x30, 0x40});
 
-	for (size_t i = 0; i < frame.size(); i++) {
-		parser.addData(&frame[i], 1);
+	కొరకు (size_t i = 0; i < చట్రం.కొలత(); i++) {
+		parser.కూడు_దత్తాంశం(&చట్రం[i], 1);
 		// No complete frame until the last byte
 	}
 
 	size_t len = 0;
-	ASSERT_NE(parser.getNextMessage(&len), nullptr);
-	EXPECT_EQ(len, frame.size());
+	ASSERT_NE(parser.get_తదుపరి_సందేశం(&len), శూన్యసూచిక);
+	EXPECT_EQ(len, చట్రం.కొలత());
 }
 
-TEST_F(UbxTest, NoiseBeforeFrame)
+TEST_F(UbxTest, Noise_Before_చట్రం)
 {
-	auto frame = buildUbxFrame(0x13, 0x00, {0x55});
-	std::vector<uint8_t> stream = {0x00, 0xFF, 0x01};
-	stream.insert(stream.end(), frame.begin(), frame.end());
-	parser.addData(stream.data(), stream.size());
+	స్వయంచాలక చట్రం = build_Ubx_చట్రం(0x13, 0x00, {0x55});
+	std::సదిశ_2<uint8_t> ప్రవాహం = {0x00, 0xFF, 0x01};
+	ప్రవాహం.చొప్పించు(ప్రవాహం.చివర(), చట్రం.begin(), చట్రం.చివర());
+	parser.కూడు_దత్తాంశం(ప్రవాహం.దత్తాంశం(), ప్రవాహం.కొలత());
 
 	size_t len = 0;
-	ASSERT_NE(parser.getNextMessage(&len), nullptr);
-	EXPECT_GT(parser.getStats().bytes_discarded, 0u);
-	parser.consumeMessage(len);
+	ASSERT_NE(parser.get_తదుపరి_సందేశం(&len), శూన్యసూచిక);
+	EXPECT_GT(parser.getStats().బైట్లు_discarded_2, 0u);
+	parser.consume_సందేశం(len);
 	EXPECT_EQ(parser.getStats().ubx_messages, 1u);
 }
 
 TEST_F(UbxTest, BadSync2)
 {
 	// 0xB5 followed by something other than 0x62 is not a frame start
-	std::vector<uint8_t> stream = {UBX_SYNC1, 0x00, 0x11, 0x22};
-	auto frame = buildUbxFrame(0x13, 0x00, {0x01});
-	stream.insert(stream.end(), frame.begin(), frame.end());
-	parser.addData(stream.data(), stream.size());
+	std::సదిశ_2<uint8_t> ప్రవాహం = {UBX_SYNC1, 0x00, 0x11, 0x22};
+	స్వయంచాలక చట్రం = build_Ubx_చట్రం(0x13, 0x00, {0x01});
+	ప్రవాహం.చొప్పించు(ప్రవాహం.చివర(), చట్రం.begin(), చట్రం.చివర());
+	parser.కూడు_దత్తాంశం(ప్రవాహం.దత్తాంశం(), ప్రవాహం.కొలత());
 
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-	ASSERT_NE(parser.getNextMessage(&len, &protocol), nullptr);
+	ASSERT_NE(parser.get_తదుపరి_సందేశం(&len, &protocol), శూన్యసూచిక);
 	EXPECT_EQ(protocol, CorrectionProtocol::Ubx);
-	parser.consumeMessage(len);
+	parser.consume_సందేశం(len);
 	EXPECT_EQ(parser.getStats().ubx_messages, 1u);
-	EXPECT_GT(parser.getStats().bytes_discarded, 0u);
+	EXPECT_GT(parser.getStats().బైట్లు_discarded_2, 0u);
 }
 
 TEST_F(UbxTest, BadChecksum)
 {
-	auto frame = buildUbxFrame(0x13, 0x00, {0x11, 0x22});
-	frame.back() ^= 0xFF;
-	parser.addData(frame.data(), frame.size());
+	స్వయంచాలక చట్రం = build_Ubx_చట్రం(0x13, 0x00, {0x11, 0x22});
+	చట్రం.వెనుక() ^= 0xFF;
+	parser.కూడు_దత్తాంశం(చట్రం.దత్తాంశం(), చట్రం.కొలత());
 
 	size_t len = 0;
-	EXPECT_EQ(parser.getNextMessage(&len), nullptr);
-	EXPECT_GE(parser.getStats().crc_errors, 1u);
+	EXPECT_EQ(parser.get_తదుపరి_సందేశం(&len), శూన్యసూచిక);
+	EXPECT_GE(parser.getStats().చక్రీయ_తనిఖీ_errors_2, 1u);
 	EXPECT_EQ(parser.getStats().ubx_messages, 0u);
 }
 
 TEST_F(UbxTest, RejectsOversizedPayload)
 {
 	// Length field claims UBX_MAX_PAYLOAD_LEN + 1 — must not pin the buffer
-	std::vector<uint8_t> header = {
+	std::సదిశ_2<uint8_t> శీర్షిక = {
 		UBX_SYNC1, UBX_SYNC2,
 		0x13, 0x00,
 		static_cast<uint8_t>((UBX_MAX_PAYLOAD_LEN + 1) & 0xFF),
 		static_cast<uint8_t>(((UBX_MAX_PAYLOAD_LEN + 1) >> 8) & 0xFF),
 	};
-	auto good = buildUbxFrame(0x13, 0x00, {0xAB});
-	header.insert(header.end(), good.begin(), good.end());
-	parser.addData(header.data(), header.size());
+	స్వయంచాలక good = build_Ubx_చట్రం(0x13, 0x00, {0xAB});
+	శీర్షిక.చొప్పించు(శీర్షిక.చివర(), good.begin(), good.చివర());
+	parser.కూడు_దత్తాంశం(శీర్షిక.దత్తాంశం(), శీర్షిక.కొలత());
 
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-	ASSERT_NE(parser.getNextMessage(&len, &protocol), nullptr);
+	ASSERT_NE(parser.get_తదుపరి_సందేశం(&len, &protocol), శూన్యసూచిక);
 	EXPECT_EQ(protocol, CorrectionProtocol::Ubx);
-	EXPECT_EQ(len, good.size());
-	parser.consumeMessage(len);
+	EXPECT_EQ(len, good.కొలత());
+	parser.consume_సందేశం(len);
 	EXPECT_EQ(parser.getStats().ubx_messages, 1u);
 }
 
@@ -292,65 +292,65 @@ TEST_F(UbxTest, RejectsOversizedPayload)
 TEST_F(UbxTest, MgaThenRtcm3)
 {
 	std::mt19937 rng(42);
-	auto mga1 = buildUbxFrame(0x13, 0x00, {0x01, 0x02, 0x03});
-	auto mga2 = buildUbxFrame(0x13, 0x02, {0x10, 0x20});
-	auto rtcm = buildRtcmFrame(rng, 40);
+	స్వయంచాలక mga1 = build_Ubx_చట్రం(0x13, 0x00, {0x01, 0x02, 0x03});
+	స్వయంచాలక mga2 = build_Ubx_చట్రం(0x13, 0x02, {0x10, 0x20});
+	స్వయంచాలక rtcm = build_Rtcm_చట్రం(rng, 40);
 
-	std::vector<uint8_t> stream;
-	stream.insert(stream.end(), mga1.begin(), mga1.end());
-	stream.insert(stream.end(), mga2.begin(), mga2.end());
-	stream.insert(stream.end(), rtcm.begin(), rtcm.end());
-	parser.addData(stream.data(), stream.size());
+	std::సదిశ_2<uint8_t> ప్రవాహం;
+	ప్రవాహం.చొప్పించు(ప్రవాహం.చివర(), mga1.begin(), mga1.చివర());
+	ప్రవాహం.చొప్పించు(ప్రవాహం.చివర(), mga2.begin(), mga2.చివర());
+	ప్రవాహం.చొప్పించు(ప్రవాహం.చివర(), rtcm.begin(), rtcm.చివర());
+	parser.కూడు_దత్తాంశం(ప్రవాహం.దత్తాంశం(), ప్రవాహం.కొలత());
 
-	std::vector<CorrectionProtocol> seen;
+	std::సదిశ_2<CorrectionProtocol> చూసిన;
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
 
-	while (parser.getNextMessage(&len, &protocol) != nullptr) {
-		seen.push_back(protocol);
-		parser.consumeMessage(len);
+	అయితే (parser.get_తదుపరి_సందేశం(&len, &protocol) != శూన్యసూచిక) {
+		చూసిన.push_back(protocol);
+		parser.consume_సందేశం(len);
 	}
 
-	ASSERT_EQ(seen.size(), 3u);
-	EXPECT_EQ(seen[0], CorrectionProtocol::Ubx);
-	EXPECT_EQ(seen[1], CorrectionProtocol::Ubx);
-	EXPECT_EQ(seen[2], CorrectionProtocol::Rtcm3);
+	ASSERT_EQ(చూసిన.కొలత(), 3u);
+	EXPECT_EQ(చూసిన[0], CorrectionProtocol::Ubx);
+	EXPECT_EQ(చూసిన[1], CorrectionProtocol::Ubx);
+	EXPECT_EQ(చూసిన[2], CorrectionProtocol::Rtcm3);
 	EXPECT_EQ(parser.getStats().ubx_messages, 2u);
 	EXPECT_EQ(parser.getStats().rtcm3_messages, 1u);
-	EXPECT_EQ(parser.getStats().crc_errors, 0u);
+	EXPECT_EQ(parser.getStats().చక్రీయ_తనిఖీ_errors_2, 0u);
 }
 
-#if defined(CONFIG_GPS_SPARTN)
+#ఒకవేళ defined(CONFIG_GPS_SPARTN)
 TEST_F(UbxTest, MgaThenSpartn)
 {
-	auto mga = buildUbxFrame(0x13, 0x00, {0xDE, 0xAD});
-	auto spartn = buildSpartnFrame(0, {0xAA, 0xBB});
+	స్వయంచాలక mga = build_Ubx_చట్రం(0x13, 0x00, {0xDE, 0xAD});
+	స్వయంచాలక spartn = build_Spartn_చట్రం(0, {0xAA, 0xBB});
 
-	std::vector<uint8_t> stream;
-	stream.insert(stream.end(), mga.begin(), mga.end());
-	stream.insert(stream.end(), spartn.begin(), spartn.end());
+	std::సదిశ_2<uint8_t> ప్రవాహం;
+	ప్రవాహం.చొప్పించు(ప్రవాహం.చివర(), mga.begin(), mga.చివర());
+	ప్రవాహం.చొప్పించు(ప్రవాహం.చివర(), spartn.begin(), spartn.చివర());
 	// Another MGA mid-stream should also work (reconnect-style)
-	auto mga2 = buildUbxFrame(0x13, 0x01, {0x01});
-	stream.insert(stream.end(), mga2.begin(), mga2.end());
-	parser.addData(stream.data(), stream.size());
+	స్వయంచాలక mga2 = build_Ubx_చట్రం(0x13, 0x01, {0x01});
+	ప్రవాహం.చొప్పించు(ప్రవాహం.చివర(), mga2.begin(), mga2.చివర());
+	parser.కూడు_దత్తాంశం(ప్రవాహం.దత్తాంశం(), ప్రవాహం.కొలత());
 
-	std::vector<CorrectionProtocol> seen;
+	std::సదిశ_2<CorrectionProtocol> చూసిన;
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
 
-	while (parser.getNextMessage(&len, &protocol) != nullptr) {
-		seen.push_back(protocol);
-		parser.consumeMessage(len);
+	అయితే (parser.get_తదుపరి_సందేశం(&len, &protocol) != శూన్యసూచిక) {
+		చూసిన.push_back(protocol);
+		parser.consume_సందేశం(len);
 	}
 
-	ASSERT_EQ(seen.size(), 3u);
-	EXPECT_EQ(seen[0], CorrectionProtocol::Ubx);
-	EXPECT_EQ(seen[1], CorrectionProtocol::Spartn);
-	EXPECT_EQ(seen[2], CorrectionProtocol::Ubx);
+	ASSERT_EQ(చూసిన.కొలత(), 3u);
+	EXPECT_EQ(చూసిన[0], CorrectionProtocol::Ubx);
+	EXPECT_EQ(చూసిన[1], CorrectionProtocol::Spartn);
+	EXPECT_EQ(చూసిన[2], CorrectionProtocol::Ubx);
 	EXPECT_EQ(parser.getStats().ubx_messages, 2u);
 	EXPECT_EQ(parser.getStats().spartn_messages, 1u);
 }
-#endif
+#అయితే_ముగింపు
 
 // A complete RTCM3 frame consumes its payload, so a 0xB5 that happens to sit
 // inside that payload is never considered as a UBX start.
@@ -358,7 +358,7 @@ TEST_F(UbxTest, RtcmPayloadStrayB5IsNotFramedAsUbx)
 {
 	// Craft an RTCM3 frame whose payload contains a UBX-looking prefix.
 	// buildRtcmFrame randomizes payload; force a 0xB5 0x62 sequence in raw form.
-	std::vector<uint8_t> payload(32, 0x00);
+	std::సదిశ_2<uint8_t> payload(32, 0x00);
 	payload[4] = UBX_SYNC1;
 	payload[5] = UBX_SYNC2;
 	payload[6] = 0x13;
@@ -366,33 +366,33 @@ TEST_F(UbxTest, RtcmPayloadStrayB5IsNotFramedAsUbx)
 	payload[8] = 0x02; // fake length
 	payload[9] = 0x00;
 
-	std::vector<uint8_t> frame;
-	frame.push_back(RTCM3_PREAMBLE);
-	frame.push_back(0x00);
-	frame.push_back(static_cast<uint8_t>(payload.size()));
-	frame.insert(frame.end(), payload.begin(), payload.end());
-	const uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
-	frame.push_back((crc >> 16) & 0xFF);
-	frame.push_back((crc >> 8) & 0xFF);
-	frame.push_back(crc & 0xFF);
+	std::సదిశ_2<uint8_t> చట్రం;
+	చట్రం.push_back(RTCM3_PREAMBLE);
+	చట్రం.push_back(0x00);
+	చట్రం.push_back(static_cast<uint8_t>(payload.కొలత()));
+	చట్రం.చొప్పించు(చట్రం.చివర(), payload.begin(), payload.చివర());
+	స్థిరరాశి uint32_t చక్రీయ_తనిఖీ = rtcm3_crc24q(చట్రం.దత్తాంశం(), చట్రం.కొలత());
+	చట్రం.push_back((చక్రీయ_తనిఖీ >> 16) & 0xFF);
+	చట్రం.push_back((చక్రీయ_తనిఖీ >> 8) & 0xFF);
+	చట్రం.push_back(చక్రీయ_తనిఖీ & 0xFF);
 
 	// Follow with a real UBX so we know the framer still works after
-	auto ubx = buildUbxFrame(0x13, 0x00, {0x99});
-	std::vector<uint8_t> stream = frame;
-	stream.insert(stream.end(), ubx.begin(), ubx.end());
-	parser.addData(stream.data(), stream.size());
+	స్వయంచాలక ubx = build_Ubx_చట్రం(0x13, 0x00, {0x99});
+	std::సదిశ_2<uint8_t> ప్రవాహం = చట్రం;
+	ప్రవాహం.చొప్పించు(ప్రవాహం.చివర(), ubx.begin(), ubx.చివర());
+	parser.కూడు_దత్తాంశం(ప్రవాహం.దత్తాంశం(), ప్రవాహం.కొలత());
 
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Ubx;
-	ASSERT_NE(parser.getNextMessage(&len, &protocol), nullptr);
+	ASSERT_NE(parser.get_తదుపరి_సందేశం(&len, &protocol), శూన్యసూచిక);
 	EXPECT_EQ(protocol, CorrectionProtocol::Rtcm3);
-	parser.consumeMessage(len);
+	parser.consume_సందేశం(len);
 
-	ASSERT_NE(parser.getNextMessage(&len, &protocol), nullptr);
+	ASSERT_NE(parser.get_తదుపరి_సందేశం(&len, &protocol), శూన్యసూచిక);
 	EXPECT_EQ(protocol, CorrectionProtocol::Ubx);
-	parser.consumeMessage(len);
+	parser.consume_సందేశం(len);
 
 	EXPECT_EQ(parser.getStats().rtcm3_messages, 1u);
 	EXPECT_EQ(parser.getStats().ubx_messages, 1u);
-	EXPECT_EQ(parser.getStats().crc_errors, 0u);
+	EXPECT_EQ(parser.getStats().చక్రీయ_తనిఖీ_errors_2, 0u);
 }

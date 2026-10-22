@@ -31,99 +31,99 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <lib/conversion/rotation.h>
-#include <lib/matrix/matrix/math.hpp>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/sensor_correction.h>
+#అన్తర్భావ <lib/conversion/rotation.h>
+#అన్తర్భావ <lib/matrix/matrix/math.hpp>
+#అన్తర్భావ <px4_platform_common/px4_config.h>
+#అన్తర్భావ <px4_platform_common/log.h>
+#అన్తర్భావ <uORB/Subscription.hpp>
+#అన్తర్భావ <uORB/topics/sensor_correction.h>
 
-namespace calibration
+నామాకాశ calibration
 {
-class Gyroscope
+తరగతి Gyroscope
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+బహిరంగ:
+	స్థిర constexpr పూర్ణాంకం MAX_SENSOR_లెక్క = 4;
 
-	static constexpr uint8_t DEFAULT_PRIORITY = 50;
+	స్థిర constexpr uint8_t DEFAULT_ప్రాధాన్యత = 50;
 
 	// Unlike a magnetometer, an external IMU is never a better primary than the
 	// on-board one: it is behind a bus with its own clock and transport latency
 	// and is not thermally managed, so it must not win the vote uncalibrated.
-	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 25;
+	స్థిర constexpr uint8_t DEFAULT_EXTERNAL_ప్రాధాన్యత = 25;
 
-	static constexpr const char *SensorString() { return "GYRO"; }
+	స్థిర constexpr స్థిరరాశి అక్షరం *SensorString() { తిరిగి "GYRO"; }
 
 	Gyroscope();
-	explicit Gyroscope(uint32_t device_id);
-	Gyroscope(uint32_t device_id, bool external);
+	స్పష్టమైన Gyroscope(uint32_t device_id);
+	Gyroscope(uint32_t device_id, తార్కిక external);
 
-	~Gyroscope() = default;
+	~Gyroscope() = అప్రమేయ;
 
-	void PrintStatus();
+	శూన్య Print_స్థితి();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
-	void set_device_id(uint32_t device_id, bool external);
-	bool set_offset(const matrix::Vector3f &offset);
-	void set_rotation(Rotation rotation);
+	తార్కిక సమితి_calibration_సూచీ(పూర్ణాంకం calibration_సూచీ);
+	శూన్య సమితి_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
+	శూన్య సమితి_device_id(uint32_t device_id, తార్కిక external);
+	తార్కిక సమితి_స్థానభ్రంశం(స్థిరరాశి మాతృక::Vector3f &స్థానభ్రంశం);
+	శూన్య సమితి_rotation(Rotation rotation);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	bool external() const { return _external; }
-	const matrix::Vector3f &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const matrix::Dcmf &rotation() const { return _rotation; }
-	const Rotation &rotation_enum() const { return _rotation_enum; }
-	const matrix::Vector3f &thermal_offset() const { return _thermal_offset; }
+	తార్కిక calibrated() స్థిరరాశి { తిరిగి (_device_id != 0) && (calibration_సూచీ_2 >= 0); }
+	uint8_t calibration_లెక్క_2() స్థిరరాశి { తిరిగి calibration_లెక్క; }
+	int8_t calibration_సూచీ() స్థిరరాశి { తిరిగి calibration_సూచీ_2; }
+	uint32_t device_id() స్థిరరాశి { తిరిగి _device_id; }
+	తార్కిక enabled() స్థిరరాశి { తిరిగి (ప్రాధాన్యత_2 > 0); }
+	తార్కిక external() స్థిరరాశి { తిరిగి _external; }
+	స్థిరరాశి మాతృక::Vector3f &స్థానభ్రంశం() స్థిరరాశి { తిరిగి స్థానభ్రంశం_2; }
+	స్థిరరాశి int32_t &ప్రాధాన్యత() స్థిరరాశి { తిరిగి ప్రాధాన్యత_2; }
+	స్థిరరాశి మాతృక::Dcmf &rotation() స్థిరరాశి { తిరిగి _rotation; }
+	స్థిరరాశి Rotation &rotation_enum() స్థిరరాశి { తిరిగి _rotation_enum; }
+	స్థిరరాశి మాతృక::Vector3f &thermal_స్థానభ్రంశం_2() స్థిరరాశి { తిరిగి thermal_స్థానభ్రంశం; }
 
 	// apply offsets and scale
 	// rotate corrected measurements from sensor to body frame
-	inline matrix::Vector3f Correct(const matrix::Vector3f &data) const
+	అంతఃవరుస మాతృక::Vector3f Correct(స్థిరరాశి మాతృక::Vector3f &దత్తాంశం) స్థిరరాశి
 	{
-		return _rotation * matrix::Vector3f{data - _thermal_offset - _offset};
+		తిరిగి _rotation * మాతృక::Vector3f{దత్తాంశం - thermal_స్థానభ్రంశం - స్థానభ్రంశం_2};
 	}
 
-	inline matrix::Vector3f Uncorrect(const matrix::Vector3f &corrected_data) const
+	అంతఃవరుస మాతృక::Vector3f Uncorrect(స్థిరరాశి మాతృక::Vector3f &corrected_దత్తాంశం) స్థిరరాశి
 	{
-		return (_rotation.T() * corrected_data) + _thermal_offset + _offset;
+		తిరిగి (_rotation.T() * corrected_దత్తాంశం) + thermal_స్థానభ్రంశం + స్థానభ్రంశం_2;
 	}
 
 	// Compute sensor offset from bias (board frame)
-	matrix::Vector3f BiasCorrectedSensorOffset(const matrix::Vector3f &bias) const
+	మాతృక::Vector3f Bias_Corrected_Sensor_స్థానభ్రంశం(స్థిరరాశి మాతృక::Vector3f &bias) స్థిరరాశి
 	{
 		// updated calibration offset = existing offset + bias rotated to sensor frame
-		return _offset + (_rotation.T() * bias);
+		తిరిగి స్థానభ్రంశం_2 + (_rotation.T() * bias);
 	}
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	తార్కిక Parameters_ఎక్కించు();
+	తార్కిక ParametersSave(పూర్ణాంకం desired_calibration_సూచీ = -1, తార్కిక force = అబద్ధం);
+	శూన్య ParametersUpdate();
 
-	void Reset();
+	శూన్య Reset();
 
-	void SensorCorrectionsUpdate(bool force = false);
+	శూన్య SensorCorrectionsUpdate(తార్కిక force = అబద్ధం);
 
-private:
+అంతరంగ:
 	uORB::Subscription _sensor_correction_sub{ORB_ID(sensor_correction)};
 
 	Rotation _rotation_enum{ROTATION_NONE};
 
-	matrix::Dcmf _rotation;
-	matrix::Vector3f _offset;
-	matrix::Vector3f _thermal_offset;
+	మాతృక::Dcmf _rotation;
+	మాతృక::Vector3f స్థానభ్రంశం_2;
+	మాతృక::Vector3f thermal_స్థానభ్రంశం;
 
-	int8_t _calibration_index{-1};
+	int8_t calibration_సూచీ_2{-1};
 	uint32_t _device_id{0};
-	int32_t _priority{-1};
+	int32_t ప్రాధాన్యత_2{-1};
 
-	bool _external{false};
+	తార్కిక _external{అబద్ధం};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_లెక్క{0};
 };
 } // namespace calibration

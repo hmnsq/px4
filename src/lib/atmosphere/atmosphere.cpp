@@ -36,27 +36,27 @@
  *
  */
 
-#include <geo/geo.h>
-#include "atmosphere.h"
-namespace atmosphere
+#అన్తర్భావ <geo/geo.h>
+#అన్తర్భావ "atmosphere.h"
+నామాకాశ atmosphere
 {
 
 
-float getDensityFromPressureAndTemp(const float pressure_pa, const float temperature_celsius)
+దశాంశం get_Density_From_Pressure_And_తాత్కాలిక(స్థిరరాశి దశాంశం pressure_pa, స్థిరరాశి దశాంశం temperature_celsius)
 {
-	return (pressure_pa / (kAirGasConstant * (temperature_celsius - kAbsoluteNullCelsius)));
+	తిరిగి (pressure_pa / (kAirGasConstant * (temperature_celsius - kAbsoluteNullCelsius)));
 }
-float getPressureFromAltitude(const float altitude_m)
+దశాంశం getPressureFromAltitude(స్థిరరాశి దశాంశం altitude_m)
 {
 
-	return kPressRefSeaLevelPa * powf((altitude_m * kTempGradient + kTempRefKelvin) / kTempRefKelvin,
-					  -CONSTANTS_ONE_G / (kTempGradient * kAirGasConstant));
+	తిరిగి kPressRefSeaLevelPa * powf((altitude_m * k_తాత్కాలిక_Gradient + k_తాత్కాలిక_Ref_Kelvin) / k_తాత్కాలిక_Ref_Kelvin,
+					  -CONSTANTS_ONE_G / (k_తాత్కాలిక_Gradient * kAirGasConstant));
 }
-float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa)
+దశాంశం getAltitudeFromPressure(దశాంశం pressure_pa, దశాంశం pressure_sealevel_pa)
 {
 	// calculate altitude using the hypsometric equation
 
-	const float pressure_ratio = pressure_pa / pressure_sealevel_pa;
+	స్థిరరాశి దశాంశం pressure_నిష్పత్తి = pressure_pa / pressure_sealevel_pa;
 
 	/*
 	 * Solve:
@@ -67,12 +67,12 @@ float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa)
 	 * h = -------------------------------  + h1
 	 *                   a
 	 */
-	return (((powf(pressure_ratio, (-(kTempGradient * kAirGasConstant) / CONSTANTS_ONE_G))) * kTempRefKelvin) -
-		kTempRefKelvin) / kTempGradient;
+	తిరిగి (((powf(pressure_నిష్పత్తి, (-(k_తాత్కాలిక_Gradient * kAirGasConstant) / CONSTANTS_ONE_G))) * k_తాత్కాలిక_Ref_Kelvin) -
+		k_తాత్కాలిక_Ref_Kelvin) / k_తాత్కాలిక_Gradient;
 
 }
-float getStandardTemperatureAtAltitude(float altitude_m)
+దశాంశం getStandardTemperatureAtAltitude(దశాంశం altitude_m)
 {
-	return 15.0f + kTempGradient * altitude_m;
+	తిరిగి 15.0f + k_తాత్కాలిక_Gradient * altitude_m;
 }
 }

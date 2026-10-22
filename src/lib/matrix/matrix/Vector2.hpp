@@ -6,103 +6,103 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#సూచన once
 
-#include "Vector.hpp"
+#అన్తర్భావ "Vector.hpp"
 
-namespace matrix
+నామాకాశ మాతృక
 {
 
-template<typename Type>
-class Vector2 : public Vector<Type, 2>
+మూస<రకం_పేరు Type>
+తరగతి Vector2 : బహిరంగ సదిశ<Type, 2>
 {
-public:
+బహిరంగ:
 
-	using Matrix21 = Matrix<Type, 2, 1>;
-	using Vector3 = Vector<Type, 3>;
+	ఉపయోగించి Matrix21 = మాతృక_2<Type, 2, 1>;
+	ఉపయోగించి Vector3 = సదిశ<Type, 3>;
 
-	Vector2() = default;
+	Vector2() = అప్రమేయ;
 
-	Vector2(const Matrix21 &other) :
-		Vector<Type, 2>(other)
+	Vector2(స్థిరరాశి Matrix21 &other) :
+		సదిశ<Type, 2>(other)
 	{
 	}
 
-	explicit Vector2(const Type data_[2]) :
-		Vector<Type, 2>(data_)
+	స్పష్టమైన Vector2(స్థిరరాశి Type దత్తాంశం_2[2]) :
+		సదిశ<Type, 2>(దత్తాంశం_2)
 	{
 	}
 
 	Vector2(Type x, Type y)
 	{
-		Vector2 &v(*this);
+		Vector2 &v(*ఇది);
 		v(0) = x;
 		v(1) = y;
 	}
 
-	using base = Vector<Type, 2>;
-	using base::base;
+	ఉపయోగించి base = సదిశ<Type, 2>;
+	ఉపయోగించి base::base;
 
-	explicit Vector2(const Vector3 &other)
+	స్పష్టమైన Vector2(స్థిరరాశి Vector3 &other)
 	{
-		Vector2 &v(*this);
+		Vector2 &v(*ఇది);
 		v(0) = other(0);
 		v(1) = other(1);
 	}
 
-	Type cross(const Matrix21 &b) const
+	Type cross(స్థిరరాశి Matrix21 &b) స్థిరరాశి
 	{
-		const Vector2 &a(*this);
-		return a(0) * b(1, 0) - a(1) * b(0, 0);
+		స్థిరరాశి Vector2 &a(*ఇది);
+		తిరిగి a(0) * b(1, 0) - a(1) * b(0, 0);
 	}
 
 	/**
 	 * Override matrix ops so Vector2 type is returned
 	 */
 
-	Vector2 operator+(Vector2 other) const
+	Vector2 క్రియాకారకం+(Vector2 other) స్థిరరాశి
 	{
-		return Matrix21::operator+(other);
+		తిరిగి Matrix21::క్రియాకారకం+(other);
 	}
 
-	Vector2 operator+(Type scalar) const
+	Vector2 క్రియాకారకం+(Type scalar) స్థిరరాశి
 	{
-		return Matrix21::operator+(scalar);
+		తిరిగి Matrix21::క్రియాకారకం+(scalar);
 	}
 
-	Vector2 operator-(Vector2 other) const
+	Vector2 క్రియాకారకం-(Vector2 other) స్థిరరాశి
 	{
-		return Matrix21::operator-(other);
+		తిరిగి Matrix21::క్రియాకారకం-(other);
 	}
 
-	Vector2 operator-(Type scalar) const
+	Vector2 క్రియాకారకం-(Type scalar) స్థిరరాశి
 	{
-		return Matrix21::operator-(scalar);
+		తిరిగి Matrix21::క్రియాకారకం-(scalar);
 	}
 
-	Vector2 operator-() const
+	Vector2 క్రియాకారకం-() స్థిరరాశి
 	{
-		return Matrix21::operator-();
+		తిరిగి Matrix21::క్రియాకారకం-();
 	}
 
-	Vector2 operator*(Type scalar) const
+	Vector2 క్రియాకారకం*(Type scalar) స్థిరరాశి
 	{
-		return Matrix21::operator*(scalar);
+		తిరిగి Matrix21::క్రియాకారకం*(scalar);
 	}
 
-	Type operator*(Vector2 b) const
+	Type క్రియాకారకం*(Vector2 b) స్థిరరాశి
 	{
-		return Vector<Type, 2>::operator*(b);
+		తిరిగి సదిశ<Type, 2>::క్రియాకారకం*(b);
 	}
 
-	Type operator%(const Matrix21 &b) const
+	Type క్రియాకారకం%(స్థిరరాశి Matrix21 &b) స్థిరరాశి
 	{
-		return (*this).cross(b);
+		తిరిగి (*ఇది).cross(b);
 	}
 
 };
 
-using Vector2f = Vector2<float>;
-using Vector2d = Vector2<double>;
+ఉపయోగించి Vector2f = Vector2<దశాంశం>;
+ఉపయోగించి Vector2d = Vector2<ద్విగుణ>;
 
 } // namespace matrix

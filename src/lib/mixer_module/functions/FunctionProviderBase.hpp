@@ -31,45 +31,45 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <limits.h>
+#అన్తర్భావ <limits.h>
 
-#include <mixer_module/output_functions.hpp>
+#అన్తర్భావ <mixer_module/output_functions.hpp>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionCallback.hpp>
+#అన్తర్భావ <uORB/Subscription.hpp>
+#అన్తర్భావ <uORB/SubscriptionCallback.hpp>
 
-#include <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
+#అన్తర్భావ <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
 
-class FunctionProviderBase
+తరగతి Function_Provider_పునాది
 {
-public:
-	struct Context {
-		px4::WorkItem &work_item;
-		const float &thrust_factor;
+బహిరంగ:
+	నిర్మాణం Context {
+		px4::Work_అంశం &work_అంశం;
+		స్థిరరాశి దశాంశం &thrust_గుణకం_2;
 	};
 
-	FunctionProviderBase() = default;
-	virtual ~FunctionProviderBase() = default;
+	Function_Provider_పునాది() = అప్రమేయ;
+	మాయా ~Function_Provider_పునాది() = అప్రమేయ;
 
-	virtual void update() = 0;
+	మాయా శూన్య update() = 0;
 
 	/**
 	 * Get the current output value for a given function
 	 * @return NAN (=disarmed) or value in range [-1, 1]
 	 */
-	virtual float value(OutputFunction func) = 0;
+	మాయా దశాంశం value(OutputFunction func) = 0;
 
-	virtual float defaultFailsafeValue(OutputFunction func) const { return NAN; }
-	virtual bool allowPrearmControl() const { return true; }
+	మాయా దశాంశం default_Failsafe_విలువ(OutputFunction func) స్థిరరాశి { తిరిగి NAN; }
+	మాయా తార్కిక allowPrearmControl() స్థిరరాశి { తిరిగి నిజం; }
 
-	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { return nullptr; }
+	మాయా uORB::Subscription_Callback_Work_అంశం *subscriptionCallback() { తిరిగి శూన్యసూచిక; }
 
-	virtual bool getLatestSampleTimestamp(hrt_abstime &t) const { return false; }
+	మాయా తార్కిక getLatestSampleTimestamp(hrt_abstime &t) స్థిరరాశి { తిరిగి అబద్ధం; }
 
 	/**
 	 * Check whether the output (motor) is configured to be reversible
 	 */
-	virtual bool reversible(OutputFunction func) const { return false; }
+	మాయా తార్కిక reversible(OutputFunction func) స్థిరరాశి { తిరిగి అబద్ధం; }
 };

@@ -31,42 +31,42 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/atomic_bitset.h>
-#include "atomic_transaction.h"
-#include "param.h"
-#include <stdlib.h>
+#అన్తర్భావ <px4_platform_common/atomic_bitset.h>
+#అన్తర్భావ "atomic_transaction.h"
+#అన్తర్భావ "param.h"
+#అన్తర్భావ <stdlib.h>
 
 class ParamLayer
 {
-public:
-	static constexpr param_t PARAM_COUNT = sizeof(px4::parameters) / sizeof(param_info_s);
+బహిరంగ:
+	స్థిర constexpr param_t PARAM_లెక్క = పరిమాణం(px4::parameters) / పరిమాణం(param_info_s);
 
-	ParamLayer(ParamLayer *parent = nullptr) : _parent(parent) {}
+	ParamLayer(ParamLayer *మాతృ = nullptr) : మాతృ_2(మాతృ) {}
 
-	ParamLayer(const ParamLayer &) = delete;
-	ParamLayer &operator=(const ParamLayer &) = delete;
+	ParamLayer(స్థిరరాశి ParamLayer &) = delete;
+	ParamLayer &క్రియాకారకం=(స్థిరరాశి ParamLayer &) = delete;
 	ParamLayer(ParamLayer &&) = delete;
-	ParamLayer &operator=(ParamLayer &&) = delete;
+	ParamLayer &క్రియాకారకం=(ParamLayer &&) = delete;
 
 
-	virtual bool store(param_t param, param_value_u value) = 0;
+	మాయా bool store(param_t param, param_విలువ_u విలువ) = 0;
 
-	virtual bool contains(param_t param) const = 0;
+	మాయా bool కలిగియుంది(param_t param) స్థిరరాశి = 0;
 
-	virtual px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const = 0;
+	మాయా px4::AtomicBitset<PARAM_లెక్క> containedAsBitset() స్థిరరాశి = 0;
 
-	virtual param_value_u get(param_t param) const = 0;
+	మాయా param_విలువ_u get(param_t param) స్థిరరాశి = 0;
 
-	virtual void reset(param_t param) = 0;
+	మాయా శూన్య reset(param_t param) = 0;
 
-	virtual void refresh(param_t param) = 0;
+	మాయా శూన్య refresh(param_t param) = 0;
 
-	virtual int size() const = 0;
+	మాయా పూర్ణాంకం కొలత() స్థిరరాశి = 0;
 
-	virtual int byteSize() const = 0;
+	మాయా పూర్ణాంకం byte_కొలత() స్థిరరాశి = 0;
 
-protected:
-	ParamLayer *const _parent;
+రక్షిత:
+	ParamLayer *స్థిరరాశి మాతృ_2;
 };

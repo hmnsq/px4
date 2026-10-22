@@ -31,13 +31,13 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "ParamLayer.h"
+#అన్తర్భావ "ParamLayer.h"
 
-#include <px4_platform_common/atomic.h>
+#అన్తర్భావ <px4_platform_common/atomic.h>
 
-#include <cassert>
+#అన్తర్భావ <cassert>
 
 /**
  * DynamicSparseLayer - a parameter layer that stores only the parameters that
@@ -90,34 +90,34 @@
  * it isn't needed there" - that would hide the embedded concurrency from the only
  * tooling that can catch bugs in it.
  */
-class DynamicSparseLayer : public ParamLayer
+class DynamicSparseLayer : బహిరంగ ParamLayer
 {
-public:
-	DynamicSparseLayer(ParamLayer *parent, int n_prealloc = 32, int n_grow = 4) : ParamLayer(parent),
+బహిరంగ:
+	DynamicSparseLayer(ParamLayer *మాతృ, పూర్ణాంకం n_prealloc = 32, పూర్ణాంకం n_grow = 4) : ParamLayer(మాతృ),
 		_n_slots(n_prealloc),
 		// _grow() only terminates if every grow adds at least one slot, so clamp
 		// _n_grow to >= 1. The assert flags the misconfiguration in debug builds;
 		// the clamp keeps the release build safe (asserts compile out under NDEBUG).
 		_n_grow(n_grow > 0 ? n_grow : 1)
 	{
-		assert(n_grow > 0);
+		ప్రతిజ్ఞా(n_grow > 0);
 
-		Slot *slots = (Slot *)malloc(sizeof(Slot) * n_prealloc);
+		స్థానం_2 *slots = (స్థానం_2 *)జ్ఞాపకం_ఇవ్వు(పరిమాణం(స్థానం_2) * n_prealloc);
 
-		if (slots == nullptr) {
+		ఒకవేళ (slots == nullptr) {
 			PX4_ERR("Failed to allocate memory for dynamic sparse layer");
 			_n_slots = 0;
-			return;
+			తిరిగి;
 		}
 
-		for (int i = 0; i < _n_slots; i++) {
-			slots[i] = {UINT16_MAX, param_value_u{}};
+		కొరకు (పూర్ణాంకం i = 0; i < _n_slots; i++) {
+			slots[i] = {UINT16_MAX, param_విలువ_u{}};
 		}
 
 		_slots.store(slots);
 	}
 
-	virtual ~DynamicSparseLayer()
+	మాయా ~DynamicSparseLayer()
 	{
 		// Take the lock so concurrent readers can't observe a half-freed
 		// state (relevant on POSIX, where DynamicSparseLayer instances are
@@ -127,14 +127,14 @@ public:
 		// after us short-circuits on the empty layer instead of dereferencing
 		// freed memory.
 		AtomicTransaction transaction;
-		Slot *slots = _slots.load();
+		స్థానం_2 *slots = _slots.ఎక్కించు();
 		_slots.store(nullptr);
-		_next_slot = 0;
+		తదుపరి_స్థానం = 0;
 		_n_slots = 0;
-		free(slots);
+		విడుదల(slots);
 	}
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_విలువ_u విలువ) override
 	{
 		AtomicTransaction transaction;
 
@@ -144,144 +144,144 @@ public:
 		// carry a decision across a grow: we re-read _slots, re-search, and
 		// re-check capacity from scratch on every iteration. Without a grow this
 		// loop body runs exactly once.
-		while (true) {
-			Slot *slots = _slots.load();
-			const int index = _getIndex(param);
+		అయితే (true) {
+			స్థానం_2 *slots = _slots.ఎక్కించు();
+			స్థిరరాశి పూర్ణాంకం సూచీ = get_సూచీ(param);
 
-			if (index < _next_slot) {
+			ఒకవేళ (సూచీ < తదుపరి_స్థానం) {
 				// The param already has an override: update it in place.
-				slots[index].value = value;
-				return true;
+				slots[సూచీ].విలువ = విలువ;
+				తిరిగి true;
 			}
 
-			if (_next_slot < _n_slots) {
+			ఒకవేళ (తదుపరి_స్థానం < _n_slots) {
 				// New param and there is a free slot: append it and re-sort so
 				// _getIndex() can keep binary-searching. This branch holds the
 				// lock throughout (no _grow), so the read-then-append is atomic.
-				slots[_next_slot++] = {param, value};
-				_sort();
-				return true;
+				slots[తదుపరి_స్థానం++] = {param, విలువ};
+				క్రమీకరించు();
+				తిరిగి true;
 			}
 
 			// New param but the array is full: grow and loop to retry. _grow()
 			// returns false only if allocation failed, in which case the store
 			// fails.
-			if (!_grow(transaction)) {
-				return false;
+			ఒకవేళ (!_grow(transaction)) {
+				తిరిగి false;
 			}
 		}
 	}
 
-	bool contains(param_t param) const override
+	bool కలిగియుంది(param_t param) స్థిరరాశి override
 	{
 		// Reader: hold the lock for the whole lookup so we never read _slots /
 		// _next_slot while a writer (store/_grow/reset) is mutating them.
-		const AtomicTransaction transaction;
-		return _getIndex(param) < _next_slot;
+		స్థిరరాశి AtomicTransaction transaction;
+		తిరిగి get_సూచీ(param) < తదుపరి_స్థానం;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_లెక్క> containedAsBitset() స్థిరరాశి override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
-		const AtomicTransaction transaction;
-		Slot *slots = _slots.load();
+		px4::AtomicBitset<PARAM_లెక్క> సమితి;
+		స్థిరరాశి AtomicTransaction transaction;
+		స్థానం_2 *slots = _slots.ఎక్కించు();
 
-		for (int i = 0; i < _next_slot; i++) {
-			set.set(slots[i].param);
+		కొరకు (పూర్ణాంకం i = 0; i < తదుపరి_స్థానం; i++) {
+			సమితి.సమితి(slots[i].param);
 		}
 
-		return set;
+		తిరిగి సమితి;
 	}
 
-	param_value_u get(param_t param) const override
+	param_విలువ_u get(param_t param) స్థిరరాశి override
 	{
 		// Reader: lock held for the whole lookup (see contains()).
-		const AtomicTransaction transaction;
-		Slot *slots = _slots.load();
+		స్థిరరాశి AtomicTransaction transaction;
+		స్థానం_2 *slots = _slots.ఎక్కించు();
 
-		const int index = _getIndex(param);
+		స్థిరరాశి పూర్ణాంకం సూచీ = get_సూచీ(param);
 
-		if (index < _next_slot) { // exists in our data structure
-			return slots[index].value;
+		ఒకవేళ (సూచీ < తదుపరి_స్థానం) { // exists in our data structure
+			తిరిగి slots[సూచీ].విలువ;
 		}
 
 		// Not overridden here: defer to the layer below us.
-		return _parent->get(param);
+		తిరిగి మాతృ_2->get(param);
 	}
 
-	void reset(param_t param) override
+	శూన్య reset(param_t param) override
 	{
-		const AtomicTransaction transaction;
-		int index = _getIndex(param);
-		Slot *slots = _slots.load();
+		స్థిరరాశి AtomicTransaction transaction;
+		పూర్ణాంకం సూచీ = get_సూచీ(param);
+		స్థానం_2 *slots = _slots.ఎక్కించు();
 
-		if (index < _next_slot) {
-			slots[index] = {UINT16_MAX, param_value_u{}};
-			_sort();
-			_next_slot--;
+		ఒకవేళ (సూచీ < తదుపరి_స్థానం) {
+			slots[సూచీ] = {UINT16_MAX, param_విలువ_u{}};
+			క్రమీకరించు();
+			తదుపరి_స్థానం--;
 		}
 	}
 
-	void refresh(param_t param) override
+	శూన్య refresh(param_t param) override
 	{
-		_parent->refresh(param);
+		మాతృ_2->refresh(param);
 	}
 
-	int size() const override
+	పూర్ణాంకం కొలత() స్థిరరాశి override
 	{
-		const AtomicTransaction transaction;
-		return _next_slot;
+		స్థిరరాశి AtomicTransaction transaction;
+		తిరిగి తదుపరి_స్థానం;
 	}
 
-	int byteSize() const override
+	పూర్ణాంకం byte_కొలత() స్థిరరాశి override
 	{
-		const AtomicTransaction transaction;
-		return _n_slots * sizeof(Slot);
+		స్థిరరాశి AtomicTransaction transaction;
+		తిరిగి _n_slots * పరిమాణం(స్థానం_2);
 	}
 
-private:
-	struct Slot {
+అంతరంగ:
+	నిర్మాణం స్థానం_2 {
 		param_t param;
-		param_value_u value;
+		param_విలువ_u విలువ;
 	};
 
-	static int _slotCompare(const void *a, const void *b)
+	స్థిర పూర్ణాంకం స్థానం_Compare(స్థిరరాశి శూన్య *a, స్థిరరాశి శూన్య *b)
 	{
-		return ((int)((Slot *)a)->param) - ((int)((Slot *)b)->param);
+		తిరిగి ((పూర్ణాంకం)((స్థానం_2 *)a)->param) - ((పూర్ణాంకం)((స్థానం_2 *)b)->param);
 	}
 
 	// Keep the array sorted by param ascending. Sentinels (param == UINT16_MAX)
 	// sort to the end, so the valid entries stay packed in [0, _next_slot).
 	// Caller must hold the lock.
-	void _sort()
+	శూన్య క్రమీకరించు()
 	{
-		qsort(_slots.load(), _n_slots, sizeof(Slot), _slotCompare);
+		qsort(_slots.ఎక్కించు(), _n_slots, పరిమాణం(స్థానం_2), స్థానం_Compare);
 	}
 
 	// Binary-search the sorted valid range for `param`. Returns its index if
 	// found, or `_next_slot` (the "not found" sentinel, == past-the-end of the
 	// valid range) otherwise. Caller must hold the lock.
-	int _getIndex(param_t param) const
+	పూర్ణాంకం get_సూచీ(param_t param) స్థిరరాశి
 	{
-		int left = 0;
-		int right = _next_slot - 1;
-		Slot *slots = _slots.load();
+		పూర్ణాంకం ఎడమ_2 = 0;
+		పూర్ణాంకం కుడి_2 = తదుపరి_స్థానం - 1;
+		స్థానం_2 *slots = _slots.ఎక్కించు();
 
-		while (left <= right) {
-			int mid = (left + right) / 2;
+		అయితే (ఎడమ_2 <= కుడి_2) {
+			పూర్ణాంకం mid = (ఎడమ_2 + కుడి_2) / 2;
 
-			if (slots[mid].param == param) {
-				return mid;
+			ఒకవేళ (slots[mid].param == param) {
+				తిరిగి mid;
 
-			} else if (slots[mid].param < param) {
-				left = mid + 1;
+			} లేకపోతే ఒకవేళ (slots[mid].param < param) {
+				ఎడమ_2 = mid + 1;
 
-			} else {
-				right = mid - 1;
+			} లేకపోతే {
+				కుడి_2 = mid - 1;
 			}
 		}
 
-		return _next_slot;
+		తిరిగి తదుపరి_స్థానం;
 	}
 
 	// Called by store() with the lock held when the array is full. Replaces
@@ -290,9 +290,9 @@ private:
 	// this releases the lock around the allocation - see below.
 	bool _grow(AtomicTransaction &transaction)
 	{
-		if (_n_slots == 0) {
+		ఒకవేళ (_n_slots == 0) {
 			// Construction failed to allocate; there is no buffer to grow.
-			return false;
+			తిరిగి false;
 		}
 
 		// Loop until there is room. Each iteration either grows the buffer
@@ -303,20 +303,20 @@ private:
 		// passes that there is permanent room. Hence this terminates in at most
 		// ~PARAM_COUNT/_n_grow iterations even under contention; only a malloc
 		// failure aborts early.
-		while (_next_slot >= _n_slots) {
+		అయితే (తదుపరి_స్థానం >= _n_slots) {
 			// Snapshot the size we are allocating for. We must drop the lock
 			// around malloc()/free(): on NuttX the lock disables interrupts and
 			// the allocator can't run there; on POSIX the allocator takes its own
 			// locks. This unlock..lock pair is the ONLY window in the whole class
 			// where another thread can change our members underneath us.
-			const int alloc_n_slots = _n_slots;
+			స్థిరరాశి పూర్ణాంకం alloc_n_slots = _n_slots;
 
 			transaction.unlock();
-			Slot *new_slots = (Slot *) malloc(sizeof(Slot) * (alloc_n_slots + _n_grow));
-			transaction.lock();
+			స్థానం_2 *new_slots = (స్థానం_2 *) జ్ఞాపకం_ఇవ్వు(పరిమాణం(స్థానం_2) * (alloc_n_slots + _n_grow));
+			transaction.తాళం();
 
-			if (new_slots == nullptr) {
-				return false;
+			ఒకవేళ (new_slots == nullptr) {
+				తిరిగి false;
 			}
 
 			// Back under the lock: did another writer grow the buffer while we
@@ -328,22 +328,22 @@ private:
 			// A pointer compare would then pass while _n_slots has moved on, and
 			// the memcpy below would copy _n_slots entries into our buffer that was
 			// only sized for alloc_n_slots - a heap overflow.
-			if (_n_slots != alloc_n_slots) {
+			ఒకవేళ (_n_slots != alloc_n_slots) {
 				// Someone else already grew it. Our buffer is now the wrong size;
 				// throw it away. This is progress, not a failure, so the loop just
 				// re-evaluates: there may already be room, or we grow again.
-				free(new_slots);
-				continue;
+				విడుదల(new_slots);
+				కొనసాగు;
 			}
 
 			// _n_slots == alloc_n_slots, so the buffer is correctly sized and
 			// `_slots` still points at the array we sized against. Copy the live
 			// entries over, sentinel-fill the new tail, and publish.
-			Slot *previous_slots = _slots.load();
-			memcpy(new_slots, previous_slots, sizeof(Slot) * _n_slots);
+			స్థానం_2 *మునుపటి_slots = _slots.ఎక్కించు();
+			జ్ఞాపకం_నకలు(new_slots, మునుపటి_slots, పరిమాణం(స్థానం_2) * _n_slots);
 
-			for (int i = _n_slots; i < _n_slots + _n_grow; i++) {
-				new_slots[i] = {UINT16_MAX, param_value_u{}};
+			కొరకు (పూర్ణాంకం i = _n_slots; i < _n_slots + _n_grow; i++) {
+				new_slots[i] = {UINT16_MAX, param_విలువ_u{}};
 			}
 
 			_slots.store(new_slots);
@@ -353,16 +353,16 @@ private:
 			// again. Safe now because _slots already points at new_slots, so no
 			// reader will touch previous_slots.
 			transaction.unlock();
-			free(previous_slots);
-			transaction.lock();
+			విడుదల(మునుపటి_slots);
+			transaction.తాళం();
 		}
 
-		return _next_slot < _n_slots;
+		తిరిగి తదుపరి_స్థానం < _n_slots;
 	}
 
 	// All three guarded by the AtomicTransaction mutex (see class comment).
-	int _next_slot = 0;        // number of valid entries, all in _slots[0.._next_slot)
-	int _n_slots = 0;          // capacity: total entries _slots points to
-	const int _n_grow;         // how many slots to add per grow
-	px4::atomic<Slot *> _slots{nullptr}; // the array; atomic only for the unlock-around-malloc window in _grow()
+	పూర్ణాంకం తదుపరి_స్థానం = 0;        // number of valid entries, all in _slots[0.._next_slot)
+	పూర్ణాంకం _n_slots = 0;          // capacity: total entries _slots points to
+	స్థిరరాశి పూర్ణాంకం _n_grow;         // how many slots to add per grow
+	px4::atomic<స్థానం_2 *> _slots{nullptr}; // the array; atomic only for the unlock-around-malloc window in _grow()
 };

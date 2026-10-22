@@ -37,124 +37,124 @@
  * Welford's online algorithm for computing mean and covariance of a vector.
  */
 
-#pragma once
+#సూచన once
 
-namespace math
+నామాకాశ math
 {
 
-template <typename Type, size_t N>
-class WelfordMeanVector
+మూస <రకం_పేరు Type, size_t N>
+తరగతి Welford_సగటు_సదిశ
 {
-public:
+బహిరంగ:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const matrix::Vector<Type, N> &new_value)
+	తార్కిక update(స్థిరరాశి మాతృక::సదిశ<Type, N> &new_విలువ)
 	{
-		if (_count == 0) {
+		ఒకవేళ (లెక్క_3 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
-			return false;
+			లెక్క_3 = 1;
+			సగటు_2 = new_విలువ;
+			తిరిగి అబద్ధం;
 
-		} else if (_count == UINT16_MAX) {
+		} లేకపోతే ఒకవేళ (లెక్క_3 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / లెక్క_3;
 			_M2_accum.zero();
 
-			_count = 1;
+			లెక్క_3 = 1;
 
-		} else {
-			_count++;
+		} లేకపోతే {
+			లెక్క_3++;
 		}
 
-		// mean
+		//సగటు
 		//  accumulates the mean of the entire dataset
 		//  use Kahan summation because delta can be very small compared to the mean
-		const matrix::Vector<Type, N> delta{new_value - _mean};
+		స్థిరరాశి మాతృక::సదిశ<Type, N> delta{new_విలువ - సగటు_2};
 		{
-			const matrix::Vector<Type, N> y = (delta / _count) - _mean_accum;
-			const matrix::Vector<Type, N> t = _mean + y;
-			_mean_accum = (t - _mean) - y;
-			_mean = t;
+			స్థిరరాశి మాతృక::సదిశ<Type, N> y = (delta / లెక్క_3) - సగటు_accum;
+			స్థిరరాశి మాతృక::సదిశ<Type, N> t = సగటు_2 + y;
+			సగటు_accum = (t - సగటు_2) - y;
+			సగటు_2 = t;
 		}
 
-		if (!_mean.isAllFinite()) {
+		ఒకవేళ (!సగటు_2.isAllFinite()) {
 			reset();
-			return false;
+			తిరిగి అబద్ధం;
 		}
 
 		// covariance
 		//  Kahan summation (upper triangle only)
 		{
 			// eg C(x,y) += dx * (y - mean_y)
-			matrix::SquareMatrix<Type, N> m2_change{};
+			మాతృక::వర్గం_మాతృక<Type, N> m2_change{};
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
-					m2_change(r, c) = delta(r) * (new_value(c) - _mean(c));
+			కొరకు (size_t r = 0; r < N; r++) {
+				కొరకు (size_t c = r; c < N; c++) {
+					m2_change(r, c) = delta(r) * (new_విలువ(c) - సగటు_2(c));
 				}
 			}
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
+			కొరకు (size_t r = 0; r < N; r++) {
+				కొరకు (size_t c = r; c < N; c++) {
 
-					const Type y = m2_change(r, c) - _M2_accum(r, c);
-					const Type t = _M2(r, c) + y;
+					స్థిరరాశి Type y = m2_change(r, c) - _M2_accum(r, c);
+					స్థిరరాశి Type t = _M2(r, c) + y;
 					_M2_accum(r, c) = (t - _M2(r, c)) - y;
 
 					_M2(r, c) = t;
 				}
 
 				// protect against floating point precision causing negative variances
-				if (_M2(r, r) < 0) {
+				ఒకవేళ (_M2(r, r) < 0) {
 					_M2(r, r) = 0;
 				}
 			}
 
 			// make symmetric
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r + 1; c < N; c++) {
+			కొరకు (size_t r = 0; r < N; r++) {
+				కొరకు (size_t c = r + 1; c < N; c++) {
 					_M2(c, r) = _M2(r, c);
 				}
 			}
 		}
 
-		if (!_M2.isAllFinite()) {
+		ఒకవేళ (!_M2.isAllFinite()) {
 			reset();
-			return false;
+			తిరిగి అబద్ధం;
 		}
 
-		return valid();
+		తిరిగి valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	తార్కిక valid() స్థిరరాశి { తిరిగి లెక్క_3 > 2; }
+	స్వయంచాలక లెక్క() స్థిరరాశి { తిరిగి లెక్క_3; }
 
-	void reset()
+	శూన్య reset()
 	{
-		_count = 0;
-		_mean.zero();
+		లెక్క_3 = 0;
+		సగటు_2.zero();
 		_M2.zero();
 
-		_mean_accum.zero();
+		సగటు_accum.zero();
 		_M2_accum.zero();
 	}
 
-	matrix::Vector<Type, N> mean() const { return _mean; }
-	matrix::Vector<Type, N> variance() const { return _M2.diag() / (_count - 1); }
-	matrix::SquareMatrix<Type, N> covariance() const { return _M2 / (_count - 1); }
+	మాతృక::సదిశ<Type, N> సగటు() స్థిరరాశి { తిరిగి సగటు_2; }
+	మాతృక::సదిశ<Type, N> variance() స్థిరరాశి { తిరిగి _M2.diag() / (లెక్క_3 - 1); }
+	మాతృక::వర్గం_మాతృక<Type, N> covariance() స్థిరరాశి { తిరిగి _M2 / (లెక్క_3 - 1); }
 
-	Type covariance(int x, int y) const { return _M2(x, y) / (_count - 1); }
+	Type covariance(పూర్ణాంకం x, పూర్ణాంకం y) స్థిరరాశి { తిరిగి _M2(x, y) / (లెక్క_3 - 1); }
 
-private:
+అంతరంగ:
 
-	matrix::Vector<Type, N> _mean{};
-	matrix::Vector<Type, N> _mean_accum{};  ///< kahan summation algorithm accumulator for mean
+	మాతృక::సదిశ<Type, N> సగటు_2{};
+	మాతృక::సదిశ<Type, N> సగటు_accum{};  ///< kahan summation algorithm accumulator for mean
 
-	matrix::SquareMatrix<Type, N> _M2{};
-	matrix::SquareMatrix<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
+	మాతృక::వర్గం_మాతృక<Type, N> _M2{};
+	మాతృక::వర్గం_మాతృక<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t లెక్క_3{0};
 };
 
 } // namespace math

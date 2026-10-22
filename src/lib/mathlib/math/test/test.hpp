@@ -37,23 +37,23 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
 //#include <assert.h>
 //#include <time.h>
 //#include <stdlib.h>
 
-bool equal(float a, float b, float eps = 1e-5);
+తార్కిక equal(దశాంశం a, దశాంశం b, దశాంశం eps = 1e-5);
 
-bool greater_than(float a, float b);
+తార్కిక greater_than(దశాంశం a, దశాంశం b);
 
-bool less_than(float a, float b);
+తార్కిక less_than(దశాంశం a, దశాంశం b);
 
-bool greater_than_or_equal(float a, float b);
+తార్కిక greater_than_or_equal(దశాంశం a, దశాంశం b);
 
-bool less_than_or_equal(float a, float b);
+తార్కిక less_than_or_equal(దశాంశం a, దశాంశం b);
 
-void float2SigExp(
-	const float &num,
-	float &sig,
-	int &exp);
+శూన్య float2SigExp(
+	స్థిరరాశి దశాంశం &అంకె,
+	దశాంశం &sig,
+	పూర్ణాంకం &ఘాతాంకం);

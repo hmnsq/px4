@@ -4,18 +4,18 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#సూచన once
 
-#include "Vector3.hpp"
+#అన్తర్భావ "Vector3.hpp"
 
-namespace matrix
+నామాకాశ మాతృక
 {
 
-template <typename Type>
-class Euler;
+మూస <రకం_పేరు Type>
+తరగతి Euler;
 
-template<typename Type>
-class Quaternion;
+మూస<రకం_పేరు Type>
+తరగతి Quaternion;
 
 /**
  * AxisAngle class
@@ -23,33 +23,33 @@ class Quaternion;
  * The rotation between two coordinate frames is
  * described by this class.
  */
-template<typename Type>
-class AxisAngle : public Vector3<Type>
+మూస<రకం_పేరు Type>
+తరగతి AxisAngle : బహిరంగ Vector3<Type>
 {
-public:
-	using Matrix31 = Matrix<Type, 3, 1>;
+బహిరంగ:
+	ఉపయోగించి Matrix31 = మాతృక_2<Type, 3, 1>;
 
 	/**
 	 * Constructor from array
 	 *
 	 * @param data_ array
 	 */
-	explicit AxisAngle(const Type data_[3]) :
-		Vector3<Type>(data_)
+	స్పష్టమైన AxisAngle(స్థిరరాశి Type దత్తాంశం_2[3]) :
+		Vector3<Type>(దత్తాంశం_2)
 	{
 	}
 
 	/**
 	 * Standard constructor
 	 */
-	AxisAngle() = default;
+	AxisAngle() = అప్రమేయ;
 
 	/**
 	 * Constructor from Matrix31
 	 *
 	 * @param other Matrix31 to copy
 	 */
-	AxisAngle(const Matrix31 &other) :
+	AxisAngle(స్థిరరాశి Matrix31 &other) :
 		Vector3<Type>(other)
 	{
 	}
@@ -63,15 +63,15 @@ public:
 	 *
 	 * @param q quaternion
 	 */
-	AxisAngle(const Quaternion<Type> &q)
+	AxisAngle(స్థిరరాశి Quaternion<Type> &q)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *ఇది;
 		Type mag = q.imag().norm();
 
-		if (std::fabs(mag) >= Type(1e-10)) {
+		ఒకవేళ (std::fabs(mag) >= Type(1e-10)) {
 			v = q.imag() * Type(Type(2) * std::atan2(mag, q(0)) / mag);
 
-		} else {
+		} లేకపోతే {
 			v = q.imag() * Type(Type(2) * Type(sign(q(0))));
 		}
 	}
@@ -84,9 +84,9 @@ public:
 	 *
 	 * @param dcm dcm to set quaternion to
 	 */
-	AxisAngle(const Dcm<Type> &dcm)
+	AxisAngle(స్థిరరాశి Dcm<Type> &dcm)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *ఇది;
 		v = AxisAngle<Type>(Quaternion<Type>(dcm));
 	}
 
@@ -99,9 +99,9 @@ public:
 	 *
 	 * @param euler euler angle instance
 	 */
-	AxisAngle(const Euler<Type> &euler)
+	AxisAngle(స్థిరరాశి Euler<Type> &euler)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *ఇది;
 		v = AxisAngle<Type>(Quaternion<Type>(euler));
 	}
 
@@ -114,7 +114,7 @@ public:
 	 */
 	AxisAngle(Type x, Type y, Type z)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *ఇది;
 		v(0) = x;
 		v(1) = y;
 		v(2) = z;
@@ -126,9 +126,9 @@ public:
 	 * @param axis An axis of rotation, normalized if not unit length
 	 * @param angle The amount to rotate
 	 */
-	AxisAngle(const Matrix31 &axis_, Type angle_)
+	AxisAngle(స్థిరరాశి Matrix31 &axis_, Type angle_)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *ఇది;
 		// make sure axis is a unit vector
 		Vector3<Type> a = axis_;
 		a = a.unit();
@@ -140,21 +140,21 @@ public:
 
 	Vector3<Type> axis()
 	{
-		if (Vector3<Type>::norm() > 0) {
-			return Vector3<Type>::unit();
+		ఒకవేళ (Vector3<Type>::norm() > 0) {
+			తిరిగి Vector3<Type>::unit();
 
-		} else {
-			return Vector3<Type>(1, 0, 0);
+		} లేకపోతే {
+			తిరిగి Vector3<Type>(1, 0, 0);
 		}
 	}
 
 	Type angle()
 	{
-		return Vector3<Type>::norm();
+		తిరిగి Vector3<Type>::norm();
 	}
 };
 
-using AxisAnglef = AxisAngle<float>;
-using AxisAngled = AxisAngle<double>;
+ఉపయోగించి AxisAnglef = AxisAngle<దశాంశం>;
+ఉపయోగించి AxisAngled = AxisAngle<ద్విగుణ>;
 
 } // namespace matrix

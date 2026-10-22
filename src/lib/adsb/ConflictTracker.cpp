@@ -38,22 +38,22 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include "ConflictTracker.h"
+#అన్తర్భావ "ConflictTracker.h"
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <px4_platform_common/log.h>
 
-namespace
+నామాకాశ
 {
 
-void append_change(conflict_tracker_changes_s &changes, const conflict_tracker_change_s &change)
+శూన్య append_change(conflict_tracker_changes_s &changes, స్థిరరాశి conflict_tracker_change_s &change)
 {
-	if (!changes.push_back(change)) {
+	ఒకవేళ (!changes.push_back(change)) {
 		PX4_ERR("DAA: conflict changes overflow");
 	}
 }
 
-void record_ignored(conflict_tracker_changes_s &changes, const conflict_info_s &conflict, const IgnoreTrafficCause cause)
+శూన్య రికార్డు_ignored(conflict_tracker_changes_s &changes, స్థిరరాశి conflict_info_s &conflict, స్థిరరాశి IgnoreTrafficCause cause)
 {
 	conflict_tracker_change_s change{};
 	change.type = ConflictTrackerChangeType::kReportIgnored;
@@ -62,7 +62,7 @@ void record_ignored(conflict_tracker_changes_s &changes, const conflict_info_s &
 	append_change(changes, change);
 }
 
-void record_removed(conflict_tracker_changes_s &changes, const conflict_info_s &conflict, const RemoveBufferCause cause)
+శూన్య రికార్డు_removed(conflict_tracker_changes_s &changes, స్థిరరాశి conflict_info_s &conflict, స్థిరరాశి Remove_బఫరు_Cause cause)
 {
 	conflict_tracker_change_s change{};
 	change.type = ConflictTrackerChangeType::kConflictRemoved;
@@ -73,211 +73,211 @@ void record_removed(conflict_tracker_changes_s &changes, const conflict_info_s &
 
 } // namespace
 
-bool ConflictTracker::apply_conflict(const conflict_info_s &conflict, conflict_tracker_changes_s &changes)
+తార్కిక ConflictTracker::apply_conflict(స్థిరరాశి conflict_info_s &conflict, conflict_tracker_changes_s &changes)
 {
-	if (conflict.encoded_id.id == 0
+	ఒకవేళ (conflict.encoded_id.id == 0
 	    || conflict.conflict_level > detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL
 	    || !PX4_ISFINITE(conflict.aircraft_dist)
 	    || conflict.aircraft_dist < 0.f) {
 		PX4_ERR("DAA: invalid conflict");
-		return false;
+		తిరిగి అబద్ధం;
 	}
 
-	const int conflict_idx = find_conflict_idx(conflict.encoded_id);
+	స్థిరరాశి పూర్ణాంకం conflict_idx = కనుగొను_conflict_idx(conflict.encoded_id);
 
-	if (conflict_idx < 0) {
-		if (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
-			return false;
+	ఒకవేళ (conflict_idx < 0) {
+		ఒకవేళ (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
+			తిరిగి అబద్ధం;
 		}
 
-		return add_conflict(conflict, changes);
+		తిరిగి కూడు_conflict(conflict, changes);
 	}
 
-	return update_conflict(conflict, conflict_idx, changes);
+	తిరిగి update_conflict(conflict, conflict_idx, changes);
 }
 
-bool ConflictTracker::add_conflict(const conflict_info_s &conflict, conflict_tracker_changes_s &changes)
+తార్కిక ConflictTracker::కూడు_conflict(స్థిరరాశి conflict_info_s &conflict, conflict_tracker_changes_s &changes)
 {
-	if (_buffer.size() < _buffer.max_size()) {
-		_buffer.push_back(conflict);
+	ఒకవేళ (బఫరు.కొలత() < బఫరు.max_కొలత()) {
+		బఫరు.push_back(conflict);
 
 		conflict_tracker_change_s change{};
 		change.type = ConflictTrackerChangeType::kConflictAdded;
 		change.conflict = conflict;
 		append_change(changes, change);
-		return true;
+		తిరిగి నిజం;
 	}
 
-	const int least_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kLeastUrgent);
+	స్థిరరాశి పూర్ణాంకం కనిష్ఠ_అత్యవసర_conflict_idx = కనుగొను_conflict_idx_by_ప్రాధాన్యత(Conflict_ప్రాధాన్యత::k_కనిష్ఠ_అత్యవసర);
 
-	if (!is_conflict_more_important(conflict, _buffer[least_urgent_conflict_idx])) {
+	ఒకవేళ (!is_conflict_మరిన్ని_important(conflict, బఫరు[కనిష్ఠ_అత్యవసర_conflict_idx])) {
 		PX4_DEBUG("DAA: new conflict does not outrank tracked conflicts, ignoring.");
-		record_ignored(changes, conflict, IgnoreTrafficCause::kBufferFull);
-		return false;
+		రికార్డు_ignored(changes, conflict, IgnoreTrafficCause::k_బఫరు_నిండిన);
+		తిరిగి అబద్ధం;
 	}
 
-	const conflict_info_s removed_conflict = _buffer[least_urgent_conflict_idx];
-	_buffer[least_urgent_conflict_idx] = conflict;
-	record_removed(changes, removed_conflict, RemoveBufferCause::kBufferFull);
+	స్థిరరాశి conflict_info_s removed_conflict = బఫరు[కనిష్ఠ_అత్యవసర_conflict_idx];
+	బఫరు[కనిష్ఠ_అత్యవసర_conflict_idx] = conflict;
+	రికార్డు_removed(changes, removed_conflict, Remove_బఫరు_Cause::k_బఫరు_నిండిన);
 
 	conflict_tracker_change_s change{};
 	change.type = ConflictTrackerChangeType::kConflictAdded;
 	change.conflict = conflict;
 	append_change(changes, change);
-	return true;
+	తిరిగి నిజం;
 }
 
-bool ConflictTracker::update_conflict(const conflict_info_s &conflict, const int conflict_idx,
+తార్కిక ConflictTracker::update_conflict(స్థిరరాశి conflict_info_s &conflict, స్థిరరాశి పూర్ణాంకం conflict_idx,
 				      conflict_tracker_changes_s &changes)
 {
-	const uint8_t previous_conflict_level = _buffer[conflict_idx].conflict_level;
+	స్థిరరాశి uint8_t మునుపటి_conflict_level = బఫరు[conflict_idx].conflict_level;
 
-	if (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
+	ఒకవేళ (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
 		PX4_DEBUG("DAA: Conflict avoided");
-		_buffer.remove(conflict_idx);
+		బఫరు.remove(conflict_idx);
 
-	} else {
-		_buffer[conflict_idx] = conflict;
+	} లేకపోతే {
+		బఫరు[conflict_idx] = conflict;
 	}
 
-	if (conflict.conflict_level != previous_conflict_level) {
+	ఒకవేళ (conflict.conflict_level != మునుపటి_conflict_level) {
 		conflict_tracker_change_s change{};
-		change.type = ConflictTrackerChangeType::kConflictLevelChanged;
+		change.type = ConflictTrackerChangeType::k_Conflict_Level_మారింది;
 		change.conflict = conflict;
-		change.previous_level = previous_conflict_level;
+		change.మునుపటి_level = మునుపటి_conflict_level;
 
-		const int most_urgent_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
-		change.conflict_is_most_urgent = (_most_urgent.encoded_id == conflict.encoded_id)
-						 || (is_valid_idx(most_urgent_idx)
-						     && _buffer[most_urgent_idx].encoded_id == conflict.encoded_id);
+		స్థిరరాశి పూర్ణాంకం most_అత్యవసర_idx = కనుగొను_conflict_idx_by_ప్రాధాన్యత(Conflict_ప్రాధాన్యత::k_Most_అత్యవసర);
+		change.conflict_is_most_అత్యవసర = (most_అత్యవసర.encoded_id == conflict.encoded_id)
+						 || (is_valid_idx(most_అత్యవసర_idx)
+						     && బఫరు[most_అత్యవసర_idx].encoded_id == conflict.encoded_id);
 
 		append_change(changes, change);
 	}
 
-	return true;
+	తిరిగి నిజం;
 }
 
-bool ConflictTracker::remove_stale_conflicts(const hrt_abstime now, const hrt_abstime timeout_us,
+తార్కిక ConflictTracker::remove_stale_conflicts(స్థిరరాశి hrt_abstime now, స్థిరరాశి hrt_abstime timeout_us,
 		conflict_tracker_changes_s &changes)
 {
-	int nb_conflicts_removed = 0;
+	పూర్ణాంకం nb_conflicts_removed = 0;
 
 	// Iterate backwards because Array::remove() shifts later entries left.
-	for (int idx = (static_cast<int>(_buffer.size()) - 1); idx >= 0; --idx) {
-		const hrt_abstime latest_update = _buffer[idx].latest_update_timestamp;
+	కొరకు (పూర్ణాంకం idx = (static_cast<పూర్ణాంకం>(బఫరు.కొలత()) - 1); idx >= 0; --idx) {
+		స్థిరరాశి hrt_abstime latest_update = బఫరు[idx].latest_update_timestamp;
 
-		if (latest_update == 0 || latest_update > now || (now - latest_update) > timeout_us) {
-			const conflict_info_s removed_conflict = _buffer[idx];
-			_buffer.remove(idx);
-			record_removed(changes, removed_conflict, RemoveBufferCause::kStaleConflict);
+		ఒకవేళ (latest_update == 0 || latest_update > now || (now - latest_update) > timeout_us) {
+			స్థిరరాశి conflict_info_s removed_conflict = బఫరు[idx];
+			బఫరు.remove(idx);
+			రికార్డు_removed(changes, removed_conflict, Remove_బఫరు_Cause::kStaleConflict);
 			nb_conflicts_removed++;
 		}
 	}
 
-	if (nb_conflicts_removed > 0) {
+	ఒకవేళ (nb_conflicts_removed > 0) {
 		PX4_DEBUG("DAA: removed %d stale conflicts from buffer", nb_conflicts_removed);
 	}
 
-	return nb_conflicts_removed > 0;
+	తిరిగి nb_conflicts_removed > 0;
 }
 
-void ConflictTracker::clear()
+శూన్య ConflictTracker::clear()
 {
-	_buffer.clear();
-	reset_most_urgent();
+	బఫరు.clear();
+	reset_most_అత్యవసర();
 }
 
-void ConflictTracker::reset_most_urgent()
+శూన్య ConflictTracker::reset_most_అత్యవసర()
 {
-	static constexpr float kNoConflictDistance{9999.f};
+	స్థిర constexpr దశాంశం k_No_Conflict_దూరం{9999.f};
 	PX4_DEBUG("DAA: reset most urgent buffer to null.");
-	_most_urgent = {};
-	_most_urgent.aircraft_dist = kNoConflictDistance;
+	most_అత్యవసర = {};
+	most_అత్యవసర.aircraft_dist = k_No_Conflict_దూరం;
 }
 
-void ConflictTracker::refresh_most_urgent()
+శూన్య ConflictTracker::refresh_most_అత్యవసర()
 {
-	if (_buffer.empty()) {
+	ఒకవేళ (బఫరు.ఖాళీలు()) {
 		PX4_DEBUG("DAA: refresh_most_urgent empty buffer.");
-		reset_most_urgent();
-		return;
+		reset_most_అత్యవసర();
+		తిరిగి;
 	}
 
-	_most_urgent = find_most_urgent();
+	most_అత్యవసర = కనుగొను_most_అత్యవసర();
 }
 
-conflict_info_s ConflictTracker::find_most_urgent() const
+conflict_info_s ConflictTracker::కనుగొను_most_అత్యవసర() స్థిరరాశి
 {
-	const int most_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
+	స్థిరరాశి పూర్ణాంకం most_అత్యవసర_conflict_idx = కనుగొను_conflict_idx_by_ప్రాధాన్యత(Conflict_ప్రాధాన్యత::k_Most_అత్యవసర);
 
-	if (!is_valid_idx(most_urgent_conflict_idx)) {
-		return {};
+	ఒకవేళ (!is_valid_idx(most_అత్యవసర_conflict_idx)) {
+		తిరిగి {};
 	}
 
-	return _buffer[most_urgent_conflict_idx];
+	తిరిగి బఫరు[most_అత్యవసర_conflict_idx];
 }
 
-conflict_info_s ConflictTracker::get_conflict(const DaaEncodedId &encoded_id) const
+conflict_info_s ConflictTracker::get_conflict(స్థిరరాశి DaaEncodedId &encoded_id) స్థిరరాశి
 {
-	const int conflict_idx = find_conflict_idx(encoded_id);
+	స్థిరరాశి పూర్ణాంకం conflict_idx = కనుగొను_conflict_idx(encoded_id);
 
-	if (!is_valid_idx(conflict_idx)) {
-		return {};
+	ఒకవేళ (!is_valid_idx(conflict_idx)) {
+		తిరిగి {};
 	}
 
-	return _buffer[conflict_idx];
+	తిరిగి బఫరు[conflict_idx];
 }
 
-int ConflictTracker::find_conflict_idx_by_priority(const ConflictPriority priority) const
+పూర్ణాంకం ConflictTracker::కనుగొను_conflict_idx_by_ప్రాధాన్యత(స్థిరరాశి Conflict_ప్రాధాన్యత ప్రాధాన్యత) స్థిరరాశి
 {
-	const int buff_size = static_cast<int>(_buffer.size());
+	స్థిరరాశి పూర్ణాంకం buff_కొలత = static_cast<పూర్ణాంకం>(బఫరు.కొలత());
 
-	if (buff_size < 1) {
-		return -1;
+	ఒకవేళ (buff_కొలత < 1) {
+		తిరిగి -1;
 	}
 
-	int best_idx = 0;
+	పూర్ణాంకం ఉత్తమ_idx = 0;
 
-	for (int i = 1; i < buff_size; ++i) {
-		const bool is_better = (priority == ConflictPriority::kMostUrgent)
-				       ? is_conflict_more_important(_buffer[i], _buffer[best_idx])
-				       : is_conflict_less_important(_buffer[i], _buffer[best_idx]);
+	కొరకు (పూర్ణాంకం i = 1; i < buff_కొలత; ++i) {
+		స్థిరరాశి తార్కిక is_better = (ప్రాధాన్యత == Conflict_ప్రాధాన్యత::k_Most_అత్యవసర)
+				       ? is_conflict_మరిన్ని_important(బఫరు[i], బఫరు[ఉత్తమ_idx])
+				       : is_conflict_less_important(బఫరు[i], బఫరు[ఉత్తమ_idx]);
 
-		if (is_better) {
-			best_idx = i;
+		ఒకవేళ (is_better) {
+			ఉత్తమ_idx = i;
 		}
 	}
 
-	return best_idx;
+	తిరిగి ఉత్తమ_idx;
 }
 
-int ConflictTracker::find_conflict_idx(const DaaEncodedId &encoded_id) const
+పూర్ణాంకం ConflictTracker::కనుగొను_conflict_idx(స్థిరరాశి DaaEncodedId &encoded_id) స్థిరరాశి
 {
-	for (size_t i = 0; i < _buffer.size(); i++) {
-		if (_buffer[i].encoded_id == encoded_id) {
-			return static_cast<int>(i);
+	కొరకు (size_t i = 0; i < బఫరు.కొలత(); i++) {
+		ఒకవేళ (బఫరు[i].encoded_id == encoded_id) {
+			తిరిగి static_cast<పూర్ణాంకం>(i);
 		}
 	}
 
-	return -1;
+	తిరిగి -1;
 }
 
-bool ConflictTracker::is_conflict_less_important(const conflict_info_s &new_conflict,
-		const conflict_info_s &base_conflict)
+తార్కిక ConflictTracker::is_conflict_less_important(స్థిరరాశి conflict_info_s &new_conflict,
+		స్థిరరాశి conflict_info_s &పునాది_conflict)
 {
-	if (new_conflict.conflict_level != base_conflict.conflict_level) {
-		return new_conflict.conflict_level < base_conflict.conflict_level;
+	ఒకవేళ (new_conflict.conflict_level != పునాది_conflict.conflict_level) {
+		తిరిగి new_conflict.conflict_level < పునాది_conflict.conflict_level;
 	}
 
-	return new_conflict.aircraft_dist > base_conflict.aircraft_dist;
+	తిరిగి new_conflict.aircraft_dist > పునాది_conflict.aircraft_dist;
 }
 
-bool ConflictTracker::is_conflict_more_important(const conflict_info_s &new_conflict,
-		const conflict_info_s &base_conflict)
+తార్కిక ConflictTracker::is_conflict_మరిన్ని_important(స్థిరరాశి conflict_info_s &new_conflict,
+		స్థిరరాశి conflict_info_s &పునాది_conflict)
 {
-	if (new_conflict.conflict_level != base_conflict.conflict_level) {
-		return new_conflict.conflict_level > base_conflict.conflict_level;
+	ఒకవేళ (new_conflict.conflict_level != పునాది_conflict.conflict_level) {
+		తిరిగి new_conflict.conflict_level > పునాది_conflict.conflict_level;
 	}
 
-	return new_conflict.aircraft_dist < base_conflict.aircraft_dist;
+	తిరిగి new_conflict.aircraft_dist < పునాది_conflict.aircraft_dist;
 }

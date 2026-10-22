@@ -37,61 +37,61 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <time.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <mathlib/math/test/test.hpp>
+#అన్తర్భావ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
 
-template<class Type, size_t M>
-class __EXPORT BlockLowPassVector: public Block
+మూస<తరగతి Type, size_t M>
+తరగతి __EXPORT ఖండం_దిగువ_Pass_సదిశ: బహిరంగ ఖండం
 {
-public:
+బహిరంగ:
 // methods
-	BlockLowPassVector(SuperBlock *parent,
-			   const char *name) :
-		Block(parent, name),
+	ఖండం_దిగువ_Pass_సదిశ(Super_ఖండం *మాతృ,
+			   స్థిరరాశి అక్షరం *name) :
+		ఖండం(మాతృ, name),
 		_state(),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(ఇది, "") // only one parameter, no need to name
 	{
-		for (size_t i = 0; i < M; i++) {
+		కొరకు (size_t i = 0; i < M; i++) {
 			_state(i) = 0.0f / 0.0f;
 		}
 	}
-	virtual ~BlockLowPassVector() = default;
-	matrix::Vector<Type, M> update(const matrix::Matrix<Type, M, 1> &input)
+	మాయా ~ఖండం_దిగువ_Pass_సదిశ() = అప్రమేయ;
+	మాతృక::సదిశ<Type, M> update(స్థిరరాశి మాతృక::మాతృక_2<Type, M, 1> &ఆదానం)
 	{
-		for (size_t i = 0; i < M; i++) {
-			if (!PX4_ISFINITE(getState()(i))) {
-				setState(input);
+		కొరకు (size_t i = 0; i < M; i++) {
+			ఒకవేళ (!PX4_ISFINITE(getState()(i))) {
+				సమితి_State(ఆదానం);
 			}
 		}
 
-		float b = 2 * M_PI_F * getFCut() * getDt();
-		float a = b / (1 + b);
-		setState(input * a + getState() * (1 - a));
-		return getState();
+		దశాంశం b = 2 * M_PI_F * getFCut() * getDt();
+		దశాంశం a = b / (1 + b);
+		సమితి_State(ఆదానం * a + getState() * (1 - a));
+		తిరిగి getState();
 	}
 // accessors
-	matrix::Vector<Type, M> getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(const matrix::Vector<Type, M> &state) { _state = state; }
-private:
-// attributes
-	matrix::Vector<Type, M> _state;
-	control::BlockParamFloat _fCut;
+	మాతృక::సదిశ<Type, M> getState() { తిరిగి _state; }
+	దశాంశం getFCut() { తిరిగి _fCut.get(); }
+	శూన్య సమితి_State(స్థిరరాశి మాతృక::సదిశ<Type, M> &state) { _state = state; }
+అంతరంగ:
+//లక్షణాలు
+	మాతృక::సదిశ<Type, M> _state;
+	control::ఖండం_Param_Float _fCut;
 };
 
 } // namespace control

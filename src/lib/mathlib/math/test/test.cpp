@@ -37,100 +37,100 @@
  * Test library code
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#అన్తర్భావ <stdio.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <stdlib.h>
 
-#include <px4_platform_common/defines.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
 
-#include "test.hpp"
+#అన్తర్భావ "test.hpp"
 
-bool __EXPORT equal(float a, float b, float epsilon)
+తార్కిక __EXPORT equal(దశాంశం a, దశాంశం b, దశాంశం epsilon)
 {
-	float diff = fabsf(a - b);
+	దశాంశం diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	ఒకవేళ (diff > epsilon) {
+		రాయి("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", ద్విగుణ(a), ద్విగుణ(b));
+		తిరిగి అబద్ధం;
 
-	} else { return true; }
+	} లేకపోతే { తిరిగి నిజం; }
 }
 
-bool __EXPORT greater_than(float a, float b)
+తార్కిక __EXPORT greater_than(దశాంశం a, దశాంశం b)
 {
-	if (a > b) {
-		return true;
+	ఒకవేళ (a > b) {
+		తిరిగి నిజం;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} లేకపోతే {
+		రాయి("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", ద్విగుణ(a), ద్విగుణ(b));
+		తిరిగి అబద్ధం;
 	}
 }
 
-bool __EXPORT less_than(float a, float b)
+తార్కిక __EXPORT less_than(దశాంశం a, దశాంశం b)
 {
-	if (a < b) {
-		return true;
+	ఒకవేళ (a < b) {
+		తిరిగి నిజం;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} లేకపోతే {
+		రాయి("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", ద్విగుణ(a), ద్విగుణ(b));
+		తిరిగి అబద్ధం;
 	}
 }
 
-bool __EXPORT greater_than_or_equal(float a, float b)
+తార్కిక __EXPORT greater_than_or_equal(దశాంశం a, దశాంశం b)
 {
-	if (a >= b) {
-		return true;
+	ఒకవేళ (a >= b) {
+		తిరిగి నిజం;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} లేకపోతే {
+		రాయి("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", ద్విగుణ(a), ద్విగుణ(b));
+		తిరిగి అబద్ధం;
 	}
 }
 
-bool __EXPORT less_than_or_equal(float a, float b)
+తార్కిక __EXPORT less_than_or_equal(దశాంశం a, దశాంశం b)
 {
-	if (a <= b) {
-		return true;
+	ఒకవేళ (a <= b) {
+		తిరిగి నిజం;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} లేకపోతే {
+		రాయి("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", ద్విగుణ(a), ద్విగుణ(b));
+		తిరిగి అబద్ధం;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+శూన్య __EXPORT float2SigExp(స్థిరరాశి దశాంశం &అంకె, దశాంశం &sig, పూర్ణాంకం &ఘాతాంకం)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	ఒకవేళ (!PX4_ISFINITE(అంకె)) {
 		sig = 0.0f;
-		exp = -99;
-		return;
+		ఘాతాంకం = -99;
+		తిరిగి;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	ఒకవేళ (fabsf(అంకె) < 1.0e-38f) {
 		sig = 0;
-		exp = 0;
-		return;
+		ఘాతాంకం = 0;
+		తిరిగి;
 	}
 
-	exp = log10f(fabsf(num));
+	ఘాతాంకం = log10f(fabsf(అంకె));
 
-	if (exp > 0) {
-		exp = ceil(exp);
+	ఒకవేళ (ఘాతాంకం > 0) {
+		ఘాతాంకం = ceil(ఘాతాంకం);
 
-	} else {
-		exp = floor(exp);
+	} లేకపోతే {
+		ఘాతాంకం = floor(ఘాతాంకం);
 	}
 
-	sig = num;
+	sig = అంకె;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	ఒకవేళ (ఘాతాంకం > 0) {
+		కొరకు (పూర్ణాంకం i = 0; i < నిరపేక్ష(ఘాతాంకం); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} లేకపోతే {
+		కొరకు (పూర్ణాంకం i = 0; i < నిరపేక్ష(ఘాతాంకం); i++) { sig *= 10; }
 	}
 }

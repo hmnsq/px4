@@ -31,44 +31,44 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ <matrix/math.hpp>
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-TEST(MatrixVectorTest, Vector)
+TEST(మాతృక_సదిశ_Test, సదిశ)
 {
 	// test data
-	float data1[] = {1, 2, 3, 4, 5};
-	float data2[] = {6, 7, 8, 9, 10};
-	Vector<float, 5> v1(data1);
-	Vector<float, 5> v2(data2);
+	దశాంశం data1[] = {1, 2, 3, 4, 5};
+	దశాంశం data2[] = {6, 7, 8, 9, 10};
+	సదిశ<దశాంశం, 5> v1(data1);
+	సదిశ<దశాంశం, 5> v2(data2);
 
 	// copy constructor
-	Vector<float, 5> v3(v2);
+	సదిశ<దశాంశం, 5> v3(v2);
 	EXPECT_EQ(v2, v3);
 
 	// norm, dot product
 	EXPECT_FLOAT_EQ(v1.norm(), 7.416198487095663f);
 	EXPECT_FLOAT_EQ(v1.norm_squared(), v1.norm() * v1.norm());
-	EXPECT_FLOAT_EQ(v1.norm(), v1.length());
+	EXPECT_FLOAT_EQ(v1.norm(), v1.నిడివి());
 	EXPECT_FLOAT_EQ(v1.dot(v2), 130.0f);
 	EXPECT_FLOAT_EQ(v1.dot(v2), v1 * v2);
 
 	// unit, unit_zero, normalize
 	EXPECT_FLOAT_EQ(v2.unit().norm(), 1.f);
 	EXPECT_FLOAT_EQ(v2.unit_or_zero().norm(), 1.f);
-	EXPECT_FLOAT_EQ((Vector<float, 5>().unit_or_zero().norm()), 0.f);
+	EXPECT_FLOAT_EQ((సదిశ<దశాంశం, 5>().unit_or_zero().norm()), 0.f);
 	v2.normalize();
 	EXPECT_FLOAT_EQ(v2.norm(), 1.f);
 
 	// sqrt
-	float data1_sq[] = {1, 4, 9, 16, 25};
-	Vector<float, 5> v4(data1_sq);
-	EXPECT_EQ(v1, v4.sqrt());
+	దశాంశం data1_sq[] = {1, 4, 9, 16, 25};
+	సదిశ<దశాంశం, 5> v4(data1_sq);
+	EXPECT_EQ(v1, v4.వర్గమూలం());
 
 	// longerThan
-	Vector<float, 2> v5;
+	సదిశ<దశాంశం, 2> v5;
 	v5(0) = 3;
 	v5(1) = 4;
 	EXPECT_TRUE(v5.longerThan(4.99f));

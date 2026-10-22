@@ -35,18 +35,18 @@
  * To run this test only use: make tests TESTFILTER=atmosphere
  */
 
-#include <gtest/gtest.h>
-#include <lib/atmosphere/atmosphere.h>
-using namespace atmosphere;
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ <lib/atmosphere/atmosphere.h>
+ఉపయోగించి నామాకాశ atmosphere;
 
 TEST(TestAtmosphere, pressureFromAltitude)
 {
 	// GIVEN pressure at seal level in standard atmosphere and sea level altitude
-	const float pressureAtSeaLevel = 101325.f; // Pa
-	float altitude = 0.0f;
+	స్థిరరాశి దశాంశం pressureAtSeaLevel = 101325.f; // Pa
+	దశాంశం altitude = 0.0f;
 
 	// WHEN we calculate pressure based on altitude
-	float pressure = getPressureFromAltitude(altitude);
+	దశాంశం pressure = getPressureFromAltitude(altitude);
 
 	// THEN expect seal level pressure for standard atmosphere
 	EXPECT_FLOAT_EQ(pressure, pressureAtSeaLevel);
@@ -62,11 +62,11 @@ TEST(TestAtmosphere, pressureFromAltitude)
 TEST(TestAtmosphere, altitudeFromPressure)
 {
 	// GIVEN pressure at seal level in standard atmosphere
-	const float pressureAtSealevel = 101325.f;
-	float pressure = pressureAtSealevel;
+	స్థిరరాశి దశాంశం pressureAtSealevel = 101325.f;
+	దశాంశం pressure = pressureAtSealevel;
 
 	// WHEN we calculate altitude from pressure
-	float altitude = getAltitudeFromPressure(pressure, pressureAtSealevel);
+	దశాంశం altitude = getAltitudeFromPressure(pressure, pressureAtSealevel);
 
 	// THEN expect resulting altitude to be near sea level
 	EXPECT_FLOAT_EQ(altitude, 0.0f);
@@ -84,21 +84,21 @@ TEST(TestAtmosphere, altitudeFromPressure)
 TEST(TestAtmosphere, DensityFromPressure)
 {
 // GIVEN standard atmosphere at sea level
-	const float pressureAtSealevel = 101325.f;
-	const float tempSeaLevel = 15.f;
+	స్థిరరాశి దశాంశం pressureAtSealevel = 101325.f;
+	స్థిరరాశి దశాంశం తాత్కాలిక_Sea_Level = 15.f;
 
 	// WHEN we calculate density from pressure and temperature
-	float density = getDensityFromPressureAndTemp(pressureAtSealevel, tempSeaLevel);
+	దశాంశం density = get_Density_From_Pressure_And_తాత్కాలిక(pressureAtSealevel, తాత్కాలిక_Sea_Level);
 
 	// THEN expect density at sea level in standard atmosphere
 	EXPECT_NEAR(density, 1.225f, 0.001f);
 
 	// GIVEN standard atmosphere at 3000m
-	const float pressure = 70109.f;
-	const float tempAt3000m = -4.5f;
+	స్థిరరాశి దశాంశం pressure = 70109.f;
+	స్థిరరాశి దశాంశం తాత్కాలిక_At3000m = -4.5f;
 
 	// WHEN we calculate density from pressure and temperature
-	density = getDensityFromPressureAndTemp(pressure, tempAt3000m);
+	density = get_Density_From_Pressure_And_తాత్కాలిక(pressure, తాత్కాలిక_At3000m);
 
 	// THEN expect density at 3000m in standard atmosphere
 	EXPECT_NEAR(density, 0.9091f, 0.001f);
@@ -107,10 +107,10 @@ TEST(TestAtmosphere, DensityFromPressure)
 TEST(TestAtmosphere, StandardTemperature)
 {
 	// GIVEN standard atmosphere at sea level
-	float altitude = 0.f;
+	దశాంశం altitude = 0.f;
 
 	// WHEN we calculate standard temperature from altitude
-	float temperature = getStandardTemperatureAtAltitude(altitude);
+	దశాంశం temperature = getStandardTemperatureAtAltitude(altitude);
 
 	// THEN expect standard temperature at sea level
 	EXPECT_NEAR(temperature, 15.f, 0.001f);

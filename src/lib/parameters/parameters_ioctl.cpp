@@ -37,163 +37,163 @@
  * Protected build kernel space interface to global parameter store.
  */
 
-#define PARAM_IMPLEMENTATION
+#నిర్వచించు PARAM_IMPLEMENTATION
 
-#include <errno.h>
+#అన్తర్భావ <errno.h>
 
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <px4_platform_common/defines.h>
+#అన్తర్భావ "param.h"
+#అన్తర్భావ "parameters_ioctl.h"
+#అన్తర్భావ <px4_platform_common/defines.h>
 
-int	param_ioctl(unsigned int cmd, unsigned long arg)
+పూర్ణాంకం	param_ioctl(గుర్తులేని పూర్ణాంకం cmd, గుర్తులేని దీర్ఘ arg)
 {
-	int ret = OK;
+	పూర్ణాంకం ret = OK;
 
-	switch (cmd) {
-	case PARAMIOCNOTIFY: {
+	ఎంపిక (cmd) {
+	స్థితి PARAMIOCNOTIFY: {
 			param_notify_changes();
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCFIND: {
-			paramiocfind_t *data = (paramiocfind_t *)arg;
+	స్థితి PARAMIOCFIND: {
+			paramiocfind_t *దత్తాంశం = (paramiocfind_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_find(data->name);
+			ఒకవేళ (దత్తాంశం->notification) {
+				దత్తాంశం->ret = param_కనుగొను(దత్తాంశం->name);
 
-			} else {
-				data->ret = param_find_no_notification(data->name);
+			} లేకపోతే {
+				దత్తాంశం->ret = param_కనుగొను_no_notification(దత్తాంశం->name);
 			}
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCCOUNTUSED: {
-			paramioccountused_t *data = (paramioccountused_t *)arg;
-			data->ret = param_count_used();
+	స్థితి PARAMIOCCOUNTUSED: {
+			paramioccountused_t *దత్తాంశం = (paramioccountused_t *)arg;
+			దత్తాంశం->ret = param_లెక్క_వాడిన();
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCFORUSEDINDEX: {
-			paramiocforusedindex_t *data = (paramiocforusedindex_t *)arg;
-			data->ret =  param_for_used_index(data->index);
+	స్థితి PARAMIOCFORUSEDINDEX: {
+			paramiocforusedindex_t *దత్తాంశం = (paramiocforusedindex_t *)arg;
+			దత్తాంశం->ret =  param_for_వాడిన_సూచీ(దత్తాంశం->సూచీ);
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCGETUSEDINDEX: {
-			paramiocgetusedindex_t *data = (paramiocgetusedindex_t *)arg;
-			data->ret = param_get_used_index(data->param);
+	స్థితి PARAMIOCGETUSEDINDEX: {
+			paramiocgetusedindex_t *దత్తాంశం = (paramiocgetusedindex_t *)arg;
+			దత్తాంశం->ret = param_get_వాడిన_సూచీ(దత్తాంశం->param);
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCUNSAVED: {
-			paramiocunsaved_t *data = (paramiocunsaved_t *)arg;
-			data->ret = param_value_unsaved(data->param);
+	స్థితి PARAMIOCUNSAVED: {
+			paramiocunsaved_t *దత్తాంశం = (paramiocunsaved_t *)arg;
+			దత్తాంశం->ret = param_విలువ_unsaved(దత్తాంశం->param);
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCGET: {
-			paramiocget_t *data = (paramiocget_t *)arg;
+	స్థితి PARAMIOCGET: {
+			paramiocget_t *దత్తాంశం = (paramiocget_t *)arg;
 
-			if (data->deflt) {
-				data->ret = param_get_default_value(data->param, data->val);
+			ఒకవేళ (దత్తాంశం->deflt) {
+				దత్తాంశం->ret = param_get_default_విలువ(దత్తాంశం->param, దత్తాంశం->val);
 
-			} else {
-				data->ret = param_get(data->param, data->val);
+			} లేకపోతే {
+				దత్తాంశం->ret = param_get(దత్తాంశం->param, దత్తాంశం->val);
 			}
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCAUTOSAVE: {
-			paramiocautosave_t *data = (paramiocautosave_t *)arg;
-			param_control_autosave(data->enable);
+	స్థితి PARAMIOCAUTOSAVE: {
+			paramiocautosave_t *దత్తాంశం = (paramiocautosave_t *)arg;
+			param_control_autosave(దత్తాంశం->enable);
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCSET: {
-			paramiocset_t *data = (paramiocset_t *)arg;
+	స్థితి PARAMIOCSET: {
+			paramiocset_t *దత్తాంశం = (paramiocset_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_set(data->param, data->val);
+			ఒకవేళ (దత్తాంశం->notification) {
+				దత్తాంశం->ret = param_సమితి(దత్తాంశం->param, దత్తాంశం->val);
 
-			} else {
-				data->ret = param_set_no_notification(data->param, data->val);
+			} లేకపోతే {
+				దత్తాంశం->ret = param_సమితి_no_notification(దత్తాంశం->param, దత్తాంశం->val);
 			}
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCUSED: {
-			paramiocused_t *data = (paramiocused_t *)arg;
-			data->ret = param_used(data->param);
+	స్థితి PARAMIOCUSED: {
+			paramiocused_t *దత్తాంశం = (paramiocused_t *)arg;
+			దత్తాంశం->ret = param_వాడిన(దత్తాంశం->param);
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCSETUSED: {
-			paramiocsetused_t *data = (paramiocsetused_t *)arg;
-			param_set_used(data->param);
+	స్థితి PARAMIOCSETUSED: {
+			paramiocsetused_t *దత్తాంశం = (paramiocsetused_t *)arg;
+			param_సమితి_వాడిన(దత్తాంశం->param);
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCSETDEFAULT: {
-			paramiocsetdefault_t *data = (paramiocsetdefault_t *)arg;
-			data->ret = param_set_default_value(data->param, data->val);
+	స్థితి PARAMIOCSETDEFAULT: {
+			paramiocsetdefault_t *దత్తాంశం = (paramiocsetdefault_t *)arg;
+			దత్తాంశం->ret = param_సమితి_default_విలువ(దత్తాంశం->param, దత్తాంశం->val);
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCRESET: {
-			paramiocreset_t *data = (paramiocreset_t *)arg;
+	స్థితి PARAMIOCRESET: {
+			paramiocreset_t *దత్తాంశం = (paramiocreset_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_reset(data->param);
+			ఒకవేళ (దత్తాంశం->notification) {
+				దత్తాంశం->ret = param_reset(దత్తాంశం->param);
 
-			} else {
-				data->ret = param_reset_no_notification(data->param);
+			} లేకపోతే {
+				దత్తాంశం->ret = param_reset_no_notification(దత్తాంశం->param);
 			}
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCRESETGROUP: {
-			paramiocresetgroup_t *data = (paramiocresetgroup_t *)arg;
+	స్థితి PARAMIOCRESETGROUP: {
+			paramiocresetgroup_t *దత్తాంశం = (paramiocresetgroup_t *)arg;
 
-			if (data->type == PARAM_RESET_EXCLUDES) {
-				param_reset_excludes(data->group, data->num_in_group);
+			ఒకవేళ (దత్తాంశం->type == PARAM_RESET_EXCLUDES) {
+				param_reset_excludes(దత్తాంశం->సమూహం, దత్తాంశం->అంకె_లోపల_సమూహం);
 
-			} else if (data->type == PARAM_RESET_SPECIFIC) {
-				param_reset_specific(data->group, data->num_in_group);
+			} లేకపోతే ఒకవేళ (దత్తాంశం->type == PARAM_RESET_SPECIFIC) {
+				param_reset_specific(దత్తాంశం->సమూహం, దత్తాంశం->అంకె_లోపల_సమూహం);
 
-			} else {
+			} లేకపోతే {
 				param_reset_all();
 			}
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCSAVEDEFAULT: {
-			paramiocsavedefault_t *data = (paramiocsavedefault_t *)arg;
-			data->ret = param_save_default(data->blocking);
+	స్థితి PARAMIOCSAVEDEFAULT: {
+			paramiocsavedefault_t *దత్తాంశం = (paramiocsavedefault_t *)arg;
+			దత్తాంశం->ret = param_save_default(దత్తాంశం->blocking);
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCLOADDEFAULT: {
-			paramiocloaddefault_t *data = (paramiocloaddefault_t *)arg;
-			data->ret = param_load_default();
+	స్థితి PARAMIOCLOADDEFAULT: {
+			paramiocloaddefault_t *దత్తాంశం = (paramiocloaddefault_t *)arg;
+			దత్తాంశం->ret = param_ఎక్కించు_default();
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCEXPORT: {
-			paramiocexport_t *data = (paramiocexport_t *)arg;
-			data->ret = param_export(data->filename, nullptr);
+	స్థితి PARAMIOCEXPORT: {
+			paramiocexport_t *దత్తాంశం = (paramiocexport_t *)arg;
+			దత్తాంశం->ret = param_export(దత్తాంశం->filename, శూన్యసూచిక);
 		}
-		break;
+		ఆపు;
 
-	case PARAMIOCHASH: {
-			paramiochash_t *data = (paramiochash_t *)arg;
-			data->ret = param_hash_check();
+	స్థితి PARAMIOCHASH: {
+			paramiochash_t *దత్తాంశం = (paramiochash_t *)arg;
+			దత్తాంశం->ret = param_hash_check();
 		}
-		break;
+		ఆపు;
 
-	default:
+	అప్రమేయ:
 		ret = -ENOTTY;
-		break;
+		ఆపు;
 	}
 
-	return ret;
+	తిరిగి ret;
 }

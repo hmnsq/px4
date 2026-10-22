@@ -39,18 +39,18 @@
  * @author Marco Bauer <marco@wtns.de>
  */
 
-#include <stdbool.h>
-#include <stdio.h>
-#include "sumd.h"
-#include "common_rc.h"
+#అన్తర్భావ <stdbool.h>
+#అన్తర్భావ <stdio.h>
+#అన్తర్భావ "sumd.h"
+#అన్తర్భావ "common_rc.h"
 
-enum SUMD_DECODE_STATE {
+గణన SUMD_DECODE_STATE {
 	SUMD_DECODE_STATE_UNSYNCED = 0,
-	SUMD_DECODE_STATE_GOT_HEADER,
+	SUMD_DECODE_STATE_GOT_శీర్షిక,
 	SUMD_DECODE_STATE_GOT_STATE,
 	SUMD_DECODE_STATE_GOT_LEN,
-	SUMD_DECODE_STATE_GOT_DATA,
-	SUMD_DECODE_STATE_GOT_CRC,
+	SUMD_DECODE_STATE_GOT_దత్తాంశం,
+	SUMD_DECODE_STATE_GOT_చక్రీయ_తనిఖీ,
 	SUMD_DECODE_STATE_GOT_CRC16_BYTE_1,
 	SUMD_DECODE_STATE_GOT_CRC16_BYTE_2
 };
@@ -69,299 +69,299 @@ const char *decode_states[] = {"UNSYNCED",
 
 uint8_t 	_crc8 	= 0x00;
 uint16_t 	_crc16 = 0x0000;
-bool 		_sumd 		= true;
-bool		_crcOK		= false;
-bool		_debug		= false;
+తార్కిక 		_sumd 		= నిజం;
+తార్కిక		చక్రీయ_తనిఖీ_OK		= అబద్ధం;
+తార్కిక		_debug		= అబద్ధం;
 
 
 /* define range mapping here, -+100% -> 1000..2000 */
-#define SUMD_RANGE_MIN 0.0f
-#define SUMD_RANGE_MAX 4096.0f
+#నిర్వచించు SUMD_RANGE_MIN 0.0f
+#నిర్వచించు SUMD_RANGE_MAX 4096.0f
 
-#define SUMD_TARGET_MIN 1000.0f
-#define SUMD_TARGET_MAX 2000.0f
+#నిర్వచించు SUMD_లక్ష్యం_MIN 1000.0f
+#నిర్వచించు SUMD_లక్ష్యం_MAX 2000.0f
 
 /* pre-calculate the floating point stuff as far as possible at compile time */
-#define SUMD_SCALE_FACTOR ((SUMD_TARGET_MAX - SUMD_TARGET_MIN) / (SUMD_RANGE_MAX - SUMD_RANGE_MIN))
-#define SUMD_SCALE_OFFSET (int)(SUMD_TARGET_MIN - (SUMD_SCALE_FACTOR * SUMD_RANGE_MIN + 0.5f))
+#నిర్వచించు SUMD_SCALE_గుణకం ((SUMD_లక్ష్యం_MAX - SUMD_లక్ష్యం_MIN) / (SUMD_RANGE_MAX - SUMD_RANGE_MIN))
+#నిర్వచించు SUMD_SCALE_స్థానభ్రంశం (పూర్ణాంకం)(SUMD_లక్ష్యం_MIN - (SUMD_SCALE_గుణకం * SUMD_RANGE_MIN + 0.5f))
 
-static enum SUMD_DECODE_STATE _decode_state = SUMD_DECODE_STATE_UNSYNCED;
-static uint8_t _rxlen;
+స్థిర గణన SUMD_DECODE_STATE _decode_state = SUMD_DECODE_STATE_UNSYNCED;
+స్థిర uint8_t _rxlen;
 
-static ReceiverFcPacketHoTT &_rxpacket = rc_decode_buf._hottrxpacket;
+స్థిర ReceiverFcPacketHoTT &_rxpacket = rc_decode_buf._hottrxpacket;
 
-uint16_t sumd_crc16(uint16_t crc, uint8_t value)
+uint16_t sumd_crc16(uint16_t చక్రీయ_తనిఖీ, uint8_t value)
 {
-	int i;
-	crc ^= (uint16_t)value << 8;
+	పూర్ణాంకం i;
+	చక్రీయ_తనిఖీ ^= (uint16_t)value << 8;
 
-	for (i = 0; i < 8; i++) {
-		crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : (crc << 1);
+	కొరకు (i = 0; i < 8; i++) {
+		చక్రీయ_తనిఖీ = (చక్రీయ_తనిఖీ & 0x8000) ? (చక్రీయ_తనిఖీ << 1) ^ 0x1021 : (చక్రీయ_తనిఖీ << 1);
 	}
 
-	return crc;
+	తిరిగి చక్రీయ_తనిఖీ;
 }
 
-uint8_t sumd_crc8(uint8_t crc, uint8_t value)
+uint8_t sumd_crc8(uint8_t చక్రీయ_తనిఖీ, uint8_t value)
 {
-	crc += value;
-	return crc;
+	చక్రీయ_తనిఖీ += value;
+	తిరిగి చక్రీయ_తనిఖీ;
 }
 
-int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channel_count, uint16_t *channels,
-		uint16_t max_chan_count, bool *failsafe)
+పూర్ణాంకం sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_లెక్క, uint16_t *channel_లెక్క, uint16_t *channels,
+		uint16_t max_chan_లెక్క, తార్కిక *failsafe)
 {
 
-	int ret = 1;
+	పూర్ణాంకం ret = 1;
 
-	switch (_decode_state) {
-	case SUMD_DECODE_STATE_UNSYNCED:
-		if (_debug) {
-			printf(" SUMD_DECODE_STATE_UNSYNCED \n") ;
+	ఎంపిక (_decode_state) {
+	స్థితి SUMD_DECODE_STATE_UNSYNCED:
+		ఒకవేళ (_debug) {
+			రాయి(" SUMD_DECODE_STATE_UNSYNCED \n") ;
 		}
 
-		if (byte == SUMD_HEADER_ID) {
-			_rxpacket.header = byte;
-			_sumd = true;
+		ఒకవేళ (byte == SUMD_శీర్షిక_ID) {
+			_rxpacket.శీర్షిక = byte;
+			_sumd = నిజం;
 			_rxlen = 0;
 			_crc16 = 0x0000;
 			_crc8 = 0x00;
-			_crcOK = false;
+			చక్రీయ_తనిఖీ_OK = అబద్ధం;
 			_crc16 = sumd_crc16(_crc16, byte);
 			_crc8 = sumd_crc8(_crc8, byte);
-			_decode_state = SUMD_DECODE_STATE_GOT_HEADER;
+			_decode_state = SUMD_DECODE_STATE_GOT_శీర్షిక;
 
-			if (_debug) {
-				printf(" SUMD_DECODE_STATE_GOT_HEADER: %x \n", byte) ;
+			ఒకవేళ (_debug) {
+				రాయి(" SUMD_DECODE_STATE_GOT_HEADER: %x \n", byte) ;
 			}
 
-		} else {
+		} లేకపోతే {
 			ret = 3;
 		}
 
-		break;
+		ఆపు;
 
-	case SUMD_DECODE_STATE_GOT_HEADER:
-		if (byte == SUMD_ID_SUMD || byte == SUMD_ID_FAILSAFE || byte == SUMD_ID_SUMH) {
-			_rxpacket.status = byte;
+	స్థితి SUMD_DECODE_STATE_GOT_శీర్షిక:
+		ఒకవేళ (byte == SUMD_ID_SUMD || byte == SUMD_ID_FAILSAFE || byte == SUMD_ID_SUMH) {
+			_rxpacket.స్థితి_2 = byte;
 
-			if (byte == SUMD_ID_SUMH) {
-				_sumd = false;
+			ఒకవేళ (byte == SUMD_ID_SUMH) {
+				_sumd = అబద్ధం;
 			}
 
-			if (_sumd) {
+			ఒకవేళ (_sumd) {
 				_crc16 = sumd_crc16(_crc16, byte);
 
-			} else {
+			} లేకపోతే {
 				_crc8 = sumd_crc8(_crc8, byte);
 			}
 
 			_decode_state = SUMD_DECODE_STATE_GOT_STATE;
 
-			if (_debug) {
-				printf(" SUMD_DECODE_STATE_GOT_STATE: %x \n", byte) ;
+			ఒకవేళ (_debug) {
+				రాయి(" SUMD_DECODE_STATE_GOT_STATE: %x \n", byte) ;
 			}
 
-		} else {
+		} లేకపోతే {
 			_decode_state = SUMD_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		ఆపు;
 
-	case SUMD_DECODE_STATE_GOT_STATE:
-		if (byte >= 2 && byte <= SUMD_MAX_CHANNELS) {
-			_rxpacket.length = byte;
+	స్థితి SUMD_DECODE_STATE_GOT_STATE:
+		ఒకవేళ (byte >= 2 && byte <= SUMD_MAX_CHANNELS) {
+			_rxpacket.నిడివి = byte;
 
-			if (_sumd) {
+			ఒకవేళ (_sumd) {
 				_crc16 = sumd_crc16(_crc16, byte);
 
-			} else {
+			} లేకపోతే {
 				_crc8 = sumd_crc8(_crc8, byte);
 			}
 
 			_rxlen++;
 			_decode_state = SUMD_DECODE_STATE_GOT_LEN;
 
-			if (_debug) {
-				printf(" SUMD_DECODE_STATE_GOT_LEN: %x (%d) \n", byte, byte) ;
+			ఒకవేళ (_debug) {
+				రాయి(" SUMD_DECODE_STATE_GOT_LEN: %x (%d) \n", byte, byte) ;
 			}
 
-		} else {
+		} లేకపోతే {
 			_decode_state = SUMD_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		ఆపు;
 
-	case SUMD_DECODE_STATE_GOT_LEN:
-		_rxpacket.sumd_data[_rxlen] = byte;
+	స్థితి SUMD_DECODE_STATE_GOT_LEN:
+		_rxpacket.sumd_దత్తాంశం[_rxlen] = byte;
 
-		if (_sumd) {
+		ఒకవేళ (_sumd) {
 			_crc16 = sumd_crc16(_crc16, byte);
 
-		} else {
+		} లేకపోతే {
 			_crc8 = sumd_crc8(_crc8, byte);
 		}
 
 		_rxlen++;
 
-		if (_rxlen <= ((_rxpacket.length * 2))) {
-			if (_debug) {
-				printf(" SUMD_DECODE_STATE_GOT_DATA[%d]: %x\n", _rxlen - 2, byte) ;
+		ఒకవేళ (_rxlen <= ((_rxpacket.నిడివి * 2))) {
+			ఒకవేళ (_debug) {
+				రాయి(" SUMD_DECODE_STATE_GOT_DATA[%d]: %x\n", _rxlen - 2, byte) ;
 			}
 
-		} else {
-			_decode_state = SUMD_DECODE_STATE_GOT_DATA;
+		} లేకపోతే {
+			_decode_state = SUMD_DECODE_STATE_GOT_దత్తాంశం;
 
-			if (_debug) {
-				printf(" SUMD_DECODE_STATE_GOT_DATA -- finish --\n") ;
+			ఒకవేళ (_debug) {
+				రాయి(" SUMD_DECODE_STATE_GOT_DATA -- finish --\n") ;
 			}
 
 		}
 
-		break;
+		ఆపు;
 
-	case SUMD_DECODE_STATE_GOT_DATA:
-		_rxpacket.crc16_high = byte;
+	స్థితి SUMD_DECODE_STATE_GOT_దత్తాంశం:
+		_rxpacket.crc16_ఎగువ = byte;
 
-		if (_debug) {
-			printf(" SUMD_DECODE_STATE_GOT_CRC16[1]: %x   [%x]\n", byte, ((_crc16 >> 8) & 0xff)) ;
+		ఒకవేళ (_debug) {
+			రాయి(" SUMD_DECODE_STATE_GOT_CRC16[1]: %x   [%x]\n", byte, ((_crc16 >> 8) & 0xff)) ;
 		}
 
-		if (_sumd) {
-			_decode_state = SUMD_DECODE_STATE_GOT_CRC;
+		ఒకవేళ (_sumd) {
+			_decode_state = SUMD_DECODE_STATE_GOT_చక్రీయ_తనిఖీ;
 
-		} else {
+		} లేకపోతే {
 			_decode_state = SUMD_DECODE_STATE_GOT_CRC16_BYTE_1;
 		}
 
-		break;
+		ఆపు;
 
-	case SUMD_DECODE_STATE_GOT_CRC16_BYTE_1:
-		_rxpacket.crc16_low = byte;
+	స్థితి SUMD_DECODE_STATE_GOT_CRC16_BYTE_1:
+		_rxpacket.crc16_దిగువ = byte;
 
-		if (_debug) {
-			printf(" SUMD_DECODE_STATE_GOT_CRC16[2]: %x   [%x]\n", byte, (_crc16 & 0xff)) ;
+		ఒకవేళ (_debug) {
+			రాయి(" SUMD_DECODE_STATE_GOT_CRC16[2]: %x   [%x]\n", byte, (_crc16 & 0xff)) ;
 		}
 
 		_decode_state = SUMD_DECODE_STATE_GOT_CRC16_BYTE_2;
 
-		break;
+		ఆపు;
 
-	case SUMD_DECODE_STATE_GOT_CRC16_BYTE_2:
+	స్థితి SUMD_DECODE_STATE_GOT_CRC16_BYTE_2:
 		_rxpacket.telemetry = byte;
 
-		if (_debug) {
-			printf(" SUMD_DECODE_STATE_GOT_SUMH_TELEMETRY: %x\n", byte) ;
+		ఒకవేళ (_debug) {
+			రాయి(" SUMD_DECODE_STATE_GOT_SUMH_TELEMETRY: %x\n", byte) ;
 		}
 
-		_decode_state = SUMD_DECODE_STATE_GOT_CRC;
+		_decode_state = SUMD_DECODE_STATE_GOT_చక్రీయ_తనిఖీ;
 
-		break;
+		ఆపు;
 
-	case SUMD_DECODE_STATE_GOT_CRC:
-		if (_sumd) {
-			_rxpacket.crc16_low = byte;
+	స్థితి SUMD_DECODE_STATE_GOT_చక్రీయ_తనిఖీ:
+		ఒకవేళ (_sumd) {
+			_rxpacket.crc16_దిగువ = byte;
 
-			if (_debug) {
-				printf(" SUMD_DECODE_STATE_GOT_CRC[2]: %x   [%x]\n\n", byte, (_crc16 & 0xff)) ;
+			ఒకవేళ (_debug) {
+				రాయి(" SUMD_DECODE_STATE_GOT_CRC[2]: %x   [%x]\n\n", byte, (_crc16 & 0xff)) ;
 			}
 
-			if (_crc16 == (uint16_t)(_rxpacket.crc16_high << 8) + _rxpacket.crc16_low) {
-				_crcOK = true;
+			ఒకవేళ (_crc16 == (uint16_t)(_rxpacket.crc16_ఎగువ << 8) + _rxpacket.crc16_దిగువ) {
+				చక్రీయ_తనిఖీ_OK = నిజం;
 			}
 
-		} else {
+		} లేకపోతే {
 			_rxpacket.crc8 = byte;
 
-			if (_debug) {
-				printf(" SUMD_DECODE_STATE_GOT_CRC8_SUMH: %x   [%x]\n\n", byte, _crc8) ;
+			ఒకవేళ (_debug) {
+				రాయి(" SUMD_DECODE_STATE_GOT_CRC8_SUMH: %x   [%x]\n\n", byte, _crc8) ;
 			}
 
-			if (_crc8 == _rxpacket.crc8) {
-				_crcOK = true;
+			ఒకవేళ (_crc8 == _rxpacket.crc8) {
+				చక్రీయ_తనిఖీ_OK = నిజం;
 			}
 		}
 
-		if (_crcOK) {
-			if (_debug) {
-				printf(" CRC - OK \n") ;
+		ఒకవేళ (చక్రీయ_తనిఖీ_OK) {
+			ఒకవేళ (_debug) {
+				రాయి(" CRC - OK \n") ;
 			}
 
-			if (_sumd) {
-				if (_debug) {
-					printf(" Got valid SUMD Packet\n") ;
+			ఒకవేళ (_sumd) {
+				ఒకవేళ (_debug) {
+					రాయి(" Got valid SUMD Packet\n") ;
 				}
 
-			} else {
-				if (_debug) {
-					printf(" Got valid SUMH Packet\n") ;
+			} లేకపోతే {
+				ఒకవేళ (_debug) {
+					రాయి(" Got valid SUMH Packet\n") ;
 				}
 
 			}
 
-			if (_debug) {
-				printf(" RXLEN: %d  [Chans: %d] \n\n", _rxlen - 1, (_rxlen - 1) / 2) ;
+			ఒకవేళ (_debug) {
+				రాయి(" RXLEN: %d  [Chans: %d] \n\n", _rxlen - 1, (_rxlen - 1) / 2) ;
 			}
 
 			ret = 0;
-			unsigned i;
-			uint8_t _cnt = *rx_count + 1;
-			*rx_count = _cnt;
+			గుర్తులేని i;
+			uint8_t _cnt = *rx_లెక్క + 1;
+			*rx_లెక్క = _cnt;
 
 			*rssi = 100;
 
 			/* failsafe flag */
-			*failsafe = (_rxpacket.status == SUMD_ID_FAILSAFE);
+			*failsafe = (_rxpacket.స్థితి_2 == SUMD_ID_FAILSAFE);
 
 			/* received Channels */
-			if ((uint16_t)_rxpacket.length > max_chan_count) {
-				_rxpacket.length = (uint8_t) max_chan_count;
+			ఒకవేళ ((uint16_t)_rxpacket.నిడివి > max_chan_లెక్క) {
+				_rxpacket.నిడివి = (uint8_t) max_chan_లెక్క;
 			}
 
-			*channel_count = (uint16_t)_rxpacket.length;
+			*channel_లెక్క = (uint16_t)_rxpacket.నిడివి;
 
 			/* decode the actual packet */
 			/* reorder first 4 channels */
 
 			/* ch1 = roll -> sumd = ch2 */
-			channels[0] = (uint16_t)((_rxpacket.sumd_data[1 * 2 + 1] << 8) | _rxpacket.sumd_data[1 * 2 + 2]) >> 3;
+			channels[0] = (uint16_t)((_rxpacket.sumd_దత్తాంశం[1 * 2 + 1] << 8) | _rxpacket.sumd_దత్తాంశం[1 * 2 + 2]) >> 3;
 			/* ch2 = pitch -> sumd = ch2 */
-			channels[1] = (uint16_t)((_rxpacket.sumd_data[2 * 2 + 1] << 8) | _rxpacket.sumd_data[2 * 2 + 2]) >> 3;
+			channels[1] = (uint16_t)((_rxpacket.sumd_దత్తాంశం[2 * 2 + 1] << 8) | _rxpacket.sumd_దత్తాంశం[2 * 2 + 2]) >> 3;
 			/* ch3 = throttle -> sumd = ch2 */
-			channels[2] = (uint16_t)((_rxpacket.sumd_data[0 * 2 + 1] << 8) | _rxpacket.sumd_data[0 * 2 + 2]) >> 3;
+			channels[2] = (uint16_t)((_rxpacket.sumd_దత్తాంశం[0 * 2 + 1] << 8) | _rxpacket.sumd_దత్తాంశం[0 * 2 + 2]) >> 3;
 			/* ch4 = yaw -> sumd = ch2 */
-			channels[3] = (uint16_t)((_rxpacket.sumd_data[3 * 2 + 1] << 8) | _rxpacket.sumd_data[3 * 2 + 2]) >> 3;
+			channels[3] = (uint16_t)((_rxpacket.sumd_దత్తాంశం[3 * 2 + 1] << 8) | _rxpacket.sumd_దత్తాంశం[3 * 2 + 2]) >> 3;
 
 			/* we start at channel 5(index 4) */
-			unsigned chan_index = 4;
+			గుర్తులేని chan_సూచీ = 4;
 
-			for (i = 4; i < _rxpacket.length; i++) {
-				if (_debug) {
-					printf("ch[%d] : %x %x [ %x    %d ]\n", i + 1, _rxpacket.sumd_data[i * 2 + 1], _rxpacket.sumd_data[i * 2 + 2],
-					       ((_rxpacket.sumd_data[i * 2 + 1] << 8) | _rxpacket.sumd_data[i * 2 + 2]) >> 3,
-					       ((_rxpacket.sumd_data[i * 2 + 1] << 8) | _rxpacket.sumd_data[i * 2 + 2]) >> 3);
+			కొరకు (i = 4; i < _rxpacket.నిడివి; i++) {
+				ఒకవేళ (_debug) {
+					రాయి("ch[%d] : %x %x [ %x    %d ]\n", i + 1, _rxpacket.sumd_దత్తాంశం[i * 2 + 1], _rxpacket.sumd_దత్తాంశం[i * 2 + 2],
+					       ((_rxpacket.sumd_దత్తాంశం[i * 2 + 1] << 8) | _rxpacket.sumd_దత్తాంశం[i * 2 + 2]) >> 3,
+					       ((_rxpacket.sumd_దత్తాంశం[i * 2 + 1] << 8) | _rxpacket.sumd_దత్తాంశం[i * 2 + 2]) >> 3);
 				}
 
-				channels[chan_index] = (uint16_t)((_rxpacket.sumd_data[i * 2 + 1] << 8) | _rxpacket.sumd_data[i * 2 + 2]) >> 3;
+				channels[chan_సూచీ] = (uint16_t)((_rxpacket.sumd_దత్తాంశం[i * 2 + 1] << 8) | _rxpacket.sumd_దత్తాంశం[i * 2 + 2]) >> 3;
 				/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
 				//channels[chan_index] = (uint16_t)(channels[chan_index] * SUMD_SCALE_FACTOR + .5f) + SUMD_SCALE_OFFSET;
 
-				chan_index++;
+				chan_సూచీ++;
 			}
 
-		} else {
+		} లేకపోతే {
 			/* decoding failed */
 			ret = 4;
 
-			if (_debug) {
-				printf(" CRC - fail \n") ;
+			ఒకవేళ (_debug) {
+				రాయి(" CRC - fail \n") ;
 			}
 
 		}
 
 		_decode_state = SUMD_DECODE_STATE_UNSYNCED;
-		break;
+		ఆపు;
 	}
 
-	return ret;
+	తిరిగి ret;
 }

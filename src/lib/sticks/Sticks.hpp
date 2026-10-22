@@ -39,48 +39,48 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/module_params.h>
-#include <matrix/matrix/math.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/manual_control_setpoint.h>
-#include <uORB/topics/failsafe_flags.h>
+#అన్తర్భావ <px4_platform_common/module_params.h>
+#అన్తర్భావ <matrix/matrix/math.hpp>
+#అన్తర్భావ <uORB/Subscription.hpp>
+#అన్తర్భావ <uORB/topics/manual_control_setpoint.h>
+#అన్తర్భావ <uORB/topics/failsafe_flags.h>
 
-class Sticks : public ModuleParams
+తరగతి Sticks : బహిరంగ ModuleParams
 {
-public:
-	Sticks(ModuleParams *parent);
-	~Sticks() = default;
+బహిరంగ:
+	Sticks(ModuleParams *మాతృ);
+	~Sticks() = అప్రమేయ;
 
 	// Checks for updated manual control input & updates internal values
-	bool checkAndUpdateStickInputs();
+	తార్కిక checkAndUpdateStickInputs();
 
-	bool isAvailable() { return _input_available; };
+	తార్కిక is_అందుబాటు() { తిరిగి ఆదానం_అందుబాటు; };
 
 	// Helper functions to get stick values more intuitively
-	float getRoll() const { return _positions(0); }
-	float getPitch() const { return _positions(1); }
-	float getYaw() const { return _positions(2); }
-	float getThrottleZeroCentered() const { return _positions(3); }
+	దశాంశం getRoll() స్థిరరాశి { తిరిగి _positions(0); }
+	దశాంశం getPitch() స్థిరరాశి { తిరిగి _positions(1); }
+	దశాంశం getYaw() స్థిరరాశి { తిరిగి _positions(2); }
+	దశాంశం getThrottleZeroCentered() స్థిరరాశి { తిరిగి _positions(3); }
 
-	float getRollExpo(float expo = .6f) const { return expoDeadzone(getRoll(), expo, _param_man_deadzone.get()); }
-	float getPitchExpo(float expo = .6f) const { return expoDeadzone(getPitch(), expo, _param_man_deadzone.get()); }
-	float getYawExpo(float expo = .6f) const { return expoDeadzone(getYaw(), expo, _param_man_deadzone.get()); }
-	float getThrottleZeroCenteredExpo(float expo = .6f) const { return expoDeadzone(getThrottleZeroCentered(), expo, _param_man_deadzone.get()); }
+	దశాంశం getRollExpo(దశాంశం expo = .6f) స్థిరరాశి { తిరిగి expoDeadzone(getRoll(), expo, _param_man_deadzone.get()); }
+	దశాంశం getPitchExpo(దశాంశం expo = .6f) స్థిరరాశి { తిరిగి expoDeadzone(getPitch(), expo, _param_man_deadzone.get()); }
+	దశాంశం getYawExpo(దశాంశం expo = .6f) స్థిరరాశి { తిరిగి expoDeadzone(getYaw(), expo, _param_man_deadzone.get()); }
+	దశాంశం getThrottleZeroCenteredExpo(దశాంశం expo = .6f) స్థిరరాశి { తిరిగి expoDeadzone(getThrottleZeroCentered(), expo, _param_man_deadzone.get()); }
 
-	static float expoDeadzone(float value, float expo, float deadzone);
+	స్థిర దశాంశం expoDeadzone(దశాంశం value, దశాంశం expo, దశాంశం deadzone);
 
-	const matrix::Vector2f getPitchRoll() { return {getPitch(), getRoll()}; }
-	const matrix::Vector2f getPitchRollExpo() { return {getPitchExpo(), getRollExpo()}; }
+	స్థిరరాశి మాతృక::Vector2f getPitchRoll() { తిరిగి {getPitch(), getRoll()}; }
+	స్థిరరాశి మాతృక::Vector2f getPitchRollExpo() { తిరిగి {getPitchExpo(), getRollExpo()}; }
 
-	const matrix::Vector<float, 6> &getAux() const { return _aux_positions; }
+	స్థిరరాశి మాతృక::సదిశ<దశాంశం, 6> &getAux() స్థిరరాశి { తిరిగి _aux_positions; }
 
 	/**
 	 * Limit the the horizontal input from a square shaped joystick gimbal to a unit circle
 	 * @param v Vector containing x, y, z axis of the joystick gimbal. x, y get adjusted
 	 */
-	static void limitStickUnitLengthXY(matrix::Vector2f &v);
+	స్థిర శూన్య హద్దు_Stick_Unit_నిడివి_XY(మాతృక::Vector2f &v);
 
 	/**
 	 * Rotate horizontal component of joystick input into the vehicle body orientation
@@ -88,13 +88,13 @@ public:
 	 * @param yaw Current vehicle yaw heading
 	 * @param yaw_setpoint Current yaw setpoint if it's locked else NAN
 	 */
-	static void rotateIntoHeadingFrameXY(matrix::Vector2f &v, const float yaw, const float yaw_setpoint);
+	స్థిర శూన్య rotate_Into_Heading_చట్రం_XY(మాతృక::Vector2f &v, స్థిరరాశి దశాంశం yaw, స్థిరరాశి దశాంశం yaw_setpoint);
 
-private:
-	bool _input_available{false};
-	matrix::Vector4f _positions; ///< unmodified manual stick inputs roll, pitch, yaw ,throttle
+అంతరంగ:
+	తార్కిక ఆదానం_అందుబాటు{అబద్ధం};
+	మాతృక::Vector4f _positions; ///< unmodified manual stick inputs roll, pitch, yaw ,throttle
 
-	matrix::Vector<float, 6> _aux_positions;
+	మాతృక::సదిశ<దశాంశం, 6> _aux_positions;
 
 	uORB::Subscription _manual_control_setpoint_sub{ORB_ID(manual_control_setpoint)};
 	uORB::Subscription _failsafe_flags_sub{ORB_ID(failsafe_flags)};

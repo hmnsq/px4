@@ -37,60 +37,60 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <time.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <mathlib/math/test/test.hpp>
+#అన్తర్భావ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
 
 /**
  * A proportional-integral-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPID: public SuperBlock
+తరగతి __EXPORT ఖండం_PID: బహిరంగ Super_ఖండం
 {
-public:
+బహిరంగ:
 // methods
-	BlockPID(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kI(this, "I"),
-		_kD(this, "D")
+	ఖండం_PID(Super_ఖండం *మాతృ, స్థిరరాశి అక్షరం *name) :
+		Super_ఖండం(మాతృ, name),
+		_integral(ఇది, "I"),
+		_derivative(ఇది, "D"),
+		_kP(ఇది, "P"),
+		_kI(ఇది, "I"),
+		_kD(ఇది, "D")
 	{}
-	virtual ~BlockPID() = default;
-	float update(float input)
+	మాయా ~ఖండం_PID() = అప్రమేయ;
+	దశాంశం update(దశాంశం ఆదానం)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input) +
-		       getKD() * getDerivative().update(input);
+		తిరిగి getKP() * ఆదానం +
+		       getKI() * getIntegral().update(ఆదానం) +
+		       getKD() * getDerivative().update(ఆదానం);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	float getKD() { return _kD.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
-// attributes
-	BlockIntegral _integral;
-	BlockDerivative _derivative;
-	control::BlockParamFloat _kP;
-	control::BlockParamFloat _kI;
-	control::BlockParamFloat _kD;
+	దశాంశం getKP() { తిరిగి _kP.get(); }
+	దశాంశం getKI() { తిరిగి _kI.get(); }
+	దశాంశం getKD() { తిరిగి _kD.get(); }
+	ఖండం_Integral &getIntegral() { తిరిగి _integral; }
+	ఖండం_Derivative &getDerivative() { తిరిగి _derivative; }
+అంతరంగ:
+//లక్షణాలు
+	ఖండం_Integral _integral;
+	ఖండం_Derivative _derivative;
+	control::ఖండం_Param_Float _kP;
+	control::ఖండం_Param_Float _kI;
+	control::ఖండం_Param_Float _kD;
 };
 
 } // namespace control

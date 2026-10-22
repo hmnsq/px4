@@ -38,19 +38,19 @@
  * @author Mohammed Kabir <mhkabir98@gmail.com>
  */
 
-#pragma once
+#సూచన once
 
-#include <drivers/drv_hrt.h>
+#అన్తర్భావ <drivers/drv_hrt.h>
 
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/timesync_status.h>
+#అన్తర్భావ <uORB/PublicationMulti.hpp>
+#అన్తర్భావ <uORB/topics/timesync_status.h>
 
-#include <math.h>
-#include <float.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <float.h>
 
-using namespace time_literals;
+ఉపయోగించి నామాకాశ సమయం_literals;
 
-static constexpr time_t PX4_EPOCH_SECS = 1234567890ULL;
+స్థిర constexpr time_t PX4_EPOCH_SECS = 1234567890ULL;
 
 // Filter gains
 //
@@ -62,10 +62,10 @@ static constexpr time_t PX4_EPOCH_SECS = 1234567890ULL;
 // tighter estimation of the skew (derivative), but will negatively affect how fast the
 // filter reacts to clock skewing (e.g cause by temperature changes to the oscillator).
 // Larger values will cause large-amplitude oscillations.
-static constexpr double ALPHA_GAIN_INITIAL = 0.05;
-static constexpr double BETA_GAIN_INITIAL = 0.05;
-static constexpr double ALPHA_GAIN_FINAL = 0.003;
-static constexpr double BETA_GAIN_FINAL = 0.003;
+స్థిర constexpr ద్విగుణ ALPHA_GAIN_INITIAL = 0.05;
+స్థిర constexpr ద్విగుణ BETA_GAIN_INITIAL = 0.05;
+స్థిర constexpr ద్విగుణ ALPHA_GAIN_FINAL = 0.003;
+స్థిర constexpr ద్విగుణ BETA_GAIN_FINAL = 0.003;
 
 // Filter gain scheduling
 //
@@ -73,7 +73,7 @@ static constexpr double BETA_GAIN_FINAL = 0.003;
 // exhanged timesync packets is less than CONVERGENCE_WINDOW. A lower value will
 // allow the timesync to converge faster, but with potentially less accurate initial
 // offset and skew estimates.
-static constexpr uint32_t CONVERGENCE_WINDOW = 500;
+స్థిర constexpr uint32_t CONVERGENCE_కిటికీ = 500;
 
 // Outlier rejection and filter reset
 //
@@ -85,18 +85,18 @@ static constexpr uint32_t CONVERGENCE_WINDOW = 500;
 // of such events in a row will reset the filter. This usually happens only due to a time jump
 // on the remote system.
 // TODO : automatically determine these using ping statistics?
-static constexpr uint64_t MAX_RTT_SAMPLE = 10_ms;
-static constexpr uint64_t MAX_DEVIATION_SAMPLE = 100_ms;
-static constexpr uint32_t MAX_CONSECUTIVE_HIGH_RTT = 10;
-static constexpr uint32_t MAX_CONSECUTIVE_HIGH_DEVIATION = 10;
+స్థిర constexpr uint64_t MAX_RTT_SAMPLE = 10_ms;
+స్థిర constexpr uint64_t MAX_DEVIATION_SAMPLE = 100_ms;
+స్థిర constexpr uint32_t MAX_CONSECUTIVE_ఎగువ_RTT = 10;
+స్థిర constexpr uint32_t MAX_CONSECUTIVE_ఎగువ_DEVIATION = 10;
 
-class Timesync
+తరగతి Timesync
 {
-public:
-	Timesync(uint8_t source = timesync_status_s::SOURCE_PROTOCOL_UNKNOWN) : _source(source) {};
-	~Timesync() = default;
+బహిరంగ:
+	Timesync(uint8_t ఆధారం = timesync_స్థితి_s::ఆధారం_PROTOCOL_UNKNOWN) : ఆధారం_2(ఆధారం) {};
+	~Timesync() = అప్రమేయ;
 
-	void update(const uint64_t now_us, const int64_t remote_timestamp_ns, int64_t originate_timestamp_ns);
+	శూన్య update(స్థిరరాశి uint64_t now_us, స్థిరరాశి int64_t remote_timestamp_ns, int64_t originate_timestamp_ns);
 
 	/**
 	 * Convert remote timestamp to local hrt time (usec)
@@ -104,41 +104,41 @@ public:
 	 */
 	uint64_t sync_stamp(uint64_t usec);
 
-	int64_t offset() const { return (int64_t)_time_offset; }
+	int64_t స్థానభ్రంశం() స్థిరరాశి { తిరిగి (int64_t)సమయం_స్థానభ్రంశం; }
 
 	/**
 	 * Return true if the timesync algorithm converged to a good estimate,
 	 * return false otherwise
 	 */
-	bool sync_converged() const { return _sequence >= CONVERGENCE_WINDOW; }
+	తార్కిక sync_converged() స్థిరరాశి { తిరిగి _sequence >= CONVERGENCE_కిటికీ; }
 
 	/**
 	 * Reset the exponential filter and its states
 	 */
-	void reset_filter();
+	శూన్య reset_filter();
 
 
-private:
+అంతరంగ:
 
 	/**
 	 * Online exponential filter to smooth time offset
 	 */
-	void add_sample(int64_t offset_us);
-	uORB::PublicationMulti<timesync_status_s>  _timesync_status_pub{ORB_ID(timesync_status)};
+	శూన్య కూడు_sample(int64_t స్థానభ్రంశం_us);
+	uORB::PublicationMulti<timesync_స్థితి_s>  timesync_స్థితి_pub{ORB_ID(timesync_స్థితి)};
 
 	uint32_t _sequence{0};
 
 	// Timesync statistics
-	double _time_offset{0};
-	double _time_skew{0};
+	ద్విగుణ సమయం_స్థానభ్రంశం{0};
+	ద్విగుణ సమయం_skew{0};
 
 	// Filter parameters
-	double _filter_alpha{ALPHA_GAIN_INITIAL};
-	double _filter_beta{BETA_GAIN_INITIAL};
+	ద్విగుణ _filter_alpha{ALPHA_GAIN_INITIAL};
+	ద్విగుణ _filter_beta{BETA_GAIN_INITIAL};
 
 	// Outlier rejection and filter reset
-	uint32_t _high_deviation_count{0};
-	uint32_t _high_rtt_count{0};
+	uint32_t ఎగువ_deviation_లెక్క{0};
+	uint32_t ఎగువ_rtt_లెక్క{0};
 
-	uint8_t _source{};
+	uint8_t ఆధారం_2{};
 };

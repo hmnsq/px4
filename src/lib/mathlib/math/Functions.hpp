@@ -37,21 +37,21 @@
  * collection of rather simple mathematical functions that get used over and over again
  */
 
-#pragma once
+#సూచన once
 
-#include "Limits.hpp"
+#అన్తర్భావ "Limits.hpp"
 
-#include <px4_platform_common/defines.h>
-#include <matrix/matrix/math.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <matrix/matrix/math.hpp>
 
-namespace math
+నామాకాశ math
 {
 
 // Type-safe signum function with zero treated as positive
-template<typename T>
-int signNoZero(T val)
+మూస<రకం_పేరు T>
+పూర్ణాంకం signNoZero(T val)
 {
-	return (T(0) <= val) - (val < T(0));
+	తిరిగి (T(0) <= val) - (val < T(0));
 }
 
 /**
@@ -60,15 +60,15 @@ int signNoZero(T val)
  * @param[in] positive Truth value to take the sign from
  * @return 1 if positive is true, -1 if positive is false
  */
-inline int signFromBool(bool positive)
+అంతఃవరుస పూర్ణాంకం signFromBool(తార్కిక ధనాత్మక)
 {
-	return positive ? 1 : -1;
+	తిరిగి ధనాత్మక ? 1 : -1;
 }
 
-template<typename T>
+మూస<రకం_పేరు T>
 T sq(T val)
 {
-	return val * val;
+	తిరిగి val * val;
 }
 
 /*
@@ -80,12 +80,12 @@ T sq(T val)
  * 		1 - pure cubic function
  * @return result of function output
  */
-template<typename T>
-const T expo(const T &value, const T &e)
+మూస<రకం_పేరు T>
+స్థిరరాశి T expo(స్థిరరాశి T &value, స్థిరరాశి T &e)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T ec = constrain(e, (T) 0, (T) 1);
-	return (1 - ec) * x + ec * x * x * x;
+	తిరిగి (1 - ec) * x + ec * x * x * x;
 }
 
 /*
@@ -99,12 +99,12 @@ const T expo(const T &value, const T &e)
  * 		0.99 - very strong bent curve, stays zero until maximum stick input
  * @return result of function output
  */
-template<typename T>
-const T superexpo(const T &value, const T &e, const T &g)
+మూస<రకం_పేరు T>
+స్థిరరాశి T superexpo(స్థిరరాశి T &value, స్థిరరాశి T &e, స్థిరరాశి T &g)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T gc = constrain(g, (T) 0, (T) 0.99);
-	return expo(x, e) * (1 - gc) / (1 - fabsf(x) * gc);
+	తిరిగి expo(x, e) * (1 - gc) / (1 - fabsf(x) * gc);
 }
 
 /*
@@ -121,21 +121,21 @@ const T superexpo(const T &value, const T &e, const T &g)
  * 		0.5 - deadzone is half of the span [-0.5,0.5]
  * 		0.99 - almost entire span is deadzone
  */
-template<typename T>
-const T deadzone(const T &value, const T &dz)
+మూస<రకం_పేరు T>
+స్థిరరాశి T deadzone(స్థిరరాశి T &value, స్థిరరాశి T &dz)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T dzc = constrain(dz, (T) 0, (T) 0.99);
 	// Rescale the input such that we get a piecewise linear function that will be continuous with applied deadzone
-	T out = (x - matrix::sign(x) * dzc) / (1 - dzc);
+	T బహిర్గతం = (x - మాతృక::sign(x) * dzc) / (1 - dzc);
 	// apply the deadzone (values zero around the middle)
-	return out * (fabsf(x) > dzc);
+	తిరిగి బహిర్గతం * (fabsf(x) > dzc);
 }
 
-template<typename T>
-const T expo_deadzone(const T &value, const T &e, const T &dz)
+మూస<రకం_పేరు T>
+స్థిరరాశి T expo_deadzone(స్థిరరాశి T &value, స్థిరరాశి T &e, స్థిరరాశి T &dz)
 {
-	return expo(deadzone(value, dz), e);
+	తిరిగి expo(deadzone(value, dz), e);
 }
 
 
@@ -148,20 +148,20 @@ const T expo_deadzone(const T &value, const T &e, const T &dz)
  * y_low -------
  *         x_low   x_high
  */
-template<typename T>
-const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_low, const T &y_high)
+మూస<రకం_పేరు T>
+స్థిరరాశి T interpolate(స్థిరరాశి T &value, స్థిరరాశి T &x_దిగువ, స్థిరరాశి T &x_ఎగువ, స్థిరరాశి T &y_దిగువ, స్థిరరాశి T &y_ఎగువ)
 {
-	if (value <= x_low) {
-		return y_low;
+	ఒకవేళ (value <= x_దిగువ) {
+		తిరిగి y_దిగువ;
 
-	} else if (value > x_high) {
-		return y_high;
+	} లేకపోతే ఒకవేళ (value > x_ఎగువ) {
+		తిరిగి y_ఎగువ;
 
-	} else {
+	} లేకపోతే {
 		/* linear function between the two points */
-		T a = (y_high - y_low) / (x_high - x_low);
-		T b = y_low - (a * x_low);
-		return (a * value) + b;
+		T a = (y_ఎగువ - y_దిగువ) / (x_ఎగువ - x_దిగువ);
+		T b = y_దిగువ - (a * x_దిగువ);
+		తిరిగి (a * value) + b;
 	}
 }
 
@@ -177,11 +177,11 @@ const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_
  * y[0] -------
  *        0 1/(N-1) 2/(N-1) ... 1
  */
-template<typename T, size_t N>
-const T interpolateN(const T &value, const T(&y)[N])
+మూస<రకం_పేరు T, size_t N>
+స్థిరరాశి T interpolateN(స్థిరరాశి T &value, స్థిరరాశి T(&y)[N])
 {
-	size_t index = constrain((int)(value * (N - 1)), 0, (int)(N - 2));
-	return interpolate(value, (T)index / (T)(N - 1), (T)(index + 1) / (T)(N - 1), y[index], y[index + 1]);
+	size_t సూచీ = constrain((పూర్ణాంకం)(value * (N - 1)), 0, (పూర్ణాంకం)(N - 2));
+	తిరిగి interpolate(value, (T)సూచీ / (T)(N - 1), (T)(సూచీ + 1) / (T)(N - 1), y[సూచీ], y[సూచీ + 1]);
 }
 
 /*
@@ -197,16 +197,16 @@ const T interpolateN(const T &value, const T(&y)[N])
  *          x[0] x[1] ... x[N-1]
  * Note: x[N] corner coordinates have to be sorted in ascending order
  */
-template<typename T, size_t N>
-const T interpolateNXY(const T &value, const T(&x)[N], const T(&y)[N])
+మూస<రకం_పేరు T, size_t N>
+స్థిరరాశి T interpolateNXY(స్థిరరాశి T &value, స్థిరరాశి T(&x)[N], స్థిరరాశి T(&y)[N])
 {
-	size_t index = 0;
+	size_t సూచీ = 0;
 
-	while ((value > x[index + 1]) && (index < (N - 2))) {
-		index++;
+	అయితే ((value > x[సూచీ + 1]) && (సూచీ < (N - 2))) {
+		సూచీ++;
 	}
 
-	return interpolate(value, x[index], x[index + 1], y[index], y[index + 1]);
+	తిరిగి interpolate(value, x[సూచీ], x[సూచీ + 1], y[సూచీ], y[సూచీ + 1]);
 }
 
 /*
@@ -221,17 +221,17 @@ const T interpolateNXY(const T &value, const T(&x)[N], const T(&y)[N])
  * 0     -------
  *             0    1
  */
-template<typename T>
-const T sqrt_linear(const T &value)
+మూస<రకం_పేరు T>
+స్థిరరాశి T sqrt_రేఖీయ(స్థిరరాశి T &value)
 {
-	if (value < static_cast<T>(0)) {
-		return static_cast<T>(0);
+	ఒకవేళ (value < static_cast<T>(0)) {
+		తిరిగి static_cast<T>(0);
 
-	} else if (value < static_cast<T>(1)) {
-		return sqrtf(value);
+	} లేకపోతే ఒకవేళ (value < static_cast<T>(1)) {
+		తిరిగి sqrtf(value);
 
-	} else {
-		return value;
+	} లేకపోతే {
+		తిరిగి value;
 	}
 }
 
@@ -241,30 +241,30 @@ const T sqrt_linear(const T &value)
  * s=1 returns b
  * Any value for s is valid.
  */
-template<typename T>
-const T lerp(const T &a, const T &b, const T &s)
+మూస<రకం_పేరు T>
+స్థిరరాశి T lerp(స్థిరరాశి T &a, స్థిరరాశి T &b, స్థిరరాశి T &s)
 {
-	return (static_cast<T>(1) - s) * a + s * b;
+	తిరిగి (static_cast<T>(1) - s) * a + s * b;
 }
 
-template<typename T>
+మూస<రకం_పేరు T>
 constexpr T negate(T value)
 {
-	static_assert(sizeof(T) > 2, "implement for T");
-	return -value;
+	static_assert(పరిమాణం(T) > 2, "implement for T");
+	తిరిగి -value;
 }
 
-template<>
+మూస<>
 constexpr int16_t negate<int16_t>(int16_t value)
 {
-	if (value == INT16_MAX) {
-		return INT16_MIN;
+	ఒకవేళ (value == INT16_MAX) {
+		తిరిగి INT16_MIN;
 
-	} else if (value == INT16_MIN) {
-		return INT16_MAX;
+	} లేకపోతే ఒకవేళ (value == INT16_MIN) {
+		తిరిగి INT16_MAX;
 	}
 
-	return -value;
+	తిరిగి -value;
 }
 
 /*
@@ -272,31 +272,31 @@ constexpr int16_t negate<int16_t>(int16_t value)
  * in a given integer.
  */
 
-template<typename T>
-int countSetBits(T n)
+మూస<రకం_పేరు T>
+పూర్ణాంకం లెక్క_సమితి_బిట్లు(T n)
 {
-	return __builtin_popcount(n);
+	తిరిగి __builtin_popcount(n);
 }
 
-template<typename T>
-int countTrailingZeros(T n)
+మూస<రకం_పేరు T>
+పూర్ణాంకం లెక్క_Trailing_Zeros(T n)
 {
-	return n == 0 ? (int)(sizeof(T) * 8) : __builtin_ctz(n);
+	తిరిగి n == 0 ? (పూర్ణాంకం)(పరిమాణం(T) * 8) : __builtin_ctz(n);
 }
 
-inline bool isFinite(const float &value)
+అంతఃవరుస తార్కిక isFinite(స్థిరరాశి దశాంశం &value)
 {
-	return PX4_ISFINITE(value);
+	తిరిగి PX4_ISFINITE(value);
 }
 
-inline bool isFinite(const matrix::Vector2f &value)
+అంతఃవరుస తార్కిక isFinite(స్థిరరాశి మాతృక::Vector2f &value)
 {
-	return value.isAllFinite();
+	తిరిగి value.isAllFinite();
 }
 
-inline bool isFinite(const matrix::Vector3f &value)
+అంతఃవరుస తార్కిక isFinite(స్థిరరాశి మాతృక::Vector3f &value)
 {
-	return value.isAllFinite();
+	తిరిగి value.isAllFinite();
 }
 
 } /* namespace math */

@@ -34,73 +34,73 @@
 
 
 
-#include "VariableLengthRingbuffer.hpp"
+#అన్తర్భావ "VariableLengthRingbuffer.hpp"
 
-#include <assert.h>
-#include <string.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <string.h>
 
 
-VariableLengthRingbuffer::~VariableLengthRingbuffer()
+Variable_నిడివి_Ringbuffer::~Variable_నిడివి_Ringbuffer()
 {
 	deallocate();
 }
 
-bool VariableLengthRingbuffer::allocate(size_t buffer_size)
+తార్కిక Variable_నిడివి_Ringbuffer::allocate(size_t బఫరు_కొలత)
 {
-	return _ringbuffer.allocate(buffer_size);
+	తిరిగి _ringbuffer.allocate(బఫరు_కొలత);
 }
 
-void VariableLengthRingbuffer::deallocate()
+శూన్య Variable_నిడివి_Ringbuffer::deallocate()
 {
 	_ringbuffer.deallocate();
 }
 
-bool VariableLengthRingbuffer::push_back(const uint8_t *packet, size_t packet_len)
+తార్కిక Variable_నిడివి_Ringbuffer::push_back(స్థిరరాశి uint8_t *packet, size_t packet_len)
 {
-	if (packet_len == 0 || packet == nullptr) {
+	ఒకవేళ (packet_len == 0 || packet == శూన్యసూచిక) {
 		// Nothing to add, we better don't try.
-		return false;
+		తిరిగి అబద్ధం;
 	}
 
-	size_t space_required = packet_len + sizeof(Header);
+	size_t space_required = packet_len + పరిమాణం(శీర్షిక_2);
 
-	if (space_required > _ringbuffer.space_available()) {
-		return false;
+	ఒకవేళ (space_required > _ringbuffer.space_అందుబాటు()) {
+		తిరిగి అబద్ధం;
 	}
 
-	Header header{static_cast<uint32_t>(packet_len)};
-	bool result = _ringbuffer.push_back(reinterpret_cast<const uint8_t * >(&header), sizeof(header));
-	assert(result);
+	శీర్షిక_2 శీర్షిక{static_cast<uint32_t>(packet_len)};
+	తార్కిక ఫలితం = _ringbuffer.push_back(reinterpret_cast<స్థిరరాశి uint8_t * >(&శీర్షిక), పరిమాణం(శీర్షిక));
+	ప్రతిజ్ఞా(ఫలితం);
 
-	result = _ringbuffer.push_back(packet, packet_len);
-	assert(result);
+	ఫలితం = _ringbuffer.push_back(packet, packet_len);
+	ప్రతిజ్ఞా(ఫలితం);
 
 	// In case asserts are commented out to prevent unused warnings.
-	(void)result;
+	(శూన్య)ఫలితం;
 
-	return true;
+	తిరిగి నిజం;
 }
 
-size_t VariableLengthRingbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
+size_t Variable_నిడివి_Ringbuffer::తీయి_front(uint8_t *buf, size_t buf_max_len)
 {
-	if (buf == nullptr) {
+	ఒకవేళ (buf == శూన్యసూచిక) {
 		// User needs to supply a valid pointer.
-		return 0;
+		తిరిగి 0;
 	}
 
 	// Check next header
-	Header header;
+	శీర్షిక_2 శీర్షిక;
 
-	if (_ringbuffer.pop_front(reinterpret_cast<uint8_t *>(&header), sizeof(header)) < sizeof(header)) {
-		return 0;
+	ఒకవేళ (_ringbuffer.తీయి_front(reinterpret_cast<uint8_t *>(&శీర్షిక), పరిమాణం(శీర్షిక)) < పరిమాణం(శీర్షిక)) {
+		తిరిగి 0;
 	}
 
 	// We can't fit the packet into the user supplied buffer.
 	// This should never happen as the user has to supply a big // enough buffer.
-	assert(static_cast<uint32_t>(header.len) <= buf_max_len);
+	ప్రతిజ్ఞా(static_cast<uint32_t>(శీర్షిక.len) <= buf_max_len);
 
-	size_t bytes_read = _ringbuffer.pop_front(buf, header.len);
-	assert(bytes_read == header.len);
+	size_t బైట్లు_read = _ringbuffer.తీయి_front(buf, శీర్షిక.len);
+	ప్రతిజ్ఞా(బైట్లు_read == శీర్షిక.len);
 
-	return bytes_read;
+	తిరిగి బైట్లు_read;
 }

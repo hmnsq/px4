@@ -30,30 +30,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#pragma once
+#సూచన once
 
-#include <uORB/uORB.h>
-#include <uORB/Publication.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/dataman_request.h>
-#include <uORB/topics/dataman_response.h>
-#include <dataman/dataman.h>
-#include <lib/perf/perf_counter.h>
-#include <px4_platform_common/posix.h>
+#అన్తర్భావ <uORB/uORB.h>
+#అన్తర్భావ <uORB/Publication.hpp>
+#అన్తర్భావ <uORB/Subscription.hpp>
+#అన్తర్భావ <uORB/topics/dataman_request.h>
+#అన్తర్భావ <uORB/topics/dataman_response.h>
+#అన్తర్భావ <dataman/dataman.h>
+#అన్తర్భావ <lib/perf/perf_counter.h>
+#అన్తర్భావ <px4_platform_common/posix.h>
 
-using namespace time_literals;
+ఉపయోగించి నామాకాశ సమయం_literals;
 
-class DatamanClientTestPeer;
-class DatamanCacheTestPeer;
+తరగతి DatamanClientTestPeer;
+తరగతి DatamanCacheTestPeer;
 
-class DatamanClient
+తరగతి DatamanClient
 {
-public:
+బహిరంగ:
 	DatamanClient();
 	~DatamanClient();
 
-	DatamanClient(const DatamanClient &) = delete;
-	DatamanClient &operator=(const DatamanClient &) = delete;
+	DatamanClient(స్థిరరాశి DatamanClient &) = తొలగించు;
+	DatamanClient &క్రియాకారకం=(స్థిరరాశి DatamanClient &) = తొలగించు;
 
 	/**
 	 * @brief Reads data synchronously from the dataman for the specified item and index.
@@ -66,7 +66,7 @@ public:
 	 *
 	 * @return true if data was read successfully within the timeout, false otherwise.
 	 */
-	bool readSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
+	తార్కిక readSync(dm_అంశం_t అంశం, uint32_t సూచీ, uint8_t *బఫరు_2, uint32_t నిడివి, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Write data to the dataman synchronously.
@@ -79,7 +79,7 @@ public:
 	 *
 	 * @return True if the write operation succeeded, false otherwise.
 	 */
-	bool writeSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
+	తార్కిక writeSync(dm_అంశం_t అంశం, uint32_t సూచీ, uint8_t *బఫరు_2, uint32_t నిడివి, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Clears the data in the specified dataman item.
@@ -89,7 +89,7 @@ public:
 	 *
 	 * @return True if the operation was successful, false otherwise.
 	 */
-	bool clearSync(dm_item_t item, hrt_abstime timeout = 5000_ms);
+	తార్కిక clearSync(dm_అంశం_t అంశం, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Initiates an asynchronous request to read the data from dataman for a specific item and index.
@@ -105,7 +105,7 @@ public:
 	 *       The completion status of the request can be obtained with the
 	 *       lastOperationCompleted() function.
 	 */
-	bool readAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length);
+	తార్కిక readAsync(dm_అంశం_t అంశం, uint32_t సూచీ, uint8_t *బఫరు_2, uint32_t నిడివి);
 
 	/**
 	 * @brief Initiates an asynchronous request to write the data to dataman for a specific item and index.
@@ -121,7 +121,7 @@ public:
 	 *       The completion status of the request can be obtained with the
 	 *       lastOperationCompleted() function.
 	 */
-	bool writeAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length);
+	తార్కిక writeAsync(dm_అంశం_t అంశం, uint32_t సూచీ, uint8_t *బఫరు_2, uint32_t నిడివి);
 
 	/**
 	 * @brief Initiates an asynchronous request to clear an item in dataman.
@@ -131,7 +131,7 @@ public:
 	 * @param[in] item The item to clear.
 	 * @return True if the request was successfully initiated, false otherwise.
 	 */
-	bool clearAsync(dm_item_t item);
+	తార్కిక clearAsync(dm_అంశం_t అంశం);
 
 	/**
 	 * @brief Updates the state of the dataman client for asynchronous functions.
@@ -142,7 +142,7 @@ public:
 	 *
 	 * @see readAsync(), writeAsync(), clearAsync(), lastOperationCompleted()
 	 */
-	void update();
+	శూన్య update();
 
 	/**
 	 * @brief Check if the last dataman operation has completed and whether it was successful.
@@ -150,12 +150,12 @@ public:
 	 * @param[out] success Output parameter indicating whether the last operation was successful.
 	 * @return true if the last operation has completed, false otherwise.
 	 */
-	bool lastOperationCompleted(bool &success);
+	తార్కిక చివరి_Operation_Completed(తార్కిక &success);
 
 	/**
 	 * Abort any async operation currently in progress
 	 */
-	void abortCurrentOperation();
+	శూన్య abortCurrentOperation();
 
 	/**
 	 * @brief Get the subscription fd used for Dataman responses.
@@ -164,53 +164,53 @@ public:
 	 * to a poll set must only do so while they have an outstanding operation whose
 	 * update() path will consume the notification.
 	 */
-	orb_sub_t responseSubscription() const { return _dataman_response_sub; }
+	orb_sub_t responseSubscription() స్థిరరాశి { తిరిగి _dataman_response_sub; }
 
-private:
-	friend class DatamanClientTestPeer;
+అంతరంగ:
+	మిత్ర తరగతి DatamanClientTestPeer;
 
-	enum class State {
+	గణన తరగతి State {
 		Idle,
-		RequestSent,
+		Request_పంపిన,
 		ResponseReceived
 	};
 
-	struct Request {
+	నిర్మాణం Request {
 		hrt_abstime timestamp;
 		dm_function_t request_type;
-		dm_item_t item;
-		uint32_t index;
-		uint8_t *buffer;
-		uint32_t length;
+		dm_అంశం_t అంశం;
+		uint32_t సూచీ;
+		uint8_t *బఫరు_2;
+		uint32_t నిడివి;
 	};
 
 	/* Synchronous response/request handler */
-	bool syncHandler(const dataman_request_s &request, dataman_response_s &response,
-			 const hrt_abstime &start_time, hrt_abstime timeout);
+	తార్కిక syncHandler(స్థిరరాశి dataman_request_s &request, dataman_response_s &response,
+			 స్థిరరాశి hrt_abstime &ప్రారంభం_సమయం, hrt_abstime timeout);
 	/* Drain any queued stale replies before a new request starts. */
-	void clearPendingResponse();
+	శూన్య clearPendingResponse();
 
 	State _state{State::Idle};
-	Request _active_request{};
-	uint8_t _response_status{};
+	Request చురుకైన_request{};
+	uint8_t response_స్థితి{};
 
 	orb_sub_t _dataman_response_sub{ORB_SUB_INVALID};
 	uORB::Publication<dataman_request_s> _dataman_request_pub{ORB_ID(dataman_request)};
 
 	px4_pollfd_struct_t _fds;
 
-	static constexpr uint16_t CLIENT_ID_NOT_SET{0};
+	స్థిర constexpr uint16_t CLIENT_ID_NOT_సమితి{0};
 
-	uint16_t _client_id{CLIENT_ID_NOT_SET};
+	uint16_t _client_id{CLIENT_ID_NOT_సమితి};
 
-	perf_counter_t _sync_perf{nullptr};
+	perf_counter_t _sync_perf{శూన్యసూచిక};
 };
 
 
-class DatamanCache
+తరగతి DatamanCache
 {
-public:
-	DatamanCache(const char *cache_miss_perf_counter_name, uint32_t num_items);
+బహిరంగ:
+	DatamanCache(స్థిరరాశి అక్షరం *cache_తప్పిపోవు_perf_counter_name, uint32_t అంకె_వస్తువులు);
 	~DatamanCache();
 
 	/**
@@ -218,12 +218,12 @@ public:
 	 *
 	 * @param[in] num_items The number of items the cache should hold.
 	 */
-	void resize(uint32_t num_items);
+	శూన్య resize(uint32_t అంకె_వస్తువులు);
 
 	/**
 	 * @brief Invalidates all cached items in the cache by resetting their cache_state to Idle.
 	 */
-	void invalidate();
+	శూన్య invalidate();
 
 	/**
 	 * @brief Adds an index for items to be cached.
@@ -236,7 +236,7 @@ public:
 	 *
 	 * @return true if the item was added to be cached, false otherwise if the size of the cache is reached.
 	 */
-	bool load(dm_item_t item, uint32_t index);
+	తార్కిక ఎక్కించు(dm_అంశం_t అంశం, uint32_t సూచీ);
 
 	/**
 	 * @brief Loads for a specific item from the cache or acquires and wait for it if not found in the cache.
@@ -251,7 +251,7 @@ public:
 	 *
 	 * @note This function will block if timeout is set differently than 0 and data doesn't exist in cache.
 	 */
-	bool loadWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 0);
+	తార్కిక ఎక్కించు_Wait(dm_అంశం_t అంశం, uint32_t సూచీ, uint8_t *బఫరు_2, uint32_t నిడివి, hrt_abstime timeout = 0);
 
 	/**
 	 * @brief Write data back and update it in the cache if stored.
@@ -264,7 +264,7 @@ public:
 	 *
 	 * @return True if the write operation succeeded, false otherwise.
 	 */
-	bool writeWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
+	తార్కిక writeWait(dm_అంశం_t అంశం, uint32_t సూచీ, uint8_t *బఫరు_2, uint32_t నిడివి, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Update a cached item in-place without issuing a new dataman request.
@@ -274,7 +274,7 @@ public:
 	 *
 	 * @return true if the item was fully cached and has been updated.
 	 */
-	bool updateCachedItem(dm_item_t item, uint32_t index, const uint8_t *buffer, uint32_t length);
+	తార్కిక update_Cached_అంశం(dm_అంశం_t అంశం, uint32_t సూచీ, స్థిరరాశి uint8_t *బఫరు_2, uint32_t నిడివి);
 
 	/**
 	 * @brief Updates the dataman cache by checking for responses from the DatamanClient and processing them.
@@ -285,50 +285,50 @@ public:
 	 * to the next item in the cache. This function does not block and returns immediately.
 	 * The data can be acquired with the 'loadWait()' function after it has been cached.
 	 */
-	void update();
+	శూన్య update();
 
 	/**
 	 * @brief Function providing info if there items to be loaded to dataman cache.
 	 *
 	 * @return true if there are items to be processed.
 	 */
-	bool isLoading() const { return (_item_counter > 0); }
+	తార్కిక isLoading() స్థిరరాశి { తిరిగి (అంశం_counter > 0); }
 
 	/**
 	 * @brief Returns a reference to the DatamanClient instance used by the DatamanCache.
 	 *
 	 * @return A reference to the DatamanClient instance used by the DatamanCache.
 	 */
-	DatamanClient &client() { return _client; }
+	DatamanClient &client() { తిరిగి _client; }
 
-	int size() const { return _num_items; }
+	పూర్ణాంకం కొలత() స్థిరరాశి { తిరిగి అంకె_వస్తువులు_2; }
 
-private:
-	friend class DatamanCacheTestPeer;
+అంతరంగ:
+	మిత్ర తరగతి DatamanCacheTestPeer;
 
-	enum class State {
+	గణన తరగతి State {
 		Idle,
 		RequestPrepared,
-		RequestSent,
+		Request_పంపిన,
 		ResponseReceived,
 		Error
 	};
 
-	struct Item {
+	నిర్మాణం అంశం_2 {
 		dataman_response_s response;
 		State cache_state;
 	};
 
-	void resetCacheState();
-	inline void changeUpdateIndex();
+	శూన్య resetCacheState();
+	అంతఃవరుస శూన్య change_Update_సూచీ();
 
-	Item *_items{nullptr};
-	uint32_t _load_index{0};	///< index for tracking last index used by load function
-	uint32_t _update_index{0};	///< index for tracking last index used by update function
-	uint32_t _item_counter{0};	///< number of items to process with update function
-	uint32_t _num_items{0};		///< number of items that cache can store
+	అంశం_2 *వస్తువులు{శూన్యసూచిక};
+	uint32_t ఎక్కించు_సూచీ{0};	///< index for tracking last index used by load function
+	uint32_t update_సూచీ{0};	///< index for tracking last index used by update function
+	uint32_t అంశం_counter{0};	///< number of items to process with update function
+	uint32_t అంకె_వస్తువులు_2{0};		///< number of items that cache can store
 
 	DatamanClient _client{};
 
-	perf_counter_t	_cache_miss_perf;
+	perf_counter_t	cache_తప్పిపోవు_perf;
 };

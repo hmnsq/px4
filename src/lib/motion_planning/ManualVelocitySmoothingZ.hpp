@@ -36,88 +36,88 @@
  *
  */
 
-#pragma once
+#సూచన once
 
-#include <motion_planning/VelocitySmoothing.hpp>
+#అన్తర్భావ <motion_planning/VelocitySmoothing.hpp>
 
-class ManualVelocitySmoothingZ final
+తరగతి ManualVelocitySmoothingZ final
 {
-public:
-	ManualVelocitySmoothingZ() = default;
-	~ManualVelocitySmoothingZ() = default;
+బహిరంగ:
+	ManualVelocitySmoothingZ() = అప్రమేయ;
+	~ManualVelocitySmoothingZ() = అప్రమేయ;
 
-	void reset(float accel, float vel, float pos);
-	void update(float dt, float velocity_target);
+	శూన్య reset(దశాంశం accel, దశాంశం vel, దశాంశం pos);
+	శూన్య update(దశాంశం dt, దశాంశం velocity_లక్ష్యం);
 
-	void setVelSpFeedback(const float fb) { _velocity_setpoint_feedback = fb; }
+	శూన్య సమితి_Vel_Sp_Feedback(స్థిరరాశి దశాంశం fb) { _velocity_setpoint_feedback = fb; }
 
-	void setMaxJerk(const float max_jerk)
+	శూన్య సమితి_Max_Jerk(స్థిరరాశి దశాంశం max_jerk)
 	{
-		_trajectory.setMaxJerk(max_jerk);
+		_trajectory.సమితి_Max_Jerk(max_jerk);
 	}
-	void setMaxAccelUp(const float max_accel_up)
+	శూన్య సమితి_Max_Accel_పైకి(స్థిరరాశి దశాంశం max_accel_పైకి_2)
 	{
-		_max_accel_up = max_accel_up;
+		max_accel_పైకి = max_accel_పైకి_2;
 	}
-	void setMaxAccelDown(const float max_accel_down)
+	శూన్య సమితి_Max_Accel_కిందికి(స్థిరరాశి దశాంశం max_accel_కిందికి_2)
 	{
-		_max_accel_down = max_accel_down;
+		max_accel_కిందికి = max_accel_కిందికి_2;
 	}
-	void setMaxVelUp(const float max_vel_up)
+	శూన్య సమితి_Max_Vel_పైకి(స్థిరరాశి దశాంశం max_vel_పైకి_2)
 	{
-		_max_vel_up = max_vel_up;
+		max_vel_పైకి = max_vel_పైకి_2;
 	}
-	void setMaxVelDown(const float max_vel_down)
+	శూన్య సమితి_Max_Vel_కిందికి(స్థిరరాశి దశాంశం max_vel_కిందికి_2)
 	{
-		_max_vel_down = max_vel_down;
+		max_vel_కిందికి = max_vel_కిందికి_2;
 	}
 
-	float getCurrentJerk() const { return _state.j; }
-	float getCurrentAcceleration() const { return _state.a; }
-	void setCurrentVelocity(const float vel)
+	దశాంశం getCurrentJerk() స్థిరరాశి { తిరిగి _state.j; }
+	దశాంశం getCurrentAcceleration() స్థిరరాశి { తిరిగి _state.a; }
+	శూన్య సమితి_Current_Velocity(స్థిరరాశి దశాంశం vel)
 	{
 		_state.v = vel;
-		_trajectory.setCurrentVelocity(vel);
+		_trajectory.సమితి_Current_Velocity(vel);
 	}
-	float getCurrentVelocity() const { return _state.v; }
-	void setCurrentPosition(const float pos)
+	దశాంశం getCurrentVelocity() స్థిరరాశి { తిరిగి _state.v; }
+	శూన్య సమితి_Current_Position(స్థిరరాశి దశాంశం pos)
 	{
 		_state.x = pos;
-		_trajectory.setCurrentPosition(pos);
+		_trajectory.సమితి_Current_Position(pos);
 		_position_estimate = pos;
 
-		if (_position_lock_active) {
+		ఒకవేళ (position_తాళం_చురుకైన) {
 			_position_setpoint_locked = pos;
 		}
 	}
-	float getCurrentPosition() const { return _position_setpoint_locked; }
-	void setCurrentPositionEstimate(float pos) { _position_estimate = pos; }
+	దశాంశం getCurrentPosition() స్థిరరాశి { తిరిగి _position_setpoint_locked; }
+	శూన్య సమితి_Current_Position_Estimate(దశాంశం pos) { _position_estimate = pos; }
 
-private:
-	void resetPositionLock();
-	void updateTrajectories(float dt);
-	void updateTrajConstraints(float vel_target);
-	void checkPositionLock(float velocity_target);
-	void updateTrajDurations(float velocity_target);
+అంతరంగ:
+	శూన్య reset_Position_తాళం();
+	శూన్య updateTrajectories(దశాంశం dt);
+	శూన్య updateTrajConstraints(దశాంశం vel_లక్ష్యం);
+	శూన్య check_Position_తాళం(దశాంశం velocity_లక్ష్యం);
+	శూన్య updateTrajDurations(దశాంశం velocity_లక్ష్యం);
 
 	VelocitySmoothing _trajectory; ///< Trajectory in z direction
 
-	bool _position_lock_active{false};
+	తార్కిక position_తాళం_చురుకైన{అబద్ధం};
 
-	float _position_setpoint_locked{};
+	దశాంశం _position_setpoint_locked{};
 
-	float _velocity_setpoint_feedback{};
-	float _position_estimate{};
+	దశాంశం _velocity_setpoint_feedback{};
+	దశాంశం _position_estimate{};
 
-	struct {
-		float j;
-		float a;
-		float v;
-		float x;
+	నిర్మాణం {
+		దశాంశం j;
+		దశాంశం a;
+		దశాంశం v;
+		దశాంశం x;
 	} _state{};
 
-	float _max_accel_up{0.f};
-	float _max_accel_down{0.f};
-	float _max_vel_up{0.f};
-	float _max_vel_down{0.f};
+	దశాంశం max_accel_పైకి{0.f};
+	దశాంశం max_accel_కిందికి{0.f};
+	దశాంశం max_vel_పైకి{0.f};
+	దశాంశం max_vel_కిందికి{0.f};
 };

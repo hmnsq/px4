@@ -31,25 +31,25 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/integration.hpp>
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ <matrix/integration.hpp>
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-Vector<float, 6> f(float t, const Matrix<float, 6, 1> &  /*y*/, const Matrix<float, 3, 1> &  /*u*/)
+సదిశ<దశాంశం, 6> f(దశాంశం t, స్థిరరాశి మాతృక_2<దశాంశం, 6, 1> &  /*y*/, స్థిరరాశి మాతృక_2<దశాంశం, 3, 1> &  /*u*/)
 {
-	float v = -sin(t);
-	return v * ones<float, 6, 1>();
+	దశాంశం v = -జ్యా(t);
+	తిరిగి v * ones<దశాంశం, 6, 1>();
 }
 
-TEST(MatrixIntegralTest, Integral)
+TEST(మాతృక_Integral_Test, Integral)
 {
-	Vector<float, 6> y = ones<float, 6, 1>();
-	Vector<float, 3> u = ones<float, 3, 1>();
-	float t0 = 0;
-	float tf = 2;
-	float h = 0.001f;
+	సదిశ<దశాంశం, 6> y = ones<దశాంశం, 6, 1>();
+	సదిశ<దశాంశం, 3> u = ones<దశాంశం, 3, 1>();
+	దశాంశం t0 = 0;
+	దశాంశం tf = 2;
+	దశాంశం h = 0.001f;
 	integrate_rk4(f, y, u, t0, tf, h, y);
-	float v = 1 + std::cos(tf) - std::cos(t0);
-	EXPECT_EQ(y, (ones<float, 6, 1>()*v));
+	దశాంశం v = 1 + std::కోజ్యా(tf) - std::కోజ్యా(t0);
+	EXPECT_EQ(y, (ones<దశాంశం, 6, 1>()*v));
 }

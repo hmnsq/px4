@@ -37,75 +37,75 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <containers/List.hpp>
-#include <px4_platform_common/defines.h>
-#include <parameters/param.h>
+#అన్తర్భావ <containers/List.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <parameters/param.h>
 
-namespace control
+నామాకాశ control
 {
 
-class Block;
+తరగతి ఖండం;
 
 // A base class for block params that enables traversing linked list.
-class BlockParamBase : public ListNode<BlockParamBase *>
+తరగతి ఖండం_Param_పునాది : బహిరంగ List_కణుపు<ఖండం_Param_పునాది *>
 {
-public:
+బహిరంగ:
 	/**
 	 * Instantiate a block param base.
 	 *
 	 * @param parent_prefix Set to true to include the parent name in the parameter name
 	 */
-	BlockParamBase(Block *parent, const char *name, bool parent_prefix = true);
-	virtual ~BlockParamBase() = default;
+	ఖండం_Param_పునాది(ఖండం *మాతృ, స్థిరరాశి అక్షరం *name, తార్కిక మాతృ_ఉపసర్గ = నిజం);
+	మాయా ~ఖండం_Param_పునాది() = అప్రమేయ;
 
-	virtual bool update() = 0;
-	const char *getName() const { return param_name(_handle); }
+	మాయా తార్కిక update() = 0;
+	స్థిరరాశి అక్షరం *getName() స్థిరరాశి { తిరిగి param_name(_handle); }
 
-protected:
+రక్షిత:
 	param_t _handle{PARAM_INVALID};
 };
 
 // Parameters that are tied to blocks for updating and naming.
-template <class T>
-class __EXPORT BlockParam final : public BlockParamBase
+మూస <తరగతి T>
+తరగతి __EXPORT ఖండం_Param final : బహిరంగ ఖండం_Param_పునాది
 {
-public:
-	BlockParam(Block *block, const char *name, bool parent_prefix = true);
-	BlockParam(Block *block, const char *name, bool parent_prefix, T &extern_val);
+బహిరంగ:
+	ఖండం_Param(ఖండం *ఖండం_2, స్థిరరాశి అక్షరం *name, తార్కిక మాతృ_ఉపసర్గ = నిజం);
+	ఖండం_Param(ఖండం *ఖండం_2, స్థిరరాశి అక్షరం *name, తార్కిక మాతృ_ఉపసర్గ, T &extern_val);
 
-	~BlockParam() override = default;
+	~ఖండం_Param() override = అప్రమేయ;
 
 	// no copy, assignment, move, move assignment
-	BlockParam(const BlockParam &) = delete;
-	BlockParam &operator=(const BlockParam &) = delete;
-	BlockParam(BlockParam &&) = delete;
-	BlockParam &operator=(BlockParam &&) = delete;
+	ఖండం_Param(స్థిరరాశి ఖండం_Param &) = తొలగించు;
+	ఖండం_Param &క్రియాకారకం=(స్థిరరాశి ఖండం_Param &) = తొలగించు;
+	ఖండం_Param(ఖండం_Param &&) = తొలగించు;
+	ఖండం_Param &క్రియాకారకం=(ఖండం_Param &&) = తొలగించు;
 
-	T get() const { return _val; }
+	T get() స్థిరరాశి { తిరిగి _val; }
 
 	// Store the parameter value to the parameter storage (@see param_set())
-	bool commit() { return (param_set(_handle, &_val) == PX4_OK); }
+	తార్కిక commit() { తిరిగి (param_సమితి(_handle, &_val) == PX4_OK); }
 
 	// Store the parameter value to the parameter storage, w/o notifying the system (@see param_set_no_notification())
-	bool commit_no_notification() { return (param_set_no_notification(_handle, &_val) == PX4_OK); }
+	తార్కిక commit_no_notification() { తిరిగి (param_సమితి_no_notification(_handle, &_val) == PX4_OK); }
 
-	void set(T val) { _val = val; }
+	శూన్య సమితి(T val) { _val = val; }
 
-	bool update() override { return (param_get(_handle, &_val) == PX4_OK); }
+	తార్కిక update() override { తిరిగి (param_get(_handle, &_val) == PX4_OK); }
 
-protected:
+రక్షిత:
 	T _val;
 };
 
-template <>
-bool BlockParam<bool>::update();
+మూస <>
+తార్కిక ఖండం_Param<తార్కిక>::update();
 
-typedef BlockParam<float> BlockParamFloat;
-typedef BlockParam<int32_t> BlockParamInt;
-typedef BlockParam<bool> BlockParamBool;
-typedef BlockParam<float &> BlockParamExtFloat;
-typedef BlockParam<int32_t &> BlockParamExtInt;
+రకనిర్వచనం ఖండం_Param<దశాంశం> ఖండం_Param_Float;
+రకనిర్వచనం ఖండం_Param<int32_t> ఖండం_Param_Int;
+రకనిర్వచనం ఖండం_Param<తార్కిక> ఖండం_Param_Bool;
+రకనిర్వచనం ఖండం_Param<దశాంశం &> ఖండం_Param_Ext_Float;
+రకనిర్వచనం ఖండం_Param<int32_t &> ఖండం_Param_Ext_Int;
 
 } // namespace control

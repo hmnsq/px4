@@ -1,45 +1,45 @@
-import os
-import re
-import codecs
-import sys
+దిగుమతి os
+దిగుమతి re
+దిగుమతి codecs
+దిగుమతి sys
 
-class SourceScanner(object):
+తరగతి ఆధారం_Scanner(object):
     """
     Traverses directory tree, reads all source files, and passes their contents
     to the Parser.
     """
 
-    def ScanDir(self, srcdirs, parser):
+    నిర్వచనం పరిశీలన_Dir(self, srcdirs, parser):
         """
         Scans provided path and passes all found contents to the parser using
         parser.Parse method.
         """
         extensions1 = tuple([".h"])
         extensions2 = tuple([".c"])
-        for srcdir in srcdirs:
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions1):
-                    path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions2):
-                    path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-        return True
+        కొరకు srcdir లో srcdirs:
+            కొరకు filename లో os.listdir(srcdir):
+                ఒకవేళ filename.endswith(extensions1):
+                    మార్గం = os.మార్గం.join(srcdir, filename)
+                    ఒకవేళ కాదు self.పరిశీలన_File(మార్గం, parser):
+                        తిరిగి అబద్ధం
+            కొరకు filename లో os.listdir(srcdir):
+                ఒకవేళ filename.endswith(extensions2):
+                    మార్గం = os.మార్గం.join(srcdir, filename)
+                    ఒకవేళ కాదు self.పరిశీలన_File(మార్గం, parser):
+                        తిరిగి అబద్ధం
+        తిరిగి నిజం
 
-    def ScanFile(self, path, parser):
+    నిర్వచనం పరిశీలన_File(self, మార్గం, parser):
         """
         Scans provided file and passes its contents to the parser using
         parser.Parse method.
         """
 
-        with codecs.open(path, 'r', 'utf-8') as f:
-            try:
-                contents = f.read()
-            except:
+        తోడుగా codecs.open(మార్గం, 'r', 'utf-8') ఇవ f:
+            ప్రయత్నించు:
+                contents = f.పఠ()
+            మినహాయింపు:
                 contents = ''
-                print('Failed reading file: %s, skipping content.' % path)
-                pass
-        return parser.Parse(contents)
+                ముద్రించు('Failed reading file: %s, skipping content.' % మార్గం)
+                దాటు
+        తిరిగి parser.Parse(contents)

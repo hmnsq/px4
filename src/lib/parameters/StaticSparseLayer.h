@@ -31,138 +31,138 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <stdlib.h>
-#include "ParamLayer.h"
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ "ParamLayer.h"
 
-template <int N_SLOTS>
-class StaticSparseLayer : public ParamLayer
+మూస <పూర్ణాంకం N_SLOTS>
+class StaticSparseLayer : బహిరంగ ParamLayer
 {
-public:
-	StaticSparseLayer(ParamLayer *parent) : ParamLayer(parent)
+బహిరంగ:
+	StaticSparseLayer(ParamLayer *మాతృ) : ParamLayer(మాతృ)
 	{
-		for (int i = 0; i < N_SLOTS; i++) {
-			_slots[i] = {UINT16_MAX, param_value_u{}};
+		కొరకు (పూర్ణాంకం i = 0; i < N_SLOTS; i++) {
+			_slots[i] = {UINT16_MAX, param_విలువ_u{}};
 		}
 	}
 
-	virtual ~StaticSparseLayer() = default;
+	మాయా ~StaticSparseLayer() = అప్రమేయ;
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_విలువ_u విలువ) override
 	{
-		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		స్థిరరాశి AtomicTransaction transaction;
+		స్థిరరాశి పూర్ణాంకం సూచీ = get_సూచీ(param);
 
-		if (index < _next_slot) { // already exists
-			_slots[index].value = value;
+		ఒకవేళ (సూచీ < తదుపరి_స్థానం) { // already exists
+			_slots[సూచీ].విలువ = విలువ;
 
-		} else if (_next_slot < N_SLOTS) {
-			_slots[_next_slot++] = {param, value};
-			_sort();
+		} లేకపోతే ఒకవేళ (తదుపరి_స్థానం < N_SLOTS) {
+			_slots[తదుపరి_స్థానం++] = {param, విలువ};
+			క్రమీకరించు();
 
-		} else {
-			return false;
+		} లేకపోతే {
+			తిరిగి false;
 		}
 
-		return true;
+		తిరిగి true;
 	}
 
-	bool contains(param_t param) const override
+	bool కలిగియుంది(param_t param) స్థిరరాశి override
 	{
-		const AtomicTransaction transaction;
-		return _getIndex(param) < _next_slot;
+		స్థిరరాశి AtomicTransaction transaction;
+		తిరిగి get_సూచీ(param) < తదుపరి_స్థానం;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_లెక్క> containedAsBitset() స్థిరరాశి override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
-		const AtomicTransaction transaction;
+		px4::AtomicBitset<PARAM_లెక్క> సమితి;
+		స్థిరరాశి AtomicTransaction transaction;
 
-		for (int i = 0; i < _next_slot; i++) {
-			set.set(_slots[i].param);
+		కొరకు (పూర్ణాంకం i = 0; i < తదుపరి_స్థానం; i++) {
+			సమితి.సమితి(_slots[i].param);
 		}
 
-		return set;
+		తిరిగి సమితి;
 	}
 
-	param_value_u get(param_t param) const override
+	param_విలువ_u get(param_t param) స్థిరరాశి override
 	{
-		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		స్థిరరాశి AtomicTransaction transaction;
+		స్థిరరాశి పూర్ణాంకం సూచీ = get_సూచీ(param);
 
-		if (index < _next_slot) { // exists in this layer
-			return _slots[index].value;
+		ఒకవేళ (సూచీ < తదుపరి_స్థానం) { // exists in this layer
+			తిరిగి _slots[సూచీ].విలువ;
 		}
 
-		return _parent->get(param);
+		తిరిగి మాతృ_2->get(param);
 	}
 
-	void reset(param_t param) override
+	శూన్య reset(param_t param) override
 	{
-		const AtomicTransaction transaction;
-		int index = _getIndex(param);
+		స్థిరరాశి AtomicTransaction transaction;
+		పూర్ణాంకం సూచీ = get_సూచీ(param);
 
-		if (index < _next_slot) {
-			_slots[index] = {UINT16_MAX, param_value_u{}};
-			_sort();
-			_next_slot--;
+		ఒకవేళ (సూచీ < తదుపరి_స్థానం) {
+			_slots[సూచీ] = {UINT16_MAX, param_విలువ_u{}};
+			క్రమీకరించు();
+			తదుపరి_స్థానం--;
 		}
 	}
 
-	void refresh(param_t param) override
+	శూన్య refresh(param_t param) override
 	{
-		_parent->refresh(param);
+		మాతృ_2->refresh(param);
 	}
 
-	int size() const override
+	పూర్ణాంకం కొలత() స్థిరరాశి override
 	{
-		return _next_slot;
+		తిరిగి తదుపరి_స్థానం;
 	}
 
-	int byteSize() const override
+	పూర్ణాంకం byte_కొలత() స్థిరరాశి override
 	{
-		return N_SLOTS * sizeof(Slot);
+		తిరిగి N_SLOTS * పరిమాణం(స్థానం_2);
 	}
 
-private:
-	struct Slot {
+అంతరంగ:
+	నిర్మాణం స్థానం_2 {
 		param_t param;
-		param_value_u value;
+		param_విలువ_u విలువ;
 	};
 
-	static int _slotCompare(const void *a, const void *b)
+	స్థిర పూర్ణాంకం స్థానం_Compare(స్థిరరాశి శూన్య *a, స్థిరరాశి శూన్య *b)
 	{
-		return ((int)((Slot *)a)->param) - ((int)((Slot *)b)->param);
+		తిరిగి ((పూర్ణాంకం)((స్థానం_2 *)a)->param) - ((పూర్ణాంకం)((స్థానం_2 *)b)->param);
 	}
 
-	void _sort()
+	శూన్య క్రమీకరించు()
 	{
-		qsort(_slots, N_SLOTS, sizeof(Slot), &_slotCompare);
+		qsort(_slots, N_SLOTS, పరిమాణం(స్థానం_2), &స్థానం_Compare);
 	}
 
-	int _getIndex(param_t param) const
+	పూర్ణాంకం get_సూచీ(param_t param) స్థిరరాశి
 	{
-		int left = 0;
-		int right = _next_slot - 1;
+		పూర్ణాంకం ఎడమ_2 = 0;
+		పూర్ణాంకం కుడి_2 = తదుపరి_స్థానం - 1;
 
-		while (left <= right) {
-			int mid = (left + right) / 2;
+		అయితే (ఎడమ_2 <= కుడి_2) {
+			పూర్ణాంకం mid = (ఎడమ_2 + కుడి_2) / 2;
 
-			if (_slots[mid].param == param) {
-				return mid;
+			ఒకవేళ (_slots[mid].param == param) {
+				తిరిగి mid;
 
-			} else if (_slots[mid].param < param) {
-				left = mid + 1;
+			} లేకపోతే ఒకవేళ (_slots[mid].param < param) {
+				ఎడమ_2 = mid + 1;
 
-			} else {
-				right = mid - 1;
+			} లేకపోతే {
+				కుడి_2 = mid - 1;
 			}
 		}
 
-		return _next_slot;
+		తిరిగి తదుపరి_స్థానం;
 	}
 
-	Slot _slots[N_SLOTS];
-	int _next_slot = 0;
+	స్థానం_2 _slots[N_SLOTS];
+	పూర్ణాంకం తదుపరి_స్థానం = 0;
 };

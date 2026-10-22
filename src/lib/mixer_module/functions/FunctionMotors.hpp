@@ -31,98 +31,98 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "FunctionProviderBase.hpp"
+#అన్తర్భావ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/actuator_motors.h>
+#అన్తర్భావ <uORB/topics/actuator_motors.h>
 
 /**
  * Functions: Motor1 ... MotorMax
  */
-class FunctionMotors : public FunctionProviderBase
+తరగతి FunctionMotors : బహిరంగ Function_Provider_పునాది
 {
-public:
-	static_assert(actuator_motors_s::NUM_CONTROLS == (int)OutputFunction::MotorMax - (int)OutputFunction::Motor1 + 1,
+బహిరంగ:
+	static_assert(actuator_motors_s::అంకె_CONTROLS == (పూర్ణాంకం)OutputFunction::MotorMax - (పూర్ణాంకం)OutputFunction::Motor1 + 1,
 		      "Unexpected num motors");
 
-	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (int)OutputFunction::Motor1, "Unexpected motor idx");
+	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (పూర్ణాంకం)OutputFunction::Motor1, "Unexpected motor idx");
 
-	FunctionMotors(const Context &context) :
-		_topic(&context.work_item, ORB_ID(actuator_motors)),
-		_thrust_factor(context.thrust_factor)
+	FunctionMotors(స్థిరరాశి Context &context) :
+		_topic(&context.work_అంశం, ORB_ID(actuator_motors)),
+		thrust_గుణకం(context.thrust_గుణకం_2)
 	{
-		for (int i = 0; i < actuator_motors_s::NUM_CONTROLS; ++i) {
-			_data.control[i] = NAN;
+		కొరకు (పూర్ణాంకం i = 0; i < actuator_motors_s::అంకె_CONTROLS; ++i) {
+			దత్తాంశం_3.control[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionMotors(context); }
+	స్థిర Function_Provider_పునాది *allocate(స్థిరరాశి Context &context) { తిరిగి కొత్త FunctionMotors(context); }
 
-	void update() override
+	శూన్య update() override
 	{
-		if (_topic.update(&_data)) {
-			updateValues(_data.reversible_flags, _thrust_factor, _data.control, actuator_motors_s::NUM_CONTROLS);
+		ఒకవేళ (_topic.update(&దత్తాంశం_3)) {
+			update_విలువలు(దత్తాంశం_3.reversible_flags, thrust_గుణకం, దత్తాంశం_3.control, actuator_motors_s::అంకె_CONTROLS);
 		}
 	}
 
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Motor1]; }
+	దశాంశం value(OutputFunction func) override { తిరిగి దత్తాంశం_3.control[(పూర్ణాంకం)func - (పూర్ణాంకం)OutputFunction::Motor1]; }
 
-#if defined(CONFIG_DRIVERS_UAVCANNODE)
-	bool allowPrearmControl() const override { return true; }
-#else
-	bool allowPrearmControl() const override { return false; }
-#endif
+#ఒకవేళ defined(CONFIG_DRIVERS_UAVCANNODE)
+	తార్కిక allowPrearmControl() స్థిరరాశి override { తిరిగి నిజం; }
+#లేకపోతే
+	తార్కిక allowPrearmControl() స్థిరరాశి override { తిరిగి అబద్ధం; }
+#అయితే_ముగింపు
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::Subscription_Callback_Work_అంశం *subscriptionCallback() override { తిరిగి &_topic; }
 
-	bool getLatestSampleTimestamp(hrt_abstime &t) const override { t = _data.timestamp_sample; return t != 0; }
+	తార్కిక getLatestSampleTimestamp(hrt_abstime &t) స్థిరరాశి override { t = దత్తాంశం_3.timestamp_sample; తిరిగి t != 0; }
 
-	static inline void updateValues(uint32_t reversible, float thrust_factor, float *values, int num_values)
+	స్థిర అంతఃవరుస శూన్య update_విలువలు(uint32_t reversible, దశాంశం thrust_గుణకం_2, దశాంశం *విలువలు_2, పూర్ణాంకం అంకె_విలువలు)
 	{
-		if (thrust_factor > FLT_EPSILON && thrust_factor <= 1.f) {
+		ఒకవేళ (thrust_గుణకం_2 > FLT_EPSILON && thrust_గుణకం_2 <= 1.f) {
 			// thrust factor
 			//  rel_thrust = factor * x^2 + (1-factor) * x,
-			const float a = thrust_factor;
-			const float b = (1.f - thrust_factor);
+			స్థిరరాశి దశాంశం a = thrust_గుణకం_2;
+			స్థిరరాశి దశాంశం b = (1.f - thrust_గుణకం_2);
 
 			// don't recompute for all values (ax^2+bx+c=0)
-			const float tmp1 = b / (2.f * a);
-			const float tmp2 = b * b / (4.f * a * a);
+			స్థిరరాశి దశాంశం tmp1 = b / (2.f * a);
+			స్థిరరాశి దశాంశం tmp2 = b * b / (4.f * a * a);
 
-			for (int i = 0; i < num_values; ++i) {
+			కొరకు (పూర్ణాంకం i = 0; i < అంకె_విలువలు; ++i) {
 
-				const float control = values[i];
+				స్థిరరాశి దశాంశం control = విలువలు_2[i];
 
-				if (PX4_ISFINITE(control)) {
-					if (control > FLT_EPSILON) {
-						values[i] = -tmp1 + sqrtf(tmp2 + (control / a));
+				ఒకవేళ (PX4_ISFINITE(control)) {
+					ఒకవేళ (control > FLT_EPSILON) {
+						విలువలు_2[i] = -tmp1 + sqrtf(tmp2 + (control / a));
 
-					} else if (control < -FLT_EPSILON) {
-						values[i] =  tmp1 - sqrtf(tmp2 - (control / a));
+					} లేకపోతే ఒకవేళ (control < -FLT_EPSILON) {
+						విలువలు_2[i] =  tmp1 - sqrtf(tmp2 - (control / a));
 
 					}
 				}
 			}
 		}
 
-		for (int i = 0; i < num_values; ++i) {
-			if ((reversible & (1u << i)) == 0) {
-				if (values[i] < -FLT_EPSILON) {
-					values[i] = NAN;
+		కొరకు (పూర్ణాంకం i = 0; i < అంకె_విలువలు; ++i) {
+			ఒకవేళ ((reversible & (1u << i)) == 0) {
+				ఒకవేళ (విలువలు_2[i] < -FLT_EPSILON) {
+					విలువలు_2[i] = NAN;
 
-				} else {
+				} లేకపోతే {
 					// remap from [0, 1] to [-1, 1]
-					values[i] = values[i] * 2.f - 1.f;
+					విలువలు_2[i] = విలువలు_2[i] * 2.f - 1.f;
 				}
 			}
 		}
 	}
 
-	bool reversible(OutputFunction func) const override { return _data.reversible_flags & (1u << ((int)func - (int)OutputFunction::Motor1)); }
+	తార్కిక reversible(OutputFunction func) స్థిరరాశి override { తిరిగి దత్తాంశం_3.reversible_flags & (1u << ((పూర్ణాంకం)func - (పూర్ణాంకం)OutputFunction::Motor1)); }
 
-private:
-	uORB::SubscriptionCallbackWorkItem _topic;
-	actuator_motors_s _data{};
-	const float &_thrust_factor;
+అంతరంగ:
+	uORB::Subscription_Callback_Work_అంశం _topic;
+	actuator_motors_s దత్తాంశం_3{};
+	స్థిరరాశి దశాంశం &thrust_గుణకం;
 };

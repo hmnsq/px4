@@ -37,14 +37,14 @@
  * Common header for mathlib exports.
  */
 
-#pragma once
+#సూచన once
 
-#ifdef __cplusplus
+#నిర్వచితమైతే __cplusplus
 
-#include "math/Limits.hpp"
-#include "math/Functions.hpp"
-#include "math/SearchMin.hpp"
-#include "math/TrajMath.hpp"
-#include "math/Utilities.hpp"
+#అన్తర్భావ "math/Limits.hpp"
+#అన్తర్భావ "math/Functions.hpp"
+#అన్తర్భావ "math/SearchMin.hpp"
+#అన్తర్భావ "math/TrajMath.hpp"
+#అన్తర్భావ "math/Utilities.hpp"
 
-#endif
+#అయితే_ముగింపు

@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include "param.h"
+#అన్తర్భావ "param.h"
 
-struct param_remote_counters {
-	uint32_t set_value_request_received;
-	uint32_t set_value_response_sent;
+నిర్మాణం param_remote_counters {
+	uint32_t సమితి_విలువ_request_received;
+	uint32_t సమితి_విలువ_response_పంపిన;
 	uint32_t reset_received;
-	uint32_t set_value_request_sent;
-	uint32_t set_value_response_received;
-	uint32_t set_used_sent;
+	uint32_t సమితి_విలువ_request_పంపిన;
+	uint32_t సమితి_విలువ_response_received;
+	uint32_t సమితి_వాడిన_పంపిన;
 };
 
-void param_remote_init();
-void param_remote_set_used(param_t param);
-void param_remote_set_value(param_t param, const void *val);
-void param_remote_get_counters(struct param_remote_counters *cnt);
+శూన్య param_remote_init();
+శూన్య param_remote_సమితి_వాడిన(param_t param);
+శూన్య param_remote_సమితి_విలువ(param_t param, స్థిరరాశి శూన్య *val);
+శూన్య param_remote_get_counters(నిర్మాణం param_remote_counters *cnt);

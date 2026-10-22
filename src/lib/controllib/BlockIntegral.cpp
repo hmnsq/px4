@@ -37,19 +37,19 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <float.h>
 
-#include "blocks.hpp"
+#అన్తర్భావ "blocks.hpp"
 
-namespace control
+నామాకాశ control
 {
 
-float BlockIntegral::update(float input)
+దశాంశం ఖండం_Integral::update(దశాంశం ఆదానం)
 {
 	// trapezoidal integration
-	setY(_limit.update(getY() + input * getDt()));
-	return getY();
+	సమితి_Y(హద్దు.update(getY() + ఆదానం * getDt()));
+	తిరిగి getY();
 }
 
 } // namespace control

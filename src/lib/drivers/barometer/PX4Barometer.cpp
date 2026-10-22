@@ -32,53 +32,53 @@
  ****************************************************************************/
 
 
-#include "PX4Barometer.hpp"
+#అన్తర్భావ "PX4Barometer.hpp"
 
-#include <lib/drivers/device/Device.hpp>
+#అన్తర్భావ <lib/drivers/device/Device.hpp>
 
 PX4Barometer::PX4Barometer(uint32_t device_id)
 {
-	set_device_id(device_id);
+	సమితి_device_id(device_id);
 	_report.temperature = 15; // if no temperature is set, report the sea level standard temperature of 15°C. As used in VehicleAirData
 }
 
-PX4Barometer::PX4Barometer(uint32_t device_id, bool external)
+PX4Barometer::PX4Barometer(uint32_t device_id, తార్కిక external)
 {
-	set_device_id(device_id);
-	set_external(external);
+	సమితి_device_id(device_id);
+	సమితి_external(external);
 	_report.temperature = 15; // if no temperature is set, report the sea level standard temperature of 15°C. As used in VehicleAirData
 }
 
-void PX4Barometer::set_device_id(uint32_t device_id)
+శూన్య PX4Barometer::సమితి_device_id(uint32_t device_id)
 {
 	_report.device_id = device_id;
 
-	if (!_external_forced) {
+	ఒకవేళ (!_external_forced) {
 		_report.is_external = device::device_is_external(device_id);
 	}
 }
 
-void PX4Barometer::set_external(bool external)
+శూన్య PX4Barometer::సమితి_external(తార్కిక external)
 {
 	_report.is_external = external;
-	_external_forced = true;
+	_external_forced = నిజం;
 }
 
-void PX4Barometer::update(const hrt_abstime &timestamp_sample, float pressure)
+శూన్య PX4Barometer::update(స్థిరరాశి hrt_abstime &timestamp_sample, దశాంశం pressure)
 {
-	if (!PX4_ISFINITE(pressure)) {
-		return;
+	ఒకవేళ (!PX4_ISFINITE(pressure)) {
+		తిరిగి;
 	}
 
 	_report.timestamp_sample = timestamp_sample;
 	_report.pressure = pressure;
-	_report.timestamp = hrt_absolute_time();
+	_report.timestamp = hrt_absolute_సమయం();
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_BARO,
+	ఒకవేళ (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_BARO,
 					_sensor_pub.get_instance(), _report, _stuck)) {
-		return;
+		తిరిగి;
 	}
 
 	_sensor_pub.publish(_report);

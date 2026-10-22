@@ -31,49 +31,49 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
 // Provides CONFIG_NAVIGATOR_ADSB_F3442 for the standard selection.
-#include <px4_boardconfig.h>
+#అన్తర్భావ <px4_boardconfig.h>
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
-#include "f3442_standard/DaaF3442.h"
-#else
-#include "crosstrack_standard/DaaCrosstrack.h"
-#endif
+#ఒకవేళ defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#అన్తర్భావ "f3442_standard/DaaF3442.h"
+#లేకపోతే
+#అన్తర్భావ "crosstrack_standard/DaaCrosstrack.h"
+#అయితే_ముగింపు
 
-#include <matrix/math.hpp>
+#అన్తర్భావ <matrix/math.hpp>
 
-#include <uORB/topics/detect_and_avoid.h>
-#include <uORB/topics/transponder_report.h>
+#అన్తర్భావ <uORB/topics/detect_and_avoid.h>
+#అన్తర్భావ <uORB/topics/transponder_report.h>
 
-struct daa_input_s {
-	matrix::Vector2d uav_lat_lon{};
-	float uav_alt{0.f};
-	matrix::Vector3f uav_vel_ned{};
+నిర్మాణం daa_ఆదానం_s {
+	మాతృక::Vector2d uav_lat_lon{};
+	దశాంశం uav_alt{0.f};
+	మాతృక::Vector3f uav_vel_ned{};
 	transponder_report_s transponder_report{};
 };
 
 class AdsbConflict
 {
-public:
-	AdsbConflict() = default;
-	~AdsbConflict() = default;
+బహిరంగ:
+	AdsbConflict() = అప్రమేయ;
+	~AdsbConflict() = అప్రమేయ;
 
 	/**
 	 * @brief Validate ownship + transponder inputs and compute the DAA output.
 	 * Returns false on non-finite inputs or when the built standard needs a heading the report does not provide.
 	*/
-	bool calculate_daa_output(const daa_input_s &daa_input, detect_and_avoid_s &daa_output);
+	bool calculate_daa_output(స్థిరరాశి daa_ఆదానం_s &daa_ఆదానం, detect_and_avoid_s &daa_output);
 
 	bool try_updating_params();
 
-	static bool valid_wgs84_coordinates(const double latitude, const double longitude);
+	స్థిర bool valid_wgs84_coordinates(స్థిరరాశి ద్విగుణ latitude, స్థిరరాశి ద్విగుణ longitude);
 
-private:
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+అంతరంగ:
+#ఒకవేళ defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	DaaF3442 _daa;
-#else
+#లేకపోతే
 	DaaCrosstrack _daa;
-#endif
+#అయితే_ముగింపు
 };

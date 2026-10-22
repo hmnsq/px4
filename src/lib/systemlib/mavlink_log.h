@@ -39,32 +39,32 @@
  * @author Julian Oes <julian@oes.ch>
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_log.h>
-#include <uORB/uORB.h>
+#అన్తర్భావ <px4_log.h>
+#అన్తర్భావ <uORB/uORB.h>
 
 /**
  * The maximum string length supported.
  */
-#define MAVLINK_LOG_MAXLEN			50
+#నిర్వచించు MAVLINK_LOG_MAXLEN			50
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-__EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, const char *fmt, ...);
-#ifdef __cplusplus
+#నిర్వచితమైతే __cplusplus
+బాహ్య "C" {
+#అయితే_ముగింపు
+__EXPORT శూన్య mavlink_vasprintf(పూర్ణాంకం severity, orb_advert_t *mavlink_log_pub, స్థిరరాశి అక్షరం *fmt, ...);
+#నిర్వచితమైతే __cplusplus
 }
-#endif
+#అయితే_ముగింపు
 
-#define _MSG_PRIO_DEBUG		7
-#define _MSG_PRIO_INFO		6
-#define _MSG_PRIO_NOTICE	5
-#define _MSG_PRIO_WARNING	4
-#define _MSG_PRIO_ERROR		3
-#define _MSG_PRIO_CRITICAL	2
-#define _MSG_PRIO_ALERT		1
-#define _MSG_PRIO_EMERGENCY	0
+#నిర్వచించు సందేశం_PRIO_DEBUG		7
+#నిర్వచించు సందేశం_PRIO_INFO		6
+#నిర్వచించు సందేశం_PRIO_NOTICE	5
+#నిర్వచించు సందేశం_PRIO_WARNING	4
+#నిర్వచించు సందేశం_PRIO_ERROR		3
+#నిర్వచించు సందేశం_PRIO_CRITICAL	2
+#నిర్వచించు సందేశం_PRIO_ALERT		1
+#నిర్వచించు సందేశం_PRIO_EMERGENCY	0
 
 /*
  * The va_args implementation here is not beautiful, but obviously we run into the same issues
@@ -79,11 +79,11 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _pub		Pointer to the uORB advert;
  * @param _text		The text to log;
  */
-#define mavlink_log_info(_pub, _text, ...)			\
-	do { \
-		mavlink_vasprintf(_MSG_PRIO_INFO, _pub, _text, ##__VA_ARGS__); \
-		PX4_INFO(_text, ##__VA_ARGS__); \
-	} while(0);
+#నిర్వచించు mavlink_log_info(_pub, పాఠ్యం_2, ...)			\
+	చేయి { \
+		mavlink_vasprintf(సందేశం_PRIO_INFO, _pub, పాఠ్యం_2, ##__VA_ARGS__); \
+		PX4_INFO(పాఠ్యం_2, ##__VA_ARGS__); \
+	} అయితే(0);
 
 /**
  * Send a mavlink warning message and print to console.
@@ -91,11 +91,11 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _pub		Pointer to the uORB advert;
  * @param _text		The text to log;
  */
-#define mavlink_log_warning(_pub, _text, ...) \
-	do { \
-		mavlink_vasprintf(_MSG_PRIO_WARNING, _pub, _text, ##__VA_ARGS__); \
-		PX4_WARN(_text, ##__VA_ARGS__); \
-	} while(0);
+#నిర్వచించు mavlink_log_warning(_pub, పాఠ్యం_2, ...) \
+	చేయి { \
+		mavlink_vasprintf(సందేశం_PRIO_WARNING, _pub, పాఠ్యం_2, ##__VA_ARGS__); \
+		PX4_WARN(పాఠ్యం_2, ##__VA_ARGS__); \
+	} అయితే(0);
 
 /**
  * Send a mavlink emergency message and print to console.
@@ -103,11 +103,11 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _pub		Pointer to the uORB advert;
  * @param _text		The text to log;
  */
-#define mavlink_log_emergency(_pub, _text, ...) \
-	do { \
-		mavlink_vasprintf(_MSG_PRIO_EMERGENCY, _pub, _text, ##__VA_ARGS__); \
-		PX4_ERR(_text, ##__VA_ARGS__); \
-	} while(0);
+#నిర్వచించు mavlink_log_emergency(_pub, పాఠ్యం_2, ...) \
+	చేయి { \
+		mavlink_vasprintf(సందేశం_PRIO_EMERGENCY, _pub, పాఠ్యం_2, ##__VA_ARGS__); \
+		PX4_ERR(పాఠ్యం_2, ##__VA_ARGS__); \
+	} అయితే(0);
 
 /**
  * Send a mavlink critical message and print to console.
@@ -115,8 +115,8 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _pub		Pointer to the uORB advert;
  * @param _text		The text to log;
  */
-#define mavlink_log_critical(_pub, _text, ...) \
-	do { \
-		mavlink_vasprintf(_MSG_PRIO_CRITICAL, _pub, _text, ##__VA_ARGS__); \
-		PX4_WARN(_text, ##__VA_ARGS__); \
-	} while(0);
+#నిర్వచించు mavlink_log_critical(_pub, పాఠ్యం_2, ...) \
+	చేయి { \
+		mavlink_vasprintf(సందేశం_PRIO_CRITICAL, _pub, పాఠ్యం_2, ##__VA_ARGS__); \
+		PX4_WARN(పాఠ్యం_2, ##__VA_ARGS__); \
+	} అయితే(0);

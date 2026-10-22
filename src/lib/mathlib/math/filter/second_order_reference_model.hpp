@@ -39,19 +39,19 @@
  * @author Thomas Stastny <thomas.stastny@auterion.com>
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/defines.h>
-#include <matrix/SquareMatrix.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <matrix/SquareMatrix.hpp>
 
-namespace math
+నామాకాశ math
 {
 
-template<typename T>
-class SecondOrderReferenceModel
+మూస<రకం_పేరు T>
+తరగతి రెండవ_క్రమం_Reference_Model
 {
-public:
-	SecondOrderReferenceModel() = default;
+బహిరంగ:
+	రెండవ_క్రమం_Reference_Model() = అప్రమేయ;
 
 	/**
 	 * Construct with system parameters
@@ -59,15 +59,15 @@ public:
 	 * @param[in] natural_freq The desired natural frequency of the system [rad/s]
 	 * @param[in] damping_ratio The desired damping ratio of the system
 	 */
-	SecondOrderReferenceModel(const float natural_freq, const float damping_ratio)
+	రెండవ_క్రమం_Reference_Model(స్థిరరాశి దశాంశం natural_freq, స్థిరరాశి దశాంశం damping_నిష్పత్తి)
 	{
-		setParameters(natural_freq, damping_ratio);
+		సమితి_Parameters(natural_freq, damping_నిష్పత్తి);
 	}
 
 	/**
 	 * Enumeration for available time discretization methods
 	 */
-	enum DiscretizationMethod {
+	గణన Discretization_పద్ధతి {
 		kForwardEuler,
 		kBilinear
 	};
@@ -75,7 +75,7 @@ public:
 	/**
 	 * Set the time discretization method used for state integration
 	 */
-	void setDiscretizationMethod(const DiscretizationMethod method) { discretization_method_ = method; }
+	శూన్య సమితి_Discretization_పద్ధతి(స్థిరరాశి Discretization_పద్ధతి పద్ధతి) { discretization_పద్ధతి = పద్ధతి; }
 
 	/**
 	 * Set the system parameters
@@ -87,9 +87,9 @@ public:
 	 * @param[in] damping_ratio The desired damping ratio of the system
 	 * @return Whether or not the param set was successful
 	 */
-	bool setParameters(const float natural_freq, const float damping_ratio)
+	తార్కిక సమితి_Parameters(స్థిరరాశి దశాంశం natural_freq, స్థిరరాశి దశాంశం damping_నిష్పత్తి)
 	{
-		if (natural_freq < FLT_EPSILON || damping_ratio < FLT_EPSILON) {
+		ఒకవేళ (natural_freq < FLT_EPSILON || damping_నిష్పత్తి < FLT_EPSILON) {
 
 			// Deadzone the resulting constants (will result in zero filter acceleration)
 			spring_constant_ = FLT_EPSILON;
@@ -97,38 +97,38 @@ public:
 
 			// Zero natural frequency means our time step is irrelevant
 			cutoff_freq_ = FLT_EPSILON;
-			max_time_step_ = INFINITY;
+			max_సమయం_అడుగు = INFINITY;
 
 			// Fail
-			return false;
+			తిరిగి అబద్ధం;
 		}
 
 		// Note these are "effective" coefficients, as mass coefficient is considered baked in
 		spring_constant_ = natural_freq * natural_freq;
-		damping_coefficient_ = 2.0f * damping_ratio * natural_freq;
+		damping_coefficient_ = 2.0f * damping_నిష్పత్తి * natural_freq;
 
-		cutoff_freq_ = calculateCutoffFrequency(natural_freq, damping_ratio);
+		cutoff_freq_ = calculateCutoffFrequency(natural_freq, damping_నిష్పత్తి);
 
 		// Based on *conservative nyquist frequency via kSampleRateMultiplier >= 2
-		max_time_step_ = 2.0f * M_PI_F / (cutoff_freq_ * kSampleRateMultiplier);
+		max_సమయం_అడుగు = 2.0f * M_PI_F / (cutoff_freq_ * k_Sample_రేటు_Multiplier);
 
-		return true;
+		తిరిగి నిజం;
 	}
 
 	/**
 	 * @return System state [units]
 	 */
-	const T &getState() const { return filter_state_; }
+	స్థిరరాశి T &getState() స్థిరరాశి { తిరిగి filter_state_; }
 
 	/**
 	 * @return System rate [units/s]
 	 */
-	const T &getRate() const { return filter_rate_; }
+	స్థిరరాశి T &get_రేటు() స్థిరరాశి { తిరిగి filter_రేటు; }
 
 	/**
 	 * @return System acceleration [units/s^2]
 	 */
-	const T &getAccel() const { return filter_accel_; }
+	స్థిరరాశి T &getAccel() స్థిరరాశి { తిరిగి filter_accel_; }
 
 	/**
 	 * Update the system states
@@ -139,23 +139,23 @@ public:
 	 * @param[in] state_sample New state sample [units]
 	 * @param[in] rate_sample New rate sample, if provided, otherwise defaults to zero(s) [units/s]
 	 */
-	void update(const float time_step, const T &state_sample, const T &rate_sample = T())
+	శూన్య update(స్థిరరాశి దశాంశం సమయం_అడుగు, స్థిరరాశి T &state_sample, స్థిరరాశి T &రేటు_sample = T())
 	{
-		if ((time_step > max_time_step_) || (time_step < 0.0f)) {
+		ఒకవేళ ((సమయం_అడుగు > max_సమయం_అడుగు) || (సమయం_అడుగు < 0.0f)) {
 			// time step is too large or is negative, reset the filter
-			reset(state_sample, rate_sample);
-			return;
+			reset(state_sample, రేటు_sample);
+			తిరిగి;
 		}
 
 		// take a step forward from the last state (and input), update the filter states
-		integrateStates(time_step, last_state_sample_, last_rate_sample_);
+		integrate_స్థితులు(సమయం_అడుగు, చివరి_state_sample, చివరి_రేటు_sample);
 
 		// instantaneous acceleration from current input / state
-		filter_accel_ = calculateInstantaneousAcceleration(state_sample, rate_sample);
+		filter_accel_ = calculateInstantaneousAcceleration(state_sample, రేటు_sample);
 
 		// store the current samples
-		last_state_sample_ = state_sample;
-		last_rate_sample_ = rate_sample;
+		చివరి_state_sample = state_sample;
+		చివరి_రేటు_sample = రేటు_sample;
 	}
 
 	/**
@@ -164,44 +164,44 @@ public:
 	 * @param[in] state Initial state [units]
 	 * @param[in] rate Initial rate, if provided, otherwise defaults to zero(s) [units/s]
 	 */
-	void reset(const T &state, const T &rate = T())
+	శూన్య reset(స్థిరరాశి T &state, స్థిరరాశి T &రేటు = T())
 	{
 		filter_state_ = state;
-		filter_rate_ = rate;
+		filter_రేటు = రేటు;
 		filter_accel_ = T();
 
-		last_state_sample_ = state;
-		last_rate_sample_ = rate;
+		చివరి_state_sample = state;
+		చివరి_రేటు_sample = రేటు;
 	}
 
-private:
+అంతరంగ:
 
 	// A conservative multiplier (>=2) on sample frequency to bound the maximum time step
-	static constexpr float kSampleRateMultiplier = 4.0f;
+	స్థిర constexpr దశాంశం k_Sample_రేటు_Multiplier = 4.0f;
 
 	// (effective, no mass) Spring constant for second order system [s^-2]
-	float spring_constant_{FLT_EPSILON};
+	దశాంశం spring_constant_{FLT_EPSILON};
 
 	// (effective, no mass) Damping coefficient for second order system [s^-1]
-	float damping_coefficient_{FLT_EPSILON};
+	దశాంశం damping_coefficient_{FLT_EPSILON};
 
 	// cutoff frequency [rad/s]
-	float cutoff_freq_{FLT_EPSILON};
+	దశాంశం cutoff_freq_{FLT_EPSILON};
 
 	T filter_state_{}; // [units]
-	T filter_rate_{}; // [units/s]
+	T filter_రేటు{}; // [units/s]
 	T filter_accel_{}; // [units/s^2]
 
 	// the last samples need to be stored because we don't know the time step over which we integrate to update to the
 	// next step a priori
-	T last_state_sample_{}; // [units]
-	T last_rate_sample_{}; // [units/s]
+	T చివరి_state_sample{}; // [units]
+	T చివరి_రేటు_sample{}; // [units/s]
 
 	// Maximum time step [s]
-	float max_time_step_{INFINITY};
+	దశాంశం max_సమయం_అడుగు{INFINITY};
 
 	// The selected time discretization method used for state integration
-	DiscretizationMethod discretization_method_{kBilinear};
+	Discretization_పద్ధతి discretization_పద్ధతి{kBilinear};
 
 	/**
 	 * Calculate the cutoff frequency in terms of undamped natural frequency and damping ratio
@@ -210,11 +210,11 @@ private:
 	 * @param[in] damping_ratio The desired damping ratio of the system
 	 * @return Cutoff frequency [rad/s]
 	 */
-	float calculateCutoffFrequency(const float natural_freq, const float damping_ratio)
+	దశాంశం calculateCutoffFrequency(స్థిరరాశి దశాంశం natural_freq, స్థిరరాశి దశాంశం damping_నిష్పత్తి)
 	{
-		const float damping_ratio_squared = damping_ratio * damping_ratio;
-		return natural_freq * sqrtf(1.0f - 2.0f * damping_ratio_squared + sqrtf(4.0f * damping_ratio_squared *
-					    damping_ratio_squared - 4.0f * damping_ratio_squared + 2.0f));
+		స్థిరరాశి దశాంశం damping_నిష్పత్తి_squared = damping_నిష్పత్తి * damping_నిష్పత్తి;
+		తిరిగి natural_freq * sqrtf(1.0f - 2.0f * damping_నిష్పత్తి_squared + sqrtf(4.0f * damping_నిష్పత్తి_squared *
+					    damping_నిష్పత్తి_squared - 4.0f * damping_నిష్పత్తి_squared + 2.0f));
 	}
 
 	/**
@@ -224,18 +224,18 @@ private:
 	 * @param[in] state_sample [units]
 	 * @param[in] rate_sample [units/s]
 	 */
-	void integrateStates(const float time_step, const T &state_sample, const T &rate_sample)
+	శూన్య integrate_స్థితులు(స్థిరరాశి దశాంశం సమయం_అడుగు, స్థిరరాశి T &state_sample, స్థిరరాశి T &రేటు_sample)
 	{
-		switch (discretization_method_) {
-		case DiscretizationMethod::kForwardEuler: {
+		ఎంపిక (discretization_పద్ధతి) {
+		స్థితి Discretization_పద్ధతి::kForwardEuler: {
 				// forward-Euler discretization
-				integrateStatesForwardEuler(time_step, state_sample, rate_sample);
-				break;
+				integrate_స్థితులు_Forward_Euler(సమయం_అడుగు, state_sample, రేటు_sample);
+				ఆపు;
 			}
 
-		default: {
+		అప్రమేయ: {
 				// default to bilinear transform
-				integrateStatesBilinear(time_step, state_sample, rate_sample);
+				integrate_స్థితులు_Bilinear(సమయం_అడుగు, state_sample, రేటు_sample);
 			}
 		}
 	}
@@ -247,7 +247,7 @@ private:
 	 * @param[in] state_sample [units]
 	 * @param[in] rate_sample [units/s]
 	 */
-	void integrateStatesForwardEuler(const float time_step, const T &state_sample, const T &rate_sample)
+	శూన్య integrate_స్థితులు_Forward_Euler(స్థిరరాశి దశాంశం సమయం_అడుగు, స్థిరరాశి T &state_sample, స్థిరరాశి T &రేటు_sample)
 	{
 		// general notation for what follows:
 		// c: continuous
@@ -260,24 +260,24 @@ private:
 		// Ac = [ 0   1 ]
 		//      [-Kx -Kv]
 		// Ad = I + Ac * T
-		matrix::SquareMatrix<float, 2> state_matrix;
-		state_matrix(0, 0) = 1.0f;
-		state_matrix(0, 1) = time_step;
-		state_matrix(1, 0) = -spring_constant_ * time_step;
-		state_matrix(1, 1) = -damping_coefficient_ * time_step + 1.0f;
+		మాతృక::వర్గం_మాతృక<దశాంశం, 2> state_మాతృక;
+		state_మాతృక(0, 0) = 1.0f;
+		state_మాతృక(0, 1) = సమయం_అడుగు;
+		state_మాతృక(1, 0) = -spring_constant_ * సమయం_అడుగు;
+		state_మాతృక(1, 1) = -damping_coefficient_ * సమయం_అడుగు + 1.0f;
 
 		// input matrix
 		// Bc = [0  0 ]
 		//      [Kx Kv]
 		// Bd = Bc * T
-		matrix::SquareMatrix<float, 2> input_matrix;
-		input_matrix(0, 0) = 0.0f;
-		input_matrix(0, 1) = 0.0f;
-		input_matrix(1, 0) = spring_constant_ * time_step;
-		input_matrix(1, 1) = damping_coefficient_ * time_step;
+		మాతృక::వర్గం_మాతృక<దశాంశం, 2> ఆదానం_మాతృక;
+		ఆదానం_మాతృక(0, 0) = 0.0f;
+		ఆదానం_మాతృక(0, 1) = 0.0f;
+		ఆదానం_మాతృక(1, 0) = spring_constant_ * సమయం_అడుగు;
+		ఆదానం_మాతృక(1, 1) = damping_coefficient_ * సమయం_అడుగు;
 
 		// discrete state transition
-		transitionStates(state_matrix, input_matrix, state_sample, rate_sample);
+		transition_స్థితులు(state_మాతృక, ఆదానం_మాతృక, state_sample, రేటు_sample);
 	}
 
 	/**
@@ -287,11 +287,11 @@ private:
 	 * @param[in] state_sample [units]
 	 * @param[in] rate_sample [units/s]
 	 */
-	void integrateStatesBilinear(const float time_step, const T &state_sample, const T &rate_sample)
+	శూన్య integrate_స్థితులు_Bilinear(స్థిరరాశి దశాంశం సమయం_అడుగు, స్థిరరాశి T &state_sample, స్థిరరాశి T &రేటు_sample)
 	{
-		const float time_step_squared = time_step * time_step;
-		const float inv_denominator = 1.0f / (0.25f * spring_constant_ * time_step_squared + 0.5f * damping_coefficient_ *
-						      time_step + 1.0f);
+		స్థిరరాశి దశాంశం సమయం_అడుగు_squared = సమయం_అడుగు * సమయం_అడుగు;
+		స్థిరరాశి దశాంశం inv_denominator = 1.0f / (0.25f * spring_constant_ * సమయం_అడుగు_squared + 0.5f * damping_coefficient_ *
+						      సమయం_అడుగు + 1.0f);
 
 		// general notation for what follows:
 		// c: continuous
@@ -304,26 +304,26 @@ private:
 		// Ac = [ 0   1 ]
 		//      [-Kx -Kv]
 		// Ad = (I + 1/2 * Ac * T) * (I - 1/2 * Ac * T)^-1
-		matrix::SquareMatrix<float, 2> state_matrix;
-		state_matrix(0, 0) = -0.25f * spring_constant_ * time_step_squared + 0.5f * damping_coefficient_ * time_step + 1.0f;
-		state_matrix(0, 1) = time_step;
-		state_matrix(1, 0) = -spring_constant_ * time_step;
-		state_matrix(1, 1) = -0.25f * spring_constant_ * time_step_squared - 0.5f * damping_coefficient_ * time_step + 1.0f;
-		state_matrix *= inv_denominator;
+		మాతృక::వర్గం_మాతృక<దశాంశం, 2> state_మాతృక;
+		state_మాతృక(0, 0) = -0.25f * spring_constant_ * సమయం_అడుగు_squared + 0.5f * damping_coefficient_ * సమయం_అడుగు + 1.0f;
+		state_మాతృక(0, 1) = సమయం_అడుగు;
+		state_మాతృక(1, 0) = -spring_constant_ * సమయం_అడుగు;
+		state_మాతృక(1, 1) = -0.25f * spring_constant_ * సమయం_అడుగు_squared - 0.5f * damping_coefficient_ * సమయం_అడుగు + 1.0f;
+		state_మాతృక *= inv_denominator;
 
 		// input matrix
 		// Bc = [0  0 ]
 		//      [Kx Kv]
 		// Bd = Ac^-1 * (Ad - I) * Bc
-		matrix::SquareMatrix<float, 2> input_matrix;
-		input_matrix(0, 0) = 0.5f * spring_constant_ * time_step_squared;
-		input_matrix(0, 1) = 0.5f * damping_coefficient_ * time_step_squared;
-		input_matrix(1, 0) = spring_constant_ * time_step;
-		input_matrix(1, 1) = damping_coefficient_ * time_step;
-		input_matrix *= inv_denominator;
+		మాతృక::వర్గం_మాతృక<దశాంశం, 2> ఆదానం_మాతృక;
+		ఆదానం_మాతృక(0, 0) = 0.5f * spring_constant_ * సమయం_అడుగు_squared;
+		ఆదానం_మాతృక(0, 1) = 0.5f * damping_coefficient_ * సమయం_అడుగు_squared;
+		ఆదానం_మాతృక(1, 0) = spring_constant_ * సమయం_అడుగు;
+		ఆదానం_మాతృక(1, 1) = damping_coefficient_ * సమయం_అడుగు;
+		ఆదానం_మాతృక *= inv_denominator;
 
 		// discrete state transition
-		transitionStates(state_matrix, input_matrix, state_sample, rate_sample);
+		transition_స్థితులు(state_మాతృక, ఆదానం_మాతృక, state_sample, రేటు_sample);
 	}
 
 	/**
@@ -334,15 +334,15 @@ private:
 	 * @param[in] state_sample [units]
 	 * @param[in] rate_sample [units/s]
 	 */
-	void transitionStates(const matrix::SquareMatrix<float, 2> &state_matrix,
-			      const matrix::SquareMatrix<float, 2> &input_matrix, const T &state_sample, const T &rate_sample)
+	శూన్య transition_స్థితులు(స్థిరరాశి మాతృక::వర్గం_మాతృక<దశాంశం, 2> &state_మాతృక,
+			      స్థిరరాశి మాతృక::వర్గం_మాతృక<దశాంశం, 2> &ఆదానం_మాతృక, స్థిరరాశి T &state_sample, స్థిరరాశి T &రేటు_sample)
 	{
-		const T new_state = state_matrix(0, 0) * filter_state_ + state_matrix(0, 1) * filter_rate_ + input_matrix(0,
-				    0) * state_sample + input_matrix(0, 1) * rate_sample;
-		const T new_rate = state_matrix(1, 0) * filter_state_ + state_matrix(1, 1) * filter_rate_ + input_matrix(1,
-				   0) * state_sample + input_matrix(1, 1) * rate_sample;
+		స్థిరరాశి T new_state = state_మాతృక(0, 0) * filter_state_ + state_మాతృక(0, 1) * filter_రేటు + ఆదానం_మాతృక(0,
+				    0) * state_sample + ఆదానం_మాతృక(0, 1) * రేటు_sample;
+		స్థిరరాశి T new_రేటు = state_మాతృక(1, 0) * filter_state_ + state_మాతృక(1, 1) * filter_రేటు + ఆదానం_మాతృక(1,
+				   0) * state_sample + ఆదానం_మాతృక(1, 1) * రేటు_sample;
 		filter_state_ = new_state;
-		filter_rate_ = new_rate;
+		filter_రేటు = new_రేటు;
 	}
 
 	/**
@@ -351,11 +351,11 @@ private:
 	 * @param[in] state_sample [units]
 	 * @param[in] rate_sample [units/s]
 	 */
-	T calculateInstantaneousAcceleration(const T &state_sample, const T &rate_sample) const
+	T calculateInstantaneousAcceleration(స్థిరరాశి T &state_sample, స్థిరరాశి T &రేటు_sample) స్థిరరాశి
 	{
-		const T state_error = state_sample - filter_state_;
-		const T rate_error = rate_sample - filter_rate_;
-		return state_error * spring_constant_ + rate_error * damping_coefficient_;
+		స్థిరరాశి T state_error = state_sample - filter_state_;
+		స్థిరరాశి T రేటు_error = రేటు_sample - filter_రేటు;
+		తిరిగి state_error * spring_constant_ + రేటు_error * damping_coefficient_;
 	}
 };
 

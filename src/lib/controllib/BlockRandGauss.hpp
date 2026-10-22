@@ -37,70 +37,70 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <time.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <mathlib/math/test/test.hpp>
+#అన్తర్భావ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
 
-class __EXPORT BlockRandGauss: public Block
+తరగతి __EXPORT ఖండం_Rand_Gauss: బహిరంగ ఖండం
 {
-public:
+బహిరంగ:
 // methods
-	BlockRandGauss(SuperBlock *parent,
-		       const char *name) :
-		Block(parent, name),
-		_mean(this, "MEAN"),
-		_stdDev(this, "DEV")
+	ఖండం_Rand_Gauss(Super_ఖండం *మాతృ,
+		       స్థిరరాశి అక్షరం *name) :
+		ఖండం(మాతృ, name),
+		సగటు_2(ఇది, "MEAN"),
+		_stdDev(ఇది, "DEV")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandGauss() = default;
-	float update()
+	మాయా ~ఖండం_Rand_Gauss() = అప్రమేయ;
+	దశాంశం update()
 	{
-		static float V1, V2, S;
-		static int phase = 0;
-		float X;
+		స్థిర దశాంశం V1, V2, S;
+		స్థిర పూర్ణాంకం phase = 0;
+		దశాంశం X;
 
-		if (phase == 0) {
-			do {
-				float U1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-				float U2 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		ఒకవేళ (phase == 0) {
+			చేయి {
+				దశాంశం U1 = static_cast<దశాంశం>(rand()) / static_cast<దశాంశం>(RAND_MAX);
+				దశాంశం U2 = static_cast<దశాంశం>(rand()) / static_cast<దశాంశం>(RAND_MAX);
 				V1 = 2 * U1 - 1;
 				V2 = 2 * U2 - 1;
 				S = V1 * V1 + V2 * V2;
-			} while (S >= 1 || fabsf(S) < 1e-8f);
+			} అయితే (S >= 1 || fabsf(S) < 1e-8f);
 
-			X = V1 * float(sqrtf(-2 * float(logf(S)) / S));
+			X = V1 * దశాంశం(sqrtf(-2 * దశాంశం(logf(S)) / S));
 
-		} else {
-			X = V2 * float(sqrtf(-2 * float(logf(S)) / S));
+		} లేకపోతే {
+			X = V2 * దశాంశం(sqrtf(-2 * దశాంశం(logf(S)) / S));
 		}
 
 		phase = 1 - phase;
-		return X * getStdDev() + getMean();
+		తిరిగి X * getStdDev() + get_సగటు();
 	}
 // accessors
-	float getMean() { return _mean.get(); }
-	float getStdDev() { return _stdDev.get(); }
-private:
-// attributes
-	control::BlockParamFloat _mean;
-	control::BlockParamFloat _stdDev;
+	దశాంశం get_సగటు() { తిరిగి సగటు_2.get(); }
+	దశాంశం getStdDev() { తిరిగి _stdDev.get(); }
+అంతరంగ:
+//లక్షణాలు
+	control::ఖండం_Param_Float సగటు_2;
+	control::ఖండం_Param_Float _stdDev;
 };
 
 } // namespace control

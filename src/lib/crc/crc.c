@@ -38,9 +38,9 @@
  * Included Files
  ****************************************************************************/
 
-#include <stdint.h>
-#include <stdlib.h>
-#include "crc.h"
+#అన్తర్భావ <stdint.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ "crc.h"
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -86,22 +86,22 @@
  *
  ****************************************************************************/
 
-uint16_t crc16_add(uint16_t crc, uint8_t value)
+uint16_t crc16_కూడు(uint16_t చక్రీయ_తనిఖీ, uint8_t విలువ)
 {
 	uint32_t i;
-	const uint16_t poly = 0x1021u;
-	crc ^= (uint16_t)((uint16_t) value << 8u);
+	స్థిరరాశి uint16_t poly = 0x1021u;
+	చక్రీయ_తనిఖీ ^= (uint16_t)((uint16_t) విలువ << 8u);
 
-	for (i = 0; i < 8; i++) {
-		if (crc & (1u << 15u)) {
-			crc = (uint16_t)((crc << 1u) ^ poly);
+	కొరకు (i = 0; i < 8; i++) {
+		ఒకవేళ (చక్రీయ_తనిఖీ & (1u << 15u)) {
+			చక్రీయ_తనిఖీ = (uint16_t)((చక్రీయ_తనిఖీ << 1u) ^ poly);
 
-		} else {
-			crc = (uint16_t)(crc << 1u);
+		} లేకపోతే {
+			చక్రీయ_తనిఖీ = (uint16_t)(చక్రీయ_తనిఖీ << 1u);
 		}
 	}
 
-	return crc;
+	తిరిగి చక్రీయ_తనిఖీ;
 }
 
 /****************************************************************************
@@ -121,15 +121,15 @@ uint16_t crc16_add(uint16_t crc, uint8_t value)
  *
  ****************************************************************************/
 
-uint16_t crc16_signature(uint16_t initial, size_t length, const uint8_t *bytes)
+uint16_t crc16_signature(uint16_t initial, size_t నిడివి, స్థిరరాశి uint8_t *బైట్లు)
 {
 	size_t i;
 
-	for (i = 0u; i < length; i++) {
-		initial = crc16_add(initial, bytes[i]);
+	కొరకు (i = 0u; i < నిడివి; i++) {
+		initial = crc16_కూడు(initial, బైట్లు[i]);
 	}
 
-	return initial ^ CRC16_OUTPUT_XOR;
+	తిరిగి initial ^ CRC16_OUTPUT_XOR;
 }
 
 /****************************************************************************
@@ -148,25 +148,25 @@ uint16_t crc16_signature(uint16_t initial, size_t length, const uint8_t *bytes)
  *
  ****************************************************************************/
 
-uint32_t crc32_signature(uint32_t acc, size_t length, const uint8_t *bytes)
+uint32_t చక్రీయ_తనిఖీ_32_signature(uint32_t acc, size_t నిడివి, స్థిరరాశి uint8_t *బైట్లు)
 {
 	size_t i;
-	const uint32_t poly = 0xedb88320u;
-	const uint8_t  bits = 8u;
-	uint8_t        w = bits;
+	స్థిరరాశి uint32_t poly = 0xedb88320u;
+	స్థిరరాశి uint8_t  బిట్లు = 8u;
+	uint8_t        w = బిట్లు;
 
-	for (i = 0u; i < length; i++) {
-		acc ^= bytes[i];
-		w = bits;
+	కొరకు (i = 0u; i < నిడివి; i++) {
+		acc ^= బైట్లు[i];
+		w = బిట్లు;
 
-		while (w--) {
-			const uint32_t xor = -(acc & 1);
+		అయితే (w--) {
+			స్థిరరాశి uint32_t xor = -(acc & 1);
 			acc >>= 1;
 			acc ^= (poly & xor);
 		}
 	}
 
-	return acc;
+	తిరిగి acc;
 }
 
 
@@ -187,25 +187,25 @@ uint32_t crc32_signature(uint32_t acc, size_t length, const uint8_t *bytes)
  *
  ****************************************************************************/
 __EXPORT
-uint64_t crc64_add_word(uint64_t crc, uint32_t value)
+uint64_t crc64_కూడు_మాట(uint64_t చక్రీయ_తనిఖీ, uint32_t విలువ)
 {
 	uint32_t i, j;
 	uint8_t byte;
-	const uint64_t poly = 0x42F0E1EBA9EA3693ull;
+	స్థిరరాశి uint64_t poly = 0x42F0E1EBA9EA3693ull;
 
-	for (j = 0; j < 4; j++) {
-		byte = ((uint8_t *) &value)[j];
-		crc ^= (uint64_t) byte << 56u;
+	కొరకు (j = 0; j < 4; j++) {
+		byte = ((uint8_t *) &విలువ)[j];
+		చక్రీయ_తనిఖీ ^= (uint64_t) byte << 56u;
 
-		for (i = 0; i < 8; i++) {
-			if (crc & (1ull << 63u)) {
-				crc = (uint64_t)(crc << 1u) ^ poly;
+		కొరకు (i = 0; i < 8; i++) {
+			ఒకవేళ (చక్రీయ_తనిఖీ & (1ull << 63u)) {
+				చక్రీయ_తనిఖీ = (uint64_t)(చక్రీయ_తనిఖీ << 1u) ^ poly;
 
-			} else {
-				crc = (uint64_t)(crc << 1u);
+			} లేకపోతే {
+				చక్రీయ_తనిఖీ = (uint64_t)(చక్రీయ_తనిఖీ << 1u);
 			}
 		}
 	}
 
-	return crc;
+	తిరిగి చక్రీయ_తనిఖీ;
 }

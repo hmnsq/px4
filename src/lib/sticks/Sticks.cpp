@@ -35,21 +35,21 @@
  * @file Sticks.cpp
  */
 
-#include "Sticks.hpp"
+#అన్తర్భావ "Sticks.hpp"
 
-using namespace time_literals;
-using namespace matrix;
+ఉపయోగించి నామాకాశ సమయం_literals;
+ఉపయోగించి నామాకాశ మాతృక;
 
-Sticks::Sticks(ModuleParams *parent) :
-	ModuleParams(parent)
+Sticks::Sticks(ModuleParams *మాతృ) :
+	ModuleParams(మాతృ)
 {}
 
-bool Sticks::checkAndUpdateStickInputs()
+తార్కిక Sticks::checkAndUpdateStickInputs()
 {
 	// Sticks are rescaled linearly and exponentially to [-1,1]
 	manual_control_setpoint_s manual_control_setpoint;
 
-	if (_manual_control_setpoint_sub.update(&manual_control_setpoint)) {
+	ఒకవేళ (_manual_control_setpoint_sub.update(&manual_control_setpoint)) {
 		_positions(0) = manual_control_setpoint.roll;
 		_positions(1) = manual_control_setpoint.pitch;
 		_positions(2) = manual_control_setpoint.yaw;
@@ -63,42 +63,42 @@ bool Sticks::checkAndUpdateStickInputs()
 		_aux_positions(5) = manual_control_setpoint.aux6;
 
 		// valid stick inputs are required
-		_input_available = manual_control_setpoint.valid && _positions.isAllFinite();
+		ఆదానం_అందుబాటు = manual_control_setpoint.valid && _positions.isAllFinite();
 
-	} else {
+	} లేకపోతే {
 		failsafe_flags_s failsafe_flags;
 
-		if (_failsafe_flags_sub.update(&failsafe_flags)) {
-			if (failsafe_flags.manual_control_signal_lost) {
-				_input_available = false;
+		ఒకవేళ (_failsafe_flags_sub.update(&failsafe_flags)) {
+			ఒకవేళ (failsafe_flags.manual_control_signal_కోల్పోయిన) {
+				ఆదానం_అందుబాటు = అబద్ధం;
 			}
 		}
 	}
 
-	if (!_input_available) {
+	ఒకవేళ (!ఆదానం_అందుబాటు) {
 		// Timeout: set all sticks to zero
 		_positions.zero();
 	}
 
-	return _input_available;
+	తిరిగి ఆదానం_అందుబాటు;
 }
 
-float Sticks::expoDeadzone(float value, float expo, float deadzone)
+దశాంశం Sticks::expoDeadzone(దశాంశం value, దశాంశం expo, దశాంశం deadzone)
 {
-	return math::expo(math::deadzone(value, deadzone), expo);
+	తిరిగి math::expo(math::deadzone(value, deadzone), expo);
 }
 
-void Sticks::limitStickUnitLengthXY(Vector2f &v)
+శూన్య Sticks::హద్దు_Stick_Unit_నిడివి_XY(Vector2f &v)
 {
-	const float vl = v.length();
+	స్థిరరాశి దశాంశం vl = v.నిడివి();
 
-	if (vl > 1.0f) {
+	ఒకవేళ (vl > 1.0f) {
 		v /= vl;
 	}
 }
 
-void Sticks::rotateIntoHeadingFrameXY(Vector2f &v, const float yaw, const float yaw_setpoint)
+శూన్య Sticks::rotate_Into_Heading_చట్రం_XY(Vector2f &v, స్థిరరాశి దశాంశం yaw, స్థిరరాశి దశాంశం yaw_setpoint)
 {
-	const float yaw_rotate = PX4_ISFINITE(yaw_setpoint) ? yaw_setpoint : yaw;
+	స్థిరరాశి దశాంశం yaw_rotate = PX4_ISFINITE(yaw_setpoint) ? yaw_setpoint : yaw;
 	v = Dcm2f(yaw_rotate) * v;
 }

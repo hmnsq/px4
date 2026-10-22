@@ -38,50 +38,50 @@
  *
  */
 
-#include "rtl_time_estimator.h"
+#అన్తర్భావ "rtl_time_estimator.h"
 
-#include <float.h>
-#include <math.h>
+#అన్తర్భావ <float.h>
+#అన్తర్భావ <math.h>
 
-#include <px4_platform_common/defines.h>
-#include <drivers/drv_hrt.h>
-#include <uORB/topics/vehicle_status.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <drivers/drv_hrt.h>
+#అన్తర్భావ <uORB/topics/vehicle_status.h>
 
-RtlTimeEstimator::RtlTimeEstimator() : ModuleParams(nullptr)
+Rtl_సమయం_Estimator::Rtl_సమయం_Estimator() : ModuleParams(శూన్యసూచిక)
 {
-	_param_mpc_z_v_auto_up = param_find("MPC_Z_V_AUTO_UP");
-	_param_mpc_z_v_auto_dn = param_find("MPC_Z_V_AUTO_DN");
-	_param_fw_climb_rate = param_find("FW_T_CLMB_R_SP");
-	_param_fw_sink_rate = param_find("FW_T_SINK_R_SP");
-	_param_fw_airspeed_trim = param_find("FW_AIRSPD_TRIM");
-	_param_fw_gnd_spd_min = param_find("FW_GND_SPD_MIN");
-	_param_mpc_xy_cruise = param_find("MPC_XY_CRUISE");
-	_param_rover_cruise_speed = param_find("RO_SPEED_LIM");
+	param_mpc_z_v_auto_పైకి = param_కనుగొను("MPC_Z_V_AUTO_UP");
+	_param_mpc_z_v_auto_dn = param_కనుగొను("MPC_Z_V_AUTO_DN");
+	param_fw_climb_రేటు = param_కనుగొను("FW_T_CLMB_R_SP");
+	param_fw_sink_రేటు = param_కనుగొను("FW_T_SINK_R_SP");
+	_param_fw_airspeed_trim = param_కనుగొను("FW_AIRSPD_TRIM");
+	_param_fw_gnd_spd_min = param_కనుగొను("FW_GND_SPD_MIN");
+	_param_mpc_xy_cruise = param_కనుగొను("MPC_XY_CRUISE");
+	param_rover_cruise_వేగం = param_కనుగొను("RO_SPEED_LIM");
 };
 
-rtl_time_estimate_s RtlTimeEstimator::getEstimate() const
+rtl_సమయం_estimate_s Rtl_సమయం_Estimator::getEstimate() స్థిరరాశి
 {
-	rtl_time_estimate_s time_estimate{};
+	rtl_సమయం_estimate_s సమయం_estimate{};
 
-	if (_is_valid && PX4_ISFINITE(_time_estimate)) {
-		time_estimate.valid = true;
-		time_estimate.time_estimate = _time_estimate;
+	ఒకవేళ (_is_valid && PX4_ISFINITE(సమయం_estimate_2)) {
+		సమయం_estimate.valid = నిజం;
+		సమయం_estimate.సమయం_estimate = సమయం_estimate_2;
 		// Use actual time estimate to compute the safer time estimate with additional scale factor and a margin
-		time_estimate.safe_time_estimate = _param_rtl_time_factor.get() * _time_estimate + _param_rtl_time_margin.get();
+		సమయం_estimate.సురక్షిత_సమయం_estimate = param_rtl_సమయం_గుణకం.get() * సమయం_estimate_2 + param_rtl_సమయం_margin.get();
 
-	} else {
-		time_estimate.valid = false;
+	} లేకపోతే {
+		సమయం_estimate.valid = అబద్ధం;
 	}
 
-	time_estimate.timestamp = hrt_absolute_time();
-	return time_estimate;
+	సమయం_estimate.timestamp = hrt_absolute_సమయం();
+	తిరిగి సమయం_estimate;
 }
 
-void RtlTimeEstimator::update()
+శూన్య Rtl_సమయం_Estimator::update()
 {
 	_wind_sub.update();
 
-	if (_parameter_update_sub.updated()) {
+	ఒకవేళ (_parameter_update_sub.updated()) {
 		parameter_update_s param_update;
 		_parameter_update_sub.copy(&param_update);
 
@@ -91,56 +91,56 @@ void RtlTimeEstimator::update()
 	}
 }
 
-void RtlTimeEstimator::addVertDistance(float alt)
+శూన్య Rtl_సమయం_Estimator::కూడు_Vert_దూరం(దశాంశం alt)
 {
-	if (PX4_ISFINITE(alt)) {
-		_is_valid = true;
+	ఒకవేళ (PX4_ISFINITE(alt)) {
+		_is_valid = నిజం;
 
-		_time_estimate += calcVertTimeEstimate(alt);
+		సమయం_estimate_2 += calc_Vert_సమయం_Estimate(alt);
 	}
 }
 
-void RtlTimeEstimator::addDistance(float hor_dist, const matrix::Vector2f &direction, float vert_dist)
+శూన్య Rtl_సమయం_Estimator::కూడు_దూరం(దశాంశం hor_dist, స్థిరరాశి మాతృక::Vector2f &direction, దశాంశం vert_dist)
 {
-	if (PX4_ISFINITE(hor_dist) && PX4_ISFINITE(vert_dist)) {
-		_is_valid = true;
+	ఒకవేళ (PX4_ISFINITE(hor_dist) && PX4_ISFINITE(vert_dist)) {
+		_is_valid = నిజం;
 
-		float hor_time_estimate{0.f};
+		దశాంశం hor_సమయం_estimate{0.f};
 
-		if (hor_dist > FLT_EPSILON && PX4_ISFINITE(hor_dist)) {
-			hor_time_estimate = hor_dist / getCruiseGroundSpeed(direction.normalized());
+		ఒకవేళ (hor_dist > FLT_EPSILON && PX4_ISFINITE(hor_dist)) {
+			hor_సమయం_estimate = hor_dist / get_Cruise_Ground_వేగం(direction.normalized());
 		}
 
-		float ver_time_estimate{calcVertTimeEstimate(vert_dist)};
+		దశాంశం ver_సమయం_estimate{calc_Vert_సమయం_Estimate(vert_dist)};
 
-		_time_estimate += math::max(hor_time_estimate, ver_time_estimate);
+		సమయం_estimate_2 += math::max(hor_సమయం_estimate, ver_సమయం_estimate);
 
 	}
 }
 
-void RtlTimeEstimator::addWait(float time_s)
+శూన్య Rtl_సమయం_Estimator::కూడు_Wait(దశాంశం సమయం_s)
 {
-	if (PX4_ISFINITE(time_s)) {
-		_is_valid = true;
+	ఒకవేళ (PX4_ISFINITE(సమయం_s)) {
+		_is_valid = నిజం;
 
-		if (time_s > FLT_EPSILON) {
-			_time_estimate += time_s;
+		ఒకవేళ (సమయం_s > FLT_EPSILON) {
+			సమయం_estimate_2 += సమయం_s;
 		}
 	}
 }
 
-float RtlTimeEstimator::getCruiseGroundSpeed(const matrix::Vector2f &direction_norm)
+దశాంశం Rtl_సమయం_Estimator::get_Cruise_Ground_వేగం(స్థిరరాశి మాతృక::Vector2f &direction_norm)
 {
-	float cruise_speed = getCruiseSpeed();
+	దశాంశం cruise_వేగం_2 = get_Cruise_వేగం();
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		matrix::Vector2f wind = get_wind();
+	ఒకవేళ (_vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_FIXED_WING) {
+		మాతృక::Vector2f wind = get_wind();
 
-		const float wind_along_dir = wind.dot(direction_norm);
-		const float wind_across_dir = matrix::Vector2f(wind - direction_norm * wind_along_dir).norm();
+		స్థిరరాశి దశాంశం wind_along_dir = wind.dot(direction_norm);
+		స్థిరరాశి దశాంశం wind_across_dir = మాతృక::Vector2f(wind - direction_norm * wind_along_dir).norm();
 
 		// Note: use fminf so that we don't _rely_ on tailwind towards direction to make Return more efficient
-		const float ground_speed = sqrtf(cruise_speed * cruise_speed - wind_across_dir * wind_across_dir) + fminf(
+		స్థిరరాశి దశాంశం ground_వేగం = sqrtf(cruise_వేగం_2 * cruise_వేగం_2 - wind_across_dir * wind_across_dir) + fminf(
 						   0.f, wind_along_dir);
 
 		// Assume that minimum ground speed is always satisfied. If
@@ -148,108 +148,108 @@ float RtlTimeEstimator::getCruiseGroundSpeed(const matrix::Vector2f &direction_n
 		// the assumption always holds. Otherwise it breaks down when
 		// flying upwind, and the return time estimate is optimistic.
 
-		float fw_gnd_spd_min = 5.0f;
+		దశాంశం fw_gnd_spd_min = 5.0f;
 
-		if (_param_fw_gnd_spd_min != PARAM_INVALID) {
+		ఒకవేళ (_param_fw_gnd_spd_min != PARAM_INVALID) {
 			param_get(_param_fw_gnd_spd_min, &fw_gnd_spd_min);
 		}
 
-		cruise_speed = fmaxf(ground_speed, fw_gnd_spd_min);
+		cruise_వేగం_2 = fmaxf(ground_వేగం, fw_gnd_spd_min);
 	}
 
-	return cruise_speed;
+	తిరిగి cruise_వేగం_2;
 }
 
-float RtlTimeEstimator::calcVertTimeEstimate(float alt)
+దశాంశం Rtl_సమయం_Estimator::calc_Vert_సమయం_Estimate(దశాంశం alt)
 {
-	float vertical_rate{0.1f};
-	float time_estimate{0.f};
+	దశాంశం vertical_రేటు{0.1f};
+	దశాంశం సమయం_estimate{0.f};
 
-	if (alt > FLT_EPSILON) {
-		vertical_rate = getClimbRate();
+	ఒకవేళ (alt > FLT_EPSILON) {
+		vertical_రేటు = get_Climb_రేటు();
 
-	} else {
-		vertical_rate = getDescendRate();
+	} లేకపోతే {
+		vertical_రేటు = get_Descend_రేటు();
 	}
 
-	float abs_alt = fabsf(alt);
+	దశాంశం abs_alt = fabsf(alt);
 
-	if (abs_alt > FLT_EPSILON) {
-		time_estimate = abs_alt / vertical_rate;
+	ఒకవేళ (abs_alt > FLT_EPSILON) {
+		సమయం_estimate = abs_alt / vertical_రేటు;
 	}
 
-	return time_estimate;
+	తిరిగి సమయం_estimate;
 }
 
-float RtlTimeEstimator::getCruiseSpeed()
+దశాంశం Rtl_సమయం_Estimator::get_Cruise_వేగం()
 {
-	float ret = 1e6f;
+	దశాంశం ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_xy_cruise == PARAM_INVALID || param_get(_param_mpc_xy_cruise, &ret) != PX4_OK) {
+	ఒకవేళ (_vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_ROTARY_WING) {
+		ఒకవేళ (_param_mpc_xy_cruise == PARAM_INVALID || param_get(_param_mpc_xy_cruise, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		if (_param_fw_airspeed_trim == PARAM_INVALID || param_get(_param_fw_airspeed_trim, &ret) != PX4_OK) {
+	} లేకపోతే ఒకవేళ (_vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_FIXED_WING) {
+		ఒకవేళ (_param_fw_airspeed_trim == PARAM_INVALID || param_get(_param_fw_airspeed_trim, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROVER) {
-		if (_param_rover_cruise_speed == PARAM_INVALID || param_get(_param_rover_cruise_speed, &ret) != PX4_OK) {
+	} లేకపోతే ఒకవేళ (_vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_ROVER) {
+		ఒకవేళ (param_rover_cruise_వేగం == PARAM_INVALID || param_get(param_rover_cruise_వేగం, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	తిరిగి ret;
 }
 
-matrix::Vector2f RtlTimeEstimator::get_wind()
+మాతృక::Vector2f Rtl_సమయం_Estimator::get_wind()
 {
 	_wind_sub.update();
-	matrix::Vector2f wind{};
+	మాతృక::Vector2f wind{};
 
-	if (hrt_absolute_time() - _wind_sub.get().timestamp < 1_s) {
+	ఒకవేళ (hrt_absolute_సమయం() - _wind_sub.get().timestamp < 1_s) {
 		wind(0) = _wind_sub.get().windspeed_north;
 		wind(1) = _wind_sub.get().windspeed_east;
 	}
 
-	return wind;
+	తిరిగి wind;
 }
 
-float RtlTimeEstimator::getClimbRate()
+దశాంశం Rtl_సమయం_Estimator::get_Climb_రేటు()
 {
-	float ret = 1e6f;
+	దశాంశం ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_z_v_auto_up == PARAM_INVALID || param_get(_param_mpc_z_v_auto_up, &ret) != PX4_OK) {
+	ఒకవేళ (_vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_ROTARY_WING) {
+		ఒకవేళ (param_mpc_z_v_auto_పైకి == PARAM_INVALID || param_get(param_mpc_z_v_auto_పైకి, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+	} లేకపోతే ఒకవేళ (_vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_FIXED_WING) {
 
-		if (_param_fw_climb_rate == PARAM_INVALID || param_get(_param_fw_climb_rate, &ret) != PX4_OK) {
+		ఒకవేళ (param_fw_climb_రేటు == PARAM_INVALID || param_get(param_fw_climb_రేటు, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	తిరిగి ret;
 }
 
-float RtlTimeEstimator::getDescendRate()
+దశాంశం Rtl_సమయం_Estimator::get_Descend_రేటు()
 {
-	float ret = 1e6f;
+	దశాంశం ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_z_v_auto_dn == PARAM_INVALID || param_get(_param_mpc_z_v_auto_dn, &ret) != PX4_OK) {
+	ఒకవేళ (_vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_ROTARY_WING) {
+		ఒకవేళ (_param_mpc_z_v_auto_dn == PARAM_INVALID || param_get(_param_mpc_z_v_auto_dn, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		if (_param_fw_sink_rate == PARAM_INVALID || param_get(_param_fw_sink_rate, &ret) != PX4_OK) {
+	} లేకపోతే ఒకవేళ (_vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_FIXED_WING) {
+		ఒకవేళ (param_fw_sink_రేటు == PARAM_INVALID || param_get(param_fw_sink_రేటు, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	తిరిగి ret;
 }

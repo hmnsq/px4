@@ -1,10 +1,10 @@
-#pragma once
+#సూచన once
 
-#include <cmath>
+#అన్తర్భావ <cmath>
 
-#include <px4_platform_common/defines.h>
+#అన్తర్భావ <px4_platform_common/defines.h>
 
-namespace matrix
+నామాకాశ మాతృక
 {
 
 /**
@@ -18,29 +18,29 @@ namespace matrix
  * @param eps numerical tolerance of the check
  * @return true if the two values are considered equal, false otherwise
  */
-template<typename Type>
-bool isEqualF(const Type x, const Type y, const Type eps = Type(1e-4f))
+మూస<రకం_పేరు Type>
+తార్కిక isEqualF(స్థిరరాశి Type x, స్థిరరాశి Type y, స్థిరరాశి Type eps = Type(1e-4f))
 {
-	return (std::fabs(x - y) <= eps)
+	తిరిగి (std::fabs(x - y) <= eps)
 	       || (std::isnan(x) && std::isnan(y))
 	       || (std::isinf(x) && std::isinf(y) && std::isnan(x - y));
 }
 
-namespace detail
+నామాకాశ detail
 {
 
-template<typename Floating>
-Floating wrap_floating(Floating x, Floating low, Floating high)
+మూస<రకం_పేరు Floating>
+Floating wrap_floating(Floating x, Floating దిగువ, Floating ఎగువ)
 {
 	// already in range
-	if (low <= x && x < high) {
-		return x;
+	ఒకవేళ (దిగువ <= x && x < ఎగువ) {
+		తిరిగి x;
 	}
 
-	const auto range = high - low;
-	const auto inv_range = Floating(1) / range; // should evaluate at compile time, multiplies below at runtime
-	const auto num_wraps = std::floor((x - low) * inv_range);
-	return x - range * num_wraps;
+	స్థిరరాశి స్వయంచాలక range = ఎగువ - దిగువ;
+	స్థిరరాశి స్వయంచాలక inv_range = Floating(1) / range; // should evaluate at compile time, multiplies below at runtime
+	స్థిరరాశి స్వయంచాలక అంకె_wraps = std::floor((x - దిగువ) * inv_range);
+	తిరిగి x - range * అంకె_wraps;
 }
 
 } // namespace detail
@@ -53,9 +53,9 @@ Floating wrap_floating(Floating x, Floating low, Floating high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline float wrap(float x, float low, float high)
+అంతఃవరుస దశాంశం wrap(దశాంశం x, దశాంశం దిగువ, దశాంశం ఎగువ)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	తిరిగి మాతృక::detail::wrap_floating(x, దిగువ, ఎగువ);
 }
 
 /**
@@ -66,9 +66,9 @@ inline float wrap(float x, float low, float high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline double wrap(double x, double low, double high)
+అంతఃవరుస ద్విగుణ wrap(ద్విగుణ x, ద్విగుణ దిగువ, ద్విగుణ ఎగువ)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	తిరిగి మాతృక::detail::wrap_floating(x, దిగువ, ఎగువ);
 }
 
 /**
@@ -79,34 +79,34 @@ inline double wrap(double x, double low, double high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-template<typename Integer>
-Integer wrap(Integer x, Integer low, Integer high)
+మూస<రకం_పేరు Integer>
+Integer wrap(Integer x, Integer దిగువ, Integer ఎగువ)
 {
-	const auto range = high - low;
+	స్థిరరాశి స్వయంచాలక range = ఎగువ - దిగువ;
 
-	if (x < low) {
-		x += range * ((low - x) / range + 1);
+	ఒకవేళ (x < దిగువ) {
+		x += range * ((దిగువ - x) / range + 1);
 	}
 
-	return low + (x - low) % range;
+	తిరిగి దిగువ + (x - దిగువ) % range;
 }
 
 /**
  * Wrap value in range [-π, π)
  */
-template<typename Type>
+మూస<రకం_పేరు Type>
 Type wrap_pi(Type x)
 {
-	return wrap(x, Type(-M_PI), Type(M_PI));
+	తిరిగి wrap(x, Type(-M_PI), Type(M_PI));
 }
 
 /**
  * Wrap value in range [0, 2π)
  */
-template<typename Type>
+మూస<రకం_పేరు Type>
 Type wrap_2pi(Type x)
 {
-	return wrap(x, Type(0), Type((2 * M_PI)));
+	తిరిగి wrap(x, Type(0), Type((2 * M_PI)));
 }
 
 /**
@@ -118,10 +118,10 @@ Type wrap_2pi(Type x)
  * @param high upper limit of the wrapping range
  * @return New unwrapped value
  */
-template<typename Type>
-Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high)
+మూస<రకం_పేరు Type>
+Type unwrap(స్థిరరాశి Type చివరి_x, స్థిరరాశి Type new_x, స్థిరరాశి Type దిగువ, స్థిరరాశి Type ఎగువ)
 {
-	return last_x + wrap(new_x - last_x, low, high);
+	తిరిగి చివరి_x + wrap(new_x - చివరి_x, దిగువ, ఎగువ);
 }
 
 /**
@@ -131,10 +131,10 @@ Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high
  * @param[in] new_angle New angle in [-pi, pi] [rad]
  * @return New unwrapped angle [rad]
  */
-template<typename Type>
-Type unwrap_pi(const Type last_angle, const Type new_angle)
+మూస<రకం_పేరు Type>
+Type unwrap_pi(స్థిరరాశి Type చివరి_angle, స్థిరరాశి Type new_angle)
 {
-	return unwrap(last_angle, new_angle, Type(-M_PI), Type(M_PI));
+	తిరిగి unwrap(చివరి_angle, new_angle, Type(-M_PI), Type(M_PI));
 }
 
 /**
@@ -143,10 +143,10 @@ Type unwrap_pi(const Type last_angle, const Type new_angle)
  * @param[in] val Number to take the sign from
  * @return -1 if val < 0, 0 if val == 0, 1 if val > 0
  */
-template<typename T>
-int sign(T val)
+మూస<రకం_పేరు T>
+పూర్ణాంకం sign(T val)
 {
-	return (T(0) < val) - (val < T(0));
+	తిరిగి (T(0) < val) - (val < T(0));
 }
 
 } // namespace matrix

@@ -31,12 +31,12 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ <matrix/math.hpp>
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-TEST(MatrixVectorAssignmentTest, VectorAssignment)
+TEST(మాతృక_సదిశ_Assignment_Test, సదిశ_Assignment)
 {
 	Vector3f v;
 	v(0) = 1;
@@ -53,7 +53,7 @@ TEST(MatrixVectorAssignmentTest, VectorAssignment)
 	EXPECT_FLOAT_EQ(v2(1), 5);
 	EXPECT_FLOAT_EQ(v2(2), 6);
 
-	SquareMatrix<float, 3> m = diag(Vector3f(1, 2, 3));
+	వర్గం_మాతృక<దశాంశం, 3> m = diag(Vector3f(1, 2, 3));
 	EXPECT_FLOAT_EQ(m(0, 0), 1);
 	EXPECT_FLOAT_EQ(m(1, 1), 2);
 	EXPECT_FLOAT_EQ(m(2, 2), 3);

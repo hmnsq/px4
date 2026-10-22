@@ -36,25 +36,25 @@
  * Pure geometry functions for geofence point-in-polygon and point-in-circle tests.
  */
 
-#pragma once
+#సూచన once
 
-#include <cmath>
-#include <cstdint>
-#include <cstdlib>
+#అన్తర్భావ <cmath>
+#అన్తర్భావ <cstdint>
+#అన్తర్భావ <cstdlib>
 
-#include <matrix/math.hpp>
+#అన్తర్భావ <matrix/math.hpp>
 
-#include <dataman/dataman.h>
+#అన్తర్భావ <dataman/dataman.h>
 
 namespace geofence_utils
 {
 
-static constexpr float CM_PER_M  = 100.f;
+స్థిర constexpr దశాంశం CM_చొప్పున_M  = 100.f;
 
 // True iff `m_value` (metres) fits into the planner's fixed-point
 // representation. intersectsInsideOf doubles cm coordinates internally, so the
 // usable range is 2^30 cm = 10,737 km from the planner's reference.
-inline bool inFixedPointRange(float m_value) { return fabsf(m_value) < (1u << 30) / CM_PER_M; }
+అంతఃవరుస bool లోపల_Fixed_బిందువు_Range(దశాంశం m_విలువ) { తిరిగి fabsf(m_విలువ) < (1u << 30) / CM_చొప్పున_M; }
 
 /**
  * Sign of the signed area of triangle abc -- the fundamental 2D orientation
@@ -74,30 +74,30 @@ inline bool inFixedPointRange(float m_value) { return fabsf(m_value) < (1u << 30
  * https://www.science.smith.edu/~jorourke/books/compgeom.html
  *
  */
-inline int orient2d(int32_t ax, int32_t ay,
+అంతఃవరుస పూర్ణాంకం orient2d(int32_t ax, int32_t ay,
 		    int32_t bx, int32_t by,
 		    int32_t cx, int32_t cy)
 {
-	const int64_t det = (static_cast<int64_t>(bx) - ax) * (static_cast<int64_t>(cy) - ay)
+	స్థిరరాశి int64_t det = (static_cast<int64_t>(bx) - ax) * (static_cast<int64_t>(cy) - ay)
 			    - (static_cast<int64_t>(by) - ay) * (static_cast<int64_t>(cx) - ax);
 
-	if (det > 0) { return  1; }
+	ఒకవేళ (det > 0) { తిరిగి  1; }
 
-	if (det < 0) { return -1; }
+	ఒకవేళ (det < 0) { తిరిగి -1; }
 
-	return 0;
+	తిరిగి 0;
 }
 
 /**
  * For a, b, c collinear (orient2d == 0), is c on the open segment ab?
  */
-inline bool collinearBetween(int32_t ax, int32_t ay, int32_t bx, int32_t by, int32_t cx, int32_t cy)
+అంతఃవరుస bool collinearBetween(int32_t ax, int32_t ay, int32_t bx, int32_t by, int32_t cx, int32_t cy)
 {
-	if (std::abs(ax - bx) >= std::abs(ay - by)) {
-		return (ax < cx && cx < bx) || (bx < cx && cx < ax);
+	ఒకవేళ (std::నిరపేక్ష(ax - bx) >= std::నిరపేక్ష(ay - by)) {
+		తిరిగి (ax < cx && cx < bx) || (bx < cx && cx < ax);
 
-	} else {
-		return (ay < cy && cy < by) || (by < cy && cy < ay);
+	} లేకపోతే {
+		తిరిగి (ay < cy && cy < by) || (by < cy && cy < ay);
 	}
 }
 
@@ -117,7 +117,7 @@ inline bool collinearBetween(int32_t ax, int32_t ay, int32_t bx, int32_t by, int
  * Computational Geometry in C, Joseph O'Rourke
  * https://www.science.smith.edu/~jorourke/books/compgeom.html
  */
-enum class SegSegResult {
+గణన class Seg_Seg_ఫలితం {
 	Disjoint,
 	Cross,
 	AInsideCD, BInsideCD,
@@ -125,7 +125,7 @@ enum class SegSegResult {
 	Collinear,
 };
 
-inline SegSegResult segmentsIntersect(int32_t ax, int32_t ay, int32_t bx, int32_t by,
+అంతఃవరుస Seg_Seg_ఫలితం segmentsIntersect(int32_t ax, int32_t ay, int32_t bx, int32_t by,
 				      int32_t cx, int32_t cy, int32_t dx, int32_t dy)
 {
 	// These two early returns are logically not necessary (would catch the
@@ -135,32 +135,32 @@ inline SegSegResult segmentsIntersect(int32_t ax, int32_t ay, int32_t bx, int32_
 	// conclude the segments are disjoint. This does not detect _all_
 	// disjoint cases so the final return stays.
 
-	const int o1 = orient2d(ax, ay, bx, by, cx, cy);
-	const int o2 = orient2d(ax, ay, bx, by, dx, dy);
+	స్థిరరాశి పూర్ణాంకం o1 = orient2d(ax, ay, bx, by, cx, cy);
+	స్థిరరాశి పూర్ణాంకం o2 = orient2d(ax, ay, bx, by, dx, dy);
 
-	if (o1 != 0 && o1 == o2) { return SegSegResult::Disjoint; }
+	ఒకవేళ (o1 != 0 && o1 == o2) { తిరిగి Seg_Seg_ఫలితం::Disjoint; }
 
-	const int o3 = orient2d(cx, cy, dx, dy, ax, ay);
-	const int o4 = orient2d(cx, cy, dx, dy, bx, by);
+	స్థిరరాశి పూర్ణాంకం o3 = orient2d(cx, cy, dx, dy, ax, ay);
+	స్థిరరాశి పూర్ణాంకం o4 = orient2d(cx, cy, dx, dy, bx, by);
 
-	if (o3 != 0 && o3 == o4) { return SegSegResult::Disjoint; }
+	ఒకవేళ (o3 != 0 && o3 == o4) { తిరిగి Seg_Seg_ఫలితం::Disjoint; }
 
-	if (o1 && o2 && o3 && o4 && o1 != o2 && o3 != o4) { return SegSegResult::Cross; }
+	ఒకవేళ (o1 && o2 && o3 && o4 && o1 != o2 && o3 != o4) { తిరిగి Seg_Seg_ఫలితం::Cross; }
 
-	if (!o1 && !o2 && !o3 && !o4) { return SegSegResult::Collinear; }
+	ఒకవేళ (!o1 && !o2 && !o3 && !o4) { తిరిగి Seg_Seg_ఫలితం::Collinear; }
 
 	// Endpoint strictly on the open interior of the other segment iff:
 	//  - orient2d is zero (point on the supporting line)
 	//  - the point lies strictly between the other two via collinearBetween
-	if (o3 == 0 && collinearBetween(cx, cy, dx, dy, ax, ay)) { return SegSegResult::AInsideCD; }
+	ఒకవేళ (o3 == 0 && collinearBetween(cx, cy, dx, dy, ax, ay)) { తిరిగి Seg_Seg_ఫలితం::AInsideCD; }
 
-	if (o4 == 0 && collinearBetween(cx, cy, dx, dy, bx, by)) { return SegSegResult::BInsideCD; }
+	ఒకవేళ (o4 == 0 && collinearBetween(cx, cy, dx, dy, bx, by)) { తిరిగి Seg_Seg_ఫలితం::BInsideCD; }
 
-	if (o1 == 0 && collinearBetween(ax, ay, bx, by, cx, cy)) { return SegSegResult::CInsideAB; }
+	ఒకవేళ (o1 == 0 && collinearBetween(ax, ay, bx, by, cx, cy)) { తిరిగి Seg_Seg_ఫలితం::CInsideAB; }
 
-	if (o2 == 0 && collinearBetween(ax, ay, bx, by, dx, dy)) { return SegSegResult::DInsideAB; }
+	ఒకవేళ (o2 == 0 && collinearBetween(ax, ay, bx, by, dx, dy)) { తిరిగి Seg_Seg_ఫలితం::DInsideAB; }
 
-	return SegSegResult::Disjoint;
+	తిరిగి Seg_Seg_ఫలితం::Disjoint;
 }
 
 /**
@@ -168,15 +168,15 @@ inline SegSegResult segmentsIntersect(int32_t ax, int32_t ay, int32_t bx, int32_
  * Zero-length segments are treated as points. Coordinates must be finite and in the same plane.
  * For latitude/longitude coordinates, longitudes must use one continuous interval.
  */
-bool segmentsIntersectInclusive(const matrix::Vector2d &a, const matrix::Vector2d &b,
-				const matrix::Vector2d &c, const matrix::Vector2d &d);
+bool segmentsIntersectInclusive(స్థిరరాశి మాతృక::Vector2d &a, స్థిరరాశి మాతృక::Vector2d &b,
+				స్థిరరాశి మాతృక::Vector2d &c, స్థిరరాశి మాతృక::Vector2d &d);
 
 /**
  * Squared distance from a point to the closest point on segment ab, including its endpoints.
  * Use finite Cartesian coordinates in the same units. A zero-length segment is treated as a point.
  */
-double pointToSegmentDistanceSquared(const matrix::Vector2d &point,
-				     const matrix::Vector2d &a, const matrix::Vector2d &b);
+ద్విగుణ బిందువు_గమ్యం_Segment_దూరం_Squared(స్థిరరాశి మాతృక::Vector2d &బిందువు,
+				     స్థిరరాశి మాతృక::Vector2d &a, స్థిరరాశి మాతృక::Vector2d &b);
 
 /**
  * Check if a polygon's vertices are ordered counter-clockwise using the shoelace formula.
@@ -186,7 +186,7 @@ double pointToSegmentDistanceSquared(const matrix::Vector2d &point,
  * @param num_vertices  number of vertices
  * @return true if the polygon is counter-clockwise
  */
-bool isPolygonCCW(const matrix::Vector2f *vertices, int num_vertices);
+bool isPolygonCCW(స్థిరరాశి మాతృక::Vector2f *vertices, పూర్ణాంకం అంకె_vertices);
 
 /**
  * Upper bound on the number of vertices addPolygon() emits for a simple polygon:
@@ -200,9 +200,9 @@ bool isPolygonCCW(const matrix::Vector2f *vertices, int num_vertices);
  * Degenerate input (n < 3) is rejected by addPolygon and emits nothing, so
  * the bound is 0.
  */
-constexpr int maxVerticesAfterSplitting(int num_vertices)
+constexpr పూర్ణాంకం maxVerticesAfterSplitting(పూర్ణాంకం అంకె_vertices)
 {
-	return num_vertices < 3 ? 0 : num_vertices + (180 * num_vertices + 360 - 1) / 300;
+	తిరిగి అంకె_vertices < 3 ? 0 : అంకె_vertices + (180 * అంకె_vertices + 360 - 1) / 300;
 }
 
 
@@ -221,13 +221,13 @@ constexpr int maxVerticesAfterSplitting(int num_vertices)
  */
 class PlannerPolygons
 {
-public:
+బహిరంగ:
 
 	// Default node capacity. 100 nodes was found to limit the full update
 	// on geofence / margin change to about 20 ms.
-	static constexpr int kDefaultMaxNodes = 100;
-	static constexpr int kMaxPolygons = 16;
-	static constexpr int kCircleApproxVertices = 8;
+	స్థిర constexpr పూర్ణాంకం kDefaultMaxNodes = 100;
+	స్థిర constexpr పూర్ణాంకం kMaxPolygons = 16;
+	స్థిర constexpr పూర్ణాంకం kCircleApproxVertices = 8;
 
 	// Number of nodes needed to hold the largest geofence storable in dataman.
 	// Worst case:
@@ -236,102 +236,102 @@ public:
 	//  - 1 destination slot
 	// If the allocated node capacity >= kMaxNodesForAnyStorableFence, we always have enough space.
 	// Otherwise we may fail with AddResult::BudgetExceeded.
-	static constexpr int kMaxNodesForAnyStorableFence =
+	స్థిర constexpr పూర్ణాంకం kMaxNodesForAnyStorableFence =
 		(kMaxPolygons - 1) * kCircleApproxVertices
-		+ maxVerticesAfterSplitting(DM_KEY_FENCE_POINTS_MAX - (kMaxPolygons - 1))
+		+ maxVerticesAfterSplitting(DM_కీలకం_FENCE_POINTS_MAX - (kMaxPolygons - 1))
 		+ 1;
 
 	// Return code specifying why a polygon was not added.
-	enum class AddResult {
+	గణన class కూడు_ఫలితం {
 		Success,
 		BudgetExceeded,  // node or polygon buffer full (allocated node capacity / kMaxPolygons)
-		OutOfRange,      // vertex or circle extent outside usable fixed-point range
+		బహిర్గతం_యొక్క_Range,      // vertex or circle extent outside usable fixed-point range
 		Degenerate,      // <3 vertices, zero-length/antiparallel edge, self-intersecting, empty circle, negative margin
 	};
 
-	explicit PlannerPolygons(int max_nodes = kDefaultMaxNodes) { allocate(max_nodes); }
+	explicit PlannerPolygons(పూర్ణాంకం max_nodes = kDefaultMaxNodes) { allocate(max_nodes); }
 	~PlannerPolygons() { freeBuffers(); }
 
-	PlannerPolygons(const PlannerPolygons &) = delete;
-	PlannerPolygons &operator=(const PlannerPolygons &) = delete;
+	PlannerPolygons(స్థిరరాశి PlannerPolygons &) = delete;
+	PlannerPolygons &క్రియాకారకం=(స్థిరరాశి PlannerPolygons &) = delete;
 
 	// (Re-)allocate the node buffers for max_nodes nodes (including the destination slot) and reset.
 	// Returns false if the allocation failed, in which case the capacity is 0 and every add fails.
-	bool allocate(int max_nodes);
+	bool allocate(పూర్ణాంకం max_nodes);
 
 	// Slot 0 is always reserved for the destination; polygon vertices start at index 1.
-	void reset()
+	శూన్య reset()
 	{
-		_num_polygons = 0;
+		అంకె_polygons = 0;
 
-		if (_max_nodes < 1) {
-			_num_nodes = 0;
-			return;
+		ఒకవేళ (_max_nodes < 1) {
+			అంకె_nodes_2 = 0;
+			తిరిగి;
 		}
 
-		_num_nodes = 1;
+		అంకె_nodes_2 = 1;
 		_x_cm[0] = 0;
 		_y_cm[0] = 0;
-		_node_not_on_optimal_path[0] = false;
+		కణుపు_not_on_optimal_మార్గం[0] = false;
 	}
 
 	// Append a polygon:
 	//  - canonicalize orientation,
 	//  - offset each vertex outward (exclusion) or inward (inclusion) by `margin` meters,
 	//  - quantize to cm, append as nodes.
-	AddResult addPolygon(const matrix::Vector2f *vertices_in, int num_vertices,
-			     bool is_inclusion_zone, float margin = 0.f);
+	కూడు_ఫలితం కూడు_Polygon(స్థిరరాశి మాతృక::Vector2f *vertices_లోపల, పూర్ణాంకం అంకె_vertices,
+			     bool is_inclusion_zone, దశాంశం margin = 0.f);
 
 	// Append an approximate circle (k-gon over/underapproximation).
 	//  - shrink/expand according to margin and is_inclusion_zone
 	//  - quantize to cm, append as nodes.
-	AddResult addApproxCircle(const matrix::Vector2f &center, const float radius, float margin, const bool is_inclusion_zone);
+	కూడు_ఫలితం కూడు_Approx_Circle(స్థిరరాశి మాతృక::Vector2f &center, స్థిరరాశి దశాంశం radius, దశాంశం margin, స్థిరరాశి bool is_inclusion_zone);
 
-	int numNodes() const { return _num_nodes; }
+	పూర్ణాంకం అంకె_Nodes() స్థిరరాశి { తిరిగి అంకె_nodes_2; }
 
 	// Number of polygon nodes (excludes the destination at index 0).
-	int numVertices() const { return _num_nodes - 1; }
+	పూర్ణాంకం అంకె_Vertices() స్థిరరాశి { తిరిగి అంకె_nodes_2 - 1; }
 
-	matrix::Vector2f node(int idx) const
+	మాతృక::Vector2f కణుపు_2(పూర్ణాంకం idx) స్థిరరాశి
 	{
-		return matrix::Vector2f{_x_cm[idx] / CM_PER_M, _y_cm[idx] / CM_PER_M};
+		తిరిగి మాతృక::Vector2f{_x_cm[idx] / CM_చొప్పున_M, _y_cm[idx] / CM_చొప్పున_M};
 	}
 
 	// Update the destination position. Always safe to call after reset().
 	// Returns false if the destination violates the geofence, but still updates destionation.
-	bool setDestination(const matrix::Vector2f &p);
+	bool సమితి_Destination(స్థిరరాశి మాతృక::Vector2f &p);
 
 	// Get the current destination position.
-	matrix::Vector2f getDestination() const;
+	మాతృక::Vector2f getDestination() స్థిరరాశి;
 
 	// Destination is always at index 0; polygon vertices start at index 1.
-	static constexpr int destIndex() { return 0; }
+	స్థిర constexpr పూర్ణాంకం dest_సూచీ() { తిరిగి 0; }
 
 	// True if the segment (a, b) crosses no geofence interior.
-	bool edgeVisible(int a, int b) const;
-	bool edgeVisible(const matrix::Vector2f &a, int b) const;          // One float endpoint (e.g. vehicle position).
-	bool edgeVisible(const matrix::Vector2f &a, const matrix::Vector2f &b) const; // Both float endpoints.
+	bool అంచు_Visible(పూర్ణాంకం a, పూర్ణాంకం b) స్థిరరాశి;
+	bool అంచు_Visible(స్థిరరాశి మాతృక::Vector2f &a, పూర్ణాంకం b) స్థిరరాశి;          // One float endpoint (e.g. vehicle position).
+	bool అంచు_Visible(స్థిరరాశి మాతృక::Vector2f &a, స్థిరరాశి మాతృక::Vector2f &b) స్థిరరాశి; // Both float endpoints.
 
 	// Traversal cost for edge (a, b): INFINITY if the edge crosses any fence,
 	// Euclidean distance (metres) otherwise.
-	float edgeCost(int a, int b) const;
+	దశాంశం అంచు_ఖర్చు(పూర్ణాంకం a, పూర్ణాంకం b) స్థిరరాశి;
 
-private:
-	void freeBuffers();
+అంతరంగ:
+	శూన్య freeBuffers();
 
-	int _max_nodes{0};
+	పూర్ణాంకం _max_nodes{0};
 	int32_t *_x_cm{nullptr};
 	int32_t *_y_cm{nullptr};
 
-	struct PolygonInfo {
-		int start_index;
-		int num_vertices;
+	నిర్మాణం PolygonInfo {
+		పూర్ణాంకం ప్రారంభం_సూచీ;
+		పూర్ణాంకం అంకె_vertices;
 		bool is_inclusion;
 		int32_t min_x, max_x, min_y, max_y; // Bouding box
 	};
 
 	PolygonInfo _polygons[kMaxPolygons];
-	int _num_polygons{0};
+	పూర్ణాంకం అంకె_polygons{0};
 
 	/**
 	 * Reduced visibility graph: we can exclude some vertices a priori
@@ -342,8 +342,8 @@ private:
 	 *   (A -> just before B -> just after B -> C)
 	 * and so it cannot be globally optimal.
 	 */
-	bool *_node_not_on_optimal_path{nullptr};
-	int _num_nodes{0};
+	bool *కణుపు_not_on_optimal_మార్గం{nullptr};
+	పూర్ణాంకం అంకె_nodes_2{0};
 
 	/**
 	 * Line-segment vs polygon intersection check.
@@ -353,12 +353,12 @@ private:
 	 * only the boundary is allowed (necessary for shortest path to be well
 	 * defined)
 	 */
-	bool intersectsInsideOf(const PolygonInfo &poly, int32_t s_x, int32_t s_y, int32_t e_x, int32_t e_y) const;
+	bool intersects_Inside_యొక్క(స్థిరరాశి PolygonInfo &poly, int32_t s_x, int32_t s_y, int32_t e_x, int32_t e_y) స్థిరరాశి;
 
 	/**
 	 * Return true iff the line segment s-e intersects the inside of _any_ stored polygon.
 	 */
-	bool intersectsAnyInside(int32_t s_x, int32_t s_y, int32_t e_x, int32_t e_y) const;
+	bool intersectsAnyInside(int32_t s_x, int32_t s_y, int32_t e_x, int32_t e_y) స్థిరరాశి;
 
 	/**
 	 * Consider extending the triangle poly[v-1] -> poly[v] -> poly[v+1]
@@ -370,7 +370,7 @@ private:
 	 * the case iff the line segment poly[v] -> p pierces the interior at
 	 * vertex curr.
 	 */
-	bool pointInsideInteriorCone(const PolygonInfo &poly, int32_t px, int32_t py, int v) const;
+	bool బిందువు_Inside_Interior_Cone(స్థిరరాశి PolygonInfo &poly, int32_t px, int32_t py, పూర్ణాంకం v) స్థిరరాశి;
 
 	/**
 	 * Return true if the edge ab is bitangent at a: neither the edge nor
@@ -382,35 +382,35 @@ private:
 	 *
 	 * * Stephen LaValle, 2006: Planning Algorithms, 6.2.4 - Shortest-Path Roadmaps
 	 */
-	bool edgeBitangent(int a, int32_t bx, int32_t by) const;
-	bool edgeBitangent(int a, int b) const;                        // Other endpoint is node index b.
-	bool edgeBitangent(int a, const matrix::Vector2f &b) const;    // Other endpoint is an arbitrary position.
+	bool అంచు_Bitangent(పూర్ణాంకం a, int32_t bx, int32_t by) స్థిరరాశి;
+	bool అంచు_Bitangent(పూర్ణాంకం a, పూర్ణాంకం b) స్థిరరాశి;                        // Other endpoint is node index b.
+	bool అంచు_Bitangent(పూర్ణాంకం a, స్థిరరాశి మాతృక::Vector2f &b) స్థిరరాశి;    // Other endpoint is an arbitrary position.
 
 	/**
 	 * Update {min,max}_{x,y} with the min/max coordinates of the polygon with vertices
 	 * [start_index, start_index + num_vertices).
 	 */
-	void computeBoundingBox(const int start_index, const int num_vertices,
+	శూన్య computeBoundingBox(స్థిరరాశి పూర్ణాంకం ప్రారంభం_సూచీ, స్థిరరాశి పూర్ణాంకం అంకె_vertices,
 				int32_t &min_x, int32_t &max_x, int32_t &min_y, int32_t &max_y);
 
 	// Write float-metre coordinates into an existing node slot (used internally by
 	// addPolygon, addApproxCircle, and setDestination).
-	void setNode(int idx, const matrix::Vector2f &p);
+	శూన్య సమితి_కణుపు(పూర్ణాంకం idx, స్థిరరాశి మాతృక::Vector2f &p);
 
 };
 
 // Convenience for unit tests and one-shot callers: build a transient
 // PlannerPolygons with the given polygon and query the segment.
-inline bool lineSegmentIntersectsPolygon(const matrix::Vector2f &start, const matrix::Vector2f &end,
-		const matrix::Vector2f *vertices, int num_vertices, bool is_inclusion_zone)
+అంతఃవరుస bool పంక్తి_Segment_Intersects_Polygon(స్థిరరాశి మాతృక::Vector2f &ప్రారంభం, స్థిరరాశి మాతృక::Vector2f &చివర,
+		స్థిరరాశి మాతృక::Vector2f *vertices, పూర్ణాంకం అంకె_vertices, bool is_inclusion_zone)
 {
-	PlannerPolygons polys{maxVerticesAfterSplitting(num_vertices) + 1};
+	PlannerPolygons polys{maxVerticesAfterSplitting(అంకె_vertices) + 1};
 
-	if (polys.addPolygon(vertices, num_vertices, is_inclusion_zone) != PlannerPolygons::AddResult::Success) {
-		return false;
+	ఒకవేళ (polys.కూడు_Polygon(vertices, అంకె_vertices, is_inclusion_zone) != PlannerPolygons::కూడు_ఫలితం::Success) {
+		తిరిగి false;
 	}
 
-	return !polys.edgeVisible(start, end);
+	తిరిగి !polys.అంచు_Visible(ప్రారంభం, చివర);
 }
 
 } // namespace geofence_utils

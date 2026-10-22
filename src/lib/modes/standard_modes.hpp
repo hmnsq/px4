@@ -31,23 +31,23 @@
  *
  ****************************************************************************/
 
-#pragma once
+#సూచన once
 
-#include <uORB/topics/vehicle_status.h>
+#అన్తర్భావ <uORB/topics/vehicle_status.h>
 
-#include <stdint.h>
+#అన్తర్భావ <stdint.h>
 
-namespace mode_util
+నామాకాశ బహుళకం_util
 {
 
 // This matches the definition from MAVLink MAV_STANDARD_MODE
-enum class StandardMode : uint8_t {
+గణన తరగతి Standard_బహుళకం : uint8_t {
 	NON_STANDARD = 0,
 	POSITION_HOLD = 1,
 	ORBIT = 2,
 	CRUISE = 3,
 	ALTITUDE_HOLD = 4,
-	SAFE_RECOVERY = 5,
+	సురక్షిత_RECOVERY = 5,
 	MISSION = 6,
 	LAND = 7,
 	TAKEOFF = 8,
@@ -56,99 +56,99 @@ enum class StandardMode : uint8_t {
 /**
  * @return Get MAVLink standard mode from nav_state
  */
-static inline StandardMode getStandardModeFromNavState(uint8_t nav_state, uint8_t vehicle_type, bool is_vtol)
+స్థిర అంతఃవరుస Standard_బహుళకం get_Standard_బహుళకం_From_Nav_State(uint8_t nav_state, uint8_t vehicle_type, తార్కిక is_vtol)
 {
-	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: return StandardMode::SAFE_RECOVERY;
+	ఎంపిక (nav_state) {
+	స్థితి vehicle_స్థితి_s::NAVIGATION_STATE_AUTO_RTL: తిరిగి Standard_బహుళకం::సురక్షిత_RECOVERY;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION: return StandardMode::MISSION;
+	స్థితి vehicle_స్థితి_s::NAVIGATION_STATE_AUTO_MISSION: తిరిగి Standard_బహుళకం::MISSION;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_LAND: return StandardMode::LAND;
+	స్థితి vehicle_స్థితి_s::NAVIGATION_STATE_AUTO_LAND: తిరిగి Standard_బహుళకం::LAND;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF: return StandardMode::TAKEOFF;
+	స్థితి vehicle_స్థితి_s::NAVIGATION_STATE_AUTO_TAKEOFF: తిరిగి Standard_బహుళకం::TAKEOFF;
 
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
-		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ALTITUDE_HOLD;
+	స్థితి vehicle_స్థితి_s::NAVIGATION_STATE_ALTCTL:
+		ఒకవేళ (is_vtol || vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_ROTARY_WING
+		    || vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_FIXED_WING) {
+			తిరిగి Standard_బహుళకం::ALTITUDE_HOLD;
 		}
 
-		break;
+		ఆపు;
 
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return StandardMode::POSITION_HOLD;
+	స్థితి vehicle_స్థితి_s::NAVIGATION_STATE_POSCTL:
+		ఒకవేళ (!is_vtol && vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_ROTARY_WING) {
+			తిరిగి Standard_బహుళకం::POSITION_HOLD;
 		}
 
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::CRUISE;
+		ఒకవేళ (!is_vtol && vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_FIXED_WING) {
+			తిరిగి Standard_బహుళకం::CRUISE;
 		}
 
-		break;
+		ఆపు;
 
-	case vehicle_status_s::NAVIGATION_STATE_ORBIT:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
-		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ORBIT;
+	స్థితి vehicle_స్థితి_s::NAVIGATION_STATE_ORBIT:
+		ఒకవేళ (is_vtol || vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_ROTARY_WING
+		    || vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_FIXED_WING) {
+			తిరిగి Standard_బహుళకం::ORBIT;
 		}
 
-		break;
+		ఆపు;
 	}
 
-	return StandardMode::NON_STANDARD;
+	తిరిగి Standard_బహుళకం::NON_STANDARD;
 }
 
 /**
  * @return Get nav_state from a standard mode, or vehicle_status_s::NAVIGATION_STATE_MAX if not supported
  */
-static inline uint8_t getNavStateFromStandardMode(StandardMode mode, uint8_t vehicle_type, bool is_vtol)
+స్థిర అంతఃవరుస uint8_t get_Nav_State_From_Standard_బహుళకం(Standard_బహుళకం బహుళకం, uint8_t vehicle_type, తార్కిక is_vtol)
 {
-	switch (mode) {
-	case StandardMode::SAFE_RECOVERY: return vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
+	ఎంపిక (బహుళకం) {
+	స్థితి Standard_బహుళకం::సురక్షిత_RECOVERY: తిరిగి vehicle_స్థితి_s::NAVIGATION_STATE_AUTO_RTL;
 
-	case StandardMode::MISSION: return vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
+	స్థితి Standard_బహుళకం::MISSION: తిరిగి vehicle_స్థితి_s::NAVIGATION_STATE_AUTO_MISSION;
 
-	case StandardMode::LAND: return vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
+	స్థితి Standard_బహుళకం::LAND: తిరిగి vehicle_స్థితి_s::NAVIGATION_STATE_AUTO_LAND;
 
-	case StandardMode::TAKEOFF: return vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
+	స్థితి Standard_బహుళకం::TAKEOFF: తిరిగి vehicle_స్థితి_s::NAVIGATION_STATE_AUTO_TAKEOFF;
 
-	case StandardMode::ALTITUDE_HOLD:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
-		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ALTCTL;
+	స్థితి Standard_బహుళకం::ALTITUDE_HOLD:
+		ఒకవేళ (is_vtol || vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_ROTARY_WING
+		    || vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_FIXED_WING) {
+			తిరిగి vehicle_స్థితి_s::NAVIGATION_STATE_ALTCTL;
 		}
 
-		break;
+		ఆపు;
 
-	case StandardMode::POSITION_HOLD:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+	స్థితి Standard_బహుళకం::POSITION_HOLD:
+		ఒకవేళ (!is_vtol && vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_ROTARY_WING) {
+			తిరిగి vehicle_స్థితి_s::NAVIGATION_STATE_POSCTL;
 		}
 
-		break;
+		ఆపు;
 
-	case StandardMode::CRUISE:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+	స్థితి Standard_బహుళకం::CRUISE:
+		ఒకవేళ (!is_vtol && vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_FIXED_WING) {
+			తిరిగి vehicle_స్థితి_s::NAVIGATION_STATE_POSCTL;
 		}
 
-		break;
+		ఆపు;
 
-	case StandardMode::ORBIT:
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ORBIT;
+	స్థితి Standard_బహుళకం::ORBIT:
+		ఒకవేళ (vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_ROTARY_WING) {
+			తిరిగి vehicle_స్థితి_s::NAVIGATION_STATE_ORBIT;
 		}
 
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+		ఒకవేళ (vehicle_type == vehicle_స్థితి_s::VEHICLE_TYPE_FIXED_WING) {
+			తిరిగి vehicle_స్థితి_s::NAVIGATION_STATE_AUTO_LOITER;
 		}
 
-		break;
+		ఆపు;
 
-	default: break;
+	అప్రమేయ: ఆపు;
 	}
 
-	return vehicle_status_s::NAVIGATION_STATE_MAX;
+	తిరిగి vehicle_స్థితి_s::NAVIGATION_STATE_MAX;
 }
 
 

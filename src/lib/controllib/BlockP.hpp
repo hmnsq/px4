@@ -37,45 +37,45 @@
  * Controller library code
  */
 
-#pragma once
+#సూచన once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#అన్తర్భావ <px4_platform_common/defines.h>
+#అన్తర్భావ <assert.h>
+#అన్తర్భావ <time.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <math.h>
+#అన్తర్భావ <mathlib/math/test/test.hpp>
+#అన్తర్భావ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#అన్తర్భావ "block/Block.hpp"
+#అన్తర్భావ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#అన్తర్భావ "matrix/math.hpp"
 
-namespace control
+నామాకాశ control
 {
 
 /**
  * A proportional controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockP: public Block
+తరగతి __EXPORT ఖండం_P: బహిరంగ ఖండం
 {
-public:
+బహిరంగ:
 // methods
-	BlockP(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_kP(this, "") // only one param, no need to name
+	ఖండం_P(Super_ఖండం *మాతృ, స్థిరరాశి అక్షరం *name) :
+		ఖండం(మాతృ, name),
+		_kP(ఇది, "") // only one param, no need to name
 	{}
-	virtual ~BlockP() = default;
-	float update(float input)
+	మాయా ~ఖండం_P() = అప్రమేయ;
+	దశాంశం update(దశాంశం ఆదానం)
 	{
-		return getKP() * input;
+		తిరిగి getKP() * ఆదానం;
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-protected:
-	control::BlockParamFloat _kP;
+	దశాంశం getKP() { తిరిగి _kP.get(); }
+రక్షిత:
+	control::ఖండం_Param_Float _kP;
 };
 
 } // namespace control

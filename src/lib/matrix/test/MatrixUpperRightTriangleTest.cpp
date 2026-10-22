@@ -31,22 +31,22 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ <matrix/math.hpp>
 
-using namespace matrix;
+ఉపయోగించి నామాకాశ మాతృక;
 
-TEST(MatrixUpperRightTriangleTest, UpperRightTriangle)
+TEST(మాతృక_పై_కుడి_Triangle_Test, పై_కుడి_Triangle)
 {
-	float data[9] = {1, 2, 3,
+	దశాంశం దత్తాంశం[9] = {1, 2, 3,
 			 4, 5, 6,
 			 7, 8, 10
 			};
-	float urt[6] = {1, 2, 3, 5, 6, 10};
+	దశాంశం urt[6] = {1, 2, 3, 5, 6, 10};
 
-	SquareMatrix<float, 3> A(data);
+	వర్గం_మాతృక<దశాంశం, 3> A(దత్తాంశం);
 
-	for (size_t i = 0; i < 6; i++) {
-		EXPECT_FLOAT_EQ(urt[i], A.upper_right_triangle()(i));
+	కొరకు (size_t i = 0; i < 6; i++) {
+		EXPECT_FLOAT_EQ(urt[i], A.పై_కుడి_triangle()(i));
 	}
 }

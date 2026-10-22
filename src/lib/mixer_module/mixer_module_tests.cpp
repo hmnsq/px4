@@ -31,55 +31,55 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <array>
+#అన్తర్భావ <gtest/gtest.h>
+#అన్తర్భావ <array>
 
-#include <parameters/param.h>
-#include <uORB/topics/actuator_motors.h>
-#include <uORB/topics/actuator_servos.h>
-#include <uORB/topics/actuator_armed.h>
-#include <uORB/topics/actuator_test.h>
-#include <uORB/Publication.hpp>
-#include <uORB/Subscription.hpp>
+#అన్తర్భావ <parameters/param.h>
+#అన్తర్భావ <uORB/topics/actuator_motors.h>
+#అన్తర్భావ <uORB/topics/actuator_servos.h>
+#అన్తర్భావ <uORB/topics/actuator_armed.h>
+#అన్తర్భావ <uORB/topics/actuator_test.h>
+#అన్తర్భావ <uORB/Publication.hpp>
+#అన్తర్భావ <uORB/Subscription.hpp>
 
-#include "mixer_module.hpp"
+#అన్తర్భావ "mixer_module.hpp"
 
-#if defined(CONFIG_ARCH_BOARD_PX4_SITL)
-#define PARAM_PREFIX "PWM_MAIN"
-#else
-#define PARAM_PREFIX "HIL_ACT"
-#endif
+#ఒకవేళ defined(CONFIG_ARCH_BOARD_PX4_SITL)
+#నిర్వచించు PARAM_ఉపసర్గ "PWM_MAIN"
+#లేకపోతే
+#నిర్వచించు PARAM_ఉపసర్గ "HIL_ACT"
+#అయితే_ముగింపు
 
-static constexpr int MAX_NUM_OUTPUTS = 8;
-static constexpr int DISARMED_VALUE = 900;
-static constexpr int FAILSAFE_VALUE = 800;
-static constexpr int MIN_VALUE = 1000;
-static constexpr int CENTER_VALUE = 1500;
-static constexpr int MAX_VALUE = 2000;
+స్థిర constexpr పూర్ణాంకం MAX_అంకె_OUTPUTS = 8;
+స్థిర constexpr పూర్ణాంకం DISARMED_విలువ = 900;
+స్థిర constexpr పూర్ణాంకం FAILSAFE_విలువ = 800;
+స్థిర constexpr పూర్ణాంకం MIN_విలువ = 1000;
+స్థిర constexpr పూర్ణాంకం CENTER_విలువ = 1500;
+స్థిర constexpr పూర్ణాంకం MAX_విలువ = 2000;
 
-class MixerModuleTest : public ::testing::Test
+తరగతి MixerModuleTest : బహిరంగ ::testing::Test
 {
-public:
-	void SetUp() override
+బహిరంగ:
+	శూన్య సమితి_పైకి() override
 	{
-		param_control_autosave(false);
+		param_control_autosave(అబద్ధం);
 	}
 
-	int update(MixingOutput &mixing_output)
+	పూర్ణాంకం update(MixingOutput &mixing_output)
 	{
 		mixing_output.update();
 		// make sure output_limit switches to ON (if outputs enabled)
 		px4_usleep(50000 * 2);
 		mixing_output.update();
 		mixing_output.update();
-		return 3; // expected number of output updates
+		తిరిగి 3; // expected number of output updates
 	}
 
 };
 
-class OutputModuleTest : public OutputModuleInterface
+తరగతి OutputModuleTest : బహిరంగ OutputModuleInterface
 {
-public:
+బహిరంగ:
 	OutputModuleTest() : OutputModuleInterface(MODULE_NAME, px4::wq_configurations::hp_default) {};
 
 	~OutputModuleTest() override
@@ -90,65 +90,65 @@ public:
 		_actuator_armed_pub.unadvertise();
 	}
 
-	void Run() override
+	శూన్య నిరంతరం() override
 	{
-		was_scheduled = true;
+		was_scheduled = నిజం;
 	}
 
-	bool updateOutputs(float outputs_[MAX_ACTUATORS], unsigned num_outputs_, unsigned num_control_groups_updated) override
+	తార్కిక updateOutputs(దశాంశం outputs_[MAX_ACTUATORS], గుర్తులేని అంకె_outputs_2, గుర్తులేని అంకె_control_groups_updated) override
 	{
-		memcpy(outputs, outputs_, sizeof(outputs));
-		num_outputs = num_outputs_;
-		++num_updates;
-		return true;
+		జ్ఞాపకం_నకలు(outputs, outputs_, పరిమాణం(outputs));
+		అంకె_outputs = అంకె_outputs_2;
+		++అంకె_updates;
+		తిరిగి నిజం;
 	}
 
-	void mixerChanged() override
+	శూన్య mixer_మారింది() override
 	{
-		mixer_changed = true;
+		mixer_మారింది_2 = నిజం;
 	}
 
-	void configureFunctions(const std::array<int32_t, MAX_NUM_OUTPUTS> &functions)
+	శూన్య configureFunctions(స్థిరరాశి std::array<int32_t, MAX_అంకె_OUTPUTS> &functions)
 	{
-		for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-			char buffer[17];
+		కొరకు (పూర్ణాంకం i = 0; i < MAX_అంకె_OUTPUTS; ++i) {
+			అక్షరం బఫరు_2[17];
 
-			snprintf(buffer, sizeof(buffer), "%s_FUNC%u", PARAM_PREFIX, i + 1);
-			param_set(param_find(buffer), &functions[i]);
+			snprintf(బఫరు_2, పరిమాణం(బఫరు_2), "%s_FUNC%u", PARAM_ఉపసర్గ, i + 1);
+			param_సమితి(param_కనుగొను(బఫరు_2), &functions[i]);
 		}
 
 		updateParams();
 	}
 
-	void sendMotors(const std::array<float, actuator_motors_s::NUM_CONTROLS> &motors, uint16_t reversible = 0)
+	శూన్య sendMotors(స్థిరరాశి std::array<దశాంశం, actuator_motors_s::అంకె_CONTROLS> &motors, uint16_t reversible = 0)
 	{
 		actuator_motors_s actuator_motors{};
-		actuator_motors.timestamp = hrt_absolute_time();
+		actuator_motors.timestamp = hrt_absolute_సమయం();
 		actuator_motors.reversible_flags = reversible;
 
-		for (unsigned i = 0; i < motors.size(); ++i) {
+		కొరకు (గుర్తులేని i = 0; i < motors.కొలత(); ++i) {
 			actuator_motors.control[i] = motors[i];
 		}
 
 		_actuator_motors_pub.publish(actuator_motors);
 	}
 
-	void sendServos(const std::array<float, actuator_servos_s::NUM_CONTROLS> &servos)
+	శూన్య sendServos(స్థిరరాశి std::array<దశాంశం, actuator_servos_s::అంకె_CONTROLS> &servos)
 	{
 		actuator_servos_s actuator_servos{};
-		actuator_servos.timestamp = hrt_absolute_time();
+		actuator_servos.timestamp = hrt_absolute_సమయం();
 
-		for (unsigned i = 0; i < servos.size(); ++i) {
+		కొరకు (గుర్తులేని i = 0; i < servos.కొలత(); ++i) {
 			actuator_servos.control[i] = servos[i];
 		}
 
 		_actuator_servos_pub.publish(actuator_servos);
 	}
 
-	void sendActuatorMotorTest(int function, float value, bool release_control)
+	శూన్య sendActuatorMotorTest(పూర్ణాంకం function, దశాంశం value, తార్కిక release_control)
 	{
 		actuator_test_s actuator_test{};
-		actuator_test.timestamp = hrt_absolute_time();
+		actuator_test.timestamp = hrt_absolute_సమయం();
 		actuator_test.function = function;
 		actuator_test.value = value;
 		actuator_test.action = release_control ? actuator_test_s::ACTION_RELEASE_CONTROL : actuator_test_s::ACTION_DO_CONTROL;
@@ -156,10 +156,10 @@ public:
 		_actuator_test_pub.publish(actuator_test);
 	}
 
-	void sendActuatorArmed(bool armed, bool termination = false, bool kill = false, bool prearm = false)
+	శూన్య sendActuatorArmed(తార్కిక armed, తార్కిక termination = అబద్ధం, తార్కిక kill = అబద్ధం, తార్కిక prearm = అబద్ధం)
 	{
 		actuator_armed_s actuator_armed{};
-		actuator_armed.timestamp = hrt_absolute_time();
+		actuator_armed.timestamp = hrt_absolute_సమయం();
 		actuator_armed.armed = armed;
 		actuator_armed.termination = termination;
 		actuator_armed.kill = kill;
@@ -167,21 +167,21 @@ public:
 		_actuator_armed_pub.publish(actuator_armed);
 	}
 
-	void reset()
+	శూన్య reset()
 	{
-		memset(outputs, 0, sizeof(outputs));
-		num_outputs = 0;
-		num_updates = 0;
-		mixer_changed = false;
+		memset(outputs, 0, పరిమాణం(outputs));
+		అంకె_outputs = 0;
+		అంకె_updates = 0;
+		mixer_మారింది_2 = అబద్ధం;
 	}
 
-	float outputs[MAX_ACTUATORS] {};
-	int num_outputs{0};
-	int num_updates{0};
-	bool was_scheduled{false};
-	bool mixer_changed{false};
+	దశాంశం outputs[MAX_ACTUATORS] {};
+	పూర్ణాంకం అంకె_outputs{0};
+	పూర్ణాంకం అంకె_updates{0};
+	తార్కిక was_scheduled{అబద్ధం};
+	తార్కిక mixer_మారింది_2{అబద్ధం};
 
-private:
+అంతరంగ:
 	uORB::Publication<actuator_test_s> _actuator_test_pub{ORB_ID(actuator_test)};
 	uORB::Publication<actuator_motors_s> _actuator_motors_pub{ORB_ID(actuator_motors)};
 	uORB::Publication<actuator_servos_s> _actuator_servos_pub{ORB_ID(actuator_servos)};
@@ -192,34 +192,34 @@ TEST_F(MixerModuleTest, basic)
 {
 	OutputModuleTest test_module;
 	test_module.configureFunctions({});
-	MixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
-	mixing_output.setAllDisarmedValues(DISARMED_VALUE);
-	mixing_output.setAllFailsafeValues(FAILSAFE_VALUE);
-	mixing_output.setAllMinValues(MIN_VALUE);
-	mixing_output.setAllCenterValues(CENTER_VALUE);
-	mixing_output.setAllMaxValues(MAX_VALUE);
-	EXPECT_EQ(test_module.num_updates, 0);
+	MixingOutput mixing_output{PARAM_ఉపసర్గ, MAX_అంకె_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, అబద్ధం, అబద్ధం};
+	mixing_output.సమితి_All_Disarmed_విలువలు(DISARMED_విలువ);
+	mixing_output.సమితి_All_Failsafe_విలువలు(FAILSAFE_విలువ);
+	mixing_output.సమితి_All_Min_విలువలు(MIN_విలువ);
+	mixing_output.సమితి_All_Center_విలువలు(CENTER_విలువ);
+	mixing_output.సమితి_All_Max_విలువలు(MAX_విలువ);
+	EXPECT_EQ(test_module.అంకె_updates, 0);
 
 	// all functions disabled: expect to get one single update to process disabling the output signal
 	mixing_output.update();
-	mixing_output.updateSubscriptions(false);
+	mixing_output.updateSubscriptions(అబద్ధం);
 	mixing_output.update();
-	EXPECT_EQ(test_module.num_updates, 1);
+	EXPECT_EQ(test_module.అంకె_updates, 1);
 	mixing_output.update();
-	mixing_output.updateSubscriptions(false);
+	mixing_output.updateSubscriptions(అబద్ధం);
 	mixing_output.update();
-	EXPECT_EQ(test_module.num_updates, 1);
+	EXPECT_EQ(test_module.అంకె_updates, 1);
 	test_module.reset();
 
 	// configure motor, ensure all still disarmed
-	test_module.configureFunctions({(int)OutputFunction::Motor1});
-	mixing_output.updateSubscriptions(false);
-	EXPECT_TRUE(test_module.mixer_changed);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	test_module.configureFunctions({(పూర్ణాంకం)OutputFunction::Motor1});
+	mixing_output.updateSubscriptions(అబద్ధం);
+	EXPECT_TRUE(test_module.mixer_మారింది_2);
+	EXPECT_EQ(test_module.అంకె_updates, update(mixing_output));
+	EXPECT_EQ(test_module.అంకె_outputs, MAX_అంకె_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	కొరకు (పూర్ణాంకం i = 0; i < test_module.అంకె_outputs; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_విలువ);
 	}
 
 	test_module.reset();
@@ -228,48 +228,48 @@ TEST_F(MixerModuleTest, basic)
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
 	test_module.configureFunctions({
 		0,
-		(int)OutputFunction::Motor3,
-		(int)OutputFunction::Motor1,
-		(int)OutputFunction::Motor5});
+		(పూర్ణాంకం)OutputFunction::Motor3,
+		(పూర్ణాంకం)OutputFunction::Motor1,
+		(పూర్ణాంకం)OutputFunction::Motor5});
 
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(అబద్ధం);
+	EXPECT_EQ(test_module.అంకె_updates, update(mixing_output));
+	EXPECT_EQ(test_module.అంకె_outputs, MAX_అంకె_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	కొరకు (పూర్ణాంకం i = 0; i < test_module.అంకె_outputs; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_విలువ);
 	}
 
 	test_module.reset();
 
 
 	// actuator test
-	test_module.sendActuatorMotorTest((int)OutputFunction::Motor5, 1.f, false);
+	test_module.sendActuatorMotorTest((పూర్ణాంకం)OutputFunction::Motor5, 1.f, అబద్ధం);
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(అబద్ధం);
+	EXPECT_EQ(test_module.అంకె_updates, update(mixing_output));
+	EXPECT_EQ(test_module.అంకె_outputs, MAX_అంకె_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
-		if (i == 3) {
-			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
+	కొరకు (పూర్ణాంకం i = 0; i < test_module.అంకె_outputs; ++i) {
+		ఒకవేళ (i == 3) {
+			EXPECT_EQ(test_module.outputs[i], MAX_విలువ);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} లేకపోతే {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_విలువ);
 		}
 	}
 
 	test_module.reset();
 
 	// stop
-	test_module.sendActuatorMotorTest((int)OutputFunction::Motor5, 0.f, true);
+	test_module.sendActuatorMotorTest((పూర్ణాంకం)OutputFunction::Motor5, 0.f, నిజం);
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(అబద్ధం);
+	EXPECT_EQ(test_module.అంకె_updates, update(mixing_output));
+	EXPECT_EQ(test_module.అంకె_outputs, MAX_అంకె_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	కొరకు (పూర్ణాంకం i = 0; i < test_module.అంకె_outputs; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_విలువ);
 	}
 
 	test_module.reset();
@@ -282,50 +282,50 @@ TEST_F(MixerModuleTest, arming)
 	OutputModuleTest test_module;
 	test_module.configureFunctions({
 		0,
-		(int)OutputFunction::Motor3,
-		(int)OutputFunction::Motor1,
-		(int)OutputFunction::Motor5,
-		(int)OutputFunction::Servo3});
-	MixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
-	mixing_output.setAllDisarmedValues(DISARMED_VALUE);
-	mixing_output.setAllFailsafeValues(FAILSAFE_VALUE);
-	mixing_output.setAllMinValues(MIN_VALUE);
-	mixing_output.setAllCenterValues(CENTER_VALUE);
-	mixing_output.setAllMaxValues(MAX_VALUE);
+		(పూర్ణాంకం)OutputFunction::Motor3,
+		(పూర్ణాంకం)OutputFunction::Motor1,
+		(పూర్ణాంకం)OutputFunction::Motor5,
+		(పూర్ణాంకం)OutputFunction::Servo3});
+	MixingOutput mixing_output{PARAM_ఉపసర్గ, MAX_అంకె_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, అబద్ధం, అబద్ధం};
+	mixing_output.సమితి_All_Disarmed_విలువలు(DISARMED_విలువ);
+	mixing_output.సమితి_All_Failsafe_విలువలు(FAILSAFE_విలువ);
+	mixing_output.సమితి_All_Min_విలువలు(MIN_విలువ);
+	mixing_output.సమితి_All_Center_విలువలు(CENTER_విలువ);
+	mixing_output.సమితి_All_Max_విలువలు(MAX_విలువ);
 
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
-	test_module.sendActuatorArmed(false);
+	test_module.sendActuatorArmed(అబద్ధం);
 
 	// ensure all disarmed
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(అబద్ధం);
+	EXPECT_EQ(test_module.అంకె_updates, update(mixing_output));
+	EXPECT_EQ(test_module.అంకె_outputs, MAX_అంకె_OUTPUTS);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	కొరకు (పూర్ణాంకం i = 0; i < MAX_అంకె_OUTPUTS; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_విలువ);
 	}
 
 	test_module.reset();
 
 	// arming
 	test_module.sendMotors({0.5f, 1.f, 0.1f, 0.2f, 1.f, 1.f, 1.f, 1.f});
-	test_module.sendActuatorArmed(true);
+	test_module.sendActuatorArmed(నిజం);
 
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	EXPECT_EQ(test_module.అంకె_updates, update(mixing_output));
+	EXPECT_EQ(test_module.అంకె_outputs, MAX_అంకె_OUTPUTS);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.1f + MIN_VALUE);
+	కొరకు (పూర్ణాంకం i = 0; i < MAX_అంకె_OUTPUTS; ++i) {
+		ఒకవేళ (i == 1) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_విలువ - MIN_విలువ) * 0.1f + MIN_విలువ);
 
-		} else if (i == 2) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.5f + MIN_VALUE);
+		} లేకపోతే ఒకవేళ (i == 2) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_విలువ - MIN_విలువ) * 0.5f + MIN_విలువ);
 
-		} else if (i == 3) {
-			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
+		} లేకపోతే ఒకవేళ (i == 3) {
+			EXPECT_EQ(test_module.outputs[i], MAX_విలువ);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} లేకపోతే {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_విలువ);
 		}
 	}
 
@@ -333,110 +333,110 @@ TEST_F(MixerModuleTest, arming)
 
 	// update motors
 	test_module.sendMotors({0.9f, 1.f, 0.24f, 0.2f, 0.f, 1.f, 1.f, 1.f});
-	mixing_output.updateSubscriptions(false);
+	mixing_output.updateSubscriptions(అబద్ధం);
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.24f + MIN_VALUE);
+	కొరకు (పూర్ణాంకం i = 0; i < MAX_అంకె_OUTPUTS; ++i) {
+		ఒకవేళ (i == 1) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_విలువ - MIN_విలువ) * 0.24f + MIN_విలువ);
 
-		} else if (i == 2) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.9f + MIN_VALUE);
+		} లేకపోతే ఒకవేళ (i == 2) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_విలువ - MIN_విలువ) * 0.9f + MIN_విలువ);
 
-		} else if (i == 3) {
-			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
+		} లేకపోతే ఒకవేళ (i == 3) {
+			EXPECT_EQ(test_module.outputs[i], MIN_విలువ);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} లేకపోతే {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_విలువ);
 		}
 	}
 
 	test_module.reset();
 
 	// failsafe
-	test_module.sendActuatorArmed(true, true);
+	test_module.sendActuatorArmed(నిజం, నిజం);
 	test_module.sendMotors({0.5f, 1.f, 0.1f, 0.2f, 1.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		EXPECT_EQ(test_module.outputs[i], FAILSAFE_VALUE);
+	కొరకు (పూర్ణాంకం i = 0; i < MAX_అంకె_OUTPUTS; ++i) {
+		EXPECT_EQ(test_module.outputs[i], FAILSAFE_విలువ);
 	}
 
 	test_module.reset();
 
 	// restore
-	test_module.sendActuatorArmed(true, false);
+	test_module.sendActuatorArmed(నిజం, అబద్ధం);
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i >= 1 && i <= 3) {
-			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
+	కొరకు (పూర్ణాంకం i = 0; i < MAX_అంకె_OUTPUTS; ++i) {
+		ఒకవేళ (i >= 1 && i <= 3) {
+			EXPECT_EQ(test_module.outputs[i], MAX_విలువ);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} లేకపోతే {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_విలువ);
 		}
 	}
 
 	test_module.reset();
 
 	// manual lockdown
-	test_module.sendActuatorArmed(true, false, true);
+	test_module.sendActuatorArmed(నిజం, అబద్ధం, నిజం);
 	test_module.sendMotors({0.5f, 1.f, 0.1f, 0.2f, 1.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	కొరకు (పూర్ణాంకం i = 0; i < MAX_అంకె_OUTPUTS; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_విలువ);
 	}
 
 	test_module.reset();
 
 	// restore
-	test_module.sendActuatorArmed(true, false);
+	test_module.sendActuatorArmed(నిజం, అబద్ధం);
 	test_module.sendMotors({0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i >= 1 && i <= 3) {
-			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
+	కొరకు (పూర్ణాంకం i = 0; i < MAX_అంకె_OUTPUTS; ++i) {
+		ఒకవేళ (i >= 1 && i <= 3) {
+			EXPECT_EQ(test_module.outputs[i], MIN_విలువ);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} లేకపోతే {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_విలువ);
 		}
 	}
 
 	test_module.reset();
 
 	// set motor 5 reversible: expect output to be in center when commanding to 0
-	test_module.sendActuatorArmed(true, false);
+	test_module.sendActuatorArmed(నిజం, అబద్ధం);
 	test_module.sendMotors({0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 1.f}, 1u << 4);
 	mixing_output.update();
 	EXPECT_EQ(mixing_output.reversibleOutputs(), 1u << 3);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
-			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
+	కొరకు (పూర్ణాంకం i = 0; i < MAX_అంకె_OUTPUTS; ++i) {
+		ఒకవేళ (i == 1) {
+			EXPECT_EQ(test_module.outputs[i], MIN_విలువ);
 
-		} else if (i == 2) {
-			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
+		} లేకపోతే ఒకవేళ (i == 2) {
+			EXPECT_EQ(test_module.outputs[i], MIN_విలువ);
 
-		} else if (i == 3) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.5f + MIN_VALUE);
+		} లేకపోతే ఒకవేళ (i == 3) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_విలువ - MIN_విలువ) * 0.5f + MIN_విలువ);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} లేకపోతే {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_విలువ);
 		}
 	}
 
 	test_module.reset();
 
 	// disarm
-	test_module.sendActuatorArmed(false);
+	test_module.sendActuatorArmed(అబద్ధం);
 	test_module.sendMotors({0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 1.f}, 1u << 4);
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	కొరకు (పూర్ణాంకం i = 0; i < MAX_అంకె_OUTPUTS; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_విలువ);
 	}
 
 	test_module.reset();
@@ -448,29 +448,29 @@ TEST_F(MixerModuleTest, prearm)
 {
 	OutputModuleTest test_module;
 	test_module.configureFunctions({
-		(int)OutputFunction::Motor1,
-		(int)OutputFunction::Servo1});
-	MixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
-	mixing_output.setAllDisarmedValues(DISARMED_VALUE);
-	mixing_output.setAllFailsafeValues(FAILSAFE_VALUE);
-	mixing_output.setAllMinValues(MIN_VALUE);
-	mixing_output.setAllMaxValues(MAX_VALUE);
+		(పూర్ణాంకం)OutputFunction::Motor1,
+		(పూర్ణాంకం)OutputFunction::Servo1});
+	MixingOutput mixing_output{PARAM_ఉపసర్గ, MAX_అంకె_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, అబద్ధం, అబద్ధం};
+	mixing_output.సమితి_All_Disarmed_విలువలు(DISARMED_విలువ);
+	mixing_output.సమితి_All_Failsafe_విలువలు(FAILSAFE_విలువ);
+	mixing_output.సమితి_All_Min_విలువలు(MIN_విలువ);
+	mixing_output.సమితి_All_Max_విలువలు(MAX_విలువ);
 
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
 	test_module.sendServos({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
-	test_module.sendActuatorArmed(false, false, false, true);
+	test_module.sendActuatorArmed(అబద్ధం, అబద్ధం, అబద్ధం, నిజం);
 
 	// ensure all disarmed, except the servo
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(అబద్ధం);
+	EXPECT_EQ(test_module.అంకె_updates, update(mixing_output));
+	EXPECT_EQ(test_module.అంకె_outputs, MAX_అంకె_OUTPUTS);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
-			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
+	కొరకు (పూర్ణాంకం i = 0; i < MAX_అంకె_OUTPUTS; ++i) {
+		ఒకవేళ (i == 1) {
+			EXPECT_EQ(test_module.outputs[i], MAX_విలువ);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} లేకపోతే {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_విలువ);
 		}
 	}
 
@@ -479,74 +479,74 @@ TEST_F(MixerModuleTest, prearm)
 	EXPECT_FALSE(test_module.was_scheduled);
 }
 
-class TestMixingOutput : public MixingOutput
+తరగతి TestMixingOutput : బహిరంగ MixingOutput
 {
-public:
-	TestMixingOutput(const char *param_prefix, uint8_t max_num_outputs, OutputModuleInterface &interface,
+బహిరంగ:
+	TestMixingOutput(స్థిరరాశి అక్షరం *param_ఉపసర్గ, uint8_t max_అంకె_outputs, OutputModuleInterface &interface,
 			 SchedulingPolicy scheduling_policy,
-			 bool support_esc_calibration, bool ramp_up = true)
-		: MixingOutput(param_prefix, max_num_outputs, interface, scheduling_policy, support_esc_calibration, ramp_up)
+			 తార్కిక support_esc_calibration, తార్కిక ramp_పైకి = నిజం)
+		: MixingOutput(param_ఉపసర్గ, max_అంకె_outputs, interface, scheduling_policy, support_esc_calibration, ramp_పైకి)
 	{};
-	float output_limit_calc_single(int i, float value) const { return MixingOutput::output_limit_calc_single(i, value); }
+	దశాంశం output_హద్దు_calc_single(పూర్ణాంకం i, దశాంశం value) స్థిరరాశి { తిరిగి MixingOutput::output_హద్దు_calc_single(i, value); }
 };
 
-TEST_F(MixerModuleTest, OutputLimitCalcSingle)
+TEST_F(MixerModuleTest, Output_హద్దు_Calc_Single)
 {
 	OutputModuleTest test_module;
-	test_module.configureFunctions({(int)OutputFunction::Motor1});
-	TestMixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
+	test_module.configureFunctions({(పూర్ణాంకం)OutputFunction::Motor1});
+	TestMixingOutput mixing_output{PARAM_ఉపసర్గ, MAX_అంకె_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, అబద్ధం, అబద్ధం};
 
-	mixing_output.setAllMinValues(MIN_VALUE); // default range [1000,2000]
-	mixing_output.setAllMaxValues(MAX_VALUE);
-	mixing_output.setAllCenterValues(CENTER_VALUE); // Set center to middle value
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.f), 1000); // In range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -.5f), 1250);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.f), 1500);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, .5f), 1750);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1.f), 2000);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.1f), 1000); // Out of range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1.1f), 2000);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1000.f), 1000); // Way ouf of range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1000.f), 2000);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.0005), 1500.25f);
-	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_limit_calc_single(0, 0.0005))), 1500); // Rounding down
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.0015), 1500.75f);
-	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_limit_calc_single(0, 0.0015))), 1501); // Rounding up
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.002), 1501); // Exact value
+	mixing_output.సమితి_All_Min_విలువలు(MIN_విలువ); // default range [1000,2000]
+	mixing_output.సమితి_All_Max_విలువలు(MAX_విలువ);
+	mixing_output.సమితి_All_Center_విలువలు(CENTER_విలువ); // Set center to middle value
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, -1.f), 1000); // In range
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, -.5f), 1250);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 0.f), 1500);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, .5f), 1750);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 1.f), 2000);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, -1.1f), 1000); // Out of range
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 1.1f), 2000);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, -1000.f), 1000); // Way ouf of range
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 1000.f), 2000);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 0.0005), 1500.25f);
+	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_హద్దు_calc_single(0, 0.0005))), 1500); // Rounding down
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 0.0015), 1500.75f);
+	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_హద్దు_calc_single(0, 0.0015))), 1501); // Rounding up
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 0.002), 1501); // Exact value
 
-	mixing_output.setAllMinValues(0); // lower range [0,20]
-	mixing_output.setAllMaxValues(20);
-	mixing_output.setAllCenterValues(10); // Set center to middle value
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.f), 0); // In range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -.5f), 5);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.f), 10);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, .5f), 15);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1.f), 20);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.1f), 0); // Out of range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1.1f), 20);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1000.f), 0); // Way ouf of range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1000.f), 20);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.025), 10.25f);
-	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_limit_calc_single(0, 0.025))), 10); // Rounding down
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.075), 10.75f);
-	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_limit_calc_single(0, 0.075))), 11); // Rounding up
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.1), 11); // Exact value
+	mixing_output.సమితి_All_Min_విలువలు(0); // lower range [0,20]
+	mixing_output.సమితి_All_Max_విలువలు(20);
+	mixing_output.సమితి_All_Center_విలువలు(10); // Set center to middle value
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, -1.f), 0); // In range
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, -.5f), 5);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 0.f), 10);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, .5f), 15);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 1.f), 20);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, -1.1f), 0); // Out of range
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 1.1f), 20);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, -1000.f), 0); // Way ouf of range
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 1000.f), 20);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 0.025), 10.25f);
+	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_హద్దు_calc_single(0, 0.025))), 10); // Rounding down
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 0.075), 10.75f);
+	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_హద్దు_calc_single(0, 0.075))), 11); // Rounding up
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 0.1), 11); // Exact value
 
-	mixing_output.setAllMinValues(20); // inverted range [20,0]
-	mixing_output.setAllMaxValues(0);
-	mixing_output.setAllCenterValues(10); // Set center to middle value
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.f), 20); // In range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -.5f), 15);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.f), 10);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, .5f), 5);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1.f), 0);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.1f), 20); // Out of range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1.1f), 0);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1000.f), 20); // Way ouf of range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1000.f), 0);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.025), 9.75f);
-	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_limit_calc_single(0, 0.025))), 10); // Rounding down
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.075), 9.25f);
-	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_limit_calc_single(0, 0.075))), 9); // Rounding up
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.1), 9); // Exact value
+	mixing_output.సమితి_All_Min_విలువలు(20); // inverted range [20,0]
+	mixing_output.సమితి_All_Max_విలువలు(0);
+	mixing_output.సమితి_All_Center_విలువలు(10); // Set center to middle value
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, -1.f), 20); // In range
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, -.5f), 15);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 0.f), 10);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, .5f), 5);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 1.f), 0);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, -1.1f), 20); // Out of range
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 1.1f), 0);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, -1000.f), 20); // Way ouf of range
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 1000.f), 0);
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 0.025), 9.75f);
+	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_హద్దు_calc_single(0, 0.025))), 10); // Rounding down
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 0.075), 9.25f);
+	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_హద్దు_calc_single(0, 0.075))), 9); // Rounding up
+	EXPECT_EQ(mixing_output.output_హద్దు_calc_single(0, 0.1), 9); // Exact value
 }

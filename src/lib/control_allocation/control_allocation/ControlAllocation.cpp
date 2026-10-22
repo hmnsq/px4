@@ -39,33 +39,33 @@
  * @author Julien Lecoeur <julien.lecoeur@gmail.com>
  */
 
-#include "ControlAllocation.hpp"
+#అన్తర్భావ "ControlAllocation.hpp"
 
-ControlAllocation::ControlAllocation()
+Control_కేటాయింపు::Control_కేటాయింపు()
 {
-	_control_allocation_scale.setAll(1.f);
-	_actuator_min.setAll(0.f);
-	_actuator_max.setAll(1.f);
+	control_కేటాయింపు_scale.సమితి_All(1.f);
+	_actuator_min.సమితి_All(0.f);
+	_actuator_max.సమితి_All(1.f);
 }
 
-void
-ControlAllocation::setEffectivenessMatrix(
-	const matrix::Matrix<float, ControlAllocation::NUM_AXES, ControlAllocation::NUM_ACTUATORS> &effectiveness,
-	const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
-	bool update_normalization_scale)
+శూన్య
+Control_కేటాయింపు::సమితి_Effectiveness_మాతృక(
+	స్థిరరాశి మాతృక::మాతృక_2<దశాంశం, Control_కేటాయింపు::అంకె_AXES, Control_కేటాయింపు::అంకె_ACTUATORS> &effectiveness,
+	స్థిరరాశి Actuator_సదిశ &actuator_trim, స్థిరరాశి Actuator_సదిశ &linearization_బిందువు, పూర్ణాంకం అంకె_actuators,
+	తార్కిక update_normalization_scale)
 {
 	_effectiveness = effectiveness;
-	ActuatorVector linearization_point_clipped = linearization_point;
-	clipActuatorSetpoint(linearization_point_clipped);
-	_actuator_trim = actuator_trim + linearization_point_clipped;
+	Actuator_సదిశ linearization_బిందువు_clipped = linearization_బిందువు;
+	clipActuatorSetpoint(linearization_బిందువు_clipped);
+	_actuator_trim = actuator_trim + linearization_బిందువు_clipped;
 	clipActuatorSetpoint(_actuator_trim);
-	_num_actuators = num_actuators;
-	_control_trim = _effectiveness * linearization_point_clipped;
+	అంకె_actuators_2 = అంకె_actuators;
+	_control_trim = _effectiveness * linearization_బిందువు_clipped;
 }
 
-void
-ControlAllocation::setActuatorSetpoint(
-	const matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator_sp)
+శూన్య
+Control_కేటాయింపు::సమితి_Actuator_Setpoint(
+	స్థిరరాశి మాతృక::సదిశ<దశాంశం, Control_కేటాయింపు::అంకె_ACTUATORS> &actuator_sp)
 {
 	// Set actuator setpoint
 	_actuator_sp = actuator_sp;
@@ -74,41 +74,41 @@ ControlAllocation::setActuatorSetpoint(
 	clipActuatorSetpoint(_actuator_sp);
 }
 
-void
-ControlAllocation::clipActuatorSetpoint(matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator) const
+శూన్య
+Control_కేటాయింపు::clipActuatorSetpoint(మాతృక::సదిశ<దశాంశం, Control_కేటాయింపు::అంకె_ACTUATORS> &actuator) స్థిరరాశి
 {
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_max(i) < _actuator_min(i)) {
+	కొరకు (పూర్ణాంకం i = 0; i < అంకె_actuators_2; i++) {
+		ఒకవేళ (_actuator_max(i) < _actuator_min(i)) {
 			actuator(i) = _actuator_trim(i);
 
-		} else if (actuator(i) < _actuator_min(i)) {
+		} లేకపోతే ఒకవేళ (actuator(i) < _actuator_min(i)) {
 			actuator(i) = _actuator_min(i);
 
-		} else if (actuator(i) > _actuator_max(i)) {
+		} లేకపోతే ఒకవేళ (actuator(i) > _actuator_max(i)) {
 			actuator(i) = _actuator_max(i);
 		}
 	}
 }
 
-matrix::Vector<float, ControlAllocation::NUM_ACTUATORS>
-ControlAllocation::normalizeActuatorSetpoint(const matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator)
-const
+మాతృక::సదిశ<దశాంశం, Control_కేటాయింపు::అంకె_ACTUATORS>
+Control_కేటాయింపు::normalizeActuatorSetpoint(స్థిరరాశి మాతృక::సదిశ<దశాంశం, Control_కేటాయింపు::అంకె_ACTUATORS> &actuator)
+స్థిరరాశి
 {
-	matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> actuator_normalized;
+	మాతృక::సదిశ<దశాంశం, Control_కేటాయింపు::అంకె_ACTUATORS> actuator_normalized;
 
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_min(i) < _actuator_max(i)) {
+	కొరకు (పూర్ణాంకం i = 0; i < అంకె_actuators_2; i++) {
+		ఒకవేళ (_actuator_min(i) < _actuator_max(i)) {
 			actuator_normalized(i) = (actuator(i) - _actuator_min(i)) / (_actuator_max(i) - _actuator_min(i));
 
-		} else {
+		} లేకపోతే {
 			actuator_normalized(i) = (_actuator_trim(i) - _actuator_min(i)) / (_actuator_max(i) - _actuator_min(i));
 		}
 	}
 
-	return actuator_normalized;
+	తిరిగి actuator_normalized;
 }
 
-void ControlAllocation::applySlewRateLimit(float dt)
+శూన్య Control_కేటాయింపు::apply_Slew_రేటు_హద్దు(దశాంశం dt)
 {
 	// For motors, an actuator setpoint of NaN represents switching off the
 	// motor (giving it disarmed PWM). Physically it results in zero thrust,
@@ -122,38 +122,38 @@ void ControlAllocation::applySlewRateLimit(float dt)
 	//  - NaN to nonzero: replace NaN by zero, then rise with slew rate to input
 	//  - between nonzero and 0: slew limit, then match input
 
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_slew_rate_limit(i) > FLT_EPSILON) {
+	కొరకు (పూర్ణాంకం i = 0; i < అంకె_actuators_2; i++) {
+		ఒకవేళ (actuator_slew_రేటు_హద్దు(i) > FLT_EPSILON) {
 
-			float input = _actuator_sp(i);
-			float previous = _prev_actuator_sp(i);
+			దశాంశం ఆదానం = _actuator_sp(i);
+			దశాంశం మునుపటి = _prev_actuator_sp(i);
 
 			// Before slew limiting, transform NaN to 0, but remember if the input was NaN
-			const bool input_is_nan = !PX4_ISFINITE(input);
+			స్థిరరాశి తార్కిక ఆదానం_is_nan = !PX4_ISFINITE(ఆదానం);
 
-			if (input_is_nan) {
-				input = 0.f;
+			ఒకవేళ (ఆదానం_is_nan) {
+				ఆదానం = 0.f;
 			}
 
-			if (!PX4_ISFINITE(previous)) {
-				previous = 0.f;
+			ఒకవేళ (!PX4_ISFINITE(మునుపటి)) {
+				మునుపటి = 0.f;
 			}
 
 			// Slew limit without any NaN involved
-			const float delta_sp_max = dt * (_actuator_max(i) - _actuator_min(i)) / _actuator_slew_rate_limit(i);
-			const float delta_sp = input - previous;
+			స్థిరరాశి దశాంశం delta_sp_max = dt * (_actuator_max(i) - _actuator_min(i)) / actuator_slew_రేటు_హద్దు(i);
+			స్థిరరాశి దశాంశం delta_sp = ఆదానం - మునుపటి;
 
-			float output = input;
+			దశాంశం output = ఆదానం;
 
-			if (delta_sp > delta_sp_max) {
-				output = previous + delta_sp_max;
+			ఒకవేళ (delta_sp > delta_sp_max) {
+				output = మునుపటి + delta_sp_max;
 
-			} else if (delta_sp < -delta_sp_max) {
-				output = previous - delta_sp_max;
+			} లేకపోతే ఒకవేళ (delta_sp < -delta_sp_max) {
+				output = మునుపటి - delta_sp_max;
 			}
 
 			// Transform back to NaN if appropriate
-			if (input_is_nan && fabsf(output) < FLT_EPSILON) {
+			ఒకవేళ (ఆదానం_is_nan && fabsf(output) < FLT_EPSILON) {
 				output = NAN;
 			}
 

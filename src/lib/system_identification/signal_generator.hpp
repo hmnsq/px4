@@ -35,32 +35,32 @@
  * @file signal_generator.hpp
  */
 
-#pragma once
+#సూచన once
 
-namespace signal_generator
+నామాకాశ signal_generator
 {
 
-inline float getLinearSineSweep(float f_start, float f_end, float duration, float t)
+అంతఃవరుస దశాంశం get_రేఖీయ_Sine_Sweep(దశాంశం f_ప్రారంభం, దశాంశం f_చివర, దశాంశం duration, దశాంశం t)
 {
-	if (t > duration) {
-		return 0.f;
+	ఒకవేళ (t > duration) {
+		తిరిగి 0.f;
 	}
 
-	const float w_start = f_start * M_TWOPI_F;
-	const float w_end = f_end * M_TWOPI_F;
+	స్థిరరాశి దశాంశం w_ప్రారంభం = f_ప్రారంభం * M_TWOPI_F;
+	స్థిరరాశి దశాంశం w_చివర = f_చివర * M_TWOPI_F;
 
-	return sinf(w_start * t + 0.5f * (w_end - w_start) * t * t / duration);
+	తిరిగి sinf(w_ప్రారంభం * t + 0.5f * (w_చివర - w_ప్రారంభం) * t * t / duration);
 }
 
-inline float getLogSineSweep(float f_start, float f_end, float duration, float t)
+అంతఃవరుస దశాంశం getLogSineSweep(దశాంశం f_ప్రారంభం, దశాంశం f_చివర, దశాంశం duration, దశాంశం t)
 {
-	if (t > duration) {
-		return 0.f;
+	ఒకవేళ (t > duration) {
+		తిరిగి 0.f;
 	}
 
-	const float f_ratio = f_end / fmaxf(f_start, 0.1f);
+	స్థిరరాశి దశాంశం f_నిష్పత్తి = f_చివర / fmaxf(f_ప్రారంభం, 0.1f);
 
-	return sinf(M_TWOPI_F * f_start * duration * (powf(f_ratio, t / duration) - 1.f) / logf(f_ratio));
+	తిరిగి sinf(M_TWOPI_F * f_ప్రారంభం * duration * (powf(f_నిష్పత్తి, t / duration) - 1.f) / logf(f_నిష్పత్తి));
 }
 
 } /* namespace signal_generator */
