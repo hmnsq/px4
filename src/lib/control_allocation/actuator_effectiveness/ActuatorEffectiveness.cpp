@@ -31,28 +31,28 @@
  *
  ****************************************************************************/
 
-#include "ActuatorEffectiveness.hpp"
+#अन्तर्भाव "ActuatorEffectiveness.hpp"
 
-#include <px4_platform_common/log.h>
+#अन्तर्भाव <px4_platform_common/log.h>
 
-int ActuatorEffectiveness::Configuration::addActuator(ActuatorType type, const matrix::Vector3f &torque,
-		const matrix::Vector3f &thrust)
+पूर्णाङ्क ActuatorEffectiveness::Configuration::addActuator(ActuatorType type, ध्रुव matrix::Vector3f &torque,
+		ध्रुव matrix::Vector3f &thrust)
 {
-	int actuator_idx = num_actuators_matrix[selected_matrix];
+	पूर्णाङ्क actuator_idx = अंक_actuators_matrix[selected_matrix];
 
-	if (actuator_idx >= NUM_ACTUATORS) {
+	यदि (actuator_idx >= अंक_ACTUATORS) {
 		PX4_ERR("Too many actuators");
-		return -1;
+		प्रत्यागम -1;
 	}
 
-	if ((int)type < (int)ActuatorType::COUNT - 1 && num_actuators[(int)type + 1] > 0) {
+	यदि ((पूर्णाङ्क)type < (पूर्णाङ्क)ActuatorType::गिनती_2 - 1 && अंक_actuators[(पूर्णाङ्क)type + 1] > 0) {
 		PX4_ERR("Trying to add actuators in the wrong order (add motors first, then servos)");
-		return -1;
+		प्रत्यागम -1;
 	}
 
-	if (type == ActuatorType::MOTORS && selected_matrix != 0) {
+	यदि (type == ActuatorType::MOTORS && selected_matrix != 0) {
 		PX4_ERR("Trying to add motors to matrix %d (add to matrix 0)", selected_matrix);
-		return -1;
+		प्रत्यागम -1;
 	}
 
 	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::ROLL, actuator_idx) = torque(0);
@@ -61,35 +61,35 @@ int ActuatorEffectiveness::Configuration::addActuator(ActuatorType type, const m
 	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::THRUST_X, actuator_idx) = thrust(0);
 	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::THRUST_Y, actuator_idx) = thrust(1);
 	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::THRUST_Z, actuator_idx) = thrust(2);
-	matrix_selection_indexes[totalNumActuators()] = selected_matrix;
-	++num_actuators[(int)type];
-	return num_actuators_matrix[selected_matrix]++;
+	matrix_selection_indexes[total_अंक_Actuators()] = selected_matrix;
+	++अंक_actuators[(पूर्णाङ्क)type];
+	प्रत्यागम अंक_actuators_matrix[selected_matrix]++;
 }
 
-void ActuatorEffectiveness::Configuration::actuatorsAdded(ActuatorType type, int count)
+शून्य ActuatorEffectiveness::Configuration::actuatorsAdded(ActuatorType type, पूर्णाङ्क गिनती)
 {
-	int total_count = totalNumActuators();
+	पूर्णाङ्क total_गिनती = total_अंक_Actuators();
 
-	for (int i = 0; i < count; ++i) {
-		matrix_selection_indexes[i + total_count] = selected_matrix;
+	प्रति (पूर्णाङ्क i = 0; i < गिनती; ++i) {
+		matrix_selection_indexes[i + total_गिनती] = selected_matrix;
 	}
 
-	num_actuators[(int)type] += count;
-	num_actuators_matrix[selected_matrix] += count;
+	अंक_actuators[(पूर्णाङ्क)type] += गिनती;
+	अंक_actuators_matrix[selected_matrix] += गिनती;
 }
 
-int ActuatorEffectiveness::Configuration::totalNumActuators() const
+पूर्णाङ्क ActuatorEffectiveness::Configuration::total_अंक_Actuators() ध्रुव
 {
-	int total_count = 0;
+	पूर्णाङ्क total_गिनती = 0;
 
-	for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
-		total_count += num_actuators_matrix[i];
+	प्रति (पूर्णाङ्क i = 0; i < MAX_अंक_MATRICES; ++i) {
+		total_गिनती += अंक_actuators_matrix[i];
 	}
 
-	return total_count;
+	प्रत्यागम total_गिनती;
 }
 
-ActuatorEffectiveness::ActuatorBitmask ActuatorEffectiveness::getStoppedMotors() const
+ActuatorEffectiveness::ActuatorBitmask ActuatorEffectiveness::getStoppedMotors() ध्रुव
 {
 	// Motors can be stopped (here) for two reasons. They can
 	// additionally be stopped in the ControlAllocator, due to motor
@@ -99,11 +99,11 @@ ActuatorEffectiveness::ActuatorBitmask ActuatorEffectiveness::getStoppedMotors()
 	ActuatorEffectiveness::ActuatorBitmask stopped_motors_mask = _stopped_motors_mask_due_to_flight_phase;
 
 	//  b) because the thrust setpoint in a given direction is NaN
-	if (_longitudinal_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.longitudinal; }
+	यदि (_longitudinal_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.longitudinal; }
 
-	if (_lateral_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.lateral; }
+	यदि (_lateral_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.lateral; }
 
-	if (_vertical_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.vertical; }
+	यदि (_vertical_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.vertical; }
 
-	return stopped_motors_mask;
+	प्रत्यागम stopped_motors_mask;
 }
