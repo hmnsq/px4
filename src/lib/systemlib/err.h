@@ -65,31 +65,31 @@
 #ifndef _SYSTEMLIB_ERR_H
 #define _SYSTEMLIB_ERR_H
 
-#include <px4_platform_common/log.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <stdlib.h>
+#ضمن <px4_platform_common/log.h>
+#ضمن <stdarg.h>
+#ضمن <errno.h>
+#ضمن <stdlib.h>
 
 __BEGIN_DECLS
 
 
 #ifdef __PX4_NUTTX
 #define EXIT(eval) exit(eval)
-#else
+#وإلا
 #define EXIT(eval) px4_task_exit(eval)
 #endif
 
 
-#define err(eval, ...)		do { \
+#define err(eval, ...)		افعل { \
 		PX4_ERR(__VA_ARGS__); \
 		PX4_ERR("Task exited with errno=%i\n", errno); \
 		EXIT(eval); \
-	} while(0)
+	} بينما(0)
 
-#define errx(eval, ...)		do { \
+#define errx(eval, ...)		افعل { \
 		PX4_ERR(__VA_ARGS__); \
 		EXIT(eval); \
-	} while(0)
+	} بينما(0)
 
 #define warn(...) 		PX4_WARN(__VA_ARGS__)
 #define warnx(...) 		PX4_WARN(__VA_ARGS__)

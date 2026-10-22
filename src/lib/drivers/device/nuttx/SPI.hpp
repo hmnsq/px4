@@ -39,32 +39,32 @@
  * Base class for devices connected via SPI.
  */
 
-#include "../CDev.hpp"
-#include <px4_platform_common/spi.h>
+#ضمن "../CDev.hpp"
+#ضمن <px4_platform_common/spi.h>
 
-#if defined(CONFIG_SPI)
+#إذا defined(CONFIG_SPI)
 
-#include <nuttx/spi/spi.h>
-#include <px4_platform_common/spi.h>
+#ضمن <nuttx/spi/spi.h>
+#ضمن <px4_platform_common/spi.h>
 
-struct I2CSPIDriverConfig;
+بنية I2CSPIDriverConfig;
 
-namespace device __EXPORT
+نطاق device __EXPORT
 {
 
 /**
  * Abstract class for character device on SPI
  */
-class __EXPORT SPI : public CDev
+صنف __EXPORT SPI : عام CDev
 {
-public:
+عام:
 	// no copy, assignment, move, move assignment
-	SPI(const SPI &) = delete;
-	SPI &operator=(const SPI &) = delete;
+	SPI(ثابت SPI &) = delete;
+	SPI &operator=(ثابت SPI &) = delete;
 	SPI(SPI &&) = delete;
 	SPI &operator=(SPI &&) = delete;
 
-protected:
+محمي:
 	/**
 	 * Constructor
 	 *
@@ -75,27 +75,27 @@ protected:
 	 * @param mode		SPI clock/data mode
 	 * @param frequency	SPI clock frequency
 	 */
-	SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency);
+	SPI(uint8_t device_type, ثابت حرف *name, صحيح bus, uint32_t device, تعداد spi_mode_e mode, uint32_t frequency);
 
-	SPI(const I2CSPIDriverConfig &config);
+	SPI(ثابت I2CSPIDriverConfig &config);
 
 	virtual ~SPI();
 
 	/**
 	 * Locking modes supported by the driver.
 	 */
-	enum LockMode {
+	تعداد LockMode {
 		LOCK_PREEMPTION,	/**< the default; lock against all forms of preemption. */
 		LOCK_THREADS,		/**< lock only against other threads, using SPI_LOCK */
 		LOCK_NONE		/**< perform no locking, only safe if the bus is entirely private */
 	};
 
-	virtual int	init() override;
+	virtual صحيح	init() override;
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	virtual صحيح	probe() { إرجاع PX4_OK; }
 
 	/**
 	 * Perform a SPI transfer.
@@ -116,7 +116,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(uint8_t *send, uint8_t *recv, unsigned len);
+	صحيح		transfer(uint8_t *send, uint8_t *recv, unsigned len);
 
 	/**
 	 * Perform a SPI 16 bit transfer.
@@ -137,7 +137,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	صحيح		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
 
 	/**
 	 * Set the SPI bus frequency
@@ -148,8 +148,8 @@ protected:
 	 *
 	 * @param frequency	Frequency to set (Hz)
 	 */
-	void		set_frequency(uint32_t frequency) { _frequency = frequency; }
-	uint32_t	get_frequency() { return _frequency; }
+	فراغ		set_frequency(uint32_t frequency) { _frequency = frequency; }
+	uint32_t	get_frequency() { إرجاع _frequency; }
 
 	/**
 	 * Set the SPI bus locking mode
@@ -159,20 +159,20 @@ protected:
 	 *
 	 * @param mode	Locking mode
 	 */
-	void		set_lockmode(enum LockMode mode) { _locking_mode = mode; }
+	فراغ		set_lockmode(تعداد LockMode mode) { _locking_mode = mode; }
 
-private:
+خاص:
 	uint32_t		_device;
-	enum spi_mode_e		_mode;
+	تعداد spi_mode_e		_mode;
 	uint32_t		_frequency;
-	struct spi_dev_s	*_dev {nullptr};
+	بنية spi_dev_s	*_dev {nullptr};
 
 	LockMode		_locking_mode{LOCK_THREADS};	/**< selected locking mode */
 
-protected:
-	int	_transfer(uint8_t *send, uint8_t *recv, unsigned len);
+محمي:
+	صحيح	_transfer(uint8_t *send, uint8_t *recv, unsigned len);
 
-	int	_transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	صحيح	_transferhword(uint16_t *send, uint16_t *recv, unsigned len);
 
 };
 

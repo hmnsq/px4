@@ -33,61 +33,61 @@
 
 #pragma once
 
-#include "ParamLayer.h"
+#ضمن "ParamLayer.h"
 
-class ConstLayer : public ParamLayer
+class ConstLayer : عام ParamLayer
 {
-public:
+عام:
 
-	ConstLayer() = default;
+	ConstLayer() = افتراضي;
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_قيمة_u قيمة) override
 	{
-		return false;
+		إرجاع false;
 	}
 
-	bool contains(param_t param) const override
+	bool contains(param_t param) ثابت override
 	{
-		return param < PARAM_COUNT;
+		إرجاع param < PARAM_تعداد;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_تعداد> containedAsBitset() ثابت override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
+		px4::AtomicBitset<PARAM_تعداد> set;
 
-		for (int i = 0; i < PARAM_COUNT; i++) {
+		لكل (صحيح i = 0; i < PARAM_تعداد; i++) {
 			set.set(i);
 		}
 
-		return set;
+		إرجاع set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_قيمة_u get(param_t param) ثابت override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		إذا (param >= PARAM_تعداد) {
+			إرجاع {0};
 		}
 
-		return px4::parameters[param].val;
+		إرجاع px4::parameters[param].val;
 	}
 
-	void reset(param_t param) override
+	فراغ reset(param_t param) override
 	{
 		// Do nothing
 	}
 
-	void refresh(param_t param) override
+	فراغ refresh(param_t param) override
 	{
 		// Do nothing
 	}
 
-	int size() const override
+	صحيح size() ثابت override
 	{
-		return PARAM_COUNT;
+		إرجاع PARAM_تعداد;
 	}
 
-	int byteSize() const override
+	صحيح byteSize() ثابت override
 	{
-		return PARAM_COUNT * sizeof(param_info_s);
+		إرجاع PARAM_تعداد * حجم(param_info_s);
 	}
 };

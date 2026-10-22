@@ -41,46 +41,46 @@
 
 #pragma once
 
-#include <px4_platform_common/module_params.h>
-#include <matrix/matrix/math.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/manual_control_setpoint.h>
-#include <uORB/topics/failsafe_flags.h>
+#ضمن <px4_platform_common/module_params.h>
+#ضمن <matrix/matrix/math.hpp>
+#ضمن <uORB/Subscription.hpp>
+#ضمن <uORB/topics/manual_control_setpoint.h>
+#ضمن <uORB/topics/failsafe_flags.h>
 
-class Sticks : public ModuleParams
+صنف Sticks : عام ModuleParams
 {
-public:
+عام:
 	Sticks(ModuleParams *parent);
-	~Sticks() = default;
+	~Sticks() = افتراضي;
 
 	// Checks for updated manual control input & updates internal values
-	bool checkAndUpdateStickInputs();
+	منطقي checkAndUpdateStickInputs();
 
-	bool isAvailable() { return _input_available; };
+	منطقي isAvailable() { إرجاع إدخال_available; };
 
 	// Helper functions to get stick values more intuitively
-	float getRoll() const { return _positions(0); }
-	float getPitch() const { return _positions(1); }
-	float getYaw() const { return _positions(2); }
-	float getThrottleZeroCentered() const { return _positions(3); }
+	عائم getRoll() ثابت { إرجاع _positions(0); }
+	عائم getPitch() ثابت { إرجاع _positions(1); }
+	عائم getYaw() ثابت { إرجاع _positions(2); }
+	عائم getThrottleZeroCentered() ثابت { إرجاع _positions(3); }
 
-	float getRollExpo(float expo = .6f) const { return expoDeadzone(getRoll(), expo, _param_man_deadzone.get()); }
-	float getPitchExpo(float expo = .6f) const { return expoDeadzone(getPitch(), expo, _param_man_deadzone.get()); }
-	float getYawExpo(float expo = .6f) const { return expoDeadzone(getYaw(), expo, _param_man_deadzone.get()); }
-	float getThrottleZeroCenteredExpo(float expo = .6f) const { return expoDeadzone(getThrottleZeroCentered(), expo, _param_man_deadzone.get()); }
+	عائم getRollExpo(عائم expo = .6f) ثابت { إرجاع expoDeadzone(getRoll(), expo, _param_man_deadzone.get()); }
+	عائم getPitchExpo(عائم expo = .6f) ثابت { إرجاع expoDeadzone(getPitch(), expo, _param_man_deadzone.get()); }
+	عائم getYawExpo(عائم expo = .6f) ثابت { إرجاع expoDeadzone(getYaw(), expo, _param_man_deadzone.get()); }
+	عائم getThrottleZeroCenteredExpo(عائم expo = .6f) ثابت { إرجاع expoDeadzone(getThrottleZeroCentered(), expo, _param_man_deadzone.get()); }
 
-	static float expoDeadzone(float value, float expo, float deadzone);
+	ساكن عائم expoDeadzone(عائم value, عائم expo, عائم deadzone);
 
-	const matrix::Vector2f getPitchRoll() { return {getPitch(), getRoll()}; }
-	const matrix::Vector2f getPitchRollExpo() { return {getPitchExpo(), getRollExpo()}; }
+	ثابت matrix::Vector2f getPitchRoll() { إرجاع {getPitch(), getRoll()}; }
+	ثابت matrix::Vector2f getPitchRollExpo() { إرجاع {getPitchExpo(), getRollExpo()}; }
 
-	const matrix::Vector<float, 6> &getAux() const { return _aux_positions; }
+	ثابت matrix::Vector<عائم, 6> &getAux() ثابت { إرجاع _aux_positions; }
 
 	/**
 	 * Limit the the horizontal input from a square shaped joystick gimbal to a unit circle
 	 * @param v Vector containing x, y, z axis of the joystick gimbal. x, y get adjusted
 	 */
-	static void limitStickUnitLengthXY(matrix::Vector2f &v);
+	ساكن فراغ limitStickUnitLengthXY(matrix::Vector2f &v);
 
 	/**
 	 * Rotate horizontal component of joystick input into the vehicle body orientation
@@ -88,13 +88,13 @@ public:
 	 * @param yaw Current vehicle yaw heading
 	 * @param yaw_setpoint Current yaw setpoint if it's locked else NAN
 	 */
-	static void rotateIntoHeadingFrameXY(matrix::Vector2f &v, const float yaw, const float yaw_setpoint);
+	ساكن فراغ rotateIntoHeadingFrameXY(matrix::Vector2f &v, ثابت عائم yaw, ثابت عائم yaw_setpoint);
 
-private:
-	bool _input_available{false};
+خاص:
+	منطقي إدخال_available{خطأ};
 	matrix::Vector4f _positions; ///< unmodified manual stick inputs roll, pitch, yaw ,throttle
 
-	matrix::Vector<float, 6> _aux_positions;
+	matrix::Vector<عائم, 6> _aux_positions;
 
 	uORB::Subscription _manual_control_setpoint_sub{ORB_ID(manual_control_setpoint)};
 	uORB::Subscription _failsafe_flags_sub{ORB_ID(failsafe_flags)};

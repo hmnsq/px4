@@ -33,29 +33,29 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ضمن "FunctionProviderBase.hpp"
 
-#include <uORB/topics/manual_control_setpoint.h>
+#ضمن <uORB/topics/manual_control_setpoint.h>
 
 /**
  * Functions: RC_Roll .. RCAUX_Max
  */
-class FunctionManualRC : public FunctionProviderBase
+صنف FunctionManualRC : عام FunctionProviderBase
 {
-public:
+عام:
 	FunctionManualRC()
 	{
-		resetAllToDisarmedValue();
+		reset_All_To_Disarmed_قيمة();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionManualRC(); }
+	ساكن FunctionProviderBase *allocate(ثابت Context &context) { إرجاع جديد FunctionManualRC(); }
 
-	void update() override
+	فراغ update() override
 	{
 		manual_control_setpoint_s manual_control_setpoint;
 
-		if (_topic.update(&manual_control_setpoint)) {
-			if (manual_control_setpoint.valid) {
+		إذا (_topic.update(&manual_control_setpoint)) {
+			إذا (manual_control_setpoint.valid) {
 				_data[0] = manual_control_setpoint.roll;
 				_data[1] = manual_control_setpoint.pitch;
 				_data[2] = manual_control_setpoint.throttle;
@@ -68,27 +68,27 @@ public:
 				_data[9] = manual_control_setpoint.aux5;
 				_data[10] = manual_control_setpoint.aux6;
 
-			} else {
-				resetAllToDisarmedValue();
+			} وإلا {
+				reset_All_To_Disarmed_قيمة();
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::RC_Roll]; }
+	عائم value(OutputFunction func) override { إرجاع _data[(صحيح)func - (صحيح)OutputFunction::RC_Roll]; }
 
-private:
-	static constexpr int num_data_points = 11;
+خاص:
+	ساكن constexpr صحيح رقم_data_points = 11;
 
-	void resetAllToDisarmedValue()
+	فراغ reset_All_To_Disarmed_قيمة()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
+		لكل (صحيح i = 0; i < رقم_data_points; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
+	static_assert(رقم_data_points == (صحيح)OutputFunction::RC_AUXMax - (صحيح)OutputFunction::RC_Roll + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _topic{ORB_ID(manual_control_setpoint)};
-	float _data[num_data_points] {};
+	عائم _data[رقم_data_points] {};
 };

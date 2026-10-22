@@ -37,41 +37,41 @@
  * Performance model.
  */
 
-#include <float.h>
-#include <math.h>
-#include <px4_platform_common/module_params.h>
-#include <uORB/topics/fuel_tank_status.h>
+#ضمن <float.h>
+#ضمن <math.h>
+#ضمن <px4_platform_common/module_params.h>
+#ضمن <uORB/topics/fuel_tank_status.h>
 
 #ifndef PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
 #define PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
 
-class PerformanceModel : public ModuleParams
+صنف PerformanceModel : عام ModuleParams
 {
-public:
+عام:
 	PerformanceModel();
-	~PerformanceModel() = default;
+	~PerformanceModel() = افتراضي;
 
-	void updateParameters();
+	فراغ updateParameters();
 
 	/**
 	 * Get the maximum climb rate (true airspeed) expected for current air density and weight.
 	 * @param air_density in kg/m^3
 	 * @return maximum climb rate in m/s
 	 */
-	float getMaximumClimbRate(float air_density) const;
+	عائم getMaximumClimbRate(عائم air_density) ثابت;
 
 	/**
 	 * Get the minimum sink rate (true airspeed) expected for current air density and weight.
 	 * @param air_density in kg/m^3
 	 * @return minimum sink rate in m/s
 	 */
-	float getMinimumSinkRate(float air_density) const;
+	عائم getMinimumSinkRate(عائم air_density) ثابت;
 
 	/**
 	 * Get the ration of actual weight to base weight
 	 * @return weight ratio
 	 */
-	float getWeightRatio() const;
+	عائم getWeightRatio() ثابت;
 
 	/**
 	 * Set the fraction of fuel remaining, used to reduce the vehicle weight by the burned fuel mass
@@ -79,13 +79,13 @@ public:
 	 * Non-finite input is ignored and the last known fuel fraction is kept.
 	 * @param fuel_fraction_remaining fraction of fuel remaining in range [0,1]
 	 */
-	void setFuelFractionRemaining(float fuel_fraction_remaining);
+	فراغ setFuelFractionRemaining(عائم fuel_fraction_remaining);
 
 	/**
 	 * Check if fuel-based weight compensation is enabled.
 	 * @return true if WEIGHT_FUEL is set to a valid fuel weight
 	 */
-	bool isFuelCompensationEnabled() const { return _param_weight_fuel.get() > FLT_EPSILON; }
+	منطقي isFuelCompensationEnabled() ثابت { إرجاع _param_weight_fuel.get() > FLT_EPSILON; }
 
 	/**
 	 * Extract the fraction of fuel remaining from a fuel tank status message, preferring the
@@ -94,7 +94,7 @@ public:
 	 * @param fuel_tank_status fuel tank status message
 	 * @return fraction of fuel remaining in range [0,1], NAN if not available
 	 */
-	static float getFuelFractionRemaining(const fuel_tank_status_s &fuel_tank_status);
+	ساكن عائم getFuelFractionRemaining(ثابت fuel_tank_status_s &fuel_tank_status);
 
 	/**
 	 * Get the trim throttle for the current airspeed setpoint as well as air density and weight.
@@ -104,20 +104,20 @@ public:
 	 * @param air_density air density in kg/m^3
 	 * @return trim throttle in range [0,1]
 	 */
-	float getTrimThrottle(float throttle_min, float throttle_max, float airspeed_sp, float air_density) const;
+	عائم getTrimThrottle(عائم throttle_min, عائم throttle_max, عائم airspeed_sp, عائم air_density) ثابت;
 
 	/**
 	 * Get the throttle scale factor for the current air density.
 	 * @param air_density in kg/m^3
 	 * @return throttle scale factor for air density
 	 */
-	float getAirDensityThrottleScale(float air_density) const;
+	عائم getAirDensityThrottleScale(عائم air_density) ثابت;
 
 	/**
 	 * Get the trim airspeed compensated for weight.
 	 * @return calibrated trim airspeed in m/s
 	 */
-	float getCalibratedTrimAirspeed() const;
+	عائم getCalibratedTrimAirspeed() ثابت;
 
 	/**
 	 * Get the minimum airspeed compensated for weight, load factor due to bank angle and flaps.
@@ -125,13 +125,13 @@ public:
 	 * @param flaps_setpoint Flaps setpoint, normalized in range [0,1]
 	 * @return calibrated minimum airspeed in m/s
 	 */
-	float getMinimumCalibratedAirspeed(float load_factor, float flaps_setpoint) const;
+	عائم getMinimumCalibratedAirspeed(عائم load_factor, عائم flaps_setpoint) ثابت;
 
 	/**
 	 * Get the maximum airspeed.
 	 * @return calibrated maximum airspeed in m/s
 	 */
-	float getMaximumCalibratedAirspeed() const;
+	عائم getMaximumCalibratedAirspeed() ثابت;
 
 	/**
 	 * get the stall airspeed compensated for load factor due to bank angle.
@@ -139,15 +139,15 @@ public:
 	 * @param flaps_setpoint Flaps setpoint, normalized in range [0,1]
 	 * @return calibrated stall airspeed in m/s
 	 */
-	float getCalibratedStallAirspeed(float load_factor, float flaps_setpoint) const;
+	عائم getCalibratedStallAirspeed(عائم load_factor, عائم flaps_setpoint) ثابت;
 
 	/**
 	 * Run some checks on parameters and detect unfeasible combinations.
 	 * @return true if all checks pass
 	 */
-	bool runSanityChecks() const;
+	منطقي runSanityChecks() ثابت;
 
-private:
+خاص:
 	DEFINE_PARAMETERS(
 		(ParamFloat<px4::params::FW_AIRSPD_MAX>) _param_fw_airspd_max,
 		(ParamFloat<px4::params::FW_AIRSPD_MIN>) _param_fw_airspd_min,
@@ -173,12 +173,12 @@ private:
 	 * @param calibrated_airspeed_sp [m/s] calibrated
 	 * @return trim throttle [0, 1] at sea level
 	 */
-	float getTrimThrottleForCalibratedAirspeed(float calibrated_airspeed_sp) const;
+	عائم getTrimThrottleForCalibratedAirspeed(عائم calibrated_airspeed_sp) ثابت;
 
 
-	static float sanitiseAirDensity(float air_density);
+	ساكن عائم sanitiseAirDensity(عائم air_density);
 
-	float _fuel_fraction_remaining{NAN}; ///< fraction of fuel remaining in range [0,1], NAN if unknown
+	عائم _fuel_fraction_remaining{NAN}; ///< fraction of fuel remaining in range [0,1], NAN if unknown
 };
 
 #endif //PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
