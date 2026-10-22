@@ -46,12 +46,12 @@ namespace calibration
 class Magnetometer
 {
 public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+	static constexpr 정수 MAX_SENSOR_COUNT = 4;
 
 	static constexpr uint8_t DEFAULT_PRIORITY = 50;
 	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
 
-	static constexpr const char *SensorString() { return "MAG"; }
+	static constexpr const char *SensorString() { 반환 "MAG"; }
 
 	Magnetometer();
 	explicit Magnetometer(uint32_t device_id);
@@ -61,7 +61,7 @@ public:
 
 	void PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
+	bool set_calibration_index(정수 calibration_index);
 	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
 	void set_device_id(uint32_t device_id, bool external);
 	bool set_offset(const matrix::Vector3f &offset);
@@ -82,35 +82,35 @@ public:
 	 */
 	void set_custom_rotation(const matrix::Eulerf &rotation);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
+	bool calibrated() const { 반환 (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_count() const { 반환 _calibration_count; }
+	int8_t calibration_index() const { 반환 _calibration_index; }
+	uint32_t device_id() const { 반환 _device_id; }
+	bool enabled() const { 반환 (_priority > 0); }
 	void disable() { _priority = 0; }
-	bool external() const { return _external; }
-	const matrix::Vector3f &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const matrix::Dcmf &rotation() const { return _rotation; }
-	const Rotation &rotation_enum() const { return _rotation_enum; }
-	const matrix::Matrix3f &scale() const { return _scale; }
+	bool external() const { 반환 _external; }
+	const matrix::Vector3f &offset() const { 반환 _offset; }
+	const int32_t &priority() const { 반환 _priority; }
+	const matrix::Dcmf &rotation() const { 반환 _rotation; }
+	const Rotation &rotation_enum() const { 반환 _rotation_enum; }
+	const matrix::Matrix3f &scale() const { 반환 _scale; }
 
 	// apply offsets and scale
 	// rotate corrected measurements from sensor to body frame
 	inline matrix::Vector3f Correct(const matrix::Vector3f &data) const
 	{
-		return _rotation * (_scale * ((data + _power * _power_compensation) - _offset));
+		반환 _rotation * (_scale * ((data + _power * _power_compensation) - _offset));
 	}
 
 	// Compute sensor offset from bias (board frame)
 	matrix::Vector3f BiasCorrectedSensorOffset(const matrix::Vector3f &bias) const
 	{
 		// updated calibration offset = existing offset + bias rotated to sensor frame and unscaled
-		return _offset + (_scale.I() * _rotation.T() * bias);
+		반환 _offset + (_scale.I() * _rotation.T() * bias);
 	}
 
 	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
+	bool ParametersSave(정수 desired_calibration_index = -1, bool force = false);
 	void ParametersUpdate();
 
 	void Reset();

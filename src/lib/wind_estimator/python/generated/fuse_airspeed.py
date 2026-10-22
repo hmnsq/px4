@@ -39,7 +39,7 @@ def fuse_airspeed(v_local, state, P, airspeed, R, epsilon):
     # Total ops: 56
 
     # Input arrays
-    if v_local.shape == (3,):
+    만약 v_local.shape == (3,):
         v_local = v_local.reshape((3, 1))
     elif v_local.shape != (3, 1):
         raise IndexError(
@@ -48,7 +48,7 @@ def fuse_airspeed(v_local, state, P, airspeed, R, epsilon):
             )
         )
 
-    if state.shape == (3,):
+    만약 state.shape == (3,):
         state = state.reshape((3, 1))
     elif state.shape != (3, 1):
         raise IndexError(
@@ -86,4 +86,4 @@ def fuse_airspeed(v_local, state, P, airspeed, R, epsilon):
     _K[2] = _tmp10 * (-P[2, 0] * _tmp4 - P[2, 1] * _tmp5 + _tmp8)
     _innov_var = _tmp9
     _innov = -_tmp2 * state[2, 0] + airspeed
-    return _H, _K, _innov_var, _innov
+    반환 _H, _K, _innov_var, _innov

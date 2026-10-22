@@ -49,7 +49,7 @@ bool Sticks::checkAndUpdateStickInputs()
 	// Sticks are rescaled linearly and exponentially to [-1,1]
 	manual_control_setpoint_s manual_control_setpoint;
 
-	if (_manual_control_setpoint_sub.update(&manual_control_setpoint)) {
+	만약 (_manual_control_setpoint_sub.update(&manual_control_setpoint)) {
 		_positions(0) = manual_control_setpoint.roll;
 		_positions(1) = manual_control_setpoint.pitch;
 		_positions(2) = manual_control_setpoint.yaw;
@@ -65,34 +65,34 @@ bool Sticks::checkAndUpdateStickInputs()
 		// valid stick inputs are required
 		_input_available = manual_control_setpoint.valid && _positions.isAllFinite();
 
-	} else {
+	} 아니면 {
 		failsafe_flags_s failsafe_flags;
 
-		if (_failsafe_flags_sub.update(&failsafe_flags)) {
-			if (failsafe_flags.manual_control_signal_lost) {
+		만약 (_failsafe_flags_sub.update(&failsafe_flags)) {
+			만약 (failsafe_flags.manual_control_signal_lost) {
 				_input_available = false;
 			}
 		}
 	}
 
-	if (!_input_available) {
+	만약 (!_input_available) {
 		// Timeout: set all sticks to zero
 		_positions.zero();
 	}
 
-	return _input_available;
+	반환 _input_available;
 }
 
 float Sticks::expoDeadzone(float value, float expo, float deadzone)
 {
-	return math::expo(math::deadzone(value, deadzone), expo);
+	반환 math::expo(math::deadzone(value, deadzone), expo);
 }
 
 void Sticks::limitStickUnitLengthXY(Vector2f &v)
 {
 	const float vl = v.length();
 
-	if (vl > 1.0f) {
+	만약 (vl > 1.0f) {
 		v /= vl;
 	}
 }

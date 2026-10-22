@@ -71,8 +71,8 @@ public:
 	virtual ~BlockLowPass() = default;
 	float update(float input);
 // accessors
-	float getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
+	float getState() { 반환 _state; }
+	float getFCut() { 반환 _fCut.get(); }
 	void setState(float state) { _state = state; }
 protected:
 // attributes

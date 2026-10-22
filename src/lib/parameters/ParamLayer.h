@@ -63,9 +63,9 @@ public:
 
 	virtual void refresh(param_t param) = 0;
 
-	virtual int size() const = 0;
+	virtual 정수 size() const = 0;
 
-	virtual int byteSize() const = 0;
+	virtual 정수 byteSize() const = 0;
 
 protected:
 	ParamLayer *const _parent;

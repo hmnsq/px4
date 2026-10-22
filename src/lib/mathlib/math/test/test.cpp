@@ -49,88 +49,88 @@ bool __EXPORT equal(float a, float b, float epsilon)
 {
 	float diff = fabsf(a - b);
 
-	if (diff > epsilon) {
+	만약 (diff > epsilon) {
 		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		반환 false;
 
-	} else { return true; }
+	} 아니면 { 반환 true; }
 }
 
 bool __EXPORT greater_than(float a, float b)
 {
-	if (a > b) {
-		return true;
+	만약 (a > b) {
+		반환 true;
 
-	} else {
+	} 아니면 {
 		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		반환 false;
 	}
 }
 
 bool __EXPORT less_than(float a, float b)
 {
-	if (a < b) {
-		return true;
+	만약 (a < b) {
+		반환 true;
 
-	} else {
+	} 아니면 {
 		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		반환 false;
 	}
 }
 
 bool __EXPORT greater_than_or_equal(float a, float b)
 {
-	if (a >= b) {
-		return true;
+	만약 (a >= b) {
+		반환 true;
 
-	} else {
+	} 아니면 {
 		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		반환 false;
 	}
 }
 
 bool __EXPORT less_than_or_equal(float a, float b)
 {
-	if (a <= b) {
-		return true;
+	만약 (a <= b) {
+		반환 true;
 
-	} else {
+	} 아니면 {
 		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		반환 false;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+void __EXPORT float2SigExp(const float &num, float &sig, 정수 &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	만약 (!PX4_ISFINITE(num)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		반환;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	만약 (fabsf(num) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		반환;
 	}
 
 	exp = log10f(fabsf(num));
 
-	if (exp > 0) {
+	만약 (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} 아니면 {
 		exp = floor(exp);
 	}
 
 	sig = num;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	만약 (exp > 0) {
+		위해 (정수 i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} 아니면 {
+		위해 (정수 i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

@@ -84,7 +84,7 @@ typedef struct paramiocget {
 	const param_t param;
 	const bool deflt;
 	void *const val;
-	int ret;
+	정수 ret;
 } paramiocget_t;
 
 #define PARAMIOCAUTOSAVE	_PARAMIOC(8)
@@ -97,7 +97,7 @@ typedef struct paramiocset {
 	const param_t param;
 	const bool notification;
 	const void *val;
-	int ret;
+	정수 ret;
 } paramiocset_t;
 
 #define PARAMIOCUSED	_PARAMIOC(10)
@@ -115,14 +115,14 @@ typedef struct paramiocsetused {
 typedef struct paramiocsetdefault {
 	const param_t param;
 	const void *val;
-	int ret;
+	정수 ret;
 } paramiocsetdefault_t;
 
 #define PARAMIOCRESET	_PARAMIOC(13)
 typedef struct paramiocreset {
 	const param_t param;
 	const bool notification;
-	int ret;
+	정수 ret;
 } paramiocreset_t;
 
 #define PARAMIOCRESETGROUP	_PARAMIOC(14)
@@ -135,25 +135,25 @@ typedef enum {
 typedef struct paramiocresetgroup {
 	param_reset_type_t type;
 	const char **group;
-	const int num_in_group;
+	const 정수 num_in_group;
 } paramiocresetgroup_t;
 
 #define PARAMIOCSAVEDEFAULT	_PARAMIOC(15)
 typedef struct paramiocsavedefault {
 	bool blocking;
-	int ret;
+	정수 ret;
 } paramiocsavedefault_t;
 
 #define PARAMIOCLOADDEFAULT	_PARAMIOC(16)
 typedef struct paramiocloaddefault {
-	int ret;
+	정수 ret;
 } paramiocloaddefault_t;
 
 
 #define PARAMIOCEXPORT	_PARAMIOC(17)
 typedef struct paramiocexport {
 	const char *filename;
-	int ret;
+	정수 ret;
 } paramiocexport_t;
 
 #define PARAMIOCHASH	_PARAMIOC(18)
@@ -161,4 +161,4 @@ typedef struct paramiochash {
 	uint32_t ret;
 } paramiochash_t;
 
-int param_ioctl(unsigned int cmd, unsigned long arg);
+정수 param_ioctl(unsigned 정수 cmd, unsigned long arg);

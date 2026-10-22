@@ -24,7 +24,7 @@ class ParameterGroup(object):
         """
         Get parameter group name
         """
-        return self.name
+        반환 self.name
 
     def GetParams(self):
         """
@@ -32,7 +32,7 @@ class ParameterGroup(object):
         object. Note that returned object is not a copy. Modifications affect
         state of the parser.
         """
-        return sorted(self.params, key=lambda param: param.name)
+        반환 sorted(self.params, key=lambda param: param.name)
 
 class Parameter(object):
     """
@@ -64,25 +64,25 @@ class Parameter(object):
         self.readonly = False
 
     def GetName(self):
-        return self.name
+        반환 self.name
 
     def GetType(self):
-        return self.type
+        반환 self.type
 
     def GetDefault(self):
-        return self.default
+        반환 self.default
 
     def GetCategory(self):
-        return self.category.title()
+        반환 self.category.title()
 
     def GetVolatile(self):
-        return self.volatile
+        반환 self.volatile
 
     def GetBoolean(self):
-        return self.boolean
+        반환 self.boolean
 
     def GetReadonly(self):
-        return self.readonly
+        반환 self.readonly
 
     def SetField(self, code, value):
         """
@@ -133,50 +133,50 @@ class Parameter(object):
         keys = self.fields.keys()
         keys = sorted(keys)
         keys = sorted(keys, key=lambda x: self.priority.get(x, 0), reverse=True)
-        return keys
+        반환 keys
 
     def GetFieldValue(self, code):
         """
         Return value of the given field code or None if not found.
         """
         fv =  self.fields.get(code)
-        if not fv:
+        만약 not fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv
+                반환 ""
+        반환 fv
 
     def GetEnumCodes(self):
         """
         Return list of existing value codes in convenient order
         """
-        return sorted(self.values.keys(), key=float)
+        반환 sorted(self.values.keys(), key=float)
 
     def GetEnumValue(self, code):
         """
         Return value of the given enum code or None if not found.
         """
         fv =  self.values.get(code)
-        if not fv:
+        만약 not fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv
+                반환 ""
+        반환 fv
 
     def GetBitmaskList(self):
         """
         Return list of existing bitmask codes in convenient order
         """
         keys = self.bitmask.keys()
-        return sorted(keys, key=float)
+        반환 sorted(keys, key=float)
 
     def GetBitmaskBit(self, index):
         """
         Return value of the given bitmask code or None if not found.
         """
         fv = self.bitmask.get(index)
-        if not fv:
+        만약 not fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv.strip()
+                반환 ""
+        반환 fv.strip()
 
 class SourceParser(object):
     """
@@ -215,12 +215,12 @@ class SourceParser(object):
         # represents parser state. It contains human-readable state
         # names.
         state = None
-        for line in self.re_split_lines.split(contents):
+        위해 line in self.re_split_lines.split(contents):
             line = line.strip()
             # Ignore empty lines
-            if line == "":
+            만약 line == "":
                 continue
-            if self.re_comment_start.match(line):
+            만약 self.re_comment_start.match(line):
                 state = "wait-short"
                 short_desc = None
                 long_desc = None
@@ -229,27 +229,27 @@ class SourceParser(object):
                 def_bitmask = {}
             elif state is not None and state != "comment-processed":
                 m = self.re_comment_end.search(line)
-                if m:
+                만약 m:
                     line = m.group(1)
                     last_comment_line = True
-                else:
+                아니면:
                     last_comment_line = False
                 m = self.re_comment_content.match(line)
-                if m:
+                만약 m:
                     comment_content = m.group(1)
-                    if comment_content == "":
+                    만약 comment_content == "":
                         # When short comment ends with empty comment line,
                         # start waiting for the next part - long comment.
-                        if state == "wait-short-end":
+                        만약 state == "wait-short-end":
                             state = "wait-long"
-                        if state == "wait-long-end":
+                        만약 state == "wait-long-end":
                             # Long description includes empty lines
                             long_desc += "\n"
-                    else:
+                    아니면:
                         m = self.re_comment_tag.match(comment_content)
-                        if m:
+                        만약 m:
                             tag, desc = m.group(1, 2)
-                            if (tag == "value"):
+                            만약 (tag == "value"):
                                 # Take the meta info string and split the code and description
                                 metainfo = desc.split(" ",  1)
                                 def_values[metainfo[0]] = metainfo[1]
@@ -257,7 +257,7 @@ class SourceParser(object):
                                 # Take the meta info string and split the code and description
                                 metainfo = desc.split(" ",  1)
                                 def_bitmask[metainfo[0]] = metainfo[1]
-                            else:
+                            아니면:
                                 tags[tag] = desc
                             current_tag = tag
                             state = "wait-tag-end"
@@ -278,54 +278,54 @@ class SourceParser(object):
                         elif state == "wait-tag-end":
                             # Append comment line to the tag text
                             tags[current_tag] += "\n" + comment_content
-                        else:
+                        아니면:
                             raise AssertionError(
                                     "Invalid parser state: %s" % state)
                 elif not last_comment_line:
                     # Invalid comment line (inside comment, but not starting with
                     # "*" or "*/". Reset parsed content.
                     state = None
-                if last_comment_line:
+                만약 last_comment_line:
                     state = "comment-processed"
-            else:
+            아니면:
                 tp = None
                 name = None
                 defval = ""
                 # Non-empty line outside the comment
                 m = self.re_px4_param_default_definition.match(line)
                 # Default value handling
-                if m:
+                만약 m:
                     name_m, defval_m = m.group(1,2)
                     default_var[name_m] = defval_m
                 m = self.re_parameter_definition.match(line)
-                if m:
+                만약 m:
                     tp, name, defval = m.group(1, 2, 3)
-                else:
+                아니면:
                     m = self.re_px4_parameter_definition.match(line)
-                    if m:
+                    만약 m:
                         tp, name = m.group(1, 2)
-                        if (name+'_DEFAULT') in default_var:
+                        만약 (name+'_DEFAULT') in default_var:
                             defval = default_var[name+'_DEFAULT']
-                if tp is not None:
+                만약 tp is not None:
                     # Remove trailing type specifier from numbers: 0.1f => 0.1
-                    if defval != "" and self.re_is_a_number.match(defval):
+                    만약 defval != "" and self.re_is_a_number.match(defval):
                         defval = self.re_cut_type_specifier.sub('', defval)
                     param = Parameter(name, tp, defval)
                     param.SetField("short_desc", name)
                     # If comment was found before the parameter declaration,
                     # inject its data into the newly created parameter.
                     group = "Miscellaneous"
-                    if state == "comment-processed":
-                        if short_desc is not None:
-                            if '\n' in short_desc:
+                    만약 state == "comment-processed":
+                        만약 short_desc is not None:
+                            만약 '\n' in short_desc:
                                 raise Exception('short description must be a single line (parameter: {:})'.format(name))
-                            if len(short_desc) > 150:
+                            만약 len(short_desc) > 150:
                                 raise Exception('short description too long (150 max, is {:}, parameter: {:})'.format(len(short_desc), name))
                             param.SetField("short_desc", self.re_remove_dots.sub('', short_desc))
-                        if long_desc is not None:
+                        만약 long_desc is not None:
                             param.SetField("long_desc", long_desc)
-                        for tag in tags:
-                            if tag == "group":
+                        위해 tag in tags:
+                            만약 tag == "group":
                                 group = tags[tag]
                             elif tag == "volatile":
                                 param.SetVolatile()
@@ -335,26 +335,26 @@ class SourceParser(object):
                                 param.SetBoolean()
                             elif tag not in self.valid_tags:
                                 sys.stderr.write("Skipping invalid documentation tag: '%s'\n" % tag)
-                                return False
-                            else:
+                                반환 False
+                            아니면:
                                 param.SetField(tag, tags[tag])
-                        for def_value in def_values:
+                        위해 def_value in def_values:
                             param.SetEnumValue(def_value, def_values[def_value])
-                        for def_bit in def_bitmask:
+                        위해 def_bit in def_bitmask:
                             param.SetBitmaskBit(def_bit, def_bitmask[def_bit])
                     # Store the parameter
-                    if group not in self.param_groups:
+                    만약 group not in self.param_groups:
                         self.param_groups[group] = ParameterGroup(group)
                     self.param_groups[group].AddParameter(param)
                 state = None
-        return True
+        반환 True
 
     def IsNumber(self, numberString):
         try:
             float(numberString)
-            return True
+            반환 True
         except ValueError:
-            return False
+            반환 False
 
     def Validate(self):
         """
@@ -377,67 +377,67 @@ class SourceParser(object):
                                 'N/(m/s)', 'Nm/rad', 'Nm/(rad/s)', 'Nm', 'N',
                                 'rpm',
                                 'normalized_thrust/s', 'normalized_thrust', 'norm', 'SD', 'dBHz', ''])
-        for group in self.GetParamGroups():
-            for param in group.GetParams():
+        위해 group in self.GetParamGroups():
+            위해 param in group.GetParams():
                 name  = param.GetName()
-                if len(name) > 16:
+                만약 len(name) > 16:
                     sys.stderr.write("Parameter Name {0} is too long (Limit is 16)\n".format(name))
-                    return False
+                    반환 False
                 board = param.GetFieldValue("board")
                 # Check for duplicates
                 name_plus_board = name + "+" + board
-                for seenParamName in seenParamNames:
-                    if seenParamName == name_plus_board:
+                위해 seenParamName in seenParamNames:
+                    만약 seenParamName == name_plus_board:
                         sys.stderr.write("Duplicate parameter definition: {0}\n".format(name_plus_board))
-                        return False
+                        반환 False
                 seenParamNames.append(name_plus_board)
                 # Validate values
                 default = param.GetDefault()
                 min = param.GetFieldValue("min")
                 max = param.GetFieldValue("max")
                 units = param.GetFieldValue("unit")
-                if units not in allowedUnits:
+                만약 units not in allowedUnits:
                     sys.stderr.write("Invalid unit in {0}: {1}\n".format(name, units))
-                    return False
+                    반환 False
                 #sys.stderr.write("{0} default:{1} min:{2} max:{3}\n".format(name, default, min, max))
-                if default != "" and not self.IsNumber(default):
+                만약 default != "" and not self.IsNumber(default):
                     sys.stderr.write("Default value not number: {0} {1}\n".format(name, default))
-                    return False
+                    반환 False
                 # if default != "" and "." not in default:
                 #     sys.stderr.write("Default value does not contain dot (e.g. 10 needs to be written as 10.0): {0} {1}\n".format(name, default))
                 #     return False
-                if min != "":
-                    if not self.IsNumber(min):
+                만약 min != "":
+                    만약 not self.IsNumber(min):
                         sys.stderr.write("Min value not number: {0} {1}\n".format(name, min))
-                        return False
-                    if default != "" and float(default) < float(min):
+                        반환 False
+                    만약 default != "" and float(default) < float(min):
                         sys.stderr.write("Default value is smaller than min: {0} default:{1} min:{2}\n".format(name, default, min))
-                        return False
-                if max != "":
-                    if not self.IsNumber(max):
+                        반환 False
+                만약 max != "":
+                    만약 not self.IsNumber(max):
                         sys.stderr.write("Max value not number: {0} {1}\n".format(name, max))
-                        return False
-                    if default != "" and float(default) > float(max):
+                        반환 False
+                    만약 default != "" and float(default) > float(max):
                         sys.stderr.write("Default value is larger than max: {0} default:{1} max:{2}\n".format(name, default, max))
-                        return False
-                for code in param.GetEnumCodes():
-                        if not self.IsNumber(code):
+                        반환 False
+                위해 code in param.GetEnumCodes():
+                        만약 not self.IsNumber(code):
                             sys.stderr.write("Min value not number: {0} {1}\n".format(name, code))
-                            return False
-                        if param.GetEnumValue(code) == "":
+                            반환 False
+                        만약 param.GetEnumValue(code) == "":
                             sys.stderr.write("Description for enum value is empty: {0} {1}\n".format(name, code))
-                            return False
-                for index in param.GetBitmaskList():
-                        if not self.IsNumber(index):
+                            반환 False
+                위해 index in param.GetBitmaskList():
+                        만약 not self.IsNumber(index):
                             sys.stderr.write("bit value not number: {0} {1}\n".format(name, index))
-                            return False
-                        if not int(min) <= math.pow(2, int(index)) <= int(max):
-                            sys.stderr.write("Bitmask bit must be between {0} and {1}: {2} {3}\n".format(min, max, name, math.pow(2, int(index))))
-                            return False
-                        if param.GetBitmaskBit(index) == "":
+                            반환 False
+                        만약 not 정수(min) <= math.pow(2, 정수(index)) <= 정수(max):
+                            sys.stderr.write("Bitmask bit must be between {0} and {1}: {2} {3}\n".format(min, max, name, math.pow(2, 정수(index))))
+                            반환 False
+                        만약 param.GetBitmaskBit(index) == "":
                             sys.stderr.write("Description for bitmask bit is empty: {0} {1}\n".format(name, index))
-                            return False
-        return True
+                            반환 False
+        반환 True
 
     def GetParamGroups(self):
         """
@@ -448,4 +448,4 @@ class SourceParser(object):
         groups = self.param_groups.values()
         groups = sorted(groups, key=lambda x: x.GetName())
         groups = sorted(groups, key=lambda x: self.priority.get(x.GetName(), 0), reverse=True)
-        return groups
+        반환 groups

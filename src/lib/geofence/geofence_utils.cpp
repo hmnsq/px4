@@ -41,31 +41,31 @@ namespace geofence_utils
 namespace
 {
 
-int32_t metersToCm(float m) { return roundf(m * CM_PER_M); }
+int32_t metersToCm(float m) { 반환 roundf(m * CM_PER_M); }
 
 } // namespace
 
 
-bool PlannerPolygons::allocate(int max_nodes)
+bool PlannerPolygons::allocate(정수 max_nodes)
 {
 	freeBuffers();
 
-	if (max_nodes > 0) {
+	만약 (max_nodes > 0) {
 		_x_cm = new int32_t[max_nodes];
 		_y_cm = new int32_t[max_nodes];
 		_node_not_on_optimal_path = new bool[max_nodes];
 
-		if (_x_cm != nullptr && _y_cm != nullptr && _node_not_on_optimal_path != nullptr) {
+		만약 (_x_cm != nullptr && _y_cm != nullptr && _node_not_on_optimal_path != nullptr) {
 			_max_nodes = max_nodes;
 
-		} else {
+		} 아니면 {
 			freeBuffers();
 		}
 	}
 
 	reset();
 
-	return _max_nodes == max_nodes;
+	반환 _max_nodes == max_nodes;
 }
 
 void PlannerPolygons::freeBuffers()
@@ -79,10 +79,10 @@ void PlannerPolygons::freeBuffers()
 	_max_nodes = 0;
 }
 
-void PlannerPolygons::setNode(int idx, const matrix::Vector2f &p)
+void PlannerPolygons::setNode(정수 idx, const matrix::Vector2f &p)
 {
-	if (_max_nodes < 1) {
-		return;
+	만약 (_max_nodes < 1) {
+		반환;
 	}
 
 	idx = math::constrain(idx, 0, _max_nodes - 1);
@@ -91,38 +91,38 @@ void PlannerPolygons::setNode(int idx, const matrix::Vector2f &p)
 	_y_cm[idx] = metersToCm(p(1));
 }
 
-PlannerPolygons::AddResult PlannerPolygons::addPolygon(const matrix::Vector2f *vertices_in, int num_vertices,
+PlannerPolygons::AddResult PlannerPolygons::addPolygon(const matrix::Vector2f *vertices_in, 정수 num_vertices,
 		bool is_inclusion_zone, float margin)
 {
-	if (_num_polygons >= kMaxPolygons || _num_nodes + num_vertices > _max_nodes) {
-		return AddResult::BudgetExceeded;
+	만약 (_num_polygons >= kMaxPolygons || _num_nodes + num_vertices > _max_nodes) {
+		반환 AddResult::BudgetExceeded;
 	}
 
-	if (margin < -FLT_EPSILON || num_vertices < 3) { return AddResult::Degenerate; }
+	만약 (margin < -FLT_EPSILON || num_vertices < 3) { 반환 AddResult::Degenerate; }
 
-	for (int i = 0; i < num_vertices; ++i) {
+	위해 (정수 i = 0; i < num_vertices; ++i) {
 		// Reject self-intersecting (non-simple) polygons.
 		const matrix::Vector2f &a = vertices_in[i];
 		const matrix::Vector2f &b = vertices_in[(i + 1) % num_vertices];
 
-		for (int j = i + 2; j < num_vertices; ++j) {
-			if (i == 0 && j == num_vertices - 1) {
+		위해 (정수 j = i + 2; j < num_vertices; ++j) {
+			만약 (i == 0 && j == num_vertices - 1) {
 				continue; // (last edge, first edge) are adjacent
 			}
 
 			const matrix::Vector2f &c = vertices_in[j];
 			const matrix::Vector2f &d = vertices_in[(j + 1) % num_vertices];
 
-			if (segmentsIntersect(
+			만약 (segmentsIntersect(
 				    metersToCm(a(0)), metersToCm(a(1)), metersToCm(b(0)), metersToCm(b(1)),
 				    metersToCm(c(0)), metersToCm(c(1)), metersToCm(d(0)), metersToCm(d(1))) != SegSegResult::Disjoint) {
-				return AddResult::Degenerate;
+				반환 AddResult::Degenerate;
 			}
 		}
 
 		// Reject vertices outside the usable fixed-point range
-		if (!inFixedPointRange(vertices_in[i](0)) || !inFixedPointRange(vertices_in[i](1))) {
-			return AddResult::OutOfRange;
+		만약 (!inFixedPointRange(vertices_in[i](0)) || !inFixedPointRange(vertices_in[i](1))) {
+			반환 AddResult::OutOfRange;
 		}
 	}
 
@@ -133,19 +133,19 @@ PlannerPolygons::AddResult PlannerPolygons::addPolygon(const matrix::Vector2f *v
 	const bool reverse = (isPolygonCCW(vertices_in, num_vertices) == is_inclusion_zone);
 
 	// Index into vertices_in in stored order (accounts for possible reversal).
-	auto vertex = [&](int i) -> const matrix::Vector2f & {
-		return vertices_in[reverse ? (num_vertices - 1 - i) : i];
+	auto vertex = [&](정수 i) -> const matrix::Vector2f & {
+		반환 vertices_in[reverse ? (num_vertices - 1 - i) : i];
 	};
 
 	PolygonInfo &poly = _polygons[_num_polygons];
 	poly.start_index  = _num_nodes;
 	poly.is_inclusion = is_inclusion_zone;
 
-	int out_idx = 0;
+	정수 out_idx = 0;
 
-	for (int i = 0; i < num_vertices; i++) {
-		const int prev = (i + num_vertices - 1) % num_vertices;
-		const int next = (i + 1) % num_vertices;
+	위해 (정수 i = 0; i < num_vertices; i++) {
+		const 정수 prev = (i + num_vertices - 1) % num_vertices;
+		const 정수 next = (i + 1) % num_vertices;
 
 		const matrix::Vector2f edge_in  = vertex(i) - vertex(prev);
 		const matrix::Vector2f edge_out = vertex(next) - vertex(i);
@@ -153,8 +153,8 @@ PlannerPolygons::AddResult PlannerPolygons::addPolygon(const matrix::Vector2f *v
 		const float edge_in_norm = edge_in.norm();
 		const float edge_out_norm = edge_out.norm();
 
-		if (edge_in_norm < FLT_EPSILON || edge_out_norm < FLT_EPSILON) {
-			return AddResult::Degenerate;
+		만약 (edge_in_norm < FLT_EPSILON || edge_out_norm < FLT_EPSILON) {
+			반환 AddResult::Degenerate;
 		}
 
 		const matrix::Vector2f edge_in_normalized = edge_in / edge_in_norm;
@@ -168,8 +168,8 @@ PlannerPolygons::AddResult PlannerPolygons::addPolygon(const matrix::Vector2f *v
 		matrix::Vector2f bisector = n_in + n_out;
 		const float bisector_len  = bisector.length();
 
-		if (bisector_len < FLT_EPSILON) {
-			return AddResult::Degenerate; // antiparallel edges - polygon doubles back
+		만약 (bisector_len < FLT_EPSILON) {
+			반환 AddResult::Degenerate; // antiparallel edges - polygon doubles back
 		}
 
 		const matrix::Vector2f normalized_bisector = bisector / bisector_len;
@@ -197,7 +197,7 @@ PlannerPolygons::AddResult PlannerPolygons::addPolygon(const matrix::Vector2f *v
 		// This never happens if the planner-internal node buffer is 2x the original buffer.
 		const bool space_for_split_vertices = _num_nodes + out_idx + 1 < _max_nodes;
 
-		if (corner_convex && angle_sharp && margin_nonzero && space_for_split_vertices) {
+		만약 (corner_convex && angle_sharp && margin_nonzero && space_for_split_vertices) {
 
 			// Sharp corner: cut it off along the line
 			//  - perpendicular to normalized_bisector
@@ -215,13 +215,13 @@ PlannerPolygons::AddResult PlannerPolygons::addPolygon(const matrix::Vector2f *v
 			setNode(poly.start_index + out_idx++, base + perp * s);
 			setNode(poly.start_index + out_idx++, base - perp * s);
 
-		} else {
+		} 아니면 {
 			// Regular corner or no space for split: single bisector vertex displaced by margin / sin(interior angle/2).
 			setNode(poly.start_index + out_idx++, vertex(i) - normalized_bisector * (margin * offset_scale));
 		}
 	}
 
-	const int num_out = out_idx;
+	const 정수 num_out = out_idx;
 	poly.num_vertices = num_out;
 
 	computeBoundingBox(poly.start_index, num_out, poly.min_x, poly.max_x, poly.min_y, poly.max_y);
@@ -229,10 +229,10 @@ PlannerPolygons::AddResult PlannerPolygons::addPolygon(const matrix::Vector2f *v
 	// In canonical orientation, the node is not possibly on the shortest
 	// path if the vertex curves right or straight (forbidden region >= 180
 	// deg)
-	for (int i = 0; i < num_out; i++) {
-		const int prev = poly.start_index + (i + num_out - 1) % num_out;
-		const int curr = poly.start_index + i;
-		const int next = poly.start_index + (i + 1) % num_out;
+	위해 (정수 i = 0; i < num_out; i++) {
+		const 정수 prev = poly.start_index + (i + num_out - 1) % num_out;
+		const 정수 curr = poly.start_index + i;
+		const 정수 next = poly.start_index + (i + 1) % num_out;
 		const bool curves_right_or_straight = orient2d(_x_cm[prev], _y_cm[prev],
 						      _x_cm[curr], _y_cm[curr],
 						      _x_cm[next], _y_cm[next]) <= 0;
@@ -241,7 +241,7 @@ PlannerPolygons::AddResult PlannerPolygons::addPolygon(const matrix::Vector2f *v
 
 	_num_nodes += num_out;
 	++_num_polygons;
-	return AddResult::Success;
+	반환 AddResult::Success;
 }
 
 PlannerPolygons::AddResult PlannerPolygons::addApproxCircle(const matrix::Vector2f &center, const float circle_radius,
@@ -259,11 +259,11 @@ PlannerPolygons::AddResult PlannerPolygons::addApproxCircle(const matrix::Vector
 	// planner into all controllers, which would then have to also fly
 	// loiter segments, not just pure waypoint sequences.
 
-	if (_num_polygons >= kMaxPolygons || _num_nodes + kCircleApproxVertices > _max_nodes) {
-		return AddResult::BudgetExceeded;
+	만약 (_num_polygons >= kMaxPolygons || _num_nodes + kCircleApproxVertices > _max_nodes) {
+		반환 AddResult::BudgetExceeded;
 	}
 
-	if (circle_radius <= 0.1f) { return AddResult::Degenerate; }
+	만약 (circle_radius <= 0.1f) { 반환 AddResult::Degenerate; }
 
 	// ensures that the k-gon is, w.r.t the real circle:
 	//  - over-approximation of circle grown by margin, if exclusion
@@ -272,13 +272,13 @@ PlannerPolygons::AddResult PlannerPolygons::addApproxCircle(const matrix::Vector
 				   ? circle_radius - margin
 				   : circle_radius / cosf(M_PI_F / kCircleApproxVertices) + margin;
 
-	if (k_gon_radius <= FLT_EPSILON) { // Negative radius - circle empty
-		return AddResult::Degenerate;
+	만약 (k_gon_radius <= FLT_EPSILON) { // Negative radius - circle empty
+		반환 AddResult::Degenerate;
 	}
 
-	if (!inFixedPointRange(fabsf(center(0)) + k_gon_radius)
+	만약 (!inFixedPointRange(fabsf(center(0)) + k_gon_radius)
 	    || !inFixedPointRange(fabsf(center(1)) + k_gon_radius)) {
-		return AddResult::OutOfRange;
+		반환 AddResult::OutOfRange;
 	}
 
 	// Canonical orientation: CCW for exclusion, CW for inclusion
@@ -289,7 +289,7 @@ PlannerPolygons::AddResult PlannerPolygons::addApproxCircle(const matrix::Vector
 	poly.num_vertices = kCircleApproxVertices;
 	poly.is_inclusion = is_inclusion_zone;
 
-	for (int i = 0; i < kCircleApproxVertices; i++) {
+	위해 (정수 i = 0; i < kCircleApproxVertices; i++) {
 		const float angle = (i + 0.5f) * delta_angle;
 		const matrix::Vector2f p = center + matrix::Vector2f{
 			k_gon_radius * cosf(angle), k_gon_radius * sinf(angle)
@@ -301,16 +301,16 @@ PlannerPolygons::AddResult PlannerPolygons::addApproxCircle(const matrix::Vector
 
 	// For regular k-gons, all corners are either convex or reflex based on
 	// is_inclusion, so the reduced visibility graph criterion is simplified
-	for (int i = 0; i < kCircleApproxVertices; i++) {
+	위해 (정수 i = 0; i < kCircleApproxVertices; i++) {
 		_node_not_on_optimal_path[poly.start_index + i] = is_inclusion_zone;
 	}
 
 	_num_nodes += kCircleApproxVertices;
 	++_num_polygons;
-	return AddResult::Success;
+	반환 AddResult::Success;
 }
 
-void PlannerPolygons::computeBoundingBox(const int start_index, const int num_vertices,
+void PlannerPolygons::computeBoundingBox(const 정수 start_index, const 정수 num_vertices,
 		int32_t &min_x, int32_t &max_x, int32_t &min_y, int32_t &max_y)
 {
 
@@ -321,32 +321,32 @@ void PlannerPolygons::computeBoundingBox(const int start_index, const int num_ve
 	min_x = max_x = _x_cm[start_index];
 	min_y = max_y = _y_cm[start_index];
 
-	for (int i = 1; i < num_vertices; i++) {
+	위해 (정수 i = 1; i < num_vertices; i++) {
 		const int32_t x = _x_cm[start_index + i];
 		const int32_t y = _y_cm[start_index + i];
 
-		if (x < min_x) { min_x = x; }
+		만약 (x < min_x) { min_x = x; }
 
-		if (x > max_x) { max_x = x; }
+		만약 (x > max_x) { max_x = x; }
 
-		if (y < min_y) { min_y = y; }
+		만약 (y < min_y) { min_y = y; }
 
-		if (y > max_y) { max_y = y; }
+		만약 (y > max_y) { max_y = y; }
 	}
 }
 
 bool PlannerPolygons::pointInsideInteriorCone(const PolygonInfo &poly,
-		int32_t px, int32_t py, int v) const
+		int32_t px, int32_t py, 정수 v) const
 {
-	const int prev = poly.start_index + ((v + poly.num_vertices - 1) % poly.num_vertices);
-	const int curr = poly.start_index + v;
-	const int next = poly.start_index + ((v + 1) % poly.num_vertices);
+	const 정수 prev = poly.start_index + ((v + poly.num_vertices - 1) % poly.num_vertices);
+	const 정수 curr = poly.start_index + v;
+	const 정수 next = poly.start_index + ((v + 1) % poly.num_vertices);
 
-	const int p_left_of_incoming  = orient2d(_x_cm[prev], _y_cm[prev], _x_cm[curr], _y_cm[curr], px, py);
-	const int p_left_of_outgoing  = orient2d(_x_cm[curr], _y_cm[curr], _x_cm[next], _y_cm[next], px, py);
-	const int is_convex           = orient2d(_x_cm[prev], _y_cm[prev], _x_cm[curr], _y_cm[curr], _x_cm[next], _y_cm[next]);
+	const 정수 p_left_of_incoming  = orient2d(_x_cm[prev], _y_cm[prev], _x_cm[curr], _y_cm[curr], px, py);
+	const 정수 p_left_of_outgoing  = orient2d(_x_cm[curr], _y_cm[curr], _x_cm[next], _y_cm[next], px, py);
+	const 정수 is_convex           = orient2d(_x_cm[prev], _y_cm[prev], _x_cm[curr], _y_cm[curr], _x_cm[next], _y_cm[next]);
 
-	return is_convex > 0  // If convex==0 (exact 180 deg "corner") the two cases are equivalent
+	반환 is_convex > 0  // If convex==0 (exact 180 deg "corner") the two cases are equivalent
 	       ? (p_left_of_incoming > 0 && p_left_of_outgoing > 0)   // Convex: interior = intersection of two half-planes
 	       : (p_left_of_incoming > 0 || p_left_of_outgoing > 0);  // Reflex: interior = union of two half-planes
 }
@@ -361,7 +361,7 @@ bool PlannerPolygons::intersectsInsideOf(const PolygonInfo &poly,
 	//  (2) accumulate midpoint winding contribution -- if (1) is inconclusive,
 	//      this decides if the line is inside or outside
 
-	int wn = 0;
+	정수 wn = 0;
 	bool mid_on_boundary = false;
 
 	// Rather than calculating the midpoint (mid = (s + e)/2) explicitly,
@@ -371,10 +371,10 @@ bool PlannerPolygons::intersectsInsideOf(const PolygonInfo &poly,
 	const int32_t twice_mid_x = s_x + e_x;
 	const int32_t twice_mid_y = s_y + e_y;
 
-	for (int i = 0; i < poly.num_vertices; i++) {
+	위해 (정수 i = 0; i < poly.num_vertices; i++) {
 
-		const int prev_idx = poly.start_index + (i + poly.num_vertices - 1) % poly.num_vertices;
-		const int curr_idx = poly.start_index + i;
+		const 정수 prev_idx = poly.start_index + (i + poly.num_vertices - 1) % poly.num_vertices;
+		const 정수 curr_idx = poly.start_index + i;
 
 		const int32_t ax = _x_cm[prev_idx], ay = _y_cm[prev_idx];
 		const int32_t bx = _x_cm[curr_idx], by = _y_cm[curr_idx];
@@ -382,15 +382,15 @@ bool PlannerPolygons::intersectsInsideOf(const PolygonInfo &poly,
 		// (1) test segment vs polygon edge (a, b)
 		switch (segmentsIntersect(ax, ay, bx, by, s_x, s_y, e_x, e_y)) {
 		case SegSegResult::Cross:
-			return true;
+			반환 true;
 
 		// skip AInsideCD - a from this segment is b from the adjacent segment
 		case SegSegResult::BInsideCD:
 
 			// Polygon vertex b is exactly on the interior of the test segment.
 			// Return intersecting if it pokes into the polygon interior through vertex b.
-			if (pointInsideInteriorCone(poly, s_x, s_y, i) || pointInsideInteriorCone(poly, e_x, e_y, i)) {
-				return true;
+			만약 (pointInsideInteriorCone(poly, s_x, s_y, i) || pointInsideInteriorCone(poly, e_x, e_y, i)) {
+				반환 true;
 			}
 
 			break;
@@ -403,36 +403,36 @@ bool PlannerPolygons::intersectsInsideOf(const PolygonInfo &poly,
 		// Ref: Dan Sunday, Inclusion of a Point in a Polygon
 		// https://web.archive.org/web/20130126163405/http://geomalgorithms.com/a03-_inclusion.html
 
-		const int side = orient2d(2 * ax, 2 * ay, 2 * bx, 2 * by, twice_mid_x, twice_mid_y);
+		const 정수 side = orient2d(2 * ax, 2 * ay, 2 * bx, 2 * by, twice_mid_x, twice_mid_y);
 
-		if (side == 0) {
+		만약 (side == 0) {
 
 			const bool mid_on_open_ab = collinearBetween(2 * ax, 2 * ay, 2 * bx, 2 * by, twice_mid_x, twice_mid_y);
 			const bool mid_is_b = 2 * bx == twice_mid_x && 2 * by == twice_mid_y;
 
 			// Skip point a - a from this segment is b from the adjacent segment
-			if (mid_on_open_ab || mid_is_b) {
+			만약 (mid_on_open_ab || mid_is_b) {
 				mid_on_boundary = true;
 			}
 
-		} else if (2 * ay <= twice_mid_y) {
-			if (2 * by > twice_mid_y && side > 0) { wn++; }
+		} 아니면 만약 (2 * ay <= twice_mid_y) {
+			만약 (2 * by > twice_mid_y && side > 0) { wn++; }
 
-		} else if (2 * by <= twice_mid_y && side < 0) { wn--; }
+		} 아니면 만약 (2 * by <= twice_mid_y && side < 0) { wn--; }
 	}
 
 
 	// Midpoint on boundary, segment runs along it (strict crossing detected earlier).
 	// Non-intersecting in either zone.
-	if (mid_on_boundary) {
-		return false;
+	만약 (mid_on_boundary) {
+		반환 false;
 	}
 
 	// Exclusion: violation when midpoint is inside (bounded). Inclusion: when outside (unbounded).
 	// This is the only place we depart from the inside = left = forbidden canonical orientation,
 	// necessary because of the point membership check.
 	const bool midpoint_in_bounded_inside = (wn != 0);
-	return midpoint_in_bounded_inside != poly.is_inclusion;
+	반환 midpoint_in_bounded_inside != poly.is_inclusion;
 }
 
 bool PlannerPolygons::intersectsAnyInside(int32_t s_x, int32_t s_y, int32_t e_x, int32_t e_y) const
@@ -442,58 +442,58 @@ bool PlannerPolygons::intersectsAnyInside(int32_t s_x, int32_t s_y, int32_t e_x,
 	const int32_t seg_min_y = s_y < e_y ? s_y : e_y;
 	const int32_t seg_max_y = s_y > e_y ? s_y : e_y;
 
-	for (int p = 0; p < _num_polygons; p++) {
+	위해 (정수 p = 0; p < _num_polygons; p++) {
 		const PolygonInfo &poly = _polygons[p];
 
-		if (seg_max_x < poly.min_x || seg_min_x > poly.max_x ||
+		만약 (seg_max_x < poly.min_x || seg_min_x > poly.max_x ||
 		    seg_max_y < poly.min_y || seg_min_y > poly.max_y) {
 			// Segment is entirely outside this polygon.
 			// For exclusion zones: outside = safe, skip.
 			// For inclusion zones: outside = forbidden region, immediate violation.
-			if (poly.is_inclusion) { return true; }
+			만약 (poly.is_inclusion) { 반환 true; }
 
 			continue;
 		}
 
-		if (intersectsInsideOf(poly, s_x, s_y, e_x, e_y)) {
-			return true;
+		만약 (intersectsInsideOf(poly, s_x, s_y, e_x, e_y)) {
+			반환 true;
 		}
 	}
 
-	return false;
+	반환 false;
 }
 
-bool PlannerPolygons::edgeBitangent(int a, int32_t bx, int32_t by) const
+bool PlannerPolygons::edgeBitangent(정수 a, int32_t bx, int32_t by) const
 {
 	// Find the polygon owning vertex index a. Indices not belonging to any
 	// polygon (in particular the destination at index 0) are trivially bitangent.
 
-	if (a == destIndex()) { return true; }
+	만약 (a == destIndex()) { 반환 true; }
 
-	for (int p = 0; p < _num_polygons; p++) {
+	위해 (정수 p = 0; p < _num_polygons; p++) {
 		const PolygonInfo &poly = _polygons[p];
 
-		if (a >= poly.start_index && a < poly.start_index + poly.num_vertices) {
+		만약 (a >= poly.start_index && a < poly.start_index + poly.num_vertices) {
 			// Define point c = a + (a-b) = 2a - b, so that ac = ab mirrored about a
 			// Then: Edge is bitangent at a <=> neither ab nor ac pokes into the interior
 			int32_t cx = 2 * _x_cm[a] - bx;
 			int32_t cy = 2 * _y_cm[a] - by;
-			return !pointInsideInteriorCone(poly, bx, by, a - poly.start_index)
+			반환 !pointInsideInteriorCone(poly, bx, by, a - poly.start_index)
 			       && !pointInsideInteriorCone(poly, cx, cy, a - poly.start_index);
 		}
 	}
 
-	return true;
+	반환 true;
 }
 
-bool PlannerPolygons::edgeBitangent(int a, int b) const
+bool PlannerPolygons::edgeBitangent(정수 a, 정수 b) const
 {
-	return edgeBitangent(a, _x_cm[b], _y_cm[b]);
+	반환 edgeBitangent(a, _x_cm[b], _y_cm[b]);
 }
 
-bool PlannerPolygons::edgeBitangent(int a, const matrix::Vector2f &b) const
+bool PlannerPolygons::edgeBitangent(정수 a, const matrix::Vector2f &b) const
 {
-	return edgeBitangent(a, metersToCm(b(0)), metersToCm(b(1)));
+	반환 edgeBitangent(a, metersToCm(b(0)), metersToCm(b(1)));
 }
 
 bool PlannerPolygons::setDestination(const matrix::Vector2f &p)
@@ -503,54 +503,54 @@ bool PlannerPolygons::setDestination(const matrix::Vector2f &p)
 	const int32_t x_cm = metersToCm(p(0));
 	const int32_t y_cm = metersToCm(p(1));
 
-	if (intersectsAnyInside(x_cm, y_cm, x_cm, y_cm)) {
+	만약 (intersectsAnyInside(x_cm, y_cm, x_cm, y_cm)) {
 		// If the destination breaches a geofence, still use it but
 		// signal to the user that it is invalid.
-		return false;
+		반환 false;
 	}
 
-	return true;
+	반환 true;
 }
 
 matrix::Vector2f PlannerPolygons::getDestination() const
 {
-	if (_max_nodes < 1) {
-		return matrix::Vector2f{NAN, NAN};
+	만약 (_max_nodes < 1) {
+		반환 matrix::Vector2f{NAN, NAN};
 	}
 
-	return node(destIndex());
+	반환 node(destIndex());
 }
 
-bool PlannerPolygons::edgeVisible(int a, int b) const
+bool PlannerPolygons::edgeVisible(정수 a, 정수 b) const
 {
-	if (a == b) { return false; }
+	만약 (a == b) { 반환 false; }
 
-	if (_node_not_on_optimal_path[a] || _node_not_on_optimal_path[b]) { return false; }
+	만약 (_node_not_on_optimal_path[a] || _node_not_on_optimal_path[b]) { 반환 false; }
 
 	// Only bitangent edges can be on a shortest path; this check also cheaply
 	// discards edges that violate the polygon at the vertex they come from.
-	if (!edgeBitangent(a, b) || !edgeBitangent(b, a)) { return false; }
+	만약 (!edgeBitangent(a, b) || !edgeBitangent(b, a)) { 반환 false; }
 
-	return !intersectsAnyInside(_x_cm[a], _y_cm[a], _x_cm[b], _y_cm[b]);
+	반환 !intersectsAnyInside(_x_cm[a], _y_cm[a], _x_cm[b], _y_cm[b]);
 }
 
-bool PlannerPolygons::edgeVisible(const matrix::Vector2f &a, int b) const
+bool PlannerPolygons::edgeVisible(const matrix::Vector2f &a, 정수 b) const
 {
-	if (_node_not_on_optimal_path[b]) { return false; }
+	만약 (_node_not_on_optimal_path[b]) { 반환 false; }
 
-	if (!edgeBitangent(b, a)) { return false; }
+	만약 (!edgeBitangent(b, a)) { 반환 false; }
 
-	return !intersectsAnyInside(metersToCm(a(0)), metersToCm(a(1)), _x_cm[b], _y_cm[b]);
+	반환 !intersectsAnyInside(metersToCm(a(0)), metersToCm(a(1)), _x_cm[b], _y_cm[b]);
 }
 
 bool PlannerPolygons::edgeVisible(const matrix::Vector2f &a, const matrix::Vector2f &b) const
 {
-	return !intersectsAnyInside(metersToCm(a(0)), metersToCm(a(1)), metersToCm(b(0)), metersToCm(b(1)));
+	반환 !intersectsAnyInside(metersToCm(a(0)), metersToCm(a(1)), metersToCm(b(0)), metersToCm(b(1)));
 }
 
-float PlannerPolygons::edgeCost(int a, int b) const
+float PlannerPolygons::edgeCost(정수 a, 정수 b) const
 {
-	return edgeVisible(a, b) ? (node(a) - node(b)).norm() : INFINITY;
+	반환 edgeVisible(a, b) ? (node(a) - node(b)).norm() : INFINITY;
 }
 
 
@@ -558,10 +558,10 @@ bool segmentsIntersectInclusive(const matrix::Vector2d &a, const matrix::Vector2
 				const matrix::Vector2d &c, const matrix::Vector2d &d)
 {
 	// Reject separated bounds, including gaps between collinear segments.
-	for (int axis = 0; axis < 2; ++axis) {
-		if (math::max(a(axis), b(axis)) < math::min(c(axis), d(axis))
+	위해 (정수 axis = 0; axis < 2; ++axis) {
+		만약 (math::max(a(axis), b(axis)) < math::min(c(axis), d(axis))
 		    || math::max(c(axis), d(axis)) < math::min(a(axis), b(axis))) {
-			return false;
+			반환 false;
 		}
 	}
 
@@ -573,7 +573,7 @@ bool segmentsIntersectInclusive(const matrix::Vector2d &a, const matrix::Vector2
 	const double side_b = cd.cross(b - c);
 
 	// Each segment must cross or touch the line through the other segment.
-	return ((side_c <= 0.0 && side_d >= 0.0) || (side_c >= 0.0 && side_d <= 0.0))
+	반환 ((side_c <= 0.0 && side_d >= 0.0) || (side_c >= 0.0 && side_d <= 0.0))
 	       && ((side_a <= 0.0 && side_b >= 0.0) || (side_a >= 0.0 && side_b <= 0.0));
 }
 
@@ -586,32 +586,32 @@ double pointToSegmentDistanceSquared(const matrix::Vector2d &point,
 	// along / length_squared locates the projection: 0 at a, 1 at b.
 	const double along = to_point.dot(direction);
 
-	if (along <= 0.0) {
-		return to_point.norm_squared();
+	만약 (along <= 0.0) {
+		반환 to_point.norm_squared();
 
-	} else if (along >= length_squared) {
-		return (point - b).norm_squared();
+	} 아니면 만약 (along >= length_squared) {
+		반환 (point - b).norm_squared();
 	}
 
 	// Squared distance to the line: |to_point x direction|^2 / |direction|^2.
 	// https://mathworld.wolfram.com/2-DimensionalPoint-LineDistance.html
 	const double cross = to_point.cross(direction);
-	return cross * cross / length_squared;
+	반환 cross * cross / length_squared;
 }
 
-bool isPolygonCCW(const matrix::Vector2f *vertices, int num_vertices)
+bool isPolygonCCW(const matrix::Vector2f *vertices, 정수 num_vertices)
 {
 	// https://en.wikipedia.org/wiki/Shoelace_formula
 	// Triangle formula
 	float signed_area_2x = 0.f;
 
-	for (int i = 0; i < num_vertices; i++) {
-		const int j = (i + 1) % num_vertices;
+	위해 (정수 i = 0; i < num_vertices; i++) {
+		const 정수 j = (i + 1) % num_vertices;
 		signed_area_2x += vertices[i](0) * vertices[j](1)
 				  - vertices[j](0) * vertices[i](1);
 	}
 
-	return signed_area_2x > 0.f;
+	반환 signed_area_2x > 0.f;
 }
 
 } // namespace geofence_utils

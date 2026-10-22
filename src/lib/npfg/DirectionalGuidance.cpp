@@ -98,7 +98,7 @@ DirectionalGuidance::guideToPath(const Vector2f &curr_pos_local, const Vector2f 
 					   wind_cross_upt, airspeed, wind_speed, signed_track_error_, path_curvature) * feas_combined * track_proximity_;
 	course_sp_ = atan2f(bearing_vec_(1), bearing_vec_(0));
 
-	return DirectionalGuidanceOutput{.course_setpoint = course_sp_,
+	반환 DirectionalGuidanceOutput{.course_setpoint = course_sp_,
 					 .lateral_acceleration_feedforward = lateral_accel_ff_};
 }
 
@@ -110,7 +110,7 @@ float DirectionalGuidance::adaptPeriod(const float ground_speed, const float air
 	const float air_turn_rate = fabsf(path_curvature * airspeed);
 	const float wind_factor = windFactor(airspeed, wind_speed);
 
-	if (en_period_lb_ && roll_time_const_ > NPFG_EPSILON) {
+	만약 (en_period_lb_ && roll_time_const_ > NPFG_EPSILON) {
 		// lower bound for period not considering path curvature
 		const float period_lb_zero_curvature = periodLowerBound(0.0f, wind_factor, feas_on_track) * period_safety_factor_;
 
@@ -141,11 +141,11 @@ float DirectionalGuidance::adaptPeriod(const float ground_speed, const float air
 		// NOTE: if the roll time constant is not accurately known, lower-bound
 		// checks may be too optimistic and reducing the period can still destabilize
 		// the system! enable this feature at your own risk.
-		if (en_period_ub_) {
+		만약 (en_period_ub_) {
 
 			const float period_ub = periodUpperBound(air_turn_rate, wind_factor, feas_on_track);
 
-			if (en_period_ub_ && PX4_ISFINITE(period_ub) && period > period_ub) {
+			만약 (en_period_ub_ && PX4_ISFINITE(period_ub) && period > period_ub) {
 				// NOTE: if the roll time constant is not accurately known, reducing
 				// the period here can destabilize the system!
 				// enable this feature at your own risk!
@@ -160,35 +160,35 @@ float DirectionalGuidance::adaptPeriod(const float ground_speed, const float air
 		}
 	}
 
-	return period;
+	반환 period;
 }
 
 float DirectionalGuidance::normalizedTrackError(const float track_error, const float track_error_bound) const
 {
-	return math::constrain(track_error / track_error_bound, 0.0f, 1.0f);
+	반환 math::constrain(track_error / track_error_bound, 0.0f, 1.0f);
 }
 
 float DirectionalGuidance::windFactor(const float airspeed, const float wind_speed) const
 {
 	// See [TODO: include citation] for definition/elaboration of this approximation.
-	if (wind_speed > airspeed || airspeed < NPFG_EPSILON) {
-		return 2.0f;
+	만약 (wind_speed > airspeed || airspeed < NPFG_EPSILON) {
+		반환 2.0f;
 
-	} else {
-		return 2.0f * (1.0f - sqrtf(1.0f - math::min(1.0f, wind_speed / airspeed)));
+	} 아니면 {
+		반환 2.0f * (1.0f - sqrtf(1.0f - math::min(1.0f, wind_speed / airspeed)));
 	}
 }
 
 float DirectionalGuidance::periodUpperBound(const float air_turn_rate, const float wind_factor,
 		const float feas_on_track) const
 {
-	if (air_turn_rate * wind_factor > NPFG_EPSILON) {
+	만약 (air_turn_rate * wind_factor > NPFG_EPSILON) {
 		// multiply air turn rate by feasibility on track to zero out when we anyway
 		// should not consider the curvature
-		return 4.0f * M_PI_F * damping_ / (air_turn_rate * wind_factor * feas_on_track);
+		반환 4.0f * M_PI_F * damping_ / (air_turn_rate * wind_factor * feas_on_track);
 	}
 
-	return INFINITY;
+	반환 INFINITY;
 }
 
 float DirectionalGuidance::periodLowerBound(const float air_turn_rate, const float wind_factor,
@@ -200,44 +200,44 @@ float DirectionalGuidance::periodLowerBound(const float air_turn_rate, const flo
 	// the lower bound for zero curvature and no wind OR damping ratio < 0.5
 	const float period_lb = M_PI_F * roll_time_const_ / damping_;
 
-	if (air_turn_rate * wind_factor < NPFG_EPSILON || damping_ < 0.5f) {
-		return period_lb;
+	만약 (air_turn_rate * wind_factor < NPFG_EPSILON || damping_ < 0.5f) {
+		반환 period_lb;
 
-	} else {
+	} 아니면 {
 		// the lower bound for tracking a curved path in wind with damping ratio > 0.5
 		const float period_windy_curved_damped = 4.0f * M_PI_F * roll_time_const_ * damping_;
 
 		// blend the two together as the bearing on track becomes less feasible
-		return period_windy_curved_damped * feas_on_track + (1.0f - feas_on_track) * period_lb;
+		반환 period_windy_curved_damped * feas_on_track + (1.0f - feas_on_track) * period_lb;
 	}
 }
 
 float DirectionalGuidance::trackProximity(const float look_ahead_ang) const
 {
 	const float sin_look_ahead_ang = sinf(look_ahead_ang);
-	return sin_look_ahead_ang * sin_look_ahead_ang;
+	반환 sin_look_ahead_ang * sin_look_ahead_ang;
 }
 
 float DirectionalGuidance::trackErrorBound(const float ground_speed, const float time_const) const
 {
-	if (ground_speed > 1.0f) {
-		return ground_speed * time_const;
+	만약 (ground_speed > 1.0f) {
+		반환 ground_speed * time_const;
 
-	} else {
+	} 아니면 {
 		// limit bound to some minimum ground speed to avoid singularities in track
 		// error normalization. the following equation assumes ground speed minimum = 1.0
-		return 0.5f * time_const * (ground_speed * ground_speed + 1.0f);
+		반환 0.5f * time_const * (ground_speed * ground_speed + 1.0f);
 	}
 }
 
 float DirectionalGuidance::timeConst(const float period, const float damping) const
 {
-	return period * damping;
+	반환 period * damping;
 }
 
 float DirectionalGuidance::lookAheadAngle(const float normalized_track_error) const
 {
-	return M_PI_2_F * (normalized_track_error - 1.0f) * (normalized_track_error - 1.0f);
+	반환 M_PI_2_F * (normalized_track_error - 1.0f) * (normalized_track_error - 1.0f);
 }
 
 
@@ -250,22 +250,22 @@ matrix::Vector2f DirectionalGuidance::bearingVec(const Vector2f &unit_path_tange
 	Vector2f unit_path_normal(-unit_path_tangent(1), unit_path_tangent(0)); // right handed 90 deg (clockwise) turn
 	Vector2f unit_track_error = -((signed_track_error < 0.0f) ? -1.0f : 1.0f) * unit_path_normal;
 
-	return cos_look_ahead_ang * unit_track_error + sin_look_ahead_ang * unit_path_tangent;
+	반환 cos_look_ahead_ang * unit_track_error + sin_look_ahead_ang * unit_path_tangent;
 }
 
 float
 DirectionalGuidance::bearingFeasibility(float wind_cross_bearing, const float wind_dot_bearing, const float airspeed,
 					const float wind_speed) const
 {
-	if (wind_dot_bearing < 0.0f) {
+	만약 (wind_dot_bearing < 0.0f) {
 		wind_cross_bearing = wind_speed;
 
-	} else {
+	} 아니면 {
 		wind_cross_bearing = fabsf(wind_cross_bearing);
 	}
 
 	float sin_arg = sinf(M_PI_F * 0.5f * math::constrain((airspeed - wind_cross_bearing) / AIRSPEED_BUFFER, 0.0f, 1.0f));
-	return sin_arg * sin_arg;
+	반환 sin_arg * sin_arg;
 }
 
 float DirectionalGuidance::lateralAccelFF(const Vector2f &unit_path_tangent, const Vector2f &ground_vel,
@@ -298,7 +298,7 @@ float DirectionalGuidance::lateralAccelFF(const Vector2f &unit_path_tangent, con
 	// note the use of airspeed * speed_ratio as oppose to ground_speed^2 here --
 	// the prior considers that we command lateral acceleration in the air mass
 	// relative frame while the latter does not
-	return airspeed * speed_ratio * path_frame_rate;
+	반환 airspeed * speed_ratio * path_frame_rate;
 }
 
 float DirectionalGuidance::projectAirspOnBearing(const float airspeed, const float wind_cross_bearing) const
@@ -306,10 +306,10 @@ float DirectionalGuidance::projectAirspOnBearing(const float airspeed, const flo
 	// NOTE: wind_cross_bearing must be less than airspeed to use this function
 	// it is assumed that bearing feasibility is checked and found feasible (e.g. bearingIsFeasible() = true) prior to entering this method
 	// otherwise the return will be erroneous
-	return sqrtf(math::max(airspeed * airspeed - wind_cross_bearing * wind_cross_bearing, 0.0f));
+	반환 sqrtf(math::max(airspeed * airspeed - wind_cross_bearing * wind_cross_bearing, 0.0f));
 }
 
 float DirectionalGuidance::switchDistance(float wp_radius) const
 {
-	return math::min(wp_radius, track_error_bound_ * switch_distance_multiplier_);
+	반환 math::min(wp_radius, track_error_bound_ * switch_distance_multiplier_);
 }

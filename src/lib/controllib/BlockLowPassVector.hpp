@@ -66,15 +66,15 @@ public:
 		_state(),
 		_fCut(this, "") // only one parameter, no need to name
 	{
-		for (size_t i = 0; i < M; i++) {
+		위해 (size_t i = 0; i < M; i++) {
 			_state(i) = 0.0f / 0.0f;
 		}
 	}
 	virtual ~BlockLowPassVector() = default;
 	matrix::Vector<Type, M> update(const matrix::Matrix<Type, M, 1> &input)
 	{
-		for (size_t i = 0; i < M; i++) {
-			if (!PX4_ISFINITE(getState()(i))) {
+		위해 (size_t i = 0; i < M; i++) {
+			만약 (!PX4_ISFINITE(getState()(i))) {
 				setState(input);
 			}
 		}
@@ -82,11 +82,11 @@ public:
 		float b = 2 * M_PI_F * getFCut() * getDt();
 		float a = b / (1 + b);
 		setState(input * a + getState() * (1 - a));
-		return getState();
+		반환 getState();
 	}
 // accessors
-	matrix::Vector<Type, M> getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
+	matrix::Vector<Type, M> getState() { 반환 _state; }
+	float getFCut() { 반환 _fCut.get(); }
 	void setState(const matrix::Vector<Type, M> &state) { _state = state; }
 private:
 // attributes

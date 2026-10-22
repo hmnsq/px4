@@ -54,25 +54,25 @@ BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_pref
 {
 	char fullname[blockNameLengthMax];
 
-	if (parent == nullptr) {
+	만약 (parent == nullptr) {
 		strncpy(fullname, name, blockNameLengthMax - 1);
 		fullname[sizeof(fullname) - 1] = '\0';
 
-	} else {
+	} 아니면 {
 		char parentName[blockNameLengthMax];
 		parent->getName(parentName, blockNameLengthMax);
 
-		if (strcmp(name, "") == 0) {
+		만약 (strcmp(name, "") == 0) {
 			strncpy(fullname, parentName, blockNameLengthMax);
 			// ensure string is terminated
 			fullname[sizeof(fullname) - 1] = '\0';
 
-		} else if (parent_prefix) {
-			if (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
+		} 아니면 만약 (parent_prefix) {
+			만약 (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
 				PX4_ERR("param too long: %s", name);
 			}
 
-		} else {
+		} 아니면 {
 			strncpy(fullname, name, blockNameLengthMax);
 			// ensure string is terminated
 			fullname[sizeof(fullname) - 1] = '\0';
@@ -83,7 +83,7 @@ BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_pref
 
 	_handle = param_find(fullname);
 
-	if (_handle == PARAM_INVALID) {
+	만약 (_handle == PARAM_INVALID) {
 		PX4_ERR("error finding param: %s", fullname);
 	}
 };
@@ -100,16 +100,16 @@ template <>
 bool BlockParam<bool>::update()
 {
 	int32_t tmp = 0;
-	int ret = param_get(_handle, &tmp);
+	정수 ret = param_get(_handle, &tmp);
 
-	if (tmp == 1) {
+	만약 (tmp == 1) {
 		_val = true;
 
-	} else {
+	} 아니면 {
 		_val = false;
 	}
 
-	return (ret == PX4_OK);
+	반환 (ret == PX4_OK);
 }
 
 template <>

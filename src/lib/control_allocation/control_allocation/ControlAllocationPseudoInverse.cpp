@@ -44,7 +44,7 @@
 void
 ControlAllocationPseudoInverse::setEffectivenessMatrix(
 	const matrix::Matrix<float, ControlAllocation::NUM_AXES, ControlAllocation::NUM_ACTUATORS> &effectiveness,
-	const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
+	const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, 정수 num_actuators,
 	bool update_normalization_scale)
 {
 	ControlAllocation::setEffectivenessMatrix(effectiveness, actuator_trim, linearization_point, num_actuators,
@@ -56,7 +56,7 @@ ControlAllocationPseudoInverse::setEffectivenessMatrix(
 	_mix_update_needed = true;
 	_normalization_needs_update = update_normalization_scale;
 
-	if (_metric_allocation && update_normalization_scale) {
+	만약 (_metric_allocation && update_normalization_scale) {
 		// adding #include <px4_platform_common/log.h> + PX4_WARN leads to failed linking on test
 		_normalization_needs_update = false;
 	}
@@ -65,11 +65,11 @@ ControlAllocationPseudoInverse::setEffectivenessMatrix(
 void
 ControlAllocationPseudoInverse::updatePseudoInverse()
 {
-	if (_mix_update_needed) {
+	만약 (_mix_update_needed) {
 		matrix::geninv(_effectiveness, _mix);
 
-		if (!_metric_allocation) {
-			if (_normalization_needs_update && !_had_actuator_failure) {
+		만약 (!_metric_allocation) {
+			만약 (_normalization_needs_update && !_had_actuator_failure) {
 				updateControlAllocationMatrixScale();
 				_normalization_needs_update = false;
 			}
@@ -85,31 +85,31 @@ void
 ControlAllocationPseudoInverse::updateControlAllocationMatrixScale()
 {
 	// Same scale on roll and pitch
-	if (_normalize_rpy) {
+	만약 (_normalize_rpy) {
 
-		int num_non_zero_roll_torque = 0;
-		int num_non_zero_pitch_torque = 0;
+		정수 num_non_zero_roll_torque = 0;
+		정수 num_non_zero_pitch_torque = 0;
 
-		for (int i = 0; i < _num_actuators; i++) {
+		위해 (정수 i = 0; i < _num_actuators; i++) {
 
-			if (fabsf(_mix(i, 0)) > 1e-3f) {
+			만약 (fabsf(_mix(i, 0)) > 1e-3f) {
 				++num_non_zero_roll_torque;
 			}
 
-			if (fabsf(_mix(i, 1)) > 1e-3f) {
+			만약 (fabsf(_mix(i, 1)) > 1e-3f) {
 				++num_non_zero_pitch_torque;
 			}
 		}
 
 		float roll_norm_scale = 1.f;
 
-		if (num_non_zero_roll_torque > 0) {
+		만약 (num_non_zero_roll_torque > 0) {
 			roll_norm_scale = sqrtf(_mix.col(0).norm_squared() / (num_non_zero_roll_torque / 2.f));
 		}
 
 		float pitch_norm_scale = 1.f;
 
-		if (num_non_zero_pitch_torque > 0) {
+		만약 (num_non_zero_pitch_torque > 0) {
 			pitch_norm_scale = sqrtf(_mix.col(1).norm_squared() / (num_non_zero_pitch_torque / 2.f));
 		}
 
@@ -119,7 +119,7 @@ ControlAllocationPseudoInverse::updateControlAllocationMatrixScale()
 		// Scale yaw separately
 		_control_allocation_scale(2) = _mix.col(2).max();
 
-	} else {
+	} 아니면 {
 		_control_allocation_scale(0) = 1.f;
 		_control_allocation_scale(1) = 1.f;
 		_control_allocation_scale(2) = 1.f;
@@ -129,23 +129,23 @@ ControlAllocationPseudoInverse::updateControlAllocationMatrixScale()
 	// (for tilted actuators)
 	_control_allocation_scale(THRUST_Z) = 1.f;
 
-	for (int axis_idx = 2; axis_idx >= 0; --axis_idx) {
-		int num_non_zero_thrust = 0;
+	위해 (정수 axis_idx = 2; axis_idx >= 0; --axis_idx) {
+		정수 num_non_zero_thrust = 0;
 		float norm_sum = 0.f;
 
-		for (int i = 0; i < _num_actuators; i++) {
+		위해 (정수 i = 0; i < _num_actuators; i++) {
 			float norm = fabsf(_mix(i, 3 + axis_idx));
 			norm_sum += norm;
 
-			if (norm > FLT_EPSILON) {
+			만약 (norm > FLT_EPSILON) {
 				++num_non_zero_thrust;
 			}
 		}
 
-		if (num_non_zero_thrust > 0) {
+		만약 (num_non_zero_thrust > 0) {
 			_control_allocation_scale(3 + axis_idx) = norm_sum / num_non_zero_thrust;
 
-		} else {
+		} 아니면 {
 			_control_allocation_scale(3 + axis_idx) = _control_allocation_scale(THRUST_Z);
 		}
 	}
@@ -154,16 +154,16 @@ ControlAllocationPseudoInverse::updateControlAllocationMatrixScale()
 void
 ControlAllocationPseudoInverse::normalizeControlAllocationMatrix()
 {
-	if (_control_allocation_scale(0) > FLT_EPSILON) {
+	만약 (_control_allocation_scale(0) > FLT_EPSILON) {
 		_mix.col(0) /= _control_allocation_scale(0);
 		_mix.col(1) /= _control_allocation_scale(1);
 	}
 
-	if (_control_allocation_scale(2) > FLT_EPSILON) {
+	만약 (_control_allocation_scale(2) > FLT_EPSILON) {
 		_mix.col(2) /= _control_allocation_scale(2);
 	}
 
-	if (_control_allocation_scale(3) > FLT_EPSILON) {
+	만약 (_control_allocation_scale(3) > FLT_EPSILON) {
 		_mix.col(3) /= _control_allocation_scale(3);
 		_mix.col(4) /= _control_allocation_scale(4);
 		_mix.col(5) /= _control_allocation_scale(5);
@@ -171,9 +171,9 @@ ControlAllocationPseudoInverse::normalizeControlAllocationMatrix()
 
 	// Set all the small elements to 0 to avoid issues
 	// in the control allocation algorithms
-	for (int i = 0; i < _num_actuators; i++) {
-		for (int j = 0; j < NUM_AXES; j++) {
-			if (fabsf(_mix(i, j)) < 1e-3f) {
+	위해 (정수 i = 0; i < _num_actuators; i++) {
+		위해 (정수 j = 0; j < NUM_AXES; j++) {
+			만약 (fabsf(_mix(i, j)) < 1e-3f) {
 				_mix(i, j) = 0.f;
 			}
 		}
@@ -204,13 +204,13 @@ ControlAllocationPseudoInverse::dropDependentAxes(matrix::Matrix<float, NUM_AXES
 	float chol[NUM_AXES][NUM_AXES] {};
 	float inv_norm[NUM_AXES];
 	ControlAxis accepted[NUM_AXES];
-	int num_accepted = 0;
+	정수 num_accepted = 0;
 	uint8_t dropped = 0;
 
-	for (const ControlAxis axis : kPriority) {
+	위해 (const ControlAxis axis : kPriority) {
 		const float norm_squared = effectiveness.row(axis).norm_squared();
 
-		if (norm_squared < FLT_EPSILON) {
+		만약 (norm_squared < FLT_EPSILON) {
 			continue; // unused axis
 		}
 
@@ -220,10 +220,10 @@ ControlAllocationPseudoInverse::dropDependentAxes(matrix::Matrix<float, NUM_AXES
 		float projection[NUM_AXES];
 		float projected_norm_squared = 0.f;
 
-		for (int i = 0; i < num_accepted; i++) {
+		위해 (정수 i = 0; i < num_accepted; i++) {
 			float sum = effectiveness.row(axis).dot(effectiveness.row(accepted[i])) * inv * inv_norm[i];
 
-			for (int j = 0; j < i; j++) {
+			위해 (정수 j = 0; j < i; j++) {
 				sum -= chol[i][j] * projection[j];
 			}
 
@@ -233,12 +233,12 @@ ControlAllocationPseudoInverse::dropDependentAxes(matrix::Matrix<float, NUM_AXES
 
 		const float independence = 1.f - projected_norm_squared;
 
-		if (independence < kMinAxisIndependence) {
+		만약 (independence < kMinAxisIndependence) {
 			effectiveness.row(axis) = 0.f;
 			dropped |= static_cast<uint8_t>(1u << axis);
 
-		} else {
-			for (int j = 0; j < num_accepted; j++) {
+		} 아니면 {
+			위해 (정수 j = 0; j < num_accepted; j++) {
 				chol[num_accepted][j] = projection[j];
 			}
 
@@ -249,5 +249,5 @@ ControlAllocationPseudoInverse::dropDependentAxes(matrix::Matrix<float, NUM_AXES
 		}
 	}
 
-	return dropped;
+	반환 dropped;
 }

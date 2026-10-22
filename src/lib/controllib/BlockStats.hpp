@@ -81,15 +81,15 @@ public:
 		_count = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
+	size_t getCount() { 반환 _count; }
+	matrix::Vector<Type, M> getMean() { 반환 _sum / _count; }
 	matrix::Vector<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		반환 (_sumSq - _sum.emult(_sum) / _count) / _count;
 	}
 	matrix::Vector<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		반환 getVar().sqrt();
 	}
 private:
 // attributes

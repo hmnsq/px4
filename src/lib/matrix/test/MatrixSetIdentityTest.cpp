@@ -41,12 +41,12 @@ TEST(MatrixSetIdentityTest, SetIdentity)
 	Matrix3f A;
 	A.setIdentity();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	위해 (size_t i = 0; i < 3; i++) {
+		위해 (size_t j = 0; j < 3; j++) {
+			만약 (i == j) {
 				EXPECT_FLOAT_EQ(A(i, j), 1);
 
-			} else {
+			} 아니면 {
 				EXPECT_FLOAT_EQ(A(i, j), 0);
 			}
 		}
@@ -55,12 +55,12 @@ TEST(MatrixSetIdentityTest, SetIdentity)
 	Matrix3f B;
 	B.identity();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	위해 (size_t i = 0; i < 3; i++) {
+		위해 (size_t j = 0; j < 3; j++) {
+			만약 (i == j) {
 				EXPECT_FLOAT_EQ(B(i, j), 1);
 
-			} else {
+			} 아니면 {
 				EXPECT_FLOAT_EQ(B(i, j), 0);
 			}
 		}

@@ -52,9 +52,9 @@
  */
 __BEGIN_DECLS
 extern void led_init();
-extern void led_on(int led);
-extern void led_off(int led);
-extern void led_toggle(int led);
+extern void led_on(정수 led);
+extern void led_off(정수 led);
+extern void led_toggle(정수 led);
 __END_DECLS
 
 class LED : cdev::CDev
@@ -63,8 +63,8 @@ public:
 	LED();
 	~LED() override = default;
 
-	int	init() override;
-	int	ioctl(cdev::file_t *filp, int cmd, unsigned long arg) override;
+	정수	init() override;
+	정수	ioctl(cdev::file_t *filp, 정수 cmd, unsigned long arg) override;
 };
 
 LED::LED() : CDev(LED0_DEVICE_PATH)
@@ -73,7 +73,7 @@ LED::LED() : CDev(LED0_DEVICE_PATH)
 	init();
 }
 
-int
+정수
 LED::init()
 {
 	PX4_DEBUG("LED::init");
@@ -82,13 +82,13 @@ LED::init()
 
 	led_init();
 
-	return 0;
+	반환 0;
 }
 
-int
-LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
+정수
+LED::ioctl(cdev::file_t *filp, 정수 cmd, unsigned long arg)
 {
-	int result = OK;
+	정수 result = OK;
 
 	switch (cmd) {
 	case LED_ON:
@@ -107,7 +107,7 @@ LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
 		result = CDev::ioctl(filp, cmd, arg);
 	}
 
-	return result;
+	반환 result;
 }
 
 namespace
@@ -118,7 +118,7 @@ LED	*gLED;
 void
 drv_led_start(void)
 {
-	if (gLED == nullptr) {
+	만약 (gLED == nullptr) {
 		gLED = new LED;
 	}
 }

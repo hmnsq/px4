@@ -59,7 +59,7 @@ Tunes::Tunes(unsigned default_note_length, NoteMode default_note_mode,
 	_default_octave(default_octave),
 	_default_tempo(default_tempo)
 {
-	if (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_KEY)) {
+	만약 (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_KEY)) {
 		_tunes_disabled = true;
 	}
 
@@ -69,11 +69,11 @@ Tunes::Tunes(unsigned default_note_length, NoteMode default_note_mode,
 void Tunes::reset(bool repeat_flag)
 {
 	// reset pointer
-	if (!repeat_flag)	{
+	만약 (!repeat_flag)	{
 		_tune = nullptr;
 		_next_tune = nullptr;
 
-	} else {
+	} 아니면 {
 		_tune = _tune_start_ptr;
 		_next_tune = _tune;
 	}
@@ -88,19 +88,19 @@ void Tunes::reset(bool repeat_flag)
 Tunes::ControlResult Tunes::set_control(const tune_control_s &tune_control)
 {
 	// Sanity check
-	if (tune_control.tune_id >= _default_tunes_size) {
-		return ControlResult::InvalidTune;
+	만약 (tune_control.tune_id >= _default_tunes_size) {
+		반환 ControlResult::InvalidTune;
 	}
 
 	// Accept new tune or a stop?
-	if (_tune == nullptr ||  	   // No tune is currently being played
+	만약 (_tune == nullptr ||  	   // No tune is currently being played
 	    tune_control.tune_override ||  // Override interrupts everything
 	    _default_tunes_interruptable[_current_tune_id]) {
 
 		// Check if this exact tune is already being played back
-		if (tune_control.tune_id != static_cast<int>(TuneID::CUSTOM) &&
+		만약 (tune_control.tune_id != static_cast<정수>(TuneID::CUSTOM) &&
 		    _tune == _default_tunes[tune_control.tune_id]) {
-			return ControlResult::AlreadyPlaying; // Nothing to do
+			반환 ControlResult::AlreadyPlaying; // Nothing to do
 		}
 
 		// Reset repeat flag. Can jump to true again while tune is being parsed later
@@ -110,22 +110,22 @@ Tunes::ControlResult Tunes::set_control(const tune_control_s &tune_control)
 		reset(_repeat);
 
 		// Volume will remain valid for the entire tune, unless interrupted.
-		if (tune_control.volume <= tune_control_s::VOLUME_LEVEL_MAX) {
+		만약 (tune_control.volume <= tune_control_s::VOLUME_LEVEL_MAX) {
 			_volume = tune_control.volume;
 
-		} else {
+		} 아니면 {
 			_volume = tune_control_s::VOLUME_LEVEL_MAX;
 		}
 
 
 		// Special treatment for custom tunes
-		if (tune_control.tune_id == static_cast<int>(TuneID::CUSTOM)) {
+		만약 (tune_control.tune_id == static_cast<정수>(TuneID::CUSTOM)) {
 			_using_custom_msg = true;
 			_frequency        = (unsigned)tune_control.frequency;
 			_duration         = (unsigned)tune_control.duration;
 			_silence          = (unsigned)tune_control.silence;
 
-		} else {
+		} 아니면 {
 			_using_custom_msg = false;
 			_tune             = _default_tunes[tune_control.tune_id];
 			_tune_start_ptr   = _tune;
@@ -133,25 +133,25 @@ Tunes::ControlResult Tunes::set_control(const tune_control_s &tune_control)
 		}
 
 		_current_tune_id = tune_control.tune_id;
-		return ControlResult::Success;
+		반환 ControlResult::Success;
 	}
 
-	return ControlResult::WouldInterrupt;
+	반환 ControlResult::WouldInterrupt;
 }
 
 void Tunes::set_string(const char *const string, uint8_t volume)
 {
 	// Only play new tune if nothing is being played currently.
-	if (_tune == nullptr) {
+	만약 (_tune == nullptr) {
 		// Set tune string the first time.
 		_tune           = string;
 		_tune_start_ptr = string;
 		_next_tune      = _tune;
 
-		if (volume <= tune_control_s::VOLUME_LEVEL_MAX) {
+		만약 (volume <= tune_control_s::VOLUME_LEVEL_MAX) {
 			_volume = volume;
 
-		} else {
+		} 아니면 {
 			_volume = tune_control_s::VOLUME_LEVEL_MAX;
 		}
 	}
@@ -159,61 +159,61 @@ void Tunes::set_string(const char *const string, uint8_t volume)
 
 Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsigned &silence, uint8_t &volume)
 {
-	if (_tunes_disabled) {
+	만약 (_tunes_disabled) {
 		frequency = 0;
 		duration = 0;
 		silence = 0;
 		volume = 0;
-		return Tunes::Status::Stop;
+		반환 Tunes::Status::Stop;
 	}
 
 	Tunes::Status ret = get_next_note(frequency, duration, silence);
 
 	// Check if note should not be heard -> adjust volume to 0 to be safe.
-	if (frequency == 0 || duration == 0) {
+	만약 (frequency == 0 || duration == 0) {
 		volume = 0;
 
-	} else {
+	} 아니면 {
 		volume = _volume;
 	}
 
-	return ret;
+	반환 ret;
 }
 
 Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsigned &silence)
 {
-	if (_tunes_disabled) {
+	만약 (_tunes_disabled) {
 		frequency = 0;
 		duration = 0;
 		silence = 0;
-		return Tunes::Status::Stop;
+		반환 Tunes::Status::Stop;
 	}
 
 	// Return the values for frequency and duration if the custom msg was received.
-	if (_using_custom_msg) {
+	만약 (_using_custom_msg) {
 		_using_custom_msg = false;
 		duration  = _duration;
 		frequency = _frequency;
 		silence   = _silence;
-		return Tunes::Status::Continue;
+		반환 Tunes::Status::Continue;
 	}
 
 	// Make sure we still have a tune.
-	if ((_next_tune == nullptr) || (_tune == nullptr)) {
-		return tune_error();
+	만약 ((_next_tune == nullptr) || (_tune == nullptr)) {
+		반환 tune_error();
 	}
 
 	// Parse characters out of the string until we have resolved a note.
 	unsigned note = 0;
 	unsigned note_length = _note_length;
 
-	while (note == 0) {
+	동안 (note == 0) {
 		// we always need at least one character from the string.
-		int c = next_char();
+		정수 c = next_char();
 
-		if (c == 0) {
+		만약 (c == 0) {
 			silence = 0;
-			return tune_end();
+			반환 tune_end();
 		}
 
 		_next_tune++;
@@ -229,8 +229,8 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 		case 'L':	// Select note length.
 			_note_length = next_number();
 
-			if (_note_length < 1) {
-				return tune_error();
+			만약 (_note_length < 1) {
+				반환 tune_error();
 			}
 
 			break;
@@ -238,21 +238,21 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 		case 'O':	// Select octave.
 			_octave = next_number();
 
-			if (_octave > 6) {
+			만약 (_octave > 6) {
 				_octave = 6;
 			}
 
 			break;
 
 		case '<':	// Decrease octave.
-			if (_octave > 0) {
+			만약 (_octave > 0) {
 				_octave--;
 			}
 
 			break;
 
 		case '>':	// Increase octave.
-			if (_octave < 6) {
+			만약 (_octave < 6) {
 				_octave++;
 			}
 
@@ -261,8 +261,8 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 		case 'M':	// Select inter-note gap.
 			c = next_char();
 
-			if (c == 0) {
-				return tune_error();
+			만약 (c == 0) {
+				반환 tune_error();
 			}
 
 			_next_tune++;
@@ -289,7 +289,7 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 				break;
 
 			default:
-				return tune_error();
+				반환 tune_error();
 			}
 
 			break;
@@ -300,16 +300,16 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 			duration = 0;
 			note_length = next_number();
 			silence = rest_duration(note_length, next_dots());
-			return Tunes::Status::Continue;
+			반환 Tunes::Status::Continue;
 
 		case 'T': {	// Change tempo.
 				unsigned nt = next_number();
 
-				if ((nt >= 32) && (nt <= 255)) {
+				만약 ((nt >= 32) && (nt <= 255)) {
 					_tempo = nt;
 
-				} else {
-					return tune_error();
+				} 아니면 {
+					반환 tune_error();
 				}
 
 				break;
@@ -318,14 +318,14 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 		case 'N':	// Play an arbitrary note.
 			note = next_number();
 
-			if (note > 84) {
-				return tune_error();
+			만약 (note > 84) {
+				반환 tune_error();
 			}
 
-			if (note == 0) {
+			만약 (note == 0) {
 				// This is a rest - pause for the current note length.
 				silence = rest_duration(_note_length, next_dots());
-				return Tunes::Status::Continue;
+				반환 Tunes::Status::Continue;
 			}
 
 			break;
@@ -337,7 +337,7 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 			switch (c) {
 			case '#':	// Up a semitone.
 			case '+':
-				if (note < 84) {
+				만약 (note < 84) {
 					note++;
 				}
 
@@ -345,7 +345,7 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 				break;
 
 			case '-':	// Down a semitone.
-				if (note > 1) {
+				만약 (note > 1) {
 					note--;
 				}
 
@@ -360,14 +360,14 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 			// Shorthand length notation.
 			note_length = next_number();
 
-			if (note_length == 0) {
+			만약 (note_length == 0) {
 				note_length = _note_length;
 			}
 
 			break;
 
 		default:
-			return tune_error();
+			반환 tune_error();
 		}
 	}
 
@@ -376,54 +376,54 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 
 	// Compute the note frequency.
 	frequency = note_to_frequency(note);
-	return Tunes::Status::Continue;
+	반환 Tunes::Status::Continue;
 }
 
 Tunes::Status Tunes::tune_end()
 {
-	if (_tunes_disabled) {
-		return Tunes::Status::Stop;
+	만약 (_tunes_disabled) {
+		반환 Tunes::Status::Stop;
 	}
 
 	// Restore intial parameters.
 	reset(_repeat);
 
 	// Stop or restart the tune.
-	if (_repeat) {
-		return Tunes::Status::Continue;
+	만약 (_repeat) {
+		반환 Tunes::Status::Continue;
 
-	} else {
-		return Tunes::Status::Stop;
+	} 아니면 {
+		반환 Tunes::Status::Stop;
 	}
 }
 
 Tunes::Status Tunes::tune_error()
 {
-	if (_tunes_disabled) {
-		return Tunes::Status::Stop;
+	만약 (_tunes_disabled) {
+		반환 Tunes::Status::Stop;
 	}
 
 	// The tune appears to be bad (unexpected EOF, bad character, etc.).
-	if (_next_tune != nullptr) {
+	만약 (_next_tune != nullptr) {
 		PX4_WARN("Tune error at: %s", _next_tune);
 	}
 
 	_repeat = false;	// Don't loop on error.
 	reset(_repeat);
-	return Tunes::Status::Error;
+	반환 Tunes::Status::Error;
 }
 
 uint32_t Tunes::note_to_frequency(unsigned note) const
 {
 	// Compute the frequency (Hz).
-	return (unsigned)(880.0f * powf(2.0f, ((int)note - 46) / 12.0f));
+	반환 (unsigned)(880.0f * powf(2.0f, ((정수)note - 46) / 12.0f));
 }
 
 unsigned Tunes::note_duration(unsigned &silence, unsigned note_length, unsigned dots) const
 {
 	unsigned whole_note_period = BEAT_TIME_CONVERSION / _tempo;
 
-	if (note_length == 0) {
+	만약 (note_length == 0) {
 		note_length = 1;
 	}
 
@@ -448,19 +448,19 @@ unsigned Tunes::note_duration(unsigned &silence, unsigned note_length, unsigned 
 
 	unsigned dot_extension = note_period / 2;
 
-	while (dots--) {
+	동안 (dots--) {
 		note_period += dot_extension;
 		dot_extension /= 2;
 	}
 
-	return note_period;
+	반환 note_period;
 }
 
 unsigned Tunes::rest_duration(unsigned rest_length, unsigned dots) const
 {
 	unsigned whole_note_period = BEAT_TIME_CONVERSION / _tempo;
 
-	if (rest_length == 0) {
+	만약 (rest_length == 0) {
 		rest_length = 1;
 	}
 
@@ -468,33 +468,33 @@ unsigned Tunes::rest_duration(unsigned rest_length, unsigned dots) const
 
 	unsigned dot_extension = rest_period / 2;
 
-	while (dots--) {
+	동안 (dots--) {
 		rest_period += dot_extension;
 		dot_extension /= 2;
 	}
 
-	return rest_period;
+	반환 rest_period;
 }
 
-int Tunes::next_char()
+정수 Tunes::next_char()
 {
-	while (isspace(*_next_tune)) {
+	동안 (isspace(*_next_tune)) {
 		_next_tune++;
 	}
 
-	return toupper(*_next_tune);
+	반환 toupper(*_next_tune);
 }
 
 unsigned Tunes::next_number()
 {
 	unsigned number = 0;
-	int next_character;
+	정수 next_character;
 
-	for (;;) {
+	위해 (;;) {
 		next_character = next_char();
 
-		if (!isdigit(next_character)) {
-			return number;
+		만약 (!isdigit(next_character)) {
+			반환 number;
 		}
 
 		_next_tune++;
@@ -506,10 +506,10 @@ unsigned Tunes::next_dots()
 {
 	unsigned dots = 0;
 
-	while (next_char() == '.') {
+	동안 (next_char() == '.') {
 		_next_tune++;
 		dots++;
 	}
 
-	return dots;
+	반환 dots;
 }

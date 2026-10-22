@@ -60,16 +60,16 @@ protected:
 	{
 		param_control_autosave(false);
 		param_reset_all();
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#만약 defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 		set_f3442_params(20.f, 10.f, 100.f, 50.f, 30, 40);
-#else
+#아니면
 		set_crosstrack_params(500.f, 500.f, 60);
 #endif // CONFIG_NAVIGATOR_ADSB_F3442
 	}
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#만약 defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	void set_f3442_params(float nmac_radius, float nmac_height, float wc_radius,
-			      float wc_height, int nmac_latency_s, int wc_latency_s)
+			      float wc_height, 정수 nmac_latency_s, 정수 wc_latency_s)
 	{
 		param_set(param_handle(px4::params::DAA_LVL_CRIT_RAD), &nmac_radius);
 		param_set(param_handle(px4::params::DAA_LVL_CRIT_HGT), &nmac_height);
@@ -81,7 +81,7 @@ protected:
 #endif // CONFIG_NAVIGATOR_ADSB_F3442
 
 	void set_crosstrack_params(float horizontal_separation_m,
-				   float vertical_separation_m, int collision_time_s)
+				   float vertical_separation_m, 정수 collision_time_s)
 	{
 		param_set(param_handle(px4::params::NAV_TRAFF_A_HOR), &horizontal_separation_m);
 		param_set(param_handle(px4::params::NAV_TRAFF_A_VER), &vertical_separation_m);
@@ -99,7 +99,7 @@ protected:
 		report.heading = scenario.heading_rad;
 		report.hor_velocity = scenario.hor_speed_m_s;
 		report.ver_velocity = scenario.ver_speed_up_m_s;
-		return report;
+		반환 report;
 	}
 
 	daa_input_s create_daa_input(const matrix::Vector2d &uav_lat_lon, const float uav_alt,
@@ -110,7 +110,7 @@ protected:
 		daa_input.uav_alt = uav_alt;
 		daa_input.uav_vel_ned = uav_vel_ned;
 		daa_input.transponder_report = report;
-		return daa_input;
+		반환 daa_input;
 	}
 };
 
@@ -163,7 +163,7 @@ TEST_F(AdsbConflictTest, RejectsInvalidAircraftState)
 			matrix::Vector3f(0.f, nan, 0.f), report), daa_output));
 }
 
-#if !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
+#만약 !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
 TEST_F(AdsbConflictTest, CrosstrackRejectsNonFiniteTrafficHeading)
 {
 	AdsbConflict adsb_conflict;
@@ -187,9 +187,9 @@ TEST_F(AdsbConflictTest, UsesBuiltStandardForParamValidation)
 
 	EXPECT_TRUE(adsb_conflict.try_updating_params());
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#만약 defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	set_f3442_params(invalid_bound, 10.f, 100.f, 50.f, 30, 40);
-#else
+#아니면
 	set_crosstrack_params(invalid_bound, 500.f, 60);
 #endif // CONFIG_NAVIGATOR_ADSB_F3442
 
@@ -209,11 +209,11 @@ TEST_F(AdsbConflictTest, DelegatesToBuiltStandardAndForwardsOutput)
 	ASSERT_TRUE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#만약 defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	EXPECT_EQ(daa_output.conflict_level, detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL);
 	EXPECT_NEAR(daa_output.aircraft_dist_hor, approaching_traffic.distance_m, 0.1f);
 	EXPECT_NEAR(daa_output.aircraft_dist_vert, approaching_traffic.altitude_offset_m, 0.1f);
-#else
+#아니면
 	EXPECT_EQ(daa_output.conflict_level, detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH);
 	EXPECT_NEAR(daa_output.aircraft_dist_vert, approaching_traffic.altitude_offset_m, 0.1f);
 	EXPECT_LT(fabsf(daa_output.aircraft_dist_hor), 500.f);

@@ -62,7 +62,7 @@ static orb_sub_t param_set_rsp_fd = ORB_SUB_INVALID;
 static px4_task_t sync_thread_tid;
 static const char *sync_thread_name = "param_remote_sync";
 
-static int remote_sync_thread(int argc, char *argv[])
+static 정수 remote_sync_thread(정수 argc, char *argv[])
 {
 	// This thread gets started by the remote side during PX4 initialization.
 	// We cannot send out the subscribe request immediately because the other
@@ -87,25 +87,25 @@ static int remote_sync_thread(int argc, char *argv[])
 
 	PX4_INFO("Starting parameter remote sync thread");
 
-	while (true) {
+	동안 (true) {
 		px4_poll(fds, 2, 1000);
 
-		if (fds[0].revents & POLLIN) {
+		만약 (fds[0].revents & POLLIN) {
 			bool updated = true;
 
-			while (updated) {
+			동안 (updated) {
 				orb_copy(ORB_ID(parameter_reset_request), _reset_req_fd, &_reset_request);
 
-				if (debug) {
+				만약 (debug) {
 					PX4_INFO("Got parameter_reset_request for %s", param_name(_reset_request.parameter_index));
 				}
 
 				param_remote_counters.reset_received++;
 
-				if (_reset_request.reset_all) {
+				만약 (_reset_request.reset_all) {
 					param_reset_all();
 
-				} else {
+				} 아니면 {
 					param_reset_no_notification(_reset_request.parameter_index);
 
 				}
@@ -114,13 +114,13 @@ static int remote_sync_thread(int argc, char *argv[])
 			}
 		}
 
-		if (fds[1].revents & POLLIN) {
+		만약 (fds[1].revents & POLLIN) {
 			bool updated = true;
 
-			while (updated) {
+			동안 (updated) {
 				orb_copy(ORB_ID(parameter_primary_set_value_request), _set_value_req_fd, &_set_value_request);
 
-				if (debug) {
+				만약 (debug) {
 					PX4_INFO("Got parameter_remote_set_value_request for %s", param_name(_set_value_request.parameter_index));
 				}
 
@@ -148,11 +148,11 @@ static int remote_sync_thread(int argc, char *argv[])
 				_set_value_response.request_timestamp = _set_value_request.timestamp;
 				_set_value_response.parameter_index = _set_value_request.parameter_index;
 
-				if (_set_value_rsp_h == nullptr) {
+				만약 (_set_value_rsp_h == nullptr) {
 					_set_value_rsp_h = orb_advertise(ORB_ID(parameter_remote_set_value_response), &_set_value_response);
 
-				} else {
-					if (debug) {
+				} 아니면 {
+					만약 (debug) {
 						PX4_INFO("Sending set value response for %s", param_name(_set_value_request.parameter_index));
 					}
 
@@ -166,7 +166,7 @@ static int remote_sync_thread(int argc, char *argv[])
 		}
 	}
 
-	return 0;
+	반환 0;
 }
 
 void param_remote_init()
@@ -184,7 +184,7 @@ void param_remote_init()
 void param_remote_set_used(param_t param)
 {
 	// Notify the parameter server that this parameter has been marked as used
-	if (debug) {
+	만약 (debug) {
 		PX4_INFO("Requesting server to mark %s as used", param_name(param));
 	}
 
@@ -194,10 +194,10 @@ void param_remote_set_used(param_t param)
 
 	req.parameter_index = param;
 
-	if (parameter_set_used_h == nullptr) {
+	만약 (parameter_set_used_h == nullptr) {
 		parameter_set_used_h = orb_advertise(ORB_ID(parameter_set_used_request), &req);
 
-	} else {
+	} 아니면 {
 		orb_publish(ORB_ID(parameter_set_used_request), parameter_set_used_h, &req);
 	}
 
@@ -215,7 +215,7 @@ void param_remote_set_value(param_t param, const void *val)
 	case PARAM_TYPE_INT32:
 		req.int_value = *(int32_t *)val;
 
-		if (debug) {
+		만약 (debug) {
 			PX4_INFO("*** Setting %s to %" PRIi32 " ***", param_name(req.parameter_index), req.int_value);
 		}
 
@@ -224,7 +224,7 @@ void param_remote_set_value(param_t param, const void *val)
 	case PARAM_TYPE_FLOAT:
 		req.float_value = *(float *)val;
 
-		if (debug) {
+		만약 (debug) {
 			PX4_INFO("*** Setting %s to %f ***", param_name(req.parameter_index), (double) req.float_value);
 		}
 
@@ -236,29 +236,29 @@ void param_remote_set_value(param_t param, const void *val)
 		break;
 	}
 
-	if (!orb_sub_valid(param_set_rsp_fd)) {
-		if (debug) {
+	만약 (!orb_sub_valid(param_set_rsp_fd)) {
+		만약 (debug) {
 			PX4_INFO("Subscribing to parameter_primary_set_value_response");
 		}
 
 		param_set_rsp_fd = orb_subscribe(ORB_ID(parameter_primary_set_value_response));
 
-		if (!orb_sub_valid(param_set_rsp_fd)) {
+		만약 (!orb_sub_valid(param_set_rsp_fd)) {
 			PX4_ERR("Subscription to parameter_primary_set_value_response failed");
 
-		} else {
-			if (debug) {
+		} 아니면 {
+			만약 (debug) {
 				PX4_INFO("Subscription to parameter_primary_set_value_response succeeded");
 			}
 		}
 	}
 
-	if (send_request) {
-		if (debug) {
+	만약 (send_request) {
+		만약 (debug) {
 			PX4_INFO("Sending param set value request to primary for %s", param_name(req.parameter_index));
 		}
 
-		if (param_set_value_req_h == nullptr) {
+		만약 (param_set_value_req_h == nullptr) {
 			param_set_value_req_h = orb_advertise(ORB_ID(parameter_primary_set_value_request), nullptr);
 		}
 
@@ -269,29 +269,29 @@ void param_remote_set_value(param_t param, const void *val)
 		// Wait for response
 		bool updated = false;
 
-		if (debug) {
+		만약 (debug) {
 			PX4_INFO("Waiting for parameter_client_set_value_response for %s", param_name(req.parameter_index));
 		}
 
 		px4_usleep(TIMEOUT_WAIT);
-		int count = TIMEOUT_COUNT;
+		정수 count = TIMEOUT_COUNT;
 
-		while (--count) {
+		동안 (--count) {
 			(void) orb_check(param_set_rsp_fd, &updated);
 
 			struct parameter_set_value_response_s rsp;
 
-			while (updated) {
+			동안 (updated) {
 
 				orb_copy(ORB_ID(parameter_primary_set_value_response), param_set_rsp_fd, &rsp);
 
-				if ((rsp.request_timestamp == req.timestamp) && (rsp.parameter_index == req.parameter_index)) {
-					if (debug) {
+				만약 ((rsp.request_timestamp == req.timestamp) && (rsp.parameter_index == req.parameter_index)) {
+					만약 (debug) {
 						PX4_INFO("Got parameter_primary_set_value_response for %s", param_name(req.parameter_index));
 					}
 
 					param_remote_counters.set_value_response_received++;
-					return;
+					반환;
 				}
 
 				(void) orb_check(param_set_rsp_fd, &updated);

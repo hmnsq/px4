@@ -55,17 +55,17 @@ public:
 
 	uint8_t *buf() const
 	{
-		return _buf;
+		반환 _buf;
 	}
 
 	size_t size() const
 	{
-		return _size;
+		반환 _size;
 	}
 
 	void paint(unsigned offset = 0)
 	{
-		for (size_t i = 0; i < _size; ++i) {
+		위해 (size_t i = 0; i < _size; ++i) {
 			_buf[i] = (uint8_t)((i + offset) % UINT8_MAX);
 		}
 	}
@@ -78,11 +78,11 @@ private:
 
 bool operator==(const TempData &lhs, const TempData &rhs)
 {
-	if (lhs.size() != rhs.size()) {
-		return false;
+	만약 (lhs.size() != rhs.size()) {
+		반환 false;
 	}
 
-	return memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
+	반환 memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
 }
 
 
@@ -220,7 +220,7 @@ TEST(Ringbuffer, PushAndPopSeveral)
 	data.paint();
 
 	// 9 little chunks in
-	for (unsigned i = 0; i < 9; ++i) {
+	위해 (unsigned i = 0; i < 9; ++i) {
 		EXPECT_TRUE(buf.push_back(data.buf() + i * 10, 10));
 	}
 

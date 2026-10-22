@@ -46,7 +46,7 @@ void StickYaw::reset(const float yaw, const float unaided_yaw)
 	// The filter state outlives deactivation; a reset means there is no stick history to carry over.
 	resetYawspeed();
 
-	if (PX4_ISFINITE(unaided_yaw)) {
+	만약 (PX4_ISFINITE(unaided_yaw)) {
 		_yaw_error_lpf.reset(wrap_pi(yaw - unaided_yaw));
 	}
 }
@@ -63,7 +63,7 @@ void StickYaw::generateYawSetpoint(float &yawspeed_setpoint, float &yaw_setpoint
 	const float yaw_correction_prev = _yaw_correction;
 	const bool reset_setpoint = updateYawCorrection(yaw, unaided_yaw, deltatime);
 
-	if (reset_setpoint) {
+	만약 (reset_setpoint) {
 		yaw_setpoint = NAN;
 	}
 
@@ -75,24 +75,24 @@ void StickYaw::generateYawSetpoint(float &yawspeed_setpoint, float &yaw_setpoint
 
 bool StickYaw::updateYawCorrection(const float yaw, const float unaided_yaw, const float deltatime)
 {
-	if (!PX4_ISFINITE(unaided_yaw)) {
+	만약 (!PX4_ISFINITE(unaided_yaw)) {
 		_unaided_yaw_was_invalid = true;
 		// If unaided yaw is not available we leave yaw_correction_ unchanged
 		// Meaning yaw_setpoint - yaw_correction_prev + _yaw_correction = yaw_setpoint
-		return false;
+		반환 false;
 	}
 
 	// Detect the convergence phase of the yaw estimate by monitoring its relative
 	// distance from an unaided yaw source.
 	const float yaw_error = wrap_pi(yaw - unaided_yaw);
 
-	if (_unaided_yaw_was_invalid) {
+	만약 (_unaided_yaw_was_invalid) {
 		_unaided_yaw_was_invalid = false;
 		_yaw_error_lpf.reset(yaw_error);
 		_yaw_error_ref = yaw_error;
 		_yaw_correction = 0.f;
 		_yaw_estimate_converging = false;
-		return true;
+		반환 true;
 	}
 
 	// Run it through a high-pass filter to detect transients
@@ -104,10 +104,10 @@ bool StickYaw::updateYawCorrection(const float yaw, const float unaided_yaw, con
 
 	bool reset_setpoint = false;
 
-	if (!_yaw_estimate_converging) {
+	만약 (!_yaw_estimate_converging) {
 		_yaw_error_ref = yaw_error;
 
-		if (was_converging) {
+		만약 (was_converging) {
 			// Force a reset of the locking mechanism
 			reset_setpoint = true;
 		}
@@ -115,24 +115,24 @@ bool StickYaw::updateYawCorrection(const float yaw, const float unaided_yaw, con
 
 	_yaw_correction = wrap_pi(yaw_error - _yaw_error_ref);
 
-	return reset_setpoint;
+	반환 reset_setpoint;
 }
 
 float StickYaw::updateYawLock(const float yaw, const float yawspeed_setpoint, const float yaw_setpoint,
 			      const float yaw_correction_prev) const
 {
 	// Yaw-lock depends on desired yawspeed input. If not locked, yaw_sp is set to NAN.
-	if (fabsf(yawspeed_setpoint) > FLT_EPSILON) {
+	만약 (fabsf(yawspeed_setpoint) > FLT_EPSILON) {
 		// no fixed heading when rotating around yaw by stick
-		return NAN;
+		반환 NAN;
 
-	} else {
+	} 아니면 {
 		// slow down and hold the current heading when no more rotation commanded
-		if (!PX4_ISFINITE(yaw_setpoint)) {
-			return yaw;
+		만약 (!PX4_ISFINITE(yaw_setpoint)) {
+			반환 yaw;
 
-		} else {
-			return wrap_pi(yaw_setpoint - yaw_correction_prev + _yaw_correction);
+		} 아니면 {
+			반환 wrap_pi(yaw_setpoint - yaw_correction_prev + _yaw_correction);
 		}
 	}
 }

@@ -54,13 +54,13 @@ namespace cdev
  * The standard NuttX operation dispatch table can't call C++ member functions
  * directly, so we have to bounce them through this dispatch table.
  */
-static int	cdev_open(file_t *filp);
-static int	cdev_close(file_t *filp);
+static 정수	cdev_open(file_t *filp);
+static 정수	cdev_close(file_t *filp);
 static ssize_t	cdev_read(file_t *filp, char *buffer, size_t buflen);
 static ssize_t	cdev_write(file_t *filp, const char *buffer, size_t buflen);
-static off_t	cdev_seek(file_t *filp, off_t offset, int whence);
-static int	cdev_ioctl(file_t *filp, int cmd, unsigned long arg);
-static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
+static off_t	cdev_seek(file_t *filp, off_t offset, 정수 whence);
+static 정수	cdev_ioctl(file_t *filp, 정수 cmd, unsigned long arg);
+static 정수	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
 
 /**
  * Character device indirection table.
@@ -84,86 +84,86 @@ unlink	: nullptr
 #endif
 };
 
-const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { return g_fops; }
+const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { 반환 g_fops; }
 
-static int
+static 정수
 cdev_open(file_t *filp)
 {
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->open(filp);
+	반환 cdev->open(filp);
 }
 
-static int
+static 정수
 cdev_close(file_t *filp)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	만약 ((filp->f_inode->i_crefs) == 0) {
+		반환 -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->close(filp);
+	반환 cdev->close(filp);
 }
 
 static ssize_t
 cdev_read(file_t *filp, char *buffer, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	만약 ((filp->f_inode->i_crefs) == 0) {
+		반환 -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->read(filp, buffer, buflen);
+	반환 cdev->read(filp, buffer, buflen);
 }
 
 static ssize_t
 cdev_write(file_t *filp, const char *buffer, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	만약 ((filp->f_inode->i_crefs) == 0) {
+		반환 -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->write(filp, buffer, buflen);
+	반환 cdev->write(filp, buffer, buflen);
 }
 
 static off_t
-cdev_seek(file_t *filp, off_t offset, int whence)
+cdev_seek(file_t *filp, off_t offset, 정수 whence)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	만약 ((filp->f_inode->i_crefs) == 0) {
+		반환 -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->seek(filp, offset, whence);
+	반환 cdev->seek(filp, offset, whence);
 }
 
-static int
-cdev_ioctl(file_t *filp, int cmd, unsigned long arg)
+static 정수
+cdev_ioctl(file_t *filp, 정수 cmd, unsigned long arg)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	만약 ((filp->f_inode->i_crefs) == 0) {
+		반환 -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->ioctl(filp, cmd, arg);
+	반환 cdev->ioctl(filp, cmd, arg);
 }
 
-static int
+static 정수
 cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	만약 ((filp->f_inode->i_crefs) == 0) {
+		반환 -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->poll(filp, fds, setup);
+	반환 cdev->poll(filp, fds, setup);
 }
 
 } // namespace cdev

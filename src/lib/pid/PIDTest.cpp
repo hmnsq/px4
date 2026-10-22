@@ -73,14 +73,14 @@ TEST(PIDTest, ProportinalOnly)
 
 	float plant = 0.f;
 	float output = 10000.f;
-	int i; // need function scope to check how many steps
+	정수 i; // need function scope to check how many steps
 
-	for (i = 1000; i > 0; i--) {
+	위해 (i = 1000; i > 0; i--) {
 		const float output_new = pid.update(plant, 0.f, false);
 		plant += output_new;
 
 		// expect the output to get smaller with each iteration
-		if (output_new >= output) {
+		만약 (output_new >= output) {
 			break;
 		}
 

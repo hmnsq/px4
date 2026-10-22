@@ -50,12 +50,12 @@ public:
 
 	~CDevExample();
 
-	int main();
+	정수 main();
 
 	static px4::AppState appState; /* track requests to terminate app */
 
 private:
-	int do_poll(int fd, int timeout, int iterations, int delayms_after_poll);
+	정수 do_poll(정수 fd, 정수 timeout, 정수 iterations, 정수 delayms_after_poll);
 
 	CDevNode *_node;
 };

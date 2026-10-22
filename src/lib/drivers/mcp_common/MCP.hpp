@@ -60,7 +60,7 @@ struct MCP230XX_config_t {
 	uint8_t i2c_bus = 0;
 	uint8_t first_minor = 0;
 	uint8_t num_pins = 8;
-	int num_banks = 1;
+	정수 num_banks = 1;
 	uint16_t interval = 10;
 	mcp_gpio_dev_s _gpio_handle[16];
 	CallbackHandler *_callback_handler = nullptr;
@@ -75,14 +75,14 @@ class MCP230XX :  public device::I2C, public I2CSPIDriver<MCP230XX>
 public:
 	MCP230XX(const I2CSPIDriverConfig &config);
 	virtual ~MCP230XX();
-	static I2CSPIDriverBase *instantiate(const I2CSPIDriverConfig &config, int runtime_instance);
+	static I2CSPIDriverBase *instantiate(const I2CSPIDriverConfig &config, 정수 runtime_instance);
 	static void print_usage();
 
 	void RunImpl();
 	void print_status() override;
 	void custom_method(const BusCLIArguments &cli) override;
-	int probe();
-	virtual int init();
+	정수 probe();
+	virtual 정수 init();
 
 protected:
 	MCP230XX_config_t mcp_config;
@@ -96,29 +96,29 @@ private:
 	perf_counter_t _comms_errors;
 	perf_counter_t _register_check;
 
-	virtual int configure(uint16_t mask, PinType type);
-	virtual int read(uint16_t *mask);
-	int read_reg(uint8_t address, uint8_t &data);
-	int write(uint16_t mask_set, uint16_t mask_clear);
-	int write_reg(uint8_t address, uint8_t value);
-	int set_up();
-	int sanity_check();
-	int init_communication();
-	int init_uorb();
+	virtual 정수 configure(uint16_t mask, PinType type);
+	virtual 정수 read(uint16_t *mask);
+	정수 read_reg(uint8_t address, uint8_t &data);
+	정수 write(uint16_t mask_set, uint16_t mask_clear);
+	정수 write_reg(uint8_t address, uint8_t value);
+	정수 set_up();
+	정수 sanity_check();
+	정수 init_communication();
+	정수 init_uorb();
 	void cleanup_uorb();
 
-	virtual int get_olat(int bank, uint8_t *addr) = 0;
-	virtual int get_gppu(int bank, uint8_t *addr) = 0;
-	virtual int get_iodir(int bank, uint8_t *addr) = 0;
-	virtual int get_gpio(int bank, uint8_t *addr) = 0;
-	virtual int get_probe_reg(uint8_t *addr) = 0;
+	virtual 정수 get_olat(정수 bank, uint8_t *addr) = 0;
+	virtual 정수 get_gppu(정수 bank, uint8_t *addr) = 0;
+	virtual 정수 get_iodir(정수 bank, uint8_t *addr) = 0;
+	virtual 정수 get_gpio(정수 bank, uint8_t *addr) = 0;
+	virtual 정수 get_probe_reg(uint8_t *addr) = 0;
 
 	uint16_t _olat;
 	uint16_t _iodir;
 	uint16_t _gppu;
 
 	uint16_t _checking_freq = 10;
-	int _count = 0;
+	정수 _count = 0;
 
 	enum class STATE : uint8_t {
 		INIT_COMMUNICATION,

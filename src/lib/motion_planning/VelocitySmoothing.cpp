@@ -61,23 +61,23 @@ float VelocitySmoothing::saturateT1ForAccel(float a0, float j_max, float T1, flo
 	float accel_T1 = a0 + j_max * T1;
 	float T1_new = T1;
 
-	if (accel_T1 > a_max) {
+	만약 (accel_T1 > a_max) {
 		T1_new = (a_max - a0) / j_max;
 
-	} else if (accel_T1 < -a_max) {
+	} 아니면 만약 (accel_T1 < -a_max) {
 		T1_new = (-a_max - a0) / j_max;
 	}
 
-	return T1_new;
+	반환 T1_new;
 }
 
 float VelocitySmoothing::computeT1(float a0, float v3, float j_max, float a_max) const
 {
 	float delta = 2.f * a0 * a0 + 4.f * j_max * v3;
 
-	if (delta < 0.f) {
+	만약 (delta < 0.f) {
 		// Solution is not real
-		return 0.f;
+		반환 0.f;
 	}
 
 	float sqrt_delta = sqrtf(delta);
@@ -89,16 +89,16 @@ float VelocitySmoothing::computeT1(float a0, float v3, float j_max, float a_max)
 
 	float T1 = 0.f;
 
-	if (T1_plus >= 0.f && T3_plus >= 0.f) {
+	만약 (T1_plus >= 0.f && T3_plus >= 0.f) {
 		T1 = T1_plus;
 
-	} else if (T1_minus >= 0.f && T3_minus >= 0.f) {
+	} 아니면 만약 (T1_minus >= 0.f && T3_minus >= 0.f) {
 		T1 = T1_minus;
 	}
 
 	T1 = saturateT1ForAccel(a0, j_max, T1, a_max);
 
-	return math::max(T1, 0.f);
+	반환 math::max(T1, 0.f);
 }
 
 float VelocitySmoothing::computeT1(float T123, float a0, float v3, float j_max, float a_max) const
@@ -107,9 +107,9 @@ float VelocitySmoothing::computeT1(float T123, float a0, float v3, float j_max, 
 	float b = j_max * T123 - a0;
 	float delta = T123 * T123 * j_max * j_max + 2.f * T123 * a0 * j_max - a0 * a0 - 4.f * j_max * v3;
 
-	if (delta < 0.f) {
+	만약 (delta < 0.f) {
 		// Solution is not real
-		return 0.f;
+		반환 0.f;
 	}
 
 	float sqrt_delta = sqrtf(delta);
@@ -122,16 +122,16 @@ float VelocitySmoothing::computeT1(float T123, float a0, float v3, float j_max, 
 
 	float T1 = 0.f;
 
-	if ((T1_plus >= 0.f && T3_plus >= 0.f) && ((T1_plus + T3_plus) <= T123)) {
+	만약 ((T1_plus >= 0.f && T3_plus >= 0.f) && ((T1_plus + T3_plus) <= T123)) {
 		T1 = T1_plus;
 
-	} else if ((T1_minus >= 0.f && T3_minus >= 0.f) && ((T1_minus + T3_minus) <= T123)) {
+	} 아니면 만약 ((T1_minus >= 0.f && T3_minus >= 0.f) && ((T1_minus + T3_minus) <= T123)) {
 		T1 = T1_minus;
 	}
 
 	T1 = saturateT1ForAccel(a0, j_max, T1, a_max);
 
-	return T1;
+	반환 T1;
 }
 
 
@@ -141,23 +141,23 @@ float VelocitySmoothing::computeT2(float T1, float T3, float a0, float v3, float
 
 	float den = a0 + j_max * T1;
 
-	if (math::abs_t(den) > FLT_EPSILON) {
+	만약 (math::abs_t(den) > FLT_EPSILON) {
 		T2 = (-0.5f * T1 * T1 * j_max - T1 * T3 * j_max - T1 * a0 + 0.5f * T3 * T3 * j_max - T3 * a0 + v3) / den;
 	}
 
-	return math::max(T2, 0.f);
+	반환 math::max(T2, 0.f);
 }
 
 float VelocitySmoothing::computeT2(float T123, float T1, float T3) const
 {
 	float T2 = T123 - T1 - T3;
-	return math::max(T2, 0.f);
+	반환 math::max(T2, 0.f);
 }
 
 float VelocitySmoothing::computeT3(float T1, float a0, float j_max) const
 {
 	float T3 = a0 / j_max + T1;
-	return math::max(T3, 0.f);
+	반환 math::max(T3, 0.f);
 }
 
 void VelocitySmoothing::updateDurations(float vel_setpoint)
@@ -171,35 +171,35 @@ void VelocitySmoothing::updateDurations(float vel_setpoint)
 	updateDurationsMinimizeTotalTime();
 }
 
-int VelocitySmoothing::computeDirection() const
+정수 VelocitySmoothing::computeDirection() const
 {
 	// Compute the velocity at which the trajectory will be
 	// when the acceleration will be zero
 	float vel_zero_acc = computeVelAtZeroAcc();
 
 	/* Depending of the direction, start accelerating positively or negatively */
-	int direction = sign(_vel_sp - vel_zero_acc);
+	정수 direction = sign(_vel_sp - vel_zero_acc);
 
-	if (direction == 0) {
+	만약 (direction == 0) {
 		// If by braking immediately the velocity is exactly
 		// the required one with zero acceleration, then brake
 		direction = sign(_state.a);
 	}
 
-	return direction;
+	반환 direction;
 }
 
 float VelocitySmoothing::computeVelAtZeroAcc() const
 {
 	float vel_zero_acc = _state.v;
 
-	if (fabsf(_state.a) > FLT_EPSILON) {
+	만약 (fabsf(_state.a) > FLT_EPSILON) {
 		float j_zero_acc = -sign(_state.a) * _max_jerk; // Required jerk to reduce the acceleration
 		float t_zero_acc = -_state.a / j_zero_acc; // Required time to cancel the current acceleration
 		vel_zero_acc = _state.v + _state.a * t_zero_acc + 0.5f * j_zero_acc * t_zero_acc * t_zero_acc;
 	}
 
-	return vel_zero_acc;
+	반환 vel_zero_acc;
 }
 
 void VelocitySmoothing::updateDurationsMinimizeTotalTime()
@@ -207,7 +207,7 @@ void VelocitySmoothing::updateDurationsMinimizeTotalTime()
 	float jerk_max_T1 = _direction * _max_jerk;
 	float delta_v = _vel_sp - _state.v;
 
-	if (fabsf(jerk_max_T1) > FLT_EPSILON) { // zero direction or jerk would lead to division by zero
+	만약 (fabsf(jerk_max_T1) > FLT_EPSILON) { // zero direction or jerk would lead to division by zero
 		// compute increasing acceleration time
 		_T1 = computeT1(_state.a, delta_v, jerk_max_T1, _max_accel);
 
@@ -217,12 +217,12 @@ void VelocitySmoothing::updateDurationsMinimizeTotalTime()
 		// compute constant acceleration time
 		_T2 = computeT2(_T1, _T3, _state.a, delta_v, jerk_max_T1);
 
-	} else {
+	} 아니면 {
 		_T1 = _T2 = _T3 = 0.f;
 	}
 }
 
-Trajectory VelocitySmoothing::evaluatePoly(float j, float a0, float v0, float x0, float t, int d) const
+Trajectory VelocitySmoothing::evaluatePoly(float j, float a0, float v0, float x0, float t, 정수 d) const
 {
 	Trajectory traj;
 	float jt = d * j;
@@ -234,7 +234,7 @@ Trajectory VelocitySmoothing::evaluatePoly(float j, float a0, float v0, float x0
 	traj.v = v0 + a0 * t + 0.5f * jt * t2;
 	traj.x = x0 + v0 * t + 0.5f * a0 * t2 + 1.f / 6.f * jt * t3;
 
-	return traj;
+	반환 traj;
 }
 
 void VelocitySmoothing::updateTraj(float dt, float time_stretch)
@@ -246,40 +246,40 @@ void VelocitySmoothing::updateTraj(float dt, float time_stretch)
 	_state = evaluatePoly(_max_jerk, _state_init.a, _state_init.v, _state_init.x, t1, _direction);
 	t_remain -= t1;
 
-	if (t_remain > 0.f) {
+	만약 (t_remain > 0.f) {
 		float t2 = math::min(t_remain, _T2);
 		_state = evaluatePoly(0.f, _state.a, _state.v, _state.x, t2, 0.f);
 		t_remain -= t2;
 	}
 
-	if (t_remain > 0.f) {
+	만약 (t_remain > 0.f) {
 		float t3 = math::min(t_remain, _T3);
 		_state = evaluatePoly(_max_jerk, _state.a, _state.v, _state.x, t3, -_direction);
 		t_remain -= t3;
 	}
 
-	if (t_remain > 0.f) {
+	만약 (t_remain > 0.f) {
 		_state = evaluatePoly(0.f, 0.f, _state.v, _state.x, t_remain, 0.f);
 	}
 }
 
-void VelocitySmoothing::timeSynchronization(VelocitySmoothing *traj, int n_traj)
+void VelocitySmoothing::timeSynchronization(VelocitySmoothing *traj, 정수 n_traj)
 {
 	float desired_time = 0.f;
-	int longest_traj_index = 0;
+	정수 longest_traj_index = 0;
 
-	for (int i = 0; i < n_traj; i++) {
+	위해 (정수 i = 0; i < n_traj; i++) {
 		const float T123 = traj[i].getTotalTime();
 
-		if (T123 > desired_time) {
+		만약 (T123 > desired_time) {
 			desired_time = T123;
 			longest_traj_index = i;
 		}
 	}
 
-	if (desired_time > FLT_EPSILON) {
-		for (int i = 0; i < n_traj; i++) {
-			if ((i != longest_traj_index)
+	만약 (desired_time > FLT_EPSILON) {
+		위해 (정수 i = 0; i < n_traj; i++) {
+			만약 ((i != longest_traj_index)
 			    && (traj[i].getTotalTime() < desired_time)) {
 				traj[i].updateDurationsGivenTotalTime(desired_time);
 			}
@@ -292,7 +292,7 @@ void VelocitySmoothing::updateDurationsGivenTotalTime(float T123)
 	float jerk_max_T1 = _direction * _max_jerk;
 	float delta_v = _vel_sp - _state.v;
 
-	if (fabsf(jerk_max_T1) > FLT_EPSILON) { // zero direction or jerk would lead to division by zero
+	만약 (fabsf(jerk_max_T1) > FLT_EPSILON) { // zero direction or jerk would lead to division by zero
 		// compute increasing acceleration time
 		_T1 = computeT1(T123, _state.a, delta_v, jerk_max_T1, _max_accel);
 
@@ -302,7 +302,7 @@ void VelocitySmoothing::updateDurationsGivenTotalTime(float T123)
 		// compute constant acceleration time
 		_T2 = computeT2(T123, _T1, _T3);
 
-	} else {
+	} 아니면 {
 		_T1 = _T2 = _T3 = 0.f;
 	}
 }

@@ -36,13 +36,13 @@
 #include <stdlib.h>
 #include "ParamLayer.h"
 
-template <int N_SLOTS>
+template <정수 N_SLOTS>
 class StaticSparseLayer : public ParamLayer
 {
 public:
 	StaticSparseLayer(ParamLayer *parent) : ParamLayer(parent)
 	{
-		for (int i = 0; i < N_SLOTS; i++) {
+		위해 (정수 i = 0; i < N_SLOTS; i++) {
 			_slots[i] = {UINT16_MAX, param_value_u{}};
 		}
 	}
@@ -52,26 +52,26 @@ public:
 	bool store(param_t param, param_value_u value) override
 	{
 		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		const 정수 index = _getIndex(param);
 
-		if (index < _next_slot) { // already exists
+		만약 (index < _next_slot) { // already exists
 			_slots[index].value = value;
 
-		} else if (_next_slot < N_SLOTS) {
+		} 아니면 만약 (_next_slot < N_SLOTS) {
 			_slots[_next_slot++] = {param, value};
 			_sort();
 
-		} else {
-			return false;
+		} 아니면 {
+			반환 false;
 		}
 
-		return true;
+		반환 true;
 	}
 
 	bool contains(param_t param) const override
 	{
 		const AtomicTransaction transaction;
-		return _getIndex(param) < _next_slot;
+		반환 _getIndex(param) < _next_slot;
 	}
 
 	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
@@ -79,31 +79,31 @@ public:
 		px4::AtomicBitset<PARAM_COUNT> set;
 		const AtomicTransaction transaction;
 
-		for (int i = 0; i < _next_slot; i++) {
+		위해 (정수 i = 0; i < _next_slot; i++) {
 			set.set(_slots[i].param);
 		}
 
-		return set;
+		반환 set;
 	}
 
 	param_value_u get(param_t param) const override
 	{
 		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		const 정수 index = _getIndex(param);
 
-		if (index < _next_slot) { // exists in this layer
-			return _slots[index].value;
+		만약 (index < _next_slot) { // exists in this layer
+			반환 _slots[index].value;
 		}
 
-		return _parent->get(param);
+		반환 _parent->get(param);
 	}
 
 	void reset(param_t param) override
 	{
 		const AtomicTransaction transaction;
-		int index = _getIndex(param);
+		정수 index = _getIndex(param);
 
-		if (index < _next_slot) {
+		만약 (index < _next_slot) {
 			_slots[index] = {UINT16_MAX, param_value_u{}};
 			_sort();
 			_next_slot--;
@@ -115,14 +115,14 @@ public:
 		_parent->refresh(param);
 	}
 
-	int size() const override
+	정수 size() const override
 	{
-		return _next_slot;
+		반환 _next_slot;
 	}
 
-	int byteSize() const override
+	정수 byteSize() const override
 	{
-		return N_SLOTS * sizeof(Slot);
+		반환 N_SLOTS * sizeof(Slot);
 	}
 
 private:
@@ -131,9 +131,9 @@ private:
 		param_value_u value;
 	};
 
-	static int _slotCompare(const void *a, const void *b)
+	static 정수 _slotCompare(const void *a, const void *b)
 	{
-		return ((int)((Slot *)a)->param) - ((int)((Slot *)b)->param);
+		반환 ((정수)((Slot *)a)->param) - ((정수)((Slot *)b)->param);
 	}
 
 	void _sort()
@@ -141,28 +141,28 @@ private:
 		qsort(_slots, N_SLOTS, sizeof(Slot), &_slotCompare);
 	}
 
-	int _getIndex(param_t param) const
+	정수 _getIndex(param_t param) const
 	{
-		int left = 0;
-		int right = _next_slot - 1;
+		정수 left = 0;
+		정수 right = _next_slot - 1;
 
-		while (left <= right) {
-			int mid = (left + right) / 2;
+		동안 (left <= right) {
+			정수 mid = (left + right) / 2;
 
-			if (_slots[mid].param == param) {
-				return mid;
+			만약 (_slots[mid].param == param) {
+				반환 mid;
 
-			} else if (_slots[mid].param < param) {
+			} 아니면 만약 (_slots[mid].param < param) {
 				left = mid + 1;
 
-			} else {
+			} 아니면 {
 				right = mid - 1;
 			}
 		}
 
-		return _next_slot;
+		반환 _next_slot;
 	}
 
 	Slot _slots[N_SLOTS];
-	int _next_slot = 0;
+	정수 _next_slot = 0;
 };

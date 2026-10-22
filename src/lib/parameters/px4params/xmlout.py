@@ -3,17 +3,17 @@ import codecs
 
 def indent(elem, level=0):
     i = "\n" + level*"  "
-    if len(elem):
-        if not elem.text or not elem.text.strip():
+    만약 len(elem):
+        만약 not elem.text or not elem.text.strip():
             elem.text = i + "  "
-        if not elem.tail or not elem.tail.strip():
+        만약 not elem.tail or not elem.tail.strip():
             elem.tail = i
-        for elem in elem:
+        위해 elem in elem:
             indent(elem, level+1)
-        if not elem.tail or not elem.tail.strip():
+        만약 not elem.tail or not elem.tail.strip():
             elem.tail = i
-    else:
-        if level and (not elem.tail or not elem.tail.strip()):
+    아니면:
+        만약 level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
 
 class XMLOutput():
@@ -28,51 +28,51 @@ class XMLOutput():
         xml_version.text = "15"
         last_param_name = ""
         board_specific_param_set = False
-        for group in groups:
+        위해 group in groups:
             xml_group = ET.SubElement(xml_parameters, "group")
             xml_group.attrib["name"] = group.GetName()
-            if group.no_code_generation:
+            만약 group.no_code_generation:
                 xml_group.attrib["no_code_generation"] = group.no_code_generation
-            for param in group.GetParams():
-                if (last_param_name == param.GetName() and not board_specific_param_set) or last_param_name != param.GetName():
+            위해 param in group.GetParams():
+                만약 (last_param_name == param.GetName() and not board_specific_param_set) or last_param_name != param.GetName():
                     xml_param = ET.SubElement(xml_group, "parameter")
                     xml_param.attrib["name"] = param.GetName()
                     xml_param.attrib["default"] = param.GetDefault()
                     xml_param.attrib["type"] = param.GetType()
-                    if param.GetVolatile():
+                    만약 param.GetVolatile():
                         xml_param.attrib["volatile"] = "true"
-                    if param.GetBoolean():
+                    만약 param.GetBoolean():
                         xml_param.attrib["boolean"] = "true"
-                    if param.GetReadonly():
+                    만약 param.GetReadonly():
                         xml_param.attrib["readonly"] = "true"
-                    if (param.GetCategory()):
+                    만약 (param.GetCategory()):
                         xml_param.attrib["category"] = param.GetCategory()
                     last_param_name = param.GetName()
-                    for code in param.GetFieldCodes():
+                    위해 code in param.GetFieldCodes():
                         value = param.GetFieldValue(code)
-                        if code == "board":
-                            if value == board:
+                        만약 code == "board":
+                            만약 value == board:
                                 board_specific_param_set = True
                                 xml_field = ET.SubElement(xml_param, code)
                                 xml_field.text = value
-                            else:
+                            아니면:
                                 xml_group.remove(xml_param)
-                        else:
+                        아니면:
                             xml_field = ET.SubElement(xml_param, code)
                             xml_field.text = value
-                if last_param_name != param.GetName():
+                만약 last_param_name != param.GetName():
                     board_specific_param_set = False
                 
-                if len(param.GetEnumCodes()) > 0:
+                만약 len(param.GetEnumCodes()) > 0:
                     xml_values = ET.SubElement(xml_param, "values")
-                    for code in param.GetEnumCodes():
+                    위해 code in param.GetEnumCodes():
                         xml_value = ET.SubElement(xml_values, "value")
                         xml_value.attrib["code"] = code;
                         xml_value.text = param.GetEnumValue(code)
 
-                if len(param.GetBitmaskList()) > 0:
+                만약 len(param.GetBitmaskList()) > 0:
                     xml_values = ET.SubElement(xml_param, "bitmask")
-                    for index in param.GetBitmaskList():
+                    위해 index in param.GetBitmaskList():
                         xml_value = ET.SubElement(xml_values, "bit")
                         xml_value.attrib["index"] = index;
                         xml_value.text = param.GetBitmaskBit(index)

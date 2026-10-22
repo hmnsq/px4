@@ -109,7 +109,7 @@ public:
 	 */
 	void resetIntegral(size_t axis)
 	{
-		if (axis < 3) {
+		만약 (axis < 3) {
 			_rate_int(axis) = 0.f;
 		}
 	}

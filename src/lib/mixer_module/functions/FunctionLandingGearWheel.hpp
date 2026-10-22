@@ -44,18 +44,18 @@ class FunctionLandingGearWheel : public FunctionProviderBase
 {
 public:
 	FunctionLandingGearWheel() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGearWheel(); }
+	static FunctionProviderBase *allocate(const Context &context) { 반환 new FunctionLandingGearWheel(); }
 
 	void update() override
 	{
 		landing_gear_wheel_s landing_gear_wheel;
 
-		if (_topic.update(&landing_gear_wheel)) {
+		만약 (_topic.update(&landing_gear_wheel)) {
 			_data = landing_gear_wheel.normalized_wheel_setpoint;
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	float value(OutputFunction func) override { 반환 _data; }
 
 private:
 	uORB::Subscription _topic{ORB_ID(landing_gear_wheel)};

@@ -47,14 +47,14 @@ namespace control
 
 float BlockLowPass::update(float input)
 {
-	if (!PX4_ISFINITE(getState())) {
+	만약 (!PX4_ISFINITE(getState())) {
 		setState(input);
 	}
 
 	float b = 2 * M_PI_F * getFCut() * getDt();
 	float a = b / (1 + b);
 	setState(a * input + (1 - a)*getState());
-	return getState();
+	반환 getState();
 }
 
 } // namespace control

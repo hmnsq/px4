@@ -51,22 +51,22 @@ void project_distance_on_horizontal_plane(float &distance, const float yaw, cons
 	distance *= horizontal_projection_scale;
 }
 
-int get_bin_at_angle(float bin_width, float angle)
+정수 get_bin_at_angle(float bin_width, float angle)
 {
-	int bin_at_angle = (int)round(matrix::wrap(angle, 0.f, 360.f) / bin_width);
-	return wrap_bin(bin_at_angle, 360 / bin_width);
+	정수 bin_at_angle = (정수)round(matrix::wrap(angle, 0.f, 360.f) / bin_width);
+	반환 wrap_bin(bin_at_angle, 360 / bin_width);
 }
 
-float get_lower_bound_angle(int bin, float bin_width, float angle_offset)
+float get_lower_bound_angle(정수 bin, float bin_width, float angle_offset)
 {
 	bin = wrap_bin(bin, 360 / bin_width);
-	return wrap_360(bin * bin_width + angle_offset - bin_width / 2.f);
+	반환 wrap_360(bin * bin_width + angle_offset - bin_width / 2.f);
 }
 
-int get_offset_bin_index(int bin, float bin_width, float angle_offset)
+정수 get_offset_bin_index(정수 bin, float bin_width, float angle_offset)
 {
-	int offset = get_bin_at_angle(bin_width, angle_offset);
-	return wrap_bin(bin - offset, 360 / bin_width);
+	정수 offset = get_bin_at_angle(bin_width, angle_offset);
+	반환 wrap_bin(bin - offset, 360 / bin_width);
 }
 
 float sensor_orientation_to_yaw_offset(const SensorOrientation orientation, const float q[4])
@@ -107,24 +107,24 @@ float sensor_orientation_to_yaw_offset(const SensorOrientation orientation, cons
 		break;
 
 	case SensorOrientation::ROTATION_CUSTOM:
-		if (q != nullptr) {
+		만약 (q != nullptr) {
 			offset = Eulerf(Quatf(q)).psi();
 		}
 
 		break;
 	}
 
-	return offset;
+	반환 offset;
 }
 
-int wrap_bin(int bin, int bin_count)
+정수 wrap_bin(정수 bin, 정수 bin_count)
 {
-	return (bin + bin_count) % bin_count;
+	반환 (bin + bin_count) % bin_count;
 }
 
 float wrap_360(const float angle)
 {
-	return matrix::wrap(angle, 0.0f, 360.0f);
+	반환 matrix::wrap(angle, 0.0f, 360.0f);
 }
 
 } // ObstacleMath

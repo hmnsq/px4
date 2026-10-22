@@ -48,11 +48,11 @@ bool wait_until(const std::atomic<bool> &condition)
 {
 	const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
 
-	while (!condition.load() && std::chrono::steady_clock::now() < deadline) {
+	동안 (!condition.load() && std::chrono::steady_clock::now() < deadline) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 
-	return condition.load();
+	반환 condition.load();
 }
 
 } // namespace
@@ -71,7 +71,7 @@ TEST(PerfCounter, IterateLineContent)
 	} context;
 
 	perf_iterate_all([](const char *counter_line, void *user) {
-		if (strstr(counter_line, "test_perf_line_content") != nullptr) {
+		만약 (strstr(counter_line, "test_perf_line_content") != nullptr) {
 			static_cast<Context *>(user)->line = counter_line;
 		}
 	}, &context);
@@ -98,7 +98,7 @@ TEST(PerfCounter, ConcurrentAllocDoesNotBlockOnSlowCallback)
 	perf_iterate_all([](const char *, void *user) {
 		Context *ctx = static_cast<Context *>(user);
 
-		if (ctx->first.exchange(false)) {
+		만약 (ctx->first.exchange(false)) {
 			ctx->alloc_thread = std::thread([ctx]() {
 				perf_counter_t other = perf_alloc(PC_COUNT, "test_perf_concurrent_alloc");
 				ctx->alloc_succeeded.store(other != nullptr);
@@ -110,7 +110,7 @@ TEST(PerfCounter, ConcurrentAllocDoesNotBlockOnSlowCallback)
 		}
 	}, &context);
 
-	if (context.alloc_thread.joinable()) {
+	만약 (context.alloc_thread.joinable()) {
 		context.alloc_thread.join();
 	}
 
@@ -138,7 +138,7 @@ TEST(PerfCounter, AllocFromCallbackDoesNotDeadlock)
 		perf_iterate_all([](const char *, void *user) {
 			Context *ctx = static_cast<Context *>(user);
 
-			if (ctx->first.exchange(false)) {
+			만약 (ctx->first.exchange(false)) {
 				ctx->allocated = perf_alloc(PC_COUNT, "test_perf_callback_alloc_inner");
 			}
 		}, &context);
@@ -146,7 +146,7 @@ TEST(PerfCounter, AllocFromCallbackDoesNotDeadlock)
 		context.done.store(true);
 	});
 
-	if (!wait_until(context.done)) {
+	만약 (!wait_until(context.done)) {
 		iterate_thread.detach();
 		FAIL() << "perf_alloc() from the callback deadlocked";
 	}
@@ -170,13 +170,13 @@ TEST(PerfCounter, FreeDuringIterationIsDeferred)
 		perf_counter_t counter_a;
 		std::atomic<bool> free_done{false};
 		std::thread free_thread;
-		int lines_a{0};
+		정수 lines_a{0};
 	} context{counter_a};
 
 	perf_iterate_all([](const char *counter_line, void *user) {
 		Context *ctx = static_cast<Context *>(user);
 
-		if (!ctx->free_thread.joinable() && strstr(counter_line, "test_perf_free_defer_b") != nullptr) {
+		만약 (!ctx->free_thread.joinable() && strstr(counter_line, "test_perf_free_defer_b") != nullptr) {
 			// free a not-yet-visited counter while the iteration is running
 			ctx->free_thread = std::thread([ctx]() {
 				perf_free(ctx->counter_a);
@@ -186,12 +186,12 @@ TEST(PerfCounter, FreeDuringIterationIsDeferred)
 			EXPECT_TRUE(wait_until(ctx->free_done));
 		}
 
-		if (strstr(counter_line, "test_perf_free_defer_a") != nullptr) {
+		만약 (strstr(counter_line, "test_perf_free_defer_a") != nullptr) {
 			ctx->lines_a++;
 		}
 	}, &context);
 
-	if (context.free_thread.joinable()) {
+	만약 (context.free_thread.joinable()) {
 		context.free_thread.join();
 	}
 
@@ -200,11 +200,11 @@ TEST(PerfCounter, FreeDuringIterationIsDeferred)
 
 	// the freed entry must not reappear after deferred cleanup
 	struct CountContext {
-		int lines_a{0};
+		정수 lines_a{0};
 	} count_context;
 
 	perf_iterate_all([](const char *counter_line, void *user) {
-		if (strstr(counter_line, "test_perf_free_defer_a") != nullptr) {
+		만약 (strstr(counter_line, "test_perf_free_defer_a") != nullptr) {
 			static_cast<CountContext *>(user)->lines_a++;
 		}
 	}, &count_context);
@@ -226,33 +226,33 @@ TEST(PerfCounter, FreeIsDeferredUntilLastOverlappingIterationEnds)
 		std::atomic<bool> entered{false};
 		std::atomic<bool> release{false};
 		std::atomic<bool> timed_out{false};
-		int lines_a{0};
-		int replacement_lines{0};
+		정수 lines_a{0};
+		정수 replacement_lines{0};
 	} first_context, second_context;
 
 	perf_callback callback = [](const char *counter_line, void *user) {
 		IterateContext *ctx = static_cast<IterateContext *>(user);
 
-		if (strstr(counter_line, "test_perf_overlap_b") != nullptr) {
+		만약 (strstr(counter_line, "test_perf_overlap_b") != nullptr) {
 			ctx->entered.store(true);
 
-			if (!wait_until(ctx->release)) {
+			만약 (!wait_until(ctx->release)) {
 				ctx->timed_out.store(true);
 			}
 		}
 
-		if (strstr(counter_line, "test_perf_overlap_a") != nullptr) {
+		만약 (strstr(counter_line, "test_perf_overlap_a") != nullptr) {
 			ctx->lines_a++;
 		}
 
-		if (strstr(counter_line, "test_perf_overlap_replacement") != nullptr) {
+		만약 (strstr(counter_line, "test_perf_overlap_replacement") != nullptr) {
 			ctx->replacement_lines++;
 		}
 	};
 
 	std::thread first_thread([&]() { perf_iterate_all(callback, &first_context); });
 
-	if (!wait_until(first_context.entered)) {
+	만약 (!wait_until(first_context.entered)) {
 		first_context.release.store(true);
 		first_thread.join();
 		perf_free(counter_a);
@@ -262,7 +262,7 @@ TEST(PerfCounter, FreeIsDeferredUntilLastOverlappingIterationEnds)
 
 	std::thread second_thread([&]() { perf_iterate_all(callback, &second_context); });
 
-	if (!wait_until(second_context.entered)) {
+	만약 (!wait_until(second_context.entered)) {
 		first_context.release.store(true);
 		second_context.release.store(true);
 		first_thread.join();
@@ -278,7 +278,7 @@ TEST(PerfCounter, FreeIsDeferredUntilLastOverlappingIterationEnds)
 		free_done.store(true);
 	});
 
-	if (!wait_until(free_done)) {
+	만약 (!wait_until(free_done)) {
 		first_context.release.store(true);
 		second_context.release.store(true);
 		first_thread.join();
@@ -296,7 +296,7 @@ TEST(PerfCounter, FreeIsDeferredUntilLastOverlappingIterationEnds)
 	// allocation is likely to reuse the entry cached by the second iterator.
 	perf_counter_t replacement = perf_alloc(PC_COUNT, "test_perf_overlap_replacement");
 
-	if (replacement == nullptr) {
+	만약 (replacement == nullptr) {
 		second_context.release.store(true);
 		second_thread.join();
 		perf_free(counter_b);

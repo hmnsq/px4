@@ -46,23 +46,23 @@ namespace gnss
 
 bool CorrectionFramer::isPreamble(uint8_t byte)
 {
-	if (byte == RTCM3_PREAMBLE) {
-		return true;
+	만약 (byte == RTCM3_PREAMBLE) {
+		반환 true;
 	}
 
-	if (byte == UBX_SYNC1) {
-		return true;
+	만약 (byte == UBX_SYNC1) {
+		반환 true;
 	}
 
-#if defined(CONFIG_GPS_SPARTN)
+#만약 defined(CONFIG_GPS_SPARTN)
 
-	if (byte == SPARTN_PREAMBLE) {
-		return true;
+	만약 (byte == SPARTN_PREAMBLE) {
+		반환 true;
 	}
 
 #endif
 
-	return false;
+	반환 false;
 }
 
 size_t CorrectionFramer::addData(const uint8_t *data, size_t len)
@@ -70,19 +70,19 @@ size_t CorrectionFramer::addData(const uint8_t *data, size_t len)
 	const size_t space_available = BUFFER_SIZE - _buffer_len;
 	const size_t to_copy = (len < space_available) ? len : space_available;
 
-	if (to_copy > 0) {
+	만약 (to_copy > 0) {
 		memcpy(&_buffer[_buffer_len], data, to_copy);
 		_buffer_len += to_copy;
 	}
 
-	return to_copy;
+	반환 to_copy;
 }
 
 CorrectionFramer::Probe CorrectionFramer::probeRtcm3(size_t *frame_len) const
 {
 	// Need at least the header to read the length
-	if (_buffer_len < RTCM3_HEADER_LEN) {
-		return Probe::NeedMoreData;
+	만약 (_buffer_len < RTCM3_HEADER_LEN) {
+		반환 Probe::NeedMoreData;
 	}
 
 	// The 10-bit field cannot exceed RTCM3_MAX_PAYLOAD_LEN, so the length alone
@@ -90,8 +90,8 @@ CorrectionFramer::Probe CorrectionFramer::probeRtcm3(size_t *frame_len) const
 	const size_t payload_len = rtcm3_payload_length(_buffer);
 	const size_t len = RTCM3_HEADER_LEN + payload_len + RTCM3_CRC_LEN;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	만약 (_buffer_len < len) {
+		반환 Probe::NeedMoreData;
 	}
 
 	const uint32_t calculated_crc = rtcm3_crc24q(_buffer, RTCM3_HEADER_LEN + payload_len);
@@ -99,27 +99,27 @@ CorrectionFramer::Probe CorrectionFramer::probeRtcm3(size_t *frame_len) const
 				      (static_cast<uint32_t>(_buffer[len - 2]) << 8) |
 				      _buffer[len - 1];
 
-	if (calculated_crc != received_crc) {
-		return Probe::CrcError;
+	만약 (calculated_crc != received_crc) {
+		반환 Probe::CrcError;
 	}
 
 	*frame_len = len;
-	return Probe::Complete;
+	반환 Probe::Complete;
 }
 
 CorrectionFramer::Probe CorrectionFramer::probeUbx(size_t *frame_len) const
 {
 	// Need sync1 + sync2 at minimum to reject a false preamble quickly
-	if (_buffer_len < 2) {
-		return Probe::NeedMoreData;
+	만약 (_buffer_len < 2) {
+		반환 Probe::NeedMoreData;
 	}
 
-	if (_buffer[1] != UBX_SYNC2) {
-		return Probe::InvalidHeader;
+	만약 (_buffer[1] != UBX_SYNC2) {
+		반환 Probe::InvalidHeader;
 	}
 
-	if (_buffer_len < UBX_HEADER_LEN) {
-		return Probe::NeedMoreData;
+	만약 (_buffer_len < UBX_HEADER_LEN) {
+		반환 Probe::NeedMoreData;
 	}
 
 	const size_t payload_len = static_cast<size_t>(_buffer[4]) |
@@ -127,14 +127,14 @@ CorrectionFramer::Probe CorrectionFramer::probeUbx(size_t *frame_len) const
 
 	// Protocol allows larger payloads; reject beyond the injection cap so a
 	// garbage length cannot pin the buffer waiting for thousands of bytes.
-	if (payload_len > UBX_MAX_PAYLOAD_LEN) {
-		return Probe::InvalidHeader;
+	만약 (payload_len > UBX_MAX_PAYLOAD_LEN) {
+		반환 Probe::InvalidHeader;
 	}
 
 	const size_t len = UBX_HEADER_LEN + payload_len + UBX_CK_LEN;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	만약 (_buffer_len < len) {
+		반환 Probe::NeedMoreData;
 	}
 
 	// CK_A/CK_B cover Class..end of payload (not the sync bytes)
@@ -142,20 +142,20 @@ CorrectionFramer::Probe CorrectionFramer::probeUbx(size_t *frame_len) const
 	uint8_t ck_b = 0;
 	ubx_checksum(&_buffer[2], UBX_HEADER_LEN - 2 + payload_len, &ck_a, &ck_b);
 
-	if ((ck_a != _buffer[len - 2]) || (ck_b != _buffer[len - 1])) {
-		return Probe::CrcError;
+	만약 ((ck_a != _buffer[len - 2]) || (ck_b != _buffer[len - 1])) {
+		반환 Probe::CrcError;
 	}
 
 	*frame_len = len;
-	return Probe::Complete;
+	반환 Probe::Complete;
 }
 
-#if defined(CONFIG_GPS_SPARTN)
+#만약 defined(CONFIG_GPS_SPARTN)
 CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *frame_len) const
 {
 	// Need TF002..TF006 to read the length and CRC type
-	if (_buffer_len < SPARTN_FRAME_START_LEN) {
-		return Probe::NeedMoreData;
+	만약 (_buffer_len < SPARTN_FRAME_START_LEN) {
+		반환 Probe::NeedMoreData;
 	}
 
 	const uint8_t b1 = _buffer[1];
@@ -165,8 +165,8 @@ CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *frame_len) const
 	// TF002 is the only header field with a checkable range. The 10-bit length
 	// spans its full range and TF006 is a 4-bit CRC over a non-byte-aligned
 	// field, so this is the only cheap guard before the message CRC.
-	if (!spartn_message_type_defined(b1 >> 1)) {
-		return Probe::InvalidHeader;
+	만약 (!spartn_message_type_defined(b1 >> 1)) {
+		반환 Probe::InvalidHeader;
 	}
 
 	const uint16_t payload_len = static_cast<uint16_t>(((b1 & 0x01) << 9) | (b2 << 1) | (b3 >> 7));
@@ -175,20 +175,20 @@ CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *frame_len) const
 	const size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
 
 	// TF008 (time tag type) sets the description block length
-	if (_buffer_len < SPARTN_FRAME_START_LEN + 1) {
-		return Probe::NeedMoreData;
+	만약 (_buffer_len < SPARTN_FRAME_START_LEN + 1) {
+		반환 Probe::NeedMoreData;
 	}
 
 	const bool time_tag_32bit = ((_buffer[4] >> 3) & 0x01) != 0;
 	const size_t desc_len = spartn_desc_length_bytes(eaf, time_tag_32bit);
 
-	if (_buffer_len < SPARTN_FRAME_START_LEN + desc_len) {
-		return Probe::NeedMoreData;
+	만약 (_buffer_len < SPARTN_FRAME_START_LEN + desc_len) {
+		반환 Probe::NeedMoreData;
 	}
 
 	size_t auth_bytes = 0;
 
-	if (eaf) {
+	만약 (eaf) {
 		// TF014/TF015 occupy the low 6 bits of the last description byte
 		const uint8_t last = _buffer[SPARTN_FRAME_START_LEN + desc_len - 1];
 		auth_bytes = spartn_auth_length_bytes(true, (last >> 3) & 0x07, last & 0x07);
@@ -196,8 +196,8 @@ CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *frame_len) const
 
 	const size_t len = SPARTN_FRAME_START_LEN + desc_len + payload_len + auth_bytes + crc_bytes;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	만약 (_buffer_len < len) {
+		반환 Probe::NeedMoreData;
 	}
 
 	// Message CRC (TF018) covers TF002..TF017
@@ -205,55 +205,55 @@ CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *frame_len) const
 	const uint32_t calculated_crc = spartn_message_crc(&_buffer[1], core_len, crc_type);
 	uint32_t received_crc = 0;
 
-	for (size_t i = 0; i < crc_bytes; i++) {
+	위해 (size_t i = 0; i < crc_bytes; i++) {
 		received_crc = (received_crc << 8) | _buffer[len - crc_bytes + i];
 	}
 
-	if (calculated_crc != received_crc) {
-		return Probe::CrcError;
+	만약 (calculated_crc != received_crc) {
+		반환 Probe::CrcError;
 	}
 
 	*frame_len = len;
-	return Probe::Complete;
+	반환 Probe::Complete;
 }
 #endif // CONFIG_GPS_SPARTN
 
 const uint8_t *CorrectionFramer::getNextMessage(size_t *out_len, CorrectionProtocol *out_protocol)
 {
-	while (_buffer_len > 0) {
+	동안 (_buffer_len > 0) {
 		// Drop everything that cannot start a frame of any supported protocol
 		size_t to_drop = 0;
 
-		while ((to_drop < _buffer_len) && !isPreamble(_buffer[to_drop])) {
+		동안 ((to_drop < _buffer_len) && !isPreamble(_buffer[to_drop])) {
 			to_drop++;
 		}
 
-		if (to_drop > 0) {
+		만약 (to_drop > 0) {
 			_bytes_discarded += to_drop;
 			discardBytes(to_drop);
 		}
 
-		if (_buffer_len == 0) {
-			return nullptr;
+		만약 (_buffer_len == 0) {
+			반환 nullptr;
 		}
 
 		size_t frame_len = 0;
 		CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
 		Probe result;
 
-		if (_buffer[0] == UBX_SYNC1) {
+		만약 (_buffer[0] == UBX_SYNC1) {
 			protocol = CorrectionProtocol::Ubx;
 			result = probeUbx(&frame_len);
 
-#if defined(CONFIG_GPS_SPARTN)
+#만약 defined(CONFIG_GPS_SPARTN)
 
-		} else if (_buffer[0] == SPARTN_PREAMBLE) {
+		} 아니면 만약 (_buffer[0] == SPARTN_PREAMBLE) {
 			protocol = CorrectionProtocol::Spartn;
 			result = probeSpartn(&frame_len);
 
 #endif
 
-		} else {
+		} 아니면 {
 			// RTCM3 preamble (isPreamble already filtered other bytes)
 			protocol = CorrectionProtocol::Rtcm3;
 			result = probeRtcm3(&frame_len);
@@ -261,7 +261,7 @@ const uint8_t *CorrectionFramer::getNextMessage(size_t *out_len, CorrectionProto
 
 		switch (result) {
 		case Probe::NeedMoreData:
-			return nullptr;
+			반환 nullptr;
 
 		case Probe::InvalidHeader:
 			_bytes_discarded++;
@@ -277,15 +277,15 @@ const uint8_t *CorrectionFramer::getNextMessage(size_t *out_len, CorrectionProto
 			_pending_protocol = protocol;
 			*out_len = frame_len;
 
-			if (out_protocol != nullptr) {
+			만약 (out_protocol != nullptr) {
 				*out_protocol = protocol;
 			}
 
-			return _buffer;
+			반환 _buffer;
 		}
 	}
 
-	return nullptr;
+	반환 nullptr;
 }
 
 void CorrectionFramer::consumeMessage(size_t len)
@@ -311,10 +311,10 @@ void CorrectionFramer::consumeMessage(size_t len)
 
 void CorrectionFramer::discardBytes(size_t count)
 {
-	if (count >= _buffer_len) {
+	만약 (count >= _buffer_len) {
 		_buffer_len = 0;
 
-	} else {
+	} 아니면 {
 		memmove(_buffer, &_buffer[count], _buffer_len - count);
 		_buffer_len -= count;
 	}

@@ -85,15 +85,15 @@ public:
 	{
 		theta() = std::asin(-dcm(2, 0));
 
-		if ((std::fabs(theta() - Type(M_PI / 2))) < Type(1.0e-3)) {
+		만약 ((std::fabs(theta() - Type(M_PI / 2))) < Type(1.0e-3)) {
 			phi() = 0;
 			psi() = std::atan2(dcm(1, 2), dcm(0, 2));
 
-		} else if ((std::fabs(theta() + Type(M_PI / 2))) < Type(1.0e-3)) {
+		} 아니면 만약 ((std::fabs(theta() + Type(M_PI / 2))) < Type(1.0e-3)) {
 			phi() = 0;
 			psi() = std::atan2(-dcm(1, 2), -dcm(0, 2));
 
-		} else {
+		} 아니면 {
 			phi() = std::atan2(dcm(2, 1), dcm(2, 2));
 			psi() = std::atan2(dcm(1, 0), dcm(0, 0));
 		}
@@ -115,28 +115,28 @@ public:
 
 	inline Type phi() const
 	{
-		return (*this)(0);
+		반환 (*this)(0);
 	}
 	inline Type theta() const
 	{
-		return (*this)(1);
+		반환 (*this)(1);
 	}
 	inline Type psi() const
 	{
-		return (*this)(2);
+		반환 (*this)(2);
 	}
 
 	inline Type &phi()
 	{
-		return (*this)(0);
+		반환 (*this)(0);
 	}
 	inline Type &theta()
 	{
-		return (*this)(1);
+		반환 (*this)(1);
 	}
 	inline Type &psi()
 	{
-		return (*this)(2);
+		반환 (*this)(2);
 	}
 
 };
