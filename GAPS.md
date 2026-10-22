@@ -1,0 +1,621 @@
+# What is still missing
+
+76 languages. Each line says in how many languages it is missing.
+
+## Files in languages BURP cannot read yet
+
+- `.sh`: 1 files
+
+## Keywords with no word in a language's table
+
+- shraeni:get: 75
+- soochee:args: 75
+- shraeni:bad: 75
+- soochee:replace: 75
+- soochee:length: 75
+- soochee:join: 75
+- shraeni:good: 75
+- shraeni:clear: 75
+- shraeni:fail: 75
+- soochee:run: 75
+- soochee:update: 75
+- guru:__FILE__: 75
+- soochee:start: 74
+- soochee:out: 74
+- shraeni:size_t: 71
+- shraeni:FLT_EPSILON: 71
+- shraeni:NAN: 71
+- guru:size_t: 71
+- shraeni:INFINITY: 71
+- shraeni:close: 71
+- shraeni:memcmp: 71
+- shraeni:fabs: 71
+- shraeni:errno: 71
+- shraeni:rename: 71
+- shraeni:floor: 71
+- shraeni:SEEK_SET: 71
+- shraeni:tm: 71
+- shraeni:isfinite: 71
+- shraeni:strncpy: 71
+- shraeni:EOF: 71
+- shraeni:FILE: 71
+- shraeni:fclose: 71
+- shraeni:fopen: 71
+- shraeni:ceil: 71
+- shraeni:fgets: 71
+- shraeni:strerror: 71
+- shraeni:memmove: 71
+- shraeni:kill: 71
+- shraeni:RAND_MAX: 71
+- shraeni:fmod: 71
+- shraeni:fscanf: 71
+- shraeni:remove: 71
+- shraeni:fstat: 71
+- shraeni:va_list: 71
+- shraeni:va_start: 71
+- shraeni:va_end: 71
+- shraeni:DBL_EPSILON: 71
+- shraeni:offsetof: 71
+- guru:offsetof: 71
+- guru:NAN: 71
+- shraeni:va_arg: 71
+- guru:INFINITY: 71
+- guru:strtol: 71
+- shraeni:freopen: 71
+- shraeni:stdout: 71
+- shraeni:fseek: 71
+- shraeni:fgetc: 71
+- guru:time: 71
+- shraeni:stderr: 71
+- guru:CHAR_BIT: 71
+- guru:errno: 71
+- shraeni:time_t: 71
+- shraeni:realloc: 71
+- shraeni:strcmp: 70
+- shraeni:memset: 70
+- shraeni:open: 70
+- shraeni:strcpy: 70
+- shraeni:srand: 70
+- shraeni:rand: 70
+- guru:qsort: 70
+- guru:memset: 70
+- shraeni:qsort: 70
+- shraeni:nullptr: 67
+- shraeni:using: 67
+- shraeni:typename: 67
+- soochee:print: 67
+- soochee:def: 67
+- shraeni:sin: 67
+- shraeni:cos: 67
+- soochee:None: 67
+- shraeni:explicit: 67
+- soochee:range: 67
+- soochee:len: 67
+- soochee:is: 67
+- soochee:with: 67
+- shraeni:exp: 67
+- shraeni:log: 67
+- soochee:pass: 67
+- guru:cos: 67
+- guru:sin: 67
+- guru:#define: 66
+- shraeni:#endif: 66
+- shraeni:#pragma: 66
+- shraeni:#define: 66
+- shraeni:delete: 66
+- guru:#endif: 66
+- guru:#pragma: 66
+- shraeni:#ifdef: 66
+- guru:#ifdef: 66
+- shraeni:#ifndef: 66
+- guru:#ifndef: 66
+- soochee:boolean: 66
+- guru:#undef: 66
+- shraeni:#undef: 66
+- shraeni:unsigned: 62
+- shraeni:template: 62
+- shraeni:operator: 62
+- shraeni:printf: 62
+- shraeni:auto: 62
+- guru:unsigned: 62
+- shraeni:memcpy: 62
+- shraeni:sqrt: 62
+- shraeni:long: 62
+- guru:long: 62
+- shraeni:abs: 62
+- guru:pow: 62
+- shraeni:strncmp: 62
+- shraeni:strlen: 62
+- shraeni:strstr: 62
+- guru:strlen: 62
+- shraeni:friend: 62
+- guru:malloc: 62
+- guru:operator: 62
+- guru:template: 62
+- guru:memcpy: 62
+- shraeni:sscanf: 62
+- guru:printf: 62
+- guru:abs: 62
+- shraeni:pow: 62
+- shraeni:INT_MAX: 62
+- shraeni:malloc: 62
+- guru:exit: 62
+- shraeni:isspace: 62
+- shraeni:toupper: 62
+- shraeni:isdigit: 62
+- guru:sqrt: 62
+- soochee:sqrt: 62
+- soochee:main: 54
+- shraeni:main: 54
+- guru:main: 54
+- shraeni:virtual: 40
+- guru:virtual: 40
+- shraeni:true: 38
+- shraeni:bool: 26
+- shraeni:false: 26
+- shraeni:namespace: 26
+- soochee:elif: 26
+- soochee:False: 26
+- soochee:as: 26
+- soochee:or: 26
+- soochee:True: 26
+- soochee:except: 26
+- soochee:assert: 26
+- soochee:raise: 26
+- soochee:lambda: 26
+- soochee:global: 26
+- shraeni:const: 25
+- shraeni:float: 25
+- shraeni:void: 25
+- guru:const: 25
+- shraeni:static: 25
+- guru:void: 25
+- shraeni:public: 25
+- shraeni:class: 25
+- shraeni:this: 25
+- guru:float: 25
+- guru:static: 25
+- shraeni:default: 25
+- soochee:import: 25
+- shraeni:private: 25
+- shraeni:switch: 25
+- guru:typedef: 25
+- guru:NULL: 25
+- guru:public: 25
+- shraeni:new: 25
+- shraeni:continue: 25
+- shraeni:NULL: 25
+- shraeni:goto: 25
+- guru:extern: 25
+- shraeni:assert: 25
+- shraeni:write: 25
+- soochee:write: 25
+- soochee:default: 25
+- guru:private: 25
+- soochee:float: 25
+- guru:default: 25
+- shraeni:read: 25
+- shraeni:do: 25
+- soochee:try: 25
+- shraeni:typedef: 25
+- soochee:class: 25
+- guru:#elif: 25
+- guru:continue: 25
+- shraeni:free: 25
+- shraeni:extern: 25
+- soochee:read: 25
+- guru:read: 25
+- guru:do: 25
+- guru:free: 25
+- soochee:const: 25
+
+## Names with no dictionary entry (the most common first)
+
+- `EXPECT_NEAR`: 76
+- `f`: 76
+- `i`: 76
+- `get_mag_strength_tesla`: 76
+- `get_mag_declination_degrees`: 76
+- `get_mag_inclination_degrees`: 76
+- `EXPECT_EQ`: 76
+- `Type`: 76
+- `param`: 76
+- `N`: 76
+- `EXPECT_FLOAT_EQ`: 76
+- `Vector3f`: 76
+- `Vector2f`: 76
+- `j`: 76
+- `a`: 76
+- `M`: 76
+- `update`: 76
+- `buf`: 76
+- `ret`: 76
+- `math`: 76
+- `T`: 76
+- `len`: 76
+- `b`: 76
+- `name`: 76
+- `TEST`: 76
+- `Scalar`: 76
+- `allocate`: 76
+- `q`: 76
+- `x`: 76
+- `Vector4f`: 76
+- `ASSERT_CL`: 76
+- `equal`: 76
+- `EXPECT_TRUE`: 76
+- `dt`: 76
+- `param_t`: 76
+- `P`: 76
+- `TEST_F`: 76
+- `parser`: 76
+- `A`: 76
+- `once`: 76
+- `cp`: 76
+- `v`: 76
+- `encoder`: 76
+- `y`: 76
+- `val`: 76
+- `self`: 76
+- `EXPECT_FALSE`: 76
+- `TECSControl`: 76
+- `c`: 76
+- `device_id`: 76
+- `timestamp`: 76
+- `fd`: 76
+- `control`: 76
+- `distances`: 76
+- `flag`: 76
+- `params`: 76
+- `n`: 76
+- `t`: 76
+- `defined`: 76
+- `reset`: 76
+- `decoder`: 76
+- `report`: 76
+- `PX4_ERR`: 76
+- `config`: 76
+- `s`: 76
+- `hrt_abstime`: 76
+- `PX4_ISFINITE`: 76
+- `ORB_ID`: 76
+- `Dual`: 76
+- `px4`: 76
+- `type`: 76
+- `other`: 76
+- `_device_id`: 76
+- `r`: 76
+- `d`: 76
+- `Q`: 76
+- `detect_and_avoid_s`: 76
+- `override`: 76
+- `hse`: 76
+- `setpoint`: 76
+- `R`: 76
+- `payload`: 76
+- `handle`: 76
+- `_state`: 76
+- `pf`: 76
+- `Quatf`: 76
+- `radians`: 76
+- `state`: 76
+- `changes`: 76
+- `_trajectory`: 76
+- `PX4_OK`: 76
+- `constrain`: 76
+- `test_module`: 76
+- `sample`: 76
+- `k`: 76
+- `norm`: 76
+- `getState`: 76
+- `mixing_output`: 76
+- `OutputFunction`: 76
+- `PX4_INFO`: 76
+- `res`: 76
+- `CDev`: 76
+- `pid`: 76
+- `PX4_DEBUG`: 76
+- `param_name`: 76
+- `p`: 76
+- `DaaAction`: 76
+- `getObstacleMap`: 76
+- `arg`: 76
+- `SensorString`: 76
+- `DaaEncodedId`: 76
+- `z`: 76
+- `cdev`: 76
+- `request`: 76
+- `success`: 76
+- `rv`: 76
+- `m`: 76
+- `Param`: 76
+- `altitude`: 76
+- `ControlAxis`: 76
+- `I2C`: 76
+- `M_PI_F`: 76
+- `derivative`: 76
+- `tracker`: 76
+- `_params`: 76
+- `hysteresis`: 76
+- `external`: 76
+- `sector_map`: 76
+- `tmp`: 76
+- `_scale`: 76
+- `airspeed`: 76
+- `id`: 76
+- `now`: 76
+- `uORB`: 76
+- `store`: 76
+- `filename`: 76
+- `PX4_ERROR`: 76
+- `Quaternion`: 76
+- `dcm`: 76
+- `poly`: 76
+- `waypoints`: 76
+- `position`: 76
+- `max_channels`: 76
+- `u`: 76
+- `SPI`: 76
+- `wrap_pi`: 76
+- `gnss`: 76
+- `Vector3`: 76
+- `e`: 76
+- `bearing`: 76
+- `_P`: 76
+- `axis`: 76
+- `response`: 76
+- `radius`: 76
+- `scale`: 76
+- `param_get`: 76
+- `fds`: 76
+- `output`: 76
+- `pos`: 76
+- `filter`: 76
+- `vec`: 76
+- `pmagic`: 76
+- `_param_handles`: 76
+- `channel`: 76
+- `dev`: 76
+- `device`: 76
+- `alt`: 76
+- `wind_vel`: 76
+- `Flag`: 76
+- `send`: 76
+- `Dcmf`: 76
+- `K`: 76
+- `ASSERT_TRUE`: 76
+- `conflict`: 76
+- `encoded_id`: 76
+- `getDt`: 76
+- `PARAM_INVALID`: 76
+- `Rotation`: 76
+- `w`: 76
+- `scalar`: 76
+- `ASSERT_EQ`: 76
+- `Eulerf`: 76
+- `attitude`: 76
+- `h_magic_t`: 76
+- `debug`: 76
+- `trajectory`: 76
+- `yaw`: 76
+- `_rxpacket`: 76
+- `np`: 76
+- `instance`: 76
+- `I`: 76
+- `inv`: 76
+- `bus`: 76
+- `L`: 76
+- `format`: 76
+- `outputs`: 76
+- `n_cells`: 76
+- `str`: 76
+- `os`: 76
+- `CorrectionProtocol`: 76
+- `file_t`: 76
+- `ASSERT_NE`: 76
+- `uas_id`: 76
+- `GPS_RTCM_MAX_FRAGMENT_LEN`: 76
+- `begin`: 76
+- `LatLonAlt`: 76
+- `lla`: 76
+- `Matrix3f`: 76
+- `a0`: 76
+- `pci`: 76
+- `Vector2d`: 76
+- `heading`: 76
+- `_y`: 76
+- `stats`: 76
+- `recv`: 76
+- `Dcm`: 76
+- `v1`: 76
+- `airspeed_max`: 76
+- `daa_stats`: 76
+- `sys`: 76
+- `devid_s`: 76
+- `decision`: 76
+- `xy`: 76
+- `crosstrack_error`: 76
+- `_fd`: 76
+- `protocol`: 76
+- `context`: 76
+- `req`: 76
+- `tecs`: 76
+- `Tunes`: 76
+- `param_handle`: 76
+- `action`: 76
+- `_mix`: 76
+- `sample_freq`: 76
+- `rot`: 76
+- `getStats`: 76
+- `vehicle_gnss_s`: 76
+- `oi`: 76
+- `pe`: 76
+- `angle`: 76
+- `direction`: 76
+- `_trajectories`: 76
+- `Setpoint`: 76
+- `lat`: 76
+- `traffic_state`: 76
+- `idx`: 76
+- `ownship_ids`: 76
+- `ParamFloat`: 76
+- `updated`: 76
+- `events`: 76
+- `State`: 76
+- `_external`: 76
+- `func`: 76
+- `H`: 76
+- `MAX_ACTUATORS`: 76
+- `j_max`: 76
+- `fi`: 76
+- `pce`: 76
+- `makeSetpoint`: 76
+- `latitude`: 76
+- `conflict_level`: 76
+- `testing`: 76
+- `conflict_info_s`: 76
+- `nav_state`: 76
+- `flags`: 76
+- `callsign`: 76
+- `vel`: 76
+- `dot`: 76
+- `failed`: 76
+- `rotation`: 76
+- `gps_rtcm_assembler`: 76
+- `accel`: 76
+- `fp`: 76
+- `CODER_KILL`: 76
+- `lon`: 76
+- `ModuleParams`: 76
+- `modified_setpoint`: 76
+- `negate`: 76
+- `frequency`: 76
+- `getCurrentPosition`: 76
+- `vehicle_location`: 76
+- `sf`: 76
+- `min_airspeed_for_bearing`: 76
+- `AlphaFilter`: 76
+- `init`: 76
+- `filp`: 76
+- `effectiveness`: 76
+- `MixingOutput`: 76
+- `curr_wp_ned`: 76
+- `v_local`: 76
+- `DaaActionPolicy`: 76
+- `daa`: 76
+- `log`: 76
+- `ObstacleMath`: 76
+- `_dev`: 76
+- `RtcmTest`: 76
+- `HSE_state`: 76
+- `isFinite`: 76
+- `_sample_freq`: 76
+- `fs`: 76
+
+## Comments with no translation
+
+- namespace control: 76
+- ***************************************************************************
+ * Name: parameter_flash: 76
+- test initial state: 76
+- set dt: 76
+- methods: 76
+- accessors: 76
+- namespace matrix: 76
+- namespace device: 76
+- WARNING! black out zone: 76
+- namespace: 76
+- no copy, assignment, move, move assignment: 76
+- reset array to UINT16_MAX: 76
+- test update: 76
+- north aligned: 76
+- THEN: the correct bins in the map should be filled: 76
+- namespace calibration: 76
+- GIVEN: a simple setup condition: 76
+- WHEN: we update bearing and airspeed magnitude augmentation: 76
+- test  update: 76
+- GIVEN: a vector: 76
+- AND: a parameter handle: 76
+- !/usr/bin/env python: 76
+- namespace gnss: 76
+- namespace math: 76
+- Let some time for the filter to settle: 76
+- CONFIG_NAVIGATOR_ADSB_F3442: 76
+- AND: an obstacle message: 76
+- Reinitialize slew rate if current value is closer to setpoint than post slew rate value: 76
+- GIVEN: a vehicle attitude and obstacle distance message: 76
+- set state: 76
+- test end condition: 76
+- perform one update so initialized is set: 76
+- ***************************************************************************
+ * Pre-processor Definit: 76
+- call the probe function to check whether the device is present: 76
+- tell the world where we are: 76
+- *
+	 * Check for the presence of the device on the bus.: 76
+- WHEN: we get the next waypoint: 76
+- THEN: it should be the same: 76
+- Pipe the data into the parser: 76
+- internal sensors follow board rotation: 76
+- greater then 2.5 times the size of vehicle_status_s: 76
+- namespace cdev: 76
+- !/usr/bin/env python3: 76
+- Redistribution and use in source and binary forms, with or without: 76
+- modification, are permitted provided that the following conditions: 76
+- are met:: 76
+- notice, this list of conditions and the following disclaimer.: 76
+- notice, this list of conditions and the following disclaimer in: 76
+- the documentation and/or other materials provided with the: 76
+- distribution.: 76
+- 3. Neither the name PX4 nor the names of its contributors may be: 76
+- used to endorse or promote products derived from this software: 76
+- without specific prior written permission.: 76
+- "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT: 76
+- LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS: 76
+- FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE: 76
+- INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,: 76
+- BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS: 76
+- OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED: 76
+- AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT: 76
+- LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN: 76
+- ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE: 76
+- POSSIBILITY OF SUCH DAMAGE.: 76
+- try to keep 10m distance: 76
+- WHEN: we publish the message and set the parameter and then run the setpoint modification: 76
+- unit transform: 76
+- CONFIG_I2C: 76
+- CONFIG_SPI: 76
+- Given by simulation: 76
+- for debugging in case of failure: 76
+- GIVEN: 3 waypoints in straight line: 76
+- WHEN: we get the speed for travel around the path: 76
+- PX4_INFO("loading data from: %s", filepath);: 76
+- convert values to 1000-2000 ppm encoding in a not too sloppy fashion: 76
+- no saved calibration available: 76
+- ensure we have a valid calibration slot (matching existing or first available slot): 76
+- save calibration: 76
+- do nothing: 76
+- GIVEN: a vehicle attitude and a distance sensor message: 76
+- WHEN: we add distance sensor data: 76
+- GIVEN: a distance, sensor orientation, and quaternion representing the vehicle's orientation: 76
+- THEN: the distance should be scaled correctly: 76
+- GIVEN: a start bin, bin width, and angle: 76
+- WHEN: we calculate the bin index at the angle: 76
+- THEN: the bin index should be correct: 76
+- only one parameter, no need to name: 76
+- ensure string is terminated: 76
+- initial state: 76
+- update: 76
+- set Y: 76
+- test exceed max: 76
+- test exceed min: 76
+- set U: 76
+- set integral state: 76
+- set derivative state: 76
+- current DeviceStructure: 76
+- update to new device type: 76
+- classification set by the driver, do not re-derive from the device id: 76
+- *
+	 * The number of times a read or write operation will be retried on
+	 * error.: 76
+- is_inclusion_zone=: 76
