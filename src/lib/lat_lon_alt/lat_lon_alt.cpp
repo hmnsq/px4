@@ -62,7 +62,7 @@ LatLonAlt LatLonAlt::fromEcef(const Vector3d &p_ecef)
 	LatLonAlt lla;
 	lla.setLatLonRad(lat, lon);
 	lla.setAltitude(static_cast<float>(alt));
-	return lla;
+	повернути lla;
 }
 
 Vector3d LatLonAlt::toEcef() const
@@ -75,7 +75,7 @@ Vector3d LatLonAlt::toEcef() const
 	const double r_e = Wgs84::equatorial_radius / sqrt(1.0 - std::pow(Wgs84::eccentricity * sin_lat, 2.0));
 	const double r_total = r_e + static_cast<double>(_altitude);
 
-	return Vector3d(r_total * cos_lat * cos_lon,
+	повернути Vector3d(r_total * cos_lat * cos_lon,
 			r_total * cos_lat * sin_lon,
 			((1.0 - Wgs84::eccentricity2) * r_e + static_cast<double>(_altitude)) * sin_lat);
 }
@@ -85,7 +85,7 @@ Vector3f LatLonAlt::computeAngularRateNavFrame(const Vector3f &v_ned) const
 	double r_n;
 	double r_e;
 	computeRadiiOfCurvature(_latitude_rad, r_n, r_e);
-	return Vector3f(
+	повернути Vector3f(
 		       v_ned(1) / (static_cast<float>(r_e) + _altitude),
 		       -v_ned(0) / (static_cast<float>(r_n) + _altitude),
 		       -v_ned(1) * tanf(_latitude_rad) / (static_cast<float>(r_e) + _altitude));
@@ -99,7 +99,7 @@ Vector2d LatLonAlt::deltaLatLonToDeltaXY(const double latitude, const float alti
 	const double dn_dlat = r_n + static_cast<double>(altitude);
 	const double de_dlon = (r_e + static_cast<double>(altitude)) * cos(latitude);
 
-	return Vector2d(dn_dlat, de_dlon);
+	повернути Vector2d(dn_dlat, de_dlon);
 }
 
 void LatLonAlt::computeRadiiOfCurvature(const double latitude, double &meridian_radius_of_curvature,
@@ -123,7 +123,7 @@ matrix::Dcmf LatLonAlt::computeRotEcefToNed() const
 			     (float)(-cos_lat * cos_lon), (float)(-cos_lat * sin_lon), (float) - sin_lat
 			    };
 
-	return matrix::Dcmf(val);
+	повернути matrix::Dcmf(val);
 }
 
 LatLonAlt LatLonAlt::operator+(const matrix::Vector3f &delta_pos) const
@@ -136,7 +136,7 @@ LatLonAlt LatLonAlt::operator+(const matrix::Vector3f &delta_pos) const
 	LatLonAlt lla_new;
 	lla_new.setLatLonRad(latitude_rad, longitude_rad);
 	lla_new.setAltitude(altitude);
-	return lla_new;
+	повернути lla_new;
 }
 
 void LatLonAlt::operator+=(const matrix::Vector3f &delta_pos)
@@ -161,7 +161,7 @@ matrix::Vector3f LatLonAlt::operator-(const LatLonAlt &lla) const
 	const float delta_alt = _altitude - lla.altitude();
 
 	const matrix::Vector2d d_lat_lon_to_d_xy = deltaLatLonToDeltaXY(_latitude_rad, _altitude);
-	return matrix::Vector3f(static_cast<float>(delta_lat * d_lat_lon_to_d_xy(0)),
+	повернути matrix::Vector3f(static_cast<float>(delta_lat * d_lat_lon_to_d_xy(0)),
 				static_cast<float>(delta_lon * d_lat_lon_to_d_xy(1)),
 				-delta_alt);
 }

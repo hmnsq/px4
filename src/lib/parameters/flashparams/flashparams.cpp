@@ -60,10 +60,10 @@
 #include "flashfs.h"
 #include "../param_translation.h"
 
-#if 0
-# define debug(fmt, args...)            do { warnx(fmt, ##args); } while(0)
-#else
-# define debug(fmt, args...)            do { } while(0)
+#якщо 0
+# define debug(fmt, args...)            do { warnx(fmt, ##args); } поки(0)
+#інакше
+# define debug(fmt, args...)            do { } поки(0)
 #endif
 
 
@@ -105,13 +105,13 @@ static bool log_unreadable;
 static bool
 any_unsaved(param_filter_func filter)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if ((filter == nullptr || filter(param)) && param_value_unsaved(param)) {
-			return true;
+	для (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
+		якщо ((filter == nullptr || filter(param)) && param_value_unsaved(param)) {
+			повернути true;
 		}
 	}
 
-	return false;
+	повернути false;
 }
 
 /*
@@ -122,28 +122,28 @@ any_unsaved(param_filter_func filter)
  * default in force, is written as a BSON null so replay drops it, which is
  * what the file backend's "don't export defaults" gives after a reload.
  */
-static int
+static ціле
 encode_params(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if (filter && !filter(param)) {
+	для (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
+		якщо (filter && !filter(param)) {
 			continue;
 		}
 
-		if (snapshot) {
-			if (!user_config.contains(param)) {
+		якщо (snapshot) {
+			якщо (!user_config.contains(param)) {
 				continue;
 			}
 
-		} else {
-			if (!param_value_unsaved(param)) {
+		} інакше {
+			якщо (!param_value_unsaved(param)) {
 				continue;
 			}
 
-			if (!user_config.contains(param) || param_value_is_default(param)) {
-				if (bson_encoder_append_null(encoder, param_name(param))) {
+			якщо (!user_config.contains(param) || param_value_is_default(param)) {
+				якщо (bson_encoder_append_null(encoder, param_name(param))) {
 					debug("BSON append failed for '%s'", param_name(param));
-					return -1;
+					повернути -1;
 				}
 
 				continue;
@@ -152,172 +152,172 @@ encode_params(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
 
 		switch (param_type(param)) {
 		case PARAM_TYPE_INT32:
-			if (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
+			якщо (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				повернути -1;
 			}
 
 			break;
 
 		case PARAM_TYPE_FLOAT:
-			if (bson_encoder_append_double(encoder, param_name(param), (double)user_config.get(param).f)) {
+			якщо (bson_encoder_append_double(encoder, param_name(param), (double)user_config.get(param).f)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				повернути -1;
 			}
 
 			break;
 
 		default:
 			debug("unrecognized parameter type");
-			return -1;
+			повернути -1;
 		}
 	}
 
-	return 0;
+	повернути 0;
 }
 
 /* The caller frees bson_encoder_buf_data() whatever the result. */
-static int
+static ціле
 encode_document(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
 {
 	bson_encoder_init_buf(encoder, nullptr, 0);
 
-	int result = encode_params(encoder, filter, snapshot);
+	ціле result = encode_params(encoder, filter, snapshot);
 
-	if (result == 0) {
+	якщо (result == 0) {
 		result = bson_encoder_fini(encoder);
 	}
 
-	return result;
+	повернути result;
 }
 
-static int
+static ціле
 stage_write_buffer(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
 {
 	void *enc_buff = bson_encoder_buf_data(encoder);
 	*enc_size = bson_encoder_buf_size(encoder);
 
-	if (enc_buff == nullptr) {
-		return -ENOMEM;
+	якщо (enc_buff == nullptr) {
+		повернути -ENOMEM;
 	}
 
 	size_t alloc_size = *enc_size;
-	int result = parameter_flashfs_alloc(parameters_token, buffer, &alloc_size);
+	ціле result = parameter_flashfs_alloc(parameters_token, buffer, &alloc_size);
 
-	if (result != OK) {
-		return result;
+	якщо (result != OK) {
+		повернути result;
 	}
 
-	if (alloc_size < *enc_size) {
+	якщо (alloc_size < *enc_size) {
 		parameter_flashfs_free();
-		return -ENOMEM;
+		повернути -ENOMEM;
 	}
 
 	memcpy(*buffer, enc_buff, *enc_size);
-	return OK;
+	повернути OK;
 }
 
-static int
+static ціле
 commit_append(uint8_t *buffer, size_t enc_size)
 {
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	ціле result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	якщо (result == (ціле)enc_size) {
+		повернути OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	повернути result < 0 ? result : -EFBIG;
 }
 
-static int
+static ціле
 export_delta(param_filter_func filter)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, filter, false);
+	ціле result = encode_document(&encoder, filter, false);
 
-	if (result == 0) {
+	якщо (result == 0) {
 		uint8_t *buffer;
 		size_t enc_size;
 		result = stage_write_buffer(&encoder, &buffer, &enc_size);
 
-		if (result == OK) {
+		якщо (result == OK) {
 			result = commit_append(buffer, enc_size);
 		}
 	}
 
 	free(bson_encoder_buf_data(&encoder));
-	return result;
+	повернути result;
 }
 
 /* Everything that can fail before the erase, so a failure here leaves the
  * log untouched and still loadable. */
-static int
+static ціле
 stage_snapshot(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
 {
-	int result = stage_write_buffer(encoder, buffer, enc_size);
+	ціле result = stage_write_buffer(encoder, buffer, enc_size);
 
-	if (result != OK) {
-		return result;
+	якщо (result != OK) {
+		повернути result;
 	}
 
-	if (*enc_size > parameter_flashfs_max_payload()) {
+	якщо (*enc_size > parameter_flashfs_max_payload()) {
 		parameter_flashfs_free();
-		return -ENOSPC;
+		повернути -ENOSPC;
 	}
 
-	return OK;
+	повернути OK;
 }
 
-static int
+static ціле
 commit_snapshot(uint8_t *buffer, size_t enc_size)
 {
-	if (parameter_flashfs_blank() != 1) {
-		int rv = parameter_flashfs_erase();
+	якщо (parameter_flashfs_blank() != 1) {
+		ціле rv = parameter_flashfs_erase();
 
-		if (rv < 0) {
+		якщо (rv < 0) {
 			parameter_flashfs_free();
-			return rv;
+			повернути rv;
 		}
 	}
 
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	ціле result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 
-	if (result != (int)enc_size && parameter_flashfs_blank() == 1) {
+	якщо (result != (ціле)enc_size && parameter_flashfs_blank() == 1) {
 		result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 	}
 
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	якщо (result == (ціле)enc_size) {
+		повернути OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	повернути result < 0 ? result : -EFBIG;
 }
 
-static int
+static ціле
 compact_to_snapshot()
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	ціле result = encode_document(&encoder, nullptr, true);
 
-	if (result == 0) {
+	якщо (result == 0) {
 		uint8_t *buffer;
 		size_t enc_size;
 		result = stage_snapshot(&encoder, &buffer, &enc_size);
 
-		if (result == OK) {
+		якщо (result == OK) {
 			result = commit_snapshot(buffer, enc_size);
 		}
 	}
 
-	if (result == OK) {
+	якщо (result == OK) {
 		log_unreadable = false;
 	}
 
 	free(bson_encoder_buf_data(&encoder));
-	return result;
+	повернути result;
 }
 
 static bool
@@ -325,34 +325,34 @@ has_record(flash_file_token_t token)
 {
 	uint8_t *buffer = nullptr;
 	size_t buf_size = 0;
-	return parameter_flashfs_read(token, &buffer, &buf_size) >= 0;
+	повернути parameter_flashfs_read(token, &buffer, &buf_size) >= 0;
 }
 
-static int
+static ціле
 param_export_internal(param_filter_func filter)
 {
 	/* A delta only means something behind a snapshot that replays. A legacy
 	 * record still present means the boot migration did not run; replay
 	 * would take it over any delta appended behind it. */
-	if (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
-		return compact_to_snapshot();
+	якщо (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
+		повернути compact_to_snapshot();
 	}
 
-	if (!any_unsaved(filter)) {
-		return 0;
+	якщо (!any_unsaved(filter)) {
+		повернути 0;
 	}
 
-	int result = export_delta(filter);
+	ціле result = export_delta(filter);
 
-	if (result != -ENOSPC) {
-		return result;
+	якщо (result != -ENOSPC) {
+		повернути result;
 	}
 
 	/* Same-bank erase stalls the CPU for ~1 s; last resort when a single
 	 * save does not fit the tail. Compact writes the full RAM snapshot so a
 	 * filtered save cannot drop params not in the delta. */
 	PX4_WARN("flashparams: param sector full, compacting");
-	return compact_to_snapshot();
+	повернути compact_to_snapshot();
 }
 
 
@@ -361,50 +361,50 @@ record_is_stale(bson_node_t node)
 {
 	const param_t param = param_find_no_notification(node->name);
 
-	if (param == PARAM_INVALID) {
-		return true;
+	якщо (param == PARAM_INVALID) {
+		повернути true;
 	}
 
 	switch (node->type) {
 	case BSON_INT32:
-		return param_type(param) != PARAM_TYPE_INT32;
+		повернути param_type(param) != PARAM_TYPE_INT32;
 
 	case BSON_DOUBLE:
-		return param_type(param) != PARAM_TYPE_FLOAT;
+		повернути param_type(param) != PARAM_TYPE_FLOAT;
 
 	default:
-		return false;
+		повернути false;
 	}
 }
 
-static int
+static ціле
 param_import_callback(bson_decoder_t decoder, bson_node_t node)
 {
 	float f;
 	int32_t i;
 	void *v = nullptr;
-	int result = -1;
+	ціле result = -1;
 
 	/*
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	якщо (node->type == BSON_EOO) {
 		debug("end of parameters");
-		return 0;
+		повернути 0;
 	}
 
 	/* A tombstone has no value. The decoder leaves the previous node's in
 	 * the union and the translations read it without a type check. */
 	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
 
-	if (!tombstone) {
-		if (record_is_stale(node)) {
+	якщо (!tombstone) {
+		якщо (record_is_stale(node)) {
 			log_stale = true;
 		}
 
-		if (param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
-			return 1;
+		якщо (param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+			повернути 1;
 		}
 	}
 
@@ -414,9 +414,9 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	 */
 	param_t param = param_find_no_notification(node->name);
 
-	if (param == PARAM_INVALID) {
+	якщо (param == PARAM_INVALID) {
 		debug("ignoring unrecognised parameter '%s'", node->name);
-		return 1;
+		повернути 1;
 	}
 
 	/*
@@ -431,7 +431,7 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 		goto out;
 
 	case BSON_INT32:
-		if (param_type(param) != PARAM_TYPE_INT32) {
+		якщо (param_type(param) != PARAM_TYPE_INT32) {
 			PX4_WARN("unexpected type for %s", node->name);
 			result = 1; // just skip this entry
 			goto out;
@@ -442,7 +442,7 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 		break;
 
 	case BSON_DOUBLE:
-		if (param_type(param) != PARAM_TYPE_FLOAT) {
+		якщо (param_type(param) != PARAM_TYPE_FLOAT) {
 			PX4_WARN("unexpected type for %s", node->name);
 			result = 1; // just skip this entry
 			goto out;
@@ -458,7 +458,7 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 		goto out;
 	}
 
-	if (param_set_external(param, v, true, true)) {
+	якщо (param_set_external(param, v, true, true)) {
 		debug("error setting value for '%s'", node->name);
 		goto out;
 	}
@@ -467,67 +467,67 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	result = 1;
 
 out:
-	return result;
+	повернути result;
 }
 
-static int
+static ціле
 import_one_entry(uint8_t *buffer, size_t buf_size, void *arg)
 {
-	int *result = static_cast<int *>(arg);
+	ціле *result = static_cast<ціле *>(arg);
 	bson_decoder_s decoder{};
 
-	if (bson_decoder_init_buf(&decoder, buffer, buf_size, param_import_callback)) {
+	якщо (bson_decoder_init_buf(&decoder, buffer, buf_size, param_import_callback)) {
 		debug("decoder init failed");
 		*result = -1;
-		return -1;
+		повернути -1;
 	}
 
 	do {
 		*result = bson_decoder_next(&decoder);
 
-	} while (*result > 0);
+	} поки (*result > 0);
 
-	return *result < 0 ? *result : 0;
+	повернути *result < 0 ? *result : 0;
 }
 
-static int
+static ціле
 param_import_internal(bool *legacy)
 {
-	int result = 0;
+	ціле result = 0;
 	log_stale = false;
-	int n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &result);
+	ціле n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &result);
 	*legacy = n > 0;
 
-	if (n == 0) {
+	якщо (n == 0) {
 		n = parameter_flashfs_walk(parameters_token, import_one_entry, &result);
 	}
 
-	if (n < 0) {
+	якщо (n < 0) {
 		debug("flash walk failed (%d)", n);
 		log_unreadable = true;
-		return n;
+		повернути n;
 	}
 
-	if (n == 0) {
+	якщо (n == 0) {
 		/* No valid entry found. A fully erased store is blank (first boot, or
 		 * after switching firmware): report "not yet stored" (1), matching the
 		 * convention used by param_load_default(). A store that holds data but
 		 * no valid entry (torn write, bit-rot, or foreign data) is corrupt and
 		 * must not be silently reseeded - report it so the boot recovery runs. */
-		if (parameter_flashfs_blank() == 1) {
-			return 1;
+		якщо (parameter_flashfs_blank() == 1) {
+			повернути 1;
 		}
 
 		debug("flash holds data but no valid entry");
-		return -EILSEQ;
+		повернути -EILSEQ;
 	}
 
-	if (result < 0) {
+	якщо (result < 0) {
 		debug("BSON error decoding parameters");
-		return result;
+		повернути result;
 	}
 
-	return 0;
+	повернути 0;
 }
 
 /*
@@ -538,58 +538,58 @@ param_import_internal(bool *legacy)
  * the erase is an error: until then the log is intact and RAM holds what it
  * said, so the boot must not be reported as a corrupt store.
  */
-static int
+static ціле
 compact_after_import(bool legacy)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	ціле result = encode_document(&encoder, nullptr, true);
 
-	if (result != 0) {
+	якщо (result != 0) {
 		PX4_ERR("flashparams: snapshot encode failed (%d), log kept", result);
 		free(bson_encoder_buf_data(&encoder));
-		return 0;
+		повернути 0;
 	}
 
 	const size_t enc_size = bson_encoder_buf_size(&encoder);
-	int need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_size);
+	ціле need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_size);
 	result = 0;
 
-	if (need > 0) {
+	якщо (need > 0) {
 		uint8_t *buffer;
 		size_t staged_size;
 		result = stage_snapshot(&encoder, &buffer, &staged_size);
 
-		if (result != OK) {
+		якщо (result != OK) {
 			PX4_ERR("flashparams: cannot stage snapshot (%d), log kept", result);
 			result = 0;
 
-		} else {
+		} інакше {
 			PX4_INFO("flashparams: compacting param sector%s", legacy ? " (legacy layout)" : "");
 			result = commit_snapshot(buffer, staged_size);
 
-			if (result != OK) {
+			якщо (result != OK) {
 				PX4_ERR("flashparams: compact failed (%d)", result);
 			}
 		}
 	}
 
 	free(bson_encoder_buf_data(&encoder));
-	return result;
+	повернути result;
 }
 
-int flash_param_save(param_filter_func filter)
+ціле flash_param_save(param_filter_func filter)
 {
-	return param_export_internal(filter);
+	повернути param_export_internal(filter);
 }
 
-int flash_param_import()
+ціле flash_param_import()
 {
 	bool legacy = false;
-	int result = param_import_internal(&legacy);
+	ціле result = param_import_internal(&legacy);
 
-	if (result != 0) {
-		return result;
+	якщо (result != 0) {
+		повернути result;
 	}
 
-	return compact_after_import(legacy);
+	повернути compact_after_import(legacy);
 }

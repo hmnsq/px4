@@ -70,7 +70,7 @@ public:
 private:
 	float _crosstrack_separation_m{500.f};
 	float _vertical_separation_m{500.f};
-	int _collision_time_threshold_s{60};
+	ціле _collision_time_threshold_s{60};
 
 	DEFINE_PARAMETERS(
 		(ParamFloat<px4::params::NAV_TRAFF_A_VER>) _param_nav_traff_a_ver,

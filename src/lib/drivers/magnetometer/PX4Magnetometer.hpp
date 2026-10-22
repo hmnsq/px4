@@ -40,7 +40,7 @@
 
 #include <lib/failure_injection/FailureInjection.hpp>
 
-static constexpr float microTesla2Gauss(float micro_tesla) { return micro_tesla * 0.01f; }
+static constexpr float microTesla2Gauss(float micro_tesla) { повернути micro_tesla * 0.01f; }
 
 class PX4Magnetometer
 {
@@ -59,8 +59,8 @@ public:
 
 	void update(const hrt_abstime &timestamp_sample, float x, float y, float z);
 
-	int get_instance() { return _sensor_pub.get_instance(); };
-	uint32_t get_device_id() const { return _device_id; }
+	ціле get_instance() { повернути _sensor_pub.get_instance(); };
+	uint32_t get_device_id() const { повернути _device_id; }
 
 private:
 	uORB::PublicationMulti<sensor_mag_s> _sensor_pub{ORB_ID(sensor_mag)};

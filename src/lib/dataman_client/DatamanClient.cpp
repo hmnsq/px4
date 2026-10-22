@@ -44,10 +44,10 @@ DatamanClient::DatamanClient()
 	_dataman_request_pub.advertise();
 	_dataman_response_sub = orb_subscribe(ORB_ID(dataman_response));
 
-	if (!orb_sub_valid(_dataman_response_sub)) {
+	якщо (!orb_sub_valid(_dataman_response_sub)) {
 		PX4_ERR("Failed to subscribe (%i)", errno);
 
-	} else {
+	} інакше {
 		// make sure we don't get any stale response by doing an orb_copy
 		dataman_response_s response{};
 		orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
@@ -64,11 +64,11 @@ DatamanClient::DatamanClient()
 
 		bool success = syncHandler(request, response, timestamp, 1000_ms);
 
-		if (success && (response.client_id > CLIENT_ID_NOT_SET)) {
+		якщо (success && (response.client_id > CLIENT_ID_NOT_SET)) {
 
 			_client_id = response.client_id;
 
-		} else {
+		} інакше {
 			PX4_ERR("Failed to get client ID!");
 		}
 	}
@@ -78,7 +78,7 @@ DatamanClient::~DatamanClient()
 {
 	perf_free(_sync_perf);
 
-	if (orb_sub_valid(_dataman_response_sub)) {
+	якщо (orb_sub_valid(_dataman_response_sub)) {
 		orb_unsubscribe(_dataman_response_sub);
 	}
 }
@@ -94,41 +94,41 @@ bool DatamanClient::syncHandler(const dataman_request_s &request, dataman_respon
 
 	_dataman_request_pub.publish(request);
 
-	while (!response_received && (time_elapsed < timeout)) {
+	поки (!response_received && (time_elapsed < timeout)) {
 
 		uint32_t timeout_ms = 100;
 		ret = px4_poll(&_fds, 1, timeout_ms);
 
-		if (ret < 0) {
+		якщо (ret < 0) {
 			PX4_ERR("px4_poll returned error: %" PRIu32, ret);
 			break;
 
-		} else if (ret == 0) {
+		} інакше якщо (ret == 0) {
 
 			// No response received, send new request
 			_dataman_request_pub.publish(request);
 
-		} else {
+		} інакше {
 
 			bool updated = false;
 			orb_check(_dataman_response_sub, &updated);
 
-			if (updated) {
+			якщо (updated) {
 				orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
 
-				if (response.client_id == request.client_id) {
+				якщо (response.client_id == request.client_id) {
 
-					if ((response.request_type == request.request_type) &&
+					якщо ((response.request_type == request.request_type) &&
 					    (response.item == request.item) &&
 					    (response.index == request.index)) {
 						response_received = true;
 						break;
 					}
 
-				} else if (request.client_id == CLIENT_ID_NOT_SET) {
+				} інакше якщо (request.client_id == CLIENT_ID_NOT_SET) {
 
 					// validate timestamp from response.data
-					if (0 == memcmp(&(request.timestamp), &(response.data), sizeof(hrt_abstime))) {
+					якщо (0 == memcmp(&(request.timestamp), &(response.data), sizeof(hrt_abstime))) {
 						response_received = true;
 						break;
 					}
@@ -141,22 +141,22 @@ bool DatamanClient::syncHandler(const dataman_request_s &request, dataman_respon
 
 	perf_end(_sync_perf);
 
-	if (!response_received && ret >= 0) {
+	якщо (!response_received && ret >= 0) {
 		PX4_ERR("timeout after %" PRIu32 " ms!", static_cast<uint32_t>(timeout / 1000));
 	}
 
-	return response_received;
+	повернути response_received;
 }
 
 bool DatamanClient::readSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	якщо (_client_id == CLIENT_ID_NOT_SET) {
+		повернути false;
 	}
 
-	if (length > g_per_item_size[item]) {
+	якщо (length > g_per_item_size[item]) {
 		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+		повернути false;
 	}
 
 	hrt_abstime timestamp = hrt_absolute_time();
@@ -172,31 +172,31 @@ bool DatamanClient::readSync(dm_item_t item, uint32_t index, uint8_t *buffer, ui
 	dataman_response_s response{};
 	bool success = syncHandler(request, response, timestamp, timeout);
 
-	if (success) {
+	якщо (success) {
 
-		if (response.status != dataman_response_s::STATUS_SUCCESS) {
+		якщо (response.status != dataman_response_s::STATUS_SUCCESS) {
 
 			success = false;
 			PX4_ERR("readSync failed! status=%" PRIu8 ", item=%" PRIu8 ", index=%" PRIu32 ", length=%" PRIu32,
 				response.status, static_cast<uint8_t>(item), index, length);
 
-		} else {
+		} інакше {
 			memcpy(buffer, response.data, length);
 		}
 	}
 
-	return success;
+	повернути success;
 }
 
 bool DatamanClient::writeSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	якщо (_client_id == CLIENT_ID_NOT_SET) {
+		повернути false;
 	}
 
-	if (length > g_per_item_size[item]) {
+	якщо (length > g_per_item_size[item]) {
 		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+		повернути false;
 	}
 
 	hrt_abstime timestamp = hrt_absolute_time();
@@ -214,9 +214,9 @@ bool DatamanClient::writeSync(dm_item_t item, uint32_t index, uint8_t *buffer, u
 	dataman_response_s response{};
 	bool success = syncHandler(request, response, timestamp, timeout);
 
-	if (success) {
+	якщо (success) {
 
-		if (response.status != dataman_response_s::STATUS_SUCCESS) {
+		якщо (response.status != dataman_response_s::STATUS_SUCCESS) {
 
 			success = false;
 			PX4_ERR("writeSync failed! status=%" PRIu8 ", item=%" PRIu8 ", index=%" PRIu32 ", length=%" PRIu32,
@@ -224,13 +224,13 @@ bool DatamanClient::writeSync(dm_item_t item, uint32_t index, uint8_t *buffer, u
 		}
 	}
 
-	return success;
+	повернути success;
 }
 
 bool DatamanClient::clearSync(dm_item_t item, hrt_abstime timeout)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	якщо (_client_id == CLIENT_ID_NOT_SET) {
+		повернути false;
 	}
 
 	hrt_abstime timestamp = hrt_absolute_time();
@@ -244,9 +244,9 @@ bool DatamanClient::clearSync(dm_item_t item, hrt_abstime timeout)
 	dataman_response_s response{};
 	bool success = syncHandler(request, response, timestamp, timeout);
 
-	if (success) {
+	якщо (success) {
 
-		if (response.status != dataman_response_s::STATUS_SUCCESS) {
+		якщо (response.status != dataman_response_s::STATUS_SUCCESS) {
 
 			success = false;
 			PX4_ERR("clearSync failed! status=%" PRIu8 ", item=%" PRIu8,
@@ -254,13 +254,13 @@ bool DatamanClient::clearSync(dm_item_t item, hrt_abstime timeout)
 		}
 	}
 
-	return success;
+	повернути success;
 }
 
 void DatamanClient::clearPendingResponse()
 {
-	if (_dataman_response_sub < 0) {
-		return;
+	якщо (_dataman_response_sub < 0) {
+		повернути;
 	}
 
 	// Drain queued replies first so a response from an aborted or timed-out
@@ -268,7 +268,7 @@ void DatamanClient::clearPendingResponse()
 	bool updated = false;
 	orb_check(_dataman_response_sub, &updated);
 
-	while (updated) {
+	поки (updated) {
 		dataman_response_s response{};
 		orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
 		orb_check(_dataman_response_sub, &updated);
@@ -277,18 +277,18 @@ void DatamanClient::clearPendingResponse()
 
 bool DatamanClient::readAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	якщо (_client_id == CLIENT_ID_NOT_SET) {
+		повернути false;
 	}
 
-	if (length > g_per_item_size[item]) {
+	якщо (length > g_per_item_size[item]) {
 		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+		повернути false;
 	}
 
 	bool success = false;
 
-	if (_state == State::Idle) {
+	якщо (_state == State::Idle) {
 		// Drop any queued stale replies before publishing a fresh async request.
 		clearPendingResponse();
 
@@ -316,23 +316,23 @@ bool DatamanClient::readAsync(dm_item_t item, uint32_t index, uint8_t *buffer, u
 		success = true;
 	}
 
-	return success;
+	повернути success;
 }
 
 bool DatamanClient::writeAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	якщо (_client_id == CLIENT_ID_NOT_SET) {
+		повернути false;
 	}
 
-	if (length > g_per_item_size[item]) {
+	якщо (length > g_per_item_size[item]) {
 		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+		повернути false;
 	}
 
 	bool success = false;
 
-	if (_state == State::Idle) {
+	якщо (_state == State::Idle) {
 		// Drop any queued stale replies before publishing a fresh async request.
 		clearPendingResponse();
 
@@ -362,18 +362,18 @@ bool DatamanClient::writeAsync(dm_item_t item, uint32_t index, uint8_t *buffer, 
 		success = true;
 	}
 
-	return success;
+	повернути success;
 }
 
 bool DatamanClient::clearAsync(dm_item_t item)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	якщо (_client_id == CLIENT_ID_NOT_SET) {
+		повернути false;
 	}
 
 	bool success = false;
 
-	if (_state == State::Idle) {
+	якщо (_state == State::Idle) {
 		// Drop any queued stale replies before publishing a fresh async request.
 		clearPendingResponse();
 
@@ -397,33 +397,33 @@ bool DatamanClient::clearAsync(dm_item_t item)
 		success = true;
 	}
 
-	return success;
+	повернути success;
 }
 
 void DatamanClient::update()
 {
-	if (_state == State::RequestSent) {
+	якщо (_state == State::RequestSent) {
 
 		bool updated = false;
 		orb_check(_dataman_response_sub, &updated);
 
 		dataman_response_s response;
 
-		if (updated) {
+		якщо (updated) {
 			orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
 
-			if ((response.client_id == _client_id) &&
+			якщо ((response.client_id == _client_id) &&
 			    (response.request_type == _active_request.request_type) &&
 			    (response.item == _active_request.item) &&
 			    (response.index == _active_request.index)) {
 
-				if (response.request_type == DM_READ) {
+				якщо (response.request_type == DM_READ) {
 					memcpy(_active_request.buffer, response.data, _active_request.length);
 				}
 
 				_response_status = response.status;
 
-				if (_response_status != dataman_response_s::STATUS_SUCCESS) {
+				якщо (_response_status != dataman_response_s::STATUS_SUCCESS) {
 
 					PX4_ERR("Async request type %" PRIu8 " failed! status=%" PRIu8 " item=%" PRIu8 " index=%" PRIu32,
 						response.request_type, response.status, static_cast<uint8_t>(_active_request.item), _active_request.index);
@@ -433,10 +433,10 @@ void DatamanClient::update()
 			}
 		}
 
-		if (_state == State::RequestSent) {
+		якщо (_state == State::RequestSent) {
 
 			/* Retry the request if there is no answer */
-			if (((_active_request.request_type != DM_CLEAR) && (hrt_elapsed_time(&_active_request.timestamp) > 100_ms)) ||
+			якщо (((_active_request.request_type != DM_CLEAR) && (hrt_elapsed_time(&_active_request.timestamp) > 100_ms)) ||
 			    (hrt_elapsed_time(&_active_request.timestamp) > 1000_ms)
 			   ) {
 
@@ -452,7 +452,7 @@ void DatamanClient::update()
 				request.request_type = static_cast<uint8_t>(_active_request.request_type);
 				request.item = static_cast<uint8_t>(_active_request.item);
 
-				if (_active_request.request_type == DM_WRITE) {
+				якщо (_active_request.request_type == DM_WRITE) {
 					memcpy(request.data, _active_request.buffer, _active_request.length);
 				}
 
@@ -469,9 +469,9 @@ bool DatamanClient::lastOperationCompleted(bool &success)
 	bool completed = false;
 	success = false;
 
-	if (_state == State::ResponseReceived) {
+	якщо (_state == State::ResponseReceived) {
 
-		if (_response_status == dataman_response_s::STATUS_SUCCESS) {
+		якщо (_response_status == dataman_response_s::STATUS_SUCCESS) {
 			success = true;
 		}
 
@@ -479,7 +479,7 @@ bool DatamanClient::lastOperationCompleted(bool &success)
 		completed = true;
 	}
 
-	return completed;
+	повернути completed;
 }
 
 void DatamanClient::abortCurrentOperation()
@@ -490,16 +490,16 @@ void DatamanClient::abortCurrentOperation()
 DatamanCache::DatamanCache(const char *cache_miss_perf_counter_name, uint32_t num_items)
 	: _cache_miss_perf(perf_alloc(PC_COUNT, cache_miss_perf_counter_name))
 {
-	if (num_items == 0) {
-		return;
+	якщо (num_items == 0) {
+		повернути;
 	}
 
 	_items = new Item[num_items] {};
 
-	if (_items != nullptr) {
+	якщо (_items != nullptr) {
 		_num_items = num_items;
 
-	} else {
+	} інакше {
 		PX4_ERR("alloc failed");
 	}
 }
@@ -513,27 +513,27 @@ DatamanCache::~DatamanCache()
 
 void DatamanCache::resize(uint32_t num_items)
 {
-	if (num_items == 0) {
+	якщо (num_items == 0) {
 		// Allow callers to explicitly disable caching while leaving the DatamanClient usable.
 		_client.abortCurrentOperation();
 		delete[] _items;
 		_items = nullptr;
 		resetCacheState();
 		_num_items = 0;
-		return;
+		повернути;
 	}
 
 	Item *new_items = new Item[num_items] {};
 
-	if (new_items != nullptr) {
+	якщо (new_items != nullptr) {
 		_client.abortCurrentOperation();
 
 		uint32_t num_min = num_items < _num_items ? num_items : _num_items;
 
-		for (uint32_t i = 0; i < num_min; ++i) {
+		для (uint32_t i = 0; i < num_min; ++i) {
 			new_items[i] = _items[i];
 
-			if (new_items[i].cache_state == State::RequestSent) {
+			якщо (new_items[i].cache_state == State::RequestSent) {
 				new_items[i].cache_state = State::RequestPrepared;
 			}
 		}
@@ -547,24 +547,24 @@ void DatamanCache::resize(uint32_t num_items)
 		_update_index = (_update_index < _num_items) ? _update_index : 0;
 		_item_counter = (_item_counter < _num_items) ? _item_counter : _num_items;
 
-	} else {
+	} інакше {
 		PX4_ERR("alloc failed");
 	}
 }
 
 bool DatamanCache::load(dm_item_t item, uint32_t index)
 {
-	if (!_items) {
-		return false;
+	якщо (!_items) {
+		повернути false;
 	}
 
 	bool success = false;
 	bool duplicate = false;
 
 	//Prevent duplicates
-	for (uint32_t i = 0; i < _num_items; ++i) {
+	для (uint32_t i = 0; i < _num_items; ++i) {
 
-		if (_items[i].cache_state != State::Idle &&
+		якщо (_items[i].cache_state != State::Idle &&
 		    _items[i].cache_state != State::Error &&
 		    _items[i].response.item == item &&
 		    _items[i].response.index == index) {
@@ -573,7 +573,7 @@ bool DatamanCache::load(dm_item_t item, uint32_t index)
 		}
 	}
 
-	if (!duplicate && (_item_counter < _num_items)) {
+	якщо (!duplicate && (_item_counter < _num_items)) {
 
 		_items[_load_index].cache_state = State::RequestPrepared;
 		_items[_load_index].response.item = item;
@@ -586,26 +586,26 @@ bool DatamanCache::load(dm_item_t item, uint32_t index)
 		success = true;
 	}
 
-	return success;
+	повернути success;
 }
 
 bool DatamanCache::loadWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
 {
-	if (length > g_per_item_size[item]) {
+	якщо (length > g_per_item_size[item]) {
 		PX4_ERR("Length %" PRIu32 " can't fit in data size for item %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+		повернути false;
 	}
 
 	bool success = false;
 	bool item_found = false;
 
-	if (_items) {
-		for (uint32_t i = 0; i < _num_items; ++i) {
-			if ((_items[i].response.item == item) &&
+	якщо (_items) {
+		для (uint32_t i = 0; i < _num_items; ++i) {
+			якщо ((_items[i].response.item == item) &&
 			    (_items[i].response.index == index)) {
 				item_found = true;
 
-				if (_items[i].cache_state == State::ResponseReceived) {
+				якщо (_items[i].cache_state == State::ResponseReceived) {
 					memcpy(buffer, _items[i].response.data, length);
 					success = true;
 					break;
@@ -614,15 +614,15 @@ bool DatamanCache::loadWait(dm_item_t item, uint32_t index, uint8_t *buffer, uin
 		}
 	}
 
-	if (!success) {
+	якщо (!success) {
 		perf_count(_cache_miss_perf);
 	}
 
-	if (!success && (timeout > 0)) {
+	якщо (!success && (timeout > 0)) {
 		success = _client.readSync(item, index, buffer, length, timeout);
 
 		// Cache the item if not found already (it could be in the process of being loaded)
-		if (success && !item_found && _items && (_item_counter < _num_items)) {
+		якщо (success && !item_found && _items && (_item_counter < _num_items)) {
 			_items[_load_index].cache_state = State::ResponseReceived;
 			_items[_load_index].response.item = item;
 			_items[_load_index].response.index = index;
@@ -634,21 +634,21 @@ bool DatamanCache::loadWait(dm_item_t item, uint32_t index, uint8_t *buffer, uin
 		}
 	}
 
-	return success;
+	повернути success;
 }
 
 bool DatamanCache::writeWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
 {
-	if (length > g_per_item_size[item]) {
+	якщо (length > g_per_item_size[item]) {
 		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+		повернути false;
 	}
 
 	bool success = _client.writeSync(item, index, buffer, length, timeout);
 
-	if (success && _items) {
-		for (uint32_t i = 0; i < _num_items; ++i) {
-			if ((_items[i].response.item == item) &&
+	якщо (success && _items) {
+		для (uint32_t i = 0; i < _num_items; ++i) {
+			якщо ((_items[i].response.item == item) &&
 			    (_items[i].response.index == index) &&
 			    ((_items[i].cache_state == State::ResponseReceived) ||
 			     (_items[i].cache_state == State::RequestPrepared))) {
@@ -660,37 +660,37 @@ bool DatamanCache::writeWait(dm_item_t item, uint32_t index, uint8_t *buffer, ui
 		}
 	}
 
-	return success;
+	повернути success;
 }
 
 bool DatamanCache::updateCachedItem(dm_item_t item, uint32_t index, const uint8_t *buffer, uint32_t length)
 {
-	if (!_items || buffer == nullptr || _num_items == 0) {
-		return false;
+	якщо (!_items || buffer == nullptr || _num_items == 0) {
+		повернути false;
 	}
 
-	if (length > g_per_item_size[item]) {
+	якщо (length > g_per_item_size[item]) {
 		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+		повернути false;
 	}
 
 	// Only patch data that is fully received and stable. Slots in other states are skipped:
 	// an in-flight async read will fetch the new SD card data shortly anyway, and invalidated
 	// slots can still carry a stale key match for the same item/index.
-	for (uint32_t i = 0; i < _num_items; ++i) {
-		if ((_items[i].response.item == item) && (_items[i].response.index == index)
+	для (uint32_t i = 0; i < _num_items; ++i) {
+		якщо ((_items[i].response.item == item) && (_items[i].response.index == index)
 		    && (_items[i].cache_state == State::ResponseReceived)) {
 			memcpy(_items[i].response.data, buffer, length);
-			return true;
+			повернути true;
 		}
 	}
 
-	return false;
+	повернути false;
 }
 
 void DatamanCache::update()
 {
-	if (_item_counter > 0) {
+	якщо (_item_counter > 0) {
 
 		_client.update();
 
@@ -713,10 +713,10 @@ void DatamanCache::update()
 						    _items[_update_index].response.data,
 						    g_per_item_size[_items[_update_index].response.item]);
 
-			if (success) {
+			якщо (success) {
 				_items[_update_index].cache_state = State::RequestSent;
 
-			} else {
+			} інакше {
 				_items[_update_index].cache_state = State::Error;
 			}
 
@@ -724,14 +724,14 @@ void DatamanCache::update()
 
 		case State::RequestSent:
 
-			if (_client.lastOperationCompleted(response_success)) {
+			якщо (_client.lastOperationCompleted(response_success)) {
 
-				if (response_success) {
+				якщо (response_success) {
 
 					_items[_update_index].cache_state = State::ResponseReceived;
 					changeUpdateIndex();
 
-				} else {
+				} інакше {
 					_items[_update_index].cache_state = State::Error;
 				}
 			}
@@ -743,7 +743,7 @@ void DatamanCache::update()
 			break;
 		}
 
-		if (_items[_update_index].cache_state == State::Error) {
+		якщо (_items[_update_index].cache_state == State::Error) {
 			PX4_ERR("Caching: item %" PRIu8 ", index %" PRIu32", status %" PRIu8,
 				_items[_update_index].response.item, _items[_update_index].response.index,
 				_items[_update_index].response.status);
@@ -763,7 +763,7 @@ void DatamanCache::resetCacheState()
 
 void DatamanCache::invalidate()
 {
-	for (uint32_t i = 0; i < _num_items; ++i) {
+	для (uint32_t i = 0; i < _num_items; ++i) {
 		_items[i].cache_state = State::Idle;
 	}
 
@@ -773,15 +773,15 @@ void DatamanCache::invalidate()
 
 inline void DatamanCache::changeUpdateIndex()
 {
-	if (_num_items == 0) {
+	якщо (_num_items == 0) {
 		_update_index = 0;
 		_item_counter = 0;
-		return;
+		повернути;
 	}
 
 	_update_index = (_update_index + 1) % _num_items;
 
-	if (_item_counter > 0) {
+	якщо (_item_counter > 0) {
 		--_item_counter;
 	}
 }

@@ -115,7 +115,7 @@ public:
 	void renormalize()
 	{
 		// renormalize rows
-		for (size_t r = 0; r < 2; r++) {
+		для (size_t r = 0; r < 2; r++) {
 			Vector2<Type> rvec(Matrix<Type, 1, 2>(this->row(r)).transpose());
 			this->row(r) = rvec.normalized();
 		}

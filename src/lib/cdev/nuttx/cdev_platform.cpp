@@ -54,13 +54,13 @@ namespace cdev
  * The standard NuttX operation dispatch table can't call C++ member functions
  * directly, so we have to bounce them through this dispatch table.
  */
-static int	cdev_open(file_t *filp);
-static int	cdev_close(file_t *filp);
+static ціле	cdev_open(file_t *filp);
+static ціле	cdev_close(file_t *filp);
 static ssize_t	cdev_read(file_t *filp, char *buffer, size_t buflen);
 static ssize_t	cdev_write(file_t *filp, const char *buffer, size_t buflen);
-static off_t	cdev_seek(file_t *filp, off_t offset, int whence);
-static int	cdev_ioctl(file_t *filp, int cmd, unsigned long arg);
-static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
+static off_t	cdev_seek(file_t *filp, off_t offset, ціле whence);
+static ціле	cdev_ioctl(file_t *filp, ціле cmd, unsigned long arg);
+static ціле	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
 
 /**
  * Character device indirection table.
@@ -84,86 +84,86 @@ unlink	: nullptr
 #endif
 };
 
-const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { return g_fops; }
+const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { повернути g_fops; }
 
-static int
+static ціле
 cdev_open(file_t *filp)
 {
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->open(filp);
+	повернути cdev->open(filp);
 }
 
-static int
+static ціле
 cdev_close(file_t *filp)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	якщо ((filp->f_inode->i_crefs) == 0) {
+		повернути -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->close(filp);
+	повернути cdev->close(filp);
 }
 
 static ssize_t
 cdev_read(file_t *filp, char *buffer, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	якщо ((filp->f_inode->i_crefs) == 0) {
+		повернути -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->read(filp, buffer, buflen);
+	повернути cdev->read(filp, buffer, buflen);
 }
 
 static ssize_t
 cdev_write(file_t *filp, const char *buffer, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	якщо ((filp->f_inode->i_crefs) == 0) {
+		повернути -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->write(filp, buffer, buflen);
+	повернути cdev->write(filp, buffer, buflen);
 }
 
 static off_t
-cdev_seek(file_t *filp, off_t offset, int whence)
+cdev_seek(file_t *filp, off_t offset, ціле whence)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	якщо ((filp->f_inode->i_crefs) == 0) {
+		повернути -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->seek(filp, offset, whence);
+	повернути cdev->seek(filp, offset, whence);
 }
 
-static int
-cdev_ioctl(file_t *filp, int cmd, unsigned long arg)
+static ціле
+cdev_ioctl(file_t *filp, ціле cmd, unsigned long arg)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	якщо ((filp->f_inode->i_crefs) == 0) {
+		повернути -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->ioctl(filp, cmd, arg);
+	повернути cdev->ioctl(filp, cmd, arg);
 }
 
-static int
+static ціле
 cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	якщо ((filp->f_inode->i_crefs) == 0) {
+		повернути -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->poll(filp, fds, setup);
+	повернути cdev->poll(filp, fds, setup);
 }
 
 } // namespace cdev

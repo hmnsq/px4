@@ -132,14 +132,14 @@ __BEGIN_DECLS
 
 __EXPORT void F_unlock(void);
 __EXPORT void F_lock(void);
-__EXPORT int val_read(void *dest, volatile const void *src, int bytes);
-__EXPORT int val_write(volatile void *dest, const void *src, int bytes);
-__EXPORT int write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, char *signature);
-__EXPORT int lock_otp(void);
+__EXPORT ціле val_read(void *dest, volatile const void *src, ціле bytes);
+__EXPORT ціле val_write(volatile void *dest, const void *src, ціле bytes);
+__EXPORT ціле write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, char *signature);
+__EXPORT ціле lock_otp(void);
 
 
-__EXPORT int F_write_byte(unsigned long Address, uint8_t Data);
-__EXPORT int F_write_word(unsigned long Address, uint32_t Data);
+__EXPORT ціле F_write_byte(unsigned long Address, uint8_t Data);
+__EXPORT ціле F_write_word(unsigned long Address, uint32_t Data);
 
 __END_DECLS
 

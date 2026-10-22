@@ -104,13 +104,13 @@ public:
 	 */
 	uint64_t sync_stamp(uint64_t usec);
 
-	int64_t offset() const { return (int64_t)_time_offset; }
+	int64_t offset() const { повернути (int64_t)_time_offset; }
 
 	/**
 	 * Return true if the timesync algorithm converged to a good estimate,
 	 * return false otherwise
 	 */
-	bool sync_converged() const { return _sequence >= CONVERGENCE_WINDOW; }
+	bool sync_converged() const { повернути _sequence >= CONVERGENCE_WINDOW; }
 
 	/**
 	 * Reset the exponential filter and its states

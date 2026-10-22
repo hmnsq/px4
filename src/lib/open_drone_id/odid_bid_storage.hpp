@@ -60,7 +60,7 @@ struct BidLockInfo {
 	BidLockState state{BidLockState::Unsupported};
 	UasId id{};
 
-	bool locked() const { return state == BidLockState::Locked; }
+	bool locked() const { повернути state == BidLockState::Locked; }
 };
 
 enum class BidStoreResult {

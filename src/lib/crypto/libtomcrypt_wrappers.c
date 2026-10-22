@@ -38,7 +38,7 @@ unsigned long rng_get_bytes(unsigned char *out,
 			    unsigned long outlen,
 			    void (*callback)(void))
 {
-	return px4_get_secure_random((uint8_t *)out, (size_t)outlen);
+	повернути px4_get_secure_random((uint8_t *)out, (size_t)outlen);
 }
 
 void libtomcrypt_init(void)

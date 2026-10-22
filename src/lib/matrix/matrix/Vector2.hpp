@@ -53,7 +53,7 @@ public:
 	Type cross(const Matrix21 &b) const
 	{
 		const Vector2 &a(*this);
-		return a(0) * b(1, 0) - a(1) * b(0, 0);
+		повернути a(0) * b(1, 0) - a(1) * b(0, 0);
 	}
 
 	/**
@@ -62,42 +62,42 @@ public:
 
 	Vector2 operator+(Vector2 other) const
 	{
-		return Matrix21::operator+(other);
+		повернути Matrix21::operator+(other);
 	}
 
 	Vector2 operator+(Type scalar) const
 	{
-		return Matrix21::operator+(scalar);
+		повернути Matrix21::operator+(scalar);
 	}
 
 	Vector2 operator-(Vector2 other) const
 	{
-		return Matrix21::operator-(other);
+		повернути Matrix21::operator-(other);
 	}
 
 	Vector2 operator-(Type scalar) const
 	{
-		return Matrix21::operator-(scalar);
+		повернути Matrix21::operator-(scalar);
 	}
 
 	Vector2 operator-() const
 	{
-		return Matrix21::operator-();
+		повернути Matrix21::operator-();
 	}
 
 	Vector2 operator*(Type scalar) const
 	{
-		return Matrix21::operator*(scalar);
+		повернути Matrix21::operator*(scalar);
 	}
 
 	Type operator*(Vector2 b) const
 	{
-		return Vector<Type, 2>::operator*(b);
+		повернути Vector<Type, 2>::operator*(b);
 	}
 
 	Type operator%(const Matrix21 &b) const
 	{
-		return (*this).cross(b);
+		повернути (*this).cross(b);
 	}
 
 };

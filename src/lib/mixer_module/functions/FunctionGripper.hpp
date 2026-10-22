@@ -44,24 +44,24 @@ class FunctionGripper : public FunctionProviderBase
 {
 public:
 	FunctionGripper() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGripper(); }
+	static FunctionProviderBase *allocate(const Context &context) { повернути new FunctionGripper(); }
 
 	void update() override
 	{
 		gripper_s gripper;
 
-		if (_gripper_sub.update(&gripper)) {
-			if (gripper.command == gripper_s::COMMAND_RELEASE) {
+		якщо (_gripper_sub.update(&gripper)) {
+			якщо (gripper.command == gripper_s::COMMAND_RELEASE) {
 				_data = -1.f; // Minimum command for release
 
-			} else if (gripper.command == gripper_s::COMMAND_GRAB) {
+			} інакше якщо (gripper.command == gripper_s::COMMAND_GRAB) {
 				_data = 1.f; // Maximum command for grab
 
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	float value(OutputFunction func) override { повернути _data; }
 
 private:
 	uORB::Subscription _gripper_sub{ORB_ID(gripper)};

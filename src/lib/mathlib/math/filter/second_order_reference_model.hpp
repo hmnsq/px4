@@ -89,7 +89,7 @@ public:
 	 */
 	bool setParameters(const float natural_freq, const float damping_ratio)
 	{
-		if (natural_freq < FLT_EPSILON || damping_ratio < FLT_EPSILON) {
+		якщо (natural_freq < FLT_EPSILON || damping_ratio < FLT_EPSILON) {
 
 			// Deadzone the resulting constants (will result in zero filter acceleration)
 			spring_constant_ = FLT_EPSILON;
@@ -100,7 +100,7 @@ public:
 			max_time_step_ = INFINITY;
 
 			// Fail
-			return false;
+			повернути false;
 		}
 
 		// Note these are "effective" coefficients, as mass coefficient is considered baked in
@@ -112,23 +112,23 @@ public:
 		// Based on *conservative nyquist frequency via kSampleRateMultiplier >= 2
 		max_time_step_ = 2.0f * M_PI_F / (cutoff_freq_ * kSampleRateMultiplier);
 
-		return true;
+		повернути true;
 	}
 
 	/**
 	 * @return System state [units]
 	 */
-	const T &getState() const { return filter_state_; }
+	const T &getState() const { повернути filter_state_; }
 
 	/**
 	 * @return System rate [units/s]
 	 */
-	const T &getRate() const { return filter_rate_; }
+	const T &getRate() const { повернути filter_rate_; }
 
 	/**
 	 * @return System acceleration [units/s^2]
 	 */
-	const T &getAccel() const { return filter_accel_; }
+	const T &getAccel() const { повернути filter_accel_; }
 
 	/**
 	 * Update the system states
@@ -141,10 +141,10 @@ public:
 	 */
 	void update(const float time_step, const T &state_sample, const T &rate_sample = T())
 	{
-		if ((time_step > max_time_step_) || (time_step < 0.0f)) {
+		якщо ((time_step > max_time_step_) || (time_step < 0.0f)) {
 			// time step is too large or is negative, reset the filter
 			reset(state_sample, rate_sample);
-			return;
+			повернути;
 		}
 
 		// take a step forward from the last state (and input), update the filter states
@@ -213,7 +213,7 @@ private:
 	float calculateCutoffFrequency(const float natural_freq, const float damping_ratio)
 	{
 		const float damping_ratio_squared = damping_ratio * damping_ratio;
-		return natural_freq * sqrtf(1.0f - 2.0f * damping_ratio_squared + sqrtf(4.0f * damping_ratio_squared *
+		повернути natural_freq * sqrtf(1.0f - 2.0f * damping_ratio_squared + sqrtf(4.0f * damping_ratio_squared *
 					    damping_ratio_squared - 4.0f * damping_ratio_squared + 2.0f));
 	}
 
@@ -355,7 +355,7 @@ private:
 	{
 		const T state_error = state_sample - filter_state_;
 		const T rate_error = rate_sample - filter_rate_;
-		return state_error * spring_constant_ + rate_error * damping_coefficient_;
+		повернути state_error * spring_constant_ + rate_error * damping_coefficient_;
 	}
 };
 

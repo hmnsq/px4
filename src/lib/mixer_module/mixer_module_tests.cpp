@@ -44,18 +44,18 @@
 
 #include "mixer_module.hpp"
 
-#if defined(CONFIG_ARCH_BOARD_PX4_SITL)
+#якщо defined(CONFIG_ARCH_BOARD_PX4_SITL)
 #define PARAM_PREFIX "PWM_MAIN"
-#else
+#інакше
 #define PARAM_PREFIX "HIL_ACT"
 #endif
 
-static constexpr int MAX_NUM_OUTPUTS = 8;
-static constexpr int DISARMED_VALUE = 900;
-static constexpr int FAILSAFE_VALUE = 800;
-static constexpr int MIN_VALUE = 1000;
-static constexpr int CENTER_VALUE = 1500;
-static constexpr int MAX_VALUE = 2000;
+static constexpr ціле MAX_NUM_OUTPUTS = 8;
+static constexpr ціле DISARMED_VALUE = 900;
+static constexpr ціле FAILSAFE_VALUE = 800;
+static constexpr ціле MIN_VALUE = 1000;
+static constexpr ціле CENTER_VALUE = 1500;
+static constexpr ціле MAX_VALUE = 2000;
 
 class MixerModuleTest : public ::testing::Test
 {
@@ -65,14 +65,14 @@ public:
 		param_control_autosave(false);
 	}
 
-	int update(MixingOutput &mixing_output)
+	ціле update(MixingOutput &mixing_output)
 	{
 		mixing_output.update();
 		// make sure output_limit switches to ON (if outputs enabled)
 		px4_usleep(50000 * 2);
 		mixing_output.update();
 		mixing_output.update();
-		return 3; // expected number of output updates
+		повернути 3; // expected number of output updates
 	}
 
 };
@@ -100,7 +100,7 @@ public:
 		memcpy(outputs, outputs_, sizeof(outputs));
 		num_outputs = num_outputs_;
 		++num_updates;
-		return true;
+		повернути true;
 	}
 
 	void mixerChanged() override
@@ -110,7 +110,7 @@ public:
 
 	void configureFunctions(const std::array<int32_t, MAX_NUM_OUTPUTS> &functions)
 	{
-		for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
+		для (ціле i = 0; i < MAX_NUM_OUTPUTS; ++i) {
 			char buffer[17];
 
 			snprintf(buffer, sizeof(buffer), "%s_FUNC%u", PARAM_PREFIX, i + 1);
@@ -126,7 +126,7 @@ public:
 		actuator_motors.timestamp = hrt_absolute_time();
 		actuator_motors.reversible_flags = reversible;
 
-		for (unsigned i = 0; i < motors.size(); ++i) {
+		для (unsigned i = 0; i < motors.size(); ++i) {
 			actuator_motors.control[i] = motors[i];
 		}
 
@@ -138,14 +138,14 @@ public:
 		actuator_servos_s actuator_servos{};
 		actuator_servos.timestamp = hrt_absolute_time();
 
-		for (unsigned i = 0; i < servos.size(); ++i) {
+		для (unsigned i = 0; i < servos.size(); ++i) {
 			actuator_servos.control[i] = servos[i];
 		}
 
 		_actuator_servos_pub.publish(actuator_servos);
 	}
 
-	void sendActuatorMotorTest(int function, float value, bool release_control)
+	void sendActuatorMotorTest(ціле function, float value, bool release_control)
 	{
 		actuator_test_s actuator_test{};
 		actuator_test.timestamp = hrt_absolute_time();
@@ -176,8 +176,8 @@ public:
 	}
 
 	float outputs[MAX_ACTUATORS] {};
-	int num_outputs{0};
-	int num_updates{0};
+	ціле num_outputs{0};
+	ціле num_updates{0};
 	bool was_scheduled{false};
 	bool mixer_changed{false};
 
@@ -212,13 +212,13 @@ TEST_F(MixerModuleTest, basic)
 	test_module.reset();
 
 	// configure motor, ensure all still disarmed
-	test_module.configureFunctions({(int)OutputFunction::Motor1});
+	test_module.configureFunctions({(ціле)OutputFunction::Motor1});
 	mixing_output.updateSubscriptions(false);
 	EXPECT_TRUE(test_module.mixer_changed);
 	EXPECT_EQ(test_module.num_updates, update(mixing_output));
 	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
+	для (ціле i = 0; i < test_module.num_outputs; ++i) {
 		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
 	}
 
@@ -228,15 +228,15 @@ TEST_F(MixerModuleTest, basic)
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
 	test_module.configureFunctions({
 		0,
-		(int)OutputFunction::Motor3,
-		(int)OutputFunction::Motor1,
-		(int)OutputFunction::Motor5});
+		(ціле)OutputFunction::Motor3,
+		(ціле)OutputFunction::Motor1,
+		(ціле)OutputFunction::Motor5});
 
 	mixing_output.updateSubscriptions(false);
 	EXPECT_EQ(test_module.num_updates, update(mixing_output));
 	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
+	для (ціле i = 0; i < test_module.num_outputs; ++i) {
 		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
 	}
 
@@ -244,17 +244,17 @@ TEST_F(MixerModuleTest, basic)
 
 
 	// actuator test
-	test_module.sendActuatorMotorTest((int)OutputFunction::Motor5, 1.f, false);
+	test_module.sendActuatorMotorTest((ціле)OutputFunction::Motor5, 1.f, false);
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
 	mixing_output.updateSubscriptions(false);
 	EXPECT_EQ(test_module.num_updates, update(mixing_output));
 	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
-		if (i == 3) {
+	для (ціле i = 0; i < test_module.num_outputs; ++i) {
+		якщо (i == 3) {
 			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
 
-		} else {
+		} інакше {
 			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
 		}
 	}
@@ -262,13 +262,13 @@ TEST_F(MixerModuleTest, basic)
 	test_module.reset();
 
 	// stop
-	test_module.sendActuatorMotorTest((int)OutputFunction::Motor5, 0.f, true);
+	test_module.sendActuatorMotorTest((ціле)OutputFunction::Motor5, 0.f, true);
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
 	mixing_output.updateSubscriptions(false);
 	EXPECT_EQ(test_module.num_updates, update(mixing_output));
 	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
+	для (ціле i = 0; i < test_module.num_outputs; ++i) {
 		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
 	}
 
@@ -282,10 +282,10 @@ TEST_F(MixerModuleTest, arming)
 	OutputModuleTest test_module;
 	test_module.configureFunctions({
 		0,
-		(int)OutputFunction::Motor3,
-		(int)OutputFunction::Motor1,
-		(int)OutputFunction::Motor5,
-		(int)OutputFunction::Servo3});
+		(ціле)OutputFunction::Motor3,
+		(ціле)OutputFunction::Motor1,
+		(ціле)OutputFunction::Motor5,
+		(ціле)OutputFunction::Servo3});
 	MixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
 	mixing_output.setAllDisarmedValues(DISARMED_VALUE);
 	mixing_output.setAllFailsafeValues(FAILSAFE_VALUE);
@@ -301,7 +301,7 @@ TEST_F(MixerModuleTest, arming)
 	EXPECT_EQ(test_module.num_updates, update(mixing_output));
 	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
+	для (ціле i = 0; i < MAX_NUM_OUTPUTS; ++i) {
 		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
 	}
 
@@ -314,17 +314,17 @@ TEST_F(MixerModuleTest, arming)
 	EXPECT_EQ(test_module.num_updates, update(mixing_output));
 	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
+	для (ціле i = 0; i < MAX_NUM_OUTPUTS; ++i) {
+		якщо (i == 1) {
 			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.1f + MIN_VALUE);
 
-		} else if (i == 2) {
+		} інакше якщо (i == 2) {
 			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.5f + MIN_VALUE);
 
-		} else if (i == 3) {
+		} інакше якщо (i == 3) {
 			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
 
-		} else {
+		} інакше {
 			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
 		}
 	}
@@ -336,17 +336,17 @@ TEST_F(MixerModuleTest, arming)
 	mixing_output.updateSubscriptions(false);
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
+	для (ціле i = 0; i < MAX_NUM_OUTPUTS; ++i) {
+		якщо (i == 1) {
 			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.24f + MIN_VALUE);
 
-		} else if (i == 2) {
+		} інакше якщо (i == 2) {
 			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.9f + MIN_VALUE);
 
-		} else if (i == 3) {
+		} інакше якщо (i == 3) {
 			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
 
-		} else {
+		} інакше {
 			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
 		}
 	}
@@ -358,7 +358,7 @@ TEST_F(MixerModuleTest, arming)
 	test_module.sendMotors({0.5f, 1.f, 0.1f, 0.2f, 1.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
+	для (ціле i = 0; i < MAX_NUM_OUTPUTS; ++i) {
 		EXPECT_EQ(test_module.outputs[i], FAILSAFE_VALUE);
 	}
 
@@ -369,11 +369,11 @@ TEST_F(MixerModuleTest, arming)
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i >= 1 && i <= 3) {
+	для (ціле i = 0; i < MAX_NUM_OUTPUTS; ++i) {
+		якщо (i >= 1 && i <= 3) {
 			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
 
-		} else {
+		} інакше {
 			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
 		}
 	}
@@ -385,7 +385,7 @@ TEST_F(MixerModuleTest, arming)
 	test_module.sendMotors({0.5f, 1.f, 0.1f, 0.2f, 1.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
+	для (ціле i = 0; i < MAX_NUM_OUTPUTS; ++i) {
 		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
 	}
 
@@ -396,11 +396,11 @@ TEST_F(MixerModuleTest, arming)
 	test_module.sendMotors({0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i >= 1 && i <= 3) {
+	для (ціле i = 0; i < MAX_NUM_OUTPUTS; ++i) {
+		якщо (i >= 1 && i <= 3) {
 			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
 
-		} else {
+		} інакше {
 			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
 		}
 	}
@@ -413,17 +413,17 @@ TEST_F(MixerModuleTest, arming)
 	mixing_output.update();
 	EXPECT_EQ(mixing_output.reversibleOutputs(), 1u << 3);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
+	для (ціле i = 0; i < MAX_NUM_OUTPUTS; ++i) {
+		якщо (i == 1) {
 			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
 
-		} else if (i == 2) {
+		} інакше якщо (i == 2) {
 			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
 
-		} else if (i == 3) {
+		} інакше якщо (i == 3) {
 			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.5f + MIN_VALUE);
 
-		} else {
+		} інакше {
 			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
 		}
 	}
@@ -435,7 +435,7 @@ TEST_F(MixerModuleTest, arming)
 	test_module.sendMotors({0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 1.f}, 1u << 4);
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
+	для (ціле i = 0; i < MAX_NUM_OUTPUTS; ++i) {
 		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
 	}
 
@@ -448,8 +448,8 @@ TEST_F(MixerModuleTest, prearm)
 {
 	OutputModuleTest test_module;
 	test_module.configureFunctions({
-		(int)OutputFunction::Motor1,
-		(int)OutputFunction::Servo1});
+		(ціле)OutputFunction::Motor1,
+		(ціле)OutputFunction::Servo1});
 	MixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
 	mixing_output.setAllDisarmedValues(DISARMED_VALUE);
 	mixing_output.setAllFailsafeValues(FAILSAFE_VALUE);
@@ -465,11 +465,11 @@ TEST_F(MixerModuleTest, prearm)
 	EXPECT_EQ(test_module.num_updates, update(mixing_output));
 	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
+	для (ціле i = 0; i < MAX_NUM_OUTPUTS; ++i) {
+		якщо (i == 1) {
 			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
 
-		} else {
+		} інакше {
 			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
 		}
 	}
@@ -487,13 +487,13 @@ public:
 			 bool support_esc_calibration, bool ramp_up = true)
 		: MixingOutput(param_prefix, max_num_outputs, interface, scheduling_policy, support_esc_calibration, ramp_up)
 	{};
-	float output_limit_calc_single(int i, float value) const { return MixingOutput::output_limit_calc_single(i, value); }
+	float output_limit_calc_single(ціле i, float value) const { повернути MixingOutput::output_limit_calc_single(i, value); }
 };
 
 TEST_F(MixerModuleTest, OutputLimitCalcSingle)
 {
 	OutputModuleTest test_module;
-	test_module.configureFunctions({(int)OutputFunction::Motor1});
+	test_module.configureFunctions({(ціле)OutputFunction::Motor1});
 	TestMixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
 
 	mixing_output.setAllMinValues(MIN_VALUE); // default range [1000,2000]

@@ -64,17 +64,17 @@
 // PerfVar mirrors the subset of the px4::atomic API used below so the call
 // sites are identical in both configurations; on embedded the accessors are
 // trivial and inline to bare loads/stores.
-#if defined(__PX4_POSIX) || defined(__SANITIZE_THREAD__)
+#якщо defined(__PX4_POSIX) || defined(__SANITIZE_THREAD__)
 template <typename T> using PerfVar = px4::atomic<T>;
-#else
+#інакше
 template <typename T>
 class PerfVar
 {
 public:
 	PerfVar() = default;
-	T load() const { return _value; }
+	T load() const { повернути _value; }
 	void store(T value) { _value = value; }
-	T fetch_add(T value) { const T previous = _value; _value += value; return previous; }
+	T fetch_add(T value) { const T previous = _value; _value += value; повернути previous; }
 private:
 	T _value {};
 };
@@ -141,7 +141,7 @@ pthread_mutex_t perf_counters_mutex = PTHREAD_MUTEX_INITIALIZER;
  * While non-zero, perf_free() only marks entries as pending_free; the last
  * iteration to finish deletes them.
  */
-static int perf_iterate_active = 0;
+static ціле perf_iterate_active = 0;
 
 static void
 perf_delete(perf_counter_t handle)
@@ -173,10 +173,10 @@ perf_free_pending_locked()
 {
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
+	поки (handle != nullptr) {
 		perf_counter_t next = (perf_counter_t)sq_next(&handle->link);
 
-		if (handle->pending_free) {
+		якщо (handle->pending_free) {
 			sq_rem(&handle->link, &perf_counters);
 			perf_delete(handle);
 		}
@@ -207,7 +207,7 @@ perf_alloc(enum perf_counter_type type, const char *name)
 		break;
 	}
 
-	if (ctr != nullptr) {
+	якщо (ctr != nullptr) {
 		ctr->type = type;
 		ctr->name = name;
 		ctr->pending_free = false;
@@ -216,7 +216,7 @@ perf_alloc(enum perf_counter_type type, const char *name)
 		pthread_mutex_unlock(&perf_counters_mutex);
 	}
 
-	return ctr;
+	повернути ctr;
 }
 
 perf_counter_t
@@ -225,17 +225,17 @@ perf_alloc_once(enum perf_counter_type type, const char *name)
 	pthread_mutex_lock(&perf_counters_mutex);
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
-		if (!handle->pending_free && !strcmp(handle->name, name)) {
-			if (type == handle->type) {
+	поки (handle != nullptr) {
+		якщо (!handle->pending_free && !strcmp(handle->name, name)) {
+			якщо (type == handle->type) {
 				/* they are the same counter */
 				pthread_mutex_unlock(&perf_counters_mutex);
-				return handle;
+				повернути handle;
 
-			} else {
+			} інакше {
 				/* same name but different type, assuming this is an error and not intended */
 				pthread_mutex_unlock(&perf_counters_mutex);
-				return nullptr;
+				повернути nullptr;
 			}
 		}
 
@@ -245,24 +245,24 @@ perf_alloc_once(enum perf_counter_type type, const char *name)
 	pthread_mutex_unlock(&perf_counters_mutex);
 
 	/* if the execution reaches here, no existing counter of that name was found */
-	return perf_alloc(type, name);
+	повернути perf_alloc(type, name);
 }
 
 void
 perf_free(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	якщо (handle == nullptr) {
+		повернути;
 	}
 
 	pthread_mutex_lock(&perf_counters_mutex);
 
-	if (perf_iterate_active > 0) {
+	якщо (perf_iterate_active > 0) {
 		// an iteration may be positioned on this entry: keep it linked
 		// and let the last active iteration delete it
 		handle->pending_free = true;
 		pthread_mutex_unlock(&perf_counters_mutex);
-		return;
+		повернути;
 	}
 
 	sq_rem(&handle->link, &perf_counters);
@@ -274,8 +274,8 @@ perf_free(perf_counter_t handle)
 void
 perf_count(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	якщо (handle == nullptr) {
+		повернути;
 	}
 
 	switch (handle->type) {
@@ -295,8 +295,8 @@ perf_count(perf_counter_t handle)
 void
 perf_begin(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	якщо (handle == nullptr) {
+		повернути;
 	}
 
 	switch (handle->type) {
@@ -312,8 +312,8 @@ perf_begin(perf_counter_t handle)
 void
 perf_end(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	якщо (handle == nullptr) {
+		повернути;
 	}
 
 	switch (handle->type) {
@@ -321,7 +321,7 @@ perf_end(perf_counter_t handle)
 			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
 			hrt_abstime ts = pce->time_start.load();
 
-			if (ts != 0) {
+			якщо (ts != 0) {
 				perf_set_elapsed(handle, hrt_absolute_time() - ts);
 			}
 		}
@@ -335,27 +335,27 @@ perf_end(perf_counter_t handle)
 void
 perf_set_elapsed(perf_counter_t handle, int64_t elapsed)
 {
-	if (handle == nullptr) {
-		return;
+	якщо (handle == nullptr) {
+		повернути;
 	}
 
 	switch (handle->type) {
 	case PC_ELAPSED: {
 			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
 
-			if (elapsed >= 0) {
+			якщо (elapsed >= 0) {
 				uint64_t ec = pce->event_count.fetch_add(1) + 1;
 				pce->time_total.fetch_add((uint64_t)elapsed);
 
 				uint32_t tl = pce->time_least.load();
 
-				if ((tl > (uint32_t)elapsed) || (tl == 0)) {
+				якщо ((tl > (uint32_t)elapsed) || (tl == 0)) {
 					pce->time_least.store((uint32_t)elapsed);
 				}
 
 				uint32_t tm = pce->time_most.load();
 
-				if (tm < (uint32_t)elapsed) {
+				якщо (tm < (uint32_t)elapsed) {
 					pce->time_most.store((uint32_t)elapsed);
 				}
 
@@ -383,8 +383,8 @@ perf_set_elapsed(perf_counter_t handle, int64_t elapsed)
 void
 perf_count_interval(perf_counter_t handle, hrt_abstime now)
 {
-	if (handle == nullptr) {
-		return;
+	якщо (handle == nullptr) {
+		повернути;
 	}
 
 	switch (handle->type) {
@@ -413,13 +413,13 @@ perf_count_interval(perf_counter_t handle, hrt_abstime now)
 
 					uint32_t least = pci->time_least.load();
 
-					if ((uint32_t)interval < least) {
+					якщо ((uint32_t)interval < least) {
 						pci->time_least.store((uint32_t)interval);
 					}
 
 					uint32_t most = pci->time_most.load();
 
-					if ((uint32_t)interval > most) {
+					якщо ((uint32_t)interval > most) {
 						pci->time_most.store((uint32_t)interval);
 					}
 
@@ -450,8 +450,8 @@ perf_count_interval(perf_counter_t handle, hrt_abstime now)
 void
 perf_set_count(perf_counter_t handle, uint64_t count)
 {
-	if (handle == nullptr) {
-		return;
+	якщо (handle == nullptr) {
+		повернути;
 	}
 
 	switch (handle->type) {
@@ -469,8 +469,8 @@ perf_set_count(perf_counter_t handle, uint64_t count)
 void
 perf_cancel(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	якщо (handle == nullptr) {
+		повернути;
 	}
 
 	switch (handle->type) {
@@ -488,8 +488,8 @@ perf_cancel(perf_counter_t handle)
 void
 perf_reset(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	якщо (handle == nullptr) {
+		повернути;
 	}
 
 	switch (handle->type) {
@@ -527,8 +527,8 @@ perf_reset(perf_counter_t handle)
 void
 perf_print_counter(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	якщо (handle == nullptr) {
+		повернути;
 	}
 
 	switch (handle->type) {
@@ -578,13 +578,13 @@ perf_print_counter(perf_counter_t handle)
 }
 
 
-int
-perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle)
+ціле
+perf_print_counter_buffer(char *buffer, ціле length, perf_counter_t handle)
 {
-	int num_written = 0;
+	ціле num_written = 0;
 
-	if (handle == nullptr) {
-		return 0;
+	якщо (handle == nullptr) {
+		повернути 0;
 	}
 
 	switch (handle->type) {
@@ -638,60 +638,60 @@ perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle)
 	}
 
 	buffer[length - 1] = 0; // ensure 0-termination
-	return num_written;
+	повернути num_written;
 }
 
 uint64_t
 perf_event_count(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return 0;
+	якщо (handle == nullptr) {
+		повернути 0;
 	}
 
 	switch (handle->type) {
 	case PC_COUNT:
-		return ((struct perf_ctr_count *)handle)->event_count.load();
+		повернути ((struct perf_ctr_count *)handle)->event_count.load();
 
 	case PC_ELAPSED: {
 			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			return pce->event_count.load();
+			повернути pce->event_count.load();
 		}
 
 	case PC_INTERVAL: {
 			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			return pci->event_count.load();
+			повернути pci->event_count.load();
 		}
 
 	default:
 		break;
 	}
 
-	return 0;
+	повернути 0;
 }
 
 float
 perf_mean(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return 0;
+	якщо (handle == nullptr) {
+		повернути 0;
 	}
 
 	switch (handle->type) {
 	case PC_ELAPSED: {
 			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			return pce->mean.load();
+			повернути pce->mean.load();
 		}
 
 	case PC_INTERVAL: {
 			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			return pci->mean.load();
+			повернути pci->mean.load();
 		}
 
 	default:
 		break;
 	}
 
-	return 0.0f;
+	повернути 0.0f;
 }
 
 void
@@ -705,11 +705,11 @@ perf_iterate_all(perf_callback cb, void *user)
 
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
+	поки (handle != nullptr) {
 		// advance while locked; entries stay linked until all active iterations end
 		perf_counter_t next = (perf_counter_t)sq_next(&handle->link);
 
-		if (!handle->pending_free) {
+		якщо (!handle->pending_free) {
 			perf_print_counter_buffer(buffer, sizeof(buffer), handle);
 
 			// the callback may block (the logger waits for MAVLink acks here), so run
@@ -724,7 +724,7 @@ perf_iterate_all(perf_callback cb, void *user)
 		handle = next;
 	}
 
-	if (--perf_iterate_active == 0) {
+	якщо (--perf_iterate_active == 0) {
 		perf_free_pending_locked();
 	}
 
@@ -737,8 +737,8 @@ perf_print_all(void)
 	pthread_mutex_lock(&perf_counters_mutex);
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
-		if (!handle->pending_free) {
+	поки (handle != nullptr) {
+		якщо (!handle->pending_free) {
 			perf_print_counter(handle);
 		}
 
@@ -754,9 +754,9 @@ perf_print_latency(void)
 	latency_info_t latency;
 	PX4_INFO_RAW("bucket [us] : events\n");
 
-	for (int i = 0; i < get_latency_bucket_count(); i++) {
+	для (ціле i = 0; i < get_latency_bucket_count(); i++) {
 		latency = get_latency(i, i);
-		PX4_INFO_RAW("       %4i : %li\n", latency.bucket, (long int)latency.counter);
+		PX4_INFO_RAW("       %4i : %li\n", latency.bucket, (long ціле)latency.counter);
 	}
 
 	// print the overflow bucket value
@@ -770,8 +770,8 @@ perf_reset_all(void)
 	pthread_mutex_lock(&perf_counters_mutex);
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
-		if (!handle->pending_free) {
+	поки (handle != nullptr) {
+		якщо (!handle->pending_free) {
 			perf_reset(handle);
 		}
 

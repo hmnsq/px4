@@ -72,9 +72,9 @@ public:
 	virtual ~BlockHighPass() = default;
 	float update(float input);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getFCut() {return _fCut.get();}
+	float getU() {повернути _u;}
+	float getY() {повернути _y;}
+	float getFCut() {повернути _fCut.get();}
 	void setU(float u) {_u = u;}
 	void setY(float y) {_y = y;}
 protected:

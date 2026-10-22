@@ -54,28 +54,28 @@ px4::AppState CDevExample::appState;
 
 static bool g_exit = false;
 
-static int writer_main(int argc, char *argv[])
+static ціле writer_main(ціле argc, char *argv[])
 {
 	char buf[1];
 
-	int fd = px4_open(TESTDEV, PX4_F_WRONLY);
+	ціле fd = px4_open(TESTDEV, PX4_F_WRONLY);
 
-	if (fd < 0) {
+	якщо (fd < 0) {
 		PX4_INFO("Writer: Open failed %d", fd);
-		return PX4_ERROR;
+		повернути PX4_ERROR;
 	}
 
-	int ret = 0;
-	int i = 0;
+	ціле ret = 0;
+	ціле i = 0;
 
-	while (!g_exit) {
+	поки (!g_exit) {
 		// Wait for 2 seconds
 		PX4_INFO("Writer: Sleeping for 2 sec");
 		ret = px4_sleep(2);
 
-		if (ret < 0) {
+		якщо (ret < 0) {
 			PX4_INFO("Writer: sleep failed %d %d", ret, errno);
-			return ret;
+			повернути ret;
 		}
 
 		buf[0] = 'A' + (char)(i % 26);
@@ -86,7 +86,7 @@ static int writer_main(int argc, char *argv[])
 
 	px4_close(fd);
 	PX4_INFO("Writer: stopped");
-	return ret;
+	повернути ret;
 }
 
 class PrivData
@@ -108,8 +108,8 @@ public:
 
 	~CDevNode() override = default;
 
-	int open(cdev::file_t *handlep) override;
-	int close(cdev::file_t *handlep) override;
+	ціле open(cdev::file_t *handlep) override;
+	ціле close(cdev::file_t *handlep) override;
 	ssize_t write(cdev::file_t *handlep, const char *buffer, size_t buflen) override;
 	ssize_t read(cdev::file_t *handlep, char *buffer, size_t buflen) override;
 private:
@@ -118,46 +118,46 @@ private:
 	char     _buf[1000];
 };
 
-int CDevNode::open(cdev::file_t *handlep)
+ціле CDevNode::open(cdev::file_t *handlep)
 {
 	// Only allow one writer
-	if (_is_open_for_write && (handlep->f_oflags & PX4_F_WRONLY)) {
+	якщо (_is_open_for_write && (handlep->f_oflags & PX4_F_WRONLY)) {
 		errno = EBUSY;
-		return -1;
+		повернути -1;
 	}
 
-	int ret = CDev::open(handlep);
+	ціле ret = CDev::open(handlep);
 
-	if (ret != 0) {
-		return ret;
+	якщо (ret != 0) {
+		повернути ret;
 	}
 
 	handlep->f_priv = new PrivData;
 
-	if (_is_open_for_write && (handlep->f_oflags & PX4_F_WRONLY)) {
+	якщо (_is_open_for_write && (handlep->f_oflags & PX4_F_WRONLY)) {
 		_is_open_for_write = true;
 	}
 
-	return 0;
+	повернути 0;
 }
 
-int CDevNode::close(cdev::file_t *handlep)
+ціле CDevNode::close(cdev::file_t *handlep)
 {
 	delete (PrivData *)handlep->f_priv;
 	handlep->f_priv = nullptr;
 	CDev::close(handlep);
 
 	// Enable a new writer of the device is re-opened for write
-	if ((handlep->f_oflags & PX4_F_WRONLY) && _is_open_for_write) {
+	якщо ((handlep->f_oflags & PX4_F_WRONLY) && _is_open_for_write) {
 		_is_open_for_write = false;
 	}
 
-	return 0;
+	повернути 0;
 }
 
 ssize_t CDevNode::write(cdev::file_t *handlep, const char *buffer, size_t buflen)
 {
-	for (size_t i = 0; i < buflen && _write_offset < 1000; i++) {
+	для (size_t i = 0; i < buflen && _write_offset < 1000; i++) {
 		_buf[_write_offset] = buffer[i];
 		_write_offset++;
 	}
@@ -165,7 +165,7 @@ ssize_t CDevNode::write(cdev::file_t *handlep, const char *buffer, size_t buflen
 	// ignore what was written, but let pollers know something was written
 	poll_notify(POLLIN);
 
-	return buflen;
+	повернути buflen;
 }
 
 ssize_t CDevNode::read(cdev::file_t *handlep, char *buffer, size_t buflen)
@@ -174,27 +174,27 @@ ssize_t CDevNode::read(cdev::file_t *handlep, char *buffer, size_t buflen)
 	ssize_t chars_read = 0;
 	PX4_INFO("read %zu write %zu", p->_read_offset, _write_offset);
 
-	for (size_t i = 0; i < buflen && (p->_read_offset < _write_offset); i++) {
+	для (size_t i = 0; i < buflen && (p->_read_offset < _write_offset); i++) {
 		buffer[i] = _buf[p->_read_offset];
 		p->_read_offset++;
 		chars_read++;
 	}
 
-	return chars_read;
+	повернути chars_read;
 }
 
 CDevExample::~CDevExample()
 {
-	if (_node) {
+	якщо (_node) {
 		delete _node;
 		_node = nullptr;
 	}
 }
 
-int CDevExample::do_poll(int fd, int timeout, int iterations, int delayms_after_poll)
+ціле CDevExample::do_poll(ціле fd, ціле timeout, ціле iterations, ціле delayms_after_poll)
 {
-	int pollret, readret;
-	int loop_count = 0;
+	ціле pollret, readret;
+	ціле loop_count = 0;
 	char readbuf[10];
 	px4_pollfd_struct_t fds[1];
 
@@ -205,66 +205,66 @@ int CDevExample::do_poll(int fd, int timeout, int iterations, int delayms_after_
 	bool mustblock = (timeout < 0);
 
 	// Test indefinte blocking poll
-	while ((!appState.exitRequested()) && (loop_count < iterations)) {
+	поки ((!appState.exitRequested()) && (loop_count < iterations)) {
 		pollret = px4_poll(fds, 1, timeout);
 
-		if (pollret < 0) {
+		якщо (pollret < 0) {
 			PX4_ERR("Reader: px4_poll failed %d FAIL", pollret);
 			goto fail;
 		}
 
 		PX4_INFO("Reader: px4_poll returned %d", pollret);
 
-		if (pollret) {
+		якщо (pollret) {
 			readret = px4_read(fd, readbuf, 10);
 
-			if (readret != 1) {
-				if (mustblock) {
+			якщо (readret != 1) {
+				якщо (mustblock) {
 					PX4_ERR("Reader:     read failed %d FAIL", readret);
 					goto fail;
 
-				} else {
+				} інакше {
 					PX4_INFO("Reader:     read failed %d FAIL", readret);
 				}
 
-			} else {
+			} інакше {
 				readbuf[readret] = '\0';
 				PX4_INFO("Reader: px4_poll     returned %d, read '%s' PASS", pollret, readbuf);
 			}
 		}
 
-		if (delayms_after_poll) {
+		якщо (delayms_after_poll) {
 			px4_usleep(delayms_after_poll * 1000);
 		}
 
 		loop_count++;
 	}
 
-	return 0;
+	повернути 0;
 fail:
-	return 1;
+	повернути 1;
 }
-int CDevExample::main()
+ціле CDevExample::main()
 {
 	appState.setRunning(true);
 
 	_node = new CDevNode();
 
-	if (_node == nullptr) {
+	якщо (_node == nullptr) {
 		PX4_INFO("Failed to allocate CDevNode");
-		return -ENOMEM;
+		повернути -ENOMEM;
 	}
 
-	if (_node->init() != PX4_OK) {
+	якщо (_node->init() != PX4_OK) {
 		PX4_INFO("Failed to init CDevNode");
-		return 1;
+		повернути 1;
 	}
 
-	int fd = px4_open(TESTDEV, PX4_F_RDONLY);
+	ціле fd = px4_open(TESTDEV, PX4_F_RDONLY);
 
-	if (fd < 0) {
+	якщо (fd < 0) {
 		PX4_INFO("Open failed %d", fd);
-		return PX4_ERROR;
+		повернути PX4_ERROR;
 	}
 
 	// Start a task that will write something in 4 seconds
@@ -275,26 +275,18 @@ int CDevExample::main()
 				 writer_main,
 				 (char *const *)nullptr);
 
-	int ret = 0;
+	ціле ret = 0;
 
 	PX4_INFO("TEST: BLOCKING POLL ---------------");
 
-	if (do_poll(fd, -1, 3, 0)) {
+	якщо (do_poll(fd, -1, 3, 0)) {
 		ret = 1;
 		goto fail2;
 	}
 
 	PX4_INFO("TEST: ZERO TIMEOUT POLL -----------");
 
-	if (do_poll(fd, 0, 3, 0)) {
-		ret = 1;
-		goto fail2;
-		goto fail2;
-	}
-
-	PX4_INFO("TEST: ZERO TIMEOUT POLL -----------");
-
-	if (do_poll(fd, 0, 3, 0)) {
+	якщо (do_poll(fd, 0, 3, 0)) {
 		ret = 1;
 		goto fail2;
 		goto fail2;
@@ -302,21 +294,29 @@ int CDevExample::main()
 
 	PX4_INFO("TEST: ZERO TIMEOUT POLL -----------");
 
-	if (do_poll(fd, 0, 3, 0)) {
+	якщо (do_poll(fd, 0, 3, 0)) {
+		ret = 1;
+		goto fail2;
+		goto fail2;
+	}
+
+	PX4_INFO("TEST: ZERO TIMEOUT POLL -----------");
+
+	якщо (do_poll(fd, 0, 3, 0)) {
 		ret = 1;
 		goto fail2;
 	}
 
 	PX4_INFO("TEST: 100ms TIMEOUT POLL -----------");
 
-	if (do_poll(fd, 0, 30, 100)) {
+	якщо (do_poll(fd, 0, 30, 100)) {
 		ret = 1;
 		goto fail2;
 	}
 
 	PX4_INFO("TEST: 1 SEC TIMOUT POLL ------------");
 
-	if (do_poll(fd, 1000, 3, 0)) {
+	якщо (do_poll(fd, 1000, 3, 0)) {
 		ret = 1;
 		goto fail2;
 	}
@@ -327,5 +327,5 @@ fail2:
 	px4_close(fd);
 	PX4_INFO("TEST: waiting for writer to stop");
 	px4_sleep(3);
-	return ret;
+	повернути ret;
 }

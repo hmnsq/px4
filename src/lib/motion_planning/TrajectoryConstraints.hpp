@@ -77,7 +77,7 @@ inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, co
 
 	float speed_at_target = 0.0f;
 
-	if (target_next_different &&
+	якщо (target_next_different &&
 	    !waypoint_overlap
 	   ) {
 		// rounding can push the dot product of two unit vectors past 1, which acosf turns into NaN
@@ -93,7 +93,7 @@ inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, co
 	float start_to_target = (start_position - target).xy().norm();
 	float max_speed = computeMaxSpeedFromDistance(config.max_jerk, config.max_acc_xy, start_to_target, speed_at_target);
 
-	return min(config.max_speed_xy, max_speed);
+	повернути min(config.max_speed_xy, max_speed);
 }
 
 /*
@@ -106,7 +106,7 @@ inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, co
  *
  * @return the maximum speed at waypoint[0] which allows it to follow the trajectory while respecting the dynamic limits
  */
-template <int N>
+template <ціле N>
 float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDynamicLimits &config)
 {
 	static_assert(N >= 2, "Need at least 2 points to compute speed");
@@ -114,14 +114,14 @@ float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDyna
 	float max_speed = 0.f;
 
 	// go backwards through the waypoints
-	for (int i = (N - 2); i >= 0; i--) {
+	для (ціле i = (N - 2); i >= 0; i--) {
 		max_speed = computeStartXYSpeedFromWaypoints(waypoints[i],
 				waypoints[i + 1],
 				waypoints[min(i + 2, N - 1)],
 				max_speed, config);
 	}
 
-	return max_speed;
+	повернути max_speed;
 }
 
 /*
@@ -139,11 +139,11 @@ inline void clampToXYNorm(Vector3f &target, float max_xy_norm, float accuracy = 
 				   ? max_xy_norm / xynorm
 				   : 1.f;
 
-	if (scale_factor < 1.f) {
-		if (max_xy_norm < accuracy && xynorm < accuracy) {
+	якщо (scale_factor < 1.f) {
+		якщо (max_xy_norm < accuracy && xynorm < accuracy) {
 			target.xy() = Vector2f(target) * scale_factor;
 
-		} else {
+		} інакше {
 			target *= scale_factor;
 		}
 	}
@@ -164,11 +164,11 @@ inline void clampToZNorm(Vector3f &target, float max_z_norm, float accuracy = FL
 				   ? max_z_norm / znorm
 				   : 1.f;
 
-	if (scale_factor < 1.f) {
-		if (max_z_norm < accuracy && znorm < accuracy) {
+	якщо (scale_factor < 1.f) {
+		якщо (max_z_norm < accuracy && znorm < accuracy) {
 			target(2) *= scale_factor;
 
-		} else {
+		} інакше {
 			target *= scale_factor;
 		}
 	}

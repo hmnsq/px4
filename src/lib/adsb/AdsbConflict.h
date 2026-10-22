@@ -36,9 +36,9 @@
 // Provides CONFIG_NAVIGATOR_ADSB_F3442 for the standard selection.
 #include <px4_boardconfig.h>
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#якщо defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 #include "f3442_standard/DaaF3442.h"
-#else
+#інакше
 #include "crosstrack_standard/DaaCrosstrack.h"
 #endif
 
@@ -71,9 +71,9 @@ public:
 	static bool valid_wgs84_coordinates(const double latitude, const double longitude);
 
 private:
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#якщо defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	DaaF3442 _daa;
-#else
+#інакше
 	DaaCrosstrack _daa;
 #endif
 };

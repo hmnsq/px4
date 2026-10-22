@@ -59,7 +59,7 @@ TEST_F(ParameterTest, testParamReadWrite)
 
 	// WHEN: we get the parameter
 	float value = -999.f;
-	int status = param_get(param, &value);
+	ціле status = param_get(param, &value);
 
 	// THEN it should be successful and have the default value
 	EXPECT_EQ(0, status);
@@ -126,7 +126,7 @@ TEST_F(ParameterTest, testImportTombstoneResets)
 	ASSERT_EQ(0, bson_encoder_fini(&encoder));
 
 	char path[] = "/tmp/param_tombstone_XXXXXX";
-	int fd = mkstemp(path);
+	ціле fd = mkstemp(path);
 	ASSERT_GE(fd, 0);
 	ASSERT_EQ((ssize_t)bson_encoder_buf_size(&encoder), write(fd, bson_encoder_buf_data(&encoder),
 			bson_encoder_buf_size(&encoder)));

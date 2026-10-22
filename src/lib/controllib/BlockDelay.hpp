@@ -75,40 +75,40 @@ public:
 		// delay starts at zero, then increases to LEN
 		_delay += 1;
 
-		if (_delay > (int)(LEN - 1)) {
+		якщо (_delay > (ціле)(LEN - 1)) {
 			_delay = LEN - 1;
 		}
 
 		// compute position of delayed value
-		int j = _index - _delay;
+		ціле j = _index - _delay;
 
-		if (j < 0) {
+		якщо (j < 0) {
 			j += LEN;
 		}
 
 		// increment storage position
 		_index += 1;
 
-		if (_index > (LEN - 1)) {
+		якщо (_index > (LEN - 1)) {
 			_index  = 0;
 		}
 
 		// get delayed value
-		return _h[j];
+		повернути _h[j];
 	}
 	matrix::Matrix<Type, M, N> get(size_t delay)
 	{
-		int j = _index - delay;
+		ціле j = _index - delay;
 
-		if (j < 0) { j += LEN; }
+		якщо (j < 0) { j += LEN; }
 
-		return _h[j];
+		повернути _h[j];
 	}
 private:
 // attributes
 	matrix::Matrix<Type, M, N> _h[LEN];
 	size_t _index;
-	int _delay;
+	ціле _delay;
 };
 
 } // namespace control

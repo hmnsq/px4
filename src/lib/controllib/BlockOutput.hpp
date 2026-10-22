@@ -76,10 +76,10 @@ public:
 		_val = _limit.update(input + getTrim());
 	}
 // accessors
-	float getMin() { return _limit.getMin(); }
-	float getMax() { return _limit.getMax(); }
-	float getTrim() { return _trim.get(); }
-	float get() { return _val; }
+	float getMin() { повернути _limit.getMin(); }
+	float getMax() { повернути _limit.getMax(); }
+	float getTrim() { повернути _trim.get(); }
+	float get() { повернути _val; }
 private:
 // attributes
 	control::BlockParamFloat _trim;

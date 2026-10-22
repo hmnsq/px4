@@ -59,25 +59,25 @@ public:
 	StubParamLayer() : ParamLayer(nullptr) {}
 	virtual ~StubParamLayer() = default;
 
-	bool store(param_t, param_value_u) override { return false; }
-	bool contains(param_t) const override { return false; }
+	bool store(param_t, param_value_u) override { повернути false; }
+	bool contains(param_t) const override { повернути false; }
 
 	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
 	{
-		return px4::AtomicBitset<PARAM_COUNT>();
+		повернути px4::AtomicBitset<PARAM_COUNT>();
 	}
 
 	param_value_u get(param_t) const override
 	{
 		param_value_u v{};
 		v.i = 0;
-		return v;
+		повернути v;
 	}
 
 	void reset(param_t) override {}
 	void refresh(param_t) override {}
-	int size() const override { return 0; }
-	int byteSize() const override { return 0; }
+	ціле size() const override { повернути 0; }
+	ціле byteSize() const override { повернути 0; }
 };
 
 class DynamicSparseLayerConcurrentTest : public ::testing::Test
@@ -91,14 +91,14 @@ protected:
 // this safely stresses the read-side during buffer reallocation.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 {
-	for (int rep = 0; rep < 50; rep++) {
+	для (ціле rep = 0; rep < 50; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/2, /*n_grow=*/1);
 
-		constexpr int NUM_PARAMS = 100;
+		constexpr ціле NUM_PARAMS = 100;
 		std::atomic<bool> stop{false};
 
 		std::thread writer([&]() {
-			for (int i = 0; i < NUM_PARAMS; i++) {
+			для (ціле i = 0; i < NUM_PARAMS; i++) {
 				param_value_u v{};
 				v.i = i * 10;
 				layer.store(static_cast<param_t>(i), v);
@@ -109,12 +109,12 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 
 		std::vector<std::thread> readers;
 
-		for (int r = 0; r < 4; r++) {
+		для (ціле r = 0; r < 4; r++) {
 			readers.emplace_back([&]() {
-				while (!stop.load(std::memory_order_acquire)) {
-					int current_size = layer.size();
+				поки (!stop.load(std::memory_order_acquire)) {
+					ціле current_size = layer.size();
 
-					for (int i = 0; i < current_size && i < NUM_PARAMS; i++) {
+					для (ціле i = 0; i < current_size && i < NUM_PARAMS; i++) {
 						layer.contains(static_cast<param_t>(i));
 						layer.get(static_cast<param_t>(i));
 					}
@@ -124,11 +124,11 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 
 		writer.join();
 
-		for (auto &t : readers) {
+		для (auto &t : readers) {
 			t.join();
 		}
 
-		for (int i = 0; i < NUM_PARAMS; i++) {
+		для (ціле i = 0; i < NUM_PARAMS; i++) {
 			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
 			param_value_u v = layer.get(static_cast<param_t>(i));
@@ -146,20 +146,20 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 // This test validates concurrent store correctness.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
 {
-	constexpr int PARAMS_PER_WRITER = 50;
-	constexpr int NUM_WRITERS = 4;
-	constexpr int TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
+	constexpr ціле PARAMS_PER_WRITER = 50;
+	constexpr ціле NUM_WRITERS = 4;
+	constexpr ціле TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
 
-	for (int rep = 0; rep < 20; rep++) {
+	для (ціле rep = 0; rep < 20; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/TOTAL, /*n_grow=*/1);
 
 		std::vector<std::thread> writers;
 
-		for (int w = 0; w < NUM_WRITERS; w++) {
+		для (ціле w = 0; w < NUM_WRITERS; w++) {
 			writers.emplace_back([&layer, w]() {
-				int base = w * PARAMS_PER_WRITER;
+				ціле base = w * PARAMS_PER_WRITER;
 
-				for (int i = 0; i < PARAMS_PER_WRITER; i++) {
+				для (ціле i = 0; i < PARAMS_PER_WRITER; i++) {
 					param_value_u v{};
 					v.i = (base + i) * 10;
 					layer.store(static_cast<param_t>(base + i), v);
@@ -167,13 +167,13 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
 			});
 		}
 
-		for (auto &t : writers) {
+		для (auto &t : writers) {
 			t.join();
 		}
 
 		ASSERT_EQ(layer.size(), TOTAL) << "rep=" << rep;
 
-		for (int i = 0; i < TOTAL; i++) {
+		для (ціле i = 0; i < TOTAL; i++) {
 			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
 			param_value_u v = layer.get(static_cast<param_t>(i));
@@ -186,21 +186,21 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
 // Combined stress: writers store while readers access concurrently.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 {
-	constexpr int PARAMS_PER_WRITER = 50;
-	constexpr int NUM_WRITERS = 2;
-	constexpr int TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
+	constexpr ціле PARAMS_PER_WRITER = 50;
+	constexpr ціле NUM_WRITERS = 2;
+	constexpr ціле TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
 
-	for (int rep = 0; rep < 20; rep++) {
+	для (ціле rep = 0; rep < 20; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/2, /*n_grow=*/1);
 		std::atomic<bool> stop{false};
 
 		std::vector<std::thread> writers;
 
-		for (int w = 0; w < NUM_WRITERS; w++) {
+		для (ціле w = 0; w < NUM_WRITERS; w++) {
 			writers.emplace_back([&layer, w]() {
-				int base = w * PARAMS_PER_WRITER;
+				ціле base = w * PARAMS_PER_WRITER;
 
-				for (int i = 0; i < PARAMS_PER_WRITER; i++) {
+				для (ціле i = 0; i < PARAMS_PER_WRITER; i++) {
 					param_value_u v{};
 					v.i = (base + i) * 10;
 					layer.store(static_cast<param_t>(base + i), v);
@@ -210,12 +210,12 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 
 		std::vector<std::thread> readers;
 
-		for (int r = 0; r < 4; r++) {
+		для (ціле r = 0; r < 4; r++) {
 			readers.emplace_back([&]() {
-				while (!stop.load(std::memory_order_acquire)) {
-					int current_size = layer.size();
+				поки (!stop.load(std::memory_order_acquire)) {
+					ціле current_size = layer.size();
 
-					for (int i = 0; i < current_size && i < TOTAL; i++) {
+					для (ціле i = 0; i < current_size && i < TOTAL; i++) {
 						layer.contains(static_cast<param_t>(i));
 						layer.get(static_cast<param_t>(i));
 					}
@@ -223,19 +223,19 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 			});
 		}
 
-		for (auto &t : writers) {
+		для (auto &t : writers) {
 			t.join();
 		}
 
 		stop.store(true, std::memory_order_release);
 
-		for (auto &t : readers) {
+		для (auto &t : readers) {
 			t.join();
 		}
 
 		ASSERT_EQ(layer.size(), TOTAL) << "rep=" << rep;
 
-		for (int i = 0; i < TOTAL; i++) {
+		для (ціле i = 0; i < TOTAL; i++) {
 			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
 			param_value_u v = layer.get(static_cast<param_t>(i));

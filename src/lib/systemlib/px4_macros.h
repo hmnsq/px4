@@ -57,59 +57,59 @@
 #define _PX4_MACROS_H
 
 
-#if !defined(arraySize)
+#якщо !defined(arraySize)
 #define arraySize(a) (sizeof((a))/sizeof((a[0])))
 #endif
 
-#if !defined(NO_BLOAT)
-#if defined(__BASE_FILE__)
+#якщо !defined(NO_BLOAT)
+#якщо defined(__BASE_FILE__)
 #define _FILE_NAME_ __BASE_FILE__
-#else
+#інакше
 #define _FILE_NAME_ __FILE__
 #endif
-#else
+#інакше
 #define _FILE_NAME_ ""
 #endif
 
-#if !defined(INVALID_CASE)
+#якщо !defined(INVALID_CASE)
 #define INVALID_CASE(c) printf("Invalid Case %d, %s:%d",(c),__BASE_FILE__,__LINE__) /* todo use PANIC */
 #endif
 
-#if !defined(UNUSED)
+#якщо !defined(UNUSED)
 #define UNUSED(var) (void)(var)
 #endif
 
-#if !defined(CAT)
-#if !defined(_CAT)
+#якщо !defined(CAT)
+#якщо !defined(_CAT)
 #define _CAT(a, b) a ## b
 #endif
 #define CAT(a, b) _CAT(a, b)
 #endif
 
-#if !defined(FREEZE_STR)
+#якщо !defined(FREEZE_STR)
 #  define FREEZE_STR(s) #s
 #endif
 
-#if !defined(STRINGIFY)
+#якщо !defined(STRINGIFY)
 #define STRINGIFY(s) FREEZE_STR(s)
 #endif
 
-#if !defined(CCASSERT)
-#if defined(static_assert)
+#якщо !defined(CCASSERT)
+#якщо defined(static_assert)
 #		define CCASSERT(predicate) static_assert(predicate, STRINGIFY(predicate))
-#	else
+#	інакше
 #		define CCASSERT(predicate) _x_CCASSERT_LINE(predicate, __LINE__)
-#		if !defined(_x_CCASSERT_LINE)
+#		якщо !defined(_x_CCASSERT_LINE)
 #			define _x_CCASSERT_LINE(predicate, line) typedef char CAT(constraint_violated_on_line_,line)[2*((predicate)!=0)-1] __attribute__ ((unused)) ;
 #		endif
 #	endif
 #endif
 
-#if !defined(DO_PRAGMA)
+#якщо !defined(DO_PRAGMA)
 #  define DO_PRAGMA(x) _Pragma (#x)
 #endif
 
-#if !defined(TODO)
+#якщо !defined(TODO)
 #  define TODO(x) DO_PRAGMA(message ("TODO - " #x))
 #endif
 

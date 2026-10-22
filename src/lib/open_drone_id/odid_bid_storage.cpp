@@ -41,7 +41,7 @@
 #ifdef __PX4_NUTTX
 #include <nuttx/crc32.h>
 #include <px4_platform_common/px4_manifest.h>
-#else
+#інакше
 #include <crc32.h>
 #endif
 
@@ -72,24 +72,24 @@ public:
 private:
 	static bool uasIdIsEmpty(const uint8_t uas_id[UAS_ID_SIZE])
 	{
-		for (unsigned i = 0; i < UAS_ID_SIZE; ++i) {
-			if (uas_id[i] != 0) {
-				return false;
+		для (unsigned i = 0; i < UAS_ID_SIZE; ++i) {
+			якщо (uas_id[i] != 0) {
+				повернути false;
 			}
 		}
 
-		return true;
+		повернути true;
 	}
 
 	static uint32_t recordCrc(const UasIdRecord &record)
 	{
-		return crc32(reinterpret_cast<const uint8_t *>(&record.version),
+		повернути crc32(reinterpret_cast<const uint8_t *>(&record.version),
 			     offsetof(UasIdRecord, crc) - offsetof(UasIdRecord, version));
 	}
 
 	static bool recordValid(const UasIdRecord &record)
 	{
-		return record.magic == ODID_UASID_MAGIC
+		повернути record.magic == ODID_UASID_MAGIC
 		       && record.version == ODID_UASID_RECORD_VERSION
 		       && record.id_type == UAS_ID_TYPE_SERIAL_NUMBER
 		       && !uasIdIsEmpty(record.uas_id)
@@ -102,37 +102,37 @@ private:
 	{
 		const uint8_t *bytes = reinterpret_cast<const uint8_t *>(&record);
 
-		for (unsigned i = 0; i < sizeof(record); ++i) {
-			if (bytes[i] != 0xff) {
-				return false;
+		для (unsigned i = 0; i < sizeof(record); ++i) {
+			якщо (bytes[i] != 0xff) {
+				повернути false;
 			}
 		}
 
-		return true;
+		повернути true;
 	}
 
 	static bool recordMatches(const UasIdRecord &record, const uint8_t uas_id[UAS_ID_SIZE])
 	{
-		return memcmp(record.uas_id, uas_id, UAS_ID_SIZE) == 0;
+		повернути memcmp(record.uas_id, uas_id, UAS_ID_SIZE) == 0;
 	}
 
 	// Write the entire buffer to the file descriptor, handling short writes.
-	static bool writeAll(int fd, const void *buffer, size_t size)
+	static bool writeAll(ціле fd, const void *buffer, size_t size)
 	{
 		const uint8_t *bytes = static_cast<const uint8_t *>(buffer);
 
-		while (size > 0) {
+		поки (size > 0) {
 			const ssize_t written = write(fd, bytes, size);
 
-			if (written <= 0) {
-				return false;
+			якщо (written <= 0) {
+				повернути false;
 			}
 
 			bytes += written;
 			size -= written;
 		}
 
-		return true;
+		повернути true;
 	}
 
 };
@@ -143,42 +143,42 @@ static_assert(sizeof(UasIdRecord) <= 256, "OpenDroneID UAS ID record must fit in
 // On other platforms, the get() method will return StorageUnavailable and the checkOrStore() method will return Unsupported.
 BidLockInfo BidStorageBackend::get()
 {
-#if defined(__PX4_NUTTX)
+#якщо defined(__PX4_NUTTX)
 	const char *path = nullptr;
 
-	if (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
-		return {BidLockState::StorageUnavailable, {}};
+	якщо (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
+		повернути {BidLockState::StorageUnavailable, {}};
 	}
 
-	int fd = open(path, O_RDONLY);
+	ціле fd = open(path, O_RDONLY);
 
-	if (fd < 0) {
-		return {BidLockState::StorageUnavailable, {}};
+	якщо (fd < 0) {
+		повернути {BidLockState::StorageUnavailable, {}};
 	}
 
 	UasIdRecord record{};
 
-	if (read(fd, &record, sizeof(record)) != sizeof(record)) {
+	якщо (read(fd, &record, sizeof(record)) != sizeof(record)) {
 		close(fd);
-		return {BidLockState::StorageUnavailable, {}};
+		повернути {BidLockState::StorageUnavailable, {}};
 	}
 
 	close(fd);
 
-	if (recordValid(record)) {
+	якщо (recordValid(record)) {
 		BidLockInfo info{BidLockState::Locked, {}};
 		info.id.ua_type = record.ua_type;
 		memcpy(info.id.uas_id, record.uas_id, UAS_ID_SIZE);
-		return info;
+		повернути info;
 	}
 
-	if (recordBlank(record)) {
-		return {BidLockState::Empty, {}};
+	якщо (recordBlank(record)) {
+		повернути {BidLockState::Empty, {}};
 	}
 
-	return {BidLockState::InvalidRecord, {}};
-#else
-	return {BidLockState::Unsupported, {}};
+	повернути {BidLockState::InvalidRecord, {}};
+#інакше
+	повернути {BidLockState::Unsupported, {}};
 #endif
 }
 
@@ -186,41 +186,41 @@ BidLockInfo BidStorageBackend::get()
 // The storage is write-once, so once a UAS ID is stored it cannot be changed (except by erasing the flash).
 BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE])
 {
-	if (uasIdIsEmpty(uas_id)) {
-		return BidStoreResult::InvalidBasicId;
+	якщо (uasIdIsEmpty(uas_id)) {
+		повернути BidStoreResult::InvalidBasicId;
 	}
 
-#if defined(__PX4_NUTTX)
+#якщо defined(__PX4_NUTTX)
 	const char *path = nullptr;
 
-	if (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
-		return BidStoreResult::StorageUnavailable;
+	якщо (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
+		повернути BidStoreResult::StorageUnavailable;
 	}
 
-	int fd = open(path, O_RDWR);
+	ціле fd = open(path, O_RDWR);
 
-	if (fd < 0) {
-		return BidStoreResult::StorageUnavailable;
+	якщо (fd < 0) {
+		повернути BidStoreResult::StorageUnavailable;
 	}
 
 	UasIdRecord existing{};
 
-	if (read(fd, &existing, sizeof(existing)) != sizeof(existing)) {
+	якщо (read(fd, &existing, sizeof(existing)) != sizeof(existing)) {
 		close(fd);
-		return BidStoreResult::StorageUnavailable;
+		повернути BidStoreResult::StorageUnavailable;
 	}
 
-	if (recordValid(existing)) {
+	якщо (recordValid(existing)) {
 		const BidStoreResult result = recordMatches(existing, uas_id)
 					      ? BidStoreResult::AlreadyLocked
 					      : BidStoreResult::AlreadyLockedDifferent;
 		close(fd);
-		return result;
+		повернути result;
 	}
 
-	if (!recordBlank(existing)) {
+	якщо (!recordBlank(existing)) {
 		close(fd);
-		return BidStoreResult::InvalidRecord;
+		повернути BidStoreResult::InvalidRecord;
 	}
 
 	UasIdRecord record{};
@@ -244,9 +244,9 @@ BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t ua
 
 	close(fd);
 
-	return written ? BidStoreResult::Stored : BidStoreResult::WriteError;
-#else
-	return BidStoreResult::Unsupported;
+	повернути written ? BidStoreResult::Stored : BidStoreResult::WriteError;
+#інакше
+	повернути BidStoreResult::Unsupported;
 #endif
 }
 
@@ -256,46 +256,46 @@ BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t ua
 BidLockInfo BidStorage::get()
 {
 	BidStorageBackend storage;
-	return storage.get();
+	повернути storage.get();
 }
 
 BidStoreResult BidStorage::checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE])
 {
 	BidStorageBackend storage;
-	return storage.checkOrStore(ua_type, uas_id);
+	повернути storage.checkOrStore(ua_type, uas_id);
 }
 
 //
 BidStoreResult BidLock::resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE],
 				UasId &locked_id)
 {
-	if (id_type != UAS_ID_TYPE_SERIAL_NUMBER) {
-		return BidStoreResult::InvalidBasicId;
+	якщо (id_type != UAS_ID_TYPE_SERIAL_NUMBER) {
+		повернути BidStoreResult::InvalidBasicId;
 	}
 
-	if (!_loaded) {
+	якщо (!_loaded) {
 		_info = BidStorage::get();
 		_loaded = true;
 	}
 
-	if (_info.locked()) {
+	якщо (_info.locked()) {
 		locked_id = _info.id;
-		return BidStoreResult::AlreadyLocked;
+		повернути BidStoreResult::AlreadyLocked;
 	}
 
-	if (_info.state != BidLockState::Empty) {
+	якщо (_info.state != BidLockState::Empty) {
 		switch (_info.state) {
 		case BidLockState::InvalidRecord:
-			return BidStoreResult::InvalidRecord;
+			повернути BidStoreResult::InvalidRecord;
 
 		case BidLockState::StorageUnavailable:
-			return BidStoreResult::StorageUnavailable;
+			повернути BidStoreResult::StorageUnavailable;
 
 		case BidLockState::WriteError:
-			return BidStoreResult::WriteError;
+			повернути BidStoreResult::WriteError;
 
 		case BidLockState::Unsupported:
-			return BidStoreResult::Unsupported;
+			повернути BidStoreResult::Unsupported;
 
 		case BidLockState::Empty:
 		case BidLockState::Locked:
@@ -311,18 +311,18 @@ BidStoreResult BidLock::resolve(uint8_t id_type, uint8_t ua_type, const uint8_t 
 		_info.id.ua_type = ua_type;
 		memcpy(_info.id.uas_id, uas_id, UAS_ID_SIZE);
 		locked_id = _info.id;
-		return result;
+		повернути result;
 
 	case BidStoreResult::AlreadyLocked:
 	case BidStoreResult::AlreadyLockedDifferent: {
 			_info = BidStorage::get();
 
-			if (_info.locked()) {
+			якщо (_info.locked()) {
 				locked_id = _info.id;
-				return BidStoreResult::AlreadyLocked;
+				повернути BidStoreResult::AlreadyLocked;
 			}
 
-			return BidStoreResult::InvalidRecord;
+			повернути BidStoreResult::InvalidRecord;
 		}
 
 	case BidStoreResult::InvalidBasicId:
@@ -330,10 +330,10 @@ BidStoreResult BidLock::resolve(uint8_t id_type, uint8_t ua_type, const uint8_t 
 	case BidStoreResult::InvalidRecord:
 	case BidStoreResult::WriteError:
 	case BidStoreResult::Unsupported:
-		return result;
+		повернути result;
 	}
 
-	return BidStoreResult::InvalidRecord;
+	повернути BidStoreResult::InvalidRecord;
 }
 
 } // namespace open_drone_id

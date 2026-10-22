@@ -66,29 +66,29 @@ public:
 	 */
 	inline T apply(const T &sample)
 	{
-		if (!_initialized) {
+		якщо (!_initialized) {
 			reset(sample);
 			_initialized = true;
 		}
 
-		return applyInternal(sample);
+		повернути applyInternal(sample);
 	}
 
 	// Filter array of samples in place using the direct form I
-	inline void applyArray(T samples[], int num_samples)
+	inline void applyArray(T samples[], ціле num_samples)
 	{
-		if (!_initialized) {
+		якщо (!_initialized) {
 			reset(samples[0]);
 			_initialized = true;
 		}
 
-		for (int n = 0; n < num_samples; n++) {
+		для (ціле n = 0; n < num_samples; n++) {
 			samples[n] = applyInternal(samples[n]);
 		}
 	}
 
-	float getNotchFreq() const { return _notch_freq; }
-	float getBandwidth() const { return _bandwidth; }
+	float getNotchFreq() const { повернути _notch_freq; }
+	float getBandwidth() const { повернути _bandwidth; }
 
 	// Used in unit test only
 	void getCoefficients(float a[3], float b[3]) const
@@ -110,7 +110,7 @@ public:
 
 		float denominator = 1.f + _a1 * _a1 + _a2 * _a2 + 2.f * (_a1 + _a1 * _a2) * cosf(w) + 2.f * _a2 * cosf(2.f * w);
 
-		return sqrtf(numerator / denominator);
+		повернути sqrtf(numerator / denominator);
 	}
 
 	/**
@@ -128,7 +128,7 @@ public:
 		_b2 = b[2];
 	}
 
-	bool initialized() const { return _initialized; }
+	bool initialized() const { повернути _initialized; }
 
 	void reset() { _initialized = false; }
 
@@ -139,7 +139,7 @@ public:
 		_delay_element_1 = _delay_element_2 = input;
 		_delay_element_output_1 = _delay_element_output_2 = input * (_b0 + _b1 + _b2) / (1 + _a1 + _a2);
 
-		if (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
+		якщо (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
 			_delay_element_output_1 = _delay_element_output_2 = {};
 		}
 
@@ -184,7 +184,7 @@ protected:
 		_delay_element_output_2 = _delay_element_output_1;
 		_delay_element_output_1 = output;
 
-		return output;
+		повернути output;
 	}
 
 	T _delay_element_1{};
@@ -216,11 +216,11 @@ protected:
 template<typename T>
 bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float bandwidth)
 {
-	if ((sample_freq <= 0.f) || (notch_freq <= 0.f) || (bandwidth <= 0.f) || (notch_freq >= sample_freq / 2)
+	якщо ((sample_freq <= 0.f) || (notch_freq <= 0.f) || (bandwidth <= 0.f) || (notch_freq >= sample_freq / 2)
 	    || !isFinite(sample_freq) || !isFinite(notch_freq) || !isFinite(bandwidth)) {
 
 		disable();
-		return false;
+		повернути false;
 	}
 
 	const float freq_min = sample_freq * 0.001f;
@@ -234,10 +234,10 @@ bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float ba
 	const bool sample_freq_change = (sample_freq_diff > FLT_EPSILON);
 	const bool bandwidth_change = (bandwidth_diff > FLT_EPSILON);
 
-	if (!sample_freq_change && !bandwidth_change) {
+	якщо (!sample_freq_change && !bandwidth_change) {
 		const float notch_freq_diff = fabsf(notch_freq_new - _notch_freq);
 
-		if (notch_freq_diff > FLT_EPSILON) {
+		якщо (notch_freq_diff > FLT_EPSILON) {
 			// only notch frequency has changed
 			_notch_freq = notch_freq_new;
 
@@ -246,21 +246,21 @@ bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float ba
 			_b1 = 2.f * beta * _b0;
 			_a1 = _b1;
 
-			if (notch_freq_diff > _bandwidth) {
+			якщо (notch_freq_diff > _bandwidth) {
 				// force reset
 				_initialized = false;
 			}
 
-			if (!isFinite(_b1)) {
+			якщо (!isFinite(_b1)) {
 				disable();
-				return false;
+				повернути false;
 			}
 
-			return true;
+			повернути true;
 
-		} else {
+		} інакше {
 			// no change, do nothing
-			return true;
+			повернути true;
 		}
 	}
 
@@ -279,20 +279,20 @@ bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float ba
 	_a1 = _b1;
 	_a2 = (1.f - alpha) * a0_inv;
 
-	if (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a2)) {
+	якщо (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a2)) {
 		disable();
-		return false;
+		повернути false;
 	}
 
 	// force reset if bandwidth or sample frequency changed by more than 1%
-	if (bandwidth_diff > 0.01f * _bandwidth) {
+	якщо (bandwidth_diff > 0.01f * _bandwidth) {
 		_initialized = false;
 
-	} else if (sample_freq_diff > 0.01f * _sample_freq) {
+	} інакше якщо (sample_freq_diff > 0.01f * _sample_freq) {
 		_initialized = false;
 	}
 
-	return true;
+	повернути true;
 }
 
 } // namespace math
