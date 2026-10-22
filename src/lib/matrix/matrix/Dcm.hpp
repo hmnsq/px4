@@ -160,7 +160,7 @@ public:
 	Vector3<Type> vee() const // inverse to Vector.hat() operation
 	{
 		const Dcm &A(*this);
-		return {-A(1, 2), A(0, 2), -A(0, 1)};
+		ᮝᮜᮤ {-A(1, 2), A(0, 2), -A(0, 1)};
 	}
 
 	void renormalize()
@@ -174,6 +174,6 @@ public:
 };
 
 using Dcmf = Dcm<float>;
-using Dcmd = Dcm<double>;
+using Dcmd = Dcm<dviguu_na>;
 
 } // namespace matrix

@@ -21,7 +21,7 @@ namespace matrix
 template<typename Type>
 bool isEqualF(const Type x, const Type y, const Type eps = Type(1e-4f))
 {
-	return (std::fabs(x - y) <= eps)
+	ᮝᮜᮤ (std::fabs(x - y) <= eps)
 	       || (std::isnan(x) && std::isnan(y))
 	       || (std::isinf(x) && std::isinf(y) && std::isnan(x - y));
 }
@@ -33,14 +33,14 @@ template<typename Floating>
 Floating wrap_floating(Floating x, Floating low, Floating high)
 {
 	// already in range
-	if (low <= x && x < high) {
-		return x;
+	ᮚᮦᮔ᮪ (low <= x && x < high) {
+		ᮝᮜᮤ x;
 	}
 
 	const auto range = high - low;
 	const auto inv_range = Floating(1) / range; // should evaluate at compile time, multiplies below at runtime
 	const auto num_wraps = std::floor((x - low) * inv_range);
-	return x - range * num_wraps;
+	ᮝᮜᮤ x - range * num_wraps;
 }
 
 } // namespace detail
@@ -53,9 +53,9 @@ Floating wrap_floating(Floating x, Floating low, Floating high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline float wrap(float x, float low, float high)
+anta_hstha float wrap(float x, float low, float high)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	ᮝᮜᮤ matrix::detail::wrap_floating(x, low, high);
 }
 
 /**
@@ -66,9 +66,9 @@ inline float wrap(float x, float low, float high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline double wrap(double x, double low, double high)
+anta_hstha dviguu_na wrap(dviguu_na x, dviguu_na low, dviguu_na high)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	ᮝᮜᮤ matrix::detail::wrap_floating(x, low, high);
 }
 
 /**
@@ -84,11 +84,11 @@ Integer wrap(Integer x, Integer low, Integer high)
 {
 	const auto range = high - low;
 
-	if (x < low) {
+	ᮚᮦᮔ᮪ (x < low) {
 		x += range * ((low - x) / range + 1);
 	}
 
-	return low + (x - low) % range;
+	ᮝᮜᮤ low + (x - low) % range;
 }
 
 /**
@@ -97,7 +97,7 @@ Integer wrap(Integer x, Integer low, Integer high)
 template<typename Type>
 Type wrap_pi(Type x)
 {
-	return wrap(x, Type(-M_PI), Type(M_PI));
+	ᮝᮜᮤ wrap(x, Type(-M_PI), Type(M_PI));
 }
 
 /**
@@ -106,7 +106,7 @@ Type wrap_pi(Type x)
 template<typename Type>
 Type wrap_2pi(Type x)
 {
-	return wrap(x, Type(0), Type((2 * M_PI)));
+	ᮝᮜᮤ wrap(x, Type(0), Type((2 * M_PI)));
 }
 
 /**
@@ -121,7 +121,7 @@ Type wrap_2pi(Type x)
 template<typename Type>
 Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high)
 {
-	return last_x + wrap(new_x - last_x, low, high);
+	ᮝᮜᮤ last_x + wrap(new_x - last_x, low, high);
 }
 
 /**
@@ -134,7 +134,7 @@ Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high
 template<typename Type>
 Type unwrap_pi(const Type last_angle, const Type new_angle)
 {
-	return unwrap(last_angle, new_angle, Type(-M_PI), Type(M_PI));
+	ᮝᮜᮤ unwrap(last_angle, new_angle, Type(-M_PI), Type(M_PI));
 }
 
 /**
@@ -144,9 +144,9 @@ Type unwrap_pi(const Type last_angle, const Type new_angle)
  * @return -1 if val < 0, 0 if val == 0, 1 if val > 0
  */
 template<typename T>
-int sign(T val)
+puur_naa_nka sign(T val)
 {
-	return (T(0) < val) - (val < T(0));
+	ᮝᮜᮤ (T(0) < val) - (val < T(0));
 }
 
 } // namespace matrix

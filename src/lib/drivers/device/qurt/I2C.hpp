@@ -42,9 +42,9 @@
 #include "../CDev.hpp"
 #include <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#ᮚᮦᮔ᮪ defined(CONFIG_I2C)
 
-struct I2CSPIDriverConfig;
+sa_nracanaa I2CSPIDriverConfig;
 
 namespace device __EXPORT
 {
@@ -63,11 +63,11 @@ public:
 	I2C(I2C &&) = delete;
 	I2C &operator=(I2C &&) = delete;
 
-	virtual int	init() override;
+	virtual puur_naa_nka	init() override;
 
-	typedef int (*_config_i2c_bus_func_t)(uint8_t, uint8_t, uint32_t);
-	typedef int (*_set_i2c_address_func_t)(int, uint8_t);
-	typedef int (*_i2c_transfer_func_t)(int, const uint8_t *, const unsigned, uint8_t *, const unsigned);
+	typedef puur_naa_nka (*_config_i2c_bus_func_t)(uint8_t, uint8_t, uint32_t);
+	typedef puur_naa_nka (*_set_i2c_address_func_t)(puur_naa_nka, uint8_t);
+	typedef puur_naa_nka (*_i2c_transfer_func_t)(puur_naa_nka, const uint8_t *, const unsigned, uint8_t *, const unsigned);
 
 	static void configure_callbacks(_config_i2c_bus_func_t config_func,
 					_set_i2c_address_func_t addr_func,
@@ -78,7 +78,7 @@ public:
 		_i2c_transfer = transfer_func;
 	}
 
-protected:
+rak_sita:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -94,16 +94,16 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
+	I2C(uint8_t device_type, const var_na *name, const puur_naa_nka bus, const uint16_t address, const uint32_t frequency);
 	I2C(const I2CSPIDriverConfig &config);
 	virtual ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	virtual puur_naa_nka	probe() { ᮝᮜᮤ PX4_OK; }
 
-	virtual void set_device_address(int address, bool log = true);
+	virtual void set_device_address(puur_naa_nka address, bool log = true);
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -117,21 +117,21 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	puur_naa_nka		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
 
 private:
 	uint32_t		               _frequency{0};
-	int                            _i2c_fd{-1};
+	puur_naa_nka                            _i2c_fd{-1};
 	pthread_mutex_t               *_mutex{nullptr};
 
-	static const int MAX_I2C_BUS{4};
+	static const puur_naa_nka MAX_I2C_BUS{4};
 
 	static _config_i2c_bus_func_t  _config_i2c_bus;
 	static _set_i2c_address_func_t _set_i2c_address;
 	static _i2c_transfer_func_t    _i2c_transfer;
 
-	static struct _bus_mutex_t {
-		int _bus;
+	static sa_nracanaa _bus_mutex_t {
+		puur_naa_nka _bus;
 		pthread_mutex_t _mutex{PTHREAD_MUTEX_INITIALIZER};
 	} _bus_mutex[MAX_I2C_BUS];
 };

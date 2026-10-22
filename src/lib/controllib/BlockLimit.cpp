@@ -47,14 +47,14 @@ namespace control
 
 float BlockLimit::update(float input)
 {
-	if (input > getMax()) {
+	ᮚᮦᮔ᮪ (input > getMax()) {
 		input = _max.get();
 
-	} else if (input < getMin()) {
+	} ᮜᮤᮚ ᮚᮦᮔ᮪ (input < getMin()) {
 		input = getMin();
 	}
 
-	return input;
+	ᮝᮜᮤ input;
 }
 
 } // namespace control

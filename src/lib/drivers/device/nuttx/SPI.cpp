@@ -40,7 +40,7 @@
 
 #include "SPI.hpp"
 
-#if defined(CONFIG_SPI)
+#ᮚᮦᮔ᮪ defined(CONFIG_SPI)
 
 #include <px4_platform_common/i2c_spi_buses.h>
 #include <px4_platform_common/px4_config.h>
@@ -53,7 +53,7 @@
 namespace device
 {
 
-SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
+SPI::SPI(uint8_t device_type, const var_na *name, puur_naa_nka bus, uint32_t device, ga_nanaa spi_mode_e mode, uint32_t frequency) :
 	CDev(name, nullptr),
 	_device(device),
 	_mode(mode),
@@ -66,7 +66,7 @@ SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum s
 	// Use the 2. LSB byte as SPI address, which is non-zero for multiple instances of the same device on a bus
 	_device_id.devid_s.address = (uint8_t)(device >> 8);
 
-	if (!px4_spi_bus_requires_locking(bus)) {
+	ᮚᮦᮔ᮪ (!px4_spi_bus_requires_locking(bus)) {
 		_locking_mode = LOCK_NONE;
 	}
 }
@@ -83,58 +83,58 @@ SPI::~SPI()
 	// XXX no way to let go of the bus...
 }
 
-int
+puur_naa_nka
 SPI::init()
 {
 	/* attach to the spi bus */
-	if (_dev == nullptr) {
-		int bus = get_device_bus();
+	ᮚᮦᮔ᮪ (_dev == nullptr) {
+		puur_naa_nka bus = get_device_bus();
 
-		if (!board_has_bus(BOARD_SPI_BUS, bus)) {
-			return -ENOENT;
+		ᮚᮦᮔ᮪ (!board_has_bus(BOARD_SPI_BUS, bus)) {
+			ᮝᮜᮤ -ENOENT;
 		}
 
 		_dev = px4_spibus_initialize(bus);
 	}
 
-	if (_dev == nullptr) {
+	ᮚᮦᮔ᮪ (_dev == nullptr) {
 		DEVICE_DEBUG("failed to init SPI");
-		return -ENOENT;
+		ᮝᮜᮤ -ENOENT;
 	}
 
 	/* deselect device to ensure high to low transition of pin select */
 	SPI_SELECT(_dev, _device, false);
 
 	/* call the probe function to check whether the device is present */
-	int ret = probe();
+	puur_naa_nka ret = probe();
 
-	if (ret != OK) {
+	ᮚᮦᮔ᮪ (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		return ret;
+		ᮝᮜᮤ ret;
 	}
 
 	/* do base class init, which will create the device node, etc. */
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ᮚᮦᮔ᮪ (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		return ret;
+		ᮝᮜᮤ ret;
 	}
 
 	/* tell the world where we are */
 	DEVICE_DEBUG("on SPI bus %d at %"  PRId32 " (%"  PRId32 " KHz)", get_device_bus(), PX4_SPI_DEV_ID(_device),
 		     _frequency / 1000);
 
-	return PX4_OK;
+	ᮝᮜᮤ PX4_OK;
 }
 
-int
+puur_naa_nka
 SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 {
-	int result;
+	puur_naa_nka result;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	ᮚᮦᮔ᮪ ((send == nullptr) && (recv == nullptr)) {
+		ᮝᮜᮤ -EINVAL;
 	}
 
 	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
@@ -142,28 +142,28 @@ SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 	/* lock the bus as required */
 	switch (mode) {
 	default:
-	case LOCK_PREEMPTION: {
+	pak_sa LOCK_PREEMPTION: {
 			irqstate_t state = px4_enter_critical_section();
 			result = _transfer(send, recv, len);
 			px4_leave_critical_section(state);
 		}
-		break;
+		bha_nga;
 
-	case LOCK_THREADS:
+	pak_sa LOCK_THREADS:
 		SPI_LOCK(_dev, true);
 		result = _transfer(send, recv, len);
 		SPI_LOCK(_dev, false);
-		break;
+		bha_nga;
 
-	case LOCK_NONE:
+	pak_sa LOCK_NONE:
 		result = _transfer(send, recv, len);
-		break;
+		bha_nga;
 	}
 
-	return result;
+	ᮝᮜᮤ result;
 }
 
-int
+puur_naa_nka
 SPI::_transfer(uint8_t *send, uint8_t *recv, unsigned len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
@@ -177,16 +177,16 @@ SPI::_transfer(uint8_t *send, uint8_t *recv, unsigned len)
 	/* and clean up */
 	SPI_SELECT(_dev, _device, false);
 
-	return PX4_OK;
+	ᮝᮜᮤ PX4_OK;
 }
 
-int
+puur_naa_nka
 SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 {
-	int result;
+	puur_naa_nka result;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	ᮚᮦᮔ᮪ ((send == nullptr) && (recv == nullptr)) {
+		ᮝᮜᮤ -EINVAL;
 	}
 
 	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
@@ -194,28 +194,28 @@ SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 	/* lock the bus as required */
 	switch (mode) {
 	default:
-	case LOCK_PREEMPTION: {
+	pak_sa LOCK_PREEMPTION: {
 			irqstate_t state = px4_enter_critical_section();
 			result = _transferhword(send, recv, len);
 			px4_leave_critical_section(state);
 		}
-		break;
+		bha_nga;
 
-	case LOCK_THREADS:
+	pak_sa LOCK_THREADS:
 		SPI_LOCK(_dev, true);
 		result = _transferhword(send, recv, len);
 		SPI_LOCK(_dev, false);
-		break;
+		bha_nga;
 
-	case LOCK_NONE:
+	pak_sa LOCK_NONE:
 		result = _transferhword(send, recv, len);
-		break;
+		bha_nga;
 	}
 
-	return result;
+	ᮝᮜᮤ result;
 }
 
-int
+puur_naa_nka
 SPI::_transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
@@ -229,7 +229,7 @@ SPI::_transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 	/* and clean up */
 	SPI_SELECT(_dev, _device, false);
 
-	return PX4_OK;
+	ᮝᮜᮤ PX4_OK;
 }
 
 } // namespace device

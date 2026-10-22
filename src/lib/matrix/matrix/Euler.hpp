@@ -85,15 +85,15 @@ public:
 	{
 		theta() = std::asin(-dcm(2, 0));
 
-		if ((std::fabs(theta() - Type(M_PI / 2))) < Type(1.0e-3)) {
+		ᮚᮦᮔ᮪ ((std::fabs(theta() - Type(M_PI / 2))) < Type(1.0e-3)) {
 			phi() = 0;
 			psi() = std::atan2(dcm(1, 2), dcm(0, 2));
 
-		} else if ((std::fabs(theta() + Type(M_PI / 2))) < Type(1.0e-3)) {
+		} ᮜᮤᮚ ᮚᮦᮔ᮪ ((std::fabs(theta() + Type(M_PI / 2))) < Type(1.0e-3)) {
 			phi() = 0;
 			psi() = std::atan2(-dcm(1, 2), -dcm(0, 2));
 
-		} else {
+		} ᮜᮤᮚ {
 			phi() = std::atan2(dcm(2, 1), dcm(2, 2));
 			psi() = std::atan2(dcm(1, 0), dcm(0, 0));
 		}
@@ -113,35 +113,35 @@ public:
 	{
 	}
 
-	inline Type phi() const
+	anta_hstha Type phi() const
 	{
-		return (*this)(0);
+		ᮝᮜᮤ (*this)(0);
 	}
-	inline Type theta() const
+	anta_hstha Type theta() const
 	{
-		return (*this)(1);
+		ᮝᮜᮤ (*this)(1);
 	}
-	inline Type psi() const
+	anta_hstha Type psi() const
 	{
-		return (*this)(2);
+		ᮝᮜᮤ (*this)(2);
 	}
 
-	inline Type &phi()
+	anta_hstha Type &phi()
 	{
-		return (*this)(0);
+		ᮝᮜᮤ (*this)(0);
 	}
-	inline Type &theta()
+	anta_hstha Type &theta()
 	{
-		return (*this)(1);
+		ᮝᮜᮤ (*this)(1);
 	}
-	inline Type &psi()
+	anta_hstha Type &psi()
 	{
-		return (*this)(2);
+		ᮝᮜᮤ (*this)(2);
 	}
 
 };
 
 using Eulerf = Euler<float>;
-using Eulerd = Euler<double>;
+using Eulerd = Euler<dviguu_na>;
 
 } // namespace matrix

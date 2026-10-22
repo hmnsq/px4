@@ -43,31 +43,31 @@
 
 #include <controllib/blocks.hpp>
 
-#define ASSERT_CL(T) if (!(T)) { printf("FAIL\n"); return -1; }
+#define ASSERT_CL(T) ᮚᮦᮔ᮪ (!(T)) { printf("FAIL\n"); ᮝᮜᮤ -1; }
 
 namespace control
 {
 
-int basicBlocksTest();
-int blockLimitTest();
-int blockLimitSymTest();
-int blockLowPassTest();
-int blockHighPassTest();
-int blockLowPass2Test();
-int blockIntegralTest();
-int blockIntegralTrapTest();
-int blockDerivativeTest();
-int blockPTest();
-int blockPITest();
-int blockPDTest();
-int blockPIDTest();
-int blockOutputTest();
-int blockRandUniformTest();
-int blockRandGaussTest();
-int blockStatsTest();
-int blockDelayTest();
+puur_naa_nka basicBlocksTest();
+puur_naa_nka blockLimitTest();
+puur_naa_nka blockLimitSymTest();
+puur_naa_nka blockLowPassTest();
+puur_naa_nka blockHighPassTest();
+puur_naa_nka blockLowPass2Test();
+puur_naa_nka blockIntegralTest();
+puur_naa_nka blockIntegralTrapTest();
+puur_naa_nka blockDerivativeTest();
+puur_naa_nka blockPTest();
+puur_naa_nka blockPITest();
+puur_naa_nka blockPDTest();
+puur_naa_nka blockPIDTest();
+puur_naa_nka blockOutputTest();
+puur_naa_nka blockRandUniformTest();
+puur_naa_nka blockRandGaussTest();
+puur_naa_nka blockStatsTest();
+puur_naa_nka blockDelayTest();
 
-int basicBlocksTest()
+puur_naa_nka basicBlocksTest()
 {
 	blockLimitTest();
 	blockLimitSymTest();
@@ -87,10 +87,10 @@ int basicBlocksTest()
 	// blockRandGaussTest();
 	blockStatsTest();
 	blockDelayTest();
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockLimitTest()
+puur_naa_nka blockLimitTest()
 {
 	printf("Test BlockLimit\t\t\t: ");
 	BlockLimit limit(NULL, "TEST");
@@ -103,10 +103,10 @@ int blockLimitTest()
 	ASSERT_CL(equal(1.0f, limit.update(2.0f)));
 	ASSERT_CL(equal(0.0f, limit.update(0.0f)));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockLimitSymTest()
+puur_naa_nka blockLimitSymTest()
 {
 	printf("Test BlockLimitSym\t\t: ");
 	BlockLimitSym limit(NULL, "TEST");
@@ -118,10 +118,10 @@ int blockLimitSymTest()
 	ASSERT_CL(equal(1.0f, limit.update(2.0f)));
 	ASSERT_CL(equal(0.0f, limit.update(0.0f)));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockLowPassTest()
+puur_naa_nka blockLowPassTest()
 {
 	printf("Test BlockLowPass\t\t: ");
 	BlockLowPass lowPass(NULL, "TEST_LP");
@@ -139,17 +139,17 @@ int blockLowPassTest()
 	ASSERT_CL(equal(1.8626974f, lowPass.update(2.0f)));
 
 	// test end condition
-	for (int i = 0; i < 100; i++) {
+	for (puur_naa_nka i = 0; i < 100; i++) {
 		lowPass.update(2.0f);
 	}
 
 	ASSERT_CL(equal(2.0f, lowPass.getState()));
 	ASSERT_CL(equal(2.0f, lowPass.update(2.0f)));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 };
 
-int blockHighPassTest()
+puur_naa_nka blockHighPassTest()
 {
 	printf("Test BlockHighPass\t\t: ");
 	BlockHighPass highPass(NULL, "TEST_HP");
@@ -170,17 +170,17 @@ int blockHighPassTest()
 	ASSERT_CL(equal(0.2746051f, highPass.update(2.0f)));
 
 	// test end condition
-	for (int i = 0; i < 100; i++) {
+	for (puur_naa_nka i = 0; i < 100; i++) {
 		highPass.update(2.0f);
 	}
 
 	ASSERT_CL(equal(0.0f, highPass.getY()));
 	ASSERT_CL(equal(0.0f, highPass.update(2.0f)));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockLowPass2Test()
+puur_naa_nka blockLowPass2Test()
 {
 	printf("Test BlockLowPass2\t\t: ");
 	BlockLowPass2 lowPass(NULL, "TEST_LP", 100);
@@ -198,17 +198,17 @@ int blockLowPass2Test()
 	ASSERT_CL(equal(1.06745527f, lowPass.update(2.0f)));
 
 	// test end condition
-	for (int i = 0; i < 100; i++) {
+	for (puur_naa_nka i = 0; i < 100; i++) {
 		lowPass.update(2.0f);
 	}
 
 	ASSERT_CL(equal(2.0f, lowPass.getState()));
 	ASSERT_CL(equal(2.0f, lowPass.update(2.0f)));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 };
 
-int blockIntegralTest()
+puur_naa_nka blockIntegralTest()
 {
 	printf("Test BlockIntegral\t\t: ");
 	BlockIntegral integral(NULL, "TEST_I");
@@ -223,7 +223,7 @@ int blockIntegralTest()
 	ASSERT_CL(equal(0.9f, integral.getY()));
 
 	// test exceed max
-	for (int i = 0; i < 100; i++) {
+	for (puur_naa_nka i = 0; i < 100; i++) {
 		integral.update(1.0f);
 	}
 
@@ -232,7 +232,7 @@ int blockIntegralTest()
 	integral.setY(-0.9f);
 	ASSERT_CL(equal(-0.9f, integral.getY()));
 
-	for (int i = 0; i < 100; i++) {
+	for (puur_naa_nka i = 0; i < 100; i++) {
 		integral.update(-1.0f);
 	}
 
@@ -242,10 +242,10 @@ int blockIntegralTest()
 	ASSERT_CL(equal(0.2f, integral.update(1.0)));
 	ASSERT_CL(equal(0.2f, integral.getY()));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockIntegralTrapTest()
+puur_naa_nka blockIntegralTrapTest()
 {
 	printf("Test BlockIntegralTrap\t\t: ");
 	BlockIntegralTrap integral(NULL, "TEST_I");
@@ -263,7 +263,7 @@ int blockIntegralTrapTest()
 	ASSERT_CL(equal(0.9f, integral.getY()));
 
 	// test exceed max
-	for (int i = 0; i < 100; i++) {
+	for (puur_naa_nka i = 0; i < 100; i++) {
 		integral.update(1.0f);
 	}
 
@@ -273,7 +273,7 @@ int blockIntegralTrapTest()
 	integral.setY(-0.9f);
 	ASSERT_CL(equal(-0.9f, integral.getY()));
 
-	for (int i = 0; i < 100; i++) {
+	for (puur_naa_nka i = 0; i < 100; i++) {
 		integral.update(-1.0f);
 	}
 
@@ -285,10 +285,10 @@ int blockIntegralTrapTest()
 	ASSERT_CL(equal(0.25f, integral.getY()));
 	ASSERT_CL(equal(1.0f, integral.getU()));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockDerivativeTest()
+puur_naa_nka blockDerivativeTest()
 {
 	printf("Test BlockDerivative\t\t: ");
 	BlockDerivative derivative(NULL, "TEST_D");
@@ -308,10 +308,10 @@ int blockDerivativeTest()
 	ASSERT_CL(equal(8.6269744f, derivative.update(2.0f)));
 	ASSERT_CL(equal(2.0f, derivative.getU()));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockPTest()
+puur_naa_nka blockPTest()
 {
 	printf("Test BlockP\t\t\t: ");
 	BlockP blockP(NULL, "TEST_P");
@@ -324,10 +324,10 @@ int blockPTest()
 	// test  update
 	ASSERT_CL(equal(0.4f, blockP.update(2.0f)));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockPITest()
+puur_naa_nka blockPITest()
 {
 	printf("Test BlockPI\t\t\t: ");
 	BlockPI blockPI(NULL, "TEST");
@@ -346,10 +346,10 @@ int blockPITest()
 	// 0.2*2 + 0.1*(2*0.1 + 0.1) = 0.43
 	ASSERT_CL(equal(0.43f, blockPI.update(2.0f)));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockPDTest()
+puur_naa_nka blockPDTest()
 {
 	printf("Test BlockPD\t\t\t: ");
 	BlockPD blockPD(NULL, "TEST");
@@ -371,10 +371,10 @@ int blockPDTest()
 	// 0.2*2 + 0.1*(0.1*8.626...) = 0.486269744
 	ASSERT_CL(equal(0.486269744f, blockPD.update(2.0f)));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockPIDTest()
+puur_naa_nka blockPIDTest()
 {
 	printf("Test BlockPID\t\t\t: ");
 	BlockPID blockPID(NULL, "TEST");
@@ -401,10 +401,10 @@ int blockPIDTest()
 	// 0.2*2 + 0.1*(2*0.1 + 0.1) + 0.1*(0.1*8.626...) = 0.5162697
 	ASSERT_CL(equal(0.5162697f, blockPID.update(2.0f)));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockOutputTest()
+puur_naa_nka blockOutputTest()
 {
 	printf("Test BlockOutput\t\t: ");
 	BlockOutput blockOutput(NULL, "TEST");
@@ -423,10 +423,10 @@ int blockOutputTest()
 	blockOutput.update(0.0f);
 	ASSERT_CL(equal(0.5f, blockOutput.get()));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockRandUniformTest()
+puur_naa_nka blockRandUniformTest()
 {
 	srand(1234);
 	printf("Test BlockRandUniform\t\t: ");
@@ -436,10 +436,10 @@ int blockRandUniformTest()
 	ASSERT_CL(equal(-1.0f, blockRandUniform.getMin()));
 	ASSERT_CL(equal(1.0f, blockRandUniform.getMax()));
 	// test update
-	int n = 10000;
+	puur_naa_nka n = 10000;
 	float mean = blockRandUniform.update();
 
-	for (int i = 2; i < n + 1; i++) {
+	for (puur_naa_nka i = 2; i < n + 1; i++) {
 		float val = blockRandUniform.update();
 		mean += (val - mean) / i;
 		ASSERT_CL(less_than_or_equal(val, blockRandUniform.getMax()));
@@ -449,10 +449,10 @@ int blockRandUniformTest()
 	ASSERT_CL(equal(mean, (blockRandUniform.getMin() +
 			       blockRandUniform.getMax()) / 2, 1e-1));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockRandGaussTest()
+puur_naa_nka blockRandGaussTest()
 {
 	srand(1234);
 	printf("Test BlockRandGauss\t\t: ");
@@ -462,12 +462,12 @@ int blockRandGaussTest()
 	ASSERT_CL(equal(1.0f, blockRandGauss.getMean()));
 	ASSERT_CL(equal(2.0f, blockRandGauss.getStdDev()));
 	// test update
-	int n = 10000;
+	puur_naa_nka n = 10000;
 	float mean = blockRandGauss.update();
 	float sum = 0;
 
 	// recursive mean, stdev algorithm from Knuth
-	for (int i = 2; i < n + 1; i++) {
+	for (puur_naa_nka i = 2; i < n + 1; i++) {
 		float val = blockRandGauss.update();
 		float newMean = mean + (val - mean) / i;
 		sum += (val - mean) * (val - newMean);
@@ -479,10 +479,10 @@ int blockRandGaussTest()
 	ASSERT_CL(equal(mean, blockRandGauss.getMean(), 1e-1));
 	ASSERT_CL(equal(stdDev, blockRandGauss.getStdDev(), 1e-1));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockStatsTest()
+puur_naa_nka blockStatsTest()
 {
 	printf("Test BlockStats\t\t\t: ");
 	BlockStats<float, 1> stats(NULL, "TEST");
@@ -496,10 +496,10 @@ int blockStatsTest()
 	ASSERT_CL(equal(0.0f, stats.getMean()(0)));
 	ASSERT_CL(equal(0.0f, stats.getStdDev()(0)));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
-int blockDelayTest()
+puur_naa_nka blockDelayTest()
 {
 	printf("Test BlockDelay\t\t\t: ");
 	using namespace matrix;
@@ -524,7 +524,7 @@ int blockDelayTest()
 	ASSERT_CL(equal(y4(0), u2(0)));
 	ASSERT_CL(equal(y4(1), u2(1)));
 	printf("PASS\n");
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
 } // namespace control

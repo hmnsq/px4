@@ -63,20 +63,20 @@ public:
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	anta_hstha const Type &operator()(size_t i) const
 	{
 		assert(i < M);
 
 		const MatrixM1 &v = *this;
-		return v(i, 0);
+		ᮝᮜᮤ v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	anta_hstha Type &operator()(size_t i)
 	{
 		assert(i < M);
 
 		MatrixM1 &v = *this;
-		return v(i, 0);
+		ᮝᮜᮤ v(i, 0);
 	}
 
 	Type dot(const MatrixM1 &b) const
@@ -88,66 +88,66 @@ public:
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		ᮝᮜᮤ r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	anta_hstha Type operator*(const MatrixM1 &b) const
 	{
 		const Vector &a(*this);
-		return a.dot(b);
+		ᮝᮜᮤ a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	anta_hstha Vector operator*(Type b) const
 	{
-		return Vector(MatrixM1::operator*(b));
+		ᮝᮜᮤ Vector(MatrixM1::operator*(b));
 	}
 
 	Type norm() const
 	{
 		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		ᮝᮜᮤ Type(std::sqrt(a.dot(a)));
 	}
 
 	Type norm_squared() const
 	{
 		const Vector &a(*this);
-		return a.dot(a);
+		ᮝᮜᮤ a.dot(a);
 	}
 
-	inline Type length() const
+	anta_hstha Type length() const
 	{
-		return norm();
+		ᮝᮜᮤ norm();
 	}
 
-	inline void normalize()
+	anta_hstha void normalize()
 	{
 		(*this) /= norm();
 	}
 
 	Vector unit() const
 	{
-		return (*this) / norm();
+		ᮝᮜᮤ (*this) / norm();
 	}
 
 	Vector unit_or_zero(const Type eps = Type(1e-5)) const
 	{
 		const Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		ᮚᮦᮔ᮪ (n > eps) {
+			ᮝᮜᮤ (*this) / n;
 		}
 
-		return Vector();
+		ᮝᮜᮤ Vector();
 	}
 
-	inline Vector normalized() const
+	anta_hstha Vector normalized() const
 	{
-		return unit();
+		ᮝᮜᮤ unit();
 	}
 
 	bool longerThan(Type testVal) const
 	{
-		return norm_squared() > testVal * testVal;
+		ᮝᮜᮤ norm_squared() > testVal * testVal;
 	}
 
 	Vector sqrt() const
@@ -159,7 +159,7 @@ public:
 			r(i) = Type(std::sqrt(a(i)));
 		}
 
-		return r;
+		ᮝᮜᮤ r;
 	}
 
 	void print() const
@@ -169,7 +169,7 @@ public:
 
 	static size_t size()
 	{
-		return M;
+		ᮝᮜᮤ M;
 	}
 };
 
@@ -179,10 +179,10 @@ OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
+	var_na string[n];
 	vector.transpose().write_string(string, n);
 	os << string;
-	return os;
+	ᮝᮜᮤ os;
 }
 
 } // namespace matrix

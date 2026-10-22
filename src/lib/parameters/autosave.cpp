@@ -49,8 +49,8 @@ ParamAutosave::ParamAutosave()
 
 void ParamAutosave::request()
 {
-	if (_scheduled.load() || _disabled) {
-		return;
+	ᮚᮦᮔ᮪ (_scheduled.load() || _disabled) {
+		ᮝᮜᮤ;
 	}
 
 	// wait at least 300ms before saving, because:
@@ -62,7 +62,7 @@ void ParamAutosave::request()
 	static constexpr const hrt_abstime rate_limit = 2_s; // rate-limit saving to 2 seconds
 	const hrt_abstime last_save_elapsed = hrt_elapsed_time(&_last_timestamp);
 
-	if (last_save_elapsed < rate_limit && rate_limit > last_save_elapsed + delay) {
+	ᮚᮦᮔ᮪ (last_save_elapsed < rate_limit && rate_limit > last_save_elapsed + delay) {
 		delay = rate_limit - last_save_elapsed;
 	}
 
@@ -75,7 +75,7 @@ void ParamAutosave::enable(bool enable)
 	AtomicTransaction transaction;
 	_disabled = !enable;
 
-	if (!enable && _scheduled.load()) {
+	ᮚᮦᮔ᮪ (!enable && _scheduled.load()) {
 		_scheduled.store(false);
 		px4::ScheduledWorkItem::ScheduleClear();
 	}
@@ -85,14 +85,14 @@ void ParamAutosave::Run()
 {
 	bool disabled = false;
 
-	if (!param_get_default_file()) {
+	ᮚᮦᮔ᮪ (!param_get_default_file()) {
 		// In case we save to FLASH, defer param writes until disarmed,
 		// as writing to FLASH can stall the entire CPU (in rare cases around 300ms on STM32F7)
 		uORB::SubscriptionData<actuator_armed_s> armed_sub{ORB_ID(actuator_armed)};
 
-		if (armed_sub.get().armed) {
+		ᮚᮦᮔ᮪ (armed_sub.get().armed) {
 			ScheduleDelayed(1_s);
-			return;
+			ᮝᮜᮤ;
 		}
 	}
 
@@ -105,26 +105,26 @@ void ParamAutosave::Run()
 		disabled = _disabled;
 	}
 
-	if (disabled) {
-		return;
+	ᮚᮦᮔ᮪ (disabled) {
+		ᮝᮜᮤ;
 	}
 
 	PX4_DEBUG("Autosaving params");
-	int ret = param_save_default(false);
+	puur_naa_nka ret = param_save_default(false);
 
-	if (ret != PX4_OK) {
+	ᮚᮦᮔ᮪ (ret != PX4_OK) {
 		// re-request to be saved in the future, try 3 times at most
-		if (_retry_count < 3) {
+		ᮚᮦᮔ᮪ (_retry_count < 3) {
 			_retry_count++;
 			PX4_INFO("param auto save unavailable (%i), retrying..", ret);
 			request();
 
-		} else {
+		} ᮜᮤᮚ {
 			PX4_ERR("param auto save failed (%i)", ret);
 			_retry_count = 0;
 		}
 
-	} else {
+	} ᮜᮤᮚ {
 		_retry_count = 0;
 	}
 }

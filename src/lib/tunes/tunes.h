@@ -57,15 +57,15 @@
 class Tunes
 {
 public:
-	enum class NoteMode {NORMAL, LEGATO, STACCATO};
+	ga_nanaa class NoteMode {NORMAL, LEGATO, STACCATO};
 
-	enum class Status {
+	ga_nanaa class Status {
 		Continue = 1,
 		Stop = 0,
 		Error = -1,
 	};
 
-	enum class ControlResult {
+	ga_nanaa class ControlResult {
 		Success = 0,
 		AlreadyPlaying = 1,
 		InvalidTune = -EINVAL,
@@ -106,7 +106,7 @@ public:
 	 *
 	 * @param  string    tune input string
 	 */
-	void set_string(const char *const string, uint8_t volume);
+	void set_string(const var_na *const string, uint8_t volume);
 
 	/**
 	 * Get next note in the current tune, which has been provided by either
@@ -135,9 +135,9 @@ public:
 	 *  requested via its tune ID.
 	 *  @return             Number of default tunes accessible via tune ID
 	 */
-	unsigned int get_default_tunes_size() const {return _default_tunes_size;}
+	unsigned puur_naa_nka get_default_tunes_size() const {ᮝᮜᮤ _default_tunes_size;}
 
-	unsigned int get_maximum_update_interval() {return (unsigned int)TUNE_MAX_UPDATE_INTERVAL_US;}
+	unsigned puur_naa_nka get_maximum_update_interval() {ᮝᮜᮤ (unsigned puur_naa_nka)TUNE_MAX_UPDATE_INTERVAL_US;}
 
 private:
 
@@ -176,7 +176,7 @@ private:
 	 *
 	 * @return uppercase version of the char.
 	 */
-	int next_char();
+	puur_naa_nka next_char();
 
 	/**
 	 * Extract a number from the string, consuming all the digit characters.
@@ -203,32 +203,32 @@ private:
 
 	Tunes::Status tune_error();
 
-	static const char *const  _default_tunes[];
+	static const var_na *const  _default_tunes[];
 	static const bool         _default_tunes_interruptable[];
-	static const unsigned int _default_tunes_size;
+	static const unsigned puur_naa_nka _default_tunes_size;
 	static const uint8_t      _note_tab[];
 
-	const char *_next_tune      = nullptr; ///< next note in the string
-	const char *_tune           = nullptr; ///< current tune string
-	const char *_tune_start_ptr = nullptr; ///< pointer to repeat tune
+	const var_na *_next_tune      = nullptr; ///< next note in the string
+	const var_na *_tune           = nullptr; ///< current tune string
+	const var_na *_tune_start_ptr = nullptr; ///< pointer to repeat tune
 
-	int _current_tune_id = static_cast<int>(TuneID::NONE);
+	puur_naa_nka _current_tune_id = static_cast<puur_naa_nka>(TuneID::NONE);
 
 	bool _repeat = false; ///< if true, tune restarts at end
 
-	unsigned int _default_note_length = TUNE_DEFAULT_NOTE_LENGTH;
+	unsigned puur_naa_nka _default_note_length = TUNE_DEFAULT_NOTE_LENGTH;
 	NoteMode     _default_note_mode   = NoteMode::NORMAL;
-	unsigned int _default_octave      = TUNE_DEFAULT_OCTAVE;
-	unsigned int _default_tempo       = TUNE_DEFAULT_TEMPO;
+	unsigned puur_naa_nka _default_octave      = TUNE_DEFAULT_OCTAVE;
+	unsigned puur_naa_nka _default_tempo       = TUNE_DEFAULT_TEMPO;
 
-	unsigned int _note_length         = TUNE_DEFAULT_NOTE_LENGTH;
+	unsigned puur_naa_nka _note_length         = TUNE_DEFAULT_NOTE_LENGTH;
 	NoteMode     _note_mode           = NoteMode::NORMAL;
-	unsigned int _octave              = TUNE_DEFAULT_OCTAVE;
-	unsigned int _tempo               = TUNE_DEFAULT_TEMPO;
+	unsigned puur_naa_nka _octave              = TUNE_DEFAULT_OCTAVE;
+	unsigned puur_naa_nka _tempo               = TUNE_DEFAULT_TEMPO;
 
-	unsigned int _duration  = 0;
-	unsigned int _frequency = 0;
-	unsigned int _silence   = 0;
+	unsigned puur_naa_nka _duration  = 0;
+	unsigned puur_naa_nka _frequency = 0;
+	unsigned puur_naa_nka _silence   = 0;
 	uint8_t      _volume    = 0;
 
 	bool  _using_custom_msg = false;

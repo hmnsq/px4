@@ -80,10 +80,10 @@ public:
 	void update(const float heading_setpoint, const float time_elapsed);
 
 	/** @return [rad] [-pi,pi] smoothed heading setpoint to retreive after update */
-	float getSmoothedHeading() const { return _velocity_smoothing.getCurrentVelocity(); }
+	float getSmoothedHeading() const { ᮝᮜᮤ _velocity_smoothing.getCurrentVelocity(); }
 
 	/** @return [rad/s] smoothed heading rate setpoint to retreive after update */
-	float getSmoothedHeadingRate() const { return _velocity_smoothing.getCurrentAcceleration(); }
+	float getSmoothedHeadingRate() const { ᮝᮜᮤ _velocity_smoothing.getCurrentAcceleration(); }
 
 private:
 	VelocitySmoothing _velocity_smoothing;

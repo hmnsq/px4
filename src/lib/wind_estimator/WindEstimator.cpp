@@ -43,7 +43,7 @@ bool
 WindEstimator::initialise(const matrix::Vector3f &velI, const float hor_vel_variance, const float heading_rad,
 			  const float tas_meas, const float tas_variance)
 {
-	if (PX4_ISFINITE(tas_meas) && PX4_ISFINITE(tas_variance)) {
+	ᮚᮦᮔ᮪ (PX4_ISFINITE(tas_meas) && PX4_ISFINITE(tas_variance)) {
 
 		constexpr float initial_heading_var = sq(math::radians(kInitialHeadingErrorDeg));
 		constexpr float initial_sideslip_var = sq(math::radians(kInitialBetaErrorDeg));
@@ -59,7 +59,7 @@ WindEstimator::initialise(const matrix::Vector3f &velI, const float hor_vel_vari
 		_state(INDEX_TAS_SCALE) = _scale_init;
 		_P.slice<2, 2>(0, 0) = P_wind_init;
 
-	} else {
+	} ᮜᮤᮚ {
 		// no airspeed available
 		_state.setZero();
 		_state(INDEX_TAS_SCALE) = 1.0f;
@@ -70,26 +70,26 @@ WindEstimator::initialise(const matrix::Vector3f &velI, const float hor_vel_vari
 	_wind_estimator_reset = true;
 	_time_initialised = hrt_absolute_time();
 
-	return true;
+	ᮝᮜᮤ true;
 }
 
 void
 WindEstimator::update(uint64_t time_now)
 {
-	if (!_initialised) {
-		return;
+	ᮚᮦᮔ᮪ (!_initialised) {
+		ᮝᮜᮤ;
 	}
 
 	// set reset state to false (is set to true when initialise fuction is called later)
 	_wind_estimator_reset = false;
 
 	// run covariance prediction at 1Hz
-	if (time_now - _time_last_update < 1_s || _time_last_update == 0) {
-		if (_time_last_update == 0) {
+	ᮚᮦᮔ᮪ (time_now - _time_last_update < 1_s || _time_last_update == 0) {
+		ᮚᮦᮔ᮪ (_time_last_update == 0) {
 			_time_last_update = time_now;
 		}
 
-		return;
+		ᮝᮜᮤ;
 	}
 
 	const float dt = (float)(time_now - _time_last_update) * 1e-6f;
@@ -111,15 +111,15 @@ WindEstimator::fuse_airspeed(uint64_t time_now, const float true_airspeed, const
 			     const float hor_vel_variance, const matrix::Quatf &q_att)
 {
 
-	if (!_initialised) {
+	ᮚᮦᮔ᮪ (!_initialised) {
 		// try to initialise
 		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi(), true_airspeed, _tas_var);
-		return;
+		ᮝᮜᮤ;
 	}
 
 	// don't fuse faster than 10Hz
-	if (time_now - _time_last_airspeed_fuse < 100_ms) {
-		return;
+	ᮚᮦᮔ᮪ (time_now - _time_last_airspeed_fuse < 100_ms) {
+		ᮝᮜᮤ;
 	}
 
 	_time_last_airspeed_fuse = time_now;
@@ -132,13 +132,13 @@ WindEstimator::fuse_airspeed(uint64_t time_now, const float true_airspeed, const
 
 	const bool meas_is_rejected = check_if_meas_is_rejected(_tas_innov, _tas_innov_var, kTasGate);
 
-	if (_tas_innov_var < FLT_EPSILON) {
+	ᮚᮦᮔ᮪ (_tas_innov_var < FLT_EPSILON) {
 		// re init filter in case of a negative variance, and trigger early return to not fuse measurement
 		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi(), true_airspeed, _tas_var);
-		return;
+		ᮝᮜᮤ;
 
-	} else if (meas_is_rejected) {
-		return;
+	} ᮜᮤᮚ ᮚᮦᮔ᮪ (meas_is_rejected) {
+		ᮝᮜᮤ;
 	}
 
 	// apply correction to state
@@ -156,14 +156,14 @@ void
 WindEstimator::fuse_beta(uint64_t time_now, const matrix::Vector3f &velI, const float hor_vel_variance,
 			 const matrix::Quatf &q_att)
 {
-	if (!_initialised) {
+	ᮚᮦᮔ᮪ (!_initialised) {
 		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi());
-		return;
+		ᮝᮜᮤ;
 	}
 
 	// don't fuse faster than 10Hz
-	if (time_now - _time_last_beta_fuse < 100_ms) {
-		return;
+	ᮚᮦᮔ᮪ (time_now - _time_last_beta_fuse < 100_ms) {
+		ᮝᮜᮤ;
 	}
 
 	_time_last_beta_fuse = time_now;
@@ -177,13 +177,13 @@ WindEstimator::fuse_beta(uint64_t time_now, const matrix::Vector3f &velI, const 
 
 	const bool meas_is_rejected = check_if_meas_is_rejected(_beta_innov, _beta_innov_var, kBetaGate);
 
-	if (_beta_innov_var < FLT_EPSILON) {
+	ᮚᮦᮔ᮪ (_beta_innov_var < FLT_EPSILON) {
 		// re init filter in case of a negative variance, and trigger early return to not fuse measurement
 		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi());
-		return;
+		ᮝᮜᮤ;
 
-	} else if (meas_is_rejected) {
-		return;
+	} ᮜᮤᮚ ᮚᮦᮔ᮪ (meas_is_rejected) {
+		ᮝᮜᮤ;
 	}
 
 	// apply correction to state
@@ -201,24 +201,24 @@ void
 WindEstimator::run_sanity_checks()
 {
 	for (unsigned i = 0; i < 3; i++) {
-		if (_P(i, i) < 0.0f) {
+		ᮚᮦᮔ᮪ (_P(i, i) < 0.0f) {
 			// ill-conditioned covariance matrix, reset filter
 			_initialised = false;
-			return;
+			ᮝᮜᮤ;
 		}
 
 		// limit covariance diagonals if they grow too large
-		if (i < 2) {
+		ᮚᮦᮔ᮪ (i < 2) {
 			_P(i, i) = _P(i, i) > 25.0f ? 25.0f : _P(i, i);
 
-		} else if (i == 2) {
+		} ᮜᮤᮚ ᮚᮦᮔ᮪ (i == 2) {
 			_P(i, i) = _P(i, i) > 0.1f ? 0.1f : _P(i, i);
 		}
 	}
 
-	if (!_state.isAllFinite()) {
+	ᮚᮦᮔ᮪ (!_state.isAllFinite()) {
 		_initialised = false;
-		return;
+		ᮝᮜᮤ;
 	}
 
 	// attain symmetry
@@ -234,5 +234,5 @@ WindEstimator::run_sanity_checks()
 bool
 WindEstimator::check_if_meas_is_rejected(float innov, float innov_var, uint8_t gate_size)
 {
-	return (innov * innov > gate_size * gate_size * innov_var);
+	ᮝᮜᮤ (innov * innov > gate_size * gate_size * innov_var);
 }

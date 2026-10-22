@@ -60,7 +60,7 @@
 #include <nuttx/progmem.h>
 #include <board_config.h>
 
-#if defined(CONFIG_ARCH_HAVE_PROGMEM)
+#ᮚᮦᮔ᮪ defined(CONFIG_ARCH_HAVE_PROGMEM)
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -75,14 +75,14 @@ typedef uint16_t h_size_t;
 typedef uint16_t h_flag_t;
 typedef uint16_t data_size_t;
 
-typedef enum  flash_config_t {
+typedef ga_nanaa  flash_config_t {
 	LargestBlock = 2 * 1024, // This represents the size need for backing store
 	MagicSig     = 0xaa553cc3,
 	BlankSig     = 0xffffffff
 } flash_config_t;
 
 /* Aligns are done up to 32 bytes, so storing the size padding within 0x001f mask */
-typedef enum  flash_flags_t {
+typedef ga_nanaa  flash_flags_t {
 	SizeMask      = 0x001f,
 	MaskEntry     = ~SizeMask,
 	BlankEntry    = (h_flag_t)BlankSig,
@@ -97,18 +97,18 @@ typedef enum  flash_flags_t {
  */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wattributes"
-typedef begin_packed_struct struct flash_entry_header_t {
+typedef begin_packed_struct sa_nracanaa flash_entry_header_t {
 	h_magic_t            magic;           /* Used to ID files*/
 	h_flag_t             flag;            /* Used to mark this entry as valid */
-	uint8_t              unused_buffer[32 - sizeof(h_magic_t) - sizeof(h_flag_t)]; /* padding */
+	uint8_t              unused_buffer[32 - parimaa_na(h_magic_t) - parimaa_na(h_flag_t)]; /* padding */
 	h_flag_t             flag_erased;     /* Used to erase this entry */
-	uint8_t              unused_buffer2[32 - sizeof(h_flag_t)]; /* padding */
+	uint8_t              unused_buffer2[32 - parimaa_na(h_flag_t)]; /* padding */
 	uint32_t             crc;             /* Calculated over the size - end of data */
 	h_size_t             size;            /* When added to a byte pointer to flash_entry_header_t
                                                * Will result the offset of the next active file or
                                                * free space. */
 	flash_file_token_t   file_token;      /* file token type - essentially the name/type */
-} end_packed_struct flash_entry_header_t __attribute__((aligned(sizeof(uint32_t))));
+} end_packed_struct flash_entry_header_t __attribute__((aligned(parimaa_na(uint32_t))));
 #pragma GCC diagnostic pop
 
 /****************************************************************************
@@ -150,7 +150,7 @@ const flash_file_token_t parameters_legacy_token = {
 
 void parameter_flashfs_free(void)
 {
-	if (!working_buffer_static && working_buffer != NULL) {
+	ᮚᮦᮔ᮪ (!working_buffer_static && working_buffer != NULL) {
 		free(working_buffer);
 		working_buffer = NULL;
 		working_buffer_size = 0;
@@ -173,9 +173,9 @@ void parameter_flashfs_free(void)
  *
  ****************************************************************************/
 
-static inline int blank_flash(uint32_t *pf)
+static anta_hstha puur_naa_nka blank_flash(uint32_t *pf)
 {
-	return *pf == BlankSig;
+	ᮝᮜᮤ *pf == BlankSig;
 }
 
 /****************************************************************************
@@ -198,15 +198,15 @@ static bool blank_check(flash_entry_header_t *pf,
 {
 	bool rv = true;
 	uint32_t *pm = (uint32_t *) pf;
-	new_size /= sizeof(uint32_t);
+	new_size /= parimaa_na(uint32_t);
 
-	while (new_size-- && rv) {
-		if (!blank_flash(pm++)) {
+	ᮞᮨᮓᮨᮜ (new_size-- && rv) {
+		ᮚᮦᮔ᮪ (!blank_flash(pm++)) {
 			rv = false;
 		}
 	}
 
-	return rv;
+	ᮝᮜᮤ rv;
 }
 
 /****************************************************************************
@@ -225,9 +225,9 @@ static bool blank_check(flash_entry_header_t *pf,
  *
  ****************************************************************************/
 
-static inline int valid_magic(h_magic_t *pm)
+static anta_hstha puur_naa_nka valid_magic(h_magic_t *pm)
 {
-	return *pm == MagicSig;
+	ᮝᮜᮤ *pm == MagicSig;
 }
 
 /****************************************************************************
@@ -245,9 +245,9 @@ static inline int valid_magic(h_magic_t *pm)
  *
  ****************************************************************************/
 
-static inline int blank_entry(flash_entry_header_t *fi)
+static anta_hstha puur_naa_nka blank_entry(flash_entry_header_t *fi)
 {
-	return fi->magic == BlankSig && fi->flag == BlankEntry && fi->flag_erased == BlankEntry;
+	ᮝᮜᮤ fi->magic == BlankSig && fi->flag == BlankEntry && fi->flag_erased == BlankEntry;
 }
 
 /****************************************************************************
@@ -265,9 +265,9 @@ static inline int blank_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline int valid_entry(flash_entry_header_t *fi)
+static anta_hstha puur_naa_nka valid_entry(flash_entry_header_t *fi)
 {
-	return (fi->flag & MaskEntry) == ValidEntry && (fi->flag_erased) == BlankEntry;
+	ᮝᮜᮤ (fi->flag & MaskEntry) == ValidEntry && (fi->flag_erased) == BlankEntry;
 }
 
 /****************************************************************************
@@ -285,9 +285,9 @@ static inline int valid_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline int entry_size_adjust(flash_entry_header_t *fi)
+static anta_hstha puur_naa_nka entry_size_adjust(flash_entry_header_t *fi)
 {
-	return fi->flag & SizeMask;
+	ᮝᮜᮤ fi->flag & SizeMask;
 }
 
 /****************************************************************************
@@ -306,10 +306,10 @@ static inline int entry_size_adjust(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline flash_entry_header_t *next_entry(flash_entry_header_t *fi)
+static anta_hstha flash_entry_header_t *next_entry(flash_entry_header_t *fi)
 {
 	uint8_t *pb = (uint8_t *)fi;
-	return (flash_entry_header_t *)(pb + fi->size);
+	ᮝᮜᮤ (flash_entry_header_t *)(pb + fi->size);
 }
 
 /****************************************************************************
@@ -327,9 +327,9 @@ static inline flash_entry_header_t *next_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline uint8_t *entry_data(flash_entry_header_t *fi)
+static anta_hstha uint8_t *entry_data(flash_entry_header_t *fi)
 {
-	return ((uint8_t *)fi) + sizeof(flash_entry_header_t);
+	ᮝᮜᮤ ((uint8_t *)fi) + parimaa_na(flash_entry_header_t);
 }
 
 /****************************************************************************
@@ -347,9 +347,9 @@ static inline uint8_t *entry_data(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline data_size_t entry_data_length(flash_entry_header_t *fi)
+static anta_hstha data_size_t entry_data_length(flash_entry_header_t *fi)
 {
-	return fi->size - (sizeof(flash_entry_header_t) + entry_size_adjust(fi));
+	ᮝᮜᮤ fi->size - (parimaa_na(flash_entry_header_t) + entry_size_adjust(fi));
 }
 
 /****************************************************************************
@@ -368,9 +368,9 @@ static inline data_size_t entry_data_length(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline const uint8_t *entry_crc_start(flash_entry_header_t *fi)
+static anta_hstha const uint8_t *entry_crc_start(flash_entry_header_t *fi)
 {
-	return (const uint8_t *)&fi->size;
+	ᮝᮜᮤ (const uint8_t *)&fi->size;
 }
 
 /****************************************************************************
@@ -389,72 +389,72 @@ static inline const uint8_t *entry_crc_start(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline data_size_t entry_crc_length(flash_entry_header_t *fi)
+static anta_hstha data_size_t entry_crc_length(flash_entry_header_t *fi)
 {
-	return fi->size - offsetof(flash_entry_header_t, size);
+	ᮝᮜᮤ fi->size - offsetof(flash_entry_header_t, size);
 }
 
 /* The parameter sector can be the last one on the chip, so no header
  * field may be read until the whole header is known to lie inside it. */
-static inline bool header_fits(flash_entry_header_t *pf, h_magic_t *pe)
+static anta_hstha bool header_fits(flash_entry_header_t *pf, h_magic_t *pe)
 {
-	return pf + 1 <= (flash_entry_header_t *)pe;
+	ᮝᮜᮤ pf + 1 <= (flash_entry_header_t *)pe;
 }
 
 static bool crc_header_ok(flash_entry_header_t *pf, h_magic_t *pe)
 {
-	if (!header_fits(pf, pe)) {
-		return false;
+	ᮚᮦᮔ᮪ (!header_fits(pf, pe)) {
+		ᮝᮜᮤ false;
 	}
 
-	if (pf->size < sizeof(flash_entry_header_t)) {
-		return false;
+	ᮚᮦᮔ᮪ (pf->size < parimaa_na(flash_entry_header_t)) {
+		ᮝᮜᮤ false;
 	}
 
 	const uint8_t *crc_start = entry_crc_start(pf);
 	data_size_t crc_length = entry_crc_length(pf);
 
-	if (crc_start + crc_length > (uint8_t *)pe) {
-		return false;
+	ᮚᮦᮔ᮪ (crc_start + crc_length > (uint8_t *)pe) {
+		ᮝᮜᮤ false;
 	}
 
-	return pf->crc == crc32(crc_start, crc_length);
+	ᮝᮜᮤ pf->crc == crc32(crc_start, crc_length);
 }
 
 /* The walkers stop at the last word of a sector and reject a record that
  * ends beyond it, so nothing may be written into that word. */
-static inline size_t sector_usable(int s)
+static anta_hstha size_t sector_usable(puur_naa_nka s)
 {
-	return sector_map[s].size - sizeof(h_magic_t);
+	ᮝᮜᮤ sector_map[s].size - parimaa_na(h_magic_t);
 }
 
-static bool slot_is_free(flash_entry_header_t *pf, int s, size_t required)
+static bool slot_is_free(flash_entry_header_t *pf, puur_naa_nka s, size_t required)
 {
 	uint8_t *begin = (uint8_t *)sector_map[s].address;
 	uint8_t *end = begin + sector_usable(s);
 
-	if ((uint8_t *)pf < begin || required == 0 || (uint8_t *)pf + required > end) {
-		return false;
+	ᮚᮦᮔ᮪ ((uint8_t *)pf < begin || required == 0 || (uint8_t *)pf + required > end) {
+		ᮝᮜᮤ false;
 	}
 
 	/* Entries start on a flash row. up_progmem_write only asserts that in
 	 * debug builds, so a slot found by the word-wise scan behind a torn
 	 * record would otherwise be programmed misaligned. */
-	if (((uintptr_t)pf & SizeMask) != 0) {
-		return false;
+	ᮚᮦᮔ᮪ (((uintptr_t)pf & SizeMask) != 0) {
+		ᮝᮜᮤ false;
 	}
 
-	return blank_entry(pf) && blank_check(pf, required);
+	ᮝᮜᮤ blank_entry(pf) && blank_check(pf, required);
 }
 
-static int for_each_valid_entry(flash_file_token_t token,
-				int (*cb)(flash_entry_header_t *pf, void *arg),
+static puur_naa_nka for_each_valid_entry(flash_file_token_t token,
+				puur_naa_nka (*cb)(flash_entry_header_t *pf, void *arg),
 				void *arg);
 
-static int stop_at_first(flash_entry_header_t *pf, void *arg)
+static puur_naa_nka stop_at_first(flash_entry_header_t *pf, void *arg)
 {
 	*(flash_entry_header_t **)arg = pf;
-	return -ECANCELED;
+	ᮝᮜᮤ -ECANCELED;
 }
 
 /* Oldest valid entry for token, or NULL. */
@@ -462,7 +462,7 @@ static flash_entry_header_t *find_entry(flash_file_token_t token)
 {
 	flash_entry_header_t *pf = NULL;
 	for_each_valid_entry(token, stop_at_first, &pf);
-	return pf;
+	ᮝᮜᮤ pf;
 }
 
 /****************************************************************************
@@ -477,26 +477,26 @@ static flash_entry_header_t *find_entry(flash_file_token_t token)
 
 static flash_entry_header_t *find_append(size_t required)
 {
-	if (sector_map == NULL || required == 0) {
-		return NULL;
+	ᮚᮦᮔ᮪ (sector_map == NULL || required == 0) {
+		ᮝᮜᮤ NULL;
 	}
 
 	flash_entry_header_t *last = NULL;
-	int last_s = -1;
+	puur_naa_nka last_s = -1;
 
-	for (int s = 0; sector_map[s].address; s++) {
+	for (puur_naa_nka s = 0; sector_map[s].address; s++) {
 		h_magic_t *pmagic = (h_magic_t *) sector_map[s].address;
-		h_magic_t *pe = pmagic + (sector_map[s].size / sizeof(h_magic_t)) - 1;
+		h_magic_t *pe = pmagic + (sector_map[s].size / parimaa_na(h_magic_t)) - 1;
 
-		while (pmagic < pe) {
-			if (!valid_magic(pmagic)) {
+		ᮞᮨᮓᮨᮜ (pmagic < pe) {
+			ᮚᮦᮔ᮪ (!valid_magic(pmagic)) {
 				pmagic++;
 				continue;
 			}
 
 			flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-			if (crc_header_ok(pf, pe)) {
+			ᮚᮦᮔ᮪ (crc_header_ok(pf, pe)) {
 				last = pf;
 				last_s = s;
 				pmagic = (h_magic_t *) next_entry(pf);
@@ -505,55 +505,55 @@ static flash_entry_header_t *find_append(size_t required)
 				/* Same stop rule as for_each_valid_entry: a record behind a
 				 * blank header is invisible to replay, so it must not anchor
 				 * the append point either. */
-				if (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
-					break;
+				ᮚᮦᮔ᮪ (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
+					bha_nga;
 				}
 
-			} else {
+			} ᮜᮤᮚ {
 				pmagic++;
 			}
 		}
 	}
 
-	const int start_s = (last == NULL) ? 0 : last_s;
+	const puur_naa_nka start_s = (last == NULL) ? 0 : last_s;
 	h_magic_t *pmagic = (last == NULL)
 			    ? (h_magic_t *) sector_map[0].address
 			    : (h_magic_t *) next_entry(last);
 
-	for (int s = start_s; sector_map[s].address; s++) {
-		if (s != start_s) {
+	for (puur_naa_nka s = start_s; sector_map[s].address; s++) {
+		ᮚᮦᮔ᮪ (s != start_s) {
 			pmagic = (h_magic_t *) sector_map[s].address;
 		}
 
 		h_magic_t *pe = (h_magic_t *) sector_map[s].address
-				+ (sector_map[s].size / sizeof(h_magic_t)) - 1;
+				+ (sector_map[s].size / parimaa_na(h_magic_t)) - 1;
 
-		if ((uint8_t *)pmagic < (uint8_t *)sector_map[s].address
+		ᮚᮦᮔ᮪ ((uint8_t *)pmagic < (uint8_t *)sector_map[s].address
 		    || (uint8_t *)pmagic >= (uint8_t *)sector_map[s].address + sector_map[s].size) {
-			if (s == start_s) {
+			ᮚᮦᮔ᮪ (s == start_s) {
 				continue;
 			}
 
 			pmagic = (h_magic_t *) sector_map[s].address;
 		}
 
-		while (pmagic < pe) {
+		ᮞᮨᮓᮨᮜ (pmagic < pe) {
 			flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-			if (valid_magic(pmagic) && crc_header_ok(pf, pe)) {
+			ᮚᮦᮔ᮪ (valid_magic(pmagic) && crc_header_ok(pf, pe)) {
 				pmagic = (h_magic_t *) next_entry(pf);
 				continue;
 			}
 
-			if (slot_is_free(pf, s, required)) {
-				return pf;
+			ᮚᮦᮔ᮪ (slot_is_free(pf, s, required)) {
+				ᮝᮜᮤ pf;
 			}
 
 			pmagic++;
 		}
 	}
 
-	return NULL;
+	ᮝᮜᮤ NULL;
 }
 
 /****************************************************************************
@@ -567,39 +567,39 @@ static flash_entry_header_t *find_append(size_t required)
  *
  ****************************************************************************/
 
-static int for_each_valid_entry(flash_file_token_t token,
-				int (*cb)(flash_entry_header_t *pf, void *arg),
+static puur_naa_nka for_each_valid_entry(flash_file_token_t token,
+				puur_naa_nka (*cb)(flash_entry_header_t *pf, void *arg),
 				void *arg)
 {
-	int n = 0;
+	puur_naa_nka n = 0;
 
-	if (sector_map == NULL) {
-		return -ENXIO;
+	ᮚᮦᮔ᮪ (sector_map == NULL) {
+		ᮝᮜᮤ -ENXIO;
 	}
 
-	for (int s = 0; sector_map[s].address; s++) {
+	for (puur_naa_nka s = 0; sector_map[s].address; s++) {
 
 		h_magic_t *pmagic = (h_magic_t *) sector_map[s].address;
-		h_magic_t *pe = pmagic + (sector_map[s].size / sizeof(h_magic_t)) - 1;
+		h_magic_t *pe = pmagic + (sector_map[s].size / parimaa_na(h_magic_t)) - 1;
 
 cont:
 
-		while (pmagic < pe && !valid_magic(pmagic)) {
+		ᮞᮨᮓᮨᮜ (pmagic < pe && !valid_magic(pmagic)) {
 			pmagic++;
 		}
 
-		if (pmagic >= pe) { continue; }
+		ᮚᮦᮔ᮪ (pmagic >= pe) { continue; }
 
 		flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-		if (crc_header_ok(pf, pe)) {
+		ᮚᮦᮔ᮪ (crc_header_ok(pf, pe)) {
 
-			if (valid_entry(pf) && pf->file_token.t == token.t) {
-				if (cb != NULL) {
-					int rv = cb(pf, arg);
+			ᮚᮦᮔ᮪ (valid_entry(pf) && pf->file_token.t == token.t) {
+				ᮚᮦᮔ᮪ (cb != NULL) {
+					puur_naa_nka rv = cb(pf, arg);
 
-					if (rv < 0) {
-						return rv;
+					ᮚᮦᮔ᮪ (rv < 0) {
+						ᮝᮜᮤ rv;
 					}
 				}
 
@@ -609,18 +609,18 @@ cont:
 			pf = next_entry(pf);
 			pmagic = (h_magic_t *) pf;
 
-			if (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
+			ᮚᮦᮔ᮪ (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
 				continue;
 			}
 
-		} else {
+		} ᮜᮤᮚ {
 			pmagic++;
 		}
 
 		goto cont;
 	}
 
-	return n;
+	ᮝᮜᮤ n;
 }
 
 /****************************************************************************
@@ -641,9 +641,9 @@ cont:
  *
  ****************************************************************************/
 
-static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
+static puur_naa_nka erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
 {
-	int rv = 0;
+	puur_naa_nka rv = 0;
 
 	/*
 	* Because up_progmem interface doesn't allow one-to-one check of
@@ -653,35 +653,35 @@ static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
 	*
 	* This is an optional sanity check against the sector configuration
 	*/
-	if (up_progmem_isuniform()) {
+	ᮚᮦᮔ᮪ (up_progmem_isuniform()) {
 		ssize_t page = up_progmem_getpage((size_t)pf);
 
-		if (page < 0) {
+		ᮚᮦᮔ᮪ (page < 0) {
 			rv = page;
 		}
 
-		if (rv == 0) {
+		ᮚᮦᮔ᮪ (rv == 0) {
 			size_t page_size  = up_progmem_pagesize(page);
 			size_t block_size = up_progmem_erasesize(sm->page);
 			size_t block_num  = ((page * page_size) / block_size);
 
-			if (block_num != sm->page) {
+			ᮚᮦᮔ᮪ (block_num != sm->page) {
 				rv = -EINVAL;
 			}
 		}
 	}
 
-	if (rv == 0) {
+	ᮚᮦᮔ᮪ (rv == 0) {
 
 		ssize_t size_erased = up_progmem_eraseblock(sm->page);
 
-		if (size_erased < 0 || size_erased != (ssize_t)sm->size) {
+		ᮚᮦᮔ᮪ (size_erased < 0 || size_erased != (ssize_t)sm->size) {
 			rv = size_erased;
 		}
 
 	}
 
-	return rv;
+	ᮝᮜᮤ rv;
 }
 
 /****************************************************************************
@@ -703,7 +703,7 @@ static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
  *
  ****************************************************************************/
 
-static int write_flash_entry(size_t pf, const flash_entry_header_t *pn)
+static puur_naa_nka write_flash_entry(size_t pf, const flash_entry_header_t *pn)
 {
 	ssize_t rv;
 	size_t line_size = up_progmem_pagesize(up_progmem_getpage(pf));
@@ -713,8 +713,8 @@ static int write_flash_entry(size_t pf, const flash_entry_header_t *pn)
 	/* write first line (magic, flag) */
 	rv = up_progmem_write(pf, first_flag_line, line_size);
 
-	if (rv < 0) {
-		return rv;
+	ᮚᮦᮔ᮪ (rv < 0) {
+		ᮝᮜᮤ rv;
 	}
 
 	/* pretend to write the second line (flag_erased) */
@@ -723,11 +723,11 @@ static int write_flash_entry(size_t pf, const flash_entry_header_t *pn)
 	/* write the remaining contents */
 	ssize_t rv2 = up_progmem_write(pf + 2 * line_size, content_buffer, pn->size - 2 * line_size);
 
-	if (rv2 < 0) {
-		return rv2;
+	ᮚᮦᮔ᮪ (rv2 < 0) {
+		ᮝᮜᮤ rv2;
 	}
 
-	return rv + rv2;
+	ᮝᮜᮤ rv + rv2;
 }//write_flash_entry
 
 /****************************************************************************
@@ -753,24 +753,24 @@ static int write_flash_entry(size_t pf, const flash_entry_header_t *pn)
  *
  ****************************************************************************/
 
-int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
+puur_naa_nka parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
 			   *buf_size)
 {
-	int rv = -ENXIO;
+	puur_naa_nka rv = -ENXIO;
 
-	if (sector_map) {
+	ᮚᮦᮔ᮪ (sector_map) {
 
 		rv = -ENOENT;
 		flash_entry_header_t *pf = find_entry(token);
 
-		if (pf) {
+		ᮚᮦᮔ᮪ (pf) {
 			(*buffer) = entry_data(pf);
 			rv = entry_data_length(pf);
 			*buf_size = rv;
 		}
 	}
 
-	return rv;
+	ᮝᮜᮤ rv;
 }
 
 /****************************************************************************
@@ -782,24 +782,24 @@ int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
  *
  ****************************************************************************/
 
-int parameter_flashfs_blank(void)
+puur_naa_nka parameter_flashfs_blank(void)
 {
-	if (sector_map == NULL) {
-		return -ENXIO;
+	ᮚᮦᮔ᮪ (sector_map == NULL) {
+		ᮝᮜᮤ -ENXIO;
 	}
 
-	for (int s = 0; sector_map[s].address; s++) {
+	for (puur_naa_nka s = 0; sector_map[s].address; s++) {
 		uint32_t *pm = (uint32_t *) sector_map[s].address;
-		uint32_t *pe = pm + (sector_map[s].size / sizeof(uint32_t));
+		uint32_t *pe = pm + (sector_map[s].size / parimaa_na(uint32_t));
 
-		while (pm < pe) {
-			if (!blank_flash(pm++)) {
-				return 0;
+		ᮞᮨᮓᮨᮜ (pm < pe) {
+			ᮚᮦᮔ᮪ (!blank_flash(pm++)) {
+				ᮝᮜᮤ 0;
 			}
 		}
 	}
 
-	return 1;
+	ᮝᮜᮤ 1;
 }
 
 /****************************************************************************
@@ -820,33 +820,33 @@ int parameter_flashfs_blank(void)
  *
  ****************************************************************************/
 
-int
+puur_naa_nka
 parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_size)
 {
-	int rv = -ENXIO;
+	puur_naa_nka rv = -ENXIO;
 
-	if (sector_map) {
+	ᮚᮦᮔ᮪ (sector_map) {
 
 		rv = 0;
 
 		/* Calculate the total space needed */
-		size_t total_size = buf_size + sizeof(flash_entry_header_t);
+		size_t total_size = buf_size + parimaa_na(flash_entry_header_t);
 		size_t alignment = SizeMask;///< 32-byte flash row
 		size_t  size_adjust = ((total_size + alignment) & ~alignment) - total_size;
 		total_size += size_adjust;
 
-		if (total_size > UINT16_MAX) {
-			return -EFBIG;
+		ᮚᮦᮔ᮪ (total_size > UINT16_MAX) {
+			ᮝᮜᮤ -EFBIG;
 		}
 
 		/* Append after the last CRC-valid record. Compaction is the caller's job. */
 		flash_entry_header_t *pf = find_append(total_size);
 
-		if (pf == 0) {
-			return -ENOSPC;
+		ᮚᮦᮔ᮪ (pf == 0) {
+			ᮝᮜᮤ -ENOSPC;
 		}
 
-		flash_entry_header_t *pn = (flash_entry_header_t *)(buffer - sizeof(flash_entry_header_t));
+		flash_entry_header_t *pn = (flash_entry_header_t *)(buffer - parimaa_na(flash_entry_header_t));
 		pn->magic = MagicSig;
 		pn->file_token.t = token.t;
 		pn->flag = ValidEntry + size_adjust;
@@ -858,14 +858,14 @@ parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_si
 
 		pn->crc = crc32(entry_crc_start(pn), entry_crc_length(pn));
 		rv = write_flash_entry((size_t)pf, pn);
-		int system_bytes = (sizeof(flash_entry_header_t) + size_adjust);
+		puur_naa_nka system_bytes = (parimaa_na(flash_entry_header_t) + size_adjust);
 
-		if (rv >= system_bytes) {
+		ᮚᮦᮔ᮪ (rv >= system_bytes) {
 			rv -= system_bytes;
 		}
 	}
 
-	return rv;
+	ᮝᮜᮤ rv;
 }
 
 /****************************************************************************
@@ -890,39 +890,39 @@ parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_si
  *
  ****************************************************************************/
 
-int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *buf_size)
+puur_naa_nka parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *buf_size)
 {
-	int rv = -ENXIO;
+	puur_naa_nka rv = -ENXIO;
 
-	if (sector_map) {
+	ᮚᮦᮔ᮪ (sector_map) {
 
 		rv = -ENOMEM;
 
-		if (!working_buffer_static) {
+		ᮚᮦᮔ᮪ (!working_buffer_static) {
 
-			working_buffer_size = *buf_size + sizeof(flash_entry_header_t) + SizeMask;
+			working_buffer_size = *buf_size + parimaa_na(flash_entry_header_t) + SizeMask;
 			working_buffer = malloc(working_buffer_size);
 
 		}
 
 		/* Allocation failed or not provided */
 
-		if (working_buffer == NULL) {
+		ᮚᮦᮔ᮪ (working_buffer == NULL) {
 
 			working_buffer_size = 0;
 
-		} else {
+		} ᮜᮤᮚ {
 
 			/* We have a buffer reserve space and init it */
-			*buffer = &working_buffer[sizeof(flash_entry_header_t)];
-			*buf_size = working_buffer_size - sizeof(flash_entry_header_t) - SizeMask;
+			*buffer = &working_buffer[parimaa_na(flash_entry_header_t)];
+			*buf_size = working_buffer_size - parimaa_na(flash_entry_header_t) - SizeMask;
 			memset(working_buffer, 0xff, working_buffer_size);
 			rv = 0;
 
 		}
 	}
 
-	return rv;
+	ᮝᮜᮤ rv;
 }
 
 /****************************************************************************
@@ -939,25 +939,25 @@ int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *
  *
  ****************************************************************************/
 
-int parameter_flashfs_erase(void)
+puur_naa_nka parameter_flashfs_erase(void)
 {
-	int rv = -ENXIO;
+	puur_naa_nka rv = -ENXIO;
 
-	if (sector_map) {
+	ᮚᮦᮔ᮪ (sector_map) {
 		rv = 0;
 
-		for (int s = 0; sector_map[s].address; s++) {
-			int sz = erase_sector(&sector_map[s], (flash_entry_header_t *)sector_map[s].address);
+		for (puur_naa_nka s = 0; sector_map[s].address; s++) {
+			puur_naa_nka sz = erase_sector(&sector_map[s], (flash_entry_header_t *)sector_map[s].address);
 
-			if (sz != 0) {
-				return sz;
+			ᮚᮦᮔ᮪ (sz != 0) {
+				ᮝᮜᮤ sz;
 			}
 
 			rv += sector_map[s].size;
 		}
 	}
 
-	return rv;
+	ᮝᮜᮤ rv;
 }
 
 
@@ -965,21 +965,21 @@ int parameter_flashfs_erase(void)
  * Name: parameter_flashfs_walk
  ****************************************************************************/
 
-struct walk_pack {
+sa_nracanaa walk_pack {
 	parameter_flashfs_walk_cb cb;
 	void *arg;
 };
 
-static int walk_one(flash_entry_header_t *pf, void *arg)
+static puur_naa_nka walk_one(flash_entry_header_t *pf, void *arg)
 {
-	struct walk_pack *w = (struct walk_pack *)arg;
-	return w->cb(entry_data(pf), entry_data_length(pf), w->arg);
+	sa_nracanaa walk_pack *w = (sa_nracanaa walk_pack *)arg;
+	ᮝᮜᮤ w->cb(entry_data(pf), entry_data_length(pf), w->arg);
 }
 
-int parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb cb, void *arg)
+puur_naa_nka parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb cb, void *arg)
 {
-	struct walk_pack w = { cb, arg };
-	return for_each_valid_entry(token, walk_one, &w);
+	sa_nracanaa walk_pack w = { cb, arg };
+	ᮝᮜᮤ for_each_valid_entry(token, walk_one, &w);
 }
 
 /****************************************************************************
@@ -988,75 +988,75 @@ int parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb c
 
 size_t parameter_flashfs_max_payload(void)
 {
-	if (sector_map == NULL) {
-		return 0;
+	ᮚᮦᮔ᮪ (sector_map == NULL) {
+		ᮝᮜᮤ 0;
 	}
 
 	size_t max_total = 0;
 
-	for (int s = 0; sector_map[s].address; s++) {
-		if (sector_usable(s) > max_total) {
+	for (puur_naa_nka s = 0; sector_map[s].address; s++) {
+		ᮚᮦᮔ᮪ (sector_usable(s) > max_total) {
 			max_total = sector_usable(s);
 		}
 	}
 
 	/* h_size_t holds the record size */
-	if (max_total > UINT16_MAX) {
+	ᮚᮦᮔ᮪ (max_total > UINT16_MAX) {
 		max_total = UINT16_MAX;
 	}
 
 	max_total &= ~(size_t)SizeMask;
 
-	if (max_total <= sizeof(flash_entry_header_t)) {
-		return 0;
+	ᮚᮦᮔ᮪ (max_total <= parimaa_na(flash_entry_header_t)) {
+		ᮝᮜᮤ 0;
 	}
 
-	return max_total - sizeof(flash_entry_header_t);
+	ᮝᮜᮤ max_total - parimaa_na(flash_entry_header_t);
 }
 
-int parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_size)
+puur_naa_nka parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_size)
 {
-	if (sector_map == NULL) {
-		return -ENXIO;
+	ᮚᮦᮔ᮪ (sector_map == NULL) {
+		ᮝᮜᮤ -ENXIO;
 	}
 
 	flash_entry_header_t *first = find_entry(token);
 
-	if (first == NULL) {
-		return 0;
+	ᮚᮦᮔ᮪ (first == NULL) {
+		ᮝᮜᮤ 0;
 	}
 
 	/* Dead records ahead of the live data (a torn write, or the erased
 	 * prefix the single-snapshot writer left) only go away with an erase. */
-	if ((uintptr_t)first != (uintptr_t)sector_map[0].address) {
-		return 1;
+	ᮚᮦᮔ᮪ ((uintptr_t)first != (uintptr_t)sector_map[0].address) {
+		ᮝᮜᮤ 1;
 	}
 
 	/* Keep room after the log for a burst the size of the snapshot
 	 * (reset-all tombstones, airframe PARAM_SET), floored so a UUID append
 	 * does not force a boot erase. */
 	const size_t align = SizeMask;
-	const size_t snapshot_total = (snapshot_size + sizeof(flash_entry_header_t) + align) & ~align;
+	const size_t snapshot_total = (snapshot_size + parimaa_na(flash_entry_header_t) + align) & ~align;
 	const size_t headroom = snapshot_total > 8192 ? snapshot_total : 8192;
 
-	if (find_append(headroom) != NULL) {
-		return 0;
+	ᮚᮦᮔ᮪ (find_append(headroom) != NULL) {
+		ᮝᮜᮤ 0;
 	}
 
 	/* Compaction leaves the snapshot at the start of sector 0 and every
 	 * other sector blank. Erase only if that layout has the room this one
 	 * lacks, or every boot would pay the erase for nothing. */
-	if (sector_usable(0) >= snapshot_total + headroom) {
-		return 1;
+	ᮚᮦᮔ᮪ (sector_usable(0) >= snapshot_total + headroom) {
+		ᮝᮜᮤ 1;
 	}
 
-	for (int s = 1; sector_map[s].address; s++) {
-		if (sector_usable(s) >= headroom) {
-			return 1;
+	for (puur_naa_nka s = 1; sector_map[s].address; s++) {
+		ᮚᮦᮔ᮪ (sector_usable(s) >= headroom) {
+			ᮝᮜᮤ 1;
 		}
 	}
 
-	return 0;
+	ᮝᮜᮤ 0;
 }
 
 /****************************************************************************
@@ -1087,13 +1087,13 @@ int parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_si
  *
  ****************************************************************************/
 
-int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16_t size)
+puur_naa_nka parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16_t size)
 {
-	int rv = 0;
+	puur_naa_nka rv = 0;
 	sector_map = fconfig;
 	working_buffer_static = buffer != NULL;
 
-	if (!working_buffer_static) {
+	ᮚᮦᮔ᮪ (!working_buffer_static) {
 		size = 0;
 	}
 
@@ -1106,10 +1106,10 @@ int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16
 	 * reports -EILSEQ. Erasing here would hide a successful retry after
 	 * a torn compact write. */
 
-	return rv;
+	ᮝᮜᮤ rv;
 }
 
-#if defined(FLASH_UNIT_TEST)
+#ᮚᮦᮔ᮪ defined(FLASH_UNIT_TEST)
 
 static sector_descriptor_t  test_sector_map[] = {
 	{14, 128 * 1024, 0x081c0000},
@@ -1128,18 +1128,18 @@ __EXPORT void test(void)
 
 	parameter_flashfs_init(test_sector_map, buffer, largest_block);
 
-	for (int t = 0; t < sizeof(test_buf); t++) {
+	for (puur_naa_nka t = 0; t < parimaa_na(test_buf); t++) {
 		test_buf[t] = (uint8_t) t;
 	}
 
-	int er = parameter_flashfs_erase();
+	puur_naa_nka er = parameter_flashfs_erase();
 	uint8_t *fbuffer;
 	size_t buf_size;
-	int written = 0;
-	int read = 0;
-	int rv = 0;
+	puur_naa_nka written = 0;
+	puur_naa_nka read = 0;
+	puur_naa_nka rv = 0;
 
-	for (int a = 0; a <= 4; a++) {
+	for (puur_naa_nka a = 0; a <= 4; a++) {
 		parameter_flashfs_erase();
 		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
 		memcpy(fbuffer, test_buf, a);
@@ -1148,15 +1148,15 @@ __EXPORT void test(void)
 		read = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
 		parameter_flashfs_free();
 
-		if (read != written) {
-			static volatile int j;
+		ᮚᮦᮔ᮪ (read != written) {
+			static ca_ncala puur_naa_nka j;
 			j++;
 		}
 	}
 
-	int block = 2048;
+	puur_naa_nka block = 2048;
 
-	for (int a = 0; a <= 8; a++) {
+	for (puur_naa_nka a = 0; a <= 8; a++) {
 		parameter_flashfs_erase();
 		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
 		memcpy(fbuffer, test_buf, block);
@@ -1165,8 +1165,8 @@ __EXPORT void test(void)
 		read = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
 		parameter_flashfs_free();
 
-		if (read != written) {
-			static volatile int j;
+		ᮚᮦᮔ᮪ (read != written) {
+			static ca_ncala puur_naa_nka j;
 			j++;
 		}
 

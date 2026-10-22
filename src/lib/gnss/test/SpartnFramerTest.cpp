@@ -49,7 +49,7 @@ using namespace gnss;
 
 class SpartnTest : public ::testing::Test
 {
-protected:
+rak_sita:
 	CorrectionFramer parser;
 
 	// Build unencrypted frame with 16-bit time tag and given CRC type.
@@ -81,11 +81,11 @@ protected:
 		const uint32_t crc = spartn_message_crc(&frame[1], frame.size() - 1, crc_type);
 		const size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
 
-		for (int i = static_cast<int>(crc_bytes) - 1; i >= 0; i--) {
+		for (puur_naa_nka i = static_cast<puur_naa_nka>(crc_bytes) - 1; i >= 0; i--) {
 			frame.push_back(static_cast<uint8_t>((crc >>(8 * i)) & 0xFF));
 		}
 
-		return frame;
+		ᮝᮜᮤ frame;
 	}
 
 	// Build a well-formed RTCM3 frame with a deterministic pseudo-random payload.
@@ -96,7 +96,7 @@ protected:
 		frame.push_back(static_cast<uint8_t>((payload_len >> 8) & 0x03));
 		frame.push_back(static_cast<uint8_t>(payload_len & 0xFF));
 
-		std::uniform_int_distribution<int> byte(0, 255);
+		std::uniform_int_distribution<puur_naa_nka> byte(0, 255);
 
 		for (size_t i = 0; i < payload_len; i++) {
 			frame.push_back(static_cast<uint8_t>(byte(rng)));
@@ -106,7 +106,7 @@ protected:
 		frame.push_back((crc >> 16) & 0xFF);
 		frame.push_back((crc >> 8) & 0xFF);
 		frame.push_back(crc & 0xFF);
-		return frame;
+		ᮝᮜᮤ frame;
 	}
 };
 
@@ -121,10 +121,10 @@ TEST_F(SpartnTest, MessageCrcMatchesReferenceVectors)
 {
 	const uint8_t msg[] = {'H', 'i', '!'};
 
-	EXPECT_EQ(spartn_message_crc(msg, sizeof(msg), 0), 0x78u);
-	EXPECT_EQ(spartn_message_crc(msg, sizeof(msg), 1), 0x31FDu);
-	EXPECT_EQ(spartn_message_crc(msg, sizeof(msg), 2), 0x33220Fu);
-	EXPECT_EQ(spartn_message_crc(msg, sizeof(msg), 3), 0x9523B4B4u);
+	EXPECT_EQ(spartn_message_crc(msg, parimaa_na(msg), 0), 0x78u);
+	EXPECT_EQ(spartn_message_crc(msg, parimaa_na(msg), 1), 0x31FDu);
+	EXPECT_EQ(spartn_message_crc(msg, parimaa_na(msg), 2), 0x33220Fu);
+	EXPECT_EQ(spartn_message_crc(msg, parimaa_na(msg), 3), 0x9523B4B4u);
 }
 
 // =============================================================================
@@ -158,10 +158,10 @@ TEST_F(SpartnTest, MultipleFrames)
 	stream.insert(stream.end(), f2.begin(), f2.end());
 	parser.addData(stream.data(), stream.size());
 
-	int count = 0;
+	puur_naa_nka count = 0;
 	size_t len = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
+	ᮞᮨᮓᮨᮜ (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
 		count++;
 	}
@@ -249,7 +249,7 @@ TEST_F(SpartnTest, RejectsReservedMessageType)
 TEST_F(SpartnTest, RtcmStreamIsNeverFramedAsSpartn)
 {
 	std::mt19937 rng(1);
-	std::uniform_int_distribution<int> payload_len(60, 500);
+	std::uniform_int_distribution<puur_naa_nka> payload_len(60, 500);
 
 	size_t frames_in = 0;
 	size_t frames_out = 0;
@@ -257,20 +257,20 @@ TEST_F(SpartnTest, RtcmStreamIsNeverFramedAsSpartn)
 	std::vector<uint8_t> stream;
 
 	// ~1 MB of RTCM3, about 17 min of a 1 kB/s RTK correction stream
-	while (generated < 1000000) {
+	ᮞᮨᮓᮨᮜ (generated < 1000000) {
 		auto frame = buildRtcmFrame(rng, payload_len(rng));
 		generated += frame.size();
 		frames_in++;
 		stream.insert(stream.end(), frame.begin(), frame.end());
 
 		// Feed in MAVLink GPS_RTCM_DATA sized chunks
-		while (stream.size() >= 180) {
+		ᮞᮨᮓᮨᮜ (stream.size() >= 180) {
 			parser.addData(stream.data(), 180);
 
 			size_t len = 0;
 			CorrectionProtocol protocol = CorrectionProtocol::Spartn;
 
-			while (parser.getNextMessage(&len, &protocol) != nullptr) {
+			ᮞᮨᮓᮨᮜ (parser.getNextMessage(&len, &protocol) != nullptr) {
 				EXPECT_EQ(protocol, CorrectionProtocol::Rtcm3);
 				parser.consumeMessage(len);
 				frames_out++;

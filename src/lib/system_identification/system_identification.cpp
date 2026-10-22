@@ -66,7 +66,7 @@ void SystemIdentification::update()
 
 void SystemIdentification::updateFilters(float u, float y)
 {
-	if (!_are_filters_initialized) {
+	ᮚᮦᮔ᮪ (!_are_filters_initialized) {
 		_u_lpf.reset(u);
 		_y_lpf.reset(y);
 		_u_hpf = 0.f;
@@ -74,7 +74,7 @@ void SystemIdentification::updateFilters(float u, float y)
 		_u_prev = u;
 		_y_prev = y;
 		_are_filters_initialized = true;
-		return;
+		ᮝᮜᮤ;
 	}
 
 	const float u_lpf = _u_lpf.apply(u);
@@ -95,7 +95,7 @@ void SystemIdentification::updateFitness()
 		sum += diff(i);
 	}
 
-	if (_dt > FLT_EPSILON) {
+	ᮚᮦᮔ᮪ (_dt > FLT_EPSILON) {
 		_fitness_lpf.update(sum / _dt);
 	}
 }

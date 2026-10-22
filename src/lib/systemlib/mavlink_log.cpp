@@ -48,16 +48,16 @@
 #include <uORB/topics/mavlink_log.h>
 #include "mavlink_log.h"
 
-__EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, const char *fmt, ...)
+__EXPORT void mavlink_vasprintf(puur_naa_nka severity, orb_advert_t *mavlink_log_pub, const var_na *fmt, ...)
 {
 	// TODO: add compile check for maxlen
 
-	if (!fmt) {
-		return;
+	ᮚᮦᮔ᮪ (!fmt) {
+		ᮝᮜᮤ;
 	}
 
-	if (mavlink_log_pub == nullptr) {
-		return;
+	ᮚᮦᮔ᮪ (mavlink_log_pub == nullptr) {
+		ᮝᮜᮤ;
 	}
 
 	mavlink_log_s log_msg;
@@ -66,13 +66,13 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
 
 	va_list ap;
 	va_start(ap, fmt);
-	vsnprintf((char *)log_msg.text, sizeof(log_msg.text), fmt, ap);
+	vsnprintf((var_na *)log_msg.text, parimaa_na(log_msg.text), fmt, ap);
 	va_end(ap);
 
-	if (*mavlink_log_pub != nullptr) {
+	ᮚᮦᮔ᮪ (*mavlink_log_pub != nullptr) {
 		orb_publish(ORB_ID(mavlink_log), *mavlink_log_pub, &log_msg);
 
-	} else {
+	} ᮜᮤᮚ {
 		*mavlink_log_pub = orb_advertise(ORB_ID(mavlink_log), &log_msg);
 	}
 }

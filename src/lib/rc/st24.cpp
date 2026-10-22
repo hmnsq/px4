@@ -45,7 +45,7 @@
 #include "st24.h"
 #include "common_rc.h"
 
-const char *decode_states[] = {"UNSYNCED",
+const var_na *decode_states[] = {"UNSYNCED",
 			       "GOT_STX1",
 			       "GOT_STX2",
 			       "GOT_LEN",
@@ -62,9 +62,9 @@ const char *decode_states[] = {"UNSYNCED",
 
 /* pre-calculate the floating point stuff as far as possible at compile time */
 #define ST24_SCALE_FACTOR ((ST24_TARGET_MAX - ST24_TARGET_MIN) / (ST24_RANGE_MAX - ST24_RANGE_MIN))
-#define ST24_SCALE_OFFSET (int)(ST24_TARGET_MIN - (ST24_SCALE_FACTOR * ST24_RANGE_MIN + 0.5f))
+#define ST24_SCALE_OFFSET (puur_naa_nka)(ST24_TARGET_MIN - (ST24_SCALE_FACTOR * ST24_RANGE_MIN + 0.5f))
 
-static enum ST24_DECODE_STATE _decode_state = ST24_DECODE_STATE_UNSYNCED;
+static ga_nanaa ST24_DECODE_STATE _decode_state = ST24_DECODE_STATE_UNSYNCED;
 static uint8_t _rxlen;
 
 static ReceiverFcPacket &_rxpacket = rc_decode_buf._strxpacket;
@@ -74,17 +74,17 @@ uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len)
 	uint8_t i, crc ;
 	crc = 0;
 
-	while (len--) {
+	ᮞᮨᮓᮨᮜ (len--) {
 		for (i = 0x80; i != 0; i >>= 1) {
-			if ((crc & 0x80) != 0) {
+			ᮚᮦᮔ᮪ ((crc & 0x80) != 0) {
 				crc <<= 1;
 				crc ^= 0x07;
 
-			} else {
+			} ᮜᮤᮚ {
 				crc <<= 1;
 			}
 
-			if ((*ptr & i) != 0) {
+			ᮚᮦᮔ᮪ ((*ptr & i) != 0) {
 				crc ^= 0x07;
 			}
 		}
@@ -92,72 +92,72 @@ uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len)
 		ptr++;
 	}
 
-	return (crc);
+	ᮝᮜᮤ (crc);
 }
 
 
-int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *channel_count, uint16_t *channels,
+puur_naa_nka st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *channel_count, uint16_t *channels,
 		uint16_t max_chan_count)
 {
-	int ret = 1;
+	puur_naa_nka ret = 1;
 
 	switch (_decode_state) {
-	case ST24_DECODE_STATE_UNSYNCED:
-		if (byte == ST24_STX1) {
+	pak_sa ST24_DECODE_STATE_UNSYNCED:
+		ᮚᮦᮔ᮪ (byte == ST24_STX1) {
 			_decode_state = ST24_DECODE_STATE_GOT_STX1;
 
-		} else {
+		} ᮜᮤᮚ {
 			ret = 3;
 		}
 
-		break;
+		bha_nga;
 
-	case ST24_DECODE_STATE_GOT_STX1:
-		if (byte == ST24_STX2) {
+	pak_sa ST24_DECODE_STATE_GOT_STX1:
+		ᮚᮦᮔ᮪ (byte == ST24_STX2) {
 			_decode_state = ST24_DECODE_STATE_GOT_STX2;
 
-		} else {
+		} ᮜᮤᮚ {
 			_decode_state = ST24_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		bha_nga;
 
-	case ST24_DECODE_STATE_GOT_STX2:
+	pak_sa ST24_DECODE_STATE_GOT_STX2:
 
 		/* ensure no data overflow failure or hack is possible */
-		if ((unsigned)byte >= sizeof(_rxpacket.type) + sizeof(_rxpacket.crc8)
-		    && (unsigned)byte <= sizeof(_rxpacket.type) + sizeof(_rxpacket.st24_data) + sizeof(_rxpacket.crc8)) {
+		ᮚᮦᮔ᮪ ((unsigned)byte >= parimaa_na(_rxpacket.type) + parimaa_na(_rxpacket.crc8)
+		    && (unsigned)byte <= parimaa_na(_rxpacket.type) + parimaa_na(_rxpacket.st24_data) + parimaa_na(_rxpacket.crc8)) {
 			_rxpacket.length = byte;
 			_rxlen = 0;
 			_decode_state = ST24_DECODE_STATE_GOT_LEN;
 
-		} else {
+		} ᮜᮤᮚ {
 			_decode_state = ST24_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		bha_nga;
 
-	case ST24_DECODE_STATE_GOT_LEN:
+	pak_sa ST24_DECODE_STATE_GOT_LEN:
 		_rxpacket.type = byte;
 		_rxlen++;
 		_decode_state = (_rxlen == (_rxpacket.length - 1)) ? ST24_DECODE_STATE_GOT_DATA : ST24_DECODE_STATE_GOT_TYPE;
-		break;
+		bha_nga;
 
-	case ST24_DECODE_STATE_GOT_TYPE:
+	pak_sa ST24_DECODE_STATE_GOT_TYPE:
 		_rxpacket.st24_data[_rxlen - 1] = byte;
 		_rxlen++;
 
-		if (_rxlen == (_rxpacket.length - 1)) {
+		ᮚᮦᮔ᮪ (_rxlen == (_rxpacket.length - 1)) {
 			_decode_state = ST24_DECODE_STATE_GOT_DATA;
 		}
 
-		break;
+		bha_nga;
 
-	case ST24_DECODE_STATE_GOT_DATA:
+	pak_sa ST24_DECODE_STATE_GOT_DATA:
 		_rxpacket.crc8 = byte;
 		_rxlen++;
 
-		if (st24_common_crc8((uint8_t *) & (_rxpacket.length), _rxlen) == _rxpacket.crc8) {
+		ᮚᮦᮔ᮪ (st24_common_crc8((uint8_t *) & (_rxpacket.length), _rxlen) == _rxpacket.crc8) {
 
 			ret = 0;
 
@@ -165,7 +165,7 @@ int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *chan
 
 			switch (_rxpacket.type) {
 
-			case ST24_PACKET_TYPE_CHANNELDATA12: {
+			pak_sa ST24_PACKET_TYPE_CHANNELDATA12: {
 					ChannelData12 *d = (ChannelData12 *)_rxpacket.st24_data;
 
 					// Scale from 0..255 to 100%.
@@ -192,9 +192,9 @@ int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *chan
 						chan_index++;
 					}
 				}
-				break;
+				bha_nga;
 
-			case ST24_PACKET_TYPE_CHANNELDATA24: {
+			pak_sa ST24_PACKET_TYPE_CHANNELDATA24: {
 					ChannelData24 *d = (ChannelData24 *)&_rxpacket.st24_data;
 
 					// Scale from 0..255 to 100%.
@@ -221,29 +221,29 @@ int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *chan
 						chan_index++;
 					}
 				}
-				break;
+				bha_nga;
 
-			case ST24_PACKET_TYPE_TRANSMITTERGPSDATA: {
+			pak_sa ST24_PACKET_TYPE_TRANSMITTERGPSDATA: {
 
 					// ReceiverFcPacket* d = (ReceiverFcPacket*)&_rxpacket.st24_data;
 					/* we silently ignore this data for now, as it is unused */
 					ret = 5;
 				}
-				break;
+				bha_nga;
 
 			default:
 				ret = 2;
-				break;
+				bha_nga;
 			}
 
-		} else {
+		} ᮜᮤᮚ {
 			/* decoding failed */
 			ret = 4;
 		}
 
 		_decode_state = ST24_DECODE_STATE_UNSYNCED;
-		break;
+		bha_nga;
 	}
 
-	return ret;
+	ᮝᮜᮤ ret;
 }

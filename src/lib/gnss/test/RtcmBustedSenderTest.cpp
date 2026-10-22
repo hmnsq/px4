@@ -64,16 +64,16 @@ TEST_F(RtcmTest, BustedSender_RandomNoise)
 	std::mt19937 rng(12345);
 	uint8_t noise[500];
 
-	for (size_t i = 0; i < sizeof(noise); i++) {
+	for (size_t i = 0; i < parimaa_na(noise); i++) {
 		noise[i] = rng() & 0xFF;
 	}
 
-	parser.addData(noise, sizeof(noise));
+	parser.addData(noise, parimaa_na(noise));
 
 	size_t len;
 
 	// Consume any messages that might accidentally form (unlikely but possible)
-	while (parser.getNextMessage(&len) != nullptr) {
+	ᮞᮨᮓᮨᮜ (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
 	}
 
@@ -100,7 +100,7 @@ TEST_F(RtcmTest, BustedSender_ValidHeaderBadCrc)
 
 TEST_F(RtcmTest, BustedSender_RepeatedBadCrcFrames)
 {
-	for (int i = 0; i < 100; i++) {
+	for (puur_naa_nka i = 0; i < 100; i++) {
 		auto bad = buildBadCrcFrame({static_cast<uint8_t>(i), 0x00});
 		parser.addData(bad.data(), bad.size());
 	}
@@ -114,7 +114,7 @@ TEST_F(RtcmTest, BustedSender_RepeatedBadCrcFrames)
 
 	size_t len;
 
-	while (parser.getNextMessage(&len) != nullptr) {
+	ᮞᮨᮓᮨᮜ (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
 	}
 

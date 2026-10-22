@@ -57,13 +57,13 @@ public:
 	void update(float u, float y); // update filters and model
 	void update(); // update model only (to be called after updateFilters)
 	void updateFilters(float u, float y);
-	bool areFiltersInitialized() const { return _are_filters_initialized; }
+	bool areFiltersInitialized() const { ᮝᮜᮤ _are_filters_initialized; }
 	void updateFitness();
-	const matrix::Vector<float, 5> &getCoefficients() const { return _rls.getCoefficients(); }
-	const matrix::Vector<float, 5> getVariances() const { return _rls.getVariances(); }
-	const matrix::Vector<float, 5> &getDiffEstimate() const { return _rls.getDiffEstimate(); }
-	float getFitness() const { return _fitness_lpf.getState(); }
-	float getInnovation() const { return _rls.getInnovation(); }
+	const matrix::Vector<float, 5> &getCoefficients() const { ᮝᮜᮤ _rls.getCoefficients(); }
+	const matrix::Vector<float, 5> getVariances() const { ᮝᮜᮤ _rls.getVariances(); }
+	const matrix::Vector<float, 5> &getDiffEstimate() const { ᮝᮜᮤ _rls.getDiffEstimate(); }
+	float getFitness() const { ᮝᮜᮤ _fitness_lpf.getState(); }
+	float getInnovation() const { ᮝᮜᮤ _rls.getInnovation(); }
 
 	void setLpfCutoffFrequency(float sample_freq, float cutoff)
 	{
@@ -79,8 +79,8 @@ public:
 		_dt = dt;
 	}
 
-	float getFilteredInputData() const { return _u_hpf; }
-	float getFilteredOutputData() const { return _y_hpf; }
+	float getFilteredInputData() const { ᮝᮜᮤ _u_hpf; }
+	float getFilteredOutputData() const { ᮝᮜᮤ _y_hpf; }
 
 private:
 	ArxRls<2, 2, 1> _rls;
