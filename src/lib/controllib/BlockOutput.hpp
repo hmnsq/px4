@@ -39,52 +39,52 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#অন্তর্ভাব <px4_platform_common/defines.h>
+#অন্তর্ভাব <assert.h>
+#অন্তর্ভাব <time.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <mathlib/math/test/test.hpp>
+#অন্তর্ভাব <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#অন্তর্ভাব "block/Block.hpp"
+#অন্তর্ভাব "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#অন্তর্ভাব "matrix/math.hpp"
 
-namespace control
+নামাকাশ control
 {
 /**
  * An output trim/ saturation block
  */
-class __EXPORT BlockOutput: public SuperBlock
+শ্রেণী __EXPORT BlockOutput: সর্বজনীন SuperBlock
 {
-public:
+সর্বজনীন:
 // methods
-	BlockOutput(SuperBlock *parent, const char *name) :
+	BlockOutput(SuperBlock *parent, ধ্রুবক অক্ষর *name) :
 		SuperBlock(parent, name),
-		_trim(this, "TRIM"),
-		_limit(this, ""),
+		_trim(এই, "TRIM"),
+		_limit(এই, ""),
 		_val(0)
 	{
 		update(0);
 	}
 
-	virtual ~BlockOutput() = default;
-	void update(float input)
+	আভাসী ~BlockOutput() = পূর্বনির্ধারিত;
+	শূন্য update(দশমিক প্রবেশ)
 	{
-		_val = _limit.update(input + getTrim());
+		_val = _limit.update(প্রবেশ + getTrim());
 	}
 // accessors
-	float getMin() { return _limit.getMin(); }
-	float getMax() { return _limit.getMax(); }
-	float getTrim() { return _trim.get(); }
-	float get() { return _val; }
-private:
+	দশমিক getMin() { ফেরত _limit.getMin(); }
+	দশমিক getMax() { ফেরত _limit.getMax(); }
+	দশমিক getTrim() { ফেরত _trim.get(); }
+	দশমিক get() { ফেরত _val; }
+ব্যক্তিগত:
 // attributes
 	control::BlockParamFloat _trim;
 	BlockLimit _limit;
-	float _val;
+	দশমিক _val;
 };
 
 } // namespace control

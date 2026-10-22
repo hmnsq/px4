@@ -33,21 +33,21 @@
 
 #pragma once
 
-#include <stdint.h>
+#অন্তর্ভাব <stdint.h>
 
-namespace open_drone_id
+নামাকাশ open_drone_id
 {
 
-static constexpr uint8_t UAS_ID_SIZE = 20;
-static constexpr uint8_t UAS_ID_TYPE_SERIAL_NUMBER = 1;
-static constexpr int32_t UAS_ID_MODE_LOCK_FIRST_BASIC_ID = 1;
+স্থির constexpr uint8_t UAS_ID_আকার = 20;
+স্থির constexpr uint8_t UAS_ID_TYPE_SERIAL_সংখ্যা = 1;
+স্থির constexpr int32_t UAS_ID_MODE_LOCK_FIRST_BASIC_ID = 1;
 
-struct UasId {
+কাঠামো UasId {
 	uint8_t ua_type{0};
-	uint8_t uas_id[UAS_ID_SIZE] {};
+	uint8_t uas_id[UAS_ID_আকার] {};
 };
 
-enum class BidLockState {
+গণনা শ্রেণী BidLockState {
 	Empty,
 	Locked,
 	InvalidRecord,
@@ -56,14 +56,14 @@ enum class BidLockState {
 	Unsupported,
 };
 
-struct BidLockInfo {
+কাঠামো BidLockInfo {
 	BidLockState state{BidLockState::Unsupported};
 	UasId id{};
 
-	bool locked() const { return state == BidLockState::Locked; }
+	যৌক্তিক locked() ধ্রুবক { ফেরত state == BidLockState::Locked; }
 };
 
-enum class BidStoreResult {
+গণনা শ্রেণী Bid_Store_ফলাফল {
 	Stored,
 	AlreadyLocked,
 	AlreadyLockedDifferent,
@@ -74,21 +74,21 @@ enum class BidStoreResult {
 	Unsupported,
 };
 
-class BidStorage
+শ্রেণী BidStorage
 {
-public:
-	static BidLockInfo get();
-	static BidStoreResult checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE]);
+সর্বজনীন:
+	স্থির BidLockInfo get();
+	স্থির Bid_Store_ফলাফল checkOrStore(uint8_t ua_type, ধ্রুবক uint8_t uas_id[UAS_ID_আকার]);
 };
 
-class BidLock
+শ্রেণী BidLock
 {
-public:
-	BidStoreResult resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE], UasId &locked_id);
+সর্বজনীন:
+	Bid_Store_ফলাফল resolve(uint8_t id_type, uint8_t ua_type, ধ্রুবক uint8_t uas_id[UAS_ID_আকার], UasId &locked_id);
 
-private:
+ব্যক্তিগত:
 	BidLockInfo _info{};
-	bool _loaded{false};
+	যৌক্তিক _loaded{মিথ্যা};
 };
 
 } // namespace open_drone_id

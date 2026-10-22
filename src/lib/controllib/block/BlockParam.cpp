@@ -37,59 +37,59 @@
  * Controller library code
  */
 
-#include "Block.hpp"
-#include "BlockParam.hpp"
+#অন্তর্ভাব "Block.hpp"
+#অন্তর্ভাব "BlockParam.hpp"
 
-#include <cstdio>
-#include <cstring>
+#অন্তর্ভাব <cstdio>
+#অন্তর্ভাব <cstring>
 
-#include <containers/List.hpp>
+#অন্তর্ভাব <containers/List.hpp>
 
-#include <px4_platform_common/log.h>
+#অন্তর্ভাব <px4_platform_common/log.h>
 
-namespace control
+নামাকাশ control
 {
 
-BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_prefix)
+BlockParamBase::BlockParamBase(Block *parent, ধ্রুবক অক্ষর *name, যৌক্তিক parent_prefix)
 {
-	char fullname[blockNameLengthMax];
+	অক্ষর fullname[block_Name_দৈর্ঘ্য_Max];
 
-	if (parent == nullptr) {
-		strncpy(fullname, name, blockNameLengthMax - 1);
-		fullname[sizeof(fullname) - 1] = '\0';
+	যদি (parent == nullptr) {
+		strncpy(fullname, name, block_Name_দৈর্ঘ্য_Max - 1);
+		fullname[আকার(fullname) - 1] = '\0';
 
-	} else {
-		char parentName[blockNameLengthMax];
-		parent->getName(parentName, blockNameLengthMax);
+	} অন্যথা {
+		অক্ষর parentName[block_Name_দৈর্ঘ্য_Max];
+		parent->getName(parentName, block_Name_দৈর্ঘ্য_Max);
 
-		if (strcmp(name, "") == 0) {
-			strncpy(fullname, parentName, blockNameLengthMax);
+		যদি (strcmp(name, "") == 0) {
+			strncpy(fullname, parentName, block_Name_দৈর্ঘ্য_Max);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[আকার(fullname) - 1] = '\0';
 
-		} else if (parent_prefix) {
-			if (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
+		} অন্যথা যদি (parent_prefix) {
+			যদি (snprintf(fullname, block_Name_দৈর্ঘ্য_Max, "%s_%s", parentName, name) >= block_Name_দৈর্ঘ্য_Max) {
 				PX4_ERR("param too long: %s", name);
 			}
 
-		} else {
-			strncpy(fullname, name, blockNameLengthMax);
+		} অন্যথা {
+			strncpy(fullname, name, block_Name_দৈর্ঘ্য_Max);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[আকার(fullname) - 1] = '\0';
 		}
 
-		parent->getParams().add(this);
+		parent->getParams().add(এই);
 	}
 
 	_handle = param_find(fullname);
 
-	if (_handle == PARAM_INVALID) {
+	যদি (_handle == PARAM_INVALID) {
 		PX4_ERR("error finding param: %s", fullname);
 	}
 };
 
 template <>
-BlockParam<bool>::BlockParam(Block *block, const char *name, bool parent_prefix) :
+BlockParam<যৌক্তিক>::BlockParam(Block *block, ধ্রুবক অক্ষর *name, যৌক্তিক parent_prefix) :
 	BlockParamBase(block, name, parent_prefix),
 	_val()
 {
@@ -97,23 +97,23 @@ BlockParam<bool>::BlockParam(Block *block, const char *name, bool parent_prefix)
 }
 
 template <>
-bool BlockParam<bool>::update()
+যৌক্তিক BlockParam<যৌক্তিক>::update()
 {
 	int32_t tmp = 0;
-	int ret = param_get(_handle, &tmp);
+	পূর্ণসংখ্যা ret = param_get(_handle, &tmp);
 
-	if (tmp == 1) {
-		_val = true;
+	যদি (tmp == 1) {
+		_val = সত্য;
 
-	} else {
-		_val = false;
+	} অন্যথা {
+		_val = মিথ্যা;
 	}
 
-	return (ret == PX4_OK);
+	ফেরত (ret == PX4_OK);
 }
 
 template <>
-BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_prefix) :
+BlockParam<int32_t>::BlockParam(Block *block, ধ্রুবক অক্ষর *name, যৌক্তিক parent_prefix) :
 	BlockParamBase(block, name, parent_prefix),
 	_val()
 {
@@ -121,7 +121,7 @@ BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_pref
 }
 
 template <>
-BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix) :
+BlockParam<দশমিক>::BlockParam(Block *block, ধ্রুবক অক্ষর *name, যৌক্তিক parent_prefix) :
 	BlockParamBase(block, name, parent_prefix),
 	_val()
 {
@@ -129,7 +129,7 @@ BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix
 }
 
 template <>
-BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_prefix, int32_t &extern_val) :
+BlockParam<int32_t &>::BlockParam(Block *block, ধ্রুবক অক্ষর *name, যৌক্তিক parent_prefix, int32_t &extern_val) :
 	BlockParamBase(block, name, parent_prefix),
 	_val(extern_val)
 {
@@ -137,7 +137,7 @@ BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_pr
 }
 
 template <>
-BlockParam<float &>::BlockParam(Block *block, const char *name, bool parent_prefix, float &extern_val) :
+BlockParam<দশমিক &>::BlockParam(Block *block, ধ্রুবক অক্ষর *name, যৌক্তিক parent_prefix, দশমিক &extern_val) :
 	BlockParamBase(block, name, parent_prefix),
 	_val(extern_val)
 {

@@ -41,7 +41,7 @@
 
 #pragma once
 
-#include <climits>
+#অন্তর্ভাব <climits>
 
 /*
 min_rssi_dbm = -92.0
@@ -67,18 +67,18 @@ constexpr int8_t lu_dbm_percent[] = {
 	0,
 };
 
-#define MASK(n) (n >> (sizeof(n) * CHAR_BIT - 1))
+#define MASK(n) (n >> (আকার(n) * CHAR_BIT - 1))
 
 /* constexpr-compatible version of abs() */
-constexpr unsigned c_abs(int n)
+constexpr unsigned c_abs(পূর্ণসংখ্যা n)
 {
-	return (n + MASK(n)) ^ MASK(n);
+	ফেরত (n + MASK(n)) ^ MASK(n);
 }
 
 /* convert signed spektrum dbm (-92 to -42) to percentage */
 constexpr int8_t spek_dbm_to_percent(int8_t dbm)
 {
-	return lu_dbm_percent[c_abs(dbm)];
+	ফেরত lu_dbm_percent[c_abs(dbm)];
 }
 
 static_assert(spek_dbm_to_percent(0) == 100, "0 dbm should be 100%");

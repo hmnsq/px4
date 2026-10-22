@@ -37,11 +37,11 @@
  * LED driver to control the onboard LED(s) via ioctl interface.
  */
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/px4_config.h>
-#include <lib/cdev/CDev.hpp>
-#include <drivers/drv_board_led.h>
-#include <stdio.h>
+#অন্তর্ভাব <px4_platform_common/log.h>
+#অন্তর্ভাব <px4_platform_common/px4_config.h>
+#অন্তর্ভাব <lib/cdev/CDev.hpp>
+#অন্তর্ভাব <drivers/drv_board_led.h>
+#অন্তর্ভাব <stdio.h>
 
 /*
  * Ideally we'd be able to get these from arm_internal.h,
@@ -51,20 +51,20 @@
  * CONFIG_ARCH_LEDS configuration switch.
  */
 __BEGIN_DECLS
-extern void led_init();
-extern void led_on(int led);
-extern void led_off(int led);
-extern void led_toggle(int led);
+বাহ্যিক শূন্য led_init();
+বাহ্যিক শূন্য led_on(পূর্ণসংখ্যা led);
+বাহ্যিক শূন্য led_off(পূর্ণসংখ্যা led);
+বাহ্যিক শূন্য led_toggle(পূর্ণসংখ্যা led);
 __END_DECLS
 
-class LED : cdev::CDev
+শ্রেণী LED : cdev::CDev
 {
-public:
+সর্বজনীন:
 	LED();
-	~LED() override = default;
+	~LED() override = পূর্বনির্ধারিত;
 
-	int	init() override;
-	int	ioctl(cdev::file_t *filp, int cmd, unsigned long arg) override;
+	পূর্ণসংখ্যা	init() override;
+	পূর্ণসংখ্যা	ioctl(cdev::file_t *filp, পূর্ণসংখ্যা cmd, unsigned long arg) override;
 };
 
 LED::LED() : CDev(LED0_DEVICE_PATH)
@@ -73,7 +73,7 @@ LED::LED() : CDev(LED0_DEVICE_PATH)
 	init();
 }
 
-int
+পূর্ণসংখ্যা
 LED::init()
 {
 	PX4_DEBUG("LED::init");
@@ -82,43 +82,43 @@ LED::init()
 
 	led_init();
 
-	return 0;
+	ফেরত 0;
 }
 
-int
-LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
+পূর্ণসংখ্যা
+LED::ioctl(cdev::file_t *filp, পূর্ণসংখ্যা cmd, unsigned long arg)
 {
-	int result = OK;
+	পূর্ণসংখ্যা ফলাফল = OK;
 
-	switch (cmd) {
-	case LED_ON:
+	নির্বাচন (cmd) {
+	ক্ষেত্র LED_ON:
 		led_on(arg);
-		break;
+		বিরতি;
 
-	case LED_OFF:
+	ক্ষেত্র LED_OFF:
 		led_off(arg);
-		break;
+		বিরতি;
 
-	case LED_TOGGLE:
+	ক্ষেত্র LED_TOGGLE:
 		led_toggle(arg);
-		break;
+		বিরতি;
 
-	default:
-		result = CDev::ioctl(filp, cmd, arg);
+	পূর্বনির্ধারিত:
+		ফলাফল = CDev::ioctl(filp, cmd, arg);
 	}
 
-	return result;
+	ফেরত ফলাফল;
 }
 
-namespace
+নামাকাশ
 {
 LED	*gLED;
 }
 
-void
-drv_led_start(void)
+শূন্য
+drv_led_start(শূন্য)
 {
-	if (gLED == nullptr) {
-		gLED = new LED;
+	যদি (gLED == nullptr) {
+		gLED = নতুন LED;
 	}
 }

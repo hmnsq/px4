@@ -31,19 +31,19 @@
  *
  ****************************************************************************/
 
-#include "RtcmTestCommon.hpp"
+#অন্তর্ভাব "RtcmTestCommon.hpp"
 
-TEST_F(RtcmTest, CRC24Q_EmptyData)
+TEST_F(RtcmTest, CRC24_Q_Empty_তথ্য)
 {
 	uint32_t crc = rtcm3_crc24q(nullptr, 0);
 	EXPECT_EQ(crc, 0u);
 }
 
-TEST_F(RtcmTest, CRC24Q_KnownValue)
+TEST_F(RtcmTest, CRC24_Q_Known_মান)
 {
 	// Test with known RTCM data
-	uint8_t data[] = {0xD3, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04};
-	uint32_t crc = rtcm3_crc24q(data, sizeof(data));
+	uint8_t তথ্য[] = {0xD3, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04};
+	uint32_t crc = rtcm3_crc24q(তথ্য, আকার(তথ্য));
 	// CRC should be a 24-bit value
 	EXPECT_EQ(crc & 0xFF000000, 0u);
 	EXPECT_NE(crc, 0u);

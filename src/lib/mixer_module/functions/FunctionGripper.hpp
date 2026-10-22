@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#অন্তর্ভাব "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gripper.h>
+#অন্তর্ভাব <uORB/topics/gripper.h>
 
 /**
  * @brief Function: Gripper (Used for actuating a Gripper)
  */
-class FunctionGripper : public FunctionProviderBase
+শ্রেণী FunctionGripper : সর্বজনীন FunctionProviderBase
 {
-public:
-	FunctionGripper() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGripper(); }
+সর্বজনীন:
+	FunctionGripper() = পূর্বনির্ধারিত;
+	স্থির FunctionProviderBase *allocate(ধ্রুবক Context &context) { ফেরত নতুন FunctionGripper(); }
 
-	void update() override
+	শূন্য update() override
 	{
 		gripper_s gripper;
 
-		if (_gripper_sub.update(&gripper)) {
-			if (gripper.command == gripper_s::COMMAND_RELEASE) {
-				_data = -1.f; // Minimum command for release
+		যদি (_gripper_sub.update(&gripper)) {
+			যদি (gripper.command == gripper_s::COMMAND_RELEASE) {
+				তথ্য_3 = -1.f; // Minimum command for release
 
-			} else if (gripper.command == gripper_s::COMMAND_GRAB) {
-				_data = 1.f; // Maximum command for grab
+			} অন্যথা যদি (gripper.command == gripper_s::COMMAND_GRAB) {
+				তথ্য_3 = 1.f; // Maximum command for grab
 
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	দশমিক value(OutputFunction func) override { ফেরত তথ্য_3; }
 
-private:
+ব্যক্তিগত:
 	uORB::Subscription _gripper_sub{ORB_ID(gripper)};
-	float _data{-1.f};
+	দশমিক তথ্য_3{-1.f};
 };

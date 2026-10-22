@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include <cmath>
+#অন্তর্ভাব <cmath>
 
-class PID
+শ্রেণী PID
 {
-public:
-	PID() = default;
-	virtual ~PID() = default;
-	void setOutputLimit(const float limit) {setOutputLimit(-limit, limit);}
-	void setOutputLimit(const float lower_limit, const float upper_limit);
-	void setIntegralLimit(const float limit) { _limit_integral = limit; }
-	void setGains(const float P, const float I, const float D);
-	void setSetpoint(const float setpoint) { _setpoint = setpoint; }
-	void setFeedForwardGain(const float feedforward_gain) { _gain_feedforward = feedforward_gain; }
-	float update(const float feedback, const float dt, const bool update_integral = true);
-	float getIntegral() { return _integral; }
-	void resetIntegral() { _integral = 0.f; }
-	void resetDerivative() { _last_feedback = NAN; }
-private:
-	void updateIntegral(float error, const float saturation, const float dt);
-	float updateDerivative(float feedback, const float dt);
+সর্বজনীন:
+	PID() = পূর্বনির্ধারিত;
+	আভাসী ~PID() = পূর্বনির্ধারিত;
+	শূন্য setOutputLimit(ধ্রুবক দশমিক limit) {setOutputLimit(-limit, limit);}
+	শূন্য setOutputLimit(ধ্রুবক দশমিক lower_limit, ধ্রুবক দশমিক upper_limit);
+	শূন্য setIntegralLimit(ধ্রুবক দশমিক limit) { _limit_integral = limit; }
+	শূন্য setGains(ধ্রুবক দশমিক P, ধ্রুবক দশমিক I, ধ্রুবক দশমিক D);
+	শূন্য setSetpoint(ধ্রুবক দশমিক setpoint) { _setpoint = setpoint; }
+	শূন্য setFeedForwardGain(ধ্রুবক দশমিক feedforward_gain) { _gain_feedforward = feedforward_gain; }
+	দশমিক update(ধ্রুবক দশমিক feedback, ধ্রুবক দশমিক dt, ধ্রুবক যৌক্তিক update_integral = সত্য);
+	দশমিক getIntegral() { ফেরত _integral; }
+	শূন্য resetIntegral() { _integral = 0.f; }
+	শূন্য resetDerivative() { _last_feedback = NAN; }
+ব্যক্তিগত:
+	শূন্য updateIntegral(দশমিক error, ধ্রুবক দশমিক saturation, ধ্রুবক দশমিক dt);
+	দশমিক updateDerivative(দশমিক feedback, ধ্রুবক দশমিক dt);
 
-	float _setpoint{0.f}; ///< current setpoint to track
-	float _integral{0.f}; ///< integral state
-	float _last_feedback{NAN};
+	দশমিক _setpoint{0.f}; ///< current setpoint to track
+	দশমিক _integral{0.f}; ///< integral state
+	দশমিক _last_feedback{NAN};
 
 	// Gains, Limits
-	float _gain_feedforward{0.f};
-	float _gain_proportional{0.f};
-	float _gain_integral{0.f};
-	float _gain_derivative{0.f};
-	float _limit_integral{0.f};
-	float _lower_limit_output{0.f};
-	float _upper_limit_output{0.f};
+	দশমিক _gain_feedforward{0.f};
+	দশমিক _gain_proportional{0.f};
+	দশমিক _gain_integral{0.f};
+	দশমিক _gain_derivative{0.f};
+	দশমিক _limit_integral{0.f};
+	দশমিক _lower_limit_output{0.f};
+	দশমিক _upper_limit_output{0.f};
 };

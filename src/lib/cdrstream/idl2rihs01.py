@@ -33,30 +33,30 @@
 #
 ############################################################################
 
-import argparse
-import pathlib
-import sys
-import os
-import tempfile
-import json
+আমদানি argparse
+আমদানি pathlib
+আমদানি sys
+আমদানি os
+আমদানি tempfile
+আমদানি json
 
-try:
-    from rosidl_generator_type_description import generate_type_hash
-except ImportError:
+চেষ্টা:
+    তঃ rosidl_generator_type_description আমদানি generate_type_hash
+ব্যতিক্রম ImportError:
     # modifying sys.path and importing the Python package with the same
     # name as this script does not work on Windows
-    rosidl_generator_type_description_root = os.path.dirname(os.path.dirname(__file__))
+    rosidl_generator_type_description_মূল = os.path.dirname(os.path.dirname(__file__))
     rosidl_generator_type_description_module = os.path.join(
-        rosidl_generator_type_description_root, 'rosidl_generator_type_description', '__init__.py')
-    if not os.path.exists(rosidl_generator_type_description_module):
-        raise
-    from importlib.machinery import SourceFileLoader
+        rosidl_generator_type_description_মূল, 'rosidl_generator_type_description', '__init__.py')
+    যদি নয় os.path.exists(rosidl_generator_type_description_module):
+        তোলো
+    তঃ importlib.machinery আমদানি SourceFileLoader
 
     loader = SourceFileLoader('rosidl_generator_type_description', rosidl_generator_type_description_module)
     rosidl_generator_type_description = loader.load_module()
     generate_type_hash = rosidl_generator_type_description.generate_type_hash
 
-if __name__ == '__main__':
+যদি __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description=f'Convert px4 .idl files to rihs01')
     parser.add_argument(
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     type_hash_arguments['output_dir'] = args.output_dir
     type_hash_arguments["idl_tuples"] = idl_files
 
-    for interface_file in args.interface_files:
+    জন্য interface_file মধ্যে args.interface_files:
         # So file path need to be magically encoded with a : to let the parser do its thing
 
         interface_file = str(pathlib.Path(interface_file)).replace("px4/msg", "px4:msg")

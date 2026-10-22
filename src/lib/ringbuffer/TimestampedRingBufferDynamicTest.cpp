@@ -31,60 +31,60 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <math.h>
-#include "TimestampedRingBuffer.hpp"
+#অন্তর্ভাব <gtest/gtest.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব "TimestampedRingBuffer.hpp"
 
-struct sample {
+কাঠামো sample {
 	uint64_t time_us;
-	float data[3];
+	দশমিক তথ্য[3];
 };
 
 
-class TimestampedRingBufferDynamicTest : public ::testing::Test
+শ্রেণী Timestamped_Ring_বাফার_Dynamic_Test : সর্বজনীন ::testing::Test
 {
-public:
+সর্বজনীন:
 
 	sample _x, _y, _z;
-	TimestampedRingBuffer<sample> *_buffer{nullptr};
+	Timestamped_Ring_বাফার<sample> *বাফার{nullptr};
 
-	void SetUp() override
+	শূন্য SetUp() override
 	{
-		_buffer = new TimestampedRingBuffer<sample>(3);
+		বাফার = নতুন Timestamped_Ring_বাফার<sample>(3);
 		_x.time_us = 1000000;
-		_x.data[0] = _x.data[1] = _x.data[2] = 1.5f;
+		_x.তথ্য[0] = _x.তথ্য[1] = _x.তথ্য[2] = 1.5f;
 
 		_y.time_us = 2000000;
-		_y.data[0] = _y.data[1] = _y.data[2] = 3.0f;
+		_y.তথ্য[0] = _y.তথ্য[1] = _y.তথ্য[2] = 3.0f;
 
 		_z.time_us = 3000000;
-		_z.data[0] = _z.data[1] = _z.data[2] = 4.0f;
+		_z.তথ্য[0] = _z.তথ্য[1] = _z.তথ্য[2] = 4.0f;
 	}
 
-	void TearDown() override
+	শূন্য TearDown() override
 	{
-		delete _buffer;
+		delete বাফার;
 	}
 };
 
-TEST_F(TimestampedRingBufferDynamicTest, goodInitialisation)
+TEST_F(Timestamped_Ring_বাফার_Dynamic_Test, goodInitialisation)
 {
 	// WHEN: buffer was allocated
 	// THEN: allocation should have succeed
-	EXPECT_TRUE(_buffer->allocate(3));
-	EXPECT_TRUE(_buffer->valid());
-	EXPECT_EQ(_buffer->get_length(), 3);
+	EXPECT_TRUE(বাফার->allocate(3));
+	EXPECT_TRUE(বাফার->valid());
+	EXPECT_EQ(বাফার->get_দৈর্ঘ্য(), 3);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, RejectsInvalidSize)
+TEST_F(Timestamped_Ring_বাফার_Dynamic_Test, Rejects_Invalid_আকার)
 {
-	EXPECT_FALSE(_buffer->allocate(0));
-	EXPECT_FALSE(_buffer->allocate(UINT8_MAX + 1u));
-	EXPECT_TRUE(_buffer->valid());
-	EXPECT_EQ(_buffer->get_length(), 3);
+	EXPECT_FALSE(বাফার->allocate(0));
+	EXPECT_FALSE(বাফার->allocate(UINT8_MAX + 1u));
+	EXPECT_TRUE(বাফার->valid());
+	EXPECT_EQ(বাফার->get_দৈর্ঘ্য(), 3);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, badInitialisation)
+TEST_F(Timestamped_Ring_বাফার_Dynamic_Test, badInitialisation)
 {
 	// WHEN: buffer allocation input is bad
 	// THEN: allocation should fail
@@ -94,75 +94,75 @@ TEST_F(TimestampedRingBufferDynamicTest, badInitialisation)
 	// ASSERT_EQ(false, _buffer->allocate(0));
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, orderOfSamples)
+TEST_F(Timestamped_Ring_বাফার_Dynamic_Test, orderOfSamples)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
+	ASSERT_EQ(সত্য, বাফার->allocate(3));
 	// GIVEN: allocated buffer
 	// WHEN: adding multiple samples
 	// THEN: they should be added in order
-	_buffer->push(_x);
+	বাফার->ঠেলো(_x);
 
-	EXPECT_EQ(_x.time_us, _buffer->get_newest().time_us);
-	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
+	EXPECT_EQ(_x.time_us, বাফার->get_newest().time_us);
+	EXPECT_EQ(_x.time_us, বাফার->get_oldest().time_us);
 
-	_buffer->push(_z);
-	_buffer->push(_y);
+	বাফার->ঠেলো(_z);
+	বাফার->ঠেলো(_y);
 
-	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
-	EXPECT_EQ(_y.time_us, _buffer->get_newest().time_us);
+	EXPECT_EQ(_x.time_us, বাফার->get_oldest().time_us);
+	EXPECT_EQ(_y.time_us, বাফার->get_newest().time_us);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, popSample)
+TEST_F(Timestamped_Ring_বাফার_Dynamic_Test, বের_করো_Sample)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(সত্য, বাফার->allocate(3));
+	বাফার->ঠেলো(_x);
+	বাফার->ঠেলো(_y);
+	বাফার->ঠেলো(_z);
 
 	// GIVEN: allocated and filled buffer
 
-	sample pop = {};
+	sample বের_করো = {};
 	// WHEN: we want to retrieve a sample that is older than any in the buffer
 	// THEN: we should not get any sample
-	EXPECT_FALSE(_buffer->pop_first_older_than(0, &pop));
+	EXPECT_FALSE(বাফার->বের_করো_first_older_than(0, &বের_করো));
 
 	// WHEN: when calling "pop_first_older_than"
 	// THEN: we should get the first sample from the head that is older
-	EXPECT_TRUE(_buffer->pop_first_older_than(_x.time_us + 1, &pop));
-	EXPECT_EQ(_x.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_y.time_us + 10, &pop));
-	EXPECT_EQ(_y.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 100, &pop));
-	EXPECT_EQ(_z.time_us, pop.time_us);
+	EXPECT_TRUE(বাফার->বের_করো_first_older_than(_x.time_us + 1, &বের_করো));
+	EXPECT_EQ(_x.time_us, বের_করো.time_us);
+	EXPECT_TRUE(বাফার->বের_করো_first_older_than(_y.time_us + 10, &বের_করো));
+	EXPECT_EQ(_y.time_us, বের_করো.time_us);
+	EXPECT_TRUE(বাফার->বের_করো_first_older_than(_z.time_us + 100, &বের_করো));
+	EXPECT_EQ(_z.time_us, বের_করো.time_us);
 	// TODO: When changing the order of popping sample it does not behave as expected, fix this
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, askingForTooNewSample)
+TEST_F(Timestamped_Ring_বাফার_Dynamic_Test, askingForTooNewSample)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(সত্য, বাফার->allocate(3));
+	বাফার->ঠেলো(_x);
+	বাফার->ঠেলো(_y);
+	বাফার->ঠেলো(_z);
 
-	sample pop = {};
+	sample বের_করো = {};
 	// WHEN: all buffered samples are older by 0.1s than your query timestamp
 	// THEN: should get no sample returned
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 99000, &pop));
-	EXPECT_FALSE(_buffer->pop_first_older_than(_y.time_us + 100000, &pop));
+	EXPECT_TRUE(বাফার->বের_করো_first_older_than(_z.time_us + 99000, &বের_করো));
+	EXPECT_FALSE(বাফার->বের_করো_first_older_than(_y.time_us + 100000, &বের_করো));
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, reallocateBuffer)
+TEST_F(Timestamped_Ring_বাফার_Dynamic_Test, reallocate_বাফার)
 {
-	ASSERT_EQ(true, _buffer->allocate(5));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(সত্য, বাফার->allocate(5));
+	বাফার->ঠেলো(_x);
+	বাফার->ঠেলো(_y);
+	বাফার->ঠেলো(_y);
+	বাফার->ঠেলো(_y);
+	বাফার->ঠেলো(_z);
 
 	// GIVEN: allocated and filled buffer
 	// WHEN: do another allocate call
-	EXPECT_TRUE(_buffer->allocate(3));
+	EXPECT_TRUE(বাফার->allocate(3));
 	// THEN: its length should update
-	EXPECT_EQ(3, _buffer->get_length());
+	EXPECT_EQ(3, বাফার->get_দৈর্ঘ্য());
 }

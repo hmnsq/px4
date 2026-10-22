@@ -1,22 +1,22 @@
 #pragma once
 
 #ifdef __cplusplus
-extern "C" {
+বাহ্যিক "C" {
 #endif
 
-#include <stdbool.h>
-#include <termios.h>
+#অন্তর্ভাব <stdbool.h>
+#অন্তর্ভাব <termios.h>
 
-int qurt_uart_get_port(const char *dev);
-int qurt_uart_open(const char *dev, speed_t speed);
-int qurt_uart_write(int fd, const char *buf, size_t len);
-int qurt_uart_read(int fd, char *buf, size_t len, uint32_t timeout_us);
+পূর্ণসংখ্যা qurt_uart_get_port(ধ্রুবক অক্ষর *dev);
+পূর্ণসংখ্যা qurt_uart_open(ধ্রুবক অক্ষর *dev, speed_t speed);
+পূর্ণসংখ্যা qurt_uart_write(পূর্ণসংখ্যা fd, ধ্রুবক অক্ষর *buf, size_t len);
+পূর্ণসংখ্যা qurt_uart_read(পূর্ণসংখ্যা fd, অক্ষর *buf, size_t len, uint32_t timeout_us);
 
-typedef int (*open_uart_func_t)(uint8_t, speed_t);
-typedef int (*write_uart_func_t)(int, const void *, size_t);
-typedef int (*read_uart_func_t)(int,  void *, size_t);
+প্রকারলেখ পূর্ণসংখ্যা (*open_uart_func_t)(uint8_t, speed_t);
+প্রকারলেখ পূর্ণসংখ্যা (*write_uart_func_t)(পূর্ণসংখ্যা, ধ্রুবক শূন্য *, size_t);
+প্রকারলেখ পূর্ণসংখ্যা (*read_uart_func_t)(পূর্ণসংখ্যা,  শূন্য *, size_t);
 
-void configure_uart_callbacks(open_uart_func_t, write_uart_func_t, read_uart_func_t);
+শূন্য configure_uart_callbacks(open_uart_func_t, write_uart_func_t, read_uart_func_t);
 
 #ifdef __cplusplus
 }

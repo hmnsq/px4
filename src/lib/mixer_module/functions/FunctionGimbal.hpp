@@ -33,33 +33,33 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#অন্তর্ভাব "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gimbal_controls.h>
+#অন্তর্ভাব <uORB/topics/gimbal_controls.h>
 
 /**
  * Functions: Gimbal_Roll .. Gimbal_Yaw
  */
-class FunctionGimbal : public FunctionProviderBase
+শ্রেণী FunctionGimbal : সর্বজনীন FunctionProviderBase
 {
-public:
-	FunctionGimbal() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGimbal(); }
+সর্বজনীন:
+	FunctionGimbal() = পূর্বনির্ধারিত;
+	স্থির FunctionProviderBase *allocate(ধ্রুবক Context &context) { ফেরত নতুন FunctionGimbal(); }
 
-	void update() override
+	শূন্য update() override
 	{
 		gimbal_controls_s gimbal_controls;
 
-		if (_topic.update(&gimbal_controls)) {
-			_data[0] = gimbal_controls.control[gimbal_controls_s::INDEX_ROLL];
-			_data[1] = gimbal_controls.control[gimbal_controls_s::INDEX_PITCH];
-			_data[2] = gimbal_controls.control[gimbal_controls_s::INDEX_YAW];
+		যদি (_topic.update(&gimbal_controls)) {
+			তথ্য_3[0] = gimbal_controls.control[gimbal_controls_s::সূচক_ROLL];
+			তথ্য_3[1] = gimbal_controls.control[gimbal_controls_s::সূচক_PITCH];
+			তথ্য_3[2] = gimbal_controls.control[gimbal_controls_s::সূচক_YAW];
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Gimbal_Roll]; }
+	দশমিক value(OutputFunction func) override { ফেরত তথ্য_3[(পূর্ণসংখ্যা)func - (পূর্ণসংখ্যা)OutputFunction::Gimbal_Roll]; }
 
-private:
+ব্যক্তিগত:
 	uORB::Subscription _topic{ORB_ID(gimbal_controls)};
-	float _data[3] { NAN, NAN, NAN };
+	দশমিক তথ্য_3[3] { NAN, NAN, NAN };
 };

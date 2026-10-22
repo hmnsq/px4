@@ -41,32 +41,32 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#অন্তর্ভাব "Vector.hpp"
 
-namespace matrix
+নামাকাশ matrix
 {
 
 template<typename Type>
-class Vector4 : public Vector<Type, 4>
+শ্রেণী Vector4 : সর্বজনীন Vector<Type, 4>
 {
-public:
+সর্বজনীন:
 	using Matrix41 = Matrix<Type, 4, 1>;
 
-	Vector4() = default;
+	Vector4() = পূর্বনির্ধারিত;
 
-	Vector4(const Matrix41 &other) :
+	Vector4(ধ্রুবক Matrix41 &other) :
 		Vector<Type, 4>(other)
 	{
 	}
 
-	explicit Vector4(const Type data_[3]) :
-		Vector<Type, 4>(data_)
+	explicit Vector4(ধ্রুবক Type তথ্য_2[3]) :
+		Vector<Type, 4>(তথ্য_2)
 	{
 	}
 
 	Vector4(Type x1, Type x2, Type x3, Type x4)
 	{
-		Vector4 &v(*this);
+		Vector4 &v(*এই);
 		v(0) = x1;
 		v(1) = x2;
 		v(2) = x3;
@@ -74,12 +74,12 @@ public:
 	}
 
 	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 4, 1, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	Vector4(ধ্রুবক Slice<Type, 4, 1, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
 	{
 	}
 
 	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 1, 4, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	Vector4(ধ্রুবক Slice<Type, 1, 4, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
 	{
 	}
 
@@ -87,43 +87,43 @@ public:
 	 * Override matrix ops so Vector4 type is returned
 	 */
 
-	Vector4 operator+(Vector4 other) const
+	Vector4 operator+(Vector4 other) ধ্রুবক
 	{
-		return Matrix41::operator+(other);
+		ফেরত Matrix41::operator+(other);
 	}
 
-	Vector4 operator+(Type scalar) const
+	Vector4 operator+(Type scalar) ধ্রুবক
 	{
-		return Matrix41::operator+(scalar);
+		ফেরত Matrix41::operator+(scalar);
 	}
 
-	Vector4 operator-(Vector4 other) const
+	Vector4 operator-(Vector4 other) ধ্রুবক
 	{
-		return Matrix41::operator-(other);
+		ফেরত Matrix41::operator-(other);
 	}
 
-	Vector4 operator-(Type scalar) const
+	Vector4 operator-(Type scalar) ধ্রুবক
 	{
-		return Matrix41::operator-(scalar);
+		ফেরত Matrix41::operator-(scalar);
 	}
 
-	Vector4 operator-() const
+	Vector4 operator-() ধ্রুবক
 	{
-		return Matrix41::operator-();
+		ফেরত Matrix41::operator-();
 	}
 
-	Vector4 operator*(Type scalar) const
+	Vector4 operator*(Type scalar) ধ্রুবক
 	{
-		return Matrix41::operator*(scalar);
+		ফেরত Matrix41::operator*(scalar);
 	}
 
-	Type operator*(Vector4 b) const
+	Type operator*(Vector4 b) ধ্রুবক
 	{
-		return Vector<Type, 4>::operator*(b);
+		ফেরত Vector<Type, 4>::operator*(b);
 	}
 
 };
 
-using Vector4f = Vector4<float>;
+using Vector4f = Vector4<দশমিক>;
 
 } // namespace matrix

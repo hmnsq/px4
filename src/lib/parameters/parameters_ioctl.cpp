@@ -39,161 +39,161 @@
 
 #define PARAM_IMPLEMENTATION
 
-#include <errno.h>
+#অন্তর্ভাব <errno.h>
 
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <px4_platform_common/defines.h>
+#অন্তর্ভাব "param.h"
+#অন্তর্ভাব "parameters_ioctl.h"
+#অন্তর্ভাব <px4_platform_common/defines.h>
 
-int	param_ioctl(unsigned int cmd, unsigned long arg)
+পূর্ণসংখ্যা	param_ioctl(unsigned পূর্ণসংখ্যা cmd, unsigned long arg)
 {
-	int ret = OK;
+	পূর্ণসংখ্যা ret = OK;
 
-	switch (cmd) {
-	case PARAMIOCNOTIFY: {
+	নির্বাচন (cmd) {
+	ক্ষেত্র PARAMIOCNOTIFY: {
 			param_notify_changes();
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCFIND: {
-			paramiocfind_t *data = (paramiocfind_t *)arg;
+	ক্ষেত্র PARAMIOCFIND: {
+			paramiocfind_t *তথ্য = (paramiocfind_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_find(data->name);
+			যদি (তথ্য->notification) {
+				তথ্য->ret = param_find(তথ্য->name);
 
-			} else {
-				data->ret = param_find_no_notification(data->name);
+			} অন্যথা {
+				তথ্য->ret = param_find_no_notification(তথ্য->name);
 			}
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCCOUNTUSED: {
-			paramioccountused_t *data = (paramioccountused_t *)arg;
-			data->ret = param_count_used();
+	ক্ষেত্র PARAMIOCCOUNTUSED: {
+			paramioccountused_t *তথ্য = (paramioccountused_t *)arg;
+			তথ্য->ret = param_গুনতি_used();
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCFORUSEDINDEX: {
-			paramiocforusedindex_t *data = (paramiocforusedindex_t *)arg;
-			data->ret =  param_for_used_index(data->index);
+	ক্ষেত্র PARAMIOCFORUSEDINDEX: {
+			paramiocforusedindex_t *তথ্য = (paramiocforusedindex_t *)arg;
+			তথ্য->ret =  param_for_used_সূচক(তথ্য->সূচক);
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCGETUSEDINDEX: {
-			paramiocgetusedindex_t *data = (paramiocgetusedindex_t *)arg;
-			data->ret = param_get_used_index(data->param);
+	ক্ষেত্র PARAMIOCGETUSEDINDEX: {
+			paramiocgetusedindex_t *তথ্য = (paramiocgetusedindex_t *)arg;
+			তথ্য->ret = param_get_used_সূচক(তথ্য->param);
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCUNSAVED: {
-			paramiocunsaved_t *data = (paramiocunsaved_t *)arg;
-			data->ret = param_value_unsaved(data->param);
+	ক্ষেত্র PARAMIOCUNSAVED: {
+			paramiocunsaved_t *তথ্য = (paramiocunsaved_t *)arg;
+			তথ্য->ret = param_মান_unsaved(তথ্য->param);
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCGET: {
-			paramiocget_t *data = (paramiocget_t *)arg;
+	ক্ষেত্র PARAMIOCGET: {
+			paramiocget_t *তথ্য = (paramiocget_t *)arg;
 
-			if (data->deflt) {
-				data->ret = param_get_default_value(data->param, data->val);
+			যদি (তথ্য->deflt) {
+				তথ্য->ret = param_get_default_মান(তথ্য->param, তথ্য->val);
 
-			} else {
-				data->ret = param_get(data->param, data->val);
+			} অন্যথা {
+				তথ্য->ret = param_get(তথ্য->param, তথ্য->val);
 			}
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCAUTOSAVE: {
-			paramiocautosave_t *data = (paramiocautosave_t *)arg;
-			param_control_autosave(data->enable);
+	ক্ষেত্র PARAMIOCAUTOSAVE: {
+			paramiocautosave_t *তথ্য = (paramiocautosave_t *)arg;
+			param_control_autosave(তথ্য->enable);
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCSET: {
-			paramiocset_t *data = (paramiocset_t *)arg;
+	ক্ষেত্র PARAMIOCSET: {
+			paramiocset_t *তথ্য = (paramiocset_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_set(data->param, data->val);
+			যদি (তথ্য->notification) {
+				তথ্য->ret = param_set(তথ্য->param, তথ্য->val);
 
-			} else {
-				data->ret = param_set_no_notification(data->param, data->val);
+			} অন্যথা {
+				তথ্য->ret = param_set_no_notification(তথ্য->param, তথ্য->val);
 			}
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCUSED: {
-			paramiocused_t *data = (paramiocused_t *)arg;
-			data->ret = param_used(data->param);
+	ক্ষেত্র PARAMIOCUSED: {
+			paramiocused_t *তথ্য = (paramiocused_t *)arg;
+			তথ্য->ret = param_used(তথ্য->param);
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCSETUSED: {
-			paramiocsetused_t *data = (paramiocsetused_t *)arg;
-			param_set_used(data->param);
+	ক্ষেত্র PARAMIOCSETUSED: {
+			paramiocsetused_t *তথ্য = (paramiocsetused_t *)arg;
+			param_set_used(তথ্য->param);
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCSETDEFAULT: {
-			paramiocsetdefault_t *data = (paramiocsetdefault_t *)arg;
-			data->ret = param_set_default_value(data->param, data->val);
+	ক্ষেত্র PARAMIOCSETDEFAULT: {
+			paramiocsetdefault_t *তথ্য = (paramiocsetdefault_t *)arg;
+			তথ্য->ret = param_set_default_মান(তথ্য->param, তথ্য->val);
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCRESET: {
-			paramiocreset_t *data = (paramiocreset_t *)arg;
+	ক্ষেত্র PARAMIOCRESET: {
+			paramiocreset_t *তথ্য = (paramiocreset_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_reset(data->param);
+			যদি (তথ্য->notification) {
+				তথ্য->ret = param_reset(তথ্য->param);
 
-			} else {
-				data->ret = param_reset_no_notification(data->param);
+			} অন্যথা {
+				তথ্য->ret = param_reset_no_notification(তথ্য->param);
 			}
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCRESETGROUP: {
-			paramiocresetgroup_t *data = (paramiocresetgroup_t *)arg;
+	ক্ষেত্র PARAMIOCRESETGROUP: {
+			paramiocresetgroup_t *তথ্য = (paramiocresetgroup_t *)arg;
 
-			if (data->type == PARAM_RESET_EXCLUDES) {
-				param_reset_excludes(data->group, data->num_in_group);
+			যদি (তথ্য->type == PARAM_RESET_EXCLUDES) {
+				param_reset_excludes(তথ্য->group, তথ্য->অঙ্ক_in_group);
 
-			} else if (data->type == PARAM_RESET_SPECIFIC) {
-				param_reset_specific(data->group, data->num_in_group);
+			} অন্যথা যদি (তথ্য->type == PARAM_RESET_SPECIFIC) {
+				param_reset_specific(তথ্য->group, তথ্য->অঙ্ক_in_group);
 
-			} else {
+			} অন্যথা {
 				param_reset_all();
 			}
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCSAVEDEFAULT: {
-			paramiocsavedefault_t *data = (paramiocsavedefault_t *)arg;
-			data->ret = param_save_default(data->blocking);
+	ক্ষেত্র PARAMIOCSAVEDEFAULT: {
+			paramiocsavedefault_t *তথ্য = (paramiocsavedefault_t *)arg;
+			তথ্য->ret = param_save_default(তথ্য->blocking);
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCLOADDEFAULT: {
-			paramiocloaddefault_t *data = (paramiocloaddefault_t *)arg;
-			data->ret = param_load_default();
+	ক্ষেত্র PARAMIOCLOADDEFAULT: {
+			paramiocloaddefault_t *তথ্য = (paramiocloaddefault_t *)arg;
+			তথ্য->ret = param_load_default();
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCEXPORT: {
-			paramiocexport_t *data = (paramiocexport_t *)arg;
-			data->ret = param_export(data->filename, nullptr);
+	ক্ষেত্র PARAMIOCEXPORT: {
+			paramiocexport_t *তথ্য = (paramiocexport_t *)arg;
+			তথ্য->ret = param_export(তথ্য->filename, nullptr);
 		}
-		break;
+		বিরতি;
 
-	case PARAMIOCHASH: {
-			paramiochash_t *data = (paramiochash_t *)arg;
-			data->ret = param_hash_check();
+	ক্ষেত্র PARAMIOCHASH: {
+			paramiochash_t *তথ্য = (paramiochash_t *)arg;
+			তথ্য->ret = param_hash_check();
 		}
-		break;
+		বিরতি;
 
-	default:
+	পূর্বনির্ধারিত:
 		ret = -ENOTTY;
-		break;
+		বিরতি;
 	}
 
-	return ret;
+	ফেরত ret;
 }

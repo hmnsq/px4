@@ -31,60 +31,60 @@
  *
  ****************************************************************************/
 
-#include "PID.hpp"
-#include "lib/mathlib/math/Functions.hpp"
+#অন্তর্ভাব "PID.hpp"
+#অন্তর্ভাব "lib/mathlib/math/Functions.hpp"
 
-void PID::setOutputLimit(const float lower_limit, const float upper_limit)
+শূন্য PID::setOutputLimit(ধ্রুবক দশমিক lower_limit, ধ্রুবক দশমিক upper_limit)
 {
 	_lower_limit_output = lower_limit;
 	_upper_limit_output = upper_limit;
 }
 
-void PID::setGains(const float P, const float I, const float D)
+শূন্য PID::setGains(ধ্রুবক দশমিক P, ধ্রুবক দশমিক I, ধ্রুবক দশমিক D)
 {
 	_gain_proportional = P;
 	_gain_integral = I;
 	_gain_derivative = D;
 }
 
-float PID::update(const float feedback, const float dt, const bool update_integral)
+দশমিক PID::update(ধ্রুবক দশমিক feedback, ধ্রুবক দশমিক dt, ধ্রুবক যৌক্তিক update_integral)
 {
-	const float error = _setpoint - feedback;
-	const float derivative = updateDerivative(feedback, dt);
-	const float output = (_gain_feedforward * _setpoint) + (_gain_proportional * error) + _integral -
+	ধ্রুবক দশমিক error = _setpoint - feedback;
+	ধ্রুবক দশমিক derivative = updateDerivative(feedback, dt);
+	ধ্রুবক দশমিক output = (_gain_feedforward * _setpoint) + (_gain_proportional * error) + _integral -
 			     (_gain_derivative * derivative);
-	const float output_constrained = math::constrain(output, _lower_limit_output, _upper_limit_output);
+	ধ্রুবক দশমিক output_constrained = math::constrain(output, _lower_limit_output, _upper_limit_output);
 
-	if (update_integral) {
+	যদি (update_integral) {
 		updateIntegral(error, output - output_constrained, dt);
 	}
 
 	_last_feedback = feedback;
-	return output_constrained;
+	ফেরত output_constrained;
 }
 
-void PID::updateIntegral(float error, const float saturation, const float dt)
+শূন্য PID::updateIntegral(দশমিক error, ধ্রুবক দশমিক saturation, ধ্রুবক দশমিক dt)
 {
 	// Anti-windup: stop integrating in the direction that drives the output
 	// further into saturation (conditional integration)
-	if ((saturation > FLT_EPSILON && error > 0.f) || (saturation < -FLT_EPSILON && error < 0.f)) {
+	যদি ((saturation > FLT_EPSILON && error > 0.f) || (saturation < -FLT_EPSILON && error < 0.f)) {
 		error = 0.f;
 	}
 
-	const float integral_new = _integral + _gain_integral * error * dt;
+	ধ্রুবক দশমিক integral_new = _integral + _gain_integral * error * dt;
 
-	if (std::isfinite(integral_new)) {
+	যদি (std::isfinite(integral_new)) {
 		_integral = math::constrain(integral_new, -_limit_integral, _limit_integral);
 	}
 }
 
-float PID::updateDerivative(float feedback, const float dt)
+দশমিক PID::updateDerivative(দশমিক feedback, ধ্রুবক দশমিক dt)
 {
-	float feedback_change = 0.f;
+	দশমিক feedback_change = 0.f;
 
-	if ((dt > FLT_EPSILON) && std::isfinite(_last_feedback)) {
+	যদি ((dt > FLT_EPSILON) && std::isfinite(_last_feedback)) {
 		feedback_change = (feedback - _last_feedback) / dt;
 	}
 
-	return feedback_change;
+	ফেরত feedback_change;
 }

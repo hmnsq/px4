@@ -31,15 +31,15 @@
  *
  ****************************************************************************/
 
-#include "RtcmTestCommon.hpp"
+#অন্তর্ভাব "RtcmTestCommon.hpp"
 
 TEST_F(RtcmTest, BustedSender_AllZeros)
 {
 	std::vector<uint8_t> garbage(1000, 0x00);
-	parser.addData(garbage.data(), garbage.size());
+	parser.add_তথ্য(garbage.তথ্য(), garbage.আকার_2());
 
 	size_t len;
-	EXPECT_EQ(parser.getNextMessage(&len), nullptr);
+	EXPECT_EQ(parser.get_পরবর্তী_Message(&len), nullptr);
 	EXPECT_EQ(parser.getStats().bytes_discarded, 1000u);
 	EXPECT_EQ(parser.bufferedBytes(), 0u);
 }
@@ -50,11 +50,11 @@ TEST_F(RtcmTest, BustedSender_AllPreambles)
 	// Length extracted from 0xD3,0xD3 is ((0x03)<<8)|0xD3 = 979 bytes.
 	// Parser waits for full frame which never comes.
 	std::vector<uint8_t> preambles(500, RTCM3_PREAMBLE);
-	parser.addData(preambles.data(), preambles.size());
+	parser.add_তথ্য(preambles.তথ্য(), preambles.আকার_2());
 
 	size_t len;
 	// Parser should be stuck waiting for more data (incomplete frame)
-	EXPECT_EQ(parser.getNextMessage(&len), nullptr);
+	EXPECT_EQ(parser.get_পরবর্তী_Message(&len), nullptr);
 	// Buffer retains data waiting for frame completion
 	EXPECT_GT(parser.bufferedBytes(), 0u);
 }
@@ -64,16 +64,16 @@ TEST_F(RtcmTest, BustedSender_RandomNoise)
 	std::mt19937 rng(12345);
 	uint8_t noise[500];
 
-	for (size_t i = 0; i < sizeof(noise); i++) {
+	জন্য (size_t i = 0; i < আকার(noise); i++) {
 		noise[i] = rng() & 0xFF;
 	}
 
-	parser.addData(noise, sizeof(noise));
+	parser.add_তথ্য(noise, আকার(noise));
 
 	size_t len;
 
 	// Consume any messages that might accidentally form (unlikely but possible)
-	while (parser.getNextMessage(&len) != nullptr) {
+	যখন (parser.get_পরবর্তী_Message(&len) != nullptr) {
 		parser.consumeMessage(len);
 	}
 
@@ -91,30 +91,30 @@ TEST_F(RtcmTest, BustedSender_ValidHeaderBadCrc)
 		0xDE, 0xAD, 0xBE             // Bad CRC
 	};
 
-	parser.addData(frame.data(), frame.size());
+	parser.add_তথ্য(frame.তথ্য(), frame.আকার_2());
 
 	size_t len;
-	EXPECT_EQ(parser.getNextMessage(&len), nullptr);
+	EXPECT_EQ(parser.get_পরবর্তী_Message(&len), nullptr);
 	EXPECT_EQ(parser.getStats().crc_errors, 1u);
 }
 
 TEST_F(RtcmTest, BustedSender_RepeatedBadCrcFrames)
 {
-	for (int i = 0; i < 100; i++) {
+	জন্য (পূর্ণসংখ্যা i = 0; i < 100; i++) {
 		auto bad = buildBadCrcFrame({static_cast<uint8_t>(i), 0x00});
-		parser.addData(bad.data(), bad.size());
+		parser.add_তথ্য(bad.তথ্য(), bad.আকার_2());
 	}
 
 	// Re-scanning after a failure can land on a byte that claims a frame longer
 	// than what is buffered, which parks the framer until the rest arrives (see
 	// BustedSender_AllPreambles). Feed a frame's worth of non-preamble filler so
 	// every pending candidate can be resolved, as a live stream would.
-	const std::vector<uint8_t> filler(CorrectionFramer::MAX_FRAME_LEN, 0x00);
-	parser.addData(filler.data(), filler.size());
+	ধ্রুবক std::vector<uint8_t> filler(CorrectionFramer::MAX_FRAME_LEN, 0x00);
+	parser.add_তথ্য(filler.তথ্য(), filler.আকার_2());
 
 	size_t len;
 
-	while (parser.getNextMessage(&len) != nullptr) {
+	যখন (parser.get_পরবর্তী_Message(&len) != nullptr) {
 		parser.consumeMessage(len);
 	}
 

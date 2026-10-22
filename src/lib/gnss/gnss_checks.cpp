@@ -36,9 +36,9 @@
  * GNSS quality checks: strict ones to qualify a receiver, relaxed ones once armed
  */
 
-#include "gnss_checks.hpp"
+#অন্তর্ভাব "gnss_checks.hpp"
 
-namespace
+নামাকাশ
 {
 constexpr uint16_t kDriftChecks = vehicle_gnss_s::CHECK_HDRIFT | vehicle_gnss_s::CHECK_VDRIFT
 				  | vehicle_gnss_s::CHECK_HSPEED | vehicle_gnss_s::CHECK_VSPEED;
@@ -48,69 +48,69 @@ constexpr uint16_t kRelaxedChecks = vehicle_gnss_s::CHECK_FIX | vehicle_gnss_s::
 				    | vehicle_gnss_s::CHECK_SACC | vehicle_gnss_s::CHECK_SPOOFED | vehicle_gnss_s::CHECK_JAMMED;
 }
 
-bool GnssChecks::run(const gnssChecksSample &gnss, bool armed, bool in_air, bool vehicle_at_rest)
+যৌক্তিক GnssChecks::run(ধ্রুবক gnssChecksSample &gnss, যৌক্তিক armed, যৌক্তিক in_air, যৌক্তিক vehicle_at_rest)
 {
-	if (_time_last_pass_us != 0 && isTimedOut(_time_last_pass_us, gnss.time_us, kPassTimeoutUs)) {
+	যদি (_time_last_pass_us != 0 && isTimedOut(_time_last_pass_us, gnss.time_us, kPassTimeoutUs)) {
 		reset();
 	}
 
 	// assume failed first time through
-	if (_time_last_fail_us == 0) {
+	যদি (_time_last_fail_us == 0) {
 		_time_last_fail_us = gnss.time_us;
 	}
 
-	if (!armed && !in_air) {
-		_initial_strict_checks_passed = false;
+	যদি (!armed && !in_air) {
+		_initial_strict_checks_passed = মিথ্যা;
 	}
 
 	// Both sets run on every sample: both are reported, and the selection ranks receivers on the strict one in flight
-	const bool strict_checks_pass = runStrictChecks(gnss, in_air, vehicle_at_rest);
-	const bool relaxed_checks_pass = runRelaxedChecks(gnss);
+	ধ্রুবক যৌক্তিক strict_checks_pass = runStrictChecks(gnss, in_air, vehicle_at_rest);
+	ধ্রুবক যৌক্তিক relaxed_checks_pass = runRelaxedChecks(gnss);
 
 	_passed_strict = strict_checks_pass
-			 && isTimedOut(_time_last_fail_us, gnss.time_us, getRequiredPassDurationUs(false));
-	_passed = false;
-	_strict = true;
+			 && isTimedOut(_time_last_fail_us, gnss.time_us, getRequiredPassDurationUs(মিথ্যা));
+	_passed = মিথ্যা;
+	_strict = সত্য;
 
-	if (_passed_strict) {
-		_initial_strict_checks_passed = true;
-		_passed = true;
+	যদি (_passed_strict) {
+		_initial_strict_checks_passed = সত্য;
+		_passed = সত্য;
 
-	} else if (_initial_strict_checks_passed) {
-		_strict = false;
+	} অন্যথা যদি (_initial_strict_checks_passed) {
+		_strict = মিথ্যা;
 
-		if (relaxed_checks_pass) {
-			_passed = isTimedOut(_time_last_fail_us, gnss.time_us, getRequiredPassDurationUs(true));
+		যদি (relaxed_checks_pass) {
+			_passed = isTimedOut(_time_last_fail_us, gnss.time_us, getRequiredPassDurationUs(সত্য));
 
-		} else {
+		} অন্যথা {
 			_time_last_fail_us = gnss.time_us;
 		}
 
-	} else if (!strict_checks_pass) {
+	} অন্যথা যদি (!strict_checks_pass) {
 		_time_last_fail_us = gnss.time_us;
 	}
 
-	lat_lon_prev.initReference(gnss.lat, gnss.lon, gnss.time_us);
-	_alt_prev = gnss.alt;
+	lat_lon_পূর্ব.initReference(gnss.lat, gnss.lon, gnss.time_us);
+	alt_পূর্ব = gnss.alt;
 
-	if (_passed) {
+	যদি (_passed) {
 		_time_last_pass_us = gnss.time_us;
 	}
 
-	return _passed;
+	ফেরত _passed;
 }
 
-void GnssChecks::setFail(uint16_t &fail_flags, uint16_t check, bool failed)
+শূন্য GnssChecks::setFail(uint16_t &fail_flags, uint16_t check, যৌক্তিক failed)
 {
-	if (failed) {
+	যদি (failed) {
 		fail_flags |= check;
 
-	} else {
+	} অন্যথা {
 		fail_flags &= ~check;
 	}
 }
 
-bool GnssChecks::runRelaxedChecks(const gnssChecksSample &gnss)
+যৌক্তিক GnssChecks::runRelaxedChecks(ধ্রুবক gnssChecksSample &gnss)
 {
 	setFail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_FIX, gnss.fix_type < 3);
 
@@ -124,10 +124,10 @@ bool GnssChecks::runRelaxedChecks(const gnssChecksSample &gnss)
 	setFail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_SPOOFED, gnss.spoofed);
 	setFail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_JAMMED, gnss.jammed);
 
-	return enabledChecksPass(_relaxed_fail_flags, kRelaxedChecks);
+	ফেরত enabledChecksPass(_relaxed_fail_flags, kRelaxedChecks);
 }
 
-bool GnssChecks::runStrictChecks(const gnssChecksSample &gnss, bool in_air, bool vehicle_at_rest)
+যৌক্তিক GnssChecks::runStrictChecks(ধ্রুবক gnssChecksSample &gnss, যৌক্তিক in_air, যৌক্তিক vehicle_at_rest)
 {
 	// Check the fix type
 	setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_FIX, gnss.fix_type < _params.req_fix);
@@ -150,43 +150,43 @@ bool GnssChecks::runStrictChecks(const gnssChecksSample &gnss, bool in_air, bool
 
 	runOnGroundGnssChecks(gnss, in_air, vehicle_at_rest);
 
-	return enabledChecksPass(_strict_fail_flags, UINT16_MAX);
+	ফেরত enabledChecksPass(_strict_fail_flags, UINT16_MAX);
 }
 
-void GnssChecks::runOnGroundGnssChecks(const gnssChecksSample &gnss, bool in_air, bool vehicle_at_rest)
+শূন্য GnssChecks::runOnGroundGnssChecks(ধ্রুবক gnssChecksSample &gnss, যৌক্তিক in_air, যৌক্তিক vehicle_at_rest)
 {
-	if (in_air) {
+	যদি (in_air) {
 		// These checks are always declared as passed when flying
 		// If on ground and moving, the last result before movement commenced is kept
 		clearDriftChecks();
-		return;
+		ফেরত;
 	}
 
-	if (vehicle_at_rest) {
+	যদি (vehicle_at_rest) {
 		// Calculate time lapsed since last update, limit to prevent numerical errors and calculate a lowpass filter coefficient
-		constexpr float filt_time_const = 10.0f;
-		const float dt = math::constrain(float(int64_t(gnss.time_us) - int64_t(
-				lat_lon_prev.getProjectionReferenceTimestamp()))
+		constexpr দশমিক filt_time_const = 10.0f;
+		ধ্রুবক দশমিক dt = math::constrain(দশমিক(int64_t(gnss.time_us) - int64_t(
+				lat_lon_পূর্ব.getProjectionReferenceTimestamp()))
 						 * 1e-6f, 0.001f, filt_time_const);
-		const float filter_coef = dt / filt_time_const;
+		ধ্রুবক দশমিক filter_coef = dt / filt_time_const;
 
 		// Calculate position movement since last measurement
-		float delta_pos_n = 0.0f;
-		float delta_pos_e = 0.0f;
+		দশমিক delta_pos_n = 0.0f;
+		দশমিক delta_pos_e = 0.0f;
 
 		// calculate position movement since last fix
-		if (lat_lon_prev.getProjectionReferenceTimestamp() > 0) {
-			lat_lon_prev.project(gnss.lat, gnss.lon, delta_pos_n, delta_pos_e);
+		যদি (lat_lon_পূর্ব.getProjectionReferenceTimestamp() > 0) {
+			lat_lon_পূর্ব.project(gnss.lat, gnss.lon, delta_pos_n, delta_pos_e);
 
-		} else {
+		} অন্যথা {
 			// no previous position has been set
-			lat_lon_prev.initReference(gnss.lat, gnss.lon, gnss.time_us);
-			_alt_prev = gnss.alt;
+			lat_lon_পূর্ব.initReference(gnss.lat, gnss.lon, gnss.time_us);
+			alt_পূর্ব = gnss.alt;
 		}
 
 		// Calculate the horizontal and vertical drift velocity components and limit to 10x the threshold
-		const matrix::Vector3f vel_limit(_params.req_hdrift, _params.req_hdrift, _params.req_vdrift);
-		matrix::Vector3f delta_pos(delta_pos_n, delta_pos_e, (_alt_prev - gnss.alt));
+		ধ্রুবক matrix::Vector3f vel_limit(_params.req_hdrift, _params.req_hdrift, _params.req_vdrift);
+		matrix::Vector3f delta_pos(delta_pos_n, delta_pos_e, (alt_পূর্ব - gnss.alt));
 
 		// Apply a low pass filter
 		_lat_lon_alt_deriv_filt = delta_pos / dt * filter_coef + _lat_lon_alt_deriv_filt * (1.0f - filter_coef);
@@ -203,7 +203,7 @@ void GnssChecks::runOnGroundGnssChecks(const gnssChecksSample &gnss, bool in_air
 		setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_VDRIFT, _vertical_position_drift_rate_m_s > _params.req_vdrift);
 
 		// hspeed: check the magnitude of the filtered horizontal GNSS velocity
-		const matrix::Vector2f vel_ne = matrix::constrain(matrix::Vector2f(gnss.vel.xy()),
+		ধ্রুবক matrix::Vector2f vel_ne = matrix::constrain(matrix::Vector2f(gnss.vel.xy()),
 						-10.0f * _params.req_hdrift,
 						10.0f * _params.req_hdrift);
 		_vel_ne_filt = vel_ne * filter_coef + _vel_ne_filt * (1.0f - filter_coef);
@@ -211,26 +211,26 @@ void GnssChecks::runOnGroundGnssChecks(const gnssChecksSample &gnss, bool in_air
 		setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_HSPEED, _filtered_horizontal_velocity_m_s > _params.req_hdrift);
 
 		// vspeed: check the magnitude of the filtered vertical GNSS velocity
-		const float gnss_vz_limit = 10.f * _params.req_vdrift;
-		const float gnss_vz = math::constrain(gnss.vel(2), -gnss_vz_limit, gnss_vz_limit);
+		ধ্রুবক দশমিক gnss_vz_limit = 10.f * _params.req_vdrift;
+		ধ্রুবক দশমিক gnss_vz = math::constrain(gnss.vel(2), -gnss_vz_limit, gnss_vz_limit);
 		_vel_d_filt = gnss_vz * filter_coef + _vel_d_filt * (1.f - filter_coef);
 
 		setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_VSPEED, fabsf(_vel_d_filt) > _params.req_vdrift);
 
-	} else {
+	} অন্যথা {
 		// This is the case where the vehicle is on ground and IMU movement is blocking the drift calculation
 		resetDriftFilters();
 	}
 }
 
-void GnssChecks::clearDriftChecks()
+শূন্য GnssChecks::clearDriftChecks()
 {
 	_strict_fail_flags &= ~kDriftChecks;
 
 	resetDriftFilters();
 }
 
-void GnssChecks::resetDriftFilters()
+শূন্য GnssChecks::resetDriftFilters()
 {
 	_vel_ne_filt.setZero();
 	_vel_d_filt = 0.f;

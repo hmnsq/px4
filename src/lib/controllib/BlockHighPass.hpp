@@ -39,48 +39,48 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#অন্তর্ভাব <px4_platform_common/defines.h>
+#অন্তর্ভাব <assert.h>
+#অন্তর্ভাব <time.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <mathlib/math/test/test.hpp>
+#অন্তর্ভাব <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#অন্তর্ভাব "block/Block.hpp"
+#অন্তর্ভাব "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#অন্তর্ভাব "matrix/math.hpp"
 
-namespace control
+নামাকাশ control
 {
 
 /**
  * A high pass filter as described here:
  * http://en.wikipedia.org/wiki/High-pass_filter.
  */
-class __EXPORT BlockHighPass : public Block
+শ্রেণী __EXPORT Block_উপরের_Pass : সর্বজনীন Block
 {
-public:
+সর্বজনীন:
 // methods
-	BlockHighPass(SuperBlock *parent, const char *name) :
+	Block_উপরের_Pass(SuperBlock *parent, ধ্রুবক অক্ষর *name) :
 		Block(parent, name),
 		_u(0),
 		_y(0),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(এই, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockHighPass() = default;
-	float update(float input);
+	আভাসী ~Block_উপরের_Pass() = পূর্বনির্ধারিত;
+	দশমিক update(দশমিক প্রবেশ);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getFCut() {return _fCut.get();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
+	দশমিক getU() {ফেরত _u;}
+	দশমিক getY() {ফেরত _y;}
+	দশমিক getFCut() {ফেরত _fCut.get();}
+	শূন্য setU(দশমিক u) {_u = u;}
+	শূন্য setY(দশমিক y) {_y = y;}
+সুরক্ষিত:
 // attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
+	দশমিক _u; /**< previous input */
+	দশমিক _y; /**< previous output */
 	control::BlockParamFloat _fCut; /**< cut-off frequency, Hz */
 };
 

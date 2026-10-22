@@ -31,22 +31,22 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#অন্তর্ভাব <gtest/gtest.h>
+#অন্তর্ভাব <matrix/math.hpp>
 
-using namespace matrix;
+using নামাকাশ matrix;
 
-TEST(MatrixUpperRightTriangleTest, UpperRightTriangle)
+TEST(Matrix_Upper_ডান_Triangle_Test, Upper_ডান_Triangle)
 {
-	float data[9] = {1, 2, 3,
+	দশমিক তথ্য[9] = {1, 2, 3,
 			 4, 5, 6,
 			 7, 8, 10
 			};
-	float urt[6] = {1, 2, 3, 5, 6, 10};
+	দশমিক urt[6] = {1, 2, 3, 5, 6, 10};
 
-	SquareMatrix<float, 3> A(data);
+	SquareMatrix<দশমিক, 3> A(তথ্য);
 
-	for (size_t i = 0; i < 6; i++) {
-		EXPECT_FLOAT_EQ(urt[i], A.upper_right_triangle()(i));
+	জন্য (size_t i = 0; i < 6; i++) {
+		EXPECT_FLOAT_EQ(urt[i], A.upper_ডান_triangle()(i));
 	}
 }

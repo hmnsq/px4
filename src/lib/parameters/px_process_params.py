@@ -43,52 +43,52 @@
 #   * Human-readable description in Markdown page format for the PX4 dev guide
 #
 
-from __future__ import print_function
-import sys
-import os
-import argparse
-from px4params import srcscanner, srcparser, injectxmlparams, xmlout, markdownout, jsonout, readonly_config
+তঃ __future__ আমদানি print_function
+আমদানি sys
+আমদানি os
+আমদানি argparse
+তঃ px4params আমদানি srcscanner, srcparser, injectxmlparams, xmlout, markdownout, jsonout, readonly_config
 
-import lzma #to create .xz file
-import json
+আমদানি lzma #to create .xz file
+আমদানি json
 
 def save_compressed(filename):
     #create lzma compressed version
     xz_filename=filename+'.xz'
-    with lzma.open(xz_filename, 'wt', preset=9) as f:
-        with open(filename, 'r') as content_file:
-            f.write(content_file.read())
+    with lzma.open(xz_filename, 'wt', preset=9) ইব f:
+        with open(filename, 'r') ইব content_file:
+            f.লিখ(content_file.পঠ())
 
 
 
-def main():
+def প্রধান():
     # Parse command line arguments
     parser = argparse.ArgumentParser(description="Process parameter documentation.")
     parser.add_argument("-s", "--src-path",
-                        default=["../src"],
+                        পূর্বনির্ধারিত=["../src"],
                         metavar="PATH",
                         nargs='*',
                         help="one or more paths to source files to scan for parameters")
     parser.add_argument("-x", "--xml",
                         nargs='?',
-                        const="parameters.xml",
+                        ধ্রুবক="parameters.xml",
                         metavar="FILENAME",
                         help="Create XML file"
                              " (default FILENAME: parameters.xml)")
     parser.add_argument("-b", "--board",
                         nargs='?',
-                        const="",
+                        ধ্রুবক="",
                         metavar="BOARD",
                         help="Board to create xml parameter xml for")
     parser.add_argument("-m", "--markdown",
                         nargs='?',
-                        const="parameters.md",
+                        ধ্রুবক="parameters.md",
                         metavar="FILENAME",
                         help="Create Markdown file"
                              " (default FILENAME: parameters.md)")
     parser.add_argument("-j", "--json",
                         nargs='?',
-                        const="parameters.json",
+                        ধ্রুবক="parameters.json",
                         metavar="FILENAME",
                         help="Create Json file"
                              " (default FILENAME: parameters.json)")
@@ -99,18 +99,18 @@ def main():
                         action='store_true',
                         help="compress parameter file")
     parser.add_argument("-o", "--overrides",
-                        default="{}",
+                        পূর্বনির্ধারিত="{}",
                         metavar="OVERRIDES",
                         help="a dict of overrides in the form of a json string")
     parser.add_argument("--readonly-config",
-                        default=None,
+                        পূর্বনির্ধারিত=None,
                         metavar="FILENAME",
                         help="path to readonly_params.yaml")
 
     args = parser.parse_args()
 
     # Check for valid command
-    if not (args.xml or args.markdown or args.json):
+    যদি নয় (args.xml অথবা args.markdown অথবা args.json):
         print("Error: You need to specify at least one output method!\n")
         parser.print_usage()
         sys.exit(1)
@@ -120,17 +120,17 @@ def main():
     parser = srcparser.SourceParser()
 
     # Scan directories, and parse the files
-    if (args.verbose):
+    যদি (args.verbose):
         print("Scanning source path " + str(args.src_path))
 
-    if not scanner.ScanDir(args.src_path, parser):
+    যদি নয় scanner.ScanDir(args.src_path, parser):
         sys.exit(1)
 
-    if not parser.Validate():
+    যদি নয় parser.Validate():
         sys.exit(1)
     param_groups = parser.GetParamGroups()
 
-    if len(param_groups) == 0:
+    যদি len(param_groups) == 0:
         print("Warning: no parameters found")
 
 
@@ -138,60 +138,60 @@ def main():
     cur_dir = os.path.dirname(os.path.realpath(__file__))
 
     override_dict = json.loads(args.overrides)
-    if len(override_dict.keys()) > 0:
-        for group in param_groups:
-            for param in group.GetParams():
+    যদি len(override_dict.চাবিগুলি()) > 0:
+        জন্য group মধ্যে param_groups:
+            জন্য param মধ্যে group.GetParams():
                 name = param.GetName()
-                if name in override_dict.keys():
+                যদি name মধ্যে override_dict.চাবিগুলি():
                     val = str(override_dict[param.GetName()])
-                    param.default = val
+                    param.পূর্বনির্ধারিত = val
                     print("OVERRIDING {:s} to {:s}!!!!!".format(name, val))
 
     # Mark readonly parameters
-    if args.readonly_config:
+    যদি args.readonly_config:
         all_param_names = set()
-        for group in param_groups:
-            for param in group.GetParams():
+        জন্য group মধ্যে param_groups:
+            জন্য param মধ্যে group.GetParams():
                 all_param_names.add(param.GetName())
         readonly_params = readonly_config.load_readonly_params(args.readonly_config, all_param_names)
-        for group in param_groups:
-            for param in group.GetParams():
-                if param.GetName() in readonly_params:
+        জন্য group মধ্যে param_groups:
+            জন্য param মধ্যে group.GetParams():
+                যদি param.GetName() মধ্যে readonly_params:
                     param.SetReadonly()
 
     output_files = []
 
     # Output to XML file
-    if args.xml:
-        if args.verbose:
+    যদি args.xml:
+        যদি args.verbose:
             print("Creating XML file " + args.xml)
         out = xmlout.XMLOutput(param_groups, args.board)
         out.Save(args.xml)
         output_files.append(args.xml)
 
     # Output to Markdown/HTML tables
-    if args.markdown:
-        if args.verbose:
+    যদি args.markdown:
+        যদি args.verbose:
             print("Creating markdown file " + args.markdown)
         out = markdownout.MarkdownTablesOutput(param_groups)
         out.Save(args.markdown)
         output_files.append(args.markdown)
 
     # Output to JSON file
-    if args.json:
-        if args.verbose:
+    যদি args.json:
+        যদি args.verbose:
             print("Creating Json file " + args.json)
         cur_dir = os.path.dirname(os.path.realpath(__file__))
         out = jsonout.JsonOutput(param_groups, args.board)
         out.Save(args.json)
         output_files.append(args.json)
 
-    if args.compress:
-        for f in output_files:
-            if args.verbose:
+    যদি args.compress:
+        জন্য f মধ্যে output_files:
+            যদি args.verbose:
                 print("Compressing file " + f)
             save_compressed(f)
 
 
-if __name__ == "__main__":
-    main()
+যদি __name__ == "__main__":
+    প্রধান()

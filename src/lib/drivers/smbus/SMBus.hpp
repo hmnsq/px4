@@ -39,18 +39,18 @@
  * @author Bazooka Joe <BazookaJoe1900@gmail.com>
  */
 
-#include <drivers/device/i2c.h>
-#include <perf/perf_counter.h>
-#include <string.h>
+#অন্তর্ভাব <drivers/device/i2c.h>
+#অন্তর্ভাব <perf/perf_counter.h>
+#অন্তর্ভাব <string.h>
 
 #define SMBUS_PEC_POLYNOMIAL	0x07	///< Polynomial for calculating PEC
 
-class SMBus : public device::I2C
+শ্রেণী SMBus : সর্বজনীন device::I2C
 {
-public:
-	static constexpr uint8_t MAX_BLOCK_LEN = 34;
+সর্বজনীন:
+	স্থির constexpr uint8_t MAX_BLOCK_LEN = 34;
 
-	SMBus(uint8_t device_id, int bus_num, uint16_t address);
+	SMBus(uint8_t device_id, পূর্ণসংখ্যা bus_অঙ্ক, uint16_t address);
 	~SMBus() override;
 
 	/**
@@ -60,7 +60,7 @@ public:
 	 * @param length The number of bytes being written. Maximum is SMBus::MAX_BLOCK_LEN.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	int block_write(const uint8_t cmd_code, const void *data, uint8_t byte_count, const bool use_pec);
+	পূর্ণসংখ্যা block_write(ধ্রুবক uint8_t cmd_code, ধ্রুবক শূন্য *তথ্য, uint8_t byte_গুনতি, ধ্রুবক যৌক্তিক use_pec);
 
 	/**
 	 * @brief Sends a block read command.
@@ -69,7 +69,7 @@ public:
 	 * @param length The number of bytes being read. Maximum is SMBus::MAX_BLOCK_LEN.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	int block_read(const uint8_t cmd_code, void *data, const uint8_t length, const bool use_pec);
+	পূর্ণসংখ্যা block_read(ধ্রুবক uint8_t cmd_code, শূন্য *তথ্য, ধ্রুবক uint8_t দৈর্ঘ্য, ধ্রুবক যৌক্তিক use_pec);
 
 	/**
 	 * @brief Sends a read word command.
@@ -77,7 +77,7 @@ public:
 	 * @param data The 2 bytes of returned data plus a 1 byte CRC if used.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	int read_word(const uint8_t cmd_code, uint16_t &data);
+	পূর্ণসংখ্যা read_word(ধ্রুবক uint8_t cmd_code, uint16_t &তথ্য);
 
 	/**
 	 * @brief Sends a write word command.
@@ -85,7 +85,7 @@ public:
 	 * @param data The 2 bytes of data to be transfered.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	int write_word(const uint8_t cmd_code, uint16_t data);
+	পূর্ণসংখ্যা write_word(ধ্রুবক uint8_t cmd_code, uint16_t তথ্য);
 
 	/**
 	 * @brief Calculates the PEC from the data.
@@ -93,8 +93,8 @@ public:
 	 * @param length The number of bytes being written.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	uint8_t get_pec(uint8_t *buffer, uint8_t length);
+	uint8_t get_pec(uint8_t *বাফার_2, uint8_t দৈর্ঘ্য);
 
-	perf_counter_t _interface_errors{perf_alloc(PC_COUNT, MODULE_NAME": errors")};
+	perf_গণক_t _interface_errors{perf_alloc(PC_গুনতি, MODULE_NAME": errors")};
 
 };

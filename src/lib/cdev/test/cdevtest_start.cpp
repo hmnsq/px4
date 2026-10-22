@@ -37,32 +37,32 @@
  * @author Thomas Gubler <thomasgubler@gmail.com>
  * @author Mark Charlebois <mcharleb@gmail.com>
  */
-#include "cdevtest_example.h"
+#অন্তর্ভাব "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/tasks.h>
-#include <stdio.h>
-#include <string.h>
+#অন্তর্ভাব <px4_platform_common/app.h>
+#অন্তর্ভাব <px4_platform_common/tasks.h>
+#অন্তর্ভাব <stdio.h>
+#অন্তর্ভাব <string.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+স্থির পূর্ণসংখ্যা daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-extern "C" __EXPORT int cdev_test_main(int argc, char *argv[]);
-int cdev_test_main(int argc, char *argv[])
+বাহ্যিক "C" __EXPORT পূর্ণসংখ্যা cdev_test_main(পূর্ণসংখ্যা argc, অক্ষর *argv[]);
+পূর্ণসংখ্যা cdev_test_main(পূর্ণসংখ্যা argc, অক্ষর *argv[])
 {
 
-	if (argc < 2) {
+	যদি (argc < 2) {
 		printf("usage: cdevtest {start|stop|status}\n");
-		return 1;
+		ফেরত 1;
 	}
 
-	if (!strcmp(argv[1], "start")) {
+	যদি (!strcmp(argv[1], "start")) {
 
-		if (CDevExample::appState.isRunning()) {
+		যদি (CDevExample::appState.isRunning()) {
 			printf("already running\n");
 			/* this is not an error */
-			return 0;
+			ফেরত 0;
 		}
 
 		daemon_task = px4_task_spawn_cmd("cdevtest",
@@ -70,27 +70,27 @@ int cdev_test_main(int argc, char *argv[])
 						 SCHED_PRIORITY_MAX - 5,
 						 2000,
 						 PX4_MAIN,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+						 (argv) ? (অক্ষর *ধ্রুবক *)&argv[2] : (অক্ষর *ধ্রুবক *)nullptr);
 
-		return 0;
+		ফেরত 0;
 	}
 
-	if (!strcmp(argv[1], "stop")) {
+	যদি (!strcmp(argv[1], "stop")) {
 		CDevExample::appState.requestExit();
-		return 0;
+		ফেরত 0;
 	}
 
-	if (!strcmp(argv[1], "status")) {
-		if (CDevExample::appState.isRunning()) {
+	যদি (!strcmp(argv[1], "status")) {
+		যদি (CDevExample::appState.isRunning()) {
 			printf("is running\n");
 
-		} else {
+		} অন্যথা {
 			printf("not started\n");
 		}
 
-		return 0;
+		ফেরত 0;
 	}
 
 	printf("usage: cdevtest_main {start|stop|status}\n");
-	return 1;
+	ফেরত 1;
 }

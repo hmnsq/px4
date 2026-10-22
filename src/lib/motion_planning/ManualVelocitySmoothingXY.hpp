@@ -38,86 +38,86 @@
 
 #pragma once
 
-#include <motion_planning/VelocitySmoothing.hpp>
+#অন্তর্ভাব <motion_planning/VelocitySmoothing.hpp>
 
-#include <matrix/matrix/math.hpp>
+#অন্তর্ভাব <matrix/matrix/math.hpp>
 
 using matrix::Vector2f;
 
-class ManualVelocitySmoothingXY final
+শ্রেণী ManualVelocitySmoothingXY final
 {
-public:
-	ManualVelocitySmoothingXY() = default;
-	~ManualVelocitySmoothingXY() = default;
+সর্বজনীন:
+	ManualVelocitySmoothingXY() = পূর্বনির্ধারিত;
+	~ManualVelocitySmoothingXY() = পূর্বনির্ধারিত;
 
-	void reset(const Vector2f &accel, const Vector2f &vel, const Vector2f &pos);
-	void update(float dt, const Vector2f &velocity_target);
+	শূন্য reset(ধ্রুবক Vector2f &accel, ধ্রুবক Vector2f &vel, ধ্রুবক Vector2f &pos);
+	শূন্য update(দশমিক dt, ধ্রুবক Vector2f &velocity_target);
 
-	void setVelSpFeedback(const Vector2f &fb) { _velocity_setpoint_feedback = fb; }
+	শূন্য setVelSpFeedback(ধ্রুবক Vector2f &fb) { _velocity_setpoint_feedback = fb; }
 
-	void setMaxJerk(const float max_jerk)
+	শূন্য setMaxJerk(ধ্রুবক দশমিক max_jerk)
 	{
 		_trajectory[0].setMaxJerk(max_jerk);
 		_trajectory[1].setMaxJerk(max_jerk);
 	}
-	float getMaxJerk() const { return _trajectory[0].getMaxJerk(); }
+	দশমিক getMaxJerk() ধ্রুবক { ফেরত _trajectory[0].getMaxJerk(); }
 
-	void setMaxAccel(const float max_accel)
+	শূন্য setMaxAccel(ধ্রুবক দশমিক max_accel)
 	{
 		_trajectory[0].setMaxAccel(max_accel);
 		_trajectory[1].setMaxAccel(max_accel);
 	}
-	float getMaxAccel() const { return _trajectory[0].getMaxAccel(); }
+	দশমিক getMaxAccel() ধ্রুবক { ফেরত _trajectory[0].getMaxAccel(); }
 
-	void setMaxVel(const float max_vel)
+	শূন্য setMaxVel(ধ্রুবক দশমিক max_vel)
 	{
 		_trajectory[0].setMaxVel(max_vel);
 		_trajectory[1].setMaxVel(max_vel);
 	}
-	float getMaxVel() const { return _trajectory[0].getMaxVel(); }
+	দশমিক getMaxVel() ধ্রুবক { ফেরত _trajectory[0].getMaxVel(); }
 
-	Vector2f getCurrentJerk() const { return _state.j; }
-	Vector2f getCurrentAcceleration() const { return _state.a; }
+	Vector2f getCurrentJerk() ধ্রুবক { ফেরত _state.j; }
+	Vector2f getCurrentAcceleration() ধ্রুবক { ফেরত _state.a; }
 
-	void setCurrentVelocity(const Vector2f &vel)
+	শূন্য setCurrentVelocity(ধ্রুবক Vector2f &vel)
 	{
 		_state.v = vel;
 		_trajectory[0].setCurrentVelocity(vel(0));
 		_trajectory[1].setCurrentVelocity(vel(1));
 	}
-	Vector2f getCurrentVelocity() const { return _state.v; }
+	Vector2f getCurrentVelocity() ধ্রুবক { ফেরত _state.v; }
 
-	void setCurrentPosition(const Vector2f &pos)
+	শূন্য setCurrentPosition(ধ্রুবক Vector2f &pos)
 	{
 		_state.x = pos;
 		_trajectory[0].setCurrentPosition(pos(0));
 		_trajectory[1].setCurrentPosition(pos(1));
 		_position_estimate = pos;
 
-		if (_position_lock_active) {
+		যদি (_position_lock_active) {
 			_position_setpoint_locked = pos;
 		}
 	}
-	Vector2f getCurrentPosition() const { return _position_setpoint_locked; }
+	Vector2f getCurrentPosition() ধ্রুবক { ফেরত _position_setpoint_locked; }
 
-	void setCurrentPositionEstimate(const Vector2f &pos) { _position_estimate = pos; }
+	শূন্য setCurrentPositionEstimate(ধ্রুবক Vector2f &pos) { _position_estimate = pos; }
 
-private:
-	void resetPositionLock();
-	void updateTrajectories(float dt);
-	void checkPositionLock(const Vector2f &velocity_target);
-	void updateTrajDurations(const Vector2f &velocity_target);
+ব্যক্তিগত:
+	শূন্য resetPositionLock();
+	শূন্য updateTrajectories(দশমিক dt);
+	শূন্য checkPositionLock(ধ্রুবক Vector2f &velocity_target);
+	শূন্য updateTrajDurations(ধ্রুবক Vector2f &velocity_target);
 
 	VelocitySmoothing _trajectory[2]; ///< Trajectory in x and y directions
 
-	bool _position_lock_active{false};
+	যৌক্তিক _position_lock_active{মিথ্যা};
 
 	Vector2f _position_setpoint_locked{};
 
 	Vector2f _velocity_setpoint_feedback{};
 	Vector2f _position_estimate{};
 
-	struct {
+	কাঠামো {
 		Vector2f j;
 		Vector2f a;
 		Vector2f v;

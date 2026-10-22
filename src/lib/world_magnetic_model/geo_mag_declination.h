@@ -42,11 +42,11 @@
 #pragma once
 
 // Return magnetic declination in degrees
-float get_mag_declination_degrees(float latitude_deg, float longitude_deg);
+দশমিক get_mag_declination_degrees(দশমিক latitude_deg, দশমিক longitude_deg);
 
 // Return magnetic field inclination in degrees
-float get_mag_inclination_degrees(float latitude_deg, float longitude_deg);
+দশমিক get_mag_inclination_degrees(দশমিক latitude_deg, দশমিক longitude_deg);
 
 // return magnetic field strength in Gauss or Tesla
-float get_mag_strength_gauss(float latitude_deg, float longitude_deg);
-float get_mag_strength_tesla(float latitude_deg, float longitude_deg);
+দশমিক get_mag_strength_gauss(দশমিক latitude_deg, দশমিক longitude_deg);
+দশমিক get_mag_strength_tesla(দশমিক latitude_deg, দশমিক longitude_deg);

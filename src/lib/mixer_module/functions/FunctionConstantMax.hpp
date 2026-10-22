@@ -33,18 +33,18 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#অন্তর্ভাব "FunctionProviderBase.hpp"
 
 /**
  * Functions: Constant_Max
  */
-class FunctionConstantMax : public FunctionProviderBase
+শ্রেণী FunctionConstantMax : সর্বজনীন FunctionProviderBase
 {
-public:
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionConstantMax(); }
+সর্বজনীন:
+	স্থির FunctionProviderBase *allocate(ধ্রুবক Context &context) { ফেরত নতুন FunctionConstantMax(); }
 
-	float value(OutputFunction func) override { return 1.f; }
-	void update() override { }
+	দশমিক value(OutputFunction func) override { ফেরত 1.f; }
+	শূন্য update() override { }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 1.f; }
+	দশমিক default_Failsafe_মান(OutputFunction func) ধ্রুবক override { ফেরত 1.f; }
 };

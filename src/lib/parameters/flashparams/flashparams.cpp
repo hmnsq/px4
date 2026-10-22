@@ -42,36 +42,36 @@
  * foot print device.
  */
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/shutdown.h>
-#include <parameters/px4_parameters.hpp>
+#অন্তর্ভাব <px4_platform_common/defines.h>
+#অন্তর্ভাব <px4_platform_common/log.h>
+#অন্তর্ভাব <px4_platform_common/posix.h>
+#অন্তর্ভাব <px4_platform_common/shutdown.h>
+#অন্তর্ভাব <parameters/px4_parameters.hpp>
 
-#include <string.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <errno.h>
+#অন্তর্ভাব <string.h>
+#অন্তর্ভাব <stdbool.h>
+#অন্তর্ভাব <stdint.h>
+#অন্তর্ভাব <errno.h>
 
-#include <parameters/param.h>
+#অন্তর্ভাব <parameters/param.h>
 
-#include <lib/tinybson/tinybson.h>
-#include "flashparams.h"
-#include "flashfs.h"
-#include "../param_translation.h"
+#অন্তর্ভাব <lib/tinybson/tinybson.h>
+#অন্তর্ভাব "flashparams.h"
+#অন্তর্ভাব "flashfs.h"
+#অন্তর্ভাব "../param_translation.h"
 
-#if 0
-# define debug(fmt, args...)            do { warnx(fmt, ##args); } while(0)
-#else
-# define debug(fmt, args...)            do { } while(0)
+#যদি 0
+# define debug(fmt, args...)            করো { warnx(fmt, ##args); } যখন(0)
+#অন্যথা
+# define debug(fmt, args...)            করো { } যখন(0)
 #endif
 
 
 /**
  * Storage for modified parameters.
  */
-struct param_wbuf_s {
-	union param_value_u     val;
+কাঠামো param_wbuf_s {
+	সংঘ param_মান_u     val;
 	param_t                 param;
 };
 
@@ -96,22 +96,22 @@ struct param_wbuf_s {
  * drops those on its next save; here they stay until a compaction, and a
  * translation is only kept for a few releases. A snapshot cannot hold such a
  * record, so compacting for it does not repeat. */
-static bool log_stale;
+স্থির যৌক্তিক log_stale;
 
 /* Replay failed inside a CRC-valid record. A delta appended behind it would
  * never be reached, so the next save rewrites the store. */
-static bool log_unreadable;
+স্থির যৌক্তিক log_unreadable;
 
-static bool
+স্থির যৌক্তিক
 any_unsaved(param_filter_func filter)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if ((filter == nullptr || filter(param)) && param_value_unsaved(param)) {
-			return true;
+	জন্য (param_t param = 0; param < user_config.PARAM_গুনতি; param++) {
+		যদি ((filter == nullptr || filter(param)) && param_মান_unsaved(param)) {
+			ফেরত সত্য;
 		}
 	}
 
-	return false;
+	ফেরত মিথ্যা;
 }
 
 /*
@@ -122,289 +122,289 @@ any_unsaved(param_filter_func filter)
  * default in force, is written as a BSON null so replay drops it, which is
  * what the file backend's "don't export defaults" gives after a reload.
  */
-static int
-encode_params(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
+স্থির পূর্ণসংখ্যা
+encode_params(bson_encoder_s *encoder, param_filter_func filter, যৌক্তিক snapshot)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if (filter && !filter(param)) {
-			continue;
+	জন্য (param_t param = 0; param < user_config.PARAM_গুনতি; param++) {
+		যদি (filter && !filter(param)) {
+			চালু;
 		}
 
-		if (snapshot) {
-			if (!user_config.contains(param)) {
-				continue;
+		যদি (snapshot) {
+			যদি (!user_config.contains(param)) {
+				চালু;
 			}
 
-		} else {
-			if (!param_value_unsaved(param)) {
-				continue;
+		} অন্যথা {
+			যদি (!param_মান_unsaved(param)) {
+				চালু;
 			}
 
-			if (!user_config.contains(param) || param_value_is_default(param)) {
-				if (bson_encoder_append_null(encoder, param_name(param))) {
+			যদি (!user_config.contains(param) || param_মান_is_default(param)) {
+				যদি (bson_encoder_append_null(encoder, param_name(param))) {
 					debug("BSON append failed for '%s'", param_name(param));
-					return -1;
+					ফেরত -1;
 				}
 
-				continue;
+				চালু;
 			}
 		}
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			if (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
+		নির্বাচন (param_type(param)) {
+		ক্ষেত্র PARAM_TYPE_INT32:
+			যদি (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				ফেরত -1;
 			}
 
-			break;
+			বিরতি;
 
-		case PARAM_TYPE_FLOAT:
-			if (bson_encoder_append_double(encoder, param_name(param), (double)user_config.get(param).f)) {
+		ক্ষেত্র PARAM_TYPE_FLOAT:
+			যদি (bson_encoder_append_double(encoder, param_name(param), (দ্বিগুণ)user_config.get(param).f)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				ফেরত -1;
 			}
 
-			break;
+			বিরতি;
 
-		default:
+		পূর্বনির্ধারিত:
 			debug("unrecognized parameter type");
-			return -1;
+			ফেরত -1;
 		}
 	}
 
-	return 0;
+	ফেরত 0;
 }
 
 /* The caller frees bson_encoder_buf_data() whatever the result. */
-static int
-encode_document(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
+স্থির পূর্ণসংখ্যা
+encode_document(bson_encoder_s *encoder, param_filter_func filter, যৌক্তিক snapshot)
 {
 	bson_encoder_init_buf(encoder, nullptr, 0);
 
-	int result = encode_params(encoder, filter, snapshot);
+	পূর্ণসংখ্যা ফলাফল = encode_params(encoder, filter, snapshot);
 
-	if (result == 0) {
-		result = bson_encoder_fini(encoder);
+	যদি (ফলাফল == 0) {
+		ফলাফল = bson_encoder_fini(encoder);
 	}
 
-	return result;
+	ফেরত ফলাফল;
 }
 
-static int
-stage_write_buffer(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
+স্থির পূর্ণসংখ্যা
+stage_write_বাফার(bson_encoder_s *encoder, uint8_t **বাফার_2, size_t *enc_আকার)
 {
-	void *enc_buff = bson_encoder_buf_data(encoder);
-	*enc_size = bson_encoder_buf_size(encoder);
+	শূন্য *enc_buff = bson_encoder_buf_তথ্য(encoder);
+	*enc_আকার = bson_encoder_buf_আকার(encoder);
 
-	if (enc_buff == nullptr) {
-		return -ENOMEM;
+	যদি (enc_buff == nullptr) {
+		ফেরত -ENOMEM;
 	}
 
-	size_t alloc_size = *enc_size;
-	int result = parameter_flashfs_alloc(parameters_token, buffer, &alloc_size);
+	size_t alloc_আকার = *enc_আকার;
+	পূর্ণসংখ্যা ফলাফল = parameter_flashfs_alloc(parameters_token, বাফার_2, &alloc_আকার);
 
-	if (result != OK) {
-		return result;
+	যদি (ফলাফল != OK) {
+		ফেরত ফলাফল;
 	}
 
-	if (alloc_size < *enc_size) {
+	যদি (alloc_আকার < *enc_আকার) {
 		parameter_flashfs_free();
-		return -ENOMEM;
+		ফেরত -ENOMEM;
 	}
 
-	memcpy(*buffer, enc_buff, *enc_size);
-	return OK;
+	memcpy(*বাফার_2, enc_buff, *enc_আকার);
+	ফেরত OK;
 }
 
-static int
-commit_append(uint8_t *buffer, size_t enc_size)
+স্থির পূর্ণসংখ্যা
+commit_append(uint8_t *বাফার_2, size_t enc_আকার)
 {
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	পূর্ণসংখ্যা ফলাফল = parameter_flashfs_write(parameters_token, বাফার_2, enc_আকার);
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	যদি (ফলাফল == (পূর্ণসংখ্যা)enc_আকার) {
+		ফেরত OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	ফেরত ফলাফল < 0 ? ফলাফল : -EFBIG;
 }
 
-static int
+স্থির পূর্ণসংখ্যা
 export_delta(param_filter_func filter)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, filter, false);
+	পূর্ণসংখ্যা ফলাফল = encode_document(&encoder, filter, মিথ্যা);
 
-	if (result == 0) {
-		uint8_t *buffer;
-		size_t enc_size;
-		result = stage_write_buffer(&encoder, &buffer, &enc_size);
+	যদি (ফলাফল == 0) {
+		uint8_t *বাফার_2;
+		size_t enc_আকার;
+		ফলাফল = stage_write_বাফার(&encoder, &বাফার_2, &enc_আকার);
 
-		if (result == OK) {
-			result = commit_append(buffer, enc_size);
+		যদি (ফলাফল == OK) {
+			ফলাফল = commit_append(বাফার_2, enc_আকার);
 		}
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	মুক্ত(bson_encoder_buf_তথ্য(&encoder));
+	ফেরত ফলাফল;
 }
 
 /* Everything that can fail before the erase, so a failure here leaves the
  * log untouched and still loadable. */
-static int
-stage_snapshot(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
+স্থির পূর্ণসংখ্যা
+stage_snapshot(bson_encoder_s *encoder, uint8_t **বাফার_2, size_t *enc_আকার)
 {
-	int result = stage_write_buffer(encoder, buffer, enc_size);
+	পূর্ণসংখ্যা ফলাফল = stage_write_বাফার(encoder, বাফার_2, enc_আকার);
 
-	if (result != OK) {
-		return result;
+	যদি (ফলাফল != OK) {
+		ফেরত ফলাফল;
 	}
 
-	if (*enc_size > parameter_flashfs_max_payload()) {
+	যদি (*enc_আকার > parameter_flashfs_max_payload()) {
 		parameter_flashfs_free();
-		return -ENOSPC;
+		ফেরত -ENOSPC;
 	}
 
-	return OK;
+	ফেরত OK;
 }
 
-static int
-commit_snapshot(uint8_t *buffer, size_t enc_size)
+স্থির পূর্ণসংখ্যা
+commit_snapshot(uint8_t *বাফার_2, size_t enc_আকার)
 {
-	if (parameter_flashfs_blank() != 1) {
-		int rv = parameter_flashfs_erase();
+	যদি (parameter_flashfs_blank() != 1) {
+		পূর্ণসংখ্যা rv = parameter_flashfs_erase();
 
-		if (rv < 0) {
+		যদি (rv < 0) {
 			parameter_flashfs_free();
-			return rv;
+			ফেরত rv;
 		}
 	}
 
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	পূর্ণসংখ্যা ফলাফল = parameter_flashfs_write(parameters_token, বাফার_2, enc_আকার);
 
-	if (result != (int)enc_size && parameter_flashfs_blank() == 1) {
-		result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	যদি (ফলাফল != (পূর্ণসংখ্যা)enc_আকার && parameter_flashfs_blank() == 1) {
+		ফলাফল = parameter_flashfs_write(parameters_token, বাফার_2, enc_আকার);
 	}
 
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	যদি (ফলাফল == (পূর্ণসংখ্যা)enc_আকার) {
+		ফেরত OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	ফেরত ফলাফল < 0 ? ফলাফল : -EFBIG;
 }
 
-static int
+স্থির পূর্ণসংখ্যা
 compact_to_snapshot()
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	পূর্ণসংখ্যা ফলাফল = encode_document(&encoder, nullptr, সত্য);
 
-	if (result == 0) {
-		uint8_t *buffer;
-		size_t enc_size;
-		result = stage_snapshot(&encoder, &buffer, &enc_size);
+	যদি (ফলাফল == 0) {
+		uint8_t *বাফার_2;
+		size_t enc_আকার;
+		ফলাফল = stage_snapshot(&encoder, &বাফার_2, &enc_আকার);
 
-		if (result == OK) {
-			result = commit_snapshot(buffer, enc_size);
+		যদি (ফলাফল == OK) {
+			ফলাফল = commit_snapshot(বাফার_2, enc_আকার);
 		}
 	}
 
-	if (result == OK) {
-		log_unreadable = false;
+	যদি (ফলাফল == OK) {
+		log_unreadable = মিথ্যা;
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	মুক্ত(bson_encoder_buf_তথ্য(&encoder));
+	ফেরত ফলাফল;
 }
 
-static bool
+স্থির যৌক্তিক
 has_record(flash_file_token_t token)
 {
-	uint8_t *buffer = nullptr;
-	size_t buf_size = 0;
-	return parameter_flashfs_read(token, &buffer, &buf_size) >= 0;
+	uint8_t *বাফার_2 = nullptr;
+	size_t buf_আকার = 0;
+	ফেরত parameter_flashfs_read(token, &বাফার_2, &buf_আকার) >= 0;
 }
 
-static int
+স্থির পূর্ণসংখ্যা
 param_export_internal(param_filter_func filter)
 {
 	/* A delta only means something behind a snapshot that replays. A legacy
 	 * record still present means the boot migration did not run; replay
 	 * would take it over any delta appended behind it. */
-	if (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
-		return compact_to_snapshot();
+	যদি (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
+		ফেরত compact_to_snapshot();
 	}
 
-	if (!any_unsaved(filter)) {
-		return 0;
+	যদি (!any_unsaved(filter)) {
+		ফেরত 0;
 	}
 
-	int result = export_delta(filter);
+	পূর্ণসংখ্যা ফলাফল = export_delta(filter);
 
-	if (result != -ENOSPC) {
-		return result;
+	যদি (ফলাফল != -ENOSPC) {
+		ফেরত ফলাফল;
 	}
 
 	/* Same-bank erase stalls the CPU for ~1 s; last resort when a single
 	 * save does not fit the tail. Compact writes the full RAM snapshot so a
 	 * filtered save cannot drop params not in the delta. */
 	PX4_WARN("flashparams: param sector full, compacting");
-	return compact_to_snapshot();
+	ফেরত compact_to_snapshot();
 }
 
 
-static bool
-record_is_stale(bson_node_t node)
+স্থির যৌক্তিক
+record_is_stale(bson_গ্রন্থি_t গ্রন্থি_2)
 {
-	const param_t param = param_find_no_notification(node->name);
+	ধ্রুবক param_t param = param_find_no_notification(গ্রন্থি_2->name);
 
-	if (param == PARAM_INVALID) {
-		return true;
+	যদি (param == PARAM_INVALID) {
+		ফেরত সত্য;
 	}
 
-	switch (node->type) {
-	case BSON_INT32:
-		return param_type(param) != PARAM_TYPE_INT32;
+	নির্বাচন (গ্রন্থি_2->type) {
+	ক্ষেত্র BSON_INT32:
+		ফেরত param_type(param) != PARAM_TYPE_INT32;
 
-	case BSON_DOUBLE:
-		return param_type(param) != PARAM_TYPE_FLOAT;
+	ক্ষেত্র BSON_DOUBLE:
+		ফেরত param_type(param) != PARAM_TYPE_FLOAT;
 
-	default:
-		return false;
+	পূর্বনির্ধারিত:
+		ফেরত মিথ্যা;
 	}
 }
 
-static int
-param_import_callback(bson_decoder_t decoder, bson_node_t node)
+স্থির পূর্ণসংখ্যা
+param_import_callback(bson_decoder_t decoder, bson_গ্রন্থি_t গ্রন্থি_2)
 {
-	float f;
+	দশমিক f;
 	int32_t i;
-	void *v = nullptr;
-	int result = -1;
+	শূন্য *v = nullptr;
+	পূর্ণসংখ্যা ফলাফল = -1;
 
 	/*
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	যদি (গ্রন্থি_2->type == BSON_EOO) {
 		debug("end of parameters");
-		return 0;
+		ফেরত 0;
 	}
 
 	/* A tombstone has no value. The decoder leaves the previous node's in
 	 * the union and the translations read it without a type check. */
-	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
+	ধ্রুবক যৌক্তিক tombstone = গ্রন্থি_2->type == BSON_nullptr || গ্রন্থি_2->type == BSON_UNDEFINED;
 
-	if (!tombstone) {
-		if (record_is_stale(node)) {
-			log_stale = true;
+	যদি (!tombstone) {
+		যদি (record_is_stale(গ্রন্থি_2)) {
+			log_stale = সত্য;
 		}
 
-		if (param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
-			return 1;
+		যদি (param_modify_on_import(গ্রন্থি_2) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+			ফেরত 1;
 		}
 	}
 
@@ -412,122 +412,122 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	 * Find the parameter this node represents.  If we don't know it,
 	 * ignore the node.
 	 */
-	param_t param = param_find_no_notification(node->name);
+	param_t param = param_find_no_notification(গ্রন্থি_2->name);
 
-	if (param == PARAM_INVALID) {
-		debug("ignoring unrecognised parameter '%s'", node->name);
-		return 1;
+	যদি (param == PARAM_INVALID) {
+		debug("ignoring unrecognised parameter '%s'", গ্রন্থি_2->name);
+		ফেরত 1;
 	}
 
 	/*
 	 * Handle setting the parameter from the node
 	 */
 
-	switch (node->type) {
-	case BSON_nullptr:
-	case BSON_UNDEFINED:
+	নির্বাচন (গ্রন্থি_2->type) {
+	ক্ষেত্র BSON_nullptr:
+	ক্ষেত্র BSON_UNDEFINED:
 		user_config.reset(param);
-		result = 1;
-		goto out;
+		ফলাফল = 1;
+		যাও out;
 
-	case BSON_INT32:
-		if (param_type(param) != PARAM_TYPE_INT32) {
-			PX4_WARN("unexpected type for %s", node->name);
-			result = 1; // just skip this entry
-			goto out;
+	ক্ষেত্র BSON_INT32:
+		যদি (param_type(param) != PARAM_TYPE_INT32) {
+			PX4_WARN("unexpected type for %s", গ্রন্থি_2->name);
+			ফলাফল = 1; // just skip this entry
+			যাও out;
 		}
 
-		i = node->i32;
+		i = গ্রন্থি_2->i32;
 		v = &i;
-		break;
+		বিরতি;
 
-	case BSON_DOUBLE:
-		if (param_type(param) != PARAM_TYPE_FLOAT) {
-			PX4_WARN("unexpected type for %s", node->name);
-			result = 1; // just skip this entry
-			goto out;
+	ক্ষেত্র BSON_DOUBLE:
+		যদি (param_type(param) != PARAM_TYPE_FLOAT) {
+			PX4_WARN("unexpected type for %s", গ্রন্থি_2->name);
+			ফলাফল = 1; // just skip this entry
+			যাও out;
 		}
 
-		f = node->d;
+		f = গ্রন্থি_2->d;
 		v = &f;
-		break;
+		বিরতি;
 
-	default:
-		PX4_ERR("%s unrecognised node type %d", node->name, node->type);
-		result = 1; // just skip this entry
-		goto out;
+	পূর্বনির্ধারিত:
+		PX4_ERR("%s unrecognised node type %d", গ্রন্থি_2->name, গ্রন্থি_2->type);
+		ফলাফল = 1; // just skip this entry
+		যাও out;
 	}
 
-	if (param_set_external(param, v, true, true)) {
-		debug("error setting value for '%s'", node->name);
-		goto out;
+	যদি (param_set_external(param, v, সত্য, সত্য)) {
+		debug("error setting value for '%s'", গ্রন্থি_2->name);
+		যাও out;
 	}
 
 	/* don't return zero, that means EOF */
-	result = 1;
+	ফলাফল = 1;
 
 out:
-	return result;
+	ফেরত ফলাফল;
 }
 
-static int
-import_one_entry(uint8_t *buffer, size_t buf_size, void *arg)
+স্থির পূর্ণসংখ্যা
+import_one_entry(uint8_t *বাফার_2, size_t buf_আকার, শূন্য *arg)
 {
-	int *result = static_cast<int *>(arg);
+	পূর্ণসংখ্যা *ফলাফল = static_cast<পূর্ণসংখ্যা *>(arg);
 	bson_decoder_s decoder{};
 
-	if (bson_decoder_init_buf(&decoder, buffer, buf_size, param_import_callback)) {
+	যদি (bson_decoder_init_buf(&decoder, বাফার_2, buf_আকার, param_import_callback)) {
 		debug("decoder init failed");
-		*result = -1;
-		return -1;
+		*ফলাফল = -1;
+		ফেরত -1;
 	}
 
-	do {
-		*result = bson_decoder_next(&decoder);
+	করো {
+		*ফলাফল = bson_decoder_পরবর্তী(&decoder);
 
-	} while (*result > 0);
+	} যখন (*ফলাফল > 0);
 
-	return *result < 0 ? *result : 0;
+	ফেরত *ফলাফল < 0 ? *ফলাফল : 0;
 }
 
-static int
-param_import_internal(bool *legacy)
+স্থির পূর্ণসংখ্যা
+param_import_internal(যৌক্তিক *legacy)
 {
-	int result = 0;
-	log_stale = false;
-	int n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &result);
+	পূর্ণসংখ্যা ফলাফল = 0;
+	log_stale = মিথ্যা;
+	পূর্ণসংখ্যা n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &ফলাফল);
 	*legacy = n > 0;
 
-	if (n == 0) {
-		n = parameter_flashfs_walk(parameters_token, import_one_entry, &result);
+	যদি (n == 0) {
+		n = parameter_flashfs_walk(parameters_token, import_one_entry, &ফলাফল);
 	}
 
-	if (n < 0) {
+	যদি (n < 0) {
 		debug("flash walk failed (%d)", n);
-		log_unreadable = true;
-		return n;
+		log_unreadable = সত্য;
+		ফেরত n;
 	}
 
-	if (n == 0) {
+	যদি (n == 0) {
 		/* No valid entry found. A fully erased store is blank (first boot, or
 		 * after switching firmware): report "not yet stored" (1), matching the
 		 * convention used by param_load_default(). A store that holds data but
 		 * no valid entry (torn write, bit-rot, or foreign data) is corrupt and
 		 * must not be silently reseeded - report it so the boot recovery runs. */
-		if (parameter_flashfs_blank() == 1) {
-			return 1;
+		যদি (parameter_flashfs_blank() == 1) {
+			ফেরত 1;
 		}
 
 		debug("flash holds data but no valid entry");
-		return -EILSEQ;
+		ফেরত -EILSEQ;
 	}
 
-	if (result < 0) {
+	যদি (ফলাফল < 0) {
 		debug("BSON error decoding parameters");
-		return result;
+		ফেরত ফলাফল;
 	}
 
-	return 0;
+	ফেরত 0;
 }
 
 /*
@@ -538,58 +538,58 @@ param_import_internal(bool *legacy)
  * the erase is an error: until then the log is intact and RAM holds what it
  * said, so the boot must not be reported as a corrupt store.
  */
-static int
-compact_after_import(bool legacy)
+স্থির পূর্ণসংখ্যা
+compact_after_import(যৌক্তিক legacy)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	পূর্ণসংখ্যা ফলাফল = encode_document(&encoder, nullptr, সত্য);
 
-	if (result != 0) {
-		PX4_ERR("flashparams: snapshot encode failed (%d), log kept", result);
-		free(bson_encoder_buf_data(&encoder));
-		return 0;
+	যদি (ফলাফল != 0) {
+		PX4_ERR("flashparams: snapshot encode failed (%d), log kept", ফলাফল);
+		মুক্ত(bson_encoder_buf_তথ্য(&encoder));
+		ফেরত 0;
 	}
 
-	const size_t enc_size = bson_encoder_buf_size(&encoder);
-	int need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_size);
-	result = 0;
+	ধ্রুবক size_t enc_আকার = bson_encoder_buf_আকার(&encoder);
+	পূর্ণসংখ্যা need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_আকার);
+	ফলাফল = 0;
 
-	if (need > 0) {
-		uint8_t *buffer;
-		size_t staged_size;
-		result = stage_snapshot(&encoder, &buffer, &staged_size);
+	যদি (need > 0) {
+		uint8_t *বাফার_2;
+		size_t staged_আকার;
+		ফলাফল = stage_snapshot(&encoder, &বাফার_2, &staged_আকার);
 
-		if (result != OK) {
-			PX4_ERR("flashparams: cannot stage snapshot (%d), log kept", result);
-			result = 0;
+		যদি (ফলাফল != OK) {
+			PX4_ERR("flashparams: cannot stage snapshot (%d), log kept", ফলাফল);
+			ফলাফল = 0;
 
-		} else {
+		} অন্যথা {
 			PX4_INFO("flashparams: compacting param sector%s", legacy ? " (legacy layout)" : "");
-			result = commit_snapshot(buffer, staged_size);
+			ফলাফল = commit_snapshot(বাফার_2, staged_আকার);
 
-			if (result != OK) {
-				PX4_ERR("flashparams: compact failed (%d)", result);
+			যদি (ফলাফল != OK) {
+				PX4_ERR("flashparams: compact failed (%d)", ফলাফল);
 			}
 		}
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	মুক্ত(bson_encoder_buf_তথ্য(&encoder));
+	ফেরত ফলাফল;
 }
 
-int flash_param_save(param_filter_func filter)
+পূর্ণসংখ্যা flash_param_save(param_filter_func filter)
 {
-	return param_export_internal(filter);
+	ফেরত param_export_internal(filter);
 }
 
-int flash_param_import()
+পূর্ণসংখ্যা flash_param_import()
 {
-	bool legacy = false;
-	int result = param_import_internal(&legacy);
+	যৌক্তিক legacy = মিথ্যা;
+	পূর্ণসংখ্যা ফলাফল = param_import_internal(&legacy);
 
-	if (result != 0) {
-		return result;
+	যদি (ফলাফল != 0) {
+		ফেরত ফলাফল;
 	}
 
-	return compact_after_import(legacy);
+	ফেরত compact_after_import(legacy);
 }

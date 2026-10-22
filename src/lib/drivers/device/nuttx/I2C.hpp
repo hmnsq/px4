@@ -39,37 +39,37 @@
  * Base class for devices connected via I2C.
  */
 
-#include "../CDev.hpp"
-#include <px4_platform_common/i2c.h>
+#অন্তর্ভাব "../CDev.hpp"
+#অন্তর্ভাব <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#যদি defined(CONFIG_I2C)
 
-#include <nuttx/i2c/i2c_master.h>
+#অন্তর্ভাব <nuttx/i2c/i2c_master.h>
 
-struct I2CSPIDriverConfig;
+কাঠামো I2CSPIDriverConfig;
 
-namespace device __EXPORT
+নামাকাশ device __EXPORT
 {
 
 /**
  * Abstract class for character device on I2C
  */
-class __EXPORT I2C : public CDev
+শ্রেণী __EXPORT I2C : সর্বজনীন CDev
 {
 
-public:
+সর্বজনীন:
 
 	// no copy, assignment, move, move assignment
-	I2C(const I2C &) = delete;
-	I2C &operator=(const I2C &) = delete;
+	I2C(ধ্রুবক I2C &) = delete;
+	I2C &operator=(ধ্রুবক I2C &) = delete;
 	I2C(I2C &&) = delete;
 	I2C &operator=(I2C &&) = delete;
 
-	virtual int	init() override;
+	আভাসী পূর্ণসংখ্যা	init() override;
 
-	static int	set_bus_clock(unsigned bus, unsigned clock_hz);
+	স্থির পূর্ণসংখ্যা	set_bus_clock(unsigned bus, unsigned clock_hz);
 
-protected:
+সুরক্ষিত:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -85,14 +85,14 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
-	I2C(const I2CSPIDriverConfig &config);
-	virtual ~I2C();
+	I2C(uint8_t device_type, ধ্রুবক অক্ষর *name, ধ্রুবক পূর্ণসংখ্যা bus, ধ্রুবক uint16_t address, ধ্রুবক uint32_t frequency);
+	I2C(ধ্রুবক I2CSPIDriverConfig &config);
+	আভাসী ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	আভাসী পূর্ণসংখ্যা	probe() { ফেরত PX4_OK; }
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -106,12 +106,12 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	পূর্ণসংখ্যা		transfer(ধ্রুবক uint8_t *send, ধ্রুবক unsigned send_len, uint8_t *recv, ধ্রুবক unsigned recv_len);
 
-private:
-	static unsigned	int	_bus_clocks[PX4_NUMBER_I2C_BUSES];
+ব্যক্তিগত:
+	স্থির unsigned	পূর্ণসংখ্যা	_bus_clocks[PX4_সংখ্যা_I2_C_BUSES];
 
-	const uint32_t		_frequency;
+	ধ্রুবক uint32_t		_frequency;
 	i2c_master_s		*_dev{nullptr};
 
 };

@@ -46,10 +46,10 @@
 #ifndef _SYSTEMLIB_FLASHPARAMS_FLASHPARAMS_H
 #define _SYSTEMLIB_FLASHPARAMS_FLASHPARAMS_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <sys/types.h>
-#include "../DynamicSparseLayer.h"
+#অন্তর্ভাব <stdint.h>
+#অন্তর্ভাব <stdbool.h>
+#অন্তর্ভাব <sys/types.h>
+#অন্তর্ভাব "../DynamicSparseLayer.h"
 
 __BEGIN_DECLS
 
@@ -58,13 +58,13 @@ __BEGIN_DECLS
  * the param_values and 2 functions to be global
  */
 
-__EXPORT extern DynamicSparseLayer user_config;
-__EXPORT int param_set_external(param_t param, const void *val, bool mark_saved, bool notify_changes);
-__EXPORT void param_get_external(param_t param, void *val);
+__EXPORT বাহ্যিক DynamicSparseLayer user_config;
+__EXPORT পূর্ণসংখ্যা param_set_external(param_t param, ধ্রুবক শূন্য *val, bool mark_saved, bool notify_changes);
+__EXPORT শূন্য param_get_external(param_t param, শূন্য *val);
 
 /* The interface hooks to the Flash based storage. The caller is responsible for locking */
-__EXPORT int flash_param_save(param_filter_func filter);
-__EXPORT int flash_param_import();
+__EXPORT পূর্ণসংখ্যা flash_param_save(param_filter_func filter);
+__EXPORT পূর্ণসংখ্যা flash_param_import();
 
 __END_DECLS
 

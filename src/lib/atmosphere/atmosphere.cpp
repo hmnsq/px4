@@ -36,27 +36,27 @@
  *
  */
 
-#include <geo/geo.h>
-#include "atmosphere.h"
-namespace atmosphere
+#অন্তর্ভাব <geo/geo.h>
+#অন্তর্ভাব "atmosphere.h"
+নামাকাশ atmosphere
 {
 
 
-float getDensityFromPressureAndTemp(const float pressure_pa, const float temperature_celsius)
+দশমিক get_Density_From_Pressure_And_অস্থায়ী(ধ্রুবক দশমিক pressure_pa, ধ্রুবক দশমিক temperature_celsius)
 {
-	return (pressure_pa / (kAirGasConstant * (temperature_celsius - kAbsoluteNullCelsius)));
+	ফেরত (pressure_pa / (kAirGasConstant * (temperature_celsius - kAbsoluteNullCelsius)));
 }
-float getPressureFromAltitude(const float altitude_m)
+দশমিক getPressureFromAltitude(ধ্রুবক দশমিক altitude_m)
 {
 
-	return kPressRefSeaLevelPa * powf((altitude_m * kTempGradient + kTempRefKelvin) / kTempRefKelvin,
-					  -CONSTANTS_ONE_G / (kTempGradient * kAirGasConstant));
+	ফেরত kPressRefSeaLevelPa * powf((altitude_m * k_অস্থায়ী_Gradient + k_অস্থায়ী_Ref_Kelvin) / k_অস্থায়ী_Ref_Kelvin,
+					  -CONSTANTS_ONE_G / (k_অস্থায়ী_Gradient * kAirGasConstant));
 }
-float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa)
+দশমিক getAltitudeFromPressure(দশমিক pressure_pa, দশমিক pressure_sealevel_pa)
 {
 	// calculate altitude using the hypsometric equation
 
-	const float pressure_ratio = pressure_pa / pressure_sealevel_pa;
+	ধ্রুবক দশমিক pressure_ratio = pressure_pa / pressure_sealevel_pa;
 
 	/*
 	 * Solve:
@@ -67,12 +67,12 @@ float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa)
 	 * h = -------------------------------  + h1
 	 *                   a
 	 */
-	return (((powf(pressure_ratio, (-(kTempGradient * kAirGasConstant) / CONSTANTS_ONE_G))) * kTempRefKelvin) -
-		kTempRefKelvin) / kTempGradient;
+	ফেরত (((powf(pressure_ratio, (-(k_অস্থায়ী_Gradient * kAirGasConstant) / CONSTANTS_ONE_G))) * k_অস্থায়ী_Ref_Kelvin) -
+		k_অস্থায়ী_Ref_Kelvin) / k_অস্থায়ী_Gradient;
 
 }
-float getStandardTemperatureAtAltitude(float altitude_m)
+দশমিক getStandardTemperatureAtAltitude(দশমিক altitude_m)
 {
-	return 15.0f + kTempGradient * altitude_m;
+	ফেরত 15.0f + k_অস্থায়ী_Gradient * altitude_m;
 }
 }

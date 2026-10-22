@@ -40,81 +40,81 @@
 
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#অন্তর্ভাব <stdio.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <stdint.h>
+#অন্তর্ভাব <string.h>
 
-namespace math
+নামাকাশ math
 {
 
-template<typename U> struct is_floating_point { static constexpr bool value = false; };
-template<> struct is_floating_point<float> { static constexpr bool value = true; };
-template<> struct is_floating_point<double> { static constexpr bool value = true; };
-template<> struct is_floating_point<long double> { static constexpr bool value = true; };
+template<typename U> কাঠামো is_floating_point { স্থির constexpr যৌক্তিক value = মিথ্যা; };
+template<> কাঠামো is_floating_point<দশমিক> { স্থির constexpr যৌক্তিক value = সত্য; };
+template<> কাঠামো is_floating_point<দ্বিগুণ> { স্থির constexpr যৌক্তিক value = সত্য; };
+template<> কাঠামো is_floating_point<long দ্বিগুণ> { স্থির constexpr যৌক্তিক value = সত্য; };
 
-template<typename T, int WINDOW = 3>
-class MedianFilter
+template<typename T, পূর্ণসংখ্যা WINDOW = 3>
+শ্রেণী MedianFilter
 {
-public:
+সর্বজনীন:
 	static_assert(WINDOW >= 3, "MedianFilter window size must be >= 3");
 	static_assert(WINDOW % 2, "MedianFilter window size must be odd"); // odd
 
-	MedianFilter() = default;
+	MedianFilter() = পূর্বনির্ধারিত;
 
-	void insert(const T &sample)
+	শূন্য ঢোকাও(ধ্রুবক T &sample)
 	{
-		_head = (_head + 1) % WINDOW;
-		_buffer[_head] = sample;
+		শীর্ষ_2 = (শীর্ষ_2 + 1) % WINDOW;
+		বাফার[শীর্ষ_2] = sample;
 	}
 
 	T median()
 	{
 		T sorted[WINDOW];
-		memcpy(sorted, _buffer, sizeof(_buffer));
-		qsort(&sorted, WINDOW, sizeof(T), cmp);
+		memcpy(sorted, বাফার, আকার(বাফার));
+		qsort(&sorted, WINDOW, আকার(T), cmp);
 
-		return sorted[WINDOW / 2];
+		ফেরত sorted[WINDOW / 2];
 	}
 
-	T apply(const T &sample)
+	T apply(ধ্রুবক T &sample)
 	{
-		insert(sample);
-		return median();
+		ঢোকাও(sample);
+		ফেরত median();
 	}
 
-private:
+ব্যক্তিগত:
 
-	static int cmp(const void *a, const void *b)
+	স্থির পূর্ণসংখ্যা cmp(ধ্রুবক শূন্য *a, ধ্রুবক শূন্য *b)
 	{
-		const T va = *(const T *)a;
-		const T vb = *(const T *)b;
+		ধ্রুবক T va = *(ধ্রুবক T *)a;
+		ধ্রুবক T vb = *(ধ্রুবক T *)b;
 
-		if constexpr(is_floating_point<T>::value) {
-			if (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
-				return 0;
+		যদি constexpr(is_floating_point<T>::value) {
+			যদি (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
+				ফেরত 0;
 
-			} else if (!__builtin_isfinite(va)) {
-				return  1;
+			} অন্যথা যদি (!__builtin_isfinite(va)) {
+				ফেরত  1;
 
-			} else if (!__builtin_isfinite(vb)) {
-				return -1;
+			} অন্যথা যদি (!__builtin_isfinite(vb)) {
+				ফেরত -1;
 			}
 		}
 
-		if (va < vb) {
-			return -1;
+		যদি (va < vb) {
+			ফেরত -1;
 		}
 
-		if (va > vb) {
-			return  1;
+		যদি (va > vb) {
+			ফেরত  1;
 		}
 
-		return 0;
+		ফেরত 0;
 	}
 
-	T _buffer[WINDOW] {};
-	uint8_t _head{0};
+	T বাফার[WINDOW] {};
+	uint8_t শীর্ষ_2{0};
 };
 
 } // namespace math

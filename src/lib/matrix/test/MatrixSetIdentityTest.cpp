@@ -31,22 +31,22 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#অন্তর্ভাব <gtest/gtest.h>
+#অন্তর্ভাব <matrix/math.hpp>
 
-using namespace matrix;
+using নামাকাশ matrix;
 
 TEST(MatrixSetIdentityTest, SetIdentity)
 {
 	Matrix3f A;
 	A.setIdentity();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	জন্য (size_t i = 0; i < 3; i++) {
+		জন্য (size_t j = 0; j < 3; j++) {
+			যদি (i == j) {
 				EXPECT_FLOAT_EQ(A(i, j), 1);
 
-			} else {
+			} অন্যথা {
 				EXPECT_FLOAT_EQ(A(i, j), 0);
 			}
 		}
@@ -55,12 +55,12 @@ TEST(MatrixSetIdentityTest, SetIdentity)
 	Matrix3f B;
 	B.identity();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	জন্য (size_t i = 0; i < 3; i++) {
+		জন্য (size_t j = 0; j < 3; j++) {
+			যদি (i == j) {
 				EXPECT_FLOAT_EQ(B(i, j), 1);
 
-			} else {
+			} অন্যথা {
 				EXPECT_FLOAT_EQ(B(i, j), 0);
 			}
 		}

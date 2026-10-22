@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#অন্তর্ভাব <gtest/gtest.h>
+#অন্তর্ভাব <matrix/math.hpp>
 
-using namespace matrix;
+using নামাকাশ matrix;
 
 TEST(MatrixScalarMultiplicationTest, ScalarMultiplication)
 {
-	float data[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-	Matrix3f A(data);
+	দশমিক তথ্য[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+	Matrix3f A(তথ্য);
 	A = A * 2;
-	float data_check[9] = {2, 4, 6, 8, 10, 12, 14, 16, 18};
-	Matrix3f A_check(data_check);
+	দশমিক তথ্য_check[9] = {2, 4, 6, 8, 10, 12, 14, 16, 18};
+	Matrix3f A_check(তথ্য_check);
 	EXPECT_EQ(A, A_check);
 }

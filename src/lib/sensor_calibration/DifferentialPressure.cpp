@@ -31,16 +31,16 @@
  *
  ****************************************************************************/
 
-#include "DifferentialPressure.hpp"
+#অন্তর্ভাব "DifferentialPressure.hpp"
 
-#include "Utilities.hpp"
+#অন্তর্ভাব "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#অন্তর্ভাব <lib/drivers/device/Device.hpp>
+#অন্তর্ভাব <lib/parameters/param.h>
 
-#include <float.h>
+#অন্তর্ভাব <float.h>
 
-namespace calibration
+নামাকাশ calibration
 {
 
 DifferentialPressure::DifferentialPressure()
@@ -53,11 +53,11 @@ DifferentialPressure::DifferentialPressure(uint32_t device_id)
 	set_device_id(device_id);
 }
 
-void DifferentialPressure::set_device_id(uint32_t device_id)
+শূন্য DifferentialPressure::set_device_id(uint32_t device_id)
 {
-	const bool external = device::device_is_external(device_id);
+	ধ্রুবক যৌক্তিক external = device::device_is_external(device_id);
 
-	if (_device_id != device_id || _external != external) {
+	যদি (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -68,153 +68,153 @@ void DifferentialPressure::set_device_id(uint32_t device_id)
 	}
 }
 
-bool DifferentialPressure::set_offset(const float &offset)
+যৌক্তিক DifferentialPressure::set_offset(ধ্রুবক দশমিক &offset)
 {
-	if (fabsf(_offset - offset) > 0.01f) {
-		if (PX4_ISFINITE(offset)) {
+	যদি (fabsf(_offset - offset) > 0.01f) {
+		যদি (PX4_ISFINITE(offset)) {
 			_offset = offset;
-			_calibration_count++;
-			return true;
+			calibration_গুনতি++;
+			ফেরত সত্য;
 		}
 	}
 
-	return false;
+	ফেরত মিথ্যা;
 }
 
-bool DifferentialPressure::set_calibration_index(int calibration_index)
+যৌক্তিক DifferentialPressure::set_calibration_সূচক(পূর্ণসংখ্যা calibration_সূচক)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
-		_calibration_index = calibration_index;
-		return true;
+	যদি ((calibration_সূচক >= 0) && (calibration_সূচক < MAX_SENSOR_গুনতি)) {
+		calibration_সূচক_2 = calibration_সূচক;
+		ফেরত সত্য;
 	}
 
-	return false;
+	ফেরত মিথ্যা;
 }
 
-void DifferentialPressure::ParametersUpdate()
+শূন্য DifferentialPressure::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	যদি (_device_id == 0) {
+		ফেরত;
 	}
 
-	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
+	calibration_সূচক_2 = Find_Current_Calibration_সূচক(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	যদি (calibration_সূচক_2 == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
+	} অন্যথা {
 		ParametersLoad();
 	}
 }
 
-bool DifferentialPressure::ParametersLoad()
+যৌক্তিক DifferentialPressure::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	যদি (calibration_সূচক_2 >= 0 && calibration_সূচক_2 < MAX_SENSOR_গুনতি) {
 		// CAL_DPRESx_OFF
-		set_offset(GetCalibrationParamFloat(SensorString(), "OFF", _calibration_index));
+		set_offset(GetCalibrationParamFloat(SensorString(), "OFF", calibration_সূচক_2));
 
-		return true;
+		ফেরত সত্য;
 	}
 
-	return false;
+	ফেরত মিথ্যা;
 }
 
-bool DifferentialPressure::AdoptLegacyOffset()
+যৌক্তিক DifferentialPressure::AdoptLegacyOffset()
 {
-	if ((_device_id == 0) || calibrated()) {
-		return false;
+	যদি ((_device_id == 0) || calibrated()) {
+		ফেরত মিথ্যা;
 	}
 
 	// slot 0 must still be free, otherwise another sensor already owns the legacy offset
-	if (GetCalibrationParamInt32(SensorString(), "ID", kLegacyIndex) != 0) {
-		return false;
+	যদি (GetCalibrationParamInt32(SensorString(), "ID", k_Legacy_সূচক) != 0) {
+		ফেরত মিথ্যা;
 	}
 
-	float legacy_offset = 0.f;
+	দশমিক legacy_offset = 0.f;
 
-	if (param_get(param_find(kLegacyOffsetParam), &legacy_offset) != PX4_OK) {
-		return false;
+	যদি (param_get(param_find(kLegacyOffsetParam), &legacy_offset) != PX4_OK) {
+		ফেরত মিথ্যা;
 	}
 
-	if (!PX4_ISFINITE(legacy_offset) || (fabsf(legacy_offset) < FLT_EPSILON)) {
-		return false;
+	যদি (!PX4_ISFINITE(legacy_offset) || (fabsf(legacy_offset) < FLT_EPSILON)) {
+		ফেরত মিথ্যা;
 	}
 
 	_offset = legacy_offset;
-	_calibration_index = kLegacyIndex;
+	calibration_সূচক_2 = k_Legacy_সূচক;
 
-	PX4_INFO("%s %" PRIu32 " adopted %s %.3f Pa", SensorString(), _device_id, kLegacyOffsetParam, (double)_offset);
+	PX4_INFO("%s %" PRIu32 " adopted %s %.3f Pa", SensorString(), _device_id, kLegacyOffsetParam, (দ্বিগুণ)_offset);
 
-	return true;
+	ফেরত সত্য;
 }
 
-void DifferentialPressure::UpdateLegacyOffset() const
+শূন্য DifferentialPressure::UpdateLegacyOffset() ধ্রুবক
 {
 	// keep SENS_DPRES_OFF in step with slot 0 so that ground stations reading it can still tell
 	// whether airspeed has been calibrated
-	if (_calibration_index != kLegacyIndex) {
-		return;
+	যদি (calibration_সূচক_2 != k_Legacy_সূচক) {
+		ফেরত;
 	}
 
-	const param_t handle = param_find(kLegacyOffsetParam);
+	ধ্রুবক param_t handle = param_find(kLegacyOffsetParam);
 
-	if (handle == PARAM_INVALID) {
-		return;
+	যদি (handle == PARAM_INVALID) {
+		ফেরত;
 	}
 
-	float offset = _offset;
+	দশমিক offset = _offset;
 	param_set_no_notification(handle, &offset);
 }
 
-void DifferentialPressure::Reset()
+শূন্য DifferentialPressure::Reset()
 {
 	_offset = 0;
 
-	_calibration_index = -1;
+	calibration_সূচক_2 = -1;
 
-	_calibration_count = 0;
+	calibration_গুনতি = 0;
 }
 
-bool DifferentialPressure::ParametersSave(int desired_calibration_index, bool force)
+যৌক্তিক DifferentialPressure::ParametersSave(পূর্ণসংখ্যা desired_calibration_সূচক, যৌক্তিক force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
-		_calibration_index = desired_calibration_index;
+	যদি (force && desired_calibration_সূচক >= 0 && desired_calibration_সূচক < MAX_SENSOR_গুনতি) {
+		calibration_সূচক_2 = desired_calibration_সূচক;
 
-	} else if (!force || (_calibration_index < 0)
-		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
+	} অন্যথা যদি (!force || (calibration_সূচক_2 < 0)
+		   || (desired_calibration_সূচক != -1 && desired_calibration_সূচক != calibration_সূচক_2)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
-		int8_t calibration_index_prev = _calibration_index;
-		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
+		int8_t calibration_সূচক_পূর্ব = calibration_সূচক_2;
+		calibration_সূচক_2 = Find_Available_Calibration_সূচক(SensorString(), _device_id, desired_calibration_সূচক);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		যদি (calibration_সূচক_পূর্ব >= 0 && (calibration_সূচক_পূর্ব != calibration_সূচক_2)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
-				 calibration_index_prev, _calibration_index);
+				 calibration_সূচক_পূর্ব, calibration_সূচক_2);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	যদি (calibration_সূচক_2 >= 0 && calibration_সূচক_2 < MAX_SENSOR_গুনতি) {
 		// save calibration
-		bool success = true;
-		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
-		success &= SetCalibrationParam(SensorString(), "OFF", _calibration_index, _offset);
+		যৌক্তিক success = সত্য;
+		success &= SetCalibrationParam(SensorString(), "ID", calibration_সূচক_2, _device_id);
+		success &= SetCalibrationParam(SensorString(), "OFF", calibration_সূচক_2, _offset);
 
 		UpdateLegacyOffset();
 
-		return success;
+		ফেরত success;
 	}
 
 	// index 3 is possible: FindAvailableCalibrationIndex() searches four slots, we define three
-	PX4_ERR("%s %" PRIu32 " no free calibration slot (got %" PRIi8 ")", SensorString(), _device_id, _calibration_index);
+	PX4_ERR("%s %" PRIu32 " no free calibration slot (got %" PRIi8 ")", SensorString(), _device_id, calibration_সূচক_2);
 
-	return false;
+	ফেরত মিথ্যা;
 }
 
-void DifferentialPressure::PrintStatus()
+শূন্য DifferentialPressure::PrintStatus()
 {
 	PX4_INFO_RAW("%s %" PRIu32 " offset: %05.3f Pa, %s\n",
-		     SensorString(), device_id(), (double)_offset,
+		     SensorString(), device_id(), (দ্বিগুণ)_offset,
 		     external() ? "Ext" : "Internal");
 }
 

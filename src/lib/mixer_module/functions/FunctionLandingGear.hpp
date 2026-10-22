@@ -33,36 +33,36 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#অন্তর্ভাব "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear.h>
+#অন্তর্ভাব <uORB/topics/landing_gear.h>
 
 /**
  * Functions: Landing_Gear
  */
-class FunctionLandingGear : public FunctionProviderBase
+শ্রেণী FunctionLandingGear : সর্বজনীন FunctionProviderBase
 {
-public:
-	FunctionLandingGear() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGear(); }
+সর্বজনীন:
+	FunctionLandingGear() = পূর্বনির্ধারিত;
+	স্থির FunctionProviderBase *allocate(ধ্রুবক Context &context) { ফেরত নতুন FunctionLandingGear(); }
 
-	void update() override
+	শূন্য update() override
 	{
 		landing_gear_s landing_gear;
 
-		if (_topic.update(&landing_gear)) {
-			if (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
-				_data = -1.f;
+		যদি (_topic.update(&landing_gear)) {
+			যদি (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
+				তথ্য_3 = -1.f;
 
-			} else if (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
-				_data = 1.f;
+			} অন্যথা যদি (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
+				তথ্য_3 = 1.f;
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	দশমিক value(OutputFunction func) override { ফেরত তথ্য_3; }
 
-private:
+ব্যক্তিগত:
 	uORB::Subscription _topic{ORB_ID(landing_gear)};
-	float _data{-1.f};
+	দশমিক তথ্য_3{-1.f};
 };

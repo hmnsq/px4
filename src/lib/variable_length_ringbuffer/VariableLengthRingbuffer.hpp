@@ -35,8 +35,8 @@
 
 #pragma once
 
-#include <stdint.h>
-#include <lib/ringbuffer/Ringbuffer.hpp>
+#অন্তর্ভাব <stdint.h>
+#অন্তর্ভাব <lib/ringbuffer/Ringbuffer.hpp>
 
 
 // FIFO ringbuffer implementation for packets of variable length.
@@ -46,21 +46,21 @@
 //
 // The buffer is not thread-safe.
 
-class VariableLengthRingbuffer
+শ্রেণী Variable_দৈর্ঘ্য_Ringbuffer
 {
-public:
+সর্বজনীন:
 	/* @brief Constructor
 	 *
 	 * @note Does not allocate automatically.
 	 */
-	VariableLengthRingbuffer() = default;
+	Variable_দৈর্ঘ্য_Ringbuffer() = পূর্বনির্ধারিত;
 
 	/*
 	 * @brief Destructor
 	 *
 	 * Automatically calls deallocate.
 	 */
-	~VariableLengthRingbuffer();
+	~Variable_দৈর্ঘ্য_Ringbuffer();
 
 	/* @brief Allocate ringbuffer
 	 *
@@ -71,14 +71,14 @@ public:
 	 *
 	 * @returns false if allocation fails.
 	 */
-	bool allocate(size_t buffer_size);
+	যৌক্তিক allocate(size_t বাফার_আকার);
 
 	/*
 	 * @brief Deallocate ringbuffer
 	 *
 	 * @note only required to deallocate and reallocate again.
 	 */
-	void deallocate();
+	শূন্য deallocate();
 
 	/*
 	 * @brief Copy packet into ringbuffer
@@ -88,7 +88,7 @@ public:
 	 *
 	 * @returns true if packet could be copied into buffer.
 	 */
-	bool push_back(const uint8_t *packet, size_t packet_len);
+	যৌক্তিক push_back(ধ্রুবক uint8_t *packet, size_t packet_len);
 
 	/*
 	 * @brief Get packet from ringbuffer
@@ -100,10 +100,10 @@ public:
 	 *
 	 * @returns 0 if packet is bigger than max_len or buffer is empty.
 	 */
-	size_t pop_front(uint8_t *buf, size_t max_buf_len);
+	size_t বের_করো_front(uint8_t *buf, size_t max_buf_len);
 
-private:
-	struct Header {
+ব্যক্তিগত:
+	কাঠামো Header {
 		uint32_t len;
 	};
 

@@ -39,48 +39,48 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#অন্তর্ভাব <px4_platform_common/defines.h>
+#অন্তর্ভাব <assert.h>
+#অন্তর্ভাব <time.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <mathlib/math/test/test.hpp>
+#অন্তর্ভাব <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#অন্তর্ভাব "block/Block.hpp"
+#অন্তর্ভাব "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#অন্তর্ভাব "matrix/math.hpp"
 
-namespace control
+নামাকাশ control
 {
 
 /**
  * A 2nd order low pass filter block which uses the default px4 2nd order low pass filter
  */
-class __EXPORT BlockLowPass2 : public Block
+শ্রেণী __EXPORT Block_নিচের_Pass2 : সর্বজনীন Block
 {
-public:
+সর্বজনীন:
 // methods
-	BlockLowPass2(SuperBlock *parent, const char *name, float sample_freq) :
+	Block_নিচের_Pass2(SuperBlock *parent, ধ্রুবক অক্ষর *name, দশমিক sample_freq) :
 		Block(parent, name),
 		_state(0.0 / 0.0 /* initialize to invalid val, force into is_finite() check on first call */),
-		_fCut(this, ""), // only one parameter, no need to name
+		_fCut(এই, ""), // only one parameter, no need to name
 		_fs(sample_freq),
 		_lp(_fs, _fCut.get())
 	{}
-	virtual ~BlockLowPass2() = default;
-	float update(float input);
+	আভাসী ~Block_নিচের_Pass2() = পূর্বনির্ধারিত;
+	দশমিক update(দশমিক প্রবেশ);
 // accessors
-	float getState() { return _state; }
-	float getFCutParam() { return _fCut.get(); }
-	void setState(float state) { _state = _lp.reset(state); }
-protected:
+	দশমিক getState() { ফেরত _state; }
+	দশমিক getFCutParam() { ফেরত _fCut.get(); }
+	শূন্য setState(দশমিক state) { _state = _lp.reset(state); }
+সুরক্ষিত:
 // attributes
-	float _state;
+	দশমিক _state;
 	control::BlockParamFloat _fCut;
-	float _fs;
-	math::LowPassFilter2p<float> _lp;
+	দশমিক _fs;
+	math::নিচের_Pass_Filter2p<দশমিক> _lp;
 };
 
 } // namespace control

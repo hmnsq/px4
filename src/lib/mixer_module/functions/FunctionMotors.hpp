@@ -33,96 +33,96 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#অন্তর্ভাব "FunctionProviderBase.hpp"
 
-#include <uORB/topics/actuator_motors.h>
+#অন্তর্ভাব <uORB/topics/actuator_motors.h>
 
 /**
  * Functions: Motor1 ... MotorMax
  */
-class FunctionMotors : public FunctionProviderBase
+শ্রেণী FunctionMotors : সর্বজনীন FunctionProviderBase
 {
-public:
-	static_assert(actuator_motors_s::NUM_CONTROLS == (int)OutputFunction::MotorMax - (int)OutputFunction::Motor1 + 1,
+সর্বজনীন:
+	static_assert(actuator_motors_s::অঙ্ক_CONTROLS == (পূর্ণসংখ্যা)OutputFunction::MotorMax - (পূর্ণসংখ্যা)OutputFunction::Motor1 + 1,
 		      "Unexpected num motors");
 
-	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (int)OutputFunction::Motor1, "Unexpected motor idx");
+	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (পূর্ণসংখ্যা)OutputFunction::Motor1, "Unexpected motor idx");
 
-	FunctionMotors(const Context &context) :
+	FunctionMotors(ধ্রুবক Context &context) :
 		_topic(&context.work_item, ORB_ID(actuator_motors)),
 		_thrust_factor(context.thrust_factor)
 	{
-		for (int i = 0; i < actuator_motors_s::NUM_CONTROLS; ++i) {
-			_data.control[i] = NAN;
+		জন্য (পূর্ণসংখ্যা i = 0; i < actuator_motors_s::অঙ্ক_CONTROLS; ++i) {
+			তথ্য_3.control[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionMotors(context); }
+	স্থির FunctionProviderBase *allocate(ধ্রুবক Context &context) { ফেরত নতুন FunctionMotors(context); }
 
-	void update() override
+	শূন্য update() override
 	{
-		if (_topic.update(&_data)) {
-			updateValues(_data.reversible_flags, _thrust_factor, _data.control, actuator_motors_s::NUM_CONTROLS);
+		যদি (_topic.update(&তথ্য_3)) {
+			update_মানসমূহ(তথ্য_3.reversible_flags, _thrust_factor, তথ্য_3.control, actuator_motors_s::অঙ্ক_CONTROLS);
 		}
 	}
 
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Motor1]; }
+	দশমিক value(OutputFunction func) override { ফেরত তথ্য_3.control[(পূর্ণসংখ্যা)func - (পূর্ণসংখ্যা)OutputFunction::Motor1]; }
 
-#if defined(CONFIG_DRIVERS_UAVCANNODE)
-	bool allowPrearmControl() const override { return true; }
-#else
-	bool allowPrearmControl() const override { return false; }
+#যদি defined(CONFIG_DRIVERS_UAVCANNODE)
+	যৌক্তিক allowPrearmControl() ধ্রুবক override { ফেরত সত্য; }
+#অন্যথা
+	যৌক্তিক allowPrearmControl() ধ্রুবক override { ফেরত মিথ্যা; }
 #endif
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { ফেরত &_topic; }
 
-	bool getLatestSampleTimestamp(hrt_abstime &t) const override { t = _data.timestamp_sample; return t != 0; }
+	যৌক্তিক getLatestSampleTimestamp(hrt_abstime &t) ধ্রুবক override { t = তথ্য_3.timestamp_sample; ফেরত t != 0; }
 
-	static inline void updateValues(uint32_t reversible, float thrust_factor, float *values, int num_values)
+	স্থির অন্তঃরেখ শূন্য update_মানসমূহ(uint32_t reversible, দশমিক thrust_factor, দশমিক *মানসমূহ_2, পূর্ণসংখ্যা অঙ্ক_মানসমূহ)
 	{
-		if (thrust_factor > FLT_EPSILON && thrust_factor <= 1.f) {
+		যদি (thrust_factor > FLT_EPSILON && thrust_factor <= 1.f) {
 			// thrust factor
 			//  rel_thrust = factor * x^2 + (1-factor) * x,
-			const float a = thrust_factor;
-			const float b = (1.f - thrust_factor);
+			ধ্রুবক দশমিক a = thrust_factor;
+			ধ্রুবক দশমিক b = (1.f - thrust_factor);
 
 			// don't recompute for all values (ax^2+bx+c=0)
-			const float tmp1 = b / (2.f * a);
-			const float tmp2 = b * b / (4.f * a * a);
+			ধ্রুবক দশমিক tmp1 = b / (2.f * a);
+			ধ্রুবক দশমিক tmp2 = b * b / (4.f * a * a);
 
-			for (int i = 0; i < num_values; ++i) {
+			জন্য (পূর্ণসংখ্যা i = 0; i < অঙ্ক_মানসমূহ; ++i) {
 
-				const float control = values[i];
+				ধ্রুবক দশমিক control = মানসমূহ_2[i];
 
-				if (PX4_ISFINITE(control)) {
-					if (control > FLT_EPSILON) {
-						values[i] = -tmp1 + sqrtf(tmp2 + (control / a));
+				যদি (PX4_ISFINITE(control)) {
+					যদি (control > FLT_EPSILON) {
+						মানসমূহ_2[i] = -tmp1 + sqrtf(tmp2 + (control / a));
 
-					} else if (control < -FLT_EPSILON) {
-						values[i] =  tmp1 - sqrtf(tmp2 - (control / a));
+					} অন্যথা যদি (control < -FLT_EPSILON) {
+						মানসমূহ_2[i] =  tmp1 - sqrtf(tmp2 - (control / a));
 
 					}
 				}
 			}
 		}
 
-		for (int i = 0; i < num_values; ++i) {
-			if ((reversible & (1u << i)) == 0) {
-				if (values[i] < -FLT_EPSILON) {
-					values[i] = NAN;
+		জন্য (পূর্ণসংখ্যা i = 0; i < অঙ্ক_মানসমূহ; ++i) {
+			যদি ((reversible & (1u << i)) == 0) {
+				যদি (মানসমূহ_2[i] < -FLT_EPSILON) {
+					মানসমূহ_2[i] = NAN;
 
-				} else {
+				} অন্যথা {
 					// remap from [0, 1] to [-1, 1]
-					values[i] = values[i] * 2.f - 1.f;
+					মানসমূহ_2[i] = মানসমূহ_2[i] * 2.f - 1.f;
 				}
 			}
 		}
 	}
 
-	bool reversible(OutputFunction func) const override { return _data.reversible_flags & (1u << ((int)func - (int)OutputFunction::Motor1)); }
+	যৌক্তিক reversible(OutputFunction func) ধ্রুবক override { ফেরত তথ্য_3.reversible_flags & (1u << ((পূর্ণসংখ্যা)func - (পূর্ণসংখ্যা)OutputFunction::Motor1)); }
 
-private:
+ব্যক্তিগত:
 	uORB::SubscriptionCallbackWorkItem _topic;
-	actuator_motors_s _data{};
-	const float &_thrust_factor;
+	actuator_motors_s তথ্য_3{};
+	ধ্রুবক দশমিক &_thrust_factor;
 };

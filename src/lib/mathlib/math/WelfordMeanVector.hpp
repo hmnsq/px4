@@ -39,48 +39,48 @@
 
 #pragma once
 
-namespace math
+নামাকাশ math
 {
 
 template <typename Type, size_t N>
-class WelfordMeanVector
+শ্রেণী WelfordMeanVector
 {
-public:
+সর্বজনীন:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const matrix::Vector<Type, N> &new_value)
+	যৌক্তিক update(ধ্রুবক matrix::Vector<Type, N> &new_মান)
 	{
-		if (_count == 0) {
+		যদি (গুনতি_3 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
-			return false;
+			গুনতি_3 = 1;
+			_mean = new_মান;
+			ফেরত মিথ্যা;
 
-		} else if (_count == UINT16_MAX) {
+		} অন্যথা যদি (গুনতি_3 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / গুনতি_3;
 			_M2_accum.zero();
 
-			_count = 1;
+			গুনতি_3 = 1;
 
-		} else {
-			_count++;
+		} অন্যথা {
+			গুনতি_3++;
 		}
 
 		// mean
 		//  accumulates the mean of the entire dataset
 		//  use Kahan summation because delta can be very small compared to the mean
-		const matrix::Vector<Type, N> delta{new_value - _mean};
+		ধ্রুবক matrix::Vector<Type, N> delta{new_মান - _mean};
 		{
-			const matrix::Vector<Type, N> y = (delta / _count) - _mean_accum;
-			const matrix::Vector<Type, N> t = _mean + y;
+			ধ্রুবক matrix::Vector<Type, N> y = (delta / গুনতি_3) - _mean_accum;
+			ধ্রুবক matrix::Vector<Type, N> t = _mean + y;
 			_mean_accum = (t - _mean) - y;
 			_mean = t;
 		}
 
-		if (!_mean.isAllFinite()) {
+		যদি (!_mean.isAllFinite()) {
 			reset();
-			return false;
+			ফেরত মিথ্যা;
 		}
 
 		// covariance
@@ -89,50 +89,50 @@ public:
 			// eg C(x,y) += dx * (y - mean_y)
 			matrix::SquareMatrix<Type, N> m2_change{};
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
-					m2_change(r, c) = delta(r) * (new_value(c) - _mean(c));
+			জন্য (size_t r = 0; r < N; r++) {
+				জন্য (size_t c = r; c < N; c++) {
+					m2_change(r, c) = delta(r) * (new_মান(c) - _mean(c));
 				}
 			}
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
+			জন্য (size_t r = 0; r < N; r++) {
+				জন্য (size_t c = r; c < N; c++) {
 
-					const Type y = m2_change(r, c) - _M2_accum(r, c);
-					const Type t = _M2(r, c) + y;
+					ধ্রুবক Type y = m2_change(r, c) - _M2_accum(r, c);
+					ধ্রুবক Type t = _M2(r, c) + y;
 					_M2_accum(r, c) = (t - _M2(r, c)) - y;
 
 					_M2(r, c) = t;
 				}
 
 				// protect against floating point precision causing negative variances
-				if (_M2(r, r) < 0) {
+				যদি (_M2(r, r) < 0) {
 					_M2(r, r) = 0;
 				}
 			}
 
 			// make symmetric
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r + 1; c < N; c++) {
+			জন্য (size_t r = 0; r < N; r++) {
+				জন্য (size_t c = r + 1; c < N; c++) {
 					_M2(c, r) = _M2(r, c);
 				}
 			}
 		}
 
-		if (!_M2.isAllFinite()) {
+		যদি (!_M2.isAllFinite()) {
 			reset();
-			return false;
+			ফেরত মিথ্যা;
 		}
 
-		return valid();
+		ফেরত valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	যৌক্তিক valid() ধ্রুবক { ফেরত গুনতি_3 > 2; }
+	auto গুনতি() ধ্রুবক { ফেরত গুনতি_3; }
 
-	void reset()
+	শূন্য reset()
 	{
-		_count = 0;
+		গুনতি_3 = 0;
 		_mean.zero();
 		_M2.zero();
 
@@ -140,13 +140,13 @@ public:
 		_M2_accum.zero();
 	}
 
-	matrix::Vector<Type, N> mean() const { return _mean; }
-	matrix::Vector<Type, N> variance() const { return _M2.diag() / (_count - 1); }
-	matrix::SquareMatrix<Type, N> covariance() const { return _M2 / (_count - 1); }
+	matrix::Vector<Type, N> mean() ধ্রুবক { ফেরত _mean; }
+	matrix::Vector<Type, N> variance() ধ্রুবক { ফেরত _M2.diag() / (গুনতি_3 - 1); }
+	matrix::SquareMatrix<Type, N> covariance() ধ্রুবক { ফেরত _M2 / (গুনতি_3 - 1); }
 
-	Type covariance(int x, int y) const { return _M2(x, y) / (_count - 1); }
+	Type covariance(পূর্ণসংখ্যা x, পূর্ণসংখ্যা y) ধ্রুবক { ফেরত _M2(x, y) / (গুনতি_3 - 1); }
 
-private:
+ব্যক্তিগত:
 
 	matrix::Vector<Type, N> _mean{};
 	matrix::Vector<Type, N> _mean_accum{};  ///< kahan summation algorithm accumulator for mean
@@ -154,7 +154,7 @@ private:
 	matrix::SquareMatrix<Type, N> _M2{};
 	matrix::SquareMatrix<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t গুনতি_3{0};
 };
 
 } // namespace math

@@ -8,82 +8,82 @@
 
 #pragma once
 
-#include <cmath>
-#include <cstdio>
-#include <cstring>
+#অন্তর্ভাব <cmath>
+#অন্তর্ভাব <cstdio>
+#অন্তর্ভাব <cstring>
 
-#include "helper_functions.hpp"
-#include "Slice.hpp"
+#অন্তর্ভাব "helper_functions.hpp"
+#অন্তর্ভাব "Slice.hpp"
 
-namespace matrix
+নামাকাশ matrix
 {
 
 template<typename Type, size_t M, size_t N>
-class Matrix
+শ্রেণী Matrix
 {
-	Type _data[M][N] {};
+	Type তথ্য_3[M][N] {};
 
-public:
+সর্বজনীন:
 
 	// Constructors
-	Matrix() = default;
+	Matrix() = পূর্বনির্ধারিত;
 
-	explicit Matrix(const Type data_[M * N])
+	explicit Matrix(ধ্রুবক Type তথ্য_2[M * N])
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				_data[i][j] = data_[N * i + j];
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
+				তথ্য_3[i][j] = তথ্য_2[N * i + j];
 			}
 		}
 	}
 
-	explicit Matrix(const Type data_[M][N])
+	explicit Matrix(ধ্রুবক Type তথ্য_2[M][N])
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				_data[i][j] = data_[i][j];
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
+				তথ্য_3[i][j] = তথ্য_2[i][j];
 			}
 		}
 	}
 
-	Matrix(const Matrix &other)
+	Matrix(ধ্রুবক Matrix &other)
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				_data[i][j] = other(i, j);
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
+				তথ্য_3[i][j] = other(i, j);
 			}
 		}
 	}
 
 	template<typename S>
-	Matrix(const Matrix<S, M, N> &aa)
+	Matrix(ধ্রুবক Matrix<S, M, N> &aa)
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				_data[i][j] = static_cast<Type>(aa(i, j));
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
+				তথ্য_3[i][j] = static_cast<Type>(aa(i, j));
 			}
 		}
 	}
 
 	template<size_t P, size_t Q>
-	Matrix(const Slice<Type, M, N, P, Q> &in_slice)
+	Matrix(ধ্রুবক Slice<Type, M, N, P, Q> &in_slice)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				self(i, j) = in_slice(i, j);
 			}
 		}
 	}
 
 	template<size_t P, size_t Q>
-	Matrix(const ConstSlice<Type, M, N, P, Q> &in_slice)
+	Matrix(ধ্রুবক ConstSlice<Type, M, N, P, Q> &in_slice)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				self(i, j) = in_slice(i, j);
 			}
 		}
@@ -94,54 +94,54 @@ public:
 	 */
 
 
-	inline const Type &operator()(size_t i, size_t j) const
+	অন্তঃরেখ ধ্রুবক Type &operator()(size_t i, size_t j) ধ্রুবক
 	{
-		assert(i < M);
-		assert(j < N);
+		প্রতিজ্ঞা(i < M);
+		প্রতিজ্ঞা(j < N);
 
-		return _data[i][j];
+		ফেরত তথ্য_3[i][j];
 	}
 
-	inline Type &operator()(size_t i, size_t j)
+	অন্তঃরেখ Type &operator()(size_t i, size_t j)
 	{
-		assert(i < M);
-		assert(j < N);
+		প্রতিজ্ঞা(i < M);
+		প্রতিজ্ঞা(j < N);
 
-		return _data[i][j];
+		ফেরত তথ্য_3[i][j];
 	}
 
-	Matrix<Type, M, N> &operator=(const Matrix<Type, M, N> &other)
+	Matrix<Type, M, N> &operator=(ধ্রুবক Matrix<Type, M, N> &other)
 	{
-		if (this != &other) {
-			Matrix<Type, M, N> &self = *this;
+		যদি (এই != &other) {
+			Matrix<Type, M, N> &self = *এই;
 
-			for (size_t i = 0; i < M; i++) {
-				for (size_t j = 0; j < N; j++) {
+			জন্য (size_t i = 0; i < M; i++) {
+				জন্য (size_t j = 0; j < N; j++) {
 					self(i, j) = other(i, j);
 				}
 			}
 		}
 
-		return (*this);
+		ফেরত (*এই);
 	}
 
-	void copyTo(Type dst[M * N]) const
+	শূন্য copyTo(Type dst[M * N]) ধ্রুবক
 	{
-		const Matrix<Type, M, N> &self = *this;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				dst[N * i + j] = self(i, j);
 			}
 		}
 	}
 
-	void copyToColumnMajor(Type dst[M * N]) const
+	শূন্য copyToColumnMajor(Type dst[M * N]) ধ্রুবক
 	{
-		const Matrix<Type, M, N> &self = *this;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				dst[i + (j * M)] = self(i, j);
 			}
 		}
@@ -156,139 +156,139 @@ public:
 	// required mult pair, but it provides
 	// compile time size_t checking
 	template<size_t P>
-	Matrix<Type, M, P> operator*(const Matrix<Type, N, P> &other) const
+	Matrix<Type, M, P> operator*(ধ্রুবক Matrix<Type, N, P> &other) ধ্রুবক
 	{
-		const Matrix<Type, M, N> &self = *this;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
 		Matrix<Type, M, P> res{};
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t k = 0; k < P; k++) {
-				for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t k = 0; k < P; k++) {
+				জন্য (size_t j = 0; j < N; j++) {
 					res(i, k) += self(i, j) * other(j, k);
 				}
 			}
 		}
 
-		return res;
+		ফেরত res;
 	}
 
 	// Using this function reduces the number of temporary variables needed to compute A * B.T
 	template<size_t P>
-	Matrix<Type, M, M> multiplyByTranspose(const Matrix<Type, P, N> &other) const
+	Matrix<Type, M, M> multiplyByTranspose(ধ্রুবক Matrix<Type, P, N> &other) ধ্রুবক
 	{
 		Matrix<Type, M, P> res;
-		const Matrix<Type, M, N> &self = *this;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t k = 0; k < P; k++) {
-				for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t k = 0; k < P; k++) {
+				জন্য (size_t j = 0; j < N; j++) {
 					res(i, k) += self(i, j) * other(k, j);
 				}
 			}
 		}
 
-		return res;
+		ফেরত res;
 	}
 
 	// Element-wise multiplication
-	Matrix<Type, M, N> emult(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> emult(ধ্রুবক Matrix<Type, M, N> &other) ধ্রুবক
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) * other(i, j);
 			}
 		}
 
-		return res;
+		ফেরত res;
 	}
 
 	// Element-wise division
-	Matrix<Type, M, N> edivide(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> edivide(ধ্রুবক Matrix<Type, M, N> &other) ধ্রুবক
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) / other(i, j);
 			}
 		}
 
-		return res;
+		ফেরত res;
 	}
 
-	Matrix<Type, M, N> operator+(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> operator+(ধ্রুবক Matrix<Type, M, N> &other) ধ্রুবক
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) + other(i, j);
 			}
 		}
 
-		return res;
+		ফেরত res;
 	}
 
-	Matrix<Type, M, N> operator-(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> operator-(ধ্রুবক Matrix<Type, M, N> &other) ধ্রুবক
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) - other(i, j);
 			}
 		}
 
-		return res;
+		ফেরত res;
 	}
 
 	// unary minus
-	Matrix<Type, M, N> operator-() const
+	Matrix<Type, M, N> operator-() ধ্রুবক
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				res(i, j) = -self(i, j);
 			}
 		}
 
-		return res;
+		ফেরত res;
 	}
 
-	void operator+=(const Matrix<Type, M, N> &other)
+	শূন্য operator+=(ধ্রুবক Matrix<Type, M, N> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
 	}
 
-	void operator-=(const Matrix<Type, M, N> &other)
+	শূন্য operator-=(ধ্রুবক Matrix<Type, M, N> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
 	}
 
 	template<size_t P>
-	void operator*=(const Matrix<Type, N, P> &other)
+	শূন্য operator*=(ধ্রুবক Matrix<Type, N, P> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *এই;
 		self = self * other;
 	}
 
@@ -296,114 +296,114 @@ public:
 	 * Scalar Operations
 	 */
 
-	Matrix<Type, M, N> operator*(Type scalar) const
+	Matrix<Type, M, N> operator*(Type scalar) ধ্রুবক
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) * scalar;
 			}
 		}
 
-		return res;
+		ফেরত res;
 	}
 
-	inline Matrix<Type, M, N> operator/(Type scalar) const
+	অন্তঃরেখ Matrix<Type, M, N> operator/(Type scalar) ধ্রুবক
 	{
-		return (*this) * (1 / scalar);
+		ফেরত (*এই) * (1 / scalar);
 	}
 
-	Matrix<Type, M, N> operator+(Type scalar) const
+	Matrix<Type, M, N> operator+(Type scalar) ধ্রুবক
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) + scalar;
 			}
 		}
 
-		return res;
+		ফেরত res;
 	}
 
-	inline Matrix<Type, M, N> operator-(Type scalar) const
+	অন্তঃরেখ Matrix<Type, M, N> operator-(Type scalar) ধ্রুবক
 	{
-		return (*this) + (-1 * scalar);
+		ফেরত (*এই) + (-1 * scalar);
 	}
 
-	void operator*=(Type scalar)
+	শূন্য operator*=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				self(i, j) *= scalar;
 			}
 		}
 	}
 
-	void operator/=(Type scalar)
+	শূন্য operator/=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *এই;
 		self *= (Type(1) / scalar);
 	}
 
-	inline void operator+=(Type scalar)
+	অন্তঃরেখ শূন্য operator+=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				self(i, j) += scalar;
 			}
 		}
 	}
 
-	inline void operator-=(Type scalar)
+	অন্তঃরেখ শূন্য operator-=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *এই;
 		self += (-scalar);
 	}
 
-	bool operator==(const Matrix<Type, M, N> &other) const
+	যৌক্তিক operator==(ধ্রুবক Matrix<Type, M, N> &other) ধ্রুবক
 	{
-		return isEqual(*this, other);
+		ফেরত isEqual(*এই, other);
 	}
 
-	bool operator!=(const Matrix<Type, M, N> &other) const
+	যৌক্তিক operator!=(ধ্রুবক Matrix<Type, M, N> &other) ধ্রুবক
 	{
-		const Matrix<Type, M, N> &self = *this;
-		return !(self == other);
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
+		ফেরত !(self == other);
 	}
 
 	/**
 	 * Misc. Functions
 	 */
 
-	void write_string(char *buf, size_t n) const
+	শূন্য write_string(অক্ষর *buf, size_t n) ধ্রুবক
 	{
 		buf[0] = '\0'; // make an empty string to begin with (we need the '\0' for strlen to work)
-		const Matrix<Type, M, N> &self = *this;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				snprintf(buf + strlen(buf), n - strlen(buf), "\t%8.8g", double(self(i, j))); // directly append to the string buffer
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
+				snprintf(buf + strlen(buf), n - strlen(buf), "\t%8.8g", দ্বিগুণ(self(i, j))); // directly append to the string buffer
 			}
 
 			snprintf(buf + strlen(buf), n - strlen(buf), "\n");
 		}
 	}
 
-	void print(float eps = 1e-9) const
+	শূন্য print(দশমিক eps = 1e-9) ধ্রুবক
 	{
 		// print column numbering
-		if (N > 1) {
+		যদি (N > 1) {
 			printf("  ");
 
-			for (unsigned i = 0; i < N; i++) {
+			জন্য (unsigned i = 0; i < N; i++) {
 				printf("|%2u      ", i);
 
 			}
@@ -411,36 +411,36 @@ public:
 			printf("\n");
 		}
 
-		const Matrix<Type, M, N> &self = *this;
-		bool is_prev_symmetric = true; // assume symmetric until one element is not
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
+		যৌক্তিক is_পূর্ব_symmetric = সত্য; // assume symmetric until one element is not
 
-		for (unsigned i = 0; i < M; i++) {
+		জন্য (unsigned i = 0; i < M; i++) {
 			printf("%2u|", i); // print row numbering
 
-			for (unsigned j = 0; j < N; j++) {
-				double d = static_cast<double>(self(i, j));
+			জন্য (unsigned j = 0; j < N; j++) {
+				দ্বিগুণ d = static_cast<দ্বিগুণ>(self(i, j));
 
 				// if symmetric don't print upper triangular elements
-				if (is_prev_symmetric && (M == N) && (j > i) && (i < N) && (j < M)
-				    && (fabs(d - static_cast<double>(self(j, i))) < (double)eps)
+				যদি (is_পূর্ব_symmetric && (M == N) && (j > i) && (i < N) && (j < M)
+				    && (fabs(d - static_cast<দ্বিগুণ>(self(j, i))) < (দ্বিগুণ)eps)
 				   ) {
 					// print empty space
 					printf("         ");
 
-				} else {
+				} অন্যথা {
 					// avoid -0.0 for display
-					if (fabs(d - 0.0) < (double)eps) {
+					যদি (fabs(d - 0.0) < (দ্বিগুণ)eps) {
 						// print fixed width zero
 						printf(" 0       ");
 
-					} else if ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
+					} অন্যথা যদি ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
 						printf("% .1e ", d);
 
-					} else {
+					} অন্যথা {
 						printf("% 6.5f ", d);
 					}
 
-					is_prev_symmetric = false; // not symmetric if once inside here
+					is_পূর্ব_symmetric = মিথ্যা; // not symmetric if once inside here
 				}
 			}
 
@@ -448,250 +448,250 @@ public:
 		}
 	}
 
-	Matrix<Type, N, M> transpose() const
+	Matrix<Type, N, M> transpose() ধ্রুবক
 	{
 		Matrix<Type, N, M> res;
-		const Matrix<Type, M, N> &self = *this;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				res(j, i) = self(i, j);
 			}
 		}
 
-		return res;
+		ফেরত res;
 	}
 
 	// tranpose alias
-	inline Matrix<Type, N, M> T() const
+	অন্তঃরেখ Matrix<Type, N, M> T() ধ্রুবক
 	{
-		return transpose();
+		ফেরত transpose();
 	}
 
 	template<size_t P, size_t Q>
-	ConstSlice<Type, P, Q, M, N> slice(size_t x0, size_t y0) const
+	ConstSlice<Type, P, Q, M, N> slice(size_t x0, size_t y0) ধ্রুবক
 	{
-		return {x0, y0, this};
+		ফেরত {x0, y0, এই};
 	}
 
 	template<size_t P, size_t Q>
 	Slice<Type, P, Q, M, N> slice(size_t x0, size_t y0)
 	{
-		return {x0, y0, this};
+		ফেরত {x0, y0, এই};
 	}
 
-	ConstSlice<Type, 1, N, M, N> row(size_t i) const
+	ConstSlice<Type, 1, N, M, N> row(size_t i) ধ্রুবক
 	{
-		return slice<1, N>(i, 0);
+		ফেরত slice<1, N>(i, 0);
 	}
 
 	Slice<Type, 1, N, M, N> row(size_t i)
 	{
-		return slice<1, N>(i, 0);
+		ফেরত slice<1, N>(i, 0);
 	}
 
-	ConstSlice<Type, M, 1, M, N> col(size_t j) const
+	ConstSlice<Type, M, 1, M, N> col(size_t j) ধ্রুবক
 	{
-		return slice<M, 1>(0, j);
+		ফেরত slice<M, 1>(0, j);
 	}
 
 	Slice<Type, M, 1, M, N> col(size_t j)
 	{
-		return slice<M, 1>(0, j);
+		ফেরত slice<M, 1>(0, j);
 	}
 
-	void setRow(size_t i, const Matrix<Type, N, 1> &row_in)
+	শূন্য setRow(size_t i, ধ্রুবক Matrix<Type, N, 1> &row_in)
 	{
 		slice<1, N>(i, 0) = row_in.transpose();
 	}
 
-	void setRow(size_t i, Type val)
+	শূন্য setRow(size_t i, Type val)
 	{
 		slice<1, N>(i, 0) = val;
 	}
 
-	void setCol(size_t j, const Matrix<Type, M, 1> &column)
+	শূন্য setCol(size_t j, ধ্রুবক Matrix<Type, M, 1> &column)
 	{
 		slice<M, 1>(0, j) = column;
 	}
 
-	void setCol(size_t j, Type val)
+	শূন্য setCol(size_t j, Type val)
 	{
 		slice<M, 1>(0, j) = val;
 	}
 
-	void setZero()
+	শূন্য setZero()
 	{
-		memset(_data, 0, sizeof(_data));
+		memset(তথ্য_3, 0, আকার(তথ্য_3));
 	}
 
-	inline void zero()
+	অন্তঃরেখ শূন্য zero()
 	{
 		setZero();
 	}
 
-	void setAll(Type val)
+	শূন্য setAll(Type val)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				self(i, j) = val;
 			}
 		}
 	}
 
-	inline void setOne()
+	অন্তঃরেখ শূন্য setOne()
 	{
 		setAll(1);
 	}
 
-	inline void setNaN()
+	অন্তঃরেখ শূন্য setNaN()
 	{
 		setAll(NAN);
 	}
 
-	void setIdentity()
+	শূন্য setIdentity()
 	{
 		setZero();
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *এই;
 
-		const size_t min_i = M > N ? N : M;
+		ধ্রুবক size_t min_i = M > N ? N : M;
 
-		for (size_t i = 0; i < min_i; i++) {
+		জন্য (size_t i = 0; i < min_i; i++) {
 			self(i, i) = 1;
 		}
 	}
 
-	inline void identity()
+	অন্তঃরেখ শূন্য identity()
 	{
 		setIdentity();
 	}
 
-	inline void swapRows(size_t a, size_t b)
+	অন্তঃরেখ শূন্য swapRows(size_t a, size_t b)
 	{
-		assert(a < M);
-		assert(b < M);
+		প্রতিজ্ঞা(a < M);
+		প্রতিজ্ঞা(b < M);
 
-		if (a == b) {
-			return;
+		যদি (a == b) {
+			ফেরত;
 		}
 
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *এই;
 
-		for (size_t j = 0; j < N; j++) {
+		জন্য (size_t j = 0; j < N; j++) {
 			Type tmp = self(a, j);
 			self(a, j) = self(b, j);
 			self(b, j) = tmp;
 		}
 	}
 
-	inline void swapCols(size_t a, size_t b)
+	অন্তঃরেখ শূন্য swapCols(size_t a, size_t b)
 	{
-		assert(a < N);
-		assert(b < N);
+		প্রতিজ্ঞা(a < N);
+		প্রতিজ্ঞা(b < N);
 
-		if (a == b) {
-			return;
+		যদি (a == b) {
+			ফেরত;
 		}
 
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
+		জন্য (size_t i = 0; i < M; i++) {
 			Type tmp = self(i, a);
 			self(i, a) = self(i, b);
 			self(i, b) = tmp;
 		}
 	}
 
-	inline void nanToZero()
+	অন্তঃরেখ শূন্য nanToZero()
 	{
 
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				if (std::isnan(self(i, j))) {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
+				যদি (std::isnan(self(i, j))) {
 					self(i, j) = static_cast<Type>(0.0f);
 				}
 			}
 		}
 	}
 
-	Matrix<Type, M, N> abs() const
+	Matrix<Type, M, N> abs() ধ্রুবক
 	{
 		Matrix<Type, M, N> r;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				r(i, j) = Type(std::fabs((*this)(i, j)));
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
+				r(i, j) = Type(std::fabs((*এই)(i, j)));
 			}
 		}
 
-		return r;
+		ফেরত r;
 	}
 
-	Type max() const
+	Type max() ধ্রুবক
 	{
-		Type max_val = (*this)(0, 0);
+		Type max_val = (*এই)(0, 0);
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				Type val = (*this)(i, j);
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
+				Type val = (*এই)(i, j);
 
-				if (val > max_val) {
+				যদি (val > max_val) {
 					max_val = val;
 				}
 			}
 		}
 
-		return max_val;
+		ফেরত max_val;
 	}
 
-	Type min() const
+	Type min() ধ্রুবক
 	{
-		Type min_val = (*this)(0, 0);
+		Type min_val = (*এই)(0, 0);
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				Type val = (*this)(i, j);
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
+				Type val = (*এই)(i, j);
 
-				if (val < min_val) {
+				যদি (val < min_val) {
 					min_val = val;
 				}
 			}
 		}
 
-		return min_val;
+		ফেরত min_val;
 	}
 
-	bool isAllNan() const
+	যৌক্তিক isAllNan() ধ্রুবক
 	{
-		const Matrix<Type, M, N> &self = *this;
-		bool result = true;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
+		যৌক্তিক ফলাফল = সত্য;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				result = result && std::isnan(self(i, j));
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
+				ফলাফল = ফলাফল && std::isnan(self(i, j));
 			}
 		}
 
-		return result;
+		ফেরত ফলাফল;
 	}
 
-	bool isAllFinite() const
+	যৌক্তিক isAllFinite() ধ্রুবক
 	{
-		const Matrix<Type, M, N> &self = *this;
+		ধ্রুবক Matrix<Type, M, N> &self = *এই;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				if (!std::isfinite(self(i, j))) {
-					return false;
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
+				যদি (!std::isfinite(self(i, j))) {
+					ফেরত মিথ্যা;
 				}
 			}
 		}
 
-		return true;
+		ফেরত সত্য;
 	}
 };
 
@@ -700,7 +700,7 @@ Matrix<Type, M, N> zeros()
 {
 	Matrix<Type, M, N> m;
 	m.setZero();
-	return m;
+	ফেরত m;
 }
 
 template<typename Type, size_t M, size_t N>
@@ -708,208 +708,208 @@ Matrix<Type, M, N> ones()
 {
 	Matrix<Type, M, N> m;
 	m.setOne();
-	return m;
+	ফেরত m;
 }
 
 template<size_t M, size_t N>
-Matrix<float, M, N> nans()
+Matrix<দশমিক, M, N> nans()
 {
-	Matrix<float, M, N> m;
+	Matrix<দশমিক, M, N> m;
 	m.setNaN();
-	return m;
+	ফেরত m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> operator*(Type scalar, const Matrix<Type, M, N> &other)
+Matrix<Type, M, N> operator*(Type scalar, ধ্রুবক Matrix<Type, M, N> &other)
 {
-	return other * scalar;
+	ফেরত other * scalar;
 }
 
 template<typename Type, size_t  M, size_t N>
-bool isEqual(const Matrix<Type, M, N> &x,
-	     const Matrix<Type, M, N> &y, const Type eps = Type(1e-4f))
+যৌক্তিক isEqual(ধ্রুবক Matrix<Type, M, N> &x,
+	     ধ্রুবক Matrix<Type, M, N> &y, ধ্রুবক Type eps = Type(1e-4f))
 {
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			if (!isEqualF(x(i, j), y(i, j), eps)) {
-				return false;
+	জন্য (size_t i = 0; i < M; i++) {
+		জন্য (size_t j = 0; j < N; j++) {
+			যদি (!isEqualF(x(i, j), y(i, j), eps)) {
+				ফেরত মিথ্যা;
 			}
 		}
 	}
 
-	return true;
+	ফেরত সত্য;
 }
 
-namespace typeFunction
+নামাকাশ typeFunction
 {
 template<typename Type>
-Type min(const Type x, const Type y)
+Type min(ধ্রুবক Type x, ধ্রুবক Type y)
 {
-	bool x_is_nan = std::isnan(x);
-	bool y_is_nan = std::isnan(y);
+	যৌক্তিক x_is_nan = std::isnan(x);
+	যৌক্তিক y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	যদি (x_is_nan || y_is_nan) {
+		যদি (x_is_nan && !y_is_nan) {
+			ফেরত y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		ফেরত x;
 	}
 
-	return (x < y) ? x : y;
+	ফেরত (x < y) ? x : y;
 }
 
 template<typename Type>
-Type max(const Type x, const Type y)
+Type max(ধ্রুবক Type x, ধ্রুবক Type y)
 {
-	bool x_is_nan = std::isnan(x);
-	bool y_is_nan = std::isnan(y);
+	যৌক্তিক x_is_nan = std::isnan(x);
+	যৌক্তিক y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	যদি (x_is_nan || y_is_nan) {
+		যদি (x_is_nan && !y_is_nan) {
+			ফেরত y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		ফেরত x;
 	}
 
-	return (x > y) ? x : y;
+	ফেরত (x > y) ? x : y;
 }
 
 template<typename Type>
-Type constrain(const Type x, const Type lower_bound, const Type upper_bound)
+Type constrain(ধ্রুবক Type x, ধ্রুবক Type lower_bound, ধ্রুবক Type upper_bound)
 {
-	if (lower_bound > upper_bound) {
-		return NAN;
+	যদি (lower_bound > upper_bound) {
+		ফেরত NAN;
 
-	} else if (std::isnan(x)) {
-		return NAN;
+	} অন্যথা যদি (std::isnan(x)) {
+		ফেরত NAN;
 
-	} else {
-		return typeFunction::max(lower_bound, typeFunction::min(upper_bound, x));
+	} অন্যথা {
+		ফেরত typeFunction::max(lower_bound, typeFunction::min(upper_bound, x));
 	}
 }
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Matrix<Type, M, N> &x, const Type scalar_upper_bound)
+Matrix<Type, M, N> min(ধ্রুবক Matrix<Type, M, N> &x, ধ্রুবক Type scalar_upper_bound)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	জন্য (size_t i = 0; i < M; i++) {
+		জন্য (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::min(x(i, j), scalar_upper_bound);
 		}
 	}
 
-	return m;
+	ফেরত m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Type scalar_upper_bound, const Matrix<Type, M, N> &x)
+Matrix<Type, M, N> min(ধ্রুবক Type scalar_upper_bound, ধ্রুবক Matrix<Type, M, N> &x)
 {
-	return min(x, scalar_upper_bound);
+	ফেরত min(x, scalar_upper_bound);
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x2)
+Matrix<Type, M, N> min(ধ্রুবক Matrix<Type, M, N> &x1, ধ্রুবক Matrix<Type, M, N> &x2)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	জন্য (size_t i = 0; i < M; i++) {
+		জন্য (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::min(x1(i, j), x2(i, j));
 		}
 	}
 
-	return m;
+	ফেরত m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Matrix<Type, M, N> &x, const Type scalar_lower_bound)
+Matrix<Type, M, N> max(ধ্রুবক Matrix<Type, M, N> &x, ধ্রুবক Type scalar_lower_bound)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	জন্য (size_t i = 0; i < M; i++) {
+		জন্য (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::max(x(i, j), scalar_lower_bound);
 		}
 	}
 
-	return m;
+	ফেরত m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Type scalar_lower_bound, const Matrix<Type, M, N> &x)
+Matrix<Type, M, N> max(ধ্রুবক Type scalar_lower_bound, ধ্রুবক Matrix<Type, M, N> &x)
 {
-	return max(x, scalar_lower_bound);
+	ফেরত max(x, scalar_lower_bound);
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x2)
+Matrix<Type, M, N> max(ধ্রুবক Matrix<Type, M, N> &x1, ধ্রুবক Matrix<Type, M, N> &x2)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	জন্য (size_t i = 0; i < M; i++) {
+		জন্য (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::max(x1(i, j), x2(i, j));
 		}
 	}
 
-	return m;
+	ফেরত m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
-			     const Type scalar_lower_bound,
-			     const Type scalar_upper_bound)
+Matrix<Type, M, N> constrain(ধ্রুবক Matrix<Type, M, N> &x,
+			     ধ্রুবক Type scalar_lower_bound,
+			     ধ্রুবক Type scalar_upper_bound)
 {
 	Matrix<Type, M, N> m;
 
-	if (scalar_lower_bound > scalar_upper_bound) {
+	যদি (scalar_lower_bound > scalar_upper_bound) {
 		m.setNaN();
 
-	} else {
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+	} অন্যথা {
+		জন্য (size_t i = 0; i < M; i++) {
+			জন্য (size_t j = 0; j < N; j++) {
 				m(i, j) = typeFunction::constrain(x(i, j), scalar_lower_bound, scalar_upper_bound);
 			}
 		}
 	}
 
-	return m;
+	ফেরত m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
-			     const Matrix<Type, M, N> &x_lower_bound,
-			     const Matrix<Type, M, N> &x_upper_bound)
+Matrix<Type, M, N> constrain(ধ্রুবক Matrix<Type, M, N> &x,
+			     ধ্রুবক Matrix<Type, M, N> &x_lower_bound,
+			     ধ্রুবক Matrix<Type, M, N> &x_upper_bound)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	জন্য (size_t i = 0; i < M; i++) {
+		জন্য (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::constrain(x(i, j), x_lower_bound(i, j), x_upper_bound(i, j));
 		}
 	}
 
-	return m;
+	ফেরত m;
 }
 
 template<typename OStream, typename Type, size_t M, size_t N>
-OStream &operator<<(OStream &os, const matrix::Matrix<Type, M, N> &matrix)
+OStream &operator<<(OStream &os, ধ্রুবক matrix::Matrix<Type, M, N> &matrix)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * N * M + M + 1;
-	char string[n];
+	অক্ষর string[n];
 	matrix.write_string(string, n);
 	os << string;
-	return os;
+	ফেরত os;
 }
 
 } // namespace matrix

@@ -33,48 +33,48 @@
 
 #pragma once
 
-#include <drivers/drv_hrt.h>
-#include <lib/conversion/rotation.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/distance_sensor.h>
+#অন্তর্ভাব <drivers/drv_hrt.h>
+#অন্তর্ভাব <lib/conversion/rotation.h>
+#অন্তর্ভাব <uORB/PublicationMulti.hpp>
+#অন্তর্ভাব <uORB/topics/distance_sensor.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#অন্তর্ভাব <lib/failure_injection/FailureInjection.hpp>
 
-class PX4Rangefinder
+শ্রেণী PX4Rangefinder
 {
-public:
-	PX4Rangefinder(const uint32_t device_id,
-		       const uint8_t device_orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING);
+সর্বজনীন:
+	PX4Rangefinder(ধ্রুবক uint32_t device_id,
+		       ধ্রুবক uint8_t device_orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING);
 	~PX4Rangefinder();
 
 	// Set the MAV_DISTANCE_SENSOR type (LASER, ULTRASOUND, INFRARED, RADAR)
-	void set_rangefinder_type(uint8_t rangefinder_type) { _distance_sensor_pub.get().type = rangefinder_type; };
+	শূন্য set_rangefinder_type(uint8_t rangefinder_type) { _distance_sensor_pub.get().type = rangefinder_type; };
 
-	void set_device_id(const uint32_t device_id) { _distance_sensor_pub.get().device_id = device_id; };
-	void set_device_type(const uint8_t device_type);
+	শূন্য set_device_id(ধ্রুবক uint32_t device_id) { _distance_sensor_pub.get().device_id = device_id; };
+	শূন্য set_device_type(ধ্রুবক uint8_t device_type);
 
-	void set_fov(const float fov) { set_hfov(fov); set_vfov(fov); }
-	void set_hfov(const float fov) { _distance_sensor_pub.get().h_fov = fov; }
-	void set_vfov(const float fov) { _distance_sensor_pub.get().v_fov = fov; }
+	শূন্য set_fov(ধ্রুবক দশমিক fov) { set_hfov(fov); set_vfov(fov); }
+	শূন্য set_hfov(ধ্রুবক দশমিক fov) { _distance_sensor_pub.get().h_fov = fov; }
+	শূন্য set_vfov(ধ্রুবক দশমিক fov) { _distance_sensor_pub.get().v_fov = fov; }
 
-	void set_max_distance(const float distance) { _distance_sensor_pub.get().max_distance = distance; }
-	void set_min_distance(const float distance) { _distance_sensor_pub.get().min_distance = distance; }
+	শূন্য set_max_distance(ধ্রুবক দশমিক distance) { _distance_sensor_pub.get().max_distance = distance; }
+	শূন্য set_min_distance(ধ্রুবক দশমিক distance) { _distance_sensor_pub.get().min_distance = distance; }
 
-	void set_variance(const float variance) { _distance_sensor_pub.get().variance = variance; }
+	শূন্য set_variance(ধ্রুবক দশমিক variance) { _distance_sensor_pub.get().variance = variance; }
 
-	void set_orientation(const uint8_t device_orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING);
+	শূন্য set_orientation(ধ্রুবক uint8_t device_orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING);
 
-	void set_mode(const uint8_t mode) { _distance_sensor_pub.get().mode = mode; }
+	শূন্য set_mode(ধ্রুবক uint8_t mode) { _distance_sensor_pub.get().mode = mode; }
 
 	// update with quaterion sensor orientation with respect to the vehicle body frame
-	void update(const hrt_abstime &timestamp_sample, const float distance, const int8_t quality = -1, const float *q = nullptr,
+	শূন্য update(ধ্রুবক hrt_abstime &timestamp_sample, ধ্রুবক দশমিক distance, ধ্রুবক int8_t quality = -1, ধ্রুবক দশমিক *q = nullptr,
 		    uint8_t q_len = 4);
 
-	int get_instance() { return _distance_sensor_pub.get_instance(); };
-	uint32_t get_device_id() { return _distance_sensor_pub.get().device_id; };
+	পূর্ণসংখ্যা get_instance() { ফেরত _distance_sensor_pub.get_instance(); };
+	uint32_t get_device_id() { ফেরত _distance_sensor_pub.get().device_id; };
 
-private:
-	uORB::PublicationMultiData<distance_sensor_s> _distance_sensor_pub{ORB_ID(distance_sensor)};
+ব্যক্তিগত:
+	uORB::Publication_Multi_তথ্য<distance_sensor_s> _distance_sensor_pub{ORB_ID(distance_sensor)};
 
 	failure_injection::Config _failure_config;
 	failure_injection::Stuck<distance_sensor_s> _stuck;

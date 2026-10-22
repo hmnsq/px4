@@ -37,100 +37,100 @@
  * Test library code
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#অন্তর্ভাব <stdio.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <stdlib.h>
 
-#include <px4_platform_common/defines.h>
+#অন্তর্ভাব <px4_platform_common/defines.h>
 
-#include "test.hpp"
+#অন্তর্ভাব "test.hpp"
 
-bool __EXPORT equal(float a, float b, float epsilon)
+যৌক্তিক __EXPORT equal(দশমিক a, দশমিক b, দশমিক epsilon)
 {
-	float diff = fabsf(a - b);
+	দশমিক diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	যদি (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", দ্বিগুণ(a), দ্বিগুণ(b));
+		ফেরত মিথ্যা;
 
-	} else { return true; }
+	} অন্যথা { ফেরত সত্য; }
 }
 
-bool __EXPORT greater_than(float a, float b)
+যৌক্তিক __EXPORT greater_than(দশমিক a, দশমিক b)
 {
-	if (a > b) {
-		return true;
+	যদি (a > b) {
+		ফেরত সত্য;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} অন্যথা {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", দ্বিগুণ(a), দ্বিগুণ(b));
+		ফেরত মিথ্যা;
 	}
 }
 
-bool __EXPORT less_than(float a, float b)
+যৌক্তিক __EXPORT less_than(দশমিক a, দশমিক b)
 {
-	if (a < b) {
-		return true;
+	যদি (a < b) {
+		ফেরত সত্য;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} অন্যথা {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", দ্বিগুণ(a), দ্বিগুণ(b));
+		ফেরত মিথ্যা;
 	}
 }
 
-bool __EXPORT greater_than_or_equal(float a, float b)
+যৌক্তিক __EXPORT greater_than_or_equal(দশমিক a, দশমিক b)
 {
-	if (a >= b) {
-		return true;
+	যদি (a >= b) {
+		ফেরত সত্য;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} অন্যথা {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", দ্বিগুণ(a), দ্বিগুণ(b));
+		ফেরত মিথ্যা;
 	}
 }
 
-bool __EXPORT less_than_or_equal(float a, float b)
+যৌক্তিক __EXPORT less_than_or_equal(দশমিক a, দশমিক b)
 {
-	if (a <= b) {
-		return true;
+	যদি (a <= b) {
+		ফেরত সত্য;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} অন্যথা {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", দ্বিগুণ(a), দ্বিগুণ(b));
+		ফেরত মিথ্যা;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+শূন্য __EXPORT float2SigExp(ধ্রুবক দশমিক &অঙ্ক, দশমিক &sig, পূর্ণসংখ্যা &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	যদি (!PX4_ISFINITE(অঙ্ক)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		ফেরত;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	যদি (fabsf(অঙ্ক) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		ফেরত;
 	}
 
-	exp = log10f(fabsf(num));
+	exp = log10f(fabsf(অঙ্ক));
 
-	if (exp > 0) {
+	যদি (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} অন্যথা {
 		exp = floor(exp);
 	}
 
-	sig = num;
+	sig = অঙ্ক;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	যদি (exp > 0) {
+		জন্য (পূর্ণসংখ্যা i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} অন্যথা {
+		জন্য (পূর্ণসংখ্যা i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

@@ -37,65 +37,65 @@
  * @author Mathieu Bresciani <mathieu@auterion.com>
  */
 
-#include "system_identification.hpp"
+#অন্তর্ভাব "system_identification.hpp"
 
-void SystemIdentification::reset(const matrix::Vector<float, 5> &id_state_init)
+শূন্য SystemIdentification::reset(ধ্রুবক matrix::Vector<দশমিক, 5> &id_state_init)
 {
 	_rls.reset(id_state_init);
 	_u_lpf.reset(0.f);
 	_u_lpf.reset(0.f);
 	_u_hpf = 0.f;
 	_y_hpf = 0.f;
-	_u_prev = 0.f;
-	_y_prev = 0.f;
+	u_পূর্ব = 0.f;
+	y_পূর্ব = 0.f;
 	_fitness_lpf.reset(10.f);
-	_are_filters_initialized = false;
+	_are_filters_initialized = মিথ্যা;
 }
 
-void SystemIdentification::update(float u, float y)
+শূন্য SystemIdentification::update(দশমিক u, দশমিক y)
 {
 	updateFilters(u, y);
 	update();
 }
 
-void SystemIdentification::update()
+শূন্য SystemIdentification::update()
 {
 	_rls.update(_u_hpf, _y_hpf);
 	updateFitness();
 }
 
-void SystemIdentification::updateFilters(float u, float y)
+শূন্য SystemIdentification::updateFilters(দশমিক u, দশমিক y)
 {
-	if (!_are_filters_initialized) {
+	যদি (!_are_filters_initialized) {
 		_u_lpf.reset(u);
 		_y_lpf.reset(y);
 		_u_hpf = 0.f;
 		_y_hpf = 0.f;
-		_u_prev = u;
-		_y_prev = y;
-		_are_filters_initialized = true;
-		return;
+		u_পূর্ব = u;
+		y_পূর্ব = y;
+		_are_filters_initialized = সত্য;
+		ফেরত;
 	}
 
-	const float u_lpf = _u_lpf.apply(u);
-	const float y_lpf = _y_lpf.apply(y);
-	_u_hpf = _alpha_hpf * _u_hpf + _alpha_hpf * (u_lpf - _u_prev);
-	_y_hpf = _alpha_hpf * _y_hpf + _alpha_hpf * (y_lpf - _y_prev);
+	ধ্রুবক দশমিক u_lpf = _u_lpf.apply(u);
+	ধ্রুবক দশমিক y_lpf = _y_lpf.apply(y);
+	_u_hpf = _alpha_hpf * _u_hpf + _alpha_hpf * (u_lpf - u_পূর্ব);
+	_y_hpf = _alpha_hpf * _y_hpf + _alpha_hpf * (y_lpf - y_পূর্ব);
 
-	_u_prev = u_lpf;
-	_y_prev = y_lpf;
+	u_পূর্ব = u_lpf;
+	y_পূর্ব = y_lpf;
 }
 
-void SystemIdentification::updateFitness()
+শূন্য SystemIdentification::updateFitness()
 {
-	const matrix::Vector<float, 5> &diff = _rls.getDiffEstimate();
-	float sum = 0.f;
+	ধ্রুবক matrix::Vector<দশমিক, 5> &diff = _rls.getDiffEstimate();
+	দশমিক যোগ = 0.f;
 
-	for (size_t i = 0; i < 5; i++) {
-		sum += diff(i);
+	জন্য (size_t i = 0; i < 5; i++) {
+		যোগ += diff(i);
 	}
 
-	if (_dt > FLT_EPSILON) {
-		_fitness_lpf.update(sum / _dt);
+	যদি (_dt > FLT_EPSILON) {
+		_fitness_lpf.update(যোগ / _dt);
 	}
 }

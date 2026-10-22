@@ -33,18 +33,18 @@
 
 #pragma once
 
-struct traffic_data_s {
-	double lat_traffic;
-	double lon_traffic;
-	float alt_traffic;
-	float heading_traffic;
-	float vxy_traffic;
-	float vz_traffic;
+কাঠামো traffic_তথ্য_s {
+	দ্বিগুণ lat_traffic;
+	দ্বিগুণ lon_traffic;
+	দশমিক alt_traffic;
+	দশমিক heading_traffic;
+	দশমিক vxy_traffic;
+	দশমিক vz_traffic;
 	bool in_conflict;
 };
 
 // traffic dataset generated using notebook in adsb/test_adsb_helper.ipynb
-static constexpr traffic_data_s kTrafficDataset[] = {
+স্থির constexpr traffic_তথ্য_s kTrafficDataset[] = {
 
 	{3.270694516059187151e+01, -9.638379328402535862e+01, 4.470000000000000000e+02, -3.141592653589793116e+00, 2.042375980563040798e+02, 2.042375980563040798e+02, 0},
 	{3.270694516059187151e+01, -9.638379328402535862e+01, 7.900000000000000000e+02, -3.109129529502698386e+00, 2.500275609807847104e+03, 2.500275609807847104e+03, 0},

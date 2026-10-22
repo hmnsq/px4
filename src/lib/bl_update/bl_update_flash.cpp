@@ -31,52 +31,52 @@
  *
  ****************************************************************************/
 
-#include "bl_update_flash.h"
+#অন্তর্ভাব "bl_update_flash.h"
 
-#include <px4_platform_common/px4_config.h>
+#অন্তর্ভাব <px4_platform_common/px4_config.h>
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sched.h>
-#include <sys/stat.h>
+#অন্তর্ভাব <stdint.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <string.h>
+#অন্তর্ভাব <unistd.h>
+#অন্তর্ভাব <fcntl.h>
+#অন্তর্ভাব <sched.h>
+#অন্তর্ভাব <sys/stat.h>
 
-#include <arch/board/board.h>
+#অন্তর্ভাব <arch/board/board.h>
 
-#include <nuttx/progmem.h>
+#অন্তর্ভাব <nuttx/progmem.h>
 
-#if defined(BL_UPDATE_WATCHDOG)
+#যদি defined(BL_UPDATE_WATCHDOG)
 #  include <drivers/drv_watchdog.h>
-#else
+#অন্যথা
 #  define watchdog_pet()
 #endif
 
-#if defined(CONFIG_ARCH_CHIP_STM32H7)
-#  define BL_FILE_SIZE_LIMIT	128*1024
+#যদি defined(CONFIG_ARCH_CHIP_STM32H7)
+#  define BL_FILE_আকার_LIMIT	128*1024
 #  define STM_RAM_BASE        STM32_AXISRAM_BASE
-#  define PAGE_SIZE_MATTERS   1
-#elif defined(CONFIG_ARCH_CHIP_STM32F7)
-#  define BL_FILE_SIZE_LIMIT	32*1024
+#  define PAGE_আকার_MATTERS   1
+#নতুবা_যদি defined(CONFIG_ARCH_CHIP_STM32F7)
+#  define BL_FILE_আকার_LIMIT	32*1024
 #  define STM_RAM_BASE        STM32_SRAM_BASE
-#else
-#  define BL_FILE_SIZE_LIMIT  16384
+#অন্যথা
+#  define BL_FILE_আকার_LIMIT  16384
 #  define STM_RAM_BASE        STM32_SRAM_BASE
 #endif
 
-namespace bl_update
+নামাকাশ bl_update
 {
 
-#if defined (CONFIG_STM32_STM32F4XXX) || defined (CONFIG_ARCH_CHIP_STM32F7) || \
+#যদি defined (CONFIG_STM32_STM32F4XXX) || defined (CONFIG_ARCH_CHIP_STM32F7) || \
     defined (CONFIG_ARCH_CHIP_STM32H7)
 
-static Result write_flash(const uint8_t *buf, size_t image_size)
+স্থির ফলাফল_2 write_flash(ধ্রুবক uint8_t *buf, size_t image_আকার)
 {
 	uint8_t *base = (uint8_t *) PX4_FLASH_BASE;
 
-	if (memcmp(base, buf, image_size) == 0) {
-		return Result::Unchanged;
+	যদি (memcmp(base, buf, image_আকার) == 0) {
+		ফেরত ফলাফল_2::Unchanged;
 	}
 
 	/* prevent other tasks from running while we do this */
@@ -85,12 +85,12 @@ static Result write_flash(const uint8_t *buf, size_t image_size)
 	/* The IWDG may already be running (CAN nodes start it in the bootloader)
 	 * and nothing else gets to pet it while the scheduler is locked. */
 	watchdog_pet();
-	const bool erased = up_progmem_eraseblock(0) >= 0;
+	ধ্রুবক যৌক্তিক erased = up_progmem_eraseblock(0) >= 0;
 	watchdog_pet();
 
 	/* Program even if the erase reported an error: the old bootloader is
 	 * already damaged, and a failed program reports it below. */
-	const ssize_t size = up_progmem_write((size_t) base, buf, image_size);
+	ধ্রুবক ssize_t আকার_2 = up_progmem_write((size_t) base, buf, image_আকার);
 	watchdog_pet();
 
 	/* re-lock the flash control register */
@@ -98,127 +98,127 @@ static Result write_flash(const uint8_t *buf, size_t image_size)
 
 	sched_unlock();
 
-	if (size != (ssize_t) image_size) {
-		return erased ? Result::ProgramFailed : Result::EraseFailed;
+	যদি (আকার_2 != (ssize_t) image_আকার) {
+		ফেরত erased ? ফলাফল_2::ProgramFailed : ফলাফল_2::EraseFailed;
 	}
 
-	if (memcmp(base, buf, image_size) != 0) {
-		return Result::VerifyFailed;
+	যদি (memcmp(base, buf, image_আকার) != 0) {
+		ফেরত ফলাফল_2::VerifyFailed;
 	}
 
-	return Result::Updated;
+	ফেরত ফলাফল_2::Updated;
 }
 
-Result flash(const char *path)
+ফলাফল_2 flash(ধ্রুবক অক্ষর *path)
 {
-	int fd = open(path, O_RDONLY);
+	পূর্ণসংখ্যা fd = open(path, O_RDONLY);
 
-	if (fd < 0) {
-		return Result::OpenFailed;
+	যদি (fd < 0) {
+		ফেরত ফলাফল_2::OpenFailed;
 	}
 
-	struct stat s;
+	কাঠামো stat s;
 
-	if (fstat(fd, &s) != 0) {
+	যদি (fstat(fd, &s) != 0) {
 		close(fd);
-		return Result::OpenFailed;
+		ফেরত ফলাফল_2::OpenFailed;
 	}
 
-	if (s.st_size > BL_FILE_SIZE_LIMIT) {
+	যদি (s.st_size > BL_FILE_আকার_LIMIT) {
 		close(fd);
-		return Result::TooLarge;
+		ফেরত ফলাফল_2::TooLarge;
 	}
 
-	const size_t file_size = s.st_size;
+	ধ্রুবক size_t file_আকার = s.st_size;
 
 	/* up_progmem_write() rejects a size that is not a multiple of its
 	 * program unit, and by then the old bootloader is erased. */
-#if defined(PAGE_SIZE_MATTERS)
-	const size_t align_mask = up_progmem_pagesize(0) - 1;
-#else
-	const size_t align_mask = sizeof(uint32_t) - 1;
+#যদি defined(PAGE_আকার_MATTERS)
+	ধ্রুবক size_t align_mask = up_progmem_pagesize(0) - 1;
+#অন্যথা
+	ধ্রুবক size_t align_mask = আকার(uint32_t) - 1;
 #endif
-	const size_t image_size = (file_size + align_mask) & ~align_mask;
+	ধ্রুবক size_t image_আকার = (file_আকার + align_mask) & ~align_mask;
 
-	uint8_t *buf = (uint8_t *)malloc(image_size);
+	uint8_t *buf = (uint8_t *)malloc(image_আকার);
 
-	if (buf == nullptr) {
+	যদি (buf == nullptr) {
 		close(fd);
-		return Result::NoMemory;
+		ফেরত ফলাফল_2::NoMemory;
 	}
 
-	memset(buf, 0xff, image_size);
+	memset(buf, 0xff, image_আকার);
 
-	const ssize_t bytes_read = read(fd, buf, file_size);
+	ধ্রুবক ssize_t bytes_read = পঠ(fd, buf, file_আকার);
 	close(fd);
 
-	if (bytes_read != (ssize_t) file_size) {
-		free(buf);
-		return Result::ReadFailed;
+	যদি (bytes_read != (ssize_t) file_আকার) {
+		মুক্ত(buf);
+		ফেরত ফলাফল_2::ReadFailed;
 	}
 
-	const uint32_t *hdr = (const uint32_t *)buf;
+	ধ্রুবক uint32_t *hdr = (ধ্রুবক uint32_t *)buf;
 
-	if ((hdr[0] < STM_RAM_BASE) ||			/* stack not below RAM */
+	যদি ((hdr[0] < STM_RAM_BASE) ||			/* stack not below RAM */
 	    (hdr[0] > (STM_RAM_BASE + (128 * 1024))) ||	/* stack not above RAM */
 	    (hdr[1] < PX4_FLASH_BASE) ||			/* entrypoint not below flash */
-	    ((hdr[1] - PX4_FLASH_BASE) > BL_FILE_SIZE_LIMIT)) {	/* entrypoint not outside bootloader */
-		free(buf);
-		return Result::InvalidImage;
+	    ((hdr[1] - PX4_FLASH_BASE) > BL_FILE_আকার_LIMIT)) {	/* entrypoint not outside bootloader */
+		মুক্ত(buf);
+		ফেরত ফলাফল_2::InvalidImage;
 	}
 
-	const Result result = write_flash(buf, image_size);
-	free(buf);
-	return result;
+	ধ্রুবক ফলাফল_2 ফলাফল = write_flash(buf, image_আকার);
+	মুক্ত(buf);
+	ফেরত ফলাফল;
 }
 
-#else
+#অন্যথা
 
-Result flash(const char *path)
+ফলাফল_2 flash(ধ্রুবক অক্ষর *path)
 {
-	return Result::NotSupported;
+	ফেরত ফলাফল_2::NotSupported;
 }
 
 #endif
 
-const char *result_str(Result result)
+ধ্রুবক অক্ষর *ফলাফল_str(ফলাফল_2 ফলাফল)
 {
-	switch (result) {
-	case Result::Updated:
-		return "bootloader updated";
+	নির্বাচন (ফলাফল) {
+	ক্ষেত্র ফলাফল_2::Updated:
+		ফেরত "bootloader updated";
 
-	case Result::Unchanged:
-		return "bootloader unchanged";
+	ক্ষেত্র ফলাফল_2::Unchanged:
+		ফেরত "bootloader unchanged";
 
-	case Result::NotSupported:
-		return "not supported on this hardware";
+	ক্ষেত্র ফলাফল_2::NotSupported:
+		ফেরত "not supported on this hardware";
 
-	case Result::OpenFailed:
-		return "cannot open bootloader file";
+	ক্ষেত্র ফলাফল_2::OpenFailed:
+		ফেরত "cannot open bootloader file";
 
-	case Result::TooLarge:
-		return "bootloader file too large";
+	ক্ষেত্র ফলাফল_2::TooLarge:
+		ফেরত "bootloader file too large";
 
-	case Result::NoMemory:
-		return "out of memory";
+	ক্ষেত্র ফলাফল_2::NoMemory:
+		ফেরত "out of memory";
 
-	case Result::ReadFailed:
-		return "bootloader file read error";
+	ক্ষেত্র ফলাফল_2::ReadFailed:
+		ফেরত "bootloader file read error";
 
-	case Result::InvalidImage:
-		return "not a bootloader image";
+	ক্ষেত্র ফলাফল_2::InvalidImage:
+		ফেরত "not a bootloader image";
 
-	case Result::EraseFailed:
-		return "flash erase failed, retry before rebooting";
+	ক্ষেত্র ফলাফল_2::EraseFailed:
+		ফেরত "flash erase failed, retry before rebooting";
 
-	case Result::ProgramFailed:
-		return "flash program failed, retry before rebooting";
+	ক্ষেত্র ফলাফল_2::ProgramFailed:
+		ফেরত "flash program failed, retry before rebooting";
 
-	case Result::VerifyFailed:
-		return "verify failed, retry before rebooting";
+	ক্ষেত্র ফলাফল_2::VerifyFailed:
+		ফেরত "verify failed, retry before rebooting";
 	}
 
-	return "unknown error";
+	ফেরত "unknown error";
 }
 
 } // namespace bl_update

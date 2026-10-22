@@ -31,18 +31,18 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#অন্তর্ভাব <gtest/gtest.h>
+#অন্তর্ভাব <matrix/math.hpp>
 
-using namespace matrix;
+using নামাকাশ matrix;
 
 TEST(MatrixHatveeTest, Hatvee)
 {
-	Euler<float> euler(0.1f, 0.2f, 0.3f);
-	Dcm<float> R(euler);
-	Dcm<float> skew = R - R.T();
-	Vector3<float> w = skew.vee();
-	Vector3<float> w_check(0.1348f, 0.4170f, 0.5647f);
+	Euler<দশমিক> euler(0.1f, 0.2f, 0.3f);
+	Dcm<দশমিক> R(euler);
+	Dcm<দশমিক> skew = R - R.T();
+	Vector3<দশমিক> w = skew.vee();
+	Vector3<দশমিক> w_check(0.1348f, 0.4170f, 0.5647f);
 
 	EXPECT_EQ(w, w_check);
 	EXPECT_EQ(skew, w.hat());

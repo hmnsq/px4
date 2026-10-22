@@ -10,221 +10,221 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#অন্তর্ভাব "Vector.hpp"
 
-namespace matrix
+নামাকাশ matrix
 {
 // Vector that only store nonzero elements,
 // which indices are specified as parameter pack
 template<typename Type, size_t M, size_t... Idxs>
-class SparseVector
+শ্রেণী SparseVector
 {
-private:
-	enum : size_t { N = sizeof...(Idxs) };
+ব্যক্তিগত:
+	গণনা : size_t { N = আকার...(Idxs) };
 
-	static constexpr bool duplicateIndices()
+	স্থির constexpr যৌক্তিক duplicateIndices()
 	{
 		constexpr size_t indicies[] {Idxs...};
 
-		for (size_t i = 0; i < N; i++) {
-			for (size_t j = 0; j < i; j++) {
-				if (indicies[i] == indicies[j]) {
-					return true;
+		জন্য (size_t i = 0; i < N; i++) {
+			জন্য (size_t j = 0; j < i; j++) {
+				যদি (indicies[i] == indicies[j]) {
+					ফেরত সত্য;
 				}
 			}
 		}
 
-		return false;
+		ফেরত মিথ্যা;
 	}
 
-	static constexpr size_t findMaxIndex()
+	স্থির constexpr size_t find_Max_সূচক()
 	{
 		constexpr size_t indicies[] {Idxs...};
-		size_t maxIndex = 0;
+		size_t max_সূচক = 0;
 
-		for (size_t i = 0; i < N; i++) {
-			if (maxIndex < indicies[i]) {
-				maxIndex = indicies[i];
+		জন্য (size_t i = 0; i < N; i++) {
+			যদি (max_সূচক < indicies[i]) {
+				max_সূচক = indicies[i];
 			}
 		}
 
-		return maxIndex;
+		ফেরত max_সূচক;
 	}
 
-	static constexpr size_t indexAt(size_t i)
+	স্থির constexpr size_t সূচক_At(size_t i)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		return indicies[i];
+		ফেরত indicies[i];
 	}
 
 	static_assert(!duplicateIndices(), "Duplicate indices");
 	static_assert(N < M, "More entries than elements, use a dense vector");
 	static_assert(N > 0, "A sparse vector needs at least one element");
-	static_assert(findMaxIndex() < M, "Largest entry doesn't fit in sparse vector");
+	static_assert(find_Max_সূচক() < M, "Largest entry doesn't fit in sparse vector");
 
-	Type _data[N] {};
+	Type তথ্য_3[N] {};
 
-	static constexpr int findCompressedIndex(size_t index)
+	স্থির constexpr পূর্ণসংখ্যা find_Compressed_সূচক(size_t সূচক)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		int compressedIndex = -1;
+		পূর্ণসংখ্যা compressed_সূচক = -1;
 
-		for (size_t i = 0; i < N; i++) {
-			if (index == indicies[i]) {
-				compressedIndex = static_cast<int>(i);
+		জন্য (size_t i = 0; i < N; i++) {
+			যদি (সূচক == indicies[i]) {
+				compressed_সূচক = static_cast<পূর্ণসংখ্যা>(i);
 			}
 		}
 
-		return compressedIndex;
+		ফেরত compressed_সূচক;
 	}
 
-public:
-	constexpr size_t non_zeros() const
+সর্বজনীন:
+	constexpr size_t non_zeros() ধ্রুবক
 	{
-		return N;
+		ফেরত N;
 	}
 
-	constexpr size_t index(size_t i) const
+	constexpr size_t সূচক(size_t i) ধ্রুবক
 	{
-		return indexAt(i);
+		ফেরত সূচক_At(i);
 	}
 
-	SparseVector() = default;
+	SparseVector() = পূর্বনির্ধারিত;
 
-	SparseVector(const matrix::Vector<Type, M> &data)
+	SparseVector(ধ্রুবক matrix::Vector<Type, M> &তথ্য)
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] = data(indexAt(i));
+		জন্য (size_t i = 0; i < N; i++) {
+			তথ্য_3[i] = তথ্য(সূচক_At(i));
 		}
 	}
 
-	explicit SparseVector(const Type data[N])
+	explicit SparseVector(ধ্রুবক Type তথ্য[N])
 	{
-		memcpy(_data, data, sizeof(_data));
+		memcpy(তথ্য_3, তথ্য, আকার(তথ্য_3));
 	}
 
 	template <size_t i>
-	inline Type at() const
+	অন্তঃরেখ Type at() ধ্রুবক
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
-		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		constexpr পূর্ণসংখ্যা compressed_সূচক_2 = find_Compressed_সূচক(i);
+		static_assert(compressed_সূচক_2 >= 0, "cannot access unpopulated indices");
+		ফেরত তথ্য_3[compressed_সূচক_2];
 	}
 
 	template <size_t i>
-	inline Type &at()
+	অন্তঃরেখ Type &at()
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
-		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		constexpr পূর্ণসংখ্যা compressed_সূচক_2 = find_Compressed_সূচক(i);
+		static_assert(compressed_সূচক_2 >= 0, "cannot access unpopulated indices");
+		ফেরত তথ্য_3[compressed_সূচক_2];
 	}
 
-	inline Type atCompressedIndex(size_t i) const
+	অন্তঃরেখ Type at_Compressed_সূচক(size_t i) ধ্রুবক
 	{
-		assert(i < N);
-		return _data[i];
+		প্রতিজ্ঞা(i < N);
+		ফেরত তথ্য_3[i];
 	}
 
-	inline Type &atCompressedIndex(size_t i)
+	অন্তঃরেখ Type &at_Compressed_সূচক(size_t i)
 	{
-		assert(i < N);
-		return _data[i];
+		প্রতিজ্ঞা(i < N);
+		ফেরত তথ্য_3[i];
 	}
 
-	void setZero()
+	শূন্য setZero()
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] = Type(0);
+		জন্য (size_t i = 0; i < N; i++) {
+			তথ্য_3[i] = Type(0);
 		}
 	}
 
-	Type dot(const matrix::Vector<Type, M> &other) const
+	Type dot(ধ্রুবক matrix::Vector<Type, M> &other) ধ্রুবক
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
-			accum += _data[i] * other(indexAt(i));
+		জন্য (size_t i = 0; i < N; i++) {
+			accum += তথ্য_3[i] * other(সূচক_At(i));
 		}
 
-		return accum;
+		ফেরত accum;
 	}
 
-	matrix::Vector<Type, M> operator+(const matrix::Vector<Type, M> &other) const
+	matrix::Vector<Type, M> operator+(ধ্রুবক matrix::Vector<Type, M> &other) ধ্রুবক
 	{
 		matrix::Vector<Type, M> vec = other;
 
-		for (size_t i = 0; i < N; i++) {
-			vec(indexAt(i)) +=  _data[i];
+		জন্য (size_t i = 0; i < N; i++) {
+			vec(সূচক_At(i)) +=  তথ্য_3[i];
 		}
 
-		return vec;
+		ফেরত vec;
 	}
 
 	SparseVector &operator+=(Type t)
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] += t;
+		জন্য (size_t i = 0; i < N; i++) {
+			তথ্য_3[i] += t;
 		}
 
-		return *this;
+		ফেরত *এই;
 	}
 
-	Type norm_squared() const
+	Type norm_squared() ধ্রুবক
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
-			accum += _data[i] * _data[i];
+		জন্য (size_t i = 0; i < N; i++) {
+			accum += তথ্য_3[i] * তথ্য_3[i];
 		}
 
-		return accum;
+		ফেরত accum;
 	}
 
-	Type norm() const
+	Type norm() ধ্রুবক
 	{
-		return std::sqrt(norm_squared());
+		ফেরত std::sqrt(norm_squared());
 	}
 
-	bool longerThan(Type testVal) const
+	যৌক্তিক longerThan(Type testVal) ধ্রুবক
 	{
-		return norm_squared() > testVal * testVal;
+		ফেরত norm_squared() > testVal * testVal;
 	}
 };
 
 template<typename Type, size_t Q, size_t M, size_t ... Idxs>
-matrix::Vector<Type, Q> operator*(const matrix::Matrix<Type, Q, M> &mat,
-				  const matrix::SparseVector<Type, M, Idxs...> &vec)
+matrix::Vector<Type, Q> operator*(ধ্রুবক matrix::Matrix<Type, Q, M> &mat,
+				  ধ্রুবক matrix::SparseVector<Type, M, Idxs...> &vec)
 {
 	matrix::Vector<Type, Q> res;
 
-	for (size_t i = 0; i < Q; i++) {
-		const Vector<Type, M> row = mat.row(i);
+	জন্য (size_t i = 0; i < Q; i++) {
+		ধ্রুবক Vector<Type, M> row = mat.row(i);
 		res(i) = vec.dot(row);
 	}
 
-	return res;
+	ফেরত res;
 }
 
 // returns x.T * A * x
 template<typename Type, size_t M, size_t ... Idxs>
-Type quadraticForm(const matrix::SquareMatrix<Type, M> &A, const matrix::SparseVector<Type, M, Idxs...> &x)
+Type quadraticForm(ধ্রুবক matrix::SquareMatrix<Type, M> &A, ধ্রুবক matrix::SparseVector<Type, M, Idxs...> &x)
 {
 	Type res = Type(0);
 
-	for (size_t i = 0; i < x.non_zeros(); i++) {
+	জন্য (size_t i = 0; i < x.non_zeros(); i++) {
 		Type tmp = Type(0);
 
-		for (size_t j = 0; j < x.non_zeros(); j++) {
-			tmp += A(x.index(i), x.index(j)) * x.atCompressedIndex(j);
+		জন্য (size_t j = 0; j < x.non_zeros(); j++) {
+			tmp += A(x.সূচক(i), x.সূচক(j)) * x.at_Compressed_সূচক(j);
 		}
 
-		res += x.atCompressedIndex(i) * tmp;
+		res += x.at_Compressed_সূচক(i) * tmp;
 	}
 
-	return res;
+	ফেরত res;
 }
 
 template<size_t M, size_t ... Idxs>
-using SparseVectorf = SparseVector<float, M, Idxs...>;
+using SparseVectorf = SparseVector<দশমিক, M, Idxs...>;
 
 }

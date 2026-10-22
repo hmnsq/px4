@@ -13,365 +13,365 @@
 
 #pragma once
 
-#include <cmath>
+#অন্তর্ভাব <cmath>
 
-#include "Scalar.hpp"
-#include "Vector.hpp"
+#অন্তর্ভাব "Scalar.hpp"
+#অন্তর্ভাব "Vector.hpp"
 
-namespace matrix
+নামাকাশ matrix
 {
 
 template <typename Scalar, size_t N>
-struct Dual {
-	enum : size_t { WIDTH = N };
+কাঠামো Dual {
+	গণনা : size_t { WIDTH = N };
 
 	Scalar value {};
 	Vector<Scalar, N> derivative;
 
-	Dual() = default;
+	Dual() = পূর্বনির্ধারিত;
 
-	explicit Dual(Scalar v, size_t inputDimension = 65535)
+	explicit Dual(Scalar v, size_t প্রবেশ_Dimension = 65535)
 	{
 		value = v;
 
-		if (inputDimension < N) {
-			derivative(inputDimension) = Scalar(1);
+		যদি (প্রবেশ_Dimension < N) {
+			derivative(প্রবেশ_Dimension) = Scalar(1);
 		}
 	}
 
-	explicit Dual(Scalar v, const Vector<Scalar, N> &d) :
+	explicit Dual(Scalar v, ধ্রুবক Vector<Scalar, N> &d) :
 		value(v), derivative(d)
 	{}
 
-	Dual<Scalar, N> &operator=(const Scalar &a)
+	Dual<Scalar, N> &operator=(ধ্রুবক Scalar &a)
 	{
 		derivative.setZero();
 		value = a;
-		return *this;
+		ফেরত *এই;
 	}
 
-	Dual<Scalar, N> &operator +=(const Dual<Scalar, N> &a)
+	Dual<Scalar, N> &operator +=(ধ্রুবক Dual<Scalar, N> &a)
 	{
-		return (*this = *this + a);
+		ফেরত (*এই = *এই + a);
 	}
 
-	Dual<Scalar, N> &operator *=(const Dual<Scalar, N> &a)
+	Dual<Scalar, N> &operator *=(ধ্রুবক Dual<Scalar, N> &a)
 	{
-		return (*this = *this * a);
+		ফেরত (*এই = *এই * a);
 	}
 
-	Dual<Scalar, N> &operator -=(const Dual<Scalar, N> &a)
+	Dual<Scalar, N> &operator -=(ধ্রুবক Dual<Scalar, N> &a)
 	{
-		return (*this = *this - a);
+		ফেরত (*এই = *এই - a);
 	}
 
-	Dual<Scalar, N> &operator /=(const Dual<Scalar, N> &a)
+	Dual<Scalar, N> &operator /=(ধ্রুবক Dual<Scalar, N> &a)
 	{
-		return (*this = *this / a);
+		ফেরত (*এই = *এই / a);
 	}
 
 	Dual<Scalar, N> &operator +=(Scalar a)
 	{
-		return (*this = *this + a);
+		ফেরত (*এই = *এই + a);
 	}
 
 	Dual<Scalar, N> &operator -=(Scalar a)
 	{
-		return (*this = *this - a);
+		ফেরত (*এই = *এই - a);
 	}
 
 	Dual<Scalar, N> &operator *=(Scalar a)
 	{
-		return (*this = *this * a);
+		ফেরত (*এই = *এই * a);
 	}
 
 	Dual<Scalar, N> &operator /=(Scalar a)
 	{
-		return (*this = *this / a);
+		ফেরত (*এই = *এই / a);
 	}
 
-	bool operator==(const Dual<Scalar, N> &other) const
+	যৌক্তিক operator==(ধ্রুবক Dual<Scalar, N> &other) ধ্রুবক
 	{
-		return isEqualF(value, other.value) && (derivative == other.derivative);
+		ফেরত isEqualF(value, other.value) && (derivative == other.derivative);
 	}
 
-	bool operator!=(const Dual<Scalar, N> &other) const
+	যৌক্তিক operator!=(ধ্রুবক Dual<Scalar, N> &other) ধ্রুবক
 	{
-		const Dual<Scalar, N> &self = *this;
-		return !(self == other);
+		ধ্রুবক Dual<Scalar, N> &self = *এই;
+		ফেরত !(self == other);
 	}
 };
 
 // operators
 
 template <typename Scalar, size_t N>
-Dual<Scalar, N> operator+(const Dual<Scalar, N> &a)
+Dual<Scalar, N> operator+(ধ্রুবক Dual<Scalar, N> &a)
 {
-	return a;
+	ফেরত a;
 }
 
 template <typename Scalar, size_t N>
-Dual<Scalar, N> operator-(const Dual<Scalar, N> &a)
+Dual<Scalar, N> operator-(ধ্রুবক Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(-a.value, -a.derivative);
+	ফেরত Dual<Scalar, N>(-a.value, -a.derivative);
 }
 
 template <typename Scalar, size_t N>
-Dual<Scalar, N> operator+(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+Dual<Scalar, N> operator+(ধ্রুবক Dual<Scalar, N> &a, ধ্রুবক Dual<Scalar, N> &b)
 {
-	return Dual<Scalar, N>(a.value + b.value, a.derivative + b.derivative);
+	ফেরত Dual<Scalar, N>(a.value + b.value, a.derivative + b.derivative);
 }
 
 template <typename Scalar, size_t N>
-Dual<Scalar, N> operator-(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+Dual<Scalar, N> operator-(ধ্রুবক Dual<Scalar, N> &a, ধ্রুবক Dual<Scalar, N> &b)
 {
-	return a + (-b);
+	ফেরত a + (-b);
 }
 
 template <typename Scalar, size_t N>
-Dual<Scalar, N> operator+(const Dual<Scalar, N> &a, Scalar b)
+Dual<Scalar, N> operator+(ধ্রুবক Dual<Scalar, N> &a, Scalar b)
 {
-	return Dual<Scalar, N>(a.value + b, a.derivative);
+	ফেরত Dual<Scalar, N>(a.value + b, a.derivative);
 }
 
 template <typename Scalar, size_t N>
-Dual<Scalar, N> operator-(const Dual<Scalar, N> &a, Scalar b)
+Dual<Scalar, N> operator-(ধ্রুবক Dual<Scalar, N> &a, Scalar b)
 {
-	return a + (-b);
+	ফেরত a + (-b);
 }
 
 template <typename Scalar, size_t N>
-Dual<Scalar, N> operator+(Scalar a, const Dual<Scalar, N> &b)
+Dual<Scalar, N> operator+(Scalar a, ধ্রুবক Dual<Scalar, N> &b)
 {
-	return Dual<Scalar, N>(a + b.value, b.derivative);
+	ফেরত Dual<Scalar, N>(a + b.value, b.derivative);
 }
 
 template <typename Scalar, size_t N>
-Dual<Scalar, N> operator-(Scalar a, const Dual<Scalar, N> &b)
+Dual<Scalar, N> operator-(Scalar a, ধ্রুবক Dual<Scalar, N> &b)
 {
-	return a + (-b);
+	ফেরত a + (-b);
 }
 
 template <typename Scalar, size_t N>
-Dual<Scalar, N> operator*(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+Dual<Scalar, N> operator*(ধ্রুবক Dual<Scalar, N> &a, ধ্রুবক Dual<Scalar, N> &b)
 {
-	return Dual<Scalar, N>(a.value * b.value, a.value * b.derivative + b.value * a.derivative);
+	ফেরত Dual<Scalar, N>(a.value * b.value, a.value * b.derivative + b.value * a.derivative);
 }
 
 template <typename Scalar, size_t N>
-Dual<Scalar, N> operator*(const Dual<Scalar, N> &a, Scalar b)
+Dual<Scalar, N> operator*(ধ্রুবক Dual<Scalar, N> &a, Scalar b)
 {
-	return Dual<Scalar, N>(a.value * b, a.derivative * b);
+	ফেরত Dual<Scalar, N>(a.value * b, a.derivative * b);
 }
 
 template <typename Scalar, size_t N>
-Dual<Scalar, N> operator*(Scalar a, const Dual<Scalar, N> &b)
+Dual<Scalar, N> operator*(Scalar a, ধ্রুবক Dual<Scalar, N> &b)
 {
-	return b * a;
+	ফেরত b * a;
 }
 
 template <typename Scalar, size_t N>
-Dual<Scalar, N> operator/(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+Dual<Scalar, N> operator/(ধ্রুবক Dual<Scalar, N> &a, ধ্রুবক Dual<Scalar, N> &b)
 {
-	const Scalar inv_b_real = Scalar(1) / b.value;
-	return Dual<Scalar, N>(a.value * inv_b_real, a.derivative * inv_b_real -
+	ধ্রুবক Scalar inv_b_real = Scalar(1) / b.value;
+	ফেরত Dual<Scalar, N>(a.value * inv_b_real, a.derivative * inv_b_real -
 			       a.value * b.derivative * inv_b_real * inv_b_real);
 }
 
 template <typename Scalar, size_t N>
-Dual<Scalar, N> operator/(const Dual<Scalar, N> &a, Scalar b)
+Dual<Scalar, N> operator/(ধ্রুবক Dual<Scalar, N> &a, Scalar b)
 {
-	return a * (Scalar(1) / b);
+	ফেরত a * (Scalar(1) / b);
 }
 
 template <typename Scalar, size_t N>
-Dual<Scalar, N> operator/(Scalar a, const Dual<Scalar, N> &b)
+Dual<Scalar, N> operator/(Scalar a, ধ্রুবক Dual<Scalar, N> &b)
 {
-	const Scalar inv_b_real = Scalar(1) / b.value;
-	return Dual<Scalar, N>(a * inv_b_real, (-inv_b_real * a * inv_b_real) * b.derivative);
+	ধ্রুবক Scalar inv_b_real = Scalar(1) / b.value;
+	ফেরত Dual<Scalar, N>(a * inv_b_real, (-inv_b_real * a * inv_b_real) * b.derivative);
 }
 
 // basic math
 
 // sqrt
 template <typename Scalar, size_t N>
-Dual<Scalar, N> sqrt(const Dual<Scalar, N> &a)
+Dual<Scalar, N> sqrt(ধ্রুবক Dual<Scalar, N> &a)
 {
 	Scalar real = std::sqrt(a.value);
-	return Dual<Scalar, N>(real, a.derivative * (Scalar(1) / (Scalar(2) * real)));
+	ফেরত Dual<Scalar, N>(real, a.derivative * (Scalar(1) / (Scalar(2) * real)));
 }
 
 // abs
 template <typename Scalar, size_t N>
-Dual<Scalar, N> abs(const Dual<Scalar, N> &a)
+Dual<Scalar, N> abs(ধ্রুবক Dual<Scalar, N> &a)
 {
-	return a.value >= Scalar(0) ? a : -a;
+	ফেরত a.value >= Scalar(0) ? a : -a;
 }
 
 // ceil
 template <typename Scalar, size_t N>
-Dual<Scalar, N> ceil(const Dual<Scalar, N> &a)
+Dual<Scalar, N> ceil(ধ্রুবক Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(std::ceil(a.value));
+	ফেরত Dual<Scalar, N>(std::ceil(a.value));
 }
 
 // floor
 template <typename Scalar, size_t N>
-Dual<Scalar, N> floor(const Dual<Scalar, N> &a)
+Dual<Scalar, N> floor(ধ্রুবক Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(std::floor(a.value));
+	ফেরত Dual<Scalar, N>(std::floor(a.value));
 }
 
 // fmod
 template <typename Scalar, size_t N>
-Dual<Scalar, N> fmod(const Dual<Scalar, N> &a, Scalar mod)
+Dual<Scalar, N> fmod(ধ্রুবক Dual<Scalar, N> &a, Scalar mod)
 {
-	return Dual<Scalar, N>(a.value - Scalar(size_t(a.value / mod)) * mod, a.derivative);
+	ফেরত Dual<Scalar, N>(a.value - Scalar(size_t(a.value / mod)) * mod, a.derivative);
 }
 
 // max
 template <typename Scalar, size_t N>
-Dual<Scalar, N> max(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+Dual<Scalar, N> max(ধ্রুবক Dual<Scalar, N> &a, ধ্রুবক Dual<Scalar, N> &b)
 {
-	return a.value >= b.value ? a : b;
+	ফেরত a.value >= b.value ? a : b;
 }
 
 // min
 template <typename Scalar, size_t N>
-Dual<Scalar, N> min(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+Dual<Scalar, N> min(ধ্রুবক Dual<Scalar, N> &a, ধ্রুবক Dual<Scalar, N> &b)
 {
-	return a.value < b.value ? a : b;
+	ফেরত a.value < b.value ? a : b;
 }
 
 // isnan
 template <typename Scalar>
-bool IsNan(Scalar a)
+যৌক্তিক IsNan(Scalar a)
 {
-	return std::isnan(a);
+	ফেরত std::isnan(a);
 }
 
 template <typename Scalar, size_t N>
-bool IsNan(const Dual<Scalar, N> &a)
+যৌক্তিক IsNan(ধ্রুবক Dual<Scalar, N> &a)
 {
-	return IsNan(a.value);
+	ফেরত IsNan(a.value);
 }
 
 // isfinite
 template <typename Scalar>
-bool IsFinite(Scalar a)
+যৌক্তিক IsFinite(Scalar a)
 {
-	return std::isfinite(a);
+	ফেরত std::isfinite(a);
 }
 
 template <typename Scalar, size_t N>
-bool IsFinite(const Dual<Scalar, N> &a)
+যৌক্তিক IsFinite(ধ্রুবক Dual<Scalar, N> &a)
 {
-	return IsFinite(a.value);
+	ফেরত IsFinite(a.value);
 }
 
 // isinf
 template <typename Scalar>
-bool IsInf(Scalar a)
+যৌক্তিক IsInf(Scalar a)
 {
-	return std::isinf(a);
+	ফেরত std::isinf(a);
 }
 
 template <typename Scalar, size_t N>
-bool IsInf(const Dual<Scalar, N> &a)
+যৌক্তিক IsInf(ধ্রুবক Dual<Scalar, N> &a)
 {
-	return IsInf(a.value);
+	ফেরত IsInf(a.value);
 }
 
 // trig
 
 // sin
 template <typename Scalar, size_t N>
-Dual<Scalar, N> sin(const Dual<Scalar, N> &a)
+Dual<Scalar, N> sin(ধ্রুবক Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(std::sin(a.value), std::cos(a.value) * a.derivative);
+	ফেরত Dual<Scalar, N>(std::sin(a.value), std::cos(a.value) * a.derivative);
 }
 
 // cos
 template <typename Scalar, size_t N>
-Dual<Scalar, N> cos(const Dual<Scalar, N> &a)
+Dual<Scalar, N> cos(ধ্রুবক Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(std::cos(a.value), -std::sin(a.value) * a.derivative);
+	ফেরত Dual<Scalar, N>(std::cos(a.value), -std::sin(a.value) * a.derivative);
 }
 
 // tan
 template <typename Scalar, size_t N>
-Dual<Scalar, N> tan(const Dual<Scalar, N> &a)
+Dual<Scalar, N> tan(ধ্রুবক Dual<Scalar, N> &a)
 {
 	Scalar real = std::tan(a.value);
-	return Dual<Scalar, N>(real, (Scalar(1) + real * real) * a.derivative);
+	ফেরত Dual<Scalar, N>(real, (Scalar(1) + real * real) * a.derivative);
 }
 
 // asin
 template <typename Scalar, size_t N>
-Dual<Scalar, N> asin(const Dual<Scalar, N> &a)
+Dual<Scalar, N> asin(ধ্রুবক Dual<Scalar, N> &a)
 {
 	Scalar asin_d = Scalar(1) / std::sqrt(Scalar(1) - a.value * a.value);
-	return Dual<Scalar, N>(std::asin(a.value), asin_d * a.derivative);
+	ফেরত Dual<Scalar, N>(std::asin(a.value), asin_d * a.derivative);
 }
 
 // acos
 template <typename Scalar, size_t N>
-Dual<Scalar, N> acos(const Dual<Scalar, N> &a)
+Dual<Scalar, N> acos(ধ্রুবক Dual<Scalar, N> &a)
 {
 	Scalar acos_d = -Scalar(1) / std::sqrt(Scalar(1) - a.value * a.value);
-	return Dual<Scalar, N>(std::acos(a.value), acos_d * a.derivative);
+	ফেরত Dual<Scalar, N>(std::acos(a.value), acos_d * a.derivative);
 }
 
 // atan
 template <typename Scalar, size_t N>
-Dual<Scalar, N> atan(const Dual<Scalar, N> &a)
+Dual<Scalar, N> atan(ধ্রুবক Dual<Scalar, N> &a)
 {
 	Scalar atan_d = Scalar(1) / (Scalar(1) + a.value * a.value);
-	return Dual<Scalar, N>(std::atan(a.value), atan_d * a.derivative);
+	ফেরত Dual<Scalar, N>(std::atan(a.value), atan_d * a.derivative);
 }
 
 // atan2
 template <typename Scalar, size_t N>
-Dual<Scalar, N> atan2(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+Dual<Scalar, N> atan2(ধ্রুবক Dual<Scalar, N> &a, ধ্রুবক Dual<Scalar, N> &b)
 {
 	// derivative is equal to that of atan(a/b), so substitute a/b into atan and simplify
 	Scalar atan_d = Scalar(1) / (a.value * a.value + b.value * b.value);
-	return Dual<Scalar, N>(std::atan2(a.value, b.value), (a.derivative * b.value - a.value * b.derivative) * atan_d);
+	ফেরত Dual<Scalar, N>(std::atan2(a.value, b.value), (a.derivative * b.value - a.value * b.derivative) * atan_d);
 }
 
 // retrieve the derivative elements of a vector of Duals into a matrix
 template <typename Scalar, size_t M, size_t N>
-Matrix<Scalar, M, N> collectDerivatives(const Matrix<Dual<Scalar, N>, M, 1> &input)
+Matrix<Scalar, M, N> collectDerivatives(ধ্রুবক Matrix<Dual<Scalar, N>, M, 1> &প্রবেশ)
 {
 	Matrix<Scalar, M, N> jac;
 
-	for (size_t i = 0; i < M; i++) {
-		jac.row(i) = input(i, 0).derivative;
+	জন্য (size_t i = 0; i < M; i++) {
+		jac.row(i) = প্রবেশ(i, 0).derivative;
 	}
 
-	return jac;
+	ফেরত jac;
 }
 
 // retrieve the real (non-derivative) elements of a matrix of Duals into an equally sized matrix
 template <typename Scalar, size_t M, size_t N, size_t D>
-Matrix<Scalar, M, N> collectReals(const Matrix<Dual<Scalar, D>, M, N> &input)
+Matrix<Scalar, M, N> collectReals(ধ্রুবক Matrix<Dual<Scalar, D>, M, N> &প্রবেশ)
 {
 	Matrix<Scalar, M, N> r;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			r(i, j) = input(i, j).value;
+	জন্য (size_t i = 0; i < M; i++) {
+		জন্য (size_t j = 0; j < N; j++) {
+			r(i, j) = প্রবেশ(i, j).value;
 		}
 	}
 
-	return r;
+	ফেরত r;
 }
 
 template<typename OStream, typename Type, size_t N>
-OStream &operator<<(OStream &os, const matrix::Dual<Type, N> &dual)
+OStream &operator<<(OStream &os, ধ্রুবক matrix::Dual<Type, N> &dual)
 {
 	os << "\nValue: " << dual.value << "\nDerivative:" << dual.derivative;
-	return os;
+	ফেরত os;
 }
 
 }

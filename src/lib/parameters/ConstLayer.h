@@ -33,61 +33,61 @@
 
 #pragma once
 
-#include "ParamLayer.h"
+#অন্তর্ভাব "ParamLayer.h"
 
-class ConstLayer : public ParamLayer
+class ConstLayer : সর্বজনীন ParamLayer
 {
-public:
+সর্বজনীন:
 
-	ConstLayer() = default;
+	ConstLayer() = পূর্বনির্ধারিত;
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_মান_u মান) override
 	{
-		return false;
+		ফেরত false;
 	}
 
-	bool contains(param_t param) const override
+	bool contains(param_t param) ধ্রুবক override
 	{
-		return param < PARAM_COUNT;
+		ফেরত param < PARAM_গুনতি;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_গুনতি> containedAsBitset() ধ্রুবক override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
+		px4::AtomicBitset<PARAM_গুনতি> set;
 
-		for (int i = 0; i < PARAM_COUNT; i++) {
+		জন্য (পূর্ণসংখ্যা i = 0; i < PARAM_গুনতি; i++) {
 			set.set(i);
 		}
 
-		return set;
+		ফেরত set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_মান_u get(param_t param) ধ্রুবক override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		যদি (param >= PARAM_গুনতি) {
+			ফেরত {0};
 		}
 
-		return px4::parameters[param].val;
+		ফেরত px4::parameters[param].val;
 	}
 
-	void reset(param_t param) override
+	শূন্য reset(param_t param) override
 	{
 		// Do nothing
 	}
 
-	void refresh(param_t param) override
+	শূন্য refresh(param_t param) override
 	{
 		// Do nothing
 	}
 
-	int size() const override
+	পূর্ণসংখ্যা আকার_2() ধ্রুবক override
 	{
-		return PARAM_COUNT;
+		ফেরত PARAM_গুনতি;
 	}
 
-	int byteSize() const override
+	পূর্ণসংখ্যা byte_আকার() ধ্রুবক override
 	{
-		return PARAM_COUNT * sizeof(param_info_s);
+		ফেরত PARAM_গুনতি * আকার(param_info_s);
 	}
 };

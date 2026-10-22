@@ -40,71 +40,71 @@
  * @author Juraj Ciberlin <jciberlin1@gmail.com>
  */
 
-#if 0 // enable non-verbose debugging
+#যদি 0 // enable non-verbose debugging
 #define GHST_DEBUG PX4_WARN
-#else
+#অন্যথা
 #define GHST_DEBUG(...)
 #endif
 
-#if 0 // verbose debugging. Careful when enabling: it leads to too much output, causing dropped bytes
+#যদি 0 // verbose debugging. Careful when enabling: it leads to too much output, causing dropped bytes
 #define GHST_VERBOSE PX4_WARN
-#else
+#অন্যথা
 #define GHST_VERBOSE(...)
 #endif
 
-#include <drivers/drv_hrt.h>
-#include <termios.h>
-#include <string.h>
-#include <unistd.h>
-#include <math.h>
+#অন্তর্ভাব <drivers/drv_hrt.h>
+#অন্তর্ভাব <termios.h>
+#অন্তর্ভাব <string.h>
+#অন্তর্ভাব <unistd.h>
+#অন্তর্ভাব <math.h>
 
 // TODO: include RSSI dBm to percentage conversion for ghost receiver
-#include "spektrum_rssi.h"
+#অন্তর্ভাব "spektrum_rssi.h"
 
-#include "ghst.hpp"
-#include "common_rc.h"
+#অন্তর্ভাব "ghst.hpp"
+#অন্তর্ভাব "common_rc.h"
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 
-#define GHST_FRAME_PAYLOAD_SIZE_TELEMETRY	(10U)
-#define GHST_FRAME_CRC_SIZE			(1U)
-#define GHST_FRAME_TYPE_SIZE			(1U)
-#define GHST_TYPE_DATA_CRC_SIZE			(12U)
+#define GHST_FRAME_PAYLOAD_আকার_TELEMETRY	(10U)
+#define GHST_FRAME_CRC_আকার			(1U)
+#define GHST_FRAME_TYPE_আকার			(1U)
+#define GHST_TYPE_তথ্য_CRC_আকার			(12U)
 #define GHST_ADDR_FC				(130U)
-#define GHST_MAX_NUM_CHANNELS			(16)
+#define GHST_MAX_অঙ্ক_CHANNELS			(16)
 
-enum class ghst_parser_state_t : uint8_t {
+গণনা শ্রেণী ghst_parser_state_t : uint8_t {
 	unsynced = 0U,
 	synced
 };
 
 // only RSSI frame contains value of RSSI, if it is not received, send last received RSSI/LQ
-static ghstLinkStatistics_t last_link_stats = { .rssi_pct = -1, .rssi_dbm = NAN, .link_quality = 0 };
+স্থির ghstLinkStatistics_t last_link_stats = { .rssi_pct = -1, .rssi_dbm = NAN, .link_quality = 0 };
 
-static ghst_frame_t &ghst_frame = rc_decode_buf.ghst_frame;
-static uint32_t current_frame_position = 0U;
-static ghst_parser_state_t parser_state = ghst_parser_state_t::unsynced;
+স্থির ghst_frame_t &ghst_frame = rc_decode_buf.ghst_frame;
+স্থির uint32_t current_frame_position = 0U;
+স্থির ghst_parser_state_t parser_state = ghst_parser_state_t::unsynced;
 
-static uint16_t prev_rc_vals[GHST_MAX_NUM_CHANNELS];
+স্থির uint16_t পূর্ব_rc_vals[GHST_MAX_অঙ্ক_CHANNELS];
 
 /**
  * parse the current ghst_frame buffer
  */
-static bool ghst_parse_buffer(uint16_t *values, ghstLinkStatistics_t *link_stats, uint16_t *num_values,
+স্থির যৌক্তিক ghst_parse_বাফার(uint16_t *মানসমূহ_2, ghstLinkStatistics_t *link_stats, uint16_t *অঙ্ক_মানসমূহ,
 			      uint16_t max_channels);
 
-int ghst_config(int uart_fd)
+পূর্ণসংখ্যা ghst_config(পূর্ণসংখ্যা uart_fd)
 {
-	struct termios t;
-	int ret_val;
+	কাঠামো termios t;
+	পূর্ণসংখ্যা ret_val;
 
 	// no parity, one stop bit
 	tcgetattr(uart_fd, &t);
 	cfsetspeed(&t, GHST_BAUDRATE);
 	t.c_cflag &= ~(CSTOPB | PARENB);
-	memset(prev_rc_vals, static_cast<int>(UINT16_MAX), sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+	memset(পূর্ব_rc_vals, static_cast<পূর্ণসংখ্যা>(UINT16_MAX), আকার(uint16_t) * GHST_MAX_অঙ্ক_CHANNELS);
 	ret_val = tcsetattr(uart_fd, TCSANOW, &t);
-	return ret_val;
+	ফেরত ret_val;
 }
 
 /**
@@ -112,62 +112,62 @@ int ghst_config(int uart_fd)
  * @param chan_value channel value in [172, 1811]
  * @return PWM channel value in [1000, 2000]
  */
-static uint16_t convert_channel_value(unsigned chan_value);
+স্থির uint16_t convert_channel_মান(unsigned chan_মান);
 
 
-bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *values,
-		ghstLinkStatistics_t *link_stats, uint16_t *num_values, uint16_t max_channels)
+যৌক্তিক ghst_parse(ধ্রুবক uint64_t now, ধ্রুবক uint8_t *frame, unsigned len, uint16_t *মানসমূহ_2,
+		ghstLinkStatistics_t *link_stats, uint16_t *অঙ্ক_মানসমূহ, uint16_t max_channels)
 {
-	bool success = false;
+	যৌক্তিক success = মিথ্যা;
 	uint8_t *ghst_frame_ptr = (uint8_t *)&ghst_frame;
 
-	memcpy(values, prev_rc_vals, sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+	memcpy(মানসমূহ_2, পূর্ব_rc_vals, আকার(uint16_t) * GHST_MAX_অঙ্ক_CHANNELS);
 
-	while (len > 0U) {
+	যখন (len > 0U) {
 
 		// fill in the ghst_buffer, as much as we can
-		const uint32_t current_len = MIN(len, sizeof(ghst_frame_t) - current_frame_position);
+		ধ্রুবক uint32_t current_len = MIN(len, আকার(ghst_frame_t) - current_frame_position);
 		memcpy(ghst_frame_ptr + current_frame_position, frame, current_len);
 		current_frame_position += current_len;
 
 		// protection to guarantee parsing progress
-		if (current_len == 0U) {
+		যদি (current_len == 0U) {
 			GHST_DEBUG("========== parser bug: no progress (%u) ===========", len);
 
-			for (uint32_t i = 0U; i < current_frame_position; ++i) {
+			জন্য (uint32_t i = 0U; i < current_frame_position; ++i) {
 				GHST_DEBUG("ghst_frame_ptr[%u]: 0x%x", i, ghst_frame_ptr[i]);
 			}
 
 			// reset the parser
 			current_frame_position = 0U;
 			parser_state = ghst_parser_state_t::unsynced;
-			success = false;
+			success = মিথ্যা;
 
-		} else {
+		} অন্যথা {
 			len -= current_len;
 			frame += current_len;
 
-			if (ghst_parse_buffer(values, link_stats, num_values, max_channels)) {
-				success = true;
+			যদি (ghst_parse_বাফার(মানসমূহ_2, link_stats, অঙ্ক_মানসমূহ, max_channels)) {
+				success = সত্য;
 			}
 		}
 	}
 
-	return success;
+	ফেরত success;
 }
 
-uint8_t ghst_frame_CRC(const ghst_frame_t &frame)
+uint8_t ghst_frame_CRC(ধ্রুবক ghst_frame_t &frame)
 {
 	uint8_t crc = crc8_dvb_s2(0U, frame.type);
 
-	for (uint32_t i = 0U; i < frame.header.length - GHST_FRAME_CRC_SIZE - GHST_FRAME_TYPE_SIZE; ++i) {
+	জন্য (uint32_t i = 0U; i < frame.header.দৈর্ঘ্য - GHST_FRAME_CRC_আকার - GHST_FRAME_TYPE_আকার; ++i) {
 		crc = crc8_dvb_s2(crc, frame.payload[i]);
 	}
 
-	return crc;
+	ফেরত crc;
 }
 
-static uint16_t convert_channel_value(unsigned int chan_value)
+স্থির uint16_t convert_channel_মান(unsigned পূর্ণসংখ্যা chan_মান)
 {
 	/*
 	 *       RC     PWM
@@ -175,175 +175,175 @@ static uint16_t convert_channel_value(unsigned int chan_value)
 	 * mid  992 -> 1500us
 	 * max 1811 -> 2012us
 	 */
-	static constexpr float scale = (2012.0F - 988.0F) / (1811.0F - 172.0F);
-	static constexpr float offset = 988.0F - (172.0F * scale);
-	float scaled_chan_value = scale * static_cast<float>(chan_value);
-	float scaled_chan_value_with_offset = scaled_chan_value + offset;
-	uint16_t converted_chan_value = static_cast<uint16_t>(scaled_chan_value_with_offset);
+	স্থির constexpr দশমিক scale = (2012.0F - 988.0F) / (1811.0F - 172.0F);
+	স্থির constexpr দশমিক offset = 988.0F - (172.0F * scale);
+	দশমিক scaled_chan_মান = scale * static_cast<দশমিক>(chan_মান);
+	দশমিক scaled_chan_মান_with_offset = scaled_chan_মান + offset;
+	uint16_t converted_chan_মান = static_cast<uint16_t>(scaled_chan_মান_with_offset);
 
-	return converted_chan_value;
+	ফেরত converted_chan_মান;
 }
 
-static bool ghst_parse_buffer(uint16_t *values, ghstLinkStatistics_t *link_stats, uint16_t *num_values,
+স্থির যৌক্তিক ghst_parse_বাফার(uint16_t *মানসমূহ_2, ghstLinkStatistics_t *link_stats, uint16_t *অঙ্ক_মানসমূহ,
 			      uint16_t max_channels)
 {
 	uint8_t *ghst_frame_ptr = (uint8_t *)&ghst_frame;
 
-	if (parser_state == ghst_parser_state_t::unsynced) {
+	যদি (parser_state == ghst_parser_state_t::unsynced) {
 		// there is no sync yet, try to find an RC packet by searching for a matching frame length and type
-		for (uint32_t i = 1U; i < current_frame_position - 1U; ++i) {
-			if ((ghst_frame_ptr[i + 1U] >= static_cast<uint8_t>(ghstFrameType::frameTypeFirst)) &&
+		জন্য (uint32_t i = 1U; i < current_frame_position - 1U; ++i) {
+			যদি ((ghst_frame_ptr[i + 1U] >= static_cast<uint8_t>(ghstFrameType::frameTypeFirst)) &&
 			    (ghst_frame_ptr[i + 1U] <= static_cast<uint8_t>(ghstFrameType::frameTypeLast))) {
-				if (ghst_frame_ptr[i] == GHST_TYPE_DATA_CRC_SIZE) {
+				যদি (ghst_frame_ptr[i] == GHST_TYPE_তথ্য_CRC_আকার) {
 					parser_state = ghst_parser_state_t::synced;
 					uint32_t frame_offset = i - 1U;
 					GHST_VERBOSE("RC channels found at offset %u", frame_offset);
 
 					// move the rest of the buffer to the beginning
-					if (frame_offset != 0U) {
+					যদি (frame_offset != 0U) {
 						memmove(ghst_frame_ptr, ghst_frame_ptr + frame_offset, current_frame_position - frame_offset);
 						current_frame_position -= frame_offset;
 					}
 
-					break;
+					বিরতি;
 				}
 			}
 		}
 	}
 
-	if (parser_state != ghst_parser_state_t::synced) {
-		if (current_frame_position >= sizeof(ghst_frame_t)) {
+	যদি (parser_state != ghst_parser_state_t::synced) {
+		যদি (current_frame_position >= আকার(ghst_frame_t)) {
 			// discard most of the data, but keep the last 3 bytes (otherwise we could miss the frame start)
 			current_frame_position = 3U;
 
-			memcpy(ghst_frame_ptr, ghst_frame_ptr + sizeof(ghst_frame_t) - current_frame_position, current_frame_position);
+			memcpy(ghst_frame_ptr, ghst_frame_ptr + আকার(ghst_frame_t) - current_frame_position, current_frame_position);
 
 			GHST_VERBOSE("Discarding buffer");
 		}
 
-		return false;
+		ফেরত মিথ্যা;
 	}
 
 
-	if (current_frame_position < 3U) {
+	যদি (current_frame_position < 3U) {
 		// wait until we have the address, length and type
-		return false;
+		ফেরত মিথ্যা;
 	}
 
 	// now we have at least the header and the type
 
-	const unsigned current_frame_length = ghst_frame.header.length + sizeof(ghst_frame_header_t);
+	ধ্রুবক unsigned current_frame_দৈর্ঘ্য = ghst_frame.header.দৈর্ঘ্য + আকার(ghst_frame_header_t);
 
-	if ((current_frame_length > sizeof(ghst_frame_t)) || (current_frame_length < 4U)) {
+	যদি ((current_frame_দৈর্ঘ্য > আকার(ghst_frame_t)) || (current_frame_দৈর্ঘ্য < 4U)) {
 		// frame too long or bogus (frame length should be longer than 4, at least 1 address, 1 length, 1 type, 1 data, 1 crc)
 		// discard everything and go into unsynced state
 		current_frame_position = 0U;
 		parser_state = ghst_parser_state_t::unsynced;
-		GHST_DEBUG("Frame too long/bogus (%u, type=%u) -> unsync", current_frame_length, ghst_frame.type);
-		return false;
+		GHST_DEBUG("Frame too long/bogus (%u, type=%u) -> unsync", current_frame_দৈর্ঘ্য, ghst_frame.type);
+		ফেরত মিথ্যা;
 	}
 
-	if (current_frame_position < current_frame_length) {
+	যদি (current_frame_position < current_frame_দৈর্ঘ্য) {
 		// we do not have the full frame yet -> wait for more data
-		GHST_VERBOSE("waiting for more data (%u < %u)", current_frame_position, current_frame_length);
-		return false;
+		GHST_VERBOSE("waiting for more data (%u < %u)", current_frame_position, current_frame_দৈর্ঘ্য);
+		ফেরত মিথ্যা;
 	}
 
-	bool ret = false;
+	যৌক্তিক ret = মিথ্যা;
 
 	// now we have the full frame
 
-	if ((ghst_frame.type >= static_cast<uint8_t>(ghstFrameType::frameTypeFirst)) &&
+	যদি ((ghst_frame.type >= static_cast<uint8_t>(ghstFrameType::frameTypeFirst)) &&
 	    (ghst_frame.type <= static_cast<uint8_t>(ghstFrameType::frameTypeLast)) &&
-	    (ghst_frame.header.length == GHST_TYPE_DATA_CRC_SIZE) &&
+	    (ghst_frame.header.দৈর্ঘ্য == GHST_TYPE_তথ্য_CRC_আকার) &&
 	    (ghst_frame.header.device_address == GHST_ADDR_FC)) {
-		const uint8_t crc = ghst_frame.payload[ghst_frame.header.length - 2U];
+		ধ্রুবক uint8_t crc = ghst_frame.payload[ghst_frame.header.দৈর্ঘ্য - 2U];
 
-		if (crc == ghst_frame_CRC(ghst_frame)) {
-			const ghstPayloadData_t *const rcChannels = (ghstPayloadData_t *)&ghst_frame.payload;
-			*num_values = MIN(max_channels, GHST_MAX_NUM_CHANNELS);
+		যদি (crc == ghst_frame_CRC(ghst_frame)) {
+			ধ্রুবক ghst_Payload_তথ্য_t *ধ্রুবক rcChannels = (ghst_Payload_তথ্য_t *)&ghst_frame.payload;
+			*অঙ্ক_মানসমূহ = MIN(max_channels, GHST_MAX_অঙ্ক_CHANNELS);
 
 			// all frames contain data from chan1to4
-			if (max_channels > 0U) { values[0] = convert_channel_value(rcChannels->chan1to4.chan1 >> 1U); }
+			যদি (max_channels > 0U) { মানসমূহ_2[0] = convert_channel_মান(rcChannels->chan1to4.chan1 >> 1U); }
 
-			if (max_channels > 1U) { values[1] = convert_channel_value(rcChannels->chan1to4.chan2 >> 1U); }
+			যদি (max_channels > 1U) { মানসমূহ_2[1] = convert_channel_মান(rcChannels->chan1to4.chan2 >> 1U); }
 
-			if (max_channels > 2U) { values[2] = convert_channel_value(rcChannels->chan1to4.chan3 >> 1U); }
+			যদি (max_channels > 2U) { মানসমূহ_2[2] = convert_channel_মান(rcChannels->chan1to4.chan3 >> 1U); }
 
-			if (max_channels > 3U) { values[3] = convert_channel_value(rcChannels->chan1to4.chan4 >> 1U); }
+			যদি (max_channels > 3U) { মানসমূহ_2[3] = convert_channel_মান(rcChannels->chan1to4.chan4 >> 1U); }
 
-			if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType5to8)) {
-				if (max_channels > 4U) { values[4] = convert_channel_value(rcChannels->chanA << 3U); }
+			যদি (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType5to8)) {
+				যদি (max_channels > 4U) { মানসমূহ_2[4] = convert_channel_মান(rcChannels->chanA << 3U); }
 
-				if (max_channels > 5U) { values[5] = convert_channel_value(rcChannels->chanB << 3U); }
+				যদি (max_channels > 5U) { মানসমূহ_2[5] = convert_channel_মান(rcChannels->chanB << 3U); }
 
-				if (max_channels > 6U) { values[6] = convert_channel_value(rcChannels->chanC << 3U); }
+				যদি (max_channels > 6U) { মানসমূহ_2[6] = convert_channel_মান(rcChannels->chanC << 3U); }
 
-				if (max_channels > 7U) { values[7] = convert_channel_value(rcChannels->chanD << 3U); }
+				যদি (max_channels > 7U) { মানসমূহ_2[7] = convert_channel_মান(rcChannels->chanD << 3U); }
 
-			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType9to12)) {
-				if (max_channels > 8U) { values[8] = convert_channel_value(rcChannels->chanA << 3U); }
+			} অন্যথা যদি (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType9to12)) {
+				যদি (max_channels > 8U) { মানসমূহ_2[8] = convert_channel_মান(rcChannels->chanA << 3U); }
 
-				if (max_channels > 9U) { values[9] = convert_channel_value(rcChannels->chanB << 3U); }
+				যদি (max_channels > 9U) { মানসমূহ_2[9] = convert_channel_মান(rcChannels->chanB << 3U); }
 
-				if (max_channels > 10U) { values[10] = convert_channel_value(rcChannels->chanC << 3U); }
+				যদি (max_channels > 10U) { মানসমূহ_2[10] = convert_channel_মান(rcChannels->chanC << 3U); }
 
-				if (max_channels > 11U) { values[11] = convert_channel_value(rcChannels->chanD << 3U); }
+				যদি (max_channels > 11U) { মানসমূহ_2[11] = convert_channel_মান(rcChannels->chanD << 3U); }
 
-			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType13to16)) {
-				if (max_channels > 12U) { values[12] = convert_channel_value(rcChannels->chanA << 3U); }
+			} অন্যথা যদি (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType13to16)) {
+				যদি (max_channels > 12U) { মানসমূহ_2[12] = convert_channel_মান(rcChannels->chanA << 3U); }
 
-				if (max_channels > 13U) { values[13] = convert_channel_value(rcChannels->chanB << 3U); }
+				যদি (max_channels > 13U) { মানসমূহ_2[13] = convert_channel_মান(rcChannels->chanB << 3U); }
 
-				if (max_channels > 14U) { values[14] = convert_channel_value(rcChannels->chanC << 3U); }
+				যদি (max_channels > 14U) { মানসমূহ_2[14] = convert_channel_মান(rcChannels->chanC << 3U); }
 
-				if (max_channels > 15U) { values[15] = convert_channel_value(rcChannels->chanD << 3U); }
+				যদি (max_channels > 15U) { মানসমূহ_2[15] = convert_channel_মান(rcChannels->chanD << 3U); }
 
-			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameTypeRssi)) {
-				const ghstPayloadRssi_t *const rssiValues = (ghstPayloadRssi_t *)&ghst_frame.payload;
+			} অন্যথা যদি (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameTypeRssi)) {
+				ধ্রুবক ghstPayloadRssi_t *ধ্রুবক rssi_মানসমূহ = (ghstPayloadRssi_t *)&ghst_frame.payload;
 				// TODO: call function for RSSI dBm to percentage conversion for ghost receiver
 				last_link_stats.rssi_pct = spek_dbm_to_percent(static_cast<int8_t>
-							   (rssiValues->rssidBm));	// rssidBm sign inverted (90 = -90dBm)
-				last_link_stats.rssi_dbm = -rssiValues->rssidBm;
-				last_link_stats.link_quality = rssiValues->lq;						// 0 - 100
+							   (rssi_মানসমূহ->rssidBm));	// rssidBm sign inverted (90 = -90dBm)
+				last_link_stats.rssi_dbm = -rssi_মানসমূহ->rssidBm;
+				last_link_stats.link_quality = rssi_মানসমূহ->lq;						// 0 - 100
 
-			} else {
+			} অন্যথা {
 				GHST_DEBUG("Frame type: %u", ghst_frame.type);
 			}
 
 			*link_stats = last_link_stats;
 
-			memcpy(prev_rc_vals, values, sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+			memcpy(পূর্ব_rc_vals, মানসমূহ_2, আকার(uint16_t) * GHST_MAX_অঙ্ক_CHANNELS);
 
 			GHST_VERBOSE("Got Channels");
 
-			ret = true;
+			ret = সত্য;
 
-		} else {
+		} অন্যথা {
 			GHST_DEBUG("CRC check failed");
 		}
 
-	} else {
-		GHST_DEBUG("Got Non-RC frame (len=%u, type=%u)", current_frame_length, ghst_frame.type);
+	} অন্যথা {
+		GHST_DEBUG("Got Non-RC frame (len=%u, type=%u)", current_frame_দৈর্ঘ্য, ghst_frame.type);
 	}
 
 	// either reset or move the rest of the buffer
-	if (current_frame_position > current_frame_length) {
-		GHST_VERBOSE("Moving buffer (%u > %u)", current_frame_position, current_frame_length);
-		memmove(ghst_frame_ptr, ghst_frame_ptr + current_frame_length, current_frame_position - current_frame_length);
-		current_frame_position -= current_frame_length;
+	যদি (current_frame_position > current_frame_দৈর্ঘ্য) {
+		GHST_VERBOSE("Moving buffer (%u > %u)", current_frame_position, current_frame_দৈর্ঘ্য);
+		memmove(ghst_frame_ptr, ghst_frame_ptr + current_frame_দৈর্ঘ্য, current_frame_position - current_frame_দৈর্ঘ্য);
+		current_frame_position -= current_frame_দৈর্ঘ্য;
 
-	} else {
+	} অন্যথা {
 		current_frame_position = 0U;
 	}
 
-	return ret;
+	ফেরত ret;
 }
 
 /**
  * write an uint8_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint8_t(uint8_t *buf, int &offset, uint8_t value)
+স্থির অন্তঃরেখ শূন্য write_uint8_t(uint8_t *buf, পূর্ণসংখ্যা &offset, uint8_t value)
 {
 	buf[offset++] = value;
 }
@@ -351,7 +351,7 @@ static inline void write_uint8_t(uint8_t *buf, int &offset, uint8_t value)
 /**
  * write an uint16_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint16_t(uint8_t *buf, int &offset, uint16_t value)
+স্থির অন্তঃরেখ শূন্য write_uint16_t(uint8_t *buf, পূর্ণসংখ্যা &offset, uint16_t value)
 {
 	buf[offset] = value & 0xFFU;
 	buf[offset + 1] = value >> 8U;
@@ -361,7 +361,7 @@ static inline void write_uint16_t(uint8_t *buf, int &offset, uint16_t value)
 /**
  * write an uint32_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint32_t(uint8_t *buf, int &offset, uint32_t value)
+স্থির অন্তঃরেখ শূন্য write_uint32_t(uint8_t *buf, পূর্ণসংখ্যা &offset, uint32_t value)
 {
 	// Little Endian
 	buf[offset] = value & 0xFFU;
@@ -374,27 +374,27 @@ static inline void write_uint32_t(uint8_t *buf, int &offset, uint32_t value)
 /**
  * write frame header
  */
-static inline void write_frame_header(uint8_t *buf, int &offset, ghstTelemetryType type, uint8_t payload_size)
+স্থির অন্তঃরেখ শূন্য write_frame_header(uint8_t *buf, পূর্ণসংখ্যা &offset, ghstTelemetryType type, uint8_t payload_আকার)
 {
 	write_uint8_t(buf, offset, static_cast<uint8_t>(ghstAddress::rxAddress));
-	write_uint8_t(buf, offset, payload_size + GHST_FRAME_CRC_SIZE + GHST_FRAME_TYPE_SIZE);
+	write_uint8_t(buf, offset, payload_আকার + GHST_FRAME_CRC_আকার + GHST_FRAME_TYPE_আকার);
 	write_uint8_t(buf, offset, static_cast<uint8_t>(type));
 }
 
 /**
  * write frame CRC
  */
-static inline void write_frame_crc(uint8_t *buf, int &offset, int buf_size)
+স্থির অন্তঃরেখ শূন্য write_frame_crc(uint8_t *buf, পূর্ণসংখ্যা &offset, পূর্ণসংখ্যা buf_আকার)
 {
-	write_uint8_t(buf, offset, crc8_dvb_s2_buf(buf + 2U, buf_size - 3));
+	write_uint8_t(buf, offset, crc8_dvb_s2_buf(buf + 2U, buf_আকার - 3));
 }
 
-bool ghst_send_telemetry_battery_status(int uart_fd, uint16_t voltage_in_10mV,
+যৌক্তিক ghst_send_telemetry_battery_status(পূর্ণসংখ্যা uart_fd, uint16_t voltage_in_10mV,
 					uint16_t current_in_10mA, uint16_t fuel_in_10mAh)
 {
-	uint8_t buf[GHST_FRAME_PAYLOAD_SIZE_TELEMETRY + 4U]; // address, frame length, type, crc
-	int offset = 0;
-	write_frame_header(buf, offset, ghstTelemetryType::batteryPack, GHST_FRAME_PAYLOAD_SIZE_TELEMETRY);
+	uint8_t buf[GHST_FRAME_PAYLOAD_আকার_TELEMETRY + 4U]; // address, frame length, type, crc
+	পূর্ণসংখ্যা offset = 0;
+	write_frame_header(buf, offset, ghstTelemetryType::batteryPack, GHST_FRAME_PAYLOAD_আকার_TELEMETRY);
 	write_uint16_t(buf, offset, voltage_in_10mV);
 	write_uint16_t(buf, offset, current_in_10mA);
 	write_uint16_t(buf, offset, fuel_in_10mAh);
@@ -402,37 +402,37 @@ bool ghst_send_telemetry_battery_status(int uart_fd, uint16_t voltage_in_10mV,
 	write_uint8_t(buf, offset, 0x00U); // empty
 	write_uint8_t(buf, offset, 0x00U); // empty
 	write_uint8_t(buf, offset, 0x00U); // empty
-	write_frame_crc(buf, offset, sizeof(buf));
+	write_frame_crc(buf, offset, আকার(buf));
 
-	return write(uart_fd, buf, offset) == offset;
+	ফেরত লিখ(uart_fd, buf, offset) == offset;
 }
 
-bool ghst_send_telemetry_gps1_status(int uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude)
+যৌক্তিক ghst_send_telemetry_gps1_status(পূর্ণসংখ্যা uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude)
 {
-	uint8_t buf[GHST_FRAME_PAYLOAD_SIZE_TELEMETRY + 4U]; // address, frame length, type, crc
-	int offset = 0;
-	write_frame_header(buf, offset, ghstTelemetryType::gpsPrimary, GHST_FRAME_PAYLOAD_SIZE_TELEMETRY);
+	uint8_t buf[GHST_FRAME_PAYLOAD_আকার_TELEMETRY + 4U]; // address, frame length, type, crc
+	পূর্ণসংখ্যা offset = 0;
+	write_frame_header(buf, offset, ghstTelemetryType::gpsPrimary, GHST_FRAME_PAYLOAD_আকার_TELEMETRY);
 	write_uint32_t(buf, offset, latitude);
 	write_uint32_t(buf, offset, longitude);
 	write_uint16_t(buf, offset, altitude);
-	write_frame_crc(buf, offset, sizeof(buf));
+	write_frame_crc(buf, offset, আকার(buf));
 
-	return write(uart_fd, buf, offset) == offset;
+	ফেরত লিখ(uart_fd, buf, offset) == offset;
 }
 
-bool ghst_send_telemetry_gps2_status(int uart_fd, uint16_t ground_speed, uint16_t ground_course, uint8_t numSats,
+যৌক্তিক ghst_send_telemetry_gps2_status(পূর্ণসংখ্যা uart_fd, uint16_t ground_speed, uint16_t ground_course, uint8_t অঙ্ক_Sats,
 				     uint16_t home_dist, uint16_t home_dir, uint8_t flags)
 {
-	uint8_t buf[GHST_FRAME_PAYLOAD_SIZE_TELEMETRY + 4U]; // address, frame length, type, crc
-	int offset = 0;
-	write_frame_header(buf, offset, ghstTelemetryType::gpsSecondary, GHST_FRAME_PAYLOAD_SIZE_TELEMETRY);
+	uint8_t buf[GHST_FRAME_PAYLOAD_আকার_TELEMETRY + 4U]; // address, frame length, type, crc
+	পূর্ণসংখ্যা offset = 0;
+	write_frame_header(buf, offset, ghstTelemetryType::gpsSecondary, GHST_FRAME_PAYLOAD_আকার_TELEMETRY);
 	write_uint16_t(buf, offset, ground_speed);
 	write_uint16_t(buf, offset, ground_course);
-	write_uint8_t(buf, offset, numSats);
+	write_uint8_t(buf, offset, অঙ্ক_Sats);
 	write_uint16_t(buf, offset, home_dist);
 	write_uint16_t(buf, offset, home_dir);
 	write_uint8_t(buf, offset, flags);
-	write_frame_crc(buf, offset, sizeof(buf));
+	write_frame_crc(buf, offset, আকার(buf));
 
-	return write(uart_fd, buf, offset) == offset;
+	ফেরত লিখ(uart_fd, buf, offset) == offset;
 }

@@ -40,125 +40,125 @@
 #pragma once
 
 #define PARAM_IMPLEMENTATION
-#include "param.h"
-#include <px4_platform/board_ctrl.h>
-#include <px4_platform_common/defines.h>
+#অন্তর্ভাব "param.h"
+#অন্তর্ভাব <px4_platform/board_ctrl.h>
+#অন্তর্ভাব <px4_platform_common/defines.h>
 
 #define _PARAMIOC(_n) (_PX4_IOC(_PARAMIOCBASE, _n))
 
 #define PARAMIOCNOTIFY	_PARAMIOC(1)
 
 #define PARAMIOCFIND	_PARAMIOC(2)
-typedef struct paramiocfind {
-	const char *name;
-	const bool notification;
+প্রকারলেখ কাঠামো paramiocfind {
+	ধ্রুবক অক্ষর *name;
+	ধ্রুবক bool notification;
 	param_t ret;
 } paramiocfind_t;
 
 
 #define PARAMIOCCOUNTUSED	_PARAMIOC(3)
-typedef struct paramioccountused {
+প্রকারলেখ কাঠামো paramioccountused {
 	unsigned ret;
 } paramioccountused_t;
 
 #define PARAMIOCFORUSEDINDEX	_PARAMIOC(4)
-typedef struct paramiocforusedindex {
-	const unsigned index;
+প্রকারলেখ কাঠামো paramiocforusedindex {
+	ধ্রুবক unsigned সূচক;
 	param_t ret;
 } paramiocforusedindex_t;
 
 #define PARAMIOCGETUSEDINDEX	_PARAMIOC(5)
-typedef struct paramiocgetusedindex {
-	const param_t param;
+প্রকারলেখ কাঠামো paramiocgetusedindex {
+	ধ্রুবক param_t param;
 	unsigned ret;
 } paramiocgetusedindex_t;
 
 #define PARAMIOCUNSAVED	_PARAMIOC(6)
-typedef struct paramiocunsaved {
-	const param_t param;
+প্রকারলেখ কাঠামো paramiocunsaved {
+	ধ্রুবক param_t param;
 	bool ret;
 } paramiocunsaved_t;
 
 #define PARAMIOCGET	_PARAMIOC(7)
-typedef struct paramiocget {
-	const param_t param;
-	const bool deflt;
-	void *const val;
-	int ret;
+প্রকারলেখ কাঠামো paramiocget {
+	ধ্রুবক param_t param;
+	ধ্রুবক bool deflt;
+	শূন্য *ধ্রুবক val;
+	পূর্ণসংখ্যা ret;
 } paramiocget_t;
 
 #define PARAMIOCAUTOSAVE	_PARAMIOC(8)
-typedef struct paramiocautosave {
-	const bool enable;
+প্রকারলেখ কাঠামো paramiocautosave {
+	ধ্রুবক bool enable;
 } paramiocautosave_t;
 
 #define PARAMIOCSET	_PARAMIOC(9)
-typedef struct paramiocset {
-	const param_t param;
-	const bool notification;
-	const void *val;
-	int ret;
+প্রকারলেখ কাঠামো paramiocset {
+	ধ্রুবক param_t param;
+	ধ্রুবক bool notification;
+	ধ্রুবক শূন্য *val;
+	পূর্ণসংখ্যা ret;
 } paramiocset_t;
 
 #define PARAMIOCUSED	_PARAMIOC(10)
-typedef struct paramiocused {
-	const param_t param;
+প্রকারলেখ কাঠামো paramiocused {
+	ধ্রুবক param_t param;
 	bool ret;
 } paramiocused_t;
 
 #define PARAMIOCSETUSED	_PARAMIOC(11)
-typedef struct paramiocsetused {
-	const param_t param;
+প্রকারলেখ কাঠামো paramiocsetused {
+	ধ্রুবক param_t param;
 } paramiocsetused_t;
 
 #define PARAMIOCSETDEFAULT	_PARAMIOC(12)
-typedef struct paramiocsetdefault {
-	const param_t param;
-	const void *val;
-	int ret;
+প্রকারলেখ কাঠামো paramiocsetdefault {
+	ধ্রুবক param_t param;
+	ধ্রুবক শূন্য *val;
+	পূর্ণসংখ্যা ret;
 } paramiocsetdefault_t;
 
 #define PARAMIOCRESET	_PARAMIOC(13)
-typedef struct paramiocreset {
-	const param_t param;
-	const bool notification;
-	int ret;
+প্রকারলেখ কাঠামো paramiocreset {
+	ধ্রুবক param_t param;
+	ধ্রুবক bool notification;
+	পূর্ণসংখ্যা ret;
 } paramiocreset_t;
 
 #define PARAMIOCRESETGROUP	_PARAMIOC(14)
-typedef enum {
+প্রকারলেখ গণনা {
 	PARAM_RESET_ALL,
 	PARAM_RESET_EXCLUDES,
 	PARAM_RESET_SPECIFIC
 } param_reset_type_t;
 
-typedef struct paramiocresetgroup {
+প্রকারলেখ কাঠামো paramiocresetgroup {
 	param_reset_type_t type;
-	const char **group;
-	const int num_in_group;
+	ধ্রুবক অক্ষর **group;
+	ধ্রুবক পূর্ণসংখ্যা অঙ্ক_in_group;
 } paramiocresetgroup_t;
 
 #define PARAMIOCSAVEDEFAULT	_PARAMIOC(15)
-typedef struct paramiocsavedefault {
+প্রকারলেখ কাঠামো paramiocsavedefault {
 	bool blocking;
-	int ret;
+	পূর্ণসংখ্যা ret;
 } paramiocsavedefault_t;
 
 #define PARAMIOCLOADDEFAULT	_PARAMIOC(16)
-typedef struct paramiocloaddefault {
-	int ret;
+প্রকারলেখ কাঠামো paramiocloaddefault {
+	পূর্ণসংখ্যা ret;
 } paramiocloaddefault_t;
 
 
 #define PARAMIOCEXPORT	_PARAMIOC(17)
-typedef struct paramiocexport {
-	const char *filename;
-	int ret;
+প্রকারলেখ কাঠামো paramiocexport {
+	ধ্রুবক অক্ষর *filename;
+	পূর্ণসংখ্যা ret;
 } paramiocexport_t;
 
 #define PARAMIOCHASH	_PARAMIOC(18)
-typedef struct paramiochash {
+প্রকারলেখ কাঠামো paramiochash {
 	uint32_t ret;
 } paramiochash_t;
 
-int param_ioctl(unsigned int cmd, unsigned long arg);
+পূর্ণসংখ্যা param_ioctl(unsigned পূর্ণসংখ্যা cmd, unsigned long arg);

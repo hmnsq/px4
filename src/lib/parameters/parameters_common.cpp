@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#include <string.h>
+#অন্তর্ভাব <string.h>
 
 /**
  * @file parameters_common.cpp
@@ -40,7 +40,7 @@
  *
  */
 
-static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(param_info_s);
+স্থির constexpr uint16_t param_info_গুনতি = আকার(px4::parameters) / আকার(param_info_s);
 
 /**
  * Test whether a param_t is value.
@@ -48,119 +48,119 @@ static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(pa
  * @param param			The parameter handle to test.
  * @return			True if the handle is valid.
  */
-static constexpr bool handle_in_range(param_t param) { return (param < param_info_count); }
+স্থির constexpr যৌক্তিক handle_in_range(param_t param) { ফেরত (param < param_info_গুনতি); }
 
-unsigned param_count()
+unsigned param_গুনতি()
 {
-	return param_info_count;
+	ফেরত param_info_গুনতি;
 }
 
-int param_get_index(param_t param)
+পূর্ণসংখ্যা param_get_সূচক(param_t param)
 {
-	if (handle_in_range(param)) {
-		return (unsigned)param;
+	যদি (handle_in_range(param)) {
+		ফেরত (unsigned)param;
 	}
 
-	return -1;
+	ফেরত -1;
 }
 
-param_t param_for_index(unsigned index)
+param_t param_for_সূচক(unsigned সূচক)
 {
-	if (index < param_info_count) {
-		return (param_t)index;
+	যদি (সূচক < param_info_গুনতি) {
+		ফেরত (param_t)সূচক;
 	}
 
-	return PARAM_INVALID;
+	ফেরত PARAM_INVALID;
 }
 
-const char *param_name(param_t param)
+ধ্রুবক অক্ষর *param_name(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters[param].name : nullptr;
+	ফেরত handle_in_range(param) ? px4::parameters[param].name : nullptr;
 }
 
 param_type_t param_type(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
+	ফেরত handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
 }
 
-bool param_is_volatile(param_t param)
+যৌক্তিক param_is_volatile(param_t param)
 {
-	if (handle_in_range(param)) {
-		for (const auto &p : px4::parameters_volatile) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	যদি (handle_in_range(param)) {
+		জন্য (ধ্রুবক auto &p : px4::parameters_volatile) {
+			যদি (static_cast<px4::params>(param) == p) {
+				ফেরত সত্য;
 			}
 		}
 	}
 
-	return false;
+	ফেরত মিথ্যা;
 }
 
-static bool params_locked = false;
+স্থির যৌক্তিক params_locked = মিথ্যা;
 
-bool param_is_readonly(param_t param)
+যৌক্তিক param_is_readonly(param_t param)
 {
-	if (params_locked && handle_in_range(param)) {
-		for (const auto &p : px4::parameters_readonly) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	যদি (params_locked && handle_in_range(param)) {
+		জন্য (ধ্রুবক auto &p : px4::parameters_readonly) {
+			যদি (static_cast<px4::params>(param) == p) {
+				ফেরত সত্য;
 			}
 		}
 	}
 
-	return false;
+	ফেরত মিথ্যা;
 }
 
-void param_lock_readonly()
+শূন্য param_lock_readonly()
 {
-	params_locked = true;
+	params_locked = সত্য;
 }
 
-size_t param_size(param_t param)
+size_t param_আকার(param_t param)
 {
-	if (handle_in_range(param)) {
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-		case PARAM_TYPE_FLOAT:
-			return 4;
+	যদি (handle_in_range(param)) {
+		নির্বাচন (param_type(param)) {
+		ক্ষেত্র PARAM_TYPE_INT32:
+		ক্ষেত্র PARAM_TYPE_FLOAT:
+			ফেরত 4;
 
-		default:
-			return 0;
+		পূর্বনির্ধারিত:
+			ফেরত 0;
 		}
 	}
 
-	return 0;
+	ফেরত 0;
 }
 
-int
-param_get_system_default_value(param_t param, void *default_val)
+পূর্ণসংখ্যা
+param_get_system_default_মান(param_t param, শূন্য *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	যদি (!handle_in_range(param)) {
+		ফেরত PX4_ERROR;
 	}
 
-	int ret = PX4_OK;
+	পূর্ণসংখ্যা ret = PX4_OK;
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
-		memcpy(default_val, &px4::parameters[param].val.i, param_size(param));
-		break;
+	নির্বাচন (param_type(param)) {
+	ক্ষেত্র PARAM_TYPE_INT32:
+		memcpy(default_val, &px4::parameters[param].val.i, param_আকার(param));
+		বিরতি;
 
-	case PARAM_TYPE_FLOAT:
-		memcpy(default_val, &px4::parameters[param].val.f, param_size(param));
-		break;
+	ক্ষেত্র PARAM_TYPE_FLOAT:
+		memcpy(default_val, &px4::parameters[param].val.f, param_আকার(param));
+		বিরতি;
 
-	default:
+	পূর্বনির্ধারিত:
 		ret = PX4_ERROR;
-		break;
+		বিরতি;
 	}
 
-	return ret;
+	ফেরত ret;
 }
 
-int
-param_get_mark_used(param_t param, void *val)
+পূর্ণসংখ্যা
+param_get_mark_used(param_t param, শূন্য *val)
 {
 	param_set_used(param);
-	return param_get(param, val);
+	ফেরত param_get(param, val);
 }

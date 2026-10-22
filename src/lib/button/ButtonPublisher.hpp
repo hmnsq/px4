@@ -40,36 +40,36 @@
 
 #pragma once
 
-#include <drivers/drv_tone_alarm.h>
-#include <drivers/drv_hrt.h>
-#include <uORB/Publication.hpp>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/actuator_armed.h>
-#include <uORB/topics/button_event.h>
-#include <uORB/topics/vehicle_command.h>
-#include <uORB/topics/led_control.h>
-#include <uORB/topics/tune_control.h>
+#অন্তর্ভাব <drivers/drv_tone_alarm.h>
+#অন্তর্ভাব <drivers/drv_hrt.h>
+#অন্তর্ভাব <uORB/Publication.hpp>
+#অন্তর্ভাব <uORB/PublicationMulti.hpp>
+#অন্তর্ভাব <uORB/Subscription.hpp>
+#অন্তর্ভাব <uORB/topics/actuator_armed.h>
+#অন্তর্ভাব <uORB/topics/button_event.h>
+#অন্তর্ভাব <uORB/topics/vehicle_command.h>
+#অন্তর্ভাব <uORB/topics/led_control.h>
+#অন্তর্ভাব <uORB/topics/tune_control.h>
 
-class ButtonPublisher
+শ্রেণী ButtonPublisher
 {
-public:
+সর্বজনীন:
 	ButtonPublisher();
-	~ButtonPublisher() = default;
+	~ButtonPublisher() = পূর্বনির্ধারিত;
 
 	/**
 	 * Function for publishing safety button trigger event
 	 */
-	void safetyButtonTriggerEvent();
+	শূন্য safetyButtonTriggerEvent();
 
 	/**
 	 * Function for publishing pairing button trigger event
 	 */
-	void pairingButtonTriggerEvent();
+	শূন্য pairingButtonTriggerEvent();
 
-	static constexpr uint8_t PAIRING_BUTTON_EVENT_COUNT{3};
+	স্থির constexpr uint8_t PAIRING_BUTTON_EVENT_গুনতি{3};
 
-private:
+ব্যক্তিগত:
 	uORB::Publication<button_event_s>		_safety_button_pub{ORB_ID(safety_button)};
 	uORB::Publication<vehicle_command_s>	_vehicle_command_pub{ORB_ID(vehicle_command)};
 	uORB::Publication<led_control_s> 		_led_control_pub{ORB_ID(led_control)};

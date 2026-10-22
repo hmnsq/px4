@@ -33,62 +33,62 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#অন্তর্ভাব "FunctionProviderBase.hpp"
 
-#include <uORB/topics/manual_control_setpoint.h>
+#অন্তর্ভাব <uORB/topics/manual_control_setpoint.h>
 
 /**
  * Functions: RC_Roll .. RCAUX_Max
  */
-class FunctionManualRC : public FunctionProviderBase
+শ্রেণী FunctionManualRC : সর্বজনীন FunctionProviderBase
 {
-public:
+সর্বজনীন:
 	FunctionManualRC()
 	{
-		resetAllToDisarmedValue();
+		reset_All_To_Disarmed_মান();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionManualRC(); }
+	স্থির FunctionProviderBase *allocate(ধ্রুবক Context &context) { ফেরত নতুন FunctionManualRC(); }
 
-	void update() override
+	শূন্য update() override
 	{
 		manual_control_setpoint_s manual_control_setpoint;
 
-		if (_topic.update(&manual_control_setpoint)) {
-			if (manual_control_setpoint.valid) {
-				_data[0] = manual_control_setpoint.roll;
-				_data[1] = manual_control_setpoint.pitch;
-				_data[2] = manual_control_setpoint.throttle;
-				_data[3] = manual_control_setpoint.yaw;
-				_data[4] = manual_control_setpoint.flaps;
-				_data[5] = manual_control_setpoint.aux1;
-				_data[6] = manual_control_setpoint.aux2;
-				_data[7] = manual_control_setpoint.aux3;
-				_data[8] = manual_control_setpoint.aux4;
-				_data[9] = manual_control_setpoint.aux5;
-				_data[10] = manual_control_setpoint.aux6;
+		যদি (_topic.update(&manual_control_setpoint)) {
+			যদি (manual_control_setpoint.valid) {
+				তথ্য_3[0] = manual_control_setpoint.roll;
+				তথ্য_3[1] = manual_control_setpoint.pitch;
+				তথ্য_3[2] = manual_control_setpoint.throttle;
+				তথ্য_3[3] = manual_control_setpoint.yaw;
+				তথ্য_3[4] = manual_control_setpoint.flaps;
+				তথ্য_3[5] = manual_control_setpoint.aux1;
+				তথ্য_3[6] = manual_control_setpoint.aux2;
+				তথ্য_3[7] = manual_control_setpoint.aux3;
+				তথ্য_3[8] = manual_control_setpoint.aux4;
+				তথ্য_3[9] = manual_control_setpoint.aux5;
+				তথ্য_3[10] = manual_control_setpoint.aux6;
 
-			} else {
-				resetAllToDisarmedValue();
+			} অন্যথা {
+				reset_All_To_Disarmed_মান();
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::RC_Roll]; }
+	দশমিক value(OutputFunction func) override { ফেরত তথ্য_3[(পূর্ণসংখ্যা)func - (পূর্ণসংখ্যা)OutputFunction::RC_Roll]; }
 
-private:
-	static constexpr int num_data_points = 11;
+ব্যক্তিগত:
+	স্থির constexpr পূর্ণসংখ্যা অঙ্ক_তথ্য_points = 11;
 
-	void resetAllToDisarmedValue()
+	শূন্য reset_All_To_Disarmed_মান()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
-			_data[i] = NAN;
+		জন্য (পূর্ণসংখ্যা i = 0; i < অঙ্ক_তথ্য_points; ++i) {
+			তথ্য_3[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
+	static_assert(অঙ্ক_তথ্য_points == (পূর্ণসংখ্যা)OutputFunction::RC_AUXMax - (পূর্ণসংখ্যা)OutputFunction::RC_Roll + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _topic{ORB_ID(manual_control_setpoint)};
-	float _data[num_data_points] {};
+	দশমিক তথ্য_3[অঙ্ক_তথ্য_points] {};
 };

@@ -41,278 +41,278 @@
 
 #pragma once
 
-#include <climits>
-#include <cstddef>
-#include <inttypes.h>
+#অন্তর্ভাব <climits>
+#অন্তর্ভাব <cstddef>
+#অন্তর্ভাব <inttypes.h>
 
-template <typename data_type, size_t SIZE = 0>
-class TimestampedRingBuffer;
+template <typename তথ্য_type, size_t আকার_4 = 0>
+শ্রেণী Timestamped_Ring_বাফার;
 
 /**
  * Static-size ring buffer specialization (SIZE > 0).
  */
-template <typename data_type, size_t SIZE>
-class TimestampedRingBuffer
+template <typename তথ্য_type, size_t আকার_4>
+শ্রেণী Timestamped_Ring_বাফার
 {
-public:
-	static_assert(SIZE > 0, "SIZE must be > 0");
-	static_assert(SIZE <= UINT8_MAX, "SIZE must fit in uint8_t");
-	static constexpr uint8_t kSize = static_cast<uint8_t>(SIZE);
+সর্বজনীন:
+	static_assert(আকার_4 > 0, "SIZE must be > 0");
+	static_assert(আকার_4 <= UINT8_MAX, "SIZE must fit in uint8_t");
+	স্থির constexpr uint8_t k_আকার = static_cast<uint8_t>(আকার_4);
 
-	TimestampedRingBuffer() = default;
-	~TimestampedRingBuffer() = default;
+	Timestamped_Ring_বাফার() = পূর্বনির্ধারিত;
+	~Timestamped_Ring_বাফার() = পূর্বনির্ধারিত;
 
 	// no copy, assignment, move, move assignment
-	TimestampedRingBuffer(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer &operator=(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
-	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
+	Timestamped_Ring_বাফার(ধ্রুবক Timestamped_Ring_বাফার &) = delete;
+	Timestamped_Ring_বাফার &operator=(ধ্রুবক Timestamped_Ring_বাফার &) = delete;
+	Timestamped_Ring_বাফার(Timestamped_Ring_বাফার &&) = delete;
+	Timestamped_Ring_বাফার &operator=(Timestamped_Ring_বাফার &&) = delete;
 
-	bool allocate(size_t size) { return size == SIZE; }
+	যৌক্তিক allocate(size_t আকার_2) { ফেরত আকার_2 == আকার_4; }
 
-	bool valid() const { return SIZE > 0; }
+	যৌক্তিক valid() ধ্রুবক { ফেরত আকার_4 > 0; }
 
-	void push(const data_type &sample)
+	শূন্য ঠেলো(ধ্রুবক তথ্য_type &sample)
 	{
-		_buffer[_head] = sample;
-		_head = next(_head);
+		বাফার[শীর্ষ_2] = sample;
+		শীর্ষ_2 = পরবর্তী(শীর্ষ_2);
 
-		if (_entries < kSize) {
+		যদি (_entries < k_আকার) {
 			_entries++;
 		}
 	}
 
-	uint8_t get_length() const { return kSize; }
+	uint8_t get_দৈর্ঘ্য() ধ্রুবক { ফেরত k_আকার; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	তথ্য_type &operator[](ধ্রুবক uint8_t সূচক) { ফেরত বাফার[সূচক]; }
 
-	const data_type &get_newest() const { return _buffer[get_newest_index()]; }
-	const data_type &get_oldest() const { return _buffer[get_oldest_index()]; }
+	ধ্রুবক তথ্য_type &get_newest() ধ্রুবক { ফেরত বাফার[get_newest_সূচক()]; }
+	ধ্রুবক তথ্য_type &get_oldest() ধ্রুবক { ফেরত বাফার[get_oldest_সূচক()]; }
 
-	uint8_t get_newest_index() const { return (_entries > 0) ? prev(_head) : 0; }
-	uint8_t get_oldest_index() const
+	uint8_t get_newest_সূচক() ধ্রুবক { ফেরত (_entries > 0) ? পূর্ব(শীর্ষ_2) : 0; }
+	uint8_t get_oldest_সূচক() ধ্রুবক
 	{
-		if (_entries == 0) {
-			return 0;
+		যদি (_entries == 0) {
+			ফেরত 0;
 		}
 
-		const uint16_t idx = static_cast<uint16_t>(_head) + static_cast<uint16_t>(kSize) - static_cast<uint16_t>(_entries);
-		return (idx >= kSize) ? static_cast<uint8_t>(idx - kSize) : static_cast<uint8_t>(idx);
+		ধ্রুবক uint16_t idx = static_cast<uint16_t>(শীর্ষ_2) + static_cast<uint16_t>(k_আকার) - static_cast<uint16_t>(_entries);
+		ফেরত (idx >= k_আকার) ? static_cast<uint8_t>(idx - k_আকার) : static_cast<uint8_t>(idx);
 	}
 
-	uint8_t next(uint8_t i) const { return (i + 1 >= kSize) ? 0 : i + 1; }
-	uint8_t prev(uint8_t i) const { return (i == 0) ? kSize - 1 : i - 1; }
+	uint8_t পরবর্তী(uint8_t i) ধ্রুবক { ফেরত (i + 1 >= k_আকার) ? 0 : i + 1; }
+	uint8_t পূর্ব(uint8_t i) ধ্রুবক { ফেরত (i == 0) ? k_আকার - 1 : i - 1; }
 
-	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
+	যৌক্তিক বের_করো_first_older_than(ধ্রুবক uint64_t &timestamp, তথ্য_type *sample)
 	{
 		// start looking from newest observation data
-		const uint8_t newest_idx = get_newest_index();
-		const uint8_t oldest_idx = get_oldest_index();
+		ধ্রুবক uint8_t newest_idx = get_newest_সূচক();
+		ধ্রুবক uint8_t oldest_idx = get_oldest_সূচক();
 
-		for (uint8_t i = 0; i < _entries; i++) {
-			int index = (newest_idx - i);
-			index = index < 0 ? kSize + index : index;
+		জন্য (uint8_t i = 0; i < _entries; i++) {
+			পূর্ণসংখ্যা সূচক = (newest_idx - i);
+			সূচক = সূচক < 0 ? k_আকার + সূচক : সূচক;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
-				*sample = _buffer[index];
+			যদি (timestamp >= বাফার[সূচক].time_us && timestamp < বাফার[সূচক].time_us + (uint64_t)1e5) {
+				*sample = বাফার[সূচক];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				const uint8_t index_u = static_cast<uint8_t>(index);
-				const uint8_t distance = (index_u >= oldest_idx) ? (index_u - oldest_idx) : (index_u + kSize - oldest_idx);
-				const uint8_t discard_count = distance + 1;
-				_entries = (_entries > discard_count) ? (_entries - discard_count) : 0;
-				_buffer[index].time_us = 0;
+				ধ্রুবক uint8_t সূচক_u = static_cast<uint8_t>(সূচক);
+				ধ্রুবক uint8_t distance = (সূচক_u >= oldest_idx) ? (সূচক_u - oldest_idx) : (সূচক_u + k_আকার - oldest_idx);
+				ধ্রুবক uint8_t discard_গুনতি = distance + 1;
+				_entries = (_entries > discard_গুনতি) ? (_entries - discard_গুনতি) : 0;
+				বাফার[সূচক].time_us = 0;
 
-				return true;
+				ফেরত সত্য;
 			}
 		}
 
-		return false;
+		ফেরত মিথ্যা;
 	}
 
-	int get_total_size() const
+	পূর্ণসংখ্যা get_যোগ_আকার() ধ্রুবক
 	{
-		static_assert(sizeof(TimestampedRingBuffer<data_type, SIZE>) <= static_cast<size_t>(INT_MAX),
+		static_assert(আকার(Timestamped_Ring_বাফার<তথ্য_type, আকার_4>) <= static_cast<size_t>(INT_MAX),
 			      "static ring buffer size must fit in int");
-		return static_cast<int>(sizeof(TimestampedRingBuffer<data_type, SIZE>));
+		ফেরত static_cast<পূর্ণসংখ্যা>(আকার(Timestamped_Ring_বাফার<তথ্য_type, আকার_4>));
 	}
 
-	int entries() const { return _entries; }
-	bool empty() const { return _entries == 0; }
+	পূর্ণসংখ্যা entries() ধ্রুবক { ফেরত _entries; }
+	যৌক্তিক empty() ধ্রুবক { ফেরত _entries == 0; }
 
-	void reset()
+	শূন্য reset()
 	{
-		for (uint8_t i = 0; i < kSize; i++) {
-			_buffer[i].time_us = 0;
+		জন্য (uint8_t i = 0; i < k_আকার; i++) {
+			বাফার[i].time_us = 0;
 		}
 
-		_head = 0;
+		শীর্ষ_2 = 0;
 		_entries = 0;
 	}
 
-private:
-	data_type _buffer[SIZE] {};
+ব্যক্তিগত:
+	তথ্য_type বাফার[আকার_4] {};
 
-	uint8_t _head{0};
+	uint8_t শীর্ষ_2{0};
 	uint8_t _entries{0};
 };
 
 /**
  * Dynamic-size ring buffer specialization (SIZE == 0).
  */
-template <typename data_type>
-class TimestampedRingBuffer<data_type, 0>
+template <typename তথ্য_type>
+শ্রেণী Timestamped_Ring_বাফার<তথ্য_type, 0>
 {
-public:
-	explicit TimestampedRingBuffer(size_t size) { allocate(size); }
-	TimestampedRingBuffer() = delete;
-	~TimestampedRingBuffer() { delete[] _buffer; }
+সর্বজনীন:
+	explicit Timestamped_Ring_বাফার(size_t আকার_2) { allocate(আকার_2); }
+	Timestamped_Ring_বাফার() = delete;
+	~Timestamped_Ring_বাফার() { delete[] বাফার; }
 
 	// no copy, assignment, move, move assignment
-	TimestampedRingBuffer(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer &operator=(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
-	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
+	Timestamped_Ring_বাফার(ধ্রুবক Timestamped_Ring_বাফার &) = delete;
+	Timestamped_Ring_বাফার &operator=(ধ্রুবক Timestamped_Ring_বাফার &) = delete;
+	Timestamped_Ring_বাফার(Timestamped_Ring_বাফার &&) = delete;
+	Timestamped_Ring_বাফার &operator=(Timestamped_Ring_বাফার &&) = delete;
 
-	bool allocate(size_t size)
+	যৌক্তিক allocate(size_t আকার_2)
 	{
-		if (valid() && (size == _size)) {
+		যদি (valid() && (আকার_2 == আকার_3)) {
 			// no change
-			return true;
+			ফেরত সত্য;
 		}
 
-		if (size == 0 || size > UINT8_MAX) {
-			return false;
+		যদি (আকার_2 == 0 || আকার_2 > UINT8_MAX) {
+			ফেরত মিথ্যা;
 		}
 
-		delete[] _buffer;
+		delete[] বাফার;
 
-		_buffer = new data_type[size] {};
+		বাফার = নতুন তথ্য_type[আকার_2] {};
 
-		if (_buffer == nullptr) {
-			return false;
+		যদি (বাফার == nullptr) {
+			ফেরত মিথ্যা;
 		}
 
-		_size = static_cast<uint8_t>(size);
+		আকার_3 = static_cast<uint8_t>(আকার_2);
 
 		// new[]{} already zeroed time_us, only reset the indices
-		_head = 0;
-		_tail = 0;
-		_first_write = true;
+		শীর্ষ_2 = 0;
+		লেজ_2 = 0;
+		_first_write = সত্য;
 
-		return true;
+		ফেরত সত্য;
 	}
 
-	bool valid() const { return (_buffer != nullptr) && (_size > 0); }
+	যৌক্তিক valid() ধ্রুবক { ফেরত (বাফার != nullptr) && (আকার_3 > 0); }
 
-	void push(const data_type &sample)
+	শূন্য ঠেলো(ধ্রুবক তথ্য_type &sample)
 	{
-		uint8_t head_new = _head;
+		uint8_t শীর্ষ_new = শীর্ষ_2;
 
-		if (!_first_write) {
-			head_new = next(_head);
+		যদি (!_first_write) {
+			শীর্ষ_new = পরবর্তী(শীর্ষ_2);
 		}
 
-		_buffer[head_new] = sample;
-		_head = head_new;
+		বাফার[শীর্ষ_new] = sample;
+		শীর্ষ_2 = শীর্ষ_new;
 
 		// move tail if we overwrite it
-		if (_head == _tail && !_first_write) {
-			_tail = next(_tail);
+		যদি (শীর্ষ_2 == লেজ_2 && !_first_write) {
+			লেজ_2 = পরবর্তী(লেজ_2);
 
-		} else {
-			_first_write = false;
+		} অন্যথা {
+			_first_write = মিথ্যা;
 		}
 	}
 
-	uint8_t get_length() const { return _size; }
+	uint8_t get_দৈর্ঘ্য() ধ্রুবক { ফেরত আকার_3; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	তথ্য_type &operator[](ধ্রুবক uint8_t সূচক) { ফেরত বাফার[সূচক]; }
 
-	const data_type &get_newest() const { return _buffer[_head]; }
-	const data_type &get_oldest() const { return _buffer[_tail]; }
+	ধ্রুবক তথ্য_type &get_newest() ধ্রুবক { ফেরত বাফার[শীর্ষ_2]; }
+	ধ্রুবক তথ্য_type &get_oldest() ধ্রুবক { ফেরত বাফার[লেজ_2]; }
 
-	uint8_t get_newest_index() const { return _head; }
-	uint8_t get_oldest_index() const { return _tail; }
+	uint8_t get_newest_সূচক() ধ্রুবক { ফেরত শীর্ষ_2; }
+	uint8_t get_oldest_সূচক() ধ্রুবক { ফেরত লেজ_2; }
 
-	uint8_t next(uint8_t i) const { return (_size > 0) ? ((i + 1 >= _size) ? 0 : i + 1) : 0; }
-	uint8_t prev(uint8_t i) const { return (_size > 0) ? ((i == 0) ? (_size - 1) : (i - 1)) : 0; }
+	uint8_t পরবর্তী(uint8_t i) ধ্রুবক { ফেরত (আকার_3 > 0) ? ((i + 1 >= আকার_3) ? 0 : i + 1) : 0; }
+	uint8_t পূর্ব(uint8_t i) ধ্রুবক { ফেরত (আকার_3 > 0) ? ((i == 0) ? (আকার_3 - 1) : (i - 1)) : 0; }
 
-	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
+	যৌক্তিক বের_করো_first_older_than(ধ্রুবক uint64_t &timestamp, তথ্য_type *sample)
 	{
 		// start looking from newest observation data
-		for (uint8_t i = 0; i < _size; i++) {
-			int index = (_head - i);
-			index = index < 0 ? _size + index : index;
+		জন্য (uint8_t i = 0; i < আকার_3; i++) {
+			পূর্ণসংখ্যা সূচক = (শীর্ষ_2 - i);
+			সূচক = সূচক < 0 ? আকার_3 + সূচক : সূচক;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
-				*sample = _buffer[index];
+			যদি (timestamp >= বাফার[সূচক].time_us && timestamp < বাফার[সূচক].time_us + (uint64_t)1e5) {
+				*sample = বাফার[সূচক];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				if (index == _head) {
-					_tail = _head;
-					_first_write = true;
+				যদি (সূচক == শীর্ষ_2) {
+					লেজ_2 = শীর্ষ_2;
+					_first_write = সত্য;
 
-				} else {
-					_tail = next(static_cast<uint8_t>(index));
+				} অন্যথা {
+					লেজ_2 = পরবর্তী(static_cast<uint8_t>(সূচক));
 				}
 
-				_buffer[index].time_us = 0;
+				বাফার[সূচক].time_us = 0;
 
-				return true;
+				ফেরত সত্য;
 			}
 
-			if (index == _tail) {
+			যদি (সূচক == লেজ_2) {
 				// we have reached the tail and haven't got a
 				// match
-				return false;
+				ফেরত মিথ্যা;
 			}
 		}
 
-		return false;
+		ফেরত মিথ্যা;
 	}
 
-	int get_used_size() const { return sizeof(*this) + sizeof(data_type) * entries(); }
-	int get_total_size() const { return sizeof(*this) + sizeof(data_type) * _size; }
+	পূর্ণসংখ্যা get_used_আকার() ধ্রুবক { ফেরত আকার(*এই) + আকার(তথ্য_type) * entries(); }
+	পূর্ণসংখ্যা get_যোগ_আকার() ধ্রুবক { ফেরত আকার(*এই) + আকার(তথ্য_type) * আকার_3; }
 
-	int entries() const
+	পূর্ণসংখ্যা entries() ধ্রুবক
 	{
-		int count = 0;
+		পূর্ণসংখ্যা গুনতি = 0;
 
-		for (uint8_t i = 0; i < _size; i++) {
-			if (_buffer[i].time_us != 0) {
-				count++;
+		জন্য (uint8_t i = 0; i < আকার_3; i++) {
+			যদি (বাফার[i].time_us != 0) {
+				গুনতি++;
 			}
 		}
 
-		return count;
+		ফেরত গুনতি;
 	}
 
-	bool empty() const { return entries() == 0; }
+	যৌক্তিক empty() ধ্রুবক { ফেরত entries() == 0; }
 
-	void reset()
+	শূন্য reset()
 	{
-		if (_buffer) {
-			for (uint8_t i = 0; i < _size; i++) {
-				_buffer[i].time_us = 0;
+		যদি (বাফার) {
+			জন্য (uint8_t i = 0; i < আকার_3; i++) {
+				বাফার[i].time_us = 0;
 			}
 
-			_head = 0;
-			_tail = 0;
-			_first_write = true;
+			শীর্ষ_2 = 0;
+			লেজ_2 = 0;
+			_first_write = সত্য;
 		}
 	}
 
-private:
-	data_type *_buffer{nullptr};
+ব্যক্তিগত:
+	তথ্য_type *বাফার{nullptr};
 
-	uint8_t _head{0};
-	uint8_t _tail{0};
-	uint8_t _size{0};
+	uint8_t শীর্ষ_2{0};
+	uint8_t লেজ_2{0};
+	uint8_t আকার_3{0};
 
-	bool _first_write{true};
+	যৌক্তিক _first_write{সত্য};
 };

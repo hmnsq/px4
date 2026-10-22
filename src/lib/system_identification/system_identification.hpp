@@ -39,64 +39,64 @@
 
 #pragma once
 
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <matrix/matrix/math.hpp>
-#include <mathlib/mathlib.h>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
-#include <px4_platform_common/defines.h>
+#অন্তর্ভাব <lib/mathlib/math/filter/AlphaFilter.hpp>
+#অন্তর্ভাব <matrix/matrix/math.hpp>
+#অন্তর্ভাব <mathlib/mathlib.h>
+#অন্তর্ভাব <mathlib/math/filter/LowPassFilter2p.hpp>
+#অন্তর্ভাব <px4_platform_common/defines.h>
 
-#include "arx_rls.hpp"
+#অন্তর্ভাব "arx_rls.hpp"
 
-class SystemIdentification final
+শ্রেণী SystemIdentification final
 {
-public:
-	SystemIdentification() = default;
-	~SystemIdentification() = default;
+সর্বজনীন:
+	SystemIdentification() = পূর্বনির্ধারিত;
+	~SystemIdentification() = পূর্বনির্ধারিত;
 
-	void reset(const matrix::Vector<float, 5> &id_state_init = {});
-	void update(float u, float y); // update filters and model
-	void update(); // update model only (to be called after updateFilters)
-	void updateFilters(float u, float y);
-	bool areFiltersInitialized() const { return _are_filters_initialized; }
-	void updateFitness();
-	const matrix::Vector<float, 5> &getCoefficients() const { return _rls.getCoefficients(); }
-	const matrix::Vector<float, 5> getVariances() const { return _rls.getVariances(); }
-	const matrix::Vector<float, 5> &getDiffEstimate() const { return _rls.getDiffEstimate(); }
-	float getFitness() const { return _fitness_lpf.getState(); }
-	float getInnovation() const { return _rls.getInnovation(); }
+	শূন্য reset(ধ্রুবক matrix::Vector<দশমিক, 5> &id_state_init = {});
+	শূন্য update(দশমিক u, দশমিক y); // update filters and model
+	শূন্য update(); // update model only (to be called after updateFilters)
+	শূন্য updateFilters(দশমিক u, দশমিক y);
+	যৌক্তিক areFiltersInitialized() ধ্রুবক { ফেরত _are_filters_initialized; }
+	শূন্য updateFitness();
+	ধ্রুবক matrix::Vector<দশমিক, 5> &getCoefficients() ধ্রুবক { ফেরত _rls.getCoefficients(); }
+	ধ্রুবক matrix::Vector<দশমিক, 5> getVariances() ধ্রুবক { ফেরত _rls.getVariances(); }
+	ধ্রুবক matrix::Vector<দশমিক, 5> &getDiffEstimate() ধ্রুবক { ফেরত _rls.getDiffEstimate(); }
+	দশমিক getFitness() ধ্রুবক { ফেরত _fitness_lpf.getState(); }
+	দশমিক getInnovation() ধ্রুবক { ফেরত _rls.getInnovation(); }
 
-	void setLpfCutoffFrequency(float sample_freq, float cutoff)
+	শূন্য setLpfCutoffFrequency(দশমিক sample_freq, দশমিক cutoff)
 	{
 		_u_lpf.set_cutoff_frequency(sample_freq, cutoff);
 		_y_lpf.set_cutoff_frequency(sample_freq, cutoff);
 	}
-	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
+	শূন্য setHpfCutoffFrequency(দশমিক sample_freq, দশমিক cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	void setForgettingFactor(float time_constant, float dt) { _rls.setForgettingFactor(time_constant, dt); }
-	void setFitnessLpfTimeConstant(float time_constant, float dt)
+	শূন্য setForgettingFactor(দশমিক time_constant, দশমিক dt) { _rls.setForgettingFactor(time_constant, dt); }
+	শূন্য setFitnessLpfTimeConstant(দশমিক time_constant, দশমিক dt)
 	{
 		_fitness_lpf.setParameters(dt, time_constant);
 		_dt = dt;
 	}
 
-	float getFilteredInputData() const { return _u_hpf; }
-	float getFilteredOutputData() const { return _y_hpf; }
+	দশমিক get_Filtered_প্রবেশ_তথ্য() ধ্রুবক { ফেরত _u_hpf; }
+	দশমিক get_Filtered_Output_তথ্য() ধ্রুবক { ফেরত _y_hpf; }
 
-private:
+ব্যক্তিগত:
 	ArxRls<2, 2, 1> _rls;
-	math::LowPassFilter2p<float> _u_lpf{400.f, 30.f};
-	math::LowPassFilter2p<float> _y_lpf{400.f, 30.f};
+	math::নিচের_Pass_Filter2p<দশমিক> _u_lpf{400.f, 30.f};
+	math::নিচের_Pass_Filter2p<দশমিক> _y_lpf{400.f, 30.f};
 
 	//TODO: replace by HighPassFilter class
-	float _alpha_hpf{0.f};
-	float _u_hpf{0.f};
-	float _y_hpf{0.f};
+	দশমিক _alpha_hpf{0.f};
+	দশমিক _u_hpf{0.f};
+	দশমিক _y_hpf{0.f};
 
-	float _u_prev{0.f};
-	float _y_prev{0.f};
+	দশমিক u_পূর্ব{0.f};
+	দশমিক y_পূর্ব{0.f};
 
-	bool _are_filters_initialized{false};
+	যৌক্তিক _are_filters_initialized{মিথ্যা};
 
-	AlphaFilter<float> _fitness_lpf;
-	float _dt{0.1f};
+	AlphaFilter<দশমিক> _fitness_lpf;
+	দশমিক _dt{0.1f};
 };

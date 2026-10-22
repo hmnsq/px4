@@ -33,92 +33,92 @@
 
 #pragma once
 
-#include <px4_platform_common/atomic_bitset.h>
-#include "ParamLayer.h"
+#অন্তর্ভাব <px4_platform_common/atomic_bitset.h>
+#অন্তর্ভাব "ParamLayer.h"
 
-class ExhaustiveLayer : public ParamLayer
+class ExhaustiveLayer : সর্বজনীন ParamLayer
 {
-public:
+সর্বজনীন:
 	ExhaustiveLayer(ParamLayer *parent) : ParamLayer(parent)
 	{
 		// refresh all values
-		for (param_t i = 0; i < PARAM_COUNT; i++) {
-			_values[i] = parent->get(i);
+		জন্য (param_t i = 0; i < PARAM_গুনতি; i++) {
+			মানসমূহ_3[i] = parent->get(i);
 		}
 	}
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_মান_u মান) override
 	{
-		if (param >= PARAM_COUNT) {
-			return false;
+		যদি (param >= PARAM_গুনতি) {
+			ফেরত false;
 		}
 
 		{
-			const AtomicTransaction transaction;
-			_values[param] = value;
+			ধ্রুবক AtomicTransaction transaction;
+			মানসমূহ_3[param] = মান;
 			_ownership_set.set(param);
 		}
 
-		return true;
+		ফেরত true;
 	}
 
-	bool contains(param_t param) const override
+	bool contains(param_t param) ধ্রুবক override
 	{
-		return param < PARAM_COUNT && _ownership_set[param];
+		ফেরত param < PARAM_গুনতি && _ownership_set[param];
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_গুনতি> containedAsBitset() ধ্রুবক override
 	{
-		return _ownership_set;
+		ফেরত _ownership_set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_মান_u get(param_t param) ধ্রুবক override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		যদি (param >= PARAM_গুনতি) {
+			ফেরত {0};
 		}
 
-		const AtomicTransaction transaction;
+		ধ্রুবক AtomicTransaction transaction;
 		// We assume to have the correct values for all params, even without ownership.
 		// We expect that refresh was called when underlying defaults changed
-		return _values[param];
+		ফেরত মানসমূহ_3[param];
 	}
 
-	void reset(param_t param) override
+	শূন্য reset(param_t param) override
 	{
-		if (param >= PARAM_COUNT) {
-			return;
+		যদি (param >= PARAM_গুনতি) {
+			ফেরত;
 		}
 
-		const AtomicTransaction transaction;
-		_values[param] = _parent->get(param);
+		ধ্রুবক AtomicTransaction transaction;
+		মানসমূহ_3[param] = _parent->get(param);
 		_ownership_set.set(param, false);
 	}
 
-	void refresh(param_t param) override
+	শূন্য refresh(param_t param) override
 	{
 		_parent->refresh(param);
 		// in case we don't have ownership, and it changed below, we have to refresh our cache.
 		{
-			const AtomicTransaction transaction;
+			ধ্রুবক AtomicTransaction transaction;
 
-			if (!contains(param)) {
-				_values[param] = _parent->get(param);
+			যদি (!contains(param)) {
+				মানসমূহ_3[param] = _parent->get(param);
 			}
 		}
 	}
 
-	int size() const override
+	পূর্ণসংখ্যা আকার_2() ধ্রুবক override
 	{
-		return _ownership_set.count();
+		ফেরত _ownership_set.গুনতি();
 	}
 
-	int byteSize() const override
+	পূর্ণসংখ্যা byte_আকার() ধ্রুবক override
 	{
-		return PARAM_COUNT * sizeof(param_value_u);
+		ফেরত PARAM_গুনতি * আকার(param_মান_u);
 	}
 
-private:
-	param_value_u _values[PARAM_COUNT];
-	px4::AtomicBitset<PARAM_COUNT> _ownership_set;
+ব্যক্তিগত:
+	param_মান_u মানসমূহ_3[PARAM_গুনতি];
+	px4::AtomicBitset<PARAM_গুনতি> _ownership_set;
 };

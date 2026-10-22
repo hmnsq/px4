@@ -37,24 +37,24 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <float.h>
 
-#include "blocks.hpp"
+#অন্তর্ভাব "blocks.hpp"
 
-namespace control
+নামাকাশ control
 {
 
-float BlockLowPass::update(float input)
+দশমিক Block_নিচের_Pass::update(দশমিক প্রবেশ)
 {
-	if (!PX4_ISFINITE(getState())) {
-		setState(input);
+	যদি (!PX4_ISFINITE(getState())) {
+		setState(প্রবেশ);
 	}
 
-	float b = 2 * M_PI_F * getFCut() * getDt();
-	float a = b / (1 + b);
-	setState(a * input + (1 - a)*getState());
-	return getState();
+	দশমিক b = 2 * M_PI_F * getFCut() * getDt();
+	দশমিক a = b / (1 + b);
+	setState(a * প্রবেশ + (1 - a)*getState());
+	ফেরত getState();
 }
 
 } // namespace control

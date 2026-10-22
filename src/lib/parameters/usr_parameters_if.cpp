@@ -37,185 +37,185 @@
  * Protected build user space interface to global parameter store.
  */
 #define PARAM_IMPLEMENTATION
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <parameters/px4_parameters.hpp>
-#include <sys/boardctl.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#অন্তর্ভাব "param.h"
+#অন্তর্ভাব "parameters_ioctl.h"
+#অন্তর্ভাব <parameters/px4_parameters.hpp>
+#অন্তর্ভাব <sys/boardctl.h>
+#অন্তর্ভাব <px4_platform_common/defines.h>
+#অন্তর্ভাব <px4_platform_common/log.h>
 
-#include "parameters_common.cpp"
+#অন্তর্ভাব "parameters_common.cpp"
 
-void
+শূন্য
 param_notify_changes()
 {
-	boardctl(PARAMIOCNOTIFY, NULL);
+	boardctl(PARAMIOCNOTIFY, ফাঁকা);
 }
 
-param_t param_find(const char *name)
+param_t param_find(ধ্রুবক অক্ষর *name)
 {
-	paramiocfind_t data = {name, true, PARAM_INVALID};
-	boardctl(PARAMIOCFIND, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocfind_t তথ্য = {name, সত্য, PARAM_INVALID};
+	boardctl(PARAMIOCFIND, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-param_t param_find_no_notification(const char *name)
+param_t param_find_no_notification(ধ্রুবক অক্ষর *name)
 {
-	paramiocfind_t data = {name, false, PARAM_INVALID};
-	boardctl(PARAMIOCFIND, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocfind_t তথ্য = {name, মিথ্যা, PARAM_INVALID};
+	boardctl(PARAMIOCFIND, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-unsigned param_count_used()
+unsigned param_গুনতি_used()
 {
-	paramioccountused_t data = {0};
-	boardctl(PARAMIOCCOUNTUSED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramioccountused_t তথ্য = {0};
+	boardctl(PARAMIOCCOUNTUSED, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-param_t param_for_used_index(unsigned index)
+param_t param_for_used_সূচক(unsigned সূচক)
 {
-	paramiocforusedindex_t data = {index, 0};
-	boardctl(PARAMIOCFORUSEDINDEX, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocforusedindex_t তথ্য = {সূচক, 0};
+	boardctl(PARAMIOCFORUSEDINDEX, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-int param_get_used_index(param_t param)
+পূর্ণসংখ্যা param_get_used_সূচক(param_t param)
 {
-	paramiocgetusedindex_t data = {param, 0};
-	boardctl(PARAMIOCGETUSEDINDEX, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocgetusedindex_t তথ্য = {param, 0};
+	boardctl(PARAMIOCGETUSEDINDEX, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-bool
-param_value_unsaved(param_t param)
+যৌক্তিক
+param_মান_unsaved(param_t param)
 {
-	paramiocunsaved_t data = {param, false};
-	boardctl(PARAMIOCUNSAVED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocunsaved_t তথ্য = {param, মিথ্যা};
+	boardctl(PARAMIOCUNSAVED, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-int
-param_get(param_t param, void *val)
+পূর্ণসংখ্যা
+param_get(param_t param, শূন্য *val)
 {
-	paramiocget_t data = {param, false, val, PX4_ERROR};
-	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocget_t তথ্য = {param, মিথ্যা, val, PX4_ERROR};
+	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-int
-param_get_default_value(param_t param, void *default_val)
+পূর্ণসংখ্যা
+param_get_default_মান(param_t param, শূন্য *default_val)
 {
-	paramiocget_t data = {param, true, default_val, PX4_ERROR};
-	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocget_t তথ্য = {param, সত্য, default_val, PX4_ERROR};
+	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-void
-param_control_autosave(bool enable)
+শূন্য
+param_control_autosave(যৌক্তিক enable)
 {
-	paramiocautosave_t data = {enable};
-	boardctl(PARAMIOCAUTOSAVE, reinterpret_cast<unsigned long>(&data));
+	paramiocautosave_t তথ্য = {enable};
+	boardctl(PARAMIOCAUTOSAVE, reinterpret_cast<unsigned long>(&তথ্য));
 }
 
-int param_set(param_t param, const void *val)
+পূর্ণসংখ্যা param_set(param_t param, ধ্রুবক শূন্য *val)
 {
-	paramiocset_t data = {param, true, val, PX4_ERROR};
-	boardctl(PARAMIOCSET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocset_t তথ্য = {param, সত্য, val, PX4_ERROR};
+	boardctl(PARAMIOCSET, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-int param_set_no_notification(param_t param, const void *val)
+পূর্ণসংখ্যা param_set_no_notification(param_t param, ধ্রুবক শূন্য *val)
 {
-	paramiocset_t data = {param, false, val, PX4_ERROR};
-	boardctl(PARAMIOCSET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocset_t তথ্য = {param, মিথ্যা, val, PX4_ERROR};
+	boardctl(PARAMIOCSET, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-bool param_used(param_t param)
+যৌক্তিক param_used(param_t param)
 {
-	paramiocused_t data = {param, false};
-	boardctl(PARAMIOCUSED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocused_t তথ্য = {param, মিথ্যা};
+	boardctl(PARAMIOCUSED, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-void param_set_used(param_t param)
+শূন্য param_set_used(param_t param)
 {
-	paramiocsetused_t data = {param};
-	boardctl(PARAMIOCSETUSED, reinterpret_cast<unsigned long>(&data));
+	paramiocsetused_t তথ্য = {param};
+	boardctl(PARAMIOCSETUSED, reinterpret_cast<unsigned long>(&তথ্য));
 }
 
-int param_set_default_value(param_t param, const void *val)
+পূর্ণসংখ্যা param_set_default_মান(param_t param, ধ্রুবক শূন্য *val)
 {
-	paramiocsetdefault_t data = {param, val, PX4_ERROR};
-	boardctl(PARAMIOCSETDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocsetdefault_t তথ্য = {param, val, PX4_ERROR};
+	boardctl(PARAMIOCSETDEFAULT, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-int param_reset(param_t param)
+পূর্ণসংখ্যা param_reset(param_t param)
 {
-	paramiocreset_t data = {param, true, PX4_ERROR};
-	boardctl(PARAMIOCRESET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocreset_t তথ্য = {param, সত্য, PX4_ERROR};
+	boardctl(PARAMIOCRESET, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-int param_reset_no_notification(param_t param)
+পূর্ণসংখ্যা param_reset_no_notification(param_t param)
 {
-	paramiocreset_t data = {param, false, PX4_ERROR};
-	boardctl(PARAMIOCRESET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocreset_t তথ্য = {param, মিথ্যা, PX4_ERROR};
+	boardctl(PARAMIOCRESET, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-void
+শূন্য
 param_reset_all()
 {
-	paramiocresetgroup_t data = {PARAM_RESET_ALL, nullptr, 0};
-	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
+	paramiocresetgroup_t তথ্য = {PARAM_RESET_ALL, nullptr, 0};
+	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&তথ্য));
 }
 
-void
-param_reset_excludes(const char *excludes[], int num_excludes)
+শূন্য
+param_reset_excludes(ধ্রুবক অক্ষর *excludes[], পূর্ণসংখ্যা অঙ্ক_excludes)
 {
-	paramiocresetgroup_t data = {PARAM_RESET_EXCLUDES, excludes, num_excludes};
-	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
+	paramiocresetgroup_t তথ্য = {PARAM_RESET_EXCLUDES, excludes, অঙ্ক_excludes};
+	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&তথ্য));
 }
 
-void
-param_reset_specific(const char *resets[], int num_resets)
+শূন্য
+param_reset_specific(ধ্রুবক অক্ষর *resets[], পূর্ণসংখ্যা অঙ্ক_resets)
 {
-	paramiocresetgroup_t data = {PARAM_RESET_SPECIFIC, resets, num_resets};
-	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
+	paramiocresetgroup_t তথ্য = {PARAM_RESET_SPECIFIC, resets, অঙ্ক_resets};
+	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&তথ্য));
 }
 
-int param_save_default(bool blocking)
+পূর্ণসংখ্যা param_save_default(যৌক্তিক blocking)
 {
-	paramiocsavedefault_t data = {blocking, PX4_ERROR};
-	boardctl(PARAMIOCSAVEDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocsavedefault_t তথ্য = {blocking, PX4_ERROR};
+	boardctl(PARAMIOCSAVEDEFAULT, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-int
+পূর্ণসংখ্যা
 param_load_default()
 {
-	paramiocloaddefault_t data = {PX4_ERROR};
-	boardctl(PARAMIOCLOADDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocloaddefault_t তথ্য = {PX4_ERROR};
+	boardctl(PARAMIOCLOADDEFAULT, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
-int
-param_export(const char *filename, param_filter_func filter)
+পূর্ণসংখ্যা
+param_export(ধ্রুবক অক্ষর *filename, param_filter_func filter)
 {
-	paramiocexport_t data = {filename, PX4_ERROR};
+	paramiocexport_t তথ্য = {filename, PX4_ERROR};
 
-	if (filter) { PX4_ERR("ERROR: filter not supported in userside blob"); }
+	যদি (filter) { PX4_ERR("ERROR: filter not supported in userside blob"); }
 
-	boardctl(PARAMIOCEXPORT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	boardctl(PARAMIOCEXPORT, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }
 
 uint32_t param_hash_check()
 {
-	paramiochash_t data = {0};
-	boardctl(PARAMIOCHASH, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiochash_t তথ্য = {0};
+	boardctl(PARAMIOCHASH, reinterpret_cast<unsigned long>(&তথ্য));
+	ফেরত তথ্য.ret;
 }

@@ -44,80 +44,80 @@
 #pragma once
 
 // PX4 includes
-#include <drivers/drv_hrt.h>
+#অন্তর্ভাব <drivers/drv_hrt.h>
 
 // Libraries
-#include <math.h>
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <matrix/matrix/math.hpp>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <lib/mathlib/math/filter/AlphaFilter.hpp>
+#অন্তর্ভাব <matrix/matrix/math.hpp>
 
 // uORB includes
-#include <uORB/Publication.hpp>
-#include <uORB/topics/gain_compression.h>
+#অন্তর্ভাব <uORB/Publication.hpp>
+#অন্তর্ভাব <uORB/topics/gain_compression.h>
 
-class GainCompression
+শ্রেণী GainCompression
 {
-public:
-	void reset()
+সর্বজনীন:
+	শূন্য reset()
 	{
 		_compression_gain = 1.f;
 		_hpf = 0.f;
 		_lpf.reset(0.f);
-		_input_initialized = false;
+		প্রবেশ_initialized = মিথ্যা;
 	}
-	float update(float input, float dt);
+	দশমিক update(দশমিক প্রবেশ, দশমিক dt);
 
-	void setLpfCutoffFrequency(float sample_freq, float cutoff)
+	শূন্য setLpfCutoffFrequency(দশমিক sample_freq, দশমিক cutoff)
 	{
 		_lpf.setCutoffFreq(sample_freq, cutoff);
 	}
-	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
+	শূন্য setHpfCutoffFrequency(দশমিক sample_freq, দশমিক cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	float getSpectralDamperHpf() const { return _hpf * _hpf; }
-	float getSpectralDamperLpf() const { return _lpf.getState(); }
-	void setCompressionGainMin(float gain_min) { _compression_gain_min = gain_min; }
+	দশমিক getSpectralDamperHpf() ধ্রুবক { ফেরত _hpf * _hpf; }
+	দশমিক getSpectralDamperLpf() ধ্রুবক { ফেরত _lpf.getState(); }
+	শূন্য setCompressionGainMin(দশমিক gain_min) { _compression_gain_min = gain_min; }
 
-private:
-	float _compression_gain{1.f};
-	float _compression_gain_min{0.3f};
+ব্যক্তিগত:
+	দশমিক _compression_gain{1.f};
+	দশমিক _compression_gain_min{0.3f};
 
-	float _alpha_hpf{0.f};
-	float _hpf{0.f};
+	দশমিক _alpha_hpf{0.f};
+	দশমিক _hpf{0.f};
 
-	float _input_prev{0.f};
-	bool _input_initialized{false};
+	দশমিক প্রবেশ_পূর্ব{0.f};
+	যৌক্তিক প্রবেশ_initialized{মিথ্যা};
 
-	AlphaFilter<float> _lpf;
+	AlphaFilter<দশমিক> _lpf;
 
-	static constexpr float _kSpectralDamperGain{200.f}; // tuned based on flight test data to obtain a quick response
-	static constexpr float _kLeakageGain{0.1f}; // 1/time_constant, slow enough to not interfere with the controller
+	স্থির constexpr দশমিক _kSpectralDamperGain{200.f}; // tuned based on flight test data to obtain a quick response
+	স্থির constexpr দশমিক _kLeakageGain{0.1f}; // 1/time_constant, slow enough to not interfere with the controller
 
 };
 
-class GainCompression3d
+শ্রেণী GainCompression3d
 {
-public:
+সর্বজনীন:
 	GainCompression3d();
-	~GainCompression3d() = default;
+	~GainCompression3d() = পূর্বনির্ধারিত;
 
-	void reset();
-	void update(const matrix::Vector3f &input, float dt);
-	const matrix::Vector3f &getGains() const { return _gains; };
+	শূন্য reset();
+	শূন্য update(ধ্রুবক matrix::Vector3f &প্রবেশ, দশমিক dt);
+	ধ্রুবক matrix::Vector3f &getGains() ধ্রুবক { ফেরত _gains; };
 
-	void setEnabled(bool enabled) { _enabled = enabled; }
-	void setCompressionGainMin(float gain_min);
+	শূন্য setEnabled(যৌক্তিক enabled) { _enabled = enabled; }
+	শূন্য setCompressionGainMin(দশমিক gain_min);
 
-private:
+ব্যক্তিগত:
 	// uORB publications
 	uORB::Publication<gain_compression_s> _gain_compression_pub{ORB_ID(gain_compression)};
 
 	GainCompression _compression_gains[3];
 	matrix::Vector3f _gains{1.f, 1.f, 1.f};
 
-	bool _enabled{false};
+	যৌক্তিক _enabled{মিথ্যা};
 
 	hrt_abstime _time_last_publication{0};
 
-	static constexpr float _kLpfCutoffFrequency{5.f}; // Just above the control bandwidth of most UAVs
-	static constexpr float _kHpfCutoffFrequency{2.f * _kLpfCutoffFrequency}; // 1 Octave above LPF cutoff, as recommended by the reference paper
+	স্থির constexpr দশমিক _kLpfCutoffFrequency{5.f}; // Just above the control bandwidth of most UAVs
+	স্থির constexpr দশমিক _kHpfCutoffFrequency{2.f * _kLpfCutoffFrequency}; // 1 Octave above LPF cutoff, as recommended by the reference paper
 };

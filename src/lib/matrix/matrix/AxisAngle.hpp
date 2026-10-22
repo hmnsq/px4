@@ -6,16 +6,16 @@
 
 #pragma once
 
-#include "Vector3.hpp"
+#অন্তর্ভাব "Vector3.hpp"
 
-namespace matrix
+নামাকাশ matrix
 {
 
 template <typename Type>
-class Euler;
+শ্রেণী Euler;
 
 template<typename Type>
-class Quaternion;
+শ্রেণী Quaternion;
 
 /**
  * AxisAngle class
@@ -24,9 +24,9 @@ class Quaternion;
  * described by this class.
  */
 template<typename Type>
-class AxisAngle : public Vector3<Type>
+শ্রেণী AxisAngle : সর্বজনীন Vector3<Type>
 {
-public:
+সর্বজনীন:
 	using Matrix31 = Matrix<Type, 3, 1>;
 
 	/**
@@ -34,22 +34,22 @@ public:
 	 *
 	 * @param data_ array
 	 */
-	explicit AxisAngle(const Type data_[3]) :
-		Vector3<Type>(data_)
+	explicit AxisAngle(ধ্রুবক Type তথ্য_2[3]) :
+		Vector3<Type>(তথ্য_2)
 	{
 	}
 
 	/**
 	 * Standard constructor
 	 */
-	AxisAngle() = default;
+	AxisAngle() = পূর্বনির্ধারিত;
 
 	/**
 	 * Constructor from Matrix31
 	 *
 	 * @param other Matrix31 to copy
 	 */
-	AxisAngle(const Matrix31 &other) :
+	AxisAngle(ধ্রুবক Matrix31 &other) :
 		Vector3<Type>(other)
 	{
 	}
@@ -63,15 +63,15 @@ public:
 	 *
 	 * @param q quaternion
 	 */
-	AxisAngle(const Quaternion<Type> &q)
+	AxisAngle(ধ্রুবক Quaternion<Type> &q)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *এই;
 		Type mag = q.imag().norm();
 
-		if (std::fabs(mag) >= Type(1e-10)) {
+		যদি (std::fabs(mag) >= Type(1e-10)) {
 			v = q.imag() * Type(Type(2) * std::atan2(mag, q(0)) / mag);
 
-		} else {
+		} অন্যথা {
 			v = q.imag() * Type(Type(2) * Type(sign(q(0))));
 		}
 	}
@@ -84,9 +84,9 @@ public:
 	 *
 	 * @param dcm dcm to set quaternion to
 	 */
-	AxisAngle(const Dcm<Type> &dcm)
+	AxisAngle(ধ্রুবক Dcm<Type> &dcm)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *এই;
 		v = AxisAngle<Type>(Quaternion<Type>(dcm));
 	}
 
@@ -99,9 +99,9 @@ public:
 	 *
 	 * @param euler euler angle instance
 	 */
-	AxisAngle(const Euler<Type> &euler)
+	AxisAngle(ধ্রুবক Euler<Type> &euler)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *এই;
 		v = AxisAngle<Type>(Quaternion<Type>(euler));
 	}
 
@@ -114,7 +114,7 @@ public:
 	 */
 	AxisAngle(Type x, Type y, Type z)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *এই;
 		v(0) = x;
 		v(1) = y;
 		v(2) = z;
@@ -126,9 +126,9 @@ public:
 	 * @param axis An axis of rotation, normalized if not unit length
 	 * @param angle The amount to rotate
 	 */
-	AxisAngle(const Matrix31 &axis_, Type angle_)
+	AxisAngle(ধ্রুবক Matrix31 &axis_, Type angle_)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *এই;
 		// make sure axis is a unit vector
 		Vector3<Type> a = axis_;
 		a = a.unit();
@@ -140,21 +140,21 @@ public:
 
 	Vector3<Type> axis()
 	{
-		if (Vector3<Type>::norm() > 0) {
-			return Vector3<Type>::unit();
+		যদি (Vector3<Type>::norm() > 0) {
+			ফেরত Vector3<Type>::unit();
 
-		} else {
-			return Vector3<Type>(1, 0, 0);
+		} অন্যথা {
+			ফেরত Vector3<Type>(1, 0, 0);
 		}
 	}
 
 	Type angle()
 	{
-		return Vector3<Type>::norm();
+		ফেরত Vector3<Type>::norm();
 	}
 };
 
-using AxisAnglef = AxisAngle<float>;
-using AxisAngled = AxisAngle<double>;
+using AxisAnglef = AxisAngle<দশমিক>;
+using AxisAngled = AxisAngle<দ্বিগুণ>;
 
 } // namespace matrix

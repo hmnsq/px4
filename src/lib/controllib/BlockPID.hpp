@@ -39,52 +39,52 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#অন্তর্ভাব <px4_platform_common/defines.h>
+#অন্তর্ভাব <assert.h>
+#অন্তর্ভাব <time.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <mathlib/math/test/test.hpp>
+#অন্তর্ভাব <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#অন্তর্ভাব "block/Block.hpp"
+#অন্তর্ভাব "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#অন্তর্ভাব "matrix/math.hpp"
 
-namespace control
+নামাকাশ control
 {
 
 /**
  * A proportional-integral-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPID: public SuperBlock
+শ্রেণী __EXPORT BlockPID: সর্বজনীন SuperBlock
 {
-public:
+সর্বজনীন:
 // methods
-	BlockPID(SuperBlock *parent, const char *name) :
+	BlockPID(SuperBlock *parent, ধ্রুবক অক্ষর *name) :
 		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kI(this, "I"),
-		_kD(this, "D")
+		_integral(এই, "I"),
+		_derivative(এই, "D"),
+		_kP(এই, "P"),
+		_kI(এই, "I"),
+		_kD(এই, "D")
 	{}
-	virtual ~BlockPID() = default;
-	float update(float input)
+	আভাসী ~BlockPID() = পূর্বনির্ধারিত;
+	দশমিক update(দশমিক প্রবেশ)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input) +
-		       getKD() * getDerivative().update(input);
+		ফেরত getKP() * প্রবেশ +
+		       getKI() * getIntegral().update(প্রবেশ) +
+		       getKD() * getDerivative().update(প্রবেশ);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	float getKD() { return _kD.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
+	দশমিক getKP() { ফেরত _kP.get(); }
+	দশমিক getKI() { ফেরত _kI.get(); }
+	দশমিক getKD() { ফেরত _kD.get(); }
+	BlockIntegral &getIntegral() { ফেরত _integral; }
+	BlockDerivative &getDerivative() { ফেরত _derivative; }
+ব্যক্তিগত:
 // attributes
 	BlockIntegral _integral;
 	BlockDerivative _derivative;

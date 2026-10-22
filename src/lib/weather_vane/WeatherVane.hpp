@@ -42,41 +42,41 @@
 
 #pragma once
 
-#include <px4_platform_common/module_params.h>
-#include <matrix/matrix/math.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/vehicle_attitude_setpoint.h>
-#include <uORB/topics/vehicle_local_position.h>
-#include <uORB/topics/vehicle_control_mode.h>
-#include <uORB/topics/vehicle_status.h>
+#অন্তর্ভাব <px4_platform_common/module_params.h>
+#অন্তর্ভাব <matrix/matrix/math.hpp>
+#অন্তর্ভাব <uORB/Subscription.hpp>
+#অন্তর্ভাব <uORB/topics/vehicle_attitude_setpoint.h>
+#অন্তর্ভাব <uORB/topics/vehicle_local_position.h>
+#অন্তর্ভাব <uORB/topics/vehicle_control_mode.h>
+#অন্তর্ভাব <uORB/topics/vehicle_status.h>
 
-class WeatherVane : public ModuleParams
+শ্রেণী WeatherVane : সর্বজনীন ModuleParams
 {
-public:
+সর্বজনীন:
 	WeatherVane(ModuleParams *parent);
 
-	~WeatherVane() = default;
+	~WeatherVane() = পূর্বনির্ধারিত;
 
-	void setNavigatorForceDisabled(bool navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
+	শূন্য setNavigatorForceDisabled(যৌক্তিক navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
 
-	bool isActive() {return _is_active;}
+	যৌক্তিক isActive() {ফেরত _is_active;}
 
-	void update();
+	শূন্য update();
 
-	float getWeathervaneYawrate();
+	দশমিক getWeathervaneYawrate();
 
-private:
+ব্যক্তিগত:
 	uORB::Subscription _vehicle_attitude_setpoint_sub{ORB_ID(vehicle_attitude_setpoint)};
 	uORB::Subscription _vehicle_local_position_sub{ORB_ID(vehicle_local_position)};
 	uORB::Subscription _vehicle_control_mode_sub{ORB_ID(vehicle_control_mode)};
 	uORB::Subscription _vehicle_status_sub{ORB_ID(vehicle_status)};
 
-	bool _is_active{false};
+	যৌক্তিক _is_active{মিথ্যা};
 
 	// local copies of status such that we don't need to copy uORB messages all the time
-	bool _flag_control_manual_enabled{false};
-	bool _flag_control_position_enabled{false};
-	bool _navigator_force_disabled{false};
+	যৌক্তিক _flag_control_manual_enabled{মিথ্যা};
+	যৌক্তিক _flag_control_position_enabled{মিথ্যা};
+	যৌক্তিক _navigator_force_disabled{মিথ্যা};
 
 	DEFINE_PARAMETERS(
 		(ParamBool<px4::params::WV_EN>) _param_wv_en,

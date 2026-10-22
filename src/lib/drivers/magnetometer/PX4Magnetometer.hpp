@@ -33,48 +33,48 @@
 
 #pragma once
 
-#include <drivers/drv_hrt.h>
-#include <lib/conversion/rotation.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/sensor_mag.h>
+#অন্তর্ভাব <drivers/drv_hrt.h>
+#অন্তর্ভাব <lib/conversion/rotation.h>
+#অন্তর্ভাব <uORB/PublicationMulti.hpp>
+#অন্তর্ভাব <uORB/topics/sensor_mag.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#অন্তর্ভাব <lib/failure_injection/FailureInjection.hpp>
 
-static constexpr float microTesla2Gauss(float micro_tesla) { return micro_tesla * 0.01f; }
+স্থির constexpr দশমিক microTesla2Gauss(দশমিক micro_tesla) { ফেরত micro_tesla * 0.01f; }
 
-class PX4Magnetometer
+শ্রেণী PX4Magnetometer
 {
-public:
-	PX4Magnetometer(uint32_t device_id, enum Rotation rotation = ROTATION_NONE);
-	PX4Magnetometer(uint32_t device_id, enum Rotation rotation, bool external);
+সর্বজনীন:
+	PX4Magnetometer(uint32_t device_id, গণনা Rotation rotation = ROTATION_NONE);
+	PX4Magnetometer(uint32_t device_id, গণনা Rotation rotation, যৌক্তিক external);
 	~PX4Magnetometer();
 
-	void set_device_id(uint32_t device_id);
-	void set_device_type(uint8_t devtype);
-	void set_external(bool external);
-	void set_error_count(uint32_t error_count) { _error_count = error_count; }
-	void set_range(float range) { _range = range; }
-	void set_scale(float scale) { _scale = scale; }
-	void set_temperature(float temperature) { _temperature = temperature; }
+	শূন্য set_device_id(uint32_t device_id);
+	শূন্য set_device_type(uint8_t devtype);
+	শূন্য set_external(যৌক্তিক external);
+	শূন্য set_error_গুনতি(uint32_t error_গুনতি) { error_গুনতি_2 = error_গুনতি; }
+	শূন্য set_range(দশমিক range) { _range = range; }
+	শূন্য set_scale(দশমিক scale) { _scale = scale; }
+	শূন্য set_temperature(দশমিক temperature) { _temperature = temperature; }
 
-	void update(const hrt_abstime &timestamp_sample, float x, float y, float z);
+	শূন্য update(ধ্রুবক hrt_abstime &timestamp_sample, দশমিক x, দশমিক y, দশমিক z);
 
-	int get_instance() { return _sensor_pub.get_instance(); };
-	uint32_t get_device_id() const { return _device_id; }
+	পূর্ণসংখ্যা get_instance() { ফেরত _sensor_pub.get_instance(); };
+	uint32_t get_device_id() ধ্রুবক { ফেরত _device_id; }
 
-private:
+ব্যক্তিগত:
 	uORB::PublicationMulti<sensor_mag_s> _sensor_pub{ORB_ID(sensor_mag)};
 
 	uint32_t		_device_id{0};
-	const enum Rotation	_rotation;
+	ধ্রুবক গণনা Rotation	_rotation;
 
-	bool			_is_external{false};
-	bool			_external_forced{false}; // classification set by the driver, do not re-derive from the device id
+	যৌক্তিক			_is_external{মিথ্যা};
+	যৌক্তিক			_external_forced{মিথ্যা}; // classification set by the driver, do not re-derive from the device id
 
-	float			_range{0.f};
-	float			_scale{1.f};
-	float			_temperature{NAN};
-	uint32_t		_error_count{0};
+	দশমিক			_range{0.f};
+	দশমিক			_scale{1.f};
+	দশমিক			_temperature{NAN};
+	uint32_t		error_গুনতি_2{0};
 
 	failure_injection::Config _failure_config;
 	failure_injection::Stuck<sensor_mag_s> _stuck;

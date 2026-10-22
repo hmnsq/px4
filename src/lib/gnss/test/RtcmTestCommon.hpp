@@ -33,49 +33,49 @@
 
 #pragma once
 
-#include <gtest/gtest.h>
-#include "correction_framer.h"
-#include <vector>
-#include <cstring>
-#include <numeric>
-#include <random>
+#অন্তর্ভাব <gtest/gtest.h>
+#অন্তর্ভাব "correction_framer.h"
+#অন্তর্ভাব <vector>
+#অন্তর্ভাব <cstring>
+#অন্তর্ভাব <numeric>
+#অন্তর্ভাব <random>
 
-using namespace gnss;
+using নামাকাশ gnss;
 
-class RtcmTest : public ::testing::Test
+শ্রেণী RtcmTest : সর্বজনীন ::testing::Test
 {
-protected:
+সুরক্ষিত:
 	CorrectionFramer parser;
 	GpsRtcmMessageAssembler gps_rtcm_assembler;
 
-	uint8_t buildGpsRtcmFlags(bool fragmented, uint8_t fragment_id = 0, uint8_t sequence_id = 0)
+	uint8_t buildGpsRtcmFlags(যৌক্তিক fragmented, uint8_t fragment_id = 0, uint8_t sequence_id = 0)
 	{
 		uint8_t flags = fragmented ? GPS_RTCM_FLAG_FRAGMENTED : 0;
 		flags |= (fragment_id & GPS_RTCM_FLAG_FRAGMENT_ID_MASK) << GPS_RTCM_FLAG_FRAGMENT_ID_SHIFT;
 		flags |= (sequence_id & GPS_RTCM_FLAG_SEQUENCE_ID_MASK) << GPS_RTCM_FLAG_SEQUENCE_ID_SHIFT;
-		return flags;
+		ফেরত flags;
 	}
 
 	// Helper to build a valid RTCM3 frame with proper CRC
-	std::vector<uint8_t> buildValidFrame(uint16_t msg_type, const std::vector<uint8_t> &payload_data)
+	std::vector<uint8_t> buildValidFrame(uint16_t বার্তা_type, ধ্রুবক std::vector<uint8_t> &payload_তথ্য)
 	{
 		// Payload = 12-bit message type + rest of payload_data
 		// Message type is stored in first 12 bits of payload
 		std::vector<uint8_t> payload;
-		payload.push_back((msg_type >> 4) & 0xFF);
-		payload.push_back(((msg_type & 0x0F) << 4) | (payload_data.empty() ? 0 : (payload_data[0] >> 4)));
+		payload.push_back((বার্তা_type >> 4) & 0xFF);
+		payload.push_back(((বার্তা_type & 0x0F) << 4) | (payload_তথ্য.empty() ? 0 : (payload_তথ্য[0] >> 4)));
 
-		for (size_t i = 0; i < payload_data.size(); i++) {
-			uint8_t current = (payload_data[i] << 4) & 0xF0;
+		জন্য (size_t i = 0; i < payload_তথ্য.আকার_2(); i++) {
+			uint8_t current = (payload_তথ্য[i] << 4) & 0xF0;
 
-			if (i + 1 < payload_data.size()) {
-				current |= (payload_data[i + 1] >> 4) & 0x0F;
+			যদি (i + 1 < payload_তথ্য.আকার_2()) {
+				current |= (payload_তথ্য[i + 1] >> 4) & 0x0F;
 			}
 
 			payload.push_back(current);
 		}
 
-		return buildRawFrame(payload);
+		ফেরত buildRawFrame(payload);
 	}
 
 	// Helper to build a frame with raw payload bytes (no message type encoding)
@@ -83,10 +83,10 @@ protected:
 	// Keep this helper out-of-line to avoid a GCC false positive on the
 	// inlined std::vector::push_back.
 	// See https://github.com/PX4/PX4-Autopilot/issues/26875 for details.
-	__attribute__((noinline)) std::vector<uint8_t> buildRawFrame(const std::vector<uint8_t> &payload)
+	__attribute__((noinline)) std::vector<uint8_t> buildRawFrame(ধ্রুবক std::vector<uint8_t> &payload)
 	{
 		std::vector<uint8_t> frame;
-		size_t payload_len = payload.size();
+		size_t payload_len = payload.আকার_2();
 
 		// Header: preamble + length
 		frame.push_back(RTCM3_PREAMBLE);
@@ -94,23 +94,23 @@ protected:
 		frame.push_back(payload_len & 0xFF);         // Lower 8 bits of length
 
 		// Payload
-		frame.insert(frame.end(), payload.begin(), payload.end());
+		frame.ঢোকাও(frame.end(), payload.begin(), payload.end());
 
 		// CRC
-		uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
+		uint32_t crc = rtcm3_crc24q(frame.তথ্য(), frame.আকার_2());
 		frame.push_back((crc >> 16) & 0xFF);
 		frame.push_back((crc >> 8) & 0xFF);
 		frame.push_back(crc & 0xFF);
 
-		return frame;
+		ফেরত frame;
 	}
 
 	// Helper to build a frame with bad CRC
-	std::vector<uint8_t> buildBadCrcFrame(const std::vector<uint8_t> &payload)
+	std::vector<uint8_t> buildBadCrcFrame(ধ্রুবক std::vector<uint8_t> &payload)
 	{
 		auto frame = buildRawFrame(payload);
 		// Corrupt the CRC
-		frame[frame.size() - 1] ^= 0xFF;
-		return frame;
+		frame[frame.আকার_2() - 1] ^= 0xFF;
+		ফেরত frame;
 	}
 };

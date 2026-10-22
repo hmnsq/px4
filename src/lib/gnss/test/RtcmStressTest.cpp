@@ -31,31 +31,31 @@
  *
  ****************************************************************************/
 
-#include "RtcmTestCommon.hpp"
+#অন্তর্ভাব "RtcmTestCommon.hpp"
 
 TEST_F(RtcmTest, Stress_ManySmallValidFrames)
 {
 	// Simulate a good sender sending many small messages
 	// Process as we go to avoid buffer overflow
-	const int num_frames = 1000;
-	int count = 0;
+	ধ্রুবক পূর্ণসংখ্যা অঙ্ক_frames = 1000;
+	পূর্ণসংখ্যা গুনতি = 0;
 
-	for (int i = 0; i < num_frames; i++) {
+	জন্য (পূর্ণসংখ্যা i = 0; i < অঙ্ক_frames; i++) {
 		auto frame = buildValidFrame(1005 + (i % 100), {static_cast<uint8_t>(i & 0xFF)});
-		parser.addData(frame.data(), frame.size());
+		parser.add_তথ্য(frame.তথ্য(), frame.আকার_2());
 
 		// Consume available messages after each add
 		size_t len;
 
-		while (parser.getNextMessage(&len) != nullptr) {
+		যখন (parser.get_পরবর্তী_Message(&len) != nullptr) {
 			parser.consumeMessage(len);
-			count++;
+			গুনতি++;
 		}
 	}
 
-	EXPECT_EQ(count, num_frames);
+	EXPECT_EQ(গুনতি, অঙ্ক_frames);
 	auto stats = parser.getStats();
-	EXPECT_EQ(stats.messages_parsed, static_cast<uint32_t>(num_frames));
+	EXPECT_EQ(stats.messages_parsed, static_cast<uint32_t>(অঙ্ক_frames));
 	EXPECT_EQ(stats.bytes_discarded, 0u);
 	EXPECT_EQ(stats.crc_errors, 0u);
 }
@@ -64,11 +64,11 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 {
 	// This tests the pathological case Alex mentioned: lots of invalid data
 	// causing many memmove operations during preamble search
-	const size_t garbage_size = 10000;
-	std::vector<uint8_t> garbage(garbage_size);
+	ধ্রুবক size_t garbage_আকার = 10000;
+	std::vector<uint8_t> garbage(garbage_আকার);
 	std::mt19937 rng(99);
 
-	for (auto &byte : garbage) {
+	জন্য (auto &byte : garbage) {
 		// Avoid every protocol preamble to ensure maximum discards: 0xD3 (RTCM3)
 		// and 0x73 (SPARTN), which the framer also treats as a frame start when
 		// CONFIG_GPS_SPARTN is enabled.
@@ -78,53 +78,53 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 	// Add in chunks to simulate streaming
 	size_t offset = 0;
 
-	while (offset < garbage.size()) {
-		size_t chunk = std::min<size_t>(256, garbage.size() - offset);
-		parser.addData(&garbage[offset], chunk);
+	যখন (offset < garbage.আকার_2()) {
+		size_t chunk = std::min<size_t>(256, garbage.আকার_2() - offset);
+		parser.add_তথ্য(&garbage[offset], chunk);
 
 		// Try to parse (forces discarding)
 		size_t len;
-		parser.getNextMessage(&len);
+		parser.get_পরবর্তী_Message(&len);
 		offset += chunk;
 	}
 
 	// Now add a valid frame
 	auto valid = buildValidFrame(1005, {0x01, 0x02, 0x03});
-	parser.addData(valid.data(), valid.size());
+	parser.add_তথ্য(valid.তথ্য(), valid.আকার_2());
 
 	size_t len;
-	const uint8_t *msg = parser.getNextMessage(&len);
-	ASSERT_NE(msg, nullptr);
+	ধ্রুবক uint8_t *বার্তা = parser.get_পরবর্তী_Message(&len);
+	ASSERT_NE(বার্তা, nullptr);
 
 	parser.consumeMessage(len);
 	auto stats = parser.getStats();
 	EXPECT_EQ(stats.messages_parsed, 1u);
-	EXPECT_EQ(stats.bytes_discarded, garbage_size);
+	EXPECT_EQ(stats.bytes_discarded, garbage_আকার);
 }
 
 TEST_F(RtcmTest, Stress_InterleavedGarbageAndValid)
 {
 	// Simulate a flaky sender that mixes garbage with valid frames
-	const int num_valid = 100;
-	int parsed = 0;
+	ধ্রুবক পূর্ণসংখ্যা অঙ্ক_valid = 100;
+	পূর্ণসংখ্যা parsed = 0;
 
-	for (int i = 0; i < num_valid; i++) {
+	জন্য (পূর্ণসংখ্যা i = 0; i < অঙ্ক_valid; i++) {
 		// Add some garbage (variable amount)
 		std::vector<uint8_t> garbage(10 + (i % 50), 0xAA);
-		parser.addData(garbage.data(), garbage.size());
+		parser.add_তথ্য(garbage.তথ্য(), garbage.আকার_2());
 
 		// Add valid frame
 		auto frame = buildValidFrame(1005, {static_cast<uint8_t>(i)});
-		parser.addData(frame.data(), frame.size());
+		parser.add_তথ্য(frame.তথ্য(), frame.আকার_2());
 
 		// Parse what we can
 		size_t len;
 
-		while (parser.getNextMessage(&len) != nullptr) {
+		যখন (parser.get_পরবর্তী_Message(&len) != nullptr) {
 			parser.consumeMessage(len);
 			parsed++;
 		}
 	}
 
-	EXPECT_EQ(parsed, num_valid);
+	EXPECT_EQ(parsed, অঙ্ক_valid);
 }
