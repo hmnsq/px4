@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#include <cmath>
+#অন্তর্ভাব <cmath>
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
-#include <iostream>
+#অন্তর্ভাব <gtest/gtest.h>
+#অন্তর্ভাব <matrix/math.hpp>
+#অন্তর্ভাব <iostream>
 
-using namespace matrix;
+using নামাকাশ matrix;
 
 template <typename T>
-T testFunction(const Vector<T, 3> &point)
+T testFunction(ধ্রুব Vector<T, 3> &point)
 {
 	// function is f(x,y,z) = x^2 + 2xy + 3y^2 + z
-	return point(0) * point(0)
+	প্রত্যাগম point(0) * point(0)
 	       + 2.f * point(0) * point(1)
 	       + 3.f * point(1) * point(1)
 	       + point(2);
 }
 
 template <typename Scalar>
-Vector<Scalar, 3> positionError(const Vector<Scalar, 3> &positionState,
-				const Vector<Scalar, 3> &velocityStateBody,
-				const Quaternion<Scalar> &bodyOrientation,
-				const Vector<Scalar, 3> &positionMeasurement,
+Vector<Scalar, 3> positionError(ধ্রুব Vector<Scalar, 3> &positionState,
+				ধ্রুব Vector<Scalar, 3> &velocityStateBody,
+				ধ্রুব Quaternion<Scalar> &bodyOrientation,
+				ধ্রুব Vector<Scalar, 3> &positionMeasurement,
 				Scalar dt
 			       )
 {
-	return positionMeasurement - (positionState +  bodyOrientation.rotateVector(velocityStateBody) * dt);
+	প্রত্যাগম positionMeasurement - (positionState +  bodyOrientation.rotateVector(velocityStateBody) * dt);
 }
 
 TEST(MatrixDualTest, Dual)
 {
-	const Dual<float, 1> a(3, 0);
-	const Dual<float, 1> b(6, 0);
+	ধ্রুব Dual<ভিন্ন, 1> a(3, 0);
+	ধ্রুব Dual<ভিন্ন, 1> b(6, 0);
 
 	{
 		EXPECT_FLOAT_EQ(a.value, 3.f);
@@ -72,86 +72,86 @@ TEST(MatrixDualTest, Dual)
 
 	{
 		// addition
-		Dual<float, 1> c = a + b;
+		Dual<ভিন্ন, 1> c = a + b;
 		EXPECT_FLOAT_EQ(c.value, 9.f);
 		EXPECT_FLOAT_EQ(c.derivative(0), 2.f);
 
-		Dual<float, 1> d = +a;
+		Dual<ভিন্ন, 1> d = +a;
 		EXPECT_EQ(d, a);
 		d += b;
 		EXPECT_EQ(d, c);
 
-		Dual<float, 1> e = a;
+		Dual<ভিন্ন, 1> e = a;
 		e += b.value;
 		EXPECT_FLOAT_EQ(e.value, c.value);
 		EXPECT_EQ(e.derivative, a.derivative);
 
-		Dual<float, 1> f = b.value + a;
+		Dual<ভিন্ন, 1> f = b.value + a;
 		EXPECT_EQ(f, e);
 	}
 
 	{
 		// subtraction
-		Dual<float, 1> c = b - a;
+		Dual<ভিন্ন, 1> c = b - a;
 		EXPECT_FLOAT_EQ(c.value, 3.f);
 		EXPECT_FLOAT_EQ(c.derivative(0), 0.f);
 
-		Dual<float, 1> d = b;
+		Dual<ভিন্ন, 1> d = b;
 		EXPECT_EQ(d, b);
 		d -= a;
 		EXPECT_EQ(d, c);
 
-		Dual<float, 1> e = b;
+		Dual<ভিন্ন, 1> e = b;
 		e -= a.value;
 		EXPECT_FLOAT_EQ(e.value, c.value);
 		EXPECT_EQ(e.derivative, b.derivative);
 
-		Dual<float, 1> f = a.value - b;
+		Dual<ভিন্ন, 1> f = a.value - b;
 		EXPECT_EQ(f, -e);
 	}
 
 	{
 		// multiplication
-		Dual<float, 1> c = a * b;
+		Dual<ভিন্ন, 1> c = a * b;
 		EXPECT_FLOAT_EQ(c.value, 18.f);
 		EXPECT_FLOAT_EQ(c.derivative(0), 9.f);
 
-		Dual<float, 1> d = a;
+		Dual<ভিন্ন, 1> d = a;
 		EXPECT_EQ(d, a);
 		d *= b;
 		EXPECT_EQ(d, c);
 
-		Dual<float, 1> e = a;
+		Dual<ভিন্ন, 1> e = a;
 		e *= b.value;
 		EXPECT_FLOAT_EQ(e.value, c.value);
 		EXPECT_EQ(e.derivative, a.derivative * b.value);
 
-		Dual<float, 1> f = b.value * a;
+		Dual<ভিন্ন, 1> f = b.value * a;
 		EXPECT_EQ(f, e);
 	}
 
 	{
 		// division
-		Dual<float, 1> c = b / a;
+		Dual<ভিন্ন, 1> c = b / a;
 		EXPECT_FLOAT_EQ(c.value, 2.f);
 		EXPECT_FLOAT_EQ(c.derivative(0), -1.f / 3.f);
 
-		Dual<float, 1> d = b;
+		Dual<ভিন্ন, 1> d = b;
 		EXPECT_EQ(d, b);
 		d /= a;
 		EXPECT_EQ(d, c);
 
-		Dual<float, 1> e = b;
+		Dual<ভিন্ন, 1> e = b;
 		e /= a.value;
 		EXPECT_FLOAT_EQ(e.value, c.value);
 		EXPECT_EQ(e.derivative, b.derivative / a.value);
 
-		Dual<float, 1> f = a.value / b;
+		Dual<ভিন্ন, 1> f = a.value / b;
 		EXPECT_EQ(f, 1.f / e);
 	}
 
 	{
-		Dual<float, 1> blank;
+		Dual<ভিন্ন, 1> blank;
 		EXPECT_FLOAT_EQ(blank.value, 0.f);
 		EXPECT_FLOAT_EQ(blank.derivative(0), 0.f);
 	}
@@ -171,14 +171,14 @@ TEST(MatrixDualTest, Dual)
 
 	{
 		// ceil
-		Dual<float, 1> c(1.5, 0);
+		Dual<ভিন্ন, 1> c(1.5, 0);
 		EXPECT_FLOAT_EQ(ceil(c).value, ceil(c.value));
 		EXPECT_FLOAT_EQ(ceil(c).derivative(0), 0.f);
 	}
 
 	{
 		// floor
-		Dual<float, 1> c(1.5, 0);
+		Dual<ভিন্ন, 1> c(1.5, 0);
 		EXPECT_FLOAT_EQ(floor(c).value, floor(c.value));
 		EXPECT_FLOAT_EQ(floor(c).derivative(0), 0.f);
 	}
@@ -198,7 +198,7 @@ TEST(MatrixDualTest, Dual)
 	{
 		// isnan
 		EXPECT_FALSE(IsNan(a));
-		Dual<float, 1> c(std::sqrt(-1.f), 0);
+		Dual<ভিন্ন, 1> c(std::sqrt(-1.f), 0);
 		EXPECT_TRUE(IsNan(c));
 	}
 
@@ -206,10 +206,10 @@ TEST(MatrixDualTest, Dual)
 		// isfinite/isinf
 		EXPECT_TRUE(IsFinite(a));
 		EXPECT_FALSE(IsInf(a));
-		Dual<float, 1> c(std::sqrt(-1.f), 0);
+		Dual<ভিন্ন, 1> c(std::sqrt(-1.f), 0);
 		EXPECT_FALSE(IsFinite(c));
 		EXPECT_FALSE(IsInf(c));
-		Dual<float, 1> d(INFINITY, 0);
+		Dual<ভিন্ন, 1> d(INFINITY, 0);
 		EXPECT_FALSE(IsFinite(d));
 		EXPECT_TRUE(IsInf(d));
 	}
@@ -228,7 +228,7 @@ TEST(MatrixDualTest, Dual)
 
 	{
 		// asin/acos/atan
-		Dual<float, 1> c(0.3f, 0);
+		Dual<ভিন্ন, 1> c(0.3f, 0);
 		EXPECT_FLOAT_EQ(asin(c).value, std::asin(c.value));
 		EXPECT_FLOAT_EQ(asin(c).derivative(0), 1.f / std::sqrt(1.f - 0.3f * 0.3f)); // asin'(x) = 1/sqrt(1-x^2)
 
@@ -242,32 +242,32 @@ TEST(MatrixDualTest, Dual)
 	{
 		// atan2
 		EXPECT_FLOAT_EQ(atan2(a, b).value, atan2(a.value, b.value));
-		EXPECT_EQ(atan2(a, Dual<float, 1>(b.value)), atan(a / b.value)); // atan2'(y, x) = atan'(y/x)
+		EXPECT_EQ(atan2(a, Dual<ভিন্ন, 1>(b.value)), atan(a / b.value)); // atan2'(y, x) = atan'(y/x)
 	}
 
 	{
 		// partial derivatives
 		// function is f(x,y,z) = x^2 + 2xy + 3y^2 + z, we need with respect to d/dx and d/dy at the point (0.5, -0.8, 2)
 
-		using D = Dual<float, 2>;
+		using D = Dual<ভিন্ন, 2>;
 
 		// set our starting point, requesting partial derivatives of x and y in column 0 and 1
 		Vector3<D> dualPoint(D(0.5f, 0), D(-0.8f, 1), D(2.f));
 
-		Dual<float, 2> dualResult = testFunction(dualPoint);
+		Dual<ভিন্ন, 2> dualResult = testFunction(dualPoint);
 
 		// compare to a numerical derivative:
-		Vector<float, 3> floatPoint = collectReals(dualPoint);
-		float floatResult = testFunction(floatPoint);
+		Vector<ভিন্ন, 3> floatPoint = collectReals(dualPoint);
+		ভিন্ন floatResult = testFunction(floatPoint);
 
-		float h = 0.0001f;
-		Vector<float, 3> floatPoint_plusDX = floatPoint;
+		ভিন্ন h = 0.0001f;
+		Vector<ভিন্ন, 3> floatPoint_plusDX = floatPoint;
 		floatPoint_plusDX(0) += h;
-		float floatResult_plusDX = testFunction(floatPoint_plusDX);
+		ভিন্ন floatResult_plusDX = testFunction(floatPoint_plusDX);
 
-		Vector<float, 3> floatPoint_plusDY = floatPoint;
+		Vector<ভিন্ন, 3> floatPoint_plusDY = floatPoint;
 		floatPoint_plusDY(1) += h;
-		float floatResult_plusDY = testFunction(floatPoint_plusDY);
+		ভিন্ন floatResult_plusDY = testFunction(floatPoint_plusDY);
 
 		Vector2f numerical_derivative((floatResult_plusDX - floatResult) / h,
 					      (floatResult_plusDY - floatResult) / h);
@@ -281,23 +281,23 @@ TEST(MatrixDualTest, Dual)
 		// get residual of x/y/z with partial derivatives of rotation
 
 		Vector3f direct_error;
-		Matrix<float, 3, 4> numerical_jacobian;
+		Matrix<ভিন্ন, 3, 4> numerical_jacobian;
 		{
 			Vector3f positionState(5, 6, 7);
 			Vector3f velocityState(-1, 0, 1);
 			Quaternionf velocityOrientation(0.2f, -0.1f, 0, 1);
 			Vector3f positionMeasurement(4.5f, 6.2f, 7.9f);
-			float dt = 0.1f;
+			ভিন্ন dt = 0.1f;
 
 			direct_error = positionError(positionState,
 						     velocityState,
 						     velocityOrientation,
 						     positionMeasurement,
 						     dt);
-			float h = 0.001f;
+			ভিন্ন h = 0.001f;
 
-			for (size_t i = 0; i < 4; i++) {
-				Quaternion<float> h4 = velocityOrientation;
+			প্রতি (size_t i = 0; i < 4; i++) {
+				Quaternion<ভিন্ন> h4 = velocityOrientation;
 				h4(i) += h;
 				numerical_jacobian.col(i) = (positionError(positionState,
 							     velocityState,
@@ -308,9 +308,9 @@ TEST(MatrixDualTest, Dual)
 			}
 		}
 		Vector3f auto_error;
-		Matrix<float, 3, 4> auto_jacobian;
+		Matrix<ভিন্ন, 3, 4> auto_jacobian;
 		{
-			using D4 = Dual<float, 4>;
+			using D4 = Dual<ভিন্ন, 4>;
 			using Vector3d4 = Vector3<D4>;
 			Vector3d4 positionState(D4(5), D4(6), D4(7));
 			Vector3d4 velocityState(D4(-1), D4(0), D4(1));

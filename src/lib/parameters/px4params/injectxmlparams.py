@@ -2,71 +2,71 @@
 # Injects params from XML file into a param_group
 #
 
-from __future__ import print_function
-from px4params import srcscanner, srcparser, xmlout, markdownout
-from .srcparser import ParameterGroup, Parameter
+তঃ __future__ আনযন print_function
+তঃ px4params আনযন srcscanner, srcparser, xmlout, markdownout
+তঃ .srcparser আনযন ParameterGroup, Parameter
 
-import xml.etree.ElementTree as ET
-import sys
+আনযন xml.etree.Element_বৃক্ষ ইব ET
+আনযন sys
 
 
-class XMLInject():
+বর্গ XMLInject():
     def __init__(self, injected_xml_filename):
         self.groups=[]
 
         valid_parameter_attributes = set(["category", "default", "name", "type", "volatile", "boolean"])
         valid_field_tags = set(["board","short_desc", "long_desc", "min", "max", "unit", "decimal", "increment", "reboot_required"])
-        valid_other_top_level_tags = set(["group","values"])
+        valid_other_শীর্ষ_level_tags = set(["group","values"])
 
         importtree = ET.parse(injected_xml_filename)
         injectgroups = importtree.getroot().findall("group")
         not_handled_parameter_tags=set()
         not_handled_parameter_attributes=set()
-        for igroup in injectgroups:
+        প্রতি igroup অন্তঃ injectgroups:
             group_name=igroup.get('name')
             imported_group = ParameterGroup(group_name)
             no_code_generation=igroup.get('no_code_generation')
-            if no_code_generation:
+            যদি no_code_generation:
                 imported_group.no_code_generation=no_code_generation
-            for iparam in igroup:
+            প্রতি iparam অন্তঃ igroup:
                 param_name=iparam.get('name')
                 param_type=iparam.get('type')
                 new_param= Parameter(param_name, param_type)
                 #get other param info stored as attributes
-                for param_attrib in iparam.attrib:
-                    if param_attrib not in valid_parameter_attributes:
+                প্রতি param_attrib অন্তঃ iparam.attrib:
+                    যদি param_attrib ন অন্তঃ valid_parameter_attributes:
                         not_handled_parameter_attributes.add(param_attrib)
-                    elif param_attrib == 'category':
+                    নোচেদ্যদি param_attrib == 'category':
                         new_param.SetCategory(iparam.get('category'))
-                    elif param_attrib == 'default':
-                        new_param.default = iparam.get('default')
-                    elif param_attrib == 'volatile':
+                    নোচেদ্যদি param_attrib == 'default':
+                        new_param.স্বভাব = iparam.get('default')
+                    নোচেদ্যদি param_attrib == 'volatile':
                         new_param.SetVolatile()
-                    elif param_attrib == "boolean":
+                    নোচেদ্যদি param_attrib == "boolean":
                         new_param.SetBoolean()
 
                 #get param info stored as child tags
-                for child in iparam:
-                    if child.tag in valid_field_tags:
+                প্রতি child অন্তঃ iparam:
+                    যদি child.tag অন্তঃ valid_field_tags:
                         new_param.SetField(child.tag, child.text)
-                    elif child.tag == 'values':
-                        for value in child:
-                            new_param.SetEnumValue(value.get('code'), value.text)
-                    elif child.tag == 'bitmask':
-                        for bit in child:
+                    নোচেদ্যদি child.tag == 'values':
+                        প্রতি মান অন্তঃ child:
+                            new_param.Set_Enum_মান(মান.get('code'), মান.text)
+                    নোচেদ্যদি child.tag == 'bitmask':
+                        প্রতি bit অন্তঃ child:
                             new_param.SetBitmaskBit(bit.get('index'), bit.text)
-                    else:
+                    অন্যথা:
                         not_handled_parameter_tags.add(child.tag)                      
             
                 imported_group.AddParameter(new_param)
             self.groups.append(imported_group)
 
                     
-        if not_handled_parameter_tags or not_handled_parameter_attributes:
+        যদি not_handled_parameter_tags বা not_handled_parameter_attributes:
             print("WARNING: Injected file parameter has unhandled child tags: %s" % not_handled_parameter_tags)
             print("WARNING: Injected file parameter has unhandled attributes: %s" % not_handled_parameter_attributes)
 
         
 
     def injected(self):
-        return self.groups
+        প্রত্যাগম self.groups

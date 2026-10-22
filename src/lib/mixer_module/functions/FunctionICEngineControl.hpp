@@ -33,30 +33,30 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#অন্তর্ভাব "FunctionProviderBase.hpp"
 
-#include <uORB/topics/internal_combustion_engine_control.h>
+#অন্তর্ভাব <uORB/topics/internal_combustion_engine_control.h>
 
 /**
  * Functions: ICE...
  */
-class FunctionICEControl : public FunctionProviderBase
+বর্গ FunctionICEControl : সার্বজনিক FunctionProviderBase
 {
-public:
+সার্বজনিক:
 	FunctionICEControl()
 	{
-		resetAllToDisarmedValue();
+		reset_All_To_Disarmed_মান();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionICEControl(); }
+	স্থির FunctionProviderBase *allocate(ধ্রুব Context &context) { প্রত্যাগম নূতন FunctionICEControl(); }
 
-	void update() override
+	শূন্য update() override
 	{
 		internal_combustion_engine_control_s internal_combustion_engine_control;
 
 		// map [0, 1] to [-1, 1] which is the interface for non-motor PWM channels
 		// NAN is mapped to disarmed
-		if (_internal_combustion_engine_control_sub.update(&internal_combustion_engine_control)) {
+		যদি (_internal_combustion_engine_control_sub.update(&internal_combustion_engine_control)) {
 			_data[0] = internal_combustion_engine_control.ignition_on * 2.f - 1.f;
 			_data[1] = internal_combustion_engine_control.throttle_control * 2.f - 1.f;
 			_data[2] = internal_combustion_engine_control.choke_control * 2.f - 1.f;
@@ -64,21 +64,21 @@ public:
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::IC_Engine_Ignition]; }
+	ভিন্ন value(OutputFunction func) override { প্রত্যাগম _data[(পূর্ণাঙ্ক)func - (পূর্ণাঙ্ক)OutputFunction::IC_Engine_Ignition]; }
 
-private:
-	static constexpr int num_data_points = 4;
+গুপ্ত:
+	স্থির constexpr পূর্ণাঙ্ক অঙ্ক_data_points = 4;
 
-	void resetAllToDisarmedValue()
+	শূন্য reset_All_To_Disarmed_মান()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
+		প্রতি (পূর্ণাঙ্ক i = 0; i < অঙ্ক_data_points; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::IC_Engine_Starter - (int)OutputFunction::IC_Engine_Ignition + 1,
+	static_assert(অঙ্ক_data_points == (পূর্ণাঙ্ক)OutputFunction::IC_Engine_Starter - (পূর্ণাঙ্ক)OutputFunction::IC_Engine_Ignition + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _internal_combustion_engine_control_sub{ORB_ID(internal_combustion_engine_control)};
-	float _data[num_data_points] {};
+	ভিন্ন _data[অঙ্ক_data_points] {};
 };

@@ -35,41 +35,41 @@
  * @file rate_control.cpp
  */
 
-#include "rate_control.hpp"
-#include <px4_platform_common/defines.h>
+#অন্তর্ভাব "rate_control.hpp"
+#অন্তর্ভাব <px4_platform_common/defines.h>
 
-using namespace matrix;
+using নামাকাশ matrix;
 
-void RateControl::setPidGains(const Vector3f &P, const Vector3f &I, const Vector3f &D)
+শূন্য RateControl::setPidGains(ধ্রুব Vector3f &P, ধ্রুব Vector3f &I, ধ্রুব Vector3f &D)
 {
 	_gain_p = P;
 	_gain_i = I;
 	_gain_d = D;
 }
 
-void RateControl::setSaturationStatus(const Vector3<bool> &saturation_positive,
-				      const Vector3<bool> &saturation_negative)
+শূন্য RateControl::setSaturationStatus(ধ্রুব Vector3<তার্কিক> &saturation_positive,
+				      ধ্রুব Vector3<তার্কিক> &saturation_negative)
 {
 	_control_allocator_saturation_positive = saturation_positive;
 	_control_allocator_saturation_negative = saturation_negative;
 }
 
-void RateControl::setPositiveSaturationFlag(size_t axis, bool is_saturated)
+শূন্য RateControl::setPositiveSaturationFlag(size_t axis, তার্কিক is_saturated)
 {
-	if (axis < 3) {
+	যদি (axis < 3) {
 		_control_allocator_saturation_positive(axis) = is_saturated;
 	}
 }
 
-void RateControl::setNegativeSaturationFlag(size_t axis, bool is_saturated)
+শূন্য RateControl::setNegativeSaturationFlag(size_t axis, তার্কিক is_saturated)
 {
-	if (axis < 3) {
+	যদি (axis < 3) {
 		_control_allocator_saturation_negative(axis) = is_saturated;
 	}
 }
 
-Vector3f RateControl::update(const Vector3f &rate, const Vector3f &rate_sp, const Vector3f &angular_accel,
-			     const float dt, const bool landed)
+Vector3f RateControl::update(ধ্রুব Vector3f &rate, ধ্রুব Vector3f &rate_sp, ধ্রুব Vector3f &angular_accel,
+			     ধ্রুব ভিন্ন dt, ধ্রুব তার্কিক landed)
 {
 	// angular rates error
 	Vector3f rate_error = rate_sp - rate;
@@ -78,23 +78,23 @@ Vector3f RateControl::update(const Vector3f &rate, const Vector3f &rate_sp, cons
 	Vector3f torque = _gain_p.emult(rate_error) + _rate_int - _gain_d.emult(angular_accel) + _gain_ff.emult(rate_sp);
 
 	// update integral only if we are not landed
-	if (!landed) {
+	যদি (!landed) {
 		updateIntegral(rate_error, dt);
 	}
 
-	return torque;
+	প্রত্যাগম torque;
 }
 
-void RateControl::updateIntegral(Vector3f &rate_error, const float dt)
+শূন্য RateControl::updateIntegral(Vector3f &rate_error, ধ্রুব ভিন্ন dt)
 {
-	for (int i = 0; i < 3; i++) {
+	প্রতি (পূর্ণাঙ্ক i = 0; i < 3; i++) {
 		// prevent further positive control saturation
-		if (_control_allocator_saturation_positive(i)) {
+		যদি (_control_allocator_saturation_positive(i)) {
 			rate_error(i) = math::min(rate_error(i), 0.f);
 		}
 
 		// prevent further negative control saturation
-		if (_control_allocator_saturation_negative(i)) {
+		যদি (_control_allocator_saturation_negative(i)) {
 			rate_error(i) = math::max(rate_error(i), 0.f);
 		}
 
@@ -104,20 +104,20 @@ void RateControl::updateIntegral(Vector3f &rate_error, const float dt)
 		// The formula leads to a gradual decrease w/o steps, while only affecting the cases where it should:
 		// with the parameter set to 400 degrees, up to 100 deg rate error, i_factor is almost 1 (having no effect),
 		// and up to 200 deg error leads to <25% reduction of I.
-		float i_factor = rate_error(i) / math::radians(400.f);
+		ভিন্ন i_factor = rate_error(i) / math::radians(400.f);
 		i_factor = math::max(0.0f, 1.f - i_factor * i_factor);
 
 		// Perform the integration using a first order method
-		float rate_i = _rate_int(i) + i_factor * _gain_i(i) * rate_error(i) * dt;
+		ভিন্ন rate_i = _rate_int(i) + i_factor * _gain_i(i) * rate_error(i) * dt;
 
 		// do not propagate the result if out of range or invalid
-		if (PX4_ISFINITE(rate_i)) {
+		যদি (PX4_ISFINITE(rate_i)) {
 			_rate_int(i) = math::constrain(rate_i, -_lim_int(i), _lim_int(i));
 		}
 	}
 }
 
-void RateControl::getRateControlStatus(rate_ctrl_status_s &rate_ctrl_status)
+শূন্য RateControl::getRateControlStatus(rate_ctrl_status_s &rate_ctrl_status)
 {
 	rate_ctrl_status.rollspeed_integ = _rate_int(0);
 	rate_ctrl_status.pitchspeed_integ = _rate_int(1);

@@ -33,43 +33,43 @@
 
 #pragma once
 
-#include <limits.h>
+#অন্তর্ভাব <limits.h>
 
-#include <mixer_module/output_functions.hpp>
+#অন্তর্ভাব <mixer_module/output_functions.hpp>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionCallback.hpp>
+#অন্তর্ভাব <uORB/Subscription.hpp>
+#অন্তর্ভাব <uORB/SubscriptionCallback.hpp>
 
-#include <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
+#অন্তর্ভাব <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
 
-class FunctionProviderBase
+বর্গ FunctionProviderBase
 {
-public:
-	struct Context {
+সার্বজনিক:
+	সংরচনা Context {
 		px4::WorkItem &work_item;
-		const float &thrust_factor;
+		ধ্রুব ভিন্ন &thrust_factor;
 	};
 
-	FunctionProviderBase() = default;
-	virtual ~FunctionProviderBase() = default;
+	FunctionProviderBase() = স্বভাব;
+	আভাস ~FunctionProviderBase() = স্বভাব;
 
-	virtual void update() = 0;
+	আভাস শূন্য update() = 0;
 
 	/**
 	 * Get the current output value for a given function
 	 * @return NAN (=disarmed) or value in range [-1, 1]
 	 */
-	virtual float value(OutputFunction func) = 0;
+	আভাস ভিন্ন value(OutputFunction func) = 0;
 
-	virtual float defaultFailsafeValue(OutputFunction func) const { return NAN; }
-	virtual bool allowPrearmControl() const { return true; }
+	আভাস ভিন্ন default_Failsafe_মান(OutputFunction func) ধ্রুব { প্রত্যাগম NAN; }
+	আভাস তার্কিক allowPrearmControl() ধ্রুব { প্রত্যাগম সত্য; }
 
-	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { return nullptr; }
+	আভাস uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { প্রত্যাগম nullptr; }
 
-	virtual bool getLatestSampleTimestamp(hrt_abstime &t) const { return false; }
+	আভাস তার্কিক getLatestSampleTimestamp(hrt_abstime &t) ধ্রুব { প্রত্যাগম অসত্য; }
 
 	/**
 	 * Check whether the output (motor) is configured to be reversible
 	 */
-	virtual bool reversible(OutputFunction func) const { return false; }
+	আভাস তার্কিক reversible(OutputFunction func) ধ্রুব { প্রত্যাগম অসত্য; }
 };

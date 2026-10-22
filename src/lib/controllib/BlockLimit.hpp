@@ -39,20 +39,20 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#অন্তর্ভাব <px4_platform_common/defines.h>
+#অন্তর্ভাব <assert.h>
+#অন্তর্ভাব <time.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <mathlib/math/test/test.hpp>
+#অন্তর্ভাব <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#অন্তর্ভাব "block/Block.hpp"
+#অন্তর্ভাব "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#অন্তর্ভাব "matrix/math.hpp"
 
-namespace control
+নামাকাশ control
 {
 
 /**
@@ -60,21 +60,21 @@ namespace control
  * The output of update is the input, bounded
  * by min/max.
  */
-class __EXPORT BlockLimit : public Block
+বর্গ __EXPORT BlockLimit : সার্বজনিক Block
 {
-public:
+সার্বজনিক:
 // methods
-	BlockLimit(SuperBlock *parent, const char *name) :
+	BlockLimit(SuperBlock *parent, ধ্রুব বর্ণ *name) :
 		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+		_min(এতত্, "MIN"),
+		_max(এতত্, "MAX")
 	{}
-	virtual ~BlockLimit() = default;
-	float update(float input);
+	আভাস ~BlockLimit() = স্বভাব;
+	ভিন্ন update(ভিন্ন প্রবেশ);
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-protected:
+	ভিন্ন getMin() { প্রত্যাগম _min.get(); }
+	ভিন্ন getMax() { প্রত্যাগম _max.get(); }
+রক্ষিত:
 // attributes
 	control::BlockParamFloat _min;
 	control::BlockParamFloat _max;

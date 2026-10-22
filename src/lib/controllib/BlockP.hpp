@@ -39,42 +39,42 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#অন্তর্ভাব <px4_platform_common/defines.h>
+#অন্তর্ভাব <assert.h>
+#অন্তর্ভাব <time.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <mathlib/math/test/test.hpp>
+#অন্তর্ভাব <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#অন্তর্ভাব "block/Block.hpp"
+#অন্তর্ভাব "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#অন্তর্ভাব "matrix/math.hpp"
 
-namespace control
+নামাকাশ control
 {
 
 /**
  * A proportional controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockP: public Block
+বর্গ __EXPORT BlockP: সার্বজনিক Block
 {
-public:
+সার্বজনিক:
 // methods
-	BlockP(SuperBlock *parent, const char *name) :
+	BlockP(SuperBlock *parent, ধ্রুব বর্ণ *name) :
 		Block(parent, name),
-		_kP(this, "") // only one param, no need to name
+		_kP(এতত্, "") // only one param, no need to name
 	{}
-	virtual ~BlockP() = default;
-	float update(float input)
+	আভাস ~BlockP() = স্বভাব;
+	ভিন্ন update(ভিন্ন প্রবেশ)
 	{
-		return getKP() * input;
+		প্রত্যাগম getKP() * প্রবেশ;
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-protected:
+	ভিন্ন getKP() { প্রত্যাগম _kP.get(); }
+রক্ষিত:
 	control::BlockParamFloat _kP;
 };
 

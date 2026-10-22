@@ -31,26 +31,26 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <math.h>
-#include "TimestampedRingBuffer.hpp"
+#অন্তর্ভাব <gtest/gtest.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব "TimestampedRingBuffer.hpp"
 
-struct sample {
+সংরচনা sample {
 	uint64_t time_us;
-	float data[3];
+	ভিন্ন data[3];
 };
 
 
-class TimestampedRingBufferDynamicTest : public ::testing::Test
+বর্গ TimestampedRingBufferDynamicTest : সার্বজনিক ::testing::Test
 {
-public:
+সার্বজনিক:
 
 	sample _x, _y, _z;
 	TimestampedRingBuffer<sample> *_buffer{nullptr};
 
-	void SetUp() override
+	শূন্য SetUp() override
 	{
-		_buffer = new TimestampedRingBuffer<sample>(3);
+		_buffer = নূতন TimestampedRingBuffer<sample>(3);
 		_x.time_us = 1000000;
 		_x.data[0] = _x.data[1] = _x.data[2] = 1.5f;
 
@@ -61,7 +61,7 @@ public:
 		_z.data[0] = _z.data[1] = _z.data[2] = 4.0f;
 	}
 
-	void TearDown() override
+	শূন্য TearDown() override
 	{
 		delete _buffer;
 	}
@@ -96,69 +96,69 @@ TEST_F(TimestampedRingBufferDynamicTest, badInitialisation)
 
 TEST_F(TimestampedRingBufferDynamicTest, orderOfSamples)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
+	ASSERT_EQ(সত্য, _buffer->allocate(3));
 	// GIVEN: allocated buffer
 	// WHEN: adding multiple samples
 	// THEN: they should be added in order
-	_buffer->push(_x);
+	_buffer->ঠেলো(_x);
 
 	EXPECT_EQ(_x.time_us, _buffer->get_newest().time_us);
 	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
 
-	_buffer->push(_z);
-	_buffer->push(_y);
+	_buffer->ঠেলো(_z);
+	_buffer->ঠেলো(_y);
 
 	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
 	EXPECT_EQ(_y.time_us, _buffer->get_newest().time_us);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, popSample)
+TEST_F(TimestampedRingBufferDynamicTest, বের_করো_Sample)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(সত্য, _buffer->allocate(3));
+	_buffer->ঠেলো(_x);
+	_buffer->ঠেলো(_y);
+	_buffer->ঠেলো(_z);
 
 	// GIVEN: allocated and filled buffer
 
-	sample pop = {};
+	sample বের_করো = {};
 	// WHEN: we want to retrieve a sample that is older than any in the buffer
 	// THEN: we should not get any sample
-	EXPECT_FALSE(_buffer->pop_first_older_than(0, &pop));
+	EXPECT_FALSE(_buffer->বের_করো_first_older_than(0, &বের_করো));
 
 	// WHEN: when calling "pop_first_older_than"
 	// THEN: we should get the first sample from the head that is older
-	EXPECT_TRUE(_buffer->pop_first_older_than(_x.time_us + 1, &pop));
-	EXPECT_EQ(_x.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_y.time_us + 10, &pop));
-	EXPECT_EQ(_y.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 100, &pop));
-	EXPECT_EQ(_z.time_us, pop.time_us);
+	EXPECT_TRUE(_buffer->বের_করো_first_older_than(_x.time_us + 1, &বের_করো));
+	EXPECT_EQ(_x.time_us, বের_করো.time_us);
+	EXPECT_TRUE(_buffer->বের_করো_first_older_than(_y.time_us + 10, &বের_করো));
+	EXPECT_EQ(_y.time_us, বের_করো.time_us);
+	EXPECT_TRUE(_buffer->বের_করো_first_older_than(_z.time_us + 100, &বের_করো));
+	EXPECT_EQ(_z.time_us, বের_করো.time_us);
 	// TODO: When changing the order of popping sample it does not behave as expected, fix this
 }
 
 TEST_F(TimestampedRingBufferDynamicTest, askingForTooNewSample)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(সত্য, _buffer->allocate(3));
+	_buffer->ঠেলো(_x);
+	_buffer->ঠেলো(_y);
+	_buffer->ঠেলো(_z);
 
-	sample pop = {};
+	sample বের_করো = {};
 	// WHEN: all buffered samples are older by 0.1s than your query timestamp
 	// THEN: should get no sample returned
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 99000, &pop));
-	EXPECT_FALSE(_buffer->pop_first_older_than(_y.time_us + 100000, &pop));
+	EXPECT_TRUE(_buffer->বের_করো_first_older_than(_z.time_us + 99000, &বের_করো));
+	EXPECT_FALSE(_buffer->বের_করো_first_older_than(_y.time_us + 100000, &বের_করো));
 }
 
 TEST_F(TimestampedRingBufferDynamicTest, reallocateBuffer)
 {
-	ASSERT_EQ(true, _buffer->allocate(5));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(সত্য, _buffer->allocate(5));
+	_buffer->ঠেলো(_x);
+	_buffer->ঠেলো(_y);
+	_buffer->ঠেলো(_y);
+	_buffer->ঠেলো(_y);
+	_buffer->ঠেলো(_z);
 
 	// GIVEN: allocated and filled buffer
 	// WHEN: do another allocate call

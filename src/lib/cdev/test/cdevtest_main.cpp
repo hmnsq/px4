@@ -37,13 +37,13 @@
  *
  * @author Mark Charlebois <charlebm@gmail.com>
  */
-#include "cdevtest_example.h"
+#অন্তর্ভাব "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/init.h>
-#include <stdio.h>
+#অন্তর্ভাব <px4_platform_common/app.h>
+#অন্তর্ভাব <px4_platform_common/init.h>
+#অন্তর্ভাব <stdio.h>
 
-int PX4_MAIN(int argc, char **argv)
+পূর্ণাঙ্ক PX4_MAIN(পূর্ণাঙ্ক argc, বর্ণ **argv)
 {
 	px4::init(argc, argv, "cdevtest");
 
@@ -52,5 +52,5 @@ int PX4_MAIN(int argc, char **argv)
 	cdevtest.main();
 
 	printf("goodbye\n");
-	return 0;
+	প্রত্যাগম 0;
 }

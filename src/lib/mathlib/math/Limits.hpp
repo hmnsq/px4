@@ -39,28 +39,28 @@
 
 #pragma once
 
-#include <float.h>
-#include <math.h>
-#include <stdint.h>
+#অন্তর্ভাব <float.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <stdint.h>
 
 #ifndef MATH_PI
 #define MATH_PI		3.141592653589793238462643383280
 #endif
 
-namespace math
+নামাকাশ math
 {
 
-#if defined(__PX4_QURT)
-namespace HexagonDSPMath
+#যদি defined(__PX4_QURT)
+নামাকাশ HexagonDSPMath
 {
-static inline constexpr bool isNan(float val) { return __builtin_isnan(val); }
-static inline constexpr bool isNan(double val) { return __builtin_isnan(val); }
-static inline constexpr bool isNan(long double val) { return __builtin_isnan(val); }
+স্থির অন্তঃস্থ constexpr তার্কিক isNan(ভিন্ন val) { প্রত্যাগম __builtin_isnan(val); }
+স্থির অন্তঃস্থ constexpr তার্কিক isNan(দ্বিগুণ val) { প্রত্যাগম __builtin_isnan(val); }
+স্থির অন্তঃস্থ constexpr তার্কিক isNan(long দ্বিগুণ val) { প্রত্যাগম __builtin_isnan(val); }
 
 template<typename _Tp>
-static inline constexpr bool isNan(_Tp)
+স্থির অন্তঃস্থ constexpr তার্কিক isNan(_Tp)
 {
-	return false;
+	প্রত্যাগম অসত্য;
 }
 } // namespace HexagonDSPMath
 #endif // __PX4_QURT
@@ -68,95 +68,95 @@ static inline constexpr bool isNan(_Tp)
 template<typename _Tp>
 constexpr _Tp min(_Tp a, _Tp b)
 {
-#if defined(__PX4_QURT)
+#যদি defined(__PX4_QURT)
 
 	// The Hexagon compiler can lower this pattern to sfmin, which does not preserve NaN semantics.
-	if (HexagonDSPMath::isNan(a) || HexagonDSPMath::isNan(b)) {
-		return b;
+	যদি (HexagonDSPMath::isNan(a) || HexagonDSPMath::isNan(b)) {
+		প্রত্যাগম b;
 	}
 
 #endif // __PX4_QURT
 
-	return (a < b) ? a : b;
+	প্রত্যাগম (a < b) ? a : b;
 }
 
 template<typename _Tp>
 constexpr _Tp min(_Tp a, _Tp b, _Tp c)
 {
-	return min(min(a, b), c);
+	প্রত্যাগম min(min(a, b), c);
 }
 
 template<typename _Tp>
 constexpr _Tp max(_Tp a, _Tp b)
 {
-#if defined(__PX4_QURT)
+#যদি defined(__PX4_QURT)
 
 	// The Hexagon compiler can lower this pattern to sfmax, which does not preserve NaN semantics.
-	if (HexagonDSPMath::isNan(a) || HexagonDSPMath::isNan(b)) {
-		return b;
+	যদি (HexagonDSPMath::isNan(a) || HexagonDSPMath::isNan(b)) {
+		প্রত্যাগম b;
 	}
 
 #endif // __PX4_QURT
 
-	return (a > b) ? a : b;
+	প্রত্যাগম (a > b) ? a : b;
 }
 
 template<typename _Tp>
 constexpr _Tp max(_Tp a, _Tp b, _Tp c)
 {
-	return max(max(a, b), c);
+	প্রত্যাগম max(max(a, b), c);
 }
 
 template<typename _Tp>
 constexpr _Tp constrain(_Tp val, _Tp min_val, _Tp max_val)
 {
-#if defined(__PX4_QURT)
+#যদি defined(__PX4_QURT)
 
 	// The Hexagon compiler lowers this clamp pattern to sfmin, which does not preserve NaN semantics.
-	if (HexagonDSPMath::isNan(val)) {
-		return val;
+	যদি (HexagonDSPMath::isNan(val)) {
+		প্রত্যাগম val;
 	}
 
 #endif // __PX4_QURT
 
-	return (val < min_val) ? min_val : ((val > max_val) ? max_val : val);
+	প্রত্যাগম (val < min_val) ? min_val : ((val > max_val) ? max_val : val);
 }
 
 /** Constrain float values to valid values for int16_t.
  * Invalid values are just clipped to be in the range for int16_t. */
-constexpr int16_t constrainFloatToInt16(float value)
+constexpr int16_t constrainFloatToInt16(ভিন্ন value)
 {
-	return (int16_t)math::constrain(value, (float)INT16_MIN, (float)INT16_MAX);
+	প্রত্যাগম (int16_t)math::constrain(value, (ভিন্ন)INT16_MIN, (ভিন্ন)INT16_MAX);
 }
 
 template<typename _Tp>
-constexpr bool isInRange(_Tp val, _Tp min_val, _Tp max_val)
+constexpr তার্কিক isInRange(_Tp val, _Tp min_val, _Tp max_val)
 {
-	return (min_val <= val) && (val <= max_val);
+	প্রত্যাগম (min_val <= val) && (val <= max_val);
 }
 
 template<typename T>
 constexpr T radians(T degrees)
 {
-	return degrees * (static_cast<T>(MATH_PI) / static_cast<T>(180));
+	প্রত্যাগম degrees * (static_cast<T>(MATH_PI) / static_cast<T>(180));
 }
 
 template<typename T>
 constexpr T degrees(T radians)
 {
-	return radians * (static_cast<T>(180) / static_cast<T>(MATH_PI));
+	প্রত্যাগম radians * (static_cast<T>(180) / static_cast<T>(MATH_PI));
 }
 
 /** Safe way to check if float is zero */
-inline bool isZero(float val)
+অন্তঃস্থ তার্কিক isZero(ভিন্ন val)
 {
-	return fabsf(val - 0.0f) < FLT_EPSILON;
+	প্রত্যাগম fabsf(val - 0.0f) < FLT_EPSILON;
 }
 
 /** Safe way to check if double is zero */
-inline bool isZero(double val)
+অন্তঃস্থ তার্কিক isZero(দ্বিগুণ val)
 {
-	return fabs(val - 0.0) < DBL_EPSILON;
+	প্রত্যাগম fabs(val - 0.0) < DBL_EPSILON;
 }
 
 }

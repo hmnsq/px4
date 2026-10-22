@@ -8,181 +8,181 @@
 
 #pragma once
 
-#include "Matrix.hpp"
+#অন্তর্ভাব "Matrix.hpp"
 
-namespace matrix
+নামাকাশ matrix
 {
 
 template<typename Type, size_t M>
-class Vector : public Matrix<Type, M, 1>
+বর্গ Vector : সার্বজনিক Matrix<Type, M, 1>
 {
-public:
+সার্বজনিক:
 	using MatrixM1 = Matrix<Type, M, 1>;
 
-	Vector() = default;
+	Vector() = স্বভাব;
 
-	Vector(const MatrixM1 &other) :
+	Vector(ধ্রুব MatrixM1 &other) :
 		MatrixM1(other)
 	{
 	}
 
-	explicit Vector(const Type data_[M]) :
+	explicit Vector(ধ্রুব Type data_[M]) :
 		MatrixM1(data_)
 	{
 	}
 
 	template<size_t P, size_t Q>
-	Vector(const Slice<Type, M, 1, P, Q> &slice_in) :
+	Vector(ধ্রুব Slice<Type, M, 1, P, Q> &slice_in) :
 		Matrix<Type, M, 1>(slice_in)
 	{
 	}
 
 	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const Slice<Type, 1, M, P, Q> &slice_in)
+	Vector(ধ্রুব Slice<Type, 1, M, P, Q> &slice_in)
 	{
-		Vector &self(*this);
+		Vector &self(*এতত্);
 
-		for (size_t i = 0; i < M; i++) {
+		প্রতি (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
 
 	template<size_t P, size_t Q>
-	Vector(const ConstSlice<Type, M, 1, P, Q> &slice_in) :
+	Vector(ধ্রুব ConstSlice<Type, M, 1, P, Q> &slice_in) :
 		Matrix<Type, M, 1>(slice_in)
 	{
 	}
 
 	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const ConstSlice<Type, 1, M, P, Q> &slice_in)
+	Vector(ধ্রুব ConstSlice<Type, 1, M, P, Q> &slice_in)
 	{
-		Vector &self(*this);
+		Vector &self(*এতত্);
 
-		for (size_t i = 0; i < M; i++) {
+		প্রতি (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	অন্তঃস্থ ধ্রুব Type &operator()(size_t i) ধ্রুব
 	{
-		assert(i < M);
+		প্রতিজ্ঞা(i < M);
 
-		const MatrixM1 &v = *this;
-		return v(i, 0);
+		ধ্রুব MatrixM1 &v = *এতত্;
+		প্রত্যাগম v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	অন্তঃস্থ Type &operator()(size_t i)
 	{
-		assert(i < M);
+		প্রতিজ্ঞা(i < M);
 
-		MatrixM1 &v = *this;
-		return v(i, 0);
+		MatrixM1 &v = *এতত্;
+		প্রত্যাগম v(i, 0);
 	}
 
-	Type dot(const MatrixM1 &b) const
+	Type dot(ধ্রুব MatrixM1 &b) ধ্রুব
 	{
-		const Vector &a(*this);
+		ধ্রুব Vector &a(*এতত্);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		প্রতি (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		প্রত্যাগম r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	অন্তঃস্থ Type operator*(ধ্রুব MatrixM1 &b) ধ্রুব
 	{
-		const Vector &a(*this);
-		return a.dot(b);
+		ধ্রুব Vector &a(*এতত্);
+		প্রত্যাগম a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	অন্তঃস্থ Vector operator*(Type b) ধ্রুব
 	{
-		return Vector(MatrixM1::operator*(b));
+		প্রত্যাগম Vector(MatrixM1::operator*(b));
 	}
 
-	Type norm() const
+	Type norm() ধ্রুব
 	{
-		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		ধ্রুব Vector &a(*এতত্);
+		প্রত্যাগম Type(std::sqrt(a.dot(a)));
 	}
 
-	Type norm_squared() const
+	Type norm_squared() ধ্রুব
 	{
-		const Vector &a(*this);
-		return a.dot(a);
+		ধ্রুব Vector &a(*এতত্);
+		প্রত্যাগম a.dot(a);
 	}
 
-	inline Type length() const
+	অন্তঃস্থ Type length() ধ্রুব
 	{
-		return norm();
+		প্রত্যাগম norm();
 	}
 
-	inline void normalize()
+	অন্তঃস্থ শূন্য normalize()
 	{
-		(*this) /= norm();
+		(*এতত্) /= norm();
 	}
 
-	Vector unit() const
+	Vector unit() ধ্রুব
 	{
-		return (*this) / norm();
+		প্রত্যাগম (*এতত্) / norm();
 	}
 
-	Vector unit_or_zero(const Type eps = Type(1e-5)) const
+	Vector unit_or_zero(ধ্রুব Type eps = Type(1e-5)) ধ্রুব
 	{
-		const Type n = norm();
+		ধ্রুব Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		যদি (n > eps) {
+			প্রত্যাগম (*এতত্) / n;
 		}
 
-		return Vector();
+		প্রত্যাগম Vector();
 	}
 
-	inline Vector normalized() const
+	অন্তঃস্থ Vector normalized() ধ্রুব
 	{
-		return unit();
+		প্রত্যাগম unit();
 	}
 
-	bool longerThan(Type testVal) const
+	তার্কিক longerThan(Type testVal) ধ্রুব
 	{
-		return norm_squared() > testVal * testVal;
+		প্রত্যাগম norm_squared() > testVal * testVal;
 	}
 
-	Vector sqrt() const
+	Vector sqrt() ধ্রুব
 	{
-		const Vector &a(*this);
+		ধ্রুব Vector &a(*এতত্);
 		Vector r;
 
-		for (size_t i = 0; i < M; i++) {
+		প্রতি (size_t i = 0; i < M; i++) {
 			r(i) = Type(std::sqrt(a(i)));
 		}
 
-		return r;
+		প্রত্যাগম r;
 	}
 
-	void print() const
+	শূন্য print() ধ্রুব
 	{
-		(*this).transpose().print();
+		(*এতত্).transpose().print();
 	}
 
-	static size_t size()
+	স্থির size_t size()
 	{
-		return M;
+		প্রত্যাগম M;
 	}
 };
 
 template<typename OStream, typename Type, size_t M>
-OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
+OStream &operator<<(OStream &os, ধ্রুব matrix::Vector<Type, M> &vector)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
+	বর্ণ string[n];
 	vector.transpose().write_string(string, n);
 	os << string;
-	return os;
+	প্রত্যাগম os;
 }
 
 } // namespace matrix

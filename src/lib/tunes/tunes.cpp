@@ -35,22 +35,22 @@
  * @file tunes.cpp
  */
 
-#include "tunes.h"
+#অন্তর্ভাব "tunes.h"
 
-#include <px4_platform_common/log.h>
+#অন্তর্ভাব <px4_platform_common/log.h>
 
-#include <lib/circuit_breaker/circuit_breaker.h>
+#অন্তর্ভাব <lib/circuit_breaker/circuit_breaker.h>
 
-#include <math.h>
-#include <ctype.h>
-#include <errno.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <ctype.h>
+#অন্তর্ভাব <errno.h>
 
 #define BEAT_TIME_CONVERSION_MS (60 * 1000 * 4)
 #define BEAT_TIME_CONVERSION_US (BEAT_TIME_CONVERSION_MS * 1000)
 #define BEAT_TIME_CONVERSION    BEAT_TIME_CONVERSION_US
 
 // semitone offsets from C for the characters 'A'-'G'
-const uint8_t Tunes::_note_tab[] = {9, 11, 0, 2, 4, 5, 7};
+ধ্রুব uint8_t Tunes::_note_tab[] = {9, 11, 0, 2, 4, 5, 7};
 
 Tunes::Tunes(unsigned default_note_length, NoteMode default_note_mode,
 	     unsigned default_octave, unsigned default_tempo):
@@ -59,21 +59,21 @@ Tunes::Tunes(unsigned default_note_length, NoteMode default_note_mode,
 	_default_octave(default_octave),
 	_default_tempo(default_tempo)
 {
-	if (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_KEY)) {
-		_tunes_disabled = true;
+	যদি (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_চাবি)) {
+		_tunes_disabled = সত্য;
 	}
 
-	reset(false);
+	reset(অসত্য);
 }
 
-void Tunes::reset(bool repeat_flag)
+শূন্য Tunes::reset(তার্কিক repeat_flag)
 {
 	// reset pointer
-	if (!repeat_flag)	{
+	যদি (!repeat_flag)	{
 		_tune = nullptr;
 		_next_tune = nullptr;
 
-	} else {
+	} অন্যথা {
 		_tune = _tune_start_ptr;
 		_next_tune = _tune;
 	}
@@ -85,73 +85,73 @@ void Tunes::reset(bool repeat_flag)
 	_tempo       = _default_tempo;
 }
 
-Tunes::ControlResult Tunes::set_control(const tune_control_s &tune_control)
+Tunes::ControlResult Tunes::set_control(ধ্রুব tune_control_s &tune_control)
 {
 	// Sanity check
-	if (tune_control.tune_id >= _default_tunes_size) {
-		return ControlResult::InvalidTune;
+	যদি (tune_control.tune_id >= _default_tunes_size) {
+		প্রত্যাগম ControlResult::InvalidTune;
 	}
 
 	// Accept new tune or a stop?
-	if (_tune == nullptr ||  	   // No tune is currently being played
+	যদি (_tune == nullptr ||  	   // No tune is currently being played
 	    tune_control.tune_override ||  // Override interrupts everything
 	    _default_tunes_interruptable[_current_tune_id]) {
 
 		// Check if this exact tune is already being played back
-		if (tune_control.tune_id != static_cast<int>(TuneID::CUSTOM) &&
+		যদি (tune_control.tune_id != static_cast<পূর্ণাঙ্ক>(TuneID::CUSTOM) &&
 		    _tune == _default_tunes[tune_control.tune_id]) {
-			return ControlResult::AlreadyPlaying; // Nothing to do
+			প্রত্যাগম ControlResult::AlreadyPlaying; // Nothing to do
 		}
 
 		// Reset repeat flag. Can jump to true again while tune is being parsed later
-		_repeat = false;
+		_repeat = অসত্য;
 
 		// Reset octave, tempo etc.
 		reset(_repeat);
 
 		// Volume will remain valid for the entire tune, unless interrupted.
-		if (tune_control.volume <= tune_control_s::VOLUME_LEVEL_MAX) {
+		যদি (tune_control.volume <= tune_control_s::VOLUME_LEVEL_MAX) {
 			_volume = tune_control.volume;
 
-		} else {
+		} অন্যথা {
 			_volume = tune_control_s::VOLUME_LEVEL_MAX;
 		}
 
 
 		// Special treatment for custom tunes
-		if (tune_control.tune_id == static_cast<int>(TuneID::CUSTOM)) {
-			_using_custom_msg = true;
+		যদি (tune_control.tune_id == static_cast<পূর্ণাঙ্ক>(TuneID::CUSTOM)) {
+			using_custom_বার্তা = সত্য;
 			_frequency        = (unsigned)tune_control.frequency;
 			_duration         = (unsigned)tune_control.duration;
 			_silence          = (unsigned)tune_control.silence;
 
-		} else {
-			_using_custom_msg = false;
+		} অন্যথা {
+			using_custom_বার্তা = অসত্য;
 			_tune             = _default_tunes[tune_control.tune_id];
 			_tune_start_ptr   = _tune;
 			_next_tune        = _tune;
 		}
 
 		_current_tune_id = tune_control.tune_id;
-		return ControlResult::Success;
+		প্রত্যাগম ControlResult::Success;
 	}
 
-	return ControlResult::WouldInterrupt;
+	প্রত্যাগম ControlResult::WouldInterrupt;
 }
 
-void Tunes::set_string(const char *const string, uint8_t volume)
+শূন্য Tunes::set_string(ধ্রুব বর্ণ *ধ্রুব string, uint8_t volume)
 {
 	// Only play new tune if nothing is being played currently.
-	if (_tune == nullptr) {
+	যদি (_tune == nullptr) {
 		// Set tune string the first time.
 		_tune           = string;
 		_tune_start_ptr = string;
 		_next_tune      = _tune;
 
-		if (volume <= tune_control_s::VOLUME_LEVEL_MAX) {
+		যদি (volume <= tune_control_s::VOLUME_LEVEL_MAX) {
 			_volume = volume;
 
-		} else {
+		} অন্যথা {
 			_volume = tune_control_s::VOLUME_LEVEL_MAX;
 		}
 	}
@@ -159,215 +159,215 @@ void Tunes::set_string(const char *const string, uint8_t volume)
 
 Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsigned &silence, uint8_t &volume)
 {
-	if (_tunes_disabled) {
+	যদি (_tunes_disabled) {
 		frequency = 0;
 		duration = 0;
 		silence = 0;
 		volume = 0;
-		return Tunes::Status::Stop;
+		প্রত্যাগম Tunes::Status::Stop;
 	}
 
 	Tunes::Status ret = get_next_note(frequency, duration, silence);
 
 	// Check if note should not be heard -> adjust volume to 0 to be safe.
-	if (frequency == 0 || duration == 0) {
+	যদি (frequency == 0 || duration == 0) {
 		volume = 0;
 
-	} else {
+	} অন্যথা {
 		volume = _volume;
 	}
 
-	return ret;
+	প্রত্যাগম ret;
 }
 
 Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsigned &silence)
 {
-	if (_tunes_disabled) {
+	যদি (_tunes_disabled) {
 		frequency = 0;
 		duration = 0;
 		silence = 0;
-		return Tunes::Status::Stop;
+		প্রত্যাগম Tunes::Status::Stop;
 	}
 
 	// Return the values for frequency and duration if the custom msg was received.
-	if (_using_custom_msg) {
-		_using_custom_msg = false;
+	যদি (using_custom_বার্তা) {
+		using_custom_বার্তা = অসত্য;
 		duration  = _duration;
 		frequency = _frequency;
 		silence   = _silence;
-		return Tunes::Status::Continue;
+		প্রত্যাগম Tunes::Status::Continue;
 	}
 
 	// Make sure we still have a tune.
-	if ((_next_tune == nullptr) || (_tune == nullptr)) {
-		return tune_error();
+	যদি ((_next_tune == nullptr) || (_tune == nullptr)) {
+		প্রত্যাগম tune_error();
 	}
 
 	// Parse characters out of the string until we have resolved a note.
 	unsigned note = 0;
 	unsigned note_length = _note_length;
 
-	while (note == 0) {
+	যাবত্ (note == 0) {
 		// we always need at least one character from the string.
-		int c = next_char();
+		পূর্ণাঙ্ক c = next_char();
 
-		if (c == 0) {
+		যদি (c == 0) {
 			silence = 0;
-			return tune_end();
+			প্রত্যাগম tune_end();
 		}
 
 		_next_tune++;
 
-		switch (c) {
+		বিকল্প (c) {
 
-		case 'V':	// Select volume.
+		পক্ষ 'V':	// Select volume.
 			// Consume volume if specified in tune but ignore
 			// MML compatibility
-			next_number();
-			break;
+			next_সংখ্যা();
+			ভঙ্গ;
 
-		case 'L':	// Select note length.
-			_note_length = next_number();
+		পক্ষ 'L':	// Select note length.
+			_note_length = next_সংখ্যা();
 
-			if (_note_length < 1) {
-				return tune_error();
+			যদি (_note_length < 1) {
+				প্রত্যাগম tune_error();
 			}
 
-			break;
+			ভঙ্গ;
 
-		case 'O':	// Select octave.
-			_octave = next_number();
+		পক্ষ 'O':	// Select octave.
+			_octave = next_সংখ্যা();
 
-			if (_octave > 6) {
+			যদি (_octave > 6) {
 				_octave = 6;
 			}
 
-			break;
+			ভঙ্গ;
 
-		case '<':	// Decrease octave.
-			if (_octave > 0) {
+		পক্ষ '<':	// Decrease octave.
+			যদি (_octave > 0) {
 				_octave--;
 			}
 
-			break;
+			ভঙ্গ;
 
-		case '>':	// Increase octave.
-			if (_octave < 6) {
+		পক্ষ '>':	// Increase octave.
+			যদি (_octave < 6) {
 				_octave++;
 			}
 
-			break;
+			ভঙ্গ;
 
-		case 'M':	// Select inter-note gap.
+		পক্ষ 'M':	// Select inter-note gap.
 			c = next_char();
 
-			if (c == 0) {
-				return tune_error();
+			যদি (c == 0) {
+				প্রত্যাগম tune_error();
 			}
 
 			_next_tune++;
 
-			switch (c) {
-			case 'N':
+			বিকল্প (c) {
+			পক্ষ 'N':
 				_note_mode = NoteMode::NORMAL;
-				break;
+				ভঙ্গ;
 
-			case 'L':
+			পক্ষ 'L':
 				_note_mode = NoteMode::LEGATO;
-				break;
+				ভঙ্গ;
 
-			case 'S':
+			পক্ষ 'S':
 				_note_mode = NoteMode::STACCATO;
-				break;
+				ভঙ্গ;
 
-			case 'F':
-				_repeat = false;
-				break;
+			পক্ষ 'F':
+				_repeat = অসত্য;
+				ভঙ্গ;
 
-			case 'B':
-				_repeat = true;
-				break;
+			পক্ষ 'B':
+				_repeat = সত্য;
+				ভঙ্গ;
 
-			default:
-				return tune_error();
+			স্বভাব:
+				প্রত্যাগম tune_error();
 			}
 
-			break;
+			ভঙ্গ;
 
-		case 'P':	// Pause for a note length.
-		case 'R':
+		পক্ষ 'P':	// Pause for a note length.
+		পক্ষ 'R':
 			frequency = 0;
 			duration = 0;
-			note_length = next_number();
+			note_length = next_সংখ্যা();
 			silence = rest_duration(note_length, next_dots());
-			return Tunes::Status::Continue;
+			প্রত্যাগম Tunes::Status::Continue;
 
-		case 'T': {	// Change tempo.
-				unsigned nt = next_number();
+		পক্ষ 'T': {	// Change tempo.
+				unsigned nt = next_সংখ্যা();
 
-				if ((nt >= 32) && (nt <= 255)) {
+				যদি ((nt >= 32) && (nt <= 255)) {
 					_tempo = nt;
 
-				} else {
-					return tune_error();
+				} অন্যথা {
+					প্রত্যাগম tune_error();
 				}
 
-				break;
+				ভঙ্গ;
 			}
 
-		case 'N':	// Play an arbitrary note.
-			note = next_number();
+		পক্ষ 'N':	// Play an arbitrary note.
+			note = next_সংখ্যা();
 
-			if (note > 84) {
-				return tune_error();
+			যদি (note > 84) {
+				প্রত্যাগম tune_error();
 			}
 
-			if (note == 0) {
+			যদি (note == 0) {
 				// This is a rest - pause for the current note length.
 				silence = rest_duration(_note_length, next_dots());
-				return Tunes::Status::Continue;
+				প্রত্যাগম Tunes::Status::Continue;
 			}
 
-			break;
+			ভঙ্গ;
 
-		case 'A'...'G':	// Play a note in the current octave.
+		পক্ষ 'A'...'G':	// Play a note in the current octave.
 			note = _note_tab[c - 'A'] + (_octave * 12) + 1;
 			c = next_char();
 
-			switch (c) {
-			case '#':	// Up a semitone.
-			case '+':
-				if (note < 84) {
+			বিকল্প (c) {
+			পক্ষ '#':	// Up a semitone.
+			পক্ষ '+':
+				যদি (note < 84) {
 					note++;
 				}
 
 				_next_tune++;
-				break;
+				ভঙ্গ;
 
-			case '-':	// Down a semitone.
-				if (note > 1) {
+			পক্ষ '-':	// Down a semitone.
+				যদি (note > 1) {
 					note--;
 				}
 
 				_next_tune++;
-				break;
+				ভঙ্গ;
 
-			default:
+			স্বভাব:
 				// 0 / No next char here is OK.
-				break;
+				ভঙ্গ;
 			}
 
 			// Shorthand length notation.
-			note_length = next_number();
+			note_length = next_সংখ্যা();
 
-			if (note_length == 0) {
+			যদি (note_length == 0) {
 				note_length = _note_length;
 			}
 
-			break;
+			ভঙ্গ;
 
-		default:
-			return tune_error();
+		স্বভাব:
+			প্রত্যাগম tune_error();
 		}
 	}
 
@@ -376,91 +376,91 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 
 	// Compute the note frequency.
 	frequency = note_to_frequency(note);
-	return Tunes::Status::Continue;
+	প্রত্যাগম Tunes::Status::Continue;
 }
 
 Tunes::Status Tunes::tune_end()
 {
-	if (_tunes_disabled) {
-		return Tunes::Status::Stop;
+	যদি (_tunes_disabled) {
+		প্রত্যাগম Tunes::Status::Stop;
 	}
 
 	// Restore intial parameters.
 	reset(_repeat);
 
 	// Stop or restart the tune.
-	if (_repeat) {
-		return Tunes::Status::Continue;
+	যদি (_repeat) {
+		প্রত্যাগম Tunes::Status::Continue;
 
-	} else {
-		return Tunes::Status::Stop;
+	} অন্যথা {
+		প্রত্যাগম Tunes::Status::Stop;
 	}
 }
 
 Tunes::Status Tunes::tune_error()
 {
-	if (_tunes_disabled) {
-		return Tunes::Status::Stop;
+	যদি (_tunes_disabled) {
+		প্রত্যাগম Tunes::Status::Stop;
 	}
 
 	// The tune appears to be bad (unexpected EOF, bad character, etc.).
-	if (_next_tune != nullptr) {
+	যদি (_next_tune != nullptr) {
 		PX4_WARN("Tune error at: %s", _next_tune);
 	}
 
-	_repeat = false;	// Don't loop on error.
+	_repeat = অসত্য;	// Don't loop on error.
 	reset(_repeat);
-	return Tunes::Status::Error;
+	প্রত্যাগম Tunes::Status::Error;
 }
 
-uint32_t Tunes::note_to_frequency(unsigned note) const
+uint32_t Tunes::note_to_frequency(unsigned note) ধ্রুব
 {
 	// Compute the frequency (Hz).
-	return (unsigned)(880.0f * powf(2.0f, ((int)note - 46) / 12.0f));
+	প্রত্যাগম (unsigned)(880.0f * powf(2.0f, ((পূর্ণাঙ্ক)note - 46) / 12.0f));
 }
 
-unsigned Tunes::note_duration(unsigned &silence, unsigned note_length, unsigned dots) const
+unsigned Tunes::note_duration(unsigned &silence, unsigned note_length, unsigned dots) ধ্রুব
 {
 	unsigned whole_note_period = BEAT_TIME_CONVERSION / _tempo;
 
-	if (note_length == 0) {
+	যদি (note_length == 0) {
 		note_length = 1;
 	}
 
 	unsigned note_period = whole_note_period / note_length;
 
-	switch (_note_mode) {
-	case NoteMode::NORMAL:
+	বিকল্প (_note_mode) {
+	পক্ষ NoteMode::NORMAL:
 		silence = note_period / 8;
-		break;
+		ভঙ্গ;
 
-	case NoteMode::STACCATO:
+	পক্ষ NoteMode::STACCATO:
 		silence = note_period / 4;
-		break;
+		ভঙ্গ;
 
-	case NoteMode::LEGATO:
-	default:
+	পক্ষ NoteMode::LEGATO:
+	স্বভাব:
 		silence = 0;
-		break;
+		ভঙ্গ;
 	}
 
 	note_period -= silence;
 
 	unsigned dot_extension = note_period / 2;
 
-	while (dots--) {
+	যাবত্ (dots--) {
 		note_period += dot_extension;
 		dot_extension /= 2;
 	}
 
-	return note_period;
+	প্রত্যাগম note_period;
 }
 
-unsigned Tunes::rest_duration(unsigned rest_length, unsigned dots) const
+unsigned Tunes::rest_duration(unsigned rest_length, unsigned dots) ধ্রুব
 {
 	unsigned whole_note_period = BEAT_TIME_CONVERSION / _tempo;
 
-	if (rest_length == 0) {
+	যদি (rest_length == 0) {
 		rest_length = 1;
 	}
 
@@ -468,37 +468,37 @@ unsigned Tunes::rest_duration(unsigned rest_length, unsigned dots) const
 
 	unsigned dot_extension = rest_period / 2;
 
-	while (dots--) {
+	যাবত্ (dots--) {
 		rest_period += dot_extension;
 		dot_extension /= 2;
 	}
 
-	return rest_period;
+	প্রত্যাগম rest_period;
 }
 
-int Tunes::next_char()
+পূর্ণাঙ্ক Tunes::next_char()
 {
-	while (isspace(*_next_tune)) {
+	যাবত্ (isspace(*_next_tune)) {
 		_next_tune++;
 	}
 
-	return toupper(*_next_tune);
+	প্রত্যাগম toupper(*_next_tune);
 }
 
-unsigned Tunes::next_number()
+unsigned Tunes::next_সংখ্যা()
 {
-	unsigned number = 0;
-	int next_character;
+	unsigned সংখ্যা = 0;
+	পূর্ণাঙ্ক next_character;
 
-	for (;;) {
+	প্রতি (;;) {
 		next_character = next_char();
 
-		if (!isdigit(next_character)) {
-			return number;
+		যদি (!isdigit(next_character)) {
+			প্রত্যাগম সংখ্যা;
 		}
 
 		_next_tune++;
-		number = (number * 10) + (next_character - '0');
+		সংখ্যা = (সংখ্যা * 10) + (next_character - '0');
 	}
 }
 
@@ -506,10 +506,10 @@ unsigned Tunes::next_dots()
 {
 	unsigned dots = 0;
 
-	while (next_char() == '.') {
+	যাবত্ (next_char() == '.') {
 		_next_tune++;
 		dots++;
 	}
 
-	return dots;
+	প্রত্যাগম dots;
 }

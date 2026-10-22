@@ -42,18 +42,18 @@
 *
 */
 
-#include "geo_mag_declination.h"
+#অন্তর্ভাব "geo_mag_declination.h"
 
-#include "geo_magnetic_tables.hpp"
+#অন্তর্ভাব "geo_magnetic_tables.hpp"
 
-#include <mathlib/mathlib.h>
+#অন্তর্ভাব <mathlib/mathlib.h>
 
-#include <math.h>
-#include <stdint.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <stdint.h>
 
 using math::constrain;
 
-static unsigned get_lookup_table_index(float *val, float min, float max)
+স্থির unsigned get_lookup_table_index(ভিন্ন *val, ভিন্ন min, ভিন্ন max)
 {
 	/* for the rare case of hitting the bounds exactly
 	 * the rounding logic wouldn't fit, so enforce it.
@@ -63,65 +63,65 @@ static unsigned get_lookup_table_index(float *val, float min, float max)
 	/* limit to (table bounds - 1) because bilinear interpolation requires checking (index + 1) */
 	*val = constrain(*val, min, max - SAMPLING_RES);
 
-	return static_cast<unsigned>((-(min) + *val) / SAMPLING_RES);
+	প্রত্যাগম static_cast<unsigned>((-(min) + *val) / SAMPLING_RES);
 }
 
-static float get_table_data(float latitude_deg, float longitude_deg, const int16_t table[LAT_DIM][LON_DIM])
+স্থির ভিন্ন get_table_data(ভিন্ন latitude_deg, ভিন্ন longitude_deg, ধ্রুব int16_t table[LAT_DIM][LON_DIM])
 {
 	latitude_deg = math::constrain(latitude_deg, SAMPLING_MIN_LAT, SAMPLING_MAX_LAT);
 
-	if (longitude_deg > SAMPLING_MAX_LON) {
+	যদি (longitude_deg > SAMPLING_MAX_LON) {
 		longitude_deg -= 360.f;
 	}
 
-	if (longitude_deg < SAMPLING_MIN_LON) {
+	যদি (longitude_deg < SAMPLING_MIN_LON) {
 		longitude_deg += 360.f;
 	}
 
 	/* round down to nearest sampling resolution */
-	float min_lat = floorf(latitude_deg / SAMPLING_RES) * SAMPLING_RES;
-	float min_lon = floorf(longitude_deg / SAMPLING_RES) * SAMPLING_RES;
+	ভিন্ন min_lat = floorf(latitude_deg / SAMPLING_RES) * SAMPLING_RES;
+	ভিন্ন min_lon = floorf(longitude_deg / SAMPLING_RES) * SAMPLING_RES;
 
 	/* find index of nearest low sampling point */
 	unsigned min_lat_index = get_lookup_table_index(&min_lat, SAMPLING_MIN_LAT, SAMPLING_MAX_LAT);
 	unsigned min_lon_index = get_lookup_table_index(&min_lon, SAMPLING_MIN_LON, SAMPLING_MAX_LON);
 
-	const float data_sw = table[min_lat_index][min_lon_index];
-	const float data_se = table[min_lat_index][min_lon_index + 1];
-	const float data_ne = table[min_lat_index + 1][min_lon_index + 1];
-	const float data_nw = table[min_lat_index + 1][min_lon_index];
+	ধ্রুব ভিন্ন data_sw = table[min_lat_index][min_lon_index];
+	ধ্রুব ভিন্ন data_se = table[min_lat_index][min_lon_index + 1];
+	ধ্রুব ভিন্ন data_ne = table[min_lat_index + 1][min_lon_index + 1];
+	ধ্রুব ভিন্ন data_nw = table[min_lat_index + 1][min_lon_index];
 
 	/* perform bilinear interpolation on the four grid corners */
-	const float lat_scale = constrain((latitude_deg - min_lat) / SAMPLING_RES, 0.f, 1.f);
-	const float lon_scale = constrain((longitude_deg - min_lon) / SAMPLING_RES, 0.f, 1.f);
+	ধ্রুব ভিন্ন lat_scale = constrain((latitude_deg - min_lat) / SAMPLING_RES, 0.f, 1.f);
+	ধ্রুব ভিন্ন lon_scale = constrain((longitude_deg - min_lon) / SAMPLING_RES, 0.f, 1.f);
 
-	const float data_min = lon_scale * (data_se - data_sw) + data_sw;
-	const float data_max = lon_scale * (data_ne - data_nw) + data_nw;
+	ধ্রুব ভিন্ন data_min = lon_scale * (data_se - data_sw) + data_sw;
+	ধ্রুব ভিন্ন data_max = lon_scale * (data_ne - data_nw) + data_nw;
 
-	return lat_scale * (data_max - data_min) + data_min;
+	প্রত্যাগম lat_scale * (data_max - data_min) + data_min;
 }
 
-float get_mag_declination_degrees(float latitude_deg, float longitude_deg)
+ভিন্ন get_mag_declination_degrees(ভিন্ন latitude_deg, ভিন্ন longitude_deg)
 {
 	// table stored as scaled degrees
-	return get_table_data(latitude_deg, longitude_deg, declination_table) * WMM_DECLINATION_SCALE_TO_DEGREES;
+	প্রত্যাগম get_table_data(latitude_deg, longitude_deg, declination_table) * WMM_DECLINATION_SCALE_TO_DEGREES;
 }
 
-float get_mag_inclination_degrees(float latitude_deg, float longitude_deg)
+ভিন্ন get_mag_inclination_degrees(ভিন্ন latitude_deg, ভিন্ন longitude_deg)
 {
 	// table stored as scaled degrees
-	return get_table_data(latitude_deg, longitude_deg, inclination_table) * WMM_INCLINATION_SCALE_TO_DEGREES;
+	প্রত্যাগম get_table_data(latitude_deg, longitude_deg, inclination_table) * WMM_INCLINATION_SCALE_TO_DEGREES;
 }
 
-float get_mag_strength_gauss(float latitude_deg, float longitude_deg)
+ভিন্ন get_mag_strength_gauss(ভিন্ন latitude_deg, ভিন্ন longitude_deg)
 {
 	// 1 Gauss = 1e4 Tesla
-	return get_mag_strength_tesla(latitude_deg, longitude_deg) * 1e4f;
+	প্রত্যাগম get_mag_strength_tesla(latitude_deg, longitude_deg) * 1e4f;
 }
 
-float get_mag_strength_tesla(float latitude_deg, float longitude_deg)
+ভিন্ন get_mag_strength_tesla(ভিন্ন latitude_deg, ভিন্ন longitude_deg)
 {
 	// table stored as scaled nanotesla
-	return get_table_data(latitude_deg, longitude_deg, totalintensity_table)
+	প্রত্যাগম get_table_data(latitude_deg, longitude_deg, totalintensity_table)
 	       * WMM_TOTALINTENSITY_SCALE_TO_NANOTESLA * 1e-9f;
 }

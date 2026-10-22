@@ -33,19 +33,19 @@
 
 #pragma once
 
-#include <uORB/topics/vehicle_status.h>
+#অন্তর্ভাব <uORB/topics/vehicle_status.h>
 
-#include <stdint.h>
+#অন্তর্ভাব <stdint.h>
 
-namespace mode_util
+নামাকাশ mode_util
 {
 
 /**
  * @return Bitmask with all valid modes
  */
-static inline uint32_t getValidNavStates(uint32_t mode_not_supported = 0)
+স্থির অন্তঃস্থ uint32_t getValidNavStates(uint32_t mode_not_supported = 0)
 {
-	return ((1u << vehicle_status_s::NAVIGATION_STATE_MANUAL) |
+	প্রত্যাগম ((1u << vehicle_status_s::NAVIGATION_STATE_MANUAL) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_ALTCTL) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_ALTITUDE_CRUISE) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_MANUAL_PARKING) |
@@ -70,7 +70,7 @@ static inline uint32_t getValidNavStates(uint32_t mode_not_supported = 0)
 	static_assert(vehicle_status_s::NAVIGATION_STATE_MAX  == 31, "update valid nav states");
 }
 
-inline const char *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX] = {
+অন্তঃস্থ ধ্রুব বর্ণ *ধ্রুব nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX] = {
 	"Manual",
 	"Altitude",
 	"Position",
@@ -110,49 +110,49 @@ inline const char *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX]
  * The position control mode is shown as "Cruise" for fixed-wing vehicles (including VTOLs in
  * forward flight, which report VEHICLE_TYPE_FIXED_WING) and as "Position" for all other types.
  */
-static inline const char *nav_state_name(uint8_t nav_state, uint8_t vehicle_type)
+স্থির অন্তঃস্থ ধ্রুব বর্ণ *nav_state_name(uint8_t nav_state, uint8_t vehicle_type)
 {
-	if (nav_state >= vehicle_status_s::NAVIGATION_STATE_MAX) {
-		return "(unknown)";
+	যদি (nav_state >= vehicle_status_s::NAVIGATION_STATE_MAX) {
+		প্রত্যাগম "(unknown)";
 	}
 
-	if (nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL
+	যদি (nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL
 	    && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		return "Cruise";
+		প্রত্যাগম "Cruise";
 	}
 
-	return nav_state_names[nav_state];
+	প্রত্যাগম nav_state_names[nav_state];
 }
 
 /**
  * @return returns true for advanced modes
  */
-static inline bool isAdvanced(uint8_t nav_state)
+স্থির অন্তঃস্থ তার্কিক isAdvanced(uint8_t nav_state)
 {
-	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL: return false;
+	বিকল্প (nav_state) {
+	পক্ষ vehicle_status_s::NAVIGATION_STATE_ALTCTL: প্রত্যাগম অসত্য;
 
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL: return false;
+	পক্ষ vehicle_status_s::NAVIGATION_STATE_POSCTL: প্রত্যাগম অসত্য;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL1: return false;
+	পক্ষ vehicle_status_s::NAVIGATION_STATE_EXTERNAL1: প্রত্যাগম অসত্য;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL2: return false;
+	পক্ষ vehicle_status_s::NAVIGATION_STATE_EXTERNAL2: প্রত্যাগম অসত্য;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL3: return false;
+	পক্ষ vehicle_status_s::NAVIGATION_STATE_EXTERNAL3: প্রত্যাগম অসত্য;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL4: return false;
+	পক্ষ vehicle_status_s::NAVIGATION_STATE_EXTERNAL4: প্রত্যাগম অসত্য;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL5: return false;
+	পক্ষ vehicle_status_s::NAVIGATION_STATE_EXTERNAL5: প্রত্যাগম অসত্য;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL6: return false;
+	পক্ষ vehicle_status_s::NAVIGATION_STATE_EXTERNAL6: প্রত্যাগম অসত্য;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL7: return false;
+	পক্ষ vehicle_status_s::NAVIGATION_STATE_EXTERNAL7: প্রত্যাগম অসত্য;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL8: return false;
+	পক্ষ vehicle_status_s::NAVIGATION_STATE_EXTERNAL8: প্রত্যাগম অসত্য;
 
 	}
 
-	return true;
+	প্রত্যাগম সত্য;
 }
 
 } // namespace mode_util

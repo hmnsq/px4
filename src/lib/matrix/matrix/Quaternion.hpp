@@ -28,19 +28,19 @@
 
 #pragma once
 
-#include <float.h> // FLT_EPSILON
+#অন্তর্ভাব <float.h> // FLT_EPSILON
 
-#include "Vector3.hpp"
-#include "Vector4.hpp"
+#অন্তর্ভাব "Vector3.hpp"
+#অন্তর্ভাব "Vector4.hpp"
 
-namespace matrix
+নামাকাশ matrix
 {
 
 template <typename Type>
-class Euler;
+বর্গ Euler;
 
 template <typename Type>
-class AxisAngle;
+বর্গ AxisAngle;
 
 /**
  * Quaternion class
@@ -49,9 +49,9 @@ class AxisAngle;
  * described by this class.
  */
 template<typename Type>
-class Quaternion : public Vector4<Type>
+বর্গ Quaternion : সার্বজনিক Vector4<Type>
 {
-public:
+সার্বজনিক:
 	using Matrix41 = Matrix<Type, 4, 1>;
 	using Matrix31 = Matrix<Type, 3, 1>;
 
@@ -60,7 +60,7 @@ public:
 	 *
 	 * @param data_ array
 	 */
-	explicit Quaternion(const Type data_[4]) :
+	explicit Quaternion(ধ্রুব Type data_[4]) :
 		Vector4<Type>(data_)
 	{
 	}
@@ -70,7 +70,7 @@ public:
 	 */
 	Quaternion()
 	{
-		Quaternion &q = *this;
+		Quaternion &q = *এতত্;
 		q(0) = 1;
 		q(1) = 0;
 		q(2) = 0;
@@ -82,7 +82,7 @@ public:
 	 *
 	 * @param other Matrix41 to copy
 	 */
-	Quaternion(const Matrix41 &other) :
+	Quaternion(ধ্রুব Matrix41 &other) :
 		Vector4<Type>(other)
 	{
 	}
@@ -95,12 +95,12 @@ public:
 	 *
 	 * @param dcm dcm to set quaternion to
 	 */
-	Quaternion(const Dcm<Type> &R)
+	Quaternion(ধ্রুব Dcm<Type> &R)
 	{
-		Quaternion &q = *this;
+		Quaternion &q = *এতত্;
 		Type t = R.trace();
 
-		if (t > Type(0)) {
+		যদি (t > Type(0)) {
 			t = std::sqrt(Type(1) + t);
 			q(0) = Type(0.5) * t;
 			t = Type(0.5) / t;
@@ -108,7 +108,7 @@ public:
 			q(2) = (R(0, 2) - R(2, 0)) * t;
 			q(3) = (R(1, 0) - R(0, 1)) * t;
 
-		} else if (R(0, 0) > R(1, 1) && R(0, 0) > R(2, 2)) {
+		} অন্যথা যদি (R(0, 0) > R(1, 1) && R(0, 0) > R(2, 2)) {
 			t = std::sqrt(Type(1) + R(0, 0) - R(1, 1) - R(2, 2));
 			q(1) = Type(0.5) * t;
 			t = Type(0.5) / t;
@@ -116,7 +116,7 @@ public:
 			q(2) = (R(1, 0) + R(0, 1)) * t;
 			q(3) = (R(0, 2) + R(2, 0)) * t;
 
-		} else if (R(1, 1) > R(2, 2)) {
+		} অন্যথা যদি (R(1, 1) > R(2, 2)) {
 			t = std::sqrt(Type(1) - R(0, 0) + R(1, 1) - R(2, 2));
 			q(2) = Type(0.5) * t;
 			t = Type(0.5) / t;
@@ -124,7 +124,7 @@ public:
 			q(1) = (R(1, 0) + R(0, 1)) * t;
 			q(3) = (R(2, 1) + R(1, 2)) * t;
 
-		} else {
+		} অন্যথা {
 			t = std::sqrt(Type(1) - R(0, 0) - R(1, 1) + R(2, 2));
 			q(3) = Type(0.5) * t;
 			t = Type(0.5) / t;
@@ -143,9 +143,9 @@ public:
 	 *
 	 * @param euler euler angle instance
 	 */
-	Quaternion(const Euler<Type> &euler)
+	Quaternion(ধ্রুব Euler<Type> &euler)
 	{
-		Quaternion &q = *this;
+		Quaternion &q = *এতত্;
 		Type cosPhi_2 = Type(std::cos(euler.phi() / Type(2)));
 		Type cosTheta_2 = Type(std::cos(euler.theta() / Type(2)));
 		Type cosPsi_2 = Type(std::cos(euler.psi() / Type(2)));
@@ -167,16 +167,16 @@ public:
 	 *
 	 * @param aa axis-angle vector
 	 */
-	Quaternion(const AxisAngle<Type> &aa)
+	Quaternion(ধ্রুব AxisAngle<Type> &aa)
 	{
-		Quaternion &q = *this;
+		Quaternion &q = *এতত্;
 		Type angle = aa.norm();
 
-		if (angle < Type(1e-10)) {
+		যদি (angle < Type(1e-10)) {
 			q(0) = Type(1);
 			q(1) = q(2) = q(3) = 0;
 
-		} else {
+		} অন্যথা {
 			// only normalize once the angle is known to be non-zero
 			Vector<Type, 3> axis = aa.unit();
 			Type magnitude = std::sin(angle / Type(2));
@@ -195,31 +195,31 @@ public:
 	 * @param src source vector (no need to normalize)
 	 * @param eps epsilon threshold which decides if a value is considered zero
 	 */
-	Quaternion(const Vector3<Type> &src, const Vector3<Type> &dst, const Type eps = Type(1e-5))
+	Quaternion(ধ্রুব Vector3<Type> &src, ধ্রুব Vector3<Type> &dst, ধ্রুব Type eps = Type(1e-5))
 	{
-		Quaternion &q = *this;
+		Quaternion &q = *এতত্;
 		Vector3<Type> cr = src.cross(dst);
-		const float dt = src.dot(dst);
+		ধ্রুব ভিন্ন dt = src.dot(dst);
 
-		if (cr.norm() < eps && dt < 0) {
+		যদি (cr.norm() < eps && dt < 0) {
 			// handle corner cases with 180 degree rotations
 			// if the two vectors are parallel, cross product is zero
 			// if they point opposite, the dot product is negative
 			cr = src.abs();
 
-			if (cr(0) < cr(1)) {
-				if (cr(0) < cr(2)) {
+			যদি (cr(0) < cr(1)) {
+				যদি (cr(0) < cr(2)) {
 					cr = Vector3<Type>(1, 0, 0);
 
-				} else {
+				} অন্যথা {
 					cr = Vector3<Type>(0, 0, 1);
 				}
 
-			} else {
-				if (cr(1) < cr(2)) {
+			} অন্যথা {
+				যদি (cr(1) < cr(2)) {
 					cr = Vector3<Type>(0, 1, 0);
 
-				} else {
+				} অন্যথা {
 					cr = Vector3<Type>(0, 0, 1);
 				}
 			}
@@ -227,7 +227,7 @@ public:
 			q(0) = Type(0);
 			cr = src.cross(cr);
 
-		} else {
+		} অন্যথা {
 			// normal case, do half-way quaternion solution
 			q(0) = dt + std::sqrt(src.norm_squared() * dst.norm_squared());
 		}
@@ -252,7 +252,7 @@ public:
 	 */
 	Quaternion(Type a, Type b, Type c, Type d)
 	{
-		Quaternion &q = *this;
+		Quaternion &q = *এতত্;
 		q(0) = a;
 		q(1) = b;
 		q(2) = c;
@@ -265,10 +265,10 @@ public:
 	 * @param q quaternion to multiply with
 	 * @return product
 	 */
-	Quaternion operator*(const Quaternion &p) const
+	Quaternion operator*(ধ্রুব Quaternion &p) ধ্রুব
 	{
-		const Quaternion &q = *this;
-		return {
+		ধ্রুব Quaternion &q = *এতত্;
+		প্রত্যাগম {
 			q(0) *p(0) - q(1) *p(1) - q(2) *p(2) - q(3) *p(3),
 			q(1) *p(0) + q(0) *p(1) - q(3) *p(2) + q(2) *p(3),
 			q(2) *p(0) + q(3) *p(1) + q(0) *p(2) - q(1) *p(3),
@@ -280,9 +280,9 @@ public:
 	 *
 	 * @param other quaternion to multiply with
 	 */
-	void operator*=(const Quaternion &other)
+	শূন্য operator*=(ধ্রুব Quaternion &other)
 	{
-		Quaternion &self = *this;
+		Quaternion &self = *এতত্;
 		self = self * other;
 	}
 
@@ -292,10 +292,10 @@ public:
 	 * @param scalar scalar to multiply with
 	 * @return product
 	 */
-	Quaternion operator*(Type scalar) const
+	Quaternion operator*(Type scalar) ধ্রুব
 	{
-		const Quaternion &q = *this;
-		return scalar * q;
+		ধ্রুব Quaternion &q = *এতত্;
+		প্রত্যাগম scalar * q;
 	}
 
 	/**
@@ -303,9 +303,9 @@ public:
 	 *
 	 * @param scalar scalar to multiply with
 	 */
-	void operator*=(Type scalar)
+	শূন্য operator*=(Type scalar)
 	{
-		Quaternion &q = *this;
+		Quaternion &q = *এতত্;
 		q = q * scalar;
 	}
 
@@ -317,11 +317,11 @@ public:
 	 *
 	 * @param w angular rate in frame 1 (typically body frame)
 	 */
-	Matrix41 derivative1(const Matrix31 &w) const
+	Matrix41 derivative1(ধ্রুব Matrix31 &w) ধ্রুব
 	{
-		const Quaternion &q = *this;
+		ধ্রুব Quaternion &q = *এতত্;
 		Quaternion<Type> v(0, w(0, 0), w(1, 0), w(2, 0));
-		return q * v  * Type(0.5);
+		প্রত্যাগম q * v  * Type(0.5);
 	}
 
 	/**
@@ -332,11 +332,11 @@ public:
 	 *
 	 * @param w angular rate in frame 2 (typically reference frame)
 	 */
-	Matrix41 derivative2(const Matrix31 &w) const
+	Matrix41 derivative2(ধ্রুব Matrix31 &w) ধ্রুব
 	{
-		const Quaternion &q = *this;
+		ধ্রুব Quaternion &q = *এতত্;
 		Quaternion<Type> v(0, w(0, 0), w(1, 0), w(2, 0));
-		return v * q  * Type(0.5);
+		প্রত্যাগম v * q  * Type(0.5);
 	}
 
 	/**
@@ -359,20 +359,20 @@ public:
 	  *
 	  * @param u 3D vector u
 	  */
-	static Quaternion expq(const Vector3<Type> &u)
+	স্থির Quaternion expq(ধ্রুব Vector3<Type> &u)
 	{
-		const Type tol = Type(0.2);           // ensures an error < 10^-10
-		const Type c2 = Type(1.0 / 2.0);      // 1 / 2!
-		const Type c3 = Type(1.0 / 6.0);      // 1 / 3!
-		const Type c4 = Type(1.0 / 24.0);     // 1 / 4!
-		const Type c5 = Type(1.0 / 120.0);    // 1 / 5!
-		const Type c6 = Type(1.0 / 720.0);    // 1 / 6!
-		const Type c7 = Type(1.0 / 5040.0);   // 1 / 7!
+		ধ্রুব Type tol = Type(0.2);           // ensures an error < 10^-10
+		ধ্রুব Type c2 = Type(1.0 / 2.0);      // 1 / 2!
+		ধ্রুব Type c3 = Type(1.0 / 6.0);      // 1 / 3!
+		ধ্রুব Type c4 = Type(1.0 / 24.0);     // 1 / 4!
+		ধ্রুব Type c5 = Type(1.0 / 120.0);    // 1 / 5!
+		ধ্রুব Type c6 = Type(1.0 / 720.0);    // 1 / 6!
+		ধ্রুব Type c7 = Type(1.0 / 5040.0);   // 1 / 7!
 
 		Type u_norm = u.norm();
 		Type sinc_u, cos_u;
 
-		if (u_norm < tol) {
+		যদি (u_norm < tol) {
 			Type u2 = u_norm * u_norm;
 			Type u4 = u2 * u2;
 			Type u6 = u4 * u2;
@@ -381,13 +381,13 @@ public:
 			sinc_u = Type(1.0) - u2 * c3 + u4 * c5 - u6 * c7;
 			cos_u = Type(1.0) - u2 * c2 + u4 * c4 - u6 * c6;
 
-		} else {
+		} অন্যথা {
 			sinc_u = Type(std::sin(u_norm) / u_norm);
 			cos_u = Type(std::cos(u_norm));
 		}
 
 		Vector<Type, 3> v = sinc_u * u;
-		return Quaternion<Type> (cos_u, v(0), v(1), v(2));
+		প্রত্যাগম Quaternion<Type> (cos_u, v(0), v(1), v(2));
 	}
 
 	/** inverse right Jacobian of the quaternion logarithm u
@@ -400,17 +400,17 @@ public:
 	  *
 	  * @param u 3D vector u
 	  */
-	static Dcm<Type> inv_r_jacobian(const Vector3<Type> &u)
+	স্থির Dcm<Type> inv_r_jacobian(ধ্রুব Vector3<Type> &u)
 	{
-		const Type tol = Type(1.0e-4);
+		ধ্রুব Type tol = Type(1.0e-4);
 		Type u_norm = u.norm();
 		Dcm<Type> u_hat = u.hat();
 
-		if (u_norm < tol) { 	// result smaller than O(||.||^3)
-			return Type(0.5) * (Dcm<Type>() + u_hat + (Type(1.0 / 3.0) + u_norm * u_norm / Type(45.0)) * u_hat * u_hat);
+		যদি (u_norm < tol) { 	// result smaller than O(||.||^3)
+			প্রত্যাগম Type(0.5) * (Dcm<Type>() + u_hat + (Type(1.0 / 3.0) + u_norm * u_norm / Type(45.0)) * u_hat * u_hat);
 
-		} else {
-			return Type(0.5) * (Dcm<Type>() + u_hat + (Type(1.0) - u_norm * Type(std::cos(u_norm) / std::sin(u_norm))) /
+		} অন্যথা {
+			প্রত্যাগম Type(0.5) * (Dcm<Type>() + u_hat + (Type(1.0) - u_norm * Type(std::cos(u_norm) / std::sin(u_norm))) /
 					    (u_norm * u_norm) * u_hat * u_hat);
 		}
 	}
@@ -418,9 +418,9 @@ public:
 	/**
 	 * Invert quaternion in place
 	 */
-	void invert()
+	শূন্য invert()
 	{
-		*this = this->inversed();
+		*এতত্ = এতত্->inversed();
 	}
 
 	/**
@@ -428,11 +428,11 @@ public:
 	 *
 	 * @return inverted quaternion
 	 */
-	Quaternion inversed() const
+	Quaternion inversed() ধ্রুব
 	{
-		const Quaternion &q = *this;
+		ধ্রুব Quaternion &q = *এতত্;
 		Type normSq = q.dot(q);
-		return Quaternion(
+		প্রত্যাগম Quaternion(
 			       q(0) / normSq,
 			       -q(1) / normSq,
 			       -q(2) / normSq,
@@ -442,9 +442,9 @@ public:
 	/**
 	 * Bring quaternion to canonical form
 	 */
-	void canonicalize()
+	শূন্য canonicalize()
 	{
-		*this = this->canonical();
+		*এতত্ = এতত্->canonical();
 	}
 
 	/**
@@ -452,17 +452,17 @@ public:
 	 *
 	 * @return quaternion in canonical from
 	 */
-	Quaternion canonical() const
+	Quaternion canonical() ধ্রুব
 	{
-		const Quaternion &q = *this;
+		ধ্রুব Quaternion &q = *এতত্;
 
-		for (size_t i = 0; i < 4; i++) {
-			if (std::fabs(q(i)) > FLT_EPSILON) {
-				return q * Type(sign(q(i)));
+		প্রতি (size_t i = 0; i < 4; i++) {
+			যদি (std::fabs(q(i)) > FLT_EPSILON) {
+				প্রত্যাগম q * Type(sign(q(i)));
 			}
 		}
 
-		return q;
+		প্রত্যাগম q;
 	}
 
 	/**
@@ -470,10 +470,10 @@ public:
 	 *
 	 * @param vec rotation vector
 	 */
-	void rotate(const AxisAngle<Type> &vec)
+	শূন্য rotate(ধ্রুব AxisAngle<Type> &vec)
 	{
 		Quaternion res(vec);
-		(*this) = res * (*this);
+		(*এতত্) = res * (*এতত্);
 	}
 
 	/**
@@ -485,12 +485,12 @@ public:
 	 * @param vec vector to rotate in frame 1 (typically body frame)
 	 * @return rotated vector in frame 2 (typically reference frame)
 	 */
-	Vector3<Type> rotateVector(const Vector3<Type> &vec) const
+	Vector3<Type> rotateVector(ধ্রুব Vector3<Type> &vec) ধ্রুব
 	{
-		const Quaternion &q = *this;
+		ধ্রুব Quaternion &q = *এতত্;
 		Quaternion v(Type(0), vec(0), vec(1), vec(2));
 		Quaternion res = q * v * q.inversed();
-		return Vector3<Type>(res(1), res(2), res(3));
+		প্রত্যাগম Vector3<Type>(res(1), res(2), res(3));
 	}
 
 	/**
@@ -502,21 +502,21 @@ public:
 	 * @param vec vector to rotate in frame 2 (typically reference frame)
 	 * @return rotated vector in frame 1 (typically body frame)
 	 */
-	Vector3<Type> rotateVectorInverse(const Vector3<Type> &vec) const
+	Vector3<Type> rotateVectorInverse(ধ্রুব Vector3<Type> &vec) ধ্রুব
 	{
-		const Quaternion &q = *this;
+		ধ্রুব Quaternion &q = *এতত্;
 		Quaternion v(Type(0), vec(0), vec(1), vec(2));
 		Quaternion res = q.inversed() * v * q;
-		return Vector3<Type>(res(1), res(2), res(3));
+		প্রত্যাগম Vector3<Type>(res(1), res(2), res(3));
 	}
 
 	/**
 	 * Imaginary components of quaternion
 	 */
-	Vector3<Type> imag() const
+	Vector3<Type> imag() ধ্রুব
 	{
-		const Quaternion &q = *this;
-		return Vector3<Type>(q(1), q(2), q(3));
+		ধ্রুব Quaternion &q = *এতত্;
+		প্রত্যাগম Vector3<Type>(q(1), q(2), q(3));
 	}
 
 	/**
@@ -526,25 +526,25 @@ public:
 	 * == last column of the equivalent rotation matrix
 	 * but calculated more efficiently than a full conversion
 	 */
-	Vector3<Type> dcm_z() const
+	Vector3<Type> dcm_z() ধ্রুব
 	{
-		const Quaternion &q = *this;
+		ধ্রুব Quaternion &q = *এতত্;
 		Vector3<Type> R_z;
-		const Type a = q(0);
-		const Type b = q(1);
-		const Type c = q(2);
-		const Type d = q(3);
+		ধ্রুব Type a = q(0);
+		ধ্রুব Type b = q(1);
+		ধ্রুব Type c = q(2);
+		ধ্রুব Type d = q(3);
 		R_z(0) = 2 * (a * c + b * d);
 		R_z(1) = 2 * (c * d - a * b);
 		R_z(2) = a * a - b * b - c * c + d * d;
-		return R_z;
+		প্রত্যাগম R_z;
 	}
 };
 
-using Quatf = Quaternion<float>;
-using Quaternionf = Quaternion<float>;
+using Quatf = Quaternion<ভিন্ন>;
+using Quaternionf = Quaternion<ভিন্ন>;
 
-using Quatd = Quaternion<double>;
-using Quaterniond = Quaternion<double>;
+using Quatd = Quaternion<দ্বিগুণ>;
+using Quaterniond = Quaternion<দ্বিগুণ>;
 
 } // namespace matrix

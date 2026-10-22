@@ -1,9 +1,9 @@
-import os
-import re
-import codecs
-import sys
+আনযন os
+আনযন re
+আনযন codecs
+আনযন sys
 
-class SourceScanner(object):
+বর্গ SourceScanner(object):
     """
     Traverses directory tree, reads all source files, and passes their contents
     to the Parser.
@@ -16,18 +16,18 @@ class SourceScanner(object):
         """
         extensions1 = tuple([".h"])
         extensions2 = tuple([".c"])
-        for srcdir in srcdirs:
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions1):
+        প্রতি srcdir অন্তঃ srcdirs:
+            প্রতি filename অন্তঃ os.listdir(srcdir):
+                যদি filename.endswith(extensions1):
                     path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions2):
+                    যদি ন self.ScanFile(path, parser):
+                        প্রত্যাগম অসত্য
+            প্রতি filename অন্তঃ os.listdir(srcdir):
+                যদি filename.endswith(extensions2):
                     path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-        return True
+                    যদি ন self.ScanFile(path, parser):
+                        প্রত্যাগম অসত্য
+        প্রত্যাগম সত্য
 
     def ScanFile(self, path, parser):
         """
@@ -35,11 +35,11 @@ class SourceScanner(object):
         parser.Parse method.
         """
 
-        with codecs.open(path, 'r', 'utf-8') as f:
-            try:
-                contents = f.read()
-            except:
+        with codecs.open(path, 'r', 'utf-8') ইব f:
+            যত্ন:
+                contents = f.পঠ()
+            অপবাদ:
                 contents = ''
                 print('Failed reading file: %s, skipping content.' % path)
                 pass
-        return parser.Parse(contents)
+        প্রত্যাগম parser.Parse(contents)

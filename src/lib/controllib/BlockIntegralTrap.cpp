@@ -37,21 +37,21 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <float.h>
 
-#include "blocks.hpp"
+#অন্তর্ভাব "blocks.hpp"
 
-namespace control
+নামাকাশ control
 {
 
-float BlockIntegralTrap::update(float input)
+ভিন্ন BlockIntegralTrap::update(ভিন্ন প্রবেশ)
 {
 	// trapezoidal integration
 	setY(_limit.update(getY() +
-			   (getU() + input) / 2.0f * getDt()));
-	setU(input);
-	return getY();
+			   (getU() + প্রবেশ) / 2.0f * getDt()));
+	setU(প্রবেশ);
+	প্রত্যাগম getY();
 }
 
 } // namespace control

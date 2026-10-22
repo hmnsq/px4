@@ -73,14 +73,14 @@
  */
 
 #pragma once
-#include <matrix/math.hpp>
-#include <mathlib/mathlib.h>
-#include <px4_platform_common/module_params.h>
-#include <uORB/topics/pure_pursuit_status.h>
+#অন্তর্ভাব <matrix/math.hpp>
+#অন্তর্ভাব <mathlib/mathlib.h>
+#অন্তর্ভাব <px4_platform_common/module_params.h>
+#অন্তর্ভাব <uORB/topics/pure_pursuit_status.h>
 
-using namespace matrix;
+using নামাকাশ matrix;
 
-namespace PurePursuit
+নামাকাশ PurePursuit
 {
 /**
  * @brief Return bearing towards the intersection point between a circle with a radius of
@@ -99,7 +99,7 @@ namespace PurePursuit
  * @param vehicle_speed Vehicle speed [m/s].
  * @return Target bearing [rad]
  */
-float calcTargetBearing(pure_pursuit_status_s &pure_pursuit_status, float lookahead_gain, float lookahead_max,
-			float lookahead_min, const Vector2f &curr_wp_ned, const Vector2f &prev_wp_ned, const Vector2f &curr_pos_ned,
-			float vehicle_speed);
+ভিন্ন calcTargetBearing(pure_pursuit_status_s &pure_pursuit_status, ভিন্ন lookahead_gain, ভিন্ন lookahead_max,
+			ভিন্ন lookahead_min, ধ্রুব Vector2f &curr_wp_ned, ধ্রুব Vector2f &prev_wp_ned, ধ্রুব Vector2f &curr_pos_ned,
+			ভিন্ন vehicle_speed);
 }

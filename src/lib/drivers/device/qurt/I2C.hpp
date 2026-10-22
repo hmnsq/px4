@@ -39,37 +39,37 @@
 
 #pragma once
 
-#include "../CDev.hpp"
-#include <px4_platform_common/i2c.h>
+#অন্তর্ভাব "../CDev.hpp"
+#অন্তর্ভাব <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#যদি defined(CONFIG_I2C)
 
-struct I2CSPIDriverConfig;
+সংরচনা I2CSPIDriverConfig;
 
-namespace device __EXPORT
+নামাকাশ device __EXPORT
 {
 
 /**
  * Abstract class for character device on I2C
  */
-class __EXPORT I2C : public CDev
+বর্গ __EXPORT I2C : সার্বজনিক CDev
 {
 
-public:
+সার্বজনিক:
 
 	// no copy, assignment, move, move assignment
-	I2C(const I2C &) = delete;
-	I2C &operator=(const I2C &) = delete;
+	I2C(ধ্রুব I2C &) = delete;
+	I2C &operator=(ধ্রুব I2C &) = delete;
 	I2C(I2C &&) = delete;
 	I2C &operator=(I2C &&) = delete;
 
-	virtual int	init() override;
+	আভাস পূর্ণাঙ্ক	init() override;
 
-	typedef int (*_config_i2c_bus_func_t)(uint8_t, uint8_t, uint32_t);
-	typedef int (*_set_i2c_address_func_t)(int, uint8_t);
-	typedef int (*_i2c_transfer_func_t)(int, const uint8_t *, const unsigned, uint8_t *, const unsigned);
+	প্রকারনির্দেশ পূর্ণাঙ্ক (*_config_i2c_bus_func_t)(uint8_t, uint8_t, uint32_t);
+	প্রকারনির্দেশ পূর্ণাঙ্ক (*_set_i2c_address_func_t)(পূর্ণাঙ্ক, uint8_t);
+	প্রকারনির্দেশ পূর্ণাঙ্ক (*_i2c_transfer_func_t)(পূর্ণাঙ্ক, ধ্রুব uint8_t *, ধ্রুব unsigned, uint8_t *, ধ্রুব unsigned);
 
-	static void configure_callbacks(_config_i2c_bus_func_t config_func,
+	স্থির শূন্য configure_callbacks(_config_i2c_bus_func_t config_func,
 					_set_i2c_address_func_t addr_func,
 					_i2c_transfer_func_t transfer_func)
 	{
@@ -78,7 +78,7 @@ public:
 		_i2c_transfer = transfer_func;
 	}
 
-protected:
+রক্ষিত:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -94,16 +94,16 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
-	I2C(const I2CSPIDriverConfig &config);
-	virtual ~I2C();
+	I2C(uint8_t device_type, ধ্রুব বর্ণ *name, ধ্রুব পূর্ণাঙ্ক bus, ধ্রুব uint16_t address, ধ্রুব uint32_t frequency);
+	I2C(ধ্রুব I2CSPIDriverConfig &config);
+	আভাস ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	আভাস পূর্ণাঙ্ক	probe() { প্রত্যাগম PX4_OK; }
 
-	virtual void set_device_address(int address, bool log = true);
+	আভাস শূন্য set_device_address(পূর্ণাঙ্ক address, তার্কিক log = সত্য);
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -117,21 +117,21 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	পূর্ণাঙ্ক		transfer(ধ্রুব uint8_t *send, ধ্রুব unsigned send_len, uint8_t *recv, ধ্রুব unsigned recv_len);
 
-private:
+গুপ্ত:
 	uint32_t		               _frequency{0};
-	int                            _i2c_fd{-1};
+	পূর্ণাঙ্ক                            _i2c_fd{-1};
 	pthread_mutex_t               *_mutex{nullptr};
 
-	static const int MAX_I2C_BUS{4};
+	স্থির ধ্রুব পূর্ণাঙ্ক MAX_I2C_BUS{4};
 
-	static _config_i2c_bus_func_t  _config_i2c_bus;
-	static _set_i2c_address_func_t _set_i2c_address;
-	static _i2c_transfer_func_t    _i2c_transfer;
+	স্থির _config_i2c_bus_func_t  _config_i2c_bus;
+	স্থির _set_i2c_address_func_t _set_i2c_address;
+	স্থির _i2c_transfer_func_t    _i2c_transfer;
 
-	static struct _bus_mutex_t {
-		int _bus;
+	স্থির সংরচনা _bus_mutex_t {
+		পূর্ণাঙ্ক _bus;
 		pthread_mutex_t _mutex{PTHREAD_MUTEX_INITIALIZER};
 	} _bus_mutex[MAX_I2C_BUS];
 };

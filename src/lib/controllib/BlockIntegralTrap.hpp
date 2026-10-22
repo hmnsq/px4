@@ -39,20 +39,20 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#অন্তর্ভাব <px4_platform_common/defines.h>
+#অন্তর্ভাব <assert.h>
+#অন্তর্ভাব <time.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <mathlib/math/test/test.hpp>
+#অন্তর্ভাব <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#অন্তর্ভাব "block/Block.hpp"
+#অন্তর্ভাব "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#অন্তর্ভাব "matrix/math.hpp"
 
-namespace control
+নামাকাশ control
 {
 
 /**
@@ -63,27 +63,27 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegralTrap : public SuperBlock
+বর্গ __EXPORT BlockIntegralTrap : সার্বজনিক SuperBlock
 {
-public:
+সার্বজনিক:
 // methods
-	BlockIntegralTrap(SuperBlock *parent, const char *name) :
+	BlockIntegralTrap(SuperBlock *parent, ধ্রুব বর্ণ *name) :
 		SuperBlock(parent, name),
 		_u(0),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegralTrap() = default;
-	float update(float input);
+		_limit(এতত্, "") {}
+	আভাস ~BlockIntegralTrap() = স্বভাব;
+	ভিন্ন update(ভিন্ন প্রবেশ);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
+	ভিন্ন getU() {প্রত্যাগম _u;}
+	ভিন্ন getY() {প্রত্যাগম _y;}
+	ভিন্ন getMax() {প্রত্যাগম _limit.getMax();}
+	শূন্য setU(ভিন্ন u) {_u = u;}
+	শূন্য setY(ভিন্ন y) {_y = y;}
+রক্ষিত:
 // attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
+	ভিন্ন _u; /**< previous input */
+	ভিন্ন _y; /**< previous output */
 	BlockLimitSym _limit; /**< limiter */
 };
 

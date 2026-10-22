@@ -48,18 +48,18 @@
 
 #pragma once
 
-#include <matrix/matrix/math.hpp>
+#অন্তর্ভাব <matrix/matrix/math.hpp>
 
-class FieldSensorBiasEstimator
+বর্গ FieldSensorBiasEstimator
 {
-public:
-	FieldSensorBiasEstimator() = default;
-	~FieldSensorBiasEstimator() = default;
+সার্বজনিক:
+	FieldSensorBiasEstimator() = স্বভাব;
+	~FieldSensorBiasEstimator() = স্বভাব;
 
 	// Set initial states
-	void setField(const matrix::Vector3f &field) { _field_prev = field; }
-	void setBias(const matrix::Vector3f &bias) { _state_bias = bias; }
-	void setLearningGain(float learning_gain) { _learning_gain = learning_gain; }
+	শূন্য setField(ধ্রুব matrix::Vector3f &field) { _field_prev = field; }
+	শূন্য setBias(ধ্রুব matrix::Vector3f &bias) { _state_bias = bias; }
+	শূন্য setLearningGain(ভিন্ন learning_gain) { _learning_gain = learning_gain; }
 
 	/**
 	 * Update the estimator and extract updated biases.
@@ -67,20 +67,20 @@ public:
 	 * @param field biased field sensor data
 	 * @param dt time in seconds since the last update
 	 */
-	void updateEstimate(const matrix::Vector3f &gyro, const matrix::Vector3f &field, const float dt)
+	শূন্য updateEstimate(ধ্রুব matrix::Vector3f &gyro, ধ্রুব matrix::Vector3f &field, ধ্রুব ভিন্ন dt)
 	{
-		const matrix::Vector3f field_pred = _field_prev + (-gyro % (_field_prev - _state_bias)) * dt;
-		const matrix::Vector3f field_innov = field - field_pred;
+		ধ্রুব matrix::Vector3f field_pred = _field_prev + (-gyro % (_field_prev - _state_bias)) * dt;
+		ধ্রুব matrix::Vector3f field_innov = field - field_pred;
 		_state_bias += _learning_gain * (-gyro % field_innov) * dt;
 		_field_prev = field;
 	}
 
-	const matrix::Vector3f &getField() { return _field_prev; }
-	const matrix::Vector3f &getBias() { return _state_bias; }
+	ধ্রুব matrix::Vector3f &getField() { প্রত্যাগম _field_prev; }
+	ধ্রুব matrix::Vector3f &getBias() { প্রত্যাগম _state_bias; }
 
-private:
+গুপ্ত:
 	// states
 	matrix::Vector3f _field_prev{};
 	matrix::Vector3f _state_bias{};
-	float _learning_gain{20.f};
+	ভিন্ন _learning_gain{20.f};
 };

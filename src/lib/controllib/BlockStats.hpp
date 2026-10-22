@@ -39,63 +39,63 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#অন্তর্ভাব <px4_platform_common/defines.h>
+#অন্তর্ভাব <assert.h>
+#অন্তর্ভাব <time.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <math.h>
+#অন্তর্ভাব <mathlib/math/test/test.hpp>
+#অন্তর্ভাব <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#অন্তর্ভাব "block/Block.hpp"
+#অন্তর্ভাব "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#অন্তর্ভাব "matrix/math.hpp"
 
-namespace control
+নামাকাশ control
 {
-template<class Type, size_t M>
-class __EXPORT BlockStats: public Block
+template<বর্গ Type, size_t M>
+বর্গ __EXPORT BlockStats: সার্বজনিক Block
 {
 
-public:
+সার্বজনিক:
 // methods
 	BlockStats(SuperBlock *parent,
-		   const char *name) :
+		   ধ্রুব বর্ণ *name) :
 		Block(parent, name),
 		_sum(),
 		_sumSq(),
-		_count(0)
+		গুনতি_3(0)
 	{}
-	virtual ~BlockStats() = default;
-	void update(const matrix::Vector<Type, M> &u)
+	আভাস ~BlockStats() = স্বভাব;
+	শূন্য update(ধ্রুব matrix::Vector<Type, M> &u)
 	{
 		_sum += u;
 		_sumSq += u.emult(u);
-		_count += 1;
+		গুনতি_3 += 1;
 	}
-	void reset()
+	শূন্য reset()
 	{
 		_sum.setZero();
 		_sumSq.setZero();
-		_count = 0;
+		গুনতি_3 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
+	size_t get_গুনতি() { প্রত্যাগম গুনতি_3; }
+	matrix::Vector<Type, M> getMean() { প্রত্যাগম _sum / গুনতি_3; }
 	matrix::Vector<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		প্রত্যাগম (_sumSq - _sum.emult(_sum) / গুনতি_3) / গুনতি_3;
 	}
 	matrix::Vector<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		প্রত্যাগম getVar().sqrt();
 	}
-private:
+গুপ্ত:
 // attributes
 	matrix::Vector<Type, M> _sum;
 	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+	size_t গুনতি_3;
 };
 
 } // namespace control

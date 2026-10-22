@@ -39,33 +39,33 @@
  * Base class for devices connected via I2C.
  */
 
-#include "../CDev.hpp"
-#include <px4_platform_common/i2c.h>
+#অন্তর্ভাব "../CDev.hpp"
+#অন্তর্ভাব <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#যদি defined(CONFIG_I2C)
 
-struct I2CSPIDriverConfig;
+সংরচনা I2CSPIDriverConfig;
 
-namespace device __EXPORT
+নামাকাশ device __EXPORT
 {
 
 /**
  * Abstract class for character device on I2C
  */
-class __EXPORT I2C : public CDev
+বর্গ __EXPORT I2C : সার্বজনিক CDev
 {
 
-public:
+সার্বজনিক:
 
 	// no copy, assignment, move, move assignment
-	I2C(const I2C &) = delete;
-	I2C &operator=(const I2C &) = delete;
+	I2C(ধ্রুব I2C &) = delete;
+	I2C &operator=(ধ্রুব I2C &) = delete;
 	I2C(I2C &&) = delete;
 	I2C &operator=(I2C &&) = delete;
 
-	virtual int	init() override;
+	আভাস পূর্ণাঙ্ক	init() override;
 
-protected:
+রক্ষিত:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -81,14 +81,14 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
-	I2C(const I2CSPIDriverConfig &config);
-	virtual ~I2C();
+	I2C(uint8_t device_type, ধ্রুব বর্ণ *name, ধ্রুব পূর্ণাঙ্ক bus, ধ্রুব uint16_t address, ধ্রুব uint32_t frequency);
+	I2C(ধ্রুব I2CSPIDriverConfig &config);
+	আভাস ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	আভাস পূর্ণাঙ্ক	probe() { প্রত্যাগম PX4_OK; }
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -102,10 +102,10 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	পূর্ণাঙ্ক		transfer(ধ্রুব uint8_t *send, ধ্রুব unsigned send_len, uint8_t *recv, ধ্রুব unsigned recv_len);
 
-private:
-	int			_fd{-1};
+গুপ্ত:
+	পূর্ণাঙ্ক			_fd{-1};
 
 };
 

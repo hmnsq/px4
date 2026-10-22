@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include <cmath>
+#অন্তর্ভাব <cmath>
 
-class PID
+বর্গ PID
 {
-public:
-	PID() = default;
-	virtual ~PID() = default;
-	void setOutputLimit(const float limit) {setOutputLimit(-limit, limit);}
-	void setOutputLimit(const float lower_limit, const float upper_limit);
-	void setIntegralLimit(const float limit) { _limit_integral = limit; }
-	void setGains(const float P, const float I, const float D);
-	void setSetpoint(const float setpoint) { _setpoint = setpoint; }
-	void setFeedForwardGain(const float feedforward_gain) { _gain_feedforward = feedforward_gain; }
-	float update(const float feedback, const float dt, const bool update_integral = true);
-	float getIntegral() { return _integral; }
-	void resetIntegral() { _integral = 0.f; }
-	void resetDerivative() { _last_feedback = NAN; }
-private:
-	void updateIntegral(float error, const float saturation, const float dt);
-	float updateDerivative(float feedback, const float dt);
+সার্বজনিক:
+	PID() = স্বভাব;
+	আভাস ~PID() = স্বভাব;
+	শূন্য setOutputLimit(ধ্রুব ভিন্ন limit) {setOutputLimit(-limit, limit);}
+	শূন্য setOutputLimit(ধ্রুব ভিন্ন lower_limit, ধ্রুব ভিন্ন upper_limit);
+	শূন্য setIntegralLimit(ধ্রুব ভিন্ন limit) { _limit_integral = limit; }
+	শূন্য setGains(ধ্রুব ভিন্ন P, ধ্রুব ভিন্ন I, ধ্রুব ভিন্ন D);
+	শূন্য setSetpoint(ধ্রুব ভিন্ন setpoint) { _setpoint = setpoint; }
+	শূন্য setFeedForwardGain(ধ্রুব ভিন্ন feedforward_gain) { _gain_feedforward = feedforward_gain; }
+	ভিন্ন update(ধ্রুব ভিন্ন feedback, ধ্রুব ভিন্ন dt, ধ্রুব তার্কিক update_integral = সত্য);
+	ভিন্ন getIntegral() { প্রত্যাগম _integral; }
+	শূন্য resetIntegral() { _integral = 0.f; }
+	শূন্য resetDerivative() { _last_feedback = NAN; }
+গুপ্ত:
+	শূন্য updateIntegral(ভিন্ন error, ধ্রুব ভিন্ন saturation, ধ্রুব ভিন্ন dt);
+	ভিন্ন updateDerivative(ভিন্ন feedback, ধ্রুব ভিন্ন dt);
 
-	float _setpoint{0.f}; ///< current setpoint to track
-	float _integral{0.f}; ///< integral state
-	float _last_feedback{NAN};
+	ভিন্ন _setpoint{0.f}; ///< current setpoint to track
+	ভিন্ন _integral{0.f}; ///< integral state
+	ভিন্ন _last_feedback{NAN};
 
 	// Gains, Limits
-	float _gain_feedforward{0.f};
-	float _gain_proportional{0.f};
-	float _gain_integral{0.f};
-	float _gain_derivative{0.f};
-	float _limit_integral{0.f};
-	float _lower_limit_output{0.f};
-	float _upper_limit_output{0.f};
+	ভিন্ন _gain_feedforward{0.f};
+	ভিন্ন _gain_proportional{0.f};
+	ভিন্ন _gain_integral{0.f};
+	ভিন্ন _gain_derivative{0.f};
+	ভিন্ন _limit_integral{0.f};
+	ভিন্ন _lower_limit_output{0.f};
+	ভিন্ন _upper_limit_output{0.f};
 };

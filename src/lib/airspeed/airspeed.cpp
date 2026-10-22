@@ -40,66 +40,66 @@
  *
  */
 
-#include "airspeed.h"
+#অন্তর্ভাব "airspeed.h"
 
-#include <px4_platform_common/defines.h>
-#include <lib/atmosphere/atmosphere.h>
+#অন্তর্ভাব <px4_platform_common/defines.h>
+#অন্তর্ভাব <lib/atmosphere/atmosphere.h>
 
 using atmosphere::getDensityFromPressureAndTemp;
 using atmosphere::kAirDensitySeaLevelStandardAtmos;
 
-float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel, enum AIRSPEED_SENSOR_MODEL smodel,
-			 float tube_len, float tube_dia_mm, float differential_pressure, float pressure_ambient, float temperature_celsius)
+ভিন্ন calc_IAS_corrected(গণনা AIRSPEED_COMPENSATION_MODEL pmodel, গণনা AIRSPEED_SENSOR_MODEL smodel,
+			 ভিন্ন tube_len, ভিন্ন tube_dia_mm, ভিন্ন differential_pressure, ভিন্ন pressure_ambient, ভিন্ন temperature_celsius)
 {
-	if (!PX4_ISFINITE(temperature_celsius)) {
+	যদি (!PX4_ISFINITE(temperature_celsius)) {
 		temperature_celsius = 15.f; // ICAO Standard Atmosphere 15 degrees Celsius
 	}
 
 	// air density in kg/m3
-	const float rho_air = getDensityFromPressureAndTemp(pressure_ambient, temperature_celsius);
+	ধ্রুব ভিন্ন rho_air = getDensityFromPressureAndTemp(pressure_ambient, temperature_celsius);
 
-	const float dp = fabsf(differential_pressure);
-	float dp_tot = dp;
+	ধ্রুব ভিন্ন dp = fabsf(differential_pressure);
+	ভিন্ন dp_tot = dp;
 
-	float dv = 0.0f;
+	ভিন্ন dv = 0.0f;
 
-	switch (smodel) {
+	বিকল্প (smodel) {
 
-	case AIRSPEED_SENSOR_MODEL_MEMBRANE: {
+	পক্ষ AIRSPEED_SENSOR_MODEL_MEMBRANE: {
 			// do nothing
 		}
-		break;
+		ভঙ্গ;
 
-	case AIRSPEED_SENSOR_MODEL_SDP3X: {
+	পক্ষ AIRSPEED_SENSOR_MODEL_SDP3X: {
 			// assumes a metal pitot tube with round tip as here: https://drotek.com/shop/2986-large_default/sdp3x-airspeed-sensor-kit-sdp31.jpg
 			// and tubing as provided by px4/drotek (1.5 mm diameter)
 			// The tube_len represents the length of the tubes connecting the pitot to the sensor.
-			switch (pmodel) {
-			case AIRSPEED_COMPENSATION_MODEL_PITOT:
-			case AIRSPEED_COMPENSATION_MODEL_NO_PITOT: {
-					const float dp_corr = dp * 96600.0f / pressure_ambient;
+			বিকল্প (pmodel) {
+			পক্ষ AIRSPEED_COMPENSATION_MODEL_PITOT:
+			পক্ষ AIRSPEED_COMPENSATION_MODEL_NO_PITOT: {
+					ধ্রুব ভিন্ন dp_corr = dp * 96600.0f / pressure_ambient;
 					// flow through sensor
-					float flow_SDP33 = (300.805f - 300.878f / (0.00344205f * powf(dp_corr, 0.68698f) + 1.0f)) * 1.29f / rho_air;
+					ভিন্ন flow_SDP33 = (300.805f - 300.878f / (0.00344205f * powf(dp_corr, 0.68698f) + 1.0f)) * 1.29f / rho_air;
 
 					// for too small readings the compensation might result in a negative flow which causes numerical issues
-					if (flow_SDP33 < 0.0f) {
+					যদি (flow_SDP33 < 0.0f) {
 						flow_SDP33 = 0.0f;
 					}
 
-					float dp_pitot = 0.0f;
+					ভিন্ন dp_pitot = 0.0f;
 
-					switch (pmodel) {
-					case AIRSPEED_COMPENSATION_MODEL_PITOT:
+					বিকল্প (pmodel) {
+					পক্ষ AIRSPEED_COMPENSATION_MODEL_PITOT:
 						dp_pitot = (0.0032f * flow_SDP33 * flow_SDP33 + 0.0123f * flow_SDP33 + 1.0f) * 1.29f / rho_air;
-						break;
+						ভঙ্গ;
 
-					default:
+					স্বভাব:
 						// do nothing
-						break;
+						ভঙ্গ;
 					}
 
 					// pressure drop through tube
-					const float dp_tube = (flow_SDP33 * 0.674f) / 450.0f * tube_len * rho_air / 1.29f;
+					ধ্রুব ভিন্ন dp_tube = (flow_SDP33 * 0.674f) / 450.0f * tube_len * rho_air / 1.29f;
 
 					// speed at pitot-tube tip due to flow through sensor
 					dv = 0.125f * flow_SDP33;
@@ -107,23 +107,23 @@ float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel, enum AIRSPEED_
 					// sum of all pressure drops
 					dp_tot = dp_corr + dp_tube + dp_pitot;
 				}
-				break;
+				ভঙ্গ;
 
-			case AIRSPEED_COMPENSATION_TUBE_PRESSURE_LOSS: {
+			পক্ষ AIRSPEED_COMPENSATION_TUBE_PRESSURE_LOSS: {
 					// Pressure loss compensation as defined in https://goo.gl/UHV1Vv.
 					// tube_dia_mm: Diameter in mm of the pitot and tubes, must have the same diameter.
 					// tube_len: Length of the tubes connecting the pitot to the sensor and the static + dynamic port length of the pitot.
 
 					// check if the tube diameter and dp is nonzero to avoid division by 0
-					if ((tube_dia_mm > 0.0f) && (dp > 0.0f)) {
-						const float d_tubePow4 = powf(tube_dia_mm * 1e-3f, 4);
-						const float denominator = M_PI_F * d_tubePow4 * rho_air * dp;
+					যদি ((tube_dia_mm > 0.0f) && (dp > 0.0f)) {
+						ধ্রুব ভিন্ন d_tubePow4 = powf(tube_dia_mm * 1e-3f, 4);
+						ধ্রুব ভিন্ন denominator = M_PI_F * d_tubePow4 * rho_air * dp;
 
 						// avoid division by 0
-						float eps = 0.0f;
+						ভিন্ন eps = 0.0f;
 
-						if (fabsf(denominator) > 1e-32f) {
-							const float viscosity = (18.205f + 0.0484f * (temperature_celsius - 20.0f)) * 1e-6f;
+						যদি (fabsf(denominator) > 1e-32f) {
+							ধ্রুব ভিন্ন viscosity = (18.205f + 0.0484f * (temperature_celsius - 20.0f)) * 1e-6f;
 
 							// 4.79 * 1e-7 -> mass flow through sensor
 							// 59.5 -> dp sensor constant where linear and quadratic contribution to dp vs flow is equal
@@ -131,7 +131,7 @@ float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel, enum AIRSPEED_
 						}
 
 						// range check on eps
-						if (fabsf(eps) >= 1.0f) {
+						যদি (fabsf(eps) >= 1.0f) {
 							eps = 0.0f;
 						}
 
@@ -139,83 +139,83 @@ float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel, enum AIRSPEED_
 						dp_tot = dp / (1.0f + eps);
 					}
 				}
-				break;
+				ভঙ্গ;
 
-			default: {
+			স্বভাব: {
 					// do nothing
 				}
-				break;
+				ভঙ্গ;
 			}
 
 		}
-		break;
+		ভঙ্গ;
 
-	default: {
+	স্বভাব: {
 			// do nothing
 		}
-		break;
+		ভঙ্গ;
 	}
 
 	// computed airspeed without correction for inflow-speed at tip of pitot-tube
-	const float airspeed_uncorrected = sqrtf(2.0f * dp_tot / kAirDensitySeaLevelStandardAtmos);
+	ধ্রুব ভিন্ন airspeed_uncorrected = sqrtf(2.0f * dp_tot / kAirDensitySeaLevelStandardAtmos);
 
 	// corrected airspeed
-	const float airspeed_corrected = airspeed_uncorrected + dv;
+	ধ্রুব ভিন্ন airspeed_corrected = airspeed_uncorrected + dv;
 
 	// return result with correct sign
-	return (differential_pressure > 0.0f) ? airspeed_corrected : -airspeed_corrected;
+	প্রত্যাগম (differential_pressure > 0.0f) ? airspeed_corrected : -airspeed_corrected;
 }
 
-float calc_IAS(float differential_pressure)
+ভিন্ন calc_IAS(ভিন্ন differential_pressure)
 {
-	if (differential_pressure > 0.0f) {
-		return sqrtf((2.0f * differential_pressure) / kAirDensitySeaLevelStandardAtmos);
+	যদি (differential_pressure > 0.0f) {
+		প্রত্যাগম sqrtf((2.0f * differential_pressure) / kAirDensitySeaLevelStandardAtmos);
 
-	} else {
-		return -sqrtf((2.0f * fabsf(differential_pressure)) / kAirDensitySeaLevelStandardAtmos);
+	} অন্যথা {
+		প্রত্যাগম -sqrtf((2.0f * fabsf(differential_pressure)) / kAirDensitySeaLevelStandardAtmos);
 	}
 
 }
 
-float calc_TAS_from_CAS(float speed_calibrated, float pressure_ambient, float temperature_celsius)
+ভিন্ন calc_TAS_from_CAS(ভিন্ন speed_calibrated, ভিন্ন pressure_ambient, ভিন্ন temperature_celsius)
 {
-	if (!PX4_ISFINITE(temperature_celsius)) {
+	যদি (!PX4_ISFINITE(temperature_celsius)) {
 		temperature_celsius = 15.f; // ICAO Standard Atmosphere 15 degrees Celsius
 	}
 
-	return speed_calibrated * sqrtf(kAirDensitySeaLevelStandardAtmos / getDensityFromPressureAndTemp(pressure_ambient,
+	প্রত্যাগম speed_calibrated * sqrtf(kAirDensitySeaLevelStandardAtmos / getDensityFromPressureAndTemp(pressure_ambient,
 					temperature_celsius));
 }
 
-float calc_CAS_from_IAS(float speed_indicated, float scale)
+ভিন্ন calc_CAS_from_IAS(ভিন্ন speed_indicated, ভিন্ন scale)
 {
-	return speed_indicated * scale;
+	প্রত্যাগম speed_indicated * scale;
 }
 
-float calc_TAS(float total_pressure, float static_pressure, float temperature_celsius)
+ভিন্ন calc_TAS(ভিন্ন total_pressure, ভিন্ন static_pressure, ভিন্ন temperature_celsius)
 {
-	float density = getDensityFromPressureAndTemp(static_pressure, temperature_celsius);
+	ভিন্ন density = getDensityFromPressureAndTemp(static_pressure, temperature_celsius);
 
-	if (density < 0.0001f || !PX4_ISFINITE(density)) {
+	যদি (density < 0.0001f || !PX4_ISFINITE(density)) {
 		density = kAirDensitySeaLevelStandardAtmos;
 	}
 
-	float pressure_difference = total_pressure - static_pressure;
+	ভিন্ন pressure_difference = total_pressure - static_pressure;
 
-	if (pressure_difference > 0) {
-		return sqrtf((2.0f * (pressure_difference)) / density);
+	যদি (pressure_difference > 0) {
+		প্রত্যাগম sqrtf((2.0f * (pressure_difference)) / density);
 
-	} else {
-		return -sqrtf((2.0f * fabsf(pressure_difference)) / density);
+	} অন্যথা {
+		প্রত্যাগম -sqrtf((2.0f * fabsf(pressure_difference)) / density);
 	}
 }
 
-float calc_calibrated_from_true_airspeed(float speed_true, float air_density)
+ভিন্ন calc_calibrated_from_true_airspeed(ভিন্ন speed_true, ভিন্ন air_density)
 {
-	return speed_true * sqrtf(air_density / kAirDensitySeaLevelStandardAtmos);
+	প্রত্যাগম speed_true * sqrtf(air_density / kAirDensitySeaLevelStandardAtmos);
 }
 
-float calc_true_from_calibrated_airspeed(float speed_calibrated, float air_density)
+ভিন্ন calc_true_from_calibrated_airspeed(ভিন্ন speed_calibrated, ভিন্ন air_density)
 {
-	return speed_calibrated * sqrtf(kAirDensitySeaLevelStandardAtmos / air_density);
+	প্রত্যাগম speed_calibrated * sqrtf(kAirDensitySeaLevelStandardAtmos / air_density);
 }

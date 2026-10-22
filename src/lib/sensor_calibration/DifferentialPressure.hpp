@@ -33,48 +33,48 @@
 
 #pragma once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#অন্তর্ভাব <px4_platform_common/px4_config.h>
+#অন্তর্ভাব <px4_platform_common/defines.h>
+#অন্তর্ভাব <px4_platform_common/log.h>
 
-#include <inttypes.h>
-#include <math.h>
+#অন্তর্ভাব <inttypes.h>
+#অন্তর্ভাব <math.h>
 
-namespace calibration
+নামাকাশ calibration
 {
-class DifferentialPressure
+বর্গ DifferentialPressure
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 3; ///< also the airspeed selector's sensor limit
+সার্বজনিক:
+	স্থির constexpr পূর্ণাঙ্ক MAX_SENSOR_গুনতি = 3; ///< also the airspeed selector's sensor limit
 
-	static constexpr const char *SensorString() { return "DPRES"; }
+	স্থির constexpr ধ্রুব বর্ণ *SensorString() { প্রত্যাগম "DPRES"; }
 
 	DifferentialPressure();
 	explicit DifferentialPressure(uint32_t device_id);
 
-	~DifferentialPressure() = default;
+	~DifferentialPressure() = স্বভাব;
 
-	void PrintStatus();
+	শূন্য PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id);
-	bool set_offset(const float &offset);
+	তার্কিক set_calibration_index(পূর্ণাঙ্ক calibration_index);
+	শূন্য set_device_id(uint32_t device_id);
+	তার্কিক set_offset(ধ্রুব ভিন্ন &offset);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
+	তার্কিক calibrated() ধ্রুব { প্রত্যাগম (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_গুনতি_2() ধ্রুব { প্রত্যাগম calibration_গুনতি; }
+	int8_t calibration_index() ধ্রুব { প্রত্যাগম _calibration_index; }
+	uint32_t device_id() ধ্রুব { প্রত্যাগম _device_id; }
+	তার্কিক external() ধ্রুব { প্রত্যাগম _external; }
+	ধ্রুব ভিন্ন &offset() ধ্রুব { প্রত্যাগম _offset; }
 
 	/// remove the zero offset from a raw differential pressure reading [Pa]
-	inline float Correct(const float &data) const { return data - _offset; }
+	অন্তঃস্থ ভিন্ন Correct(ধ্রুব ভিন্ন &data) ধ্রুব { প্রত্যাগম data - _offset; }
 
-	inline float Uncorrect(const float &corrected_data) const { return corrected_data + _offset; }
+	অন্তঃস্থ ভিন্ন Uncorrect(ধ্রুব ভিন্ন &corrected_data) ধ্রুব { প্রত্যাগম corrected_data + _offset; }
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	তার্কিক ParametersLoad();
+	তার্কিক ParametersSave(পূর্ণাঙ্ক desired_calibration_index = -1, তার্কিক force = অসত্য);
+	শূন্য ParametersUpdate();
 
 	/**
 	 * Take over the offset left in SENS_DPRES_OFF, using slot 0.
@@ -82,23 +82,23 @@ public:
 	 *
 	 * @return true if the offset was adopted (the caller should save)
 	 */
-	bool AdoptLegacyOffset();
+	তার্কিক AdoptLegacyOffset();
 
 	/** mirror slot 0's offset into SENS_DPRES_OFF for ground stations that still read it */
-	void UpdateLegacyOffset() const;
+	শূন্য UpdateLegacyOffset() ধ্রুব;
 
-	void Reset();
+	শূন্য Reset();
 
-private:
-	static constexpr int kLegacyIndex{0};
-	static constexpr const char *kLegacyOffsetParam{"SENS_DPRES_OFF"};
+গুপ্ত:
+	স্থির constexpr পূর্ণাঙ্ক kLegacyIndex{0};
+	স্থির constexpr ধ্রুব বর্ণ *kLegacyOffsetParam{"SENS_DPRES_OFF"};
 
-	float _offset{0};
+	ভিন্ন _offset{0};
 
 	int8_t _calibration_index{-1};
 	uint32_t _device_id{0};
-	uint8_t _calibration_count{0};
+	uint8_t calibration_গুনতি{0};
 
-	bool _external{false};
+	তার্কিক _external{অসত্য};
 };
 } // namespace calibration

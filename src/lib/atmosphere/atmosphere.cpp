@@ -36,27 +36,27 @@
  *
  */
 
-#include <geo/geo.h>
-#include "atmosphere.h"
-namespace atmosphere
+#অন্তর্ভাব <geo/geo.h>
+#অন্তর্ভাব "atmosphere.h"
+নামাকাশ atmosphere
 {
 
 
-float getDensityFromPressureAndTemp(const float pressure_pa, const float temperature_celsius)
+ভিন্ন getDensityFromPressureAndTemp(ধ্রুব ভিন্ন pressure_pa, ধ্রুব ভিন্ন temperature_celsius)
 {
-	return (pressure_pa / (kAirGasConstant * (temperature_celsius - kAbsoluteNullCelsius)));
+	প্রত্যাগম (pressure_pa / (kAirGasConstant * (temperature_celsius - kAbsoluteNullCelsius)));
 }
-float getPressureFromAltitude(const float altitude_m)
+ভিন্ন getPressureFromAltitude(ধ্রুব ভিন্ন altitude_m)
 {
 
-	return kPressRefSeaLevelPa * powf((altitude_m * kTempGradient + kTempRefKelvin) / kTempRefKelvin,
+	প্রত্যাগম kPressRefSeaLevelPa * powf((altitude_m * kTempGradient + kTempRefKelvin) / kTempRefKelvin,
 					  -CONSTANTS_ONE_G / (kTempGradient * kAirGasConstant));
 }
-float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa)
+ভিন্ন getAltitudeFromPressure(ভিন্ন pressure_pa, ভিন্ন pressure_sealevel_pa)
 {
 	// calculate altitude using the hypsometric equation
 
-	const float pressure_ratio = pressure_pa / pressure_sealevel_pa;
+	ধ্রুব ভিন্ন pressure_ratio = pressure_pa / pressure_sealevel_pa;
 
 	/*
 	 * Solve:
@@ -67,12 +67,12 @@ float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa)
 	 * h = -------------------------------  + h1
 	 *                   a
 	 */
-	return (((powf(pressure_ratio, (-(kTempGradient * kAirGasConstant) / CONSTANTS_ONE_G))) * kTempRefKelvin) -
+	প্রত্যাগম (((powf(pressure_ratio, (-(kTempGradient * kAirGasConstant) / CONSTANTS_ONE_G))) * kTempRefKelvin) -
 		kTempRefKelvin) / kTempGradient;
 
 }
-float getStandardTemperatureAtAltitude(float altitude_m)
+ভিন্ন getStandardTemperatureAtAltitude(ভিন্ন altitude_m)
 {
-	return 15.0f + kTempGradient * altitude_m;
+	প্রত্যাগম 15.0f + kTempGradient * altitude_m;
 }
 }

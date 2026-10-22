@@ -33,79 +33,79 @@
 
 #pragma once
 
-#include <lib/conversion/rotation.h>
-#include <lib/matrix/matrix/math.hpp>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/sensor_correction.h>
+#অন্তর্ভাব <lib/conversion/rotation.h>
+#অন্তর্ভাব <lib/matrix/matrix/math.hpp>
+#অন্তর্ভাব <px4_platform_common/px4_config.h>
+#অন্তর্ভাব <px4_platform_common/log.h>
+#অন্তর্ভাব <uORB/Subscription.hpp>
+#অন্তর্ভাব <uORB/topics/sensor_correction.h>
 
-namespace calibration
+নামাকাশ calibration
 {
-class Accelerometer
+বর্গ Accelerometer
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+সার্বজনিক:
+	স্থির constexpr পূর্ণাঙ্ক MAX_SENSOR_গুনতি = 4;
 
-	static constexpr uint8_t DEFAULT_PRIORITY = 50;
+	স্থির constexpr uint8_t DEFAULT_PRIORITY = 50;
 
 	// Unlike a magnetometer, an external IMU is never a better primary than the
 	// on-board one: it is behind a bus with its own clock and transport latency
 	// and is not thermally managed, so it must not win the vote uncalibrated.
-	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 25;
+	স্থির constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 25;
 
-	static constexpr const char *SensorString() { return "ACC"; }
+	স্থির constexpr ধ্রুব বর্ণ *SensorString() { প্রত্যাগম "ACC"; }
 
 	Accelerometer();
 	explicit Accelerometer(uint32_t device_id);
-	Accelerometer(uint32_t device_id, bool external);
+	Accelerometer(uint32_t device_id, তার্কিক external);
 
-	~Accelerometer() = default;
+	~Accelerometer() = স্বভাব;
 
-	void PrintStatus();
+	শূন্য PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
-	void set_device_id(uint32_t device_id, bool external);
-	bool set_offset(const matrix::Vector3f &offset);
-	bool set_scale(const matrix::Vector3f &scale);
-	void set_rotation(Rotation rotation);
+	তার্কিক set_calibration_index(পূর্ণাঙ্ক calibration_index);
+	শূন্য set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
+	শূন্য set_device_id(uint32_t device_id, তার্কিক external);
+	তার্কিক set_offset(ধ্রুব matrix::Vector3f &offset);
+	তার্কিক set_scale(ধ্রুব matrix::Vector3f &scale);
+	শূন্য set_rotation(Rotation rotation);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	bool external() const { return _external; }
-	const matrix::Vector3f &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const matrix::Dcmf &rotation() const { return _rotation; }
-	const Rotation &rotation_enum() const { return _rotation_enum; }
-	const matrix::Vector3f &scale() const { return _scale; }
+	তার্কিক calibrated() ধ্রুব { প্রত্যাগম (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_গুনতি_2() ধ্রুব { প্রত্যাগম calibration_গুনতি; }
+	int8_t calibration_index() ধ্রুব { প্রত্যাগম _calibration_index; }
+	uint32_t device_id() ধ্রুব { প্রত্যাগম _device_id; }
+	তার্কিক enabled() ধ্রুব { প্রত্যাগম (_priority > 0); }
+	তার্কিক external() ধ্রুব { প্রত্যাগম _external; }
+	ধ্রুব matrix::Vector3f &offset() ধ্রুব { প্রত্যাগম _offset; }
+	ধ্রুব int32_t &priority() ধ্রুব { প্রত্যাগম _priority; }
+	ধ্রুব matrix::Dcmf &rotation() ধ্রুব { প্রত্যাগম _rotation; }
+	ধ্রুব Rotation &rotation_enum() ধ্রুব { প্রত্যাগম _rotation_enum; }
+	ধ্রুব matrix::Vector3f &scale() ধ্রুব { প্রত্যাগম _scale; }
 
 	// apply offsets and scale
 	// rotate corrected measurements from sensor to body frame
-	inline matrix::Vector3f Correct(const matrix::Vector3f &data) const
+	অন্তঃস্থ matrix::Vector3f Correct(ধ্রুব matrix::Vector3f &data) ধ্রুব
 	{
-		return _rotation * matrix::Vector3f{(data - _thermal_offset - _offset).emult(_scale)};
+		প্রত্যাগম _rotation * matrix::Vector3f{(data - _thermal_offset - _offset).emult(_scale)};
 	}
 
 	// Compute sensor offset from bias (board frame)
-	matrix::Vector3f BiasCorrectedSensorOffset(const matrix::Vector3f &bias) const
+	matrix::Vector3f BiasCorrectedSensorOffset(ধ্রুব matrix::Vector3f &bias) ধ্রুব
 	{
 		// updated calibration offset = existing offset + bias rotated to sensor frame and unscaled
-		return _offset + (_rotation.T() * bias).edivide(_scale);
+		প্রত্যাগম _offset + (_rotation.T() * bias).edivide(_scale);
 	}
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	তার্কিক ParametersLoad();
+	তার্কিক ParametersSave(পূর্ণাঙ্ক desired_calibration_index = -1, তার্কিক force = অসত্য);
+	শূন্য ParametersUpdate();
 
-	void Reset();
+	শূন্য Reset();
 
-	void SensorCorrectionsUpdate(bool force = false);
+	শূন্য SensorCorrectionsUpdate(তার্কিক force = অসত্য);
 
-private:
+গুপ্ত:
 	uORB::Subscription _sensor_correction_sub{ORB_ID(sensor_correction)};
 
 	Rotation _rotation_enum{ROTATION_NONE};
@@ -119,8 +119,8 @@ private:
 	uint32_t _device_id{0};
 	int32_t _priority{-1};
 
-	bool _external{false};
+	তার্কিক _external{অসত্য};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_গুনতি{0};
 };
 } // namespace calibration
