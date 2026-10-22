@@ -31,21 +31,21 @@
  *
  ****************************************************************************/
 
-#include "VelocitySmoothing.hpp"
+#ضمن "VelocitySmoothing.hpp"
 
-#include <cstdio>
-#include <float.h>
-#include <mathlib/mathlib.h>
-#include <matrix/matrix/math.hpp>
+#ضمن <cstdio>
+#ضمن <float.h>
+#ضمن <mathlib/mathlib.h>
+#ضمن <matrix/matrix/math.hpp>
 
 using matrix::sign;
 
-VelocitySmoothing::VelocitySmoothing(float initial_accel, float initial_vel, float initial_pos)
+VelocitySmoothing::VelocitySmoothing(عائم initial_accel, عائم initial_vel, عائم initial_pos)
 {
 	reset(initial_accel, initial_vel, initial_pos);
 }
 
-void VelocitySmoothing::reset(float accel, float vel, float pos)
+فراغ VelocitySmoothing::reset(عائم accel, عائم vel, عائم pos)
 {
 	_state.j = 0.f;
 	_state.a = accel;
@@ -55,112 +55,112 @@ void VelocitySmoothing::reset(float accel, float vel, float pos)
 	_state_init = _state;
 }
 
-float VelocitySmoothing::saturateT1ForAccel(float a0, float j_max, float T1, float a_max) const
+عائم VelocitySmoothing::saturateT1ForAccel(عائم a0, عائم j_max, عائم T1, عائم a_max) ثابت
 {
 	/* Check maximum acceleration, saturate and recompute T1 if needed */
-	float accel_T1 = a0 + j_max * T1;
-	float T1_new = T1;
+	عائم accel_T1 = a0 + j_max * T1;
+	عائم T1_new = T1;
 
-	if (accel_T1 > a_max) {
+	إذا (accel_T1 > a_max) {
 		T1_new = (a_max - a0) / j_max;
 
-	} else if (accel_T1 < -a_max) {
+	} وإلا إذا (accel_T1 < -a_max) {
 		T1_new = (-a_max - a0) / j_max;
 	}
 
-	return T1_new;
+	أرجع T1_new;
 }
 
-float VelocitySmoothing::computeT1(float a0, float v3, float j_max, float a_max) const
+عائم VelocitySmoothing::computeT1(عائم a0, عائم v3, عائم j_max, عائم a_max) ثابت
 {
-	float delta = 2.f * a0 * a0 + 4.f * j_max * v3;
+	عائم delta = 2.f * a0 * a0 + 4.f * j_max * v3;
 
-	if (delta < 0.f) {
+	إذا (delta < 0.f) {
 		// Solution is not real
-		return 0.f;
+		أرجع 0.f;
 	}
 
-	float sqrt_delta = sqrtf(delta);
-	float T1_plus = (-a0 + 0.5f * sqrt_delta) / j_max;
-	float T1_minus = (-a0 - 0.5f * sqrt_delta) / j_max;
+	عائم sqrt_delta = sqrtf(delta);
+	عائم T1_plus = (-a0 + 0.5f * sqrt_delta) / j_max;
+	عائم T1_minus = (-a0 - 0.5f * sqrt_delta) / j_max;
 
-	float T3_plus = a0 / j_max + T1_plus;
-	float T3_minus = a0 / j_max + T1_minus;
+	عائم T3_plus = a0 / j_max + T1_plus;
+	عائم T3_minus = a0 / j_max + T1_minus;
 
-	float T1 = 0.f;
+	عائم T1 = 0.f;
 
-	if (T1_plus >= 0.f && T3_plus >= 0.f) {
+	إذا (T1_plus >= 0.f && T3_plus >= 0.f) {
 		T1 = T1_plus;
 
-	} else if (T1_minus >= 0.f && T3_minus >= 0.f) {
+	} وإلا إذا (T1_minus >= 0.f && T3_minus >= 0.f) {
 		T1 = T1_minus;
 	}
 
 	T1 = saturateT1ForAccel(a0, j_max, T1, a_max);
 
-	return math::max(T1, 0.f);
+	أرجع math::max(T1, 0.f);
 }
 
-float VelocitySmoothing::computeT1(float T123, float a0, float v3, float j_max, float a_max) const
+عائم VelocitySmoothing::computeT1(عائم T123, عائم a0, عائم v3, عائم j_max, عائم a_max) ثابت
 {
-	float a = -j_max;
-	float b = j_max * T123 - a0;
-	float delta = T123 * T123 * j_max * j_max + 2.f * T123 * a0 * j_max - a0 * a0 - 4.f * j_max * v3;
+	عائم a = -j_max;
+	عائم b = j_max * T123 - a0;
+	عائم delta = T123 * T123 * j_max * j_max + 2.f * T123 * a0 * j_max - a0 * a0 - 4.f * j_max * v3;
 
-	if (delta < 0.f) {
+	إذا (delta < 0.f) {
 		// Solution is not real
-		return 0.f;
+		أرجع 0.f;
 	}
 
-	float sqrt_delta = sqrtf(delta);
-	float denominator_inv = 1.f / (2.f * a);
-	float T1_plus = math::max((-b + sqrt_delta) * denominator_inv, 0.f);
-	float T1_minus = math::max((-b - sqrt_delta) * denominator_inv, 0.f);
+	عائم sqrt_delta = sqrtf(delta);
+	عائم denominator_inv = 1.f / (2.f * a);
+	عائم T1_plus = math::max((-b + sqrt_delta) * denominator_inv, 0.f);
+	عائم T1_minus = math::max((-b - sqrt_delta) * denominator_inv, 0.f);
 
-	float T3_plus = a0 / j_max + T1_plus;
-	float T3_minus = a0 / j_max + T1_minus;
+	عائم T3_plus = a0 / j_max + T1_plus;
+	عائم T3_minus = a0 / j_max + T1_minus;
 
-	float T1 = 0.f;
+	عائم T1 = 0.f;
 
-	if ((T1_plus >= 0.f && T3_plus >= 0.f) && ((T1_plus + T3_plus) <= T123)) {
+	إذا ((T1_plus >= 0.f && T3_plus >= 0.f) && ((T1_plus + T3_plus) <= T123)) {
 		T1 = T1_plus;
 
-	} else if ((T1_minus >= 0.f && T3_minus >= 0.f) && ((T1_minus + T3_minus) <= T123)) {
+	} وإلا إذا ((T1_minus >= 0.f && T3_minus >= 0.f) && ((T1_minus + T3_minus) <= T123)) {
 		T1 = T1_minus;
 	}
 
 	T1 = saturateT1ForAccel(a0, j_max, T1, a_max);
 
-	return T1;
+	أرجع T1;
 }
 
 
-float VelocitySmoothing::computeT2(float T1, float T3, float a0, float v3, float j_max) const
+عائم VelocitySmoothing::computeT2(عائم T1, عائم T3, عائم a0, عائم v3, عائم j_max) ثابت
 {
-	float T2 = 0.f;
+	عائم T2 = 0.f;
 
-	float den = a0 + j_max * T1;
+	عائم den = a0 + j_max * T1;
 
-	if (math::abs_t(den) > FLT_EPSILON) {
+	إذا (math::abs_t(den) > FLT_EPSILON) {
 		T2 = (-0.5f * T1 * T1 * j_max - T1 * T3 * j_max - T1 * a0 + 0.5f * T3 * T3 * j_max - T3 * a0 + v3) / den;
 	}
 
-	return math::max(T2, 0.f);
+	أرجع math::max(T2, 0.f);
 }
 
-float VelocitySmoothing::computeT2(float T123, float T1, float T3) const
+عائم VelocitySmoothing::computeT2(عائم T123, عائم T1, عائم T3) ثابت
 {
-	float T2 = T123 - T1 - T3;
-	return math::max(T2, 0.f);
+	عائم T2 = T123 - T1 - T3;
+	أرجع math::max(T2, 0.f);
 }
 
-float VelocitySmoothing::computeT3(float T1, float a0, float j_max) const
+عائم VelocitySmoothing::computeT3(عائم T1, عائم a0, عائم j_max) ثابت
 {
-	float T3 = a0 / j_max + T1;
-	return math::max(T3, 0.f);
+	عائم T3 = a0 / j_max + T1;
+	أرجع math::max(T3, 0.f);
 }
 
-void VelocitySmoothing::updateDurations(float vel_setpoint)
+فراغ VelocitySmoothing::updateDurations(عائم vel_setpoint)
 {
 	_vel_sp = math::constrain(vel_setpoint, -_max_vel, _max_vel);
 	_local_time = 0.f;
@@ -171,43 +171,43 @@ void VelocitySmoothing::updateDurations(float vel_setpoint)
 	updateDurationsMinimizeTotalTime();
 }
 
-int VelocitySmoothing::computeDirection() const
+صحيح VelocitySmoothing::computeDirection() ثابت
 {
 	// Compute the velocity at which the trajectory will be
 	// when the acceleration will be zero
-	float vel_zero_acc = computeVelAtZeroAcc();
+	عائم vel_zero_acc = computeVelAtZeroAcc();
 
 	/* Depending of the direction, start accelerating positively or negatively */
-	int direction = sign(_vel_sp - vel_zero_acc);
+	صحيح direction = sign(_vel_sp - vel_zero_acc);
 
-	if (direction == 0) {
+	إذا (direction == 0) {
 		// If by braking immediately the velocity is exactly
 		// the required one with zero acceleration, then brake
 		direction = sign(_state.a);
 	}
 
-	return direction;
+	أرجع direction;
 }
 
-float VelocitySmoothing::computeVelAtZeroAcc() const
+عائم VelocitySmoothing::computeVelAtZeroAcc() ثابت
 {
-	float vel_zero_acc = _state.v;
+	عائم vel_zero_acc = _state.v;
 
-	if (fabsf(_state.a) > FLT_EPSILON) {
-		float j_zero_acc = -sign(_state.a) * _max_jerk; // Required jerk to reduce the acceleration
-		float t_zero_acc = -_state.a / j_zero_acc; // Required time to cancel the current acceleration
+	إذا (fabsf(_state.a) > FLT_EPSILON) {
+		عائم j_zero_acc = -sign(_state.a) * _max_jerk; // Required jerk to reduce the acceleration
+		عائم t_zero_acc = -_state.a / j_zero_acc; // Required time to cancel the current acceleration
 		vel_zero_acc = _state.v + _state.a * t_zero_acc + 0.5f * j_zero_acc * t_zero_acc * t_zero_acc;
 	}
 
-	return vel_zero_acc;
+	أرجع vel_zero_acc;
 }
 
-void VelocitySmoothing::updateDurationsMinimizeTotalTime()
+فراغ VelocitySmoothing::updateDurationsMinimizeTotalTime()
 {
-	float jerk_max_T1 = _direction * _max_jerk;
-	float delta_v = _vel_sp - _state.v;
+	عائم jerk_max_T1 = _direction * _max_jerk;
+	عائم delta_v = _vel_sp - _state.v;
 
-	if (fabsf(jerk_max_T1) > FLT_EPSILON) { // zero direction or jerk would lead to division by zero
+	إذا (fabsf(jerk_max_T1) > FLT_EPSILON) { // zero direction or jerk would lead to division by zero
 		// compute increasing acceleration time
 		_T1 = computeT1(_state.a, delta_v, jerk_max_T1, _max_accel);
 
@@ -217,69 +217,69 @@ void VelocitySmoothing::updateDurationsMinimizeTotalTime()
 		// compute constant acceleration time
 		_T2 = computeT2(_T1, _T3, _state.a, delta_v, jerk_max_T1);
 
-	} else {
+	} وإلا {
 		_T1 = _T2 = _T3 = 0.f;
 	}
 }
 
-Trajectory VelocitySmoothing::evaluatePoly(float j, float a0, float v0, float x0, float t, int d) const
+Trajectory VelocitySmoothing::evaluatePoly(عائم j, عائم a0, عائم v0, عائم x0, عائم t, صحيح d) ثابت
 {
 	Trajectory traj;
-	float jt = d * j;
-	float t2 = t * t;
-	float t3 = t2 * t;
+	عائم jt = d * j;
+	عائم t2 = t * t;
+	عائم t3 = t2 * t;
 
 	traj.j = jt;
 	traj.a = a0 + jt * t;
 	traj.v = v0 + a0 * t + 0.5f * jt * t2;
 	traj.x = x0 + v0 * t + 0.5f * a0 * t2 + 1.f / 6.f * jt * t3;
 
-	return traj;
+	أرجع traj;
 }
 
-void VelocitySmoothing::updateTraj(float dt, float time_stretch)
+فراغ VelocitySmoothing::updateTraj(عائم dt, عائم time_stretch)
 {
 	_local_time += dt * time_stretch;
-	float t_remain = _local_time;
+	عائم t_remain = _local_time;
 
-	float t1 = math::min(t_remain, _T1);
+	عائم t1 = math::min(t_remain, _T1);
 	_state = evaluatePoly(_max_jerk, _state_init.a, _state_init.v, _state_init.x, t1, _direction);
 	t_remain -= t1;
 
-	if (t_remain > 0.f) {
-		float t2 = math::min(t_remain, _T2);
+	إذا (t_remain > 0.f) {
+		عائم t2 = math::min(t_remain, _T2);
 		_state = evaluatePoly(0.f, _state.a, _state.v, _state.x, t2, 0.f);
 		t_remain -= t2;
 	}
 
-	if (t_remain > 0.f) {
-		float t3 = math::min(t_remain, _T3);
+	إذا (t_remain > 0.f) {
+		عائم t3 = math::min(t_remain, _T3);
 		_state = evaluatePoly(_max_jerk, _state.a, _state.v, _state.x, t3, -_direction);
 		t_remain -= t3;
 	}
 
-	if (t_remain > 0.f) {
+	إذا (t_remain > 0.f) {
 		_state = evaluatePoly(0.f, 0.f, _state.v, _state.x, t_remain, 0.f);
 	}
 }
 
-void VelocitySmoothing::timeSynchronization(VelocitySmoothing *traj, int n_traj)
+فراغ VelocitySmoothing::timeSynchronization(VelocitySmoothing *traj, صحيح n_traj)
 {
-	float desired_time = 0.f;
-	int longest_traj_index = 0;
+	عائم desired_time = 0.f;
+	صحيح longest_traj_index = 0;
 
-	for (int i = 0; i < n_traj; i++) {
-		const float T123 = traj[i].getTotalTime();
+	لكل (صحيح i = 0; i < n_traj; i++) {
+		ثابت عائم T123 = traj[i].getTotalTime();
 
-		if (T123 > desired_time) {
+		إذا (T123 > desired_time) {
 			desired_time = T123;
 			longest_traj_index = i;
 		}
 	}
 
-	if (desired_time > FLT_EPSILON) {
-		for (int i = 0; i < n_traj; i++) {
-			if ((i != longest_traj_index)
+	إذا (desired_time > FLT_EPSILON) {
+		لكل (صحيح i = 0; i < n_traj; i++) {
+			إذا ((i != longest_traj_index)
 			    && (traj[i].getTotalTime() < desired_time)) {
 				traj[i].updateDurationsGivenTotalTime(desired_time);
 			}
@@ -287,12 +287,12 @@ void VelocitySmoothing::timeSynchronization(VelocitySmoothing *traj, int n_traj)
 	}
 }
 
-void VelocitySmoothing::updateDurationsGivenTotalTime(float T123)
+فراغ VelocitySmoothing::updateDurationsGivenTotalTime(عائم T123)
 {
-	float jerk_max_T1 = _direction * _max_jerk;
-	float delta_v = _vel_sp - _state.v;
+	عائم jerk_max_T1 = _direction * _max_jerk;
+	عائم delta_v = _vel_sp - _state.v;
 
-	if (fabsf(jerk_max_T1) > FLT_EPSILON) { // zero direction or jerk would lead to division by zero
+	إذا (fabsf(jerk_max_T1) > FLT_EPSILON) { // zero direction or jerk would lead to division by zero
 		// compute increasing acceleration time
 		_T1 = computeT1(T123, _state.a, delta_v, jerk_max_T1, _max_accel);
 
@@ -302,7 +302,7 @@ void VelocitySmoothing::updateDurationsGivenTotalTime(float T123)
 		// compute constant acceleration time
 		_T2 = computeT2(T123, _T1, _T3);
 
-	} else {
+	} وإلا {
 		_T1 = _T2 = _T3 = 0.f;
 	}
 }

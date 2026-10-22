@@ -31,21 +31,21 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "PerformanceModel.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن "PerformanceModel.hpp"
 
 // to run: make tests TESTFILTER=PerformanceModel
 
-class PerformanceModelTest : public ::testing::Test
+صنف PerformanceModelTest : عام ::testing::Test
 {
-public:
-	void SetUp() override
+عام:
+	فراغ SetUp() override
 	{
-		param_control_autosave(false);
+		param_control_autosave(خطأ);
 		param_reset_all();
 	}
 
-	void setWeightParams(float base, float gross, float fuel)
+	فراغ setWeightParams(عائم base, عائم gross, عائم fuel)
 	{
 		param_set(param_handle(px4::params::WEIGHT_BASE), &base);
 		param_set(param_handle(px4::params::WEIGHT_GROSS), &gross);
@@ -94,7 +94,7 @@ TEST_F(PerformanceModelTest, weightRatioScalesWithFuelFraction)
 	EXPECT_FLOAT_EQ(_model.getWeightRatio(), 0.8f);
 }
 
-TEST_F(PerformanceModelTest, fuelFractionKeptOnNonFiniteInput)
+TEST_F(PerformanceModelTest, fuel_Fraction_Kept_On_Non_Finite_مدخل)
 {
 	// GIVEN: base and gross weight set, 4kg full fuel load, and a known fuel fraction
 	setWeightParams(10.0f, 12.0f, 4.0f);
