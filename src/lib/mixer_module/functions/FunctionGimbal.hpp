@@ -33,33 +33,33 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ಅನ್ತರ್ಭಾವ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gimbal_controls.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/gimbal_controls.h>
 
 /**
  * Functions: Gimbal_Roll .. Gimbal_Yaw
  */
-class FunctionGimbal : public FunctionProviderBase
+ವರ್ಗ FunctionGimbal : ಸಾರ್ವಜನಿಕ FunctionProviderBase
 {
-public:
-	FunctionGimbal() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGimbal(); }
+ಸಾರ್ವಜನಿಕ:
+	FunctionGimbal() = ಸ್ವಭಾವ;
+	ಸ್ಥಿರ FunctionProviderBase *allocate(ಧ್ರುವ Context &context) { ಪ್ರತ್ಯಾಗಮ ನೂತನ FunctionGimbal(); }
 
-	void update() override
+	ಶೂನ್ಯ update() override
 	{
 		gimbal_controls_s gimbal_controls;
 
-		if (_topic.update(&gimbal_controls)) {
+		ಯದಿ (_topic.update(&gimbal_controls)) {
 			_data[0] = gimbal_controls.control[gimbal_controls_s::INDEX_ROLL];
 			_data[1] = gimbal_controls.control[gimbal_controls_s::INDEX_PITCH];
 			_data[2] = gimbal_controls.control[gimbal_controls_s::INDEX_YAW];
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Gimbal_Roll]; }
+	ಭಿನ್ನ value(OutputFunction func) override { ಪ್ರತ್ಯಾಗಮ _data[(ಪೂರ್ಣಾಙ್ಕ)func - (ಪೂರ್ಣಾಙ್ಕ)OutputFunction::Gimbal_Roll]; }
 
-private:
+ಗುಪ್ತ:
 	uORB::Subscription _topic{ORB_ID(gimbal_controls)};
-	float _data[3] { NAN, NAN, NAN };
+	ಭಿನ್ನ _data[3] { NAN, NAN, NAN };
 };

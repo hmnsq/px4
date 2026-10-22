@@ -33,92 +33,92 @@
 
 #pragma once
 
-#include <px4_platform_common/atomic_bitset.h>
-#include "ParamLayer.h"
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/atomic_bitset.h>
+#ಅನ್ತರ್ಭಾವ "ParamLayer.h"
 
-class ExhaustiveLayer : public ParamLayer
+class ExhaustiveLayer : ಸಾರ್ವಜನಿಕ ParamLayer
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	ExhaustiveLayer(ParamLayer *parent) : ParamLayer(parent)
 	{
 		// refresh all values
-		for (param_t i = 0; i < PARAM_COUNT; i++) {
-			_values[i] = parent->get(i);
+		ಪ್ರತಿ (param_t i = 0; i < PARAM_ಎಣಿಕೆ; i++) {
+			ಮೌಲ್ಯಗಳು_3[i] = parent->get(i);
 		}
 	}
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_ಮೌಲ್ಯ_u ಮೌಲ್ಯ) override
 	{
-		if (param >= PARAM_COUNT) {
-			return false;
+		ಯದಿ (param >= PARAM_ಎಣಿಕೆ) {
+			ಪ್ರತ್ಯಾಗಮ false;
 		}
 
 		{
-			const AtomicTransaction transaction;
-			_values[param] = value;
+			ಧ್ರುವ AtomicTransaction transaction;
+			ಮೌಲ್ಯಗಳು_3[param] = ಮೌಲ್ಯ;
 			_ownership_set.set(param);
 		}
 
-		return true;
+		ಪ್ರತ್ಯಾಗಮ true;
 	}
 
-	bool contains(param_t param) const override
+	bool contains(param_t param) ಧ್ರುವ override
 	{
-		return param < PARAM_COUNT && _ownership_set[param];
+		ಪ್ರತ್ಯಾಗಮ param < PARAM_ಎಣಿಕೆ && _ownership_set[param];
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_ಎಣಿಕೆ> containedAsBitset() ಧ್ರುವ override
 	{
-		return _ownership_set;
+		ಪ್ರತ್ಯಾಗಮ _ownership_set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_ಮೌಲ್ಯ_u get(param_t param) ಧ್ರುವ override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		ಯದಿ (param >= PARAM_ಎಣಿಕೆ) {
+			ಪ್ರತ್ಯಾಗಮ {0};
 		}
 
-		const AtomicTransaction transaction;
+		ಧ್ರುವ AtomicTransaction transaction;
 		// We assume to have the correct values for all params, even without ownership.
 		// We expect that refresh was called when underlying defaults changed
-		return _values[param];
+		ಪ್ರತ್ಯಾಗಮ ಮೌಲ್ಯಗಳು_3[param];
 	}
 
-	void reset(param_t param) override
+	ಶೂನ್ಯ reset(param_t param) override
 	{
-		if (param >= PARAM_COUNT) {
-			return;
+		ಯದಿ (param >= PARAM_ಎಣಿಕೆ) {
+			ಪ್ರತ್ಯಾಗಮ;
 		}
 
-		const AtomicTransaction transaction;
-		_values[param] = _parent->get(param);
+		ಧ್ರುವ AtomicTransaction transaction;
+		ಮೌಲ್ಯಗಳು_3[param] = _parent->get(param);
 		_ownership_set.set(param, false);
 	}
 
-	void refresh(param_t param) override
+	ಶೂನ್ಯ refresh(param_t param) override
 	{
 		_parent->refresh(param);
 		// in case we don't have ownership, and it changed below, we have to refresh our cache.
 		{
-			const AtomicTransaction transaction;
+			ಧ್ರುವ AtomicTransaction transaction;
 
-			if (!contains(param)) {
-				_values[param] = _parent->get(param);
+			ಯದಿ (!contains(param)) {
+				ಮೌಲ್ಯಗಳು_3[param] = _parent->get(param);
 			}
 		}
 	}
 
-	int size() const override
+	ಪೂರ್ಣಾಙ್ಕ size() ಧ್ರುವ override
 	{
-		return _ownership_set.count();
+		ಪ್ರತ್ಯಾಗಮ _ownership_set.ಎಣಿಕೆ();
 	}
 
-	int byteSize() const override
+	ಪೂರ್ಣಾಙ್ಕ byteSize() ಧ್ರುವ override
 	{
-		return PARAM_COUNT * sizeof(param_value_u);
+		ಪ್ರತ್ಯಾಗಮ PARAM_ಎಣಿಕೆ * ಪರಿಮಾಣ(param_ಮೌಲ್ಯ_u);
 	}
 
-private:
-	param_value_u _values[PARAM_COUNT];
-	px4::AtomicBitset<PARAM_COUNT> _ownership_set;
+ಗುಪ್ತ:
+	param_ಮೌಲ್ಯ_u ಮೌಲ್ಯಗಳು_3[PARAM_ಎಣಿಕೆ];
+	px4::AtomicBitset<PARAM_ಎಣಿಕೆ> _ownership_set;
 };

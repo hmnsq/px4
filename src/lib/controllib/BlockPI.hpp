@@ -39,47 +39,47 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
 /**
  * A proportional-integral controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPI: public SuperBlock
+ವರ್ಗ __EXPORT BlockPI: ಸಾರ್ವಜನಿಕ SuperBlock
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockPI(SuperBlock *parent, const char *name) :
+	BlockPI(SuperBlock *parent, ಧ್ರುವ ವರ್ಣ *name) :
 		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_kP(this, "P"),
-		_kI(this, "I")
+		_integral(ಏತತ್, "I"),
+		_kP(ಏತತ್, "P"),
+		_kI(ಏತತ್, "I")
 	{}
-	virtual ~BlockPI() = default;
-	float update(float input)
+	ಆಭಾಸ ~BlockPI() = ಸ್ವಭಾವ;
+	ಭಿನ್ನ update(ಭಿನ್ನ ಒಳಹರಿವು)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input);
+		ಪ್ರತ್ಯಾಗಮ getKP() * ಒಳಹರಿವು +
+		       getKI() * getIntegral().update(ಒಳಹರಿವು);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-private:
+	ಭಿನ್ನ getKP() { ಪ್ರತ್ಯಾಗಮ _kP.get(); }
+	ಭಿನ್ನ getKI() { ಪ್ರತ್ಯಾಗಮ _kI.get(); }
+	BlockIntegral &getIntegral() { ಪ್ರತ್ಯಾಗಮ _integral; }
+ಗುಪ್ತ:
 	BlockIntegral _integral;
 	control::BlockParamFloat _kP;
 	control::BlockParamFloat _kI;

@@ -1,17 +1,17 @@
-import sys
-import re
-import math
+ಆನಯನ sys
+ಆನಯನ re
+ಆನಯನ math
 
-global default_var
+ವೈಶ್ವಿಕ default_var
 default_var = {}
 
-class ParameterGroup(object):
+ವರ್ಗ ParameterGroup(object):
     """
     Single parameter group
     """
     def __init__(self, name):
         self.name = name
-        self.no_code_generation = False #for injected parameters
+        self.no_code_generation = ಅಸತ್ಯ #for injected parameters
         self.params = []
 
     def AddParameter(self, param):
@@ -24,7 +24,7 @@ class ParameterGroup(object):
         """
         Get parameter group name
         """
-        return self.name
+        ಪ್ರತ್ಯಾಗಮ self.name
 
     def GetParams(self):
         """
@@ -32,9 +32,9 @@ class ParameterGroup(object):
         object. Note that returned object is not a copy. Modifications affect
         state of the parser.
         """
-        return sorted(self.params, key=lambda param: param.name)
+        ಪ್ರತ್ಯಾಗಮ sorted(self.params, ಕೀಲಿ=ಅನಾಮನ್ param: param.name)
 
-class Parameter(object):
+ವರ್ಗ Parameter(object):
     """
     Single parameter
     """
@@ -51,50 +51,50 @@ class Parameter(object):
         # all others == 0 (sorted alphabetically)
     }
 
-    def __init__(self, name, type, default = ""):
+    def __init__(self, name, type, ಸ್ವಭಾವ = ""):
         self.fields = {}
-        self.values = {}
+        self.ಮೌಲ್ಯಗಳು_2 = {}
         self.bitmask = {}
         self.name = name
         self.type = type
-        self.default = default
+        self.ಸ್ವಭಾವ = ಸ್ವಭಾವ
         self.category = ""
-        self.volatile = False
-        self.boolean = False
-        self.readonly = False
+        self.ಚಞ್ಚಲ = ಅಸತ್ಯ
+        self.boolean = ಅಸತ್ಯ
+        self.readonly = ಅಸತ್ಯ
 
     def GetName(self):
-        return self.name
+        ಪ್ರತ್ಯಾಗಮ self.name
 
     def GetType(self):
-        return self.type
+        ಪ್ರತ್ಯಾಗಮ self.type
 
     def GetDefault(self):
-        return self.default
+        ಪ್ರತ್ಯಾಗಮ self.ಸ್ವಭಾವ
 
     def GetCategory(self):
-        return self.category.title()
+        ಪ್ರತ್ಯಾಗಮ self.category.title()
 
     def GetVolatile(self):
-        return self.volatile
+        ಪ್ರತ್ಯಾಗಮ self.ಚಞ್ಚಲ
 
     def GetBoolean(self):
-        return self.boolean
+        ಪ್ರತ್ಯಾಗಮ self.boolean
 
     def GetReadonly(self):
-        return self.readonly
+        ಪ್ರತ್ಯಾಗಮ self.readonly
 
-    def SetField(self, code, value):
+    def SetField(self, code, ಮೌಲ್ಯ):
         """
         Set named field value
         """
-        self.fields[code] = value
+        self.fields[code] = ಮೌಲ್ಯ
 
-    def SetEnumValue(self, code, value):
+    def Set_Enum_ಮೌಲ್ಯ(self, code, ಮೌಲ್ಯ):
         """
         Set named enum value
         """
-        self.values[code] = value
+        self.ಮೌಲ್ಯಗಳು_2[code] = ಮೌಲ್ಯ
 
     def SetBitmaskBit(self, index, bit):
         """
@@ -106,19 +106,19 @@ class Parameter(object):
         """
         Set volatile flag
         """
-        self.volatile = True
+        self.ಚಞ್ಚಲ = ಸತ್ಯ
 
     def SetBoolean(self):
         """
         Set boolean flag
         """
-        self.boolean = True
+        self.boolean = ಸತ್ಯ
 
     def SetReadonly(self):
         """
         Set readonly flag
         """
-        self.readonly = True
+        self.readonly = ಸತ್ಯ
 
     def SetCategory(self, category):
         """
@@ -130,60 +130,60 @@ class Parameter(object):
         """
         Return list of existing field codes in convenient order
         """
-        keys = self.fields.keys()
-        keys = sorted(keys)
-        keys = sorted(keys, key=lambda x: self.priority.get(x, 0), reverse=True)
-        return keys
+        ಕೀಲಿಗಳು = self.fields.ಕೀಲಿಗಳು()
+        ಕೀಲಿಗಳು = sorted(ಕೀಲಿಗಳು)
+        ಕೀಲಿಗಳು = sorted(ಕೀಲಿಗಳು, ಕೀಲಿ=ಅನಾಮನ್ x: self.priority.get(x, 0), reverse=ಸತ್ಯ)
+        ಪ್ರತ್ಯಾಗಮ ಕೀಲಿಗಳು
 
-    def GetFieldValue(self, code):
+    def Get_Field_ಮೌಲ್ಯ(self, code):
         """
         Return value of the given field code or None if not found.
         """
         fv =  self.fields.get(code)
-        if not fv:
+        ಯದಿ ನ fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv
+                ಪ್ರತ್ಯಾಗಮ ""
+        ಪ್ರತ್ಯಾಗಮ fv
 
     def GetEnumCodes(self):
         """
         Return list of existing value codes in convenient order
         """
-        return sorted(self.values.keys(), key=float)
+        ಪ್ರತ್ಯಾಗಮ sorted(self.ಮೌಲ್ಯಗಳು_2.ಕೀಲಿಗಳು(), ಕೀಲಿ=ಭಿನ್ನ)
 
-    def GetEnumValue(self, code):
+    def Get_Enum_ಮೌಲ್ಯ(self, code):
         """
         Return value of the given enum code or None if not found.
         """
-        fv =  self.values.get(code)
-        if not fv:
+        fv =  self.ಮೌಲ್ಯಗಳು_2.get(code)
+        ಯದಿ ನ fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv
+                ಪ್ರತ್ಯಾಗಮ ""
+        ಪ್ರತ್ಯಾಗಮ fv
 
     def GetBitmaskList(self):
         """
         Return list of existing bitmask codes in convenient order
         """
-        keys = self.bitmask.keys()
-        return sorted(keys, key=float)
+        ಕೀಲಿಗಳು = self.bitmask.ಕೀಲಿಗಳು()
+        ಪ್ರತ್ಯಾಗಮ sorted(ಕೀಲಿಗಳು, ಕೀಲಿ=ಭಿನ್ನ)
 
     def GetBitmaskBit(self, index):
         """
         Return value of the given bitmask code or None if not found.
         """
         fv = self.bitmask.get(index)
-        if not fv:
+        ಯದಿ ನ fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv.strip()
+                ಪ್ರತ್ಯಾಗಮ ""
+        ಪ್ರತ್ಯಾಗಮ fv.strip()
 
-class SourceParser(object):
+ವರ್ಗ SourceParser(object):
     """
     Parses provided data and stores all found parameters internally.
     """
 
-    re_split_lines = re.compile(r'[\r\n]+')
+    re_split_ಸಾಲುಗಳು = re.compile(r'[\r\n]+')
     re_comment_start = re.compile(r'^\/\*\*')
     re_comment_content = re.compile(r'^\*\s*(.*)')
     re_comment_tag = re.compile(r'@([a-zA-Z][a-zA-Z0-9_]*)\s*(.*)')
@@ -192,7 +192,7 @@ class SourceParser(object):
     re_px4_parameter_definition = re.compile(r'PX4_PARAM_DEFINE_([A-Z_][A-Z0-9_]*)\s*\(([A-Z_][A-Z0-9_]*)\s*\)\s*;')
     re_px4_param_default_definition = re.compile(r'#define\s*PARAM_([A-Z_][A-Z0-9_]*)\s*([^ ,\)]+)\s*')
     re_cut_type_specifier = re.compile(r'[a-z]+$')
-    re_is_a_number = re.compile(r'^-?[0-9\.]')
+    re_is_a_ಸಂಖ್ಯೆ = re.compile(r'^-?[0-9\.]')
     re_remove_dots = re.compile(r'\.+$')
 
     valid_tags = set(["group", "board", "min", "max", "unit", "decimal", "increment", "reboot_required", "value", "boolean", "bit", "category", "volatile"])
@@ -215,146 +215,146 @@ class SourceParser(object):
         # represents parser state. It contains human-readable state
         # names.
         state = None
-        for line in self.re_split_lines.split(contents):
-            line = line.strip()
+        ಪ್ರತಿ ಸಾಲು ಅನ್ತಃ self.re_split_ಸಾಲುಗಳು.split(contents):
+            ಸಾಲು = ಸಾಲು.strip()
             # Ignore empty lines
-            if line == "":
-                continue
-            if self.re_comment_start.match(line):
+            ಯದಿ ಸಾಲು == "":
+                ಅನುವರ್ತ
+            ಯದಿ self.re_comment_start.match(ಸಾಲು):
                 state = "wait-short"
                 short_desc = None
                 long_desc = None
                 tags = {}
-                def_values = {}
+                def_ಮೌಲ್ಯಗಳು = {}
                 def_bitmask = {}
-            elif state is not None and state != "comment-processed":
-                m = self.re_comment_end.search(line)
-                if m:
-                    line = m.group(1)
-                    last_comment_line = True
-                else:
-                    last_comment_line = False
-                m = self.re_comment_content.match(line)
-                if m:
+            ನೋಚೇದ್ಯದಿ state is ನ None ಚ state != "comment-processed":
+                m = self.re_comment_end.ಹುಡುಕು(ಸಾಲು)
+                ಯದಿ m:
+                    ಸಾಲು = m.group(1)
+                    last_comment_ಸಾಲು = ಸತ್ಯ
+                ಅನ್ಯಥಾ:
+                    last_comment_ಸಾಲು = ಅಸತ್ಯ
+                m = self.re_comment_content.match(ಸಾಲು)
+                ಯದಿ m:
                     comment_content = m.group(1)
-                    if comment_content == "":
+                    ಯದಿ comment_content == "":
                         # When short comment ends with empty comment line,
                         # start waiting for the next part - long comment.
-                        if state == "wait-short-end":
+                        ಯದಿ state == "wait-short-end":
                             state = "wait-long"
-                        if state == "wait-long-end":
+                        ಯದಿ state == "wait-long-end":
                             # Long description includes empty lines
                             long_desc += "\n"
-                    else:
+                    ಅನ್ಯಥಾ:
                         m = self.re_comment_tag.match(comment_content)
-                        if m:
+                        ಯದಿ m:
                             tag, desc = m.group(1, 2)
-                            if (tag == "value"):
+                            ಯದಿ (tag == "value"):
                                 # Take the meta info string and split the code and description
                                 metainfo = desc.split(" ",  1)
-                                def_values[metainfo[0]] = metainfo[1]
-                            elif (tag == "bit"):
+                                def_ಮೌಲ್ಯಗಳು[metainfo[0]] = metainfo[1]
+                            ನೋಚೇದ್ಯದಿ (tag == "bit"):
                                 # Take the meta info string and split the code and description
                                 metainfo = desc.split(" ",  1)
                                 def_bitmask[metainfo[0]] = metainfo[1]
-                            else:
+                            ಅನ್ಯಥಾ:
                                 tags[tag] = desc
                             current_tag = tag
                             state = "wait-tag-end"
-                        elif state == "wait-short":
+                        ನೋಚೇದ್ಯದಿ state == "wait-short":
                             # Store first line of the short description
                             short_desc = comment_content
                             state = "wait-short-end"
-                        elif state == "wait-short-end":
+                        ನೋಚೇದ್ಯದಿ state == "wait-short-end":
                             # Append comment line to the short description
                             short_desc += "\n" + comment_content
-                        elif state == "wait-long":
+                        ನೋಚೇದ್ಯದಿ state == "wait-long":
                             # Store first line of the long description
                             long_desc = comment_content
                             state = "wait-long-end"
-                        elif state == "wait-long-end":
+                        ನೋಚೇದ್ಯದಿ state == "wait-long-end":
                             # Append comment line to the long description
                             long_desc += "\n" + comment_content
-                        elif state == "wait-tag-end":
+                        ನೋಚೇದ್ಯದಿ state == "wait-tag-end":
                             # Append comment line to the tag text
                             tags[current_tag] += "\n" + comment_content
-                        else:
-                            raise AssertionError(
+                        ಅನ್ಯಥಾ:
+                            ಉತ್ಥಾಪಯ AssertionError(
                                     "Invalid parser state: %s" % state)
-                elif not last_comment_line:
+                ನೋಚೇದ್ಯದಿ ನ last_comment_ಸಾಲು:
                     # Invalid comment line (inside comment, but not starting with
                     # "*" or "*/". Reset parsed content.
                     state = None
-                if last_comment_line:
+                ಯದಿ last_comment_ಸಾಲು:
                     state = "comment-processed"
-            else:
+            ಅನ್ಯಥಾ:
                 tp = None
                 name = None
                 defval = ""
                 # Non-empty line outside the comment
-                m = self.re_px4_param_default_definition.match(line)
+                m = self.re_px4_param_default_definition.match(ಸಾಲು)
                 # Default value handling
-                if m:
+                ಯದಿ m:
                     name_m, defval_m = m.group(1,2)
                     default_var[name_m] = defval_m
-                m = self.re_parameter_definition.match(line)
-                if m:
+                m = self.re_parameter_definition.match(ಸಾಲು)
+                ಯದಿ m:
                     tp, name, defval = m.group(1, 2, 3)
-                else:
-                    m = self.re_px4_parameter_definition.match(line)
-                    if m:
+                ಅನ್ಯಥಾ:
+                    m = self.re_px4_parameter_definition.match(ಸಾಲು)
+                    ಯದಿ m:
                         tp, name = m.group(1, 2)
-                        if (name+'_DEFAULT') in default_var:
+                        ಯದಿ (name+'_DEFAULT') ಅನ್ತಃ default_var:
                             defval = default_var[name+'_DEFAULT']
-                if tp is not None:
+                ಯದಿ tp is ನ None:
                     # Remove trailing type specifier from numbers: 0.1f => 0.1
-                    if defval != "" and self.re_is_a_number.match(defval):
+                    ಯದಿ defval != "" ಚ self.re_is_a_ಸಂಖ್ಯೆ.match(defval):
                         defval = self.re_cut_type_specifier.sub('', defval)
                     param = Parameter(name, tp, defval)
                     param.SetField("short_desc", name)
                     # If comment was found before the parameter declaration,
                     # inject its data into the newly created parameter.
                     group = "Miscellaneous"
-                    if state == "comment-processed":
-                        if short_desc is not None:
-                            if '\n' in short_desc:
-                                raise Exception('short description must be a single line (parameter: {:})'.format(name))
-                            if len(short_desc) > 150:
-                                raise Exception('short description too long (150 max, is {:}, parameter: {:})'.format(len(short_desc), name))
+                    ಯದಿ state == "comment-processed":
+                        ಯದಿ short_desc is ನ None:
+                            ಯದಿ '\n' ಅನ್ತಃ short_desc:
+                                ಉತ್ಥಾಪಯ Exception('short description must be a single line (parameter: {:})'.format(name))
+                            ಯದಿ len(short_desc) > 150:
+                                ಉತ್ಥಾಪಯ Exception('short description too long (150 max, is {:}, parameter: {:})'.format(len(short_desc), name))
                             param.SetField("short_desc", self.re_remove_dots.sub('', short_desc))
-                        if long_desc is not None:
+                        ಯದಿ long_desc is ನ None:
                             param.SetField("long_desc", long_desc)
-                        for tag in tags:
-                            if tag == "group":
+                        ಪ್ರತಿ tag ಅನ್ತಃ tags:
+                            ಯದಿ tag == "group":
                                 group = tags[tag]
-                            elif tag == "volatile":
+                            ನೋಚೇದ್ಯದಿ tag == "volatile":
                                 param.SetVolatile()
-                            elif tag == "category":
+                            ನೋಚೇದ್ಯದಿ tag == "category":
                                 param.SetCategory(tags[tag])
-                            elif tag == "boolean":
+                            ನೋಚೇದ್ಯದಿ tag == "boolean":
                                 param.SetBoolean()
-                            elif tag not in self.valid_tags:
-                                sys.stderr.write("Skipping invalid documentation tag: '%s'\n" % tag)
-                                return False
-                            else:
+                            ನೋಚೇದ್ಯದಿ tag ನ ಅನ್ತಃ self.valid_tags:
+                                sys.stderr.ಲಿಖ("Skipping invalid documentation tag: '%s'\n" % tag)
+                                ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
+                            ಅನ್ಯಥಾ:
                                 param.SetField(tag, tags[tag])
-                        for def_value in def_values:
-                            param.SetEnumValue(def_value, def_values[def_value])
-                        for def_bit in def_bitmask:
+                        ಪ್ರತಿ def_ಮೌಲ್ಯ ಅನ್ತಃ def_ಮೌಲ್ಯಗಳು:
+                            param.Set_Enum_ಮೌಲ್ಯ(def_ಮೌಲ್ಯ, def_ಮೌಲ್ಯಗಳು[def_ಮೌಲ್ಯ])
+                        ಪ್ರತಿ def_bit ಅನ್ತಃ def_bitmask:
                             param.SetBitmaskBit(def_bit, def_bitmask[def_bit])
                     # Store the parameter
-                    if group not in self.param_groups:
+                    ಯದಿ group ನ ಅನ್ತಃ self.param_groups:
                         self.param_groups[group] = ParameterGroup(group)
                     self.param_groups[group].AddParameter(param)
                 state = None
-        return True
+        ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ
 
-    def IsNumber(self, numberString):
-        try:
-            float(numberString)
-            return True
-        except ValueError:
-            return False
+    def Is_ಸಂಖ್ಯೆ(self, ಸಂಖ್ಯೆ_String):
+        ಯತ್ನ:
+            ಭಿನ್ನ(ಸಂಖ್ಯೆ_String)
+            ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ
+        ಅಪವಾದ ಮೌಲ್ಯ_Error:
+            ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
 
     def Validate(self):
         """
@@ -377,67 +377,67 @@ class SourceParser(object):
                                 'N/(m/s)', 'Nm/rad', 'Nm/(rad/s)', 'Nm', 'N',
                                 'rpm',
                                 'normalized_thrust/s', 'normalized_thrust', 'norm', 'SD', 'dBHz', ''])
-        for group in self.GetParamGroups():
-            for param in group.GetParams():
+        ಪ್ರತಿ group ಅನ್ತಃ self.GetParamGroups():
+            ಪ್ರತಿ param ಅನ್ತಃ group.GetParams():
                 name  = param.GetName()
-                if len(name) > 16:
-                    sys.stderr.write("Parameter Name {0} is too long (Limit is 16)\n".format(name))
-                    return False
-                board = param.GetFieldValue("board")
+                ಯದಿ len(name) > 16:
+                    sys.stderr.ಲಿಖ("Parameter Name {0} is too long (Limit is 16)\n".format(name))
+                    ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
+                board = param.Get_Field_ಮೌಲ್ಯ("board")
                 # Check for duplicates
                 name_plus_board = name + "+" + board
-                for seenParamName in seenParamNames:
-                    if seenParamName == name_plus_board:
-                        sys.stderr.write("Duplicate parameter definition: {0}\n".format(name_plus_board))
-                        return False
+                ಪ್ರತಿ seenParamName ಅನ್ತಃ seenParamNames:
+                    ಯದಿ seenParamName == name_plus_board:
+                        sys.stderr.ಲಿಖ("Duplicate parameter definition: {0}\n".format(name_plus_board))
+                        ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
                 seenParamNames.append(name_plus_board)
                 # Validate values
-                default = param.GetDefault()
-                min = param.GetFieldValue("min")
-                max = param.GetFieldValue("max")
-                units = param.GetFieldValue("unit")
-                if units not in allowedUnits:
-                    sys.stderr.write("Invalid unit in {0}: {1}\n".format(name, units))
-                    return False
+                ಸ್ವಭಾವ = param.GetDefault()
+                min = param.Get_Field_ಮೌಲ್ಯ("min")
+                max = param.Get_Field_ಮೌಲ್ಯ("max")
+                units = param.Get_Field_ಮೌಲ್ಯ("unit")
+                ಯದಿ units ನ ಅನ್ತಃ allowedUnits:
+                    sys.stderr.ಲಿಖ("Invalid unit in {0}: {1}\n".format(name, units))
+                    ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
                 #sys.stderr.write("{0} default:{1} min:{2} max:{3}\n".format(name, default, min, max))
-                if default != "" and not self.IsNumber(default):
-                    sys.stderr.write("Default value not number: {0} {1}\n".format(name, default))
-                    return False
+                ಯದಿ ಸ್ವಭಾವ != "" ಚ ನ self.Is_ಸಂಖ್ಯೆ(ಸ್ವಭಾವ):
+                    sys.stderr.ಲಿಖ("Default value not number: {0} {1}\n".format(name, ಸ್ವಭಾವ))
+                    ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
                 # if default != "" and "." not in default:
                 #     sys.stderr.write("Default value does not contain dot (e.g. 10 needs to be written as 10.0): {0} {1}\n".format(name, default))
                 #     return False
-                if min != "":
-                    if not self.IsNumber(min):
-                        sys.stderr.write("Min value not number: {0} {1}\n".format(name, min))
-                        return False
-                    if default != "" and float(default) < float(min):
-                        sys.stderr.write("Default value is smaller than min: {0} default:{1} min:{2}\n".format(name, default, min))
-                        return False
-                if max != "":
-                    if not self.IsNumber(max):
-                        sys.stderr.write("Max value not number: {0} {1}\n".format(name, max))
-                        return False
-                    if default != "" and float(default) > float(max):
-                        sys.stderr.write("Default value is larger than max: {0} default:{1} max:{2}\n".format(name, default, max))
-                        return False
-                for code in param.GetEnumCodes():
-                        if not self.IsNumber(code):
-                            sys.stderr.write("Min value not number: {0} {1}\n".format(name, code))
-                            return False
-                        if param.GetEnumValue(code) == "":
-                            sys.stderr.write("Description for enum value is empty: {0} {1}\n".format(name, code))
-                            return False
-                for index in param.GetBitmaskList():
-                        if not self.IsNumber(index):
-                            sys.stderr.write("bit value not number: {0} {1}\n".format(name, index))
-                            return False
-                        if not int(min) <= math.pow(2, int(index)) <= int(max):
-                            sys.stderr.write("Bitmask bit must be between {0} and {1}: {2} {3}\n".format(min, max, name, math.pow(2, int(index))))
-                            return False
-                        if param.GetBitmaskBit(index) == "":
-                            sys.stderr.write("Description for bitmask bit is empty: {0} {1}\n".format(name, index))
-                            return False
-        return True
+                ಯದಿ min != "":
+                    ಯದಿ ನ self.Is_ಸಂಖ್ಯೆ(min):
+                        sys.stderr.ಲಿಖ("Min value not number: {0} {1}\n".format(name, min))
+                        ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
+                    ಯದಿ ಸ್ವಭಾವ != "" ಚ ಭಿನ್ನ(ಸ್ವಭಾವ) < ಭಿನ್ನ(min):
+                        sys.stderr.ಲಿಖ("Default value is smaller than min: {0} default:{1} min:{2}\n".format(name, ಸ್ವಭಾವ, min))
+                        ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
+                ಯದಿ max != "":
+                    ಯದಿ ನ self.Is_ಸಂಖ್ಯೆ(max):
+                        sys.stderr.ಲಿಖ("Max value not number: {0} {1}\n".format(name, max))
+                        ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
+                    ಯದಿ ಸ್ವಭಾವ != "" ಚ ಭಿನ್ನ(ಸ್ವಭಾವ) > ಭಿನ್ನ(max):
+                        sys.stderr.ಲಿಖ("Default value is larger than max: {0} default:{1} max:{2}\n".format(name, ಸ್ವಭಾವ, max))
+                        ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
+                ಪ್ರತಿ code ಅನ್ತಃ param.GetEnumCodes():
+                        ಯದಿ ನ self.Is_ಸಂಖ್ಯೆ(code):
+                            sys.stderr.ಲಿಖ("Min value not number: {0} {1}\n".format(name, code))
+                            ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
+                        ಯದಿ param.Get_Enum_ಮೌಲ್ಯ(code) == "":
+                            sys.stderr.ಲಿಖ("Description for enum value is empty: {0} {1}\n".format(name, code))
+                            ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
+                ಪ್ರತಿ index ಅನ್ತಃ param.GetBitmaskList():
+                        ಯದಿ ನ self.Is_ಸಂಖ್ಯೆ(index):
+                            sys.stderr.ಲಿಖ("bit value not number: {0} {1}\n".format(name, index))
+                            ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
+                        ಯದಿ ನ ಪೂರ್ಣಾಙ್ಕ(min) <= math.pow(2, ಪೂರ್ಣಾಙ್ಕ(index)) <= ಪೂರ್ಣಾಙ್ಕ(max):
+                            sys.stderr.ಲಿಖ("Bitmask bit must be between {0} and {1}: {2} {3}\n".format(min, max, name, math.pow(2, ಪೂರ್ಣಾಙ್ಕ(index))))
+                            ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
+                        ಯದಿ param.GetBitmaskBit(index) == "":
+                            sys.stderr.ಲಿಖ("Description for bitmask bit is empty: {0} {1}\n".format(name, index))
+                            ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ
+        ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ
 
     def GetParamGroups(self):
         """
@@ -445,7 +445,7 @@ class SourceParser(object):
         object. Note that returned object is not a copy. Modifications affect
         state of the parser.
         """
-        groups = self.param_groups.values()
-        groups = sorted(groups, key=lambda x: x.GetName())
-        groups = sorted(groups, key=lambda x: self.priority.get(x.GetName(), 0), reverse=True)
-        return groups
+        groups = self.param_groups.ಮೌಲ್ಯಗಳು_2()
+        groups = sorted(groups, ಕೀಲಿ=ಅನಾಮನ್ x: x.GetName())
+        groups = sorted(groups, ಕೀಲಿ=ಅನಾಮನ್ x: self.priority.get(x.GetName(), 0), reverse=ಸತ್ಯ)
+        ಪ್ರತ್ಯಾಗಮ groups

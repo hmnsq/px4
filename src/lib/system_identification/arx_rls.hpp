@@ -57,12 +57,12 @@
 
 #pragma once
 
-#include <matrix/matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <matrix/matrix/math.hpp>
 
 template<size_t N, size_t M, size_t D>
-class ArxRls final
+ವರ್ಗ ArxRls final
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	ArxRls()
 	{
 		static_assert(N >= M, "The transfer function needs to be proper");
@@ -70,26 +70,26 @@ public:
 		reset();
 	}
 
-	~ArxRls() = default;
+	~ArxRls() = ಸ್ವಭಾವ;
 
-	void setForgettingFactor(float time_constant, float dt) { _lambda = 1.f - dt / time_constant; }
-	void setForgettingFactor(float lambda) { _lambda = lambda; }
+	ಶೂನ್ಯ setForgettingFactor(ಭಿನ್ನ time_constant, ಭಿನ್ನ dt) { _lambda = 1.f - dt / time_constant; }
+	ಶೂನ್ಯ setForgettingFactor(ಭಿನ್ನ lambda) { _lambda = lambda; }
 
 	/*
 	 * return the vector of estimated parameters
 	 * [a_1 .. a_n b_0 .. b_m]'
 	 */
-	const matrix::Vector < float, N + M + 1 > &getCoefficients() const { return _theta_hat; }
-	const matrix::Vector < float, N + M + 1 > getVariances() const { return _P.diag(); }
-	float getInnovation() const { return _innovation; }
-	const matrix::Vector < float, N + M + 1 > &getDiffEstimate() const { return _diff_theta_hat; }
+	ಧ್ರುವ matrix::Vector < ಭಿನ್ನ, N + M + 1 > &getCoefficients() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ _theta_hat; }
+	ಧ್ರುವ matrix::Vector < ಭಿನ್ನ, N + M + 1 > getVariances() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ _P.diag(); }
+	ಭಿನ್ನ getInnovation() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ _innovation; }
+	ಧ್ರುವ matrix::Vector < ಭಿನ್ನ, N + M + 1 > &getDiffEstimate() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ _diff_theta_hat; }
 
-	void reset(const matrix::Vector < float, N + M + 1 > &theta_init = {})
+	ಶೂನ್ಯ reset(ಧ್ರುವ matrix::Vector < ಭಿನ್ನ, N + M + 1 > &theta_init = {})
 	{
 		/* _P.uncorrelateCovarianceSetVariance<N + M + 1>(0, 10e3f); // does not work */
 		_P.setZero();
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
+		ಪ್ರತಿ (size_t i = 0; i < (N + M + 1); i++) {
 			_P(i, i) = 10e3f;
 		}
 
@@ -97,11 +97,11 @@ public:
 
 		_theta_hat = theta_init;
 
-		for (size_t i = 0; i < M + D + 1; i++) {
+		ಪ್ರತಿ (size_t i = 0; i < M + D + 1; i++) {
 			_u[i] = 0.f;
 		}
 
-		for (size_t i = 0; i < N + 1; i++) {
+		ಪ್ರತಿ (size_t i = 0; i < N + 1; i++) {
 			_y[i] = 0.f;
 		}
 
@@ -109,100 +109,100 @@ public:
 		_innovation = 0.f;
 	}
 
-	void update(float u, float y)
+	ಶೂನ್ಯ update(ಭಿನ್ನ u, ಭಿನ್ನ y)
 	{
-		const matrix::Vector < float, N + M + 1 > theta_prev = _theta_hat;
+		ಧ್ರುವ matrix::Vector < ಭಿನ್ನ, N + M + 1 > theta_prev = _theta_hat;
 
-		addInputOutput(u, y);
+		add_ಒಳಹರಿವು_Output(u, y);
 
-		if (!isBufferFull()) {
+		ಯದಿ (!isBufferFull()) {
 			// Do not start to update the RLS algorithm when the
 			// buffer still contains zeros
-			return;
+			ಪ್ರತ್ಯಾಗಮ;
 		}
 
-		const matrix::Vector < float, N + M + 1 > phi = constructDesignVector();
-		const matrix::Matrix < float, 1, N + M + 1 > phi_t = phi.transpose();
+		ಧ್ರುವ matrix::Vector < ಭಿನ್ನ, N + M + 1 > phi = constructDesignVector();
+		ಧ್ರುವ matrix::Matrix < ಭಿನ್ನ, 1, N + M + 1 > phi_t = phi.transpose();
 
 		_P = (_P - _P * phi * phi_t * _P / (_lambda + (phi_t * _P * phi)(0, 0))) / _lambda;
 		_innovation = _y[N] - (phi_t * _theta_hat)(0, 0);
 		_theta_hat = _theta_hat + _P * phi * _innovation;
 
-		for (size_t i = 0; i < N + M + 1; i++) {
+		ಪ್ರತಿ (size_t i = 0; i < N + M + 1; i++) {
 			_diff_theta_hat(i) = fabsf(_theta_hat(i) - theta_prev(i));
 		}
 
 		/* fixCovarianceErrors(); // TODO: this could help against ill-conditioned matrix but needs more testing*/
 	}
 
-private:
-	void addInputOutput(float u, float y)
+ಗುಪ್ತ:
+	ಶೂನ್ಯ add_ಒಳಹರಿವು_Output(ಭಿನ್ನ u, ಭಿನ್ನ y)
 	{
 		shiftRegisters();
 		_u[M + D] = u;
 		_y[N] = y;
 
-		if (!isBufferFull()) {
+		ಯದಿ (!isBufferFull()) {
 			_nb_samples++;
 		}
 	}
 
-	void shiftRegisters()
+	ಶೂನ್ಯ shiftRegisters()
 	{
-		for (size_t i = 0; i < N; i++) {
+		ಪ್ರತಿ (size_t i = 0; i < N; i++) {
 			_y[i] = _y[i + 1];
 		}
 
-		for (size_t i = 0; i < (M + D); i++) {
+		ಪ್ರತಿ (size_t i = 0; i < (M + D); i++) {
 			_u[i] = _u[i + 1];
 		}
 	}
 
-	bool isBufferFull() const { return _nb_samples > (M + N + D); }
+	ತಾರ್ಕಿಕ isBufferFull() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ _nb_samples > (M + N + D); }
 
-	matrix::Vector < float, N + M + 1 > constructDesignVector() const
+	matrix::Vector < ಭಿನ್ನ, N + M + 1 > constructDesignVector() ಧ್ರುವ
 	{
-		matrix::Vector < float, N + M + 1 > phi;
+		matrix::Vector < ಭಿನ್ನ, N + M + 1 > phi;
 
-		for (size_t i = 0; i < N; i++) {
+		ಪ್ರತಿ (size_t i = 0; i < N; i++) {
 			phi(i) = -_y[N - i - 1];
 		}
 
-		int j = 0;
+		ಪೂರ್ಣಾಙ್ಕ j = 0;
 
-		for (size_t i = N; i < (N + M + 1); i++) {
+		ಪ್ರತಿ (size_t i = N; i < (N + M + 1); i++) {
 			phi(i) = _u[M - j];
 			j++;
 		}
 
-		return phi;
+		ಪ್ರತ್ಯಾಗಮ phi;
 	}
 
-	void fixCovarianceErrors()
+	ಶೂನ್ಯ fixCovarianceErrors()
 	{
-		float max_var = 0.f;
+		ಭಿನ್ನ max_var = 0.f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) > max_var) {
+		ಪ್ರತಿ (size_t i = 0; i < (N + M + 1); i++) {
+			ಯದಿ (_P(i, i) > max_var) {
 				max_var = _P(i, i);
 			}
 		}
 
-		const float min_var_allowed = max_var * 0.1f;
+		ಧ್ರುವ ಭಿನ್ನ min_var_allowed = max_var * 0.1f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) < min_var_allowed) {
+		ಪ್ರತಿ (size_t i = 0; i < (N + M + 1); i++) {
+			ಯದಿ (_P(i, i) < min_var_allowed) {
 				_P(i, i) = min_var_allowed;
 			}
 		}
 	}
 
-	matrix::SquareMatrix < float, N + M + 1 > _P;
-	matrix::Vector < float, N + M + 1 > _theta_hat;
-	matrix::Vector < float, N + M + 1 > _diff_theta_hat;
-	float _innovation{};
-	float _u[M + D + 1] {};
-	float _y[N + 1] {};
+	matrix::SquareMatrix < ಭಿನ್ನ, N + M + 1 > _P;
+	matrix::Vector < ಭಿನ್ನ, N + M + 1 > _theta_hat;
+	matrix::Vector < ಭಿನ್ನ, N + M + 1 > _diff_theta_hat;
+	ಭಿನ್ನ _innovation{};
+	ಭಿನ್ನ _u[M + D + 1] {};
+	ಭಿನ್ನ _y[N + 1] {};
 	unsigned _nb_samples{0};
-	float _lambda{1.f};
+	ಭಿನ್ನ _lambda{1.f};
 };

@@ -33,15 +33,15 @@
 
 #pragma once
 
-#include <uORB/topics/vehicle_status.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/vehicle_status.h>
 
-#include <stdint.h>
+#ಅನ್ತರ್ಭಾವ <stdint.h>
 
-namespace mode_util
+ನಾಮಾಕಾಶ mode_util
 {
 
 // This matches the definition from MAVLink MAV_STANDARD_MODE
-enum class StandardMode : uint8_t {
+ಗಣನಾ ವರ್ಗ StandardMode : uint8_t {
 	NON_STANDARD = 0,
 	POSITION_HOLD = 1,
 	ORBIT = 2,
@@ -56,99 +56,99 @@ enum class StandardMode : uint8_t {
 /**
  * @return Get MAVLink standard mode from nav_state
  */
-static inline StandardMode getStandardModeFromNavState(uint8_t nav_state, uint8_t vehicle_type, bool is_vtol)
+ಸ್ಥಿರ ಅನ್ತಃಸ್ಥ StandardMode getStandardModeFromNavState(uint8_t nav_state, uint8_t vehicle_type, ತಾರ್ಕಿಕ is_vtol)
 {
-	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: return StandardMode::SAFE_RECOVERY;
+	ವಿಕಲ್ಪ (nav_state) {
+	ಪಕ್ಷ vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: ಪ್ರತ್ಯಾಗಮ StandardMode::SAFE_RECOVERY;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION: return StandardMode::MISSION;
+	ಪಕ್ಷ vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION: ಪ್ರತ್ಯಾಗಮ StandardMode::MISSION;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_LAND: return StandardMode::LAND;
+	ಪಕ್ಷ vehicle_status_s::NAVIGATION_STATE_AUTO_LAND: ಪ್ರತ್ಯಾಗಮ StandardMode::LAND;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF: return StandardMode::TAKEOFF;
+	ಪಕ್ಷ vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF: ಪ್ರತ್ಯಾಗಮ StandardMode::TAKEOFF;
 
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+	ಪಕ್ಷ vehicle_status_s::NAVIGATION_STATE_ALTCTL:
+		ಯದಿ (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ALTITUDE_HOLD;
+			ಪ್ರತ್ಯಾಗಮ StandardMode::ALTITUDE_HOLD;
 		}
 
-		break;
+		ಭಙ್ಗ;
 
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return StandardMode::POSITION_HOLD;
+	ಪಕ್ಷ vehicle_status_s::NAVIGATION_STATE_POSCTL:
+		ಯದಿ (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			ಪ್ರತ್ಯಾಗಮ StandardMode::POSITION_HOLD;
 		}
 
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::CRUISE;
+		ಯದಿ (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			ಪ್ರತ್ಯಾಗಮ StandardMode::CRUISE;
 		}
 
-		break;
+		ಭಙ್ಗ;
 
-	case vehicle_status_s::NAVIGATION_STATE_ORBIT:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+	ಪಕ್ಷ vehicle_status_s::NAVIGATION_STATE_ORBIT:
+		ಯದಿ (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ORBIT;
+			ಪ್ರತ್ಯಾಗಮ StandardMode::ORBIT;
 		}
 
-		break;
+		ಭಙ್ಗ;
 	}
 
-	return StandardMode::NON_STANDARD;
+	ಪ್ರತ್ಯಾಗಮ StandardMode::NON_STANDARD;
 }
 
 /**
  * @return Get nav_state from a standard mode, or vehicle_status_s::NAVIGATION_STATE_MAX if not supported
  */
-static inline uint8_t getNavStateFromStandardMode(StandardMode mode, uint8_t vehicle_type, bool is_vtol)
+ಸ್ಥಿರ ಅನ್ತಃಸ್ಥ uint8_t getNavStateFromStandardMode(StandardMode mode, uint8_t vehicle_type, ತಾರ್ಕಿಕ is_vtol)
 {
-	switch (mode) {
-	case StandardMode::SAFE_RECOVERY: return vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
+	ವಿಕಲ್ಪ (mode) {
+	ಪಕ್ಷ StandardMode::SAFE_RECOVERY: ಪ್ರತ್ಯಾಗಮ vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
 
-	case StandardMode::MISSION: return vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
+	ಪಕ್ಷ StandardMode::MISSION: ಪ್ರತ್ಯಾಗಮ vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
 
-	case StandardMode::LAND: return vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
+	ಪಕ್ಷ StandardMode::LAND: ಪ್ರತ್ಯಾಗಮ vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
 
-	case StandardMode::TAKEOFF: return vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
+	ಪಕ್ಷ StandardMode::TAKEOFF: ಪ್ರತ್ಯಾಗಮ vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
 
-	case StandardMode::ALTITUDE_HOLD:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+	ಪಕ್ಷ StandardMode::ALTITUDE_HOLD:
+		ಯದಿ (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ALTCTL;
+			ಪ್ರತ್ಯಾಗಮ vehicle_status_s::NAVIGATION_STATE_ALTCTL;
 		}
 
-		break;
+		ಭಙ್ಗ;
 
-	case StandardMode::POSITION_HOLD:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+	ಪಕ್ಷ StandardMode::POSITION_HOLD:
+		ಯದಿ (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			ಪ್ರತ್ಯಾಗಮ vehicle_status_s::NAVIGATION_STATE_POSCTL;
 		}
 
-		break;
+		ಭಙ್ಗ;
 
-	case StandardMode::CRUISE:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+	ಪಕ್ಷ StandardMode::CRUISE:
+		ಯದಿ (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			ಪ್ರತ್ಯಾಗಮ vehicle_status_s::NAVIGATION_STATE_POSCTL;
 		}
 
-		break;
+		ಭಙ್ಗ;
 
-	case StandardMode::ORBIT:
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ORBIT;
+	ಪಕ್ಷ StandardMode::ORBIT:
+		ಯದಿ (vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			ಪ್ರತ್ಯಾಗಮ vehicle_status_s::NAVIGATION_STATE_ORBIT;
 		}
 
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+		ಯದಿ (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			ಪ್ರತ್ಯಾಗಮ vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
 		}
 
-		break;
+		ಭಙ್ಗ;
 
-	default: break;
+	ಸ್ವಭಾವ: ಭಙ್ಗ;
 	}
 
-	return vehicle_status_s::NAVIGATION_STATE_MAX;
+	ಪ್ರತ್ಯಾಗಮ vehicle_status_s::NAVIGATION_STATE_MAX;
 }
 
 

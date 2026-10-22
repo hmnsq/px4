@@ -38,19 +38,19 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
 
-#include <cstring>
+#ಅನ್ತರ್ಭಾವ <cstring>
 
-#include <lib/adsb/DaaEncodedId.h>
+#ಅನ್ತರ್ಭಾವ <lib/adsb/DaaEncodedId.h>
 
-namespace
+ನಾಮಾಕಾಶ
 {
 
-void set_report_callsign(transponder_report_s &report, const char *callsign)
+ಶೂನ್ಯ set_report_callsign(transponder_report_s &report, ಧ್ರುವ ವರ್ಣ *callsign)
 {
-	strncpy(report.callsign, callsign, sizeof(report.callsign) - 1);
-	report.callsign[sizeof(report.callsign) - 1] = '\0';
+	strncpy(report.callsign, callsign, ಪರಿಮಾಣ(report.callsign) - 1);
+	report.callsign[ಪರಿಮಾಣ(report.callsign) - 1] = '\0';
 }
 
 } // namespace
@@ -58,32 +58,32 @@ void set_report_callsign(transponder_report_s &report, const char *callsign)
 // Callsign packs to a 64-bit key and back; the round-trip re-encodes identically, unterminated rejected.
 TEST(DaaEncodedIdTest, CallsignRoundTrip)
 {
-	const char *callsigns[] {
+	ಧ್ರುವ ವರ್ಣ *callsigns[] {
 		"A",
 		"PX4TEST1",
 		"ABCD1234",
 		"ZZ999999",
 	};
 
-	for (const char *callsign : callsigns) {
-		const uint64_t key = DaaEncodedId::callsign_to_uint64(callsign);
+	ಪ್ರತಿ (ಧ್ರುವ ವರ್ಣ *callsign : callsigns) {
+		ಧ್ರುವ uint64_t ಕೀಲಿ = DaaEncodedId::callsign_to_uint64(callsign);
 
-		char recovered[kCallsignLength];
-		DaaEncodedId::convert_uint64_callsign_to_str(key, recovered);
+		ವರ್ಣ recovered[kCallsignLength];
+		DaaEncodedId::convert_uint64_callsign_to_str(ಕೀಲಿ, recovered);
 
-		EXPECT_EQ(key, DaaEncodedId::callsign_to_uint64(recovered));
+		EXPECT_EQ(ಕೀಲಿ, DaaEncodedId::callsign_to_uint64(recovered));
 	}
 
 	// unterminated input -> 0
-	char callsign_non_null[kCallsignLength];
-	memset(callsign_non_null, 'A', sizeof(callsign_non_null));
+	ವರ್ಣ callsign_non_null[kCallsignLength];
+	memset(callsign_non_null, 'A', ಪರಿಮಾಣ(callsign_non_null));
 	EXPECT_EQ(DaaEncodedId::callsign_to_uint64(callsign_non_null), 0u);
 }
 
 // High-bit callsign bytes stay in their own byte slot; no sign extension across the key.
 TEST(DaaEncodedIdTest, CallsignPackingDoesNotSignExtend)
 {
-	const char callsign[kCallsignLength] {static_cast<char>(0x80), static_cast<char>(0xFF), '\0'};
+	ಧ್ರುವ ವರ್ಣ callsign[kCallsignLength] {static_cast<ವರ್ಣ>(0x80), static_cast<ವರ್ಣ>(0xFF), '\0'};
 
 	EXPECT_EQ(DaaEncodedId::callsign_to_uint64(callsign), static_cast<uint64_t>(0xFF80u));
 }
@@ -91,10 +91,10 @@ TEST(DaaEncodedIdTest, CallsignPackingDoesNotSignExtend)
 TEST(DaaEncodedIdTest, CallsignParamsUseDocumentedCharacterOrder)
 {
 	// Documented parameter values: "PX4 " = 0x50583420, "TEST" = 0x54455354.
-	const uint64_t encoded = DaaEncodedId::callsign_params_to_uint64(0x50583420, 0x54455354);
+	ಧ್ರುವ uint64_t encoded = DaaEncodedId::callsign_params_to_uint64(0x50583420, 0x54455354);
 	EXPECT_EQ(encoded, 0x5453455420345850ULL);
 
-	char decoded[kCallsignLength] {};
+	ವರ್ಣ decoded[kCallsignLength] {};
 	DaaEncodedId::convert_uint64_callsign_to_str(encoded, decoded);
 	EXPECT_STREQ(decoded, "PX4 TEST");
 
@@ -107,16 +107,16 @@ TEST(DaaEncodedIdTest, CallsignParamsUseDocumentedCharacterOrder)
 // Decoding a short callsign clears every byte after the terminator (MAVLink copies the whole field).
 TEST(DaaEncodedIdTest, CallsignDecodeClearsUnusedBytes)
 {
-	const char callsign[kCallsignLength] {'A', 'B', '\0'};
-	const uint64_t key = DaaEncodedId::callsign_to_uint64(callsign);
+	ಧ್ರುವ ವರ್ಣ callsign[kCallsignLength] {'A', 'B', '\0'};
+	ಧ್ರುವ uint64_t ಕೀಲಿ = DaaEncodedId::callsign_to_uint64(callsign);
 
-	char recovered[kCallsignLength];
-	memset(recovered, 0x7F, sizeof(recovered));
-	DaaEncodedId::convert_uint64_callsign_to_str(key, recovered);
+	ವರ್ಣ recovered[kCallsignLength];
+	memset(recovered, 0x7F, ಪರಿಮಾಣ(recovered));
+	DaaEncodedId::convert_uint64_callsign_to_str(ಕೀಲಿ, recovered);
 
 	EXPECT_STREQ(recovered, "AB");
 
-	for (int i = 2; i < kCallsignLength; ++i) {
+	ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ i = 2; i < kCallsignLength; ++i) {
 		EXPECT_EQ(recovered[i], '\0');
 	}
 }
@@ -124,20 +124,20 @@ TEST(DaaEncodedIdTest, CallsignDecodeClearsUnusedBytes)
 // ICAO formats as fixed-width uppercase hex of the low 24 bits; a too-small buffer is left untouched.
 TEST(DaaEncodedIdTest, FormatsIcaoAsFixedWidthHex)
 {
-	char icao_buffer[kIcaoLength] {};
+	ವರ್ಣ icao_buffer[kIcaoLength] {};
 
 	// zero-padded + uppercased
-	DaaEncodedId::convert_icao_uint32_to_hex_str(0xABCu, icao_buffer, sizeof(icao_buffer));
+	DaaEncodedId::convert_icao_uint32_to_hex_str(0xABCu, icao_buffer, ಪರಿಮಾಣ(icao_buffer));
 	EXPECT_STREQ(icao_buffer, "000ABC");
 
 	// only the low 24 bits
-	DaaEncodedId::convert_icao_uint32_to_hex_str(0x12ABCDEFu, icao_buffer, sizeof(icao_buffer));
+	DaaEncodedId::convert_icao_uint32_to_hex_str(0x12ABCDEFu, icao_buffer, ಪರಿಮಾಣ(icao_buffer));
 	EXPECT_STREQ(icao_buffer, "ABCDEF");
 
 	// too-small buffer untouched
-	char small_buffer[kIcaoLength - 1];
-	memset(small_buffer, 'X', sizeof(small_buffer));
-	DaaEncodedId::convert_icao_uint32_to_hex_str(0xABCu, small_buffer, sizeof(small_buffer));
+	ವರ್ಣ small_buffer[kIcaoLength - 1];
+	memset(small_buffer, 'X', ಪರಿಮಾಣ(small_buffer));
+	DaaEncodedId::convert_icao_uint32_to_hex_str(0xABCu, small_buffer, ಪರಿಮಾಣ(small_buffer));
 	EXPECT_EQ(small_buffer[0], 'X');
 }
 
@@ -146,17 +146,17 @@ TEST(DaaEncodedIdTest, UasIdPackingPreservesTailBytes)
 {
 	uint8_t uas_id[kUasIdByteLength];
 
-	for (int i = 0; i < 4; ++i) {
-		for (int b = 0; b < kUasIdByteLength; ++b) {
+	ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ i = 0; i < 4; ++i) {
+		ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ b = 0; b < kUasIdByteLength; ++b) {
 			uas_id[b] = static_cast<uint8_t>(0x10 * i + b);
 		}
 
-		const uint64_t key = DaaEncodedId::last_uas_id_bytes_to_uint64(uas_id);
+		ಧ್ರುವ uint64_t ಕೀಲಿ = DaaEncodedId::last_uas_id_bytes_to_uint64(uas_id);
 
 		// key byte k == GUID tail byte k
-		for (int k = 0; k < kIdEncodingNbBytes; ++k) {
-			const uint8_t key_byte = static_cast<uint8_t>((key >>(k * 8)) & 0xFF);
-			EXPECT_EQ(uas_id[kUasIdByteLength - kIdEncodingNbBytes + k], key_byte);
+		ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ k = 0; k < kIdEncodingNbBytes; ++k) {
+			ಧ್ರುವ uint8_t ಕೀಲಿ_byte = static_cast<uint8_t>((ಕೀಲಿ >>(k * 8)) & 0xFF);
+			EXPECT_EQ(uas_id[kUasIdByteLength - kIdEncodingNbBytes + k], ಕೀಲಿ_byte);
 		}
 	}
 
@@ -167,61 +167,61 @@ TEST(DaaEncodedIdTest, UasIdPackingPreservesTailBytes)
 // to_string() renders each encoding, plus an explicit placeholder for an unknown one.
 TEST(DaaEncodedIdTest, ToStringRendersEachEncoding)
 {
-	char buffer[kUtmGuidMsgLength];
+	ವರ್ಣ buffer[k_Utm_Guid_ಸಂದೇಶ_Length];
 
 	// ICAO -> fixed-width uppercase hex of the low 24 bits.
-	DaaEncodedId{0xABCu, detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO}.to_string(buffer, sizeof(buffer));
+	DaaEncodedId{0xABCu, detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO}.to_string(buffer, ಪರಿಮಾಣ(buffer));
 	EXPECT_STREQ(buffer, "000ABC");
 
 	// Callsign -> the decoded callsign string.
-	const uint64_t callsign_key = DaaEncodedId::callsign_to_uint64("AB");
-	DaaEncodedId{callsign_key, detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN}.to_string(buffer, sizeof(buffer));
+	ಧ್ರುವ uint64_t callsign_ಕೀಲಿ = DaaEncodedId::callsign_to_uint64("AB");
+	DaaEncodedId{callsign_ಕೀಲಿ, detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN}.to_string(buffer, ಪರಿಮಾಣ(buffer));
 	EXPECT_STREQ(buffer, "AB");
 
-	const char callsign_with_controls[kCallsignLength] {'A', '\n', static_cast<char>(0x7f), 'B', '\0'};
+	ಧ್ರುವ ವರ್ಣ callsign_with_controls[kCallsignLength] {'A', '\n', static_cast<ವರ್ಣ>(0x7f), 'B', '\0'};
 	DaaEncodedId{DaaEncodedId::callsign_to_uint64(callsign_with_controls),
-		     detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN}.to_string(buffer, sizeof(buffer));
+		     detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN}.to_string(buffer, ಪರಿಮಾಣ(buffer));
 	EXPECT_STREQ(buffer, "A??B");
 
 	// UAS ID -> reduced lowercase hex of the packed tail bytes (little-endian).
-	DaaEncodedId{0x0102030405u, detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID}.to_string(buffer, sizeof(buffer));
+	DaaEncodedId{0x0102030405u, detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID}.to_string(buffer, ಪರಿಮಾಣ(buffer));
 	EXPECT_STREQ(buffer, "0504030201");
 
 	// Unknown encoding -> explicit placeholder.
-	char unknown_buffer[32];
-	DaaEncodedId{42u, 0xFF}.to_string(unknown_buffer, sizeof(unknown_buffer));
+	ವರ್ಣ unknown_buffer[32];
+	DaaEncodedId{42u, 0xFF}.to_string(unknown_buffer, ಪರಿಮಾಣ(unknown_buffer));
 	EXPECT_STREQ(unknown_buffer, "Unknown ID.");
 }
 
 TEST(DaaEncodedIdTest, ToStringRespectsBufferSize)
 {
-	struct guarded_buffer_s {
-		char output[4];
-		char guard;
+	ಸಂರಚನಾ guarded_buffer_s {
+		ವರ್ಣ output[4];
+		ವರ್ಣ guard;
 	};
 
 	guarded_buffer_s callsign_buffer{{}, 'X'};
-	const uint64_t callsign_key = DaaEncodedId::callsign_to_uint64("ABCDEFGH");
-	DaaEncodedId{callsign_key, detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN}.to_string(
-		callsign_buffer.output, sizeof(callsign_buffer.output));
+	ಧ್ರುವ uint64_t callsign_ಕೀಲಿ = DaaEncodedId::callsign_to_uint64("ABCDEFGH");
+	DaaEncodedId{callsign_ಕೀಲಿ, detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN}.to_string(
+		callsign_buffer.output, ಪರಿಮಾಣ(callsign_buffer.output));
 	EXPECT_STREQ(callsign_buffer.output, "ABC");
 	EXPECT_EQ(callsign_buffer.guard, 'X');
 
 	guarded_buffer_s uas_id_buffer{{}, 'X'};
 	DaaEncodedId{0x0102030405u, detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID}.to_string(
-		uas_id_buffer.output, sizeof(uas_id_buffer.output));
+		uas_id_buffer.output, ಪರಿಮಾಣ(uas_id_buffer.output));
 	EXPECT_STREQ(uas_id_buffer.output, "050");
 	EXPECT_EQ(uas_id_buffer.guard, 'X');
 
-	char one_byte_buffer{'X'};
-	DaaEncodedId{callsign_key, detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN}.to_string(&one_byte_buffer, 1);
+	ವರ್ಣ one_byte_buffer{'X'};
+	DaaEncodedId{callsign_ಕೀಲಿ, detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN}.to_string(&one_byte_buffer, 1);
 	EXPECT_EQ(one_byte_buffer, '\0');
 }
 
 // Equality keys on both id and encoding.
 TEST(DaaEncodedIdTest, EqualityComparesIdAndEncoding)
 {
-	const DaaEncodedId a{42u, detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO};
+	ಧ್ರುವ DaaEncodedId a{42u, detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO};
 
 	// Same id and encoding: equal.
 	EXPECT_TRUE(a == (DaaEncodedId{42u, detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO}));
@@ -275,7 +275,7 @@ TEST(DaaEncodedIdTest, FromReportSelectsEncodingByPriority)
 // ICAO self-detection matches the primary or secondary ownship ICAO; unset (negative) never matches.
 TEST(DaaEncodedIdTest, SelfDetectionIcao)
 {
-	const DaaEncodedId traffic_id{0x123456, detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO};
+	ಧ್ರುವ DaaEncodedId traffic_id{0x123456, detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO};
 
 	daa_ownship_ids_s ownship_ids{};
 	EXPECT_FALSE(DaaEncodedId::is_self_detection(traffic_id, ownship_ids));
@@ -295,11 +295,11 @@ TEST(DaaEncodedIdTest, SelfDetectionIcao)
 // Callsign self-detection requires an exact packed match.
 TEST(DaaEncodedIdTest, SelfDetectionCallsign)
 {
-	const char callsign[kCallsignLength] = "TST1234";
-	const uint64_t packed_callsign = DaaEncodedId::callsign_to_uint64(callsign);
+	ಧ್ರುವ ವರ್ಣ callsign[kCallsignLength] = "TST1234";
+	ಧ್ರುವ uint64_t packed_callsign = DaaEncodedId::callsign_to_uint64(callsign);
 	ASSERT_NE(packed_callsign, 0u);
 
-	const DaaEncodedId traffic_id{packed_callsign, detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN};
+	ಧ್ರುವ DaaEncodedId traffic_id{packed_callsign, detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN};
 
 	daa_ownship_ids_s ownship_ids{};
 	EXPECT_FALSE(DaaEncodedId::is_self_detection(traffic_id, ownship_ids));
@@ -316,20 +316,20 @@ TEST(DaaEncodedIdTest, SelfDetectionUasId)
 {
 	uint8_t uas_id_bytes[kUasIdByteLength];
 
-	for (int i = 0; i < kUasIdByteLength; ++i) {
+	ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ i = 0; i < kUasIdByteLength; ++i) {
 		uas_id_bytes[i] = 0xE0 + i;
 	}
 
-	const uint64_t packed_uas_id = DaaEncodedId::last_uas_id_bytes_to_uint64(uas_id_bytes);
+	ಧ್ರುವ uint64_t packed_uas_id = DaaEncodedId::last_uas_id_bytes_to_uint64(uas_id_bytes);
 	ASSERT_NE(packed_uas_id, 0u);
 
-	const DaaEncodedId traffic_id{packed_uas_id, detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID};
+	ಧ್ರುವ DaaEncodedId traffic_id{packed_uas_id, detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID};
 
 	daa_ownship_ids_s ownship_ids{};
 	ownship_ids.uas_id = packed_uas_id;
 	EXPECT_FALSE(DaaEncodedId::is_self_detection(traffic_id, ownship_ids));
 
-	ownship_ids.uas_id_valid = true;
+	ownship_ids.uas_id_valid = ಸತ್ಯ;
 	EXPECT_TRUE(DaaEncodedId::is_self_detection(traffic_id, ownship_ids));
 
 	ownship_ids.uas_id = packed_uas_id ^ 1u;
@@ -345,7 +345,7 @@ TEST(DaaEncodedIdTest, IdentifyTrafficReport)
 	EXPECT_EQ(DaaEncodedId::identify_traffic_report(report, ownship_ids).id, 0u);
 
 	report.icao_address = 0xABCDEF;
-	const DaaEncodedId encoded_id = DaaEncodedId::identify_traffic_report(report, ownship_ids);
+	ಧ್ರುವ DaaEncodedId encoded_id = DaaEncodedId::identify_traffic_report(report, ownship_ids);
 	EXPECT_EQ(encoded_id.id, 0xABCDEFu);
 	EXPECT_EQ(encoded_id.encoding, detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO);
 

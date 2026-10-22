@@ -1,17 +1,17 @@
 #pragma once
 
-#include "Scalar.hpp"
-#include "SquareMatrix.hpp"
+#ಅನ್ತರ್ಭಾವ "Scalar.hpp"
+#ಅನ್ತರ್ಭಾವ "SquareMatrix.hpp"
 
-namespace matrix
+ನಾಮಾಕಾಶ matrix
 {
 
 template<typename Type, size_t M, size_t N>
-int kalman_correct(
-	const Matrix<Type, M, M> &P,
-	const Matrix<Type, N, M> &C,
-	const Matrix<Type, N, N> &R,
-	const Matrix<Type, N, 1> &r,
+ಪೂರ್ಣಾಙ್ಕ kalman_correct(
+	ಧ್ರುವ Matrix<Type, M, M> &P,
+	ಧ್ರುವ Matrix<Type, N, M> &C,
+	ಧ್ರುವ Matrix<Type, N, N> &R,
+	ಧ್ರುವ Matrix<Type, N, 1> &r,
 	Matrix<Type, M, 1> &dx,
 	Matrix<Type, M, M> &dP,
 	Type &beta
@@ -22,7 +22,7 @@ int kalman_correct(
 	dx = K * r;
 	beta = Scalar<Type>(r.T() * S_I * r);
 	dP = K * C * P * (-1);
-	return 0;
+	ಪ್ರತ್ಯಾಗಮ 0;
 }
 
 } // namespace matrix

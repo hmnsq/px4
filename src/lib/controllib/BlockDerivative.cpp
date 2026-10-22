@@ -37,34 +37,34 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <float.h>
 
-#include "blocks.hpp"
+#ಅನ್ತರ್ಭಾವ "blocks.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
-float BlockDerivative::update(float input)
+ಭಿನ್ನ BlockDerivative::update(ಭಿನ್ನ ಒಳಹರಿವು)
 {
-	float output;
+	ಭಿನ್ನ output;
 
-	if (_initialized) {
-		output = _lowPass.update((input - getU()) / getDt());
+	ಯದಿ (_initialized) {
+		output = ಕೆಳಗಿನ_Pass.update((ಒಳಹರಿವು - getU()) / getDt());
 
-	} else {
+	} ಅನ್ಯಥಾ {
 		// if this is the first call to update
 		// we have no valid derivative
 		// and so we use the assumption the
 		// input value is not changing much,
 		// which is the best we can do here.
-		_lowPass.update(0.0f);
+		ಕೆಳಗಿನ_Pass.update(0.0f);
 		output = 0.0f;
-		_initialized = true;
+		_initialized = ಸತ್ಯ;
 	}
 
-	setU(input);
-	return output;
+	setU(ಒಳಹರಿವು);
+	ಪ್ರತ್ಯಾಗಮ output;
 }
 
 } // namespace control

@@ -8,56 +8,56 @@
 
 #pragma once
 
-#include "Matrix.hpp"
+#ಅನ್ತರ್ಭಾವ "Matrix.hpp"
 
-namespace matrix
+ನಾಮಾಕಾಶ matrix
 {
 
 template<typename Type>
-class Scalar
+ವರ್ಗ Scalar
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	Scalar() = delete;
 
-	Scalar(const Matrix<Type, 1, 1> &other) :
-		_value{other(0, 0)}
+	Scalar(ಧ್ರುವ Matrix<Type, 1, 1> &other) :
+		ಮೌಲ್ಯ_2{other(0, 0)}
 	{
 	}
 
-	Scalar(Type other) : _value(other)
+	Scalar(Type other) : ಮೌಲ್ಯ_2(other)
 	{
 	}
 
-	operator const Type &()
+	operator ಧ್ರುವ Type &()
 	{
-		return _value;
+		ಪ್ರತ್ಯಾಗಮ ಮೌಲ್ಯ_2;
 	}
 
-	operator Matrix<Type, 1, 1>() const
+	operator Matrix<Type, 1, 1>() ಧ್ರುವ
 	{
 		Matrix<Type, 1, 1> m;
-		m(0, 0) = _value;
-		return m;
+		m(0, 0) = ಮೌಲ್ಯ_2;
+		ಪ್ರತ್ಯಾಗಮ m;
 	}
 
-	operator Vector<Type, 1>() const
+	operator Vector<Type, 1>() ಧ್ರುವ
 	{
 		Vector<Type, 1> m;
-		m(0) = _value;
-		return m;
+		m(0) = ಮೌಲ್ಯ_2;
+		ಪ್ರತ್ಯಾಗಮ m;
 	}
 
-	bool operator==(const float other) const
+	ತಾರ್ಕಿಕ operator==(ಧ್ರುವ ಭಿನ್ನ other) ಧ್ರುವ
 	{
-		return isEqualF(_value, other);
+		ಪ್ರತ್ಯಾಗಮ isEqualF(ಮೌಲ್ಯ_2, other);
 	}
 
-private:
-	const Type _value;
+ಗುಪ್ತ:
+	ಧ್ರುವ Type ಮೌಲ್ಯ_2;
 
 };
 
-using Scalarf = Scalar<float>;
-using Scalard = Scalar<double>;
+using Scalarf = Scalar<ಭಿನ್ನ>;
+using Scalard = Scalar<ದ್ವಿಗುಣ>;
 
 } // namespace matrix

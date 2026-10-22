@@ -40,125 +40,125 @@
 #pragma once
 
 #define PARAM_IMPLEMENTATION
-#include "param.h"
-#include <px4_platform/board_ctrl.h>
-#include <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ <px4_platform/board_ctrl.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
 
 #define _PARAMIOC(_n) (_PX4_IOC(_PARAMIOCBASE, _n))
 
 #define PARAMIOCNOTIFY	_PARAMIOC(1)
 
 #define PARAMIOCFIND	_PARAMIOC(2)
-typedef struct paramiocfind {
-	const char *name;
-	const bool notification;
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocfind {
+	ಧ್ರುವ ವರ್ಣ *name;
+	ಧ್ರುವ bool notification;
 	param_t ret;
 } paramiocfind_t;
 
 
 #define PARAMIOCCOUNTUSED	_PARAMIOC(3)
-typedef struct paramioccountused {
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramioccountused {
 	unsigned ret;
 } paramioccountused_t;
 
 #define PARAMIOCFORUSEDINDEX	_PARAMIOC(4)
-typedef struct paramiocforusedindex {
-	const unsigned index;
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocforusedindex {
+	ಧ್ರುವ unsigned index;
 	param_t ret;
 } paramiocforusedindex_t;
 
 #define PARAMIOCGETUSEDINDEX	_PARAMIOC(5)
-typedef struct paramiocgetusedindex {
-	const param_t param;
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocgetusedindex {
+	ಧ್ರುವ param_t param;
 	unsigned ret;
 } paramiocgetusedindex_t;
 
 #define PARAMIOCUNSAVED	_PARAMIOC(6)
-typedef struct paramiocunsaved {
-	const param_t param;
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocunsaved {
+	ಧ್ರುವ param_t param;
 	bool ret;
 } paramiocunsaved_t;
 
 #define PARAMIOCGET	_PARAMIOC(7)
-typedef struct paramiocget {
-	const param_t param;
-	const bool deflt;
-	void *const val;
-	int ret;
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocget {
+	ಧ್ರುವ param_t param;
+	ಧ್ರುವ bool deflt;
+	ಶೂನ್ಯ *ಧ್ರುವ val;
+	ಪೂರ್ಣಾಙ್ಕ ret;
 } paramiocget_t;
 
 #define PARAMIOCAUTOSAVE	_PARAMIOC(8)
-typedef struct paramiocautosave {
-	const bool enable;
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocautosave {
+	ಧ್ರುವ bool enable;
 } paramiocautosave_t;
 
 #define PARAMIOCSET	_PARAMIOC(9)
-typedef struct paramiocset {
-	const param_t param;
-	const bool notification;
-	const void *val;
-	int ret;
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocset {
+	ಧ್ರುವ param_t param;
+	ಧ್ರುವ bool notification;
+	ಧ್ರುವ ಶೂನ್ಯ *val;
+	ಪೂರ್ಣಾಙ್ಕ ret;
 } paramiocset_t;
 
 #define PARAMIOCUSED	_PARAMIOC(10)
-typedef struct paramiocused {
-	const param_t param;
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocused {
+	ಧ್ರುವ param_t param;
 	bool ret;
 } paramiocused_t;
 
 #define PARAMIOCSETUSED	_PARAMIOC(11)
-typedef struct paramiocsetused {
-	const param_t param;
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocsetused {
+	ಧ್ರುವ param_t param;
 } paramiocsetused_t;
 
 #define PARAMIOCSETDEFAULT	_PARAMIOC(12)
-typedef struct paramiocsetdefault {
-	const param_t param;
-	const void *val;
-	int ret;
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocsetdefault {
+	ಧ್ರುವ param_t param;
+	ಧ್ರುವ ಶೂನ್ಯ *val;
+	ಪೂರ್ಣಾಙ್ಕ ret;
 } paramiocsetdefault_t;
 
 #define PARAMIOCRESET	_PARAMIOC(13)
-typedef struct paramiocreset {
-	const param_t param;
-	const bool notification;
-	int ret;
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocreset {
+	ಧ್ರುವ param_t param;
+	ಧ್ರುವ bool notification;
+	ಪೂರ್ಣಾಙ್ಕ ret;
 } paramiocreset_t;
 
 #define PARAMIOCRESETGROUP	_PARAMIOC(14)
-typedef enum {
+ಪ್ರಕಾರನಿರ್ದೇಶ ಗಣನಾ {
 	PARAM_RESET_ALL,
 	PARAM_RESET_EXCLUDES,
 	PARAM_RESET_SPECIFIC
 } param_reset_type_t;
 
-typedef struct paramiocresetgroup {
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocresetgroup {
 	param_reset_type_t type;
-	const char **group;
-	const int num_in_group;
+	ಧ್ರುವ ವರ್ಣ **group;
+	ಧ್ರುವ ಪೂರ್ಣಾಙ್ಕ ಅಂಕೆ_in_group;
 } paramiocresetgroup_t;
 
 #define PARAMIOCSAVEDEFAULT	_PARAMIOC(15)
-typedef struct paramiocsavedefault {
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocsavedefault {
 	bool blocking;
-	int ret;
+	ಪೂರ್ಣಾಙ್ಕ ret;
 } paramiocsavedefault_t;
 
 #define PARAMIOCLOADDEFAULT	_PARAMIOC(16)
-typedef struct paramiocloaddefault {
-	int ret;
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocloaddefault {
+	ಪೂರ್ಣಾಙ್ಕ ret;
 } paramiocloaddefault_t;
 
 
 #define PARAMIOCEXPORT	_PARAMIOC(17)
-typedef struct paramiocexport {
-	const char *filename;
-	int ret;
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiocexport {
+	ಧ್ರುವ ವರ್ಣ *filename;
+	ಪೂರ್ಣಾಙ್ಕ ret;
 } paramiocexport_t;
 
 #define PARAMIOCHASH	_PARAMIOC(18)
-typedef struct paramiochash {
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ paramiochash {
 	uint32_t ret;
 } paramiochash_t;
 
-int param_ioctl(unsigned int cmd, unsigned long arg);
+ಪೂರ್ಣಾಙ್ಕ param_ioctl(unsigned ಪೂರ್ಣಾಙ್ಕ cmd, unsigned long arg);

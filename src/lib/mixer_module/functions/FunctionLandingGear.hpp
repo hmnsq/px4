@@ -33,36 +33,36 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ಅನ್ತರ್ಭಾವ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/landing_gear.h>
 
 /**
  * Functions: Landing_Gear
  */
-class FunctionLandingGear : public FunctionProviderBase
+ವರ್ಗ FunctionLandingGear : ಸಾರ್ವಜನಿಕ FunctionProviderBase
 {
-public:
-	FunctionLandingGear() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGear(); }
+ಸಾರ್ವಜನಿಕ:
+	FunctionLandingGear() = ಸ್ವಭಾವ;
+	ಸ್ಥಿರ FunctionProviderBase *allocate(ಧ್ರುವ Context &context) { ಪ್ರತ್ಯಾಗಮ ನೂತನ FunctionLandingGear(); }
 
-	void update() override
+	ಶೂನ್ಯ update() override
 	{
 		landing_gear_s landing_gear;
 
-		if (_topic.update(&landing_gear)) {
-			if (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
+		ಯದಿ (_topic.update(&landing_gear)) {
+			ಯದಿ (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
 				_data = -1.f;
 
-			} else if (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
+			} ಅನ್ಯಥಾ ಯದಿ (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
 				_data = 1.f;
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	ಭಿನ್ನ value(OutputFunction func) override { ಪ್ರತ್ಯಾಗಮ _data; }
 
-private:
+ಗುಪ್ತ:
 	uORB::Subscription _topic{ORB_ID(landing_gear)};
-	float _data{-1.f};
+	ಭಿನ್ನ _data{-1.f};
 };

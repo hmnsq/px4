@@ -31,13 +31,13 @@
  *
  ****************************************************************************/
 
-#include "PX4Rangefinder.hpp"
+#ಅನ್ತರ್ಭಾವ "PX4Rangefinder.hpp"
 
-#include <lib/drivers/device/Device.hpp>
+#ಅನ್ತರ್ಭಾವ <lib/drivers/device/Device.hpp>
 
-using namespace time_literals;
+using ನಾಮಾಕಾಶ time_literals;
 
-PX4Rangefinder::PX4Rangefinder(const uint32_t device_id, const uint8_t device_orientation)
+PX4Rangefinder::PX4Rangefinder(ಧ್ರುವ uint32_t device_id, ಧ್ರುವ uint8_t device_orientation)
 {
 	set_device_id(device_id);
 	set_orientation(device_orientation);
@@ -50,10 +50,10 @@ PX4Rangefinder::~PX4Rangefinder()
 	_distance_sensor_pub.unadvertise();
 }
 
-void PX4Rangefinder::set_device_type(uint8_t device_type)
+ಶೂನ್ಯ PX4Rangefinder::set_device_type(uint8_t device_type)
 {
 	// current DeviceStructure
-	union device::Device::DeviceId device_id;
+	ಸಙ್ಘ device::Device::DeviceId device_id;
 	device_id.devid = _distance_sensor_pub.get().device_id;
 
 	// update to new device type
@@ -63,12 +63,12 @@ void PX4Rangefinder::set_device_type(uint8_t device_type)
 	_distance_sensor_pub.get().device_id = device_id.devid;
 }
 
-void PX4Rangefinder::set_orientation(const uint8_t device_orientation)
+ಶೂನ್ಯ PX4Rangefinder::set_orientation(ಧ್ರುವ uint8_t device_orientation)
 {
 	_distance_sensor_pub.get().orientation = device_orientation;
 }
 
-void PX4Rangefinder::update(const hrt_abstime &timestamp_sample, const float distance, const int8_t quality, const float *q, uint8_t q_len)
+ಶೂನ್ಯ PX4Rangefinder::update(ಧ್ರುವ hrt_abstime &timestamp_sample, ಧ್ರುವ ಭಿನ್ನ distance, ಧ್ರುವ int8_t quality, ಧ್ರುವ ಭಿನ್ನ *q, uint8_t q_len)
 {
 	distance_sensor_s &report = _distance_sensor_pub.get();
 	report.timestamp = timestamp_sample;
@@ -76,22 +76,22 @@ void PX4Rangefinder::update(const hrt_abstime &timestamp_sample, const float dis
 	report.signal_quality = quality;
 
 	// if quality is unavailable (-1) set to 0 if distance is outside bounds
-	if (quality < 0) {
-		if ((distance < report.min_distance) || (distance > report.max_distance)) {
+	ಯದಿ (quality < 0) {
+		ಯದಿ ((distance < report.min_distance) || (distance > report.max_distance)) {
 			report.signal_quality = 0;
 		}
 	}
 
 	// Update the quaternion in the sample update
-	if (q != nullptr) {
-		memcpy(report.q, q, sizeof(float) * q_len);
+	ಯದಿ (q != nullptr) {
+		memcpy(report.q, q, ಪರಿಮಾಣ(ಭಿನ್ನ) * q_len);
 	}
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_DISTANCE_SENSOR,
+	ಯದಿ (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_DISTANCE_SENSOR,
 					_distance_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		ಪ್ರತ್ಯಾಗಮ;
 	}
 
 	_distance_sensor_pub.update();

@@ -39,20 +39,20 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
 /**
@@ -60,19 +60,19 @@ namespace control
  * Same as limiter but with only a max, is used for
  * upper limit of +max, and lower limit of -max
  */
-class __EXPORT BlockLimitSym : public Block
+ವರ್ಗ __EXPORT BlockLimitSym : ಸಾರ್ವಜನಿಕ Block
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockLimitSym(SuperBlock *parent, const char *name) :
+	BlockLimitSym(SuperBlock *parent, ಧ್ರುವ ವರ್ಣ *name) :
 		Block(parent, name),
-		_max(this, "MAX")
+		_max(ಏತತ್, "MAX")
 	{}
-	virtual ~BlockLimitSym() = default;
-	float update(float input);
+	ಆಭಾಸ ~BlockLimitSym() = ಸ್ವಭಾವ;
+	ಭಿನ್ನ update(ಭಿನ್ನ ಒಳಹರಿವು);
 // accessors
-	float getMax() { return _max.get(); }
-protected:
+	ಭಿನ್ನ getMax() { ಪ್ರತ್ಯಾಗಮ _max.get(); }
+ರಕ್ಷಿತ:
 // attributes
 	control::BlockParamFloat _max;
 };

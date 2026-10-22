@@ -39,23 +39,23 @@
  */
 #pragma once
 
-#include <px4_platform_common/app.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/app.h>
 
-class CDevNode;
+class CDev_ಗಂಟು;
 
 class CDevExample
 {
-public:
-	CDevExample() : _node(0) {}
+ಸಾರ್ವಜನಿಕ:
+	CDevExample() : ಗಂಟು(0) {}
 
 	~CDevExample();
 
-	int main();
+	ಪೂರ್ಣಾಙ್ಕ main();
 
-	static px4::AppState appState; /* track requests to terminate app */
+	ಸ್ಥಿರ px4::AppState appState; /* track requests to terminate app */
 
-private:
-	int do_poll(int fd, int timeout, int iterations, int delayms_after_poll);
+ಗುಪ್ತ:
+	ಪೂರ್ಣಾಙ್ಕ do_poll(ಪೂರ್ಣಾಙ್ಕ fd, ಪೂರ್ಣಾಙ್ಕ timeout, ಪೂರ್ಣಾಙ್ಕ iterations, ಪೂರ್ಣಾಙ್ಕ delayms_after_poll);
 
-	CDevNode *_node;
+	CDev_ಗಂಟು *ಗಂಟು;
 };

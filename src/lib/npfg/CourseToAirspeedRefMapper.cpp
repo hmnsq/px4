@@ -31,84 +31,84 @@
  *
  ****************************************************************************/
 
-#include "CourseToAirspeedRefMapper.hpp"
+#ಅನ್ತರ್ಭಾವ "CourseToAirspeedRefMapper.hpp"
 using matrix::Vector2f;
 
-float
-CourseToAirspeedRefMapper::mapCourseSetpointToHeadingSetpoint(const float bearing_setpoint, const Vector2f &wind_vel,
-		float airspeed_sp) const
+ಭಿನ್ನ
+CourseToAirspeedRefMapper::mapCourseSetpointToHeadingSetpoint(ಧ್ರುವ ಭಿನ್ನ bearing_setpoint, ಧ್ರುವ Vector2f &wind_vel,
+		ಭಿನ್ನ airspeed_sp) ಧ್ರುವ
 {
-	const Vector2f bearing_vector = Vector2f{cosf(bearing_setpoint), sinf(bearing_setpoint)};
-	const float wind_cross_bearing = wind_vel.cross(bearing_vector);
-	const float wind_dot_bearing = wind_vel.dot(bearing_vector);
+	ಧ್ರುವ Vector2f bearing_vector = Vector2f{cosf(bearing_setpoint), sinf(bearing_setpoint)};
+	ಧ್ರುವ ಭಿನ್ನ wind_cross_bearing = wind_vel.cross(bearing_vector);
+	ಧ್ರುವ ಭಿನ್ನ wind_dot_bearing = wind_vel.dot(bearing_vector);
 
 	Vector2f air_vel_ref;
 
-	if (bearingIsFeasible(wind_cross_bearing, wind_dot_bearing, airspeed_sp, wind_vel.norm())) {
+	ಯದಿ (bearingIsFeasible(wind_cross_bearing, wind_dot_bearing, airspeed_sp, wind_vel.norm())) {
 
-		const float airsp_dot_bearing = projectAirspOnBearing(airspeed_sp, wind_cross_bearing);
+		ಧ್ರುವ ಭಿನ್ನ airsp_dot_bearing = projectAirspOnBearing(airspeed_sp, wind_cross_bearing);
 		air_vel_ref = solveWindTriangle(wind_cross_bearing, airsp_dot_bearing, bearing_vector);
 
-	} else {
+	} ಅನ್ಯಥಾ {
 		air_vel_ref = infeasibleAirVelRef(wind_vel, bearing_vector, wind_vel.norm(), airspeed_sp);
 	}
 
-	return atan2f(air_vel_ref(1), air_vel_ref(0));
+	ಪ್ರತ್ಯಾಗಮ atan2f(air_vel_ref(1), air_vel_ref(0));
 }
 
-float
-CourseToAirspeedRefMapper::getMinAirspeedForCurrentBearing(const float bearing_setpoint, const Vector2f &wind_vel,
-		float airspeed_max, float min_ground_speed) const
+ಭಿನ್ನ
+CourseToAirspeedRefMapper::getMinAirspeedForCurrentBearing(ಧ್ರುವ ಭಿನ್ನ bearing_setpoint, ಧ್ರುವ Vector2f &wind_vel,
+		ಭಿನ್ನ airspeed_max, ಭಿನ್ನ min_ground_speed) ಧ್ರುವ
 {
-	const Vector2f bearing_vector = Vector2f{cosf(bearing_setpoint), sinf(bearing_setpoint)};
-	const float wind_cross_bearing = wind_vel.cross(bearing_vector);
-	const float wind_dot_bearing = wind_vel.dot(bearing_vector);
+	ಧ್ರುವ Vector2f bearing_vector = Vector2f{cosf(bearing_setpoint), sinf(bearing_setpoint)};
+	ಧ್ರುವ ಭಿನ್ನ wind_cross_bearing = wind_vel.cross(bearing_vector);
+	ಧ್ರುವ ಭಿನ್ನ wind_dot_bearing = wind_vel.dot(bearing_vector);
 
-	const bool wind_along_bearing_is_below_min_ground_speed = min_ground_speed > wind_dot_bearing;
+	ಧ್ರುವ ತಾರ್ಕಿಕ wind_along_bearing_is_below_min_ground_speed = min_ground_speed > wind_dot_bearing;
 
-	float airspeed_min = 0.f; // return 0 if no min airspeed is necessary
+	ಭಿನ್ನ airspeed_min = 0.f; // return 0 if no min airspeed is necessary
 
-	if (wind_along_bearing_is_below_min_ground_speed) {
+	ಯದಿ (wind_along_bearing_is_below_min_ground_speed) {
 		// airspeed required to achieve minimum ground speed along bearing vector (5.18)
 		airspeed_min = sqrtf((min_ground_speed - wind_dot_bearing) * (min_ground_speed - wind_dot_bearing) +
 				     wind_cross_bearing * wind_cross_bearing);
 
 	}
 
-	return math::min(airspeed_min, airspeed_max);
+	ಪ್ರತ್ಯಾಗಮ math::min(airspeed_min, airspeed_max);
 }
 
-float CourseToAirspeedRefMapper::projectAirspOnBearing(const float airspeed_true, const float wind_cross_bearing) const
+ಭಿನ್ನ CourseToAirspeedRefMapper::projectAirspOnBearing(ಧ್ರುವ ಭಿನ್ನ airspeed_true, ಧ್ರುವ ಭಿನ್ನ wind_cross_bearing) ಧ್ರುವ
 {
 	// NOTE: wind_cross_bearing must be less than airspeed to use this function
 	// it is assumed that bearing feasibility is checked and found feasible (e.g. bearingIsFeasible() = true) prior to entering this method
 	// otherwise the return will be erroneous
 
 	// 3.5.8
-	return sqrtf(math::max(airspeed_true * airspeed_true - wind_cross_bearing * wind_cross_bearing, 0.0f));
+	ಪ್ರತ್ಯಾಗಮ sqrtf(math::max(airspeed_true * airspeed_true - wind_cross_bearing * wind_cross_bearing, 0.0f));
 }
 
-int CourseToAirspeedRefMapper::bearingIsFeasible(const float wind_cross_bearing, const float wind_dot_bearing,
-		const float airspeed, const float wind_speed) const
+ಪೂರ್ಣಾಙ್ಕ CourseToAirspeedRefMapper::bearingIsFeasible(ಧ್ರುವ ಭಿನ್ನ wind_cross_bearing, ಧ್ರುವ ಭಿನ್ನ wind_dot_bearing,
+		ಧ್ರುವ ಭಿನ್ನ airspeed, ಧ್ರುವ ಭಿನ್ನ wind_speed) ಧ್ರುವ
 {
-	return (fabsf(wind_cross_bearing) < airspeed) && ((wind_dot_bearing > 0.0f) || (wind_speed < airspeed));
+	ಪ್ರತ್ಯಾಗಮ (fabsf(wind_cross_bearing) < airspeed) && ((wind_dot_bearing > 0.0f) || (wind_speed < airspeed));
 }
 
 matrix::Vector2f
-CourseToAirspeedRefMapper::solveWindTriangle(const float wind_cross_bearing, const float airsp_dot_bearing,
-		const Vector2f &bearing_vec) const
+CourseToAirspeedRefMapper::solveWindTriangle(ಧ್ರುವ ಭಿನ್ನ wind_cross_bearing, ಧ್ರುವ ಭಿನ್ನ airsp_dot_bearing,
+		ಧ್ರುವ Vector2f &bearing_vec) ಧ್ರುವ
 {
 	// essentially a 2D rotation with the speeds (magnitudes) baked in
-	return Vector2f{airsp_dot_bearing * bearing_vec(0) - wind_cross_bearing * bearing_vec(1),
+	ಪ್ರತ್ಯಾಗಮ Vector2f{airsp_dot_bearing * bearing_vec(0) - wind_cross_bearing * bearing_vec(1),
 			wind_cross_bearing * bearing_vec(0) + airsp_dot_bearing * bearing_vec(1)};
 }
 
-matrix::Vector2f CourseToAirspeedRefMapper::infeasibleAirVelRef(const Vector2f &wind_vel, const Vector2f &bearing_vec,
-		const float wind_speed, const float airspeed) const
+matrix::Vector2f CourseToAirspeedRefMapper::infeasibleAirVelRef(ಧ್ರುವ Vector2f &wind_vel, ಧ್ರುವ Vector2f &bearing_vec,
+		ಧ್ರುವ ಭಿನ್ನ wind_speed, ಧ್ರುವ ಭಿನ್ನ airspeed) ಧ್ರುವ
 {
 	// NOTE: wind speed must be greater than airspeed, and airspeed must be greater than zero to use this function
 	// it is assumed that bearing feasibility is checked and found infeasible (e.g. bearingIsFeasible() = false) prior to entering this method
 	// otherwise the normalization of the air velocity vector could have a division by zero
 	Vector2f air_vel_ref = sqrtf(math::max(wind_speed * wind_speed - airspeed * airspeed, 0.0f)) * bearing_vec - wind_vel;
-	return air_vel_ref.normalized() * airspeed;
+	ಪ್ರತ್ಯಾಗಮ air_vel_ref.normalized() * airspeed;
 }

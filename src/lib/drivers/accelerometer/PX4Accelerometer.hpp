@@ -33,61 +33,61 @@
 
 #pragma once
 
-#include <drivers/drv_hrt.h>
-#include <lib/conversion/rotation.h>
-#include <lib/geo/geo.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/sensor_accel.h>
-#include <uORB/topics/sensor_accel_fifo.h>
+#ಅನ್ತರ್ಭಾವ <drivers/drv_hrt.h>
+#ಅನ್ತರ್ಭಾವ <lib/conversion/rotation.h>
+#ಅನ್ತರ್ಭಾವ <lib/geo/geo.h>
+#ಅನ್ತರ್ಭಾವ <uORB/PublicationMulti.hpp>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/sensor_accel.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/sensor_accel_fifo.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#ಅನ್ತರ್ಭಾವ <lib/failure_injection/FailureInjection.hpp>
 
-class PX4Accelerometer
+ವರ್ಗ PX4Accelerometer
 {
-public:
-	PX4Accelerometer(uint32_t device_id, enum Rotation rotation = ROTATION_NONE);
-	PX4Accelerometer(uint32_t device_id, enum Rotation rotation, bool external);
+ಸಾರ್ವಜನಿಕ:
+	PX4Accelerometer(uint32_t device_id, ಗಣನಾ Rotation rotation = ROTATION_NONE);
+	PX4Accelerometer(uint32_t device_id, ಗಣನಾ Rotation rotation, ತಾರ್ಕಿಕ external);
 	~PX4Accelerometer();
 
-	uint32_t get_device_id() const { return _device_id; }
+	uint32_t get_device_id() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ _device_id; }
 
-	int32_t get_max_rate_hz() const { return math::constrain(_imu_gyro_rate_max, static_cast<int32_t>(100), static_cast<int32_t>(4000)); }
+	int32_t get_max_rate_hz() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ math::constrain(_imu_gyro_rate_max, static_cast<int32_t>(100), static_cast<int32_t>(4000)); }
 
-	void set_device_id(uint32_t device_id);
-	void set_device_type(uint8_t devtype);
-	void set_external(bool external);
-	void set_error_count(uint32_t error_count) { _error_count = error_count; }
-	void set_range(float range) { _range = range; UpdateClipLimit(); }
-	void set_scale(float scale);
-	void set_temperature(float temperature) { _temperature = temperature; }
+	ಶೂನ್ಯ set_device_id(uint32_t device_id);
+	ಶೂನ್ಯ set_device_type(uint8_t devtype);
+	ಶೂನ್ಯ set_external(ತಾರ್ಕಿಕ external);
+	ಶೂನ್ಯ set_error_ಎಣಿಕೆ(uint32_t error_ಎಣಿಕೆ) { error_ಎಣಿಕೆ_2 = error_ಎಣಿಕೆ; }
+	ಶೂನ್ಯ set_range(ಭಿನ್ನ range) { _range = range; UpdateClipLimit(); }
+	ಶೂನ್ಯ set_scale(ಭಿನ್ನ scale);
+	ಶೂನ್ಯ set_temperature(ಭಿನ್ನ temperature) { _temperature = temperature; }
 
-	void update(const hrt_abstime &timestamp_sample, float x, float y, float z);
+	ಶೂನ್ಯ update(ಧ್ರುವ hrt_abstime &timestamp_sample, ಭಿನ್ನ x, ಭಿನ್ನ y, ಭಿನ್ನ z);
 
-	void updateFIFO(sensor_accel_fifo_s &sample);
+	ಶೂನ್ಯ updateFIFO(sensor_accel_fifo_s &sample);
 
-	int get_instance() { return _sensor_pub.get_instance(); };
+	ಪೂರ್ಣಾಙ್ಕ get_instance() { ಪ್ರತ್ಯಾಗಮ _sensor_pub.get_instance(); };
 
-private:
-	void UpdateClipLimit();
+ಗುಪ್ತ:
+	ಶೂನ್ಯ UpdateClipLimit();
 
 	uORB::PublicationMulti<sensor_accel_s> _sensor_pub{ORB_ID(sensor_accel)};
 	uORB::PublicationMulti<sensor_accel_fifo_s>  _sensor_fifo_pub{ORB_ID(sensor_accel_fifo)};
 
 	uint32_t		_device_id{0};
-	const enum Rotation	_rotation;
+	ಧ್ರುವ ಗಣನಾ Rotation	_rotation;
 
-	bool			_is_external{false};
-	bool			_external_forced{false}; // classification set by the driver, do not re-derive from the device id
+	ತಾರ್ಕಿಕ			_is_external{ಅಸತ್ಯ};
+	ತಾರ್ಕಿಕ			_external_forced{ಅಸತ್ಯ}; // classification set by the driver, do not re-derive from the device id
 
 	int32_t			_imu_gyro_rate_max{0}; // match gyro max rate
 
-	float			_range{16 * CONSTANTS_ONE_G};
-	float			_scale{1.f};
-	float			_temperature{NAN};
+	ಭಿನ್ನ			_range{16 * CONSTANTS_ONE_G};
+	ಭಿನ್ನ			_scale{1.f};
+	ಭಿನ್ನ			_temperature{NAN};
 
-	float			_clip_limit{_range / _scale};
+	ಭಿನ್ನ			_clip_limit{_range / _scale};
 
-	uint32_t		_error_count{0};
+	uint32_t		error_ಎಣಿಕೆ_2{0};
 
 	int16_t			_last_sample[3] {};
 

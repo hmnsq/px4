@@ -39,33 +39,33 @@
  * Base class for devices connected via I2C.
  */
 
-#include "../CDev.hpp"
-#include <px4_platform_common/i2c.h>
+#ಅನ್ತರ್ಭಾವ "../CDev.hpp"
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#ಯದಿ defined(CONFIG_I2C)
 
-struct I2CSPIDriverConfig;
+ಸಂರಚನಾ I2CSPIDriverConfig;
 
-namespace device __EXPORT
+ನಾಮಾಕಾಶ device __EXPORT
 {
 
 /**
  * Abstract class for character device on I2C
  */
-class __EXPORT I2C : public CDev
+ವರ್ಗ __EXPORT I2C : ಸಾರ್ವಜನಿಕ CDev
 {
 
-public:
+ಸಾರ್ವಜನಿಕ:
 
 	// no copy, assignment, move, move assignment
-	I2C(const I2C &) = delete;
-	I2C &operator=(const I2C &) = delete;
+	I2C(ಧ್ರುವ I2C &) = delete;
+	I2C &operator=(ಧ್ರುವ I2C &) = delete;
 	I2C(I2C &&) = delete;
 	I2C &operator=(I2C &&) = delete;
 
-	virtual int	init() override;
+	ಆಭಾಸ ಪೂರ್ಣಾಙ್ಕ	init() override;
 
-protected:
+ರಕ್ಷಿತ:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -81,14 +81,14 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
-	I2C(const I2CSPIDriverConfig &config);
-	virtual ~I2C();
+	I2C(uint8_t device_type, ಧ್ರುವ ವರ್ಣ *name, ಧ್ರುವ ಪೂರ್ಣಾಙ್ಕ bus, ಧ್ರುವ uint16_t address, ಧ್ರುವ uint32_t frequency);
+	I2C(ಧ್ರುವ I2CSPIDriverConfig &config);
+	ಆಭಾಸ ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	ಆಭಾಸ ಪೂರ್ಣಾಙ್ಕ	probe() { ಪ್ರತ್ಯಾಗಮ PX4_OK; }
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -102,10 +102,10 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	ಪೂರ್ಣಾಙ್ಕ		transfer(ಧ್ರುವ uint8_t *send, ಧ್ರುವ unsigned send_len, uint8_t *recv, ಧ್ರುವ unsigned recv_len);
 
-private:
-	int			_fd{-1};
+ಗುಪ್ತ:
+	ಪೂರ್ಣಾಙ್ಕ			_fd{-1};
 
 };
 

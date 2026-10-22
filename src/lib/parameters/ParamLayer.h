@@ -33,40 +33,40 @@
 
 #pragma once
 
-#include <px4_platform_common/atomic_bitset.h>
-#include "atomic_transaction.h"
-#include "param.h"
-#include <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/atomic_bitset.h>
+#ಅನ್ತರ್ಭಾವ "atomic_transaction.h"
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
 
 class ParamLayer
 {
-public:
-	static constexpr param_t PARAM_COUNT = sizeof(px4::parameters) / sizeof(param_info_s);
+ಸಾರ್ವಜನಿಕ:
+	ಸ್ಥಿರ constexpr param_t PARAM_ಎಣಿಕೆ = ಪರಿಮಾಣ(px4::parameters) / ಪರಿಮಾಣ(param_info_s);
 
 	ParamLayer(ParamLayer *parent = nullptr) : _parent(parent) {}
 
-	ParamLayer(const ParamLayer &) = delete;
-	ParamLayer &operator=(const ParamLayer &) = delete;
+	ParamLayer(ಧ್ರುವ ParamLayer &) = delete;
+	ParamLayer &operator=(ಧ್ರುವ ParamLayer &) = delete;
 	ParamLayer(ParamLayer &&) = delete;
 	ParamLayer &operator=(ParamLayer &&) = delete;
 
 
-	virtual bool store(param_t param, param_value_u value) = 0;
+	ಆಭಾಸ bool store(param_t param, param_ಮೌಲ್ಯ_u ಮೌಲ್ಯ) = 0;
 
-	virtual bool contains(param_t param) const = 0;
+	ಆಭಾಸ bool contains(param_t param) ಧ್ರುವ = 0;
 
-	virtual px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const = 0;
+	ಆಭಾಸ px4::AtomicBitset<PARAM_ಎಣಿಕೆ> containedAsBitset() ಧ್ರುವ = 0;
 
-	virtual param_value_u get(param_t param) const = 0;
+	ಆಭಾಸ param_ಮೌಲ್ಯ_u get(param_t param) ಧ್ರುವ = 0;
 
-	virtual void reset(param_t param) = 0;
+	ಆಭಾಸ ಶೂನ್ಯ reset(param_t param) = 0;
 
-	virtual void refresh(param_t param) = 0;
+	ಆಭಾಸ ಶೂನ್ಯ refresh(param_t param) = 0;
 
-	virtual int size() const = 0;
+	ಆಭಾಸ ಪೂರ್ಣಾಙ್ಕ size() ಧ್ರುವ = 0;
 
-	virtual int byteSize() const = 0;
+	ಆಭಾಸ ಪೂರ್ಣಾಙ್ಕ byteSize() ಧ್ರುವ = 0;
 
-protected:
-	ParamLayer *const _parent;
+ರಕ್ಷಿತ:
+	ParamLayer *ಧ್ರುವ _parent;
 };

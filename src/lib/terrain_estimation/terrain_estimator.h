@@ -37,12 +37,12 @@
 
 #pragma once
 
-#include <lib/mathlib/mathlib.h>
-#include <matrix/math.hpp>
-#include <uORB/topics/sensor_combined.h>
-#include <uORB/topics/sensor_gnss.h>
-#include <uORB/topics/vehicle_attitude.h>
-#include <uORB/topics/distance_sensor.h>
+#ಅನ್ತರ್ಭಾವ <lib/mathlib/mathlib.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/sensor_combined.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/sensor_gnss.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/vehicle_attitude.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/distance_sensor.h>
 
 
 /*
@@ -58,30 +58,30 @@
 
 class __EXPORT TerrainEstimator
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	TerrainEstimator();
-	~TerrainEstimator() = default;
+	~TerrainEstimator() = ಸ್ವಭಾವ;
 
-	bool is_valid() {return _terrain_valid;}
-	float get_distance_to_ground() {return -_x(0);}
-	float get_velocity() {return _x(1);}
+	bool is_valid() {ಪ್ರತ್ಯಾಗಮ _terrain_valid;}
+	ಭಿನ್ನ get_distance_to_ground() {ಪ್ರತ್ಯಾಗಮ -_x(0);}
+	ಭಿನ್ನ get_velocity() {ಪ್ರತ್ಯಾಗಮ _x(1);}
 
-	void predict(float dt, const struct vehicle_attitude_s *attitude, const struct sensor_combined_s *sensor,
-		     const struct distance_sensor_s *distance);
-	void measurement_update(uint64_t time_ref, const struct sensor_gnss_s *gnss,
-				const struct distance_sensor_s *distance,
-				const struct vehicle_attitude_s *attitude);
+	ಶೂನ್ಯ predict(ಭಿನ್ನ dt, ಧ್ರುವ ಸಂರಚನಾ vehicle_attitude_s *attitude, ಧ್ರುವ ಸಂರಚನಾ sensor_combined_s *sensor,
+		     ಧ್ರುವ ಸಂರಚನಾ distance_sensor_s *distance);
+	ಶೂನ್ಯ measurement_update(uint64_t time_ref, ಧ್ರುವ ಸಂರಚನಾ sensor_gnss_s *gnss,
+				ಧ್ರುವ ಸಂರಚನಾ distance_sensor_s *distance,
+				ಧ್ರುವ ಸಂರಚನಾ vehicle_attitude_s *attitude);
 
-private:
-	enum {n_x = 3};
+ಗುಪ್ತ:
+	ಗಣನಾ {n_x = 3};
 
-	float _distance_last;
+	ಭಿನ್ನ _distance_last;
 	bool _terrain_valid;
 
 	// kalman filter variables
-	matrix::Vector<float, n_x> _x;		// state: ground distance, velocity, accel bias in z direction
-	float  _u_z;			// acceleration in earth z direction
-	matrix::Matrix<float, 3, 3> _P;	// covariance matrix
+	matrix::Vector<ಭಿನ್ನ, n_x> _x;		// state: ground distance, velocity, accel bias in z direction
+	ಭಿನ್ನ  _u_z;			// acceleration in earth z direction
+	matrix::Matrix<ಭಿನ್ನ, 3, 3> _P;	// covariance matrix
 
 	// timestamps
 	uint64_t _time_last_distance;
@@ -97,6 +97,6 @@ private:
 	} _params;
 	*/
 
-	bool is_distance_valid(float distance);
+	bool is_distance_valid(ಭಿನ್ನ distance);
 
 };

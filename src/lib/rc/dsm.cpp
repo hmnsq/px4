@@ -39,57 +39,57 @@
  * Decodes into the global PPM buffer and updates accordingly.
  */
 
-#include <px4_platform_common/px4_config.h>
-#include <board_config.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/px4_config.h>
+#ಅನ್ತರ್ಭಾವ <board_config.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/log.h>
 
-#include <fcntl.h>
-#include <math.h>
-#include <unistd.h>
-#include <termios.h>
-#include <string.h>
+#ಅನ್ತರ್ಭಾವ <fcntl.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <unistd.h>
+#ಅನ್ತರ್ಭಾವ <termios.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
 
-#include "dsm.h"
-#include "spektrum_rssi.h"
-#include "common_rc.h"
-#include <drivers/drv_hrt.h>
+#ಅನ್ತರ್ಭಾವ "dsm.h"
+#ಅನ್ತರ್ಭಾವ "spektrum_rssi.h"
+#ಅನ್ತರ್ಭಾವ "common_rc.h"
+#ಅನ್ತರ್ಭಾವ <drivers/drv_hrt.h>
 
-#include <include/containers/Bitset.hpp>
+#ಅನ್ತರ್ಭಾವ <include/containers/Bitset.hpp>
 
-#if defined(__PX4_NUTTX)
-#include <nuttx/arch.h>
+#ಯದಿ defined(__PX4_NUTTX)
+#ಅನ್ತರ್ಭಾವ <nuttx/arch.h>
 #define dsm_udelay(arg)    up_udelay(arg)
-#else
+#ಅನ್ಯಥಾ
 #define dsm_udelay(arg) px4_usleep(arg)
 #endif
 
 // #define DSM_DEBUG
 
-static enum DSM_DECODE_STATE {
+ಸ್ಥಿರ ಗಣನಾ DSM_DECODE_STATE {
 	DSM_DECODE_STATE_DESYNC = 0,
 	DSM_DECODE_STATE_SYNC
 } dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 
-typedef struct {
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ {
 	hrt_abstime last_seen;
 	uint16_t value;
 } dsm_channel_t;
 
-static dsm_channel_t channel_buffer[DSM_MAX_CHANNEL_COUNT];
+ಸ್ಥಿರ dsm_channel_t channel_buffer[DSM_MAX_CHANNEL_ಎಣಿಕೆ];
 
-static int dsm_fd = -1;						/**< File handle to the DSM UART */
-static hrt_abstime dsm_last_rx_time;            /**< Timestamp when we last received data */
-static hrt_abstime dsm_last_frame_time;		/**< Timestamp for start of last valid dsm frame */
-static dsm_frame_t &dsm_frame = rc_decode_buf.dsm.frame;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
-static dsm_buf_t &dsm_buf = rc_decode_buf.dsm.buf;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
+ಸ್ಥಿರ ಪೂರ್ಣಾಙ್ಕ dsm_fd = -1;						/**< File handle to the DSM UART */
+ಸ್ಥಿರ hrt_abstime dsm_last_rx_time;            /**< Timestamp when we last received data */
+ಸ್ಥಿರ hrt_abstime dsm_last_frame_time;		/**< Timestamp for start of last valid dsm frame */
+ಸ್ಥಿರ dsm_frame_t &dsm_frame = rc_decode_buf.dsm.frame;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
+ಸ್ಥಿರ dsm_buf_t &dsm_buf = rc_decode_buf.dsm.buf;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
 
-static unsigned dsm_partial_frame_count;	/**< Count of bytes received for current dsm frame */
-static unsigned dsm_channel_shift = 0;			/**< Channel resolution, 0=unknown, 10=10 bit (1024), 11=11 bit (2048) */
-static unsigned dsm_frame_drops = 0;			/**< Count of incomplete DSM frames */
-static uint16_t dsm_chan_count = 0;         /**< DSM channel count */
+ಸ್ಥಿರ unsigned dsm_partial_frame_ಎಣಿಕೆ;	/**< Count of bytes received for current dsm frame */
+ಸ್ಥಿರ unsigned dsm_channel_shift = 0;			/**< Channel resolution, 0=unknown, 10=10 bit (1024), 11=11 bit (2048) */
+ಸ್ಥಿರ unsigned dsm_frame_drops = 0;			/**< Count of incomplete DSM frames */
+ಸ್ಥಿರ uint16_t dsm_chan_ಎಣಿಕೆ = 0;         /**< DSM channel count */
 
-static constexpr uint8_t CHANNEL_UNUSED = 0xFF;
+ಸ್ಥಿರ constexpr uint8_t CHANNEL_UNUSED = 0xFF;
 
 /**
  * Attempt to decode a single channel raw channel datum
@@ -116,31 +116,31 @@ static constexpr uint8_t CHANNEL_UNUSED = 0xFF;
  * @param[out] value pointer to returned channel value
  * @return true=raw value successfully decoded
  */
-static bool dsm_decode_channel(uint16_t raw, unsigned shift, uint8_t &channel, uint16_t &value)
+ಸ್ಥಿರ ತಾರ್ಕಿಕ dsm_decode_channel(uint16_t raw, unsigned shift, uint8_t &channel, uint16_t &value)
 {
-	if (shift == 10) {
+	ಯದಿ (shift == 10) {
 		// 1024 Mode: This format is used only by DSM2/22ms mode. All other modes use 2048 data.
 		//  Bits 15-10 Channel ID
 		//  Bits 9-0   Servo Position
-		static constexpr uint16_t MASK_1024_CHANID = 0xFC00;
-		static constexpr uint16_t MASK_1024_SXPOS = 0x03FF;
+		ಸ್ಥಿರ constexpr uint16_t MASK_1024_CHANID = 0xFC00;
+		ಸ್ಥಿರ constexpr uint16_t MASK_1024_SXPOS = 0x03FF;
 
 		channel = (raw & MASK_1024_CHANID) >> 10; // 6 bits
 
-		const uint16_t servo_position = (raw & MASK_1024_SXPOS); // 10 bits
+		ಧ್ರುವ uint16_t servo_position = (raw & MASK_1024_SXPOS); // 10 bits
 
-		if (channel >= DSM_MAX_CHANNEL_COUNT) {
+		ಯದಿ (channel >= DSM_MAX_CHANNEL_ಎಣಿಕೆ) {
 			PX4_DEBUG("invalid channel: %d\n", channel);
-			return false;
+			ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 		}
 
 		// PWM_OUT = (ServoPosition x 1.166μs) + Offset
-		static constexpr uint16_t offset = 903; // microseconds
+		ಸ್ಥಿರ constexpr uint16_t offset = 903; // microseconds
 		value = roundf(servo_position * 1.166f) + offset;
 
-		return true;
+		ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 
-	} else if (shift == 11) {
+	} ಅನ್ಯಥಾ ಯದಿ (shift == 11) {
 		// 2048 Mode
 		//  Bits 15    Servo Phase
 		//  Bits 14-11 Channel ID
@@ -149,53 +149,53 @@ static bool dsm_decode_channel(uint16_t raw, unsigned shift, uint8_t &channel, u
 		uint16_t servo_position = 0;
 
 		// from Spektrum Remote Receiver Interfacing Rev G Page 6
-		const bool phase = (raw >> 15) & 0x01; // the phase is part of the X-Plus address (bit 15)
+		ಧ್ರುವ ತಾರ್ಕಿಕ phase = (raw >> 15) & 0x01; // the phase is part of the X-Plus address (bit 15)
 		uint8_t chan = (raw >> 11) & 0x0F;
 
-		if (chan < 12) {
+		ಯದಿ (chan < 12) {
 			// Normal channels
-			static constexpr uint16_t MASK_2048_SXPOS = 0x07FF;
+			ಸ್ಥಿರ constexpr uint16_t MASK_2048_SXPOS = 0x07FF;
 			servo_position = (raw & MASK_2048_SXPOS);
 
-		} else if (chan == 12) {
+		} ಅನ್ಯಥಾ ಯದಿ (chan == 12) {
 			// XPlus channels
 			chan += ((raw >> 9) & 0x03);
 
-			if (phase) {
+			ಯದಿ (phase) {
 				chan += 4;
 			}
 
-			if (chan >= DSM_MAX_CHANNEL_COUNT) {
-				return false;
+			ಯದಿ (chan >= DSM_MAX_CHANNEL_ಎಣಿಕೆ) {
+				ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 			}
 
 			servo_position = (raw & 0x01FF) << 2;
 
 			channel = chan;
 
-		} else if (chan == 0x0F && phase) {
+		} ಅನ್ಯಥಾ ಯದಿ (chan == 0x0F && phase) {
 			// When the channel content is all bits set, and the phase is also set, this is the blank channel
 			channel = CHANNEL_UNUSED;
-			return true;
+			ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 
-		} else {
+		} ಅನ್ಯಥಾ {
 			// This will be the case for an unused channel (raw 16bit content will be 0xffff)
 			PX4_DEBUG("invalid: %d %d\n", chan, phase);
-			return false;
+			ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 		}
 
 		channel = chan;
 
 		// PWM_OUT = (ServoPosition x 0.583μs) + Offset
-		static constexpr uint16_t offset = 903; // microseconds
+		ಸ್ಥಿರ constexpr uint16_t offset = 903; // microseconds
 		value = roundf(servo_position * 0.583f) + offset;
 
 		PX4_DEBUG(stderr, "CH%d=%d(0x%02x), ", channel, value, raw);
 
-		return true;
+		ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 	}
 
-	return false;
+	ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 }
 
 /**
@@ -203,43 +203,43 @@ static bool dsm_decode_channel(uint16_t raw, unsigned shift, uint8_t &channel, u
  *
  * @param[in] reset true=reset the 10/11 bit state to unknown
  */
-static bool dsm_guess_format(bool reset)
+ಸ್ಥಿರ ತಾರ್ಕಿಕ dsm_guess_format(ತಾರ್ಕಿಕ reset)
 {
-	static uint32_t cs10 = 0;
-	static uint32_t cs11 = 0;
-	static uint16_t good_cs10_frame_count = 0;
-	static uint16_t good_cs11_frame_count = 0;
-	static uint16_t samples = 0;
-	static uint16_t seen_channels_count_cs11[DSM_MAX_CHANNEL_COUNT] {};
-	static uint16_t seen_channels_count_cs10[DSM_MAX_CHANNEL_COUNT] {};
+	ಸ್ಥಿರ uint32_t cs10 = 0;
+	ಸ್ಥಿರ uint32_t cs11 = 0;
+	ಸ್ಥಿರ uint16_t good_cs10_frame_ಎಣಿಕೆ = 0;
+	ಸ್ಥಿರ uint16_t good_cs11_frame_ಎಣಿಕೆ = 0;
+	ಸ್ಥಿರ uint16_t samples = 0;
+	ಸ್ಥಿರ uint16_t seen_channels_ಎಣಿಕೆ_cs11[DSM_MAX_CHANNEL_ಎಣಿಕೆ] {};
+	ಸ್ಥಿರ uint16_t seen_channels_ಎಣಿಕೆ_cs10[DSM_MAX_CHANNEL_ಎಣಿಕೆ] {};
 
 	/* reset the 10/11 bit sniffed channel masks */
-	if (reset) {
+	ಯದಿ (reset) {
 		PX4_DEBUG("dsm_guess_format reset");
 		cs10 = 0;
 		cs11 = 0;
 		samples = 0;
 
 		dsm_channel_shift = 0;
-		good_cs10_frame_count = 0;
-		good_cs11_frame_count = 0;
+		good_cs10_frame_ಎಣಿಕೆ = 0;
+		good_cs11_frame_ಎಣಿಕೆ = 0;
 
-		for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
-			seen_channels_count_cs10[i] = 0;
-			seen_channels_count_cs11[i] = 0;
+		ಪ್ರತಿ (unsigned i = 0; i < DSM_MAX_CHANNEL_ಎಣಿಕೆ; i++) {
+			seen_channels_ಎಣಿಕೆ_cs10[i] = 0;
+			seen_channels_ಎಣಿಕೆ_cs11[i] = 0;
 		}
 
-		return false;
+		ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 	}
 
-	px4::Bitset<DSM_MAX_CHANNEL_COUNT> channels_found_10;
-	px4::Bitset<DSM_MAX_CHANNEL_COUNT> channels_found_11;
+	px4::Bitset<DSM_MAX_CHANNEL_ಎಣಿಕೆ> channels_found_10;
+	px4::Bitset<DSM_MAX_CHANNEL_ಎಣಿಕೆ> channels_found_11;
 
-	bool cs10_frame_valid = true;
-	bool cs11_frame_valid = true;
+	ತಾರ್ಕಿಕ cs10_frame_valid = ಸತ್ಯ;
+	ತಾರ್ಕಿಕ cs11_frame_valid = ಸತ್ಯ;
 
 	/* scan the channels in the current dsm_frame in both 10- and 11-bit mode */
-	for (unsigned i = 0; i < DSM_FRAME_CHANNELS; i++) {
+	ಪ್ರತಿ (unsigned i = 0; i < DSM_FRAME_CHANNELS; i++) {
 
 		uint8_t *dp = &dsm_frame[2 + (2 * i)];
 		uint16_t raw = (dp[0] << 8) | dp[1];
@@ -248,32 +248,32 @@ static bool dsm_guess_format(bool reset)
 		uint16_t value = 0;
 
 		/* if the channel decodes, remember the assigned number */
-		if (dsm_decode_channel(raw, 10, channel, value)) {
-			if (channel == CHANNEL_UNUSED) {
-				continue;
+		ಯದಿ (dsm_decode_channel(raw, 10, channel, value)) {
+			ಯದಿ (channel == CHANNEL_UNUSED) {
+				ಅನುವರ್ತ;
 			}
 
 			// invalidate entire frame (for 1024) if channel already found, no duplicate channels per DSM frame
-			if (channels_found_10[channel]) {
-				cs10_frame_valid = false;
+			ಯದಿ (channels_found_10[channel]) {
+				cs10_frame_valid = ಅಸತ್ಯ;
 
-			} else {
-				seen_channels_count_cs10[channel]++;
+			} ಅನ್ಯಥಾ {
+				seen_channels_ಎಣಿಕೆ_cs10[channel]++;
 				channels_found_10.set(channel);
 			}
 		}
 
-		if (dsm_decode_channel(raw, 11, channel, value)) {
-			if (channel == CHANNEL_UNUSED) {
-				continue;
+		ಯದಿ (dsm_decode_channel(raw, 11, channel, value)) {
+			ಯದಿ (channel == CHANNEL_UNUSED) {
+				ಅನುವರ್ತ;
 			}
 
 			// invalidate entire frame (for 2048) if channel already found, no duplicate channels per DSM frame
-			if (channels_found_11[channel]) {
-				cs11_frame_valid = false;
+			ಯದಿ (channels_found_11[channel]) {
+				cs11_frame_valid = ಅಸತ್ಯ;
 
-			} else {
-				seen_channels_count_cs11[channel]++;
+			} ಅನ್ಯಥಾ {
+				seen_channels_ಎಣಿಕೆ_cs11[channel]++;
 
 				channels_found_11.set(channel);
 			}
@@ -281,22 +281,22 @@ static bool dsm_guess_format(bool reset)
 	}
 
 	// add valid cs10 channels
-	if (cs10_frame_valid) {
-		good_cs10_frame_count++;
+	ಯದಿ (cs10_frame_valid) {
+		good_cs10_frame_ಎಣಿಕೆ++;
 
-		for (unsigned channel = 0; channel < DSM_MAX_CHANNEL_COUNT; channel++) {
-			if (channels_found_10[channel]) {
+		ಪ್ರತಿ (unsigned channel = 0; channel < DSM_MAX_CHANNEL_ಎಣಿಕೆ; channel++) {
+			ಯದಿ (channels_found_10[channel]) {
 				cs10 |= 1 << channel;
 			}
 		}
 	}
 
 	// add valid cs11 channels
-	if (cs11_frame_valid) {
-		good_cs11_frame_count++;
+	ಯದಿ (cs11_frame_valid) {
+		good_cs11_frame_ಎಣಿಕೆ++;
 
-		for (unsigned channel = 0; channel < DSM_MAX_CHANNEL_COUNT; channel++) {
-			if (channels_found_11[channel]) {
+		ಪ್ರತಿ (unsigned channel = 0; channel < DSM_MAX_CHANNEL_ಎಣಿಕೆ; channel++) {
+			ಯದಿ (channels_found_11[channel]) {
 				cs11 |= 1 << channel;
 			}
 		}
@@ -305,8 +305,8 @@ static bool dsm_guess_format(bool reset)
 	samples++;
 
 	/* wait until we have seen plenty of frames */
-	if (samples < 15) {
-		return false;
+	ಯದಿ (samples < 15) {
+		ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 	}
 
 	/*
@@ -317,123 +317,123 @@ static bool dsm_guess_format(bool reset)
 	*  Channels must begin at 0 and no channel gaps after that (ie, the last channel is the one before the first unseen channel starting from zero)
 	 */
 
-	bool cs10_channel_gap_found = false;
-	bool cs11_channel_gap_found = false;
-	bool valid_channel_counts_cs10 = false;
-	bool valid_channel_counts_cs11 = false;
-	uint32_t cs10_channel_count = 0;
-	uint32_t cs11_channel_count = 0;
-	bool found_channels_end = false;
+	ತಾರ್ಕಿಕ cs10_channel_gap_found = ಅಸತ್ಯ;
+	ತಾರ್ಕಿಕ cs11_channel_gap_found = ಅಸತ್ಯ;
+	ತಾರ್ಕಿಕ valid_channel_counts_cs10 = ಅಸತ್ಯ;
+	ತಾರ್ಕಿಕ valid_channel_counts_cs11 = ಅಸತ್ಯ;
+	uint32_t cs10_channel_ಎಣಿಕೆ = 0;
+	uint32_t cs11_channel_ಎಣಿಕೆ = 0;
+	ತಾರ್ಕಿಕ found_channels_end = ಅಸತ್ಯ;
 
 	// Count of allowed bad frames
-	static constexpr uint16_t bad_samples_allowance = 5;
-	static constexpr uint16_t minimum_channel_count = 5;
-	static constexpr uint16_t minimum_channel_seen_count = 4;
+	ಸ್ಥಿರ constexpr uint16_t bad_samples_allowance = 5;
+	ಸ್ಥಿರ constexpr uint16_t minimum_channel_ಎಣಿಕೆ = 5;
+	ಸ್ಥಿರ constexpr uint16_t minimum_channel_seen_ಎಣಿಕೆ = 4;
 
 	// Check for continous channels in 10bit decoding
-	found_channels_end = false;
+	found_channels_end = ಅಸತ್ಯ;
 
-	for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
+	ಪ್ರತಿ (unsigned i = 0; i < DSM_MAX_CHANNEL_ಎಣಿಕೆ; i++) {
 		// This bit is set
-		if (cs10 & (1 << i)) {
-			if (found_channels_end) {
+		ಯದಿ (cs10 & (1 << i)) {
+			ಯದಿ (found_channels_end) {
 				// Channel gap found
-				cs10_channel_gap_found = true;
-				break;
+				cs10_channel_gap_found = ಸತ್ಯ;
+				ಭಙ್ಗ;
 			}
 
-		} else {
-			if (!found_channels_end) {
-				cs10_channel_count = i;
+		} ಅನ್ಯಥಾ {
+			ಯದಿ (!found_channels_end) {
+				cs10_channel_ಎಣಿಕೆ = i;
 			}
 
-			found_channels_end = true;
+			found_channels_end = ಸತ್ಯ;
 		}
 	}
 
 	// Check for continous channels in 11bit decoding
-	found_channels_end = false;
+	found_channels_end = ಅಸತ್ಯ;
 
-	for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
+	ಪ್ರತಿ (unsigned i = 0; i < DSM_MAX_CHANNEL_ಎಣಿಕೆ; i++) {
 		// This bit is set
-		if (cs11 & (1 << i)) {
-			if (found_channels_end) {
+		ಯದಿ (cs11 & (1 << i)) {
+			ಯದಿ (found_channels_end) {
 				// Channel gap found
-				cs11_channel_gap_found = true;
-				break;
+				cs11_channel_gap_found = ಸತ್ಯ;
+				ಭಙ್ಗ;
 			}
 
-		} else {
-			if (!found_channels_end) {
-				cs11_channel_count = i;
+		} ಅನ್ಯಥಾ {
+			ಯದಿ (!found_channels_end) {
+				cs11_channel_ಎಣಿಕೆ = i;
 			}
 
-			found_channels_end = true;
+			found_channels_end = ಸತ್ಯ;
 		}
 	}
 
 	// Check channel seen counts C10
-	if (cs10_channel_count && !cs10_channel_gap_found) {
-		valid_channel_counts_cs10 = true;
+	ಯದಿ (cs10_channel_ಎಣಿಕೆ && !cs10_channel_gap_found) {
+		valid_channel_counts_cs10 = ಸತ್ಯ;
 
-		for (unsigned i = 0; i < ((cs10_channel_count > 12) ? 12 : cs10_channel_count); i++) {
-			if (seen_channels_count_cs10[i] < minimum_channel_seen_count) {
-				valid_channel_counts_cs10 = false;
-				break;
+		ಪ್ರತಿ (unsigned i = 0; i < ((cs10_channel_ಎಣಿಕೆ > 12) ? 12 : cs10_channel_ಎಣಿಕೆ); i++) {
+			ಯದಿ (seen_channels_ಎಣಿಕೆ_cs10[i] < minimum_channel_seen_ಎಣಿಕೆ) {
+				valid_channel_counts_cs10 = ಅಸತ್ಯ;
+				ಭಙ್ಗ;
 			}
 
 		}
 	}
 
 	// Check channel seen counts C11
-	if (cs11_channel_count && !cs11_channel_gap_found) {
-		valid_channel_counts_cs11 = true;
+	ಯದಿ (cs11_channel_ಎಣಿಕೆ && !cs11_channel_gap_found) {
+		valid_channel_counts_cs11 = ಸತ್ಯ;
 
-		for (unsigned i = 0; i < ((cs11_channel_count > 12) ? 12 : cs11_channel_count); i++) {
-			if (seen_channels_count_cs11[i] < minimum_channel_seen_count) {
-				valid_channel_counts_cs11 = false;
-				break;
+		ಪ್ರತಿ (unsigned i = 0; i < ((cs11_channel_ಎಣಿಕೆ > 12) ? 12 : cs11_channel_ಎಣಿಕೆ); i++) {
+			ಯದಿ (seen_channels_ಎಣಿಕೆ_cs11[i] < minimum_channel_seen_ಎಣಿಕೆ) {
+				valid_channel_counts_cs11 = ಅಸತ್ಯ;
+				ಭಙ್ಗ;
 			}
 
 		}
 	}
 
 #ifdef DSM_DEBUG
-	printf("DSM guess: CS10 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs10_frame_count,
-	       cs10_channel_gap_found, cs10_channel_count, valid_channel_counts_cs10);
-	printf("DSM guess: CS11 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs11_frame_count,
-	       cs11_channel_gap_found, cs11_channel_count, valid_channel_counts_cs11);
+	printf("DSM guess: CS10 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs10_frame_ಎಣಿಕೆ,
+	       cs10_channel_gap_found, cs10_channel_ಎಣಿಕೆ, valid_channel_counts_cs10);
+	printf("DSM guess: CS11 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs11_frame_ಎಣಿಕೆ,
+	       cs11_channel_gap_found, cs11_channel_ಎಣಿಕೆ, valid_channel_counts_cs11);
 #endif
 
-	if (good_cs11_frame_count > samples - bad_samples_allowance && !cs11_channel_gap_found
-	    && cs11_channel_count >= minimum_channel_count && valid_channel_counts_cs11) {
+	ಯದಿ (good_cs11_frame_ಎಣಿಕೆ > samples - bad_samples_allowance && !cs11_channel_gap_found
+	    && cs11_channel_ಎಣಿಕೆ >= minimum_channel_ಎಣಿಕೆ && valid_channel_counts_cs11) {
 #ifdef DSM_DEBUG
 		printf("DSM guess: CS11 guessed!\n");
 #endif
-		dsm_chan_count = cs11_channel_count;
+		dsm_chan_ಎಣಿಕೆ = cs11_channel_ಎಣಿಕೆ;
 		dsm_channel_shift = 11;
-		return true;
+		ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 	}
 
-	if (good_cs10_frame_count > samples - bad_samples_allowance && !cs10_channel_gap_found
-	    && cs10_channel_count >= minimum_channel_count && valid_channel_counts_cs10) {
+	ಯದಿ (good_cs10_frame_ಎಣಿಕೆ > samples - bad_samples_allowance && !cs10_channel_gap_found
+	    && cs10_channel_ಎಣಿಕೆ >= minimum_channel_ಎಣಿಕೆ && valid_channel_counts_cs10) {
 #ifdef DSM_DEBUG
 		printf("DSM guess: CS10 guessed!\n");
 #endif
-		dsm_chan_count = cs10_channel_count;
+		dsm_chan_ಎಣಿಕೆ = cs10_channel_ಎಣಿಕೆ;
 		dsm_channel_shift = 10;
-		return true;
+		ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 	}
 
 	/* call ourselves to reset our state ... we have to try again */
 #ifdef DSM_DEBUG
 	printf("DSM: format detect fail\n");
 #endif
-	dsm_guess_format(true);
-	return false;
+	dsm_guess_format(ಸತ್ಯ);
+	ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 }
 
-int dsm_config(int fd)
+ಪೂರ್ಣಾಙ್ಕ dsm_config(ಪೂರ್ಣಾಙ್ಕ fd)
 {
 #ifdef SPEKTRUM_POWER_CONFIG
 	// Enable power controls for Spektrum receiver
@@ -441,14 +441,14 @@ int dsm_config(int fd)
 #endif
 #ifdef SPEKTRUM_POWER
 	// enable power on DSM connector
-	SPEKTRUM_POWER(true);
+	SPEKTRUM_POWER(ಸತ್ಯ);
 #endif
 
-	int ret = -1;
+	ಪೂರ್ಣಾಙ್ಕ ret = -1;
 
-	if (fd >= 0) {
+	ಯದಿ (fd >= 0) {
 
-		struct termios t;
+		ಸಂರಚನಾ termios t;
 
 		/* 115200bps, no parity, one stop bit */
 		tcgetattr(fd, &t);
@@ -457,33 +457,33 @@ int dsm_config(int fd)
 		tcsetattr(fd, TCSANOW, &t);
 
 		/* initialise the decoder */
-		dsm_partial_frame_count = 0;
+		dsm_partial_frame_ಎಣಿಕೆ = 0;
 		dsm_last_rx_time = hrt_absolute_time();
 
 		/* reset the format detector */
-		dsm_guess_format(true);
+		dsm_guess_format(ಸತ್ಯ);
 
 		ret = 0;
 	}
 
-	return ret;
+	ಪ್ರತ್ಯಾಗಮ ret;
 }
 
-void dsm_proto_init()
+ಶೂನ್ಯ dsm_proto_init()
 {
 	dsm_channel_shift = 0;
 	dsm_frame_drops = 0;
-	dsm_chan_count = 0;
+	dsm_chan_ಎಣಿಕೆ = 0;
 
 	dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 
-	for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
+	ಪ್ರತಿ (unsigned i = 0; i < DSM_MAX_CHANNEL_ಎಣಿಕೆ; i++) {
 		channel_buffer[i].last_seen = 0;
 		channel_buffer[i].value = 0;
 	}
 
 	/* reset the format detector */
-	dsm_guess_format(true);
+	dsm_guess_format(ಸತ್ಯ);
 }
 
 /**
@@ -493,99 +493,99 @@ void dsm_proto_init()
  *
  * @param[in] device Device name of DSM UART
  */
-int dsm_init(const char *device)
+ಪೂರ್ಣಾಙ್ಕ dsm_init(ಧ್ರುವ ವರ್ಣ *device)
 {
-	if (dsm_fd < 0) {
+	ಯದಿ (dsm_fd < 0) {
 		dsm_fd = open(device, O_RDWR | O_NONBLOCK);
 	}
 
 	dsm_proto_init();
 
-	int ret = dsm_config(dsm_fd);
+	ಪೂರ್ಣಾಙ್ಕ ret = dsm_config(dsm_fd);
 
-	if (!ret) {
-		return dsm_fd;
+	ಯದಿ (!ret) {
+		ಪ್ರತ್ಯಾಗಮ dsm_fd;
 
-	} else {
-		return -1;
+	} ಅನ್ಯಥಾ {
+		ಪ್ರತ್ಯಾಗಮ -1;
 	}
 }
 
-void dsm_deinit()
+ಶೂನ್ಯ dsm_deinit()
 {
 #ifdef SPEKTRUM_POWER_PASSIVE
 	// Turn power controls to passive
 	SPEKTRUM_POWER_PASSIVE();
 #endif
 
-	if (dsm_fd >= 0) {
+	ಯದಿ (dsm_fd >= 0) {
 		close(dsm_fd);
 	}
 
 	dsm_fd = -1;
 }
 
-#if defined(SPEKTRUM_POWER)
+#ಯದಿ defined(SPEKTRUM_POWER)
 /**
  * Handle DSM satellite receiver bind mode handler
  *
  * @param[in] cmd commands - dsm_bind_power_down, dsm_bind_power_up, dsm_bind_set_rx_out, dsm_bind_send_pulses, dsm_bind_reinit_uart
  * @param[in] pulses Number of pulses for dsm_bind_send_pulses command
  */
-void dsm_bind(uint16_t cmd, int pulses)
+ಶೂನ್ಯ dsm_bind(uint16_t cmd, ಪೂರ್ಣಾಙ್ಕ pulses)
 {
-	if (dsm_fd < 0) {
-		return;
+	ಯದಿ (dsm_fd < 0) {
+		ಪ್ರತ್ಯಾಗಮ;
 	}
 
-	switch (cmd) {
-	case DSM_CMD_BIND_POWER_DOWN:
+	ವಿಕಲ್ಪ (cmd) {
+	ಪಕ್ಷ DSM_CMD_BIND_POWER_DOWN:
 		// power down DSM satellite
-#if defined(DSM_DEBUG)
+#ಯದಿ defined(DSM_DEBUG)
 		printf("DSM: DSM_CMD_BIND_POWER_DOWN\n");
 #endif
-		SPEKTRUM_POWER(false);
-		break;
+		SPEKTRUM_POWER(ಅಸತ್ಯ);
+		ಭಙ್ಗ;
 
-	case DSM_CMD_BIND_POWER_UP:
+	ಪಕ್ಷ DSM_CMD_BIND_POWER_UP:
 		// power up DSM satellite
-#if defined(DSM_DEBUG)
+#ಯದಿ defined(DSM_DEBUG)
 		printf("DSM: DSM_CMD_BIND_POWER_UP\n");
 #endif
-		SPEKTRUM_POWER(true);
-		dsm_guess_format(true);
-		break;
+		SPEKTRUM_POWER(ಸತ್ಯ);
+		dsm_guess_format(ಸತ್ಯ);
+		ಭಙ್ಗ;
 
-	case DSM_CMD_BIND_SET_RX_OUT:
+	ಪಕ್ಷ DSM_CMD_BIND_SET_RX_OUT:
 		// Set UART RX pin to active output mode
-#if defined(DSM_DEBUG)
+#ಯದಿ defined(DSM_DEBUG)
 		printf("DSM: DSM_CMD_BIND_SET_RX_OUT\n");
 #endif
 		SPEKTRUM_RX_AS_GPIO_OUTPUT();
-		break;
+		ಭಙ್ಗ;
 
-	case DSM_CMD_BIND_SEND_PULSES:
+	ಪಕ್ಷ DSM_CMD_BIND_SEND_PULSES:
 		// Pulse RX pin a number of times
-#if defined(DSM_DEBUG)
+#ಯದಿ defined(DSM_DEBUG)
 		printf("DSM: DSM_CMD_BIND_SEND_PULSES\n");
 #endif
 
-		for (int i = 0; i < pulses; i++) {
+		ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ i = 0; i < pulses; i++) {
 			dsm_udelay(120);
-			SPEKTRUM_OUT(false);
+			SPEKTRUM_OUT(ಅಸತ್ಯ);
 			dsm_udelay(120);
-			SPEKTRUM_OUT(true);
+			SPEKTRUM_OUT(ಸತ್ಯ);
 		}
 
-		break;
+		ಭಙ್ಗ;
 
-	case DSM_CMD_BIND_REINIT_UART:
+	ಪಕ್ಷ DSM_CMD_BIND_REINIT_UART:
 		// Restore USART RX pin to RS232 receive mode
-#if defined(DSM_DEBUG)
+#ಯದಿ defined(DSM_DEBUG)
 		printf("DSM: DSM_CMD_BIND_REINIT_UART\n");
 #endif
 		SPEKTRUM_RX_AS_UART();
-		break;
+		ಭಙ್ಗ;
 
 	}
 }
@@ -598,18 +598,18 @@ void dsm_bind(uint16_t cmd, int pulses)
  * @param[out] num_values pointer to number of raw channel values returned
  * @return true=DSM frame successfully decoded, false=no update
  */
-bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count,
+ತಾರ್ಕಿಕ dsm_decode(hrt_abstime frame_time, ತಾರ್ಕಿಕ *dsm_11_bit, unsigned channel_ಎಣಿಕೆ,
 		int8_t *rssi_percent)
 {
 	// If we haven't seen a new frame recently or haven't guessed the DSM encoding, try to guess
-	if (((frame_time - dsm_last_frame_time) > 1000000) && (dsm_channel_shift != 0)) {
-		dsm_guess_format(true);
+	ಯದಿ (((frame_time - dsm_last_frame_time) > 1000000) && (dsm_channel_shift != 0)) {
+		dsm_guess_format(ಸತ್ಯ);
 	}
 
 	/* if we don't know the dsm_frame format, update the guessing state machine */
-	if (dsm_channel_shift == 0) {
-		if (!dsm_guess_format(false)) {
-			return false;
+	ಯದಿ (dsm_channel_shift == 0) {
+		ಯದಿ (!dsm_guess_format(ಅಸತ್ಯ)) {
+			ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 		}
 
 		// We have our first packet so we're in sync
@@ -624,22 +624,22 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
 	 */
 
 	// The SPM4649T with firmware version 1.1RC9 or later will have RSSI in place of fades
-	if (rssi_percent) {
-		if (((int8_t *)dsm_frame)[0] < 0) {
+	ಯದಿ (rssi_percent) {
+		ಯದಿ (((int8_t *)dsm_frame)[0] < 0) {
 			/*
 			 * RSSI is a signed integer between -42dBm and -92dBm
 			 * If signal is lost, the value is -128
 			 */
 			int8_t dbm = (int8_t)dsm_frame[0];
 
-			if (dbm == -128) {
+			ಯದಿ (dbm == -128) {
 				*rssi_percent = 0;
 
-			} else {
+			} ಅನ್ಯಥಾ {
 				*rssi_percent = spek_dbm_to_percent(dbm);
 			}
 
-		} else {
+		} ಅನ್ಯಥಾ {
 			/* if we don't know the rssi, anything over 100 will invalidate it */
 			*rssi_percent = 127;
 		}
@@ -653,9 +653,9 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
 	 * seven channels are being transmitted.
 	 */
 
-	px4::Bitset<DSM_MAX_CHANNEL_COUNT> channels_found;
+	px4::Bitset<DSM_MAX_CHANNEL_ಎಣಿಕೆ> channels_found;
 
-	for (unsigned i = 0; i < DSM_FRAME_CHANNELS; i++) {
+	ಪ್ರತಿ (unsigned i = 0; i < DSM_FRAME_CHANNELS; i++) {
 
 		uint8_t *dp = &dsm_frame[2 + (2 * i)];
 		uint16_t raw = (dp[0] << 8) | dp[1];
@@ -663,32 +663,32 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
 		uint8_t channel = 0;
 		uint16_t value = 0;
 
-		if (!dsm_decode_channel(raw, dsm_channel_shift, channel, value)) {
+		ಯದಿ (!dsm_decode_channel(raw, dsm_channel_shift, channel, value)) {
 			dsm_frame_drops++;
-			return false;
+			ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 		}
 
-		if (channel == CHANNEL_UNUSED) {
-			continue;
+		ಯದಿ (channel == CHANNEL_UNUSED) {
+			ಅನುವರ್ತ;
 		}
 
 		// abort if channel already found, no duplicate channels per DSM frame
-		if (channels_found[channel]) {
+		ಯದಿ (channels_found[channel]) {
 			PX4_DEBUG("duplicate channel %d\n\n", channel);
-			dsm_guess_format(true);
+			dsm_guess_format(ಸತ್ಯ);
 			dsm_frame_drops++;
-			return false;
+			ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 
-		} else {
+		} ಅನ್ಯಥಾ {
 			channels_found.set(channel);
 		}
 
 		/* reset bit guessing state machine if the channel index is out of bounds */
-		if (channel >= DSM_MAX_CHANNEL_COUNT || channel >= channel_count) {
-			PX4_DEBUG("channel %d > %d (DSM_MAX_CHANNEL_COUNT)", channel, DSM_MAX_CHANNEL_COUNT);
-			dsm_guess_format(true);
+		ಯದಿ (channel >= DSM_MAX_CHANNEL_ಎಣಿಕೆ || channel >= channel_ಎಣಿಕೆ) {
+			PX4_DEBUG("channel %d > %d (DSM_MAX_CHANNEL_COUNT)", channel, DSM_MAX_CHANNEL_ಎಣಿಕೆ);
+			dsm_guess_format(ಸತ್ಯ);
 			dsm_frame_drops++;
-			return false;
+			ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 		}
 
 		/*
@@ -698,20 +698,20 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
 		 * Specifically, the first four channels in rc_channel_data are roll, pitch, thrust, yaw,
 		 * but the first four channels from the DSM receiver are thrust, roll, pitch, yaw.
 		 */
-		switch (channel) {
-		case 0:
+		ವಿಕಲ್ಪ (channel) {
+		ಪಕ್ಷ 0:
 			channel = 2; // Spektrum Throttle (0) -> 2
-			break;
+			ಭಙ್ಗ;
 
-		case 1:
+		ಪಕ್ಷ 1:
 			channel = 0; // Spektrum Aileron (1) -> 0
-			break;
+			ಭಙ್ಗ;
 
-		case 2:
+		ಪಕ್ಷ 2:
 			channel = 1; // Spektrum Elevator (2) -> 1
 
-		default:
-			break;
+		ಸ್ವಭಾವ:
+			ಭಙ್ಗ;
 		}
 
 		channel_buffer[channel].value = value;
@@ -728,7 +728,7 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
 	printf("PARSED PACKET\n");
 #endif
 
-	return true;
+	ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 }
 
 /**
@@ -755,8 +755,8 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
  * @param[in] max_values maximum number of channels the receiver can process
  * @return true=decoded raw channel values updated, false=no update
  */
-bool dsm_input(int fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit, uint8_t *n_bytes, uint8_t **bytes,
-	       int8_t *rssi, unsigned *frame_drops, unsigned max_values)
+ತಾರ್ಕಿಕ dsm_ಒಳಹರಿವು(ಪೂರ್ಣಾಙ್ಕ fd, uint16_t *ಮೌಲ್ಯಗಳು_2, uint16_t *ಅಂಕೆ_ಮೌಲ್ಯಗಳು, ತಾರ್ಕಿಕ *dsm_11_bit, uint8_t *n_bytes, uint8_t **bytes,
+	       int8_t *rssi, unsigned *frame_drops, unsigned max_ಮೌಲ್ಯಗಳು)
 {
 	/*
 	 * The DSMX/2 protocol doesn't provide reliable framing,
@@ -770,20 +770,20 @@ bool dsm_input(int fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit,
 	 * provides a degree of protection. Of course, it would be better
 	 * if we didn't drop bytes...
 	 */
-	const hrt_abstime now = hrt_absolute_time();
+	ಧ್ರುವ hrt_abstime now = hrt_absolute_time();
 
 	/*
 	 * Fetch bytes, but no more than we would need to complete
 	 * a complete frame.
 	 */
 
-	int ret = read(fd, &dsm_buf[0], sizeof(dsm_buf) / sizeof(dsm_buf[0]));
+	ಪೂರ್ಣಾಙ್ಕ ret = ಪಠ(fd, &dsm_buf[0], ಪರಿಮಾಣ(dsm_buf) / ಪರಿಮಾಣ(dsm_buf[0]));
 
 	/* if the read failed for any reason, just give up here */
-	if (ret < 1) {
-		return false;
+	ಯದಿ (ret < 1) {
+		ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 
-	} else {
+	} ಅನ್ಯಥಾ {
 		*n_bytes = ret;
 		*bytes = &dsm_buf[0];
 	}
@@ -791,32 +791,32 @@ bool dsm_input(int fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit,
 	/*
 	 * Try to decode something with what we got
 	 */
-	return dsm_parse(now, &dsm_buf[0], ret, values, num_values, dsm_11_bit, &dsm_frame_drops, rssi, max_values);
+	ಪ್ರತ್ಯಾಗಮ dsm_parse(now, &dsm_buf[0], ret, ಮೌಲ್ಯಗಳು_2, ಅಂಕೆ_ಮೌಲ್ಯಗಳು, dsm_11_bit, &dsm_frame_drops, rssi, max_ಮೌಲ್ಯಗಳು);
 }
 
-bool dsm_parse(const uint64_t now, const uint8_t *frame, const unsigned len, uint16_t *values,
-	       uint16_t *num_values, bool *dsm_11_bit, unsigned *frame_drops, int8_t *rssi_percent, uint16_t max_channels)
+ತಾರ್ಕಿಕ dsm_parse(ಧ್ರುವ uint64_t now, ಧ್ರುವ uint8_t *frame, ಧ್ರುವ unsigned len, uint16_t *ಮೌಲ್ಯಗಳು_2,
+	       uint16_t *ಅಂಕೆ_ಮೌಲ್ಯಗಳು, ತಾರ್ಕಿಕ *dsm_11_bit, unsigned *frame_drops, int8_t *rssi_percent, uint16_t max_channels)
 {
 	/* this is set by the decoding state machine and will default to false
 	 * once everything that was decodable has been decoded.
 	 */
-	bool channel_data_available = false;
-	unsigned channel_output_count;
+	ತಾರ್ಕಿಕ channel_data_available = ಅಸತ್ಯ;
+	unsigned channel_output_ಎಣಿಕೆ;
 
 	/* keep decoding until we have consumed the buffer */
-	for (unsigned d = 0; d < len; d++) {
+	ಪ್ರತಿ (unsigned d = 0; d < len; d++) {
 
 		/* overflow check */
-		if (dsm_partial_frame_count == sizeof(dsm_frame) / sizeof(dsm_frame[0])) {
-			dsm_partial_frame_count = 0;
+		ಯದಿ (dsm_partial_frame_ಎಣಿಕೆ == ಪರಿಮಾಣ(dsm_frame) / ಪರಿಮಾಣ(dsm_frame[0])) {
+			dsm_partial_frame_ಎಣಿಕೆ = 0;
 			dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 #ifdef DSM_DEBUG
 			printf("DSM: RESET (BUF LIM)\n");
 #endif
 		}
 
-		if (dsm_partial_frame_count == DSM_FRAME_SIZE) {
-			dsm_partial_frame_count = 0;
+		ಯದಿ (dsm_partial_frame_ಎಣಿಕೆ == DSM_FRAME_SIZE) {
+			dsm_partial_frame_ಎಣಿಕೆ = 0;
 			dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 #ifdef DSM_DEBUG
 			printf("DSM: RESET (PACKET LIM)\n");
@@ -824,104 +824,104 @@ bool dsm_parse(const uint64_t now, const uint8_t *frame, const unsigned len, uin
 		}
 
 #ifdef DSM_DEBUG
-#if 0
+#ಯದಿ 0
 		printf("dsm state: %s%s, count: %d, val: %02x\n",
 		       (dsm_decode_state == DSM_DECODE_STATE_DESYNC) ? "DSM_DECODE_STATE_DESYNC" : "",
 		       (dsm_decode_state == DSM_DECODE_STATE_SYNC) ? "DSM_DECODE_STATE_SYNC" : "",
-		       dsm_partial_frame_count,
+		       dsm_partial_frame_ಎಣಿಕೆ,
 		       (unsigned)frame[d]);
 #endif
 #endif
 
-		switch (dsm_decode_state) {
-		case DSM_DECODE_STATE_DESYNC:
+		ವಿಕಲ್ಪ (dsm_decode_state) {
+		ಪಕ್ಷ DSM_DECODE_STATE_DESYNC:
 
 			/* we are de-synced and only interested in the frame marker */
-			if ((now - dsm_last_rx_time) > 5000) {
+			ಯದಿ ((now - dsm_last_rx_time) > 5000) {
 				dsm_decode_state = DSM_DECODE_STATE_SYNC;
-				dsm_partial_frame_count = 0;
-				dsm_frame[dsm_partial_frame_count++] = frame[d];
+				dsm_partial_frame_ಎಣಿಕೆ = 0;
+				dsm_frame[dsm_partial_frame_ಎಣಿಕೆ++] = frame[d];
 			}
 
-			break;
+			ಭಙ್ಗ;
 
-		case DSM_DECODE_STATE_SYNC: {
-				dsm_frame[dsm_partial_frame_count++] = frame[d];
+		ಪಕ್ಷ DSM_DECODE_STATE_SYNC: {
+				dsm_frame[dsm_partial_frame_ಎಣಿಕೆ++] = frame[d];
 
 				/* decode whatever we got and expect */
-				if (dsm_partial_frame_count < DSM_FRAME_SIZE) {
-					break;
+				ಯದಿ (dsm_partial_frame_ಎಣಿಕೆ < DSM_FRAME_SIZE) {
+					ಭಙ್ಗ;
 				}
 
 				// We've collected a full frame, parse it
-				channel_data_available = dsm_decode(now, dsm_11_bit, dsm_chan_count, rssi_percent);
+				channel_data_available = dsm_decode(now, dsm_11_bit, dsm_chan_ಎಣಿಕೆ, rssi_percent);
 
 				// Frame consumed, reset the buffer count
-				dsm_partial_frame_count = 0;
+				dsm_partial_frame_ಎಣಿಕೆ = 0;
 
 				/* if decoding failed, set proto to desync */
-				if (!channel_data_available) {
+				ಯದಿ (!channel_data_available) {
 					dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 				}
 			}
-			break;
+			ಭಙ್ಗ;
 
-		default:
+		ಸ್ವಭಾವ:
 #ifdef DSM_DEBUG
 			printf("UNKNOWN PROTO STATE");
 #endif
-			channel_data_available = false;
+			channel_data_available = ಅಸತ್ಯ;
 		}
 	}
 
-	if (frame_drops) {
+	ಯದಿ (frame_drops) {
 		*frame_drops = dsm_frame_drops;
 	}
 
-	if (channel_data_available) {
+	ಯದಿ (channel_data_available) {
 		// Check if any channels have been absent for too long
-		for (unsigned i = 0; i < dsm_chan_count; i++) {
-			if (now - channel_buffer[i].last_seen > 50 * 1000) {
-				return false;
+		ಪ್ರತಿ (unsigned i = 0; i < dsm_chan_ಎಣಿಕೆ; i++) {
+			ಯದಿ (now - channel_buffer[i].last_seen > 50 * 1000) {
+				ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 			}
 		}
 
 		// Overflow protect
-		if (max_channels >= DSM_MAX_CHANNEL_COUNT) {
-			max_channels = DSM_MAX_CHANNEL_COUNT;
+		ಯದಿ (max_channels >= DSM_MAX_CHANNEL_ಎಣಿಕೆ) {
+			max_channels = DSM_MAX_CHANNEL_ಎಣಿಕೆ;
 		}
 
 		// Cap returned channels to max_channels if we've seen more
-		if (dsm_chan_count > max_channels) {
-			channel_output_count = max_channels;
+		ಯದಿ (dsm_chan_ಎಣಿಕೆ > max_channels) {
+			channel_output_ಎಣಿಕೆ = max_channels;
 
-		} else {
-			channel_output_count = dsm_chan_count;
+		} ಅನ್ಯಥಾ {
+			channel_output_ಎಣಿಕೆ = dsm_chan_ಎಣಿಕೆ;
 		}
 
-		*num_values = channel_output_count;
+		*ಅಂಕೆ_ಮೌಲ್ಯಗಳು = channel_output_ಎಣಿಕೆ;
 
 		// Copy the full list of collected channels
-		for (unsigned i = 0; i < channel_output_count; i++) {
+		ಪ್ರತಿ (unsigned i = 0; i < channel_output_ಎಣಿಕೆ; i++) {
 			// Channels which do not have a value yet (because their frame has not been seen yet)
 			// will have a zero. If we come across a blank channel, keep storing values, but we
 			// won't return that we have a valid frame just yet.
-			if (channel_buffer[i].value) {
-				values[i] = channel_buffer[i].value;
+			ಯದಿ (channel_buffer[i].value) {
+				ಮೌಲ್ಯಗಳು_2[i] = channel_buffer[i].value;
 
-			} else {
-				channel_data_available = false;
+			} ಅನ್ಯಥಾ {
+				channel_data_available = ಅಸತ್ಯ;
 			}
 		}
 	}
 
 #ifdef DSM_DEBUG
 
-	if (channel_data_available) {
-		printf("frame drops: %u, chan #: %u\n", dsm_frame_drops, dsm_chan_count);
+	ಯದಿ (channel_data_available) {
+		printf("frame drops: %u, chan #: %u\n", dsm_frame_drops, dsm_chan_ಎಣಿಕೆ);
 
-		for (unsigned i = 0; i < dsm_chan_count; i++) {
-			printf("dsm_decode: #CH %02u: %u\n", i + 1, values[i]);
+		ಪ್ರತಿ (unsigned i = 0; i < dsm_chan_ಎಣಿಕೆ; i++) {
+			printf("dsm_decode: #CH %02u: %u\n", i + 1, ಮೌಲ್ಯಗಳು_2[i]);
 		}
 	}
 
@@ -930,5 +930,5 @@ bool dsm_parse(const uint64_t now, const uint8_t *frame, const unsigned len, uin
 	dsm_last_rx_time = now;
 
 	/* return false as default */
-	return channel_data_available;
+	ಪ್ರತ್ಯಾಗಮ channel_data_available;
 }

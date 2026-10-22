@@ -31,84 +31,84 @@
  *
  ****************************************************************************/
 
-#include "dijkstra.h"
+#ಅನ್ತರ್ಭಾವ "dijkstra.h"
 
-namespace dijkstra
+ನಾಮಾಕಾಶ dijkstra
 {
 
-bool solveBackward(const int num_nodes, const int goal, const float *cost, const bool symmetric,
-		   float *best_cost, int *next_node, bool *visited)
+ತಾರ್ಕಿಕ solveBackward(ಧ್ರುವ ಪೂರ್ಣಾಙ್ಕ ಅಂಕೆ_nodes, ಧ್ರುವ ಪೂರ್ಣಾಙ್ಕ goal, ಧ್ರುವ ಭಿನ್ನ *cost, ಧ್ರುವ ತಾರ್ಕಿಕ symmetric,
+		   ಭಿನ್ನ *best_cost, ಪೂರ್ಣಾಙ್ಕ *next_ಗಂಟು, ತಾರ್ಕಿಕ *visited)
 {
-	if (num_nodes <= 0 || goal < 0 || goal >= num_nodes
-	    || cost == nullptr || best_cost == nullptr || next_node == nullptr || visited == nullptr) {
-		return false;
+	ಯದಿ (ಅಂಕೆ_nodes <= 0 || goal < 0 || goal >= ಅಂಕೆ_nodes
+	    || cost == nullptr || best_cost == nullptr || next_ಗಂಟು == nullptr || visited == nullptr) {
+		ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 	}
 
-	for (int i = 0; i < num_nodes; ++i) {
+	ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ i = 0; i < ಅಂಕೆ_nodes; ++i) {
 		best_cost[i] = kUnreachable;
-		next_node[i] = -1;
-		visited[i] = false;
+		next_ಗಂಟು[i] = -1;
+		visited[i] = ಅಸತ್ಯ;
 	}
 
 	best_cost[goal] = 0.f;
-	visited[goal] = true;
+	visited[goal] = ಸತ್ಯ;
 
 	// O(N^2) Dijkstra on the reverse graph. Each iteration relaxes incoming edges
 	// v -> u using cost(v, u) and, in the same sweep over v, tracks the smallest
 	// best_cost among still-unvisited nodes — that argmin is the u for the next
 	// iteration. The very first u is `goal` (the only node with best_cost == 0).
-	int u = goal;
-	float u_cost = 0.f;
+	ಪೂರ್ಣಾಙ್ಕ u = goal;
+	ಭಿನ್ನ u_cost = 0.f;
 
-	for (int iter = 0; iter < num_nodes - 1; ++iter) {
-		int next_u = -1;
-		float next_cost = kUnreachable;
+	ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ iter = 0; iter < ಅಂಕೆ_nodes - 1; ++iter) {
+		ಪೂರ್ಣಾಙ್ಕ next_u = -1;
+		ಭಿನ್ನ next_cost = kUnreachable;
 
-		for (int v = 0; v < num_nodes; ++v) {
-			if (visited[v]) {
-				continue;
+		ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ v = 0; v < ಅಂಕೆ_nodes; ++v) {
+			ಯದಿ (visited[v]) {
+				ಅನುವರ್ತ;
 			}
 
 			// Edge v -> u. For asymmetric layout, look up the (v, u) entry directly.
 			// For symmetric packed upper-triangular: index by the unordered pair {v, u}.
-			float edge;
+			ಭಿನ್ನ edge;
 
-			if (symmetric) {
-				edge = cost[symmetricPairIndex(v, u, num_nodes)];
+			ಯದಿ (symmetric) {
+				edge = cost[symmetricPairIndex(v, u, ಅಂಕೆ_nodes)];
 
-			} else {
-				edge = cost[v * num_nodes + u];
+			} ಅನ್ಯಥಾ {
+				edge = cost[v * ಅಂಕೆ_nodes + u];
 			}
 
 			// Treat +INFINITY and NaN as missing edges. `edge < kUnreachable` is false for
 			// both because NaN is unordered and INFINITY < INFINITY is false.
-			if (edge < kUnreachable) {
-				const float candidate = u_cost + edge;
+			ಯದಿ (edge < kUnreachable) {
+				ಧ್ರುವ ಭಿನ್ನ candidate = u_cost + edge;
 
-				if (candidate < best_cost[v]) {
+				ಯದಿ (candidate < best_cost[v]) {
 					best_cost[v] = candidate;
-					next_node[v] = u;
+					next_ಗಂಟು[v] = u;
 				}
 			}
 
 			// Same sweep: track argmin of best_cost over unvisited nodes for the next iter.
-			if (best_cost[v] < next_cost) {
+			ಯದಿ (best_cost[v] < next_cost) {
 				next_cost = best_cost[v];
 				next_u = v;
 			}
 		}
 
-		if (next_u < 0) {
+		ಯದಿ (next_u < 0) {
 			// No unvisited node is reachable; remaining nodes stay at kUnreachable.
-			break;
+			ಭಙ್ಗ;
 		}
 
-		visited[next_u] = true;
+		visited[next_u] = ಸತ್ಯ;
 		u = next_u;
 		u_cost = next_cost;
 	}
 
-	return true;
+	ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 }
 
 } // namespace dijkstra

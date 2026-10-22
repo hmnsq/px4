@@ -41,34 +41,34 @@
 
 #pragma once
 
-#include <mathlib/mathlib.h>
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/mathlib.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
 template<typename Type>
-class SlewRate
+ವರ್ಗ SlewRate
 {
-public:
-	SlewRate() = default;
-	SlewRate(Type initial_value) { setForcedValue(initial_value); }
-	~SlewRate() = default;
+ಸಾರ್ವಜನಿಕ:
+	SlewRate() = ಸ್ವಭಾವ;
+	SlewRate(Type initial_ಮೌಲ್ಯ) { set_Forced_ಮೌಲ್ಯ(initial_ಮೌಲ್ಯ); }
+	~SlewRate() = ಸ್ವಭಾವ;
 
 	/**
 	 * Set maximum rate of change for the value
 	 * @param slew_rate maximum rate of change
 	 */
-	void setSlewRate(const Type slew_rate) { _slew_rate = slew_rate; }
+	ಶೂನ್ಯ setSlewRate(ಧ್ರುವ Type slew_rate) { _slew_rate = slew_rate; }
 
 	/**
 	 * Set value ignoring slew rate for initialization purpose
 	 * @param value new applied value
 	 */
-	void setForcedValue(const Type value) { _value = value; }
+	ಶೂನ್ಯ set_Forced_ಮೌಲ್ಯ(ಧ್ರುವ Type value) { ಮೌಲ್ಯ_2 = value; }
 
 	/**
 	 * Get value from last update of the slew rate
 	 * @return current value the slew rate is at
 	 */
-	Type getState() const { return _value; }
+	Type getState() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ ಮೌಲ್ಯ_2; }
 
 	/**
 	 * Update slewrate
@@ -76,17 +76,17 @@ public:
 	 * @param deltatime time in seconds since last update
 	 * @return actual value that complies with the slew rate
 	 */
-	Type update(const Type new_value, const float deltatime)
+	Type update(ಧ್ರುವ Type new_ಮೌಲ್ಯ, ಧ್ರುವ ಭಿನ್ನ deltatime)
 	{
 		// Limit the rate of change of the value
-		const Type dvalue_desired = new_value - _value;
-		const Type dvalue_max = _slew_rate * deltatime;
-		const Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
-		_value += dvalue;
-		return _value;
+		ಧ್ರುವ Type dvalue_desired = new_ಮೌಲ್ಯ - ಮೌಲ್ಯ_2;
+		ಧ್ರುವ Type dvalue_max = _slew_rate * deltatime;
+		ಧ್ರುವ Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
+		ಮೌಲ್ಯ_2 += dvalue;
+		ಪ್ರತ್ಯಾಗಮ ಮೌಲ್ಯ_2;
 	}
 
-protected:
+ರಕ್ಷಿತ:
 	Type _slew_rate{}; ///< maximum rate of change for the value
-	Type _value{}; ///< state to keep last value of the slew rate
+	Type ಮೌಲ್ಯ_2{}; ///< state to keep last value of the slew rate
 };

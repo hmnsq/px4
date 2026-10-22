@@ -31,9 +31,9 @@
  *
  ****************************************************************************/
 
-#include "AirspeedDirectionController.hpp"
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
+#ಅನ್ತರ್ಭಾವ "AirspeedDirectionController.hpp"
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <lib/mathlib/mathlib.h>
 
 using matrix::Vector2f;
 AirspeedDirectionController::AirspeedDirectionController()
@@ -41,24 +41,24 @@ AirspeedDirectionController::AirspeedDirectionController()
 	// Constructor
 }
 
-float AirspeedDirectionController::controlHeading(const float heading_sp, const float heading,
-		const float airspeed) const
+ಭಿನ್ನ AirspeedDirectionController::controlHeading(ಧ್ರುವ ಭಿನ್ನ heading_sp, ಧ್ರುವ ಭಿನ್ನ heading,
+		ಧ್ರುವ ಭಿನ್ನ airspeed) ಧ್ರುವ
 {
 
-	const Vector2f airspeed_vector = Vector2f{cosf(heading), sinf(heading)} * airspeed;
-	const Vector2f airspeed_sp_vector_unit = Vector2f{cosf(heading_sp), sinf(heading_sp)};
+	ಧ್ರುವ Vector2f airspeed_vector = Vector2f{cosf(heading), sinf(heading)} * airspeed;
+	ಧ್ರುವ Vector2f airspeed_sp_vector_unit = Vector2f{cosf(heading_sp), sinf(heading_sp)};
 
-	const float dot_air_vel_err = airspeed_vector.dot(airspeed_sp_vector_unit);
-	const float cross_air_vel_err = airspeed_vector.cross(airspeed_sp_vector_unit);
+	ಧ್ರುವ ಭಿನ್ನ dot_air_vel_err = airspeed_vector.dot(airspeed_sp_vector_unit);
+	ಧ್ರುವ ಭಿನ್ನ cross_air_vel_err = airspeed_vector.cross(airspeed_sp_vector_unit);
 
-	if (dot_air_vel_err < 0.0f) {
+	ಯದಿ (dot_air_vel_err < 0.0f) {
 		// hold max lateral acceleration command above 90 deg heading error
-		return p_gain_ * ((cross_air_vel_err < 0.0f) ? -airspeed : airspeed);
+		ಪ್ರತ್ಯಾಗಮ p_gain_ * ((cross_air_vel_err < 0.0f) ? -airspeed : airspeed);
 
-	} else {
+	} ಅನ್ಯಥಾ {
 		// airspeed/airspeed_ref is used to scale any incremented airspeed reference back to the current airspeed
 		// for acceleration commands in a "feedback" sense (i.e. at the current vehicle airspeed)
 		// todo use airspeed_ref or adapt comment
-		return p_gain_ * cross_air_vel_err;
+		ಪ್ರತ್ಯಾಗಮ p_gain_ * cross_air_vel_err;
 	}
 }

@@ -1,49 +1,49 @@
-#include <unit_test.h>
+#ಅನ್ತರ್ಭಾವ <unit_test.h>
 
-#include <systemlib/err.h>
+#ಅನ್ತರ್ಭಾವ <systemlib/err.h>
 
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
+#ಅನ್ತರ್ಭಾವ <stdio.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
+#ಅನ್ತರ್ಭಾವ <unistd.h>
 
-#include <drivers/drv_hrt.h>
+#ಅನ್ತರ್ಭಾವ <drivers/drv_hrt.h>
 
 #define DSM_DEBUG
-#include <lib/rc/sbus.h>
-#include <lib/rc/dsm.h>
-#include <lib/rc/st24.h>
-#include <lib/rc/sumd.h>
-#include <lib/rc/crsf.h>
-#include <lib/rc/ghst.hpp>
+#ಅನ್ತರ್ಭಾವ <lib/rc/sbus.h>
+#ಅನ್ತರ್ಭಾವ <lib/rc/dsm.h>
+#ಅನ್ತರ್ಭಾವ <lib/rc/st24.h>
+#ಅನ್ತರ್ಭಾವ <lib/rc/sumd.h>
+#ಅನ್ತರ್ಭಾವ <lib/rc/crsf.h>
+#ಅನ್ತರ್ಭಾವ <lib/rc/ghst.hpp>
 
-#if defined(CONFIG_ARCH_BOARD_PX4_SITL)
+#ಯದಿ defined(CONFIG_ARCH_BOARD_PX4_SITL)
 #define TEST_DATA_PATH "./test_data/"
-#else
-#define TEST_DATA_PATH CONFIG_BOARD_ROOT_PATH
+#ಅನ್ಯಥಾ
+#define TEST_DATA_PATH CONFIG_BOARD_ಬೇರು_PATH
 #endif
 
-extern "C" __EXPORT int rc_tests_main(int argc, char *argv[]);
+ಬಾಹ್ಯ "C" __EXPORT ಪೂರ್ಣಾಙ್ಕ rc_tests_main(ಪೂರ್ಣಾಙ್ಕ argc, ವರ್ಣ *argv[]);
 
-class RCTest : public UnitTest
+ವರ್ಗ RCTest : ಸಾರ್ವಜನಿಕ UnitTest
 {
-public:
-	bool run_tests() override;
+ಸಾರ್ವಜನಿಕ:
+	ತಾರ್ಕಿಕ run_tests() override;
 
-private:
-	bool crsfTest();
-	bool ghstTest();
-	bool dsmTest(const char *filepath, unsigned expected_chancount, unsigned expected_dropcount, unsigned chan0);
-	bool dsmTest10Ch();
-	bool dsmTest16Ch();
-	bool dsmTest22msDSMX16Ch();
-	bool dsmTestOrangeDsmx();
-	bool sbus2Test();
-	bool st24MalformedLengthTest();
-	bool st24Test();
-	bool sumdTest();
+ಗುಪ್ತ:
+	ತಾರ್ಕಿಕ crsfTest();
+	ತಾರ್ಕಿಕ ghstTest();
+	ತಾರ್ಕಿಕ dsmTest(ಧ್ರುವ ವರ್ಣ *filepath, unsigned expected_chancount, unsigned expected_dropcount, unsigned chan0);
+	ತಾರ್ಕಿಕ dsmTest10Ch();
+	ತಾರ್ಕಿಕ dsmTest16Ch();
+	ತಾರ್ಕಿಕ dsmTest22msDSMX16Ch();
+	ತಾರ್ಕಿಕ dsmTestOrangeDsmx();
+	ತಾರ್ಕಿಕ sbus2Test();
+	ತಾರ್ಕಿಕ st24MalformedLengthTest();
+	ತಾರ್ಕಿಕ st24Test();
+	ತಾರ್ಕಿಕ sumdTest();
 };
 
-bool RCTest::run_tests()
+ತಾರ್ಕಿಕ RCTest::run_tests()
 {
 	ut_run_test(crsfTest);
 	ut_run_test(ghstTest);
@@ -56,204 +56,204 @@ bool RCTest::run_tests()
 	ut_run_test(st24Test);
 	ut_run_test(sumdTest);
 
-	return (_tests_failed == 0);
+	ಪ್ರತ್ಯಾಗಮ (_tests_failed == 0);
 }
 
-bool RCTest::crsfTest()
+ತಾರ್ಕಿಕ RCTest::crsfTest()
 {
-	const char *filepath = TEST_DATA_PATH "crsf_rc_channels.txt";
+	ಧ್ರುವ ವರ್ಣ *filepath = TEST_DATA_PATH "crsf_rc_channels.txt";
 
 	FILE *fp = fopen(filepath, "rt");
 
 	ut_test(fp);
 	//PX4_INFO("loading data from: %s", filepath);
 
-	const int line_size = 500;
-	char line[line_size];
-	bool has_decoded_values = false;
-	const int max_channels = 16;
-	uint16_t rc_values[max_channels];
-	uint16_t num_values = 0;
-	int line_counter = 1;
+	ಧ್ರುವ ಪೂರ್ಣಾಙ್ಕ ಸಾಲು_size = 500;
+	ವರ್ಣ ಸಾಲು[ಸಾಲು_size];
+	ತಾರ್ಕಿಕ has_decoded_ಮೌಲ್ಯಗಳು = ಅಸತ್ಯ;
+	ಧ್ರುವ ಪೂರ್ಣಾಙ್ಕ max_channels = 16;
+	uint16_t rc_ಮೌಲ್ಯಗಳು[max_channels];
+	uint16_t ಅಂಕೆ_ಮೌಲ್ಯಗಳು = 0;
+	ಪೂರ್ಣಾಙ್ಕ ಸಾಲು_counter = 1;
 
-	while (fgets(line, line_size, fp) != nullptr)  {
+	ಯಾವತ್ (fgets(ಸಾಲು, ಸಾಲು_size, fp) != nullptr)  {
 
-		if (strncmp(line, "INPUT ", 6) == 0) {
+		ಯದಿ (strncmp(ಸಾಲು, "INPUT ", 6) == 0) {
 
-			if (has_decoded_values) {
-				PX4_ERR("Parser decoded values that are not in the test file (line=%i)", line_counter);
-				return false;
+			ಯದಿ (has_decoded_ಮೌಲ್ಯಗಳು) {
+				PX4_ERR("Parser decoded values that are not in the test file (line=%i)", ಸಾಲು_counter);
+				ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 			}
 
 			// read the values
-			const char *file_buffer = line + 6;
-			int frame_len = 0;
+			ಧ್ರುವ ವರ್ಣ *file_buffer = ಸಾಲು + 6;
+			ಪೂರ್ಣಾಙ್ಕ frame_len = 0;
 			uint8_t frame[300];
-			int offset;
-			int number;
+			ಪೂರ್ಣಾಙ್ಕ offset;
+			ಪೂರ್ಣಾಙ್ಕ ಸಂಖ್ಯೆ;
 
-			while (sscanf(file_buffer, "%x, %n", &number, &offset) > 0) {
-				frame[frame_len++] = number;
+			ಯಾವತ್ (sscanf(file_buffer, "%x, %n", &ಸಂಖ್ಯೆ, &offset) > 0) {
+				frame[frame_len++] = ಸಂಖ್ಯೆ;
 				file_buffer += offset;
 			}
 
 			// Pipe the data into the parser
 			hrt_abstime now = hrt_absolute_time();
 
-			bool result = crsf_parse(now, frame, frame_len, rc_values, &num_values, max_channels);
+			ತಾರ್ಕಿಕ result = crsf_parse(now, frame, frame_len, rc_ಮೌಲ್ಯಗಳು, &ಅಂಕೆ_ಮೌಲ್ಯಗಳು, max_channels);
 
-			if (result) {
-				has_decoded_values = true;
+			ಯದಿ (result) {
+				has_decoded_ಮೌಲ್ಯಗಳು = ಸತ್ಯ;
 			}
 
-		} else if (strncmp(line, "DECODED ", 8) == 0) {
+		} ಅನ್ಯಥಾ ಯದಿ (strncmp(ಸಾಲು, "DECODED ", 8) == 0) {
 
-			if (!has_decoded_values) {
-				PX4_ERR("Test file contains decoded values but the parser did not decode anything (line=%i)", line_counter);
-				return false;
+			ಯದಿ (!has_decoded_ಮೌಲ್ಯಗಳು) {
+				PX4_ERR("Test file contains decoded values but the parser did not decode anything (line=%i)", ಸಾಲು_counter);
+				ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 			}
 
 			// read the values
-			const char *file_buffer = line + 8;
-			int offset;
-			int expected_rc_value;
-			int expected_num_channels = 0;
+			ಧ್ರುವ ವರ್ಣ *file_buffer = ಸಾಲು + 8;
+			ಪೂರ್ಣಾಙ್ಕ offset;
+			ಪೂರ್ಣಾಙ್ಕ expected_rc_ಮೌಲ್ಯ;
+			ಪೂರ್ಣಾಙ್ಕ expected_ಅಂಕೆ_channels = 0;
 
-			while (sscanf(file_buffer, "%x, %n", &expected_rc_value, &offset) > 0) {
+			ಯಾವತ್ (sscanf(file_buffer, "%x, %n", &expected_rc_ಮೌಲ್ಯ, &offset) > 0) {
 
 				// allow a small difference
-				if (abs(expected_rc_value - (int)rc_values[expected_num_channels]) > 10) {
-					PX4_ERR("File line: %i, channel: %i", line_counter, expected_num_channels);
-					ut_compare("Wrong decoded channel", expected_rc_value, rc_values[expected_num_channels]);
+				ಯದಿ (abs(expected_rc_ಮೌಲ್ಯ - (ಪೂರ್ಣಾಙ್ಕ)rc_ಮೌಲ್ಯಗಳು[expected_ಅಂಕೆ_channels]) > 10) {
+					PX4_ERR("File line: %i, channel: %i", ಸಾಲು_counter, expected_ಅಂಕೆ_channels);
+					ut_compare("Wrong decoded channel", expected_rc_ಮೌಲ್ಯ, rc_ಮೌಲ್ಯಗಳು[expected_ಅಂಕೆ_channels]);
 				}
 
 				file_buffer += offset;
-				++expected_num_channels;
+				++expected_ಅಂಕೆ_channels;
 			}
 
-			if (expected_num_channels != num_values) {
-				PX4_ERR("File line: %d", line_counter);
-				ut_compare("Unexpected number of decoded channels", expected_num_channels, num_values);
+			ಯದಿ (expected_ಅಂಕೆ_channels != ಅಂಕೆ_ಮೌಲ್ಯಗಳು) {
+				PX4_ERR("File line: %d", ಸಾಲು_counter);
+				ut_compare("Unexpected number of decoded channels", expected_ಅಂಕೆ_channels, ಅಂಕೆ_ಮೌಲ್ಯಗಳು);
 			}
 
-			has_decoded_values = false;
+			has_decoded_ಮೌಲ್ಯಗಳು = ಅಸತ್ಯ;
 		}
 
-		++line_counter;
+		++ಸಾಲು_counter;
 	}
 
-	return true;
+	ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 }
 
-bool RCTest::ghstTest()
+ತಾರ್ಕಿಕ RCTest::ghstTest()
 {
-	const char *filepath = TEST_DATA_PATH "ghst_rc_channels.txt";
+	ಧ್ರುವ ವರ್ಣ *filepath = TEST_DATA_PATH "ghst_rc_channels.txt";
 
 	FILE *fp = fopen(filepath, "rt");
 
 	ut_test(fp);
 
-	int uart_fd = -1;
-	const int line_size = 500;
-	char line[line_size];
-	bool has_decoded_values = false;
-	const int max_channels = 16;
-	uint16_t rc_values[max_channels];
-	uint16_t num_values = 0;
-	int line_counter = 1;
+	ಪೂರ್ಣಾಙ್ಕ uart_fd = -1;
+	ಧ್ರುವ ಪೂರ್ಣಾಙ್ಕ ಸಾಲು_size = 500;
+	ವರ್ಣ ಸಾಲು[ಸಾಲು_size];
+	ತಾರ್ಕಿಕ has_decoded_ಮೌಲ್ಯಗಳು = ಅಸತ್ಯ;
+	ಧ್ರುವ ಪೂರ್ಣಾಙ್ಕ max_channels = 16;
+	uint16_t rc_ಮೌಲ್ಯಗಳು[max_channels];
+	uint16_t ಅಂಕೆ_ಮೌಲ್ಯಗಳು = 0;
+	ಪೂರ್ಣಾಙ್ಕ ಸಾಲು_counter = 1;
 	ghstLinkStatistics_t link_stats;
 	ghst_config(uart_fd);
 
-	while (fgets(line, line_size, fp) != nullptr)  {
+	ಯಾವತ್ (fgets(ಸಾಲು, ಸಾಲು_size, fp) != nullptr)  {
 
-		if (strncmp(line, "INPUT ", 6) == 0) {
+		ಯದಿ (strncmp(ಸಾಲು, "INPUT ", 6) == 0) {
 
-			if (has_decoded_values) {
-				PX4_ERR("Parser decoded values that are not in the test file (line=%i)", line_counter);
-				return false;
+			ಯದಿ (has_decoded_ಮೌಲ್ಯಗಳು) {
+				PX4_ERR("Parser decoded values that are not in the test file (line=%i)", ಸಾಲು_counter);
+				ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 			}
 
 			// read the values
-			const char *file_buffer = line + 6;
-			int frame_len = 0;
+			ಧ್ರುವ ವರ್ಣ *file_buffer = ಸಾಲು + 6;
+			ಪೂರ್ಣಾಙ್ಕ frame_len = 0;
 			uint8_t frame[300];
-			int offset;
-			int number;
+			ಪೂರ್ಣಾಙ್ಕ offset;
+			ಪೂರ್ಣಾಙ್ಕ ಸಂಖ್ಯೆ;
 
-			while (sscanf(file_buffer, "%x, %n", &number, &offset) > 0) {
-				frame[frame_len++] = number;
+			ಯಾವತ್ (sscanf(file_buffer, "%x, %n", &ಸಂಖ್ಯೆ, &offset) > 0) {
+				frame[frame_len++] = ಸಂಖ್ಯೆ;
 				file_buffer += offset;
 			}
 
 			// Pipe the data into the parser
 			hrt_abstime now = hrt_absolute_time();
 
-			bool result = ghst_parse(now, frame, frame_len, rc_values, &link_stats, &num_values, max_channels);
+			ತಾರ್ಕಿಕ result = ghst_parse(now, frame, frame_len, rc_ಮೌಲ್ಯಗಳು, &link_stats, &ಅಂಕೆ_ಮೌಲ್ಯಗಳು, max_channels);
 
-			if (result) {
-				has_decoded_values = true;
+			ಯದಿ (result) {
+				has_decoded_ಮೌಲ್ಯಗಳು = ಸತ್ಯ;
 			}
 
-		} else if (strncmp(line, "DECODED ", 8) == 0) {
+		} ಅನ್ಯಥಾ ಯದಿ (strncmp(ಸಾಲು, "DECODED ", 8) == 0) {
 
-			if (!has_decoded_values) {
-				PX4_ERR("Test file contains decoded values but the parser did not decode anything (line=%i)", line_counter);
-				return false;
+			ಯದಿ (!has_decoded_ಮೌಲ್ಯಗಳು) {
+				PX4_ERR("Test file contains decoded values but the parser did not decode anything (line=%i)", ಸಾಲು_counter);
+				ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 			}
 
 			// read the values
-			const char *file_buffer = line + 8;
-			int offset;
-			int expected_rc_value;
-			int expected_num_channels = 0;
+			ಧ್ರುವ ವರ್ಣ *file_buffer = ಸಾಲು + 8;
+			ಪೂರ್ಣಾಙ್ಕ offset;
+			ಪೂರ್ಣಾಙ್ಕ expected_rc_ಮೌಲ್ಯ;
+			ಪೂರ್ಣಾಙ್ಕ expected_ಅಂಕೆ_channels = 0;
 
-			while (sscanf(file_buffer, "%x, %n", &expected_rc_value, &offset) > 0) {
+			ಯಾವತ್ (sscanf(file_buffer, "%x, %n", &expected_rc_ಮೌಲ್ಯ, &offset) > 0) {
 
 				// allow a small difference
-				if (abs(expected_rc_value - (int)rc_values[expected_num_channels]) > 10) {
-					PX4_ERR("File line: %i, channel: %i", line_counter, expected_num_channels);
-					ut_compare("Wrong decoded channel", expected_rc_value, rc_values[expected_num_channels]);
+				ಯದಿ (abs(expected_rc_ಮೌಲ್ಯ - (ಪೂರ್ಣಾಙ್ಕ)rc_ಮೌಲ್ಯಗಳು[expected_ಅಂಕೆ_channels]) > 10) {
+					PX4_ERR("File line: %i, channel: %i", ಸಾಲು_counter, expected_ಅಂಕೆ_channels);
+					ut_compare("Wrong decoded channel", expected_rc_ಮೌಲ್ಯ, rc_ಮೌಲ್ಯಗಳು[expected_ಅಂಕೆ_channels]);
 				}
 
 				file_buffer += offset;
-				++expected_num_channels;
+				++expected_ಅಂಕೆ_channels;
 			}
 
-			if (expected_num_channels != num_values) {
-				PX4_ERR("File line: %d", line_counter);
-				ut_compare("Unexpected number of decoded channels", expected_num_channels, num_values);
+			ಯದಿ (expected_ಅಂಕೆ_channels != ಅಂಕೆ_ಮೌಲ್ಯಗಳು) {
+				PX4_ERR("File line: %d", ಸಾಲು_counter);
+				ut_compare("Unexpected number of decoded channels", expected_ಅಂಕೆ_channels, ಅಂಕೆ_ಮೌಲ್ಯಗಳು);
 			}
 
-			has_decoded_values = false;
+			has_decoded_ಮೌಲ್ಯಗಳು = ಅಸತ್ಯ;
 		}
 
-		++line_counter;
+		++ಸಾಲು_counter;
 	}
 
-	return true;
+	ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 }
 
-bool RCTest::dsmTest10Ch()
+ತಾರ್ಕಿಕ RCTest::dsmTest10Ch()
 {
-	return dsmTest(TEST_DATA_PATH "dsm_x_data.txt", 10, 2, 1500);
+	ಪ್ರತ್ಯಾಗಮ dsmTest(TEST_DATA_PATH "dsm_x_data.txt", 10, 2, 1500);
 }
 
-bool RCTest::dsmTest16Ch()
+ತಾರ್ಕಿಕ RCTest::dsmTest16Ch()
 {
-	return dsmTest(TEST_DATA_PATH "dsm_x_dx9_data.txt", 16, 1, 1500);
+	ಪ್ರತ್ಯಾಗಮ dsmTest(TEST_DATA_PATH "dsm_x_dx9_data.txt", 16, 1, 1500);
 }
 
-bool RCTest::dsmTest22msDSMX16Ch()
+ತಾರ್ಕಿಕ RCTest::dsmTest22msDSMX16Ch()
 {
-	return dsmTest(TEST_DATA_PATH "dsm_x_dx9_px4_binding_data.txt", 16, 1, 1499);
+	ಪ್ರತ್ಯಾಗಮ dsmTest(TEST_DATA_PATH "dsm_x_dx9_px4_binding_data.txt", 16, 1, 1499);
 }
 
-bool RCTest::dsmTestOrangeDsmx()
+ತಾರ್ಕಿಕ RCTest::dsmTestOrangeDsmx()
 {
-	return dsmTest(TEST_DATA_PATH "orangerx_dsmx_12.txt", 12, 1, 1499);
+	ಪ್ರತ್ಯಾಗಮ dsmTest(TEST_DATA_PATH "orangerx_dsmx_12.txt", 12, 1, 1499);
 }
 
-bool RCTest::dsmTest(const char *filepath, unsigned expected_chancount, unsigned expected_dropcount, unsigned chan0)
+ತಾರ್ಕಿಕ RCTest::dsmTest(ಧ್ರುವ ವರ್ಣ *filepath, unsigned expected_chancount, unsigned expected_dropcount, unsigned chan0)
 {
 	FILE *fp;
 	fp = fopen(filepath, "rt");
@@ -261,32 +261,32 @@ bool RCTest::dsmTest(const char *filepath, unsigned expected_chancount, unsigned
 	ut_test(fp);
 	//PX4_INFO("loading data from: %s", filepath);
 
-	float f;
+	ಭಿನ್ನ f;
 	unsigned x;
-	int ret;
+	ಪೂರ್ಣಾಙ್ಕ ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
-		char buf[200];
-		(void)fgets(buf, sizeof(buf), fp);
+	ಪ್ರತಿ (unsigned i = 0; i < 20; i++) {
+		ವರ್ಣ buf[200];
+		(ಶೂನ್ಯ)fgets(buf, ಪರಿಮಾಣ(buf), fp);
 	}
 
 	// Init the parser
 	uint8_t frame[30];
-	uint16_t rc_values[18];
-	uint16_t num_values;
-	bool dsm_11_bit;
+	uint16_t rc_ಮೌಲ್ಯಗಳು[18];
+	uint16_t ಅಂಕೆ_ಮೌಲ್ಯಗಳು;
+	ತಾರ್ಕಿಕ dsm_11_bit;
 	unsigned dsm_frame_drops = 0;
-	uint16_t max_channels = sizeof(rc_values) / sizeof(rc_values[0]);
+	uint16_t max_channels = ಪರಿಮಾಣ(rc_ಮೌಲ್ಯಗಳು) / ಪರಿಮಾಣ(rc_ಮೌಲ್ಯಗಳು[0]);
 
-	int count = 0;
+	ಪೂರ್ಣಾಙ್ಕ ಎಣಿಕೆ = 0;
 	unsigned last_drop = 0;
 
 	dsm_proto_init();
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	ಯಾವತ್ (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		ಯದಿ (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
@@ -295,45 +295,45 @@ bool RCTest::dsmTest(const char *filepath, unsigned expected_chancount, unsigned
 		unsigned len = 1;
 
 		// Pipe the data into the parser
-		bool result = dsm_parse(f * 1e6f, &frame[0], len, rc_values, &num_values,
+		ತಾರ್ಕಿಕ result = dsm_parse(f * 1e6f, &frame[0], len, rc_ಮೌಲ್ಯಗಳು, &ಅಂಕೆ_ಮೌಲ್ಯಗಳು,
 					&dsm_11_bit, &dsm_frame_drops, nullptr, max_channels);
 
-		if (result) {
-			if (count > (16 * 20)) { // need to process enough data to have full channel count
-				ut_compare("num_values == expected_chancount", num_values, expected_chancount);
+		ಯದಿ (result) {
+			ಯದಿ (ಎಣಿಕೆ > (16 * 20)) { // need to process enough data to have full channel count
+				ut_compare("num_values == expected_chancount", ಅಂಕೆ_ಮೌಲ್ಯಗಳು, expected_chancount);
 			}
 
-			ut_test(abs((int)chan0 - (int)rc_values[0]) < 30);
+			ut_test(abs((ಪೂರ್ಣಾಙ್ಕ)chan0 - (ಪೂರ್ಣಾಙ್ಕ)rc_ಮೌಲ್ಯಗಳು[0]) < 30);
 
 			//PX4_INFO("decoded packet with %d channels and %s encoding:", num_values, (dsm_11_bit) ? "11 bit" : "10 bit");
 
-			for (unsigned i = 0; i < num_values; i++) {
+			ಪ್ರತಿ (unsigned i = 0; i < ಅಂಕೆ_ಮೌಲ್ಯಗಳು; i++) {
 				//PX4_INFO("chan #%u:\t%d", i, (int)rc_values[i]);
 			}
 		}
 
-		if (last_drop != (dsm_frame_drops)) {
+		ಯದಿ (last_drop != (dsm_frame_drops)) {
 			//PX4_INFO("frame dropped, now #%d", (dsm_frame_drops));
 			last_drop = dsm_frame_drops;
 		}
 
-		count++;
+		ಎಣಿಕೆ++;
 	}
 
 	fclose(fp);
 
-	ut_compare("num_values == expected_chancount", num_values, expected_chancount);
+	ut_compare("num_values == expected_chancount", ಅಂಕೆ_ಮೌಲ್ಯಗಳು, expected_chancount);
 
 	ut_test(ret == EOF);
 	//PX4_INFO("drop: %d", (int)last_drop);
 	ut_compare("last_drop == expected_dropcount", last_drop, expected_dropcount);
 
-	return true;
+	ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 }
 
-bool RCTest::sbus2Test()
+ತಾರ್ಕಿಕ RCTest::sbus2Test()
 {
-	const char *filepath = TEST_DATA_PATH "sbus2_r7008SB.txt";
+	ಧ್ರುವ ವರ್ಣ *filepath = TEST_DATA_PATH "sbus2_r7008SB.txt";
 
 	FILE *fp;
 	fp = fopen(filepath, "rt");
@@ -341,31 +341,31 @@ bool RCTest::sbus2Test()
 	ut_test(fp);
 	//PX4_INFO("loading data from: %s", filepath);
 
-	float f;
+	ಭಿನ್ನ f;
 	unsigned x;
-	int ret;
+	ಪೂರ್ಣಾಙ್ಕ ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
-		char buf[200];
-		(void)fgets(buf, sizeof(buf), fp);
+	ಪ್ರತಿ (unsigned i = 0; i < 20; i++) {
+		ವರ್ಣ buf[200];
+		(ಶೂನ್ಯ)fgets(buf, ಪರಿಮಾಣ(buf), fp);
 	}
 
 	// Init the parser
 	uint8_t frame[SBUS_BUFFER_SIZE];
-	uint16_t rc_values[18];
-	uint16_t num_values;
+	uint16_t rc_ಮೌಲ್ಯಗಳು[18];
+	uint16_t ಅಂಕೆ_ಮೌಲ್ಯಗಳು;
 	unsigned sbus_frame_drops = 0;
 	unsigned sbus_frame_resets = 0;
-	bool sbus_failsafe;
-	bool sbus_frame_drop;
-	uint16_t max_channels = sizeof(rc_values) / sizeof(rc_values[0]);
+	ತಾರ್ಕಿಕ sbus_failsafe;
+	ತಾರ್ಕಿಕ sbus_frame_drop;
+	uint16_t max_channels = ಪರಿಮಾಣ(rc_ಮೌಲ್ಯಗಳು) / ಪರಿಮಾಣ(rc_ಮೌಲ್ಯಗಳು[0]);
 
 	unsigned last_drop = 0;
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	ಯಾವತ್ (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		ಯದಿ (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
@@ -377,16 +377,16 @@ bool RCTest::sbus2Test()
 		hrt_abstime now = hrt_absolute_time();
 
 		// if (rate_limiter % byte_offset == 0) {
-		bool result = sbus_parse(now, &frame[0], len, rc_values, &num_values,
+		ತಾರ್ಕಿಕ result = sbus_parse(now, &frame[0], len, rc_ಮೌಲ್ಯಗಳು, &ಅಂಕೆ_ಮೌಲ್ಯಗಳು,
 					 &sbus_failsafe, &sbus_frame_drop, &sbus_frame_drops, max_channels);
 
-		if (result) {
+		ಯದಿ (result) {
 			//PX4_INFO("decoded packet");
 		}
 
 		// }
 
-		if (last_drop != (sbus_frame_drops + sbus_frame_resets)) {
+		ಯದಿ (last_drop != (sbus_frame_drops + sbus_frame_resets)) {
 			PX4_WARN("frame dropped, now #%d", (sbus_frame_drops + sbus_frame_resets));
 			last_drop = sbus_frame_drops + sbus_frame_resets;
 		}
@@ -395,44 +395,44 @@ bool RCTest::sbus2Test()
 
 	ut_test(ret == EOF);
 
-	return true;
+	ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 }
 
-bool RCTest::st24MalformedLengthTest()
+ತಾರ್ಕಿಕ RCTest::st24MalformedLengthTest()
 {
 	uint8_t rssi{};
-	uint8_t lost_count{};
-	uint16_t channel_count{};
+	uint8_t lost_ಎಣಿಕೆ{};
+	uint16_t channel_ಎಣಿಕೆ{};
 	uint16_t channels[24] {};
-	const uint8_t invalid_lengths[] {0, 1};
+	ಧ್ರುವ uint8_t invalid_lengths[] {0, 1};
 
-	for (const uint8_t invalid_length : invalid_lengths) {
-		const uint8_t prefix[] {ST24_STX1, ST24_STX2, invalid_length, 0};
+	ಪ್ರತಿ (ಧ್ರುವ uint8_t invalid_length : invalid_lengths) {
+		ಧ್ರುವ uint8_t prefix[] {ST24_STX1, ST24_STX2, invalid_length, 0};
 
-		for (const uint8_t byte : prefix) {
-			(void)st24_decode(byte, &rssi, &lost_count, &channel_count, channels, 24);
+		ಪ್ರತಿ (ಧ್ರುವ uint8_t byte : prefix) {
+			(ಶೂನ್ಯ)st24_decode(byte, &rssi, &lost_ಎಣಿಕೆ, &channel_ಎಣಿಕೆ, channels, 24);
 		}
 
-		for (unsigned i = 0; i <= ST24_DATA_LEN_MAX; ++i) {
-			(void)st24_decode(0xaa, &rssi, &lost_count, &channel_count, channels, 24);
+		ಪ್ರತಿ (unsigned i = 0; i <= ST24_DATA_LEN_MAX; ++i) {
+			(ಶೂನ್ಯ)st24_decode(0xaa, &rssi, &lost_ಎಣಿಕೆ, &channel_ಎಣಿಕೆ, channels, 24);
 		}
 	}
 
 	uint8_t minimal_packet[] {ST24_STX1, ST24_STX2, 2, 0xff, 0};
 	minimal_packet[4] = st24_common_crc8(&minimal_packet[2], 2);
-	int result = 1;
+	ಪೂರ್ಣಾಙ್ಕ result = 1;
 
-	for (const uint8_t byte : minimal_packet) {
-		result = st24_decode(byte, &rssi, &lost_count, &channel_count, channels, 24);
+	ಪ್ರತಿ (ಧ್ರುವ uint8_t byte : minimal_packet) {
+		result = st24_decode(byte, &rssi, &lost_ಎಣಿಕೆ, &channel_ಎಣಿಕೆ, channels, 24);
 	}
 
 	ut_test(result == 2);
-	return true;
+	ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 }
 
-bool RCTest::st24Test()
+ತಾರ್ಕಿಕ RCTest::st24Test()
 {
-	const char *filepath = TEST_DATA_PATH "st24_data.txt";
+	ಧ್ರುವ ವರ್ಣ *filepath = TEST_DATA_PATH "st24_data.txt";
 
 	//PX4_INFO("loading data from: %s", filepath);
 
@@ -441,26 +441,26 @@ bool RCTest::st24Test()
 	fp = fopen(filepath, "rt");
 	ut_test(fp);
 
-	float f;
+	ಭಿನ್ನ f;
 	unsigned x;
-	int ret;
+	ಪೂರ್ಣಾಙ್ಕ ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
-		char buf[200];
-		(void)fgets(buf, sizeof(buf), fp);
+	ಪ್ರತಿ (unsigned i = 0; i < 20; i++) {
+		ವರ್ಣ buf[200];
+		(ಶೂನ್ಯ)fgets(buf, ಪರಿಮಾಣ(buf), fp);
 	}
 
-	float last_time = 0;
+	ಭಿನ್ನ last_time = 0;
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	ಯಾವತ್ (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		ಯದಿ (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
 
-		if (((f - last_time) * 1000 * 1000) > 3000) {
+		ಯದಿ (((f - last_time) * 1000 * 1000) > 3000) {
 			// PX4_INFO("FRAME RESET\n\n");
 		}
 
@@ -472,14 +472,14 @@ bool RCTest::st24Test()
 		//hrt_abstime now = hrt_absolute_time();
 
 		uint8_t rssi;
-		uint8_t rx_count;
-		uint16_t channel_count;
+		uint8_t rx_ಎಣಿಕೆ;
+		uint16_t channel_ಎಣಿಕೆ;
 		uint16_t channels[20];
 
-		if (!st24_decode(b, &rssi, &rx_count, &channel_count, channels, sizeof(channels) / sizeof(channels[0]))) {
+		ಯದಿ (!st24_decode(b, &rssi, &rx_ಎಣಿಕೆ, &channel_ಎಣಿಕೆ, channels, ಪರಿಮಾಣ(channels) / ಪರಿಮಾಣ(channels[0]))) {
 			//PX4_INFO("decoded: %u channels (converted to PPM range)", (unsigned)channel_count);
 
-			for (unsigned i = 0; i < channel_count; i++) {
+			ಪ್ರತಿ (unsigned i = 0; i < channel_ಎಣಿಕೆ; i++) {
 				//int16_t val = channels[i];
 				//PX4_INFO("channel %u: %d 0x%03X", i, static_cast<int>(val), static_cast<int>(val));
 			}
@@ -488,12 +488,12 @@ bool RCTest::st24Test()
 
 	ut_test(ret == EOF);
 
-	return true;
+	ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 }
 
-bool RCTest::sumdTest()
+ತಾರ್ಕಿಕ RCTest::sumdTest()
 {
-	const char *filepath = TEST_DATA_PATH "sumd_data.txt";
+	ಧ್ರುವ ವರ್ಣ *filepath = TEST_DATA_PATH "sumd_data.txt";
 
 	//PX4_INFO("loading data from: %s", filepath);
 
@@ -502,26 +502,26 @@ bool RCTest::sumdTest()
 	fp = fopen(filepath, "rt");
 	ut_test(fp);
 
-	float f;
+	ಭಿನ್ನ f;
 	unsigned x;
-	int ret;
+	ಪೂರ್ಣಾಙ್ಕ ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
-		char buf[200];
-		(void)fgets(buf, sizeof(buf), fp);
+	ಪ್ರತಿ (unsigned i = 0; i < 20; i++) {
+		ವರ್ಣ buf[200];
+		(ಶೂನ್ಯ)fgets(buf, ಪರಿಮಾಣ(buf), fp);
 	}
 
-	float last_time = 0;
+	ಭಿನ್ನ last_time = 0;
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	ಯಾವತ್ (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		ಯದಿ (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
 
-		if (((f - last_time) * 1000 * 1000) > 3000) {
+		ಯದಿ (((f - last_time) * 1000 * 1000) > 3000) {
 			// PX4_INFO("FRAME RESET\n\n");
 		}
 
@@ -533,16 +533,16 @@ bool RCTest::sumdTest()
 		//hrt_abstime now = hrt_absolute_time();
 
 		uint8_t rssi;
-		uint8_t rx_count;
-		uint16_t channel_count;
+		uint8_t rx_ಎಣಿಕೆ;
+		uint16_t channel_ಎಣಿಕೆ;
 		uint16_t channels[32];
-		bool sumd_failsafe;
+		ತಾರ್ಕಿಕ sumd_failsafe;
 
 
-		if (!sumd_decode(b, &rssi, &rx_count, &channel_count, channels, 32, &sumd_failsafe)) {
+		ಯದಿ (!sumd_decode(b, &rssi, &rx_ಎಣಿಕೆ, &channel_ಎಣಿಕೆ, channels, 32, &sumd_failsafe)) {
 			//PX4_INFO("decoded: %u channels (converted to PPM range)", (unsigned)channel_count);
 
-			for (unsigned i = 0; i < channel_count; i++) {
+			ಪ್ರತಿ (unsigned i = 0; i < channel_ಎಣಿಕೆ; i++) {
 				//int16_t val = channels[i];
 				//PX4_INFO("channel %u: %d 0x%03X", i, static_cast<int>(val), static_cast<int>(val));
 			}
@@ -551,7 +551,7 @@ bool RCTest::sumdTest()
 
 	ut_test(ret == EOF);
 
-	return true;
+	ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 }
 
 ut_declare_test_c(rc_tests_main, RCTest)

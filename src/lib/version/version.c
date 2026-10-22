@@ -31,18 +31,18 @@
  *
  ****************************************************************************/
 
-#include "version.h"
+#ಅನ್ತರ್ಭಾವ "version.h"
 
-#include "build_git_version.h"
+#ಅನ್ತರ್ಭಾವ "build_git_version.h"
 
-#include <string.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
 
-#if !defined(CONFIG_CDCACM_PRODUCTID)
+#ಯದಿ !defined(CONFIG_CDCACM_PRODUCTID)
 # define CONFIG_CDCACM_PRODUCTID 0
 #endif
 
-#if defined(__PX4_LINUX)
-#include <sys/utsname.h>
+#ಯದಿ defined(__PX4_LINUX)
+#ಅನ್ತರ್ಭಾವ <sys/utsname.h>
 #endif
 
 // dev >= 0
@@ -50,7 +50,7 @@
 // beta >= 128
 // release candidate >= 192
 // release == 255
-enum FIRMWARE_TYPE {
+ಗಣನಾ FIRMWARE_TYPE {
 	FIRMWARE_TYPE_DEV = 0,
 	FIRMWARE_TYPE_ALPHA = 64,
 	FIRMWARE_TYPE_BETA = 128,
@@ -58,86 +58,86 @@ enum FIRMWARE_TYPE {
 	FIRMWARE_TYPE_RELEASE = 255
 };
 
-const char *px4_build_uri(void)
+ಧ್ರುವ ವರ್ಣ *px4_build_uri(ಶೂನ್ಯ)
 {
-	return STRINGIFY(BUILD_URI);
+	ಪ್ರತ್ಯಾಗಮ STRINGIFY(BUILD_URI);
 }
 
-uint32_t version_tag_to_number(const char *tag)
+uint32_t version_tag_to_ಸಂಖ್ಯೆ(ಧ್ರುವ ವರ್ಣ *tag)
 {
-	uint32_t version_number = 0;
+	uint32_t version_ಸಂಖ್ಯೆ = 0;
 
 	int16_t buffer = -1;
 	size_t buffer_counter = 0;
-	size_t dash_count = 0;
-	size_t point_count = 0;
-	char version[3] = {0, 0, 0};
-	int firmware_type = FIRMWARE_TYPE_RELEASE;
+	size_t dash_ಎಣಿಕೆ = 0;
+	size_t point_ಎಣಿಕೆ = 0;
+	ವರ್ಣ version[3] = {0, 0, 0};
+	ಪೂರ್ಣಾಙ್ಕ firmware_type = FIRMWARE_TYPE_RELEASE;
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		switch (tag[i]) {
-		case '-':
-			dash_count++;
-			break;
+	ಪ್ರತಿ (size_t i = 0; i < strlen(tag); i++) {
+		ವಿಕಲ್ಪ (tag[i]) {
+		ಪಕ್ಷ '-':
+			dash_ಎಣಿಕೆ++;
+			ಭಙ್ಗ;
 
-		case '.':
-			point_count++;
-			break;
+		ಪಕ್ಷ '.':
+			point_ಎಣಿಕೆ++;
+			ಭಙ್ಗ;
 
-		case 'r':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
+		ಪಕ್ಷ 'r':
+			ಯದಿ (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
 				firmware_type = FIRMWARE_TYPE_RC;
 
 			}
 
-			break;
+			ಭಙ್ಗ;
 
-		case 'p':
+		ಪಕ್ಷ 'p':
 			firmware_type = FIRMWARE_TYPE_ALPHA;
-			break;
+			ಭಙ್ಗ;
 
-		case 't':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
+		ಪಕ್ಷ 't':
+			ಯದಿ (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
-			} else {
+			} ಅನ್ಯಥಾ {
 				firmware_type = FIRMWARE_TYPE_BETA;
 
 			}
 
-			break;
+			ಭಙ್ಗ;
 
-		case 'v':
-			if (i > 0) {
+		ಪಕ್ಷ 'v':
+			ಯದಿ (i > 0) {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
 			}
 
-			break;
+			ಭಙ್ಗ;
 
-		default:
-			break;
+		ಸ್ವಭಾವ:
+			ಭಙ್ಗ;
 		}
 	}
 
-	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
-	    (dash_count == 2 && point_count == 2) ||
-	    (dash_count == 3 && point_count == 4) ||
-	    (dash_count == 4 && point_count == 4)) {
+	ಯದಿ ((dash_ಎಣಿಕೆ == 1 && point_ಎಣಿಕೆ == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
+	    (dash_ಎಣಿಕೆ == 2 && point_ಎಣಿಕೆ == 2) ||
+	    (dash_ಎಣಿಕೆ == 3 && point_ಎಣಿಕೆ == 4) ||
+	    (dash_ಎಣಿಕೆ == 4 && point_ಎಣಿಕೆ == 4)) {
 		firmware_type = FIRMWARE_TYPE_DEV;
 	}
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (buffer_counter > 2) {
-			continue;
+	ಪ್ರತಿ (size_t i = 0; i < strlen(tag); i++) {
+		ಯದಿ (buffer_counter > 2) {
+			ಅನುವರ್ತ;
 		}
 
-		if (tag[i] >= '0' && tag[i] <= '9') {
+		ಯದಿ (tag[i] >= '0' && tag[i] <= '9') {
 			buffer = (buffer == -1) ? 0 : buffer;
 			buffer = buffer * 10 + (tag[i] - '0');
 
-		} else {
-			if (buffer >= 0) {
+		} ಅನ್ಯಥಾ {
+			ಯದಿ (buffer >= 0) {
 				version[buffer_counter] = buffer;
 				buffer_counter++;
 			}
@@ -146,109 +146,109 @@ uint32_t version_tag_to_number(const char *tag)
 		}
 	}
 
-	if (buffer >= 0) {
+	ಯದಿ (buffer >= 0) {
 		version[buffer_counter] = buffer;
 		buffer_counter++;
 	}
 
-	if (buffer_counter <= 0) {
+	ಯದಿ (buffer_counter <= 0) {
 		firmware_type = 0x00;
 	}
 
-	if (buffer_counter == 3 || buffer_counter == 6) {
-		version_number = ((uint8_t)version[0] << 8 * 3) |
+	ಯದಿ (buffer_counter == 3 || buffer_counter == 6) {
+		version_ಸಂಖ್ಯೆ = ((uint8_t)version[0] << 8 * 3) |
 				 ((uint8_t)version[1] << 8 * 2) |
 				 ((uint8_t)version[2] << 8 * 1) | firmware_type;
 
-	} else {
-		version_number = 0;
+	} ಅನ್ಯಥಾ {
+		version_ಸಂಖ್ಯೆ = 0;
 	}
 
-	return version_number;
+	ಪ್ರತ್ಯಾಗಮ version_ಸಂಖ್ಯೆ;
 }
 
-uint32_t px4_firmware_version(void)
+uint32_t px4_firmware_version(ಶೂನ್ಯ)
 {
-	return version_tag_to_number(PX4_GIT_TAG_STR);
+	ಪ್ರತ್ಯಾಗಮ version_tag_to_ಸಂಖ್ಯೆ(PX4_GIT_TAG_STR);
 }
 
-uint32_t version_tag_to_vendor_version_number(const char *tag)
+uint32_t version_tag_to_vendor_version_ಸಂಖ್ಯೆ(ಧ್ರುವ ವರ್ಣ *tag)
 {
-	uint32_t version_number = 0;
+	uint32_t version_ಸಂಖ್ಯೆ = 0;
 
 	int16_t buffer = -1;
 	size_t buffer_counter = 0;
-	char version[6] = {0, 0, 0, 0, 0, 0};
-	size_t dash_count = 0;
-	size_t point_count = 0;
-	int firmware_type = FIRMWARE_TYPE_RELEASE;
+	ವರ್ಣ version[6] = {0, 0, 0, 0, 0, 0};
+	size_t dash_ಎಣಿಕೆ = 0;
+	size_t point_ಎಣಿಕೆ = 0;
+	ಪೂರ್ಣಾಙ್ಕ firmware_type = FIRMWARE_TYPE_RELEASE;
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		switch (tag[i]) {
-		case '-':
-			dash_count++;
-			break;
+	ಪ್ರತಿ (size_t i = 0; i < strlen(tag); i++) {
+		ವಿಕಲ್ಪ (tag[i]) {
+		ಪಕ್ಷ '-':
+			dash_ಎಣಿಕೆ++;
+			ಭಙ್ಗ;
 
-		case '.':
-			point_count++;
-			break;
+		ಪಕ್ಷ '.':
+			point_ಎಣಿಕೆ++;
+			ಭಙ್ಗ;
 
-		case 'r':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
+		ಪಕ್ಷ 'r':
+			ಯದಿ (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
 				firmware_type = FIRMWARE_TYPE_RC;
 
 			}
 
-			break;
+			ಭಙ್ಗ;
 
-		case 'p':
+		ಪಕ್ಷ 'p':
 			firmware_type = FIRMWARE_TYPE_ALPHA;
-			break;
+			ಭಙ್ಗ;
 
-		case 't':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
+		ಪಕ್ಷ 't':
+			ಯದಿ (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
-			} else {
+			} ಅನ್ಯಥಾ {
 				firmware_type = FIRMWARE_TYPE_BETA;
 
 			}
 
-			break;
+			ಭಙ್ಗ;
 
-		case 'v':
-			if (i > 0) {
+		ಪಕ್ಷ 'v':
+			ಯದಿ (i > 0) {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
 			}
 
-			break;
+			ಭಙ್ಗ;
 
-		default:
-			break;
+		ಸ್ವಭಾವ:
+			ಭಙ್ಗ;
 		}
 	}
 
-	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
-	    (dash_count == 2 && point_count == 2) ||
-	    (dash_count == 3 && point_count == 4) ||
-	    (dash_count == 4 && point_count == 4)) {
+	ಯದಿ ((dash_ಎಣಿಕೆ == 1 && point_ಎಣಿಕೆ == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
+	    (dash_ಎಣಿಕೆ == 2 && point_ಎಣಿಕೆ == 2) ||
+	    (dash_ಎಣಿಕೆ == 3 && point_ಎಣಿಕೆ == 4) ||
+	    (dash_ಎಣಿಕೆ == 4 && point_ಎಣಿಕೆ == 4)) {
 		firmware_type = FIRMWARE_TYPE_DEV;
 	}
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (buffer_counter > 5) {
-			continue;
+	ಪ್ರತಿ (size_t i = 0; i < strlen(tag); i++) {
+		ಯದಿ (buffer_counter > 5) {
+			ಅನುವರ್ತ;
 		}
 
-		if (tag[i] >= '0' && tag[i] <= '9') {
+		ಯದಿ (tag[i] >= '0' && tag[i] <= '9') {
 			buffer = (buffer == -1) ? 0 : buffer;
 			buffer = buffer * 10 + (tag[i] - '0');
 
-		} else {
-			if (buffer >= 0) {
-				if (buffer_counter + 1 == 4 && tag[i] == '-') {
-					break;
+		} ಅನ್ಯಥಾ {
+			ಯದಿ (buffer >= 0) {
+				ಯದಿ (buffer_counter + 1 == 4 && tag[i] == '-') {
+					ಭಙ್ಗ;
 				}
 
 				version[buffer_counter] = buffer;
@@ -259,152 +259,152 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 		}
 	}
 
-	if (buffer >= 0 && (buffer_counter + 1 == 3 || buffer_counter + 1 == 6)) {
+	ಯದಿ (buffer >= 0 && (buffer_counter + 1 == 3 || buffer_counter + 1 == 6)) {
 		version[buffer_counter] = buffer;
 		buffer_counter++;
 	}
 
-	if (buffer_counter == 6) {
-		version_number = ((uint8_t)version[3] << 8 * 3) |
+	ಯದಿ (buffer_counter == 6) {
+		version_ಸಂಖ್ಯೆ = ((uint8_t)version[3] << 8 * 3) |
 				 ((uint8_t)version[4] << 8 * 2) |
 				 ((uint8_t)version[5] << 8 * 1) | firmware_type;
 
-	} else if (buffer_counter == 3) {
-		version_number = firmware_type;
+	} ಅನ್ಯಥಾ ಯದಿ (buffer_counter == 3) {
+		version_ಸಂಖ್ಯೆ = firmware_type;
 
-	} else {
-		version_number = 0;
+	} ಅನ್ಯಥಾ {
+		version_ಸಂಖ್ಯೆ = 0;
 	}
 
-	return version_number;
+	ಪ್ರತ್ಯಾಗಮ version_ಸಂಖ್ಯೆ;
 }
 
-uint32_t px4_firmware_vendor_version(void)
+uint32_t px4_firmware_vendor_version(ಶೂನ್ಯ)
 {
-	return version_tag_to_vendor_version_number(PX4_GIT_TAG_STR);
+	ಪ್ರತ್ಯಾಗಮ version_tag_to_vendor_version_ಸಂಖ್ಯೆ(PX4_GIT_TAG_STR);
 }
 
-const char *px4_firmware_git_branch(void)
+ಧ್ರುವ ವರ್ಣ *px4_firmware_git_branch(ಶೂನ್ಯ)
 {
-	return PX4_GIT_BRANCH_NAME;
+	ಪ್ರತ್ಯಾಗಮ PX4_GIT_BRANCH_NAME;
 }
 
-uint32_t px4_board_version(void)
+uint32_t px4_board_version(ಶೂನ್ಯ)
 {
-#if defined(__PX4_NUTTX)
-	return CONFIG_CDCACM_PRODUCTID;
-#else
-	return 1;
+#ಯದಿ defined(__PX4_NUTTX)
+	ಪ್ರತ್ಯಾಗಮ CONFIG_CDCACM_PRODUCTID;
+#ಅನ್ಯಥಾ
+	ಪ್ರತ್ಯಾಗಮ 1;
 #endif
 }
 
-uint32_t px4_os_version(void)
+uint32_t px4_os_version(ಶೂನ್ಯ)
 {
-#if defined(__PX4_DARWIN) || defined(__PX4_CYGWIN) || defined(__PX4_QURT)
-	return 0; //TODO: implement version for Darwin, Cygwin, QuRT
-#elif defined(__PX4_LINUX)
-	struct utsname name;
+#ಯದಿ defined(__PX4_DARWIN) || defined(__PX4_CYGWIN) || defined(__PX4_QURT)
+	ಪ್ರತ್ಯಾಗಮ 0; //TODO: implement version for Darwin, Cygwin, QuRT
+#ನೋಚೇದ್ಯದಿ defined(__PX4_LINUX)
+	ಸಂರಚನಾ utsname name;
 
-	if (uname(&name) == 0) {
-		char *c = name.release;
+	ಯದಿ (uname(&name) == 0) {
+		ವರ್ಣ *c = name.release;
 
 		// cut the part after the first '-'
-		while (*c && *c != '-') {
+		ಯಾವತ್ (*c && *c != '-') {
 			++c;
 		}
 
 		*c = 0;
-		return version_tag_to_number(name.release);
+		ಪ್ರತ್ಯಾಗಮ version_tag_to_ಸಂಖ್ಯೆ(name.release);
 
-	} else {
-		return 0;
+	} ಅನ್ಯಥಾ {
+		ಪ್ರತ್ಯಾಗಮ 0;
 	}
 
-#elif defined(__PX4_NUTTX)
-	return version_tag_to_number(NUTTX_GIT_TAG_STR);
-#else
+#ನೋಚೇದ್ಯದಿ defined(__PX4_NUTTX)
+	ಪ್ರತ್ಯಾಗಮ version_tag_to_ಸಂಖ್ಯೆ(NUTTX_GIT_TAG_STR);
+#ಅನ್ಯಥಾ
 # error "px4_os_version not implemented for current OS"
 #endif
 }
 
-const char *px4_os_version_string(void)
+ಧ್ರುವ ವರ್ಣ *px4_os_version_string(ಶೂನ್ಯ)
 {
-#if defined(__PX4_NUTTX)
-	return NUTTX_GIT_VERSION_STR;
-#else
-	return NULL;
+#ಯದಿ defined(__PX4_NUTTX)
+	ಪ್ರತ್ಯಾಗಮ NUTTX_GIT_VERSION_STR;
+#ಅನ್ಯಥಾ
+	ಪ್ರತ್ಯಾಗಮ ರಿಕ್ತ;
 #endif
 }
 
-const char *px4_os_name(void)
+ಧ್ರುವ ವರ್ಣ *px4_os_name(ಶೂನ್ಯ)
 {
-#if defined(__PX4_DARWIN)
-	return "Darwin";
-#elif defined(__PX4_LINUX)
-	return "Linux";
-#elif defined(__PX4_QURT)
-	return "QuRT";
-#elif defined(__PX4_NUTTX)
-	return "NuttX";
-#elif defined(__PX4_CYGWIN)
-	return "Cygwin";
-#else
+#ಯದಿ defined(__PX4_DARWIN)
+	ಪ್ರತ್ಯಾಗಮ "Darwin";
+#ನೋಚೇದ್ಯದಿ defined(__PX4_LINUX)
+	ಪ್ರತ್ಯಾಗಮ "Linux";
+#ನೋಚೇದ್ಯದಿ defined(__PX4_QURT)
+	ಪ್ರತ್ಯಾಗಮ "QuRT";
+#ನೋಚೇದ್ಯದಿ defined(__PX4_NUTTX)
+	ಪ್ರತ್ಯಾಗಮ "NuttX";
+#ನೋಚೇದ್ಯದಿ defined(__PX4_CYGWIN)
+	ಪ್ರತ್ಯಾಗಮ "Cygwin";
+#ಅನ್ಯಥಾ
 # error "px4_os_name not implemented for current OS"
 #endif
 }
 
-const char *px4_toolchain_name(void)
+ಧ್ರುವ ವರ್ಣ *px4_toolchain_name(ಶೂನ್ಯ)
 {
-#if defined(__clang__)
-	return "Clang/LLVM";
-#elif defined(__ICC) || defined(__INTEL_COMPILER)
-	return "Intel ICC";
-#elif defined(__GNUC__) || defined(__GNUG__)
-	return "GNU GCC";
-#elif defined(_MSC_VER)
-	return "MS Visual Studio";
-#else
-	return "Unknown";
+#ಯದಿ defined(__clang__)
+	ಪ್ರತ್ಯಾಗಮ "Clang/LLVM";
+#ನೋಚೇದ್ಯದಿ defined(__ICC) || defined(__INTEL_COMPILER)
+	ಪ್ರತ್ಯಾಗಮ "Intel ICC";
+#ನೋಚೇದ್ಯದಿ defined(__GNUC__) || defined(__GNUG__)
+	ಪ್ರತ್ಯಾಗಮ "GNU GCC";
+#ನೋಚೇದ್ಯದಿ defined(_MSC_VER)
+	ಪ್ರತ್ಯಾಗಮ "MS Visual Studio";
+#ಅನ್ಯಥಾ
+	ಪ್ರತ್ಯಾಗಮ "Unknown";
 #endif
 }
 
-const char *px4_toolchain_version(void)
+ಧ್ರುವ ವರ್ಣ *px4_toolchain_version(ಶೂನ್ಯ)
 {
 #ifdef __VERSION__
-	return __VERSION__;
-#else
-	return "";
+	ಪ್ರತ್ಯಾಗಮ __VERSION__;
+#ಅನ್ಯಥಾ
+	ಪ್ರತ್ಯಾಗಮ "";
 #endif
 }
 
-const char *px4_firmware_version_string(void)
+ಧ್ರುವ ವರ್ಣ *px4_firmware_version_string(ಶೂನ್ಯ)
 {
-	return PX4_GIT_VERSION_STR;
+	ಪ್ರತ್ಯಾಗಮ PX4_GIT_VERSION_STR;
 }
 
-uint64_t px4_firmware_version_binary(void)
+uint64_t px4_firmware_version_ದ್ವಿಮಾನ(ಶೂನ್ಯ)
 {
-	return PX4_GIT_VERSION_BINARY;
+	ಪ್ರತ್ಯಾಗಮ PX4_GIT_VERSION_ದ್ವಿಮಾನ;
 }
 
 
-#ifdef MAVLINK_LIB_GIT_VERSION_BINARY
-uint64_t px4_mavlink_lib_version_binary(void)
+#ifdef MAVLINK_LIB_GIT_VERSION_ದ್ವಿಮಾನ
+uint64_t px4_mavlink_lib_version_ದ್ವಿಮಾನ(ಶೂನ್ಯ)
 {
-	return MAVLINK_LIB_GIT_VERSION_BINARY;
+	ಪ್ರತ್ಯಾಗಮ MAVLINK_LIB_GIT_VERSION_ದ್ವಿಮಾನ;
 }
 #endif /* MAVLINK_LIB_GIT_VERSION_BINARY */
 
-uint64_t px4_os_version_binary(void)
+uint64_t px4_os_version_ದ್ವಿಮಾನ(ಶೂನ್ಯ)
 {
-#ifdef NUTTX_GIT_VERSION_BINARY
-	return NUTTX_GIT_VERSION_BINARY;
-#else
-	return 0;
+#ifdef NUTTX_GIT_VERSION_ದ್ವಿಮಾನ
+	ಪ್ರತ್ಯಾಗಮ NUTTX_GIT_VERSION_ದ್ವಿಮಾನ;
+#ಅನ್ಯಥಾ
+	ಪ್ರತ್ಯಾಗಮ 0;
 #endif
 }
 
-const char *px4_firmware_oem_version_string(void)
+ಧ್ರುವ ವರ್ಣ *px4_firmware_oem_version_string(ಶೂನ್ಯ)
 {
-	return PX4_GIT_OEM_VERSION_STR;
+	ಪ್ರತ್ಯಾಗಮ PX4_GIT_OEM_VERSION_STR;
 }

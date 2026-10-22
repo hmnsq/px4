@@ -37,32 +37,32 @@
  * @author Thomas Gubler <thomasgubler@gmail.com>
  * @author Mark Charlebois <mcharleb@gmail.com>
  */
-#include "cdevtest_example.h"
+#ಅನ್ತರ್ಭಾವ "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/tasks.h>
-#include <stdio.h>
-#include <string.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/app.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/tasks.h>
+#ಅನ್ತರ್ಭಾವ <stdio.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+ಸ್ಥಿರ ಪೂರ್ಣಾಙ್ಕ daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-extern "C" __EXPORT int cdev_test_main(int argc, char *argv[]);
-int cdev_test_main(int argc, char *argv[])
+ಬಾಹ್ಯ "C" __EXPORT ಪೂರ್ಣಾಙ್ಕ cdev_test_main(ಪೂರ್ಣಾಙ್ಕ argc, ವರ್ಣ *argv[]);
+ಪೂರ್ಣಾಙ್ಕ cdev_test_main(ಪೂರ್ಣಾಙ್ಕ argc, ವರ್ಣ *argv[])
 {
 
-	if (argc < 2) {
+	ಯದಿ (argc < 2) {
 		printf("usage: cdevtest {start|stop|status}\n");
-		return 1;
+		ಪ್ರತ್ಯಾಗಮ 1;
 	}
 
-	if (!strcmp(argv[1], "start")) {
+	ಯದಿ (!strcmp(argv[1], "start")) {
 
-		if (CDevExample::appState.isRunning()) {
+		ಯದಿ (CDevExample::appState.isRunning()) {
 			printf("already running\n");
 			/* this is not an error */
-			return 0;
+			ಪ್ರತ್ಯಾಗಮ 0;
 		}
 
 		daemon_task = px4_task_spawn_cmd("cdevtest",
@@ -70,27 +70,27 @@ int cdev_test_main(int argc, char *argv[])
 						 SCHED_PRIORITY_MAX - 5,
 						 2000,
 						 PX4_MAIN,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+						 (argv) ? (ವರ್ಣ *ಧ್ರುವ *)&argv[2] : (ವರ್ಣ *ಧ್ರುವ *)nullptr);
 
-		return 0;
+		ಪ್ರತ್ಯಾಗಮ 0;
 	}
 
-	if (!strcmp(argv[1], "stop")) {
+	ಯದಿ (!strcmp(argv[1], "stop")) {
 		CDevExample::appState.requestExit();
-		return 0;
+		ಪ್ರತ್ಯಾಗಮ 0;
 	}
 
-	if (!strcmp(argv[1], "status")) {
-		if (CDevExample::appState.isRunning()) {
+	ಯದಿ (!strcmp(argv[1], "status")) {
+		ಯದಿ (CDevExample::appState.isRunning()) {
 			printf("is running\n");
 
-		} else {
+		} ಅನ್ಯಥಾ {
 			printf("not started\n");
 		}
 
-		return 0;
+		ಪ್ರತ್ಯಾಗಮ 0;
 	}
 
 	printf("usage: cdevtest_main {start|stop|status}\n");
-	return 1;
+	ಪ್ರತ್ಯಾಗಮ 1;
 }

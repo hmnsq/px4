@@ -31,60 +31,60 @@
  *
  ****************************************************************************/
 
-#include "PID.hpp"
-#include "lib/mathlib/math/Functions.hpp"
+#ಅನ್ತರ್ಭಾವ "PID.hpp"
+#ಅನ್ತರ್ಭಾವ "lib/mathlib/math/Functions.hpp"
 
-void PID::setOutputLimit(const float lower_limit, const float upper_limit)
+ಶೂನ್ಯ PID::setOutputLimit(ಧ್ರುವ ಭಿನ್ನ lower_limit, ಧ್ರುವ ಭಿನ್ನ upper_limit)
 {
 	_lower_limit_output = lower_limit;
 	_upper_limit_output = upper_limit;
 }
 
-void PID::setGains(const float P, const float I, const float D)
+ಶೂನ್ಯ PID::setGains(ಧ್ರುವ ಭಿನ್ನ P, ಧ್ರುವ ಭಿನ್ನ I, ಧ್ರುವ ಭಿನ್ನ D)
 {
 	_gain_proportional = P;
 	_gain_integral = I;
 	_gain_derivative = D;
 }
 
-float PID::update(const float feedback, const float dt, const bool update_integral)
+ಭಿನ್ನ PID::update(ಧ್ರುವ ಭಿನ್ನ feedback, ಧ್ರುವ ಭಿನ್ನ dt, ಧ್ರುವ ತಾರ್ಕಿಕ update_integral)
 {
-	const float error = _setpoint - feedback;
-	const float derivative = updateDerivative(feedback, dt);
-	const float output = (_gain_feedforward * _setpoint) + (_gain_proportional * error) + _integral -
+	ಧ್ರುವ ಭಿನ್ನ error = _setpoint - feedback;
+	ಧ್ರುವ ಭಿನ್ನ derivative = updateDerivative(feedback, dt);
+	ಧ್ರುವ ಭಿನ್ನ output = (_gain_feedforward * _setpoint) + (_gain_proportional * error) + _integral -
 			     (_gain_derivative * derivative);
-	const float output_constrained = math::constrain(output, _lower_limit_output, _upper_limit_output);
+	ಧ್ರುವ ಭಿನ್ನ output_constrained = math::constrain(output, _lower_limit_output, _upper_limit_output);
 
-	if (update_integral) {
+	ಯದಿ (update_integral) {
 		updateIntegral(error, output - output_constrained, dt);
 	}
 
 	_last_feedback = feedback;
-	return output_constrained;
+	ಪ್ರತ್ಯಾಗಮ output_constrained;
 }
 
-void PID::updateIntegral(float error, const float saturation, const float dt)
+ಶೂನ್ಯ PID::updateIntegral(ಭಿನ್ನ error, ಧ್ರುವ ಭಿನ್ನ saturation, ಧ್ರುವ ಭಿನ್ನ dt)
 {
 	// Anti-windup: stop integrating in the direction that drives the output
 	// further into saturation (conditional integration)
-	if ((saturation > FLT_EPSILON && error > 0.f) || (saturation < -FLT_EPSILON && error < 0.f)) {
+	ಯದಿ ((saturation > FLT_EPSILON && error > 0.f) || (saturation < -FLT_EPSILON && error < 0.f)) {
 		error = 0.f;
 	}
 
-	const float integral_new = _integral + _gain_integral * error * dt;
+	ಧ್ರುವ ಭಿನ್ನ integral_new = _integral + _gain_integral * error * dt;
 
-	if (std::isfinite(integral_new)) {
+	ಯದಿ (std::isfinite(integral_new)) {
 		_integral = math::constrain(integral_new, -_limit_integral, _limit_integral);
 	}
 }
 
-float PID::updateDerivative(float feedback, const float dt)
+ಭಿನ್ನ PID::updateDerivative(ಭಿನ್ನ feedback, ಧ್ರುವ ಭಿನ್ನ dt)
 {
-	float feedback_change = 0.f;
+	ಭಿನ್ನ feedback_change = 0.f;
 
-	if ((dt > FLT_EPSILON) && std::isfinite(_last_feedback)) {
+	ಯದಿ ((dt > FLT_EPSILON) && std::isfinite(_last_feedback)) {
 		feedback_change = (feedback - _last_feedback) / dt;
 	}
 
-	return feedback_change;
+	ಪ್ರತ್ಯಾಗಮ feedback_change;
 }

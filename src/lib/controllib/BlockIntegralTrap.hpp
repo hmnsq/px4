@@ -39,20 +39,20 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
 /**
@@ -63,27 +63,27 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegralTrap : public SuperBlock
+ವರ್ಗ __EXPORT BlockIntegralTrap : ಸಾರ್ವಜನಿಕ SuperBlock
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockIntegralTrap(SuperBlock *parent, const char *name) :
+	BlockIntegralTrap(SuperBlock *parent, ಧ್ರುವ ವರ್ಣ *name) :
 		SuperBlock(parent, name),
 		_u(0),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegralTrap() = default;
-	float update(float input);
+		_limit(ಏತತ್, "") {}
+	ಆಭಾಸ ~BlockIntegralTrap() = ಸ್ವಭಾವ;
+	ಭಿನ್ನ update(ಭಿನ್ನ ಒಳಹರಿವು);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
+	ಭಿನ್ನ getU() {ಪ್ರತ್ಯಾಗಮ _u;}
+	ಭಿನ್ನ getY() {ಪ್ರತ್ಯಾಗಮ _y;}
+	ಭಿನ್ನ getMax() {ಪ್ರತ್ಯಾಗಮ _limit.getMax();}
+	ಶೂನ್ಯ setU(ಭಿನ್ನ u) {_u = u;}
+	ಶೂನ್ಯ setY(ಭಿನ್ನ y) {_y = y;}
+ರಕ್ಷಿತ:
 // attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
+	ಭಿನ್ನ _u; /**< previous input */
+	ಭಿನ್ನ _y; /**< previous output */
 	BlockLimitSym _limit; /**< limiter */
 };
 

@@ -35,18 +35,18 @@
  * To run this test only use: make tests TESTFILTER=atmosphere
  */
 
-#include <gtest/gtest.h>
-#include <lib/atmosphere/atmosphere.h>
-using namespace atmosphere;
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <lib/atmosphere/atmosphere.h>
+using ನಾಮಾಕಾಶ atmosphere;
 
 TEST(TestAtmosphere, pressureFromAltitude)
 {
 	// GIVEN pressure at seal level in standard atmosphere and sea level altitude
-	const float pressureAtSeaLevel = 101325.f; // Pa
-	float altitude = 0.0f;
+	ಧ್ರುವ ಭಿನ್ನ pressureAtSeaLevel = 101325.f; // Pa
+	ಭಿನ್ನ altitude = 0.0f;
 
 	// WHEN we calculate pressure based on altitude
-	float pressure = getPressureFromAltitude(altitude);
+	ಭಿನ್ನ pressure = getPressureFromAltitude(altitude);
 
 	// THEN expect seal level pressure for standard atmosphere
 	EXPECT_FLOAT_EQ(pressure, pressureAtSeaLevel);
@@ -62,11 +62,11 @@ TEST(TestAtmosphere, pressureFromAltitude)
 TEST(TestAtmosphere, altitudeFromPressure)
 {
 	// GIVEN pressure at seal level in standard atmosphere
-	const float pressureAtSealevel = 101325.f;
-	float pressure = pressureAtSealevel;
+	ಧ್ರುವ ಭಿನ್ನ pressureAtSealevel = 101325.f;
+	ಭಿನ್ನ pressure = pressureAtSealevel;
 
 	// WHEN we calculate altitude from pressure
-	float altitude = getAltitudeFromPressure(pressure, pressureAtSealevel);
+	ಭಿನ್ನ altitude = getAltitudeFromPressure(pressure, pressureAtSealevel);
 
 	// THEN expect resulting altitude to be near sea level
 	EXPECT_FLOAT_EQ(altitude, 0.0f);
@@ -84,18 +84,18 @@ TEST(TestAtmosphere, altitudeFromPressure)
 TEST(TestAtmosphere, DensityFromPressure)
 {
 // GIVEN standard atmosphere at sea level
-	const float pressureAtSealevel = 101325.f;
-	const float tempSeaLevel = 15.f;
+	ಧ್ರುವ ಭಿನ್ನ pressureAtSealevel = 101325.f;
+	ಧ್ರುವ ಭಿನ್ನ tempSeaLevel = 15.f;
 
 	// WHEN we calculate density from pressure and temperature
-	float density = getDensityFromPressureAndTemp(pressureAtSealevel, tempSeaLevel);
+	ಭಿನ್ನ density = getDensityFromPressureAndTemp(pressureAtSealevel, tempSeaLevel);
 
 	// THEN expect density at sea level in standard atmosphere
 	EXPECT_NEAR(density, 1.225f, 0.001f);
 
 	// GIVEN standard atmosphere at 3000m
-	const float pressure = 70109.f;
-	const float tempAt3000m = -4.5f;
+	ಧ್ರುವ ಭಿನ್ನ pressure = 70109.f;
+	ಧ್ರುವ ಭಿನ್ನ tempAt3000m = -4.5f;
 
 	// WHEN we calculate density from pressure and temperature
 	density = getDensityFromPressureAndTemp(pressure, tempAt3000m);
@@ -107,10 +107,10 @@ TEST(TestAtmosphere, DensityFromPressure)
 TEST(TestAtmosphere, StandardTemperature)
 {
 	// GIVEN standard atmosphere at sea level
-	float altitude = 0.f;
+	ಭಿನ್ನ altitude = 0.f;
 
 	// WHEN we calculate standard temperature from altitude
-	float temperature = getStandardTemperatureAtAltitude(altitude);
+	ಭಿನ್ನ temperature = getStandardTemperatureAtAltitude(altitude);
 
 	// THEN expect standard temperature at sea level
 	EXPECT_NEAR(temperature, 15.f, 0.001f);

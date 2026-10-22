@@ -34,8 +34,8 @@
 #pragma once
 
 #define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) name,
-enum class TuneID {
-#include "tune_definition.desc"
+ಗಣನಾ class TuneID {
+#ಅನ್ತರ್ಭಾವ "tune_definition.desc"
 	NONE = -1
 };
 #undef PX4_DEFINE_TUNE

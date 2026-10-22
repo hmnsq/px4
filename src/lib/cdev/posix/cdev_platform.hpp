@@ -1,35 +1,35 @@
 
 #pragma once
 
-#include <inttypes.h>
-#include <string.h>
+#ಅನ್ತರ್ಭಾವ <inttypes.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
 
 #define ATOMIC_ENTER lock()
 #define ATOMIC_LEAVE unlock()
 
-namespace cdev
+ನಾಮಾಕಾಶ cdev
 {
 
-struct file_operations {
-	void *op;
+ಸಂರಚನಾ file_operations {
+	ಶೂನ್ಯ *op;
 };
 
-using px4_file_operations_t = struct file_operations;
+using px4_file_operations_t = ಸಂರಚನಾ file_operations;
 using mode_t = uint32_t;
 
-class CDev;
+ವರ್ಗ CDev;
 
-struct file_t {
-	int f_oflags{0};
-	void *f_priv{nullptr};
+ಸಂರಚನಾ file_t {
+	ಪೂರ್ಣಾಙ್ಕ f_oflags{0};
+	ಶೂನ್ಯ *f_priv{nullptr};
 	CDev *cdev{nullptr};
 
-	file_t() = default;
-	file_t(int f, CDev *c) : f_oflags(f), cdev(c) {}
+	file_t() = ಸ್ವಭಾವ;
+	file_t(ಪೂರ್ಣಾಙ್ಕ f, CDev *c) : f_oflags(f), cdev(c) {}
 };
 
 } // namespace cdev
 
-extern "C" __EXPORT int register_driver(const char *name, const cdev::px4_file_operations_t *fops,
-					cdev::mode_t mode, void *data);
-extern "C" __EXPORT int unregister_driver(const char *path);
+ಬಾಹ್ಯ "C" __EXPORT ಪೂರ್ಣಾಙ್ಕ register_driver(ಧ್ರುವ ವರ್ಣ *name, ಧ್ರುವ cdev::px4_file_operations_t *fops,
+					cdev::mode_t mode, ಶೂನ್ಯ *data);
+ಬಾಹ್ಯ "C" __EXPORT ಪೂರ್ಣಾಙ್ಕ unregister_driver(ಧ್ರುವ ವರ್ಣ *path);

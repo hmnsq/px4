@@ -58,60 +58,60 @@
 
 #ifndef PX4_DIRECTIONALGUIDANCE_HPP
 #define PX4_DIRECTIONALGUIDANCE_HPP
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <lib/mathlib/mathlib.h>
 
-struct DirectionalGuidanceOutput {
-	float course_setpoint{NAN};
-	float lateral_acceleration_feedforward{NAN};
+ಸಂರಚನಾ DirectionalGuidanceOutput {
+	ಭಿನ್ನ course_setpoint{NAN};
+	ಭಿನ್ನ lateral_acceleration_feedforward{NAN};
 };
 
-class DirectionalGuidance
+ವರ್ಗ DirectionalGuidance
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 
 	DirectionalGuidance();
 
-	DirectionalGuidanceOutput guideToPath(const matrix::Vector2f &curr_pos_local, const matrix::Vector2f &ground_vel,
-					      const matrix::Vector2f &wind_vel,
-					      const matrix::Vector2f &unit_path_tangent, const matrix::Vector2f &position_on_path,
-					      const float path_curvature);
+	DirectionalGuidanceOutput guideToPath(ಧ್ರುವ matrix::Vector2f &curr_pos_local, ಧ್ರುವ matrix::Vector2f &ground_vel,
+					      ಧ್ರುವ matrix::Vector2f &wind_vel,
+					      ಧ್ರುವ matrix::Vector2f &unit_path_tangent, ಧ್ರುವ matrix::Vector2f &position_on_path,
+					      ಧ್ರುವ ಭಿನ್ನ path_curvature);
 	/*
 	 * Set the nominal controller period [s].
 	 */
-	void setPeriod(float period) { period_ = math::max(period, NPFG_EPSILON); }
+	ಶೂನ್ಯ setPeriod(ಭಿನ್ನ period) { period_ = math::max(period, NPFG_EPSILON); }
 
 	/*
 	 * Set the nominal controller damping ratio.
 	 */
-	void setDamping(float damping) { damping_ = math::constrain(damping, NPFG_EPSILON, 1.0f); }
+	ಶೂನ್ಯ setDamping(ಭಿನ್ನ damping) { damping_ = math::constrain(damping, NPFG_EPSILON, 1.0f); }
 
 	/*
 	 * Enable automatic lower bounding of the user set controller period.
 	 */
-	void enablePeriodLB(const bool en) { en_period_lb_ = en; }
+	ಶೂನ್ಯ enablePeriodLB(ಧ್ರುವ ತಾರ್ಕಿಕ en) { en_period_lb_ = en; }
 
 	/*
 	 * Enable automatic adaptation of the user set controller period for track keeping
 	 * performance.
 	 */
-	void enablePeriodUB(const bool en) { en_period_ub_ = en; }
+	ಶೂನ್ಯ enablePeriodUB(ಧ್ರುವ ತಾರ್ಕಿಕ en) { en_period_ub_ = en; }
 
 
 	/*
 	 * Set the autopilot roll response time constant [s].
 	 */
-	void setRollTimeConst(float tc) { roll_time_const_ = tc; }
+	ಶೂನ್ಯ setRollTimeConst(ಭಿನ್ನ tc) { roll_time_const_ = tc; }
 
 	/*
 	* Set the switch distance multiplier.
 	*/
-	void setSwitchDistanceMultiplier(float mult) { switch_distance_multiplier_ = math::max(mult, 0.1f); }
+	ಶೂನ್ಯ setSwitchDistanceMultiplier(ಭಿನ್ನ mult) { switch_distance_multiplier_ = math::max(mult, 0.1f); }
 
 	/*
 	 * Set the period safety factor.
 	 */
-	void setPeriodSafetyFactor(float sf) { period_safety_factor_ = math::max(sf, 1.0f); }
+	ಶೂನ್ಯ setPeriodSafetyFactor(ಭಿನ್ನ sf) { period_safety_factor_ = math::max(sf, 1.0f); }
 	/*
 	 * [Copied directly from ECL_L1_Pos_Controller]
 	 *
@@ -122,56 +122,56 @@ public:
 	 *
 	 * @param[in] wp_radius The switching radius the waypoint has set.
 	 */
-	float switchDistance(float wp_radius) const;
+	ಭಿನ್ನ switchDistance(ಭಿನ್ನ wp_radius) ಧ್ರುವ;
 
-	float getCourseSetpoint() const { return course_sp_; }
-	float getLateralAccelerationSetpoint() const { return lateral_accel_ff_; }
-	float getBearingFeasibility() const { return feas_; }
-	float getBearingFeasibilityOnTrack() const { return feas_on_track_; }
-	float getSignedTrackError() const { return signed_track_error_; }
-	float getTrackErrorBound() const { return track_error_bound_; }
-	float getAdaptedPeriod() const { return adapted_period_; }
+	ಭಿನ್ನ getCourseSetpoint() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ course_sp_; }
+	ಭಿನ್ನ getLateralAccelerationSetpoint() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ lateral_accel_ff_; }
+	ಭಿನ್ನ getBearingFeasibility() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ feas_; }
+	ಭಿನ್ನ getBearingFeasibilityOnTrack() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ feas_on_track_; }
+	ಭಿನ್ನ getSignedTrackError() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ signed_track_error_; }
+	ಭಿನ್ನ getTrackErrorBound() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ track_error_bound_; }
+	ಭಿನ್ನ getAdaptedPeriod() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ adapted_period_; }
 
-private:
-	static constexpr float NPFG_EPSILON = 1.0e-6; // small number *bigger than machine epsilon
-	static constexpr float MIN_RADIUS = 0.5f; // minimum effective radius (avoid singularities) [m]
-	static constexpr float AIRSPEED_BUFFER = 1.5f; // airspeed buffer [m/s] (must be > 0)
+ಗುಪ್ತ:
+	ಸ್ಥಿರ constexpr ಭಿನ್ನ NPFG_EPSILON = 1.0e-6; // small number *bigger than machine epsilon
+	ಸ್ಥಿರ constexpr ಭಿನ್ನ MIN_RADIUS = 0.5f; // minimum effective radius (avoid singularities) [m]
+	ಸ್ಥಿರ constexpr ಭಿನ್ನ AIRSPEED_BUFFER = 1.5f; // airspeed buffer [m/s] (must be > 0)
 
-	float period_{10.0f}; // nominal (desired) period -- user defined [s]
-	float damping_{0.7071f}; // nominal (desired) damping ratio -- user defined
-	float adapted_period_{10.0f}; // auto-adapted period (if stability bounds enabled) [s]
+	ಭಿನ್ನ period_{10.0f}; // nominal (desired) period -- user defined [s]
+	ಭಿನ್ನ damping_{0.7071f}; // nominal (desired) damping ratio -- user defined
+	ಭಿನ್ನ adapted_period_{10.0f}; // auto-adapted period (if stability bounds enabled) [s]
 
 	/*
 	 * user defined guidance settings
 	 */
 
 	// guidance options
-	bool en_period_lb_{true}; // enables automatic lower bound constraints on controller period
-	bool en_period_ub_{true}; // enables automatic upper bound constraints on controller period (remains disabled if lower bound is disabled)
+	ತಾರ್ಕಿಕ en_period_lb_{ಸತ್ಯ}; // enables automatic lower bound constraints on controller period
+	ತಾರ್ಕಿಕ en_period_ub_{ಸತ್ಯ}; // enables automatic upper bound constraints on controller period (remains disabled if lower bound is disabled)
 
 	// guidance settings
-	float roll_time_const_{0.0f}; // autopilot roll response time constant [s]
+	ಭಿನ್ನ roll_time_const_{0.0f}; // autopilot roll response time constant [s]
 
 	// guidance parameters
-	float switch_distance_multiplier_{0.32f}; // a value multiplied by the track error boundary resulting in a lower switch distance
+	ಭಿನ್ನ switch_distance_multiplier_{0.32f}; // a value multiplied by the track error boundary resulting in a lower switch distance
 	// ^as the bearing angle changes quadratically (instead of linearly as in L1), the time constant (automatically calculated for on track stability) proportional track error boundary typically over estimates the required switching distance
-	float period_safety_factor_{1.5f}; // multiplied by the minimum period for conservative lower bound
+	ಭಿನ್ನ period_safety_factor_{1.5f}; // multiplied by the minimum period for conservative lower bound
 
 	/*
 	* internal guidance states
 	*/
 
 	//bearing feasibility
-	float feas_{1.0f}; // continous representation of bearing feasibility in [0,1] (0=infeasible, 1=feasible)
-	float feas_on_track_{1.0f}; // continuous bearing feasibility "on track"
+	ಭಿನ್ನ feas_{1.0f}; // continous representation of bearing feasibility in [0,1] (0=infeasible, 1=feasible)
+	ಭಿನ್ನ feas_on_track_{1.0f}; // continuous bearing feasibility "on track"
 
 	// track proximity
-	float track_error_bound_{212.13f}; // the current ground speed dependent track error bound [m]
-	float track_proximity_{0.0f}; // value in [0,1] indicating proximity to track, 0 = at track error boundary or beyond, 1 = on track
-	float signed_track_error_{0.0f}; // signed track error [m]
+	ಭಿನ್ನ track_error_bound_{212.13f}; // the current ground speed dependent track error bound [m]
+	ಭಿನ್ನ track_proximity_{0.0f}; // value in [0,1] indicating proximity to track, 0 = at track error boundary or beyond, 1 = on track
+	ಭಿನ್ನ signed_track_error_{0.0f}; // signed track error [m]
 	matrix::Vector2f bearing_vec_{matrix::Vector2f{1.0f, 0.0f}}; // bearing unit vector
-	float course_sp_{0.f}; // course setpoint [rad]
-	float lateral_accel_ff_{0.f}; // lateral acceleration feedforward [m/s^2]
+	ಭಿನ್ನ course_sp_{0.f}; // course setpoint [rad]
+	ಭಿನ್ನ lateral_accel_ff_{0.f}; // lateral acceleration feedforward [m/s^2]
 
 	/*
 	 * Cacluates a continuous representation of the bearing feasibility from [0,1].
@@ -183,8 +183,8 @@ private:
 	 * @param[in] wind_speed Wind speed [m/s]
 	 * @return bearing feasibility
 	 */
-	float bearingFeasibility(float wind_cross_bearing, const float wind_dot_bearing, const float airspeed,
-				 const float wind_speed) const;
+	ಭಿನ್ನ bearingFeasibility(ಭಿನ್ನ wind_cross_bearing, ಧ್ರುವ ಭಿನ್ನ wind_dot_bearing, ಧ್ರುವ ಭಿನ್ನ airspeed,
+				 ಧ್ರುವ ಭಿನ್ನ wind_speed) ಧ್ರುವ;
 	/*
 	 * Adapts the controller period considering user defined inputs, current flight
 	 * condition, path properties, and stability bounds.
@@ -200,9 +200,9 @@ private:
 	 * @param[in] feas_on_track Bearing feasibility on track at the closest point
 	 * @return Adapted period [s]
 	 */
-	float adaptPeriod(const float ground_speed, const float airspeed, const float wind_speed,
-			  const float track_error, const float path_curvature, const matrix::Vector2f &wind_vel,
-			  const matrix::Vector2f &unit_path_tangent, const float feas_on_track) const;
+	ಭಿನ್ನ adaptPeriod(ಧ್ರುವ ಭಿನ್ನ ground_speed, ಧ್ರುವ ಭಿನ್ನ airspeed, ಧ್ರುವ ಭಿನ್ನ wind_speed,
+			  ಧ್ರುವ ಭಿನ್ನ track_error, ಧ್ರುವ ಭಿನ್ನ path_curvature, ಧ್ರುವ matrix::Vector2f &wind_vel,
+			  ಧ್ರುವ matrix::Vector2f &unit_path_tangent, ಧ್ರುವ ಭಿನ್ನ feas_on_track) ಧ್ರುವ;
 	/*
 	 * Returns normalized (unitless) and constrained track error [0,1].
 	 *
@@ -210,7 +210,7 @@ private:
 	 * @param[in] track_error_bound Track error boundary [m]
 	 * @return Normalized track error
 	 */
-	float normalizedTrackError(const float track_error, const float track_error_bound) const;
+	ಭಿನ್ನ normalizedTrackError(ಧ್ರುವ ಭಿನ್ನ track_error, ಧ್ರುವ ಭಿನ್ನ track_error_bound) ಧ್ರುವ;
 
 	/*
 	 * Cacluates an approximation of the wind factor (see [TODO: include citation]).
@@ -219,7 +219,7 @@ private:
 	 * @param[in] wind_speed Wind speed [m/s]
 	 * @return Non-dimensional wind factor approximation
 	 */
-	float windFactor(const float airspeed, const float wind_speed) const;
+	ಭಿನ್ನ windFactor(ಧ್ರುವ ಭಿನ್ನ airspeed, ಧ್ರುವ ಭಿನ್ನ wind_speed) ಧ್ರುವ;
 
 	/*
 	 * Calculates a theoretical upper bound on the user defined period to maintain
@@ -230,7 +230,7 @@ private:
 	 * @param[in] wind_factor Non-dimensional wind factor (see [TODO: include citation])
 	 * @return Period upper bound [s]
 	 */
-	float periodUpperBound(const float air_turn_rate, const float wind_factor, const float feas_on_track) const;
+	ಭಿನ್ನ periodUpperBound(ಧ್ರುವ ಭಿನ್ನ air_turn_rate, ಧ್ರುವ ಭಿನ್ನ wind_factor, ಧ್ರುವ ಭಿನ್ನ feas_on_track) ಧ್ರುವ;
 
 	/*
 	 * Calculates a theoretical lower bound on the user defined period to avoid
@@ -243,7 +243,7 @@ private:
 	 * @param[in] wind_factor Non-dimensional wind factor (see [TODO: include citation])
 	 * @return Period lower bound [s]
 	 */
-	float periodLowerBound(const float air_turn_rate, const float wind_factor, const float feas_on_track) const;
+	ಭಿನ್ನ periodLowerBound(ಧ್ರುವ ಭಿನ್ನ air_turn_rate, ಧ್ರುವ ಭಿನ್ನ wind_factor, ಧ್ರುವ ಭಿನ್ನ feas_on_track) ಧ್ರುವ;
 
 	/*
 	 * Computes a continous non-dimensional track proximity [0,1] - 0 when the
@@ -253,7 +253,7 @@ private:
 	 *            from the unit track error vector [rad]
 	 * @return Track proximity
 	 */
-	float trackProximity(const float look_ahead_ang) const;
+	ಭಿನ್ನ trackProximity(ಧ್ರುವ ಭಿನ್ನ look_ahead_ang) ಧ್ರುವ;
 
 	/*
 	 * Calculates a ground speed modulated track error bound under which the
@@ -264,7 +264,7 @@ private:
 	 * @param[in] time_const Controller time constant [s]
 	 * @return Track error boundary [m]
 	 */
-	float trackErrorBound(const float ground_speed, const float time_const) const;
+	ಭಿನ್ನ trackErrorBound(ಧ್ರುವ ಭಿನ್ನ ground_speed, ಧ್ರುವ ಭಿನ್ನ time_const) ಧ್ರುವ;
 
 	/*
 	 * Calculates the required controller time constant to achieve the desired
@@ -275,7 +275,7 @@ private:
 	 * @param[in] damping Desired system damping ratio
 	 * @return Time constant [s]
 	 */
-	float timeConst(const float period, const float damping) const;
+	ಭಿನ್ನ timeConst(ಧ್ರುವ ಭಿನ್ನ period, ಧ್ರುವ ಭಿನ್ನ damping) ಧ್ರುವ;
 
 	/*
 	 * Cacluates the look ahead angle as a quadratic function of the normalized
@@ -284,7 +284,7 @@ private:
 	 * @param[in] normalized_track_error Normalized track error (track error / track error boundary)
 	 * @return Look ahead angle [rad]
 	 */
-	float lookAheadAngle(const float normalized_track_error) const;
+	ಭಿನ್ನ lookAheadAngle(ಧ್ರುವ ಭಿನ್ನ normalized_track_error) ಧ್ರುವ;
 	/*
 	 * Calculates the bearing vector and track proximity transitioning variable
 	 * from the look-ahead angle mapping.
@@ -297,8 +297,8 @@ private:
 	 *            determined by path normal direction) [m]
 	 * @return Unit bearing vector
 	 */
-	matrix::Vector2f bearingVec(const matrix::Vector2f &unit_path_tangent, const float look_ahead_ang,
-				    const float signed_track_error) const;
+	matrix::Vector2f bearingVec(ಧ್ರುವ matrix::Vector2f &unit_path_tangent, ಧ್ರುವ ಭಿನ್ನ look_ahead_ang,
+				    ಧ್ರುವ ಭಿನ್ನ signed_track_error) ಧ್ರುವ;
 
 	/*
 	 * Projection of the air velocity vector onto the bearing line considering
@@ -308,7 +308,7 @@ private:
 	 * @param[in] wind_cross_bearing 2D cross product of wind velocity and bearing vector [m/s]
 	 * @return Projection of air velocity vector on bearing vector [m/s]
 	 */
-	float projectAirspOnBearing(const float airspeed, const float wind_cross_bearing) const;
+	ಭಿನ್ನ projectAirspOnBearing(ಧ್ರುವ ಭಿನ್ನ airspeed, ಧ್ರುವ ಭಿನ್ನ wind_cross_bearing) ಧ್ರುವ;
 	/*
 	 * Calculates an additional feed-forward lateral acceleration demand considering
 	 * the path curvature.
@@ -324,9 +324,9 @@ private:
 	 * @param[in] path_curvature Path curvature at closest point on track [m^-1]
 	 * @return Feed-forward lateral acceleration command [m/s^2]
 	 */
-	float lateralAccelFF(const matrix::Vector2f &unit_path_tangent, const matrix::Vector2f &ground_vel,
-			     const float wind_dot_upt, const float wind_cross_upt, const float airspeed,
-			     const float wind_speed, const float signed_track_error, const float path_curvature) const;
+	ಭಿನ್ನ lateralAccelFF(ಧ್ರುವ matrix::Vector2f &unit_path_tangent, ಧ್ರುವ matrix::Vector2f &ground_vel,
+			     ಧ್ರುವ ಭಿನ್ನ wind_dot_upt, ಧ್ರುವ ಭಿನ್ನ wind_cross_upt, ಧ್ರುವ ಭಿನ್ನ airspeed,
+			     ಧ್ರುವ ಭಿನ್ನ wind_speed, ಧ್ರುವ ಭಿನ್ನ signed_track_error, ಧ್ರುವ ಭಿನ್ನ path_curvature) ಧ್ರುವ;
 
 };
 

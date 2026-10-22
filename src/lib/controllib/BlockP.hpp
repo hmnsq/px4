@@ -39,42 +39,42 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
 /**
  * A proportional controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockP: public Block
+ವರ್ಗ __EXPORT BlockP: ಸಾರ್ವಜನಿಕ Block
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockP(SuperBlock *parent, const char *name) :
+	BlockP(SuperBlock *parent, ಧ್ರುವ ವರ್ಣ *name) :
 		Block(parent, name),
-		_kP(this, "") // only one param, no need to name
+		_kP(ಏತತ್, "") // only one param, no need to name
 	{}
-	virtual ~BlockP() = default;
-	float update(float input)
+	ಆಭಾಸ ~BlockP() = ಸ್ವಭಾವ;
+	ಭಿನ್ನ update(ಭಿನ್ನ ಒಳಹರಿವು)
 	{
-		return getKP() * input;
+		ಪ್ರತ್ಯಾಗಮ getKP() * ಒಳಹರಿವು;
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-protected:
+	ಭಿನ್ನ getKP() { ಪ್ರತ್ಯಾಗಮ _kP.get(); }
+ರಕ್ಷಿತ:
 	control::BlockParamFloat _kP;
 };
 

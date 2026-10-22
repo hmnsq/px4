@@ -33,29 +33,29 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ಅನ್ತರ್ಭಾವ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/manual_control_setpoint.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/manual_control_setpoint.h>
 
 /**
  * Functions: RC_Roll .. RCAUX_Max
  */
-class FunctionManualRC : public FunctionProviderBase
+ವರ್ಗ FunctionManualRC : ಸಾರ್ವಜನಿಕ FunctionProviderBase
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	FunctionManualRC()
 	{
-		resetAllToDisarmedValue();
+		reset_All_To_Disarmed_ಮೌಲ್ಯ();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionManualRC(); }
+	ಸ್ಥಿರ FunctionProviderBase *allocate(ಧ್ರುವ Context &context) { ಪ್ರತ್ಯಾಗಮ ನೂತನ FunctionManualRC(); }
 
-	void update() override
+	ಶೂನ್ಯ update() override
 	{
 		manual_control_setpoint_s manual_control_setpoint;
 
-		if (_topic.update(&manual_control_setpoint)) {
-			if (manual_control_setpoint.valid) {
+		ಯದಿ (_topic.update(&manual_control_setpoint)) {
+			ಯದಿ (manual_control_setpoint.valid) {
 				_data[0] = manual_control_setpoint.roll;
 				_data[1] = manual_control_setpoint.pitch;
 				_data[2] = manual_control_setpoint.throttle;
@@ -68,27 +68,27 @@ public:
 				_data[9] = manual_control_setpoint.aux5;
 				_data[10] = manual_control_setpoint.aux6;
 
-			} else {
-				resetAllToDisarmedValue();
+			} ಅನ್ಯಥಾ {
+				reset_All_To_Disarmed_ಮೌಲ್ಯ();
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::RC_Roll]; }
+	ಭಿನ್ನ value(OutputFunction func) override { ಪ್ರತ್ಯಾಗಮ _data[(ಪೂರ್ಣಾಙ್ಕ)func - (ಪೂರ್ಣಾಙ್ಕ)OutputFunction::RC_Roll]; }
 
-private:
-	static constexpr int num_data_points = 11;
+ಗುಪ್ತ:
+	ಸ್ಥಿರ constexpr ಪೂರ್ಣಾಙ್ಕ ಅಂಕೆ_data_points = 11;
 
-	void resetAllToDisarmedValue()
+	ಶೂನ್ಯ reset_All_To_Disarmed_ಮೌಲ್ಯ()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
+		ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ i = 0; i < ಅಂಕೆ_data_points; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
+	static_assert(ಅಂಕೆ_data_points == (ಪೂರ್ಣಾಙ್ಕ)OutputFunction::RC_AUXMax - (ಪೂರ್ಣಾಙ್ಕ)OutputFunction::RC_Roll + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _topic{ORB_ID(manual_control_setpoint)};
-	float _data[num_data_points] {};
+	ಭಿನ್ನ _data[ಅಂಕೆ_data_points] {};
 };

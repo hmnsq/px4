@@ -36,19 +36,19 @@
  * Tests for rotations.
  */
 
-#include <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
 
-#include "rotation.h"
+#ಅನ್ತರ್ಭಾವ "rotation.h"
 
 
 TEST(Rotations, matrix_vs_3f)
 {
 	//iterate through all defined rotations
-	for (size_t i = 0; i < (size_t)Rotation::ROTATION_MAX; i++) {
+	ಪ್ರತಿ (size_t i = 0; i < (size_t)Rotation::ROTATION_MAX; i++) {
 
 		// GIVEN: an initial vector and a rotation
-		const matrix::Vector3f original = {1.f, 2.f, 3.f};
-		const enum Rotation	rotation = static_cast<Rotation>(i);
+		ಧ್ರುವ matrix::Vector3f original = {1.f, 2.f, 3.f};
+		ಧ್ರುವ ಗಣನಾ Rotation	rotation = static_cast<Rotation>(i);
 
 		// WHEN: we transform the vector using the rotate_3f function and the rotation matrix
 		matrix::Vector3f transformed_3f = original;
@@ -67,34 +67,34 @@ TEST(Rotations, matrix_vs_3f)
 TEST(Rotations, duplicates)
 {
 	// find all identical rotations to skip (needs to be kept in sync with mag calibration auto rotation)
-	for (size_t i = 0; i < (size_t)Rotation::ROTATION_MAX; i++) {
+	ಪ್ರತಿ (size_t i = 0; i < (size_t)Rotation::ROTATION_MAX; i++) {
 
 		// GIVEN: an initial vector and a rotation
-		const matrix::Vector3f original = {1.f, 2.f, 3.f};
-		const enum Rotation rotation_1 = static_cast<Rotation>(i);
+		ಧ್ರುವ matrix::Vector3f original = {1.f, 2.f, 3.f};
+		ಧ್ರುವ ಗಣನಾ Rotation rotation_1 = static_cast<Rotation>(i);
 
 		// WHEN: we transform the vector using the rotate_3f function and the rotation matrix
 		matrix::Vector3f transformed_1 = original;
 		rotate_3f(rotation_1, transformed_1(0), transformed_1(1), transformed_1(2));
 
-		for (size_t j = 0; j < (size_t)Rotation::ROTATION_MAX; j++) {
+		ಪ್ರತಿ (size_t j = 0; j < (size_t)Rotation::ROTATION_MAX; j++) {
 
-			const enum Rotation rotation_2 = static_cast<Rotation>(j);
+			ಧ್ರುವ ಗಣನಾ Rotation rotation_2 = static_cast<Rotation>(j);
 
 			matrix::Vector3f transformed_2 = original;
 			rotate_3f(rotation_2, transformed_2(0), transformed_2(1), transformed_2(2));
 
-			if (i != j) {
+			ಯದಿ (i != j) {
 				// ROTATION_PITCH_180_YAW_90 (26) = ROTATION_ROLL_180_YAW_270 (14)
-				if (i == ROTATION_ROLL_180_YAW_270 && j == ROTATION_PITCH_180_YAW_90) { continue; }
+				ಯದಿ (i == ROTATION_ROLL_180_YAW_270 && j == ROTATION_PITCH_180_YAW_90) { ಅನುವರ್ತ; }
 
-				if (j == ROTATION_ROLL_180_YAW_270 && i == ROTATION_PITCH_180_YAW_90) { continue; }
+				ಯದಿ (j == ROTATION_ROLL_180_YAW_270 && i == ROTATION_PITCH_180_YAW_90) { ಅನುವರ್ತ; }
 
 
 				// ROTATION_ROLL_180_YAW_90 (10) = ROTATION_PITCH_180_YAW_270 (27)
-				if (i == ROTATION_ROLL_180_YAW_90 && j == ROTATION_PITCH_180_YAW_270) { continue; }
+				ಯದಿ (i == ROTATION_ROLL_180_YAW_90 && j == ROTATION_PITCH_180_YAW_270) { ಅನುವರ್ತ; }
 
-				if (j == ROTATION_ROLL_180_YAW_90 && i == ROTATION_PITCH_180_YAW_270) { continue; }
+				ಯದಿ (j == ROTATION_ROLL_180_YAW_90 && i == ROTATION_PITCH_180_YAW_270) { ಅನುವರ್ತ; }
 
 
 				// otherwise all rotations should be different

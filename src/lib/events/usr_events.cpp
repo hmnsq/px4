@@ -37,14 +37,14 @@
  * User space interface for dispatching events.
  */
 
-#include <sys/boardctl.h>
+#ಅನ್ತರ್ಭಾವ <sys/boardctl.h>
 
-#include "events_ioctl.h"
+#ಅನ್ತರ್ಭಾವ "events_ioctl.h"
 
-namespace events
+ನಾಮಾಕಾಶ events
 {
 
-void send(event_s &event)
+ಶೂನ್ಯ send(event_s &event)
 {
 	eventiocsend_t data = {event};
 	boardctl(EVENTSIOCSEND, reinterpret_cast<unsigned long>(&data));

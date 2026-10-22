@@ -33,21 +33,21 @@
 
 #pragma once
 
-#include "mathlib/math/Limits.hpp"
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ "mathlib/math/Limits.hpp"
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-class LatLonAlt
+ವರ್ಗ LatLonAlt
 {
-public:
-	LatLonAlt() = default;
-	LatLonAlt(const LatLonAlt &lla)
+ಸಾರ್ವಜನಿಕ:
+	LatLonAlt() = ಸ್ವಭಾವ;
+	LatLonAlt(ಧ್ರುವ LatLonAlt &lla)
 	{
 		_latitude_rad = lla.latitude_rad();
 		_longitude_rad = lla.longitude_rad();
 		_altitude = lla.altitude();
 	}
 
-	LatLonAlt(const double latitude_deg, const double longitude_deg, const float altitude_m)
+	LatLonAlt(ಧ್ರುವ ದ್ವಿಗುಣ latitude_deg, ಧ್ರುವ ದ್ವಿಗುಣ longitude_deg, ಧ್ರುವ ಭಿನ್ನ altitude_m)
 	{
 		_latitude_rad = math::radians(latitude_deg);
 		_longitude_rad = math::radians(longitude_deg);
@@ -55,41 +55,41 @@ public:
 	}
 
 
-	static LatLonAlt fromEcef(const matrix::Vector3d &p_ecef);
-	matrix::Vector3d toEcef() const;
+	ಸ್ಥಿರ LatLonAlt fromEcef(ಧ್ರುವ matrix::Vector3d &p_ecef);
+	matrix::Vector3d toEcef() ಧ್ರುವ;
 
-	void setZero() { _latitude_rad = 0.0; _longitude_rad = 0.0; _altitude = 0.f; }
+	ಶೂನ್ಯ setZero() { _latitude_rad = 0.0; _longitude_rad = 0.0; _altitude = 0.f; }
 
-	double latitude_deg() const { return math::degrees(latitude_rad()); }
-	double longitude_deg() const { return math::degrees(longitude_rad()); }
+	ದ್ವಿಗುಣ latitude_deg() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ math::degrees(latitude_rad()); }
+	ದ್ವಿಗುಣ longitude_deg() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ math::degrees(longitude_rad()); }
 
-	const double &latitude_rad() const { return _latitude_rad; }
-	const double &longitude_rad() const { return _longitude_rad; }
-	float altitude() const { return _altitude; }
+	ಧ್ರುವ ದ್ವಿಗುಣ &latitude_rad() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ _latitude_rad; }
+	ಧ್ರುವ ದ್ವಿಗುಣ &longitude_rad() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ _longitude_rad; }
+	ಭಿನ್ನ altitude() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ _altitude; }
 
-	void setLatitudeDeg(const double &latitude_deg) { _latitude_rad = math::radians(latitude_deg); }
-	void setLongitudeDeg(const double &longitude_deg) { _longitude_rad = math::radians(longitude_deg); }
-	void setAltitude(const float altitude) { _altitude = altitude; }
+	ಶೂನ್ಯ setLatitudeDeg(ಧ್ರುವ ದ್ವಿಗುಣ &latitude_deg) { _latitude_rad = math::radians(latitude_deg); }
+	ಶೂನ್ಯ setLongitudeDeg(ಧ್ರುವ ದ್ವಿಗುಣ &longitude_deg) { _longitude_rad = math::radians(longitude_deg); }
+	ಶೂನ್ಯ setAltitude(ಧ್ರುವ ಭಿನ್ನ altitude) { _altitude = altitude; }
 
-	void setLatLon(const LatLonAlt &lla) { _latitude_rad = lla.latitude_rad(); _longitude_rad = lla.longitude_rad(); }
-	void setLatLonDeg(const double latitude, const double longitude) { _latitude_rad = math::radians(latitude); _longitude_rad = math::radians(longitude); }
-	void setLatLonRad(const double latitude, const double longitude) { _latitude_rad = latitude; _longitude_rad = longitude; }
+	ಶೂನ್ಯ setLatLon(ಧ್ರುವ LatLonAlt &lla) { _latitude_rad = lla.latitude_rad(); _longitude_rad = lla.longitude_rad(); }
+	ಶೂನ್ಯ setLatLonDeg(ಧ್ರುವ ದ್ವಿಗುಣ latitude, ಧ್ರುವ ದ್ವಿಗುಣ longitude) { _latitude_rad = math::radians(latitude); _longitude_rad = math::radians(longitude); }
+	ಶೂನ್ಯ setLatLonRad(ಧ್ರುವ ದ್ವಿಗುಣ latitude, ಧ್ರುವ ದ್ವಿಗುಣ longitude) { _latitude_rad = latitude; _longitude_rad = longitude; }
 
-	void print() const { printf("latitude = %f (deg), longitude = %f (deg), altitude = %f (m)\n", _latitude_rad, _longitude_rad, (double)_altitude); }
+	ಶೂನ್ಯ print() ಧ್ರುವ { printf("latitude = %f (deg), longitude = %f (deg), altitude = %f (m)\n", _latitude_rad, _longitude_rad, (ದ್ವಿಗುಣ)_altitude); }
 
 	/*
 	 * The plus and minus operators below use approximations and should only be used when the Cartesian component is small
 	 */
-	LatLonAlt operator+(const matrix::Vector3f &delta_pos) const;
-	void operator+=(const matrix::Vector3f &delta_pos);
-	void operator+=(const matrix::Vector2f &delta_pos);
-	matrix::Vector3f operator-(const LatLonAlt &lla) const;
+	LatLonAlt operator+(ಧ್ರುವ matrix::Vector3f &delta_pos) ಧ್ರುವ;
+	ಶೂನ್ಯ operator+=(ಧ್ರುವ matrix::Vector3f &delta_pos);
+	ಶೂನ್ಯ operator+=(ಧ್ರುವ matrix::Vector2f &delta_pos);
+	matrix::Vector3f operator-(ಧ್ರುವ LatLonAlt &lla) ಧ್ರುವ;
 
-	void operator=(const LatLonAlt &lla)
+	ಶೂನ್ಯ operator=(ಧ್ರುವ LatLonAlt &lla)
 	{
 		// Protect against self-assignment
-		if (this == &lla) {
-			return;
+		ಯದಿ (ಏತತ್ == &lla) {
+			ಪ್ರತ್ಯಾಗಮ;
 		}
 
 		_latitude_rad = lla.latitude_rad();
@@ -101,39 +101,39 @@ public:
 	 * Compute the angular rate of the local navigation frame at the current latitude and height
 	 * with respect to an inertial frame and resolved in the navigation frame
 	 */
-	matrix::Vector3f computeAngularRateNavFrame(const matrix::Vector3f &v_ned) const;
+	matrix::Vector3f computeAngularRateNavFrame(ಧ್ರುವ matrix::Vector3f &v_ned) ಧ್ರುವ;
 
 	// Compute the ECEF to NED coordinate transformation matrix at the current position
-	matrix::Dcmf computeRotEcefToNed() const;
+	matrix::Dcmf computeRotEcefToNed() ಧ್ರುವ;
 
-	struct Wgs84 {
-		static constexpr double equatorial_radius = 6378137.0;
-		static constexpr double eccentricity = 0.0818191908425;
-		static constexpr double eccentricity2 = eccentricity * eccentricity;
-		static constexpr double meridian_radius_of_curvature_numerator = equatorial_radius * (1.0 - eccentricity2);
-		static constexpr double gravity_equator = 9.7803253359;
-		static constexpr double somigliana_coefficient = 0.001931851353;
+	ಸಂರಚನಾ Wgs84 {
+		ಸ್ಥಿರ constexpr ದ್ವಿಗುಣ equatorial_radius = 6378137.0;
+		ಸ್ಥಿರ constexpr ದ್ವಿಗುಣ eccentricity = 0.0818191908425;
+		ಸ್ಥಿರ constexpr ದ್ವಿಗುಣ eccentricity2 = eccentricity * eccentricity;
+		ಸ್ಥಿರ constexpr ದ್ವಿಗುಣ meridian_radius_of_curvature_numerator = equatorial_radius * (1.0 - eccentricity2);
+		ಸ್ಥಿರ constexpr ದ್ವಿಗುಣ gravity_equator = 9.7803253359;
+		ಸ್ಥಿರ constexpr ದ್ವಿಗುಣ somigliana_coefficient = 0.001931851353;
 
 		// Normal gravity at the ellipsoid surface as a function of latitude (Somigliana formula).
 		// Captures the ~9.780 (equator) to ~9.832 m/s^2 (pole) variation. Input in radians.
-		static float gravity(const double latitude_rad)
+		ಸ್ಥಿರ ಭಿನ್ನ gravity(ಧ್ರುವ ದ್ವಿಗುಣ latitude_rad)
 		{
-			const double sin_lat = sin(latitude_rad);
-			const double sin_lat2 = sin_lat * sin_lat;
-			const double g = gravity_equator * (1.0 + somigliana_coefficient * sin_lat2)
+			ಧ್ರುವ ದ್ವಿಗುಣ sin_lat = sin(latitude_rad);
+			ಧ್ರುವ ದ್ವಿಗುಣ sin_lat2 = sin_lat * sin_lat;
+			ಧ್ರುವ ದ್ವಿಗುಣ g = gravity_equator * (1.0 + somigliana_coefficient * sin_lat2)
 					 / std::sqrt(1.0 - eccentricity2 * sin_lat2);
-			return static_cast<float>(g);
+			ಪ್ರತ್ಯಾಗಮ static_cast<ಭಿನ್ನ>(g);
 		}
 	};
 
-private:
+ಗುಪ್ತ:
 	// Convert between curvilinear and cartesian errors
-	static matrix::Vector2d deltaLatLonToDeltaXY(const double latitude, const float altitude);
+	ಸ್ಥಿರ matrix::Vector2d deltaLatLonToDeltaXY(ಧ್ರುವ ದ್ವಿಗುಣ latitude, ಧ್ರುವ ಭಿನ್ನ altitude);
 
-	static void computeRadiiOfCurvature(const double latitude, double &meridian_radius_of_curvature,
-					    double &transverse_radius_of_curvature);
+	ಸ್ಥಿರ ಶೂನ್ಯ computeRadiiOfCurvature(ಧ್ರುವ ದ್ವಿಗುಣ latitude, ದ್ವಿಗುಣ &meridian_radius_of_curvature,
+					    ದ್ವಿಗುಣ &transverse_radius_of_curvature);
 
-	double _latitude_rad{0.0};
-	double _longitude_rad{0.0};
-	float _altitude{0.0};
+	ದ್ವಿಗುಣ _latitude_rad{0.0};
+	ದ್ವಿಗುಣ _longitude_rad{0.0};
+	ಭಿನ್ನ _altitude{0.0};
 };

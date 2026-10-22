@@ -34,11 +34,11 @@
 
 
 
-#include "Ringbuffer.hpp"
+#ಅನ್ತರ್ಭಾವ "Ringbuffer.hpp"
 
-#include <mathlib/mathlib.h>
-#include <assert.h>
-#include <string.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/mathlib.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
 
 
 Ringbuffer::~Ringbuffer()
@@ -46,16 +46,16 @@ Ringbuffer::~Ringbuffer()
 	deallocate();
 }
 
-bool Ringbuffer::allocate(size_t buffer_size)
+ತಾರ್ಕಿಕ Ringbuffer::allocate(size_t buffer_size)
 {
-	assert(_ringbuffer == nullptr);
+	ಪ್ರತಿಜ್ಞಾ(_ringbuffer == nullptr);
 
 	_size = buffer_size;
-	_ringbuffer = new uint8_t[_size];
-	return _ringbuffer != nullptr;
+	_ringbuffer = ನೂತನ uint8_t[_size];
+	ಪ್ರತ್ಯಾಗಮ _ringbuffer != nullptr;
 }
 
-void Ringbuffer::deallocate()
+ಶೂನ್ಯ Ringbuffer::deallocate()
 {
 	delete[] _ringbuffer;
 	_ringbuffer = nullptr;
@@ -64,88 +64,88 @@ void Ringbuffer::deallocate()
 	_end = 0;
 }
 
-size_t Ringbuffer::space_available() const
+size_t Ringbuffer::space_available() ಧ್ರುವ
 {
-	if (_start > _end) {
-		return _start - _end - 1;
+	ಯದಿ (_start > _end) {
+		ಪ್ರತ್ಯಾಗಮ _start - _end - 1;
 
-	} else {
-		return _start - _end - 1 + _size;
+	} ಅನ್ಯಥಾ {
+		ಪ್ರತ್ಯಾಗಮ _start - _end - 1 + _size;
 	}
 }
 
-size_t Ringbuffer::space_used() const
+size_t Ringbuffer::space_used() ಧ್ರುವ
 {
-	if (_start <= _end) {
-		return _end - _start;
+	ಯದಿ (_start <= _end) {
+		ಪ್ರತ್ಯಾಗಮ _end - _start;
 
-	} else {
+	} ಅನ್ಯಥಾ {
 		// Potential wrap around.
-		return _end - _start + _size;
+		ಪ್ರತ್ಯಾಗಮ _end - _start + _size;
 	}
 }
 
 
-bool Ringbuffer::push_back(const uint8_t *buf, size_t buf_len)
+ತಾರ್ಕಿಕ Ringbuffer::push_back(ಧ್ರುವ uint8_t *buf, size_t buf_len)
 {
-	if (buf_len == 0 || buf == nullptr) {
+	ಯದಿ (buf_len == 0 || buf == nullptr) {
 		// Nothing to add, we better don't try.
-		return false;
+		ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 	}
 
-	if (_start > _end) {
+	ಯದಿ (_start > _end) {
 		// Add after end up to start, no wrap around.
 
 		// Leave one byte free so that start don't end up the same
 		// which signals empty.
-		const size_t available = _start - _end - 1;
+		ಧ್ರುವ size_t available = _start - _end - 1;
 
-		if (available < buf_len) {
-			return false;
+		ಯದಿ (available < buf_len) {
+			ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 		}
 
 		memcpy(&_ringbuffer[_end], buf, buf_len);
 		_end += buf_len;
 
-	} else {
+	} ಅನ್ಯಥಾ {
 		// Add after end, maybe wrap around.
-		const size_t available = _start - _end - 1 + _size;
+		ಧ್ರುವ size_t available = _start - _end - 1 + _size;
 
-		if (available < buf_len) {
-			return false;
+		ಯದಿ (available < buf_len) {
+			ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 		}
 
-		const size_t remaining_packet_len = _size - _end;
+		ಧ್ರುವ size_t remaining_packet_len = _size - _end;
 
-		if (buf_len > remaining_packet_len) {
+		ಯದಿ (buf_len > remaining_packet_len) {
 			memcpy(&_ringbuffer[_end], buf, remaining_packet_len);
 			_end = 0;
 
 			memcpy(&_ringbuffer[_end], buf + remaining_packet_len, buf_len - remaining_packet_len);
 			_end += buf_len - remaining_packet_len;
 
-		} else {
+		} ಅನ್ಯಥಾ {
 			memcpy(&_ringbuffer[_end], buf, buf_len);
 			_end += buf_len;
 		}
 	}
 
-	return true;
+	ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 }
 
-size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
+size_t Ringbuffer::ತೆಗೆ_front(uint8_t *buf, size_t buf_max_len)
 {
-	if (buf == nullptr) {
+	ಯದಿ (buf == nullptr) {
 		// User needs to supply a valid pointer.
-		return 0;
+		ಪ್ರತ್ಯಾಗಮ 0;
 	}
 
-	if (_start == _end) {
+	ಯದಿ (_start == _end) {
 		// Empty
-		return 0;
+		ಪ್ರತ್ಯಾಗಮ 0;
 	}
 
-	if (_start < _end) {
+	ಯದಿ (_start < _end) {
 
 		// No wrap around.
 		size_t to_copy_len = math::min(_end - _start, buf_max_len);
@@ -153,30 +153,30 @@ size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
 		memcpy(buf, &_ringbuffer[_start], to_copy_len);
 		_start += to_copy_len;
 
-		return to_copy_len;
+		ಪ್ರತ್ಯಾಗಮ to_copy_len;
 
-	} else {
+	} ಅನ್ಯಥಾ {
 		// Potential wrap around.
 		size_t to_copy_len = _end - _start + _size;
 
-		if (to_copy_len > buf_max_len) {
+		ಯದಿ (to_copy_len > buf_max_len) {
 			to_copy_len = buf_max_len;
 		}
 
-		const size_t remaining_buf_len = _size - _start;
+		ಧ್ರುವ size_t remaining_buf_len = _size - _start;
 
-		if (to_copy_len > remaining_buf_len) {
+		ಯದಿ (to_copy_len > remaining_buf_len) {
 
 			memcpy(buf, &_ringbuffer[_start], remaining_buf_len);
 			_start = 0;
 			memcpy(buf + remaining_buf_len, &_ringbuffer[_start], to_copy_len - remaining_buf_len);
 			_start += to_copy_len - remaining_buf_len;
 
-		} else {
+		} ಅನ್ಯಥಾ {
 			memcpy(buf, &_ringbuffer[_start], to_copy_len);
 			_start += to_copy_len;
 		}
 
-		return to_copy_len;
+		ಪ್ರತ್ಯಾಗಮ to_copy_len;
 	}
 }

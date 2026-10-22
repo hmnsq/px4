@@ -32,14 +32,14 @@
  ****************************************************************************/
 
 
-#include <px4_platform_common/events.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/events.h>
 
-namespace events
+ನಾಮಾಕಾಶ events
 {
-namespace util
+ನಾಮಾಕಾಶ util
 {
 
-void sendWithoutMessage(uint32_t id, Log external, LogInternal internal)
+ಶೂನ್ಯ sendWithoutMessage(uint32_t id, Log external, LogInternal internal)
 {
 	event_s e{};
 	e.log_levels = ((uint8_t)internal << 4) | (uint8_t)external;

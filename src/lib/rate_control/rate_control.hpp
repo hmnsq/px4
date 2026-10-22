@@ -39,16 +39,16 @@
 
 #pragma once
 
-#include <matrix/matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <matrix/matrix/math.hpp>
 
-#include <mathlib/mathlib.h>
-#include <uORB/topics/rate_ctrl_status.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/mathlib.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/rate_ctrl_status.h>
 
-class RateControl
+ವರ್ಗ RateControl
 {
-public:
-	RateControl() = default;
-	~RateControl() = default;
+ಸಾರ್ವಜನಿಕ:
+	RateControl() = ಸ್ವಭಾವ;
+	~RateControl() = ಸ್ವಭಾವ;
 
 	/**
 	 * Set the rate control PID gains
@@ -56,35 +56,35 @@ public:
 	 * @param I 3D vector of integral gains
 	 * @param D 3D vector of derivative gains
 	 */
-	void setPidGains(const matrix::Vector3f &P, const matrix::Vector3f &I, const matrix::Vector3f &D);
+	ಶೂನ್ಯ setPidGains(ಧ್ರುವ matrix::Vector3f &P, ಧ್ರುವ matrix::Vector3f &I, ಧ್ರುವ matrix::Vector3f &D);
 
 	/**
 	 * Set the mximum absolute value of the integrator for all axes
 	 * @param integrator_limit limit value for all axes x, y, z
 	 */
-	void setIntegratorLimit(const matrix::Vector3f &integrator_limit) { _lim_int = integrator_limit; };
+	ಶೂನ್ಯ setIntegratorLimit(ಧ್ರುವ matrix::Vector3f &integrator_limit) { _lim_int = integrator_limit; };
 
 	/**
 	 * Set direct rate to torque feed forward gain
 	 * @see _gain_ff
 	 * @param FF 3D vector of feed forward gains for body x,y,z axis
 	 */
-	void setFeedForwardGain(const matrix::Vector3f &FF) { _gain_ff = FF; };
+	ಶೂನ್ಯ setFeedForwardGain(ಧ್ರುವ matrix::Vector3f &FF) { _gain_ff = FF; };
 
 	/**
 	 * Set saturation status
 	 * @param control saturation vector from control allocator
 	 */
-	void setSaturationStatus(const matrix::Vector3<bool> &saturation_positive,
-				 const matrix::Vector3<bool> &saturation_negative);
+	ಶೂನ್ಯ setSaturationStatus(ಧ್ರುವ matrix::Vector3<ತಾರ್ಕಿಕ> &saturation_positive,
+				 ಧ್ರುವ matrix::Vector3<ತಾರ್ಕಿಕ> &saturation_negative);
 
 	/**
 	 * Set individual saturation flags
 	 * @param axis 0 roll, 1 pitch, 2 yaw
 	 * @param is_saturated value to update the flag with
 	 */
-	void setPositiveSaturationFlag(size_t axis, bool is_saturated);
-	void setNegativeSaturationFlag(size_t axis, bool is_saturated);
+	ಶೂನ್ಯ setPositiveSaturationFlag(size_t axis, ತಾರ್ಕಿಕ is_saturated);
+	ಶೂನ್ಯ setNegativeSaturationFlag(size_t axis, ತಾರ್ಕಿಕ is_saturated);
 
 	/**
 	 * Run one control loop cycle calculation
@@ -93,23 +93,23 @@ public:
 	 * @param dt desired vehicle angular rate setpoint
 	 * @return [-1,1] normalized torque vector to apply to the vehicle
 	 */
-	matrix::Vector3f update(const matrix::Vector3f &rate, const matrix::Vector3f &rate_sp,
-				const matrix::Vector3f &angular_accel, const float dt, const bool landed);
+	matrix::Vector3f update(ಧ್ರುವ matrix::Vector3f &rate, ಧ್ರುವ matrix::Vector3f &rate_sp,
+				ಧ್ರುವ matrix::Vector3f &angular_accel, ಧ್ರುವ ಭಿನ್ನ dt, ಧ್ರುವ ತಾರ್ಕಿಕ landed);
 
 	/**
 	 * Set the integral term to 0 to prevent windup
 	 * @see _rate_int
 	 */
-	void resetIntegral() { _rate_int.zero(); }
+	ಶೂನ್ಯ resetIntegral() { _rate_int.zero(); }
 
 	/**
 	 * Set the integral term to 0 for specific axes
 	 * @param  axis roll 0 / pitch 1 / yaw 2
 	 * @see _rate_int
 	 */
-	void resetIntegral(size_t axis)
+	ಶೂನ್ಯ resetIntegral(size_t axis)
 	{
-		if (axis < 3) {
+		ಯದಿ (axis < 3) {
 			_rate_int(axis) = 0.f;
 		}
 	}
@@ -118,10 +118,10 @@ public:
 	 * Get status message of controller for logging/debugging
 	 * @param rate_ctrl_status status message to fill with internal states
 	 */
-	void getRateControlStatus(rate_ctrl_status_s &rate_ctrl_status);
+	ಶೂನ್ಯ getRateControlStatus(rate_ctrl_status_s &rate_ctrl_status);
 
-private:
-	void updateIntegral(matrix::Vector3f &rate_error, const float dt);
+ಗುಪ್ತ:
+	ಶೂನ್ಯ updateIntegral(matrix::Vector3f &rate_error, ಧ್ರುವ ಭಿನ್ನ dt);
 
 	// Gains
 	matrix::Vector3f _gain_p; ///< rate control proportional gain for all axes x, y, z
@@ -134,6 +134,6 @@ private:
 	matrix::Vector3f _rate_int; ///< integral term of the rate controller
 
 	// Feedback from control allocation
-	matrix::Vector<bool, 3> _control_allocator_saturation_negative;
-	matrix::Vector<bool, 3> _control_allocator_saturation_positive;
+	matrix::Vector<ತಾರ್ಕಿಕ, 3> _control_allocator_saturation_negative;
+	matrix::Vector<ತಾರ್ಕಿಕ, 3> _control_allocator_saturation_positive;
 };

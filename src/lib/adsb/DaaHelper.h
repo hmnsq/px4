@@ -39,32 +39,32 @@
 
 #pragma once
 
-#include <cstdint>
+#ಅನ್ತರ್ಭಾವ <cstdint>
 
-#include <lib/mathlib/mathlib.h>
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <lib/mathlib/mathlib.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-struct aircraft_state_s {
+ಸಂರಚನಾ aircraft_state_s {
 	matrix::Vector2d lat_lon{};
-	float altitude{0.f};
+	ಭಿನ್ನ altitude{0.f};
 	matrix::Vector3f velocity_ned{};
-	float heading{0.f};
+	ಭಿನ್ನ heading{0.f};
 };
 
-struct daa_stats_s {
-	float aircraft_dist{0.f};
-	float aircraft_dist_hor{0.f};
-	float aircraft_dist_vert{0.f};
-	float expected_min_dist_time_sec{0.f};
+ಸಂರಚನಾ daa_stats_s {
+	ಭಿನ್ನ aircraft_dist{0.f};
+	ಭಿನ್ನ aircraft_dist_hor{0.f};
+	ಭಿನ್ನ aircraft_dist_vert{0.f};
+	ಭಿನ್ನ expected_min_dist_time_sec{0.f};
 };
 
-inline matrix::Vector2f calculate_horizontal_vertical_speed_magnitudes(const aircraft_state_s &aircraft_state)
+ಅನ್ತಃಸ್ಥ matrix::Vector2f calculate_horizontal_vertical_speed_magnitudes(ಧ್ರುವ aircraft_state_s &aircraft_state)
 {
-	return matrix::Vector2f(aircraft_state.velocity_ned.xy().norm(), fabsf(aircraft_state.velocity_ned(2)));
+	ಪ್ರತ್ಯಾಗಮ matrix::Vector2f(aircraft_state.velocity_ned.xy().norm(), fabsf(aircraft_state.velocity_ned(2)));
 }
 
 // Worst-case closing speed (UAV and traffic flying straight at each other).
-inline float calculate_relative_uav_traffic_speed(const aircraft_state_s &uav_state, const aircraft_state_s &traffic_state)
+ಅನ್ತಃಸ್ಥ ಭಿನ್ನ calculate_relative_uav_traffic_speed(ಧ್ರುವ aircraft_state_s &uav_state, ಧ್ರುವ aircraft_state_s &traffic_state)
 {
-	return traffic_state.velocity_ned.norm() + uav_state.velocity_ned.norm();
+	ಪ್ರತ್ಯಾಗಮ traffic_state.velocity_ned.norm() + uav_state.velocity_ned.norm();
 }

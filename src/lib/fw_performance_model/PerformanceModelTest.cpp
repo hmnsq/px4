@@ -31,21 +31,21 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "PerformanceModel.hpp"
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ "PerformanceModel.hpp"
 
 // to run: make tests TESTFILTER=PerformanceModel
 
-class PerformanceModelTest : public ::testing::Test
+ವರ್ಗ PerformanceModelTest : ಸಾರ್ವಜನಿಕ ::testing::Test
 {
-public:
-	void SetUp() override
+ಸಾರ್ವಜನಿಕ:
+	ಶೂನ್ಯ SetUp() override
 	{
-		param_control_autosave(false);
+		param_control_autosave(ಅಸತ್ಯ);
 		param_reset_all();
 	}
 
-	void setWeightParams(float base, float gross, float fuel)
+	ಶೂನ್ಯ setWeightParams(ಭಿನ್ನ base, ಭಿನ್ನ gross, ಭಿನ್ನ fuel)
 	{
 		param_set(param_handle(px4::params::WEIGHT_BASE), &base);
 		param_set(param_handle(px4::params::WEIGHT_GROSS), &gross);
@@ -94,7 +94,7 @@ TEST_F(PerformanceModelTest, weightRatioScalesWithFuelFraction)
 	EXPECT_FLOAT_EQ(_model.getWeightRatio(), 0.8f);
 }
 
-TEST_F(PerformanceModelTest, fuelFractionKeptOnNonFiniteInput)
+TEST_F(PerformanceModelTest, fuel_Fraction_Kept_On_Non_Finite_ಒಳಹರಿವು)
 {
 	// GIVEN: base and gross weight set, 4kg full fuel load, and a known fuel fraction
 	setWeightParams(10.0f, 12.0f, 4.0f);

@@ -39,46 +39,46 @@
  * @author Mark Charlebois <charlebm@gmail.com>
  */
 
-#include "cdevtest_example.h"
+#ಅನ್ತರ್ಭಾವ "cdevtest_example.h"
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/tasks.h>
-#include <px4_platform_common/time.h>
-#include <lib/cdev/CDev.hpp>
-#include <unistd.h>
-#include <stdio.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/log.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/tasks.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/time.h>
+#ಅನ್ತರ್ಭಾವ <lib/cdev/CDev.hpp>
+#ಅನ್ತರ್ಭಾವ <unistd.h>
+#ಅನ್ತರ್ಭಾವ <stdio.h>
 
 px4::AppState CDevExample::appState;
 
 #define TESTDEV "/dev/cdevtest"
 
-static bool g_exit = false;
+ಸ್ಥಿರ ತಾರ್ಕಿಕ g_exit = ಅಸತ್ಯ;
 
-static int writer_main(int argc, char *argv[])
+ಸ್ಥಿರ ಪೂರ್ಣಾಙ್ಕ writer_main(ಪೂರ್ಣಾಙ್ಕ argc, ವರ್ಣ *argv[])
 {
-	char buf[1];
+	ವರ್ಣ buf[1];
 
-	int fd = px4_open(TESTDEV, PX4_F_WRONLY);
+	ಪೂರ್ಣಾಙ್ಕ fd = px4_open(TESTDEV, PX4_F_WRONLY);
 
-	if (fd < 0) {
+	ಯದಿ (fd < 0) {
 		PX4_INFO("Writer: Open failed %d", fd);
-		return PX4_ERROR;
+		ಪ್ರತ್ಯಾಗಮ PX4_ERROR;
 	}
 
-	int ret = 0;
-	int i = 0;
+	ಪೂರ್ಣಾಙ್ಕ ret = 0;
+	ಪೂರ್ಣಾಙ್ಕ i = 0;
 
-	while (!g_exit) {
+	ಯಾವತ್ (!g_exit) {
 		// Wait for 2 seconds
 		PX4_INFO("Writer: Sleeping for 2 sec");
 		ret = px4_sleep(2);
 
-		if (ret < 0) {
+		ಯದಿ (ret < 0) {
 			PX4_INFO("Writer: sleep failed %d %d", ret, errno);
-			return ret;
+			ಪ್ರತ್ಯಾಗಮ ret;
 		}
 
-		buf[0] = 'A' + (char)(i % 26);
+		buf[0] = 'A' + (ವರ್ಣ)(i % 26);
 		PX4_INFO("Writer: writing char '%c'", buf[0]);
 		ret = px4_write(fd, buf, 1);
 		++i;
@@ -86,78 +86,78 @@ static int writer_main(int argc, char *argv[])
 
 	px4_close(fd);
 	PX4_INFO("Writer: stopped");
-	return ret;
+	ಪ್ರತ್ಯಾಗಮ ret;
 }
 
-class PrivData
+ವರ್ಗ PrivData
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	PrivData() : _read_offset(0) {}
-	~PrivData() = default;
+	~PrivData() = ಸ್ವಭಾವ;
 
 	size_t _read_offset;
 };
 
-class CDevNode : public cdev::CDev
+ವರ್ಗ CDev_ಗಂಟು : ಸಾರ್ವಜನಿಕ cdev::CDev
 {
-public:
-	CDevNode() :
+ಸಾರ್ವಜನಿಕ:
+	CDev_ಗಂಟು() :
 		CDev(TESTDEV),
-		_is_open_for_write(false),
+		_is_open_for_write(ಅಸತ್ಯ),
 		_write_offset(0) {}
 
-	~CDevNode() override = default;
+	~CDev_ಗಂಟು() override = ಸ್ವಭಾವ;
 
-	int open(cdev::file_t *handlep) override;
-	int close(cdev::file_t *handlep) override;
-	ssize_t write(cdev::file_t *handlep, const char *buffer, size_t buflen) override;
-	ssize_t read(cdev::file_t *handlep, char *buffer, size_t buflen) override;
-private:
-	bool _is_open_for_write;
+	ಪೂರ್ಣಾಙ್ಕ open(cdev::file_t *handlep) override;
+	ಪೂರ್ಣಾಙ್ಕ close(cdev::file_t *handlep) override;
+	ssize_t ಲಿಖ(cdev::file_t *handlep, ಧ್ರುವ ವರ್ಣ *buffer, size_t buflen) override;
+	ssize_t ಪಠ(cdev::file_t *handlep, ವರ್ಣ *buffer, size_t buflen) override;
+ಗುಪ್ತ:
+	ತಾರ್ಕಿಕ _is_open_for_write;
 	size_t _write_offset;
-	char     _buf[1000];
+	ವರ್ಣ     _buf[1000];
 };
 
-int CDevNode::open(cdev::file_t *handlep)
+ಪೂರ್ಣಾಙ್ಕ CDev_ಗಂಟು::open(cdev::file_t *handlep)
 {
 	// Only allow one writer
-	if (_is_open_for_write && (handlep->f_oflags & PX4_F_WRONLY)) {
+	ಯದಿ (_is_open_for_write && (handlep->f_oflags & PX4_F_WRONLY)) {
 		errno = EBUSY;
-		return -1;
+		ಪ್ರತ್ಯಾಗಮ -1;
 	}
 
-	int ret = CDev::open(handlep);
+	ಪೂರ್ಣಾಙ್ಕ ret = CDev::open(handlep);
 
-	if (ret != 0) {
-		return ret;
+	ಯದಿ (ret != 0) {
+		ಪ್ರತ್ಯಾಗಮ ret;
 	}
 
-	handlep->f_priv = new PrivData;
+	handlep->f_priv = ನೂತನ PrivData;
 
-	if (_is_open_for_write && (handlep->f_oflags & PX4_F_WRONLY)) {
-		_is_open_for_write = true;
+	ಯದಿ (_is_open_for_write && (handlep->f_oflags & PX4_F_WRONLY)) {
+		_is_open_for_write = ಸತ್ಯ;
 	}
 
-	return 0;
+	ಪ್ರತ್ಯಾಗಮ 0;
 }
 
-int CDevNode::close(cdev::file_t *handlep)
+ಪೂರ್ಣಾಙ್ಕ CDev_ಗಂಟು::close(cdev::file_t *handlep)
 {
 	delete (PrivData *)handlep->f_priv;
 	handlep->f_priv = nullptr;
 	CDev::close(handlep);
 
 	// Enable a new writer of the device is re-opened for write
-	if ((handlep->f_oflags & PX4_F_WRONLY) && _is_open_for_write) {
-		_is_open_for_write = false;
+	ಯದಿ ((handlep->f_oflags & PX4_F_WRONLY) && _is_open_for_write) {
+		_is_open_for_write = ಅಸತ್ಯ;
 	}
 
-	return 0;
+	ಪ್ರತ್ಯಾಗಮ 0;
 }
 
-ssize_t CDevNode::write(cdev::file_t *handlep, const char *buffer, size_t buflen)
+ssize_t CDev_ಗಂಟು::ಲಿಖ(cdev::file_t *handlep, ಧ್ರುವ ವರ್ಣ *buffer, size_t buflen)
 {
-	for (size_t i = 0; i < buflen && _write_offset < 1000; i++) {
+	ಪ್ರತಿ (size_t i = 0; i < buflen && _write_offset < 1000; i++) {
 		_buf[_write_offset] = buffer[i];
 		_write_offset++;
 	}
@@ -165,167 +165,167 @@ ssize_t CDevNode::write(cdev::file_t *handlep, const char *buffer, size_t buflen
 	// ignore what was written, but let pollers know something was written
 	poll_notify(POLLIN);
 
-	return buflen;
+	ಪ್ರತ್ಯಾಗಮ buflen;
 }
 
-ssize_t CDevNode::read(cdev::file_t *handlep, char *buffer, size_t buflen)
+ssize_t CDev_ಗಂಟು::ಪಠ(cdev::file_t *handlep, ವರ್ಣ *buffer, size_t buflen)
 {
 	PrivData *p = (PrivData *)handlep->f_priv;
 	ssize_t chars_read = 0;
 	PX4_INFO("read %zu write %zu", p->_read_offset, _write_offset);
 
-	for (size_t i = 0; i < buflen && (p->_read_offset < _write_offset); i++) {
+	ಪ್ರತಿ (size_t i = 0; i < buflen && (p->_read_offset < _write_offset); i++) {
 		buffer[i] = _buf[p->_read_offset];
 		p->_read_offset++;
 		chars_read++;
 	}
 
-	return chars_read;
+	ಪ್ರತ್ಯಾಗಮ chars_read;
 }
 
 CDevExample::~CDevExample()
 {
-	if (_node) {
-		delete _node;
-		_node = nullptr;
+	ಯದಿ (ಗಂಟು) {
+		delete ಗಂಟು;
+		ಗಂಟು = nullptr;
 	}
 }
 
-int CDevExample::do_poll(int fd, int timeout, int iterations, int delayms_after_poll)
+ಪೂರ್ಣಾಙ್ಕ CDevExample::do_poll(ಪೂರ್ಣಾಙ್ಕ fd, ಪೂರ್ಣಾಙ್ಕ timeout, ಪೂರ್ಣಾಙ್ಕ iterations, ಪೂರ್ಣಾಙ್ಕ delayms_after_poll)
 {
-	int pollret, readret;
-	int loop_count = 0;
-	char readbuf[10];
+	ಪೂರ್ಣಾಙ್ಕ pollret, readret;
+	ಪೂರ್ಣಾಙ್ಕ loop_ಎಣಿಕೆ = 0;
+	ವರ್ಣ readbuf[10];
 	px4_pollfd_struct_t fds[1];
 
 	fds[0].fd = fd;
 	fds[0].events = POLLIN;
 	fds[0].revents = 0;
 
-	bool mustblock = (timeout < 0);
+	ತಾರ್ಕಿಕ mustblock = (timeout < 0);
 
 	// Test indefinte blocking poll
-	while ((!appState.exitRequested()) && (loop_count < iterations)) {
+	ಯಾವತ್ ((!appState.exitRequested()) && (loop_ಎಣಿಕೆ < iterations)) {
 		pollret = px4_poll(fds, 1, timeout);
 
-		if (pollret < 0) {
+		ಯದಿ (pollret < 0) {
 			PX4_ERR("Reader: px4_poll failed %d FAIL", pollret);
-			goto fail;
+			ಗಚ್ಛ fail;
 		}
 
 		PX4_INFO("Reader: px4_poll returned %d", pollret);
 
-		if (pollret) {
+		ಯದಿ (pollret) {
 			readret = px4_read(fd, readbuf, 10);
 
-			if (readret != 1) {
-				if (mustblock) {
+			ಯದಿ (readret != 1) {
+				ಯದಿ (mustblock) {
 					PX4_ERR("Reader:     read failed %d FAIL", readret);
-					goto fail;
+					ಗಚ್ಛ fail;
 
-				} else {
+				} ಅನ್ಯಥಾ {
 					PX4_INFO("Reader:     read failed %d FAIL", readret);
 				}
 
-			} else {
+			} ಅನ್ಯಥಾ {
 				readbuf[readret] = '\0';
 				PX4_INFO("Reader: px4_poll     returned %d, read '%s' PASS", pollret, readbuf);
 			}
 		}
 
-		if (delayms_after_poll) {
+		ಯದಿ (delayms_after_poll) {
 			px4_usleep(delayms_after_poll * 1000);
 		}
 
-		loop_count++;
+		loop_ಎಣಿಕೆ++;
 	}
 
-	return 0;
+	ಪ್ರತ್ಯಾಗಮ 0;
 fail:
-	return 1;
+	ಪ್ರತ್ಯಾಗಮ 1;
 }
-int CDevExample::main()
+ಪೂರ್ಣಾಙ್ಕ CDevExample::main()
 {
-	appState.setRunning(true);
+	appState.setRunning(ಸತ್ಯ);
 
-	_node = new CDevNode();
+	ಗಂಟು = ನೂತನ CDev_ಗಂಟು();
 
-	if (_node == nullptr) {
+	ಯದಿ (ಗಂಟು == nullptr) {
 		PX4_INFO("Failed to allocate CDevNode");
-		return -ENOMEM;
+		ಪ್ರತ್ಯಾಗಮ -ENOMEM;
 	}
 
-	if (_node->init() != PX4_OK) {
+	ಯದಿ (ಗಂಟು->init() != PX4_OK) {
 		PX4_INFO("Failed to init CDevNode");
-		return 1;
+		ಪ್ರತ್ಯಾಗಮ 1;
 	}
 
-	int fd = px4_open(TESTDEV, PX4_F_RDONLY);
+	ಪೂರ್ಣಾಙ್ಕ fd = px4_open(TESTDEV, PX4_F_RDONLY);
 
-	if (fd < 0) {
+	ಯದಿ (fd < 0) {
 		PX4_INFO("Open failed %d", fd);
-		return PX4_ERROR;
+		ಪ್ರತ್ಯಾಗಮ PX4_ERROR;
 	}
 
 	// Start a task that will write something in 4 seconds
-	(void)px4_task_spawn_cmd("writer",
+	(ಶೂನ್ಯ)px4_task_spawn_cmd("writer",
 				 SCHED_DEFAULT,
 				 SCHED_PRIORITY_MAX - 6,
 				 2000,
 				 writer_main,
-				 (char *const *)nullptr);
+				 (ವರ್ಣ *ಧ್ರುವ *)nullptr);
 
-	int ret = 0;
+	ಪೂರ್ಣಾಙ್ಕ ret = 0;
 
 	PX4_INFO("TEST: BLOCKING POLL ---------------");
 
-	if (do_poll(fd, -1, 3, 0)) {
+	ಯದಿ (do_poll(fd, -1, 3, 0)) {
 		ret = 1;
-		goto fail2;
+		ಗಚ್ಛ fail2;
 	}
 
 	PX4_INFO("TEST: ZERO TIMEOUT POLL -----------");
 
-	if (do_poll(fd, 0, 3, 0)) {
+	ಯದಿ (do_poll(fd, 0, 3, 0)) {
 		ret = 1;
-		goto fail2;
-		goto fail2;
+		ಗಚ್ಛ fail2;
+		ಗಚ್ಛ fail2;
 	}
 
 	PX4_INFO("TEST: ZERO TIMEOUT POLL -----------");
 
-	if (do_poll(fd, 0, 3, 0)) {
+	ಯದಿ (do_poll(fd, 0, 3, 0)) {
 		ret = 1;
-		goto fail2;
-		goto fail2;
+		ಗಚ್ಛ fail2;
+		ಗಚ್ಛ fail2;
 	}
 
 	PX4_INFO("TEST: ZERO TIMEOUT POLL -----------");
 
-	if (do_poll(fd, 0, 3, 0)) {
+	ಯದಿ (do_poll(fd, 0, 3, 0)) {
 		ret = 1;
-		goto fail2;
+		ಗಚ್ಛ fail2;
 	}
 
 	PX4_INFO("TEST: 100ms TIMEOUT POLL -----------");
 
-	if (do_poll(fd, 0, 30, 100)) {
+	ಯದಿ (do_poll(fd, 0, 30, 100)) {
 		ret = 1;
-		goto fail2;
+		ಗಚ್ಛ fail2;
 	}
 
 	PX4_INFO("TEST: 1 SEC TIMOUT POLL ------------");
 
-	if (do_poll(fd, 1000, 3, 0)) {
+	ಯದಿ (do_poll(fd, 1000, 3, 0)) {
 		ret = 1;
-		goto fail2;
+		ಗಚ್ಛ fail2;
 	}
 
 	PX4_INFO("TEST: waiting for writer to stop");
 fail2:
-	g_exit = true;
+	g_exit = ಸತ್ಯ;
 	px4_close(fd);
 	PX4_INFO("TEST: waiting for writer to stop");
 	px4_sleep(3);
-	return ret;
+	ಪ್ರತ್ಯಾಗಮ ret;
 }

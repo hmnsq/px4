@@ -31,22 +31,22 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-using namespace matrix;
+using ನಾಮಾಕಾಶ matrix;
 
 TEST(MatrixSetIdentityTest, SetIdentity)
 {
 	Matrix3f A;
 	A.setIdentity();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	ಪ್ರತಿ (size_t i = 0; i < 3; i++) {
+		ಪ್ರತಿ (size_t j = 0; j < 3; j++) {
+			ಯದಿ (i == j) {
 				EXPECT_FLOAT_EQ(A(i, j), 1);
 
-			} else {
+			} ಅನ್ಯಥಾ {
 				EXPECT_FLOAT_EQ(A(i, j), 0);
 			}
 		}
@@ -55,12 +55,12 @@ TEST(MatrixSetIdentityTest, SetIdentity)
 	Matrix3f B;
 	B.identity();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	ಪ್ರತಿ (size_t i = 0; i < 3; i++) {
+		ಪ್ರತಿ (size_t j = 0; j < 3; j++) {
+			ಯದಿ (i == j) {
 				EXPECT_FLOAT_EQ(B(i, j), 1);
 
-			} else {
+			} ಅನ್ಯಥಾ {
 				EXPECT_FLOAT_EQ(B(i, j), 0);
 			}
 		}

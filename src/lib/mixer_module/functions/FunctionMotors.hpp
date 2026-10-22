@@ -33,96 +33,96 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ಅನ್ತರ್ಭಾವ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/actuator_motors.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/actuator_motors.h>
 
 /**
  * Functions: Motor1 ... MotorMax
  */
-class FunctionMotors : public FunctionProviderBase
+ವರ್ಗ FunctionMotors : ಸಾರ್ವಜನಿಕ FunctionProviderBase
 {
-public:
-	static_assert(actuator_motors_s::NUM_CONTROLS == (int)OutputFunction::MotorMax - (int)OutputFunction::Motor1 + 1,
+ಸಾರ್ವಜನಿಕ:
+	static_assert(actuator_motors_s::ಅಂಕೆ_CONTROLS == (ಪೂರ್ಣಾಙ್ಕ)OutputFunction::MotorMax - (ಪೂರ್ಣಾಙ್ಕ)OutputFunction::Motor1 + 1,
 		      "Unexpected num motors");
 
-	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (int)OutputFunction::Motor1, "Unexpected motor idx");
+	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (ಪೂರ್ಣಾಙ್ಕ)OutputFunction::Motor1, "Unexpected motor idx");
 
-	FunctionMotors(const Context &context) :
+	FunctionMotors(ಧ್ರುವ Context &context) :
 		_topic(&context.work_item, ORB_ID(actuator_motors)),
 		_thrust_factor(context.thrust_factor)
 	{
-		for (int i = 0; i < actuator_motors_s::NUM_CONTROLS; ++i) {
+		ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ i = 0; i < actuator_motors_s::ಅಂಕೆ_CONTROLS; ++i) {
 			_data.control[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionMotors(context); }
+	ಸ್ಥಿರ FunctionProviderBase *allocate(ಧ್ರುವ Context &context) { ಪ್ರತ್ಯಾಗಮ ನೂತನ FunctionMotors(context); }
 
-	void update() override
+	ಶೂನ್ಯ update() override
 	{
-		if (_topic.update(&_data)) {
-			updateValues(_data.reversible_flags, _thrust_factor, _data.control, actuator_motors_s::NUM_CONTROLS);
+		ಯದಿ (_topic.update(&_data)) {
+			update_ಮೌಲ್ಯಗಳು(_data.reversible_flags, _thrust_factor, _data.control, actuator_motors_s::ಅಂಕೆ_CONTROLS);
 		}
 	}
 
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Motor1]; }
+	ಭಿನ್ನ value(OutputFunction func) override { ಪ್ರತ್ಯಾಗಮ _data.control[(ಪೂರ್ಣಾಙ್ಕ)func - (ಪೂರ್ಣಾಙ್ಕ)OutputFunction::Motor1]; }
 
-#if defined(CONFIG_DRIVERS_UAVCANNODE)
-	bool allowPrearmControl() const override { return true; }
-#else
-	bool allowPrearmControl() const override { return false; }
+#ಯದಿ defined(CONFIG_DRIVERS_UAVCANNODE)
+	ತಾರ್ಕಿಕ allowPrearmControl() ಧ್ರುವ override { ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ; }
+#ಅನ್ಯಥಾ
+	ತಾರ್ಕಿಕ allowPrearmControl() ಧ್ರುವ override { ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ; }
 #endif
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { ಪ್ರತ್ಯಾಗಮ &_topic; }
 
-	bool getLatestSampleTimestamp(hrt_abstime &t) const override { t = _data.timestamp_sample; return t != 0; }
+	ತಾರ್ಕಿಕ getLatestSampleTimestamp(hrt_abstime &t) ಧ್ರುವ override { t = _data.timestamp_sample; ಪ್ರತ್ಯಾಗಮ t != 0; }
 
-	static inline void updateValues(uint32_t reversible, float thrust_factor, float *values, int num_values)
+	ಸ್ಥಿರ ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ update_ಮೌಲ್ಯಗಳು(uint32_t reversible, ಭಿನ್ನ thrust_factor, ಭಿನ್ನ *ಮೌಲ್ಯಗಳು_2, ಪೂರ್ಣಾಙ್ಕ ಅಂಕೆ_ಮೌಲ್ಯಗಳು)
 	{
-		if (thrust_factor > FLT_EPSILON && thrust_factor <= 1.f) {
+		ಯದಿ (thrust_factor > FLT_EPSILON && thrust_factor <= 1.f) {
 			// thrust factor
 			//  rel_thrust = factor * x^2 + (1-factor) * x,
-			const float a = thrust_factor;
-			const float b = (1.f - thrust_factor);
+			ಧ್ರುವ ಭಿನ್ನ a = thrust_factor;
+			ಧ್ರುವ ಭಿನ್ನ b = (1.f - thrust_factor);
 
 			// don't recompute for all values (ax^2+bx+c=0)
-			const float tmp1 = b / (2.f * a);
-			const float tmp2 = b * b / (4.f * a * a);
+			ಧ್ರುವ ಭಿನ್ನ tmp1 = b / (2.f * a);
+			ಧ್ರುವ ಭಿನ್ನ tmp2 = b * b / (4.f * a * a);
 
-			for (int i = 0; i < num_values; ++i) {
+			ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ i = 0; i < ಅಂಕೆ_ಮೌಲ್ಯಗಳು; ++i) {
 
-				const float control = values[i];
+				ಧ್ರುವ ಭಿನ್ನ control = ಮೌಲ್ಯಗಳು_2[i];
 
-				if (PX4_ISFINITE(control)) {
-					if (control > FLT_EPSILON) {
-						values[i] = -tmp1 + sqrtf(tmp2 + (control / a));
+				ಯದಿ (PX4_ISFINITE(control)) {
+					ಯದಿ (control > FLT_EPSILON) {
+						ಮೌಲ್ಯಗಳು_2[i] = -tmp1 + sqrtf(tmp2 + (control / a));
 
-					} else if (control < -FLT_EPSILON) {
-						values[i] =  tmp1 - sqrtf(tmp2 - (control / a));
+					} ಅನ್ಯಥಾ ಯದಿ (control < -FLT_EPSILON) {
+						ಮೌಲ್ಯಗಳು_2[i] =  tmp1 - sqrtf(tmp2 - (control / a));
 
 					}
 				}
 			}
 		}
 
-		for (int i = 0; i < num_values; ++i) {
-			if ((reversible & (1u << i)) == 0) {
-				if (values[i] < -FLT_EPSILON) {
-					values[i] = NAN;
+		ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ i = 0; i < ಅಂಕೆ_ಮೌಲ್ಯಗಳು; ++i) {
+			ಯದಿ ((reversible & (1u << i)) == 0) {
+				ಯದಿ (ಮೌಲ್ಯಗಳು_2[i] < -FLT_EPSILON) {
+					ಮೌಲ್ಯಗಳು_2[i] = NAN;
 
-				} else {
+				} ಅನ್ಯಥಾ {
 					// remap from [0, 1] to [-1, 1]
-					values[i] = values[i] * 2.f - 1.f;
+					ಮೌಲ್ಯಗಳು_2[i] = ಮೌಲ್ಯಗಳು_2[i] * 2.f - 1.f;
 				}
 			}
 		}
 	}
 
-	bool reversible(OutputFunction func) const override { return _data.reversible_flags & (1u << ((int)func - (int)OutputFunction::Motor1)); }
+	ತಾರ್ಕಿಕ reversible(OutputFunction func) ಧ್ರುವ override { ಪ್ರತ್ಯಾಗಮ _data.reversible_flags & (1u << ((ಪೂರ್ಣಾಙ್ಕ)func - (ಪೂರ್ಣಾಙ್ಕ)OutputFunction::Motor1)); }
 
-private:
+ಗುಪ್ತ:
 	uORB::SubscriptionCallbackWorkItem _topic;
 	actuator_motors_s _data{};
-	const float &_thrust_factor;
+	ಧ್ರುವ ಭಿನ್ನ &_thrust_factor;
 };

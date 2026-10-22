@@ -40,21 +40,21 @@
  *       that is supplied.  Should we just depend on the bus knowing?
  */
 
-#include "I2C.hpp"
+#ಅನ್ತರ್ಭಾವ "I2C.hpp"
 
-#if defined(CONFIG_I2C)
+#ಯದಿ defined(CONFIG_I2C)
 
 #ifdef __PX4_LINUX
 
-#include <linux/i2c.h>
-#include <linux/i2c-dev.h>
+#ಅನ್ತರ್ಭಾವ <linux/i2c.h>
+#ಅನ್ತರ್ಭಾವ <linux/i2c-dev.h>
 
-#include <px4_platform_common/i2c_spi_buses.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/i2c_spi_buses.h>
 
-namespace device
+ನಾಮಾಕಾಶ device
 {
 
-I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency) :
+I2C::I2C(uint8_t device_type, ಧ್ರುವ ವರ್ಣ *name, ಧ್ರುವ ಪೂರ್ಣಾಙ್ಕ bus, ಧ್ರುವ uint16_t address, ಧ್ರುವ uint32_t frequency) :
 	CDev(name, nullptr)
 {
 	// fill in _device_id fields for a I2C device
@@ -64,7 +64,7 @@ I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t ad
 	_device_id.devid_s.address = address;
 }
 
-I2C::I2C(const I2CSPIDriverConfig &config)
+I2C::I2C(ಧ್ರುವ I2CSPIDriverConfig &config)
 	: I2C(config.devid_driver_index, config.module_name, config.bus, config.i2c_address, config.bus_frequency)
 {
 	set_external(config.external);
@@ -72,46 +72,46 @@ I2C::I2C(const I2CSPIDriverConfig &config)
 
 I2C::~I2C()
 {
-	if (_fd >= 0) {
+	ಯದಿ (_fd >= 0) {
 		::close(_fd);
 		_fd = -1;
 	}
 }
 
-int
+ಪೂರ್ಣಾಙ್ಕ
 I2C::init()
 {
-	int ret = PX4_ERROR;
+	ಪೂರ್ಣಾಙ್ಕ ret = PX4_ERROR;
 
-	if (_fd >= 0) {
-		return PX4_OK;
+	ಯದಿ (_fd >= 0) {
+		ಪ್ರತ್ಯಾಗಮ PX4_OK;
 	}
 
 	// Open the actual I2C device
-	char dev_path[16] {};
-	snprintf(dev_path, sizeof(dev_path), "/dev/i2c-%i", get_device_bus());
+	ವರ್ಣ dev_path[16] {};
+	snprintf(dev_path, ಪರಿಮಾಣ(dev_path), "/dev/i2c-%i", get_device_bus());
 	_fd = ::open(dev_path, O_RDWR);
 
-	if (_fd < 0) {
+	ಯದಿ (_fd < 0) {
 		DEVICE_DEBUG("failed to init I2C");
 		ret = -ENOENT;
-		goto out;
+		ಗಚ್ಛ out;
 	}
 
 	// call the probe function to check whether the device is present
 	ret = probe();
 
-	if (ret != OK) {
+	ಯದಿ (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		goto out;
+		ಗಚ್ಛ out;
 	}
 
 	// do base class init, which will create device node, etc
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ಯದಿ (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		goto out;
+		ಗಚ್ಛ out;
 	}
 
 	// tell the world where we are
@@ -119,32 +119,32 @@ I2C::init()
 
 out:
 
-	if ((ret != OK) && !(_fd < 0)) {
+	ಯದಿ ((ret != OK) && !(_fd < 0)) {
 		::close(_fd);
 		_fd = -1;
 	}
 
-	return ret;
+	ಪ್ರತ್ಯಾಗಮ ret;
 }
 
-int
-I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
+ಪೂರ್ಣಾಙ್ಕ
+I2C::transfer(ಧ್ರುವ uint8_t *send, ಧ್ರುವ unsigned send_len, uint8_t *recv, ಧ್ರುವ unsigned recv_len)
 {
-	int ret = PX4_ERROR;
-	unsigned retry_count = 0;
+	ಪೂರ್ಣಾಙ್ಕ ret = PX4_ERROR;
+	unsigned retry_ಎಣಿಕೆ = 0;
 
-	if (_fd < 0) {
+	ಯದಿ (_fd < 0) {
 		PX4_ERR("I2C device not opened");
-		return PX4_ERROR;
+		ಪ್ರತ್ಯಾಗಮ PX4_ERROR;
 	}
 
-	do {
+	ಕುರು {
 		DEVICE_DEBUG("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
 		unsigned msgs = 0;
-		struct i2c_msg msgv[2] {};
+		ಸಂರಚನಾ i2c_ಸಂದೇಶ msgv[2] {};
 
-		if (send_len > 0) {
+		ಯದಿ (send_len > 0) {
 			msgv[msgs].addr = get_device_address();
 			msgv[msgs].flags = 0;
 			msgv[msgs].buf = const_cast<uint8_t *>(send);
@@ -152,7 +152,7 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 			msgs++;
 		}
 
-		if (recv_len > 0) {
+		ಯದಿ (recv_len > 0) {
 			msgv[msgs].addr = get_device_address();
 			msgv[msgs].flags = I2C_M_RD;
 			msgv[msgs].buf = recv;
@@ -160,29 +160,29 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 			msgs++;
 		}
 
-		if (msgs == 0) {
-			return -EINVAL;
+		ಯದಿ (msgs == 0) {
+			ಪ್ರತ್ಯಾಗಮ -EINVAL;
 		}
 
 		i2c_rdwr_ioctl_data packets{};
 		packets.msgs  = msgv;
 		packets.nmsgs = msgs;
 
-		int ret_ioctl = ::ioctl(_fd, I2C_RDWR, (unsigned long)&packets);
+		ಪೂರ್ಣಾಙ್ಕ ret_ioctl = ::ioctl(_fd, I2C_RDWR, (unsigned long)&packets);
 
-		if (ret_ioctl == -1) {
+		ಯದಿ (ret_ioctl == -1) {
 			DEVICE_DEBUG("I2C transfer failed");
 			ret = PX4_ERROR;
 
-		} else {
+		} ಅನ್ಯಥಾ {
 			// success
 			ret = PX4_OK;
-			break;
+			ಭಙ್ಗ;
 		}
 
-	} while (retry_count++ < _retries);
+	} ಯಾವತ್ (retry_ಎಣಿಕೆ++ < _retries);
 
-	return ret;
+	ಪ್ರತ್ಯಾಗಮ ret;
 }
 
 } // namespace device

@@ -31,25 +31,25 @@
  *
  ****************************************************************************/
 
-#if 0 // enable non-verbose debugging
+#ಯದಿ 0 // enable non-verbose debugging
 #define CRSF_DEBUG PX4_WARN
-#else
+#ಅನ್ಯಥಾ
 #define CRSF_DEBUG(...)
 #endif
 
-#if 0 // verbose debugging. Careful when enabling: it leads to too much output, causing dropped bytes
+#ಯದಿ 0 // verbose debugging. Careful when enabling: it leads to too much output, causing dropped bytes
 #define CRSF_VERBOSE PX4_WARN
-#else
+#ಅನ್ಯಥಾ
 #define CRSF_VERBOSE(...)
 #endif
 
-#include <drivers/drv_hrt.h>
-#include <termios.h>
-#include <string.h>
-#include <unistd.h>
+#ಅನ್ತರ್ಭಾವ <drivers/drv_hrt.h>
+#ಅನ್ತರ್ಭಾವ <termios.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
+#ಅನ್ತರ್ಭಾವ <unistd.h>
 
-#include "crsf.h"
-#include "common_rc.h"
+#ಅನ್ತರ್ಭಾವ "crsf.h"
+#ಅನ್ತರ್ಭಾವ "common_rc.h"
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -59,7 +59,7 @@
 
 #define CRSF_SYNC_BYTE 0xC8
 
-enum class crsf_frame_type_t : uint8_t {
+ಗಣನಾ ವರ್ಗ crsf_frame_type_t : uint8_t {
 	gps = 0x02,
 	battery_sensor = 0x08,
 	baro_altitude = 0x09,
@@ -77,7 +77,7 @@ enum class crsf_frame_type_t : uint8_t {
 	command = 0x32
 };
 
-enum class crsf_payload_size_t : uint8_t {
+ಗಣನಾ ವರ್ಗ crsf_payload_size_t : uint8_t {
 	gps = 15,
 	battery_sensor = 8,
 	baro_altitude = 4, ///< altitude (uint16) + vertical speed (int16)
@@ -87,7 +87,7 @@ enum class crsf_payload_size_t : uint8_t {
 };
 
 
-enum class crsf_address_t : uint8_t {
+ಗಣನಾ ವರ್ಗ crsf_address_t : uint8_t {
 	broadcast = 0x00,
 	usb = 0x10,
 	tbs_core_pnp_pro = 0x80,
@@ -103,8 +103,8 @@ enum class crsf_address_t : uint8_t {
 	crsf_transmitter = 0xEE
 };
 
-#pragma pack(push, 1)
-struct crsf_payload_RC_channels_packed_t {
+#pragma pack(ತಳ್ಳು, 1)
+ಸಂರಚನಾ crsf_payload_RC_channels_packed_t {
 	// 176 bits of data (11 bits per channel * 16 channels) = 22 bytes
 	unsigned chan0 : 11;
 	unsigned chan1 : 11;
@@ -124,35 +124,35 @@ struct crsf_payload_RC_channels_packed_t {
 	unsigned chan15 : 11;
 };
 
-#pragma pack(pop)
+#pragma pack(ತೆಗೆ)
 
-enum class crsf_parser_state_t : uint8_t {
+ಗಣನಾ ವರ್ಗ crsf_parser_state_t : uint8_t {
 	unsynced = 0,
 	synced
 };
 
-static crsf_frame_t	 &crsf_frame = rc_decode_buf.crsf_frame;
-static unsigned current_frame_position = 0;
-static crsf_parser_state_t parser_state = crsf_parser_state_t::unsynced;
+ಸ್ಥಿರ crsf_frame_t	 &crsf_frame = rc_decode_buf.crsf_frame;
+ಸ್ಥಿರ unsigned current_frame_position = 0;
+ಸ್ಥಿರ crsf_parser_state_t parser_state = crsf_parser_state_t::unsynced;
 
 /**
  * parse the current crsf_frame buffer
  */
-static bool crsf_parse_buffer(uint16_t *values, uint16_t *num_values, uint16_t max_channels);
+ಸ್ಥಿರ ತಾರ್ಕಿಕ crsf_parse_buffer(uint16_t *ಮೌಲ್ಯಗಳು_2, uint16_t *ಅಂಕೆ_ಮೌಲ್ಯಗಳು, uint16_t max_channels);
 
-uint8_t crsf_frame_CRC(const crsf_frame_t &frame);
+uint8_t crsf_frame_CRC(ಧ್ರುವ crsf_frame_t &frame);
 
 
-int
-crsf_config(int uart_fd)
+ಪೂರ್ಣಾಙ್ಕ
+crsf_config(ಪೂರ್ಣಾಙ್ಕ uart_fd)
 {
-	struct termios t;
+	ಸಂರಚನಾ termios t;
 
 	/* no parity, one stop bit */
 	tcgetattr(uart_fd, &t);
 	cfsetspeed(&t, CRSF_BAUDRATE);
 	t.c_cflag &= ~(CSTOPB | PARENB);
-	return tcsetattr(uart_fd, TCSANOW, &t);
+	ಪ್ರತ್ಯಾಗಮ tcsetattr(uart_fd, TCSANOW, &t);
 }
 
 /**
@@ -160,61 +160,61 @@ crsf_config(int uart_fd)
  * @param chan_value channel value in [172, 1811]
  * @return PWM channel value in [1000, 2000]
  */
-static uint16_t convert_channel_value(unsigned chan_value);
+ಸ್ಥಿರ uint16_t convert_channel_ಮೌಲ್ಯ(unsigned chan_ಮೌಲ್ಯ);
 
 
-bool crsf_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *values,
-		uint16_t *num_values, uint16_t max_channels)
+ತಾರ್ಕಿಕ crsf_parse(ಧ್ರುವ uint64_t now, ಧ್ರುವ uint8_t *frame, unsigned len, uint16_t *ಮೌಲ್ಯಗಳು_2,
+		uint16_t *ಅಂಕೆ_ಮೌಲ್ಯಗಳು, uint16_t max_channels)
 {
-	bool ret = false;
+	ತಾರ್ಕಿಕ ret = ಅಸತ್ಯ;
 	uint8_t *crsf_frame_ptr = (uint8_t *)&crsf_frame;
 
-	while (len > 0) {
+	ಯಾವತ್ (len > 0) {
 
 		// fill in the crsf_buffer, as much as we can
-		const unsigned current_len = MIN(len, sizeof(crsf_frame_t) - current_frame_position);
+		ಧ್ರುವ unsigned current_len = MIN(len, ಪರಿಮಾಣ(crsf_frame_t) - current_frame_position);
 		memcpy(crsf_frame_ptr + current_frame_position, frame, current_len);
 		current_frame_position += current_len;
 
 		// protection to guarantee parsing progress
-		if (current_len == 0) {
+		ಯದಿ (current_len == 0) {
 			CRSF_DEBUG("========== parser bug: no progress (%i) ===========", len);
 
-			for (unsigned i = 0; i < current_frame_position; ++i) {
-				CRSF_DEBUG("crsf_frame_ptr[%i]: 0x%x", i, (int)crsf_frame_ptr[i]);
+			ಪ್ರತಿ (unsigned i = 0; i < current_frame_position; ++i) {
+				CRSF_DEBUG("crsf_frame_ptr[%i]: 0x%x", i, (ಪೂರ್ಣಾಙ್ಕ)crsf_frame_ptr[i]);
 			}
 
 			// reset the parser
 			current_frame_position = 0;
 			parser_state = crsf_parser_state_t::unsynced;
-			return false;
+			ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 		}
 
 		len -= current_len;
 		frame += current_len;
 
-		if (crsf_parse_buffer(values, num_values, max_channels)) {
-			ret = true;
+		ಯದಿ (crsf_parse_buffer(ಮೌಲ್ಯಗಳು_2, ಅಂಕೆ_ಮೌಲ್ಯಗಳು, max_channels)) {
+			ret = ಸತ್ಯ;
 		}
 	}
 
 
-	return ret;
+	ಪ್ರತ್ಯಾಗಮ ret;
 }
 
-uint8_t crsf_frame_CRC(const crsf_frame_t &frame)
+uint8_t crsf_frame_CRC(ಧ್ರುವ crsf_frame_t &frame)
 {
 	// CRC includes type and payload
 	uint8_t crc = crc8_dvb_s2(0, frame.type);
 
-	for (int i = 0; i < frame.header.length - 2; ++i) {
+	ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ i = 0; i < frame.header.length - 2; ++i) {
 		crc = crc8_dvb_s2(crc, frame.payload[i]);
 	}
 
-	return crc;
+	ಪ್ರತ್ಯಾಗಮ crc;
 }
 
-static uint16_t convert_channel_value(unsigned chan_value)
+ಸ್ಥಿರ uint16_t convert_channel_ಮೌಲ್ಯ(unsigned chan_ಮೌಲ್ಯ)
 {
 	/*
 	 *       RC     PWM
@@ -222,157 +222,157 @@ static uint16_t convert_channel_value(unsigned chan_value)
 	 * mid  992 -> 1500us
 	 * max 1811 -> 2012us
 	 */
-	static constexpr float scale = (2012.f - 988.f) / (1811.f - 172.f);
-	static constexpr float offset = 988.f - 172.f * scale;
-	return (scale * chan_value) + offset;
+	ಸ್ಥಿರ constexpr ಭಿನ್ನ scale = (2012.f - 988.f) / (1811.f - 172.f);
+	ಸ್ಥಿರ constexpr ಭಿನ್ನ offset = 988.f - 172.f * scale;
+	ಪ್ರತ್ಯಾಗಮ (scale * chan_ಮೌಲ್ಯ) + offset;
 }
 
-static bool crsf_parse_buffer(uint16_t *values, uint16_t *num_values, uint16_t max_channels)
+ಸ್ಥಿರ ತಾರ್ಕಿಕ crsf_parse_buffer(uint16_t *ಮೌಲ್ಯಗಳು_2, uint16_t *ಅಂಕೆ_ಮೌಲ್ಯಗಳು, uint16_t max_channels)
 {
 	uint8_t *crsf_frame_ptr = (uint8_t *)&crsf_frame;
 
-	if (parser_state == crsf_parser_state_t::unsynced) {
+	ಯದಿ (parser_state == crsf_parser_state_t::unsynced) {
 		// there is no sync byte, try to find an RC packet by searching for a matching frame length and type
-		for (unsigned i = 1; i < current_frame_position - 1; ++i) {
-			if (crsf_frame_ptr[i] == (uint8_t)crsf_payload_size_t::rc_channels + 2 &&
+		ಪ್ರತಿ (unsigned i = 1; i < current_frame_position - 1; ++i) {
+			ಯದಿ (crsf_frame_ptr[i] == (uint8_t)crsf_payload_size_t::rc_channels + 2 &&
 			    crsf_frame_ptr[i + 1] == (uint8_t)crsf_frame_type_t::rc_channels_packed) {
 				parser_state = crsf_parser_state_t::synced;
 				unsigned frame_offset = i - 1;
 				CRSF_VERBOSE("RC channels found at offset %i", frame_offset);
 
 				// move the rest of the buffer to the beginning
-				if (frame_offset != 0) {
+				ಯದಿ (frame_offset != 0) {
 					memmove(crsf_frame_ptr, crsf_frame_ptr + frame_offset, current_frame_position - frame_offset);
 					current_frame_position -= frame_offset;
 				}
 
-				break;
+				ಭಙ್ಗ;
 			}
 		}
 	}
 
-	if (parser_state != crsf_parser_state_t::synced) {
-		if (current_frame_position >= sizeof(crsf_frame_t)) {
+	ಯದಿ (parser_state != crsf_parser_state_t::synced) {
+		ಯದಿ (current_frame_position >= ಪರಿಮಾಣ(crsf_frame_t)) {
 			// discard most of the data, but keep the last 3 bytes (otherwise we could miss the frame start)
 			current_frame_position = 3;
 
-			for (unsigned i = 0; i < current_frame_position; ++i) {
-				crsf_frame_ptr[i] = crsf_frame_ptr[sizeof(crsf_frame_t) - current_frame_position + i];
+			ಪ್ರತಿ (unsigned i = 0; i < current_frame_position; ++i) {
+				crsf_frame_ptr[i] = crsf_frame_ptr[ಪರಿಮಾಣ(crsf_frame_t) - current_frame_position + i];
 			}
 
 			CRSF_VERBOSE("Discarding buffer");
 		}
 
-		return false;
+		ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 	}
 
 
-	if (current_frame_position < 3) {
+	ಯದಿ (current_frame_position < 3) {
 		// wait until we have the header & type
-		return false;
+		ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 	}
 
 	// Now we have at least the header and the type
 
-	const unsigned current_frame_length = crsf_frame.header.length + sizeof(crsf_frame_header_t);
+	ಧ್ರುವ unsigned current_frame_length = crsf_frame.header.length + ಪರಿಮಾಣ(crsf_frame_header_t);
 
-	if (current_frame_length > sizeof(crsf_frame_t) || current_frame_length < 4) {
+	ಯದಿ (current_frame_length > ಪರಿಮಾಣ(crsf_frame_t) || current_frame_length < 4) {
 		// frame too long or bogus -> discard everything and go into unsynced state
 		current_frame_position = 0;
 		parser_state = crsf_parser_state_t::unsynced;
 		CRSF_DEBUG("Frame too long/bogus (%i, type=%i) -> unsync", current_frame_length, crsf_frame.type);
-		return false;
+		ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 	}
 
-	if (current_frame_position < current_frame_length) {
+	ಯದಿ (current_frame_position < current_frame_length) {
 		// we don't have the full frame yet -> wait for more data
 		CRSF_VERBOSE("waiting for more data (%i < %i)", current_frame_position, current_frame_length);
-		return false;
+		ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 	}
 
-	bool ret = false;
+	ತಾರ್ಕಿಕ ret = ಅಸತ್ಯ;
 
 	// Now we have the full frame
 
-	if (crsf_frame.type == (uint8_t)crsf_frame_type_t::rc_channels_packed &&
+	ಯದಿ (crsf_frame.type == (uint8_t)crsf_frame_type_t::rc_channels_packed &&
 	    crsf_frame.header.length == (uint8_t)crsf_payload_size_t::rc_channels + 2) {
-		const uint8_t crc = crsf_frame.payload[crsf_frame.header.length - 2];
+		ಧ್ರುವ uint8_t crc = crsf_frame.payload[crsf_frame.header.length - 2];
 
-		if (crc == crsf_frame_CRC(crsf_frame)) {
-			const crsf_payload_RC_channels_packed_t *const rc_channels =
+		ಯದಿ (crc == crsf_frame_CRC(crsf_frame)) {
+			ಧ್ರುವ crsf_payload_RC_channels_packed_t *ಧ್ರುವ rc_channels =
 				(crsf_payload_RC_channels_packed_t *)&crsf_frame.payload;
-			*num_values = MIN(max_channels, 16);
+			*ಅಂಕೆ_ಮೌಲ್ಯಗಳು = MIN(max_channels, 16);
 
-			if (max_channels > 0) { values[0] = convert_channel_value(rc_channels->chan0); }
+			ಯದಿ (max_channels > 0) { ಮೌಲ್ಯಗಳು_2[0] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan0); }
 
-			if (max_channels > 1) { values[1] = convert_channel_value(rc_channels->chan1); }
+			ಯದಿ (max_channels > 1) { ಮೌಲ್ಯಗಳು_2[1] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan1); }
 
-			if (max_channels > 2) { values[2] = convert_channel_value(rc_channels->chan2); }
+			ಯದಿ (max_channels > 2) { ಮೌಲ್ಯಗಳು_2[2] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan2); }
 
-			if (max_channels > 3) { values[3] = convert_channel_value(rc_channels->chan3); }
+			ಯದಿ (max_channels > 3) { ಮೌಲ್ಯಗಳು_2[3] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan3); }
 
-			if (max_channels > 4) { values[4] = convert_channel_value(rc_channels->chan4); }
+			ಯದಿ (max_channels > 4) { ಮೌಲ್ಯಗಳು_2[4] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan4); }
 
-			if (max_channels > 5) { values[5] = convert_channel_value(rc_channels->chan5); }
+			ಯದಿ (max_channels > 5) { ಮೌಲ್ಯಗಳು_2[5] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan5); }
 
-			if (max_channels > 6) { values[6] = convert_channel_value(rc_channels->chan6); }
+			ಯದಿ (max_channels > 6) { ಮೌಲ್ಯಗಳು_2[6] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan6); }
 
-			if (max_channels > 7) { values[7] = convert_channel_value(rc_channels->chan7); }
+			ಯದಿ (max_channels > 7) { ಮೌಲ್ಯಗಳು_2[7] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan7); }
 
-			if (max_channels > 8) { values[8] = convert_channel_value(rc_channels->chan8); }
+			ಯದಿ (max_channels > 8) { ಮೌಲ್ಯಗಳು_2[8] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan8); }
 
-			if (max_channels > 9) { values[9] = convert_channel_value(rc_channels->chan9); }
+			ಯದಿ (max_channels > 9) { ಮೌಲ್ಯಗಳು_2[9] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan9); }
 
-			if (max_channels > 10) { values[10] = convert_channel_value(rc_channels->chan10); }
+			ಯದಿ (max_channels > 10) { ಮೌಲ್ಯಗಳು_2[10] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan10); }
 
-			if (max_channels > 11) { values[11] = convert_channel_value(rc_channels->chan11); }
+			ಯದಿ (max_channels > 11) { ಮೌಲ್ಯಗಳು_2[11] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan11); }
 
-			if (max_channels > 12) { values[12] = convert_channel_value(rc_channels->chan12); }
+			ಯದಿ (max_channels > 12) { ಮೌಲ್ಯಗಳು_2[12] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan12); }
 
-			if (max_channels > 13) { values[13] = convert_channel_value(rc_channels->chan13); }
+			ಯದಿ (max_channels > 13) { ಮೌಲ್ಯಗಳು_2[13] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan13); }
 
-			if (max_channels > 14) { values[14] = convert_channel_value(rc_channels->chan14); }
+			ಯದಿ (max_channels > 14) { ಮೌಲ್ಯಗಳು_2[14] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan14); }
 
-			if (max_channels > 15) { values[15] = convert_channel_value(rc_channels->chan15); }
+			ಯದಿ (max_channels > 15) { ಮೌಲ್ಯಗಳು_2[15] = convert_channel_ಮೌಲ್ಯ(rc_channels->chan15); }
 
 			CRSF_VERBOSE("Got Channels");
 
-			ret = true;
+			ret = ಸತ್ಯ;
 
-		} else {
+		} ಅನ್ಯಥಾ {
 			CRSF_DEBUG("CRC check failed");
 		}
 
-	} else {
+	} ಅನ್ಯಥಾ {
 		CRSF_DEBUG("Got Non-RC frame (len=%i, type=%i)", current_frame_length, crsf_frame.type);
 		// We could check the CRC here and reset the parser into unsynced state if it fails.
 		// But in practise it's robust even without that.
 	}
 
 	// Either reset or move the rest of the buffer
-	if (current_frame_position > current_frame_length) {
+	ಯದಿ (current_frame_position > current_frame_length) {
 		CRSF_VERBOSE("Moving buffer (%i > %i)", current_frame_position, current_frame_length);
 		memmove(crsf_frame_ptr, crsf_frame_ptr + current_frame_length, current_frame_position - current_frame_length);
 		current_frame_position -= current_frame_length;
 
-	} else {
+	} ಅನ್ಯಥಾ {
 		current_frame_position = 0;
 	}
 
-	return ret;
+	ಪ್ರತ್ಯಾಗಮ ret;
 }
 
 /**
  * write an uint8_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint8_t(uint8_t *buf, int &offset, uint8_t value)
+ಸ್ಥಿರ ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ write_uint8_t(uint8_t *buf, ಪೂರ್ಣಾಙ್ಕ &offset, uint8_t value)
 {
 	buf[offset++] = value;
 }
 /**
  * write an uint16_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint16_t(uint8_t *buf, int &offset, uint16_t value)
+ಸ್ಥಿರ ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ write_uint16_t(uint8_t *buf, ಪೂರ್ಣಾಙ್ಕ &offset, uint16_t value)
 {
 	// Big endian
 	buf[offset] = value >> 8;
@@ -382,7 +382,7 @@ static inline void write_uint16_t(uint8_t *buf, int &offset, uint16_t value)
 /**
  * write an uint24_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint24_t(uint8_t *buf, int &offset, int value)
+ಸ್ಥಿರ ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ write_uint24_t(uint8_t *buf, ಪೂರ್ಣಾಙ್ಕ &offset, ಪೂರ್ಣಾಙ್ಕ value)
 {
 	// Big endian
 	buf[offset] = value >> 16;
@@ -394,7 +394,7 @@ static inline void write_uint24_t(uint8_t *buf, int &offset, int value)
 /**
  * write an int32_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_int32_t(uint8_t *buf, int &offset, int32_t value)
+ಸ್ಥಿರ ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ write_int32_t(uint8_t *buf, ಪೂರ್ಣಾಙ್ಕ &offset, int32_t value)
 {
 	// Big endian
 	buf[offset] = value >> 24;
@@ -404,13 +404,13 @@ static inline void write_int32_t(uint8_t *buf, int &offset, int32_t value)
 	offset += 4;
 }
 
-static inline void write_frame_header(uint8_t *buf, int &offset, crsf_frame_type_t type, uint8_t payload_size)
+ಸ್ಥಿರ ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ write_frame_header(uint8_t *buf, ಪೂರ್ಣಾಙ್ಕ &offset, crsf_frame_type_t type, uint8_t payload_size)
 {
 	write_uint8_t(buf, offset, CRSF_SYNC_BYTE); // this got changed from the address to the sync byte
 	write_uint8_t(buf, offset, payload_size + 2);
 	write_uint8_t(buf, offset, (uint8_t)type);
 }
-static inline void write_frame_crc(uint8_t *buf, int &offset, int buf_size)
+ಸ್ಥಿರ ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ write_frame_crc(uint8_t *buf, ಪೂರ್ಣಾಙ್ಕ &offset, ಪೂರ್ಣಾಙ್ಕ buf_size)
 {
 	// CRC does not include the address and length
 	write_uint8_t(buf, offset, crc8_dvb_s2_buf(buf + 2, buf_size - 3));
@@ -419,73 +419,73 @@ static inline void write_frame_crc(uint8_t *buf, int &offset, int buf_size)
 	//if (buf_size != offset) { PX4_ERR("frame size mismatch (%i != %i)", buf_size, offset); }
 }
 
-bool crsf_send_telemetry_battery(int uart_fd, uint16_t voltage, uint16_t current, int fuel, uint8_t remaining)
+ತಾರ್ಕಿಕ crsf_send_telemetry_battery(ಪೂರ್ಣಾಙ್ಕ uart_fd, uint16_t voltage, uint16_t current, ಪೂರ್ಣಾಙ್ಕ fuel, uint8_t remaining)
 {
 	uint8_t buf[(uint8_t)crsf_payload_size_t::battery_sensor + 4];
-	int offset = 0;
+	ಪೂರ್ಣಾಙ್ಕ offset = 0;
 	write_frame_header(buf, offset, crsf_frame_type_t::battery_sensor, (uint8_t)crsf_payload_size_t::battery_sensor);
 	write_uint16_t(buf, offset, voltage);
 	write_uint16_t(buf, offset, current);
 	write_uint24_t(buf, offset, fuel);
 	write_uint8_t(buf, offset, remaining);
-	write_frame_crc(buf, offset, sizeof(buf));
-	return write(uart_fd, buf, offset) == offset;
+	write_frame_crc(buf, offset, ಪರಿಮಾಣ(buf));
+	ಪ್ರತ್ಯಾಗಮ ಲಿಖ(uart_fd, buf, offset) == offset;
 }
 
-bool crsf_send_telemetry_gps(int uart_fd, int32_t latitude, int32_t longitude, uint16_t groundspeed,
-			     uint16_t gps_heading, uint16_t altitude, uint8_t num_satellites)
+ತಾರ್ಕಿಕ crsf_send_telemetry_gps(ಪೂರ್ಣಾಙ್ಕ uart_fd, int32_t latitude, int32_t longitude, uint16_t groundspeed,
+			     uint16_t gps_heading, uint16_t altitude, uint8_t ಅಂಕೆ_satellites)
 {
 	uint8_t buf[(uint8_t)crsf_payload_size_t::gps + 4];
-	int offset = 0;
+	ಪೂರ್ಣಾಙ್ಕ offset = 0;
 	write_frame_header(buf, offset, crsf_frame_type_t::gps, (uint8_t)crsf_payload_size_t::gps);
 	write_int32_t(buf, offset, latitude);
 	write_int32_t(buf, offset, longitude);
 	write_uint16_t(buf, offset, groundspeed);
 	write_uint16_t(buf, offset, gps_heading);
 	write_uint16_t(buf, offset, altitude);
-	write_uint8_t(buf, offset, num_satellites);
-	write_frame_crc(buf, offset, sizeof(buf));
-	return write(uart_fd, buf, offset) == offset;
+	write_uint8_t(buf, offset, ಅಂಕೆ_satellites);
+	write_frame_crc(buf, offset, ಪರಿಮಾಣ(buf));
+	ಪ್ರತ್ಯಾಗಮ ಲಿಖ(uart_fd, buf, offset) == offset;
 }
 
-bool crsf_send_telemetry_baro_altitude(int uart_fd, uint16_t altitude, int16_t vertical_speed)
+ತಾರ್ಕಿಕ crsf_send_telemetry_baro_altitude(ಪೂರ್ಣಾಙ್ಕ uart_fd, uint16_t altitude, int16_t vertical_speed)
 {
 	uint8_t buf[(uint8_t)crsf_payload_size_t::baro_altitude + 4];
-	int offset = 0;
+	ಪೂರ್ಣಾಙ್ಕ offset = 0;
 	write_frame_header(buf, offset, crsf_frame_type_t::baro_altitude, (uint8_t)crsf_payload_size_t::baro_altitude);
 	write_uint16_t(buf, offset, altitude);
 	write_uint16_t(buf, offset, (uint16_t)vertical_speed);
-	write_frame_crc(buf, offset, sizeof(buf));
-	return write(uart_fd, buf, offset) == offset;
+	write_frame_crc(buf, offset, ಪರಿಮಾಣ(buf));
+	ಪ್ರತ್ಯಾಗಮ ಲಿಖ(uart_fd, buf, offset) == offset;
 }
 
-bool crsf_send_telemetry_attitude(int uart_fd, int16_t pitch, int16_t roll, int16_t yaw)
+ತಾರ್ಕಿಕ crsf_send_telemetry_attitude(ಪೂರ್ಣಾಙ್ಕ uart_fd, int16_t pitch, int16_t roll, int16_t yaw)
 {
 	uint8_t buf[(uint8_t)crsf_payload_size_t::attitude + 4];
-	int offset = 0;
+	ಪೂರ್ಣಾಙ್ಕ offset = 0;
 	write_frame_header(buf, offset, crsf_frame_type_t::attitude, (uint8_t)crsf_payload_size_t::attitude);
 	write_uint16_t(buf, offset, pitch);
 	write_uint16_t(buf, offset, roll);
 	write_uint16_t(buf, offset, yaw);
-	write_frame_crc(buf, offset, sizeof(buf));
-	return write(uart_fd, buf, offset) == offset;
+	write_frame_crc(buf, offset, ಪರಿಮಾಣ(buf));
+	ಪ್ರತ್ಯಾಗಮ ಲಿಖ(uart_fd, buf, offset) == offset;
 }
 
-bool crsf_send_telemetry_flight_mode(int uart_fd, const char *flight_mode)
+ತಾರ್ಕಿಕ crsf_send_telemetry_flight_mode(ಪೂರ್ಣಾಙ್ಕ uart_fd, ಧ್ರುವ ವರ್ಣ *flight_mode)
 {
-	const int max_length = 16;
-	int length = strlen(flight_mode) + 1;
+	ಧ್ರುವ ಪೂರ್ಣಾಙ್ಕ max_length = 16;
+	ಪೂರ್ಣಾಙ್ಕ length = strlen(flight_mode) + 1;
 
-	if (length > max_length) {
+	ಯದಿ (length > max_length) {
 		length = max_length;
 	}
 
 	uint8_t buf[max_length + 4];
-	int offset = 0;
+	ಪೂರ್ಣಾಙ್ಕ offset = 0;
 	write_frame_header(buf, offset, crsf_frame_type_t::flight_mode, length);
 	memcpy(buf + offset, flight_mode, length);
 	offset += length;
 	buf[offset - 1] = 0; // ensure null-terminated string
 	write_frame_crc(buf, offset, length + 4);
-	return write(uart_fd, buf, offset) == offset;
+	ಪ್ರತ್ಯಾಗಮ ಲಿಖ(uart_fd, buf, offset) == offset;
 }

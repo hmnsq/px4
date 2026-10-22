@@ -39,48 +39,48 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
 /**
  * A high pass filter as described here:
  * http://en.wikipedia.org/wiki/High-pass_filter.
  */
-class __EXPORT BlockHighPass : public Block
+ವರ್ಗ __EXPORT Block_ಮೇಲಿನ_Pass : ಸಾರ್ವಜನಿಕ Block
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockHighPass(SuperBlock *parent, const char *name) :
+	Block_ಮೇಲಿನ_Pass(SuperBlock *parent, ಧ್ರುವ ವರ್ಣ *name) :
 		Block(parent, name),
 		_u(0),
 		_y(0),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(ಏತತ್, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockHighPass() = default;
-	float update(float input);
+	ಆಭಾಸ ~Block_ಮೇಲಿನ_Pass() = ಸ್ವಭಾವ;
+	ಭಿನ್ನ update(ಭಿನ್ನ ಒಳಹರಿವು);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getFCut() {return _fCut.get();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
+	ಭಿನ್ನ getU() {ಪ್ರತ್ಯಾಗಮ _u;}
+	ಭಿನ್ನ getY() {ಪ್ರತ್ಯಾಗಮ _y;}
+	ಭಿನ್ನ getFCut() {ಪ್ರತ್ಯಾಗಮ _fCut.get();}
+	ಶೂನ್ಯ setU(ಭಿನ್ನ u) {_u = u;}
+	ಶೂನ್ಯ setY(ಭಿನ್ನ y) {_y = y;}
+ರಕ್ಷಿತ:
 // attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
+	ಭಿನ್ನ _u; /**< previous input */
+	ಭಿನ್ನ _y; /**< previous output */
 	control::BlockParamFloat _fCut; /**< cut-off frequency, Hz */
 };
 

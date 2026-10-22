@@ -31,31 +31,31 @@
  *
  ****************************************************************************/
 
-#include "RtcmTestCommon.hpp"
+#ಅನ್ತರ್ಭಾವ "RtcmTestCommon.hpp"
 
 TEST_F(RtcmTest, Stress_ManySmallValidFrames)
 {
 	// Simulate a good sender sending many small messages
 	// Process as we go to avoid buffer overflow
-	const int num_frames = 1000;
-	int count = 0;
+	ಧ್ರುವ ಪೂರ್ಣಾಙ್ಕ ಅಂಕೆ_frames = 1000;
+	ಪೂರ್ಣಾಙ್ಕ ಎಣಿಕೆ = 0;
 
-	for (int i = 0; i < num_frames; i++) {
+	ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ i = 0; i < ಅಂಕೆ_frames; i++) {
 		auto frame = buildValidFrame(1005 + (i % 100), {static_cast<uint8_t>(i & 0xFF)});
 		parser.addData(frame.data(), frame.size());
 
 		// Consume available messages after each add
 		size_t len;
 
-		while (parser.getNextMessage(&len) != nullptr) {
+		ಯಾವತ್ (parser.getNextMessage(&len) != nullptr) {
 			parser.consumeMessage(len);
-			count++;
+			ಎಣಿಕೆ++;
 		}
 	}
 
-	EXPECT_EQ(count, num_frames);
+	EXPECT_EQ(ಎಣಿಕೆ, ಅಂಕೆ_frames);
 	auto stats = parser.getStats();
-	EXPECT_EQ(stats.messages_parsed, static_cast<uint32_t>(num_frames));
+	EXPECT_EQ(stats.messages_parsed, static_cast<uint32_t>(ಅಂಕೆ_frames));
 	EXPECT_EQ(stats.bytes_discarded, 0u);
 	EXPECT_EQ(stats.crc_errors, 0u);
 }
@@ -64,11 +64,11 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 {
 	// This tests the pathological case Alex mentioned: lots of invalid data
 	// causing many memmove operations during preamble search
-	const size_t garbage_size = 10000;
+	ಧ್ರುವ size_t garbage_size = 10000;
 	std::vector<uint8_t> garbage(garbage_size);
 	std::mt19937 rng(99);
 
-	for (auto &byte : garbage) {
+	ಪ್ರತಿ (auto &byte : garbage) {
 		// Avoid every protocol preamble to ensure maximum discards: 0xD3 (RTCM3)
 		// and 0x73 (SPARTN), which the framer also treats as a frame start when
 		// CONFIG_GPS_SPARTN is enabled.
@@ -78,7 +78,7 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 	// Add in chunks to simulate streaming
 	size_t offset = 0;
 
-	while (offset < garbage.size()) {
+	ಯಾವತ್ (offset < garbage.size()) {
 		size_t chunk = std::min<size_t>(256, garbage.size() - offset);
 		parser.addData(&garbage[offset], chunk);
 
@@ -93,8 +93,8 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 	parser.addData(valid.data(), valid.size());
 
 	size_t len;
-	const uint8_t *msg = parser.getNextMessage(&len);
-	ASSERT_NE(msg, nullptr);
+	ಧ್ರುವ uint8_t *ಸಂದೇಶ = parser.getNextMessage(&len);
+	ASSERT_NE(ಸಂದೇಶ, nullptr);
 
 	parser.consumeMessage(len);
 	auto stats = parser.getStats();
@@ -105,10 +105,10 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 TEST_F(RtcmTest, Stress_InterleavedGarbageAndValid)
 {
 	// Simulate a flaky sender that mixes garbage with valid frames
-	const int num_valid = 100;
-	int parsed = 0;
+	ಧ್ರುವ ಪೂರ್ಣಾಙ್ಕ ಅಂಕೆ_valid = 100;
+	ಪೂರ್ಣಾಙ್ಕ parsed = 0;
 
-	for (int i = 0; i < num_valid; i++) {
+	ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ i = 0; i < ಅಂಕೆ_valid; i++) {
 		// Add some garbage (variable amount)
 		std::vector<uint8_t> garbage(10 + (i % 50), 0xAA);
 		parser.addData(garbage.data(), garbage.size());
@@ -120,11 +120,11 @@ TEST_F(RtcmTest, Stress_InterleavedGarbageAndValid)
 		// Parse what we can
 		size_t len;
 
-		while (parser.getNextMessage(&len) != nullptr) {
+		ಯಾವತ್ (parser.getNextMessage(&len) != nullptr) {
 			parser.consumeMessage(len);
 			parsed++;
 		}
 	}
 
-	EXPECT_EQ(parsed, num_valid);
+	EXPECT_EQ(parsed, ಅಂಕೆ_valid);
 }

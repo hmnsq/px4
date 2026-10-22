@@ -31,31 +31,31 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <random>
-#include <lib/matrix/matrix/math.hpp>
-#include "WelfordMean.hpp"
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <random>
+#ಅನ್ತರ್ಭಾವ <lib/matrix/matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ "WelfordMean.hpp"
 
-using namespace math;
+using ನಾಮಾಕಾಶ math;
 using matrix::Vector3f;
 
 TEST(WelfordMeanTest, NoisySignal)
 {
-	const float std_dev = 3.f;
-	std::normal_distribution<float> standard_normal_distribution{0.f, std_dev};
+	ಧ್ರುವ ಭಿನ್ನ std_dev = 3.f;
+	std::normal_distribution<ಭಿನ್ನ> standard_normal_distribution{0.f, std_dev};
 	std::default_random_engine random_generator{}; // Pseudo-random generator with constant seed
 	random_generator.seed(42);
-	WelfordMean<float> welford{};
+	WelfordMean<ಭಿನ್ನ> welford{};
 
-	for (int i = 0; i < 1000; i++) {
-		const float noisy_value = standard_normal_distribution(random_generator);
-		welford.update(noisy_value);
+	ಪ್ರತಿ (ಪೂರ್ಣಾಙ್ಕ i = 0; i < 1000; i++) {
+		ಧ್ರುವ ಭಿನ್ನ noisy_ಮೌಲ್ಯ = standard_normal_distribution(random_generator);
+		welford.update(noisy_ಮೌಲ್ಯ);
 	}
 
 	EXPECT_TRUE(welford.valid());
-	const float mean = welford.mean();
-	const float var = welford.variance();
-	const float var_real = std_dev * std_dev;
+	ಧ್ರುವ ಭಿನ್ನ mean = welford.mean();
+	ಧ್ರುವ ಭಿನ್ನ var = welford.variance();
+	ಧ್ರುವ ಭಿನ್ನ var_real = std_dev * std_dev;
 
 	EXPECT_NEAR(mean, 0.f, 0.7f);
 

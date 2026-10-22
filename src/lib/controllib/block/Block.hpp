@@ -39,85 +39,85 @@
 
 #pragma once
 
-#include <containers/List.hpp>
-#include <controllib/block/BlockParam.hpp>
-#include <cstdint>
+#ಅನ್ತರ್ಭಾವ <containers/List.hpp>
+#ಅನ್ತರ್ಭಾವ <controllib/block/BlockParam.hpp>
+#ಅನ್ತರ್ಭಾವ <cstdint>
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
-static constexpr uint8_t maxChildrenPerBlock = 100;
-static constexpr uint8_t maxParamsPerBlock = 110;
-static constexpr uint8_t blockNameLengthMax = 40;
+ಸ್ಥಿರ constexpr uint8_t maxChildrenPerBlock = 100;
+ಸ್ಥಿರ constexpr uint8_t maxParamsPerBlock = 110;
+ಸ್ಥಿರ constexpr uint8_t blockNameLengthMax = 40;
 
 // forward declaration
-class BlockParamBase;
-class SuperBlock;
+ವರ್ಗ BlockParamBase;
+ವರ್ಗ SuperBlock;
 
 /**
  */
-class __EXPORT Block : public ListNode<Block *>
+ವರ್ಗ __EXPORT Block : ಸಾರ್ವಜನಿಕ List_ಗಂಟು<Block *>
 {
-public:
-	friend class BlockParamBase;
+ಸಾರ್ವಜನಿಕ:
+	friend ವರ್ಗ BlockParamBase;
 
-	Block(SuperBlock *parent, const char *name);
-	virtual ~Block() = default;
+	Block(SuperBlock *parent, ಧ್ರುವ ವರ್ಣ *name);
+	ಆಭಾಸ ~Block() = ಸ್ವಭಾವ;
 
 	// no copy, assignment, move, move assignment
-	Block(const Block &) = delete;
-	Block &operator=(const Block &) = delete;
+	Block(ಧ್ರುವ Block &) = delete;
+	Block &operator=(ಧ್ರುವ Block &) = delete;
 	Block(Block &&) = delete;
 	Block &operator=(Block &&) = delete;
 
-	void getName(char *name, size_t n);
+	ಶೂನ್ಯ getName(ವರ್ಣ *name, size_t n);
 
-	virtual void updateParams();
+	ಆಭಾಸ ಶೂನ್ಯ updateParams();
 
-	virtual void setDt(float dt) { _dt = dt; }
-	float getDt() { return _dt; }
+	ಆಭಾಸ ಶೂನ್ಯ setDt(ಭಿನ್ನ dt) { _dt = dt; }
+	ಭಿನ್ನ getDt() { ಪ್ರತ್ಯಾಗಮ _dt; }
 
-protected:
+ರಕ್ಷಿತ:
 
-	virtual void updateParamsSubclass() {}
+	ಆಭಾಸ ಶೂನ್ಯ updateParamsSubclass() {}
 
-	SuperBlock *getParent() { return _parent; }
-	List<BlockParamBase *> &getParams() { return _params; }
+	SuperBlock *getParent() { ಪ್ರತ್ಯಾಗಮ _parent; }
+	List<BlockParamBase *> &getParams() { ಪ್ರತ್ಯಾಗಮ _params; }
 
-	const char *_name;
+	ಧ್ರುವ ವರ್ಣ *_name;
 	SuperBlock *_parent;
-	float _dt{0.0f};
+	ಭಿನ್ನ _dt{0.0f};
 
 	List<BlockParamBase *> _params;
 };
 
-class __EXPORT SuperBlock :
-	public Block
+ವರ್ಗ __EXPORT SuperBlock :
+	ಸಾರ್ವಜನಿಕ Block
 {
-public:
-	friend class Block;
+ಸಾರ್ವಜನಿಕ:
+	friend ವರ್ಗ Block;
 
-	SuperBlock(SuperBlock *parent, const char *name) : Block(parent, name) {}
-	~SuperBlock() = default;
+	SuperBlock(SuperBlock *parent, ಧ್ರುವ ವರ್ಣ *name) : Block(parent, name) {}
+	~SuperBlock() = ಸ್ವಭಾವ;
 
 	// no copy, assignment, move, move assignment
-	SuperBlock(const SuperBlock &) = delete;
-	SuperBlock &operator=(const SuperBlock &) = delete;
+	SuperBlock(ಧ್ರುವ SuperBlock &) = delete;
+	SuperBlock &operator=(ಧ್ರುವ SuperBlock &) = delete;
 	SuperBlock(SuperBlock &&) = delete;
 	SuperBlock &operator=(SuperBlock &&) = delete;
 
-	void setDt(float dt) override;
+	ಶೂನ್ಯ setDt(ಭಿನ್ನ dt) override;
 
-	void updateParams() override
+	ಶೂನ್ಯ updateParams() override
 	{
 		Block::updateParams();
 
-		if (getChildren().getHead() != nullptr) { updateChildParams(); }
+		ಯದಿ (getChildren().getHead() != nullptr) { updateChildParams(); }
 	}
 
-protected:
-	List<Block *> &getChildren() { return _children; }
-	void updateChildParams();
+ರಕ್ಷಿತ:
+	List<Block *> &getChildren() { ಪ್ರತ್ಯಾಗಮ _children; }
+	ಶೂನ್ಯ updateChildParams();
 
 	List<Block *> _children;
 };

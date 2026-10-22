@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ಅನ್ತರ್ಭಾವ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gripper.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/gripper.h>
 
 /**
  * @brief Function: Gripper (Used for actuating a Gripper)
  */
-class FunctionGripper : public FunctionProviderBase
+ವರ್ಗ FunctionGripper : ಸಾರ್ವಜನಿಕ FunctionProviderBase
 {
-public:
-	FunctionGripper() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGripper(); }
+ಸಾರ್ವಜನಿಕ:
+	FunctionGripper() = ಸ್ವಭಾವ;
+	ಸ್ಥಿರ FunctionProviderBase *allocate(ಧ್ರುವ Context &context) { ಪ್ರತ್ಯಾಗಮ ನೂತನ FunctionGripper(); }
 
-	void update() override
+	ಶೂನ್ಯ update() override
 	{
 		gripper_s gripper;
 
-		if (_gripper_sub.update(&gripper)) {
-			if (gripper.command == gripper_s::COMMAND_RELEASE) {
+		ಯದಿ (_gripper_sub.update(&gripper)) {
+			ಯದಿ (gripper.command == gripper_s::COMMAND_RELEASE) {
 				_data = -1.f; // Minimum command for release
 
-			} else if (gripper.command == gripper_s::COMMAND_GRAB) {
+			} ಅನ್ಯಥಾ ಯದಿ (gripper.command == gripper_s::COMMAND_GRAB) {
 				_data = 1.f; // Maximum command for grab
 
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	ಭಿನ್ನ value(OutputFunction func) override { ಪ್ರತ್ಯಾಗಮ _data; }
 
-private:
+ಗುಪ್ತ:
 	uORB::Subscription _gripper_sub{ORB_ID(gripper)};
-	float _data{-1.f};
+	ಭಿನ್ನ _data{-1.f};
 };

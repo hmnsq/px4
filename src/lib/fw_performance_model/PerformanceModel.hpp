@@ -37,41 +37,41 @@
  * Performance model.
  */
 
-#include <float.h>
-#include <math.h>
-#include <px4_platform_common/module_params.h>
-#include <uORB/topics/fuel_tank_status.h>
+#ಅನ್ತರ್ಭಾವ <float.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/module_params.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/fuel_tank_status.h>
 
 #ifndef PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
 #define PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
 
-class PerformanceModel : public ModuleParams
+ವರ್ಗ PerformanceModel : ಸಾರ್ವಜನಿಕ ModuleParams
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	PerformanceModel();
-	~PerformanceModel() = default;
+	~PerformanceModel() = ಸ್ವಭಾವ;
 
-	void updateParameters();
+	ಶೂನ್ಯ updateParameters();
 
 	/**
 	 * Get the maximum climb rate (true airspeed) expected for current air density and weight.
 	 * @param air_density in kg/m^3
 	 * @return maximum climb rate in m/s
 	 */
-	float getMaximumClimbRate(float air_density) const;
+	ಭಿನ್ನ getMaximumClimbRate(ಭಿನ್ನ air_density) ಧ್ರುವ;
 
 	/**
 	 * Get the minimum sink rate (true airspeed) expected for current air density and weight.
 	 * @param air_density in kg/m^3
 	 * @return minimum sink rate in m/s
 	 */
-	float getMinimumSinkRate(float air_density) const;
+	ಭಿನ್ನ getMinimumSinkRate(ಭಿನ್ನ air_density) ಧ್ರುವ;
 
 	/**
 	 * Get the ration of actual weight to base weight
 	 * @return weight ratio
 	 */
-	float getWeightRatio() const;
+	ಭಿನ್ನ getWeightRatio() ಧ್ರುವ;
 
 	/**
 	 * Set the fraction of fuel remaining, used to reduce the vehicle weight by the burned fuel mass
@@ -79,13 +79,13 @@ public:
 	 * Non-finite input is ignored and the last known fuel fraction is kept.
 	 * @param fuel_fraction_remaining fraction of fuel remaining in range [0,1]
 	 */
-	void setFuelFractionRemaining(float fuel_fraction_remaining);
+	ಶೂನ್ಯ setFuelFractionRemaining(ಭಿನ್ನ fuel_fraction_remaining);
 
 	/**
 	 * Check if fuel-based weight compensation is enabled.
 	 * @return true if WEIGHT_FUEL is set to a valid fuel weight
 	 */
-	bool isFuelCompensationEnabled() const { return _param_weight_fuel.get() > FLT_EPSILON; }
+	ತಾರ್ಕಿಕ isFuelCompensationEnabled() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ _param_weight_fuel.get() > FLT_EPSILON; }
 
 	/**
 	 * Extract the fraction of fuel remaining from a fuel tank status message, preferring the
@@ -94,7 +94,7 @@ public:
 	 * @param fuel_tank_status fuel tank status message
 	 * @return fraction of fuel remaining in range [0,1], NAN if not available
 	 */
-	static float getFuelFractionRemaining(const fuel_tank_status_s &fuel_tank_status);
+	ಸ್ಥಿರ ಭಿನ್ನ getFuelFractionRemaining(ಧ್ರುವ fuel_tank_status_s &fuel_tank_status);
 
 	/**
 	 * Get the trim throttle for the current airspeed setpoint as well as air density and weight.
@@ -104,20 +104,20 @@ public:
 	 * @param air_density air density in kg/m^3
 	 * @return trim throttle in range [0,1]
 	 */
-	float getTrimThrottle(float throttle_min, float throttle_max, float airspeed_sp, float air_density) const;
+	ಭಿನ್ನ getTrimThrottle(ಭಿನ್ನ throttle_min, ಭಿನ್ನ throttle_max, ಭಿನ್ನ airspeed_sp, ಭಿನ್ನ air_density) ಧ್ರುವ;
 
 	/**
 	 * Get the throttle scale factor for the current air density.
 	 * @param air_density in kg/m^3
 	 * @return throttle scale factor for air density
 	 */
-	float getAirDensityThrottleScale(float air_density) const;
+	ಭಿನ್ನ getAirDensityThrottleScale(ಭಿನ್ನ air_density) ಧ್ರುವ;
 
 	/**
 	 * Get the trim airspeed compensated for weight.
 	 * @return calibrated trim airspeed in m/s
 	 */
-	float getCalibratedTrimAirspeed() const;
+	ಭಿನ್ನ getCalibratedTrimAirspeed() ಧ್ರುವ;
 
 	/**
 	 * Get the minimum airspeed compensated for weight, load factor due to bank angle and flaps.
@@ -125,13 +125,13 @@ public:
 	 * @param flaps_setpoint Flaps setpoint, normalized in range [0,1]
 	 * @return calibrated minimum airspeed in m/s
 	 */
-	float getMinimumCalibratedAirspeed(float load_factor, float flaps_setpoint) const;
+	ಭಿನ್ನ getMinimumCalibratedAirspeed(ಭಿನ್ನ load_factor, ಭಿನ್ನ flaps_setpoint) ಧ್ರುವ;
 
 	/**
 	 * Get the maximum airspeed.
 	 * @return calibrated maximum airspeed in m/s
 	 */
-	float getMaximumCalibratedAirspeed() const;
+	ಭಿನ್ನ getMaximumCalibratedAirspeed() ಧ್ರುವ;
 
 	/**
 	 * get the stall airspeed compensated for load factor due to bank angle.
@@ -139,15 +139,15 @@ public:
 	 * @param flaps_setpoint Flaps setpoint, normalized in range [0,1]
 	 * @return calibrated stall airspeed in m/s
 	 */
-	float getCalibratedStallAirspeed(float load_factor, float flaps_setpoint) const;
+	ಭಿನ್ನ getCalibratedStallAirspeed(ಭಿನ್ನ load_factor, ಭಿನ್ನ flaps_setpoint) ಧ್ರುವ;
 
 	/**
 	 * Run some checks on parameters and detect unfeasible combinations.
 	 * @return true if all checks pass
 	 */
-	bool runSanityChecks() const;
+	ತಾರ್ಕಿಕ runSanityChecks() ಧ್ರುವ;
 
-private:
+ಗುಪ್ತ:
 	DEFINE_PARAMETERS(
 		(ParamFloat<px4::params::FW_AIRSPD_MAX>) _param_fw_airspd_max,
 		(ParamFloat<px4::params::FW_AIRSPD_MIN>) _param_fw_airspd_min,
@@ -173,12 +173,12 @@ private:
 	 * @param calibrated_airspeed_sp [m/s] calibrated
 	 * @return trim throttle [0, 1] at sea level
 	 */
-	float getTrimThrottleForCalibratedAirspeed(float calibrated_airspeed_sp) const;
+	ಭಿನ್ನ getTrimThrottleForCalibratedAirspeed(ಭಿನ್ನ calibrated_airspeed_sp) ಧ್ರುವ;
 
 
-	static float sanitiseAirDensity(float air_density);
+	ಸ್ಥಿರ ಭಿನ್ನ sanitiseAirDensity(ಭಿನ್ನ air_density);
 
-	float _fuel_fraction_remaining{NAN}; ///< fraction of fuel remaining in range [0,1], NAN if unknown
+	ಭಿನ್ನ _fuel_fraction_remaining{NAN}; ///< fraction of fuel remaining in range [0,1], NAN if unknown
 };
 
 #endif //PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_

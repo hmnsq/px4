@@ -31,36 +31,36 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
-#include "ObstacleMath.hpp"
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <lib/mathlib/mathlib.h>
+#ಅನ್ತರ್ಭಾವ "ObstacleMath.hpp"
 
-using namespace matrix;
+using ನಾಮಾಕಾಶ matrix;
 
 TEST(ObstacleMathTest, ProjectDistanceOnHorizontalPlane)
 {
 	// standard vehicle orientation inputs
 	Quatf vehicle_pitch_up_45(Eulerf(0.0f, M_PI_4_F, 0.0f));
-	Quatf vehicle_roll_right_45(Eulerf(M_PI_4_F, 0.0f, 0.0f));
+	Quatf vehicle_roll_ಬಲ_45(Eulerf(M_PI_4_F, 0.0f, 0.0f));
 
 	// GIVEN: a distance, sensor orientation, and quaternion representing the vehicle's orientation
-	float distance = 1.0f;
-	float sensor_orientation = 0; // radians (forward facing)
+	ಭಿನ್ನ distance = 1.0f;
+	ಭಿನ್ನ sensor_orientation = 0; // radians (forward facing)
 
 	// WHEN: we project the distance onto the horizontal plane
 	ObstacleMath::project_distance_on_horizontal_plane(distance, sensor_orientation, vehicle_pitch_up_45);
 
 	// THEN: the distance should be scaled correctly
-	float expected_scale    = sqrtf(2) / 2;
-	float expected_distance = 1.0f * expected_scale;
+	ಭಿನ್ನ expected_scale    = sqrtf(2) / 2;
+	ಭಿನ್ನ expected_distance = 1.0f * expected_scale;
 
 	EXPECT_NEAR(distance, expected_distance, 1e-5);
 
 	// GIVEN: a distance, sensor orientation, and quaternion representing the vehicle's orientation
 	distance = 1.0f;
 
-	ObstacleMath::project_distance_on_horizontal_plane(distance, sensor_orientation, vehicle_roll_right_45);
+	ObstacleMath::project_distance_on_horizontal_plane(distance, sensor_orientation, vehicle_roll_ಬಲ_45);
 
 	// THEN: the distance should be scaled correctly
 	expected_scale     = 1.f;
@@ -72,7 +72,7 @@ TEST(ObstacleMathTest, ProjectDistanceOnHorizontalPlane)
 	distance = 1.0f;
 	sensor_orientation = M_PI_2_F; // radians (right facing)
 
-	ObstacleMath::project_distance_on_horizontal_plane(distance, sensor_orientation, vehicle_roll_right_45);
+	ObstacleMath::project_distance_on_horizontal_plane(distance, sensor_orientation, vehicle_roll_ಬಲ_45);
 
 	// THEN: the distance should be scaled correctly
 	expected_scale     = sqrtf(2) / 2;
@@ -94,10 +94,10 @@ TEST(ObstacleMathTest, ProjectDistanceOnHorizontalPlane)
 
 TEST(ObstacleMathTest, GetBinAtAngle)
 {
-	float bin_width = 5.0f;
+	ಭಿನ್ನ bin_width = 5.0f;
 
 	// GIVEN: a start bin, bin width, and angle
-	float angle = 0.0f;
+	ಭಿನ್ನ angle = 0.0f;
 
 	// WHEN: we calculate the bin index at the angle
 	uint16_t bin_index = ObstacleMath::get_bin_at_angle(bin_width, angle);
@@ -136,12 +136,12 @@ TEST(ObstacleMathTest, GetBinAtAngle)
 TEST(ObstacleMathTest, GetLowerBound)
 {
 	// GIVEN: an invalid bin index, non-integer bin width, and a negative non-integer angle offset
-	int      bin          = -1;
-	float    bin_width    =  7.5f;
-	float    angle_offset = -4.3f;
+	ಪೂರ್ಣಾಙ್ಕ      bin          = -1;
+	ಭಿನ್ನ    bin_width    =  7.5f;
+	ಭಿನ್ನ    angle_offset = -4.3f;
 
 	// WHEN: we calculate the lower bound angle of the bin
-	float lower_bound = ObstacleMath::get_lower_bound_angle(bin, bin_width, angle_offset);
+	ಭಿನ್ನ lower_bound = ObstacleMath::get_lower_bound_angle(bin, bin_width, angle_offset);
 
 	// THEN: the lower bound angle should be correct. The bin index is wrapped to the end and
 	// the angle offset is applied in the counter-clockwise direction.
@@ -158,8 +158,8 @@ TEST(ObstacleMathTest, OffsetBinIndex)
 
 	// GIVEN: a bin index, bin width, and a negative angle offset
 	uint16_t bin = 0;
-	float bin_width = 5.0f;
-	float angle_offset = -120.0f;
+	ಭಿನ್ನ bin_width = 5.0f;
+	ಭಿನ್ನ angle_offset = -120.0f;
 
 	// WHEN: we offset the bin index by the negative angle
 	uint16_t new_bin_index = ObstacleMath::get_offset_bin_index(bin, bin_width, angle_offset);
@@ -184,31 +184,31 @@ TEST(ObstacleMathTest, OffsetBinIndex)
 TEST(ObstacleMathTest, WrapBin)
 {
 	// GIVEN: a bin index within bounds and the number of bins
-	int bin = 0;
-	int bin_count = 72;
+	ಪೂರ್ಣಾಙ್ಕ bin = 0;
+	ಪೂರ್ಣಾಙ್ಕ bin_ಎಣಿಕೆ = 72;
 
 	// WHEN: we wrap a bin index within the bounds
-	int wrapped_bin = ObstacleMath::wrap_bin(bin, bin_count);
+	ಪೂರ್ಣಾಙ್ಕ wrapped_bin = ObstacleMath::wrap_bin(bin, bin_ಎಣಿಕೆ);
 
 	// THEN: the wrapped bin index should stay 0
 	EXPECT_EQ(wrapped_bin, 0);
 
 	// GIVEN: a bin index that is out of bounds, and the number of bins
 	bin = 73;
-	bin_count = 72;
+	bin_ಎಣಿಕೆ = 72;
 
 	// WHEN: we wrap a bin index that is larger than the number of bins
-	wrapped_bin = ObstacleMath::wrap_bin(bin, bin_count);
+	wrapped_bin = ObstacleMath::wrap_bin(bin, bin_ಎಣಿಕೆ);
 
 	// THEN: the wrapped bin index should be wrapped back to the beginning
 	EXPECT_EQ(wrapped_bin, 1);
 
 	// GIVEN: a negative bin index and the number of bins
 	bin = -1;
-	bin_count = 72;
+	bin_ಎಣಿಕೆ = 72;
 
 	// WHEN: we wrap a bin index that is negative
-	wrapped_bin = ObstacleMath::wrap_bin(bin, bin_count);
+	wrapped_bin = ObstacleMath::wrap_bin(bin, bin_ಎಣಿಕೆ);
 
 	// THEN: the wrapped bin index should be wrapped back to the end
 	EXPECT_EQ(wrapped_bin, 71);
@@ -221,26 +221,26 @@ TEST(ObstacleMathTest, HandleMissedBins)
 	// data should be filled in the bins outside the FOV.
 
 	// GIVEN: measurements, current bin, previous bin, bin width, and field of view offset
-	float measurements[8] = {0, 0, 1, 0, 0, 2, 0, 0};
-	int   current_bin     = 2;
-	int   previous_bin    = 5;
-	int   bin_width       = 45.0f;
-	float fov             = 270.0f;
-	float fov_offset      = 360.0f - fov / 2;
+	ಭಿನ್ನ measurements[8] = {0, 0, 1, 0, 0, 2, 0, 0};
+	ಪೂರ್ಣಾಙ್ಕ   current_bin     = 2;
+	ಪೂರ್ಣಾಙ್ಕ   previous_bin    = 5;
+	ಪೂರ್ಣಾಙ್ಕ   bin_width       = 45.0f;
+	ಭಿನ್ನ fov             = 270.0f;
+	ಭಿನ್ನ fov_offset      = 360.0f - fov / 2;
 
-	float measurement     = measurements[current_bin];
+	ಭಿನ್ನ measurement     = measurements[current_bin];
 
 	// WHEN: we handle missed bins
-	int current_bin_offset  = ObstacleMath::get_offset_bin_index(current_bin,  bin_width, fov_offset);
-	int previous_bin_offset = ObstacleMath::get_offset_bin_index(previous_bin, bin_width, fov_offset);
+	ಪೂರ್ಣಾಙ್ಕ current_bin_offset  = ObstacleMath::get_offset_bin_index(current_bin,  bin_width, fov_offset);
+	ಪೂರ್ಣಾಙ್ಕ previous_bin_offset = ObstacleMath::get_offset_bin_index(previous_bin, bin_width, fov_offset);
 
-	int start = math::min(current_bin_offset, previous_bin_offset) + 1;
-	int end   = math::max(current_bin_offset, previous_bin_offset);
+	ಪೂರ್ಣಾಙ್ಕ start = math::min(current_bin_offset, previous_bin_offset) + 1;
+	ಪೂರ್ಣಾಙ್ಕ end   = math::max(current_bin_offset, previous_bin_offset);
 
 	EXPECT_EQ(start, 1);
 	EXPECT_EQ(end,   5);
 
-	for (uint16_t i = start; i < end; i++) {
+	ಪ್ರತಿ (uint16_t i = start; i < end; i++) {
 		uint16_t bin_index = ObstacleMath::get_offset_bin_index(i, bin_width, -fov_offset);
 		measurements[bin_index] = measurement;
 	}

@@ -41,7 +41,7 @@
 
 #pragma once
 
-#include <stdint.h>
+#ಅನ್ತರ್ಭಾವ <stdint.h>
 
 __BEGIN_DECLS
 
@@ -55,18 +55,18 @@ __BEGIN_DECLS
 
 
 
-#pragma pack(push, 1)
-typedef struct {
+#pragma pack(ತಳ್ಳು, 1)
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಂರಚನಾ {
 	uint8_t	header;							///< 0xA8 for a valid packet
 	uint8_t	status;							///< 0x01 valid and live SUMD data frame / 0x00 = SUMH / 0x81 = Failsafe
 	uint8_t	length;							///< Channels
 	uint8_t	sumd_data[SUMD_MAX_CHANNELS * 2];	///< ChannelData (High Byte/ Low Byte)
-	uint8_t	crc16_high;						///< High Byte of 16 Bit CRC
-	uint8_t	crc16_low;						///< Low Byte of 16 Bit CRC
+	uint8_t	crc16_ಮೇಲಿನ;						///< High Byte of 16 Bit CRC
+	uint8_t	crc16_ಕೆಳಗಿನ;						///< Low Byte of 16 Bit CRC
 	uint8_t	telemetry;						///< Telemetry request
 	uint8_t	crc8;							///< SUMH CRC8
 } ReceiverFcPacketHoTT;
-#pragma pack(pop)
+#pragma pack(ತೆಗೆ)
 
 
 /**
@@ -76,7 +76,7 @@ typedef struct {
  * @param value to accumulate in the checksum
  * @return the checksum
  */
-uint16_t sumd_crc16(uint16_t crc, uint8_t value);
+uint16_t sumd_crc16(uint16_t crc, uint8_t ಮೌಲ್ಯ);
 
 /**
  * CRC8 implementation for SUMH protocol
@@ -85,7 +85,7 @@ uint16_t sumd_crc16(uint16_t crc, uint8_t value);
  * @param value to accumulate in the checksum
  * @return the checksum
  */
-uint8_t sumd_crc8(uint8_t crc, uint8_t value);
+uint8_t sumd_crc8(uint8_t crc, uint8_t ಮೌಲ್ಯ);
 
 /**
  * Decoder for SUMD/SUMH protocol
@@ -102,8 +102,8 @@ uint8_t sumd_crc8(uint8_t crc, uint8_t value);
 __EXPORT int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channel_count,
 				 uint16_t *channels, uint16_t max_chan_count, bool *failsafe);
 */
-__EXPORT int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channel_count,
-			 uint16_t *channels, uint16_t max_chan_count, bool *failsafe);
+__EXPORT ಪೂರ್ಣಾಙ್ಕ sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_ಎಣಿಕೆ, uint16_t *channel_ಎಣಿಕೆ,
+			 uint16_t *channels, uint16_t max_chan_ಎಣಿಕೆ, bool *failsafe);
 
 
 __END_DECLS

@@ -43,16 +43,16 @@
 
 // #include <float.h>
 // #include <mathlib/math/Functions.hpp>
-#include <mathlib/math/filter/AlphaFilter.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/AlphaFilter.hpp>
 
-using namespace math;
+using ನಾಮಾಕಾಶ math;
 
 template <typename T>
-class FilteredDerivative
+ವರ್ಗ FilteredDerivative
 {
-public:
-	FilteredDerivative() = default;
-	~FilteredDerivative() = default;
+ಸಾರ್ವಜನಿಕ:
+	FilteredDerivative() = ಸ್ವಭಾವ;
+	~FilteredDerivative() = ಸ್ವಭಾವ;
 
 	/**
 	 * Set filter parameters for time abstraction
@@ -60,7 +60,7 @@ public:
 	 * @param sample_interval_s interval between two samples in seconds
 	 * @param time_constant_s filter time constant determining convergence in seconds
 	 */
-	void setParameters(float sample_interval_s, float time_constant_s)
+	ಶೂನ್ಯ setParameters(ಭಿನ್ನ sample_interval_s, ಭಿನ್ನ time_constant_s)
 	{
 		_alpha_filter.setParameters(sample_interval_s, time_constant_s);
 		_sample_interval = sample_interval_s;
@@ -70,10 +70,10 @@ public:
 	 * @param sample_interval_us interval between two samples in microseconds
 	 * @param time_constant_us filter time constant determining convergence in microseconds
 	 */
-	void setParameters(uint64_t sample_interval_us, uint64_t time_constant_us)
+	ಶೂನ್ಯ setParameters(uint64_t sample_interval_us, uint64_t time_constant_us)
 	{
 		_alpha_filter.setParameters(sample_interval_us, time_constant_us);
-		_sample_interval = static_cast<float>(sample_interval_us) * 1e-6f;
+		_sample_interval = static_cast<ಭಿನ್ನ>(sample_interval_us) * 1e-6f;
 	}
 
 	/**
@@ -81,10 +81,10 @@ public:
 	 *
 	 * @param sample new initial value
 	 */
-	void reset(const T &sample)
+	ಶೂನ್ಯ reset(ಧ್ರುವ T &sample)
 	{
 		_alpha_filter.reset(sample);
-		_initialized = false;
+		_initialized = ಅಸತ್ಯ;
 	}
 
 	/**
@@ -92,34 +92,34 @@ public:
 	 *
 	 * @return retrieve the filtered result
 	 */
-	const T &update(const T &sample)
+	ಧ್ರುವ T &update(ಧ್ರುವ T &sample)
 	{
-		if (_initialized) {
-			if (_sample_interval > FLT_EPSILON) {
+		ಯದಿ (_initialized) {
+			ಯದಿ (_sample_interval > FLT_EPSILON) {
 				_alpha_filter.update((sample - _previous_sample) / _sample_interval);
 
-			} else {
-				_initialized = false;
+			} ಅನ್ಯಥಾ {
+				_initialized = ಅಸತ್ಯ;
 			}
 
-		} else {
+		} ಅನ್ಯಥಾ {
 			// don't update in the first iteration
-			_initialized = true;
+			_initialized = ಸತ್ಯ;
 		}
 
 		_previous_sample = sample;
-		return _alpha_filter.getState();
+		ಪ್ರತ್ಯಾಗಮ _alpha_filter.getState();
 	}
 
-	const T &getState() const { return _alpha_filter.getState(); }
+	ಧ್ರುವ T &getState() ಧ್ರುವ { ಪ್ರತ್ಯಾಗಮ _alpha_filter.getState(); }
 
 	// delete mixing seconds with microseconds explicitly -> better compiler error
-	void setParameters(uint64_t sample_interval_us, float time_constant_s) = delete;
-	void setParameters(float sample_interval_s, uint64_t time_constant_us) = delete;
+	ಶೂನ್ಯ setParameters(uint64_t sample_interval_us, ಭಿನ್ನ time_constant_s) = delete;
+	ಶೂನ್ಯ setParameters(ಭಿನ್ನ sample_interval_s, uint64_t time_constant_us) = delete;
 
-private:
+ಗುಪ್ತ:
 	AlphaFilter<T> _alpha_filter;
-	float _sample_interval{0.f};
+	ಭಿನ್ನ _sample_interval{0.f};
 	T _previous_sample{0.f};
-	bool _initialized{false};
+	ತಾರ್ಕಿಕ _initialized{ಅಸತ್ಯ};
 };

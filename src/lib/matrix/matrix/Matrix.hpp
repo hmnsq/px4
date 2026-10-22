@@ -8,82 +8,82 @@
 
 #pragma once
 
-#include <cmath>
-#include <cstdio>
-#include <cstring>
+#ಅನ್ತರ್ಭಾವ <cmath>
+#ಅನ್ತರ್ಭಾವ <cstdio>
+#ಅನ್ತರ್ಭಾವ <cstring>
 
-#include "helper_functions.hpp"
-#include "Slice.hpp"
+#ಅನ್ತರ್ಭಾವ "helper_functions.hpp"
+#ಅನ್ತರ್ಭಾವ "Slice.hpp"
 
-namespace matrix
+ನಾಮಾಕಾಶ matrix
 {
 
 template<typename Type, size_t M, size_t N>
-class Matrix
+ವರ್ಗ Matrix
 {
 	Type _data[M][N] {};
 
-public:
+ಸಾರ್ವಜನಿಕ:
 
 	// Constructors
-	Matrix() = default;
+	Matrix() = ಸ್ವಭಾವ;
 
-	explicit Matrix(const Type data_[M * N])
+	explicit Matrix(ಧ್ರುವ Type data_[M * N])
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				_data[i][j] = data_[N * i + j];
 			}
 		}
 	}
 
-	explicit Matrix(const Type data_[M][N])
+	explicit Matrix(ಧ್ರುವ Type data_[M][N])
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				_data[i][j] = data_[i][j];
 			}
 		}
 	}
 
-	Matrix(const Matrix &other)
+	Matrix(ಧ್ರುವ Matrix &other)
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				_data[i][j] = other(i, j);
 			}
 		}
 	}
 
 	template<typename S>
-	Matrix(const Matrix<S, M, N> &aa)
+	Matrix(ಧ್ರುವ Matrix<S, M, N> &aa)
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				_data[i][j] = static_cast<Type>(aa(i, j));
 			}
 		}
 	}
 
 	template<size_t P, size_t Q>
-	Matrix(const Slice<Type, M, N, P, Q> &in_slice)
+	Matrix(ಧ್ರುವ Slice<Type, M, N, P, Q> &in_slice)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				self(i, j) = in_slice(i, j);
 			}
 		}
 	}
 
 	template<size_t P, size_t Q>
-	Matrix(const ConstSlice<Type, M, N, P, Q> &in_slice)
+	Matrix(ಧ್ರುವ ConstSlice<Type, M, N, P, Q> &in_slice)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				self(i, j) = in_slice(i, j);
 			}
 		}
@@ -94,54 +94,54 @@ public:
 	 */
 
 
-	inline const Type &operator()(size_t i, size_t j) const
+	ಅನ್ತಃಸ್ಥ ಧ್ರುವ Type &operator()(size_t i, size_t j) ಧ್ರುವ
 	{
-		assert(i < M);
-		assert(j < N);
+		ಪ್ರತಿಜ್ಞಾ(i < M);
+		ಪ್ರತಿಜ್ಞಾ(j < N);
 
-		return _data[i][j];
+		ಪ್ರತ್ಯಾಗಮ _data[i][j];
 	}
 
-	inline Type &operator()(size_t i, size_t j)
+	ಅನ್ತಃಸ್ಥ Type &operator()(size_t i, size_t j)
 	{
-		assert(i < M);
-		assert(j < N);
+		ಪ್ರತಿಜ್ಞಾ(i < M);
+		ಪ್ರತಿಜ್ಞಾ(j < N);
 
-		return _data[i][j];
+		ಪ್ರತ್ಯಾಗಮ _data[i][j];
 	}
 
-	Matrix<Type, M, N> &operator=(const Matrix<Type, M, N> &other)
+	Matrix<Type, M, N> &operator=(ಧ್ರುವ Matrix<Type, M, N> &other)
 	{
-		if (this != &other) {
-			Matrix<Type, M, N> &self = *this;
+		ಯದಿ (ಏತತ್ != &other) {
+			Matrix<Type, M, N> &self = *ಏತತ್;
 
-			for (size_t i = 0; i < M; i++) {
-				for (size_t j = 0; j < N; j++) {
+			ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+				ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 					self(i, j) = other(i, j);
 				}
 			}
 		}
 
-		return (*this);
+		ಪ್ರತ್ಯಾಗಮ (*ಏತತ್);
 	}
 
-	void copyTo(Type dst[M * N]) const
+	ಶೂನ್ಯ copyTo(Type dst[M * N]) ಧ್ರುವ
 	{
-		const Matrix<Type, M, N> &self = *this;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				dst[N * i + j] = self(i, j);
 			}
 		}
 	}
 
-	void copyToColumnMajor(Type dst[M * N]) const
+	ಶೂನ್ಯ copyToColumnMajor(Type dst[M * N]) ಧ್ರುವ
 	{
-		const Matrix<Type, M, N> &self = *this;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				dst[i + (j * M)] = self(i, j);
 			}
 		}
@@ -156,139 +156,139 @@ public:
 	// required mult pair, but it provides
 	// compile time size_t checking
 	template<size_t P>
-	Matrix<Type, M, P> operator*(const Matrix<Type, N, P> &other) const
+	Matrix<Type, M, P> operator*(ಧ್ರುವ Matrix<Type, N, P> &other) ಧ್ರುವ
 	{
-		const Matrix<Type, M, N> &self = *this;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
 		Matrix<Type, M, P> res{};
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t k = 0; k < P; k++) {
-				for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t k = 0; k < P; k++) {
+				ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 					res(i, k) += self(i, j) * other(j, k);
 				}
 			}
 		}
 
-		return res;
+		ಪ್ರತ್ಯಾಗಮ res;
 	}
 
 	// Using this function reduces the number of temporary variables needed to compute A * B.T
 	template<size_t P>
-	Matrix<Type, M, M> multiplyByTranspose(const Matrix<Type, P, N> &other) const
+	Matrix<Type, M, M> multiplyByTranspose(ಧ್ರುವ Matrix<Type, P, N> &other) ಧ್ರುವ
 	{
 		Matrix<Type, M, P> res;
-		const Matrix<Type, M, N> &self = *this;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t k = 0; k < P; k++) {
-				for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t k = 0; k < P; k++) {
+				ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 					res(i, k) += self(i, j) * other(k, j);
 				}
 			}
 		}
 
-		return res;
+		ಪ್ರತ್ಯಾಗಮ res;
 	}
 
 	// Element-wise multiplication
-	Matrix<Type, M, N> emult(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> emult(ಧ್ರುವ Matrix<Type, M, N> &other) ಧ್ರುವ
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) * other(i, j);
 			}
 		}
 
-		return res;
+		ಪ್ರತ್ಯಾಗಮ res;
 	}
 
 	// Element-wise division
-	Matrix<Type, M, N> edivide(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> edivide(ಧ್ರುವ Matrix<Type, M, N> &other) ಧ್ರುವ
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) / other(i, j);
 			}
 		}
 
-		return res;
+		ಪ್ರತ್ಯಾಗಮ res;
 	}
 
-	Matrix<Type, M, N> operator+(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> operator+(ಧ್ರುವ Matrix<Type, M, N> &other) ಧ್ರುವ
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) + other(i, j);
 			}
 		}
 
-		return res;
+		ಪ್ರತ್ಯಾಗಮ res;
 	}
 
-	Matrix<Type, M, N> operator-(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> operator-(ಧ್ರುವ Matrix<Type, M, N> &other) ಧ್ರುವ
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) - other(i, j);
 			}
 		}
 
-		return res;
+		ಪ್ರತ್ಯಾಗಮ res;
 	}
 
 	// unary minus
-	Matrix<Type, M, N> operator-() const
+	Matrix<Type, M, N> operator-() ಧ್ರುವ
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				res(i, j) = -self(i, j);
 			}
 		}
 
-		return res;
+		ಪ್ರತ್ಯಾಗಮ res;
 	}
 
-	void operator+=(const Matrix<Type, M, N> &other)
+	ಶೂನ್ಯ operator+=(ಧ್ರುವ Matrix<Type, M, N> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
 	}
 
-	void operator-=(const Matrix<Type, M, N> &other)
+	ಶೂನ್ಯ operator-=(ಧ್ರುವ Matrix<Type, M, N> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
 	}
 
 	template<size_t P>
-	void operator*=(const Matrix<Type, N, P> &other)
+	ಶೂನ್ಯ operator*=(ಧ್ರುವ Matrix<Type, N, P> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ಏತತ್;
 		self = self * other;
 	}
 
@@ -296,114 +296,114 @@ public:
 	 * Scalar Operations
 	 */
 
-	Matrix<Type, M, N> operator*(Type scalar) const
+	Matrix<Type, M, N> operator*(Type scalar) ಧ್ರುವ
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) * scalar;
 			}
 		}
 
-		return res;
+		ಪ್ರತ್ಯಾಗಮ res;
 	}
 
-	inline Matrix<Type, M, N> operator/(Type scalar) const
+	ಅನ್ತಃಸ್ಥ Matrix<Type, M, N> operator/(Type scalar) ಧ್ರುವ
 	{
-		return (*this) * (1 / scalar);
+		ಪ್ರತ್ಯಾಗಮ (*ಏತತ್) * (1 / scalar);
 	}
 
-	Matrix<Type, M, N> operator+(Type scalar) const
+	Matrix<Type, M, N> operator+(Type scalar) ಧ್ರುವ
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) + scalar;
 			}
 		}
 
-		return res;
+		ಪ್ರತ್ಯಾಗಮ res;
 	}
 
-	inline Matrix<Type, M, N> operator-(Type scalar) const
+	ಅನ್ತಃಸ್ಥ Matrix<Type, M, N> operator-(Type scalar) ಧ್ರುವ
 	{
-		return (*this) + (-1 * scalar);
+		ಪ್ರತ್ಯಾಗಮ (*ಏತತ್) + (-1 * scalar);
 	}
 
-	void operator*=(Type scalar)
+	ಶೂನ್ಯ operator*=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				self(i, j) *= scalar;
 			}
 		}
 	}
 
-	void operator/=(Type scalar)
+	ಶೂನ್ಯ operator/=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ಏತತ್;
 		self *= (Type(1) / scalar);
 	}
 
-	inline void operator+=(Type scalar)
+	ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ operator+=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				self(i, j) += scalar;
 			}
 		}
 	}
 
-	inline void operator-=(Type scalar)
+	ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ operator-=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ಏತತ್;
 		self += (-scalar);
 	}
 
-	bool operator==(const Matrix<Type, M, N> &other) const
+	ತಾರ್ಕಿಕ operator==(ಧ್ರುವ Matrix<Type, M, N> &other) ಧ್ರುವ
 	{
-		return isEqual(*this, other);
+		ಪ್ರತ್ಯಾಗಮ isEqual(*ಏತತ್, other);
 	}
 
-	bool operator!=(const Matrix<Type, M, N> &other) const
+	ತಾರ್ಕಿಕ operator!=(ಧ್ರುವ Matrix<Type, M, N> &other) ಧ್ರುವ
 	{
-		const Matrix<Type, M, N> &self = *this;
-		return !(self == other);
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
+		ಪ್ರತ್ಯಾಗಮ !(self == other);
 	}
 
 	/**
 	 * Misc. Functions
 	 */
 
-	void write_string(char *buf, size_t n) const
+	ಶೂನ್ಯ write_string(ವರ್ಣ *buf, size_t n) ಧ್ರುವ
 	{
 		buf[0] = '\0'; // make an empty string to begin with (we need the '\0' for strlen to work)
-		const Matrix<Type, M, N> &self = *this;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				snprintf(buf + strlen(buf), n - strlen(buf), "\t%8.8g", double(self(i, j))); // directly append to the string buffer
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
+				snprintf(buf + strlen(buf), n - strlen(buf), "\t%8.8g", ದ್ವಿಗುಣ(self(i, j))); // directly append to the string buffer
 			}
 
 			snprintf(buf + strlen(buf), n - strlen(buf), "\n");
 		}
 	}
 
-	void print(float eps = 1e-9) const
+	ಶೂನ್ಯ print(ಭಿನ್ನ eps = 1e-9) ಧ್ರುವ
 	{
 		// print column numbering
-		if (N > 1) {
+		ಯದಿ (N > 1) {
 			printf("  ");
 
-			for (unsigned i = 0; i < N; i++) {
+			ಪ್ರತಿ (unsigned i = 0; i < N; i++) {
 				printf("|%2u      ", i);
 
 			}
@@ -411,36 +411,36 @@ public:
 			printf("\n");
 		}
 
-		const Matrix<Type, M, N> &self = *this;
-		bool is_prev_symmetric = true; // assume symmetric until one element is not
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
+		ತಾರ್ಕಿಕ is_prev_symmetric = ಸತ್ಯ; // assume symmetric until one element is not
 
-		for (unsigned i = 0; i < M; i++) {
+		ಪ್ರತಿ (unsigned i = 0; i < M; i++) {
 			printf("%2u|", i); // print row numbering
 
-			for (unsigned j = 0; j < N; j++) {
-				double d = static_cast<double>(self(i, j));
+			ಪ್ರತಿ (unsigned j = 0; j < N; j++) {
+				ದ್ವಿಗುಣ d = static_cast<ದ್ವಿಗುಣ>(self(i, j));
 
 				// if symmetric don't print upper triangular elements
-				if (is_prev_symmetric && (M == N) && (j > i) && (i < N) && (j < M)
-				    && (fabs(d - static_cast<double>(self(j, i))) < (double)eps)
+				ಯದಿ (is_prev_symmetric && (M == N) && (j > i) && (i < N) && (j < M)
+				    && (fabs(d - static_cast<ದ್ವಿಗುಣ>(self(j, i))) < (ದ್ವಿಗುಣ)eps)
 				   ) {
 					// print empty space
 					printf("         ");
 
-				} else {
+				} ಅನ್ಯಥಾ {
 					// avoid -0.0 for display
-					if (fabs(d - 0.0) < (double)eps) {
+					ಯದಿ (fabs(d - 0.0) < (ದ್ವಿಗುಣ)eps) {
 						// print fixed width zero
 						printf(" 0       ");
 
-					} else if ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
+					} ಅನ್ಯಥಾ ಯದಿ ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
 						printf("% .1e ", d);
 
-					} else {
+					} ಅನ್ಯಥಾ {
 						printf("% 6.5f ", d);
 					}
 
-					is_prev_symmetric = false; // not symmetric if once inside here
+					is_prev_symmetric = ಅಸತ್ಯ; // not symmetric if once inside here
 				}
 			}
 
@@ -448,250 +448,250 @@ public:
 		}
 	}
 
-	Matrix<Type, N, M> transpose() const
+	Matrix<Type, N, M> transpose() ಧ್ರುವ
 	{
 		Matrix<Type, N, M> res;
-		const Matrix<Type, M, N> &self = *this;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				res(j, i) = self(i, j);
 			}
 		}
 
-		return res;
+		ಪ್ರತ್ಯಾಗಮ res;
 	}
 
 	// tranpose alias
-	inline Matrix<Type, N, M> T() const
+	ಅನ್ತಃಸ್ಥ Matrix<Type, N, M> T() ಧ್ರುವ
 	{
-		return transpose();
+		ಪ್ರತ್ಯಾಗಮ transpose();
 	}
 
 	template<size_t P, size_t Q>
-	ConstSlice<Type, P, Q, M, N> slice(size_t x0, size_t y0) const
+	ConstSlice<Type, P, Q, M, N> slice(size_t x0, size_t y0) ಧ್ರುವ
 	{
-		return {x0, y0, this};
+		ಪ್ರತ್ಯಾಗಮ {x0, y0, ಏತತ್};
 	}
 
 	template<size_t P, size_t Q>
 	Slice<Type, P, Q, M, N> slice(size_t x0, size_t y0)
 	{
-		return {x0, y0, this};
+		ಪ್ರತ್ಯಾಗಮ {x0, y0, ಏತತ್};
 	}
 
-	ConstSlice<Type, 1, N, M, N> row(size_t i) const
+	ConstSlice<Type, 1, N, M, N> row(size_t i) ಧ್ರುವ
 	{
-		return slice<1, N>(i, 0);
+		ಪ್ರತ್ಯಾಗಮ slice<1, N>(i, 0);
 	}
 
 	Slice<Type, 1, N, M, N> row(size_t i)
 	{
-		return slice<1, N>(i, 0);
+		ಪ್ರತ್ಯಾಗಮ slice<1, N>(i, 0);
 	}
 
-	ConstSlice<Type, M, 1, M, N> col(size_t j) const
+	ConstSlice<Type, M, 1, M, N> col(size_t j) ಧ್ರುವ
 	{
-		return slice<M, 1>(0, j);
+		ಪ್ರತ್ಯಾಗಮ slice<M, 1>(0, j);
 	}
 
 	Slice<Type, M, 1, M, N> col(size_t j)
 	{
-		return slice<M, 1>(0, j);
+		ಪ್ರತ್ಯಾಗಮ slice<M, 1>(0, j);
 	}
 
-	void setRow(size_t i, const Matrix<Type, N, 1> &row_in)
+	ಶೂನ್ಯ setRow(size_t i, ಧ್ರುವ Matrix<Type, N, 1> &row_in)
 	{
 		slice<1, N>(i, 0) = row_in.transpose();
 	}
 
-	void setRow(size_t i, Type val)
+	ಶೂನ್ಯ setRow(size_t i, Type val)
 	{
 		slice<1, N>(i, 0) = val;
 	}
 
-	void setCol(size_t j, const Matrix<Type, M, 1> &column)
+	ಶೂನ್ಯ setCol(size_t j, ಧ್ರುವ Matrix<Type, M, 1> &column)
 	{
 		slice<M, 1>(0, j) = column;
 	}
 
-	void setCol(size_t j, Type val)
+	ಶೂನ್ಯ setCol(size_t j, Type val)
 	{
 		slice<M, 1>(0, j) = val;
 	}
 
-	void setZero()
+	ಶೂನ್ಯ setZero()
 	{
-		memset(_data, 0, sizeof(_data));
+		memset(_data, 0, ಪರಿಮಾಣ(_data));
 	}
 
-	inline void zero()
+	ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ zero()
 	{
 		setZero();
 	}
 
-	void setAll(Type val)
+	ಶೂನ್ಯ setAll(Type val)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				self(i, j) = val;
 			}
 		}
 	}
 
-	inline void setOne()
+	ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ setOne()
 	{
 		setAll(1);
 	}
 
-	inline void setNaN()
+	ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ setNaN()
 	{
 		setAll(NAN);
 	}
 
-	void setIdentity()
+	ಶೂನ್ಯ setIdentity()
 	{
 		setZero();
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ಏತತ್;
 
-		const size_t min_i = M > N ? N : M;
+		ಧ್ರುವ size_t min_i = M > N ? N : M;
 
-		for (size_t i = 0; i < min_i; i++) {
+		ಪ್ರತಿ (size_t i = 0; i < min_i; i++) {
 			self(i, i) = 1;
 		}
 	}
 
-	inline void identity()
+	ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ identity()
 	{
 		setIdentity();
 	}
 
-	inline void swapRows(size_t a, size_t b)
+	ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ swapRows(size_t a, size_t b)
 	{
-		assert(a < M);
-		assert(b < M);
+		ಪ್ರತಿಜ್ಞಾ(a < M);
+		ಪ್ರತಿಜ್ಞಾ(b < M);
 
-		if (a == b) {
-			return;
+		ಯದಿ (a == b) {
+			ಪ್ರತ್ಯಾಗಮ;
 		}
 
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 			Type tmp = self(a, j);
 			self(a, j) = self(b, j);
 			self(b, j) = tmp;
 		}
 	}
 
-	inline void swapCols(size_t a, size_t b)
+	ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ swapCols(size_t a, size_t b)
 	{
-		assert(a < N);
-		assert(b < N);
+		ಪ್ರತಿಜ್ಞಾ(a < N);
+		ಪ್ರತಿಜ್ಞಾ(b < N);
 
-		if (a == b) {
-			return;
+		ಯದಿ (a == b) {
+			ಪ್ರತ್ಯಾಗಮ;
 		}
 
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
 			Type tmp = self(i, a);
 			self(i, a) = self(i, b);
 			self(i, b) = tmp;
 		}
 	}
 
-	inline void nanToZero()
+	ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ nanToZero()
 	{
 
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				if (std::isnan(self(i, j))) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
+				ಯದಿ (std::isnan(self(i, j))) {
 					self(i, j) = static_cast<Type>(0.0f);
 				}
 			}
 		}
 	}
 
-	Matrix<Type, M, N> abs() const
+	Matrix<Type, M, N> abs() ಧ್ರುವ
 	{
 		Matrix<Type, M, N> r;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				r(i, j) = Type(std::fabs((*this)(i, j)));
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
+				r(i, j) = Type(std::fabs((*ಏತತ್)(i, j)));
 			}
 		}
 
-		return r;
+		ಪ್ರತ್ಯಾಗಮ r;
 	}
 
-	Type max() const
+	Type max() ಧ್ರುವ
 	{
-		Type max_val = (*this)(0, 0);
+		Type max_val = (*ಏತತ್)(0, 0);
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				Type val = (*this)(i, j);
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
+				Type val = (*ಏತತ್)(i, j);
 
-				if (val > max_val) {
+				ಯದಿ (val > max_val) {
 					max_val = val;
 				}
 			}
 		}
 
-		return max_val;
+		ಪ್ರತ್ಯಾಗಮ max_val;
 	}
 
-	Type min() const
+	Type min() ಧ್ರುವ
 	{
-		Type min_val = (*this)(0, 0);
+		Type min_val = (*ಏತತ್)(0, 0);
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				Type val = (*this)(i, j);
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
+				Type val = (*ಏತತ್)(i, j);
 
-				if (val < min_val) {
+				ಯದಿ (val < min_val) {
 					min_val = val;
 				}
 			}
 		}
 
-		return min_val;
+		ಪ್ರತ್ಯಾಗಮ min_val;
 	}
 
-	bool isAllNan() const
+	ತಾರ್ಕಿಕ isAllNan() ಧ್ರುವ
 	{
-		const Matrix<Type, M, N> &self = *this;
-		bool result = true;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
+		ತಾರ್ಕಿಕ result = ಸತ್ಯ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				result = result && std::isnan(self(i, j));
 			}
 		}
 
-		return result;
+		ಪ್ರತ್ಯಾಗಮ result;
 	}
 
-	bool isAllFinite() const
+	ತಾರ್ಕಿಕ isAllFinite() ಧ್ರುವ
 	{
-		const Matrix<Type, M, N> &self = *this;
+		ಧ್ರುವ Matrix<Type, M, N> &self = *ಏತತ್;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				if (!std::isfinite(self(i, j))) {
-					return false;
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
+				ಯದಿ (!std::isfinite(self(i, j))) {
+					ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 				}
 			}
 		}
 
-		return true;
+		ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 	}
 };
 
@@ -700,7 +700,7 @@ Matrix<Type, M, N> zeros()
 {
 	Matrix<Type, M, N> m;
 	m.setZero();
-	return m;
+	ಪ್ರತ್ಯಾಗಮ m;
 }
 
 template<typename Type, size_t M, size_t N>
@@ -708,208 +708,208 @@ Matrix<Type, M, N> ones()
 {
 	Matrix<Type, M, N> m;
 	m.setOne();
-	return m;
+	ಪ್ರತ್ಯಾಗಮ m;
 }
 
 template<size_t M, size_t N>
-Matrix<float, M, N> nans()
+Matrix<ಭಿನ್ನ, M, N> nans()
 {
-	Matrix<float, M, N> m;
+	Matrix<ಭಿನ್ನ, M, N> m;
 	m.setNaN();
-	return m;
+	ಪ್ರತ್ಯಾಗಮ m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> operator*(Type scalar, const Matrix<Type, M, N> &other)
+Matrix<Type, M, N> operator*(Type scalar, ಧ್ರುವ Matrix<Type, M, N> &other)
 {
-	return other * scalar;
+	ಪ್ರತ್ಯಾಗಮ other * scalar;
 }
 
 template<typename Type, size_t  M, size_t N>
-bool isEqual(const Matrix<Type, M, N> &x,
-	     const Matrix<Type, M, N> &y, const Type eps = Type(1e-4f))
+ತಾರ್ಕಿಕ isEqual(ಧ್ರುವ Matrix<Type, M, N> &x,
+	     ಧ್ರುವ Matrix<Type, M, N> &y, ಧ್ರುವ Type eps = Type(1e-4f))
 {
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			if (!isEqualF(x(i, j), y(i, j), eps)) {
-				return false;
+	ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+		ಪ್ರತಿ (size_t j = 0; j < N; j++) {
+			ಯದಿ (!isEqualF(x(i, j), y(i, j), eps)) {
+				ಪ್ರತ್ಯಾಗಮ ಅಸತ್ಯ;
 			}
 		}
 	}
 
-	return true;
+	ಪ್ರತ್ಯಾಗಮ ಸತ್ಯ;
 }
 
-namespace typeFunction
+ನಾಮಾಕಾಶ typeFunction
 {
 template<typename Type>
-Type min(const Type x, const Type y)
+Type min(ಧ್ರುವ Type x, ಧ್ರುವ Type y)
 {
-	bool x_is_nan = std::isnan(x);
-	bool y_is_nan = std::isnan(y);
+	ತಾರ್ಕಿಕ x_is_nan = std::isnan(x);
+	ತಾರ್ಕಿಕ y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	ಯದಿ (x_is_nan || y_is_nan) {
+		ಯದಿ (x_is_nan && !y_is_nan) {
+			ಪ್ರತ್ಯಾಗಮ y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		ಪ್ರತ್ಯಾಗಮ x;
 	}
 
-	return (x < y) ? x : y;
+	ಪ್ರತ್ಯಾಗಮ (x < y) ? x : y;
 }
 
 template<typename Type>
-Type max(const Type x, const Type y)
+Type max(ಧ್ರುವ Type x, ಧ್ರುವ Type y)
 {
-	bool x_is_nan = std::isnan(x);
-	bool y_is_nan = std::isnan(y);
+	ತಾರ್ಕಿಕ x_is_nan = std::isnan(x);
+	ತಾರ್ಕಿಕ y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	ಯದಿ (x_is_nan || y_is_nan) {
+		ಯದಿ (x_is_nan && !y_is_nan) {
+			ಪ್ರತ್ಯಾಗಮ y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		ಪ್ರತ್ಯಾಗಮ x;
 	}
 
-	return (x > y) ? x : y;
+	ಪ್ರತ್ಯಾಗಮ (x > y) ? x : y;
 }
 
 template<typename Type>
-Type constrain(const Type x, const Type lower_bound, const Type upper_bound)
+Type constrain(ಧ್ರುವ Type x, ಧ್ರುವ Type lower_bound, ಧ್ರುವ Type upper_bound)
 {
-	if (lower_bound > upper_bound) {
-		return NAN;
+	ಯದಿ (lower_bound > upper_bound) {
+		ಪ್ರತ್ಯಾಗಮ NAN;
 
-	} else if (std::isnan(x)) {
-		return NAN;
+	} ಅನ್ಯಥಾ ಯದಿ (std::isnan(x)) {
+		ಪ್ರತ್ಯಾಗಮ NAN;
 
-	} else {
-		return typeFunction::max(lower_bound, typeFunction::min(upper_bound, x));
+	} ಅನ್ಯಥಾ {
+		ಪ್ರತ್ಯಾಗಮ typeFunction::max(lower_bound, typeFunction::min(upper_bound, x));
 	}
 }
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Matrix<Type, M, N> &x, const Type scalar_upper_bound)
+Matrix<Type, M, N> min(ಧ್ರುವ Matrix<Type, M, N> &x, ಧ್ರುವ Type scalar_upper_bound)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+		ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::min(x(i, j), scalar_upper_bound);
 		}
 	}
 
-	return m;
+	ಪ್ರತ್ಯಾಗಮ m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Type scalar_upper_bound, const Matrix<Type, M, N> &x)
+Matrix<Type, M, N> min(ಧ್ರುವ Type scalar_upper_bound, ಧ್ರುವ Matrix<Type, M, N> &x)
 {
-	return min(x, scalar_upper_bound);
+	ಪ್ರತ್ಯಾಗಮ min(x, scalar_upper_bound);
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x2)
+Matrix<Type, M, N> min(ಧ್ರುವ Matrix<Type, M, N> &x1, ಧ್ರುವ Matrix<Type, M, N> &x2)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+		ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::min(x1(i, j), x2(i, j));
 		}
 	}
 
-	return m;
+	ಪ್ರತ್ಯಾಗಮ m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Matrix<Type, M, N> &x, const Type scalar_lower_bound)
+Matrix<Type, M, N> max(ಧ್ರುವ Matrix<Type, M, N> &x, ಧ್ರುವ Type scalar_lower_bound)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+		ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::max(x(i, j), scalar_lower_bound);
 		}
 	}
 
-	return m;
+	ಪ್ರತ್ಯಾಗಮ m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Type scalar_lower_bound, const Matrix<Type, M, N> &x)
+Matrix<Type, M, N> max(ಧ್ರುವ Type scalar_lower_bound, ಧ್ರುವ Matrix<Type, M, N> &x)
 {
-	return max(x, scalar_lower_bound);
+	ಪ್ರತ್ಯಾಗಮ max(x, scalar_lower_bound);
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x2)
+Matrix<Type, M, N> max(ಧ್ರುವ Matrix<Type, M, N> &x1, ಧ್ರುವ Matrix<Type, M, N> &x2)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+		ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::max(x1(i, j), x2(i, j));
 		}
 	}
 
-	return m;
+	ಪ್ರತ್ಯಾಗಮ m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
-			     const Type scalar_lower_bound,
-			     const Type scalar_upper_bound)
+Matrix<Type, M, N> constrain(ಧ್ರುವ Matrix<Type, M, N> &x,
+			     ಧ್ರುವ Type scalar_lower_bound,
+			     ಧ್ರುವ Type scalar_upper_bound)
 {
 	Matrix<Type, M, N> m;
 
-	if (scalar_lower_bound > scalar_upper_bound) {
+	ಯದಿ (scalar_lower_bound > scalar_upper_bound) {
 		m.setNaN();
 
-	} else {
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+	} ಅನ್ಯಥಾ {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+			ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 				m(i, j) = typeFunction::constrain(x(i, j), scalar_lower_bound, scalar_upper_bound);
 			}
 		}
 	}
 
-	return m;
+	ಪ್ರತ್ಯಾಗಮ m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
-			     const Matrix<Type, M, N> &x_lower_bound,
-			     const Matrix<Type, M, N> &x_upper_bound)
+Matrix<Type, M, N> constrain(ಧ್ರುವ Matrix<Type, M, N> &x,
+			     ಧ್ರುವ Matrix<Type, M, N> &x_lower_bound,
+			     ಧ್ರುವ Matrix<Type, M, N> &x_upper_bound)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	ಪ್ರತಿ (size_t i = 0; i < M; i++) {
+		ಪ್ರತಿ (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::constrain(x(i, j), x_lower_bound(i, j), x_upper_bound(i, j));
 		}
 	}
 
-	return m;
+	ಪ್ರತ್ಯಾಗಮ m;
 }
 
 template<typename OStream, typename Type, size_t M, size_t N>
-OStream &operator<<(OStream &os, const matrix::Matrix<Type, M, N> &matrix)
+OStream &operator<<(OStream &os, ಧ್ರುವ matrix::Matrix<Type, M, N> &matrix)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * N * M + M + 1;
-	char string[n];
+	ವರ್ಣ string[n];
 	matrix.write_string(string, n);
 	os << string;
-	return os;
+	ಪ್ರತ್ಯಾಗಮ os;
 }
 
 } // namespace matrix

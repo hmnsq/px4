@@ -39,161 +39,161 @@
 
 #define PARAM_IMPLEMENTATION
 
-#include <errno.h>
+#ಅನ್ತರ್ಭಾವ <errno.h>
 
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ "parameters_ioctl.h"
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
 
-int	param_ioctl(unsigned int cmd, unsigned long arg)
+ಪೂರ್ಣಾಙ್ಕ	param_ioctl(unsigned ಪೂರ್ಣಾಙ್ಕ cmd, unsigned long arg)
 {
-	int ret = OK;
+	ಪೂರ್ಣಾಙ್ಕ ret = OK;
 
-	switch (cmd) {
-	case PARAMIOCNOTIFY: {
+	ವಿಕಲ್ಪ (cmd) {
+	ಪಕ್ಷ PARAMIOCNOTIFY: {
 			param_notify_changes();
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCFIND: {
+	ಪಕ್ಷ PARAMIOCFIND: {
 			paramiocfind_t *data = (paramiocfind_t *)arg;
 
-			if (data->notification) {
+			ಯದಿ (data->notification) {
 				data->ret = param_find(data->name);
 
-			} else {
+			} ಅನ್ಯಥಾ {
 				data->ret = param_find_no_notification(data->name);
 			}
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCCOUNTUSED: {
+	ಪಕ್ಷ PARAMIOCCOUNTUSED: {
 			paramioccountused_t *data = (paramioccountused_t *)arg;
-			data->ret = param_count_used();
+			data->ret = param_ಎಣಿಕೆ_used();
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCFORUSEDINDEX: {
+	ಪಕ್ಷ PARAMIOCFORUSEDINDEX: {
 			paramiocforusedindex_t *data = (paramiocforusedindex_t *)arg;
 			data->ret =  param_for_used_index(data->index);
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCGETUSEDINDEX: {
+	ಪಕ್ಷ PARAMIOCGETUSEDINDEX: {
 			paramiocgetusedindex_t *data = (paramiocgetusedindex_t *)arg;
 			data->ret = param_get_used_index(data->param);
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCUNSAVED: {
+	ಪಕ್ಷ PARAMIOCUNSAVED: {
 			paramiocunsaved_t *data = (paramiocunsaved_t *)arg;
-			data->ret = param_value_unsaved(data->param);
+			data->ret = param_ಮೌಲ್ಯ_unsaved(data->param);
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCGET: {
+	ಪಕ್ಷ PARAMIOCGET: {
 			paramiocget_t *data = (paramiocget_t *)arg;
 
-			if (data->deflt) {
-				data->ret = param_get_default_value(data->param, data->val);
+			ಯದಿ (data->deflt) {
+				data->ret = param_get_default_ಮೌಲ್ಯ(data->param, data->val);
 
-			} else {
+			} ಅನ್ಯಥಾ {
 				data->ret = param_get(data->param, data->val);
 			}
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCAUTOSAVE: {
+	ಪಕ್ಷ PARAMIOCAUTOSAVE: {
 			paramiocautosave_t *data = (paramiocautosave_t *)arg;
 			param_control_autosave(data->enable);
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCSET: {
+	ಪಕ್ಷ PARAMIOCSET: {
 			paramiocset_t *data = (paramiocset_t *)arg;
 
-			if (data->notification) {
+			ಯದಿ (data->notification) {
 				data->ret = param_set(data->param, data->val);
 
-			} else {
+			} ಅನ್ಯಥಾ {
 				data->ret = param_set_no_notification(data->param, data->val);
 			}
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCUSED: {
+	ಪಕ್ಷ PARAMIOCUSED: {
 			paramiocused_t *data = (paramiocused_t *)arg;
 			data->ret = param_used(data->param);
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCSETUSED: {
+	ಪಕ್ಷ PARAMIOCSETUSED: {
 			paramiocsetused_t *data = (paramiocsetused_t *)arg;
 			param_set_used(data->param);
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCSETDEFAULT: {
+	ಪಕ್ಷ PARAMIOCSETDEFAULT: {
 			paramiocsetdefault_t *data = (paramiocsetdefault_t *)arg;
-			data->ret = param_set_default_value(data->param, data->val);
+			data->ret = param_set_default_ಮೌಲ್ಯ(data->param, data->val);
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCRESET: {
+	ಪಕ್ಷ PARAMIOCRESET: {
 			paramiocreset_t *data = (paramiocreset_t *)arg;
 
-			if (data->notification) {
+			ಯದಿ (data->notification) {
 				data->ret = param_reset(data->param);
 
-			} else {
+			} ಅನ್ಯಥಾ {
 				data->ret = param_reset_no_notification(data->param);
 			}
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCRESETGROUP: {
+	ಪಕ್ಷ PARAMIOCRESETGROUP: {
 			paramiocresetgroup_t *data = (paramiocresetgroup_t *)arg;
 
-			if (data->type == PARAM_RESET_EXCLUDES) {
-				param_reset_excludes(data->group, data->num_in_group);
+			ಯದಿ (data->type == PARAM_RESET_EXCLUDES) {
+				param_reset_excludes(data->group, data->ಅಂಕೆ_in_group);
 
-			} else if (data->type == PARAM_RESET_SPECIFIC) {
-				param_reset_specific(data->group, data->num_in_group);
+			} ಅನ್ಯಥಾ ಯದಿ (data->type == PARAM_RESET_SPECIFIC) {
+				param_reset_specific(data->group, data->ಅಂಕೆ_in_group);
 
-			} else {
+			} ಅನ್ಯಥಾ {
 				param_reset_all();
 			}
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCSAVEDEFAULT: {
+	ಪಕ್ಷ PARAMIOCSAVEDEFAULT: {
 			paramiocsavedefault_t *data = (paramiocsavedefault_t *)arg;
 			data->ret = param_save_default(data->blocking);
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCLOADDEFAULT: {
+	ಪಕ್ಷ PARAMIOCLOADDEFAULT: {
 			paramiocloaddefault_t *data = (paramiocloaddefault_t *)arg;
 			data->ret = param_load_default();
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCEXPORT: {
+	ಪಕ್ಷ PARAMIOCEXPORT: {
 			paramiocexport_t *data = (paramiocexport_t *)arg;
 			data->ret = param_export(data->filename, nullptr);
 		}
-		break;
+		ಭಙ್ಗ;
 
-	case PARAMIOCHASH: {
+	ಪಕ್ಷ PARAMIOCHASH: {
 			paramiochash_t *data = (paramiochash_t *)arg;
 			data->ret = param_hash_check();
 		}
-		break;
+		ಭಙ್ಗ;
 
-	default:
+	ಸ್ವಭಾವ:
 		ret = -ENOTTY;
-		break;
+		ಭಙ್ಗ;
 	}
 
-	return ret;
+	ಪ್ರತ್ಯಾಗಮ ret;
 }

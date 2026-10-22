@@ -8,181 +8,181 @@
 
 #pragma once
 
-#include "Matrix.hpp"
+#ಅನ್ತರ್ಭಾವ "Matrix.hpp"
 
-namespace matrix
+ನಾಮಾಕಾಶ matrix
 {
 
 template<typename Type, size_t M>
-class Vector : public Matrix<Type, M, 1>
+ವರ್ಗ Vector : ಸಾರ್ವಜನಿಕ Matrix<Type, M, 1>
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	using MatrixM1 = Matrix<Type, M, 1>;
 
-	Vector() = default;
+	Vector() = ಸ್ವಭಾವ;
 
-	Vector(const MatrixM1 &other) :
+	Vector(ಧ್ರುವ MatrixM1 &other) :
 		MatrixM1(other)
 	{
 	}
 
-	explicit Vector(const Type data_[M]) :
+	explicit Vector(ಧ್ರುವ Type data_[M]) :
 		MatrixM1(data_)
 	{
 	}
 
 	template<size_t P, size_t Q>
-	Vector(const Slice<Type, M, 1, P, Q> &slice_in) :
+	Vector(ಧ್ರುವ Slice<Type, M, 1, P, Q> &slice_in) :
 		Matrix<Type, M, 1>(slice_in)
 	{
 	}
 
 	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const Slice<Type, 1, M, P, Q> &slice_in)
+	Vector(ಧ್ರುವ Slice<Type, 1, M, P, Q> &slice_in)
 	{
-		Vector &self(*this);
+		Vector &self(*ಏತತ್);
 
-		for (size_t i = 0; i < M; i++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
 
 	template<size_t P, size_t Q>
-	Vector(const ConstSlice<Type, M, 1, P, Q> &slice_in) :
+	Vector(ಧ್ರುವ ConstSlice<Type, M, 1, P, Q> &slice_in) :
 		Matrix<Type, M, 1>(slice_in)
 	{
 	}
 
 	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const ConstSlice<Type, 1, M, P, Q> &slice_in)
+	Vector(ಧ್ರುವ ConstSlice<Type, 1, M, P, Q> &slice_in)
 	{
-		Vector &self(*this);
+		Vector &self(*ಏತತ್);
 
-		for (size_t i = 0; i < M; i++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	ಅನ್ತಃಸ್ಥ ಧ್ರುವ Type &operator()(size_t i) ಧ್ರುವ
 	{
-		assert(i < M);
+		ಪ್ರತಿಜ್ಞಾ(i < M);
 
-		const MatrixM1 &v = *this;
-		return v(i, 0);
+		ಧ್ರುವ MatrixM1 &v = *ಏತತ್;
+		ಪ್ರತ್ಯಾಗಮ v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	ಅನ್ತಃಸ್ಥ Type &operator()(size_t i)
 	{
-		assert(i < M);
+		ಪ್ರತಿಜ್ಞಾ(i < M);
 
-		MatrixM1 &v = *this;
-		return v(i, 0);
+		MatrixM1 &v = *ಏತತ್;
+		ಪ್ರತ್ಯಾಗಮ v(i, 0);
 	}
 
-	Type dot(const MatrixM1 &b) const
+	Type dot(ಧ್ರುವ MatrixM1 &b) ಧ್ರುವ
 	{
-		const Vector &a(*this);
+		ಧ್ರುವ Vector &a(*ಏತತ್);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		ಪ್ರತ್ಯಾಗಮ r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	ಅನ್ತಃಸ್ಥ Type operator*(ಧ್ರುವ MatrixM1 &b) ಧ್ರುವ
 	{
-		const Vector &a(*this);
-		return a.dot(b);
+		ಧ್ರುವ Vector &a(*ಏತತ್);
+		ಪ್ರತ್ಯಾಗಮ a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	ಅನ್ತಃಸ್ಥ Vector operator*(Type b) ಧ್ರುವ
 	{
-		return Vector(MatrixM1::operator*(b));
+		ಪ್ರತ್ಯಾಗಮ Vector(MatrixM1::operator*(b));
 	}
 
-	Type norm() const
+	Type norm() ಧ್ರುವ
 	{
-		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		ಧ್ರುವ Vector &a(*ಏತತ್);
+		ಪ್ರತ್ಯಾಗಮ Type(std::sqrt(a.dot(a)));
 	}
 
-	Type norm_squared() const
+	Type norm_squared() ಧ್ರುವ
 	{
-		const Vector &a(*this);
-		return a.dot(a);
+		ಧ್ರುವ Vector &a(*ಏತತ್);
+		ಪ್ರತ್ಯಾಗಮ a.dot(a);
 	}
 
-	inline Type length() const
+	ಅನ್ತಃಸ್ಥ Type length() ಧ್ರುವ
 	{
-		return norm();
+		ಪ್ರತ್ಯಾಗಮ norm();
 	}
 
-	inline void normalize()
+	ಅನ್ತಃಸ್ಥ ಶೂನ್ಯ normalize()
 	{
-		(*this) /= norm();
+		(*ಏತತ್) /= norm();
 	}
 
-	Vector unit() const
+	Vector unit() ಧ್ರುವ
 	{
-		return (*this) / norm();
+		ಪ್ರತ್ಯಾಗಮ (*ಏತತ್) / norm();
 	}
 
-	Vector unit_or_zero(const Type eps = Type(1e-5)) const
+	Vector unit_or_zero(ಧ್ರುವ Type eps = Type(1e-5)) ಧ್ರುವ
 	{
-		const Type n = norm();
+		ಧ್ರುವ Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		ಯದಿ (n > eps) {
+			ಪ್ರತ್ಯಾಗಮ (*ಏತತ್) / n;
 		}
 
-		return Vector();
+		ಪ್ರತ್ಯಾಗಮ Vector();
 	}
 
-	inline Vector normalized() const
+	ಅನ್ತಃಸ್ಥ Vector normalized() ಧ್ರುವ
 	{
-		return unit();
+		ಪ್ರತ್ಯಾಗಮ unit();
 	}
 
-	bool longerThan(Type testVal) const
+	ತಾರ್ಕಿಕ longerThan(Type testVal) ಧ್ರುವ
 	{
-		return norm_squared() > testVal * testVal;
+		ಪ್ರತ್ಯಾಗಮ norm_squared() > testVal * testVal;
 	}
 
-	Vector sqrt() const
+	Vector sqrt() ಧ್ರುವ
 	{
-		const Vector &a(*this);
+		ಧ್ರುವ Vector &a(*ಏತತ್);
 		Vector r;
 
-		for (size_t i = 0; i < M; i++) {
+		ಪ್ರತಿ (size_t i = 0; i < M; i++) {
 			r(i) = Type(std::sqrt(a(i)));
 		}
 
-		return r;
+		ಪ್ರತ್ಯಾಗಮ r;
 	}
 
-	void print() const
+	ಶೂನ್ಯ print() ಧ್ರುವ
 	{
-		(*this).transpose().print();
+		(*ಏತತ್).transpose().print();
 	}
 
-	static size_t size()
+	ಸ್ಥಿರ size_t size()
 	{
-		return M;
+		ಪ್ರತ್ಯಾಗಮ M;
 	}
 };
 
 template<typename OStream, typename Type, size_t M>
-OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
+OStream &operator<<(OStream &os, ಧ್ರುವ matrix::Vector<Type, M> &vector)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
+	ವರ್ಣ string[n];
 	vector.transpose().write_string(string, n);
 	os << string;
-	return os;
+	ಪ್ರತ್ಯಾಗಮ os;
 }
 
 } // namespace matrix
