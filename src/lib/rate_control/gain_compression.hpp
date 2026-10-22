@@ -73,8 +73,8 @@ public:
 	}
 	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	float getSpectralDamperHpf() const { return _hpf * _hpf; }
-	float getSpectralDamperLpf() const { return _lpf.getState(); }
+	float getSpectralDamperHpf() const { ᨀᨘᨒ _hpf * _hpf; }
+	float getSpectralDamperLpf() const { ᨀᨘᨒ _lpf.getState(); }
 	void setCompressionGainMin(float gain_min) { _compression_gain_min = gain_min; }
 
 private:
@@ -102,7 +102,7 @@ public:
 
 	void reset();
 	void update(const matrix::Vector3f &input, float dt);
-	const matrix::Vector3f &getGains() const { return _gains; };
+	const matrix::Vector3f &getGains() const { ᨀᨘᨒ _gains; };
 
 	void setEnabled(bool enabled) { _enabled = enabled; }
 	void setCompressionGainMin(float gain_min);

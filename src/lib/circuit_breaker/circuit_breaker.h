@@ -61,11 +61,11 @@
 
 __BEGIN_DECLS
 
-extern "C" __EXPORT bool circuit_breaker_enabled(const char *breaker, int32_t magic);
+extern "C" __EXPORT bool circuit_breaker_enabled(const var_na *breaker, int32_t magic);
 
-static inline bool circuit_breaker_enabled_by_val(int32_t breaker_val, int32_t magic)
+static anta_hstha bool circuit_breaker_enabled_by_val(int32_t breaker_val, int32_t magic)
 {
-	return breaker_val == magic;
+	ᨀᨘᨒ breaker_val == magic;
 }
 
 __END_DECLS

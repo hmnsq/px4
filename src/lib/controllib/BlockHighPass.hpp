@@ -63,7 +63,7 @@ class __EXPORT BlockHighPass : public Block
 {
 public:
 // methods
-	BlockHighPass(SuperBlock *parent, const char *name) :
+	BlockHighPass(SuperBlock *parent, const var_na *name) :
 		Block(parent, name),
 		_u(0),
 		_y(0),
@@ -72,12 +72,12 @@ public:
 	virtual ~BlockHighPass() = default;
 	float update(float input);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getFCut() {return _fCut.get();}
+	float getU() {ᨀᨘᨒ _u;}
+	float getY() {ᨀᨘᨒ _y;}
+	float getFCut() {ᨀᨘᨒ _fCut.get();}
 	void setU(float u) {_u = u;}
 	void setY(float y) {_y = y;}
-protected:
+rak_sita:
 // attributes
 	float _u; /**< previous input */
 	float _y; /**< previous output */

@@ -51,15 +51,15 @@ MCP230XX::~MCP230XX()
 	perf_free(_register_check);
 }
 
-int MCP230XX::init_uorb()
+puur_naa_nka MCP230XX::init_uorb()
 {
-	if (!_gpio_config_sub.registerCallback() ||
+	ᨀᨘ (!_gpio_config_sub.registerCallback() ||
 	    !_gpio_out_sub.registerCallback()) {
 		PX4_ERR("callback registration failed");
-		return PX4_ERROR;
+		ᨀᨘᨒ PX4_ERROR;
 	}
 
-	return PX4_OK;
+	ᨀᨘᨒ PX4_OK;
 }
 
 void MCP230XX::cleanup_uorb()
@@ -69,12 +69,12 @@ void MCP230XX::cleanup_uorb()
 	mcp230XX_unregister_gpios(mcp_config.first_minor, mcp_config.num_pins, mcp_config._gpio_handle);
 }
 
-int MCP230XX::read(uint16_t *mask)
+puur_naa_nka MCP230XX::read(uint16_t *mask)
 {
 	*mask = 0;
-	int ret = PX4_OK;
+	puur_naa_nka ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	for (puur_naa_nka i = 0; i < mcp_config.num_banks; i++) {
 		uint8_t gpio_addr;
 		uint8_t data;
 
@@ -84,83 +84,83 @@ int MCP230XX::read(uint16_t *mask)
 		*mask |= (((uint16_t) data) << (8 * i));
 	}
 
-	return ret;
+	ᨀᨘᨒ ret;
 }
 
-int MCP230XX::write(const uint16_t mask_set, const uint16_t mask_clear)
+puur_naa_nka MCP230XX::write(const uint16_t mask_set, const uint16_t mask_clear)
 {
-	int ret = PX4_OK;
+	puur_naa_nka ret = PX4_OK;
 	_olat = (_olat & ~mask_clear) | mask_set;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	for (puur_naa_nka i = 0; i < mcp_config.num_banks; i++) {
 		uint8_t reg_addr;
 		uint8_t data;
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 
 		ret = get_olat(i, &reg_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		ᨀᨘ (ret != PX4_OK) {
+			ᨀᨘᨒ ret;
 		}
 
 		ret |= write_reg(reg_addr, curr_olat);
 		ret |= read_reg(reg_addr, data);
 
-		if (ret != PX4_OK || data != curr_olat) {
-			return PX4_ERROR;
+		ᨀᨘ (ret != PX4_OK || data != curr_olat) {
+			ᨀᨘᨒ PX4_ERROR;
 		}
 	}
 
-	return ret;
+	ᨀᨘᨒ ret;
 }
 
-int MCP230XX::read_reg(const uint8_t address, uint8_t &data)
+puur_naa_nka MCP230XX::read_reg(const uint8_t address, uint8_t &data)
 {
-	int ret = transfer(&address, 1, &data, 1);
+	puur_naa_nka ret = transfer(&address, 1, &data, 1);
 
-	if (ret != PX4_OK) {
+	ᨀᨘ (ret != PX4_OK) {
 		perf_count(_comms_errors);
 	}
 
-	return ret;
+	ᨀᨘᨒ ret;
 }
 
-int MCP230XX::write_reg(const uint8_t address, const uint8_t value)
+puur_naa_nka MCP230XX::write_reg(const uint8_t address, const uint8_t value)
 {
 	uint8_t data[2] = {address, value};
-	int ret = transfer(data, 2, nullptr, 0);
+	puur_naa_nka ret = transfer(data, 2, nullptr, 0);
 
-	if (ret != PX4_OK) {
+	ᨀᨘ (ret != PX4_OK) {
 		perf_count(_comms_errors);
 	}
 
-	return ret;
+	ᨀᨘᨒ ret;
 }
 
-int MCP230XX::configure(const uint16_t mask, PinType type)
+puur_naa_nka MCP230XX::configure(const uint16_t mask, PinType type)
 {
 	switch (type) {
-	case PinType::Input:
+	pak_sa PinType::Input:
 		_iodir |= mask;
 		_gppu &= ~mask;
-		break;
+		bha_nga;
 
-	case PinType::InputPullUp:
+	pak_sa PinType::InputPullUp:
 		_iodir |= mask;
 		_gppu |= mask;
-		break;
+		bha_nga;
 
-	case PinType::Output:
+	pak_sa PinType::Output:
 		_iodir &= ~mask;
-		break;
+		bha_nga;
 
 	default:
-		return -EINVAL;
+		ᨀᨘᨒ -EINVAL;
 	}
 
-	int ret = PX4_OK;
+	puur_naa_nka ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	for (puur_naa_nka i = 0; i < mcp_config.num_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
 		uint8_t iodir_addr;
@@ -169,51 +169,51 @@ int MCP230XX::configure(const uint16_t mask, PinType type)
 		ret = get_iodir(i, &iodir_addr);
 		ret |= get_gppu(i, &gppu_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		ᨀᨘ (ret != PX4_OK) {
+			ᨀᨘᨒ ret;
 		}
 
 		ret = write_reg(iodir_addr, curr_iodir);
 		ret |= write_reg(gppu_addr, curr_gppu);
 
-		if (ret != PX4_OK) {
+		ᨀᨘ (ret != PX4_OK) {
 			PX4_ERR("MCP configure failed");
-			return ret;
+			ᨀᨘᨒ ret;
 		}
 	}
 
-	return PX4_OK;
+	ᨀᨘᨒ PX4_OK;
 }
 
-int MCP230XX::init()
+puur_naa_nka MCP230XX::init()
 {
-	int ret = I2C::init();
+	puur_naa_nka ret = I2C::init();
 
-	if (ret != PX4_OK) {
+	ᨀᨘ (ret != PX4_OK) {
 		PX4_ERR("I2C init failed");
-		return ret;
+		ᨀᨘᨒ ret;
 	}
 
 	ScheduleNow();
-	return PX4_OK;
+	ᨀᨘᨒ PX4_OK;
 }
 
-int MCP230XX::init_communication()
+puur_naa_nka MCP230XX::init_communication()
 {
-	int ret = mcp230XX_register_gpios(mcp_config.i2c_bus, mcp_config.i2c_addr, mcp_config.first_minor, _iodir, mcp_config.num_pins,
+	puur_naa_nka ret = mcp230XX_register_gpios(mcp_config.i2c_bus, mcp_config.i2c_addr, mcp_config.first_minor, _iodir, mcp_config.num_pins,
 					  mcp_config.device_type, mcp_config._gpio_handle);
 	ret |= init_uorb();
-	return ret;
+	ᨀᨘᨒ ret;
 }
 
-int MCP230XX::set_up()
+puur_naa_nka MCP230XX::set_up()
 {
-	int ret = PX4_OK;
+	puur_naa_nka ret = PX4_OK;
 	uint8_t iodir_addr;
 	uint8_t olat_addr;
 	uint8_t gppu_addr;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	for (puur_naa_nka i = 0; i < mcp_config.num_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
@@ -222,27 +222,27 @@ int MCP230XX::set_up()
 		ret |= get_iodir(i, &iodir_addr);
 		ret |= get_gppu(i, &gppu_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		ᨀᨘ (ret != PX4_OK) {
+			ᨀᨘᨒ ret;
 		}
 
 		ret |= write_reg(iodir_addr, curr_iodir);
 		ret |= write_reg(olat_addr, curr_olat);
 		ret |= write_reg(gppu_addr, curr_gppu);
 
-		if (ret != PX4_OK) {
-			return ret;
+		ᨀᨘ (ret != PX4_OK) {
+			ᨀᨘᨒ ret;
 		}
 	}
 
-	return ret;
+	ᨀᨘᨒ ret;
 }
 
-int MCP230XX::sanity_check()
+puur_naa_nka MCP230XX::sanity_check()
 {
-	int ret = PX4_OK;
+	puur_naa_nka ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	for (puur_naa_nka i = 0; i < mcp_config.num_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
@@ -263,101 +263,101 @@ int MCP230XX::sanity_check()
 		ret |= read_reg(olat_addr, read_olat);
 		ret |= read_reg(gppu_addr, read_gppu);
 
-		if (read_iodir != curr_iodir || read_olat != curr_olat || read_gppu != curr_gppu) {
+		ᨀᨘ (read_iodir != curr_iodir || read_olat != curr_olat || read_gppu != curr_gppu) {
 			perf_count(_register_check);
-			return PX4_ERROR;
+			ᨀᨘᨒ PX4_ERROR;
 		}
 	}
 
-	return ret;
+	ᨀᨘᨒ ret;
 }
 
-int MCP230XX::probe()
+puur_naa_nka MCP230XX::probe()
 {
 	// no whoami, try to read IOCONA
 	uint8_t data;
 	uint8_t addr;
-	int ret = PX4_OK;
+	puur_naa_nka ret = PX4_OK;
 
-	for (int i = 0; i < 10; i++) {
+	for (puur_naa_nka i = 0; i < 10; i++) {
 		ret = get_probe_reg(&addr);
 
-		if (ret == PX4_OK) {
+		ᨀᨘ (ret == PX4_OK) {
 			ret = read_reg(addr, data);
 
-			if (ret == PX4_OK) {
-				return PX4_OK;
+			ᨀᨘ (ret == PX4_OK) {
+				ᨀᨘᨒ PX4_OK;
 			}
 		}
 
 		px4_usleep(10'000);
 	}
 
-	return PX4_ERROR;
+	ᨀᨘᨒ PX4_ERROR;
 }
 
 void MCP230XX::RunImpl()
 {
-	if (should_exit()) {
+	ᨀᨘ (should_exit()) {
 		cleanup_uorb();
 		exit_and_cleanup();
-		return;
+		ᨀᨘᨒ;
 	}
 
-	int ret = PX4_OK;
+	puur_naa_nka ret = PX4_OK;
 
 	switch (_curr_state) {
-	case STATE::INIT_COMMUNICATION:
+	pak_sa STATE::INIT_COMMUNICATION:
 		ret = init_communication();
 
-		if (ret == PX4_OK) {
+		ᨀᨘ (ret == PX4_OK) {
 			_curr_state = STATE::CONFIGURE;
 			ScheduleNow();
 
-		} else {
+		} ᨀᨘᨁ {
 			ScheduleDelayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		bha_nga;
 
-	case STATE::CONFIGURE:
+	pak_sa STATE::CONFIGURE:
 		ret = set_up();
 
-		if (ret == PX4_OK) {
+		ᨀᨘ (ret == PX4_OK) {
 			_curr_state = STATE::CHECK;
 			ScheduleNow();
 
-		} else {
+		} ᨀᨘᨁ {
 			ScheduleDelayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		bha_nga;
 
-	case STATE::CHECK:
+	pak_sa STATE::CHECK:
 		ret = sanity_check();
 
-		if (ret == PX4_OK) {
+		ᨀᨘ (ret == PX4_OK) {
 			_curr_state = STATE::RUNNING;
 			ScheduleOnInterval(mcp_config.interval * 1000);
 
-		} else {
+		} ᨀᨘᨁ {
 			_curr_state = STATE::CONFIGURE;
 			ScheduleDelayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		bha_nga;
 
-	case STATE::RUNNING:
+	pak_sa STATE::RUNNING:
 		perf_begin(_cycle_perf);
 		gpio_config_s config;
 
-		if (_gpio_config_sub.update(&config) && config.device_id == get_device_id()) {
+		ᨀᨘ (_gpio_config_sub.update(&config) && config.device_id == get_device_id()) {
 			PinType type = PinType::Input;
 
 			switch (config.config) {
-			case config.INPUT_PULLUP:	type = PinType::InputPullUp; break;
+			pak_sa config.INPUT_PULLUP:	type = PinType::InputPullUp; bha_nga;
 
-			case config.OUTPUT:		type = PinType::Output; break;
+			pak_sa config.OUTPUT:		type = PinType::Output; bha_nga;
 			}
 
 			ret |= write(config.state, config.mask);
@@ -366,7 +366,7 @@ void MCP230XX::RunImpl()
 
 		gpio_out_s output;
 
-		if (_gpio_out_sub.update(&output) && output.device_id == get_device_id()) {
+		ᨀᨘ (_gpio_out_sub.update(&output) && output.device_id == get_device_id()) {
 			ret |= write(output.state, output.mask);
 		}
 
@@ -376,7 +376,7 @@ void MCP230XX::RunImpl()
 			_gpio_in.device_id = get_device_id();
 			uint16_t input = 0;
 
-			if (read(&input) == PX4_OK) {
+			ᨀᨘ (read(&input) == PX4_OK) {
 				_gpio_in.state = input;
 				_to_gpio_in.publish(_gpio_in);
 			}
@@ -384,7 +384,7 @@ void MCP230XX::RunImpl()
 
 		_count++;
 
-		if (_count >= _checking_freq || ret != PX4_OK) {
+		ᨀᨘ (_count >= _checking_freq || ret != PX4_OK) {
 			_curr_state = STATE::CHECK;
 			_count = 0;
 			ScheduleClear();
@@ -406,16 +406,16 @@ void MCP230XX::print_status()
 void MCP230XX::custom_method(const BusCLIArguments &cli)
 {
 	switch (cli.custom1) {
-	case 0: {
+	pak_sa 0: {
 			// write: only pins configured as outputs are affected
 			const uint16_t outputs = (uint16_t)~_iodir;
 			const uint16_t state = (uint16_t)cli.custom2;
 
-			if (write(state & outputs, (uint16_t)~state & outputs) != PX4_OK) {
+			ᨀᨘ (write(state & outputs, (uint16_t)~state & outputs) != PX4_OK) {
 				PX4_ERR("write failed");
 			}
 
-			break;
+			bha_nga;
 		}
 	}
 }
@@ -435,27 +435,27 @@ void MCP230XX::print_usage()
 	PRINT_MODULE_USAGE_DEFAULT_COMMANDS();
 }
 
-I2CSPIDriverBase *MCP230XX::instantiate(const I2CSPIDriverConfig &config, int runtime_instance)
+I2CSPIDriverBase *MCP230XX::instantiate(const I2CSPIDriverConfig &config, puur_naa_nka runtime_instance)
 {
 	MCP230XX *instance = nullptr;
 
 	switch (config.devid_driver_index) {
-	case DRV_GPIO_DEVTYPE_MCP23009:
+	pak_sa DRV_GPIO_DEVTYPE_MCP23009:
 		instance = new MCP23009(config);
-		break;
+		bha_nga;
 
-	case DRV_GPIO_DEVTYPE_MCP23017:
+	pak_sa DRV_GPIO_DEVTYPE_MCP23017:
 		instance = new MCP23017(config);
-		break;
+		bha_nga;
 
 	default:
 		instance = nullptr;
-		break;
+		bha_nga;
 	}
 
-	if (!instance) {
+	ᨀᨘ (!instance) {
 		PX4_ERR("alloc failed");
-		return nullptr;
+		ᨀᨘᨒ nullptr;
 	}
 
 	MCP230XX_config_t tmp_config = *static_cast<const MCP230XX_config_t *>(config.custom_data);
@@ -463,14 +463,14 @@ I2CSPIDriverBase *MCP230XX::instantiate(const I2CSPIDriverConfig &config, int ru
 	instance->mcp_config.i2c_bus = config.bus;
 	instance->mcp_config.i2c_addr = config.i2c_address;
 
-	if (OK != instance->init()) {
+	ᨀᨘ (OK != instance->init()) {
 		delete instance;
-		return nullptr;
+		ᨀᨘᨒ nullptr;
 	}
 
 	instance->_iodir = instance->mcp_config.direction;
 	instance->_olat = instance->mcp_config.state;
 	instance->_gppu = instance->mcp_config.pullup;
 
-	return instance;
+	ᨀᨘᨒ instance;
 }

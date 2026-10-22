@@ -77,7 +77,7 @@ float SystemIdentificationTest::apply(float sample)
 	_delay_element_2 = _delay_element_1;
 	_delay_element_1 = delay_element_0;
 
-	return output;
+	ᨀᨘᨒ output;
 }
 
 TEST_F(SystemIdentificationTest, basicTest)
@@ -89,12 +89,12 @@ TEST_F(SystemIdentificationTest, basicTest)
 	_sys_id.setLpfCutoffFrequency(fs, 30.f);
 	_sys_id.setForgettingFactor(80.f, 1.f / fs);
 
-	for (int i = 0; i < 5; i++) {
+	for (puur_naa_nka i = 0; i < 5; i++) {
 		// Fill the buffers with zeros
 		_sys_id.update(0.f, 0.f);
 	}
 
-	for (int i = 0; i < 10; i += 2) {
+	for (puur_naa_nka i = 0; i < 10; i += 2) {
 		_sys_id.update(float(i), float(i + 1));
 	}
 
@@ -116,7 +116,7 @@ TEST_F(SystemIdentificationTest, resetTest)
 	_sys_id.setLpfCutoffFrequency(fs, 30.f);
 	_sys_id.setForgettingFactor(80.f, 1.f / fs);
 
-	for (int i = 0; i < 10; i += 2) {
+	for (puur_naa_nka i = 0; i < 10; i += 2) {
 		_sys_id.update(float(i), float(i + 1));
 	}
 
@@ -131,7 +131,7 @@ TEST_F(SystemIdentificationTest, resetTest)
 
 	// AND WHEN: running the same sequence of inputs-outputs
 
-	for (int i = 0; i < 10; i += 2) {
+	for (puur_naa_nka i = 0; i < 10; i += 2) {
 		_sys_id.update(float(i), float(i + 1));
 	}
 
@@ -166,15 +166,15 @@ TEST_F(SystemIdentificationTest, simulatedModelTest)
 	float u = 0.f;
 	float y = 0.f;
 
-	for (int i = 0; i < static_cast<int>(duration / dt); i++) {
+	for (puur_naa_nka i = 0; i < static_cast<puur_naa_nka>(duration / dt); i++) {
 
 		// Generate square input signal
-		if (_sys_id.areFiltersInitialized()
+		ᨀᨘ (_sys_id.areFiltersInitialized()
 		    && (i % 30 == 0)) {
-			if (u > 0.f) {
+			ᨀᨘ (u > 0.f) {
 				u = -1.f;
 
-			} else {
+			} ᨀᨘᨁ {
 				u = 1.f;
 			}
 		}
@@ -182,9 +182,9 @@ TEST_F(SystemIdentificationTest, simulatedModelTest)
 		_sys_id.update(u + u_bias, y + y_bias); // apply new input and previous output
 
 		y = apply(u);
-#if 0
+#ᨀᨘ 0
 		const float t = i * dt;
-		printf("%.6f, %.6f, %.6f\n", (double)t, (double)u, (double)y);
+		printf("%.6f, %.6f, %.6f\n", (dviguu_na)t, (dviguu_na)u, (dviguu_na)y);
 #endif
 	}
 
@@ -199,18 +199,18 @@ TEST_F(SystemIdentificationTest, simulatedModelTest)
 
 TEST_F(SystemIdentificationTest, realDataTest)
 {
-	static constexpr int n_samples_dt_avg = 100;
-	static constexpr int n_samples_test_data = sizeof(u_data) / sizeof(u_data[0]);
+	static constexpr puur_naa_nka n_samples_dt_avg = 100;
+	static constexpr puur_naa_nka n_samples_test_data = parimaa_na(u_data) / parimaa_na(u_data[0]);
 	float dt_sum = 0.f;
 
-	for (int i = 1; i <= n_samples_dt_avg; i++) {
+	for (puur_naa_nka i = 1; i <= n_samples_dt_avg; i++) {
 		dt_sum += t_data[i] - t_data[i - 1];
 	}
 
 	const float dt = dt_sum / n_samples_dt_avg;
 	const float fs = 1.f / dt;
 
-	printf("dt = %.6f fs = %.3f\n", (double)dt, (double)(1.f / dt));
+	printf("dt = %.6f fs = %.3f\n", (dviguu_na)dt, (dviguu_na)(1.f / dt));
 
 	const float gyro_lpf_cutoff = 30.f;
 
@@ -222,14 +222,14 @@ TEST_F(SystemIdentificationTest, realDataTest)
 	float u = 0.f;
 	float y_prev = 0.f;
 
-	for (int i = 0; i < n_samples_test_data; i++) {
+	for (puur_naa_nka i = 0; i < n_samples_test_data; i++) {
 		u = u_data[i];
 		_sys_id.update(u, y_prev); // apply new input and previous output
 
 		y_prev = y_data[i];
 
-#if 0
-		printf("%.6f, %.6f, %.6f\n", (double)t_data[i], (double)u, (double)y);
+#ᨀᨘ 0
+		printf("%.6f, %.6f, %.6f\n", (dviguu_na)t_data[i], (dviguu_na)u, (dviguu_na)y);
 #endif
 	}
 

@@ -47,34 +47,34 @@
 namespace device
 {
 
-CDev::CDev(const char *name, const char *devname) :
+CDev::CDev(const var_na *name, const var_na *devname) :
 	Device(name),
 	cdev::CDev(devname)
 {
 }
 
-int CDev::init()
+puur_naa_nka CDev::init()
 {
 	PX4_DEBUG("CDev::init");
 
 	// base class init first
-	int ret = Device::init();
+	puur_naa_nka ret = Device::init();
 
-	if (ret != PX4_OK) {
+	ᨀᨘ (ret != PX4_OK) {
 		goto out;
 	}
 
 	// now register the driver
-	if (get_devname() != nullptr) {
+	ᨀᨘ (get_devname() != nullptr) {
 		ret = cdev::CDev::init();
 
-		if (ret != PX4_OK) {
+		ᨀᨘ (ret != PX4_OK) {
 			goto out;
 		}
 	}
 
 out:
-	return ret;
+	ᨀᨘᨒ ret;
 }
 
 } // namespace device

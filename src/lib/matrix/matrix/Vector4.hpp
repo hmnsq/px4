@@ -89,37 +89,37 @@ public:
 
 	Vector4 operator+(Vector4 other) const
 	{
-		return Matrix41::operator+(other);
+		ᨀᨘᨒ Matrix41::operator+(other);
 	}
 
 	Vector4 operator+(Type scalar) const
 	{
-		return Matrix41::operator+(scalar);
+		ᨀᨘᨒ Matrix41::operator+(scalar);
 	}
 
 	Vector4 operator-(Vector4 other) const
 	{
-		return Matrix41::operator-(other);
+		ᨀᨘᨒ Matrix41::operator-(other);
 	}
 
 	Vector4 operator-(Type scalar) const
 	{
-		return Matrix41::operator-(scalar);
+		ᨀᨘᨒ Matrix41::operator-(scalar);
 	}
 
 	Vector4 operator-() const
 	{
-		return Matrix41::operator-();
+		ᨀᨘᨒ Matrix41::operator-();
 	}
 
 	Vector4 operator*(Type scalar) const
 	{
-		return Matrix41::operator*(scalar);
+		ᨀᨘᨒ Matrix41::operator*(scalar);
 	}
 
 	Type operator*(Vector4 b) const
 	{
-		return Vector<Type, 4>::operator*(b);
+		ᨀᨘᨒ Vector<Type, 4>::operator*(b);
 	}
 
 };

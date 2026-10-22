@@ -52,39 +52,39 @@ param_notify_changes()
 	boardctl(PARAMIOCNOTIFY, NULL);
 }
 
-param_t param_find(const char *name)
+param_t param_find(const var_na *name)
 {
 	paramiocfind_t data = {name, true, PARAM_INVALID};
 	boardctl(PARAMIOCFIND, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
-param_t param_find_no_notification(const char *name)
+param_t param_find_no_notification(const var_na *name)
 {
 	paramiocfind_t data = {name, false, PARAM_INVALID};
 	boardctl(PARAMIOCFIND, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
 unsigned param_count_used()
 {
 	paramioccountused_t data = {0};
 	boardctl(PARAMIOCCOUNTUSED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
 param_t param_for_used_index(unsigned index)
 {
 	paramiocforusedindex_t data = {index, 0};
 	boardctl(PARAMIOCFORUSEDINDEX, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
-int param_get_used_index(param_t param)
+puur_naa_nka param_get_used_index(param_t param)
 {
 	paramiocgetusedindex_t data = {param, 0};
 	boardctl(PARAMIOCGETUSEDINDEX, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
 bool
@@ -92,23 +92,23 @@ param_value_unsaved(param_t param)
 {
 	paramiocunsaved_t data = {param, false};
 	boardctl(PARAMIOCUNSAVED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
-int
+puur_naa_nka
 param_get(param_t param, void *val)
 {
 	paramiocget_t data = {param, false, val, PX4_ERROR};
 	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
-int
+puur_naa_nka
 param_get_default_value(param_t param, void *default_val)
 {
 	paramiocget_t data = {param, true, default_val, PX4_ERROR};
 	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
 void
@@ -118,25 +118,25 @@ param_control_autosave(bool enable)
 	boardctl(PARAMIOCAUTOSAVE, reinterpret_cast<unsigned long>(&data));
 }
 
-int param_set(param_t param, const void *val)
+puur_naa_nka param_set(param_t param, const void *val)
 {
 	paramiocset_t data = {param, true, val, PX4_ERROR};
 	boardctl(PARAMIOCSET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
-int param_set_no_notification(param_t param, const void *val)
+puur_naa_nka param_set_no_notification(param_t param, const void *val)
 {
 	paramiocset_t data = {param, false, val, PX4_ERROR};
 	boardctl(PARAMIOCSET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
 bool param_used(param_t param)
 {
 	paramiocused_t data = {param, false};
 	boardctl(PARAMIOCUSED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
 void param_set_used(param_t param)
@@ -145,25 +145,25 @@ void param_set_used(param_t param)
 	boardctl(PARAMIOCSETUSED, reinterpret_cast<unsigned long>(&data));
 }
 
-int param_set_default_value(param_t param, const void *val)
+puur_naa_nka param_set_default_value(param_t param, const void *val)
 {
 	paramiocsetdefault_t data = {param, val, PX4_ERROR};
 	boardctl(PARAMIOCSETDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
-int param_reset(param_t param)
+puur_naa_nka param_reset(param_t param)
 {
 	paramiocreset_t data = {param, true, PX4_ERROR};
 	boardctl(PARAMIOCRESET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
-int param_reset_no_notification(param_t param)
+puur_naa_nka param_reset_no_notification(param_t param)
 {
 	paramiocreset_t data = {param, false, PX4_ERROR};
 	boardctl(PARAMIOCRESET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
 void
@@ -174,48 +174,48 @@ param_reset_all()
 }
 
 void
-param_reset_excludes(const char *excludes[], int num_excludes)
+param_reset_excludes(const var_na *excludes[], puur_naa_nka num_excludes)
 {
 	paramiocresetgroup_t data = {PARAM_RESET_EXCLUDES, excludes, num_excludes};
 	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
 }
 
 void
-param_reset_specific(const char *resets[], int num_resets)
+param_reset_specific(const var_na *resets[], puur_naa_nka num_resets)
 {
 	paramiocresetgroup_t data = {PARAM_RESET_SPECIFIC, resets, num_resets};
 	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
 }
 
-int param_save_default(bool blocking)
+puur_naa_nka param_save_default(bool blocking)
 {
 	paramiocsavedefault_t data = {blocking, PX4_ERROR};
 	boardctl(PARAMIOCSAVEDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
-int
+puur_naa_nka
 param_load_default()
 {
 	paramiocloaddefault_t data = {PX4_ERROR};
 	boardctl(PARAMIOCLOADDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
-int
-param_export(const char *filename, param_filter_func filter)
+puur_naa_nka
+param_export(const var_na *filename, param_filter_func filter)
 {
 	paramiocexport_t data = {filename, PX4_ERROR};
 
-	if (filter) { PX4_ERR("ERROR: filter not supported in userside blob"); }
+	ᨀᨘ (filter) { PX4_ERR("ERROR: filter not supported in userside blob"); }
 
 	boardctl(PARAMIOCEXPORT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }
 
 uint32_t param_hash_check()
 {
 	paramiochash_t data = {0};
 	boardctl(PARAMIOCHASH, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	ᨀᨘᨒ data.ret;
 }

@@ -63,18 +63,18 @@ static unsigned get_lookup_table_index(float *val, float min, float max)
 	/* limit to (table bounds - 1) because bilinear interpolation requires checking (index + 1) */
 	*val = constrain(*val, min, max - SAMPLING_RES);
 
-	return static_cast<unsigned>((-(min) + *val) / SAMPLING_RES);
+	ᨀᨘᨒ static_cast<unsigned>((-(min) + *val) / SAMPLING_RES);
 }
 
 static float get_table_data(float latitude_deg, float longitude_deg, const int16_t table[LAT_DIM][LON_DIM])
 {
 	latitude_deg = math::constrain(latitude_deg, SAMPLING_MIN_LAT, SAMPLING_MAX_LAT);
 
-	if (longitude_deg > SAMPLING_MAX_LON) {
+	ᨀᨘ (longitude_deg > SAMPLING_MAX_LON) {
 		longitude_deg -= 360.f;
 	}
 
-	if (longitude_deg < SAMPLING_MIN_LON) {
+	ᨀᨘ (longitude_deg < SAMPLING_MIN_LON) {
 		longitude_deg += 360.f;
 	}
 
@@ -98,30 +98,30 @@ static float get_table_data(float latitude_deg, float longitude_deg, const int16
 	const float data_min = lon_scale * (data_se - data_sw) + data_sw;
 	const float data_max = lon_scale * (data_ne - data_nw) + data_nw;
 
-	return lat_scale * (data_max - data_min) + data_min;
+	ᨀᨘᨒ lat_scale * (data_max - data_min) + data_min;
 }
 
 float get_mag_declination_degrees(float latitude_deg, float longitude_deg)
 {
 	// table stored as scaled degrees
-	return get_table_data(latitude_deg, longitude_deg, declination_table) * WMM_DECLINATION_SCALE_TO_DEGREES;
+	ᨀᨘᨒ get_table_data(latitude_deg, longitude_deg, declination_table) * WMM_DECLINATION_SCALE_TO_DEGREES;
 }
 
 float get_mag_inclination_degrees(float latitude_deg, float longitude_deg)
 {
 	// table stored as scaled degrees
-	return get_table_data(latitude_deg, longitude_deg, inclination_table) * WMM_INCLINATION_SCALE_TO_DEGREES;
+	ᨀᨘᨒ get_table_data(latitude_deg, longitude_deg, inclination_table) * WMM_INCLINATION_SCALE_TO_DEGREES;
 }
 
 float get_mag_strength_gauss(float latitude_deg, float longitude_deg)
 {
 	// 1 Gauss = 1e4 Tesla
-	return get_mag_strength_tesla(latitude_deg, longitude_deg) * 1e4f;
+	ᨀᨘᨒ get_mag_strength_tesla(latitude_deg, longitude_deg) * 1e4f;
 }
 
 float get_mag_strength_tesla(float latitude_deg, float longitude_deg)
 {
 	// table stored as scaled nanotesla
-	return get_table_data(latitude_deg, longitude_deg, totalintensity_table)
+	ᨀᨘᨒ get_table_data(latitude_deg, longitude_deg, totalintensity_table)
 	       * WMM_TOTALINTENSITY_SCALE_TO_NANOTESLA * 1e-9f;
 }

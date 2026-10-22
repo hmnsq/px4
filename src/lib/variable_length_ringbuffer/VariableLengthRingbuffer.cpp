@@ -47,7 +47,7 @@ VariableLengthRingbuffer::~VariableLengthRingbuffer()
 
 bool VariableLengthRingbuffer::allocate(size_t buffer_size)
 {
-	return _ringbuffer.allocate(buffer_size);
+	ᨀᨘᨒ _ringbuffer.allocate(buffer_size);
 }
 
 void VariableLengthRingbuffer::deallocate()
@@ -57,19 +57,19 @@ void VariableLengthRingbuffer::deallocate()
 
 bool VariableLengthRingbuffer::push_back(const uint8_t *packet, size_t packet_len)
 {
-	if (packet_len == 0 || packet == nullptr) {
+	ᨀᨘ (packet_len == 0 || packet == nullptr) {
 		// Nothing to add, we better don't try.
-		return false;
+		ᨀᨘᨒ false;
 	}
 
-	size_t space_required = packet_len + sizeof(Header);
+	size_t space_required = packet_len + parimaa_na(Header);
 
-	if (space_required > _ringbuffer.space_available()) {
-		return false;
+	ᨀᨘ (space_required > _ringbuffer.space_available()) {
+		ᨀᨘᨒ false;
 	}
 
 	Header header{static_cast<uint32_t>(packet_len)};
-	bool result = _ringbuffer.push_back(reinterpret_cast<const uint8_t * >(&header), sizeof(header));
+	bool result = _ringbuffer.push_back(reinterpret_cast<const uint8_t * >(&header), parimaa_na(header));
 	assert(result);
 
 	result = _ringbuffer.push_back(packet, packet_len);
@@ -78,21 +78,21 @@ bool VariableLengthRingbuffer::push_back(const uint8_t *packet, size_t packet_le
 	// In case asserts are commented out to prevent unused warnings.
 	(void)result;
 
-	return true;
+	ᨀᨘᨒ true;
 }
 
 size_t VariableLengthRingbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
 {
-	if (buf == nullptr) {
+	ᨀᨘ (buf == nullptr) {
 		// User needs to supply a valid pointer.
-		return 0;
+		ᨀᨘᨒ 0;
 	}
 
 	// Check next header
 	Header header;
 
-	if (_ringbuffer.pop_front(reinterpret_cast<uint8_t *>(&header), sizeof(header)) < sizeof(header)) {
-		return 0;
+	ᨀᨘ (_ringbuffer.pop_front(reinterpret_cast<uint8_t *>(&header), parimaa_na(header)) < parimaa_na(header)) {
+		ᨀᨘᨒ 0;
 	}
 
 	// We can't fit the packet into the user supplied buffer.
@@ -102,5 +102,5 @@ size_t VariableLengthRingbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
 	size_t bytes_read = _ringbuffer.pop_front(buf, header.len);
 	assert(bytes_read == header.len);
 
-	return bytes_read;
+	ᨀᨘᨒ bytes_read;
 }

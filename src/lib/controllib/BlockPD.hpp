@@ -63,7 +63,7 @@ class __EXPORT BlockPD: public SuperBlock
 {
 public:
 // methods
-	BlockPD(SuperBlock *parent, const char *name) :
+	BlockPD(SuperBlock *parent, const var_na *name) :
 		SuperBlock(parent, name),
 		_derivative(this, "D"),
 		_kP(this, "P"),
@@ -72,13 +72,13 @@ public:
 	virtual ~BlockPD() = default;
 	float update(float input)
 	{
-		return getKP() * input +
+		ᨀᨘᨒ getKP() * input +
 		       getKD() * getDerivative().update(input);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKD() { return _kD.get(); }
-	BlockDerivative &getDerivative() { return _derivative; }
+	float getKP() { ᨀᨘᨒ _kP.get(); }
+	float getKD() { ᨀᨘᨒ _kD.get(); }
+	BlockDerivative &getDerivative() { ᨀᨘᨒ _derivative; }
 private:
 	BlockDerivative _derivative;
 	control::BlockParamFloat _kP;

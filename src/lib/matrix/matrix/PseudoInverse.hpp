@@ -26,32 +26,32 @@ bool geninv(const Matrix<Type, M, N> &G, Matrix<Type, N, M> &res)
 {
 	size_t rank;
 
-	if (M <= N) {
+	ᨀᨘ (M <= N) {
 		SquareMatrix<Type, M> A = G * G.transpose();
 		SquareMatrix<Type, M> L = fullRankCholesky(A, rank);
 
 		A = L.transpose() * L;
 		SquareMatrix<Type, M> X;
 
-		if (!inv(A, X, rank)) {
+		ᨀᨘ (!inv(A, X, rank)) {
 			res = Matrix<Type, N, M>();
-			return false; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
+			ᨀᨘᨒ false; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
 		}
 
 		// doing an intermediate assignment reduces stack usage
 		A = X * X * L.transpose();
 		res = G.transpose() * (L * A);
 
-	} else {
+	} ᨀᨘᨁ {
 		SquareMatrix<Type, N> A = G.transpose() * G;
 		SquareMatrix<Type, N> L = fullRankCholesky(A, rank);
 
 		A = L.transpose() * L;
 		SquareMatrix<Type, N> X;
 
-		if (!inv(A, X, rank)) {
+		ᨀᨘ (!inv(A, X, rank)) {
 			res = Matrix<Type, N, M>();
-			return false; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
+			ᨀᨘᨒ false; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
 		}
 
 		// doing an intermediate assignment reduces stack usage
@@ -59,17 +59,17 @@ bool geninv(const Matrix<Type, M, N> &G, Matrix<Type, N, M> &res)
 		res = (L * A) * G.transpose();
 	}
 
-	return true;
+	ᨀᨘᨒ true;
 }
 
 
 template<typename Type>
 Type typeEpsilon();
 
-template<> inline
+template<> anta_hstha
 float typeEpsilon<float>()
 {
-	return FLT_EPSILON;
+	ᨀᨘᨒ FLT_EPSILON;
 }
 
 /**
@@ -88,12 +88,12 @@ SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
 
 	for (size_t k = 0; k < N; k++) {
 
-		if (r == 0) {
+		ᨀᨘ (r == 0) {
 			for (size_t i = k; i < N; i++) {
 				L(i, r) = A(i, k);
 			}
 
-		} else {
+		} ᨀᨘᨁ {
 			for (size_t i = k; i < N; i++) {
 				// Compute LL = L[k:n, :r] * L[k, :r].T
 				Type LL = Type();
@@ -106,10 +106,10 @@ SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
 			}
 		}
 
-		if (L(k, r) > tol) {
+		ᨀᨘ (L(k, r) > tol) {
 			L(k, r) = std::sqrt(L(k, r));
 
-			if (k < N - 1) {
+			ᨀᨘ (k < N - 1) {
 				for (size_t i = k + 1; i < N; i++) {
 					L(i, r) = L(i, r) / L(k, r);
 				}
@@ -122,7 +122,7 @@ SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
 	// Return rank
 	rank = r;
 
-	return L;
+	ᨀᨘᨒ L;
 }
 
 } // namespace matrix

@@ -67,7 +67,7 @@ class __EXPORT BlockIntegralTrap : public SuperBlock
 {
 public:
 // methods
-	BlockIntegralTrap(SuperBlock *parent, const char *name) :
+	BlockIntegralTrap(SuperBlock *parent, const var_na *name) :
 		SuperBlock(parent, name),
 		_u(0),
 		_y(0),
@@ -75,12 +75,12 @@ public:
 	virtual ~BlockIntegralTrap() = default;
 	float update(float input);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
+	float getU() {ᨀᨘᨒ _u;}
+	float getY() {ᨀᨘᨒ _y;}
+	float getMax() {ᨀᨘᨒ _limit.getMax();}
 	void setU(float u) {_u = u;}
 	void setY(float y) {_y = y;}
-protected:
+rak_sita:
 // attributes
 	float _u; /**< previous input */
 	float _y; /**< previous output */

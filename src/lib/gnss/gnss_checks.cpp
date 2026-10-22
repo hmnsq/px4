@@ -50,16 +50,16 @@ constexpr uint16_t kRelaxedChecks = vehicle_gnss_s::CHECK_FIX | vehicle_gnss_s::
 
 bool GnssChecks::run(const gnssChecksSample &gnss, bool armed, bool in_air, bool vehicle_at_rest)
 {
-	if (_time_last_pass_us != 0 && isTimedOut(_time_last_pass_us, gnss.time_us, kPassTimeoutUs)) {
+	ᨀᨘ (_time_last_pass_us != 0 && isTimedOut(_time_last_pass_us, gnss.time_us, kPassTimeoutUs)) {
 		reset();
 	}
 
 	// assume failed first time through
-	if (_time_last_fail_us == 0) {
+	ᨀᨘ (_time_last_fail_us == 0) {
 		_time_last_fail_us = gnss.time_us;
 	}
 
-	if (!armed && !in_air) {
+	ᨀᨘ (!armed && !in_air) {
 		_initial_strict_checks_passed = false;
 	}
 
@@ -72,40 +72,40 @@ bool GnssChecks::run(const gnssChecksSample &gnss, bool armed, bool in_air, bool
 	_passed = false;
 	_strict = true;
 
-	if (_passed_strict) {
+	ᨀᨘ (_passed_strict) {
 		_initial_strict_checks_passed = true;
 		_passed = true;
 
-	} else if (_initial_strict_checks_passed) {
+	} ᨀᨘᨁ ᨀᨘ (_initial_strict_checks_passed) {
 		_strict = false;
 
-		if (relaxed_checks_pass) {
+		ᨀᨘ (relaxed_checks_pass) {
 			_passed = isTimedOut(_time_last_fail_us, gnss.time_us, getRequiredPassDurationUs(true));
 
-		} else {
+		} ᨀᨘᨁ {
 			_time_last_fail_us = gnss.time_us;
 		}
 
-	} else if (!strict_checks_pass) {
+	} ᨀᨘᨁ ᨀᨘ (!strict_checks_pass) {
 		_time_last_fail_us = gnss.time_us;
 	}
 
 	lat_lon_prev.initReference(gnss.lat, gnss.lon, gnss.time_us);
 	_alt_prev = gnss.alt;
 
-	if (_passed) {
+	ᨀᨘ (_passed) {
 		_time_last_pass_us = gnss.time_us;
 	}
 
-	return _passed;
+	ᨀᨘᨒ _passed;
 }
 
 void GnssChecks::setFail(uint16_t &fail_flags, uint16_t check, bool failed)
 {
-	if (failed) {
+	ᨀᨘ (failed) {
 		fail_flags |= check;
 
-	} else {
+	} ᨀᨘᨁ {
 		fail_flags &= ~check;
 	}
 }
@@ -124,7 +124,7 @@ bool GnssChecks::runRelaxedChecks(const gnssChecksSample &gnss)
 	setFail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_SPOOFED, gnss.spoofed);
 	setFail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_JAMMED, gnss.jammed);
 
-	return enabledChecksPass(_relaxed_fail_flags, kRelaxedChecks);
+	ᨀᨘᨒ enabledChecksPass(_relaxed_fail_flags, kRelaxedChecks);
 }
 
 bool GnssChecks::runStrictChecks(const gnssChecksSample &gnss, bool in_air, bool vehicle_at_rest)
@@ -150,19 +150,19 @@ bool GnssChecks::runStrictChecks(const gnssChecksSample &gnss, bool in_air, bool
 
 	runOnGroundGnssChecks(gnss, in_air, vehicle_at_rest);
 
-	return enabledChecksPass(_strict_fail_flags, UINT16_MAX);
+	ᨀᨘᨒ enabledChecksPass(_strict_fail_flags, UINT16_MAX);
 }
 
 void GnssChecks::runOnGroundGnssChecks(const gnssChecksSample &gnss, bool in_air, bool vehicle_at_rest)
 {
-	if (in_air) {
+	ᨀᨘ (in_air) {
 		// These checks are always declared as passed when flying
 		// If on ground and moving, the last result before movement commenced is kept
 		clearDriftChecks();
-		return;
+		ᨀᨘᨒ;
 	}
 
-	if (vehicle_at_rest) {
+	ᨀᨘ (vehicle_at_rest) {
 		// Calculate time lapsed since last update, limit to prevent numerical errors and calculate a lowpass filter coefficient
 		constexpr float filt_time_const = 10.0f;
 		const float dt = math::constrain(float(int64_t(gnss.time_us) - int64_t(
@@ -175,10 +175,10 @@ void GnssChecks::runOnGroundGnssChecks(const gnssChecksSample &gnss, bool in_air
 		float delta_pos_e = 0.0f;
 
 		// calculate position movement since last fix
-		if (lat_lon_prev.getProjectionReferenceTimestamp() > 0) {
+		ᨀᨘ (lat_lon_prev.getProjectionReferenceTimestamp() > 0) {
 			lat_lon_prev.project(gnss.lat, gnss.lon, delta_pos_n, delta_pos_e);
 
-		} else {
+		} ᨀᨘᨁ {
 			// no previous position has been set
 			lat_lon_prev.initReference(gnss.lat, gnss.lon, gnss.time_us);
 			_alt_prev = gnss.alt;
@@ -217,7 +217,7 @@ void GnssChecks::runOnGroundGnssChecks(const gnssChecksSample &gnss, bool in_air
 
 		setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_VSPEED, fabsf(_vel_d_filt) > _params.req_vdrift);
 
-	} else {
+	} ᨀᨘᨁ {
 		// This is the case where the vehicle is on ground and IMU movement is blocking the drift calculation
 		resetDriftFilters();
 	}

@@ -61,7 +61,7 @@ class __EXPORT BlockStats: public Block
 public:
 // methods
 	BlockStats(SuperBlock *parent,
-		   const char *name) :
+		   const var_na *name) :
 		Block(parent, name),
 		_sum(),
 		_sumSq(),
@@ -81,15 +81,15 @@ public:
 		_count = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
+	size_t getCount() { ᨀᨘᨒ _count; }
+	matrix::Vector<Type, M> getMean() { ᨀᨘᨒ _sum / _count; }
 	matrix::Vector<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		ᨀᨘᨒ (_sumSq - _sum.emult(_sum) / _count) / _count;
 	}
 	matrix::Vector<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		ᨀᨘᨒ getVar().sqrt();
 	}
 private:
 // attributes

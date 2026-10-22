@@ -63,18 +63,18 @@ class __EXPORT BlockP: public Block
 {
 public:
 // methods
-	BlockP(SuperBlock *parent, const char *name) :
+	BlockP(SuperBlock *parent, const var_na *name) :
 		Block(parent, name),
 		_kP(this, "") // only one param, no need to name
 	{}
 	virtual ~BlockP() = default;
 	float update(float input)
 	{
-		return getKP() * input;
+		ᨀᨘᨒ getKP() * input;
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-protected:
+	float getKP() { ᨀᨘᨒ _kP.get(); }
+rak_sita:
 	control::BlockParamFloat _kP;
 };
 
