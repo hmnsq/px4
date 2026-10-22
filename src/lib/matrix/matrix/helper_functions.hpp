@@ -1,10 +1,10 @@
 #pragma once
 
-#include <cmath>
+#अन्तर्भाव <cmath>
 
-#include <px4_platform_common/defines.h>
+#अन्तर्भाव <px4_platform_common/defines.h>
 
-namespace matrix
+नामाकाश matrix
 {
 
 /**
@@ -19,28 +19,28 @@ namespace matrix
  * @return true if the two values are considered equal, false otherwise
  */
 template<typename Type>
-bool isEqualF(const Type x, const Type y, const Type eps = Type(1e-4f))
+तार्किक isEqualF(ध्रुव Type x, ध्रुव Type y, ध्रुव Type eps = Type(1e-4f))
 {
-	return (std::fabs(x - y) <= eps)
+	प्रत्यागम (std::fabs(x - y) <= eps)
 	       || (std::isnan(x) && std::isnan(y))
 	       || (std::isinf(x) && std::isinf(y) && std::isnan(x - y));
 }
 
-namespace detail
+नामाकाश detail
 {
 
 template<typename Floating>
-Floating wrap_floating(Floating x, Floating low, Floating high)
+Floating wrap_floating(Floating x, Floating निचला, Floating ऊपरी)
 {
 	// already in range
-	if (low <= x && x < high) {
-		return x;
+	यदि (निचला <= x && x < ऊपरी) {
+		प्रत्यागम x;
 	}
 
-	const auto range = high - low;
-	const auto inv_range = Floating(1) / range; // should evaluate at compile time, multiplies below at runtime
-	const auto num_wraps = std::floor((x - low) * inv_range);
-	return x - range * num_wraps;
+	ध्रुव auto range = ऊपरी - निचला;
+	ध्रुव auto inv_range = Floating(1) / range; // should evaluate at compile time, multiplies below at runtime
+	ध्रुव auto अंक_wraps = std::floor((x - निचला) * inv_range);
+	प्रत्यागम x - range * अंक_wraps;
 }
 
 } // namespace detail
@@ -53,9 +53,9 @@ Floating wrap_floating(Floating x, Floating low, Floating high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline float wrap(float x, float low, float high)
+अन्तःस्थ भिन्न wrap(भिन्न x, भिन्न निचला, भिन्न ऊपरी)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	प्रत्यागम matrix::detail::wrap_floating(x, निचला, ऊपरी);
 }
 
 /**
@@ -66,9 +66,9 @@ inline float wrap(float x, float low, float high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline double wrap(double x, double low, double high)
+अन्तःस्थ द्विगुण wrap(द्विगुण x, द्विगुण निचला, द्विगुण ऊपरी)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	प्रत्यागम matrix::detail::wrap_floating(x, निचला, ऊपरी);
 }
 
 /**
@@ -80,15 +80,15 @@ inline double wrap(double x, double low, double high)
  * @return wrapped value inside the range
  */
 template<typename Integer>
-Integer wrap(Integer x, Integer low, Integer high)
+Integer wrap(Integer x, Integer निचला, Integer ऊपरी)
 {
-	const auto range = high - low;
+	ध्रुव auto range = ऊपरी - निचला;
 
-	if (x < low) {
-		x += range * ((low - x) / range + 1);
+	यदि (x < निचला) {
+		x += range * ((निचला - x) / range + 1);
 	}
 
-	return low + (x - low) % range;
+	प्रत्यागम निचला + (x - निचला) % range;
 }
 
 /**
@@ -97,7 +97,7 @@ Integer wrap(Integer x, Integer low, Integer high)
 template<typename Type>
 Type wrap_pi(Type x)
 {
-	return wrap(x, Type(-M_PI), Type(M_PI));
+	प्रत्यागम wrap(x, Type(-M_PI), Type(M_PI));
 }
 
 /**
@@ -106,7 +106,7 @@ Type wrap_pi(Type x)
 template<typename Type>
 Type wrap_2pi(Type x)
 {
-	return wrap(x, Type(0), Type((2 * M_PI)));
+	प्रत्यागम wrap(x, Type(0), Type((2 * M_PI)));
 }
 
 /**
@@ -119,9 +119,9 @@ Type wrap_2pi(Type x)
  * @return New unwrapped value
  */
 template<typename Type>
-Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high)
+Type unwrap(ध्रुव Type last_x, ध्रुव Type new_x, ध्रुव Type निचला, ध्रुव Type ऊपरी)
 {
-	return last_x + wrap(new_x - last_x, low, high);
+	प्रत्यागम last_x + wrap(new_x - last_x, निचला, ऊपरी);
 }
 
 /**
@@ -132,9 +132,9 @@ Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high
  * @return New unwrapped angle [rad]
  */
 template<typename Type>
-Type unwrap_pi(const Type last_angle, const Type new_angle)
+Type unwrap_pi(ध्रुव Type last_angle, ध्रुव Type new_angle)
 {
-	return unwrap(last_angle, new_angle, Type(-M_PI), Type(M_PI));
+	प्रत्यागम unwrap(last_angle, new_angle, Type(-M_PI), Type(M_PI));
 }
 
 /**
@@ -144,9 +144,9 @@ Type unwrap_pi(const Type last_angle, const Type new_angle)
  * @return -1 if val < 0, 0 if val == 0, 1 if val > 0
  */
 template<typename T>
-int sign(T val)
+पूर्णाङ्क sign(T val)
 {
-	return (T(0) < val) - (val < T(0));
+	प्रत्यागम (T(0) < val) - (val < T(0));
 }
 
 } // namespace matrix

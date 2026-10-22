@@ -35,42 +35,42 @@ License: BSD 3-Clause
 Description:
 """
 
-import matplotlib.pylab as plt
-from pyulog import ULog
-import numpy as np
+आनयन matplotlib.pylab इव plt
+तः pyulog आनयन ULog
+आनयन numpy इव np
 
-from generated.fuse_airspeed import fuse_airspeed
+तः generated.fuse_airspeed आनयन fuse_airspeed
 
 def getData(log, topic_name, variable_name, instance=0):
     variable_data = np.array([])
-    for elem in log.data_list:
-        if elem.name == topic_name:
-            if instance == elem.multi_id:
+    प्रति elem अन्तः log.data_list:
+        यदि elem.name == topic_name:
+            यदि instance == elem.multi_id:
                 variable_data = elem.data[variable_name]
-                break
+                भङ्ग
 
-    return variable_data
+    प्रत्यागम variable_data
 
 def us2s(time_ms):
-    return time_ms * 1e-6
+    प्रत्यागम time_ms * 1e-6
 
 def run(logfile, use_gnss, scale_init):
     log = ULog(logfile)
 
-    if use_gnss and any(elem.name == 'vehicle_gnss' for elem in log.data_list):
+    यदि use_gnss च any(elem.name == 'vehicle_gnss' प्रति elem अन्तः log.data_list):
         v_local = np.array([getData(log, 'vehicle_gnss', 'receiver.vel_north'),
                   getData(log, 'vehicle_gnss', 'receiver.vel_east'),
                   getData(log, 'vehicle_gnss', 'receiver.vel_down')])
         t_v_local = us2s(getData(log, 'vehicle_gnss', 'timestamp'))
 
-    elif use_gnss:
+    नोचेद्यदि use_gnss:
         # logs recorded before the rename to vehicle_gnss
         v_local = np.array([getData(log, 'vehicle_gps_position', 'vel_n_m_s'),
                   getData(log, 'vehicle_gps_position', 'vel_e_m_s'),
                   getData(log, 'vehicle_gps_position', 'vel_d_m_s')])
         t_v_local = us2s(getData(log, 'vehicle_gps_position', 'timestamp'))
 
-    else:
+    अन्यथा:
         v_local = np.array([getData(log, 'vehicle_local_position', 'vx'),
                   getData(log, 'vehicle_local_position', 'vy'),
                   getData(log, 'vehicle_local_position', 'vz')])
@@ -82,7 +82,7 @@ def run(logfile, use_gnss, scale_init):
     dist_bottom = getData(log, 'vehicle_local_position', 'dist_bottom')
     t_dist_bottom = us2s(getData(log, 'vehicle_local_position', 'timestamp'))
 
-    if scale_init is None:
+    यदि scale_init is None:
         scale_init = 1.0
 
     # The estimator estimates the inverse scale factor to have a simpler measurement jacobian
@@ -103,20 +103,20 @@ def run(logfile, use_gnss, scale_init):
     i_airspeed = 0
     i_dist_bottom = 0
 
-    for i in range(n):
+    प्रति i अन्तः range(n):
         dt = t_v_local[i] - t_now
         t_now = t_v_local[i] # run on local position updates
 
-        while i_dist_bottom < len(t_dist_bottom) and t_dist_bottom[i_dist_bottom] <= t_now:
+        यावत् i_dist_bottom < len(t_dist_bottom) च t_dist_bottom[i_dist_bottom] <= t_now:
             i_dist_bottom += 1
         i_dist_bottom -= 1
 
-        if dist_bottom[i_dist_bottom] > 20.0: # Don't start too low
+        यदि dist_bottom[i_dist_bottom] > 20.0: # Don't start too low
 
             P += Q * dt
 
-            if i_airspeed < len(t_true_airspeed) and t_true_airspeed[i_airspeed] < t_now:
-                while i_airspeed < len(t_true_airspeed) and t_true_airspeed[i_airspeed] < t_now:
+            यदि i_airspeed < len(t_true_airspeed) च t_true_airspeed[i_airspeed] < t_now:
+                यावत् i_airspeed < len(t_true_airspeed) च t_true_airspeed[i_airspeed] < t_now:
                     i_airspeed += 1
                 i_airspeed -= 1
 
@@ -142,9 +142,9 @@ def run(logfile, use_gnss, scale_init):
     ax2.set_ylabel("airspeed scale (-)")
     plt.show()
 
-if __name__ == '__main__':
-    import os
-    import argparse
+यदि __name__ == '__main__':
+    आनयन os
+    आनयन argparse
 
     # Get the path of this script (without file name)
     script_path = os.path.split(os.path.realpath(__file__))[0]
@@ -157,7 +157,7 @@ if __name__ == '__main__':
     parser.add_argument('logfile', help='Full ulog file path, name and extension', type=str)
     parser.add_argument('--gnss', help='Use GNSS velocity instead of local velocity estimate',
                         action='store_true')
-    parser.add_argument('--scale_init', help='Initial airsped scale factor (1.0 if not specified)', type=float)
+    parser.add_argument('--scale_init', help='Initial airsped scale factor (1.0 if not specified)', type=भिन्न)
     args = parser.parse_args()
 
     logfile = os.path.abspath(args.logfile) # Convert to absolute path
