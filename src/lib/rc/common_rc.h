@@ -1,18 +1,18 @@
 
 #pragma once
 
-#include <stdint.h>
+#अन्तर्भाव <stdint.h>
 
-#include "crsf.h"
-#include "dsm.h"
-#include "ghst.hpp"
-#include "sbus.h"
-#include "st24.h"
-#include "sumd.h"
+#अन्तर्भाव "crsf.h"
+#अन्तर्भाव "dsm.h"
+#अन्तर्भाव "ghst.hpp"
+#अन्तर्भाव "sbus.h"
+#अन्तर्भाव "st24.h"
+#अन्तर्भाव "sumd.h"
 
-#pragma pack(push, 1)
-typedef  struct rc_decode_buf_ {
-	union {
+#pragma pack(ढकला, 1)
+प्रकारव्याख्या  संरचना rc_decode_buf_ {
+	संघ {
 		crsf_frame_t crsf_frame;
 		ghst_frame_t ghst_frame;
 		dsm_decode_t dsm;
@@ -21,9 +21,9 @@ typedef  struct rc_decode_buf_ {
 		ReceiverFcPacketHoTT _hottrxpacket;
 	};
 } rc_decode_buf_t;
-#pragma pack(pop)
+#pragma pack(काढा)
 
-extern rc_decode_buf_t rc_decode_buf;
+बाह्य rc_decode_buf_t rc_decode_buf;
 
 uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a);
-uint8_t crc8_dvb_s2_buf(uint8_t *buf, int len);
+uint8_t crc8_dvb_s2_buf(uint8_t *buf, पूर्णांक len);

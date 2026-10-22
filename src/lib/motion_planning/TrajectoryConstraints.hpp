@@ -33,29 +33,29 @@
 
 #pragma once
 
-#include <px4_defines.h>
+#अन्तर्भाव <px4_defines.h>
 
-#include <matrix/math.hpp>
-#include <mathlib/mathlib.h>
+#अन्तर्भाव <matrix/math.hpp>
+#अन्तर्भाव <mathlib/mathlib.h>
 
-namespace math
+नामाकाश math
 {
-namespace trajectory
+नामाकाश trajectory
 {
 using matrix::Vector3f;
 using matrix::Vector2f;
 
-struct VehicleDynamicLimits {
-	float z_accept_rad;
-	float xy_accept_rad;
+संरचना VehicleDynamicLimits {
+	दशांश z_accept_rad;
+	दशांश xy_accept_rad;
 
-	float max_acc_xy;
-	float max_jerk;
+	दशांश max_acc_xy;
+	दशांश max_jerk;
 
-	float max_speed_xy;
+	दशांश max_speed_xy;
 
 	// TODO: remove this
-	float max_acc_xy_radius_scale;
+	दशांश max_acc_xy_radius_scale;
 };
 
 /*
@@ -67,33 +67,33 @@ struct VehicleDynamicLimits {
  * the real acceptance radius is smaller.
  *
  */
-inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, const Vector3f &target,
-		const Vector3f &next_target, float exit_speed, const VehicleDynamicLimits &config)
+ओळीत दशांश computeStartXYSpeedFromWaypoints(स्थिरांक Vector3f &start_position, स्थिरांक Vector3f &target,
+		स्थिरांक Vector3f &next_target, दशांश exit_speed, स्थिरांक VehicleDynamicLimits &config)
 {
-	const float distance_target_next = (target - next_target).xy().norm();
+	स्थिरांक दशांश distance_target_next = (target - next_target).xy().norm();
 
-	const bool target_next_different = distance_target_next  > 0.001f;
-	const bool waypoint_overlap = distance_target_next < config.xy_accept_rad;
+	स्थिरांक तार्किक target_next_different = distance_target_next  > 0.001f;
+	स्थिरांक तार्किक waypoint_overlap = distance_target_next < config.xy_accept_rad;
 
-	float speed_at_target = 0.0f;
+	दशांश speed_at_target = 0.0f;
 
-	if (target_next_different &&
+	जर (target_next_different &&
 	    !waypoint_overlap
 	   ) {
 		// rounding can push the dot product of two unit vectors past 1, which acosf turns into NaN
-		const float cos_alpha = constrain(Vector2f((target - start_position).xy()).unit_or_zero().dot(
+		स्थिरांक दशांश cos_alpha = constrain(Vector2f((target - start_position).xy()).unit_or_zero().dot(
 				Vector2f((target - next_target).xy()).unit_or_zero()), -1.f, 1.f);
-		const float alpha = acosf(cos_alpha);
-		const float safe_alpha = constrain(alpha, 0.f, M_PI_F - FLT_EPSILON);
-		float accel_tmp = config.max_acc_xy_radius_scale * config.max_acc_xy;
-		float max_speed_in_turn = computeMaxSpeedInWaypoint(safe_alpha, accel_tmp, config.xy_accept_rad);
+		स्थिरांक दशांश alpha = acosf(cos_alpha);
+		स्थिरांक दशांश safe_alpha = constrain(alpha, 0.f, M_PI_F - भग्न_अंतर);
+		दशांश accel_tmp = config.max_acc_xy_radius_scale * config.max_acc_xy;
+		दशांश max_speed_in_turn = computeMaxSpeedInWaypoint(safe_alpha, accel_tmp, config.xy_accept_rad);
 		speed_at_target = min(max_speed_in_turn, exit_speed, config.max_speed_xy);
 	}
 
-	float start_to_target = (start_position - target).xy().norm();
-	float max_speed = computeMaxSpeedFromDistance(config.max_jerk, config.max_acc_xy, start_to_target, speed_at_target);
+	दशांश start_to_target = (start_position - target).xy().norm();
+	दशांश max_speed = computeMaxSpeedFromDistance(config.max_jerk, config.max_acc_xy, start_to_target, speed_at_target);
 
-	return min(config.max_speed_xy, max_speed);
+	परत min(config.max_speed_xy, max_speed);
 }
 
 /*
@@ -106,22 +106,22 @@ inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, co
  *
  * @return the maximum speed at waypoint[0] which allows it to follow the trajectory while respecting the dynamic limits
  */
-template <int N>
-float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDynamicLimits &config)
+ढाँचा <पूर्णांक N>
+दशांश computeXYSpeedFromWaypoints(स्थिरांक Vector3f waypoints[N], स्थिरांक VehicleDynamicLimits &config)
 {
 	static_assert(N >= 2, "Need at least 2 points to compute speed");
 
-	float max_speed = 0.f;
+	दशांश max_speed = 0.f;
 
 	// go backwards through the waypoints
-	for (int i = (N - 2); i >= 0; i--) {
+	साठी (पूर्णांक i = (N - 2); i >= 0; i--) {
 		max_speed = computeStartXYSpeedFromWaypoints(waypoints[i],
 				waypoints[i + 1],
 				waypoints[min(i + 2, N - 1)],
 				max_speed, config);
 	}
 
-	return max_speed;
+	परत max_speed;
 }
 
 /*
@@ -132,18 +132,18 @@ float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDyna
  * only the XY components are scaled down to avoid affecting
  * Z in case of numerical issues
  */
-inline void clampToXYNorm(Vector3f &target, float max_xy_norm, float accuracy = FLT_EPSILON)
+ओळीत शून्य clampToXYNorm(Vector3f &target, दशांश max_xy_norm, दशांश accuracy = भग्न_अंतर)
 {
-	const float xynorm = target.xy().norm();
-	const float scale_factor = (xynorm > FLT_EPSILON)
+	स्थिरांक दशांश xynorm = target.xy().norm();
+	स्थिरांक दशांश scale_factor = (xynorm > भग्न_अंतर)
 				   ? max_xy_norm / xynorm
 				   : 1.f;
 
-	if (scale_factor < 1.f) {
-		if (max_xy_norm < accuracy && xynorm < accuracy) {
+	जर (scale_factor < 1.f) {
+		जर (max_xy_norm < accuracy && xynorm < accuracy) {
 			target.xy() = Vector2f(target) * scale_factor;
 
-		} else {
+		} अन्यथा {
 			target *= scale_factor;
 		}
 	}
@@ -157,18 +157,18 @@ inline void clampToXYNorm(Vector3f &target, float max_xy_norm, float accuracy = 
  * only the Z component is scaled down to avoid affecting
  * XY in case of numerical issues
  */
-inline void clampToZNorm(Vector3f &target, float max_z_norm, float accuracy = FLT_EPSILON)
+ओळीत शून्य clampToZNorm(Vector3f &target, दशांश max_z_norm, दशांश accuracy = भग्न_अंतर)
 {
-	const float znorm = fabs(target(2));
-	const float scale_factor = (znorm > FLT_EPSILON)
+	स्थिरांक दशांश znorm = भ_असल(target(2));
+	स्थिरांक दशांश scale_factor = (znorm > भग्न_अंतर)
 				   ? max_z_norm / znorm
 				   : 1.f;
 
-	if (scale_factor < 1.f) {
-		if (max_z_norm < accuracy && znorm < accuracy) {
+	जर (scale_factor < 1.f) {
+		जर (max_z_norm < accuracy && znorm < accuracy) {
 			target(2) *= scale_factor;
 
-		} else {
+		} अन्यथा {
 			target *= scale_factor;
 		}
 	}

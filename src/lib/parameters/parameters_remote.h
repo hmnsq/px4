@@ -33,18 +33,18 @@
 
 #pragma once
 
-#include "param.h"
+#अन्तर्भाव "param.h"
 
-struct param_remote_counters {
-	uint32_t set_value_request_received;
-	uint32_t set_value_response_sent;
+संरचना param_remote_counters {
+	uint32_t set_मूल्य_request_received;
+	uint32_t set_मूल्य_response_sent;
 	uint32_t reset_received;
-	uint32_t set_value_request_sent;
-	uint32_t set_value_response_received;
+	uint32_t set_मूल्य_request_sent;
+	uint32_t set_मूल्य_response_received;
 	uint32_t set_used_sent;
 };
 
-void param_remote_init();
-void param_remote_set_used(param_t param);
-void param_remote_set_value(param_t param, const void *val);
-void param_remote_get_counters(struct param_remote_counters *cnt);
+शून्य param_remote_init();
+शून्य param_remote_set_used(param_t param);
+शून्य param_remote_set_मूल्य(param_t param, स्थिरांक शून्य *val);
+शून्य param_remote_get_counters(संरचना param_remote_counters *cnt);

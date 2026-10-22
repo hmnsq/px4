@@ -33,48 +33,48 @@
 
 #pragma once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#अन्तर्भाव <px4_platform_common/px4_config.h>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <px4_platform_common/log.h>
 
-#include <inttypes.h>
-#include <math.h>
+#अन्तर्भाव <inttypes.h>
+#अन्तर्भाव <math.h>
 
-namespace calibration
+नामाकाश calibration
 {
-class DifferentialPressure
+वर्ग DifferentialPressure
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 3; ///< also the airspeed selector's sensor limit
+सार्वजनिक:
+	स्थिर constexpr पूर्णांक MAX_SENSOR_मोजणी = 3; ///< also the airspeed selector's sensor limit
 
-	static constexpr const char *SensorString() { return "DPRES"; }
+	स्थिर constexpr स्थिरांक अक्षर *SensorString() { परत "DPRES"; }
 
 	DifferentialPressure();
 	explicit DifferentialPressure(uint32_t device_id);
 
-	~DifferentialPressure() = default;
+	~DifferentialPressure() = पूर्वनिर्धारित;
 
-	void PrintStatus();
+	शून्य PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id);
-	bool set_offset(const float &offset);
+	तार्किक set_calibration_index(पूर्णांक calibration_index);
+	शून्य set_device_id(uint32_t device_id);
+	तार्किक set_offset(स्थिरांक दशांश &offset);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
+	तार्किक calibrated() स्थिरांक { परत (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_मोजणी_2() स्थिरांक { परत calibration_मोजणी; }
+	int8_t calibration_index() स्थिरांक { परत _calibration_index; }
+	uint32_t device_id() स्थिरांक { परत _device_id; }
+	तार्किक external() स्थिरांक { परत _external; }
+	स्थिरांक दशांश &offset() स्थिरांक { परत _offset; }
 
 	/// remove the zero offset from a raw differential pressure reading [Pa]
-	inline float Correct(const float &data) const { return data - _offset; }
+	ओळीत दशांश Correct(स्थिरांक दशांश &data) स्थिरांक { परत data - _offset; }
 
-	inline float Uncorrect(const float &corrected_data) const { return corrected_data + _offset; }
+	ओळीत दशांश Uncorrect(स्थिरांक दशांश &corrected_data) स्थिरांक { परत corrected_data + _offset; }
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	तार्किक ParametersLoad();
+	तार्किक ParametersSave(पूर्णांक desired_calibration_index = -1, तार्किक force = असत्य);
+	शून्य ParametersUpdate();
 
 	/**
 	 * Take over the offset left in SENS_DPRES_OFF, using slot 0.
@@ -82,23 +82,23 @@ public:
 	 *
 	 * @return true if the offset was adopted (the caller should save)
 	 */
-	bool AdoptLegacyOffset();
+	तार्किक AdoptLegacyOffset();
 
 	/** mirror slot 0's offset into SENS_DPRES_OFF for ground stations that still read it */
-	void UpdateLegacyOffset() const;
+	शून्य UpdateLegacyOffset() स्थिरांक;
 
-	void Reset();
+	शून्य Reset();
 
-private:
-	static constexpr int kLegacyIndex{0};
-	static constexpr const char *kLegacyOffsetParam{"SENS_DPRES_OFF"};
+खाजगी:
+	स्थिर constexpr पूर्णांक kLegacyIndex{0};
+	स्थिर constexpr स्थिरांक अक्षर *kLegacyOffsetParam{"SENS_DPRES_OFF"};
 
-	float _offset{0};
+	दशांश _offset{0};
 
 	int8_t _calibration_index{-1};
 	uint32_t _device_id{0};
-	uint8_t _calibration_count{0};
+	uint8_t calibration_मोजणी{0};
 
-	bool _external{false};
+	तार्किक _external{असत्य};
 };
 } // namespace calibration

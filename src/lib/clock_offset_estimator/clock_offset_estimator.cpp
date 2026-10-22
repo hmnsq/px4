@@ -31,40 +31,40 @@
  *
  ****************************************************************************/
 
-#include "clock_offset_estimator.hpp"
+#अन्तर्भाव "clock_offset_estimator.hpp"
 
 hrt_abstime ClockOffsetEstimator::toLocal(uint64_t remote_us, hrt_abstime local_us)
 {
-	if (remote_us == 0) {
-		return 0;
+	जर (remote_us == 0) {
+		परत 0;
 	}
 
-	const int64_t lag = static_cast<int64_t>(local_us) - static_cast<int64_t>(remote_us);
+	स्थिरांक int64_t lag = static_cast<int64_t>(local_us) - static_cast<int64_t>(remote_us);
 
-	if (!_initialized || lag > _link_offset_us + kResetThresholdUs) {
+	जर (!_initialized || lag > _link_offset_us + kResetThresholdUs) {
 		// Bootstrap, or remote-clock discontinuity.
 		_link_offset_us = lag;
-		_initialized = true;
+		_initialized = सत्य;
 
-	} else {
+	} अन्यथा {
 		// Drift the floor up at the worst-case relative clock rate so we don't
 		// pin below the true offset when HRT runs faster than the remote.
-		const hrt_abstime dt = (local_us > _last_update_us) ? (local_us - _last_update_us) : 0;
+		स्थिरांक hrt_abstime dt = (local_us > _last_update_us) ? (local_us - _last_update_us) : 0;
 		_link_offset_us += static_cast<int64_t>(dt) * kMaxClockDriftPpm / 1'000'000;
 
-		if (lag < _link_offset_us) {
+		जर (lag < _link_offset_us) {
 			_link_offset_us = lag;
 		}
 	}
 
 	_last_update_us = local_us;
 
-	const int64_t result = static_cast<int64_t>(remote_us) + _link_offset_us;
+	स्थिरांक int64_t result = static_cast<int64_t>(remote_us) + _link_offset_us;
 
 	// Mapped HRT cannot lie after receipt.
-	if (result <= 0 || result > static_cast<int64_t>(local_us)) {
-		return 0;
+	जर (result <= 0 || result > static_cast<int64_t>(local_us)) {
+		परत 0;
 	}
 
-	return static_cast<hrt_abstime>(result);
+	परत static_cast<hrt_abstime>(result);
 }

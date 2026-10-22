@@ -43,16 +43,16 @@
 
 // #include <float.h>
 // #include <mathlib/math/Functions.hpp>
-#include <mathlib/math/filter/AlphaFilter.hpp>
+#अन्तर्भाव <mathlib/math/filter/AlphaFilter.hpp>
 
-using namespace math;
+using नामाकाश math;
 
-template <typename T>
-class FilteredDerivative
+ढाँचा <typename T>
+वर्ग FilteredDerivative
 {
-public:
-	FilteredDerivative() = default;
-	~FilteredDerivative() = default;
+सार्वजनिक:
+	FilteredDerivative() = पूर्वनिर्धारित;
+	~FilteredDerivative() = पूर्वनिर्धारित;
 
 	/**
 	 * Set filter parameters for time abstraction
@@ -60,7 +60,7 @@ public:
 	 * @param sample_interval_s interval between two samples in seconds
 	 * @param time_constant_s filter time constant determining convergence in seconds
 	 */
-	void setParameters(float sample_interval_s, float time_constant_s)
+	शून्य setParameters(दशांश sample_interval_s, दशांश time_constant_s)
 	{
 		_alpha_filter.setParameters(sample_interval_s, time_constant_s);
 		_sample_interval = sample_interval_s;
@@ -70,10 +70,10 @@ public:
 	 * @param sample_interval_us interval between two samples in microseconds
 	 * @param time_constant_us filter time constant determining convergence in microseconds
 	 */
-	void setParameters(uint64_t sample_interval_us, uint64_t time_constant_us)
+	शून्य setParameters(uint64_t sample_interval_us, uint64_t time_constant_us)
 	{
 		_alpha_filter.setParameters(sample_interval_us, time_constant_us);
-		_sample_interval = static_cast<float>(sample_interval_us) * 1e-6f;
+		_sample_interval = static_cast<दशांश>(sample_interval_us) * 1e-6f;
 	}
 
 	/**
@@ -81,10 +81,10 @@ public:
 	 *
 	 * @param sample new initial value
 	 */
-	void reset(const T &sample)
+	शून्य reset(स्थिरांक T &sample)
 	{
 		_alpha_filter.reset(sample);
-		_initialized = false;
+		_initialized = असत्य;
 	}
 
 	/**
@@ -92,34 +92,34 @@ public:
 	 *
 	 * @return retrieve the filtered result
 	 */
-	const T &update(const T &sample)
+	स्थिरांक T &update(स्थिरांक T &sample)
 	{
-		if (_initialized) {
-			if (_sample_interval > FLT_EPSILON) {
+		जर (_initialized) {
+			जर (_sample_interval > भग्न_अंतर) {
 				_alpha_filter.update((sample - _previous_sample) / _sample_interval);
 
-			} else {
-				_initialized = false;
+			} अन्यथा {
+				_initialized = असत्य;
 			}
 
-		} else {
+		} अन्यथा {
 			// don't update in the first iteration
-			_initialized = true;
+			_initialized = सत्य;
 		}
 
 		_previous_sample = sample;
-		return _alpha_filter.getState();
+		परत _alpha_filter.getState();
 	}
 
-	const T &getState() const { return _alpha_filter.getState(); }
+	स्थिरांक T &getState() स्थिरांक { परत _alpha_filter.getState(); }
 
 	// delete mixing seconds with microseconds explicitly -> better compiler error
-	void setParameters(uint64_t sample_interval_us, float time_constant_s) = delete;
-	void setParameters(float sample_interval_s, uint64_t time_constant_us) = delete;
+	शून्य setParameters(uint64_t sample_interval_us, दशांश time_constant_s) = delete;
+	शून्य setParameters(दशांश sample_interval_s, uint64_t time_constant_us) = delete;
 
-private:
+खाजगी:
 	AlphaFilter<T> _alpha_filter;
-	float _sample_interval{0.f};
+	दशांश _sample_interval{0.f};
 	T _previous_sample{0.f};
-	bool _initialized{false};
+	तार्किक _initialized{असत्य};
 };

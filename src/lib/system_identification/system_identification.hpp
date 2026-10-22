@@ -39,64 +39,64 @@
 
 #pragma once
 
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <matrix/matrix/math.hpp>
-#include <mathlib/mathlib.h>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
-#include <px4_platform_common/defines.h>
+#अन्तर्भाव <lib/mathlib/math/filter/AlphaFilter.hpp>
+#अन्तर्भाव <matrix/matrix/math.hpp>
+#अन्तर्भाव <mathlib/mathlib.h>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
 
-#include "arx_rls.hpp"
+#अन्तर्भाव "arx_rls.hpp"
 
-class SystemIdentification final
+वर्ग SystemIdentification final
 {
-public:
-	SystemIdentification() = default;
-	~SystemIdentification() = default;
+सार्वजनिक:
+	SystemIdentification() = पूर्वनिर्धारित;
+	~SystemIdentification() = पूर्वनिर्धारित;
 
-	void reset(const matrix::Vector<float, 5> &id_state_init = {});
-	void update(float u, float y); // update filters and model
-	void update(); // update model only (to be called after updateFilters)
-	void updateFilters(float u, float y);
-	bool areFiltersInitialized() const { return _are_filters_initialized; }
-	void updateFitness();
-	const matrix::Vector<float, 5> &getCoefficients() const { return _rls.getCoefficients(); }
-	const matrix::Vector<float, 5> getVariances() const { return _rls.getVariances(); }
-	const matrix::Vector<float, 5> &getDiffEstimate() const { return _rls.getDiffEstimate(); }
-	float getFitness() const { return _fitness_lpf.getState(); }
-	float getInnovation() const { return _rls.getInnovation(); }
+	शून्य reset(स्थिरांक matrix::Vector<दशांश, 5> &id_state_init = {});
+	शून्य update(दशांश u, दशांश y); // update filters and model
+	शून्य update(); // update model only (to be called after updateFilters)
+	शून्य updateFilters(दशांश u, दशांश y);
+	तार्किक areFiltersInitialized() स्थिरांक { परत _are_filters_initialized; }
+	शून्य updateFitness();
+	स्थिरांक matrix::Vector<दशांश, 5> &getCoefficients() स्थिरांक { परत _rls.getCoefficients(); }
+	स्थिरांक matrix::Vector<दशांश, 5> getVariances() स्थिरांक { परत _rls.getVariances(); }
+	स्थिरांक matrix::Vector<दशांश, 5> &getDiffEstimate() स्थिरांक { परत _rls.getDiffEstimate(); }
+	दशांश getFitness() स्थिरांक { परत _fitness_lpf.getState(); }
+	दशांश getInnovation() स्थिरांक { परत _rls.getInnovation(); }
 
-	void setLpfCutoffFrequency(float sample_freq, float cutoff)
+	शून्य setLpfCutoffFrequency(दशांश sample_freq, दशांश cutoff)
 	{
 		_u_lpf.set_cutoff_frequency(sample_freq, cutoff);
 		_y_lpf.set_cutoff_frequency(sample_freq, cutoff);
 	}
-	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
+	शून्य setHpfCutoffFrequency(दशांश sample_freq, दशांश cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	void setForgettingFactor(float time_constant, float dt) { _rls.setForgettingFactor(time_constant, dt); }
-	void setFitnessLpfTimeConstant(float time_constant, float dt)
+	शून्य setForgettingFactor(दशांश time_constant, दशांश dt) { _rls.setForgettingFactor(time_constant, dt); }
+	शून्य setFitnessLpfTimeConstant(दशांश time_constant, दशांश dt)
 	{
 		_fitness_lpf.setParameters(dt, time_constant);
 		_dt = dt;
 	}
 
-	float getFilteredInputData() const { return _u_hpf; }
-	float getFilteredOutputData() const { return _y_hpf; }
+	दशांश get_Filtered_आदान_Data() स्थिरांक { परत _u_hpf; }
+	दशांश getFilteredOutputData() स्थिरांक { परत _y_hpf; }
 
-private:
+खाजगी:
 	ArxRls<2, 2, 1> _rls;
-	math::LowPassFilter2p<float> _u_lpf{400.f, 30.f};
-	math::LowPassFilter2p<float> _y_lpf{400.f, 30.f};
+	math::खालचा_Pass_Filter2p<दशांश> _u_lpf{400.f, 30.f};
+	math::खालचा_Pass_Filter2p<दशांश> _y_lpf{400.f, 30.f};
 
 	//TODO: replace by HighPassFilter class
-	float _alpha_hpf{0.f};
-	float _u_hpf{0.f};
-	float _y_hpf{0.f};
+	दशांश _alpha_hpf{0.f};
+	दशांश _u_hpf{0.f};
+	दशांश _y_hpf{0.f};
 
-	float _u_prev{0.f};
-	float _y_prev{0.f};
+	दशांश _u_prev{0.f};
+	दशांश _y_prev{0.f};
 
-	bool _are_filters_initialized{false};
+	तार्किक _are_filters_initialized{असत्य};
 
-	AlphaFilter<float> _fitness_lpf;
-	float _dt{0.1f};
+	AlphaFilter<दशांश> _fitness_lpf;
+	दशांश _dt{0.1f};
 };

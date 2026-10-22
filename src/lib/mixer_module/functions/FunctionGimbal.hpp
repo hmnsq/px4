@@ -33,33 +33,33 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#अन्तर्भाव "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gimbal_controls.h>
+#अन्तर्भाव <uORB/topics/gimbal_controls.h>
 
 /**
  * Functions: Gimbal_Roll .. Gimbal_Yaw
  */
-class FunctionGimbal : public FunctionProviderBase
+वर्ग FunctionGimbal : सार्वजनिक FunctionProviderBase
 {
-public:
-	FunctionGimbal() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGimbal(); }
+सार्वजनिक:
+	FunctionGimbal() = पूर्वनिर्धारित;
+	स्थिर FunctionProviderBase *allocate(स्थिरांक Context &context) { परत नवीन FunctionGimbal(); }
 
-	void update() override
+	शून्य update() override
 	{
 		gimbal_controls_s gimbal_controls;
 
-		if (_topic.update(&gimbal_controls)) {
+		जर (_topic.update(&gimbal_controls)) {
 			_data[0] = gimbal_controls.control[gimbal_controls_s::INDEX_ROLL];
 			_data[1] = gimbal_controls.control[gimbal_controls_s::INDEX_PITCH];
 			_data[2] = gimbal_controls.control[gimbal_controls_s::INDEX_YAW];
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Gimbal_Roll]; }
+	दशांश value(OutputFunction func) override { परत _data[(पूर्णांक)func - (पूर्णांक)OutputFunction::Gimbal_Roll]; }
 
-private:
+खाजगी:
 	uORB::Subscription _topic{ORB_ID(gimbal_controls)};
-	float _data[3] { NAN, NAN, NAN };
+	दशांश _data[3] { न_अंक, न_अंक, न_अंक };
 };

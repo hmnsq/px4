@@ -8,392 +8,392 @@
 
 #pragma once
 
-#include <cassert>
-#include <cstdio>
-#include <cmath>
+#अन्तर्भाव <cassert>
+#अन्तर्भाव <cstdio>
+#अन्तर्भाव <cmath>
 
-namespace matrix
+नामाकाश matrix
 {
 
-template<typename Type, size_t M, size_t N>
-class Matrix;
+ढाँचा<typename Type, माप_प्रकार M, माप_प्रकार N>
+वर्ग Matrix;
 
-template<typename Type, size_t M>
-class Vector;
+ढाँचा<typename Type, माप_प्रकार M>
+वर्ग Vector;
 
-template <typename MatrixT, typename Type, size_t P, size_t Q, size_t M, size_t N>
-class SliceT
+ढाँचा <typename MatrixT, typename Type, माप_प्रकार P, माप_प्रकार Q, माप_प्रकार M, माप_प्रकार N>
+वर्ग SliceT
 {
-public:
+सार्वजनिक:
 	using Self = SliceT<MatrixT, Type, P, Q, M, N>;
 
-	SliceT(size_t x0, size_t y0, MatrixT *data) :
+	SliceT(माप_प्रकार x0, माप_प्रकार y0, MatrixT *data) :
 		_x0(x0),
 		_y0(y0),
 		_data(data)
 	{
 		static_assert(P <= M, "Slice rows bigger than backing matrix");
 		static_assert(Q <= N, "Slice cols bigger than backing matrix");
-		assert(x0 + P <= M);
-		assert(y0 + Q <= N);
+		प्रतिज्ञा(x0 + P <= M);
+		प्रतिज्ञा(y0 + Q <= N);
 	}
 
-	SliceT(const Self &other) = default;
+	SliceT(स्थिरांक Self &other) = पूर्वनिर्धारित;
 
-	const Type &operator()(size_t i, size_t j) const
+	स्थिरांक Type &चालक()(माप_प्रकार i, माप_प्रकार j) स्थिरांक
 	{
-		assert(i < P);
-		assert(j < Q);
+		प्रतिज्ञा(i < P);
+		प्रतिज्ञा(j < Q);
 
-		return (*_data)(_x0 + i, _y0 + j);
+		परत (*_data)(_x0 + i, _y0 + j);
 	}
 
-	Type &operator()(size_t i, size_t j)
+	Type &चालक()(माप_प्रकार i, माप_प्रकार j)
 	{
-		assert(i < P);
-		assert(j < Q);
+		प्रतिज्ञा(i < P);
+		प्रतिज्ञा(j < Q);
 
-		return (*_data)(_x0 + i, _y0 + j);
+		परत (*_data)(_x0 + i, _y0 + j);
 	}
 
 	// Separate function needed otherwise the default copy constructor matches before the deep copy implementation
-	Self &operator=(const Self &other)
+	Self &चालक=(स्थिरांक Self &other)
 	{
 		// Protect against self-assignment
-		if (this == &other) {
-			return *this;
+		जर (हे == &other) {
+			परत *हे;
 		}
 
-		return this->operator=<M, N>(other);
+		परत हे->चालक=<M, N>(other);
 	}
 
-	template<size_t MM, size_t NN>
-	Self &operator=(const SliceT<Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
+	ढाँचा<माप_प्रकार MM, माप_प्रकार NN>
+	Self &चालक=(स्थिरांक SliceT<Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		Self &self = *this;
+		Self &self = *हे;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
 				self(i, j) = other(i, j);
 			}
 		}
 
-		return self;
+		परत self;
 	}
 
-	template<size_t MM, size_t NN>
-	SliceT<MatrixT, Type, P, Q, M, N> &operator=(const SliceT<const Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
+	ढाँचा<माप_प्रकार MM, माप_प्रकार NN>
+	SliceT<MatrixT, Type, P, Q, M, N> &चालक=(स्थिरांक SliceT<स्थिरांक Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *हे;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
 				self(i, j) = other(i, j);
 			}
 		}
 
-		return self;
+		परत self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator=(const Matrix<Type, P, Q> &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &चालक=(स्थिरांक Matrix<Type, P, Q> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *हे;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
 				self(i, j) = other(i, j);
 			}
 		}
 
-		return self;
+		परत self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator=(const Type &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &चालक=(स्थिरांक Type &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *हे;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
 				self(i, j) = other;
 			}
 		}
 
-		return self;
+		परत self;
 	}
 
-	template<size_t MM, size_t NN>
-	Matrix<Type, P, Q> operator-(const SliceT<const Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
+	ढाँचा<माप_प्रकार MM, माप_प्रकार NN>
+	Matrix<Type, P, Q> चालक-(स्थिरांक SliceT<स्थिरांक Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		परत Matrix<Type, P, Q> {*हे} - other;
 	}
 
 
-	Matrix<Type, P, Q> operator-(const Matrix<Type, P, Q> &other)
+	Matrix<Type, P, Q> चालक-(स्थिरांक Matrix<Type, P, Q> &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		परत Matrix<Type, P, Q> {*हे} - other;
 	}
 
-	Matrix<Type, P, Q> operator-(const Type &other)
+	Matrix<Type, P, Q> चालक-(स्थिरांक Type &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		परत Matrix<Type, P, Q> {*हे} - other;
 	}
 
-	template<size_t MM, size_t NN>
-	Matrix<Type, P, Q> operator+(const SliceT<const Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
+	ढाँचा<माप_प्रकार MM, माप_प्रकार NN>
+	Matrix<Type, P, Q> चालक+(स्थिरांक SliceT<स्थिरांक Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		परत Matrix<Type, P, Q> {*हे} + other;
 	}
 
-	Matrix<Type, P, Q> operator+(const Matrix<Type, P, Q> &other)
+	Matrix<Type, P, Q> चालक+(स्थिरांक Matrix<Type, P, Q> &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		परत Matrix<Type, P, Q> {*हे} + other;
 	}
 
-	Matrix<Type, P, Q> operator+(const Type &other)
+	Matrix<Type, P, Q> चालक+(स्थिरांक Type &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		परत Matrix<Type, P, Q> {*हे} + other;
 	}
 
 	// allow assigning vectors to a slice that are in the axis
-	template <size_t DUMMY = 1> // make this a template function since it only exists for some instantiations
-	SliceT<MatrixT, Type, 1, Q, M, N> &operator=(const Vector<Type, Q> &other)
+	ढाँचा <माप_प्रकार DUMMY = 1> // make this a template function since it only exists for some instantiations
+	SliceT<MatrixT, Type, 1, Q, M, N> &चालक=(स्थिरांक Vector<Type, Q> &other)
 	{
-		SliceT<MatrixT, Type, 1, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, 1, Q, M, N> &self = *हे;
 
-		for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार j = 0; j < Q; j++) {
 			self(0, j) = other(j);
 		}
 
-		return self;
+		परत self;
 	}
 
-	template<size_t MM, size_t NN>
-	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(const SliceT<MatrixT, Type, P, Q, MM, NN> &other)
+	ढाँचा<माप_प्रकार MM, माप_प्रकार NN>
+	SliceT<MatrixT, Type, P, Q, M, N> &चालक+=(स्थिरांक SliceT<MatrixT, Type, P, Q, MM, NN> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *हे;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
 
-		return self;
+		परत self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(const Matrix<Type, P, Q> &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &चालक+=(स्थिरांक Matrix<Type, P, Q> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *हे;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
 
-		return self;
+		परत self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(const Type &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &चालक+=(स्थिरांक Type &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *हे;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
 				self(i, j) += other;
 			}
 		}
 
-		return self;
+		परत self;
 	}
 
-	template<size_t MM, size_t NN>
-	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(const SliceT<MatrixT, Type, P, Q, MM, NN> &other)
+	ढाँचा<माप_प्रकार MM, माप_प्रकार NN>
+	SliceT<MatrixT, Type, P, Q, M, N> &चालक-=(स्थिरांक SliceT<MatrixT, Type, P, Q, MM, NN> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *हे;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
 
-		return self;
+		परत self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(const Matrix<Type, P, Q> &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &चालक-=(स्थिरांक Matrix<Type, P, Q> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *हे;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
 
-		return self;
+		परत self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(const Type &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &चालक-=(स्थिरांक Type &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *हे;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
 				self(i, j) -= other;
 			}
 		}
 
-		return self;
+		परत self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator*=(const Type &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &चालक*=(स्थिरांक Type &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *हे;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
 				self(i, j) *= other;
 			}
 		}
 
-		return self;
+		परत self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator/=(const Type &scalar)
+	SliceT<MatrixT, Type, P, Q, M, N> &चालक/=(स्थिरांक Type &scalar)
 	{
-		return operator*=(Type(1) / scalar);
+		परत चालक*=(Type(1) / scalar);
 	}
 
-	Matrix<Type, P, Q> operator*(const Type &scalar) const
+	Matrix<Type, P, Q> चालक*(स्थिरांक Type &scalar) स्थिरांक
 	{
-		return Matrix<Type, P, Q> {*this} * scalar;
+		परत Matrix<Type, P, Q> {*हे} * scalar;
 	}
 
-	Matrix<Type, P, Q> operator/(const Type &scalar) const
+	Matrix<Type, P, Q> चालक/(स्थिरांक Type &scalar) स्थिरांक
 	{
-		return (*this) * (1 / scalar);
+		परत (*हे) * (1 / scalar);
 	}
 
-	template<size_t R, size_t S>
-	const SliceT<MatrixT, Type, R, S, M, N> slice(size_t x0, size_t y0) const
+	ढाँचा<माप_प्रकार R, माप_प्रकार S>
+	स्थिरांक SliceT<MatrixT, Type, R, S, M, N> slice(माप_प्रकार x0, माप_प्रकार y0) स्थिरांक
 	{
-		return SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
+		परत SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
 	}
 
-	template<size_t R, size_t S>
-	SliceT<MatrixT, Type, R, S, M, N> slice(size_t x0, size_t y0)
+	ढाँचा<माप_प्रकार R, माप_प्रकार S>
+	SliceT<MatrixT, Type, R, S, M, N> slice(माप_प्रकार x0, माप_प्रकार y0)
 	{
-		return SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
+		परत SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
 	}
 
-	void copyTo(Type dst[P * Q]) const
+	शून्य copyTo(Type dst[P * Q]) स्थिरांक
 	{
-		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		स्थिरांक SliceT<MatrixT, Type, P, Q, M, N> &self = *हे;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
 				dst[i * N + j] = self(i, j);
 			}
 		}
 	}
 
-	void copyToColumnMajor(Type dst[P * Q]) const
+	शून्य copyToColumnMajor(Type dst[P * Q]) स्थिरांक
 	{
-		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		स्थिरांक SliceT<MatrixT, Type, P, Q, M, N> &self = *हे;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
 				dst[i + (j * M)] = self(i, j);
 			}
 		}
 	}
 
-	Vector < Type, P < Q ? P : Q > diag() const
+	Vector < Type, P < Q ? P : Q > diag() स्थिरांक
 	{
-		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		स्थिरांक SliceT<MatrixT, Type, P, Q, M, N> &self = *हे;
 		Vector < Type, P < Q ? P : Q > res;
 
-		for (size_t j = 0; j < (P < Q ? P : Q); j++) {
+		साठी (माप_प्रकार j = 0; j < (P < Q ? P : Q); j++) {
 			res(j) = self(j, j);
 		}
 
-		return res;
+		परत res;
 	}
 
-	template<size_t MM, size_t NN>
-	Type dot(const SliceT<MatrixT, Type, P, Q, MM, NN> &other) const
+	ढाँचा<माप_प्रकार MM, माप_प्रकार NN>
+	Type dot(स्थिरांक SliceT<MatrixT, Type, P, Q, MM, NN> &other) स्थिरांक
 	{
-		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		स्थिरांक SliceT<MatrixT, Type, P, Q, M, N> &self = *हे;
 		Type accum(0);
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
 				accum += self(i, j) * other(i, j);
 			}
 		}
 
-		return accum;
+		परत accum;
 	}
 
-	Type norm_squared() const
+	Type norm_squared() स्थिरांक
 	{
-		return dot(*this);
+		परत dot(*हे);
 	}
 
-	Type norm() const
+	Type norm() स्थिरांक
 	{
-		return std::sqrt(norm_squared());
+		परत std::वर्ग_मूल(norm_squared());
 	}
 
-	bool longerThan(Type testVal) const
+	तार्किक longerThan(Type testVal) स्थिरांक
 	{
-		return norm_squared() > testVal * testVal;
+		परत norm_squared() > testVal * testVal;
 	}
 
-	Type max() const
+	Type max() स्थिरांक
 	{
-		Type max_val = (*this)(0, 0);
+		Type max_val = (*हे)(0, 0);
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
-				Type val = (*this)(i, j);
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
+				Type val = (*हे)(i, j);
 
-				if (val > max_val) {
+				जर (val > max_val) {
 					max_val = val;
 				}
 			}
 		}
 
-		return max_val;
+		परत max_val;
 	}
 
-	Type min() const
+	Type min() स्थिरांक
 	{
-		Type min_val = (*this)(0, 0);
+		Type min_val = (*हे)(0, 0);
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
-				Type val = (*this)(i, j);
+		साठी (माप_प्रकार i = 0; i < P; i++) {
+			साठी (माप_प्रकार j = 0; j < Q; j++) {
+				Type val = (*हे)(i, j);
 
-				if (val < min_val) {
+				जर (val < min_val) {
 					min_val = val;
 				}
 			}
 		}
 
-		return min_val;
+		परत min_val;
 	}
 
-private:
-	size_t _x0, _y0;
+खाजगी:
+	माप_प्रकार _x0, _y0;
 	MatrixT *_data;
 };
 
-template <typename Type, size_t P, size_t Q, size_t M, size_t N>
+ढाँचा <typename Type, माप_प्रकार P, माप_प्रकार Q, माप_प्रकार M, माप_प्रकार N>
 using Slice = SliceT<Matrix<Type, M, N>, Type, P, Q, M, N>;
 
-template <typename Type, size_t P, size_t Q, size_t M, size_t N>
-using ConstSlice = SliceT<const Matrix<Type, M, N>, Type, P, Q, M, N>;
+ढाँचा <typename Type, माप_प्रकार P, माप_प्रकार Q, माप_प्रकार M, माप_प्रकार N>
+using ConstSlice = SliceT<स्थिरांक Matrix<Type, M, N>, Type, P, Q, M, N>;
 
 }

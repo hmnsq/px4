@@ -10,51 +10,51 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#अन्तर्भाव "Vector.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 // Vector that only store nonzero elements,
 // which indices are specified as parameter pack
-template<typename Type, size_t M, size_t... Idxs>
-class SparseVector
+ढाँचा<typename Type, माप_प्रकार M, माप_प्रकार... Idxs>
+वर्ग SparseVector
 {
-private:
-	enum : size_t { N = sizeof...(Idxs) };
+खाजगी:
+	गणना : माप_प्रकार { N = आकार...(Idxs) };
 
-	static constexpr bool duplicateIndices()
+	स्थिर constexpr तार्किक duplicateIndices()
 	{
-		constexpr size_t indicies[] {Idxs...};
+		constexpr माप_प्रकार indicies[] {Idxs...};
 
-		for (size_t i = 0; i < N; i++) {
-			for (size_t j = 0; j < i; j++) {
-				if (indicies[i] == indicies[j]) {
-					return true;
+		साठी (माप_प्रकार i = 0; i < N; i++) {
+			साठी (माप_प्रकार j = 0; j < i; j++) {
+				जर (indicies[i] == indicies[j]) {
+					परत सत्य;
 				}
 			}
 		}
 
-		return false;
+		परत असत्य;
 	}
 
-	static constexpr size_t findMaxIndex()
+	स्थिर constexpr माप_प्रकार findMaxIndex()
 	{
-		constexpr size_t indicies[] {Idxs...};
-		size_t maxIndex = 0;
+		constexpr माप_प्रकार indicies[] {Idxs...};
+		माप_प्रकार maxIndex = 0;
 
-		for (size_t i = 0; i < N; i++) {
-			if (maxIndex < indicies[i]) {
+		साठी (माप_प्रकार i = 0; i < N; i++) {
+			जर (maxIndex < indicies[i]) {
 				maxIndex = indicies[i];
 			}
 		}
 
-		return maxIndex;
+		परत maxIndex;
 	}
 
-	static constexpr size_t indexAt(size_t i)
+	स्थिर constexpr माप_प्रकार indexAt(माप_प्रकार i)
 	{
-		constexpr size_t indicies[] {Idxs...};
-		return indicies[i];
+		constexpr माप_प्रकार indicies[] {Idxs...};
+		परत indicies[i];
 	}
 
 	static_assert(!duplicateIndices(), "Duplicate indices");
@@ -64,167 +64,167 @@ private:
 
 	Type _data[N] {};
 
-	static constexpr int findCompressedIndex(size_t index)
+	स्थिर constexpr पूर्णांक findCompressedIndex(माप_प्रकार index)
 	{
-		constexpr size_t indicies[] {Idxs...};
-		int compressedIndex = -1;
+		constexpr माप_प्रकार indicies[] {Idxs...};
+		पूर्णांक compressedIndex = -1;
 
-		for (size_t i = 0; i < N; i++) {
-			if (index == indicies[i]) {
-				compressedIndex = static_cast<int>(i);
+		साठी (माप_प्रकार i = 0; i < N; i++) {
+			जर (index == indicies[i]) {
+				compressedIndex = static_cast<पूर्णांक>(i);
 			}
 		}
 
-		return compressedIndex;
+		परत compressedIndex;
 	}
 
-public:
-	constexpr size_t non_zeros() const
+सार्वजनिक:
+	constexpr माप_प्रकार non_zeros() स्थिरांक
 	{
-		return N;
+		परत N;
 	}
 
-	constexpr size_t index(size_t i) const
+	constexpr माप_प्रकार index(माप_प्रकार i) स्थिरांक
 	{
-		return indexAt(i);
+		परत indexAt(i);
 	}
 
-	SparseVector() = default;
+	SparseVector() = पूर्वनिर्धारित;
 
-	SparseVector(const matrix::Vector<Type, M> &data)
+	SparseVector(स्थिरांक matrix::Vector<Type, M> &data)
 	{
-		for (size_t i = 0; i < N; i++) {
+		साठी (माप_प्रकार i = 0; i < N; i++) {
 			_data[i] = data(indexAt(i));
 		}
 	}
 
-	explicit SparseVector(const Type data[N])
+	explicit SparseVector(स्थिरांक Type data[N])
 	{
-		memcpy(_data, data, sizeof(_data));
+		स_नकल(_data, data, आकार(_data));
 	}
 
-	template <size_t i>
-	inline Type at() const
+	ढाँचा <माप_प्रकार i>
+	ओळीत Type at() स्थिरांक
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
+		constexpr पूर्णांक compressed_index = findCompressedIndex(i);
 		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		परत _data[compressed_index];
 	}
 
-	template <size_t i>
-	inline Type &at()
+	ढाँचा <माप_प्रकार i>
+	ओळीत Type &at()
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
+		constexpr पूर्णांक compressed_index = findCompressedIndex(i);
 		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		परत _data[compressed_index];
 	}
 
-	inline Type atCompressedIndex(size_t i) const
+	ओळीत Type atCompressedIndex(माप_प्रकार i) स्थिरांक
 	{
-		assert(i < N);
-		return _data[i];
+		प्रतिज्ञा(i < N);
+		परत _data[i];
 	}
 
-	inline Type &atCompressedIndex(size_t i)
+	ओळीत Type &atCompressedIndex(माप_प्रकार i)
 	{
-		assert(i < N);
-		return _data[i];
+		प्रतिज्ञा(i < N);
+		परत _data[i];
 	}
 
-	void setZero()
+	शून्य setZero()
 	{
-		for (size_t i = 0; i < N; i++) {
+		साठी (माप_प्रकार i = 0; i < N; i++) {
 			_data[i] = Type(0);
 		}
 	}
 
-	Type dot(const matrix::Vector<Type, M> &other) const
+	Type dot(स्थिरांक matrix::Vector<Type, M> &other) स्थिरांक
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
+		साठी (माप_प्रकार i = 0; i < N; i++) {
 			accum += _data[i] * other(indexAt(i));
 		}
 
-		return accum;
+		परत accum;
 	}
 
-	matrix::Vector<Type, M> operator+(const matrix::Vector<Type, M> &other) const
+	matrix::Vector<Type, M> चालक+(स्थिरांक matrix::Vector<Type, M> &other) स्थिरांक
 	{
 		matrix::Vector<Type, M> vec = other;
 
-		for (size_t i = 0; i < N; i++) {
+		साठी (माप_प्रकार i = 0; i < N; i++) {
 			vec(indexAt(i)) +=  _data[i];
 		}
 
-		return vec;
+		परत vec;
 	}
 
-	SparseVector &operator+=(Type t)
+	SparseVector &चालक+=(Type t)
 	{
-		for (size_t i = 0; i < N; i++) {
+		साठी (माप_प्रकार i = 0; i < N; i++) {
 			_data[i] += t;
 		}
 
-		return *this;
+		परत *हे;
 	}
 
-	Type norm_squared() const
+	Type norm_squared() स्थिरांक
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
+		साठी (माप_प्रकार i = 0; i < N; i++) {
 			accum += _data[i] * _data[i];
 		}
 
-		return accum;
+		परत accum;
 	}
 
-	Type norm() const
+	Type norm() स्थिरांक
 	{
-		return std::sqrt(norm_squared());
+		परत std::वर्ग_मूल(norm_squared());
 	}
 
-	bool longerThan(Type testVal) const
+	तार्किक longerThan(Type testVal) स्थिरांक
 	{
-		return norm_squared() > testVal * testVal;
+		परत norm_squared() > testVal * testVal;
 	}
 };
 
-template<typename Type, size_t Q, size_t M, size_t ... Idxs>
-matrix::Vector<Type, Q> operator*(const matrix::Matrix<Type, Q, M> &mat,
-				  const matrix::SparseVector<Type, M, Idxs...> &vec)
+ढाँचा<typename Type, माप_प्रकार Q, माप_प्रकार M, माप_प्रकार ... Idxs>
+matrix::Vector<Type, Q> चालक*(स्थिरांक matrix::Matrix<Type, Q, M> &mat,
+				  स्थिरांक matrix::SparseVector<Type, M, Idxs...> &vec)
 {
 	matrix::Vector<Type, Q> res;
 
-	for (size_t i = 0; i < Q; i++) {
-		const Vector<Type, M> row = mat.row(i);
+	साठी (माप_प्रकार i = 0; i < Q; i++) {
+		स्थिरांक Vector<Type, M> row = mat.row(i);
 		res(i) = vec.dot(row);
 	}
 
-	return res;
+	परत res;
 }
 
 // returns x.T * A * x
-template<typename Type, size_t M, size_t ... Idxs>
-Type quadraticForm(const matrix::SquareMatrix<Type, M> &A, const matrix::SparseVector<Type, M, Idxs...> &x)
+ढाँचा<typename Type, माप_प्रकार M, माप_प्रकार ... Idxs>
+Type quadraticForm(स्थिरांक matrix::SquareMatrix<Type, M> &A, स्थिरांक matrix::SparseVector<Type, M, Idxs...> &x)
 {
 	Type res = Type(0);
 
-	for (size_t i = 0; i < x.non_zeros(); i++) {
+	साठी (माप_प्रकार i = 0; i < x.non_zeros(); i++) {
 		Type tmp = Type(0);
 
-		for (size_t j = 0; j < x.non_zeros(); j++) {
+		साठी (माप_प्रकार j = 0; j < x.non_zeros(); j++) {
 			tmp += A(x.index(i), x.index(j)) * x.atCompressedIndex(j);
 		}
 
 		res += x.atCompressedIndex(i) * tmp;
 	}
 
-	return res;
+	परत res;
 }
 
-template<size_t M, size_t ... Idxs>
-using SparseVectorf = SparseVector<float, M, Idxs...>;
+ढाँचा<माप_प्रकार M, माप_प्रकार ... Idxs>
+using SparseVectorf = SparseVector<दशांश, M, Idxs...>;
 
 }

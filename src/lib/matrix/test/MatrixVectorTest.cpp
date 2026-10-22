@@ -31,21 +31,21 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <matrix/math.hpp>
 
-using namespace matrix;
+using नामाकाश matrix;
 
 TEST(MatrixVectorTest, Vector)
 {
 	// test data
-	float data1[] = {1, 2, 3, 4, 5};
-	float data2[] = {6, 7, 8, 9, 10};
-	Vector<float, 5> v1(data1);
-	Vector<float, 5> v2(data2);
+	दशांश data1[] = {1, 2, 3, 4, 5};
+	दशांश data2[] = {6, 7, 8, 9, 10};
+	Vector<दशांश, 5> v1(data1);
+	Vector<दशांश, 5> v2(data2);
 
 	// copy constructor
-	Vector<float, 5> v3(v2);
+	Vector<दशांश, 5> v3(v2);
 	EXPECT_EQ(v2, v3);
 
 	// norm, dot product
@@ -58,17 +58,17 @@ TEST(MatrixVectorTest, Vector)
 	// unit, unit_zero, normalize
 	EXPECT_FLOAT_EQ(v2.unit().norm(), 1.f);
 	EXPECT_FLOAT_EQ(v2.unit_or_zero().norm(), 1.f);
-	EXPECT_FLOAT_EQ((Vector<float, 5>().unit_or_zero().norm()), 0.f);
+	EXPECT_FLOAT_EQ((Vector<दशांश, 5>().unit_or_zero().norm()), 0.f);
 	v2.normalize();
 	EXPECT_FLOAT_EQ(v2.norm(), 1.f);
 
 	// sqrt
-	float data1_sq[] = {1, 4, 9, 16, 25};
-	Vector<float, 5> v4(data1_sq);
-	EXPECT_EQ(v1, v4.sqrt());
+	दशांश data1_sq[] = {1, 4, 9, 16, 25};
+	Vector<दशांश, 5> v4(data1_sq);
+	EXPECT_EQ(v1, v4.वर्ग_मूल());
 
 	// longerThan
-	Vector<float, 2> v5;
+	Vector<दशांश, 2> v5;
 	v5(0) = 3;
 	v5(1) = 4;
 	EXPECT_TRUE(v5.longerThan(4.99f));

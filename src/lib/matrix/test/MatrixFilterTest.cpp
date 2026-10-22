@@ -31,29 +31,29 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/filter.hpp>
-#include <matrix/Vector.hpp>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <matrix/filter.hpp>
+#अन्तर्भाव <matrix/Vector.hpp>
 
-using namespace matrix;
+using नामाकाश matrix;
 
 TEST(MatrixFilterTest, Filter)
 {
-	const size_t n_x = 6;
-	const size_t n_y = 5;
-	SquareMatrix<float, n_x> P = eye<float, n_x>();
-	SquareMatrix<float, n_y> R = eye<float, n_y>();
-	Matrix<float, n_y, n_x> C;
+	स्थिरांक माप_प्रकार n_x = 6;
+	स्थिरांक माप_प्रकार n_y = 5;
+	SquareMatrix<दशांश, n_x> P = eye<दशांश, n_x>();
+	SquareMatrix<दशांश, n_y> R = eye<दशांश, n_y>();
+	Matrix<दशांश, n_y, n_x> C;
 	C.setIdentity();
-	float data[] = {1, 2, 3, 4, 5};
-	Vector<float, n_y> r(data);
+	दशांश data[] = {1, 2, 3, 4, 5};
+	Vector<दशांश, n_y> r(data);
 
-	Vector<float, n_x> dx;
-	SquareMatrix<float, n_x> dP;
-	float beta = 0;
-	kalman_correct<float, 6, 5>(P, C, R, r, dx, dP, beta);
+	Vector<दशांश, n_x> dx;
+	SquareMatrix<दशांश, n_x> dP;
+	दशांश beta = 0;
+	kalman_correct<दशांश, 6, 5>(P, C, R, r, dx, dP, beta);
 
-	float data_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
-	Vector<float, n_x> dx_check(data_check);
+	दशांश data_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
+	Vector<दशांश, n_x> dx_check(data_check);
 	EXPECT_EQ(dx, dx_check);
 }

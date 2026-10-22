@@ -1,10 +1,10 @@
-from xml.sax.saxutils import escape
-import codecs
-import json
-import sys
+तः xml.sax.saxutils आयात escape
+आयात codecs
+आयात json
+आयात sys
 
 
-class JsonOutput():
+वर्ग JsonOutput():
     def __init__(self, groups, board):
         all_json=dict()
         all_json['version']=1
@@ -49,90 +49,90 @@ class JsonOutput():
 			}
         schema_map_fix_type = {
 			"reboot_required": ("rebootRequired", bool),
-			"decimal": ("decimalPlaces", int),
+			"decimal": ("decimalPlaces", पूर्णांक),
 			}
         allowed_types = { "Uint8", "Int8", "Uint16", "Int16", "Uint32", "Int32", "Float"}
 
         last_param_name = ""
-        board_specific_param_set = False
-        for group in groups:
+        board_specific_param_set = असत्य
+        साठी group मध्ये groups:
             group_name=group.GetName()
 
-            def get_typed_value(value: str, type_name: str):
-                if type_name == 'Float': return float(value)
-                if type_name == 'Int32': return int(value)
-                return value
+            def get_typed_मूल्य(मूल्य: str, type_name: str):
+                जर type_name == 'Float': परत दशांश(मूल्य)
+                जर type_name == 'Int32': परत पूर्णांक(मूल्य)
+                परत मूल्य
 
-            for param in group.GetParams():
-                if (last_param_name == param.GetName() and not board_specific_param_set) or last_param_name != param.GetName():
+            साठी param मध्ये group.GetParams():
+                जर (last_param_name == param.GetName() आणि नाही board_specific_param_set) किंवा last_param_name != param.GetName():
                     curr_param=dict()
                     curr_param['name'] = param.GetName()
                     type_name = param.GetType().capitalize()
                     curr_param['type'] = type_name
-                    if not type_name in allowed_types:
+                    जर नाही type_name मध्ये allowed_types:
                         print("Error: %s type not supported: curr_param['type']" % (curr_param['name'],curr_param['type']) )
                         sys.Exit(1)
-                    curr_param['default'] = get_typed_value(param.GetDefault(), type_name)
+                    curr_param['default'] = get_typed_मूल्य(param.GetDefault(), type_name)
 
                     curr_param['group'] = group_name
-                    if param.GetCategory():
+                    जर param.GetCategory():
                         curr_param['category'] = param.GetCategory()
-                    else:
+                    अन्यथा:
                         curr_param['category'] = 'Standard'
 
-                    if param.GetVolatile():
-                        curr_param['volatile'] = True
-                    if param.GetReadonly():
-                        curr_param['readOnly'] = True
+                    जर param.GetVolatile():
+                        curr_param['volatile'] = सत्य
+                    जर param.GetReadonly():
+                        curr_param['readOnly'] = सत्य
 
                     last_param_name = param.GetName()
-                    for code in param.GetFieldCodes():
-                        value = param.GetFieldValue(code)
-                        if code == "board":
-                            if value == board:
-                                board_specific_param_set = True
+                    साठी code मध्ये param.GetFieldCodes():
+                        मूल्य = param.Get_Field_मूल्य(code)
+                        जर code == "board":
+                            जर मूल्य == board:
+                                board_specific_param_set = सत्य
                                 # JSON schema has no field for board_specific schema. Ignore.
-                            else:
+                            अन्यथा:
                                 #xml_group.remove(xml_param)
-                                continue
-                        else:
+                                सुरूठेवा
+                        अन्यथा:
                             #map PX4 param field names to schema names
-                            if code in schema_map:
-                                curr_param[schema_map[code]] = value
-                            elif code in schema_map_typed:
-                                curr_param[schema_map_typed[code]] = get_typed_value(value, type_name)
-                            elif code in schema_map_fix_type:
-                                curr_param[schema_map_fix_type[code][0]] = schema_map_fix_type[code][1](value)
-                            else:
+                            जर code मध्ये schema_map:
+                                curr_param[schema_map[code]] = मूल्य
+                            किंवाजर code मध्ये schema_map_typed:
+                                curr_param[schema_map_typed[code]] = get_typed_मूल्य(मूल्य, type_name)
+                            किंवाजर code मध्ये schema_map_fix_type:
+                                curr_param[schema_map_fix_type[code][0]] = schema_map_fix_type[code][1](मूल्य)
+                            अन्यथा:
                                 print('ERROR: Field not in json schema: %s' % code)
                                 sys.exit(1)
 
 
-                if last_param_name != param.GetName():
-                    board_specific_param_set = False
+                जर last_param_name != param.GetName():
+                    board_specific_param_set = असत्य
 
-                enum_codes=param.GetEnumCodes() or '' # Gets numerical values for parameter.
-                if enum_codes:
-                    enum_codes=sorted(enum_codes,key=float)
+                enum_codes=param.GetEnumCodes() किंवा '' # Gets numerical values for parameter.
+                जर enum_codes:
+                    enum_codes=sorted(enum_codes,किल्ली=दशांश)
                     codes_list=list()
-                    for item in enum_codes:
+                    साठी item मध्ये enum_codes:
                         code_dict=dict()
-                        code_dict['value']=get_typed_value(item, type_name)
-                        code_dict['description']=param.GetEnumValue(item)
+                        code_dict['value']=get_typed_मूल्य(item, type_name)
+                        code_dict['description']=param.Get_Enum_मूल्य(item)
                         codes_list.append(code_dict)
                     curr_param['values'] = codes_list
-                elif param.GetBoolean():
+                किंवाजर param.GetBoolean():
                     curr_param['values'] = [
                         { 'value': 0, 'description': 'Disabled' },
                         { 'value': 1, 'description': 'Enabled' }
                     ]
 
 
-                if len(param.GetBitmaskList()) > 0:
+                जर len(param.GetBitmaskList()) > 0:
                     bitmasks_list=list()
-                    for index in param.GetBitmaskList():
+                    साठी index मध्ये param.GetBitmaskList():
                         bitmask_dict=dict()
-                        bitmask_dict['index']=int(index)
+                        bitmask_dict['index']=पूर्णांक(index)
                         bitmask_dict['description']=param.GetBitmaskBit(index)
                         bitmasks_list.append(bitmask_dict)
                     curr_param['bitmask'] = bitmasks_list
@@ -142,9 +142,9 @@ class JsonOutput():
 
 
         #Json string output.
-        self.output = json.dumps(all_json, sort_keys=True)
+        self.output = json.dumps(all_json, sort_किल्ल्या=सत्य)
 
 
     def Save(self, filename):
-        with codecs.open(filename, 'w', 'utf-8') as f:
-            f.write(self.output)
+        with codecs.open(filename, 'w', 'utf-8') इव f:
+            f.लिख(self.output)

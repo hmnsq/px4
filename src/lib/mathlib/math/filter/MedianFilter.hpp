@@ -40,29 +40,29 @@
 
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#अन्तर्भाव <stdio.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <stdint.h>
+#अन्तर्भाव <string.h>
 
-namespace math
+नामाकाश math
 {
 
-template<typename U> struct is_floating_point { static constexpr bool value = false; };
-template<> struct is_floating_point<float> { static constexpr bool value = true; };
-template<> struct is_floating_point<double> { static constexpr bool value = true; };
-template<> struct is_floating_point<long double> { static constexpr bool value = true; };
+ढाँचा<typename U> संरचना is_floating_point { स्थिर constexpr तार्किक value = असत्य; };
+ढाँचा<> संरचना is_floating_point<दशांश> { स्थिर constexpr तार्किक value = सत्य; };
+ढाँचा<> संरचना is_floating_point<द्विगुण> { स्थिर constexpr तार्किक value = सत्य; };
+ढाँचा<> संरचना is_floating_point<दीर्घ द्विगुण> { स्थिर constexpr तार्किक value = सत्य; };
 
-template<typename T, int WINDOW = 3>
-class MedianFilter
+ढाँचा<typename T, पूर्णांक WINDOW = 3>
+वर्ग MedianFilter
 {
-public:
+सार्वजनिक:
 	static_assert(WINDOW >= 3, "MedianFilter window size must be >= 3");
 	static_assert(WINDOW % 2, "MedianFilter window size must be odd"); // odd
 
-	MedianFilter() = default;
+	MedianFilter() = पूर्वनिर्धारित;
 
-	void insert(const T &sample)
+	शून्य घाला(स्थिरांक T &sample)
 	{
 		_head = (_head + 1) % WINDOW;
 		_buffer[_head] = sample;
@@ -71,46 +71,46 @@ public:
 	T median()
 	{
 		T sorted[WINDOW];
-		memcpy(sorted, _buffer, sizeof(_buffer));
-		qsort(&sorted, WINDOW, sizeof(T), cmp);
+		स_नकल(sorted, _buffer, आकार(_buffer));
+		क्विक(&sorted, WINDOW, आकार(T), cmp);
 
-		return sorted[WINDOW / 2];
+		परत sorted[WINDOW / 2];
 	}
 
-	T apply(const T &sample)
+	T apply(स्थिरांक T &sample)
 	{
-		insert(sample);
-		return median();
+		घाला(sample);
+		परत median();
 	}
 
-private:
+खाजगी:
 
-	static int cmp(const void *a, const void *b)
+	स्थिर पूर्णांक cmp(स्थिरांक शून्य *a, स्थिरांक शून्य *b)
 	{
-		const T va = *(const T *)a;
-		const T vb = *(const T *)b;
+		स्थिरांक T va = *(स्थिरांक T *)a;
+		स्थिरांक T vb = *(स्थिरांक T *)b;
 
-		if constexpr(is_floating_point<T>::value) {
-			if (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
-				return 0;
+		जर constexpr(is_floating_point<T>::value) {
+			जर (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
+				परत 0;
 
-			} else if (!__builtin_isfinite(va)) {
-				return  1;
+			} अन्यथा जर (!__builtin_isfinite(va)) {
+				परत  1;
 
-			} else if (!__builtin_isfinite(vb)) {
-				return -1;
+			} अन्यथा जर (!__builtin_isfinite(vb)) {
+				परत -1;
 			}
 		}
 
-		if (va < vb) {
-			return -1;
+		जर (va < vb) {
+			परत -1;
 		}
 
-		if (va > vb) {
-			return  1;
+		जर (va > vb) {
+			परत  1;
 		}
 
-		return 0;
+		परत 0;
 	}
 
 	T _buffer[WINDOW] {};

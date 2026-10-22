@@ -34,11 +34,11 @@
 
 
 
-#include "Ringbuffer.hpp"
+#अन्तर्भाव "Ringbuffer.hpp"
 
-#include <mathlib/mathlib.h>
-#include <assert.h>
-#include <string.h>
+#अन्तर्भाव <mathlib/mathlib.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <string.h>
 
 
 Ringbuffer::~Ringbuffer()
@@ -46,16 +46,16 @@ Ringbuffer::~Ringbuffer()
 	deallocate();
 }
 
-bool Ringbuffer::allocate(size_t buffer_size)
+तार्किक Ringbuffer::allocate(माप_प्रकार buffer_size)
 {
-	assert(_ringbuffer == nullptr);
+	प्रतिज्ञा(_ringbuffer == nullptr);
 
 	_size = buffer_size;
-	_ringbuffer = new uint8_t[_size];
-	return _ringbuffer != nullptr;
+	_ringbuffer = नवीन uint8_t[_size];
+	परत _ringbuffer != nullptr;
 }
 
-void Ringbuffer::deallocate()
+शून्य Ringbuffer::deallocate()
 {
 	delete[] _ringbuffer;
 	_ringbuffer = nullptr;
@@ -64,119 +64,119 @@ void Ringbuffer::deallocate()
 	_end = 0;
 }
 
-size_t Ringbuffer::space_available() const
+माप_प्रकार Ringbuffer::space_available() स्थिरांक
 {
-	if (_start > _end) {
-		return _start - _end - 1;
+	जर (_start > _end) {
+		परत _start - _end - 1;
 
-	} else {
-		return _start - _end - 1 + _size;
+	} अन्यथा {
+		परत _start - _end - 1 + _size;
 	}
 }
 
-size_t Ringbuffer::space_used() const
+माप_प्रकार Ringbuffer::space_used() स्थिरांक
 {
-	if (_start <= _end) {
-		return _end - _start;
+	जर (_start <= _end) {
+		परत _end - _start;
 
-	} else {
+	} अन्यथा {
 		// Potential wrap around.
-		return _end - _start + _size;
+		परत _end - _start + _size;
 	}
 }
 
 
-bool Ringbuffer::push_back(const uint8_t *buf, size_t buf_len)
+तार्किक Ringbuffer::push_back(स्थिरांक uint8_t *buf, माप_प्रकार buf_len)
 {
-	if (buf_len == 0 || buf == nullptr) {
+	जर (buf_len == 0 || buf == nullptr) {
 		// Nothing to add, we better don't try.
-		return false;
+		परत असत्य;
 	}
 
-	if (_start > _end) {
+	जर (_start > _end) {
 		// Add after end up to start, no wrap around.
 
 		// Leave one byte free so that start don't end up the same
 		// which signals empty.
-		const size_t available = _start - _end - 1;
+		स्थिरांक माप_प्रकार available = _start - _end - 1;
 
-		if (available < buf_len) {
-			return false;
+		जर (available < buf_len) {
+			परत असत्य;
 		}
 
-		memcpy(&_ringbuffer[_end], buf, buf_len);
+		स_नकल(&_ringbuffer[_end], buf, buf_len);
 		_end += buf_len;
 
-	} else {
+	} अन्यथा {
 		// Add after end, maybe wrap around.
-		const size_t available = _start - _end - 1 + _size;
+		स्थिरांक माप_प्रकार available = _start - _end - 1 + _size;
 
-		if (available < buf_len) {
-			return false;
+		जर (available < buf_len) {
+			परत असत्य;
 		}
 
-		const size_t remaining_packet_len = _size - _end;
+		स्थिरांक माप_प्रकार remaining_packet_len = _size - _end;
 
-		if (buf_len > remaining_packet_len) {
-			memcpy(&_ringbuffer[_end], buf, remaining_packet_len);
+		जर (buf_len > remaining_packet_len) {
+			स_नकल(&_ringbuffer[_end], buf, remaining_packet_len);
 			_end = 0;
 
-			memcpy(&_ringbuffer[_end], buf + remaining_packet_len, buf_len - remaining_packet_len);
+			स_नकल(&_ringbuffer[_end], buf + remaining_packet_len, buf_len - remaining_packet_len);
 			_end += buf_len - remaining_packet_len;
 
-		} else {
-			memcpy(&_ringbuffer[_end], buf, buf_len);
+		} अन्यथा {
+			स_नकल(&_ringbuffer[_end], buf, buf_len);
 			_end += buf_len;
 		}
 	}
 
-	return true;
+	परत सत्य;
 }
 
-size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
+माप_प्रकार Ringbuffer::काढा_front(uint8_t *buf, माप_प्रकार buf_max_len)
 {
-	if (buf == nullptr) {
+	जर (buf == nullptr) {
 		// User needs to supply a valid pointer.
-		return 0;
+		परत 0;
 	}
 
-	if (_start == _end) {
+	जर (_start == _end) {
 		// Empty
-		return 0;
+		परत 0;
 	}
 
-	if (_start < _end) {
+	जर (_start < _end) {
 
 		// No wrap around.
-		size_t to_copy_len = math::min(_end - _start, buf_max_len);
+		माप_प्रकार to_copy_len = math::min(_end - _start, buf_max_len);
 
-		memcpy(buf, &_ringbuffer[_start], to_copy_len);
+		स_नकल(buf, &_ringbuffer[_start], to_copy_len);
 		_start += to_copy_len;
 
-		return to_copy_len;
+		परत to_copy_len;
 
-	} else {
+	} अन्यथा {
 		// Potential wrap around.
-		size_t to_copy_len = _end - _start + _size;
+		माप_प्रकार to_copy_len = _end - _start + _size;
 
-		if (to_copy_len > buf_max_len) {
+		जर (to_copy_len > buf_max_len) {
 			to_copy_len = buf_max_len;
 		}
 
-		const size_t remaining_buf_len = _size - _start;
+		स्थिरांक माप_प्रकार remaining_buf_len = _size - _start;
 
-		if (to_copy_len > remaining_buf_len) {
+		जर (to_copy_len > remaining_buf_len) {
 
-			memcpy(buf, &_ringbuffer[_start], remaining_buf_len);
+			स_नकल(buf, &_ringbuffer[_start], remaining_buf_len);
 			_start = 0;
-			memcpy(buf + remaining_buf_len, &_ringbuffer[_start], to_copy_len - remaining_buf_len);
+			स_नकल(buf + remaining_buf_len, &_ringbuffer[_start], to_copy_len - remaining_buf_len);
 			_start += to_copy_len - remaining_buf_len;
 
-		} else {
-			memcpy(buf, &_ringbuffer[_start], to_copy_len);
+		} अन्यथा {
+			स_नकल(buf, &_ringbuffer[_start], to_copy_len);
 			_start += to_copy_len;
 		}
 
-		return to_copy_len;
+		परत to_copy_len;
 	}
 }

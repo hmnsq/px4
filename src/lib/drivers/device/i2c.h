@@ -33,11 +33,11 @@
 #pragma once
 
 #ifdef __PX4_NUTTX
-#include "nuttx/I2C.hpp"
-#elif defined(__PX4_QURT)
-#include "qurt/I2C.hpp"
-#else
-#include "posix/I2C.hpp"
+#अन्तर्भाव "nuttx/I2C.hpp"
+#किंवाजर defined(__PX4_QURT)
+#अन्तर्भाव "qurt/I2C.hpp"
+#अन्यथा
+#अन्तर्भाव "posix/I2C.hpp"
 #endif
 
-#include <board_config.h>
+#अन्तर्भाव <board_config.h>

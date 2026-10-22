@@ -38,41 +38,41 @@
  * @author Lorenz Meier <lorenz@px4.io>
  */
 
-#include <drivers/drv_hrt.h>
-#include <px4_platform_common/posix.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
+#अन्तर्भाव <drivers/drv_hrt.h>
+#अन्तर्भाव <px4_platform_common/posix.h>
+#अन्तर्भाव <string.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <stdio.h>
+#अन्तर्भाव <stdarg.h>
 
-#include <uORB/topics/mavlink_log.h>
-#include "mavlink_log.h"
+#अन्तर्भाव <uORB/topics/mavlink_log.h>
+#अन्तर्भाव "mavlink_log.h"
 
-__EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, const char *fmt, ...)
+__EXPORT शून्य mavlink_vasprintf(पूर्णांक severity, orb_advert_t *mavlink_log_pub, स्थिरांक अक्षर *fmt, ...)
 {
 	// TODO: add compile check for maxlen
 
-	if (!fmt) {
-		return;
+	जर (!fmt) {
+		परत;
 	}
 
-	if (mavlink_log_pub == nullptr) {
-		return;
+	जर (mavlink_log_pub == nullptr) {
+		परत;
 	}
 
-	mavlink_log_s log_msg;
-	log_msg.severity = severity;
-	log_msg.timestamp = hrt_absolute_time();
+	mavlink_log_s log_संदेश;
+	log_संदेश.severity = severity;
+	log_संदेश.timestamp = hrt_absolute_time();
 
-	va_list ap;
-	va_start(ap, fmt);
-	vsnprintf((char *)log_msg.text, sizeof(log_msg.text), fmt, ap);
-	va_end(ap);
+	बहु_सूची ap;
+	बहु_शुरू(ap, fmt);
+	vsnprintf((अक्षर *)log_संदेश.text, आकार(log_संदेश.text), fmt, ap);
+	बहु_पूर्ण(ap);
 
-	if (*mavlink_log_pub != nullptr) {
-		orb_publish(ORB_ID(mavlink_log), *mavlink_log_pub, &log_msg);
+	जर (*mavlink_log_pub != nullptr) {
+		orb_publish(ORB_ID(mavlink_log), *mavlink_log_pub, &log_संदेश);
 
-	} else {
-		*mavlink_log_pub = orb_advertise(ORB_ID(mavlink_log), &log_msg);
+	} अन्यथा {
+		*mavlink_log_pub = orb_advertise(ORB_ID(mavlink_log), &log_संदेश);
 	}
 }

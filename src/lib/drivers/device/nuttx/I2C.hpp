@@ -39,37 +39,37 @@
  * Base class for devices connected via I2C.
  */
 
-#include "../CDev.hpp"
-#include <px4_platform_common/i2c.h>
+#अन्तर्भाव "../CDev.hpp"
+#अन्तर्भाव <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#जर defined(CONFIG_I2C)
 
-#include <nuttx/i2c/i2c_master.h>
+#अन्तर्भाव <nuttx/i2c/i2c_master.h>
 
-struct I2CSPIDriverConfig;
+संरचना I2CSPIDriverConfig;
 
-namespace device __EXPORT
+नामाकाश device __EXPORT
 {
 
 /**
  * Abstract class for character device on I2C
  */
-class __EXPORT I2C : public CDev
+वर्ग __EXPORT I2C : सार्वजनिक CDev
 {
 
-public:
+सार्वजनिक:
 
 	// no copy, assignment, move, move assignment
-	I2C(const I2C &) = delete;
-	I2C &operator=(const I2C &) = delete;
+	I2C(स्थिरांक I2C &) = delete;
+	I2C &चालक=(स्थिरांक I2C &) = delete;
 	I2C(I2C &&) = delete;
-	I2C &operator=(I2C &&) = delete;
+	I2C &चालक=(I2C &&) = delete;
 
-	virtual int	init() override;
+	आभासी पूर्णांक	init() override;
 
-	static int	set_bus_clock(unsigned bus, unsigned clock_hz);
+	स्थिर पूर्णांक	set_bus_clock(अचिन्हित bus, अचिन्हित clock_hz);
 
-protected:
+संरक्षित:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -85,14 +85,14 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
-	I2C(const I2CSPIDriverConfig &config);
-	virtual ~I2C();
+	I2C(uint8_t device_type, स्थिरांक अक्षर *name, स्थिरांक पूर्णांक bus, स्थिरांक uint16_t address, स्थिरांक uint32_t frequency);
+	I2C(स्थिरांक I2CSPIDriverConfig &config);
+	आभासी ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	आभासी पूर्णांक	probe() { परत PX4_OK; }
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -106,12 +106,12 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	पूर्णांक		transfer(स्थिरांक uint8_t *send, स्थिरांक अचिन्हित send_len, uint8_t *recv, स्थिरांक अचिन्हित recv_len);
 
-private:
-	static unsigned	int	_bus_clocks[PX4_NUMBER_I2C_BUSES];
+खाजगी:
+	स्थिर अचिन्हित	पूर्णांक	_bus_clocks[PX4_संख्या_I2_C_BUSES];
 
-	const uint32_t		_frequency;
+	स्थिरांक uint32_t		_frequency;
 	i2c_master_s		*_dev{nullptr};
 
 };

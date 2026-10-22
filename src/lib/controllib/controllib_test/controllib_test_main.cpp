@@ -38,43 +38,43 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <float.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <stdio.h>
+#अन्तर्भाव <float.h>
 
-#include <controllib/blocks.hpp>
+#अन्तर्भाव <controllib/blocks.hpp>
 
-using namespace control;
+using नामाकाश control;
 
-#define ASSERT_CL(T) if (!(T)) { printf("FAIL\n"); return -1; }
+#define ASSERT_CL(T) जर (!(T)) { म_लिखो("FAIL\n"); परत -1; }
 
-int basicBlocksTest();
-int blockLimitTest();
-int blockLimitSymTest();
-int blockLowPassTest();
-int blockHighPassTest();
-int blockLowPass2Test();
-int blockIntegralTest();
-int blockIntegralTrapTest();
-int blockDerivativeTest();
-int blockPTest();
-int blockPITest();
-int blockPDTest();
-int blockPIDTest();
-int blockOutputTest();
-int blockRandUniformTest();
-int blockRandGaussTest();
-int blockStatsTest();
-int blockDelayTest();
+पूर्णांक basicBlocksTest();
+पूर्णांक blockLimitTest();
+पूर्णांक blockLimitSymTest();
+पूर्णांक block_खालचा_Pass_Test();
+पूर्णांक block_वरचा_Pass_Test();
+पूर्णांक block_खालचा_Pass2_Test();
+पूर्णांक blockIntegralTest();
+पूर्णांक blockIntegralTrapTest();
+पूर्णांक blockDerivativeTest();
+पूर्णांक blockPTest();
+पूर्णांक blockPITest();
+पूर्णांक blockPDTest();
+पूर्णांक blockPIDTest();
+पूर्णांक blockOutputTest();
+पूर्णांक blockRandUniformTest();
+पूर्णांक blockRandGaussTest();
+पूर्णांक blockStatsTest();
+पूर्णांक blockDelayTest();
 
-int basicBlocksTest()
+पूर्णांक basicBlocksTest()
 {
-	bool failed = false;
+	तार्किक failed = असत्य;
 	failed = failed || blockLimitTest() < 0;
 	failed = failed || blockLimitSymTest() < 0;
-	failed = failed || blockLowPassTest() < 0;
-	failed = failed || blockHighPassTest() < 0;
-	failed = failed || blockLowPass2Test() < 0;
+	failed = failed || block_खालचा_Pass_Test() < 0;
+	failed = failed || block_वरचा_Pass_Test() < 0;
+	failed = failed || block_खालचा_Pass2_Test() < 0;
 	failed = failed || blockIntegralTest() < 0;
 	failed = failed || blockIntegralTrapTest() < 0;
 	failed = failed || blockDerivativeTest() < 0;
@@ -87,12 +87,12 @@ int basicBlocksTest()
 	failed = failed || blockRandGaussTest() < 0;
 	failed = failed || blockStatsTest() < 0;
 	failed = failed || blockDelayTest() < 0;
-	return failed ? -1 : 0;
+	परत failed ? -1 : 0;
 }
 
-int blockLimitTest()
+पूर्णांक blockLimitTest()
 {
-	printf("Test BlockLimit\t\t\t: ");
+	म_लिखो("Test BlockLimit\t\t\t: ");
 	BlockLimit limit(nullptr, "TEST");
 	// initial state
 	ASSERT_CL(equal(1.0f, limit.getMax()));
@@ -102,13 +102,13 @@ int blockLimitTest()
 	ASSERT_CL(equal(-1.0f, limit.update(-2.0f)));
 	ASSERT_CL(equal(1.0f, limit.update(2.0f)));
 	ASSERT_CL(equal(0.0f, limit.update(0.0f)));
-	printf("PASS\n");
-	return 0;
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-int blockLimitSymTest()
+पूर्णांक blockLimitSymTest()
 {
-	printf("Test BlockLimitSym\t\t: ");
+	म_लिखो("Test BlockLimitSym\t\t: ");
 	BlockLimitSym limit(nullptr, "TEST");
 	// initial state
 	ASSERT_CL(equal(1.0f, limit.getMax()));
@@ -117,100 +117,100 @@ int blockLimitSymTest()
 	ASSERT_CL(equal(-1.0f, limit.update(-2.0f)));
 	ASSERT_CL(equal(1.0f, limit.update(2.0f)));
 	ASSERT_CL(equal(0.0f, limit.update(0.0f)));
-	printf("PASS\n");
-	return 0;
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-int blockLowPassTest()
+पूर्णांक block_खालचा_Pass_Test()
 {
-	printf("Test BlockLowPass\t\t: ");
-	BlockLowPass lowPass(nullptr, "TEST_LP");
+	म_लिखो("Test BlockLowPass\t\t: ");
+	Block_खालचा_Pass खालचा_Pass_2(nullptr, "TEST_LP");
 	// test initial state
-	ASSERT_CL(equal(10.0f, lowPass.getFCut()));
-	ASSERT_CL(equal(0.0f, lowPass.getState()));
-	ASSERT_CL(equal(0.0f, lowPass.getDt()));
+	ASSERT_CL(equal(10.0f, खालचा_Pass_2.getFCut()));
+	ASSERT_CL(equal(0.0f, खालचा_Pass_2.getState()));
+	ASSERT_CL(equal(0.0f, खालचा_Pass_2.getDt()));
 	// set dt
-	lowPass.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, lowPass.getDt()));
+	खालचा_Pass_2.setDt(0.1f);
+	ASSERT_CL(equal(0.1f, खालचा_Pass_2.getDt()));
 	// set state
-	lowPass.setState(1.0f);
-	ASSERT_CL(equal(1.0f, lowPass.getState()));
+	खालचा_Pass_2.setState(1.0f);
+	ASSERT_CL(equal(1.0f, खालचा_Pass_2.getState()));
 	// test update
-	ASSERT_CL(equal(1.8626974f, lowPass.update(2.0f)));
+	ASSERT_CL(equal(1.8626974f, खालचा_Pass_2.update(2.0f)));
 
 	// test end condition
-	for (int i = 0; i < 100; i++) {
-		lowPass.update(2.0f);
+	साठी (पूर्णांक i = 0; i < 100; i++) {
+		खालचा_Pass_2.update(2.0f);
 	}
 
-	ASSERT_CL(equal(2.0f, lowPass.getState()));
-	ASSERT_CL(equal(2.0f, lowPass.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(2.0f, खालचा_Pass_2.getState()));
+	ASSERT_CL(equal(2.0f, खालचा_Pass_2.update(2.0f)));
+	म_लिखो("PASS\n");
+	परत 0;
 };
 
-int blockHighPassTest()
+पूर्णांक block_वरचा_Pass_Test()
 {
-	printf("Test BlockHighPass\t\t: ");
-	BlockHighPass highPass(nullptr, "TEST_HP");
+	म_लिखो("Test BlockHighPass\t\t: ");
+	Block_वरचा_Pass वरचा_Pass(nullptr, "TEST_HP");
 	// test initial state
-	ASSERT_CL(equal(10.0f, highPass.getFCut()));
-	ASSERT_CL(equal(0.0f, highPass.getU()));
-	ASSERT_CL(equal(0.0f, highPass.getY()));
-	ASSERT_CL(equal(0.0f, highPass.getDt()));
+	ASSERT_CL(equal(10.0f, वरचा_Pass.getFCut()));
+	ASSERT_CL(equal(0.0f, वरचा_Pass.getU()));
+	ASSERT_CL(equal(0.0f, वरचा_Pass.getY()));
+	ASSERT_CL(equal(0.0f, वरचा_Pass.getDt()));
 	// set dt
-	highPass.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, highPass.getDt()));
+	वरचा_Pass.setDt(0.1f);
+	ASSERT_CL(equal(0.1f, वरचा_Pass.getDt()));
 	// set state
-	highPass.setU(1.0f);
-	ASSERT_CL(equal(1.0f, highPass.getU()));
-	highPass.setY(1.0f);
-	ASSERT_CL(equal(1.0f, highPass.getY()));
+	वरचा_Pass.setU(1.0f);
+	ASSERT_CL(equal(1.0f, वरचा_Pass.getU()));
+	वरचा_Pass.setY(1.0f);
+	ASSERT_CL(equal(1.0f, वरचा_Pass.getY()));
 	// test update
-	ASSERT_CL(equal(0.2746051f, highPass.update(2.0f)));
+	ASSERT_CL(equal(0.2746051f, वरचा_Pass.update(2.0f)));
 
 	// test end condition
-	for (int i = 0; i < 100; i++) {
-		highPass.update(2.0f);
+	साठी (पूर्णांक i = 0; i < 100; i++) {
+		वरचा_Pass.update(2.0f);
 	}
 
-	ASSERT_CL(equal(0.0f, highPass.getY()));
-	ASSERT_CL(equal(0.0f, highPass.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(0.0f, वरचा_Pass.getY()));
+	ASSERT_CL(equal(0.0f, वरचा_Pass.update(2.0f)));
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-int blockLowPass2Test()
+पूर्णांक block_खालचा_Pass2_Test()
 {
-	printf("Test BlockLowPass2\t\t: ");
-	BlockLowPass2 lowPass(nullptr, "TEST_LP", 100);
+	म_लिखो("Test BlockLowPass2\t\t: ");
+	Block_खालचा_Pass2 खालचा_Pass_2(nullptr, "TEST_LP", 100);
 	// test initial state
-	ASSERT_CL(equal(10.0f, lowPass.getFCutParam()));
-	ASSERT_CL(equal(0.0f, lowPass.getState()));
-	ASSERT_CL(equal(0.0f, lowPass.getDt()));
+	ASSERT_CL(equal(10.0f, खालचा_Pass_2.getFCutParam()));
+	ASSERT_CL(equal(0.0f, खालचा_Pass_2.getState()));
+	ASSERT_CL(equal(0.0f, खालचा_Pass_2.getDt()));
 	// set dt
-	lowPass.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, lowPass.getDt()));
+	खालचा_Pass_2.setDt(0.1f);
+	ASSERT_CL(equal(0.1f, खालचा_Pass_2.getDt()));
 	// set state
-	lowPass.setState(1.0f);
-	ASSERT_CL(equal(1.0f, lowPass.getState()));
+	खालचा_Pass_2.setState(1.0f);
+	ASSERT_CL(equal(1.0f, खालचा_Pass_2.getState()));
 	// test update
-	ASSERT_CL(equal(1.06745527f, lowPass.update(2.0f)));
+	ASSERT_CL(equal(1.06745527f, खालचा_Pass_2.update(2.0f)));
 
 	// test end condition
-	for (int i = 0; i < 100; i++) {
-		lowPass.update(2.0f);
+	साठी (पूर्णांक i = 0; i < 100; i++) {
+		खालचा_Pass_2.update(2.0f);
 	}
 
-	ASSERT_CL(equal(2.0f, lowPass.getState()));
-	ASSERT_CL(equal(2.0f, lowPass.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(2.0f, खालचा_Pass_2.getState()));
+	ASSERT_CL(equal(2.0f, खालचा_Pass_2.update(2.0f)));
+	म_लिखो("PASS\n");
+	परत 0;
 };
 
-int blockIntegralTest()
+पूर्णांक blockIntegralTest()
 {
-	printf("Test BlockIntegral\t\t: ");
+	म_लिखो("Test BlockIntegral\t\t: ");
 	BlockIntegral integral(nullptr, "TEST_I");
 	// test initial state
 	ASSERT_CL(equal(1.0f, integral.getMax()));
@@ -223,7 +223,7 @@ int blockIntegralTest()
 	ASSERT_CL(equal(0.9f, integral.getY()));
 
 	// test exceed max
-	for (int i = 0; i < 100; i++) {
+	साठी (पूर्णांक i = 0; i < 100; i++) {
 		integral.update(1.0f);
 	}
 
@@ -232,7 +232,7 @@ int blockIntegralTest()
 	integral.setY(-0.9f);
 	ASSERT_CL(equal(-0.9f, integral.getY()));
 
-	for (int i = 0; i < 100; i++) {
+	साठी (पूर्णांक i = 0; i < 100; i++) {
 		integral.update(-1.0f);
 	}
 
@@ -241,13 +241,13 @@ int blockIntegralTest()
 	integral.setY(0.1f);
 	ASSERT_CL(equal(0.2f, integral.update(1.0)));
 	ASSERT_CL(equal(0.2f, integral.getY()));
-	printf("PASS\n");
-	return 0;
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-int blockIntegralTrapTest()
+पूर्णांक blockIntegralTrapTest()
 {
-	printf("Test BlockIntegralTrap\t\t: ");
+	म_लिखो("Test BlockIntegralTrap\t\t: ");
 	BlockIntegralTrap integral(nullptr, "TEST_I");
 	// test initial state
 	ASSERT_CL(equal(1.0f, integral.getMax()));
@@ -263,7 +263,7 @@ int blockIntegralTrapTest()
 	ASSERT_CL(equal(0.9f, integral.getY()));
 
 	// test exceed max
-	for (int i = 0; i < 100; i++) {
+	साठी (पूर्णांक i = 0; i < 100; i++) {
 		integral.update(1.0f);
 	}
 
@@ -273,7 +273,7 @@ int blockIntegralTrapTest()
 	integral.setY(-0.9f);
 	ASSERT_CL(equal(-0.9f, integral.getY()));
 
-	for (int i = 0; i < 100; i++) {
+	साठी (पूर्णांक i = 0; i < 100; i++) {
 		integral.update(-1.0f);
 	}
 
@@ -284,13 +284,13 @@ int blockIntegralTrapTest()
 	ASSERT_CL(equal(0.25f, integral.update(1.0)));
 	ASSERT_CL(equal(0.25f, integral.getY()));
 	ASSERT_CL(equal(1.0f, integral.getU()));
-	printf("PASS\n");
-	return 0;
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-int blockDerivativeTest()
+पूर्णांक blockDerivativeTest()
 {
-	printf("Test BlockDerivative\t\t: ");
+	म_लिखो("Test BlockDerivative\t\t: ");
 	BlockDerivative derivative(nullptr, "TEST_D");
 	// test initial state
 	ASSERT_CL(equal(0.0f, derivative.getU()));
@@ -307,13 +307,13 @@ int blockDerivativeTest()
 	// test  update
 	ASSERT_CL(equal(8.6269744f, derivative.update(2.0f)));
 	ASSERT_CL(equal(2.0f, derivative.getU()));
-	printf("PASS\n");
-	return 0;
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-int blockPTest()
+पूर्णांक blockPTest()
 {
-	printf("Test BlockP\t\t\t: ");
+	म_लिखो("Test BlockP\t\t\t: ");
 	BlockP blockP(nullptr, "TEST_P");
 	// test initial state
 	ASSERT_CL(equal(0.2f, blockP.getKP()));
@@ -323,13 +323,13 @@ int blockPTest()
 	ASSERT_CL(equal(0.1f, blockP.getDt()));
 	// test  update
 	ASSERT_CL(equal(0.4f, blockP.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-int blockPITest()
+पूर्णांक blockPITest()
 {
-	printf("Test BlockPI\t\t\t: ");
+	म_लिखो("Test BlockPI\t\t\t: ");
 	BlockPI blockPI(nullptr, "TEST");
 	// test initial state
 	ASSERT_CL(equal(0.2f, blockPI.getKP()));
@@ -345,13 +345,13 @@ int blockPITest()
 	// test  update
 	// 0.2*2 + 0.1*(2*0.1 + 0.1) = 0.43
 	ASSERT_CL(equal(0.43f, blockPI.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-int blockPDTest()
+पूर्णांक blockPDTest()
 {
-	printf("Test BlockPD\t\t\t: ");
+	म_लिखो("Test BlockPD\t\t\t: ");
 	BlockPD blockPD(nullptr, "TEST");
 	// test initial state
 	ASSERT_CL(equal(0.2f, blockPD.getKP()));
@@ -370,13 +370,13 @@ int blockPDTest()
 	// test  update
 	// 0.2*2 + 0.1*(0.1*8.626...) = 0.486269744
 	ASSERT_CL(equal(0.486269744f, blockPD.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-int blockPIDTest()
+पूर्णांक blockPIDTest()
 {
-	printf("Test BlockPID\t\t\t: ");
+	म_लिखो("Test BlockPID\t\t\t: ");
 	BlockPID blockPID(nullptr, "TEST");
 	// test initial state
 	ASSERT_CL(equal(0.2f, blockPID.getKP()));
@@ -400,13 +400,13 @@ int blockPIDTest()
 	// test  update
 	// 0.2*2 + 0.1*(2*0.1 + 0.1) + 0.1*(0.1*8.626...) = 0.5162697
 	ASSERT_CL(equal(0.5162697f, blockPID.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-int blockOutputTest()
+पूर्णांक blockOutputTest()
 {
-	printf("Test BlockOutput\t\t: ");
+	म_लिखो("Test BlockOutput\t\t: ");
 	BlockOutput blockOutput(nullptr, "TEST");
 	// test initial state
 	ASSERT_CL(equal(0.0f, blockOutput.getDt()));
@@ -422,25 +422,25 @@ int blockOutputTest()
 	// test trim
 	blockOutput.update(0.0f);
 	ASSERT_CL(equal(0.5f, blockOutput.get()));
-	printf("PASS\n");
-	return 0;
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-int blockRandUniformTest()
+पूर्णांक blockRandUniformTest()
 {
-	srand(1234);
-	printf("Test BlockRandUniform\t\t: ");
+	बेक्रम(1234);
+	म_लिखो("Test BlockRandUniform\t\t: ");
 	BlockRandUniform blockRandUniform(nullptr, "TEST");
 	// test initial state
 	ASSERT_CL(equal(0.0f, blockRandUniform.getDt()));
 	ASSERT_CL(equal(-1.0f, blockRandUniform.getMin()));
 	ASSERT_CL(equal(1.0f, blockRandUniform.getMax()));
 	// test update
-	int n = 10000;
-	float mean = blockRandUniform.update();
+	पूर्णांक n = 10000;
+	दशांश mean = blockRandUniform.update();
 
-	for (int i = 2; i < n + 1; i++) {
-		float val = blockRandUniform.update();
+	साठी (पूर्णांक i = 2; i < n + 1; i++) {
+		दशांश val = blockRandUniform.update();
 		mean += (val - mean) / i;
 		ASSERT_CL(less_than_or_equal(val, blockRandUniform.getMax()));
 		ASSERT_CL(greater_than_or_equal(val, blockRandUniform.getMin()));
@@ -448,62 +448,62 @@ int blockRandUniformTest()
 
 	ASSERT_CL(equal(mean, (blockRandUniform.getMin() +
 			       blockRandUniform.getMax()) / 2, 1e-1));
-	printf("PASS\n");
-	return 0;
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-int blockRandGaussTest()
+पूर्णांक blockRandGaussTest()
 {
-	srand(1234);
-	printf("Test BlockRandGauss\t\t: ");
+	बेक्रम(1234);
+	म_लिखो("Test BlockRandGauss\t\t: ");
 	BlockRandGauss blockRandGauss(nullptr, "TEST");
 	// test initial state
 	ASSERT_CL(equal(0.0f, blockRandGauss.getDt()));
 	ASSERT_CL(equal(1.0f, blockRandGauss.getMean()));
 	ASSERT_CL(equal(2.0f, blockRandGauss.getStdDev()));
 	// test update
-	int n = 10000;
-	float mean = blockRandGauss.update();
-	float sum = 0;
+	पूर्णांक n = 10000;
+	दशांश mean = blockRandGauss.update();
+	दशांश sum = 0;
 
 	// recursive mean, stdev algorithm from Knuth
-	for (int i = 2; i < n + 1; i++) {
-		float val = blockRandGauss.update();
-		float newMean = mean + (val - mean) / i;
+	साठी (पूर्णांक i = 2; i < n + 1; i++) {
+		दशांश val = blockRandGauss.update();
+		दशांश newMean = mean + (val - mean) / i;
 		sum += (val - mean) * (val - newMean);
 		mean = newMean;
 	}
 
-	float stdDev = sqrtf(sum / (n - 1));
-	(void)(stdDev);
+	दशांश stdDev = sqrtf(sum / (n - 1));
+	(शून्य)(stdDev);
 	ASSERT_CL(equal(mean, blockRandGauss.getMean(), 1e-1));
 	ASSERT_CL(equal(stdDev, blockRandGauss.getStdDev(), 1e-1));
-	printf("PASS\n");
-	return 0;
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-int blockStatsTest()
+पूर्णांक blockStatsTest()
 {
-	printf("Test BlockStats\t\t\t: ");
-	BlockStats<float, 1> stats(nullptr, "TEST");
+	म_लिखो("Test BlockStats\t\t\t: ");
+	BlockStats<दशांश, 1> stats(nullptr, "TEST");
 	ASSERT_CL(equal(0.0f, stats.getMean()(0)));
 	ASSERT_CL(equal(0.0f, stats.getStdDev()(0)));
-	stats.update(matrix::Scalar<float>(1.0f));
-	stats.update(matrix::Scalar<float>(2));
+	stats.update(matrix::Scalar<दशांश>(1.0f));
+	stats.update(matrix::Scalar<दशांश>(2));
 	ASSERT_CL(equal(1.5f, stats.getMean()(0)));
 	ASSERT_CL(equal(0.5f, stats.getStdDev()(0)));
 	stats.reset();
 	ASSERT_CL(equal(0.0f, stats.getMean()(0)));
 	ASSERT_CL(equal(0.0f, stats.getStdDev()(0)));
-	printf("PASS\n");
-	return 0;
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-int blockDelayTest()
+पूर्णांक blockDelayTest()
 {
-	printf("Test BlockDelay\t\t\t: ");
-	using namespace matrix;
-	BlockDelay<float, 2, 1, 3> delay(nullptr, "TEST");
+	म_लिखो("Test BlockDelay\t\t\t: ");
+	using नामाकाश matrix;
+	BlockDelay<दशांश, 2, 1, 3> delay(nullptr, "TEST");
 	Vector2f u1(1, 2);
 	Vector2f y1 = delay.update(u1);
 	ASSERT_CL(equal(y1(0), u1(0)));
@@ -523,13 +523,13 @@ int blockDelayTest()
 	Vector2f y4 = delay.update(u4);
 	ASSERT_CL(equal(y4(0), u2(0)));
 	ASSERT_CL(equal(y4(1), u2(1)));
-	printf("PASS\n");
-	return 0;
+	म_लिखो("PASS\n");
+	परत 0;
 }
 
-extern "C" __EXPORT int controllib_test_main(int argc, char *argv[]);
+बाह्य "C" __EXPORT पूर्णांक controllib_test_main(पूर्णांक argc, अक्षर *argv[]);
 
-int controllib_test_main(int argc, char *argv[])
+पूर्णांक controllib_test_main(पूर्णांक argc, अक्षर *argv[])
 {
-	return basicBlocksTest();
+	परत basicBlocksTest();
 }

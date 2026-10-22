@@ -33,31 +33,31 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#अन्तर्भाव "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear_wheel.h>
+#अन्तर्भाव <uORB/topics/landing_gear_wheel.h>
 
 /**
  * Functions: Landing_Gear_Wheel
  */
-class FunctionLandingGearWheel : public FunctionProviderBase
+वर्ग FunctionLandingGearWheel : सार्वजनिक FunctionProviderBase
 {
-public:
-	FunctionLandingGearWheel() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGearWheel(); }
+सार्वजनिक:
+	FunctionLandingGearWheel() = पूर्वनिर्धारित;
+	स्थिर FunctionProviderBase *allocate(स्थिरांक Context &context) { परत नवीन FunctionLandingGearWheel(); }
 
-	void update() override
+	शून्य update() override
 	{
 		landing_gear_wheel_s landing_gear_wheel;
 
-		if (_topic.update(&landing_gear_wheel)) {
+		जर (_topic.update(&landing_gear_wheel)) {
 			_data = landing_gear_wheel.normalized_wheel_setpoint;
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	दशांश value(OutputFunction func) override { परत _data; }
 
-private:
+खाजगी:
 	uORB::Subscription _topic{ORB_ID(landing_gear_wheel)};
-	float _data{0.f};
+	दशांश _data{0.f};
 };

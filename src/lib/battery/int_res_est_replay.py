@@ -5,26 +5,26 @@
 # Note: Can lead to slightly different results than the online estimation due to the fact that
 # the log frequency of the voltage and current are not the same as the online frequency.
 
-from pyulog import ULog
-import matplotlib.pyplot as plt
-import numpy as np
-import argparse
+तः pyulog आयात ULog
+आयात matplotlib.pyplot इव plt
+आयात numpy इव np
+आयात argparse
 
 def getData(log, topic_name, variable_name, instance=0):
-    for elem in log.data_list:
-        if elem.name == topic_name and instance == elem.multi_id:
-            return elem.data[variable_name]
-    return np.array([])
+    साठी elem मध्ये log.data_list:
+        जर elem.name == topic_name आणि instance == elem.multi_id:
+            परत elem.data[variable_name]
+    परत np.array([])
 
 def us2s(time_us):
-    return time_us * 1e-6
+    परत time_us * 1e-6
 
 def getParam(log, param_name):
-    if param_name in log.initial_parameters:
-        return log.initial_parameters[param_name]
-    else:
+    जर param_name मध्ये log.initial_parameters:
+        परत log.initial_parameters[param_name]
+    अन्यथा:
         print(f"Parameter {param_name} not found in log.")
-    return None
+    परत None
 
 def rls_update(theta, P, x, V, I, lam):
     gamma = P @ x / (lam + x.T @ P @ x)
@@ -32,11 +32,11 @@ def rls_update(theta, P, x, V, I, lam):
     data_cov = x.T @ P @ x
     theta_temp = theta + gamma * error
     P_temp = (P - gamma @ x.T @ P) / lam
-    if (abs(np.linalg.norm(P)) < abs(np.linalg.norm(P_temp))):
+    जर (abs(np.linalg.norm(P)) < abs(np.linalg.norm(P_temp))):
         theta_corr = np.array([V + theta[1] * I, theta[1]]) # Correct OCV estimation
         P_corr = P
-        return theta_corr, P_corr, error, data_cov, 0, 0
-    return theta_temp, P_temp, error, data_cov, gamma[0], gamma[1]
+        परत theta_corr, P_corr, error, data_cov, 0, 0
+    परत theta_temp, P_temp, error, data_cov, gamma[0], gamma[1]
 
 def main(log_name, n_cells, full_cell, empty_cell, lam):
     log = ULog(log_name)
@@ -49,17 +49,17 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
     print(f"Extracted from log - BAT1_N_CELLS: {log_n_cells}, BAT1_V_CHARGED: {log_full_cell}, BAT1_V_EMPTY: {log_empty_cell}")
 
     # Use log parameters unless overridden
-    if n_cells is None:
+    जर n_cells is None:
         n_cells = log_n_cells
-    else:
+    अन्यथा:
         print(f"Using override for n_cells: {n_cells}")
-    if full_cell is None:
+    जर full_cell is None:
         full_cell = log_full_cell
-    else:
+    अन्यथा:
         print(f"Using override for full_cell: {full_cell}")
-    if empty_cell is None:
+    जर empty_cell is None:
         empty_cell = log_empty_cell
-    else:
+    अन्यथा:
         print(f"Using override for empty_cell: {empty_cell}")
 
     # Debug information for final parameter values
@@ -70,9 +70,9 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
     V = getData(log, 'battery_status', 'voltage_v')
     remaining = getData(log, 'battery_status', 'remaining')
 
-    if not timestamps.size or not I.size or not V.size or not remaining.size:
+    जर नाही timestamps.size किंवा नाही I.size किंवा नाही V.size किंवा नाही remaining.size:
         print("Error: Incomplete data.")
-        return
+        परत
 
     # Initializations
     theta = np.array([[V[0] + 0.005 * n_cells * I[0]], [0.005 * n_cells]])  # Initial VOC and R
@@ -94,7 +94,7 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
     gamma_voc_hist = np.zeros_like(I)
     gamma_r_hist = np.zeros_like(I)
 
-    for index in range(len(I)):
+    साठी index मध्ये range(len(I)):
         # RLS algorithm
         x = np.array([[1.0], [-I[index]]]) # Input vector
         theta, P, error, data_cov, gamma_voc_hist[index], gamma_r_hist[index] = rls_update(theta, P, x, V[index], I[index], lam) # Run RLS
@@ -197,12 +197,12 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
 
     plt.show()
 
-if __name__ == "__main__":
+जर __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Estimate battery parameters from ulog file.')
-    parser.add_argument('-f', type = str,   required = True,  help = 'Full path to ulog file')
-    parser.add_argument('-c', type = float, required = False, help = 'Number of cells in battery')
-    parser.add_argument('-u', type = float, required = False, default = None, help = 'Full cell voltage')
-    parser.add_argument('-e', type = float, required = False, default = None,  help = 'Empty cell voltage')
-    parser.add_argument('-l', type = float, required = False, default = 0.99, help = 'Forgetting factor')
+    parser.add_argument('-f', type = str,   required = सत्य,  help = 'Full path to ulog file')
+    parser.add_argument('-c', type = दशांश, required = असत्य, help = 'Number of cells in battery')
+    parser.add_argument('-u', type = दशांश, required = असत्य, पूर्वनिर्धारित = None, help = 'Full cell voltage')
+    parser.add_argument('-e', type = दशांश, required = असत्य, पूर्वनिर्धारित = None,  help = 'Empty cell voltage')
+    parser.add_argument('-l', type = दशांश, required = असत्य, पूर्वनिर्धारित = 0.99, help = 'Forgetting factor')
     args = parser.parse_args()
     main(args.f, args.c, args.u, args.e, args.l)

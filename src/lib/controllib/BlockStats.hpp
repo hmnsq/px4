@@ -39,63 +39,63 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
-template<class Type, size_t M>
-class __EXPORT BlockStats: public Block
+ढाँचा<वर्ग Type, माप_प्रकार M>
+वर्ग __EXPORT BlockStats: सार्वजनिक Block
 {
 
-public:
+सार्वजनिक:
 // methods
 	BlockStats(SuperBlock *parent,
-		   const char *name) :
+		   स्थिरांक अक्षर *name) :
 		Block(parent, name),
 		_sum(),
 		_sumSq(),
-		_count(0)
+		मोजणी_3(0)
 	{}
-	virtual ~BlockStats() = default;
-	void update(const matrix::Vector<Type, M> &u)
+	आभासी ~BlockStats() = पूर्वनिर्धारित;
+	शून्य update(स्थिरांक matrix::Vector<Type, M> &u)
 	{
 		_sum += u;
 		_sumSq += u.emult(u);
-		_count += 1;
+		मोजणी_3 += 1;
 	}
-	void reset()
+	शून्य reset()
 	{
 		_sum.setZero();
 		_sumSq.setZero();
-		_count = 0;
+		मोजणी_3 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
+	माप_प्रकार get_मोजणी() { परत मोजणी_3; }
+	matrix::Vector<Type, M> getMean() { परत _sum / मोजणी_3; }
 	matrix::Vector<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		परत (_sumSq - _sum.emult(_sum) / मोजणी_3) / मोजणी_3;
 	}
 	matrix::Vector<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		परत getVar().वर्ग_मूल();
 	}
-private:
+खाजगी:
 // attributes
 	matrix::Vector<Type, M> _sum;
 	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+	माप_प्रकार मोजणी_3;
 };
 
 } // namespace control

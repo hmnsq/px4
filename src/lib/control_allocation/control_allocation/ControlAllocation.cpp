@@ -39,7 +39,7 @@
  * @author Julien Lecoeur <julien.lecoeur@gmail.com>
  */
 
-#include "ControlAllocation.hpp"
+#अन्तर्भाव "ControlAllocation.hpp"
 
 ControlAllocation::ControlAllocation()
 {
@@ -48,24 +48,24 @@ ControlAllocation::ControlAllocation()
 	_actuator_max.setAll(1.f);
 }
 
-void
+शून्य
 ControlAllocation::setEffectivenessMatrix(
-	const matrix::Matrix<float, ControlAllocation::NUM_AXES, ControlAllocation::NUM_ACTUATORS> &effectiveness,
-	const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
-	bool update_normalization_scale)
+	स्थिरांक matrix::Matrix<दशांश, ControlAllocation::अंक_AXES, ControlAllocation::अंक_ACTUATORS> &effectiveness,
+	स्थिरांक ActuatorVector &actuator_trim, स्थिरांक ActuatorVector &linearization_point, पूर्णांक अंक_actuators,
+	तार्किक update_normalization_scale)
 {
 	_effectiveness = effectiveness;
 	ActuatorVector linearization_point_clipped = linearization_point;
 	clipActuatorSetpoint(linearization_point_clipped);
 	_actuator_trim = actuator_trim + linearization_point_clipped;
 	clipActuatorSetpoint(_actuator_trim);
-	_num_actuators = num_actuators;
+	अंक_actuators_2 = अंक_actuators;
 	_control_trim = _effectiveness * linearization_point_clipped;
 }
 
-void
+शून्य
 ControlAllocation::setActuatorSetpoint(
-	const matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator_sp)
+	स्थिरांक matrix::Vector<दशांश, ControlAllocation::अंक_ACTUATORS> &actuator_sp)
 {
 	// Set actuator setpoint
 	_actuator_sp = actuator_sp;
@@ -74,41 +74,41 @@ ControlAllocation::setActuatorSetpoint(
 	clipActuatorSetpoint(_actuator_sp);
 }
 
-void
-ControlAllocation::clipActuatorSetpoint(matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator) const
+शून्य
+ControlAllocation::clipActuatorSetpoint(matrix::Vector<दशांश, ControlAllocation::अंक_ACTUATORS> &actuator) स्थिरांक
 {
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_max(i) < _actuator_min(i)) {
+	साठी (पूर्णांक i = 0; i < अंक_actuators_2; i++) {
+		जर (_actuator_max(i) < _actuator_min(i)) {
 			actuator(i) = _actuator_trim(i);
 
-		} else if (actuator(i) < _actuator_min(i)) {
+		} अन्यथा जर (actuator(i) < _actuator_min(i)) {
 			actuator(i) = _actuator_min(i);
 
-		} else if (actuator(i) > _actuator_max(i)) {
+		} अन्यथा जर (actuator(i) > _actuator_max(i)) {
 			actuator(i) = _actuator_max(i);
 		}
 	}
 }
 
-matrix::Vector<float, ControlAllocation::NUM_ACTUATORS>
-ControlAllocation::normalizeActuatorSetpoint(const matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator)
-const
+matrix::Vector<दशांश, ControlAllocation::अंक_ACTUATORS>
+ControlAllocation::normalizeActuatorSetpoint(स्थिरांक matrix::Vector<दशांश, ControlAllocation::अंक_ACTUATORS> &actuator)
+स्थिरांक
 {
-	matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> actuator_normalized;
+	matrix::Vector<दशांश, ControlAllocation::अंक_ACTUATORS> actuator_normalized;
 
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_min(i) < _actuator_max(i)) {
+	साठी (पूर्णांक i = 0; i < अंक_actuators_2; i++) {
+		जर (_actuator_min(i) < _actuator_max(i)) {
 			actuator_normalized(i) = (actuator(i) - _actuator_min(i)) / (_actuator_max(i) - _actuator_min(i));
 
-		} else {
+		} अन्यथा {
 			actuator_normalized(i) = (_actuator_trim(i) - _actuator_min(i)) / (_actuator_max(i) - _actuator_min(i));
 		}
 	}
 
-	return actuator_normalized;
+	परत actuator_normalized;
 }
 
-void ControlAllocation::applySlewRateLimit(float dt)
+शून्य ControlAllocation::applySlewRateLimit(दशांश dt)
 {
 	// For motors, an actuator setpoint of NaN represents switching off the
 	// motor (giving it disarmed PWM). Physically it results in zero thrust,
@@ -122,39 +122,39 @@ void ControlAllocation::applySlewRateLimit(float dt)
 	//  - NaN to nonzero: replace NaN by zero, then rise with slew rate to input
 	//  - between nonzero and 0: slew limit, then match input
 
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_slew_rate_limit(i) > FLT_EPSILON) {
+	साठी (पूर्णांक i = 0; i < अंक_actuators_2; i++) {
+		जर (_actuator_slew_rate_limit(i) > भग्न_अंतर) {
 
-			float input = _actuator_sp(i);
-			float previous = _prev_actuator_sp(i);
+			दशांश आदान = _actuator_sp(i);
+			दशांश previous = _prev_actuator_sp(i);
 
 			// Before slew limiting, transform NaN to 0, but remember if the input was NaN
-			const bool input_is_nan = !PX4_ISFINITE(input);
+			स्थिरांक तार्किक आदान_is_nan = !PX4_ISFINITE(आदान);
 
-			if (input_is_nan) {
-				input = 0.f;
+			जर (आदान_is_nan) {
+				आदान = 0.f;
 			}
 
-			if (!PX4_ISFINITE(previous)) {
+			जर (!PX4_ISFINITE(previous)) {
 				previous = 0.f;
 			}
 
 			// Slew limit without any NaN involved
-			const float delta_sp_max = dt * (_actuator_max(i) - _actuator_min(i)) / _actuator_slew_rate_limit(i);
-			const float delta_sp = input - previous;
+			स्थिरांक दशांश delta_sp_max = dt * (_actuator_max(i) - _actuator_min(i)) / _actuator_slew_rate_limit(i);
+			स्थिरांक दशांश delta_sp = आदान - previous;
 
-			float output = input;
+			दशांश output = आदान;
 
-			if (delta_sp > delta_sp_max) {
+			जर (delta_sp > delta_sp_max) {
 				output = previous + delta_sp_max;
 
-			} else if (delta_sp < -delta_sp_max) {
+			} अन्यथा जर (delta_sp < -delta_sp_max) {
 				output = previous - delta_sp_max;
 			}
 
 			// Transform back to NaN if appropriate
-			if (input_is_nan && fabsf(output) < FLT_EPSILON) {
-				output = NAN;
+			जर (आदान_is_nan && fabsf(output) < भग्न_अंतर) {
+				output = न_अंक;
 			}
 
 			_actuator_sp(i) = output;

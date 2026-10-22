@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "Magnetometer.hpp"
+#अन्तर्भाव "Magnetometer.hpp"
 
-#include "Utilities.hpp"
+#अन्तर्भाव "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#अन्तर्भाव <lib/drivers/device/Device.hpp>
+#अन्तर्भाव <lib/parameters/param.h>
 
-using namespace matrix;
-using namespace time_literals;
+using नामाकाश matrix;
+using नामाकाश time_literals;
 
-namespace calibration
+नामाकाश calibration
 {
 
 Magnetometer::Magnetometer()
@@ -54,19 +54,19 @@ Magnetometer::Magnetometer(uint32_t device_id)
 	set_device_id(device_id);
 }
 
-Magnetometer::Magnetometer(uint32_t device_id, bool external)
+Magnetometer::Magnetometer(uint32_t device_id, तार्किक external)
 {
 	set_device_id(device_id, external);
 }
 
-void Magnetometer::set_device_id(uint32_t device_id)
+शून्य Magnetometer::set_device_id(uint32_t device_id)
 {
 	set_device_id(device_id, device::device_is_external(device_id));
 }
 
-void Magnetometer::set_device_id(uint32_t device_id, bool external)
+शून्य Magnetometer::set_device_id(uint32_t device_id, तार्किक external)
 {
-	if (_device_id != device_id || _external != external) {
+	जर (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -74,39 +74,39 @@ void Magnetometer::set_device_id(uint32_t device_id, bool external)
 		Reset();
 
 		ParametersUpdate();
-		SensorCorrectionsUpdate(true);
+		SensorCorrectionsUpdate(सत्य);
 	}
 }
 
-void Magnetometer::SensorCorrectionsUpdate(bool force)
+शून्य Magnetometer::SensorCorrectionsUpdate(तार्किक force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	जर (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		जर (_device_id == 0) {
+			परत;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		जर (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.mag_device_ids[i] == _device_id) {
-					switch (i) {
-					case 0:
+			साठी (पूर्णांक i = 0; i < MAX_SENSOR_मोजणी; i++) {
+				जर (corrections.mag_device_ids[i] == _device_id) {
+					निवड (i) {
+					स्थिती 0:
 						_thermal_offset = Vector3f{corrections.mag_offset_0};
-						return;
-					case 1:
+						परत;
+					स्थिती 1:
 						_thermal_offset = Vector3f{corrections.mag_offset_1};
-						return;
-					case 2:
+						परत;
+					स्थिती 2:
 						_thermal_offset = Vector3f{corrections.mag_offset_2};
-						return;
-					case 3:
+						परत;
+					स्थिती 3:
 						_thermal_offset = Vector3f{corrections.mag_offset_3};
-						return;
+						परत;
 					}
 				}
 			}
@@ -117,39 +117,39 @@ void Magnetometer::SensorCorrectionsUpdate(bool force)
 	}
 }
 
-bool Magnetometer::set_offset(const Vector3f &offset)
+तार्किक Magnetometer::set_offset(स्थिरांक Vector3f &offset)
 {
-	if (Vector3f(_offset - offset).longerThan(0.005f)) {
-		if (offset.isAllFinite()) {
+	जर (Vector3f(_offset - offset).longerThan(0.005f)) {
+		जर (offset.isAllFinite()) {
 			_offset = offset;
-			_calibration_count++;
-			return true;
+			calibration_मोजणी++;
+			परत सत्य;
 		}
 	}
 
-	return false;
+	परत असत्य;
 }
 
-bool Magnetometer::set_scale(const Vector3f &scale)
+तार्किक Magnetometer::set_scale(स्थिरांक Vector3f &scale)
 {
-	if (Vector3f(_scale.diag() - scale).longerThan(0.01f)) {
-		if (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
+	जर (Vector3f(_scale.diag() - scale).longerThan(0.01f)) {
+		जर (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
 			_scale(0, 0) = scale(0);
 			_scale(1, 1) = scale(1);
 			_scale(2, 2) = scale(2);
 
-			_calibration_count++;
-			return true;
+			calibration_मोजणी++;
+			परत सत्य;
 		}
 	}
 
-	return false;
+	परत असत्य;
 }
 
-bool Magnetometer::set_offdiagonal(const Vector3f &offdiagonal)
+तार्किक Magnetometer::set_offdiagonal(स्थिरांक Vector3f &offdiagonal)
 {
-	if (Vector3f(Vector3f{_scale(0, 1), _scale(0, 2), _scale(1, 2)} - offdiagonal).longerThan(0.01f)) {
-		if (offdiagonal.isAllFinite()) {
+	जर (Vector3f(Vector3f{_scale(0, 1), _scale(0, 2), _scale(1, 2)} - offdiagonal).longerThan(0.01f)) {
+		जर (offdiagonal.isAllFinite()) {
 
 			_scale(0, 1) = offdiagonal(0);
 			_scale(1, 0) = offdiagonal(0);
@@ -160,20 +160,20 @@ bool Magnetometer::set_offdiagonal(const Vector3f &offdiagonal)
 			_scale(1, 2) = offdiagonal(2);
 			_scale(2, 1) = offdiagonal(2);
 
-			_calibration_count++;
-			return true;
+			calibration_मोजणी++;
+			परत सत्य;
 		}
 	}
 
-	return false;
+	परत असत्य;
 }
 
-void Magnetometer::set_rotation(const Rotation rotation)
+शून्य Magnetometer::set_rotation(स्थिरांक Rotation rotation)
 {
-	if (rotation < ROTATION_MAX) {
+	जर (rotation < ROTATION_MAX) {
 		_rotation_enum = rotation;
 
-	} else {
+	} अन्यथा {
 		// invalid rotation, resetting
 		_rotation_enum = ROTATION_NONE;
 	}
@@ -185,7 +185,7 @@ void Magnetometer::set_rotation(const Rotation rotation)
 	_rotation_custom_euler.zero();
 }
 
-void Magnetometer::set_custom_rotation(const Eulerf &rotation)
+शून्य Magnetometer::set_custom_rotation(स्थिरांक Eulerf &rotation)
 {
 	_rotation_enum = ROTATION_CUSTOM;
 
@@ -203,74 +203,74 @@ void Magnetometer::set_custom_rotation(const Eulerf &rotation)
 	// values properly (i.e. finding Vehicle's true Forward-Right-Down frame in a user's perspective)
 }
 
-bool Magnetometer::set_calibration_index(int calibration_index)
+तार्किक Magnetometer::set_calibration_index(पूर्णांक calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	जर ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_मोजणी)) {
 		_calibration_index = calibration_index;
-		return true;
+		परत सत्य;
 	}
 
-	return false;
+	परत असत्य;
 }
 
-void Magnetometer::ParametersUpdate()
+शून्य Magnetometer::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	जर (_device_id == 0) {
+		परत;
 	}
 
 	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	जर (_calibration_index == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
+	} अन्यथा {
 		ParametersLoad();
 	}
 }
 
-bool Magnetometer::ParametersLoad()
+तार्किक Magnetometer::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	जर (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_मोजणी) {
 		// CAL_MAGx_ROT
-		int32_t rotation_value = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
+		int32_t rotation_मूल्य = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
 
-		const float euler_roll_deg = GetCalibrationParamFloat(SensorString(), "ROLL", _calibration_index);
-		const float euler_pitch_deg = GetCalibrationParamFloat(SensorString(), "PITCH", _calibration_index);
-		const float euler_yaw_deg = GetCalibrationParamFloat(SensorString(), "YAW", _calibration_index);
+		स्थिरांक दशांश euler_roll_deg = GetCalibrationParamFloat(SensorString(), "ROLL", _calibration_index);
+		स्थिरांक दशांश euler_pitch_deg = GetCalibrationParamFloat(SensorString(), "PITCH", _calibration_index);
+		स्थिरांक दशांश euler_yaw_deg = GetCalibrationParamFloat(SensorString(), "YAW", _calibration_index);
 
-		if (_external) {
-			if (((rotation_value >= ROTATION_MAX) && (rotation_value != ROTATION_CUSTOM)) || (rotation_value < 0)) {
+		जर (_external) {
+			जर (((rotation_मूल्य >= ROTATION_MAX) && (rotation_मूल्य != ROTATION_CUSTOM)) || (rotation_मूल्य < 0)) {
 				// invalid rotation, resetting
-				rotation_value = ROTATION_NONE;
+				rotation_मूल्य = ROTATION_NONE;
 			}
 
 			// if CAL_MAGx_{ROLL,PITCH,YAW} manually set then CAL_MAGx_ROT needs to be ROTATION_CUSTOM
-			if ((rotation_value != ROTATION_CUSTOM)
-			    && ((fabsf(euler_roll_deg) > FLT_EPSILON)
-				|| (fabsf(euler_pitch_deg) > FLT_EPSILON)
-				|| (fabsf(euler_yaw_deg) > FLT_EPSILON))) {
+			जर ((rotation_मूल्य != ROTATION_CUSTOM)
+			    && ((fabsf(euler_roll_deg) > भग्न_अंतर)
+				|| (fabsf(euler_pitch_deg) > भग्न_अंतर)
+				|| (fabsf(euler_yaw_deg) > भग्न_अंतर))) {
 
-				rotation_value = ROTATION_CUSTOM;
-				SetCalibrationParam(SensorString(), "ROT", _calibration_index, rotation_value);
+				rotation_मूल्य = ROTATION_CUSTOM;
+				SetCalibrationParam(SensorString(), "ROT", _calibration_index, rotation_मूल्य);
 			}
 
 			// Handle custom specified euler angle
-			if (rotation_value == ROTATION_CUSTOM) {
+			जर (rotation_मूल्य == ROTATION_CUSTOM) {
 
-				const matrix::Eulerf rotation_custom_euler{
+				स्थिरांक matrix::Eulerf rotation_custom_euler{
 					math::radians(euler_roll_deg),
 					math::radians(euler_pitch_deg),
 					math::radians(euler_yaw_deg)};
 
 				set_custom_rotation(rotation_custom_euler);
 
-			} else {
-				set_rotation(static_cast<Rotation>(rotation_value));
+			} अन्यथा {
+				set_rotation(static_cast<Rotation>(rotation_मूल्य));
 			}
 
-		} else {
+		} अन्यथा {
 			// internal sensors follow board rotation
 			set_rotation(GetBoardRotation());
 		}
@@ -278,11 +278,11 @@ bool Magnetometer::ParametersLoad()
 		// CAL_MAGx_PRIO
 		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		जर ((_priority < 0) || (_priority > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
-			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
+			स्थिर constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			जर (_priority != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
 					_calibration_index, _priority);
 
@@ -304,18 +304,18 @@ bool Magnetometer::ParametersLoad()
 		// CAL_MAGx_COMP{X,Y,Z}
 		_power_compensation = GetCalibrationParamsVector3f(SensorString(), "COMP", _calibration_index);
 
-		return true;
+		परत सत्य;
 	}
 
-	return false;
+	परत असत्य;
 }
 
-void Magnetometer::Reset()
+शून्य Magnetometer::Reset()
 {
-	if (_external) {
+	जर (_external) {
 		set_rotation(ROTATION_NONE);
 
-	} else {
+	} अन्यथा {
 		// internal sensors follow board rotation
 		set_rotation(GetBoardRotation());
 	}
@@ -330,46 +330,46 @@ void Magnetometer::Reset()
 
 	_calibration_index = -1;
 
-	_calibration_count = 0;
+	calibration_मोजणी = 0;
 }
 
-bool Magnetometer::ParametersSave(int desired_calibration_index, bool force)
+तार्किक Magnetometer::ParametersSave(पूर्णांक desired_calibration_index, तार्किक force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	जर (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_मोजणी) {
 		_calibration_index = desired_calibration_index;
 
-	} else if (!force || (_calibration_index < 0)
+	} अन्यथा जर (!force || (_calibration_index < 0)
 		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
 		int8_t calibration_index_prev = _calibration_index;
 		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		जर (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
 				 calibration_index_prev, _calibration_index);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	जर (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_मोजणी) {
 		// save calibration
-		bool success = true;
+		तार्किक success = सत्य;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
 		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
 		success &= SetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index, _offset);
 
-		const Vector3f scale{_scale.diag()};
+		स्थिरांक Vector3f scale{_scale.diag()};
 		success &= SetCalibrationParamsVector3f(SensorString(), "SCALE", _calibration_index, scale);
 
-		const Vector3f off_diag{_scale(0, 1), _scale(0, 2), _scale(1, 2)};
+		स्थिरांक Vector3f off_diag{_scale(0, 1), _scale(0, 2), _scale(1, 2)};
 		success &= SetCalibrationParamsVector3f(SensorString(), "ODIAG", _calibration_index, off_diag);
 
 		success &= SetCalibrationParamsVector3f(SensorString(), "COMP", _calibration_index, _power_compensation);
 
-		if (_external) {
+		जर (_external) {
 			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, (int32_t)_rotation_enum);
 
-		} else {
+		} अन्यथा {
 			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, -1); // internal
 		}
 
@@ -377,31 +377,31 @@ bool Magnetometer::ParametersSave(int desired_calibration_index, bool force)
 		success &= SetCalibrationParam(SensorString(), "PITCH", _calibration_index, math::degrees(_rotation_custom_euler(1)));
 		success &= SetCalibrationParam(SensorString(), "YAW", _calibration_index, math::degrees(_rotation_custom_euler(2)));
 
-		return success;
+		परत success;
 	}
 
-	return false;
+	परत असत्य;
 }
 
-void Magnetometer::PrintStatus()
+शून्य Magnetometer::PrintStatus()
 {
-	if (external()) {
+	जर (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Ext ROT: %d\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
-			     (double)_scale(0, 0), (double)_scale(1, 1), (double)_scale(2, 2),
+			     (द्विगुण)_offset(0), (द्विगुण)_offset(1), (द्विगुण)_offset(2),
+			     (द्विगुण)_scale(0, 0), (द्विगुण)_scale(1, 1), (द्विगुण)_scale(2, 2),
 			     rotation_enum());
 
-	} else {
+	} अन्यथा {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
-			     (double)_scale(0, 0), (double)_scale(1, 1), (double)_scale(2, 2));
+			     (द्विगुण)_offset(0), (द्विगुण)_offset(1), (द्विगुण)_offset(2),
+			     (द्विगुण)_scale(0, 0), (द्विगुण)_scale(1, 1), (द्विगुण)_scale(2, 2));
 	}
 
-#if defined(DEBUG_BUILD)
+#जर defined(DEBUG_BUILD)
 	_scale.print();
 #endif // DEBUG_BUILD
 }

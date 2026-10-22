@@ -31,21 +31,21 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "PerformanceModel.hpp"
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव "PerformanceModel.hpp"
 
 // to run: make tests TESTFILTER=PerformanceModel
 
-class PerformanceModelTest : public ::testing::Test
+वर्ग PerformanceModelTest : सार्वजनिक ::testing::Test
 {
-public:
-	void SetUp() override
+सार्वजनिक:
+	शून्य SetUp() override
 	{
-		param_control_autosave(false);
+		param_control_autosave(असत्य);
 		param_reset_all();
 	}
 
-	void setWeightParams(float base, float gross, float fuel)
+	शून्य setWeightParams(दशांश base, दशांश gross, दशांश fuel)
 	{
 		param_set(param_handle(px4::params::WEIGHT_BASE), &base);
 		param_set(param_handle(px4::params::WEIGHT_GROSS), &gross);
@@ -94,7 +94,7 @@ TEST_F(PerformanceModelTest, weightRatioScalesWithFuelFraction)
 	EXPECT_FLOAT_EQ(_model.getWeightRatio(), 0.8f);
 }
 
-TEST_F(PerformanceModelTest, fuelFractionKeptOnNonFiniteInput)
+TEST_F(PerformanceModelTest, fuel_Fraction_Kept_On_Non_Finite_आदान)
 {
 	// GIVEN: base and gross weight set, 4kg full fuel load, and a known fuel fraction
 	setWeightParams(10.0f, 12.0f, 4.0f);
@@ -102,7 +102,7 @@ TEST_F(PerformanceModelTest, fuelFractionKeptOnNonFiniteInput)
 	EXPECT_FLOAT_EQ(_model.getWeightRatio(), 1.0f);
 
 	// WHEN: the fuel fraction input becomes non-finite (e.g. sensor failure)
-	_model.setFuelFractionRemaining(NAN);
+	_model.setFuelFractionRemaining(न_अंक);
 
 	// THEN: the last known fuel fraction is kept
 	EXPECT_FLOAT_EQ(_model.getWeightRatio(), 1.0f);
@@ -135,9 +135,9 @@ TEST_F(PerformanceModelTest, fuelFractionFromTankStatusFallbackChain)
 {
 	// GIVEN: a fuel tank status with no measurements
 	fuel_tank_status_s status{};
-	status.maximum_fuel_capacity = NAN;
-	status.remaining_fuel = NAN;
-	status.consumed_fuel = NAN;
+	status.maximum_fuel_capacity = न_अंक;
+	status.remaining_fuel = न_अंक;
+	status.consumed_fuel = न_अंक;
 	status.percent_remaining = UINT8_MAX;
 
 	// THEN: no fuel fraction is available
@@ -163,14 +163,14 @@ TEST_F(PerformanceModelTest, fuelFractionFromTankStatusIsConstrained)
 	fuel_tank_status_s status{};
 	status.maximum_fuel_capacity = 2000.f;
 	status.remaining_fuel = 3000.f;
-	status.consumed_fuel = NAN;
+	status.consumed_fuel = न_अंक;
 	status.percent_remaining = UINT8_MAX;
 
 	// THEN: the fuel fraction is constrained to 1
 	EXPECT_FLOAT_EQ(PerformanceModel::getFuelFractionRemaining(status), 1.0f);
 
 	// AND: more consumed fuel than the maximum capacity results in a fraction of 0
-	status.remaining_fuel = NAN;
+	status.remaining_fuel = न_अंक;
 	status.consumed_fuel = 3000.f;
 	EXPECT_FLOAT_EQ(PerformanceModel::getFuelFractionRemaining(status), 0.0f);
 

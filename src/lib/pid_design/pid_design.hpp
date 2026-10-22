@@ -40,10 +40,10 @@
 
 #pragma once
 
-#include <matrix/matrix/math.hpp>
-#include <mathlib/mathlib.h>
+#अन्तर्भाव <matrix/matrix/math.hpp>
+#अन्तर्भाव <mathlib/mathlib.h>
 
-namespace pid_design
+नामाकाश pid_design
 {
 
 /*
@@ -65,41 +65,41 @@ namespace pid_design
 * T.Yamatoto, K.Fujii and M.Kaneda, Design and implementation of a self-tuning pid controller, 1998
 */
 
-inline matrix::Vector3f computePidGmvc(const matrix::Vector3f &num, const matrix::Vector3f &den, float dt,
-				       float sigma = 0.1f, float delta = 1.f, float lbda = 0.5f)
+ओळीत matrix::Vector3f computePidGmvc(स्थिरांक matrix::Vector3f &अंक, स्थिरांक matrix::Vector3f &den, दशांश dt,
+				       दशांश sigma = 0.1f, दशांश delta = 1.f, दशांश lbda = 0.5f)
 {
 	sigma = math::constrain(sigma, 0.01f, 1.f);
 	delta = math::constrain(delta, 0.f, 1.f);
 	lbda = math::constrain(lbda, 0.f, 10.f);
 
-	const float a1 = den(1);
-	const float a2 = den(2);
-	const float b0 = num(0);
-	const float b1 = num(1);
-	const float b2 = num(2);
+	स्थिरांक दशांश a1 = den(1);
+	स्थिरांक दशांश a2 = den(2);
+	स्थिरांक दशांश b0 = अंक(0);
+	स्थिरांक दशांश b1 = अंक(1);
+	स्थिरांक दशांश b2 = अंक(2);
 
 	// Solve GMVC law (see derivation in pid_synthesis_symbolic.py)
-	const float rho = dt / sigma;
-	const float mu = 0.25f * (1.f - delta) + 0.51f * delta; // mu is in the interval [0.25 0.51]
-	const float p1 = -2.f * expf(-rho / (2.f * mu)) * cosf(sqrtf(4.f * mu - 1.f) * rho / (2.f * mu));
-	const float p2 = expf(-rho / mu);
-	const float e1 = -a1 + p1 + 1.f;
-	const float f0 = -a1 * e1 + a1 - a2 + e1 + p2;
-	const float f1 = a1 * e1 - a2 * e1 + a2;
-	const float f2 = a2 * e1;
+	स्थिरांक दशांश rho = dt / sigma;
+	स्थिरांक दशांश mu = 0.25f * (1.f - delta) + 0.51f * delta; // mu is in the interval [0.25 0.51]
+	स्थिरांक दशांश p1 = -2.f * expf(-rho / (2.f * mu)) * cosf(sqrtf(4.f * mu - 1.f) * rho / (2.f * mu));
+	स्थिरांक दशांश p2 = expf(-rho / mu);
+	स्थिरांक दशांश e1 = -a1 + p1 + 1.f;
+	स्थिरांक दशांश f0 = -a1 * e1 + a1 - a2 + e1 + p2;
+	स्थिरांक दशांश f1 = a1 * e1 - a2 * e1 + a2;
+	स्थिरांक दशांश f2 = a2 * e1;
 
 	// Translate to PID gains
-	const float nu = lbda + (e1 + 1.f) * (b0 + b1 + b2);
+	स्थिरांक दशांश nu = lbda + (e1 + 1.f) * (b0 + b1 + b2);
 
-	if (fabsf(nu) < FLT_EPSILON) {
-		return matrix::Vector3f();
+	जर (fabsf(nu) < भग्न_अंतर) {
+		परत matrix::Vector3f();
 	}
 
-	const float kc = -(f1 + 2.f * f2) / nu;
-	float ki = -(f0 + f1 + f2) / (dt * (f1 + 2.f * f2));
+	स्थिरांक दशांश kc = -(f1 + 2.f * f2) / nu;
+	दशांश ki = -(f0 + f1 + f2) / (dt * (f1 + 2.f * f2));
 	ki /= 5.f; // This is not part of the original implementation but is required to produce reasonable gains
-	const float kd = -dt * f2 / (f1 + 2.f * f2);
+	स्थिरांक दशांश kd = -dt * f2 / (f1 + 2.f * f2);
 
-	return matrix::Vector3f(kc, ki, kd);
+	परत matrix::Vector3f(kc, ki, kd);
 }
 } // namespace pid_design

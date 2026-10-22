@@ -34,10 +34,10 @@
 
 
 
-#include "VariableLengthRingbuffer.hpp"
+#अन्तर्भाव "VariableLengthRingbuffer.hpp"
 
-#include <assert.h>
-#include <string.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <string.h>
 
 
 VariableLengthRingbuffer::~VariableLengthRingbuffer()
@@ -45,62 +45,62 @@ VariableLengthRingbuffer::~VariableLengthRingbuffer()
 	deallocate();
 }
 
-bool VariableLengthRingbuffer::allocate(size_t buffer_size)
+तार्किक VariableLengthRingbuffer::allocate(माप_प्रकार buffer_size)
 {
-	return _ringbuffer.allocate(buffer_size);
+	परत _ringbuffer.allocate(buffer_size);
 }
 
-void VariableLengthRingbuffer::deallocate()
+शून्य VariableLengthRingbuffer::deallocate()
 {
 	_ringbuffer.deallocate();
 }
 
-bool VariableLengthRingbuffer::push_back(const uint8_t *packet, size_t packet_len)
+तार्किक VariableLengthRingbuffer::push_back(स्थिरांक uint8_t *packet, माप_प्रकार packet_len)
 {
-	if (packet_len == 0 || packet == nullptr) {
+	जर (packet_len == 0 || packet == nullptr) {
 		// Nothing to add, we better don't try.
-		return false;
+		परत असत्य;
 	}
 
-	size_t space_required = packet_len + sizeof(Header);
+	माप_प्रकार space_required = packet_len + आकार(Header);
 
-	if (space_required > _ringbuffer.space_available()) {
-		return false;
+	जर (space_required > _ringbuffer.space_available()) {
+		परत असत्य;
 	}
 
 	Header header{static_cast<uint32_t>(packet_len)};
-	bool result = _ringbuffer.push_back(reinterpret_cast<const uint8_t * >(&header), sizeof(header));
-	assert(result);
+	तार्किक result = _ringbuffer.push_back(reinterpret_cast<स्थिरांक uint8_t * >(&header), आकार(header));
+	प्रतिज्ञा(result);
 
 	result = _ringbuffer.push_back(packet, packet_len);
-	assert(result);
+	प्रतिज्ञा(result);
 
 	// In case asserts are commented out to prevent unused warnings.
-	(void)result;
+	(शून्य)result;
 
-	return true;
+	परत सत्य;
 }
 
-size_t VariableLengthRingbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
+माप_प्रकार VariableLengthRingbuffer::काढा_front(uint8_t *buf, माप_प्रकार buf_max_len)
 {
-	if (buf == nullptr) {
+	जर (buf == nullptr) {
 		// User needs to supply a valid pointer.
-		return 0;
+		परत 0;
 	}
 
 	// Check next header
 	Header header;
 
-	if (_ringbuffer.pop_front(reinterpret_cast<uint8_t *>(&header), sizeof(header)) < sizeof(header)) {
-		return 0;
+	जर (_ringbuffer.काढा_front(reinterpret_cast<uint8_t *>(&header), आकार(header)) < आकार(header)) {
+		परत 0;
 	}
 
 	// We can't fit the packet into the user supplied buffer.
 	// This should never happen as the user has to supply a big // enough buffer.
-	assert(static_cast<uint32_t>(header.len) <= buf_max_len);
+	प्रतिज्ञा(static_cast<uint32_t>(header.len) <= buf_max_len);
 
-	size_t bytes_read = _ringbuffer.pop_front(buf, header.len);
-	assert(bytes_read == header.len);
+	माप_प्रकार bytes_read = _ringbuffer.काढा_front(buf, header.len);
+	प्रतिज्ञा(bytes_read == header.len);
 
-	return bytes_read;
+	परत bytes_read;
 }

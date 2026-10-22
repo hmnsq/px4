@@ -39,73 +39,73 @@
 
 #pragma once
 
-#include <containers/List.hpp>
-#include <px4_platform_common/defines.h>
-#include <parameters/param.h>
+#अन्तर्भाव <containers/List.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <parameters/param.h>
 
-namespace control
+नामाकाश control
 {
 
-class Block;
+वर्ग Block;
 
 // A base class for block params that enables traversing linked list.
-class BlockParamBase : public ListNode<BlockParamBase *>
+वर्ग BlockParamBase : सार्वजनिक List_गाठ<BlockParamBase *>
 {
-public:
+सार्वजनिक:
 	/**
 	 * Instantiate a block param base.
 	 *
 	 * @param parent_prefix Set to true to include the parent name in the parameter name
 	 */
-	BlockParamBase(Block *parent, const char *name, bool parent_prefix = true);
-	virtual ~BlockParamBase() = default;
+	BlockParamBase(Block *parent, स्थिरांक अक्षर *name, तार्किक parent_prefix = सत्य);
+	आभासी ~BlockParamBase() = पूर्वनिर्धारित;
 
-	virtual bool update() = 0;
-	const char *getName() const { return param_name(_handle); }
+	आभासी तार्किक update() = 0;
+	स्थिरांक अक्षर *getName() स्थिरांक { परत param_name(_handle); }
 
-protected:
+संरक्षित:
 	param_t _handle{PARAM_INVALID};
 };
 
 // Parameters that are tied to blocks for updating and naming.
-template <class T>
-class __EXPORT BlockParam final : public BlockParamBase
+ढाँचा <वर्ग T>
+वर्ग __EXPORT BlockParam final : सार्वजनिक BlockParamBase
 {
-public:
-	BlockParam(Block *block, const char *name, bool parent_prefix = true);
-	BlockParam(Block *block, const char *name, bool parent_prefix, T &extern_val);
+सार्वजनिक:
+	BlockParam(Block *block, स्थिरांक अक्षर *name, तार्किक parent_prefix = सत्य);
+	BlockParam(Block *block, स्थिरांक अक्षर *name, तार्किक parent_prefix, T &extern_val);
 
-	~BlockParam() override = default;
+	~BlockParam() override = पूर्वनिर्धारित;
 
 	// no copy, assignment, move, move assignment
-	BlockParam(const BlockParam &) = delete;
-	BlockParam &operator=(const BlockParam &) = delete;
+	BlockParam(स्थिरांक BlockParam &) = delete;
+	BlockParam &चालक=(स्थिरांक BlockParam &) = delete;
 	BlockParam(BlockParam &&) = delete;
-	BlockParam &operator=(BlockParam &&) = delete;
+	BlockParam &चालक=(BlockParam &&) = delete;
 
-	T get() const { return _val; }
+	T get() स्थिरांक { परत _val; }
 
 	// Store the parameter value to the parameter storage (@see param_set())
-	bool commit() { return (param_set(_handle, &_val) == PX4_OK); }
+	तार्किक commit() { परत (param_set(_handle, &_val) == PX4_OK); }
 
 	// Store the parameter value to the parameter storage, w/o notifying the system (@see param_set_no_notification())
-	bool commit_no_notification() { return (param_set_no_notification(_handle, &_val) == PX4_OK); }
+	तार्किक commit_no_notification() { परत (param_set_no_notification(_handle, &_val) == PX4_OK); }
 
-	void set(T val) { _val = val; }
+	शून्य set(T val) { _val = val; }
 
-	bool update() override { return (param_get(_handle, &_val) == PX4_OK); }
+	तार्किक update() override { परत (param_get(_handle, &_val) == PX4_OK); }
 
-protected:
+संरक्षित:
 	T _val;
 };
 
-template <>
-bool BlockParam<bool>::update();
+ढाँचा <>
+तार्किक BlockParam<तार्किक>::update();
 
-typedef BlockParam<float> BlockParamFloat;
-typedef BlockParam<int32_t> BlockParamInt;
-typedef BlockParam<bool> BlockParamBool;
-typedef BlockParam<float &> BlockParamExtFloat;
-typedef BlockParam<int32_t &> BlockParamExtInt;
+प्रकारव्याख्या BlockParam<दशांश> BlockParamFloat;
+प्रकारव्याख्या BlockParam<int32_t> BlockParamInt;
+प्रकारव्याख्या BlockParam<तार्किक> BlockParamBool;
+प्रकारव्याख्या BlockParam<दशांश &> BlockParamExtFloat;
+प्रकारव्याख्या BlockParam<int32_t &> BlockParamExtInt;
 
 } // namespace control

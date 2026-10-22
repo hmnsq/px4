@@ -30,16 +30,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#include "MCP.hpp"
-#include <drivers/gpio/mcp23009/MCP23009.hpp>
-#include <drivers/gpio/mcp23017/MCP23017.hpp>
+#अन्तर्भाव "MCP.hpp"
+#अन्तर्भाव <drivers/gpio/mcp23009/MCP23009.hpp>
+#अन्तर्भाव <drivers/gpio/mcp23017/MCP23017.hpp>
 
-MCP230XX::MCP230XX(const I2CSPIDriverConfig &config) :
+MCP230XX::MCP230XX(स्थिरांक I2CSPIDriverConfig &config) :
 	I2C(config),
 	I2CSPIDriver(config),
 	_cycle_perf(perf_alloc(PC_ELAPSED, MODULE_NAME": single-sample")),
-	_comms_errors(perf_alloc(PC_COUNT, MODULE_NAME": comms errors")),
-	_register_check(perf_alloc(PC_COUNT, MODULE_NAME": register check"))
+	_comms_errors(perf_alloc(PC_मोजणी, MODULE_NAME": comms errors")),
+	_register_check(perf_alloc(PC_मोजणी, MODULE_NAME": register check"))
 {
 }
 
@@ -51,30 +51,30 @@ MCP230XX::~MCP230XX()
 	perf_free(_register_check);
 }
 
-int MCP230XX::init_uorb()
+पूर्णांक MCP230XX::init_uorb()
 {
-	if (!_gpio_config_sub.registerCallback() ||
+	जर (!_gpio_config_sub.registerCallback() ||
 	    !_gpio_out_sub.registerCallback()) {
 		PX4_ERR("callback registration failed");
-		return PX4_ERROR;
+		परत PX4_ERROR;
 	}
 
-	return PX4_OK;
+	परत PX4_OK;
 }
 
-void MCP230XX::cleanup_uorb()
+शून्य MCP230XX::cleanup_uorb()
 {
 	_gpio_config_sub.unregisterCallback();
 	_gpio_out_sub.unregisterCallback();
-	mcp230XX_unregister_gpios(mcp_config.first_minor, mcp_config.num_pins, mcp_config._gpio_handle);
+	mcp230XX_unregister_gpios(mcp_config.first_minor, mcp_config.अंक_pins, mcp_config._gpio_handle);
 }
 
-int MCP230XX::read(uint16_t *mask)
+पूर्णांक MCP230XX::पठ(uint16_t *mask)
 {
 	*mask = 0;
-	int ret = PX4_OK;
+	पूर्णांक ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	साठी (पूर्णांक i = 0; i < mcp_config.अंक_banks; i++) {
 		uint8_t gpio_addr;
 		uint8_t data;
 
@@ -84,83 +84,83 @@ int MCP230XX::read(uint16_t *mask)
 		*mask |= (((uint16_t) data) << (8 * i));
 	}
 
-	return ret;
+	परत ret;
 }
 
-int MCP230XX::write(const uint16_t mask_set, const uint16_t mask_clear)
+पूर्णांक MCP230XX::लिख(स्थिरांक uint16_t mask_set, स्थिरांक uint16_t mask_clear)
 {
-	int ret = PX4_OK;
+	पूर्णांक ret = PX4_OK;
 	_olat = (_olat & ~mask_clear) | mask_set;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	साठी (पूर्णांक i = 0; i < mcp_config.अंक_banks; i++) {
 		uint8_t reg_addr;
 		uint8_t data;
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 
 		ret = get_olat(i, &reg_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		जर (ret != PX4_OK) {
+			परत ret;
 		}
 
 		ret |= write_reg(reg_addr, curr_olat);
 		ret |= read_reg(reg_addr, data);
 
-		if (ret != PX4_OK || data != curr_olat) {
-			return PX4_ERROR;
+		जर (ret != PX4_OK || data != curr_olat) {
+			परत PX4_ERROR;
 		}
 	}
 
-	return ret;
+	परत ret;
 }
 
-int MCP230XX::read_reg(const uint8_t address, uint8_t &data)
+पूर्णांक MCP230XX::read_reg(स्थिरांक uint8_t address, uint8_t &data)
 {
-	int ret = transfer(&address, 1, &data, 1);
+	पूर्णांक ret = transfer(&address, 1, &data, 1);
 
-	if (ret != PX4_OK) {
-		perf_count(_comms_errors);
+	जर (ret != PX4_OK) {
+		perf_मोजणी(_comms_errors);
 	}
 
-	return ret;
+	परत ret;
 }
 
-int MCP230XX::write_reg(const uint8_t address, const uint8_t value)
+पूर्णांक MCP230XX::write_reg(स्थिरांक uint8_t address, स्थिरांक uint8_t value)
 {
 	uint8_t data[2] = {address, value};
-	int ret = transfer(data, 2, nullptr, 0);
+	पूर्णांक ret = transfer(data, 2, nullptr, 0);
 
-	if (ret != PX4_OK) {
-		perf_count(_comms_errors);
+	जर (ret != PX4_OK) {
+		perf_मोजणी(_comms_errors);
 	}
 
-	return ret;
+	परत ret;
 }
 
-int MCP230XX::configure(const uint16_t mask, PinType type)
+पूर्णांक MCP230XX::configure(स्थिरांक uint16_t mask, PinType type)
 {
-	switch (type) {
-	case PinType::Input:
+	निवड (type) {
+	स्थिती PinType::आदान_2:
 		_iodir |= mask;
 		_gppu &= ~mask;
-		break;
+		थांबा;
 
-	case PinType::InputPullUp:
+	स्थिती PinType::आदान_Pull_Up:
 		_iodir |= mask;
 		_gppu |= mask;
-		break;
+		थांबा;
 
-	case PinType::Output:
+	स्थिती PinType::Output:
 		_iodir &= ~mask;
-		break;
+		थांबा;
 
-	default:
-		return -EINVAL;
+	पूर्वनिर्धारित:
+		परत -EINVAL;
 	}
 
-	int ret = PX4_OK;
+	पूर्णांक ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	साठी (पूर्णांक i = 0; i < mcp_config.अंक_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
 		uint8_t iodir_addr;
@@ -169,51 +169,51 @@ int MCP230XX::configure(const uint16_t mask, PinType type)
 		ret = get_iodir(i, &iodir_addr);
 		ret |= get_gppu(i, &gppu_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		जर (ret != PX4_OK) {
+			परत ret;
 		}
 
 		ret = write_reg(iodir_addr, curr_iodir);
 		ret |= write_reg(gppu_addr, curr_gppu);
 
-		if (ret != PX4_OK) {
+		जर (ret != PX4_OK) {
 			PX4_ERR("MCP configure failed");
-			return ret;
+			परत ret;
 		}
 	}
 
-	return PX4_OK;
+	परत PX4_OK;
 }
 
-int MCP230XX::init()
+पूर्णांक MCP230XX::init()
 {
-	int ret = I2C::init();
+	पूर्णांक ret = I2C::init();
 
-	if (ret != PX4_OK) {
+	जर (ret != PX4_OK) {
 		PX4_ERR("I2C init failed");
-		return ret;
+		परत ret;
 	}
 
 	ScheduleNow();
-	return PX4_OK;
+	परत PX4_OK;
 }
 
-int MCP230XX::init_communication()
+पूर्णांक MCP230XX::init_communication()
 {
-	int ret = mcp230XX_register_gpios(mcp_config.i2c_bus, mcp_config.i2c_addr, mcp_config.first_minor, _iodir, mcp_config.num_pins,
+	पूर्णांक ret = mcp230XX_register_gpios(mcp_config.i2c_bus, mcp_config.i2c_addr, mcp_config.first_minor, _iodir, mcp_config.अंक_pins,
 					  mcp_config.device_type, mcp_config._gpio_handle);
 	ret |= init_uorb();
-	return ret;
+	परत ret;
 }
 
-int MCP230XX::set_up()
+पूर्णांक MCP230XX::set_up()
 {
-	int ret = PX4_OK;
+	पूर्णांक ret = PX4_OK;
 	uint8_t iodir_addr;
 	uint8_t olat_addr;
 	uint8_t gppu_addr;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	साठी (पूर्णांक i = 0; i < mcp_config.अंक_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
@@ -222,27 +222,27 @@ int MCP230XX::set_up()
 		ret |= get_iodir(i, &iodir_addr);
 		ret |= get_gppu(i, &gppu_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		जर (ret != PX4_OK) {
+			परत ret;
 		}
 
 		ret |= write_reg(iodir_addr, curr_iodir);
 		ret |= write_reg(olat_addr, curr_olat);
 		ret |= write_reg(gppu_addr, curr_gppu);
 
-		if (ret != PX4_OK) {
-			return ret;
+		जर (ret != PX4_OK) {
+			परत ret;
 		}
 	}
 
-	return ret;
+	परत ret;
 }
 
-int MCP230XX::sanity_check()
+पूर्णांक MCP230XX::sanity_check()
 {
-	int ret = PX4_OK;
+	पूर्णांक ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	साठी (पूर्णांक i = 0; i < mcp_config.अंक_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
@@ -263,130 +263,130 @@ int MCP230XX::sanity_check()
 		ret |= read_reg(olat_addr, read_olat);
 		ret |= read_reg(gppu_addr, read_gppu);
 
-		if (read_iodir != curr_iodir || read_olat != curr_olat || read_gppu != curr_gppu) {
-			perf_count(_register_check);
-			return PX4_ERROR;
+		जर (read_iodir != curr_iodir || read_olat != curr_olat || read_gppu != curr_gppu) {
+			perf_मोजणी(_register_check);
+			परत PX4_ERROR;
 		}
 	}
 
-	return ret;
+	परत ret;
 }
 
-int MCP230XX::probe()
+पूर्णांक MCP230XX::probe()
 {
 	// no whoami, try to read IOCONA
 	uint8_t data;
 	uint8_t addr;
-	int ret = PX4_OK;
+	पूर्णांक ret = PX4_OK;
 
-	for (int i = 0; i < 10; i++) {
+	साठी (पूर्णांक i = 0; i < 10; i++) {
 		ret = get_probe_reg(&addr);
 
-		if (ret == PX4_OK) {
+		जर (ret == PX4_OK) {
 			ret = read_reg(addr, data);
 
-			if (ret == PX4_OK) {
-				return PX4_OK;
+			जर (ret == PX4_OK) {
+				परत PX4_OK;
 			}
 		}
 
 		px4_usleep(10'000);
 	}
 
-	return PX4_ERROR;
+	परत PX4_ERROR;
 }
 
-void MCP230XX::RunImpl()
+शून्य MCP230XX::RunImpl()
 {
-	if (should_exit()) {
+	जर (should_exit()) {
 		cleanup_uorb();
 		exit_and_cleanup();
-		return;
+		परत;
 	}
 
-	int ret = PX4_OK;
+	पूर्णांक ret = PX4_OK;
 
-	switch (_curr_state) {
-	case STATE::INIT_COMMUNICATION:
+	निवड (_curr_state) {
+	स्थिती STATE::INIT_COMMUNICATION:
 		ret = init_communication();
 
-		if (ret == PX4_OK) {
+		जर (ret == PX4_OK) {
 			_curr_state = STATE::CONFIGURE;
 			ScheduleNow();
 
-		} else {
+		} अन्यथा {
 			ScheduleDelayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		थांबा;
 
-	case STATE::CONFIGURE:
+	स्थिती STATE::CONFIGURE:
 		ret = set_up();
 
-		if (ret == PX4_OK) {
+		जर (ret == PX4_OK) {
 			_curr_state = STATE::CHECK;
 			ScheduleNow();
 
-		} else {
+		} अन्यथा {
 			ScheduleDelayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		थांबा;
 
-	case STATE::CHECK:
+	स्थिती STATE::CHECK:
 		ret = sanity_check();
 
-		if (ret == PX4_OK) {
+		जर (ret == PX4_OK) {
 			_curr_state = STATE::RUNNING;
 			ScheduleOnInterval(mcp_config.interval * 1000);
 
-		} else {
+		} अन्यथा {
 			_curr_state = STATE::CONFIGURE;
 			ScheduleDelayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		थांबा;
 
-	case STATE::RUNNING:
+	स्थिती STATE::RUNNING:
 		perf_begin(_cycle_perf);
 		gpio_config_s config;
 
-		if (_gpio_config_sub.update(&config) && config.device_id == get_device_id()) {
-			PinType type = PinType::Input;
+		जर (_gpio_config_sub.update(&config) && config.device_id == get_device_id()) {
+			PinType type = PinType::आदान_2;
 
-			switch (config.config) {
-			case config.INPUT_PULLUP:	type = PinType::InputPullUp; break;
+			निवड (config.config) {
+			स्थिती config.आदान_PULLUP:	type = PinType::आदान_Pull_Up; थांबा;
 
-			case config.OUTPUT:		type = PinType::Output; break;
+			स्थिती config.OUTPUT:		type = PinType::Output; थांबा;
 			}
 
-			ret |= write(config.state, config.mask);
+			ret |= लिख(config.state, config.mask);
 			ret |= configure(config.mask, type);
 		}
 
 		gpio_out_s output;
 
-		if (_gpio_out_sub.update(&output) && output.device_id == get_device_id()) {
-			ret |= write(output.state, output.mask);
+		जर (_gpio_out_sub.update(&output) && output.device_id == get_device_id()) {
+			ret |= लिख(output.state, output.mask);
 		}
 
 		{
 			gpio_in_s _gpio_in;
 			_gpio_in.timestamp = hrt_absolute_time();
 			_gpio_in.device_id = get_device_id();
-			uint16_t input = 0;
+			uint16_t आदान = 0;
 
-			if (read(&input) == PX4_OK) {
-				_gpio_in.state = input;
+			जर (पठ(&आदान) == PX4_OK) {
+				_gpio_in.state = आदान;
 				_to_gpio_in.publish(_gpio_in);
 			}
 		}
 
-		_count++;
+		मोजणी_3++;
 
-		if (_count >= _checking_freq || ret != PX4_OK) {
+		जर (मोजणी_3 >= _checking_freq || ret != PX4_OK) {
 			_curr_state = STATE::CHECK;
-			_count = 0;
+			मोजणी_3 = 0;
 			ScheduleClear();
 			ScheduleNow();
 		}
@@ -395,7 +395,7 @@ void MCP230XX::RunImpl()
 	}
 }
 
-void MCP230XX::print_status()
+शून्य MCP230XX::print_status()
 {
 	I2CSPIDriverBase::print_status();
 	perf_print_counter(_cycle_perf);
@@ -403,74 +403,74 @@ void MCP230XX::print_status()
 	perf_print_counter(_register_check);
 }
 
-void MCP230XX::custom_method(const BusCLIArguments &cli)
+शून्य MCP230XX::custom_method(स्थिरांक BusCLIArguments &cli)
 {
-	switch (cli.custom1) {
-	case 0: {
+	निवड (cli.custom1) {
+	स्थिती 0: {
 			// write: only pins configured as outputs are affected
-			const uint16_t outputs = (uint16_t)~_iodir;
-			const uint16_t state = (uint16_t)cli.custom2;
+			स्थिरांक uint16_t outputs = (uint16_t)~_iodir;
+			स्थिरांक uint16_t state = (uint16_t)cli.custom2;
 
-			if (write(state & outputs, (uint16_t)~state & outputs) != PX4_OK) {
+			जर (लिख(state & outputs, (uint16_t)~state & outputs) != PX4_OK) {
 				PX4_ERR("write failed");
 			}
 
-			break;
+			थांबा;
 		}
 	}
 }
 
-void MCP230XX::print_usage()
+शून्य MCP230XX::print_usage()
 {
 	PRINT_MODULE_USAGE_NAME("mcp230xx", "driver");
 	PRINT_MODULE_USAGE_COMMAND("start");
-	PRINT_MODULE_USAGE_PARAMS_I2C_SPI_DRIVER(true, false);
+	PRINT_MODULE_USAGE_PARAMS_I2C_SPI_DRIVER(सत्य, असत्य);
 	PRINT_MODULE_USAGE_PARAMS_I2C_ADDRESS(0x27);
-	PRINT_MODULE_USAGE_PARAM_INT('D', 0, 0, 65535, "Direction (1=Input, 0=Output)", true);
-	PRINT_MODULE_USAGE_PARAM_INT('O', 0, 0, 65535, "Output", true);
-	PRINT_MODULE_USAGE_PARAM_INT('P', 0, 0, 65535, "Pullups", true);
-	PRINT_MODULE_USAGE_PARAM_INT('U', 0, 0, 1000, "Update Interval [ms]", true);
-	PRINT_MODULE_USAGE_PARAM_INT('M', 0, 0, 255, "First minor number", true);
+	PRINT_MODULE_USAGE_PARAM_INT('D', 0, 0, 65535, "Direction (1=Input, 0=Output)", सत्य);
+	PRINT_MODULE_USAGE_PARAM_INT('O', 0, 0, 65535, "Output", सत्य);
+	PRINT_MODULE_USAGE_PARAM_INT('P', 0, 0, 65535, "Pullups", सत्य);
+	PRINT_MODULE_USAGE_PARAM_INT('U', 0, 0, 1000, "Update Interval [ms]", सत्य);
+	PRINT_MODULE_USAGE_PARAM_INT('M', 0, 0, 255, "First minor number", सत्य);
 	PRINT_MODULE_USAGE_COMMAND_DESCR("write", "Set the output pins to the state given with -O");
 	PRINT_MODULE_USAGE_DEFAULT_COMMANDS();
 }
 
-I2CSPIDriverBase *MCP230XX::instantiate(const I2CSPIDriverConfig &config, int runtime_instance)
+I2CSPIDriverBase *MCP230XX::instantiate(स्थिरांक I2CSPIDriverConfig &config, पूर्णांक runtime_instance)
 {
 	MCP230XX *instance = nullptr;
 
-	switch (config.devid_driver_index) {
-	case DRV_GPIO_DEVTYPE_MCP23009:
-		instance = new MCP23009(config);
-		break;
+	निवड (config.devid_driver_index) {
+	स्थिती DRV_GPIO_DEVTYPE_MCP23009:
+		instance = नवीन MCP23009(config);
+		थांबा;
 
-	case DRV_GPIO_DEVTYPE_MCP23017:
-		instance = new MCP23017(config);
-		break;
+	स्थिती DRV_GPIO_DEVTYPE_MCP23017:
+		instance = नवीन MCP23017(config);
+		थांबा;
 
-	default:
+	पूर्वनिर्धारित:
 		instance = nullptr;
-		break;
+		थांबा;
 	}
 
-	if (!instance) {
+	जर (!instance) {
 		PX4_ERR("alloc failed");
-		return nullptr;
+		परत nullptr;
 	}
 
-	MCP230XX_config_t tmp_config = *static_cast<const MCP230XX_config_t *>(config.custom_data);
+	MCP230XX_config_t tmp_config = *static_cast<स्थिरांक MCP230XX_config_t *>(config.custom_data);
 	instance->mcp_config = tmp_config;
 	instance->mcp_config.i2c_bus = config.bus;
 	instance->mcp_config.i2c_addr = config.i2c_address;
 
-	if (OK != instance->init()) {
+	जर (OK != instance->init()) {
 		delete instance;
-		return nullptr;
+		परत nullptr;
 	}
 
 	instance->_iodir = instance->mcp_config.direction;
 	instance->_olat = instance->mcp_config.state;
 	instance->_gppu = instance->mcp_config.pullup;
 
-	return instance;
+	परत instance;
 }

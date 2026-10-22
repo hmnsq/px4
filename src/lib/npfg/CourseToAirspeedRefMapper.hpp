@@ -60,23 +60,23 @@
 #define PX4_COURSETOAIRSPEEDREFMAPPER_HPP
 
 
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
+#अन्तर्भाव <matrix/math.hpp>
+#अन्तर्भाव <lib/mathlib/mathlib.h>
 
-class CourseToAirspeedRefMapper
+वर्ग CourseToAirspeedRefMapper
 {
-public:
+सार्वजनिक:
 
 	CourseToAirspeedRefMapper() {};
 
-	~CourseToAirspeedRefMapper() = default;
+	~CourseToAirspeedRefMapper() = पूर्वनिर्धारित;
 
-	float mapCourseSetpointToHeadingSetpoint(const float bearing_setpoint,
-			const matrix::Vector2f &wind_vel, float airspeed_sp) const;
-	float getMinAirspeedForCurrentBearing(const float bearing_setpoint,
-					      const matrix::Vector2f &wind_vel, float max_airspeed, float min_ground_speed) const;
+	दशांश mapCourseSetpointToHeadingSetpoint(स्थिरांक दशांश bearing_setpoint,
+			स्थिरांक matrix::Vector2f &wind_vel, दशांश airspeed_sp) स्थिरांक;
+	दशांश getMinAirspeedForCurrentBearing(स्थिरांक दशांश bearing_setpoint,
+					      स्थिरांक matrix::Vector2f &wind_vel, दशांश max_airspeed, दशांश min_ground_speed) स्थिरांक;
 
-private:
+खाजगी:
 	/*
 	 * Projection of the air velocity vector onto the bearing line considering
 	 * a connected wind triangle.
@@ -85,7 +85,7 @@ private:
 	 * @param[in] wind_cross_bearing 2D cross product of wind velocity and bearing vector [m/s]
 	 * @return Projection of air velocity vector on bearing vector [m/s]
 	 */
-	float projectAirspOnBearing(const float airspeed, const float wind_cross_bearing) const;
+	दशांश projectAirspOnBearing(स्थिरांक दशांश airspeed, स्थिरांक दशांश wind_cross_bearing) स्थिरांक;
 	/*
 	 * Check for binary bearing feasibility.
 	 *
@@ -95,8 +95,8 @@ private:
 	 * @param[in] wind_speed Wind speed [m/s]
 	 * @return Binary bearing feasibility: 1 if feasible, 0 if infeasible
 	 */
-	int bearingIsFeasible(const float wind_cross_bearing, const float wind_dot_bearing, const float airspeed,
-			      const float wind_speed) const;
+	पूर्णांक bearingIsFeasible(स्थिरांक दशांश wind_cross_bearing, स्थिरांक दशांश wind_dot_bearing, स्थिरांक दशांश airspeed,
+			      स्थिरांक दशांश wind_speed) स्थिरांक;
 	/*
 	 * Air velocity solution for a given wind velocity and bearing vector assuming
 	 * a "high speed" (not backwards) solution in the excess wind case.
@@ -106,8 +106,8 @@ private:
 	 * @param[in] bearing_vec Bearing vector
 	 * @return Air velocity reference vector [m/s]
 	 */
-	matrix::Vector2f solveWindTriangle(const float wind_cross_bearing, const float airsp_dot_bearing,
-					   const matrix::Vector2f &bearing_vec) const;
+	matrix::Vector2f solveWindTriangle(स्थिरांक दशांश wind_cross_bearing, स्थिरांक दशांश airsp_dot_bearing,
+					   स्थिरांक matrix::Vector2f &bearing_vec) स्थिरांक;
 	/*
 	 * Air velocity solution for an infeasible bearing.
 	 *
@@ -117,8 +117,8 @@ private:
 	 * @param[in] airspeed Vehicle true airspeed [m/s]
 	 * @return Air velocity vector [m/s]
 	 */
-	matrix::Vector2f infeasibleAirVelRef(const matrix::Vector2f &wind_vel, const matrix::Vector2f &bearing_vec,
-					     const float wind_speed, const float airspeed) const;
+	matrix::Vector2f infeasibleAirVelRef(स्थिरांक matrix::Vector2f &wind_vel, स्थिरांक matrix::Vector2f &bearing_vec,
+					     स्थिरांक दशांश wind_speed, स्थिरांक दशांश airspeed) स्थिरांक;
 };
 
 #endif //PX4_COURSETOAIRSPEEDREFMAPPER_HPP

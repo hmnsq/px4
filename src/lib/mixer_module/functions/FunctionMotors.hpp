@@ -33,96 +33,96 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#अन्तर्भाव "FunctionProviderBase.hpp"
 
-#include <uORB/topics/actuator_motors.h>
+#अन्तर्भाव <uORB/topics/actuator_motors.h>
 
 /**
  * Functions: Motor1 ... MotorMax
  */
-class FunctionMotors : public FunctionProviderBase
+वर्ग FunctionMotors : सार्वजनिक FunctionProviderBase
 {
-public:
-	static_assert(actuator_motors_s::NUM_CONTROLS == (int)OutputFunction::MotorMax - (int)OutputFunction::Motor1 + 1,
+सार्वजनिक:
+	static_assert(actuator_motors_s::अंक_CONTROLS == (पूर्णांक)OutputFunction::MotorMax - (पूर्णांक)OutputFunction::Motor1 + 1,
 		      "Unexpected num motors");
 
-	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (int)OutputFunction::Motor1, "Unexpected motor idx");
+	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (पूर्णांक)OutputFunction::Motor1, "Unexpected motor idx");
 
-	FunctionMotors(const Context &context) :
+	FunctionMotors(स्थिरांक Context &context) :
 		_topic(&context.work_item, ORB_ID(actuator_motors)),
 		_thrust_factor(context.thrust_factor)
 	{
-		for (int i = 0; i < actuator_motors_s::NUM_CONTROLS; ++i) {
-			_data.control[i] = NAN;
+		साठी (पूर्णांक i = 0; i < actuator_motors_s::अंक_CONTROLS; ++i) {
+			_data.control[i] = न_अंक;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionMotors(context); }
+	स्थिर FunctionProviderBase *allocate(स्थिरांक Context &context) { परत नवीन FunctionMotors(context); }
 
-	void update() override
+	शून्य update() override
 	{
-		if (_topic.update(&_data)) {
-			updateValues(_data.reversible_flags, _thrust_factor, _data.control, actuator_motors_s::NUM_CONTROLS);
+		जर (_topic.update(&_data)) {
+			update_मूल्ये(_data.reversible_flags, _thrust_factor, _data.control, actuator_motors_s::अंक_CONTROLS);
 		}
 	}
 
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Motor1]; }
+	दशांश value(OutputFunction func) override { परत _data.control[(पूर्णांक)func - (पूर्णांक)OutputFunction::Motor1]; }
 
-#if defined(CONFIG_DRIVERS_UAVCANNODE)
-	bool allowPrearmControl() const override { return true; }
-#else
-	bool allowPrearmControl() const override { return false; }
+#जर defined(CONFIG_DRIVERS_UAVCANNODE)
+	तार्किक allowPrearmControl() स्थिरांक override { परत सत्य; }
+#अन्यथा
+	तार्किक allowPrearmControl() स्थिरांक override { परत असत्य; }
 #endif
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { परत &_topic; }
 
-	bool getLatestSampleTimestamp(hrt_abstime &t) const override { t = _data.timestamp_sample; return t != 0; }
+	तार्किक getLatestSampleTimestamp(hrt_abstime &t) स्थिरांक override { t = _data.timestamp_sample; परत t != 0; }
 
-	static inline void updateValues(uint32_t reversible, float thrust_factor, float *values, int num_values)
+	स्थिर ओळीत शून्य update_मूल्ये(uint32_t reversible, दशांश thrust_factor, दशांश *मूल्ये_2, पूर्णांक अंक_मूल्ये)
 	{
-		if (thrust_factor > FLT_EPSILON && thrust_factor <= 1.f) {
+		जर (thrust_factor > भग्न_अंतर && thrust_factor <= 1.f) {
 			// thrust factor
 			//  rel_thrust = factor * x^2 + (1-factor) * x,
-			const float a = thrust_factor;
-			const float b = (1.f - thrust_factor);
+			स्थिरांक दशांश a = thrust_factor;
+			स्थिरांक दशांश b = (1.f - thrust_factor);
 
 			// don't recompute for all values (ax^2+bx+c=0)
-			const float tmp1 = b / (2.f * a);
-			const float tmp2 = b * b / (4.f * a * a);
+			स्थिरांक दशांश tmp1 = b / (2.f * a);
+			स्थिरांक दशांश tmp2 = b * b / (4.f * a * a);
 
-			for (int i = 0; i < num_values; ++i) {
+			साठी (पूर्णांक i = 0; i < अंक_मूल्ये; ++i) {
 
-				const float control = values[i];
+				स्थिरांक दशांश control = मूल्ये_2[i];
 
-				if (PX4_ISFINITE(control)) {
-					if (control > FLT_EPSILON) {
-						values[i] = -tmp1 + sqrtf(tmp2 + (control / a));
+				जर (PX4_ISFINITE(control)) {
+					जर (control > भग्न_अंतर) {
+						मूल्ये_2[i] = -tmp1 + sqrtf(tmp2 + (control / a));
 
-					} else if (control < -FLT_EPSILON) {
-						values[i] =  tmp1 - sqrtf(tmp2 - (control / a));
+					} अन्यथा जर (control < -भग्न_अंतर) {
+						मूल्ये_2[i] =  tmp1 - sqrtf(tmp2 - (control / a));
 
 					}
 				}
 			}
 		}
 
-		for (int i = 0; i < num_values; ++i) {
-			if ((reversible & (1u << i)) == 0) {
-				if (values[i] < -FLT_EPSILON) {
-					values[i] = NAN;
+		साठी (पूर्णांक i = 0; i < अंक_मूल्ये; ++i) {
+			जर ((reversible & (1u << i)) == 0) {
+				जर (मूल्ये_2[i] < -भग्न_अंतर) {
+					मूल्ये_2[i] = न_अंक;
 
-				} else {
+				} अन्यथा {
 					// remap from [0, 1] to [-1, 1]
-					values[i] = values[i] * 2.f - 1.f;
+					मूल्ये_2[i] = मूल्ये_2[i] * 2.f - 1.f;
 				}
 			}
 		}
 	}
 
-	bool reversible(OutputFunction func) const override { return _data.reversible_flags & (1u << ((int)func - (int)OutputFunction::Motor1)); }
+	तार्किक reversible(OutputFunction func) स्थिरांक override { परत _data.reversible_flags & (1u << ((पूर्णांक)func - (पूर्णांक)OutputFunction::Motor1)); }
 
-private:
+खाजगी:
 	uORB::SubscriptionCallbackWorkItem _topic;
 	actuator_motors_s _data{};
-	const float &_thrust_factor;
+	स्थिरांक दशांश &_thrust_factor;
 };

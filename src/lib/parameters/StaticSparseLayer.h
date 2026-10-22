@@ -33,136 +33,136 @@
 
 #pragma once
 
-#include <stdlib.h>
-#include "ParamLayer.h"
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव "ParamLayer.h"
 
-template <int N_SLOTS>
-class StaticSparseLayer : public ParamLayer
+ढाँचा <पूर्णांक N_SLOTS>
+class StaticSparseLayer : सार्वजनिक ParamLayer
 {
-public:
+सार्वजनिक:
 	StaticSparseLayer(ParamLayer *parent) : ParamLayer(parent)
 	{
-		for (int i = 0; i < N_SLOTS; i++) {
-			_slots[i] = {UINT16_MAX, param_value_u{}};
+		साठी (पूर्णांक i = 0; i < N_SLOTS; i++) {
+			_slots[i] = {UINT16_MAX, param_मूल्य_u{}};
 		}
 	}
 
-	virtual ~StaticSparseLayer() = default;
+	आभासी ~StaticSparseLayer() = पूर्वनिर्धारित;
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_मूल्य_u मूल्य) override
 	{
-		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		स्थिरांक AtomicTransaction transaction;
+		स्थिरांक पूर्णांक index = _getIndex(param);
 
-		if (index < _next_slot) { // already exists
-			_slots[index].value = value;
+		जर (index < _next_slot) { // already exists
+			_slots[index].मूल्य = मूल्य;
 
-		} else if (_next_slot < N_SLOTS) {
-			_slots[_next_slot++] = {param, value};
+		} अन्यथा जर (_next_slot < N_SLOTS) {
+			_slots[_next_slot++] = {param, मूल्य};
 			_sort();
 
-		} else {
-			return false;
+		} अन्यथा {
+			परत false;
 		}
 
-		return true;
+		परत true;
 	}
 
-	bool contains(param_t param) const override
+	bool contains(param_t param) स्थिरांक override
 	{
-		const AtomicTransaction transaction;
-		return _getIndex(param) < _next_slot;
+		स्थिरांक AtomicTransaction transaction;
+		परत _getIndex(param) < _next_slot;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_मोजणी> containedAsBitset() स्थिरांक override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
-		const AtomicTransaction transaction;
+		px4::AtomicBitset<PARAM_मोजणी> set;
+		स्थिरांक AtomicTransaction transaction;
 
-		for (int i = 0; i < _next_slot; i++) {
+		साठी (पूर्णांक i = 0; i < _next_slot; i++) {
 			set.set(_slots[i].param);
 		}
 
-		return set;
+		परत set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_मूल्य_u get(param_t param) स्थिरांक override
 	{
-		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		स्थिरांक AtomicTransaction transaction;
+		स्थिरांक पूर्णांक index = _getIndex(param);
 
-		if (index < _next_slot) { // exists in this layer
-			return _slots[index].value;
+		जर (index < _next_slot) { // exists in this layer
+			परत _slots[index].मूल्य;
 		}
 
-		return _parent->get(param);
+		परत _parent->get(param);
 	}
 
-	void reset(param_t param) override
+	शून्य reset(param_t param) override
 	{
-		const AtomicTransaction transaction;
-		int index = _getIndex(param);
+		स्थिरांक AtomicTransaction transaction;
+		पूर्णांक index = _getIndex(param);
 
-		if (index < _next_slot) {
-			_slots[index] = {UINT16_MAX, param_value_u{}};
+		जर (index < _next_slot) {
+			_slots[index] = {UINT16_MAX, param_मूल्य_u{}};
 			_sort();
 			_next_slot--;
 		}
 	}
 
-	void refresh(param_t param) override
+	शून्य refresh(param_t param) override
 	{
 		_parent->refresh(param);
 	}
 
-	int size() const override
+	पूर्णांक size() स्थिरांक override
 	{
-		return _next_slot;
+		परत _next_slot;
 	}
 
-	int byteSize() const override
+	पूर्णांक byteSize() स्थिरांक override
 	{
-		return N_SLOTS * sizeof(Slot);
+		परत N_SLOTS * आकार(Slot);
 	}
 
-private:
-	struct Slot {
+खाजगी:
+	संरचना Slot {
 		param_t param;
-		param_value_u value;
+		param_मूल्य_u मूल्य;
 	};
 
-	static int _slotCompare(const void *a, const void *b)
+	स्थिर पूर्णांक _slotCompare(स्थिरांक शून्य *a, स्थिरांक शून्य *b)
 	{
-		return ((int)((Slot *)a)->param) - ((int)((Slot *)b)->param);
+		परत ((पूर्णांक)((Slot *)a)->param) - ((पूर्णांक)((Slot *)b)->param);
 	}
 
-	void _sort()
+	शून्य _sort()
 	{
-		qsort(_slots, N_SLOTS, sizeof(Slot), &_slotCompare);
+		क्विक(_slots, N_SLOTS, आकार(Slot), &_slotCompare);
 	}
 
-	int _getIndex(param_t param) const
+	पूर्णांक _getIndex(param_t param) स्थिरांक
 	{
-		int left = 0;
-		int right = _next_slot - 1;
+		पूर्णांक डावा = 0;
+		पूर्णांक उजवा = _next_slot - 1;
 
-		while (left <= right) {
-			int mid = (left + right) / 2;
+		पर्यंत (डावा <= उजवा) {
+			पूर्णांक mid = (डावा + उजवा) / 2;
 
-			if (_slots[mid].param == param) {
-				return mid;
+			जर (_slots[mid].param == param) {
+				परत mid;
 
-			} else if (_slots[mid].param < param) {
-				left = mid + 1;
+			} अन्यथा जर (_slots[mid].param < param) {
+				डावा = mid + 1;
 
-			} else {
-				right = mid - 1;
+			} अन्यथा {
+				उजवा = mid - 1;
 			}
 		}
 
-		return _next_slot;
+		परत _next_slot;
 	}
 
 	Slot _slots[N_SLOTS];
-	int _next_slot = 0;
+	पूर्णांक _next_slot = 0;
 };

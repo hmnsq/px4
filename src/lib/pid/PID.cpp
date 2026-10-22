@@ -31,60 +31,60 @@
  *
  ****************************************************************************/
 
-#include "PID.hpp"
-#include "lib/mathlib/math/Functions.hpp"
+#अन्तर्भाव "PID.hpp"
+#अन्तर्भाव "lib/mathlib/math/Functions.hpp"
 
-void PID::setOutputLimit(const float lower_limit, const float upper_limit)
+शून्य PID::setOutputLimit(स्थिरांक दशांश lower_limit, स्थिरांक दशांश upper_limit)
 {
 	_lower_limit_output = lower_limit;
 	_upper_limit_output = upper_limit;
 }
 
-void PID::setGains(const float P, const float I, const float D)
+शून्य PID::setGains(स्थिरांक दशांश P, स्थिरांक दशांश I, स्थिरांक दशांश D)
 {
 	_gain_proportional = P;
 	_gain_integral = I;
 	_gain_derivative = D;
 }
 
-float PID::update(const float feedback, const float dt, const bool update_integral)
+दशांश PID::update(स्थिरांक दशांश feedback, स्थिरांक दशांश dt, स्थिरांक तार्किक update_integral)
 {
-	const float error = _setpoint - feedback;
-	const float derivative = updateDerivative(feedback, dt);
-	const float output = (_gain_feedforward * _setpoint) + (_gain_proportional * error) + _integral -
+	स्थिरांक दशांश error = _setpoint - feedback;
+	स्थिरांक दशांश derivative = updateDerivative(feedback, dt);
+	स्थिरांक दशांश output = (_gain_feedforward * _setpoint) + (_gain_proportional * error) + _integral -
 			     (_gain_derivative * derivative);
-	const float output_constrained = math::constrain(output, _lower_limit_output, _upper_limit_output);
+	स्थिरांक दशांश output_constrained = math::constrain(output, _lower_limit_output, _upper_limit_output);
 
-	if (update_integral) {
+	जर (update_integral) {
 		updateIntegral(error, output - output_constrained, dt);
 	}
 
 	_last_feedback = feedback;
-	return output_constrained;
+	परत output_constrained;
 }
 
-void PID::updateIntegral(float error, const float saturation, const float dt)
+शून्य PID::updateIntegral(दशांश error, स्थिरांक दशांश saturation, स्थिरांक दशांश dt)
 {
 	// Anti-windup: stop integrating in the direction that drives the output
 	// further into saturation (conditional integration)
-	if ((saturation > FLT_EPSILON && error > 0.f) || (saturation < -FLT_EPSILON && error < 0.f)) {
+	जर ((saturation > भग्न_अंतर && error > 0.f) || (saturation < -भग्न_अंतर && error < 0.f)) {
 		error = 0.f;
 	}
 
-	const float integral_new = _integral + _gain_integral * error * dt;
+	स्थिरांक दशांश integral_new = _integral + _gain_integral * error * dt;
 
-	if (std::isfinite(integral_new)) {
+	जर (std::है_सीमित(integral_new)) {
 		_integral = math::constrain(integral_new, -_limit_integral, _limit_integral);
 	}
 }
 
-float PID::updateDerivative(float feedback, const float dt)
+दशांश PID::updateDerivative(दशांश feedback, स्थिरांक दशांश dt)
 {
-	float feedback_change = 0.f;
+	दशांश feedback_change = 0.f;
 
-	if ((dt > FLT_EPSILON) && std::isfinite(_last_feedback)) {
+	जर ((dt > भग्न_अंतर) && std::है_सीमित(_last_feedback)) {
 		feedback_change = (feedback - _last_feedback) / dt;
 	}
 
-	return feedback_change;
+	परत feedback_change;
 }

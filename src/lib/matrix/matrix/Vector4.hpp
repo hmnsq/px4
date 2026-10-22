@@ -41,45 +41,45 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#अन्तर्भाव "Vector.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
-template<typename Type>
-class Vector4 : public Vector<Type, 4>
+ढाँचा<typename Type>
+वर्ग Vector4 : सार्वजनिक Vector<Type, 4>
 {
-public:
+सार्वजनिक:
 	using Matrix41 = Matrix<Type, 4, 1>;
 
-	Vector4() = default;
+	Vector4() = पूर्वनिर्धारित;
 
-	Vector4(const Matrix41 &other) :
+	Vector4(स्थिरांक Matrix41 &other) :
 		Vector<Type, 4>(other)
 	{
 	}
 
-	explicit Vector4(const Type data_[3]) :
+	explicit Vector4(स्थिरांक Type data_[3]) :
 		Vector<Type, 4>(data_)
 	{
 	}
 
 	Vector4(Type x1, Type x2, Type x3, Type x4)
 	{
-		Vector4 &v(*this);
+		Vector4 &v(*हे);
 		v(0) = x1;
 		v(1) = x2;
 		v(2) = x3;
 		v(3) = x4;
 	}
 
-	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 4, 1, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	ढाँचा<माप_प्रकार P, माप_प्रकार Q>
+	Vector4(स्थिरांक Slice<Type, 4, 1, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
 	{
 	}
 
-	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 1, 4, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	ढाँचा<माप_प्रकार P, माप_प्रकार Q>
+	Vector4(स्थिरांक Slice<Type, 1, 4, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
 	{
 	}
 
@@ -87,43 +87,43 @@ public:
 	 * Override matrix ops so Vector4 type is returned
 	 */
 
-	Vector4 operator+(Vector4 other) const
+	Vector4 चालक+(Vector4 other) स्थिरांक
 	{
-		return Matrix41::operator+(other);
+		परत Matrix41::चालक+(other);
 	}
 
-	Vector4 operator+(Type scalar) const
+	Vector4 चालक+(Type scalar) स्थिरांक
 	{
-		return Matrix41::operator+(scalar);
+		परत Matrix41::चालक+(scalar);
 	}
 
-	Vector4 operator-(Vector4 other) const
+	Vector4 चालक-(Vector4 other) स्थिरांक
 	{
-		return Matrix41::operator-(other);
+		परत Matrix41::चालक-(other);
 	}
 
-	Vector4 operator-(Type scalar) const
+	Vector4 चालक-(Type scalar) स्थिरांक
 	{
-		return Matrix41::operator-(scalar);
+		परत Matrix41::चालक-(scalar);
 	}
 
-	Vector4 operator-() const
+	Vector4 चालक-() स्थिरांक
 	{
-		return Matrix41::operator-();
+		परत Matrix41::चालक-();
 	}
 
-	Vector4 operator*(Type scalar) const
+	Vector4 चालक*(Type scalar) स्थिरांक
 	{
-		return Matrix41::operator*(scalar);
+		परत Matrix41::चालक*(scalar);
 	}
 
-	Type operator*(Vector4 b) const
+	Type चालक*(Vector4 b) स्थिरांक
 	{
-		return Vector<Type, 4>::operator*(b);
+		परत Vector<Type, 4>::चालक*(b);
 	}
 
 };
 
-using Vector4f = Vector4<float>;
+using Vector4f = Vector4<दशांश>;
 
 } // namespace matrix

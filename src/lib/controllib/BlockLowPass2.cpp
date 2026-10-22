@@ -37,26 +37,26 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <float.h>
 
-#include "blocks.hpp"
+#अन्तर्भाव "blocks.hpp"
 
-namespace control
+नामाकाश control
 {
 
-float BlockLowPass2::update(float input)
+दशांश Block_खालचा_Pass2::update(दशांश आदान)
 {
-	if (!PX4_ISFINITE(getState())) {
-		setState(input);
+	जर (!PX4_ISFINITE(getState())) {
+		setState(आदान);
 	}
 
-	if (fabsf(_lp.get_cutoff_freq() - getFCutParam()) > FLT_EPSILON) {
+	जर (fabsf(_lp.get_cutoff_freq() - getFCutParam()) > भग्न_अंतर) {
 		_lp.set_cutoff_frequency(_fs, getFCutParam());
 	}
 
-	_state = _lp.apply(input);
-	return _state;
+	_state = _lp.apply(आदान);
+	परत _state;
 }
 
 } // namespace control

@@ -35,21 +35,21 @@
  * @file Sticks.cpp
  */
 
-#include "Sticks.hpp"
+#अन्तर्भाव "Sticks.hpp"
 
-using namespace time_literals;
-using namespace matrix;
+using नामाकाश time_literals;
+using नामाकाश matrix;
 
 Sticks::Sticks(ModuleParams *parent) :
 	ModuleParams(parent)
 {}
 
-bool Sticks::checkAndUpdateStickInputs()
+तार्किक Sticks::checkAndUpdateStickInputs()
 {
 	// Sticks are rescaled linearly and exponentially to [-1,1]
 	manual_control_setpoint_s manual_control_setpoint;
 
-	if (_manual_control_setpoint_sub.update(&manual_control_setpoint)) {
+	जर (_manual_control_setpoint_sub.update(&manual_control_setpoint)) {
 		_positions(0) = manual_control_setpoint.roll;
 		_positions(1) = manual_control_setpoint.pitch;
 		_positions(2) = manual_control_setpoint.yaw;
@@ -63,42 +63,42 @@ bool Sticks::checkAndUpdateStickInputs()
 		_aux_positions(5) = manual_control_setpoint.aux6;
 
 		// valid stick inputs are required
-		_input_available = manual_control_setpoint.valid && _positions.isAllFinite();
+		आदान_available = manual_control_setpoint.valid && _positions.isAllFinite();
 
-	} else {
+	} अन्यथा {
 		failsafe_flags_s failsafe_flags;
 
-		if (_failsafe_flags_sub.update(&failsafe_flags)) {
-			if (failsafe_flags.manual_control_signal_lost) {
-				_input_available = false;
+		जर (_failsafe_flags_sub.update(&failsafe_flags)) {
+			जर (failsafe_flags.manual_control_signal_lost) {
+				आदान_available = असत्य;
 			}
 		}
 	}
 
-	if (!_input_available) {
+	जर (!आदान_available) {
 		// Timeout: set all sticks to zero
 		_positions.zero();
 	}
 
-	return _input_available;
+	परत आदान_available;
 }
 
-float Sticks::expoDeadzone(float value, float expo, float deadzone)
+दशांश Sticks::expoDeadzone(दशांश value, दशांश expo, दशांश deadzone)
 {
-	return math::expo(math::deadzone(value, deadzone), expo);
+	परत math::expo(math::deadzone(value, deadzone), expo);
 }
 
-void Sticks::limitStickUnitLengthXY(Vector2f &v)
+शून्य Sticks::limitStickUnitLengthXY(Vector2f &v)
 {
-	const float vl = v.length();
+	स्थिरांक दशांश vl = v.length();
 
-	if (vl > 1.0f) {
+	जर (vl > 1.0f) {
 		v /= vl;
 	}
 }
 
-void Sticks::rotateIntoHeadingFrameXY(Vector2f &v, const float yaw, const float yaw_setpoint)
+शून्य Sticks::rotateIntoHeadingFrameXY(Vector2f &v, स्थिरांक दशांश yaw, स्थिरांक दशांश yaw_setpoint)
 {
-	const float yaw_rotate = PX4_ISFINITE(yaw_setpoint) ? yaw_setpoint : yaw;
+	स्थिरांक दशांश yaw_rotate = PX4_ISFINITE(yaw_setpoint) ? yaw_setpoint : yaw;
 	v = Dcm2f(yaw_rotate) * v;
 }

@@ -33,40 +33,40 @@
 
 #pragma once
 
-#include <px4_platform_common/atomic_bitset.h>
-#include "atomic_transaction.h"
-#include "param.h"
-#include <stdlib.h>
+#अन्तर्भाव <px4_platform_common/atomic_bitset.h>
+#अन्तर्भाव "atomic_transaction.h"
+#अन्तर्भाव "param.h"
+#अन्तर्भाव <stdlib.h>
 
 class ParamLayer
 {
-public:
-	static constexpr param_t PARAM_COUNT = sizeof(px4::parameters) / sizeof(param_info_s);
+सार्वजनिक:
+	स्थिर constexpr param_t PARAM_मोजणी = आकार(px4::parameters) / आकार(param_info_s);
 
 	ParamLayer(ParamLayer *parent = nullptr) : _parent(parent) {}
 
-	ParamLayer(const ParamLayer &) = delete;
-	ParamLayer &operator=(const ParamLayer &) = delete;
+	ParamLayer(स्थिरांक ParamLayer &) = delete;
+	ParamLayer &चालक=(स्थिरांक ParamLayer &) = delete;
 	ParamLayer(ParamLayer &&) = delete;
-	ParamLayer &operator=(ParamLayer &&) = delete;
+	ParamLayer &चालक=(ParamLayer &&) = delete;
 
 
-	virtual bool store(param_t param, param_value_u value) = 0;
+	आभासी bool store(param_t param, param_मूल्य_u मूल्य) = 0;
 
-	virtual bool contains(param_t param) const = 0;
+	आभासी bool contains(param_t param) स्थिरांक = 0;
 
-	virtual px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const = 0;
+	आभासी px4::AtomicBitset<PARAM_मोजणी> containedAsBitset() स्थिरांक = 0;
 
-	virtual param_value_u get(param_t param) const = 0;
+	आभासी param_मूल्य_u get(param_t param) स्थिरांक = 0;
 
-	virtual void reset(param_t param) = 0;
+	आभासी शून्य reset(param_t param) = 0;
 
-	virtual void refresh(param_t param) = 0;
+	आभासी शून्य refresh(param_t param) = 0;
 
-	virtual int size() const = 0;
+	आभासी पूर्णांक size() स्थिरांक = 0;
 
-	virtual int byteSize() const = 0;
+	आभासी पूर्णांक byteSize() स्थिरांक = 0;
 
-protected:
-	ParamLayer *const _parent;
+संरक्षित:
+	ParamLayer *स्थिरांक _parent;
 };

@@ -39,13 +39,13 @@
  * @author Lorenz Meier <lm@inf.ethz.ch>
  */
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <cmath>
-#include "st24.h"
-#include "common_rc.h"
+#अन्तर्भाव <stdbool.h>
+#अन्तर्भाव <stdio.h>
+#अन्तर्भाव <cmath>
+#अन्तर्भाव "st24.h"
+#अन्तर्भाव "common_rc.h"
 
-const char *decode_states[] = {"UNSYNCED",
+स्थिरांक अक्षर *decode_states[] = {"UNSYNCED",
 			       "GOT_STX1",
 			       "GOT_STX2",
 			       "GOT_LEN",
@@ -62,29 +62,29 @@ const char *decode_states[] = {"UNSYNCED",
 
 /* pre-calculate the floating point stuff as far as possible at compile time */
 #define ST24_SCALE_FACTOR ((ST24_TARGET_MAX - ST24_TARGET_MIN) / (ST24_RANGE_MAX - ST24_RANGE_MIN))
-#define ST24_SCALE_OFFSET (int)(ST24_TARGET_MIN - (ST24_SCALE_FACTOR * ST24_RANGE_MIN + 0.5f))
+#define ST24_SCALE_OFFSET (पूर्णांक)(ST24_TARGET_MIN - (ST24_SCALE_FACTOR * ST24_RANGE_MIN + 0.5f))
 
-static enum ST24_DECODE_STATE _decode_state = ST24_DECODE_STATE_UNSYNCED;
-static uint8_t _rxlen;
+स्थिर गणना ST24_DECODE_STATE _decode_state = ST24_DECODE_STATE_UNSYNCED;
+स्थिर uint8_t _rxlen;
 
-static ReceiverFcPacket &_rxpacket = rc_decode_buf._strxpacket;
+स्थिर ReceiverFcPacket &_rxpacket = rc_decode_buf._strxpacket;
 
 uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len)
 {
 	uint8_t i, crc ;
 	crc = 0;
 
-	while (len--) {
-		for (i = 0x80; i != 0; i >>= 1) {
-			if ((crc & 0x80) != 0) {
+	पर्यंत (len--) {
+		साठी (i = 0x80; i != 0; i >>= 1) {
+			जर ((crc & 0x80) != 0) {
 				crc <<= 1;
 				crc ^= 0x07;
 
-			} else {
+			} अन्यथा {
 				crc <<= 1;
 			}
 
-			if ((*ptr & i) != 0) {
+			जर ((*ptr & i) != 0) {
 				crc ^= 0x07;
 			}
 		}
@@ -92,93 +92,93 @@ uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len)
 		ptr++;
 	}
 
-	return (crc);
+	परत (crc);
 }
 
 
-int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *channel_count, uint16_t *channels,
-		uint16_t max_chan_count)
+पूर्णांक st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_मोजणी, uint16_t *channel_मोजणी, uint16_t *channels,
+		uint16_t max_chan_मोजणी)
 {
-	int ret = 1;
+	पूर्णांक ret = 1;
 
-	switch (_decode_state) {
-	case ST24_DECODE_STATE_UNSYNCED:
-		if (byte == ST24_STX1) {
+	निवड (_decode_state) {
+	स्थिती ST24_DECODE_STATE_UNSYNCED:
+		जर (byte == ST24_STX1) {
 			_decode_state = ST24_DECODE_STATE_GOT_STX1;
 
-		} else {
+		} अन्यथा {
 			ret = 3;
 		}
 
-		break;
+		थांबा;
 
-	case ST24_DECODE_STATE_GOT_STX1:
-		if (byte == ST24_STX2) {
+	स्थिती ST24_DECODE_STATE_GOT_STX1:
+		जर (byte == ST24_STX2) {
 			_decode_state = ST24_DECODE_STATE_GOT_STX2;
 
-		} else {
+		} अन्यथा {
 			_decode_state = ST24_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		थांबा;
 
-	case ST24_DECODE_STATE_GOT_STX2:
+	स्थिती ST24_DECODE_STATE_GOT_STX2:
 
 		/* ensure no data overflow failure or hack is possible */
-		if ((unsigned)byte >= sizeof(_rxpacket.type) + sizeof(_rxpacket.crc8)
-		    && (unsigned)byte <= sizeof(_rxpacket.type) + sizeof(_rxpacket.st24_data) + sizeof(_rxpacket.crc8)) {
+		जर ((अचिन्हित)byte >= आकार(_rxpacket.type) + आकार(_rxpacket.crc8)
+		    && (अचिन्हित)byte <= आकार(_rxpacket.type) + आकार(_rxpacket.st24_data) + आकार(_rxpacket.crc8)) {
 			_rxpacket.length = byte;
 			_rxlen = 0;
 			_decode_state = ST24_DECODE_STATE_GOT_LEN;
 
-		} else {
+		} अन्यथा {
 			_decode_state = ST24_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		थांबा;
 
-	case ST24_DECODE_STATE_GOT_LEN:
+	स्थिती ST24_DECODE_STATE_GOT_LEN:
 		_rxpacket.type = byte;
 		_rxlen++;
 		_decode_state = (_rxlen == (_rxpacket.length - 1)) ? ST24_DECODE_STATE_GOT_DATA : ST24_DECODE_STATE_GOT_TYPE;
-		break;
+		थांबा;
 
-	case ST24_DECODE_STATE_GOT_TYPE:
+	स्थिती ST24_DECODE_STATE_GOT_TYPE:
 		_rxpacket.st24_data[_rxlen - 1] = byte;
 		_rxlen++;
 
-		if (_rxlen == (_rxpacket.length - 1)) {
+		जर (_rxlen == (_rxpacket.length - 1)) {
 			_decode_state = ST24_DECODE_STATE_GOT_DATA;
 		}
 
-		break;
+		थांबा;
 
-	case ST24_DECODE_STATE_GOT_DATA:
+	स्थिती ST24_DECODE_STATE_GOT_DATA:
 		_rxpacket.crc8 = byte;
 		_rxlen++;
 
-		if (st24_common_crc8((uint8_t *) & (_rxpacket.length), _rxlen) == _rxpacket.crc8) {
+		जर (st24_common_crc8((uint8_t *) & (_rxpacket.length), _rxlen) == _rxpacket.crc8) {
 
 			ret = 0;
 
 			/* decode the actual packet */
 
-			switch (_rxpacket.type) {
+			निवड (_rxpacket.type) {
 
-			case ST24_PACKET_TYPE_CHANNELDATA12: {
+			स्थिती ST24_PACKET_TYPE_CHANNELDATA12: {
 					ChannelData12 *d = (ChannelData12 *)_rxpacket.st24_data;
 
 					// Scale from 0..255 to 100%.
 					*rssi = d->rssi * (100.0f / 255.0f);
-					*lost_count = d->lost_count;
+					*lost_मोजणी = d->lost_मोजणी;
 
 					/* this can lead to rounding of the strides */
-					*channel_count = (max_chan_count < 12) ? max_chan_count : 12;
+					*channel_मोजणी = (max_chan_मोजणी < 12) ? max_chan_मोजणी : 12;
 
-					unsigned stride_count = (*channel_count * 3) / 2;
-					unsigned chan_index = 0;
+					अचिन्हित stride_मोजणी = (*channel_मोजणी * 3) / 2;
+					अचिन्हित chan_index = 0;
 
-					for (unsigned i = 0; i < stride_count; i += 3) {
+					साठी (अचिन्हित i = 0; i < stride_मोजणी; i += 3) {
 						channels[chan_index] = ((uint16_t)d->channel[i] << 4);
 						channels[chan_index] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
 						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
@@ -192,22 +192,22 @@ int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *chan
 						chan_index++;
 					}
 				}
-				break;
+				थांबा;
 
-			case ST24_PACKET_TYPE_CHANNELDATA24: {
+			स्थिती ST24_PACKET_TYPE_CHANNELDATA24: {
 					ChannelData24 *d = (ChannelData24 *)&_rxpacket.st24_data;
 
 					// Scale from 0..255 to 100%.
 					*rssi = d->rssi * (100.0f / 255.0f);
-					*lost_count = d->lost_count;
+					*lost_मोजणी = d->lost_मोजणी;
 
 					/* this can lead to rounding of the strides */
-					*channel_count = (max_chan_count < 24) ? max_chan_count : 24;
+					*channel_मोजणी = (max_chan_मोजणी < 24) ? max_chan_मोजणी : 24;
 
-					unsigned stride_count = (*channel_count * 3) / 2;
-					unsigned chan_index = 0;
+					अचिन्हित stride_मोजणी = (*channel_मोजणी * 3) / 2;
+					अचिन्हित chan_index = 0;
 
-					for (unsigned i = 0; i < stride_count; i += 3) {
+					साठी (अचिन्हित i = 0; i < stride_मोजणी; i += 3) {
 						channels[chan_index] = ((uint16_t)d->channel[i] << 4);
 						channels[chan_index] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
 						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
@@ -221,29 +221,29 @@ int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *chan
 						chan_index++;
 					}
 				}
-				break;
+				थांबा;
 
-			case ST24_PACKET_TYPE_TRANSMITTERGPSDATA: {
+			स्थिती ST24_PACKET_TYPE_TRANSMITTERGPSDATA: {
 
 					// ReceiverFcPacket* d = (ReceiverFcPacket*)&_rxpacket.st24_data;
 					/* we silently ignore this data for now, as it is unused */
 					ret = 5;
 				}
-				break;
+				थांबा;
 
-			default:
+			पूर्वनिर्धारित:
 				ret = 2;
-				break;
+				थांबा;
 			}
 
-		} else {
+		} अन्यथा {
 			/* decoding failed */
 			ret = 4;
 		}
 
 		_decode_state = ST24_DECODE_STATE_UNSYNCED;
-		break;
+		थांबा;
 	}
 
-	return ret;
+	परत ret;
 }

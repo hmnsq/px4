@@ -37,24 +37,24 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <float.h>
 
-#include "blocks.hpp"
+#अन्तर्भाव "blocks.hpp"
 
-namespace control
+नामाकाश control
 {
 
-float BlockLimit::update(float input)
+दशांश BlockLimit::update(दशांश आदान)
 {
-	if (input > getMax()) {
-		input = _max.get();
+	जर (आदान > getMax()) {
+		आदान = _max.get();
 
-	} else if (input < getMin()) {
-		input = getMin();
+	} अन्यथा जर (आदान < getMin()) {
+		आदान = getMin();
 	}
 
-	return input;
+	परत आदान;
 }
 
 } // namespace control

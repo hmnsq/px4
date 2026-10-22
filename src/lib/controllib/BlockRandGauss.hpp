@@ -39,65 +39,65 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
-class __EXPORT BlockRandGauss: public Block
+वर्ग __EXPORT BlockRandGauss: सार्वजनिक Block
 {
-public:
+सार्वजनिक:
 // methods
 	BlockRandGauss(SuperBlock *parent,
-		       const char *name) :
+		       स्थिरांक अक्षर *name) :
 		Block(parent, name),
-		_mean(this, "MEAN"),
-		_stdDev(this, "DEV")
+		_mean(हे, "MEAN"),
+		_stdDev(हे, "DEV")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandGauss() = default;
-	float update()
+	आभासी ~BlockRandGauss() = पूर्वनिर्धारित;
+	दशांश update()
 	{
-		static float V1, V2, S;
-		static int phase = 0;
-		float X;
+		स्थिर दशांश V1, V2, S;
+		स्थिर पूर्णांक phase = 0;
+		दशांश X;
 
-		if (phase == 0) {
-			do {
-				float U1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-				float U2 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		जर (phase == 0) {
+			करा {
+				दशांश U1 = static_cast<दशांश>(अक्रम()) / static_cast<दशांश>(अक्रम_उच्च);
+				दशांश U2 = static_cast<दशांश>(अक्रम()) / static_cast<दशांश>(अक्रम_उच्च);
 				V1 = 2 * U1 - 1;
 				V2 = 2 * U2 - 1;
 				S = V1 * V1 + V2 * V2;
-			} while (S >= 1 || fabsf(S) < 1e-8f);
+			} पर्यंत (S >= 1 || fabsf(S) < 1e-8f);
 
-			X = V1 * float(sqrtf(-2 * float(logf(S)) / S));
+			X = V1 * दशांश(sqrtf(-2 * दशांश(logf(S)) / S));
 
-		} else {
-			X = V2 * float(sqrtf(-2 * float(logf(S)) / S));
+		} अन्यथा {
+			X = V2 * दशांश(sqrtf(-2 * दशांश(logf(S)) / S));
 		}
 
 		phase = 1 - phase;
-		return X * getStdDev() + getMean();
+		परत X * getStdDev() + getMean();
 	}
 // accessors
-	float getMean() { return _mean.get(); }
-	float getStdDev() { return _stdDev.get(); }
-private:
+	दशांश getMean() { परत _mean.get(); }
+	दशांश getStdDev() { परत _stdDev.get(); }
+खाजगी:
 // attributes
 	control::BlockParamFloat _mean;
 	control::BlockParamFloat _stdDev;

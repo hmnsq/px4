@@ -38,86 +38,86 @@
 
 #pragma once
 
-#include <motion_planning/VelocitySmoothing.hpp>
+#अन्तर्भाव <motion_planning/VelocitySmoothing.hpp>
 
-class ManualVelocitySmoothingZ final
+वर्ग ManualVelocitySmoothingZ final
 {
-public:
-	ManualVelocitySmoothingZ() = default;
-	~ManualVelocitySmoothingZ() = default;
+सार्वजनिक:
+	ManualVelocitySmoothingZ() = पूर्वनिर्धारित;
+	~ManualVelocitySmoothingZ() = पूर्वनिर्धारित;
 
-	void reset(float accel, float vel, float pos);
-	void update(float dt, float velocity_target);
+	शून्य reset(दशांश accel, दशांश vel, दशांश pos);
+	शून्य update(दशांश dt, दशांश velocity_target);
 
-	void setVelSpFeedback(const float fb) { _velocity_setpoint_feedback = fb; }
+	शून्य setVelSpFeedback(स्थिरांक दशांश fb) { _velocity_setpoint_feedback = fb; }
 
-	void setMaxJerk(const float max_jerk)
+	शून्य setMaxJerk(स्थिरांक दशांश max_jerk)
 	{
 		_trajectory.setMaxJerk(max_jerk);
 	}
-	void setMaxAccelUp(const float max_accel_up)
+	शून्य setMaxAccelUp(स्थिरांक दशांश max_accel_up)
 	{
 		_max_accel_up = max_accel_up;
 	}
-	void setMaxAccelDown(const float max_accel_down)
+	शून्य setMaxAccelDown(स्थिरांक दशांश max_accel_down)
 	{
 		_max_accel_down = max_accel_down;
 	}
-	void setMaxVelUp(const float max_vel_up)
+	शून्य setMaxVelUp(स्थिरांक दशांश max_vel_up)
 	{
 		_max_vel_up = max_vel_up;
 	}
-	void setMaxVelDown(const float max_vel_down)
+	शून्य setMaxVelDown(स्थिरांक दशांश max_vel_down)
 	{
 		_max_vel_down = max_vel_down;
 	}
 
-	float getCurrentJerk() const { return _state.j; }
-	float getCurrentAcceleration() const { return _state.a; }
-	void setCurrentVelocity(const float vel)
+	दशांश getCurrentJerk() स्थिरांक { परत _state.j; }
+	दशांश getCurrentAcceleration() स्थिरांक { परत _state.a; }
+	शून्य setCurrentVelocity(स्थिरांक दशांश vel)
 	{
 		_state.v = vel;
 		_trajectory.setCurrentVelocity(vel);
 	}
-	float getCurrentVelocity() const { return _state.v; }
-	void setCurrentPosition(const float pos)
+	दशांश getCurrentVelocity() स्थिरांक { परत _state.v; }
+	शून्य setCurrentPosition(स्थिरांक दशांश pos)
 	{
 		_state.x = pos;
 		_trajectory.setCurrentPosition(pos);
 		_position_estimate = pos;
 
-		if (_position_lock_active) {
+		जर (_position_lock_active) {
 			_position_setpoint_locked = pos;
 		}
 	}
-	float getCurrentPosition() const { return _position_setpoint_locked; }
-	void setCurrentPositionEstimate(float pos) { _position_estimate = pos; }
+	दशांश getCurrentPosition() स्थिरांक { परत _position_setpoint_locked; }
+	शून्य setCurrentPositionEstimate(दशांश pos) { _position_estimate = pos; }
 
-private:
-	void resetPositionLock();
-	void updateTrajectories(float dt);
-	void updateTrajConstraints(float vel_target);
-	void checkPositionLock(float velocity_target);
-	void updateTrajDurations(float velocity_target);
+खाजगी:
+	शून्य resetPositionLock();
+	शून्य updateTrajectories(दशांश dt);
+	शून्य updateTrajConstraints(दशांश vel_target);
+	शून्य checkPositionLock(दशांश velocity_target);
+	शून्य updateTrajDurations(दशांश velocity_target);
 
 	VelocitySmoothing _trajectory; ///< Trajectory in z direction
 
-	bool _position_lock_active{false};
+	तार्किक _position_lock_active{असत्य};
 
-	float _position_setpoint_locked{};
+	दशांश _position_setpoint_locked{};
 
-	float _velocity_setpoint_feedback{};
-	float _position_estimate{};
+	दशांश _velocity_setpoint_feedback{};
+	दशांश _position_estimate{};
 
-	struct {
-		float j;
-		float a;
-		float v;
-		float x;
+	संरचना {
+		दशांश j;
+		दशांश a;
+		दशांश v;
+		दशांश x;
 	} _state{};
 
-	float _max_accel_up{0.f};
-	float _max_accel_down{0.f};
-	float _max_vel_up{0.f};
-	float _max_vel_down{0.f};
+	दशांश _max_accel_up{0.f};
+	दशांश _max_accel_down{0.f};
+	दशांश _max_vel_up{0.f};
+	दशांश _max_vel_down{0.f};
 };

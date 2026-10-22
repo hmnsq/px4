@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include "SquareMatrix.hpp"
-#include "Vector.hpp"
+#अन्तर्भाव "SquareMatrix.hpp"
+#अन्तर्भाव "Vector.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
 /**
@@ -21,37 +21,37 @@ namespace matrix
  *
  * Courrieu, P. (2008). Fast Computation of Moore-Penrose Inverse Matrices, 8(2), 25–29. http://arxiv.org/abs/0804.4809
  */
-template<typename Type, size_t M, size_t N>
-bool geninv(const Matrix<Type, M, N> &G, Matrix<Type, N, M> &res)
+ढाँचा<typename Type, माप_प्रकार M, माप_प्रकार N>
+तार्किक geninv(स्थिरांक Matrix<Type, M, N> &G, Matrix<Type, N, M> &res)
 {
-	size_t rank;
+	माप_प्रकार rank;
 
-	if (M <= N) {
+	जर (M <= N) {
 		SquareMatrix<Type, M> A = G * G.transpose();
 		SquareMatrix<Type, M> L = fullRankCholesky(A, rank);
 
 		A = L.transpose() * L;
 		SquareMatrix<Type, M> X;
 
-		if (!inv(A, X, rank)) {
+		जर (!inv(A, X, rank)) {
 			res = Matrix<Type, N, M>();
-			return false; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
+			परत असत्य; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
 		}
 
 		// doing an intermediate assignment reduces stack usage
 		A = X * X * L.transpose();
 		res = G.transpose() * (L * A);
 
-	} else {
+	} अन्यथा {
 		SquareMatrix<Type, N> A = G.transpose() * G;
 		SquareMatrix<Type, N> L = fullRankCholesky(A, rank);
 
 		A = L.transpose() * L;
 		SquareMatrix<Type, N> X;
 
-		if (!inv(A, X, rank)) {
+		जर (!inv(A, X, rank)) {
 			res = Matrix<Type, N, M>();
-			return false; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
+			परत असत्य; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
 		}
 
 		// doing an intermediate assignment reduces stack usage
@@ -59,46 +59,46 @@ bool geninv(const Matrix<Type, M, N> &G, Matrix<Type, N, M> &res)
 		res = (L * A) * G.transpose();
 	}
 
-	return true;
+	परत सत्य;
 }
 
 
-template<typename Type>
+ढाँचा<typename Type>
 Type typeEpsilon();
 
-template<> inline
-float typeEpsilon<float>()
+ढाँचा<> ओळीत
+दशांश typeEpsilon<दशांश>()
 {
-	return FLT_EPSILON;
+	परत भग्न_अंतर;
 }
 
 /**
  * Full rank Cholesky factorization of A
  */
-template<typename Type, size_t N>
-SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
-				       size_t &rank)
+ढाँचा<typename Type, माप_प्रकार N>
+SquareMatrix<Type, N> fullRankCholesky(स्थिरांक SquareMatrix<Type, N> &A,
+				       माप_प्रकार &rank)
 {
 	// Loses one ulp accuracy per row of diag, relative to largest magnitude
-	const Type tol = N * typeEpsilon<Type>() * A.diag().max();
+	स्थिरांक Type tol = N * typeEpsilon<Type>() * A.diag().max();
 
 	Matrix<Type, N, N> L;
 
-	size_t r = 0;
+	माप_प्रकार r = 0;
 
-	for (size_t k = 0; k < N; k++) {
+	साठी (माप_प्रकार k = 0; k < N; k++) {
 
-		if (r == 0) {
-			for (size_t i = k; i < N; i++) {
+		जर (r == 0) {
+			साठी (माप_प्रकार i = k; i < N; i++) {
 				L(i, r) = A(i, k);
 			}
 
-		} else {
-			for (size_t i = k; i < N; i++) {
+		} अन्यथा {
+			साठी (माप_प्रकार i = k; i < N; i++) {
 				// Compute LL = L[k:n, :r] * L[k, :r].T
 				Type LL = Type();
 
-				for (size_t j = 0; j < r; j++) {
+				साठी (माप_प्रकार j = 0; j < r; j++) {
 					LL += L(i, j) * L(k, j);
 				}
 
@@ -106,11 +106,11 @@ SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
 			}
 		}
 
-		if (L(k, r) > tol) {
-			L(k, r) = std::sqrt(L(k, r));
+		जर (L(k, r) > tol) {
+			L(k, r) = std::वर्ग_मूल(L(k, r));
 
-			if (k < N - 1) {
-				for (size_t i = k + 1; i < N; i++) {
+			जर (k < N - 1) {
+				साठी (माप_प्रकार i = k + 1; i < N; i++) {
 					L(i, r) = L(i, r) / L(k, r);
 				}
 			}
@@ -122,7 +122,7 @@ SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
 	// Return rank
 	rank = r;
 
-	return L;
+	परत L;
 }
 
 } // namespace matrix

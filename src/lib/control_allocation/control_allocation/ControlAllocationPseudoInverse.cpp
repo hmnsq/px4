@@ -39,78 +39,78 @@
  * @author Julien Lecoeur <julien.lecoeur@gmail.com>
  */
 
-#include "ControlAllocationPseudoInverse.hpp"
+#अन्तर्भाव "ControlAllocationPseudoInverse.hpp"
 
-void
+शून्य
 ControlAllocationPseudoInverse::setEffectivenessMatrix(
-	const matrix::Matrix<float, ControlAllocation::NUM_AXES, ControlAllocation::NUM_ACTUATORS> &effectiveness,
-	const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
-	bool update_normalization_scale)
+	स्थिरांक matrix::Matrix<दशांश, ControlAllocation::अंक_AXES, ControlAllocation::अंक_ACTUATORS> &effectiveness,
+	स्थिरांक ActuatorVector &actuator_trim, स्थिरांक ActuatorVector &linearization_point, पूर्णांक अंक_actuators,
+	तार्किक update_normalization_scale)
 {
-	ControlAllocation::setEffectivenessMatrix(effectiveness, actuator_trim, linearization_point, num_actuators,
+	ControlAllocation::setEffectivenessMatrix(effectiveness, actuator_trim, linearization_point, अंक_actuators,
 			update_normalization_scale);
 
 	// in place on the stored copy: no second matrix on the (small work queue) stack
 	_dropped_axes = dropDependentAxes(_effectiveness);
 
-	_mix_update_needed = true;
+	_mix_update_needed = सत्य;
 	_normalization_needs_update = update_normalization_scale;
 
-	if (_metric_allocation && update_normalization_scale) {
+	जर (_metric_allocation && update_normalization_scale) {
 		// adding #include <px4_platform_common/log.h> + PX4_WARN leads to failed linking on test
-		_normalization_needs_update = false;
+		_normalization_needs_update = असत्य;
 	}
 }
 
-void
+शून्य
 ControlAllocationPseudoInverse::updatePseudoInverse()
 {
-	if (_mix_update_needed) {
+	जर (_mix_update_needed) {
 		matrix::geninv(_effectiveness, _mix);
 
-		if (!_metric_allocation) {
-			if (_normalization_needs_update && !_had_actuator_failure) {
+		जर (!_metric_allocation) {
+			जर (_normalization_needs_update && !_had_actuator_failure) {
 				updateControlAllocationMatrixScale();
-				_normalization_needs_update = false;
+				_normalization_needs_update = असत्य;
 			}
 
 			normalizeControlAllocationMatrix();
 		}
 
-		_mix_update_needed = false;
+		_mix_update_needed = असत्य;
 	}
 }
 
-void
+शून्य
 ControlAllocationPseudoInverse::updateControlAllocationMatrixScale()
 {
 	// Same scale on roll and pitch
-	if (_normalize_rpy) {
+	जर (_normalize_rpy) {
 
-		int num_non_zero_roll_torque = 0;
-		int num_non_zero_pitch_torque = 0;
+		पूर्णांक अंक_non_zero_roll_torque = 0;
+		पूर्णांक अंक_non_zero_pitch_torque = 0;
 
-		for (int i = 0; i < _num_actuators; i++) {
+		साठी (पूर्णांक i = 0; i < अंक_actuators_2; i++) {
 
-			if (fabsf(_mix(i, 0)) > 1e-3f) {
-				++num_non_zero_roll_torque;
+			जर (fabsf(_mix(i, 0)) > 1e-3f) {
+				++अंक_non_zero_roll_torque;
 			}
 
-			if (fabsf(_mix(i, 1)) > 1e-3f) {
-				++num_non_zero_pitch_torque;
+			जर (fabsf(_mix(i, 1)) > 1e-3f) {
+				++अंक_non_zero_pitch_torque;
 			}
 		}
 
-		float roll_norm_scale = 1.f;
+		दशांश roll_norm_scale = 1.f;
 
-		if (num_non_zero_roll_torque > 0) {
-			roll_norm_scale = sqrtf(_mix.col(0).norm_squared() / (num_non_zero_roll_torque / 2.f));
+		जर (अंक_non_zero_roll_torque > 0) {
+			roll_norm_scale = sqrtf(_mix.col(0).norm_squared() / (अंक_non_zero_roll_torque / 2.f));
 		}
 
-		float pitch_norm_scale = 1.f;
+		दशांश pitch_norm_scale = 1.f;
 
-		if (num_non_zero_pitch_torque > 0) {
-			pitch_norm_scale = sqrtf(_mix.col(1).norm_squared() / (num_non_zero_pitch_torque / 2.f));
+		जर (अंक_non_zero_pitch_torque > 0) {
+			pitch_norm_scale = sqrtf(_mix.col(1).norm_squared() / (अंक_non_zero_pitch_torque / 2.f));
 		}
 
 		_control_allocation_scale(0) = fmaxf(roll_norm_scale, pitch_norm_scale);
@@ -119,7 +119,7 @@ ControlAllocationPseudoInverse::updateControlAllocationMatrixScale()
 		// Scale yaw separately
 		_control_allocation_scale(2) = _mix.col(2).max();
 
-	} else {
+	} अन्यथा {
 		_control_allocation_scale(0) = 1.f;
 		_control_allocation_scale(1) = 1.f;
 		_control_allocation_scale(2) = 1.f;
@@ -129,41 +129,41 @@ ControlAllocationPseudoInverse::updateControlAllocationMatrixScale()
 	// (for tilted actuators)
 	_control_allocation_scale(THRUST_Z) = 1.f;
 
-	for (int axis_idx = 2; axis_idx >= 0; --axis_idx) {
-		int num_non_zero_thrust = 0;
-		float norm_sum = 0.f;
+	साठी (पूर्णांक axis_idx = 2; axis_idx >= 0; --axis_idx) {
+		पूर्णांक अंक_non_zero_thrust = 0;
+		दशांश norm_sum = 0.f;
 
-		for (int i = 0; i < _num_actuators; i++) {
-			float norm = fabsf(_mix(i, 3 + axis_idx));
+		साठी (पूर्णांक i = 0; i < अंक_actuators_2; i++) {
+			दशांश norm = fabsf(_mix(i, 3 + axis_idx));
 			norm_sum += norm;
 
-			if (norm > FLT_EPSILON) {
-				++num_non_zero_thrust;
+			जर (norm > भग्न_अंतर) {
+				++अंक_non_zero_thrust;
 			}
 		}
 
-		if (num_non_zero_thrust > 0) {
-			_control_allocation_scale(3 + axis_idx) = norm_sum / num_non_zero_thrust;
+		जर (अंक_non_zero_thrust > 0) {
+			_control_allocation_scale(3 + axis_idx) = norm_sum / अंक_non_zero_thrust;
 
-		} else {
+		} अन्यथा {
 			_control_allocation_scale(3 + axis_idx) = _control_allocation_scale(THRUST_Z);
 		}
 	}
 }
 
-void
+शून्य
 ControlAllocationPseudoInverse::normalizeControlAllocationMatrix()
 {
-	if (_control_allocation_scale(0) > FLT_EPSILON) {
+	जर (_control_allocation_scale(0) > भग्न_अंतर) {
 		_mix.col(0) /= _control_allocation_scale(0);
 		_mix.col(1) /= _control_allocation_scale(1);
 	}
 
-	if (_control_allocation_scale(2) > FLT_EPSILON) {
+	जर (_control_allocation_scale(2) > भग्न_अंतर) {
 		_mix.col(2) /= _control_allocation_scale(2);
 	}
 
-	if (_control_allocation_scale(3) > FLT_EPSILON) {
+	जर (_control_allocation_scale(3) > भग्न_अंतर) {
 		_mix.col(3) /= _control_allocation_scale(3);
 		_mix.col(4) /= _control_allocation_scale(4);
 		_mix.col(5) /= _control_allocation_scale(5);
@@ -171,16 +171,16 @@ ControlAllocationPseudoInverse::normalizeControlAllocationMatrix()
 
 	// Set all the small elements to 0 to avoid issues
 	// in the control allocation algorithms
-	for (int i = 0; i < _num_actuators; i++) {
-		for (int j = 0; j < NUM_AXES; j++) {
-			if (fabsf(_mix(i, j)) < 1e-3f) {
+	साठी (पूर्णांक i = 0; i < अंक_actuators_2; i++) {
+		साठी (पूर्णांक j = 0; j < अंक_AXES; j++) {
+			जर (fabsf(_mix(i, j)) < 1e-3f) {
 				_mix(i, j) = 0.f;
 			}
 		}
 	}
 }
 
-void
+शून्य
 ControlAllocationPseudoInverse::allocate()
 {
 	//Compute new gains if needed
@@ -193,37 +193,37 @@ ControlAllocationPseudoInverse::allocate()
 }
 
 uint8_t
-ControlAllocationPseudoInverse::dropDependentAxes(matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness)
+ControlAllocationPseudoInverse::dropDependentAxes(matrix::Matrix<दशांश, अंक_AXES, अंक_ACTUATORS> &effectiveness)
 {
 	// highest priority first
-	static constexpr ControlAxis kPriority[NUM_AXES] = {THRUST_Z, ROLL, PITCH, THRUST_X, THRUST_Y, YAW};
+	स्थिर constexpr ControlAxis kPriority[अंक_AXES] = {THRUST_Z, ROLL, PITCH, THRUST_X, THRUST_Y, YAW};
 
 	// Gram-Schmidt through the Cholesky factor of the Gram matrix of the accepted unit rows:
 	// equivalent to orthogonalizing the rows, without keeping NUM_ACTUATORS-long vectors on the
 	// (small work queue) stack
-	float chol[NUM_AXES][NUM_AXES] {};
-	float inv_norm[NUM_AXES];
-	ControlAxis accepted[NUM_AXES];
-	int num_accepted = 0;
+	दशांश chol[अंक_AXES][अंक_AXES] {};
+	दशांश inv_norm[अंक_AXES];
+	ControlAxis accepted[अंक_AXES];
+	पूर्णांक अंक_accepted = 0;
 	uint8_t dropped = 0;
 
-	for (const ControlAxis axis : kPriority) {
-		const float norm_squared = effectiveness.row(axis).norm_squared();
+	साठी (स्थिरांक ControlAxis axis : kPriority) {
+		स्थिरांक दशांश norm_squared = effectiveness.row(axis).norm_squared();
 
-		if (norm_squared < FLT_EPSILON) {
-			continue; // unused axis
+		जर (norm_squared < भग्न_अंतर) {
+			सुरूठेवा; // unused axis
 		}
 
-		const float inv = 1.f / sqrtf(norm_squared);
+		स्थिरांक दशांश inv = 1.f / sqrtf(norm_squared);
 
 		// projection of the unit row onto the orthonormal basis of the accepted rows
-		float projection[NUM_AXES];
-		float projected_norm_squared = 0.f;
+		दशांश projection[अंक_AXES];
+		दशांश projected_norm_squared = 0.f;
 
-		for (int i = 0; i < num_accepted; i++) {
-			float sum = effectiveness.row(axis).dot(effectiveness.row(accepted[i])) * inv * inv_norm[i];
+		साठी (पूर्णांक i = 0; i < अंक_accepted; i++) {
+			दशांश sum = effectiveness.row(axis).dot(effectiveness.row(accepted[i])) * inv * inv_norm[i];
 
-			for (int j = 0; j < i; j++) {
+			साठी (पूर्णांक j = 0; j < i; j++) {
 				sum -= chol[i][j] * projection[j];
 			}
 
@@ -231,23 +231,23 @@ ControlAllocationPseudoInverse::dropDependentAxes(matrix::Matrix<float, NUM_AXES
 			projected_norm_squared += projection[i] * projection[i];
 		}
 
-		const float independence = 1.f - projected_norm_squared;
+		स्थिरांक दशांश independence = 1.f - projected_norm_squared;
 
-		if (independence < kMinAxisIndependence) {
+		जर (independence < kMinAxisIndependence) {
 			effectiveness.row(axis) = 0.f;
 			dropped |= static_cast<uint8_t>(1u << axis);
 
-		} else {
-			for (int j = 0; j < num_accepted; j++) {
-				chol[num_accepted][j] = projection[j];
+		} अन्यथा {
+			साठी (पूर्णांक j = 0; j < अंक_accepted; j++) {
+				chol[अंक_accepted][j] = projection[j];
 			}
 
-			chol[num_accepted][num_accepted] = sqrtf(independence);
-			inv_norm[num_accepted] = inv;
-			accepted[num_accepted] = axis;
-			num_accepted++;
+			chol[अंक_accepted][अंक_accepted] = sqrtf(independence);
+			inv_norm[अंक_accepted] = inv;
+			accepted[अंक_accepted] = axis;
+			अंक_accepted++;
 		}
 	}
 
-	return dropped;
+	परत dropped;
 }

@@ -41,41 +41,41 @@
 
 #pragma once
 
-#include <cstdint>
+#अन्तर्भाव <cstdint>
 
-#include <matrix/matrix/math.hpp>
-#include <uORB/topics/control_allocator_status.h>
+#अन्तर्भाव <matrix/matrix/math.hpp>
+#अन्तर्भाव <uORB/topics/control_allocator_status.h>
 
-enum class AllocationMethod {
+गणना वर्ग AllocationMethod {
 	NONE = -1,
 	PSEUDO_INVERSE = 0,
 	SEQUENTIAL_DESATURATION = 1,
 	AUTO = 2,
 };
 
-enum class ActuatorType {
+गणना वर्ग ActuatorType {
 	MOTORS = 0,
 	SERVOS,
 
-	COUNT
+	मोजणी_2
 };
 
-enum class EffectivenessUpdateReason {
+गणना वर्ग EffectivenessUpdateReason {
 	NO_EXTERNAL_UPDATE = 0,
 	CONFIGURATION_UPDATE = 1, ///< config changes (parameter)
 	MOTOR_ACTIVATION_UPDATE = 2, ///< motor failure detected or certain redundant motors are switched off to save energy
 };
 
-class ActuatorEffectiveness
+वर्ग ActuatorEffectiveness
 {
-public:
-	ActuatorEffectiveness() = default;
-	virtual ~ActuatorEffectiveness() = default;
+सार्वजनिक:
+	ActuatorEffectiveness() = पूर्वनिर्धारित;
+	आभासी ~ActuatorEffectiveness() = पूर्वनिर्धारित;
 
-	static constexpr int NUM_ACTUATORS = 16;
-	static constexpr int NUM_AXES = 6;
+	स्थिर constexpr पूर्णांक अंक_ACTUATORS = 16;
+	स्थिर constexpr पूर्णांक अंक_AXES = 6;
 
-	enum ControlAxis {
+	गणना ControlAxis {
 		ROLL = 0,
 		PITCH,
 		YAW,
@@ -84,47 +84,47 @@ public:
 		THRUST_Z
 	};
 
-	static constexpr int MAX_NUM_MATRICES = 2;
+	स्थिर constexpr पूर्णांक MAX_अंक_MATRICES = 2;
 
-	using EffectivenessMatrix = matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS>;
-	using ActuatorVector = matrix::Vector<float, NUM_ACTUATORS>;
+	using EffectivenessMatrix = matrix::Matrix<दशांश, अंक_AXES, अंक_ACTUATORS>;
+	using ActuatorVector = matrix::Vector<दशांश, अंक_ACTUATORS>;
 	using ActuatorBitmask = uint32_t;
 
-	static_assert(NUM_ACTUATORS <= 8 * sizeof(ActuatorBitmask),
+	static_assert(अंक_ACTUATORS <= 8 * आकार(ActuatorBitmask),
 		      "NUM_ACTUATORS exceeds the number of bits available in the mask type.");
 
-	enum class FlightPhase {
+	गणना वर्ग FlightPhase {
 		HOVER_FLIGHT = 0,
 		FORWARD_FLIGHT = 1,
 		TRANSITION_HF_TO_FF = 2,
 		TRANSITION_FF_TO_HF = 3
 	};
 
-	struct Configuration {
+	संरचना Configuration {
 		/**
 		 * Add an actuator to the selected matrix, returning the index, or -1 on error
 		 */
-		int addActuator(ActuatorType type, const matrix::Vector3f &torque, const matrix::Vector3f &thrust);
+		पूर्णांक addActuator(ActuatorType type, स्थिरांक matrix::Vector3f &torque, स्थिरांक matrix::Vector3f &thrust);
 
 		/**
 		 * Call this after manually adding N actuators to the selected matrix
 		 */
-		void actuatorsAdded(ActuatorType type, int count);
+		शून्य actuatorsAdded(ActuatorType type, पूर्णांक मोजणी);
 
-		int totalNumActuators() const;
+		पूर्णांक total_अंक_Actuators() स्थिरांक;
 
 		/// Configured effectiveness matrix. Actuators are expected to be filled in order, motors first, then servos
-		EffectivenessMatrix effectiveness_matrices[MAX_NUM_MATRICES];
+		EffectivenessMatrix effectiveness_matrices[MAX_अंक_MATRICES];
 
-		int num_actuators_matrix[MAX_NUM_MATRICES]; ///< current amount, and next actuator index to fill in to effectiveness_matrices
-		ActuatorVector trim[MAX_NUM_MATRICES];
+		पूर्णांक अंक_actuators_matrix[MAX_अंक_MATRICES]; ///< current amount, and next actuator index to fill in to effectiveness_matrices
+		ActuatorVector trim[MAX_अंक_MATRICES];
 
-		ActuatorVector linearization_point[MAX_NUM_MATRICES];
+		ActuatorVector linearization_point[MAX_अंक_MATRICES];
 
-		int selected_matrix;
+		पूर्णांक selected_matrix;
 
-		uint8_t matrix_selection_indexes[NUM_ACTUATORS * MAX_NUM_MATRICES];
-		int num_actuators[(int)ActuatorType::COUNT];
+		uint8_t matrix_selection_indexes[अंक_ACTUATORS * MAX_अंक_MATRICES];
+		पूर्णांक अंक_actuators[(पूर्णांक)ActuatorType::मोजणी_2];
 	};
 
 	/**
@@ -132,7 +132,7 @@ public:
 	 *
 	 * @param Flight phase
 	 */
-	virtual void setFlightPhase(const FlightPhase &flight_phase)
+	आभासी शून्य setFlightPhase(स्थिरांक FlightPhase &flight_phase)
 	{
 		_flight_phase = flight_phase;
 	}
@@ -141,14 +141,14 @@ public:
 	 * Get the number of effectiveness matrices. Must be <= MAX_NUM_MATRICES.
 	 * This is expected to stay constant.
 	 */
-	virtual int numMatrices() const { return 1; }
+	आभासी पूर्णांक अंक_Matrices() स्थिरांक { परत 1; }
 
 	/**
 	 * Get the desired allocation method(s) for each matrix, if configured as AUTO
 	 */
-	virtual void getDesiredAllocationMethod(AllocationMethod allocation_method_out[MAX_NUM_MATRICES]) const
+	आभासी शून्य getDesiredAllocationMethod(AllocationMethod allocation_method_out[MAX_अंक_MATRICES]) स्थिरांक
 	{
-		for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
+		साठी (पूर्णांक i = 0; i < MAX_अंक_MATRICES; ++i) {
 			allocation_method_out[i] = AllocationMethod::PSEUDO_INVERSE;
 		}
 	}
@@ -156,10 +156,10 @@ public:
 	/**
 	 * Query if the roll, pitch and yaw columns of the mixing matrix should be normalized
 	 */
-	virtual void getNormalizeRPY(bool normalize[MAX_NUM_MATRICES]) const
+	आभासी शून्य getNormalizeRPY(तार्किक normalize[MAX_अंक_MATRICES]) स्थिरांक
 	{
-		for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
-			normalize[i] = false;
+		साठी (पूर्णांक i = 0; i < MAX_अंक_MATRICES; ++i) {
+			normalize[i] = असत्य;
 		}
 	}
 
@@ -168,22 +168,22 @@ public:
 	 *
 	 * @return true if updated and matrix is set
 	 */
-	virtual bool getEffectivenessMatrix(Configuration &configuration, EffectivenessUpdateReason external_update) { return false;}
+	आभासी तार्किक getEffectivenessMatrix(Configuration &configuration, EffectivenessUpdateReason external_update) { परत असत्य;}
 
 	/**
 	 * Get the current flight phase
 	 *
 	 * @return Flight phase
 	 */
-	const FlightPhase &getFlightPhase() const
+	स्थिरांक FlightPhase &getFlightPhase() स्थिरांक
 	{
-		return _flight_phase;
+		परत _flight_phase;
 	}
 
 	/**
 	 * Display name
 	 */
-	virtual const char *name() const = 0;
+	आभासी स्थिरांक अक्षर *name() स्थिरांक = 0;
 
 	/**
 	 * Callback from the control allocation, allowing to manipulate the setpoint.
@@ -191,7 +191,7 @@ public:
 	 *
 	 * @param actuator_sp input & output setpoint
 	 */
-	virtual void allocateAuxilaryControls(const float dt, int matrix_index, ActuatorVector &actuator_sp) {}
+	आभासी शून्य allocateAuxilaryControls(स्थिरांक दशांश dt, पूर्णांक matrix_index, ActuatorVector &actuator_sp) {}
 
 	/**
 	 * Callback from the control allocation, allowing to manipulate the setpoint.
@@ -199,19 +199,19 @@ public:
 	 * It is called after the matrix multiplication and before final clipping.
 	 * @param actuator_sp input & output setpoint
 	 */
-	virtual void updateSetpoint(const matrix::Vector<float, NUM_AXES> &control_sp, int matrix_index,
-				    ActuatorVector &actuator_sp, const ActuatorVector &actuator_min, const ActuatorVector &actuator_max) {}
+	आभासी शून्य updateSetpoint(स्थिरांक matrix::Vector<दशांश, अंक_AXES> &control_sp, पूर्णांक matrix_index,
+				    ActuatorVector &actuator_sp, स्थिरांक ActuatorVector &actuator_min, स्थिरांक ActuatorVector &actuator_max) {}
 
 	/**
 	 * Get a bitmask of motors to be stopped
 	 */
-	ActuatorBitmask getStoppedMotors() const;
+	ActuatorBitmask getStoppedMotors() स्थिरांक;
 
 	/**
 	 * Fill in the unallocated torque and thrust, customized by effectiveness type.
 	 * Can be implemented for every type separately. If not implemented then the effectivenes matrix is used instead.
 	 */
-	virtual void getUnallocatedControl(int matrix_index, control_allocator_status_s &status) {}
+	आभासी शून्य getUnallocatedControl(पूर्णांक matrix_index, control_allocator_status_s &status) {}
 
 	/**
 	 * Override the collective tilt setpoint that would normally come from
@@ -220,23 +220,23 @@ public:
 	 * @param do_override When true, use @p collective_tilt instead of the uORB value.
 	 * @param collective_tilt Normalised setpoint in [0, 1]. 0: vertical, 1: horizontal.
 	 */
-	virtual void overrideCollectiveTilt(bool /*do_override*/, float /*collective_tilt*/) {}
+	आभासी शून्य overrideCollectiveTilt(तार्किक /*do_override*/, दशांश /*collective_tilt*/) {}
 
 	/**
 	 * Record which components of the thrust setpoint are NaN, so that motors in that direction are stopped.
 	 *
 	 * @param thrust_sp The thrust setpoint as received by the allocator (instance zero - multicopter only)
 	 */
-	void stopMotorsBasedOnThrustSetpoint(const matrix::Vector3f &thrust_sp)
+	शून्य stopMotorsBasedOnThrustSetpoint(स्थिरांक matrix::Vector3f &thrust_sp)
 	{
 		_longitudinal_motors_stopped_by_thrust = !PX4_ISFINITE(thrust_sp(0));
 		_lateral_motors_stopped_by_thrust = !PX4_ISFINITE(thrust_sp(1));
 		_vertical_motors_stopped_by_thrust = !PX4_ISFINITE(thrust_sp(2));
 	}
 
-protected:
+संरक्षित:
 
-	struct MotorDirectionBitmasks {
+	संरचना MotorDirectionBitmasks {
 		ActuatorBitmask longitudinal{};
 		ActuatorBitmask lateral{};
 		ActuatorBitmask vertical{};
@@ -245,8 +245,8 @@ protected:
 	FlightPhase _flight_phase{FlightPhase::HOVER_FLIGHT};
 	ActuatorBitmask _stopped_motors_mask_due_to_flight_phase{};
 
-	bool _longitudinal_motors_stopped_by_thrust{false};
-	bool _vertical_motors_stopped_by_thrust{false};
-	bool _lateral_motors_stopped_by_thrust{false};
+	तार्किक _longitudinal_motors_stopped_by_thrust{असत्य};
+	तार्किक _vertical_motors_stopped_by_thrust{असत्य};
+	तार्किक _lateral_motors_stopped_by_thrust{असत्य};
 
 };

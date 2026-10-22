@@ -8,30 +8,30 @@
 
 #pragma once
 
-#include <float.h> // FLT_EPSILON
+#अन्तर्भाव <float.h> // FLT_EPSILON
 
-#include "Slice.hpp"
+#अन्तर्भाव "Slice.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
-template <typename Type, size_t  M>
-class SquareMatrix : public Matrix<Type, M, M>
+ढाँचा <typename Type, माप_प्रकार  M>
+वर्ग SquareMatrix : सार्वजनिक Matrix<Type, M, M>
 {
-public:
-	SquareMatrix() = default;
+सार्वजनिक:
+	SquareMatrix() = पूर्वनिर्धारित;
 
-	explicit SquareMatrix(const Type data_[M][M]) :
+	explicit SquareMatrix(स्थिरांक Type data_[M][M]) :
 		Matrix<Type, M, M>(data_)
 	{
 	}
 
-	explicit SquareMatrix(const Type data_[M * M]) :
+	explicit SquareMatrix(स्थिरांक Type data_[M * M]) :
 		Matrix<Type, M, M>(data_)
 	{
 	}
 
-	SquareMatrix(const Matrix<Type, M, M> &other) :
+	SquareMatrix(स्थिरांक Matrix<Type, M, M> &other) :
 		Matrix<Type, M, M>(other)
 	{
 	}
@@ -39,113 +39,113 @@ public:
 	using base = Matrix<Type, M, M>;
 	using base::base;
 
-	SquareMatrix<Type, M> &operator=(const Matrix<Type, M, M> &other)
+	SquareMatrix<Type, M> &चालक=(स्थिरांक Matrix<Type, M, M> &other)
 	{
-		Matrix<Type, M, M>::operator=(other);
-		return *this;
+		Matrix<Type, M, M>::चालक=(other);
+		परत *हे;
 	}
 
-	template <size_t P, size_t Q>
-	SquareMatrix<Type, M> &operator=(const Slice<Type, M, M, P, Q> &in_slice)
+	ढाँचा <माप_प्रकार P, माप_प्रकार Q>
+	SquareMatrix<Type, M> &चालक=(स्थिरांक Slice<Type, M, M, P, Q> &in_slice)
 	{
-		Matrix<Type, M, M>::operator=(in_slice);
-		return *this;
+		Matrix<Type, M, M>::चालक=(in_slice);
+		परत *हे;
 	}
 
-	template<size_t P, size_t Q>
-	ConstSlice<Type, P, Q, M, M> slice(size_t x0, size_t y0) const
+	ढाँचा<माप_प्रकार P, माप_प्रकार Q>
+	ConstSlice<Type, P, Q, M, M> slice(माप_प्रकार x0, माप_प्रकार y0) स्थिरांक
 	{
-		return {x0, y0, this};
+		परत {x0, y0, हे};
 	}
 
-	template<size_t P, size_t Q>
-	Slice<Type, P, Q, M, M> slice(size_t x0, size_t y0)
+	ढाँचा<माप_प्रकार P, माप_प्रकार Q>
+	Slice<Type, P, Q, M, M> slice(माप_प्रकार x0, माप_प्रकार y0)
 	{
-		return {x0, y0, this};
+		परत {x0, y0, हे};
 	}
 
 	// inverse alias
-	inline SquareMatrix<Type, M> I() const
+	ओळीत SquareMatrix<Type, M> I() स्थिरांक
 	{
 		SquareMatrix<Type, M> i;
 
-		if (inv(*this, i)) {
-			return i;
+		जर (inv(*हे, i)) {
+			परत i;
 
-		} else {
+		} अन्यथा {
 			i.setZero();
-			return i;
+			परत i;
 		}
 	}
 
 	// inverse alias
-	inline bool I(SquareMatrix<Type, M> &i) const
+	ओळीत तार्किक I(SquareMatrix<Type, M> &i) स्थिरांक
 	{
-		return inv(*this, i);
+		परत inv(*हे, i);
 	}
 
 
-	Vector<Type, M> diag() const
+	Vector<Type, M> diag() स्थिरांक
 	{
 		Vector<Type, M> res;
-		const SquareMatrix<Type, M> &self = *this;
+		स्थिरांक SquareMatrix<Type, M> &self = *हे;
 
-		for (size_t i = 0; i < M; i++) {
+		साठी (माप_प्रकार i = 0; i < M; i++) {
 			res(i) = self(i, i);
 		}
 
-		return res;
+		परत res;
 	}
 
 	// get matrix upper right triangle in a row-major vector format
-	Vector < Type, M *(M + 1) / 2 > upper_right_triangle() const
+	Vector < Type, M *(M + 1) / 2 > upper_उजवा_triangle() स्थिरांक
 	{
 		Vector < Type, M * (M + 1) / 2 > res;
-		const SquareMatrix<Type, M> &self = *this;
+		स्थिरांक SquareMatrix<Type, M> &self = *हे;
 
-		unsigned idx = 0;
+		अचिन्हित idx = 0;
 
-		for (size_t x = 0; x < M; x++) {
-			for (size_t y = x; y < M; y++) {
+		साठी (माप_प्रकार x = 0; x < M; x++) {
+			साठी (माप_प्रकार y = x; y < M; y++) {
 				res(idx) = self(x, y);
 				++idx;
 			}
 		}
 
-		return res;
+		परत res;
 	}
 
-	template <size_t Width>
-	Type trace(size_t first) const
+	ढाँचा <माप_प्रकार Width>
+	Type trace(माप_प्रकार first) स्थिरांक
 	{
 		static_assert(Width <= M, "Width bigger than matrix");
-		assert(first + Width <= M);
+		प्रतिज्ञा(first + Width <= M);
 
 		Type res = 0;
-		const SquareMatrix<Type, M> &self = *this;
+		स्थिरांक SquareMatrix<Type, M> &self = *हे;
 
-		for (size_t i = first; i < (first + Width); i++) {
+		साठी (माप_प्रकार i = first; i < (first + Width); i++) {
 			res += self(i, i);
 		}
 
-		return res;
+		परत res;
 	}
 
-	Type trace() const
+	Type trace() स्थिरांक
 	{
-		const SquareMatrix<Type, M> &self = *this;
-		return self.trace<M>(0);
+		स्थिरांक SquareMatrix<Type, M> &self = *हे;
+		परत self.trace<M>(0);
 	}
 
 	// keep the sub covariance matrix and zero all covariance elements related
 	// to the rest of the matrix
-	template <size_t Width>
-	void uncorrelateCovarianceBlock(size_t first)
+	ढाँचा <माप_प्रकार Width>
+	शून्य uncorrelateCovarianceBlock(माप_प्रकार first)
 	{
 		static_assert(Width <= M, "Width bigger than matrix");
-		assert(first + Width <= M);
+		प्रतिज्ञा(first + Width <= M);
 
-		SquareMatrix<Type, M> &self = *this;
+		SquareMatrix<Type, M> &self = *हे;
 		SquareMatrix<Type, Width> cov = self.slice<Width, Width>(first, first);
 		self.slice<M, Width>(0, first) = 0.f;
 		self.slice<Width, M>(first, 0) = 0.f;
@@ -153,35 +153,35 @@ public:
 	}
 
 	// zero all offdiagonal elements and keep corresponding diagonal elements
-	template <size_t Width>
-	void uncorrelateCovariance(size_t first)
+	ढाँचा <माप_प्रकार Width>
+	शून्य uncorrelateCovariance(माप_प्रकार first)
 	{
 		static_assert(Width <= M, "Width bigger than matrix");
-		assert(first + Width <= M);
+		प्रतिज्ञा(first + Width <= M);
 
-		SquareMatrix<Type, M> &self = *this;
+		SquareMatrix<Type, M> &self = *हे;
 		Vector<Type, Width> diag_elements = self.slice<Width, Width>(first, first).diag();
 		self.uncorrelateCovarianceSetVariance(first, diag_elements);
 	}
 
-	template <size_t Width>
-	void uncorrelateCovarianceSetVariance(size_t first, const Vector<Type, Width> &vec);
+	ढाँचा <माप_प्रकार Width>
+	शून्य uncorrelateCovarianceSetVariance(माप_प्रकार first, स्थिरांक Vector<Type, Width> &vec);
 
-	template <size_t Width>
-	void uncorrelateCovarianceSetVariance(size_t first, Type val);
+	ढाँचा <माप_प्रकार Width>
+	शून्य uncorrelateCovarianceSetVariance(माप_प्रकार first, Type val);
 
 	// make block diagonal symmetric by taking the average of the two corresponding off diagonal values
-	template <size_t Width>
-	void makeBlockSymmetric(size_t first)
+	ढाँचा <माप_प्रकार Width>
+	शून्य makeBlockSymmetric(माप_प्रकार first)
 	{
 		static_assert(Width <= M, "Width bigger than matrix");
-		assert(first + Width <= M);
+		प्रतिज्ञा(first + Width <= M);
 
-		SquareMatrix<Type, M> &self = *this;
+		SquareMatrix<Type, M> &self = *हे;
 
-		if (Width > 1) {
-			for (size_t row_idx = first + 1; row_idx < first + Width; row_idx++) {
-				for (size_t col_idx = first; col_idx < row_idx; col_idx++) {
+		जर (Width > 1) {
+			साठी (माप_प्रकार row_idx = first + 1; row_idx < first + Width; row_idx++) {
+				साठी (माप_प्रकार col_idx = first; col_idx < row_idx; col_idx++) {
 					Type tmp = (self(row_idx, col_idx) + self(col_idx, row_idx)) / Type(2);
 					self(row_idx, col_idx) = tmp;
 					self(col_idx, row_idx) = tmp;
@@ -191,23 +191,23 @@ public:
 	}
 
 	// make rows and columns symmetric by taking the average of the two corresponding off diagonal values
-	template <size_t Width>
-	void makeRowColSymmetric(size_t first)
+	ढाँचा <माप_प्रकार Width>
+	शून्य makeRowColSymmetric(माप_प्रकार first)
 	{
 		static_assert(Width <= M, "Width bigger than matrix");
-		assert(first + Width <= M);
+		प्रतिज्ञा(first + Width <= M);
 
-		SquareMatrix<Type, M> &self = *this;
+		SquareMatrix<Type, M> &self = *हे;
 		self.makeBlockSymmetric<Width>(first);
 
-		for (size_t row_idx = first; row_idx < first + Width; row_idx++) {
-			for (size_t col_idx = 0; col_idx < first; col_idx++) {
+		साठी (माप_प्रकार row_idx = first; row_idx < first + Width; row_idx++) {
+			साठी (माप_प्रकार col_idx = 0; col_idx < first; col_idx++) {
 				Type tmp = (self(row_idx, col_idx) + self(col_idx, row_idx)) / Type(2);
 				self(row_idx, col_idx) = tmp;
 				self(col_idx, row_idx) = tmp;
 			}
 
-			for (size_t col_idx = first + Width; col_idx < M; col_idx++) {
+			साठी (माप_प्रकार col_idx = first + Width; col_idx < M; col_idx++) {
 				Type tmp = (self(row_idx, col_idx) + self(col_idx, row_idx)) / Type(2);
 				self(row_idx, col_idx) = tmp;
 				self(col_idx, row_idx) = tmp;
@@ -216,70 +216,70 @@ public:
 	}
 
 	// checks if block diagonal is symmetric
-	template <size_t Width>
-	bool isBlockSymmetric(size_t first, const Type eps = Type(1e-8f))
+	ढाँचा <माप_प्रकार Width>
+	तार्किक isBlockSymmetric(माप_प्रकार first, स्थिरांक Type eps = Type(1e-8f))
 	{
 		static_assert(Width <= M, "Width bigger than matrix");
-		assert(first + Width <= M);
+		प्रतिज्ञा(first + Width <= M);
 
-		SquareMatrix<Type, M> &self = *this;
+		SquareMatrix<Type, M> &self = *हे;
 
-		if (Width > 1) {
-			for (size_t row_idx = first + 1; row_idx < first + Width; row_idx++) {
-				for (size_t col_idx = first; col_idx < row_idx; col_idx++) {
-					if (!isEqualF(self(row_idx, col_idx), self(col_idx, row_idx), eps)) {
-						return false;
+		जर (Width > 1) {
+			साठी (माप_प्रकार row_idx = first + 1; row_idx < first + Width; row_idx++) {
+				साठी (माप_प्रकार col_idx = first; col_idx < row_idx; col_idx++) {
+					जर (!isEqualF(self(row_idx, col_idx), self(col_idx, row_idx), eps)) {
+						परत असत्य;
 					}
 				}
 			}
 		}
 
-		return true;
+		परत सत्य;
 	}
 
 	// checks if rows and columns are symmetric
-	template <size_t Width>
-	bool isRowColSymmetric(size_t first, const Type eps = Type(1e-8f))
+	ढाँचा <माप_प्रकार Width>
+	तार्किक isRowColSymmetric(माप_प्रकार first, स्थिरांक Type eps = Type(1e-8f))
 	{
 		static_assert(Width <= M, "Width bigger than matrix");
-		assert(first + Width <= M);
+		प्रतिज्ञा(first + Width <= M);
 
-		SquareMatrix<Type, M> &self = *this;
+		SquareMatrix<Type, M> &self = *हे;
 
-		for (size_t row_idx = first; row_idx < first + Width; row_idx++) {
-			for (size_t col_idx = 0; col_idx < first; col_idx++) {
-				if (!isEqualF(self(row_idx, col_idx), self(col_idx, row_idx), eps)) {
-					return false;
+		साठी (माप_प्रकार row_idx = first; row_idx < first + Width; row_idx++) {
+			साठी (माप_प्रकार col_idx = 0; col_idx < first; col_idx++) {
+				जर (!isEqualF(self(row_idx, col_idx), self(col_idx, row_idx), eps)) {
+					परत असत्य;
 				}
 			}
 
-			for (size_t col_idx = first + Width; col_idx < M; col_idx++) {
-				if (!isEqualF(self(row_idx, col_idx), self(col_idx, row_idx), eps)) {
-					return false;
+			साठी (माप_प्रकार col_idx = first + Width; col_idx < M; col_idx++) {
+				जर (!isEqualF(self(row_idx, col_idx), self(col_idx, row_idx), eps)) {
+					परत असत्य;
 				}
 			}
 		}
 
-		return self.isBlockSymmetric<Width>(first, eps);
+		परत self.isBlockSymmetric<Width>(first, eps);
 	}
 
-	void copyLowerToUpperTriangle()
+	शून्य copyLowerToUpperTriangle()
 	{
-		SquareMatrix<Type, M> &self = *this;
+		SquareMatrix<Type, M> &self = *हे;
 
-		for (size_t row_idx = 1; row_idx < M; row_idx++) {
-			for (size_t col_idx = 0 ; col_idx < row_idx; col_idx++) {
+		साठी (माप_प्रकार row_idx = 1; row_idx < M; row_idx++) {
+			साठी (माप_प्रकार col_idx = 0 ; col_idx < row_idx; col_idx++) {
 				self(col_idx, row_idx) = self(row_idx, col_idx);
 			}
 		}
 	}
 
-	void copyUpperToLowerTriangle()
+	शून्य copyUpperToLowerTriangle()
 	{
-		SquareMatrix<Type, M> &self = *this;
+		SquareMatrix<Type, M> &self = *हे;
 
-		for (size_t row_idx = 1; row_idx < M; row_idx++) {
-			for (size_t col_idx = 0 ; col_idx < row_idx; col_idx++) {
+		साठी (माप_प्रकार row_idx = 1; row_idx < M; row_idx++) {
+			साठी (माप_प्रकार col_idx = 0 ; col_idx < row_idx; col_idx++) {
 				self(row_idx, col_idx) = self(col_idx, row_idx);
 			}
 		}
@@ -287,105 +287,105 @@ public:
 };
 
 // defined out of the class so they are not implicitly inline, they are large and called often
-template<typename Type, size_t M>
-template<size_t Width>
-void SquareMatrix<Type, M>::uncorrelateCovarianceSetVariance(size_t first, const Vector<Type, Width> &vec)
+ढाँचा<typename Type, माप_प्रकार M>
+ढाँचा<माप_प्रकार Width>
+शून्य SquareMatrix<Type, M>::uncorrelateCovarianceSetVariance(माप_प्रकार first, स्थिरांक Vector<Type, Width> &vec)
 {
 	static_assert(Width <= M, "Width bigger than matrix");
-	assert(first + Width <= M);
+	प्रतिज्ञा(first + Width <= M);
 
-	SquareMatrix<Type, M> &self = *this;
+	SquareMatrix<Type, M> &self = *हे;
 	// zero rows and columns
 	self.slice<Width, M>(first, 0) = Type(0);
 	self.slice<M, Width>(0, first) = Type(0);
 
 	// set diagonals
-	unsigned vec_idx = 0;
+	अचिन्हित vec_idx = 0;
 
-	for (size_t idx = first; idx < first + Width; idx++) {
+	साठी (माप_प्रकार idx = first; idx < first + Width; idx++) {
 		self(idx, idx) = vec(vec_idx);
 		vec_idx ++;
 	}
 }
 
-template<typename Type, size_t M>
-template<size_t Width>
-void SquareMatrix<Type, M>::uncorrelateCovarianceSetVariance(size_t first, Type val)
+ढाँचा<typename Type, माप_प्रकार M>
+ढाँचा<माप_प्रकार Width>
+शून्य SquareMatrix<Type, M>::uncorrelateCovarianceSetVariance(माप_प्रकार first, Type val)
 {
 	static_assert(Width <= M, "Width bigger than matrix");
-	assert(first + Width <= M);
+	प्रतिज्ञा(first + Width <= M);
 
-	SquareMatrix<Type, M> &self = *this;
+	SquareMatrix<Type, M> &self = *हे;
 	// zero rows and columns
 	self.slice<Width, M>(first, 0) = Type(0);
 	self.slice<M, Width>(0, first) = Type(0);
 
 	// set diagonals
-	for (size_t idx = first; idx < first + Width; idx++) {
+	साठी (माप_प्रकार idx = first; idx < first + Width; idx++) {
 		self(idx, idx) = val;
 	}
 }
 
-using SquareMatrix2f = SquareMatrix<float, 2>;
-using SquareMatrix3f = SquareMatrix<float, 3>;
-using SquareMatrix3d = SquareMatrix<double, 3>;
+using SquareMatrix2f = SquareMatrix<दशांश, 2>;
+using SquareMatrix3f = SquareMatrix<दशांश, 3>;
+using SquareMatrix3d = SquareMatrix<द्विगुण, 3>;
 
-template<typename Type, size_t M>
+ढाँचा<typename Type, माप_प्रकार M>
 SquareMatrix<Type, M> eye()
 {
 	SquareMatrix<Type, M> m;
 	m.setIdentity();
-	return m;
+	परत m;
 }
 
-template<typename Type, size_t M>
+ढाँचा<typename Type, माप_प्रकार M>
 SquareMatrix<Type, M> diag(Vector<Type, M> d)
 {
 	SquareMatrix<Type, M> m;
 
-	for (size_t i = 0; i < M; i++) {
+	साठी (माप_प्रकार i = 0; i < M; i++) {
 		m(i, i) = d(i);
 	}
 
-	return m;
+	परत m;
 }
 
-template<typename Type, size_t M>
-SquareMatrix<Type, M> expm(const Matrix<Type, M, M> &A, size_t order = 5)
+ढाँचा<typename Type, माप_प्रकार M>
+SquareMatrix<Type, M> expm(स्थिरांक Matrix<Type, M, M> &A, माप_प्रकार order = 5)
 {
 	SquareMatrix<Type, M> res;
 	SquareMatrix<Type, M> A_pow = A;
 	res.setIdentity();
-	size_t i_factorial = 1;
+	माप_प्रकार i_factorial = 1;
 
-	for (size_t i = 1; i <= order; i++) {
+	साठी (माप_प्रकार i = 1; i <= order; i++) {
 		i_factorial *= i;
 		res += A_pow / Type(i_factorial);
 		A_pow *= A_pow;
 	}
 
-	return res;
+	परत res;
 }
 
 /**
  * Deal with the special case where the square matrix is 1
  */
-template<typename Type>
-bool inv(const SquareMatrix<Type, 1> &A, SquareMatrix<Type, 1> &inv, size_t rank = 1)
+ढाँचा<typename Type>
+तार्किक inv(स्थिरांक SquareMatrix<Type, 1> &A, SquareMatrix<Type, 1> &inv, माप_प्रकार rank = 1)
 {
-	if (std::fabs(A(0, 0)) < Type(FLT_EPSILON)) {
-		return false;
+	जर (std::भ_असल(A(0, 0)) < Type(भग्न_अंतर)) {
+		परत असत्य;
 	}
 
 	inv(0, 0) = Type(1) / A(0, 0);
-	return true;
+	परत सत्य;
 }
 
 /**
  * inverse based on LU factorization with partial pivotting
  */
-template<typename Type, size_t M>
-bool inv(const SquareMatrix<Type, M> &A, SquareMatrix<Type, M> &inv, size_t rank = M)
+ढाँचा<typename Type, माप_प्रकार M>
+तार्किक inv(स्थिरांक SquareMatrix<Type, M> &A, SquareMatrix<Type, M> &inv, माप_प्रकार rank = M)
 {
 	SquareMatrix<Type, M> L;
 	L.setIdentity();
@@ -396,21 +396,21 @@ bool inv(const SquareMatrix<Type, M> &A, SquareMatrix<Type, M> &inv, size_t rank
 	//printf("A:\n"); A.print();
 
 	// for all diagonal elements
-	for (size_t n = 0; n < rank; n++) {
+	साठी (माप_प्रकार n = 0; n < rank; n++) {
 
 		// if diagonal is zero, swap with row below
-		if (std::fabs(U(n, n)) < Type(FLT_EPSILON)) {
+		जर (std::भ_असल(U(n, n)) < Type(भग्न_अंतर)) {
 			//printf("trying pivot for row %d\n",n);
-			for (size_t i = n + 1; i < rank; i++) {
+			साठी (माप_प्रकार i = n + 1; i < rank; i++) {
 
 				//printf("\ttrying row %d\n",i);
-				if (std::fabs(U(i, n)) > Type(FLT_EPSILON)) {
+				जर (std::भ_असल(U(i, n)) > Type(भग्न_अंतर)) {
 					//printf("swapped %d\n",i);
 					U.swapRows(i, n);
 					P.swapRows(i, n);
 					L.swapRows(i, n);
 					L.swapCols(i, n);
-					break;
+					थांबा;
 				}
 			}
 		}
@@ -424,17 +424,17 @@ bool inv(const SquareMatrix<Type, M> &A, SquareMatrix<Type, M> &inv, size_t rank
 #endif
 
 		// failsafe, return zero matrix
-		if (std::fabs(static_cast<float>(U(n, n))) < FLT_EPSILON) {
-			return false;
+		जर (std::भ_असल(static_cast<दशांश>(U(n, n))) < भग्न_अंतर) {
+			परत असत्य;
 		}
 
 		// for all rows below diagonal
-		for (size_t i = (n + 1); i < rank; i++) {
+		साठी (माप_प्रकार i = (n + 1); i < rank; i++) {
 			L(i, n) = U(i, n) / U(n, n);
 
 			// add i-th row and n-th row
 			// multiplied by: -a(i,n)/a(n,n)
-			for (size_t k = n; k < rank; k++) {
+			साठी (माप_प्रकार k = n; k < rank; k++) {
 				U(i, k) -= L(i, n) * U(n, k);
 			}
 		}
@@ -447,11 +447,11 @@ bool inv(const SquareMatrix<Type, M> &A, SquareMatrix<Type, M> &inv, size_t rank
 	//SquareMatrix<Type, M> Y = P;
 
 	// for all columns of Y
-	for (size_t c = 0; c < rank; c++) {
+	साठी (माप_प्रकार c = 0; c < rank; c++) {
 		// for all rows of L
-		for (size_t i = 0; i < rank; i++) {
+		साठी (माप_प्रकार i = 0; i < rank; i++) {
 			// for all columns of L
-			for (size_t j = 0; j < i; j++) {
+			साठी (माप_प्रकार j = 0; j < i; j++) {
 				// for all existing y
 				// subtract the component they
 				// contribute to the solution
@@ -472,14 +472,14 @@ bool inv(const SquareMatrix<Type, M> &A, SquareMatrix<Type, M> &inv, size_t rank
 	//SquareMatrix<Type, M> X = Y;
 
 	// for all columns of X
-	for (size_t c = 0; c < rank; c++) {
+	साठी (माप_प्रकार c = 0; c < rank; c++) {
 		// for all rows of U
-		for (size_t k = 0; k < rank; k++) {
+		साठी (माप_प्रकार k = 0; k < rank; k++) {
 			// have to go in reverse order
-			size_t i = rank - 1 - k;
+			माप_प्रकार i = rank - 1 - k;
 
 			// for all columns of U
-			for (size_t j = i + 1; j < rank; j++) {
+			साठी (माप_प्रकार j = i + 1; j < rank; j++) {
 				// for all existing x
 				// subtract the component they
 				// contribute to the solution
@@ -496,26 +496,26 @@ bool inv(const SquareMatrix<Type, M> &A, SquareMatrix<Type, M> &inv, size_t rank
 	}
 
 	//check sanity of results
-	for (size_t i = 0; i < rank; i++) {
-		for (size_t j = 0; j < rank; j++) {
-			if (!std::isfinite(P(i, j))) {
-				return false;
+	साठी (माप_प्रकार i = 0; i < rank; i++) {
+		साठी (माप_प्रकार j = 0; j < rank; j++) {
+			जर (!std::है_सीमित(P(i, j))) {
+				परत असत्य;
 			}
 		}
 	}
 
 	//printf("X:\n"); X.print();
 	inv = P;
-	return true;
+	परत सत्य;
 }
 
-template<typename Type>
-bool inv(const SquareMatrix<Type, 2> &A, SquareMatrix<Type, 2> &inv)
+ढाँचा<typename Type>
+तार्किक inv(स्थिरांक SquareMatrix<Type, 2> &A, SquareMatrix<Type, 2> &inv)
 {
 	Type det = A(0, 0) * A(1, 1) - A(1, 0) * A(0, 1);
 
-	if (std::fabs(static_cast<float>(det)) < FLT_EPSILON || !std::isfinite(det)) {
-		return false;
+	जर (std::भ_असल(static_cast<दशांश>(det)) < भग्न_अंतर || !std::है_सीमित(det)) {
+		परत असत्य;
 	}
 
 	inv(0, 0) = A(1, 1);
@@ -523,18 +523,18 @@ bool inv(const SquareMatrix<Type, 2> &A, SquareMatrix<Type, 2> &inv)
 	inv(0, 1) = -A(0, 1);
 	inv(1, 1) = A(0, 0);
 	inv /= det;
-	return true;
+	परत सत्य;
 }
 
-template<typename Type>
-bool inv(const SquareMatrix<Type, 3> &A, SquareMatrix<Type, 3> &inv)
+ढाँचा<typename Type>
+तार्किक inv(स्थिरांक SquareMatrix<Type, 3> &A, SquareMatrix<Type, 3> &inv)
 {
 	Type det = A(0, 0) * (A(1, 1) * A(2, 2) - A(2, 1) * A(1, 2)) -
 		   A(0, 1) * (A(1, 0) * A(2, 2) - A(1, 2) * A(2, 0)) +
 		   A(0, 2) * (A(1, 0) * A(2, 1) - A(1, 1) * A(2, 0));
 
-	if (std::fabs(static_cast<float>(det)) < FLT_EPSILON || !std::isfinite(det)) {
-		return false;
+	जर (std::भ_असल(static_cast<दशांश>(det)) < भग्न_अंतर || !std::है_सीमित(det)) {
+		परत असत्य;
 	}
 
 	inv(0, 0) = A(1, 1) * A(2, 2) - A(2, 1) * A(1, 2);
@@ -547,23 +547,23 @@ bool inv(const SquareMatrix<Type, 3> &A, SquareMatrix<Type, 3> &inv)
 	inv(2, 1) = A(2, 0) * A(0, 1) - A(0, 0) * A(2, 1);
 	inv(2, 2) = A(0, 0) * A(1, 1) - A(1, 0) * A(0, 1);
 	inv /= det;
-	return true;
+	परत सत्य;
 }
 
 /**
  * inverse based on LU factorization with partial pivotting
  */
-template<typename Type, size_t M>
-SquareMatrix<Type, M> inv(const SquareMatrix<Type, M> &A)
+ढाँचा<typename Type, माप_प्रकार M>
+SquareMatrix<Type, M> inv(स्थिरांक SquareMatrix<Type, M> &A)
 {
 	SquareMatrix<Type, M> i;
 
-	if (inv(A, i)) {
-		return i;
+	जर (inv(A, i)) {
+		परत i;
 
-	} else {
+	} अन्यथा {
 		i.setZero();
-		return i;
+		परत i;
 	}
 }
 
@@ -572,47 +572,47 @@ SquareMatrix<Type, M> inv(const SquareMatrix<Type, M> &A)
  *
  * Note: A must be positive definite
  */
-template<typename Type, size_t M>
-SquareMatrix <Type, M> cholesky(const SquareMatrix<Type, M> &A)
+ढाँचा<typename Type, माप_प्रकार M>
+SquareMatrix <Type, M> cholesky(स्थिरांक SquareMatrix<Type, M> &A)
 {
 	SquareMatrix<Type, M> L;
 
-	for (size_t j = 0; j < M; j++) {
-		for (size_t i = j; i < M; i++) {
-			if (i == j) {
-				float sum = 0;
+	साठी (माप_प्रकार j = 0; j < M; j++) {
+		साठी (माप_प्रकार i = j; i < M; i++) {
+			जर (i == j) {
+				दशांश sum = 0;
 
-				for (size_t k = 0; k < j; k++) {
+				साठी (माप_प्रकार k = 0; k < j; k++) {
 					sum += L(j, k) * L(j, k);
 				}
 
 				Type res = A(j, j) - sum;
 
-				if (res <= 0) {
+				जर (res <= 0) {
 					L(j, j) = 0;
 
-				} else {
-					L(j, j) = std::sqrt(res);
+				} अन्यथा {
+					L(j, j) = std::वर्ग_मूल(res);
 				}
 
-			} else {
-				float sum = 0;
+			} अन्यथा {
+				दशांश sum = 0;
 
-				for (size_t k = 0; k < j; k++) {
+				साठी (माप_प्रकार k = 0; k < j; k++) {
 					sum += L(i, k) * L(j, k);
 				}
 
-				if (L(j, j) <= 0) {
+				जर (L(j, j) <= 0) {
 					L(i, j) = 0;
 
-				} else {
+				} अन्यथा {
 					L(i, j) = (A(i, j) - sum) / L(j, j);
 				}
 			}
 		}
 	}
 
-	return L;
+	परत L;
 }
 
 /**
@@ -621,15 +621,15 @@ SquareMatrix <Type, M> cholesky(const SquareMatrix<Type, M> &A)
  * TODO: Check if gaussian elimination jumps straight to back-substitution
  * for L or we need to do it manually. Will impact speed otherwise.
  */
-template<typename Type, size_t M>
-SquareMatrix <Type, M> choleskyInv(const SquareMatrix<Type, M> &A)
+ढाँचा<typename Type, माप_प्रकार M>
+SquareMatrix <Type, M> choleskyInv(स्थिरांक SquareMatrix<Type, M> &A)
 {
 	SquareMatrix<Type, M> L_inv = inv(cholesky(A));
-	return L_inv.T() * L_inv;
+	परत L_inv.T() * L_inv;
 }
 
-using Matrix2f = SquareMatrix<float, 2>;
-using Matrix3f = SquareMatrix<float, 3>;
-using Matrix3d = SquareMatrix<double, 3>;
+using Matrix2f = SquareMatrix<दशांश, 2>;
+using Matrix3f = SquareMatrix<दशांश, 3>;
+using Matrix3d = SquareMatrix<द्विगुण, 3>;
 
 } // namespace matrix

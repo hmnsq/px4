@@ -39,44 +39,44 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <float.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <float.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
 /**
  * A low pass filter as described here:
  * http://en.wikipedia.org/wiki/Low-pass_filter.
  */
-class __EXPORT BlockLowPass : public Block
+वर्ग __EXPORT Block_खालचा_Pass : सार्वजनिक Block
 {
-public:
+सार्वजनिक:
 // methods
-	BlockLowPass(SuperBlock *parent, const char *name) :
+	Block_खालचा_Pass(SuperBlock *parent, स्थिरांक अक्षर *name) :
 		Block(parent, name),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(हे, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockLowPass() = default;
-	float update(float input);
+	आभासी ~Block_खालचा_Pass() = पूर्वनिर्धारित;
+	दशांश update(दशांश आदान);
 // accessors
-	float getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(float state) { _state = state; }
-protected:
+	दशांश getState() { परत _state; }
+	दशांश getFCut() { परत _fCut.get(); }
+	शून्य setState(दशांश state) { _state = state; }
+संरक्षित:
 // attributes
-	float _state{NAN}; // initialize to invalid val, force into is_finite() check on first call
+	दशांश _state{न_अंक}; // initialize to invalid val, force into is_finite() check on first call
 	control::BlockParamFloat _fCut;
 };
 

@@ -33,14 +33,14 @@
 #
 ############################################################################
 
-import argparse
-import builtins
-import pathlib
-import sys
+आयात argparse
+आयात builtins
+आयात pathlib
+आयात sys
 
-from rosidl_adapter.msg import convert_msg_to_idl
+तः rosidl_adapter.संदेश आयात convert_संदेश_to_idl
 
-if __name__ == '__main__':
+जर __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description=f'Convert px4 .msg files to .idl')
     parser.add_argument(
@@ -54,20 +54,20 @@ if __name__ == '__main__':
     real_print = builtins.print
 
     def quiet_print(*pargs, **kwargs):
-        if pargs and isinstance(pargs[0], str) and \
+        जर pargs आणि isinstance(pargs[0], str) आणि \
                 pargs[0].startswith(('Reading input file:', 'Writing output file:')):
-            return
+            परत
         real_print(*pargs, **kwargs)
 
     builtins.print = quiet_print
-    try:
-        for interface_file in args.interface_files:
+    प्रयत्न:
+        साठी interface_file मध्ये args.interface_files:
             interface_file = pathlib.Path(interface_file)
             package_dir = interface_file.parent.absolute()
 
-            convert_msg_to_idl(
+            convert_संदेश_to_idl(
                 package_dir, 'px4_msgs',
                 interface_file.absolute().relative_to(package_dir),
                 interface_file.parent)
-    finally:
+    अखेरीस:
         builtins.print = real_print

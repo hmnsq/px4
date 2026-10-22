@@ -31,22 +31,22 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/matrix/math.hpp>
-#include "Functions.hpp"
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <matrix/matrix/math.hpp>
+#अन्तर्भाव "Functions.hpp"
 
-#include "TrajMath.hpp"
+#अन्तर्भाव "TrajMath.hpp"
 
-using namespace math;
+using नामाकाश math;
 using matrix::Vector2f;
 
 TEST(MaxDistanceToCircle, noDirection)
 {
 	Vector2f pos;
 	Vector2f circle_center;
-	float radius = 3.f;
+	दशांश radius = 3.f;
 	Vector2f direction;
-	float distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
+	दशांश distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
 	EXPECT_TRUE(isnan(distance));
 }
 
@@ -55,9 +55,9 @@ TEST(MaxDistanceToCircle, insideCircle)
 	// North position, South direction
 	Vector2f pos(1.f, 0.f);
 	Vector2f circle_center;
-	float radius = 3.f;
+	दशांश radius = 3.f;
 	Vector2f direction(-1.f, 0.f);
-	float distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
+	दशांश distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
 	EXPECT_FLOAT_EQ(distance, 4.f);
 
 	// North position, West direction (direction doesn't need to be unit length)
@@ -77,9 +77,9 @@ TEST(MaxDistanceToCircle, outsideCircle)
 	// North position, South direction
 	Vector2f pos(4.f, 0.f);
 	Vector2f circle_center;
-	float radius = 3.f;
+	दशांश radius = 3.f;
 	Vector2f direction(-1.f, 0.f);
-	float distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
+	दशांश distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
 	EXPECT_FLOAT_EQ(distance, pos(0) + radius);
 
 	// looking away from the circle
@@ -99,9 +99,9 @@ TEST(MaxDistanceToCircle, onCircle)
 	// South, looking North
 	Vector2f pos(-4.f, 1.f);
 	Vector2f circle_center(-1.f, 1.f);
-	float radius = 3.f;
+	दशांश radius = 3.f;
 	Vector2f direction(1.f, 0.f);
-	float distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
+	दशांश distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
 	EXPECT_FLOAT_EQ(distance, 2.f * radius);
 
 	// looking tangent to the circle

@@ -8,36 +8,36 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#अन्तर्भाव "Vector.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
-template <typename Type>
-class Dcm;
+ढाँचा <typename Type>
+वर्ग Dcm;
 
-template<typename Type>
-class Vector3 : public Vector<Type, 3>
+ढाँचा<typename Type>
+वर्ग Vector3 : सार्वजनिक Vector<Type, 3>
 {
-public:
+सार्वजनिक:
 
 	using Matrix31 = Matrix<Type, 3, 1>;
 
-	Vector3() = default;
+	Vector3() = पूर्वनिर्धारित;
 
-	Vector3(const Matrix31 &other) :
+	Vector3(स्थिरांक Matrix31 &other) :
 		Vector<Type, 3>(other)
 	{
 	}
 
-	explicit Vector3(const Type data_[3]) :
+	explicit Vector3(स्थिरांक Type data_[3]) :
 		Vector<Type, 3>(data_)
 	{
 	}
 
 	Vector3(Type x, Type y, Type z)
 	{
-		Vector3 &v(*this);
+		Vector3 &v(*हे);
 		v(0) = x;
 		v(1) = y;
 		v(2) = z;
@@ -46,69 +46,69 @@ public:
 	using base = Vector<Type, 3>;
 	using base::base;
 
-	Vector3 cross(const Matrix31 &b) const
+	Vector3 cross(स्थिरांक Matrix31 &b) स्थिरांक
 	{
-		const Vector3 &a(*this);
-		return {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
+		स्थिरांक Vector3 &a(*हे);
+		परत {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
 	}
 
 	/**
 	 * Override matrix ops so Vector3 type is returned
 	 */
 
-	inline Vector3 operator+(Vector3 other) const
+	ओळीत Vector3 चालक+(Vector3 other) स्थिरांक
 	{
-		return Matrix31::operator+(other);
+		परत Matrix31::चालक+(other);
 	}
 
-	inline Vector3 operator+(Type scalar) const
+	ओळीत Vector3 चालक+(Type scalar) स्थिरांक
 	{
-		return Matrix31::operator+(scalar);
+		परत Matrix31::चालक+(scalar);
 	}
 
-	inline Vector3 operator-(Vector3 other) const
+	ओळीत Vector3 चालक-(Vector3 other) स्थिरांक
 	{
-		return Matrix31::operator-(other);
+		परत Matrix31::चालक-(other);
 	}
 
-	inline Vector3 operator-(Type scalar) const
+	ओळीत Vector3 चालक-(Type scalar) स्थिरांक
 	{
-		return Matrix31::operator-(scalar);
+		परत Matrix31::चालक-(scalar);
 	}
 
-	inline Vector3 operator-() const
+	ओळीत Vector3 चालक-() स्थिरांक
 	{
-		return Matrix31::operator-();
+		परत Matrix31::चालक-();
 	}
 
-	inline Vector3 operator*(Type scalar) const
+	ओळीत Vector3 चालक*(Type scalar) स्थिरांक
 	{
-		return Matrix31::operator*(scalar);
+		परत Matrix31::चालक*(scalar);
 	}
 
-	inline Type operator*(Vector3 b) const
+	ओळीत Type चालक*(Vector3 b) स्थिरांक
 	{
-		return Vector<Type, 3>::operator*(b);
+		परत Vector<Type, 3>::चालक*(b);
 	}
 
-	inline Vector3 operator%(const Matrix31 &b) const
+	ओळीत Vector3 चालक%(स्थिरांक Matrix31 &b) स्थिरांक
 	{
-		return (*this).cross(b);
+		परत (*हे).cross(b);
 	}
 
-	ConstSlice<Type, 2, 1, 3, 1> xy() const
+	ConstSlice<Type, 2, 1, 3, 1> xy() स्थिरांक
 	{
-		return {0, 0, this};
+		परत {0, 0, हे};
 	}
 
 	Slice<Type, 2, 1, 3, 1> xy()
 	{
-		return {0, 0, this};
+		परत {0, 0, हे};
 	}
 
-	Dcm<Type> hat() const      // inverse to Dcm.vee() operation
+	Dcm<Type> hat() स्थिरांक      // inverse to Dcm.vee() operation
 	{
-		const Vector3 &v(*this);
+		स्थिरांक Vector3 &v(*हे);
 		Dcm<Type> A;
 		A(0, 0) = 0;
 		A(0, 1) = -v(2);
@@ -119,12 +119,12 @@ public:
 		A(2, 0) = -v(1);
 		A(2, 1) = v(0);
 		A(2, 2) = 0;
-		return A;
+		परत A;
 	}
 
 };
 
-using Vector3f = Vector3<float>;
-using Vector3d = Vector3<double>;
+using Vector3f = Vector3<दशांश>;
+using Vector3d = Vector3<द्विगुण>;
 
 } // namespace matrix

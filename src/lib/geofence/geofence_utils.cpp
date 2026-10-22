@@ -31,58 +31,58 @@
  *
  ****************************************************************************/
 
-#include "geofence_utils.h"
-#include <lib/geo/geo.h>
-#include <lib/mathlib/mathlib.h>
+#अन्तर्भाव "geofence_utils.h"
+#अन्तर्भाव <lib/geo/geo.h>
+#अन्तर्भाव <lib/mathlib/mathlib.h>
 
-namespace geofence_utils
+नामाकाश geofence_utils
 {
 
-namespace
+नामाकाश
 {
 
-int32_t metersToCm(float m) { return roundf(m * CM_PER_M); }
+int32_t metersToCm(दशांश m) { परत roundf(m * CM_PER_M); }
 
 } // namespace
 
 
-bool PlannerPolygons::allocate(int max_nodes)
+तार्किक PlannerPolygons::allocate(पूर्णांक max_nodes)
 {
 	freeBuffers();
 
-	if (max_nodes > 0) {
-		_x_cm = new int32_t[max_nodes];
-		_y_cm = new int32_t[max_nodes];
-		_node_not_on_optimal_path = new bool[max_nodes];
+	जर (max_nodes > 0) {
+		_x_cm = नवीन int32_t[max_nodes];
+		_y_cm = नवीन int32_t[max_nodes];
+		गाठ_not_on_optimal_path = नवीन तार्किक[max_nodes];
 
-		if (_x_cm != nullptr && _y_cm != nullptr && _node_not_on_optimal_path != nullptr) {
+		जर (_x_cm != nullptr && _y_cm != nullptr && गाठ_not_on_optimal_path != nullptr) {
 			_max_nodes = max_nodes;
 
-		} else {
+		} अन्यथा {
 			freeBuffers();
 		}
 	}
 
 	reset();
 
-	return _max_nodes == max_nodes;
+	परत _max_nodes == max_nodes;
 }
 
-void PlannerPolygons::freeBuffers()
+शून्य PlannerPolygons::freeBuffers()
 {
 	delete[] _x_cm;
 	delete[] _y_cm;
-	delete[] _node_not_on_optimal_path;
+	delete[] गाठ_not_on_optimal_path;
 	_x_cm = nullptr;
 	_y_cm = nullptr;
-	_node_not_on_optimal_path = nullptr;
+	गाठ_not_on_optimal_path = nullptr;
 	_max_nodes = 0;
 }
 
-void PlannerPolygons::setNode(int idx, const matrix::Vector2f &p)
+शून्य PlannerPolygons::set_गाठ(पूर्णांक idx, स्थिरांक matrix::Vector2f &p)
 {
-	if (_max_nodes < 1) {
-		return;
+	जर (_max_nodes < 1) {
+		परत;
 	}
 
 	idx = math::constrain(idx, 0, _max_nodes - 1);
@@ -91,38 +91,38 @@ void PlannerPolygons::setNode(int idx, const matrix::Vector2f &p)
 	_y_cm[idx] = metersToCm(p(1));
 }
 
-PlannerPolygons::AddResult PlannerPolygons::addPolygon(const matrix::Vector2f *vertices_in, int num_vertices,
-		bool is_inclusion_zone, float margin)
+PlannerPolygons::AddResult PlannerPolygons::addPolygon(स्थिरांक matrix::Vector2f *vertices_in, पूर्णांक अंक_vertices,
+		तार्किक is_inclusion_zone, दशांश margin)
 {
-	if (_num_polygons >= kMaxPolygons || _num_nodes + num_vertices > _max_nodes) {
-		return AddResult::BudgetExceeded;
+	जर (अंक_polygons >= kMaxPolygons || अंक_nodes_2 + अंक_vertices > _max_nodes) {
+		परत AddResult::BudgetExceeded;
 	}
 
-	if (margin < -FLT_EPSILON || num_vertices < 3) { return AddResult::Degenerate; }
+	जर (margin < -भग्न_अंतर || अंक_vertices < 3) { परत AddResult::Degenerate; }
 
-	for (int i = 0; i < num_vertices; ++i) {
+	साठी (पूर्णांक i = 0; i < अंक_vertices; ++i) {
 		// Reject self-intersecting (non-simple) polygons.
-		const matrix::Vector2f &a = vertices_in[i];
-		const matrix::Vector2f &b = vertices_in[(i + 1) % num_vertices];
+		स्थिरांक matrix::Vector2f &a = vertices_in[i];
+		स्थिरांक matrix::Vector2f &b = vertices_in[(i + 1) % अंक_vertices];
 
-		for (int j = i + 2; j < num_vertices; ++j) {
-			if (i == 0 && j == num_vertices - 1) {
-				continue; // (last edge, first edge) are adjacent
+		साठी (पूर्णांक j = i + 2; j < अंक_vertices; ++j) {
+			जर (i == 0 && j == अंक_vertices - 1) {
+				सुरूठेवा; // (last edge, first edge) are adjacent
 			}
 
-			const matrix::Vector2f &c = vertices_in[j];
-			const matrix::Vector2f &d = vertices_in[(j + 1) % num_vertices];
+			स्थिरांक matrix::Vector2f &c = vertices_in[j];
+			स्थिरांक matrix::Vector2f &d = vertices_in[(j + 1) % अंक_vertices];
 
-			if (segmentsIntersect(
+			जर (segmentsIntersect(
 				    metersToCm(a(0)), metersToCm(a(1)), metersToCm(b(0)), metersToCm(b(1)),
 				    metersToCm(c(0)), metersToCm(c(1)), metersToCm(d(0)), metersToCm(d(1))) != SegSegResult::Disjoint) {
-				return AddResult::Degenerate;
+				परत AddResult::Degenerate;
 			}
 		}
 
 		// Reject vertices outside the usable fixed-point range
-		if (!inFixedPointRange(vertices_in[i](0)) || !inFixedPointRange(vertices_in[i](1))) {
-			return AddResult::OutOfRange;
+		जर (!inFixedPointRange(vertices_in[i](0)) || !inFixedPointRange(vertices_in[i](1))) {
+			परत AddResult::OutOfRange;
 		}
 	}
 
@@ -130,49 +130,49 @@ PlannerPolygons::AddResult PlannerPolygons::addPolygon(const matrix::Vector2f *v
 	// the left of each edge. CCW for exclusion (bounded interior is forbidden),
 	// CW for inclusion (unbounded exterior is forbidden). Reverse iff input
 	// doesn't already match.
-	const bool reverse = (isPolygonCCW(vertices_in, num_vertices) == is_inclusion_zone);
+	स्थिरांक तार्किक reverse = (isPolygonCCW(vertices_in, अंक_vertices) == is_inclusion_zone);
 
 	// Index into vertices_in in stored order (accounts for possible reversal).
-	auto vertex = [&](int i) -> const matrix::Vector2f & {
-		return vertices_in[reverse ? (num_vertices - 1 - i) : i];
+	स्वतः vertex = [&](पूर्णांक i) -> स्थिरांक matrix::Vector2f & {
+		परत vertices_in[reverse ? (अंक_vertices - 1 - i) : i];
 	};
 
-	PolygonInfo &poly = _polygons[_num_polygons];
-	poly.start_index  = _num_nodes;
+	PolygonInfo &poly = _polygons[अंक_polygons];
+	poly.start_index  = अंक_nodes_2;
 	poly.is_inclusion = is_inclusion_zone;
 
-	int out_idx = 0;
+	पूर्णांक out_idx = 0;
 
-	for (int i = 0; i < num_vertices; i++) {
-		const int prev = (i + num_vertices - 1) % num_vertices;
-		const int next = (i + 1) % num_vertices;
+	साठी (पूर्णांक i = 0; i < अंक_vertices; i++) {
+		स्थिरांक पूर्णांक prev = (i + अंक_vertices - 1) % अंक_vertices;
+		स्थिरांक पूर्णांक next = (i + 1) % अंक_vertices;
 
-		const matrix::Vector2f edge_in  = vertex(i) - vertex(prev);
-		const matrix::Vector2f edge_out = vertex(next) - vertex(i);
+		स्थिरांक matrix::Vector2f edge_in  = vertex(i) - vertex(prev);
+		स्थिरांक matrix::Vector2f edge_out = vertex(next) - vertex(i);
 
-		const float edge_in_norm = edge_in.norm();
-		const float edge_out_norm = edge_out.norm();
+		स्थिरांक दशांश edge_in_norm = edge_in.norm();
+		स्थिरांक दशांश edge_out_norm = edge_out.norm();
 
-		if (edge_in_norm < FLT_EPSILON || edge_out_norm < FLT_EPSILON) {
-			return AddResult::Degenerate;
+		जर (edge_in_norm < भग्न_अंतर || edge_out_norm < भग्न_अंतर) {
+			परत AddResult::Degenerate;
 		}
 
-		const matrix::Vector2f edge_in_normalized = edge_in / edge_in_norm;
-		const matrix::Vector2f edge_out_normalized = edge_out / edge_out_norm;
+		स्थिरांक matrix::Vector2f edge_in_normalized = edge_in / edge_in_norm;
+		स्थिरांक matrix::Vector2f edge_out_normalized = edge_out / edge_out_norm;
 
 		// Inward normals of the two adjacent edges.
 		// Canonical stored orientation: left side = forbidden region, right side = allowed region
-		const matrix::Vector2f n_in  = matrix::Vector2f{-edge_in_normalized(1), edge_in_normalized(0)};
-		const matrix::Vector2f n_out = matrix::Vector2f{-edge_out_normalized(1), edge_out_normalized(0)};
+		स्थिरांक matrix::Vector2f n_in  = matrix::Vector2f{-edge_in_normalized(1), edge_in_normalized(0)};
+		स्थिरांक matrix::Vector2f n_out = matrix::Vector2f{-edge_out_normalized(1), edge_out_normalized(0)};
 
 		matrix::Vector2f bisector = n_in + n_out;
-		const float bisector_len  = bisector.length();
+		स्थिरांक दशांश bisector_len  = bisector.length();
 
-		if (bisector_len < FLT_EPSILON) {
-			return AddResult::Degenerate; // antiparallel edges - polygon doubles back
+		जर (bisector_len < भग्न_अंतर) {
+			परत AddResult::Degenerate; // antiparallel edges - polygon doubles back
 		}
 
-		const matrix::Vector2f normalized_bisector = bisector / bisector_len;
+		स्थिरांक matrix::Vector2f normalized_bisector = bisector / bisector_len;
 
 		// The following bit ensures that:
 		//  - The original edges are moved away from the forbidden interior by `margin`
@@ -181,71 +181,71 @@ PlannerPolygons::AddResult PlannerPolygons::addPolygon(const matrix::Vector2f *v
 		//    two new ones.
 
 		// Only split convex corners - others are ignored, see _node_not_on_optimal_path
-		const bool corner_convex = edge_in_normalized(0) * edge_out_normalized(1)
+		स्थिरांक तार्किक corner_convex = edge_in_normalized(0) * edge_out_normalized(1)
 					   - edge_in_normalized(1) * edge_out_normalized(0) > 0.f;
 
 		// Scaling needed wrt the normalised bisector to achieve parallel edges
-		const float offset_scale = 2.f / bisector_len;
+		स्थिरांक दशांश offset_scale = 2.f / bisector_len;
 
 		// bisector_len = 2*sin(interior angle/2); split when interior angle < 60 deg <=> bisector_len < 1.
-		const bool angle_sharp = bisector_len < 1;
+		स्थिरांक तार्किक angle_sharp = bisector_len < 1;
 
 		// If margin zero, do not split - would output the same vertex twice.
-		const bool margin_nonzero = margin > FLT_EPSILON;
+		स्थिरांक तार्किक margin_nonzero = margin > भग्न_अंतर;
 
 		// If we do not have enough space, do not split the vertex.
 		// This never happens if the planner-internal node buffer is 2x the original buffer.
-		const bool space_for_split_vertices = _num_nodes + out_idx + 1 < _max_nodes;
+		स्थिरांक तार्किक space_for_split_vertices = अंक_nodes_2 + out_idx + 1 < _max_nodes;
 
-		if (corner_convex && angle_sharp && margin_nonzero && space_for_split_vertices) {
+		जर (corner_convex && angle_sharp && margin_nonzero && space_for_split_vertices) {
 
 			// Sharp corner: cut it off along the line
 			//  - perpendicular to normalized_bisector
 			//  - going through base := vertex(i) - normalized_bisector * margin
 
-			const matrix::Vector2f base = vertex(i) - normalized_bisector * margin;
-			const matrix::Vector2f perp = {-normalized_bisector(1), normalized_bisector(0)};
+			स्थिरांक matrix::Vector2f base = vertex(i) - normalized_bisector * margin;
+			स्थिरांक matrix::Vector2f perp = {-normalized_bisector(1), normalized_bisector(0)};
 
 			// Construct s such that:
 			//  base + perp*s is on the offset incoming edge
 			//  base - perp*s is on the offset outgoing edge
-			const float e_out_dot_b = edge_out_normalized.dot(normalized_bisector);
-			const float s = margin * (1.f - n_out.dot(normalized_bisector)) / e_out_dot_b;
+			स्थिरांक दशांश e_out_dot_b = edge_out_normalized.dot(normalized_bisector);
+			स्थिरांक दशांश s = margin * (1.f - n_out.dot(normalized_bisector)) / e_out_dot_b;
 
-			setNode(poly.start_index + out_idx++, base + perp * s);
-			setNode(poly.start_index + out_idx++, base - perp * s);
+			set_गाठ(poly.start_index + out_idx++, base + perp * s);
+			set_गाठ(poly.start_index + out_idx++, base - perp * s);
 
-		} else {
+		} अन्यथा {
 			// Regular corner or no space for split: single bisector vertex displaced by margin / sin(interior angle/2).
-			setNode(poly.start_index + out_idx++, vertex(i) - normalized_bisector * (margin * offset_scale));
+			set_गाठ(poly.start_index + out_idx++, vertex(i) - normalized_bisector * (margin * offset_scale));
 		}
 	}
 
-	const int num_out = out_idx;
-	poly.num_vertices = num_out;
+	स्थिरांक पूर्णांक अंक_out = out_idx;
+	poly.अंक_vertices = अंक_out;
 
-	computeBoundingBox(poly.start_index, num_out, poly.min_x, poly.max_x, poly.min_y, poly.max_y);
+	computeBoundingBox(poly.start_index, अंक_out, poly.min_x, poly.max_x, poly.min_y, poly.max_y);
 
 	// In canonical orientation, the node is not possibly on the shortest
 	// path if the vertex curves right or straight (forbidden region >= 180
 	// deg)
-	for (int i = 0; i < num_out; i++) {
-		const int prev = poly.start_index + (i + num_out - 1) % num_out;
-		const int curr = poly.start_index + i;
-		const int next = poly.start_index + (i + 1) % num_out;
-		const bool curves_right_or_straight = orient2d(_x_cm[prev], _y_cm[prev],
+	साठी (पूर्णांक i = 0; i < अंक_out; i++) {
+		स्थिरांक पूर्णांक prev = poly.start_index + (i + अंक_out - 1) % अंक_out;
+		स्थिरांक पूर्णांक curr = poly.start_index + i;
+		स्थिरांक पूर्णांक next = poly.start_index + (i + 1) % अंक_out;
+		स्थिरांक तार्किक curves_उजवा_or_straight = orient2d(_x_cm[prev], _y_cm[prev],
 						      _x_cm[curr], _y_cm[curr],
 						      _x_cm[next], _y_cm[next]) <= 0;
-		_node_not_on_optimal_path[curr] = curves_right_or_straight;
+		गाठ_not_on_optimal_path[curr] = curves_उजवा_or_straight;
 	}
 
-	_num_nodes += num_out;
-	++_num_polygons;
-	return AddResult::Success;
+	अंक_nodes_2 += अंक_out;
+	++अंक_polygons;
+	परत AddResult::Success;
 }
 
-PlannerPolygons::AddResult PlannerPolygons::addApproxCircle(const matrix::Vector2f &center, const float circle_radius,
-		float margin, const bool is_inclusion_zone)
+PlannerPolygons::AddResult PlannerPolygons::addApproxCircle(स्थिरांक matrix::Vector2f &center, स्थिरांक दशांश circle_radius,
+		दशांश margin, स्थिरांक तार्किक is_inclusion_zone)
 {
 	// For planning we approximate circles by regular k-gons. This adds
 	// quite some nodes and additional restricted area. However, planning
@@ -259,58 +259,58 @@ PlannerPolygons::AddResult PlannerPolygons::addApproxCircle(const matrix::Vector
 	// planner into all controllers, which would then have to also fly
 	// loiter segments, not just pure waypoint sequences.
 
-	if (_num_polygons >= kMaxPolygons || _num_nodes + kCircleApproxVertices > _max_nodes) {
-		return AddResult::BudgetExceeded;
+	जर (अंक_polygons >= kMaxPolygons || अंक_nodes_2 + kCircleApproxVertices > _max_nodes) {
+		परत AddResult::BudgetExceeded;
 	}
 
-	if (circle_radius <= 0.1f) { return AddResult::Degenerate; }
+	जर (circle_radius <= 0.1f) { परत AddResult::Degenerate; }
 
 	// ensures that the k-gon is, w.r.t the real circle:
 	//  - over-approximation of circle grown by margin, if exclusion
 	//  - under-approximation of circle shrunk by margin, if inclusion
-	const float k_gon_radius = is_inclusion_zone
+	स्थिरांक दशांश k_gon_radius = is_inclusion_zone
 				   ? circle_radius - margin
 				   : circle_radius / cosf(M_PI_F / kCircleApproxVertices) + margin;
 
-	if (k_gon_radius <= FLT_EPSILON) { // Negative radius - circle empty
-		return AddResult::Degenerate;
+	जर (k_gon_radius <= भग्न_अंतर) { // Negative radius - circle empty
+		परत AddResult::Degenerate;
 	}
 
-	if (!inFixedPointRange(fabsf(center(0)) + k_gon_radius)
+	जर (!inFixedPointRange(fabsf(center(0)) + k_gon_radius)
 	    || !inFixedPointRange(fabsf(center(1)) + k_gon_radius)) {
-		return AddResult::OutOfRange;
+		परत AddResult::OutOfRange;
 	}
 
 	// Canonical orientation: CCW for exclusion, CW for inclusion
-	const float delta_angle = (is_inclusion_zone ? -1.f : 1.f) * 2.f * M_PI_F / kCircleApproxVertices;
+	स्थिरांक दशांश delta_angle = (is_inclusion_zone ? -1.f : 1.f) * 2.f * M_PI_F / kCircleApproxVertices;
 
-	PolygonInfo &poly = _polygons[_num_polygons];
-	poly.start_index = _num_nodes;
-	poly.num_vertices = kCircleApproxVertices;
+	PolygonInfo &poly = _polygons[अंक_polygons];
+	poly.start_index = अंक_nodes_2;
+	poly.अंक_vertices = kCircleApproxVertices;
 	poly.is_inclusion = is_inclusion_zone;
 
-	for (int i = 0; i < kCircleApproxVertices; i++) {
-		const float angle = (i + 0.5f) * delta_angle;
-		const matrix::Vector2f p = center + matrix::Vector2f{
+	साठी (पूर्णांक i = 0; i < kCircleApproxVertices; i++) {
+		स्थिरांक दशांश angle = (i + 0.5f) * delta_angle;
+		स्थिरांक matrix::Vector2f p = center + matrix::Vector2f{
 			k_gon_radius * cosf(angle), k_gon_radius * sinf(angle)
 		};
-		setNode(poly.start_index + i, p);
+		set_गाठ(poly.start_index + i, p);
 	}
 
 	computeBoundingBox(poly.start_index, kCircleApproxVertices, poly.min_x, poly.max_x, poly.min_y, poly.max_y);
 
 	// For regular k-gons, all corners are either convex or reflex based on
 	// is_inclusion, so the reduced visibility graph criterion is simplified
-	for (int i = 0; i < kCircleApproxVertices; i++) {
-		_node_not_on_optimal_path[poly.start_index + i] = is_inclusion_zone;
+	साठी (पूर्णांक i = 0; i < kCircleApproxVertices; i++) {
+		गाठ_not_on_optimal_path[poly.start_index + i] = is_inclusion_zone;
 	}
 
-	_num_nodes += kCircleApproxVertices;
-	++_num_polygons;
-	return AddResult::Success;
+	अंक_nodes_2 += kCircleApproxVertices;
+	++अंक_polygons;
+	परत AddResult::Success;
 }
 
-void PlannerPolygons::computeBoundingBox(const int start_index, const int num_vertices,
+शून्य PlannerPolygons::computeBoundingBox(स्थिरांक पूर्णांक start_index, स्थिरांक पूर्णांक अंक_vertices,
 		int32_t &min_x, int32_t &max_x, int32_t &min_y, int32_t &max_y)
 {
 
@@ -321,38 +321,38 @@ void PlannerPolygons::computeBoundingBox(const int start_index, const int num_ve
 	min_x = max_x = _x_cm[start_index];
 	min_y = max_y = _y_cm[start_index];
 
-	for (int i = 1; i < num_vertices; i++) {
-		const int32_t x = _x_cm[start_index + i];
-		const int32_t y = _y_cm[start_index + i];
+	साठी (पूर्णांक i = 1; i < अंक_vertices; i++) {
+		स्थिरांक int32_t x = _x_cm[start_index + i];
+		स्थिरांक int32_t y = _y_cm[start_index + i];
 
-		if (x < min_x) { min_x = x; }
+		जर (x < min_x) { min_x = x; }
 
-		if (x > max_x) { max_x = x; }
+		जर (x > max_x) { max_x = x; }
 
-		if (y < min_y) { min_y = y; }
+		जर (y < min_y) { min_y = y; }
 
-		if (y > max_y) { max_y = y; }
+		जर (y > max_y) { max_y = y; }
 	}
 }
 
-bool PlannerPolygons::pointInsideInteriorCone(const PolygonInfo &poly,
-		int32_t px, int32_t py, int v) const
+तार्किक PlannerPolygons::pointInsideInteriorCone(स्थिरांक PolygonInfo &poly,
+		int32_t px, int32_t py, पूर्णांक v) स्थिरांक
 {
-	const int prev = poly.start_index + ((v + poly.num_vertices - 1) % poly.num_vertices);
-	const int curr = poly.start_index + v;
-	const int next = poly.start_index + ((v + 1) % poly.num_vertices);
+	स्थिरांक पूर्णांक prev = poly.start_index + ((v + poly.अंक_vertices - 1) % poly.अंक_vertices);
+	स्थिरांक पूर्णांक curr = poly.start_index + v;
+	स्थिरांक पूर्णांक next = poly.start_index + ((v + 1) % poly.अंक_vertices);
 
-	const int p_left_of_incoming  = orient2d(_x_cm[prev], _y_cm[prev], _x_cm[curr], _y_cm[curr], px, py);
-	const int p_left_of_outgoing  = orient2d(_x_cm[curr], _y_cm[curr], _x_cm[next], _y_cm[next], px, py);
-	const int is_convex           = orient2d(_x_cm[prev], _y_cm[prev], _x_cm[curr], _y_cm[curr], _x_cm[next], _y_cm[next]);
+	स्थिरांक पूर्णांक p_डावा_of_incoming  = orient2d(_x_cm[prev], _y_cm[prev], _x_cm[curr], _y_cm[curr], px, py);
+	स्थिरांक पूर्णांक p_डावा_of_outgoing  = orient2d(_x_cm[curr], _y_cm[curr], _x_cm[next], _y_cm[next], px, py);
+	स्थिरांक पूर्णांक is_convex           = orient2d(_x_cm[prev], _y_cm[prev], _x_cm[curr], _y_cm[curr], _x_cm[next], _y_cm[next]);
 
-	return is_convex > 0  // If convex==0 (exact 180 deg "corner") the two cases are equivalent
-	       ? (p_left_of_incoming > 0 && p_left_of_outgoing > 0)   // Convex: interior = intersection of two half-planes
-	       : (p_left_of_incoming > 0 || p_left_of_outgoing > 0);  // Reflex: interior = union of two half-planes
+	परत is_convex > 0  // If convex==0 (exact 180 deg "corner") the two cases are equivalent
+	       ? (p_डावा_of_incoming > 0 && p_डावा_of_outgoing > 0)   // Convex: interior = intersection of two half-planes
+	       : (p_डावा_of_incoming > 0 || p_डावा_of_outgoing > 0);  // Reflex: interior = union of two half-planes
 }
 
-bool PlannerPolygons::intersectsInsideOf(const PolygonInfo &poly,
-		int32_t s_x, int32_t s_y, int32_t e_x, int32_t e_y) const
+तार्किक PlannerPolygons::intersectsInsideOf(स्थिरांक PolygonInfo &poly,
+		int32_t s_x, int32_t s_y, int32_t e_x, int32_t e_y) स्थिरांक
 {
 	// Single pass over polygon edges, doing two jobs:
 	//  (1) classify the test segment vs each polygon edge. early-return on:
@@ -361,257 +361,257 @@ bool PlannerPolygons::intersectsInsideOf(const PolygonInfo &poly,
 	//  (2) accumulate midpoint winding contribution -- if (1) is inconclusive,
 	//      this decides if the line is inside or outside
 
-	int wn = 0;
-	bool mid_on_boundary = false;
+	पूर्णांक wn = 0;
+	तार्किक mid_on_boundary = असत्य;
 
 	// Rather than calculating the midpoint (mid = (s + e)/2) explicitly,
 	// which will lead to rounding error for uneven numbers, we instead
 	// scale all other inputs by two, reducing the range by a factor of two
 	// (2^31 cm = 21400 km -> 2^30 cm = 10700 km)
-	const int32_t twice_mid_x = s_x + e_x;
-	const int32_t twice_mid_y = s_y + e_y;
+	स्थिरांक int32_t twice_mid_x = s_x + e_x;
+	स्थिरांक int32_t twice_mid_y = s_y + e_y;
 
-	for (int i = 0; i < poly.num_vertices; i++) {
+	साठी (पूर्णांक i = 0; i < poly.अंक_vertices; i++) {
 
-		const int prev_idx = poly.start_index + (i + poly.num_vertices - 1) % poly.num_vertices;
-		const int curr_idx = poly.start_index + i;
+		स्थिरांक पूर्णांक prev_idx = poly.start_index + (i + poly.अंक_vertices - 1) % poly.अंक_vertices;
+		स्थिरांक पूर्णांक curr_idx = poly.start_index + i;
 
-		const int32_t ax = _x_cm[prev_idx], ay = _y_cm[prev_idx];
-		const int32_t bx = _x_cm[curr_idx], by = _y_cm[curr_idx];
+		स्थिरांक int32_t ax = _x_cm[prev_idx], ay = _y_cm[prev_idx];
+		स्थिरांक int32_t bx = _x_cm[curr_idx], by = _y_cm[curr_idx];
 
 		// (1) test segment vs polygon edge (a, b)
-		switch (segmentsIntersect(ax, ay, bx, by, s_x, s_y, e_x, e_y)) {
-		case SegSegResult::Cross:
-			return true;
+		निवड (segmentsIntersect(ax, ay, bx, by, s_x, s_y, e_x, e_y)) {
+		स्थिती SegSegResult::Cross:
+			परत सत्य;
 
 		// skip AInsideCD - a from this segment is b from the adjacent segment
-		case SegSegResult::BInsideCD:
+		स्थिती SegSegResult::BInsideCD:
 
 			// Polygon vertex b is exactly on the interior of the test segment.
 			// Return intersecting if it pokes into the polygon interior through vertex b.
-			if (pointInsideInteriorCone(poly, s_x, s_y, i) || pointInsideInteriorCone(poly, e_x, e_y, i)) {
-				return true;
+			जर (pointInsideInteriorCone(poly, s_x, s_y, i) || pointInsideInteriorCone(poly, e_x, e_y, i)) {
+				परत सत्य;
 			}
 
-			break;
+			थांबा;
 
-		default:
-			break;
+		पूर्वनिर्धारित:
+			थांबा;
 		}
 
 		// (2) midpoint winding contribution
 		// Ref: Dan Sunday, Inclusion of a Point in a Polygon
 		// https://web.archive.org/web/20130126163405/http://geomalgorithms.com/a03-_inclusion.html
 
-		const int side = orient2d(2 * ax, 2 * ay, 2 * bx, 2 * by, twice_mid_x, twice_mid_y);
+		स्थिरांक पूर्णांक side = orient2d(2 * ax, 2 * ay, 2 * bx, 2 * by, twice_mid_x, twice_mid_y);
 
-		if (side == 0) {
+		जर (side == 0) {
 
-			const bool mid_on_open_ab = collinearBetween(2 * ax, 2 * ay, 2 * bx, 2 * by, twice_mid_x, twice_mid_y);
-			const bool mid_is_b = 2 * bx == twice_mid_x && 2 * by == twice_mid_y;
+			स्थिरांक तार्किक mid_on_open_ab = collinearBetween(2 * ax, 2 * ay, 2 * bx, 2 * by, twice_mid_x, twice_mid_y);
+			स्थिरांक तार्किक mid_is_b = 2 * bx == twice_mid_x && 2 * by == twice_mid_y;
 
 			// Skip point a - a from this segment is b from the adjacent segment
-			if (mid_on_open_ab || mid_is_b) {
-				mid_on_boundary = true;
+			जर (mid_on_open_ab || mid_is_b) {
+				mid_on_boundary = सत्य;
 			}
 
-		} else if (2 * ay <= twice_mid_y) {
-			if (2 * by > twice_mid_y && side > 0) { wn++; }
+		} अन्यथा जर (2 * ay <= twice_mid_y) {
+			जर (2 * by > twice_mid_y && side > 0) { wn++; }
 
-		} else if (2 * by <= twice_mid_y && side < 0) { wn--; }
+		} अन्यथा जर (2 * by <= twice_mid_y && side < 0) { wn--; }
 	}
 
 
 	// Midpoint on boundary, segment runs along it (strict crossing detected earlier).
 	// Non-intersecting in either zone.
-	if (mid_on_boundary) {
-		return false;
+	जर (mid_on_boundary) {
+		परत असत्य;
 	}
 
 	// Exclusion: violation when midpoint is inside (bounded). Inclusion: when outside (unbounded).
 	// This is the only place we depart from the inside = left = forbidden canonical orientation,
 	// necessary because of the point membership check.
-	const bool midpoint_in_bounded_inside = (wn != 0);
-	return midpoint_in_bounded_inside != poly.is_inclusion;
+	स्थिरांक तार्किक midpoint_in_bounded_inside = (wn != 0);
+	परत midpoint_in_bounded_inside != poly.is_inclusion;
 }
 
-bool PlannerPolygons::intersectsAnyInside(int32_t s_x, int32_t s_y, int32_t e_x, int32_t e_y) const
+तार्किक PlannerPolygons::intersectsAnyInside(int32_t s_x, int32_t s_y, int32_t e_x, int32_t e_y) स्थिरांक
 {
-	const int32_t seg_min_x = s_x < e_x ? s_x : e_x;
-	const int32_t seg_max_x = s_x > e_x ? s_x : e_x;
-	const int32_t seg_min_y = s_y < e_y ? s_y : e_y;
-	const int32_t seg_max_y = s_y > e_y ? s_y : e_y;
+	स्थिरांक int32_t seg_min_x = s_x < e_x ? s_x : e_x;
+	स्थिरांक int32_t seg_max_x = s_x > e_x ? s_x : e_x;
+	स्थिरांक int32_t seg_min_y = s_y < e_y ? s_y : e_y;
+	स्थिरांक int32_t seg_max_y = s_y > e_y ? s_y : e_y;
 
-	for (int p = 0; p < _num_polygons; p++) {
-		const PolygonInfo &poly = _polygons[p];
+	साठी (पूर्णांक p = 0; p < अंक_polygons; p++) {
+		स्थिरांक PolygonInfo &poly = _polygons[p];
 
-		if (seg_max_x < poly.min_x || seg_min_x > poly.max_x ||
+		जर (seg_max_x < poly.min_x || seg_min_x > poly.max_x ||
 		    seg_max_y < poly.min_y || seg_min_y > poly.max_y) {
 			// Segment is entirely outside this polygon.
 			// For exclusion zones: outside = safe, skip.
 			// For inclusion zones: outside = forbidden region, immediate violation.
-			if (poly.is_inclusion) { return true; }
+			जर (poly.is_inclusion) { परत सत्य; }
 
-			continue;
+			सुरूठेवा;
 		}
 
-		if (intersectsInsideOf(poly, s_x, s_y, e_x, e_y)) {
-			return true;
+		जर (intersectsInsideOf(poly, s_x, s_y, e_x, e_y)) {
+			परत सत्य;
 		}
 	}
 
-	return false;
+	परत असत्य;
 }
 
-bool PlannerPolygons::edgeBitangent(int a, int32_t bx, int32_t by) const
+तार्किक PlannerPolygons::edgeBitangent(पूर्णांक a, int32_t bx, int32_t by) स्थिरांक
 {
 	// Find the polygon owning vertex index a. Indices not belonging to any
 	// polygon (in particular the destination at index 0) are trivially bitangent.
 
-	if (a == destIndex()) { return true; }
+	जर (a == destIndex()) { परत सत्य; }
 
-	for (int p = 0; p < _num_polygons; p++) {
-		const PolygonInfo &poly = _polygons[p];
+	साठी (पूर्णांक p = 0; p < अंक_polygons; p++) {
+		स्थिरांक PolygonInfo &poly = _polygons[p];
 
-		if (a >= poly.start_index && a < poly.start_index + poly.num_vertices) {
+		जर (a >= poly.start_index && a < poly.start_index + poly.अंक_vertices) {
 			// Define point c = a + (a-b) = 2a - b, so that ac = ab mirrored about a
 			// Then: Edge is bitangent at a <=> neither ab nor ac pokes into the interior
 			int32_t cx = 2 * _x_cm[a] - bx;
 			int32_t cy = 2 * _y_cm[a] - by;
-			return !pointInsideInteriorCone(poly, bx, by, a - poly.start_index)
+			परत !pointInsideInteriorCone(poly, bx, by, a - poly.start_index)
 			       && !pointInsideInteriorCone(poly, cx, cy, a - poly.start_index);
 		}
 	}
 
-	return true;
+	परत सत्य;
 }
 
-bool PlannerPolygons::edgeBitangent(int a, int b) const
+तार्किक PlannerPolygons::edgeBitangent(पूर्णांक a, पूर्णांक b) स्थिरांक
 {
-	return edgeBitangent(a, _x_cm[b], _y_cm[b]);
+	परत edgeBitangent(a, _x_cm[b], _y_cm[b]);
 }
 
-bool PlannerPolygons::edgeBitangent(int a, const matrix::Vector2f &b) const
+तार्किक PlannerPolygons::edgeBitangent(पूर्णांक a, स्थिरांक matrix::Vector2f &b) स्थिरांक
 {
-	return edgeBitangent(a, metersToCm(b(0)), metersToCm(b(1)));
+	परत edgeBitangent(a, metersToCm(b(0)), metersToCm(b(1)));
 }
 
-bool PlannerPolygons::setDestination(const matrix::Vector2f &p)
+तार्किक PlannerPolygons::setDestination(स्थिरांक matrix::Vector2f &p)
 {
-	setNode(destIndex(), p);
+	set_गाठ(destIndex(), p);
 
-	const int32_t x_cm = metersToCm(p(0));
-	const int32_t y_cm = metersToCm(p(1));
+	स्थिरांक int32_t x_cm = metersToCm(p(0));
+	स्थिरांक int32_t y_cm = metersToCm(p(1));
 
-	if (intersectsAnyInside(x_cm, y_cm, x_cm, y_cm)) {
+	जर (intersectsAnyInside(x_cm, y_cm, x_cm, y_cm)) {
 		// If the destination breaches a geofence, still use it but
 		// signal to the user that it is invalid.
-		return false;
+		परत असत्य;
 	}
 
-	return true;
+	परत सत्य;
 }
 
-matrix::Vector2f PlannerPolygons::getDestination() const
+matrix::Vector2f PlannerPolygons::getDestination() स्थिरांक
 {
-	if (_max_nodes < 1) {
-		return matrix::Vector2f{NAN, NAN};
+	जर (_max_nodes < 1) {
+		परत matrix::Vector2f{न_अंक, न_अंक};
 	}
 
-	return node(destIndex());
+	परत गाठ_2(destIndex());
 }
 
-bool PlannerPolygons::edgeVisible(int a, int b) const
+तार्किक PlannerPolygons::edgeVisible(पूर्णांक a, पूर्णांक b) स्थिरांक
 {
-	if (a == b) { return false; }
+	जर (a == b) { परत असत्य; }
 
-	if (_node_not_on_optimal_path[a] || _node_not_on_optimal_path[b]) { return false; }
+	जर (गाठ_not_on_optimal_path[a] || गाठ_not_on_optimal_path[b]) { परत असत्य; }
 
 	// Only bitangent edges can be on a shortest path; this check also cheaply
 	// discards edges that violate the polygon at the vertex they come from.
-	if (!edgeBitangent(a, b) || !edgeBitangent(b, a)) { return false; }
+	जर (!edgeBitangent(a, b) || !edgeBitangent(b, a)) { परत असत्य; }
 
-	return !intersectsAnyInside(_x_cm[a], _y_cm[a], _x_cm[b], _y_cm[b]);
+	परत !intersectsAnyInside(_x_cm[a], _y_cm[a], _x_cm[b], _y_cm[b]);
 }
 
-bool PlannerPolygons::edgeVisible(const matrix::Vector2f &a, int b) const
+तार्किक PlannerPolygons::edgeVisible(स्थिरांक matrix::Vector2f &a, पूर्णांक b) स्थिरांक
 {
-	if (_node_not_on_optimal_path[b]) { return false; }
+	जर (गाठ_not_on_optimal_path[b]) { परत असत्य; }
 
-	if (!edgeBitangent(b, a)) { return false; }
+	जर (!edgeBitangent(b, a)) { परत असत्य; }
 
-	return !intersectsAnyInside(metersToCm(a(0)), metersToCm(a(1)), _x_cm[b], _y_cm[b]);
+	परत !intersectsAnyInside(metersToCm(a(0)), metersToCm(a(1)), _x_cm[b], _y_cm[b]);
 }
 
-bool PlannerPolygons::edgeVisible(const matrix::Vector2f &a, const matrix::Vector2f &b) const
+तार्किक PlannerPolygons::edgeVisible(स्थिरांक matrix::Vector2f &a, स्थिरांक matrix::Vector2f &b) स्थिरांक
 {
-	return !intersectsAnyInside(metersToCm(a(0)), metersToCm(a(1)), metersToCm(b(0)), metersToCm(b(1)));
+	परत !intersectsAnyInside(metersToCm(a(0)), metersToCm(a(1)), metersToCm(b(0)), metersToCm(b(1)));
 }
 
-float PlannerPolygons::edgeCost(int a, int b) const
+दशांश PlannerPolygons::edgeCost(पूर्णांक a, पूर्णांक b) स्थिरांक
 {
-	return edgeVisible(a, b) ? (node(a) - node(b)).norm() : INFINITY;
+	परत edgeVisible(a, b) ? (गाठ_2(a) - गाठ_2(b)).norm() : अनन्त;
 }
 
 
-bool segmentsIntersectInclusive(const matrix::Vector2d &a, const matrix::Vector2d &b,
-				const matrix::Vector2d &c, const matrix::Vector2d &d)
+तार्किक segmentsIntersectInclusive(स्थिरांक matrix::Vector2d &a, स्थिरांक matrix::Vector2d &b,
+				स्थिरांक matrix::Vector2d &c, स्थिरांक matrix::Vector2d &d)
 {
 	// Reject separated bounds, including gaps between collinear segments.
-	for (int axis = 0; axis < 2; ++axis) {
-		if (math::max(a(axis), b(axis)) < math::min(c(axis), d(axis))
+	साठी (पूर्णांक axis = 0; axis < 2; ++axis) {
+		जर (math::max(a(axis), b(axis)) < math::min(c(axis), d(axis))
 		    || math::max(c(axis), d(axis)) < math::min(a(axis), b(axis))) {
-			return false;
+			परत असत्य;
 		}
 	}
 
-	const matrix::Vector2d ab = b - a;
-	const matrix::Vector2d cd = d - c;
-	const double side_c = ab.cross(c - a);
-	const double side_d = ab.cross(d - a);
-	const double side_a = cd.cross(a - c);
-	const double side_b = cd.cross(b - c);
+	स्थिरांक matrix::Vector2d ab = b - a;
+	स्थिरांक matrix::Vector2d cd = d - c;
+	स्थिरांक द्विगुण side_c = ab.cross(c - a);
+	स्थिरांक द्विगुण side_d = ab.cross(d - a);
+	स्थिरांक द्विगुण side_a = cd.cross(a - c);
+	स्थिरांक द्विगुण side_b = cd.cross(b - c);
 
 	// Each segment must cross or touch the line through the other segment.
-	return ((side_c <= 0.0 && side_d >= 0.0) || (side_c >= 0.0 && side_d <= 0.0))
+	परत ((side_c <= 0.0 && side_d >= 0.0) || (side_c >= 0.0 && side_d <= 0.0))
 	       && ((side_a <= 0.0 && side_b >= 0.0) || (side_a >= 0.0 && side_b <= 0.0));
 }
 
-double pointToSegmentDistanceSquared(const matrix::Vector2d &point,
-				     const matrix::Vector2d &a, const matrix::Vector2d &b)
+द्विगुण pointToSegmentDistanceSquared(स्थिरांक matrix::Vector2d &point,
+				     स्थिरांक matrix::Vector2d &a, स्थिरांक matrix::Vector2d &b)
 {
-	const matrix::Vector2d direction = b - a;
-	const matrix::Vector2d to_point = point - a;
-	const double length_squared = direction.norm_squared();
+	स्थिरांक matrix::Vector2d direction = b - a;
+	स्थिरांक matrix::Vector2d to_point = point - a;
+	स्थिरांक द्विगुण length_squared = direction.norm_squared();
 	// along / length_squared locates the projection: 0 at a, 1 at b.
-	const double along = to_point.dot(direction);
+	स्थिरांक द्विगुण along = to_point.dot(direction);
 
-	if (along <= 0.0) {
-		return to_point.norm_squared();
+	जर (along <= 0.0) {
+		परत to_point.norm_squared();
 
-	} else if (along >= length_squared) {
-		return (point - b).norm_squared();
+	} अन्यथा जर (along >= length_squared) {
+		परत (point - b).norm_squared();
 	}
 
 	// Squared distance to the line: |to_point x direction|^2 / |direction|^2.
 	// https://mathworld.wolfram.com/2-DimensionalPoint-LineDistance.html
-	const double cross = to_point.cross(direction);
-	return cross * cross / length_squared;
+	स्थिरांक द्विगुण cross = to_point.cross(direction);
+	परत cross * cross / length_squared;
 }
 
-bool isPolygonCCW(const matrix::Vector2f *vertices, int num_vertices)
+तार्किक isPolygonCCW(स्थिरांक matrix::Vector2f *vertices, पूर्णांक अंक_vertices)
 {
 	// https://en.wikipedia.org/wiki/Shoelace_formula
 	// Triangle formula
-	float signed_area_2x = 0.f;
+	दशांश signed_area_2x = 0.f;
 
-	for (int i = 0; i < num_vertices; i++) {
-		const int j = (i + 1) % num_vertices;
+	साठी (पूर्णांक i = 0; i < अंक_vertices; i++) {
+		स्थिरांक पूर्णांक j = (i + 1) % अंक_vertices;
 		signed_area_2x += vertices[i](0) * vertices[j](1)
 				  - vertices[j](0) * vertices[i](1);
 	}
 
-	return signed_area_2x > 0.f;
+	परत signed_area_2x > 0.f;
 }
 
 } // namespace geofence_utils
