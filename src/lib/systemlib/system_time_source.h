@@ -36,14 +36,14 @@
  * Bit values for the SYS_TIME_SRC bitmask parameter.
  */
 
-#pragma once
+#رهنمود once
 
-#include <cstdint>
+#ضمن <cstdint>
 
-enum SystemTimeSource : int32_t {
-	SYS_TIME_SRC_GPS       = 1 << 0,
-	SYS_TIME_SRC_MAVLINK   = 1 << 1,
-	SYS_TIME_SRC_SOFT_RTC  = 1 << 2,
-	SYS_TIME_SRC_DDS       = 1 << 3,
-	SYS_TIME_SRC_SIMULATOR = 1 << 4,
+تعداد System_زمان_منبع : int32_t {
+	SYS_زمان_SRC_GPS       = 1 << 0,
+	SYS_زمان_SRC_MAVLINK   = 1 << 1,
+	SYS_زمان_SRC_SOFT_RTC  = 1 << 2,
+	SYS_زمان_SRC_DDS       = 1 << 3,
+	SYS_زمان_SRC_SIMULATOR = 1 << 4,
 };

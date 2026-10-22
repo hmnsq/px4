@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#pragma once
+#رهنمود once
 
-#include "FunctionProviderBase.hpp"
+#ضمن "FunctionProviderBase.hpp"
 
 /**
  * Functions: Constant_Max
  */
-class FunctionConstantMax : public FunctionProviderBase
+صنف FunctionConstantMax : عام Function_Provider_پایه
 {
-public:
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionConstantMax(); }
+عام:
+	ساكن Function_Provider_پایه *allocate(ثابت Context &context) { أرجع جديد FunctionConstantMax(); }
 
-	float value(OutputFunction func) override { return 1.f; }
-	void update() override { }
+	عائم value(OutputFunction func) override { أرجع 1.f; }
+	فراغ update() override { }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 1.f; }
+	عائم default_Failsafe_مقدار(OutputFunction func) ثابت override { أرجع 1.f; }
 };

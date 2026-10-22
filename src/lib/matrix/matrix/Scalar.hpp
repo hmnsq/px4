@@ -6,58 +6,58 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#رهنمود once
 
-#include "Matrix.hpp"
+#ضمن "Matrix.hpp"
 
-namespace matrix
+نطاق ماتریس
 {
 
-template<typename Type>
-class Scalar
+قالب<نام_نوع Type>
+صنف Scalar
 {
-public:
-	Scalar() = delete;
+عام:
+	Scalar() = حذف;
 
-	Scalar(const Matrix<Type, 1, 1> &other) :
-		_value{other(0, 0)}
+	Scalar(ثابت ماتریس_2<Type, 1, 1> &other) :
+		مقدار_2{other(0, 0)}
 	{
 	}
 
-	Scalar(Type other) : _value(other)
+	Scalar(Type other) : مقدار_2(other)
 	{
 	}
 
-	operator const Type &()
+	عملگر ثابت Type &()
 	{
-		return _value;
+		أرجع مقدار_2;
 	}
 
-	operator Matrix<Type, 1, 1>() const
+	عملگر ماتریس_2<Type, 1, 1>() ثابت
 	{
-		Matrix<Type, 1, 1> m;
-		m(0, 0) = _value;
-		return m;
+		ماتریس_2<Type, 1, 1> m;
+		m(0, 0) = مقدار_2;
+		أرجع m;
 	}
 
-	operator Vector<Type, 1>() const
+	عملگر وکتور<Type, 1>() ثابت
 	{
-		Vector<Type, 1> m;
-		m(0) = _value;
-		return m;
+		وکتور<Type, 1> m;
+		m(0) = مقدار_2;
+		أرجع m;
 	}
 
-	bool operator==(const float other) const
+	منطقي عملگر==(ثابت عائم other) ثابت
 	{
-		return isEqualF(_value, other);
+		أرجع isEqualF(مقدار_2, other);
 	}
 
-private:
-	const Type _value;
+خاص:
+	ثابت Type مقدار_2;
 
 };
 
-using Scalarf = Scalar<float>;
-using Scalard = Scalar<double>;
+استفاده Scalarf = Scalar<عائم>;
+استفاده Scalard = Scalar<مزدوج>;
 
 } // namespace matrix

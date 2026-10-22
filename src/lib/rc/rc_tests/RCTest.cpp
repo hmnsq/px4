@@ -1,259 +1,259 @@
-#include <unit_test.h>
+#ضمن <unit_test.h>
 
-#include <systemlib/err.h>
+#ضمن <systemlib/err.h>
 
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
+#ضمن <stdio.h>
+#ضمن <string.h>
+#ضمن <unistd.h>
 
-#include <drivers/drv_hrt.h>
+#ضمن <drivers/drv_hrt.h>
 
-#define DSM_DEBUG
-#include <lib/rc/sbus.h>
-#include <lib/rc/dsm.h>
-#include <lib/rc/st24.h>
-#include <lib/rc/sumd.h>
-#include <lib/rc/crsf.h>
-#include <lib/rc/ghst.hpp>
+#تعریف_کن DSM_DEBUG
+#ضمن <lib/rc/sbus.h>
+#ضمن <lib/rc/dsm.h>
+#ضمن <lib/rc/st24.h>
+#ضمن <lib/rc/sumd.h>
+#ضمن <lib/rc/crsf.h>
+#ضمن <lib/rc/ghst.hpp>
 
-#if defined(CONFIG_ARCH_BOARD_PX4_SITL)
-#define TEST_DATA_PATH "./test_data/"
-#else
-#define TEST_DATA_PATH CONFIG_BOARD_ROOT_PATH
-#endif
+#إذا defined(CONFIG_ARCH_BOARD_PX4_SITL)
+#تعریف_کن TEST_داده_مسیر "./test_data/"
+#وإلا
+#تعریف_کن TEST_داده_مسیر CONFIG_BOARD_ریشه_مسیر
+#پایان_اگر
 
-extern "C" __EXPORT int rc_tests_main(int argc, char *argv[]);
+خارجي "C" __EXPORT صحيح rc_tests_main(صحيح argc, حرف *argv[]);
 
-class RCTest : public UnitTest
+صنف RCTest : عام UnitTest
 {
-public:
-	bool run_tests() override;
+عام:
+	منطقي پیاپی_tests() override;
 
-private:
-	bool crsfTest();
-	bool ghstTest();
-	bool dsmTest(const char *filepath, unsigned expected_chancount, unsigned expected_dropcount, unsigned chan0);
-	bool dsmTest10Ch();
-	bool dsmTest16Ch();
-	bool dsmTest22msDSMX16Ch();
-	bool dsmTestOrangeDsmx();
-	bool sbus2Test();
-	bool st24MalformedLengthTest();
-	bool st24Test();
-	bool sumdTest();
+خاص:
+	منطقي crsfTest();
+	منطقي ghstTest();
+	منطقي dsmTest(ثابت حرف *filepath, بیعلامت expected_chancount, بیعلامت expected_dropcount, بیعلامت chan0);
+	منطقي dsmTest10Ch();
+	منطقي dsmTest16Ch();
+	منطقي dsmTest22msDSMX16Ch();
+	منطقي dsmTestOrangeDsmx();
+	منطقي sbus2Test();
+	منطقي st24_Malformed_درازی_Test();
+	منطقي st24Test();
+	منطقي sumdTest();
 };
 
-bool RCTest::run_tests()
+منطقي RCTest::پیاپی_tests()
 {
-	ut_run_test(crsfTest);
-	ut_run_test(ghstTest);
-	ut_run_test(dsmTest10Ch);
-	ut_run_test(dsmTest16Ch);
-	ut_run_test(dsmTest22msDSMX16Ch);
-	ut_run_test(dsmTestOrangeDsmx);
-	ut_run_test(sbus2Test);
-	ut_run_test(st24MalformedLengthTest);
-	ut_run_test(st24Test);
-	ut_run_test(sumdTest);
+	ut_پیاپی_test(crsfTest);
+	ut_پیاپی_test(ghstTest);
+	ut_پیاپی_test(dsmTest10Ch);
+	ut_پیاپی_test(dsmTest16Ch);
+	ut_پیاپی_test(dsmTest22msDSMX16Ch);
+	ut_پیاپی_test(dsmTestOrangeDsmx);
+	ut_پیاپی_test(sbus2Test);
+	ut_پیاپی_test(st24_Malformed_درازی_Test);
+	ut_پیاپی_test(st24Test);
+	ut_پیاپی_test(sumdTest);
 
-	return (_tests_failed == 0);
+	أرجع (_tests_failed == 0);
 }
 
-bool RCTest::crsfTest()
+منطقي RCTest::crsfTest()
 {
-	const char *filepath = TEST_DATA_PATH "crsf_rc_channels.txt";
+	ثابت حرف *filepath = TEST_داده_مسیر "crsf_rc_channels.txt";
 
 	FILE *fp = fopen(filepath, "rt");
 
 	ut_test(fp);
 	//PX4_INFO("loading data from: %s", filepath);
 
-	const int line_size = 500;
-	char line[line_size];
-	bool has_decoded_values = false;
-	const int max_channels = 16;
-	uint16_t rc_values[max_channels];
-	uint16_t num_values = 0;
-	int line_counter = 1;
+	ثابت صحيح سطر_اندازه = 500;
+	حرف سطر[سطر_اندازه];
+	منطقي has_decoded_مقادیر = خطأ;
+	ثابت صحيح max_channels = 16;
+	uint16_t rc_مقادیر[max_channels];
+	uint16_t رقم_مقادیر = 0;
+	صحيح سطر_counter = 1;
 
-	while (fgets(line, line_size, fp) != nullptr)  {
+	طالما (fgets(سطر, سطر_اندازه, fp) != اشاره_تهی)  {
 
-		if (strncmp(line, "INPUT ", 6) == 0) {
+		إذا (مقایسه_رشته(سطر, "INPUT ", 6) == 0) {
 
-			if (has_decoded_values) {
-				PX4_ERR("Parser decoded values that are not in the test file (line=%i)", line_counter);
-				return false;
+			إذا (has_decoded_مقادیر) {
+				PX4_ERR("Parser decoded values that are not in the test file (line=%i)", سطر_counter);
+				أرجع خطأ;
 			}
 
 			// read the values
-			const char *file_buffer = line + 6;
-			int frame_len = 0;
-			uint8_t frame[300];
-			int offset;
-			int number;
+			ثابت حرف *file_میانگیر = سطر + 6;
+			صحيح قاب_len = 0;
+			uint8_t قاب[300];
+			صحيح جابه_جایی;
+			صحيح عدد;
 
-			while (sscanf(file_buffer, "%x, %n", &number, &offset) > 0) {
-				frame[frame_len++] = number;
-				file_buffer += offset;
+			طالما (از_رشته_بخوان(file_میانگیر, "%x, %n", &عدد, &جابه_جایی) > 0) {
+				قاب[قاب_len++] = عدد;
+				file_میانگیر += جابه_جایی;
 			}
 
 			// Pipe the data into the parser
-			hrt_abstime now = hrt_absolute_time();
+			hrt_abstime now = hrt_absolute_زمان();
 
-			bool result = crsf_parse(now, frame, frame_len, rc_values, &num_values, max_channels);
+			منطقي نتیجه = crsf_parse(now, قاب, قاب_len, rc_مقادیر, &رقم_مقادیر, max_channels);
 
-			if (result) {
-				has_decoded_values = true;
+			إذا (نتیجه) {
+				has_decoded_مقادیر = درست;
 			}
 
-		} else if (strncmp(line, "DECODED ", 8) == 0) {
+		} وإلا إذا (مقایسه_رشته(سطر, "DECODED ", 8) == 0) {
 
-			if (!has_decoded_values) {
-				PX4_ERR("Test file contains decoded values but the parser did not decode anything (line=%i)", line_counter);
-				return false;
+			إذا (!has_decoded_مقادیر) {
+				PX4_ERR("Test file contains decoded values but the parser did not decode anything (line=%i)", سطر_counter);
+				أرجع خطأ;
 			}
 
 			// read the values
-			const char *file_buffer = line + 8;
-			int offset;
-			int expected_rc_value;
-			int expected_num_channels = 0;
+			ثابت حرف *file_میانگیر = سطر + 8;
+			صحيح جابه_جایی;
+			صحيح expected_rc_مقدار;
+			صحيح expected_رقم_channels = 0;
 
-			while (sscanf(file_buffer, "%x, %n", &expected_rc_value, &offset) > 0) {
+			طالما (از_رشته_بخوان(file_میانگیر, "%x, %n", &expected_rc_مقدار, &جابه_جایی) > 0) {
 
 				// allow a small difference
-				if (abs(expected_rc_value - (int)rc_values[expected_num_channels]) > 10) {
-					PX4_ERR("File line: %i, channel: %i", line_counter, expected_num_channels);
-					ut_compare("Wrong decoded channel", expected_rc_value, rc_values[expected_num_channels]);
+				إذا (قدر_مطلق(expected_rc_مقدار - (صحيح)rc_مقادیر[expected_رقم_channels]) > 10) {
+					PX4_ERR("File line: %i, channel: %i", سطر_counter, expected_رقم_channels);
+					ut_compare("Wrong decoded channel", expected_rc_مقدار, rc_مقادیر[expected_رقم_channels]);
 				}
 
-				file_buffer += offset;
-				++expected_num_channels;
+				file_میانگیر += جابه_جایی;
+				++expected_رقم_channels;
 			}
 
-			if (expected_num_channels != num_values) {
-				PX4_ERR("File line: %d", line_counter);
-				ut_compare("Unexpected number of decoded channels", expected_num_channels, num_values);
+			إذا (expected_رقم_channels != رقم_مقادیر) {
+				PX4_ERR("File line: %d", سطر_counter);
+				ut_compare("Unexpected number of decoded channels", expected_رقم_channels, رقم_مقادیر);
 			}
 
-			has_decoded_values = false;
+			has_decoded_مقادیر = خطأ;
 		}
 
-		++line_counter;
+		++سطر_counter;
 	}
 
-	return true;
+	أرجع درست;
 }
 
-bool RCTest::ghstTest()
+منطقي RCTest::ghstTest()
 {
-	const char *filepath = TEST_DATA_PATH "ghst_rc_channels.txt";
+	ثابت حرف *filepath = TEST_داده_مسیر "ghst_rc_channels.txt";
 
 	FILE *fp = fopen(filepath, "rt");
 
 	ut_test(fp);
 
-	int uart_fd = -1;
-	const int line_size = 500;
-	char line[line_size];
-	bool has_decoded_values = false;
-	const int max_channels = 16;
-	uint16_t rc_values[max_channels];
-	uint16_t num_values = 0;
-	int line_counter = 1;
+	صحيح uart_fd = -1;
+	ثابت صحيح سطر_اندازه = 500;
+	حرف سطر[سطر_اندازه];
+	منطقي has_decoded_مقادیر = خطأ;
+	ثابت صحيح max_channels = 16;
+	uint16_t rc_مقادیر[max_channels];
+	uint16_t رقم_مقادیر = 0;
+	صحيح سطر_counter = 1;
 	ghstLinkStatistics_t link_stats;
 	ghst_config(uart_fd);
 
-	while (fgets(line, line_size, fp) != nullptr)  {
+	طالما (fgets(سطر, سطر_اندازه, fp) != اشاره_تهی)  {
 
-		if (strncmp(line, "INPUT ", 6) == 0) {
+		إذا (مقایسه_رشته(سطر, "INPUT ", 6) == 0) {
 
-			if (has_decoded_values) {
-				PX4_ERR("Parser decoded values that are not in the test file (line=%i)", line_counter);
-				return false;
+			إذا (has_decoded_مقادیر) {
+				PX4_ERR("Parser decoded values that are not in the test file (line=%i)", سطر_counter);
+				أرجع خطأ;
 			}
 
 			// read the values
-			const char *file_buffer = line + 6;
-			int frame_len = 0;
-			uint8_t frame[300];
-			int offset;
-			int number;
+			ثابت حرف *file_میانگیر = سطر + 6;
+			صحيح قاب_len = 0;
+			uint8_t قاب[300];
+			صحيح جابه_جایی;
+			صحيح عدد;
 
-			while (sscanf(file_buffer, "%x, %n", &number, &offset) > 0) {
-				frame[frame_len++] = number;
-				file_buffer += offset;
+			طالما (از_رشته_بخوان(file_میانگیر, "%x, %n", &عدد, &جابه_جایی) > 0) {
+				قاب[قاب_len++] = عدد;
+				file_میانگیر += جابه_جایی;
 			}
 
 			// Pipe the data into the parser
-			hrt_abstime now = hrt_absolute_time();
+			hrt_abstime now = hrt_absolute_زمان();
 
-			bool result = ghst_parse(now, frame, frame_len, rc_values, &link_stats, &num_values, max_channels);
+			منطقي نتیجه = ghst_parse(now, قاب, قاب_len, rc_مقادیر, &link_stats, &رقم_مقادیر, max_channels);
 
-			if (result) {
-				has_decoded_values = true;
+			إذا (نتیجه) {
+				has_decoded_مقادیر = درست;
 			}
 
-		} else if (strncmp(line, "DECODED ", 8) == 0) {
+		} وإلا إذا (مقایسه_رشته(سطر, "DECODED ", 8) == 0) {
 
-			if (!has_decoded_values) {
-				PX4_ERR("Test file contains decoded values but the parser did not decode anything (line=%i)", line_counter);
-				return false;
+			إذا (!has_decoded_مقادیر) {
+				PX4_ERR("Test file contains decoded values but the parser did not decode anything (line=%i)", سطر_counter);
+				أرجع خطأ;
 			}
 
 			// read the values
-			const char *file_buffer = line + 8;
-			int offset;
-			int expected_rc_value;
-			int expected_num_channels = 0;
+			ثابت حرف *file_میانگیر = سطر + 8;
+			صحيح جابه_جایی;
+			صحيح expected_rc_مقدار;
+			صحيح expected_رقم_channels = 0;
 
-			while (sscanf(file_buffer, "%x, %n", &expected_rc_value, &offset) > 0) {
+			طالما (از_رشته_بخوان(file_میانگیر, "%x, %n", &expected_rc_مقدار, &جابه_جایی) > 0) {
 
 				// allow a small difference
-				if (abs(expected_rc_value - (int)rc_values[expected_num_channels]) > 10) {
-					PX4_ERR("File line: %i, channel: %i", line_counter, expected_num_channels);
-					ut_compare("Wrong decoded channel", expected_rc_value, rc_values[expected_num_channels]);
+				إذا (قدر_مطلق(expected_rc_مقدار - (صحيح)rc_مقادیر[expected_رقم_channels]) > 10) {
+					PX4_ERR("File line: %i, channel: %i", سطر_counter, expected_رقم_channels);
+					ut_compare("Wrong decoded channel", expected_rc_مقدار, rc_مقادیر[expected_رقم_channels]);
 				}
 
-				file_buffer += offset;
-				++expected_num_channels;
+				file_میانگیر += جابه_جایی;
+				++expected_رقم_channels;
 			}
 
-			if (expected_num_channels != num_values) {
-				PX4_ERR("File line: %d", line_counter);
-				ut_compare("Unexpected number of decoded channels", expected_num_channels, num_values);
+			إذا (expected_رقم_channels != رقم_مقادیر) {
+				PX4_ERR("File line: %d", سطر_counter);
+				ut_compare("Unexpected number of decoded channels", expected_رقم_channels, رقم_مقادیر);
 			}
 
-			has_decoded_values = false;
+			has_decoded_مقادیر = خطأ;
 		}
 
-		++line_counter;
+		++سطر_counter;
 	}
 
-	return true;
+	أرجع درست;
 }
 
-bool RCTest::dsmTest10Ch()
+منطقي RCTest::dsmTest10Ch()
 {
-	return dsmTest(TEST_DATA_PATH "dsm_x_data.txt", 10, 2, 1500);
+	أرجع dsmTest(TEST_داده_مسیر "dsm_x_data.txt", 10, 2, 1500);
 }
 
-bool RCTest::dsmTest16Ch()
+منطقي RCTest::dsmTest16Ch()
 {
-	return dsmTest(TEST_DATA_PATH "dsm_x_dx9_data.txt", 16, 1, 1500);
+	أرجع dsmTest(TEST_داده_مسیر "dsm_x_dx9_data.txt", 16, 1, 1500);
 }
 
-bool RCTest::dsmTest22msDSMX16Ch()
+منطقي RCTest::dsmTest22msDSMX16Ch()
 {
-	return dsmTest(TEST_DATA_PATH "dsm_x_dx9_px4_binding_data.txt", 16, 1, 1499);
+	أرجع dsmTest(TEST_داده_مسیر "dsm_x_dx9_px4_binding_data.txt", 16, 1, 1499);
 }
 
-bool RCTest::dsmTestOrangeDsmx()
+منطقي RCTest::dsmTestOrangeDsmx()
 {
-	return dsmTest(TEST_DATA_PATH "orangerx_dsmx_12.txt", 12, 1, 1499);
+	أرجع dsmTest(TEST_داده_مسیر "orangerx_dsmx_12.txt", 12, 1, 1499);
 }
 
-bool RCTest::dsmTest(const char *filepath, unsigned expected_chancount, unsigned expected_dropcount, unsigned chan0)
+منطقي RCTest::dsmTest(ثابت حرف *filepath, بیعلامت expected_chancount, بیعلامت expected_dropcount, بیعلامت chan0)
 {
 	FILE *fp;
 	fp = fopen(filepath, "rt");
@@ -261,79 +261,79 @@ bool RCTest::dsmTest(const char *filepath, unsigned expected_chancount, unsigned
 	ut_test(fp);
 	//PX4_INFO("loading data from: %s", filepath);
 
-	float f;
-	unsigned x;
-	int ret;
+	عائم f;
+	بیعلامت x;
+	صحيح ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
-		char buf[200];
-		(void)fgets(buf, sizeof(buf), fp);
+	لكل (بیعلامت i = 0; i < 20; i++) {
+		حرف buf[200];
+		(فراغ)fgets(buf, حجم(buf), fp);
 	}
 
 	// Init the parser
-	uint8_t frame[30];
-	uint16_t rc_values[18];
-	uint16_t num_values;
-	bool dsm_11_bit;
-	unsigned dsm_frame_drops = 0;
-	uint16_t max_channels = sizeof(rc_values) / sizeof(rc_values[0]);
+	uint8_t قاب[30];
+	uint16_t rc_مقادیر[18];
+	uint16_t رقم_مقادیر;
+	منطقي dsm_11_بیت;
+	بیعلامت dsm_قاب_drops = 0;
+	uint16_t max_channels = حجم(rc_مقادیر) / حجم(rc_مقادیر[0]);
 
-	int count = 0;
-	unsigned last_drop = 0;
+	صحيح شمار = 0;
+	بیعلامت آخرین_drop = 0;
 
 	dsm_proto_init();
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	طالما (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		إذا (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
 
-		frame[0] = x;
-		unsigned len = 1;
+		قاب[0] = x;
+		بیعلامت len = 1;
 
 		// Pipe the data into the parser
-		bool result = dsm_parse(f * 1e6f, &frame[0], len, rc_values, &num_values,
-					&dsm_11_bit, &dsm_frame_drops, nullptr, max_channels);
+		منطقي نتیجه = dsm_parse(f * 1e6f, &قاب[0], len, rc_مقادیر, &رقم_مقادیر,
+					&dsm_11_بیت, &dsm_قاب_drops, اشاره_تهی, max_channels);
 
-		if (result) {
-			if (count > (16 * 20)) { // need to process enough data to have full channel count
-				ut_compare("num_values == expected_chancount", num_values, expected_chancount);
+		إذا (نتیجه) {
+			إذا (شمار > (16 * 20)) { // need to process enough data to have full channel count
+				ut_compare("num_values == expected_chancount", رقم_مقادیر, expected_chancount);
 			}
 
-			ut_test(abs((int)chan0 - (int)rc_values[0]) < 30);
+			ut_test(قدر_مطلق((صحيح)chan0 - (صحيح)rc_مقادیر[0]) < 30);
 
 			//PX4_INFO("decoded packet with %d channels and %s encoding:", num_values, (dsm_11_bit) ? "11 bit" : "10 bit");
 
-			for (unsigned i = 0; i < num_values; i++) {
+			لكل (بیعلامت i = 0; i < رقم_مقادیر; i++) {
 				//PX4_INFO("chan #%u:\t%d", i, (int)rc_values[i]);
 			}
 		}
 
-		if (last_drop != (dsm_frame_drops)) {
+		إذا (آخرین_drop != (dsm_قاب_drops)) {
 			//PX4_INFO("frame dropped, now #%d", (dsm_frame_drops));
-			last_drop = dsm_frame_drops;
+			آخرین_drop = dsm_قاب_drops;
 		}
 
-		count++;
+		شمار++;
 	}
 
 	fclose(fp);
 
-	ut_compare("num_values == expected_chancount", num_values, expected_chancount);
+	ut_compare("num_values == expected_chancount", رقم_مقادیر, expected_chancount);
 
 	ut_test(ret == EOF);
 	//PX4_INFO("drop: %d", (int)last_drop);
-	ut_compare("last_drop == expected_dropcount", last_drop, expected_dropcount);
+	ut_compare("last_drop == expected_dropcount", آخرین_drop, expected_dropcount);
 
-	return true;
+	أرجع درست;
 }
 
-bool RCTest::sbus2Test()
+منطقي RCTest::sbus2Test()
 {
-	const char *filepath = TEST_DATA_PATH "sbus2_r7008SB.txt";
+	ثابت حرف *filepath = TEST_داده_مسیر "sbus2_r7008SB.txt";
 
 	FILE *fp;
 	fp = fopen(filepath, "rt");
@@ -341,98 +341,98 @@ bool RCTest::sbus2Test()
 	ut_test(fp);
 	//PX4_INFO("loading data from: %s", filepath);
 
-	float f;
-	unsigned x;
-	int ret;
+	عائم f;
+	بیعلامت x;
+	صحيح ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
-		char buf[200];
-		(void)fgets(buf, sizeof(buf), fp);
+	لكل (بیعلامت i = 0; i < 20; i++) {
+		حرف buf[200];
+		(فراغ)fgets(buf, حجم(buf), fp);
 	}
 
 	// Init the parser
-	uint8_t frame[SBUS_BUFFER_SIZE];
-	uint16_t rc_values[18];
-	uint16_t num_values;
-	unsigned sbus_frame_drops = 0;
-	unsigned sbus_frame_resets = 0;
-	bool sbus_failsafe;
-	bool sbus_frame_drop;
-	uint16_t max_channels = sizeof(rc_values) / sizeof(rc_values[0]);
+	uint8_t قاب[SBUS_میانگیر_اندازه];
+	uint16_t rc_مقادیر[18];
+	uint16_t رقم_مقادیر;
+	بیعلامت sbus_قاب_drops = 0;
+	بیعلامت sbus_قاب_resets = 0;
+	منطقي sbus_failsafe;
+	منطقي sbus_قاب_drop;
+	uint16_t max_channels = حجم(rc_مقادیر) / حجم(rc_مقادیر[0]);
 
-	unsigned last_drop = 0;
+	بیعلامت آخرین_drop = 0;
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	طالما (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		إذا (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
 
-		frame[0] = x;
-		unsigned len = 1;
+		قاب[0] = x;
+		بیعلامت len = 1;
 
 		// Pipe the data into the parser
-		hrt_abstime now = hrt_absolute_time();
+		hrt_abstime now = hrt_absolute_زمان();
 
 		// if (rate_limiter % byte_offset == 0) {
-		bool result = sbus_parse(now, &frame[0], len, rc_values, &num_values,
-					 &sbus_failsafe, &sbus_frame_drop, &sbus_frame_drops, max_channels);
+		منطقي نتیجه = sbus_parse(now, &قاب[0], len, rc_مقادیر, &رقم_مقادیر,
+					 &sbus_failsafe, &sbus_قاب_drop, &sbus_قاب_drops, max_channels);
 
-		if (result) {
+		إذا (نتیجه) {
 			//PX4_INFO("decoded packet");
 		}
 
 		// }
 
-		if (last_drop != (sbus_frame_drops + sbus_frame_resets)) {
-			PX4_WARN("frame dropped, now #%d", (sbus_frame_drops + sbus_frame_resets));
-			last_drop = sbus_frame_drops + sbus_frame_resets;
+		إذا (آخرین_drop != (sbus_قاب_drops + sbus_قاب_resets)) {
+			PX4_WARN("frame dropped, now #%d", (sbus_قاب_drops + sbus_قاب_resets));
+			آخرین_drop = sbus_قاب_drops + sbus_قاب_resets;
 		}
 
 	}
 
 	ut_test(ret == EOF);
 
-	return true;
+	أرجع درست;
 }
 
-bool RCTest::st24MalformedLengthTest()
+منطقي RCTest::st24_Malformed_درازی_Test()
 {
 	uint8_t rssi{};
-	uint8_t lost_count{};
-	uint16_t channel_count{};
+	uint8_t گمشده_شمار{};
+	uint16_t channel_شمار{};
 	uint16_t channels[24] {};
-	const uint8_t invalid_lengths[] {0, 1};
+	ثابت uint8_t invalid_lengths[] {0, 1};
 
-	for (const uint8_t invalid_length : invalid_lengths) {
-		const uint8_t prefix[] {ST24_STX1, ST24_STX2, invalid_length, 0};
+	لكل (ثابت uint8_t invalid_درازی : invalid_lengths) {
+		ثابت uint8_t پیشوند[] {ST24_STX1, ST24_STX2, invalid_درازی, 0};
 
-		for (const uint8_t byte : prefix) {
-			(void)st24_decode(byte, &rssi, &lost_count, &channel_count, channels, 24);
+		لكل (ثابت uint8_t byte : پیشوند) {
+			(فراغ)st24_decode(byte, &rssi, &گمشده_شمار, &channel_شمار, channels, 24);
 		}
 
-		for (unsigned i = 0; i <= ST24_DATA_LEN_MAX; ++i) {
-			(void)st24_decode(0xaa, &rssi, &lost_count, &channel_count, channels, 24);
+		لكل (بیعلامت i = 0; i <= ST24_داده_LEN_MAX; ++i) {
+			(فراغ)st24_decode(0xaa, &rssi, &گمشده_شمار, &channel_شمار, channels, 24);
 		}
 	}
 
-	uint8_t minimal_packet[] {ST24_STX1, ST24_STX2, 2, 0xff, 0};
-	minimal_packet[4] = st24_common_crc8(&minimal_packet[2], 2);
-	int result = 1;
+	uint8_t کمینه_packet[] {ST24_STX1, ST24_STX2, 2, 0xff, 0};
+	کمینه_packet[4] = st24_common_crc8(&کمینه_packet[2], 2);
+	صحيح نتیجه = 1;
 
-	for (const uint8_t byte : minimal_packet) {
-		result = st24_decode(byte, &rssi, &lost_count, &channel_count, channels, 24);
+	لكل (ثابت uint8_t byte : کمینه_packet) {
+		نتیجه = st24_decode(byte, &rssi, &گمشده_شمار, &channel_شمار, channels, 24);
 	}
 
-	ut_test(result == 2);
-	return true;
+	ut_test(نتیجه == 2);
+	أرجع درست;
 }
 
-bool RCTest::st24Test()
+منطقي RCTest::st24Test()
 {
-	const char *filepath = TEST_DATA_PATH "st24_data.txt";
+	ثابت حرف *filepath = TEST_داده_مسیر "st24_data.txt";
 
 	//PX4_INFO("loading data from: %s", filepath);
 
@@ -441,45 +441,45 @@ bool RCTest::st24Test()
 	fp = fopen(filepath, "rt");
 	ut_test(fp);
 
-	float f;
-	unsigned x;
-	int ret;
+	عائم f;
+	بیعلامت x;
+	صحيح ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
-		char buf[200];
-		(void)fgets(buf, sizeof(buf), fp);
+	لكل (بیعلامت i = 0; i < 20; i++) {
+		حرف buf[200];
+		(فراغ)fgets(buf, حجم(buf), fp);
 	}
 
-	float last_time = 0;
+	عائم آخرین_زمان = 0;
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	طالما (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		إذا (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
 
-		if (((f - last_time) * 1000 * 1000) > 3000) {
+		إذا (((f - آخرین_زمان) * 1000 * 1000) > 3000) {
 			// PX4_INFO("FRAME RESET\n\n");
 		}
 
 		uint8_t b = static_cast<uint8_t>(x);
 
-		last_time = f;
+		آخرین_زمان = f;
 
 		// Pipe the data into the parser
 		//hrt_abstime now = hrt_absolute_time();
 
 		uint8_t rssi;
-		uint8_t rx_count;
-		uint16_t channel_count;
+		uint8_t rx_شمار;
+		uint16_t channel_شمار;
 		uint16_t channels[20];
 
-		if (!st24_decode(b, &rssi, &rx_count, &channel_count, channels, sizeof(channels) / sizeof(channels[0]))) {
+		إذا (!st24_decode(b, &rssi, &rx_شمار, &channel_شمار, channels, حجم(channels) / حجم(channels[0]))) {
 			//PX4_INFO("decoded: %u channels (converted to PPM range)", (unsigned)channel_count);
 
-			for (unsigned i = 0; i < channel_count; i++) {
+			لكل (بیعلامت i = 0; i < channel_شمار; i++) {
 				//int16_t val = channels[i];
 				//PX4_INFO("channel %u: %d 0x%03X", i, static_cast<int>(val), static_cast<int>(val));
 			}
@@ -488,12 +488,12 @@ bool RCTest::st24Test()
 
 	ut_test(ret == EOF);
 
-	return true;
+	أرجع درست;
 }
 
-bool RCTest::sumdTest()
+منطقي RCTest::sumdTest()
 {
-	const char *filepath = TEST_DATA_PATH "sumd_data.txt";
+	ثابت حرف *filepath = TEST_داده_مسیر "sumd_data.txt";
 
 	//PX4_INFO("loading data from: %s", filepath);
 
@@ -502,47 +502,47 @@ bool RCTest::sumdTest()
 	fp = fopen(filepath, "rt");
 	ut_test(fp);
 
-	float f;
-	unsigned x;
-	int ret;
+	عائم f;
+	بیعلامت x;
+	صحيح ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
-		char buf[200];
-		(void)fgets(buf, sizeof(buf), fp);
+	لكل (بیعلامت i = 0; i < 20; i++) {
+		حرف buf[200];
+		(فراغ)fgets(buf, حجم(buf), fp);
 	}
 
-	float last_time = 0;
+	عائم آخرین_زمان = 0;
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	طالما (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		إذا (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
 
-		if (((f - last_time) * 1000 * 1000) > 3000) {
+		إذا (((f - آخرین_زمان) * 1000 * 1000) > 3000) {
 			// PX4_INFO("FRAME RESET\n\n");
 		}
 
 		uint8_t b = static_cast<uint8_t>(x);
 
-		last_time = f;
+		آخرین_زمان = f;
 
 		// Pipe the data into the parser
 		//hrt_abstime now = hrt_absolute_time();
 
 		uint8_t rssi;
-		uint8_t rx_count;
-		uint16_t channel_count;
+		uint8_t rx_شمار;
+		uint16_t channel_شمار;
 		uint16_t channels[32];
-		bool sumd_failsafe;
+		منطقي sumd_failsafe;
 
 
-		if (!sumd_decode(b, &rssi, &rx_count, &channel_count, channels, 32, &sumd_failsafe)) {
+		إذا (!sumd_decode(b, &rssi, &rx_شمار, &channel_شمار, channels, 32, &sumd_failsafe)) {
 			//PX4_INFO("decoded: %u channels (converted to PPM range)", (unsigned)channel_count);
 
-			for (unsigned i = 0; i < channel_count; i++) {
+			لكل (بیعلامت i = 0; i < channel_شمار; i++) {
 				//int16_t val = channels[i];
 				//PX4_INFO("channel %u: %d 0x%03X", i, static_cast<int>(val), static_cast<int>(val));
 			}
@@ -551,7 +551,7 @@ bool RCTest::sumdTest()
 
 	ut_test(ret == EOF);
 
-	return true;
+	أرجع درست;
 }
 
 ut_declare_test_c(rc_tests_main, RCTest)

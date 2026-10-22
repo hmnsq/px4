@@ -31,53 +31,53 @@
  *
  ****************************************************************************/
 
-#if 0 // enable non-verbose debugging
-#define CRSF_DEBUG PX4_WARN
-#else
-#define CRSF_DEBUG(...)
-#endif
+#إذا 0 // enable non-verbose debugging
+#تعریف_کن CRSF_DEBUG PX4_WARN
+#وإلا
+#تعریف_کن CRSF_DEBUG(...)
+#پایان_اگر
 
-#if 0 // verbose debugging. Careful when enabling: it leads to too much output, causing dropped bytes
-#define CRSF_VERBOSE PX4_WARN
-#else
-#define CRSF_VERBOSE(...)
-#endif
+#إذا 0 // verbose debugging. Careful when enabling: it leads to too much output, causing dropped bytes
+#تعریف_کن CRSF_VERBOSE PX4_WARN
+#وإلا
+#تعریف_کن CRSF_VERBOSE(...)
+#پایان_اگر
 
-#include <drivers/drv_hrt.h>
-#include <termios.h>
-#include <string.h>
-#include <unistd.h>
+#ضمن <drivers/drv_hrt.h>
+#ضمن <termios.h>
+#ضمن <string.h>
+#ضمن <unistd.h>
 
-#include "crsf.h"
-#include "common_rc.h"
+#ضمن "crsf.h"
+#ضمن "common_rc.h"
 
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#define MAX(a,b) (((a)>(b))?(a):(b))
+#تعریف_کن MIN(a,b) (((a)<(b))?(a):(b))
+#تعریف_کن MAX(a,b) (((a)>(b))?(a):(b))
 
 
-#define CRSF_BAUDRATE 420000
+#تعریف_کن CRSF_BAUDRATE 420000
 
-#define CRSF_SYNC_BYTE 0xC8
+#تعریف_کن CRSF_SYNC_BYTE 0xC8
 
-enum class crsf_frame_type_t : uint8_t {
+تعداد صنف crsf_قاب_type_t : uint8_t {
 	gps = 0x02,
 	battery_sensor = 0x08,
 	baro_altitude = 0x09,
 	link_statistics = 0x14,
 	rc_channels_packed = 0x16,
 	attitude = 0x1E,
-	flight_mode = 0x21,
+	flight_نما = 0x21,
 
 	// Extended Header Frames, range: 0x28 to 0x96
 	device_ping = 0x28,
 	device_info = 0x29,
-	parameter_settings_entry = 0x2B,
+	parameter_settings_مدخل = 0x2B,
 	parameter_read = 0x2C,
 	parameter_write = 0x2D,
 	command = 0x32
 };
 
-enum class crsf_payload_size_t : uint8_t {
+تعداد صنف crsf_payload_اندازه_t : uint8_t {
 	gps = 15,
 	battery_sensor = 8,
 	baro_altitude = 4, ///< altitude (uint16) + vertical speed (int16)
@@ -87,8 +87,8 @@ enum class crsf_payload_size_t : uint8_t {
 };
 
 
-enum class crsf_address_t : uint8_t {
-	broadcast = 0x00,
+تعداد صنف crsf_آدرس_t : uint8_t {
+	پخش = 0x00,
 	usb = 0x10,
 	tbs_core_pnp_pro = 0x80,
 	reserved1 = 0x8A,
@@ -97,62 +97,62 @@ enum class crsf_address_t : uint8_t {
 	tbs_blackbox = 0xC4,
 	flight_controller = 0xC8,
 	reserved2 = 0xCA,
-	race_tag = 0xCC,
+	race_برچسب = 0xCC,
 	radio_transmitter = 0xEA,
 	crsf_receiver = 0xEC,
 	crsf_transmitter = 0xEE
 };
 
-#pragma pack(push, 1)
-struct crsf_payload_RC_channels_packed_t {
+#رهنمود pack(افزودن, 1)
+بنية crsf_payload_RC_channels_packed_t {
 	// 176 bits of data (11 bits per channel * 16 channels) = 22 bytes
-	unsigned chan0 : 11;
-	unsigned chan1 : 11;
-	unsigned chan2 : 11;
-	unsigned chan3 : 11;
-	unsigned chan4 : 11;
-	unsigned chan5 : 11;
-	unsigned chan6 : 11;
-	unsigned chan7 : 11;
-	unsigned chan8 : 11;
-	unsigned chan9 : 11;
-	unsigned chan10 : 11;
-	unsigned chan11 : 11;
-	unsigned chan12 : 11;
-	unsigned chan13 : 11;
-	unsigned chan14 : 11;
-	unsigned chan15 : 11;
+	بیعلامت chan0 : 11;
+	بیعلامت chan1 : 11;
+	بیعلامت chan2 : 11;
+	بیعلامت chan3 : 11;
+	بیعلامت chan4 : 11;
+	بیعلامت chan5 : 11;
+	بیعلامت chan6 : 11;
+	بیعلامت chan7 : 11;
+	بیعلامت chan8 : 11;
+	بیعلامت chan9 : 11;
+	بیعلامت chan10 : 11;
+	بیعلامت chan11 : 11;
+	بیعلامت chan12 : 11;
+	بیعلامت chan13 : 11;
+	بیعلامت chan14 : 11;
+	بیعلامت chan15 : 11;
 };
 
-#pragma pack(pop)
+#رهنمود pack(برداشت)
 
-enum class crsf_parser_state_t : uint8_t {
+تعداد صنف crsf_parser_state_t : uint8_t {
 	unsynced = 0,
 	synced
 };
 
-static crsf_frame_t	 &crsf_frame = rc_decode_buf.crsf_frame;
-static unsigned current_frame_position = 0;
-static crsf_parser_state_t parser_state = crsf_parser_state_t::unsynced;
+ساكن crsf_قاب_t	 &crsf_قاب = rc_decode_buf.crsf_قاب;
+ساكن بیعلامت current_قاب_position = 0;
+ساكن crsf_parser_state_t parser_state = crsf_parser_state_t::unsynced;
 
 /**
  * parse the current crsf_frame buffer
  */
-static bool crsf_parse_buffer(uint16_t *values, uint16_t *num_values, uint16_t max_channels);
+ساكن منطقي crsf_parse_میانگیر(uint16_t *مقادیر_2, uint16_t *رقم_مقادیر, uint16_t max_channels);
 
-uint8_t crsf_frame_CRC(const crsf_frame_t &frame);
+uint8_t crsf_قاب_بررسی_چرخهای(ثابت crsf_قاب_t &قاب);
 
 
-int
-crsf_config(int uart_fd)
+صحيح
+crsf_config(صحيح uart_fd)
 {
-	struct termios t;
+	بنية termios t;
 
 	/* no parity, one stop bit */
 	tcgetattr(uart_fd, &t);
 	cfsetspeed(&t, CRSF_BAUDRATE);
 	t.c_cflag &= ~(CSTOPB | PARENB);
-	return tcsetattr(uart_fd, TCSANOW, &t);
+	أرجع tcsetattr(uart_fd, TCSANOW, &t);
 }
 
 /**
@@ -160,61 +160,61 @@ crsf_config(int uart_fd)
  * @param chan_value channel value in [172, 1811]
  * @return PWM channel value in [1000, 2000]
  */
-static uint16_t convert_channel_value(unsigned chan_value);
+ساكن uint16_t convert_channel_مقدار(بیعلامت chan_مقدار);
 
 
-bool crsf_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *values,
-		uint16_t *num_values, uint16_t max_channels)
+منطقي crsf_parse(ثابت uint64_t now, ثابت uint8_t *قاب, بیعلامت len, uint16_t *مقادیر_2,
+		uint16_t *رقم_مقادیر, uint16_t max_channels)
 {
-	bool ret = false;
-	uint8_t *crsf_frame_ptr = (uint8_t *)&crsf_frame;
+	منطقي ret = خطأ;
+	uint8_t *crsf_قاب_ptr = (uint8_t *)&crsf_قاب;
 
-	while (len > 0) {
+	طالما (len > 0) {
 
 		// fill in the crsf_buffer, as much as we can
-		const unsigned current_len = MIN(len, sizeof(crsf_frame_t) - current_frame_position);
-		memcpy(crsf_frame_ptr + current_frame_position, frame, current_len);
-		current_frame_position += current_len;
+		ثابت بیعلامت current_len = MIN(len, حجم(crsf_قاب_t) - current_قاب_position);
+		کپی_حافظه(crsf_قاب_ptr + current_قاب_position, قاب, current_len);
+		current_قاب_position += current_len;
 
 		// protection to guarantee parsing progress
-		if (current_len == 0) {
+		إذا (current_len == 0) {
 			CRSF_DEBUG("========== parser bug: no progress (%i) ===========", len);
 
-			for (unsigned i = 0; i < current_frame_position; ++i) {
-				CRSF_DEBUG("crsf_frame_ptr[%i]: 0x%x", i, (int)crsf_frame_ptr[i]);
+			لكل (بیعلامت i = 0; i < current_قاب_position; ++i) {
+				CRSF_DEBUG("crsf_frame_ptr[%i]: 0x%x", i, (صحيح)crsf_قاب_ptr[i]);
 			}
 
 			// reset the parser
-			current_frame_position = 0;
+			current_قاب_position = 0;
 			parser_state = crsf_parser_state_t::unsynced;
-			return false;
+			أرجع خطأ;
 		}
 
 		len -= current_len;
-		frame += current_len;
+		قاب += current_len;
 
-		if (crsf_parse_buffer(values, num_values, max_channels)) {
-			ret = true;
+		إذا (crsf_parse_میانگیر(مقادیر_2, رقم_مقادیر, max_channels)) {
+			ret = درست;
 		}
 	}
 
 
-	return ret;
+	أرجع ret;
 }
 
-uint8_t crsf_frame_CRC(const crsf_frame_t &frame)
+uint8_t crsf_قاب_بررسی_چرخهای(ثابت crsf_قاب_t &قاب)
 {
 	// CRC includes type and payload
-	uint8_t crc = crc8_dvb_s2(0, frame.type);
+	uint8_t بررسی_چرخهای = crc8_dvb_s2(0, قاب.type);
 
-	for (int i = 0; i < frame.header.length - 2; ++i) {
-		crc = crc8_dvb_s2(crc, frame.payload[i]);
+	لكل (صحيح i = 0; i < قاب.سرآیند.درازی - 2; ++i) {
+		بررسی_چرخهای = crc8_dvb_s2(بررسی_چرخهای, قاب.payload[i]);
 	}
 
-	return crc;
+	أرجع بررسی_چرخهای;
 }
 
-static uint16_t convert_channel_value(unsigned chan_value)
+ساكن uint16_t convert_channel_مقدار(بیعلامت chan_مقدار)
 {
 	/*
 	 *       RC     PWM
@@ -222,270 +222,270 @@ static uint16_t convert_channel_value(unsigned chan_value)
 	 * mid  992 -> 1500us
 	 * max 1811 -> 2012us
 	 */
-	static constexpr float scale = (2012.f - 988.f) / (1811.f - 172.f);
-	static constexpr float offset = 988.f - 172.f * scale;
-	return (scale * chan_value) + offset;
+	ساكن constexpr عائم scale = (2012.f - 988.f) / (1811.f - 172.f);
+	ساكن constexpr عائم جابه_جایی = 988.f - 172.f * scale;
+	أرجع (scale * chan_مقدار) + جابه_جایی;
 }
 
-static bool crsf_parse_buffer(uint16_t *values, uint16_t *num_values, uint16_t max_channels)
+ساكن منطقي crsf_parse_میانگیر(uint16_t *مقادیر_2, uint16_t *رقم_مقادیر, uint16_t max_channels)
 {
-	uint8_t *crsf_frame_ptr = (uint8_t *)&crsf_frame;
+	uint8_t *crsf_قاب_ptr = (uint8_t *)&crsf_قاب;
 
-	if (parser_state == crsf_parser_state_t::unsynced) {
+	إذا (parser_state == crsf_parser_state_t::unsynced) {
 		// there is no sync byte, try to find an RC packet by searching for a matching frame length and type
-		for (unsigned i = 1; i < current_frame_position - 1; ++i) {
-			if (crsf_frame_ptr[i] == (uint8_t)crsf_payload_size_t::rc_channels + 2 &&
-			    crsf_frame_ptr[i + 1] == (uint8_t)crsf_frame_type_t::rc_channels_packed) {
+		لكل (بیعلامت i = 1; i < current_قاب_position - 1; ++i) {
+			إذا (crsf_قاب_ptr[i] == (uint8_t)crsf_payload_اندازه_t::rc_channels + 2 &&
+			    crsf_قاب_ptr[i + 1] == (uint8_t)crsf_قاب_type_t::rc_channels_packed) {
 				parser_state = crsf_parser_state_t::synced;
-				unsigned frame_offset = i - 1;
-				CRSF_VERBOSE("RC channels found at offset %i", frame_offset);
+				بیعلامت قاب_جابه_جایی = i - 1;
+				CRSF_VERBOSE("RC channels found at offset %i", قاب_جابه_جایی);
 
 				// move the rest of the buffer to the beginning
-				if (frame_offset != 0) {
-					memmove(crsf_frame_ptr, crsf_frame_ptr + frame_offset, current_frame_position - frame_offset);
-					current_frame_position -= frame_offset;
+				إذا (قاب_جابه_جایی != 0) {
+					memmove(crsf_قاب_ptr, crsf_قاب_ptr + قاب_جابه_جایی, current_قاب_position - قاب_جابه_جایی);
+					current_قاب_position -= قاب_جابه_جایی;
 				}
 
-				break;
+				اكسر;
 			}
 		}
 	}
 
-	if (parser_state != crsf_parser_state_t::synced) {
-		if (current_frame_position >= sizeof(crsf_frame_t)) {
+	إذا (parser_state != crsf_parser_state_t::synced) {
+		إذا (current_قاب_position >= حجم(crsf_قاب_t)) {
 			// discard most of the data, but keep the last 3 bytes (otherwise we could miss the frame start)
-			current_frame_position = 3;
+			current_قاب_position = 3;
 
-			for (unsigned i = 0; i < current_frame_position; ++i) {
-				crsf_frame_ptr[i] = crsf_frame_ptr[sizeof(crsf_frame_t) - current_frame_position + i];
+			لكل (بیعلامت i = 0; i < current_قاب_position; ++i) {
+				crsf_قاب_ptr[i] = crsf_قاب_ptr[حجم(crsf_قاب_t) - current_قاب_position + i];
 			}
 
 			CRSF_VERBOSE("Discarding buffer");
 		}
 
-		return false;
+		أرجع خطأ;
 	}
 
 
-	if (current_frame_position < 3) {
+	إذا (current_قاب_position < 3) {
 		// wait until we have the header & type
-		return false;
+		أرجع خطأ;
 	}
 
 	// Now we have at least the header and the type
 
-	const unsigned current_frame_length = crsf_frame.header.length + sizeof(crsf_frame_header_t);
+	ثابت بیعلامت current_قاب_درازی = crsf_قاب.سرآیند.درازی + حجم(crsf_قاب_سرآیند_t);
 
-	if (current_frame_length > sizeof(crsf_frame_t) || current_frame_length < 4) {
+	إذا (current_قاب_درازی > حجم(crsf_قاب_t) || current_قاب_درازی < 4) {
 		// frame too long or bogus -> discard everything and go into unsynced state
-		current_frame_position = 0;
+		current_قاب_position = 0;
 		parser_state = crsf_parser_state_t::unsynced;
-		CRSF_DEBUG("Frame too long/bogus (%i, type=%i) -> unsync", current_frame_length, crsf_frame.type);
-		return false;
+		CRSF_DEBUG("Frame too long/bogus (%i, type=%i) -> unsync", current_قاب_درازی, crsf_قاب.type);
+		أرجع خطأ;
 	}
 
-	if (current_frame_position < current_frame_length) {
+	إذا (current_قاب_position < current_قاب_درازی) {
 		// we don't have the full frame yet -> wait for more data
-		CRSF_VERBOSE("waiting for more data (%i < %i)", current_frame_position, current_frame_length);
-		return false;
+		CRSF_VERBOSE("waiting for more data (%i < %i)", current_قاب_position, current_قاب_درازی);
+		أرجع خطأ;
 	}
 
-	bool ret = false;
+	منطقي ret = خطأ;
 
 	// Now we have the full frame
 
-	if (crsf_frame.type == (uint8_t)crsf_frame_type_t::rc_channels_packed &&
-	    crsf_frame.header.length == (uint8_t)crsf_payload_size_t::rc_channels + 2) {
-		const uint8_t crc = crsf_frame.payload[crsf_frame.header.length - 2];
+	إذا (crsf_قاب.type == (uint8_t)crsf_قاب_type_t::rc_channels_packed &&
+	    crsf_قاب.سرآیند.درازی == (uint8_t)crsf_payload_اندازه_t::rc_channels + 2) {
+		ثابت uint8_t بررسی_چرخهای = crsf_قاب.payload[crsf_قاب.سرآیند.درازی - 2];
 
-		if (crc == crsf_frame_CRC(crsf_frame)) {
-			const crsf_payload_RC_channels_packed_t *const rc_channels =
-				(crsf_payload_RC_channels_packed_t *)&crsf_frame.payload;
-			*num_values = MIN(max_channels, 16);
+		إذا (بررسی_چرخهای == crsf_قاب_بررسی_چرخهای(crsf_قاب)) {
+			ثابت crsf_payload_RC_channels_packed_t *ثابت rc_channels =
+				(crsf_payload_RC_channels_packed_t *)&crsf_قاب.payload;
+			*رقم_مقادیر = MIN(max_channels, 16);
 
-			if (max_channels > 0) { values[0] = convert_channel_value(rc_channels->chan0); }
+			إذا (max_channels > 0) { مقادیر_2[0] = convert_channel_مقدار(rc_channels->chan0); }
 
-			if (max_channels > 1) { values[1] = convert_channel_value(rc_channels->chan1); }
+			إذا (max_channels > 1) { مقادیر_2[1] = convert_channel_مقدار(rc_channels->chan1); }
 
-			if (max_channels > 2) { values[2] = convert_channel_value(rc_channels->chan2); }
+			إذا (max_channels > 2) { مقادیر_2[2] = convert_channel_مقدار(rc_channels->chan2); }
 
-			if (max_channels > 3) { values[3] = convert_channel_value(rc_channels->chan3); }
+			إذا (max_channels > 3) { مقادیر_2[3] = convert_channel_مقدار(rc_channels->chan3); }
 
-			if (max_channels > 4) { values[4] = convert_channel_value(rc_channels->chan4); }
+			إذا (max_channels > 4) { مقادیر_2[4] = convert_channel_مقدار(rc_channels->chan4); }
 
-			if (max_channels > 5) { values[5] = convert_channel_value(rc_channels->chan5); }
+			إذا (max_channels > 5) { مقادیر_2[5] = convert_channel_مقدار(rc_channels->chan5); }
 
-			if (max_channels > 6) { values[6] = convert_channel_value(rc_channels->chan6); }
+			إذا (max_channels > 6) { مقادیر_2[6] = convert_channel_مقدار(rc_channels->chan6); }
 
-			if (max_channels > 7) { values[7] = convert_channel_value(rc_channels->chan7); }
+			إذا (max_channels > 7) { مقادیر_2[7] = convert_channel_مقدار(rc_channels->chan7); }
 
-			if (max_channels > 8) { values[8] = convert_channel_value(rc_channels->chan8); }
+			إذا (max_channels > 8) { مقادیر_2[8] = convert_channel_مقدار(rc_channels->chan8); }
 
-			if (max_channels > 9) { values[9] = convert_channel_value(rc_channels->chan9); }
+			إذا (max_channels > 9) { مقادیر_2[9] = convert_channel_مقدار(rc_channels->chan9); }
 
-			if (max_channels > 10) { values[10] = convert_channel_value(rc_channels->chan10); }
+			إذا (max_channels > 10) { مقادیر_2[10] = convert_channel_مقدار(rc_channels->chan10); }
 
-			if (max_channels > 11) { values[11] = convert_channel_value(rc_channels->chan11); }
+			إذا (max_channels > 11) { مقادیر_2[11] = convert_channel_مقدار(rc_channels->chan11); }
 
-			if (max_channels > 12) { values[12] = convert_channel_value(rc_channels->chan12); }
+			إذا (max_channels > 12) { مقادیر_2[12] = convert_channel_مقدار(rc_channels->chan12); }
 
-			if (max_channels > 13) { values[13] = convert_channel_value(rc_channels->chan13); }
+			إذا (max_channels > 13) { مقادیر_2[13] = convert_channel_مقدار(rc_channels->chan13); }
 
-			if (max_channels > 14) { values[14] = convert_channel_value(rc_channels->chan14); }
+			إذا (max_channels > 14) { مقادیر_2[14] = convert_channel_مقدار(rc_channels->chan14); }
 
-			if (max_channels > 15) { values[15] = convert_channel_value(rc_channels->chan15); }
+			إذا (max_channels > 15) { مقادیر_2[15] = convert_channel_مقدار(rc_channels->chan15); }
 
 			CRSF_VERBOSE("Got Channels");
 
-			ret = true;
+			ret = درست;
 
-		} else {
+		} وإلا {
 			CRSF_DEBUG("CRC check failed");
 		}
 
-	} else {
-		CRSF_DEBUG("Got Non-RC frame (len=%i, type=%i)", current_frame_length, crsf_frame.type);
+	} وإلا {
+		CRSF_DEBUG("Got Non-RC frame (len=%i, type=%i)", current_قاب_درازی, crsf_قاب.type);
 		// We could check the CRC here and reset the parser into unsynced state if it fails.
 		// But in practise it's robust even without that.
 	}
 
 	// Either reset or move the rest of the buffer
-	if (current_frame_position > current_frame_length) {
-		CRSF_VERBOSE("Moving buffer (%i > %i)", current_frame_position, current_frame_length);
-		memmove(crsf_frame_ptr, crsf_frame_ptr + current_frame_length, current_frame_position - current_frame_length);
-		current_frame_position -= current_frame_length;
+	إذا (current_قاب_position > current_قاب_درازی) {
+		CRSF_VERBOSE("Moving buffer (%i > %i)", current_قاب_position, current_قاب_درازی);
+		memmove(crsf_قاب_ptr, crsf_قاب_ptr + current_قاب_درازی, current_قاب_position - current_قاب_درازی);
+		current_قاب_position -= current_قاب_درازی;
 
-	} else {
-		current_frame_position = 0;
+	} وإلا {
+		current_قاب_position = 0;
 	}
 
-	return ret;
+	أرجع ret;
 }
 
 /**
  * write an uint8_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint8_t(uint8_t *buf, int &offset, uint8_t value)
+ساكن مضمن فراغ write_uint8_t(uint8_t *buf, صحيح &جابه_جایی, uint8_t value)
 {
-	buf[offset++] = value;
+	buf[جابه_جایی++] = value;
 }
 /**
  * write an uint16_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint16_t(uint8_t *buf, int &offset, uint16_t value)
+ساكن مضمن فراغ write_uint16_t(uint8_t *buf, صحيح &جابه_جایی, uint16_t value)
 {
 	// Big endian
-	buf[offset] = value >> 8;
-	buf[offset + 1] = value & 0xff;
-	offset += 2;
+	buf[جابه_جایی] = value >> 8;
+	buf[جابه_جایی + 1] = value & 0xff;
+	جابه_جایی += 2;
 }
 /**
  * write an uint24_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint24_t(uint8_t *buf, int &offset, int value)
+ساكن مضمن فراغ write_uint24_t(uint8_t *buf, صحيح &جابه_جایی, صحيح value)
 {
 	// Big endian
-	buf[offset] = value >> 16;
-	buf[offset + 1] = (value >> 8) & 0xff;
-	buf[offset + 2] = value & 0xff;
-	offset += 3;
+	buf[جابه_جایی] = value >> 16;
+	buf[جابه_جایی + 1] = (value >> 8) & 0xff;
+	buf[جابه_جایی + 2] = value & 0xff;
+	جابه_جایی += 3;
 }
 
 /**
  * write an int32_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_int32_t(uint8_t *buf, int &offset, int32_t value)
+ساكن مضمن فراغ write_int32_t(uint8_t *buf, صحيح &جابه_جایی, int32_t value)
 {
 	// Big endian
-	buf[offset] = value >> 24;
-	buf[offset + 1] = (value >> 16) & 0xff;
-	buf[offset + 2] = (value >> 8) & 0xff;
-	buf[offset + 3] = value & 0xff;
-	offset += 4;
+	buf[جابه_جایی] = value >> 24;
+	buf[جابه_جایی + 1] = (value >> 16) & 0xff;
+	buf[جابه_جایی + 2] = (value >> 8) & 0xff;
+	buf[جابه_جایی + 3] = value & 0xff;
+	جابه_جایی += 4;
 }
 
-static inline void write_frame_header(uint8_t *buf, int &offset, crsf_frame_type_t type, uint8_t payload_size)
+ساكن مضمن فراغ write_قاب_سرآیند(uint8_t *buf, صحيح &جابه_جایی, crsf_قاب_type_t type, uint8_t payload_اندازه)
 {
-	write_uint8_t(buf, offset, CRSF_SYNC_BYTE); // this got changed from the address to the sync byte
-	write_uint8_t(buf, offset, payload_size + 2);
-	write_uint8_t(buf, offset, (uint8_t)type);
+	write_uint8_t(buf, جابه_جایی, CRSF_SYNC_BYTE); // this got changed from the address to the sync byte
+	write_uint8_t(buf, جابه_جایی, payload_اندازه + 2);
+	write_uint8_t(buf, جابه_جایی, (uint8_t)type);
 }
-static inline void write_frame_crc(uint8_t *buf, int &offset, int buf_size)
+ساكن مضمن فراغ write_قاب_بررسی_چرخهای(uint8_t *buf, صحيح &جابه_جایی, صحيح buf_اندازه)
 {
 	// CRC does not include the address and length
-	write_uint8_t(buf, offset, crc8_dvb_s2_buf(buf + 2, buf_size - 3));
+	write_uint8_t(buf, جابه_جایی, crc8_dvb_s2_buf(buf + 2, buf_اندازه - 3));
 
 	// check correctness of buffer size (only needed during development)
 	//if (buf_size != offset) { PX4_ERR("frame size mismatch (%i != %i)", buf_size, offset); }
 }
 
-bool crsf_send_telemetry_battery(int uart_fd, uint16_t voltage, uint16_t current, int fuel, uint8_t remaining)
+منطقي crsf_send_telemetry_battery(صحيح uart_fd, uint16_t voltage, uint16_t current, صحيح fuel, uint8_t مانده)
 {
-	uint8_t buf[(uint8_t)crsf_payload_size_t::battery_sensor + 4];
-	int offset = 0;
-	write_frame_header(buf, offset, crsf_frame_type_t::battery_sensor, (uint8_t)crsf_payload_size_t::battery_sensor);
-	write_uint16_t(buf, offset, voltage);
-	write_uint16_t(buf, offset, current);
-	write_uint24_t(buf, offset, fuel);
-	write_uint8_t(buf, offset, remaining);
-	write_frame_crc(buf, offset, sizeof(buf));
-	return write(uart_fd, buf, offset) == offset;
+	uint8_t buf[(uint8_t)crsf_payload_اندازه_t::battery_sensor + 4];
+	صحيح جابه_جایی = 0;
+	write_قاب_سرآیند(buf, جابه_جایی, crsf_قاب_type_t::battery_sensor, (uint8_t)crsf_payload_اندازه_t::battery_sensor);
+	write_uint16_t(buf, جابه_جایی, voltage);
+	write_uint16_t(buf, جابه_جایی, current);
+	write_uint24_t(buf, جابه_جایی, fuel);
+	write_uint8_t(buf, جابه_جایی, مانده);
+	write_قاب_بررسی_چرخهای(buf, جابه_جایی, حجم(buf));
+	أرجع اكتب(uart_fd, buf, جابه_جایی) == جابه_جایی;
 }
 
-bool crsf_send_telemetry_gps(int uart_fd, int32_t latitude, int32_t longitude, uint16_t groundspeed,
-			     uint16_t gps_heading, uint16_t altitude, uint8_t num_satellites)
+منطقي crsf_send_telemetry_gps(صحيح uart_fd, int32_t latitude, int32_t longitude, uint16_t groundspeed,
+			     uint16_t gps_heading, uint16_t altitude, uint8_t رقم_satellites)
 {
-	uint8_t buf[(uint8_t)crsf_payload_size_t::gps + 4];
-	int offset = 0;
-	write_frame_header(buf, offset, crsf_frame_type_t::gps, (uint8_t)crsf_payload_size_t::gps);
-	write_int32_t(buf, offset, latitude);
-	write_int32_t(buf, offset, longitude);
-	write_uint16_t(buf, offset, groundspeed);
-	write_uint16_t(buf, offset, gps_heading);
-	write_uint16_t(buf, offset, altitude);
-	write_uint8_t(buf, offset, num_satellites);
-	write_frame_crc(buf, offset, sizeof(buf));
-	return write(uart_fd, buf, offset) == offset;
+	uint8_t buf[(uint8_t)crsf_payload_اندازه_t::gps + 4];
+	صحيح جابه_جایی = 0;
+	write_قاب_سرآیند(buf, جابه_جایی, crsf_قاب_type_t::gps, (uint8_t)crsf_payload_اندازه_t::gps);
+	write_int32_t(buf, جابه_جایی, latitude);
+	write_int32_t(buf, جابه_جایی, longitude);
+	write_uint16_t(buf, جابه_جایی, groundspeed);
+	write_uint16_t(buf, جابه_جایی, gps_heading);
+	write_uint16_t(buf, جابه_جایی, altitude);
+	write_uint8_t(buf, جابه_جایی, رقم_satellites);
+	write_قاب_بررسی_چرخهای(buf, جابه_جایی, حجم(buf));
+	أرجع اكتب(uart_fd, buf, جابه_جایی) == جابه_جایی;
 }
 
-bool crsf_send_telemetry_baro_altitude(int uart_fd, uint16_t altitude, int16_t vertical_speed)
+منطقي crsf_send_telemetry_baro_altitude(صحيح uart_fd, uint16_t altitude, int16_t vertical_سرعت)
 {
-	uint8_t buf[(uint8_t)crsf_payload_size_t::baro_altitude + 4];
-	int offset = 0;
-	write_frame_header(buf, offset, crsf_frame_type_t::baro_altitude, (uint8_t)crsf_payload_size_t::baro_altitude);
-	write_uint16_t(buf, offset, altitude);
-	write_uint16_t(buf, offset, (uint16_t)vertical_speed);
-	write_frame_crc(buf, offset, sizeof(buf));
-	return write(uart_fd, buf, offset) == offset;
+	uint8_t buf[(uint8_t)crsf_payload_اندازه_t::baro_altitude + 4];
+	صحيح جابه_جایی = 0;
+	write_قاب_سرآیند(buf, جابه_جایی, crsf_قاب_type_t::baro_altitude, (uint8_t)crsf_payload_اندازه_t::baro_altitude);
+	write_uint16_t(buf, جابه_جایی, altitude);
+	write_uint16_t(buf, جابه_جایی, (uint16_t)vertical_سرعت);
+	write_قاب_بررسی_چرخهای(buf, جابه_جایی, حجم(buf));
+	أرجع اكتب(uart_fd, buf, جابه_جایی) == جابه_جایی;
 }
 
-bool crsf_send_telemetry_attitude(int uart_fd, int16_t pitch, int16_t roll, int16_t yaw)
+منطقي crsf_send_telemetry_attitude(صحيح uart_fd, int16_t pitch, int16_t roll, int16_t yaw)
 {
-	uint8_t buf[(uint8_t)crsf_payload_size_t::attitude + 4];
-	int offset = 0;
-	write_frame_header(buf, offset, crsf_frame_type_t::attitude, (uint8_t)crsf_payload_size_t::attitude);
-	write_uint16_t(buf, offset, pitch);
-	write_uint16_t(buf, offset, roll);
-	write_uint16_t(buf, offset, yaw);
-	write_frame_crc(buf, offset, sizeof(buf));
-	return write(uart_fd, buf, offset) == offset;
+	uint8_t buf[(uint8_t)crsf_payload_اندازه_t::attitude + 4];
+	صحيح جابه_جایی = 0;
+	write_قاب_سرآیند(buf, جابه_جایی, crsf_قاب_type_t::attitude, (uint8_t)crsf_payload_اندازه_t::attitude);
+	write_uint16_t(buf, جابه_جایی, pitch);
+	write_uint16_t(buf, جابه_جایی, roll);
+	write_uint16_t(buf, جابه_جایی, yaw);
+	write_قاب_بررسی_چرخهای(buf, جابه_جایی, حجم(buf));
+	أرجع اكتب(uart_fd, buf, جابه_جایی) == جابه_جایی;
 }
 
-bool crsf_send_telemetry_flight_mode(int uart_fd, const char *flight_mode)
+منطقي crsf_send_telemetry_flight_نما(صحيح uart_fd, ثابت حرف *flight_نما)
 {
-	const int max_length = 16;
-	int length = strlen(flight_mode) + 1;
+	ثابت صحيح max_درازی = 16;
+	صحيح درازی = طول_رشته(flight_نما) + 1;
 
-	if (length > max_length) {
-		length = max_length;
+	إذا (درازی > max_درازی) {
+		درازی = max_درازی;
 	}
 
-	uint8_t buf[max_length + 4];
-	int offset = 0;
-	write_frame_header(buf, offset, crsf_frame_type_t::flight_mode, length);
-	memcpy(buf + offset, flight_mode, length);
-	offset += length;
-	buf[offset - 1] = 0; // ensure null-terminated string
-	write_frame_crc(buf, offset, length + 4);
-	return write(uart_fd, buf, offset) == offset;
+	uint8_t buf[max_درازی + 4];
+	صحيح جابه_جایی = 0;
+	write_قاب_سرآیند(buf, جابه_جایی, crsf_قاب_type_t::flight_نما, درازی);
+	کپی_حافظه(buf + جابه_جایی, flight_نما, درازی);
+	جابه_جایی += درازی;
+	buf[جابه_جایی - 1] = 0; // ensure null-terminated string
+	write_قاب_بررسی_چرخهای(buf, جابه_جایی, درازی + 4);
+	أرجع اكتب(uart_fd, buf, جابه_جایی) == جابه_جایی;
 }

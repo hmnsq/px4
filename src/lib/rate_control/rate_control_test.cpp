@@ -31,14 +31,14 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <lib/rate_control/rate_control.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <lib/rate_control/rate_control.hpp>
 
-using namespace matrix;
+استفاده نطاق ماتریس;
 
-TEST(RateControlTest, AllZeroCase)
+TEST(نرخ_Control_Test, AllZeroCase)
 {
-	RateControl rate_control;
-	Vector3f torque = rate_control.update(Vector3f(), Vector3f(), Vector3f(), 0.f, false);
+	نرخ_Control نرخ_control;
+	Vector3f torque = نرخ_control.update(Vector3f(), Vector3f(), Vector3f(), 0.f, خطأ);
 	EXPECT_EQ(torque, Vector3f());
 }

@@ -39,47 +39,47 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#رهنمود once
 
-#include "Vector.hpp"
+#ضمن "Vector.hpp"
 
-namespace matrix
+نطاق ماتریس
 {
 
-template<typename Type>
-class Vector4 : public Vector<Type, 4>
+قالب<نام_نوع Type>
+صنف Vector4 : عام وکتور<Type, 4>
 {
-public:
-	using Matrix41 = Matrix<Type, 4, 1>;
+عام:
+	استفاده Matrix41 = ماتریس_2<Type, 4, 1>;
 
-	Vector4() = default;
+	Vector4() = افتراضي;
 
-	Vector4(const Matrix41 &other) :
-		Vector<Type, 4>(other)
+	Vector4(ثابت Matrix41 &other) :
+		وکتور<Type, 4>(other)
 	{
 	}
 
-	explicit Vector4(const Type data_[3]) :
-		Vector<Type, 4>(data_)
+	صریح Vector4(ثابت Type داده_2[3]) :
+		وکتور<Type, 4>(داده_2)
 	{
 	}
 
 	Vector4(Type x1, Type x2, Type x3, Type x4)
 	{
-		Vector4 &v(*this);
+		Vector4 &v(*هذا);
 		v(0) = x1;
 		v(1) = x2;
 		v(2) = x3;
 		v(3) = x4;
 	}
 
-	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 4, 1, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	قالب<size_t P, size_t Q>
+	Vector4(ثابت برش_2<Type, 4, 1, P, Q> &برش_درون) : وکتور<Type, 4>(برش_درون)
 	{
 	}
 
-	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 1, 4, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	قالب<size_t P, size_t Q>
+	Vector4(ثابت برش_2<Type, 1, 4, P, Q> &برش_درون) : وکتور<Type, 4>(برش_درون)
 	{
 	}
 
@@ -87,43 +87,43 @@ public:
 	 * Override matrix ops so Vector4 type is returned
 	 */
 
-	Vector4 operator+(Vector4 other) const
+	Vector4 عملگر+(Vector4 other) ثابت
 	{
-		return Matrix41::operator+(other);
+		أرجع Matrix41::عملگر+(other);
 	}
 
-	Vector4 operator+(Type scalar) const
+	Vector4 عملگر+(Type scalar) ثابت
 	{
-		return Matrix41::operator+(scalar);
+		أرجع Matrix41::عملگر+(scalar);
 	}
 
-	Vector4 operator-(Vector4 other) const
+	Vector4 عملگر-(Vector4 other) ثابت
 	{
-		return Matrix41::operator-(other);
+		أرجع Matrix41::عملگر-(other);
 	}
 
-	Vector4 operator-(Type scalar) const
+	Vector4 عملگر-(Type scalar) ثابت
 	{
-		return Matrix41::operator-(scalar);
+		أرجع Matrix41::عملگر-(scalar);
 	}
 
-	Vector4 operator-() const
+	Vector4 عملگر-() ثابت
 	{
-		return Matrix41::operator-();
+		أرجع Matrix41::عملگر-();
 	}
 
-	Vector4 operator*(Type scalar) const
+	Vector4 عملگر*(Type scalar) ثابت
 	{
-		return Matrix41::operator*(scalar);
+		أرجع Matrix41::عملگر*(scalar);
 	}
 
-	Type operator*(Vector4 b) const
+	Type عملگر*(Vector4 b) ثابت
 	{
-		return Vector<Type, 4>::operator*(b);
+		أرجع وکتور<Type, 4>::عملگر*(b);
 	}
 
 };
 
-using Vector4f = Vector4<float>;
+استفاده Vector4f = Vector4<عائم>;
 
 } // namespace matrix

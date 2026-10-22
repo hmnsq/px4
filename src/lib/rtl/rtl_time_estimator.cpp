@@ -38,50 +38,50 @@
  *
  */
 
-#include "rtl_time_estimator.h"
+#ضمن "rtl_time_estimator.h"
 
-#include <float.h>
-#include <math.h>
+#ضمن <float.h>
+#ضمن <math.h>
 
-#include <px4_platform_common/defines.h>
-#include <drivers/drv_hrt.h>
-#include <uORB/topics/vehicle_status.h>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <drivers/drv_hrt.h>
+#ضمن <uORB/topics/vehicle_status.h>
 
-RtlTimeEstimator::RtlTimeEstimator() : ModuleParams(nullptr)
+Rtl_زمان_Estimator::Rtl_زمان_Estimator() : ModuleParams(اشاره_تهی)
 {
-	_param_mpc_z_v_auto_up = param_find("MPC_Z_V_AUTO_UP");
-	_param_mpc_z_v_auto_dn = param_find("MPC_Z_V_AUTO_DN");
-	_param_fw_climb_rate = param_find("FW_T_CLMB_R_SP");
-	_param_fw_sink_rate = param_find("FW_T_SINK_R_SP");
-	_param_fw_airspeed_trim = param_find("FW_AIRSPD_TRIM");
-	_param_fw_gnd_spd_min = param_find("FW_GND_SPD_MIN");
-	_param_mpc_xy_cruise = param_find("MPC_XY_CRUISE");
-	_param_rover_cruise_speed = param_find("RO_SPEED_LIM");
+	param_mpc_z_v_auto_به_بالا = param_پیدا_کن("MPC_Z_V_AUTO_UP");
+	_param_mpc_z_v_auto_dn = param_پیدا_کن("MPC_Z_V_AUTO_DN");
+	param_fw_climb_نرخ = param_پیدا_کن("FW_T_CLMB_R_SP");
+	param_fw_sink_نرخ = param_پیدا_کن("FW_T_SINK_R_SP");
+	_param_fw_airspeed_trim = param_پیدا_کن("FW_AIRSPD_TRIM");
+	_param_fw_gnd_spd_min = param_پیدا_کن("FW_GND_SPD_MIN");
+	_param_mpc_xy_cruise = param_پیدا_کن("MPC_XY_CRUISE");
+	param_rover_cruise_سرعت = param_پیدا_کن("RO_SPEED_LIM");
 };
 
-rtl_time_estimate_s RtlTimeEstimator::getEstimate() const
+rtl_زمان_estimate_s Rtl_زمان_Estimator::getEstimate() ثابت
 {
-	rtl_time_estimate_s time_estimate{};
+	rtl_زمان_estimate_s زمان_estimate{};
 
-	if (_is_valid && PX4_ISFINITE(_time_estimate)) {
-		time_estimate.valid = true;
-		time_estimate.time_estimate = _time_estimate;
+	إذا (_is_valid && PX4_ISFINITE(زمان_estimate_2)) {
+		زمان_estimate.valid = درست;
+		زمان_estimate.زمان_estimate = زمان_estimate_2;
 		// Use actual time estimate to compute the safer time estimate with additional scale factor and a margin
-		time_estimate.safe_time_estimate = _param_rtl_time_factor.get() * _time_estimate + _param_rtl_time_margin.get();
+		زمان_estimate.امن_زمان_estimate = param_rtl_زمان_ضریب.get() * زمان_estimate_2 + param_rtl_زمان_margin.get();
 
-	} else {
-		time_estimate.valid = false;
+	} وإلا {
+		زمان_estimate.valid = خطأ;
 	}
 
-	time_estimate.timestamp = hrt_absolute_time();
-	return time_estimate;
+	زمان_estimate.timestamp = hrt_absolute_زمان();
+	أرجع زمان_estimate;
 }
 
-void RtlTimeEstimator::update()
+فراغ Rtl_زمان_Estimator::update()
 {
 	_wind_sub.update();
 
-	if (_parameter_update_sub.updated()) {
+	إذا (_parameter_update_sub.updated()) {
 		parameter_update_s param_update;
 		_parameter_update_sub.copy(&param_update);
 
@@ -91,56 +91,56 @@ void RtlTimeEstimator::update()
 	}
 }
 
-void RtlTimeEstimator::addVertDistance(float alt)
+فراغ Rtl_زمان_Estimator::جمع_کن_Vert_فاصله(عائم alt)
 {
-	if (PX4_ISFINITE(alt)) {
-		_is_valid = true;
+	إذا (PX4_ISFINITE(alt)) {
+		_is_valid = درست;
 
-		_time_estimate += calcVertTimeEstimate(alt);
+		زمان_estimate_2 += calc_Vert_زمان_Estimate(alt);
 	}
 }
 
-void RtlTimeEstimator::addDistance(float hor_dist, const matrix::Vector2f &direction, float vert_dist)
+فراغ Rtl_زمان_Estimator::جمع_کن_فاصله(عائم hor_dist, ثابت ماتریس::Vector2f &direction, عائم vert_dist)
 {
-	if (PX4_ISFINITE(hor_dist) && PX4_ISFINITE(vert_dist)) {
-		_is_valid = true;
+	إذا (PX4_ISFINITE(hor_dist) && PX4_ISFINITE(vert_dist)) {
+		_is_valid = درست;
 
-		float hor_time_estimate{0.f};
+		عائم hor_زمان_estimate{0.f};
 
-		if (hor_dist > FLT_EPSILON && PX4_ISFINITE(hor_dist)) {
-			hor_time_estimate = hor_dist / getCruiseGroundSpeed(direction.normalized());
+		إذا (hor_dist > FLT_EPSILON && PX4_ISFINITE(hor_dist)) {
+			hor_زمان_estimate = hor_dist / get_Cruise_Ground_سرعت(direction.normalized());
 		}
 
-		float ver_time_estimate{calcVertTimeEstimate(vert_dist)};
+		عائم ver_زمان_estimate{calc_Vert_زمان_Estimate(vert_dist)};
 
-		_time_estimate += math::max(hor_time_estimate, ver_time_estimate);
+		زمان_estimate_2 += math::max(hor_زمان_estimate, ver_زمان_estimate);
 
 	}
 }
 
-void RtlTimeEstimator::addWait(float time_s)
+فراغ Rtl_زمان_Estimator::جمع_کن_Wait(عائم زمان_s)
 {
-	if (PX4_ISFINITE(time_s)) {
-		_is_valid = true;
+	إذا (PX4_ISFINITE(زمان_s)) {
+		_is_valid = درست;
 
-		if (time_s > FLT_EPSILON) {
-			_time_estimate += time_s;
+		إذا (زمان_s > FLT_EPSILON) {
+			زمان_estimate_2 += زمان_s;
 		}
 	}
 }
 
-float RtlTimeEstimator::getCruiseGroundSpeed(const matrix::Vector2f &direction_norm)
+عائم Rtl_زمان_Estimator::get_Cruise_Ground_سرعت(ثابت ماتریس::Vector2f &direction_norm)
 {
-	float cruise_speed = getCruiseSpeed();
+	عائم cruise_سرعت_2 = get_Cruise_سرعت();
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		matrix::Vector2f wind = get_wind();
+	إذا (_vehicle_type == vehicle_وضعیت_s::VEHICLE_TYPE_FIXED_WING) {
+		ماتریس::Vector2f wind = get_wind();
 
-		const float wind_along_dir = wind.dot(direction_norm);
-		const float wind_across_dir = matrix::Vector2f(wind - direction_norm * wind_along_dir).norm();
+		ثابت عائم wind_along_dir = wind.dot(direction_norm);
+		ثابت عائم wind_across_dir = ماتریس::Vector2f(wind - direction_norm * wind_along_dir).norm();
 
 		// Note: use fminf so that we don't _rely_ on tailwind towards direction to make Return more efficient
-		const float ground_speed = sqrtf(cruise_speed * cruise_speed - wind_across_dir * wind_across_dir) + fminf(
+		ثابت عائم ground_سرعت = sqrtf(cruise_سرعت_2 * cruise_سرعت_2 - wind_across_dir * wind_across_dir) + fminf(
 						   0.f, wind_along_dir);
 
 		// Assume that minimum ground speed is always satisfied. If
@@ -148,108 +148,108 @@ float RtlTimeEstimator::getCruiseGroundSpeed(const matrix::Vector2f &direction_n
 		// the assumption always holds. Otherwise it breaks down when
 		// flying upwind, and the return time estimate is optimistic.
 
-		float fw_gnd_spd_min = 5.0f;
+		عائم fw_gnd_spd_min = 5.0f;
 
-		if (_param_fw_gnd_spd_min != PARAM_INVALID) {
+		إذا (_param_fw_gnd_spd_min != PARAM_INVALID) {
 			param_get(_param_fw_gnd_spd_min, &fw_gnd_spd_min);
 		}
 
-		cruise_speed = fmaxf(ground_speed, fw_gnd_spd_min);
+		cruise_سرعت_2 = fmaxf(ground_سرعت, fw_gnd_spd_min);
 	}
 
-	return cruise_speed;
+	أرجع cruise_سرعت_2;
 }
 
-float RtlTimeEstimator::calcVertTimeEstimate(float alt)
+عائم Rtl_زمان_Estimator::calc_Vert_زمان_Estimate(عائم alt)
 {
-	float vertical_rate{0.1f};
-	float time_estimate{0.f};
+	عائم vertical_نرخ{0.1f};
+	عائم زمان_estimate{0.f};
 
-	if (alt > FLT_EPSILON) {
-		vertical_rate = getClimbRate();
+	إذا (alt > FLT_EPSILON) {
+		vertical_نرخ = get_Climb_نرخ();
 
-	} else {
-		vertical_rate = getDescendRate();
+	} وإلا {
+		vertical_نرخ = get_Descend_نرخ();
 	}
 
-	float abs_alt = fabsf(alt);
+	عائم abs_alt = fabsf(alt);
 
-	if (abs_alt > FLT_EPSILON) {
-		time_estimate = abs_alt / vertical_rate;
+	إذا (abs_alt > FLT_EPSILON) {
+		زمان_estimate = abs_alt / vertical_نرخ;
 	}
 
-	return time_estimate;
+	أرجع زمان_estimate;
 }
 
-float RtlTimeEstimator::getCruiseSpeed()
+عائم Rtl_زمان_Estimator::get_Cruise_سرعت()
 {
-	float ret = 1e6f;
+	عائم ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_xy_cruise == PARAM_INVALID || param_get(_param_mpc_xy_cruise, &ret) != PX4_OK) {
+	إذا (_vehicle_type == vehicle_وضعیت_s::VEHICLE_TYPE_ROTARY_WING) {
+		إذا (_param_mpc_xy_cruise == PARAM_INVALID || param_get(_param_mpc_xy_cruise, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		if (_param_fw_airspeed_trim == PARAM_INVALID || param_get(_param_fw_airspeed_trim, &ret) != PX4_OK) {
+	} وإلا إذا (_vehicle_type == vehicle_وضعیت_s::VEHICLE_TYPE_FIXED_WING) {
+		إذا (_param_fw_airspeed_trim == PARAM_INVALID || param_get(_param_fw_airspeed_trim, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROVER) {
-		if (_param_rover_cruise_speed == PARAM_INVALID || param_get(_param_rover_cruise_speed, &ret) != PX4_OK) {
+	} وإلا إذا (_vehicle_type == vehicle_وضعیت_s::VEHICLE_TYPE_ROVER) {
+		إذا (param_rover_cruise_سرعت == PARAM_INVALID || param_get(param_rover_cruise_سرعت, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	أرجع ret;
 }
 
-matrix::Vector2f RtlTimeEstimator::get_wind()
+ماتریس::Vector2f Rtl_زمان_Estimator::get_wind()
 {
 	_wind_sub.update();
-	matrix::Vector2f wind{};
+	ماتریس::Vector2f wind{};
 
-	if (hrt_absolute_time() - _wind_sub.get().timestamp < 1_s) {
+	إذا (hrt_absolute_زمان() - _wind_sub.get().timestamp < 1_s) {
 		wind(0) = _wind_sub.get().windspeed_north;
 		wind(1) = _wind_sub.get().windspeed_east;
 	}
 
-	return wind;
+	أرجع wind;
 }
 
-float RtlTimeEstimator::getClimbRate()
+عائم Rtl_زمان_Estimator::get_Climb_نرخ()
 {
-	float ret = 1e6f;
+	عائم ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_z_v_auto_up == PARAM_INVALID || param_get(_param_mpc_z_v_auto_up, &ret) != PX4_OK) {
+	إذا (_vehicle_type == vehicle_وضعیت_s::VEHICLE_TYPE_ROTARY_WING) {
+		إذا (param_mpc_z_v_auto_به_بالا == PARAM_INVALID || param_get(param_mpc_z_v_auto_به_بالا, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+	} وإلا إذا (_vehicle_type == vehicle_وضعیت_s::VEHICLE_TYPE_FIXED_WING) {
 
-		if (_param_fw_climb_rate == PARAM_INVALID || param_get(_param_fw_climb_rate, &ret) != PX4_OK) {
+		إذا (param_fw_climb_نرخ == PARAM_INVALID || param_get(param_fw_climb_نرخ, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	أرجع ret;
 }
 
-float RtlTimeEstimator::getDescendRate()
+عائم Rtl_زمان_Estimator::get_Descend_نرخ()
 {
-	float ret = 1e6f;
+	عائم ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_z_v_auto_dn == PARAM_INVALID || param_get(_param_mpc_z_v_auto_dn, &ret) != PX4_OK) {
+	إذا (_vehicle_type == vehicle_وضعیت_s::VEHICLE_TYPE_ROTARY_WING) {
+		إذا (_param_mpc_z_v_auto_dn == PARAM_INVALID || param_get(_param_mpc_z_v_auto_dn, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		if (_param_fw_sink_rate == PARAM_INVALID || param_get(_param_fw_sink_rate, &ret) != PX4_OK) {
+	} وإلا إذا (_vehicle_type == vehicle_وضعیت_s::VEHICLE_TYPE_FIXED_WING) {
+		إذا (param_fw_sink_نرخ == PARAM_INVALID || param_get(param_fw_sink_نرخ, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	أرجع ret;
 }

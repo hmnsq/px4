@@ -37,50 +37,50 @@
  * Controller library code
  */
 
-#pragma once
+#رهنمود once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
 /**
  * A 2nd order low pass filter block which uses the default px4 2nd order low pass filter
  */
-class __EXPORT BlockLowPass2 : public Block
+صنف __EXPORT بلوک_کم_Pass2 : عام بلوک
 {
-public:
+عام:
 // methods
-	BlockLowPass2(SuperBlock *parent, const char *name, float sample_freq) :
-		Block(parent, name),
+	بلوک_کم_Pass2(Super_بلوک *والد, ثابت حرف *name, عائم sample_freq) :
+		بلوک(والد, name),
 		_state(0.0 / 0.0 /* initialize to invalid val, force into is_finite() check on first call */),
-		_fCut(this, ""), // only one parameter, no need to name
+		_fCut(هذا, ""), // only one parameter, no need to name
 		_fs(sample_freq),
 		_lp(_fs, _fCut.get())
 	{}
-	virtual ~BlockLowPass2() = default;
-	float update(float input);
+	مجازی ~بلوک_کم_Pass2() = افتراضي;
+	عائم update(عائم درون_داد);
 // accessors
-	float getState() { return _state; }
-	float getFCutParam() { return _fCut.get(); }
-	void setState(float state) { _state = _lp.reset(state); }
-protected:
-// attributes
-	float _state;
-	control::BlockParamFloat _fCut;
-	float _fs;
-	math::LowPassFilter2p<float> _lp;
+	عائم getState() { أرجع _state; }
+	عائم getFCutParam() { أرجع _fCut.get(); }
+	فراغ مجموعه_State(عائم state) { _state = _lp.reset(state); }
+محمي:
+//صفات
+	عائم _state;
+	control::بلوک_Param_Float _fCut;
+	عائم _fs;
+	math::کم_Pass_Filter2p<عائم> _lp;
 };
 
 } // namespace control

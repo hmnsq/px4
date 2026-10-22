@@ -39,43 +39,43 @@
  * @author Julien Lecoeur <julien.lecoeur@gmail.com>
  */
 
-#pragma once
+#رهنمود once
 
-#include <cstdint>
+#ضمن <cstdint>
 
-#include <matrix/matrix/math.hpp>
-#include <uORB/topics/control_allocator_status.h>
+#ضمن <matrix/matrix/math.hpp>
+#ضمن <uORB/topics/control_allocator_status.h>
 
-enum class AllocationMethod {
+تعداد صنف تخصیص_روش {
 	NONE = -1,
 	PSEUDO_INVERSE = 0,
 	SEQUENTIAL_DESATURATION = 1,
 	AUTO = 2,
 };
 
-enum class ActuatorType {
+تعداد صنف ActuatorType {
 	MOTORS = 0,
 	SERVOS,
 
-	COUNT
+	شمار_2
 };
 
-enum class EffectivenessUpdateReason {
+تعداد صنف EffectivenessUpdateReason {
 	NO_EXTERNAL_UPDATE = 0,
 	CONFIGURATION_UPDATE = 1, ///< config changes (parameter)
 	MOTOR_ACTIVATION_UPDATE = 2, ///< motor failure detected or certain redundant motors are switched off to save energy
 };
 
-class ActuatorEffectiveness
+صنف ActuatorEffectiveness
 {
-public:
-	ActuatorEffectiveness() = default;
-	virtual ~ActuatorEffectiveness() = default;
+عام:
+	ActuatorEffectiveness() = افتراضي;
+	مجازی ~ActuatorEffectiveness() = افتراضي;
 
-	static constexpr int NUM_ACTUATORS = 16;
-	static constexpr int NUM_AXES = 6;
+	ساكن constexpr صحيح رقم_ACTUATORS = 16;
+	ساكن constexpr صحيح رقم_AXES = 6;
 
-	enum ControlAxis {
+	تعداد ControlAxis {
 		ROLL = 0,
 		PITCH,
 		YAW,
@@ -84,47 +84,47 @@ public:
 		THRUST_Z
 	};
 
-	static constexpr int MAX_NUM_MATRICES = 2;
+	ساكن constexpr صحيح MAX_رقم_MATRICES = 2;
 
-	using EffectivenessMatrix = matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS>;
-	using ActuatorVector = matrix::Vector<float, NUM_ACTUATORS>;
-	using ActuatorBitmask = uint32_t;
+	استفاده Effectiveness_ماتریس = ماتریس::ماتریس_2<عائم, رقم_AXES, رقم_ACTUATORS>;
+	استفاده Actuator_وکتور = ماتریس::وکتور<عائم, رقم_ACTUATORS>;
+	استفاده ActuatorBitmask = uint32_t;
 
-	static_assert(NUM_ACTUATORS <= 8 * sizeof(ActuatorBitmask),
+	static_assert(رقم_ACTUATORS <= 8 * حجم(ActuatorBitmask),
 		      "NUM_ACTUATORS exceeds the number of bits available in the mask type.");
 
-	enum class FlightPhase {
+	تعداد صنف FlightPhase {
 		HOVER_FLIGHT = 0,
 		FORWARD_FLIGHT = 1,
-		TRANSITION_HF_TO_FF = 2,
-		TRANSITION_FF_TO_HF = 3
+		TRANSITION_HF_مقصد_FF = 2,
+		TRANSITION_FF_مقصد_HF = 3
 	};
 
-	struct Configuration {
+	بنية Configuration {
 		/**
 		 * Add an actuator to the selected matrix, returning the index, or -1 on error
 		 */
-		int addActuator(ActuatorType type, const matrix::Vector3f &torque, const matrix::Vector3f &thrust);
+		صحيح جمع_کن_Actuator(ActuatorType type, ثابت ماتریس::Vector3f &torque, ثابت ماتریس::Vector3f &thrust);
 
 		/**
 		 * Call this after manually adding N actuators to the selected matrix
 		 */
-		void actuatorsAdded(ActuatorType type, int count);
+		فراغ actuatorsAdded(ActuatorType type, صحيح شمار);
 
-		int totalNumActuators() const;
+		صحيح مجموع_رقم_Actuators() ثابت;
 
 		/// Configured effectiveness matrix. Actuators are expected to be filled in order, motors first, then servos
-		EffectivenessMatrix effectiveness_matrices[MAX_NUM_MATRICES];
+		Effectiveness_ماتریس effectiveness_matrices[MAX_رقم_MATRICES];
 
-		int num_actuators_matrix[MAX_NUM_MATRICES]; ///< current amount, and next actuator index to fill in to effectiveness_matrices
-		ActuatorVector trim[MAX_NUM_MATRICES];
+		صحيح رقم_actuators_ماتریس[MAX_رقم_MATRICES]; ///< current amount, and next actuator index to fill in to effectiveness_matrices
+		Actuator_وکتور trim[MAX_رقم_MATRICES];
 
-		ActuatorVector linearization_point[MAX_NUM_MATRICES];
+		Actuator_وکتور linearization_نقطه[MAX_رقم_MATRICES];
 
-		int selected_matrix;
+		صحيح selected_ماتریس;
 
-		uint8_t matrix_selection_indexes[NUM_ACTUATORS * MAX_NUM_MATRICES];
-		int num_actuators[(int)ActuatorType::COUNT];
+		uint8_t ماتریس_selection_indexes[رقم_ACTUATORS * MAX_رقم_MATRICES];
+		صحيح رقم_actuators[(صحيح)ActuatorType::شمار_2];
 	};
 
 	/**
@@ -132,7 +132,7 @@ public:
 	 *
 	 * @param Flight phase
 	 */
-	virtual void setFlightPhase(const FlightPhase &flight_phase)
+	مجازی فراغ مجموعه_Flight_Phase(ثابت FlightPhase &flight_phase)
 	{
 		_flight_phase = flight_phase;
 	}
@@ -141,25 +141,25 @@ public:
 	 * Get the number of effectiveness matrices. Must be <= MAX_NUM_MATRICES.
 	 * This is expected to stay constant.
 	 */
-	virtual int numMatrices() const { return 1; }
+	مجازی صحيح رقم_Matrices() ثابت { أرجع 1; }
 
 	/**
 	 * Get the desired allocation method(s) for each matrix, if configured as AUTO
 	 */
-	virtual void getDesiredAllocationMethod(AllocationMethod allocation_method_out[MAX_NUM_MATRICES]) const
+	مجازی فراغ get_Desired_تخصیص_روش(تخصیص_روش تخصیص_روش_بیرون[MAX_رقم_MATRICES]) ثابت
 	{
-		for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
-			allocation_method_out[i] = AllocationMethod::PSEUDO_INVERSE;
+		لكل (صحيح i = 0; i < MAX_رقم_MATRICES; ++i) {
+			تخصیص_روش_بیرون[i] = تخصیص_روش::PSEUDO_INVERSE;
 		}
 	}
 
 	/**
 	 * Query if the roll, pitch and yaw columns of the mixing matrix should be normalized
 	 */
-	virtual void getNormalizeRPY(bool normalize[MAX_NUM_MATRICES]) const
+	مجازی فراغ getNormalizeRPY(منطقي normalize[MAX_رقم_MATRICES]) ثابت
 	{
-		for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
-			normalize[i] = false;
+		لكل (صحيح i = 0; i < MAX_رقم_MATRICES; ++i) {
+			normalize[i] = خطأ;
 		}
 	}
 
@@ -168,22 +168,22 @@ public:
 	 *
 	 * @return true if updated and matrix is set
 	 */
-	virtual bool getEffectivenessMatrix(Configuration &configuration, EffectivenessUpdateReason external_update) { return false;}
+	مجازی منطقي get_Effectiveness_ماتریس(Configuration &configuration, EffectivenessUpdateReason external_update) { أرجع خطأ;}
 
 	/**
 	 * Get the current flight phase
 	 *
 	 * @return Flight phase
 	 */
-	const FlightPhase &getFlightPhase() const
+	ثابت FlightPhase &getFlightPhase() ثابت
 	{
-		return _flight_phase;
+		أرجع _flight_phase;
 	}
 
 	/**
 	 * Display name
 	 */
-	virtual const char *name() const = 0;
+	مجازی ثابت حرف *name() ثابت = 0;
 
 	/**
 	 * Callback from the control allocation, allowing to manipulate the setpoint.
@@ -191,7 +191,7 @@ public:
 	 *
 	 * @param actuator_sp input & output setpoint
 	 */
-	virtual void allocateAuxilaryControls(const float dt, int matrix_index, ActuatorVector &actuator_sp) {}
+	مجازی فراغ allocateAuxilaryControls(ثابت عائم dt, صحيح ماتریس_شاخص, Actuator_وکتور &actuator_sp) {}
 
 	/**
 	 * Callback from the control allocation, allowing to manipulate the setpoint.
@@ -199,19 +199,19 @@ public:
 	 * It is called after the matrix multiplication and before final clipping.
 	 * @param actuator_sp input & output setpoint
 	 */
-	virtual void updateSetpoint(const matrix::Vector<float, NUM_AXES> &control_sp, int matrix_index,
-				    ActuatorVector &actuator_sp, const ActuatorVector &actuator_min, const ActuatorVector &actuator_max) {}
+	مجازی فراغ updateSetpoint(ثابت ماتریس::وکتور<عائم, رقم_AXES> &control_sp, صحيح ماتریس_شاخص,
+				    Actuator_وکتور &actuator_sp, ثابت Actuator_وکتور &actuator_min, ثابت Actuator_وکتور &actuator_max) {}
 
 	/**
 	 * Get a bitmask of motors to be stopped
 	 */
-	ActuatorBitmask getStoppedMotors() const;
+	ActuatorBitmask getStoppedMotors() ثابت;
 
 	/**
 	 * Fill in the unallocated torque and thrust, customized by effectiveness type.
 	 * Can be implemented for every type separately. If not implemented then the effectivenes matrix is used instead.
 	 */
-	virtual void getUnallocatedControl(int matrix_index, control_allocator_status_s &status) {}
+	مجازی فراغ getUnallocatedControl(صحيح ماتریس_شاخص, control_allocator_وضعیت_s &وضعیت) {}
 
 	/**
 	 * Override the collective tilt setpoint that would normally come from
@@ -220,33 +220,33 @@ public:
 	 * @param do_override When true, use @p collective_tilt instead of the uORB value.
 	 * @param collective_tilt Normalised setpoint in [0, 1]. 0: vertical, 1: horizontal.
 	 */
-	virtual void overrideCollectiveTilt(bool /*do_override*/, float /*collective_tilt*/) {}
+	مجازی فراغ overrideCollectiveTilt(منطقي /*do_override*/, عائم /*collective_tilt*/) {}
 
 	/**
 	 * Record which components of the thrust setpoint are NaN, so that motors in that direction are stopped.
 	 *
 	 * @param thrust_sp The thrust setpoint as received by the allocator (instance zero - multicopter only)
 	 */
-	void stopMotorsBasedOnThrustSetpoint(const matrix::Vector3f &thrust_sp)
+	فراغ stopMotorsBasedOnThrustSetpoint(ثابت ماتریس::Vector3f &thrust_sp)
 	{
 		_longitudinal_motors_stopped_by_thrust = !PX4_ISFINITE(thrust_sp(0));
 		_lateral_motors_stopped_by_thrust = !PX4_ISFINITE(thrust_sp(1));
 		_vertical_motors_stopped_by_thrust = !PX4_ISFINITE(thrust_sp(2));
 	}
 
-protected:
+محمي:
 
-	struct MotorDirectionBitmasks {
+	بنية MotorDirectionBitmasks {
 		ActuatorBitmask longitudinal{};
 		ActuatorBitmask lateral{};
 		ActuatorBitmask vertical{};
 	} _motor_direction_bitmasks;
 
 	FlightPhase _flight_phase{FlightPhase::HOVER_FLIGHT};
-	ActuatorBitmask _stopped_motors_mask_due_to_flight_phase{};
+	ActuatorBitmask stopped_motors_ماسک_due_مقصد_flight_phase{};
 
-	bool _longitudinal_motors_stopped_by_thrust{false};
-	bool _vertical_motors_stopped_by_thrust{false};
-	bool _lateral_motors_stopped_by_thrust{false};
+	منطقي _longitudinal_motors_stopped_by_thrust{خطأ};
+	منطقي _vertical_motors_stopped_by_thrust{خطأ};
+	منطقي _lateral_motors_stopped_by_thrust{خطأ};
 
 };

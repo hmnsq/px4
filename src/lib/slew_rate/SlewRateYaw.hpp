@@ -39,16 +39,16 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#رهنمود once
 
-#include "SlewRate.hpp"
+#ضمن "SlewRate.hpp"
 
-template<typename Type>
-class SlewRateYaw : public SlewRate<Type>
+قالب<نام_نوع Type>
+صنف Slew_نرخ_Yaw : عام Slew_نرخ<Type>
 {
-public:
-	SlewRateYaw() = default;
-	~SlewRateYaw() = default;
+عام:
+	Slew_نرخ_Yaw() = افتراضي;
+	~Slew_نرخ_Yaw() = افتراضي;
 
 	/**
 	 * Update slewrate with yaw wrapping [-pi,pi]
@@ -56,9 +56,9 @@ public:
 	 * @param deltatime time in seconds since last update
 	 * @return actual value that complies with the slew rate
 	 */
-	Type update(const Type new_value, const float deltatime)
+	Type update(ثابت Type new_مقدار, ثابت عائم deltatime)
 	{
-		const Type d_wrapped = matrix::wrap_pi(new_value - this->_value);
-		return matrix::wrap_pi(SlewRate<Type>::update(this->_value + d_wrapped, deltatime));
+		ثابت Type d_wrapped = ماتریس::wrap_pi(new_مقدار - هذا->مقدار_2);
+		أرجع ماتریس::wrap_pi(Slew_نرخ<Type>::update(هذا->مقدار_2 + d_wrapped, deltatime));
 	}
 };

@@ -2,71 +2,71 @@
 # Injects params from XML file into a param_group
 #
 
-from __future__ import print_function
-from px4params import srcscanner, srcparser, xmlout, markdownout
-from .srcparser import ParameterGroup, Parameter
+من __future__ استورد print_function
+من px4params استورد srcscanner, srcparser, xmlout, markdownout
+من .srcparser استورد Parameter_گروه, Parameter
 
-import xml.etree.ElementTree as ET
-import sys
+استورد xml.etree.Element_درخت كـ ET
+استورد sys
 
 
-class XMLInject():
-    def __init__(self, injected_xml_filename):
+صنف XMLInject():
+    تعریف __init__(self, injected_xml_filename):
         self.groups=[]
 
-        valid_parameter_attributes = set(["category", "default", "name", "type", "volatile", "boolean"])
-        valid_field_tags = set(["board","short_desc", "long_desc", "min", "max", "unit", "decimal", "increment", "reboot_required"])
-        valid_other_top_level_tags = set(["group","values"])
+        valid_parameter_صفات = مجموعه(["category", "default", "name", "type", "volatile", "boolean"])
+        valid_فیلد_برچسبها = مجموعه(["board","short_desc", "long_desc", "min", "max", "unit", "decimal", "increment", "reboot_required"])
+        valid_other_بالاترین_level_برچسبها = مجموعه(["group","values"])
 
         importtree = ET.parse(injected_xml_filename)
         injectgroups = importtree.getroot().findall("group")
-        not_handled_parameter_tags=set()
-        not_handled_parameter_attributes=set()
-        for igroup in injectgroups:
-            group_name=igroup.get('name')
-            imported_group = ParameterGroup(group_name)
-            no_code_generation=igroup.get('no_code_generation')
-            if no_code_generation:
-                imported_group.no_code_generation=no_code_generation
-            for iparam in igroup:
+        not_handled_parameter_برچسبها=مجموعه()
+        not_handled_parameter_صفات=مجموعه()
+        لكل igroup في injectgroups:
+            گروه_name=igroup.get('name')
+            imported_گروه = Parameter_گروه(گروه_name)
+            no_کد_generation=igroup.get('no_code_generation')
+            إذا no_کد_generation:
+                imported_گروه.no_کد_generation=no_کد_generation
+            لكل iparam في igroup:
                 param_name=iparam.get('name')
                 param_type=iparam.get('type')
                 new_param= Parameter(param_name, param_type)
                 #get other param info stored as attributes
-                for param_attrib in iparam.attrib:
-                    if param_attrib not in valid_parameter_attributes:
-                        not_handled_parameter_attributes.add(param_attrib)
-                    elif param_attrib == 'category':
-                        new_param.SetCategory(iparam.get('category'))
-                    elif param_attrib == 'default':
-                        new_param.default = iparam.get('default')
-                    elif param_attrib == 'volatile':
-                        new_param.SetVolatile()
-                    elif param_attrib == "boolean":
-                        new_param.SetBoolean()
+                لكل param_attrib في iparam.attrib:
+                    إذا param_attrib ليس في valid_parameter_صفات:
+                        not_handled_parameter_صفات.جمع_کن(param_attrib)
+                    وإلاإذا param_attrib == 'category':
+                        new_param.مجموعه_Category(iparam.get('category'))
+                    وإلاإذا param_attrib == 'default':
+                        new_param.افتراضي = iparam.get('default')
+                    وإلاإذا param_attrib == 'volatile':
+                        new_param.مجموعه_Volatile()
+                    وإلاإذا param_attrib == "boolean":
+                        new_param.مجموعه_Boolean()
 
                 #get param info stored as child tags
-                for child in iparam:
-                    if child.tag in valid_field_tags:
-                        new_param.SetField(child.tag, child.text)
-                    elif child.tag == 'values':
-                        for value in child:
-                            new_param.SetEnumValue(value.get('code'), value.text)
-                    elif child.tag == 'bitmask':
-                        for bit in child:
-                            new_param.SetBitmaskBit(bit.get('index'), bit.text)
-                    else:
-                        not_handled_parameter_tags.add(child.tag)                      
+                لكل فرزند في iparam:
+                    إذا فرزند.برچسب في valid_فیلد_برچسبها:
+                        new_param.مجموعه_فیلد_2(فرزند.برچسب, فرزند.متن)
+                    وإلاإذا فرزند.برچسب == 'values':
+                        لكل مقدار في فرزند:
+                            new_param.مجموعه_Enum_مقدار(مقدار.get('code'), مقدار.متن)
+                    وإلاإذا فرزند.برچسب == 'bitmask':
+                        لكل بیت في فرزند:
+                            new_param.مجموعه_Bitmask_بیت(بیت.get('index'), بیت.متن)
+                    وإلا:
+                        not_handled_parameter_برچسبها.جمع_کن(فرزند.برچسب)                      
             
-                imported_group.AddParameter(new_param)
-            self.groups.append(imported_group)
+                imported_گروه.جمع_کن_Parameter(new_param)
+            self.groups.append(imported_گروه)
 
                     
-        if not_handled_parameter_tags or not_handled_parameter_attributes:
-            print("WARNING: Injected file parameter has unhandled child tags: %s" % not_handled_parameter_tags)
-            print("WARNING: Injected file parameter has unhandled attributes: %s" % not_handled_parameter_attributes)
+        إذا not_handled_parameter_برچسبها أو not_handled_parameter_صفات:
+            چاپ("WARNING: Injected file parameter has unhandled child tags: %s" % not_handled_parameter_برچسبها)
+            چاپ("WARNING: Injected file parameter has unhandled attributes: %s" % not_handled_parameter_صفات)
 
         
 
-    def injected(self):
-        return self.groups
+    تعریف injected(self):
+        أرجع self.groups

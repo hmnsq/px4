@@ -36,88 +36,88 @@
  *
  */
 
-#pragma once
+#رهنمود once
 
-#include <motion_planning/VelocitySmoothing.hpp>
+#ضمن <motion_planning/VelocitySmoothing.hpp>
 
-#include <matrix/matrix/math.hpp>
+#ضمن <matrix/matrix/math.hpp>
 
-using matrix::Vector2f;
+استفاده ماتریس::Vector2f;
 
-class ManualVelocitySmoothingXY final
+صنف ManualVelocitySmoothingXY final
 {
-public:
-	ManualVelocitySmoothingXY() = default;
-	~ManualVelocitySmoothingXY() = default;
+عام:
+	ManualVelocitySmoothingXY() = افتراضي;
+	~ManualVelocitySmoothingXY() = افتراضي;
 
-	void reset(const Vector2f &accel, const Vector2f &vel, const Vector2f &pos);
-	void update(float dt, const Vector2f &velocity_target);
+	فراغ reset(ثابت Vector2f &accel, ثابت Vector2f &vel, ثابت Vector2f &pos);
+	فراغ update(عائم dt, ثابت Vector2f &velocity_هدف);
 
-	void setVelSpFeedback(const Vector2f &fb) { _velocity_setpoint_feedback = fb; }
+	فراغ مجموعه_Vel_Sp_Feedback(ثابت Vector2f &fb) { _velocity_setpoint_feedback = fb; }
 
-	void setMaxJerk(const float max_jerk)
+	فراغ مجموعه_Max_Jerk(ثابت عائم max_jerk)
 	{
-		_trajectory[0].setMaxJerk(max_jerk);
-		_trajectory[1].setMaxJerk(max_jerk);
+		_trajectory[0].مجموعه_Max_Jerk(max_jerk);
+		_trajectory[1].مجموعه_Max_Jerk(max_jerk);
 	}
-	float getMaxJerk() const { return _trajectory[0].getMaxJerk(); }
+	عائم getMaxJerk() ثابت { أرجع _trajectory[0].getMaxJerk(); }
 
-	void setMaxAccel(const float max_accel)
+	فراغ مجموعه_Max_Accel(ثابت عائم max_accel)
 	{
-		_trajectory[0].setMaxAccel(max_accel);
-		_trajectory[1].setMaxAccel(max_accel);
+		_trajectory[0].مجموعه_Max_Accel(max_accel);
+		_trajectory[1].مجموعه_Max_Accel(max_accel);
 	}
-	float getMaxAccel() const { return _trajectory[0].getMaxAccel(); }
+	عائم getMaxAccel() ثابت { أرجع _trajectory[0].getMaxAccel(); }
 
-	void setMaxVel(const float max_vel)
+	فراغ مجموعه_Max_Vel(ثابت عائم max_vel)
 	{
-		_trajectory[0].setMaxVel(max_vel);
-		_trajectory[1].setMaxVel(max_vel);
+		_trajectory[0].مجموعه_Max_Vel(max_vel);
+		_trajectory[1].مجموعه_Max_Vel(max_vel);
 	}
-	float getMaxVel() const { return _trajectory[0].getMaxVel(); }
+	عائم getMaxVel() ثابت { أرجع _trajectory[0].getMaxVel(); }
 
-	Vector2f getCurrentJerk() const { return _state.j; }
-	Vector2f getCurrentAcceleration() const { return _state.a; }
+	Vector2f getCurrentJerk() ثابت { أرجع _state.j; }
+	Vector2f getCurrentAcceleration() ثابت { أرجع _state.a; }
 
-	void setCurrentVelocity(const Vector2f &vel)
+	فراغ مجموعه_Current_Velocity(ثابت Vector2f &vel)
 	{
 		_state.v = vel;
-		_trajectory[0].setCurrentVelocity(vel(0));
-		_trajectory[1].setCurrentVelocity(vel(1));
+		_trajectory[0].مجموعه_Current_Velocity(vel(0));
+		_trajectory[1].مجموعه_Current_Velocity(vel(1));
 	}
-	Vector2f getCurrentVelocity() const { return _state.v; }
+	Vector2f getCurrentVelocity() ثابت { أرجع _state.v; }
 
-	void setCurrentPosition(const Vector2f &pos)
+	فراغ مجموعه_Current_Position(ثابت Vector2f &pos)
 	{
 		_state.x = pos;
-		_trajectory[0].setCurrentPosition(pos(0));
-		_trajectory[1].setCurrentPosition(pos(1));
+		_trajectory[0].مجموعه_Current_Position(pos(0));
+		_trajectory[1].مجموعه_Current_Position(pos(1));
 		_position_estimate = pos;
 
-		if (_position_lock_active) {
+		إذا (position_قفل_فعال) {
 			_position_setpoint_locked = pos;
 		}
 	}
-	Vector2f getCurrentPosition() const { return _position_setpoint_locked; }
+	Vector2f getCurrentPosition() ثابت { أرجع _position_setpoint_locked; }
 
-	void setCurrentPositionEstimate(const Vector2f &pos) { _position_estimate = pos; }
+	فراغ مجموعه_Current_Position_Estimate(ثابت Vector2f &pos) { _position_estimate = pos; }
 
-private:
-	void resetPositionLock();
-	void updateTrajectories(float dt);
-	void checkPositionLock(const Vector2f &velocity_target);
-	void updateTrajDurations(const Vector2f &velocity_target);
+خاص:
+	فراغ reset_Position_قفل();
+	فراغ updateTrajectories(عائم dt);
+	فراغ check_Position_قفل(ثابت Vector2f &velocity_هدف);
+	فراغ updateTrajDurations(ثابت Vector2f &velocity_هدف);
 
 	VelocitySmoothing _trajectory[2]; ///< Trajectory in x and y directions
 
-	bool _position_lock_active{false};
+	منطقي position_قفل_فعال{خطأ};
 
 	Vector2f _position_setpoint_locked{};
 
 	Vector2f _velocity_setpoint_feedback{};
 	Vector2f _position_estimate{};
 
-	struct {
+	بنية {
 		Vector2f j;
 		Vector2f a;
 		Vector2f v;

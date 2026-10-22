@@ -43,155 +43,155 @@
 #   * Human-readable description in Markdown page format for the PX4 dev guide
 #
 
-from __future__ import print_function
-import sys
-import os
-import argparse
-from px4params import srcscanner, srcparser, injectxmlparams, xmlout, markdownout, jsonout, readonly_config
+من __future__ استورد print_function
+استورد sys
+استورد os
+استورد argparse
+من px4params استورد srcscanner, srcparser, injectxmlparams, xmlout, markdownout, jsonout, readonly_config
 
-import lzma #to create .xz file
-import json
+استورد lzma #to create .xz file
+استورد json
 
-def save_compressed(filename):
+تعریف save_compressed(filename):
     #create lzma compressed version
     xz_filename=filename+'.xz'
-    with lzma.open(xz_filename, 'wt', preset=9) as f:
-        with open(filename, 'r') as content_file:
-            f.write(content_file.read())
+    با lzma.open(xz_filename, 'wt', preset=9) كـ f:
+        با open(filename, 'r') كـ content_file:
+            f.اكتب(content_file.اقرأ())
 
 
 
-def main():
+تعریف اصلی():
     # Parse command line arguments
-    parser = argparse.ArgumentParser(description="Process parameter documentation.")
-    parser.add_argument("-s", "--src-path",
-                        default=["../src"],
+    parser = argparse.آرگومان_Parser(description="Process parameter documentation.")
+    parser.جمع_کن_آرگومان("-s", "--src-path",
+                        افتراضي=["../src"],
                         metavar="PATH",
                         nargs='*',
                         help="one or more paths to source files to scan for parameters")
-    parser.add_argument("-x", "--xml",
+    parser.جمع_کن_آرگومان("-x", "--xml",
                         nargs='?',
-                        const="parameters.xml",
+                        ثابت="parameters.xml",
                         metavar="FILENAME",
                         help="Create XML file"
                              " (default FILENAME: parameters.xml)")
-    parser.add_argument("-b", "--board",
+    parser.جمع_کن_آرگومان("-b", "--board",
                         nargs='?',
-                        const="",
+                        ثابت="",
                         metavar="BOARD",
                         help="Board to create xml parameter xml for")
-    parser.add_argument("-m", "--markdown",
+    parser.جمع_کن_آرگومان("-m", "--markdown",
                         nargs='?',
-                        const="parameters.md",
+                        ثابت="parameters.md",
                         metavar="FILENAME",
                         help="Create Markdown file"
                              " (default FILENAME: parameters.md)")
-    parser.add_argument("-j", "--json",
+    parser.جمع_کن_آرگومان("-j", "--json",
                         nargs='?',
-                        const="parameters.json",
+                        ثابت="parameters.json",
                         metavar="FILENAME",
                         help="Create Json file"
                              " (default FILENAME: parameters.json)")
-    parser.add_argument('-v', '--verbose',
+    parser.جمع_کن_آرگومان('-v', '--verbose',
                         action='store_true',
                         help="verbose output")
-    parser.add_argument('-c', '--compress',
+    parser.جمع_کن_آرگومان('-c', '--compress',
                         action='store_true',
                         help="compress parameter file")
-    parser.add_argument("-o", "--overrides",
-                        default="{}",
+    parser.جمع_کن_آرگومان("-o", "--overrides",
+                        افتراضي="{}",
                         metavar="OVERRIDES",
                         help="a dict of overrides in the form of a json string")
-    parser.add_argument("--readonly-config",
-                        default=None,
+    parser.جمع_کن_آرگومان("--readonly-config",
+                        افتراضي=هیچ,
                         metavar="FILENAME",
                         help="path to readonly_params.yaml")
 
-    args = parser.parse_args()
+    آرگومانها = parser.parse_آرگومانها()
 
     # Check for valid command
-    if not (args.xml or args.markdown or args.json):
-        print("Error: You need to specify at least one output method!\n")
+    إذا ليس (آرگومانها.xml أو آرگومانها.markdown أو آرگومانها.json):
+        چاپ("Error: You need to specify at least one output method!\n")
         parser.print_usage()
         sys.exit(1)
 
     # Initialize source scanner and parser
-    scanner = srcscanner.SourceScanner()
-    parser = srcparser.SourceParser()
+    scanner = srcscanner.منبع_Scanner()
+    parser = srcparser.منبع_Parser()
 
     # Scan directories, and parse the files
-    if (args.verbose):
-        print("Scanning source path " + str(args.src_path))
+    إذا (آرگومانها.verbose):
+        چاپ("Scanning source path " + str(آرگومانها.src_مسیر))
 
-    if not scanner.ScanDir(args.src_path, parser):
+    إذا ليس scanner.پیمایش_Dir(آرگومانها.src_مسیر, parser):
         sys.exit(1)
 
-    if not parser.Validate():
+    إذا ليس parser.Validate():
         sys.exit(1)
     param_groups = parser.GetParamGroups()
 
-    if len(param_groups) == 0:
-        print("Warning: no parameters found")
+    إذا طول(param_groups) == 0:
+        چاپ("Warning: no parameters found")
 
 
     #inject parameters at front of set
-    cur_dir = os.path.dirname(os.path.realpath(__file__))
+    cur_dir = os.مسیر.dirname(os.مسیر.realpath(__file__))
 
-    override_dict = json.loads(args.overrides)
-    if len(override_dict.keys()) > 0:
-        for group in param_groups:
-            for param in group.GetParams():
+    override_dict = json.loads(آرگومانها.overrides)
+    إذا طول(override_dict.کلیدها()) > 0:
+        لكل گروه في param_groups:
+            لكل param في گروه.GetParams():
                 name = param.GetName()
-                if name in override_dict.keys():
+                إذا name في override_dict.کلیدها():
                     val = str(override_dict[param.GetName()])
-                    param.default = val
-                    print("OVERRIDING {:s} to {:s}!!!!!".format(name, val))
+                    param.افتراضي = val
+                    چاپ("OVERRIDING {:s} to {:s}!!!!!".format(name, val))
 
     # Mark readonly parameters
-    if args.readonly_config:
-        all_param_names = set()
-        for group in param_groups:
-            for param in group.GetParams():
-                all_param_names.add(param.GetName())
-        readonly_params = readonly_config.load_readonly_params(args.readonly_config, all_param_names)
-        for group in param_groups:
-            for param in group.GetParams():
-                if param.GetName() in readonly_params:
-                    param.SetReadonly()
+    إذا آرگومانها.readonly_config:
+        all_param_نامها = مجموعه()
+        لكل گروه في param_groups:
+            لكل param في گروه.GetParams():
+                all_param_نامها.جمع_کن(param.GetName())
+        readonly_params = readonly_config.بارگیری_readonly_params(آرگومانها.readonly_config, all_param_نامها)
+        لكل گروه في param_groups:
+            لكل param في گروه.GetParams():
+                إذا param.GetName() في readonly_params:
+                    param.مجموعه_Readonly()
 
     output_files = []
 
     # Output to XML file
-    if args.xml:
-        if args.verbose:
-            print("Creating XML file " + args.xml)
-        out = xmlout.XMLOutput(param_groups, args.board)
-        out.Save(args.xml)
-        output_files.append(args.xml)
+    إذا آرگومانها.xml:
+        إذا آرگومانها.verbose:
+            چاپ("Creating XML file " + آرگومانها.xml)
+        بیرون = xmlout.XMLOutput(param_groups, آرگومانها.board)
+        بیرون.Save(آرگومانها.xml)
+        output_files.append(آرگومانها.xml)
 
     # Output to Markdown/HTML tables
-    if args.markdown:
-        if args.verbose:
-            print("Creating markdown file " + args.markdown)
-        out = markdownout.MarkdownTablesOutput(param_groups)
-        out.Save(args.markdown)
-        output_files.append(args.markdown)
+    إذا آرگومانها.markdown:
+        إذا آرگومانها.verbose:
+            چاپ("Creating markdown file " + آرگومانها.markdown)
+        بیرون = markdownout.MarkdownTablesOutput(param_groups)
+        بیرون.Save(آرگومانها.markdown)
+        output_files.append(آرگومانها.markdown)
 
     # Output to JSON file
-    if args.json:
-        if args.verbose:
-            print("Creating Json file " + args.json)
-        cur_dir = os.path.dirname(os.path.realpath(__file__))
-        out = jsonout.JsonOutput(param_groups, args.board)
-        out.Save(args.json)
-        output_files.append(args.json)
+    إذا آرگومانها.json:
+        إذا آرگومانها.verbose:
+            چاپ("Creating Json file " + آرگومانها.json)
+        cur_dir = os.مسیر.dirname(os.مسیر.realpath(__file__))
+        بیرون = jsonout.JsonOutput(param_groups, آرگومانها.board)
+        بیرون.Save(آرگومانها.json)
+        output_files.append(آرگومانها.json)
 
-    if args.compress:
-        for f in output_files:
-            if args.verbose:
-                print("Compressing file " + f)
+    إذا آرگومانها.compress:
+        لكل f في output_files:
+            إذا آرگومانها.verbose:
+                چاپ("Compressing file " + f)
             save_compressed(f)
 
 
-if __name__ == "__main__":
-    main()
+إذا __name__ == "__main__":
+    اصلی()

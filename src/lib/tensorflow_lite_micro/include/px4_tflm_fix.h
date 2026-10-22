@@ -1,11 +1,11 @@
-#pragma once
+#رهنمود once
 
 // Fix for ctype_base.h character class masks
-#define _U 0x01
-#define _L 0x02
-#define _N 0x04
-#define _X 0x08
-#define _S 0x10
-#define _P 0x20
-#define _B 0x40
-#define _C 0x80
+#تعریف_کن _U 0x01
+#تعریف_کن _L 0x02
+#تعریف_کن _N 0x04
+#تعریف_کن _X 0x08
+#تعریف_کن _S 0x10
+#تعریف_کن _P 0x20
+#تعریف_کن _B 0x40
+#تعریف_کن _C 0x80

@@ -31,42 +31,42 @@
  *
  ****************************************************************************/
 
-#include "ManualVelocitySmoothingZ.hpp"
+#ضمن "ManualVelocitySmoothingZ.hpp"
 
-#include <mathlib/mathlib.h>
-#include <float.h>
+#ضمن <mathlib/mathlib.h>
+#ضمن <float.h>
 
-void ManualVelocitySmoothingZ::reset(float accel, float vel, float pos)
+فراغ ManualVelocitySmoothingZ::reset(عائم accel, عائم vel, عائم pos)
 {
 	_trajectory.reset(accel, vel, pos);
 
-	resetPositionLock();
+	reset_Position_قفل();
 }
 
-void ManualVelocitySmoothingZ::resetPositionLock()
+فراغ ManualVelocitySmoothingZ::reset_Position_قفل()
 {
-	_position_lock_active = false;
+	position_قفل_فعال = خطأ;
 	_position_setpoint_locked = NAN;
 }
 
-void ManualVelocitySmoothingZ::update(float dt, float velocity_target)
+فراغ ManualVelocitySmoothingZ::update(عائم dt, عائم velocity_هدف)
 {
 	// Update state
 	updateTrajectories(dt);
 
 	// Set max accel/vel/jerk
 	// Has to be done before _updateTrajDurations()
-	updateTrajConstraints(velocity_target);
+	updateTrajConstraints(velocity_هدف);
 
 	// Lock or unlock position
 	// Has to be done before _updateTrajDurations()
-	checkPositionLock(velocity_target);
+	check_Position_قفل(velocity_هدف);
 
 	// Update durations
-	_trajectory.updateDurations(velocity_target);
+	_trajectory.updateDurations(velocity_هدف);
 }
 
-void ManualVelocitySmoothingZ::updateTrajectories(float dt)
+فراغ ManualVelocitySmoothingZ::updateTrajectories(عائم dt)
 {
 	_trajectory.updateTraj(dt);
 
@@ -76,19 +76,19 @@ void ManualVelocitySmoothingZ::updateTrajectories(float dt)
 	_state.x = _trajectory.getCurrentPosition();
 }
 
-void ManualVelocitySmoothingZ::updateTrajConstraints(float velocity_target)
+فراغ ManualVelocitySmoothingZ::updateTrajConstraints(عائم velocity_هدف)
 {
-	if (velocity_target < 0.f) { // up
-		_trajectory.setMaxAccel(_max_accel_up);
-		_trajectory.setMaxVel(_max_vel_up);
+	إذا (velocity_هدف < 0.f) { //به_بالا
+		_trajectory.مجموعه_Max_Accel(max_accel_به_بالا);
+		_trajectory.مجموعه_Max_Vel(max_vel_به_بالا);
 
-	} else { // down
-		_trajectory.setMaxAccel(_max_accel_down);
-		_trajectory.setMaxVel(_max_vel_down);
+	} وإلا { //پایین
+		_trajectory.مجموعه_Max_Accel(max_accel_پایین);
+		_trajectory.مجموعه_Max_Vel(max_vel_پایین);
 	}
 }
 
-void ManualVelocitySmoothingZ::checkPositionLock(float velocity_target)
+فراغ ManualVelocitySmoothingZ::check_Position_قفل(عائم velocity_هدف)
 {
 	/**
 	 * During a position lock -> position unlock transition, we have to make sure that the velocity setpoint
@@ -98,22 +98,22 @@ void ManualVelocitySmoothingZ::checkPositionLock(float velocity_target)
 	 * This is why the previous input of the velocity controller
 	 * is used to set current velocity of the trajectory.
 	 */
-	if (fabsf(_state.v) < 0.1f &&
+	إذا (fabsf(_state.v) < 0.1f &&
 	    fabsf(_state.a) < .2f &&
-	    fabsf(velocity_target) <= FLT_EPSILON) {
+	    fabsf(velocity_هدف) <= FLT_EPSILON) {
 		// Lock position
-		_position_lock_active = true;
+		position_قفل_فعال = درست;
 		_position_setpoint_locked = _state.x;
 
-	} else {
+	} وإلا {
 		// Unlock position
-		if (_position_lock_active) {
+		إذا (position_قفل_فعال) {
 			// Start the trajectory at the current velocity setpoint
-			_trajectory.setCurrentVelocity(_velocity_setpoint_feedback);
+			_trajectory.مجموعه_Current_Velocity(_velocity_setpoint_feedback);
 			_state.v = _velocity_setpoint_feedback;
-			resetPositionLock();
+			reset_Position_قفل();
 		}
 
-		_trajectory.setCurrentPosition(_position_estimate);
+		_trajectory.مجموعه_Current_Position(_position_estimate);
 	}
 }

@@ -37,18 +37,18 @@
  * PID 3 axis angular rate / angular velocity control.
  */
 
-#pragma once
+#رهنمود once
 
-#include <matrix/matrix/math.hpp>
+#ضمن <matrix/matrix/math.hpp>
 
-#include <mathlib/mathlib.h>
-#include <uORB/topics/rate_ctrl_status.h>
+#ضمن <mathlib/mathlib.h>
+#ضمن <uORB/topics/rate_ctrl_status.h>
 
-class RateControl
+صنف نرخ_Control
 {
-public:
-	RateControl() = default;
-	~RateControl() = default;
+عام:
+	نرخ_Control() = افتراضي;
+	~نرخ_Control() = افتراضي;
 
 	/**
 	 * Set the rate control PID gains
@@ -56,35 +56,35 @@ public:
 	 * @param I 3D vector of integral gains
 	 * @param D 3D vector of derivative gains
 	 */
-	void setPidGains(const matrix::Vector3f &P, const matrix::Vector3f &I, const matrix::Vector3f &D);
+	فراغ مجموعه_Pid_Gains(ثابت ماتریس::Vector3f &P, ثابت ماتریس::Vector3f &I, ثابت ماتریس::Vector3f &D);
 
 	/**
 	 * Set the mximum absolute value of the integrator for all axes
 	 * @param integrator_limit limit value for all axes x, y, z
 	 */
-	void setIntegratorLimit(const matrix::Vector3f &integrator_limit) { _lim_int = integrator_limit; };
+	فراغ مجموعه_Integrator_حد(ثابت ماتریس::Vector3f &integrator_حد) { _lim_int = integrator_حد; };
 
 	/**
 	 * Set direct rate to torque feed forward gain
 	 * @see _gain_ff
 	 * @param FF 3D vector of feed forward gains for body x,y,z axis
 	 */
-	void setFeedForwardGain(const matrix::Vector3f &FF) { _gain_ff = FF; };
+	فراغ مجموعه_Feed_Forward_Gain(ثابت ماتریس::Vector3f &FF) { _gain_ff = FF; };
 
 	/**
 	 * Set saturation status
 	 * @param control saturation vector from control allocator
 	 */
-	void setSaturationStatus(const matrix::Vector3<bool> &saturation_positive,
-				 const matrix::Vector3<bool> &saturation_negative);
+	فراغ مجموعه_Saturation_وضعیت(ثابت ماتریس::Vector3<منطقي> &saturation_مثبت,
+				 ثابت ماتریس::Vector3<منطقي> &saturation_negative);
 
 	/**
 	 * Set individual saturation flags
 	 * @param axis 0 roll, 1 pitch, 2 yaw
 	 * @param is_saturated value to update the flag with
 	 */
-	void setPositiveSaturationFlag(size_t axis, bool is_saturated);
-	void setNegativeSaturationFlag(size_t axis, bool is_saturated);
+	فراغ مجموعه_مثبت_Saturation_Flag(size_t axis, منطقي is_saturated);
+	فراغ مجموعه_Negative_Saturation_Flag(size_t axis, منطقي is_saturated);
 
 	/**
 	 * Run one control loop cycle calculation
@@ -93,24 +93,24 @@ public:
 	 * @param dt desired vehicle angular rate setpoint
 	 * @return [-1,1] normalized torque vector to apply to the vehicle
 	 */
-	matrix::Vector3f update(const matrix::Vector3f &rate, const matrix::Vector3f &rate_sp,
-				const matrix::Vector3f &angular_accel, const float dt, const bool landed);
+	ماتریس::Vector3f update(ثابت ماتریس::Vector3f &نرخ, ثابت ماتریس::Vector3f &نرخ_sp,
+				ثابت ماتریس::Vector3f &angular_accel, ثابت عائم dt, ثابت منطقي landed);
 
 	/**
 	 * Set the integral term to 0 to prevent windup
 	 * @see _rate_int
 	 */
-	void resetIntegral() { _rate_int.zero(); }
+	فراغ resetIntegral() { نرخ_int.zero(); }
 
 	/**
 	 * Set the integral term to 0 for specific axes
 	 * @param  axis roll 0 / pitch 1 / yaw 2
 	 * @see _rate_int
 	 */
-	void resetIntegral(size_t axis)
+	فراغ resetIntegral(size_t axis)
 	{
-		if (axis < 3) {
-			_rate_int(axis) = 0.f;
+		إذا (axis < 3) {
+			نرخ_int(axis) = 0.f;
 		}
 	}
 
@@ -118,22 +118,22 @@ public:
 	 * Get status message of controller for logging/debugging
 	 * @param rate_ctrl_status status message to fill with internal states
 	 */
-	void getRateControlStatus(rate_ctrl_status_s &rate_ctrl_status);
+	فراغ get_نرخ_Control_وضعیت(نرخ_ctrl_وضعیت_s &نرخ_ctrl_وضعیت);
 
-private:
-	void updateIntegral(matrix::Vector3f &rate_error, const float dt);
+خاص:
+	فراغ updateIntegral(ماتریس::Vector3f &نرخ_error, ثابت عائم dt);
 
 	// Gains
-	matrix::Vector3f _gain_p; ///< rate control proportional gain for all axes x, y, z
-	matrix::Vector3f _gain_i; ///< rate control integral gain
-	matrix::Vector3f _gain_d; ///< rate control derivative gain
-	matrix::Vector3f _lim_int; ///< integrator term maximum absolute value
-	matrix::Vector3f _gain_ff; ///< direct rate to torque feed forward gain only useful for helicopters
+	ماتریس::Vector3f _gain_p; ///< rate control proportional gain for all axes x, y, z
+	ماتریس::Vector3f _gain_i; ///< rate control integral gain
+	ماتریس::Vector3f _gain_d; ///< rate control derivative gain
+	ماتریس::Vector3f _lim_int; ///< integrator term maximum absolute value
+	ماتریس::Vector3f _gain_ff; ///< direct rate to torque feed forward gain only useful for helicopters
 
 	// States
-	matrix::Vector3f _rate_int; ///< integral term of the rate controller
+	ماتریس::Vector3f نرخ_int; ///< integral term of the rate controller
 
 	// Feedback from control allocation
-	matrix::Vector<bool, 3> _control_allocator_saturation_negative;
-	matrix::Vector<bool, 3> _control_allocator_saturation_positive;
+	ماتریس::وکتور<منطقي, 3> _control_allocator_saturation_negative;
+	ماتریس::وکتور<منطقي, 3> control_allocator_saturation_مثبت;
 };

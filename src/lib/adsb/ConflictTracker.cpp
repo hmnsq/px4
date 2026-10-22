@@ -38,22 +38,22 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include "ConflictTracker.h"
+#ضمن "ConflictTracker.h"
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <px4_platform_common/log.h>
 
-namespace
+نطاق
 {
 
-void append_change(conflict_tracker_changes_s &changes, const conflict_tracker_change_s &change)
+فراغ append_change(conflict_tracker_changes_s &changes, ثابت conflict_tracker_change_s &change)
 {
-	if (!changes.push_back(change)) {
+	إذا (!changes.push_back(change)) {
 		PX4_ERR("DAA: conflict changes overflow");
 	}
 }
 
-void record_ignored(conflict_tracker_changes_s &changes, const conflict_info_s &conflict, const IgnoreTrafficCause cause)
+فراغ رکورد_ignored(conflict_tracker_changes_s &changes, ثابت conflict_info_s &conflict, ثابت IgnoreTrafficCause cause)
 {
 	conflict_tracker_change_s change{};
 	change.type = ConflictTrackerChangeType::kReportIgnored;
@@ -62,7 +62,7 @@ void record_ignored(conflict_tracker_changes_s &changes, const conflict_info_s &
 	append_change(changes, change);
 }
 
-void record_removed(conflict_tracker_changes_s &changes, const conflict_info_s &conflict, const RemoveBufferCause cause)
+فراغ رکورد_removed(conflict_tracker_changes_s &changes, ثابت conflict_info_s &conflict, ثابت Remove_میانگیر_Cause cause)
 {
 	conflict_tracker_change_s change{};
 	change.type = ConflictTrackerChangeType::kConflictRemoved;
@@ -73,211 +73,211 @@ void record_removed(conflict_tracker_changes_s &changes, const conflict_info_s &
 
 } // namespace
 
-bool ConflictTracker::apply_conflict(const conflict_info_s &conflict, conflict_tracker_changes_s &changes)
+منطقي ConflictTracker::apply_conflict(ثابت conflict_info_s &conflict, conflict_tracker_changes_s &changes)
 {
-	if (conflict.encoded_id.id == 0
+	إذا (conflict.encoded_id.id == 0
 	    || conflict.conflict_level > detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL
 	    || !PX4_ISFINITE(conflict.aircraft_dist)
 	    || conflict.aircraft_dist < 0.f) {
 		PX4_ERR("DAA: invalid conflict");
-		return false;
+		أرجع خطأ;
 	}
 
-	const int conflict_idx = find_conflict_idx(conflict.encoded_id);
+	ثابت صحيح conflict_idx = پیدا_کن_conflict_idx(conflict.encoded_id);
 
-	if (conflict_idx < 0) {
-		if (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
-			return false;
+	إذا (conflict_idx < 0) {
+		إذا (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
+			أرجع خطأ;
 		}
 
-		return add_conflict(conflict, changes);
+		أرجع جمع_کن_conflict(conflict, changes);
 	}
 
-	return update_conflict(conflict, conflict_idx, changes);
+	أرجع update_conflict(conflict, conflict_idx, changes);
 }
 
-bool ConflictTracker::add_conflict(const conflict_info_s &conflict, conflict_tracker_changes_s &changes)
+منطقي ConflictTracker::جمع_کن_conflict(ثابت conflict_info_s &conflict, conflict_tracker_changes_s &changes)
 {
-	if (_buffer.size() < _buffer.max_size()) {
-		_buffer.push_back(conflict);
+	إذا (میانگیر.اندازه() < میانگیر.max_اندازه()) {
+		میانگیر.push_back(conflict);
 
 		conflict_tracker_change_s change{};
 		change.type = ConflictTrackerChangeType::kConflictAdded;
 		change.conflict = conflict;
 		append_change(changes, change);
-		return true;
+		أرجع درست;
 	}
 
-	const int least_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kLeastUrgent);
+	ثابت صحيح کمترین_اضطراری_conflict_idx = پیدا_کن_conflict_idx_by_اولویت(Conflict_اولویت::k_کمترین_اضطراری);
 
-	if (!is_conflict_more_important(conflict, _buffer[least_urgent_conflict_idx])) {
+	إذا (!is_conflict_بیشتر_important(conflict, میانگیر[کمترین_اضطراری_conflict_idx])) {
 		PX4_DEBUG("DAA: new conflict does not outrank tracked conflicts, ignoring.");
-		record_ignored(changes, conflict, IgnoreTrafficCause::kBufferFull);
-		return false;
+		رکورد_ignored(changes, conflict, IgnoreTrafficCause::k_میانگیر_پر);
+		أرجع خطأ;
 	}
 
-	const conflict_info_s removed_conflict = _buffer[least_urgent_conflict_idx];
-	_buffer[least_urgent_conflict_idx] = conflict;
-	record_removed(changes, removed_conflict, RemoveBufferCause::kBufferFull);
+	ثابت conflict_info_s removed_conflict = میانگیر[کمترین_اضطراری_conflict_idx];
+	میانگیر[کمترین_اضطراری_conflict_idx] = conflict;
+	رکورد_removed(changes, removed_conflict, Remove_میانگیر_Cause::k_میانگیر_پر);
 
 	conflict_tracker_change_s change{};
 	change.type = ConflictTrackerChangeType::kConflictAdded;
 	change.conflict = conflict;
 	append_change(changes, change);
-	return true;
+	أرجع درست;
 }
 
-bool ConflictTracker::update_conflict(const conflict_info_s &conflict, const int conflict_idx,
+منطقي ConflictTracker::update_conflict(ثابت conflict_info_s &conflict, ثابت صحيح conflict_idx,
 				      conflict_tracker_changes_s &changes)
 {
-	const uint8_t previous_conflict_level = _buffer[conflict_idx].conflict_level;
+	ثابت uint8_t قبلی_conflict_level = میانگیر[conflict_idx].conflict_level;
 
-	if (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
+	إذا (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
 		PX4_DEBUG("DAA: Conflict avoided");
-		_buffer.remove(conflict_idx);
+		میانگیر.remove(conflict_idx);
 
-	} else {
-		_buffer[conflict_idx] = conflict;
+	} وإلا {
+		میانگیر[conflict_idx] = conflict;
 	}
 
-	if (conflict.conflict_level != previous_conflict_level) {
+	إذا (conflict.conflict_level != قبلی_conflict_level) {
 		conflict_tracker_change_s change{};
-		change.type = ConflictTrackerChangeType::kConflictLevelChanged;
+		change.type = ConflictTrackerChangeType::k_Conflict_Level_تغییریافته;
 		change.conflict = conflict;
-		change.previous_level = previous_conflict_level;
+		change.قبلی_level = قبلی_conflict_level;
 
-		const int most_urgent_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
-		change.conflict_is_most_urgent = (_most_urgent.encoded_id == conflict.encoded_id)
-						 || (is_valid_idx(most_urgent_idx)
-						     && _buffer[most_urgent_idx].encoded_id == conflict.encoded_id);
+		ثابت صحيح most_اضطراری_idx = پیدا_کن_conflict_idx_by_اولویت(Conflict_اولویت::k_Most_اضطراری);
+		change.conflict_is_most_اضطراری = (most_اضطراری.encoded_id == conflict.encoded_id)
+						 || (is_valid_idx(most_اضطراری_idx)
+						     && میانگیر[most_اضطراری_idx].encoded_id == conflict.encoded_id);
 
 		append_change(changes, change);
 	}
 
-	return true;
+	أرجع درست;
 }
 
-bool ConflictTracker::remove_stale_conflicts(const hrt_abstime now, const hrt_abstime timeout_us,
+منطقي ConflictTracker::remove_stale_conflicts(ثابت hrt_abstime now, ثابت hrt_abstime timeout_us,
 		conflict_tracker_changes_s &changes)
 {
-	int nb_conflicts_removed = 0;
+	صحيح nb_conflicts_removed = 0;
 
 	// Iterate backwards because Array::remove() shifts later entries left.
-	for (int idx = (static_cast<int>(_buffer.size()) - 1); idx >= 0; --idx) {
-		const hrt_abstime latest_update = _buffer[idx].latest_update_timestamp;
+	لكل (صحيح idx = (static_cast<صحيح>(میانگیر.اندازه()) - 1); idx >= 0; --idx) {
+		ثابت hrt_abstime latest_update = میانگیر[idx].latest_update_timestamp;
 
-		if (latest_update == 0 || latest_update > now || (now - latest_update) > timeout_us) {
-			const conflict_info_s removed_conflict = _buffer[idx];
-			_buffer.remove(idx);
-			record_removed(changes, removed_conflict, RemoveBufferCause::kStaleConflict);
+		إذا (latest_update == 0 || latest_update > now || (now - latest_update) > timeout_us) {
+			ثابت conflict_info_s removed_conflict = میانگیر[idx];
+			میانگیر.remove(idx);
+			رکورد_removed(changes, removed_conflict, Remove_میانگیر_Cause::kStaleConflict);
 			nb_conflicts_removed++;
 		}
 	}
 
-	if (nb_conflicts_removed > 0) {
+	إذا (nb_conflicts_removed > 0) {
 		PX4_DEBUG("DAA: removed %d stale conflicts from buffer", nb_conflicts_removed);
 	}
 
-	return nb_conflicts_removed > 0;
+	أرجع nb_conflicts_removed > 0;
 }
 
-void ConflictTracker::clear()
+فراغ ConflictTracker::clear()
 {
-	_buffer.clear();
-	reset_most_urgent();
+	میانگیر.clear();
+	reset_most_اضطراری();
 }
 
-void ConflictTracker::reset_most_urgent()
+فراغ ConflictTracker::reset_most_اضطراری()
 {
-	static constexpr float kNoConflictDistance{9999.f};
+	ساكن constexpr عائم k_No_Conflict_فاصله{9999.f};
 	PX4_DEBUG("DAA: reset most urgent buffer to null.");
-	_most_urgent = {};
-	_most_urgent.aircraft_dist = kNoConflictDistance;
+	most_اضطراری = {};
+	most_اضطراری.aircraft_dist = k_No_Conflict_فاصله;
 }
 
-void ConflictTracker::refresh_most_urgent()
+فراغ ConflictTracker::refresh_most_اضطراری()
 {
-	if (_buffer.empty()) {
+	إذا (میانگیر.خالی()) {
 		PX4_DEBUG("DAA: refresh_most_urgent empty buffer.");
-		reset_most_urgent();
-		return;
+		reset_most_اضطراری();
+		أرجع;
 	}
 
-	_most_urgent = find_most_urgent();
+	most_اضطراری = پیدا_کن_most_اضطراری();
 }
 
-conflict_info_s ConflictTracker::find_most_urgent() const
+conflict_info_s ConflictTracker::پیدا_کن_most_اضطراری() ثابت
 {
-	const int most_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
+	ثابت صحيح most_اضطراری_conflict_idx = پیدا_کن_conflict_idx_by_اولویت(Conflict_اولویت::k_Most_اضطراری);
 
-	if (!is_valid_idx(most_urgent_conflict_idx)) {
-		return {};
+	إذا (!is_valid_idx(most_اضطراری_conflict_idx)) {
+		أرجع {};
 	}
 
-	return _buffer[most_urgent_conflict_idx];
+	أرجع میانگیر[most_اضطراری_conflict_idx];
 }
 
-conflict_info_s ConflictTracker::get_conflict(const DaaEncodedId &encoded_id) const
+conflict_info_s ConflictTracker::get_conflict(ثابت DaaEncodedId &encoded_id) ثابت
 {
-	const int conflict_idx = find_conflict_idx(encoded_id);
+	ثابت صحيح conflict_idx = پیدا_کن_conflict_idx(encoded_id);
 
-	if (!is_valid_idx(conflict_idx)) {
-		return {};
+	إذا (!is_valid_idx(conflict_idx)) {
+		أرجع {};
 	}
 
-	return _buffer[conflict_idx];
+	أرجع میانگیر[conflict_idx];
 }
 
-int ConflictTracker::find_conflict_idx_by_priority(const ConflictPriority priority) const
+صحيح ConflictTracker::پیدا_کن_conflict_idx_by_اولویت(ثابت Conflict_اولویت اولویت) ثابت
 {
-	const int buff_size = static_cast<int>(_buffer.size());
+	ثابت صحيح buff_اندازه = static_cast<صحيح>(میانگیر.اندازه());
 
-	if (buff_size < 1) {
-		return -1;
+	إذا (buff_اندازه < 1) {
+		أرجع -1;
 	}
 
-	int best_idx = 0;
+	صحيح بهترین_idx = 0;
 
-	for (int i = 1; i < buff_size; ++i) {
-		const bool is_better = (priority == ConflictPriority::kMostUrgent)
-				       ? is_conflict_more_important(_buffer[i], _buffer[best_idx])
-				       : is_conflict_less_important(_buffer[i], _buffer[best_idx]);
+	لكل (صحيح i = 1; i < buff_اندازه; ++i) {
+		ثابت منطقي is_better = (اولویت == Conflict_اولویت::k_Most_اضطراری)
+				       ? is_conflict_بیشتر_important(میانگیر[i], میانگیر[بهترین_idx])
+				       : is_conflict_less_important(میانگیر[i], میانگیر[بهترین_idx]);
 
-		if (is_better) {
-			best_idx = i;
+		إذا (is_better) {
+			بهترین_idx = i;
 		}
 	}
 
-	return best_idx;
+	أرجع بهترین_idx;
 }
 
-int ConflictTracker::find_conflict_idx(const DaaEncodedId &encoded_id) const
+صحيح ConflictTracker::پیدا_کن_conflict_idx(ثابت DaaEncodedId &encoded_id) ثابت
 {
-	for (size_t i = 0; i < _buffer.size(); i++) {
-		if (_buffer[i].encoded_id == encoded_id) {
-			return static_cast<int>(i);
+	لكل (size_t i = 0; i < میانگیر.اندازه(); i++) {
+		إذا (میانگیر[i].encoded_id == encoded_id) {
+			أرجع static_cast<صحيح>(i);
 		}
 	}
 
-	return -1;
+	أرجع -1;
 }
 
-bool ConflictTracker::is_conflict_less_important(const conflict_info_s &new_conflict,
-		const conflict_info_s &base_conflict)
+منطقي ConflictTracker::is_conflict_less_important(ثابت conflict_info_s &new_conflict,
+		ثابت conflict_info_s &پایه_conflict)
 {
-	if (new_conflict.conflict_level != base_conflict.conflict_level) {
-		return new_conflict.conflict_level < base_conflict.conflict_level;
+	إذا (new_conflict.conflict_level != پایه_conflict.conflict_level) {
+		أرجع new_conflict.conflict_level < پایه_conflict.conflict_level;
 	}
 
-	return new_conflict.aircraft_dist > base_conflict.aircraft_dist;
+	أرجع new_conflict.aircraft_dist > پایه_conflict.aircraft_dist;
 }
 
-bool ConflictTracker::is_conflict_more_important(const conflict_info_s &new_conflict,
-		const conflict_info_s &base_conflict)
+منطقي ConflictTracker::is_conflict_بیشتر_important(ثابت conflict_info_s &new_conflict,
+		ثابت conflict_info_s &پایه_conflict)
 {
-	if (new_conflict.conflict_level != base_conflict.conflict_level) {
-		return new_conflict.conflict_level > base_conflict.conflict_level;
+	إذا (new_conflict.conflict_level != پایه_conflict.conflict_level) {
+		أرجع new_conflict.conflict_level > پایه_conflict.conflict_level;
 	}
 
-	return new_conflict.aircraft_dist < base_conflict.aircraft_dist;
+	أرجع new_conflict.aircraft_dist < پایه_conflict.aircraft_dist;
 }

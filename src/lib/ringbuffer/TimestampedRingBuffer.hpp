@@ -39,280 +39,280 @@
 * Note: This is not the same as `Ringbuffer` (byte FIFO) in `src/lib/ringbuffer/Ringbuffer.hpp`.
 */
 
-#pragma once
+#رهنمود once
 
-#include <climits>
-#include <cstddef>
-#include <inttypes.h>
+#ضمن <climits>
+#ضمن <cstddef>
+#ضمن <inttypes.h>
 
-template <typename data_type, size_t SIZE = 0>
-class TimestampedRingBuffer;
+قالب <نام_نوع داده_type, size_t اندازه_3 = 0>
+صنف Timestamped_Ring_میانگیر;
 
 /**
  * Static-size ring buffer specialization (SIZE > 0).
  */
-template <typename data_type, size_t SIZE>
-class TimestampedRingBuffer
+قالب <نام_نوع داده_type, size_t اندازه_3>
+صنف Timestamped_Ring_میانگیر
 {
-public:
-	static_assert(SIZE > 0, "SIZE must be > 0");
-	static_assert(SIZE <= UINT8_MAX, "SIZE must fit in uint8_t");
-	static constexpr uint8_t kSize = static_cast<uint8_t>(SIZE);
+عام:
+	static_assert(اندازه_3 > 0, "SIZE must be > 0");
+	static_assert(اندازه_3 <= UINT8_MAX, "SIZE must fit in uint8_t");
+	ساكن constexpr uint8_t k_اندازه = static_cast<uint8_t>(اندازه_3);
 
-	TimestampedRingBuffer() = default;
-	~TimestampedRingBuffer() = default;
+	Timestamped_Ring_میانگیر() = افتراضي;
+	~Timestamped_Ring_میانگیر() = افتراضي;
 
 	// no copy, assignment, move, move assignment
-	TimestampedRingBuffer(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer &operator=(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
-	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
+	Timestamped_Ring_میانگیر(ثابت Timestamped_Ring_میانگیر &) = حذف;
+	Timestamped_Ring_میانگیر &عملگر=(ثابت Timestamped_Ring_میانگیر &) = حذف;
+	Timestamped_Ring_میانگیر(Timestamped_Ring_میانگیر &&) = حذف;
+	Timestamped_Ring_میانگیر &عملگر=(Timestamped_Ring_میانگیر &&) = حذف;
 
-	bool allocate(size_t size) { return size == SIZE; }
+	منطقي allocate(size_t اندازه) { أرجع اندازه == اندازه_3; }
 
-	bool valid() const { return SIZE > 0; }
+	منطقي valid() ثابت { أرجع اندازه_3 > 0; }
 
-	void push(const data_type &sample)
+	فراغ افزودن(ثابت داده_type &sample)
 	{
-		_buffer[_head] = sample;
-		_head = next(_head);
+		میانگیر[سر] = sample;
+		سر = بعدی(سر);
 
-		if (_entries < kSize) {
+		إذا (_entries < k_اندازه) {
 			_entries++;
 		}
 	}
 
-	uint8_t get_length() const { return kSize; }
+	uint8_t get_درازی() ثابت { أرجع k_اندازه; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	داده_type &عملگر[](ثابت uint8_t شاخص) { أرجع میانگیر[شاخص]; }
 
-	const data_type &get_newest() const { return _buffer[get_newest_index()]; }
-	const data_type &get_oldest() const { return _buffer[get_oldest_index()]; }
+	ثابت داده_type &get_newest() ثابت { أرجع میانگیر[get_newest_شاخص()]; }
+	ثابت داده_type &get_oldest() ثابت { أرجع میانگیر[get_oldest_شاخص()]; }
 
-	uint8_t get_newest_index() const { return (_entries > 0) ? prev(_head) : 0; }
-	uint8_t get_oldest_index() const
+	uint8_t get_newest_شاخص() ثابت { أرجع (_entries > 0) ? prev(سر) : 0; }
+	uint8_t get_oldest_شاخص() ثابت
 	{
-		if (_entries == 0) {
-			return 0;
+		إذا (_entries == 0) {
+			أرجع 0;
 		}
 
-		const uint16_t idx = static_cast<uint16_t>(_head) + static_cast<uint16_t>(kSize) - static_cast<uint16_t>(_entries);
-		return (idx >= kSize) ? static_cast<uint8_t>(idx - kSize) : static_cast<uint8_t>(idx);
+		ثابت uint16_t idx = static_cast<uint16_t>(سر) + static_cast<uint16_t>(k_اندازه) - static_cast<uint16_t>(_entries);
+		أرجع (idx >= k_اندازه) ? static_cast<uint8_t>(idx - k_اندازه) : static_cast<uint8_t>(idx);
 	}
 
-	uint8_t next(uint8_t i) const { return (i + 1 >= kSize) ? 0 : i + 1; }
-	uint8_t prev(uint8_t i) const { return (i == 0) ? kSize - 1 : i - 1; }
+	uint8_t بعدی(uint8_t i) ثابت { أرجع (i + 1 >= k_اندازه) ? 0 : i + 1; }
+	uint8_t prev(uint8_t i) ثابت { أرجع (i == 0) ? k_اندازه - 1 : i - 1; }
 
-	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
+	منطقي برداشت_اولی_older_than(ثابت uint64_t &timestamp, داده_type *sample)
 	{
 		// start looking from newest observation data
-		const uint8_t newest_idx = get_newest_index();
-		const uint8_t oldest_idx = get_oldest_index();
+		ثابت uint8_t newest_idx = get_newest_شاخص();
+		ثابت uint8_t oldest_idx = get_oldest_شاخص();
 
-		for (uint8_t i = 0; i < _entries; i++) {
-			int index = (newest_idx - i);
-			index = index < 0 ? kSize + index : index;
+		لكل (uint8_t i = 0; i < _entries; i++) {
+			صحيح شاخص = (newest_idx - i);
+			شاخص = شاخص < 0 ? k_اندازه + شاخص : شاخص;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
-				*sample = _buffer[index];
+			إذا (timestamp >= میانگیر[شاخص].زمان_us && timestamp < میانگیر[شاخص].زمان_us + (uint64_t)1e5) {
+				*sample = میانگیر[شاخص];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				const uint8_t index_u = static_cast<uint8_t>(index);
-				const uint8_t distance = (index_u >= oldest_idx) ? (index_u - oldest_idx) : (index_u + kSize - oldest_idx);
-				const uint8_t discard_count = distance + 1;
-				_entries = (_entries > discard_count) ? (_entries - discard_count) : 0;
-				_buffer[index].time_us = 0;
+				ثابت uint8_t شاخص_u = static_cast<uint8_t>(شاخص);
+				ثابت uint8_t فاصله = (شاخص_u >= oldest_idx) ? (شاخص_u - oldest_idx) : (شاخص_u + k_اندازه - oldest_idx);
+				ثابت uint8_t discard_شمار = فاصله + 1;
+				_entries = (_entries > discard_شمار) ? (_entries - discard_شمار) : 0;
+				میانگیر[شاخص].زمان_us = 0;
 
-				return true;
+				أرجع درست;
 			}
 		}
 
-		return false;
+		أرجع خطأ;
 	}
 
-	int get_total_size() const
+	صحيح get_مجموع_اندازه() ثابت
 	{
-		static_assert(sizeof(TimestampedRingBuffer<data_type, SIZE>) <= static_cast<size_t>(INT_MAX),
+		static_assert(حجم(Timestamped_Ring_میانگیر<داده_type, اندازه_3>) <= static_cast<size_t>(بیشترین_صحیح),
 			      "static ring buffer size must fit in int");
-		return static_cast<int>(sizeof(TimestampedRingBuffer<data_type, SIZE>));
+		أرجع static_cast<صحيح>(حجم(Timestamped_Ring_میانگیر<داده_type, اندازه_3>));
 	}
 
-	int entries() const { return _entries; }
-	bool empty() const { return _entries == 0; }
+	صحيح entries() ثابت { أرجع _entries; }
+	منطقي خالی() ثابت { أرجع _entries == 0; }
 
-	void reset()
+	فراغ reset()
 	{
-		for (uint8_t i = 0; i < kSize; i++) {
-			_buffer[i].time_us = 0;
+		لكل (uint8_t i = 0; i < k_اندازه; i++) {
+			میانگیر[i].زمان_us = 0;
 		}
 
-		_head = 0;
+		سر = 0;
 		_entries = 0;
 	}
 
-private:
-	data_type _buffer[SIZE] {};
+خاص:
+	داده_type میانگیر[اندازه_3] {};
 
-	uint8_t _head{0};
+	uint8_t سر{0};
 	uint8_t _entries{0};
 };
 
 /**
  * Dynamic-size ring buffer specialization (SIZE == 0).
  */
-template <typename data_type>
-class TimestampedRingBuffer<data_type, 0>
+قالب <نام_نوع داده_type>
+صنف Timestamped_Ring_میانگیر<داده_type, 0>
 {
-public:
-	explicit TimestampedRingBuffer(size_t size) { allocate(size); }
-	TimestampedRingBuffer() = delete;
-	~TimestampedRingBuffer() { delete[] _buffer; }
+عام:
+	صریح Timestamped_Ring_میانگیر(size_t اندازه) { allocate(اندازه); }
+	Timestamped_Ring_میانگیر() = حذف;
+	~Timestamped_Ring_میانگیر() { حذف[] میانگیر; }
 
 	// no copy, assignment, move, move assignment
-	TimestampedRingBuffer(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer &operator=(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
-	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
+	Timestamped_Ring_میانگیر(ثابت Timestamped_Ring_میانگیر &) = حذف;
+	Timestamped_Ring_میانگیر &عملگر=(ثابت Timestamped_Ring_میانگیر &) = حذف;
+	Timestamped_Ring_میانگیر(Timestamped_Ring_میانگیر &&) = حذف;
+	Timestamped_Ring_میانگیر &عملگر=(Timestamped_Ring_میانگیر &&) = حذف;
 
-	bool allocate(size_t size)
+	منطقي allocate(size_t اندازه)
 	{
-		if (valid() && (size == _size)) {
+		إذا (valid() && (اندازه == اندازه_2)) {
 			// no change
-			return true;
+			أرجع درست;
 		}
 
-		if (size == 0 || size > UINT8_MAX) {
-			return false;
+		إذا (اندازه == 0 || اندازه > UINT8_MAX) {
+			أرجع خطأ;
 		}
 
-		delete[] _buffer;
+		حذف[] میانگیر;
 
-		_buffer = new data_type[size] {};
+		میانگیر = جديد داده_type[اندازه] {};
 
-		if (_buffer == nullptr) {
-			return false;
+		إذا (میانگیر == اشاره_تهی) {
+			أرجع خطأ;
 		}
 
-		_size = static_cast<uint8_t>(size);
+		اندازه_2 = static_cast<uint8_t>(اندازه);
 
 		// new[]{} already zeroed time_us, only reset the indices
-		_head = 0;
-		_tail = 0;
-		_first_write = true;
+		سر = 0;
+		دم_2 = 0;
+		اولی_write = درست;
 
-		return true;
+		أرجع درست;
 	}
 
-	bool valid() const { return (_buffer != nullptr) && (_size > 0); }
+	منطقي valid() ثابت { أرجع (میانگیر != اشاره_تهی) && (اندازه_2 > 0); }
 
-	void push(const data_type &sample)
+	فراغ افزودن(ثابت داده_type &sample)
 	{
-		uint8_t head_new = _head;
+		uint8_t سر_new = سر;
 
-		if (!_first_write) {
-			head_new = next(_head);
+		إذا (!اولی_write) {
+			سر_new = بعدی(سر);
 		}
 
-		_buffer[head_new] = sample;
-		_head = head_new;
+		میانگیر[سر_new] = sample;
+		سر = سر_new;
 
 		// move tail if we overwrite it
-		if (_head == _tail && !_first_write) {
-			_tail = next(_tail);
+		إذا (سر == دم_2 && !اولی_write) {
+			دم_2 = بعدی(دم_2);
 
-		} else {
-			_first_write = false;
+		} وإلا {
+			اولی_write = خطأ;
 		}
 	}
 
-	uint8_t get_length() const { return _size; }
+	uint8_t get_درازی() ثابت { أرجع اندازه_2; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	داده_type &عملگر[](ثابت uint8_t شاخص) { أرجع میانگیر[شاخص]; }
 
-	const data_type &get_newest() const { return _buffer[_head]; }
-	const data_type &get_oldest() const { return _buffer[_tail]; }
+	ثابت داده_type &get_newest() ثابت { أرجع میانگیر[سر]; }
+	ثابت داده_type &get_oldest() ثابت { أرجع میانگیر[دم_2]; }
 
-	uint8_t get_newest_index() const { return _head; }
-	uint8_t get_oldest_index() const { return _tail; }
+	uint8_t get_newest_شاخص() ثابت { أرجع سر; }
+	uint8_t get_oldest_شاخص() ثابت { أرجع دم_2; }
 
-	uint8_t next(uint8_t i) const { return (_size > 0) ? ((i + 1 >= _size) ? 0 : i + 1) : 0; }
-	uint8_t prev(uint8_t i) const { return (_size > 0) ? ((i == 0) ? (_size - 1) : (i - 1)) : 0; }
+	uint8_t بعدی(uint8_t i) ثابت { أرجع (اندازه_2 > 0) ? ((i + 1 >= اندازه_2) ? 0 : i + 1) : 0; }
+	uint8_t prev(uint8_t i) ثابت { أرجع (اندازه_2 > 0) ? ((i == 0) ? (اندازه_2 - 1) : (i - 1)) : 0; }
 
-	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
+	منطقي برداشت_اولی_older_than(ثابت uint64_t &timestamp, داده_type *sample)
 	{
 		// start looking from newest observation data
-		for (uint8_t i = 0; i < _size; i++) {
-			int index = (_head - i);
-			index = index < 0 ? _size + index : index;
+		لكل (uint8_t i = 0; i < اندازه_2; i++) {
+			صحيح شاخص = (سر - i);
+			شاخص = شاخص < 0 ? اندازه_2 + شاخص : شاخص;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
-				*sample = _buffer[index];
+			إذا (timestamp >= میانگیر[شاخص].زمان_us && timestamp < میانگیر[شاخص].زمان_us + (uint64_t)1e5) {
+				*sample = میانگیر[شاخص];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				if (index == _head) {
-					_tail = _head;
-					_first_write = true;
+				إذا (شاخص == سر) {
+					دم_2 = سر;
+					اولی_write = درست;
 
-				} else {
-					_tail = next(static_cast<uint8_t>(index));
+				} وإلا {
+					دم_2 = بعدی(static_cast<uint8_t>(شاخص));
 				}
 
-				_buffer[index].time_us = 0;
+				میانگیر[شاخص].زمان_us = 0;
 
-				return true;
+				أرجع درست;
 			}
 
-			if (index == _tail) {
+			إذا (شاخص == دم_2) {
 				// we have reached the tail and haven't got a
-				// match
-				return false;
+				//تطابق
+				أرجع خطأ;
 			}
 		}
 
-		return false;
+		أرجع خطأ;
 	}
 
-	int get_used_size() const { return sizeof(*this) + sizeof(data_type) * entries(); }
-	int get_total_size() const { return sizeof(*this) + sizeof(data_type) * _size; }
+	صحيح get_استفاده_شده_اندازه() ثابت { أرجع حجم(*هذا) + حجم(داده_type) * entries(); }
+	صحيح get_مجموع_اندازه() ثابت { أرجع حجم(*هذا) + حجم(داده_type) * اندازه_2; }
 
-	int entries() const
+	صحيح entries() ثابت
 	{
-		int count = 0;
+		صحيح شمار = 0;
 
-		for (uint8_t i = 0; i < _size; i++) {
-			if (_buffer[i].time_us != 0) {
-				count++;
+		لكل (uint8_t i = 0; i < اندازه_2; i++) {
+			إذا (میانگیر[i].زمان_us != 0) {
+				شمار++;
 			}
 		}
 
-		return count;
+		أرجع شمار;
 	}
 
-	bool empty() const { return entries() == 0; }
+	منطقي خالی() ثابت { أرجع entries() == 0; }
 
-	void reset()
+	فراغ reset()
 	{
-		if (_buffer) {
-			for (uint8_t i = 0; i < _size; i++) {
-				_buffer[i].time_us = 0;
+		إذا (میانگیر) {
+			لكل (uint8_t i = 0; i < اندازه_2; i++) {
+				میانگیر[i].زمان_us = 0;
 			}
 
-			_head = 0;
-			_tail = 0;
-			_first_write = true;
+			سر = 0;
+			دم_2 = 0;
+			اولی_write = درست;
 		}
 	}
 
-private:
-	data_type *_buffer{nullptr};
+خاص:
+	داده_type *میانگیر{اشاره_تهی};
 
-	uint8_t _head{0};
-	uint8_t _tail{0};
-	uint8_t _size{0};
+	uint8_t سر{0};
+	uint8_t دم_2{0};
+	uint8_t اندازه_2{0};
 
-	bool _first_write{true};
+	منطقي اولی_write{درست};
 };

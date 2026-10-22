@@ -31,36 +31,36 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/math.hpp>
 
-using namespace matrix;
+استفاده نطاق ماتریس;
 
-TEST(MatrixSetIdentityTest, SetIdentity)
+TEST(ماتریس_مجموعه_عنصر_خنثی_Test, مجموعه_عنصر_خنثی_2)
 {
 	Matrix3f A;
-	A.setIdentity();
+	A.مجموعه_عنصر_خنثی();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	لكل (size_t i = 0; i < 3; i++) {
+		لكل (size_t j = 0; j < 3; j++) {
+			إذا (i == j) {
 				EXPECT_FLOAT_EQ(A(i, j), 1);
 
-			} else {
+			} وإلا {
 				EXPECT_FLOAT_EQ(A(i, j), 0);
 			}
 		}
 	}
 
 	Matrix3f B;
-	B.identity();
+	B.عنصر_خنثی();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	لكل (size_t i = 0; i < 3; i++) {
+		لكل (size_t j = 0; j < 3; j++) {
+			إذا (i == j) {
 				EXPECT_FLOAT_EQ(B(i, j), 1);
 
-			} else {
+			} وإلا {
 				EXPECT_FLOAT_EQ(B(i, j), 0);
 			}
 		}

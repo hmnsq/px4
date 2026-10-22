@@ -39,95 +39,95 @@
  * mountpoints.
  */
 
-#include <gtest/gtest.h>
-#include "correction_framer.h"
+#ضمن <gtest/gtest.h>
+#ضمن "correction_framer.h"
 
-#include <vector>
-#include <cstring>
-#include <random>
+#ضمن <vector>
+#ضمن <cstring>
+#ضمن <random>
 
-using namespace gnss;
+استفاده نطاق gnss;
 
-class UbxTest : public ::testing::Test
+صنف UbxTest : عام ::testing::Test
 {
-protected:
+محمي:
 	CorrectionFramer parser;
 
 	// Build a valid UBX frame (class/id arbitrary; content not decoded).
-	std::vector<uint8_t> buildUbxFrame(uint8_t msg_class, uint8_t msg_id,
-					   const std::vector<uint8_t> &payload)
+	std::وکتور_2<uint8_t> build_Ubx_قاب(uint8_t پیام_class, uint8_t پیام_id,
+					   ثابت std::وکتور_2<uint8_t> &payload)
 	{
-		const size_t payload_len = payload.size();
-		std::vector<uint8_t> frame;
-		frame.push_back(UBX_SYNC1);
-		frame.push_back(UBX_SYNC2);
-		frame.push_back(msg_class);
-		frame.push_back(msg_id);
-		frame.push_back(static_cast<uint8_t>(payload_len & 0xFF));
-		frame.push_back(static_cast<uint8_t>((payload_len >> 8) & 0xFF));
-		frame.insert(frame.end(), payload.begin(), payload.end());
+		ثابت size_t payload_len = payload.اندازه();
+		std::وکتور_2<uint8_t> قاب;
+		قاب.push_back(UBX_SYNC1);
+		قاب.push_back(UBX_SYNC2);
+		قاب.push_back(پیام_class);
+		قاب.push_back(پیام_id);
+		قاب.push_back(static_cast<uint8_t>(payload_len & 0xFF));
+		قاب.push_back(static_cast<uint8_t>((payload_len >> 8) & 0xFF));
+		قاب.درج(قاب.انتها(), payload.begin(), payload.انتها());
 
 		uint8_t ck_a = 0;
 		uint8_t ck_b = 0;
-		ubx_checksum(&frame[2], UBX_HEADER_LEN - 2 + payload_len, &ck_a, &ck_b);
-		frame.push_back(ck_a);
-		frame.push_back(ck_b);
-		return frame;
+		ubx_checksum(&قاب[2], UBX_سرآیند_LEN - 2 + payload_len, &ck_a, &ck_b);
+		قاب.push_back(ck_a);
+		قاب.push_back(ck_b);
+		أرجع قاب;
 	}
 
-	std::vector<uint8_t> buildRtcmFrame(std::mt19937 &rng, size_t payload_len)
+	std::وکتور_2<uint8_t> build_Rtcm_قاب(std::mt19937 &rng, size_t payload_len)
 	{
-		std::vector<uint8_t> frame;
-		frame.push_back(RTCM3_PREAMBLE);
-		frame.push_back(static_cast<uint8_t>((payload_len >> 8) & 0x03));
-		frame.push_back(static_cast<uint8_t>(payload_len & 0xFF));
+		std::وکتور_2<uint8_t> قاب;
+		قاب.push_back(RTCM3_PREAMBLE);
+		قاب.push_back(static_cast<uint8_t>((payload_len >> 8) & 0x03));
+		قاب.push_back(static_cast<uint8_t>(payload_len & 0xFF));
 
-		std::uniform_int_distribution<int> byte(0, 255);
+		std::یکنواخت_int_distribution<صحيح> byte(0, 255);
 
-		for (size_t i = 0; i < payload_len; i++) {
-			frame.push_back(static_cast<uint8_t>(byte(rng)));
+		لكل (size_t i = 0; i < payload_len; i++) {
+			قاب.push_back(static_cast<uint8_t>(byte(rng)));
 		}
 
-		const uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
-		frame.push_back((crc >> 16) & 0xFF);
-		frame.push_back((crc >> 8) & 0xFF);
-		frame.push_back(crc & 0xFF);
-		return frame;
+		ثابت uint32_t بررسی_چرخهای = rtcm3_crc24q(قاب.داده(), قاب.اندازه());
+		قاب.push_back((بررسی_چرخهای >> 16) & 0xFF);
+		قاب.push_back((بررسی_چرخهای >> 8) & 0xFF);
+		قاب.push_back(بررسی_چرخهای & 0xFF);
+		أرجع قاب;
 	}
 
-#if defined(CONFIG_GPS_SPARTN)
-	std::vector<uint8_t> buildSpartnFrame(uint8_t msg_type, const std::vector<uint8_t> &payload,
-					      uint8_t crc_type = 0)
+#إذا defined(CONFIG_GPS_SPARTN)
+	std::وکتور_2<uint8_t> build_Spartn_قاب(uint8_t پیام_type_2, ثابت std::وکتور_2<uint8_t> &payload,
+					      uint8_t بررسی_چرخهای_type = 0)
 	{
-		const size_t payload_len = payload.size();
-		std::vector<uint8_t> frame;
-		frame.push_back(SPARTN_PREAMBLE);
+		ثابت size_t payload_len = payload.اندازه();
+		std::وکتور_2<uint8_t> قاب;
+		قاب.push_back(SPARTN_PREAMBLE);
 
-		uint8_t b1 = static_cast<uint8_t>(((msg_type & 0x7F) << 1) | ((payload_len >> 9) & 0x01));
+		uint8_t b1 = static_cast<uint8_t>(((پیام_type_2 & 0x7F) << 1) | ((payload_len >> 9) & 0x01));
 		uint8_t b2 = static_cast<uint8_t>((payload_len >> 1) & 0xFF);
-		uint8_t b3 = static_cast<uint8_t>(((payload_len & 0x01) << 7) | ((crc_type & 0x03) << 4));
-		frame.push_back(b1);
-		frame.push_back(b2);
-		frame.push_back(b3);
+		uint8_t b3 = static_cast<uint8_t>(((payload_len & 0x01) << 7) | ((بررسی_چرخهای_type & 0x03) << 4));
+		قاب.push_back(b1);
+		قاب.push_back(b2);
+		قاب.push_back(b3);
 
 		// 4-byte description, 16-bit time tag
-		frame.push_back(0x00);
-		frame.push_back(0x00);
-		frame.push_back(0x00);
-		frame.push_back(0x00);
+		قاب.push_back(0x00);
+		قاب.push_back(0x00);
+		قاب.push_back(0x00);
+		قاب.push_back(0x00);
 
-		frame.insert(frame.end(), payload.begin(), payload.end());
+		قاب.درج(قاب.انتها(), payload.begin(), payload.انتها());
 
-		const uint32_t crc = spartn_message_crc(&frame[1], frame.size() - 1, crc_type);
-		const size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
+		ثابت uint32_t بررسی_چرخهای = spartn_پیام_بررسی_چرخهای(&قاب[1], قاب.اندازه() - 1, بررسی_چرخهای_type);
+		ثابت size_t بررسی_چرخهای_بایتها = static_cast<size_t>(بررسی_چرخهای_type) + 1;
 
-		for (int i = static_cast<int>(crc_bytes) - 1; i >= 0; i--) {
-			frame.push_back(static_cast<uint8_t>((crc >>(8 * i)) & 0xFF));
+		لكل (صحيح i = static_cast<صحيح>(بررسی_چرخهای_بایتها) - 1; i >= 0; i--) {
+			قاب.push_back(static_cast<uint8_t>((بررسی_چرخهای >>(8 * i)) & 0xFF));
 		}
 
-		return frame;
+		أرجع قاب;
 	}
-#endif
+#پایان_اگر
 };
 
 // =============================================================================
@@ -136,12 +136,12 @@ protected:
 
 // Empty ACK-ACK (class=0x05, id=0x01, length=0): covered bytes 05 01 00 00.
 // 8-bit Fletcher: a runs 5,6,6,6 and b runs 5,11,17,23 → CK_A=0x06, CK_B=0x17.
-TEST_F(UbxTest, ChecksumKnownVector)
+TEST_F(UbxTest, Checksum_معلوم_وکتور)
 {
-	const uint8_t covered[] = {0x05, 0x01, 0x00, 0x00};
+	ثابت uint8_t covered[] = {0x05, 0x01, 0x00, 0x00};
 	uint8_t ck_a = 0;
 	uint8_t ck_b = 0;
-	ubx_checksum(covered, sizeof(covered), &ck_a, &ck_b);
+	ubx_checksum(covered, حجم(covered), &ck_a, &ck_b);
 	EXPECT_EQ(ck_a, 0x06u);
 	EXPECT_EQ(ck_b, 0x17u);
 }
@@ -150,134 +150,134 @@ TEST_F(UbxTest, ChecksumKnownVector)
 // Framing
 // =============================================================================
 
-TEST_F(UbxTest, SingleMinimalFrame)
+TEST_F(UbxTest, Single_کمینه_قاب)
 {
 	// UBX-MGA class is 0x13; any class/id is fine for framing
-	auto frame = buildUbxFrame(0x13, 0x00, {0xAA, 0xBB});
-	parser.addData(frame.data(), frame.size());
+	خودکار قاب = build_Ubx_قاب(0x13, 0x00, {0xAA, 0xBB});
+	parser.جمع_کن_داده(قاب.داده(), قاب.اندازه());
 
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-	const uint8_t *msg = parser.getNextMessage(&len, &protocol);
-	ASSERT_NE(msg, nullptr);
+	ثابت uint8_t *پیام_2 = parser.get_بعدی_پیام(&len, &protocol);
+	ASSERT_NE(پیام_2, اشاره_تهی);
 	EXPECT_EQ(protocol, CorrectionProtocol::Ubx);
-	EXPECT_EQ(len, frame.size());
-	EXPECT_EQ(0, memcmp(msg, frame.data(), frame.size()));
-	parser.consumeMessage(len);
+	EXPECT_EQ(len, قاب.اندازه());
+	EXPECT_EQ(0, memcmp(پیام_2, قاب.داده(), قاب.اندازه()));
+	parser.consume_پیام(len);
 	EXPECT_EQ(parser.getStats().messages_parsed, 1u);
 	EXPECT_EQ(parser.getStats().ubx_messages, 1u);
-	EXPECT_EQ(parser.getStats().crc_errors, 0u);
+	EXPECT_EQ(parser.getStats().بررسی_چرخهای_errors_2, 0u);
 }
 
-TEST_F(UbxTest, EmptyPayloadFrame)
+TEST_F(UbxTest, خالی_Payload_قاب)
 {
-	auto frame = buildUbxFrame(0x05, 0x01, {});
-	parser.addData(frame.data(), frame.size());
+	خودکار قاب = build_Ubx_قاب(0x05, 0x01, {});
+	parser.جمع_کن_داده(قاب.داده(), قاب.اندازه());
 
 	size_t len = 0;
-	ASSERT_NE(parser.getNextMessage(&len), nullptr);
-	EXPECT_EQ(len, UBX_HEADER_LEN + UBX_CK_LEN);
-	parser.consumeMessage(len);
+	ASSERT_NE(parser.get_بعدی_پیام(&len), اشاره_تهی);
+	EXPECT_EQ(len, UBX_سرآیند_LEN + UBX_CK_LEN);
+	parser.consume_پیام(len);
 	EXPECT_EQ(parser.getStats().ubx_messages, 1u);
 }
 
-TEST_F(UbxTest, MultipleFrames)
+TEST_F(UbxTest, مضرب_قابها)
 {
-	auto f1 = buildUbxFrame(0x13, 0x00, {0x01});
-	auto f2 = buildUbxFrame(0x13, 0x02, {0x02, 0x03, 0x04});
-	std::vector<uint8_t> stream;
-	stream.insert(stream.end(), f1.begin(), f1.end());
-	stream.insert(stream.end(), f2.begin(), f2.end());
-	parser.addData(stream.data(), stream.size());
+	خودکار f1 = build_Ubx_قاب(0x13, 0x00, {0x01});
+	خودکار f2 = build_Ubx_قاب(0x13, 0x02, {0x02, 0x03, 0x04});
+	std::وکتور_2<uint8_t> جریان;
+	جریان.درج(جریان.انتها(), f1.begin(), f1.انتها());
+	جریان.درج(جریان.انتها(), f2.begin(), f2.انتها());
+	parser.جمع_کن_داده(جریان.داده(), جریان.اندازه());
 
-	int count = 0;
+	صحيح شمار = 0;
 	size_t len = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
-		parser.consumeMessage(len);
-		count++;
+	طالما (parser.get_بعدی_پیام(&len) != اشاره_تهی) {
+		parser.consume_پیام(len);
+		شمار++;
 	}
 
-	EXPECT_EQ(count, 2);
+	EXPECT_EQ(شمار, 2);
 	EXPECT_EQ(parser.getStats().ubx_messages, 2u);
 }
 
-TEST_F(UbxTest, ChunkedArrival)
+TEST_F(UbxTest, Chunked_رسیدن)
 {
-	auto frame = buildUbxFrame(0x13, 0x01, {0x10, 0x20, 0x30, 0x40});
+	خودکار قاب = build_Ubx_قاب(0x13, 0x01, {0x10, 0x20, 0x30, 0x40});
 
-	for (size_t i = 0; i < frame.size(); i++) {
-		parser.addData(&frame[i], 1);
+	لكل (size_t i = 0; i < قاب.اندازه(); i++) {
+		parser.جمع_کن_داده(&قاب[i], 1);
 		// No complete frame until the last byte
 	}
 
 	size_t len = 0;
-	ASSERT_NE(parser.getNextMessage(&len), nullptr);
-	EXPECT_EQ(len, frame.size());
+	ASSERT_NE(parser.get_بعدی_پیام(&len), اشاره_تهی);
+	EXPECT_EQ(len, قاب.اندازه());
 }
 
-TEST_F(UbxTest, NoiseBeforeFrame)
+TEST_F(UbxTest, Noise_Before_قاب)
 {
-	auto frame = buildUbxFrame(0x13, 0x00, {0x55});
-	std::vector<uint8_t> stream = {0x00, 0xFF, 0x01};
-	stream.insert(stream.end(), frame.begin(), frame.end());
-	parser.addData(stream.data(), stream.size());
+	خودکار قاب = build_Ubx_قاب(0x13, 0x00, {0x55});
+	std::وکتور_2<uint8_t> جریان = {0x00, 0xFF, 0x01};
+	جریان.درج(جریان.انتها(), قاب.begin(), قاب.انتها());
+	parser.جمع_کن_داده(جریان.داده(), جریان.اندازه());
 
 	size_t len = 0;
-	ASSERT_NE(parser.getNextMessage(&len), nullptr);
-	EXPECT_GT(parser.getStats().bytes_discarded, 0u);
-	parser.consumeMessage(len);
+	ASSERT_NE(parser.get_بعدی_پیام(&len), اشاره_تهی);
+	EXPECT_GT(parser.getStats().بایتها_discarded_2, 0u);
+	parser.consume_پیام(len);
 	EXPECT_EQ(parser.getStats().ubx_messages, 1u);
 }
 
 TEST_F(UbxTest, BadSync2)
 {
 	// 0xB5 followed by something other than 0x62 is not a frame start
-	std::vector<uint8_t> stream = {UBX_SYNC1, 0x00, 0x11, 0x22};
-	auto frame = buildUbxFrame(0x13, 0x00, {0x01});
-	stream.insert(stream.end(), frame.begin(), frame.end());
-	parser.addData(stream.data(), stream.size());
+	std::وکتور_2<uint8_t> جریان = {UBX_SYNC1, 0x00, 0x11, 0x22};
+	خودکار قاب = build_Ubx_قاب(0x13, 0x00, {0x01});
+	جریان.درج(جریان.انتها(), قاب.begin(), قاب.انتها());
+	parser.جمع_کن_داده(جریان.داده(), جریان.اندازه());
 
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-	ASSERT_NE(parser.getNextMessage(&len, &protocol), nullptr);
+	ASSERT_NE(parser.get_بعدی_پیام(&len, &protocol), اشاره_تهی);
 	EXPECT_EQ(protocol, CorrectionProtocol::Ubx);
-	parser.consumeMessage(len);
+	parser.consume_پیام(len);
 	EXPECT_EQ(parser.getStats().ubx_messages, 1u);
-	EXPECT_GT(parser.getStats().bytes_discarded, 0u);
+	EXPECT_GT(parser.getStats().بایتها_discarded_2, 0u);
 }
 
 TEST_F(UbxTest, BadChecksum)
 {
-	auto frame = buildUbxFrame(0x13, 0x00, {0x11, 0x22});
-	frame.back() ^= 0xFF;
-	parser.addData(frame.data(), frame.size());
+	خودکار قاب = build_Ubx_قاب(0x13, 0x00, {0x11, 0x22});
+	قاب.پشت() ^= 0xFF;
+	parser.جمع_کن_داده(قاب.داده(), قاب.اندازه());
 
 	size_t len = 0;
-	EXPECT_EQ(parser.getNextMessage(&len), nullptr);
-	EXPECT_GE(parser.getStats().crc_errors, 1u);
+	EXPECT_EQ(parser.get_بعدی_پیام(&len), اشاره_تهی);
+	EXPECT_GE(parser.getStats().بررسی_چرخهای_errors_2, 1u);
 	EXPECT_EQ(parser.getStats().ubx_messages, 0u);
 }
 
 TEST_F(UbxTest, RejectsOversizedPayload)
 {
 	// Length field claims UBX_MAX_PAYLOAD_LEN + 1 — must not pin the buffer
-	std::vector<uint8_t> header = {
+	std::وکتور_2<uint8_t> سرآیند = {
 		UBX_SYNC1, UBX_SYNC2,
 		0x13, 0x00,
 		static_cast<uint8_t>((UBX_MAX_PAYLOAD_LEN + 1) & 0xFF),
 		static_cast<uint8_t>(((UBX_MAX_PAYLOAD_LEN + 1) >> 8) & 0xFF),
 	};
-	auto good = buildUbxFrame(0x13, 0x00, {0xAB});
-	header.insert(header.end(), good.begin(), good.end());
-	parser.addData(header.data(), header.size());
+	خودکار good = build_Ubx_قاب(0x13, 0x00, {0xAB});
+	سرآیند.درج(سرآیند.انتها(), good.begin(), good.انتها());
+	parser.جمع_کن_داده(سرآیند.داده(), سرآیند.اندازه());
 
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-	ASSERT_NE(parser.getNextMessage(&len, &protocol), nullptr);
+	ASSERT_NE(parser.get_بعدی_پیام(&len, &protocol), اشاره_تهی);
 	EXPECT_EQ(protocol, CorrectionProtocol::Ubx);
-	EXPECT_EQ(len, good.size());
-	parser.consumeMessage(len);
+	EXPECT_EQ(len, good.اندازه());
+	parser.consume_پیام(len);
 	EXPECT_EQ(parser.getStats().ubx_messages, 1u);
 }
 
@@ -292,65 +292,65 @@ TEST_F(UbxTest, RejectsOversizedPayload)
 TEST_F(UbxTest, MgaThenRtcm3)
 {
 	std::mt19937 rng(42);
-	auto mga1 = buildUbxFrame(0x13, 0x00, {0x01, 0x02, 0x03});
-	auto mga2 = buildUbxFrame(0x13, 0x02, {0x10, 0x20});
-	auto rtcm = buildRtcmFrame(rng, 40);
+	خودکار mga1 = build_Ubx_قاب(0x13, 0x00, {0x01, 0x02, 0x03});
+	خودکار mga2 = build_Ubx_قاب(0x13, 0x02, {0x10, 0x20});
+	خودکار rtcm = build_Rtcm_قاب(rng, 40);
 
-	std::vector<uint8_t> stream;
-	stream.insert(stream.end(), mga1.begin(), mga1.end());
-	stream.insert(stream.end(), mga2.begin(), mga2.end());
-	stream.insert(stream.end(), rtcm.begin(), rtcm.end());
-	parser.addData(stream.data(), stream.size());
+	std::وکتور_2<uint8_t> جریان;
+	جریان.درج(جریان.انتها(), mga1.begin(), mga1.انتها());
+	جریان.درج(جریان.انتها(), mga2.begin(), mga2.انتها());
+	جریان.درج(جریان.انتها(), rtcm.begin(), rtcm.انتها());
+	parser.جمع_کن_داده(جریان.داده(), جریان.اندازه());
 
-	std::vector<CorrectionProtocol> seen;
+	std::وکتور_2<CorrectionProtocol> دیده;
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
 
-	while (parser.getNextMessage(&len, &protocol) != nullptr) {
-		seen.push_back(protocol);
-		parser.consumeMessage(len);
+	طالما (parser.get_بعدی_پیام(&len, &protocol) != اشاره_تهی) {
+		دیده.push_back(protocol);
+		parser.consume_پیام(len);
 	}
 
-	ASSERT_EQ(seen.size(), 3u);
-	EXPECT_EQ(seen[0], CorrectionProtocol::Ubx);
-	EXPECT_EQ(seen[1], CorrectionProtocol::Ubx);
-	EXPECT_EQ(seen[2], CorrectionProtocol::Rtcm3);
+	ASSERT_EQ(دیده.اندازه(), 3u);
+	EXPECT_EQ(دیده[0], CorrectionProtocol::Ubx);
+	EXPECT_EQ(دیده[1], CorrectionProtocol::Ubx);
+	EXPECT_EQ(دیده[2], CorrectionProtocol::Rtcm3);
 	EXPECT_EQ(parser.getStats().ubx_messages, 2u);
 	EXPECT_EQ(parser.getStats().rtcm3_messages, 1u);
-	EXPECT_EQ(parser.getStats().crc_errors, 0u);
+	EXPECT_EQ(parser.getStats().بررسی_چرخهای_errors_2, 0u);
 }
 
-#if defined(CONFIG_GPS_SPARTN)
+#إذا defined(CONFIG_GPS_SPARTN)
 TEST_F(UbxTest, MgaThenSpartn)
 {
-	auto mga = buildUbxFrame(0x13, 0x00, {0xDE, 0xAD});
-	auto spartn = buildSpartnFrame(0, {0xAA, 0xBB});
+	خودکار mga = build_Ubx_قاب(0x13, 0x00, {0xDE, 0xAD});
+	خودکار spartn = build_Spartn_قاب(0, {0xAA, 0xBB});
 
-	std::vector<uint8_t> stream;
-	stream.insert(stream.end(), mga.begin(), mga.end());
-	stream.insert(stream.end(), spartn.begin(), spartn.end());
+	std::وکتور_2<uint8_t> جریان;
+	جریان.درج(جریان.انتها(), mga.begin(), mga.انتها());
+	جریان.درج(جریان.انتها(), spartn.begin(), spartn.انتها());
 	// Another MGA mid-stream should also work (reconnect-style)
-	auto mga2 = buildUbxFrame(0x13, 0x01, {0x01});
-	stream.insert(stream.end(), mga2.begin(), mga2.end());
-	parser.addData(stream.data(), stream.size());
+	خودکار mga2 = build_Ubx_قاب(0x13, 0x01, {0x01});
+	جریان.درج(جریان.انتها(), mga2.begin(), mga2.انتها());
+	parser.جمع_کن_داده(جریان.داده(), جریان.اندازه());
 
-	std::vector<CorrectionProtocol> seen;
+	std::وکتور_2<CorrectionProtocol> دیده;
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
 
-	while (parser.getNextMessage(&len, &protocol) != nullptr) {
-		seen.push_back(protocol);
-		parser.consumeMessage(len);
+	طالما (parser.get_بعدی_پیام(&len, &protocol) != اشاره_تهی) {
+		دیده.push_back(protocol);
+		parser.consume_پیام(len);
 	}
 
-	ASSERT_EQ(seen.size(), 3u);
-	EXPECT_EQ(seen[0], CorrectionProtocol::Ubx);
-	EXPECT_EQ(seen[1], CorrectionProtocol::Spartn);
-	EXPECT_EQ(seen[2], CorrectionProtocol::Ubx);
+	ASSERT_EQ(دیده.اندازه(), 3u);
+	EXPECT_EQ(دیده[0], CorrectionProtocol::Ubx);
+	EXPECT_EQ(دیده[1], CorrectionProtocol::Spartn);
+	EXPECT_EQ(دیده[2], CorrectionProtocol::Ubx);
 	EXPECT_EQ(parser.getStats().ubx_messages, 2u);
 	EXPECT_EQ(parser.getStats().spartn_messages, 1u);
 }
-#endif
+#پایان_اگر
 
 // A complete RTCM3 frame consumes its payload, so a 0xB5 that happens to sit
 // inside that payload is never considered as a UBX start.
@@ -358,7 +358,7 @@ TEST_F(UbxTest, RtcmPayloadStrayB5IsNotFramedAsUbx)
 {
 	// Craft an RTCM3 frame whose payload contains a UBX-looking prefix.
 	// buildRtcmFrame randomizes payload; force a 0xB5 0x62 sequence in raw form.
-	std::vector<uint8_t> payload(32, 0x00);
+	std::وکتور_2<uint8_t> payload(32, 0x00);
 	payload[4] = UBX_SYNC1;
 	payload[5] = UBX_SYNC2;
 	payload[6] = 0x13;
@@ -366,33 +366,33 @@ TEST_F(UbxTest, RtcmPayloadStrayB5IsNotFramedAsUbx)
 	payload[8] = 0x02; // fake length
 	payload[9] = 0x00;
 
-	std::vector<uint8_t> frame;
-	frame.push_back(RTCM3_PREAMBLE);
-	frame.push_back(0x00);
-	frame.push_back(static_cast<uint8_t>(payload.size()));
-	frame.insert(frame.end(), payload.begin(), payload.end());
-	const uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
-	frame.push_back((crc >> 16) & 0xFF);
-	frame.push_back((crc >> 8) & 0xFF);
-	frame.push_back(crc & 0xFF);
+	std::وکتور_2<uint8_t> قاب;
+	قاب.push_back(RTCM3_PREAMBLE);
+	قاب.push_back(0x00);
+	قاب.push_back(static_cast<uint8_t>(payload.اندازه()));
+	قاب.درج(قاب.انتها(), payload.begin(), payload.انتها());
+	ثابت uint32_t بررسی_چرخهای = rtcm3_crc24q(قاب.داده(), قاب.اندازه());
+	قاب.push_back((بررسی_چرخهای >> 16) & 0xFF);
+	قاب.push_back((بررسی_چرخهای >> 8) & 0xFF);
+	قاب.push_back(بررسی_چرخهای & 0xFF);
 
 	// Follow with a real UBX so we know the framer still works after
-	auto ubx = buildUbxFrame(0x13, 0x00, {0x99});
-	std::vector<uint8_t> stream = frame;
-	stream.insert(stream.end(), ubx.begin(), ubx.end());
-	parser.addData(stream.data(), stream.size());
+	خودکار ubx = build_Ubx_قاب(0x13, 0x00, {0x99});
+	std::وکتور_2<uint8_t> جریان = قاب;
+	جریان.درج(جریان.انتها(), ubx.begin(), ubx.انتها());
+	parser.جمع_کن_داده(جریان.داده(), جریان.اندازه());
 
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Ubx;
-	ASSERT_NE(parser.getNextMessage(&len, &protocol), nullptr);
+	ASSERT_NE(parser.get_بعدی_پیام(&len, &protocol), اشاره_تهی);
 	EXPECT_EQ(protocol, CorrectionProtocol::Rtcm3);
-	parser.consumeMessage(len);
+	parser.consume_پیام(len);
 
-	ASSERT_NE(parser.getNextMessage(&len, &protocol), nullptr);
+	ASSERT_NE(parser.get_بعدی_پیام(&len, &protocol), اشاره_تهی);
 	EXPECT_EQ(protocol, CorrectionProtocol::Ubx);
-	parser.consumeMessage(len);
+	parser.consume_پیام(len);
 
 	EXPECT_EQ(parser.getStats().rtcm3_messages, 1u);
 	EXPECT_EQ(parser.getStats().ubx_messages, 1u);
-	EXPECT_EQ(parser.getStats().crc_errors, 0u);
+	EXPECT_EQ(parser.getStats().بررسی_چرخهای_errors_2, 0u);
 }

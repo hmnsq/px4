@@ -31,60 +31,60 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <math.h>
-#include "TimestampedRingBuffer.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن <math.h>
+#ضمن "TimestampedRingBuffer.hpp"
 
-struct sample {
-	uint64_t time_us;
-	float data[3];
+بنية sample {
+	uint64_t زمان_us;
+	عائم داده[3];
 };
 
 
-class TimestampedRingBufferDynamicTest : public ::testing::Test
+صنف Timestamped_Ring_میانگیر_Dynamic_Test : عام ::testing::Test
 {
-public:
+عام:
 
 	sample _x, _y, _z;
-	TimestampedRingBuffer<sample> *_buffer{nullptr};
+	Timestamped_Ring_میانگیر<sample> *میانگیر{اشاره_تهی};
 
-	void SetUp() override
+	فراغ مجموعه_به_بالا() override
 	{
-		_buffer = new TimestampedRingBuffer<sample>(3);
-		_x.time_us = 1000000;
-		_x.data[0] = _x.data[1] = _x.data[2] = 1.5f;
+		میانگیر = جديد Timestamped_Ring_میانگیر<sample>(3);
+		_x.زمان_us = 1000000;
+		_x.داده[0] = _x.داده[1] = _x.داده[2] = 1.5f;
 
-		_y.time_us = 2000000;
-		_y.data[0] = _y.data[1] = _y.data[2] = 3.0f;
+		_y.زمان_us = 2000000;
+		_y.داده[0] = _y.داده[1] = _y.داده[2] = 3.0f;
 
-		_z.time_us = 3000000;
-		_z.data[0] = _z.data[1] = _z.data[2] = 4.0f;
+		_z.زمان_us = 3000000;
+		_z.داده[0] = _z.داده[1] = _z.داده[2] = 4.0f;
 	}
 
-	void TearDown() override
+	فراغ Tear_پایین() override
 	{
-		delete _buffer;
+		حذف میانگیر;
 	}
 };
 
-TEST_F(TimestampedRingBufferDynamicTest, goodInitialisation)
+TEST_F(Timestamped_Ring_میانگیر_Dynamic_Test, goodInitialisation)
 {
 	// WHEN: buffer was allocated
 	// THEN: allocation should have succeed
-	EXPECT_TRUE(_buffer->allocate(3));
-	EXPECT_TRUE(_buffer->valid());
-	EXPECT_EQ(_buffer->get_length(), 3);
+	EXPECT_TRUE(میانگیر->allocate(3));
+	EXPECT_TRUE(میانگیر->valid());
+	EXPECT_EQ(میانگیر->get_درازی(), 3);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, RejectsInvalidSize)
+TEST_F(Timestamped_Ring_میانگیر_Dynamic_Test, Rejects_Invalid_اندازه)
 {
-	EXPECT_FALSE(_buffer->allocate(0));
-	EXPECT_FALSE(_buffer->allocate(UINT8_MAX + 1u));
-	EXPECT_TRUE(_buffer->valid());
-	EXPECT_EQ(_buffer->get_length(), 3);
+	EXPECT_FALSE(میانگیر->allocate(0));
+	EXPECT_FALSE(میانگیر->allocate(UINT8_MAX + 1u));
+	EXPECT_TRUE(میانگیر->valid());
+	EXPECT_EQ(میانگیر->get_درازی(), 3);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, badInitialisation)
+TEST_F(Timestamped_Ring_میانگیر_Dynamic_Test, badInitialisation)
 {
 	// WHEN: buffer allocation input is bad
 	// THEN: allocation should fail
@@ -94,75 +94,75 @@ TEST_F(TimestampedRingBufferDynamicTest, badInitialisation)
 	// ASSERT_EQ(false, _buffer->allocate(0));
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, orderOfSamples)
+TEST_F(Timestamped_Ring_میانگیر_Dynamic_Test, ترتیب_از_Samples)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
+	ASSERT_EQ(درست, میانگیر->allocate(3));
 	// GIVEN: allocated buffer
 	// WHEN: adding multiple samples
 	// THEN: they should be added in order
-	_buffer->push(_x);
+	میانگیر->افزودن(_x);
 
-	EXPECT_EQ(_x.time_us, _buffer->get_newest().time_us);
-	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
+	EXPECT_EQ(_x.زمان_us, میانگیر->get_newest().زمان_us);
+	EXPECT_EQ(_x.زمان_us, میانگیر->get_oldest().زمان_us);
 
-	_buffer->push(_z);
-	_buffer->push(_y);
+	میانگیر->افزودن(_z);
+	میانگیر->افزودن(_y);
 
-	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
-	EXPECT_EQ(_y.time_us, _buffer->get_newest().time_us);
+	EXPECT_EQ(_x.زمان_us, میانگیر->get_oldest().زمان_us);
+	EXPECT_EQ(_y.زمان_us, میانگیر->get_newest().زمان_us);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, popSample)
+TEST_F(Timestamped_Ring_میانگیر_Dynamic_Test, برداشت_Sample)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(درست, میانگیر->allocate(3));
+	میانگیر->افزودن(_x);
+	میانگیر->افزودن(_y);
+	میانگیر->افزودن(_z);
 
 	// GIVEN: allocated and filled buffer
 
-	sample pop = {};
+	sample برداشت = {};
 	// WHEN: we want to retrieve a sample that is older than any in the buffer
 	// THEN: we should not get any sample
-	EXPECT_FALSE(_buffer->pop_first_older_than(0, &pop));
+	EXPECT_FALSE(میانگیر->برداشت_اولی_older_than(0, &برداشت));
 
 	// WHEN: when calling "pop_first_older_than"
 	// THEN: we should get the first sample from the head that is older
-	EXPECT_TRUE(_buffer->pop_first_older_than(_x.time_us + 1, &pop));
-	EXPECT_EQ(_x.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_y.time_us + 10, &pop));
-	EXPECT_EQ(_y.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 100, &pop));
-	EXPECT_EQ(_z.time_us, pop.time_us);
+	EXPECT_TRUE(میانگیر->برداشت_اولی_older_than(_x.زمان_us + 1, &برداشت));
+	EXPECT_EQ(_x.زمان_us, برداشت.زمان_us);
+	EXPECT_TRUE(میانگیر->برداشت_اولی_older_than(_y.زمان_us + 10, &برداشت));
+	EXPECT_EQ(_y.زمان_us, برداشت.زمان_us);
+	EXPECT_TRUE(میانگیر->برداشت_اولی_older_than(_z.زمان_us + 100, &برداشت));
+	EXPECT_EQ(_z.زمان_us, برداشت.زمان_us);
 	// TODO: When changing the order of popping sample it does not behave as expected, fix this
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, askingForTooNewSample)
+TEST_F(Timestamped_Ring_میانگیر_Dynamic_Test, askingForTooNewSample)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(درست, میانگیر->allocate(3));
+	میانگیر->افزودن(_x);
+	میانگیر->افزودن(_y);
+	میانگیر->افزودن(_z);
 
-	sample pop = {};
+	sample برداشت = {};
 	// WHEN: all buffered samples are older by 0.1s than your query timestamp
 	// THEN: should get no sample returned
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 99000, &pop));
-	EXPECT_FALSE(_buffer->pop_first_older_than(_y.time_us + 100000, &pop));
+	EXPECT_TRUE(میانگیر->برداشت_اولی_older_than(_z.زمان_us + 99000, &برداشت));
+	EXPECT_FALSE(میانگیر->برداشت_اولی_older_than(_y.زمان_us + 100000, &برداشت));
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, reallocateBuffer)
+TEST_F(Timestamped_Ring_میانگیر_Dynamic_Test, reallocate_میانگیر)
 {
-	ASSERT_EQ(true, _buffer->allocate(5));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(درست, میانگیر->allocate(5));
+	میانگیر->افزودن(_x);
+	میانگیر->افزودن(_y);
+	میانگیر->افزودن(_y);
+	میانگیر->افزودن(_y);
+	میانگیر->افزودن(_z);
 
 	// GIVEN: allocated and filled buffer
 	// WHEN: do another allocate call
-	EXPECT_TRUE(_buffer->allocate(3));
+	EXPECT_TRUE(میانگیر->allocate(3));
 	// THEN: its length should update
-	EXPECT_EQ(3, _buffer->get_length());
+	EXPECT_EQ(3, میانگیر->get_درازی());
 }

@@ -37,39 +37,39 @@
  * SPARTN transport-layer implementation.
  */
 
-#include "spartn.h"
+#ضمن "spartn.h"
 
-namespace gnss
+نطاق gnss
 {
 
-uint32_t spartn_message_crc(const uint8_t *data, size_t len, uint8_t crc_type)
+uint32_t spartn_پیام_بررسی_چرخهای(ثابت uint8_t *داده, size_t len, uint8_t بررسی_چرخهای_type)
 {
 	// Use uint64_t so n==32 (CRC-32) does not shift a 32-bit value by 32.
-	const unsigned n = 8u * (static_cast<unsigned>(crc_type) + 1u);
-	const uint64_t poly = (crc_type == 0) ? 0x07ull :
-			      (crc_type == 1) ? 0x1021ull :
-			      (crc_type == 2) ? 0x864CFBull : 0x04C11DB7ull;
-	const uint64_t top = 1ull << n;
-	const uint64_t g = top | poly;
-	uint64_t crc = (crc_type == 3) ? 0xFFFFFFFFull : 0ull;
+	ثابت بیعلامت n = 8u * (static_cast<بیعلامت>(بررسی_چرخهای_type) + 1u);
+	ثابت uint64_t poly = (بررسی_چرخهای_type == 0) ? 0x07ull :
+			      (بررسی_چرخهای_type == 1) ? 0x1021ull :
+			      (بررسی_چرخهای_type == 2) ? 0x864CFBull : 0x04C11DB7ull;
+	ثابت uint64_t بالاترین = 1ull << n;
+	ثابت uint64_t g = بالاترین | poly;
+	uint64_t بررسی_چرخهای = (بررسی_چرخهای_type == 3) ? 0xFFFFFFFFull : 0ull;
 
-	for (size_t i = 0; i < len; i++) {
-		crc ^= static_cast<uint64_t>(data[i]) << (n - 8);
+	لكل (size_t i = 0; i < len; i++) {
+		بررسی_چرخهای ^= static_cast<uint64_t>(داده[i]) << (n - 8);
 
-		for (int b = 0; b < 8; b++) {
-			crc <<= 1;
+		لكل (صحيح b = 0; b < 8; b++) {
+			بررسی_چرخهای <<= 1;
 
-			if (crc & top) {
-				crc ^= g;
+			إذا (بررسی_چرخهای & بالاترین) {
+				بررسی_چرخهای ^= g;
 			}
 		}
 	}
 
-	if (crc_type == 3) {
-		crc ^= 0xFFFFFFFFull;
+	إذا (بررسی_چرخهای_type == 3) {
+		بررسی_چرخهای ^= 0xFFFFFFFFull;
 	}
 
-	return static_cast<uint32_t>(crc & (top - 1ull));
+	أرجع static_cast<uint32_t>(بررسی_چرخهای & (بالاترین - 1ull));
 }
 
 } // namespace gnss

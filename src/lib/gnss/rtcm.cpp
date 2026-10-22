@@ -37,146 +37,146 @@
  * RTCM3 protocol parsing implementation.
  */
 
-#include "rtcm.h"
-#include <cstring>
+#ضمن "rtcm.h"
+#ضمن <cstring>
 
-namespace gnss
+نطاق gnss
 {
 
-uint32_t rtcm3_crc24q(const uint8_t *data, size_t len)
+uint32_t rtcm3_crc24q(ثابت uint8_t *داده, size_t len)
 {
-	uint32_t crc = 0;
+	uint32_t بررسی_چرخهای = 0;
 
-	for (size_t i = 0; i < len; i++) {
-		crc ^= static_cast<uint32_t>(data[i]) << 16;
+	لكل (size_t i = 0; i < len; i++) {
+		بررسی_چرخهای ^= static_cast<uint32_t>(داده[i]) << 16;
 
-		for (int j = 0; j < 8; j++) {
-			crc <<= 1;
+		لكل (صحيح j = 0; j < 8; j++) {
+			بررسی_چرخهای <<= 1;
 
-			if (crc & 0x1000000) {
-				crc ^= RTCM3_CRC24Q_POLY;
+			إذا (بررسی_چرخهای & 0x1000000) {
+				بررسی_چرخهای ^= RTCM3_CRC24Q_POLY;
 			}
 		}
 	}
 
-	return crc & 0xFFFFFF;
+	أرجع بررسی_چرخهای & 0xFFFFFF;
 }
 
-const uint8_t *GpsRtcmMessageAssembler::addPacket(uint8_t flags, const uint8_t *data, size_t len, uint64_t timestamp,
-		size_t &out_len)
+ثابت uint8_t *Gps_Rtcm_پیام_Assembler::جمع_کن_Packet(uint8_t flags, ثابت uint8_t *داده, size_t len, uint64_t timestamp,
+		size_t &بیرون_len)
 {
-	out_len = 0;
+	بیرون_len = 0;
 
-	if (data == nullptr) {
+	إذا (داده == اشاره_تهی) {
 		reset();
-		return nullptr;
+		أرجع اشاره_تهی;
 	}
 
 	// Timeout, clear stale partial state.
-	if (_active_sequence.active && (_active_sequence.timestamp != 0)
-	    && (timestamp > _active_sequence.timestamp + GPS_RTCM_FRAGMENT_TIMEOUT_US)) {
-		resetActiveState();
+	إذا (فعال_sequence.فعال_2 && (فعال_sequence.timestamp != 0)
+	    && (timestamp > فعال_sequence.timestamp + GPS_RTCM_FRAGMENT_TIMEOUT_US)) {
+		reset_فعال_State();
 	}
 
-	if (!gps_rtcm_is_fragmented(flags)) {
+	إذا (!gps_rtcm_is_fragmented(flags)) {
 		// Compatibility fallback for older QGroundControl builds
 		// that omit the final zero-length fragment
-		const size_t legacy_message_len = assembleLegacyExactMultipleMessage(_assembled_message);
+		ثابت size_t legacy_پیام_len = assemble_Legacy_Exact_مضرب_پیام(assembled_پیام);
 
 		// New fragment is invalid, return previous message if valid
-		if (len > sizeof(_assembled_message)) {
+		إذا (len > حجم(assembled_پیام)) {
 			reset();
-			out_len = legacy_message_len;
-			return (legacy_message_len > 0) ? _assembled_message : nullptr;
+			بیرون_len = legacy_پیام_len;
+			أرجع (legacy_پیام_len > 0) ? assembled_پیام : اشاره_تهی;
 		}
 
-		if (legacy_message_len > 0) {
+		إذا (legacy_پیام_len > 0) {
 			// Return the older buffered message first. Queue this new
 			// unfragmented packet as deferred output.
-			memcpy(_deferred_message, data, len);
-			_deferred_message_len = len;
-			_deferred_message_valid = true;
-			resetActiveState();
-			out_len = legacy_message_len;
-			return _assembled_message;
+			کپی_حافظه(deferred_پیام, داده, len);
+			deferred_پیام_len = len;
+			deferred_پیام_valid = درست;
+			reset_فعال_State();
+			بیرون_len = legacy_پیام_len;
+			أرجع assembled_پیام;
 		}
 
 		reset();
-		memcpy(_assembled_message, data, len);
-		out_len = len;
+		کپی_حافظه(assembled_پیام, داده, len);
+		بیرون_len = len;
 
-		return _assembled_message;
+		أرجع assembled_پیام;
 	}
 
-	if (len > GPS_RTCM_MAX_FRAGMENT_LEN) {
-		resetActiveState();
-		return nullptr;
+	إذا (len > GPS_RTCM_MAX_FRAGMENT_LEN) {
+		reset_فعال_State();
+		أرجع اشاره_تهی;
 	}
 
-	const uint8_t sequence_id = gps_rtcm_sequence_id(flags);
-	const uint8_t fragment_id = gps_rtcm_fragment_id(flags);
-	const bool is_non_full_fragment = len < GPS_RTCM_MAX_FRAGMENT_LEN;
-	const uint8_t *sequence_change_message = nullptr;
-	size_t sequence_change_message_len = 0;
+	ثابت uint8_t sequence_id = gps_rtcm_sequence_id(flags);
+	ثابت uint8_t fragment_id = gps_rtcm_fragment_id(flags);
+	ثابت منطقي is_non_پر_fragment = len < GPS_RTCM_MAX_FRAGMENT_LEN;
+	ثابت uint8_t *sequence_change_پیام = اشاره_تهی;
+	size_t sequence_change_پیام_len = 0;
 
-	if (!_active_sequence.active || sequence_id != _active_sequence.sequence_id) {
-		if (_active_sequence.active) {
+	إذا (!فعال_sequence.فعال_2 || sequence_id != فعال_sequence.sequence_id) {
+		إذا (فعال_sequence.فعال_2) {
 			// Compatibility fallback for older QGroundControl builds
 			// that omit the final zero-length fragment
-			sequence_change_message_len = assembleLegacyExactMultipleMessage(_assembled_message);
+			sequence_change_پیام_len = assemble_Legacy_Exact_مضرب_پیام(assembled_پیام);
 
-			if (sequence_change_message_len > 0) {
+			إذا (sequence_change_پیام_len > 0) {
 				// Do not return here: this same packet also starts the new
 				// sequence, so it still needs to be validated and buffered.
-				sequence_change_message = _assembled_message;
+				sequence_change_پیام = assembled_پیام;
 			}
 		}
 
-		resetActiveState();
-		_active_sequence.active = true;
-		_active_sequence.sequence_id = sequence_id;
+		reset_فعال_State();
+		فعال_sequence.فعال_2 = درست;
+		فعال_sequence.sequence_id = sequence_id;
 	}
 
-	const bool last_fragment_known = (_active_sequence.last_fragment_id >= 0);
+	ثابت منطقي آخرین_fragment_معلوم = (فعال_sequence.آخرین_fragment_id >= 0);
 
 	// Once a non-full final fragment is known, any later fragment index is invalid.
-	if (last_fragment_known && (fragment_id > _active_sequence.last_fragment_id)) {
-		resetActiveState();
-		out_len = sequence_change_message_len;
-		return sequence_change_message;
+	إذا (آخرین_fragment_معلوم && (fragment_id > فعال_sequence.آخرین_fragment_id)) {
+		reset_فعال_State();
+		بیرون_len = sequence_change_پیام_len;
+		أرجع sequence_change_پیام;
 	}
 
 	// A non-full fragment before the known end would contradict the current
 	// end-of-message boundary. That can only come from malformed sender state.
-	if (last_fragment_known && (fragment_id < _active_sequence.last_fragment_id) && is_non_full_fragment) {
-		resetActiveState();
-		out_len = sequence_change_message_len;
-		return sequence_change_message;
+	إذا (آخرین_fragment_معلوم && (fragment_id < فعال_sequence.آخرین_fragment_id) && is_non_پر_fragment) {
+		reset_فعال_State();
+		بیرون_len = sequence_change_پیام_len;
+		أرجع sequence_change_پیام;
 	}
 
 	// The first fragment with a non-full payload defines the completion
 	// boundary. A higher buffered fragment would contradict that boundary.
-	if (is_non_full_fragment && hasFragmentAfter(fragment_id)) {
-		resetActiveState();
-		out_len = sequence_change_message_len;
-		return sequence_change_message;
+	إذا (is_non_پر_fragment && hasFragmentAfter(fragment_id)) {
+		reset_فعال_State();
+		بیرون_len = sequence_change_پیام_len;
+		أرجع sequence_change_پیام;
 	}
 
-	FragmentSlot &fragment = _fragments[fragment_id];
+	Fragment_جایگاه &fragment = _fragments[fragment_id];
 
-	if (fragment.present && ((fragment.len != len) || (memcmp(fragment.data, data, len) != 0))) {
+	إذا (fragment.present && ((fragment.len != len) || (memcmp(fragment.داده, داده, len) != 0))) {
 		// Reusing a slot with different bytes means the current buffer no longer
 		// matches the incoming fragments. Drop the old partial state and treat
 		// this packet as the start of a new buffer for the same sequence ID.
-		resetActiveState();
-		_active_sequence.active = true;
-		_active_sequence.sequence_id = sequence_id;
+		reset_فعال_State();
+		فعال_sequence.فعال_2 = درست;
+		فعال_sequence.sequence_id = sequence_id;
 	}
 
-	memcpy(fragment.data, data, len);
+	کپی_حافظه(fragment.داده, داده, len);
 	fragment.len = len;
-	fragment.present = true;
-	_active_sequence.timestamp = timestamp;
+	fragment.present = درست;
+	فعال_sequence.timestamp = timestamp;
 
 	// The buffer is complete when either all 4 fragments are present, or when
 	// the first fragment with a non-full payload has been received and every
@@ -184,125 +184,125 @@ const uint8_t *GpsRtcmMessageAssembler::addPacket(uint8_t flags, const uint8_t *
 	// boundary covers the "all 4 fragments" case. A non-full fragment 0 also
 	// completes immediately, although a compliant sender would normally send
 	// that packet as unfragmented instead of setting the fragmented bit.
-	if (is_non_full_fragment || (fragment_id == GPS_RTCM_MAX_FRAGMENTS - 1)) {
-		_active_sequence.last_fragment_id = fragment_id;
+	إذا (is_non_پر_fragment || (fragment_id == GPS_RTCM_MAX_FRAGMENTS - 1)) {
+		فعال_sequence.آخرین_fragment_id = fragment_id;
 	}
 
-	if (!isComplete()) {
-		out_len = sequence_change_message_len;
-		return sequence_change_message;
+	إذا (!isComplete()) {
+		بیرون_len = sequence_change_پیام_len;
+		أرجع sequence_change_پیام;
 	}
 
 	size_t assembled_len = 0;
-	uint8_t *destination = (sequence_change_message != nullptr) ? _deferred_message : _assembled_message;
+	uint8_t *destination = (sequence_change_پیام != اشاره_تهی) ? deferred_پیام : assembled_پیام;
 
-	for (size_t i = 0; i <= lastFragmentIndex(); i++) {
-		const FragmentSlot &slot = _fragments[i];
-		memcpy(&destination[assembled_len], slot.data, slot.len);
-		assembled_len += slot.len;
+	لكل (size_t i = 0; i <= آخرین_Fragment_شاخص(); i++) {
+		ثابت Fragment_جایگاه &جایگاه = _fragments[i];
+		کپی_حافظه(&destination[assembled_len], جایگاه.داده, جایگاه.len);
+		assembled_len += جایگاه.len;
 	}
 
-	resetActiveState();
+	reset_فعال_State();
 
-	if (sequence_change_message != nullptr) {
-		_deferred_message_len = assembled_len;
-		_deferred_message_valid = true;
-		out_len = sequence_change_message_len;
-		return sequence_change_message;
+	إذا (sequence_change_پیام != اشاره_تهی) {
+		deferred_پیام_len = assembled_len;
+		deferred_پیام_valid = درست;
+		بیرون_len = sequence_change_پیام_len;
+		أرجع sequence_change_پیام;
 	}
 
-	out_len = assembled_len;
-	return _assembled_message;
+	بیرون_len = assembled_len;
+	أرجع assembled_پیام;
 }
 
-const uint8_t *GpsRtcmMessageAssembler::takeDeferredMessage(size_t &out_len)
+ثابت uint8_t *Gps_Rtcm_پیام_Assembler::take_Deferred_پیام(size_t &بیرون_len)
 {
-	out_len = 0;
+	بیرون_len = 0;
 
-	if (!_deferred_message_valid) {
-		return nullptr;
+	إذا (!deferred_پیام_valid) {
+		أرجع اشاره_تهی;
 	}
 
-	_deferred_message_valid = false;
-	out_len = _deferred_message_len;
-	return _deferred_message;
+	deferred_پیام_valid = خطأ;
+	بیرون_len = deferred_پیام_len;
+	أرجع deferred_پیام;
 }
 
-void GpsRtcmMessageAssembler::reset()
+فراغ Gps_Rtcm_پیام_Assembler::reset()
 {
-	resetActiveState();
-	_deferred_message_len = 0;
-	_deferred_message_valid = false;
+	reset_فعال_State();
+	deferred_پیام_len = 0;
+	deferred_پیام_valid = خطأ;
 }
 
-void GpsRtcmMessageAssembler::resetActiveState()
+فراغ Gps_Rtcm_پیام_Assembler::reset_فعال_State()
 {
-	for (FragmentSlot &fragment : _fragments) {
-		fragment.present = false;
+	لكل (Fragment_جایگاه &fragment : _fragments) {
+		fragment.present = خطأ;
 		fragment.len = 0;
 	}
 
-	_active_sequence = {};
+	فعال_sequence = {};
 }
 
-bool GpsRtcmMessageAssembler::hasFragmentAfter(uint8_t fragment_id) const
+منطقي Gps_Rtcm_پیام_Assembler::hasFragmentAfter(uint8_t fragment_id) ثابت
 {
-	for (size_t i = fragment_id + 1; i < GPS_RTCM_MAX_FRAGMENTS; i++) {
-		if (_fragments[i].present) {
-			return true;
+	لكل (size_t i = fragment_id + 1; i < GPS_RTCM_MAX_FRAGMENTS; i++) {
+		إذا (_fragments[i].present) {
+			أرجع درست;
 		}
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-size_t GpsRtcmMessageAssembler::assembleLegacyExactMultipleMessage(uint8_t *destination) const
+size_t Gps_Rtcm_پیام_Assembler::assemble_Legacy_Exact_مضرب_پیام(uint8_t *destination) ثابت
 {
-	size_t full_fragments = 0;
+	size_t پر_fragments = 0;
 
 	// Extension to MAVLink rule: accept legacy senders that omit the required
 	// zero-length terminator for exact multiples of 180 bytes, but only when
 	// every buffered fragment forms a gap-free full-size prefix starting at
 	// fragment 0.
-	for (; full_fragments < GPS_RTCM_MAX_FRAGMENTS; full_fragments++) {
-		if (!_fragments[full_fragments].present) {
-			break;
+	لكل (; پر_fragments < GPS_RTCM_MAX_FRAGMENTS; پر_fragments++) {
+		إذا (!_fragments[پر_fragments].present) {
+			اكسر;
 		}
 
-		if (_fragments[full_fragments].len != GPS_RTCM_MAX_FRAGMENT_LEN) {
-			break;
+		إذا (_fragments[پر_fragments].len != GPS_RTCM_MAX_FRAGMENT_LEN) {
+			اكسر;
 		}
 	}
 
 	// Reject buffers like [180, _, 180]: only flush when every buffered
 	// fragment belongs to one contiguous full-size run starting at fragment 0.
-	if ((full_fragments == 0) || hasFragmentAfter(full_fragments - 1)) {
-		return 0;
+	إذا ((پر_fragments == 0) || hasFragmentAfter(پر_fragments - 1)) {
+		أرجع 0;
 	}
 
 	size_t assembled_len = 0;
 
-	for (size_t i = 0; i < full_fragments; i++) {
-		const FragmentSlot &slot = _fragments[i];
-		memcpy(&destination[assembled_len], slot.data, slot.len);
-		assembled_len += slot.len;
+	لكل (size_t i = 0; i < پر_fragments; i++) {
+		ثابت Fragment_جایگاه &جایگاه = _fragments[i];
+		کپی_حافظه(&destination[assembled_len], جایگاه.داده, جایگاه.len);
+		assembled_len += جایگاه.len;
 	}
 
-	return assembled_len;
+	أرجع assembled_len;
 }
 
-bool GpsRtcmMessageAssembler::isComplete() const
+منطقي Gps_Rtcm_پیام_Assembler::isComplete() ثابت
 {
-	for (size_t i = 0; i <= lastFragmentIndex(); i++) {
-		if (!_fragments[i].present) {
-			return false;
+	لكل (size_t i = 0; i <= آخرین_Fragment_شاخص(); i++) {
+		إذا (!_fragments[i].present) {
+			أرجع خطأ;
 		}
 	}
 
-	return true;
+	أرجع درست;
 }
 
-size_t GpsRtcmMessageAssembler::lastFragmentIndex() const
+size_t Gps_Rtcm_پیام_Assembler::آخرین_Fragment_شاخص() ثابت
 {
 	// Per the MAVLink GPS_RTCM_DATA rule, a buffer is complete once either all
 	// 4 fragments are present, or the first fragment with a non-full payload
@@ -314,7 +314,7 @@ size_t GpsRtcmMessageAssembler::lastFragmentIndex() const
 	// intentionally accepts older senders that omit that terminator, but only
 	// for gap-free full-size fragment runs starting at fragment 0 while the old
 	// sequence is still buffered.
-	return (_active_sequence.last_fragment_id >= 0) ? static_cast<size_t>(_active_sequence.last_fragment_id) :
+	أرجع (فعال_sequence.آخرین_fragment_id >= 0) ? static_cast<size_t>(فعال_sequence.آخرین_fragment_id) :
 	       (GPS_RTCM_MAX_FRAGMENTS - 1);
 }
 

@@ -31,68 +31,68 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "CollisionPrevention.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن "CollisionPrevention.hpp"
 
-using namespace matrix;
+استفاده نطاق ماتریس;
 
 // to run: make tests TESTFILTER=CollisionPrevention
-hrt_abstime mocked_time = 0;
-const uint bin_size = CollisionPrevention::BIN_SIZE;
-const uint bin_count = CollisionPrevention::BIN_COUNT;
+hrt_abstime mocked_زمان = 0;
+ثابت uint bin_اندازه = CollisionPrevention::BIN_اندازه;
+ثابت uint bin_شمار = CollisionPrevention::BIN_شمار;
 
-class CollisionPreventionTest : public ::testing::Test
+صنف CollisionPreventionTest : عام ::testing::Test
 {
-public:
-	void SetUp() override
+عام:
+	فراغ مجموعه_به_بالا() override
 	{
-		param_control_autosave(false);
+		param_control_autosave(خطأ);
 		param_reset_all();
 	}
 };
 
-class TestCollisionPrevention : public CollisionPrevention
+صنف TestCollisionPrevention : عام CollisionPrevention
 {
-public:
-	TestCollisionPrevention() : CollisionPrevention(nullptr) {}
-	void paramsChanged() {CollisionPrevention::updateParamsImpl();}
-	obstacle_distance_s &getObstacleMap() {return _obstacle_map_body_frame;}
-	void test_addDistanceSensorData(distance_sensor_s &distance_sensor, const Quatf &attitude)
+عام:
+	TestCollisionPrevention() : CollisionPrevention(اشاره_تهی) {}
+	فراغ params_تغییریافته() {CollisionPrevention::updateParamsImpl();}
+	obstacle_فاصله_s &getObstacleMap() {أرجع obstacle_map_body_قاب;}
+	فراغ test_جمع_کن_فاصله_Sensor_داده(فاصله_sensor_s &فاصله_sensor, ثابت Quatf &attitude)
 	{
-		_addDistanceSensorData(distance_sensor, attitude);
+		جمع_کن_فاصله_Sensor_داده(فاصله_sensor, attitude);
 	}
-	void test_addObstacleSensorData(const obstacle_distance_s &obstacle, const float vehicle_yaw)
+	فراغ test_جمع_کن_Obstacle_Sensor_داده(ثابت obstacle_فاصله_s &obstacle, ثابت عائم vehicle_yaw)
 	{
-		_addObstacleSensorData(obstacle, vehicle_yaw);
+		جمع_کن_Obstacle_Sensor_داده(obstacle, vehicle_yaw);
 	}
-	void test_adaptSetpointDirection(Vector2f &setpoint_dir, int &setpoint_index,
-					 float vehicle_yaw_angle_rad)
+	فراغ test_adaptSetpointDirection(Vector2f &setpoint_dir, صحيح &setpoint_شاخص_2,
+					 عائم vehicle_yaw_angle_rad)
 	{
-		_adaptSetpointDirection(setpoint_dir, setpoint_index, vehicle_yaw_angle_rad);
+		_adaptSetpointDirection(setpoint_dir, setpoint_شاخص_2, vehicle_yaw_angle_rad);
 	}
-	bool test_enterData(int map_index, float sensor_range, float sensor_reading)
+	منطقي test_enter_داده(صحيح map_شاخص, عائم sensor_range, عائم sensor_reading)
 	{
-		return _enterData(map_index, sensor_range, sensor_reading);
+		أرجع enter_داده(map_شاخص, sensor_range, sensor_reading);
 	}
 };
 
-class TestTimingCollisionPrevention : public TestCollisionPrevention
+صنف TestTimingCollisionPrevention : عام TestCollisionPrevention
 {
-public:
+عام:
 	TestTimingCollisionPrevention() : TestCollisionPrevention() {}
-protected:
-	hrt_abstime getTime() override
+محمي:
+	hrt_abstime get_زمان() override
 	{
-		return mocked_time;
+		أرجع mocked_زمان;
 	}
 
-	hrt_abstime getElapsedTime(const hrt_abstime *ptr) override
+	hrt_abstime get_Elapsed_زمان(ثابت hrt_abstime *ptr) override
 	{
-		return mocked_time - *ptr;
+		أرجع mocked_زمان - *ptr;
 	}
 };
 
-TEST_F(CollisionPreventionTest, instantiation) { CollisionPrevention cp(nullptr); }
+TEST_F(CollisionPreventionTest, instantiation) { CollisionPrevention cp(اشاره_تهی); }
 
 TEST_F(CollisionPreventionTest, behaviorOff)
 {
@@ -100,10 +100,10 @@ TEST_F(CollisionPreventionTest, behaviorOff)
 	TestCollisionPrevention cp;
 
 	// THEN: the collision prevention should be turned off by default
-	EXPECT_FALSE(cp.is_active());
+	EXPECT_FALSE(cp.is_فعال());
 }
 
-TEST_F(CollisionPreventionTest, noSensorData)
+TEST_F(CollisionPreventionTest, no_Sensor_داده)
 {
 	// GIVEN: a simple setup condition
 	TestCollisionPrevention cp;
@@ -114,19 +114,19 @@ TEST_F(CollisionPreventionTest, noSensorData)
 	param_t param = param_handle(px4::params::CP_DIST);
 
 	// WHEN: we set the parameter check then apply the setpoint modification
-	float value = 10; // try to keep 10m away from obstacles
-	param_set(param, &value);
-	cp.paramsChanged();
+	عائم value = 10; // try to keep 10m away from obstacles
+	param_مجموعه(param, &value);
+	cp.params_تغییریافته();
 
 	Vector2f modified_setpoint = original_setpoint;
 	cp.modifySetpoint(modified_setpoint, curr_vel);
 
 	// THEN: collision prevention should be enabled and limit the speed to zero
-	EXPECT_TRUE(cp.is_active());
+	EXPECT_TRUE(cp.is_فعال());
 	EXPECT_FLOAT_EQ(0.f, modified_setpoint.norm());
 }
 
-TEST_F(CollisionPreventionTest, testBehaviorOnWithObstacleMessage)
+TEST_F(CollisionPreventionTest, test_Behavior_On_With_Obstacle_پیام)
 {
 	// GIVEN: a simple setup condition
 	TestCollisionPrevention cp;
@@ -134,7 +134,7 @@ TEST_F(CollisionPreventionTest, testBehaviorOnWithObstacleMessage)
 	Vector2f original_setpoint2(-10, 0);
 	Vector2f curr_vel(2, 0);
 	vehicle_attitude_s attitude;
-	attitude.timestamp = hrt_absolute_time();
+	attitude.timestamp = hrt_absolute_زمان();
 	attitude.q[0] = 1.0f;
 	attitude.q[1] = 0.0f;
 	attitude.q[2] = 0.0f;
@@ -142,57 +142,57 @@ TEST_F(CollisionPreventionTest, testBehaviorOnWithObstacleMessage)
 
 	// AND: a parameter handle
 	param_t param1 = param_handle(px4::params::CP_DIST);
-	float value1 = 10; // try to keep 10m distance
-	param_set(param1, &value1);
+	عائم value1 = 10; // try to keep 10m distance
+	param_مجموعه(param1, &value1);
 	param_t param2 = param_handle(px4::params::CP_GUIDE_ANG);
-	float value2 = 0; // dont guide sideways
-	param_set(param2, &value2);
-	cp.paramsChanged();
+	عائم value2 = 0; // dont guide sideways
+	param_مجموعه(param2, &value2);
+	cp.params_تغییریافته();
 
 	// AND: an obstacle message
-	obstacle_distance_s message;
-	memset(&message, 0xDEAD, sizeof(message));
-	message.frame = message.MAV_FRAME_GLOBAL; //north aligned
-	message.min_distance = 100;
-	message.max_distance = 10000;
-	message.angle_offset = 0;
-	message.timestamp = hrt_absolute_time();
-	int distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
-	message.increment = 360 / distances_array_size;
+	obstacle_فاصله_s پیام_3;
+	memset(&پیام_3, 0xDEAD, حجم(پیام_3));
+	پیام_3.قاب = پیام_3.MAV_قاب_GLOBAL; //north aligned
+	پیام_3.min_فاصله = 100;
+	پیام_3.max_فاصله = 10000;
+	پیام_3.angle_جابه_جایی = 0;
+	پیام_3.timestamp = hrt_absolute_زمان();
+	صحيح distances_array_اندازه = حجم(پیام_3.distances) / حجم(پیام_3.distances[0]);
+	پیام_3.increment = 360 / distances_array_اندازه;
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i < 10) {
-			message.distances[i] = 101;
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i < 10) {
+			پیام_3.distances[i] = 101;
 
-		} else {
-			message.distances[i] = 10001;
+		} وإلا {
+			پیام_3.distances[i] = 10001;
 		}
 	}
 
 	// WHEN: we publish the message and set the parameter and then run the setpoint modification
-	orb_advert_t obstacle_distance_pub = orb_advertise(ORB_ID(obstacle_distance), &message);
+	orb_advert_t obstacle_فاصله_pub = orb_advertise(ORB_ID(obstacle_فاصله), &پیام_3);
 	orb_advert_t vehicle_attitude_pub = orb_advertise(ORB_ID(vehicle_attitude), &attitude);
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &message);
+	orb_publish(ORB_ID(obstacle_فاصله), obstacle_فاصله_pub, &پیام_3);
 	orb_publish(ORB_ID(vehicle_attitude), vehicle_attitude_pub, &attitude);
 	Vector2f modified_setpoint1 = original_setpoint1;
 	Vector2f modified_setpoint2 = original_setpoint2;
 	cp.modifySetpoint(modified_setpoint1, curr_vel);
 	cp.modifySetpoint(modified_setpoint2, curr_vel);
-	orb_unadvertise(obstacle_distance_pub);
+	orb_unadvertise(obstacle_فاصله_pub);
 	orb_unadvertise(vehicle_attitude_pub);
 
 	// THEN: the internal map should know the obstacle
 	// case 1: the acceleration setpoint should be negative as its pushing you away from the obstacle, and sideways acceleration should be low
 	// case 2: the acceleration setpoint should be lower
-	EXPECT_FLOAT_EQ(cp.getObstacleMap().min_distance, 100);
-	EXPECT_FLOAT_EQ(cp.getObstacleMap().max_distance, 10000);
+	EXPECT_FLOAT_EQ(cp.getObstacleMap().min_فاصله, 100);
+	EXPECT_FLOAT_EQ(cp.getObstacleMap().max_فاصله, 10000);
 	EXPECT_GT(0.f, modified_setpoint1(0)) << modified_setpoint1(0);
 	EXPECT_EQ(0.f, fabsf(modified_setpoint1(1))) << modified_setpoint1(1);
 	EXPECT_GT(0.f, modified_setpoint2(0))  << original_setpoint2(0);
 	EXPECT_EQ(0.f, fabsf(modified_setpoint2(1))) << modified_setpoint2(1);
 }
 
-TEST_F(CollisionPreventionTest, testBehaviorOnWithDistanceMessage)
+TEST_F(CollisionPreventionTest, test_Behavior_On_With_فاصله_پیام)
 {
 	// GIVEN: a simple setup condition
 	TestCollisionPrevention cp;
@@ -200,7 +200,7 @@ TEST_F(CollisionPreventionTest, testBehaviorOnWithDistanceMessage)
 	Vector2f original_setpoint2(-10, 0);
 	Vector2f curr_vel(2, 0);
 	vehicle_attitude_s attitude;
-	attitude.timestamp = hrt_absolute_time();
+	attitude.timestamp = hrt_absolute_زمان();
 	attitude.q[0] = 1.0f;
 	attitude.q[1] = 0.0f;
 	attitude.q[2] = 0.0f;
@@ -208,28 +208,28 @@ TEST_F(CollisionPreventionTest, testBehaviorOnWithDistanceMessage)
 
 	// AND: a parameter handle
 	param_t param = param_handle(px4::params::CP_DIST);
-	float value = 10; // try to keep 10m distance
-	param_set(param, &value);
-	cp.paramsChanged();
+	عائم value = 10; // try to keep 10m distance
+	param_مجموعه(param, &value);
+	cp.params_تغییریافته();
 
 	// AND: an obstacle message
-	distance_sensor_s message;
-	message.timestamp = hrt_absolute_time();
-	message.min_distance = 1.f;
-	message.max_distance = 100.f;
-	message.current_distance = 1.1f;
+	فاصله_sensor_s پیام_3;
+	پیام_3.timestamp = hrt_absolute_زمان();
+	پیام_3.min_فاصله = 1.f;
+	پیام_3.max_فاصله = 100.f;
+	پیام_3.current_فاصله = 1.1f;
 
-	message.variance = 0.1f;
-	message.signal_quality = 100;
-	message.type = distance_sensor_s::MAV_DISTANCE_SENSOR_LASER;
-	message.orientation = distance_sensor_s::ROTATION_FORWARD_FACING;
-	message.h_fov = math::radians(50.f);
-	message.v_fov = math::radians(30.f);
+	پیام_3.variance = 0.1f;
+	پیام_3.signal_quality = 100;
+	پیام_3.type = فاصله_sensor_s::MAV_فاصله_SENSOR_LASER;
+	پیام_3.orientation = فاصله_sensor_s::ROTATION_FORWARD_FACING;
+	پیام_3.h_fov = math::radians(50.f);
+	پیام_3.v_fov = math::radians(30.f);
 
 	// WHEN: we publish the message and set the parameter and then run the setpoint modification
-	orb_advert_t distance_sensor_pub = orb_advertise(ORB_ID(distance_sensor), &message);
+	orb_advert_t فاصله_sensor_pub = orb_advertise(ORB_ID(فاصله_sensor), &پیام_3);
 	orb_advert_t vehicle_attitude_pub = orb_advertise(ORB_ID(vehicle_attitude), &attitude);
-	orb_publish(ORB_ID(distance_sensor), distance_sensor_pub, &message);
+	orb_publish(ORB_ID(فاصله_sensor), فاصله_sensor_pub, &پیام_3);
 	orb_publish(ORB_ID(vehicle_attitude), vehicle_attitude_pub, &attitude);
 
 	//WHEN:  We run the setpoint modification
@@ -237,17 +237,17 @@ TEST_F(CollisionPreventionTest, testBehaviorOnWithDistanceMessage)
 	Vector2f modified_setpoint2 = original_setpoint2;
 	cp.modifySetpoint(modified_setpoint1, curr_vel);
 	cp.modifySetpoint(modified_setpoint2, curr_vel);
-	orb_unadvertise(distance_sensor_pub);
+	orb_unadvertise(فاصله_sensor_pub);
 	orb_unadvertise(vehicle_attitude_pub);
 
 	// THEN: the internal map should know the obstacle
 	// case 1: the acceleration setpoint should be negative as its pushing you away from the obstacle, and sideways acceleration should be low
 	// case 2: the acceleration setpoint should be lower
-	EXPECT_FLOAT_EQ(cp.getObstacleMap().min_distance, 100);
-	EXPECT_FLOAT_EQ(cp.getObstacleMap().max_distance, 10000);
+	EXPECT_FLOAT_EQ(cp.getObstacleMap().min_فاصله, 100);
+	EXPECT_FLOAT_EQ(cp.getObstacleMap().max_فاصله, 10000);
 
-	EXPECT_FLOAT_EQ(cp.getObstacleMap().min_distance, 100);
-	EXPECT_FLOAT_EQ(cp.getObstacleMap().max_distance, 10000);
+	EXPECT_FLOAT_EQ(cp.getObstacleMap().min_فاصله, 100);
+	EXPECT_FLOAT_EQ(cp.getObstacleMap().max_فاصله, 10000);
 
 	EXPECT_GT(0.f, modified_setpoint1(0)) << modified_setpoint1(0);
 	EXPECT_EQ(0.f, fabsf(modified_setpoint1(1))) << modified_setpoint1(1);
@@ -255,16 +255,16 @@ TEST_F(CollisionPreventionTest, testBehaviorOnWithDistanceMessage)
 	EXPECT_EQ(0.f, fabsf(modified_setpoint2(1))) << modified_setpoint2(1);
 }
 
-TEST_F(CollisionPreventionTest, testPurgeOldData)
+TEST_F(CollisionPreventionTest, test_Purge_Old_داده)
 {
 	// GIVEN: a simple setup condition
 	TestTimingCollisionPrevention cp;
-	hrt_abstime start_time = hrt_absolute_time();
-	mocked_time = start_time;
+	hrt_abstime شروع_زمان = hrt_absolute_زمان();
+	mocked_زمان = شروع_زمان;
 	Vector2f original_setpoint(10, 0);
 	Vector2f curr_vel(2, 0);
 	vehicle_attitude_s attitude;
-	attitude.timestamp = start_time;
+	attitude.timestamp = شروع_زمان;
 	attitude.q[0] = 1.0f;
 	attitude.q[1] = 0.0f;
 	attitude.q[2] = 0.0f;
@@ -272,85 +272,85 @@ TEST_F(CollisionPreventionTest, testPurgeOldData)
 
 	// AND: a parameter handle
 	param_t param = param_handle(px4::params::CP_DIST);
-	float value = 1; // try to keep 10m distance
-	param_set(param, &value);
-	cp.paramsChanged();
+	عائم value = 1; // try to keep 10m distance
+	param_مجموعه(param, &value);
+	cp.params_تغییریافته();
 
 	// AND: an obstacle message
-	obstacle_distance_s message, message_lost_data;
-	memset(&message, 0xDEAD, sizeof(message));
-	message.frame = message.MAV_FRAME_GLOBAL; //north aligned
-	message.min_distance = 100;
-	message.max_distance = 10000;
-	message.angle_offset = 0;
-	message.timestamp = start_time;
-	int distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
-	message.increment = 360 / distances_array_size;
-	message_lost_data = message;
+	obstacle_فاصله_s پیام_3, پیام_گمشده_داده;
+	memset(&پیام_3, 0xDEAD, حجم(پیام_3));
+	پیام_3.قاب = پیام_3.MAV_قاب_GLOBAL; //north aligned
+	پیام_3.min_فاصله = 100;
+	پیام_3.max_فاصله = 10000;
+	پیام_3.angle_جابه_جایی = 0;
+	پیام_3.timestamp = شروع_زمان;
+	صحيح distances_array_اندازه = حجم(پیام_3.distances) / حجم(پیام_3.distances[0]);
+	پیام_3.increment = 360 / distances_array_اندازه;
+	پیام_گمشده_داده = پیام_3;
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i < 10) {
-			message.distances[i] = 10001;
-			message_lost_data.distances[i] = UINT16_MAX;
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i < 10) {
+			پیام_3.distances[i] = 10001;
+			پیام_گمشده_داده.distances[i] = UINT16_MAX;
 
-		} else if (i > 15 && i < 18) {
-			message.distances[i] = 10001;
-			message_lost_data.distances[i] = 10001;
+		} وإلا إذا (i > 15 && i < 18) {
+			پیام_3.distances[i] = 10001;
+			پیام_گمشده_داده.distances[i] = 10001;
 
-		} else {
-			message.distances[i] = UINT16_MAX;
-			message_lost_data.distances[i] = UINT16_MAX;
+		} وإلا {
+			پیام_3.distances[i] = UINT16_MAX;
+			پیام_گمشده_داده.distances[i] = UINT16_MAX;
 		}
 	}
 
 	// WHEN: we publish the message and set the parameter and then run the setpoint modification
-	orb_advert_t obstacle_distance_pub = orb_advertise(ORB_ID(obstacle_distance), &message);
+	orb_advert_t obstacle_فاصله_pub = orb_advertise(ORB_ID(obstacle_فاصله), &پیام_3);
 	orb_advert_t vehicle_attitude_pub = orb_advertise(ORB_ID(vehicle_attitude), &attitude);
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &message);
+	orb_publish(ORB_ID(obstacle_فاصله), obstacle_فاصله_pub, &پیام_3);
 	orb_publish(ORB_ID(vehicle_attitude), vehicle_attitude_pub, &attitude);
 
-	for (int i = 0; i < 10; i++) {
+	لكل (صحيح i = 0; i < 10; i++) {
 		Vector2f modified_setpoint = original_setpoint;
 		cp.modifySetpoint(modified_setpoint, curr_vel);
 
-		mocked_time = mocked_time + 100000; //advance time by 0.1 seconds
-		message_lost_data.timestamp = mocked_time;
-		orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &message_lost_data);
+		mocked_زمان = mocked_زمان + 100000; //advance time by 0.1 seconds
+		پیام_گمشده_داده.timestamp = mocked_زمان;
+		orb_publish(ORB_ID(obstacle_فاصله), obstacle_فاصله_pub, &پیام_گمشده_داده);
 
 		//at iteration 8 change the CP_GO_NO_DATA to True
-		if (i == 8) {
-			param_t param_allow = param_handle(px4::params::CP_GO_NO_DATA);
-			float value_allow = 1;
-			param_set(param_allow, &value_allow);
-			cp.paramsChanged();
+		إذا (i == 8) {
+			param_t param_allow = param_handle(px4::params::CP_GO_NO_داده);
+			عائم مقدار_allow = 1;
+			param_مجموعه(param_allow, &مقدار_allow);
+			cp.params_تغییریافته();
 		}
 
-		if (i < 6) {
+		إذا (i < 6) {
 			// THEN: If the data is new enough, the velocity setpoint should stay the same as the input
 			// Note: direction will change slightly due to guidance
 			EXPECT_FLOAT_EQ(original_setpoint.norm(), modified_setpoint.norm());
 
-		} else {
+		} وإلا {
 			// THEN: If the data is expired, the velocity setpoint should be cut down to zero because there is no data
 			//(even if CP_GO_NO_DATA is set to true, because we once had data in those bins and now lost the sensor)
 			EXPECT_FLOAT_EQ(0.f, modified_setpoint.norm()) << modified_setpoint(0) << "," << modified_setpoint(1);
 		}
 	}
 
-	orb_unadvertise(obstacle_distance_pub);
+	orb_unadvertise(obstacle_فاصله_pub);
 	orb_unadvertise(vehicle_attitude_pub);
 }
 
-TEST_F(CollisionPreventionTest, testNoRangeData)
+TEST_F(CollisionPreventionTest, test_No_Range_داده)
 {
 	// GIVEN: a simple setup condition
 	TestTimingCollisionPrevention cp;
-	hrt_abstime start_time = hrt_absolute_time();
-	mocked_time = start_time;
+	hrt_abstime شروع_زمان = hrt_absolute_زمان();
+	mocked_زمان = شروع_زمان;
 	Vector2f original_setpoint(10, 0);
 	Vector2f curr_vel(2, 0);
 	vehicle_attitude_s attitude;
-	attitude.timestamp = start_time;
+	attitude.timestamp = شروع_زمان;
 	attitude.q[0] = 1.0f;
 	attitude.q[1] = 0.0f;
 	attitude.q[2] = 0.0f;
@@ -358,51 +358,51 @@ TEST_F(CollisionPreventionTest, testNoRangeData)
 
 	// AND: a parameter handle
 	param_t param = param_handle(px4::params::CP_DIST);
-	float value = 10; // try to keep 10m distance
-	param_set(param, &value);
-	cp.paramsChanged();
+	عائم value = 10; // try to keep 10m distance
+	param_مجموعه(param, &value);
+	cp.params_تغییریافته();
 
 	// AND: an obstacle message without any obstacle
-	obstacle_distance_s message;
-	memset(&message, 0xDEAD, sizeof(message));
-	message.frame = message.MAV_FRAME_GLOBAL; //north aligned
-	message.min_distance = 100;
-	message.max_distance = 10000;
-	message.angle_offset = 0;
-	message.timestamp = start_time;
-	int distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
-	message.increment = 360 / distances_array_size;
+	obstacle_فاصله_s پیام_3;
+	memset(&پیام_3, 0xDEAD, حجم(پیام_3));
+	پیام_3.قاب = پیام_3.MAV_قاب_GLOBAL; //north aligned
+	پیام_3.min_فاصله = 100;
+	پیام_3.max_فاصله = 10000;
+	پیام_3.angle_جابه_جایی = 0;
+	پیام_3.timestamp = شروع_زمان;
+	صحيح distances_array_اندازه = حجم(پیام_3.distances) / حجم(پیام_3.distances[0]);
+	پیام_3.increment = 360 / distances_array_اندازه;
 
-	for (int i = 0; i < distances_array_size; i++) {
-		message.distances[i] = 9000;
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		پیام_3.distances[i] = 9000;
 	}
 
 
 	// WHEN: we publish the message and set the parameter and then run the setpoint modification
-	orb_advert_t obstacle_distance_pub = orb_advertise(ORB_ID(obstacle_distance), &message);
+	orb_advert_t obstacle_فاصله_pub = orb_advertise(ORB_ID(obstacle_فاصله), &پیام_3);
 	orb_advert_t vehicle_attitude_pub = orb_advertise(ORB_ID(vehicle_attitude), &attitude);
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &message);
+	orb_publish(ORB_ID(obstacle_فاصله), obstacle_فاصله_pub, &پیام_3);
 	orb_publish(ORB_ID(vehicle_attitude), vehicle_attitude_pub, &attitude);
 
-	for (int i = 0; i < 10; i++) {
+	لكل (صحيح i = 0; i < 10; i++) {
 		Vector2f modified_setpoint = original_setpoint;
 		cp.modifySetpoint(modified_setpoint, curr_vel);
 
 		//advance time by 0.1 seconds but no new message comes in
-		mocked_time = mocked_time + 100000;
+		mocked_زمان = mocked_زمان + 100000;
 
-		if (i < 5) {
+		إذا (i < 5) {
 			// THEN: If the data is new enough, the velocity setpoint should stay the same as the input
 			// Note: direction will change slightly due to guidance
 			EXPECT_FLOAT_EQ(original_setpoint.norm(), modified_setpoint.norm());
 
-		} else {
+		} وإلا {
 			// THEN: If the data is expired, the velocity setpoint should be cut down to zero because there is no data
 			EXPECT_FLOAT_EQ(0.f, modified_setpoint.norm()) << modified_setpoint(0) << "," << modified_setpoint(1);
 		}
 	}
 
-	orb_unadvertise(obstacle_distance_pub);
+	orb_unadvertise(obstacle_فاصله_pub);
 	orb_unadvertise(vehicle_attitude_pub);
 }
 
@@ -415,30 +415,30 @@ TEST_F(CollisionPreventionTest, noBias)
 
 	// AND: a parameter handle
 	param_t param = param_handle(px4::params::CP_DIST);
-	float value = 2; // try to keep 2m distance
-	param_set(param, &value);
-	cp.paramsChanged();
+	عائم value = 2; // try to keep 2m distance
+	param_مجموعه(param, &value);
+	cp.params_تغییریافته();
 
 	// AND: an obstacle message
-	obstacle_distance_s message;
-	memset(&message, 0xDEAD, sizeof(message));
-	message.min_distance = 100;
-	message.max_distance = 2000;
-	message.timestamp = hrt_absolute_time();
-	message.frame = message.MAV_FRAME_GLOBAL; //north aligned
-	int distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
-	message.increment = 360 / distances_array_size;
+	obstacle_فاصله_s پیام_3;
+	memset(&پیام_3, 0xDEAD, حجم(پیام_3));
+	پیام_3.min_فاصله = 100;
+	پیام_3.max_فاصله = 2000;
+	پیام_3.timestamp = hrt_absolute_زمان();
+	پیام_3.قاب = پیام_3.MAV_قاب_GLOBAL; //north aligned
+	صحيح distances_array_اندازه = حجم(پیام_3.distances) / حجم(پیام_3.distances[0]);
+	پیام_3.increment = 360 / distances_array_اندازه;
 
-	for (int i = 0; i < distances_array_size; i++) {
-		message.distances[i] = 700;
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		پیام_3.distances[i] = 700;
 	}
 
 	// WHEN: we publish the message and set the parameter and then run the setpoint modification
-	orb_advert_t obstacle_distance_pub = orb_advertise(ORB_ID(obstacle_distance), &message);
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &message);
+	orb_advert_t obstacle_فاصله_pub = orb_advertise(ORB_ID(obstacle_فاصله), &پیام_3);
+	orb_publish(ORB_ID(obstacle_فاصله), obstacle_فاصله_pub, &پیام_3);
 	Vector2f modified_setpoint = original_setpoint;
 	cp.modifySetpoint(modified_setpoint, curr_vel);
-	orb_unadvertise(obstacle_distance_pub);
+	orb_unadvertise(obstacle_فاصله_pub);
 
 	// THEN: setpoint should go into the same direction as the stick input
 	EXPECT_FLOAT_EQ(original_setpoint.normalized()(0), modified_setpoint.normalized()(0));
@@ -453,90 +453,90 @@ TEST_F(CollisionPreventionTest, outsideFOV)
 
 	// AND: a parameter handle
 	param_t param = param_handle(px4::params::CP_DIST);
-	float value = 5; // try to keep 5m distance
-	param_set(param, &value);
-	cp.paramsChanged();
+	عائم value = 5; // try to keep 5m distance
+	param_مجموعه(param, &value);
+	cp.params_تغییریافته();
 
 	// AND: an obstacle message
-	obstacle_distance_s message;
-	memset(&message, 0xDEAD, sizeof(message));
-	message.frame = message.MAV_FRAME_GLOBAL; //north aligned
-	message.min_distance = 100;
-	message.max_distance = 2000;
-	int distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
-	message.increment = 360.f / distances_array_size;
+	obstacle_فاصله_s پیام_3;
+	memset(&پیام_3, 0xDEAD, حجم(پیام_3));
+	پیام_3.قاب = پیام_3.MAV_قاب_GLOBAL; //north aligned
+	پیام_3.min_فاصله = 100;
+	پیام_3.max_فاصله = 2000;
+	صحيح distances_array_اندازه = حجم(پیام_3.distances) / حجم(پیام_3.distances[0]);
+	پیام_3.increment = 360.f / distances_array_اندازه;
 
 	//fov from 45deg to 225deg
-	for (int i = 0; i < distances_array_size; i++) {
-		float angle = i * message.increment;
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		عائم angle = i * پیام_3.increment;
 
-		if (angle > 45.f && angle < 225.f) {
-			message.distances[i] = 700;
+		إذا (angle > 45.f && angle < 225.f) {
+			پیام_3.distances[i] = 700;
 
-		} else {
-			message.distances[i] = UINT16_MAX;
+		} وإلا {
+			پیام_3.distances[i] = UINT16_MAX;
 		}
 	}
 
 	// WHEN: we publish the message and modify the setpoint for different demanded setpoints
-	orb_advert_t obstacle_distance_pub = orb_advertise(ORB_ID(obstacle_distance), &message);
+	orb_advert_t obstacle_فاصله_pub = orb_advertise(ORB_ID(obstacle_فاصله), &پیام_3);
 
-	for (int i = 0; i < distances_array_size; i++) {
-		float angle_deg = (float)i * message.increment;
-		float angle_rad = math::radians(angle_deg);
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		عائم angle_deg = (عائم)i * پیام_3.increment;
+		عائم angle_rad = math::radians(angle_deg);
 		Vector2f original_setpoint = {10.f * cosf(angle_rad), 10.f * sinf(angle_rad)};
 		Vector2f modified_setpoint = original_setpoint;
-		message.timestamp = hrt_absolute_time();
-		orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &message);
+		پیام_3.timestamp = hrt_absolute_زمان();
+		orb_publish(ORB_ID(obstacle_فاصله), obstacle_فاصله_pub, &پیام_3);
 		cp.modifySetpoint(modified_setpoint, curr_vel);
 
 		//THEN: if the resulting setpoint demands velocities bigger zero, it must lie inside the FOV
-		float setpoint_length = modified_setpoint.norm();
+		عائم setpoint_درازی = modified_setpoint.norm();
 
-		if (setpoint_length > 0.f) {
-			Vector2f setpoint_dir = modified_setpoint / setpoint_length;
-			float sp_angle_body_frame = atan2(setpoint_dir(1), setpoint_dir(0));
-			float sp_angle_deg = math::degrees(wrap_2pi(sp_angle_body_frame));
+		إذا (setpoint_درازی > 0.f) {
+			Vector2f setpoint_dir = modified_setpoint / setpoint_درازی;
+			عائم sp_angle_body_قاب = atan2(setpoint_dir(1), setpoint_dir(0));
+			عائم sp_angle_deg = math::degrees(wrap_2pi(sp_angle_body_قاب));
 			EXPECT_GE(sp_angle_deg, 45.f);
 			EXPECT_LE(sp_angle_deg, 225.f);
 		}
 	}
 
-	orb_unadvertise(obstacle_distance_pub);
+	orb_unadvertise(obstacle_فاصله_pub);
 }
 
-TEST_F(CollisionPreventionTest, goNoData)
+TEST_F(CollisionPreventionTest, go_No_داده)
 {
 	// GIVEN: a simple setup condition with the initial state (no distance data)
 	TestCollisionPrevention cp;
 	Vector2f curr_vel(2, 0);
 
 	// AND: an obstacle message
-	obstacle_distance_s message;
-	memset(&message, 0xDEAD, sizeof(message));
-	message.frame = message.MAV_FRAME_GLOBAL; //north aligned
-	message.min_distance = 100;
-	message.max_distance = 2000;
-	int distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
-	message.increment = 360.f / distances_array_size;
+	obstacle_فاصله_s پیام_3;
+	memset(&پیام_3, 0xDEAD, حجم(پیام_3));
+	پیام_3.قاب = پیام_3.MAV_قاب_GLOBAL; //north aligned
+	پیام_3.min_فاصله = 100;
+	پیام_3.max_فاصله = 2000;
+	صحيح distances_array_اندازه = حجم(پیام_3.distances) / حجم(پیام_3.distances[0]);
+	پیام_3.increment = 360.f / distances_array_اندازه;
 
 	//fov from 0deg to 20deg
-	for (int i = 0; i < distances_array_size; i++) {
-		float angle = i * message.increment;
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		عائم angle = i * پیام_3.increment;
 
-		if (angle > 0.f && angle < 40.f) {
-			message.distances[i] = 1000;
+		إذا (angle > 0.f && angle < 40.f) {
+			پیام_3.distances[i] = 1000;
 
-		} else {
-			message.distances[i] = UINT16_MAX;
+		} وإلا {
+			پیام_3.distances[i] = UINT16_MAX;
 		}
 	}
 
 	// AND: a parameter handle
 	param_t param = param_handle(px4::params::CP_DIST);
-	float value = 2; // try to keep 5m distance
-	param_set(param, &value);
-	cp.paramsChanged();
+	عائم value = 2; // try to keep 5m distance
+	param_مجموعه(param, &value);
+	cp.params_تغییریافته();
 
 	// AND: a setpoint outside the field of view
 	Vector2f original_setpoint = {-5, 0};
@@ -547,10 +547,10 @@ TEST_F(CollisionPreventionTest, goNoData)
 	EXPECT_FLOAT_EQ(modified_setpoint.norm(), 0.f);
 
 	//WHEN: we change the parameter CP_GO_NO_DATA to allow flying ouside the FOV
-	param_t param_allow = param_handle(px4::params::CP_GO_NO_DATA);
-	float value_allow = 1;
-	param_set(param_allow, &value_allow);
-	cp.paramsChanged();
+	param_t param_allow = param_handle(px4::params::CP_GO_NO_داده);
+	عائم مقدار_allow = 1;
+	param_مجموعه(param_allow, &مقدار_allow);
+	cp.params_تغییریافته();
 
 	//THEN: When all bins contain UINT_16MAX the setpoint should be zero even if CP_GO_NO_DATA=1
 	modified_setpoint = original_setpoint;
@@ -558,17 +558,17 @@ TEST_F(CollisionPreventionTest, goNoData)
 	EXPECT_FLOAT_EQ(modified_setpoint.norm(), 0.f);
 
 	//THEN: As soon as the range data contains any valid number, flying outside the FOV is allowed
-	message.timestamp = hrt_absolute_time();
-	orb_advert_t obstacle_distance_pub = orb_advertise(ORB_ID(obstacle_distance), &message);
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &message);
+	پیام_3.timestamp = hrt_absolute_زمان();
+	orb_advert_t obstacle_فاصله_pub = orb_advertise(ORB_ID(obstacle_فاصله), &پیام_3);
+	orb_publish(ORB_ID(obstacle_فاصله), obstacle_فاصله_pub, &پیام_3);
 
 	modified_setpoint = original_setpoint;
 	cp.modifySetpoint(modified_setpoint, curr_vel);
 	EXPECT_FLOAT_EQ(modified_setpoint.norm(), original_setpoint.norm());
-	orb_unadvertise(obstacle_distance_pub);
+	orb_unadvertise(obstacle_فاصله_pub);
 }
 
-TEST_F(CollisionPreventionTest, jerkLimit)
+TEST_F(CollisionPreventionTest, jerk_حد)
 {
 	// GIVEN: a simple setup condition
 	TestCollisionPrevention cp;
@@ -577,36 +577,36 @@ TEST_F(CollisionPreventionTest, jerkLimit)
 
 	// AND: distance set to 5m
 	param_t param = param_handle(px4::params::CP_DIST);
-	float value = 5; // try to keep 5m distance
-	param_set(param, &value);
-	cp.paramsChanged();
+	عائم value = 5; // try to keep 5m distance
+	param_مجموعه(param, &value);
+	cp.params_تغییریافته();
 
 	// AND: an obstacle message
-	obstacle_distance_s message;
-	memset(&message, 0xDEAD, sizeof(message));
-	message.min_distance = 100;
-	message.max_distance = 2000;
-	message.timestamp = hrt_absolute_time();
-	message.frame = message.MAV_FRAME_GLOBAL; //north aligned
-	int distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
-	message.increment = 360 / distances_array_size;
+	obstacle_فاصله_s پیام_3;
+	memset(&پیام_3, 0xDEAD, حجم(پیام_3));
+	پیام_3.min_فاصله = 100;
+	پیام_3.max_فاصله = 2000;
+	پیام_3.timestamp = hrt_absolute_زمان();
+	پیام_3.قاب = پیام_3.MAV_قاب_GLOBAL; //north aligned
+	صحيح distances_array_اندازه = حجم(پیام_3.distances) / حجم(پیام_3.distances[0]);
+	پیام_3.increment = 360 / distances_array_اندازه;
 
-	for (int i = 0; i < distances_array_size; i++) {
-		message.distances[i] = 700;
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		پیام_3.distances[i] = 700;
 	}
 
 	// AND: we publish the message and set the parameter and then run the setpoint modification
-	orb_advert_t obstacle_distance_pub = orb_advertise(ORB_ID(obstacle_distance), &message);
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &message);
+	orb_advert_t obstacle_فاصله_pub = orb_advertise(ORB_ID(obstacle_فاصله), &پیام_3);
+	orb_publish(ORB_ID(obstacle_فاصله), obstacle_فاصله_pub, &پیام_3);
 	Vector2f modified_setpoint_default_jerk = original_setpoint;
 	cp.modifySetpoint(modified_setpoint_default_jerk, curr_vel);
-	orb_unadvertise(obstacle_distance_pub);
+	orb_unadvertise(obstacle_فاصله_pub);
 
 	// AND: we now set max jerk to 0.1
 	param = param_handle(px4::params::MPC_JERK_MAX);
 	value = 0.1; // 0.1 maximum jerk
-	param_set(param, &value);
-	cp.paramsChanged();
+	param_مجموعه(param, &value);
+	cp.params_تغییریافته();
 
 	// WHEN: we run the setpoint modification again
 	Vector2f modified_setpoint_limited_jerk = original_setpoint;
@@ -616,167 +616,167 @@ TEST_F(CollisionPreventionTest, jerkLimit)
 	EXPECT_GT(modified_setpoint_limited_jerk.norm(), modified_setpoint_default_jerk.norm());
 
 }
-TEST_F(CollisionPreventionTest, addOutOfRangeDistanceSensorData)
+TEST_F(CollisionPreventionTest, جمع_کن_بیرون_از_Range_فاصله_Sensor_داده)
 {
 	// GIVEN: a vehicle attitude and a distance sensor message
 	TestCollisionPrevention cp;
-	Quaternion<float> vehicle_attitude(1, 0, 0, 0); //unit transform
-	distance_sensor_s distance_sensor {};
-	distance_sensor.min_distance = 0.2f;
-	distance_sensor.max_distance = 20.f;
-	distance_sensor.orientation = distance_sensor_s::ROTATION_FORWARD_FACING;
+	Quaternion<عائم> vehicle_attitude(1, 0, 0, 0); //unit transform
+	فاصله_sensor_s فاصله_sensor {};
+	فاصله_sensor.min_فاصله = 0.2f;
+	فاصله_sensor.max_فاصله = 20.f;
+	فاصله_sensor.orientation = فاصله_sensor_s::ROTATION_FORWARD_FACING;
 	// Distance is out of Range
-	distance_sensor.current_distance = -1.f;
-	distance_sensor.signal_quality = 0;
+	فاصله_sensor.current_فاصله = -1.f;
+	فاصله_sensor.signal_quality = 0;
 
-	uint32_t distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
+	uint32_t distances_array_اندازه = حجم(cp.getObstacleMap().distances) / حجم(cp.getObstacleMap().distances[0]);
 
-	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
+	cp.test_جمع_کن_فاصله_Sensor_داده(فاصله_sensor, vehicle_attitude);
 
 	//THEN: the correct bins in the map should be filled
-	for (uint32_t i = 0; i < distances_array_size; i++) {
-		if (i == 0) {
-			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], distance_sensor.max_distance * 100.f);
+	لكل (uint32_t i = 0; i < distances_array_اندازه; i++) {
+		إذا (i == 0) {
+			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], فاصله_sensor.max_فاصله * 100.f);
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX);
 		}
 	}
 }
 
-TEST_F(CollisionPreventionTest, addDistanceSensorDataNarrow)
+TEST_F(CollisionPreventionTest, جمع_کن_فاصله_Sensor_داده_Narrow)
 {
 	// GIVEN: a vehicle attitude and a distance sensor message
 	TestCollisionPrevention cp;
-	Quaternion<float> vehicle_attitude(1, 0, 0, 0); //unit transform
-	distance_sensor_s distance_sensor {};
-	distance_sensor.min_distance = 0.2f;
-	distance_sensor.max_distance = 20.f;
-	distance_sensor.current_distance = 5.f;
-	distance_sensor.orientation = distance_sensor_s::ROTATION_FORWARD_FACING;
-	distance_sensor.h_fov = math::radians(0.1 * bin_size);
+	Quaternion<عائم> vehicle_attitude(1, 0, 0, 0); //unit transform
+	فاصله_sensor_s فاصله_sensor {};
+	فاصله_sensor.min_فاصله = 0.2f;
+	فاصله_sensor.max_فاصله = 20.f;
+	فاصله_sensor.current_فاصله = 5.f;
+	فاصله_sensor.orientation = فاصله_sensor_s::ROTATION_FORWARD_FACING;
+	فاصله_sensor.h_fov = math::radians(0.1 * bin_اندازه);
 
-	uint32_t distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
+	uint32_t distances_array_اندازه = حجم(cp.getObstacleMap().distances) / حجم(cp.getObstacleMap().distances[0]);
 
 	// WHEN the sensor has a very narrow field of view
-	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
+	cp.test_جمع_کن_فاصله_Sensor_داده(فاصله_sensor, vehicle_attitude);
 
 	//THEN: the correct bins in the map should be filled
-	for (uint32_t i = 0; i < distances_array_size; i++) {
-		if (i == 0) {
+	لكل (uint32_t i = 0; i < distances_array_اندازه; i++) {
+		إذا (i == 0) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 	}
 }
-TEST_F(CollisionPreventionTest, addDistanceSensorDataSlightlyLarger)
+TEST_F(CollisionPreventionTest, جمع_کن_فاصله_Sensor_داده_Slightly_Larger)
 {
 	// GIVEN: a vehicle attitude and a distance sensor message
 	TestCollisionPrevention cp;
-	Quaternion<float> vehicle_attitude(1, 0, 0, 0); //unit transform
-	distance_sensor_s distance_sensor {};
-	distance_sensor.min_distance = 0.2f;
-	distance_sensor.max_distance = 20.f;
-	distance_sensor.current_distance = 5.f;
-	distance_sensor.orientation = distance_sensor_s::ROTATION_FORWARD_FACING;
-	distance_sensor.h_fov = math::radians(1.1 * bin_size);
+	Quaternion<عائم> vehicle_attitude(1, 0, 0, 0); //unit transform
+	فاصله_sensor_s فاصله_sensor {};
+	فاصله_sensor.min_فاصله = 0.2f;
+	فاصله_sensor.max_فاصله = 20.f;
+	فاصله_sensor.current_فاصله = 5.f;
+	فاصله_sensor.orientation = فاصله_sensor_s::ROTATION_FORWARD_FACING;
+	فاصله_sensor.h_fov = math::radians(1.1 * bin_اندازه);
 
-	uint32_t distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
+	uint32_t distances_array_اندازه = حجم(cp.getObstacleMap().distances) / حجم(cp.getObstacleMap().distances[0]);
 
 	// WHEN the sensor has a very narrow field of view
-	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
+	cp.test_جمع_کن_فاصله_Sensor_داده(فاصله_sensor, vehicle_attitude);
 
 	//THEN: the the bins corresponding to -5°, 0° and 5° should be filled
-	for (uint32_t i = 0; i < distances_array_size; i++) {
-		if (i == 71 || i <= 1) {
+	لكل (uint32_t i = 0; i < distances_array_اندازه; i++) {
+		إذا (i == 71 || i <= 1) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 	}
 }
 
-TEST_F(CollisionPreventionTest, addDistanceSensorData)
+TEST_F(CollisionPreventionTest, جمع_کن_فاصله_Sensor_داده_2)
 {
 	// GIVEN: a vehicle attitude and a distance sensor message
 	TestCollisionPrevention cp;
-	Quaternion<float> vehicle_attitude(1, 0, 0, 0); //unit transform
-	distance_sensor_s distance_sensor {};
-	distance_sensor.min_distance = 0.2f;
-	distance_sensor.max_distance = 20.f;
-	distance_sensor.current_distance = 5.f;
+	Quaternion<عائم> vehicle_attitude(1, 0, 0, 0); //unit transform
+	فاصله_sensor_s فاصله_sensor {};
+	فاصله_sensor.min_فاصله = 0.2f;
+	فاصله_sensor.max_فاصله = 20.f;
+	فاصله_sensor.current_فاصله = 5.f;
 
 	//THEN: at initialization the internal obstacle map should only contain UINT16_MAX
-	uint32_t distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
+	uint32_t distances_array_اندازه = حجم(cp.getObstacleMap().distances) / حجم(cp.getObstacleMap().distances[0]);
 
-	for (uint32_t i = 0; i < distances_array_size; i++) {
+	لكل (uint32_t i = 0; i < distances_array_اندازه; i++) {
 		EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 	}
 
 	//WHEN: we add distance sensor data to the right
-	distance_sensor.orientation = distance_sensor_s::ROTATION_RIGHT_FACING;
-	distance_sensor.h_fov = math::radians(19.99f);
-	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
-	uint fov = round(distance_sensor.h_fov * M_RAD_TO_DEG_F / 2);
-	uint start = (90 - fov) / bin_size;
-	uint end = (90 + fov) / bin_size;
+	فاصله_sensor.orientation = فاصله_sensor_s::ROTATION_راست_FACING;
+	فاصله_sensor.h_fov = math::radians(19.99f);
+	cp.test_جمع_کن_فاصله_Sensor_داده(فاصله_sensor, vehicle_attitude);
+	uint fov = round(فاصله_sensor.h_fov * M_RAD_مقصد_DEG_F / 2);
+	uint شروع = (90 - fov) / bin_اندازه;
+	uint انتها = (90 + fov) / bin_اندازه;
 
 	//THEN: the correct bins in the map should be filled
-	for (uint32_t i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	لكل (uint32_t i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= شروع && i <= انتها) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 	}
 
 	//WHEN: we add additionally distance sensor data to the left
-	distance_sensor.orientation = distance_sensor_s::ROTATION_LEFT_FACING;
-	distance_sensor.h_fov = math::radians(50.f);
-	distance_sensor.current_distance = 8.f;
-	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
-	fov = round(distance_sensor.h_fov * M_RAD_TO_DEG_F / 2);
-	uint start2 = (270 - fov) / bin_size;
-	uint end2 = (270 + fov) / bin_size;
+	فاصله_sensor.orientation = فاصله_sensor_s::ROTATION_چپ_FACING;
+	فاصله_sensor.h_fov = math::radians(50.f);
+	فاصله_sensor.current_فاصله = 8.f;
+	cp.test_جمع_کن_فاصله_Sensor_داده(فاصله_sensor, vehicle_attitude);
+	fov = round(فاصله_sensor.h_fov * M_RAD_مقصد_DEG_F / 2);
+	uint start2 = (270 - fov) / bin_اندازه;
+	uint end2 = (270 + fov) / bin_اندازه;
 
 	//THEN: the correct bins in the map should be filled
-	for (uint32_t i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	لكل (uint32_t i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= شروع && i <= انتها) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else if (i >= start2 && i <= end2) {
+		} وإلا إذا (i >= start2 && i <= end2) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 800) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 	}
 
 	//WHEN: we add additionally distance sensor data to the front
-	distance_sensor.orientation = distance_sensor_s::ROTATION_FORWARD_FACING;
-	distance_sensor.h_fov = math::radians(10.1f);
-	distance_sensor.current_distance = 3.f;
-	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
-	fov = round(distance_sensor.h_fov * M_RAD_TO_DEG_F / 2);
-	uint start3 = (360 - fov) / bin_size;
-	uint end3 = (fov) / bin_size;
+	فاصله_sensor.orientation = فاصله_sensor_s::ROTATION_FORWARD_FACING;
+	فاصله_sensor.h_fov = math::radians(10.1f);
+	فاصله_sensor.current_فاصله = 3.f;
+	cp.test_جمع_کن_فاصله_Sensor_داده(فاصله_sensor, vehicle_attitude);
+	fov = round(فاصله_sensor.h_fov * M_RAD_مقصد_DEG_F / 2);
+	uint start3 = (360 - fov) / bin_اندازه;
+	uint end3 = (fov) / bin_اندازه;
 
 	//THEN: the correct bins in the map should be filled
-	for (uint32_t i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	لكل (uint32_t i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= شروع && i <= انتها) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500)  << i;
 
-		} else if (i >= start2 && i <= end2) {
+		} وإلا إذا (i >= start2 && i <= end2) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 800) << i;
 
-		} else if (i >= start3 || i <= end3) {
+		} وإلا إذا (i >= start3 || i <= end3) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 300) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 	}
@@ -784,45 +784,45 @@ TEST_F(CollisionPreventionTest, addDistanceSensorData)
 
 }
 
-TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
+TEST_F(CollisionPreventionTest, جمع_کن_Obstacle_Sensor_داده_attitude)
 {
 	// GIVEN: a vehicle attitude and obstacle distance message
 	TestCollisionPrevention cp;
-	obstacle_distance_s obstacle_msg {};
-	obstacle_msg.frame = obstacle_msg.MAV_FRAME_GLOBAL; //north aligned
-	obstacle_msg.increment = 5.f;
-	obstacle_msg.min_distance = 20;
-	obstacle_msg.max_distance = 2000;
-	obstacle_msg.angle_offset = 0.f;
+	obstacle_فاصله_s obstacle_پیام {};
+	obstacle_پیام.قاب = obstacle_پیام.MAV_قاب_GLOBAL; //north aligned
+	obstacle_پیام.increment = 5.f;
+	obstacle_پیام.min_فاصله = 20;
+	obstacle_پیام.max_فاصله = 2000;
+	obstacle_پیام.angle_جابه_جایی = 0.f;
 
 	//obstacle at 10-30 deg world frame, distance 5 meters
-	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
+	memset(&obstacle_پیام.distances[0], UINT16_MAX, حجم(obstacle_پیام.distances));
 
-	int start = 2;
-	int end = 6;
+	صحيح شروع = 2;
+	صحيح انتها = 6;
 
-	for (int i = start; i <= end ; i++) {
-		obstacle_msg.distances[i] = 500;
+	لكل (صحيح i = شروع; i <= انتها ; i++) {
+		obstacle_پیام.distances[i] = 500;
 	}
 
 
 
 	//THEN: at initialization the internal obstacle map should only contain UINT16_MAX
-	int distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
+	صحيح distances_array_اندازه = حجم(cp.getObstacleMap().distances) / حجم(cp.getObstacleMap().distances[0]);
 
-	for (int i = 0; i < distances_array_size; i++) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
 		EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX);
 	}
 
 	//WHEN: we add distance sensor data while vehicle has zero yaw
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, 0.f);
 
 	//THEN: the correct bins in the map should be filled
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= شروع && i <= انتها) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -832,16 +832,16 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
 
 
 	//WHEN: we add obstacle distance sensor data while vehicle yaw 90deg to the right
-	cp.test_addObstacleSensorData(obstacle_msg, M_PI_2);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, M_PI_2);
 
 	//THEN: the correct bins in the map should be filled
-	int offset =  bin_count - 90 / bin_size;
+	صحيح جابه_جایی =  bin_شمار - 90 / bin_اندازه;
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= offset + start && i <= offset + end) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= جابه_جایی + شروع && i <= جابه_جایی + انتها) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -850,16 +850,16 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
 	}
 
 	//WHEN: we add obstacle distance sensor data while vehicle yaw 45deg to the left
-	cp.test_addObstacleSensorData(obstacle_msg, -M_PI_4);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, -M_PI_4);
 
 	//THEN: the correct bins in the map should be filled
-	offset =  45 / bin_size;
+	جابه_جایی =  45 / bin_اندازه;
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= offset + start && i <= offset + end) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= جابه_جایی + شروع && i <= جابه_جایی + انتها) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -868,16 +868,16 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
 	}
 
 	//WHEN: we add obstacle distance sensor data while vehicle yaw 180deg
-	cp.test_addObstacleSensorData(obstacle_msg, M_PI);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, M_PI);
 
 	//THEN: the correct bins in the map should be filled
-	offset =  180 / bin_size;
+	جابه_جایی =  180 / bin_اندازه;
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= offset + start && i <= offset + end) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= جابه_جایی + شروع && i <= جابه_جایی + انتها) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500);
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX);
 		}
 
@@ -886,35 +886,35 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
 	}
 }
 
-TEST_F(CollisionPreventionTest, addObstacleSensorData_offset_bodyframe)
+TEST_F(CollisionPreventionTest, جمع_کن_Obstacle_Sensor_داده_جابه_جایی_bodyframe)
 {
 	// GIVEN: a vehicle attitude and obstacle distance message
 	TestCollisionPrevention cp;
-	obstacle_distance_s obstacle_msg {};
-	obstacle_msg.frame = obstacle_msg.MAV_FRAME_BODY_FRD; // Body Frame
-	obstacle_msg.increment = 6.f;
-	obstacle_msg.min_distance = 20;
-	obstacle_msg.max_distance = 2000;
-	obstacle_msg.angle_offset = 0.f;
+	obstacle_فاصله_s obstacle_پیام {};
+	obstacle_پیام.قاب = obstacle_پیام.MAV_قاب_BODY_FRD; // Body Frame
+	obstacle_پیام.increment = 6.f;
+	obstacle_پیام.min_فاصله = 20;
+	obstacle_پیام.max_فاصله = 2000;
+	obstacle_پیام.angle_جابه_جایی = 0.f;
 
 	//obstacle at 363°-39° deg world frame, distance 5 meters
-	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
+	memset(&obstacle_پیام.distances[0], UINT16_MAX, حجم(obstacle_پیام.distances));
 
-	for (int i = 0; i <= 6 ; i++) { // 36° at 6° increment
-		obstacle_msg.distances[i] = 500;
+	لكل (صحيح i = 0; i <= 6 ; i++) { // 36° at 6° increment
+		obstacle_پیام.distances[i] = 500;
 	}
 
 	//WHEN: we add distance sensor data
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, 0.f);
 
 	//THEN: the the bins from 0 to 40 in map should be filled, which correspond to the angles from -2.5° to 42.5°
-	int distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
+	صحيح distances_array_اندازه = حجم(cp.getObstacleMap().distances) / حجم(cp.getObstacleMap().distances[0]);
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= 0 && i <= 8) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= 0 && i <= 8) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -923,16 +923,16 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_offset_bodyframe)
 	}
 
 	//WHEN: we add the same obstacle distance sensor data with an angle offset of 30.5°
-	obstacle_msg.angle_offset = 30.5f;
+	obstacle_پیام.angle_جابه_جایی = 30.5f;
 	// This then means our obstacle is between 27.5° and 69.5°
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, 0.f);
 
 	//THEN: the bins from 30° to 70° in map should be filled, which correspond to the angles from 27.5° to 72.5°
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= 6 && i <= 14) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= 6 && i <= 14) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -941,17 +941,17 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_offset_bodyframe)
 	}
 
 	//WHEN: we increase the offset to -30.5°
-	obstacle_msg.angle_offset = -30.5f;
+	obstacle_پیام.angle_جابه_جایی = -30.5f;
 	// This then means our obstacle is between 326.5° and 8.5°
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, 0.f);
 
 	//THEN: the bins from 325° to 10° in map should be filled, which correspond to the angles from 322.5° to 12.5°
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= 65 || i <= 2) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= 65 || i <= 2) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -960,44 +960,44 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_offset_bodyframe)
 	}
 }
 
-TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
+TEST_F(CollisionPreventionTest, جمع_کن_Obstacle_Sensor_داده_bodyframe)
 {
 	// GIVEN: a vehicle attitude and obstacle distance message
 	TestCollisionPrevention cp;
-	obstacle_distance_s obstacle_msg {};
-	obstacle_msg.frame = obstacle_msg.MAV_FRAME_BODY_FRD; //north aligned
-	obstacle_msg.increment = 5.f;
-	obstacle_msg.min_distance = 20;
-	obstacle_msg.max_distance = 2000;
-	obstacle_msg.angle_offset = 0.f;
+	obstacle_فاصله_s obstacle_پیام {};
+	obstacle_پیام.قاب = obstacle_پیام.MAV_قاب_BODY_FRD; //north aligned
+	obstacle_پیام.increment = 5.f;
+	obstacle_پیام.min_فاصله = 20;
+	obstacle_پیام.max_فاصله = 2000;
+	obstacle_پیام.angle_جابه_جایی = 0.f;
 
 	//obstacle at 10-30 deg body frame, distance 5 meters
-	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
-	int start = 2;
-	int end = 6;
+	memset(&obstacle_پیام.distances[0], UINT16_MAX, حجم(obstacle_پیام.distances));
+	صحيح شروع = 2;
+	صحيح انتها = 6;
 
-	for (int i = start; i <= end ; i++) {
-		obstacle_msg.distances[i] = 500;
+	لكل (صحيح i = شروع; i <= انتها ; i++) {
+		obstacle_پیام.distances[i] = 500;
 	}
 
 
 	//THEN: at initialization the internal obstacle map should only contain UINT16_MAX
-	int distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
+	صحيح distances_array_اندازه = حجم(cp.getObstacleMap().distances) / حجم(cp.getObstacleMap().distances[0]);
 
-	for (int i = 0; i < distances_array_size; i++) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
 		EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX);
 	}
 
 	//WHEN: we add obstacle data while vehicle has zero yaw
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, 0.f);
 
 	//THEN: the correct bins in the map should be filled
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= شروع && i <= انتها) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -1006,14 +1006,14 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
 	}
 
 	//WHEN: we add obstacle data while vehicle yaw 90deg to the right
-	cp.test_addObstacleSensorData(obstacle_msg, M_PI_2);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, M_PI_2);
 
 	//THEN: the correct bins in the map should be filled
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= شروع && i <= انتها) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -1022,14 +1022,14 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
 	}
 
 	//WHEN: we add obstacle data while vehicle yaw 45deg to the left
-	cp.test_addObstacleSensorData(obstacle_msg, -M_PI_4);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, -M_PI_4);
 
 	//THEN: the correct bins in the map should be filled
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= شروع && i <= انتها) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -1038,14 +1038,14 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
 	}
 
 	//WHEN: we add obstacle data while vehicle yaw 180deg
-	cp.test_addObstacleSensorData(obstacle_msg, M_PI);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, M_PI);
 
 	//THEN: the correct bins in the map should be filled
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= شروع && i <= انتها) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -1056,35 +1056,35 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
 }
 
 
-TEST_F(CollisionPreventionTest, addObstacleSensorData_resolution_offset)
+TEST_F(CollisionPreventionTest, جمع_کن_Obstacle_Sensor_داده_resolution_جابه_جایی)
 {
 	// GIVEN: a vehicle attitude and obstacle distance message
 	TestCollisionPrevention cp;
-	obstacle_distance_s obstacle_msg {};
-	obstacle_msg.frame = obstacle_msg.MAV_FRAME_GLOBAL; //north aligned
-	obstacle_msg.increment = 6.f;
-	obstacle_msg.min_distance = 20;
-	obstacle_msg.max_distance = 2000;
-	obstacle_msg.angle_offset = 0.f;
+	obstacle_فاصله_s obstacle_پیام {};
+	obstacle_پیام.قاب = obstacle_پیام.MAV_قاب_GLOBAL; //north aligned
+	obstacle_پیام.increment = 6.f;
+	obstacle_پیام.min_فاصله = 20;
+	obstacle_پیام.max_فاصله = 2000;
+	obstacle_پیام.angle_جابه_جایی = 0.f;
 
 	//obstacle at 363°-39° deg world frame, distance 5 meters
-	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
+	memset(&obstacle_پیام.distances[0], UINT16_MAX, حجم(obstacle_پیام.distances));
 
-	for (int i = 0; i <= 6 ; i++) { // 36° at 6° increment
-		obstacle_msg.distances[i] = 500;
+	لكل (صحيح i = 0; i <= 6 ; i++) { // 36° at 6° increment
+		obstacle_پیام.distances[i] = 500;
 	}
 
 	//WHEN: we add distance sensor data
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, 0.f);
 
 	//THEN: the the bins from 0 to 40 in map should be filled, which correspond to the angles from -2.5° to 42.5°
-	int distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
+	صحيح distances_array_اندازه = حجم(cp.getObstacleMap().distances) / حجم(cp.getObstacleMap().distances[0]);
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= 0 && i <= 8) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= 0 && i <= 8) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -1093,16 +1093,16 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_resolution_offset)
 	}
 
 	//WHEN: we add the same obstacle distance sensor data with an angle offset of 30.5°
-	obstacle_msg.angle_offset = 30.5f;
+	obstacle_پیام.angle_جابه_جایی = 30.5f;
 	// This then means our obstacle is between 27.5° and 69.5°
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, 0.f);
 
 	//THEN: the bins from 30° to 70° in map should be filled, which correspond to the angles from 27.5° to 72.5°
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= 6 && i <= 14) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= 6 && i <= 14) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -1111,17 +1111,17 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_resolution_offset)
 	}
 
 	//WHEN: we increase the offset to -30.5°
-	obstacle_msg.angle_offset = -30.5f;
+	obstacle_پیام.angle_جابه_جایی = -30.5f;
 	// This then means our obstacle is between 326.5° and 8.5°
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, 0.f);
 
 	//THEN: the bins from 325° to 10° in map should be filled, which correspond to the angles from 322.5° to 12.5°
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= 65 || i <= 2) {
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i >= 65 || i <= 2) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} وإلا {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -1134,43 +1134,43 @@ TEST_F(CollisionPreventionTest, adaptSetpointDirection_distinct_minimum)
 {
 	// GIVEN: a vehicle attitude and obstacle distance message
 	TestCollisionPrevention cp;
-	obstacle_distance_s obstacle_msg {};
-	obstacle_msg.frame = obstacle_msg.MAV_FRAME_GLOBAL; //north aligned
-	obstacle_msg.increment = 5.f;
-	obstacle_msg.min_distance = 20;
-	obstacle_msg.max_distance = 2000;
-	obstacle_msg.angle_offset = 0.f;
+	obstacle_فاصله_s obstacle_پیام {};
+	obstacle_پیام.قاب = obstacle_پیام.MAV_قاب_GLOBAL; //north aligned
+	obstacle_پیام.increment = 5.f;
+	obstacle_پیام.min_فاصله = 20;
+	obstacle_پیام.max_فاصله = 2000;
+	obstacle_پیام.angle_جابه_جایی = 0.f;
 
-	const float vehicle_yaw = 0.f;
+	ثابت عائم vehicle_yaw = 0.f;
 
 	//obstacle at 0-30 deg world frame, distance 5 meters
-	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
+	memset(&obstacle_پیام.distances[0], UINT16_MAX, حجم(obstacle_پیام.distances));
 
-	for (int i = 0; i <= 6 ; i++) {
-		obstacle_msg.distances[i] = 500;
+	لكل (صحيح i = 0; i <= 6 ; i++) {
+		obstacle_پیام.distances[i] = 500;
 	}
 
-	obstacle_msg.distances[2] = 1000;
+	obstacle_پیام.distances[2] = 1000;
 
 	//define setpoint
 	Vector2f setpoint_dir(1, 0);
-	float sp_angle_body_frame = atan2f(setpoint_dir(1), setpoint_dir(0)) - vehicle_yaw;
-	float sp_angle_with_offset_deg = wrap(math::degrees(sp_angle_body_frame) - cp.getObstacleMap().angle_offset,
+	عائم sp_angle_body_قاب = atan2f(setpoint_dir(1), setpoint_dir(0)) - vehicle_yaw;
+	عائم sp_angle_with_جابه_جایی_deg = wrap(math::degrees(sp_angle_body_قاب) - cp.getObstacleMap().angle_جابه_جایی,
 					      0.f, 360.f);
-	int sp_index = floor(sp_angle_with_offset_deg / cp.getObstacleMap().increment);
+	صحيح sp_شاخص = floor(sp_angle_with_جابه_جایی_deg / cp.getObstacleMap().increment);
 
 	//set parameter
 	param_t param = param_handle(px4::params::CP_DIST);
-	float value = 3; // try to keep 10m away from obstacles
-	param_set(param, &value);
-	cp.paramsChanged();
+	عائم value = 3; // try to keep 10m away from obstacles
+	param_مجموعه(param, &value);
+	cp.params_تغییریافته();
 
 	//WHEN: we add distance sensor data
-	cp.test_addObstacleSensorData(obstacle_msg, vehicle_yaw);
-	cp.test_adaptSetpointDirection(setpoint_dir, sp_index, vehicle_yaw);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, vehicle_yaw);
+	cp.test_adaptSetpointDirection(setpoint_dir, sp_شاخص, vehicle_yaw);
 
 	//THEN: the setpoint direction should be modified correctly
-	EXPECT_EQ(sp_index, 2);
+	EXPECT_EQ(sp_شاخص, 2);
 	EXPECT_FLOAT_EQ(setpoint_dir(0), 0.98480773f);
 	EXPECT_FLOAT_EQ(setpoint_dir(1), 0.17364818f);
 }
@@ -1179,45 +1179,45 @@ TEST_F(CollisionPreventionTest, adaptSetpointDirection_flat_minimum)
 {
 	// GIVEN: a vehicle attitude and obstacle distance message
 	TestCollisionPrevention cp;
-	obstacle_distance_s obstacle_msg {};
-	obstacle_msg.frame = obstacle_msg.MAV_FRAME_GLOBAL; //north aligned
-	obstacle_msg.increment = 5.f;
-	obstacle_msg.min_distance = 20;
-	obstacle_msg.max_distance = 2000;
-	obstacle_msg.angle_offset = 0.f;
+	obstacle_فاصله_s obstacle_پیام {};
+	obstacle_پیام.قاب = obstacle_پیام.MAV_قاب_GLOBAL; //north aligned
+	obstacle_پیام.increment = 5.f;
+	obstacle_پیام.min_فاصله = 20;
+	obstacle_پیام.max_فاصله = 2000;
+	obstacle_پیام.angle_جابه_جایی = 0.f;
 
-	const float vehicle_yaw = 0.f;
+	ثابت عائم vehicle_yaw = 0.f;
 
 	//obstacle at 0-30 deg world frame, distance 5 meters
-	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
+	memset(&obstacle_پیام.distances[0], UINT16_MAX, حجم(obstacle_پیام.distances));
 
-	for (int i = 0; i < 7 ; i++) {
-		obstacle_msg.distances[i] = 500;
+	لكل (صحيح i = 0; i < 7 ; i++) {
+		obstacle_پیام.distances[i] = 500;
 	}
 
-	obstacle_msg.distances[1] = 1000;
-	obstacle_msg.distances[2] = 1000;
-	obstacle_msg.distances[3] = 1000;
+	obstacle_پیام.distances[1] = 1000;
+	obstacle_پیام.distances[2] = 1000;
+	obstacle_پیام.distances[3] = 1000;
 
 	//define setpoint
 	Vector2f setpoint_dir(1, 0);
-	float sp_angle_body_frame = atan2f(setpoint_dir(1), setpoint_dir(0)) - vehicle_yaw;
-	float sp_angle_with_offset_deg = wrap(math::degrees(sp_angle_body_frame) - cp.getObstacleMap().angle_offset,
+	عائم sp_angle_body_قاب = atan2f(setpoint_dir(1), setpoint_dir(0)) - vehicle_yaw;
+	عائم sp_angle_with_جابه_جایی_deg = wrap(math::degrees(sp_angle_body_قاب) - cp.getObstacleMap().angle_جابه_جایی,
 					      0.f, 360.f);
-	int sp_index = floor(sp_angle_with_offset_deg / cp.getObstacleMap().increment);
+	صحيح sp_شاخص = floor(sp_angle_with_جابه_جایی_deg / cp.getObstacleMap().increment);
 
 	//set parameter
 	param_t param = param_handle(px4::params::CP_DIST);
-	float value = 3; // try to keep 10m away from obstacles
-	param_set(param, &value);
-	cp.paramsChanged();
+	عائم value = 3; // try to keep 10m away from obstacles
+	param_مجموعه(param, &value);
+	cp.params_تغییریافته();
 
 	//WHEN: we add distance sensor data
-	cp.test_addObstacleSensorData(obstacle_msg, vehicle_yaw);
-	cp.test_adaptSetpointDirection(setpoint_dir, sp_index, vehicle_yaw);
+	cp.test_جمع_کن_Obstacle_Sensor_داده(obstacle_پیام, vehicle_yaw);
+	cp.test_adaptSetpointDirection(setpoint_dir, sp_شاخص, vehicle_yaw);
 
 	//THEN: the setpoint direction should be modified correctly
-	EXPECT_EQ(sp_index, 2);
+	EXPECT_EQ(sp_شاخص, 2);
 	EXPECT_FLOAT_EQ(setpoint_dir(0), 0.98480773f);
 	EXPECT_FLOAT_EQ(setpoint_dir(1), 0.17364818f);
 }
@@ -1229,7 +1229,7 @@ TEST_F(CollisionPreventionTest, overlappingSensors)
 	Vector2f original_setpoint(10, 0);
 	Vector2f curr_vel(2, 0);
 	vehicle_attitude_s attitude;
-	attitude.timestamp = hrt_absolute_time();
+	attitude.timestamp = hrt_absolute_زمان();
 	attitude.q[0] = 1.0f;
 	attitude.q[1] = 0.0f;
 	attitude.q[2] = 0.0f;
@@ -1237,45 +1237,45 @@ TEST_F(CollisionPreventionTest, overlappingSensors)
 
 	// AND: a parameter handle
 	param_t param = param_handle(px4::params::CP_DIST);
-	float value = 10; // try to keep 10m distance
-	param_set(param, &value);
-	cp.paramsChanged();
+	عائم value = 10; // try to keep 10m distance
+	param_مجموعه(param, &value);
+	cp.params_تغییریافته();
 
 	// AND: an obstacle message for a short range and a long range sensor
-	obstacle_distance_s short_range_msg, short_range_msg_no_obstacle, long_range_msg;
-	memset(&short_range_msg, 0xDEAD, sizeof(short_range_msg));
-	short_range_msg.frame = short_range_msg.MAV_FRAME_GLOBAL; //north aligned
-	short_range_msg.angle_offset = 0;
-	short_range_msg.timestamp = hrt_absolute_time();
-	int distances_array_size = sizeof(short_range_msg.distances) / sizeof(short_range_msg.distances[0]);
-	short_range_msg.increment = 360 / distances_array_size;
-	long_range_msg = short_range_msg;
-	long_range_msg.min_distance = 100;
-	long_range_msg.max_distance = 1000;
-	short_range_msg.min_distance = 20;
-	short_range_msg.max_distance = 200;
-	short_range_msg_no_obstacle = short_range_msg;
+	obstacle_فاصله_s short_range_پیام, short_range_پیام_no_obstacle, long_range_پیام;
+	memset(&short_range_پیام, 0xDEAD, حجم(short_range_پیام));
+	short_range_پیام.قاب = short_range_پیام.MAV_قاب_GLOBAL; //north aligned
+	short_range_پیام.angle_جابه_جایی = 0;
+	short_range_پیام.timestamp = hrt_absolute_زمان();
+	صحيح distances_array_اندازه = حجم(short_range_پیام.distances) / حجم(short_range_پیام.distances[0]);
+	short_range_پیام.increment = 360 / distances_array_اندازه;
+	long_range_پیام = short_range_پیام;
+	long_range_پیام.min_فاصله = 100;
+	long_range_پیام.max_فاصله = 1000;
+	short_range_پیام.min_فاصله = 20;
+	short_range_پیام.max_فاصله = 200;
+	short_range_پیام_no_obstacle = short_range_پیام;
 
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i < 10) {
-			short_range_msg_no_obstacle.distances[i] = 201;
-			short_range_msg.distances[i] = 150;
-			long_range_msg.distances[i] = 500;
+	لكل (صحيح i = 0; i < distances_array_اندازه; i++) {
+		إذا (i < 10) {
+			short_range_پیام_no_obstacle.distances[i] = 201;
+			short_range_پیام.distances[i] = 150;
+			long_range_پیام.distances[i] = 500;
 
-		} else {
-			short_range_msg_no_obstacle.distances[i] = UINT16_MAX;
-			short_range_msg.distances[i] = UINT16_MAX;
-			long_range_msg.distances[i] = UINT16_MAX;
+		} وإلا {
+			short_range_پیام_no_obstacle.distances[i] = UINT16_MAX;
+			short_range_پیام.distances[i] = UINT16_MAX;
+			long_range_پیام.distances[i] = UINT16_MAX;
 		}
 	}
 
 
 	// CASE 1
 	//WHEN: we publish the long range sensor message
-	orb_advert_t obstacle_distance_pub = orb_advertise(ORB_ID(obstacle_distance), &long_range_msg);
+	orb_advert_t obstacle_فاصله_pub = orb_advertise(ORB_ID(obstacle_فاصله), &long_range_پیام);
 	orb_advert_t vehicle_attitude_pub = orb_advertise(ORB_ID(vehicle_attitude), &attitude);
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &long_range_msg);
+	orb_publish(ORB_ID(obstacle_فاصله), obstacle_فاصله_pub, &long_range_پیام);
 	orb_publish(ORB_ID(vehicle_attitude), vehicle_attitude_pub, &attitude);
 	Vector2f modified_setpoint = original_setpoint;
 	cp.modifySetpoint(modified_setpoint, curr_vel);
@@ -1285,11 +1285,11 @@ TEST_F(CollisionPreventionTest, overlappingSensors)
 
 	// CASE 2
 	// WHEN: we publish the short range message followed by a long range message
-	short_range_msg.timestamp = hrt_absolute_time();
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &short_range_msg);
+	short_range_پیام.timestamp = hrt_absolute_زمان();
+	orb_publish(ORB_ID(obstacle_فاصله), obstacle_فاصله_pub, &short_range_پیام);
 	cp.modifySetpoint(modified_setpoint, curr_vel);
-	long_range_msg.timestamp = hrt_absolute_time();
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &long_range_msg);
+	long_range_پیام.timestamp = hrt_absolute_زمان();
+	orb_publish(ORB_ID(obstacle_فاصله), obstacle_فاصله_pub, &long_range_پیام);
 	cp.modifySetpoint(modified_setpoint, curr_vel);
 
 	// THEN: the internal map data should contain the short range measurement
@@ -1297,45 +1297,45 @@ TEST_F(CollisionPreventionTest, overlappingSensors)
 
 	// CASE 3
 	// WHEN: we publish the short range message with values out of range followed by a long range message
-	short_range_msg_no_obstacle.timestamp = hrt_absolute_time();
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &short_range_msg_no_obstacle);
+	short_range_پیام_no_obstacle.timestamp = hrt_absolute_زمان();
+	orb_publish(ORB_ID(obstacle_فاصله), obstacle_فاصله_pub, &short_range_پیام_no_obstacle);
 	cp.modifySetpoint(modified_setpoint, curr_vel);
-	long_range_msg.timestamp = hrt_absolute_time();
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &long_range_msg);
+	long_range_پیام.timestamp = hrt_absolute_زمان();
+	orb_publish(ORB_ID(obstacle_فاصله), obstacle_فاصله_pub, &long_range_پیام);
 	cp.modifySetpoint(modified_setpoint, curr_vel);
 
 	// THEN: the internal map data should contain the short range measurement
 	EXPECT_EQ(500, cp.getObstacleMap().distances[2]);
 
-	orb_unadvertise(obstacle_distance_pub);
+	orb_unadvertise(obstacle_فاصله_pub);
 	orb_unadvertise(vehicle_attitude_pub);
 }
 
-TEST_F(CollisionPreventionTest, enterData)
+TEST_F(CollisionPreventionTest, enter_داده_2)
 {
 	// GIVEN: a simple setup condition
 	TestCollisionPrevention cp;
-	Quaternion<float> vehicle_attitude(1, 0, 0, 0); //unit transform
+	Quaternion<عائم> vehicle_attitude(1, 0, 0, 0); //unit transform
 
 	//THEN: just after initialization all bins are at UINT16_MAX and any data should be accepted
-	EXPECT_TRUE(cp.test_enterData(16, 2.f, 1.5f)); //shorter range, reading in range
-	EXPECT_TRUE(cp.test_enterData(16, 2.f, 3.f)); //shorter range, reading out of range
-	EXPECT_TRUE(cp.test_enterData(16, 20.f, 1.5f)); //same range, reading in range
-	EXPECT_TRUE(cp.test_enterData(16, 20.f, 21.f)); //same range, reading out of range
-	EXPECT_TRUE(cp.test_enterData(16, 30.f, 1.5f)); //longer range, reading in range
-	EXPECT_TRUE(cp.test_enterData(16, 30.f, 31.f)); //longer range, reading out of range
+	EXPECT_TRUE(cp.test_enter_داده(16, 2.f, 1.5f)); //shorter range, reading in range
+	EXPECT_TRUE(cp.test_enter_داده(16, 2.f, 3.f)); //shorter range, reading out of range
+	EXPECT_TRUE(cp.test_enter_داده(16, 20.f, 1.5f)); //same range, reading in range
+	EXPECT_TRUE(cp.test_enter_داده(16, 20.f, 21.f)); //same range, reading out of range
+	EXPECT_TRUE(cp.test_enter_داده(16, 30.f, 1.5f)); //longer range, reading in range
+	EXPECT_TRUE(cp.test_enter_داده(16, 30.f, 31.f)); //longer range, reading out of range
 
 	//WHEN: we add distance sensor data to the right with a valid reading
-	distance_sensor_s distance_sensor {};
-	distance_sensor.min_distance = 0.2f;
-	distance_sensor.max_distance = 20.f;
-	distance_sensor.orientation = distance_sensor_s::ROTATION_RIGHT_FACING;
-	distance_sensor.h_fov = math::radians(19.99f);
-	distance_sensor.current_distance = 5.f;
-	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
+	فاصله_sensor_s فاصله_sensor {};
+	فاصله_sensor.min_فاصله = 0.2f;
+	فاصله_sensor.max_فاصله = 20.f;
+	فاصله_sensor.orientation = فاصله_sensor_s::ROTATION_راست_FACING;
+	فاصله_sensor.h_fov = math::radians(19.99f);
+	فاصله_sensor.current_فاصله = 5.f;
+	cp.test_جمع_کن_فاصله_Sensor_داده(فاصله_sensor, vehicle_attitude);
 
 	//THEN: the internal map should contain the distance sensor readings
-	for (int i = 16; i < 20; i++) {
+	لكل (صحيح i = 16; i < 20; i++) {
 		EXPECT_EQ(500, cp.getObstacleMap().distances[i]) << i;
 	}
 
@@ -1343,19 +1343,19 @@ TEST_F(CollisionPreventionTest, enterData)
 	// a valid reading should only be accepted from sensors with shorter or equal range
 	// a out of range reading should only be accepted from sensors with the same range
 
-	EXPECT_TRUE(cp.test_enterData(16, 2.f, 1.5f)); //shorter range, reading in range
-	EXPECT_FALSE(cp.test_enterData(16, 2.f, 3.f)); //shorter range, reading out of range
-	EXPECT_TRUE(cp.test_enterData(16, 20.f, 1.5f)); //same range, reading in range
-	EXPECT_TRUE(cp.test_enterData(16, 20.f, 21.f)); //same range, reading out of range
-	EXPECT_FALSE(cp.test_enterData(16, 30.f, 1.5f)); //longer range, reading in range
-	EXPECT_FALSE(cp.test_enterData(16, 30.f, 31.f)); //longer range, reading out of range
+	EXPECT_TRUE(cp.test_enter_داده(16, 2.f, 1.5f)); //shorter range, reading in range
+	EXPECT_FALSE(cp.test_enter_داده(16, 2.f, 3.f)); //shorter range, reading out of range
+	EXPECT_TRUE(cp.test_enter_داده(16, 20.f, 1.5f)); //same range, reading in range
+	EXPECT_TRUE(cp.test_enter_داده(16, 20.f, 21.f)); //same range, reading out of range
+	EXPECT_FALSE(cp.test_enter_داده(16, 30.f, 1.5f)); //longer range, reading in range
+	EXPECT_FALSE(cp.test_enter_داده(16, 30.f, 31.f)); //longer range, reading out of range
 
 	//WHEN: we add distance sensor data to the right with an out of range reading
-	distance_sensor.current_distance = 21.f;
-	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
+	فاصله_sensor.current_فاصله = 21.f;
+	cp.test_جمع_کن_فاصله_Sensor_داده(فاصله_sensor, vehicle_attitude);
 
 	//THEN: the internal map should contain the distance sensor readings
-	for (int i = 16; i < 20; i++) {
+	لكل (صحيح i = 16; i < 20; i++) {
 		EXPECT_EQ(2000, cp.getObstacleMap().distances[i]) << i;
 	}
 
@@ -1363,10 +1363,10 @@ TEST_F(CollisionPreventionTest, enterData)
 	// a reading in range will be accepted in any case
 	// out of range readings will only be accepted from sensors with bigger or equal range
 
-	EXPECT_TRUE(cp.test_enterData(16, 2.f, 1.5f)); //shorter range, reading in range
-	EXPECT_FALSE(cp.test_enterData(16, 2.f, 3.f)); //shorter range, reading out of range
-	EXPECT_TRUE(cp.test_enterData(16, 20.f, 1.5f)); //same range, reading in range
-	EXPECT_TRUE(cp.test_enterData(16, 20.f, 21.f)); //same range, reading out of range
-	EXPECT_TRUE(cp.test_enterData(16, 30.f, 1.5f)); //longer range, reading in range
-	EXPECT_TRUE(cp.test_enterData(16, 30.f, 31.f)); //longer range, reading out of range
+	EXPECT_TRUE(cp.test_enter_داده(16, 2.f, 1.5f)); //shorter range, reading in range
+	EXPECT_FALSE(cp.test_enter_داده(16, 2.f, 3.f)); //shorter range, reading out of range
+	EXPECT_TRUE(cp.test_enter_داده(16, 20.f, 1.5f)); //same range, reading in range
+	EXPECT_TRUE(cp.test_enter_داده(16, 20.f, 21.f)); //same range, reading out of range
+	EXPECT_TRUE(cp.test_enter_داده(16, 30.f, 1.5f)); //longer range, reading in range
+	EXPECT_TRUE(cp.test_enter_داده(16, 30.f, 31.f)); //longer range, reading out of range
 }

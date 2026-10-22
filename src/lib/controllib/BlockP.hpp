@@ -37,45 +37,45 @@
  * Controller library code
  */
 
-#pragma once
+#رهنمود once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
 /**
  * A proportional controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockP: public Block
+صنف __EXPORT بلوک_P: عام بلوک
 {
-public:
+عام:
 // methods
-	BlockP(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_kP(this, "") // only one param, no need to name
+	بلوک_P(Super_بلوک *والد, ثابت حرف *name) :
+		بلوک(والد, name),
+		_kP(هذا, "") // only one param, no need to name
 	{}
-	virtual ~BlockP() = default;
-	float update(float input)
+	مجازی ~بلوک_P() = افتراضي;
+	عائم update(عائم درون_داد)
 	{
-		return getKP() * input;
+		أرجع getKP() * درون_داد;
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-protected:
-	control::BlockParamFloat _kP;
+	عائم getKP() { أرجع _kP.get(); }
+محمي:
+	control::بلوک_Param_Float _kP;
 };
 
 } // namespace control

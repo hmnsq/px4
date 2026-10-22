@@ -39,64 +39,64 @@
  * @author Julien Lecoeur <julien.lecoeur@gmail.com>
  */
 
-#include <gtest/gtest.h>
-#include <ControlAllocationPseudoInverse.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <ControlAllocationPseudoInverse.hpp>
 
-using namespace matrix;
+استفاده نطاق ماتریس;
 
-TEST(ControlAllocationTest, AllZeroCase)
+TEST(Control_تخصیص_Test, AllZeroCase)
 {
-	ControlAllocationPseudoInverse method;
+	Control_تخصیص_Pseudo_Inverse روش;
 
-	matrix::Vector<float, 6> control_sp;
-	matrix::Vector<float, 6> control_allocated;
-	matrix::Vector<float, 6> control_allocated_expected;
-	matrix::Matrix<float, 6, 16> effectiveness;
-	matrix::Vector<float, 16> actuator_sp;
-	matrix::Vector<float, 16> actuator_trim;
-	matrix::Vector<float, 16> linearization_point;
-	matrix::Vector<float, 16> actuator_sp_expected;
+	ماتریس::وکتور<عائم, 6> control_sp;
+	ماتریس::وکتور<عائم, 6> control_allocated;
+	ماتریس::وکتور<عائم, 6> control_allocated_expected;
+	ماتریس::ماتریس_2<عائم, 6, 16> effectiveness;
+	ماتریس::وکتور<عائم, 16> actuator_sp;
+	ماتریس::وکتور<عائم, 16> actuator_trim;
+	ماتریس::وکتور<عائم, 16> linearization_نقطه;
+	ماتریس::وکتور<عائم, 16> actuator_sp_expected;
 
-	method.setEffectivenessMatrix(effectiveness, actuator_trim, linearization_point, 16, false);
-	method.setControlSetpoint(control_sp);
-	method.allocate();
-	method.clipActuatorSetpoint();
-	actuator_sp = method.getActuatorSetpoint();
-	control_allocated_expected = method.getAllocatedControl();
+	روش.مجموعه_Effectiveness_ماتریس(effectiveness, actuator_trim, linearization_نقطه, 16, خطأ);
+	روش.مجموعه_Control_Setpoint(control_sp);
+	روش.allocate();
+	روش.clipActuatorSetpoint();
+	actuator_sp = روش.getActuatorSetpoint();
+	control_allocated_expected = روش.getAllocatedControl();
 
 	EXPECT_EQ(actuator_sp, actuator_sp_expected);
 	EXPECT_EQ(control_allocated, control_allocated_expected);
 }
 
-TEST(ControlAllocationMetricTest, AllZeroCase)
+TEST(Control_تخصیص_Metric_Test, AllZeroCase)
 {
-	ControlAllocationPseudoInverse method;
+	Control_تخصیص_Pseudo_Inverse روش;
 
-	matrix::Vector<float, 6> control_sp;
-	matrix::Vector<float, 6> control_allocated;
-	matrix::Vector<float, 6> control_allocated_expected;
-	matrix::Matrix<float, 6, 16> effectiveness;
-	matrix::Vector<float, 16> actuator_sp;
-	matrix::Vector<float, 16> actuator_trim;
-	matrix::Vector<float, 16> linearization_point;
-	matrix::Vector<float, 16> actuator_sp_expected;
+	ماتریس::وکتور<عائم, 6> control_sp;
+	ماتریس::وکتور<عائم, 6> control_allocated;
+	ماتریس::وکتور<عائم, 6> control_allocated_expected;
+	ماتریس::ماتریس_2<عائم, 6, 16> effectiveness;
+	ماتریس::وکتور<عائم, 16> actuator_sp;
+	ماتریس::وکتور<عائم, 16> actuator_trim;
+	ماتریس::وکتور<عائم, 16> linearization_نقطه;
+	ماتریس::وکتور<عائم, 16> actuator_sp_expected;
 
-	method.setMetricAllocation(true);
-	method.setEffectivenessMatrix(effectiveness, actuator_trim, linearization_point, 16, false);
-	method.setControlSetpoint(control_sp);
-	method.allocate();
-	actuator_sp = method.getActuatorSetpoint();
-	control_allocated_expected = method.getAllocatedControl();
+	روش.مجموعه_Metric_تخصیص(درست);
+	روش.مجموعه_Effectiveness_ماتریس(effectiveness, actuator_trim, linearization_نقطه, 16, خطأ);
+	روش.مجموعه_Control_Setpoint(control_sp);
+	روش.allocate();
+	actuator_sp = روش.getActuatorSetpoint();
+	control_allocated_expected = روش.getAllocatedControl();
 
 	EXPECT_EQ(actuator_sp, actuator_sp_expected);
 	EXPECT_EQ(control_allocated, control_allocated_expected);
 }
 
-namespace
+نطاق
 {
 
 // Surveyed hexarotor; rows roll/pitch/yaw/thrust xyz, one column per rotor
-constexpr float kSurveyedHexarotor[6][6] = {
+constexpr عائم kSurveyedHexarotor[6][6] = {
 	{-5.947500f,  5.934500f,  2.964000f, -2.853500f, -2.990000f,  2.840500f},
 	{ 0.071500f,  0.071500f,  5.063500f, -4.972500f,  5.063500f, -4.972500f},
 	{-0.325000f,  0.325000f, -0.325000f,  0.325000f,  0.325000f, -0.325000f},
@@ -105,40 +105,40 @@ constexpr float kSurveyedHexarotor[6][6] = {
 	{-6.500000f, -6.500000f, -6.500000f, -6.500000f, -6.500000f, -6.500000f}
 };
 
-Matrix<float, 6, 16> surveyedHexarotor(uint16_t stopped_mask)
+ماتریس_2<عائم, 6, 16> surveyedHexarotor(uint16_t stopped_ماسک)
 {
-	Matrix<float, 6, 16> effectiveness;
-	effectiveness.setZero();
+	ماتریس_2<عائم, 6, 16> effectiveness;
+	effectiveness.مجموعه_Zero();
 
-	for (int i = 0; i < 6; i++) {
-		if (stopped_mask & (1u << i)) {
-			continue;
+	لكل (صحيح i = 0; i < 6; i++) {
+		إذا (stopped_ماسک & (1u << i)) {
+			استمر;
 		}
 
-		for (int axis = 0; axis < 6; axis++) {
+		لكل (صحيح axis = 0; axis < 6; axis++) {
 			effectiveness(axis, i) = kSurveyedHexarotor[axis][i];
 		}
 	}
 
-	return effectiveness;
+	أرجع effectiveness;
 }
 
-struct Rotor {
-	float px;
-	float py;
-	float km;
+بنية Rotor {
+	عائم px;
+	عائم py;
+	عائم km;
 };
 
 // upward rotors as in ActuatorEffectivenessRotors
-Matrix<float, 6, 16> planarRotors(const Rotor *rotors, int count, uint16_t stopped_mask = 0)
+ماتریس_2<عائم, 6, 16> planarRotors(ثابت Rotor *rotors, صحيح شمار, uint16_t stopped_ماسک = 0)
 {
-	constexpr float ct = 6.5f;
-	Matrix<float, 6, 16> effectiveness;
-	effectiveness.setZero();
+	constexpr عائم ct = 6.5f;
+	ماتریس_2<عائم, 6, 16> effectiveness;
+	effectiveness.مجموعه_Zero();
 
-	for (int i = 0; i < count; i++) {
-		if (stopped_mask & (1u << i)) {
-			continue;
+	لكل (صحيح i = 0; i < شمار; i++) {
+		إذا (stopped_ماسک & (1u << i)) {
+			استمر;
 		}
 
 		effectiveness(0, i) = -ct * rotors[i].py;
@@ -147,7 +147,7 @@ Matrix<float, 6, 16> planarRotors(const Rotor *rotors, int count, uint16_t stopp
 		effectiveness(5, i) = -ct;
 	}
 
-	return effectiveness;
+	أرجع effectiveness;
 }
 
 // In-tree geometries 4001_quad_x, 6001_hexa_x, 8001_octo_x
@@ -162,9 +162,9 @@ constexpr Rotor kOctoX[] = {{0.46f, 0.19f, -0.05f}, {-0.46f, -0.19f, -0.05f}, {0
 
 } // namespace
 
-TEST(ControlAllocationPseudoInverseTest, DropDependentAxesKeepsIndependentGeometries)
+TEST(Control_تخصیص_Pseudo_Inverse_Test, DropDependentAxesKeepsIndependentGeometries)
 {
-	const Matrix<float, 6, 16> independent[] = {
+	ثابت ماتریس_2<عائم, 6, 16> independent[] = {
 		planarRotors(kQuadX, 4),
 		planarRotors(kHexaX, 6),
 		planarRotors(kOctoX, 8),
@@ -174,17 +174,17 @@ TEST(ControlAllocationPseudoInverseTest, DropDependentAxesKeepsIndependentGeomet
 		planarRotors(kOctoX, 8, (1u << 0) | (1u << 1)),
 	};
 
-	for (const auto &original : independent) {
-		Matrix<float, 6, 16> effectiveness = original;
-		EXPECT_EQ(ControlAllocationPseudoInverse::dropDependentAxes(effectiveness), 0);
+	لكل (ثابت خودکار &original : independent) {
+		ماتریس_2<عائم, 6, 16> effectiveness = original;
+		EXPECT_EQ(Control_تخصیص_Pseudo_Inverse::dropDependentAxes(effectiveness), 0);
 		EXPECT_EQ(effectiveness, original);
 	}
 }
 
-TEST(ControlAllocationPseudoInverseTest, DropDependentAxesDropsYawCollinearWithRoll)
+TEST(Control_تخصیص_Pseudo_Inverse_Test, DropDependentAxesDropsYawCollinearWithRoll)
 {
 	// motor and its opposite stopped: roll and yaw collinear, yaw must go, never roll
-	const Matrix<float, 6, 16> reduced[] = {
+	ثابت ماتریس_2<عائم, 6, 16> reduced[] = {
 		surveyedHexarotor((1u << 0) | (1u << 1)),
 		surveyedHexarotor((1u << 2) | (1u << 3)),
 		surveyedHexarotor((1u << 4) | (1u << 5)),
@@ -192,54 +192,54 @@ TEST(ControlAllocationPseudoInverseTest, DropDependentAxesDropsYawCollinearWithR
 		planarRotors(kHexaX, 6, (1u << 2) | (1u << 3)),
 	};
 
-	for (const auto &original : reduced) {
-		Matrix<float, 6, 16> effectiveness = original;
-		const uint8_t dropped = ControlAllocationPseudoInverse::dropDependentAxes(effectiveness);
-		EXPECT_EQ(dropped, 1u << ControlAllocation::YAW);
+	لكل (ثابت خودکار &original : reduced) {
+		ماتریس_2<عائم, 6, 16> effectiveness = original;
+		ثابت uint8_t dropped = Control_تخصیص_Pseudo_Inverse::dropDependentAxes(effectiveness);
+		EXPECT_EQ(dropped, 1u << Control_تخصیص::YAW);
 
-		for (int axis = 0; axis < 6; axis++) {
-			for (int i = 0; i < 16; i++) {
-				const float expected = (axis == ControlAllocation::YAW) ? 0.f : original(axis, i);
+		لكل (صحيح axis = 0; axis < 6; axis++) {
+			لكل (صحيح i = 0; i < 16; i++) {
+				ثابت عائم expected = (axis == Control_تخصیص::YAW) ? 0.f : original(axis, i);
 				EXPECT_FLOAT_EQ(effectiveness(axis, i), expected);
 			}
 		}
 	}
 }
 
-TEST(ControlAllocationPseudoInverseTest, DroppedAxisIsUnallocatedOthersExact)
+TEST(Control_تخصیص_Pseudo_Inverse_Test, DroppedAxisIsUnallocatedOthersExact)
 {
-	ControlAllocationPseudoInverse method;
-	Vector<float, 16> actuator_trim;
-	Vector<float, 16> linearization_point;
+	Control_تخصیص_Pseudo_Inverse روش;
+	وکتور<عائم, 16> actuator_trim;
+	وکتور<عائم, 16> linearization_نقطه;
 
-	method.setEffectivenessMatrix(surveyedHexarotor((1u << 0) | (1u << 1)), actuator_trim, linearization_point,
-				      16, false);
-	EXPECT_EQ(method.getDroppedAxes(), 1u << ControlAllocation::YAW);
+	روش.مجموعه_Effectiveness_ماتریس(surveyedHexarotor((1u << 0) | (1u << 1)), actuator_trim, linearization_نقطه,
+				      16, خطأ);
+	EXPECT_EQ(روش.getDroppedAxes(), 1u << Control_تخصیص::YAW);
 
 	// yaw demand has nothing to act on
-	Vector<float, 6> control_sp;
-	control_sp(ControlAllocation::YAW) = 1.f;
-	method.setControlSetpoint(control_sp);
-	method.allocate();
-	const Vector<float, 16> no_actuation;
-	EXPECT_EQ(method.getActuatorSetpoint(), no_actuation);
-	EXPECT_FLOAT_EQ(method.getAllocatedControl()(ControlAllocation::YAW), 0.f);
+	وکتور<عائم, 6> control_sp;
+	control_sp(Control_تخصیص::YAW) = 1.f;
+	روش.مجموعه_Control_Setpoint(control_sp);
+	روش.allocate();
+	ثابت وکتور<عائم, 16> no_actuation;
+	EXPECT_EQ(روش.getActuatorSetpoint(), no_actuation);
+	EXPECT_FLOAT_EQ(روش.getAllocatedControl()(Control_تخصیص::YAW), 0.f);
 
 	// remaining axes allocated exactly
-	control_sp.setZero();
-	control_sp(ControlAllocation::ROLL) = 0.01f;
-	control_sp(ControlAllocation::PITCH) = 0.024f;
-	control_sp(ControlAllocation::THRUST_Z) = -0.001f;
-	method.setControlSetpoint(control_sp);
-	method.allocate();
+	control_sp.مجموعه_Zero();
+	control_sp(Control_تخصیص::ROLL) = 0.01f;
+	control_sp(Control_تخصیص::PITCH) = 0.024f;
+	control_sp(Control_تخصیص::THRUST_Z) = -0.001f;
+	روش.مجموعه_Control_Setpoint(control_sp);
+	روش.allocate();
 
-	const Vector<float, 6> allocated = method.getAllocatedControl();
-	EXPECT_NEAR(allocated(ControlAllocation::ROLL), 0.01f, 1e-4f);
-	EXPECT_NEAR(allocated(ControlAllocation::PITCH), 0.024f, 1e-4f);
-	EXPECT_NEAR(allocated(ControlAllocation::THRUST_Z), -0.001f, 1e-4f);
-	EXPECT_FLOAT_EQ(allocated(ControlAllocation::YAW), 0.f);
+	ثابت وکتور<عائم, 6> allocated = روش.getAllocatedControl();
+	EXPECT_NEAR(allocated(Control_تخصیص::ROLL), 0.01f, 1e-4f);
+	EXPECT_NEAR(allocated(Control_تخصیص::PITCH), 0.024f, 1e-4f);
+	EXPECT_NEAR(allocated(Control_تخصیص::THRUST_Z), -0.001f, 1e-4f);
+	EXPECT_FLOAT_EQ(allocated(Control_تخصیص::YAW), 0.f);
 
-	for (int i = 0; i < 16; i++) {
-		EXPECT_LT(fabsf(method.getActuatorSetpoint()(i)), 0.01f) << "actuator " << i;
+	لكل (صحيح i = 0; i < 16; i++) {
+		EXPECT_LT(fabsf(روش.getActuatorSetpoint()(i)), 0.01f) << "actuator " << i;
 	}
 }

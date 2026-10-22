@@ -1,45 +1,45 @@
-import os
-import re
-import codecs
-import sys
+استورد os
+استورد re
+استورد codecs
+استورد sys
 
-class SourceScanner(object):
+صنف منبع_Scanner(object):
     """
     Traverses directory tree, reads all source files, and passes their contents
     to the Parser.
     """
 
-    def ScanDir(self, srcdirs, parser):
+    تعریف پیمایش_Dir(self, srcdirs, parser):
         """
         Scans provided path and passes all found contents to the parser using
         parser.Parse method.
         """
         extensions1 = tuple([".h"])
         extensions2 = tuple([".c"])
-        for srcdir in srcdirs:
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions1):
-                    path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions2):
-                    path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-        return True
+        لكل srcdir في srcdirs:
+            لكل filename في os.listdir(srcdir):
+                إذا filename.endswith(extensions1):
+                    مسیر = os.مسیر.join(srcdir, filename)
+                    إذا ليس self.پیمایش_File(مسیر, parser):
+                        أرجع خطأ
+            لكل filename في os.listdir(srcdir):
+                إذا filename.endswith(extensions2):
+                    مسیر = os.مسیر.join(srcdir, filename)
+                    إذا ليس self.پیمایش_File(مسیر, parser):
+                        أرجع خطأ
+        أرجع درست
 
-    def ScanFile(self, path, parser):
+    تعریف پیمایش_File(self, مسیر, parser):
         """
         Scans provided file and passes its contents to the parser using
         parser.Parse method.
         """
 
-        with codecs.open(path, 'r', 'utf-8') as f:
-            try:
-                contents = f.read()
-            except:
+        با codecs.open(مسیر, 'r', 'utf-8') كـ f:
+            حاول:
+                contents = f.اقرأ()
+            استثناء:
                 contents = ''
-                print('Failed reading file: %s, skipping content.' % path)
-                pass
-        return parser.Parse(contents)
+                چاپ('Failed reading file: %s, skipping content.' % مسیر)
+                بگذر
+        أرجع parser.Parse(contents)

@@ -39,20 +39,20 @@
  * @author Silvan Fuhrer <silvan@auterion.com>
  */
 
-#pragma once
+#رهنمود once
 
 // #include <float.h>
 // #include <mathlib/math/Functions.hpp>
-#include <mathlib/math/filter/AlphaFilter.hpp>
+#ضمن <mathlib/math/filter/AlphaFilter.hpp>
 
-using namespace math;
+استفاده نطاق math;
 
-template <typename T>
-class FilteredDerivative
+قالب <نام_نوع T>
+صنف FilteredDerivative
 {
-public:
-	FilteredDerivative() = default;
-	~FilteredDerivative() = default;
+عام:
+	FilteredDerivative() = افتراضي;
+	~FilteredDerivative() = افتراضي;
 
 	/**
 	 * Set filter parameters for time abstraction
@@ -60,9 +60,9 @@ public:
 	 * @param sample_interval_s interval between two samples in seconds
 	 * @param time_constant_s filter time constant determining convergence in seconds
 	 */
-	void setParameters(float sample_interval_s, float time_constant_s)
+	فراغ مجموعه_Parameters(عائم sample_interval_s, عائم زمان_constant_s)
 	{
-		_alpha_filter.setParameters(sample_interval_s, time_constant_s);
+		_alpha_filter.مجموعه_Parameters(sample_interval_s, زمان_constant_s);
 		_sample_interval = sample_interval_s;
 	}
 
@@ -70,10 +70,10 @@ public:
 	 * @param sample_interval_us interval between two samples in microseconds
 	 * @param time_constant_us filter time constant determining convergence in microseconds
 	 */
-	void setParameters(uint64_t sample_interval_us, uint64_t time_constant_us)
+	فراغ مجموعه_Parameters(uint64_t sample_interval_us, uint64_t زمان_constant_us)
 	{
-		_alpha_filter.setParameters(sample_interval_us, time_constant_us);
-		_sample_interval = static_cast<float>(sample_interval_us) * 1e-6f;
+		_alpha_filter.مجموعه_Parameters(sample_interval_us, زمان_constant_us);
+		_sample_interval = static_cast<عائم>(sample_interval_us) * 1e-6f;
 	}
 
 	/**
@@ -81,10 +81,10 @@ public:
 	 *
 	 * @param sample new initial value
 	 */
-	void reset(const T &sample)
+	فراغ reset(ثابت T &sample)
 	{
 		_alpha_filter.reset(sample);
-		_initialized = false;
+		_initialized = خطأ;
 	}
 
 	/**
@@ -92,34 +92,34 @@ public:
 	 *
 	 * @return retrieve the filtered result
 	 */
-	const T &update(const T &sample)
+	ثابت T &update(ثابت T &sample)
 	{
-		if (_initialized) {
-			if (_sample_interval > FLT_EPSILON) {
-				_alpha_filter.update((sample - _previous_sample) / _sample_interval);
+		إذا (_initialized) {
+			إذا (_sample_interval > FLT_EPSILON) {
+				_alpha_filter.update((sample - قبلی_sample) / _sample_interval);
 
-			} else {
-				_initialized = false;
+			} وإلا {
+				_initialized = خطأ;
 			}
 
-		} else {
+		} وإلا {
 			// don't update in the first iteration
-			_initialized = true;
+			_initialized = درست;
 		}
 
-		_previous_sample = sample;
-		return _alpha_filter.getState();
+		قبلی_sample = sample;
+		أرجع _alpha_filter.getState();
 	}
 
-	const T &getState() const { return _alpha_filter.getState(); }
+	ثابت T &getState() ثابت { أرجع _alpha_filter.getState(); }
 
 	// delete mixing seconds with microseconds explicitly -> better compiler error
-	void setParameters(uint64_t sample_interval_us, float time_constant_s) = delete;
-	void setParameters(float sample_interval_s, uint64_t time_constant_us) = delete;
+	فراغ مجموعه_Parameters(uint64_t sample_interval_us, عائم زمان_constant_s) = حذف;
+	فراغ مجموعه_Parameters(عائم sample_interval_s, uint64_t زمان_constant_us) = حذف;
 
-private:
+خاص:
 	AlphaFilter<T> _alpha_filter;
-	float _sample_interval{0.f};
-	T _previous_sample{0.f};
-	bool _initialized{false};
+	عائم _sample_interval{0.f};
+	T قبلی_sample{0.f};
+	منطقي _initialized{خطأ};
 };

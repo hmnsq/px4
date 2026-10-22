@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "Accelerometer.hpp"
+#ضمن "Accelerometer.hpp"
 
-#include "Utilities.hpp"
+#ضمن "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#ضمن <lib/drivers/device/Device.hpp>
+#ضمن <lib/parameters/param.h>
 
-using namespace matrix;
-using namespace time_literals;
+استفاده نطاق ماتریس;
+استفاده نطاق زمان_literals;
 
-namespace calibration
+نطاق calibration
 {
 
 Accelerometer::Accelerometer()
@@ -51,22 +51,22 @@ Accelerometer::Accelerometer()
 
 Accelerometer::Accelerometer(uint32_t device_id)
 {
-	set_device_id(device_id);
+	مجموعه_device_id(device_id);
 }
 
-Accelerometer::Accelerometer(uint32_t device_id, bool external)
+Accelerometer::Accelerometer(uint32_t device_id, منطقي external)
 {
-	set_device_id(device_id, external);
+	مجموعه_device_id(device_id, external);
 }
 
-void Accelerometer::set_device_id(uint32_t device_id)
+فراغ Accelerometer::مجموعه_device_id(uint32_t device_id)
 {
-	set_device_id(device_id, device::device_is_external(device_id));
+	مجموعه_device_id(device_id, device::device_is_external(device_id));
 }
 
-void Accelerometer::set_device_id(uint32_t device_id, bool external)
+فراغ Accelerometer::مجموعه_device_id(uint32_t device_id, منطقي external)
 {
-	if (_device_id != device_id || _external != external) {
+	إذا (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -74,240 +74,240 @@ void Accelerometer::set_device_id(uint32_t device_id, bool external)
 		Reset();
 
 		ParametersUpdate();
-		SensorCorrectionsUpdate(true);
+		SensorCorrectionsUpdate(درست);
 	}
 }
 
-void Accelerometer::SensorCorrectionsUpdate(bool force)
+فراغ Accelerometer::SensorCorrectionsUpdate(منطقي force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	إذا (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		إذا (_device_id == 0) {
+			أرجع;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		إذا (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.accel_device_ids[i] == _device_id) {
-					switch (i) {
-					case 0:
-						_thermal_offset = Vector3f{corrections.accel_offset_0};
-						return;
-					case 1:
-						_thermal_offset = Vector3f{corrections.accel_offset_1};
-						return;
-					case 2:
-						_thermal_offset = Vector3f{corrections.accel_offset_2};
-						return;
-					case 3:
-						_thermal_offset = Vector3f{corrections.accel_offset_3};
-						return;
+			لكل (صحيح i = 0; i < MAX_SENSOR_شمار; i++) {
+				إذا (corrections.accel_device_ids[i] == _device_id) {
+					بدل (i) {
+					حالة 0:
+						thermal_جابه_جایی = Vector3f{corrections.accel_جابه_جایی_0};
+						أرجع;
+					حالة 1:
+						thermal_جابه_جایی = Vector3f{corrections.accel_جابه_جایی_1};
+						أرجع;
+					حالة 2:
+						thermal_جابه_جایی = Vector3f{corrections.accel_جابه_جایی_2};
+						أرجع;
+					حالة 3:
+						thermal_جابه_جایی = Vector3f{corrections.accel_جابه_جایی_3};
+						أرجع;
 					}
 				}
 			}
 		}
 
 		// zero thermal offset if not found
-		_thermal_offset.zero();
+		thermal_جابه_جایی.zero();
 	}
 }
 
-bool Accelerometer::set_offset(const Vector3f &offset)
+منطقي Accelerometer::مجموعه_جابه_جایی(ثابت Vector3f &جابه_جایی)
 {
-	if (Vector3f(_offset - offset).longerThan(0.01f)) {
-		if (offset.isAllFinite()) {
-			_offset = offset;
-			_calibration_count++;
-			return true;
+	إذا (Vector3f(جابه_جایی_2 - جابه_جایی).longerThan(0.01f)) {
+		إذا (جابه_جایی.isAllFinite()) {
+			جابه_جایی_2 = جابه_جایی;
+			calibration_شمار++;
+			أرجع درست;
 		}
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-bool Accelerometer::set_scale(const Vector3f &scale)
+منطقي Accelerometer::مجموعه_scale(ثابت Vector3f &scale)
 {
-	if (Vector3f(_scale - scale).longerThan(0.01f)) {
-		if (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
+	إذا (Vector3f(_scale - scale).longerThan(0.01f)) {
+		إذا (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
 			_scale = scale;
-			_calibration_count++;
-			return true;
+			calibration_شمار++;
+			أرجع درست;
 		}
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void Accelerometer::set_rotation(Rotation rotation)
+فراغ Accelerometer::مجموعه_rotation(Rotation rotation)
 {
 	_rotation_enum = rotation;
 
 	// always apply board level adjustments
-	_rotation = Dcmf(GetSensorLevelAdjustment()) * get_rot_matrix(rotation);
+	_rotation = Dcmf(GetSensorLevelAdjustment()) * get_rot_ماتریس(rotation);
 }
 
-bool Accelerometer::set_calibration_index(int calibration_index)
+منطقي Accelerometer::مجموعه_calibration_شاخص(صحيح calibration_شاخص)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
-		_calibration_index = calibration_index;
-		return true;
+	إذا ((calibration_شاخص >= 0) && (calibration_شاخص < MAX_SENSOR_شمار)) {
+		calibration_شاخص_2 = calibration_شاخص;
+		أرجع درست;
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void Accelerometer::ParametersUpdate()
+فراغ Accelerometer::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	إذا (_device_id == 0) {
+		أرجع;
 	}
 
-	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
+	calibration_شاخص_2 = پیدا_کن_Current_Calibration_شاخص(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	إذا (calibration_شاخص_2 == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
-		ParametersLoad();
+	} وإلا {
+		Parameters_بارگیری();
 	}
 }
 
-bool Accelerometer::ParametersLoad()
+منطقي Accelerometer::Parameters_بارگیری()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	إذا (calibration_شاخص_2 >= 0 && calibration_شاخص_2 < MAX_SENSOR_شمار) {
 		// CAL_ACCx_ROT
-		int32_t rotation_value = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
+		int32_t rotation_مقدار = GetCalibrationParamInt32(SensorString(), "ROT", calibration_شاخص_2);
 
-		if (_external) {
-			if ((rotation_value >= ROTATION_MAX) || (rotation_value < 0)) {
+		إذا (_external) {
+			إذا ((rotation_مقدار >= ROTATION_MAX) || (rotation_مقدار < 0)) {
 				// invalid rotation, resetting
-				rotation_value = ROTATION_NONE;
+				rotation_مقدار = ROTATION_NONE;
 			}
 
-			set_rotation(static_cast<Rotation>(rotation_value));
+			مجموعه_rotation(static_cast<Rotation>(rotation_مقدار));
 
-		} else {
+		} وإلا {
 			// internal sensors follow board rotation
-			set_rotation(GetBoardRotation());
+			مجموعه_rotation(GetBoardRotation());
 		}
 
 		// CAL_ACCx_PRIO
-		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
+		اولویت_2 = GetCalibrationParamInt32(SensorString(), "PRIO", calibration_شاخص_2);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		إذا ((اولویت_2 < 0) || (اولویت_2 > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
-			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
+			ساكن constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			إذا (اولویت_2 != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
-					_calibration_index, _priority);
+					calibration_شاخص_2, اولویت_2);
 
-				SetCalibrationParam(SensorString(), "PRIO", _calibration_index, CAL_PRIO_UNINITIALIZED);
+				مجموعه_Calibration_Param(SensorString(), "PRIO", calibration_شاخص_2, CAL_PRIO_UNINITIALIZED);
 			}
 
-			_priority = _external ? DEFAULT_EXTERNAL_PRIORITY : DEFAULT_PRIORITY;
+			اولویت_2 = _external ? DEFAULT_EXTERNAL_اولویت : DEFAULT_اولویت;
 		}
 
 		// CAL_ACCx_OFF{X,Y,Z}
-		set_offset(GetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index));
+		مجموعه_جابه_جایی(GetCalibrationParamsVector3f(SensorString(), "OFF", calibration_شاخص_2));
 
 		// CAL_ACCx_SCALE{X,Y,Z}
-		set_scale(GetCalibrationParamsVector3f(SensorString(), "SCALE", _calibration_index));
+		مجموعه_scale(GetCalibrationParamsVector3f(SensorString(), "SCALE", calibration_شاخص_2));
 
-		return true;
+		أرجع درست;
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void Accelerometer::Reset()
+فراغ Accelerometer::Reset()
 {
-	if (_external) {
-		set_rotation(ROTATION_NONE);
+	إذا (_external) {
+		مجموعه_rotation(ROTATION_NONE);
 
-	} else {
+	} وإلا {
 		// internal sensors follow board rotation
-		set_rotation(GetBoardRotation());
+		مجموعه_rotation(GetBoardRotation());
 	}
 
-	_offset.zero();
+	جابه_جایی_2.zero();
 	_scale = Vector3f{1.f, 1.f, 1.f};
 
-	_thermal_offset.zero();
+	thermal_جابه_جایی.zero();
 
-	_priority = _external ? DEFAULT_EXTERNAL_PRIORITY : DEFAULT_PRIORITY;
+	اولویت_2 = _external ? DEFAULT_EXTERNAL_اولویت : DEFAULT_اولویت;
 
-	_calibration_index = -1;
+	calibration_شاخص_2 = -1;
 
-	_calibration_count = 0;
+	calibration_شمار = 0;
 }
 
-bool Accelerometer::ParametersSave(int desired_calibration_index, bool force)
+منطقي Accelerometer::ParametersSave(صحيح desired_calibration_شاخص, منطقي force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
-		_calibration_index = desired_calibration_index;
+	إذا (force && desired_calibration_شاخص >= 0 && desired_calibration_شاخص < MAX_SENSOR_شمار) {
+		calibration_شاخص_2 = desired_calibration_شاخص;
 
-	} else if (!force || (_calibration_index < 0)
-		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
+	} وإلا إذا (!force || (calibration_شاخص_2 < 0)
+		   || (desired_calibration_شاخص != -1 && desired_calibration_شاخص != calibration_شاخص_2)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
-		int8_t calibration_index_prev = _calibration_index;
-		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
+		int8_t calibration_شاخص_prev = calibration_شاخص_2;
+		calibration_شاخص_2 = پیدا_کن_موجود_Calibration_شاخص(SensorString(), _device_id, desired_calibration_شاخص);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		إذا (calibration_شاخص_prev >= 0 && (calibration_شاخص_prev != calibration_شاخص_2)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
-				 calibration_index_prev, _calibration_index);
+				 calibration_شاخص_prev, calibration_شاخص_2);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	إذا (calibration_شاخص_2 >= 0 && calibration_شاخص_2 < MAX_SENSOR_شمار) {
 		// save calibration
-		bool success = true;
-		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
-		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
-		success &= SetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index, _offset);
-		success &= SetCalibrationParamsVector3f(SensorString(), "SCALE", _calibration_index, _scale);
+		منطقي success = درست;
+		success &= مجموعه_Calibration_Param(SensorString(), "ID", calibration_شاخص_2, _device_id);
+		success &= مجموعه_Calibration_Param(SensorString(), "PRIO", calibration_شاخص_2, اولویت_2);
+		success &= مجموعه_Calibration_Params_Vector3f(SensorString(), "OFF", calibration_شاخص_2, جابه_جایی_2);
+		success &= مجموعه_Calibration_Params_Vector3f(SensorString(), "SCALE", calibration_شاخص_2, _scale);
 
-		if (_external) {
-			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, (int32_t)_rotation_enum);
+		إذا (_external) {
+			success &= مجموعه_Calibration_Param(SensorString(), "ROT", calibration_شاخص_2, (int32_t)_rotation_enum);
 
-		} else {
-			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, -1); // internal
+		} وإلا {
+			success &= مجموعه_Calibration_Param(SensorString(), "ROT", calibration_شاخص_2, -1); //داخلی
 		}
 
-		return success;
+		أرجع success;
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void Accelerometer::PrintStatus()
+فراغ Accelerometer::Print_وضعیت()
 {
-	if (external()) {
+	إذا (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Ext ROT: %d\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
-			     (double)_scale(0), (double)_scale(1), (double)_scale(2),
+			     (مزدوج)جابه_جایی_2(0), (مزدوج)جابه_جایی_2(1), (مزدوج)جابه_جایی_2(2),
+			     (مزدوج)_scale(0), (مزدوج)_scale(1), (مزدوج)_scale(2),
 			     rotation_enum());
 
-	} else {
+	} وإلا {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
-			     (double)_scale(0), (double)_scale(1), (double)_scale(2));
+			     (مزدوج)جابه_جایی_2(0), (مزدوج)جابه_جایی_2(1), (مزدوج)جابه_جایی_2(2),
+			     (مزدوج)_scale(0), (مزدوج)_scale(1), (مزدوج)_scale(2));
 	}
 
-	if (_thermal_offset.norm() > 0.f) {
+	إذا (thermal_جابه_جایی.norm() > 0.f) {
 		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: [%.4f %.4f %.4f]\n", SensorString(), _device_id,
-			     (double)_thermal_offset(0), (double)_thermal_offset(1), (double)_thermal_offset(2));
+			     (مزدوج)thermal_جابه_جایی(0), (مزدوج)thermal_جابه_جایی(1), (مزدوج)thermal_جابه_جایی(2));
 	}
 }
 

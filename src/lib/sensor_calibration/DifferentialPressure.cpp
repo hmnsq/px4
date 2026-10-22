@@ -31,16 +31,16 @@
  *
  ****************************************************************************/
 
-#include "DifferentialPressure.hpp"
+#ضمن "DifferentialPressure.hpp"
 
-#include "Utilities.hpp"
+#ضمن "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#ضمن <lib/drivers/device/Device.hpp>
+#ضمن <lib/parameters/param.h>
 
-#include <float.h>
+#ضمن <float.h>
 
-namespace calibration
+نطاق calibration
 {
 
 DifferentialPressure::DifferentialPressure()
@@ -50,14 +50,14 @@ DifferentialPressure::DifferentialPressure()
 
 DifferentialPressure::DifferentialPressure(uint32_t device_id)
 {
-	set_device_id(device_id);
+	مجموعه_device_id(device_id);
 }
 
-void DifferentialPressure::set_device_id(uint32_t device_id)
+فراغ DifferentialPressure::مجموعه_device_id(uint32_t device_id)
 {
-	const bool external = device::device_is_external(device_id);
+	ثابت منطقي external = device::device_is_external(device_id);
 
-	if (_device_id != device_id || _external != external) {
+	إذا (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -68,153 +68,153 @@ void DifferentialPressure::set_device_id(uint32_t device_id)
 	}
 }
 
-bool DifferentialPressure::set_offset(const float &offset)
+منطقي DifferentialPressure::مجموعه_جابه_جایی(ثابت عائم &جابه_جایی)
 {
-	if (fabsf(_offset - offset) > 0.01f) {
-		if (PX4_ISFINITE(offset)) {
-			_offset = offset;
-			_calibration_count++;
-			return true;
+	إذا (fabsf(جابه_جایی_2 - جابه_جایی) > 0.01f) {
+		إذا (PX4_ISFINITE(جابه_جایی)) {
+			جابه_جایی_2 = جابه_جایی;
+			calibration_شمار++;
+			أرجع درست;
 		}
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-bool DifferentialPressure::set_calibration_index(int calibration_index)
+منطقي DifferentialPressure::مجموعه_calibration_شاخص(صحيح calibration_شاخص)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
-		_calibration_index = calibration_index;
-		return true;
+	إذا ((calibration_شاخص >= 0) && (calibration_شاخص < MAX_SENSOR_شمار)) {
+		calibration_شاخص_2 = calibration_شاخص;
+		أرجع درست;
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void DifferentialPressure::ParametersUpdate()
+فراغ DifferentialPressure::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	إذا (_device_id == 0) {
+		أرجع;
 	}
 
-	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
+	calibration_شاخص_2 = پیدا_کن_Current_Calibration_شاخص(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	إذا (calibration_شاخص_2 == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
-		ParametersLoad();
+	} وإلا {
+		Parameters_بارگیری();
 	}
 }
 
-bool DifferentialPressure::ParametersLoad()
+منطقي DifferentialPressure::Parameters_بارگیری()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	إذا (calibration_شاخص_2 >= 0 && calibration_شاخص_2 < MAX_SENSOR_شمار) {
 		// CAL_DPRESx_OFF
-		set_offset(GetCalibrationParamFloat(SensorString(), "OFF", _calibration_index));
+		مجموعه_جابه_جایی(GetCalibrationParamFloat(SensorString(), "OFF", calibration_شاخص_2));
 
-		return true;
+		أرجع درست;
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-bool DifferentialPressure::AdoptLegacyOffset()
+منطقي DifferentialPressure::Adopt_Legacy_جابه_جایی()
 {
-	if ((_device_id == 0) || calibrated()) {
-		return false;
+	إذا ((_device_id == 0) || calibrated()) {
+		أرجع خطأ;
 	}
 
 	// slot 0 must still be free, otherwise another sensor already owns the legacy offset
-	if (GetCalibrationParamInt32(SensorString(), "ID", kLegacyIndex) != 0) {
-		return false;
+	إذا (GetCalibrationParamInt32(SensorString(), "ID", k_Legacy_شاخص) != 0) {
+		أرجع خطأ;
 	}
 
-	float legacy_offset = 0.f;
+	عائم legacy_جابه_جایی = 0.f;
 
-	if (param_get(param_find(kLegacyOffsetParam), &legacy_offset) != PX4_OK) {
-		return false;
+	إذا (param_get(param_پیدا_کن(k_Legacy_جابه_جایی_Param), &legacy_جابه_جایی) != PX4_OK) {
+		أرجع خطأ;
 	}
 
-	if (!PX4_ISFINITE(legacy_offset) || (fabsf(legacy_offset) < FLT_EPSILON)) {
-		return false;
+	إذا (!PX4_ISFINITE(legacy_جابه_جایی) || (fabsf(legacy_جابه_جایی) < FLT_EPSILON)) {
+		أرجع خطأ;
 	}
 
-	_offset = legacy_offset;
-	_calibration_index = kLegacyIndex;
+	جابه_جایی_2 = legacy_جابه_جایی;
+	calibration_شاخص_2 = k_Legacy_شاخص;
 
-	PX4_INFO("%s %" PRIu32 " adopted %s %.3f Pa", SensorString(), _device_id, kLegacyOffsetParam, (double)_offset);
+	PX4_INFO("%s %" PRIu32 " adopted %s %.3f Pa", SensorString(), _device_id, k_Legacy_جابه_جایی_Param, (مزدوج)جابه_جایی_2);
 
-	return true;
+	أرجع درست;
 }
 
-void DifferentialPressure::UpdateLegacyOffset() const
+فراغ DifferentialPressure::Update_Legacy_جابه_جایی() ثابت
 {
 	// keep SENS_DPRES_OFF in step with slot 0 so that ground stations reading it can still tell
 	// whether airspeed has been calibrated
-	if (_calibration_index != kLegacyIndex) {
-		return;
+	إذا (calibration_شاخص_2 != k_Legacy_شاخص) {
+		أرجع;
 	}
 
-	const param_t handle = param_find(kLegacyOffsetParam);
+	ثابت param_t handle = param_پیدا_کن(k_Legacy_جابه_جایی_Param);
 
-	if (handle == PARAM_INVALID) {
-		return;
+	إذا (handle == PARAM_INVALID) {
+		أرجع;
 	}
 
-	float offset = _offset;
-	param_set_no_notification(handle, &offset);
+	عائم جابه_جایی = جابه_جایی_2;
+	param_مجموعه_no_notification(handle, &جابه_جایی);
 }
 
-void DifferentialPressure::Reset()
+فراغ DifferentialPressure::Reset()
 {
-	_offset = 0;
+	جابه_جایی_2 = 0;
 
-	_calibration_index = -1;
+	calibration_شاخص_2 = -1;
 
-	_calibration_count = 0;
+	calibration_شمار = 0;
 }
 
-bool DifferentialPressure::ParametersSave(int desired_calibration_index, bool force)
+منطقي DifferentialPressure::ParametersSave(صحيح desired_calibration_شاخص, منطقي force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
-		_calibration_index = desired_calibration_index;
+	إذا (force && desired_calibration_شاخص >= 0 && desired_calibration_شاخص < MAX_SENSOR_شمار) {
+		calibration_شاخص_2 = desired_calibration_شاخص;
 
-	} else if (!force || (_calibration_index < 0)
-		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
+	} وإلا إذا (!force || (calibration_شاخص_2 < 0)
+		   || (desired_calibration_شاخص != -1 && desired_calibration_شاخص != calibration_شاخص_2)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
-		int8_t calibration_index_prev = _calibration_index;
-		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
+		int8_t calibration_شاخص_prev = calibration_شاخص_2;
+		calibration_شاخص_2 = پیدا_کن_موجود_Calibration_شاخص(SensorString(), _device_id, desired_calibration_شاخص);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		إذا (calibration_شاخص_prev >= 0 && (calibration_شاخص_prev != calibration_شاخص_2)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
-				 calibration_index_prev, _calibration_index);
+				 calibration_شاخص_prev, calibration_شاخص_2);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	إذا (calibration_شاخص_2 >= 0 && calibration_شاخص_2 < MAX_SENSOR_شمار) {
 		// save calibration
-		bool success = true;
-		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
-		success &= SetCalibrationParam(SensorString(), "OFF", _calibration_index, _offset);
+		منطقي success = درست;
+		success &= مجموعه_Calibration_Param(SensorString(), "ID", calibration_شاخص_2, _device_id);
+		success &= مجموعه_Calibration_Param(SensorString(), "OFF", calibration_شاخص_2, جابه_جایی_2);
 
-		UpdateLegacyOffset();
+		Update_Legacy_جابه_جایی();
 
-		return success;
+		أرجع success;
 	}
 
 	// index 3 is possible: FindAvailableCalibrationIndex() searches four slots, we define three
-	PX4_ERR("%s %" PRIu32 " no free calibration slot (got %" PRIi8 ")", SensorString(), _device_id, _calibration_index);
+	PX4_ERR("%s %" PRIu32 " no free calibration slot (got %" PRIi8 ")", SensorString(), _device_id, calibration_شاخص_2);
 
-	return false;
+	أرجع خطأ;
 }
 
-void DifferentialPressure::PrintStatus()
+فراغ DifferentialPressure::Print_وضعیت()
 {
 	PX4_INFO_RAW("%s %" PRIu32 " offset: %05.3f Pa, %s\n",
-		     SensorString(), device_id(), (double)_offset,
+		     SensorString(), device_id(), (مزدوج)جابه_جایی_2,
 		     external() ? "Ext" : "Internal");
 }
 

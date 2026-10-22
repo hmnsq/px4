@@ -37,11 +37,11 @@
  * LED driver to control the onboard LED(s) via ioctl interface.
  */
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/px4_config.h>
-#include <lib/cdev/CDev.hpp>
-#include <drivers/drv_board_led.h>
-#include <stdio.h>
+#ضمن <px4_platform_common/log.h>
+#ضمن <px4_platform_common/px4_config.h>
+#ضمن <lib/cdev/CDev.hpp>
+#ضمن <drivers/drv_board_led.h>
+#ضمن <stdio.h>
 
 /*
  * Ideally we'd be able to get these from arm_internal.h,
@@ -51,29 +51,29 @@
  * CONFIG_ARCH_LEDS configuration switch.
  */
 __BEGIN_DECLS
-extern void led_init();
-extern void led_on(int led);
-extern void led_off(int led);
-extern void led_toggle(int led);
+خارجي فراغ led_init();
+خارجي فراغ led_on(صحيح led);
+خارجي فراغ led_off(صحيح led);
+خارجي فراغ led_toggle(صحيح led);
 __END_DECLS
 
-class LED : cdev::CDev
+صنف LED : cdev::CDev
 {
-public:
+عام:
 	LED();
-	~LED() override = default;
+	~LED() override = افتراضي;
 
-	int	init() override;
-	int	ioctl(cdev::file_t *filp, int cmd, unsigned long arg) override;
+	صحيح	init() override;
+	صحيح	ioctl(cdev::file_t *filp, صحيح cmd, بیعلامت دراز arg) override;
 };
 
-LED::LED() : CDev(LED0_DEVICE_PATH)
+LED::LED() : CDev(LED0_DEVICE_مسیر)
 {
 	// force immediate init/device registration
 	init();
 }
 
-int
+صحيح
 LED::init()
 {
 	PX4_DEBUG("LED::init");
@@ -82,43 +82,43 @@ LED::init()
 
 	led_init();
 
-	return 0;
+	أرجع 0;
 }
 
-int
-LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
+صحيح
+LED::ioctl(cdev::file_t *filp, صحيح cmd, بیعلامت دراز arg)
 {
-	int result = OK;
+	صحيح نتیجه = OK;
 
-	switch (cmd) {
-	case LED_ON:
+	بدل (cmd) {
+	حالة LED_ON:
 		led_on(arg);
-		break;
+		اكسر;
 
-	case LED_OFF:
+	حالة LED_OFF:
 		led_off(arg);
-		break;
+		اكسر;
 
-	case LED_TOGGLE:
+	حالة LED_TOGGLE:
 		led_toggle(arg);
-		break;
+		اكسر;
 
-	default:
-		result = CDev::ioctl(filp, cmd, arg);
+	افتراضي:
+		نتیجه = CDev::ioctl(filp, cmd, arg);
 	}
 
-	return result;
+	أرجع نتیجه;
 }
 
-namespace
+نطاق
 {
 LED	*gLED;
 }
 
-void
-drv_led_start(void)
+فراغ
+drv_led_شروع(فراغ)
 {
-	if (gLED == nullptr) {
-		gLED = new LED;
+	إذا (gLED == اشاره_تهی) {
+		gLED = جديد LED;
 	}
 }

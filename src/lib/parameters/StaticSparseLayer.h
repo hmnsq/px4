@@ -31,138 +31,138 @@
  *
  ****************************************************************************/
 
-#pragma once
+#رهنمود once
 
-#include <stdlib.h>
-#include "ParamLayer.h"
+#ضمن <stdlib.h>
+#ضمن "ParamLayer.h"
 
-template <int N_SLOTS>
-class StaticSparseLayer : public ParamLayer
+قالب <صحيح N_SLOTS>
+class StaticSparseLayer : عام ParamLayer
 {
-public:
-	StaticSparseLayer(ParamLayer *parent) : ParamLayer(parent)
+عام:
+	StaticSparseLayer(ParamLayer *والد) : ParamLayer(والد)
 	{
-		for (int i = 0; i < N_SLOTS; i++) {
-			_slots[i] = {UINT16_MAX, param_value_u{}};
+		لكل (صحيح i = 0; i < N_SLOTS; i++) {
+			_slots[i] = {UINT16_MAX, param_مقدار_u{}};
 		}
 	}
 
-	virtual ~StaticSparseLayer() = default;
+	مجازی ~StaticSparseLayer() = افتراضي;
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_مقدار_u مقدار) override
 	{
-		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		ثابت AtomicTransaction transaction;
+		ثابت صحيح شاخص = get_شاخص(param);
 
-		if (index < _next_slot) { // already exists
-			_slots[index].value = value;
+		إذا (شاخص < بعدی_جایگاه) { // already exists
+			_slots[شاخص].مقدار = مقدار;
 
-		} else if (_next_slot < N_SLOTS) {
-			_slots[_next_slot++] = {param, value};
-			_sort();
+		} وإلا إذا (بعدی_جایگاه < N_SLOTS) {
+			_slots[بعدی_جایگاه++] = {param, مقدار};
+			مرتب_سازی();
 
-		} else {
-			return false;
+		} وإلا {
+			أرجع false;
 		}
 
-		return true;
+		أرجع true;
 	}
 
-	bool contains(param_t param) const override
+	bool شامل_است(param_t param) ثابت override
 	{
-		const AtomicTransaction transaction;
-		return _getIndex(param) < _next_slot;
+		ثابت AtomicTransaction transaction;
+		أرجع get_شاخص(param) < بعدی_جایگاه;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_شمار> containedAsBitset() ثابت override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
-		const AtomicTransaction transaction;
+		px4::AtomicBitset<PARAM_شمار> مجموعه;
+		ثابت AtomicTransaction transaction;
 
-		for (int i = 0; i < _next_slot; i++) {
-			set.set(_slots[i].param);
+		لكل (صحيح i = 0; i < بعدی_جایگاه; i++) {
+			مجموعه.مجموعه(_slots[i].param);
 		}
 
-		return set;
+		أرجع مجموعه;
 	}
 
-	param_value_u get(param_t param) const override
+	param_مقدار_u get(param_t param) ثابت override
 	{
-		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		ثابت AtomicTransaction transaction;
+		ثابت صحيح شاخص = get_شاخص(param);
 
-		if (index < _next_slot) { // exists in this layer
-			return _slots[index].value;
+		إذا (شاخص < بعدی_جایگاه) { // exists in this layer
+			أرجع _slots[شاخص].مقدار;
 		}
 
-		return _parent->get(param);
+		أرجع والد_2->get(param);
 	}
 
-	void reset(param_t param) override
+	فراغ reset(param_t param) override
 	{
-		const AtomicTransaction transaction;
-		int index = _getIndex(param);
+		ثابت AtomicTransaction transaction;
+		صحيح شاخص = get_شاخص(param);
 
-		if (index < _next_slot) {
-			_slots[index] = {UINT16_MAX, param_value_u{}};
-			_sort();
-			_next_slot--;
+		إذا (شاخص < بعدی_جایگاه) {
+			_slots[شاخص] = {UINT16_MAX, param_مقدار_u{}};
+			مرتب_سازی();
+			بعدی_جایگاه--;
 		}
 	}
 
-	void refresh(param_t param) override
+	فراغ refresh(param_t param) override
 	{
-		_parent->refresh(param);
+		والد_2->refresh(param);
 	}
 
-	int size() const override
+	صحيح اندازه() ثابت override
 	{
-		return _next_slot;
+		أرجع بعدی_جایگاه;
 	}
 
-	int byteSize() const override
+	صحيح byte_اندازه() ثابت override
 	{
-		return N_SLOTS * sizeof(Slot);
+		أرجع N_SLOTS * حجم(جایگاه_2);
 	}
 
-private:
-	struct Slot {
+خاص:
+	بنية جایگاه_2 {
 		param_t param;
-		param_value_u value;
+		param_مقدار_u مقدار;
 	};
 
-	static int _slotCompare(const void *a, const void *b)
+	ساكن صحيح جایگاه_Compare(ثابت فراغ *a, ثابت فراغ *b)
 	{
-		return ((int)((Slot *)a)->param) - ((int)((Slot *)b)->param);
+		أرجع ((صحيح)((جایگاه_2 *)a)->param) - ((صحيح)((جایگاه_2 *)b)->param);
 	}
 
-	void _sort()
+	فراغ مرتب_سازی()
 	{
-		qsort(_slots, N_SLOTS, sizeof(Slot), &_slotCompare);
+		qsort(_slots, N_SLOTS, حجم(جایگاه_2), &جایگاه_Compare);
 	}
 
-	int _getIndex(param_t param) const
+	صحيح get_شاخص(param_t param) ثابت
 	{
-		int left = 0;
-		int right = _next_slot - 1;
+		صحيح چپ_2 = 0;
+		صحيح راست_2 = بعدی_جایگاه - 1;
 
-		while (left <= right) {
-			int mid = (left + right) / 2;
+		طالما (چپ_2 <= راست_2) {
+			صحيح mid = (چپ_2 + راست_2) / 2;
 
-			if (_slots[mid].param == param) {
-				return mid;
+			إذا (_slots[mid].param == param) {
+				أرجع mid;
 
-			} else if (_slots[mid].param < param) {
-				left = mid + 1;
+			} وإلا إذا (_slots[mid].param < param) {
+				چپ_2 = mid + 1;
 
-			} else {
-				right = mid - 1;
+			} وإلا {
+				راست_2 = mid - 1;
 			}
 		}
 
-		return _next_slot;
+		أرجع بعدی_جایگاه;
 	}
 
-	Slot _slots[N_SLOTS];
-	int _next_slot = 0;
+	جایگاه_2 _slots[N_SLOTS];
+	صحيح بعدی_جایگاه = 0;
 };

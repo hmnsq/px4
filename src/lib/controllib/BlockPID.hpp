@@ -37,60 +37,60 @@
  * Controller library code
  */
 
-#pragma once
+#رهنمود once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
 /**
  * A proportional-integral-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPID: public SuperBlock
+صنف __EXPORT بلوک_PID: عام Super_بلوک
 {
-public:
+عام:
 // methods
-	BlockPID(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kI(this, "I"),
-		_kD(this, "D")
+	بلوک_PID(Super_بلوک *والد, ثابت حرف *name) :
+		Super_بلوک(والد, name),
+		_integral(هذا, "I"),
+		_derivative(هذا, "D"),
+		_kP(هذا, "P"),
+		_kI(هذا, "I"),
+		_kD(هذا, "D")
 	{}
-	virtual ~BlockPID() = default;
-	float update(float input)
+	مجازی ~بلوک_PID() = افتراضي;
+	عائم update(عائم درون_داد)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input) +
-		       getKD() * getDerivative().update(input);
+		أرجع getKP() * درون_داد +
+		       getKI() * getIntegral().update(درون_داد) +
+		       getKD() * getDerivative().update(درون_داد);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	float getKD() { return _kD.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
-// attributes
-	BlockIntegral _integral;
-	BlockDerivative _derivative;
-	control::BlockParamFloat _kP;
-	control::BlockParamFloat _kI;
-	control::BlockParamFloat _kD;
+	عائم getKP() { أرجع _kP.get(); }
+	عائم getKI() { أرجع _kI.get(); }
+	عائم getKD() { أرجع _kD.get(); }
+	بلوک_Integral &getIntegral() { أرجع _integral; }
+	بلوک_Derivative &getDerivative() { أرجع _derivative; }
+خاص:
+//صفات
+	بلوک_Integral _integral;
+	بلوک_Derivative _derivative;
+	control::بلوک_Param_Float _kP;
+	control::بلوک_Param_Float _kI;
+	control::بلوک_Param_Float _kD;
 };
 
 } // namespace control

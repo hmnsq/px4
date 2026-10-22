@@ -31,22 +31,22 @@
  *
  ****************************************************************************/
 
-#pragma once
+#رهنمود once
 
 namespace bl_update
 {
 
-enum class Result {
+تعداد class نتیجه_2 {
 	Updated,
 	Unchanged,
 	NotSupported,
 	OpenFailed,
 	TooLarge,
-	NoMemory,
+	No_حافظه,
 	ReadFailed,
 	InvalidImage,
 	EraseFailed,
-	ProgramFailed,
+	برنامه_Failed,
 	VerifyFailed,
 };
 
@@ -55,8 +55,8 @@ enum class Result {
  * already holds that image. Other tasks do not run while flash is erased
  * and programmed.
  */
-Result flash(const char *path);
+نتیجه_2 flash(ثابت حرف *مسیر);
 
-const char *result_str(Result result);
+ثابت حرف *نتیجه_str(نتیجه_2 نتیجه);
 
 } // namespace bl_update

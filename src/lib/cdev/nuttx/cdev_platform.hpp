@@ -1,19 +1,19 @@
 
-#pragma once
+#رهنمود once
 
-#include <inttypes.h>
+#ضمن <inttypes.h>
 
-#include <nuttx/arch.h>
+#ضمن <nuttx/arch.h>
 
-#include <px4_platform_common/micro_hal.h>
+#ضمن <px4_platform_common/micro_hal.h>
 
-#define ATOMIC_ENTER irqstate_t flags = px4_enter_critical_section()
-#define ATOMIC_LEAVE px4_leave_critical_section(flags)
+#تعریف_کن ATOMIC_ENTER irqstate_t flags = px4_enter_critical_section()
+#تعریف_کن ATOMIC_LEAVE px4_leave_critical_section(flags)
 
-namespace cdev
+نطاق cdev
 {
 
-using px4_file_operations_t = struct file_operations;
-using file_t = struct file;
+استفاده px4_file_operations_t = بنية file_operations;
+استفاده file_t = بنية file;
 
 } // namespace cdev

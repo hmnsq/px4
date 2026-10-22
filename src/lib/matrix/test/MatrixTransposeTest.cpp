@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/math.hpp>
 
-using namespace matrix;
+استفاده نطاق ماتریس;
 
-TEST(MatrixTransposeTest, Transpose)
+TEST(ماتریس_Transpose_Test, Transpose)
 {
-	float data[6] = {1, 2, 3, 4, 5, 6};
-	Matrix<float, 2, 3> A(data);
-	Matrix<float, 3, 2> A_T = A.transpose();
-	float data_check[6] = {1, 4, 2, 5, 3, 6};
-	Matrix<float, 3, 2> A_T_check(data_check);
+	عائم داده[6] = {1, 2, 3, 4, 5, 6};
+	ماتریس_2<عائم, 2, 3> A(داده);
+	ماتریس_2<عائم, 3, 2> A_T = A.transpose();
+	عائم داده_check[6] = {1, 4, 2, 5, 3, 6};
+	ماتریس_2<عائم, 3, 2> A_T_check(داده_check);
 	EXPECT_EQ(A_T, A_T_check);
 }

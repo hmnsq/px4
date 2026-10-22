@@ -37,163 +37,163 @@
  * Protected build kernel space interface to global parameter store.
  */
 
-#define PARAM_IMPLEMENTATION
+#تعریف_کن PARAM_IMPLEMENTATION
 
-#include <errno.h>
+#ضمن <errno.h>
 
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <px4_platform_common/defines.h>
+#ضمن "param.h"
+#ضمن "parameters_ioctl.h"
+#ضمن <px4_platform_common/defines.h>
 
-int	param_ioctl(unsigned int cmd, unsigned long arg)
+صحيح	param_ioctl(بیعلامت صحيح cmd, بیعلامت دراز arg)
 {
-	int ret = OK;
+	صحيح ret = OK;
 
-	switch (cmd) {
-	case PARAMIOCNOTIFY: {
+	بدل (cmd) {
+	حالة PARAMIOCNOTIFY: {
 			param_notify_changes();
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCFIND: {
-			paramiocfind_t *data = (paramiocfind_t *)arg;
+	حالة PARAMIOCFIND: {
+			paramiocfind_t *داده = (paramiocfind_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_find(data->name);
+			إذا (داده->notification) {
+				داده->ret = param_پیدا_کن(داده->name);
 
-			} else {
-				data->ret = param_find_no_notification(data->name);
+			} وإلا {
+				داده->ret = param_پیدا_کن_no_notification(داده->name);
 			}
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCCOUNTUSED: {
-			paramioccountused_t *data = (paramioccountused_t *)arg;
-			data->ret = param_count_used();
+	حالة PARAMIOCCOUNTUSED: {
+			paramioccountused_t *داده = (paramioccountused_t *)arg;
+			داده->ret = param_شمار_استفاده_شده();
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCFORUSEDINDEX: {
-			paramiocforusedindex_t *data = (paramiocforusedindex_t *)arg;
-			data->ret =  param_for_used_index(data->index);
+	حالة PARAMIOCFORUSEDINDEX: {
+			paramiocforusedindex_t *داده = (paramiocforusedindex_t *)arg;
+			داده->ret =  param_for_استفاده_شده_شاخص(داده->شاخص);
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCGETUSEDINDEX: {
-			paramiocgetusedindex_t *data = (paramiocgetusedindex_t *)arg;
-			data->ret = param_get_used_index(data->param);
+	حالة PARAMIOCGETUSEDINDEX: {
+			paramiocgetusedindex_t *داده = (paramiocgetusedindex_t *)arg;
+			داده->ret = param_get_استفاده_شده_شاخص(داده->param);
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCUNSAVED: {
-			paramiocunsaved_t *data = (paramiocunsaved_t *)arg;
-			data->ret = param_value_unsaved(data->param);
+	حالة PARAMIOCUNSAVED: {
+			paramiocunsaved_t *داده = (paramiocunsaved_t *)arg;
+			داده->ret = param_مقدار_unsaved(داده->param);
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCGET: {
-			paramiocget_t *data = (paramiocget_t *)arg;
+	حالة PARAMIOCGET: {
+			paramiocget_t *داده = (paramiocget_t *)arg;
 
-			if (data->deflt) {
-				data->ret = param_get_default_value(data->param, data->val);
+			إذا (داده->deflt) {
+				داده->ret = param_get_default_مقدار(داده->param, داده->val);
 
-			} else {
-				data->ret = param_get(data->param, data->val);
+			} وإلا {
+				داده->ret = param_get(داده->param, داده->val);
 			}
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCAUTOSAVE: {
-			paramiocautosave_t *data = (paramiocautosave_t *)arg;
-			param_control_autosave(data->enable);
+	حالة PARAMIOCAUTOSAVE: {
+			paramiocautosave_t *داده = (paramiocautosave_t *)arg;
+			param_control_autosave(داده->enable);
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCSET: {
-			paramiocset_t *data = (paramiocset_t *)arg;
+	حالة PARAMIOCSET: {
+			paramiocset_t *داده = (paramiocset_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_set(data->param, data->val);
+			إذا (داده->notification) {
+				داده->ret = param_مجموعه(داده->param, داده->val);
 
-			} else {
-				data->ret = param_set_no_notification(data->param, data->val);
+			} وإلا {
+				داده->ret = param_مجموعه_no_notification(داده->param, داده->val);
 			}
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCUSED: {
-			paramiocused_t *data = (paramiocused_t *)arg;
-			data->ret = param_used(data->param);
+	حالة PARAMIOCUSED: {
+			paramiocused_t *داده = (paramiocused_t *)arg;
+			داده->ret = param_استفاده_شده(داده->param);
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCSETUSED: {
-			paramiocsetused_t *data = (paramiocsetused_t *)arg;
-			param_set_used(data->param);
+	حالة PARAMIOCSETUSED: {
+			paramiocsetused_t *داده = (paramiocsetused_t *)arg;
+			param_مجموعه_استفاده_شده(داده->param);
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCSETDEFAULT: {
-			paramiocsetdefault_t *data = (paramiocsetdefault_t *)arg;
-			data->ret = param_set_default_value(data->param, data->val);
+	حالة PARAMIOCSETDEFAULT: {
+			paramiocsetdefault_t *داده = (paramiocsetdefault_t *)arg;
+			داده->ret = param_مجموعه_default_مقدار(داده->param, داده->val);
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCRESET: {
-			paramiocreset_t *data = (paramiocreset_t *)arg;
+	حالة PARAMIOCRESET: {
+			paramiocreset_t *داده = (paramiocreset_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_reset(data->param);
+			إذا (داده->notification) {
+				داده->ret = param_reset(داده->param);
 
-			} else {
-				data->ret = param_reset_no_notification(data->param);
+			} وإلا {
+				داده->ret = param_reset_no_notification(داده->param);
 			}
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCRESETGROUP: {
-			paramiocresetgroup_t *data = (paramiocresetgroup_t *)arg;
+	حالة PARAMIOCRESETGROUP: {
+			paramiocresetgroup_t *داده = (paramiocresetgroup_t *)arg;
 
-			if (data->type == PARAM_RESET_EXCLUDES) {
-				param_reset_excludes(data->group, data->num_in_group);
+			إذا (داده->type == PARAM_RESET_EXCLUDES) {
+				param_reset_excludes(داده->گروه, داده->رقم_درون_گروه);
 
-			} else if (data->type == PARAM_RESET_SPECIFIC) {
-				param_reset_specific(data->group, data->num_in_group);
+			} وإلا إذا (داده->type == PARAM_RESET_SPECIFIC) {
+				param_reset_specific(داده->گروه, داده->رقم_درون_گروه);
 
-			} else {
+			} وإلا {
 				param_reset_all();
 			}
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCSAVEDEFAULT: {
-			paramiocsavedefault_t *data = (paramiocsavedefault_t *)arg;
-			data->ret = param_save_default(data->blocking);
+	حالة PARAMIOCSAVEDEFAULT: {
+			paramiocsavedefault_t *داده = (paramiocsavedefault_t *)arg;
+			داده->ret = param_save_default(داده->blocking);
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCLOADDEFAULT: {
-			paramiocloaddefault_t *data = (paramiocloaddefault_t *)arg;
-			data->ret = param_load_default();
+	حالة PARAMIOCLOADDEFAULT: {
+			paramiocloaddefault_t *داده = (paramiocloaddefault_t *)arg;
+			داده->ret = param_بارگیری_default();
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCEXPORT: {
-			paramiocexport_t *data = (paramiocexport_t *)arg;
-			data->ret = param_export(data->filename, nullptr);
+	حالة PARAMIOCEXPORT: {
+			paramiocexport_t *داده = (paramiocexport_t *)arg;
+			داده->ret = param_export(داده->filename, اشاره_تهی);
 		}
-		break;
+		اكسر;
 
-	case PARAMIOCHASH: {
-			paramiochash_t *data = (paramiochash_t *)arg;
-			data->ret = param_hash_check();
+	حالة PARAMIOCHASH: {
+			paramiochash_t *داده = (paramiochash_t *)arg;
+			داده->ret = param_hash_check();
 		}
-		break;
+		اكسر;
 
-	default:
+	افتراضي:
 		ret = -ENOTTY;
-		break;
+		اكسر;
 	}
 
-	return ret;
+	أرجع ret;
 }

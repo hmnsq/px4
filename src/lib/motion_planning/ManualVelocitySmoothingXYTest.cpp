@@ -36,26 +36,26 @@
  * Run this test only using make tests TESTFILTER=ManualVelocitySmoothing
  */
 
-#include <gtest/gtest.h>
-#include <matrix/matrix/math.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/matrix/math.hpp>
 
-#include <motion_planning/ManualVelocitySmoothingXY.hpp>
+#ضمن <motion_planning/ManualVelocitySmoothingXY.hpp>
 
-using namespace matrix;
+استفاده نطاق ماتریس;
 
-class ManualVelocitySmoothingXYTest : public ::testing::Test
+صنف ManualVelocitySmoothingXYTest : عام ::testing::Test
 {
-public:
+عام:
 	ManualVelocitySmoothingXY _smoothing;
 };
 
 
-TEST_F(ManualVelocitySmoothingXYTest, setGet)
+TEST_F(ManualVelocitySmoothingXYTest, مجموعه_Get)
 {
 	// GIVEN: Some max values
-	_smoothing.setMaxJerk(11.f);
-	_smoothing.setMaxAccel(7.f);
-	_smoothing.setMaxVel(5.f);
+	_smoothing.مجموعه_Max_Jerk(11.f);
+	_smoothing.مجموعه_Max_Accel(7.f);
+	_smoothing.مجموعه_Max_Vel(5.f);
 
 	// THEN: We should be able to get them back
 	EXPECT_FLOAT_EQ(_smoothing.getMaxJerk(), 11.f);
@@ -67,21 +67,21 @@ TEST_F(ManualVelocitySmoothingXYTest, getCurrentState)
 {
 	// GIVEN: the initial conditions
 	Vector2f v0(11.f, 13.f);
-	_smoothing.setCurrentVelocity(v0);
+	_smoothing.مجموعه_Current_Velocity(v0);
 
 	// WHEN: we get the current state
-	Vector3f j_end;
-	Vector3f a_end;
-	Vector3f v_end;
-	Vector3f x_end;
-	j_end.xy() = _smoothing.getCurrentJerk();
-	a_end.xy() = _smoothing.getCurrentAcceleration();
-	v_end.xy() = _smoothing.getCurrentVelocity();
-	x_end.xy() = _smoothing.getCurrentPosition();
+	Vector3f j_انتها;
+	Vector3f a_انتها;
+	Vector3f v_انتها;
+	Vector3f x_انتها;
+	j_انتها.xy() = _smoothing.getCurrentJerk();
+	a_انتها.xy() = _smoothing.getCurrentAcceleration();
+	v_انتها.xy() = _smoothing.getCurrentVelocity();
+	x_انتها.xy() = _smoothing.getCurrentPosition();
 
 	// THEN: the returned values should match the input
-	EXPECT_EQ(j_end, Vector3f(0.f, 0.f, 0.f));
-	EXPECT_EQ(a_end, Vector3f(0.f, 0.f, 0.f));
-	EXPECT_EQ(v_end, Vector3f(11.f, 13.f, 0.f));
-	EXPECT_EQ(x_end, Vector3f(0.f, 0.f, 0.f));
+	EXPECT_EQ(j_انتها, Vector3f(0.f, 0.f, 0.f));
+	EXPECT_EQ(a_انتها, Vector3f(0.f, 0.f, 0.f));
+	EXPECT_EQ(v_انتها, Vector3f(11.f, 13.f, 0.f));
+	EXPECT_EQ(x_انتها, Vector3f(0.f, 0.f, 0.f));
 }

@@ -37,25 +37,25 @@
  *
  * @author Mark Charlebois <charlebm@gmail.com>
  */
-#pragma once
+#رهنمود once
 
-#include <px4_platform_common/app.h>
+#ضمن <px4_platform_common/app.h>
 
-class CDevNode;
+class CDev_گره;
 
 class CDevExample
 {
-public:
-	CDevExample() : _node(0) {}
+عام:
+	CDevExample() : گره(0) {}
 
 	~CDevExample();
 
-	int main();
+	صحيح اصلی();
 
-	static px4::AppState appState; /* track requests to terminate app */
+	ساكن px4::AppState appState; /* track requests to terminate app */
 
-private:
-	int do_poll(int fd, int timeout, int iterations, int delayms_after_poll);
+خاص:
+	صحيح do_poll(صحيح fd, صحيح timeout, صحيح iterations, صحيح delayms_after_poll);
 
-	CDevNode *_node;
+	CDev_گره *گره;
 };

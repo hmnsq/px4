@@ -36,112 +36,112 @@
  * Run exclusively this test with the command "make tests TESTFILTER=HeadingSmoothing"
  */
 
-#include "mathlib/math/Limits.hpp"
-#include <gtest/gtest.h>
+#ضمن "mathlib/math/Limits.hpp"
+#ضمن <gtest/gtest.h>
 
-#include <motion_planning/HeadingSmoothing.hpp>
+#ضمن <motion_planning/HeadingSmoothing.hpp>
 
-using namespace matrix;
+استفاده نطاق ماتریس;
 
-class HeadingSmoothingTest : public ::testing::Test
+صنف HeadingSmoothingTest : عام ::testing::Test
 {
-public:
+عام:
 	HeadingSmoothingTest()
 	{
-		_smoothing.setMaxHeadingRate(15.f);
-		_smoothing.setMaxHeadingAccel(1.f);
+		_smoothing.مجموعه_Max_Heading_نرخ(15.f);
+		_smoothing.مجموعه_Max_Heading_Accel(1.f);
 	}
 
 	HeadingSmoothing _smoothing;
-	float _dt{.1f};
+	عائم _dt{.1f};
 };
 
 TEST_F(HeadingSmoothingTest, convergence)
 {
-	const float heading_current = math::radians(0.f);
-	const float heading_target = math::radians(5.f);
+	ثابت عائم heading_current = math::radians(0.f);
+	ثابت عائم heading_هدف = math::radians(5.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(1.f / _dt);
+	ثابت صحيح nb_گامها = ceilf(1.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	لكل (صحيح i = 0; i < nb_گامها; i++) {
+		_smoothing.update(heading_هدف, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
-	EXPECT_EQ(heading_rate, 0.f);
+	ثابت عائم heading = _smoothing.getSmoothedHeading();
+	ثابت عائم heading_نرخ = _smoothing.get_Smoothed_Heading_نرخ();
+	EXPECT_EQ(heading, heading_هدف) << "heading (deg): " << math::degrees(heading);
+	EXPECT_EQ(heading_نرخ, 0.f);
 }
 
-TEST_F(HeadingSmoothingTest, zero_crossing)
+TEST_F(HeadingSmoothingTest, zero_تقاطع)
 {
-	const float heading_current = math::radians(-95.f);
-	const float heading_target = math::radians(5.f);
+	ثابت عائم heading_current = math::radians(-95.f);
+	ثابت عائم heading_هدف = math::radians(5.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(4.f / _dt);
+	ثابت صحيح nb_گامها = ceilf(4.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	لكل (صحيح i = 0; i < nb_گامها; i++) {
+		_smoothing.update(heading_هدف, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
-	EXPECT_EQ(heading_rate, 0.f);
+	ثابت عائم heading = _smoothing.getSmoothedHeading();
+	ثابت عائم heading_نرخ = _smoothing.get_Smoothed_Heading_نرخ();
+	EXPECT_EQ(heading, heading_هدف) << "heading (deg): " << math::degrees(heading);
+	EXPECT_EQ(heading_نرخ, 0.f);
 }
 
 TEST_F(HeadingSmoothingTest, wrap_pi)
 {
-	const float heading_current = math::radians(-170.f);
-	const float heading_target = math::radians(170.f);
+	ثابت عائم heading_current = math::radians(-170.f);
+	ثابت عائم heading_هدف = math::radians(170.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	ثابت صحيح nb_گامها = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	لكل (صحيح i = 0; i < nb_گامها; i++) {
+		_smoothing.update(heading_هدف, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
-	EXPECT_EQ(heading_rate, 0.f);
+	ثابت عائم heading = _smoothing.getSmoothedHeading();
+	ثابت عائم heading_نرخ = _smoothing.get_Smoothed_Heading_نرخ();
+	EXPECT_EQ(heading, heading_هدف) << "heading (deg): " << math::degrees(heading);
+	EXPECT_EQ(heading_نرخ, 0.f);
 }
 
-TEST_F(HeadingSmoothingTest, positive_rate)
+TEST_F(HeadingSmoothingTest, مثبت_نرخ)
 {
-	const float max_heading_rate = .15f;
-	_smoothing.setMaxHeadingRate(max_heading_rate);
-	const float heading_current = math::radians(-170.f);
-	const float heading_target = math::radians(-20.f);
+	ثابت عائم max_heading_نرخ = .15f;
+	_smoothing.مجموعه_Max_Heading_نرخ(max_heading_نرخ);
+	ثابت عائم heading_current = math::radians(-170.f);
+	ثابت عائم heading_هدف = math::radians(-20.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	ثابت صحيح nb_گامها = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	لكل (صحيح i = 0; i < nb_گامها; i++) {
+		_smoothing.update(heading_هدف, _dt);
 	}
 
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading_rate, max_heading_rate);
+	ثابت عائم heading_نرخ = _smoothing.get_Smoothed_Heading_نرخ();
+	EXPECT_EQ(heading_نرخ, max_heading_نرخ);
 }
 
-TEST_F(HeadingSmoothingTest, negative_rate)
+TEST_F(HeadingSmoothingTest, negative_نرخ)
 {
-	const float max_heading_rate = 0.15;
-	_smoothing.setMaxHeadingRate(max_heading_rate);
-	const float heading_current = math::radians(-20.f);
-	const float heading_target = math::radians(-140.f);
+	ثابت عائم max_heading_نرخ = 0.15;
+	_smoothing.مجموعه_Max_Heading_نرخ(max_heading_نرخ);
+	ثابت عائم heading_current = math::radians(-20.f);
+	ثابت عائم heading_هدف = math::radians(-140.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	ثابت صحيح nb_گامها = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	لكل (صحيح i = 0; i < nb_گامها; i++) {
+		_smoothing.update(heading_هدف, _dt);
 	}
 
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading_rate, -max_heading_rate);
+	ثابت عائم heading_نرخ = _smoothing.get_Smoothed_Heading_نرخ();
+	EXPECT_EQ(heading_نرخ, -max_heading_نرخ);
 }

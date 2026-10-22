@@ -1,31 +1,31 @@
 
-#include "common_rc.h"
+#ضمن "common_rc.h"
 
 __EXPORT rc_decode_buf_t rc_decode_buf;
 
-uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a)
+uint8_t crc8_dvb_s2(uint8_t بررسی_چرخهای, uint8_t a)
 {
-	crc ^= a;
+	بررسی_چرخهای ^= a;
 
-	for (int i = 0; i < 8; ++i) {
-		if (crc & 0x80) {
-			crc = (crc << 1) ^ 0xD5;
+	لكل (صحيح i = 0; i < 8; ++i) {
+		إذا (بررسی_چرخهای & 0x80) {
+			بررسی_چرخهای = (بررسی_چرخهای << 1) ^ 0xD5;
 
-		} else {
-			crc = crc << 1;
+		} وإلا {
+			بررسی_چرخهای = بررسی_چرخهای << 1;
 		}
 	}
 
-	return crc;
+	أرجع بررسی_چرخهای;
 }
 
-uint8_t crc8_dvb_s2_buf(uint8_t *buf, int len)
+uint8_t crc8_dvb_s2_buf(uint8_t *buf, صحيح len)
 {
-	uint8_t crc = 0;
+	uint8_t بررسی_چرخهای = 0;
 
-	for (int i = 0; i < len; ++i) {
-		crc = crc8_dvb_s2(crc, buf[i]);
+	لكل (صحيح i = 0; i < len; ++i) {
+		بررسی_چرخهای = crc8_dvb_s2(بررسی_چرخهای, buf[i]);
 	}
 
-	return crc;
+	أرجع بررسی_چرخهای;
 }

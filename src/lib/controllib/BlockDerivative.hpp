@@ -37,19 +37,19 @@
  * Controller library code
  */
 
-#pragma once
+#رهنمود once
 
-#include "BlockLowPass.hpp"
+#ضمن "BlockLowPass.hpp"
 
-#include <px4_platform_common/defines.h>
-#include <math.h>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <math.h>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
 /**
@@ -58,17 +58,17 @@ namespace control
  * This has a built in low pass filter.
  * @see LowPass
  */
-class __EXPORT BlockDerivative : public SuperBlock
+صنف __EXPORT بلوک_Derivative : عام Super_بلوک
 {
-public:
+عام:
 // methods
-	BlockDerivative(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
+	بلوک_Derivative(Super_بلوک *والد, ثابت حرف *name) :
+		Super_بلوک(والد, name),
 		_u(0),
-		_initialized(false),
-		_lowPass(this, "LP")
+		_initialized(خطأ),
+		کم_Pass(هذا, "LP")
 	{}
-	virtual ~BlockDerivative() = default;
+	مجازی ~بلوک_Derivative() = افتراضي;
 
 	/**
 	 * Update the state and get current derivative
@@ -84,18 +84,18 @@ public:
 	 * @param input the variable to calculate the derivative of
 	 * @return the current derivative
 	 */
-	float update(float input);
+	عائم update(عائم درون_داد);
 // accessors
-	void setU(float u) {_u = u;}
-	void reset() { _initialized = false; };
-	float getU() {return _u;}
-	float getLP() {return _lowPass.getFCut();}
-	float getO() { return _lowPass.getState(); }
-protected:
-// attributes
-	float _u; /**< previous input */
-	bool _initialized;
-	BlockLowPass _lowPass; /**< low pass filter */
+	فراغ مجموعه_U(عائم u) {_u = u;}
+	فراغ reset() { _initialized = خطأ; };
+	عائم getU() {أرجع _u;}
+	عائم getLP() {أرجع کم_Pass.getFCut();}
+	عائم getO() { أرجع کم_Pass.getState(); }
+محمي:
+//صفات
+	عائم _u; /**< previous input */
+	منطقي _initialized;
+	بلوک_کم_Pass کم_Pass; /**< low pass filter */
 };
 
 } // namespace control

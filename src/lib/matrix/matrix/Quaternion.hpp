@@ -26,21 +26,21 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#رهنمود once
 
-#include <float.h> // FLT_EPSILON
+#ضمن <float.h> // FLT_EPSILON
 
-#include "Vector3.hpp"
-#include "Vector4.hpp"
+#ضمن "Vector3.hpp"
+#ضمن "Vector4.hpp"
 
-namespace matrix
+نطاق ماتریس
 {
 
-template <typename Type>
-class Euler;
+قالب <نام_نوع Type>
+صنف Euler;
 
-template <typename Type>
-class AxisAngle;
+قالب <نام_نوع Type>
+صنف AxisAngle;
 
 /**
  * Quaternion class
@@ -48,20 +48,20 @@ class AxisAngle;
  * The rotation between two coordinate frames is
  * described by this class.
  */
-template<typename Type>
-class Quaternion : public Vector4<Type>
+قالب<نام_نوع Type>
+صنف Quaternion : عام Vector4<Type>
 {
-public:
-	using Matrix41 = Matrix<Type, 4, 1>;
-	using Matrix31 = Matrix<Type, 3, 1>;
+عام:
+	استفاده Matrix41 = ماتریس_2<Type, 4, 1>;
+	استفاده Matrix31 = ماتریس_2<Type, 3, 1>;
 
 	/**
 	 * Constructor from array
 	 *
 	 * @param data_ array
 	 */
-	explicit Quaternion(const Type data_[4]) :
-		Vector4<Type>(data_)
+	صریح Quaternion(ثابت Type داده_2[4]) :
+		Vector4<Type>(داده_2)
 	{
 	}
 
@@ -70,7 +70,7 @@ public:
 	 */
 	Quaternion()
 	{
-		Quaternion &q = *this;
+		Quaternion &q = *هذا;
 		q(0) = 1;
 		q(1) = 0;
 		q(2) = 0;
@@ -82,7 +82,7 @@ public:
 	 *
 	 * @param other Matrix41 to copy
 	 */
-	Quaternion(const Matrix41 &other) :
+	Quaternion(ثابت Matrix41 &other) :
 		Vector4<Type>(other)
 	{
 	}
@@ -95,37 +95,37 @@ public:
 	 *
 	 * @param dcm dcm to set quaternion to
 	 */
-	Quaternion(const Dcm<Type> &R)
+	Quaternion(ثابت Dcm<Type> &R)
 	{
-		Quaternion &q = *this;
+		Quaternion &q = *هذا;
 		Type t = R.trace();
 
-		if (t > Type(0)) {
-			t = std::sqrt(Type(1) + t);
+		إذا (t > Type(0)) {
+			t = std::جذر(Type(1) + t);
 			q(0) = Type(0.5) * t;
 			t = Type(0.5) / t;
 			q(1) = (R(2, 1) - R(1, 2)) * t;
 			q(2) = (R(0, 2) - R(2, 0)) * t;
 			q(3) = (R(1, 0) - R(0, 1)) * t;
 
-		} else if (R(0, 0) > R(1, 1) && R(0, 0) > R(2, 2)) {
-			t = std::sqrt(Type(1) + R(0, 0) - R(1, 1) - R(2, 2));
+		} وإلا إذا (R(0, 0) > R(1, 1) && R(0, 0) > R(2, 2)) {
+			t = std::جذر(Type(1) + R(0, 0) - R(1, 1) - R(2, 2));
 			q(1) = Type(0.5) * t;
 			t = Type(0.5) / t;
 			q(0) = (R(2, 1) - R(1, 2)) * t;
 			q(2) = (R(1, 0) + R(0, 1)) * t;
 			q(3) = (R(0, 2) + R(2, 0)) * t;
 
-		} else if (R(1, 1) > R(2, 2)) {
-			t = std::sqrt(Type(1) - R(0, 0) + R(1, 1) - R(2, 2));
+		} وإلا إذا (R(1, 1) > R(2, 2)) {
+			t = std::جذر(Type(1) - R(0, 0) + R(1, 1) - R(2, 2));
 			q(2) = Type(0.5) * t;
 			t = Type(0.5) / t;
 			q(0) = (R(0, 2) - R(2, 0)) * t;
 			q(1) = (R(1, 0) + R(0, 1)) * t;
 			q(3) = (R(2, 1) + R(1, 2)) * t;
 
-		} else {
-			t = std::sqrt(Type(1) - R(0, 0) - R(1, 1) + R(2, 2));
+		} وإلا {
+			t = std::جذر(Type(1) - R(0, 0) - R(1, 1) + R(2, 2));
 			q(3) = Type(0.5) * t;
 			t = Type(0.5) / t;
 			q(0) = (R(1, 0) - R(0, 1)) * t;
@@ -143,15 +143,15 @@ public:
 	 *
 	 * @param euler euler angle instance
 	 */
-	Quaternion(const Euler<Type> &euler)
+	Quaternion(ثابت Euler<Type> &euler)
 	{
-		Quaternion &q = *this;
-		Type cosPhi_2 = Type(std::cos(euler.phi() / Type(2)));
-		Type cosTheta_2 = Type(std::cos(euler.theta() / Type(2)));
-		Type cosPsi_2 = Type(std::cos(euler.psi() / Type(2)));
-		Type sinPhi_2 = Type(std::sin(euler.phi() / Type(2)));
-		Type sinTheta_2 = Type(std::sin(euler.theta() / Type(2)));
-		Type sinPsi_2 = Type(std::sin(euler.psi() / Type(2)));
+		Quaternion &q = *هذا;
+		Type cosPhi_2 = Type(std::کسینوس(euler.phi() / Type(2)));
+		Type cosTheta_2 = Type(std::کسینوس(euler.theta() / Type(2)));
+		Type cosPsi_2 = Type(std::کسینوس(euler.psi() / Type(2)));
+		Type sinPhi_2 = Type(std::سینوس(euler.phi() / Type(2)));
+		Type sinTheta_2 = Type(std::سینوس(euler.theta() / Type(2)));
+		Type sinPsi_2 = Type(std::سینوس(euler.psi() / Type(2)));
 		q(0) = cosPhi_2 * cosTheta_2 * cosPsi_2 +
 		       sinPhi_2 * sinTheta_2 * sinPsi_2;
 		q(1) = sinPhi_2 * cosTheta_2 * cosPsi_2 -
@@ -167,20 +167,20 @@ public:
 	 *
 	 * @param aa axis-angle vector
 	 */
-	Quaternion(const AxisAngle<Type> &aa)
+	Quaternion(ثابت AxisAngle<Type> &aa)
 	{
-		Quaternion &q = *this;
+		Quaternion &q = *هذا;
 		Type angle = aa.norm();
 
-		if (angle < Type(1e-10)) {
+		إذا (angle < Type(1e-10)) {
 			q(0) = Type(1);
 			q(1) = q(2) = q(3) = 0;
 
-		} else {
+		} وإلا {
 			// only normalize once the angle is known to be non-zero
-			Vector<Type, 3> axis = aa.unit();
-			Type magnitude = std::sin(angle / Type(2));
-			q(0) = std::cos(angle / Type(2));
+			وکتور<Type, 3> axis = aa.unit();
+			Type magnitude = std::سینوس(angle / Type(2));
+			q(0) = std::کسینوس(angle / Type(2));
 			q(1) = axis(0) * magnitude;
 			q(2) = axis(1) * magnitude;
 			q(3) = axis(2) * magnitude;
@@ -195,31 +195,31 @@ public:
 	 * @param src source vector (no need to normalize)
 	 * @param eps epsilon threshold which decides if a value is considered zero
 	 */
-	Quaternion(const Vector3<Type> &src, const Vector3<Type> &dst, const Type eps = Type(1e-5))
+	Quaternion(ثابت Vector3<Type> &src, ثابت Vector3<Type> &dst, ثابت Type eps = Type(1e-5))
 	{
-		Quaternion &q = *this;
+		Quaternion &q = *هذا;
 		Vector3<Type> cr = src.cross(dst);
-		const float dt = src.dot(dst);
+		ثابت عائم dt = src.dot(dst);
 
-		if (cr.norm() < eps && dt < 0) {
+		إذا (cr.norm() < eps && dt < 0) {
 			// handle corner cases with 180 degree rotations
 			// if the two vectors are parallel, cross product is zero
 			// if they point opposite, the dot product is negative
-			cr = src.abs();
+			cr = src.قدر_مطلق();
 
-			if (cr(0) < cr(1)) {
-				if (cr(0) < cr(2)) {
+			إذا (cr(0) < cr(1)) {
+				إذا (cr(0) < cr(2)) {
 					cr = Vector3<Type>(1, 0, 0);
 
-				} else {
+				} وإلا {
 					cr = Vector3<Type>(0, 0, 1);
 				}
 
-			} else {
-				if (cr(1) < cr(2)) {
+			} وإلا {
+				إذا (cr(1) < cr(2)) {
 					cr = Vector3<Type>(0, 1, 0);
 
-				} else {
+				} وإلا {
 					cr = Vector3<Type>(0, 0, 1);
 				}
 			}
@@ -227,9 +227,9 @@ public:
 			q(0) = Type(0);
 			cr = src.cross(cr);
 
-		} else {
+		} وإلا {
 			// normal case, do half-way quaternion solution
-			q(0) = dt + std::sqrt(src.norm_squared() * dst.norm_squared());
+			q(0) = dt + std::جذر(src.norm_squared() * dst.norm_squared());
 		}
 
 		q(1) = cr(0);
@@ -252,7 +252,7 @@ public:
 	 */
 	Quaternion(Type a, Type b, Type c, Type d)
 	{
-		Quaternion &q = *this;
+		Quaternion &q = *هذا;
 		q(0) = a;
 		q(1) = b;
 		q(2) = c;
@@ -265,10 +265,10 @@ public:
 	 * @param q quaternion to multiply with
 	 * @return product
 	 */
-	Quaternion operator*(const Quaternion &p) const
+	Quaternion عملگر*(ثابت Quaternion &p) ثابت
 	{
-		const Quaternion &q = *this;
-		return {
+		ثابت Quaternion &q = *هذا;
+		أرجع {
 			q(0) *p(0) - q(1) *p(1) - q(2) *p(2) - q(3) *p(3),
 			q(1) *p(0) + q(0) *p(1) - q(3) *p(2) + q(2) *p(3),
 			q(2) *p(0) + q(3) *p(1) + q(0) *p(2) - q(1) *p(3),
@@ -280,9 +280,9 @@ public:
 	 *
 	 * @param other quaternion to multiply with
 	 */
-	void operator*=(const Quaternion &other)
+	فراغ عملگر*=(ثابت Quaternion &other)
 	{
-		Quaternion &self = *this;
+		Quaternion &self = *هذا;
 		self = self * other;
 	}
 
@@ -292,10 +292,10 @@ public:
 	 * @param scalar scalar to multiply with
 	 * @return product
 	 */
-	Quaternion operator*(Type scalar) const
+	Quaternion عملگر*(Type scalar) ثابت
 	{
-		const Quaternion &q = *this;
-		return scalar * q;
+		ثابت Quaternion &q = *هذا;
+		أرجع scalar * q;
 	}
 
 	/**
@@ -303,9 +303,9 @@ public:
 	 *
 	 * @param scalar scalar to multiply with
 	 */
-	void operator*=(Type scalar)
+	فراغ عملگر*=(Type scalar)
 	{
-		Quaternion &q = *this;
+		Quaternion &q = *هذا;
 		q = q * scalar;
 	}
 
@@ -317,11 +317,11 @@ public:
 	 *
 	 * @param w angular rate in frame 1 (typically body frame)
 	 */
-	Matrix41 derivative1(const Matrix31 &w) const
+	Matrix41 derivative1(ثابت Matrix31 &w) ثابت
 	{
-		const Quaternion &q = *this;
+		ثابت Quaternion &q = *هذا;
 		Quaternion<Type> v(0, w(0, 0), w(1, 0), w(2, 0));
-		return q * v  * Type(0.5);
+		أرجع q * v  * Type(0.5);
 	}
 
 	/**
@@ -332,11 +332,11 @@ public:
 	 *
 	 * @param w angular rate in frame 2 (typically reference frame)
 	 */
-	Matrix41 derivative2(const Matrix31 &w) const
+	Matrix41 derivative2(ثابت Matrix31 &w) ثابت
 	{
-		const Quaternion &q = *this;
+		ثابت Quaternion &q = *هذا;
 		Quaternion<Type> v(0, w(0, 0), w(1, 0), w(2, 0));
-		return v * q  * Type(0.5);
+		أرجع v * q  * Type(0.5);
 	}
 
 	/**
@@ -359,20 +359,20 @@ public:
 	  *
 	  * @param u 3D vector u
 	  */
-	static Quaternion expq(const Vector3<Type> &u)
+	ساكن Quaternion expq(ثابت Vector3<Type> &u)
 	{
-		const Type tol = Type(0.2);           // ensures an error < 10^-10
-		const Type c2 = Type(1.0 / 2.0);      // 1 / 2!
-		const Type c3 = Type(1.0 / 6.0);      // 1 / 3!
-		const Type c4 = Type(1.0 / 24.0);     // 1 / 4!
-		const Type c5 = Type(1.0 / 120.0);    // 1 / 5!
-		const Type c6 = Type(1.0 / 720.0);    // 1 / 6!
-		const Type c7 = Type(1.0 / 5040.0);   // 1 / 7!
+		ثابت Type tol = Type(0.2);           // ensures an error < 10^-10
+		ثابت Type c2 = Type(1.0 / 2.0);      // 1 / 2!
+		ثابت Type c3 = Type(1.0 / 6.0);      // 1 / 3!
+		ثابت Type c4 = Type(1.0 / 24.0);     // 1 / 4!
+		ثابت Type c5 = Type(1.0 / 120.0);    // 1 / 5!
+		ثابت Type c6 = Type(1.0 / 720.0);    // 1 / 6!
+		ثابت Type c7 = Type(1.0 / 5040.0);   // 1 / 7!
 
 		Type u_norm = u.norm();
 		Type sinc_u, cos_u;
 
-		if (u_norm < tol) {
+		إذا (u_norm < tol) {
 			Type u2 = u_norm * u_norm;
 			Type u4 = u2 * u2;
 			Type u6 = u4 * u2;
@@ -381,13 +381,13 @@ public:
 			sinc_u = Type(1.0) - u2 * c3 + u4 * c5 - u6 * c7;
 			cos_u = Type(1.0) - u2 * c2 + u4 * c4 - u6 * c6;
 
-		} else {
-			sinc_u = Type(std::sin(u_norm) / u_norm);
-			cos_u = Type(std::cos(u_norm));
+		} وإلا {
+			sinc_u = Type(std::سینوس(u_norm) / u_norm);
+			cos_u = Type(std::کسینوس(u_norm));
 		}
 
-		Vector<Type, 3> v = sinc_u * u;
-		return Quaternion<Type> (cos_u, v(0), v(1), v(2));
+		وکتور<Type, 3> v = sinc_u * u;
+		أرجع Quaternion<Type> (cos_u, v(0), v(1), v(2));
 	}
 
 	/** inverse right Jacobian of the quaternion logarithm u
@@ -400,17 +400,17 @@ public:
 	  *
 	  * @param u 3D vector u
 	  */
-	static Dcm<Type> inv_r_jacobian(const Vector3<Type> &u)
+	ساكن Dcm<Type> inv_r_jacobian(ثابت Vector3<Type> &u)
 	{
-		const Type tol = Type(1.0e-4);
+		ثابت Type tol = Type(1.0e-4);
 		Type u_norm = u.norm();
 		Dcm<Type> u_hat = u.hat();
 
-		if (u_norm < tol) { 	// result smaller than O(||.||^3)
-			return Type(0.5) * (Dcm<Type>() + u_hat + (Type(1.0 / 3.0) + u_norm * u_norm / Type(45.0)) * u_hat * u_hat);
+		إذا (u_norm < tol) { 	// result smaller than O(||.||^3)
+			أرجع Type(0.5) * (Dcm<Type>() + u_hat + (Type(1.0 / 3.0) + u_norm * u_norm / Type(45.0)) * u_hat * u_hat);
 
-		} else {
-			return Type(0.5) * (Dcm<Type>() + u_hat + (Type(1.0) - u_norm * Type(std::cos(u_norm) / std::sin(u_norm))) /
+		} وإلا {
+			أرجع Type(0.5) * (Dcm<Type>() + u_hat + (Type(1.0) - u_norm * Type(std::کسینوس(u_norm) / std::سینوس(u_norm))) /
 					    (u_norm * u_norm) * u_hat * u_hat);
 		}
 	}
@@ -418,9 +418,9 @@ public:
 	/**
 	 * Invert quaternion in place
 	 */
-	void invert()
+	فراغ invert()
 	{
-		*this = this->inversed();
+		*هذا = هذا->inversed();
 	}
 
 	/**
@@ -428,11 +428,11 @@ public:
 	 *
 	 * @return inverted quaternion
 	 */
-	Quaternion inversed() const
+	Quaternion inversed() ثابت
 	{
-		const Quaternion &q = *this;
+		ثابت Quaternion &q = *هذا;
 		Type normSq = q.dot(q);
-		return Quaternion(
+		أرجع Quaternion(
 			       q(0) / normSq,
 			       -q(1) / normSq,
 			       -q(2) / normSq,
@@ -442,9 +442,9 @@ public:
 	/**
 	 * Bring quaternion to canonical form
 	 */
-	void canonicalize()
+	فراغ canonicalize()
 	{
-		*this = this->canonical();
+		*هذا = هذا->canonical();
 	}
 
 	/**
@@ -452,17 +452,17 @@ public:
 	 *
 	 * @return quaternion in canonical from
 	 */
-	Quaternion canonical() const
+	Quaternion canonical() ثابت
 	{
-		const Quaternion &q = *this;
+		ثابت Quaternion &q = *هذا;
 
-		for (size_t i = 0; i < 4; i++) {
-			if (std::fabs(q(i)) > FLT_EPSILON) {
-				return q * Type(sign(q(i)));
+		لكل (size_t i = 0; i < 4; i++) {
+			إذا (std::fabs(q(i)) > FLT_EPSILON) {
+				أرجع q * Type(sign(q(i)));
 			}
 		}
 
-		return q;
+		أرجع q;
 	}
 
 	/**
@@ -470,10 +470,10 @@ public:
 	 *
 	 * @param vec rotation vector
 	 */
-	void rotate(const AxisAngle<Type> &vec)
+	فراغ rotate(ثابت AxisAngle<Type> &vec)
 	{
 		Quaternion res(vec);
-		(*this) = res * (*this);
+		(*هذا) = res * (*هذا);
 	}
 
 	/**
@@ -485,12 +485,12 @@ public:
 	 * @param vec vector to rotate in frame 1 (typically body frame)
 	 * @return rotated vector in frame 2 (typically reference frame)
 	 */
-	Vector3<Type> rotateVector(const Vector3<Type> &vec) const
+	Vector3<Type> rotate_وکتور(ثابت Vector3<Type> &vec) ثابت
 	{
-		const Quaternion &q = *this;
+		ثابت Quaternion &q = *هذا;
 		Quaternion v(Type(0), vec(0), vec(1), vec(2));
 		Quaternion res = q * v * q.inversed();
-		return Vector3<Type>(res(1), res(2), res(3));
+		أرجع Vector3<Type>(res(1), res(2), res(3));
 	}
 
 	/**
@@ -502,21 +502,21 @@ public:
 	 * @param vec vector to rotate in frame 2 (typically reference frame)
 	 * @return rotated vector in frame 1 (typically body frame)
 	 */
-	Vector3<Type> rotateVectorInverse(const Vector3<Type> &vec) const
+	Vector3<Type> rotate_وکتور_Inverse(ثابت Vector3<Type> &vec) ثابت
 	{
-		const Quaternion &q = *this;
+		ثابت Quaternion &q = *هذا;
 		Quaternion v(Type(0), vec(0), vec(1), vec(2));
 		Quaternion res = q.inversed() * v * q;
-		return Vector3<Type>(res(1), res(2), res(3));
+		أرجع Vector3<Type>(res(1), res(2), res(3));
 	}
 
 	/**
 	 * Imaginary components of quaternion
 	 */
-	Vector3<Type> imag() const
+	Vector3<Type> imag() ثابت
 	{
-		const Quaternion &q = *this;
-		return Vector3<Type>(q(1), q(2), q(3));
+		ثابت Quaternion &q = *هذا;
+		أرجع Vector3<Type>(q(1), q(2), q(3));
 	}
 
 	/**
@@ -526,25 +526,25 @@ public:
 	 * == last column of the equivalent rotation matrix
 	 * but calculated more efficiently than a full conversion
 	 */
-	Vector3<Type> dcm_z() const
+	Vector3<Type> dcm_z() ثابت
 	{
-		const Quaternion &q = *this;
+		ثابت Quaternion &q = *هذا;
 		Vector3<Type> R_z;
-		const Type a = q(0);
-		const Type b = q(1);
-		const Type c = q(2);
-		const Type d = q(3);
+		ثابت Type a = q(0);
+		ثابت Type b = q(1);
+		ثابت Type c = q(2);
+		ثابت Type d = q(3);
 		R_z(0) = 2 * (a * c + b * d);
 		R_z(1) = 2 * (c * d - a * b);
 		R_z(2) = a * a - b * b - c * c + d * d;
-		return R_z;
+		أرجع R_z;
 	}
 };
 
-using Quatf = Quaternion<float>;
-using Quaternionf = Quaternion<float>;
+استفاده Quatf = Quaternion<عائم>;
+استفاده Quaternionf = Quaternion<عائم>;
 
-using Quatd = Quaternion<double>;
-using Quaterniond = Quaternion<double>;
+استفاده Quatd = Quaternion<مزدوج>;
+استفاده Quaterniond = Quaternion<مزدوج>;
 
 } // namespace matrix

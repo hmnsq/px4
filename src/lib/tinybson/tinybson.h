@@ -40,15 +40,15 @@
 * in the Mongo C connector.
 */
 
-#ifndef _TINYBSON_H
-#define _TINYBSON_H
+#اگر_تعریف_نشده _TINYBSON_H
+#تعریف_کن _TINYBSON_H
 
-#include <sys/types.h>
-#include <stdint.h>
-#include <stdbool.h>
+#ضمن <sys/types.h>
+#ضمن <stdint.h>
+#ضمن <stdbool.h>
 
 /** subset of the BSON node types we might care about */
-typedef enum {
+تعريفنوع تعداد {
 	BSON_EOO       = 0,
 	BSON_DOUBLE    = 1,
 	BSON_STRING    = 2,
@@ -64,69 +64,69 @@ typedef enum {
 	BSON_INT64     = 18
 } bson_type_t;
 
-typedef enum bson_binary_subtype {
-	BSON_BIN_BINARY = 0,
+تعريفنوع تعداد bson_دودویی_subtype {
+	BSON_BIN_دودویی = 0,
 	BSON_BIN_USER = 128
-} bson_binary_subtype_t;
+} bson_دودویی_subtype_t;
 
 /**
  * Maximum node name length.
  */
-#define BSON_MAXNAME		32
+#تعریف_کن BSON_MAXNAME		32
 
 /**
  * Buffer growth increment when writing to a buffer.
  */
-#define BSON_BUF_INCREMENT	128
+#تعریف_کن BSON_BUF_INCREMENT	128
 
 /**
  * Node structure passed to the callback.
  */
-typedef struct bson_node_s {
-	char			name[BSON_MAXNAME];
+تعريفنوع بنية bson_گره_s {
+	حرف			name[BSON_MAXNAME];
 	bson_type_t		type;
-	bson_binary_subtype_t	subtype;
-	union {
-		double  d;   // bson type 1
+	bson_دودویی_subtype_t	subtype;
+	اتحاد {
+		مزدوج  d;   // bson type 1
 		bool    b;   // bson type 8
 		int32_t i32; // bson type 16
 		int64_t i64; // bson type 18
 	};
-} *bson_node_t;
+} *bson_گره_t;
 
-typedef struct bson_decoder_s *bson_decoder_t;
+تعريفنوع بنية bson_decoder_s *bson_decoder_t;
 
 /**
  * Node callback.
  *
  * The node callback function's return value is returned by bson_decoder_next.
  */
-typedef int	(* bson_decoder_callback)(bson_decoder_t decoder, bson_node_t node);
+تعريفنوع صحيح	(* bson_decoder_callback)(bson_decoder_t decoder, bson_گره_t گره_2);
 
-struct bson_decoder_s {
+بنية bson_decoder_s {
 	/* file reader state */
-	int			fd{-1};
+	صحيح			fd{-1};
 
 	/* buffer reader state */
 	uint8_t			*buf{nullptr};
 	size_t			bufsize{0};
-	unsigned		bufpos{0};
+	بیعلامت		bufpos{0};
 
 	bool			dead{false};
 	bson_decoder_callback	callback;
-	unsigned		nesting{0};
-	struct bson_node_s	node {};
+	بیعلامت		nesting{0};
+	بنية bson_گره_s	گره_2 {};
 	int32_t			pending{0};
 
-	int32_t                 total_document_size{0};
-	int32_t                 total_decoded_size{0};
+	int32_t                 مجموع_document_اندازه{0};
+	int32_t                 مجموع_decoded_اندازه{0};
 
-	uint16_t                count_node_double{0};
-	uint16_t                count_node_string{0};
-	uint16_t                count_node_bindata{0};
-	uint16_t                count_node_bool{0};
-	uint16_t                count_node_int32{0};
-	uint16_t                count_node_int64{0};
+	uint16_t                شمار_گره_double{0};
+	uint16_t                شمار_گره_string{0};
+	uint16_t                شمار_گره_bindata{0};
+	uint16_t                شمار_گره_bool{0};
+	uint16_t                شمار_گره_int32{0};
+	uint16_t                شمار_گره_int64{0};
 };
 
 /**
@@ -137,7 +137,7 @@ struct bson_decoder_s {
  * @param callback		Callback to be invoked by bson_decoder_next
  * @return			Zero on success.
  */
-__EXPORT int bson_decoder_init_file(bson_decoder_t decoder, int fd, bson_decoder_callback callback);
+__EXPORT صحيح bson_decoder_init_file(bson_decoder_t decoder, صحيح fd, bson_decoder_callback callback);
 
 /**
  * Initialise the decoder to read from a buffer in memory.
@@ -150,7 +150,7 @@ __EXPORT int bson_decoder_init_file(bson_decoder_t decoder, int fd, bson_decoder
  * @param callback		Callback to be invoked by bson_decoder_next
  * @return			Zero on success.
  */
-__EXPORT int bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_decoder_callback callback);
+__EXPORT صحيح bson_decoder_init_buf(bson_decoder_t decoder, فراغ *buf, بیعلامت bufsize, bson_decoder_callback callback);
 
 /**
  * Process the next node from the stream and invoke the callback.
@@ -159,38 +159,38 @@ __EXPORT int bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned b
  * @return			-1 if parsing encountered an error, 0 if the BSON stream has ended,
  *				otherwise the return value from the callback.
  */
-__EXPORT int bson_decoder_next(bson_decoder_t decoder);
+__EXPORT صحيح bson_decoder_بعدی(bson_decoder_t decoder);
 
 /**
  * Copy node data.
  *
  * @param decoder		Decoder state, must have been initialised with bson_decoder_init.
  */
-__EXPORT int bson_decoder_copy_data(bson_decoder_t decoder, void *buf);
+__EXPORT صحيح bson_decoder_copy_داده(bson_decoder_t decoder, فراغ *buf);
 
 /**
  * Report copyable data size.
  *
  * @param decoder		Decoder state, must have been initialised with bson_decoder_init.
  */
-__EXPORT size_t bson_decoder_data_pending(bson_decoder_t decoder);
+__EXPORT size_t bson_decoder_داده_pending(bson_decoder_t decoder);
 
 /**
  * Encoder state structure.
  */
-typedef struct bson_encoder_s {
+تعريفنوع بنية bson_encoder_s {
 	/* file writer state */
-	int		fd{-1};
+	صحيح		fd{-1};
 
 	/* buffer writer state */
 	uint8_t		*buf{nullptr};
-	unsigned	bufsize{0};
-	unsigned	bufpos{0};
+	بیعلامت	bufsize{0};
+	بیعلامت	bufpos{0};
 
 	bool		realloc_ok{false};
 	bool		dead{false};
 
-	int32_t        total_document_size{0};
+	int32_t        مجموع_document_اندازه{0};
 
 } *bson_encoder_t;
 
@@ -201,7 +201,7 @@ typedef struct bson_encoder_s {
  * @param fd			File to write to.
  * @return			Zero on success.
  */
-__EXPORT int bson_encoder_init_file(bson_encoder_t encoder, int fd);
+__EXPORT صحيح bson_encoder_init_file(bson_encoder_t encoder, صحيح fd);
 
 /**
  * Initialze the encoder for writing to a file.
@@ -212,7 +212,7 @@ __EXPORT int bson_encoder_init_file(bson_encoder_t encoder, int fd);
  * @param bufsize		Supplied buffer size
  * @return			Zero on success.
  */
-__EXPORT int bson_encoder_init_buf_file(bson_encoder_t encoder, int fd, void *buf, unsigned bufsize);
+__EXPORT صحيح bson_encoder_init_buf_file(bson_encoder_t encoder, صحيح fd, فراغ *buf, بیعلامت bufsize);
 
 /**
  * Initialze the encoder for writing to a buffer.
@@ -224,19 +224,19 @@ __EXPORT int bson_encoder_init_buf_file(bson_encoder_t encoder, int fd, void *bu
  *				the buffer is supplied, the size of the supplied buffer.
  * @return			Zero on success.
  */
-__EXPORT int bson_encoder_init_buf(bson_encoder_t encoder, void *buf, unsigned bufsize);
+__EXPORT صحيح bson_encoder_init_buf(bson_encoder_t encoder, فراغ *buf, بیعلامت bufsize);
 
 /**
  * Finalise the encoded stream.
  *
  * @param encoder		The encoder to finalise.
  */
-__EXPORT int bson_encoder_fini(bson_encoder_t encoder);
+__EXPORT صحيح bson_encoder_fini(bson_encoder_t encoder);
 
 /**
  * Fetch the size of the encoded object; only valid for buffer operations.
  */
-__EXPORT int bson_encoder_buf_size(bson_encoder_t encoder);
+__EXPORT صحيح bson_encoder_buf_اندازه(bson_encoder_t encoder);
 
 /**
  * Get a pointer to the encoded object buffer.
@@ -244,7 +244,7 @@ __EXPORT int bson_encoder_buf_size(bson_encoder_t encoder);
  * Note that if the buffer was allocated by the encoder, it is the caller's responsibility
  * to free this buffer.
  */
-__EXPORT void *bson_encoder_buf_data(bson_encoder_t encoder);
+__EXPORT فراغ *bson_encoder_buf_داده(bson_encoder_t encoder);
 
 /**
  * Append a boolean to the encoded stream.
@@ -253,7 +253,7 @@ __EXPORT void *bson_encoder_buf_data(bson_encoder_t encoder);
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_bool(bson_encoder_t encoder, const char *name, bool value);
+__EXPORT صحيح bson_encoder_append_bool(bson_encoder_t encoder, ثابت حرف *name, bool مقدار);
 
 /**
  * Append an int32 to the encoded stream.
@@ -262,7 +262,7 @@ __EXPORT int bson_encoder_append_bool(bson_encoder_t encoder, const char *name, 
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_int32(bson_encoder_t encoder, const char *name, int32_t value);
+__EXPORT صحيح bson_encoder_append_int32(bson_encoder_t encoder, ثابت حرف *name, int32_t مقدار);
 
 /**
  * Append an int64 to the encoded stream.
@@ -271,7 +271,7 @@ __EXPORT int bson_encoder_append_int32(bson_encoder_t encoder, const char *name,
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_int64(bson_encoder_t encoder, const char *name, int64_t value);
+__EXPORT صحيح bson_encoder_append_int64(bson_encoder_t encoder, ثابت حرف *name, int64_t مقدار);
 
 /**
  * Append a double to the encoded stream
@@ -280,7 +280,7 @@ __EXPORT int bson_encoder_append_int64(bson_encoder_t encoder, const char *name,
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_double(bson_encoder_t encoder, const char *name, double value);
+__EXPORT صحيح bson_encoder_append_double(bson_encoder_t encoder, ثابت حرف *name, مزدوج مقدار);
 
 /**
  * Append a string to the encoded stream.
@@ -289,7 +289,7 @@ __EXPORT int bson_encoder_append_double(bson_encoder_t encoder, const char *name
  * @param name			Node name.
  * @param string		Nul-terminated C string.
  */
-__EXPORT int bson_encoder_append_string(bson_encoder_t encoder, const char *name, const char *string);
+__EXPORT صحيح bson_encoder_append_string(bson_encoder_t encoder, ثابت حرف *name, ثابت حرف *string);
 
 /**
  * Append a binary blob to the encoded stream.
@@ -300,13 +300,13 @@ __EXPORT int bson_encoder_append_string(bson_encoder_t encoder, const char *name
  * @param size			Data size.
  * @param data			Buffer containing data to be encoded.
  */
-__EXPORT int bson_encoder_append_binary(bson_encoder_t encoder, const char *name, bson_binary_subtype_t subtype,
-					size_t size, const void *data);
+__EXPORT صحيح bson_encoder_append_دودویی(bson_encoder_t encoder, ثابت حرف *name, bson_دودویی_subtype_t subtype,
+					size_t اندازه, ثابت فراغ *داده);
 
 /**
  * Append a BSON null (type 0x0A). Name only; no value payload.
  */
-__EXPORT int bson_encoder_append_null(bson_encoder_t encoder, const char *name);
+__EXPORT صحيح bson_encoder_append_null(bson_encoder_t encoder, ثابت حرف *name);
 
 
-#endif
+#پایان_اگر

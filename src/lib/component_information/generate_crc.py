@@ -1,60 +1,60 @@
 #!/usr/bin/env python
 
-import argparse
-import os
-import hashlib
+استورد argparse
+استورد os
+استورد hashlib
 
-parser = argparse.ArgumentParser(description="""Generate the COMPONENT_INFORMATION checksums (CRC32) header file""")
-parser.add_argument('--output', metavar='checksums.h', help='output file')
-parser.add_argument('files', nargs='+', metavar='input_file.json', help='files to generate CRC from')
+parser = argparse.آرگومان_Parser(description="""Generate the COMPONENT_INFORMATION checksums (CRC32) header file""")
+parser.جمع_کن_آرگومان('--output', metavar='checksums.h', help='output file')
+parser.جمع_کن_آرگومان('files', nargs='+', metavar='input_file.json', help='files to generate CRC from')
 
-args = parser.parse_args()
-filename = args.output
-files = args.files
+آرگومانها = parser.parse_آرگومانها()
+filename = آرگومانها.output
+files = آرگومانها.files
 
-def create_table():
+تعریف create_جدول():
     a = []
-    for i in range(256):
+    لكل i في دامنه(256):
         k = i
-        for j in range(8):
-            if k & 1:
+        لكل j في دامنه(8):
+            إذا k & 1:
                 k ^= 0x1db710640
             k >>= 1
         a.append(k)
-    return a
+    أرجع a
 
 # MAVLink's CRC32
-def crc_update(buf, crc_table, crc):
-    for k in buf:
-        crc = (crc >> 8) ^ crc_table[(crc & 0xff) ^ k]
-    return crc
+تعریف بررسی_چرخهای_update(buf, بررسی_چرخهای_جدول, بررسی_چرخهای):
+    لكل k في buf:
+        بررسی_چرخهای = (بررسی_چرخهای >> 8) ^ بررسی_چرخهای_جدول[(بررسی_چرخهای & 0xff) ^ k]
+    أرجع بررسی_چرخهای
 
-crc_table = create_table()
+بررسی_چرخهای_جدول = create_جدول()
 
-def sha256sum(filename):
+تعریف sha256sum(filename):
     h  = hashlib.sha256()
     b  = bytearray(128*1024)
     mv = memoryview(b)
-    with open(filename, 'rb', buffering=0) as f:
-        for n in iter(lambda : f.readinto(mv), 0):
+    با open(filename, 'rb', buffering=0) كـ f:
+        لكل n في iter(مجهول : f.readinto(mv), 0):
             h.update(mv[:n])
-    return h.hexdigest()
+    أرجع h.hexdigest()
 
 
-with open(filename, 'w') as outfile:
-    outfile.write("#pragma once\n")
-    outfile.write("#include <stdint.h>\n")
-    outfile.write("namespace component_information {\n")
-    for filename in files:
-        file_crc = 0
-        for line in open(filename, "rb"):
-            file_crc = crc_update(line, crc_table, file_crc)
+با open(filename, 'w') كـ outfile:
+    outfile.اكتب("#pragma once\n")
+    outfile.اكتب("#include <stdint.h>\n")
+    outfile.اكتب("namespace component_information {\n")
+    لكل filename في files:
+        file_بررسی_چرخهای = 0
+        لكل سطر في open(filename, "rb"):
+            file_بررسی_چرخهای = بررسی_چرخهای_update(سطر, بررسی_چرخهای_جدول, file_بررسی_چرخهای)
         file_sha256 = sha256sum(filename)
 
-        basename = os.path.basename(filename)
-        identifier = basename.split('.')[0]
-        outfile.write("static constexpr uint32_t {:}_crc = {:};\n".format(identifier, file_crc))
-        outfile.write("static constexpr const char *{:}_sha256 = \"{:}\";\n".format(identifier, file_sha256))
+        basename = os.مسیر.basename(filename)
+        identifier = basename.تقسیم('.')[0]
+        outfile.اكتب("static constexpr uint32_t {:}_crc = {:};\n".format(identifier, file_بررسی_چرخهای))
+        outfile.اكتب("static constexpr const char *{:}_sha256 = \"{:}\";\n".format(identifier, file_sha256))
 
 
-    outfile.write("}\n")
+    outfile.اكتب("}\n")

@@ -31,79 +31,79 @@
  *
  ****************************************************************************/
 
-#include "PurePursuit.hpp"
-using namespace matrix;
-namespace PurePursuit
+#ضمن "PurePursuit.hpp"
+استفاده نطاق ماتریس;
+نطاق خالص_Pursuit
 {
-float calcTargetBearing(pure_pursuit_status_s &pure_pursuit_status, const float lookahead_gain,
-			const float lookahead_max, const float lookahead_min, const Vector2f &curr_wp_ned, const Vector2f &prev_wp_ned,
-			const Vector2f &curr_pos_ned, const float vehicle_speed)
+عائم calc_هدف_Bearing(خالص_pursuit_وضعیت_s &خالص_pursuit_وضعیت, ثابت عائم lookahead_gain,
+			ثابت عائم lookahead_max, ثابت عائم lookahead_min, ثابت Vector2f &curr_wp_ned, ثابت Vector2f &prev_wp_ned,
+			ثابت Vector2f &curr_pos_ned, ثابت عائم vehicle_سرعت)
 {
 	// Check input validity
-	if (!curr_wp_ned.isAllFinite() || !curr_pos_ned.isAllFinite() || !PX4_ISFINITE(vehicle_speed)
+	إذا (!curr_wp_ned.isAllFinite() || !curr_pos_ned.isAllFinite() || !PX4_ISFINITE(vehicle_سرعت)
 	    || !prev_wp_ned.isAllFinite()) {
-		return NAN;
+		أرجع NAN;
 	}
 
-	const float lookahead_distance = math::constrain(lookahead_gain * fabsf(vehicle_speed), lookahead_min, lookahead_max);
-	const Vector2f curr_pos_to_curr_wp = curr_wp_ned - curr_pos_ned;
-	const Vector2f prev_wp_to_curr_wp = curr_wp_ned - prev_wp_ned;
-	const Vector2f prev_wp_to_curr_pos = curr_pos_ned - prev_wp_ned;
-	const Vector2f prev_wp_to_curr_wp_u = prev_wp_to_curr_wp.unit_or_zero();
-	const float distance_along_path = prev_wp_to_curr_pos *
-					  prev_wp_to_curr_wp_u; // Signed distance of the current position along the path, from the previous waypoint
-	const Vector2f position_along_path = distance_along_path *
-					     prev_wp_to_curr_wp_u; // Projection of prev_wp_to_curr_pos onto prev_wp_to_curr_wp
-	const Vector2f curr_pos_to_path = position_along_path -
-					  prev_wp_to_curr_pos; // Shortest vector from the current position to the path
-	const float crosstrack_error = sign(prev_wp_to_curr_wp(1) * curr_pos_to_path(
-			0) - prev_wp_to_curr_wp(0) * curr_pos_to_path(1)) * curr_pos_to_path.norm();
-	const float bearing_to_curr_waypoint = matrix::wrap_pi(atan2f(curr_pos_to_curr_wp(1), curr_pos_to_curr_wp(0)));
-	float target_bearing{NAN};
+	ثابت عائم lookahead_فاصله = math::constrain(lookahead_gain * fabsf(vehicle_سرعت), lookahead_min, lookahead_max);
+	ثابت Vector2f curr_pos_مقصد_curr_wp = curr_wp_ned - curr_pos_ned;
+	ثابت Vector2f prev_wp_مقصد_curr_wp = curr_wp_ned - prev_wp_ned;
+	ثابت Vector2f prev_wp_مقصد_curr_pos = curr_pos_ned - prev_wp_ned;
+	ثابت Vector2f prev_wp_مقصد_curr_wp_u = prev_wp_مقصد_curr_wp.unit_or_zero();
+	ثابت عائم فاصله_along_مسیر = prev_wp_مقصد_curr_pos *
+					  prev_wp_مقصد_curr_wp_u; // Signed distance of the current position along the path, from the previous waypoint
+	ثابت Vector2f position_along_مسیر = فاصله_along_مسیر *
+					     prev_wp_مقصد_curr_wp_u; // Projection of prev_wp_to_curr_pos onto prev_wp_to_curr_wp
+	ثابت Vector2f curr_pos_مقصد_مسیر = position_along_مسیر -
+					  prev_wp_مقصد_curr_pos; // Shortest vector from the current position to the path
+	ثابت عائم crosstrack_error = sign(prev_wp_مقصد_curr_wp(1) * curr_pos_مقصد_مسیر(
+			0) - prev_wp_مقصد_curr_wp(0) * curr_pos_مقصد_مسیر(1)) * curr_pos_مقصد_مسیر.norm();
+	ثابت عائم bearing_مقصد_curr_waypoint = ماتریس::wrap_pi(atan2f(curr_pos_مقصد_curr_wp(1), curr_pos_مقصد_curr_wp(0)));
+	عائم هدف_bearing{NAN};
 
-	if (curr_pos_to_curr_wp.norm() < lookahead_distance
-	    || prev_wp_to_curr_wp.norm() < FLT_EPSILON
-	    || distance_along_path > prev_wp_to_curr_wp.norm()) {
+	إذا (curr_pos_مقصد_curr_wp.norm() < lookahead_فاصله
+	    || prev_wp_مقصد_curr_wp.norm() < FLT_EPSILON
+	    || فاصله_along_مسیر > prev_wp_مقصد_curr_wp.norm()) {
 		// Target current waypoint if closer to it than lookahead, if the waypoints overlap, or if the vehicle has passed
 		// the current waypoint: the lookahead intersection would otherwise lie on the extension of the path beyond it
 		// and lead the vehicle further away
-		target_bearing = bearing_to_curr_waypoint;
+		هدف_bearing = bearing_مقصد_curr_waypoint;
 
-	} else if (fabsf(crosstrack_error) >
-		   lookahead_distance) { // Path segment is outside of lookahead (No intersection point)
+	} وإلا إذا (fabsf(crosstrack_error) >
+		   lookahead_فاصله) { // Path segment is outside of lookahead (No intersection point)
 
-		const Vector2f prev_wp_to_closest_point_on_path = curr_pos_to_path + prev_wp_to_curr_pos;
-		const Vector2f curr_wp_to_closest_point_on_path = curr_pos_to_path - curr_pos_to_curr_wp;
+		ثابت Vector2f prev_wp_مقصد_closest_نقطه_on_مسیر = curr_pos_مقصد_مسیر + prev_wp_مقصد_curr_pos;
+		ثابت Vector2f curr_wp_مقصد_closest_نقطه_on_مسیر = curr_pos_مقصد_مسیر - curr_pos_مقصد_curr_wp;
 
-		if (prev_wp_to_closest_point_on_path * prev_wp_to_curr_wp <
+		إذا (prev_wp_مقصد_closest_نقطه_on_مسیر * prev_wp_مقصد_curr_wp <
 		    FLT_EPSILON) { // Target previous waypoint if closest point is on the the extended path segment "behind" previous waypoint
-			target_bearing = matrix::wrap_pi(atan2f(-prev_wp_to_curr_pos(1), -prev_wp_to_curr_pos(0)));
+			هدف_bearing = ماتریس::wrap_pi(atan2f(-prev_wp_مقصد_curr_pos(1), -prev_wp_مقصد_curr_pos(0)));
 
-		} else if (curr_wp_to_closest_point_on_path * prev_wp_to_curr_wp >
+		} وإلا إذا (curr_wp_مقصد_closest_نقطه_on_مسیر * prev_wp_مقصد_curr_wp >
 			   FLT_EPSILON) { // Target current waypoint if closest point is on the extended path segment "ahead" of current waypoint
-			target_bearing = bearing_to_curr_waypoint;
+			هدف_bearing = bearing_مقصد_curr_waypoint;
 
-		} else { // Target closest point on path
-			target_bearing = matrix::wrap_pi(atan2f(curr_pos_to_path(1), curr_pos_to_path(0)));
+		} وإلا { // Target closest point on path
+			هدف_bearing = ماتریس::wrap_pi(atan2f(curr_pos_مقصد_مسیر(1), curr_pos_مقصد_مسیر(0)));
 		}
 
 
-	} else { // Regular pure pursuit
-		const float line_extension = sqrt(powf(lookahead_distance, 2.f) - powf(curr_pos_to_path.norm(),
+	} وإلا { // Regular pure pursuit
+		ثابت عائم سطر_extension = جذر(powf(lookahead_فاصله, 2.f) - powf(curr_pos_مقصد_مسیر.norm(),
 						  2.f)); // Length of the vector from the endpoint of distance_on_line_segment to the intersection point
-		const Vector2f prev_wp_to_intersection_point = position_along_path + line_extension *
-				prev_wp_to_curr_wp_u;
-		const Vector2f curr_pos_to_intersection_point = prev_wp_to_intersection_point - prev_wp_to_curr_pos;
-		target_bearing = matrix::wrap_pi(atan2f(curr_pos_to_intersection_point(1), curr_pos_to_intersection_point(0)));
+		ثابت Vector2f prev_wp_مقصد_intersection_نقطه = position_along_مسیر + سطر_extension *
+				prev_wp_مقصد_curr_wp_u;
+		ثابت Vector2f curr_pos_مقصد_intersection_نقطه = prev_wp_مقصد_intersection_نقطه - prev_wp_مقصد_curr_pos;
+		هدف_bearing = ماتریس::wrap_pi(atan2f(curr_pos_مقصد_intersection_نقطه(1), curr_pos_مقصد_intersection_نقطه(0)));
 	}
 
 
-	pure_pursuit_status.lookahead_distance = lookahead_distance;
-	pure_pursuit_status.target_bearing = target_bearing;
-	pure_pursuit_status.crosstrack_error = crosstrack_error;
-	pure_pursuit_status.distance_to_waypoint = curr_pos_to_curr_wp.norm();
-	pure_pursuit_status.bearing_to_waypoint = bearing_to_curr_waypoint;
-	return target_bearing;
+	خالص_pursuit_وضعیت.lookahead_فاصله = lookahead_فاصله;
+	خالص_pursuit_وضعیت.هدف_bearing = هدف_bearing;
+	خالص_pursuit_وضعیت.crosstrack_error = crosstrack_error;
+	خالص_pursuit_وضعیت.فاصله_مقصد_waypoint = curr_pos_مقصد_curr_wp.norm();
+	خالص_pursuit_وضعیت.bearing_مقصد_waypoint = bearing_مقصد_curr_waypoint;
+	أرجع هدف_bearing;
 
 }
 } // Pure Pursuit

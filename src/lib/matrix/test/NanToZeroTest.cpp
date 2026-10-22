@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/math.hpp>
 
-using namespace matrix;
+استفاده نطاق ماتریس;
 
-TEST(NanToZeroTest, NanToZero)
+TEST(Nan_مقصد_Zero_Test, Nan_مقصد_Zero)
 {
-	const float data[9]     = {-1.f, 0.f, +INFINITY, NAN, 0.f, -INFINITY, 1.f, 0.f, -NAN};
-	const float expected[9] = {-1.f, 0.f, +INFINITY, 0.f, 0.f, -INFINITY, 1.f, 0.f, 0.f};
+	ثابت عائم داده[9]     = {-1.f, 0.f, +INFINITY, NAN, 0.f, -INFINITY, 1.f, 0.f, -NAN};
+	ثابت عائم expected[9] = {-1.f, 0.f, +INFINITY, 0.f, 0.f, -INFINITY, 1.f, 0.f, 0.f};
 
-	Matrix<float, 3, 3> mat(data);
-	mat.nanToZero();
+	ماتریس_2<عائم, 3, 3> mat(داده);
+	mat.nan_مقصد_Zero();
 
-	const Matrix<float, 3, 3> mat_expected(expected);
+	ثابت ماتریس_2<عائم, 3, 3> mat_expected(expected);
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
+	لكل (size_t i = 0; i < 3; i++) {
+		لكل (size_t j = 0; j < 3; j++) {
 			EXPECT_FLOAT_EQ(mat(i, j), mat_expected(i, j));
 		}
 	}
 }
 
-TEST(NanToZeroTest, NoNanUnchanged)
+TEST(Nan_مقصد_Zero_Test, NoNanUnchanged)
 {
-	const float data[4] = {-2.5f, 0.f, 3.14f, +INFINITY};
+	ثابت عائم داده[4] = {-2.5f, 0.f, 3.14f, +INFINITY};
 
-	Matrix<float, 2, 2> mat(data);
-	mat.nanToZero();
+	ماتریس_2<عائم, 2, 2> mat(داده);
+	mat.nan_مقصد_Zero();
 
-	const Matrix<float, 2, 2> mat_orig(data);
+	ثابت ماتریس_2<عائم, 2, 2> mat_orig(داده);
 
-	for (size_t i = 0; i < 2; i++) {
-		for (size_t j = 0; j < 2; j++) {
+	لكل (size_t i = 0; i < 2; i++) {
+		لكل (size_t j = 0; j < 2; j++) {
 			EXPECT_FLOAT_EQ(mat(i, j), mat_orig(i, j));
 		}
 	}

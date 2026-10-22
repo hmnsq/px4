@@ -31,38 +31,38 @@
  *
  ****************************************************************************/
 
-#pragma once
+#رهنمود once
 
-#ifdef __PX4_NUTTX
-#include "px4_platform_common/micro_hal.h"
-#endif
+#اگر_تعریف_شده __PX4_NUTTX
+#ضمن "px4_platform_common/micro_hal.h"
+#پایان_اگر
 
-#ifdef __PX4_POSIX
-#include <pthread.h>
-#endif
+#اگر_تعریف_شده __PX4_POSIX
+#ضمن <pthread.h>
+#پایان_اگر
 
 
 class AtomicTransaction
 {
-private:
-#ifdef __PX4_NUTTX
+خاص:
+#اگر_تعریف_شده __PX4_NUTTX
 	irqstate_t _irq_state;
-#endif
+#پایان_اگر
 
-#ifdef __PX4_POSIX
-	static pthread_mutex_t *_get_mutex();
-#endif
+#اگر_تعریف_شده __PX4_POSIX
+	ساكن pthread_mutex_t *_get_mutex();
+#پایان_اگر
 
-public:
-#ifdef __PX4_POSIX
+عام:
+#اگر_تعریف_شده __PX4_POSIX
 	// Initialize the recursive param mutex. Must be called once before any thread
 	// accesses parameters (done from param_init()).
-	static void initialize();
-#endif
+	ساكن فراغ initialize();
+#پایان_اگر
 
 	AtomicTransaction()
 	{
-		lock();
+		قفل();
 	}
 
 	~AtomicTransaction()
@@ -70,23 +70,23 @@ public:
 		unlock();
 	}
 
-	void lock()
+	فراغ قفل()
 	{
-#ifdef __PX4_NUTTX
+#اگر_تعریف_شده __PX4_NUTTX
 		_irq_state = px4_enter_critical_section();
-#endif
-#ifdef __PX4_POSIX
+#پایان_اگر
+#اگر_تعریف_شده __PX4_POSIX
 		pthread_mutex_lock(_get_mutex());
-#endif
+#پایان_اگر
 	}
 
-	void unlock()
+	فراغ unlock()
 	{
-#ifdef __PX4_NUTTX
+#اگر_تعریف_شده __PX4_NUTTX
 		px4_leave_critical_section(_irq_state);
-#endif
-#ifdef __PX4_POSIX
+#پایان_اگر
+#اگر_تعریف_شده __PX4_POSIX
 		pthread_mutex_unlock(_get_mutex());
-#endif
+#پایان_اگر
 	}
 };

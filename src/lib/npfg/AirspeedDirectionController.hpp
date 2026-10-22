@@ -56,22 +56,22 @@
  *     https://tstastny.github.io/pdf/tstastny_phd_thesis_wcover.pdf
  */
 
-#ifndef PX4_AIRSPEEDDIRECTIONONTROLLER_HPP
-#define PX4_AIRSPEEDDIRECTIONONTROLLER_HPP
+#اگر_تعریف_نشده PX4_AIRSPEEDDIRECTIONONTROLLER_HPP
+#تعریف_کن PX4_AIRSPEEDDIRECTIONONTROLLER_HPP
 
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
+#ضمن <matrix/math.hpp>
+#ضمن <lib/mathlib/mathlib.h>
 
-class AirspeedDirectionController
+صنف AirspeedDirectionController
 {
-public:
+عام:
 	AirspeedDirectionController();
 
-	void setPGainFromPeriodAndDamping(float damping, float period) {p_gain_ = 4.f * M_PI_F * damping / math::max(period, FLT_EPSILON);}
-	float controlHeading(const float heading_sp, const float heading, const float airspeed) const;
+	فراغ مجموعه_PGain_From_Period_And_Damping(عائم damping, عائم period) {p_gain_ = 4.f * M_PI_F * damping / math::max(period, FLT_EPSILON);}
+	عائم controlHeading(ثابت عائم heading_sp, ثابت عائم heading, ثابت عائم airspeed) ثابت;
 
-private:
-	float p_gain_{0.8885f}; // proportional gain (computed from period_ and damping_) [rad/s]
+خاص:
+	عائم p_gain_{0.8885f}; // proportional gain (computed from period_ and damping_) [rad/s]
 };
 
-#endif //PX4_AIRSPEEDDIRECTIONONTROLLER_HPP
+#پایان_اگر //PX4_AIRSPEEDDIRECTIONONTROLLER_HPP

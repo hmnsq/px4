@@ -31,64 +31,64 @@
  *
  ****************************************************************************/
 
-#pragma once
+#رهنمود once
 
-#include <stdint.h>
+#ضمن <stdint.h>
 
-namespace open_drone_id
+نطاق open_drone_id
 {
 
-static constexpr uint8_t UAS_ID_SIZE = 20;
-static constexpr uint8_t UAS_ID_TYPE_SERIAL_NUMBER = 1;
-static constexpr int32_t UAS_ID_MODE_LOCK_FIRST_BASIC_ID = 1;
+ساكن constexpr uint8_t UAS_ID_اندازه = 20;
+ساكن constexpr uint8_t UAS_ID_TYPE_SERIAL_عدد = 1;
+ساكن constexpr int32_t UAS_ID_نما_قفل_اولی_BASIC_ID = 1;
 
-struct UasId {
+بنية UasId {
 	uint8_t ua_type{0};
-	uint8_t uas_id[UAS_ID_SIZE] {};
+	uint8_t uas_id[UAS_ID_اندازه] {};
 };
 
-enum class BidLockState {
-	Empty,
+تعداد صنف Bid_قفل_State {
+	خالی_2,
 	Locked,
-	InvalidRecord,
+	Invalid_رکورد,
 	StorageUnavailable,
 	WriteError,
 	Unsupported,
 };
 
-struct BidLockInfo {
-	BidLockState state{BidLockState::Unsupported};
+بنية Bid_قفل_Info {
+	Bid_قفل_State state{Bid_قفل_State::Unsupported};
 	UasId id{};
 
-	bool locked() const { return state == BidLockState::Locked; }
+	منطقي locked() ثابت { أرجع state == Bid_قفل_State::Locked; }
 };
 
-enum class BidStoreResult {
+تعداد صنف Bid_Store_نتیجه {
 	Stored,
 	AlreadyLocked,
 	AlreadyLockedDifferent,
 	InvalidBasicId,
 	StorageUnavailable,
-	InvalidRecord,
+	Invalid_رکورد,
 	WriteError,
 	Unsupported,
 };
 
-class BidStorage
+صنف BidStorage
 {
-public:
-	static BidLockInfo get();
-	static BidStoreResult checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE]);
+عام:
+	ساكن Bid_قفل_Info get();
+	ساكن Bid_Store_نتیجه checkOrStore(uint8_t ua_type, ثابت uint8_t uas_id[UAS_ID_اندازه]);
 };
 
-class BidLock
+صنف Bid_قفل
 {
-public:
-	BidStoreResult resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE], UasId &locked_id);
+عام:
+	Bid_Store_نتیجه resolve(uint8_t id_type, uint8_t ua_type, ثابت uint8_t uas_id[UAS_ID_اندازه], UasId &locked_id);
 
-private:
-	BidLockInfo _info{};
-	bool _loaded{false};
+خاص:
+	Bid_قفل_Info _info{};
+	منطقي _loaded{خطأ};
 };
 
 } // namespace open_drone_id

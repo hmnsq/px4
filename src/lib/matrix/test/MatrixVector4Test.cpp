@@ -31,12 +31,12 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/math.hpp>
 
-using namespace matrix;
+استفاده نطاق ماتریس;
 
-TEST(MatrixVector4Test, Vector4)
+TEST(ماتریس_Vector4_Test, Vector4)
 {
 	Vector4f a(1.f, 2.f, 3.f, 4.f);
 	EXPECT_EQ(a(0), 1.f);

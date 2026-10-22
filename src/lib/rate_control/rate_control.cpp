@@ -35,67 +35,67 @@
  * @file rate_control.cpp
  */
 
-#include "rate_control.hpp"
-#include <px4_platform_common/defines.h>
+#ضمن "rate_control.hpp"
+#ضمن <px4_platform_common/defines.h>
 
-using namespace matrix;
+استفاده نطاق ماتریس;
 
-void RateControl::setPidGains(const Vector3f &P, const Vector3f &I, const Vector3f &D)
+فراغ نرخ_Control::مجموعه_Pid_Gains(ثابت Vector3f &P, ثابت Vector3f &I, ثابت Vector3f &D)
 {
 	_gain_p = P;
 	_gain_i = I;
 	_gain_d = D;
 }
 
-void RateControl::setSaturationStatus(const Vector3<bool> &saturation_positive,
-				      const Vector3<bool> &saturation_negative)
+فراغ نرخ_Control::مجموعه_Saturation_وضعیت(ثابت Vector3<منطقي> &saturation_مثبت,
+				      ثابت Vector3<منطقي> &saturation_negative)
 {
-	_control_allocator_saturation_positive = saturation_positive;
+	control_allocator_saturation_مثبت = saturation_مثبت;
 	_control_allocator_saturation_negative = saturation_negative;
 }
 
-void RateControl::setPositiveSaturationFlag(size_t axis, bool is_saturated)
+فراغ نرخ_Control::مجموعه_مثبت_Saturation_Flag(size_t axis, منطقي is_saturated)
 {
-	if (axis < 3) {
-		_control_allocator_saturation_positive(axis) = is_saturated;
+	إذا (axis < 3) {
+		control_allocator_saturation_مثبت(axis) = is_saturated;
 	}
 }
 
-void RateControl::setNegativeSaturationFlag(size_t axis, bool is_saturated)
+فراغ نرخ_Control::مجموعه_Negative_Saturation_Flag(size_t axis, منطقي is_saturated)
 {
-	if (axis < 3) {
+	إذا (axis < 3) {
 		_control_allocator_saturation_negative(axis) = is_saturated;
 	}
 }
 
-Vector3f RateControl::update(const Vector3f &rate, const Vector3f &rate_sp, const Vector3f &angular_accel,
-			     const float dt, const bool landed)
+Vector3f نرخ_Control::update(ثابت Vector3f &نرخ, ثابت Vector3f &نرخ_sp, ثابت Vector3f &angular_accel,
+			     ثابت عائم dt, ثابت منطقي landed)
 {
 	// angular rates error
-	Vector3f rate_error = rate_sp - rate;
+	Vector3f نرخ_error = نرخ_sp - نرخ;
 
 	// PID control with feed forward
-	Vector3f torque = _gain_p.emult(rate_error) + _rate_int - _gain_d.emult(angular_accel) + _gain_ff.emult(rate_sp);
+	Vector3f torque = _gain_p.emult(نرخ_error) + نرخ_int - _gain_d.emult(angular_accel) + _gain_ff.emult(نرخ_sp);
 
 	// update integral only if we are not landed
-	if (!landed) {
-		updateIntegral(rate_error, dt);
+	إذا (!landed) {
+		updateIntegral(نرخ_error, dt);
 	}
 
-	return torque;
+	أرجع torque;
 }
 
-void RateControl::updateIntegral(Vector3f &rate_error, const float dt)
+فراغ نرخ_Control::updateIntegral(Vector3f &نرخ_error, ثابت عائم dt)
 {
-	for (int i = 0; i < 3; i++) {
+	لكل (صحيح i = 0; i < 3; i++) {
 		// prevent further positive control saturation
-		if (_control_allocator_saturation_positive(i)) {
-			rate_error(i) = math::min(rate_error(i), 0.f);
+		إذا (control_allocator_saturation_مثبت(i)) {
+			نرخ_error(i) = math::min(نرخ_error(i), 0.f);
 		}
 
 		// prevent further negative control saturation
-		if (_control_allocator_saturation_negative(i)) {
-			rate_error(i) = math::max(rate_error(i), 0.f);
+		إذا (_control_allocator_saturation_negative(i)) {
+			نرخ_error(i) = math::max(نرخ_error(i), 0.f);
 		}
 
 		// I term factor: reduce the I gain with increasing rate error.
@@ -104,22 +104,22 @@ void RateControl::updateIntegral(Vector3f &rate_error, const float dt)
 		// The formula leads to a gradual decrease w/o steps, while only affecting the cases where it should:
 		// with the parameter set to 400 degrees, up to 100 deg rate error, i_factor is almost 1 (having no effect),
 		// and up to 200 deg error leads to <25% reduction of I.
-		float i_factor = rate_error(i) / math::radians(400.f);
-		i_factor = math::max(0.0f, 1.f - i_factor * i_factor);
+		عائم i_ضریب = نرخ_error(i) / math::radians(400.f);
+		i_ضریب = math::max(0.0f, 1.f - i_ضریب * i_ضریب);
 
 		// Perform the integration using a first order method
-		float rate_i = _rate_int(i) + i_factor * _gain_i(i) * rate_error(i) * dt;
+		عائم نرخ_i = نرخ_int(i) + i_ضریب * _gain_i(i) * نرخ_error(i) * dt;
 
 		// do not propagate the result if out of range or invalid
-		if (PX4_ISFINITE(rate_i)) {
-			_rate_int(i) = math::constrain(rate_i, -_lim_int(i), _lim_int(i));
+		إذا (PX4_ISFINITE(نرخ_i)) {
+			نرخ_int(i) = math::constrain(نرخ_i, -_lim_int(i), _lim_int(i));
 		}
 	}
 }
 
-void RateControl::getRateControlStatus(rate_ctrl_status_s &rate_ctrl_status)
+فراغ نرخ_Control::get_نرخ_Control_وضعیت(نرخ_ctrl_وضعیت_s &نرخ_ctrl_وضعیت)
 {
-	rate_ctrl_status.rollspeed_integ = _rate_int(0);
-	rate_ctrl_status.pitchspeed_integ = _rate_int(1);
-	rate_ctrl_status.yawspeed_integ = _rate_int(2);
+	نرخ_ctrl_وضعیت.rollspeed_integ = نرخ_int(0);
+	نرخ_ctrl_وضعیت.pitchspeed_integ = نرخ_int(1);
+	نرخ_ctrl_وضعیت.yawspeed_integ = نرخ_int(2);
 }

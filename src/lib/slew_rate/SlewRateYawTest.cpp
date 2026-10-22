@@ -31,92 +31,92 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "SlewRateYaw.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن "SlewRateYaw.hpp"
 
-TEST(SlewRateYawTest, SlewUpLimited)
+TEST(Slew_نرخ_Yaw_Test, Slew_به_بالا_Limited)
 {
-	SlewRateYaw<float> _slew_rate_yaw;
-	_slew_rate_yaw.setSlewRate(.15f);
-	_slew_rate_yaw.setForcedValue(1.1f);
+	Slew_نرخ_Yaw<عائم> slew_نرخ_yaw;
+	slew_نرخ_yaw.مجموعه_Slew_نرخ(.15f);
+	slew_نرخ_yaw.مجموعه_Forced_مقدار(1.1f);
 
-	for (int i = 1; i <= 10; i++) {
-		EXPECT_FLOAT_EQ(_slew_rate_yaw.update(3.f, 1.f), 1.1f + i * .15f);
+	لكل (صحيح i = 1; i <= 10; i++) {
+		EXPECT_FLOAT_EQ(slew_نرخ_yaw.update(3.f, 1.f), 1.1f + i * .15f);
 	}
 }
 
-TEST(SlewRateYawTest, SlewDownLimited)
+TEST(Slew_نرخ_Yaw_Test, Slew_پایین_Limited)
 {
-	SlewRateYaw<float> _slew_rate_yaw;
-	_slew_rate_yaw.setSlewRate(.1f);
-	_slew_rate_yaw.setForcedValue(.5f);
+	Slew_نرخ_Yaw<عائم> slew_نرخ_yaw;
+	slew_نرخ_yaw.مجموعه_Slew_نرخ(.1f);
+	slew_نرخ_yaw.مجموعه_Forced_مقدار(.5f);
 
-	for (int i = 1; i <= 10; i++) {
-		EXPECT_NEAR(_slew_rate_yaw.update(-2.f, 1.f), .5f - i * .1f, 1e-7f);
+	لكل (صحيح i = 1; i <= 10; i++) {
+		EXPECT_NEAR(slew_نرخ_yaw.update(-2.f, 1.f), .5f - i * .1f, 1e-7f);
 	}
 }
 
-TEST(SlewRateYawTest, ReachValueSlewed)
+TEST(Slew_نرخ_Yaw_Test, دسترسی_مقدار_Slewed)
 {
-	SlewRateYaw<float> _slew_rate_yaw;
-	_slew_rate_yaw.setSlewRate(.2f);
-	_slew_rate_yaw.setForcedValue(1.f);
+	Slew_نرخ_Yaw<عائم> slew_نرخ_yaw;
+	slew_نرخ_yaw.مجموعه_Slew_نرخ(.2f);
+	slew_نرخ_yaw.مجموعه_Forced_مقدار(1.f);
 
-	for (int i = 1; i <= 10; i++) {
-		EXPECT_FLOAT_EQ(_slew_rate_yaw.update(3.f, 1.f), 1.f + i * .2f);
+	لكل (صحيح i = 1; i <= 10; i++) {
+		EXPECT_FLOAT_EQ(slew_نرخ_yaw.update(3.f, 1.f), 1.f + i * .2f);
 	}
 
-	for (int i = 1; i <= 10; i++) {
-		EXPECT_FLOAT_EQ(_slew_rate_yaw.update(3.f, 1.f), 3.f);
+	لكل (صحيح i = 1; i <= 10; i++) {
+		EXPECT_FLOAT_EQ(slew_نرخ_yaw.update(3.f, 1.f), 3.f);
 	}
 }
 
-TEST(SlewRateYawTest, SlewUpWrappedOutput)
+TEST(Slew_نرخ_Yaw_Test, Slew_به_بالا_Wrapped_Output)
 {
 	// put the goal value always a bit further away such that at some point the output has to wrap
-	SlewRateYaw<float> _slew_rate_yaw;
-	_slew_rate_yaw.setSlewRate(.2f);
-	_slew_rate_yaw.setForcedValue(0.f);
+	Slew_نرخ_Yaw<عائم> slew_نرخ_yaw;
+	slew_نرخ_yaw.مجموعه_Slew_نرخ(.2f);
+	slew_نرخ_yaw.مجموعه_Forced_مقدار(0.f);
 
-	for (int i = 1; i <= 30; i++) {
-		EXPECT_NEAR(_slew_rate_yaw.update(i * .25f, 1.f), matrix::wrap_pi(i * .2f), 1e-5f);
+	لكل (صحيح i = 1; i <= 30; i++) {
+		EXPECT_NEAR(slew_نرخ_yaw.update(i * .25f, 1.f), ماتریس::wrap_pi(i * .2f), 1e-5f);
 	}
 }
 
-TEST(SlewRateYawTest, SlewDownWrappedOutput)
+TEST(Slew_نرخ_Yaw_Test, Slew_پایین_Wrapped_Output)
 {
 	// put the goal value always a bit further away such that at some point the output has to wrap
-	SlewRateYaw<float> _slew_rate_yaw;
-	_slew_rate_yaw.setSlewRate(.2f);
-	_slew_rate_yaw.setForcedValue(0.f);
+	Slew_نرخ_Yaw<عائم> slew_نرخ_yaw;
+	slew_نرخ_yaw.مجموعه_Slew_نرخ(.2f);
+	slew_نرخ_yaw.مجموعه_Forced_مقدار(0.f);
 
-	for (int i = 1; i <= 50; i++) {
-		EXPECT_NEAR(_slew_rate_yaw.update(i * -.25f, 1.f), matrix::wrap_pi(i * -.2f), 1e-5f);
+	لكل (صحيح i = 1; i <= 50; i++) {
+		EXPECT_NEAR(slew_نرخ_yaw.update(i * -.25f, 1.f), ماتریس::wrap_pi(i * -.2f), 1e-5f);
 	}
 }
 
-TEST(SlewRateYawTest, SlewUpWrappedInput)
+TEST(Slew_نرخ_Yaw_Test, Slew_به_بالا_Wrapped_درون_داد)
 {
 	// put the goal value always a bit further away such that at some point the output has to wrap
-	SlewRateYaw<float> _slew_rate_yaw;
-	_slew_rate_yaw.setSlewRate(.2f);
-	_slew_rate_yaw.setForcedValue(0.f);
+	Slew_نرخ_Yaw<عائم> slew_نرخ_yaw;
+	slew_نرخ_yaw.مجموعه_Slew_نرخ(.2f);
+	slew_نرخ_yaw.مجموعه_Forced_مقدار(0.f);
 
-	for (int i = 1; i <= 50; i++) {
-		EXPECT_NEAR(_slew_rate_yaw.update(matrix::wrap_pi(i * .25f), 1.f), matrix::wrap_pi(i * .2f), 1e-5f);
+	لكل (صحيح i = 1; i <= 50; i++) {
+		EXPECT_NEAR(slew_نرخ_yaw.update(ماتریس::wrap_pi(i * .25f), 1.f), ماتریس::wrap_pi(i * .2f), 1e-5f);
 	}
 }
 
-TEST(SlewRateYawTest, SlewShortWayInput)
+TEST(Slew_نرخ_Yaw_Test, Slew_Short_Way_درون_داد)
 {
-	SlewRateYaw<float> _slew_rate_yaw;
-	_slew_rate_yaw.setSlewRate(1.f);
-	_slew_rate_yaw.setForcedValue(0.f);
+	Slew_نرخ_Yaw<عائم> slew_نرخ_yaw;
+	slew_نرخ_yaw.مجموعه_Slew_نرخ(1.f);
+	slew_نرخ_yaw.مجموعه_Forced_مقدار(0.f);
 
-	EXPECT_FLOAT_EQ(_slew_rate_yaw.update(3.f, 1.f), 1.f);
-	EXPECT_FLOAT_EQ(_slew_rate_yaw.update(5.f, 1.f), 0.f);
-	EXPECT_FLOAT_EQ(_slew_rate_yaw.update(5.f, 1.f), -1.f);
-	EXPECT_FLOAT_EQ(_slew_rate_yaw.update(4.f, 1.f), -2.f);
-	EXPECT_FLOAT_EQ(_slew_rate_yaw.update(3.f, 1.f), -3.f);
-	EXPECT_FLOAT_EQ(_slew_rate_yaw.update(5.f, 1.f), -2.f);
+	EXPECT_FLOAT_EQ(slew_نرخ_yaw.update(3.f, 1.f), 1.f);
+	EXPECT_FLOAT_EQ(slew_نرخ_yaw.update(5.f, 1.f), 0.f);
+	EXPECT_FLOAT_EQ(slew_نرخ_yaw.update(5.f, 1.f), -1.f);
+	EXPECT_FLOAT_EQ(slew_نرخ_yaw.update(4.f, 1.f), -2.f);
+	EXPECT_FLOAT_EQ(slew_نرخ_yaw.update(3.f, 1.f), -3.f);
+	EXPECT_FLOAT_EQ(slew_نرخ_yaw.update(5.f, 1.f), -2.f);
 }

@@ -31,182 +31,182 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/math.hpp>
 
-using namespace matrix;
+استفاده نطاق ماتریس;
 
-TEST(MatrixSquareTest, Square)
+TEST(ماتریس_مربع_Test, مربع_2)
 {
-	float data[9] = {1, 2, 3,
+	عائم داده[9] = {1, 2, 3,
 			 4, 5, 6,
 			 7, 8, 10
 			};
-	SquareMatrix<float, 3> A(data);
-	Vector3<float> diag_check(1, 5, 10);
+	مربع_ماتریس<عائم, 3> A(داده);
+	Vector3<عائم> diag_check(1, 5, 10);
 
 	EXPECT_EQ(A.diag(), diag_check);
 	EXPECT_FLOAT_EQ(A.trace(), 16);
 	EXPECT_FLOAT_EQ(A.trace<2>(1), 15);
 
-	float data_check[9] = {
+	عائم داده_check[9] = {
 		1.01158503f,  0.02190432f,  0.03238144f,
 		0.04349195f,  1.05428524f,  0.06539627f,
 		0.07576783f,  0.08708946f,  1.10894048f
 	};
 
-	float dt = 0.01f;
-	SquareMatrix<float, 3> eA = expm(SquareMatrix<float, 3>(A * dt), 5);
-	SquareMatrix<float, 3> eA_check(data_check);
+	عائم dt = 0.01f;
+	مربع_ماتریس<عائم, 3> eA = expm(مربع_ماتریس<عائم, 3>(A * dt), 5);
+	مربع_ماتریس<عائم, 3> eA_check(داده_check);
 	EXPECT_TRUE(isEqual(eA, eA_check, 1e-3f));
 
-	SquareMatrix<float, 2> A_bottomright = A.slice<2, 2>(1, 1);
-	SquareMatrix<float, 2> A_bottomright2;
-	A_bottomright2 = A.slice<2, 2>(1, 1);
+	مربع_ماتریس<عائم, 2> A_bottomright = A.برش<2, 2>(1, 1);
+	مربع_ماتریس<عائم, 2> A_bottomright2;
+	A_bottomright2 = A.برش<2, 2>(1, 1);
 
-	float data_bottomright[4] = {5, 6,
+	عائم داده_bottomright[4] = {5, 6,
 				     8, 10
 				    };
-	SquareMatrix<float, 2> bottomright_check(data_bottomright);
+	مربع_ماتریس<عائم, 2> bottomright_check(داده_bottomright);
 	EXPECT_EQ(A_bottomright, bottomright_check);
 	EXPECT_EQ(A_bottomright2, bottomright_check);
 
 	// test diagonal functions
-	float data_4x4[16] = {1, 2, 3, 4,
+	عائم داده_4x4[16] = {1, 2, 3, 4,
 			      5, 6, 7, 8,
 			      9, 10, 11, 12,
 			      13, 14, 15, 16
 			     };
 
-	SquareMatrix<float, 4> B(data_4x4);
+	مربع_ماتریس<عائم, 4> B(داده_4x4);
 	B.uncorrelateCovariance<1>(1);
-	float data_B_check[16] = {1, 0, 3, 4,
+	عائم داده_B_check[16] = {1, 0, 3, 4,
 				  0, 6, 0, 0,
 				  9, 0, 11, 12,
 				  13, 0, 15, 16
 				 };
-	SquareMatrix<float, 4> B_check(data_B_check);
+	مربع_ماتریس<عائم, 4> B_check(داده_B_check);
 	EXPECT_EQ(B, B_check);
 
-	SquareMatrix<float, 4> C(data_4x4);
+	مربع_ماتریس<عائم, 4> C(داده_4x4);
 	C.uncorrelateCovariance<2>(1);
-	float data_C_check[16] = {1, 0, 0, 4,
+	عائم داده_C_check[16] = {1, 0, 0, 4,
 				  0, 6, 0, 0,
 				  0, 0, 11, 0,
 				  13, 0, 0, 16
 				 };
-	SquareMatrix<float, 4> C_check(data_C_check);
+	مربع_ماتریس<عائم, 4> C_check(داده_C_check);
 	EXPECT_EQ(C, C_check);
 
-	SquareMatrix<float, 4> D(data_4x4);
-	D.uncorrelateCovarianceSetVariance<2>(0, Vector2f{20, 21});
-	float data_D_check[16] = {20, 0, 0, 0,
+	مربع_ماتریس<عائم, 4> D(داده_4x4);
+	D.uncorrelate_Covariance_مجموعه_Variance<2>(0, Vector2f{20, 21});
+	عائم داده_D_check[16] = {20, 0, 0, 0,
 				  0, 21, 0, 0,
 				  0, 0, 11, 12,
 				  0, 0, 15, 16
 				 };
-	SquareMatrix<float, 4> D_check(data_D_check);
+	مربع_ماتریس<عائم, 4> D_check(داده_D_check);
 	EXPECT_EQ(D, D_check);
 
-	SquareMatrix<float, 4> E(data_4x4);
-	E.uncorrelateCovarianceSetVariance<3>(1, 33);
-	float data_E_check[16] = {1, 0, 0, 0,
+	مربع_ماتریس<عائم, 4> E(داده_4x4);
+	E.uncorrelate_Covariance_مجموعه_Variance<3>(1, 33);
+	عائم داده_E_check[16] = {1, 0, 0, 0,
 				  0, 33, 0, 0,
 				  0, 0, 33, 0,
 				  0, 0, 0, 33
 				 };
-	SquareMatrix<float, 4> E_check(data_E_check);
+	مربع_ماتریس<عائم, 4> E_check(داده_E_check);
 	EXPECT_EQ(E, E_check);
 
-	SquareMatrix<float, 4> A_block(data_4x4);
-	A_block.uncorrelateCovarianceBlock<2>(1);
-	float data_A_block_check[16] = {1, 0, 0, 4,
+	مربع_ماتریس<عائم, 4> A_بلوک(داده_4x4);
+	A_بلوک.uncorrelate_Covariance_بلوک<2>(1);
+	عائم داده_A_بلوک_check[16] = {1, 0, 0, 4,
 					0, 6, 7, 0,
 					0, 10, 11, 0,
 					13, 0, 0, 16
 				       };
-	SquareMatrix<float, 4> A_block_check(data_A_block_check);
-	EXPECT_EQ(A_block, A_block_check);
+	مربع_ماتریس<عائم, 4> A_بلوک_check(داده_A_بلوک_check);
+	EXPECT_EQ(A_بلوک, A_بلوک_check);
 
 	// test symmetric functions
-	SquareMatrix<float, 4> F(data_4x4);
-	F.makeBlockSymmetric<2>(1);
-	float data_F_check[16] = {1, 2, 3, 4,
+	مربع_ماتریس<عائم, 4> F(داده_4x4);
+	F.make_بلوک_متقارن<2>(1);
+	عائم داده_F_check[16] = {1, 2, 3, 4,
 				  5, 6, 8.5, 8,
 				  9, 8.5, 11, 12,
 				  13, 14, 15, 16
 				 };
-	SquareMatrix<float, 4> F_check(data_F_check);
+	مربع_ماتریس<عائم, 4> F_check(داده_F_check);
 	EXPECT_EQ(F, F_check);
-	EXPECT_TRUE(F.isBlockSymmetric<2>(1));
-	EXPECT_FALSE(F.isRowColSymmetric<2>(1));
+	EXPECT_TRUE(F.is_بلوک_متقارن<2>(1));
+	EXPECT_FALSE(F.is_ردیف_ستون_متقارن<2>(1));
 
-	SquareMatrix<float, 4> G(data_4x4);
-	G.makeRowColSymmetric<2>(1);
-	float data_G_check[16] = {1, 3.5, 6, 4,
+	مربع_ماتریس<عائم, 4> G(داده_4x4);
+	G.make_ردیف_ستون_متقارن<2>(1);
+	عائم داده_G_check[16] = {1, 3.5, 6, 4,
 				  3.5, 6, 8.5, 11,
 				  6, 8.5, 11, 13.5,
 				  13, 11, 13.5, 16
 				 };
-	SquareMatrix<float, 4> G_check(data_G_check);
+	مربع_ماتریس<عائم, 4> G_check(داده_G_check);
 	EXPECT_EQ(G, G_check);
-	EXPECT_TRUE(G.isBlockSymmetric<2>(1));
-	EXPECT_TRUE(G.isRowColSymmetric<2>(1));
+	EXPECT_TRUE(G.is_بلوک_متقارن<2>(1));
+	EXPECT_TRUE(G.is_ردیف_ستون_متقارن<2>(1));
 
-	SquareMatrix<float, 4> H(data_4x4);
-	H.makeBlockSymmetric<1>(1);
-	float data_H_check[16] = {1, 2, 3, 4,
+	مربع_ماتریس<عائم, 4> H(داده_4x4);
+	H.make_بلوک_متقارن<1>(1);
+	عائم داده_H_check[16] = {1, 2, 3, 4,
 				  5, 6, 7, 8,
 				  9, 10, 11, 12,
 				  13, 14, 15, 16
 				 };
-	SquareMatrix<float, 4> H_check(data_H_check);
+	مربع_ماتریس<عائم, 4> H_check(داده_H_check);
 	EXPECT_EQ(H, H_check);
-	EXPECT_TRUE(H.isBlockSymmetric<1>(1));
-	EXPECT_FALSE(H.isRowColSymmetric<1>(1));
+	EXPECT_TRUE(H.is_بلوک_متقارن<1>(1));
+	EXPECT_FALSE(H.is_ردیف_ستون_متقارن<1>(1));
 
-	SquareMatrix<float, 4> J(data_4x4);
-	J.makeRowColSymmetric<1>(1);
-	float data_J_check[16] = {1, 3.5, 3, 4,
+	مربع_ماتریس<عائم, 4> J(داده_4x4);
+	J.make_ردیف_ستون_متقارن<1>(1);
+	عائم داده_J_check[16] = {1, 3.5, 3, 4,
 				  3.5, 6, 8.5, 11,
 				  9, 8.5, 11, 12,
 				  13, 11, 15, 16
 				 };
-	SquareMatrix<float, 4> J_check(data_J_check);
+	مربع_ماتریس<عائم, 4> J_check(داده_J_check);
 	EXPECT_EQ(J, J_check);
-	EXPECT_TRUE(J.isBlockSymmetric<1>(1));
-	EXPECT_TRUE(J.isRowColSymmetric<1>(1));
-	EXPECT_FALSE(J.isBlockSymmetric<3>(1));
+	EXPECT_TRUE(J.is_بلوک_متقارن<1>(1));
+	EXPECT_TRUE(J.is_ردیف_ستون_متقارن<1>(1));
+	EXPECT_FALSE(J.is_بلوک_متقارن<3>(1));
 
-	float data_K[16] = {1, 2, 3, 4,
+	عائم داده_K[16] = {1, 2, 3, 4,
 			    2, 3, 4, 11,
 			    3, 4, 11, 12,
 			    4, 11, 15, 16
 			   };
-	SquareMatrix<float, 4> K(data_K);
-	EXPECT_FALSE(K.isRowColSymmetric<1>(2));
+	مربع_ماتریس<عائم, 4> K(داده_K);
+	EXPECT_FALSE(K.is_ردیف_ستون_متقارن<1>(2));
 
-	float data_L[16] = {1, 0, 0, 0,
+	عائم داده_L[16] = {1, 0, 0, 0,
 			    2, 3, 0, 0,
 			    3, 4, 11, 0,
 			    4, 11, 15, 16
 			   };
-	float data_L_check[16] = {1, 2, 3, 4,
+	عائم داده_L_check[16] = {1, 2, 3, 4,
 				  2, 3, 4, 11,
 				  3, 4, 11, 15,
 				  4, 11, 15, 16
 				 };
-	SquareMatrix<float, 4> L(data_L);
-	L.copyLowerToUpperTriangle();
-	SquareMatrix<float, 4> L_check(data_L_check);
+	مربع_ماتریس<عائم, 4> L(داده_L);
+	L.copy_پایینی_مقصد_فوقانی_Triangle();
+	مربع_ماتریس<عائم, 4> L_check(داده_L_check);
 	EXPECT_EQ(L, L_check);
 
-	float data_M[16] = {1, 2, 3, 4,
+	عائم داده_M[16] = {1, 2, 3, 4,
 			    0, 3, 4, 11,
 			    0, 0, 11, 15,
 			    0, 0, 0, 16
 			   };
-	SquareMatrix<float, 4> M(data_M);
-	M.copyUpperToLowerTriangle();
+	مربع_ماتریس<عائم, 4> M(داده_M);
+	M.copy_فوقانی_مقصد_پایینی_Triangle();
 	EXPECT_EQ(M, L_check);
 }

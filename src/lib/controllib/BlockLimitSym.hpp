@@ -37,22 +37,22 @@
  * Controller library code
  */
 
-#pragma once
+#رهنمود once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
 /**
@@ -60,21 +60,21 @@ namespace control
  * Same as limiter but with only a max, is used for
  * upper limit of +max, and lower limit of -max
  */
-class __EXPORT BlockLimitSym : public Block
+صنف __EXPORT بلوک_حد_Sym : عام بلوک
 {
-public:
+عام:
 // methods
-	BlockLimitSym(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_max(this, "MAX")
+	بلوک_حد_Sym(Super_بلوک *والد, ثابت حرف *name) :
+		بلوک(والد, name),
+		_max(هذا, "MAX")
 	{}
-	virtual ~BlockLimitSym() = default;
-	float update(float input);
+	مجازی ~بلوک_حد_Sym() = افتراضي;
+	عائم update(عائم درون_داد);
 // accessors
-	float getMax() { return _max.get(); }
-protected:
-// attributes
-	control::BlockParamFloat _max;
+	عائم getMax() { أرجع _max.get(); }
+محمي:
+//صفات
+	control::بلوک_Param_Float _max;
 };
 
 } // namespace control

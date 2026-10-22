@@ -31,128 +31,128 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
+#ضمن <gtest/gtest.h>
 
-#include <atomic>
-#include <chrono>
-#include <cstring>
-#include <string>
-#include <thread>
+#ضمن <atomic>
+#ضمن <chrono>
+#ضمن <cstring>
+#ضمن <string>
+#ضمن <thread>
 
-#include "perf_counter.h"
+#ضمن "perf_counter.h"
 
-namespace
+نطاق
 {
 
-bool wait_until(const std::atomic<bool> &condition)
+منطقي wait_until(ثابت std::atomic<منطقي> &condition)
 {
-	const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+	ثابت خودکار deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
 
-	while (!condition.load() && std::chrono::steady_clock::now() < deadline) {
+	طالما (!condition.بارگیری() && std::chrono::steady_clock::now() < deadline) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 
-	return condition.load();
+	أرجع condition.بارگیری();
 }
 
 } // namespace
 
-TEST(PerfCounter, IterateLineContent)
+TEST(PerfCounter, Iterate_سطر_Content)
 {
-	perf_counter_t counter = perf_alloc(PC_COUNT, "test_perf_line_content");
-	ASSERT_NE(counter, nullptr);
+	perf_counter_t counter = perf_alloc(PC_شمار, "test_perf_line_content");
+	ASSERT_NE(counter, اشاره_تهی);
 
-	perf_count(counter);
-	perf_count(counter);
-	perf_count(counter);
+	perf_شمار(counter);
+	perf_شمار(counter);
+	perf_شمار(counter);
 
-	struct Context {
-		std::string line;
+	بنية Context {
+		std::string سطر;
 	} context;
 
-	perf_iterate_all([](const char *counter_line, void *user) {
-		if (strstr(counter_line, "test_perf_line_content") != nullptr) {
-			static_cast<Context *>(user)->line = counter_line;
+	perf_iterate_all([](ثابت حرف *counter_سطر, فراغ *user) {
+		إذا (جستجوی_رشته(counter_سطر, "test_perf_line_content") != اشاره_تهی) {
+			static_cast<Context *>(user)->سطر = counter_سطر;
 		}
 	}, &context);
 
-	EXPECT_EQ(context.line, "test_perf_line_content: 3 events");
+	EXPECT_EQ(context.سطر, "test_perf_line_content: 3 events");
 
 	perf_free(counter);
 }
 
-TEST(PerfCounter, ConcurrentAllocDoesNotBlockOnSlowCallback)
+TEST(PerfCounter, Concurrent_Alloc_Does_Not_بلوک_On_Slow_Callback)
 {
-	perf_counter_t counter = perf_alloc(PC_COUNT, "test_perf_slow_callback");
-	ASSERT_NE(counter, nullptr);
+	perf_counter_t counter = perf_alloc(PC_شمار, "test_perf_slow_callback");
+	ASSERT_NE(counter, اشاره_تهی);
 
 	// while the first callback is running, another thread must be able to
 	// allocate and free a counter without waiting for the iteration to finish
-	struct Context {
-		std::atomic<bool> first{true};
-		std::atomic<bool> alloc_done{false};
-		std::atomic<bool> alloc_succeeded{false};
+	بنية Context {
+		std::atomic<منطقي> first{درست};
+		std::atomic<منطقي> alloc_انجامشده{خطأ};
+		std::atomic<منطقي> alloc_succeeded{خطأ};
 		std::thread alloc_thread;
 	} context;
 
-	perf_iterate_all([](const char *, void *user) {
+	perf_iterate_all([](ثابت حرف *, فراغ *user) {
 		Context *ctx = static_cast<Context *>(user);
 
-		if (ctx->first.exchange(false)) {
+		إذا (ctx->first.exchange(خطأ)) {
 			ctx->alloc_thread = std::thread([ctx]() {
-				perf_counter_t other = perf_alloc(PC_COUNT, "test_perf_concurrent_alloc");
-				ctx->alloc_succeeded.store(other != nullptr);
+				perf_counter_t other = perf_alloc(PC_شمار, "test_perf_concurrent_alloc");
+				ctx->alloc_succeeded.store(other != اشاره_تهی);
 				perf_free(other);
-				ctx->alloc_done.store(true);
+				ctx->alloc_انجامشده.store(درست);
 			});
 
-			EXPECT_TRUE(wait_until(ctx->alloc_done));
+			EXPECT_TRUE(wait_until(ctx->alloc_انجامشده));
 		}
 	}, &context);
 
-	if (context.alloc_thread.joinable()) {
+	إذا (context.alloc_thread.joinable()) {
 		context.alloc_thread.join();
 	}
 
-	EXPECT_TRUE(context.alloc_done.load());
-	EXPECT_TRUE(context.alloc_succeeded.load());
+	EXPECT_TRUE(context.alloc_انجامشده.بارگیری());
+	EXPECT_TRUE(context.alloc_succeeded.بارگیری());
 
 	perf_free(counter);
 }
 
 TEST(PerfCounter, AllocFromCallbackDoesNotDeadlock)
 {
-	perf_counter_t counter = perf_alloc(PC_COUNT, "test_perf_callback_alloc");
-	ASSERT_NE(counter, nullptr);
+	perf_counter_t counter = perf_alloc(PC_شمار, "test_perf_callback_alloc");
+	ASSERT_NE(counter, اشاره_تهی);
 
 	// calling perf_alloc() from inside the callback self-deadlocked when the
 	// iteration held the mutex; run the iteration on its own thread so a
 	// regression fails the test instead of hanging it
-	struct Context {
-		std::atomic<bool> first{true};
-		std::atomic<bool> done{false};
-		perf_counter_t allocated{nullptr};
+	بنية Context {
+		std::atomic<منطقي> first{درست};
+		std::atomic<منطقي> انجامشده{خطأ};
+		perf_counter_t allocated{اشاره_تهی};
 	} context;
 
 	std::thread iterate_thread([&]() {
-		perf_iterate_all([](const char *, void *user) {
+		perf_iterate_all([](ثابت حرف *, فراغ *user) {
 			Context *ctx = static_cast<Context *>(user);
 
-			if (ctx->first.exchange(false)) {
-				ctx->allocated = perf_alloc(PC_COUNT, "test_perf_callback_alloc_inner");
+			إذا (ctx->first.exchange(خطأ)) {
+				ctx->allocated = perf_alloc(PC_شمار, "test_perf_callback_alloc_inner");
 			}
 		}, &context);
 
-		context.done.store(true);
+		context.انجامشده.store(درست);
 	});
 
-	if (!wait_until(context.done)) {
+	إذا (!wait_until(context.انجامشده)) {
 		iterate_thread.detach();
 		FAIL() << "perf_alloc() from the callback deadlocked";
 	}
 
 	iterate_thread.join();
-	EXPECT_NE(context.allocated, nullptr);
+	EXPECT_NE(context.allocated, اشاره_تهی);
 
 	perf_free(context.allocated);
 	perf_free(counter);
@@ -161,156 +161,156 @@ TEST(PerfCounter, AllocFromCallbackDoesNotDeadlock)
 TEST(PerfCounter, FreeDuringIterationIsDeferred)
 {
 	// allocation order puts counter_b at the list head, so it is visited first
-	perf_counter_t counter_a = perf_alloc(PC_COUNT, "test_perf_free_defer_a");
-	perf_counter_t counter_b = perf_alloc(PC_COUNT, "test_perf_free_defer_b");
-	ASSERT_NE(counter_a, nullptr);
-	ASSERT_NE(counter_b, nullptr);
+	perf_counter_t counter_a = perf_alloc(PC_شمار, "test_perf_free_defer_a");
+	perf_counter_t counter_b = perf_alloc(PC_شمار, "test_perf_free_defer_b");
+	ASSERT_NE(counter_a, اشاره_تهی);
+	ASSERT_NE(counter_b, اشاره_تهی);
 
-	struct Context {
+	بنية Context {
 		perf_counter_t counter_a;
-		std::atomic<bool> free_done{false};
+		std::atomic<منطقي> free_انجامشده{خطأ};
 		std::thread free_thread;
-		int lines_a{0};
+		صحيح سطرها_a{0};
 	} context{counter_a};
 
-	perf_iterate_all([](const char *counter_line, void *user) {
+	perf_iterate_all([](ثابت حرف *counter_سطر, فراغ *user) {
 		Context *ctx = static_cast<Context *>(user);
 
-		if (!ctx->free_thread.joinable() && strstr(counter_line, "test_perf_free_defer_b") != nullptr) {
+		إذا (!ctx->free_thread.joinable() && جستجوی_رشته(counter_سطر, "test_perf_free_defer_b") != اشاره_تهی) {
 			// free a not-yet-visited counter while the iteration is running
 			ctx->free_thread = std::thread([ctx]() {
 				perf_free(ctx->counter_a);
-				ctx->free_done.store(true);
+				ctx->free_انجامشده.store(درست);
 			});
 
-			EXPECT_TRUE(wait_until(ctx->free_done));
+			EXPECT_TRUE(wait_until(ctx->free_انجامشده));
 		}
 
-		if (strstr(counter_line, "test_perf_free_defer_a") != nullptr) {
-			ctx->lines_a++;
+		إذا (جستجوی_رشته(counter_سطر, "test_perf_free_defer_a") != اشاره_تهی) {
+			ctx->سطرها_a++;
 		}
 	}, &context);
 
-	if (context.free_thread.joinable()) {
+	إذا (context.free_thread.joinable()) {
 		context.free_thread.join();
 	}
 
-	EXPECT_TRUE(context.free_done.load());
-	EXPECT_EQ(context.lines_a, 0);
+	EXPECT_TRUE(context.free_انجامشده.بارگیری());
+	EXPECT_EQ(context.سطرها_a, 0);
 
 	// the freed entry must not reappear after deferred cleanup
-	struct CountContext {
-		int lines_a{0};
-	} count_context;
+	بنية شمار_Context {
+		صحيح سطرها_a{0};
+	} شمار_context;
 
-	perf_iterate_all([](const char *counter_line, void *user) {
-		if (strstr(counter_line, "test_perf_free_defer_a") != nullptr) {
-			static_cast<CountContext *>(user)->lines_a++;
+	perf_iterate_all([](ثابت حرف *counter_سطر, فراغ *user) {
+		إذا (جستجوی_رشته(counter_سطر, "test_perf_free_defer_a") != اشاره_تهی) {
+			static_cast<شمار_Context *>(user)->سطرها_a++;
 		}
-	}, &count_context);
+	}, &شمار_context);
 
-	EXPECT_EQ(count_context.lines_a, 0);
+	EXPECT_EQ(شمار_context.سطرها_a, 0);
 
 	perf_free(counter_b);
 }
 
-TEST(PerfCounter, FreeIsDeferredUntilLastOverlappingIterationEnds)
+TEST(PerfCounter, Free_Is_Deferred_Until_آخرین_Overlapping_Iteration_دوسر)
 {
 	// Both iterators stop on counter_b with counter_a cached as their next entry.
-	perf_counter_t counter_a = perf_alloc(PC_COUNT, "test_perf_overlap_a");
-	perf_counter_t counter_b = perf_alloc(PC_COUNT, "test_perf_overlap_b");
-	ASSERT_NE(counter_a, nullptr);
-	ASSERT_NE(counter_b, nullptr);
+	perf_counter_t counter_a = perf_alloc(PC_شمار, "test_perf_overlap_a");
+	perf_counter_t counter_b = perf_alloc(PC_شمار, "test_perf_overlap_b");
+	ASSERT_NE(counter_a, اشاره_تهی);
+	ASSERT_NE(counter_b, اشاره_تهی);
 
-	struct IterateContext {
-		std::atomic<bool> entered{false};
-		std::atomic<bool> release{false};
-		std::atomic<bool> timed_out{false};
-		int lines_a{0};
-		int replacement_lines{0};
-	} first_context, second_context;
+	بنية IterateContext {
+		std::atomic<منطقي> entered{خطأ};
+		std::atomic<منطقي> release{خطأ};
+		std::atomic<منطقي> timed_بیرون{خطأ};
+		صحيح سطرها_a{0};
+		صحيح replacement_سطرها{0};
+	} اولی_context, دومی_context;
 
-	perf_callback callback = [](const char *counter_line, void *user) {
+	perf_callback callback = [](ثابت حرف *counter_سطر, فراغ *user) {
 		IterateContext *ctx = static_cast<IterateContext *>(user);
 
-		if (strstr(counter_line, "test_perf_overlap_b") != nullptr) {
-			ctx->entered.store(true);
+		إذا (جستجوی_رشته(counter_سطر, "test_perf_overlap_b") != اشاره_تهی) {
+			ctx->entered.store(درست);
 
-			if (!wait_until(ctx->release)) {
-				ctx->timed_out.store(true);
+			إذا (!wait_until(ctx->release)) {
+				ctx->timed_بیرون.store(درست);
 			}
 		}
 
-		if (strstr(counter_line, "test_perf_overlap_a") != nullptr) {
-			ctx->lines_a++;
+		إذا (جستجوی_رشته(counter_سطر, "test_perf_overlap_a") != اشاره_تهی) {
+			ctx->سطرها_a++;
 		}
 
-		if (strstr(counter_line, "test_perf_overlap_replacement") != nullptr) {
-			ctx->replacement_lines++;
+		إذا (جستجوی_رشته(counter_سطر, "test_perf_overlap_replacement") != اشاره_تهی) {
+			ctx->replacement_سطرها++;
 		}
 	};
 
-	std::thread first_thread([&]() { perf_iterate_all(callback, &first_context); });
+	std::thread اولی_thread([&]() { perf_iterate_all(callback, &اولی_context); });
 
-	if (!wait_until(first_context.entered)) {
-		first_context.release.store(true);
-		first_thread.join();
+	إذا (!wait_until(اولی_context.entered)) {
+		اولی_context.release.store(درست);
+		اولی_thread.join();
 		perf_free(counter_a);
 		perf_free(counter_b);
 		FAIL() << "first iterator did not reach the blocking callback";
 	}
 
-	std::thread second_thread([&]() { perf_iterate_all(callback, &second_context); });
+	std::thread دومی_thread([&]() { perf_iterate_all(callback, &دومی_context); });
 
-	if (!wait_until(second_context.entered)) {
-		first_context.release.store(true);
-		second_context.release.store(true);
-		first_thread.join();
-		second_thread.join();
+	إذا (!wait_until(دومی_context.entered)) {
+		اولی_context.release.store(درست);
+		دومی_context.release.store(درست);
+		اولی_thread.join();
+		دومی_thread.join();
 		perf_free(counter_a);
 		perf_free(counter_b);
 		FAIL() << "second iterator did not reach the blocking callback";
 	}
 
-	std::atomic<bool> free_done{false};
+	std::atomic<منطقي> free_انجامشده{خطأ};
 	std::thread free_thread([&]() {
 		perf_free(counter_a);
-		free_done.store(true);
+		free_انجامشده.store(درست);
 	});
 
-	if (!wait_until(free_done)) {
-		first_context.release.store(true);
-		second_context.release.store(true);
-		first_thread.join();
-		second_thread.join();
+	إذا (!wait_until(free_انجامشده)) {
+		اولی_context.release.store(درست);
+		دومی_context.release.store(درست);
+		اولی_thread.join();
+		دومی_thread.join();
 		free_thread.join();
 		perf_free(counter_b);
 		FAIL() << "perf_free() blocked on active callbacks";
 	}
 
 	free_thread.join();
-	first_context.release.store(true);
-	first_thread.join();
+	اولی_context.release.store(درست);
+	اولی_thread.join();
 
 	// If the first iterator incorrectly reclaimed counter_a, a same-sized
 	// allocation is likely to reuse the entry cached by the second iterator.
-	perf_counter_t replacement = perf_alloc(PC_COUNT, "test_perf_overlap_replacement");
+	perf_counter_t replacement = perf_alloc(PC_شمار, "test_perf_overlap_replacement");
 
-	if (replacement == nullptr) {
-		second_context.release.store(true);
-		second_thread.join();
+	إذا (replacement == اشاره_تهی) {
+		دومی_context.release.store(درست);
+		دومی_thread.join();
 		perf_free(counter_b);
 		FAIL() << "replacement counter allocation failed";
 	}
 
-	second_context.release.store(true);
-	second_thread.join();
+	دومی_context.release.store(درست);
+	دومی_thread.join();
 
-	EXPECT_FALSE(first_context.timed_out.load());
-	EXPECT_FALSE(second_context.timed_out.load());
-	EXPECT_EQ(first_context.lines_a, 0);
-	EXPECT_EQ(second_context.lines_a, 0);
-	EXPECT_EQ(second_context.replacement_lines, 0);
+	EXPECT_FALSE(اولی_context.timed_بیرون.بارگیری());
+	EXPECT_FALSE(دومی_context.timed_بیرون.بارگیری());
+	EXPECT_EQ(اولی_context.سطرها_a, 0);
+	EXPECT_EQ(دومی_context.سطرها_a, 0);
+	EXPECT_EQ(دومی_context.replacement_سطرها, 0);
 
 	perf_free(replacement);
 	perf_free(counter_b);

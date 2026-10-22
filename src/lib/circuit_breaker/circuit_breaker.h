@@ -37,8 +37,8 @@
  * Circuit breaker functionality.
  */
 
-#ifndef CIRCUIT_BREAKER_H_
-#define CIRCUIT_BREAKER_H_
+#اگر_تعریف_نشده CIRCUIT_BREAKER_H_
+#تعریف_کن CIRCUIT_BREAKER_H_
 
 /* SAFETY WARNING  --  SAFETY WARNING  --  SAFETY WARNING
  *
@@ -50,24 +50,24 @@
  * AND MAY DISABLE CHECKS THAT ARE VITAL FOR SAFE FLIGHT.
  */
 
-#define CBRK_BUZZER_KEY         782097
-#define CBRK_SUPPLY_CHK_KEY	894281
-#define CBRK_FLIGHTTERM_KEY	121212
-#define CBRK_USB_CHK_KEY	197848
-#define CBRK_VTOLARMING_KEY	159753
-#define CBRK_UAVCAN_FW_KEY	5318008
+#تعریف_کن CBRK_BUZZER_کلید         782097
+#تعریف_کن CBRK_SUPPLY_CHK_کلید	894281
+#تعریف_کن CBRK_FLIGHTTERM_کلید	121212
+#تعریف_کن CBRK_USB_CHK_کلید	197848
+#تعریف_کن CBRK_VTOLARMING_کلید	159753
+#تعریف_کن CBRK_UAVCAN_FW_کلید	5318008
 
-#include <stdint.h>
+#ضمن <stdint.h>
 
 __BEGIN_DECLS
 
-extern "C" __EXPORT bool circuit_breaker_enabled(const char *breaker, int32_t magic);
+خارجي "C" __EXPORT bool circuit_breaker_enabled(ثابت حرف *breaker, int32_t magic);
 
-static inline bool circuit_breaker_enabled_by_val(int32_t breaker_val, int32_t magic)
+ساكن مضمن bool circuit_breaker_enabled_by_val(int32_t breaker_val, int32_t magic)
 {
-	return breaker_val == magic;
+	أرجع breaker_val == magic;
 }
 
 __END_DECLS
 
-#endif /* CIRCUIT_BREAKER_H_ */
+#پایان_اگر /* CIRCUIT_BREAKER_H_ */

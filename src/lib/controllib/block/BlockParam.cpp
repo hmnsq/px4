@@ -37,108 +37,108 @@
  * Controller library code
  */
 
-#include "Block.hpp"
-#include "BlockParam.hpp"
+#ضمن "Block.hpp"
+#ضمن "BlockParam.hpp"
 
-#include <cstdio>
-#include <cstring>
+#ضمن <cstdio>
+#ضمن <cstring>
 
-#include <containers/List.hpp>
+#ضمن <containers/List.hpp>
 
-#include <px4_platform_common/log.h>
+#ضمن <px4_platform_common/log.h>
 
-namespace control
+نطاق control
 {
 
-BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_prefix)
+بلوک_Param_پایه::بلوک_Param_پایه(بلوک *والد, ثابت حرف *name, منطقي والد_پیشوند)
 {
-	char fullname[blockNameLengthMax];
+	حرف fullname[بلوک_Name_درازی_Max];
 
-	if (parent == nullptr) {
-		strncpy(fullname, name, blockNameLengthMax - 1);
-		fullname[sizeof(fullname) - 1] = '\0';
+	إذا (والد == اشاره_تهی) {
+		strncpy(fullname, name, بلوک_Name_درازی_Max - 1);
+		fullname[حجم(fullname) - 1] = '\0';
 
-	} else {
-		char parentName[blockNameLengthMax];
-		parent->getName(parentName, blockNameLengthMax);
+	} وإلا {
+		حرف والد_Name[بلوک_Name_درازی_Max];
+		والد->getName(والد_Name, بلوک_Name_درازی_Max);
 
-		if (strcmp(name, "") == 0) {
-			strncpy(fullname, parentName, blockNameLengthMax);
+		إذا (strcmp(name, "") == 0) {
+			strncpy(fullname, والد_Name, بلوک_Name_درازی_Max);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[حجم(fullname) - 1] = '\0';
 
-		} else if (parent_prefix) {
-			if (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
+		} وإلا إذا (والد_پیشوند) {
+			إذا (snprintf(fullname, بلوک_Name_درازی_Max, "%s_%s", والد_Name, name) >= بلوک_Name_درازی_Max) {
 				PX4_ERR("param too long: %s", name);
 			}
 
-		} else {
-			strncpy(fullname, name, blockNameLengthMax);
+		} وإلا {
+			strncpy(fullname, name, بلوک_Name_درازی_Max);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[حجم(fullname) - 1] = '\0';
 		}
 
-		parent->getParams().add(this);
+		والد->getParams().جمع_کن(هذا);
 	}
 
-	_handle = param_find(fullname);
+	_handle = param_پیدا_کن(fullname);
 
-	if (_handle == PARAM_INVALID) {
+	إذا (_handle == PARAM_INVALID) {
 		PX4_ERR("error finding param: %s", fullname);
 	}
 };
 
-template <>
-BlockParam<bool>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+قالب <>
+بلوک_Param<منطقي>::بلوک_Param(بلوک *بلوک_2, ثابت حرف *name, منطقي والد_پیشوند) :
+	بلوک_Param_پایه(بلوک_2, name, والد_پیشوند),
 	_val()
 {
 	update();
 }
 
-template <>
-bool BlockParam<bool>::update()
+قالب <>
+منطقي بلوک_Param<منطقي>::update()
 {
 	int32_t tmp = 0;
-	int ret = param_get(_handle, &tmp);
+	صحيح ret = param_get(_handle, &tmp);
 
-	if (tmp == 1) {
-		_val = true;
+	إذا (tmp == 1) {
+		_val = درست;
 
-	} else {
-		_val = false;
+	} وإلا {
+		_val = خطأ;
 	}
 
-	return (ret == PX4_OK);
+	أرجع (ret == PX4_OK);
 }
 
-template <>
-BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+قالب <>
+بلوک_Param<int32_t>::بلوک_Param(بلوک *بلوک_2, ثابت حرف *name, منطقي والد_پیشوند) :
+	بلوک_Param_پایه(بلوک_2, name, والد_پیشوند),
 	_val()
 {
 	update();
 }
 
-template <>
-BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+قالب <>
+بلوک_Param<عائم>::بلوک_Param(بلوک *بلوک_2, ثابت حرف *name, منطقي والد_پیشوند) :
+	بلوک_Param_پایه(بلوک_2, name, والد_پیشوند),
 	_val()
 {
 	update();
 }
 
-template <>
-BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_prefix, int32_t &extern_val) :
-	BlockParamBase(block, name, parent_prefix),
+قالب <>
+بلوک_Param<int32_t &>::بلوک_Param(بلوک *بلوک_2, ثابت حرف *name, منطقي والد_پیشوند, int32_t &extern_val) :
+	بلوک_Param_پایه(بلوک_2, name, والد_پیشوند),
 	_val(extern_val)
 {
 	update();
 }
 
-template <>
-BlockParam<float &>::BlockParam(Block *block, const char *name, bool parent_prefix, float &extern_val) :
-	BlockParamBase(block, name, parent_prefix),
+قالب <>
+بلوک_Param<عائم &>::بلوک_Param(بلوک *بلوک_2, ثابت حرف *name, منطقي والد_پیشوند, عائم &extern_val) :
+	بلوک_Param_پایه(بلوک_2, name, والد_پیشوند),
 	_val(extern_val)
 {
 	update();
