@@ -88,9 +88,9 @@ public:
 // accessors
 	void setU(float u) {_u = u;}
 	void reset() { _initialized = false; };
-	float getU() {return _u;}
-	float getLP() {return _lowPass.getFCut();}
-	float getO() { return _lowPass.getState(); }
+	float getU() {返回 _u;}
+	float getLP() {返回 _lowPass.getFCut();}
+	float getO() { 返回 _lowPass.getState(); }
 protected:
 // attributes
 	float _u; /**< previous input */

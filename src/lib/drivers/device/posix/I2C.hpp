@@ -42,7 +42,7 @@
 #include "../CDev.hpp"
 #include <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#如果 defined(CONFIG_I2C)
 
 struct I2CSPIDriverConfig;
 
@@ -63,7 +63,7 @@ public:
 	I2C(I2C &&) = delete;
 	I2C &operator=(I2C &&) = delete;
 
-	virtual int	init() override;
+	virtual 整数	init() override;
 
 protected:
 	/**
@@ -81,14 +81,14 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
+	I2C(uint8_t device_type, const char *name, const 整数 bus, const uint16_t address, const uint32_t frequency);
 	I2C(const I2CSPIDriverConfig &config);
 	virtual ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	virtual 整数	probe() { 返回 PX4_OK; }
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -102,10 +102,10 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	整数		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
 
 private:
-	int			_fd{-1};
+	整数			_fd{-1};
 
 };
 

@@ -66,7 +66,7 @@ void Magnetometer::set_device_id(uint32_t device_id)
 
 void Magnetometer::set_device_id(uint32_t device_id, bool external)
 {
-	if (_device_id != device_id || _external != external) {
+	如果 (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -81,32 +81,32 @@ void Magnetometer::set_device_id(uint32_t device_id, bool external)
 void Magnetometer::SensorCorrectionsUpdate(bool force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	如果 (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		如果 (_device_id == 0) {
+			返回;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		如果 (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.mag_device_ids[i] == _device_id) {
+			为 (整数 i = 0; i < MAX_SENSOR_COUNT; i++) {
+				如果 (corrections.mag_device_ids[i] == _device_id) {
 					switch (i) {
 					case 0:
 						_thermal_offset = Vector3f{corrections.mag_offset_0};
-						return;
+						返回;
 					case 1:
 						_thermal_offset = Vector3f{corrections.mag_offset_1};
-						return;
+						返回;
 					case 2:
 						_thermal_offset = Vector3f{corrections.mag_offset_2};
-						return;
+						返回;
 					case 3:
 						_thermal_offset = Vector3f{corrections.mag_offset_3};
-						return;
+						返回;
 					}
 				}
 			}
@@ -119,37 +119,37 @@ void Magnetometer::SensorCorrectionsUpdate(bool force)
 
 bool Magnetometer::set_offset(const Vector3f &offset)
 {
-	if (Vector3f(_offset - offset).longerThan(0.005f)) {
-		if (offset.isAllFinite()) {
+	如果 (Vector3f(_offset - offset).longerThan(0.005f)) {
+		如果 (offset.isAllFinite()) {
 			_offset = offset;
 			_calibration_count++;
-			return true;
+			返回 true;
 		}
 	}
 
-	return false;
+	返回 false;
 }
 
 bool Magnetometer::set_scale(const Vector3f &scale)
 {
-	if (Vector3f(_scale.diag() - scale).longerThan(0.01f)) {
-		if (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
+	如果 (Vector3f(_scale.diag() - scale).longerThan(0.01f)) {
+		如果 (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
 			_scale(0, 0) = scale(0);
 			_scale(1, 1) = scale(1);
 			_scale(2, 2) = scale(2);
 
 			_calibration_count++;
-			return true;
+			返回 true;
 		}
 	}
 
-	return false;
+	返回 false;
 }
 
 bool Magnetometer::set_offdiagonal(const Vector3f &offdiagonal)
 {
-	if (Vector3f(Vector3f{_scale(0, 1), _scale(0, 2), _scale(1, 2)} - offdiagonal).longerThan(0.01f)) {
-		if (offdiagonal.isAllFinite()) {
+	如果 (Vector3f(Vector3f{_scale(0, 1), _scale(0, 2), _scale(1, 2)} - offdiagonal).longerThan(0.01f)) {
+		如果 (offdiagonal.isAllFinite()) {
 
 			_scale(0, 1) = offdiagonal(0);
 			_scale(1, 0) = offdiagonal(0);
@@ -161,19 +161,19 @@ bool Magnetometer::set_offdiagonal(const Vector3f &offdiagonal)
 			_scale(2, 1) = offdiagonal(2);
 
 			_calibration_count++;
-			return true;
+			返回 true;
 		}
 	}
 
-	return false;
+	返回 false;
 }
 
 void Magnetometer::set_rotation(const Rotation rotation)
 {
-	if (rotation < ROTATION_MAX) {
+	如果 (rotation < ROTATION_MAX) {
 		_rotation_enum = rotation;
 
-	} else {
+	} 否则 {
 		// invalid rotation, resetting
 		_rotation_enum = ROTATION_NONE;
 	}
@@ -203,36 +203,36 @@ void Magnetometer::set_custom_rotation(const Eulerf &rotation)
 	// values properly (i.e. finding Vehicle's true Forward-Right-Down frame in a user's perspective)
 }
 
-bool Magnetometer::set_calibration_index(int calibration_index)
+bool Magnetometer::set_calibration_index(整数 calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	如果 ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
 		_calibration_index = calibration_index;
-		return true;
+		返回 true;
 	}
 
-	return false;
+	返回 false;
 }
 
 void Magnetometer::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	如果 (_device_id == 0) {
+		返回;
 	}
 
 	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	如果 (_calibration_index == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
+	} 否则 {
 		ParametersLoad();
 	}
 }
 
 bool Magnetometer::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	如果 (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
 		// CAL_MAGx_ROT
 		int32_t rotation_value = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
 
@@ -240,14 +240,14 @@ bool Magnetometer::ParametersLoad()
 		const float euler_pitch_deg = GetCalibrationParamFloat(SensorString(), "PITCH", _calibration_index);
 		const float euler_yaw_deg = GetCalibrationParamFloat(SensorString(), "YAW", _calibration_index);
 
-		if (_external) {
-			if (((rotation_value >= ROTATION_MAX) && (rotation_value != ROTATION_CUSTOM)) || (rotation_value < 0)) {
+		如果 (_external) {
+			如果 (((rotation_value >= ROTATION_MAX) && (rotation_value != ROTATION_CUSTOM)) || (rotation_value < 0)) {
 				// invalid rotation, resetting
 				rotation_value = ROTATION_NONE;
 			}
 
 			// if CAL_MAGx_{ROLL,PITCH,YAW} manually set then CAL_MAGx_ROT needs to be ROTATION_CUSTOM
-			if ((rotation_value != ROTATION_CUSTOM)
+			如果 ((rotation_value != ROTATION_CUSTOM)
 			    && ((fabsf(euler_roll_deg) > FLT_EPSILON)
 				|| (fabsf(euler_pitch_deg) > FLT_EPSILON)
 				|| (fabsf(euler_yaw_deg) > FLT_EPSILON))) {
@@ -257,7 +257,7 @@ bool Magnetometer::ParametersLoad()
 			}
 
 			// Handle custom specified euler angle
-			if (rotation_value == ROTATION_CUSTOM) {
+			如果 (rotation_value == ROTATION_CUSTOM) {
 
 				const matrix::Eulerf rotation_custom_euler{
 					math::radians(euler_roll_deg),
@@ -266,11 +266,11 @@ bool Magnetometer::ParametersLoad()
 
 				set_custom_rotation(rotation_custom_euler);
 
-			} else {
+			} 否则 {
 				set_rotation(static_cast<Rotation>(rotation_value));
 			}
 
-		} else {
+		} 否则 {
 			// internal sensors follow board rotation
 			set_rotation(GetBoardRotation());
 		}
@@ -278,11 +278,11 @@ bool Magnetometer::ParametersLoad()
 		// CAL_MAGx_PRIO
 		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		如果 ((_priority < 0) || (_priority > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
 			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			如果 (_priority != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
 					_calibration_index, _priority);
 
@@ -304,18 +304,18 @@ bool Magnetometer::ParametersLoad()
 		// CAL_MAGx_COMP{X,Y,Z}
 		_power_compensation = GetCalibrationParamsVector3f(SensorString(), "COMP", _calibration_index);
 
-		return true;
+		返回 true;
 	}
 
-	return false;
+	返回 false;
 }
 
 void Magnetometer::Reset()
 {
-	if (_external) {
+	如果 (_external) {
 		set_rotation(ROTATION_NONE);
 
-	} else {
+	} 否则 {
 		// internal sensors follow board rotation
 		set_rotation(GetBoardRotation());
 	}
@@ -333,25 +333,25 @@ void Magnetometer::Reset()
 	_calibration_count = 0;
 }
 
-bool Magnetometer::ParametersSave(int desired_calibration_index, bool force)
+bool Magnetometer::ParametersSave(整数 desired_calibration_index, bool force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	如果 (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
 		_calibration_index = desired_calibration_index;
 
-	} else if (!force || (_calibration_index < 0)
+	} 否则 如果 (!force || (_calibration_index < 0)
 		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
 		int8_t calibration_index_prev = _calibration_index;
 		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		如果 (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
 				 calibration_index_prev, _calibration_index);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	如果 (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
 		// save calibration
 		bool success = true;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
@@ -366,10 +366,10 @@ bool Magnetometer::ParametersSave(int desired_calibration_index, bool force)
 
 		success &= SetCalibrationParamsVector3f(SensorString(), "COMP", _calibration_index, _power_compensation);
 
-		if (_external) {
+		如果 (_external) {
 			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, (int32_t)_rotation_enum);
 
-		} else {
+		} 否则 {
 			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, -1); // internal
 		}
 
@@ -377,15 +377,15 @@ bool Magnetometer::ParametersSave(int desired_calibration_index, bool force)
 		success &= SetCalibrationParam(SensorString(), "PITCH", _calibration_index, math::degrees(_rotation_custom_euler(1)));
 		success &= SetCalibrationParam(SensorString(), "YAW", _calibration_index, math::degrees(_rotation_custom_euler(2)));
 
-		return success;
+		返回 success;
 	}
 
-	return false;
+	返回 false;
 }
 
 void Magnetometer::PrintStatus()
 {
-	if (external()) {
+	如果 (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Ext ROT: %d\n",
 			     SensorString(), device_id(), enabled(),
@@ -393,7 +393,7 @@ void Magnetometer::PrintStatus()
 			     (double)_scale(0, 0), (double)_scale(1, 1), (double)_scale(2, 2),
 			     rotation_enum());
 
-	} else {
+	} 否则 {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Internal\n",
 			     SensorString(), device_id(), enabled(),
@@ -401,7 +401,7 @@ void Magnetometer::PrintStatus()
 			     (double)_scale(0, 0), (double)_scale(1, 1), (double)_scale(2, 2));
 	}
 
-#if defined(DEBUG_BUILD)
+#如果 defined(DEBUG_BUILD)
 	_scale.print();
 #endif // DEBUG_BUILD
 }

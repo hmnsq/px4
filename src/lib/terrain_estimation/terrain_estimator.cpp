@@ -55,7 +55,7 @@ TerrainEstimator::TerrainEstimator() :
 
 bool TerrainEstimator::is_distance_valid(float distance)
 {
-	return (distance < 40.0f && distance > 0.00001f);
+	返回 (distance < 40.0f && distance > 0.00001f);
 }
 
 void TerrainEstimator::predict(float dt, const struct vehicle_attitude_s *attitude,
@@ -102,11 +102,11 @@ void TerrainEstimator::measurement_update(uint64_t time_ref, const struct sensor
 		const struct vehicle_attitude_s *attitude)
 {
 	// terrain estimate is invalid if we have range sensor timeout
-	if (time_ref - distance->timestamp > DISTANCE_TIMEOUT) {
+	如果 (time_ref - distance->timestamp > DISTANCE_TIMEOUT) {
 		_terrain_valid = false;
 	}
 
-	if (distance->timestamp > _time_last_distance) {
+	如果 (distance->timestamp > _time_last_distance) {
 		matrix::Quatf q(attitude->q);
 		matrix::Eulerf euler(q);
 		float d = distance->current_distance;
@@ -128,17 +128,17 @@ void TerrainEstimator::measurement_update(uint64_t time_ref, const struct sensor
 		matrix::Matrix<float, n_x, 1> K = _P * C.transpose() * S_I;
 
 		// some sort of outlayer rejection
-		if (fabsf(distance->current_distance - _distance_last) < 1.0f) {
+		如果 (fabsf(distance->current_distance - _distance_last) < 1.0f) {
 			_x += K * r;
 			_P -= K * C * _P;
 		}
 
 		// if the current and the last range measurement are bad then we consider the terrain
 		// estimate to be invalid
-		if (!is_distance_valid(distance->current_distance) && !is_distance_valid(_distance_last)) {
+		如果 (!is_distance_valid(distance->current_distance) && !is_distance_valid(_distance_last)) {
 			_terrain_valid = false;
 
-		} else {
+		} 否则 {
 			_terrain_valid = true;
 		}
 
@@ -146,7 +146,7 @@ void TerrainEstimator::measurement_update(uint64_t time_ref, const struct sensor
 		_distance_last = distance->current_distance;
 	}
 
-	if (gnss->timestamp > _time_last_gnss && gnss->fix_type >= 3) {
+	如果 (gnss->timestamp > _time_last_gnss && gnss->fix_type >= 3) {
 		matrix::Matrix<float, 1, n_x> C;
 		C(0, 1) = 1;
 
@@ -169,7 +169,7 @@ void TerrainEstimator::measurement_update(uint64_t time_ref, const struct sensor
 	}
 
 	// reinitialise filter if we find bad data
-	if (!_x.isAllFinite() || !_P.isAllFinite()) {
+	如果 (!_x.isAllFinite() || !_P.isAllFinite()) {
 		_x.zero();
 		_P.setZero();
 		_P(0, 0) = _P(1, 1) = _P(2, 2) = 0.1f;

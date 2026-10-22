@@ -79,7 +79,7 @@ void MapProjection::project(double lat, double lon, float &x, float &y) const
 
 	double k = 1.0;
 
-	if (fabs(c) > 0) {
+	如果 (fabs(c) > 0) {
 		k = (c / sin(c));
 	}
 
@@ -93,7 +93,7 @@ void MapProjection::reproject(float x, float y, double &lat, double &lon) const
 	const double y_rad = (double)y / CONSTANTS_RADIUS_OF_EARTH;
 	const double c = sqrt(x_rad * x_rad + y_rad * y_rad);
 
-	if (fabs(c) > 0) {
+	如果 (fabs(c) > 0) {
 		const double sin_c = sin(c);
 		const double cos_c = cos(c);
 
@@ -103,7 +103,7 @@ void MapProjection::reproject(float x, float y, double &lat, double &lon) const
 		lat = math::degrees(lat_rad);
 		lon = math::degrees(lon_rad);
 
-	} else {
+	} 否则 {
 		lat = math::degrees(_ref_lat);
 		lon = math::degrees(_ref_lon);
 	}
@@ -122,17 +122,17 @@ float get_distance_to_next_waypoint(double lat_now, double lon_now, double lat_n
 
 	const double c = atan2(sqrt(a), sqrt(1.0 - a));
 
-	return static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * 2.0 * c);
+	返回 static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * 2.0 * c);
 }
 
 void create_waypoint_from_line_and_dist(double lat_A, double lon_A, double lat_B, double lon_B, float dist,
 					double *lat_target, double *lon_target)
 {
-	if (fabsf(dist) < FLT_EPSILON) {
+	如果 (fabsf(dist) < FLT_EPSILON) {
 		*lat_target = lat_A;
 		*lon_target = lon_A;
 
-	} else {
+	} 否则 {
 		float heading = get_bearing_to_next_waypoint(lat_A, lon_A, lat_B, lon_B);
 		waypoint_from_heading_and_distance(lat_A, lon_A, heading, dist, lat_target, lon_target);
 	}
@@ -170,7 +170,7 @@ float get_bearing_to_next_waypoint(double lat_now, double lon_now, double lat_ne
 	const float y = static_cast<float>(sin(d_lon) * cos_lat_next);
 	const float x = static_cast<float>(cos(lat_now_rad) * sin(lat_next_rad) - sin(lat_now_rad) * cos_lat_next * cos(d_lon));
 
-	return wrap_pi(atan2f(y, x));
+	返回 wrap_pi(atan2f(y, x));
 }
 
 void
@@ -215,14 +215,14 @@ void add_vector_to_global_position(double lat_now, double lon_now, float v_n, fl
 
 // Additional functions - @author Doug Weibel <douglas.weibel@colorado.edu>
 
-int get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat_now, double lon_now,
+整数 get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat_now, double lon_now,
 			 double lat_start, double lon_start, double lat_end, double lon_end)
 {
 	// This function returns the distance to the nearest point on the track line.  Distance is positive if current
 	// position is right of the track and negative if left of the track as seen from a point on the track line
 	// headed towards the end point.
 
-	int return_value = -1;	// Set error flag, cleared when valid result calculated.
+	整数 return_value = -1;	// Set error flag, cleared when valid result calculated.
 	crosstrack_error.past_end = false;
 	crosstrack_error.distance = 0.0f;
 	crosstrack_error.bearing = 0.0f;
@@ -230,8 +230,8 @@ int get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat
 	float dist_to_end = get_distance_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
 
 	// Return error if arguments are bad
-	if (dist_to_end < 0.1f) {
-		return -1;
+	如果 (dist_to_end < 0.1f) {
+		返回 -1;
 	}
 
 	float bearing_end = get_bearing_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
@@ -239,27 +239,27 @@ int get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat
 	float bearing_diff = wrap_pi(bearing_track - bearing_end);
 
 	// Return past_end = true if past end point of line
-	if (bearing_diff > M_PI_2_F || bearing_diff < -M_PI_2_F) {
+	如果 (bearing_diff > M_PI_2_F || bearing_diff < -M_PI_2_F) {
 		crosstrack_error.past_end = true;
 		return_value = 0;
-		return return_value;
+		返回 return_value;
 	}
 
 	crosstrack_error.distance = (dist_to_end) * sinf(bearing_diff);
 
-	if (sinf(bearing_diff) >= 0) {
+	如果 (sinf(bearing_diff) >= 0) {
 		crosstrack_error.bearing = wrap_pi(bearing_track - M_PI_2_F);
 
-	} else {
+	} 否则 {
 		crosstrack_error.bearing = wrap_pi(bearing_track + M_PI_2_F);
 	}
 
 	return_value = 0;
 
-	return return_value;
+	返回 return_value;
 }
 
-int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_now, double lon_now,
+整数 get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_now, double lon_now,
 			double lat_center, double lon_center,
 			float radius, float arc_start_bearing, float arc_sweep)
 {
@@ -271,14 +271,14 @@ int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_
 	// to the arc start and the line from the center to the arc end
 	const float bearing_now = get_bearing_to_next_waypoint(lat_now, lon_now, lat_center, lon_center);
 
-	int return_value = -1;		// Set error flag, cleared when valid result calculated.
+	整数 return_value = -1;		// Set error flag, cleared when valid result calculated.
 	crosstrack_error->past_end = false;
 	crosstrack_error->distance = 0.0f;
 	crosstrack_error->bearing = 0.0f;
 
 	// Return error if arguments are bad
-	if (radius < 0.1f) {
-		return return_value;
+	如果 (radius < 0.1f) {
+		返回 return_value;
 	}
 
 	// arc_start_bearing and arc_sweep are referenced to the center, so test membership with the
@@ -291,22 +291,22 @@ int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_
 	const bool in_sector = bearing_from_start <= fabsf(arc_sweep);
 
 	// If in the sector then calculate distance and bearing to closest point
-	if (in_sector) {
+	如果 (in_sector) {
 		crosstrack_error->past_end = false;
 		float dist_to_center = get_distance_to_next_waypoint(lat_now, lon_now, lat_center, lon_center);
 
-		if (dist_to_center <= radius) {
+		如果 (dist_to_center <= radius) {
 			crosstrack_error->distance = radius - dist_to_center;
 			crosstrack_error->bearing = bearing_now + M_PI_F;
 
-		} else {
+		} 否则 {
 			crosstrack_error->distance = dist_to_center - radius;
 			crosstrack_error->bearing = bearing_now;
 		}
 
 		// If out of the sector then calculate dist and bearing to start or end point
 
-	} else {
+	} 否则 {
 
 		// Use the approximation  that 111,111 meters in the y direction is 1 degree (of latitude)
 		// and 111,111 * cos(latitude) meters in the x direction is 1 degree (of longitude) to
@@ -325,11 +325,11 @@ int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_
 		float dist_to_start = get_distance_to_next_waypoint(lat_now, lon_now, lat_start, lon_start);
 		float dist_to_end = get_distance_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
 
-		if (dist_to_start < dist_to_end) {
+		如果 (dist_to_start < dist_to_end) {
 			crosstrack_error->distance = dist_to_start;
 			crosstrack_error->bearing = get_bearing_to_next_waypoint(lat_now, lon_now, lat_start, lon_start);
 
-		} else {
+		} 否则 {
 			crosstrack_error->past_end = true;
 			crosstrack_error->distance = dist_to_end;
 			crosstrack_error->bearing = get_bearing_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
@@ -339,7 +339,7 @@ int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_
 	crosstrack_error->bearing = wrap_pi(crosstrack_error->bearing);
 	return_value = 0;
 
-	return return_value;
+	返回 return_value;
 }
 
 float get_distance_to_point_global_wgs84(double lat_now, double lon_now, float alt_now,
@@ -363,7 +363,7 @@ float get_distance_to_point_global_wgs84(double lat_now, double lon_now, float a
 	*dist_xy = fabsf(dxy);
 	*dist_z = fabsf(dz);
 
-	return sqrtf(dxy * dxy + dz * dz);
+	返回 sqrtf(dxy * dxy + dz * dz);
 }
 
 float mavlink_wpm_distance_to_point_local(float x_now, float y_now, float z_now,
@@ -377,5 +377,5 @@ float mavlink_wpm_distance_to_point_local(float x_now, float y_now, float z_now,
 	*dist_xy = sqrtf(dx * dx + dy * dy);
 	*dist_z = fabsf(dz);
 
-	return sqrtf(dx * dx + dy * dy + dz * dz);
+	返回 sqrtf(dx * dx + dy * dy + dz * dz);
 }

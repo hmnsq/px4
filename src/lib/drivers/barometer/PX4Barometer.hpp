@@ -54,8 +54,8 @@ public:
 
 	void update(const hrt_abstime &timestamp_sample, float pressure);
 
-	int get_instance() { return _sensor_pub.get_instance(); };
-	uint32_t get_device_id() const { return _report.device_id; }
+	整数 get_instance() { 返回 _sensor_pub.get_instance(); };
+	uint32_t get_device_id() const { 返回 _report.device_id; }
 
 private:
 	uORB::PublicationMulti<sensor_baro_s> _sensor_pub{ORB_ID(sensor_baro)};

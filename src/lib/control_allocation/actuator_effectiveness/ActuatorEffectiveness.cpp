@@ -35,24 +35,24 @@
 
 #include <px4_platform_common/log.h>
 
-int ActuatorEffectiveness::Configuration::addActuator(ActuatorType type, const matrix::Vector3f &torque,
+整数 ActuatorEffectiveness::Configuration::addActuator(ActuatorType type, const matrix::Vector3f &torque,
 		const matrix::Vector3f &thrust)
 {
-	int actuator_idx = num_actuators_matrix[selected_matrix];
+	整数 actuator_idx = num_actuators_matrix[selected_matrix];
 
-	if (actuator_idx >= NUM_ACTUATORS) {
+	如果 (actuator_idx >= NUM_ACTUATORS) {
 		PX4_ERR("Too many actuators");
-		return -1;
+		返回 -1;
 	}
 
-	if ((int)type < (int)ActuatorType::COUNT - 1 && num_actuators[(int)type + 1] > 0) {
+	如果 ((整数)type < (整数)ActuatorType::COUNT - 1 && num_actuators[(整数)type + 1] > 0) {
 		PX4_ERR("Trying to add actuators in the wrong order (add motors first, then servos)");
-		return -1;
+		返回 -1;
 	}
 
-	if (type == ActuatorType::MOTORS && selected_matrix != 0) {
+	如果 (type == ActuatorType::MOTORS && selected_matrix != 0) {
 		PX4_ERR("Trying to add motors to matrix %d (add to matrix 0)", selected_matrix);
-		return -1;
+		返回 -1;
 	}
 
 	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::ROLL, actuator_idx) = torque(0);
@@ -62,31 +62,31 @@ int ActuatorEffectiveness::Configuration::addActuator(ActuatorType type, const m
 	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::THRUST_Y, actuator_idx) = thrust(1);
 	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::THRUST_Z, actuator_idx) = thrust(2);
 	matrix_selection_indexes[totalNumActuators()] = selected_matrix;
-	++num_actuators[(int)type];
-	return num_actuators_matrix[selected_matrix]++;
+	++num_actuators[(整数)type];
+	返回 num_actuators_matrix[selected_matrix]++;
 }
 
-void ActuatorEffectiveness::Configuration::actuatorsAdded(ActuatorType type, int count)
+void ActuatorEffectiveness::Configuration::actuatorsAdded(ActuatorType type, 整数 count)
 {
-	int total_count = totalNumActuators();
+	整数 total_count = totalNumActuators();
 
-	for (int i = 0; i < count; ++i) {
+	为 (整数 i = 0; i < count; ++i) {
 		matrix_selection_indexes[i + total_count] = selected_matrix;
 	}
 
-	num_actuators[(int)type] += count;
+	num_actuators[(整数)type] += count;
 	num_actuators_matrix[selected_matrix] += count;
 }
 
-int ActuatorEffectiveness::Configuration::totalNumActuators() const
+整数 ActuatorEffectiveness::Configuration::totalNumActuators() const
 {
-	int total_count = 0;
+	整数 total_count = 0;
 
-	for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
+	为 (整数 i = 0; i < MAX_NUM_MATRICES; ++i) {
 		total_count += num_actuators_matrix[i];
 	}
 
-	return total_count;
+	返回 total_count;
 }
 
 ActuatorEffectiveness::ActuatorBitmask ActuatorEffectiveness::getStoppedMotors() const
@@ -99,11 +99,11 @@ ActuatorEffectiveness::ActuatorBitmask ActuatorEffectiveness::getStoppedMotors()
 	ActuatorEffectiveness::ActuatorBitmask stopped_motors_mask = _stopped_motors_mask_due_to_flight_phase;
 
 	//  b) because the thrust setpoint in a given direction is NaN
-	if (_longitudinal_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.longitudinal; }
+	如果 (_longitudinal_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.longitudinal; }
 
-	if (_lateral_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.lateral; }
+	如果 (_lateral_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.lateral; }
 
-	if (_vertical_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.vertical; }
+	如果 (_vertical_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.vertical; }
 
-	return stopped_motors_mask;
+	返回 stopped_motors_mask;
 }

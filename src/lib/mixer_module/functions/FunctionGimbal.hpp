@@ -44,20 +44,20 @@ class FunctionGimbal : public FunctionProviderBase
 {
 public:
 	FunctionGimbal() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGimbal(); }
+	static FunctionProviderBase *allocate(const Context &context) { 返回 new FunctionGimbal(); }
 
 	void update() override
 	{
 		gimbal_controls_s gimbal_controls;
 
-		if (_topic.update(&gimbal_controls)) {
+		如果 (_topic.update(&gimbal_controls)) {
 			_data[0] = gimbal_controls.control[gimbal_controls_s::INDEX_ROLL];
 			_data[1] = gimbal_controls.control[gimbal_controls_s::INDEX_PITCH];
 			_data[2] = gimbal_controls.control[gimbal_controls_s::INDEX_YAW];
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Gimbal_Roll]; }
+	float value(OutputFunction func) override { 返回 _data[(整数)func - (整数)OutputFunction::Gimbal_Roll]; }
 
 private:
 	uORB::Subscription _topic{ORB_ID(gimbal_controls)};

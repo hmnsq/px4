@@ -45,9 +45,9 @@ namespace calibration
 class DifferentialPressure
 {
 public:
-	static constexpr int MAX_SENSOR_COUNT = 3; ///< also the airspeed selector's sensor limit
+	static constexpr 整数 MAX_SENSOR_COUNT = 3; ///< also the airspeed selector's sensor limit
 
-	static constexpr const char *SensorString() { return "DPRES"; }
+	static constexpr const char *SensorString() { 返回 "DPRES"; }
 
 	DifferentialPressure();
 	explicit DifferentialPressure(uint32_t device_id);
@@ -56,24 +56,24 @@ public:
 
 	void PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
+	bool set_calibration_index(整数 calibration_index);
 	void set_device_id(uint32_t device_id);
 	bool set_offset(const float &offset);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
+	bool calibrated() const { 返回 (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_count() const { 返回 _calibration_count; }
+	int8_t calibration_index() const { 返回 _calibration_index; }
+	uint32_t device_id() const { 返回 _device_id; }
+	bool external() const { 返回 _external; }
+	const float &offset() const { 返回 _offset; }
 
 	/// remove the zero offset from a raw differential pressure reading [Pa]
-	inline float Correct(const float &data) const { return data - _offset; }
+	inline float Correct(const float &data) const { 返回 data - _offset; }
 
-	inline float Uncorrect(const float &corrected_data) const { return corrected_data + _offset; }
+	inline float Uncorrect(const float &corrected_data) const { 返回 corrected_data + _offset; }
 
 	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
+	bool ParametersSave(整数 desired_calibration_index = -1, bool force = false);
 	void ParametersUpdate();
 
 	/**
@@ -90,7 +90,7 @@ public:
 	void Reset();
 
 private:
-	static constexpr int kLegacyIndex{0};
+	static constexpr 整数 kLegacyIndex{0};
 	static constexpr const char *kLegacyOffsetParam{"SENS_DPRES_OFF"};
 
 	float _offset{0};

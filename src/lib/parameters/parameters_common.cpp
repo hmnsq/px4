@@ -48,67 +48,67 @@ static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(pa
  * @param param			The parameter handle to test.
  * @return			True if the handle is valid.
  */
-static constexpr bool handle_in_range(param_t param) { return (param < param_info_count); }
+static constexpr bool handle_in_range(param_t param) { 返回 (param < param_info_count); }
 
 unsigned param_count()
 {
-	return param_info_count;
+	返回 param_info_count;
 }
 
-int param_get_index(param_t param)
+整数 param_get_index(param_t param)
 {
-	if (handle_in_range(param)) {
-		return (unsigned)param;
+	如果 (handle_in_range(param)) {
+		返回 (unsigned)param;
 	}
 
-	return -1;
+	返回 -1;
 }
 
 param_t param_for_index(unsigned index)
 {
-	if (index < param_info_count) {
-		return (param_t)index;
+	如果 (index < param_info_count) {
+		返回 (param_t)index;
 	}
 
-	return PARAM_INVALID;
+	返回 PARAM_INVALID;
 }
 
 const char *param_name(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters[param].name : nullptr;
+	返回 handle_in_range(param) ? px4::parameters[param].name : nullptr;
 }
 
 param_type_t param_type(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
+	返回 handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
 }
 
 bool param_is_volatile(param_t param)
 {
-	if (handle_in_range(param)) {
-		for (const auto &p : px4::parameters_volatile) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	如果 (handle_in_range(param)) {
+		为 (const auto &p : px4::parameters_volatile) {
+			如果 (static_cast<px4::params>(param) == p) {
+				返回 true;
 			}
 		}
 	}
 
-	return false;
+	返回 false;
 }
 
 static bool params_locked = false;
 
 bool param_is_readonly(param_t param)
 {
-	if (params_locked && handle_in_range(param)) {
-		for (const auto &p : px4::parameters_readonly) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	如果 (params_locked && handle_in_range(param)) {
+		为 (const auto &p : px4::parameters_readonly) {
+			如果 (static_cast<px4::params>(param) == p) {
+				返回 true;
 			}
 		}
 	}
 
-	return false;
+	返回 false;
 }
 
 void param_lock_readonly()
@@ -118,28 +118,28 @@ void param_lock_readonly()
 
 size_t param_size(param_t param)
 {
-	if (handle_in_range(param)) {
+	如果 (handle_in_range(param)) {
 		switch (param_type(param)) {
 		case PARAM_TYPE_INT32:
 		case PARAM_TYPE_FLOAT:
-			return 4;
+			返回 4;
 
 		default:
-			return 0;
+			返回 0;
 		}
 	}
 
-	return 0;
+	返回 0;
 }
 
-int
+整数
 param_get_system_default_value(param_t param, void *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	如果 (!handle_in_range(param)) {
+		返回 PX4_ERROR;
 	}
 
-	int ret = PX4_OK;
+	整数 ret = PX4_OK;
 
 	switch (param_type(param)) {
 	case PARAM_TYPE_INT32:
@@ -155,12 +155,12 @@ param_get_system_default_value(param_t param, void *default_val)
 		break;
 	}
 
-	return ret;
+	返回 ret;
 }
 
-int
+整数
 param_get_mark_used(param_t param, void *val)
 {
 	param_set_used(param);
-	return param_get(param, val);
+	返回 param_get(param, val);
 }

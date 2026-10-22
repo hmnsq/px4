@@ -56,7 +56,7 @@ class TestCollisionPrevention : public CollisionPrevention
 public:
 	TestCollisionPrevention() : CollisionPrevention(nullptr) {}
 	void paramsChanged() {CollisionPrevention::updateParamsImpl();}
-	obstacle_distance_s &getObstacleMap() {return _obstacle_map_body_frame;}
+	obstacle_distance_s &getObstacleMap() {返回 _obstacle_map_body_frame;}
 	void test_addDistanceSensorData(distance_sensor_s &distance_sensor, const Quatf &attitude)
 	{
 		_addDistanceSensorData(distance_sensor, attitude);
@@ -65,14 +65,14 @@ public:
 	{
 		_addObstacleSensorData(obstacle, vehicle_yaw);
 	}
-	void test_adaptSetpointDirection(Vector2f &setpoint_dir, int &setpoint_index,
+	void test_adaptSetpointDirection(Vector2f &setpoint_dir, 整数 &setpoint_index,
 					 float vehicle_yaw_angle_rad)
 	{
 		_adaptSetpointDirection(setpoint_dir, setpoint_index, vehicle_yaw_angle_rad);
 	}
-	bool test_enterData(int map_index, float sensor_range, float sensor_reading)
+	bool test_enterData(整数 map_index, float sensor_range, float sensor_reading)
 	{
-		return _enterData(map_index, sensor_range, sensor_reading);
+		返回 _enterData(map_index, sensor_range, sensor_reading);
 	}
 };
 
@@ -83,12 +83,12 @@ public:
 protected:
 	hrt_abstime getTime() override
 	{
-		return mocked_time;
+		返回 mocked_time;
 	}
 
 	hrt_abstime getElapsedTime(const hrt_abstime *ptr) override
 	{
-		return mocked_time - *ptr;
+		返回 mocked_time - *ptr;
 	}
 };
 
@@ -157,14 +157,14 @@ TEST_F(CollisionPreventionTest, testBehaviorOnWithObstacleMessage)
 	message.max_distance = 10000;
 	message.angle_offset = 0;
 	message.timestamp = hrt_absolute_time();
-	int distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
+	整数 distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
 	message.increment = 360 / distances_array_size;
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i < 10) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i < 10) {
 			message.distances[i] = 101;
 
-		} else {
+		} 否则 {
 			message.distances[i] = 10001;
 		}
 	}
@@ -284,20 +284,20 @@ TEST_F(CollisionPreventionTest, testPurgeOldData)
 	message.max_distance = 10000;
 	message.angle_offset = 0;
 	message.timestamp = start_time;
-	int distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
+	整数 distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
 	message.increment = 360 / distances_array_size;
 	message_lost_data = message;
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i < 10) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i < 10) {
 			message.distances[i] = 10001;
 			message_lost_data.distances[i] = UINT16_MAX;
 
-		} else if (i > 15 && i < 18) {
+		} 否则 如果 (i > 15 && i < 18) {
 			message.distances[i] = 10001;
 			message_lost_data.distances[i] = 10001;
 
-		} else {
+		} 否则 {
 			message.distances[i] = UINT16_MAX;
 			message_lost_data.distances[i] = UINT16_MAX;
 		}
@@ -309,7 +309,7 @@ TEST_F(CollisionPreventionTest, testPurgeOldData)
 	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &message);
 	orb_publish(ORB_ID(vehicle_attitude), vehicle_attitude_pub, &attitude);
 
-	for (int i = 0; i < 10; i++) {
+	为 (整数 i = 0; i < 10; i++) {
 		Vector2f modified_setpoint = original_setpoint;
 		cp.modifySetpoint(modified_setpoint, curr_vel);
 
@@ -318,19 +318,19 @@ TEST_F(CollisionPreventionTest, testPurgeOldData)
 		orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &message_lost_data);
 
 		//at iteration 8 change the CP_GO_NO_DATA to True
-		if (i == 8) {
+		如果 (i == 8) {
 			param_t param_allow = param_handle(px4::params::CP_GO_NO_DATA);
 			float value_allow = 1;
 			param_set(param_allow, &value_allow);
 			cp.paramsChanged();
 		}
 
-		if (i < 6) {
+		如果 (i < 6) {
 			// THEN: If the data is new enough, the velocity setpoint should stay the same as the input
 			// Note: direction will change slightly due to guidance
 			EXPECT_FLOAT_EQ(original_setpoint.norm(), modified_setpoint.norm());
 
-		} else {
+		} 否则 {
 			// THEN: If the data is expired, the velocity setpoint should be cut down to zero because there is no data
 			//(even if CP_GO_NO_DATA is set to true, because we once had data in those bins and now lost the sensor)
 			EXPECT_FLOAT_EQ(0.f, modified_setpoint.norm()) << modified_setpoint(0) << "," << modified_setpoint(1);
@@ -370,10 +370,10 @@ TEST_F(CollisionPreventionTest, testNoRangeData)
 	message.max_distance = 10000;
 	message.angle_offset = 0;
 	message.timestamp = start_time;
-	int distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
+	整数 distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
 	message.increment = 360 / distances_array_size;
 
-	for (int i = 0; i < distances_array_size; i++) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
 		message.distances[i] = 9000;
 	}
 
@@ -384,19 +384,19 @@ TEST_F(CollisionPreventionTest, testNoRangeData)
 	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &message);
 	orb_publish(ORB_ID(vehicle_attitude), vehicle_attitude_pub, &attitude);
 
-	for (int i = 0; i < 10; i++) {
+	为 (整数 i = 0; i < 10; i++) {
 		Vector2f modified_setpoint = original_setpoint;
 		cp.modifySetpoint(modified_setpoint, curr_vel);
 
 		//advance time by 0.1 seconds but no new message comes in
 		mocked_time = mocked_time + 100000;
 
-		if (i < 5) {
+		如果 (i < 5) {
 			// THEN: If the data is new enough, the velocity setpoint should stay the same as the input
 			// Note: direction will change slightly due to guidance
 			EXPECT_FLOAT_EQ(original_setpoint.norm(), modified_setpoint.norm());
 
-		} else {
+		} 否则 {
 			// THEN: If the data is expired, the velocity setpoint should be cut down to zero because there is no data
 			EXPECT_FLOAT_EQ(0.f, modified_setpoint.norm()) << modified_setpoint(0) << "," << modified_setpoint(1);
 		}
@@ -426,10 +426,10 @@ TEST_F(CollisionPreventionTest, noBias)
 	message.max_distance = 2000;
 	message.timestamp = hrt_absolute_time();
 	message.frame = message.MAV_FRAME_GLOBAL; //north aligned
-	int distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
+	整数 distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
 	message.increment = 360 / distances_array_size;
 
-	for (int i = 0; i < distances_array_size; i++) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
 		message.distances[i] = 700;
 	}
 
@@ -463,17 +463,17 @@ TEST_F(CollisionPreventionTest, outsideFOV)
 	message.frame = message.MAV_FRAME_GLOBAL; //north aligned
 	message.min_distance = 100;
 	message.max_distance = 2000;
-	int distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
+	整数 distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
 	message.increment = 360.f / distances_array_size;
 
 	//fov from 45deg to 225deg
-	for (int i = 0; i < distances_array_size; i++) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
 		float angle = i * message.increment;
 
-		if (angle > 45.f && angle < 225.f) {
+		如果 (angle > 45.f && angle < 225.f) {
 			message.distances[i] = 700;
 
-		} else {
+		} 否则 {
 			message.distances[i] = UINT16_MAX;
 		}
 	}
@@ -481,7 +481,7 @@ TEST_F(CollisionPreventionTest, outsideFOV)
 	// WHEN: we publish the message and modify the setpoint for different demanded setpoints
 	orb_advert_t obstacle_distance_pub = orb_advertise(ORB_ID(obstacle_distance), &message);
 
-	for (int i = 0; i < distances_array_size; i++) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
 		float angle_deg = (float)i * message.increment;
 		float angle_rad = math::radians(angle_deg);
 		Vector2f original_setpoint = {10.f * cosf(angle_rad), 10.f * sinf(angle_rad)};
@@ -493,7 +493,7 @@ TEST_F(CollisionPreventionTest, outsideFOV)
 		//THEN: if the resulting setpoint demands velocities bigger zero, it must lie inside the FOV
 		float setpoint_length = modified_setpoint.norm();
 
-		if (setpoint_length > 0.f) {
+		如果 (setpoint_length > 0.f) {
 			Vector2f setpoint_dir = modified_setpoint / setpoint_length;
 			float sp_angle_body_frame = atan2(setpoint_dir(1), setpoint_dir(0));
 			float sp_angle_deg = math::degrees(wrap_2pi(sp_angle_body_frame));
@@ -517,17 +517,17 @@ TEST_F(CollisionPreventionTest, goNoData)
 	message.frame = message.MAV_FRAME_GLOBAL; //north aligned
 	message.min_distance = 100;
 	message.max_distance = 2000;
-	int distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
+	整数 distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
 	message.increment = 360.f / distances_array_size;
 
 	//fov from 0deg to 20deg
-	for (int i = 0; i < distances_array_size; i++) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
 		float angle = i * message.increment;
 
-		if (angle > 0.f && angle < 40.f) {
+		如果 (angle > 0.f && angle < 40.f) {
 			message.distances[i] = 1000;
 
-		} else {
+		} 否则 {
 			message.distances[i] = UINT16_MAX;
 		}
 	}
@@ -588,10 +588,10 @@ TEST_F(CollisionPreventionTest, jerkLimit)
 	message.max_distance = 2000;
 	message.timestamp = hrt_absolute_time();
 	message.frame = message.MAV_FRAME_GLOBAL; //north aligned
-	int distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
+	整数 distances_array_size = sizeof(message.distances) / sizeof(message.distances[0]);
 	message.increment = 360 / distances_array_size;
 
-	for (int i = 0; i < distances_array_size; i++) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
 		message.distances[i] = 700;
 	}
 
@@ -634,11 +634,11 @@ TEST_F(CollisionPreventionTest, addOutOfRangeDistanceSensorData)
 	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
 
 	//THEN: the correct bins in the map should be filled
-	for (uint32_t i = 0; i < distances_array_size; i++) {
-		if (i == 0) {
+	为 (uint32_t i = 0; i < distances_array_size; i++) {
+		如果 (i == 0) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], distance_sensor.max_distance * 100.f);
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX);
 		}
 	}
@@ -662,11 +662,11 @@ TEST_F(CollisionPreventionTest, addDistanceSensorDataNarrow)
 	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
 
 	//THEN: the correct bins in the map should be filled
-	for (uint32_t i = 0; i < distances_array_size; i++) {
-		if (i == 0) {
+	为 (uint32_t i = 0; i < distances_array_size; i++) {
+		如果 (i == 0) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 	}
@@ -689,11 +689,11 @@ TEST_F(CollisionPreventionTest, addDistanceSensorDataSlightlyLarger)
 	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
 
 	//THEN: the the bins corresponding to -5°, 0° and 5° should be filled
-	for (uint32_t i = 0; i < distances_array_size; i++) {
-		if (i == 71 || i <= 1) {
+	为 (uint32_t i = 0; i < distances_array_size; i++) {
+		如果 (i == 71 || i <= 1) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 	}
@@ -712,7 +712,7 @@ TEST_F(CollisionPreventionTest, addDistanceSensorData)
 	//THEN: at initialization the internal obstacle map should only contain UINT16_MAX
 	uint32_t distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
 
-	for (uint32_t i = 0; i < distances_array_size; i++) {
+	为 (uint32_t i = 0; i < distances_array_size; i++) {
 		EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 	}
 
@@ -725,11 +725,11 @@ TEST_F(CollisionPreventionTest, addDistanceSensorData)
 	uint end = (90 + fov) / bin_size;
 
 	//THEN: the correct bins in the map should be filled
-	for (uint32_t i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	为 (uint32_t i = 0; i < distances_array_size; i++) {
+		如果 (i >= start && i <= end) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 	}
@@ -744,14 +744,14 @@ TEST_F(CollisionPreventionTest, addDistanceSensorData)
 	uint end2 = (270 + fov) / bin_size;
 
 	//THEN: the correct bins in the map should be filled
-	for (uint32_t i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	为 (uint32_t i = 0; i < distances_array_size; i++) {
+		如果 (i >= start && i <= end) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else if (i >= start2 && i <= end2) {
+		} 否则 如果 (i >= start2 && i <= end2) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 800) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 	}
@@ -766,17 +766,17 @@ TEST_F(CollisionPreventionTest, addDistanceSensorData)
 	uint end3 = (fov) / bin_size;
 
 	//THEN: the correct bins in the map should be filled
-	for (uint32_t i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	为 (uint32_t i = 0; i < distances_array_size; i++) {
+		如果 (i >= start && i <= end) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500)  << i;
 
-		} else if (i >= start2 && i <= end2) {
+		} 否则 如果 (i >= start2 && i <= end2) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 800) << i;
 
-		} else if (i >= start3 || i <= end3) {
+		} 否则 如果 (i >= start3 || i <= end3) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 300) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 	}
@@ -798,19 +798,19 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
 	//obstacle at 10-30 deg world frame, distance 5 meters
 	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
 
-	int start = 2;
-	int end = 6;
+	整数 start = 2;
+	整数 end = 6;
 
-	for (int i = start; i <= end ; i++) {
+	为 (整数 i = start; i <= end ; i++) {
 		obstacle_msg.distances[i] = 500;
 	}
 
 
 
 	//THEN: at initialization the internal obstacle map should only contain UINT16_MAX
-	int distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
+	整数 distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
 
-	for (int i = 0; i < distances_array_size; i++) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
 		EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX);
 	}
 
@@ -818,11 +818,11 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
 	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
 
 	//THEN: the correct bins in the map should be filled
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i >= start && i <= end) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -835,13 +835,13 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
 	cp.test_addObstacleSensorData(obstacle_msg, M_PI_2);
 
 	//THEN: the correct bins in the map should be filled
-	int offset =  bin_count - 90 / bin_size;
+	整数 offset =  bin_count - 90 / bin_size;
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= offset + start && i <= offset + end) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i >= offset + start && i <= offset + end) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -855,11 +855,11 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
 	//THEN: the correct bins in the map should be filled
 	offset =  45 / bin_size;
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= offset + start && i <= offset + end) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i >= offset + start && i <= offset + end) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -873,11 +873,11 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
 	//THEN: the correct bins in the map should be filled
 	offset =  180 / bin_size;
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= offset + start && i <= offset + end) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i >= offset + start && i <= offset + end) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500);
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX);
 		}
 
@@ -900,7 +900,7 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_offset_bodyframe)
 	//obstacle at 363°-39° deg world frame, distance 5 meters
 	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
 
-	for (int i = 0; i <= 6 ; i++) { // 36° at 6° increment
+	为 (整数 i = 0; i <= 6 ; i++) { // 36° at 6° increment
 		obstacle_msg.distances[i] = 500;
 	}
 
@@ -908,13 +908,13 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_offset_bodyframe)
 	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
 
 	//THEN: the the bins from 0 to 40 in map should be filled, which correspond to the angles from -2.5° to 42.5°
-	int distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
+	整数 distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= 0 && i <= 8) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i >= 0 && i <= 8) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -928,11 +928,11 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_offset_bodyframe)
 	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
 
 	//THEN: the bins from 30° to 70° in map should be filled, which correspond to the angles from 27.5° to 72.5°
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= 6 && i <= 14) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i >= 6 && i <= 14) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -947,11 +947,11 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_offset_bodyframe)
 
 	//THEN: the bins from 325° to 10° in map should be filled, which correspond to the angles from 322.5° to 12.5°
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= 65 || i <= 2) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i >= 65 || i <= 2) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -973,18 +973,18 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
 
 	//obstacle at 10-30 deg body frame, distance 5 meters
 	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
-	int start = 2;
-	int end = 6;
+	整数 start = 2;
+	整数 end = 6;
 
-	for (int i = start; i <= end ; i++) {
+	为 (整数 i = start; i <= end ; i++) {
 		obstacle_msg.distances[i] = 500;
 	}
 
 
 	//THEN: at initialization the internal obstacle map should only contain UINT16_MAX
-	int distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
+	整数 distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
 
-	for (int i = 0; i < distances_array_size; i++) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
 		EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX);
 	}
 
@@ -993,11 +993,11 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
 
 	//THEN: the correct bins in the map should be filled
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i >= start && i <= end) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -1009,11 +1009,11 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
 	cp.test_addObstacleSensorData(obstacle_msg, M_PI_2);
 
 	//THEN: the correct bins in the map should be filled
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i >= start && i <= end) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -1025,11 +1025,11 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
 	cp.test_addObstacleSensorData(obstacle_msg, -M_PI_4);
 
 	//THEN: the correct bins in the map should be filled
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i >= start && i <= end) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -1041,11 +1041,11 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
 	cp.test_addObstacleSensorData(obstacle_msg, M_PI);
 
 	//THEN: the correct bins in the map should be filled
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= start && i <= end) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i >= start && i <= end) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -1070,7 +1070,7 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_resolution_offset)
 	//obstacle at 363°-39° deg world frame, distance 5 meters
 	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
 
-	for (int i = 0; i <= 6 ; i++) { // 36° at 6° increment
+	为 (整数 i = 0; i <= 6 ; i++) { // 36° at 6° increment
 		obstacle_msg.distances[i] = 500;
 	}
 
@@ -1078,13 +1078,13 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_resolution_offset)
 	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
 
 	//THEN: the the bins from 0 to 40 in map should be filled, which correspond to the angles from -2.5° to 42.5°
-	int distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
+	整数 distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= 0 && i <= 8) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i >= 0 && i <= 8) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -1098,11 +1098,11 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_resolution_offset)
 	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
 
 	//THEN: the bins from 30° to 70° in map should be filled, which correspond to the angles from 27.5° to 72.5°
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= 6 && i <= 14) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i >= 6 && i <= 14) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -1117,11 +1117,11 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_resolution_offset)
 
 	//THEN: the bins from 325° to 10° in map should be filled, which correspond to the angles from 322.5° to 12.5°
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i >= 65 || i <= 2) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i >= 65 || i <= 2) {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], 500) << i;
 
-		} else {
+		} 否则 {
 			EXPECT_FLOAT_EQ(cp.getObstacleMap().distances[i], UINT16_MAX) << i;
 		}
 
@@ -1146,7 +1146,7 @@ TEST_F(CollisionPreventionTest, adaptSetpointDirection_distinct_minimum)
 	//obstacle at 0-30 deg world frame, distance 5 meters
 	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
 
-	for (int i = 0; i <= 6 ; i++) {
+	为 (整数 i = 0; i <= 6 ; i++) {
 		obstacle_msg.distances[i] = 500;
 	}
 
@@ -1157,7 +1157,7 @@ TEST_F(CollisionPreventionTest, adaptSetpointDirection_distinct_minimum)
 	float sp_angle_body_frame = atan2f(setpoint_dir(1), setpoint_dir(0)) - vehicle_yaw;
 	float sp_angle_with_offset_deg = wrap(math::degrees(sp_angle_body_frame) - cp.getObstacleMap().angle_offset,
 					      0.f, 360.f);
-	int sp_index = floor(sp_angle_with_offset_deg / cp.getObstacleMap().increment);
+	整数 sp_index = floor(sp_angle_with_offset_deg / cp.getObstacleMap().increment);
 
 	//set parameter
 	param_t param = param_handle(px4::params::CP_DIST);
@@ -1191,7 +1191,7 @@ TEST_F(CollisionPreventionTest, adaptSetpointDirection_flat_minimum)
 	//obstacle at 0-30 deg world frame, distance 5 meters
 	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
 
-	for (int i = 0; i < 7 ; i++) {
+	为 (整数 i = 0; i < 7 ; i++) {
 		obstacle_msg.distances[i] = 500;
 	}
 
@@ -1204,7 +1204,7 @@ TEST_F(CollisionPreventionTest, adaptSetpointDirection_flat_minimum)
 	float sp_angle_body_frame = atan2f(setpoint_dir(1), setpoint_dir(0)) - vehicle_yaw;
 	float sp_angle_with_offset_deg = wrap(math::degrees(sp_angle_body_frame) - cp.getObstacleMap().angle_offset,
 					      0.f, 360.f);
-	int sp_index = floor(sp_angle_with_offset_deg / cp.getObstacleMap().increment);
+	整数 sp_index = floor(sp_angle_with_offset_deg / cp.getObstacleMap().increment);
 
 	//set parameter
 	param_t param = param_handle(px4::params::CP_DIST);
@@ -1247,7 +1247,7 @@ TEST_F(CollisionPreventionTest, overlappingSensors)
 	short_range_msg.frame = short_range_msg.MAV_FRAME_GLOBAL; //north aligned
 	short_range_msg.angle_offset = 0;
 	short_range_msg.timestamp = hrt_absolute_time();
-	int distances_array_size = sizeof(short_range_msg.distances) / sizeof(short_range_msg.distances[0]);
+	整数 distances_array_size = sizeof(short_range_msg.distances) / sizeof(short_range_msg.distances[0]);
 	short_range_msg.increment = 360 / distances_array_size;
 	long_range_msg = short_range_msg;
 	long_range_msg.min_distance = 100;
@@ -1257,13 +1257,13 @@ TEST_F(CollisionPreventionTest, overlappingSensors)
 	short_range_msg_no_obstacle = short_range_msg;
 
 
-	for (int i = 0; i < distances_array_size; i++) {
-		if (i < 10) {
+	为 (整数 i = 0; i < distances_array_size; i++) {
+		如果 (i < 10) {
 			short_range_msg_no_obstacle.distances[i] = 201;
 			short_range_msg.distances[i] = 150;
 			long_range_msg.distances[i] = 500;
 
-		} else {
+		} 否则 {
 			short_range_msg_no_obstacle.distances[i] = UINT16_MAX;
 			short_range_msg.distances[i] = UINT16_MAX;
 			long_range_msg.distances[i] = UINT16_MAX;
@@ -1335,7 +1335,7 @@ TEST_F(CollisionPreventionTest, enterData)
 	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
 
 	//THEN: the internal map should contain the distance sensor readings
-	for (int i = 16; i < 20; i++) {
+	为 (整数 i = 16; i < 20; i++) {
 		EXPECT_EQ(500, cp.getObstacleMap().distances[i]) << i;
 	}
 
@@ -1355,7 +1355,7 @@ TEST_F(CollisionPreventionTest, enterData)
 	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
 
 	//THEN: the internal map should contain the distance sensor readings
-	for (int i = 16; i < 20; i++) {
+	为 (整数 i = 16; i < 20; i++) {
 		EXPECT_EQ(2000, cp.getObstacleMap().distances[i]) << i;
 	}
 

@@ -36,12 +36,12 @@
 
 void *dds_malloc(size_t size)
 {
-	return NULL;
+	返回 NULL;
 }
 void *dds_realloc(void *ptr, size_t new_size)
 {
 	printf("Error CDR buffer is too small\n");
-	return NULL;
+	返回 NULL;
 }
 void dds_free(void *pt)
 {

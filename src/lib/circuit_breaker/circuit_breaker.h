@@ -65,7 +65,7 @@ extern "C" __EXPORT bool circuit_breaker_enabled(const char *breaker, int32_t ma
 
 static inline bool circuit_breaker_enabled_by_val(int32_t breaker_val, int32_t magic)
 {
-	return breaker_val == magic;
+	返回 breaker_val == magic;
 }
 
 __END_DECLS

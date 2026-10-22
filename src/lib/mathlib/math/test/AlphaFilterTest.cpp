@@ -66,7 +66,7 @@ TEST(AlphaFilterTest, runZero)
 	AlphaFilter<float> filter_float{};
 	const float input = 0.f;
 
-	for (int i = 0; i < 10; i++) {
+	为 (整数 i = 0; i < 10; i++) {
 		filter_float.update(input);
 	}
 
@@ -81,7 +81,7 @@ TEST(AlphaFilterTest, runPositive)
 	filter_float.setAlpha(.1f);
 
 	// WHEN we run the filter 9 times
-	for (int i = 0; i < 9; i++) {
+	为 (整数 i = 0; i < 9; i++) {
 		filter_float.update(input);
 	}
 
@@ -97,7 +97,7 @@ TEST(AlphaFilterTest, runNegative)
 	filter_float.setAlpha(.1f);
 
 	// WHEN we run the filter 9 times
-	for (int i = 0; i < 9; i++) {
+	为 (整数 i = 0; i < 9; i++) {
 		filter_float.update(input);
 	}
 
@@ -113,7 +113,7 @@ TEST(AlphaFilterTest, riseTime)
 	filter_float.setAlpha(.1f);
 
 	// WHEN we run the filter 27 times (3 * time constant)
-	for (int i = 0; i < 3 * 9; i++) {
+	为 (整数 i = 0; i < 3 * 9; i++) {
 		filter_float.update(input);
 	}
 
@@ -129,7 +129,7 @@ TEST(AlphaFilterTest, convergence)
 	filter_float.setAlpha(.1f);
 
 	// WHEN we run the filter 45 times (5 * time constant)
-	for (int i = 0; i < 5 * 9; i++) {
+	为 (整数 i = 0; i < 5 * 9; i++) {
 		filter_float.update(input);
 	}
 
@@ -145,14 +145,14 @@ TEST(AlphaFilterTest, convergenceVector3f)
 	filter_v3.setAlpha(.1f);
 
 	// WHEN we run the filter 45 times (5 * time constant)
-	for (int i = 0; i < 5 * 9; i++) {
+	为 (整数 i = 0; i < 5 * 9; i++) {
 		filter_v3.update(input);
 	}
 
 	// THEN the state of the filter should have converged to the input (1% error allowed)
 	Vector3f output = filter_v3.getState();
 
-	for (int i = 0; i < 3; i++) {
+	为 (整数 i = 0; i < 3; i++) {
 		ASSERT_NEAR(output(i), input(i), fabsf(0.01f * input(i)));
 	}
 }
@@ -167,14 +167,14 @@ TEST(AlphaFilterTest, convergenceVector3fAlpha)
 	filter_v3.setParameters(dt, tau);
 
 	// WHEN we run the filter 18 times (1 * time constant)
-	for (int i = 0; i < 18; i++) {
+	为 (整数 i = 0; i < 18; i++) {
 		filter_v3.update(input); // dt is assumed equal to 1
 	}
 
 	// THEN the state of the filter should have reached 65% (2% error allowed)
 	Vector3f output = filter_v3.getState();
 
-	for (int i = 0; i < 3; i++) {
+	为 (整数 i = 0; i < 3; i++) {
 		ASSERT_NEAR(output(i), 0.63f * input(i), fabsf(0.02f * input(i)));
 	}
 }
@@ -191,14 +191,14 @@ TEST(AlphaFilterTest, convergenceVector3fTauDt)
 	// WHEN we run the filter (1 * time constant)
 	const float n = tau / dt;
 
-	for (int i = 0; i < n; i++) {
+	为 (整数 i = 0; i < n; i++) {
 		filter_v3.update(input);
 	}
 
 	// THEN the state of the filter should have reached 65% (2% error allowed)
 	Vector3f output = filter_v3.getState();
 
-	for (int i = 0; i < 3; i++) {
+	为 (整数 i = 0; i < 3; i++) {
 		ASSERT_NEAR(output(i), 0.63f * input(i), fabsf(0.02f * input(i)));
 	}
 
@@ -208,7 +208,7 @@ TEST(AlphaFilterTest, convergenceVector3fTauDt)
 	output = filter_v3.getState();
 
 	// THEN the filter should exactly contain those values
-	for (int i = 0; i < 3; i++) {
+	为 (整数 i = 0; i < 3; i++) {
 		ASSERT_EQ(output(i), reset_vector(i));
 	}
 }
@@ -225,7 +225,7 @@ TEST(AlphaFilterTest, AlphaZeroTest)
 	AlphaFilter<float> _alpha_filter;
 	_alpha_filter.setParameters(1e-5f, 1e5f);
 
-	for (int i = 0; i < 100; i++) {
+	为 (整数 i = 0; i < 100; i++) {
 		_alpha_filter.update(1.f);
 		EXPECT_NEAR(_alpha_filter.getState(), 0.f, 1e-4f);
 	}
@@ -236,7 +236,7 @@ TEST(AlphaFilterTest, AlphaOneTest)
 	AlphaFilter<float> _alpha_filter;
 	_alpha_filter.setParameters(.1f, 0.f);
 
-	for (int i = 0; i < 100; i++) {
+	为 (整数 i = 0; i < 100; i++) {
 		const float new_smaple = static_cast<float>(i);
 		_alpha_filter.update(new_smaple);
 		EXPECT_FLOAT_EQ(_alpha_filter.getState(), new_smaple);
@@ -266,7 +266,7 @@ TEST(AlphaFilterTest, ConvergenceTest)
 
 	float last_value{0.f};
 
-	for (int i = 0; i < 100; i++) {
+	为 (整数 i = 0; i < 100; i++) {
 		_alpha_filter.update(1.f);
 		EXPECT_GE(_alpha_filter.getState(), last_value);
 		last_value = _alpha_filter.getState();
@@ -274,7 +274,7 @@ TEST(AlphaFilterTest, ConvergenceTest)
 
 	EXPECT_NEAR(last_value, 1.f, 1e-4f);
 
-	for (int i = 0; i < 1000; i++) {
+	为 (整数 i = 0; i < 1000; i++) {
 		_alpha_filter.update(-100.f);
 		EXPECT_LE(_alpha_filter.getState(), last_value);
 		last_value = _alpha_filter.getState();
@@ -294,7 +294,7 @@ TEST(AlphaFilterTest, runPositiveRot3)
 	filter.reset(q_init);
 
 	// WHEN we run the filter 9 times
-	for (int i = 0; i < 9; i++) {
+	为 (整数 i = 0; i < 9; i++) {
 		filter.update(input);
 	}
 
@@ -320,7 +320,7 @@ TEST(AlphaFilterTest, runNecgativeRot3)
 	filter.reset(q_init);
 
 	// WHEN we run the filter 9 times
-	for (int i = 0; i < 9; i++) {
+	为 (整数 i = 0; i < 9; i++) {
 		filter.update(input);
 	}
 

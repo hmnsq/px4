@@ -74,7 +74,7 @@
 #include "rtcm.h"
 #include "ubx.h"
 
-#if defined(CONFIG_GPS_SPARTN)
+#如果 defined(CONFIG_GPS_SPARTN)
 # include "spartn.h"
 #endif
 
@@ -101,11 +101,11 @@ class CorrectionFramer
 {
 public:
 	static constexpr size_t MAX_FRAME_LEN =
-#if defined(CONFIG_GPS_SPARTN)
+#如果 defined(CONFIG_GPS_SPARTN)
 		(SPARTN_MAX_FRAME_LEN > RTCM3_MAX_FRAME_LEN)
 		? ((SPARTN_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? SPARTN_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN)
 		: ((RTCM3_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? RTCM3_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN);
-#else
+#否则
 		(RTCM3_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? RTCM3_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN;
 #endif
 
@@ -144,11 +144,11 @@ public:
 	 */
 	void consumeMessage(size_t len);
 
-	size_t bufferedBytes() const { return _buffer_len; }
+	size_t bufferedBytes() const { 返回 _buffer_len; }
 
 	CorrectionFramerStats getStats() const
 	{
-		return {_messages_parsed, _crc_errors, _bytes_discarded, _total_frame_bytes,
+		返回 {_messages_parsed, _crc_errors, _bytes_discarded, _total_frame_bytes,
 			_rtcm3_messages, _spartn_messages, _ubx_messages};
 	}
 
@@ -164,7 +164,7 @@ private:
 
 	Probe probeRtcm3(size_t *frame_len) const;
 	Probe probeUbx(size_t *frame_len) const;
-#if defined(CONFIG_GPS_SPARTN)
+#如果 defined(CONFIG_GPS_SPARTN)
 	Probe probeSpartn(size_t *frame_len) const;
 #endif
 

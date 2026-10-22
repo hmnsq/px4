@@ -75,14 +75,14 @@ public:
 	virtual void updateParams();
 
 	virtual void setDt(float dt) { _dt = dt; }
-	float getDt() { return _dt; }
+	float getDt() { 返回 _dt; }
 
 protected:
 
 	virtual void updateParamsSubclass() {}
 
-	SuperBlock *getParent() { return _parent; }
-	List<BlockParamBase *> &getParams() { return _params; }
+	SuperBlock *getParent() { 返回 _parent; }
+	List<BlockParamBase *> &getParams() { 返回 _params; }
 
 	const char *_name;
 	SuperBlock *_parent;
@@ -112,11 +112,11 @@ public:
 	{
 		Block::updateParams();
 
-		if (getChildren().getHead() != nullptr) { updateChildParams(); }
+		如果 (getChildren().getHead() != nullptr) { updateChildParams(); }
 	}
 
 protected:
-	List<Block *> &getChildren() { return _children; }
+	List<Block *> &getChildren() { 返回 _children; }
 	void updateChildParams();
 
 	List<Block *> _children;

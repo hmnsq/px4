@@ -51,13 +51,13 @@ public:
 	// For a new value, compute the new count, new mean, the new M2.
 	bool update(const Type &new_value)
 	{
-		if (_count == 0) {
+		如果 (_count == 0) {
 			reset();
 			_count = 1;
 			_mean = new_value;
-			return false;
+			返回 false;
 
-		} else if (_count == UINT16_MAX) {
+		} 否则 如果 (_count == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
 			_M2 = _M2 / _count;
@@ -65,7 +65,7 @@ public:
 
 			_count = 1;
 
-		} else {
+		} 否则 {
 			_count++;
 		}
 
@@ -83,16 +83,16 @@ public:
 		// protect against floating point precision causing negative variances
 		_M2 = math::max(_M2, 0.f);
 
-		if (!PX4_ISFINITE(_mean) || !PX4_ISFINITE(_M2)) {
+		如果 (!PX4_ISFINITE(_mean) || !PX4_ISFINITE(_M2)) {
 			reset();
-			return false;
+			返回 false;
 		}
 
-		return valid();
+		返回 valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	bool valid() const { 返回 _count > 2; }
+	auto count() const { 返回 _count; }
 
 	void reset()
 	{
@@ -104,9 +104,9 @@ public:
 		_M2_accum = 0;
 	}
 
-	Type mean() const { return _mean; }
-	Type variance() const { return _M2 / (_count - 1); }
-	Type standard_deviation() const { return std::sqrt(variance()); }
+	Type mean() const { 返回 _mean; }
+	Type variance() const { 返回 _M2 / (_count - 1); }
+	Type standard_deviation() const { 返回 std::sqrt(variance()); }
 
 private:
 
@@ -119,7 +119,7 @@ private:
 		const Type y = input - accumulator;
 		const Type t = sum_previous + y;
 		accumulator = (t - sum_previous) - y;
-		return t;
+		返回 t;
 	}
 
 	Type _mean{};

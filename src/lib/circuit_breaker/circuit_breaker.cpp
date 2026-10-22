@@ -52,5 +52,5 @@ bool circuit_breaker_enabled(const char *breaker, int32_t magic)
 {
 	int32_t val = -1;
 
-	return (param_get(param_find(breaker), &val) == 0) && (val == magic);
+	返回 (param_get(param_find(breaker), &val) == 0) && (val == magic);
 }

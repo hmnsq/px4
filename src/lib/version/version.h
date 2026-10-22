@@ -53,7 +53,7 @@ __BEGIN_DECLS
  */
 static inline const char *px4_board_name(void)
 {
-	return PX4_BOARD_NAME;
+	返回 PX4_BOARD_NAME;
 }
 
 /**
@@ -61,7 +61,7 @@ static inline const char *px4_board_name(void)
  */
 static inline const char *px4_board_target_label(void)
 {
-	return PX4_BOARD_LABEL;
+	返回 PX4_BOARD_LABEL;
 }
 
 /**
@@ -69,32 +69,32 @@ static inline const char *px4_board_target_label(void)
  */
 static inline const char *px4_board_sub_type(void)
 {
-	return board_get_hw_type_name();
+	返回 board_get_hw_type_name();
 }
 
 /**
  * get the board HW version
  */
-static inline int px4_board_hw_version(void)
+static inline 整数 px4_board_hw_version(void)
 {
-	return board_get_hw_version();
+	返回 board_get_hw_version();
 }
 
 /**
  * get the board HW revision
  */
-static inline int px4_board_hw_revision(void)
+static inline 整数 px4_board_hw_revision(void)
 {
-	return board_get_hw_revision();
+	返回 board_get_hw_revision();
 }
 
-#if defined(BOARD_HAS_HW_SPLIT_VERSIONING)
+#如果 defined(BOARD_HAS_HW_SPLIT_VERSIONING)
 /**
  * get the base board type
  */
 static inline const char *px4_board_base_type(void)
 {
-	return board_get_hw_base_type_name();
+	返回 board_get_hw_base_type_name();
 }
 #endif
 

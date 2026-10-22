@@ -55,17 +55,17 @@ public:
 
 	uint8_t *buf() const
 	{
-		return _buf;
+		返回 _buf;
 	}
 
 	size_t size() const
 	{
-		return _size;
+		返回 _size;
 	}
 
 	void paint(unsigned offset = 0)
 	{
-		for (size_t i = 0; i < _size; ++i) {
+		为 (size_t i = 0; i < _size; ++i) {
 			_buf[i] = (uint8_t)((i + offset) % UINT8_MAX);
 		}
 	}
@@ -78,11 +78,11 @@ private:
 
 bool operator==(const TempData &lhs, const TempData &rhs)
 {
-	if (lhs.size() != rhs.size()) {
-		return false;
+	如果 (lhs.size() != rhs.size()) {
+		返回 false;
 	}
 
-	return memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
+	返回 memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
 }
 
 
@@ -220,7 +220,7 @@ TEST(Ringbuffer, PushAndPopSeveral)
 	data.paint();
 
 	// 9 little chunks in
-	for (unsigned i = 0; i < 9; ++i) {
+	为 (unsigned i = 0; i < 9; ++i) {
 		EXPECT_TRUE(buf.push_back(data.buf() + i * 10, 10));
 	}
 

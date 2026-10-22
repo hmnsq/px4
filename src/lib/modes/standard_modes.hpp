@@ -59,43 +59,43 @@ enum class StandardMode : uint8_t {
 static inline StandardMode getStandardModeFromNavState(uint8_t nav_state, uint8_t vehicle_type, bool is_vtol)
 {
 	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: return StandardMode::SAFE_RECOVERY;
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: 返回 StandardMode::SAFE_RECOVERY;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION: return StandardMode::MISSION;
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION: 返回 StandardMode::MISSION;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_LAND: return StandardMode::LAND;
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_LAND: 返回 StandardMode::LAND;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF: return StandardMode::TAKEOFF;
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF: 返回 StandardMode::TAKEOFF;
 
 	case vehicle_status_s::NAVIGATION_STATE_ALTCTL:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+		如果 (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ALTITUDE_HOLD;
+			返回 StandardMode::ALTITUDE_HOLD;
 		}
 
 		break;
 
 	case vehicle_status_s::NAVIGATION_STATE_POSCTL:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return StandardMode::POSITION_HOLD;
+		如果 (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			返回 StandardMode::POSITION_HOLD;
 		}
 
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::CRUISE;
+		如果 (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			返回 StandardMode::CRUISE;
 		}
 
 		break;
 
 	case vehicle_status_s::NAVIGATION_STATE_ORBIT:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+		如果 (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ORBIT;
+			返回 StandardMode::ORBIT;
 		}
 
 		break;
 	}
 
-	return StandardMode::NON_STANDARD;
+	返回 StandardMode::NON_STANDARD;
 }
 
 /**
@@ -104,43 +104,43 @@ static inline StandardMode getStandardModeFromNavState(uint8_t nav_state, uint8_
 static inline uint8_t getNavStateFromStandardMode(StandardMode mode, uint8_t vehicle_type, bool is_vtol)
 {
 	switch (mode) {
-	case StandardMode::SAFE_RECOVERY: return vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
+	case StandardMode::SAFE_RECOVERY: 返回 vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
 
-	case StandardMode::MISSION: return vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
+	case StandardMode::MISSION: 返回 vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
 
-	case StandardMode::LAND: return vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
+	case StandardMode::LAND: 返回 vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
 
-	case StandardMode::TAKEOFF: return vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
+	case StandardMode::TAKEOFF: 返回 vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
 
 	case StandardMode::ALTITUDE_HOLD:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+		如果 (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ALTCTL;
+			返回 vehicle_status_s::NAVIGATION_STATE_ALTCTL;
 		}
 
 		break;
 
 	case StandardMode::POSITION_HOLD:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+		如果 (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			返回 vehicle_status_s::NAVIGATION_STATE_POSCTL;
 		}
 
 		break;
 
 	case StandardMode::CRUISE:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+		如果 (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			返回 vehicle_status_s::NAVIGATION_STATE_POSCTL;
 		}
 
 		break;
 
 	case StandardMode::ORBIT:
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ORBIT;
+		如果 (vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			返回 vehicle_status_s::NAVIGATION_STATE_ORBIT;
 		}
 
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+		如果 (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			返回 vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
 		}
 
 		break;
@@ -148,7 +148,7 @@ static inline uint8_t getNavStateFromStandardMode(StandardMode mode, uint8_t veh
 	default: break;
 	}
 
-	return vehicle_status_s::NAVIGATION_STATE_MAX;
+	返回 vehicle_status_s::NAVIGATION_STATE_MAX;
 }
 
 

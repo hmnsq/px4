@@ -52,28 +52,28 @@ Block::Block(SuperBlock *parent, const char *name) :
 	_name(name),
 	_parent(parent)
 {
-	if (getParent() != nullptr) {
+	如果 (getParent() != nullptr) {
 		getParent()->getChildren().add(this);
 	}
 }
 
 void Block::getName(char *buf, size_t n)
 {
-	if (getParent() == nullptr) {
+	如果 (getParent() == nullptr) {
 		strncpy(buf, _name, n);
 		// ensure string is terminated
 		buf[n - 1] = '\0';
 
-	} else {
+	} 否则 {
 		char parentName[blockNameLengthMax];
 		getParent()->getName(parentName, n);
 
-		if (!strcmp(_name, "")) {
+		如果 (!strcmp(_name, "")) {
 			strncpy(buf, parentName, n);
 			// ensure string is terminated
 			buf[n - 1] = '\0';
 
-		} else {
+		} 否则 {
 			snprintf(buf, n, "%s_%s", parentName, _name);
 		}
 	}
@@ -82,10 +82,10 @@ void Block::getName(char *buf, size_t n)
 void Block::updateParams()
 {
 	BlockParamBase *param = getParams().getHead();
-	int count = 0;
+	整数 count = 0;
 
-	while (param != nullptr) {
-		if (count++ > maxParamsPerBlock) {
+	当 (param != nullptr) {
+		如果 (count++ > maxParamsPerBlock) {
 			char name[blockNameLengthMax];
 			getName(name, blockNameLengthMax);
 			PX4_ERR("exceeded max params for block: %s", name);
@@ -104,10 +104,10 @@ void SuperBlock::setDt(float dt)
 {
 	Block::setDt(dt);
 	Block *child = getChildren().getHead();
-	int count = 0;
+	整数 count = 0;
 
-	while (child != nullptr) {
-		if (count++ > maxChildrenPerBlock) {
+	当 (child != nullptr) {
+		如果 (count++ > maxChildrenPerBlock) {
 			char name[blockNameLengthMax];
 			getName(name, blockNameLengthMax);
 			PX4_ERR("exceeded max children for block: %s", name);
@@ -122,10 +122,10 @@ void SuperBlock::setDt(float dt)
 void SuperBlock::updateChildParams()
 {
 	Block *child = getChildren().getHead();
-	int count = 0;
+	整数 count = 0;
 
-	while (child != nullptr) {
-		if (count++ > maxChildrenPerBlock) {
+	当 (child != nullptr) {
+		如果 (count++ > maxChildrenPerBlock) {
 			char name[blockNameLengthMax];
 			getName(name, blockNameLengthMax);
 			PX4_ERR("exceeded max children for block: %s", name);

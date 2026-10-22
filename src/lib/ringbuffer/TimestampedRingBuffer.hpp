@@ -68,40 +68,40 @@ public:
 	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
 	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
 
-	bool allocate(size_t size) { return size == SIZE; }
+	bool allocate(size_t size) { 返回 size == SIZE; }
 
-	bool valid() const { return SIZE > 0; }
+	bool valid() const { 返回 SIZE > 0; }
 
 	void push(const data_type &sample)
 	{
 		_buffer[_head] = sample;
 		_head = next(_head);
 
-		if (_entries < kSize) {
+		如果 (_entries < kSize) {
 			_entries++;
 		}
 	}
 
-	uint8_t get_length() const { return kSize; }
+	uint8_t get_length() const { 返回 kSize; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	data_type &operator[](const uint8_t index) { 返回 _buffer[index]; }
 
-	const data_type &get_newest() const { return _buffer[get_newest_index()]; }
-	const data_type &get_oldest() const { return _buffer[get_oldest_index()]; }
+	const data_type &get_newest() const { 返回 _buffer[get_newest_index()]; }
+	const data_type &get_oldest() const { 返回 _buffer[get_oldest_index()]; }
 
-	uint8_t get_newest_index() const { return (_entries > 0) ? prev(_head) : 0; }
+	uint8_t get_newest_index() const { 返回 (_entries > 0) ? prev(_head) : 0; }
 	uint8_t get_oldest_index() const
 	{
-		if (_entries == 0) {
-			return 0;
+		如果 (_entries == 0) {
+			返回 0;
 		}
 
 		const uint16_t idx = static_cast<uint16_t>(_head) + static_cast<uint16_t>(kSize) - static_cast<uint16_t>(_entries);
-		return (idx >= kSize) ? static_cast<uint8_t>(idx - kSize) : static_cast<uint8_t>(idx);
+		返回 (idx >= kSize) ? static_cast<uint8_t>(idx - kSize) : static_cast<uint8_t>(idx);
 	}
 
-	uint8_t next(uint8_t i) const { return (i + 1 >= kSize) ? 0 : i + 1; }
-	uint8_t prev(uint8_t i) const { return (i == 0) ? kSize - 1 : i - 1; }
+	uint8_t next(uint8_t i) const { 返回 (i + 1 >= kSize) ? 0 : i + 1; }
+	uint8_t prev(uint8_t i) const { 返回 (i == 0) ? kSize - 1 : i - 1; }
 
 	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
 	{
@@ -109,11 +109,11 @@ public:
 		const uint8_t newest_idx = get_newest_index();
 		const uint8_t oldest_idx = get_oldest_index();
 
-		for (uint8_t i = 0; i < _entries; i++) {
-			int index = (newest_idx - i);
+		为 (uint8_t i = 0; i < _entries; i++) {
+			整数 index = (newest_idx - i);
 			index = index < 0 ? kSize + index : index;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
+			如果 (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
 				*sample = _buffer[index];
 
 				// Now we can set the tail to the item which
@@ -125,26 +125,26 @@ public:
 				_entries = (_entries > discard_count) ? (_entries - discard_count) : 0;
 				_buffer[index].time_us = 0;
 
-				return true;
+				返回 true;
 			}
 		}
 
-		return false;
+		返回 false;
 	}
 
-	int get_total_size() const
+	整数 get_total_size() const
 	{
 		static_assert(sizeof(TimestampedRingBuffer<data_type, SIZE>) <= static_cast<size_t>(INT_MAX),
 			      "static ring buffer size must fit in int");
-		return static_cast<int>(sizeof(TimestampedRingBuffer<data_type, SIZE>));
+		返回 static_cast<整数>(sizeof(TimestampedRingBuffer<data_type, SIZE>));
 	}
 
-	int entries() const { return _entries; }
-	bool empty() const { return _entries == 0; }
+	整数 entries() const { 返回 _entries; }
+	bool empty() const { 返回 _entries == 0; }
 
 	void reset()
 	{
-		for (uint8_t i = 0; i < kSize; i++) {
+		为 (uint8_t i = 0; i < kSize; i++) {
 			_buffer[i].time_us = 0;
 		}
 
@@ -178,21 +178,21 @@ public:
 
 	bool allocate(size_t size)
 	{
-		if (valid() && (size == _size)) {
+		如果 (valid() && (size == _size)) {
 			// no change
-			return true;
+			返回 true;
 		}
 
-		if (size == 0 || size > UINT8_MAX) {
-			return false;
+		如果 (size == 0 || size > UINT8_MAX) {
+			返回 false;
 		}
 
 		delete[] _buffer;
 
 		_buffer = new data_type[size] {};
 
-		if (_buffer == nullptr) {
-			return false;
+		如果 (_buffer == nullptr) {
+			返回 false;
 		}
 
 		_size = static_cast<uint8_t>(size);
@@ -202,16 +202,16 @@ public:
 		_tail = 0;
 		_first_write = true;
 
-		return true;
+		返回 true;
 	}
 
-	bool valid() const { return (_buffer != nullptr) && (_size > 0); }
+	bool valid() const { 返回 (_buffer != nullptr) && (_size > 0); }
 
 	void push(const data_type &sample)
 	{
 		uint8_t head_new = _head;
 
-		if (!_first_write) {
+		如果 (!_first_write) {
 			head_new = next(_head);
 		}
 
@@ -219,85 +219,85 @@ public:
 		_head = head_new;
 
 		// move tail if we overwrite it
-		if (_head == _tail && !_first_write) {
+		如果 (_head == _tail && !_first_write) {
 			_tail = next(_tail);
 
-		} else {
+		} 否则 {
 			_first_write = false;
 		}
 	}
 
-	uint8_t get_length() const { return _size; }
+	uint8_t get_length() const { 返回 _size; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	data_type &operator[](const uint8_t index) { 返回 _buffer[index]; }
 
-	const data_type &get_newest() const { return _buffer[_head]; }
-	const data_type &get_oldest() const { return _buffer[_tail]; }
+	const data_type &get_newest() const { 返回 _buffer[_head]; }
+	const data_type &get_oldest() const { 返回 _buffer[_tail]; }
 
-	uint8_t get_newest_index() const { return _head; }
-	uint8_t get_oldest_index() const { return _tail; }
+	uint8_t get_newest_index() const { 返回 _head; }
+	uint8_t get_oldest_index() const { 返回 _tail; }
 
-	uint8_t next(uint8_t i) const { return (_size > 0) ? ((i + 1 >= _size) ? 0 : i + 1) : 0; }
-	uint8_t prev(uint8_t i) const { return (_size > 0) ? ((i == 0) ? (_size - 1) : (i - 1)) : 0; }
+	uint8_t next(uint8_t i) const { 返回 (_size > 0) ? ((i + 1 >= _size) ? 0 : i + 1) : 0; }
+	uint8_t prev(uint8_t i) const { 返回 (_size > 0) ? ((i == 0) ? (_size - 1) : (i - 1)) : 0; }
 
 	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
 	{
 		// start looking from newest observation data
-		for (uint8_t i = 0; i < _size; i++) {
-			int index = (_head - i);
+		为 (uint8_t i = 0; i < _size; i++) {
+			整数 index = (_head - i);
 			index = index < 0 ? _size + index : index;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
+			如果 (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
 				*sample = _buffer[index];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				if (index == _head) {
+				如果 (index == _head) {
 					_tail = _head;
 					_first_write = true;
 
-				} else {
+				} 否则 {
 					_tail = next(static_cast<uint8_t>(index));
 				}
 
 				_buffer[index].time_us = 0;
 
-				return true;
+				返回 true;
 			}
 
-			if (index == _tail) {
+			如果 (index == _tail) {
 				// we have reached the tail and haven't got a
 				// match
-				return false;
+				返回 false;
 			}
 		}
 
-		return false;
+		返回 false;
 	}
 
-	int get_used_size() const { return sizeof(*this) + sizeof(data_type) * entries(); }
-	int get_total_size() const { return sizeof(*this) + sizeof(data_type) * _size; }
+	整数 get_used_size() const { 返回 sizeof(*this) + sizeof(data_type) * entries(); }
+	整数 get_total_size() const { 返回 sizeof(*this) + sizeof(data_type) * _size; }
 
-	int entries() const
+	整数 entries() const
 	{
-		int count = 0;
+		整数 count = 0;
 
-		for (uint8_t i = 0; i < _size; i++) {
-			if (_buffer[i].time_us != 0) {
+		为 (uint8_t i = 0; i < _size; i++) {
+			如果 (_buffer[i].time_us != 0) {
 				count++;
 			}
 		}
 
-		return count;
+		返回 count;
 	}
 
-	bool empty() const { return entries() == 0; }
+	bool empty() const { 返回 entries() == 0; }
 
 	void reset()
 	{
-		if (_buffer) {
-			for (uint8_t i = 0; i < _size; i++) {
+		如果 (_buffer) {
+			为 (uint8_t i = 0; i < _size; i++) {
 				_buffer[i].time_us = 0;
 			}
 

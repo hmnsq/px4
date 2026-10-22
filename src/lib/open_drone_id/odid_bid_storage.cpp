@@ -41,7 +41,7 @@
 #ifdef __PX4_NUTTX
 #include <nuttx/crc32.h>
 #include <px4_platform_common/px4_manifest.h>
-#else
+#否则
 #include <crc32.h>
 #endif
 
@@ -72,24 +72,24 @@ public:
 private:
 	static bool uasIdIsEmpty(const uint8_t uas_id[UAS_ID_SIZE])
 	{
-		for (unsigned i = 0; i < UAS_ID_SIZE; ++i) {
-			if (uas_id[i] != 0) {
-				return false;
+		为 (unsigned i = 0; i < UAS_ID_SIZE; ++i) {
+			如果 (uas_id[i] != 0) {
+				返回 false;
 			}
 		}
 
-		return true;
+		返回 true;
 	}
 
 	static uint32_t recordCrc(const UasIdRecord &record)
 	{
-		return crc32(reinterpret_cast<const uint8_t *>(&record.version),
+		返回 crc32(reinterpret_cast<const uint8_t *>(&record.version),
 			     offsetof(UasIdRecord, crc) - offsetof(UasIdRecord, version));
 	}
 
 	static bool recordValid(const UasIdRecord &record)
 	{
-		return record.magic == ODID_UASID_MAGIC
+		返回 record.magic == ODID_UASID_MAGIC
 		       && record.version == ODID_UASID_RECORD_VERSION
 		       && record.id_type == UAS_ID_TYPE_SERIAL_NUMBER
 		       && !uasIdIsEmpty(record.uas_id)
@@ -102,37 +102,37 @@ private:
 	{
 		const uint8_t *bytes = reinterpret_cast<const uint8_t *>(&record);
 
-		for (unsigned i = 0; i < sizeof(record); ++i) {
-			if (bytes[i] != 0xff) {
-				return false;
+		为 (unsigned i = 0; i < sizeof(record); ++i) {
+			如果 (bytes[i] != 0xff) {
+				返回 false;
 			}
 		}
 
-		return true;
+		返回 true;
 	}
 
 	static bool recordMatches(const UasIdRecord &record, const uint8_t uas_id[UAS_ID_SIZE])
 	{
-		return memcmp(record.uas_id, uas_id, UAS_ID_SIZE) == 0;
+		返回 memcmp(record.uas_id, uas_id, UAS_ID_SIZE) == 0;
 	}
 
 	// Write the entire buffer to the file descriptor, handling short writes.
-	static bool writeAll(int fd, const void *buffer, size_t size)
+	static bool writeAll(整数 fd, const void *buffer, size_t size)
 	{
 		const uint8_t *bytes = static_cast<const uint8_t *>(buffer);
 
-		while (size > 0) {
+		当 (size > 0) {
 			const ssize_t written = write(fd, bytes, size);
 
-			if (written <= 0) {
-				return false;
+			如果 (written <= 0) {
+				返回 false;
 			}
 
 			bytes += written;
 			size -= written;
 		}
 
-		return true;
+		返回 true;
 	}
 
 };
@@ -143,42 +143,42 @@ static_assert(sizeof(UasIdRecord) <= 256, "OpenDroneID UAS ID record must fit in
 // On other platforms, the get() method will return StorageUnavailable and the checkOrStore() method will return Unsupported.
 BidLockInfo BidStorageBackend::get()
 {
-#if defined(__PX4_NUTTX)
+#如果 defined(__PX4_NUTTX)
 	const char *path = nullptr;
 
-	if (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
-		return {BidLockState::StorageUnavailable, {}};
+	如果 (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
+		返回 {BidLockState::StorageUnavailable, {}};
 	}
 
-	int fd = open(path, O_RDONLY);
+	整数 fd = open(path, O_RDONLY);
 
-	if (fd < 0) {
-		return {BidLockState::StorageUnavailable, {}};
+	如果 (fd < 0) {
+		返回 {BidLockState::StorageUnavailable, {}};
 	}
 
 	UasIdRecord record{};
 
-	if (read(fd, &record, sizeof(record)) != sizeof(record)) {
+	如果 (read(fd, &record, sizeof(record)) != sizeof(record)) {
 		close(fd);
-		return {BidLockState::StorageUnavailable, {}};
+		返回 {BidLockState::StorageUnavailable, {}};
 	}
 
 	close(fd);
 
-	if (recordValid(record)) {
+	如果 (recordValid(record)) {
 		BidLockInfo info{BidLockState::Locked, {}};
 		info.id.ua_type = record.ua_type;
 		memcpy(info.id.uas_id, record.uas_id, UAS_ID_SIZE);
-		return info;
+		返回 info;
 	}
 
-	if (recordBlank(record)) {
-		return {BidLockState::Empty, {}};
+	如果 (recordBlank(record)) {
+		返回 {BidLockState::Empty, {}};
 	}
 
-	return {BidLockState::InvalidRecord, {}};
-#else
-	return {BidLockState::Unsupported, {}};
+	返回 {BidLockState::InvalidRecord, {}};
+#否则
+	返回 {BidLockState::Unsupported, {}};
 #endif
 }
 
@@ -186,41 +186,41 @@ BidLockInfo BidStorageBackend::get()
 // The storage is write-once, so once a UAS ID is stored it cannot be changed (except by erasing the flash).
 BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE])
 {
-	if (uasIdIsEmpty(uas_id)) {
-		return BidStoreResult::InvalidBasicId;
+	如果 (uasIdIsEmpty(uas_id)) {
+		返回 BidStoreResult::InvalidBasicId;
 	}
 
-#if defined(__PX4_NUTTX)
+#如果 defined(__PX4_NUTTX)
 	const char *path = nullptr;
 
-	if (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
-		return BidStoreResult::StorageUnavailable;
+	如果 (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
+		返回 BidStoreResult::StorageUnavailable;
 	}
 
-	int fd = open(path, O_RDWR);
+	整数 fd = open(path, O_RDWR);
 
-	if (fd < 0) {
-		return BidStoreResult::StorageUnavailable;
+	如果 (fd < 0) {
+		返回 BidStoreResult::StorageUnavailable;
 	}
 
 	UasIdRecord existing{};
 
-	if (read(fd, &existing, sizeof(existing)) != sizeof(existing)) {
+	如果 (read(fd, &existing, sizeof(existing)) != sizeof(existing)) {
 		close(fd);
-		return BidStoreResult::StorageUnavailable;
+		返回 BidStoreResult::StorageUnavailable;
 	}
 
-	if (recordValid(existing)) {
+	如果 (recordValid(existing)) {
 		const BidStoreResult result = recordMatches(existing, uas_id)
 					      ? BidStoreResult::AlreadyLocked
 					      : BidStoreResult::AlreadyLockedDifferent;
 		close(fd);
-		return result;
+		返回 result;
 	}
 
-	if (!recordBlank(existing)) {
+	如果 (!recordBlank(existing)) {
 		close(fd);
-		return BidStoreResult::InvalidRecord;
+		返回 BidStoreResult::InvalidRecord;
 	}
 
 	UasIdRecord record{};
@@ -244,9 +244,9 @@ BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t ua
 
 	close(fd);
 
-	return written ? BidStoreResult::Stored : BidStoreResult::WriteError;
-#else
-	return BidStoreResult::Unsupported;
+	返回 written ? BidStoreResult::Stored : BidStoreResult::WriteError;
+#否则
+	返回 BidStoreResult::Unsupported;
 #endif
 }
 
@@ -256,46 +256,46 @@ BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t ua
 BidLockInfo BidStorage::get()
 {
 	BidStorageBackend storage;
-	return storage.get();
+	返回 storage.get();
 }
 
 BidStoreResult BidStorage::checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE])
 {
 	BidStorageBackend storage;
-	return storage.checkOrStore(ua_type, uas_id);
+	返回 storage.checkOrStore(ua_type, uas_id);
 }
 
 //
 BidStoreResult BidLock::resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE],
 				UasId &locked_id)
 {
-	if (id_type != UAS_ID_TYPE_SERIAL_NUMBER) {
-		return BidStoreResult::InvalidBasicId;
+	如果 (id_type != UAS_ID_TYPE_SERIAL_NUMBER) {
+		返回 BidStoreResult::InvalidBasicId;
 	}
 
-	if (!_loaded) {
+	如果 (!_loaded) {
 		_info = BidStorage::get();
 		_loaded = true;
 	}
 
-	if (_info.locked()) {
+	如果 (_info.locked()) {
 		locked_id = _info.id;
-		return BidStoreResult::AlreadyLocked;
+		返回 BidStoreResult::AlreadyLocked;
 	}
 
-	if (_info.state != BidLockState::Empty) {
+	如果 (_info.state != BidLockState::Empty) {
 		switch (_info.state) {
 		case BidLockState::InvalidRecord:
-			return BidStoreResult::InvalidRecord;
+			返回 BidStoreResult::InvalidRecord;
 
 		case BidLockState::StorageUnavailable:
-			return BidStoreResult::StorageUnavailable;
+			返回 BidStoreResult::StorageUnavailable;
 
 		case BidLockState::WriteError:
-			return BidStoreResult::WriteError;
+			返回 BidStoreResult::WriteError;
 
 		case BidLockState::Unsupported:
-			return BidStoreResult::Unsupported;
+			返回 BidStoreResult::Unsupported;
 
 		case BidLockState::Empty:
 		case BidLockState::Locked:
@@ -311,18 +311,18 @@ BidStoreResult BidLock::resolve(uint8_t id_type, uint8_t ua_type, const uint8_t 
 		_info.id.ua_type = ua_type;
 		memcpy(_info.id.uas_id, uas_id, UAS_ID_SIZE);
 		locked_id = _info.id;
-		return result;
+		返回 result;
 
 	case BidStoreResult::AlreadyLocked:
 	case BidStoreResult::AlreadyLockedDifferent: {
 			_info = BidStorage::get();
 
-			if (_info.locked()) {
+			如果 (_info.locked()) {
 				locked_id = _info.id;
-				return BidStoreResult::AlreadyLocked;
+				返回 BidStoreResult::AlreadyLocked;
 			}
 
-			return BidStoreResult::InvalidRecord;
+			返回 BidStoreResult::InvalidRecord;
 		}
 
 	case BidStoreResult::InvalidBasicId:
@@ -330,10 +330,10 @@ BidStoreResult BidLock::resolve(uint8_t id_type, uint8_t ua_type, const uint8_t 
 	case BidStoreResult::InvalidRecord:
 	case BidStoreResult::WriteError:
 	case BidStoreResult::Unsupported:
-		return result;
+		返回 result;
 	}
 
-	return BidStoreResult::InvalidRecord;
+	返回 BidStoreResult::InvalidRecord;
 }
 
 } // namespace open_drone_id

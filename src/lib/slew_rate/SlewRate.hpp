@@ -68,7 +68,7 @@ public:
 	 * Get value from last update of the slew rate
 	 * @return current value the slew rate is at
 	 */
-	Type getState() const { return _value; }
+	Type getState() const { 返回 _value; }
 
 	/**
 	 * Update slewrate
@@ -83,7 +83,7 @@ public:
 		const Type dvalue_max = _slew_rate * deltatime;
 		const Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
 		_value += dvalue;
-		return _value;
+		返回 _value;
 	}
 
 protected:

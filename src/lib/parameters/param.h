@@ -149,7 +149,7 @@ __EXPORT param_t	param_for_used_index(unsigned index);
  * @param param		The parameter to obtain the index for.
  * @return		The index, or -1 if the parameter does not exist.
  */
-__EXPORT int		param_get_index(param_t param);
+__EXPORT 整数		param_get_index(param_t param);
 
 /**
  * Look up the index of an used parameter.
@@ -157,7 +157,7 @@ __EXPORT int		param_get_index(param_t param);
  * @param param		The parameter to obtain the index for.
  * @return		The index of the parameter in use, or -1 if the parameter does not exist.
  */
-__EXPORT int		param_get_used_index(param_t param);
+__EXPORT 整数		param_get_used_index(param_t param);
 
 /**
  * Obtain the name of a parameter.
@@ -229,7 +229,7 @@ __EXPORT size_t		param_size(param_t param);
  * @param val		Where to return the value, assumed to point to suitable storage for the parameter type.
  * @return		Zero if the parameter's value could be returned, nonzero otherwise.
  */
-__EXPORT int		param_get(param_t param, void *val);
+__EXPORT 整数		param_get(param_t param, void *val);
 
 /**
  * Mark a parameter as used and copy its value.
@@ -241,7 +241,7 @@ __EXPORT int		param_get(param_t param, void *val);
  * @param val		Where to return the value, assumed to point to suitable storage for the parameter type.
  * @return		Zero if the parameter's value could be returned, nonzero otherwise.
  */
-__EXPORT int		param_get_mark_used(param_t param, void *val);
+__EXPORT 整数		param_get_mark_used(param_t param, void *val);
 
 /**
  * Copy the (airframe-specific) default value of a parameter.
@@ -250,7 +250,7 @@ __EXPORT int		param_get_mark_used(param_t param, void *val);
  * @param default_val		Where to return the value, assumed to point to suitable storage for the parameter type.
  * @return		Zero if the parameter's deafult value could be returned, nonzero otherwise.
  */
-__EXPORT int		param_get_default_value(param_t param, void *default_val);
+__EXPORT 整数		param_get_default_value(param_t param, void *default_val);
 
 /**
  * Copy the system-wide default value of a parameter.
@@ -259,7 +259,7 @@ __EXPORT int		param_get_default_value(param_t param, void *default_val);
  * @param default_val		Where to return the value, assumed to point to suitable storage for the parameter type.
  * @return		Zero if the parameter's deafult value could be returned, nonzero otherwise.
  */
-__EXPORT int		param_get_system_default_value(param_t param, void *default_val);
+__EXPORT 整数		param_get_system_default_value(param_t param, void *default_val);
 
 /**
  * Set the value of a parameter.
@@ -268,7 +268,7 @@ __EXPORT int		param_get_system_default_value(param_t param, void *default_val);
  * @param val		The value to set; assumed to point to a variable of the parameter type.
  * @return		Zero if the parameter's value could be set from a scalar, nonzero otherwise.
  */
-__EXPORT int		param_set(param_t param, const void *val);
+__EXPORT 整数		param_set(param_t param, const void *val);
 
 /**
  * Set the default value of a parameter.
@@ -277,7 +277,7 @@ __EXPORT int		param_set(param_t param, const void *val);
  * @param val		The default value to set; assumed to point to a variable of the parameter type.
  * @return		Zero if the parameter's default value could be set from a scalar, nonzero otherwise.
  */
-__EXPORT int		param_set_default_value(param_t param, const void *val);
+__EXPORT 整数		param_set_default_value(param_t param, const void *val);
 
 /**
  * Mark a parameter as used. Only marked parameters will be sent to a GCS.
@@ -294,7 +294,7 @@ __EXPORT void		param_set_used(param_t param);
  * @param val		The value to set; assumed to point to a variable of the parameter type.
  * @return		Zero if the parameter's value could be set from a scalar, nonzero otherwise.
  */
-__EXPORT int		param_set_no_notification(param_t param, const void *val);
+__EXPORT 整数		param_set_no_notification(param_t param, const void *val);
 
 /**
  * Set the value of a parameter, but do not update the remote system. This avoids
@@ -306,7 +306,7 @@ __EXPORT int		param_set_no_notification(param_t param, const void *val);
  * @param notify	Set this to true for the primary (to send out a param update) and false on client
  * @return		Zero if the parameter's value could be set from a scalar, nonzero otherwise.
  */
-__EXPORT int		param_set_no_remote_update(param_t param, const void *val, bool notify);
+__EXPORT 整数		param_set_no_remote_update(param_t param, const void *val, bool notify);
 
 /**
  * Notify the system about parameter changes. Can be used for example after several calls to
@@ -320,7 +320,7 @@ __EXPORT void		param_notify_changes(void);
  * @param param		A handle returned by param_find or passed by param_foreach.
  * @return		Zero on success, nonzero on failure
  */
-__EXPORT int		param_reset(param_t param);
+__EXPORT 整数		param_reset(param_t param);
 
 /**
  * Reset a parameter to its default value, but do not notify the system about the change.
@@ -328,7 +328,7 @@ __EXPORT int		param_reset(param_t param);
  * @param param		A handle returned by param_find or passed by param_foreach.
  * @return		Zero on success, nonzero on failure
  */
-__EXPORT int		param_reset_no_notification(param_t param);
+__EXPORT 整数		param_reset_no_notification(param_t param);
 
 /**
  * Reset all parameters to their default values.
@@ -342,7 +342,7 @@ __EXPORT void		param_reset_all(void);
  *							at the end to exclude parameters with a certain prefix.
  * @param num_excludes		The number of excludes provided.
  */
-__EXPORT void		param_reset_excludes(const char *excludes[], int num_excludes);
+__EXPORT void		param_reset_excludes(const char *excludes[], 整数 num_excludes);
 
 typedef bool(*param_filter_func)(param_t handle);
 
@@ -352,7 +352,7 @@ typedef bool(*param_filter_func)(param_t handle);
  * @param resets Array of param names to reset. Use a wildcard at the end to reset parameters with a certain prefix.
  * @param num_resets The number of passed reset conditions in the resets array.
  */
-__EXPORT void		param_reset_specific(const char *resets[], int num_resets);
+__EXPORT void		param_reset_specific(const char *resets[], 整数 num_resets);
 
 /**
  * Export changed parameters to a file.
@@ -363,7 +363,7 @@ __EXPORT void		param_reset_specific(const char *resets[], int num_resets);
  * 			the parameter should be exported. No filtering if nullptr is passed.
  * @return		Zero on success, nonzero on failure.
  */
-__EXPORT int		param_export(const char *filename, param_filter_func filter);
+__EXPORT 整数		param_export(const char *filename, param_filter_func filter);
 
 /**
  * Import parameters from a file, discarding any unrecognized parameters.
@@ -375,7 +375,7 @@ __EXPORT int		param_export(const char *filename, param_filter_func filter);
  *			yet), negative if an error occurred during import. Note that
  *			in the error case, parameters may be inconsistent.
  */
-__EXPORT int		param_import(int fd);
+__EXPORT 整数		param_import(整数 fd);
 
 /**
  * Load parameters from a file.
@@ -389,7 +389,7 @@ __EXPORT int		param_import(int fd);
  *			import. Note that in the error case, parameters may be
  *			inconsistent.
  */
-__EXPORT int		param_load(int fd);
+__EXPORT 整数		param_load(整数 fd);
 
 /**
  * Apply a function to each parameter.
@@ -415,7 +415,7 @@ __EXPORT void		param_foreach(void (*func)(void *arg, param_t param), void *arg, 
  *			exist.
  * @return		Zero on success.
  */
-__EXPORT int 		param_set_default_file(const char *filename);
+__EXPORT 整数 		param_set_default_file(const char *filename);
 
 /**
  * Get the default parameter file name.
@@ -433,7 +433,7 @@ __EXPORT const char	*param_get_default_file(void);
  *			exist.
  * @return		Zero on success.
  */
-__EXPORT int 		param_set_backup_file(const char *filename);
+__EXPORT 整数 		param_set_backup_file(const char *filename);
 
 /**
  * Get the backup parameter file name.
@@ -454,14 +454,14 @@ __EXPORT const char	*param_get_backup_file(void);
  *
  * @return		Zero on success, -EWOULDBLOCK if the file is busy and blocking is false.
  */
-__EXPORT int 		param_save_default(bool blocking);
+__EXPORT 整数 		param_save_default(bool blocking);
 
 /**
  * Load parameters from the default parameter file.
  *
  * @return		Zero on success.
  */
-__EXPORT int 		param_load_default(void);
+__EXPORT 整数 		param_load_default(void);
 
 /**
  * Generate the hash of all parameters and their values
@@ -506,8 +506,8 @@ __END_DECLS
 
 
 
-#if defined(__cplusplus) && !defined(PARAM_IMPLEMENTATION)
-#if defined(CONFIG_ARCH_BOARD_PX4_SITL) || 0 // set to 1 to debug param type mismatches
+#如果 defined(__cplusplus) && !defined(PARAM_IMPLEMENTATION)
+#如果 defined(CONFIG_ARCH_BOARD_PX4_SITL) || 0 // set to 1 to debug param type mismatches
 #include <cstdio>
 #include <px4_platform_common/log.h>
 
@@ -516,26 +516,26 @@ __END_DECLS
 #endif
 
 #define CHECK_PARAM_TYPE(param, type) \
-	if (param_type(param) != type) { \
+	如果 (param_type(param) != type) { \
 		/* use printf() to avoid having to use more includes */ \
 		PX4_ERR("wrong type passed to param_get() for param %s", param_name(param)); \
 	}
-#else
+#否则
 #define CHECK_PARAM_TYPE(param, type)
 #endif
 
 // param is a C-interface. This means there is no overloading, and thus no type-safety for param_get().
 // So for C++ code we redefine param_get() to inlined overloaded versions, which gives us type-safety
 // w/o having to use a different interface
-static inline int param_get_cplusplus(param_t param, float *val)
+static inline 整数 param_get_cplusplus(param_t param, float *val)
 {
 	CHECK_PARAM_TYPE(param, PARAM_TYPE_FLOAT);
-	return param_get(param, (void *)val);
+	返回 param_get(param, (void *)val);
 }
-static inline int param_get_cplusplus(param_t param, int32_t *val)
+static inline 整数 param_get_cplusplus(param_t param, int32_t *val)
 {
 	CHECK_PARAM_TYPE(param, PARAM_TYPE_INT32);
-	return param_get(param, (void *)val);
+	返回 param_get(param, (void *)val);
 }
 #undef CHECK_PARAM_TYPE
 

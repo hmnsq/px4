@@ -42,7 +42,7 @@ public:
 	{
 		Vector &self(*this);
 
-		for (size_t i = 0; i < M; i++) {
+		为 (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
@@ -58,7 +58,7 @@ public:
 	{
 		Vector &self(*this);
 
-		for (size_t i = 0; i < M; i++) {
+		为 (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
@@ -68,7 +68,7 @@ public:
 		assert(i < M);
 
 		const MatrixM1 &v = *this;
-		return v(i, 0);
+		返回 v(i, 0);
 	}
 
 	inline Type &operator()(size_t i)
@@ -76,7 +76,7 @@ public:
 		assert(i < M);
 
 		MatrixM1 &v = *this;
-		return v(i, 0);
+		返回 v(i, 0);
 	}
 
 	Type dot(const MatrixM1 &b) const
@@ -84,39 +84,39 @@ public:
 		const Vector &a(*this);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		为 (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		返回 r;
 	}
 
 	inline Type operator*(const MatrixM1 &b) const
 	{
 		const Vector &a(*this);
-		return a.dot(b);
+		返回 a.dot(b);
 	}
 
 	inline Vector operator*(Type b) const
 	{
-		return Vector(MatrixM1::operator*(b));
+		返回 Vector(MatrixM1::operator*(b));
 	}
 
 	Type norm() const
 	{
 		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		返回 Type(std::sqrt(a.dot(a)));
 	}
 
 	Type norm_squared() const
 	{
 		const Vector &a(*this);
-		return a.dot(a);
+		返回 a.dot(a);
 	}
 
 	inline Type length() const
 	{
-		return norm();
+		返回 norm();
 	}
 
 	inline void normalize()
@@ -126,28 +126,28 @@ public:
 
 	Vector unit() const
 	{
-		return (*this) / norm();
+		返回 (*this) / norm();
 	}
 
 	Vector unit_or_zero(const Type eps = Type(1e-5)) const
 	{
 		const Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		如果 (n > eps) {
+			返回 (*this) / n;
 		}
 
-		return Vector();
+		返回 Vector();
 	}
 
 	inline Vector normalized() const
 	{
-		return unit();
+		返回 unit();
 	}
 
 	bool longerThan(Type testVal) const
 	{
-		return norm_squared() > testVal * testVal;
+		返回 norm_squared() > testVal * testVal;
 	}
 
 	Vector sqrt() const
@@ -155,11 +155,11 @@ public:
 		const Vector &a(*this);
 		Vector r;
 
-		for (size_t i = 0; i < M; i++) {
+		为 (size_t i = 0; i < M; i++) {
 			r(i) = Type(std::sqrt(a(i)));
 		}
 
-		return r;
+		返回 r;
 	}
 
 	void print() const
@@ -169,7 +169,7 @@ public:
 
 	static size_t size()
 	{
-		return M;
+		返回 M;
 	}
 };
 
@@ -182,7 +182,7 @@ OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
 	char string[n];
 	vector.transpose().write_string(string, n);
 	os << string;
-	return os;
+	返回 os;
 }
 
 } // namespace matrix

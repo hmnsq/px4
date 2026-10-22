@@ -43,32 +43,32 @@ public:
 
 	bool store(param_t param, param_value_u value) override
 	{
-		return false;
+		返回 false;
 	}
 
 	bool contains(param_t param) const override
 	{
-		return param < PARAM_COUNT;
+		返回 param < PARAM_COUNT;
 	}
 
 	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
 	{
 		px4::AtomicBitset<PARAM_COUNT> set;
 
-		for (int i = 0; i < PARAM_COUNT; i++) {
+		为 (整数 i = 0; i < PARAM_COUNT; i++) {
 			set.set(i);
 		}
 
-		return set;
+		返回 set;
 	}
 
 	param_value_u get(param_t param) const override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		如果 (param >= PARAM_COUNT) {
+			返回 {0};
 		}
 
-		return px4::parameters[param].val;
+		返回 px4::parameters[param].val;
 	}
 
 	void reset(param_t param) override
@@ -81,13 +81,13 @@ public:
 		// Do nothing
 	}
 
-	int size() const override
+	整数 size() const override
 	{
-		return PARAM_COUNT;
+		返回 PARAM_COUNT;
 	}
 
-	int byteSize() const override
+	整数 byteSize() const override
 	{
-		return PARAM_COUNT * sizeof(param_info_s);
+		返回 PARAM_COUNT * sizeof(param_info_s);
 	}
 };

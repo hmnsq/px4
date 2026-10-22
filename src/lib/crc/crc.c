@@ -92,16 +92,16 @@ uint16_t crc16_add(uint16_t crc, uint8_t value)
 	const uint16_t poly = 0x1021u;
 	crc ^= (uint16_t)((uint16_t) value << 8u);
 
-	for (i = 0; i < 8; i++) {
-		if (crc & (1u << 15u)) {
+	为 (i = 0; i < 8; i++) {
+		如果 (crc & (1u << 15u)) {
 			crc = (uint16_t)((crc << 1u) ^ poly);
 
-		} else {
+		} 否则 {
 			crc = (uint16_t)(crc << 1u);
 		}
 	}
 
-	return crc;
+	返回 crc;
 }
 
 /****************************************************************************
@@ -125,11 +125,11 @@ uint16_t crc16_signature(uint16_t initial, size_t length, const uint8_t *bytes)
 {
 	size_t i;
 
-	for (i = 0u; i < length; i++) {
+	为 (i = 0u; i < length; i++) {
 		initial = crc16_add(initial, bytes[i]);
 	}
 
-	return initial ^ CRC16_OUTPUT_XOR;
+	返回 initial ^ CRC16_OUTPUT_XOR;
 }
 
 /****************************************************************************
@@ -155,18 +155,18 @@ uint32_t crc32_signature(uint32_t acc, size_t length, const uint8_t *bytes)
 	const uint8_t  bits = 8u;
 	uint8_t        w = bits;
 
-	for (i = 0u; i < length; i++) {
+	为 (i = 0u; i < length; i++) {
 		acc ^= bytes[i];
 		w = bits;
 
-		while (w--) {
+		当 (w--) {
 			const uint32_t xor = -(acc & 1);
 			acc >>= 1;
 			acc ^= (poly & xor);
 		}
 	}
 
-	return acc;
+	返回 acc;
 }
 
 
@@ -193,19 +193,19 @@ uint64_t crc64_add_word(uint64_t crc, uint32_t value)
 	uint8_t byte;
 	const uint64_t poly = 0x42F0E1EBA9EA3693ull;
 
-	for (j = 0; j < 4; j++) {
+	为 (j = 0; j < 4; j++) {
 		byte = ((uint8_t *) &value)[j];
 		crc ^= (uint64_t) byte << 56u;
 
-		for (i = 0; i < 8; i++) {
-			if (crc & (1ull << 63u)) {
+		为 (i = 0; i < 8; i++) {
+			如果 (crc & (1ull << 63u)) {
 				crc = (uint64_t)(crc << 1u) ^ poly;
 
-			} else {
+			} 否则 {
 				crc = (uint64_t)(crc << 1u);
 			}
 		}
 	}
 
-	return crc;
+	返回 crc;
 }
