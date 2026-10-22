@@ -31,95 +31,95 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include <lib/conversion/rotation.h>
-#include <lib/matrix/matrix/math.hpp>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/battery_status.h>
-#include <uORB/topics/sensor_correction.h>
+#شامل <lib/conversion/rotation.h>
+#شامل <lib/matrix/matrix/math.hpp>
+#شامل <px4_platform_common/px4_config.h>
+#شامل <px4_platform_common/log.h>
+#شامل <uORB/Subscription.hpp>
+#شامل <uORB/topics/battery_status.h>
+#شامل <uORB/topics/sensor_correction.h>
 
-namespace calibration
+نامخلا calibration
 {
-class Magnetometer
+جماعت Magnetometer
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+عوامی:
+	ساکن constexpr صحیح MAX_SENSOR_گنتی = 4;
 
-	static constexpr uint8_t DEFAULT_PRIORITY = 50;
-	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
+	ساکن constexpr uint8_t DEFAULT_ترجیح = 50;
+	ساکن constexpr uint8_t DEFAULT_EXTERNAL_ترجیح = 75;
 
-	static constexpr const char *SensorString() { return "MAG"; }
+	ساکن constexpr ثابت حرف *SensorString() { واپس "MAG"; }
 
 	Magnetometer();
-	explicit Magnetometer(uint32_t device_id);
-	Magnetometer(uint32_t device_id, bool external);
+	صریح Magnetometer(uint32_t device_id);
+	Magnetometer(uint32_t device_id, منطقی external);
 
-	~Magnetometer() = default;
+	~Magnetometer() = طےشدہ;
 
-	void PrintStatus();
+	خالی Print_حالت();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
-	void set_device_id(uint32_t device_id, bool external);
-	bool set_offset(const matrix::Vector3f &offset);
-	bool set_scale(const matrix::Vector3f &scale);
-	bool set_offdiagonal(const matrix::Vector3f &offdiagonal);
+	منطقی سیٹ_calibration_اشاریہ(صحیح calibration_اشاریہ);
+	خالی سیٹ_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
+	خالی سیٹ_device_id(uint32_t device_id, منطقی external);
+	منطقی سیٹ_انحراف(ثابت میٹرکس::Vector3f &انحراف);
+	منطقی سیٹ_scale(ثابت میٹرکس::Vector3f &scale);
+	منطقی سیٹ_offdiagonal(ثابت میٹرکس::Vector3f &offdiagonal);
 
 	/**
 	 * @brief Set the rotation enum & corresponding rotation matrix for Magnetometer
 	 *
 	 * @param rotation Rotation enum
 	 */
-	void set_rotation(Rotation rotation);
+	خالی سیٹ_rotation(Rotation rotation);
 
 	/**
 	 * @brief Set the custom rotation & rotation enum to ROTATION_CUSTOM for Magnetometer
 	 *
 	 * @param rotation Rotation euler angles
 	 */
-	void set_custom_rotation(const matrix::Eulerf &rotation);
+	خالی سیٹ_custom_rotation(ثابت میٹرکس::Eulerf &rotation);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	void disable() { _priority = 0; }
-	bool external() const { return _external; }
-	const matrix::Vector3f &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const matrix::Dcmf &rotation() const { return _rotation; }
-	const Rotation &rotation_enum() const { return _rotation_enum; }
-	const matrix::Matrix3f &scale() const { return _scale; }
+	منطقی calibrated() ثابت { واپس (_device_id != 0) && (calibration_اشاریہ_2 >= 0); }
+	uint8_t calibration_گنتی_2() ثابت { واپس calibration_گنتی; }
+	int8_t calibration_اشاریہ() ثابت { واپس calibration_اشاریہ_2; }
+	uint32_t device_id() ثابت { واپس _device_id; }
+	منطقی enabled() ثابت { واپس (ترجیح_2 > 0); }
+	خالی disable() { ترجیح_2 = 0; }
+	منطقی external() ثابت { واپس _external; }
+	ثابت میٹرکس::Vector3f &انحراف() ثابت { واپس انحراف_2; }
+	ثابت int32_t &ترجیح() ثابت { واپس ترجیح_2; }
+	ثابت میٹرکس::Dcmf &rotation() ثابت { واپس _rotation; }
+	ثابت Rotation &rotation_enum() ثابت { واپس _rotation_enum; }
+	ثابت میٹرکس::Matrix3f &scale() ثابت { واپس _scale; }
 
 	// apply offsets and scale
 	// rotate corrected measurements from sensor to body frame
-	inline matrix::Vector3f Correct(const matrix::Vector3f &data) const
+	اندرونی میٹرکس::Vector3f Correct(ثابت میٹرکس::Vector3f &ڈیٹا) ثابت
 	{
-		return _rotation * (_scale * ((data + _power * _power_compensation) - _offset));
+		واپس _rotation * (_scale * ((ڈیٹا + _power * _power_compensation) - انحراف_2));
 	}
 
 	// Compute sensor offset from bias (board frame)
-	matrix::Vector3f BiasCorrectedSensorOffset(const matrix::Vector3f &bias) const
+	میٹرکس::Vector3f Bias_Corrected_Sensor_انحراف(ثابت میٹرکس::Vector3f &bias) ثابت
 	{
 		// updated calibration offset = existing offset + bias rotated to sensor frame and unscaled
-		return _offset + (_scale.I() * _rotation.T() * bias);
+		واپس انحراف_2 + (_scale.I() * _rotation.T() * bias);
 	}
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	منطقی Parameters_بھرو();
+	منطقی ParametersSave(صحیح desired_calibration_اشاریہ = -1, منطقی force = جھوٹ);
+	خالی ParametersUpdate();
 
-	void Reset();
+	خالی Reset();
 
-	void SensorCorrectionsUpdate(bool force = false);
+	خالی SensorCorrectionsUpdate(منطقی force = جھوٹ);
 
-	void UpdatePower(float power) { _power = power; }
+	خالی UpdatePower(اعشاری power) { _power = power; }
 
-private:
+نجی:
 	uORB::Subscription _sensor_correction_sub{ORB_ID(sensor_correction)};
 
 	Rotation _rotation_enum{ROTATION_NONE};
@@ -127,23 +127,23 @@ private:
 	/**
 	 * @brief 3 x 3 Rotation matrix that translates from sensor frame (XYZ) to vehicle body frame (FRD)
 	 */
-	matrix::Dcmf _rotation;
+	میٹرکس::Dcmf _rotation;
 
-	matrix::Eulerf _rotation_custom_euler{0.f, 0.f, 0.f}; // custom rotation euler angles (optional)
+	میٹرکس::Eulerf _rotation_custom_euler{0.f, 0.f, 0.f}; // custom rotation euler angles (optional)
 
-	matrix::Vector3f _offset;
-	matrix::Matrix3f _scale;
-	matrix::Vector3f _thermal_offset;
-	matrix::Vector3f _power_compensation;
+	میٹرکس::Vector3f انحراف_2;
+	میٹرکس::Matrix3f _scale;
+	میٹرکس::Vector3f thermal_انحراف;
+	میٹرکس::Vector3f _power_compensation;
 
-	float _power{0.f};
+	اعشاری _power{0.f};
 
-	int8_t _calibration_index{-1};
+	int8_t calibration_اشاریہ_2{-1};
 	uint32_t _device_id{0};
-	int32_t _priority{-1};
+	int32_t ترجیح_2{-1};
 
-	bool _external{false};
+	منطقی _external{جھوٹ};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_گنتی{0};
 };
 } // namespace calibration

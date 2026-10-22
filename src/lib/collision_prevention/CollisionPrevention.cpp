@@ -37,165 +37,165 @@
  *
  */
 
-#include "CollisionPrevention.hpp"
-#include "ObstacleMath.hpp"
-#include <px4_platform_common/events.h>
-#include <math.h>
+#شامل "CollisionPrevention.hpp"
+#شامل "ObstacleMath.hpp"
+#شامل <px4_platform_common/events.h>
+#شامل <math.h>
 
 
-using namespace matrix;
+استعمال نامخلا میٹرکس;
 
-CollisionPrevention::CollisionPrevention(ModuleParams *parent) :
-	ModuleParams(parent)
+CollisionPrevention::CollisionPrevention(ModuleParams *والد) :
+	ModuleParams(والد)
 {
-	static_assert(BIN_SIZE >= 5, "BIN_SIZE must be at least 5");
-	static_assert(360 % BIN_SIZE == 0, "BIN_SIZE must divide 360 evenly");
+	static_assert(BIN_سائز >= 5, "BIN_SIZE must be at least 5");
+	static_assert(360 % BIN_سائز == 0, "BIN_SIZE must divide 360 evenly");
 
 	// initialize internal obstacle map
-	_obstacle_map_body_frame.frame = obstacle_distance_s::MAV_FRAME_BODY_FRD;
-	_obstacle_map_body_frame.increment = BIN_SIZE;
-	_obstacle_map_body_frame.min_distance = UINT16_MAX;
+	obstacle_map_body_چوکھٹا.چوکھٹا = obstacle_فاصلہ_s::MAV_چوکھٹا_BODY_FRD;
+	obstacle_map_body_چوکھٹا.increment = BIN_سائز;
+	obstacle_map_body_چوکھٹا.min_فاصلہ = UINT16_MAX;
 
-	for (uint32_t i = 0 ; i < BIN_COUNT; i++) {
-		_obstacle_map_body_frame.distances[i] = UINT16_MAX;
+	برائے (uint32_t i = 0 ; i < BIN_گنتی; i++) {
+		obstacle_map_body_چوکھٹا.distances[i] = UINT16_MAX;
 	}
 }
 
-hrt_abstime CollisionPrevention::getTime()
+hrt_abstime CollisionPrevention::get_وقت()
 {
-	return hrt_absolute_time();
+	واپس hrt_absolute_وقت();
 }
 
-hrt_abstime CollisionPrevention::getElapsedTime(const hrt_abstime *ptr)
+hrt_abstime CollisionPrevention::get_Elapsed_وقت(ثابت hrt_abstime *ptr)
 {
-	return hrt_absolute_time() - *ptr;
+	واپس hrt_absolute_وقت() - *ptr;
 }
 
-bool CollisionPrevention::is_active()
+منطقی CollisionPrevention::is_فعال()
 {
-	bool activated = _param_cp_dist.get() > 0;
+	منطقی activated = _param_cp_dist.get() > 0;
 
-	if (activated && !_was_active) {
-		_time_activated = getTime();
+	اگر (activated && !was_فعال) {
+		وقت_activated = get_وقت();
 	}
 
-	_was_active = activated;
-	return activated;
+	was_فعال = activated;
+	واپس activated;
 }
 
-void CollisionPrevention::modifySetpoint(Vector2f &setpoint_accel, const Vector2f &setpoint_vel)
+خالی CollisionPrevention::modifySetpoint(Vector2f &setpoint_accel, ثابت Vector2f &setpoint_vel)
 {
-	if (_vehicle_attitude_sub.updated()) {
+	اگر (_vehicle_attitude_sub.updated()) {
 		vehicle_attitude_s vehicle_attitude;
 
-		if (_vehicle_attitude_sub.copy(&vehicle_attitude)) {
+		اگر (_vehicle_attitude_sub.copy(&vehicle_attitude)) {
 			_vehicle_attitude = Quatf(vehicle_attitude.q);
 			_vehicle_yaw = Eulerf(_vehicle_attitude).psi();
 		}
 	}
 
 	//calculate movement constraints based on range data
-	const Vector2f original_setpoint = setpoint_accel;
+	ثابت Vector2f original_setpoint = setpoint_accel;
 	_updateObstacleMap();
-	_updateObstacleData();
+	update_Obstacle_ڈیٹا();
 	_calculateConstrainedSetpoint(setpoint_accel, setpoint_vel);
 
 	// publish constraints
 	collision_constraints_s	constraints{};
-	original_setpoint.copyTo(constraints.original_setpoint);
-	setpoint_accel.copyTo(constraints.adapted_setpoint);
-	constraints.timestamp = getTime();
+	original_setpoint.copy_مقصد(constraints.original_setpoint);
+	setpoint_accel.copy_مقصد(constraints.adapted_setpoint);
+	constraints.timestamp = get_وقت();
 	_constraints_pub.publish(constraints);
 }
 
-void CollisionPrevention::_updateObstacleMap()
+خالی CollisionPrevention::_updateObstacleMap()
 {
 	// add distance sensor data
-	for (auto &dist_sens_sub : _distance_sensor_subs) {
-		distance_sensor_s distance_sensor;
+	برائے (خودکار &dist_sens_sub : فاصلہ_sensor_subs) {
+		فاصلہ_sensor_s فاصلہ_sensor;
 
-		if (dist_sens_sub.update(&distance_sensor)) {
+		اگر (dist_sens_sub.update(&فاصلہ_sensor)) {
 			// consider only instances with valid data and orientations useful for collision prevention
-			if ((getElapsedTime(&distance_sensor.timestamp) < RANGE_STREAM_TIMEOUT_US) &&
-			    (distance_sensor.orientation != distance_sensor_s::ROTATION_DOWNWARD_FACING) &&
-			    (distance_sensor.orientation != distance_sensor_s::ROTATION_UPWARD_FACING)) {
+			اگر ((get_Elapsed_وقت(&فاصلہ_sensor.timestamp) < RANGE_دھارا_TIMEOUT_US) &&
+			    (فاصلہ_sensor.orientation != فاصلہ_sensor_s::ROTATION_DOWNWARD_FACING) &&
+			    (فاصلہ_sensor.orientation != فاصلہ_sensor_s::ROTATION_UPWARD_FACING)) {
 
 				// update message description
-				_obstacle_map_body_frame.timestamp = math::max(_obstacle_map_body_frame.timestamp, distance_sensor.timestamp);
-				_obstacle_map_body_frame.max_distance = math::max(_obstacle_map_body_frame.max_distance,
-									(uint16_t)(distance_sensor.max_distance * 100.0f));
-				_obstacle_map_body_frame.min_distance = math::min(_obstacle_map_body_frame.min_distance,
-									(uint16_t)(distance_sensor.min_distance * 100.0f));
+				obstacle_map_body_چوکھٹا.timestamp = math::max(obstacle_map_body_چوکھٹا.timestamp, فاصلہ_sensor.timestamp);
+				obstacle_map_body_چوکھٹا.max_فاصلہ = math::max(obstacle_map_body_چوکھٹا.max_فاصلہ,
+									(uint16_t)(فاصلہ_sensor.max_فاصلہ * 100.0f));
+				obstacle_map_body_چوکھٹا.min_فاصلہ = math::min(obstacle_map_body_چوکھٹا.min_فاصلہ,
+									(uint16_t)(فاصلہ_sensor.min_فاصلہ * 100.0f));
 
-				_addDistanceSensorData(distance_sensor, _vehicle_attitude);
+				جوڑو_فاصلہ_Sensor_ڈیٹا(فاصلہ_sensor, _vehicle_attitude);
 			}
 		}
 	}
 
 	// add obstacle distance data
-	if (_sub_obstacle_distance.update()) {
-		const obstacle_distance_s &obstacle_distance = _sub_obstacle_distance.get();
+	اگر (sub_obstacle_فاصلہ.update()) {
+		ثابت obstacle_فاصلہ_s &obstacle_فاصلہ = sub_obstacle_فاصلہ.get();
 
 		// Update map with obstacle data if the data is not stale
-		if (getElapsedTime(&obstacle_distance.timestamp) < RANGE_STREAM_TIMEOUT_US && obstacle_distance.increment > 0.f) {
+		اگر (get_Elapsed_وقت(&obstacle_فاصلہ.timestamp) < RANGE_دھارا_TIMEOUT_US && obstacle_فاصلہ.increment > 0.f) {
 			//update message description
-			_obstacle_map_body_frame.timestamp = math::max(_obstacle_map_body_frame.timestamp, obstacle_distance.timestamp);
-			_obstacle_map_body_frame.max_distance = math::max(_obstacle_map_body_frame.max_distance,
-								obstacle_distance.max_distance);
-			_obstacle_map_body_frame.min_distance = math::min(_obstacle_map_body_frame.min_distance,
-								obstacle_distance.min_distance);
-			_addObstacleSensorData(obstacle_distance, _vehicle_yaw);
+			obstacle_map_body_چوکھٹا.timestamp = math::max(obstacle_map_body_چوکھٹا.timestamp, obstacle_فاصلہ.timestamp);
+			obstacle_map_body_چوکھٹا.max_فاصلہ = math::max(obstacle_map_body_چوکھٹا.max_فاصلہ,
+								obstacle_فاصلہ.max_فاصلہ);
+			obstacle_map_body_چوکھٹا.min_فاصلہ = math::min(obstacle_map_body_چوکھٹا.min_فاصلہ,
+								obstacle_فاصلہ.min_فاصلہ);
+			جوڑو_Obstacle_Sensor_ڈیٹا(obstacle_فاصلہ, _vehicle_yaw);
 		}
 	}
 
 	// publish fused obtacle distance message with data from offboard obstacle_distance and distance sensor
-	_obstacle_distance_fused_pub.publish(_obstacle_map_body_frame);
+	obstacle_فاصلہ_fused_pub.publish(obstacle_map_body_چوکھٹا);
 }
 
-void CollisionPrevention::_updateObstacleData()
+خالی CollisionPrevention::update_Obstacle_ڈیٹا()
 {
-	_obstacle_data_present = false;
+	obstacle_ڈیٹا_present = جھوٹ;
 	_closest_dist = UINT16_MAX;
-	_closest_dist_dir.setZero();
+	_closest_dist_dir.سیٹ_Zero();
 
-	for (int i = 0; i < BIN_COUNT; i++) {
+	برائے (صحیح i = 0; i < BIN_گنتی; i++) {
 		// if the data is stale, reset the bin
-		if (getTime() - _data_timestamps[i] > RANGE_STREAM_TIMEOUT_US) {
-			_obstacle_map_body_frame.distances[i] = UINT16_MAX;
+		اگر (get_وقت() - ڈیٹا_timestamps[i] > RANGE_دھارا_TIMEOUT_US) {
+			obstacle_map_body_چوکھٹا.distances[i] = UINT16_MAX;
 		}
 
-		float angle = wrap_2pi(_vehicle_yaw + math::radians((float)i * BIN_SIZE +
-				       _obstacle_map_body_frame.angle_offset));
-		const Vector2f bin_direction = {cosf(angle), sinf(angle)};
-		const uint16_t bin_distance = _obstacle_map_body_frame.distances[i];
+		اعشاری angle = wrap_2pi(_vehicle_yaw + math::radians((اعشاری)i * BIN_سائز +
+				       obstacle_map_body_چوکھٹا.angle_انحراف));
+		ثابت Vector2f bin_direction = {cosf(angle), sinf(angle)};
+		ثابت uint16_t bin_فاصلہ = obstacle_map_body_چوکھٹا.distances[i];
 
 		// check if there is avaliable data and the data of the map is not stale
-		if (bin_distance < UINT16_MAX
-		    && (getTime() - _obstacle_map_body_frame.timestamp) < RANGE_STREAM_TIMEOUT_US) {
-			_obstacle_data_present = true;
+		اگر (bin_فاصلہ < UINT16_MAX
+		    && (get_وقت() - obstacle_map_body_چوکھٹا.timestamp) < RANGE_دھارا_TIMEOUT_US) {
+			obstacle_ڈیٹا_present = سچ;
 		}
 
-		if (bin_distance * 0.01f < _closest_dist) {
-			_closest_dist = bin_distance * 0.01f;
+		اگر (bin_فاصلہ * 0.01f < _closest_dist) {
+			_closest_dist = bin_فاصلہ * 0.01f;
 			_closest_dist_dir = bin_direction;
 		}
 	}
 }
 
-void CollisionPrevention::_calculateConstrainedSetpoint(Vector2f &setpoint_accel, const Vector2f &setpoint_vel)
+خالی CollisionPrevention::_calculateConstrainedSetpoint(Vector2f &setpoint_accel, ثابت Vector2f &setpoint_vel)
 {
-	const float setpoint_length = setpoint_accel.norm();
-	_min_dist_to_keep = math::max(_obstacle_map_body_frame.min_distance / 100.0f, _param_cp_dist.get());
+	ثابت اعشاری setpoint_لمبائی = setpoint_accel.norm();
+	min_dist_مقصد_keep = math::max(obstacle_map_body_چوکھٹا.min_فاصلہ / 100.0f, _param_cp_dist.get());
 
-	const hrt_abstime now = getTime();
+	ثابت hrt_abstime now = get_وقت();
 
-	const bool is_stick_deflected = setpoint_length > 0.001f;
+	ثابت منطقی is_stick_deflected = setpoint_لمبائی > 0.001f;
 
-	if (_obstacle_data_present && is_stick_deflected) {
+	اگر (obstacle_ڈیٹا_present && is_stick_deflected) {
 
 		_transformSetpoint(setpoint_accel);
 
-		float vel_comp_accel = INFINITY;
+		اعشاری vel_comp_accel = INFINITY;
 		Vector2f vel_comp_accel_dir{};
 
 		_getVelocityCompensationAcceleration(_vehicle_yaw, setpoint_vel, now,
@@ -203,70 +203,70 @@ void CollisionPrevention::_calculateConstrainedSetpoint(Vector2f &setpoint_accel
 
 		Vector2f constr_accel_setpoint{};
 
-		if (_checkSetpointDirectionFeasability()) {
-			constr_accel_setpoint = _constrainAccelerationSetpoint(setpoint_length);
+		اگر (_checkSetpointDirectionFeasability()) {
+			constr_accel_setpoint = _constrainAccelerationSetpoint(setpoint_لمبائی);
 		}
 
 		setpoint_accel = constr_accel_setpoint + vel_comp_accel * vel_comp_accel_dir;
 
-	} else if (!_obstacle_data_present) {
+	} ورنہ اگر (!obstacle_ڈیٹا_present) {
 		// allow no movement
-		setpoint_accel.setZero();
+		setpoint_accel.سیٹ_Zero();
 
 		// if distance data is stale, switch to Loiter
-		if (getElapsedTime(&_last_timeout_warning) > 1_s && getElapsedTime(&_time_activated) > 1_s) {
-			if ((now - _obstacle_map_body_frame.timestamp) > TIMEOUT_HOLD_US &&
-			    getElapsedTime(&_time_activated) > TIMEOUT_HOLD_US) {
+		اگر (get_Elapsed_وقت(&آخری_timeout_warning) > 1_s && get_Elapsed_وقت(&وقت_activated) > 1_s) {
+			اگر ((now - obstacle_map_body_چوکھٹا.timestamp) > TIMEOUT_HOLD_US &&
+			    get_Elapsed_وقت(&وقت_activated) > TIMEOUT_HOLD_US) {
 				_publishVehicleCmdDoLoiter();
 			}
 
 			PX4_WARN("No obstacle data, not moving...");
-			_last_timeout_warning = now;
+			آخری_timeout_warning = now;
 		}
 	}
 }
 
 // TODO this gives false output if the offset is not a multiple of the resolution. to be fixed...
-void CollisionPrevention::_addObstacleSensorData(const obstacle_distance_s &obstacle, const float vehicle_yaw)
+خالی CollisionPrevention::جوڑو_Obstacle_Sensor_ڈیٹا(ثابت obstacle_فاصلہ_s &obstacle, ثابت اعشاری vehicle_yaw)
 {
 
-	float vehicle_orientation_deg = math::degrees(vehicle_yaw);
+	اعشاری vehicle_orientation_deg = math::degrees(vehicle_yaw);
 
 
-	if (obstacle.frame == obstacle.MAV_FRAME_GLOBAL || obstacle.frame == obstacle.MAV_FRAME_LOCAL_NED) {
+	اگر (obstacle.چوکھٹا == obstacle.MAV_چوکھٹا_GLOBAL || obstacle.چوکھٹا == obstacle.MAV_چوکھٹا_LOCAL_NED) {
 		// Obstacle message arrives in local_origin frame (north aligned)
 		// corresponding data index (convert to world frame and shift by msg offset)
-		for (int i = 0; i < BIN_COUNT; i++) {
-			for (int j = 0; (j < 360 / obstacle.increment) && (j < BIN_COUNT); j++) {
-				float bin_lower_angle = ObstacleMath::get_lower_bound_angle(i, _obstacle_map_body_frame.increment,
-							_obstacle_map_body_frame.angle_offset);
-				float bin_upper_angle = ObstacleMath::get_lower_bound_angle(i + 1, _obstacle_map_body_frame.increment,
-							_obstacle_map_body_frame.angle_offset);
-				float msg_lower_angle = ObstacleMath::get_lower_bound_angle(j, obstacle.increment,
-							obstacle.angle_offset - vehicle_orientation_deg);
-				float msg_upper_angle = ObstacleMath::get_lower_bound_angle(j + 1, obstacle.increment,
-							obstacle.angle_offset - vehicle_orientation_deg);
+		برائے (صحیح i = 0; i < BIN_گنتی; i++) {
+			برائے (صحیح j = 0; (j < 360 / obstacle.increment) && (j < BIN_گنتی); j++) {
+				اعشاری bin_زیریں_angle = ObstacleMath::get_زیریں_bound_angle(i, obstacle_map_body_چوکھٹا.increment,
+							obstacle_map_body_چوکھٹا.angle_انحراف);
+				اعشاری bin_بالائی_angle = ObstacleMath::get_زیریں_bound_angle(i + 1, obstacle_map_body_چوکھٹا.increment,
+							obstacle_map_body_چوکھٹا.angle_انحراف);
+				اعشاری پیغام_زیریں_angle = ObstacleMath::get_زیریں_bound_angle(j, obstacle.increment,
+							obstacle.angle_انحراف - vehicle_orientation_deg);
+				اعشاری پیغام_بالائی_angle = ObstacleMath::get_زیریں_bound_angle(j + 1, obstacle.increment,
+							obstacle.angle_انحراف - vehicle_orientation_deg);
 
 				// if a bin stretches over the 0/360 degree line, adjust the angles
-				if (bin_lower_angle > bin_upper_angle) {
-					bin_lower_angle -= 360;
+				اگر (bin_زیریں_angle > bin_بالائی_angle) {
+					bin_زیریں_angle -= 360;
 				}
 
-				if (msg_lower_angle > msg_upper_angle) {
-					msg_lower_angle -= 360;
+				اگر (پیغام_زیریں_angle > پیغام_بالائی_angle) {
+					پیغام_زیریں_angle -= 360;
 				}
 
 				// Check for overlaps.
-				if ((msg_lower_angle > bin_lower_angle && msg_lower_angle < bin_upper_angle) ||
-				    (msg_upper_angle > bin_lower_angle && msg_upper_angle < bin_upper_angle) ||
-				    (msg_lower_angle <= bin_lower_angle && msg_upper_angle >= bin_upper_angle) ||
-				    (msg_lower_angle >= bin_lower_angle && msg_upper_angle <= bin_upper_angle)) {
-					if (obstacle.distances[j] != UINT16_MAX) {
-						if (_enterData(i, obstacle.max_distance * 0.01f, obstacle.distances[j] * 0.01f)) {
-							_obstacle_map_body_frame.distances[i] = obstacle.distances[j];
-							_data_timestamps[i] = _obstacle_map_body_frame.timestamp;
-							_data_maxranges[i] = obstacle.max_distance;
-							_data_fov[i] = 1;
+				اگر ((پیغام_زیریں_angle > bin_زیریں_angle && پیغام_زیریں_angle < bin_بالائی_angle) ||
+				    (پیغام_بالائی_angle > bin_زیریں_angle && پیغام_بالائی_angle < bin_بالائی_angle) ||
+				    (پیغام_زیریں_angle <= bin_زیریں_angle && پیغام_بالائی_angle >= bin_بالائی_angle) ||
+				    (پیغام_زیریں_angle >= bin_زیریں_angle && پیغام_بالائی_angle <= bin_بالائی_angle)) {
+					اگر (obstacle.distances[j] != UINT16_MAX) {
+						اگر (enter_ڈیٹا(i, obstacle.max_فاصلہ * 0.01f, obstacle.distances[j] * 0.01f)) {
+							obstacle_map_body_چوکھٹا.distances[i] = obstacle.distances[j];
+							ڈیٹا_timestamps[i] = obstacle_map_body_چوکھٹا.timestamp;
+							ڈیٹا_maxranges[i] = obstacle.max_فاصلہ;
+							ڈیٹا_fov[i] = 1;
 						}
 					}
 				}
@@ -274,39 +274,39 @@ void CollisionPrevention::_addObstacleSensorData(const obstacle_distance_s &obst
 			}
 		}
 
-	} else if (obstacle.frame == obstacle.MAV_FRAME_BODY_FRD) {
+	} ورنہ اگر (obstacle.چوکھٹا == obstacle.MAV_چوکھٹا_BODY_FRD) {
 		// Obstacle message arrives in body frame (front aligned)
 		// corresponding data index (shift by msg offset)
-		for (int i = 0; i < BIN_COUNT; i++) {
-			for (int j = 0; (j < 360 / obstacle.increment) && (j < BIN_COUNT); j++) {
-				float bin_lower_angle = ObstacleMath::get_lower_bound_angle(i, _obstacle_map_body_frame.increment,
-							_obstacle_map_body_frame.angle_offset);
-				float bin_upper_angle = ObstacleMath::get_lower_bound_angle(i + 1, _obstacle_map_body_frame.increment,
-							_obstacle_map_body_frame.angle_offset);
-				float msg_lower_angle = ObstacleMath::get_lower_bound_angle(j, obstacle.increment, obstacle.angle_offset);
-				float msg_upper_angle = ObstacleMath::get_lower_bound_angle(j + 1, obstacle.increment, obstacle.angle_offset);
+		برائے (صحیح i = 0; i < BIN_گنتی; i++) {
+			برائے (صحیح j = 0; (j < 360 / obstacle.increment) && (j < BIN_گنتی); j++) {
+				اعشاری bin_زیریں_angle = ObstacleMath::get_زیریں_bound_angle(i, obstacle_map_body_چوکھٹا.increment,
+							obstacle_map_body_چوکھٹا.angle_انحراف);
+				اعشاری bin_بالائی_angle = ObstacleMath::get_زیریں_bound_angle(i + 1, obstacle_map_body_چوکھٹا.increment,
+							obstacle_map_body_چوکھٹا.angle_انحراف);
+				اعشاری پیغام_زیریں_angle = ObstacleMath::get_زیریں_bound_angle(j, obstacle.increment, obstacle.angle_انحراف);
+				اعشاری پیغام_بالائی_angle = ObstacleMath::get_زیریں_bound_angle(j + 1, obstacle.increment, obstacle.angle_انحراف);
 
 				// if a bin stretches over the 0/360 degree line, adjust the angles
-				if (bin_lower_angle > bin_upper_angle) {
-					bin_lower_angle -= 360;
+				اگر (bin_زیریں_angle > bin_بالائی_angle) {
+					bin_زیریں_angle -= 360;
 				}
 
-				if (msg_lower_angle > msg_upper_angle) {
-					msg_lower_angle -= 360;
+				اگر (پیغام_زیریں_angle > پیغام_بالائی_angle) {
+					پیغام_زیریں_angle -= 360;
 				}
 
 				// Check for overlaps.
-				if ((msg_lower_angle > bin_lower_angle && msg_lower_angle < bin_upper_angle) ||
-				    (msg_upper_angle > bin_lower_angle && msg_upper_angle < bin_upper_angle) ||
-				    (msg_lower_angle <= bin_lower_angle && msg_upper_angle >= bin_upper_angle) ||
-				    (msg_lower_angle >= bin_lower_angle && msg_upper_angle <= bin_upper_angle)) {
-					if (obstacle.distances[j] != UINT16_MAX) {
+				اگر ((پیغام_زیریں_angle > bin_زیریں_angle && پیغام_زیریں_angle < bin_بالائی_angle) ||
+				    (پیغام_بالائی_angle > bin_زیریں_angle && پیغام_بالائی_angle < bin_بالائی_angle) ||
+				    (پیغام_زیریں_angle <= bin_زیریں_angle && پیغام_بالائی_angle >= bin_بالائی_angle) ||
+				    (پیغام_زیریں_angle >= bin_زیریں_angle && پیغام_بالائی_angle <= bin_بالائی_angle)) {
+					اگر (obstacle.distances[j] != UINT16_MAX) {
 
-						if (_enterData(i, obstacle.max_distance * 0.01f, obstacle.distances[j] * 0.01f)) {
-							_obstacle_map_body_frame.distances[i] = obstacle.distances[j];
-							_data_timestamps[i] = _obstacle_map_body_frame.timestamp;
-							_data_maxranges[i] = obstacle.max_distance;
-							_data_fov[i] = 1;
+						اگر (enter_ڈیٹا(i, obstacle.max_فاصلہ * 0.01f, obstacle.distances[j] * 0.01f)) {
+							obstacle_map_body_چوکھٹا.distances[i] = obstacle.distances[j];
+							ڈیٹا_timestamps[i] = obstacle_map_body_چوکھٹا.timestamp;
+							ڈیٹا_maxranges[i] = obstacle.max_فاصلہ;
+							ڈیٹا_fov[i] = 1;
 						}
 					}
 				}
@@ -314,16 +314,16 @@ void CollisionPrevention::_addObstacleSensorData(const obstacle_distance_s &obst
 			}
 		}
 
-	} else {
+	} ورنہ {
 		mavlink_log_critical(&_mavlink_log_pub, "Obstacle message received in unsupported frame %i\t",
-				     obstacle.frame);
+				     obstacle.چوکھٹا);
 		events::send<uint8_t>(events::ID("col_prev_unsup_frame"), events::Log::Error,
-				      "Obstacle message received in unsupported frame {1}", obstacle.frame);
+				      "Obstacle message received in unsupported frame {1}", obstacle.چوکھٹا);
 	}
 }
 
-bool
-CollisionPrevention::_enterData(int map_index, float sensor_range, float sensor_reading)
+منطقی
+CollisionPrevention::enter_ڈیٹا(صحیح map_اشاریہ, اعشاری sensor_range, اعشاری sensor_reading)
 {
 	//use data from this sensor if:
 	//1. this sensor data is in range, the bin contains already valid data and this data is coming from the same or less range sensor
@@ -333,239 +333,239 @@ CollisionPrevention::_enterData(int map_index, float sensor_range, float sensor_
 
 	uint16_t sensor_range_cm = static_cast<uint16_t>(lroundf(100.0f * sensor_range)); //convert to cm
 
-	if (sensor_reading < sensor_range) {
-		if ((_obstacle_map_body_frame.distances[map_index] < _data_maxranges[map_index]
-		     && sensor_range_cm <= _data_maxranges[map_index])
-		    || _obstacle_map_body_frame.distances[map_index] >= _data_maxranges[map_index]) {
+	اگر (sensor_reading < sensor_range) {
+		اگر ((obstacle_map_body_چوکھٹا.distances[map_اشاریہ] < ڈیٹا_maxranges[map_اشاریہ]
+		     && sensor_range_cm <= ڈیٹا_maxranges[map_اشاریہ])
+		    || obstacle_map_body_چوکھٹا.distances[map_اشاریہ] >= ڈیٹا_maxranges[map_اشاریہ]) {
 
-			return true;
+			واپس سچ;
 		}
 
-	} else {
-		if ((_obstacle_map_body_frame.distances[map_index] >= _data_maxranges[map_index]
-		     && sensor_range_cm >= _data_maxranges[map_index])
-		    || (_obstacle_map_body_frame.distances[map_index] < _data_maxranges[map_index]
-			&& sensor_range_cm == _data_maxranges[map_index])) {
+	} ورنہ {
+		اگر ((obstacle_map_body_چوکھٹا.distances[map_اشاریہ] >= ڈیٹا_maxranges[map_اشاریہ]
+		     && sensor_range_cm >= ڈیٹا_maxranges[map_اشاریہ])
+		    || (obstacle_map_body_چوکھٹا.distances[map_اشاریہ] < ڈیٹا_maxranges[map_اشاریہ]
+			&& sensor_range_cm == ڈیٹا_maxranges[map_اشاریہ])) {
 
-			return true;
+			واپس سچ;
 		}
 	}
 
-	return false;
+	واپس جھوٹ;
 }
 
-bool
+منطقی
 CollisionPrevention::_checkSetpointDirectionFeasability()
 {
-	if (_setpoint_index < 0 || _setpoint_index >= BIN_COUNT) {
-		return false; // treat out-of-bounds as unsafe
+	اگر (setpoint_اشاریہ < 0 || setpoint_اشاریہ >= BIN_گنتی) {
+		واپس جھوٹ; // treat out-of-bounds as unsafe
 	}
 
-	const bool no_data = (_obstacle_map_body_frame.distances[_setpoint_index] == UINT16_MAX);
-	const bool allow_movement_towards_no_data = _param_cp_go_no_data.get();
-	const bool fov_at_setpoint = _data_fov[_setpoint_index];
+	ثابت منطقی no_ڈیٹا = (obstacle_map_body_چوکھٹا.distances[setpoint_اشاریہ] == UINT16_MAX);
+	ثابت منطقی allow_movement_towards_no_ڈیٹا = param_cp_go_no_ڈیٹا.get();
+	ثابت منطقی fov_at_setpoint = ڈیٹا_fov[setpoint_اشاریہ];
 
 	// The setpoint is feasible if:
 	// 1. There is actual data at the setpoint (no_data == false), OR
 	// 2. There is no data, but movement into no-data bins is allowed and the setpoint is outside the sensor FOV.
-	return !no_data || (allow_movement_towards_no_data && !fov_at_setpoint);
+	واپس !no_ڈیٹا || (allow_movement_towards_no_ڈیٹا && !fov_at_setpoint);
 }
 
-void
-CollisionPrevention::_transformSetpoint(const Vector2f &setpoint)
+خالی
+CollisionPrevention::_transformSetpoint(ثابت Vector2f &setpoint)
 {
-	const float sp_angle_body_frame = atan2f(setpoint(1), setpoint(0)) - _vehicle_yaw;
-	const float sp_angle_with_offset_deg = ObstacleMath::wrap_360(math::degrees(sp_angle_body_frame) -
-					       _obstacle_map_body_frame.angle_offset);
-	_setpoint_index = floor(sp_angle_with_offset_deg / BIN_SIZE);
+	ثابت اعشاری sp_angle_body_چوکھٹا = atan2f(setpoint(1), setpoint(0)) - _vehicle_yaw;
+	ثابت اعشاری sp_angle_with_انحراف_deg = ObstacleMath::wrap_360(math::degrees(sp_angle_body_چوکھٹا) -
+					       obstacle_map_body_چوکھٹا.angle_انحراف);
+	setpoint_اشاریہ = floor(sp_angle_with_انحراف_deg / BIN_سائز);
 	// change setpoint direction slightly (max by _param_cp_guide_ang degrees) to help guide through narrow gaps
 	_setpoint_dir = setpoint.unit_or_zero();
-	_adaptSetpointDirection(_setpoint_dir, _setpoint_index, _vehicle_yaw);
+	_adaptSetpointDirection(_setpoint_dir, setpoint_اشاریہ, _vehicle_yaw);
 }
 
-void
-CollisionPrevention::_addDistanceSensorData(distance_sensor_s &distance_sensor, const Quatf &vehicle_attitude)
+خالی
+CollisionPrevention::جوڑو_فاصلہ_Sensor_ڈیٹا(فاصلہ_sensor_s &فاصلہ_sensor, ثابت Quatf &vehicle_attitude)
 {
 	// clamp at maximum sensor range
-	float distance_reading = math::min(distance_sensor.current_distance, distance_sensor.max_distance);
+	اعشاری فاصلہ_reading = math::min(فاصلہ_sensor.current_فاصلہ, فاصلہ_sensor.max_فاصلہ);
 
 	// negative values indicate out of range but valid measurements.
-	if (fabsf(distance_sensor.current_distance - -1.f) < FLT_EPSILON && distance_sensor.signal_quality == 0) {
-		distance_reading = distance_sensor.max_distance;
+	اگر (fabsf(فاصلہ_sensor.current_فاصلہ - -1.f) < FLT_EPSILON && فاصلہ_sensor.signal_quality == 0) {
+		فاصلہ_reading = فاصلہ_sensor.max_فاصلہ;
 	}
 
 	// discard values below min range
-	if (distance_reading > distance_sensor.min_distance) {
-		float sensor_yaw_body_rad = ObstacleMath::sensor_orientation_to_yaw_offset(static_cast<ObstacleMath::SensorOrientation>
-					    (distance_sensor.orientation), distance_sensor.q);
-		float sensor_yaw_body_deg = math::degrees(wrap_2pi(sensor_yaw_body_rad));
+	اگر (فاصلہ_reading > فاصلہ_sensor.min_فاصلہ) {
+		اعشاری sensor_yaw_body_rad = ObstacleMath::sensor_orientation_مقصد_yaw_انحراف(static_cast<ObstacleMath::SensorOrientation>
+					    (فاصلہ_sensor.orientation), فاصلہ_sensor.q);
+		اعشاری sensor_yaw_body_deg = math::degrees(wrap_2pi(sensor_yaw_body_rad));
 
 		// calculate the field of view boundary bin indices
-		int lower_bound = (int)round((sensor_yaw_body_deg  - math::degrees(distance_sensor.h_fov / 2.0f)) / BIN_SIZE);
-		int upper_bound = (int)round((sensor_yaw_body_deg  + math::degrees(distance_sensor.h_fov / 2.0f)) / BIN_SIZE);
+		صحیح زیریں_bound = (صحیح)round((sensor_yaw_body_deg  - math::degrees(فاصلہ_sensor.h_fov / 2.0f)) / BIN_سائز);
+		صحیح بالائی_bound = (صحیح)round((sensor_yaw_body_deg  + math::degrees(فاصلہ_sensor.h_fov / 2.0f)) / BIN_سائز);
 
-		if (distance_reading < distance_sensor.max_distance) {
-			ObstacleMath::project_distance_on_horizontal_plane(distance_reading, sensor_yaw_body_rad, vehicle_attitude);
+		اگر (فاصلہ_reading < فاصلہ_sensor.max_فاصلہ) {
+			ObstacleMath::project_فاصلہ_on_horizontal_plane(فاصلہ_reading, sensor_yaw_body_rad, vehicle_attitude);
 		}
 
-		uint16_t sensor_range = static_cast<uint16_t>(lroundf(100.0f * distance_sensor.max_distance)); // convert to cm
+		uint16_t sensor_range = static_cast<uint16_t>(lroundf(100.0f * فاصلہ_sensor.max_فاصلہ)); // convert to cm
 
-		for (int bin = lower_bound; bin <= upper_bound; ++bin) {
-			int wrapped_bin = ObstacleMath::wrap_bin(bin, BIN_COUNT);
+		برائے (صحیح bin = زیریں_bound; bin <= بالائی_bound; ++bin) {
+			صحیح wrapped_bin = ObstacleMath::wrap_bin(bin, BIN_گنتی);
 
-			if (_enterData(wrapped_bin, distance_sensor.max_distance, distance_reading)) {
-				_obstacle_map_body_frame.distances[wrapped_bin] = static_cast<uint16_t>(lroundf(100.0f * distance_reading));
-				_data_timestamps[wrapped_bin] = _obstacle_map_body_frame.timestamp;
-				_data_maxranges[wrapped_bin] = sensor_range;
-				_data_fov[wrapped_bin] = 1;
+			اگر (enter_ڈیٹا(wrapped_bin, فاصلہ_sensor.max_فاصلہ, فاصلہ_reading)) {
+				obstacle_map_body_چوکھٹا.distances[wrapped_bin] = static_cast<uint16_t>(lroundf(100.0f * فاصلہ_reading));
+				ڈیٹا_timestamps[wrapped_bin] = obstacle_map_body_چوکھٹا.timestamp;
+				ڈیٹا_maxranges[wrapped_bin] = sensor_range;
+				ڈیٹا_fov[wrapped_bin] = 1;
 			}
 		}
 	}
 }
 
-void
-CollisionPrevention::_adaptSetpointDirection(Vector2f &setpoint_dir, int &setpoint_index, float vehicle_yaw_angle_rad)
+خالی
+CollisionPrevention::_adaptSetpointDirection(Vector2f &setpoint_dir, صحیح &setpoint_اشاریہ_2, اعشاری vehicle_yaw_angle_rad)
 {
-	const int guidance_bins = floor(_param_cp_guide_ang.get() / BIN_SIZE);
-	const int sp_index_original = setpoint_index;
-	float best_cost = 9999.f;
-	int new_sp_index = setpoint_index;
+	ثابت صحیح guidance_bins = floor(_param_cp_guide_ang.get() / BIN_سائز);
+	ثابت صحیح sp_اشاریہ_original = setpoint_اشاریہ_2;
+	اعشاری بہترین_لاگت = 9999.f;
+	صحیح new_sp_اشاریہ = setpoint_اشاریہ_2;
 
-	for (int i = sp_index_original - guidance_bins; i <= sp_index_original + guidance_bins; i++) {
+	برائے (صحیح i = sp_اشاریہ_original - guidance_bins; i <= sp_اشاریہ_original + guidance_bins; i++) {
 
 		// apply moving average filter to the distance array to be able to center in larger gaps
-		const int filter_size = 1;
-		float mean_dist = 0;
+		ثابت صحیح filter_سائز = 1;
+		اعشاری اوسط_dist = 0;
 
-		for (int j = i - filter_size; j <= i + filter_size; j++) {
-			int bin = ObstacleMath::wrap_bin(j, BIN_COUNT);
+		برائے (صحیح j = i - filter_سائز; j <= i + filter_سائز; j++) {
+			صحیح bin = ObstacleMath::wrap_bin(j, BIN_گنتی);
 
-			if (_obstacle_map_body_frame.distances[bin] == UINT16_MAX) {
-				mean_dist += _param_cp_dist.get() * 100.f;
+			اگر (obstacle_map_body_چوکھٹا.distances[bin] == UINT16_MAX) {
+				اوسط_dist += _param_cp_dist.get() * 100.f;
 
-			} else {
-				mean_dist += _obstacle_map_body_frame.distances[bin];
+			} ورنہ {
+				اوسط_dist += obstacle_map_body_چوکھٹا.distances[bin];
 			}
 		}
 
-		const int bin = ObstacleMath::wrap_bin(i, BIN_COUNT);
-		mean_dist = mean_dist / (2.f * filter_size + 1.f);
-		const float deviation_cost = _param_cp_dist.get() * 50.f * abs(i - sp_index_original);
-		const float bin_cost = deviation_cost - mean_dist - _obstacle_map_body_frame.distances[bin];
+		ثابت صحیح bin = ObstacleMath::wrap_bin(i, BIN_گنتی);
+		اوسط_dist = اوسط_dist / (2.f * filter_سائز + 1.f);
+		ثابت اعشاری deviation_لاگت = _param_cp_dist.get() * 50.f * مطلق_قدر(i - sp_اشاریہ_original);
+		ثابت اعشاری bin_لاگت = deviation_لاگت - اوسط_dist - obstacle_map_body_چوکھٹا.distances[bin];
 
-		if (bin_cost < best_cost && _obstacle_map_body_frame.distances[bin] != UINT16_MAX) {
-			best_cost = bin_cost;
-			new_sp_index = bin;
+		اگر (bin_لاگت < بہترین_لاگت && obstacle_map_body_چوکھٹا.distances[bin] != UINT16_MAX) {
+			بہترین_لاگت = bin_لاگت;
+			new_sp_اشاریہ = bin;
 		}
 	}
 
 	//only change setpoint direction if it was moved to a different bin
-	if (new_sp_index != setpoint_index) {
-		float angle = math::radians((float)new_sp_index * BIN_SIZE + _obstacle_map_body_frame.angle_offset);
+	اگر (new_sp_اشاریہ != setpoint_اشاریہ_2) {
+		اعشاری angle = math::radians((اعشاری)new_sp_اشاریہ * BIN_سائز + obstacle_map_body_چوکھٹا.angle_انحراف);
 		angle = wrap_2pi(vehicle_yaw_angle_rad + angle);
 		setpoint_dir = {cosf(angle), sinf(angle)};
-		setpoint_index = new_sp_index;
+		setpoint_اشاریہ_2 = new_sp_اشاریہ;
 	}
 }
 
-float CollisionPrevention::_getObstacleDistance(const Vector2f &direction)
+اعشاری CollisionPrevention::get_Obstacle_فاصلہ(ثابت Vector2f &direction)
 {
-	float obstacle_distance = 0.f;
-	const float direction_norm = direction.norm();
+	اعشاری obstacle_فاصلہ = 0.f;
+	ثابت اعشاری direction_norm = direction.norm();
 
-	if (direction_norm > FLT_EPSILON) {
+	اگر (direction_norm > FLT_EPSILON) {
 		Vector2f dir = direction / direction_norm;
-		const float sp_angle_body_frame = atan2f(dir(1), dir(0)) - _vehicle_yaw;
-		const float sp_angle_with_offset_deg =
-			ObstacleMath::wrap_360(math::degrees(sp_angle_body_frame) - _obstacle_map_body_frame.angle_offset);
+		ثابت اعشاری sp_angle_body_چوکھٹا = atan2f(dir(1), dir(0)) - _vehicle_yaw;
+		ثابت اعشاری sp_angle_with_انحراف_deg =
+			ObstacleMath::wrap_360(math::degrees(sp_angle_body_چوکھٹا) - obstacle_map_body_چوکھٹا.angle_انحراف);
 
-		const int dir_index = ObstacleMath::get_bin_at_angle(BIN_SIZE, sp_angle_with_offset_deg);
-		obstacle_distance   = _obstacle_map_body_frame.distances[dir_index] * 0.01f;
+		ثابت صحیح dir_اشاریہ = ObstacleMath::get_bin_at_angle(BIN_سائز, sp_angle_with_انحراف_deg);
+		obstacle_فاصلہ   = obstacle_map_body_چوکھٹا.distances[dir_اشاریہ] * 0.01f;
 	}
 
-	return obstacle_distance;
+	واپس obstacle_فاصلہ;
 }
 
 Vector2f
-CollisionPrevention::_constrainAccelerationSetpoint(const float &setpoint_length)
+CollisionPrevention::_constrainAccelerationSetpoint(ثابت اعشاری &setpoint_لمبائی)
 {
 	Vector2f new_setpoint{};
-	const Vector2f normal_component = _closest_dist_dir * (_setpoint_dir.dot(_closest_dist_dir));
-	const Vector2f tangential_component = _setpoint_dir - normal_component;
+	ثابت Vector2f معمول_component = _closest_dist_dir * (_setpoint_dir.dot(_closest_dist_dir));
+	ثابت Vector2f tangential_component = _setpoint_dir - معمول_component;
 
-	const float normal_scale = _getScale(_closest_dist);
+	ثابت اعشاری معمول_scale = _getScale(_closest_dist);
 
 
-	const float closest_dist_tangential = _getObstacleDistance(tangential_component);
-	const float tangential_scale = _getScale(closest_dist_tangential);
+	ثابت اعشاری closest_dist_tangential = get_Obstacle_فاصلہ(tangential_component);
+	ثابت اعشاری tangential_scale = _getScale(closest_dist_tangential);
 
 
 	// only scale accelerations towards the obstacle
-	if (_closest_dist_dir.dot(_setpoint_dir) > 0) {
-		new_setpoint = (tangential_component * tangential_scale + normal_component * normal_scale) * setpoint_length;
+	اگر (_closest_dist_dir.dot(_setpoint_dir) > 0) {
+		new_setpoint = (tangential_component * tangential_scale + معمول_component * معمول_scale) * setpoint_لمبائی;
 
-	} else {
-		new_setpoint = _setpoint_dir * setpoint_length;
+	} ورنہ {
+		new_setpoint = _setpoint_dir * setpoint_لمبائی;
 	}
 
-	return new_setpoint;
+	واپس new_setpoint;
 }
 
-float
-CollisionPrevention::_getScale(const float &reference_distance)
+اعشاری
+CollisionPrevention::_getScale(ثابت اعشاری &reference_فاصلہ)
 {
-	float scale = (reference_distance - _min_dist_to_keep);
-	const float scale_distance = math::max(_min_dist_to_keep, _param_mpc_vel_manual.get() / _param_mpc_xy_p.get());
+	اعشاری scale = (reference_فاصلہ - min_dist_مقصد_keep);
+	ثابت اعشاری scale_فاصلہ = math::max(min_dist_مقصد_keep, _param_mpc_vel_manual.get() / _param_mpc_xy_p.get());
 
 	// if scale is positive, square it and scale it with the scale_distance
-	scale = scale > 0 ? powf(scale / scale_distance, 2) : scale;
+	scale = scale > 0 ? powf(scale / scale_فاصلہ, 2) : scale;
 	scale = math::min(scale, 1.0f);
-	return scale;
+	واپس scale;
 }
 
-void CollisionPrevention::_getVelocityCompensationAcceleration(const float vehicle_yaw_angle_rad,
-		const Vector2f &setpoint_vel,
-		const hrt_abstime now, float &vel_comp_accel, Vector2f &vel_comp_accel_dir)
+خالی CollisionPrevention::_getVelocityCompensationAcceleration(ثابت اعشاری vehicle_yaw_angle_rad,
+		ثابت Vector2f &setpoint_vel,
+		ثابت hrt_abstime now, اعشاری &vel_comp_accel, Vector2f &vel_comp_accel_dir)
 {
-	for (int i = 0; i < BIN_COUNT; i++) {
-		const float max_range = _data_maxranges[i] * 0.01f;
+	برائے (صحیح i = 0; i < BIN_گنتی; i++) {
+		ثابت اعشاری max_range = ڈیٹا_maxranges[i] * 0.01f;
 
 		// get the vector pointing into the direction of current bin
-		float bin_angle = wrap_2pi(vehicle_yaw_angle_rad
-					   + math::radians((float)i * BIN_SIZE + _obstacle_map_body_frame.angle_offset));
+		اعشاری bin_angle = wrap_2pi(vehicle_yaw_angle_rad
+					   + math::radians((اعشاری)i * BIN_سائز + obstacle_map_body_چوکھٹا.angle_انحراف));
 
-		const Vector2f bin_direction = { cosf(bin_angle), sinf(bin_angle) };
-		float bin_distance = _obstacle_map_body_frame.distances[i];
+		ثابت Vector2f bin_direction = { cosf(bin_angle), sinf(bin_angle) };
+		اعشاری bin_فاصلہ = obstacle_map_body_چوکھٹا.distances[i];
 
 		// only consider bins which are between min and max values
-		if (bin_distance > _obstacle_map_body_frame.min_distance && bin_distance < UINT16_MAX) {
-			const float distance = bin_distance * 0.01f;
+		اگر (bin_فاصلہ > obstacle_map_body_چوکھٹا.min_فاصلہ && bin_فاصلہ < UINT16_MAX) {
+			ثابت اعشاری فاصلہ = bin_فاصلہ * 0.01f;
 
 			// Assume current velocity is sufficiently close to the setpoint velocity, this breaks down if flying high
 			// acceleration maneuvers
-			const float curr_vel_parallel = math::max(0.f, setpoint_vel.dot(bin_direction));
-			float delay_distance = curr_vel_parallel * _param_cp_delay.get();
+			ثابت اعشاری curr_vel_parallel = math::max(0.f, setpoint_vel.dot(bin_direction));
+			اعشاری delay_فاصلہ = curr_vel_parallel * _param_cp_delay.get();
 
-			const hrt_abstime data_age = now - _data_timestamps[i];
+			ثابت hrt_abstime ڈیٹا_age = now - ڈیٹا_timestamps[i];
 
-			if (distance < max_range) {
-				delay_distance += curr_vel_parallel * (data_age * 1e-6f);
+			اگر (فاصلہ < max_range) {
+				delay_فاصلہ += curr_vel_parallel * (ڈیٹا_age * 1e-6f);
 			}
 
-			const float stop_distance = distance - _min_dist_to_keep - delay_distance;
+			ثابت اعشاری stop_فاصلہ = فاصلہ - min_dist_مقصد_keep - delay_فاصلہ;
 
-			float curr_acc_vel_constraint;
+			اعشاری curr_acc_vel_constraint;
 
-			if (stop_distance >= 0.f) {
-				const float max_vel = math::trajectory::computeMaxSpeedFromDistance(_param_mpc_jerk_max.get(),
-						      _param_mpc_acc_hor.get(), stop_distance, 0.f);
+			اگر (stop_فاصلہ >= 0.f) {
+				ثابت اعشاری max_vel = math::trajectory::compute_Max_رفتار_From_فاصلہ(_param_mpc_jerk_max.get(),
+						      _param_mpc_acc_hor.get(), stop_فاصلہ, 0.f);
 				curr_acc_vel_constraint = _param_mpc_xy_vel_p_acc.get() * math::min(max_vel - curr_vel_parallel, 0.f);
 
-			} else {
+			} ورنہ {
 				curr_acc_vel_constraint = -1.f * _param_mpc_xy_vel_p_acc.get() * curr_vel_parallel;
 			}
 
-			if (curr_acc_vel_constraint < vel_comp_accel) {
+			اگر (curr_acc_vel_constraint < vel_comp_accel) {
 				vel_comp_accel = curr_acc_vel_constraint;
 				vel_comp_accel_dir = bin_direction;
 			}
@@ -573,19 +573,19 @@ void CollisionPrevention::_getVelocityCompensationAcceleration(const float vehic
 	}
 }
 
-void CollisionPrevention::_publishVehicleCmdDoLoiter()
+خالی CollisionPrevention::_publishVehicleCmdDoLoiter()
 {
 	vehicle_command_s command{};
-	command.command = vehicle_command_s::VEHICLE_CMD_DO_SET_MODE;
+	command.command = vehicle_command_s::VEHICLE_CMD_DO_سیٹ_منوال;
 	command.param1 = 1.f; // base mode VEHICLE_MODE_FLAG_CUSTOM_MODE_ENABLED
-	command.param2 = (float)PX4_CUSTOM_MAIN_MODE_AUTO;
-	command.param3 = (float)PX4_CUSTOM_SUB_MODE_AUTO_LOITER;
-	command.target_system = 1;
-	command.target_component = 1;
-	command.source_system = 1;
-	command.source_component = 1;
-	command.confirmation = false;
-	command.from_external = false;
-	command.timestamp = getTime();
+	command.param2 = (اعشاری)PX4_CUSTOM_MAIN_منوال_AUTO;
+	command.param3 = (اعشاری)PX4_CUSTOM_SUB_منوال_AUTO_LOITER;
+	command.ہدف_system = 1;
+	command.ہدف_component = 1;
+	command.ماخذ_system = 1;
+	command.ماخذ_component = 1;
+	command.confirmation = جھوٹ;
+	command.from_external = جھوٹ;
+	command.timestamp = get_وقت();
 	_vehicle_command_pub.publish(command);
 }

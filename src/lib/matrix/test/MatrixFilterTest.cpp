@@ -31,29 +31,29 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/filter.hpp>
-#include <matrix/Vector.hpp>
+#شامل <gtest/gtest.h>
+#شامل <matrix/filter.hpp>
+#شامل <matrix/Vector.hpp>
 
-using namespace matrix;
+استعمال نامخلا میٹرکس;
 
-TEST(MatrixFilterTest, Filter)
+TEST(میٹرکس_Filter_Test, Filter)
 {
-	const size_t n_x = 6;
-	const size_t n_y = 5;
-	SquareMatrix<float, n_x> P = eye<float, n_x>();
-	SquareMatrix<float, n_y> R = eye<float, n_y>();
-	Matrix<float, n_y, n_x> C;
-	C.setIdentity();
-	float data[] = {1, 2, 3, 4, 5};
-	Vector<float, n_y> r(data);
+	ثابت size_t n_x = 6;
+	ثابت size_t n_y = 5;
+	مربع_میٹرکس<اعشاری, n_x> P = eye<اعشاری, n_x>();
+	مربع_میٹرکس<اعشاری, n_y> R = eye<اعشاری, n_y>();
+	میٹرکس_2<اعشاری, n_y, n_x> C;
+	C.سیٹ_شناختی_عنصر();
+	اعشاری ڈیٹا[] = {1, 2, 3, 4, 5};
+	سمتیہ<اعشاری, n_y> r(ڈیٹا);
 
-	Vector<float, n_x> dx;
-	SquareMatrix<float, n_x> dP;
-	float beta = 0;
-	kalman_correct<float, 6, 5>(P, C, R, r, dx, dP, beta);
+	سمتیہ<اعشاری, n_x> dx;
+	مربع_میٹرکس<اعشاری, n_x> dP;
+	اعشاری beta = 0;
+	kalman_correct<اعشاری, 6, 5>(P, C, R, r, dx, dP, beta);
 
-	float data_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
-	Vector<float, n_x> dx_check(data_check);
+	اعشاری ڈیٹا_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
+	سمتیہ<اعشاری, n_x> dx_check(ڈیٹا_check);
 	EXPECT_EQ(dx, dx_check);
 }

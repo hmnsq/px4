@@ -30,30 +30,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#pragma once
+#ہدایت once
 
-#include <uORB/uORB.h>
-#include <uORB/Publication.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/dataman_request.h>
-#include <uORB/topics/dataman_response.h>
-#include <dataman/dataman.h>
-#include <lib/perf/perf_counter.h>
-#include <px4_platform_common/posix.h>
+#شامل <uORB/uORB.h>
+#شامل <uORB/Publication.hpp>
+#شامل <uORB/Subscription.hpp>
+#شامل <uORB/topics/dataman_request.h>
+#شامل <uORB/topics/dataman_response.h>
+#شامل <dataman/dataman.h>
+#شامل <lib/perf/perf_counter.h>
+#شامل <px4_platform_common/posix.h>
 
-using namespace time_literals;
+استعمال نامخلا وقت_literals;
 
-class DatamanClientTestPeer;
-class DatamanCacheTestPeer;
+جماعت DatamanClientTestPeer;
+جماعت DatamanCacheTestPeer;
 
-class DatamanClient
+جماعت DatamanClient
 {
-public:
+عوامی:
 	DatamanClient();
 	~DatamanClient();
 
-	DatamanClient(const DatamanClient &) = delete;
-	DatamanClient &operator=(const DatamanClient &) = delete;
+	DatamanClient(ثابت DatamanClient &) = حذف;
+	DatamanClient &عامل=(ثابت DatamanClient &) = حذف;
 
 	/**
 	 * @brief Reads data synchronously from the dataman for the specified item and index.
@@ -66,7 +66,7 @@ public:
 	 *
 	 * @return true if data was read successfully within the timeout, false otherwise.
 	 */
-	bool readSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
+	منطقی readSync(dm_شے_t شے_2, uint32_t اشاریہ, uint8_t *بفر_2, uint32_t لمبائی_2, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Write data to the dataman synchronously.
@@ -79,7 +79,7 @@ public:
 	 *
 	 * @return True if the write operation succeeded, false otherwise.
 	 */
-	bool writeSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
+	منطقی writeSync(dm_شے_t شے_2, uint32_t اشاریہ, uint8_t *بفر_2, uint32_t لمبائی_2, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Clears the data in the specified dataman item.
@@ -89,7 +89,7 @@ public:
 	 *
 	 * @return True if the operation was successful, false otherwise.
 	 */
-	bool clearSync(dm_item_t item, hrt_abstime timeout = 5000_ms);
+	منطقی clearSync(dm_شے_t شے_2, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Initiates an asynchronous request to read the data from dataman for a specific item and index.
@@ -105,7 +105,7 @@ public:
 	 *       The completion status of the request can be obtained with the
 	 *       lastOperationCompleted() function.
 	 */
-	bool readAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length);
+	منطقی readAsync(dm_شے_t شے_2, uint32_t اشاریہ, uint8_t *بفر_2, uint32_t لمبائی_2);
 
 	/**
 	 * @brief Initiates an asynchronous request to write the data to dataman for a specific item and index.
@@ -121,7 +121,7 @@ public:
 	 *       The completion status of the request can be obtained with the
 	 *       lastOperationCompleted() function.
 	 */
-	bool writeAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length);
+	منطقی writeAsync(dm_شے_t شے_2, uint32_t اشاریہ, uint8_t *بفر_2, uint32_t لمبائی_2);
 
 	/**
 	 * @brief Initiates an asynchronous request to clear an item in dataman.
@@ -131,7 +131,7 @@ public:
 	 * @param[in] item The item to clear.
 	 * @return True if the request was successfully initiated, false otherwise.
 	 */
-	bool clearAsync(dm_item_t item);
+	منطقی clearAsync(dm_شے_t شے_2);
 
 	/**
 	 * @brief Updates the state of the dataman client for asynchronous functions.
@@ -142,7 +142,7 @@ public:
 	 *
 	 * @see readAsync(), writeAsync(), clearAsync(), lastOperationCompleted()
 	 */
-	void update();
+	خالی update();
 
 	/**
 	 * @brief Check if the last dataman operation has completed and whether it was successful.
@@ -150,12 +150,12 @@ public:
 	 * @param[out] success Output parameter indicating whether the last operation was successful.
 	 * @return true if the last operation has completed, false otherwise.
 	 */
-	bool lastOperationCompleted(bool &success);
+	منطقی آخری_Operation_Completed(منطقی &success);
 
 	/**
 	 * Abort any async operation currently in progress
 	 */
-	void abortCurrentOperation();
+	خالی abortCurrentOperation();
 
 	/**
 	 * @brief Get the subscription fd used for Dataman responses.
@@ -164,53 +164,53 @@ public:
 	 * to a poll set must only do so while they have an outstanding operation whose
 	 * update() path will consume the notification.
 	 */
-	orb_sub_t responseSubscription() const { return _dataman_response_sub; }
+	orb_sub_t responseSubscription() ثابت { واپس _dataman_response_sub; }
 
-private:
-	friend class DatamanClientTestPeer;
+نجی:
+	دوست جماعت DatamanClientTestPeer;
 
-	enum class State {
+	شمار جماعت State {
 		Idle,
-		RequestSent,
+		Request_بھیجا,
 		ResponseReceived
 	};
 
-	struct Request {
+	ساخت Request {
 		hrt_abstime timestamp;
 		dm_function_t request_type;
-		dm_item_t item;
-		uint32_t index;
-		uint8_t *buffer;
-		uint32_t length;
+		dm_شے_t شے_2;
+		uint32_t اشاریہ;
+		uint8_t *بفر_2;
+		uint32_t لمبائی_2;
 	};
 
 	/* Synchronous response/request handler */
-	bool syncHandler(const dataman_request_s &request, dataman_response_s &response,
-			 const hrt_abstime &start_time, hrt_abstime timeout);
+	منطقی syncHandler(ثابت dataman_request_s &request, dataman_response_s &response,
+			 ثابت hrt_abstime &آغاز_وقت, hrt_abstime timeout);
 	/* Drain any queued stale replies before a new request starts. */
-	void clearPendingResponse();
+	خالی clearPendingResponse();
 
 	State _state{State::Idle};
-	Request _active_request{};
-	uint8_t _response_status{};
+	Request فعال_request{};
+	uint8_t response_حالت{};
 
 	orb_sub_t _dataman_response_sub{ORB_SUB_INVALID};
 	uORB::Publication<dataman_request_s> _dataman_request_pub{ORB_ID(dataman_request)};
 
 	px4_pollfd_struct_t _fds;
 
-	static constexpr uint16_t CLIENT_ID_NOT_SET{0};
+	ساکن constexpr uint16_t CLIENT_ID_NOT_سیٹ{0};
 
-	uint16_t _client_id{CLIENT_ID_NOT_SET};
+	uint16_t _client_id{CLIENT_ID_NOT_سیٹ};
 
-	perf_counter_t _sync_perf{nullptr};
+	perf_شمار_t _sync_perf{خالی_اشاریہ};
 };
 
 
-class DatamanCache
+جماعت DatamanCache
 {
-public:
-	DatamanCache(const char *cache_miss_perf_counter_name, uint32_t num_items);
+عوامی:
+	DatamanCache(ثابت حرف *cache_ناکامی_perf_شمار_name, uint32_t عدد_اشیاء);
 	~DatamanCache();
 
 	/**
@@ -218,12 +218,12 @@ public:
 	 *
 	 * @param[in] num_items The number of items the cache should hold.
 	 */
-	void resize(uint32_t num_items);
+	خالی resize(uint32_t عدد_اشیاء);
 
 	/**
 	 * @brief Invalidates all cached items in the cache by resetting their cache_state to Idle.
 	 */
-	void invalidate();
+	خالی invalidate();
 
 	/**
 	 * @brief Adds an index for items to be cached.
@@ -236,7 +236,7 @@ public:
 	 *
 	 * @return true if the item was added to be cached, false otherwise if the size of the cache is reached.
 	 */
-	bool load(dm_item_t item, uint32_t index);
+	منطقی بھرو(dm_شے_t شے_2, uint32_t اشاریہ);
 
 	/**
 	 * @brief Loads for a specific item from the cache or acquires and wait for it if not found in the cache.
@@ -251,7 +251,7 @@ public:
 	 *
 	 * @note This function will block if timeout is set differently than 0 and data doesn't exist in cache.
 	 */
-	bool loadWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 0);
+	منطقی بھرو_Wait(dm_شے_t شے_2, uint32_t اشاریہ, uint8_t *بفر_2, uint32_t لمبائی_2, hrt_abstime timeout = 0);
 
 	/**
 	 * @brief Write data back and update it in the cache if stored.
@@ -264,7 +264,7 @@ public:
 	 *
 	 * @return True if the write operation succeeded, false otherwise.
 	 */
-	bool writeWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
+	منطقی writeWait(dm_شے_t شے_2, uint32_t اشاریہ, uint8_t *بفر_2, uint32_t لمبائی_2, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Update a cached item in-place without issuing a new dataman request.
@@ -274,7 +274,7 @@ public:
 	 *
 	 * @return true if the item was fully cached and has been updated.
 	 */
-	bool updateCachedItem(dm_item_t item, uint32_t index, const uint8_t *buffer, uint32_t length);
+	منطقی update_Cached_شے(dm_شے_t شے_2, uint32_t اشاریہ, ثابت uint8_t *بفر_2, uint32_t لمبائی_2);
 
 	/**
 	 * @brief Updates the dataman cache by checking for responses from the DatamanClient and processing them.
@@ -285,50 +285,50 @@ public:
 	 * to the next item in the cache. This function does not block and returns immediately.
 	 * The data can be acquired with the 'loadWait()' function after it has been cached.
 	 */
-	void update();
+	خالی update();
 
 	/**
 	 * @brief Function providing info if there items to be loaded to dataman cache.
 	 *
 	 * @return true if there are items to be processed.
 	 */
-	bool isLoading() const { return (_item_counter > 0); }
+	منطقی isLoading() ثابت { واپس (شے_شمار > 0); }
 
 	/**
 	 * @brief Returns a reference to the DatamanClient instance used by the DatamanCache.
 	 *
 	 * @return A reference to the DatamanClient instance used by the DatamanCache.
 	 */
-	DatamanClient &client() { return _client; }
+	DatamanClient &client() { واپس _client; }
 
-	int size() const { return _num_items; }
+	صحیح سائز() ثابت { واپس عدد_اشیاء_2; }
 
-private:
-	friend class DatamanCacheTestPeer;
+نجی:
+	دوست جماعت DatamanCacheTestPeer;
 
-	enum class State {
+	شمار جماعت State {
 		Idle,
 		RequestPrepared,
-		RequestSent,
+		Request_بھیجا,
 		ResponseReceived,
 		Error
 	};
 
-	struct Item {
+	ساخت شے_3 {
 		dataman_response_s response;
 		State cache_state;
 	};
 
-	void resetCacheState();
-	inline void changeUpdateIndex();
+	خالی resetCacheState();
+	اندرونی خالی change_Update_اشاریہ();
 
-	Item *_items{nullptr};
-	uint32_t _load_index{0};	///< index for tracking last index used by load function
-	uint32_t _update_index{0};	///< index for tracking last index used by update function
-	uint32_t _item_counter{0};	///< number of items to process with update function
-	uint32_t _num_items{0};		///< number of items that cache can store
+	شے_3 *اشیاء{خالی_اشاریہ};
+	uint32_t بھرو_اشاریہ{0};	///< index for tracking last index used by load function
+	uint32_t update_اشاریہ{0};	///< index for tracking last index used by update function
+	uint32_t شے_شمار{0};	///< number of items to process with update function
+	uint32_t عدد_اشیاء_2{0};		///< number of items that cache can store
 
 	DatamanClient _client{};
 
-	perf_counter_t	_cache_miss_perf;
+	perf_شمار_t	cache_ناکامی_perf;
 };

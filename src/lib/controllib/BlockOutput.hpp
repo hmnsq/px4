@@ -37,54 +37,54 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <assert.h>
+#شامل <time.h>
+#شامل <stdlib.h>
+#شامل <math.h>
+#شامل <mathlib/math/test/test.hpp>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+نامخلا control
 {
 /**
  * An output trim/ saturation block
  */
-class __EXPORT BlockOutput: public SuperBlock
+جماعت __EXPORT بلاک_Output: عوامی Super_بلاک
 {
-public:
+عوامی:
 // methods
-	BlockOutput(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_trim(this, "TRIM"),
-		_limit(this, ""),
+	بلاک_Output(Super_بلاک *والد, ثابت حرف *name) :
+		Super_بلاک(والد, name),
+		_trim(یہ, "TRIM"),
+		حد_بندی(یہ, ""),
 		_val(0)
 	{
 		update(0);
 	}
 
-	virtual ~BlockOutput() = default;
-	void update(float input)
+	مجازی ~بلاک_Output() = طےشدہ;
+	خالی update(اعشاری داخلہ)
 	{
-		_val = _limit.update(input + getTrim());
+		_val = حد_بندی.update(داخلہ + getTrim());
 	}
 // accessors
-	float getMin() { return _limit.getMin(); }
-	float getMax() { return _limit.getMax(); }
-	float getTrim() { return _trim.get(); }
-	float get() { return _val; }
-private:
-// attributes
-	control::BlockParamFloat _trim;
-	BlockLimit _limit;
-	float _val;
+	اعشاری getMin() { واپس حد_بندی.getMin(); }
+	اعشاری getMax() { واپس حد_بندی.getMax(); }
+	اعشاری getTrim() { واپس _trim.get(); }
+	اعشاری get() { واپس _val; }
+نجی:
+//اوصاف
+	control::بلاک_Param_Float _trim;
+	بلاک_حد_بندی حد_بندی;
+	اعشاری _val;
 };
 
 } // namespace control

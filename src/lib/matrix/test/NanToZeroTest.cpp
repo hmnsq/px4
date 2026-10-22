@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#شامل <gtest/gtest.h>
+#شامل <matrix/math.hpp>
 
-using namespace matrix;
+استعمال نامخلا میٹرکس;
 
-TEST(NanToZeroTest, NanToZero)
+TEST(Nan_مقصد_Zero_Test, Nan_مقصد_Zero)
 {
-	const float data[9]     = {-1.f, 0.f, +INFINITY, NAN, 0.f, -INFINITY, 1.f, 0.f, -NAN};
-	const float expected[9] = {-1.f, 0.f, +INFINITY, 0.f, 0.f, -INFINITY, 1.f, 0.f, 0.f};
+	ثابت اعشاری ڈیٹا[9]     = {-1.f, 0.f, +INFINITY, NAN, 0.f, -INFINITY, 1.f, 0.f, -NAN};
+	ثابت اعشاری expected[9] = {-1.f, 0.f, +INFINITY, 0.f, 0.f, -INFINITY, 1.f, 0.f, 0.f};
 
-	Matrix<float, 3, 3> mat(data);
-	mat.nanToZero();
+	میٹرکس_2<اعشاری, 3, 3> mat(ڈیٹا);
+	mat.nan_مقصد_Zero();
 
-	const Matrix<float, 3, 3> mat_expected(expected);
+	ثابت میٹرکس_2<اعشاری, 3, 3> mat_expected(expected);
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
+	برائے (size_t i = 0; i < 3; i++) {
+		برائے (size_t j = 0; j < 3; j++) {
 			EXPECT_FLOAT_EQ(mat(i, j), mat_expected(i, j));
 		}
 	}
 }
 
-TEST(NanToZeroTest, NoNanUnchanged)
+TEST(Nan_مقصد_Zero_Test, NoNanUnchanged)
 {
-	const float data[4] = {-2.5f, 0.f, 3.14f, +INFINITY};
+	ثابت اعشاری ڈیٹا[4] = {-2.5f, 0.f, 3.14f, +INFINITY};
 
-	Matrix<float, 2, 2> mat(data);
-	mat.nanToZero();
+	میٹرکس_2<اعشاری, 2, 2> mat(ڈیٹا);
+	mat.nan_مقصد_Zero();
 
-	const Matrix<float, 2, 2> mat_orig(data);
+	ثابت میٹرکس_2<اعشاری, 2, 2> mat_orig(ڈیٹا);
 
-	for (size_t i = 0; i < 2; i++) {
-		for (size_t j = 0; j < 2; j++) {
+	برائے (size_t i = 0; i < 2; i++) {
+		برائے (size_t j = 0; j < 2; j++) {
 			EXPECT_FLOAT_EQ(mat(i, j), mat_orig(i, j));
 		}
 	}

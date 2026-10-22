@@ -33,41 +33,41 @@
 #
 ############################################################################
 
-import argparse
-import builtins
-import pathlib
-import sys
+درآمد argparse
+درآمد builtins
+درآمد pathlib
+درآمد sys
 
-from rosidl_adapter.msg import convert_msg_to_idl
+سے rosidl_adapter.پیغام_2 درآمد convert_پیغام_مقصد_idl
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
+اگر __name__ == '__main__':
+    parser = argparse.دلیل_Parser(
         description=f'Convert px4 .msg files to .idl')
-    parser.add_argument(
+    parser.جوڑو_دلیل(
         'interface_files', nargs='+',
         help='The interface files to convert')
-    args = parser.parse_args(sys.argv[1:])
+    دلائل = parser.parse_دلائل(sys.argv[1:])
 
     # convert_msg_to_idl prints a Reading/Writing line per file. Filter those
     # via builtins.print instead of redirecting stdout, which the empy template
     # engine relies on and breaks if replaced. Errors still surface on stderr.
-    real_print = builtins.print
+    real_print = builtins.چھاپو
 
-    def quiet_print(*pargs, **kwargs):
-        if pargs and isinstance(pargs[0], str) and \
+    تعریف quiet_print(*pargs, **kwargs):
+        اگر pargs اور isinstance(pargs[0], str) اور \
                 pargs[0].startswith(('Reading input file:', 'Writing output file:')):
-            return
+            واپس
         real_print(*pargs, **kwargs)
 
-    builtins.print = quiet_print
-    try:
-        for interface_file in args.interface_files:
-            interface_file = pathlib.Path(interface_file)
-            package_dir = interface_file.parent.absolute()
+    builtins.چھاپو = quiet_print
+    کوشش:
+        برائے interface_file میں دلائل.interface_files:
+            interface_file = pathlib.راستہ_2(interface_file)
+            package_dir = interface_file.والد.absolute()
 
-            convert_msg_to_idl(
+            convert_پیغام_مقصد_idl(
                 package_dir, 'px4_msgs',
-                interface_file.absolute().relative_to(package_dir),
-                interface_file.parent)
-    finally:
-        builtins.print = real_print
+                interface_file.absolute().relative_مقصد(package_dir),
+                interface_file.والد)
+    آخرکار:
+        builtins.چھاپو = real_print

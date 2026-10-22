@@ -41,83 +41,83 @@
  * https://ntrs.nasa.gov/api/citations/20120015662/downloads/20120015662.pdf
  */
 
-#pragma once
+#ہدایت once
 
 // PX4 includes
-#include <drivers/drv_hrt.h>
+#شامل <drivers/drv_hrt.h>
 
 // Libraries
-#include <math.h>
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <matrix/matrix/math.hpp>
+#شامل <math.h>
+#شامل <lib/mathlib/math/filter/AlphaFilter.hpp>
+#شامل <matrix/matrix/math.hpp>
 
 // uORB includes
-#include <uORB/Publication.hpp>
-#include <uORB/topics/gain_compression.h>
+#شامل <uORB/Publication.hpp>
+#شامل <uORB/topics/gain_compression.h>
 
-class GainCompression
+جماعت GainCompression
 {
-public:
-	void reset()
+عوامی:
+	خالی reset()
 	{
 		_compression_gain = 1.f;
 		_hpf = 0.f;
 		_lpf.reset(0.f);
-		_input_initialized = false;
+		داخلہ_initialized = جھوٹ;
 	}
-	float update(float input, float dt);
+	اعشاری update(اعشاری داخلہ, اعشاری dt);
 
-	void setLpfCutoffFrequency(float sample_freq, float cutoff)
+	خالی سیٹ_Lpf_Cutoff_Frequency(اعشاری sample_freq, اعشاری cutoff)
 	{
-		_lpf.setCutoffFreq(sample_freq, cutoff);
+		_lpf.سیٹ_Cutoff_Freq(sample_freq, cutoff);
 	}
-	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
+	خالی سیٹ_Hpf_Cutoff_Frequency(اعشاری sample_freq, اعشاری cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	float getSpectralDamperHpf() const { return _hpf * _hpf; }
-	float getSpectralDamperLpf() const { return _lpf.getState(); }
-	void setCompressionGainMin(float gain_min) { _compression_gain_min = gain_min; }
+	اعشاری getSpectralDamperHpf() ثابت { واپس _hpf * _hpf; }
+	اعشاری getSpectralDamperLpf() ثابت { واپس _lpf.getState(); }
+	خالی سیٹ_Compression_Gain_Min(اعشاری gain_min) { _compression_gain_min = gain_min; }
 
-private:
-	float _compression_gain{1.f};
-	float _compression_gain_min{0.3f};
+نجی:
+	اعشاری _compression_gain{1.f};
+	اعشاری _compression_gain_min{0.3f};
 
-	float _alpha_hpf{0.f};
-	float _hpf{0.f};
+	اعشاری _alpha_hpf{0.f};
+	اعشاری _hpf{0.f};
 
-	float _input_prev{0.f};
-	bool _input_initialized{false};
+	اعشاری داخلہ_پچھلا{0.f};
+	منطقی داخلہ_initialized{جھوٹ};
 
-	AlphaFilter<float> _lpf;
+	AlphaFilter<اعشاری> _lpf;
 
-	static constexpr float _kSpectralDamperGain{200.f}; // tuned based on flight test data to obtain a quick response
-	static constexpr float _kLeakageGain{0.1f}; // 1/time_constant, slow enough to not interfere with the controller
+	ساکن constexpr اعشاری _kSpectralDamperGain{200.f}; // tuned based on flight test data to obtain a quick response
+	ساکن constexpr اعشاری _kLeakageGain{0.1f}; // 1/time_constant, slow enough to not interfere with the controller
 
 };
 
-class GainCompression3d
+جماعت GainCompression3d
 {
-public:
+عوامی:
 	GainCompression3d();
-	~GainCompression3d() = default;
+	~GainCompression3d() = طےشدہ;
 
-	void reset();
-	void update(const matrix::Vector3f &input, float dt);
-	const matrix::Vector3f &getGains() const { return _gains; };
+	خالی reset();
+	خالی update(ثابت میٹرکس::Vector3f &داخلہ, اعشاری dt);
+	ثابت میٹرکس::Vector3f &getGains() ثابت { واپس _gains; };
 
-	void setEnabled(bool enabled) { _enabled = enabled; }
-	void setCompressionGainMin(float gain_min);
+	خالی سیٹ_Enabled(منطقی enabled) { _enabled = enabled; }
+	خالی سیٹ_Compression_Gain_Min(اعشاری gain_min);
 
-private:
+نجی:
 	// uORB publications
 	uORB::Publication<gain_compression_s> _gain_compression_pub{ORB_ID(gain_compression)};
 
 	GainCompression _compression_gains[3];
-	matrix::Vector3f _gains{1.f, 1.f, 1.f};
+	میٹرکس::Vector3f _gains{1.f, 1.f, 1.f};
 
-	bool _enabled{false};
+	منطقی _enabled{جھوٹ};
 
-	hrt_abstime _time_last_publication{0};
+	hrt_abstime وقت_آخری_publication{0};
 
-	static constexpr float _kLpfCutoffFrequency{5.f}; // Just above the control bandwidth of most UAVs
-	static constexpr float _kHpfCutoffFrequency{2.f * _kLpfCutoffFrequency}; // 1 Octave above LPF cutoff, as recommended by the reference paper
+	ساکن constexpr اعشاری _kLpfCutoffFrequency{5.f}; // Just above the control bandwidth of most UAVs
+	ساکن constexpr اعشاری _kHpfCutoffFrequency{2.f * _kLpfCutoffFrequency}; // 1 Octave above LPF cutoff, as recommended by the reference paper
 };

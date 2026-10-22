@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include "FunctionProviderBase.hpp"
+#شامل "FunctionProviderBase.hpp"
 
 /**
  * Functions: Constant_Max
  */
-class FunctionConstantMax : public FunctionProviderBase
+جماعت FunctionConstantMax : عوامی Function_Provider_بنیاد
 {
-public:
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionConstantMax(); }
+عوامی:
+	ساکن Function_Provider_بنیاد *allocate(ثابت Context &context) { واپس نیا FunctionConstantMax(); }
 
-	float value(OutputFunction func) override { return 1.f; }
-	void update() override { }
+	اعشاری value(OutputFunction func) override { واپس 1.f; }
+	خالی update() override { }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 1.f; }
+	اعشاری default_Failsafe_قدر(OutputFunction func) ثابت override { واپس 1.f; }
 };

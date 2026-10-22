@@ -37,23 +37,23 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
 //#include <assert.h>
 //#include <time.h>
 //#include <stdlib.h>
 
-bool equal(float a, float b, float eps = 1e-5);
+منطقی equal(اعشاری a, اعشاری b, اعشاری eps = 1e-5);
 
-bool greater_than(float a, float b);
+منطقی greater_than(اعشاری a, اعشاری b);
 
-bool less_than(float a, float b);
+منطقی less_than(اعشاری a, اعشاری b);
 
-bool greater_than_or_equal(float a, float b);
+منطقی greater_than_or_equal(اعشاری a, اعشاری b);
 
-bool less_than_or_equal(float a, float b);
+منطقی less_than_or_equal(اعشاری a, اعشاری b);
 
-void float2SigExp(
-	const float &num,
-	float &sig,
-	int &exp);
+خالی float2SigExp(
+	ثابت اعشاری &عدد,
+	اعشاری &sig,
+	صحیح &قوت_نما);

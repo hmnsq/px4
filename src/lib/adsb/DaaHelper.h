@@ -37,34 +37,34 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#pragma once
+#ہدایت once
 
-#include <cstdint>
+#شامل <cstdint>
 
-#include <lib/mathlib/mathlib.h>
-#include <matrix/math.hpp>
+#شامل <lib/mathlib/mathlib.h>
+#شامل <matrix/math.hpp>
 
-struct aircraft_state_s {
-	matrix::Vector2d lat_lon{};
-	float altitude{0.f};
-	matrix::Vector3f velocity_ned{};
-	float heading{0.f};
+ساخت aircraft_state_s {
+	میٹرکس::Vector2d lat_lon{};
+	اعشاری altitude{0.f};
+	میٹرکس::Vector3f velocity_ned{};
+	اعشاری heading{0.f};
 };
 
-struct daa_stats_s {
-	float aircraft_dist{0.f};
-	float aircraft_dist_hor{0.f};
-	float aircraft_dist_vert{0.f};
-	float expected_min_dist_time_sec{0.f};
+ساخت daa_stats_s {
+	اعشاری aircraft_dist{0.f};
+	اعشاری aircraft_dist_hor{0.f};
+	اعشاری aircraft_dist_vert{0.f};
+	اعشاری expected_min_dist_وقت_sec{0.f};
 };
 
-inline matrix::Vector2f calculate_horizontal_vertical_speed_magnitudes(const aircraft_state_s &aircraft_state)
+اندرونی میٹرکس::Vector2f calculate_horizontal_vertical_رفتار_magnitudes(ثابت aircraft_state_s &aircraft_state)
 {
-	return matrix::Vector2f(aircraft_state.velocity_ned.xy().norm(), fabsf(aircraft_state.velocity_ned(2)));
+	واپس میٹرکس::Vector2f(aircraft_state.velocity_ned.xy().norm(), fabsf(aircraft_state.velocity_ned(2)));
 }
 
 // Worst-case closing speed (UAV and traffic flying straight at each other).
-inline float calculate_relative_uav_traffic_speed(const aircraft_state_s &uav_state, const aircraft_state_s &traffic_state)
+اندرونی اعشاری calculate_relative_uav_traffic_رفتار(ثابت aircraft_state_s &uav_state, ثابت aircraft_state_s &traffic_state)
 {
-	return traffic_state.velocity_ned.norm() + uav_state.velocity_ned.norm();
+	واپس traffic_state.velocity_ned.norm() + uav_state.velocity_ned.norm();
 }

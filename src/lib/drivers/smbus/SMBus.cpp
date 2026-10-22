@@ -44,11 +44,11 @@
  *  - Add remaining SMBus protocol messages as needed
  */
 
-#include "SMBus.hpp"
-#include <mathlib/mathlib.h>
+#شامل "SMBus.hpp"
+#شامل <mathlib/mathlib.h>
 
-SMBus::SMBus(uint8_t device_id, int bus_num, uint16_t address) :
-	I2C(device_id, MODULE_NAME, bus_num, address, 100000)
+SMBus::SMBus(uint8_t device_id, صحیح bus_عدد, uint16_t پتہ) :
+	I2C(device_id, MODULE_NAME, bus_عدد, پتہ, 100000)
 {
 }
 
@@ -57,152 +57,152 @@ SMBus::~SMBus()
 	perf_free(_interface_errors);
 }
 
-int SMBus::read_word(const uint8_t cmd_code, uint16_t &data)
+صحیح SMBus::read_لفظ(ثابت uint8_t cmd_رمز, uint16_t &ڈیٹا)
 {
 	uint8_t buf[6];
 	// 2 data bytes + pec byte
-	int result = transfer(&cmd_code, 1, buf + 3, 3);
+	صحیح نتیجہ = transfer(&cmd_رمز, 1, buf + 3, 3);
 
-	if (result == PX4_OK) {
-		data = buf[3] | ((uint16_t)buf[4] << 8);
+	اگر (نتیجہ == PX4_OK) {
+		ڈیٹا = buf[3] | ((uint16_t)buf[4] << 8);
 		// Check PEC.
-		uint8_t addr = get_device_address() << 1;
+		uint8_t addr = get_device_پتہ() << 1;
 		buf[0] = addr | 0x00;
-		buf[1] = cmd_code;
+		buf[1] = cmd_رمز;
 		buf[2] = addr | 0x01;
 
-		uint8_t pec = get_pec(buf, sizeof(buf) - 1);
+		uint8_t pec = get_pec(buf, حجم(buf) - 1);
 
-		if (pec != buf[sizeof(buf) - 1]) {
-			result = -EINVAL;
-			perf_count(_interface_errors);
+		اگر (pec != buf[حجم(buf) - 1]) {
+			نتیجہ = -EINVAL;
+			perf_گنتی(_interface_errors);
 		}
 
-	} else {
-		perf_count(_interface_errors);
+	} ورنہ {
+		perf_گنتی(_interface_errors);
 	}
 
-	return result;
+	واپس نتیجہ;
 }
 
-int SMBus::write_word(const uint8_t cmd_code, uint16_t data)
+صحیح SMBus::write_لفظ(ثابت uint8_t cmd_رمز, uint16_t ڈیٹا)
 {
 	// 2 data bytes + pec byte
 	uint8_t buf[5];
-	buf[0] = (get_device_address() << 1) | 0x10;
-	buf[1] = cmd_code;
-	buf[2] = data & 0xff;
-	buf[3] = (data >> 8) & 0xff;
+	buf[0] = (get_device_پتہ() << 1) | 0x10;
+	buf[1] = cmd_رمز;
+	buf[2] = ڈیٹا & 0xff;
+	buf[3] = (ڈیٹا >> 8) & 0xff;
 
 	buf[4] = get_pec(buf, 4);
 
-	int result = transfer(&buf[1], 4, nullptr, 0);
+	صحیح نتیجہ = transfer(&buf[1], 4, خالی_اشاریہ, 0);
 
-	if (result != PX4_OK) {
-		perf_count(_interface_errors);
+	اگر (نتیجہ != PX4_OK) {
+		perf_گنتی(_interface_errors);
 	}
 
-	return result;
+	واپس نتیجہ;
 }
 
-int SMBus::block_read(const uint8_t cmd_code, void *data, const uint8_t length, const bool use_pec)
+صحیح SMBus::بلاک_read(ثابت uint8_t cmd_رمز, خالی *ڈیٹا, ثابت uint8_t لمبائی_2, ثابت منطقی use_pec)
 {
-	uint8_t byte_count = 0;
+	uint8_t byte_گنتی = 0;
 	// addr(wr), cmd_code, addr(r), byte_count, data (MAX_BLOCK_LEN bytes max), pec
-	uint8_t rx_data[MAX_BLOCK_LEN + 5];
+	uint8_t rx_ڈیٹا[MAX_بلاک_LEN + 5];
 
-	if (length > MAX_BLOCK_LEN) {
-		return -EINVAL;
+	اگر (لمبائی_2 > MAX_بلاک_LEN) {
+		واپس -EINVAL;
 	}
 
-	int result = transfer(&cmd_code, 1, (uint8_t *)&rx_data[3], length + 2);
+	صحیح نتیجہ = transfer(&cmd_رمز, 1, (uint8_t *)&rx_ڈیٹا[3], لمبائی_2 + 2);
 
-	if (result != PX4_OK) {
-		perf_count(_interface_errors);
-		return result;
+	اگر (نتیجہ != PX4_OK) {
+		perf_گنتی(_interface_errors);
+		واپس نتیجہ;
 	}
 
-	uint8_t device_address = get_device_address();
-	rx_data[0] = (device_address << 1) | 0x00;
-	rx_data[1] = cmd_code;
-	rx_data[2] = (device_address << 1) | 0x01;
-	byte_count = math::min(rx_data[3], MAX_BLOCK_LEN);
+	uint8_t device_پتہ = get_device_پتہ();
+	rx_ڈیٹا[0] = (device_پتہ << 1) | 0x00;
+	rx_ڈیٹا[1] = cmd_رمز;
+	rx_ڈیٹا[2] = (device_پتہ << 1) | 0x01;
+	byte_گنتی = math::min(rx_ڈیٹا[3], MAX_بلاک_LEN);
 
 	// ensure data is not longer than given buffer
-	memcpy(data, &rx_data[4], math::min(byte_count, length));
+	حافظہ_نقل(ڈیٹا, &rx_ڈیٹا[4], math::min(byte_گنتی, لمبائی_2));
 
-	if (use_pec) {
-		uint8_t pec = get_pec(rx_data, byte_count + 4);
+	اگر (use_pec) {
+		uint8_t pec = get_pec(rx_ڈیٹا, byte_گنتی + 4);
 
-		if (pec != rx_data[byte_count + 4]) {
-			result = -EIO;
-			perf_count(_interface_errors);
+		اگر (pec != rx_ڈیٹا[byte_گنتی + 4]) {
+			نتیجہ = -EIO;
+			perf_گنتی(_interface_errors);
 		}
 	}
 
-	return result;
+	واپس نتیجہ;
 }
 
-int SMBus::block_write(const uint8_t cmd_code, const void *data, uint8_t byte_count, const bool use_pec)
+صحیح SMBus::بلاک_write(ثابت uint8_t cmd_رمز, ثابت خالی *ڈیٹا, uint8_t byte_گنتی, ثابت منطقی use_pec)
 {
 	// cmd code[1], byte count[1], data[byte_count] (MAX_BLOCK_LEN max), pec[1] (optional)
-	uint8_t buf[MAX_BLOCK_LEN + 2];
+	uint8_t buf[MAX_بلاک_LEN + 2];
 
-	if (byte_count > MAX_BLOCK_LEN) {
-		return -EINVAL;
+	اگر (byte_گنتی > MAX_بلاک_LEN) {
+		واپس -EINVAL;
 	}
 
-	buf[0] = cmd_code;
-	buf[1] = (uint8_t)byte_count;
-	memcpy(&buf[2], data, byte_count);
+	buf[0] = cmd_رمز;
+	buf[1] = (uint8_t)byte_گنتی;
+	حافظہ_نقل(&buf[2], ڈیٹا, byte_گنتی);
 
-	if (use_pec) {
-		uint8_t pec = get_pec(buf, byte_count + 2);
-		buf[byte_count + 2] = pec;
-		byte_count++;
+	اگر (use_pec) {
+		uint8_t pec = get_pec(buf, byte_گنتی + 2);
+		buf[byte_گنتی + 2] = pec;
+		byte_گنتی++;
 	}
 
-	unsigned i = 0;
-	int result = 0;
+	غیرعلامتی i = 0;
+	صحیح نتیجہ = 0;
 
 	// If block_write fails, try up to 10 times.
-	while (i < 10 && ((result = transfer((uint8_t *)buf, byte_count + 2, nullptr, 0)) != PX4_OK)) {
-		perf_count(_interface_errors);
+	جب (i < 10 && ((نتیجہ = transfer((uint8_t *)buf, byte_گنتی + 2, خالی_اشاریہ, 0)) != PX4_OK)) {
+		perf_گنتی(_interface_errors);
 		i++;
 	}
 
-	if (i == 10 || result) {
-		result = -EINVAL;
+	اگر (i == 10 || نتیجہ) {
+		نتیجہ = -EINVAL;
 	}
 
-	return result;
+	واپس نتیجہ;
 }
 
-uint8_t SMBus::get_pec(uint8_t *buff, const uint8_t len)
+uint8_t SMBus::get_pec(uint8_t *buff, ثابت uint8_t len)
 {
 	// TODO: use "return crc8ccitt(buff, len);"
 
 	// Initialise CRC to zero.
-	uint8_t crc = 0;
-	uint8_t shift_register = 0;
-	bool invert_crc;
+	uint8_t چکری_جانچ = 0;
+	uint8_t سرکاؤ_رجسٹر = 0;
+	منطقی invert_چکری_جانچ;
 
 	// Calculate crc for each byte in the stream.
-	for (uint8_t i = 0; i < len; i++) {
+	برائے (uint8_t i = 0; i < len; i++) {
 		// Load next data byte into the shift register
-		shift_register = buff[i];
+		سرکاؤ_رجسٹر = buff[i];
 
 		// Calculate crc for each bit in the current byte.
-		for (uint8_t j = 0; j < 8; j++) {
-			invert_crc = (crc ^ shift_register) & 0x80;
-			crc <<= 1;
-			shift_register <<= 1;
+		برائے (uint8_t j = 0; j < 8; j++) {
+			invert_چکری_جانچ = (چکری_جانچ ^ سرکاؤ_رجسٹر) & 0x80;
+			چکری_جانچ <<= 1;
+			سرکاؤ_رجسٹر <<= 1;
 
-			if (invert_crc) {
-				crc ^= SMBUS_PEC_POLYNOMIAL;
+			اگر (invert_چکری_جانچ) {
+				چکری_جانچ ^= SMBUS_PEC_POLYNOMIAL;
 			}
 		}
 	}
 
-	return crc;
+	واپس چکری_جانچ;
 }

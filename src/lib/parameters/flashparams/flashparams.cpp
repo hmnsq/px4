@@ -42,36 +42,36 @@
  * foot print device.
  */
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/shutdown.h>
-#include <parameters/px4_parameters.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <px4_platform_common/log.h>
+#شامل <px4_platform_common/posix.h>
+#شامل <px4_platform_common/shutdown.h>
+#شامل <parameters/px4_parameters.hpp>
 
-#include <string.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <errno.h>
+#شامل <string.h>
+#شامل <stdbool.h>
+#شامل <stdint.h>
+#شامل <errno.h>
 
-#include <parameters/param.h>
+#شامل <parameters/param.h>
 
-#include <lib/tinybson/tinybson.h>
-#include "flashparams.h"
-#include "flashfs.h"
-#include "../param_translation.h"
+#شامل <lib/tinybson/tinybson.h>
+#شامل "flashparams.h"
+#شامل "flashfs.h"
+#شامل "../param_translation.h"
 
-#if 0
-# define debug(fmt, args...)            do { warnx(fmt, ##args); } while(0)
-#else
-# define debug(fmt, args...)            do { } while(0)
-#endif
+#اگر 0
+# define debug(fmt, دلائل...)            کرو { warnx(fmt, ##args); } جب(0)
+#ورنہ
+# define debug(fmt, دلائل...)            کرو { } جب(0)
+#اگر_ختم
 
 
 /**
  * Storage for modified parameters.
  */
-struct param_wbuf_s {
-	union param_value_u     val;
+ساخت param_wbuf_s {
+	اتحاد param_قدر_u     val;
 	param_t                 param;
 };
 
@@ -96,22 +96,22 @@ struct param_wbuf_s {
  * drops those on its next save; here they stay until a compaction, and a
  * translation is only kept for a few releases. A snapshot cannot hold such a
  * record, so compacting for it does not repeat. */
-static bool log_stale;
+ساکن منطقی log_stale;
 
 /* Replay failed inside a CRC-valid record. A delta appended behind it would
  * never be reached, so the next save rewrites the store. */
-static bool log_unreadable;
+ساکن منطقی log_unreadable;
 
-static bool
+ساکن منطقی
 any_unsaved(param_filter_func filter)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if ((filter == nullptr || filter(param)) && param_value_unsaved(param)) {
-			return true;
+	برائے (param_t param = 0; param < user_config.PARAM_گنتی; param++) {
+		اگر ((filter == خالی_اشاریہ || filter(param)) && param_قدر_unsaved(param)) {
+			واپس سچ;
 		}
 	}
 
-	return false;
+	واپس جھوٹ;
 }
 
 /*
@@ -122,289 +122,289 @@ any_unsaved(param_filter_func filter)
  * default in force, is written as a BSON null so replay drops it, which is
  * what the file backend's "don't export defaults" gives after a reload.
  */
-static int
-encode_params(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
+ساکن صحیح
+encode_params(bson_encoder_s *encoder, param_filter_func filter, منطقی snapshot)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if (filter && !filter(param)) {
-			continue;
+	برائے (param_t param = 0; param < user_config.PARAM_گنتی; param++) {
+		اگر (filter && !filter(param)) {
+			جاری;
 		}
 
-		if (snapshot) {
-			if (!user_config.contains(param)) {
-				continue;
+		اگر (snapshot) {
+			اگر (!user_config.شامل_ہے(param)) {
+				جاری;
 			}
 
-		} else {
-			if (!param_value_unsaved(param)) {
-				continue;
+		} ورنہ {
+			اگر (!param_قدر_unsaved(param)) {
+				جاری;
 			}
 
-			if (!user_config.contains(param) || param_value_is_default(param)) {
-				if (bson_encoder_append_null(encoder, param_name(param))) {
+			اگر (!user_config.شامل_ہے(param) || param_قدر_is_default(param)) {
+				اگر (bson_encoder_append_null(encoder, param_name(param))) {
 					debug("BSON append failed for '%s'", param_name(param));
-					return -1;
+					واپس -1;
 				}
 
-				continue;
+				جاری;
 			}
 		}
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			if (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
+		انتخاب (param_type(param)) {
+		حالت PARAM_TYPE_INT32:
+			اگر (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				واپس -1;
 			}
 
-			break;
+			توڑو;
 
-		case PARAM_TYPE_FLOAT:
-			if (bson_encoder_append_double(encoder, param_name(param), (double)user_config.get(param).f)) {
+		حالت PARAM_TYPE_FLOAT:
+			اگر (bson_encoder_append_double(encoder, param_name(param), (دوہرا)user_config.get(param).f)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				واپس -1;
 			}
 
-			break;
+			توڑو;
 
-		default:
+		طےشدہ:
 			debug("unrecognized parameter type");
-			return -1;
+			واپس -1;
 		}
 	}
 
-	return 0;
+	واپس 0;
 }
 
 /* The caller frees bson_encoder_buf_data() whatever the result. */
-static int
-encode_document(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
+ساکن صحیح
+encode_document(bson_encoder_s *encoder, param_filter_func filter, منطقی snapshot)
 {
-	bson_encoder_init_buf(encoder, nullptr, 0);
+	bson_encoder_init_buf(encoder, خالی_اشاریہ, 0);
 
-	int result = encode_params(encoder, filter, snapshot);
+	صحیح نتیجہ = encode_params(encoder, filter, snapshot);
 
-	if (result == 0) {
-		result = bson_encoder_fini(encoder);
+	اگر (نتیجہ == 0) {
+		نتیجہ = bson_encoder_fini(encoder);
 	}
 
-	return result;
+	واپس نتیجہ;
 }
 
-static int
-stage_write_buffer(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
+ساکن صحیح
+stage_write_بفر(bson_encoder_s *encoder, uint8_t **بفر_2, size_t *enc_سائز)
 {
-	void *enc_buff = bson_encoder_buf_data(encoder);
-	*enc_size = bson_encoder_buf_size(encoder);
+	خالی *enc_buff = bson_encoder_buf_ڈیٹا(encoder);
+	*enc_سائز = bson_encoder_buf_سائز(encoder);
 
-	if (enc_buff == nullptr) {
-		return -ENOMEM;
+	اگر (enc_buff == خالی_اشاریہ) {
+		واپس -ENOMEM;
 	}
 
-	size_t alloc_size = *enc_size;
-	int result = parameter_flashfs_alloc(parameters_token, buffer, &alloc_size);
+	size_t alloc_سائز = *enc_سائز;
+	صحیح نتیجہ = parameter_flashfs_alloc(parameters_token, بفر_2, &alloc_سائز);
 
-	if (result != OK) {
-		return result;
+	اگر (نتیجہ != OK) {
+		واپس نتیجہ;
 	}
 
-	if (alloc_size < *enc_size) {
+	اگر (alloc_سائز < *enc_سائز) {
 		parameter_flashfs_free();
-		return -ENOMEM;
+		واپس -ENOMEM;
 	}
 
-	memcpy(*buffer, enc_buff, *enc_size);
-	return OK;
+	حافظہ_نقل(*بفر_2, enc_buff, *enc_سائز);
+	واپس OK;
 }
 
-static int
-commit_append(uint8_t *buffer, size_t enc_size)
+ساکن صحیح
+commit_append(uint8_t *بفر_2, size_t enc_سائز)
 {
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	صحیح نتیجہ = parameter_flashfs_write(parameters_token, بفر_2, enc_سائز);
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	اگر (نتیجہ == (صحیح)enc_سائز) {
+		واپس OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	واپس نتیجہ < 0 ? نتیجہ : -EFBIG;
 }
 
-static int
+ساکن صحیح
 export_delta(param_filter_func filter)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, filter, false);
+	صحیح نتیجہ = encode_document(&encoder, filter, جھوٹ);
 
-	if (result == 0) {
-		uint8_t *buffer;
-		size_t enc_size;
-		result = stage_write_buffer(&encoder, &buffer, &enc_size);
+	اگر (نتیجہ == 0) {
+		uint8_t *بفر_2;
+		size_t enc_سائز;
+		نتیجہ = stage_write_بفر(&encoder, &بفر_2, &enc_سائز);
 
-		if (result == OK) {
-			result = commit_append(buffer, enc_size);
+		اگر (نتیجہ == OK) {
+			نتیجہ = commit_append(بفر_2, enc_سائز);
 		}
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	آزاد(bson_encoder_buf_ڈیٹا(&encoder));
+	واپس نتیجہ;
 }
 
 /* Everything that can fail before the erase, so a failure here leaves the
  * log untouched and still loadable. */
-static int
-stage_snapshot(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
+ساکن صحیح
+stage_snapshot(bson_encoder_s *encoder, uint8_t **بفر_2, size_t *enc_سائز)
 {
-	int result = stage_write_buffer(encoder, buffer, enc_size);
+	صحیح نتیجہ = stage_write_بفر(encoder, بفر_2, enc_سائز);
 
-	if (result != OK) {
-		return result;
+	اگر (نتیجہ != OK) {
+		واپس نتیجہ;
 	}
 
-	if (*enc_size > parameter_flashfs_max_payload()) {
+	اگر (*enc_سائز > parameter_flashfs_max_payload()) {
 		parameter_flashfs_free();
-		return -ENOSPC;
+		واپس -ENOSPC;
 	}
 
-	return OK;
+	واپس OK;
 }
 
-static int
-commit_snapshot(uint8_t *buffer, size_t enc_size)
+ساکن صحیح
+commit_snapshot(uint8_t *بفر_2, size_t enc_سائز)
 {
-	if (parameter_flashfs_blank() != 1) {
-		int rv = parameter_flashfs_erase();
+	اگر (parameter_flashfs_blank() != 1) {
+		صحیح rv = parameter_flashfs_erase();
 
-		if (rv < 0) {
+		اگر (rv < 0) {
 			parameter_flashfs_free();
-			return rv;
+			واپس rv;
 		}
 	}
 
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	صحیح نتیجہ = parameter_flashfs_write(parameters_token, بفر_2, enc_سائز);
 
-	if (result != (int)enc_size && parameter_flashfs_blank() == 1) {
-		result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	اگر (نتیجہ != (صحیح)enc_سائز && parameter_flashfs_blank() == 1) {
+		نتیجہ = parameter_flashfs_write(parameters_token, بفر_2, enc_سائز);
 	}
 
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	اگر (نتیجہ == (صحیح)enc_سائز) {
+		واپس OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	واپس نتیجہ < 0 ? نتیجہ : -EFBIG;
 }
 
-static int
-compact_to_snapshot()
+ساکن صحیح
+compact_مقصد_snapshot()
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	صحیح نتیجہ = encode_document(&encoder, خالی_اشاریہ, سچ);
 
-	if (result == 0) {
-		uint8_t *buffer;
-		size_t enc_size;
-		result = stage_snapshot(&encoder, &buffer, &enc_size);
+	اگر (نتیجہ == 0) {
+		uint8_t *بفر_2;
+		size_t enc_سائز;
+		نتیجہ = stage_snapshot(&encoder, &بفر_2, &enc_سائز);
 
-		if (result == OK) {
-			result = commit_snapshot(buffer, enc_size);
+		اگر (نتیجہ == OK) {
+			نتیجہ = commit_snapshot(بفر_2, enc_سائز);
 		}
 	}
 
-	if (result == OK) {
-		log_unreadable = false;
+	اگر (نتیجہ == OK) {
+		log_unreadable = جھوٹ;
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	آزاد(bson_encoder_buf_ڈیٹا(&encoder));
+	واپس نتیجہ;
 }
 
-static bool
-has_record(flash_file_token_t token)
+ساکن منطقی
+has_ریکارڈ(flash_file_token_t token)
 {
-	uint8_t *buffer = nullptr;
-	size_t buf_size = 0;
-	return parameter_flashfs_read(token, &buffer, &buf_size) >= 0;
+	uint8_t *بفر_2 = خالی_اشاریہ;
+	size_t buf_سائز = 0;
+	واپس parameter_flashfs_read(token, &بفر_2, &buf_سائز) >= 0;
 }
 
-static int
-param_export_internal(param_filter_func filter)
+ساکن صحیح
+param_export_اندرونی(param_filter_func filter)
 {
 	/* A delta only means something behind a snapshot that replays. A legacy
 	 * record still present means the boot migration did not run; replay
 	 * would take it over any delta appended behind it. */
-	if (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
-		return compact_to_snapshot();
+	اگر (log_unreadable || has_ریکارڈ(parameters_legacy_token) || !has_ریکارڈ(parameters_token)) {
+		واپس compact_مقصد_snapshot();
 	}
 
-	if (!any_unsaved(filter)) {
-		return 0;
+	اگر (!any_unsaved(filter)) {
+		واپس 0;
 	}
 
-	int result = export_delta(filter);
+	صحیح نتیجہ = export_delta(filter);
 
-	if (result != -ENOSPC) {
-		return result;
+	اگر (نتیجہ != -ENOSPC) {
+		واپس نتیجہ;
 	}
 
 	/* Same-bank erase stalls the CPU for ~1 s; last resort when a single
 	 * save does not fit the tail. Compact writes the full RAM snapshot so a
 	 * filtered save cannot drop params not in the delta. */
 	PX4_WARN("flashparams: param sector full, compacting");
-	return compact_to_snapshot();
+	واپس compact_مقصد_snapshot();
 }
 
 
-static bool
-record_is_stale(bson_node_t node)
+ساکن منطقی
+ریکارڈ_is_stale(bson_گرہ_t گرہ_2)
 {
-	const param_t param = param_find_no_notification(node->name);
+	ثابت param_t param = param_ڈھونڈو_no_notification(گرہ_2->name);
 
-	if (param == PARAM_INVALID) {
-		return true;
+	اگر (param == PARAM_INVALID) {
+		واپس سچ;
 	}
 
-	switch (node->type) {
-	case BSON_INT32:
-		return param_type(param) != PARAM_TYPE_INT32;
+	انتخاب (گرہ_2->type) {
+	حالت BSON_INT32:
+		واپس param_type(param) != PARAM_TYPE_INT32;
 
-	case BSON_DOUBLE:
-		return param_type(param) != PARAM_TYPE_FLOAT;
+	حالت BSON_DOUBLE:
+		واپس param_type(param) != PARAM_TYPE_FLOAT;
 
-	default:
-		return false;
+	طےشدہ:
+		واپس جھوٹ;
 	}
 }
 
-static int
-param_import_callback(bson_decoder_t decoder, bson_node_t node)
+ساکن صحیح
+param_import_callback(bson_decoder_t decoder, bson_گرہ_t گرہ_2)
 {
-	float f;
+	اعشاری f;
 	int32_t i;
-	void *v = nullptr;
-	int result = -1;
+	خالی *v = خالی_اشاریہ;
+	صحیح نتیجہ = -1;
 
 	/*
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	اگر (گرہ_2->type == BSON_EOO) {
 		debug("end of parameters");
-		return 0;
+		واپس 0;
 	}
 
 	/* A tombstone has no value. The decoder leaves the previous node's in
 	 * the union and the translations read it without a type check. */
-	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
+	ثابت منطقی tombstone = گرہ_2->type == BSON_nullptr || گرہ_2->type == BSON_UNDEFINED;
 
-	if (!tombstone) {
-		if (record_is_stale(node)) {
-			log_stale = true;
+	اگر (!tombstone) {
+		اگر (ریکارڈ_is_stale(گرہ_2)) {
+			log_stale = سچ;
 		}
 
-		if (param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
-			return 1;
+		اگر (param_modify_on_import(گرہ_2) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+			واپس 1;
 		}
 	}
 
@@ -412,122 +412,122 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	 * Find the parameter this node represents.  If we don't know it,
 	 * ignore the node.
 	 */
-	param_t param = param_find_no_notification(node->name);
+	param_t param = param_ڈھونڈو_no_notification(گرہ_2->name);
 
-	if (param == PARAM_INVALID) {
-		debug("ignoring unrecognised parameter '%s'", node->name);
-		return 1;
+	اگر (param == PARAM_INVALID) {
+		debug("ignoring unrecognised parameter '%s'", گرہ_2->name);
+		واپس 1;
 	}
 
 	/*
 	 * Handle setting the parameter from the node
 	 */
 
-	switch (node->type) {
-	case BSON_nullptr:
-	case BSON_UNDEFINED:
+	انتخاب (گرہ_2->type) {
+	حالت BSON_nullptr:
+	حالت BSON_UNDEFINED:
 		user_config.reset(param);
-		result = 1;
-		goto out;
+		نتیجہ = 1;
+		جاؤ برآمد;
 
-	case BSON_INT32:
-		if (param_type(param) != PARAM_TYPE_INT32) {
-			PX4_WARN("unexpected type for %s", node->name);
-			result = 1; // just skip this entry
-			goto out;
+	حالت BSON_INT32:
+		اگر (param_type(param) != PARAM_TYPE_INT32) {
+			PX4_WARN("unexpected type for %s", گرہ_2->name);
+			نتیجہ = 1; // just skip this entry
+			جاؤ برآمد;
 		}
 
-		i = node->i32;
+		i = گرہ_2->i32;
 		v = &i;
-		break;
+		توڑو;
 
-	case BSON_DOUBLE:
-		if (param_type(param) != PARAM_TYPE_FLOAT) {
-			PX4_WARN("unexpected type for %s", node->name);
-			result = 1; // just skip this entry
-			goto out;
+	حالت BSON_DOUBLE:
+		اگر (param_type(param) != PARAM_TYPE_FLOAT) {
+			PX4_WARN("unexpected type for %s", گرہ_2->name);
+			نتیجہ = 1; // just skip this entry
+			جاؤ برآمد;
 		}
 
-		f = node->d;
+		f = گرہ_2->d;
 		v = &f;
-		break;
+		توڑو;
 
-	default:
-		PX4_ERR("%s unrecognised node type %d", node->name, node->type);
-		result = 1; // just skip this entry
-		goto out;
+	طےشدہ:
+		PX4_ERR("%s unrecognised node type %d", گرہ_2->name, گرہ_2->type);
+		نتیجہ = 1; // just skip this entry
+		جاؤ برآمد;
 	}
 
-	if (param_set_external(param, v, true, true)) {
-		debug("error setting value for '%s'", node->name);
-		goto out;
+	اگر (param_سیٹ_external(param, v, سچ, سچ)) {
+		debug("error setting value for '%s'", گرہ_2->name);
+		جاؤ برآمد;
 	}
 
 	/* don't return zero, that means EOF */
-	result = 1;
+	نتیجہ = 1;
 
-out:
-	return result;
+برآمد:
+	واپس نتیجہ;
 }
 
-static int
-import_one_entry(uint8_t *buffer, size_t buf_size, void *arg)
+ساکن صحیح
+import_one_اندراج(uint8_t *بفر_2, size_t buf_سائز, خالی *arg)
 {
-	int *result = static_cast<int *>(arg);
+	صحیح *نتیجہ = static_cast<صحیح *>(arg);
 	bson_decoder_s decoder{};
 
-	if (bson_decoder_init_buf(&decoder, buffer, buf_size, param_import_callback)) {
+	اگر (bson_decoder_init_buf(&decoder, بفر_2, buf_سائز, param_import_callback)) {
 		debug("decoder init failed");
-		*result = -1;
-		return -1;
+		*نتیجہ = -1;
+		واپس -1;
 	}
 
-	do {
-		*result = bson_decoder_next(&decoder);
+	کرو {
+		*نتیجہ = bson_decoder_اگلا(&decoder);
 
-	} while (*result > 0);
+	} جب (*نتیجہ > 0);
 
-	return *result < 0 ? *result : 0;
+	واپس *نتیجہ < 0 ? *نتیجہ : 0;
 }
 
-static int
-param_import_internal(bool *legacy)
+ساکن صحیح
+param_import_اندرونی(منطقی *legacy)
 {
-	int result = 0;
-	log_stale = false;
-	int n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &result);
+	صحیح نتیجہ = 0;
+	log_stale = جھوٹ;
+	صحیح n = parameter_flashfs_walk(parameters_legacy_token, import_one_اندراج, &نتیجہ);
 	*legacy = n > 0;
 
-	if (n == 0) {
-		n = parameter_flashfs_walk(parameters_token, import_one_entry, &result);
+	اگر (n == 0) {
+		n = parameter_flashfs_walk(parameters_token, import_one_اندراج, &نتیجہ);
 	}
 
-	if (n < 0) {
+	اگر (n < 0) {
 		debug("flash walk failed (%d)", n);
-		log_unreadable = true;
-		return n;
+		log_unreadable = سچ;
+		واپس n;
 	}
 
-	if (n == 0) {
+	اگر (n == 0) {
 		/* No valid entry found. A fully erased store is blank (first boot, or
 		 * after switching firmware): report "not yet stored" (1), matching the
 		 * convention used by param_load_default(). A store that holds data but
 		 * no valid entry (torn write, bit-rot, or foreign data) is corrupt and
 		 * must not be silently reseeded - report it so the boot recovery runs. */
-		if (parameter_flashfs_blank() == 1) {
-			return 1;
+		اگر (parameter_flashfs_blank() == 1) {
+			واپس 1;
 		}
 
 		debug("flash holds data but no valid entry");
-		return -EILSEQ;
+		واپس -EILSEQ;
 	}
 
-	if (result < 0) {
+	اگر (نتیجہ < 0) {
 		debug("BSON error decoding parameters");
-		return result;
+		واپس نتیجہ;
 	}
 
-	return 0;
+	واپس 0;
 }
 
 /*
@@ -538,58 +538,58 @@ param_import_internal(bool *legacy)
  * the erase is an error: until then the log is intact and RAM holds what it
  * said, so the boot must not be reported as a corrupt store.
  */
-static int
-compact_after_import(bool legacy)
+ساکن صحیح
+compact_after_import(منطقی legacy)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	صحیح نتیجہ = encode_document(&encoder, خالی_اشاریہ, سچ);
 
-	if (result != 0) {
-		PX4_ERR("flashparams: snapshot encode failed (%d), log kept", result);
-		free(bson_encoder_buf_data(&encoder));
-		return 0;
+	اگر (نتیجہ != 0) {
+		PX4_ERR("flashparams: snapshot encode failed (%d), log kept", نتیجہ);
+		آزاد(bson_encoder_buf_ڈیٹا(&encoder));
+		واپس 0;
 	}
 
-	const size_t enc_size = bson_encoder_buf_size(&encoder);
-	int need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_size);
-	result = 0;
+	ثابت size_t enc_سائز = bson_encoder_buf_سائز(&encoder);
+	صحیح need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_سائز);
+	نتیجہ = 0;
 
-	if (need > 0) {
-		uint8_t *buffer;
-		size_t staged_size;
-		result = stage_snapshot(&encoder, &buffer, &staged_size);
+	اگر (need > 0) {
+		uint8_t *بفر_2;
+		size_t staged_سائز;
+		نتیجہ = stage_snapshot(&encoder, &بفر_2, &staged_سائز);
 
-		if (result != OK) {
-			PX4_ERR("flashparams: cannot stage snapshot (%d), log kept", result);
-			result = 0;
+		اگر (نتیجہ != OK) {
+			PX4_ERR("flashparams: cannot stage snapshot (%d), log kept", نتیجہ);
+			نتیجہ = 0;
 
-		} else {
+		} ورنہ {
 			PX4_INFO("flashparams: compacting param sector%s", legacy ? " (legacy layout)" : "");
-			result = commit_snapshot(buffer, staged_size);
+			نتیجہ = commit_snapshot(بفر_2, staged_سائز);
 
-			if (result != OK) {
-				PX4_ERR("flashparams: compact failed (%d)", result);
+			اگر (نتیجہ != OK) {
+				PX4_ERR("flashparams: compact failed (%d)", نتیجہ);
 			}
 		}
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	آزاد(bson_encoder_buf_ڈیٹا(&encoder));
+	واپس نتیجہ;
 }
 
-int flash_param_save(param_filter_func filter)
+صحیح flash_param_save(param_filter_func filter)
 {
-	return param_export_internal(filter);
+	واپس param_export_اندرونی(filter);
 }
 
-int flash_param_import()
+صحیح flash_param_import()
 {
-	bool legacy = false;
-	int result = param_import_internal(&legacy);
+	منطقی legacy = جھوٹ;
+	صحیح نتیجہ = param_import_اندرونی(&legacy);
 
-	if (result != 0) {
-		return result;
+	اگر (نتیجہ != 0) {
+		واپس نتیجہ;
 	}
 
-	return compact_after_import(legacy);
+	واپس compact_after_import(legacy);
 }

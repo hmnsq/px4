@@ -37,126 +37,126 @@
  * Limiting / constrain helper functions
  */
 
-#pragma once
+#ہدایت once
 
-#include <float.h>
-#include <math.h>
-#include <stdint.h>
+#شامل <float.h>
+#شامل <math.h>
+#شامل <stdint.h>
 
-#ifndef MATH_PI
-#define MATH_PI		3.141592653589793238462643383280
-#endif
+#اگر_غیر_تعریف_شدہ MATH_PI
+#تعریف_کرو MATH_PI		3.141592653589793238462643383280
+#اگر_ختم
 
-namespace math
+نامخلا math
 {
 
-#if defined(__PX4_QURT)
-namespace HexagonDSPMath
+#اگر defined(__PX4_QURT)
+نامخلا HexagonDSPMath
 {
-static inline constexpr bool isNan(float val) { return __builtin_isnan(val); }
-static inline constexpr bool isNan(double val) { return __builtin_isnan(val); }
-static inline constexpr bool isNan(long double val) { return __builtin_isnan(val); }
+ساکن اندرونی constexpr منطقی isNan(اعشاری val) { واپس __builtin_isnan(val); }
+ساکن اندرونی constexpr منطقی isNan(دوہرا val) { واپس __builtin_isnan(val); }
+ساکن اندرونی constexpr منطقی isNan(طویل دوہرا val) { واپس __builtin_isnan(val); }
 
-template<typename _Tp>
-static inline constexpr bool isNan(_Tp)
+سانچہ<قسم_نام _Tp>
+ساکن اندرونی constexpr منطقی isNan(_Tp)
 {
-	return false;
+	واپس جھوٹ;
 }
 } // namespace HexagonDSPMath
-#endif // __PX4_QURT
+#اگر_ختم // __PX4_QURT
 
-template<typename _Tp>
+سانچہ<قسم_نام _Tp>
 constexpr _Tp min(_Tp a, _Tp b)
 {
-#if defined(__PX4_QURT)
+#اگر defined(__PX4_QURT)
 
 	// The Hexagon compiler can lower this pattern to sfmin, which does not preserve NaN semantics.
-	if (HexagonDSPMath::isNan(a) || HexagonDSPMath::isNan(b)) {
-		return b;
+	اگر (HexagonDSPMath::isNan(a) || HexagonDSPMath::isNan(b)) {
+		واپس b;
 	}
 
-#endif // __PX4_QURT
+#اگر_ختم // __PX4_QURT
 
-	return (a < b) ? a : b;
+	واپس (a < b) ? a : b;
 }
 
-template<typename _Tp>
+سانچہ<قسم_نام _Tp>
 constexpr _Tp min(_Tp a, _Tp b, _Tp c)
 {
-	return min(min(a, b), c);
+	واپس min(min(a, b), c);
 }
 
-template<typename _Tp>
+سانچہ<قسم_نام _Tp>
 constexpr _Tp max(_Tp a, _Tp b)
 {
-#if defined(__PX4_QURT)
+#اگر defined(__PX4_QURT)
 
 	// The Hexagon compiler can lower this pattern to sfmax, which does not preserve NaN semantics.
-	if (HexagonDSPMath::isNan(a) || HexagonDSPMath::isNan(b)) {
-		return b;
+	اگر (HexagonDSPMath::isNan(a) || HexagonDSPMath::isNan(b)) {
+		واپس b;
 	}
 
-#endif // __PX4_QURT
+#اگر_ختم // __PX4_QURT
 
-	return (a > b) ? a : b;
+	واپس (a > b) ? a : b;
 }
 
-template<typename _Tp>
+سانچہ<قسم_نام _Tp>
 constexpr _Tp max(_Tp a, _Tp b, _Tp c)
 {
-	return max(max(a, b), c);
+	واپس max(max(a, b), c);
 }
 
-template<typename _Tp>
+سانچہ<قسم_نام _Tp>
 constexpr _Tp constrain(_Tp val, _Tp min_val, _Tp max_val)
 {
-#if defined(__PX4_QURT)
+#اگر defined(__PX4_QURT)
 
 	// The Hexagon compiler lowers this clamp pattern to sfmin, which does not preserve NaN semantics.
-	if (HexagonDSPMath::isNan(val)) {
-		return val;
+	اگر (HexagonDSPMath::isNan(val)) {
+		واپس val;
 	}
 
-#endif // __PX4_QURT
+#اگر_ختم // __PX4_QURT
 
-	return (val < min_val) ? min_val : ((val > max_val) ? max_val : val);
+	واپس (val < min_val) ? min_val : ((val > max_val) ? max_val : val);
 }
 
 /** Constrain float values to valid values for int16_t.
  * Invalid values are just clipped to be in the range for int16_t. */
-constexpr int16_t constrainFloatToInt16(float value)
+constexpr int16_t constrain_Float_مقصد_Int16(اعشاری value)
 {
-	return (int16_t)math::constrain(value, (float)INT16_MIN, (float)INT16_MAX);
+	واپس (int16_t)math::constrain(value, (اعشاری)INT16_MIN, (اعشاری)INT16_MAX);
 }
 
-template<typename _Tp>
-constexpr bool isInRange(_Tp val, _Tp min_val, _Tp max_val)
+سانچہ<قسم_نام _Tp>
+constexpr منطقی is_اندر_Range(_Tp val, _Tp min_val, _Tp max_val)
 {
-	return (min_val <= val) && (val <= max_val);
+	واپس (min_val <= val) && (val <= max_val);
 }
 
-template<typename T>
+سانچہ<قسم_نام T>
 constexpr T radians(T degrees)
 {
-	return degrees * (static_cast<T>(MATH_PI) / static_cast<T>(180));
+	واپس degrees * (static_cast<T>(MATH_PI) / static_cast<T>(180));
 }
 
-template<typename T>
+سانچہ<قسم_نام T>
 constexpr T degrees(T radians)
 {
-	return radians * (static_cast<T>(180) / static_cast<T>(MATH_PI));
+	واپس radians * (static_cast<T>(180) / static_cast<T>(MATH_PI));
 }
 
 /** Safe way to check if float is zero */
-inline bool isZero(float val)
+اندرونی منطقی isZero(اعشاری val)
 {
-	return fabsf(val - 0.0f) < FLT_EPSILON;
+	واپس fabsf(val - 0.0f) < FLT_EPSILON;
 }
 
 /** Safe way to check if double is zero */
-inline bool isZero(double val)
+اندرونی منطقی isZero(دوہرا val)
 {
-	return fabs(val - 0.0) < DBL_EPSILON;
+	واپس fabs(val - 0.0) < DBL_EPSILON;
 }
 
 }

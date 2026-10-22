@@ -34,16 +34,16 @@ Description:
     Common functions used for the derivation of most estimators
 """
 
-from symforce import symbolic as sm
-from symforce import geo
-from symforce import typing as T
+سے symforce درآمد symbolic بطور sm
+سے symforce درآمد geo
+سے symforce درآمد typing بطور T
 
-import re
+درآمد re
 
 # q: quaternion describing rotation from frame 1 to frame 2
 # returns a rotation matrix derived form q which describes the same
 # rotation
-def quat_to_rot(q):
+تعریف quat_مقصد_rot(q):
     q0 = q[0]
     q1 = q[1]
     q2 = q[2]
@@ -53,55 +53,55 @@ def quat_to_rot(q):
                   [2*(q1*q2 + q0*q3), q0**2 - q1**2 + q2**2 - q3**2, 2*(q2*q3 - q0*q1)],
                    [2*(q1*q3-q0*q2), 2*(q2*q3 + q0*q1), q0**2 - q1**2 - q2**2 + q3**2]])
 
-    return Rot
+    واپس Rot
 
-def sign_no_zero(x) -> T.Scalar:
+تعریف sign_no_zero(x) -> T.Scalar:
     """
     Returns -1 if x is negative, 1 if x is positive, and 1 if x is zero
     """
-    return 2 * sm.Min(sm.sign(x), 0) + 1
+    واپس 2 * sm.Min(sm.sign(x), 0) + 1
 
-def add_epsilon_sign(expr, var, eps):
+تعریف جوڑو_epsilon_sign(اظہاریہ, var, eps):
     # Avoids a singularity at 0 while keeping the derivative correct
-    return expr.subs(var, var + eps * sign_no_zero(var))
+    واپس اظہاریہ.subs(var, var + eps * sign_no_zero(var))
 
-def generate_px4_function(function_name, output_names):
-    from symforce.codegen import Codegen, CppConfig
-    import os
-    import fileinput
+تعریف generate_px4_function(function_name, output_نام):
+    سے symforce.codegen درآمد Codegen, CppConfig
+    درآمد os
+    درآمد fileinput
 
     codegen = Codegen.function(
             function_name,
-            output_names=output_names,
+            output_نام=output_نام,
             config=CppConfig())
     metadata = codegen.generate_function(
             output_dir="generated",
-            skip_directory_nesting=True)
+            skip_directory_nesting=سچ)
 
-    print("Files generated in {}:\n".format(metadata.output_dir))
-    for f in metadata.generated_files:
-        print("  |- {}".format(os.path.relpath(f, metadata.output_dir)))
+    چھاپو("Files generated in {}:\n".format(metadata.output_dir))
+    برائے f میں metadata.generated_files:
+        چھاپو("  |- {}".format(os.راستہ.relpath(f, metadata.output_dir)))
 
     # Replace cstdlib and Eigen functions by PX4 equivalents
-    with fileinput.FileInput(os.path.abspath(metadata.generated_files[0]), inplace=True, backup='.bak') as file:
-        for line in file:
-            line = line.replace("std::max", "math::max")
-            line = line.replace("std::min", "math::min")
-            line = line.replace("Eigen", "matrix")
-            line = line.replace("matrix/Dense", "matrix/math.hpp")
+    ساتھ fileinput.File_داخلہ(os.راستہ.abspath(metadata.generated_files[0]), inplace=سچ, backup='.bak') بطور file:
+        برائے سطر میں file:
+            سطر = سطر.replace("std::max", "math::max")
+            سطر = سطر.replace("std::min", "math::min")
+            سطر = سطر.replace("Eigen", "matrix")
+            سطر = سطر.replace("matrix/Dense", "matrix/math.hpp")
 
             # don't allow underscore + uppercase identifier naming (always reserved for any use)
-            line = re.sub(r'_([A-Z])', lambda x: '_' + x.group(1).lower(), line)
+            سطر = re.sub(r'_([A-Z])', بےنام x: '_' + x.گروہ(1).زیریں(), سطر)
 
-            print(line, end='')
+            چھاپو(سطر, انتہا='')
 
-def generate_python_function(function_name, output_names):
-    from symforce.codegen import Codegen, PythonConfig
+تعریف generate_python_function(function_name, output_نام):
+    سے symforce.codegen درآمد Codegen, PythonConfig
     codegen = Codegen.function(
             function_name,
-            output_names=output_names,
+            output_نام=output_نام,
             config=PythonConfig())
 
     metadata = codegen.generate_function(
             output_dir="generated",
-            skip_directory_nesting=True)
+            skip_directory_nesting=سچ)

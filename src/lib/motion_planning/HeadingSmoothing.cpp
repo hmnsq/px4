@@ -31,30 +31,30 @@
  *
  ****************************************************************************/
 
-#include "HeadingSmoothing.hpp"
+#شامل "HeadingSmoothing.hpp"
 
 HeadingSmoothing::HeadingSmoothing()
 {
-	_velocity_smoothing.setMaxVel(M_TWOPI_F); // "velocity" is heading. 2Pi limit is needed for correct angle wrapping
+	_velocity_smoothing.سیٹ_Max_Vel(M_TWOPI_F); // "velocity" is heading. 2Pi limit is needed for correct angle wrapping
 }
 
-void HeadingSmoothing::reset(const float heading, const float heading_rate)
+خالی HeadingSmoothing::reset(ثابت اعشاری heading, ثابت اعشاری heading_شرح)
 {
-	_velocity_smoothing.setCurrentVelocity(matrix::wrap_pi(heading));
+	_velocity_smoothing.سیٹ_Current_Velocity(میٹرکس::wrap_pi(heading));
 
-	if (PX4_ISFINITE(heading_rate)) {
-		_velocity_smoothing.setCurrentAcceleration(heading_rate);
+	اگر (PX4_ISFINITE(heading_شرح)) {
+		_velocity_smoothing.سیٹ_Current_Acceleration(heading_شرح);
 	}
 }
 
-void HeadingSmoothing::update(const float heading_setpoint, const float time_elapsed)
+خالی HeadingSmoothing::update(ثابت اعشاری heading_setpoint, ثابت اعشاری وقت_elapsed)
 {
-	const float delta_heading_wrapped = matrix::wrap_pi(heading_setpoint - getSmoothedHeading());
-	const float unwrapped_heading_setpoint = delta_heading_wrapped + getSmoothedHeading();
+	ثابت اعشاری delta_heading_wrapped = میٹرکس::wrap_pi(heading_setpoint - getSmoothedHeading());
+	ثابت اعشاری unwrapped_heading_setpoint = delta_heading_wrapped + getSmoothedHeading();
 
 	_velocity_smoothing.updateDurations(unwrapped_heading_setpoint);
-	_velocity_smoothing.updateTraj(time_elapsed);
+	_velocity_smoothing.updateTraj(وقت_elapsed);
 
-	const float wrapped_current_heading = matrix::wrap_pi(getSmoothedHeading());
-	_velocity_smoothing.setCurrentVelocity(wrapped_current_heading);
+	ثابت اعشاری wrapped_current_heading = میٹرکس::wrap_pi(getSmoothedHeading());
+	_velocity_smoothing.سیٹ_Current_Velocity(wrapped_current_heading);
 }

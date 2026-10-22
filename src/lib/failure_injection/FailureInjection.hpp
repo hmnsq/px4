@@ -44,21 +44,21 @@
  * value-mutating and multi-instance cases are driver-specific.
  */
 
-#pragma once
+#ہدایت once
 
-#include <cstdint>
+#شامل <cstdint>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/esc_status.h>
-#include <uORB/topics/failure_injection.h>
+#شامل <uORB/Subscription.hpp>
+#شامل <uORB/topics/esc_status.h>
+#شامل <uORB/topics/failure_injection.h>
 
-struct battery_status_s;
-struct sensor_gnss_s;
+ساخت battery_حالت_s;
+ساخت sensor_gnss_s;
 
-namespace failure_injection
+نامخلا failure_injection
 {
 
-enum class Mode : uint8_t {
+شمار جماعت منوال_2 : uint8_t {
 	Ok           = failure_injection_s::FAILURE_TYPE_OK,
 	Off          = failure_injection_s::FAILURE_TYPE_OFF,
 	Stuck        = failure_injection_s::FAILURE_TYPE_STUCK,
@@ -70,66 +70,66 @@ enum class Mode : uint8_t {
 };
 
 /** Masks of motors failed by injection, bit i = motor instance i+1. */
-struct MotorFailureMasks {
-	uint16_t stop_mask{0};    ///< motor wrong: outputs stopped without informing the allocator
-	uint16_t failure_mask{0}; ///< motor off: reported as failed motors, removed from the allocation
+ساخت MotorFailureMasks {
+	uint16_t stop_نقاب{0};    ///< motor wrong: outputs stopped without informing the allocator
+	uint16_t failure_نقاب{0}; ///< motor off: reported as failed motors, removed from the allocation
 };
 
-#if defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
+#اگر defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
 
-class Config
+جماعت Config
 {
-public:
+عوامی:
 	/**
 	 * Poll the failure_injection subscription and, when a new failure_injection
 	 * message arrives, refresh the cached failure config that mode() / any_active()
 	 * read. Call once per loop iteration.
 	 * @return true if an updated failure config was applied, false if unchanged.
 	 */
-	bool update();
+	منطقی update();
 
 	/** Cache a failure_injection message directly (used by tests). */
-	void set(const failure_injection_s &cfg);
+	خالی سیٹ(ثابت failure_injection_s &cfg);
 
 	/**
 	 * Active failure mode for a (unit, instance), or Mode::Ok if none.
 	 * @param unit     one of failure_injection_s::FAILURE_UNIT_*
 	 * @param instance 1-based instance, or 0 to match any instance of the unit
 	 */
-	Mode mode(uint8_t unit, uint8_t instance) const;
+	منوال_2 منوال(uint8_t unit, uint8_t instance) ثابت;
 
 	/** True if any failure is currently active (free no-failure early-out). */
-	bool any_active() const { return _count > 0; }
+	منطقی any_فعال() ثابت { واپس گنتی_3 > 0; }
 
-private:
+نجی:
 	uORB::Subscription _sub{ORB_ID(failure_injection)};
 
-	uint8_t  _count{0};
+	uint8_t  گنتی_3{0};
 	uint8_t  _unit[failure_injection_s::MAX_FAILURES] {};
-	uint16_t _instance_mask[failure_injection_s::MAX_FAILURES] {};
-	Mode     _failure_type[failure_injection_s::MAX_FAILURES] {};
+	uint16_t instance_نقاب[failure_injection_s::MAX_FAILURES] {};
+	منوال_2     _failure_type[failure_injection_s::MAX_FAILURES] {};
 };
 
 /**
  * Per-(consumer, instance) state for stateful failures. Holds the last good
  * sample so Stuck can replay it.
  */
-template<typename MsgT>
-struct Stuck {
-	bool valid{false};
-	MsgT value{};
+سانچہ<قسم_نام پیغام_T>
+ساخت Stuck {
+	منطقی valid{جھوٹ};
+	پیغام_T value{};
 };
 
-template<typename...>
-using void_t = void;
+سانچہ<قسم_نام...>
+استعمال void_t = خالی;
 
-template<typename T, typename = void>
-struct has_timestamp_sample {
-	static constexpr bool value = false;
+سانچہ<قسم_نام T, قسم_نام = خالی>
+ساخت has_timestamp_sample {
+	ساکن constexpr منطقی value = جھوٹ;
 };
-template<typename T>
-struct has_timestamp_sample<T, void_t<decltype(T::timestamp_sample)>> {
-	static constexpr bool value = true;
+سانچہ<قسم_نام T>
+ساخت has_timestamp_sample<T, void_t<decltype(T::timestamp_sample)>> {
+	ساکن constexpr منطقی value = سچ;
 };
 
 /**
@@ -139,45 +139,45 @@ struct has_timestamp_sample<T, void_t<decltype(T::timestamp_sample)>> {
  * @return false if the message must be suppressed (Off); true otherwise. For
  *         Stuck the message is overwritten with the last good sample.
  */
-template<typename MsgT>
-bool process(Mode mode, MsgT &msg, Stuck<MsgT> &stuck)
+سانچہ<قسم_نام پیغام_T>
+منطقی process(منوال_2 منوال, پیغام_T &پیغام_2, Stuck<پیغام_T> &stuck)
 {
-	switch (mode) {
-	case Mode::Off:
-		return false;
+	انتخاب (منوال) {
+	حالت منوال_2::Off:
+		واپس جھوٹ;
 
-	case Mode::Stuck:
-		if (stuck.valid) {
-			const uint64_t timestamp = msg.timestamp;
+	حالت منوال_2::Stuck:
+		اگر (stuck.valid) {
+			ثابت uint64_t timestamp = پیغام_2.timestamp;
 
-			if constexpr(has_timestamp_sample<MsgT>::value) {
-				const uint64_t timestamp_sample = msg.timestamp_sample;
-				msg = stuck.value;
-				msg.timestamp_sample = timestamp_sample;
+			اگر constexpr(has_timestamp_sample<پیغام_T>::value) {
+				ثابت uint64_t timestamp_sample = پیغام_2.timestamp_sample;
+				پیغام_2 = stuck.value;
+				پیغام_2.timestamp_sample = timestamp_sample;
 
-			} else {
-				msg = stuck.value;
+			} ورنہ {
+				پیغام_2 = stuck.value;
 			}
 
-			msg.timestamp = timestamp;
+			پیغام_2.timestamp = timestamp;
 		}
 
-		return true;
+		واپس سچ;
 
-	default:
-		stuck.value = msg;
-		stuck.valid = true;
-		return true;
+	طےشدہ:
+		stuck.value = پیغام_2;
+		stuck.valid = سچ;
+		واپس سچ;
 	}
 }
 
 /**
  * Convenience overload to fix the fact that the uORB instance is 0-based but the failure_injection instance is 1-based.
  */
-template<typename MsgT>
-bool process(const Config &config, uint8_t unit, uint8_t uorb_instance, MsgT &msg, Stuck<MsgT> &stuck)
+سانچہ<قسم_نام پیغام_T>
+منطقی process(ثابت Config &config, uint8_t unit, uint8_t uorb_instance, پیغام_T &پیغام_2, Stuck<پیغام_T> &stuck)
 {
-	return process(config.mode(unit, uorb_instance + 1), msg, stuck);
+	واپس process(config.منوال(unit, uorb_instance + 1), پیغام_2, stuck);
 }
 
 /**
@@ -185,15 +185,15 @@ bool process(const Config &config, uint8_t unit, uint8_t uorb_instance, MsgT &ms
  *
  * @return false if the signal must be treated as failed/suppressed (Off), true otherwise.
  */
-inline bool process(Mode mode)
+اندرونی منطقی process(منوال_2 منوال)
 {
-	return mode != Mode::Off;
+	واپس منوال != منوال_2::Off;
 }
 
 /** Convenience overload, same 0-based to 1-based instance mapping as the generic process(). */
-inline bool process(const Config &config, uint8_t unit, uint8_t uorb_instance)
+اندرونی منطقی process(ثابت Config &config, uint8_t unit, uint8_t uorb_instance)
 {
-	return process(config.mode(unit, uorb_instance + 1));
+	واپس process(config.منوال(unit, uorb_instance + 1));
 }
 
 /**
@@ -204,7 +204,7 @@ inline bool process(const Config &config, uint8_t unit, uint8_t uorb_instance)
  *
  * @return false if the battery_status publication must be suppressed (Off), true otherwise.
  */
-bool process_battery(const Config &config, uint8_t instance, battery_status_s &battery_status);
+منطقی process_battery(ثابت Config &config, uint8_t instance, battery_حالت_s &battery_حالت);
 
 /**
  * GNSS counterpart to process(): on FAILURE_UNIT_SENSOR_GPS for the receiver publishing on the
@@ -215,7 +215,7 @@ bool process_battery(const Config &config, uint8_t instance, battery_status_s &b
  * @param uorb_instance 0-based uORB instance of the publisher (not the 1-based failure instance).
  * @return false if the sensor_gnss publication must be suppressed (Off), true otherwise.
  */
-bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
+منطقی process_gnss(ثابت Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
 		  Stuck<sensor_gnss_s> &stuck);
 
 /**
@@ -226,7 +226,7 @@ bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &se
  * can't accidentally apply it in place to a persistent status, which would compound Wrong across
  * calls. Call after Config::update().
  */
-esc_status_s process_esc(const Config &config, const esc_status_s &status);
+esc_حالت_s process_esc(ثابت Config &config, ثابت esc_حالت_s &حالت_2);
 
 /**
  * Motor counterpart to process(): derive the masks of motors failed by
@@ -235,41 +235,41 @@ esc_status_s process_esc(const Config &config, const esc_status_s &status);
  * undetected one (stop_mask: outputs stopped without informing the allocator).
  * Call after Config::update().
  */
-MotorFailureMasks process_motor(const Config &config);
+MotorFailureMasks process_motor(ثابت Config &config);
 
-#else // !CONFIG_MODULES_FAILURE_INJECTION_MANAGER
+#ورنہ // !CONFIG_MODULES_FAILURE_INJECTION_MANAGER
 
-class Config
+جماعت Config
 {
-public:
-	bool update() { return false; }
-	void set(const failure_injection_s &) {}
-	Mode mode(uint8_t, uint8_t) const { return Mode::Ok; }
-	bool any_active() const { return false; }
+عوامی:
+	منطقی update() { واپس جھوٹ; }
+	خالی سیٹ(ثابت failure_injection_s &) {}
+	منوال_2 منوال(uint8_t, uint8_t) ثابت { واپس منوال_2::Ok; }
+	منطقی any_فعال() ثابت { واپس جھوٹ; }
 };
 
-template<typename MsgT>
-struct Stuck {
+سانچہ<قسم_نام پیغام_T>
+ساخت Stuck {
 };
 
-template<typename MsgT>
-bool process(Mode, MsgT &, Stuck<MsgT> &) { return true; }
+سانچہ<قسم_نام پیغام_T>
+منطقی process(منوال_2, پیغام_T &, Stuck<پیغام_T> &) { واپس سچ; }
 
-template<typename MsgT>
-bool process(const Config &, uint8_t, uint8_t, MsgT &, Stuck<MsgT> &) { return true; }
+سانچہ<قسم_نام پیغام_T>
+منطقی process(ثابت Config &, uint8_t, uint8_t, پیغام_T &, Stuck<پیغام_T> &) { واپس سچ; }
 
-inline bool process(Mode) { return true; }
+اندرونی منطقی process(منوال_2) { واپس سچ; }
 
-inline bool process(const Config &, uint8_t, uint8_t) { return true; }
+اندرونی منطقی process(ثابت Config &, uint8_t, uint8_t) { واپس سچ; }
 
-inline bool process_battery(const Config &, uint8_t, battery_status_s &) { return true; }
+اندرونی منطقی process_battery(ثابت Config &, uint8_t, battery_حالت_s &) { واپس سچ; }
 
-inline bool process_gnss(const Config &, uint8_t, sensor_gnss_s &, Stuck<sensor_gnss_s> &) { return true; }
+اندرونی منطقی process_gnss(ثابت Config &, uint8_t, sensor_gnss_s &, Stuck<sensor_gnss_s> &) { واپس سچ; }
 
-inline esc_status_s process_esc(const Config &, const esc_status_s &status) { return status; }
+اندرونی esc_حالت_s process_esc(ثابت Config &, ثابت esc_حالت_s &حالت_2) { واپس حالت_2; }
 
-inline MotorFailureMasks process_motor(const Config &) { return {}; }
+اندرونی MotorFailureMasks process_motor(ثابت Config &) { واپس {}; }
 
-#endif // CONFIG_MODULES_FAILURE_INJECTION_MANAGER
+#اگر_ختم // CONFIG_MODULES_FAILURE_INJECTION_MANAGER
 
 } // namespace failure_injection

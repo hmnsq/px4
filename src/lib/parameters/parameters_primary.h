@@ -31,21 +31,21 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include "param.h"
+#شامل "param.h"
 
-struct param_primary_counters {
-	uint32_t set_value_request_received;
-	uint32_t set_value_response_sent;
-	uint32_t reset_sent;
-	uint32_t set_value_request_sent;
-	uint32_t set_value_response_received;
-	uint32_t set_used_received;
+ساخت param_primary_counters {
+	uint32_t سیٹ_قدر_request_received;
+	uint32_t سیٹ_قدر_response_بھیجا;
+	uint32_t reset_بھیجا;
+	uint32_t سیٹ_قدر_request_بھیجا;
+	uint32_t سیٹ_قدر_response_received;
+	uint32_t سیٹ_مستعمل_received;
 };
 
-void param_primary_init();
-void param_primary_set_value(param_t param, const void *val);
-void param_primary_reset(param_t param);
-void param_primary_reset_all();
-void param_primary_get_counters(struct param_primary_counters *cnt);
+خالی param_primary_init();
+خالی param_primary_سیٹ_قدر(param_t param, ثابت خالی *val);
+خالی param_primary_reset(param_t param);
+خالی param_primary_reset_all();
+خالی param_primary_get_counters(ساخت param_primary_counters *cnt);

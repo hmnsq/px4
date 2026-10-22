@@ -32,53 +32,53 @@
  ****************************************************************************/
 
 
-#include "PX4Barometer.hpp"
+#شامل "PX4Barometer.hpp"
 
-#include <lib/drivers/device/Device.hpp>
+#شامل <lib/drivers/device/Device.hpp>
 
 PX4Barometer::PX4Barometer(uint32_t device_id)
 {
-	set_device_id(device_id);
+	سیٹ_device_id(device_id);
 	_report.temperature = 15; // if no temperature is set, report the sea level standard temperature of 15°C. As used in VehicleAirData
 }
 
-PX4Barometer::PX4Barometer(uint32_t device_id, bool external)
+PX4Barometer::PX4Barometer(uint32_t device_id, منطقی external)
 {
-	set_device_id(device_id);
-	set_external(external);
+	سیٹ_device_id(device_id);
+	سیٹ_external(external);
 	_report.temperature = 15; // if no temperature is set, report the sea level standard temperature of 15°C. As used in VehicleAirData
 }
 
-void PX4Barometer::set_device_id(uint32_t device_id)
+خالی PX4Barometer::سیٹ_device_id(uint32_t device_id)
 {
 	_report.device_id = device_id;
 
-	if (!_external_forced) {
+	اگر (!_external_forced) {
 		_report.is_external = device::device_is_external(device_id);
 	}
 }
 
-void PX4Barometer::set_external(bool external)
+خالی PX4Barometer::سیٹ_external(منطقی external)
 {
 	_report.is_external = external;
-	_external_forced = true;
+	_external_forced = سچ;
 }
 
-void PX4Barometer::update(const hrt_abstime &timestamp_sample, float pressure)
+خالی PX4Barometer::update(ثابت hrt_abstime &timestamp_sample, اعشاری pressure)
 {
-	if (!PX4_ISFINITE(pressure)) {
-		return;
+	اگر (!PX4_ISFINITE(pressure)) {
+		واپس;
 	}
 
 	_report.timestamp_sample = timestamp_sample;
 	_report.pressure = pressure;
-	_report.timestamp = hrt_absolute_time();
+	_report.timestamp = hrt_absolute_وقت();
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_BARO,
+	اگر (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_BARO,
 					_sensor_pub.get_instance(), _report, _stuck)) {
-		return;
+		واپس;
 	}
 
 	_sensor_pub.publish(_report);

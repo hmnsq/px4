@@ -41,881 +41,881 @@
  * and background parameter saving.
  */
 
-#define PARAM_IMPLEMENTATION
-#include "param.h"
-#include "param_translation.h"
-#include <parameters/px4_parameters.hpp>
-#include <lib/tinybson/tinybson.h>
+#تعریف_کرو PARAM_IMPLEMENTATION
+#شامل "param.h"
+#شامل "param_translation.h"
+#شامل <parameters/px4_parameters.hpp>
+#شامل <lib/tinybson/tinybson.h>
 
-#if defined(__PX4_NUTTX)
-#include <nuttx/crc32.h>
-#else
-#include <crc32.h>
-#endif
-#include <float.h>
-#include <math.h>
-#include <sys/stat.h>
+#اگر defined(__PX4_NUTTX)
+#شامل <nuttx/crc32.h>
+#ورنہ
+#شامل <crc32.h>
+#اگر_ختم
+#شامل <float.h>
+#شامل <math.h>
+#شامل <sys/stat.h>
 
-#include <containers/Bitset.hpp>
-#include <drivers/drv_hrt.h>
-#include <lib/perf/perf_counter.h>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/atomic_bitset.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/sem.h>
-#include <px4_platform_common/shutdown.h>
-#include <px4_platform_common/micro_hal.h>
+#شامل <containers/Bitset.hpp>
+#شامل <drivers/drv_hrt.h>
+#شامل <lib/perf/perf_counter.h>
+#شامل <px4_platform_common/px4_config.h>
+#شامل <px4_platform_common/atomic_bitset.h>
+#شامل <px4_platform_common/defines.h>
+#شامل <px4_platform_common/posix.h>
+#شامل <px4_platform_common/sem.h>
+#شامل <px4_platform_common/shutdown.h>
+#شامل <px4_platform_common/micro_hal.h>
 
-using namespace time_literals;
+استعمال نامخلا وقت_literals;
 
-#include "uORB/uORB.h"
-#include "uORB/topics/parameter_update.h"
-#include <uORB/Subscription.hpp>
+#شامل "uORB/uORB.h"
+#شامل "uORB/topics/parameter_update.h"
+#شامل <uORB/Subscription.hpp>
 
-#include "ExhaustiveLayer.h"
-#include "ConstLayer.h"
-#include "DynamicSparseLayer.h"
-#include "StaticSparseLayer.h"
+#شامل "ExhaustiveLayer.h"
+#شامل "ConstLayer.h"
+#شامل "DynamicSparseLayer.h"
+#شامل "StaticSparseLayer.h"
 
-#include "atomic_transaction.h"
+#شامل "atomic_transaction.h"
 
 /* Include functions common to user and kernel sides */
-#include "parameters_common.cpp"
+#شامل "parameters_common.cpp"
 
-#if defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
-#include <px4_platform/board_ctrl.h>
-#include "parameters_ioctl.h"
-#endif
+#اگر defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
+#شامل <px4_platform/board_ctrl.h>
+#شامل "parameters_ioctl.h"
+#اگر_ختم
 
-#if defined(FLASH_BASED_PARAMS)
-#include "flashparams/flashparams.h"
-#else
-inline static int flash_param_save(param_filter_func filter) { return -1; }
-inline static int flash_param_import() { return -1; }
-#endif
+#اگر defined(FLASH_BASED_PARAMS)
+#شامل "flashparams/flashparams.h"
+#ورنہ
+اندرونی ساکن صحیح flash_param_save(param_filter_func filter) { واپس -1; }
+اندرونی ساکن صحیح flash_param_import() { واپس -1; }
+#اگر_ختم
 
-static char *param_default_file = nullptr;
-static char *param_backup_file = nullptr;
+ساکن حرف *param_default_file = خالی_اشاریہ;
+ساکن حرف *param_backup_file = خالی_اشاریہ;
 
-#include "autosave.h"
-static ParamAutosave *autosave_instance {nullptr};
+#شامل "autosave.h"
+ساکن ParamAutosave *autosave_instance {خالی_اشاریہ};
 
-static px4::AtomicBitset<param_info_count> params_active;  // params found
-static px4::AtomicBitset<param_info_count> params_unsaved;
+ساکن px4::AtomicBitset<param_info_گنتی> params_فعال;  // params found
+ساکن px4::AtomicBitset<param_info_گنتی> params_unsaved;
 
 // Params the save in progress is writing. They are moved out of params_unsaved
 // before their values are read, so a param_set that lands while the save runs
 // marks its param again and reaches the next save. Flash-param saves write only
 // unsaved params, so nothing else would ever write that change.
-static px4::AtomicBitset<param_info_count> params_saving;
+ساکن px4::AtomicBitset<param_info_گنتی> params_saving;
 
-static ConstLayer firmware_defaults;
-static DynamicSparseLayer runtime_defaults{&firmware_defaults};
+ساکن ConstLayer firmware_defaults;
+ساکن DynamicSparseLayer runtime_defaults{&firmware_defaults};
 DynamicSparseLayer user_config{&runtime_defaults};
 
 /** parameter update topic handle */
-#if not defined(CONFIG_PARAM_REMOTE)
-static orb_advert_t param_topic = nullptr;
-static unsigned int param_instance = 0;
-#endif
+#اگر not defined(CONFIG_PARAM_REMOTE)
+ساکن orb_advert_t param_topic = خالی_اشاریہ;
+ساکن غیرعلامتی صحیح param_instance = 0;
+#اگر_ختم
 
-static perf_counter_t param_export_perf;
-static perf_counter_t param_find_perf;
-static perf_counter_t param_get_perf;
-static perf_counter_t param_set_perf;
+ساکن perf_شمار_t param_export_perf;
+ساکن perf_شمار_t param_ڈھونڈو_perf;
+ساکن perf_شمار_t param_get_perf;
+ساکن perf_شمار_t param_سیٹ_perf;
 
-static pthread_mutex_t file_mutex  =
+ساکن pthread_mutex_t file_mutex  =
 	PTHREAD_MUTEX_INITIALIZER; ///< this protects against concurrent param saves (file or flash access).
 
 // Support for remote parameter node
-#if defined(CONFIG_PARAM_PRIMARY)
+#اگر defined(CONFIG_PARAM_PRIMARY)
 # include "parameters_primary.h"
-#endif // CONFIG_PARAM_PRIMARY
-#if defined(CONFIG_PARAM_REMOTE)
+#اگر_ختم // CONFIG_PARAM_PRIMARY
+#اگر defined(CONFIG_PARAM_REMOTE)
 # include "parameters_remote.h"
-#endif // CONFIG_PARAM_REMOTE
+#اگر_ختم // CONFIG_PARAM_REMOTE
 
-void
+خالی
 param_init()
 {
-#ifdef __PX4_POSIX
+#اگر_تعریف_شدہ __PX4_POSIX
 	// Set up the recursive param mutex before any thread can access parameters.
 	AtomicTransaction::initialize();
-#endif
+#اگر_ختم
 
 	param_export_perf = perf_alloc(PC_ELAPSED, "param: export");
-	param_find_perf = perf_alloc(PC_COUNT, "param: find");
-	param_get_perf = perf_alloc(PC_COUNT, "param: get");
-	param_set_perf = perf_alloc(PC_ELAPSED, "param: set");
+	param_ڈھونڈو_perf = perf_alloc(PC_گنتی, "param: find");
+	param_get_perf = perf_alloc(PC_گنتی, "param: get");
+	param_سیٹ_perf = perf_alloc(PC_ELAPSED, "param: set");
 
-#if defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
-	px4_register_boardct_ioctl(_PARAMIOCBASE, param_ioctl);
-#endif
+#اگر defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
+	px4_رجسٹر_boardct_ioctl(_PARAMIOCBASE, param_ioctl);
+#اگر_ختم
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#اگر defined(CONFIG_PARAM_PRIMARY)
 	param_primary_init();
-#endif // CONFIG_PARAM_PRIMARY
+#اگر_ختم // CONFIG_PARAM_PRIMARY
 
-#if defined(CONFIG_PARAM_REMOTE)
+#اگر defined(CONFIG_PARAM_REMOTE)
 	param_remote_init();
-#endif // CONFIG_PARAM_REMOTE
+#اگر_ختم // CONFIG_PARAM_REMOTE
 
-#if not defined(CONFIG_PARAM_REMOTE)
-	autosave_instance = new ParamAutosave();
-#endif
+#اگر not defined(CONFIG_PARAM_REMOTE)
+	autosave_instance = نیا ParamAutosave();
+#اگر_ختم
 }
 
 
-void
+خالی
 param_notify_changes()
 {
 // Don't send if this is a remote node. Only the primary
 // sends out update notices
-#if not defined(CONFIG_PARAM_REMOTE)
+#اگر not defined(CONFIG_PARAM_REMOTE)
 	parameter_update_s pup {};
 	pup.instance = param_instance++;
-	pup.get_count = perf_event_count(param_get_perf);
-	pup.set_count = perf_event_count(param_set_perf);
-	pup.find_count = perf_event_count(param_find_perf);
-	pup.export_count = perf_event_count(param_export_perf);
-	pup.active = params_active.count();
-	pup.changed = user_config.size();
-	pup.custom_default = runtime_defaults.size();
-	pup.timestamp = hrt_absolute_time();
+	pup.get_گنتی_2 = perf_event_گنتی(param_get_perf);
+	pup.سیٹ_گنتی = perf_event_گنتی(param_سیٹ_perf);
+	pup.ڈھونڈو_گنتی = perf_event_گنتی(param_ڈھونڈو_perf);
+	pup.export_گنتی = perf_event_گنتی(param_export_perf);
+	pup.فعال_2 = params_فعال.گنتی();
+	pup.بدلا = user_config.سائز();
+	pup.custom_default = runtime_defaults.سائز();
+	pup.timestamp = hrt_absolute_وقت();
 
-	if (param_topic == nullptr) {
+	اگر (param_topic == خالی_اشاریہ) {
 		param_topic = orb_advertise(ORB_ID(parameter_update), &pup);
 
-	} else {
+	} ورنہ {
 		orb_publish(ORB_ID(parameter_update), param_topic, &pup);
 	}
 
-#endif
+#اگر_ختم
 }
 
-static param_t param_find_internal(const char *name, bool notification)
+ساکن param_t param_ڈھونڈو_اندرونی(ثابت حرف *name, منطقی notification)
 {
-	perf_count(param_find_perf);
+	perf_گنتی(param_ڈھونڈو_perf);
 
-	param_t middle;
+	param_t درمیان;
 	param_t front = 0;
-	param_t last = param_info_count;
+	param_t آخری = param_info_گنتی;
 
 	/* perform a binary search of the known parameters */
 
-	while (front <= last) {
-		middle = front + (last - front) / 2;
-		int ret = strcmp(name, param_name(middle));
+	جب (front <= آخری) {
+		درمیان = front + (آخری - front) / 2;
+		صحیح ret = strcmp(name, param_name(درمیان));
 
-		if (ret == 0) {
-			if (notification) {
-				param_set_used(middle);
+		اگر (ret == 0) {
+			اگر (notification) {
+				param_سیٹ_مستعمل(درمیان);
 			}
 
-			return middle;
+			واپس درمیان;
 
-		} else if (middle == front) {
+		} ورنہ اگر (درمیان == front) {
 			/* An end point has been hit, but there has been no match */
-			break;
+			توڑو;
 
-		} else if (ret < 0) {
-			last = middle;
+		} ورنہ اگر (ret < 0) {
+			آخری = درمیان;
 
-		} else {
-			front = middle;
+		} ورنہ {
+			front = درمیان;
 		}
 	}
 
 	/* not found */
-	return PARAM_INVALID;
+	واپس PARAM_INVALID;
 }
 
-param_t param_find(const char *name)
+param_t param_ڈھونڈو(ثابت حرف *name)
 {
-	return param_find_internal(name, true);
+	واپس param_ڈھونڈو_اندرونی(name, سچ);
 }
 
-param_t param_find_no_notification(const char *name)
+param_t param_ڈھونڈو_no_notification(ثابت حرف *name)
 {
-	return param_find_internal(name, false);
+	واپس param_ڈھونڈو_اندرونی(name, جھوٹ);
 }
 
-unsigned param_count_used()
+غیرعلامتی param_گنتی_مستعمل()
 {
-	return params_active.count();
+	واپس params_فعال.گنتی();
 }
 
-param_t param_for_used_index(unsigned index)
+param_t param_for_مستعمل_اشاریہ(غیرعلامتی اشاریہ)
 {
 	// walk all params and count used params
-	if (index < param_info_count) {
-		unsigned used_count = 0;
+	اگر (اشاریہ < param_info_گنتی) {
+		غیرعلامتی مستعمل_گنتی = 0;
 
-		for (int i = 0; i < params_active.size(); i++) {
-			if (params_active[i]) {
+		برائے (صحیح i = 0; i < params_فعال.سائز(); i++) {
+			اگر (params_فعال[i]) {
 				// we found the right used count,
 				//  return the param value
-				if (index == used_count) {
-					return static_cast<param_t>(i);
+				اگر (اشاریہ == مستعمل_گنتی) {
+					واپس static_cast<param_t>(i);
 				}
 
-				used_count++;
+				مستعمل_گنتی++;
 			}
 		}
 	}
 
-	return PARAM_INVALID;
+	واپس PARAM_INVALID;
 }
 
-int param_get_used_index(param_t param)
+صحیح param_get_مستعمل_اشاریہ(param_t param)
 {
 	/* this tests for out of bounds and does a constant time lookup */
-	if (!param_used(param)) {
-		return -1;
+	اگر (!param_مستعمل(param)) {
+		واپس -1;
 	}
 
 	/* walk all params and count, now knowing that it has a valid index */
-	int used_count = 0;
+	صحیح مستعمل_گنتی = 0;
 
-	for (int i = 0; i < params_active.size(); i++) {
-		if (params_active[i]) {
+	برائے (صحیح i = 0; i < params_فعال.سائز(); i++) {
+		اگر (params_فعال[i]) {
 
-			if (param == i) {
-				return used_count;
+			اگر (param == i) {
+				واپس مستعمل_گنتی;
 			}
 
-			used_count++;
+			مستعمل_گنتی++;
 		}
 	}
 
-	return -1;
+	واپس -1;
 }
 
-bool
-param_value_unsaved(param_t param)
+منطقی
+param_قدر_unsaved(param_t param)
 {
-	return handle_in_range(param) ? (params_unsaved[param] || params_saving[param]) : false;
+	واپس handle_اندر_range(param) ? (params_unsaved[param] || params_saving[param]) : جھوٹ;
 }
 
-int
-param_get(param_t param, void *val)
+صحیح
+param_get(param_t param, خالی *val)
 {
-	perf_count(param_get_perf);
+	perf_گنتی(param_get_perf);
 
-	if (!handle_in_range(param)) {
+	اگر (!handle_اندر_range(param)) {
 		PX4_ERR("get: param %" PRId16 " invalid", param);
-		return PX4_ERROR;
+		واپس PX4_ERROR;
 	}
 
-	if (!params_active[param]) {
+	اگر (!params_فعال[param]) {
 		PX4_DEBUG("get: param %" PRId16 " (%s) not active", param, param_name(param));
 	}
 
-	int result = PX4_ERROR;
+	صحیح نتیجہ = PX4_ERROR;
 
-	if (val) {
+	اگر (val) {
 
-		auto retrieve_value = user_config.get(param);
+		خودکار retrieve_قدر = user_config.get(param);
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			memcpy(val, &retrieve_value.i, sizeof(retrieve_value.i));
-			return PX4_OK;
+		انتخاب (param_type(param)) {
+		حالت PARAM_TYPE_INT32:
+			حافظہ_نقل(val, &retrieve_قدر.i, حجم(retrieve_قدر.i));
+			واپس PX4_OK;
 
-		case PARAM_TYPE_FLOAT:
-			memcpy(val, &retrieve_value.f, sizeof(retrieve_value.f));
-			return PX4_OK;
+		حالت PARAM_TYPE_FLOAT:
+			حافظہ_نقل(val, &retrieve_قدر.f, حجم(retrieve_قدر.f));
+			واپس PX4_OK;
 		}
 	}
 
-	return result;
+	واپس نتیجہ;
 }
 
-int
-param_get_default_value_internal(param_t param, void *default_val)
+صحیح
+param_get_default_قدر_اندرونی(param_t param, خالی *default_val)
 {
-	if (!handle_in_range(param)) {
+	اگر (!handle_اندر_range(param)) {
 		PX4_ERR("get default value: param %d invalid", param);
-		return PX4_ERROR;
+		واپس PX4_ERROR;
 	}
 
-	if (default_val) {
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
+	اگر (default_val) {
+		انتخاب (param_type(param)) {
+		حالت PARAM_TYPE_INT32: {
 				int32_t val = runtime_defaults.get(param).i;
-				memcpy(default_val, &val, sizeof(val));
-				return PX4_OK;
+				حافظہ_نقل(default_val, &val, حجم(val));
+				واپس PX4_OK;
 			}
 
-		case PARAM_TYPE_FLOAT: {
-				float val = runtime_defaults.get(param).f;
-				memcpy(default_val, &val, sizeof(val));
-				return PX4_OK;
+		حالت PARAM_TYPE_FLOAT: {
+				اعشاری val = runtime_defaults.get(param).f;
+				حافظہ_نقل(default_val, &val, حجم(val));
+				واپس PX4_OK;
 			}
 		}
 	}
 
-	return PX4_ERROR;
+	واپس PX4_ERROR;
 }
 
-int
-param_get_default_value(param_t param, void *default_val)
+صحیح
+param_get_default_قدر(param_t param, خالی *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	اگر (!handle_اندر_range(param)) {
+		واپس PX4_ERROR;
 	}
 
-	int ret = param_get_default_value_internal(param, default_val);
-	return ret;
+	صحیح ret = param_get_default_قدر_اندرونی(param, default_val);
+	واپس ret;
 }
 
-bool param_value_is_default(param_t param)
+منطقی param_قدر_is_default(param_t param)
 {
-	if (!handle_in_range(param)) {
-		return true;
+	اگر (!handle_اندر_range(param)) {
+		واپس سچ;
 	}
 
-	if (!user_config.contains(param)) {
+	اگر (!user_config.شامل_ہے(param)) {
 		// if user config does not contain it, consider it default.
-		return true;
+		واپس سچ;
 
-	} else {
+	} ورنہ {
 		// compare with default value
-		const param_value_u user_config_value = user_config.get(param);
-		const param_value_u runtime_default_value = runtime_defaults.get(param);
+		ثابت param_قدر_u user_config_قدر = user_config.get(param);
+		ثابت param_قدر_u runtime_default_قدر = runtime_defaults.get(param);
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
-				return user_config_value.i == runtime_default_value.i;
+		انتخاب (param_type(param)) {
+		حالت PARAM_TYPE_INT32: {
+				واپس user_config_قدر.i == runtime_default_قدر.i;
 			}
 
-		case PARAM_TYPE_FLOAT: {
-				return fabsf(user_config_value.f - runtime_default_value.f) < FLT_EPSILON;
+		حالت PARAM_TYPE_FLOAT: {
+				واپس fabsf(user_config_قدر.f - runtime_default_قدر.f) < FLT_EPSILON;
 			}
 		}
 	}
 
-	return true;
+	واپس سچ;
 }
 
-static void
+ساکن خالی
 param_autosave()
 {
-	if (autosave_instance) {
+	اگر (autosave_instance) {
 		autosave_instance->request();
 	}
 }
 
-void
-param_control_autosave(bool enable)
+خالی
+param_control_autosave(منطقی enable)
 {
-	if (autosave_instance) {
+	اگر (autosave_instance) {
 		autosave_instance->enable(enable);
 	}
 }
 
-static int
-param_set_internal(param_t param, const void *val, bool mark_saved, bool notify_changes, bool update_remote = true,
-		   bool autosave = true)
+ساکن صحیح
+param_سیٹ_اندرونی(param_t param, ثابت خالی *val, منطقی mark_saved, منطقی notify_changes, منطقی update_remote = سچ,
+		   منطقی autosave = سچ)
 {
-	if (!handle_in_range(param)) {
+	اگر (!handle_اندر_range(param)) {
 		PX4_ERR("set invalid param %d", param);
-		return PX4_ERROR;
+		واپس PX4_ERROR;
 	}
 
-	if (val == nullptr) {
+	اگر (val == خالی_اشاریہ) {
 		PX4_ERR("set invalid value");
-		return PX4_ERROR;
+		واپس PX4_ERROR;
 	}
 
-	if (param_is_readonly(param)) {
+	اگر (param_is_readonly(param)) {
 		PX4_WARN("param %s is read-only", param_name(param));
-		return PX4_ERROR;
+		واپس PX4_ERROR;
 	}
 
-	int result = -1;
-	bool param_changed = false;
-	perf_begin(param_set_perf);
+	صحیح نتیجہ = -1;
+	منطقی param_بدلا = جھوٹ;
+	perf_begin(param_سیٹ_perf);
 
-	const param_value_u user_config_value = user_config.get(param);
-	param_value_u new_value{};
+	ثابت param_قدر_u user_config_قدر = user_config.get(param);
+	param_قدر_u new_قدر{};
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
-		memcpy(&new_value.i, val, sizeof(new_value.i));
-		param_changed = user_config_value.i != new_value.i;
-		break;
+	انتخاب (param_type(param)) {
+	حالت PARAM_TYPE_INT32:
+		حافظہ_نقل(&new_قدر.i, val, حجم(new_قدر.i));
+		param_بدلا = user_config_قدر.i != new_قدر.i;
+		توڑو;
 
-	case PARAM_TYPE_FLOAT:
-		memcpy(&new_value.f, val, sizeof(new_value.f));
-		param_changed = fabsf(user_config_value.f - new_value.f) > FLT_EPSILON;
-		break;
+	حالت PARAM_TYPE_FLOAT:
+		حافظہ_نقل(&new_قدر.f, val, حجم(new_قدر.f));
+		param_بدلا = fabsf(user_config_قدر.f - new_قدر.f) > FLT_EPSILON;
+		توڑو;
 
-	default: {
+	طےشدہ: {
 			PX4_ERR("param_set invalid param type for %s", param_name(param));
-			break;
+			توڑو;
 		}
 	}
 
-	if (user_config.store(param, new_value)) {
-		if (param_changed) {
-			params_unsaved.set(param, !mark_saved);
+	اگر (user_config.store(param, new_قدر)) {
+		اگر (param_بدلا) {
+			params_unsaved.سیٹ(param, !mark_saved);
 		}
 
-		result = PX4_OK;
+		نتیجہ = PX4_OK;
 
-	} else {
+	} ورنہ {
 		PX4_ERR("param_set failed to store param %s", param_name(param));
-		result = PX4_ERROR;
+		نتیجہ = PX4_ERROR;
 	}
 
-	if ((result == PX4_OK) && param_changed && !mark_saved && autosave) { // this is false when importing parameters
+	اگر ((نتیجہ == PX4_OK) && param_بدلا && !mark_saved && autosave) { // this is false when importing parameters
 		param_autosave();
 	}
 
 	// If this is the parameter server, make sure that the remote is updated
-#if defined(CONFIG_PARAM_PRIMARY)
+#اگر defined(CONFIG_PARAM_PRIMARY)
 
-	if (param_changed && update_remote) {
-		param_primary_set_value(param, val);
+	اگر (param_بدلا && update_remote) {
+		param_primary_سیٹ_قدر(param, val);
 	}
 
-#endif
+#اگر_ختم
 
 	// If this is the parameter remote, make sure that the primary is updated
-#if defined(CONFIG_PARAM_REMOTE)
+#اگر defined(CONFIG_PARAM_REMOTE)
 
-	if (param_changed && update_remote) {
-		param_remote_set_value(param, val);
+	اگر (param_بدلا && update_remote) {
+		param_remote_سیٹ_قدر(param, val);
 	}
 
-#endif
+#اگر_ختم
 
-	perf_end(param_set_perf);
+	perf_انتہا(param_سیٹ_perf);
 
 	/*
 	 * If we set something, now that we have unlocked, go ahead and advertise that
 	 * a thing has been set.
 	 */
-	if ((result == PX4_OK) && param_changed && notify_changes) {
+	اگر ((نتیجہ == PX4_OK) && param_بدلا && notify_changes) {
 		param_notify_changes();
 	}
 
-	return result;
+	واپس نتیجہ;
 }
 
-#if defined(FLASH_BASED_PARAMS)
-int param_set_external(param_t param, const void *val, bool mark_saved, bool notify_changes)
+#اگر defined(FLASH_BASED_PARAMS)
+صحیح param_سیٹ_external(param_t param, ثابت خالی *val, منطقی mark_saved, منطقی notify_changes)
 {
-	return param_set_internal(param, val, mark_saved, notify_changes);
+	واپس param_سیٹ_اندرونی(param, val, mark_saved, notify_changes);
 }
 
-void param_get_external(param_t param, void *val)
+خالی param_get_external(param_t param, خالی *val)
 {
 	param_get(param, val);
 }
-#endif
+#اگر_ختم
 
-int param_set(param_t param, const void *val)
+صحیح param_سیٹ(param_t param, ثابت خالی *val)
 {
-	return param_set_internal(param, val, false, true);
+	واپس param_سیٹ_اندرونی(param, val, جھوٹ, سچ);
 }
 
-int param_set_no_notification(param_t param, const void *val)
+صحیح param_سیٹ_no_notification(param_t param, ثابت خالی *val)
 {
-	return param_set_internal(param, val, false, false);
+	واپس param_سیٹ_اندرونی(param, val, جھوٹ, جھوٹ);
 }
 
-int param_set_no_remote_update(param_t param, const void *val, bool notify)
+صحیح param_سیٹ_no_remote_update(param_t param, ثابت خالی *val, منطقی notify)
 {
-	return param_set_internal(param, val, false, notify, false);
+	واپس param_سیٹ_اندرونی(param, val, جھوٹ, notify, جھوٹ);
 }
 
-bool param_used(param_t param)
+منطقی param_مستعمل(param_t param)
 {
-	if (handle_in_range(param)) {
-		return params_active[param];
+	اگر (handle_اندر_range(param)) {
+		واپس params_فعال[param];
 	}
 
-	return false;
+	واپس جھوٹ;
 }
 
-void param_set_used(param_t param)
+خالی param_سیٹ_مستعمل(param_t param)
 {
-	if (handle_in_range(param)) {
-#if defined(CONFIG_PARAM_REMOTE)
+	اگر (handle_اندر_range(param)) {
+#اگر defined(CONFIG_PARAM_REMOTE)
 
-		if (!param_used(param)) {
-			param_remote_set_used(param);
+		اگر (!param_مستعمل(param)) {
+			param_remote_سیٹ_مستعمل(param);
 		}
 
-#endif
+#اگر_ختم
 
-		params_active.set(param, true);
+		params_فعال.سیٹ(param, سچ);
 	}
 }
 
-int param_set_default_value(param_t param, const void *val)
+صحیح param_سیٹ_default_قدر(param_t param, ثابت خالی *val)
 {
-	if (!handle_in_range(param)) {
+	اگر (!handle_اندر_range(param)) {
 		PX4_ERR("set default value invalid param %d", param);
-		return PX4_ERROR;
+		واپس PX4_ERROR;
 	}
 
-	if (val == nullptr) {
+	اگر (val == خالی_اشاریہ) {
 		PX4_ERR("set default value invalid value");
-		return PX4_ERROR;
+		واپس PX4_ERROR;
 	}
 
-	if (param_is_readonly(param)) {
+	اگر (param_is_readonly(param)) {
 		PX4_WARN("param %s is read-only", param_name(param));
-		return PX4_ERROR;
+		واپس PX4_ERROR;
 	}
 
-	int result = PX4_ERROR;
+	صحیح نتیجہ = PX4_ERROR;
 
 
 	// check if param being set to default value
-	bool setting_to_static_default = false;
-	const param_value_u firmware_default_value = firmware_defaults.get(param);
+	منطقی setting_مقصد_static_default = جھوٹ;
+	ثابت param_قدر_u firmware_default_قدر = firmware_defaults.get(param);
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32: {
-			int32_t new_value;
-			memcpy(&new_value, val, sizeof(new_value));
-			setting_to_static_default = firmware_default_value.i == new_value;
-			break;
+	انتخاب (param_type(param)) {
+	حالت PARAM_TYPE_INT32: {
+			int32_t new_قدر;
+			حافظہ_نقل(&new_قدر, val, حجم(new_قدر));
+			setting_مقصد_static_default = firmware_default_قدر.i == new_قدر;
+			توڑو;
 		}
 
-	case PARAM_TYPE_FLOAT: {
-			float new_value;
-			memcpy(&new_value, val, sizeof(new_value));
-			setting_to_static_default = fabsf(firmware_default_value.f - new_value) <= FLT_EPSILON;
-			break;
+	حالت PARAM_TYPE_FLOAT: {
+			اعشاری new_قدر;
+			حافظہ_نقل(&new_قدر, val, حجم(new_قدر));
+			setting_مقصد_static_default = fabsf(firmware_default_قدر.f - new_قدر) <= FLT_EPSILON;
+			توڑو;
 		}
 	}
 
-	if (setting_to_static_default) {
+	اگر (setting_مقصد_static_default) {
 		runtime_defaults.reset(param);
 
-		result = PX4_OK;
+		نتیجہ = PX4_OK;
 
-	} else {
-		param_value_u new_value{};
+	} ورنہ {
+		param_قدر_u new_قدر{};
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
-				memcpy(&new_value.i, val, sizeof(new_value.i));
-				break;
+		انتخاب (param_type(param)) {
+		حالت PARAM_TYPE_INT32: {
+				حافظہ_نقل(&new_قدر.i, val, حجم(new_قدر.i));
+				توڑو;
 			}
 
-		case PARAM_TYPE_FLOAT: {
-				memcpy(&new_value.f, val, sizeof(new_value.f));
-				break;
+		حالت PARAM_TYPE_FLOAT: {
+				حافظہ_نقل(&new_قدر.f, val, حجم(new_قدر.f));
+				توڑو;
 			}
 
-		default:
-			break;
+		طےشدہ:
+			توڑو;
 		}
 
-		if (runtime_defaults.store(param, new_value)) {
+		اگر (runtime_defaults.store(param, new_قدر)) {
 			user_config.refresh(param);
-			result = PX4_OK;
+			نتیجہ = PX4_OK;
 
-		} else {
-			result = PX4_ERROR;
+		} ورنہ {
+			نتیجہ = PX4_ERROR;
 		}
 	}
 
 
-	if ((result == PX4_OK) && param_used(param)) {
+	اگر ((نتیجہ == PX4_OK) && param_مستعمل(param)) {
 		// send notification if param is already in use
 		param_notify_changes();
 	}
 
-	return result;
+	واپس نتیجہ;
 }
 
-static int param_reset_internal(param_t param, bool notify = true, bool autosave = true)
+ساکن صحیح param_reset_اندرونی(param_t param, منطقی notify = سچ, منطقی autosave = سچ)
 {
-#if defined(CONFIG_PARAM_REMOTE)
+#اگر defined(CONFIG_PARAM_REMOTE)
 	// Remote doesn't support reset
-	return false;
-#endif
+	واپس جھوٹ;
+#اگر_ختم
 
-	if (param_is_readonly(param)) {
-		return 0;  // silently skip — param_reset_all loops over all params
+	اگر (param_is_readonly(param)) {
+		واپس 0;  // silently skip — param_reset_all loops over all params
 	}
 
-	bool param_found = user_config.contains(param);
+	منطقی param_ملا = user_config.شامل_ہے(param);
 
-	if (handle_in_range(param)) {
+	اگر (handle_اندر_range(param)) {
 		user_config.reset(param);
 	}
 
-	if (param_found) {
+	اگر (param_ملا) {
 		/* Persist the reset. Flash-param saves append only unsaved params,
 		 * so a reset has to show up as a tombstone or replay keeps the
 		 * previous override. */
-		params_unsaved.set(param, true);
+		params_unsaved.سیٹ(param, سچ);
 	}
 
-	if (autosave) {
+	اگر (autosave) {
 		param_autosave();
 	}
 
-	if (param_found && notify) {
+	اگر (param_ملا && notify) {
 		param_notify_changes();
 	}
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#اگر defined(CONFIG_PARAM_PRIMARY)
 	param_primary_reset(param);
-#endif
+#اگر_ختم
 
-	return param_found;
+	واپس param_ملا;
 }
 
-int param_reset(param_t param) { return param_reset_internal(param, true); }
-int param_reset_no_notification(param_t param) { return param_reset_internal(param, false); }
+صحیح param_reset(param_t param) { واپس param_reset_اندرونی(param, سچ); }
+صحیح param_reset_no_notification(param_t param) { واپس param_reset_اندرونی(param, جھوٹ); }
 
-static void
-param_reset_all_internal(bool auto_save)
+ساکن خالی
+param_reset_all_اندرونی(منطقی auto_save)
 {
-#if defined(CONFIG_PARAM_REMOTE)
+#اگر defined(CONFIG_PARAM_REMOTE)
 	// Remote doesn't support reset
-	return;
-#endif
+	واپس;
+#اگر_ختم
 
-	for (param_t param = 0; handle_in_range(param); param++) {
-		param_reset_internal(param, false, false);
+	برائے (param_t param = 0; handle_اندر_range(param); param++) {
+		param_reset_اندرونی(param, جھوٹ, جھوٹ);
 	}
 
-	if (auto_save) {
+	اگر (auto_save) {
 		param_autosave();
 	}
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#اگر defined(CONFIG_PARAM_PRIMARY)
 	param_primary_reset_all();
-#endif
+#اگر_ختم
 
 	param_notify_changes();
 }
 
-void
+خالی
 param_reset_all()
 {
-	param_reset_all_internal(true);
+	param_reset_all_اندرونی(سچ);
 }
 
-void
-param_reset_excludes(const char *excludes[], int num_excludes)
+خالی
+param_reset_excludes(ثابت حرف *excludes[], صحیح عدد_excludes)
 {
-	for (param_t param = 0; handle_in_range(param); param++) {
-		const char *name = param_name(param);
-		bool exclude = false;
+	برائے (param_t param = 0; handle_اندر_range(param); param++) {
+		ثابت حرف *name = param_name(param);
+		منطقی exclude = جھوٹ;
 
-		for (int index = 0; index < num_excludes; index ++) {
-			int len = strlen(excludes[index]);
+		برائے (صحیح اشاریہ = 0; اشاریہ < عدد_excludes; اشاریہ ++) {
+			صحیح len = لڑی_لمبائی(excludes[اشاریہ]);
 
-			if ((excludes[index][len - 1] == '*'
-			     && strncmp(name, excludes[index], len - 1) == 0)
-			    || strcmp(name, excludes[index]) == 0) {
+			اگر ((excludes[اشاریہ][len - 1] == '*'
+			     && لڑی_موازنہ(name, excludes[اشاریہ], len - 1) == 0)
+			    || strcmp(name, excludes[اشاریہ]) == 0) {
 
-				exclude = true;
-				break;
+				exclude = سچ;
+				توڑو;
 			}
 		}
 
-		if (!exclude) {
+		اگر (!exclude) {
 			param_reset(param);
 		}
 	}
 }
 
-void
-param_reset_specific(const char *resets[], int num_resets)
+خالی
+param_reset_specific(ثابت حرف *resets[], صحیح عدد_resets)
 {
-	for (param_t param = 0; handle_in_range(param); param++) {
-		const char *name = param_name(param);
-		bool reset = false;
+	برائے (param_t param = 0; handle_اندر_range(param); param++) {
+		ثابت حرف *name = param_name(param);
+		منطقی reset = جھوٹ;
 
-		for (int index = 0; index < num_resets; index++) {
-			int len = strlen(resets[index]);
+		برائے (صحیح اشاریہ = 0; اشاریہ < عدد_resets; اشاریہ++) {
+			صحیح len = لڑی_لمبائی(resets[اشاریہ]);
 
-			if ((resets[index][len - 1] == '*'
-			     && strncmp(name, resets[index], len - 1) == 0)
-			    || strcmp(name, resets[index]) == 0) {
+			اگر ((resets[اشاریہ][len - 1] == '*'
+			     && لڑی_موازنہ(name, resets[اشاریہ], len - 1) == 0)
+			    || strcmp(name, resets[اشاریہ]) == 0) {
 
-				reset = true;
-				break;
+				reset = سچ;
+				توڑو;
 			}
 		}
 
-		if (reset) {
+		اگر (reset) {
 			param_reset(param);
 		}
 	}
 }
 
-int
-param_set_default_file(const char *filename)
+صحیح
+param_سیٹ_default_file(ثابت حرف *filename)
 {
-	if (filename && param_backup_file && strcmp(filename, param_backup_file) == 0) {
+	اگر (filename && param_backup_file && strcmp(filename, param_backup_file) == 0) {
 		PX4_ERR("default file can't be the same as the backup file %s", filename);
-		return PX4_ERROR;
+		واپس PX4_ERROR;
 	}
 
-#ifdef FLASH_BASED_PARAMS
+#اگر_تعریف_شدہ FLASH_BASED_PARAMS
 	// the default for flash-based params is always the FLASH
-	(void)filename;
-#else
+	(خالی)filename;
+#ورنہ
 
-	if (param_default_file != nullptr) {
+	اگر (param_default_file != خالی_اشاریہ) {
 		// we assume this is not in use by some other thread
-		free(param_default_file);
-		param_default_file = nullptr;
+		آزاد(param_default_file);
+		param_default_file = خالی_اشاریہ;
 	}
 
-	if (filename) {
+	اگر (filename) {
 		param_default_file = strdup(filename);
 	}
 
-#endif /* FLASH_BASED_PARAMS */
+#اگر_ختم /* FLASH_BASED_PARAMS */
 
-	return 0;
+	واپس 0;
 }
 
-const char *param_get_default_file()
+ثابت حرف *param_get_default_file()
 {
-	return param_default_file;
+	واپس param_default_file;
 }
 
-int param_set_backup_file(const char *filename)
+صحیح param_سیٹ_backup_file(ثابت حرف *filename)
 {
-	if (filename && param_default_file && strcmp(filename, param_default_file) == 0) {
+	اگر (filename && param_default_file && strcmp(filename, param_default_file) == 0) {
 		PX4_ERR("backup file can't be the same as the default file %s", filename);
-		return PX4_ERROR;
+		واپس PX4_ERROR;
 	}
 
-	if (param_backup_file != nullptr) {
+	اگر (param_backup_file != خالی_اشاریہ) {
 		// we assume this is not in use by some other thread
-		free(param_backup_file);
-		param_backup_file = nullptr;
+		آزاد(param_backup_file);
+		param_backup_file = خالی_اشاریہ;
 	}
 
-	if (filename) {
+	اگر (filename) {
 		param_backup_file = strdup(filename);
 
-	} else {
-		param_backup_file = nullptr; // backup disabled
+	} ورنہ {
+		param_backup_file = خالی_اشاریہ; // backup disabled
 	}
 
-	return 0;
+	واپس 0;
 }
 
-const char *param_get_backup_file()
+ثابت حرف *param_get_backup_file()
 {
-	return param_backup_file;
+	واپس param_backup_file;
 }
 
-static int param_export_internal(int fd, param_filter_func filter);
-static int param_verify(int fd);
+ساکن صحیح param_export_اندرونی(صحیح fd, param_filter_func filter);
+ساکن صحیح param_verify(صحیح fd);
 
-int param_save_default(bool blocking)
+صحیح param_save_default(منطقی blocking)
 {
 	PX4_DEBUG("param_save_default");
 
 	// take the file lock
-	if (blocking) {
+	اگر (blocking) {
 		pthread_mutex_lock(&file_mutex);
 
-	} else {
-		if (pthread_mutex_trylock(&file_mutex) != 0) {
+	} ورنہ {
+		اگر (pthread_mutex_trylock(&file_mutex) != 0) {
 			PX4_DEBUG("param_save_default: file lock failed (already locked)");
-			return -EWOULDBLOCK;
+			واپس -EWOULDBLOCK;
 		}
 	}
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	صحیح shutdown_تالا_ret = px4_shutdown_تالا();
 
-	if (shutdown_lock_ret != 0) {
-		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
+	اگر (shutdown_تالا_ret != 0) {
+		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_تالا_ret);
 	}
 
-	int res = PX4_ERROR;
-	const char *filename = param_get_default_file();
+	صحیح res = PX4_ERROR;
+	ثابت حرف *filename = param_get_default_file();
 
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (params_unsaved[param]) {
-			params_saving.set(param, true);
-			params_unsaved.set(param, false);
+	برائے (param_t param = 0; handle_اندر_range(param); param++) {
+		اگر (params_unsaved[param]) {
+			params_saving.سیٹ(param, سچ);
+			params_unsaved.سیٹ(param, جھوٹ);
 		}
 	}
 
-	if (filename) {
-		static constexpr int MAX_ATTEMPTS = 3;
+	اگر (filename) {
+		ساکن constexpr صحیح MAX_ATTEMPTS = 3;
 
-		for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+		برائے (صحیح attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 			// write parameters to file
-			int fd = ::open(filename, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
+			صحیح fd = ::open(filename, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_منوال_666);
 
-			if (fd > -1) {
+			اگر (fd > -1) {
 				perf_begin(param_export_perf);
-				res = param_export_internal(fd, nullptr);
-				perf_end(param_export_perf);
+				res = param_export_اندرونی(fd, خالی_اشاریہ);
+				perf_انتہا(param_export_perf);
 				::close(fd);
 
-				if (res == PX4_OK) {
+				اگر (res == PX4_OK) {
 					// reopen file to verify
-					int fd_verify = ::open(filename, O_RDONLY, PX4_O_MODE_666);
+					صحیح fd_verify = ::open(filename, O_RDONLY, PX4_O_منوال_666);
 					res = param_verify(fd_verify) || lseek(fd_verify, 0, SEEK_SET) || param_verify(fd_verify);
 					::close(fd_verify);
 				}
 			}
 
-			if (res == PX4_OK) {
-				break;
+			اگر (res == PX4_OK) {
+				توڑو;
 
-			} else {
+			} ورنہ {
 				PX4_ERR("parameter export to %s failed (%d) attempt %d", filename, res, attempt);
 				px4_usleep(10000); // wait at least 10 milliseconds before trying again
 			}
 		}
 
-	} else {
+	} ورنہ {
 		perf_begin(param_export_perf);
-		res = flash_param_save(nullptr);
-		perf_end(param_export_perf);
+		res = flash_param_save(خالی_اشاریہ);
+		perf_انتہا(param_export_perf);
 	}
 
-	if (res != PX4_OK) {
+	اگر (res != PX4_OK) {
 		PX4_ERR("param export failed (%d)", res);
 
-		for (param_t param = 0; handle_in_range(param); param++) {
-			if (params_saving[param]) {
-				params_unsaved.set(param, true);
+		برائے (param_t param = 0; handle_اندر_range(param); param++) {
+			اگر (params_saving[param]) {
+				params_unsaved.سیٹ(param, سچ);
 			}
 		}
 	}
 
 	params_saving.reset();
 
-	if (res == PX4_OK) {
+	اگر (res == PX4_OK) {
 		// backup file
-		if (param_backup_file) {
-			int fd_backup_file = ::open(param_backup_file, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
+		اگر (param_backup_file) {
+			صحیح fd_backup_file = ::open(param_backup_file, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_منوال_666);
 
-			if (fd_backup_file > -1) {
-				int backup_export_ret = param_export_internal(fd_backup_file, nullptr);
+			اگر (fd_backup_file > -1) {
+				صحیح backup_export_ret = param_export_اندرونی(fd_backup_file, خالی_اشاریہ);
 				::close(fd_backup_file);
 
-				if (backup_export_ret != 0) {
+				اگر (backup_export_ret != 0) {
 					PX4_ERR("backup parameter export to %s failed (%d)", param_backup_file, backup_export_ret);
 
-				} else {
+				} ورنہ {
 					// verify export
-					int fd_verify = ::open(param_backup_file, O_RDONLY, PX4_O_MODE_666);
+					صحیح fd_verify = ::open(param_backup_file, O_RDONLY, PX4_O_منوال_666);
 					param_verify(fd_verify);
 					::close(fd_verify);
 				}
@@ -925,368 +925,368 @@ int param_save_default(bool blocking)
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	اگر (shutdown_تالا_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return res;
+	واپس res;
 }
 
 /**
  * @return 0 on success, 1 if all params have not yet been stored, -1 if device open failed, -2 if writing parameters failed
  */
-int
-param_load_default()
+صحیح
+param_بھرو_default()
 {
-	int res = 0;
-	const char *filename = param_get_default_file();
+	صحیح res = 0;
+	ثابت حرف *filename = param_get_default_file();
 
-	if (!filename) {
-		return param_load(-1);
+	اگر (!filename) {
+		واپس param_بھرو(-1);
 	}
 
-	int fd_load = ::open(filename, O_RDONLY);
+	صحیح fd_بھرو = ::open(filename, O_RDONLY);
 
-	if (fd_load < 0) {
+	اگر (fd_بھرو < 0) {
 		/* no parameter file is OK, otherwise this is an error */
-		if (errno != ENOENT) {
+		اگر (errno != ENOENT) {
 			PX4_ERR("open '%s' for reading failed", filename);
-			return -1;
+			واپس -1;
 		}
 
-		return 1;
+		واپس 1;
 	}
 
-	int result = param_load(fd_load);
-	::close(fd_load);
+	صحیح نتیجہ = param_بھرو(fd_بھرو);
+	::close(fd_بھرو);
 
-	if (result == 1) {
+	اگر (نتیجہ == 1) {
 		/* blank file: nothing stored yet */
-		return 1;
+		واپس 1;
 	}
 
-	if (result != 0) {
+	اگر (نتیجہ != 0) {
 		PX4_ERR("error reading parameters from '%s'", filename);
-		return -2;
+		واپس -2;
 	}
 
-	return res;
+	واپس res;
 }
 
-static int param_verify_callback(bson_decoder_t decoder, bson_node_t node)
+ساکن صحیح param_verify_callback(bson_decoder_t decoder, bson_گرہ_t گرہ_2)
 {
-	if (node->type == BSON_EOO) {
-		return 0;
+	اگر (گرہ_2->type == BSON_EOO) {
+		واپس 0;
 	}
 
 	// find the parameter this node represents
-	param_t param = param_find_no_notification(node->name);
+	param_t param = param_ڈھونڈو_no_notification(گرہ_2->name);
 
-	if (param == PARAM_INVALID) {
-		PX4_ERR("verify: invalid parameter '%s'", node->name);
-		return -1;
+	اگر (param == PARAM_INVALID) {
+		PX4_ERR("verify: invalid parameter '%s'", گرہ_2->name);
+		واپس -1;
 	}
 
 	// handle verifying the parameter from the node
-	switch (node->type) {
-	case BSON_INT32: {
-			if (param_type(param) != PARAM_TYPE_INT32) {
-				PX4_ERR("verify: invalid param type %d for '%s' (BSON_INT32)", param_type(param), node->name);
-				return -1;
+	انتخاب (گرہ_2->type) {
+	حالت BSON_INT32: {
+			اگر (param_type(param) != PARAM_TYPE_INT32) {
+				PX4_ERR("verify: invalid param type %d for '%s' (BSON_INT32)", param_type(param), گرہ_2->name);
+				واپس -1;
 			}
 
 			int32_t value;
 
-			if (param_get(param, &value) == 0) {
-				if (value == node->i32) {
-					return 1; // valid
+			اگر (param_get(param, &value) == 0) {
+				اگر (value == گرہ_2->i32) {
+					واپس 1; // valid
 
-				} else {
-					PX4_ERR("verify: '%s' invalid BSON value %" PRIi32 "(expected %" PRIi32 ")", node->name, node->i32, value);
+				} ورنہ {
+					PX4_ERR("verify: '%s' invalid BSON value %" PRIi32 "(expected %" PRIi32 ")", گرہ_2->name, گرہ_2->i32, value);
 				}
 			}
 		}
-		break;
+		توڑو;
 
-	case BSON_DOUBLE: {
-			if (param_type(param) != PARAM_TYPE_FLOAT) {
-				PX4_ERR("verify: invalid param type %d for '%s' (BSON_DOUBLE)", param_type(param), node->name);
-				return -1;
+	حالت BSON_DOUBLE: {
+			اگر (param_type(param) != PARAM_TYPE_FLOAT) {
+				PX4_ERR("verify: invalid param type %d for '%s' (BSON_DOUBLE)", param_type(param), گرہ_2->name);
+				واپس -1;
 			}
 
-			float value;
+			اعشاری value;
 
-			if (param_get(param, &value) == 0) {
-				if (fabsf(value - (float)node->d) <= FLT_EPSILON) {
-					return 1; // valid
+			اگر (param_get(param, &value) == 0) {
+				اگر (fabsf(value - (اعشاری)گرہ_2->d) <= FLT_EPSILON) {
+					واپس 1; // valid
 
-				} else {
-					PX4_ERR("verify: '%s' invalid BSON value %.3f (expected %.3f)", node->name, node->d, (double)value);
+				} ورنہ {
+					PX4_ERR("verify: '%s' invalid BSON value %.3f (expected %.3f)", گرہ_2->name, گرہ_2->d, (دوہرا)value);
 				}
 			}
 		}
-		break;
+		توڑو;
 
-	default:
-		PX4_ERR("verify: '%s' invalid node type %d", node->name, node->type);
+	طےشدہ:
+		PX4_ERR("verify: '%s' invalid node type %d", گرہ_2->name, گرہ_2->type);
 	}
 
-	return -1;
+	واپس -1;
 }
 
-static int param_verify(int fd)
+ساکن صحیح param_verify(صحیح fd)
 {
 	PX4_DEBUG("param_verify");
 
-	if (fd < 0) {
-		return -1;
+	اگر (fd < 0) {
+		واپس -1;
 	}
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	اگر (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("verify: seek failed");
-		return -1;
+		واپس -1;
 	}
 
 	bson_decoder_s decoder{};
 
-	if (bson_decoder_init_file(&decoder, fd, param_verify_callback) == 0) {
-		int result = -1;
+	اگر (bson_decoder_init_file(&decoder, fd, param_verify_callback) == 0) {
+		صحیح نتیجہ = -1;
 
-		do {
-			result = bson_decoder_next(&decoder);
+		کرو {
+			نتیجہ = bson_decoder_اگلا(&decoder);
 
-		} while (result > 0);
+		} جب (نتیجہ > 0);
 
-		if (result == 0) {
-			if (decoder.total_document_size != decoder.total_decoded_size) {
-				PX4_ERR("BSON document size (%" PRId32 ") doesn't match bytes decoded (%" PRId32 ")", decoder.total_document_size,
-					decoder.total_decoded_size);
+		اگر (نتیجہ == 0) {
+			اگر (decoder.کل_document_سائز != decoder.کل_decoded_سائز) {
+				PX4_ERR("BSON document size (%" PRId32 ") doesn't match bytes decoded (%" PRId32 ")", decoder.کل_document_سائز,
+					decoder.کل_decoded_سائز);
 
-			} else {
-				return 0;
+			} ورنہ {
+				واپس 0;
 			}
 
-		} else if (result == -ENODATA) {
+		} ورنہ اگر (نتیجہ == -ENODATA) {
 			PX4_ERR("verify: no BSON data");
 
-		} else {
-			PX4_ERR("verify: failed (%d)", result);
+		} ورنہ {
+			PX4_ERR("verify: failed (%d)", نتیجہ);
 		}
 	}
 
-	return -1;
+	واپس -1;
 }
 
-int
-param_export(const char *filename, param_filter_func filter)
+صحیح
+param_export(ثابت حرف *filename, param_filter_func filter)
 {
 	PX4_DEBUG("param_export");
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	صحیح shutdown_تالا_ret = px4_shutdown_تالا();
 
-	if (shutdown_lock_ret != 0) {
-		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
+	اگر (shutdown_تالا_ret != 0) {
+		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_تالا_ret);
 	}
 
 	// take the file lock
-	if (pthread_mutex_trylock(&file_mutex) != 0) {
+	اگر (pthread_mutex_trylock(&file_mutex) != 0) {
 		PX4_ERR("param_export: file lock failed (already locked)");
-		return PX4_ERROR;
+		واپس PX4_ERROR;
 	}
 
-	int fd = ::open(filename, O_RDWR | O_CREAT, PX4_O_MODE_666);
-	int result = PX4_ERROR;
+	صحیح fd = ::open(filename, O_RDWR | O_CREAT, PX4_O_منوال_666);
+	صحیح نتیجہ = PX4_ERROR;
 
 	perf_begin(param_export_perf);
 
-	if (fd > -1) {
-		result = param_export_internal(fd, filter);
+	اگر (fd > -1) {
+		نتیجہ = param_export_اندرونی(fd, filter);
 
-	} else {
-		result = flash_param_save(filter);
+	} ورنہ {
+		نتیجہ = flash_param_save(filter);
 	}
 
-	perf_end(param_export_perf);
+	perf_انتہا(param_export_perf);
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	اگر (shutdown_تالا_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return result;
+	واپس نتیجہ;
 }
 
 // internal parameter export, caller is responsible for locking
-static int param_export_internal(int fd, param_filter_func filter)
+ساکن صحیح param_export_اندرونی(صحیح fd, param_filter_func filter)
 {
 	PX4_DEBUG("param_export_internal");
-	const auto changed_params = user_config.containedAsBitset();
+	ثابت خودکار بدلا_params = user_config.containedAsBitset();
 
-	int result = -1;
+	صحیح نتیجہ = -1;
 	bson_encoder_s encoder{};
-	uint8_t bson_buffer[256];
+	uint8_t bson_بفر[256];
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	اگر (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("export seek failed %d", errno);
-		return -1;
+		واپس -1;
 	}
 
-	if (bson_encoder_init_buf_file(&encoder, fd, &bson_buffer, sizeof(bson_buffer)) != 0) {
-		goto out;
+	اگر (bson_encoder_init_buf_file(&encoder, fd, &bson_بفر, حجم(bson_بفر)) != 0) {
+		جاؤ برآمد;
 	}
 
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (!changed_params[param] || (filter && !filter(param))) {
-			continue;
+	برائے (param_t param = 0; handle_اندر_range(param); param++) {
+		اگر (!بدلا_params[param] || (filter && !filter(param))) {
+			جاری;
 		}
 
-		const param_value_u runtime_default_value = runtime_defaults.get(param);
-		const param_value_u user_config_value = user_config.get(param);
+		ثابت param_قدر_u runtime_default_قدر = runtime_defaults.get(param);
+		ثابت param_قدر_u user_config_قدر = user_config.get(param);
 
 		// don't export default values
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			if (user_config_value.i == runtime_default_value.i) {
-				PX4_DEBUG("skipping %s %" PRIi32 " export", param_name(param), runtime_default_value.i);
-				continue;
+		انتخاب (param_type(param)) {
+		حالت PARAM_TYPE_INT32:
+			اگر (user_config_قدر.i == runtime_default_قدر.i) {
+				PX4_DEBUG("skipping %s %" PRIi32 " export", param_name(param), runtime_default_قدر.i);
+				جاری;
 			}
 
-			break;
+			توڑو;
 
-		case PARAM_TYPE_FLOAT:
-			if (fabsf(user_config_value.f - runtime_default_value.f) <= FLT_EPSILON) {
-				PX4_DEBUG("skipping %s %.3f export", param_name(param), (double)runtime_default_value.f);
-				continue;
+		حالت PARAM_TYPE_FLOAT:
+			اگر (fabsf(user_config_قدر.f - runtime_default_قدر.f) <= FLT_EPSILON) {
+				PX4_DEBUG("skipping %s %.3f export", param_name(param), (دوہرا)runtime_default_قدر.f);
+				جاری;
 			}
 
-			break;
+			توڑو;
 		}
 
-		const char *name = param_name(param);
-		const size_t size = param_size(param);
+		ثابت حرف *name = param_name(param);
+		ثابت size_t سائز = param_سائز(param);
 
 		/* append the appropriate BSON type object */
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
-				const int32_t i = user_config_value.i;
-				PX4_DEBUG("exporting: %s (%d) size: %lu val: %" PRIi32, name, param, (long unsigned int)size, i);
+		انتخاب (param_type(param)) {
+		حالت PARAM_TYPE_INT32: {
+				ثابت int32_t i = user_config_قدر.i;
+				PX4_DEBUG("exporting: %s (%d) size: %lu val: %" PRIi32, name, param, (طویل غیرعلامتی صحیح)سائز, i);
 
-				if (bson_encoder_append_int32(&encoder, name, i) != 0) {
+				اگر (bson_encoder_append_int32(&encoder, name, i) != 0) {
 					PX4_ERR("BSON append failed for '%s'", name);
-					goto out;
+					جاؤ برآمد;
 				}
 			}
-			break;
+			توڑو;
 
-		case PARAM_TYPE_FLOAT: {
-				const double f = (double)user_config_value.f;
-				PX4_DEBUG("exporting: %s (%d) size: %lu val: %.3f", name, param, (long unsigned int)size, (double)f);
+		حالت PARAM_TYPE_FLOAT: {
+				ثابت دوہرا f = (دوہرا)user_config_قدر.f;
+				PX4_DEBUG("exporting: %s (%d) size: %lu val: %.3f", name, param, (طویل غیرعلامتی صحیح)سائز, (دوہرا)f);
 
-				if (bson_encoder_append_double(&encoder, name, f) != 0) {
+				اگر (bson_encoder_append_double(&encoder, name, f) != 0) {
 					PX4_ERR("BSON append failed for '%s'", name);
-					goto out;
+					جاؤ برآمد;
 				}
 			}
-			break;
+			توڑو;
 
-		default:
+		طےشدہ:
 			PX4_ERR("%s unrecognized parameter type %d, skipping export", name, param_type(param));
 		}
 	}
 
-	result = 0;
+	نتیجہ = 0;
 
-out:
+برآمد:
 
-	if (result == 0) {
-		if (bson_encoder_fini(&encoder) != PX4_OK) {
+	اگر (نتیجہ == 0) {
+		اگر (bson_encoder_fini(&encoder) != PX4_OK) {
 			PX4_ERR("BSON encoder finalize failed");
-			result = -1;
+			نتیجہ = -1;
 		}
 	}
 
-	return result;
+	واپس نتیجہ;
 }
 
-#if defined(FLASH_BASED_PARAMS)
+#اگر defined(FLASH_BASED_PARAMS)
 // A file is never the flash backend's store, so what an import changes is unsaved until a delta carries it.
 // As on the file backend, the import itself does not save.
-static constexpr bool file_import_is_saved = false;
-#else
-static constexpr bool file_import_is_saved = true;
-#endif
+ساکن constexpr منطقی file_import_is_saved = جھوٹ;
+#ورنہ
+ساکن constexpr منطقی file_import_is_saved = سچ;
+#اگر_ختم
 
-static int
-param_import_callback(bson_decoder_t decoder, bson_node_t node)
+ساکن صحیح
+param_import_callback(bson_decoder_t decoder, bson_گرہ_t گرہ_2)
 {
 	/*
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	اگر (گرہ_2->type == BSON_EOO) {
 		PX4_DEBUG("end of parameters");
-		return 0;
+		واپس 0;
 	}
 
 	// A tombstone has no value. The decoder leaves the previous node's in the union and the translations
 	// read it without a type check.
-	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
+	ثابت منطقی tombstone = گرہ_2->type == BSON_nullptr || گرہ_2->type == BSON_UNDEFINED;
 
 	// if we do param_set() directly in the translation, set PARAM_SKIP_IMPORT as return value and return here
-	if (!tombstone && param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
-		return 1;
+	اگر (!tombstone && param_modify_on_import(گرہ_2) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+		واپس 1;
 	}
 
 	// Find the parameter this node represents.  If we don't know it, ignore the node.
-	param_t param = param_find_no_notification(node->name);
+	param_t param = param_ڈھونڈو_no_notification(گرہ_2->name);
 
-	if (param == PARAM_INVALID) {
-		PX4_WARN("ignoring unrecognised parameter '%s'", node->name);
-		return 1;
+	اگر (param == PARAM_INVALID) {
+		PX4_WARN("ignoring unrecognised parameter '%s'", گرہ_2->name);
+		واپس 1;
 	}
 
 	// Handle setting the parameter from the node
-	switch (node->type) {
-	case BSON_nullptr:
-	case BSON_UNDEFINED:
-		param_reset_internal(param, true, false);
-		return 1;
+	انتخاب (گرہ_2->type) {
+	حالت BSON_nullptr:
+	حالت BSON_UNDEFINED:
+		param_reset_اندرونی(param, سچ, جھوٹ);
+		واپس 1;
 
-	case BSON_INT32: {
-			if (param_type(param) == PARAM_TYPE_INT32) {
-				int32_t i = node->i32;
-				param_set_internal(param, &i, file_import_is_saved, true, true, false);
+	حالت BSON_INT32: {
+			اگر (param_type(param) == PARAM_TYPE_INT32) {
+				int32_t i = گرہ_2->i32;
+				param_سیٹ_اندرونی(param, &i, file_import_is_saved, سچ, سچ, جھوٹ);
 				PX4_DEBUG("Imported %s with value %" PRIi32, param_name(param), i);
 
-			} else {
-				PX4_WARN("unexpected type for %s", node->name);
+			} ورنہ {
+				PX4_WARN("unexpected type for %s", گرہ_2->name);
 			}
 		}
-		break;
+		توڑو;
 
-	case BSON_DOUBLE: {
-			if (param_type(param) == PARAM_TYPE_FLOAT) {
-				float f = node->d;
-				param_set_internal(param, &f, file_import_is_saved, true, true, false);
-				PX4_DEBUG("Imported %s with value %f", param_name(param), (double)f);
+	حالت BSON_DOUBLE: {
+			اگر (param_type(param) == PARAM_TYPE_FLOAT) {
+				اعشاری f = گرہ_2->d;
+				param_سیٹ_اندرونی(param, &f, file_import_is_saved, سچ, سچ, جھوٹ);
+				PX4_DEBUG("Imported %s with value %f", param_name(param), (دوہرا)f);
 
-			} else {
-				PX4_WARN("unexpected type for %s", node->name);
+			} ورنہ {
+				PX4_WARN("unexpected type for %s", گرہ_2->name);
 			}
 		}
-		break;
+		توڑو;
 
-	default:
-		PX4_ERR("import: unrecognised node type for '%s'", node->name);
+	طےشدہ:
+		PX4_ERR("import: unrecognised node type for '%s'", گرہ_2->name);
 	}
 
 	// don't return zero, that means EOF
-	return 1;
+	واپس 1;
 }
 
-static int
-param_import_internal(int fd)
+ساکن صحیح
+param_import_اندرونی(صحیح fd)
 {
 	/* blank source (nothing stored yet): an empty file, or zeroed/erased
 	 * storage where the BSON document length would be. Unlike the flash
@@ -1299,67 +1299,67 @@ param_import_internal(int fd)
 	 * file (no cluster chain -> error, not EOF), so the content check below
 	 * would miss it; detect it by size. Char-device backends (e.g. FRAM)
 	 * report no meaningful size and fall through to the content check. */
-	struct stat st;
+	ساخت stat st;
 
-	if (fstat(fd, &st) == 0 && S_ISREG(st.st_mode) && st.st_size == 0) {
-		return 1;
+	اگر (fstat(fd, &st) == 0 && S_ISREG(st.st_mode) && st.st_size == 0) {
+		واپس 1;
 	}
 
-	int32_t doc_size = 0;
-	ssize_t len = read(fd, &doc_size, sizeof(doc_size));
+	int32_t doc_سائز = 0;
+	ssize_t len = اقرأ(fd, &doc_سائز, حجم(doc_سائز));
 
-	if (len == 0 || (len == (ssize_t)sizeof(doc_size) && (doc_size == 0 || doc_size == -1))) {
-		return 1;
+	اگر (len == 0 || (len == (ssize_t)حجم(doc_سائز) && (doc_سائز == 0 || doc_سائز == -1))) {
+		واپس 1;
 	}
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	اگر (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("import lseek failed (%d)", errno);
-		return -1;
+		واپس -1;
 	}
 
-	static constexpr int MAX_ATTEMPTS = 3;
+	ساکن constexpr صحیح MAX_ATTEMPTS = 3;
 
-	for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+	برائے (صحیح attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 		bson_decoder_s decoder{};
 
-		if (bson_decoder_init_file(&decoder, fd, param_import_callback) == 0) {
-			int result = -1;
+		اگر (bson_decoder_init_file(&decoder, fd, param_import_callback) == 0) {
+			صحیح نتیجہ = -1;
 
-			do {
-				result = bson_decoder_next(&decoder);
+			کرو {
+				نتیجہ = bson_decoder_اگلا(&decoder);
 
-			} while (result > 0);
+			} جب (نتیجہ > 0);
 
-			if (result == 0) {
-				if (decoder.total_document_size == decoder.total_decoded_size) {
+			اگر (نتیجہ == 0) {
+				اگر (decoder.کل_document_سائز == decoder.کل_decoded_سائز) {
 					PX4_INFO("BSON document size %" PRId32 " bytes, decoded %" PRId32 " bytes (INT32:%" PRIu16 ", FLOAT:%" PRIu16 ")",
-						 decoder.total_document_size, decoder.total_decoded_size,
-						 decoder.count_node_int32, decoder.count_node_double);
+						 decoder.کل_document_سائز, decoder.کل_decoded_سائز,
+						 decoder.گنتی_گرہ_int32, decoder.گنتی_گرہ_double);
 
-					return 0;
+					واپس 0;
 
-				} else {
+				} ورنہ {
 					PX4_ERR("BSON document size (%" PRId32 ") doesn't match bytes decoded (%" PRId32 ")",
-						decoder.total_document_size, decoder.total_decoded_size);
+						decoder.کل_document_سائز, decoder.کل_decoded_سائز);
 				}
 
-			} else if (result == -ENODATA) {
+			} ورنہ اگر (نتیجہ == -ENODATA) {
 				// silently retry as a precaution unless this is our last attempt
-				if (attempt == MAX_ATTEMPTS) {
+				اگر (attempt == MAX_ATTEMPTS) {
 					PX4_DEBUG("BSON: no data");
-					return 0;
+					واپس 0;
 				}
 
-			} else {
-				PX4_ERR("param import failed (%d) attempt %d", result, attempt);
+			} ورنہ {
+				PX4_ERR("param import failed (%d) attempt %d", نتیجہ, attempt);
 			}
 
-		} else {
+		} ورنہ {
 			PX4_ERR("param import bson decoder init failed (attempt %d)", attempt);
 		}
 
-		if (attempt != MAX_ATTEMPTS) {
-			if (lseek(fd, 0, SEEK_SET) != 0) {
+		اگر (attempt != MAX_ATTEMPTS) {
+			اگر (lseek(fd, 0, SEEK_SET) != 0) {
 				PX4_ERR("import lseek failed (%d)", errno);
 			}
 
@@ -1367,101 +1367,101 @@ param_import_internal(int fd)
 		}
 	}
 
-	return -1;
+	واپس -1;
 }
 
-#if defined(FLASH_BASED_PARAMS)
-static int flash_backend_locked(int (*op)())
+#اگر defined(FLASH_BASED_PARAMS)
+ساکن صحیح flash_backend_locked(صحیح (*op)())
 {
 	/* Same order as param_save_default: mutex then shutdown lock. Autosave
 	 * uses a trylock, so a compact holds it off the flash programming. */
 	pthread_mutex_lock(&file_mutex);
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	صحیح shutdown_تالا_ret = px4_shutdown_تالا();
 
-	if (shutdown_lock_ret != 0) {
-		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
+	اگر (shutdown_تالا_ret != 0) {
+		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_تالا_ret);
 	}
 
-	int result = op();
+	صحیح نتیجہ = op();
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	اگر (shutdown_تالا_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return result;
+	واپس نتیجہ;
 }
 
-static int flash_load_locked()
+ساکن صحیح flash_بھرو_locked()
 {
 	/* Reset under the lock so a pending autosave cannot append tombstones
 	 * of the just-cleared RAM before import/compact run. */
-	param_reset_all_internal(false);
-	int result = flash_param_import();
+	param_reset_all_اندرونی(جھوٹ);
+	صحیح نتیجہ = flash_param_import();
 
-	if (result == 0 || result == 1) {
+	اگر (نتیجہ == 0 || نتیجہ == 1) {
 		params_unsaved.reset();
 	}
 
-	return result;
+	واپس نتیجہ;
 }
-#endif
+#اگر_ختم
 
-int
-param_import(int fd)
+صحیح
+param_import(صحیح fd)
 {
-	if (fd < 0) {
-#if defined(FLASH_BASED_PARAMS)
-		return flash_backend_locked(flash_param_import);
-#else
-		return flash_param_import();
-#endif
+	اگر (fd < 0) {
+#اگر defined(FLASH_BASED_PARAMS)
+		واپس flash_backend_locked(flash_param_import);
+#ورنہ
+		واپس flash_param_import();
+#اگر_ختم
 	}
 
-	return param_import_internal(fd);
+	واپس param_import_اندرونی(fd);
 }
 
-int
-param_load(int fd)
+صحیح
+param_بھرو(صحیح fd)
 {
-	if (fd < 0) {
-#if defined(FLASH_BASED_PARAMS)
-		return flash_backend_locked(flash_load_locked);
-#else
-		return PX4_ERROR;
-#endif
+	اگر (fd < 0) {
+#اگر defined(FLASH_BASED_PARAMS)
+		واپس flash_backend_locked(flash_بھرو_locked);
+#ورنہ
+		واپس PX4_ERROR;
+#اگر_ختم
 	}
 
-	param_reset_all_internal(false);
-	int result = param_import_internal(fd);
+	param_reset_all_اندرونی(جھوٹ);
+	صحیح نتیجہ = param_import_اندرونی(fd);
 
-#if !defined(FLASH_BASED_PARAMS)
+#اگر !defined(FLASH_BASED_PARAMS)
 
-	if (result >= 0) {
+	اگر (نتیجہ >= 0) {
 		params_unsaved.reset();
 	}
 
-#endif
+#اگر_ختم
 
-	return result;
+	واپس نتیجہ;
 }
 
-void
-param_foreach(void (*func)(void *arg, param_t param), void *arg, bool only_changed, bool only_used)
+خالی
+param_foreach(خالی (*func)(خالی *arg, param_t param), خالی *arg, منطقی only_بدلا, منطقی only_مستعمل)
 {
 	param_t	param;
 
-	for (param = 0; handle_in_range(param); param++) {
+	برائے (param = 0; handle_اندر_range(param); param++) {
 
 		/* if requested, skip unchanged values */
-		if (only_changed && (!user_config.contains(param))) {
-			continue;
+		اگر (only_بدلا && (!user_config.شامل_ہے(param))) {
+			جاری;
 		}
 
-		if (only_used && !param_used(param)) {
-			continue;
+		اگر (only_مستعمل && !param_مستعمل(param)) {
+			جاری;
 		}
 
 		func(arg, param);
@@ -1473,80 +1473,80 @@ uint32_t param_hash_check()
 	uint32_t param_hash = 0;
 
 	/* compute the CRC32 over all string param names and 4 byte values */
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (!param_used(param) || param_is_volatile(param)) {
-			continue;
+	برائے (param_t param = 0; handle_اندر_range(param); param++) {
+		اگر (!param_مستعمل(param) || param_is_volatile(param)) {
+			جاری;
 		}
 
-		const char *name = param_name(param);
-		auto value = user_config.get(param).i;
-		const void *val = (void *)&value;
-		param_hash = crc32part((const uint8_t *)name, strlen(name), param_hash);
-		param_hash = crc32part((const uint8_t *)val, param_size(param), param_hash);
+		ثابت حرف *name = param_name(param);
+		خودکار value = user_config.get(param).i;
+		ثابت خالی *val = (خالی *)&value;
+		param_hash = crc32part((ثابت uint8_t *)name, لڑی_لمبائی(name), param_hash);
+		param_hash = crc32part((ثابت uint8_t *)val, param_سائز(param), param_hash);
 	}
 
-	return param_hash;
+	واپس param_hash;
 }
 
-void param_print_status()
+خالی param_print_حالت()
 {
-	PX4_INFO("summary: %d/%d (used/total)", param_count_used(), param_count());
+	PX4_INFO("summary: %d/%d (used/total)", param_گنتی_مستعمل(), param_گنتی());
 
-#ifndef FLASH_BASED_PARAMS
-	const char *filename = param_get_default_file();
+#اگر_غیر_تعریف_شدہ FLASH_BASED_PARAMS
+	ثابت حرف *filename = param_get_default_file();
 
-	if (filename != nullptr) {
+	اگر (filename != خالی_اشاریہ) {
 		PX4_INFO("file: %s", param_get_default_file());
 	}
 
-	if (param_backup_file) {
+	اگر (param_backup_file) {
 		PX4_INFO("backup file: %s", param_backup_file);
 	}
 
-#endif /* FLASH_BASED_PARAMS */
+#اگر_ختم /* FLASH_BASED_PARAMS */
 
 	PX4_INFO("storage array: %d/%d elements (%zu bytes total)",
-		 user_config.size(), firmware_defaults.size(), (size_t)user_config.byteSize());
+		 user_config.سائز(), firmware_defaults.سائز(), (size_t)user_config.byte_سائز());
 
 
 	PX4_INFO("storage array (custom defaults): %d/%d elements (%zu bytes total)",
-		 runtime_defaults.size(), firmware_defaults.size(), (size_t)runtime_defaults.byteSize());
+		 runtime_defaults.سائز(), firmware_defaults.سائز(), (size_t)runtime_defaults.byte_سائز());
 
-	if (autosave_instance) {
+	اگر (autosave_instance) {
 		PX4_INFO("auto save: %s", autosave_instance->enabled() ? "on" : "off");
 
-		hrt_abstime last_autosave = autosave_instance->lastAutosave();
+		hrt_abstime آخری_autosave = autosave_instance->آخری_Autosave();
 
-		if (last_autosave > 0) {
-			PX4_INFO("last auto save: %.3f seconds ago", hrt_elapsed_time(&last_autosave) * 1e-6);
+		اگر (آخری_autosave > 0) {
+			PX4_INFO("last auto save: %.3f seconds ago", hrt_elapsed_وقت(&آخری_autosave) * 1e-6);
 		}
 	}
 
-	perf_print_counter(param_export_perf);
-	perf_print_counter(param_find_perf);
-	perf_print_counter(param_get_perf);
-	perf_print_counter(param_set_perf);
+	perf_print_شمار(param_export_perf);
+	perf_print_شمار(param_ڈھونڈو_perf);
+	perf_print_شمار(param_get_perf);
+	perf_print_شمار(param_سیٹ_perf);
 
-#if defined(CONFIG_PARAM_PRIMARY)
-	struct param_primary_counters counts;
+#اگر defined(CONFIG_PARAM_PRIMARY)
+	ساخت param_primary_counters counts;
 	param_primary_get_counters(&counts);
 	PX4_INFO("set value requests received: %" PRIu32 ", set value responses sent: %" PRIu32,
-		 counts.set_value_request_received, counts.set_value_response_sent);
+		 counts.سیٹ_قدر_request_received, counts.سیٹ_قدر_response_بھیجا);
 	PX4_INFO("set value requests sent: %" PRIu32 ", set value responses received: %" PRIu32,
-		 counts.set_value_request_sent, counts.set_value_response_received);
+		 counts.سیٹ_قدر_request_بھیجا, counts.سیٹ_قدر_response_received);
 	PX4_INFO("resets sent: %" PRIu32 ", set used requests received: %" PRIu32,
-		 counts.reset_sent, counts.set_used_received);
-#endif
+		 counts.reset_بھیجا, counts.سیٹ_مستعمل_received);
+#اگر_ختم
 
-#if defined(CONFIG_PARAM_REMOTE)
-	struct param_remote_counters counts;
+#اگر defined(CONFIG_PARAM_REMOTE)
+	ساخت param_remote_counters counts;
 	param_remote_get_counters(&counts);
 	PX4_INFO("set value requests received: %" PRIu32 ", set value responses sent: %" PRIu32,
-		 counts.set_value_request_received, counts.set_value_response_sent);
+		 counts.سیٹ_قدر_request_received, counts.سیٹ_قدر_response_بھیجا);
 	PX4_INFO("set value requests sent: %" PRIu32 ", set value responses received: %" PRIu32,
-		 counts.set_value_request_sent, counts.set_value_response_received);
+		 counts.سیٹ_قدر_request_بھیجا, counts.سیٹ_قدر_response_received);
 	PX4_INFO("resets received: %" PRIu32 ", set used requests sent: %" PRIu32,
-		 counts.reset_received, counts.set_used_sent);
-#endif
+		 counts.reset_received, counts.سیٹ_مستعمل_بھیجا);
+#اگر_ختم
 
 }

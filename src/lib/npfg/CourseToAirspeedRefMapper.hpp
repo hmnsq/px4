@@ -56,27 +56,27 @@
  *     https://tstastny.github.io/pdf/tstastny_phd_thesis_wcover.pdf
  */
 
-#ifndef PX4_COURSETOAIRSPEEDREFMAPPER_HPP
-#define PX4_COURSETOAIRSPEEDREFMAPPER_HPP
+#اگر_غیر_تعریف_شدہ PX4_COURSETOAIRSPEEDREFMAPPER_HPP
+#تعریف_کرو PX4_COURSETOAIRSPEEDREFMAPPER_HPP
 
 
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
+#شامل <matrix/math.hpp>
+#شامل <lib/mathlib/mathlib.h>
 
-class CourseToAirspeedRefMapper
+جماعت نصاب_مقصد_Airspeed_Ref_Mapper
 {
-public:
+عوامی:
 
-	CourseToAirspeedRefMapper() {};
+	نصاب_مقصد_Airspeed_Ref_Mapper() {};
 
-	~CourseToAirspeedRefMapper() = default;
+	~نصاب_مقصد_Airspeed_Ref_Mapper() = طےشدہ;
 
-	float mapCourseSetpointToHeadingSetpoint(const float bearing_setpoint,
-			const matrix::Vector2f &wind_vel, float airspeed_sp) const;
-	float getMinAirspeedForCurrentBearing(const float bearing_setpoint,
-					      const matrix::Vector2f &wind_vel, float max_airspeed, float min_ground_speed) const;
+	اعشاری map_نصاب_Setpoint_مقصد_Heading_Setpoint(ثابت اعشاری bearing_setpoint,
+			ثابت میٹرکس::Vector2f &wind_vel, اعشاری airspeed_sp) ثابت;
+	اعشاری getMinAirspeedForCurrentBearing(ثابت اعشاری bearing_setpoint,
+					      ثابت میٹرکس::Vector2f &wind_vel, اعشاری max_airspeed, اعشاری min_ground_رفتار) ثابت;
 
-private:
+نجی:
 	/*
 	 * Projection of the air velocity vector onto the bearing line considering
 	 * a connected wind triangle.
@@ -85,7 +85,7 @@ private:
 	 * @param[in] wind_cross_bearing 2D cross product of wind velocity and bearing vector [m/s]
 	 * @return Projection of air velocity vector on bearing vector [m/s]
 	 */
-	float projectAirspOnBearing(const float airspeed, const float wind_cross_bearing) const;
+	اعشاری projectAirspOnBearing(ثابت اعشاری airspeed, ثابت اعشاری wind_cross_bearing) ثابت;
 	/*
 	 * Check for binary bearing feasibility.
 	 *
@@ -95,8 +95,8 @@ private:
 	 * @param[in] wind_speed Wind speed [m/s]
 	 * @return Binary bearing feasibility: 1 if feasible, 0 if infeasible
 	 */
-	int bearingIsFeasible(const float wind_cross_bearing, const float wind_dot_bearing, const float airspeed,
-			      const float wind_speed) const;
+	صحیح bearingIsFeasible(ثابت اعشاری wind_cross_bearing, ثابت اعشاری wind_dot_bearing, ثابت اعشاری airspeed,
+			      ثابت اعشاری wind_رفتار) ثابت;
 	/*
 	 * Air velocity solution for a given wind velocity and bearing vector assuming
 	 * a "high speed" (not backwards) solution in the excess wind case.
@@ -106,8 +106,8 @@ private:
 	 * @param[in] bearing_vec Bearing vector
 	 * @return Air velocity reference vector [m/s]
 	 */
-	matrix::Vector2f solveWindTriangle(const float wind_cross_bearing, const float airsp_dot_bearing,
-					   const matrix::Vector2f &bearing_vec) const;
+	میٹرکس::Vector2f solveWindTriangle(ثابت اعشاری wind_cross_bearing, ثابت اعشاری airsp_dot_bearing,
+					   ثابت میٹرکس::Vector2f &bearing_vec) ثابت;
 	/*
 	 * Air velocity solution for an infeasible bearing.
 	 *
@@ -117,8 +117,8 @@ private:
 	 * @param[in] airspeed Vehicle true airspeed [m/s]
 	 * @return Air velocity vector [m/s]
 	 */
-	matrix::Vector2f infeasibleAirVelRef(const matrix::Vector2f &wind_vel, const matrix::Vector2f &bearing_vec,
-					     const float wind_speed, const float airspeed) const;
+	میٹرکس::Vector2f infeasibleAirVelRef(ثابت میٹرکس::Vector2f &wind_vel, ثابت میٹرکس::Vector2f &bearing_vec,
+					     ثابت اعشاری wind_رفتار, ثابت اعشاری airspeed) ثابت;
 };
 
-#endif //PX4_COURSETOAIRSPEEDREFMAPPER_HPP
+#اگر_ختم //PX4_COURSETOAIRSPEEDREFMAPPER_HPP

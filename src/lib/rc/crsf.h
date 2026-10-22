@@ -42,26 +42,26 @@
  * @author Beat Küng <beat-kueng@gmx.net>
  */
 
-#pragma once
+#ہدایت once
 
-#include <stdint.h>
-#include <px4_platform_common/defines.h>
+#شامل <stdint.h>
+#شامل <px4_platform_common/defines.h>
 
 __BEGIN_DECLS
 
-#define CRSF_FRAME_SIZE_MAX 30 // the actual maximum length is 64, but we're only interested in RC channels and want to minimize buffer size
-#define CRSF_PAYLOAD_SIZE_MAX (CRSF_FRAME_SIZE_MAX-4)
+#تعریف_کرو CRSF_چوکھٹا_سائز_MAX 30 // the actual maximum length is 64, but we're only interested in RC channels and want to minimize buffer size
+#تعریف_کرو CRSF_PAYLOAD_سائز_MAX (CRSF_چوکھٹا_سائز_MAX-4)
 
 
-struct crsf_frame_header_t {
-	uint8_t device_address;             ///< @see crsf_address_t
-	uint8_t length;                     ///< length of crsf_frame_t (including CRC) minus sizeof(crsf_frame_header_t)
+ساخت crsf_چوکھٹا_سرخی_t {
+	uint8_t device_پتہ;             ///< @see crsf_address_t
+	uint8_t لمبائی_2;                     ///< length of crsf_frame_t (including CRC) minus sizeof(crsf_frame_header_t)
 };
 
-struct crsf_frame_t {
-	crsf_frame_header_t header;
+ساخت crsf_چوکھٹا_t {
+	crsf_چوکھٹا_سرخی_t سرخی;
 	uint8_t type;                       ///< @see crsf_frame_type_t
-	uint8_t payload[CRSF_PAYLOAD_SIZE_MAX + 1]; ///< payload data including 1 byte CRC at end
+	uint8_t payload[CRSF_PAYLOAD_سائز_MAX + 1]; ///< payload data including 1 byte CRC at end
 };
 
 /**
@@ -69,7 +69,7 @@ struct crsf_frame_t {
  * @param uart_fd UART file descriptor
  * @return 0 on success, -errno otherwise
  */
-__EXPORT int	crsf_config(int uart_fd);
+__EXPORT صحیح	crsf_config(صحیح uart_fd);
 
 
 /**
@@ -83,8 +83,8 @@ __EXPORT int	crsf_config(int uart_fd);
  * @param max_channels maximum length of values
  * @return true if channels successfully decoded
  */
-__EXPORT bool	crsf_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *values,
-			   uint16_t *num_values, uint16_t max_channels);
+__EXPORT bool	crsf_parse(ثابت uint64_t now, ثابت uint8_t *چوکھٹا, غیرعلامتی len, uint16_t *اقدار_2,
+			   uint16_t *عدد_اقدار, uint16_t max_channels);
 
 
 /**
@@ -96,7 +96,7 @@ __EXPORT bool	crsf_parse(const uint64_t now, const uint8_t *frame, unsigned len,
  * @param remaining battery remaining [%]
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_battery(int uart_fd, uint16_t voltage, uint16_t current, int fuel, uint8_t remaining);
+__EXPORT bool crsf_send_telemetry_battery(صحیح uart_fd, uint16_t voltage, uint16_t current, صحیح fuel, uint8_t بقایا);
 
 /**
  * Send telemetry GPS information
@@ -109,8 +109,8 @@ __EXPORT bool crsf_send_telemetry_battery(int uart_fd, uint16_t voltage, uint16_
  * @param num_satellites number of satellites used
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_gps(int uart_fd, int32_t latitude, int32_t longitude, uint16_t groundspeed,
-				      uint16_t gps_heading, uint16_t altitude, uint8_t num_satellites);
+__EXPORT bool crsf_send_telemetry_gps(صحیح uart_fd, int32_t latitude, int32_t longitude, uint16_t groundspeed,
+				      uint16_t gps_heading, uint16_t altitude, uint8_t عدد_satellites);
 
 /**
  * Send telemetry barometric altitude information
@@ -119,7 +119,7 @@ __EXPORT bool crsf_send_telemetry_gps(int uart_fd, int32_t latitude, int32_t lon
  * @param vertical_speed Vertical speed [cm/s]
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_baro_altitude(int uart_fd, uint16_t altitude, int16_t vertical_speed);
+__EXPORT bool crsf_send_telemetry_baro_altitude(صحیح uart_fd, uint16_t altitude, int16_t vertical_رفتار);
 
 
 /**
@@ -130,7 +130,7 @@ __EXPORT bool crsf_send_telemetry_baro_altitude(int uart_fd, uint16_t altitude, 
  * @param yaw Yaw angle [rad * 1e4]
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_attitude(int uart_fd, int16_t pitch, int16_t roll, int16_t yaw);
+__EXPORT bool crsf_send_telemetry_attitude(صحیح uart_fd, int16_t pitch, int16_t roll, int16_t yaw);
 
 /**
  * Send telemetry Flight Mode information
@@ -138,6 +138,6 @@ __EXPORT bool crsf_send_telemetry_attitude(int uart_fd, int16_t pitch, int16_t r
  * @param flight_mode Flight Mode string (max length = 15)
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_flight_mode(int uart_fd, const char *flight_mode);
+__EXPORT bool crsf_send_telemetry_flight_منوال(صحیح uart_fd, ثابت حرف *flight_منوال);
 
 __END_DECLS

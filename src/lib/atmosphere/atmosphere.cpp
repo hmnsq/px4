@@ -36,27 +36,27 @@
  *
  */
 
-#include <geo/geo.h>
-#include "atmosphere.h"
-namespace atmosphere
+#شامل <geo/geo.h>
+#شامل "atmosphere.h"
+نامخلا atmosphere
 {
 
 
-float getDensityFromPressureAndTemp(const float pressure_pa, const float temperature_celsius)
+اعشاری get_Density_From_Pressure_And_عارضی(ثابت اعشاری pressure_pa, ثابت اعشاری temperature_celsius)
 {
-	return (pressure_pa / (kAirGasConstant * (temperature_celsius - kAbsoluteNullCelsius)));
+	واپس (pressure_pa / (kAirGasConstant * (temperature_celsius - kAbsoluteNullCelsius)));
 }
-float getPressureFromAltitude(const float altitude_m)
+اعشاری getPressureFromAltitude(ثابت اعشاری altitude_m)
 {
 
-	return kPressRefSeaLevelPa * powf((altitude_m * kTempGradient + kTempRefKelvin) / kTempRefKelvin,
-					  -CONSTANTS_ONE_G / (kTempGradient * kAirGasConstant));
+	واپس kPressRefSeaLevelPa * powf((altitude_m * k_عارضی_Gradient + k_عارضی_Ref_Kelvin) / k_عارضی_Ref_Kelvin,
+					  -CONSTANTS_ONE_G / (k_عارضی_Gradient * kAirGasConstant));
 }
-float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa)
+اعشاری getAltitudeFromPressure(اعشاری pressure_pa, اعشاری pressure_sealevel_pa)
 {
 	// calculate altitude using the hypsometric equation
 
-	const float pressure_ratio = pressure_pa / pressure_sealevel_pa;
+	ثابت اعشاری pressure_تناسب = pressure_pa / pressure_sealevel_pa;
 
 	/*
 	 * Solve:
@@ -67,12 +67,12 @@ float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa)
 	 * h = -------------------------------  + h1
 	 *                   a
 	 */
-	return (((powf(pressure_ratio, (-(kTempGradient * kAirGasConstant) / CONSTANTS_ONE_G))) * kTempRefKelvin) -
-		kTempRefKelvin) / kTempGradient;
+	واپس (((powf(pressure_تناسب, (-(k_عارضی_Gradient * kAirGasConstant) / CONSTANTS_ONE_G))) * k_عارضی_Ref_Kelvin) -
+		k_عارضی_Ref_Kelvin) / k_عارضی_Gradient;
 
 }
-float getStandardTemperatureAtAltitude(float altitude_m)
+اعشاری getStandardTemperatureAtAltitude(اعشاری altitude_m)
 {
-	return 15.0f + kTempGradient * altitude_m;
+	واپس 15.0f + k_عارضی_Gradient * altitude_m;
 }
 }

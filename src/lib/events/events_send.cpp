@@ -32,17 +32,17 @@
  ****************************************************************************/
 
 
-#include <px4_platform_common/events.h>
+#شامل <px4_platform_common/events.h>
 
-namespace events
+نامخلا events
 {
-namespace util
+نامخلا util
 {
 
-void sendWithoutMessage(uint32_t id, Log external, LogInternal internal)
+خالی send_Without_پیغام(uint32_t id, Log external, Log_اندرونی اندرونی_3)
 {
 	event_s e{};
-	e.log_levels = ((uint8_t)internal << 4) | (uint8_t)external;
+	e.log_سطحیں = ((uint8_t)اندرونی_3 << 4) | (uint8_t)external;
 	e.id = id;
 	send(e);
 }

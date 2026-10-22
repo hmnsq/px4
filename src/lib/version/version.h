@@ -40,68 +40,68 @@
  * @author Beat Küng <beat-kueng@gmx.net>
  */
 
-#pragma once
+#ہدایت once
 
-#include <px4_platform_common/px4_config.h>
-#include <systemlib/px4_macros.h>
-#include <stdint.h>
+#شامل <px4_platform_common/px4_config.h>
+#شامل <systemlib/px4_macros.h>
+#شامل <stdint.h>
 
 __BEGIN_DECLS
 
 /**
  * get the board name as string (including the version if there are multiple)
  */
-static inline const char *px4_board_name(void)
+ساکن اندرونی ثابت حرف *px4_board_name(خالی)
 {
-	return PX4_BOARD_NAME;
+	واپس PX4_BOARD_NAME;
 }
 
 /**
  * get the board build target variant
  */
-static inline const char *px4_board_target_label(void)
+ساکن اندرونی ثابت حرف *px4_board_ہدف_label(خالی)
 {
-	return PX4_BOARD_LABEL;
+	واپس PX4_BOARD_LABEL;
 }
 
 /**
  * get the board sub type
  */
-static inline const char *px4_board_sub_type(void)
+ساکن اندرونی ثابت حرف *px4_board_sub_type(خالی)
 {
-	return board_get_hw_type_name();
+	واپس board_get_hw_type_name();
 }
 
 /**
  * get the board HW version
  */
-static inline int px4_board_hw_version(void)
+ساکن اندرونی صحیح px4_board_hw_نسخہ(خالی)
 {
-	return board_get_hw_version();
+	واپس board_get_hw_نسخہ();
 }
 
 /**
  * get the board HW revision
  */
-static inline int px4_board_hw_revision(void)
+ساکن اندرونی صحیح px4_board_hw_revision(خالی)
 {
-	return board_get_hw_revision();
+	واپس board_get_hw_revision();
 }
 
-#if defined(BOARD_HAS_HW_SPLIT_VERSIONING)
+#اگر defined(BOARD_HAS_HW_بانٹو_VERSIONING)
 /**
  * get the base board type
  */
-static inline const char *px4_board_base_type(void)
+ساکن اندرونی ثابت حرف *px4_board_بنیاد_type(خالی)
 {
-	return board_get_hw_base_type_name();
+	واپس board_get_hw_بنیاد_type_name();
 }
-#endif
+#اگر_ختم
 
 /**
  * get the build URI (used for crash logging)
  */
-const char *px4_build_uri(void);
+ثابت حرف *px4_build_uri(خالی);
 
 /**
  * Convert a version tag string to a number
@@ -114,13 +114,13 @@ const char *px4_build_uri(void);
  *            - linux: 7.9.3
  * @return version in the form 0xAABBCCTT (AA: Major, BB: Minor, CC: Patch, TT Type @see FIRMWARE_TYPE)
  */
-__EXPORT uint32_t version_tag_to_number(const char *tag);
+__EXPORT uint32_t نسخہ_لیبل_مقصد_نمبر(ثابت حرف *لیبل);
 
 /**
  * get the PX4 Firmware version
  * @return version in the form 0xAABBCCTT (AA: Major, BB: Minor, CC: Patch, TT Type @see FIRMWARE_TYPE)
  */
-__EXPORT uint32_t px4_firmware_version(void);
+__EXPORT uint32_t px4_firmware_نسخہ(خالی);
 
 /**
  * Convert a version tag string to a vendor version number
@@ -133,76 +133,76 @@ __EXPORT uint32_t px4_firmware_version(void);
  *            - linux: 7.9.3
  * @return version in the form 0xAABBCCTT (AA: Major, BB: Minor, CC: Patch, TT Type @see FIRMWARE_TYPE)
  */
-__EXPORT uint32_t version_tag_to_vendor_version_number(const char *tag);
+__EXPORT uint32_t نسخہ_لیبل_مقصد_vendor_نسخہ_نمبر(ثابت حرف *لیبل);
 
 /**
  * get the PX4 Firmware vendor version
  * @return version in the form 0xAABBCCTT (AA: Major, BB: Minor, CC: Patch, TT Type @see FIRMWARE_TYPE)
  */
-__EXPORT uint32_t px4_firmware_vendor_version(void);
+__EXPORT uint32_t px4_firmware_vendor_نسخہ(خالی);
 
 /**
  * get the board version (last 8 bytes should be silicon ID, if any)
  */
-__EXPORT uint32_t px4_board_version(void);
+__EXPORT uint32_t px4_board_نسخہ(خالی);
 
 /**
  * operating system version
  * @return version in the form 0xAABBCCTT (AA: Major, BB: Minor, CC: Patch, TT Type @see FIRMWARE_TYPE)
  */
-__EXPORT uint32_t px4_os_version(void);
+__EXPORT uint32_t px4_os_نسخہ(خالی);
 
 /**
  * Operating system version as human readable string (git tag)
  * @return string or NULL if not defined
  */
-__EXPORT const char *px4_os_version_string(void);
+__EXPORT ثابت حرف *px4_os_نسخہ_string(خالی);
 
 /**
  * name of the operating system
  * @return human readable string
  */
-__EXPORT const char *px4_os_name(void);
+__EXPORT ثابت حرف *px4_os_name(خالی);
 
 /**
  * Toolchain name used to compile PX4
  */
-__EXPORT const char *px4_toolchain_name(void);
+__EXPORT ثابت حرف *px4_toolchain_name(خالی);
 
 /**
  * Toolchain version used to compile PX4 (no particular format)
  */
-__EXPORT const char *px4_toolchain_version(void);
+__EXPORT ثابت حرف *px4_toolchain_نسخہ(خالی);
 
 /**
  * Firmware version as human readable string (git tag)
  */
-__EXPORT const char *px4_firmware_version_string(void);
+__EXPORT ثابت حرف *px4_firmware_نسخہ_string(خالی);
 
 /**
  * get the git branch name (can be empty, for example if HEAD points to a tag)
  */
-__EXPORT const char *px4_firmware_git_branch(void);
+__EXPORT ثابت حرف *px4_firmware_git_branch(خالی);
 
 /**
  * Firmware version in binary form (first part of the git tag)
  */
-__EXPORT uint64_t px4_firmware_version_binary(void);
+__EXPORT uint64_t px4_firmware_نسخہ_ثنائی(خالی);
 
 /**
  * MAVLink lib version in binary form (first part of the git tag)
  */
-__EXPORT uint64_t px4_mavlink_lib_version_binary(void);
+__EXPORT uint64_t px4_mavlink_lib_نسخہ_ثنائی(خالی);
 
 /**
  * Operating system version in binary form (first part of the git tag)
  * @return this is not available on all OSes and can return 0
  */
-__EXPORT uint64_t px4_os_version_binary(void);
+__EXPORT uint64_t px4_os_نسخہ_ثنائی(خالی);
 
 /**
  * get the git oem version tag (can be empty, no particular format)
  */
-__EXPORT const char *px4_firmware_oem_version_string(void);
+__EXPORT ثابت حرف *px4_firmware_oem_نسخہ_string(خالی);
 
 __END_DECLS

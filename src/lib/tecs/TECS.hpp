@@ -37,52 +37,52 @@
  * @author Paul Riseborough
  */
 
-#pragma once
+#ہدایت once
 
-#include <drivers/drv_hrt.h>
-#include <mathlib/mathlib.h>
-#include <matrix/math.hpp>
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <motion_planning/VelocitySmoothing.hpp>
-#include <motion_planning/ManualVelocitySmoothingZ.hpp>
+#شامل <drivers/drv_hrt.h>
+#شامل <mathlib/mathlib.h>
+#شامل <matrix/math.hpp>
+#شامل <lib/mathlib/math/filter/AlphaFilter.hpp>
+#شامل <motion_planning/VelocitySmoothing.hpp>
+#شامل <motion_planning/ManualVelocitySmoothingZ.hpp>
 
-using namespace time_literals;
+استعمال نامخلا وقت_literals;
 
-#ifndef FRIEND_TEST // for gtest
-#define FRIEND_TEST(a, b)
-#endif
+#اگر_غیر_تعریف_شدہ FRIEND_TEST // for gtest
+#تعریف_کرو FRIEND_TEST(a, b)
+#اگر_ختم
 
-class TECSAirspeedFilter
+جماعت TECSAirspeedFilter
 {
-public:
+عوامی:
 	/**
 	 * @brief State of the equivalent airspeed filter.
 	 *
 	 */
-	struct AirspeedFilterState {
-		float speed;		///< speed of the air in EAS [m/s]
-		float speed_rate;	///< rate of speed of the air [m/s²]
+	ساخت AirspeedFilterState {
+		اعشاری رفتار;		///< speed of the air in EAS [m/s]
+		اعشاری رفتار_شرح;	///< rate of speed of the air [m/s²]
 	};
 
 	/**
 	 * @brief Parameters of the airspeed filter.
 	 *
 	 */
-	struct Param {
-		float equivalent_airspeed_trim; 	///< the trim value of the equivalent airspeed [m/s].
+	ساخت Param {
+		اعشاری equivalent_airspeed_trim; 	///< the trim value of the equivalent airspeed [m/s].
 	};
 
 	/**
 	 * @brief Input, which will be filtered.
 	 *
 	 */
-	struct Input {
-		float equivalent_airspeed; 	///< the measured equivalent airspeed in [m/s].
-		float equivalent_airspeed_rate;	///< the measured rate of equivalent airspeed in [m/s²].
+	ساخت داخلہ_2 {
+		اعشاری equivalent_airspeed; 	///< the measured equivalent airspeed in [m/s].
+		اعشاری equivalent_airspeed_شرح;	///< the measured rate of equivalent airspeed in [m/s²].
 	};
-public:
-	TECSAirspeedFilter() = default;
-	~TECSAirspeedFilter() = default;
+عوامی:
+	TECSAirspeedFilter() = طےشدہ;
+	~TECSAirspeedFilter() = طےشدہ;
 	/**
 	 * @brief Initialize filter
 	 *
@@ -90,8 +90,8 @@ public:
 	 * @param[in] equivalent_airspeed_trim is the equivalent airspeed trim (vehicle setting) in [m/s].
 	 * @param[in] airspeed_sensor_available boolean if the airspeed sensor is available.
 	 */
-	void initialize(float equivalent_airspeed, const float equivalent_airspeed_trim,
-			const bool airspeed_sensor_available);
+	خالی initialize(اعشاری equivalent_airspeed, ثابت اعشاری equivalent_airspeed_trim,
+			ثابت منطقی airspeed_sensor_دستیاب);
 
 	/**
 	 * @brief Update filter
@@ -101,18 +101,18 @@ public:
 	 * @param[in] param are the filter parameters.
 	 * @param[in] airspeed_sensor_available boolean if the airspeed sensor is available.
 	 */
-	void update(float dt, const Input &input, const Param &param, const bool airspeed_sensor_available);
+	خالی update(اعشاری dt, ثابت داخلہ_2 &داخلہ, ثابت Param &param, ثابت منطقی airspeed_sensor_دستیاب);
 
 	/**
 	 * @brief Get the filtered airspeed states.
 	 *
 	 * @return Current state of the airspeed filter.
 	 */
-	AirspeedFilterState getState() const;
+	AirspeedFilterState getState() ثابت;
 
-private:
+نجی:
 	// States
-	AirspeedFilterState _airspeed_state{.speed = 0.0f, .speed_rate = 0.0f};	///< Complementary filter state
+	AirspeedFilterState _airspeed_state{.رفتار = 0.0f, .رفتار_شرح = 0.0f};	///< Complementary filter state
 
 	// Steady-state Kalman gains for the 2-state (airspeed, airspeed_rate) complementary filter.
 	//
@@ -128,46 +128,46 @@ private:
 	//
 	// To recompute if any noise value changes:
 	//   python3 -c "import math; sm=0.07; sr=0.2; sp=0.2; a=1/sm; b=sp/sr**2; d=a+b; n=math.sqrt(sp*(2*a+b)); print(a*n/d, b/d, a*a*sp/d, b*n/d)"
-	static constexpr float kKg00{1.91940287f};
-	static constexpr float kKg01{0.25925926f};
-	static constexpr float kKg10{2.11640212f};
-	static constexpr float kKg11{0.67179101f};
+	ساکن constexpr اعشاری kKg00{1.91940287f};
+	ساکن constexpr اعشاری kKg01{0.25925926f};
+	ساکن constexpr اعشاری kKg10{2.11640212f};
+	ساکن constexpr اعشاری kKg11{0.67179101f};
 };
 
-class TECSAltitudeReferenceModel
+جماعت TECSAltitudeReferenceModel
 {
-public:
+عوامی:
 	/**
 	 * @brief Altitude reference state.
 	 *
 	 */
-	struct AltitudeReferenceState {
-		float alt; 	///< Reference altitude amsl in [m].
-		float alt_rate;	///< Reference altitude rate in [m/s].
+	ساخت AltitudeReferenceState {
+		اعشاری alt; 	///< Reference altitude amsl in [m].
+		اعشاری alt_شرح;	///< Reference altitude rate in [m/s].
 	};
 
 	/**
 	 * @brief Parameters for the reference model.
 	 *
 	 */
-	struct Param {
-		float target_climbrate;	///< The target climbrate in [m/s].
-		float target_sinkrate;	///< The target sinkrate in [m/s].
-		float vert_accel_limit;	///< Magnitude of the maximum vertical acceleration allowed [m/s²].
-		float max_climb_rate;	///< Climb rate produced by max allowed throttle [m/s].
-		float max_sink_rate;	///< Maximum sink rate (with min throttle, max speed) [m/s].
+	ساخت Param {
+		اعشاری ہدف_climbrate;	///< The target climbrate in [m/s].
+		اعشاری ہدف_sinkrate;	///< The target sinkrate in [m/s].
+		اعشاری vert_accel_حد_بندی;	///< Magnitude of the maximum vertical acceleration allowed [m/s²].
+		اعشاری max_climb_شرح;	///< Climb rate produced by max allowed throttle [m/s].
+		اعشاری max_sink_شرح;	///< Maximum sink rate (with min throttle, max speed) [m/s].
 	};
 
-public:
-	TECSAltitudeReferenceModel() = default;
-	~TECSAltitudeReferenceModel() = default;
+عوامی:
+	TECSAltitudeReferenceModel() = طےشدہ;
+	~TECSAltitudeReferenceModel() = طےشدہ;
 
 	/**
 	 * @brief Initialize reference models.
 	 *
 	 * @param[in] state is the current altitude state of the vehicle.
 	 */
-	void initialize(const AltitudeReferenceState &state);
+	خالی initialize(ثابت AltitudeReferenceState &state);
 
 	/**
 	 * @brief Update reference models.
@@ -178,133 +178,133 @@ public:
 	 * @param[in] height_rate is the current height rate in [m/s].
 	 * @param[in] param are the reference model parameters.
 	 */
-	void update(float dt, const AltitudeReferenceState &setpoint, float altitude, float height_rate, const Param &param);
+	خالی update(اعشاری dt, ثابت AltitudeReferenceState &setpoint, اعشاری altitude, اعشاری اونچائی_شرح, ثابت Param &param);
 
 	/**
 	 * @brief Get the current altitude reference of altitude reference model.
 	 *
 	 * @return Altitude reference state.
 	 */
-	AltitudeReferenceState getAltitudeReference() const;
+	AltitudeReferenceState getAltitudeReference() ثابت;
 
 	/**
 	 * @brief Get the Height Rate Setpoint directly from the velocity trajectory generator
 	 *
 	 * @return float direct height rate setpoint [m/s]
 	 */
-	float getHeightRateSetpointDirect() const {return _height_rate_setpoint_direct; }
+	اعشاری get_اونچائی_شرح_Setpoint_براہ_راست() ثابت {واپس اونچائی_شرح_setpoint_براہ_راست; }
 
 
-private:
-	static constexpr float JERK_MAX = 1000.f;	///< Magnitude of the maximum jerk allowed [m/s³].
+نجی:
+	ساکن constexpr اعشاری JERK_MAX = 1000.f;	///< Magnitude of the maximum jerk allowed [m/s³].
 
 	// State
 	VelocitySmoothing
 	_alt_control_traj_generator;		///< Generates altitude rate and altitude setpoint trajectory when altitude is commanded.
 	ManualVelocitySmoothingZ
 	_velocity_control_traj_generator;	///< generates height rate trajectory when height rate is commanded
-	float _height_rate_setpoint_direct{NAN}; ///< generated direct height rate setpoint
+	اعشاری اونچائی_شرح_setpoint_براہ_راست{NAN}; ///< generated direct height rate setpoint
 };
 
-class TECSControl
+جماعت TECSControl
 {
-public:
+عوامی:
 	/**
 	 * @brief The control parameters.
 	 *
 	 */
-	struct Param {
+	ساخت Param {
 		// Vehicle specific params
-		float max_sink_rate;			///< Maximum sink rate (with min throttle and max speed) [m/s].
-		float min_sink_rate;			///< Minimum sink rate (with min throttle and trim speed) [m/s].
-		float max_climb_rate;			///< Climb rate produced by max allowed throttle [m/s].
-		float vert_accel_limit;			///< Magnitude of the maximum vertical acceleration allowed [m/s²].
-		float equivalent_airspeed_trim;		///< Equivalent cruise airspeed for airspeed less mode [m/s].
-		float tas_min;				///< True airspeed demand lower limit [m/s].
-		float tas_stall;			///< True stall airspeed [m/s].
-		float tas_max;				///< True airspeed demand upper limit [m/s].
-		float tas_trim;				///< True airspeed trim [m/s].
-		float pitch_max;			///< Maximum absolute pitch angle setpoint [rad].
-		float pitch_min;			///< Minimum absolute pitch angle setpoint [rad].
-		float level_flight_pitch;		///< Pitch angle in level flight at trim airspeed, fed forward at zero climb angle [rad].
-		float throttle_trim;		///< Normalized throttle required to fly level at calibrated airspeed setpoint [0,1]
-		float throttle_max;			///< Normalized throttle upper limit.
-		float throttle_min;			///< Normalized throttle lower limit.
+		اعشاری max_sink_شرح;			///< Maximum sink rate (with min throttle and max speed) [m/s].
+		اعشاری min_sink_شرح;			///< Minimum sink rate (with min throttle and trim speed) [m/s].
+		اعشاری max_climb_شرح;			///< Climb rate produced by max allowed throttle [m/s].
+		اعشاری vert_accel_حد_بندی;			///< Magnitude of the maximum vertical acceleration allowed [m/s²].
+		اعشاری equivalent_airspeed_trim;		///< Equivalent cruise airspeed for airspeed less mode [m/s].
+		اعشاری tas_min;				///< True airspeed demand lower limit [m/s].
+		اعشاری tas_stall;			///< True stall airspeed [m/s].
+		اعشاری tas_max;				///< True airspeed demand upper limit [m/s].
+		اعشاری tas_trim;				///< True airspeed trim [m/s].
+		اعشاری pitch_max;			///< Maximum absolute pitch angle setpoint [rad].
+		اعشاری pitch_min;			///< Minimum absolute pitch angle setpoint [rad].
+		اعشاری level_flight_pitch;		///< Pitch angle in level flight at trim airspeed, fed forward at zero climb angle [rad].
+		اعشاری throttle_trim;		///< Normalized throttle required to fly level at calibrated airspeed setpoint [0,1]
+		اعشاری throttle_max;			///< Normalized throttle upper limit.
+		اعشاری throttle_min;			///< Normalized throttle lower limit.
 
 		// Altitude control param
-		float altitude_error_gain;		///< Altitude error inverse time constant [1/s].
-		float altitude_setpoint_gain_ff;	///< Gain from altitude demand derivative to demanded climb rate.
+		اعشاری altitude_error_gain;		///< Altitude error inverse time constant [1/s].
+		اعشاری altitude_setpoint_gain_ff;	///< Gain from altitude demand derivative to demanded climb rate.
 
 		// Airspeed control param
-		float airspeed_error_gain;				///< Airspeed error inverse time constant [1/s].
+		اعشاری airspeed_error_gain;				///< Airspeed error inverse time constant [1/s].
 
 		// Energy control param
-		float ste_rate_time_const;				///< Filter time constant for specific total energy rate (damping path) [s].
-		float seb_rate_ff;					///< Specific energy balance rate feedforward gain.
+		اعشاری ste_شرح_وقت_const;				///< Filter time constant for specific total energy rate (damping path) [s].
+		اعشاری seb_شرح_ff;					///< Specific energy balance rate feedforward gain.
 
 		// Pitch control param
-		float pitch_speed_weight;				///< Speed control weighting used by pitch demand calculation.
-		float integrator_gain_pitch;				///< Integrator gain used by the pitch demand calculation.
-		float pitch_damping_gain;				///< Damping gain of the pitch demand calculation [s].
+		اعشاری pitch_رفتار_وزن;				///< Speed control weighting used by pitch demand calculation.
+		اعشاری integrator_gain_pitch;				///< Integrator gain used by the pitch demand calculation.
+		اعشاری pitch_damping_gain;				///< Damping gain of the pitch demand calculation [s].
 
 		// Throttle control param
-		float integrator_gain_throttle;				///< Integrator gain used by the throttle demand calculation.
-		float throttle_damping_gain;				///< Damping gain of the throttle demand calculation [s].
-		float throttle_slewrate;				///< Throttle demand slew rate limit [1/s].
+		اعشاری integrator_gain_throttle;				///< Integrator gain used by the throttle demand calculation.
+		اعشاری throttle_damping_gain;				///< Damping gain of the throttle demand calculation [s].
+		اعشاری throttle_slewrate;				///< Throttle demand slew rate limit [1/s].
 
-		float load_factor_correction;				///< Gain from normal load factor increase to total energy rate demand [m²/s³].
-		float load_factor;					///< Additional normal load factor.
+		اعشاری بھرو_ضربی_عدد_correction;				///< Gain from normal load factor increase to total energy rate demand [m²/s³].
+		اعشاری بھرو_ضربی_عدد;					///< Additional normal load factor.
 
-		float fast_descend;
+		اعشاری fast_descend;
 	};
 
 	/**
 	 * @brief The debug output
 	 *
 	 */
-	struct DebugOutput {
-		float altitude_rate_control;			///< Altitude rate setpoint from altitude control loop [m/s].
-		float true_airspeed_derivative_control;		///< Airspeed rate setpoint from airspeed control loop [m/s²].
-		float total_energy_rate_estimate;		///< Total energy rate estimate [m²/s³].
-		float total_energy_rate_sp;			///< Total energy rate setpoint [m²/s³].
-		float energy_balance_rate_estimate;		///< Energy balance rate estimate [m²/s³].
-		float energy_balance_rate_sp;			///< Energy balance rate setpoint [m²/s³].
-		float pitch_integrator;				///< Pitch control integrator state, a correction added to the pitch setpoint [rad].
-		float throttle_integrator;			///< Throttle control integrator state [-].
+	ساخت DebugOutput {
+		اعشاری altitude_شرح_control;			///< Altitude rate setpoint from altitude control loop [m/s].
+		اعشاری true_airspeed_derivative_control;		///< Airspeed rate setpoint from airspeed control loop [m/s²].
+		اعشاری کل_energy_شرح_estimate;		///< Total energy rate estimate [m²/s³].
+		اعشاری کل_energy_شرح_sp;			///< Total energy rate setpoint [m²/s³].
+		اعشاری energy_balance_شرح_estimate;		///< Energy balance rate estimate [m²/s³].
+		اعشاری energy_balance_شرح_sp;			///< Energy balance rate setpoint [m²/s³].
+		اعشاری pitch_integrator;				///< Pitch control integrator state, a correction added to the pitch setpoint [rad].
+		اعشاری throttle_integrator;			///< Throttle control integrator state [-].
 	};
 
 	/**
 	 * @brief Given setpoint to control.
 	 *
 	 */
-	struct Setpoint {
+	ساخت Setpoint {
 		TECSAltitudeReferenceModel::AltitudeReferenceState altitude_reference;	///< Altitude/height rate reference.
-		float altitude_rate_setpoint_direct;					///< Direct height rate setpoint.
-		float tas_setpoint;						///< True airspeed setpoint.
+		اعشاری altitude_شرح_setpoint_براہ_راست;					///< Direct height rate setpoint.
+		اعشاری tas_setpoint;						///< True airspeed setpoint.
 	};
 
 	/**
 	 * @brief Given current measurement from the UAS.
 	 *
 	 */
-	struct Input {
-		float altitude;		///< Current altitude amsl of the UAS [m].
-		float altitude_rate;	///< Current altitude rate of the UAS [m/s].
-		float tas;		///< Current true airspeed of the UAS [m/s].
-		float tas_rate;		///< Current true airspeed rate of the UAS [m/s²].
+	ساخت داخلہ_2 {
+		اعشاری altitude;		///< Current altitude amsl of the UAS [m].
+		اعشاری altitude_شرح;	///< Current altitude rate of the UAS [m/s].
+		اعشاری tas;		///< Current true airspeed of the UAS [m/s].
+		اعشاری tas_شرح;		///< Current true airspeed rate of the UAS [m/s²].
 	};
 
 	/**
 	 * @brief Control flags.
 	 *
 	 */
-	struct Flag {
-		bool airspeed_enabled;			///< Flag if the airspeed sensor is enabled.
-		bool detect_underspeed_enabled;		///< Flag if underspeed detection is enabled.
+	ساخت Flag {
+		منطقی airspeed_enabled;			///< Flag if the airspeed sensor is enabled.
+		منطقی detect_underspeed_enabled;		///< Flag if underspeed detection is enabled.
 	};
-public:
-	TECSControl() = default;
-	~TECSControl() = default;
+عوامی:
+	TECSControl() = طےشدہ;
+	~TECSControl() = طےشدہ;
 	/**
 	 * @brief Initialization of the state.
 	 *
@@ -313,7 +313,7 @@ public:
 	 * @param[in] param is the current parameter set.
 	 * @param[in] flag is the current activated flags.
 	 */
-	void initialize(const Setpoint &setpoint, const Input &input, const Param &param, const Flag &flag);
+	خالی initialize(ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ, ثابت Param &param, ثابت Flag &flag);
 	/**
 	 * @brief Update state and output.
 	 *
@@ -323,38 +323,38 @@ public:
 	 * @param[in] param is the current parameter set.
 	 * @param[in] flag is the current activated flags.
 	 */
-	void update(float dt, const Setpoint &setpoint, const Input &input, const Param &param, const Flag &flag);
+	خالی update(اعشاری dt, ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ, ثابت Param &param, ثابت Flag &flag);
 	/**
 	 * @brief Reset the control loop integrals.
 	 *
 	 */
-	void resetIntegrals();
+	خالی resetIntegrals();
 	/**
 	 * @brief Get the underspeed ratio.
 	 *
 	 * @return Ratio of detected underspeed [0,1].
 	 */
-	float getUnderspeedRatio() const {return _ratio_undersped;}
+	اعشاری get_Underspeed_تناسب() ثابت {واپس تناسب_undersped;}
 	/**
 	 * @brief Get the throttle setpoint.
 	 *
 	 * @return throttle setpoint.
 	 */
-	float getThrottleSetpoint() const {return _throttle_setpoint;}
+	اعشاری getThrottleSetpoint() ثابت {واپس _throttle_setpoint;}
 	/**
 	 * @brief Get the pitch setpoint.
 	 *
 	 * @return The commanded absolute pitch angle [rad].
 	 */
-	float getPitchSetpoint() const {return _pitch_setpoint;}
+	اعشاری getPitchSetpoint() ثابت {واپس _pitch_setpoint;}
 	/**
 	 * @brief Get the Debug Output
 	 *
 	 * @return the debug output struct.
 	 */
-	const DebugOutput &getDebugOutput() const { return _debug_output; }
+	ثابت DebugOutput &getDebugOutput() ثابت { واپس _debug_output; }
 
-private:
+نجی:
 	// Allows the regression test to pre-corrupt _pitch_integ_state and verify the
 	// safety reset in _calcPitchControlUpdate, which the public update() path cannot
 	// reach on its own because the integrator-input guard rejects bad input first.
@@ -364,9 +364,9 @@ private:
 	 * @brief Specific total energy rate limit.
 	 *
 	 */
-	struct STERateLimit {
-		float STE_rate_max;	///< Maximum specific total energy rate limit [m²/s³].
-		float STE_rate_min;	///< Minimal specific total energy rate limit [m²/s³].
+	ساخت STERate_حد_بندی {
+		اعشاری STE_شرح_max;	///< Maximum specific total energy rate limit [m²/s³].
+		اعشاری STE_شرح_min;	///< Minimal specific total energy rate limit [m²/s³].
 	};
 
 	/**
@@ -374,60 +374,60 @@ private:
 	 * setpoint and current state estimate value as input to a controller.
 	 *
 	 */
-	struct ControlValues {
-		float setpoint;		///< Control setpoint.
-		float estimate;		///< Control estimate of current state value.
+	ساخت Control_اقدار {
+		اعشاری setpoint;		///< Control setpoint.
+		اعشاری estimate;		///< Control estimate of current state value.
 	};
 
 	/**
 	 * @brief Calculated specific energy rates.
 	 *
 	 */
-	struct SpecificEnergyRates {
-		ControlValues ske_rate;	///< Specific kinetic energy rate [m²/s³].
-		ControlValues spe_rate;	///< Specific potential energy rate [m²/s³].
+	ساخت SpecificEnergyRates {
+		Control_اقدار ske_شرح;	///< Specific kinetic energy rate [m²/s³].
+		Control_اقدار spe_شرح;	///< Specific potential energy rate [m²/s³].
 	};
 
 	/**
 	 * @brief Altitude rate and airspeed setpoints from the outer loops, from which the energy rate setpoints follow.
 	 *
 	 */
-	struct OuterLoopSetpoints {
-		float altitude_rate_setpoint;	///< Controlled altitude rate setpoint [m/s].
-		float tas_rate_setpoint;	///< Controlled true airspeed rate setpoint [m/s²].
+	ساخت OuterLoopSetpoints {
+		اعشاری altitude_شرح_setpoint;	///< Controlled altitude rate setpoint [m/s].
+		اعشاری tas_شرح_setpoint;	///< Controlled true airspeed rate setpoint [m/s²].
 	};
 
 	/**
 	 * @brief Weight factors for specific energy.
 	 *
 	 */
-	struct SpecificEnergyWeighting {
-		float spe_weighting;	///< Specific potential energy weight.
-		float ske_weighting;	///< Specific kinetic energy weight.
+	ساخت SpecificEnergyWeighting {
+		اعشاری spe_weighting;	///< Specific potential energy weight.
+		اعشاری ske_weighting;	///< Specific kinetic energy weight.
 	};
 
-private:
+نجی:
 	/**
 	 * @brief Get control error from setpoint and estimate
 	 *
 	 * @param val is the current control setpoint and estimate.
 	 * @return error value
 	 */
-	static constexpr float _getControlError(TECSControl::ControlValues val) {return (val.setpoint - val.estimate);}
+	ساکن constexpr اعشاری _getControlError(TECSControl::Control_اقدار val) {واپس (val.setpoint - val.estimate);}
 	/**
 	 * @brief Calculate specific total energy rate limits.
 	 *
 	 * @param[in] param are the control parameters.
 	 * @return Specific total energy rate limits in [m²/s³].
 	 */
-	STERateLimit _calculateTotalEnergyRateLimit(const Param &param) const;
+	STERate_حد_بندی calculate_کل_Energy_شرح_حد_بندی(ثابت Param &param) ثابت;
 	/**
 	 * @brief Gain from specific total energy rate error to throttle.
 	 *
 	 * @param[in] limit is the specific total energy rate limits in [m²/s³].
 	 * @return throttle per specific total energy rate [s³/m²].
 	 */
-	static float _steRateToThrottle(const STERateLimit &limit) { return 1.0f / (limit.STE_rate_max - limit.STE_rate_min); }
+	ساکن اعشاری ste_شرح_مقصد_Throttle(ثابت STERate_حد_بندی &حد_بندی_2) { واپس 1.0f / (حد_بندی_2.STE_شرح_max - حد_بندی_2.STE_شرح_min); }
 	/**
 	 * @brief calculate airspeed control proportional output.
 	 *
@@ -438,8 +438,8 @@ private:
 	 * @param flag	is the control flags.
 	 * @return controlled airspeed rate setpoint in [m/s²].
 	 */
-	float _calcAirspeedControlOutput(const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
-					 const Param &param, const Flag &flag) const;
+	اعشاری _calcAirspeedControlOutput(ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ, ثابت STERate_حد_بندی &حد_بندی_2,
+					 ثابت Param &param, ثابت Flag &flag) ثابت;
 	/**
 	 * @brief calculate altitude control proportional output.
 	 *
@@ -448,7 +448,7 @@ private:
 	 * @param param is the control parameters.
 	 * @return controlled altitude rate setpoint in [m/s].
 	 */
-	float _calcAltitudeControlOutput(const Setpoint &setpoint, const Input &input, const Param &param) const;
+	اعشاری _calcAltitudeControlOutput(ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ, ثابت Param &param) ثابت;
 	/**
 	 * @brief Run the airspeed and altitude outer loops and the underspeed detection.
 	 *
@@ -461,8 +461,8 @@ private:
 	 * @param flag is the control flags.
 	 * @return Specific energy rates in [m²/s³].
 	 */
-	SpecificEnergyRates _updateOuterLoops(const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
-					      const Param &param, const Flag &flag);
+	SpecificEnergyRates _updateOuterLoops(ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ, ثابت STERate_حد_بندی &حد_بندی_2,
+					      ثابت Param &param, ثابت Flag &flag);
 	/**
 	 * @brief Calculate specific energy rates.
 	 *
@@ -470,7 +470,7 @@ private:
 	 * @param input is the current input measurement of the UAS.
 	 * @return Specific energy rates in [m²/s³].
 	 */
-	SpecificEnergyRates _calcSpecificEnergyRates(const OuterLoopSetpoints &control_setpoint, const Input &input) const;
+	SpecificEnergyRates _calcSpecificEnergyRates(ثابت OuterLoopSetpoints &control_setpoint, ثابت داخلہ_2 &داخلہ) ثابت;
 	/**
 	 * @brief Detect underspeed.
 	 *
@@ -478,7 +478,7 @@ private:
 	 * @param param is the control parameters.
 	 * @param flag is the control flags.
 	 */
-	void _detectUnderspeed(const Input &input, const Param &param, const Flag &flag);
+	خالی _detectUnderspeed(ثابت داخلہ_2 &داخلہ, ثابت Param &param, ثابت Flag &flag);
 	/**
 	 * @brief Update specific energy balance weights.
 	 *
@@ -486,7 +486,7 @@ private:
 	 * @param flag is the control flags.
 	 * @return Weights used for the specific energy balance.
 	 */
-	SpecificEnergyWeighting _updateSpeedAltitudeWeights(const Param &param, const Flag &flag);
+	SpecificEnergyWeighting update_رفتار_Altitude_Weights(ثابت Param &param, ثابت Flag &flag);
 	/**
 	 * @brief Calculate the specific kinetic energy rate setpoint used by the pitch loop.
 	 *
@@ -498,8 +498,8 @@ private:
 	 * @param weight is the weighting use of the potential and kinetic energy.
 	 * @return specific kinetic energy rate setpoint in [m²/s³].
 	 */
-	float _calcPitchControlSkeRateSetpoint(const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
-					       const Param &param, const Flag &flag, const SpecificEnergyWeighting &weight) const;
+	اعشاری calc_Pitch_Control_Ske_شرح_Setpoint(ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ, ثابت STERate_حد_بندی &حد_بندی_2,
+					       ثابت Param &param, ثابت Flag &flag, ثابت SpecificEnergyWeighting &وزن) ثابت;
 	/**
 	 * @brief Specific energy rates as seen by the pitch loop.
 	 *
@@ -516,9 +516,9 @@ private:
 	 * @param weight is the weighting use of the potential and kinetic energy.
 	 * @return specific energy rates for the pitch loop in [m²/s³].
 	 */
-	SpecificEnergyRates _calcPitchControlEnergyRates(const Setpoint &setpoint, const Input &input,
-			const STERateLimit &limit, const SpecificEnergyRates &specific_energy_rates, const Param &param,
-			const Flag &flag, const SpecificEnergyWeighting &weight) const;
+	SpecificEnergyRates _calcPitchControlEnergyRates(ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ,
+			ثابت STERate_حد_بندی &حد_بندی_2, ثابت SpecificEnergyRates &specific_energy_rates, ثابت Param &param,
+			ثابت Flag &flag, ثابت SpecificEnergyWeighting &وزن) ثابت;
 	/**
 	 * @brief Calculate pitch control.
 	 *
@@ -530,8 +530,8 @@ private:
 	 * @param param is the control parameters.
 	 * @param flag is the control flags.
 	 */
-	void _calcPitchControl(float dt, const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
-			       const SpecificEnergyRates &specific_energy_rate, const Param &param, const Flag &flag);
+	خالی _calcPitchControl(اعشاری dt, ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ, ثابت STERate_حد_بندی &حد_بندی_2,
+			       ثابت SpecificEnergyRates &specific_energy_شرح, ثابت Param &param, ثابت Flag &flag);
 
 	/**
 	 * @brief Calculate pitch control specific energy balance rates.
@@ -540,8 +540,8 @@ private:
 	 * @param specific_energy_rate is the specific energy rates in [m²/s³].
 	 * @return specific energy balance rate values in [m²/s³].
 	 */
-	ControlValues _calcPitchControlSebRate(const SpecificEnergyWeighting &weight,
-					       const SpecificEnergyRates &specific_energy_rate) const;
+	Control_اقدار calc_Pitch_Control_Seb_شرح(ثابت SpecificEnergyWeighting &وزن,
+					       ثابت SpecificEnergyRates &specific_energy_شرح) ثابت;
 
 	/**
 	 * @brief Calculate the pitch control update function.
@@ -552,7 +552,7 @@ private:
 	 * @param seb_rate is the specific energy balance rate in [m²/s³].
 	 * @param param is the control parameters.
 	 */
-	void _calcPitchControlUpdate(float dt, const Input &input, const ControlValues &seb_rate, const Param &param);
+	خالی _calcPitchControlUpdate(اعشاری dt, ثابت داخلہ_2 &داخلہ, ثابت Control_اقدار &seb_شرح, ثابت Param &param);
 
 	/**
 	 * @brief Derivative of the specific energy balance rate with respect to the climb angle.
@@ -564,7 +564,7 @@ private:
 	 * @param param is the control parameters.
 	 * @return climb angle to specific energy balance rate gain in [m²/s³/rad].
 	 */
-	static float _climbAngleToSebRate(const Input &input, const Param &param);
+	ساکن اعشاری climb_Angle_مقصد_Seb_شرح(ثابت داخلہ_2 &داخلہ, ثابت Param &param);
 
 	/**
 	 * @brief Calculate the pitch control output function.
@@ -574,7 +574,7 @@ private:
 	 * @param param is the control parameters.
 	 * @return absolute pitch setpoint [rad].
 	 */
-	float _calcPitchControlOutput(const Input &input, const ControlValues &seb_rate, const Param &param) const;
+	اعشاری _calcPitchControlOutput(ثابت داخلہ_2 &داخلہ, ثابت Control_اقدار &seb_شرح, ثابت Param &param) ثابت;
 
 	/**
 	 * @brief Update controlled throttle setpoint.
@@ -585,8 +585,8 @@ private:
 	 * @param param is the control parameters.
 	 * @param flag is the control flags.
 	 */
-	void _calcThrottleControl(float dt, const STERateLimit &limit, const SpecificEnergyRates &specific_energy_rate,
-				  const Param &param, const Flag &flag);
+	خالی _calcThrottleControl(اعشاری dt, ثابت STERate_حد_بندی &حد_بندی_2, ثابت SpecificEnergyRates &specific_energy_شرح,
+				  ثابت Param &param, ثابت Flag &flag);
 
 	/**
 	 * @brief Calculate throttle control specific total energy
@@ -596,8 +596,8 @@ private:
 	 * @param param is the control parameters.
 	 * @return specific total energy rate values in [m²/s³]
 	 */
-	ControlValues _calcThrottleControlSteRate(const STERateLimit &limit, const SpecificEnergyRates &specific_energy_rate,
-			const Param &param) const;
+	Control_اقدار calc_Throttle_Control_Ste_شرح(ثابت STERate_حد_بندی &حد_بندی_2, ثابت SpecificEnergyRates &specific_energy_شرح,
+			ثابت Param &param) ثابت;
 
 	/**
 	 * @brief Calculate the throttle control update function.
@@ -609,8 +609,8 @@ private:
 	 * @param param is the control parameters.
 	 * @param flag is the control flags.
 	 */
-	void _calcThrottleControlUpdate(float dt, const STERateLimit &limit, const ControlValues &ste_rate, const Param &param,
-					const Flag &flag);
+	خالی _calcThrottleControlUpdate(اعشاری dt, ثابت STERate_حد_بندی &حد_بندی_2, ثابت Control_اقدار &ste_شرح, ثابت Param &param,
+					ثابت Flag &flag);
 
 	/**
 	 * @brief Calculate the throttle control output function.
@@ -621,77 +621,77 @@ private:
 	 * @param flag is the control flags.
 	 * @return throttle setpoint in [0,1].
 	 */
-	float _calcThrottleControlOutput(const STERateLimit &limit, const ControlValues &ste_rate, const Param &param,
-					 const Flag &flag) const;
+	اعشاری _calcThrottleControlOutput(ثابت STERate_حد_بندی &حد_بندی_2, ثابت Control_اقدار &ste_شرح, ثابت Param &param,
+					 ثابت Flag &flag) ثابت;
 
-private:
+نجی:
 	// State
-	AlphaFilter<float> _ste_rate_estimate_filter;		///< Low pass filter for the specific total energy rate.
-	float _pitch_integ_state{0.0f};				///< Pitch integrator state [rad].
-	float _fast_descend_prev{0.0f};				///< Fast descend ratio of the last update [0,1].
-	float _throttle_integ_state{0.0f};			///< Throttle integrator state [-].
+	AlphaFilter<اعشاری> ste_شرح_estimate_filter;		///< Low pass filter for the specific total energy rate.
+	اعشاری _pitch_integ_state{0.0f};				///< Pitch integrator state [rad].
+	اعشاری fast_descend_پچھلا{0.0f};				///< Fast descend ratio of the last update [0,1].
+	اعشاری _throttle_integ_state{0.0f};			///< Throttle integrator state [-].
 
 	// Output
 	DebugOutput _debug_output;				///< Debug output.
-	float _pitch_setpoint{0.0f};				///< Controlled absolute pitch setpoint [rad].
-	float _throttle_setpoint{0.0f};				///< Controlled throttle setpoint [0,1].
-	float _ratio_undersped{0.0f};				///< A continuous representation of how "undersped" the TAS is [0,1]
+	اعشاری _pitch_setpoint{0.0f};				///< Controlled absolute pitch setpoint [rad].
+	اعشاری _throttle_setpoint{0.0f};				///< Controlled throttle setpoint [0,1].
+	اعشاری تناسب_undersped{0.0f};				///< A continuous representation of how "undersped" the TAS is [0,1]
 };
 
-class TECS
+جماعت TECS
 {
-public:
-	struct DebugOutput {
+عوامی:
+	ساخت DebugOutput {
 		TECSControl::DebugOutput control;
-		float true_airspeed_sp;
-		float true_airspeed_filtered;
-		float true_airspeed_derivative;
-		float altitude_reference;
-		float height_rate_reference;
-		float height_rate_direct;
-		float fast_descend;
+		اعشاری true_airspeed_sp;
+		اعشاری true_airspeed_filtered;
+		اعشاری true_airspeed_derivative;
+		اعشاری altitude_reference;
+		اعشاری اونچائی_شرح_reference;
+		اعشاری اونچائی_شرح_براہ_راست;
+		اعشاری fast_descend;
 	};
 
 	/**
 	 * @brief Vehicle state, setpoints and limits for one control update.
 	 *
 	 */
-	struct Input {
-		float altitude;				///< Current altitude amsl [m].
-		float altitude_rate;			///< Current altitude rate [m/s].
-		float altitude_setpoint;		///< Altitude setpoint amsl [m], NAN if not set.
-		float altitude_rate_setpoint{NAN};	///< Altitude rate setpoint [m/s], NAN if not set.
-		float equivalent_airspeed;		///< Current equivalent airspeed [m/s].
-		float speed_deriv_forward;		///< Current forward acceleration, used as true airspeed rate [m/s²].
-		float equivalent_airspeed_setpoint;	///< Equivalent airspeed setpoint [m/s].
-		float eas_to_tas;			///< Conversion factor from equivalent to true airspeed [-].
-		float throttle_min;			///< Normalized throttle lower limit.
-		float throttle_max;			///< Normalized throttle upper limit.
-		float throttle_trim;			///< Normalized throttle required to fly level at the airspeed setpoint.
-		float pitch_min;			///< Minimum absolute pitch angle setpoint [rad].
-		float pitch_max;			///< Maximum absolute pitch angle setpoint [rad].
-		float target_climbrate;			///< Climb rate the reference model targets [m/s].
-		float target_sinkrate;			///< Sink rate the reference model targets [m/s].
+	ساخت داخلہ_2 {
+		اعشاری altitude;				///< Current altitude amsl [m].
+		اعشاری altitude_شرح;			///< Current altitude rate [m/s].
+		اعشاری altitude_setpoint;		///< Altitude setpoint amsl [m], NAN if not set.
+		اعشاری altitude_شرح_setpoint{NAN};	///< Altitude rate setpoint [m/s], NAN if not set.
+		اعشاری equivalent_airspeed;		///< Current equivalent airspeed [m/s].
+		اعشاری رفتار_deriv_forward;		///< Current forward acceleration, used as true airspeed rate [m/s²].
+		اعشاری equivalent_airspeed_setpoint;	///< Equivalent airspeed setpoint [m/s].
+		اعشاری eas_مقصد_tas;			///< Conversion factor from equivalent to true airspeed [-].
+		اعشاری throttle_min;			///< Normalized throttle lower limit.
+		اعشاری throttle_max;			///< Normalized throttle upper limit.
+		اعشاری throttle_trim;			///< Normalized throttle required to fly level at the airspeed setpoint.
+		اعشاری pitch_min;			///< Minimum absolute pitch angle setpoint [rad].
+		اعشاری pitch_max;			///< Maximum absolute pitch angle setpoint [rad].
+		اعشاری ہدف_climbrate;			///< Climb rate the reference model targets [m/s].
+		اعشاری ہدف_sinkrate;			///< Sink rate the reference model targets [m/s].
 	};
 
-public:
-	TECS() = default;
-	~TECS() = default;
+عوامی:
+	TECS() = طےشدہ;
+	~TECS() = طےشدہ;
 
 	// no copy, assignment, move, move assignment
-	TECS(const TECS &) = delete;
-	TECS &operator=(const TECS &) = delete;
-	TECS(TECS &&) = delete;
-	TECS &operator=(TECS &&) = delete;
+	TECS(ثابت TECS &) = حذف;
+	TECS &عامل=(ثابت TECS &) = حذف;
+	TECS(TECS &&) = حذف;
+	TECS &عامل=(TECS &&) = حذف;
 
-	const DebugOutput &getStatus() const { return _debug_status; }
+	ثابت DebugOutput &get_حالت() ثابت { واپس debug_حالت; }
 
 	/**
 	 * Set the airspeed enable state
 	 *
 	 * @param[in] enabled is true if the airspeed measurement is used for control.
 	 */
-	void enable_airspeed(bool enabled) { _control_flag.airspeed_enabled = enabled; }
+	خالی enable_airspeed(منطقی enabled) { _control_flag.airspeed_enabled = enabled; }
 
 	/**
 	 * @brief Update the control loop calculations
@@ -701,53 +701,53 @@ public:
 	 *
 	 * @param[in] input is the current vehicle state, setpoints and limits.
 	 */
-	void update(const Input &input);
+	خالی update(ثابت داخلہ_2 &داخلہ);
 
-	void resetIntegrals()
+	خالی resetIntegrals()
 	{
 		_control.resetIntegrals();
 	}
 
-	void set_detect_underspeed_enabled(bool enabled) { _control_flag.detect_underspeed_enabled = enabled; }
+	خالی سیٹ_detect_underspeed_enabled(منطقی enabled) { _control_flag.detect_underspeed_enabled = enabled; }
 
 	// setters for parameters
 
-	void set_integrator_gain_throttle(float gain) { _control_param.integrator_gain_throttle = gain;}
-	void set_integrator_gain_pitch(float gain) { _control_param.integrator_gain_pitch = gain; }
+	خالی سیٹ_integrator_gain_throttle(اعشاری gain) { _control_param.integrator_gain_throttle = gain;}
+	خالی سیٹ_integrator_gain_pitch(اعشاری gain) { _control_param.integrator_gain_pitch = gain; }
 
-	void set_max_sink_rate(float max_sink_rate) { _control_param.max_sink_rate = max_sink_rate; _reference_param.max_sink_rate = max_sink_rate; }
-	void set_min_sink_rate(float min_sink_rate) { _control_param.min_sink_rate = min_sink_rate; }
-	void set_max_climb_rate(float climb_rate) { _control_param.max_climb_rate = climb_rate; _reference_param.max_climb_rate = climb_rate; }
+	خالی سیٹ_max_sink_شرح(اعشاری max_sink_شرح) { _control_param.max_sink_شرح = max_sink_شرح; _reference_param.max_sink_شرح = max_sink_شرح; }
+	خالی سیٹ_min_sink_شرح(اعشاری min_sink_شرح) { _control_param.min_sink_شرح = min_sink_شرح; }
+	خالی سیٹ_max_climb_شرح(اعشاری climb_شرح) { _control_param.max_climb_شرح = climb_شرح; _reference_param.max_climb_شرح = climb_شرح; }
 
-	void set_altitude_rate_ff(float altitude_rate_ff) { _control_param.altitude_setpoint_gain_ff = altitude_rate_ff; }
-	void set_altitude_error_time_constant(float time_const) { _control_param.altitude_error_gain = 1.0f / math::max(time_const, 0.1f); }
-	void set_fast_descend_altitude_error(float altitude_error) { _fast_descend_alt_err = altitude_error; }
+	خالی سیٹ_altitude_شرح_ff(اعشاری altitude_شرح_ff) { _control_param.altitude_setpoint_gain_ff = altitude_شرح_ff; }
+	خالی سیٹ_altitude_error_وقت_constant(اعشاری وقت_const) { _control_param.altitude_error_gain = 1.0f / math::max(وقت_const, 0.1f); }
+	خالی سیٹ_fast_descend_altitude_error(اعشاری altitude_error) { _fast_descend_alt_err = altitude_error; }
 
-	void set_equivalent_airspeed_min(float airspeed) { _equivalent_airspeed_min = airspeed; }
-	void set_equivalent_airspeed_stall(float airspeed) { _equivalent_airspeed_stall = airspeed; }
-	void set_equivalent_airspeed_max(float airspeed) { _equivalent_airspeed_max = airspeed; }
-	void set_equivalent_airspeed_trim(float airspeed) { _control_param.equivalent_airspeed_trim = airspeed; _airspeed_filter_param.equivalent_airspeed_trim = airspeed; }
+	خالی سیٹ_equivalent_airspeed_min(اعشاری airspeed) { _equivalent_airspeed_min = airspeed; }
+	خالی سیٹ_equivalent_airspeed_stall(اعشاری airspeed) { _equivalent_airspeed_stall = airspeed; }
+	خالی سیٹ_equivalent_airspeed_max(اعشاری airspeed) { _equivalent_airspeed_max = airspeed; }
+	خالی سیٹ_equivalent_airspeed_trim(اعشاری airspeed) { _control_param.equivalent_airspeed_trim = airspeed; _airspeed_filter_param.equivalent_airspeed_trim = airspeed; }
 
-	void set_pitch_damping(float damping) { _control_param.pitch_damping_gain = damping; }
-	void set_vertical_accel_limit(float limit) { _reference_param.vert_accel_limit = limit; _control_param.vert_accel_limit = limit; }
+	خالی سیٹ_pitch_damping(اعشاری damping) { _control_param.pitch_damping_gain = damping; }
+	خالی سیٹ_vertical_accel_حد_بندی(اعشاری حد_بندی_2) { _reference_param.vert_accel_حد_بندی = حد_بندی_2; _control_param.vert_accel_حد_بندی = حد_بندی_2; }
 
-	void set_speed_weight(float weight) { _control_param.pitch_speed_weight = weight; }
-	void set_airspeed_error_time_constant(float time_const) { _control_param.airspeed_error_gain = 1.0f / math::max(time_const, 0.1f); }
+	خالی سیٹ_رفتار_وزن(اعشاری وزن) { _control_param.pitch_رفتار_وزن = وزن; }
+	خالی سیٹ_airspeed_error_وقت_constant(اعشاری وقت_const) { _control_param.airspeed_error_gain = 1.0f / math::max(وقت_const, 0.1f); }
 
-	void set_throttle_damp(float throttle_damp) { _control_param.throttle_damping_gain = throttle_damp; }
-	void set_throttle_slewrate(float slewrate) { _control_param.throttle_slewrate = slewrate; }
+	خالی سیٹ_throttle_damp(اعشاری throttle_damp) { _control_param.throttle_damping_gain = throttle_damp; }
+	خالی سیٹ_throttle_slewrate(اعشاری slewrate) { _control_param.throttle_slewrate = slewrate; }
 
-	void set_roll_throttle_compensation(float compensation) { _control_param.load_factor_correction = compensation; }
-	void set_load_factor(float load_factor) { _control_param.load_factor = load_factor; }
+	خالی سیٹ_roll_throttle_compensation(اعشاری compensation) { _control_param.بھرو_ضربی_عدد_correction = compensation; }
+	خالی سیٹ_بھرو_ضربی_عدد(اعشاری بھرو_ضربی_عدد) { _control_param.بھرو_ضربی_عدد = بھرو_ضربی_عدد; }
 
-	void set_ste_rate_time_const(float time_const) { _control_param.ste_rate_time_const = time_const; }
+	خالی سیٹ_ste_شرح_وقت_const(اعشاری وقت_const) { _control_param.ste_شرح_وقت_const = وقت_const; }
 
-	void set_seb_rate_ff_gain(float ff_gain) { _control_param.seb_rate_ff = ff_gain; }
+	خالی سیٹ_seb_شرح_ff_gain(اعشاری ff_gain) { _control_param.seb_شرح_ff = ff_gain; }
 
 	/**
 	 * Set the pitch angle in level flight at trim airspeed [rad], fed forward as the pitch at zero climb angle
 	 */
-	void set_level_flight_pitch(float pitch) { _control_param.level_flight_pitch = pitch; }
+	خالی سیٹ_level_flight_pitch(اعشاری pitch) { _control_param.level_flight_pitch = pitch; }
 
 	/**
 	 * Handle the altitude reset
@@ -758,10 +758,10 @@ public:
 	 * @param[in] altitude is the altitude amsl after the reset [m].
 	 * @param[in] altitude_rate is the current altitude rate [m/s].
 	 */
-	void handle_alt_step(float altitude, float altitude_rate)
+	خالی handle_alt_قدم(اعشاری altitude, اعشاری altitude_شرح)
 	{
 		TECSAltitudeReferenceModel::AltitudeReferenceState init_state{ .alt = altitude,
-				.alt_rate = altitude_rate};
+				.alt_شرح = altitude_شرح};
 
 		// reset altitude reference model.
 		_altitude_reference_model.initialize(init_state);
@@ -770,23 +770,23 @@ public:
 	/**
 	 * Returns the absolute pitch setpoint [rad]
 	 */
-	float get_pitch_setpoint() const {return _control.getPitchSetpoint();}
-	float get_throttle_setpoint() const {return _control.getThrottleSetpoint();}
+	اعشاری get_pitch_setpoint() ثابت {واپس _control.getPitchSetpoint();}
+	اعشاری get_throttle_setpoint() ثابت {واپس _control.getThrottleSetpoint();}
 
 	/**
 	 * Returns the altitude tracking time constant
 	 */
-	float get_altitude_error_time_constant() const { return 1.0f / _control_param.altitude_error_gain; }
+	اعشاری get_altitude_error_وقت_constant() ثابت { واپس 1.0f / _control_param.altitude_error_gain; }
 
-	float get_underspeed_ratio() const { return _control.getUnderspeedRatio(); }
+	اعشاری get_underspeed_تناسب() ثابت { واپس _control.get_Underspeed_تناسب(); }
 
-private:
+نجی:
 	/**
 	 * @brief Initialize the control parameters
 	 *
 	 * @param[in] input is the current vehicle state, setpoints and limits.
 	 */
-	void initControlParams(const Input &input);
+	خالی initControlParams(ثابت داخلہ_2 &داخلہ);
 
 	/**
 	 * @brief calculate true airspeed setpoint
@@ -797,14 +797,14 @@ private:
 	 * @param eas_setpoint is the desired equivalent airspeed setpoint [m/s]
 	 * @return true airspeed setpoint[m/s]
 	 */
-	float calcTrueAirspeedSetpoint(float eas_to_tas, float eas_setpoint);
+	اعشاری calcTrueAirspeedSetpoint(اعشاری eas_مقصد_tas, اعشاری eas_setpoint);
 
 	/**
 	 * @brief Initialize the control loop
 	 *
 	 * @param[in] input is the current vehicle state, setpoints and limits.
 	 */
-	void initialize(const Input &input);
+	خالی initialize(ثابت داخلہ_2 &داخلہ);
 
 	TECSControl 			_control;			///< Control submodule.
 	TECSAirspeedFilter 		_airspeed_filter;		///< Airspeed filter submodule.
@@ -812,19 +812,19 @@ private:
 
 	hrt_abstime _update_timestamp{0};				///< last timestamp of the update function call.
 
-	float _equivalent_airspeed_min{10.0f};				///< equivalent airspeed demand lower limit (m/sec)
-	float _equivalent_airspeed_stall{7.0f};				///< equivalent stall airspeed (m/sec)
-	float _equivalent_airspeed_max{20.0f};				///< equivalent airspeed demand upper limit (m/sec)
-	float _fast_descend_alt_err{-1.f};	 				///< Altitude difference between current altitude to altitude setpoint needed to descend with higher airspeed [m].
-	float _fast_descend{0.f};					///< Value for fast descend in [0,1]. continuous value used to flatten the high speed value out when close to target altitude.
+	اعشاری _equivalent_airspeed_min{10.0f};				///< equivalent airspeed demand lower limit (m/sec)
+	اعشاری _equivalent_airspeed_stall{7.0f};				///< equivalent stall airspeed (m/sec)
+	اعشاری _equivalent_airspeed_max{20.0f};				///< equivalent airspeed demand upper limit (m/sec)
+	اعشاری _fast_descend_alt_err{-1.f};	 				///< Altitude difference between current altitude to altitude setpoint needed to descend with higher airspeed [m].
+	اعشاری _fast_descend{0.f};					///< Value for fast descend in [0,1]. continuous value used to flatten the high speed value out when close to target altitude.
 	hrt_abstime _enabled_fast_descend_timestamp{0U};		///< timestamp at activation of fast descend mode
 
-	static constexpr float DT_MIN = 0.001f;				///< minimum allowed value of _dt (sec)
-	static constexpr float DT_MAX = 1.0f;				///< max value of _dt allowed before a filter state reset is performed (sec)
-	static constexpr hrt_abstime FAST_DESCEND_RAMP_UP_TIME = 2_s; 	///< Ramp up time until fast descend is fully engaged
-	static constexpr float FAST_DESCEND_HEIGHT_MARGIN = 5.f;	///< Height above setpoint where fast descend ends [m]
+	ساکن constexpr اعشاری DT_MIN = 0.001f;				///< minimum allowed value of _dt (sec)
+	ساکن constexpr اعشاری DT_MAX = 1.0f;				///< max value of _dt allowed before a filter state reset is performed (sec)
+	ساکن constexpr hrt_abstime FAST_DESCEND_RAMP_اوپر_وقت = 2_s; 	///< Ramp up time until fast descend is fully engaged
+	ساکن constexpr اعشاری FAST_DESCEND_اونچائی_MARGIN = 5.f;	///< Height above setpoint where fast descend ends [m]
 
-	DebugOutput _debug_status{};
+	DebugOutput debug_حالت{};
 
 	// Params
 	/// Airspeed filter parameters.
@@ -833,18 +833,18 @@ private:
 	};
 	/// Reference model parameters.
 	TECSAltitudeReferenceModel::Param _reference_param{
-		.target_climbrate = 2.0f,
-		.target_sinkrate = 2.0f,
-		.vert_accel_limit = 0.0f,
-		.max_climb_rate = 2.0f,
-		.max_sink_rate = 2.0f,
+		.ہدف_climbrate = 2.0f,
+		.ہدف_sinkrate = 2.0f,
+		.vert_accel_حد_بندی = 0.0f,
+		.max_climb_شرح = 2.0f,
+		.max_sink_شرح = 2.0f,
 	};
 	/// Control parameters.
 	TECSControl::Param _control_param{
-		.max_sink_rate = 5.0f,
-		.min_sink_rate = 2.0f,
-		.max_climb_rate = 5.0f,
-		.vert_accel_limit = 0.0f,
+		.max_sink_شرح = 5.0f,
+		.min_sink_شرح = 2.0f,
+		.max_climb_شرح = 5.0f,
+		.vert_accel_حد_بندی = 0.0f,
 		.equivalent_airspeed_trim = 15.0f,
 		.tas_min = 10.0f,
 		.tas_stall = 7.0f,
@@ -859,22 +859,22 @@ private:
 		.altitude_error_gain = 0.2f,
 		.altitude_setpoint_gain_ff = 0.0f,
 		.airspeed_error_gain = 0.1f,
-		.ste_rate_time_const = 0.1f,
-		.seb_rate_ff = 1.0f,
-		.pitch_speed_weight = 1.0f,
+		.ste_شرح_وقت_const = 0.1f,
+		.seb_شرح_ff = 1.0f,
+		.pitch_رفتار_وزن = 1.0f,
 		.integrator_gain_pitch = 0.0f,
 		.pitch_damping_gain = 0.0f,
 		.integrator_gain_throttle = 0.0f,
 		.throttle_damping_gain = 0.0f,
 		.throttle_slewrate = 0.0f,
-		.load_factor_correction = 0.0f,
-		.load_factor = 1.0f,
+		.بھرو_ضربی_عدد_correction = 0.0f,
+		.بھرو_ضربی_عدد = 1.0f,
 		.fast_descend = 0.f
 	};
 
 	TECSControl::Flag _control_flag{
-		.airspeed_enabled = false,
-		.detect_underspeed_enabled = false,
+		.airspeed_enabled = جھوٹ,
+		.detect_underspeed_enabled = جھوٹ,
 	};
 
 	/**
@@ -883,5 +883,5 @@ private:
 	 * @param alt_setpoint is the altitude setpoint
 	 * @param alt is the current altitude
 	 */
-	void _setFastDescend(float alt_setpoint, float alt);
+	خالی سیٹ_Fast_Descend(اعشاری alt_setpoint, اعشاری alt);
 };

@@ -31,45 +31,45 @@
  *
  ****************************************************************************/
 
-#include "ManualVelocitySmoothingXY.hpp"
+#شامل "ManualVelocitySmoothingXY.hpp"
 
-#include <mathlib/mathlib.h>
-#include <float.h>
+#شامل <mathlib/mathlib.h>
+#شامل <float.h>
 
-using namespace matrix;
+استعمال نامخلا میٹرکس;
 
-void ManualVelocitySmoothingXY::reset(const Vector2f &accel, const Vector2f &vel, const Vector2f &pos)
+خالی ManualVelocitySmoothingXY::reset(ثابت Vector2f &accel, ثابت Vector2f &vel, ثابت Vector2f &pos)
 {
-	for (int i = 0; i < 2; i++) {
+	برائے (صحیح i = 0; i < 2; i++) {
 		_trajectory[i].reset(accel(i), vel(i), pos(i));
 	}
 
-	resetPositionLock();
+	reset_Position_تالا();
 }
 
-void ManualVelocitySmoothingXY::resetPositionLock()
+خالی ManualVelocitySmoothingXY::reset_Position_تالا()
 {
-	_position_lock_active = false;
+	position_تالا_فعال = جھوٹ;
 	_position_setpoint_locked(0) = NAN;
 	_position_setpoint_locked(1) = NAN;
 }
 
-void ManualVelocitySmoothingXY::update(float dt, const Vector2f &velocity_target)
+خالی ManualVelocitySmoothingXY::update(اعشاری dt, ثابت Vector2f &velocity_ہدف)
 {
 	// Update state
 	updateTrajectories(dt);
 
 	// Lock or unlock position
 	// Has to be done before _updateTrajDurations()
-	checkPositionLock(velocity_target);
+	check_Position_تالا(velocity_ہدف);
 
 	// Update durations and sync XY
-	updateTrajDurations(velocity_target);
+	updateTrajDurations(velocity_ہدف);
 }
 
-void ManualVelocitySmoothingXY::updateTrajectories(float dt)
+خالی ManualVelocitySmoothingXY::updateTrajectories(اعشاری dt)
 {
-	for (int i = 0; i < 2; ++i) {
+	برائے (صحیح i = 0; i < 2; ++i) {
 		_trajectory[i].updateTraj(dt);
 
 		_state.j(i) = _trajectory[i].getCurrentJerk();
@@ -79,16 +79,16 @@ void ManualVelocitySmoothingXY::updateTrajectories(float dt)
 	}
 }
 
-void ManualVelocitySmoothingXY::updateTrajDurations(const Vector2f &velocity_target)
+خالی ManualVelocitySmoothingXY::updateTrajDurations(ثابت Vector2f &velocity_ہدف)
 {
-	for (int i = 0; i < 2; ++i) {
-		_trajectory[i].updateDurations(velocity_target(i));
+	برائے (صحیح i = 0; i < 2; ++i) {
+		_trajectory[i].updateDurations(velocity_ہدف(i));
 	}
 
-	VelocitySmoothing::timeSynchronization(_trajectory, 2);
+	VelocitySmoothing::وقت_Synchronization(_trajectory, 2);
 }
 
-void ManualVelocitySmoothingXY::checkPositionLock(const Vector2f &velocity_target)
+خالی ManualVelocitySmoothingXY::check_Position_تالا(ثابت Vector2f &velocity_ہدف)
 {
 	/**
 	 * During a position lock -> position unlock transition, we have to make sure that the velocity setpoint
@@ -98,24 +98,24 @@ void ManualVelocitySmoothingXY::checkPositionLock(const Vector2f &velocity_targe
 	 * This is why the previous input of the velocity controller
 	 * is used to set current velocity of the trajectory.
 	 */
-	if (_state.v.length() < 0.1f &&
-	    _state.a.length() < .2f &&
-	    velocity_target.length() <= FLT_EPSILON) {
+	اگر (_state.v.لمبائی_2() < 0.1f &&
+	    _state.a.لمبائی_2() < .2f &&
+	    velocity_ہدف.لمبائی_2() <= FLT_EPSILON) {
 		// Lock position
-		_position_lock_active = true;
+		position_تالا_فعال = سچ;
 		_position_setpoint_locked = _state.x;
 
-	} else {
+	} ورنہ {
 		// Unlock position
-		if (_position_lock_active) {
+		اگر (position_تالا_فعال) {
 			// Start the trajectory at the current velocity setpoint
-			_trajectory[0].setCurrentVelocity(_velocity_setpoint_feedback(0));
-			_trajectory[1].setCurrentVelocity(_velocity_setpoint_feedback(1));
+			_trajectory[0].سیٹ_Current_Velocity(_velocity_setpoint_feedback(0));
+			_trajectory[1].سیٹ_Current_Velocity(_velocity_setpoint_feedback(1));
 			_state.v = _velocity_setpoint_feedback;
-			resetPositionLock();
+			reset_Position_تالا();
 		}
 
-		_trajectory[0].setCurrentPosition(_position_estimate(0));
-		_trajectory[1].setCurrentPosition(_position_estimate(1));
+		_trajectory[0].سیٹ_Current_Position(_position_estimate(0));
+		_trajectory[1].سیٹ_Current_Position(_position_estimate(1));
 	}
 }

@@ -39,13 +39,13 @@
  * @author Lorenz Meier <lm@inf.ethz.ch>
  */
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <cmath>
-#include "st24.h"
-#include "common_rc.h"
+#شامل <stdbool.h>
+#شامل <stdio.h>
+#شامل <cmath>
+#شامل "st24.h"
+#شامل "common_rc.h"
 
-const char *decode_states[] = {"UNSYNCED",
+ثابت حرف *decode_حالتیں[] = {"UNSYNCED",
 			       "GOT_STX1",
 			       "GOT_STX2",
 			       "GOT_LEN",
@@ -54,196 +54,196 @@ const char *decode_states[] = {"UNSYNCED",
 			      };
 
 /* define range mapping here, -+100% -> 1000..2000 */
-#define ST24_RANGE_MIN 500.0f
-#define ST24_RANGE_MAX 3500.0f
+#تعریف_کرو ST24_RANGE_MIN 500.0f
+#تعریف_کرو ST24_RANGE_MAX 3500.0f
 
-#define ST24_TARGET_MIN 1000.0f
-#define ST24_TARGET_MAX 2000.0f
+#تعریف_کرو ST24_ہدف_MIN 1000.0f
+#تعریف_کرو ST24_ہدف_MAX 2000.0f
 
 /* pre-calculate the floating point stuff as far as possible at compile time */
-#define ST24_SCALE_FACTOR ((ST24_TARGET_MAX - ST24_TARGET_MIN) / (ST24_RANGE_MAX - ST24_RANGE_MIN))
-#define ST24_SCALE_OFFSET (int)(ST24_TARGET_MIN - (ST24_SCALE_FACTOR * ST24_RANGE_MIN + 0.5f))
+#تعریف_کرو ST24_SCALE_ضربی_عدد ((ST24_ہدف_MAX - ST24_ہدف_MIN) / (ST24_RANGE_MAX - ST24_RANGE_MIN))
+#تعریف_کرو ST24_SCALE_انحراف (صحیح)(ST24_ہدف_MIN - (ST24_SCALE_ضربی_عدد * ST24_RANGE_MIN + 0.5f))
 
-static enum ST24_DECODE_STATE _decode_state = ST24_DECODE_STATE_UNSYNCED;
-static uint8_t _rxlen;
+ساکن شمار ST24_DECODE_STATE _decode_state = ST24_DECODE_STATE_UNSYNCED;
+ساکن uint8_t _rxlen;
 
-static ReceiverFcPacket &_rxpacket = rc_decode_buf._strxpacket;
+ساکن ReceiverFcPacket &_rxpacket = rc_decode_buf._strxpacket;
 
 uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len)
 {
-	uint8_t i, crc ;
-	crc = 0;
+	uint8_t i, چکری_جانچ ;
+	چکری_جانچ = 0;
 
-	while (len--) {
-		for (i = 0x80; i != 0; i >>= 1) {
-			if ((crc & 0x80) != 0) {
-				crc <<= 1;
-				crc ^= 0x07;
+	جب (len--) {
+		برائے (i = 0x80; i != 0; i >>= 1) {
+			اگر ((چکری_جانچ & 0x80) != 0) {
+				چکری_جانچ <<= 1;
+				چکری_جانچ ^= 0x07;
 
-			} else {
-				crc <<= 1;
+			} ورنہ {
+				چکری_جانچ <<= 1;
 			}
 
-			if ((*ptr & i) != 0) {
-				crc ^= 0x07;
+			اگر ((*ptr & i) != 0) {
+				چکری_جانچ ^= 0x07;
 			}
 		}
 
 		ptr++;
 	}
 
-	return (crc);
+	واپس (چکری_جانچ);
 }
 
 
-int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *channel_count, uint16_t *channels,
-		uint16_t max_chan_count)
+صحیح st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *گمشدہ_گنتی, uint16_t *channel_گنتی, uint16_t *channels,
+		uint16_t max_chan_گنتی)
 {
-	int ret = 1;
+	صحیح ret = 1;
 
-	switch (_decode_state) {
-	case ST24_DECODE_STATE_UNSYNCED:
-		if (byte == ST24_STX1) {
+	انتخاب (_decode_state) {
+	حالت ST24_DECODE_STATE_UNSYNCED:
+		اگر (byte == ST24_STX1) {
 			_decode_state = ST24_DECODE_STATE_GOT_STX1;
 
-		} else {
+		} ورنہ {
 			ret = 3;
 		}
 
-		break;
+		توڑو;
 
-	case ST24_DECODE_STATE_GOT_STX1:
-		if (byte == ST24_STX2) {
+	حالت ST24_DECODE_STATE_GOT_STX1:
+		اگر (byte == ST24_STX2) {
 			_decode_state = ST24_DECODE_STATE_GOT_STX2;
 
-		} else {
+		} ورنہ {
 			_decode_state = ST24_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		توڑو;
 
-	case ST24_DECODE_STATE_GOT_STX2:
+	حالت ST24_DECODE_STATE_GOT_STX2:
 
 		/* ensure no data overflow failure or hack is possible */
-		if ((unsigned)byte >= sizeof(_rxpacket.type) + sizeof(_rxpacket.crc8)
-		    && (unsigned)byte <= sizeof(_rxpacket.type) + sizeof(_rxpacket.st24_data) + sizeof(_rxpacket.crc8)) {
-			_rxpacket.length = byte;
+		اگر ((غیرعلامتی)byte >= حجم(_rxpacket.type) + حجم(_rxpacket.crc8)
+		    && (غیرعلامتی)byte <= حجم(_rxpacket.type) + حجم(_rxpacket.st24_ڈیٹا) + حجم(_rxpacket.crc8)) {
+			_rxpacket.لمبائی_2 = byte;
 			_rxlen = 0;
 			_decode_state = ST24_DECODE_STATE_GOT_LEN;
 
-		} else {
+		} ورنہ {
 			_decode_state = ST24_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		توڑو;
 
-	case ST24_DECODE_STATE_GOT_LEN:
+	حالت ST24_DECODE_STATE_GOT_LEN:
 		_rxpacket.type = byte;
 		_rxlen++;
-		_decode_state = (_rxlen == (_rxpacket.length - 1)) ? ST24_DECODE_STATE_GOT_DATA : ST24_DECODE_STATE_GOT_TYPE;
-		break;
+		_decode_state = (_rxlen == (_rxpacket.لمبائی_2 - 1)) ? ST24_DECODE_STATE_GOT_ڈیٹا : ST24_DECODE_STATE_GOT_TYPE;
+		توڑو;
 
-	case ST24_DECODE_STATE_GOT_TYPE:
-		_rxpacket.st24_data[_rxlen - 1] = byte;
+	حالت ST24_DECODE_STATE_GOT_TYPE:
+		_rxpacket.st24_ڈیٹا[_rxlen - 1] = byte;
 		_rxlen++;
 
-		if (_rxlen == (_rxpacket.length - 1)) {
-			_decode_state = ST24_DECODE_STATE_GOT_DATA;
+		اگر (_rxlen == (_rxpacket.لمبائی_2 - 1)) {
+			_decode_state = ST24_DECODE_STATE_GOT_ڈیٹا;
 		}
 
-		break;
+		توڑو;
 
-	case ST24_DECODE_STATE_GOT_DATA:
+	حالت ST24_DECODE_STATE_GOT_ڈیٹا:
 		_rxpacket.crc8 = byte;
 		_rxlen++;
 
-		if (st24_common_crc8((uint8_t *) & (_rxpacket.length), _rxlen) == _rxpacket.crc8) {
+		اگر (st24_common_crc8((uint8_t *) & (_rxpacket.لمبائی_2), _rxlen) == _rxpacket.crc8) {
 
 			ret = 0;
 
 			/* decode the actual packet */
 
-			switch (_rxpacket.type) {
+			انتخاب (_rxpacket.type) {
 
-			case ST24_PACKET_TYPE_CHANNELDATA12: {
-					ChannelData12 *d = (ChannelData12 *)_rxpacket.st24_data;
-
-					// Scale from 0..255 to 100%.
-					*rssi = d->rssi * (100.0f / 255.0f);
-					*lost_count = d->lost_count;
-
-					/* this can lead to rounding of the strides */
-					*channel_count = (max_chan_count < 12) ? max_chan_count : 12;
-
-					unsigned stride_count = (*channel_count * 3) / 2;
-					unsigned chan_index = 0;
-
-					for (unsigned i = 0; i < stride_count; i += 3) {
-						channels[chan_index] = ((uint16_t)d->channel[i] << 4);
-						channels[chan_index] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
-						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
-						channels[chan_index] = (uint16_t)lroundf(channels[chan_index] * ST24_SCALE_FACTOR) + ST24_SCALE_OFFSET;
-						chan_index++;
-
-						channels[chan_index] = ((uint16_t)d->channel[i + 2]);
-						channels[chan_index] |= (((uint16_t)(0x0F & d->channel[i + 1])) << 8);
-						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
-						channels[chan_index] = (uint16_t)lroundf(channels[chan_index] * ST24_SCALE_FACTOR) + ST24_SCALE_OFFSET;
-						chan_index++;
-					}
-				}
-				break;
-
-			case ST24_PACKET_TYPE_CHANNELDATA24: {
-					ChannelData24 *d = (ChannelData24 *)&_rxpacket.st24_data;
+			حالت ST24_PACKET_TYPE_CHANNELDATA12: {
+					ChannelData12 *d = (ChannelData12 *)_rxpacket.st24_ڈیٹا;
 
 					// Scale from 0..255 to 100%.
 					*rssi = d->rssi * (100.0f / 255.0f);
-					*lost_count = d->lost_count;
+					*گمشدہ_گنتی = d->گمشدہ_گنتی;
 
 					/* this can lead to rounding of the strides */
-					*channel_count = (max_chan_count < 24) ? max_chan_count : 24;
+					*channel_گنتی = (max_chan_گنتی < 12) ? max_chan_گنتی : 12;
 
-					unsigned stride_count = (*channel_count * 3) / 2;
-					unsigned chan_index = 0;
+					غیرعلامتی stride_گنتی = (*channel_گنتی * 3) / 2;
+					غیرعلامتی chan_اشاریہ = 0;
 
-					for (unsigned i = 0; i < stride_count; i += 3) {
-						channels[chan_index] = ((uint16_t)d->channel[i] << 4);
-						channels[chan_index] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
+					برائے (غیرعلامتی i = 0; i < stride_گنتی; i += 3) {
+						channels[chan_اشاریہ] = ((uint16_t)d->channel[i] << 4);
+						channels[chan_اشاریہ] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
 						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
-						channels[chan_index] = static_cast<uint16_t>(lroundf(channels[chan_index] * ST24_SCALE_FACTOR) + ST24_SCALE_OFFSET);
-						chan_index++;
+						channels[chan_اشاریہ] = (uint16_t)lroundf(channels[chan_اشاریہ] * ST24_SCALE_ضربی_عدد) + ST24_SCALE_انحراف;
+						chan_اشاریہ++;
 
-						channels[chan_index] = ((uint16_t)d->channel[i + 2]);
-						channels[chan_index] |= (((uint16_t)(0x0F & d->channel[i + 1])) << 8);
+						channels[chan_اشاریہ] = ((uint16_t)d->channel[i + 2]);
+						channels[chan_اشاریہ] |= (((uint16_t)(0x0F & d->channel[i + 1])) << 8);
 						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
-						channels[chan_index] = static_cast<uint16_t>(lroundf(channels[chan_index] * ST24_SCALE_FACTOR) + ST24_SCALE_OFFSET);
-						chan_index++;
+						channels[chan_اشاریہ] = (uint16_t)lroundf(channels[chan_اشاریہ] * ST24_SCALE_ضربی_عدد) + ST24_SCALE_انحراف;
+						chan_اشاریہ++;
 					}
 				}
-				break;
+				توڑو;
 
-			case ST24_PACKET_TYPE_TRANSMITTERGPSDATA: {
+			حالت ST24_PACKET_TYPE_CHANNELDATA24: {
+					ChannelData24 *d = (ChannelData24 *)&_rxpacket.st24_ڈیٹا;
+
+					// Scale from 0..255 to 100%.
+					*rssi = d->rssi * (100.0f / 255.0f);
+					*گمشدہ_گنتی = d->گمشدہ_گنتی;
+
+					/* this can lead to rounding of the strides */
+					*channel_گنتی = (max_chan_گنتی < 24) ? max_chan_گنتی : 24;
+
+					غیرعلامتی stride_گنتی = (*channel_گنتی * 3) / 2;
+					غیرعلامتی chan_اشاریہ = 0;
+
+					برائے (غیرعلامتی i = 0; i < stride_گنتی; i += 3) {
+						channels[chan_اشاریہ] = ((uint16_t)d->channel[i] << 4);
+						channels[chan_اشاریہ] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
+						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
+						channels[chan_اشاریہ] = static_cast<uint16_t>(lroundf(channels[chan_اشاریہ] * ST24_SCALE_ضربی_عدد) + ST24_SCALE_انحراف);
+						chan_اشاریہ++;
+
+						channels[chan_اشاریہ] = ((uint16_t)d->channel[i + 2]);
+						channels[chan_اشاریہ] |= (((uint16_t)(0x0F & d->channel[i + 1])) << 8);
+						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
+						channels[chan_اشاریہ] = static_cast<uint16_t>(lroundf(channels[chan_اشاریہ] * ST24_SCALE_ضربی_عدد) + ST24_SCALE_انحراف);
+						chan_اشاریہ++;
+					}
+				}
+				توڑو;
+
+			حالت ST24_PACKET_TYPE_TRANSMITTERGPSDATA: {
 
 					// ReceiverFcPacket* d = (ReceiverFcPacket*)&_rxpacket.st24_data;
 					/* we silently ignore this data for now, as it is unused */
 					ret = 5;
 				}
-				break;
+				توڑو;
 
-			default:
+			طےشدہ:
 				ret = 2;
-				break;
+				توڑو;
 			}
 
-		} else {
+		} ورنہ {
 			/* decoding failed */
 			ret = 4;
 		}
 
 		_decode_state = ST24_DECODE_STATE_UNSYNCED;
-		break;
+		توڑو;
 	}
 
-	return ret;
+	واپس ret;
 }

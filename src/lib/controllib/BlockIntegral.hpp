@@ -37,16 +37,16 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
-#include "BlockLimitSym.hpp"
+#شامل "BlockLimitSym.hpp"
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+نامخلا control
 {
 
 /**
@@ -56,24 +56,24 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegral: public SuperBlock
+جماعت __EXPORT بلاک_Integral: عوامی Super_بلاک
 {
-public:
+عوامی:
 // methods
-	BlockIntegral(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
+	بلاک_Integral(Super_بلاک *والد, ثابت حرف *name) :
+		Super_بلاک(والد, name),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegral() = default;
-	float update(float input);
+		حد_بندی(یہ, "") {}
+	مجازی ~بلاک_Integral() = طےشدہ;
+	اعشاری update(اعشاری داخلہ);
 // accessors
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setY(float y) {_y = y;}
-protected:
-// attributes
-	float _y; /**< previous output */
-	BlockLimitSym _limit; /**< limiter */
+	اعشاری getY() {واپس _y;}
+	اعشاری getMax() {واپس حد_بندی.getMax();}
+	خالی سیٹ_Y(اعشاری y) {_y = y;}
+محفوظ:
+//اوصاف
+	اعشاری _y; /**< previous output */
+	بلاک_حد_بندی_Sym حد_بندی; /**< limiter */
 };
 
 } // namespace control

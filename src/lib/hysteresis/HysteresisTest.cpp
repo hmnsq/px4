@@ -36,169 +36,169 @@
  * Tests for system timing hysteresis.
  */
 
-#include <gtest/gtest.h>
+#شامل <gtest/gtest.h>
 
-#include "hysteresis.h"
+#شامل "hysteresis.h"
 
 
-static constexpr hrt_abstime SOME_START_TIME = 1558359616134000llu;
+ساکن constexpr hrt_abstime SOME_آغاز_وقت = 1558359616134000llu;
 
 
 TEST(Hysteresis, InitFalse)
 {
-	systemlib::Hysteresis hysteresis(false);
+	systemlib::Hysteresis hysteresis(جھوٹ);
 	EXPECT_FALSE(hysteresis.get_state());
 }
 
 TEST(Hysteresis, InitTrue)
 {
-	systemlib::Hysteresis hysteresis(true);
+	systemlib::Hysteresis hysteresis(سچ);
 	EXPECT_TRUE(hysteresis.get_state());
 }
 
 TEST(Hysteresis, Zero)
 {
-	hrt_abstime time_us = SOME_START_TIME;
+	hrt_abstime وقت_us = SOME_آغاز_وقت;
 
 	// Default is 0 hysteresis.
-	systemlib::Hysteresis hysteresis(false);
+	systemlib::Hysteresis hysteresis(جھوٹ);
 	EXPECT_FALSE(hysteresis.get_state());
 
 	// Change and see result immediately.
-	hysteresis.set_state_and_update(true, time_us);
+	hysteresis.سیٹ_state_and_update(سچ, وقت_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.سیٹ_state_and_update(جھوٹ, وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	hysteresis.set_state_and_update(true, time_us);
+	hysteresis.سیٹ_state_and_update(سچ, وقت_us);
 	EXPECT_TRUE(hysteresis.get_state());
 
-	time_us += 1000;
+	وقت_us += 1000;
 	// A wait won't change anything.
-	hysteresis.update(time_us);
+	hysteresis.update(وقت_us);
 	EXPECT_TRUE(hysteresis.get_state());
 }
 
-TEST(Hysteresis, ChangeAfterTime)
+TEST(Hysteresis, Change_After_وقت)
 {
-	hrt_abstime time_us = SOME_START_TIME;
+	hrt_abstime وقت_us = SOME_آغاز_وقت;
 
-	systemlib::Hysteresis hysteresis(false);
-	hysteresis.set_hysteresis_time_from(false, 5000);
-	hysteresis.set_hysteresis_time_from(true, 3000);
+	systemlib::Hysteresis hysteresis(جھوٹ);
+	hysteresis.سیٹ_hysteresis_وقت_from(جھوٹ, 5000);
+	hysteresis.سیٹ_hysteresis_وقت_from(سچ, 3000);
 
 	// Change to true.
-	hysteresis.set_state_and_update(true, time_us);
+	hysteresis.سیٹ_state_and_update(سچ, وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 4000;
-	hysteresis.update(time_us);
+	وقت_us += 4000;
+	hysteresis.update(وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 2000;
-	hysteresis.update(time_us);
+	وقت_us += 2000;
+	hysteresis.update(وقت_us);
 	EXPECT_TRUE(hysteresis.get_state());
 
 	// Change back to false.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.سیٹ_state_and_update(جھوٹ, وقت_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	time_us += 1000;
-	hysteresis.update(time_us);
+	وقت_us += 1000;
+	hysteresis.update(وقت_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.update(time_us);
+	وقت_us += 3000;
+	hysteresis.update(وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
 }
 
-TEST(Hysteresis, HysteresisChanged)
+TEST(Hysteresis, Hysteresis_بدلا)
 {
-	hrt_abstime time_us = SOME_START_TIME;
+	hrt_abstime وقت_us = SOME_آغاز_وقت;
 
-	systemlib::Hysteresis hysteresis(false);
-	hysteresis.set_hysteresis_time_from(true, 2000);
-	hysteresis.set_hysteresis_time_from(false, 5000);
+	systemlib::Hysteresis hysteresis(جھوٹ);
+	hysteresis.سیٹ_hysteresis_وقت_from(سچ, 2000);
+	hysteresis.سیٹ_hysteresis_وقت_from(جھوٹ, 5000);
 
 	// Change to true.
-	hysteresis.set_state_and_update(true, time_us);
+	hysteresis.سیٹ_state_and_update(سچ, وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.update(time_us);
+	وقت_us += 3000;
+	hysteresis.update(وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.update(time_us);
+	وقت_us += 3000;
+	hysteresis.update(وقت_us);
 	EXPECT_TRUE(hysteresis.get_state());
 
 	// Change hysteresis time.
-	hysteresis.set_hysteresis_time_from(true, 10000);
+	hysteresis.سیٹ_hysteresis_وقت_from(سچ, 10000);
 
 	// Change back to false.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.سیٹ_state_and_update(جھوٹ, وقت_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	time_us += 7000;
-	hysteresis.update(time_us);
+	وقت_us += 7000;
+	hysteresis.update(وقت_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	time_us += 5000;
-	hysteresis.update(time_us);
+	وقت_us += 5000;
+	hysteresis.update(وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
 }
 
-TEST(Hysteresis, ChangeAfterMultipleSets)
+TEST(Hysteresis, Change_After_مضرب_Sets)
 {
-	hrt_abstime time_us = SOME_START_TIME;
+	hrt_abstime وقت_us = SOME_آغاز_وقت;
 
-	systemlib::Hysteresis hysteresis(false);
-	hysteresis.set_hysteresis_time_from(true, 5000);
-	hysteresis.set_hysteresis_time_from(false, 5000);
+	systemlib::Hysteresis hysteresis(جھوٹ);
+	hysteresis.سیٹ_hysteresis_وقت_from(سچ, 5000);
+	hysteresis.سیٹ_hysteresis_وقت_from(جھوٹ, 5000);
 
 	// Change to true.
-	hysteresis.set_state_and_update(true, time_us);
+	hysteresis.سیٹ_state_and_update(سچ, وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.set_state_and_update(true, time_us);
+	وقت_us += 3000;
+	hysteresis.سیٹ_state_and_update(سچ, وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.set_state_and_update(true, time_us);
+	وقت_us += 3000;
+	hysteresis.سیٹ_state_and_update(سچ, وقت_us);
 	EXPECT_TRUE(hysteresis.get_state());
 
 	// Change to false.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.سیٹ_state_and_update(جھوٹ, وقت_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.set_state_and_update(false, time_us);
+	وقت_us += 3000;
+	hysteresis.سیٹ_state_and_update(جھوٹ, وقت_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.set_state_and_update(false, time_us);
+	وقت_us += 3000;
+	hysteresis.سیٹ_state_and_update(جھوٹ, وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
 }
 
-TEST(Hysteresis, TakeChangeBack)
+TEST(Hysteresis, Take_Change_عقب)
 {
-	hrt_abstime time_us = SOME_START_TIME;
+	hrt_abstime وقت_us = SOME_آغاز_وقت;
 
-	systemlib::Hysteresis hysteresis(false);
-	hysteresis.set_hysteresis_time_from(false, 5000);
+	systemlib::Hysteresis hysteresis(جھوٹ);
+	hysteresis.سیٹ_hysteresis_وقت_from(جھوٹ, 5000);
 
 	// Change to true.
-	hysteresis.set_state_and_update(true, time_us);
+	hysteresis.سیٹ_state_and_update(سچ, وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.update(time_us);
+	وقت_us += 3000;
+	hysteresis.update(وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
 	// Change your mind to false.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.سیٹ_state_and_update(جھوٹ, وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 6000;
-	hysteresis.update(time_us);
+	وقت_us += 6000;
+	hysteresis.update(وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
 
 	// And true again
-	hysteresis.set_state_and_update(true, time_us);
+	hysteresis.سیٹ_state_and_update(سچ, وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.update(time_us);
+	وقت_us += 3000;
+	hysteresis.update(وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.update(time_us);
+	وقت_us += 3000;
+	hysteresis.update(وقت_us);
 	EXPECT_TRUE(hysteresis.get_state());
 
 	// The other directory is immediate.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.سیٹ_state_and_update(جھوٹ, وقت_us);
 	EXPECT_FALSE(hysteresis.get_state());
 }

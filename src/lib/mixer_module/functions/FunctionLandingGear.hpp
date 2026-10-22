@@ -31,38 +31,38 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include "FunctionProviderBase.hpp"
+#شامل "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear.h>
+#شامل <uORB/topics/landing_gear.h>
 
 /**
  * Functions: Landing_Gear
  */
-class FunctionLandingGear : public FunctionProviderBase
+جماعت FunctionLandingGear : عوامی Function_Provider_بنیاد
 {
-public:
-	FunctionLandingGear() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGear(); }
+عوامی:
+	FunctionLandingGear() = طےشدہ;
+	ساکن Function_Provider_بنیاد *allocate(ثابت Context &context) { واپس نیا FunctionLandingGear(); }
 
-	void update() override
+	خالی update() override
 	{
 		landing_gear_s landing_gear;
 
-		if (_topic.update(&landing_gear)) {
-			if (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
-				_data = -1.f;
+		اگر (_topic.update(&landing_gear)) {
+			اگر (landing_gear.landing_gear == landing_gear_s::GEAR_نیچے_کو) {
+				ڈیٹا_3 = -1.f;
 
-			} else if (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
-				_data = 1.f;
+			} ورنہ اگر (landing_gear.landing_gear == landing_gear_s::GEAR_اوپر) {
+				ڈیٹا_3 = 1.f;
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	اعشاری value(OutputFunction func) override { واپس ڈیٹا_3; }
 
-private:
+نجی:
 	uORB::Subscription _topic{ORB_ID(landing_gear)};
-	float _data{-1.f};
+	اعشاری ڈیٹا_3{-1.f};
 };

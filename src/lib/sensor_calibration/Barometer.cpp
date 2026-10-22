@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "Barometer.hpp"
+#شامل "Barometer.hpp"
 
-#include "Utilities.hpp"
+#شامل "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#شامل <lib/drivers/device/Device.hpp>
+#شامل <lib/parameters/param.h>
 
-using namespace matrix;
-using namespace time_literals;
+استعمال نامخلا میٹرکس;
+استعمال نامخلا وقت_literals;
 
-namespace calibration
+نامخلا calibration
 {
 
 Barometer::Barometer()
@@ -51,22 +51,22 @@ Barometer::Barometer()
 
 Barometer::Barometer(uint32_t device_id)
 {
-	set_device_id(device_id);
+	سیٹ_device_id(device_id);
 }
 
-Barometer::Barometer(uint32_t device_id, bool external)
+Barometer::Barometer(uint32_t device_id, منطقی external)
 {
-	set_device_id(device_id, external);
+	سیٹ_device_id(device_id, external);
 }
 
-void Barometer::set_device_id(uint32_t device_id)
+خالی Barometer::سیٹ_device_id(uint32_t device_id)
 {
-	set_device_id(device_id, device::device_is_external(device_id));
+	سیٹ_device_id(device_id, device::device_is_external(device_id));
 }
 
-void Barometer::set_device_id(uint32_t device_id, bool external)
+خالی Barometer::سیٹ_device_id(uint32_t device_id, منطقی external)
 {
-	if (_device_id != device_id || _external != external) {
+	اگر (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -74,181 +74,181 @@ void Barometer::set_device_id(uint32_t device_id, bool external)
 		Reset();
 
 		ParametersUpdate();
-		SensorCorrectionsUpdate(true);
+		SensorCorrectionsUpdate(سچ);
 	}
 }
 
-void Barometer::SensorCorrectionsUpdate(bool force)
+خالی Barometer::SensorCorrectionsUpdate(منطقی force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	اگر (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		اگر (_device_id == 0) {
+			واپس;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		اگر (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.baro_device_ids[i] == _device_id) {
-					switch (i) {
-					case 0:
-						_thermal_offset = corrections.baro_offset_0;
-						return;
+			برائے (صحیح i = 0; i < MAX_SENSOR_گنتی; i++) {
+				اگر (corrections.baro_device_ids[i] == _device_id) {
+					انتخاب (i) {
+					حالت 0:
+						thermal_انحراف = corrections.baro_انحراف_0;
+						واپس;
 
-					case 1:
-						_thermal_offset = corrections.baro_offset_1;
-						return;
+					حالت 1:
+						thermal_انحراف = corrections.baro_انحراف_1;
+						واپس;
 
-					case 2:
-						_thermal_offset = corrections.baro_offset_2;
-						return;
+					حالت 2:
+						thermal_انحراف = corrections.baro_انحراف_2;
+						واپس;
 
-					case 3:
-						_thermal_offset = corrections.baro_offset_3;
-						return;
+					حالت 3:
+						thermal_انحراف = corrections.baro_انحراف_3;
+						واپس;
 					}
 				}
 			}
 		}
 
 		// zero thermal offset if not found
-		_thermal_offset = 0;
+		thermal_انحراف = 0;
 	}
 }
 
-bool Barometer::set_offset(const float &offset)
+منطقی Barometer::سیٹ_انحراف(ثابت اعشاری &انحراف)
 {
-	if (fabsf(_offset - offset) > 0.01f) {
-		if (PX4_ISFINITE(offset)) {
-			_offset = offset;
-			_calibration_count++;
-			return true;
+	اگر (fabsf(انحراف_2 - انحراف) > 0.01f) {
+		اگر (PX4_ISFINITE(انحراف)) {
+			انحراف_2 = انحراف;
+			calibration_گنتی++;
+			واپس سچ;
 		}
 	}
 
-	return false;
+	واپس جھوٹ;
 }
 
-bool Barometer::set_calibration_index(int calibration_index)
+منطقی Barometer::سیٹ_calibration_اشاریہ(صحیح calibration_اشاریہ)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
-		_calibration_index = calibration_index;
-		return true;
+	اگر ((calibration_اشاریہ >= 0) && (calibration_اشاریہ < MAX_SENSOR_گنتی)) {
+		calibration_اشاریہ_2 = calibration_اشاریہ;
+		واپس سچ;
 	}
 
-	return false;
+	واپس جھوٹ;
 }
 
-void Barometer::ParametersUpdate()
+خالی Barometer::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	اگر (_device_id == 0) {
+		واپس;
 	}
 
-	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
+	calibration_اشاریہ_2 = ڈھونڈو_Current_Calibration_اشاریہ(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	اگر (calibration_اشاریہ_2 == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
-		ParametersLoad();
+	} ورنہ {
+		Parameters_بھرو();
 	}
 }
 
-bool Barometer::ParametersLoad()
+منطقی Barometer::Parameters_بھرو()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	اگر (calibration_اشاریہ_2 >= 0 && calibration_اشاریہ_2 < MAX_SENSOR_گنتی) {
 		// CAL_BAROx_PRIO
-		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
+		ترجیح_2 = GetCalibrationParamInt32(SensorString(), "PRIO", calibration_اشاریہ_2);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		اگر ((ترجیح_2 < 0) || (ترجیح_2 > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
-			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
+			ساکن constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			اگر (ترجیح_2 != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
-					_calibration_index, _priority);
+					calibration_اشاریہ_2, ترجیح_2);
 
-				SetCalibrationParam(SensorString(), "PRIO", _calibration_index, CAL_PRIO_UNINITIALIZED);
+				سیٹ_Calibration_Param(SensorString(), "PRIO", calibration_اشاریہ_2, CAL_PRIO_UNINITIALIZED);
 			}
 
-			_priority = _external ? DEFAULT_EXTERNAL_PRIORITY : DEFAULT_PRIORITY;
+			ترجیح_2 = _external ? DEFAULT_EXTERNAL_ترجیح : DEFAULT_ترجیح;
 		}
 
 		// CAL_BAROx_OFF
-		set_offset(GetCalibrationParamFloat(SensorString(), "OFF", _calibration_index));
+		سیٹ_انحراف(GetCalibrationParamFloat(SensorString(), "OFF", calibration_اشاریہ_2));
 
-		return true;
+		واپس سچ;
 	}
 
-	return false;
+	واپس جھوٹ;
 }
 
-void Barometer::Reset()
+خالی Barometer::Reset()
 {
-	_offset = 0;
+	انحراف_2 = 0;
 
-	_thermal_offset = 0;
+	thermal_انحراف = 0;
 
-	_priority = _external ? DEFAULT_EXTERNAL_PRIORITY : DEFAULT_PRIORITY;
+	ترجیح_2 = _external ? DEFAULT_EXTERNAL_ترجیح : DEFAULT_ترجیح;
 
-	_calibration_index = -1;
+	calibration_اشاریہ_2 = -1;
 
-	_calibration_count = 0;
+	calibration_گنتی = 0;
 }
 
-bool Barometer::ParametersSave(int desired_calibration_index, bool force)
+منطقی Barometer::ParametersSave(صحیح desired_calibration_اشاریہ, منطقی force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
-		_calibration_index = desired_calibration_index;
+	اگر (force && desired_calibration_اشاریہ >= 0 && desired_calibration_اشاریہ < MAX_SENSOR_گنتی) {
+		calibration_اشاریہ_2 = desired_calibration_اشاریہ;
 
-	} else if (!force || (_calibration_index < 0)
-		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
+	} ورنہ اگر (!force || (calibration_اشاریہ_2 < 0)
+		   || (desired_calibration_اشاریہ != -1 && desired_calibration_اشاریہ != calibration_اشاریہ_2)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
-		int8_t calibration_index_prev = _calibration_index;
-		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
+		int8_t calibration_اشاریہ_پچھلا = calibration_اشاریہ_2;
+		calibration_اشاریہ_2 = ڈھونڈو_دستیاب_Calibration_اشاریہ(SensorString(), _device_id, desired_calibration_اشاریہ);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		اگر (calibration_اشاریہ_پچھلا >= 0 && (calibration_اشاریہ_پچھلا != calibration_اشاریہ_2)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
-				 calibration_index_prev, _calibration_index);
+				 calibration_اشاریہ_پچھلا, calibration_اشاریہ_2);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	اگر (calibration_اشاریہ_2 >= 0 && calibration_اشاریہ_2 < MAX_SENSOR_گنتی) {
 		// save calibration
-		bool success = true;
-		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
-		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
-		success &= SetCalibrationParam(SensorString(), "OFF", _calibration_index, _offset);
+		منطقی success = سچ;
+		success &= سیٹ_Calibration_Param(SensorString(), "ID", calibration_اشاریہ_2, _device_id);
+		success &= سیٹ_Calibration_Param(SensorString(), "PRIO", calibration_اشاریہ_2, ترجیح_2);
+		success &= سیٹ_Calibration_Param(SensorString(), "OFF", calibration_اشاریہ_2, انحراف_2);
 
-		return success;
+		واپس success;
 	}
 
-	return false;
+	واپس جھوٹ;
 }
 
-void Barometer::PrintStatus()
+خالی Barometer::Print_حالت()
 {
-	if (external()) {
+	اگر (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: %05.3f, Ext\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset);
+			     (دوہرا)انحراف_2);
 
-	} else {
+	} ورنہ {
 		PX4_INFO_RAW("%s %" PRIu32 " EN: %d, offset: %05.3f, Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset);
+			     (دوہرا)انحراف_2);
 	}
 
-	if (fabsf(_thermal_offset) > 0.f) {
-		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: %.4f\n", SensorString(), _device_id, (double)_thermal_offset);
+	اگر (fabsf(thermal_انحراف) > 0.f) {
+		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: %.4f\n", SensorString(), _device_id, (دوہرا)thermal_انحراف);
 	}
 }
 

@@ -31,91 +31,91 @@
  *
  ****************************************************************************/
 
-#include "gain_compression.hpp"
+#شامل "gain_compression.hpp"
 
-using matrix::Vector3f;
-using namespace time_literals;
+استعمال میٹرکس::Vector3f;
+استعمال نامخلا وقت_literals;
 
 GainCompression3d::GainCompression3d()
 {
 	_gain_compression_pub.advertise();
 }
 
-void GainCompression3d::reset()
+خالی GainCompression3d::reset()
 {
-	for (unsigned i = 0; i < 3; i++) {
+	برائے (غیرعلامتی i = 0; i < 3; i++) {
 		_compression_gains[i].reset();
 	}
 
-	_gains.setOne();
+	_gains.سیٹ_One();
 }
 
-void GainCompression3d::setCompressionGainMin(const float gain_min)
+خالی GainCompression3d::سیٹ_Compression_Gain_Min(ثابت اعشاری gain_min)
 {
-	for (unsigned i = 0; i < 3; i++) {
-		_compression_gains[i].setCompressionGainMin(gain_min);
+	برائے (غیرعلامتی i = 0; i < 3; i++) {
+		_compression_gains[i].سیٹ_Compression_Gain_Min(gain_min);
 	}
 }
 
-void GainCompression3d::update(const Vector3f &input, const float dt)
+خالی GainCompression3d::update(ثابت Vector3f &داخلہ, ثابت اعشاری dt)
 {
-	if (!_enabled) {
+	اگر (!_enabled) {
 		reset();
-		return;
+		واپس;
 	}
 
 	Vector3f hpf;
 	Vector3f lpf;
-	const float sample_freq = 1.f / math::constrain(dt, 0.125e-3f, 100e-3f); // supports rate loops up to 8kHz
+	ثابت اعشاری sample_freq = 1.f / math::constrain(dt, 0.125e-3f, 100e-3f); // supports rate loops up to 8kHz
 
-	for (unsigned i = 0; i < 3; i++) {
-		_compression_gains[i].setLpfCutoffFrequency(sample_freq, _kLpfCutoffFrequency);
-		_compression_gains[i].setHpfCutoffFrequency(sample_freq, _kHpfCutoffFrequency);
+	برائے (غیرعلامتی i = 0; i < 3; i++) {
+		_compression_gains[i].سیٹ_Lpf_Cutoff_Frequency(sample_freq, _kLpfCutoffFrequency);
+		_compression_gains[i].سیٹ_Hpf_Cutoff_Frequency(sample_freq, _kHpfCutoffFrequency);
 
-		_gains(i) = _compression_gains[i].update(input(i), dt);
+		_gains(i) = _compression_gains[i].update(داخلہ(i), dt);
 
 		hpf(i) = _compression_gains[i].getSpectralDamperHpf();
 		lpf(i) = _compression_gains[i].getSpectralDamperLpf();
 	}
 
-	const hrt_abstime now = hrt_absolute_time();
+	ثابت hrt_abstime now = hrt_absolute_وقت();
 
-	if ((now - _time_last_publication) > 100_ms) {
-		gain_compression_s msg;
-		msg.timestamp = now;
-		_gains.copyTo(msg.compression_gains);
-		hpf.copyTo(msg.spectral_damper_hpf);
-		lpf.copyTo(msg.spectral_damper_out);
-		_gain_compression_pub.publish(msg);
+	اگر ((now - وقت_آخری_publication) > 100_ms) {
+		gain_compression_s پیغام_2;
+		پیغام_2.timestamp = now;
+		_gains.copy_مقصد(پیغام_2.compression_gains);
+		hpf.copy_مقصد(پیغام_2.spectral_damper_hpf);
+		lpf.copy_مقصد(پیغام_2.spectral_damper_برآمد);
+		_gain_compression_pub.publish(پیغام_2);
 
-		_time_last_publication = now;
+		وقت_آخری_publication = now;
 	}
 }
 
-float GainCompression::update(const float input, const float dt)
+اعشاری GainCompression::update(ثابت اعشاری داخلہ, ثابت اعشاری dt)
 {
-	if (!PX4_ISFINITE(input)) {
-		return _compression_gain;
+	اگر (!PX4_ISFINITE(داخلہ)) {
+		واپس _compression_gain;
 	}
 
-	if (!_input_initialized) {
+	اگر (!داخلہ_initialized) {
 		// seed the high-pass filter to avoid detecting a step on the first sample after a reset
-		_input_prev = input;
-		_input_initialized = true;
+		داخلہ_پچھلا = داخلہ;
+		داخلہ_initialized = سچ;
 	}
 
-	_hpf = _alpha_hpf * _hpf + _alpha_hpf * (input - _input_prev);
+	_hpf = _alpha_hpf * _hpf + _alpha_hpf * (داخلہ - داخلہ_پچھلا);
 	_lpf.update(_hpf * _hpf);
 
-	_input_prev = input;
+	داخلہ_پچھلا = داخلہ;
 
-	const float ka = fmaxf(_compression_gain - _compression_gain_min, 0.f);
-	const float spectral_damping = -_kSpectralDamperGain * ka * _lpf.getState();
+	ثابت اعشاری ka = fmaxf(_compression_gain - _compression_gain_min, 0.f);
+	ثابت اعشاری spectral_damping = -_kSpectralDamperGain * ka * _lpf.getState();
 
-	const float leakage = _kLeakageGain * (1.f - _compression_gain);
+	ثابت اعشاری leakage = _kLeakageGain * (1.f - _compression_gain);
 
-	const float ka_dot = spectral_damping + leakage;
+	ثابت اعشاری ka_dot = spectral_damping + leakage;
 	_compression_gain = math::constrain(_compression_gain + ka_dot * dt, _compression_gain_min, 1.f);
 
-	return _compression_gain;
+	واپس _compression_gain;
 }

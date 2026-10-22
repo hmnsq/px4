@@ -36,56 +36,56 @@
  * @author Paul Riseborough
  */
 
-#include "TECS.hpp"
+#شامل "TECS.hpp"
 
-#include <lib/geo/geo.h>
+#شامل <lib/geo/geo.h>
 
-#include <px4_platform_common/defines.h>
+#شامل <px4_platform_common/defines.h>
 
-using math::constrain;
-using math::max;
-using math::min;
+استعمال math::constrain;
+استعمال math::max;
+استعمال math::min;
 
-static constexpr bool isValidTimeStep(float dt) { return (PX4_ISFINITE(dt) && dt > FLT_EPSILON);}
-static constexpr bool fastDescendFullyEngaged(float fast_descend) { return 1.f - fast_descend < FLT_EPSILON; }
+ساکن constexpr منطقی is_Valid_وقت_قدم(اعشاری dt) { واپس (PX4_ISFINITE(dt) && dt > FLT_EPSILON);}
+ساکن constexpr منطقی fastDescendFullyEngaged(اعشاری fast_descend) { واپس 1.f - fast_descend < FLT_EPSILON; }
 
-void TECSAirspeedFilter::initialize(const float equivalent_airspeed, const float equivalent_airspeed_trim,
-				    const bool airspeed_sensor_available)
+خالی TECSAirspeedFilter::initialize(ثابت اعشاری equivalent_airspeed, ثابت اعشاری equivalent_airspeed_trim,
+				    ثابت منطقی airspeed_sensor_دستیاب)
 {
-	if (airspeed_sensor_available && PX4_ISFINITE(equivalent_airspeed)) {
-		_airspeed_state.speed = equivalent_airspeed;
+	اگر (airspeed_sensor_دستیاب && PX4_ISFINITE(equivalent_airspeed)) {
+		_airspeed_state.رفتار = equivalent_airspeed;
 
-	} else {
-		_airspeed_state.speed = equivalent_airspeed_trim;
+	} ورنہ {
+		_airspeed_state.رفتار = equivalent_airspeed_trim;
 	}
 
-	_airspeed_state.speed_rate = 0.f;
+	_airspeed_state.رفتار_شرح = 0.f;
 }
 
-void TECSAirspeedFilter::update(const float dt, const Input &input, const Param &param,
-				const bool airspeed_sensor_available)
+خالی TECSAirspeedFilter::update(ثابت اعشاری dt, ثابت داخلہ_2 &داخلہ, ثابت Param &param,
+				ثابت منطقی airspeed_sensor_دستیاب)
 {
 	// Input checking
-	if (!isValidTimeStep(dt)) {
+	اگر (!is_Valid_وقت_قدم(dt)) {
 		// Do not update the states.
-		return;
+		واپس;
 	}
 
-	float airspeed;
+	اعشاری airspeed;
 
-	if (PX4_ISFINITE(input.equivalent_airspeed) && airspeed_sensor_available) {
-		airspeed = input.equivalent_airspeed;
+	اگر (PX4_ISFINITE(داخلہ.equivalent_airspeed) && airspeed_sensor_دستیاب) {
+		airspeed = داخلہ.equivalent_airspeed;
 
-	} else {
+	} ورنہ {
 		airspeed = param.equivalent_airspeed_trim;
 	}
 
-	float airspeed_derivative;
+	اعشاری airspeed_derivative;
 
-	if (PX4_ISFINITE(input.equivalent_airspeed_rate) && airspeed_sensor_available) {
-		airspeed_derivative = input.equivalent_airspeed_rate;
+	اگر (PX4_ISFINITE(داخلہ.equivalent_airspeed_شرح) && airspeed_sensor_دستیاب) {
+		airspeed_derivative = داخلہ.equivalent_airspeed_شرح;
 
-	} else {
+	} ورنہ {
 		airspeed_derivative = 0.0f;
 	}
 
@@ -94,303 +94,303 @@ void TECSAirspeedFilter::update(const float dt, const Input &input, const Param 
 	 since the continuous algebraic Riccatti equation is easier to solve.
 	*/
 
-	matrix::Vector2f new_state_predicted;
+	میٹرکس::Vector2f new_state_predicted;
 
-	new_state_predicted(0) = _airspeed_state.speed + dt * _airspeed_state.speed_rate;
-	new_state_predicted(1) = _airspeed_state.speed_rate;
+	new_state_predicted(0) = _airspeed_state.رفتار + dt * _airspeed_state.رفتار_شرح;
+	new_state_predicted(1) = _airspeed_state.رفتار_شرح;
 
-	const matrix::Vector2f innovation{(airspeed - new_state_predicted(0)), (airspeed_derivative - new_state_predicted(1))};
+	ثابت میٹرکس::Vector2f innovation{(airspeed - new_state_predicted(0)), (airspeed_derivative - new_state_predicted(1))};
 
-	matrix::Vector2f new_state;
+	میٹرکس::Vector2f new_state;
 	new_state(0) = new_state_predicted(0) + dt * (kKg00 * innovation(0) + kKg01 * innovation(1));
 	new_state(1) = new_state_predicted(1) + dt * (kKg10 * innovation(0) + kKg11 * innovation(1));
 
 	// Clip airspeed at zero
-	if (new_state(0) < FLT_EPSILON) {
+	اگر (new_state(0) < FLT_EPSILON) {
 		new_state(0) = 0.0f;
 		// calculate input that would result in zero speed.
-		const float desired_airspeed_innovation = (-new_state_predicted(0) / dt - kKg01 * innovation(1)) / kKg00;
+		ثابت اعشاری desired_airspeed_innovation = (-new_state_predicted(0) / dt - kKg01 * innovation(1)) / kKg00;
 		new_state(1) = new_state_predicted(1) + dt * (kKg10 * desired_airspeed_innovation + kKg11 * innovation(1));
 	}
 
 	// Update states
-	_airspeed_state.speed = new_state(0);
-	_airspeed_state.speed_rate = new_state(1);
+	_airspeed_state.رفتار = new_state(0);
+	_airspeed_state.رفتار_شرح = new_state(1);
 }
 
-TECSAirspeedFilter::AirspeedFilterState TECSAirspeedFilter::getState() const
+TECSAirspeedFilter::AirspeedFilterState TECSAirspeedFilter::getState() ثابت
 {
-	return _airspeed_state;
+	واپس _airspeed_state;
 }
 
-void TECSAltitudeReferenceModel::update(const float dt, const AltitudeReferenceState &setpoint, float altitude,
-					float height_rate, const Param &param)
+خالی TECSAltitudeReferenceModel::update(ثابت اعشاری dt, ثابت AltitudeReferenceState &setpoint, اعشاری altitude,
+					اعشاری اونچائی_شرح, ثابت Param &param)
 {
 	// Input checks
-	if (!isValidTimeStep(dt)) {
+	اگر (!is_Valid_وقت_قدم(dt)) {
 		// Do not update the states.
-		return;
+		واپس;
 	}
 
-	const float current_alt = PX4_ISFINITE(altitude) ? altitude : 0.f;
+	ثابت اعشاری current_alt = PX4_ISFINITE(altitude) ? altitude : 0.f;
 
-	_velocity_control_traj_generator.setMaxJerk(JERK_MAX);
-	_velocity_control_traj_generator.setMaxAccelUp(param.vert_accel_limit);
-	_velocity_control_traj_generator.setMaxAccelDown(param.vert_accel_limit);
-	_velocity_control_traj_generator.setMaxVelUp(param.max_sink_rate); // different convention for FW than for MC
-	_velocity_control_traj_generator.setMaxVelDown(param.max_climb_rate); // different convention for FW than for MC
+	_velocity_control_traj_generator.سیٹ_Max_Jerk(JERK_MAX);
+	_velocity_control_traj_generator.سیٹ_Max_Accel_اوپر(param.vert_accel_حد_بندی);
+	_velocity_control_traj_generator.سیٹ_Max_Accel_نیچے_کو(param.vert_accel_حد_بندی);
+	_velocity_control_traj_generator.سیٹ_Max_Vel_اوپر(param.max_sink_شرح); // different convention for FW than for MC
+	_velocity_control_traj_generator.سیٹ_Max_Vel_نیچے_کو(param.max_climb_شرح); // different convention for FW than for MC
 
 	// Altitude setpoint reference
-	_alt_control_traj_generator.setMaxJerk(JERK_MAX);
-	_alt_control_traj_generator.setMaxAccel(param.vert_accel_limit);
-	_alt_control_traj_generator.setMaxVel(fmaxf(param.max_climb_rate, param.max_sink_rate));
+	_alt_control_traj_generator.سیٹ_Max_Jerk(JERK_MAX);
+	_alt_control_traj_generator.سیٹ_Max_Accel(param.vert_accel_حد_بندی);
+	_alt_control_traj_generator.سیٹ_Max_Vel(fmaxf(param.max_climb_شرح, param.max_sink_شرح));
 
 	// XXX: this is a bit risky.. .alt_rate here could be NAN (by interface design) - and is only ok to input to the
 	// setVelSpFeedback() method because it calls the reset in the logic below when it is NAN.
 	// TODO: stop it with the NAN interfaces, make sure to take care of this when refactoring and separating altitude
 	// and height rate control loops.
-	_velocity_control_traj_generator.setVelSpFeedback(setpoint.alt_rate);
+	_velocity_control_traj_generator.سیٹ_Vel_Sp_Feedback(setpoint.alt_شرح);
 
-	bool control_altitude = true;
-	float altitude_setpoint = setpoint.alt;
+	منطقی control_altitude = سچ;
+	اعشاری altitude_setpoint = setpoint.alt;
 
-	if (!PX4_ISFINITE(setpoint.alt) && !PX4_ISFINITE(setpoint.alt_rate)) {
+	اگر (!PX4_ISFINITE(setpoint.alt) && !PX4_ISFINITE(setpoint.alt_شرح)) {
 		// neither altitude nor altitude rate is set - reset to current altitude
 		_velocity_control_traj_generator.reset(0.f, 0, current_alt);
 		altitude_setpoint = current_alt;
 
-	} else if (PX4_ISFINITE(setpoint.alt_rate)) {
+	} ورنہ اگر (PX4_ISFINITE(setpoint.alt_شرح)) {
 		// input is height rate (not altitude)
-		_velocity_control_traj_generator.setCurrentPositionEstimate(current_alt);
-		_velocity_control_traj_generator.update(dt, setpoint.alt_rate);
+		_velocity_control_traj_generator.سیٹ_Current_Position_Estimate(current_alt);
+		_velocity_control_traj_generator.update(dt, setpoint.alt_شرح);
 		altitude_setpoint = _velocity_control_traj_generator.getCurrentPosition();
 		control_altitude = PX4_ISFINITE(altitude_setpoint); // returns true if altitude is locked
 
-	} else {
+	} ورنہ {
 		// input is altitude
-		_velocity_control_traj_generator.reset(0, height_rate, altitude_setpoint);
+		_velocity_control_traj_generator.reset(0, اونچائی_شرح, altitude_setpoint);
 	}
 
-	if (control_altitude) {
-		const float target_climbrate_m_s = math::min(param.target_climbrate, param.max_climb_rate);
-		const float target_sinkrate_m_s = math::min(param.target_sinkrate, param.max_sink_rate);
+	اگر (control_altitude) {
+		ثابت اعشاری ہدف_climbrate_m_s = math::min(param.ہدف_climbrate, param.max_climb_شرح);
+		ثابت اعشاری ہدف_sinkrate_m_s = math::min(param.ہدف_sinkrate, param.max_sink_شرح);
 
-		const float delta_trajectory_to_target_m = altitude_setpoint - _alt_control_traj_generator.getCurrentPosition();
+		ثابت اعشاری delta_trajectory_مقصد_ہدف_m = altitude_setpoint - _alt_control_traj_generator.getCurrentPosition();
 
-		float height_rate_target = math::signNoZero<float>(delta_trajectory_to_target_m) *
-					   math::trajectory::computeMaxSpeedFromDistance(
-						   JERK_MAX, param.vert_accel_limit, fabsf(delta_trajectory_to_target_m), 0.f);
+		اعشاری اونچائی_شرح_ہدف = math::signNoZero<اعشاری>(delta_trajectory_مقصد_ہدف_m) *
+					   math::trajectory::compute_Max_رفتار_From_فاصلہ(
+						   JERK_MAX, param.vert_accel_حد_بندی, fabsf(delta_trajectory_مقصد_ہدف_m), 0.f);
 
-		height_rate_target = math::constrain(height_rate_target, -target_sinkrate_m_s, target_climbrate_m_s);
+		اونچائی_شرح_ہدف = math::constrain(اونچائی_شرح_ہدف, -ہدف_sinkrate_m_s, ہدف_climbrate_m_s);
 
-		_alt_control_traj_generator.updateDurations(height_rate_target);
+		_alt_control_traj_generator.updateDurations(اونچائی_شرح_ہدف);
 		_alt_control_traj_generator.updateTraj(dt);
-		_height_rate_setpoint_direct = NAN;
+		اونچائی_شرح_setpoint_براہ_راست = NAN;
 
-	} else {
-		_alt_control_traj_generator.setCurrentVelocity(_velocity_control_traj_generator.getCurrentVelocity());
-		_alt_control_traj_generator.setCurrentPosition(current_alt);
-		_height_rate_setpoint_direct = _velocity_control_traj_generator.getCurrentVelocity();
+	} ورنہ {
+		_alt_control_traj_generator.سیٹ_Current_Velocity(_velocity_control_traj_generator.getCurrentVelocity());
+		_alt_control_traj_generator.سیٹ_Current_Position(current_alt);
+		اونچائی_شرح_setpoint_براہ_راست = _velocity_control_traj_generator.getCurrentVelocity();
 	}
 }
 
-TECSAltitudeReferenceModel::AltitudeReferenceState TECSAltitudeReferenceModel::getAltitudeReference() const
+TECSAltitudeReferenceModel::AltitudeReferenceState TECSAltitudeReferenceModel::getAltitudeReference() ثابت
 {
 	TECSAltitudeReferenceModel::AltitudeReferenceState ref{
 		.alt = _alt_control_traj_generator.getCurrentPosition(),
-		.alt_rate = _alt_control_traj_generator.getCurrentVelocity(),
+		.alt_شرح = _alt_control_traj_generator.getCurrentVelocity(),
 	};
 
-	return ref;
+	واپس ref;
 }
 
-void TECSAltitudeReferenceModel::initialize(const AltitudeReferenceState &state)
+خالی TECSAltitudeReferenceModel::initialize(ثابت AltitudeReferenceState &state)
 {
-	const float init_state_alt = PX4_ISFINITE(state.alt) ? state.alt : 0.f;
-	const float init_state_alt_rate = PX4_ISFINITE(state.alt_rate) ? state.alt_rate : 0.f;
+	ثابت اعشاری init_state_alt = PX4_ISFINITE(state.alt) ? state.alt : 0.f;
+	ثابت اعشاری init_state_alt_شرح = PX4_ISFINITE(state.alt_شرح) ? state.alt_شرح : 0.f;
 
-	_alt_control_traj_generator.reset(0.0f, init_state_alt_rate, init_state_alt);
-	_velocity_control_traj_generator.reset(0.f, init_state_alt_rate, init_state_alt);
+	_alt_control_traj_generator.reset(0.0f, init_state_alt_شرح, init_state_alt);
+	_velocity_control_traj_generator.reset(0.f, init_state_alt_شرح, init_state_alt);
 }
 
-void TECSControl::initialize(const Setpoint &setpoint, const Input &input, const Param &param, const Flag &flag)
+خالی TECSControl::initialize(ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ, ثابت Param &param, ثابت Flag &flag)
 {
 	resetIntegrals();
 
 	// Initialization always goes through the altitude loop, even if a direct height rate setpoint is given
 	Setpoint altitude_loop_setpoint{setpoint};
-	altitude_loop_setpoint.altitude_rate_setpoint_direct = NAN;
+	altitude_loop_setpoint.altitude_شرح_setpoint_براہ_راست = NAN;
 
-	const STERateLimit limit{_calculateTotalEnergyRateLimit(param)};
-	const SpecificEnergyRates specific_energy_rate{_updateOuterLoops(altitude_loop_setpoint, input, limit, param, flag)};
+	ثابت STERate_حد_بندی حد_بندی_2{calculate_کل_Energy_شرح_حد_بندی(param)};
+	ثابت SpecificEnergyRates specific_energy_شرح{_updateOuterLoops(altitude_loop_setpoint, داخلہ, حد_بندی_2, param, flag)};
 
-	const SpecificEnergyWeighting weight{_updateSpeedAltitudeWeights(param, flag)};
-	const SpecificEnergyRates pitch_specific_energy_rate{_calcPitchControlEnergyRates(setpoint, input, limit,
-			specific_energy_rate, param, flag, weight)};
-	ControlValues seb_rate{_calcPitchControlSebRate(weight, pitch_specific_energy_rate)};
+	ثابت SpecificEnergyWeighting وزن{update_رفتار_Altitude_Weights(param, flag)};
+	ثابت SpecificEnergyRates pitch_specific_energy_شرح{_calcPitchControlEnergyRates(setpoint, داخلہ, حد_بندی_2,
+			specific_energy_شرح, param, flag, وزن)};
+	Control_اقدار seb_شرح{calc_Pitch_Control_Seb_شرح(وزن, pitch_specific_energy_شرح)};
 
-	_pitch_setpoint = _calcPitchControlOutput(input, seb_rate, param);
+	_pitch_setpoint = _calcPitchControlOutput(داخلہ, seb_شرح, param);
 
-	_ste_rate_estimate_filter.reset(specific_energy_rate.spe_rate.estimate + specific_energy_rate.ske_rate.estimate);
+	ste_شرح_estimate_filter.reset(specific_energy_شرح.spe_شرح.estimate + specific_energy_شرح.ske_شرح.estimate);
 
-	ControlValues ste_rate{_calcThrottleControlSteRate(limit, specific_energy_rate, param)};
+	Control_اقدار ste_شرح{calc_Throttle_Control_Ste_شرح(حد_بندی_2, specific_energy_شرح, param)};
 
-	_throttle_setpoint = _calcThrottleControlOutput(limit, ste_rate, param, flag);
+	_throttle_setpoint = _calcThrottleControlOutput(حد_بندی_2, ste_شرح, param, flag);
 
 	// Debug output
-	_debug_output.total_energy_rate_estimate = ste_rate.estimate;
-	_debug_output.total_energy_rate_sp = ste_rate.setpoint;
+	_debug_output.کل_energy_شرح_estimate = ste_شرح.estimate;
+	_debug_output.کل_energy_شرح_sp = ste_شرح.setpoint;
 	_debug_output.throttle_integrator = _throttle_integ_state;
-	_debug_output.energy_balance_rate_estimate = seb_rate.estimate;
-	_debug_output.energy_balance_rate_sp = seb_rate.setpoint;
+	_debug_output.energy_balance_شرح_estimate = seb_شرح.estimate;
+	_debug_output.energy_balance_شرح_sp = seb_شرح.setpoint;
 	_debug_output.pitch_integrator = _pitch_integ_state;
 }
 
-void TECSControl::update(const float dt, const Setpoint &setpoint, const Input &input, const Param &param,
-			 const Flag &flag)
+خالی TECSControl::update(ثابت اعشاری dt, ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ, ثابت Param &param,
+			 ثابت Flag &flag)
 {
 	// Input checking
-	if (!isValidTimeStep(dt)) {
+	اگر (!is_Valid_وقت_قدم(dt)) {
 		// Do not update the states and output.
-		return;
+		واپس;
 	}
 
-	const STERateLimit limit{_calculateTotalEnergyRateLimit(param)};
-	const SpecificEnergyRates specific_energy_rate{_updateOuterLoops(setpoint, input, limit, param, flag)};
+	ثابت STERate_حد_بندی حد_بندی_2{calculate_کل_Energy_شرح_حد_بندی(param)};
+	ثابت SpecificEnergyRates specific_energy_شرح{_updateOuterLoops(setpoint, داخلہ, حد_بندی_2, param, flag)};
 
-	_calcPitchControl(dt, setpoint, input, limit, specific_energy_rate, param, flag);
+	_calcPitchControl(dt, setpoint, داخلہ, حد_بندی_2, specific_energy_شرح, param, flag);
 
-	_calcThrottleControl(dt, limit, specific_energy_rate, param, flag);
+	_calcThrottleControl(dt, حد_بندی_2, specific_energy_شرح, param, flag);
 }
 
-TECSControl::SpecificEnergyRates TECSControl::_updateOuterLoops(const Setpoint &setpoint, const Input &input,
-		const STERateLimit &limit, const Param &param, const Flag &flag)
+TECSControl::SpecificEnergyRates TECSControl::_updateOuterLoops(ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ,
+		ثابت STERate_حد_بندی &حد_بندی_2, ثابت Param &param, ثابت Flag &flag)
 {
 	OuterLoopSetpoints control_setpoint;
 
-	control_setpoint.tas_rate_setpoint = _calcAirspeedControlOutput(setpoint, input, limit, param, flag);
+	control_setpoint.tas_شرح_setpoint = _calcAirspeedControlOutput(setpoint, داخلہ, حد_بندی_2, param, flag);
 
-	if (PX4_ISFINITE(setpoint.altitude_rate_setpoint_direct)) {
+	اگر (PX4_ISFINITE(setpoint.altitude_شرح_setpoint_براہ_راست)) {
 		// direct height rate control
-		control_setpoint.altitude_rate_setpoint = setpoint.altitude_rate_setpoint_direct;
+		control_setpoint.altitude_شرح_setpoint = setpoint.altitude_شرح_setpoint_براہ_راست;
 
-	} else {
+	} ورنہ {
 		// altitude is locked, go through altitude outer loop
-		control_setpoint.altitude_rate_setpoint = _calcAltitudeControlOutput(setpoint, input, param);
+		control_setpoint.altitude_شرح_setpoint = _calcAltitudeControlOutput(setpoint, داخلہ, param);
 	}
 
-	const SpecificEnergyRates specific_energy_rate{_calcSpecificEnergyRates(control_setpoint, input)};
+	ثابت SpecificEnergyRates specific_energy_شرح{_calcSpecificEnergyRates(control_setpoint, داخلہ)};
 
-	_detectUnderspeed(input, param, flag);
+	_detectUnderspeed(داخلہ, param, flag);
 
-	_debug_output.altitude_rate_control = control_setpoint.altitude_rate_setpoint;
-	_debug_output.true_airspeed_derivative_control = control_setpoint.tas_rate_setpoint;
+	_debug_output.altitude_شرح_control = control_setpoint.altitude_شرح_setpoint;
+	_debug_output.true_airspeed_derivative_control = control_setpoint.tas_شرح_setpoint;
 
-	return specific_energy_rate;
+	واپس specific_energy_شرح;
 }
 
-TECSControl::STERateLimit TECSControl::_calculateTotalEnergyRateLimit(const Param &param) const
+TECSControl::STERate_حد_بندی TECSControl::calculate_کل_Energy_شرح_حد_بندی(ثابت Param &param) ثابت
 {
-	TECSControl::STERateLimit limit;
+	TECSControl::STERate_حد_بندی حد_بندی_2;
 	// Calculate the specific total energy rate limits from the max throttle limits
-	limit.STE_rate_max = math::max(param.max_climb_rate, FLT_EPSILON) * CONSTANTS_ONE_G;
-	limit.STE_rate_min = - math::max(param.min_sink_rate, FLT_EPSILON) * CONSTANTS_ONE_G;
+	حد_بندی_2.STE_شرح_max = math::max(param.max_climb_شرح, FLT_EPSILON) * CONSTANTS_ONE_G;
+	حد_بندی_2.STE_شرح_min = - math::max(param.min_sink_شرح, FLT_EPSILON) * CONSTANTS_ONE_G;
 
-	return limit;
+	واپس حد_بندی_2;
 }
 
-float TECSControl::_calcAirspeedControlOutput(const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
-		const Param &param, const Flag &flag) const
+اعشاری TECSControl::_calcAirspeedControlOutput(ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ, ثابت STERate_حد_بندی &حد_بندی_2,
+		ثابت Param &param, ثابت Flag &flag) ثابت
 {
-	float airspeed_rate_output{0.0f};
+	اعشاری airspeed_شرح_output{0.0f};
 
 	// calculate the demanded true airspeed rate of change based on first order response of true airspeed error
 	// if airspeed measurement is not enabled then always set the rate setpoint to zero in order to avoid constant rate setpoints
-	if (flag.airspeed_enabled) {
+	اگر (flag.airspeed_enabled) {
 		// Calculate limits for the demanded rate of change of speed based on physical performance limits
 		// with a 50% margin to allow the total energy controller to correct for errors. Increase it in case of fast descend
-		const float max_tas_rate_sp = (param.fast_descend * 0.5f + 0.5f) * limit.STE_rate_max / math::max(input.tas,
+		ثابت اعشاری max_tas_شرح_sp = (param.fast_descend * 0.5f + 0.5f) * حد_بندی_2.STE_شرح_max / math::max(داخلہ.tas,
 					      FLT_EPSILON);
-		const float min_tas_rate_sp = (param.fast_descend * 0.5f + 0.5f) * limit.STE_rate_min / math::max(input.tas,
+		ثابت اعشاری min_tas_شرح_sp = (param.fast_descend * 0.5f + 0.5f) * حد_بندی_2.STE_شرح_min / math::max(داخلہ.tas,
 					      FLT_EPSILON);
-		airspeed_rate_output = constrain((setpoint.tas_setpoint - input.tas) * param.airspeed_error_gain, min_tas_rate_sp,
-						 max_tas_rate_sp);
+		airspeed_شرح_output = constrain((setpoint.tas_setpoint - داخلہ.tas) * param.airspeed_error_gain, min_tas_شرح_sp,
+						 max_tas_شرح_sp);
 	}
 
-	return airspeed_rate_output;
+	واپس airspeed_شرح_output;
 }
 
-float TECSControl::_calcAltitudeControlOutput(const Setpoint &setpoint, const Input &input, const Param &param) const
+اعشاری TECSControl::_calcAltitudeControlOutput(ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ, ثابت Param &param) ثابت
 {
-	float altitude_rate_output;
-	altitude_rate_output = (setpoint.altitude_reference.alt - input.altitude) * param.altitude_error_gain
-			       + param.altitude_setpoint_gain_ff * setpoint.altitude_reference.alt_rate;
+	اعشاری altitude_شرح_output;
+	altitude_شرح_output = (setpoint.altitude_reference.alt - داخلہ.altitude) * param.altitude_error_gain
+			       + param.altitude_setpoint_gain_ff * setpoint.altitude_reference.alt_شرح;
 
-	altitude_rate_output = math::constrain(altitude_rate_output, -param.max_sink_rate, param.max_climb_rate);
+	altitude_شرح_output = math::constrain(altitude_شرح_output, -param.max_sink_شرح, param.max_climb_شرح);
 
-	return altitude_rate_output;
+	واپس altitude_شرح_output;
 }
 
-TECSControl::SpecificEnergyRates TECSControl::_calcSpecificEnergyRates(const OuterLoopSetpoints &control_setpoint,
-		const Input &input) const
+TECSControl::SpecificEnergyRates TECSControl::_calcSpecificEnergyRates(ثابت OuterLoopSetpoints &control_setpoint,
+		ثابت داخلہ_2 &داخلہ) ثابت
 {
 	SpecificEnergyRates specific_energy_rates;
 	// Calculate specific energy rate demands in units of (m**2/sec**3)
-	specific_energy_rates.spe_rate.setpoint = control_setpoint.altitude_rate_setpoint *
+	specific_energy_rates.spe_شرح.setpoint = control_setpoint.altitude_شرح_setpoint *
 			CONSTANTS_ONE_G; // potential energy rate of change
 
 	// d/dt(0.5 V^2) = V * dV/dt: use measured TAS, not the TAS setpoint, to keep the airspeed loop linear
-	specific_energy_rates.ske_rate.setpoint = input.tas *
-			control_setpoint.tas_rate_setpoint; // kinetic energy rate of change
+	specific_energy_rates.ske_شرح.setpoint = داخلہ.tas *
+			control_setpoint.tas_شرح_setpoint; // kinetic energy rate of change
 
 	// Calculate specific energy rates in units of (m**2/sec**3)
-	specific_energy_rates.spe_rate.estimate = input.altitude_rate * CONSTANTS_ONE_G; // potential energy rate of change
-	specific_energy_rates.ske_rate.estimate = input.tas * input.tas_rate;// kinetic energy rate of change
+	specific_energy_rates.spe_شرح.estimate = داخلہ.altitude_شرح * CONSTANTS_ONE_G; // potential energy rate of change
+	specific_energy_rates.ske_شرح.estimate = داخلہ.tas * داخلہ.tas_شرح;// kinetic energy rate of change
 
-	return specific_energy_rates;
+	واپس specific_energy_rates;
 }
 
-void TECSControl::_detectUnderspeed(const Input &input, const Param &param, const Flag &flag)
+خالی TECSControl::_detectUnderspeed(ثابت داخلہ_2 &داخلہ, ثابت Param &param, ثابت Flag &flag)
 {
-	if (!flag.detect_underspeed_enabled || !flag.airspeed_enabled) {
-		_ratio_undersped = 0.0f;
-		return;
+	اگر (!flag.detect_underspeed_enabled || !flag.airspeed_enabled) {
+		تناسب_undersped = 0.0f;
+		واپس;
 	}
 
 	// Ramp underspeed ratio from 0 at tas_min to 1 at 90% of tas_min, or halfway to tas_stall if that is higher
-	const float tas_fully_undersped = math::min(param.tas_min,
+	ثابت اعشاری tas_fully_undersped = math::min(param.tas_min,
 					  math::max(0.9f * param.tas_min, 0.5f * (param.tas_min + param.tas_stall)));
-	const float underspeed_ramp_width = param.tas_min - tas_fully_undersped;
+	ثابت اعشاری underspeed_ramp_چوڑائی = param.tas_min - tas_fully_undersped;
 
-	_ratio_undersped = math::constrain((param.tas_min - input.tas) / math::max(underspeed_ramp_width, FLT_EPSILON),
+	تناسب_undersped = math::constrain((param.tas_min - داخلہ.tas) / math::max(underspeed_ramp_چوڑائی, FLT_EPSILON),
 					   0.0f, 1.0f);
 }
 
-TECSControl::SpecificEnergyWeighting TECSControl::_updateSpeedAltitudeWeights(const Param &param, const Flag &flag)
+TECSControl::SpecificEnergyWeighting TECSControl::update_رفتار_Altitude_Weights(ثابت Param &param, ثابت Flag &flag)
 {
 
-	SpecificEnergyWeighting weight;
+	SpecificEnergyWeighting وزن;
 	// Calculate the weight applied to control of specific kinetic energy error
-	float pitch_speed_weight = constrain(param.pitch_speed_weight, 0.0f, 2.0f);
+	اعشاری pitch_رفتار_وزن = constrain(param.pitch_رفتار_وزن, 0.0f, 2.0f);
 
 	// Underspeed or fast descend: interpolate speed weight from nominal
 	// towards max. We take the maximum of the two - this keeps the speed
 	// weight continuous, even when underspeed and fast descend are combined
-	const float max_ratio = fmaxf(_ratio_undersped, param.fast_descend);
-	pitch_speed_weight = max_ratio * 2.0f + (1.0f - max_ratio) * pitch_speed_weight;
+	ثابت اعشاری max_تناسب = fmaxf(تناسب_undersped, param.fast_descend);
+	pitch_رفتار_وزن = max_تناسب * 2.0f + (1.0f - max_تناسب) * pitch_رفتار_وزن;
 
-	if (!flag.airspeed_enabled) {
-		pitch_speed_weight = 0.0f;
+	اگر (!flag.airspeed_enabled) {
+		pitch_رفتار_وزن = 0.0f;
 	}
 
-	weight.spe_weighting = constrain(2.0f - pitch_speed_weight, 0.f, 2.f);
-	weight.ske_weighting = constrain(pitch_speed_weight, 0.f, 2.f);
+	وزن.spe_weighting = constrain(2.0f - pitch_رفتار_وزن, 0.f, 2.f);
+	وزن.ske_weighting = constrain(pitch_رفتار_وزن, 0.f, 2.f);
 
-	return weight;
+	واپس وزن;
 }
 
-float TECSControl::_calcPitchControlSkeRateSetpoint(const Setpoint &setpoint, const Input &input,
-		const STERateLimit &limit, const Param &param, const Flag &flag, const SpecificEnergyWeighting &weight) const
+اعشاری TECSControl::calc_Pitch_Control_Ske_شرح_Setpoint(ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ,
+		ثابت STERate_حد_بندی &حد_بندی_2, ثابت Param &param, ثابت Flag &flag, ثابت SpecificEnergyWeighting &وزن) ثابت
 {
 	// Trading altitude for speed with pitch is only wanted up to trim airspeed. Above trim, accelerating is left to
 	// the throttle loop: if it saturates, the vehicle settles at a lower airspeed instead of below the altitude setpoint.
@@ -398,66 +398,66 @@ float TECSControl::_calcPitchControlSkeRateSetpoint(const Setpoint &setpoint, co
 	// and the setpoint the pitch loop holds altitude, while an overspeed above the setpoint is still corrected.
 	// With a speed weight of 2 (speed priority, e.g. gliders, fast descend or underspeed) pitch is the only way to
 	// track the setpoint, so the cap is faded out as the weight goes from 1 to 2.
-	const float tas_setpoint_capped = min(setpoint.tas_setpoint, max(param.tas_trim, input.tas));
+	ثابت اعشاری tas_setpoint_capped = min(setpoint.tas_setpoint, max(param.tas_trim, داخلہ.tas));
 
 	Setpoint pitch_control_setpoint{setpoint};
 	pitch_control_setpoint.tas_setpoint = lerp(tas_setpoint_capped, setpoint.tas_setpoint,
-					      constrain(weight.ske_weighting - 1.f, 0.f, 1.f));
+					      constrain(وزن.ske_weighting - 1.f, 0.f, 1.f));
 
 	// d/dt(0.5 V^2) = V * dV/dt: the measured airspeed, not the setpoint, keeps the airspeed loop linear
-	return input.tas * _calcAirspeedControlOutput(pitch_control_setpoint, input, limit, param, flag);
+	واپس داخلہ.tas * _calcAirspeedControlOutput(pitch_control_setpoint, داخلہ, حد_بندی_2, param, flag);
 }
 
-TECSControl::SpecificEnergyRates TECSControl::_calcPitchControlEnergyRates(const Setpoint &setpoint,
-		const Input &input, const STERateLimit &limit, const SpecificEnergyRates &specific_energy_rates,
-		const Param &param, const Flag &flag, const SpecificEnergyWeighting &weight) const
+TECSControl::SpecificEnergyRates TECSControl::_calcPitchControlEnergyRates(ثابت Setpoint &setpoint,
+		ثابت داخلہ_2 &داخلہ, ثابت STERate_حد_بندی &حد_بندی_2, ثابت SpecificEnergyRates &specific_energy_rates,
+		ثابت Param &param, ثابت Flag &flag, ثابت SpecificEnergyWeighting &وزن) ثابت
 {
 	SpecificEnergyRates pitch_specific_energy_rates{specific_energy_rates};
-	pitch_specific_energy_rates.ske_rate.setpoint = _calcPitchControlSkeRateSetpoint(setpoint, input, limit, param, flag,
-			weight);
+	pitch_specific_energy_rates.ske_شرح.setpoint = calc_Pitch_Control_Ske_شرح_Setpoint(setpoint, داخلہ, حد_بندی_2, param, flag,
+			وزن);
 
 	// Between trim airspeed and the airspeed setpoint the throttle alone accelerates the vehicle. The capped setpoint
 	// above already removes the kinetic setpoint of the pitch loop there, faded in with speed priority. But the
 	// throttle's acceleration would still show up in the kinetic energy rate estimate, and the pitch loop would pitch
 	// up to turn it into height. Remove the estimate from the pitch loop in this band as well, with the same fade, so
 	// that pitch controls height only. The setpoint must not be scaled again, or it would be faded twice.
-	const bool throttle_accelerates = input.tas > param.tas_trim && input.tas < setpoint.tas_setpoint;
-	const float kinetic_estimate_gain = throttle_accelerates ? constrain(weight.ske_weighting - 1.f, 0.f, 1.f) : 1.f;
-	pitch_specific_energy_rates.ske_rate.estimate *= kinetic_estimate_gain;
+	ثابت منطقی throttle_accelerates = داخلہ.tas > param.tas_trim && داخلہ.tas < setpoint.tas_setpoint;
+	ثابت اعشاری kinetic_estimate_gain = throttle_accelerates ? constrain(وزن.ske_weighting - 1.f, 0.f, 1.f) : 1.f;
+	pitch_specific_energy_rates.ske_شرح.estimate *= kinetic_estimate_gain;
 
-	return pitch_specific_energy_rates;
+	واپس pitch_specific_energy_rates;
 }
 
-void TECSControl::_calcPitchControl(float dt, const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
-				    const SpecificEnergyRates &specific_energy_rates, const Param &param, const Flag &flag)
+خالی TECSControl::_calcPitchControl(اعشاری dt, ثابت Setpoint &setpoint, ثابت داخلہ_2 &داخلہ, ثابت STERate_حد_بندی &حد_بندی_2,
+				    ثابت SpecificEnergyRates &specific_energy_rates, ثابت Param &param, ثابت Flag &flag)
 {
-	const SpecificEnergyWeighting weight{_updateSpeedAltitudeWeights(param, flag)};
+	ثابت SpecificEnergyWeighting وزن{update_رفتار_Altitude_Weights(param, flag)};
 
-	const SpecificEnergyRates pitch_specific_energy_rates{_calcPitchControlEnergyRates(setpoint, input, limit,
-			specific_energy_rates, param, flag, weight)};
+	ثابت SpecificEnergyRates pitch_specific_energy_rates{_calcPitchControlEnergyRates(setpoint, داخلہ, حد_بندی_2,
+			specific_energy_rates, param, flag, وزن)};
 
-	ControlValues seb_rate{_calcPitchControlSebRate(weight, pitch_specific_energy_rates)};
+	Control_اقدار seb_شرح{calc_Pitch_Control_Seb_شرح(وزن, pitch_specific_energy_rates)};
 
-	_calcPitchControlUpdate(dt, input, seb_rate, param);
-	const float pitch_setpoint{_calcPitchControlOutput(input, seb_rate, param)};
+	_calcPitchControlUpdate(dt, داخلہ, seb_شرح, param);
+	ثابت اعشاری pitch_setpoint{_calcPitchControlOutput(داخلہ, seb_شرح, param)};
 
 	// Comply with the specified vertical acceleration limit by applying a pitch rate limit
 	// NOTE: at zero airspeed, the pitch increment is unbounded
-	const float pitch_increment = dt * param.vert_accel_limit / math::max(input.tas, FLT_EPSILON);
+	ثابت اعشاری pitch_increment = dt * param.vert_accel_حد_بندی / math::max(داخلہ.tas, FLT_EPSILON);
 	_pitch_setpoint = constrain(pitch_setpoint, _pitch_setpoint - pitch_increment,
 				    _pitch_setpoint + pitch_increment);
 	_pitch_setpoint = constrain(_pitch_setpoint, param.pitch_min, param.pitch_max);
 
 	//Debug Output
-	_debug_output.energy_balance_rate_estimate = seb_rate.estimate;
-	_debug_output.energy_balance_rate_sp = seb_rate.setpoint;
+	_debug_output.energy_balance_شرح_estimate = seb_شرح.estimate;
+	_debug_output.energy_balance_شرح_sp = seb_شرح.setpoint;
 	_debug_output.pitch_integrator = _pitch_integ_state;
 }
 
-TECSControl::ControlValues TECSControl::_calcPitchControlSebRate(const SpecificEnergyWeighting &weight,
-		const SpecificEnergyRates &specific_energy_rates) const
+TECSControl::Control_اقدار TECSControl::calc_Pitch_Control_Seb_شرح(ثابت SpecificEnergyWeighting &وزن,
+		ثابت SpecificEnergyRates &specific_energy_rates) ثابت
 {
-	ControlValues seb_rate;
+	Control_اقدار seb_شرح;
 	/*
 	 * The SKE_weighting variable controls how speed and altitude control are prioritized by the pitch demand calculation.
 	 * A weighting of 1 gives equal speed and altitude priority
@@ -468,182 +468,182 @@ TECSControl::ControlValues TECSControl::_calcPitchControlSebRate(const SpecificE
 	 * rises above the demanded value, the pitch angle demand is increased by the TECS controller to prevent the vehicle overspeeding.
 	 * The weighting can be adjusted between 0 and 2 depending on speed and altitude accuracy requirements.
 	*/
-	seb_rate.setpoint = specific_energy_rates.spe_rate.setpoint * weight.spe_weighting -
-			    specific_energy_rates.ske_rate.setpoint *
-			    weight.ske_weighting;
+	seb_شرح.setpoint = specific_energy_rates.spe_شرح.setpoint * وزن.spe_weighting -
+			    specific_energy_rates.ske_شرح.setpoint *
+			    وزن.ske_weighting;
 
-	seb_rate.estimate = (specific_energy_rates.spe_rate.estimate * weight.spe_weighting) -
-			    (specific_energy_rates.ske_rate.estimate * weight.ske_weighting);
+	seb_شرح.estimate = (specific_energy_rates.spe_شرح.estimate * وزن.spe_weighting) -
+			    (specific_energy_rates.ske_شرح.estimate * وزن.ske_weighting);
 
-	return seb_rate;
+	واپس seb_شرح;
 }
 
-void TECSControl::_calcPitchControlUpdate(float dt, const Input &input, const ControlValues &seb_rate,
-		const Param &param)
+خالی TECSControl::_calcPitchControlUpdate(اعشاری dt, ثابت داخلہ_2 &داخلہ, ثابت Control_اقدار &seb_شرح,
+		ثابت Param &param)
 {
 
 	// In fast descend, the pitch integrator converges to the (substantially
 	// negative) pitch. Ramp it down with decreasing fast descend ratio,
 	// such that it is zero when the ratio becomes 0 again.
-	if (param.fast_descend < _fast_descend_prev && _fast_descend_prev > FLT_EPSILON) {
-		_pitch_integ_state *= param.fast_descend / _fast_descend_prev;
+	اگر (param.fast_descend < fast_descend_پچھلا && fast_descend_پچھلا > FLT_EPSILON) {
+		_pitch_integ_state *= param.fast_descend / fast_descend_پچھلا;
 	}
 
-	_fast_descend_prev = param.fast_descend;
+	fast_descend_پچھلا = param.fast_descend;
 
-	if (param.integrator_gain_pitch > FLT_EPSILON) {
+	اگر (param.integrator_gain_pitch > FLT_EPSILON) {
 
-		const float climb_angle_to_SEB_rate = _climbAngleToSebRate(input, param);
+		ثابت اعشاری climb_angle_مقصد_SEB_شرح = climb_Angle_مقصد_Seb_شرح(داخلہ, param);
 
 		// Calculate pitch integrator input term
-		float pitch_integ_input = _getControlError(seb_rate) * param.integrator_gain_pitch / climb_angle_to_SEB_rate;
+		اعشاری pitch_integ_داخلہ = _getControlError(seb_شرح) * param.integrator_gain_pitch / climb_angle_مقصد_SEB_شرح;
 
 		// Guard against NaN integrator input - discard bad input sample (e.g., exiting offboard velocity mode)
-		if (!PX4_ISFINITE(pitch_integ_input)) {
-			pitch_integ_input = 0.f;
+		اگر (!PX4_ISFINITE(pitch_integ_داخلہ)) {
+			pitch_integ_داخلہ = 0.f;
 		}
 
 		// Prevent the integrator changing in a direction that will increase pitch demand saturation
-		if (_pitch_setpoint >= param.pitch_max) {
-			pitch_integ_input = min(pitch_integ_input, 0.f);
+		اگر (_pitch_setpoint >= param.pitch_max) {
+			pitch_integ_داخلہ = min(pitch_integ_داخلہ, 0.f);
 
-		} else if (_pitch_setpoint <= param.pitch_min) {
-			pitch_integ_input = max(pitch_integ_input, 0.f);
+		} ورنہ اگر (_pitch_setpoint <= param.pitch_min) {
+			pitch_integ_داخلہ = max(pitch_integ_داخلہ, 0.f);
 		}
 
 		// Update the pitch integrator state
-		_pitch_integ_state = _pitch_integ_state + pitch_integ_input * dt;
+		_pitch_integ_state = _pitch_integ_state + pitch_integ_داخلہ * dt;
 
 		// Safety check: reset integrator if state became corrupted
-		if (!PX4_ISFINITE(_pitch_integ_state)) {
+		اگر (!PX4_ISFINITE(_pitch_integ_state)) {
 			_pitch_integ_state = 0.f;
 		}
 
-	} else {
+	} ورنہ {
 		_pitch_integ_state = 0.0f;
 	}
 }
 
-float TECSControl::_climbAngleToSebRate(const Input &input, const Param &param)
+اعشاری TECSControl::climb_Angle_مقصد_Seb_شرح(ثابت داخلہ_2 &داخلہ, ثابت Param &param)
 {
 	// max() returns its second argument for a NaN first one, so a NaN airspeed falls back to the minimum airspeed
-	return max(input.tas, param.tas_min, FLT_EPSILON) * CONSTANTS_ONE_G;
+	واپس max(داخلہ.tas, param.tas_min, FLT_EPSILON) * CONSTANTS_ONE_G;
 }
 
-float TECSControl::_calcPitchControlOutput(const Input &input, const ControlValues &seb_rate, const Param &param) const
+اعشاری TECSControl::_calcPitchControlOutput(ثابت داخلہ_2 &داخلہ, ثابت Control_اقدار &seb_شرح, ثابت Param &param) ثابت
 {
 	// Calculate a specific energy correction that doesn't include the integrator contribution
-	float SEB_rate_correction = _getControlError(seb_rate) * param.pitch_damping_gain +
-				    param.seb_rate_ff *
-				    seb_rate.setpoint;
+	اعشاری SEB_شرح_correction = _getControlError(seb_شرح) * param.pitch_damping_gain +
+				    param.seb_شرح_ff *
+				    seb_شرح.setpoint;
 
 	// Convert the specific energy balance rate correction to a climb angle and add the level-flight pitch, the angle
 	// of attack at zero climb angle, to get the absolute pitch setpoint. This calculation assumes:
 	// a) The climb angle follows pitch angle with a lag that is small enough not to destabilise the control loop.
 	// b) The offset between climb angle and pitch angle (angle of attack) is constant and equal to the level-flight
 	// pitch, excluding the effect of pitch transients due to control action or turbulence.
-	float pitch_setpoint_unc = SEB_rate_correction / _climbAngleToSebRate(input, param) + _pitch_integ_state
+	اعشاری pitch_setpoint_unc = SEB_شرح_correction / climb_Angle_مقصد_Seb_شرح(داخلہ, param) + _pitch_integ_state
 				   + param.level_flight_pitch;
 
 	// Guard against a non-finite feedforward/damping contribution (e.g. seb_rate going NaN on the energy/speed
 	// side when exiting offboard velocity mode). constrain() does not reject NaN, so fall back to the integrator
 	// state, which is kept finite by _calcPitchControlUpdate, to avoid latching a NaN pitch demand.
-	if (!PX4_ISFINITE(pitch_setpoint_unc)) {
+	اگر (!PX4_ISFINITE(pitch_setpoint_unc)) {
 		pitch_setpoint_unc = _pitch_integ_state + param.level_flight_pitch;
 	}
 
-	return constrain(pitch_setpoint_unc, param.pitch_min, param.pitch_max);
+	واپس constrain(pitch_setpoint_unc, param.pitch_min, param.pitch_max);
 }
 
-void TECSControl::_calcThrottleControl(float dt, const STERateLimit &limit,
-				       const SpecificEnergyRates &specific_energy_rates, const Param &param, const Flag &flag)
+خالی TECSControl::_calcThrottleControl(اعشاری dt, ثابت STERate_حد_بندی &حد_بندی_2,
+				       ثابت SpecificEnergyRates &specific_energy_rates, ثابت Param &param, ثابت Flag &flag)
 {
 	// Update STE rate estimate LP filter
-	const float STE_rate_estimate_raw = specific_energy_rates.spe_rate.estimate + specific_energy_rates.ske_rate.estimate;
-	_ste_rate_estimate_filter.setParameters(dt, param.ste_rate_time_const);
-	_ste_rate_estimate_filter.update(STE_rate_estimate_raw);
-	ControlValues ste_rate{_calcThrottleControlSteRate(limit, specific_energy_rates, param)};
+	ثابت اعشاری STE_شرح_estimate_raw = specific_energy_rates.spe_شرح.estimate + specific_energy_rates.ske_شرح.estimate;
+	ste_شرح_estimate_filter.سیٹ_Parameters(dt, param.ste_شرح_وقت_const);
+	ste_شرح_estimate_filter.update(STE_شرح_estimate_raw);
+	Control_اقدار ste_شرح{calc_Throttle_Control_Ste_شرح(حد_بندی_2, specific_energy_rates, param)};
 	// During fast descend, we control airspeed over the pitch control loop. Give minimal thrust as soon as we are descending
-	float throttle_setpoint{param.throttle_min};
+	اعشاری throttle_setpoint{param.throttle_min};
 
-	if (!fastDescendFullyEngaged(param.fast_descend)) {
-		_calcThrottleControlUpdate(dt, limit, ste_rate, param, flag);
-		throttle_setpoint = (1.f - param.fast_descend) * _calcThrottleControlOutput(limit, ste_rate, param,
+	اگر (!fastDescendFullyEngaged(param.fast_descend)) {
+		_calcThrottleControlUpdate(dt, حد_بندی_2, ste_شرح, param, flag);
+		throttle_setpoint = (1.f - param.fast_descend) * _calcThrottleControlOutput(حد_بندی_2, ste_شرح, param,
 				    flag) + param.fast_descend * param.throttle_min;
 	}
 
 	// Rate limit the throttle demand
-	if (fabsf(param.throttle_slewrate) > FLT_EPSILON) {
-		const float throttle_increment_limit = dt * (param.throttle_max - param.throttle_min) * param.throttle_slewrate;
-		throttle_setpoint = constrain(throttle_setpoint, _throttle_setpoint - throttle_increment_limit,
-					      _throttle_setpoint + throttle_increment_limit);
+	اگر (fabsf(param.throttle_slewrate) > FLT_EPSILON) {
+		ثابت اعشاری throttle_increment_حد_بندی = dt * (param.throttle_max - param.throttle_min) * param.throttle_slewrate;
+		throttle_setpoint = constrain(throttle_setpoint, _throttle_setpoint - throttle_increment_حد_بندی,
+					      _throttle_setpoint + throttle_increment_حد_بندی);
 	}
 
 	_throttle_setpoint = constrain(throttle_setpoint, param.throttle_min, param.throttle_max);
 
 	// Debug output
-	_debug_output.total_energy_rate_estimate = ste_rate.estimate;
-	_debug_output.total_energy_rate_sp = ste_rate.setpoint;
+	_debug_output.کل_energy_شرح_estimate = ste_شرح.estimate;
+	_debug_output.کل_energy_شرح_sp = ste_شرح.setpoint;
 	_debug_output.throttle_integrator = _throttle_integ_state;
 }
 
-TECSControl::ControlValues TECSControl::_calcThrottleControlSteRate(const STERateLimit &limit,
-		const SpecificEnergyRates &specific_energy_rates,
-		const Param &param) const
+TECSControl::Control_اقدار TECSControl::calc_Throttle_Control_Ste_شرح(ثابت STERate_حد_بندی &حد_بندی_2,
+		ثابت SpecificEnergyRates &specific_energy_rates,
+		ثابت Param &param) ثابت
 {
 	// Output ste rate values
-	ControlValues ste_rate;
-	ste_rate.setpoint = specific_energy_rates.spe_rate.setpoint + specific_energy_rates.ske_rate.setpoint;
+	Control_اقدار ste_شرح;
+	ste_شرح.setpoint = specific_energy_rates.spe_شرح.setpoint + specific_energy_rates.ske_شرح.setpoint;
 
 	// Adjust the demanded total energy rate to compensate for induced drag rise in turns.
 	// Assume induced drag scales linearly with normal load factor.
 	// The additional normal load factor is given by (1/cos(bank angle) - 1)
-	ste_rate.setpoint += param.load_factor_correction * (param.load_factor - 1.f);
+	ste_شرح.setpoint += param.بھرو_ضربی_عدد_correction * (param.بھرو_ضربی_عدد - 1.f);
 
-	ste_rate.setpoint = constrain(ste_rate.setpoint, limit.STE_rate_min, limit.STE_rate_max);
-	ste_rate.estimate = _ste_rate_estimate_filter.getState();
+	ste_شرح.setpoint = constrain(ste_شرح.setpoint, حد_بندی_2.STE_شرح_min, حد_بندی_2.STE_شرح_max);
+	ste_شرح.estimate = ste_شرح_estimate_filter.getState();
 
-	return ste_rate;
+	واپس ste_شرح;
 }
 
-void TECSControl::_calcThrottleControlUpdate(float dt, const STERateLimit &limit, const ControlValues &ste_rate,
-		const Param &param, const Flag &flag)
+خالی TECSControl::_calcThrottleControlUpdate(اعشاری dt, ثابت STERate_حد_بندی &حد_بندی_2, ثابت Control_اقدار &ste_شرح,
+		ثابت Param &param, ثابت Flag &flag)
 {
-	const float STE_rate_to_throttle = _steRateToThrottle(limit);
+	ثابت اعشاری STE_شرح_مقصد_throttle = ste_شرح_مقصد_Throttle(حد_بندی_2);
 
 	// Integral handling
-	if (flag.airspeed_enabled) {
-		if (param.integrator_gain_throttle > FLT_EPSILON) {
+	اگر (flag.airspeed_enabled) {
+		اگر (param.integrator_gain_throttle > FLT_EPSILON) {
 			// underspeed conditions zero out integration
-			float throttle_integ_input = (_getControlError(ste_rate) * param.integrator_gain_throttle) * dt *
-						     STE_rate_to_throttle * (1.0f - _ratio_undersped);
+			اعشاری throttle_integ_داخلہ = (_getControlError(ste_شرح) * param.integrator_gain_throttle) * dt *
+						     STE_شرح_مقصد_throttle * (1.0f - تناسب_undersped);
 
 			// only allow integrator propagation into direction which unsaturates throttle
-			if (_throttle_setpoint >= param.throttle_max) {
-				throttle_integ_input = math::min(0.f, throttle_integ_input);
+			اگر (_throttle_setpoint >= param.throttle_max) {
+				throttle_integ_داخلہ = math::min(0.f, throttle_integ_داخلہ);
 
 			}
 
-			if (_throttle_setpoint <= param.throttle_min) {
-				throttle_integ_input = math::max(0.f, throttle_integ_input);
+			اگر (_throttle_setpoint <= param.throttle_min) {
+				throttle_integ_داخلہ = math::max(0.f, throttle_integ_داخلہ);
 			}
 
 			// Calculate a throttle demand from the integrated total energy rate error
 			// This will be added to the total throttle demand to compensate for steady state errors
-			_throttle_integ_state = PX4_ISFINITE(throttle_integ_input) ? _throttle_integ_state + throttle_integ_input : 0.f;
+			_throttle_integ_state = PX4_ISFINITE(throttle_integ_داخلہ) ? _throttle_integ_state + throttle_integ_داخلہ : 0.f;
 
-		} else {
+		} ورنہ {
 			_throttle_integ_state = 0.0f;
 		}
 
 	}
 }
 
-float TECSControl::_calcThrottleControlOutput(const STERateLimit &limit, const ControlValues &ste_rate,
-		const Param &param,
-		const Flag &flag) const
+اعشاری TECSControl::_calcThrottleControlOutput(ثابت STERate_حد_بندی &حد_بندی_2, ثابت Control_اقدار &ste_شرح,
+		ثابت Param &param,
+		ثابت Flag &flag) ثابت
 {
-	const float STE_rate_to_throttle = _steRateToThrottle(limit);
+	ثابت اعشاری STE_شرح_مقصد_throttle = ste_شرح_مقصد_Throttle(حد_بندی_2);
 
 	// Calculate a predicted throttle from the demanded rate of change of energy, using the cruise throttle
 	// as the starting point. Assume:
@@ -653,30 +653,30 @@ float TECSControl::_calcThrottleControlOutput(const STERateLimit &limit, const C
 
 	// assume airspeed and density-independent delta_throttle to sink/climb rate mapping
 	// TODO: include air density for thrust mappings
-	const float throttle_above_trim_per_ste_rate = (param.throttle_max - param.throttle_trim) / limit.STE_rate_max;
-	const float throttle_below_trim_per_ste_rate = (param.throttle_trim - param.throttle_min) / limit.STE_rate_min;
+	ثابت اعشاری throttle_above_trim_فی_ste_شرح = (param.throttle_max - param.throttle_trim) / حد_بندی_2.STE_شرح_max;
+	ثابت اعشاری throttle_نیچے_trim_فی_ste_شرح = (param.throttle_trim - param.throttle_min) / حد_بندی_2.STE_شرح_min;
 
-	float throttle_predicted = 0.0f;
+	اعشاری throttle_predicted = 0.0f;
 
-	if (ste_rate.setpoint >= FLT_EPSILON) {
+	اگر (ste_شرح.setpoint >= FLT_EPSILON) {
 		// throttle is between trim and maximum
-		throttle_predicted = param.throttle_trim + ste_rate.setpoint * throttle_above_trim_per_ste_rate;
+		throttle_predicted = param.throttle_trim + ste_شرح.setpoint * throttle_above_trim_فی_ste_شرح;
 
-	} else {
+	} ورنہ {
 		// throttle is between trim and minimum
-		throttle_predicted = param.throttle_trim - ste_rate.setpoint * throttle_below_trim_per_ste_rate;
+		throttle_predicted = param.throttle_trim - ste_شرح.setpoint * throttle_نیچے_trim_فی_ste_شرح;
 
 	}
 
 	// Add proportional and derivative control feedback to the predicted throttle and constrain to throttle limits
-	float throttle_setpoint = (_getControlError(ste_rate) * param.throttle_damping_gain) * STE_rate_to_throttle +
+	اعشاری throttle_setpoint = (_getControlError(ste_شرح) * param.throttle_damping_gain) * STE_شرح_مقصد_throttle +
 				  throttle_predicted;
 
-	if (flag.airspeed_enabled) {
+	اگر (flag.airspeed_enabled) {
 		// Add the integrator feedback during closed loop operation with an airspeed sensor
 		throttle_setpoint += _throttle_integ_state;
 
-	} else {
+	} ورنہ {
 		/* We want to avoid reducing the throttle output when switching from airspeed enabled mode into airspeedless mode.
 		  Thus, if the throttle integrator has a positive value, add it still to the throttle setpoint. */
 		throttle_setpoint += math::max(0.0f, _throttle_integ_state);
@@ -684,174 +684,174 @@ float TECSControl::_calcThrottleControlOutput(const STERateLimit &limit, const C
 
 
 	// ramp in max throttle setting with underspeediness value
-	throttle_setpoint = _ratio_undersped * param.throttle_max + (1.0f - _ratio_undersped) * throttle_setpoint;
+	throttle_setpoint = تناسب_undersped * param.throttle_max + (1.0f - تناسب_undersped) * throttle_setpoint;
 
-	return constrain(throttle_setpoint, param.throttle_min, param.throttle_max);
+	واپس constrain(throttle_setpoint, param.throttle_min, param.throttle_max);
 }
 
-void TECSControl::resetIntegrals()
+خالی TECSControl::resetIntegrals()
 {
 	_pitch_integ_state = 0.0f;
 	_throttle_integ_state = 0.0f;
 }
 
-void TECS::initControlParams(const Input &input)
+خالی TECS::initControlParams(ثابت داخلہ_2 &داخلہ)
 {
 	// Update parameters from input
 	// Reference model
-	_reference_param.target_climbrate = input.target_climbrate;
-	_reference_param.target_sinkrate = input.target_sinkrate;
+	_reference_param.ہدف_climbrate = داخلہ.ہدف_climbrate;
+	_reference_param.ہدف_sinkrate = داخلہ.ہدف_sinkrate;
 	// Control
-	_control_param.tas_min = input.eas_to_tas * _equivalent_airspeed_min;
-	_control_param.tas_stall = input.eas_to_tas * _equivalent_airspeed_stall;
-	_control_param.tas_max = input.eas_to_tas * _equivalent_airspeed_max;
-	_control_param.tas_trim = input.eas_to_tas * _control_param.equivalent_airspeed_trim;
-	_control_param.pitch_max = input.pitch_max;
-	_control_param.pitch_min = input.pitch_min;
-	_control_param.throttle_trim = input.throttle_trim;
-	_control_param.throttle_max = input.throttle_max;
-	_control_param.throttle_min = input.throttle_min;
+	_control_param.tas_min = داخلہ.eas_مقصد_tas * _equivalent_airspeed_min;
+	_control_param.tas_stall = داخلہ.eas_مقصد_tas * _equivalent_airspeed_stall;
+	_control_param.tas_max = داخلہ.eas_مقصد_tas * _equivalent_airspeed_max;
+	_control_param.tas_trim = داخلہ.eas_مقصد_tas * _control_param.equivalent_airspeed_trim;
+	_control_param.pitch_max = داخلہ.pitch_max;
+	_control_param.pitch_min = داخلہ.pitch_min;
+	_control_param.throttle_trim = داخلہ.throttle_trim;
+	_control_param.throttle_max = داخلہ.throttle_max;
+	_control_param.throttle_min = داخلہ.throttle_min;
 }
 
-float TECS::calcTrueAirspeedSetpoint(float eas_to_tas, float eas_setpoint)
+اعشاری TECS::calcTrueAirspeedSetpoint(اعشاری eas_مقصد_tas, اعشاری eas_setpoint)
 {
-	return lerp(eas_to_tas * eas_setpoint, _control_param.tas_max, _fast_descend);
+	واپس lerp(eas_مقصد_tas * eas_setpoint, _control_param.tas_max, _fast_descend);
 }
 
-void TECS::initialize(const Input &input)
+خالی TECS::initialize(ثابت داخلہ_2 &داخلہ)
 {
 	// Init subclasses
-	TECSAltitudeReferenceModel::AltitudeReferenceState current_state{.alt = input.altitude,
-			.alt_rate = input.altitude_rate};
+	TECSAltitudeReferenceModel::AltitudeReferenceState current_state{.alt = داخلہ.altitude,
+			.alt_شرح = داخلہ.altitude_شرح};
 	_altitude_reference_model.initialize(current_state);
-	_airspeed_filter.initialize(input.equivalent_airspeed, _airspeed_filter_param.equivalent_airspeed_trim,
+	_airspeed_filter.initialize(داخلہ.equivalent_airspeed, _airspeed_filter_param.equivalent_airspeed_trim,
 				    _control_flag.airspeed_enabled);
 
 	// Seed the controller from the filter, which falls back to trim airspeed without a valid measurement,
 	// so the controller sees the same airspeed on reset as on every following update
-	const float true_airspeed = input.eas_to_tas * _airspeed_filter.getState().speed;
+	ثابت اعشاری true_airspeed = داخلہ.eas_مقصد_tas * _airspeed_filter.getState().رفتار;
 
 	TECSControl::Setpoint control_setpoint;
 	control_setpoint.altitude_reference = _altitude_reference_model.getAltitudeReference();
-	control_setpoint.altitude_rate_setpoint_direct = NAN; // initialization always goes through the altitude loop
+	control_setpoint.altitude_شرح_setpoint_براہ_راست = NAN; // initialization always goes through the altitude loop
 	control_setpoint.tas_setpoint = true_airspeed;
 
-	const TECSControl::Input control_input{ .altitude = input.altitude,
-						.altitude_rate = input.altitude_rate,
+	ثابت TECSControl::داخلہ_2 control_داخلہ{ .altitude = داخلہ.altitude,
+						.altitude_شرح = داخلہ.altitude_شرح,
 						.tas = true_airspeed,
-						.tas_rate = 0.0f};
+						.tas_شرح = 0.0f};
 
-	_control.initialize(control_setpoint, control_input, _control_param, _control_flag);
+	_control.initialize(control_setpoint, control_داخلہ, _control_param, _control_flag);
 
 	_fast_descend = 0.f;
 	_enabled_fast_descend_timestamp = 0U;
 }
 
-void TECS::update(const Input &input)
+خالی TECS::update(ثابت داخلہ_2 &داخلہ)
 {
 	// Calculate the time since last update (seconds)
-	const hrt_abstime now = hrt_absolute_time();
-	const float dt = static_cast<float>(now - _update_timestamp) * 1e-6f;
+	ثابت hrt_abstime now = hrt_absolute_وقت();
+	ثابت اعشاری dt = static_cast<اعشاری>(now - _update_timestamp) * 1e-6f;
 
-	initControlParams(input);
+	initControlParams(داخلہ);
 
-	if (dt < DT_MIN) {
+	اگر (dt < DT_MIN) {
 		// Update interval too small, do not update. Assume constant states/output in this case.
-		return;
+		واپس;
 	}
 
-	float true_airspeed_setpoint;
+	اعشاری true_airspeed_setpoint;
 
-	if (dt > DT_MAX || _update_timestamp == 0UL) {
+	اگر (dt > DT_MAX || _update_timestamp == 0UL) {
 		// Update time interval too large, can't guarantee sanity of state updates anymore. reset the control loop.
-		initialize(input);
-		true_airspeed_setpoint = calcTrueAirspeedSetpoint(input.eas_to_tas, input.equivalent_airspeed_setpoint);
+		initialize(داخلہ);
+		true_airspeed_setpoint = calcTrueAirspeedSetpoint(داخلہ.eas_مقصد_tas, داخلہ.equivalent_airspeed_setpoint);
 
-	} else {
+	} ورنہ {
 		/* Check if we want to fast descend. On fast descend, we set the throttle to min, and use the altitude control
 		loop to control the speed to the maximum airspeed. */
-		_setFastDescend(input.altitude_setpoint, input.altitude);
+		سیٹ_Fast_Descend(داخلہ.altitude_setpoint, داخلہ.altitude);
 		_control_param.fast_descend = _fast_descend;
 
 		// Update airspeedfilter submodule
-		const TECSAirspeedFilter::Input airspeed_input{ .equivalent_airspeed = input.equivalent_airspeed,
-				.equivalent_airspeed_rate = input.speed_deriv_forward / input.eas_to_tas};
+		ثابت TECSAirspeedFilter::داخلہ_2 airspeed_داخلہ{ .equivalent_airspeed = داخلہ.equivalent_airspeed,
+				.equivalent_airspeed_شرح = داخلہ.رفتار_deriv_forward / داخلہ.eas_مقصد_tas};
 
-		_airspeed_filter.update(dt, airspeed_input, _airspeed_filter_param, _control_flag.airspeed_enabled);
+		_airspeed_filter.update(dt, airspeed_داخلہ, _airspeed_filter_param, _control_flag.airspeed_enabled);
 
 		// Update Reference model submodule
-		if (fastDescendFullyEngaged(_fast_descend)) {
+		اگر (fastDescendFullyEngaged(_fast_descend)) {
 			// Reset the altitude reference model, while we are in fast descend.
-			const TECSAltitudeReferenceModel::AltitudeReferenceState init_state{
-				.alt = input.altitude,
-				.alt_rate = input.altitude_rate};
+			ثابت TECSAltitudeReferenceModel::AltitudeReferenceState init_state{
+				.alt = داخلہ.altitude,
+				.alt_شرح = داخلہ.altitude_شرح};
 			_altitude_reference_model.initialize(init_state);
 
-		} else if (_control.getUnderspeedRatio() > 0.5f) {
+		} ورنہ اگر (_control.get_Underspeed_تناسب() > 0.5f) {
 			// Reset altitude reference during underspeed to prevent altitude error accumulation
 			// that would cause aggressive pitch-up (and potential secondary stall) on recovery.
-			const TECSAltitudeReferenceModel::AltitudeReferenceState init_state{
-				.alt = input.altitude,
-				.alt_rate = input.altitude_rate};
+			ثابت TECSAltitudeReferenceModel::AltitudeReferenceState init_state{
+				.alt = داخلہ.altitude,
+				.alt_شرح = داخلہ.altitude_شرح};
 			_altitude_reference_model.initialize(init_state);
 
-		} else {
-			const TECSAltitudeReferenceModel::AltitudeReferenceState setpoint{ .alt = input.altitude_setpoint,
-					.alt_rate = input.altitude_rate_setpoint};
+		} ورنہ {
+			ثابت TECSAltitudeReferenceModel::AltitudeReferenceState setpoint{ .alt = داخلہ.altitude_setpoint,
+					.alt_شرح = داخلہ.altitude_شرح_setpoint};
 
-			_altitude_reference_model.update(dt, setpoint, input.altitude, input.altitude_rate, _reference_param);
+			_altitude_reference_model.update(dt, setpoint, داخلہ.altitude, داخلہ.altitude_شرح, _reference_param);
 		}
 
 		TECSControl::Setpoint control_setpoint;
 		control_setpoint.altitude_reference = _altitude_reference_model.getAltitudeReference();
-		control_setpoint.altitude_rate_setpoint_direct = _altitude_reference_model.getHeightRateSetpointDirect();
-		true_airspeed_setpoint = calcTrueAirspeedSetpoint(input.eas_to_tas, input.equivalent_airspeed_setpoint);
+		control_setpoint.altitude_شرح_setpoint_براہ_راست = _altitude_reference_model.get_اونچائی_شرح_Setpoint_براہ_راست();
+		true_airspeed_setpoint = calcTrueAirspeedSetpoint(داخلہ.eas_مقصد_tas, داخلہ.equivalent_airspeed_setpoint);
 		control_setpoint.tas_setpoint = true_airspeed_setpoint;
 
-		const TECSAirspeedFilter::AirspeedFilterState airspeed_state{_airspeed_filter.getState()};
-		const TECSControl::Input control_input{ .altitude = input.altitude,
-							.altitude_rate = input.altitude_rate,
-							.tas = input.eas_to_tas * airspeed_state.speed,
-							.tas_rate = input.eas_to_tas * airspeed_state.speed_rate};
+		ثابت TECSAirspeedFilter::AirspeedFilterState airspeed_state{_airspeed_filter.getState()};
+		ثابت TECSControl::داخلہ_2 control_داخلہ{ .altitude = داخلہ.altitude,
+							.altitude_شرح = داخلہ.altitude_شرح,
+							.tas = داخلہ.eas_مقصد_tas * airspeed_state.رفتار,
+							.tas_شرح = داخلہ.eas_مقصد_tas * airspeed_state.رفتار_شرح};
 
-		_control.update(dt, control_setpoint, control_input, _control_param, _control_flag);
+		_control.update(dt, control_setpoint, control_داخلہ, _control_param, _control_flag);
 	}
 
-	_debug_status.control = _control.getDebugOutput();
-	_debug_status.true_airspeed_sp = true_airspeed_setpoint;
-	const TECSAirspeedFilter::AirspeedFilterState airspeed_state{_airspeed_filter.getState()};
-	const TECSAltitudeReferenceModel::AltitudeReferenceState altitude_reference{_altitude_reference_model.getAltitudeReference()};
-	_debug_status.true_airspeed_filtered = input.eas_to_tas * airspeed_state.speed;
-	_debug_status.true_airspeed_derivative = input.eas_to_tas * airspeed_state.speed_rate;
-	_debug_status.altitude_reference = altitude_reference.alt;
-	_debug_status.height_rate_reference = altitude_reference.alt_rate;
-	_debug_status.height_rate_direct = _altitude_reference_model.getHeightRateSetpointDirect();
-	_debug_status.fast_descend = _fast_descend;
+	debug_حالت.control = _control.getDebugOutput();
+	debug_حالت.true_airspeed_sp = true_airspeed_setpoint;
+	ثابت TECSAirspeedFilter::AirspeedFilterState airspeed_state{_airspeed_filter.getState()};
+	ثابت TECSAltitudeReferenceModel::AltitudeReferenceState altitude_reference{_altitude_reference_model.getAltitudeReference()};
+	debug_حالت.true_airspeed_filtered = داخلہ.eas_مقصد_tas * airspeed_state.رفتار;
+	debug_حالت.true_airspeed_derivative = داخلہ.eas_مقصد_tas * airspeed_state.رفتار_شرح;
+	debug_حالت.altitude_reference = altitude_reference.alt;
+	debug_حالت.اونچائی_شرح_reference = altitude_reference.alt_شرح;
+	debug_حالت.اونچائی_شرح_براہ_راست = _altitude_reference_model.get_اونچائی_شرح_Setpoint_براہ_راست();
+	debug_حالت.fast_descend = _fast_descend;
 
 	_update_timestamp = now;
 }
 
-void TECS::_setFastDescend(const float alt_setpoint, const float alt)
+خالی TECS::سیٹ_Fast_Descend(ثابت اعشاری alt_setpoint, ثابت اعشاری alt)
 {
 	// disable fast descend if we are close to the target altitude or the altitude setpoint is not finite
 
-	if (PX4_ISFINITE(alt_setpoint) && _control_flag.airspeed_enabled && (_fast_descend_alt_err > FLT_EPSILON)
+	اگر (PX4_ISFINITE(alt_setpoint) && _control_flag.airspeed_enabled && (_fast_descend_alt_err > FLT_EPSILON)
 	    && ((alt_setpoint + _fast_descend_alt_err) < alt)) {
-		auto now = hrt_absolute_time();
+		خودکار now = hrt_absolute_وقت();
 
-		if (_enabled_fast_descend_timestamp == 0U) {
+		اگر (_enabled_fast_descend_timestamp == 0U) {
 			_enabled_fast_descend_timestamp = now;
 		}
 
-		_fast_descend = constrain(max(_fast_descend, static_cast<float>(now - _enabled_fast_descend_timestamp) /
-					      static_cast<float>(FAST_DESCEND_RAMP_UP_TIME)), 0.f, 1.f);
+		_fast_descend = constrain(max(_fast_descend, static_cast<اعشاری>(now - _enabled_fast_descend_timestamp) /
+					      static_cast<اعشاری>(FAST_DESCEND_RAMP_اوپر_وقت)), 0.f, 1.f);
 
-	} else if (PX4_ISFINITE(alt_setpoint) && (_fast_descend > FLT_EPSILON) && (_fast_descend_alt_err > FLT_EPSILON)) {
+	} ورنہ اگر (PX4_ISFINITE(alt_setpoint) && (_fast_descend > FLT_EPSILON) && (_fast_descend_alt_err > FLT_EPSILON)) {
 		// We're in fast descend, scale it down until FAST_DESCEND_HEIGHT_MARGIN above target altitude
-		_fast_descend = constrain((alt - alt_setpoint - FAST_DESCEND_HEIGHT_MARGIN) / _fast_descend_alt_err, 0.f, 1.f);
+		_fast_descend = constrain((alt - alt_setpoint - FAST_DESCEND_اونچائی_MARGIN) / _fast_descend_alt_err, 0.f, 1.f);
 		_enabled_fast_descend_timestamp = 0U;
 
-	} else {
+	} ورنہ {
 		_fast_descend = 0.f;
 		_enabled_fast_descend_timestamp = 0U;
 	}

@@ -2,25 +2,25 @@
 """
 Param source code generation script.
 """
-from __future__ import print_function
-import xml.etree.ElementTree as ET
-import argparse
-import sys
+سے __future__ درآمد print_function
+درآمد xml.etree.Element_درخت بطور ET
+درآمد argparse
+درآمد sys
 
-try:
-    from jinja2 import Environment, FileSystemLoader
-except ImportError as e:
-    print("Failed to import jinja2: " + str(e))
-    print("")
-    print("You may need to install it using:")
-    print("    pip3 install --user jinja2")
-    print("")
+کوشش:
+    سے jinja2 درآمد Environment, FileSystemLoader
+استثنا ImportError بطور e:
+    چھاپو("Failed to import jinja2: " + str(e))
+    چھاپو("")
+    چھاپو("You may need to install it using:")
+    چھاپو("    pip3 install --user jinja2")
+    چھاپو("")
     sys.exit(1)
 
-import os
-from px4params.readonly_config import load_readonly_params
+درآمد os
+سے px4params.readonly_config درآمد بھرو_readonly_params
 
-def generate(xml_file, dest='.', readonly_config=None):
+تعریف generate(xml_file, dest='.', readonly_config=کچھ_نہیں):
     """
     Generate px4 param source from xml.
 
@@ -30,44 +30,44 @@ def generate(xml_file, dest='.', readonly_config=None):
         None means to scan everything.
     """
     # pylint: disable=broad-except
-    tree = ET.parse(xml_file)
-    root = tree.getroot()
+    درخت = ET.parse(xml_file)
+    جڑ = درخت.getroot()
 
     params = []
-    for group in root:
-        if group.tag == "group" and "no_code_generation" not in group.attrib:
-            for param in group:
+    برائے گروہ میں جڑ:
+        اگر گروہ.لیبل == "group" اور "no_code_generation" نہیں میں گروہ.attrib:
+            برائے param میں گروہ:
                 params.append(param)
 
-    params = sorted(params, key=lambda name: name.attrib["name"])
+    params = sorted(params, کلید=بےنام name: name.attrib["name"])
 
-    all_param_names = set(p.attrib["name"] for p in params)
-    readonly_params = load_readonly_params(readonly_config, all_param_names)
+    all_param_نام = سیٹ(p.attrib["name"] برائے p میں params)
+    readonly_params = بھرو_readonly_params(readonly_config, all_param_نام)
 
-    script_path = os.path.dirname(os.path.realpath(__file__))
+    script_راستہ = os.راستہ.dirname(os.راستہ.realpath(__file__))
 
     # for jinja docs see: http://jinja.pocoo.org/docs/2.9/api/
     env = Environment(
-        loader=FileSystemLoader(os.path.join(script_path, 'templates')))
+        loader=FileSystemLoader(os.راستہ.join(script_راستہ, 'templates')))
 
-    if not os.path.isdir(dest):
-        os.path.mkdir(dest)
+    اگر نہیں os.راستہ.isdir(dest):
+        os.راستہ.mkdir(dest)
 
     template_files = [
         'px4_parameters.hpp.jinja',
     ]
-    for template_file in template_files:
+    برائے template_file میں template_files:
         template = env.get_template(template_file)
-        with open(os.path.join(
-                dest, template_file.replace('.jinja','')), 'w') as fid:
-            fid.write(template.render(params=params, readonly_params=readonly_params))
+        ساتھ open(os.راستہ.join(
+                dest, template_file.replace('.jinja','')), 'w') بطور fid:
+            fid.اكتب(template.render(params=params, readonly_params=readonly_params))
 
-if __name__ == "__main__":
-    arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument("--xml", help="parameter xml file")
-    arg_parser.add_argument("--dest", help="destination path", default=os.path.curdir)
-    arg_parser.add_argument("--readonly-config", help="path to readonly_params.yaml", default=None)
-    args = arg_parser.parse_args()
-    generate(xml_file=args.xml, dest=args.dest, readonly_config=args.readonly_config)
+اگر __name__ == "__main__":
+    arg_parser = argparse.دلیل_Parser()
+    arg_parser.جوڑو_دلیل("--xml", help="parameter xml file")
+    arg_parser.جوڑو_دلیل("--dest", help="destination path", طےشدہ=os.راستہ.curdir)
+    arg_parser.جوڑو_دلیل("--readonly-config", help="path to readonly_params.yaml", طےشدہ=کچھ_نہیں)
+    دلائل = arg_parser.parse_دلائل()
+    generate(xml_file=دلائل.xml, dest=دلائل.dest, readonly_config=دلائل.readonly_config)
 
 #  vim: set et fenc=utf-8 ff=unix sts=4 sw=4 ts=4 :

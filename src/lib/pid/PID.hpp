@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include <cmath>
+#شامل <cmath>
 
-class PID
+جماعت PID
 {
-public:
-	PID() = default;
-	virtual ~PID() = default;
-	void setOutputLimit(const float limit) {setOutputLimit(-limit, limit);}
-	void setOutputLimit(const float lower_limit, const float upper_limit);
-	void setIntegralLimit(const float limit) { _limit_integral = limit; }
-	void setGains(const float P, const float I, const float D);
-	void setSetpoint(const float setpoint) { _setpoint = setpoint; }
-	void setFeedForwardGain(const float feedforward_gain) { _gain_feedforward = feedforward_gain; }
-	float update(const float feedback, const float dt, const bool update_integral = true);
-	float getIntegral() { return _integral; }
-	void resetIntegral() { _integral = 0.f; }
-	void resetDerivative() { _last_feedback = NAN; }
-private:
-	void updateIntegral(float error, const float saturation, const float dt);
-	float updateDerivative(float feedback, const float dt);
+عوامی:
+	PID() = طےشدہ;
+	مجازی ~PID() = طےشدہ;
+	خالی سیٹ_Output_حد_بندی(ثابت اعشاری حد_بندی_2) {سیٹ_Output_حد_بندی(-حد_بندی_2, حد_بندی_2);}
+	خالی سیٹ_Output_حد_بندی(ثابت اعشاری زیریں_حد_بندی, ثابت اعشاری بالائی_حد_بندی);
+	خالی سیٹ_Integral_حد_بندی(ثابت اعشاری حد_بندی_2) { حد_بندی_integral = حد_بندی_2; }
+	خالی سیٹ_Gains(ثابت اعشاری P, ثابت اعشاری I, ثابت اعشاری D);
+	خالی سیٹ_Setpoint(ثابت اعشاری setpoint) { _setpoint = setpoint; }
+	خالی سیٹ_Feed_Forward_Gain(ثابت اعشاری feedforward_gain) { _gain_feedforward = feedforward_gain; }
+	اعشاری update(ثابت اعشاری feedback, ثابت اعشاری dt, ثابت منطقی update_integral = سچ);
+	اعشاری getIntegral() { واپس _integral; }
+	خالی resetIntegral() { _integral = 0.f; }
+	خالی resetDerivative() { آخری_feedback = NAN; }
+نجی:
+	خالی updateIntegral(اعشاری error, ثابت اعشاری saturation, ثابت اعشاری dt);
+	اعشاری updateDerivative(اعشاری feedback, ثابت اعشاری dt);
 
-	float _setpoint{0.f}; ///< current setpoint to track
-	float _integral{0.f}; ///< integral state
-	float _last_feedback{NAN};
+	اعشاری _setpoint{0.f}; ///< current setpoint to track
+	اعشاری _integral{0.f}; ///< integral state
+	اعشاری آخری_feedback{NAN};
 
 	// Gains, Limits
-	float _gain_feedforward{0.f};
-	float _gain_proportional{0.f};
-	float _gain_integral{0.f};
-	float _gain_derivative{0.f};
-	float _limit_integral{0.f};
-	float _lower_limit_output{0.f};
-	float _upper_limit_output{0.f};
+	اعشاری _gain_feedforward{0.f};
+	اعشاری _gain_proportional{0.f};
+	اعشاری _gain_integral{0.f};
+	اعشاری _gain_derivative{0.f};
+	اعشاری حد_بندی_integral{0.f};
+	اعشاری زیریں_حد_بندی_output{0.f};
+	اعشاری بالائی_حد_بندی_output{0.f};
 };

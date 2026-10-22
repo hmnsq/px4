@@ -31,36 +31,36 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#شامل <gtest/gtest.h>
+#شامل <matrix/math.hpp>
 
-using namespace matrix;
+استعمال نامخلا میٹرکس;
 
-TEST(MatrixSetIdentityTest, SetIdentity)
+TEST(میٹرکس_سیٹ_شناختی_عنصر_Test, سیٹ_شناختی_عنصر_2)
 {
 	Matrix3f A;
-	A.setIdentity();
+	A.سیٹ_شناختی_عنصر();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	برائے (size_t i = 0; i < 3; i++) {
+		برائے (size_t j = 0; j < 3; j++) {
+			اگر (i == j) {
 				EXPECT_FLOAT_EQ(A(i, j), 1);
 
-			} else {
+			} ورنہ {
 				EXPECT_FLOAT_EQ(A(i, j), 0);
 			}
 		}
 	}
 
 	Matrix3f B;
-	B.identity();
+	B.شناختی_عنصر();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	برائے (size_t i = 0; i < 3; i++) {
+		برائے (size_t j = 0; j < 3; j++) {
+			اگر (i == j) {
 				EXPECT_FLOAT_EQ(B(i, j), 1);
 
-			} else {
+			} ورنہ {
 				EXPECT_FLOAT_EQ(B(i, j), 0);
 			}
 		}

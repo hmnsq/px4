@@ -31,31 +31,31 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include <px4_defines.h>
+#شامل <px4_defines.h>
 
-#include <matrix/math.hpp>
-#include <mathlib/mathlib.h>
+#شامل <matrix/math.hpp>
+#شامل <mathlib/mathlib.h>
 
-namespace math
+نامخلا math
 {
-namespace trajectory
+نامخلا trajectory
 {
-using matrix::Vector3f;
-using matrix::Vector2f;
+استعمال میٹرکس::Vector3f;
+استعمال میٹرکس::Vector2f;
 
-struct VehicleDynamicLimits {
-	float z_accept_rad;
-	float xy_accept_rad;
+ساخت VehicleDynamicLimits {
+	اعشاری z_accept_rad;
+	اعشاری xy_accept_rad;
 
-	float max_acc_xy;
-	float max_jerk;
+	اعشاری max_acc_xy;
+	اعشاری max_jerk;
 
-	float max_speed_xy;
+	اعشاری max_رفتار_xy;
 
 	// TODO: remove this
-	float max_acc_xy_radius_scale;
+	اعشاری max_acc_xy_radius_scale;
 };
 
 /*
@@ -67,33 +67,33 @@ struct VehicleDynamicLimits {
  * the real acceptance radius is smaller.
  *
  */
-inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, const Vector3f &target,
-		const Vector3f &next_target, float exit_speed, const VehicleDynamicLimits &config)
+اندرونی اعشاری compute_آغاز_XYSpeed_From_Waypoints(ثابت Vector3f &آغاز_position, ثابت Vector3f &ہدف,
+		ثابت Vector3f &اگلا_ہدف, اعشاری exit_رفتار, ثابت VehicleDynamicLimits &config)
 {
-	const float distance_target_next = (target - next_target).xy().norm();
+	ثابت اعشاری فاصلہ_ہدف_اگلا = (ہدف - اگلا_ہدف).xy().norm();
 
-	const bool target_next_different = distance_target_next  > 0.001f;
-	const bool waypoint_overlap = distance_target_next < config.xy_accept_rad;
+	ثابت منطقی ہدف_اگلا_different = فاصلہ_ہدف_اگلا  > 0.001f;
+	ثابت منطقی waypoint_overlap = فاصلہ_ہدف_اگلا < config.xy_accept_rad;
 
-	float speed_at_target = 0.0f;
+	اعشاری رفتار_at_ہدف = 0.0f;
 
-	if (target_next_different &&
+	اگر (ہدف_اگلا_different &&
 	    !waypoint_overlap
 	   ) {
 		// rounding can push the dot product of two unit vectors past 1, which acosf turns into NaN
-		const float cos_alpha = constrain(Vector2f((target - start_position).xy()).unit_or_zero().dot(
-				Vector2f((target - next_target).xy()).unit_or_zero()), -1.f, 1.f);
-		const float alpha = acosf(cos_alpha);
-		const float safe_alpha = constrain(alpha, 0.f, M_PI_F - FLT_EPSILON);
-		float accel_tmp = config.max_acc_xy_radius_scale * config.max_acc_xy;
-		float max_speed_in_turn = computeMaxSpeedInWaypoint(safe_alpha, accel_tmp, config.xy_accept_rad);
-		speed_at_target = min(max_speed_in_turn, exit_speed, config.max_speed_xy);
+		ثابت اعشاری cos_alpha = constrain(Vector2f((ہدف - آغاز_position).xy()).unit_or_zero().dot(
+				Vector2f((ہدف - اگلا_ہدف).xy()).unit_or_zero()), -1.f, 1.f);
+		ثابت اعشاری alpha = acosf(cos_alpha);
+		ثابت اعشاری محفوظ_alpha = constrain(alpha, 0.f, M_PI_F - FLT_EPSILON);
+		اعشاری accel_tmp = config.max_acc_xy_radius_scale * config.max_acc_xy;
+		اعشاری max_رفتار_اندر_turn = compute_Max_رفتار_اندر_Waypoint(محفوظ_alpha, accel_tmp, config.xy_accept_rad);
+		رفتار_at_ہدف = min(max_رفتار_اندر_turn, exit_رفتار, config.max_رفتار_xy);
 	}
 
-	float start_to_target = (start_position - target).xy().norm();
-	float max_speed = computeMaxSpeedFromDistance(config.max_jerk, config.max_acc_xy, start_to_target, speed_at_target);
+	اعشاری آغاز_مقصد_ہدف = (آغاز_position - ہدف).xy().norm();
+	اعشاری max_رفتار = compute_Max_رفتار_From_فاصلہ(config.max_jerk, config.max_acc_xy, آغاز_مقصد_ہدف, رفتار_at_ہدف);
 
-	return min(config.max_speed_xy, max_speed);
+	واپس min(config.max_رفتار_xy, max_رفتار);
 }
 
 /*
@@ -106,22 +106,22 @@ inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, co
  *
  * @return the maximum speed at waypoint[0] which allows it to follow the trajectory while respecting the dynamic limits
  */
-template <int N>
-float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDynamicLimits &config)
+سانچہ <صحیح N>
+اعشاری computeXYSpeedFromWaypoints(ثابت Vector3f waypoints[N], ثابت VehicleDynamicLimits &config)
 {
 	static_assert(N >= 2, "Need at least 2 points to compute speed");
 
-	float max_speed = 0.f;
+	اعشاری max_رفتار = 0.f;
 
 	// go backwards through the waypoints
-	for (int i = (N - 2); i >= 0; i--) {
-		max_speed = computeStartXYSpeedFromWaypoints(waypoints[i],
+	برائے (صحیح i = (N - 2); i >= 0; i--) {
+		max_رفتار = compute_آغاز_XYSpeed_From_Waypoints(waypoints[i],
 				waypoints[i + 1],
 				waypoints[min(i + 2, N - 1)],
-				max_speed, config);
+				max_رفتار, config);
 	}
 
-	return max_speed;
+	واپس max_رفتار;
 }
 
 /*
@@ -132,19 +132,19 @@ float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDyna
  * only the XY components are scaled down to avoid affecting
  * Z in case of numerical issues
  */
-inline void clampToXYNorm(Vector3f &target, float max_xy_norm, float accuracy = FLT_EPSILON)
+اندرونی خالی clamp_مقصد_XYNorm(Vector3f &ہدف, اعشاری max_xy_norm, اعشاری accuracy = FLT_EPSILON)
 {
-	const float xynorm = target.xy().norm();
-	const float scale_factor = (xynorm > FLT_EPSILON)
+	ثابت اعشاری xynorm = ہدف.xy().norm();
+	ثابت اعشاری scale_ضربی_عدد = (xynorm > FLT_EPSILON)
 				   ? max_xy_norm / xynorm
 				   : 1.f;
 
-	if (scale_factor < 1.f) {
-		if (max_xy_norm < accuracy && xynorm < accuracy) {
-			target.xy() = Vector2f(target) * scale_factor;
+	اگر (scale_ضربی_عدد < 1.f) {
+		اگر (max_xy_norm < accuracy && xynorm < accuracy) {
+			ہدف.xy() = Vector2f(ہدف) * scale_ضربی_عدد;
 
-		} else {
-			target *= scale_factor;
+		} ورنہ {
+			ہدف *= scale_ضربی_عدد;
 		}
 	}
 }
@@ -157,19 +157,19 @@ inline void clampToXYNorm(Vector3f &target, float max_xy_norm, float accuracy = 
  * only the Z component is scaled down to avoid affecting
  * XY in case of numerical issues
  */
-inline void clampToZNorm(Vector3f &target, float max_z_norm, float accuracy = FLT_EPSILON)
+اندرونی خالی clamp_مقصد_ZNorm(Vector3f &ہدف, اعشاری max_z_norm, اعشاری accuracy = FLT_EPSILON)
 {
-	const float znorm = fabs(target(2));
-	const float scale_factor = (znorm > FLT_EPSILON)
+	ثابت اعشاری znorm = fabs(ہدف(2));
+	ثابت اعشاری scale_ضربی_عدد = (znorm > FLT_EPSILON)
 				   ? max_z_norm / znorm
 				   : 1.f;
 
-	if (scale_factor < 1.f) {
-		if (max_z_norm < accuracy && znorm < accuracy) {
-			target(2) *= scale_factor;
+	اگر (scale_ضربی_عدد < 1.f) {
+		اگر (max_z_norm < accuracy && znorm < accuracy) {
+			ہدف(2) *= scale_ضربی_عدد;
 
-		} else {
-			target *= scale_factor;
+		} ورنہ {
+			ہدف *= scale_ضربی_عدد;
 		}
 	}
 }

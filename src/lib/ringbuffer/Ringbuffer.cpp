@@ -34,11 +34,11 @@
 
 
 
-#include "Ringbuffer.hpp"
+#شامل "Ringbuffer.hpp"
 
-#include <mathlib/mathlib.h>
-#include <assert.h>
-#include <string.h>
+#شامل <mathlib/mathlib.h>
+#شامل <assert.h>
+#شامل <string.h>
 
 
 Ringbuffer::~Ringbuffer()
@@ -46,137 +46,137 @@ Ringbuffer::~Ringbuffer()
 	deallocate();
 }
 
-bool Ringbuffer::allocate(size_t buffer_size)
+منطقی Ringbuffer::allocate(size_t بفر_سائز)
 {
-	assert(_ringbuffer == nullptr);
+	أكد(_ringbuffer == خالی_اشاریہ);
 
-	_size = buffer_size;
-	_ringbuffer = new uint8_t[_size];
-	return _ringbuffer != nullptr;
+	سائز_2 = بفر_سائز;
+	_ringbuffer = نیا uint8_t[سائز_2];
+	واپس _ringbuffer != خالی_اشاریہ;
 }
 
-void Ringbuffer::deallocate()
+خالی Ringbuffer::deallocate()
 {
-	delete[] _ringbuffer;
-	_ringbuffer = nullptr;
-	_size = 0;
-	_start = 0;
-	_end = 0;
+	حذف[] _ringbuffer;
+	_ringbuffer = خالی_اشاریہ;
+	سائز_2 = 0;
+	آغاز_3 = 0;
+	انتہا_2 = 0;
 }
 
-size_t Ringbuffer::space_available() const
+size_t Ringbuffer::space_دستیاب() ثابت
 {
-	if (_start > _end) {
-		return _start - _end - 1;
+	اگر (آغاز_3 > انتہا_2) {
+		واپس آغاز_3 - انتہا_2 - 1;
 
-	} else {
-		return _start - _end - 1 + _size;
+	} ورنہ {
+		واپس آغاز_3 - انتہا_2 - 1 + سائز_2;
 	}
 }
 
-size_t Ringbuffer::space_used() const
+size_t Ringbuffer::space_مستعمل() ثابت
 {
-	if (_start <= _end) {
-		return _end - _start;
+	اگر (آغاز_3 <= انتہا_2) {
+		واپس انتہا_2 - آغاز_3;
 
-	} else {
+	} ورنہ {
 		// Potential wrap around.
-		return _end - _start + _size;
+		واپس انتہا_2 - آغاز_3 + سائز_2;
 	}
 }
 
 
-bool Ringbuffer::push_back(const uint8_t *buf, size_t buf_len)
+منطقی Ringbuffer::push_back(ثابت uint8_t *buf, size_t buf_len)
 {
-	if (buf_len == 0 || buf == nullptr) {
+	اگر (buf_len == 0 || buf == خالی_اشاریہ) {
 		// Nothing to add, we better don't try.
-		return false;
+		واپس جھوٹ;
 	}
 
-	if (_start > _end) {
+	اگر (آغاز_3 > انتہا_2) {
 		// Add after end up to start, no wrap around.
 
 		// Leave one byte free so that start don't end up the same
 		// which signals empty.
-		const size_t available = _start - _end - 1;
+		ثابت size_t دستیاب = آغاز_3 - انتہا_2 - 1;
 
-		if (available < buf_len) {
-			return false;
+		اگر (دستیاب < buf_len) {
+			واپس جھوٹ;
 		}
 
-		memcpy(&_ringbuffer[_end], buf, buf_len);
-		_end += buf_len;
+		حافظہ_نقل(&_ringbuffer[انتہا_2], buf, buf_len);
+		انتہا_2 += buf_len;
 
-	} else {
+	} ورنہ {
 		// Add after end, maybe wrap around.
-		const size_t available = _start - _end - 1 + _size;
+		ثابت size_t دستیاب = آغاز_3 - انتہا_2 - 1 + سائز_2;
 
-		if (available < buf_len) {
-			return false;
+		اگر (دستیاب < buf_len) {
+			واپس جھوٹ;
 		}
 
-		const size_t remaining_packet_len = _size - _end;
+		ثابت size_t بقایا_packet_len = سائز_2 - انتہا_2;
 
-		if (buf_len > remaining_packet_len) {
-			memcpy(&_ringbuffer[_end], buf, remaining_packet_len);
-			_end = 0;
+		اگر (buf_len > بقایا_packet_len) {
+			حافظہ_نقل(&_ringbuffer[انتہا_2], buf, بقایا_packet_len);
+			انتہا_2 = 0;
 
-			memcpy(&_ringbuffer[_end], buf + remaining_packet_len, buf_len - remaining_packet_len);
-			_end += buf_len - remaining_packet_len;
+			حافظہ_نقل(&_ringbuffer[انتہا_2], buf + بقایا_packet_len, buf_len - بقایا_packet_len);
+			انتہا_2 += buf_len - بقایا_packet_len;
 
-		} else {
-			memcpy(&_ringbuffer[_end], buf, buf_len);
-			_end += buf_len;
+		} ورنہ {
+			حافظہ_نقل(&_ringbuffer[انتہا_2], buf, buf_len);
+			انتہا_2 += buf_len;
 		}
 	}
 
-	return true;
+	واپس سچ;
 }
 
-size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
+size_t Ringbuffer::نکالو_front(uint8_t *buf, size_t buf_max_len)
 {
-	if (buf == nullptr) {
+	اگر (buf == خالی_اشاریہ) {
 		// User needs to supply a valid pointer.
-		return 0;
+		واپس 0;
 	}
 
-	if (_start == _end) {
+	اگر (آغاز_3 == انتہا_2) {
 		// Empty
-		return 0;
+		واپس 0;
 	}
 
-	if (_start < _end) {
+	اگر (آغاز_3 < انتہا_2) {
 
 		// No wrap around.
-		size_t to_copy_len = math::min(_end - _start, buf_max_len);
+		size_t مقصد_copy_len = math::min(انتہا_2 - آغاز_3, buf_max_len);
 
-		memcpy(buf, &_ringbuffer[_start], to_copy_len);
-		_start += to_copy_len;
+		حافظہ_نقل(buf, &_ringbuffer[آغاز_3], مقصد_copy_len);
+		آغاز_3 += مقصد_copy_len;
 
-		return to_copy_len;
+		واپس مقصد_copy_len;
 
-	} else {
+	} ورنہ {
 		// Potential wrap around.
-		size_t to_copy_len = _end - _start + _size;
+		size_t مقصد_copy_len = انتہا_2 - آغاز_3 + سائز_2;
 
-		if (to_copy_len > buf_max_len) {
-			to_copy_len = buf_max_len;
+		اگر (مقصد_copy_len > buf_max_len) {
+			مقصد_copy_len = buf_max_len;
 		}
 
-		const size_t remaining_buf_len = _size - _start;
+		ثابت size_t بقایا_buf_len = سائز_2 - آغاز_3;
 
-		if (to_copy_len > remaining_buf_len) {
+		اگر (مقصد_copy_len > بقایا_buf_len) {
 
-			memcpy(buf, &_ringbuffer[_start], remaining_buf_len);
-			_start = 0;
-			memcpy(buf + remaining_buf_len, &_ringbuffer[_start], to_copy_len - remaining_buf_len);
-			_start += to_copy_len - remaining_buf_len;
+			حافظہ_نقل(buf, &_ringbuffer[آغاز_3], بقایا_buf_len);
+			آغاز_3 = 0;
+			حافظہ_نقل(buf + بقایا_buf_len, &_ringbuffer[آغاز_3], مقصد_copy_len - بقایا_buf_len);
+			آغاز_3 += مقصد_copy_len - بقایا_buf_len;
 
-		} else {
-			memcpy(buf, &_ringbuffer[_start], to_copy_len);
-			_start += to_copy_len;
+		} ورنہ {
+			حافظہ_نقل(buf, &_ringbuffer[آغاز_3], مقصد_copy_len);
+			آغاز_3 += مقصد_copy_len;
 		}
 
-		return to_copy_len;
+		واپس مقصد_copy_len;
 	}
 }

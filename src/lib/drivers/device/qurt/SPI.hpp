@@ -37,47 +37,47 @@
  * Base class for devices connected via SPI.
  */
 
-#pragma once
+#ہدایت once
 
-#include "../CDev.hpp"
+#شامل "../CDev.hpp"
 
 // #include "dev_fs_lib_spi.h"
 
-#include <px4_platform_common/spi.h>
+#شامل <px4_platform_common/spi.h>
 
 // Perhaps not the best place for these but they are only used for the IMU SPI driver on Qurt
-int px4_arch_gpiosetevent(spi_drdy_gpio_t pin, bool r, bool f, bool e, int (*func)(int, void *, void *), void *arg);
-void register_interrupt_callback_initalizer(int (*)(int (*)(int, void *, void *), void *arg));
+صحیح px4_arch_gpiosetevent(spi_drdy_gpio_t pin, منطقی r, منطقی f, منطقی e, صحیح (*func)(صحیح, خالی *, خالی *), خالی *arg);
+خالی رجسٹر_مداخلت_callback_initalizer(صحیح (*)(صحیح (*)(صحیح, خالی *, خالی *), خالی *arg));
 
-enum spi_mode_e {
+شمار spi_منوال_e {
 	SPIDEV_MODE0 = 0, /* CPOL=0 CHPHA=0 */
 	SPIDEV_MODE1 = 1, /* CPOL=0 CHPHA=1 */
 	SPIDEV_MODE2 = 2, /* CPOL=1 CHPHA=0 */
 	SPIDEV_MODE3 = 3  /* CPOL=1 CHPHA=1 */
 };
 
-struct I2CSPIDriverConfig;
+ساخت I2CSPIDriverConfig;
 
-namespace device __EXPORT
+نامخلا device __EXPORT
 {
 
 /**
  * Abstract class for character device on SPI
  */
-class __EXPORT SPI : public CDev
+جماعت __EXPORT SPI : عوامی CDev
 {
-public:
-	typedef int (*_config_spi_bus_func_t)();
-	typedef int (*_spi_transfer_func_t)(int, const uint8_t *, uint8_t *, const unsigned);
+عوامی:
+	قسمتعریف صحیح (*_config_spi_bus_func_t)();
+	قسمتعریف صحیح (*_spi_transfer_func_t)(صحیح, ثابت uint8_t *, uint8_t *, ثابت غیرعلامتی);
 
-	static void configure_callbacks(_config_spi_bus_func_t config_func,
+	ساکن خالی configure_callbacks(_config_spi_bus_func_t config_func,
 					_spi_transfer_func_t transfer_func)
 	{
 		_config_spi_bus = config_func;
 		_spi_transfer = transfer_func;
 	}
 
-protected:
+محفوظ:
 	/**
 	 * Constructor
 	 *
@@ -88,27 +88,27 @@ protected:
 	 * @param mode		SPI clock/data mode
 	 * @param frequency	SPI clock frequency
 	 */
-	SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency);
+	SPI(uint8_t device_type, ثابت حرف *name, صحیح bus, uint32_t device, شمار spi_منوال_e منوال, uint32_t frequency);
 
-	SPI(const I2CSPIDriverConfig &config);
+	SPI(ثابت I2CSPIDriverConfig &config);
 
-	virtual ~SPI();
+	مجازی ~SPI();
 
 	/**
 	 * Locking modes supported by the driver.
 	 */
-	enum LockMode {
-		LOCK_PREEMPTION,	/**< the default; lock against all forms of preemption. */
-		LOCK_THREADS,		/**< lock only against other threads, using SPI_LOCK */
-		LOCK_NONE		/**< perform no locking, only safe if the bus is entirely private */
+	شمار تالا_منوال {
+		تالا_PREEMPTION,	/**< the default; lock against all forms of preemption. */
+		تالا_دھاگے,		/**< lock only against other threads, using SPI_LOCK */
+		تالا_NONE		/**< perform no locking, only safe if the bus is entirely private */
 	};
 
-	virtual int	init();
+	مجازی صحیح	init();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	مجازی صحیح	probe() { واپس PX4_OK; }
 
 	/**
 	 * Perform a SPI transfer.
@@ -129,7 +129,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(uint8_t *send, uint8_t *recv, unsigned len);
+	صحیح		transfer(uint8_t *send, uint8_t *recv, غیرعلامتی len);
 
 	/**
 	 * Perform a SPI 16 bit transfer.
@@ -150,7 +150,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	صحیح		transferhword(uint16_t *send, uint16_t *recv, غیرعلامتی len);
 
 	/**
 	 * Set the SPI bus frequency
@@ -161,8 +161,8 @@ protected:
 	 *
 	 * @param frequency	Frequency to set (Hz)
 	 */
-	void		set_frequency(uint32_t frequency) {}
-	uint32_t	get_frequency() { return 0; }
+	خالی		سیٹ_frequency(uint32_t frequency) {}
+	uint32_t	get_frequency() { واپس 0; }
 
 	/**
 	 * Set the SPI bus locking mode
@@ -172,17 +172,17 @@ protected:
 	 *
 	 * @param mode	Locking mode
 	 */
-	void		set_lockmode(enum LockMode mode) {}
+	خالی		سیٹ_lockmode(شمار تالا_منوال منوال) {}
 
-private:
-	int 			_fd{-1};
+نجی:
+	صحیح 			_fd{-1};
 
-	static _config_spi_bus_func_t  _config_spi_bus;
-	static _spi_transfer_func_t    _spi_transfer;
+	ساکن _config_spi_bus_func_t  _config_spi_bus;
+	ساکن _spi_transfer_func_t    _spi_transfer;
 
-	static pthread_mutex_t         _mutex;
+	ساکن pthread_mutex_t         _mutex;
 
-protected:
+محفوظ:
 
 	/**
 	 * The number of times a read or write operation will be retried on

@@ -31,14 +31,14 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include "tinybson/tinybson.h"
+#شامل "tinybson/tinybson.h"
 
-enum class param_modify_on_import_ret {
+شمار class param_modify_on_import_ret {
 	PARAM_SKIP_IMPORT = 0,
 	PARAM_NOT_MODIFIED = 1,
 	PARAM_MODIFIED = 2
 };
 
-__EXPORT param_modify_on_import_ret param_modify_on_import(bson_node_t node);
+__EXPORT param_modify_on_import_ret param_modify_on_import(bson_گرہ_t گرہ_2);

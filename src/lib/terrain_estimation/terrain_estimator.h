@@ -35,14 +35,14 @@
  * @file terrain_estimator.h
  */
 
-#pragma once
+#ہدایت once
 
-#include <lib/mathlib/mathlib.h>
-#include <matrix/math.hpp>
-#include <uORB/topics/sensor_combined.h>
-#include <uORB/topics/sensor_gnss.h>
-#include <uORB/topics/vehicle_attitude.h>
-#include <uORB/topics/distance_sensor.h>
+#شامل <lib/mathlib/mathlib.h>
+#شامل <matrix/math.hpp>
+#شامل <uORB/topics/sensor_combined.h>
+#شامل <uORB/topics/sensor_gnss.h>
+#شامل <uORB/topics/vehicle_attitude.h>
+#شامل <uORB/topics/distance_sensor.h>
 
 
 /*
@@ -58,34 +58,34 @@
 
 class __EXPORT TerrainEstimator
 {
-public:
+عوامی:
 	TerrainEstimator();
-	~TerrainEstimator() = default;
+	~TerrainEstimator() = طےشدہ;
 
-	bool is_valid() {return _terrain_valid;}
-	float get_distance_to_ground() {return -_x(0);}
-	float get_velocity() {return _x(1);}
+	bool is_valid() {واپس _terrain_valid;}
+	اعشاری get_فاصلہ_مقصد_ground() {واپس -_x(0);}
+	اعشاری get_velocity() {واپس _x(1);}
 
-	void predict(float dt, const struct vehicle_attitude_s *attitude, const struct sensor_combined_s *sensor,
-		     const struct distance_sensor_s *distance);
-	void measurement_update(uint64_t time_ref, const struct sensor_gnss_s *gnss,
-				const struct distance_sensor_s *distance,
-				const struct vehicle_attitude_s *attitude);
+	خالی predict(اعشاری dt, ثابت ساخت vehicle_attitude_s *attitude, ثابت ساخت sensor_combined_s *sensor,
+		     ثابت ساخت فاصلہ_sensor_s *فاصلہ);
+	خالی measurement_update(uint64_t وقت_ref, ثابت ساخت sensor_gnss_s *gnss,
+				ثابت ساخت فاصلہ_sensor_s *فاصلہ,
+				ثابت ساخت vehicle_attitude_s *attitude);
 
-private:
-	enum {n_x = 3};
+نجی:
+	شمار {n_x = 3};
 
-	float _distance_last;
+	اعشاری فاصلہ_آخری;
 	bool _terrain_valid;
 
 	// kalman filter variables
-	matrix::Vector<float, n_x> _x;		// state: ground distance, velocity, accel bias in z direction
-	float  _u_z;			// acceleration in earth z direction
-	matrix::Matrix<float, 3, 3> _P;	// covariance matrix
+	میٹرکس::سمتیہ<اعشاری, n_x> _x;		// state: ground distance, velocity, accel bias in z direction
+	اعشاری  _u_z;			// acceleration in earth z direction
+	میٹرکس::میٹرکس_2<اعشاری, 3, 3> _P;	// covariance matrix
 
 	// timestamps
-	uint64_t _time_last_distance;
-	uint64_t _time_last_gnss;
+	uint64_t وقت_آخری_فاصلہ;
+	uint64_t وقت_آخری_gnss;
 
 	/*
 	struct {
@@ -97,6 +97,6 @@ private:
 	} _params;
 	*/
 
-	bool is_distance_valid(float distance);
+	bool is_فاصلہ_valid(اعشاری فاصلہ);
 
 };

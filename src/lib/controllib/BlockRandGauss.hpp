@@ -37,70 +37,70 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <assert.h>
+#شامل <time.h>
+#شامل <stdlib.h>
+#شامل <math.h>
+#شامل <mathlib/math/test/test.hpp>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+نامخلا control
 {
 
-class __EXPORT BlockRandGauss: public Block
+جماعت __EXPORT بلاک_Rand_Gauss: عوامی بلاک
 {
-public:
+عوامی:
 // methods
-	BlockRandGauss(SuperBlock *parent,
-		       const char *name) :
-		Block(parent, name),
-		_mean(this, "MEAN"),
-		_stdDev(this, "DEV")
+	بلاک_Rand_Gauss(Super_بلاک *والد,
+		       ثابت حرف *name) :
+		بلاک(والد, name),
+		اوسط_2(یہ, "MEAN"),
+		_stdDev(یہ, "DEV")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandGauss() = default;
-	float update()
+	مجازی ~بلاک_Rand_Gauss() = طےشدہ;
+	اعشاری update()
 	{
-		static float V1, V2, S;
-		static int phase = 0;
-		float X;
+		ساکن اعشاری V1, V2, S;
+		ساکن صحیح phase = 0;
+		اعشاری X;
 
-		if (phase == 0) {
-			do {
-				float U1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-				float U2 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		اگر (phase == 0) {
+			کرو {
+				اعشاری U1 = static_cast<اعشاری>(rand()) / static_cast<اعشاری>(RAND_MAX);
+				اعشاری U2 = static_cast<اعشاری>(rand()) / static_cast<اعشاری>(RAND_MAX);
 				V1 = 2 * U1 - 1;
 				V2 = 2 * U2 - 1;
 				S = V1 * V1 + V2 * V2;
-			} while (S >= 1 || fabsf(S) < 1e-8f);
+			} جب (S >= 1 || fabsf(S) < 1e-8f);
 
-			X = V1 * float(sqrtf(-2 * float(logf(S)) / S));
+			X = V1 * اعشاری(sqrtf(-2 * اعشاری(logf(S)) / S));
 
-		} else {
-			X = V2 * float(sqrtf(-2 * float(logf(S)) / S));
+		} ورنہ {
+			X = V2 * اعشاری(sqrtf(-2 * اعشاری(logf(S)) / S));
 		}
 
 		phase = 1 - phase;
-		return X * getStdDev() + getMean();
+		واپس X * getStdDev() + get_اوسط();
 	}
 // accessors
-	float getMean() { return _mean.get(); }
-	float getStdDev() { return _stdDev.get(); }
-private:
-// attributes
-	control::BlockParamFloat _mean;
-	control::BlockParamFloat _stdDev;
+	اعشاری get_اوسط() { واپس اوسط_2.get(); }
+	اعشاری getStdDev() { واپس _stdDev.get(); }
+نجی:
+//اوصاف
+	control::بلاک_Param_Float اوسط_2;
+	control::بلاک_Param_Float _stdDev;
 };
 
 } // namespace control

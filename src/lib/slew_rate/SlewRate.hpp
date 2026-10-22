@@ -39,36 +39,36 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#ہدایت once
 
-#include <mathlib/mathlib.h>
-#include <matrix/math.hpp>
+#شامل <mathlib/mathlib.h>
+#شامل <matrix/math.hpp>
 
-template<typename Type>
-class SlewRate
+سانچہ<قسم_نام Type>
+جماعت Slew_شرح
 {
-public:
-	SlewRate() = default;
-	SlewRate(Type initial_value) { setForcedValue(initial_value); }
-	~SlewRate() = default;
+عوامی:
+	Slew_شرح() = طےشدہ;
+	Slew_شرح(Type initial_قدر) { سیٹ_Forced_قدر(initial_قدر); }
+	~Slew_شرح() = طےشدہ;
 
 	/**
 	 * Set maximum rate of change for the value
 	 * @param slew_rate maximum rate of change
 	 */
-	void setSlewRate(const Type slew_rate) { _slew_rate = slew_rate; }
+	خالی سیٹ_Slew_شرح(ثابت Type slew_شرح) { slew_شرح_2 = slew_شرح; }
 
 	/**
 	 * Set value ignoring slew rate for initialization purpose
 	 * @param value new applied value
 	 */
-	void setForcedValue(const Type value) { _value = value; }
+	خالی سیٹ_Forced_قدر(ثابت Type value) { قدر_2 = value; }
 
 	/**
 	 * Get value from last update of the slew rate
 	 * @return current value the slew rate is at
 	 */
-	Type getState() const { return _value; }
+	Type getState() ثابت { واپس قدر_2; }
 
 	/**
 	 * Update slewrate
@@ -76,17 +76,17 @@ public:
 	 * @param deltatime time in seconds since last update
 	 * @return actual value that complies with the slew rate
 	 */
-	Type update(const Type new_value, const float deltatime)
+	Type update(ثابت Type new_قدر, ثابت اعشاری deltatime)
 	{
 		// Limit the rate of change of the value
-		const Type dvalue_desired = new_value - _value;
-		const Type dvalue_max = _slew_rate * deltatime;
-		const Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
-		_value += dvalue;
-		return _value;
+		ثابت Type dvalue_desired = new_قدر - قدر_2;
+		ثابت Type dvalue_max = slew_شرح_2 * deltatime;
+		ثابت Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
+		قدر_2 += dvalue;
+		واپس قدر_2;
 	}
 
-protected:
-	Type _slew_rate{}; ///< maximum rate of change for the value
-	Type _value{}; ///< state to keep last value of the slew rate
+محفوظ:
+	Type slew_شرح_2{}; ///< maximum rate of change for the value
+	Type قدر_2{}; ///< state to keep last value of the slew rate
 };

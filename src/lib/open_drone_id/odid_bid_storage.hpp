@@ -31,64 +31,64 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include <stdint.h>
+#شامل <stdint.h>
 
-namespace open_drone_id
+نامخلا open_drone_id
 {
 
-static constexpr uint8_t UAS_ID_SIZE = 20;
-static constexpr uint8_t UAS_ID_TYPE_SERIAL_NUMBER = 1;
-static constexpr int32_t UAS_ID_MODE_LOCK_FIRST_BASIC_ID = 1;
+ساکن constexpr uint8_t UAS_ID_سائز = 20;
+ساکن constexpr uint8_t UAS_ID_TYPE_SERIAL_نمبر = 1;
+ساکن constexpr int32_t UAS_ID_منوال_تالا_پہلا_BASIC_ID = 1;
 
-struct UasId {
+ساخت UasId {
 	uint8_t ua_type{0};
-	uint8_t uas_id[UAS_ID_SIZE] {};
+	uint8_t uas_id[UAS_ID_سائز] {};
 };
 
-enum class BidLockState {
-	Empty,
+شمار جماعت Bid_تالا_State {
+	خالی_خانے_2,
 	Locked,
-	InvalidRecord,
+	Invalid_ریکارڈ,
 	StorageUnavailable,
 	WriteError,
 	Unsupported,
 };
 
-struct BidLockInfo {
-	BidLockState state{BidLockState::Unsupported};
+ساخت Bid_تالا_Info {
+	Bid_تالا_State state{Bid_تالا_State::Unsupported};
 	UasId id{};
 
-	bool locked() const { return state == BidLockState::Locked; }
+	منطقی locked() ثابت { واپس state == Bid_تالا_State::Locked; }
 };
 
-enum class BidStoreResult {
+شمار جماعت Bid_Store_نتیجہ {
 	Stored,
 	AlreadyLocked,
 	AlreadyLockedDifferent,
 	InvalidBasicId,
 	StorageUnavailable,
-	InvalidRecord,
+	Invalid_ریکارڈ,
 	WriteError,
 	Unsupported,
 };
 
-class BidStorage
+جماعت BidStorage
 {
-public:
-	static BidLockInfo get();
-	static BidStoreResult checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE]);
+عوامی:
+	ساکن Bid_تالا_Info get();
+	ساکن Bid_Store_نتیجہ checkOrStore(uint8_t ua_type, ثابت uint8_t uas_id[UAS_ID_سائز]);
 };
 
-class BidLock
+جماعت Bid_تالا
 {
-public:
-	BidStoreResult resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE], UasId &locked_id);
+عوامی:
+	Bid_Store_نتیجہ resolve(uint8_t id_type, uint8_t ua_type, ثابت uint8_t uas_id[UAS_ID_سائز], UasId &locked_id);
 
-private:
-	BidLockInfo _info{};
-	bool _loaded{false};
+نجی:
+	Bid_تالا_Info _info{};
+	منطقی _loaded{جھوٹ};
 };
 
 } // namespace open_drone_id

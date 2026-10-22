@@ -31,16 +31,16 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include <cmath>
-#include <motion_planning/VelocitySmoothing.hpp>
+#شامل <cmath>
+#شامل <motion_planning/VelocitySmoothing.hpp>
 
-#include <matrix/matrix/math.hpp>
-#include <px4_defines.h>
+#شامل <matrix/matrix/math.hpp>
+#شامل <px4_defines.h>
 
-using matrix::Vector2f;
-using matrix::Vector3f;
+استعمال میٹرکس::Vector2f;
+استعمال میٹرکس::Vector3f;
 
 /**
  * @brief Class that generates setpoints for a smooth trajectory
@@ -49,16 +49,16 @@ using matrix::Vector3f;
  * This is achieved by first generating an unsmoothed velocity setpoint
  * which then gets smoothed using the VelocitySmoothing library.
  */
-class PositionSmoothing
+جماعت PositionSmoothing
 {
 
-public:
+عوامی:
 	/**
 	 * @brief Result type of the position smoothing algorithm.
 	 * The included values shall then be used as setpoints for
 	 * the controllers.
 	 */
-	struct PositionSmoothingSetpoints {
+	ساخت PositionSmoothingSetpoints {
 		Vector3f jerk;
 		Vector3f acceleration;
 		Vector3f velocity;
@@ -77,17 +77,17 @@ public:
 	 * @param force_zero_velocity_setpoint Force vehicle to stop. Generate trajectory that ends with still vehicle.
 	 * @param out_setpoints Output of the generated setpoints
 	 */
-	inline void generateSetpoints(
-		const Vector3f &position,
-		const Vector3f(&waypoints)[3],
-		const Vector3f &feedforward_velocity,
-		float delta_time,
-		bool force_zero_velocity_setpoint,
-		PositionSmoothingSetpoints &out_setpoints
+	اندرونی خالی generateSetpoints(
+		ثابت Vector3f &position,
+		ثابت Vector3f(&waypoints)[3],
+		ثابت Vector3f &feedforward_velocity,
+		اعشاری delta_وقت,
+		منطقی force_zero_velocity_setpoint,
+		PositionSmoothingSetpoints &برآمد_setpoints
 	)
 	{
-		_generateSetpoints(position, waypoints, false, feedforward_velocity, delta_time, force_zero_velocity_setpoint,
-				   out_setpoints);
+		_generateSetpoints(position, waypoints, جھوٹ, feedforward_velocity, delta_وقت, force_zero_velocity_setpoint,
+				   برآمد_setpoints);
 	}
 
 	/**
@@ -101,18 +101,18 @@ public:
 	 * @param force_zero_velocity_setpoint Force vehicle to stop. Generate trajectory that ends with still vehicle.
 	 * @param out_setpoints Output of the generated setpoints
 	 */
-	inline void generateSetpoints(
-		const Vector3f &position,
-		const Vector3f &waypoint,
-		const Vector3f &feedforward_velocity,
-		float delta_time,
-		bool force_zero_velocity_setpoint,
-		PositionSmoothingSetpoints &out_setpoints
+	اندرونی خالی generateSetpoints(
+		ثابت Vector3f &position,
+		ثابت Vector3f &waypoint,
+		ثابت Vector3f &feedforward_velocity,
+		اعشاری delta_وقت,
+		منطقی force_zero_velocity_setpoint,
+		PositionSmoothingSetpoints &برآمد_setpoints
 	)
 	{
 		Vector3f waypoints[3] = {waypoint, waypoint, waypoint};
-		_generateSetpoints(position, waypoints, true, feedforward_velocity, delta_time, force_zero_velocity_setpoint,
-				   out_setpoints);
+		_generateSetpoints(position, waypoints, سچ, feedforward_velocity, delta_وقت, force_zero_velocity_setpoint,
+				   برآمد_setpoints);
 	}
 
 
@@ -123,9 +123,9 @@ public:
 	 * @param velocity current velocity
 	 * @param position current position
 	 */
-	void reset(const Vector3f &acceleration, const Vector3f &velocity, const Vector3f &position)
+	خالی reset(ثابت Vector3f &acceleration, ثابت Vector3f &velocity, ثابت Vector3f &position)
 	{
-		for (size_t i = 0; i < 3; i++) {
+		برائے (size_t i = 0; i < 3; i++) {
 			_trajectory[i].reset(acceleration(i), velocity(i), position(i));
 		}
 	}
@@ -133,200 +133,200 @@ public:
 	/**
 	 * @return float Current trajectory acceleration in X
 	 */
-	inline float getCurrentAccelerationX() const
+	اندرونی اعشاری getCurrentAccelerationX() ثابت
 	{
-		return _trajectory[0].getCurrentAcceleration();
+		واپس _trajectory[0].getCurrentAcceleration();
 	}
 
 	/**
 	 * @return float Current trajectory acceleration in Y
 	 */
-	inline float getCurrentAccelerationY() const
+	اندرونی اعشاری getCurrentAccelerationY() ثابت
 	{
-		return _trajectory[1].getCurrentAcceleration();
+		واپس _trajectory[1].getCurrentAcceleration();
 	}
 
 	/**
 	 * @return float Current trajectory acceleration in Z
 	 */
-	inline float getCurrentAccelerationZ() const
+	اندرونی اعشاری getCurrentAccelerationZ() ثابت
 	{
-		return _trajectory[2].getCurrentAcceleration();
+		واپس _trajectory[2].getCurrentAcceleration();
 	}
 
 	/**
 	 * @return float Current trajectory acceleration
 	 */
-	inline Vector3f getCurrentAcceleration() const
+	اندرونی Vector3f getCurrentAcceleration() ثابت
 	{
-		return {getCurrentAccelerationX(), getCurrentAccelerationY(), getCurrentAccelerationZ()};
+		واپس {getCurrentAccelerationX(), getCurrentAccelerationY(), getCurrentAccelerationZ()};
 	}
 
 	/**
 	 * @return float Current trajectory acceleration in X and Y
 	 */
-	inline Vector2f getCurrentAccelerationXY() const
+	اندرونی Vector2f getCurrentAccelerationXY() ثابت
 	{
-		return {getCurrentAccelerationX(), getCurrentAccelerationY()};
+		واپس {getCurrentAccelerationX(), getCurrentAccelerationY()};
 	}
 
 	/**
 	 * @return float Current trajectory velocity in X
 	 */
-	inline float getCurrentVelocityX() const
+	اندرونی اعشاری getCurrentVelocityX() ثابت
 	{
-		return _trajectory[0].getCurrentVelocity();
+		واپس _trajectory[0].getCurrentVelocity();
 	}
 
 	/**
 	 * @return float Current trajectory velocity in Y
 	 */
-	inline float getCurrentVelocityY() const
+	اندرونی اعشاری getCurrentVelocityY() ثابت
 	{
-		return _trajectory[1].getCurrentVelocity();
+		واپس _trajectory[1].getCurrentVelocity();
 	}
 
 	/**
 	 * @return float Current trajectory velocity in Z
 	 */
-	inline float getCurrentVelocityZ() const
+	اندرونی اعشاری getCurrentVelocityZ() ثابت
 	{
-		return _trajectory[2].getCurrentVelocity();
+		واپس _trajectory[2].getCurrentVelocity();
 	}
 
 	/**
 	 * @return float Current trajectory velocity
 	 */
-	inline Vector3f getCurrentVelocity() const
+	اندرونی Vector3f getCurrentVelocity() ثابت
 	{
-		return {getCurrentVelocityX(), getCurrentVelocityY(), getCurrentVelocityZ()};
+		واپس {getCurrentVelocityX(), getCurrentVelocityY(), getCurrentVelocityZ()};
 	}
 
 	/**
 	 * @return float Current trajectory velocity in X and Y
 	 */
-	inline Vector2f getCurrentVelocityXY() const
+	اندرونی Vector2f getCurrentVelocityXY() ثابت
 	{
-		return {getCurrentVelocityX(), getCurrentVelocityY()};
+		واپس {getCurrentVelocityX(), getCurrentVelocityY()};
 	}
 
 	/**
 	 * @return float Current trajectory position in X
 	 */
-	inline float getCurrentPositionX() const
+	اندرونی اعشاری getCurrentPositionX() ثابت
 	{
-		return _trajectory[0].getCurrentPosition();
+		واپس _trajectory[0].getCurrentPosition();
 	}
 
 	/**
 	 * @return float Current trajectory position in Y
 	 */
-	inline float getCurrentPositionY() const
+	اندرونی اعشاری getCurrentPositionY() ثابت
 	{
-		return _trajectory[1].getCurrentPosition();
+		واپس _trajectory[1].getCurrentPosition();
 	}
 
 	/**
 	 * @return float Current trajectory position in Z
 	 */
-	inline float getCurrentPositionZ() const
+	اندرونی اعشاری getCurrentPositionZ() ثابت
 	{
-		return _trajectory[2].getCurrentPosition();
+		واپس _trajectory[2].getCurrentPosition();
 	}
 
 	/**
 	 * @return float Current trajectory position
 	 */
-	inline Vector3f getCurrentPosition() const
+	اندرونی Vector3f getCurrentPosition() ثابت
 	{
-		return {getCurrentPositionX(), getCurrentPositionY(), getCurrentPositionZ()};
+		واپس {getCurrentPositionX(), getCurrentPositionY(), getCurrentPositionZ()};
 	}
 
 	/**
 	 * @param jerk maximum jerk for generated trajectory
 	 */
-	inline void setMaxJerkXY(float jerk)
+	اندرونی خالی سیٹ_Max_Jerk_XY(اعشاری jerk)
 	{
-		_trajectory[0].setMaxJerk(jerk);
-		_trajectory[1].setMaxJerk(jerk);
+		_trajectory[0].سیٹ_Max_Jerk(jerk);
+		_trajectory[1].سیٹ_Max_Jerk(jerk);
 	}
 
 	/**
 	 * @param jerk maximum jerk for generated trajectory
 	 */
-	inline void setMaxJerkZ(float jerk)
+	اندرونی خالی سیٹ_Max_Jerk_Z(اعشاری jerk)
 	{
-		_trajectory[2].setMaxJerk(jerk);
+		_trajectory[2].سیٹ_Max_Jerk(jerk);
 	}
 
 	/**
 	 * @param jerk maximum jerk for generated trajectory
 	 */
-	inline void setMaxJerk(const float jerk)
+	اندرونی خالی سیٹ_Max_Jerk(ثابت اعشاری jerk)
 	{
-		_trajectory[0].setMaxJerk(jerk);
-		_trajectory[1].setMaxJerk(jerk);
-		_trajectory[2].setMaxJerk(jerk);
+		_trajectory[0].سیٹ_Max_Jerk(jerk);
+		_trajectory[1].سیٹ_Max_Jerk(jerk);
+		_trajectory[2].سیٹ_Max_Jerk(jerk);
 	}
 
 	/**
 	 * @param accel maximum acceleration for generated trajectory
 	 */
-	inline void setMaxAccelerationXY(float accel)
+	اندرونی خالی سیٹ_Max_Acceleration_XY(اعشاری accel)
 	{
-		_trajectory[0].setMaxAccel(accel);
-		_trajectory[1].setMaxAccel(accel);
+		_trajectory[0].سیٹ_Max_Accel(accel);
+		_trajectory[1].سیٹ_Max_Accel(accel);
 	}
 
 	/**
 	 * @param accel maximum acceleration for generated trajectory
 	 */
-	inline void setMaxAccelerationZ(float accel)
+	اندرونی خالی سیٹ_Max_Acceleration_Z(اعشاری accel)
 	{
-		_trajectory[2].setMaxAccel(accel);
+		_trajectory[2].سیٹ_Max_Accel(accel);
 	}
 
 	/**
 	 * @param accel maximum acceleration for generated trajectory
 	 */
-	inline void setMaxAcceleration(const Vector3f &accel)
+	اندرونی خالی سیٹ_Max_Acceleration(ثابت Vector3f &accel)
 	{
-		_trajectory[0].setMaxAccel(accel(0));
-		_trajectory[1].setMaxAccel(accel(1));
-		_trajectory[2].setMaxAccel(accel(2));
+		_trajectory[0].سیٹ_Max_Accel(accel(0));
+		_trajectory[1].سیٹ_Max_Accel(accel(1));
+		_trajectory[2].سیٹ_Max_Accel(accel(2));
 	}
 
 	/**
 	 * @param vel maximum velocity for generated trajectory
 	 */
-	inline void setMaxVelocityXY(float vel)
+	اندرونی خالی سیٹ_Max_Velocity_XY(اعشاری vel)
 	{
-		_trajectory[0].setMaxVel(vel);
-		_trajectory[1].setMaxVel(vel);
+		_trajectory[0].سیٹ_Max_Vel(vel);
+		_trajectory[1].سیٹ_Max_Vel(vel);
 	}
 
 	/**
 	 * @param vel maximum velocity for generated trajectory
 	 */
-	inline void setMaxVelocityZ(float vel)
+	اندرونی خالی سیٹ_Max_Velocity_Z(اعشاری vel)
 	{
-		_trajectory[2].setMaxVel(vel);
+		_trajectory[2].سیٹ_Max_Vel(vel);
 	}
 
 	/**
 	 * @param vel maximum velocity for generated trajectory
 	 */
-	inline void setMaxVelocity(const Vector3f &vel)
+	اندرونی خالی سیٹ_Max_Velocity(ثابت Vector3f &vel)
 	{
-		_trajectory[0].setMaxVel(vel(0));
-		_trajectory[1].setMaxVel(vel(1));
-		_trajectory[2].setMaxVel(vel(2));
+		_trajectory[0].سیٹ_Max_Vel(vel(0));
+		_trajectory[1].سیٹ_Max_Vel(vel(1));
+		_trajectory[2].سیٹ_Max_Vel(vel(2));
 	}
 
 	/**
 	 * @param error Maximum horizontal error allowed by the trajectory generator. Often set to param MPC_XY_ERR_MAX
 	 */
-	inline void setMaxAllowedHorizontalError(float error)
+	اندرونی خالی سیٹ_Max_Allowed_Horizontal_Error(اعشاری error)
 	{
 		_max_allowed_horizontal_error = error;
 	}
@@ -337,7 +337,7 @@ public:
 	 * A finite value (param default is 1 m) makes the smoother slow down when the virtual trajectory leads
 	 * the drone in Z, preventing a noisy altitude reference from walking the commanded z away from the drone.
 	 */
-	inline void setMaxAllowedVerticalError(float error)
+	اندرونی خالی سیٹ_Max_Allowed_Vertical_Error(اعشاری error)
 	{
 		_max_allowed_vertical_error = error;
 	}
@@ -345,7 +345,7 @@ public:
 	/**
 	 * @param radius  Altitude Acceptance Radius. Often set to NAV_MC_ALT_RAD
 	 */
-	inline void setVerticalAcceptanceRadius(float radius)
+	اندرونی خالی سیٹ_Vertical_Acceptance_Radius(اعشاری radius)
 	{
 		_vertical_acceptance_radius = radius;
 	}
@@ -353,15 +353,15 @@ public:
 	/**
 	 * @param speed vehicle cruise speed
 	 */
-	inline void setCruiseSpeed(float speed)
+	اندرونی خالی سیٹ_Cruise_رفتار(اعشاری رفتار)
 	{
-		_cruise_speed = speed;
+		cruise_رفتار = رفتار;
 	}
 
 	/**
 	 * @param gain Proportional gain for horizontal trajectory position error. Set to MPC_XY_TRAJ_P
 	 */
-	inline void setHorizontalTrajectoryGain(float gain)
+	اندرونی خالی سیٹ_Horizontal_Trajectory_Gain(اعشاری gain)
 	{
 		_horizontal_trajectory_gain = gain;
 	}
@@ -369,9 +369,9 @@ public:
 	/**
 	 * @param radius target acceptance radius
 	 */
-	inline void setTargetAcceptanceRadius(float radius)
+	اندرونی خالی سیٹ_ہدف_Acceptance_Radius(اعشاری radius)
 	{
-		_target_acceptance_radius = radius;
+		ہدف_acceptance_radius = radius;
 	}
 
 	/**
@@ -380,11 +380,11 @@ public:
 	 *
 	 * @param position
 	 */
-	void forceSetPosition(const Vector3f &position)
+	خالی force_سیٹ_Position(ثابت Vector3f &position)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(position(i))) {
-				_trajectory[i].setCurrentPosition(position(i));
+		برائے (size_t i = 0; i < 3; i++) {
+			اگر (PX4_ISFINITE(position(i))) {
+				_trajectory[i].سیٹ_Current_Position(position(i));
 			}
 		}
 	}
@@ -395,11 +395,11 @@ public:
 	 *
 	 * @param velocity
 	 */
-	void forceSetVelocity(const Vector3f &velocity)
+	خالی force_سیٹ_Velocity(ثابت Vector3f &velocity)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(velocity(i))) {
-				_trajectory[i].setCurrentVelocity(velocity(i));
+		برائے (size_t i = 0; i < 3; i++) {
+			اگر (PX4_ISFINITE(velocity(i))) {
+				_trajectory[i].سیٹ_Current_Velocity(velocity(i));
 			}
 		}
 	}
@@ -410,54 +410,54 @@ public:
 	 *
 	 * @param acceleration
 	 */
-	void forceSetAcceleration(const Vector3f &acceleration)
+	خالی force_سیٹ_Acceleration(ثابت Vector3f &acceleration)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(acceleration(i))) {
-				_trajectory[i].setCurrentAcceleration(acceleration(i));
+		برائے (size_t i = 0; i < 3; i++) {
+			اگر (PX4_ISFINITE(acceleration(i))) {
+				_trajectory[i].سیٹ_Current_Acceleration(acceleration(i));
 			}
 		}
 	}
 
 
-private:
+نجی:
 	/* params, only modified from external */
-	float _max_allowed_horizontal_error{0.f};
-	float _max_allowed_vertical_error{0.f};
-	float _vertical_acceptance_radius{0.f};
-	float _cruise_speed{0.f};
-	float _horizontal_trajectory_gain{0.f};
-	float _target_acceptance_radius{0.f};
+	اعشاری _max_allowed_horizontal_error{0.f};
+	اعشاری _max_allowed_vertical_error{0.f};
+	اعشاری _vertical_acceptance_radius{0.f};
+	اعشاری cruise_رفتار{0.f};
+	اعشاری _horizontal_trajectory_gain{0.f};
+	اعشاری ہدف_acceptance_radius{0.f};
 
 
 	/* Internal state */
 	VelocitySmoothing _trajectory[3]; ///< Trajectories in x, y and z directions
-	float _max_speed_previous{0.f};
+	اعشاری max_رفتار_پچھلا{0.f};
 
 	/* Internal functions */
-	bool _isTurning(const Vector3f &target) const;
+	منطقی _isTurning(ثابت Vector3f &ہدف) ثابت;
 
-	void _generateSetpoints(
-		const Vector3f &position,
-		const Vector3f(&waypoints)[3],
-		bool is_single_waypoint,
-		const Vector3f &feedforward_velocity,
-		float delta_time,
-		bool force_zero_velocity_setpoint,
-		PositionSmoothingSetpoints &out_setpoints
+	خالی _generateSetpoints(
+		ثابت Vector3f &position,
+		ثابت Vector3f(&waypoints)[3],
+		منطقی is_single_waypoint,
+		ثابت Vector3f &feedforward_velocity,
+		اعشاری delta_وقت,
+		منطقی force_zero_velocity_setpoint,
+		PositionSmoothingSetpoints &برآمد_setpoints
 	);
 
-	const Vector3f _generateVelocitySetpoint(const Vector3f &position, const Vector3f(&waypoints)[3],
-			bool is_single_waypoint,
-			const Vector3f &feedforward_velocity_setpoint);
-	const Vector3f _getL1Point(const Vector3f &position, const Vector3f(&waypoints)[3]) const;
-	const Vector3f _getCrossingPoint(const Vector3f &position, const Vector3f(&waypoints)[3]) const;
-	float _getMaxXYSpeed(const Vector3f(&waypoints)[3]) const;
-	float _getMaxZSpeed(const Vector3f(&waypoints)[3]) const;
+	ثابت Vector3f _generateVelocitySetpoint(ثابت Vector3f &position, ثابت Vector3f(&waypoints)[3],
+			منطقی is_single_waypoint,
+			ثابت Vector3f &feedforward_velocity_setpoint);
+	ثابت Vector3f get_L1_نقطہ(ثابت Vector3f &position, ثابت Vector3f(&waypoints)[3]) ثابت;
+	ثابت Vector3f get_پار_نقطہ(ثابت Vector3f &position, ثابت Vector3f(&waypoints)[3]) ثابت;
+	اعشاری _getMaxXYSpeed(ثابت Vector3f(&waypoints)[3]) ثابت;
+	اعشاری _getMaxZSpeed(ثابت Vector3f(&waypoints)[3]) ثابت;
 
-	void _generateTrajectory(
-		const Vector3f &position,
-		const Vector3f &velocity_setpoint,
-		float delta_time,
-		PositionSmoothingSetpoints &out_setpoints);
+	خالی _generateTrajectory(
+		ثابت Vector3f &position,
+		ثابت Vector3f &velocity_setpoint,
+		اعشاری delta_وقت,
+		PositionSmoothingSetpoints &برآمد_setpoints);
 };

@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include "Device.hpp"
-#include "CDev.hpp"
+#شامل "Device.hpp"
+#شامل "CDev.hpp"

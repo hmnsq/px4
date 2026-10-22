@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#شامل <gtest/gtest.h>
+#شامل <matrix/math.hpp>
 
-using namespace matrix;
+استعمال نامخلا میٹرکس;
 
-TEST(MatrixTransposeTest, Transpose)
+TEST(میٹرکس_Transpose_Test, Transpose)
 {
-	float data[6] = {1, 2, 3, 4, 5, 6};
-	Matrix<float, 2, 3> A(data);
-	Matrix<float, 3, 2> A_T = A.transpose();
-	float data_check[6] = {1, 4, 2, 5, 3, 6};
-	Matrix<float, 3, 2> A_T_check(data_check);
+	اعشاری ڈیٹا[6] = {1, 2, 3, 4, 5, 6};
+	میٹرکس_2<اعشاری, 2, 3> A(ڈیٹا);
+	میٹرکس_2<اعشاری, 3, 2> A_T = A.transpose();
+	اعشاری ڈیٹا_check[6] = {1, 4, 2, 5, 3, 6};
+	میٹرکس_2<اعشاری, 3, 2> A_T_check(ڈیٹا_check);
 	EXPECT_EQ(A_T, A_T_check);
 }

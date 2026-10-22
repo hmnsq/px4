@@ -1,34 +1,34 @@
-#pragma once
+#ہدایت once
 
-#include "Vector.hpp"
+#شامل "Vector.hpp"
 
-namespace matrix
+نامخلا میٹرکس
 {
 
-template<typename Type, size_t M, size_t N>
-int integrate_rk4(
-	Vector<Type, M> (*f)(Type, const Matrix<Type, M, 1> &x, const Matrix<Type, N, 1> &u),
-	const Matrix<Type, M, 1> &y0,
-	const Matrix<Type, N, 1> &u,
+سانچہ<قسم_نام Type, size_t M, size_t N>
+صحیح integrate_rk4(
+	سمتیہ<Type, M> (*f)(Type, ثابت میٹرکس_2<Type, M, 1> &x, ثابت میٹرکس_2<Type, N, 1> &u),
+	ثابت میٹرکس_2<Type, M, 1> &y0,
+	ثابت میٹرکس_2<Type, N, 1> &u,
 	Type t0,
 	Type tf,
 	Type h0,
-	Matrix<Type, M, 1> &y1
+	میٹرکس_2<Type, M, 1> &y1
 )
 {
 	// https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
 	Type t1 = t0;
 	y1 = y0;
 	Type h = h0;
-	Vector<Type, M> k1, k2, k3, k4;
+	سمتیہ<Type, M> k1, k2, k3, k4;
 
-	if (tf < t0) { return -1; } // make sure t1 > t0
+	اگر (tf < t0) { واپس -1; } // make sure t1 > t0
 
-	while (t1 < tf) {
-		if (t1 + h0 < tf) {
+	جب (t1 < tf) {
+		اگر (t1 + h0 < tf) {
 			h = h0;
 
-		} else {
+		} ورنہ {
 			h = tf - t1;
 		}
 
@@ -40,7 +40,7 @@ int integrate_rk4(
 		t1 += h;
 	}
 
-	return 0;
+	واپس 0;
 }
 
 } // namespace matrix

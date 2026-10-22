@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include "FunctionProviderBase.hpp"
+#شامل "FunctionProviderBase.hpp"
 
 /**
  * Functions: Parachute
  */
-class FunctionParachute : public FunctionProviderBase
+جماعت FunctionParachute : عوامی Function_Provider_بنیاد
 {
-public:
-	FunctionParachute() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionParachute(); }
+عوامی:
+	FunctionParachute() = طےشدہ;
+	ساکن Function_Provider_بنیاد *allocate(ثابت Context &context) { واپس نیا FunctionParachute(); }
 
-	void update() override {}
-	float value(OutputFunction func) override { return -1.f; }
-	float defaultFailsafeValue(OutputFunction func) const override { return 1.f; }
+	خالی update() override {}
+	اعشاری value(OutputFunction func) override { واپس -1.f; }
+	اعشاری default_Failsafe_قدر(OutputFunction func) ثابت override { واپس 1.f; }
 };

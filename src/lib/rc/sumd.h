@@ -39,34 +39,34 @@
  * @author Marco Bauer <marco@wtns.de>
  */
 
-#pragma once
+#ہدایت once
 
-#include <stdint.h>
+#شامل <stdint.h>
 
 __BEGIN_DECLS
 
-#define SUMD_MAX_CHANNELS	32
-#define SUMD_HEADER_LENGTH	3
-#define SUMD_HEADER_ID		0xA8
-#define SUMD_ID_SUMH		0x00
-#define SUMD_ID_SUMD		0x01
-#define SUMD_ID_FAILSAFE	0x81
+#تعریف_کرو SUMD_MAX_CHANNELS	32
+#تعریف_کرو SUMD_سرخی_لمبائی	3
+#تعریف_کرو SUMD_سرخی_ID		0xA8
+#تعریف_کرو SUMD_ID_SUMH		0x00
+#تعریف_کرو SUMD_ID_SUMD		0x01
+#تعریف_کرو SUMD_ID_FAILSAFE	0x81
 
 
 
 
-#pragma pack(push, 1)
-typedef struct {
-	uint8_t	header;							///< 0xA8 for a valid packet
-	uint8_t	status;							///< 0x01 valid and live SUMD data frame / 0x00 = SUMH / 0x81 = Failsafe
-	uint8_t	length;							///< Channels
-	uint8_t	sumd_data[SUMD_MAX_CHANNELS * 2];	///< ChannelData (High Byte/ Low Byte)
-	uint8_t	crc16_high;						///< High Byte of 16 Bit CRC
-	uint8_t	crc16_low;						///< Low Byte of 16 Bit CRC
+#ہدایت pack(ڈالو, 1)
+قسمتعریف ساخت {
+	uint8_t	سرخی;							///< 0xA8 for a valid packet
+	uint8_t	حالت_2;							///< 0x01 valid and live SUMD data frame / 0x00 = SUMH / 0x81 = Failsafe
+	uint8_t	لمبائی_2;							///< Channels
+	uint8_t	sumd_ڈیٹا[SUMD_MAX_CHANNELS * 2];	///< ChannelData (High Byte/ Low Byte)
+	uint8_t	crc16_بلند;						///< High Byte of 16 Bit CRC
+	uint8_t	crc16_کم;						///< Low Byte of 16 Bit CRC
 	uint8_t	telemetry;						///< Telemetry request
 	uint8_t	crc8;							///< SUMH CRC8
 } ReceiverFcPacketHoTT;
-#pragma pack(pop)
+#ہدایت pack(نکالو)
 
 
 /**
@@ -76,7 +76,7 @@ typedef struct {
  * @param value to accumulate in the checksum
  * @return the checksum
  */
-uint16_t sumd_crc16(uint16_t crc, uint8_t value);
+uint16_t sumd_crc16(uint16_t چکری_جانچ, uint8_t قدر);
 
 /**
  * CRC8 implementation for SUMH protocol
@@ -85,7 +85,7 @@ uint16_t sumd_crc16(uint16_t crc, uint8_t value);
  * @param value to accumulate in the checksum
  * @return the checksum
  */
-uint8_t sumd_crc8(uint8_t crc, uint8_t value);
+uint8_t sumd_crc8(uint8_t چکری_جانچ, uint8_t قدر);
 
 /**
  * Decoder for SUMD/SUMH protocol
@@ -102,8 +102,8 @@ uint8_t sumd_crc8(uint8_t crc, uint8_t value);
 __EXPORT int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channel_count,
 				 uint16_t *channels, uint16_t max_chan_count, bool *failsafe);
 */
-__EXPORT int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channel_count,
-			 uint16_t *channels, uint16_t max_chan_count, bool *failsafe);
+__EXPORT صحیح sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_گنتی, uint16_t *channel_گنتی,
+			 uint16_t *channels, uint16_t max_chan_گنتی, bool *failsafe);
 
 
 __END_DECLS

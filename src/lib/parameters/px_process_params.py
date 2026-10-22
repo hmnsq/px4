@@ -43,155 +43,155 @@
 #   * Human-readable description in Markdown page format for the PX4 dev guide
 #
 
-from __future__ import print_function
-import sys
-import os
-import argparse
-from px4params import srcscanner, srcparser, injectxmlparams, xmlout, markdownout, jsonout, readonly_config
+سے __future__ درآمد print_function
+درآمد sys
+درآمد os
+درآمد argparse
+سے px4params درآمد srcscanner, srcparser, injectxmlparams, xmlout, markdownout, jsonout, readonly_config
 
-import lzma #to create .xz file
-import json
+درآمد lzma #to create .xz file
+درآمد json
 
-def save_compressed(filename):
+تعریف save_compressed(filename):
     #create lzma compressed version
     xz_filename=filename+'.xz'
-    with lzma.open(xz_filename, 'wt', preset=9) as f:
-        with open(filename, 'r') as content_file:
-            f.write(content_file.read())
+    ساتھ lzma.open(xz_filename, 'wt', preset=9) بطور f:
+        ساتھ open(filename, 'r') بطور content_file:
+            f.اكتب(content_file.اقرأ())
 
 
 
-def main():
+تعریف مین():
     # Parse command line arguments
-    parser = argparse.ArgumentParser(description="Process parameter documentation.")
-    parser.add_argument("-s", "--src-path",
-                        default=["../src"],
+    parser = argparse.دلیل_Parser(description="Process parameter documentation.")
+    parser.جوڑو_دلیل("-s", "--src-path",
+                        طےشدہ=["../src"],
                         metavar="PATH",
                         nargs='*',
                         help="one or more paths to source files to scan for parameters")
-    parser.add_argument("-x", "--xml",
+    parser.جوڑو_دلیل("-x", "--xml",
                         nargs='?',
-                        const="parameters.xml",
+                        ثابت="parameters.xml",
                         metavar="FILENAME",
                         help="Create XML file"
                              " (default FILENAME: parameters.xml)")
-    parser.add_argument("-b", "--board",
+    parser.جوڑو_دلیل("-b", "--board",
                         nargs='?',
-                        const="",
+                        ثابت="",
                         metavar="BOARD",
                         help="Board to create xml parameter xml for")
-    parser.add_argument("-m", "--markdown",
+    parser.جوڑو_دلیل("-m", "--markdown",
                         nargs='?',
-                        const="parameters.md",
+                        ثابت="parameters.md",
                         metavar="FILENAME",
                         help="Create Markdown file"
                              " (default FILENAME: parameters.md)")
-    parser.add_argument("-j", "--json",
+    parser.جوڑو_دلیل("-j", "--json",
                         nargs='?',
-                        const="parameters.json",
+                        ثابت="parameters.json",
                         metavar="FILENAME",
                         help="Create Json file"
                              " (default FILENAME: parameters.json)")
-    parser.add_argument('-v', '--verbose',
+    parser.جوڑو_دلیل('-v', '--verbose',
                         action='store_true',
                         help="verbose output")
-    parser.add_argument('-c', '--compress',
+    parser.جوڑو_دلیل('-c', '--compress',
                         action='store_true',
                         help="compress parameter file")
-    parser.add_argument("-o", "--overrides",
-                        default="{}",
+    parser.جوڑو_دلیل("-o", "--overrides",
+                        طےشدہ="{}",
                         metavar="OVERRIDES",
                         help="a dict of overrides in the form of a json string")
-    parser.add_argument("--readonly-config",
-                        default=None,
+    parser.جوڑو_دلیل("--readonly-config",
+                        طےشدہ=کچھ_نہیں,
                         metavar="FILENAME",
                         help="path to readonly_params.yaml")
 
-    args = parser.parse_args()
+    دلائل = parser.parse_دلائل()
 
     # Check for valid command
-    if not (args.xml or args.markdown or args.json):
-        print("Error: You need to specify at least one output method!\n")
+    اگر نہیں (دلائل.xml یا دلائل.markdown یا دلائل.json):
+        چھاپو("Error: You need to specify at least one output method!\n")
         parser.print_usage()
         sys.exit(1)
 
     # Initialize source scanner and parser
-    scanner = srcscanner.SourceScanner()
-    parser = srcparser.SourceParser()
+    scanner = srcscanner.ماخذ_Scanner()
+    parser = srcparser.ماخذ_Parser()
 
     # Scan directories, and parse the files
-    if (args.verbose):
-        print("Scanning source path " + str(args.src_path))
+    اگر (دلائل.verbose):
+        چھاپو("Scanning source path " + str(دلائل.src_راستہ))
 
-    if not scanner.ScanDir(args.src_path, parser):
+    اگر نہیں scanner.جائزہ_Dir(دلائل.src_راستہ, parser):
         sys.exit(1)
 
-    if not parser.Validate():
+    اگر نہیں parser.Validate():
         sys.exit(1)
     param_groups = parser.GetParamGroups()
 
-    if len(param_groups) == 0:
-        print("Warning: no parameters found")
+    اگر لمبائی(param_groups) == 0:
+        چھاپو("Warning: no parameters found")
 
 
     #inject parameters at front of set
-    cur_dir = os.path.dirname(os.path.realpath(__file__))
+    cur_dir = os.راستہ.dirname(os.راستہ.realpath(__file__))
 
-    override_dict = json.loads(args.overrides)
-    if len(override_dict.keys()) > 0:
-        for group in param_groups:
-            for param in group.GetParams():
+    override_dict = json.loads(دلائل.overrides)
+    اگر لمبائی(override_dict.کلیدیں()) > 0:
+        برائے گروہ میں param_groups:
+            برائے param میں گروہ.GetParams():
                 name = param.GetName()
-                if name in override_dict.keys():
+                اگر name میں override_dict.کلیدیں():
                     val = str(override_dict[param.GetName()])
-                    param.default = val
-                    print("OVERRIDING {:s} to {:s}!!!!!".format(name, val))
+                    param.طےشدہ = val
+                    چھاپو("OVERRIDING {:s} to {:s}!!!!!".format(name, val))
 
     # Mark readonly parameters
-    if args.readonly_config:
-        all_param_names = set()
-        for group in param_groups:
-            for param in group.GetParams():
-                all_param_names.add(param.GetName())
-        readonly_params = readonly_config.load_readonly_params(args.readonly_config, all_param_names)
-        for group in param_groups:
-            for param in group.GetParams():
-                if param.GetName() in readonly_params:
-                    param.SetReadonly()
+    اگر دلائل.readonly_config:
+        all_param_نام = سیٹ()
+        برائے گروہ میں param_groups:
+            برائے param میں گروہ.GetParams():
+                all_param_نام.جوڑو(param.GetName())
+        readonly_params = readonly_config.بھرو_readonly_params(دلائل.readonly_config, all_param_نام)
+        برائے گروہ میں param_groups:
+            برائے param میں گروہ.GetParams():
+                اگر param.GetName() میں readonly_params:
+                    param.سیٹ_Readonly()
 
     output_files = []
 
     # Output to XML file
-    if args.xml:
-        if args.verbose:
-            print("Creating XML file " + args.xml)
-        out = xmlout.XMLOutput(param_groups, args.board)
-        out.Save(args.xml)
-        output_files.append(args.xml)
+    اگر دلائل.xml:
+        اگر دلائل.verbose:
+            چھاپو("Creating XML file " + دلائل.xml)
+        برآمد = xmlout.XMLOutput(param_groups, دلائل.board)
+        برآمد.Save(دلائل.xml)
+        output_files.append(دلائل.xml)
 
     # Output to Markdown/HTML tables
-    if args.markdown:
-        if args.verbose:
-            print("Creating markdown file " + args.markdown)
-        out = markdownout.MarkdownTablesOutput(param_groups)
-        out.Save(args.markdown)
-        output_files.append(args.markdown)
+    اگر دلائل.markdown:
+        اگر دلائل.verbose:
+            چھاپو("Creating markdown file " + دلائل.markdown)
+        برآمد = markdownout.MarkdownTablesOutput(param_groups)
+        برآمد.Save(دلائل.markdown)
+        output_files.append(دلائل.markdown)
 
     # Output to JSON file
-    if args.json:
-        if args.verbose:
-            print("Creating Json file " + args.json)
-        cur_dir = os.path.dirname(os.path.realpath(__file__))
-        out = jsonout.JsonOutput(param_groups, args.board)
-        out.Save(args.json)
-        output_files.append(args.json)
+    اگر دلائل.json:
+        اگر دلائل.verbose:
+            چھاپو("Creating Json file " + دلائل.json)
+        cur_dir = os.راستہ.dirname(os.راستہ.realpath(__file__))
+        برآمد = jsonout.JsonOutput(param_groups, دلائل.board)
+        برآمد.Save(دلائل.json)
+        output_files.append(دلائل.json)
 
-    if args.compress:
-        for f in output_files:
-            if args.verbose:
-                print("Compressing file " + f)
+    اگر دلائل.compress:
+        برائے f میں output_files:
+            اگر دلائل.verbose:
+                چھاپو("Compressing file " + f)
             save_compressed(f)
 
 
-if __name__ == "__main__":
-    main()
+اگر __name__ == "__main__":
+    مین()

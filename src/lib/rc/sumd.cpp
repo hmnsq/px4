@@ -39,18 +39,18 @@
  * @author Marco Bauer <marco@wtns.de>
  */
 
-#include <stdbool.h>
-#include <stdio.h>
-#include "sumd.h"
-#include "common_rc.h"
+#شامل <stdbool.h>
+#شامل <stdio.h>
+#شامل "sumd.h"
+#شامل "common_rc.h"
 
-enum SUMD_DECODE_STATE {
+شمار SUMD_DECODE_STATE {
 	SUMD_DECODE_STATE_UNSYNCED = 0,
-	SUMD_DECODE_STATE_GOT_HEADER,
+	SUMD_DECODE_STATE_GOT_سرخی,
 	SUMD_DECODE_STATE_GOT_STATE,
 	SUMD_DECODE_STATE_GOT_LEN,
-	SUMD_DECODE_STATE_GOT_DATA,
-	SUMD_DECODE_STATE_GOT_CRC,
+	SUMD_DECODE_STATE_GOT_ڈیٹا,
+	SUMD_DECODE_STATE_GOT_چکری_جانچ,
 	SUMD_DECODE_STATE_GOT_CRC16_BYTE_1,
 	SUMD_DECODE_STATE_GOT_CRC16_BYTE_2
 };
@@ -69,299 +69,299 @@ const char *decode_states[] = {"UNSYNCED",
 
 uint8_t 	_crc8 	= 0x00;
 uint16_t 	_crc16 = 0x0000;
-bool 		_sumd 		= true;
-bool		_crcOK		= false;
-bool		_debug		= false;
+منطقی 		_sumd 		= سچ;
+منطقی		چکری_جانچ_OK		= جھوٹ;
+منطقی		_debug		= جھوٹ;
 
 
 /* define range mapping here, -+100% -> 1000..2000 */
-#define SUMD_RANGE_MIN 0.0f
-#define SUMD_RANGE_MAX 4096.0f
+#تعریف_کرو SUMD_RANGE_MIN 0.0f
+#تعریف_کرو SUMD_RANGE_MAX 4096.0f
 
-#define SUMD_TARGET_MIN 1000.0f
-#define SUMD_TARGET_MAX 2000.0f
+#تعریف_کرو SUMD_ہدف_MIN 1000.0f
+#تعریف_کرو SUMD_ہدف_MAX 2000.0f
 
 /* pre-calculate the floating point stuff as far as possible at compile time */
-#define SUMD_SCALE_FACTOR ((SUMD_TARGET_MAX - SUMD_TARGET_MIN) / (SUMD_RANGE_MAX - SUMD_RANGE_MIN))
-#define SUMD_SCALE_OFFSET (int)(SUMD_TARGET_MIN - (SUMD_SCALE_FACTOR * SUMD_RANGE_MIN + 0.5f))
+#تعریف_کرو SUMD_SCALE_ضربی_عدد ((SUMD_ہدف_MAX - SUMD_ہدف_MIN) / (SUMD_RANGE_MAX - SUMD_RANGE_MIN))
+#تعریف_کرو SUMD_SCALE_انحراف (صحیح)(SUMD_ہدف_MIN - (SUMD_SCALE_ضربی_عدد * SUMD_RANGE_MIN + 0.5f))
 
-static enum SUMD_DECODE_STATE _decode_state = SUMD_DECODE_STATE_UNSYNCED;
-static uint8_t _rxlen;
+ساکن شمار SUMD_DECODE_STATE _decode_state = SUMD_DECODE_STATE_UNSYNCED;
+ساکن uint8_t _rxlen;
 
-static ReceiverFcPacketHoTT &_rxpacket = rc_decode_buf._hottrxpacket;
+ساکن ReceiverFcPacketHoTT &_rxpacket = rc_decode_buf._hottrxpacket;
 
-uint16_t sumd_crc16(uint16_t crc, uint8_t value)
+uint16_t sumd_crc16(uint16_t چکری_جانچ, uint8_t value)
 {
-	int i;
-	crc ^= (uint16_t)value << 8;
+	صحیح i;
+	چکری_جانچ ^= (uint16_t)value << 8;
 
-	for (i = 0; i < 8; i++) {
-		crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : (crc << 1);
+	برائے (i = 0; i < 8; i++) {
+		چکری_جانچ = (چکری_جانچ & 0x8000) ? (چکری_جانچ << 1) ^ 0x1021 : (چکری_جانچ << 1);
 	}
 
-	return crc;
+	واپس چکری_جانچ;
 }
 
-uint8_t sumd_crc8(uint8_t crc, uint8_t value)
+uint8_t sumd_crc8(uint8_t چکری_جانچ, uint8_t value)
 {
-	crc += value;
-	return crc;
+	چکری_جانچ += value;
+	واپس چکری_جانچ;
 }
 
-int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channel_count, uint16_t *channels,
-		uint16_t max_chan_count, bool *failsafe)
+صحیح sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_گنتی, uint16_t *channel_گنتی, uint16_t *channels,
+		uint16_t max_chan_گنتی, منطقی *failsafe)
 {
 
-	int ret = 1;
+	صحیح ret = 1;
 
-	switch (_decode_state) {
-	case SUMD_DECODE_STATE_UNSYNCED:
-		if (_debug) {
-			printf(" SUMD_DECODE_STATE_UNSYNCED \n") ;
+	انتخاب (_decode_state) {
+	حالت SUMD_DECODE_STATE_UNSYNCED:
+		اگر (_debug) {
+			لکھو(" SUMD_DECODE_STATE_UNSYNCED \n") ;
 		}
 
-		if (byte == SUMD_HEADER_ID) {
-			_rxpacket.header = byte;
-			_sumd = true;
+		اگر (byte == SUMD_سرخی_ID) {
+			_rxpacket.سرخی = byte;
+			_sumd = سچ;
 			_rxlen = 0;
 			_crc16 = 0x0000;
 			_crc8 = 0x00;
-			_crcOK = false;
+			چکری_جانچ_OK = جھوٹ;
 			_crc16 = sumd_crc16(_crc16, byte);
 			_crc8 = sumd_crc8(_crc8, byte);
-			_decode_state = SUMD_DECODE_STATE_GOT_HEADER;
+			_decode_state = SUMD_DECODE_STATE_GOT_سرخی;
 
-			if (_debug) {
-				printf(" SUMD_DECODE_STATE_GOT_HEADER: %x \n", byte) ;
+			اگر (_debug) {
+				لکھو(" SUMD_DECODE_STATE_GOT_HEADER: %x \n", byte) ;
 			}
 
-		} else {
+		} ورنہ {
 			ret = 3;
 		}
 
-		break;
+		توڑو;
 
-	case SUMD_DECODE_STATE_GOT_HEADER:
-		if (byte == SUMD_ID_SUMD || byte == SUMD_ID_FAILSAFE || byte == SUMD_ID_SUMH) {
-			_rxpacket.status = byte;
+	حالت SUMD_DECODE_STATE_GOT_سرخی:
+		اگر (byte == SUMD_ID_SUMD || byte == SUMD_ID_FAILSAFE || byte == SUMD_ID_SUMH) {
+			_rxpacket.حالت_2 = byte;
 
-			if (byte == SUMD_ID_SUMH) {
-				_sumd = false;
+			اگر (byte == SUMD_ID_SUMH) {
+				_sumd = جھوٹ;
 			}
 
-			if (_sumd) {
+			اگر (_sumd) {
 				_crc16 = sumd_crc16(_crc16, byte);
 
-			} else {
+			} ورنہ {
 				_crc8 = sumd_crc8(_crc8, byte);
 			}
 
 			_decode_state = SUMD_DECODE_STATE_GOT_STATE;
 
-			if (_debug) {
-				printf(" SUMD_DECODE_STATE_GOT_STATE: %x \n", byte) ;
+			اگر (_debug) {
+				لکھو(" SUMD_DECODE_STATE_GOT_STATE: %x \n", byte) ;
 			}
 
-		} else {
+		} ورنہ {
 			_decode_state = SUMD_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		توڑو;
 
-	case SUMD_DECODE_STATE_GOT_STATE:
-		if (byte >= 2 && byte <= SUMD_MAX_CHANNELS) {
-			_rxpacket.length = byte;
+	حالت SUMD_DECODE_STATE_GOT_STATE:
+		اگر (byte >= 2 && byte <= SUMD_MAX_CHANNELS) {
+			_rxpacket.لمبائی_2 = byte;
 
-			if (_sumd) {
+			اگر (_sumd) {
 				_crc16 = sumd_crc16(_crc16, byte);
 
-			} else {
+			} ورنہ {
 				_crc8 = sumd_crc8(_crc8, byte);
 			}
 
 			_rxlen++;
 			_decode_state = SUMD_DECODE_STATE_GOT_LEN;
 
-			if (_debug) {
-				printf(" SUMD_DECODE_STATE_GOT_LEN: %x (%d) \n", byte, byte) ;
+			اگر (_debug) {
+				لکھو(" SUMD_DECODE_STATE_GOT_LEN: %x (%d) \n", byte, byte) ;
 			}
 
-		} else {
+		} ورنہ {
 			_decode_state = SUMD_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		توڑو;
 
-	case SUMD_DECODE_STATE_GOT_LEN:
-		_rxpacket.sumd_data[_rxlen] = byte;
+	حالت SUMD_DECODE_STATE_GOT_LEN:
+		_rxpacket.sumd_ڈیٹا[_rxlen] = byte;
 
-		if (_sumd) {
+		اگر (_sumd) {
 			_crc16 = sumd_crc16(_crc16, byte);
 
-		} else {
+		} ورنہ {
 			_crc8 = sumd_crc8(_crc8, byte);
 		}
 
 		_rxlen++;
 
-		if (_rxlen <= ((_rxpacket.length * 2))) {
-			if (_debug) {
-				printf(" SUMD_DECODE_STATE_GOT_DATA[%d]: %x\n", _rxlen - 2, byte) ;
+		اگر (_rxlen <= ((_rxpacket.لمبائی_2 * 2))) {
+			اگر (_debug) {
+				لکھو(" SUMD_DECODE_STATE_GOT_DATA[%d]: %x\n", _rxlen - 2, byte) ;
 			}
 
-		} else {
-			_decode_state = SUMD_DECODE_STATE_GOT_DATA;
+		} ورنہ {
+			_decode_state = SUMD_DECODE_STATE_GOT_ڈیٹا;
 
-			if (_debug) {
-				printf(" SUMD_DECODE_STATE_GOT_DATA -- finish --\n") ;
+			اگر (_debug) {
+				لکھو(" SUMD_DECODE_STATE_GOT_DATA -- finish --\n") ;
 			}
 
 		}
 
-		break;
+		توڑو;
 
-	case SUMD_DECODE_STATE_GOT_DATA:
-		_rxpacket.crc16_high = byte;
+	حالت SUMD_DECODE_STATE_GOT_ڈیٹا:
+		_rxpacket.crc16_بلند = byte;
 
-		if (_debug) {
-			printf(" SUMD_DECODE_STATE_GOT_CRC16[1]: %x   [%x]\n", byte, ((_crc16 >> 8) & 0xff)) ;
+		اگر (_debug) {
+			لکھو(" SUMD_DECODE_STATE_GOT_CRC16[1]: %x   [%x]\n", byte, ((_crc16 >> 8) & 0xff)) ;
 		}
 
-		if (_sumd) {
-			_decode_state = SUMD_DECODE_STATE_GOT_CRC;
+		اگر (_sumd) {
+			_decode_state = SUMD_DECODE_STATE_GOT_چکری_جانچ;
 
-		} else {
+		} ورنہ {
 			_decode_state = SUMD_DECODE_STATE_GOT_CRC16_BYTE_1;
 		}
 
-		break;
+		توڑو;
 
-	case SUMD_DECODE_STATE_GOT_CRC16_BYTE_1:
-		_rxpacket.crc16_low = byte;
+	حالت SUMD_DECODE_STATE_GOT_CRC16_BYTE_1:
+		_rxpacket.crc16_کم = byte;
 
-		if (_debug) {
-			printf(" SUMD_DECODE_STATE_GOT_CRC16[2]: %x   [%x]\n", byte, (_crc16 & 0xff)) ;
+		اگر (_debug) {
+			لکھو(" SUMD_DECODE_STATE_GOT_CRC16[2]: %x   [%x]\n", byte, (_crc16 & 0xff)) ;
 		}
 
 		_decode_state = SUMD_DECODE_STATE_GOT_CRC16_BYTE_2;
 
-		break;
+		توڑو;
 
-	case SUMD_DECODE_STATE_GOT_CRC16_BYTE_2:
+	حالت SUMD_DECODE_STATE_GOT_CRC16_BYTE_2:
 		_rxpacket.telemetry = byte;
 
-		if (_debug) {
-			printf(" SUMD_DECODE_STATE_GOT_SUMH_TELEMETRY: %x\n", byte) ;
+		اگر (_debug) {
+			لکھو(" SUMD_DECODE_STATE_GOT_SUMH_TELEMETRY: %x\n", byte) ;
 		}
 
-		_decode_state = SUMD_DECODE_STATE_GOT_CRC;
+		_decode_state = SUMD_DECODE_STATE_GOT_چکری_جانچ;
 
-		break;
+		توڑو;
 
-	case SUMD_DECODE_STATE_GOT_CRC:
-		if (_sumd) {
-			_rxpacket.crc16_low = byte;
+	حالت SUMD_DECODE_STATE_GOT_چکری_جانچ:
+		اگر (_sumd) {
+			_rxpacket.crc16_کم = byte;
 
-			if (_debug) {
-				printf(" SUMD_DECODE_STATE_GOT_CRC[2]: %x   [%x]\n\n", byte, (_crc16 & 0xff)) ;
+			اگر (_debug) {
+				لکھو(" SUMD_DECODE_STATE_GOT_CRC[2]: %x   [%x]\n\n", byte, (_crc16 & 0xff)) ;
 			}
 
-			if (_crc16 == (uint16_t)(_rxpacket.crc16_high << 8) + _rxpacket.crc16_low) {
-				_crcOK = true;
+			اگر (_crc16 == (uint16_t)(_rxpacket.crc16_بلند << 8) + _rxpacket.crc16_کم) {
+				چکری_جانچ_OK = سچ;
 			}
 
-		} else {
+		} ورنہ {
 			_rxpacket.crc8 = byte;
 
-			if (_debug) {
-				printf(" SUMD_DECODE_STATE_GOT_CRC8_SUMH: %x   [%x]\n\n", byte, _crc8) ;
+			اگر (_debug) {
+				لکھو(" SUMD_DECODE_STATE_GOT_CRC8_SUMH: %x   [%x]\n\n", byte, _crc8) ;
 			}
 
-			if (_crc8 == _rxpacket.crc8) {
-				_crcOK = true;
+			اگر (_crc8 == _rxpacket.crc8) {
+				چکری_جانچ_OK = سچ;
 			}
 		}
 
-		if (_crcOK) {
-			if (_debug) {
-				printf(" CRC - OK \n") ;
+		اگر (چکری_جانچ_OK) {
+			اگر (_debug) {
+				لکھو(" CRC - OK \n") ;
 			}
 
-			if (_sumd) {
-				if (_debug) {
-					printf(" Got valid SUMD Packet\n") ;
+			اگر (_sumd) {
+				اگر (_debug) {
+					لکھو(" Got valid SUMD Packet\n") ;
 				}
 
-			} else {
-				if (_debug) {
-					printf(" Got valid SUMH Packet\n") ;
+			} ورنہ {
+				اگر (_debug) {
+					لکھو(" Got valid SUMH Packet\n") ;
 				}
 
 			}
 
-			if (_debug) {
-				printf(" RXLEN: %d  [Chans: %d] \n\n", _rxlen - 1, (_rxlen - 1) / 2) ;
+			اگر (_debug) {
+				لکھو(" RXLEN: %d  [Chans: %d] \n\n", _rxlen - 1, (_rxlen - 1) / 2) ;
 			}
 
 			ret = 0;
-			unsigned i;
-			uint8_t _cnt = *rx_count + 1;
-			*rx_count = _cnt;
+			غیرعلامتی i;
+			uint8_t _cnt = *rx_گنتی + 1;
+			*rx_گنتی = _cnt;
 
 			*rssi = 100;
 
 			/* failsafe flag */
-			*failsafe = (_rxpacket.status == SUMD_ID_FAILSAFE);
+			*failsafe = (_rxpacket.حالت_2 == SUMD_ID_FAILSAFE);
 
 			/* received Channels */
-			if ((uint16_t)_rxpacket.length > max_chan_count) {
-				_rxpacket.length = (uint8_t) max_chan_count;
+			اگر ((uint16_t)_rxpacket.لمبائی_2 > max_chan_گنتی) {
+				_rxpacket.لمبائی_2 = (uint8_t) max_chan_گنتی;
 			}
 
-			*channel_count = (uint16_t)_rxpacket.length;
+			*channel_گنتی = (uint16_t)_rxpacket.لمبائی_2;
 
 			/* decode the actual packet */
 			/* reorder first 4 channels */
 
 			/* ch1 = roll -> sumd = ch2 */
-			channels[0] = (uint16_t)((_rxpacket.sumd_data[1 * 2 + 1] << 8) | _rxpacket.sumd_data[1 * 2 + 2]) >> 3;
+			channels[0] = (uint16_t)((_rxpacket.sumd_ڈیٹا[1 * 2 + 1] << 8) | _rxpacket.sumd_ڈیٹا[1 * 2 + 2]) >> 3;
 			/* ch2 = pitch -> sumd = ch2 */
-			channels[1] = (uint16_t)((_rxpacket.sumd_data[2 * 2 + 1] << 8) | _rxpacket.sumd_data[2 * 2 + 2]) >> 3;
+			channels[1] = (uint16_t)((_rxpacket.sumd_ڈیٹا[2 * 2 + 1] << 8) | _rxpacket.sumd_ڈیٹا[2 * 2 + 2]) >> 3;
 			/* ch3 = throttle -> sumd = ch2 */
-			channels[2] = (uint16_t)((_rxpacket.sumd_data[0 * 2 + 1] << 8) | _rxpacket.sumd_data[0 * 2 + 2]) >> 3;
+			channels[2] = (uint16_t)((_rxpacket.sumd_ڈیٹا[0 * 2 + 1] << 8) | _rxpacket.sumd_ڈیٹا[0 * 2 + 2]) >> 3;
 			/* ch4 = yaw -> sumd = ch2 */
-			channels[3] = (uint16_t)((_rxpacket.sumd_data[3 * 2 + 1] << 8) | _rxpacket.sumd_data[3 * 2 + 2]) >> 3;
+			channels[3] = (uint16_t)((_rxpacket.sumd_ڈیٹا[3 * 2 + 1] << 8) | _rxpacket.sumd_ڈیٹا[3 * 2 + 2]) >> 3;
 
 			/* we start at channel 5(index 4) */
-			unsigned chan_index = 4;
+			غیرعلامتی chan_اشاریہ = 4;
 
-			for (i = 4; i < _rxpacket.length; i++) {
-				if (_debug) {
-					printf("ch[%d] : %x %x [ %x    %d ]\n", i + 1, _rxpacket.sumd_data[i * 2 + 1], _rxpacket.sumd_data[i * 2 + 2],
-					       ((_rxpacket.sumd_data[i * 2 + 1] << 8) | _rxpacket.sumd_data[i * 2 + 2]) >> 3,
-					       ((_rxpacket.sumd_data[i * 2 + 1] << 8) | _rxpacket.sumd_data[i * 2 + 2]) >> 3);
+			برائے (i = 4; i < _rxpacket.لمبائی_2; i++) {
+				اگر (_debug) {
+					لکھو("ch[%d] : %x %x [ %x    %d ]\n", i + 1, _rxpacket.sumd_ڈیٹا[i * 2 + 1], _rxpacket.sumd_ڈیٹا[i * 2 + 2],
+					       ((_rxpacket.sumd_ڈیٹا[i * 2 + 1] << 8) | _rxpacket.sumd_ڈیٹا[i * 2 + 2]) >> 3,
+					       ((_rxpacket.sumd_ڈیٹا[i * 2 + 1] << 8) | _rxpacket.sumd_ڈیٹا[i * 2 + 2]) >> 3);
 				}
 
-				channels[chan_index] = (uint16_t)((_rxpacket.sumd_data[i * 2 + 1] << 8) | _rxpacket.sumd_data[i * 2 + 2]) >> 3;
+				channels[chan_اشاریہ] = (uint16_t)((_rxpacket.sumd_ڈیٹا[i * 2 + 1] << 8) | _rxpacket.sumd_ڈیٹا[i * 2 + 2]) >> 3;
 				/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
 				//channels[chan_index] = (uint16_t)(channels[chan_index] * SUMD_SCALE_FACTOR + .5f) + SUMD_SCALE_OFFSET;
 
-				chan_index++;
+				chan_اشاریہ++;
 			}
 
-		} else {
+		} ورنہ {
 			/* decoding failed */
 			ret = 4;
 
-			if (_debug) {
-				printf(" CRC - fail \n") ;
+			اگر (_debug) {
+				لکھو(" CRC - fail \n") ;
 			}
 
 		}
 
 		_decode_state = SUMD_DECODE_STATE_UNSYNCED;
-		break;
+		توڑو;
 	}
 
-	return ret;
+	واپس ret;
 }

@@ -37,60 +37,60 @@
  * @author Thomas Gubler <thomasgubler@gmail.com>
  * @author Mark Charlebois <mcharleb@gmail.com>
  */
-#include "cdevtest_example.h"
+#شامل "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/tasks.h>
-#include <stdio.h>
-#include <string.h>
+#شامل <px4_platform_common/app.h>
+#شامل <px4_platform_common/tasks.h>
+#شامل <stdio.h>
+#شامل <string.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+ساکن صحیح daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-extern "C" __EXPORT int cdev_test_main(int argc, char *argv[]);
-int cdev_test_main(int argc, char *argv[])
+خارجی "C" __EXPORT صحیح cdev_test_main(صحیح argc, حرف *argv[]);
+صحیح cdev_test_main(صحیح argc, حرف *argv[])
 {
 
-	if (argc < 2) {
-		printf("usage: cdevtest {start|stop|status}\n");
-		return 1;
+	اگر (argc < 2) {
+		لکھو("usage: cdevtest {start|stop|status}\n");
+		واپس 1;
 	}
 
-	if (!strcmp(argv[1], "start")) {
+	اگر (!strcmp(argv[1], "start")) {
 
-		if (CDevExample::appState.isRunning()) {
-			printf("already running\n");
+		اگر (CDevExample::appState.isRunning()) {
+			لکھو("already running\n");
 			/* this is not an error */
-			return 0;
+			واپس 0;
 		}
 
 		daemon_task = px4_task_spawn_cmd("cdevtest",
 						 SCHED_DEFAULT,
-						 SCHED_PRIORITY_MAX - 5,
+						 SCHED_ترجیح_MAX - 5,
 						 2000,
 						 PX4_MAIN,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+						 (argv) ? (حرف *ثابت *)&argv[2] : (حرف *ثابت *)خالی_اشاریہ);
 
-		return 0;
+		واپس 0;
 	}
 
-	if (!strcmp(argv[1], "stop")) {
+	اگر (!strcmp(argv[1], "stop")) {
 		CDevExample::appState.requestExit();
-		return 0;
+		واپس 0;
 	}
 
-	if (!strcmp(argv[1], "status")) {
-		if (CDevExample::appState.isRunning()) {
-			printf("is running\n");
+	اگر (!strcmp(argv[1], "status")) {
+		اگر (CDevExample::appState.isRunning()) {
+			لکھو("is running\n");
 
-		} else {
-			printf("not started\n");
+		} ورنہ {
+			لکھو("not started\n");
 		}
 
-		return 0;
+		واپس 0;
 	}
 
-	printf("usage: cdevtest_main {start|stop|status}\n");
-	return 1;
+	لکھو("usage: cdevtest_main {start|stop|status}\n");
+	واپس 1;
 }

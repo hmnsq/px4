@@ -46,31 +46,31 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#ہدایت once
 
-#include "SquareMatrix.hpp"
-#include "Vector2.hpp"
+#شامل "SquareMatrix.hpp"
+#شامل "Vector2.hpp"
 
-namespace matrix
+نامخلا میٹرکس
 {
 
-template<typename Type>
-class Dcm2 : public SquareMatrix<Type, 2>
+سانچہ<قسم_نام Type>
+جماعت Dcm2 : عوامی مربع_میٹرکس<Type, 2>
 {
-public:
+عوامی:
 	/**
 	 * Standard constructor
 	 *
 	 * Initializes to identity
 	 */
-	Dcm2() : SquareMatrix<Type, 2>(eye<Type, 2>()) {}
+	Dcm2() : مربع_میٹرکس<Type, 2>(eye<Type, 2>()) {}
 
 	/**
 	 * Constructor from array
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm2(const Type data_[2][2]) : SquareMatrix<Type, 2>(data_)
+	صریح Dcm2(ثابت Type ڈیٹا_2[2][2]) : مربع_میٹرکس<Type, 2>(ڈیٹا_2)
 	{
 	}
 
@@ -79,7 +79,7 @@ public:
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm2(const Type data_[4]) : SquareMatrix<Type, 2>(data_)
+	صریح Dcm2(ثابت Type ڈیٹا_2[4]) : مربع_میٹرکس<Type, 2>(ڈیٹا_2)
 	{
 	}
 
@@ -88,7 +88,7 @@ public:
 	 *
 	 * @param other Matrix22 to set dcm to
 	 */
-	Dcm2(const Matrix<Type, 2, 2> &other) : SquareMatrix<Type, 2>(other)
+	Dcm2(ثابت میٹرکس_2<Type, 2, 2> &other) : مربع_میٹرکس<Type, 2>(other)
 	{
 	}
 
@@ -100,11 +100,11 @@ public:
 	 *
 	 * @param angle from frame 1 to frame 2 in radians
 	 */
-	Dcm2(const Type angle)
+	Dcm2(ثابت Type angle)
 	{
-		Dcm2 &dcm = *this;
-		Type sin_angle = std::sin(angle);
-		Type cos_angle = std::cos(angle);
+		Dcm2 &dcm = *یہ;
+		Type sin_angle = std::جیب(angle);
+		Type cos_angle = std::جیب_تمام(angle);
 
 		dcm(0, 0) = cos_angle;
 		dcm(0, 1) = -sin_angle;
@@ -112,17 +112,17 @@ public:
 		dcm(1, 1) = cos_angle;
 	}
 
-	void renormalize()
+	خالی renormalize()
 	{
 		// renormalize rows
-		for (size_t r = 0; r < 2; r++) {
-			Vector2<Type> rvec(Matrix<Type, 1, 2>(this->row(r)).transpose());
-			this->row(r) = rvec.normalized();
+		برائے (size_t r = 0; r < 2; r++) {
+			Vector2<Type> rvec(میٹرکس_2<Type, 1, 2>(یہ->صف(r)).transpose());
+			یہ->صف(r) = rvec.normalized();
 		}
 	}
 };
 
-using Dcm2f = Dcm2<float>;
-using Dcm2d = Dcm2<double>;
+استعمال Dcm2f = Dcm2<اعشاری>;
+استعمال Dcm2d = Dcm2<دوہرا>;
 
 } // namespace matrix

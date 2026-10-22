@@ -31,23 +31,23 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include <uORB/topics/vehicle_status.h>
+#شامل <uORB/topics/vehicle_status.h>
 
-#include <stdint.h>
+#شامل <stdint.h>
 
-namespace mode_util
+نامخلا منوال_util
 {
 
 // This matches the definition from MAVLink MAV_STANDARD_MODE
-enum class StandardMode : uint8_t {
+شمار جماعت Standard_منوال : uint8_t {
 	NON_STANDARD = 0,
 	POSITION_HOLD = 1,
 	ORBIT = 2,
 	CRUISE = 3,
 	ALTITUDE_HOLD = 4,
-	SAFE_RECOVERY = 5,
+	محفوظ_RECOVERY = 5,
 	MISSION = 6,
 	LAND = 7,
 	TAKEOFF = 8,
@@ -56,99 +56,99 @@ enum class StandardMode : uint8_t {
 /**
  * @return Get MAVLink standard mode from nav_state
  */
-static inline StandardMode getStandardModeFromNavState(uint8_t nav_state, uint8_t vehicle_type, bool is_vtol)
+ساکن اندرونی Standard_منوال get_Standard_منوال_From_Nav_State(uint8_t nav_state, uint8_t vehicle_type, منطقی is_vtol)
 {
-	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: return StandardMode::SAFE_RECOVERY;
+	انتخاب (nav_state) {
+	حالت vehicle_حالت_s::NAVIGATION_STATE_AUTO_RTL: واپس Standard_منوال::محفوظ_RECOVERY;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION: return StandardMode::MISSION;
+	حالت vehicle_حالت_s::NAVIGATION_STATE_AUTO_MISSION: واپس Standard_منوال::MISSION;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_LAND: return StandardMode::LAND;
+	حالت vehicle_حالت_s::NAVIGATION_STATE_AUTO_LAND: واپس Standard_منوال::LAND;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF: return StandardMode::TAKEOFF;
+	حالت vehicle_حالت_s::NAVIGATION_STATE_AUTO_TAKEOFF: واپس Standard_منوال::TAKEOFF;
 
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
-		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ALTITUDE_HOLD;
+	حالت vehicle_حالت_s::NAVIGATION_STATE_ALTCTL:
+		اگر (is_vtol || vehicle_type == vehicle_حالت_s::VEHICLE_TYPE_ROTARY_WING
+		    || vehicle_type == vehicle_حالت_s::VEHICLE_TYPE_FIXED_WING) {
+			واپس Standard_منوال::ALTITUDE_HOLD;
 		}
 
-		break;
+		توڑو;
 
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return StandardMode::POSITION_HOLD;
+	حالت vehicle_حالت_s::NAVIGATION_STATE_POSCTL:
+		اگر (!is_vtol && vehicle_type == vehicle_حالت_s::VEHICLE_TYPE_ROTARY_WING) {
+			واپس Standard_منوال::POSITION_HOLD;
 		}
 
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::CRUISE;
+		اگر (!is_vtol && vehicle_type == vehicle_حالت_s::VEHICLE_TYPE_FIXED_WING) {
+			واپس Standard_منوال::CRUISE;
 		}
 
-		break;
+		توڑو;
 
-	case vehicle_status_s::NAVIGATION_STATE_ORBIT:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
-		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ORBIT;
+	حالت vehicle_حالت_s::NAVIGATION_STATE_ORBIT:
+		اگر (is_vtol || vehicle_type == vehicle_حالت_s::VEHICLE_TYPE_ROTARY_WING
+		    || vehicle_type == vehicle_حالت_s::VEHICLE_TYPE_FIXED_WING) {
+			واپس Standard_منوال::ORBIT;
 		}
 
-		break;
+		توڑو;
 	}
 
-	return StandardMode::NON_STANDARD;
+	واپس Standard_منوال::NON_STANDARD;
 }
 
 /**
  * @return Get nav_state from a standard mode, or vehicle_status_s::NAVIGATION_STATE_MAX if not supported
  */
-static inline uint8_t getNavStateFromStandardMode(StandardMode mode, uint8_t vehicle_type, bool is_vtol)
+ساکن اندرونی uint8_t get_Nav_State_From_Standard_منوال(Standard_منوال منوال, uint8_t vehicle_type, منطقی is_vtol)
 {
-	switch (mode) {
-	case StandardMode::SAFE_RECOVERY: return vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
+	انتخاب (منوال) {
+	حالت Standard_منوال::محفوظ_RECOVERY: واپس vehicle_حالت_s::NAVIGATION_STATE_AUTO_RTL;
 
-	case StandardMode::MISSION: return vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
+	حالت Standard_منوال::MISSION: واپس vehicle_حالت_s::NAVIGATION_STATE_AUTO_MISSION;
 
-	case StandardMode::LAND: return vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
+	حالت Standard_منوال::LAND: واپس vehicle_حالت_s::NAVIGATION_STATE_AUTO_LAND;
 
-	case StandardMode::TAKEOFF: return vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
+	حالت Standard_منوال::TAKEOFF: واپس vehicle_حالت_s::NAVIGATION_STATE_AUTO_TAKEOFF;
 
-	case StandardMode::ALTITUDE_HOLD:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
-		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ALTCTL;
+	حالت Standard_منوال::ALTITUDE_HOLD:
+		اگر (is_vtol || vehicle_type == vehicle_حالت_s::VEHICLE_TYPE_ROTARY_WING
+		    || vehicle_type == vehicle_حالت_s::VEHICLE_TYPE_FIXED_WING) {
+			واپس vehicle_حالت_s::NAVIGATION_STATE_ALTCTL;
 		}
 
-		break;
+		توڑو;
 
-	case StandardMode::POSITION_HOLD:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+	حالت Standard_منوال::POSITION_HOLD:
+		اگر (!is_vtol && vehicle_type == vehicle_حالت_s::VEHICLE_TYPE_ROTARY_WING) {
+			واپس vehicle_حالت_s::NAVIGATION_STATE_POSCTL;
 		}
 
-		break;
+		توڑو;
 
-	case StandardMode::CRUISE:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+	حالت Standard_منوال::CRUISE:
+		اگر (!is_vtol && vehicle_type == vehicle_حالت_s::VEHICLE_TYPE_FIXED_WING) {
+			واپس vehicle_حالت_s::NAVIGATION_STATE_POSCTL;
 		}
 
-		break;
+		توڑو;
 
-	case StandardMode::ORBIT:
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ORBIT;
+	حالت Standard_منوال::ORBIT:
+		اگر (vehicle_type == vehicle_حالت_s::VEHICLE_TYPE_ROTARY_WING) {
+			واپس vehicle_حالت_s::NAVIGATION_STATE_ORBIT;
 		}
 
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+		اگر (vehicle_type == vehicle_حالت_s::VEHICLE_TYPE_FIXED_WING) {
+			واپس vehicle_حالت_s::NAVIGATION_STATE_AUTO_LOITER;
 		}
 
-		break;
+		توڑو;
 
-	default: break;
+	طےشدہ: توڑو;
 	}
 
-	return vehicle_status_s::NAVIGATION_STATE_MAX;
+	واپس vehicle_حالت_s::NAVIGATION_STATE_MAX;
 }
 
 

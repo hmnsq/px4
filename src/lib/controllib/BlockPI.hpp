@@ -37,52 +37,52 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <assert.h>
+#شامل <time.h>
+#شامل <stdlib.h>
+#شامل <math.h>
+#شامل <mathlib/math/test/test.hpp>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+نامخلا control
 {
 
 /**
  * A proportional-integral controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPI: public SuperBlock
+جماعت __EXPORT بلاک_PI: عوامی Super_بلاک
 {
-public:
+عوامی:
 // methods
-	BlockPI(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_kP(this, "P"),
-		_kI(this, "I")
+	بلاک_PI(Super_بلاک *والد, ثابت حرف *name) :
+		Super_بلاک(والد, name),
+		_integral(یہ, "I"),
+		_kP(یہ, "P"),
+		_kI(یہ, "I")
 	{}
-	virtual ~BlockPI() = default;
-	float update(float input)
+	مجازی ~بلاک_PI() = طےشدہ;
+	اعشاری update(اعشاری داخلہ)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input);
+		واپس getKP() * داخلہ +
+		       getKI() * getIntegral().update(داخلہ);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-private:
-	BlockIntegral _integral;
-	control::BlockParamFloat _kP;
-	control::BlockParamFloat _kI;
+	اعشاری getKP() { واپس _kP.get(); }
+	اعشاری getKI() { واپس _kI.get(); }
+	بلاک_Integral &getIntegral() { واپس _integral; }
+نجی:
+	بلاک_Integral _integral;
+	control::بلاک_Param_Float _kP;
+	control::بلاک_Param_Float _kI;
 };
 
 } // namespace control

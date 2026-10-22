@@ -1,18 +1,18 @@
 
-#include <px4_log.h>
-#include <px4_platform_common/time.h>
-#include "uart.h"
+#شامل <px4_log.h>
+#شامل <px4_platform_common/time.h>
+#شامل "uart.h"
 
-#define UART_READ_POLL_INTERVAL_US 500
+#تعریف_کرو UART_READ_POLL_INTERVAL_US 500
 
 // Static variables
-static bool _callbacks_configured = false;
+ساکن bool _callbacks_configured = false;
 
-static open_uart_func_t  _open_uart  = NULL;
-static write_uart_func_t _write_uart = NULL;
-static read_uart_func_t  _read_uart  = NULL;
+ساکن open_uart_func_t  _open_uart  = تہی;
+ساکن write_uart_func_t _write_uart = تہی;
+ساکن read_uart_func_t  _read_uart  = تہی;
 
-void configure_uart_callbacks(open_uart_func_t open_func,
+خالی configure_uart_callbacks(open_uart_func_t open_func,
 			      write_uart_func_t write_func,
 			      read_uart_func_t read_func)
 {
@@ -20,110 +20,110 @@ void configure_uart_callbacks(open_uart_func_t open_func,
 	_write_uart = write_func;
 	_read_uart  = read_func;
 
-	if (_open_uart && _write_uart && _read_uart) {
+	اگر (_open_uart && _write_uart && _read_uart) {
 		_callbacks_configured = true;
 	}
 }
 
-int qurt_uart_get_port(const char *dev)
+صحیح qurt_uart_get_پورٹ(ثابت حرف *dev)
 {
-	if (dev != NULL) {
+	اگر (dev != تہی) {
 		// Convert device string into a uart port number
-		char *endptr = NULL;
-		int port_number = strtol(dev, &endptr, 10);
+		حرف *endptr = تہی;
+		صحیح پورٹ_نمبر = strtol(dev, &endptr, 10);
 
-		if ((port_number == 0) && (endptr == dev)) {
+		اگر ((پورٹ_نمبر == 0) && (endptr == dev)) {
 			PX4_ERR("Could not convert %s into a valid uart port number", dev);
-			return -1;
+			واپس -1;
 
-		} else {
-			return port_number;
+		} ورنہ {
+			واپس پورٹ_نمبر;
 		}
 	}
 
-	return -1;
+	واپس -1;
 }
 
-int qurt_uart_open(const char *dev, speed_t speed)
+صحیح qurt_uart_open(ثابت حرف *dev, speed_t رفتار)
 {
-	int port_number = qurt_uart_get_port(dev);
+	صحیح پورٹ_نمبر = qurt_uart_get_پورٹ(dev);
 
-	if (_callbacks_configured && (port_number >= 0)) {
+	اگر (_callbacks_configured && (پورٹ_نمبر >= 0)) {
 
-		return _open_uart((uint8_t) port_number, speed);
+		واپس _open_uart((uint8_t) پورٹ_نمبر, رفتار);
 
-	} else {
+	} ورنہ {
 		PX4_ERR("Cannot open uart until callbacks have been configured");
 	}
 
-	return -1;
+	واپس -1;
 }
 
-int qurt_uart_write(int fd, const char *buf, size_t len)
+صحیح qurt_uart_write(صحیح fd, ثابت حرف *buf, size_t len)
 {
-	if (fd < 0) {
+	اگر (fd < 0) {
 		PX4_ERR("invalid fd %d for %s", fd, __FUNCTION__);
-		return -1;
+		واپس -1;
 	}
 
-	if (buf == NULL) {
+	اگر (buf == تہی) {
 		PX4_ERR("NULL buffer pointer in %s", fd, __FUNCTION__);
-		return -1;
+		واپس -1;
 	}
 
-	if (len == 0) {
+	اگر (len == 0) {
 		PX4_ERR("Zero length buffer in %s", __FUNCTION__);
-		return -1;
+		واپس -1;
 	}
 
-	if (_callbacks_configured) {
-		return _write_uart(fd, buf, len);
+	اگر (_callbacks_configured) {
+		واپس _write_uart(fd, buf, len);
 
-	} else {
+	} ورنہ {
 		PX4_ERR("Cannot write to uart until callbacks have been configured");
 	}
 
-	return -1;
+	واپس -1;
 }
 
-int qurt_uart_read(int fd, char *buf, size_t len, uint32_t timeout_us)
+صحیح qurt_uart_read(صحیح fd, حرف *buf, size_t len, uint32_t timeout_us)
 {
-	if (fd < 0) {
+	اگر (fd < 0) {
 		PX4_ERR("invalid fd %d for %s", fd, __FUNCTION__);
-		return -1;
+		واپس -1;
 	}
 
-	if (buf == NULL) {
+	اگر (buf == تہی) {
 		PX4_ERR("NULL buffer pointer in %s", fd, __FUNCTION__);
-		return -1;
+		واپس -1;
 	}
 
-	if (len == 0) {
+	اگر (len == 0) {
 		PX4_ERR("Zero length buffer in %s", __FUNCTION__);
-		return -1;
+		واپس -1;
 	}
 
-	if (_callbacks_configured) {
-		uint32_t interval_counter = (timeout_us + (UART_READ_POLL_INTERVAL_US - 1)) / UART_READ_POLL_INTERVAL_US;
+	اگر (_callbacks_configured) {
+		uint32_t interval_شمار = (timeout_us + (UART_READ_POLL_INTERVAL_US - 1)) / UART_READ_POLL_INTERVAL_US;
 		// PX4_INFO("UART interval counter = %d", interval_counter);
-		int read_len = 0;
+		صحیح read_len = 0;
 
-		do {
+		کرو {
 			read_len = _read_uart(fd, buf, len);
 
-			if (read_len > 0) { break; }
+			اگر (read_len > 0) { توڑو; }
 
-			interval_counter--;
+			interval_شمار--;
 			px4_usleep(UART_READ_POLL_INTERVAL_US);
-		} while (interval_counter);
+		} جب (interval_شمار);
 
 		// if (read_len <= 0) PX4_INFO("Warning, UART read timed out");
 		// else PX4_INFO("UART read %d bytes, counter = %d", read_len, interval_counter);
-		return read_len;
+		واپس read_len;
 
-	} else {
+	} ورنہ {
 		PX4_ERR("Cannot read from uart until callbacks have been configured");
 	}
 
-	return -1;
+	واپس -1;
 }

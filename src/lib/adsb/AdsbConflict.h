@@ -31,49 +31,49 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
 // Provides CONFIG_NAVIGATOR_ADSB_F3442 for the standard selection.
-#include <px4_boardconfig.h>
+#شامل <px4_boardconfig.h>
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
-#include "f3442_standard/DaaF3442.h"
-#else
-#include "crosstrack_standard/DaaCrosstrack.h"
-#endif
+#اگر defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#شامل "f3442_standard/DaaF3442.h"
+#ورنہ
+#شامل "crosstrack_standard/DaaCrosstrack.h"
+#اگر_ختم
 
-#include <matrix/math.hpp>
+#شامل <matrix/math.hpp>
 
-#include <uORB/topics/detect_and_avoid.h>
-#include <uORB/topics/transponder_report.h>
+#شامل <uORB/topics/detect_and_avoid.h>
+#شامل <uORB/topics/transponder_report.h>
 
-struct daa_input_s {
-	matrix::Vector2d uav_lat_lon{};
-	float uav_alt{0.f};
-	matrix::Vector3f uav_vel_ned{};
+ساخت daa_داخلہ_s {
+	میٹرکس::Vector2d uav_lat_lon{};
+	اعشاری uav_alt{0.f};
+	میٹرکس::Vector3f uav_vel_ned{};
 	transponder_report_s transponder_report{};
 };
 
 class AdsbConflict
 {
-public:
-	AdsbConflict() = default;
-	~AdsbConflict() = default;
+عوامی:
+	AdsbConflict() = طےشدہ;
+	~AdsbConflict() = طےشدہ;
 
 	/**
 	 * @brief Validate ownship + transponder inputs and compute the DAA output.
 	 * Returns false on non-finite inputs or when the built standard needs a heading the report does not provide.
 	*/
-	bool calculate_daa_output(const daa_input_s &daa_input, detect_and_avoid_s &daa_output);
+	bool calculate_daa_output(ثابت daa_داخلہ_s &daa_داخلہ, detect_and_avoid_s &daa_output);
 
 	bool try_updating_params();
 
-	static bool valid_wgs84_coordinates(const double latitude, const double longitude);
+	ساکن bool valid_wgs84_coordinates(ثابت دوہرا latitude, ثابت دوہرا longitude);
 
-private:
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+نجی:
+#اگر defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	DaaF3442 _daa;
-#else
+#ورنہ
 	DaaCrosstrack _daa;
-#endif
+#اگر_ختم
 };

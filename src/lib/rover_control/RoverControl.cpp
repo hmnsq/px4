@@ -31,238 +31,238 @@
  *
  ****************************************************************************/
 
-#include "RoverControl.hpp"
-using namespace matrix;
-namespace RoverControl
+#شامل "RoverControl.hpp"
+استعمال نامخلا میٹرکس;
+نامخلا RoverControl
 {
-float throttleControl(SlewRate<float> &motor_setpoint, const float throttle_setpoint,
-		      const float current_motor_setpoint, const float max_accel, const float max_decel, const float max_thr_spd,
-		      const float dt)
+اعشاری throttleControl(Slew_شرح<اعشاری> &motor_setpoint, ثابت اعشاری throttle_setpoint,
+		      ثابت اعشاری current_motor_setpoint, ثابت اعشاری max_accel, ثابت اعشاری max_decel, ثابت اعشاری max_thr_spd,
+		      ثابت اعشاری dt)
 {
 	// Sanitize inputs
-	if (!PX4_ISFINITE(throttle_setpoint) || !PX4_ISFINITE(current_motor_setpoint) || !PX4_ISFINITE(dt)) {
-		return NAN;
+	اگر (!PX4_ISFINITE(throttle_setpoint) || !PX4_ISFINITE(current_motor_setpoint) || !PX4_ISFINITE(dt)) {
+		واپس NAN;
 	}
 
-	const bool accelerating = fabsf(throttle_setpoint) > fabsf(current_motor_setpoint);
+	ثابت منطقی accelerating = fabsf(throttle_setpoint) > fabsf(current_motor_setpoint);
 
-	if (accelerating && max_accel > FLT_EPSILON && max_thr_spd > FLT_EPSILON) { // Acceleration slew rate
-		motor_setpoint.setSlewRate(max_accel / max_thr_spd);
+	اگر (accelerating && max_accel > FLT_EPSILON && max_thr_spd > FLT_EPSILON) { // Acceleration slew rate
+		motor_setpoint.سیٹ_Slew_شرح(max_accel / max_thr_spd);
 		motor_setpoint.update(throttle_setpoint, dt);
 
 		// Reinitialize slew rate if current value is closer to setpoint than post slew rate value
-		if (fabsf(motor_setpoint.getState() - current_motor_setpoint) > fabsf(throttle_setpoint -
+		اگر (fabsf(motor_setpoint.getState() - current_motor_setpoint) > fabsf(throttle_setpoint -
 				current_motor_setpoint)) {
-			motor_setpoint.setForcedValue(throttle_setpoint);
+			motor_setpoint.سیٹ_Forced_قدر(throttle_setpoint);
 		}
 
-	} else if (!accelerating && max_decel > FLT_EPSILON && max_thr_spd > FLT_EPSILON) { // Deceleration slew rate
-		motor_setpoint.setSlewRate(max_decel / max_thr_spd);
+	} ورنہ اگر (!accelerating && max_decel > FLT_EPSILON && max_thr_spd > FLT_EPSILON) { // Deceleration slew rate
+		motor_setpoint.سیٹ_Slew_شرح(max_decel / max_thr_spd);
 		motor_setpoint.update(throttle_setpoint, dt);
 
 		// Reinitialize slew rate if current value is closer to setpoint than post slew rate value
-		if (fabsf(motor_setpoint.getState() - current_motor_setpoint) > fabsf(throttle_setpoint -
+		اگر (fabsf(motor_setpoint.getState() - current_motor_setpoint) > fabsf(throttle_setpoint -
 				current_motor_setpoint)) {
-			motor_setpoint.setForcedValue(throttle_setpoint);
+			motor_setpoint.سیٹ_Forced_قدر(throttle_setpoint);
 		}
 
-	} else { // Fallthrough if slew rate parameters are not configured
-		motor_setpoint.setForcedValue(throttle_setpoint);
+	} ورنہ { // Fallthrough if slew rate parameters are not configured
+		motor_setpoint.سیٹ_Forced_قدر(throttle_setpoint);
 	}
 
-	return motor_setpoint.getState();
+	واپس motor_setpoint.getState();
 }
 
-float attitudeControl(SlewRateYaw<float> &adjusted_yaw_setpoint, PID &pid_yaw,
-		      const float yaw_slew_rate, float vehicle_yaw, float yaw_setpoint, const float dt)
+اعشاری attitudeControl(Slew_شرح_Yaw<اعشاری> &adjusted_yaw_setpoint, PID &pid_yaw,
+		      ثابت اعشاری yaw_slew_شرح, اعشاری vehicle_yaw, اعشاری yaw_setpoint, ثابت اعشاری dt)
 {
 	// Sanitize inputs
-	if (!PX4_ISFINITE(yaw_setpoint) || !PX4_ISFINITE(vehicle_yaw) || !PX4_ISFINITE(dt)) {
-		return NAN;
+	اگر (!PX4_ISFINITE(yaw_setpoint) || !PX4_ISFINITE(vehicle_yaw) || !PX4_ISFINITE(dt)) {
+		واپس NAN;
 	}
 
 	yaw_setpoint = wrap_pi(yaw_setpoint);
 	vehicle_yaw = wrap_pi(vehicle_yaw);
 
-	if (yaw_slew_rate > FLT_EPSILON) { // Apply slew rate if configured
-		adjusted_yaw_setpoint.setSlewRate(yaw_slew_rate);
+	اگر (yaw_slew_شرح > FLT_EPSILON) { // Apply slew rate if configured
+		adjusted_yaw_setpoint.سیٹ_Slew_شرح(yaw_slew_شرح);
 		adjusted_yaw_setpoint.update(yaw_setpoint, dt);
 
 		// Reinitialize slew rate if current value is closer to setpoint than post slew rate value
-		if (fabsf(wrap_pi(adjusted_yaw_setpoint.getState() - vehicle_yaw)) > fabsf(wrap_pi(yaw_setpoint - vehicle_yaw))) {
-			adjusted_yaw_setpoint.setForcedValue(yaw_setpoint);
+		اگر (fabsf(wrap_pi(adjusted_yaw_setpoint.getState() - vehicle_yaw)) > fabsf(wrap_pi(yaw_setpoint - vehicle_yaw))) {
+			adjusted_yaw_setpoint.سیٹ_Forced_قدر(yaw_setpoint);
 		}
 
-	} else {
-		adjusted_yaw_setpoint.setForcedValue(yaw_setpoint);
+	} ورنہ {
+		adjusted_yaw_setpoint.سیٹ_Forced_قدر(yaw_setpoint);
 	}
 
 	// Feedback control
-	pid_yaw.setSetpoint(
+	pid_yaw.سیٹ_Setpoint(
 		wrap_pi(adjusted_yaw_setpoint.getState() - vehicle_yaw));  // Error as setpoint to take care of wrapping
-	return pid_yaw.update(0.f, dt);
+	واپس pid_yaw.update(0.f, dt);
 
 }
 
-float speedControl(SlewRate<float> &speed_with_rate_limit, PID &pid_speed, const float speed_setpoint,
-		   const float vehicle_speed, const float max_accel, const float max_decel, const float max_thr_speed, const float dt)
+اعشاری رفتار_Control(Slew_شرح<اعشاری> &رفتار_with_شرح_حد_بندی, PID &pid_رفتار, ثابت اعشاری رفتار_setpoint,
+		   ثابت اعشاری vehicle_رفتار, ثابت اعشاری max_accel, ثابت اعشاری max_decel, ثابت اعشاری max_thr_رفتار, ثابت اعشاری dt)
 {
 	// Sanitize inputs
-	if (!PX4_ISFINITE(speed_setpoint) || !PX4_ISFINITE(vehicle_speed) || !PX4_ISFINITE(dt)) {
-		return NAN;
+	اگر (!PX4_ISFINITE(رفتار_setpoint) || !PX4_ISFINITE(vehicle_رفتار) || !PX4_ISFINITE(dt)) {
+		واپس NAN;
 	}
 
 	// Apply acceleration and deceleration limit
-	if (fabsf(speed_setpoint) >= fabsf(vehicle_speed) && max_accel > FLT_EPSILON) {
-		speed_with_rate_limit.setSlewRate(max_accel);
-		speed_with_rate_limit.update(speed_setpoint, dt);
+	اگر (fabsf(رفتار_setpoint) >= fabsf(vehicle_رفتار) && max_accel > FLT_EPSILON) {
+		رفتار_with_شرح_حد_بندی.سیٹ_Slew_شرح(max_accel);
+		رفتار_with_شرح_حد_بندی.update(رفتار_setpoint, dt);
 
 		// Reinitialize slew rate if current value is closer to setpoint than post slew rate value
-		if (fabsf(speed_with_rate_limit.getState() - vehicle_speed) > fabsf(
-			    speed_setpoint - vehicle_speed)) {
-			speed_with_rate_limit.setForcedValue(speed_setpoint);
+		اگر (fabsf(رفتار_with_شرح_حد_بندی.getState() - vehicle_رفتار) > fabsf(
+			    رفتار_setpoint - vehicle_رفتار)) {
+			رفتار_with_شرح_حد_بندی.سیٹ_Forced_قدر(رفتار_setpoint);
 		}
 
-	} else if (fabsf(speed_setpoint) < fabsf(vehicle_speed) && max_decel > FLT_EPSILON) {
-		speed_with_rate_limit.setSlewRate(max_decel);
-		speed_with_rate_limit.update(speed_setpoint, dt);
+	} ورنہ اگر (fabsf(رفتار_setpoint) < fabsf(vehicle_رفتار) && max_decel > FLT_EPSILON) {
+		رفتار_with_شرح_حد_بندی.سیٹ_Slew_شرح(max_decel);
+		رفتار_with_شرح_حد_بندی.update(رفتار_setpoint, dt);
 
 		// Reinitialize slew rate if current value is closer to setpoint than post slew rate value
-		if (fabsf(speed_with_rate_limit.getState() - vehicle_speed) > fabsf(
-			    speed_setpoint - vehicle_speed)) {
-			speed_with_rate_limit.setForcedValue(speed_setpoint);
+		اگر (fabsf(رفتار_with_شرح_حد_بندی.getState() - vehicle_رفتار) > fabsf(
+			    رفتار_setpoint - vehicle_رفتار)) {
+			رفتار_with_شرح_حد_بندی.سیٹ_Forced_قدر(رفتار_setpoint);
 		}
 
-	} else { // Fallthrough if slew rate is not configured
-		speed_with_rate_limit.setForcedValue(speed_setpoint);
+	} ورنہ { // Fallthrough if slew rate is not configured
+		رفتار_with_شرح_حد_بندی.سیٹ_Forced_قدر(رفتار_setpoint);
 	}
 
 	// Calculate normalized forward speed setpoint
-	float forward_speed_normalized{0.f};
+	اعشاری forward_رفتار_normalized{0.f};
 
 	// Feedforward
-	if (max_thr_speed > FLT_EPSILON) {
-		forward_speed_normalized = math::interpolate<float>(speed_with_rate_limit.getState(),
-					   -max_thr_speed, max_thr_speed,
+	اگر (max_thr_رفتار > FLT_EPSILON) {
+		forward_رفتار_normalized = math::interpolate<اعشاری>(رفتار_with_شرح_حد_بندی.getState(),
+					   -max_thr_رفتار, max_thr_رفتار,
 					   -1.f, 1.f);
 	}
 
 	// Feedback control
-	if (fabsf(speed_with_rate_limit.getState()) > FLT_EPSILON) {
-		pid_speed.setSetpoint(speed_with_rate_limit.getState());
-		forward_speed_normalized += pid_speed.update(vehicle_speed, dt);
+	اگر (fabsf(رفتار_with_شرح_حد_بندی.getState()) > FLT_EPSILON) {
+		pid_رفتار.سیٹ_Setpoint(رفتار_with_شرح_حد_بندی.getState());
+		forward_رفتار_normalized += pid_رفتار.update(vehicle_رفتار, dt);
 
-	} else {
-		pid_speed.resetIntegral();
+	} ورنہ {
+		pid_رفتار.resetIntegral();
 	}
 
 
-	return math::constrain(forward_speed_normalized, -1.f, 1.f);
+	واپس math::constrain(forward_رفتار_normalized, -1.f, 1.f);
 }
 
-float rateControl(SlewRate<float> &adjusted_yaw_rate_setpoint, PID &pid_yaw_rate, const float yaw_rate_setpoint,
-		  const float vehicle_yaw_rate, const float max_thr_speed, const float yaw_rate_corr, const float max_yaw_accel,
-		  const float max_yaw_decel,
-		  const float wheel_track, const float dt)
+اعشاری شرح_Control_2(Slew_شرح<اعشاری> &adjusted_yaw_شرح_setpoint, PID &pid_yaw_شرح, ثابت اعشاری yaw_شرح_setpoint,
+		  ثابت اعشاری vehicle_yaw_شرح, ثابت اعشاری max_thr_رفتار, ثابت اعشاری yaw_شرح_corr, ثابت اعشاری max_yaw_accel,
+		  ثابت اعشاری max_yaw_decel,
+		  ثابت اعشاری wheel_track, ثابت اعشاری dt)
 {
 	// Apply acceleration and deceleration limit
-	if (fabsf(yaw_rate_setpoint) >= fabsf(vehicle_yaw_rate) && max_yaw_accel > FLT_EPSILON) {
-		adjusted_yaw_rate_setpoint.setSlewRate(max_yaw_accel);
-		adjusted_yaw_rate_setpoint.update(yaw_rate_setpoint, dt);
+	اگر (fabsf(yaw_شرح_setpoint) >= fabsf(vehicle_yaw_شرح) && max_yaw_accel > FLT_EPSILON) {
+		adjusted_yaw_شرح_setpoint.سیٹ_Slew_شرح(max_yaw_accel);
+		adjusted_yaw_شرح_setpoint.update(yaw_شرح_setpoint, dt);
 
 		// Reinitialize slew rate if current value is closer to setpoint than post slew rate value
-		if (fabsf(adjusted_yaw_rate_setpoint.getState() - vehicle_yaw_rate) > fabsf(
-			    yaw_rate_setpoint - vehicle_yaw_rate)) {
-			adjusted_yaw_rate_setpoint.setForcedValue(yaw_rate_setpoint);
+		اگر (fabsf(adjusted_yaw_شرح_setpoint.getState() - vehicle_yaw_شرح) > fabsf(
+			    yaw_شرح_setpoint - vehicle_yaw_شرح)) {
+			adjusted_yaw_شرح_setpoint.سیٹ_Forced_قدر(yaw_شرح_setpoint);
 		}
 
 
-	} else if (fabsf(yaw_rate_setpoint) < fabsf(vehicle_yaw_rate) && max_yaw_decel > FLT_EPSILON) {
-		adjusted_yaw_rate_setpoint.setSlewRate(max_yaw_decel);
-		adjusted_yaw_rate_setpoint.update(yaw_rate_setpoint, dt);
+	} ورنہ اگر (fabsf(yaw_شرح_setpoint) < fabsf(vehicle_yaw_شرح) && max_yaw_decel > FLT_EPSILON) {
+		adjusted_yaw_شرح_setpoint.سیٹ_Slew_شرح(max_yaw_decel);
+		adjusted_yaw_شرح_setpoint.update(yaw_شرح_setpoint, dt);
 
 		// Reinitialize slew rate if current value is closer to setpoint than post slew rate value
-		if (fabsf(adjusted_yaw_rate_setpoint.getState() - vehicle_yaw_rate) > fabsf(
-			    yaw_rate_setpoint - vehicle_yaw_rate)) {
-			adjusted_yaw_rate_setpoint.setForcedValue(yaw_rate_setpoint);
+		اگر (fabsf(adjusted_yaw_شرح_setpoint.getState() - vehicle_yaw_شرح) > fabsf(
+			    yaw_شرح_setpoint - vehicle_yaw_شرح)) {
+			adjusted_yaw_شرح_setpoint.سیٹ_Forced_قدر(yaw_شرح_setpoint);
 		}
 
 
-	} else { // Fallthrough if slew rate is not configured
-		adjusted_yaw_rate_setpoint.setForcedValue(yaw_rate_setpoint);
+	} ورنہ { // Fallthrough if slew rate is not configured
+		adjusted_yaw_شرح_setpoint.سیٹ_Forced_قدر(yaw_شرح_setpoint);
 	}
 
 	// Transform yaw rate into speed difference
-	float speed_diff_normalized{0.f};
+	اعشاری رفتار_diff_normalized{0.f};
 
-	if (wheel_track > FLT_EPSILON && max_thr_speed > FLT_EPSILON) { // Feedforward
-		const float speed_diff = (adjusted_yaw_rate_setpoint.getState() * wheel_track /
-					  2.f) * yaw_rate_corr;
-		speed_diff_normalized = math::interpolate<float>(speed_diff, -max_thr_speed,
-					max_thr_speed, -1.f, 1.f);
+	اگر (wheel_track > FLT_EPSILON && max_thr_رفتار > FLT_EPSILON) { // Feedforward
+		ثابت اعشاری رفتار_diff = (adjusted_yaw_شرح_setpoint.getState() * wheel_track /
+					  2.f) * yaw_شرح_corr;
+		رفتار_diff_normalized = math::interpolate<اعشاری>(رفتار_diff, -max_thr_رفتار,
+					max_thr_رفتار, -1.f, 1.f);
 	}
 
 	// Feedback control
-	if (fabsf(adjusted_yaw_rate_setpoint.getState()) > FLT_EPSILON) {
-		pid_yaw_rate.setSetpoint(adjusted_yaw_rate_setpoint.getState());
-		speed_diff_normalized += pid_yaw_rate.update(vehicle_yaw_rate, dt);
+	اگر (fabsf(adjusted_yaw_شرح_setpoint.getState()) > FLT_EPSILON) {
+		pid_yaw_شرح.سیٹ_Setpoint(adjusted_yaw_شرح_setpoint.getState());
+		رفتار_diff_normalized += pid_yaw_شرح.update(vehicle_yaw_شرح, dt);
 
-	} else {
-		pid_yaw_rate.resetIntegral();
+	} ورنہ {
+		pid_yaw_شرح.resetIntegral();
 	}
 
 
-	return math::constrain(speed_diff_normalized, -1.f, 1.f);
+	واپس math::constrain(رفتار_diff_normalized, -1.f, 1.f);
 }
 
-void globalToLocalSetpointTriplet(Vector2f &curr_wp_ned, Vector2f &prev_wp_ned, Vector2f &next_wp_ned,
+خالی global_مقصد_Local_Setpoint_Triplet(Vector2f &curr_wp_ned, Vector2f &پچھلا_wp_ned, Vector2f &اگلا_wp_ned,
 				  position_setpoint_triplet_s position_setpoint_triplet, Vector2f &curr_pos_ned, MapProjection &global_ned_proj_ref)
 {
-	if (position_setpoint_triplet.current.valid && PX4_ISFINITE(position_setpoint_triplet.current.lat)
+	اگر (position_setpoint_triplet.current.valid && PX4_ISFINITE(position_setpoint_triplet.current.lat)
 	    && PX4_ISFINITE(position_setpoint_triplet.current.lon)) {
 		curr_wp_ned = global_ned_proj_ref.project(position_setpoint_triplet.current.lat, position_setpoint_triplet.current.lon);
 
-	} else {
+	} ورنہ {
 		curr_wp_ned = curr_pos_ned.isAllFinite() ? curr_pos_ned : Vector2f(NAN, NAN); // Fallback if current waypoint is invalid
 	}
 
-	if (position_setpoint_triplet.previous.valid && PX4_ISFINITE(position_setpoint_triplet.previous.lat)
-	    && PX4_ISFINITE(position_setpoint_triplet.previous.lon)) {
-		prev_wp_ned = global_ned_proj_ref.project(position_setpoint_triplet.previous.lat,
-				position_setpoint_triplet.previous.lon);
+	اگر (position_setpoint_triplet.پچھلا.valid && PX4_ISFINITE(position_setpoint_triplet.پچھلا.lat)
+	    && PX4_ISFINITE(position_setpoint_triplet.پچھلا.lon)) {
+		پچھلا_wp_ned = global_ned_proj_ref.project(position_setpoint_triplet.پچھلا.lat,
+				position_setpoint_triplet.پچھلا.lon);
 
-	} else {
-		prev_wp_ned = curr_pos_ned.isAllFinite() ? curr_pos_ned : Vector2f(NAN,
+	} ورنہ {
+		پچھلا_wp_ned = curr_pos_ned.isAllFinite() ? curr_pos_ned : Vector2f(NAN,
 				NAN); // Fallback if previous waypoint is invalid
 	}
 
-	if (position_setpoint_triplet.next.valid && PX4_ISFINITE(position_setpoint_triplet.next.lat)
-	    && PX4_ISFINITE(position_setpoint_triplet.next.lon)) {
-		next_wp_ned = global_ned_proj_ref.project(position_setpoint_triplet.next.lat, position_setpoint_triplet.next.lon);
+	اگر (position_setpoint_triplet.اگلا.valid && PX4_ISFINITE(position_setpoint_triplet.اگلا.lat)
+	    && PX4_ISFINITE(position_setpoint_triplet.اگلا.lon)) {
+		اگلا_wp_ned = global_ned_proj_ref.project(position_setpoint_triplet.اگلا.lat, position_setpoint_triplet.اگلا.lon);
 
-	} else {
-		next_wp_ned = Vector2f(NAN, NAN);
+	} ورنہ {
+		اگلا_wp_ned = Vector2f(NAN, NAN);
 	}
 }
 
-float calcWaypointTransitionAngle(Vector2f &prev_wp_ned, Vector2f &curr_wp_ned, Vector2f &next_wp_ned)
+اعشاری calcWaypointTransitionAngle(Vector2f &پچھلا_wp_ned, Vector2f &curr_wp_ned, Vector2f &اگلا_wp_ned)
 {
 	// Sanitize inputs
-	if (!prev_wp_ned.isAllFinite() || !curr_wp_ned.isAllFinite() || !next_wp_ned.isAllFinite()) {
-		return NAN;
+	اگر (!پچھلا_wp_ned.isAllFinite() || !curr_wp_ned.isAllFinite() || !اگلا_wp_ned.isAllFinite()) {
+		واپس NAN;
 	}
 
-	const Vector2f curr_to_next_wp_ned = next_wp_ned - curr_wp_ned;
-	const Vector2f curr_to_prev_wp_ned = prev_wp_ned - curr_wp_ned;
+	ثابت Vector2f curr_مقصد_اگلا_wp_ned = اگلا_wp_ned - curr_wp_ned;
+	ثابت Vector2f curr_مقصد_پچھلا_wp_ned = پچھلا_wp_ned - curr_wp_ned;
 
 	// Waypoint overlap
-	if (curr_to_next_wp_ned.norm() < FLT_EPSILON || curr_to_prev_wp_ned.norm() < FLT_EPSILON) {
-		return NAN;
+	اگر (curr_مقصد_اگلا_wp_ned.norm() < FLT_EPSILON || curr_مقصد_پچھلا_wp_ned.norm() < FLT_EPSILON) {
+		واپس NAN;
 	}
 
-	float cosin = curr_to_prev_wp_ned.unit_or_zero() * curr_to_next_wp_ned.unit_or_zero();
-	cosin = math::constrain<float>(cosin, -1.f, 1.f); // Protect against float precision problem
-	return acosf(cosin);
+	اعشاری cosin = curr_مقصد_پچھلا_wp_ned.unit_or_zero() * curr_مقصد_اگلا_wp_ned.unit_or_zero();
+	cosin = math::constrain<اعشاری>(cosin, -1.f, 1.f); // Protect against float precision problem
+	واپس acosf(cosin);
 }
 
 } // RoverControl

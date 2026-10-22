@@ -6,58 +6,58 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ہدایت once
 
-#include "Matrix.hpp"
+#شامل "Matrix.hpp"
 
-namespace matrix
+نامخلا میٹرکس
 {
 
-template<typename Type>
-class Scalar
+سانچہ<قسم_نام Type>
+جماعت Scalar
 {
-public:
-	Scalar() = delete;
+عوامی:
+	Scalar() = حذف;
 
-	Scalar(const Matrix<Type, 1, 1> &other) :
-		_value{other(0, 0)}
+	Scalar(ثابت میٹرکس_2<Type, 1, 1> &other) :
+		قدر_2{other(0, 0)}
 	{
 	}
 
-	Scalar(Type other) : _value(other)
+	Scalar(Type other) : قدر_2(other)
 	{
 	}
 
-	operator const Type &()
+	عامل ثابت Type &()
 	{
-		return _value;
+		واپس قدر_2;
 	}
 
-	operator Matrix<Type, 1, 1>() const
+	عامل میٹرکس_2<Type, 1, 1>() ثابت
 	{
-		Matrix<Type, 1, 1> m;
-		m(0, 0) = _value;
-		return m;
+		میٹرکس_2<Type, 1, 1> m;
+		m(0, 0) = قدر_2;
+		واپس m;
 	}
 
-	operator Vector<Type, 1>() const
+	عامل سمتیہ<Type, 1>() ثابت
 	{
-		Vector<Type, 1> m;
-		m(0) = _value;
-		return m;
+		سمتیہ<Type, 1> m;
+		m(0) = قدر_2;
+		واپس m;
 	}
 
-	bool operator==(const float other) const
+	منطقی عامل==(ثابت اعشاری other) ثابت
 	{
-		return isEqualF(_value, other);
+		واپس isEqualF(قدر_2, other);
 	}
 
-private:
-	const Type _value;
+نجی:
+	ثابت Type قدر_2;
 
 };
 
-using Scalarf = Scalar<float>;
-using Scalard = Scalar<double>;
+استعمال Scalarf = Scalar<اعشاری>;
+استعمال Scalard = Scalar<دوہرا>;
 
 } // namespace matrix

@@ -31,199 +31,199 @@
  *
  ****************************************************************************/
 
-#include "FailureInjection.hpp"
+#شامل "FailureInjection.hpp"
 
-#if defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
+#اگر defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
 
-#include <parameters/param.h>
-#include <uORB/topics/battery_status.h>
-#include <uORB/topics/sensor_gnss.h>
+#شامل <parameters/param.h>
+#شامل <uORB/topics/battery_status.h>
+#شامل <uORB/topics/sensor_gnss.h>
 
-namespace failure_injection
+نامخلا failure_injection
 {
 
-bool Config::update()
+منطقی Config::update()
 {
 	failure_injection_s cfg;
 
-	if (_sub.update(&cfg)) {
-		set(cfg);
-		return true;
+	اگر (_sub.update(&cfg)) {
+		سیٹ(cfg);
+		واپس سچ;
 	}
 
-	return false;
+	واپس جھوٹ;
 }
 
-void Config::set(const failure_injection_s &cfg)
+خالی Config::سیٹ(ثابت failure_injection_s &cfg)
 {
-	_count = (cfg.count <= failure_injection_s::MAX_FAILURES) ? cfg.count : failure_injection_s::MAX_FAILURES;
+	گنتی_3 = (cfg.گنتی <= failure_injection_s::MAX_FAILURES) ? cfg.گنتی : failure_injection_s::MAX_FAILURES;
 
-	for (uint8_t i = 0; i < _count; i++) {
+	برائے (uint8_t i = 0; i < گنتی_3; i++) {
 		_unit[i] = cfg.unit[i];
-		_instance_mask[i] = cfg.instance_mask[i];
-		_failure_type[i] = static_cast<Mode>(cfg.failure_type[i]);
+		instance_نقاب[i] = cfg.instance_نقاب_2[i];
+		_failure_type[i] = static_cast<منوال_2>(cfg.failure_type[i]);
 	}
 }
 
-Mode Config::mode(uint8_t unit, uint8_t instance) const
+منوال_2 Config::منوال(uint8_t unit, uint8_t instance) ثابت
 {
-	for (uint8_t i = 0; i < _count; i++) {
-		if (_unit[i] != unit) {
-			continue;
+	برائے (uint8_t i = 0; i < گنتی_3; i++) {
+		اگر (_unit[i] != unit) {
+			جاری;
 		}
 
 		// instance == 0 matches any instance of the unit; otherwise match the
 		// 1-based instance against the bitmask (0xFFFF covers all instances).
-		if (instance == 0 || (instance <= 16 && (_instance_mask[i] & (1u << (instance - 1))))) {
-			return _failure_type[i];
+		اگر (instance == 0 || (instance <= 16 && (instance_نقاب[i] & (1u << (instance - 1))))) {
+			واپس _failure_type[i];
 		}
 	}
 
-	return Mode::Ok;
+	واپس منوال_2::Ok;
 }
 
-bool process_battery(const Config &config, uint8_t instance, battery_status_s &battery_status)
+منطقی process_battery(ثابت Config &config, uint8_t instance, battery_حالت_s &battery_حالت)
 {
-	const Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_BATTERY, instance);
-	static constexpr float trigger_margin = 0.01f; // report remaining charge just below the threshold
+	ثابت منوال_2 منوال = config.منوال(failure_injection_s::FAILURE_UNIT_SYSTEM_BATTERY, instance);
+	ساکن constexpr اعشاری trigger_margin = 0.01f; // report remaining charge just below the threshold
 
-	if (mode == Mode::Off) {
+	اگر (منوال == منوال_2::Off) {
 		// Suppress the publication so the pack reads disconnected.
-		return false;
+		واپس جھوٹ;
 	}
 
-	if (mode != Mode::Wrong) {
-		return true;
+	اگر (منوال != منوال_2::Wrong) {
+		واپس سچ;
 	}
 
-	static const param_t level_handle = param_find("SYS_FAIL_BAT_LVL");
-	static const param_t low_thr_handle = param_find("BAT_LOW_THR");
-	static const param_t crit_thr_handle = param_find("BAT_CRIT_THR");
-	static const param_t emergen_thr_handle = param_find("BAT_EMERGEN_THR");
+	ساکن ثابت param_t level_handle = param_ڈھونڈو("SYS_FAIL_BAT_LVL");
+	ساکن ثابت param_t کم_thr_handle = param_ڈھونڈو("BAT_LOW_THR");
+	ساکن ثابت param_t crit_thr_handle = param_ڈھونڈو("BAT_CRIT_THR");
+	ساکن ثابت param_t emergen_thr_handle = param_ڈھونڈو("BAT_EMERGEN_THR");
 
-	int32_t level = battery_status_s::WARNING_CRITICAL;
+	int32_t level = battery_حالت_s::WARNING_CRITICAL;
 	param_get(level_handle, &level);
 
-	param_t threshold_handle = crit_thr_handle;
+	param_t حد_handle = crit_thr_handle;
 
-	switch (level) {
-	case battery_status_s::WARNING_LOW:
-		threshold_handle = low_thr_handle;
-		break;
+	انتخاب (level) {
+	حالت battery_حالت_s::WARNING_کم:
+		حد_handle = کم_thr_handle;
+		توڑو;
 
-	case battery_status_s::WARNING_EMERGENCY:
-		threshold_handle = emergen_thr_handle;
-		break;
+	حالت battery_حالت_s::WARNING_EMERGENCY:
+		حد_handle = emergen_thr_handle;
+		توڑو;
 
-	case battery_status_s::WARNING_CRITICAL:
-	default:
-		level = battery_status_s::WARNING_CRITICAL;
-		threshold_handle = crit_thr_handle;
-		break;
+	حالت battery_حالت_s::WARNING_CRITICAL:
+	طےشدہ:
+		level = battery_حالت_s::WARNING_CRITICAL;
+		حد_handle = crit_thr_handle;
+		توڑو;
 	}
 
-	battery_status.warning = level;
+	battery_حالت.warning = level;
 
 
 	// Report the remaining charge just below the selected threshold so the
 	// matching stage of the low-battery failsafe triggers.
-	float threshold = 0.f;
-	param_get(threshold_handle, &threshold);
-	battery_status.remaining = (threshold > trigger_margin) ? (threshold - trigger_margin) : 0.f;
+	اعشاری حد = 0.f;
+	param_get(حد_handle, &حد);
+	battery_حالت.بقایا = (حد > trigger_margin) ? (حد - trigger_margin) : 0.f;
 
-	return true;
+	واپس سچ;
 }
 
-bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
+منطقی process_gnss(ثابت Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
 		  Stuck<sensor_gnss_s> &stuck)
 {
-	const Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SENSOR_GPS, uorb_instance + 1);
+	ثابت منوال_2 منوال = config.منوال(failure_injection_s::FAILURE_UNIT_SENSOR_GPS, uorb_instance + 1);
 
 	// Off and Stuck are message-agnostic; run them first so the Stuck cache keeps the
 	// uncorrupted sample and a later Stuck replays a healthy fix.
-	if (!process(mode, sensor_gnss, stuck)) {
-		return false;
+	اگر (!process(منوال, sensor_gnss, stuck)) {
+		واپس جھوٹ;
 	}
 
-	if (mode == Mode::Wrong) {
-		static const param_t fix_type_handle = param_find("SYS_FAIL_GPS_WRG");
+	اگر (منوال == منوال_2::Wrong) {
+		ساکن ثابت param_t fix_type_handle = param_ڈھونڈو("SYS_FAIL_GPS_WRG");
 
 		int32_t fix_type = sensor_gnss_s::FIX_TYPE_2D;
 		param_get(fix_type_handle, &fix_type);
 		sensor_gnss.fix_type = (uint8_t)fix_type;
 
-		static const param_t jamming_state_handle = param_find("SYS_FAIL_GPS_JAM");
+		ساکن ثابت param_t jamming_state_handle = param_ڈھونڈو("SYS_FAIL_GPS_JAM");
 
 		int32_t jamming_state = sensor_gnss_s::JAMMING_STATE_UNKNOWN;
 		param_get(jamming_state_handle, &jamming_state);
 
-		if (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
+		اگر (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
 			sensor_gnss.jamming_state = (uint8_t)jamming_state;
 		}
 	}
 
-	return true;
+	واپس سچ;
 }
 
-esc_status_s process_esc(const Config &config, const esc_status_s &status)
+esc_حالت_s process_esc(ثابت Config &config, ثابت esc_حالت_s &حالت_2)
 {
-	esc_status_s result = status;
+	esc_حالت_s نتیجہ = حالت_2;
 
-	for (int i = 0; i < result.esc_count && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
-		const uint8_t function = result.esc[i].actuator_function;
+	برائے (صحیح i = 0; i < نتیجہ.esc_گنتی && i < esc_حالت_s::CONNECTED_ESC_MAX; i++) {
+		ثابت uint8_t function = نتیجہ.esc[i].actuator_function;
 
-		if (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
-			continue; // not a motor output
+		اگر (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
+			جاری; // not a motor output
 		}
 
-		const uint8_t instance = function - esc_report_s::ACTUATOR_FUNCTION_MOTOR1 + 1; // 1-based ESC instance
+		ثابت uint8_t instance = function - esc_report_s::ACTUATOR_FUNCTION_MOTOR1 + 1; // 1-based ESC instance
 
-		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_ESC, instance)) {
-		case Mode::Off:
-			result.esc_online_flags &= ~(1u << i);
-			result.esc_armed_flags &= ~(1u << i);
-			result.esc[i] = esc_report_s{};
-			result.esc[i].actuator_function = function;
-			break;
+		انتخاب (config.منوال(failure_injection_s::FAILURE_UNIT_SYSTEM_ESC, instance)) {
+		حالت منوال_2::Off:
+			نتیجہ.esc_online_flags &= ~(1u << i);
+			نتیجہ.esc_armed_flags &= ~(1u << i);
+			نتیجہ.esc[i] = esc_report_s{};
+			نتیجہ.esc[i].actuator_function = function;
+			توڑو;
 
-		case Mode::Wrong:
-			result.esc[i].esc_voltage *= 0.1f;
-			result.esc[i].esc_current *= 0.1f;
-			result.esc[i].esc_rpm *= 10;
-			break;
+		حالت منوال_2::Wrong:
+			نتیجہ.esc[i].esc_voltage *= 0.1f;
+			نتیجہ.esc[i].esc_current *= 0.1f;
+			نتیجہ.esc[i].esc_rpm *= 10;
+			توڑو;
 
-		default:
-			break;
+		طےشدہ:
+			توڑو;
 		}
 	}
 
-	return result;
+	واپس نتیجہ;
 }
 
-MotorFailureMasks process_motor(const Config &config)
+MotorFailureMasks process_motor(ثابت Config &config)
 {
 	MotorFailureMasks masks{};
 
-	for (int i = 0; i < esc_status_s::CONNECTED_ESC_MAX; i++) {
-		const uint16_t bit = 1u << i;
+	برائے (صحیح i = 0; i < esc_حالت_s::CONNECTED_ESC_MAX; i++) {
+		ثابت uint16_t bit = 1u << i;
 
-		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_MOTOR, i + 1)) {
-		case Mode::Off:
-			masks.failure_mask |= bit;
-			break;
+		انتخاب (config.منوال(failure_injection_s::FAILURE_UNIT_SYSTEM_MOTOR, i + 1)) {
+		حالت منوال_2::Off:
+			masks.failure_نقاب |= bit;
+			توڑو;
 
-		case Mode::Wrong:
-			masks.stop_mask |= bit;
-			break;
+		حالت منوال_2::Wrong:
+			masks.stop_نقاب |= bit;
+			توڑو;
 
-		default:
-			break;
+		طےشدہ:
+			توڑو;
 		}
 	}
 
-	return masks;
+	واپس masks;
 }
 
 } // namespace failure_injection
 
-#endif // CONFIG_MODULES_FAILURE_INJECTION_MANAGER
+#اگر_ختم // CONFIG_MODULES_FAILURE_INJECTION_MANAGER

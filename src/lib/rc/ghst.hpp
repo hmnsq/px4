@@ -40,76 +40,76 @@
  * @author Juraj Ciberlin <jciberlin1@gmail.com>
  */
 
-#pragma once
+#ہدایت once
 
-#include <stdint.h>
-#include <px4_platform_common/defines.h>
+#شامل <stdint.h>
+#شامل <px4_platform_common/defines.h>
 
 __BEGIN_DECLS
 
-#define GHST_BAUDRATE		(420000u)
-#define GHST_PAYLOAD_MAX_SIZE	(14u)
+#تعریف_کرو GHST_BAUDRATE		(420000u)
+#تعریف_کرو GHST_PAYLOAD_MAX_سائز	(14u)
 
-enum class ghstAddress {
-	rxAddress = 0x89	// Rx address
+شمار جماعت ghst_پتہ {
+	rx_پتہ = 0x89	// Rx address
 };
 
-enum class ghstFrameType {
-	frameTypeFirst	= 0x10,	// first frame type
-	frameType5to8	= 0x10,	// channel 5-8
-	frameType9to12	= 0x11,	// channel 9-12
-	frameType13to16 = 0x12,	// channel 13-16
-	frameTypeRssi	= 0x13,	// RSSI frame type, contains LQ, RSSI, RF mode, Tx power
-	frameTypeLast	= 0x1f	// last frame type
+شمار جماعت ghst_چوکھٹا_Type {
+	چوکھٹا_Type_پہلا	= 0x10,	// first frame type
+	چوکھٹا_Type5to8	= 0x10,	// channel 5-8
+	چوکھٹا_Type9to12	= 0x11,	// channel 9-12
+	چوکھٹا_Type13to16 = 0x12,	// channel 13-16
+	چوکھٹا_Type_Rssi	= 0x13,	// RSSI frame type, contains LQ, RSSI, RF mode, Tx power
+	چوکھٹا_Type_آخری	= 0x1f	// last frame type
 };
 
-enum class ghstTelemetryType {
+شمار جماعت ghstTelemetryType {
 	batteryPack = 0x23,	// battery pack status frame type
 	gpsPrimary = 0x25,	// GPS primary data (lat/long/alt)
 	gpsSecondary = 0x26	// GPS secondary data (course, dist, flags)
 };
 
-struct ghst_frame_header_t {
-	uint8_t device_address;			// device address
-	uint8_t length;				// length
+ساخت ghst_چوکھٹا_سرخی_t {
+	uint8_t device_پتہ;			// device address
+	uint8_t لمبائی_2;				//لمبائی
 };
 
-struct ghst_frame_t {
-	ghst_frame_header_t header;			// header
+ساخت ghst_چوکھٹا_t {
+	ghst_چوکھٹا_سرخی_t سرخی;			//سرخی
 	uint8_t type;					// frame type
-	uint8_t payload[GHST_PAYLOAD_MAX_SIZE + 1U];	// payload data including 1 byte CRC at the end
+	uint8_t payload[GHST_PAYLOAD_MAX_سائز + 1U];	// payload data including 1 byte CRC at the end
 };
 
 // Channel data (1-4)
-typedef struct {
-	unsigned int chan1: 12;
-	unsigned int chan2: 12;
-	unsigned int chan3: 12;
-	unsigned int chan4: 12;
-} __attribute__((__packed__)) ghstChannelData_t;
+قسمتعریف ساخت {
+	غیرعلامتی صحیح chan1: 12;
+	غیرعلامتی صحیح chan2: 12;
+	غیرعلامتی صحیح chan3: 12;
+	غیرعلامتی صحیح chan4: 12;
+} __attribute__((__packed__)) ghst_Channel_ڈیٹا_t;
 
 // Payload data
-typedef struct {
-	ghstChannelData_t chan1to4;
-	unsigned int chanA: 8;
-	unsigned int chanB: 8;
-	unsigned int chanC: 8;
-	unsigned int chanD: 8;
-} __attribute__((__packed__)) ghstPayloadData_t;
+قسمتعریف ساخت {
+	ghst_Channel_ڈیٹا_t chan1to4;
+	غیرعلامتی صحیح chanA: 8;
+	غیرعلامتی صحیح chanB: 8;
+	غیرعلامتی صحیح chanC: 8;
+	غیرعلامتی صحیح chanD: 8;
+} __attribute__((__packed__)) ghst_Payload_ڈیٹا_t;
 
 // Payload data - RSSI frame type
-typedef struct {
-	ghstChannelData_t chan1to4;
-	unsigned int lq: 8;		// link quality
-	unsigned int rssidBm: 8;	// RSSI [dBm]
-	unsigned int rfMode: 8;		// RF mode
-	int txPowerdBm: 8;		// Tx power [dBm]
+قسمتعریف ساخت {
+	ghst_Channel_ڈیٹا_t chan1to4;
+	غیرعلامتی صحیح lq: 8;		// link quality
+	غیرعلامتی صحیح rssidBm: 8;	// RSSI [dBm]
+	غیرعلامتی صحیح rf_منوال: 8;		// RF mode
+	صحیح txPowerdBm: 8;		// Tx power [dBm]
 } __attribute__((__packed__)) ghstPayloadRssi_t;
 
 // Link statistics for internal transport
-typedef struct {
+قسمتعریف ساخت {
 	int8_t rssi_pct;
-	float rssi_dbm;
+	اعشاری rssi_dbm;
 	int8_t link_quality;
 } ghstLinkStatistics_t;
 
@@ -118,7 +118,7 @@ typedef struct {
  * @param uart_fd UART file descriptor
  * @return 0 on success, -errno otherwise
  */
-__EXPORT int ghst_config(int uart_fd);
+__EXPORT صحیح ghst_config(صحیح uart_fd);
 
 
 /**
@@ -133,8 +133,8 @@ __EXPORT int ghst_config(int uart_fd);
  * @param max_channels maximum length of values
  * @return true if channels successfully decoded
  */
-__EXPORT bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *values,
-			 ghstLinkStatistics_t *link_stats, uint16_t *num_values, uint16_t max_channels);
+__EXPORT منطقی ghst_parse(ثابت uint64_t now, ثابت uint8_t *چوکھٹا, غیرعلامتی len, uint16_t *اقدار_2,
+			 ghstLinkStatistics_t *link_stats, uint16_t *عدد_اقدار, uint16_t max_channels);
 
 
 /**
@@ -145,8 +145,8 @@ __EXPORT bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len,
  * @param fuel_in_10mAh Fuel [10 mAh]
  * @return true on success
  */
-__EXPORT bool ghst_send_telemetry_battery_status(int uart_fd, uint16_t voltage_in_10mV,
-		uint16_t current_in_10mA, uint16_t fuel_in_10mAh);
+__EXPORT منطقی ghst_send_telemetry_battery_حالت(صحیح uart_fd, uint16_t voltage_اندر_10m_V,
+		uint16_t current_اندر_10m_A, uint16_t fuel_اندر_10m_Ah);
 
 /**
  * Send primary GPS information
@@ -156,7 +156,7 @@ __EXPORT bool ghst_send_telemetry_battery_status(int uart_fd, uint16_t voltage_i
  * @param altitude GPS altitude [1m]
  * @return true on success
  */
-__EXPORT bool ghst_send_telemetry_gps1_status(int uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude);
+__EXPORT منطقی ghst_send_telemetry_gps1_حالت(صحیح uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude);
 
 /**
  * Send secondary GPS information
@@ -169,6 +169,6 @@ __EXPORT bool ghst_send_telemetry_gps1_status(int uart_fd, uint32_t latitude, ui
  * @param flags GPS Flags
  * @return true on success
  */
-__EXPORT bool ghst_send_telemetry_gps2_status(int uart_fd, uint16_t ground_speed, uint16_t ground_course,
-		uint8_t num_sats, uint16_t home_dist, uint16_t home_dir, uint8_t flags);
+__EXPORT منطقی ghst_send_telemetry_gps2_حالت(صحیح uart_fd, uint16_t ground_رفتار, uint16_t ground_نصاب,
+		uint8_t عدد_sats, uint16_t home_dist, uint16_t home_dir, uint8_t flags);
 __END_DECLS

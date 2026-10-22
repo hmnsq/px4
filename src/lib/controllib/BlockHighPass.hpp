@@ -37,51 +37,51 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <assert.h>
+#شامل <time.h>
+#شامل <stdlib.h>
+#شامل <math.h>
+#شامل <mathlib/math/test/test.hpp>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+نامخلا control
 {
 
 /**
  * A high pass filter as described here:
  * http://en.wikipedia.org/wiki/High-pass_filter.
  */
-class __EXPORT BlockHighPass : public Block
+جماعت __EXPORT بلاک_بلند_Pass : عوامی بلاک
 {
-public:
+عوامی:
 // methods
-	BlockHighPass(SuperBlock *parent, const char *name) :
-		Block(parent, name),
+	بلاک_بلند_Pass(Super_بلاک *والد, ثابت حرف *name) :
+		بلاک(والد, name),
 		_u(0),
 		_y(0),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(یہ, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockHighPass() = default;
-	float update(float input);
+	مجازی ~بلاک_بلند_Pass() = طےشدہ;
+	اعشاری update(اعشاری داخلہ);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getFCut() {return _fCut.get();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
-// attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
-	control::BlockParamFloat _fCut; /**< cut-off frequency, Hz */
+	اعشاری getU() {واپس _u;}
+	اعشاری getY() {واپس _y;}
+	اعشاری getFCut() {واپس _fCut.get();}
+	خالی سیٹ_U(اعشاری u) {_u = u;}
+	خالی سیٹ_Y(اعشاری y) {_y = y;}
+محفوظ:
+//اوصاف
+	اعشاری _u; /**< previous input */
+	اعشاری _y; /**< previous output */
+	control::بلاک_Param_Float _fCut; /**< cut-off frequency, Hz */
 };
 
 } // namespace control

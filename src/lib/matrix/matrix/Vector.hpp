@@ -6,183 +6,183 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ہدایت once
 
-#include "Matrix.hpp"
+#شامل "Matrix.hpp"
 
-namespace matrix
+نامخلا میٹرکس
 {
 
-template<typename Type, size_t M>
-class Vector : public Matrix<Type, M, 1>
+سانچہ<قسم_نام Type, size_t M>
+جماعت سمتیہ : عوامی میٹرکس_2<Type, M, 1>
 {
-public:
-	using MatrixM1 = Matrix<Type, M, 1>;
+عوامی:
+	استعمال میٹرکس_M1 = میٹرکس_2<Type, M, 1>;
 
-	Vector() = default;
+	سمتیہ() = طےشدہ;
 
-	Vector(const MatrixM1 &other) :
-		MatrixM1(other)
+	سمتیہ(ثابت میٹرکس_M1 &other) :
+		میٹرکس_M1(other)
 	{
 	}
 
-	explicit Vector(const Type data_[M]) :
-		MatrixM1(data_)
+	صریح سمتیہ(ثابت Type ڈیٹا_2[M]) :
+		میٹرکس_M1(ڈیٹا_2)
 	{
 	}
 
-	template<size_t P, size_t Q>
-	Vector(const Slice<Type, M, 1, P, Q> &slice_in) :
-		Matrix<Type, M, 1>(slice_in)
+	سانچہ<size_t P, size_t Q>
+	سمتیہ(ثابت قاش_2<Type, M, 1, P, Q> &قاش_اندر) :
+		میٹرکس_2<Type, M, 1>(قاش_اندر)
 	{
 	}
 
-	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const Slice<Type, 1, M, P, Q> &slice_in)
+	سانچہ<size_t P, size_t Q, size_t DUMMY = 1>
+	سمتیہ(ثابت قاش_2<Type, 1, M, P, Q> &قاش_اندر)
 	{
-		Vector &self(*this);
+		سمتیہ &self(*یہ);
 
-		for (size_t i = 0; i < M; i++) {
-			self(i) = slice_in(0, i);
+		برائے (size_t i = 0; i < M; i++) {
+			self(i) = قاش_اندر(0, i);
 		}
 	}
 
-	template<size_t P, size_t Q>
-	Vector(const ConstSlice<Type, M, 1, P, Q> &slice_in) :
-		Matrix<Type, M, 1>(slice_in)
+	سانچہ<size_t P, size_t Q>
+	سمتیہ(ثابت Const_قاش<Type, M, 1, P, Q> &قاش_اندر) :
+		میٹرکس_2<Type, M, 1>(قاش_اندر)
 	{
 	}
 
-	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const ConstSlice<Type, 1, M, P, Q> &slice_in)
+	سانچہ<size_t P, size_t Q, size_t DUMMY = 1>
+	سمتیہ(ثابت Const_قاش<Type, 1, M, P, Q> &قاش_اندر)
 	{
-		Vector &self(*this);
+		سمتیہ &self(*یہ);
 
-		for (size_t i = 0; i < M; i++) {
-			self(i) = slice_in(0, i);
+		برائے (size_t i = 0; i < M; i++) {
+			self(i) = قاش_اندر(0, i);
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	اندرونی ثابت Type &عامل()(size_t i) ثابت
 	{
-		assert(i < M);
+		أكد(i < M);
 
-		const MatrixM1 &v = *this;
-		return v(i, 0);
+		ثابت میٹرکس_M1 &v = *یہ;
+		واپس v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	اندرونی Type &عامل()(size_t i)
 	{
-		assert(i < M);
+		أكد(i < M);
 
-		MatrixM1 &v = *this;
-		return v(i, 0);
+		میٹرکس_M1 &v = *یہ;
+		واپس v(i, 0);
 	}
 
-	Type dot(const MatrixM1 &b) const
+	Type dot(ثابت میٹرکس_M1 &b) ثابت
 	{
-		const Vector &a(*this);
+		ثابت سمتیہ &a(*یہ);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		برائے (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		واپس r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	اندرونی Type عامل*(ثابت میٹرکس_M1 &b) ثابت
 	{
-		const Vector &a(*this);
-		return a.dot(b);
+		ثابت سمتیہ &a(*یہ);
+		واپس a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	اندرونی سمتیہ عامل*(Type b) ثابت
 	{
-		return Vector(MatrixM1::operator*(b));
+		واپس سمتیہ(میٹرکس_M1::عامل*(b));
 	}
 
-	Type norm() const
+	Type norm() ثابت
 	{
-		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		ثابت سمتیہ &a(*یہ);
+		واپس Type(std::جذر(a.dot(a)));
 	}
 
-	Type norm_squared() const
+	Type norm_squared() ثابت
 	{
-		const Vector &a(*this);
-		return a.dot(a);
+		ثابت سمتیہ &a(*یہ);
+		واپس a.dot(a);
 	}
 
-	inline Type length() const
+	اندرونی Type لمبائی_2() ثابت
 	{
-		return norm();
+		واپس norm();
 	}
 
-	inline void normalize()
+	اندرونی خالی normalize()
 	{
-		(*this) /= norm();
+		(*یہ) /= norm();
 	}
 
-	Vector unit() const
+	سمتیہ unit() ثابت
 	{
-		return (*this) / norm();
+		واپس (*یہ) / norm();
 	}
 
-	Vector unit_or_zero(const Type eps = Type(1e-5)) const
+	سمتیہ unit_or_zero(ثابت Type eps = Type(1e-5)) ثابت
 	{
-		const Type n = norm();
+		ثابت Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		اگر (n > eps) {
+			واپس (*یہ) / n;
 		}
 
-		return Vector();
+		واپس سمتیہ();
 	}
 
-	inline Vector normalized() const
+	اندرونی سمتیہ normalized() ثابت
 	{
-		return unit();
+		واپس unit();
 	}
 
-	bool longerThan(Type testVal) const
+	منطقی longerThan(Type testVal) ثابت
 	{
-		return norm_squared() > testVal * testVal;
+		واپس norm_squared() > testVal * testVal;
 	}
 
-	Vector sqrt() const
+	سمتیہ جذر() ثابت
 	{
-		const Vector &a(*this);
-		Vector r;
+		ثابت سمتیہ &a(*یہ);
+		سمتیہ r;
 
-		for (size_t i = 0; i < M; i++) {
-			r(i) = Type(std::sqrt(a(i)));
+		برائے (size_t i = 0; i < M; i++) {
+			r(i) = Type(std::جذر(a(i)));
 		}
 
-		return r;
+		واپس r;
 	}
 
-	void print() const
+	خالی print() ثابت
 	{
-		(*this).transpose().print();
+		(*یہ).transpose().print();
 	}
 
-	static size_t size()
+	ساکن size_t سائز()
 	{
-		return M;
+		واپس M;
 	}
 };
 
-template<typename OStream, typename Type, size_t M>
-OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
+سانچہ<قسم_نام OStream, قسم_نام Type, size_t M>
+OStream &عامل<<(OStream &os, ثابت میٹرکس::سمتیہ<Type, M> &سمتیہ_2)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
-	vector.transpose().write_string(string, n);
+	حرف string[n];
+	سمتیہ_2.transpose().write_string(string, n);
 	os << string;
-	return os;
+	واپس os;
 }
 
 } // namespace matrix

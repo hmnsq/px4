@@ -31,12 +31,12 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#شامل <gtest/gtest.h>
+#شامل <matrix/math.hpp>
 
-using namespace matrix;
+استعمال نامخلا میٹرکس;
 
-TEST(MatrixVectorAssignmentTest, VectorAssignment)
+TEST(میٹرکس_سمتیہ_Assignment_Test, سمتیہ_Assignment)
 {
 	Vector3f v;
 	v(0) = 1;
@@ -53,7 +53,7 @@ TEST(MatrixVectorAssignmentTest, VectorAssignment)
 	EXPECT_FLOAT_EQ(v2(1), 5);
 	EXPECT_FLOAT_EQ(v2(2), 6);
 
-	SquareMatrix<float, 3> m = diag(Vector3f(1, 2, 3));
+	مربع_میٹرکس<اعشاری, 3> m = diag(Vector3f(1, 2, 3));
 	EXPECT_FLOAT_EQ(m(0, 0), 1);
 	EXPECT_FLOAT_EQ(m(1, 1), 2);
 	EXPECT_FLOAT_EQ(m(2, 2), 3);

@@ -37,55 +37,55 @@
  * @author Julian Oes <julian@oes.ch>
  */
 
-#include "hysteresis.h"
+#شامل "hysteresis.h"
 
-namespace systemlib
+نامخلا systemlib
 {
 
-Hysteresis::Hysteresis(bool initial_state)
+Hysteresis::Hysteresis(منطقی initial_state)
 {
 	_state = _requested_state = initial_state;
 }
 
-void Hysteresis::set_hysteresis_time_from(const bool from_state, const hrt_abstime new_hysteresis_time_us)
+خالی Hysteresis::سیٹ_hysteresis_وقت_from(ثابت منطقی from_state, ثابت hrt_abstime new_hysteresis_وقت_us)
 {
-	if (from_state) {
-		_time_from_true_us = new_hysteresis_time_us;
+	اگر (from_state) {
+		وقت_from_true_us = new_hysteresis_وقت_us;
 
-	} else {
-		_time_from_false_us = new_hysteresis_time_us;
+	} ورنہ {
+		وقت_from_false_us = new_hysteresis_وقت_us;
 	}
 }
 
-void Hysteresis::set_state_and_update(const bool new_state, const hrt_abstime &now_us)
+خالی Hysteresis::سیٹ_state_and_update(ثابت منطقی new_state, ثابت hrt_abstime &now_us)
 {
-	if (new_state != _state) {
-		if (new_state != _requested_state) {
+	اگر (new_state != _state) {
+		اگر (new_state != _requested_state) {
 			_requested_state = new_state;
-			_last_time_to_change_state = now_us;
+			آخری_وقت_مقصد_change_state = now_us;
 		}
 
-	} else {
+	} ورنہ {
 		_requested_state = _state;
 	}
 
 	update(now_us);
 }
 
-void Hysteresis::update(const hrt_abstime &now_us)
+خالی Hysteresis::update(ثابت hrt_abstime &now_us)
 {
-	if (_requested_state != _state) {
+	اگر (_requested_state != _state) {
 
-		if (_state && !_requested_state) {
+		اگر (_state && !_requested_state) {
 			// true -> false
-			if (now_us >= _last_time_to_change_state + _time_from_true_us) {
-				_state = false;
+			اگر (now_us >= آخری_وقت_مقصد_change_state + وقت_from_true_us) {
+				_state = جھوٹ;
 			}
 
-		} else if (!_state && _requested_state) {
+		} ورنہ اگر (!_state && _requested_state) {
 			// false -> true
-			if (now_us >= _last_time_to_change_state + _time_from_false_us) {
-				_state = true;
+			اگر (now_us >= آخری_وقت_مقصد_change_state + وقت_from_false_us) {
+				_state = سچ;
 			}
 		}
 	}

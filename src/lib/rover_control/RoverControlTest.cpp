@@ -36,34 +36,34 @@
  * Run this test only using "make tests TESTFILTER=RoverControl"
 ******************************************************************/
 
-#include <gtest/gtest.h>
-#include "RoverControl.hpp"
+#شامل <gtest/gtest.h>
+#شامل "RoverControl.hpp"
 
 TEST(calcWaypointTransitionAngle, invalidInputs)
 {
-	Vector2f prev_wp_ned(NAN, NAN);
+	Vector2f پچھلا_wp_ned(NAN, NAN);
 	Vector2f curr_wp_ned(10.f, 10.f);
-	Vector2f next_wp_ned(10.f, 10.f);
-	float prevInvalid = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
-	prev_wp_ned = Vector2f(10.f, 10.f);
+	Vector2f اگلا_wp_ned(10.f, 10.f);
+	اعشاری پچھلا_Invalid = RoverControl::calcWaypointTransitionAngle(پچھلا_wp_ned, curr_wp_ned, اگلا_wp_ned);
+	پچھلا_wp_ned = Vector2f(10.f, 10.f);
 	curr_wp_ned = Vector2f(NAN, NAN);
-	float currInvalid = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	اعشاری currInvalid = RoverControl::calcWaypointTransitionAngle(پچھلا_wp_ned, curr_wp_ned, اگلا_wp_ned);
 	curr_wp_ned = Vector2f(10.f, 10.f);
-	next_wp_ned = Vector2f(NAN, NAN);
-	float nextInvalid = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
-	EXPECT_FALSE(PX4_ISFINITE(prevInvalid));
+	اگلا_wp_ned = Vector2f(NAN, NAN);
+	اعشاری اگلا_Invalid = RoverControl::calcWaypointTransitionAngle(پچھلا_wp_ned, curr_wp_ned, اگلا_wp_ned);
+	EXPECT_FALSE(PX4_ISFINITE(پچھلا_Invalid));
 	EXPECT_FALSE(PX4_ISFINITE(currInvalid));
-	EXPECT_FALSE(PX4_ISFINITE(nextInvalid));
+	EXPECT_FALSE(PX4_ISFINITE(اگلا_Invalid));
 
 }
 
 TEST(calcWaypointTransitionAngle, validInputs)
 {
 	// P -- C -- N
-	Vector2f prev_wp_ned(0.f, 0.f);
+	Vector2f پچھلا_wp_ned(0.f, 0.f);
 	Vector2f curr_wp_ned(10.f, 0.f);
-	Vector2f next_wp_ned(20.f, 0.f);
-	const float angle1 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	Vector2f اگلا_wp_ned(20.f, 0.f);
+	ثابت اعشاری angle1 = RoverControl::calcWaypointTransitionAngle(پچھلا_wp_ned, curr_wp_ned, اگلا_wp_ned);
 	EXPECT_FLOAT_EQ(angle1, M_PI_F);
 
 	/**
@@ -71,10 +71,10 @@ TEST(calcWaypointTransitionAngle, validInputs)
 	 *	  /
 	 * P -- C
 	 */
-	prev_wp_ned = Vector2f(0.f, 0.f);
+	پچھلا_wp_ned = Vector2f(0.f, 0.f);
 	curr_wp_ned = Vector2f(10.f, 0.f);
-	next_wp_ned = Vector2f(20.f, 10.f);
-	const float angle2 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	اگلا_wp_ned = Vector2f(20.f, 10.f);
+	ثابت اعشاری angle2 = RoverControl::calcWaypointTransitionAngle(پچھلا_wp_ned, curr_wp_ned, اگلا_wp_ned);
 	EXPECT_FLOAT_EQ(angle2, M_PI_F - M_PI_4_F);
 
 	/**
@@ -82,10 +82,10 @@ TEST(calcWaypointTransitionAngle, validInputs)
 	 *	|
 	 * P -- C
 	 */
-	prev_wp_ned = Vector2f(0.f, 0.f);
+	پچھلا_wp_ned = Vector2f(0.f, 0.f);
 	curr_wp_ned = Vector2f(10.f, 0.f);
-	next_wp_ned = Vector2f(10.f, 10.f);
-	const float angle3 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	اگلا_wp_ned = Vector2f(10.f, 10.f);
+	ثابت اعشاری angle3 = RoverControl::calcWaypointTransitionAngle(پچھلا_wp_ned, curr_wp_ned, اگلا_wp_ned);
 	EXPECT_FLOAT_EQ(angle3, M_PI_2_F);
 
 	/**
@@ -93,23 +93,23 @@ TEST(calcWaypointTransitionAngle, validInputs)
 	 *    \
 	 * P -- C
 	 */
-	prev_wp_ned = Vector2f(0.f, 0.f);
+	پچھلا_wp_ned = Vector2f(0.f, 0.f);
 	curr_wp_ned = Vector2f(10.f, 0.f);
-	next_wp_ned = Vector2f(0.f, 10.f);
-	const float angle4 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	اگلا_wp_ned = Vector2f(0.f, 10.f);
+	ثابت اعشاری angle4 = RoverControl::calcWaypointTransitionAngle(پچھلا_wp_ned, curr_wp_ned, اگلا_wp_ned);
 	EXPECT_FLOAT_EQ(angle4, M_PI_4_F);
 
 	// P/C -- N
-	prev_wp_ned = Vector2f(0.f, 0.f);
+	پچھلا_wp_ned = Vector2f(0.f, 0.f);
 	curr_wp_ned = Vector2f(0.f, 0.f);
-	next_wp_ned = Vector2f(10.f, 0.f);
-	const float angle5 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	اگلا_wp_ned = Vector2f(10.f, 0.f);
+	ثابت اعشاری angle5 = RoverControl::calcWaypointTransitionAngle(پچھلا_wp_ned, curr_wp_ned, اگلا_wp_ned);
 	EXPECT_FALSE(PX4_ISFINITE(angle5));
 
 	// P -- C/N
-	prev_wp_ned = Vector2f(0.f, 0.f);
+	پچھلا_wp_ned = Vector2f(0.f, 0.f);
 	curr_wp_ned = Vector2f(10.f, 0.f);
-	next_wp_ned = Vector2f(10.f, 0.f);
-	const float angle6 = RoverControl::calcWaypointTransitionAngle(prev_wp_ned, curr_wp_ned, next_wp_ned);
+	اگلا_wp_ned = Vector2f(10.f, 0.f);
+	ثابت اعشاری angle6 = RoverControl::calcWaypointTransitionAngle(پچھلا_wp_ned, curr_wp_ned, اگلا_wp_ned);
 	EXPECT_FALSE(PX4_ISFINITE(angle6));
 }

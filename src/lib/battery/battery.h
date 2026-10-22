@@ -40,26 +40,26 @@
  * @author Timothy Scott <timothy@auterion.com>
  */
 
-#pragma once
+#ہدایت once
 
-#include <math.h>
-#include <float.h>
+#شامل <math.h>
+#شامل <float.h>
 
-#include <board_config.h>
-#include <px4_platform_common/board_common.h>
-#include <px4_platform_common/module_params.h>
-#include <matrix/math.hpp>
+#شامل <board_config.h>
+#شامل <px4_platform_common/board_common.h>
+#شامل <px4_platform_common/module_params.h>
+#شامل <matrix/math.hpp>
 
-#include <drivers/drv_hrt.h>
-#include <lib/parameters/param.h>
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/battery_status.h>
-#include <uORB/topics/flight_phase_estimation.h>
-#include <uORB/topics/vehicle_status.h>
+#شامل <drivers/drv_hrt.h>
+#شامل <lib/parameters/param.h>
+#شامل <lib/mathlib/math/filter/AlphaFilter.hpp>
+#شامل <uORB/PublicationMulti.hpp>
+#شامل <uORB/Subscription.hpp>
+#شامل <uORB/topics/battery_status.h>
+#شامل <uORB/topics/flight_phase_estimation.h>
+#شامل <uORB/topics/vehicle_status.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#شامل <lib/failure_injection/FailureInjection.hpp>
 
 /**
  * BatteryBase is a base class for any type of battery.
@@ -67,52 +67,52 @@
  * You can use this class on its own. Or, if you need to implement a custom battery type,
  * you can inherit from this class. See, for example, src/modules/battery_status/AnalogBattery.h
  */
-class Battery : public ModuleParams
+class Battery : عوامی ModuleParams
 {
-public:
-	Battery(int index, ModuleParams *parent, const int sample_interval_us, const uint8_t source);
-	~Battery() = default;
+عوامی:
+	Battery(صحیح اشاریہ, ModuleParams *والد, ثابت صحیح sample_interval_us, ثابت uint8_t ماخذ);
+	~Battery() = طےشدہ;
 
 	/**
 	 * Get the battery cell count
 	 */
-	int cell_count() { return _params.n_cells; }
+	صحیح cell_گنتی() { واپس _params.n_cells; }
 
 	/**
 	 * Get the empty voltage per cell
 	 */
-	float empty_cell_voltage() { return _params.v_empty; }
+	اعشاری خالی_خانے_cell_voltage() { واپس _params.v_خالی_خانے; }
 
 	/**
 	 * Get the full voltage per cell
 	 */
-	float full_cell_voltage() { return _params.v_charged; }
+	اعشاری بھرا_cell_voltage() { واپس _params.v_charged; }
 
-	void setPriority(const uint8_t priority) { _priority = priority; }
-	void setConnected(const bool connected) { _connected = connected; }
-	void setStateOfCharge(const float soc) { _state_of_charge = math::constrain(soc, 0.f, 1.f); _external_state_of_charge = true; }
-	void setCapacityMah(const float capacity) { _capacity_mah = math::max(capacity, 0.f); }
-	void updateVoltage(const float voltage_v);
-	void updateCurrent(const float current_a);
-	void updateTemperature(const float temperature_c);
+	خالی سیٹ_ترجیح(ثابت uint8_t ترجیح) { ترجیح_2 = ترجیح; }
+	خالی سیٹ_Connected(ثابت bool connected) { _connected = connected; }
+	خالی سیٹ_State_کا_Charge(ثابت اعشاری soc) { state_کا_charge = math::constrain(soc, 0.f, 1.f); external_state_کا_charge = true; }
+	خالی سیٹ_استعداد_Mah(ثابت اعشاری استعداد) { استعداد_mah = math::max(استعداد, 0.f); }
+	خالی updateVoltage(ثابت اعشاری voltage_v);
+	خالی updateCurrent(ثابت اعشاری current_a);
+	خالی updateTemperature(ثابت اعشاری temperature_c);
 
 	/**
 	 * Update state of charge calculations
 	 *
 	 * @param timestamp Time at which the battery data sample was measured
 	 */
-	void updateBatteryStatus(const hrt_abstime &timestamp);
+	خالی update_Battery_حالت(ثابت hrt_abstime &timestamp);
 
-	battery_status_s getBatteryStatus();
-	float getCurrentAverage() const { return PX4_ISFINITE(_current_average_filter_a.getState()) ? _current_average_filter_a.getState() : -1.f; }
-	void publishBatteryStatus(const battery_status_s &battery_status);
+	battery_حالت_s get_Battery_حالت();
+	اعشاری get_Current_اوسط_قدر() ثابت { واپس PX4_ISFINITE(current_اوسط_قدر_filter_a.getState()) ? current_اوسط_قدر_filter_a.getState() : -1.f; }
+	خالی publish_Battery_حالت(ثابت battery_حالت_s &battery_حالت);
 
 	/**
 	 * Convenience function for combined update and publication
 	 * @see updateBatteryStatus()
 	 * @see publishBatteryStatus()
 	 */
-	void updateAndPublishBatteryStatus(const hrt_abstime &timestamp);
+	خالی update_And_Publish_Battery_حالت(ثابت hrt_abstime &timestamp);
 
 	/**
 	 * Calculates how much time is left before the battery is depleted,
@@ -122,7 +122,7 @@ public:
 	 * @param current_a The current draw from the battery in amperes.
 	 * @return Estimated remaining time in seconds.
 	 */
-	float computeRemainingTime(float current_a);
+	اعشاری compute_بقایا_وقت(اعشاری current_a);
 
 	/**
 	 * Updates coulomb counting
@@ -131,104 +131,104 @@ public:
 	 * @param current_a Positive current draw in A
 	 * @return Accumulated used capacity in mAh
 	 */
-	float sumDischarged(float current_a);
-	uint8_t determineWarning(float state_of_charge);
-	void updateDt(const hrt_abstime &timestamp);
+	اعشاری مجموع_Discharged(اعشاری current_a);
+	uint8_t determineWarning(اعشاری state_کا_charge_2);
+	خالی updateDt(ثابت hrt_abstime &timestamp);
 
-protected:
-	static constexpr float LITHIUM_BATTERY_RECOGNITION_VOLTAGE = 2.1f;
+محفوظ:
+	ساکن constexpr اعشاری LITHIUM_BATTERY_RECOGNITION_VOLTAGE = 2.1f;
 
-	struct {
-		param_t v_empty;
+	ساخت {
+		param_t v_خالی_خانے;
 		param_t v_charged;
 		param_t n_cells;
-		param_t capacity;
-		param_t r_internal;
-		param_t low_thr;
+		param_t استعداد;
+		param_t r_اندرونی;
+		param_t کم_thr;
 		param_t crit_thr;
 		param_t emergen_thr;
-		param_t source;
+		param_t ماخذ;
 		param_t bat_avrg_current;
 		param_t i_overwrite;
 	} _param_handles{};
 
-	struct {
-		float v_empty;
-		float v_charged;
+	ساخت {
+		اعشاری v_خالی_خانے;
+		اعشاری v_charged;
 		int32_t  n_cells;
-		float r_internal;
-		float low_thr;
-		float crit_thr;
-		float emergen_thr;
-		int32_t source;
-		float bat_avrg_current;
-		float i_overwrite;
+		اعشاری r_اندرونی;
+		اعشاری کم_thr;
+		اعشاری crit_thr;
+		اعشاری emergen_thr;
+		int32_t ماخذ;
+		اعشاری bat_avrg_current;
+		اعشاری i_overwrite;
 	} _params{};
 
-	const int _index;
+	ثابت صحیح اشاریہ_2;
 
-	bool _first_parameter_update{true};
-	void updateParams() override;
+	bool پہلا_parameter_update{true};
+	خالی updateParams() override;
 
-private:
-	float calculateStateOfChargeVoltageBased(const float voltage_v, const float current_a);
-	void estimateStateOfCharge();
-	uint16_t determineFaults();
-	void computeScale();
+نجی:
+	اعشاری calculate_State_کا_Charge_Voltage_Based(ثابت اعشاری voltage_v, ثابت اعشاری current_a);
+	خالی estimate_State_کا_Charge();
+	uint16_t determine_خرابیاں();
+	خالی computeScale();
 
-	uORB::Subscription _vehicle_status_sub{ORB_ID(vehicle_status)};
-	uORB::SubscriptionData<flight_phase_estimation_s> _flight_phase_estimation_sub{ORB_ID(flight_phase_estimation)};
-	uORB::PublicationMulti<battery_status_s> _battery_status_pub{ORB_ID(battery_status)};
+	uORB::Subscription vehicle_حالت_sub{ORB_ID(vehicle_حالت)};
+	uORB::Subscription_ڈیٹا<flight_phase_estimation_s> _flight_phase_estimation_sub{ORB_ID(flight_phase_estimation)};
+	uORB::PublicationMulti<battery_حالت_s> battery_حالت_pub{ORB_ID(battery_حالت)};
 
 	failure_injection::Config _failure_config;
 
-	bool _external_state_of_charge{false}; ///< inticates that the soc is injected and not updated by this library
+	bool external_state_کا_charge{false}; ///< inticates that the soc is injected and not updated by this library
 
 	bool _connected{false};
-	const uint8_t _source;
-	uint8_t _priority{0};
+	ثابت uint8_t ماخذ_2;
+	uint8_t ترجیح_2{0};
 	bool _battery_initialized{false};
-	float _voltage_v{0.f};
-	AlphaFilter<float> _ocv_filter_v;
-	AlphaFilter<float> _cell_voltage_filter_v;
-	float _current_a{-1};
-	AlphaFilter<float>
-	_current_average_filter_a; ///< averaging filter for current. For FW, it is the current in level flight.
-	float _temperature_c{NAN};
-	float _discharged_mah{0.f};
-	float _discharged_mah_loop{0.f};
-	float _state_of_charge_volt_based{-1.f}; // [0,1]
-	float _state_of_charge{-1.f}; // [0,1]
-	float _scale{1.f};
-	uint8_t _warning{battery_status_s::WARNING_NONE};
-	float _dt{0.f};
-	float _dt_discharge{0.f}; // unclamped dt, used for the discharged_mah coulomb count
-	float _capacity_mah{0.f};
-	hrt_abstime _last_timestamp{0};
+	اعشاری _voltage_v{0.f};
+	AlphaFilter<اعشاری> _ocv_filter_v;
+	AlphaFilter<اعشاری> _cell_voltage_filter_v;
+	اعشاری _current_a{-1};
+	AlphaFilter<اعشاری>
+	current_اوسط_قدر_filter_a; ///< averaging filter for current. For FW, it is the current in level flight.
+	اعشاری _temperature_c{NAN};
+	اعشاری _discharged_mah{0.f};
+	اعشاری _discharged_mah_loop{0.f};
+	اعشاری state_کا_charge_volt_based{-1.f}; // [0,1]
+	اعشاری state_کا_charge{-1.f}; // [0,1]
+	اعشاری _scale{1.f};
+	uint8_t _warning{battery_حالت_s::WARNING_NONE};
+	اعشاری _dt{0.f};
+	اعشاری _dt_discharge{0.f}; // unclamped dt, used for the discharged_mah coulomb count
+	اعشاری استعداد_mah{0.f};
+	hrt_abstime آخری_timestamp{0};
 	bool _armed{false};
-	bool _vehicle_status_is_fw{false};
-	bool _vehicle_status_was_fw{false};
-	hrt_abstime _last_unconnected_timestamp{0};
+	bool vehicle_حالت_is_fw{false};
+	bool vehicle_حالت_was_fw{false};
+	hrt_abstime آخری_unconnected_timestamp{0};
 
 	// Internal Resistance estimation
-	void updateInternalResistanceEstimation(const float voltage_v, const float current_a);
-	void resetInternalResistanceEstimation(const float voltage_v, const float current_a);
-	matrix::Vector2f _RLS_est; // [Open circuit voltage estimate [V], Total internal resistance estimate [Ohm]]^T
-	matrix::Matrix2f _estimation_covariance;
-	bool _internal_resistance_initialized{false};
-	float _estimation_covariance_norm{0.f};
-	float _internal_resistance_estimate{0.005f}; // [Ohm] Per cell estimate of the internal resistance
-	float _voltage_prediction{0.f}; // [V] Predicted voltage of the estimator
-	float _prediction_error{0.f}; // [V] Error between the predicted and measured voltage
-	static constexpr float LAMBDA = 0.95f; 	// [0, 1] Forgetting factor (Tuning parameter for the RLS algorithm)
-	static constexpr float R_DEFAULT = 0.005f; // [Ohm] Initial per cell estimate of the internal resistance
-	static constexpr float OCV_DEFAULT = 4.2f; // [V] Initial per cell estimate of the open circuit voltage
-	static constexpr float R_COVARIANCE = 0.1f; // Initial per cell covariance of the internal resistance
-	static constexpr float OCV_COVARIANCE = 1.5f; // Initial per cell covariance of the open circuit voltage
+	خالی update_اندرونی_Resistance_Estimation(ثابت اعشاری voltage_v, ثابت اعشاری current_a);
+	خالی reset_اندرونی_Resistance_Estimation(ثابت اعشاری voltage_v, ثابت اعشاری current_a);
+	میٹرکس::Vector2f _RLS_est; // [Open circuit voltage estimate [V], Total internal resistance estimate [Ohm]]^T
+	میٹرکس::Matrix2f _estimation_covariance;
+	bool اندرونی_resistance_initialized{false};
+	اعشاری _estimation_covariance_norm{0.f};
+	اعشاری اندرونی_resistance_estimate_2{0.005f}; // [Ohm] Per cell estimate of the internal resistance
+	اعشاری _voltage_prediction{0.f}; // [V] Predicted voltage of the estimator
+	اعشاری _prediction_error{0.f}; // [V] Error between the predicted and measured voltage
+	ساکن constexpr اعشاری LAMBDA = 0.95f; 	// [0, 1] Forgetting factor (Tuning parameter for the RLS algorithm)
+	ساکن constexpr اعشاری R_DEFAULT = 0.005f; // [Ohm] Initial per cell estimate of the internal resistance
+	ساکن constexpr اعشاری OCV_DEFAULT = 4.2f; // [V] Initial per cell estimate of the open circuit voltage
+	ساکن constexpr اعشاری R_COVARIANCE = 0.1f; // Initial per cell covariance of the internal resistance
+	ساکن constexpr اعشاری OCV_COVARIANCE = 1.5f; // Initial per cell covariance of the open circuit voltage
 
 	// Temperature [degC] above which an overtemperature fault is declared,
 	// leading to a failsafe warning recommending immediate landing. Note
 	// that depending on the setup this may be measured in/close to the
 	// battery (smart battery) or from a separate power monitor module.
-	static constexpr float BAT_TEMP_MAX = 100.0f;
+	ساکن constexpr اعشاری BAT_عارضی_MAX = 100.0f;
 };

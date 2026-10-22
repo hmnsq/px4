@@ -37,89 +37,89 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
-#include <containers/List.hpp>
-#include <controllib/block/BlockParam.hpp>
-#include <cstdint>
+#شامل <containers/List.hpp>
+#شامل <controllib/block/BlockParam.hpp>
+#شامل <cstdint>
 
-namespace control
+نامخلا control
 {
 
-static constexpr uint8_t maxChildrenPerBlock = 100;
-static constexpr uint8_t maxParamsPerBlock = 110;
-static constexpr uint8_t blockNameLengthMax = 40;
+ساکن constexpr uint8_t max_Children_فی_بلاک = 100;
+ساکن constexpr uint8_t max_Params_فی_بلاک = 110;
+ساکن constexpr uint8_t بلاک_Name_لمبائی_Max = 40;
 
 // forward declaration
-class BlockParamBase;
-class SuperBlock;
+جماعت بلاک_Param_بنیاد;
+جماعت Super_بلاک;
 
 /**
  */
-class __EXPORT Block : public ListNode<Block *>
+جماعت __EXPORT بلاک : عوامی List_گرہ<بلاک *>
 {
-public:
-	friend class BlockParamBase;
+عوامی:
+	دوست جماعت بلاک_Param_بنیاد;
 
-	Block(SuperBlock *parent, const char *name);
-	virtual ~Block() = default;
+	بلاک(Super_بلاک *والد, ثابت حرف *name);
+	مجازی ~بلاک() = طےشدہ;
 
 	// no copy, assignment, move, move assignment
-	Block(const Block &) = delete;
-	Block &operator=(const Block &) = delete;
-	Block(Block &&) = delete;
-	Block &operator=(Block &&) = delete;
+	بلاک(ثابت بلاک &) = حذف;
+	بلاک &عامل=(ثابت بلاک &) = حذف;
+	بلاک(بلاک &&) = حذف;
+	بلاک &عامل=(بلاک &&) = حذف;
 
-	void getName(char *name, size_t n);
+	خالی getName(حرف *name, size_t n);
 
-	virtual void updateParams();
+	مجازی خالی updateParams();
 
-	virtual void setDt(float dt) { _dt = dt; }
-	float getDt() { return _dt; }
+	مجازی خالی سیٹ_Dt(اعشاری dt) { _dt = dt; }
+	اعشاری getDt() { واپس _dt; }
 
-protected:
+محفوظ:
 
-	virtual void updateParamsSubclass() {}
+	مجازی خالی updateParamsSubclass() {}
 
-	SuperBlock *getParent() { return _parent; }
-	List<BlockParamBase *> &getParams() { return _params; }
+	Super_بلاک *get_والد() { واپس والد_2; }
+	List<بلاک_Param_بنیاد *> &getParams() { واپس _params; }
 
-	const char *_name;
-	SuperBlock *_parent;
-	float _dt{0.0f};
+	ثابت حرف *_name;
+	Super_بلاک *والد_2;
+	اعشاری _dt{0.0f};
 
-	List<BlockParamBase *> _params;
+	List<بلاک_Param_بنیاد *> _params;
 };
 
-class __EXPORT SuperBlock :
-	public Block
+جماعت __EXPORT Super_بلاک :
+	عوامی بلاک
 {
-public:
-	friend class Block;
+عوامی:
+	دوست جماعت بلاک;
 
-	SuperBlock(SuperBlock *parent, const char *name) : Block(parent, name) {}
-	~SuperBlock() = default;
+	Super_بلاک(Super_بلاک *والد, ثابت حرف *name) : بلاک(والد, name) {}
+	~Super_بلاک() = طےشدہ;
 
 	// no copy, assignment, move, move assignment
-	SuperBlock(const SuperBlock &) = delete;
-	SuperBlock &operator=(const SuperBlock &) = delete;
-	SuperBlock(SuperBlock &&) = delete;
-	SuperBlock &operator=(SuperBlock &&) = delete;
+	Super_بلاک(ثابت Super_بلاک &) = حذف;
+	Super_بلاک &عامل=(ثابت Super_بلاک &) = حذف;
+	Super_بلاک(Super_بلاک &&) = حذف;
+	Super_بلاک &عامل=(Super_بلاک &&) = حذف;
 
-	void setDt(float dt) override;
+	خالی سیٹ_Dt(اعشاری dt) override;
 
-	void updateParams() override
+	خالی updateParams() override
 	{
-		Block::updateParams();
+		بلاک::updateParams();
 
-		if (getChildren().getHead() != nullptr) { updateChildParams(); }
+		اگر (getChildren().get_سر() != خالی_اشاریہ) { update_بچہ_Params(); }
 	}
 
-protected:
-	List<Block *> &getChildren() { return _children; }
-	void updateChildParams();
+محفوظ:
+	List<بلاک *> &getChildren() { واپس _children; }
+	خالی update_بچہ_Params();
 
-	List<Block *> _children;
+	List<بلاک *> _children;
 };
 
 

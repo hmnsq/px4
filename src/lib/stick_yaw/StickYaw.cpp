@@ -31,108 +31,108 @@
  *
  ****************************************************************************/
 
-#include "StickYaw.hpp"
+#شامل "StickYaw.hpp"
 
-#include <px4_platform_common/defines.h>
+#شامل <px4_platform_common/defines.h>
 
-using matrix::wrap_pi;
+استعمال میٹرکس::wrap_pi;
 
-StickYaw::StickYaw(ModuleParams *parent) :
-	ModuleParams(parent)
+StickYaw::StickYaw(ModuleParams *والد) :
+	ModuleParams(والد)
 {}
 
-void StickYaw::reset(const float yaw, const float unaided_yaw)
+خالی StickYaw::reset(ثابت اعشاری yaw, ثابت اعشاری unaided_yaw)
 {
 	// The filter state outlives deactivation; a reset means there is no stick history to carry over.
 	resetYawspeed();
 
-	if (PX4_ISFINITE(unaided_yaw)) {
+	اگر (PX4_ISFINITE(unaided_yaw)) {
 		_yaw_error_lpf.reset(wrap_pi(yaw - unaided_yaw));
 	}
 }
 
-void StickYaw::ekfResetHandler(const float delta_yaw)
+خالی StickYaw::ekfResetHandler(ثابت اعشاری delta_yaw)
 {
 	_yaw_error_lpf.reset(wrap_pi(_yaw_error_lpf.getState() + delta_yaw));
 	_yaw_error_ref = wrap_pi(_yaw_error_ref + delta_yaw);
 }
 
-void StickYaw::generateYawSetpoint(float &yawspeed_setpoint, float &yaw_setpoint, const float stick_yaw,
-				   const float yaw, const float deltatime, const float unaided_yaw)
+خالی StickYaw::generateYawSetpoint(اعشاری &yawspeed_setpoint, اعشاری &yaw_setpoint, ثابت اعشاری stick_yaw,
+				   ثابت اعشاری yaw, ثابت اعشاری deltatime, ثابت اعشاری unaided_yaw)
 {
-	const float yaw_correction_prev = _yaw_correction;
-	const bool reset_setpoint = updateYawCorrection(yaw, unaided_yaw, deltatime);
+	ثابت اعشاری yaw_correction_پچھلا = _yaw_correction;
+	ثابت منطقی reset_setpoint = updateYawCorrection(yaw, unaided_yaw, deltatime);
 
-	if (reset_setpoint) {
+	اگر (reset_setpoint) {
 		yaw_setpoint = NAN;
 	}
 
-	_yawspeed_filter.setParameters(deltatime, _param_mpc_man_y_tau.get());
-	const float yawspeed_scale = math::min(math::radians(_param_mpc_man_y_max.get()), _yawspeed_constraint);
+	_yawspeed_filter.سیٹ_Parameters(deltatime, _param_mpc_man_y_tau.get());
+	ثابت اعشاری yawspeed_scale = math::min(math::radians(_param_mpc_man_y_max.get()), _yawspeed_constraint);
 	yawspeed_setpoint = _yawspeed_filter.update(stick_yaw * yawspeed_scale);
-	yaw_setpoint = updateYawLock(yaw, yawspeed_setpoint, yaw_setpoint, yaw_correction_prev);
+	yaw_setpoint = update_Yaw_تالا(yaw, yawspeed_setpoint, yaw_setpoint, yaw_correction_پچھلا);
 }
 
-bool StickYaw::updateYawCorrection(const float yaw, const float unaided_yaw, const float deltatime)
+منطقی StickYaw::updateYawCorrection(ثابت اعشاری yaw, ثابت اعشاری unaided_yaw, ثابت اعشاری deltatime)
 {
-	if (!PX4_ISFINITE(unaided_yaw)) {
-		_unaided_yaw_was_invalid = true;
+	اگر (!PX4_ISFINITE(unaided_yaw)) {
+		_unaided_yaw_was_invalid = سچ;
 		// If unaided yaw is not available we leave yaw_correction_ unchanged
 		// Meaning yaw_setpoint - yaw_correction_prev + _yaw_correction = yaw_setpoint
-		return false;
+		واپس جھوٹ;
 	}
 
 	// Detect the convergence phase of the yaw estimate by monitoring its relative
 	// distance from an unaided yaw source.
-	const float yaw_error = wrap_pi(yaw - unaided_yaw);
+	ثابت اعشاری yaw_error = wrap_pi(yaw - unaided_yaw);
 
-	if (_unaided_yaw_was_invalid) {
-		_unaided_yaw_was_invalid = false;
+	اگر (_unaided_yaw_was_invalid) {
+		_unaided_yaw_was_invalid = جھوٹ;
 		_yaw_error_lpf.reset(yaw_error);
 		_yaw_error_ref = yaw_error;
 		_yaw_correction = 0.f;
-		_yaw_estimate_converging = false;
-		return true;
+		_yaw_estimate_converging = جھوٹ;
+		واپس سچ;
 	}
 
 	// Run it through a high-pass filter to detect transients
-	const float yaw_error_hpf = wrap_pi(yaw_error - _yaw_error_lpf.getState());
+	ثابت اعشاری yaw_error_hpf = wrap_pi(yaw_error - _yaw_error_lpf.getState());
 	_yaw_error_lpf.update(yaw_error, deltatime);
 
-	const bool was_converging = _yaw_estimate_converging;
-	_yaw_estimate_converging = fabsf(yaw_error_hpf) > _kYawErrorChangeThreshold;
+	ثابت منطقی was_converging = _yaw_estimate_converging;
+	_yaw_estimate_converging = fabsf(yaw_error_hpf) > k_Yaw_Error_Change_حد;
 
-	bool reset_setpoint = false;
+	منطقی reset_setpoint = جھوٹ;
 
-	if (!_yaw_estimate_converging) {
+	اگر (!_yaw_estimate_converging) {
 		_yaw_error_ref = yaw_error;
 
-		if (was_converging) {
+		اگر (was_converging) {
 			// Force a reset of the locking mechanism
-			reset_setpoint = true;
+			reset_setpoint = سچ;
 		}
 	}
 
 	_yaw_correction = wrap_pi(yaw_error - _yaw_error_ref);
 
-	return reset_setpoint;
+	واپس reset_setpoint;
 }
 
-float StickYaw::updateYawLock(const float yaw, const float yawspeed_setpoint, const float yaw_setpoint,
-			      const float yaw_correction_prev) const
+اعشاری StickYaw::update_Yaw_تالا(ثابت اعشاری yaw, ثابت اعشاری yawspeed_setpoint, ثابت اعشاری yaw_setpoint,
+			      ثابت اعشاری yaw_correction_پچھلا) ثابت
 {
 	// Yaw-lock depends on desired yawspeed input. If not locked, yaw_sp is set to NAN.
-	if (fabsf(yawspeed_setpoint) > FLT_EPSILON) {
+	اگر (fabsf(yawspeed_setpoint) > FLT_EPSILON) {
 		// no fixed heading when rotating around yaw by stick
-		return NAN;
+		واپس NAN;
 
-	} else {
+	} ورنہ {
 		// slow down and hold the current heading when no more rotation commanded
-		if (!PX4_ISFINITE(yaw_setpoint)) {
-			return yaw;
+		اگر (!PX4_ISFINITE(yaw_setpoint)) {
+			واپس yaw;
 
-		} else {
-			return wrap_pi(yaw_setpoint - yaw_correction_prev + _yaw_correction);
+		} ورنہ {
+			واپس wrap_pi(yaw_setpoint - yaw_correction_پچھلا + _yaw_correction);
 		}
 	}
 }

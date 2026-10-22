@@ -31,113 +31,113 @@
  *
  ****************************************************************************/
 
-#include "actuator_test.hpp"
+#شامل "actuator_test.hpp"
 
-#include "functions/FunctionMotors.hpp"
+#شامل "functions/FunctionMotors.hpp"
 
-using namespace time_literals;
+استعمال نامخلا وقت_literals;
 
-ActuatorTest::ActuatorTest(const OutputFunction function_assignments[MAX_ACTUATORS])
+ActuatorTest::ActuatorTest(ثابت OutputFunction function_assignments[MAX_ACTUATORS])
 	: _function_assignments(function_assignments)
 {
 	reset();
 }
 
-void ActuatorTest::update(int num_outputs, float thrust_curve)
+خالی ActuatorTest::update(صحیح عدد_outputs, اعشاری thrust_خم)
 {
-	const hrt_abstime now = hrt_absolute_time();
+	ثابت hrt_abstime now = hrt_absolute_وقت();
 
 	actuator_test_s actuator_test;
 
-	while (_actuator_test_sub.update(&actuator_test)) {
-		if (actuator_test.timestamp == 0 ||
-		    hrt_elapsed_time(&actuator_test.timestamp) > 100_ms) {
-			continue;
+	جب (_actuator_test_sub.update(&actuator_test)) {
+		اگر (actuator_test.timestamp == 0 ||
+		    hrt_elapsed_وقت(&actuator_test.timestamp) > 100_ms) {
+			جاری;
 		}
 
-		for (int i = 0; i < num_outputs; ++i) {
-			if ((int)_function_assignments[i] == actuator_test.function) {
-				bool in_test_mode = actuator_test.action == actuator_test_s::ACTION_DO_CONTROL;
+		برائے (صحیح i = 0; i < عدد_outputs; ++i) {
+			اگر ((صحیح)_function_assignments[i] == actuator_test.function) {
+				منطقی اندر_test_منوال = actuator_test.action == actuator_test_s::ACTION_DO_CONTROL;
 
 				// entering test mode?
-				if (!_in_test_mode && in_test_mode) {
+				اگر (!اندر_test_منوال_2 && اندر_test_منوال) {
 					reset();
-					_in_test_mode = true;
+					اندر_test_منوال_2 = سچ;
 				}
 
-				_output_overridden[i] = in_test_mode;
+				_output_overridden[i] = اندر_test_منوال;
 
-				if (in_test_mode) {
-					if (actuator_test.timeout_ms > 0) {
-						_next_timeout = now + actuator_test.timeout_ms * 1000;
+				اگر (اندر_test_منوال) {
+					اگر (actuator_test.timeout_ms > 0) {
+						اگلا_timeout = now + actuator_test.timeout_ms * 1000;
 					}
 
-					float value = actuator_test.value;
+					اعشاری value = actuator_test.value;
 
 					// handle motors
-					if ((int)OutputFunction::Motor1 <= actuator_test.function && actuator_test.function <= (int)OutputFunction::MotorMax) {
+					اگر ((صحیح)OutputFunction::Motor1 <= actuator_test.function && actuator_test.function <= (صحیح)OutputFunction::MotorMax) {
 						actuator_motors_s motors;
 						motors.reversible_flags = 0;
 						_actuator_motors_sub.copy(&motors);
-						int motor_idx = actuator_test.function - (int)OutputFunction::Motor1;
-						FunctionMotors::updateValues(motors.reversible_flags >> motor_idx, thrust_curve, &value, 1);
+						صحیح motor_idx = actuator_test.function - (صحیح)OutputFunction::Motor1;
+						FunctionMotors::update_اقدار(motors.reversible_flags >> motor_idx, thrust_خم, &value, 1);
 					}
 
 					// handle servos: add trim
-					if ((int)OutputFunction::Servo1 <= actuator_test.function && actuator_test.function <= (int)OutputFunction::ServoMax) {
+					اگر ((صحیح)OutputFunction::Servo1 <= actuator_test.function && actuator_test.function <= (صحیح)OutputFunction::ServoMax) {
 						actuator_servos_trim_s trim{};
 						_actuator_servos_trim_sub.copy(&trim);
-						int idx = actuator_test.function - (int)OutputFunction::Servo1;
+						صحیح idx = actuator_test.function - (صحیح)OutputFunction::Servo1;
 
-						if (idx < actuator_servos_trim_s::NUM_CONTROLS) {
+						اگر (idx < actuator_servos_trim_s::عدد_CONTROLS) {
 							value += trim.trim[idx];
 						}
 					}
 
 					_current_outputs[i] = value;
 
-				} else {
+				} ورنہ {
 					_current_outputs[i] = NAN;
 				}
 			}
 		}
 	}
 
-	if (_in_test_mode) {
+	اگر (اندر_test_منوال_2) {
 		// check if all disabled
-		bool any_overridden = false;
+		منطقی any_overridden = جھوٹ;
 
-		for (int i = 0; i < num_outputs; ++i) {
+		برائے (صحیح i = 0; i < عدد_outputs; ++i) {
 			any_overridden |= _output_overridden[i];
 		}
 
-		if (!any_overridden) {
-			_in_test_mode = false;
+		اگر (!any_overridden) {
+			اندر_test_منوال_2 = جھوٹ;
 		}
 	}
 
 	// check for timeout
-	if (_in_test_mode && _next_timeout != 0 && now > _next_timeout) {
-		_in_test_mode = false;
+	اگر (اندر_test_منوال_2 && اگلا_timeout != 0 && now > اگلا_timeout) {
+		اندر_test_منوال_2 = جھوٹ;
 	}
 }
 
-void ActuatorTest::overrideValues(float outputs[MAX_ACTUATORS], int num_outputs)
+خالی ActuatorTest::override_اقدار(اعشاری outputs[MAX_ACTUATORS], صحیح عدد_outputs)
 {
-	if (_in_test_mode) {
-		for (int i = 0; i < num_outputs; ++i) {
+	اگر (اندر_test_منوال_2) {
+		برائے (صحیح i = 0; i < عدد_outputs; ++i) {
 			outputs[i] = _current_outputs[i];
 		}
 	}
 }
 
-void ActuatorTest::reset()
+خالی ActuatorTest::reset()
 {
-	_in_test_mode = false;
-	_next_timeout = 0;
+	اندر_test_منوال_2 = جھوٹ;
+	اگلا_timeout = 0;
 
-	for (int i = 0; i < MAX_ACTUATORS; ++i) {
+	برائے (صحیح i = 0; i < MAX_ACTUATORS; ++i) {
 		_current_outputs[i] = NAN;
-		_output_overridden[i] = false;
+		_output_overridden[i] = جھوٹ;
 	}
 }

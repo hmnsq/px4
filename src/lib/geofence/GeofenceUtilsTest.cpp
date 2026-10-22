@@ -31,12 +31,12 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "geofence_utils.h"
+#شامل <gtest/gtest.h>
+#شامل "geofence_utils.h"
 
-using namespace matrix;
-using SS = geofence_utils::SegSegResult;
-using AddResult = geofence_utils::PlannerPolygons::AddResult;
+استعمال نامخلا میٹرکس;
+استعمال SS = geofence_utils::Seg_Seg_نتیجہ;
+استعمال جوڑو_نتیجہ = geofence_utils::PlannerPolygons::جوڑو_نتیجہ;
 
 // Low level primitives operating on fixed-point int32 coordinates.
 
@@ -55,8 +55,8 @@ TEST(GeofenceUtilsTest, SegmentsCross)
 	EXPECT_EQ(SS::Cross, geofence_utils::segmentsIntersect(0, 0, 0, 100, -1, 1, 100, 1));
 
 	// Crossing at very shallow angle - not a problem in fixed point
-	const int D = 10'000'000;  // 100 km
-	const int d = 1;           // 1 cm
+	ثابت صحیح D = 10'000'000;  // 100 km
+	ثابت صحیح d = 1;           // 1 cm
 	EXPECT_EQ(SS::Cross, geofence_utils::segmentsIntersect(0, 0, D, 0, 0, -d, D, d));
 }
 
@@ -87,59 +87,59 @@ TEST(GeofenceUtilsTest, SegmentsDisjoint)
 	EXPECT_EQ(SS::Disjoint, geofence_utils::segmentsIntersect(0, 0, 300, 0, 1000, 1000, 4000, 2000));
 }
 
-struct SegmentIntersectionCase {
-	const char *name;
+ساخت SegmentIntersectionCase {
+	ثابت حرف *name;
 	Vector2d a, b, c, d;
-	bool intersects;
+	منطقی intersects;
 };
 
-static const SegmentIntersectionCase kSegmentIntersectionCases[] = {
+ساکن ثابت SegmentIntersectionCase kSegmentIntersectionCases[] = {
 	// Contact counts, even when the segments only share an endpoint or overlap along a line.
-	{"Crossing", {0, 0}, {4, 4}, {0, 4}, {4, 0}, true},
-	{"NegativeCoordinates", {-4, -4}, {0, 0}, {-4, 0}, {0, -4}, true},
-	{"SharedEndpoint", {0, 0}, {4, 0}, {4, 0}, {4, 4}, true},
-	{"EndpointOnInterior", {0, 0}, {4, 0}, {2, 0}, {2, 4}, true},
-	{"CollinearOverlap", {0, 0}, {4, 0}, {2, 0}, {6, 0}, true},
-	{"ContainedSegment", {0, 0}, {4, 4}, {1, 1}, {3, 3}, true},
-	{"IdenticalSegments", {0, 0}, {4, 4}, {0, 0}, {4, 4}, true},
-	{"CollinearEndpointContact", {0, 0}, {2, 2}, {2, 2}, {4, 4}, true},
+	{"Crossing", {0, 0}, {4, 4}, {0, 4}, {4, 0}, سچ},
+	{"NegativeCoordinates", {-4, -4}, {0, 0}, {-4, 0}, {0, -4}, سچ},
+	{"SharedEndpoint", {0, 0}, {4, 0}, {4, 0}, {4, 4}, سچ},
+	{"EndpointOnInterior", {0, 0}, {4, 0}, {2, 0}, {2, 4}, سچ},
+	{"CollinearOverlap", {0, 0}, {4, 0}, {2, 0}, {6, 0}, سچ},
+	{"ContainedSegment", {0, 0}, {4, 4}, {1, 1}, {3, 3}, سچ},
+	{"IdenticalSegments", {0, 0}, {4, 4}, {0, 0}, {4, 4}, سچ},
+	{"CollinearEndpointContact", {0, 0}, {2, 2}, {2, 2}, {4, 4}, سچ},
 	// A shared line or overlapping bounding boxes alone do not imply an intersection.
-	{"HorizontalGap", {0, 0}, {1, 0}, {2, 0}, {3, 0}, false},
-	{"VerticalGap", {0, 0}, {0, 1}, {0, 2}, {0, 3}, false},
-	{"SlantedGap", {0, 0}, {1, 1}, {2, 2}, {3, 3}, false},
-	{"ParallelWithOverlappingBounds", {0, 0}, {4, 4}, {0, 1}, {3, 4}, false},
-	{"NonparallelWithOverlappingBounds", {0, 0}, {2, 2}, {0, 1}, {1, 3}, false},
+	{"HorizontalGap", {0, 0}, {1, 0}, {2, 0}, {3, 0}, جھوٹ},
+	{"VerticalGap", {0, 0}, {0, 1}, {0, 2}, {0, 3}, جھوٹ},
+	{"SlantedGap", {0, 0}, {1, 1}, {2, 2}, {3, 3}, جھوٹ},
+	{"ParallelWithOverlappingBounds", {0, 0}, {4, 4}, {0, 1}, {3, 4}, جھوٹ},
+	{"NonparallelWithOverlappingBounds", {0, 0}, {2, 2}, {0, 1}, {1, 3}, جھوٹ},
 	// c lies on the line through ab but past b, so only the second straddle test rejects it.
-	{"EndpointOnLineBeyondSegment", {0, 0}, {4, 0}, {5, 0}, {3, 2}, false},
+	{"EndpointOnLineBeyondSegment", {0, 0}, {4, 0}, {5, 0}, {3, 2}, جھوٹ},
 	// Equal endpoints turn a segment into a single point.
-	{"PointOnInterior", {2, 2}, {2, 2}, {0, 0}, {4, 4}, true},
-	{"PointOnEndpoint", {0, 0}, {0, 0}, {0, 0}, {4, 4}, true},
-	{"PointBeyondEndpoint", {5, 5}, {5, 5}, {0, 0}, {4, 4}, false},
-	{"PointOffLineWithinBounds", {1, 2}, {1, 2}, {0, 0}, {4, 4}, false},
-	{"CoincidentPoints", {1, 2}, {1, 2}, {1, 2}, {1, 2}, true},
-	{"DistinctPoints", {1, 2}, {1, 2}, {2, 1}, {2, 1}, false},
+	{"PointOnInterior", {2, 2}, {2, 2}, {0, 0}, {4, 4}, سچ},
+	{"PointOnEndpoint", {0, 0}, {0, 0}, {0, 0}, {4, 4}, سچ},
+	{"PointBeyondEndpoint", {5, 5}, {5, 5}, {0, 0}, {4, 4}, جھوٹ},
+	{"PointOffLineWithinBounds", {1, 2}, {1, 2}, {0, 0}, {4, 4}, جھوٹ},
+	{"CoincidentPoints", {1, 2}, {1, 2}, {1, 2}, {1, 2}, سچ},
+	{"DistinctPoints", {1, 2}, {1, 2}, {2, 1}, {2, 1}, جھوٹ},
 	// At this latitude, 0.0000001 degrees is about 1 cm and is lost with float coordinates.
-	{"LatLonCentimetreCrossing", {47.0, 8.0}, {47.0000002, 8.0}, {47.0000001, 7.9999999}, {47.0000001, 8.0000001}, true},
-	{"LatLonCentimetreGap", {47.0, 8.0}, {47.0000001, 8.0}, {47.0000002, 8.0}, {47.0000003, 8.0}, false},
+	{"LatLonCentimetreCrossing", {47.0, 8.0}, {47.0000002, 8.0}, {47.0000001, 7.9999999}, {47.0000001, 8.0000001}, سچ},
+	{"LatLonCentimetreGap", {47.0, 8.0}, {47.0000001, 8.0}, {47.0000002, 8.0}, {47.0000003, 8.0}, جھوٹ},
 	// A shallow crossing over about 76 km, with roughly 1 cm offsets at either end.
-	{"LatLonShallowCrossing", {47.0, 8.0}, {47.0, 9.0}, {46.9999999, 8.0}, {47.0000001, 9.0}, true},
+	{"LatLonShallowCrossing", {47.0, 8.0}, {47.0, 9.0}, {46.9999999, 8.0}, {47.0000001, 9.0}, سچ},
 };
 
-class GeofenceSegmentIntersectionTest : public ::testing::TestWithParam<SegmentIntersectionCase>
+جماعت GeofenceSegmentIntersectionTest : عوامی ::testing::TestWithParam<SegmentIntersectionCase>
 {
 };
 
 TEST_P(GeofenceSegmentIntersectionTest, SegmentsIntersectInclusive)
 {
-	const auto &test = GetParam();
+	ثابت خودکار &test = GetParam();
 
 	// Reversing endpoints or swapping the segments must not change the answer.
-	for (bool reverse_ab : {false, true}) {
-		for (bool reverse_cd : {false, true}) {
-			const auto &a = reverse_ab ? test.b : test.a;
-			const auto &b = reverse_ab ? test.a : test.b;
-			const auto &c = reverse_cd ? test.d : test.c;
-			const auto &d = reverse_cd ? test.c : test.d;
+	برائے (منطقی الٹ_ab : {جھوٹ, سچ}) {
+		برائے (منطقی الٹ_cd : {جھوٹ, سچ}) {
+			ثابت خودکار &a = الٹ_ab ? test.b : test.a;
+			ثابت خودکار &b = الٹ_ab ? test.a : test.b;
+			ثابت خودکار &c = الٹ_cd ? test.d : test.c;
+			ثابت خودکار &d = الٹ_cd ? test.c : test.d;
 
 			EXPECT_EQ(test.intersects, geofence_utils::segmentsIntersectInclusive(a, b, c, d));
 			EXPECT_EQ(test.intersects, geofence_utils::segmentsIntersectInclusive(c, d, a, b));
@@ -148,19 +148,19 @@ TEST_P(GeofenceSegmentIntersectionTest, SegmentsIntersectInclusive)
 }
 
 INSTANTIATE_TEST_SUITE_P(GeofenceUtils, GeofenceSegmentIntersectionTest,
-			 ::testing::ValuesIn(kSegmentIntersectionCases),
-			 [](const ::testing::TestParamInfo<SegmentIntersectionCase> &test_info)
+			 ::testing::اقدار_اندر(kSegmentIntersectionCases),
+			 [](ثابت ::testing::TestParamInfo<SegmentIntersectionCase> &test_info)
 {
-	return test_info.param.name;
+	واپس test_info.param.name;
 });
 
-struct PointSegmentDistanceCase {
-	const char *name;
-	Vector2d point, a, b;
-	double distance_squared;
+ساخت نقطہ_Segment_فاصلہ_Case {
+	ثابت حرف *name;
+	Vector2d نقطہ, a, b;
+	دوہرا فاصلہ_squared;
 };
 
-static const PointSegmentDistanceCase kPointSegmentDistanceCases[] = {
+ساکن ثابت نقطہ_Segment_فاصلہ_Case k_نقطہ_Segment_فاصلہ_Cases[] = {
 	// A horizontal segment makes the nearest endpoint and perpendicular distances easy to check.
 	{"BeforeStart", {-2, 3}, {0, 0}, {4, 0}, 13},
 	{"AfterEnd", {6, 3}, {0, 0}, {4, 0}, 13},
@@ -178,26 +178,26 @@ static const PointSegmentDistanceCase kPointSegmentDistanceCases[] = {
 	{"LongCircleTangent", {0, 0}, {-8030, 6085}, {318, -176}, 2500},
 };
 
-class GeofencePointSegmentDistanceTest : public ::testing::TestWithParam<PointSegmentDistanceCase> {};
+جماعت Geofence_نقطہ_Segment_فاصلہ_Test : عوامی ::testing::TestWithParam<نقطہ_Segment_فاصلہ_Case> {};
 
-TEST_P(GeofencePointSegmentDistanceTest, SquaredDistance)
+TEST_P(Geofence_نقطہ_Segment_فاصلہ_Test, Squared_فاصلہ)
 {
-	const auto &test = GetParam();
-	EXPECT_DOUBLE_EQ(test.distance_squared, geofence_utils::pointToSegmentDistanceSquared(test.point, test.a, test.b));
-	EXPECT_DOUBLE_EQ(test.distance_squared, geofence_utils::pointToSegmentDistanceSquared(test.point, test.b, test.a));
+	ثابت خودکار &test = GetParam();
+	EXPECT_DOUBLE_EQ(test.فاصلہ_squared, geofence_utils::نقطہ_مقصد_Segment_فاصلہ_Squared(test.نقطہ, test.a, test.b));
+	EXPECT_DOUBLE_EQ(test.فاصلہ_squared, geofence_utils::نقطہ_مقصد_Segment_فاصلہ_Squared(test.نقطہ, test.b, test.a));
 }
 
-INSTANTIATE_TEST_SUITE_P(GeofenceUtils, GeofencePointSegmentDistanceTest,
-			 ::testing::ValuesIn(kPointSegmentDistanceCases),
-			 [](const ::testing::TestParamInfo<PointSegmentDistanceCase> &test_info)
+INSTANTIATE_TEST_SUITE_P(GeofenceUtils, Geofence_نقطہ_Segment_فاصلہ_Test,
+			 ::testing::اقدار_اندر(k_نقطہ_Segment_فاصلہ_Cases),
+			 [](ثابت ::testing::TestParamInfo<نقطہ_Segment_فاصلہ_Case> &test_info)
 {
-	return test_info.param.name;
+	واپس test_info.param.name;
 });
 
 TEST(GeofenceUtilsTest, PolygonIsCCW)
 {
-	const Vector2f square[4] = {{0.f, 0.f}, {1.f, 0.f}, {1.f, 1.f}, {0.f, 1.f}};
-	EXPECT_TRUE(geofence_utils::isPolygonCCW(square, 4));
+	ثابت Vector2f مربع[4] = {{0.f, 0.f}, {1.f, 0.f}, {1.f, 1.f}, {0.f, 1.f}};
+	EXPECT_TRUE(geofence_utils::isPolygonCCW(مربع, 4));
 }
 
 // ===========================================================================
@@ -206,96 +206,96 @@ TEST(GeofenceUtilsTest, PolygonIsCCW)
 // (inside disallowed), under both polygon winding orders.
 // ===========================================================================
 
-constexpr int kMaxN = 8;
+constexpr صحیح kMaxN = 8;
 
 // Check segment/polygon interior intersection under both winding direction &
 // both zone types. Note that the used lineSegmentIntersectsPolygon first adds
 // the polygon to the internal representation which canonicalises orientation.
 // So the internal convention (left = illegal) should hold, this is also what we
 // test here.
-void expectSegmentVsPolygon(const Vector2f *vertices, int n,
-			    const Vector2f &a, const Vector2f &b,
-			    bool intersects_inclusion, bool intersects_exclusion)
+خالی expectSegmentVsPolygon(ثابت Vector2f *vertices, صحیح n,
+			    ثابت Vector2f &a, ثابت Vector2f &b,
+			    منطقی intersects_inclusion, منطقی intersects_exclusion)
 {
 	ASSERT_LE(n, kMaxN);
 	Vector2f rev[kMaxN];
 
-	for (int i = 0; i < n; ++i) { rev[i] = vertices[n - 1 - i]; }
+	برائے (صحیح i = 0; i < n; ++i) { rev[i] = vertices[n - 1 - i]; }
 
-	EXPECT_EQ(intersects_inclusion, geofence_utils::lineSegmentIntersectsPolygon(a, b, vertices, n, true));
-	EXPECT_EQ(intersects_exclusion, geofence_utils::lineSegmentIntersectsPolygon(a, b, vertices, n, false));
-	EXPECT_EQ(intersects_inclusion, geofence_utils::lineSegmentIntersectsPolygon(a, b, rev,      n, true));
-	EXPECT_EQ(intersects_exclusion, geofence_utils::lineSegmentIntersectsPolygon(a, b, rev,      n, false));
+	EXPECT_EQ(intersects_inclusion, geofence_utils::سطر_Segment_Intersects_Polygon(a, b, vertices, n, سچ));
+	EXPECT_EQ(intersects_exclusion, geofence_utils::سطر_Segment_Intersects_Polygon(a, b, vertices, n, جھوٹ));
+	EXPECT_EQ(intersects_inclusion, geofence_utils::سطر_Segment_Intersects_Polygon(a, b, rev,      n, سچ));
+	EXPECT_EQ(intersects_exclusion, geofence_utils::سطر_Segment_Intersects_Polygon(a, b, rev,      n, جھوٹ));
 }
 
 // Convex polygon (unit square)
-const Vector2f kSquare[4] = {{0.f, 0.f}, {1.f, 0.f}, {1.f, 1.f}, {0.f, 1.f}};
+ثابت Vector2f k_مربع[4] = {{0.f, 0.f}, {1.f, 0.f}, {1.f, 1.f}, {0.f, 1.f}};
 
-TEST(GeofenceUtilsTest, SquareSegmentOutside)
+TEST(GeofenceUtilsTest, مربع_Segment_Outside)
 {
 	// Far outside: inclusion is violated (must stay inside), exclusion is fine.
-	expectSegmentVsPolygon(kSquare, 4, {4.f, 5.f}, {5.f, 4.f}, true, false);
+	expectSegmentVsPolygon(k_مربع, 4, {4.f, 5.f}, {5.f, 4.f}, سچ, جھوٹ);
 }
 
-TEST(GeofenceUtilsTest, SquareSegmentInside)
+TEST(GeofenceUtilsTest, مربع_Segment_Inside)
 {
 	// Strict interior: exclusion violated, inclusion fine.
-	expectSegmentVsPolygon(kSquare, 4, {0.2f, 0.2f}, {0.6f, 0.5f}, false, true);
+	expectSegmentVsPolygon(k_مربع, 4, {0.2f, 0.2f}, {0.6f, 0.5f}, جھوٹ, سچ);
 }
 
-TEST(GeofenceUtilsTest, SquareSegmentStrictCrossing)
+TEST(GeofenceUtilsTest, مربع_Segment_Strict_پار)
 {
 	// Interior endpoint to exterior endpoint via a single proper edge crossing.
-	expectSegmentVsPolygon(kSquare, 4, {0.5f, 0.5f}, {0.5f, 1.5f}, true, true);
+	expectSegmentVsPolygon(k_مربع, 4, {0.5f, 0.5f}, {0.5f, 1.5f}, سچ, سچ);
 }
 
-TEST(GeofenceUtilsTest, SquareSegmentCrossesTwoEdges)
+TEST(GeofenceUtilsTest, مربع_Segment_Crosses_Two_کنارے)
 {
 	// Exterior endpoints with two proper edge crossings.
-	expectSegmentVsPolygon(kSquare, 4, {0.5f, -0.5f}, {0.5f, 1.5f}, true, true);
+	expectSegmentVsPolygon(k_مربع, 4, {0.5f, -0.5f}, {0.5f, 1.5f}, سچ, سچ);
 }
 
-TEST(GeofenceUtilsTest, SquareSegmentEdgeToEdgeThroughInterior)
+TEST(GeofenceUtilsTest, مربع_Segment_کنارہ_مقصد_کنارہ_Through_Interior)
 {
 	// Endpoints on two opposite edges; the segment body lies in the interior.
-	expectSegmentVsPolygon(kSquare, 4, {0.5f, 0.f}, {0.5f, 1.f}, false, true);
+	expectSegmentVsPolygon(k_مربع, 4, {0.5f, 0.f}, {0.5f, 1.f}, جھوٹ, سچ);
 }
 
-TEST(GeofenceUtilsTest, SquareSegmentDiagonalThroughOppositeVertices)
+TEST(GeofenceUtilsTest, مربع_Segment_Diagonal_Through_Opposite_Vertices)
 {
 	// Endpoints are two opposite polygon vertices; segment lies in the interior.
-	expectSegmentVsPolygon(kSquare, 4, {0.f, 0.f}, {1.f, 1.f}, false, true);
+	expectSegmentVsPolygon(k_مربع, 4, {0.f, 0.f}, {1.f, 1.f}, جھوٹ, سچ);
 	// Segment passes through opposite vertices - both zones violated.
-	expectSegmentVsPolygon(kSquare, 4, {-0.5f, 0.5f}, {1.5f, 1.5f}, true, true);
+	expectSegmentVsPolygon(k_مربع, 4, {-0.5f, 0.5f}, {1.5f, 1.5f}, سچ, سچ);
 	// Diagonal through only one vertex - still both zones.
-	expectSegmentVsPolygon(kSquare, 4, {2.f, 2.f}, {0.5f, 0.5f}, true, true);
+	expectSegmentVsPolygon(k_مربع, 4, {2.f, 2.f}, {0.5f, 0.5f}, سچ, سچ);
 }
 
-TEST(GeofenceUtilsTest, SquareSegmentAlongEdge)
+TEST(GeofenceUtilsTest, مربع_Segment_Along_کنارہ)
 {
 	// Segment coincides with one edge (pure graze, no strict interior or exterior).
-	expectSegmentVsPolygon(kSquare, 4, {0.f, 0.f}, {1.f, 0.f}, false, false);
+	expectSegmentVsPolygon(k_مربع, 4, {0.f, 0.f}, {1.f, 0.f}, جھوٹ, جھوٹ);
 }
 
-TEST(GeofenceUtilsTest, SquareSegmentExtendsBeyondEdge)
+TEST(GeofenceUtilsTest, مربع_Segment_Extends_Beyond_کنارہ)
 {
 	// Segment overlaps edge but is longer. For exclusion this is ok
 	// (non-intersecting), for inclusion this violates the outside region.
-	expectSegmentVsPolygon(kSquare, 4, {0.f, 0.f}, {2.f, 0.f}, true, false);
-	expectSegmentVsPolygon(kSquare, 4, {-1.f, 0.f}, {2.f, 0.f}, true, false);
+	expectSegmentVsPolygon(k_مربع, 4, {0.f, 0.f}, {2.f, 0.f}, سچ, جھوٹ);
+	expectSegmentVsPolygon(k_مربع, 4, {-1.f, 0.f}, {2.f, 0.f}, سچ, جھوٹ);
 }
 
-TEST(GeofenceUtilsTest, SquareSegmentTangentThroughVertex)
+TEST(GeofenceUtilsTest, مربع_Segment_Tangent_Through_راس)
 {
 	// Tangent line touching the (1,1) corner with both endpoints outside.
 	// Inclusion violated (line outside), exclusion not (only boundary).
 	// One case with midpoint = vertex, one !=
-	expectSegmentVsPolygon(kSquare, 4, {2.f, 0.f}, {0.f, 2.f},  true, false);
-	expectSegmentVsPolygon(kSquare, 4, {2.f, 0.f}, {-1.f, 3.f}, true, false);
+	expectSegmentVsPolygon(k_مربع, 4, {2.f, 0.f}, {0.f, 2.f},  سچ, جھوٹ);
+	expectSegmentVsPolygon(k_مربع, 4, {2.f, 0.f}, {-1.f, 3.f}, سچ, جھوٹ);
 
 	// If we nudge the point inward just a bit, we have a strict intersection
 	// and both zones are violated.
-	expectSegmentVsPolygon(kSquare, 4, {2.f, 0.f}, {0.f, 1.98f}, true, true);
+	expectSegmentVsPolygon(k_مربع, 4, {2.f, 0.f}, {0.f, 1.98f}, سچ, سچ);
 }
 
 
@@ -304,42 +304,42 @@ TEST(GeofenceUtilsTest, SquareSegmentTangentThroughVertex)
 
 
 // Nonconvex polygon (L-shape with a reflex vertex at (1,1))
-const Vector2f kLShape[6] = {{0.f, 0.f}, {2.f, 0.f}, {2.f, 1.f}, {1.f, 1.f}, {1.f, 2.f}, {0.f, 2.f}};
+ثابت Vector2f kLShape[6] = {{0.f, 0.f}, {2.f, 0.f}, {2.f, 1.f}, {1.f, 1.f}, {1.f, 2.f}, {0.f, 2.f}};
 
 TEST(GeofenceUtilsTest, LShapeSegmentDisjointOutside)
 {
 	// Entirely in the notch (the reflex cone, outside the polygon).
-	expectSegmentVsPolygon(kLShape, 6, {1.5f, 1.5f}, {1.8f, 1.8f}, true, false);
+	expectSegmentVsPolygon(kLShape, 6, {1.5f, 1.5f}, {1.8f, 1.8f}, سچ, جھوٹ);
 }
 
 TEST(GeofenceUtilsTest, LShapeSegmentEntirelyInside)
 {
 	// Horizontal line inside bottom rectangle - inclusion non-intersecting, exclusion intersecting
-	expectSegmentVsPolygon(kLShape, 6, {0.5f, 0.5f}, {1.5f, 0.5f}, false, true);
+	expectSegmentVsPolygon(kLShape, 6, {0.5f, 0.5f}, {1.5f, 0.5f}, جھوٹ, سچ);
 
 	// Skewed line inside upper rectangle - same
-	expectSegmentVsPolygon(kLShape, 6, {0.3f, 1.2f}, {0.7f, 1.8f}, false, true);
+	expectSegmentVsPolygon(kLShape, 6, {0.3f, 1.2f}, {0.7f, 1.8f}, جھوٹ, سچ);
 }
 
-TEST(GeofenceUtilsTest, LShapeSegmentCrossesNotchEdge)
+TEST(GeofenceUtilsTest, LShape_Segment_Crosses_Notch_کنارہ)
 {
 	// Single proper crossing from the upper-rect interior into the notch.
-	expectSegmentVsPolygon(kLShape, 6, {0.5f, 1.5f}, {1.5f, 1.5f}, true, true);
+	expectSegmentVsPolygon(kLShape, 6, {0.5f, 1.5f}, {1.5f, 1.5f}, سچ, سچ);
 }
 
-TEST(GeofenceUtilsTest, LShapeSegmentThroughReflexVertexInsideToInside)
+TEST(GeofenceUtilsTest, LShape_Segment_Through_Reflex_راس_Inside_مقصد_Inside)
 {
 	// Both endpoints inside, segment passes through the reflex (1,1) but
 	// stays inside. Inclusion non-intersecting, exclusion intersecting.
-	expectSegmentVsPolygon(kLShape, 6, {0.5f, 1.5f}, {2.f, 0.f}, false, true);
-	expectSegmentVsPolygon(kLShape, 6, {0.5f, 1.5f}, {1.5f, 0.5f}, false, true);
+	expectSegmentVsPolygon(kLShape, 6, {0.5f, 1.5f}, {2.f, 0.f}, جھوٹ, سچ);
+	expectSegmentVsPolygon(kLShape, 6, {0.5f, 1.5f}, {1.5f, 0.5f}, جھوٹ, سچ);
 }
 
-TEST(GeofenceUtilsTest, LShapeSegmentThroughReflexVertexIntoNotch)
+TEST(GeofenceUtilsTest, LShape_Segment_Through_Reflex_راس_Into_Notch)
 {
 	// One endpoint inside the polygon, the other in the notch; the segment
 	// crosses the boundary at the reflex vertex.
-	expectSegmentVsPolygon(kLShape, 6, {0.5f, 0.5f}, {2.f, 2.f}, true, true);
+	expectSegmentVsPolygon(kLShape, 6, {0.5f, 0.5f}, {2.f, 2.f}, سچ, سچ);
 }
 
 TEST(GeofenceUtilsTest, LShapeSegmentBetweenTwoVerticesAcrossNotch)
@@ -347,92 +347,92 @@ TEST(GeofenceUtilsTest, LShapeSegmentBetweenTwoVerticesAcrossNotch)
 	// Endpoints are two convex polygon vertices, (2,1) and (1,2). The chord
 	// between them crosses the notch (outside the polygon), grazing the
 	// polygon only at those two vertices.
-	expectSegmentVsPolygon(kLShape, 6, {2.f, 1.f}, {1.f, 2.f}, true, false);
+	expectSegmentVsPolygon(kLShape, 6, {2.f, 1.f}, {1.f, 2.f}, سچ, جھوٹ);
 }
 
-TEST(GeofenceUtilsTest, LShapeSegmentTangentThroughConvexVertex)
+TEST(GeofenceUtilsTest, LShape_Segment_Tangent_Through_Convex_راس)
 {
 	// These lines touch a vertex from outside. Inclusion -> intersection,
 	// exclusion -> no intersection.
 
 	// Tangent at (2, 0)
-	expectSegmentVsPolygon(kLShape, 6, {3.f, 1.f}, {1.5f, -0.5f}, true, false);
+	expectSegmentVsPolygon(kLShape, 6, {3.f, 1.f}, {1.5f, -0.5f}, سچ, جھوٹ);
 	// Tangent at (0, 0)
-	expectSegmentVsPolygon(kLShape, 6, {-1.f, 1.f}, {1.f, -1.f}, true, false);
+	expectSegmentVsPolygon(kLShape, 6, {-1.f, 1.f}, {1.f, -1.f}, سچ, جھوٹ);
 	// Tangent at both (1, 2) and (2, 1)
-	expectSegmentVsPolygon(kLShape, 6, {0.f, 3.f}, {3.f, 0.f}, true, false);
+	expectSegmentVsPolygon(kLShape, 6, {0.f, 3.f}, {3.f, 0.f}, سچ, جھوٹ);
 }
 
 // ===========================================================================
 // addPolygon rejects input out of bounds
 // ===========================================================================
 
-TEST(GeofenceUtilsTest, AddPolygonRejectsOutOfBounds)
+TEST(GeofenceUtilsTest, جوڑو_Polygon_Rejects_برآمد_کا_Bounds)
 {
 	// Square inside of bounds, 10000 km.
-	float extent = 10000 * 1000; // km to m
-	const Vector2f square[4] = {{0.f, 0.f}, {extent, 0.f}, {extent, extent}, {0.f, extent}};
+	اعشاری extent = 10000 * 1000; // km to m
+	ثابت Vector2f مربع[4] = {{0.f, 0.f}, {extent, 0.f}, {extent, extent}, {0.f, extent}};
 
 	geofence_utils::PlannerPolygons polys;
-	EXPECT_EQ(polys.addPolygon(square, 4, /*is_inclusion_zone=*/false, /*margin=*/0.f), AddResult::Success);
+	EXPECT_EQ(polys.جوڑو_Polygon(مربع, 4, /*is_inclusion_zone=*/جھوٹ, /*margin=*/0.f), جوڑو_نتیجہ::Success);
 
 	// Square out of bounds, 12000 km.
 	extent = 12000 * 1000;
-	const Vector2f square_larger[4] = {{0.f, 0.f}, {extent, 0.f}, {extent, extent}, {0.f, extent}};
+	ثابت Vector2f مربع_larger[4] = {{0.f, 0.f}, {extent, 0.f}, {extent, extent}, {0.f, extent}};
 
 	geofence_utils::PlannerPolygons polys_larger;
-	EXPECT_EQ(polys_larger.addPolygon(square_larger, 4, /*is_inclusion_zone=*/false, /*margin=*/0.f), AddResult::OutOfRange);
+	EXPECT_EQ(polys_larger.جوڑو_Polygon(مربع_larger, 4, /*is_inclusion_zone=*/جھوٹ, /*margin=*/0.f), جوڑو_نتیجہ::برآمد_کا_Range);
 }
 
-TEST(GeofenceUtilsTest, AddApproxCircleRejectsOutOfBounds)
+TEST(GeofenceUtilsTest, جوڑو_Approx_Circle_Rejects_برآمد_کا_Bounds)
 {
 	// 100m circle at origin with 10m margin - works
 	geofence_utils::PlannerPolygons polys0;
 	EXPECT_EQ(
-		polys0.addApproxCircle(matrix::Vector2f(0, 0), 100.0f, 10.0f, false),
-		AddResult::Success
+		polys0.جوڑو_Approx_Circle(میٹرکس::Vector2f(0, 0), 100.0f, 10.0f, جھوٹ),
+		جوڑو_نتیجہ::Success
 	);
 
 	// 5000km circle -- same
 	EXPECT_EQ(
-		polys0.addApproxCircle(matrix::Vector2f(0, 0), 5000.f * 1000.f, 10.0f, false),
-		AddResult::Success
+		polys0.جوڑو_Approx_Circle(میٹرکس::Vector2f(0, 0), 5000.f * 1000.f, 10.0f, جھوٹ),
+		جوڑو_نتیجہ::Success
 	);
 
 	// 10000km circle -- fails (circle is within range but approx circle not)
 	EXPECT_EQ(
-		polys0.addApproxCircle(matrix::Vector2f(0, 0), 10000.f * 1000.f, 10.0f, false),
-		AddResult::OutOfRange
+		polys0.جوڑو_Approx_Circle(میٹرکس::Vector2f(0, 0), 10000.f * 1000.f, 10.0f, جھوٹ),
+		جوڑو_نتیجہ::برآمد_کا_Range
 	);
 
 	// 12000km circle -- fails
 	EXPECT_EQ(
-		polys0.addApproxCircle(matrix::Vector2f(0, 0), 12000.f * 1000.f, 10.0f, false),
-		AddResult::OutOfRange
+		polys0.جوڑو_Approx_Circle(میٹرکس::Vector2f(0, 0), 12000.f * 1000.f, 10.0f, جھوٹ),
+		جوڑو_نتیجہ::برآمد_کا_Range
 	);
 
 	// 10000km circle, 2000 km margin (outwards, exclusion zone) -- fails
 	EXPECT_EQ(
-		polys0.addApproxCircle(matrix::Vector2f(0, 0), 12000.f * 1000.f, 2000.f * 1000.f, false),
-		AddResult::OutOfRange
+		polys0.جوڑو_Approx_Circle(میٹرکس::Vector2f(0, 0), 12000.f * 1000.f, 2000.f * 1000.f, جھوٹ),
+		جوڑو_نتیجہ::برآمد_کا_Range
 	);
 
 	// 2000km circle 10000km out - fails
 	EXPECT_EQ(
-		polys0.addApproxCircle(matrix::Vector2f(0, 10000.f * 1000.f), 2000.f * 1000.f, 10.f, false),
-		AddResult::OutOfRange
+		polys0.جوڑو_Approx_Circle(میٹرکس::Vector2f(0, 10000.f * 1000.f), 2000.f * 1000.f, 10.f, جھوٹ),
+		جوڑو_نتیجہ::برآمد_کا_Range
 	);
 
 	// 100km circle 10000km out - works
 	EXPECT_EQ(
-		polys0.addApproxCircle(matrix::Vector2f(0, 10000.f * 1000.f), 100.f * 1000.f, 10.f, false),
-		AddResult::Success
+		polys0.جوڑو_Approx_Circle(میٹرکس::Vector2f(0, 10000.f * 1000.f), 100.f * 1000.f, 10.f, جھوٹ),
+		جوڑو_نتیجہ::Success
 	);
 
 	// 100km circle 10000km out, 1000km margin - fails
 	EXPECT_EQ(
-		polys0.addApproxCircle(matrix::Vector2f(0, 10000.f * 1000.f), 100.f * 1000.f, 1000.f * 1000.f, false),
-		AddResult::OutOfRange
+		polys0.جوڑو_Approx_Circle(میٹرکس::Vector2f(0, 10000.f * 1000.f), 100.f * 1000.f, 1000.f * 1000.f, جھوٹ),
+		جوڑو_نتیجہ::برآمد_کا_Range
 	);
 
 }
@@ -441,20 +441,20 @@ TEST(GeofenceUtilsTest, AddApproxCircleRejectsOutOfBounds)
 // addPolygon rejects non-simple input
 // ===========================================================================
 
-TEST(GeofenceUtilsTest, AddPolygonRejectsSelfIntersecting)
+TEST(GeofenceUtilsTest, جوڑو_Polygon_Rejects_Self_Intersecting)
 {
 	// Figure-eight quadrilateral: 0->1->2->3 with edges (0,1) and (2,3) crossing.
-	const Vector2f figure_eight[4] = {{0.f, 0.f}, {10.f, 10.f}, {10.f, 0.f}, {0.f, 10.f}};
+	ثابت Vector2f figure_eight[4] = {{0.f, 0.f}, {10.f, 10.f}, {10.f, 0.f}, {0.f, 10.f}};
 
 	geofence_utils::PlannerPolygons polys;
-	EXPECT_EQ(polys.addPolygon(figure_eight, 4, /*is_inclusion_zone=*/false, /*margin=*/0.f), AddResult::Degenerate);
+	EXPECT_EQ(polys.جوڑو_Polygon(figure_eight, 4, /*is_inclusion_zone=*/جھوٹ, /*margin=*/0.f), جوڑو_نتیجہ::Degenerate);
 }
 
-TEST(GeofenceUtilsTest, AddPolygonAcceptsSimpleQuad)
+TEST(GeofenceUtilsTest, جوڑو_Polygon_قبول_کرتا_Simple_Quad)
 {
 	// Convex simple quadrilateral; must succeed.
-	const Vector2f square[4] = {{0.f, 0.f}, {10.f, 0.f}, {10.f, 10.f}, {0.f, 10.f}};
+	ثابت Vector2f مربع[4] = {{0.f, 0.f}, {10.f, 0.f}, {10.f, 10.f}, {0.f, 10.f}};
 
 	geofence_utils::PlannerPolygons polys;
-	EXPECT_EQ(polys.addPolygon(square, 4, /*is_inclusion_zone=*/false, /*margin=*/0.f), AddResult::Success);
+	EXPECT_EQ(polys.جوڑو_Polygon(مربع, 4, /*is_inclusion_zone=*/جھوٹ, /*margin=*/0.f), جوڑو_نتیجہ::Success);
 }

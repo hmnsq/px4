@@ -40,58 +40,58 @@
  * @author Samuel Garcin <samuel.garcin@wecorpindustries.com>
  */
 
-#pragma once
+#ہدایت once
 
-#include <mathlib/math/Functions.hpp>
-#include <cmath>
-#include <float.h>
-#include <matrix/math.hpp>
+#شامل <mathlib/math/Functions.hpp>
+#شامل <cmath>
+#شامل <float.h>
+#شامل <matrix/math.hpp>
 
-namespace math
+نامخلا math
 {
 
-template<typename T>
-class NotchFilter
+سانچہ<قسم_نام T>
+جماعت NotchFilter
 {
-public:
-	NotchFilter() = default;
-	~NotchFilter() = default;
+عوامی:
+	NotchFilter() = طےشدہ;
+	~NotchFilter() = طےشدہ;
 
-	bool setParameters(float sample_freq, float notch_freq, float bandwidth);
+	منطقی سیٹ_Parameters(اعشاری sample_freq, اعشاری notch_freq, اعشاری bandwidth);
 
 	/**
 	 * Add a new raw value to the filter using the Direct Form I
 	 *
 	 * @return retrieve the filtered result
 	 */
-	inline T apply(const T &sample)
+	اندرونی T apply(ثابت T &sample)
 	{
-		if (!_initialized) {
+		اگر (!_initialized) {
 			reset(sample);
-			_initialized = true;
+			_initialized = سچ;
 		}
 
-		return applyInternal(sample);
+		واپس apply_اندرونی(sample);
 	}
 
 	// Filter array of samples in place using the direct form I
-	inline void applyArray(T samples[], int num_samples)
+	اندرونی خالی applyArray(T samples[], صحیح عدد_samples)
 	{
-		if (!_initialized) {
+		اگر (!_initialized) {
 			reset(samples[0]);
-			_initialized = true;
+			_initialized = سچ;
 		}
 
-		for (int n = 0; n < num_samples; n++) {
-			samples[n] = applyInternal(samples[n]);
+		برائے (صحیح n = 0; n < عدد_samples; n++) {
+			samples[n] = apply_اندرونی(samples[n]);
 		}
 	}
 
-	float getNotchFreq() const { return _notch_freq; }
-	float getBandwidth() const { return _bandwidth; }
+	اعشاری getNotchFreq() ثابت { واپس _notch_freq; }
+	اعشاری getBandwidth() ثابت { واپس _bandwidth; }
 
 	// Used in unit test only
-	void getCoefficients(float a[3], float b[3]) const
+	خالی getCoefficients(اعشاری a[3], اعشاری b[3]) ثابت
 	{
 		a[0] = 1.f;
 		a[1] = _a1;
@@ -101,16 +101,16 @@ public:
 		b[2] = _b2;
 	}
 
-	float getMagnitudeResponse(float frequency) const
+	اعشاری getMagnitudeResponse(اعشاری frequency) ثابت
 	{
-		float w = 2.f * M_PI_F * frequency / _sample_freq;
+		اعشاری w = 2.f * M_PI_F * frequency / _sample_freq;
 
-		float numerator = _b0 * _b0 + _b1 * _b1 + _b2 * _b2
+		اعشاری numerator = _b0 * _b0 + _b1 * _b1 + _b2 * _b2
 				  + 2.f * (_b0 * _b1 + _b1 * _b2) * cosf(w) + 2.f * _b0 * _b2 * cosf(2.f * w);
 
-		float denominator = 1.f + _a1 * _a1 + _a2 * _a2 + 2.f * (_a1 + _a1 * _a2) * cosf(w) + 2.f * _a2 * cosf(2.f * w);
+		اعشاری denominator = 1.f + _a1 * _a1 + _a2 * _a2 + 2.f * (_a1 + _a1 * _a2) * cosf(w) + 2.f * _a2 * cosf(2.f * w);
 
-		return sqrtf(numerator / denominator);
+		واپس sqrtf(numerator / denominator);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public:
 	 * physical meaning if you use this method to change the filter's coefficients.
 	 * Used for creating clones of a specific filter.
 	 */
-	void setCoefficients(float a[2], float b[3])
+	خالی سیٹ_Coefficients(اعشاری a[2], اعشاری b[3])
 	{
 		_a1 = a[0];
 		_a2 = a[1];
@@ -128,25 +128,25 @@ public:
 		_b2 = b[2];
 	}
 
-	bool initialized() const { return _initialized; }
+	منطقی initialized() ثابت { واپس _initialized; }
 
-	void reset() { _initialized = false; }
+	خالی reset() { _initialized = جھوٹ; }
 
-	void reset(const T &sample)
+	خالی reset(ثابت T &sample)
 	{
-		const T input = isFinite(sample) ? sample : T{};
+		ثابت T داخلہ = isFinite(sample) ? sample : T{};
 
-		_delay_element_1 = _delay_element_2 = input;
-		_delay_element_output_1 = _delay_element_output_2 = input * (_b0 + _b1 + _b2) / (1 + _a1 + _a2);
+		_delay_element_1 = _delay_element_2 = داخلہ;
+		_delay_element_output_1 = _delay_element_output_2 = داخلہ * (_b0 + _b1 + _b2) / (1 + _a1 + _a2);
 
-		if (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
+		اگر (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
 			_delay_element_output_1 = _delay_element_output_2 = {};
 		}
 
-		_initialized = true;
+		_initialized = سچ;
 	}
 
-	void disable()
+	خالی disable()
 	{
 		// no filtering
 		_notch_freq = 0.f;
@@ -160,17 +160,17 @@ public:
 		_a1 = 0.f;
 		_a2 = 0.f;
 
-		_initialized = false;
+		_initialized = جھوٹ;
 	}
 
-protected:
+محفوظ:
 
 	/**
 	 * Add a new raw value to the filter using the Direct Form I
 	 *
 	 * @return retrieve the filtered result
 	 */
-	inline T applyInternal(const T &sample)
+	اندرونی T apply_اندرونی(ثابت T &sample)
 	{
 		// Direct Form I implementation
 		T output = _b0 * sample + _b1 * _delay_element_1 + _b2 * _delay_element_2 - _a1 * _delay_element_output_1 - _a2 *
@@ -184,7 +184,7 @@ protected:
 		_delay_element_output_2 = _delay_element_output_1;
 		_delay_element_output_1 = output;
 
-		return output;
+		واپس output;
 	}
 
 	T _delay_element_1{};
@@ -193,18 +193,18 @@ protected:
 	T _delay_element_output_2{};
 
 	// All the coefficients are normalized by a0, so a0 becomes 1 here
-	float _a1{0.f};
-	float _a2{0.f};
+	اعشاری _a1{0.f};
+	اعشاری _a2{0.f};
 
-	float _b0{1.f};
-	float _b1{0.f};
-	float _b2{0.f};
+	اعشاری _b0{1.f};
+	اعشاری _b1{0.f};
+	اعشاری _b2{0.f};
 
-	float _notch_freq{};
-	float _bandwidth{};
-	float _sample_freq{};
+	اعشاری _notch_freq{};
+	اعشاری _bandwidth{};
+	اعشاری _sample_freq{};
 
-	bool _initialized{false};
+	منطقی _initialized{جھوٹ};
 };
 
 /**
@@ -213,54 +213,54 @@ protected:
  * update the filtered frequency, refresh rate and quality factor while
  * conserving the filter's history
  */
-template<typename T>
-bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float bandwidth)
+سانچہ<قسم_نام T>
+منطقی NotchFilter<T>::سیٹ_Parameters(اعشاری sample_freq, اعشاری notch_freq, اعشاری bandwidth)
 {
-	if ((sample_freq <= 0.f) || (notch_freq <= 0.f) || (bandwidth <= 0.f) || (notch_freq >= sample_freq / 2)
+	اگر ((sample_freq <= 0.f) || (notch_freq <= 0.f) || (bandwidth <= 0.f) || (notch_freq >= sample_freq / 2)
 	    || !isFinite(sample_freq) || !isFinite(notch_freq) || !isFinite(bandwidth)) {
 
 		disable();
-		return false;
+		واپس جھوٹ;
 	}
 
-	const float freq_min = sample_freq * 0.001f;
+	ثابت اعشاری freq_min = sample_freq * 0.001f;
 
-	const float notch_freq_new = math::max(notch_freq, freq_min);
-	const float bandwidth_new = math::max(bandwidth, freq_min);
+	ثابت اعشاری notch_freq_new = math::max(notch_freq, freq_min);
+	ثابت اعشاری bandwidth_new = math::max(bandwidth, freq_min);
 
-	const float sample_freq_diff = fabsf(sample_freq - _sample_freq);
-	const float bandwidth_diff = fabsf(bandwidth_new - _bandwidth);
+	ثابت اعشاری sample_freq_diff = fabsf(sample_freq - _sample_freq);
+	ثابت اعشاری bandwidth_diff = fabsf(bandwidth_new - _bandwidth);
 
-	const bool sample_freq_change = (sample_freq_diff > FLT_EPSILON);
-	const bool bandwidth_change = (bandwidth_diff > FLT_EPSILON);
+	ثابت منطقی sample_freq_change = (sample_freq_diff > FLT_EPSILON);
+	ثابت منطقی bandwidth_change = (bandwidth_diff > FLT_EPSILON);
 
-	if (!sample_freq_change && !bandwidth_change) {
-		const float notch_freq_diff = fabsf(notch_freq_new - _notch_freq);
+	اگر (!sample_freq_change && !bandwidth_change) {
+		ثابت اعشاری notch_freq_diff = fabsf(notch_freq_new - _notch_freq);
 
-		if (notch_freq_diff > FLT_EPSILON) {
+		اگر (notch_freq_diff > FLT_EPSILON) {
 			// only notch frequency has changed
 			_notch_freq = notch_freq_new;
 
-			const float beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
+			ثابت اعشاری beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
 
 			_b1 = 2.f * beta * _b0;
 			_a1 = _b1;
 
-			if (notch_freq_diff > _bandwidth) {
+			اگر (notch_freq_diff > _bandwidth) {
 				// force reset
-				_initialized = false;
+				_initialized = جھوٹ;
 			}
 
-			if (!isFinite(_b1)) {
+			اگر (!isFinite(_b1)) {
 				disable();
-				return false;
+				واپس جھوٹ;
 			}
 
-			return true;
+			واپس سچ;
 
-		} else {
+		} ورنہ {
 			// no change, do nothing
-			return true;
+			واپس سچ;
 		}
 	}
 
@@ -268,9 +268,9 @@ bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float ba
 	_notch_freq = notch_freq_new;
 	_bandwidth = bandwidth_new;
 
-	const float alpha = tanf(M_PI_F * _bandwidth / _sample_freq);
-	const float beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
-	const float a0_inv = 1.f / (alpha + 1.f);
+	ثابت اعشاری alpha = tanf(M_PI_F * _bandwidth / _sample_freq);
+	ثابت اعشاری beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
+	ثابت اعشاری a0_inv = 1.f / (alpha + 1.f);
 
 	_b0 = a0_inv;
 	_b1 = 2.f * beta * a0_inv;
@@ -279,20 +279,20 @@ bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float ba
 	_a1 = _b1;
 	_a2 = (1.f - alpha) * a0_inv;
 
-	if (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a2)) {
+	اگر (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a2)) {
 		disable();
-		return false;
+		واپس جھوٹ;
 	}
 
 	// force reset if bandwidth or sample frequency changed by more than 1%
-	if (bandwidth_diff > 0.01f * _bandwidth) {
-		_initialized = false;
+	اگر (bandwidth_diff > 0.01f * _bandwidth) {
+		_initialized = جھوٹ;
 
-	} else if (sample_freq_diff > 0.01f * _sample_freq) {
-		_initialized = false;
+	} ورنہ اگر (sample_freq_diff > 0.01f * _sample_freq) {
+		_initialized = جھوٹ;
 	}
 
-	return true;
+	واپس سچ;
 }
 
 } // namespace math

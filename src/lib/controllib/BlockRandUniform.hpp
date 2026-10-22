@@ -37,56 +37,56 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <assert.h>
+#شامل <time.h>
+#شامل <stdlib.h>
+#شامل <math.h>
+#شامل <mathlib/math/test/test.hpp>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+نامخلا control
 {
 
 /**
  * A uniform random number generator
  */
-class __EXPORT BlockRandUniform: public Block
+جماعت __EXPORT بلاک_Rand_یکساں: عوامی بلاک
 {
-public:
+عوامی:
 // methods
-	BlockRandUniform(SuperBlock *parent,
-			 const char *name) :
-		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+	بلاک_Rand_یکساں(Super_بلاک *والد,
+			 ثابت حرف *name) :
+		بلاک(والد, name),
+		_min(یہ, "MIN"),
+		_max(یہ, "MAX")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandUniform() = default;
-	float update()
+	مجازی ~بلاک_Rand_یکساں() = طےشدہ;
+	اعشاری update()
 	{
-		static float rand_max = static_cast<float>(RAND_MAX);
-		float rand_val = rand();
-		float bounds = getMax() - getMin();
-		return getMin() + (rand_val * bounds) / rand_max;
+		ساکن اعشاری rand_max = static_cast<اعشاری>(RAND_MAX);
+		اعشاری rand_val = rand();
+		اعشاری bounds = getMax() - getMin();
+		واپس getMin() + (rand_val * bounds) / rand_max;
 	}
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-private:
-// attributes
-	control::BlockParamFloat _min;
-	control::BlockParamFloat _max;
+	اعشاری getMin() { واپس _min.get(); }
+	اعشاری getMax() { واپس _max.get(); }
+نجی:
+//اوصاف
+	control::بلاک_Param_Float _min;
+	control::بلاک_Param_Float _max;
 };
 
 } // namespace control

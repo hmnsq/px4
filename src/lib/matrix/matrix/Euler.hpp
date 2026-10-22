@@ -13,9 +13,9 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ہدایت once
 
-namespace matrix
+نامخلا میٹرکس
 {
 
 /**
@@ -24,22 +24,22 @@ namespace matrix
  * This class describes the rotation from frame 1
  * to frame 2 via 3-2-1 intrinsic Tait-Bryan rotation sequence.
  */
-template<typename Type>
-class Euler : public Vector<Type, 3>
+سانچہ<قسم_نام Type>
+جماعت Euler : عوامی سمتیہ<Type, 3>
 {
-public:
+عوامی:
 	/**
 	 * Standard constructor
 	 */
-	Euler() = default;
+	Euler() = طےشدہ;
 
 	/**
 	 * Copy constructor
 	 *
 	 * @param other vector to copy
 	 */
-	Euler(const Vector<Type, 3> &other) :
-		Vector<Type, 3>(other)
+	Euler(ثابت سمتیہ<Type, 3> &other) :
+		سمتیہ<Type, 3>(other)
 	{
 	}
 
@@ -48,8 +48,8 @@ public:
 	 *
 	 * @param other Matrix31 to copy
 	 */
-	Euler(const Matrix<Type, 3, 1> &other) :
-		Vector<Type, 3>(other)
+	Euler(ثابت میٹرکس_2<Type, 3, 1> &other) :
+		سمتیہ<Type, 3>(other)
 	{
 	}
 
@@ -64,7 +64,7 @@ public:
 	 * @param theta_ rotation angle about Y axis
 	 * @param psi_ rotation angle about Z axis
 	 */
-	Euler(Type phi_, Type theta_, Type psi_) : Vector<Type, 3>()
+	Euler(Type phi_, Type theta_, Type psi_) : سمتیہ<Type, 3>()
 	{
 		phi() = phi_;
 		theta() = theta_;
@@ -81,19 +81,19 @@ public:
 	 *
 	 * @param dcm Direction cosine matrix
 	*/
-	Euler(const Dcm<Type> &dcm)
+	Euler(ثابت Dcm<Type> &dcm)
 	{
 		theta() = std::asin(-dcm(2, 0));
 
-		if ((std::fabs(theta() - Type(M_PI / 2))) < Type(1.0e-3)) {
+		اگر ((std::fabs(theta() - Type(M_PI / 2))) < Type(1.0e-3)) {
 			phi() = 0;
 			psi() = std::atan2(dcm(1, 2), dcm(0, 2));
 
-		} else if ((std::fabs(theta() + Type(M_PI / 2))) < Type(1.0e-3)) {
+		} ورنہ اگر ((std::fabs(theta() + Type(M_PI / 2))) < Type(1.0e-3)) {
 			phi() = 0;
 			psi() = std::atan2(-dcm(1, 2), -dcm(0, 2));
 
-		} else {
+		} ورنہ {
 			phi() = std::atan2(dcm(2, 1), dcm(2, 2));
 			psi() = std::atan2(dcm(1, 0), dcm(0, 0));
 		}
@@ -109,39 +109,39 @@ public:
 	 *
 	 * @param q quaternion
 	*/
-	Euler(const Quaternion<Type> &q) : Vector<Type, 3>(Euler(Dcm<Type>(q)))
+	Euler(ثابت Quaternion<Type> &q) : سمتیہ<Type, 3>(Euler(Dcm<Type>(q)))
 	{
 	}
 
-	inline Type phi() const
+	اندرونی Type phi() ثابت
 	{
-		return (*this)(0);
+		واپس (*یہ)(0);
 	}
-	inline Type theta() const
+	اندرونی Type theta() ثابت
 	{
-		return (*this)(1);
+		واپس (*یہ)(1);
 	}
-	inline Type psi() const
+	اندرونی Type psi() ثابت
 	{
-		return (*this)(2);
+		واپس (*یہ)(2);
 	}
 
-	inline Type &phi()
+	اندرونی Type &phi()
 	{
-		return (*this)(0);
+		واپس (*یہ)(0);
 	}
-	inline Type &theta()
+	اندرونی Type &theta()
 	{
-		return (*this)(1);
+		واپس (*یہ)(1);
 	}
-	inline Type &psi()
+	اندرونی Type &psi()
 	{
-		return (*this)(2);
+		واپس (*یہ)(2);
 	}
 
 };
 
-using Eulerf = Euler<float>;
-using Eulerd = Euler<double>;
+استعمال Eulerf = Euler<اعشاری>;
+استعمال Eulerd = Euler<دوہرا>;
 
 } // namespace matrix

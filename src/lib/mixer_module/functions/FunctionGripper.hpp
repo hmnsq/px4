@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include "FunctionProviderBase.hpp"
+#شامل "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gripper.h>
+#شامل <uORB/topics/gripper.h>
 
 /**
  * @brief Function: Gripper (Used for actuating a Gripper)
  */
-class FunctionGripper : public FunctionProviderBase
+جماعت FunctionGripper : عوامی Function_Provider_بنیاد
 {
-public:
-	FunctionGripper() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGripper(); }
+عوامی:
+	FunctionGripper() = طےشدہ;
+	ساکن Function_Provider_بنیاد *allocate(ثابت Context &context) { واپس نیا FunctionGripper(); }
 
-	void update() override
+	خالی update() override
 	{
 		gripper_s gripper;
 
-		if (_gripper_sub.update(&gripper)) {
-			if (gripper.command == gripper_s::COMMAND_RELEASE) {
-				_data = -1.f; // Minimum command for release
+		اگر (_gripper_sub.update(&gripper)) {
+			اگر (gripper.command == gripper_s::COMMAND_RELEASE) {
+				ڈیٹا_3 = -1.f; // Minimum command for release
 
-			} else if (gripper.command == gripper_s::COMMAND_GRAB) {
-				_data = 1.f; // Maximum command for grab
+			} ورنہ اگر (gripper.command == gripper_s::COMMAND_GRAB) {
+				ڈیٹا_3 = 1.f; // Maximum command for grab
 
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	اعشاری value(OutputFunction func) override { واپس ڈیٹا_3; }
 
-private:
+نجی:
 	uORB::Subscription _gripper_sub{ORB_ID(gripper)};
-	float _data{-1.f};
+	اعشاری ڈیٹا_3{-1.f};
 };

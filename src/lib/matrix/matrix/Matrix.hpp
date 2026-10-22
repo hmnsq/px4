@@ -6,85 +6,85 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ہدایت once
 
-#include <cmath>
-#include <cstdio>
-#include <cstring>
+#شامل <cmath>
+#شامل <cstdio>
+#شامل <cstring>
 
-#include "helper_functions.hpp"
-#include "Slice.hpp"
+#شامل "helper_functions.hpp"
+#شامل "Slice.hpp"
 
-namespace matrix
+نامخلا میٹرکس
 {
 
-template<typename Type, size_t M, size_t N>
-class Matrix
+سانچہ<قسم_نام Type, size_t M, size_t N>
+جماعت میٹرکس_2
 {
-	Type _data[M][N] {};
+	Type ڈیٹا_3[M][N] {};
 
-public:
+عوامی:
 
 	// Constructors
-	Matrix() = default;
+	میٹرکس_2() = طےشدہ;
 
-	explicit Matrix(const Type data_[M * N])
+	صریح میٹرکس_2(ثابت Type ڈیٹا_2[M * N])
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				_data[i][j] = data_[N * i + j];
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
+				ڈیٹا_3[i][j] = ڈیٹا_2[N * i + j];
 			}
 		}
 	}
 
-	explicit Matrix(const Type data_[M][N])
+	صریح میٹرکس_2(ثابت Type ڈیٹا_2[M][N])
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				_data[i][j] = data_[i][j];
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
+				ڈیٹا_3[i][j] = ڈیٹا_2[i][j];
 			}
 		}
 	}
 
-	Matrix(const Matrix &other)
+	میٹرکس_2(ثابت میٹرکس_2 &other)
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				_data[i][j] = other(i, j);
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
+				ڈیٹا_3[i][j] = other(i, j);
 			}
 		}
 	}
 
-	template<typename S>
-	Matrix(const Matrix<S, M, N> &aa)
+	سانچہ<قسم_نام S>
+	میٹرکس_2(ثابت میٹرکس_2<S, M, N> &aa)
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				_data[i][j] = static_cast<Type>(aa(i, j));
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
+				ڈیٹا_3[i][j] = static_cast<Type>(aa(i, j));
 			}
 		}
 	}
 
-	template<size_t P, size_t Q>
-	Matrix(const Slice<Type, M, N, P, Q> &in_slice)
+	سانچہ<size_t P, size_t Q>
+	میٹرکس_2(ثابت قاش_2<Type, M, N, P, Q> &اندر_قاش)
 	{
-		Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				self(i, j) = in_slice(i, j);
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
+				self(i, j) = اندر_قاش(i, j);
 			}
 		}
 	}
 
-	template<size_t P, size_t Q>
-	Matrix(const ConstSlice<Type, M, N, P, Q> &in_slice)
+	سانچہ<size_t P, size_t Q>
+	میٹرکس_2(ثابت Const_قاش<Type, M, N, P, Q> &اندر_قاش)
 	{
-		Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				self(i, j) = in_slice(i, j);
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
+				self(i, j) = اندر_قاش(i, j);
 			}
 		}
 	}
@@ -94,54 +94,54 @@ public:
 	 */
 
 
-	inline const Type &operator()(size_t i, size_t j) const
+	اندرونی ثابت Type &عامل()(size_t i, size_t j) ثابت
 	{
-		assert(i < M);
-		assert(j < N);
+		أكد(i < M);
+		أكد(j < N);
 
-		return _data[i][j];
+		واپس ڈیٹا_3[i][j];
 	}
 
-	inline Type &operator()(size_t i, size_t j)
+	اندرونی Type &عامل()(size_t i, size_t j)
 	{
-		assert(i < M);
-		assert(j < N);
+		أكد(i < M);
+		أكد(j < N);
 
-		return _data[i][j];
+		واپس ڈیٹا_3[i][j];
 	}
 
-	Matrix<Type, M, N> &operator=(const Matrix<Type, M, N> &other)
+	میٹرکس_2<Type, M, N> &عامل=(ثابت میٹرکس_2<Type, M, N> &other)
 	{
-		if (this != &other) {
-			Matrix<Type, M, N> &self = *this;
+		اگر (یہ != &other) {
+			میٹرکس_2<Type, M, N> &self = *یہ;
 
-			for (size_t i = 0; i < M; i++) {
-				for (size_t j = 0; j < N; j++) {
+			برائے (size_t i = 0; i < M; i++) {
+				برائے (size_t j = 0; j < N; j++) {
 					self(i, j) = other(i, j);
 				}
 			}
 		}
 
-		return (*this);
+		واپس (*یہ);
 	}
 
-	void copyTo(Type dst[M * N]) const
+	خالی copy_مقصد(Type dst[M * N]) ثابت
 	{
-		const Matrix<Type, M, N> &self = *this;
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				dst[N * i + j] = self(i, j);
 			}
 		}
 	}
 
-	void copyToColumnMajor(Type dst[M * N]) const
+	خالی copy_مقصد_عمود_Major(Type dst[M * N]) ثابت
 	{
-		const Matrix<Type, M, N> &self = *this;
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				dst[i + (j * M)] = self(i, j);
 			}
 		}
@@ -155,140 +155,140 @@ public:
 	// since it instantiates a class for every
 	// required mult pair, but it provides
 	// compile time size_t checking
-	template<size_t P>
-	Matrix<Type, M, P> operator*(const Matrix<Type, N, P> &other) const
+	سانچہ<size_t P>
+	میٹرکس_2<Type, M, P> عامل*(ثابت میٹرکس_2<Type, N, P> &other) ثابت
 	{
-		const Matrix<Type, M, N> &self = *this;
-		Matrix<Type, M, P> res{};
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
+		میٹرکس_2<Type, M, P> res{};
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t k = 0; k < P; k++) {
-				for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t k = 0; k < P; k++) {
+				برائے (size_t j = 0; j < N; j++) {
 					res(i, k) += self(i, j) * other(j, k);
 				}
 			}
 		}
 
-		return res;
+		واپس res;
 	}
 
 	// Using this function reduces the number of temporary variables needed to compute A * B.T
-	template<size_t P>
-	Matrix<Type, M, M> multiplyByTranspose(const Matrix<Type, P, N> &other) const
+	سانچہ<size_t P>
+	میٹرکس_2<Type, M, M> multiplyByTranspose(ثابت میٹرکس_2<Type, P, N> &other) ثابت
 	{
-		Matrix<Type, M, P> res;
-		const Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, P> res;
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t k = 0; k < P; k++) {
-				for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t k = 0; k < P; k++) {
+				برائے (size_t j = 0; j < N; j++) {
 					res(i, k) += self(i, j) * other(k, j);
 				}
 			}
 		}
 
-		return res;
+		واپس res;
 	}
 
 	// Element-wise multiplication
-	Matrix<Type, M, N> emult(const Matrix<Type, M, N> &other) const
+	میٹرکس_2<Type, M, N> emult(ثابت میٹرکس_2<Type, M, N> &other) ثابت
 	{
-		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> res;
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) * other(i, j);
 			}
 		}
 
-		return res;
+		واپس res;
 	}
 
 	// Element-wise division
-	Matrix<Type, M, N> edivide(const Matrix<Type, M, N> &other) const
+	میٹرکس_2<Type, M, N> edivide(ثابت میٹرکس_2<Type, M, N> &other) ثابت
 	{
-		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> res;
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) / other(i, j);
 			}
 		}
 
-		return res;
+		واپس res;
 	}
 
-	Matrix<Type, M, N> operator+(const Matrix<Type, M, N> &other) const
+	میٹرکس_2<Type, M, N> عامل+(ثابت میٹرکس_2<Type, M, N> &other) ثابت
 	{
-		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> res;
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) + other(i, j);
 			}
 		}
 
-		return res;
+		واپس res;
 	}
 
-	Matrix<Type, M, N> operator-(const Matrix<Type, M, N> &other) const
+	میٹرکس_2<Type, M, N> عامل-(ثابت میٹرکس_2<Type, M, N> &other) ثابت
 	{
-		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> res;
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) - other(i, j);
 			}
 		}
 
-		return res;
+		واپس res;
 	}
 
 	// unary minus
-	Matrix<Type, M, N> operator-() const
+	میٹرکس_2<Type, M, N> عامل-() ثابت
 	{
-		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> res;
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				res(i, j) = -self(i, j);
 			}
 		}
 
-		return res;
+		واپس res;
 	}
 
-	void operator+=(const Matrix<Type, M, N> &other)
+	خالی عامل+=(ثابت میٹرکس_2<Type, M, N> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
 	}
 
-	void operator-=(const Matrix<Type, M, N> &other)
+	خالی عامل-=(ثابت میٹرکس_2<Type, M, N> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
 	}
 
-	template<size_t P>
-	void operator*=(const Matrix<Type, N, P> &other)
+	سانچہ<size_t P>
+	خالی عامل*=(ثابت میٹرکس_2<Type, N, P> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> &self = *یہ;
 		self = self * other;
 	}
 
@@ -296,620 +296,620 @@ public:
 	 * Scalar Operations
 	 */
 
-	Matrix<Type, M, N> operator*(Type scalar) const
+	میٹرکس_2<Type, M, N> عامل*(Type scalar) ثابت
 	{
-		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> res;
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) * scalar;
 			}
 		}
 
-		return res;
+		واپس res;
 	}
 
-	inline Matrix<Type, M, N> operator/(Type scalar) const
+	اندرونی میٹرکس_2<Type, M, N> عامل/(Type scalar) ثابت
 	{
-		return (*this) * (1 / scalar);
+		واپس (*یہ) * (1 / scalar);
 	}
 
-	Matrix<Type, M, N> operator+(Type scalar) const
+	میٹرکس_2<Type, M, N> عامل+(Type scalar) ثابت
 	{
-		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> res;
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) + scalar;
 			}
 		}
 
-		return res;
+		واپس res;
 	}
 
-	inline Matrix<Type, M, N> operator-(Type scalar) const
+	اندرونی میٹرکس_2<Type, M, N> عامل-(Type scalar) ثابت
 	{
-		return (*this) + (-1 * scalar);
+		واپس (*یہ) + (-1 * scalar);
 	}
 
-	void operator*=(Type scalar)
+	خالی عامل*=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				self(i, j) *= scalar;
 			}
 		}
 	}
 
-	void operator/=(Type scalar)
+	خالی عامل/=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> &self = *یہ;
 		self *= (Type(1) / scalar);
 	}
 
-	inline void operator+=(Type scalar)
+	اندرونی خالی عامل+=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				self(i, j) += scalar;
 			}
 		}
 	}
 
-	inline void operator-=(Type scalar)
+	اندرونی خالی عامل-=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> &self = *یہ;
 		self += (-scalar);
 	}
 
-	bool operator==(const Matrix<Type, M, N> &other) const
+	منطقی عامل==(ثابت میٹرکس_2<Type, M, N> &other) ثابت
 	{
-		return isEqual(*this, other);
+		واپس isEqual(*یہ, other);
 	}
 
-	bool operator!=(const Matrix<Type, M, N> &other) const
+	منطقی عامل!=(ثابت میٹرکس_2<Type, M, N> &other) ثابت
 	{
-		const Matrix<Type, M, N> &self = *this;
-		return !(self == other);
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
+		واپس !(self == other);
 	}
 
 	/**
 	 * Misc. Functions
 	 */
 
-	void write_string(char *buf, size_t n) const
+	خالی write_string(حرف *buf, size_t n) ثابت
 	{
 		buf[0] = '\0'; // make an empty string to begin with (we need the '\0' for strlen to work)
-		const Matrix<Type, M, N> &self = *this;
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				snprintf(buf + strlen(buf), n - strlen(buf), "\t%8.8g", double(self(i, j))); // directly append to the string buffer
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
+				snprintf(buf + لڑی_لمبائی(buf), n - لڑی_لمبائی(buf), "\t%8.8g", دوہرا(self(i, j))); // directly append to the string buffer
 			}
 
-			snprintf(buf + strlen(buf), n - strlen(buf), "\n");
+			snprintf(buf + لڑی_لمبائی(buf), n - لڑی_لمبائی(buf), "\n");
 		}
 	}
 
-	void print(float eps = 1e-9) const
+	خالی print(اعشاری eps = 1e-9) ثابت
 	{
 		// print column numbering
-		if (N > 1) {
-			printf("  ");
+		اگر (N > 1) {
+			لکھو("  ");
 
-			for (unsigned i = 0; i < N; i++) {
-				printf("|%2u      ", i);
+			برائے (غیرعلامتی i = 0; i < N; i++) {
+				لکھو("|%2u      ", i);
 
 			}
 
-			printf("\n");
+			لکھو("\n");
 		}
 
-		const Matrix<Type, M, N> &self = *this;
-		bool is_prev_symmetric = true; // assume symmetric until one element is not
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
+		منطقی is_پچھلا_متشاکل = سچ; // assume symmetric until one element is not
 
-		for (unsigned i = 0; i < M; i++) {
-			printf("%2u|", i); // print row numbering
+		برائے (غیرعلامتی i = 0; i < M; i++) {
+			لکھو("%2u|", i); // print row numbering
 
-			for (unsigned j = 0; j < N; j++) {
-				double d = static_cast<double>(self(i, j));
+			برائے (غیرعلامتی j = 0; j < N; j++) {
+				دوہرا d = static_cast<دوہرا>(self(i, j));
 
 				// if symmetric don't print upper triangular elements
-				if (is_prev_symmetric && (M == N) && (j > i) && (i < N) && (j < M)
-				    && (fabs(d - static_cast<double>(self(j, i))) < (double)eps)
+				اگر (is_پچھلا_متشاکل && (M == N) && (j > i) && (i < N) && (j < M)
+				    && (fabs(d - static_cast<دوہرا>(self(j, i))) < (دوہرا)eps)
 				   ) {
 					// print empty space
-					printf("         ");
+					لکھو("         ");
 
-				} else {
+				} ورنہ {
 					// avoid -0.0 for display
-					if (fabs(d - 0.0) < (double)eps) {
+					اگر (fabs(d - 0.0) < (دوہرا)eps) {
 						// print fixed width zero
-						printf(" 0       ");
+						لکھو(" 0       ");
 
-					} else if ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
-						printf("% .1e ", d);
+					} ورنہ اگر ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
+						لکھو("% .1e ", d);
 
-					} else {
-						printf("% 6.5f ", d);
+					} ورنہ {
+						لکھو("% 6.5f ", d);
 					}
 
-					is_prev_symmetric = false; // not symmetric if once inside here
+					is_پچھلا_متشاکل = جھوٹ; // not symmetric if once inside here
 				}
 			}
 
-			printf("\n");
+			لکھو("\n");
 		}
 	}
 
-	Matrix<Type, N, M> transpose() const
+	میٹرکس_2<Type, N, M> transpose() ثابت
 	{
-		Matrix<Type, N, M> res;
-		const Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, N, M> res;
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				res(j, i) = self(i, j);
 			}
 		}
 
-		return res;
+		واپس res;
 	}
 
 	// tranpose alias
-	inline Matrix<Type, N, M> T() const
+	اندرونی میٹرکس_2<Type, N, M> T() ثابت
 	{
-		return transpose();
+		واپس transpose();
 	}
 
-	template<size_t P, size_t Q>
-	ConstSlice<Type, P, Q, M, N> slice(size_t x0, size_t y0) const
+	سانچہ<size_t P, size_t Q>
+	Const_قاش<Type, P, Q, M, N> قاش(size_t x0, size_t y0) ثابت
 	{
-		return {x0, y0, this};
+		واپس {x0, y0, یہ};
 	}
 
-	template<size_t P, size_t Q>
-	Slice<Type, P, Q, M, N> slice(size_t x0, size_t y0)
+	سانچہ<size_t P, size_t Q>
+	قاش_2<Type, P, Q, M, N> قاش(size_t x0, size_t y0)
 	{
-		return {x0, y0, this};
+		واپس {x0, y0, یہ};
 	}
 
-	ConstSlice<Type, 1, N, M, N> row(size_t i) const
+	Const_قاش<Type, 1, N, M, N> صف(size_t i) ثابت
 	{
-		return slice<1, N>(i, 0);
+		واپس قاش<1, N>(i, 0);
 	}
 
-	Slice<Type, 1, N, M, N> row(size_t i)
+	قاش_2<Type, 1, N, M, N> صف(size_t i)
 	{
-		return slice<1, N>(i, 0);
+		واپس قاش<1, N>(i, 0);
 	}
 
-	ConstSlice<Type, M, 1, M, N> col(size_t j) const
+	Const_قاش<Type, M, 1, M, N> ستون(size_t j) ثابت
 	{
-		return slice<M, 1>(0, j);
+		واپس قاش<M, 1>(0, j);
 	}
 
-	Slice<Type, M, 1, M, N> col(size_t j)
+	قاش_2<Type, M, 1, M, N> ستون(size_t j)
 	{
-		return slice<M, 1>(0, j);
+		واپس قاش<M, 1>(0, j);
 	}
 
-	void setRow(size_t i, const Matrix<Type, N, 1> &row_in)
+	خالی سیٹ_صف(size_t i, ثابت میٹرکس_2<Type, N, 1> &صف_اندر)
 	{
-		slice<1, N>(i, 0) = row_in.transpose();
+		قاش<1, N>(i, 0) = صف_اندر.transpose();
 	}
 
-	void setRow(size_t i, Type val)
+	خالی سیٹ_صف(size_t i, Type val)
 	{
-		slice<1, N>(i, 0) = val;
+		قاش<1, N>(i, 0) = val;
 	}
 
-	void setCol(size_t j, const Matrix<Type, M, 1> &column)
+	خالی سیٹ_ستون(size_t j, ثابت میٹرکس_2<Type, M, 1> &عمود)
 	{
-		slice<M, 1>(0, j) = column;
+		قاش<M, 1>(0, j) = عمود;
 	}
 
-	void setCol(size_t j, Type val)
+	خالی سیٹ_ستون(size_t j, Type val)
 	{
-		slice<M, 1>(0, j) = val;
+		قاش<M, 1>(0, j) = val;
 	}
 
-	void setZero()
+	خالی سیٹ_Zero()
 	{
-		memset(_data, 0, sizeof(_data));
+		memset(ڈیٹا_3, 0, حجم(ڈیٹا_3));
 	}
 
-	inline void zero()
+	اندرونی خالی zero()
 	{
-		setZero();
+		سیٹ_Zero();
 	}
 
-	void setAll(Type val)
+	خالی سیٹ_All(Type val)
 	{
-		Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
 				self(i, j) = val;
 			}
 		}
 	}
 
-	inline void setOne()
+	اندرونی خالی سیٹ_One()
 	{
-		setAll(1);
+		سیٹ_All(1);
 	}
 
-	inline void setNaN()
+	اندرونی خالی سیٹ_Na_N()
 	{
-		setAll(NAN);
+		سیٹ_All(NAN);
 	}
 
-	void setIdentity()
+	خالی سیٹ_شناختی_عنصر()
 	{
-		setZero();
-		Matrix<Type, M, N> &self = *this;
+		سیٹ_Zero();
+		میٹرکس_2<Type, M, N> &self = *یہ;
 
-		const size_t min_i = M > N ? N : M;
+		ثابت size_t min_i = M > N ? N : M;
 
-		for (size_t i = 0; i < min_i; i++) {
+		برائے (size_t i = 0; i < min_i; i++) {
 			self(i, i) = 1;
 		}
 	}
 
-	inline void identity()
+	اندرونی خالی شناختی_عنصر()
 	{
-		setIdentity();
+		سیٹ_شناختی_عنصر();
 	}
 
-	inline void swapRows(size_t a, size_t b)
+	اندرونی خالی تبادلہ_صفیں(size_t a, size_t b)
 	{
-		assert(a < M);
-		assert(b < M);
+		أكد(a < M);
+		أكد(b < M);
 
-		if (a == b) {
-			return;
+		اگر (a == b) {
+			واپس;
 		}
 
-		Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t j = 0; j < N; j++) {
+		برائے (size_t j = 0; j < N; j++) {
 			Type tmp = self(a, j);
 			self(a, j) = self(b, j);
 			self(b, j) = tmp;
 		}
 	}
 
-	inline void swapCols(size_t a, size_t b)
+	اندرونی خالی تبادلہ_ستون_تعداد(size_t a, size_t b)
 	{
-		assert(a < N);
-		assert(b < N);
+		أكد(a < N);
+		أكد(b < N);
 
-		if (a == b) {
-			return;
+		اگر (a == b) {
+			واپس;
 		}
 
-		Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
+		برائے (size_t i = 0; i < M; i++) {
 			Type tmp = self(i, a);
 			self(i, a) = self(i, b);
 			self(i, b) = tmp;
 		}
 	}
 
-	inline void nanToZero()
+	اندرونی خالی nan_مقصد_Zero()
 	{
 
-		Matrix<Type, M, N> &self = *this;
+		میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				if (std::isnan(self(i, j))) {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
+				اگر (std::isnan(self(i, j))) {
 					self(i, j) = static_cast<Type>(0.0f);
 				}
 			}
 		}
 	}
 
-	Matrix<Type, M, N> abs() const
+	میٹرکس_2<Type, M, N> مطلق_قدر() ثابت
 	{
-		Matrix<Type, M, N> r;
+		میٹرکس_2<Type, M, N> r;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				r(i, j) = Type(std::fabs((*this)(i, j)));
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
+				r(i, j) = Type(std::fabs((*یہ)(i, j)));
 			}
 		}
 
-		return r;
+		واپس r;
 	}
 
-	Type max() const
+	Type max() ثابت
 	{
-		Type max_val = (*this)(0, 0);
+		Type max_val = (*یہ)(0, 0);
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				Type val = (*this)(i, j);
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
+				Type val = (*یہ)(i, j);
 
-				if (val > max_val) {
+				اگر (val > max_val) {
 					max_val = val;
 				}
 			}
 		}
 
-		return max_val;
+		واپس max_val;
 	}
 
-	Type min() const
+	Type min() ثابت
 	{
-		Type min_val = (*this)(0, 0);
+		Type min_val = (*یہ)(0, 0);
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				Type val = (*this)(i, j);
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
+				Type val = (*یہ)(i, j);
 
-				if (val < min_val) {
+				اگر (val < min_val) {
 					min_val = val;
 				}
 			}
 		}
 
-		return min_val;
+		واپس min_val;
 	}
 
-	bool isAllNan() const
+	منطقی isAllNan() ثابت
 	{
-		const Matrix<Type, M, N> &self = *this;
-		bool result = true;
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
+		منطقی نتیجہ = سچ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				result = result && std::isnan(self(i, j));
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
+				نتیجہ = نتیجہ && std::isnan(self(i, j));
 			}
 		}
 
-		return result;
+		واپس نتیجہ;
 	}
 
-	bool isAllFinite() const
+	منطقی isAllFinite() ثابت
 	{
-		const Matrix<Type, M, N> &self = *this;
+		ثابت میٹرکس_2<Type, M, N> &self = *یہ;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				if (!std::isfinite(self(i, j))) {
-					return false;
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
+				اگر (!std::isfinite(self(i, j))) {
+					واپس جھوٹ;
 				}
 			}
 		}
 
-		return true;
+		واپس سچ;
 	}
 };
 
-template<typename Type, size_t M, size_t N>
-Matrix<Type, M, N> zeros()
+سانچہ<قسم_نام Type, size_t M, size_t N>
+میٹرکس_2<Type, M, N> zeros()
 {
-	Matrix<Type, M, N> m;
-	m.setZero();
-	return m;
+	میٹرکس_2<Type, M, N> m;
+	m.سیٹ_Zero();
+	واپس m;
 }
 
-template<typename Type, size_t M, size_t N>
-Matrix<Type, M, N> ones()
+سانچہ<قسم_نام Type, size_t M, size_t N>
+میٹرکس_2<Type, M, N> ones()
 {
-	Matrix<Type, M, N> m;
-	m.setOne();
-	return m;
+	میٹرکس_2<Type, M, N> m;
+	m.سیٹ_One();
+	واپس m;
 }
 
-template<size_t M, size_t N>
-Matrix<float, M, N> nans()
+سانچہ<size_t M, size_t N>
+میٹرکس_2<اعشاری, M, N> nans()
 {
-	Matrix<float, M, N> m;
-	m.setNaN();
-	return m;
+	میٹرکس_2<اعشاری, M, N> m;
+	m.سیٹ_Na_N();
+	واپس m;
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> operator*(Type scalar, const Matrix<Type, M, N> &other)
+سانچہ<قسم_نام Type, size_t  M, size_t N>
+میٹرکس_2<Type, M, N> عامل*(Type scalar, ثابت میٹرکس_2<Type, M, N> &other)
 {
-	return other * scalar;
+	واپس other * scalar;
 }
 
-template<typename Type, size_t  M, size_t N>
-bool isEqual(const Matrix<Type, M, N> &x,
-	     const Matrix<Type, M, N> &y, const Type eps = Type(1e-4f))
+سانچہ<قسم_نام Type, size_t  M, size_t N>
+منطقی isEqual(ثابت میٹرکس_2<Type, M, N> &x,
+	     ثابت میٹرکس_2<Type, M, N> &y, ثابت Type eps = Type(1e-4f))
 {
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			if (!isEqualF(x(i, j), y(i, j), eps)) {
-				return false;
+	برائے (size_t i = 0; i < M; i++) {
+		برائے (size_t j = 0; j < N; j++) {
+			اگر (!isEqualF(x(i, j), y(i, j), eps)) {
+				واپس جھوٹ;
 			}
 		}
 	}
 
-	return true;
+	واپس سچ;
 }
 
-namespace typeFunction
+نامخلا typeFunction
 {
-template<typename Type>
-Type min(const Type x, const Type y)
+سانچہ<قسم_نام Type>
+Type min(ثابت Type x, ثابت Type y)
 {
-	bool x_is_nan = std::isnan(x);
-	bool y_is_nan = std::isnan(y);
+	منطقی x_is_nan = std::isnan(x);
+	منطقی y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	اگر (x_is_nan || y_is_nan) {
+		اگر (x_is_nan && !y_is_nan) {
+			واپس y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		واپس x;
 	}
 
-	return (x < y) ? x : y;
+	واپس (x < y) ? x : y;
 }
 
-template<typename Type>
-Type max(const Type x, const Type y)
+سانچہ<قسم_نام Type>
+Type max(ثابت Type x, ثابت Type y)
 {
-	bool x_is_nan = std::isnan(x);
-	bool y_is_nan = std::isnan(y);
+	منطقی x_is_nan = std::isnan(x);
+	منطقی y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	اگر (x_is_nan || y_is_nan) {
+		اگر (x_is_nan && !y_is_nan) {
+			واپس y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		واپس x;
 	}
 
-	return (x > y) ? x : y;
+	واپس (x > y) ? x : y;
 }
 
-template<typename Type>
-Type constrain(const Type x, const Type lower_bound, const Type upper_bound)
+سانچہ<قسم_نام Type>
+Type constrain(ثابت Type x, ثابت Type زیریں_bound, ثابت Type بالائی_bound)
 {
-	if (lower_bound > upper_bound) {
-		return NAN;
+	اگر (زیریں_bound > بالائی_bound) {
+		واپس NAN;
 
-	} else if (std::isnan(x)) {
-		return NAN;
+	} ورنہ اگر (std::isnan(x)) {
+		واپس NAN;
 
-	} else {
-		return typeFunction::max(lower_bound, typeFunction::min(upper_bound, x));
+	} ورنہ {
+		واپس typeFunction::max(زیریں_bound, typeFunction::min(بالائی_bound, x));
 	}
 }
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Matrix<Type, M, N> &x, const Type scalar_upper_bound)
+سانچہ<قسم_نام Type, size_t  M, size_t N>
+میٹرکس_2<Type, M, N> min(ثابت میٹرکس_2<Type, M, N> &x, ثابت Type scalar_بالائی_bound)
 {
-	Matrix<Type, M, N> m;
+	میٹرکس_2<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			m(i, j) = typeFunction::min(x(i, j), scalar_upper_bound);
+	برائے (size_t i = 0; i < M; i++) {
+		برائے (size_t j = 0; j < N; j++) {
+			m(i, j) = typeFunction::min(x(i, j), scalar_بالائی_bound);
 		}
 	}
 
-	return m;
+	واپس m;
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Type scalar_upper_bound, const Matrix<Type, M, N> &x)
+سانچہ<قسم_نام Type, size_t  M, size_t N>
+میٹرکس_2<Type, M, N> min(ثابت Type scalar_بالائی_bound, ثابت میٹرکس_2<Type, M, N> &x)
 {
-	return min(x, scalar_upper_bound);
+	واپس min(x, scalar_بالائی_bound);
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x2)
+سانچہ<قسم_نام Type, size_t  M, size_t N>
+میٹرکس_2<Type, M, N> min(ثابت میٹرکس_2<Type, M, N> &x1, ثابت میٹرکس_2<Type, M, N> &x2)
 {
-	Matrix<Type, M, N> m;
+	میٹرکس_2<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	برائے (size_t i = 0; i < M; i++) {
+		برائے (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::min(x1(i, j), x2(i, j));
 		}
 	}
 
-	return m;
+	واپس m;
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Matrix<Type, M, N> &x, const Type scalar_lower_bound)
+سانچہ<قسم_نام Type, size_t  M, size_t N>
+میٹرکس_2<Type, M, N> max(ثابت میٹرکس_2<Type, M, N> &x, ثابت Type scalar_زیریں_bound)
 {
-	Matrix<Type, M, N> m;
+	میٹرکس_2<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			m(i, j) = typeFunction::max(x(i, j), scalar_lower_bound);
+	برائے (size_t i = 0; i < M; i++) {
+		برائے (size_t j = 0; j < N; j++) {
+			m(i, j) = typeFunction::max(x(i, j), scalar_زیریں_bound);
 		}
 	}
 
-	return m;
+	واپس m;
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Type scalar_lower_bound, const Matrix<Type, M, N> &x)
+سانچہ<قسم_نام Type, size_t  M, size_t N>
+میٹرکس_2<Type, M, N> max(ثابت Type scalar_زیریں_bound, ثابت میٹرکس_2<Type, M, N> &x)
 {
-	return max(x, scalar_lower_bound);
+	واپس max(x, scalar_زیریں_bound);
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x2)
+سانچہ<قسم_نام Type, size_t  M, size_t N>
+میٹرکس_2<Type, M, N> max(ثابت میٹرکس_2<Type, M, N> &x1, ثابت میٹرکس_2<Type, M, N> &x2)
 {
-	Matrix<Type, M, N> m;
+	میٹرکس_2<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	برائے (size_t i = 0; i < M; i++) {
+		برائے (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::max(x1(i, j), x2(i, j));
 		}
 	}
 
-	return m;
+	واپس m;
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
-			     const Type scalar_lower_bound,
-			     const Type scalar_upper_bound)
+سانچہ<قسم_نام Type, size_t  M, size_t N>
+میٹرکس_2<Type, M, N> constrain(ثابت میٹرکس_2<Type, M, N> &x,
+			     ثابت Type scalar_زیریں_bound,
+			     ثابت Type scalar_بالائی_bound)
 {
-	Matrix<Type, M, N> m;
+	میٹرکس_2<Type, M, N> m;
 
-	if (scalar_lower_bound > scalar_upper_bound) {
-		m.setNaN();
+	اگر (scalar_زیریں_bound > scalar_بالائی_bound) {
+		m.سیٹ_Na_N();
 
-	} else {
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				m(i, j) = typeFunction::constrain(x(i, j), scalar_lower_bound, scalar_upper_bound);
+	} ورنہ {
+		برائے (size_t i = 0; i < M; i++) {
+			برائے (size_t j = 0; j < N; j++) {
+				m(i, j) = typeFunction::constrain(x(i, j), scalar_زیریں_bound, scalar_بالائی_bound);
 			}
 		}
 	}
 
-	return m;
+	واپس m;
 }
 
-template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
-			     const Matrix<Type, M, N> &x_lower_bound,
-			     const Matrix<Type, M, N> &x_upper_bound)
+سانچہ<قسم_نام Type, size_t  M, size_t N>
+میٹرکس_2<Type, M, N> constrain(ثابت میٹرکس_2<Type, M, N> &x,
+			     ثابت میٹرکس_2<Type, M, N> &x_زیریں_bound,
+			     ثابت میٹرکس_2<Type, M, N> &x_بالائی_bound)
 {
-	Matrix<Type, M, N> m;
+	میٹرکس_2<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			m(i, j) = typeFunction::constrain(x(i, j), x_lower_bound(i, j), x_upper_bound(i, j));
+	برائے (size_t i = 0; i < M; i++) {
+		برائے (size_t j = 0; j < N; j++) {
+			m(i, j) = typeFunction::constrain(x(i, j), x_زیریں_bound(i, j), x_بالائی_bound(i, j));
 		}
 	}
 
-	return m;
+	واپس m;
 }
 
-template<typename OStream, typename Type, size_t M, size_t N>
-OStream &operator<<(OStream &os, const matrix::Matrix<Type, M, N> &matrix)
+سانچہ<قسم_نام OStream, قسم_نام Type, size_t M, size_t N>
+OStream &عامل<<(OStream &os, ثابت میٹرکس::میٹرکس_2<Type, M, N> &میٹرکس)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * N * M + M + 1;
-	char string[n];
-	matrix.write_string(string, n);
+	حرف string[n];
+	میٹرکس.write_string(string, n);
 	os << string;
-	return os;
+	واپس os;
 }
 
 } // namespace matrix

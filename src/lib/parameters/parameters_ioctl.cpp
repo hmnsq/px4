@@ -37,163 +37,163 @@
  * Protected build kernel space interface to global parameter store.
  */
 
-#define PARAM_IMPLEMENTATION
+#تعریف_کرو PARAM_IMPLEMENTATION
 
-#include <errno.h>
+#شامل <errno.h>
 
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <px4_platform_common/defines.h>
+#شامل "param.h"
+#شامل "parameters_ioctl.h"
+#شامل <px4_platform_common/defines.h>
 
-int	param_ioctl(unsigned int cmd, unsigned long arg)
+صحیح	param_ioctl(غیرعلامتی صحیح cmd, غیرعلامتی طویل arg)
 {
-	int ret = OK;
+	صحیح ret = OK;
 
-	switch (cmd) {
-	case PARAMIOCNOTIFY: {
+	انتخاب (cmd) {
+	حالت PARAMIOCNOTIFY: {
 			param_notify_changes();
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCFIND: {
-			paramiocfind_t *data = (paramiocfind_t *)arg;
+	حالت PARAMIOCFIND: {
+			paramiocfind_t *ڈیٹا = (paramiocfind_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_find(data->name);
+			اگر (ڈیٹا->notification) {
+				ڈیٹا->ret = param_ڈھونڈو(ڈیٹا->name);
 
-			} else {
-				data->ret = param_find_no_notification(data->name);
+			} ورنہ {
+				ڈیٹا->ret = param_ڈھونڈو_no_notification(ڈیٹا->name);
 			}
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCCOUNTUSED: {
-			paramioccountused_t *data = (paramioccountused_t *)arg;
-			data->ret = param_count_used();
+	حالت PARAMIOCCOUNTUSED: {
+			paramioccountused_t *ڈیٹا = (paramioccountused_t *)arg;
+			ڈیٹا->ret = param_گنتی_مستعمل();
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCFORUSEDINDEX: {
-			paramiocforusedindex_t *data = (paramiocforusedindex_t *)arg;
-			data->ret =  param_for_used_index(data->index);
+	حالت PARAMIOCFORUSEDINDEX: {
+			paramiocforusedindex_t *ڈیٹا = (paramiocforusedindex_t *)arg;
+			ڈیٹا->ret =  param_for_مستعمل_اشاریہ(ڈیٹا->اشاریہ);
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCGETUSEDINDEX: {
-			paramiocgetusedindex_t *data = (paramiocgetusedindex_t *)arg;
-			data->ret = param_get_used_index(data->param);
+	حالت PARAMIOCGETUSEDINDEX: {
+			paramiocgetusedindex_t *ڈیٹا = (paramiocgetusedindex_t *)arg;
+			ڈیٹا->ret = param_get_مستعمل_اشاریہ(ڈیٹا->param);
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCUNSAVED: {
-			paramiocunsaved_t *data = (paramiocunsaved_t *)arg;
-			data->ret = param_value_unsaved(data->param);
+	حالت PARAMIOCUNSAVED: {
+			paramiocunsaved_t *ڈیٹا = (paramiocunsaved_t *)arg;
+			ڈیٹا->ret = param_قدر_unsaved(ڈیٹا->param);
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCGET: {
-			paramiocget_t *data = (paramiocget_t *)arg;
+	حالت PARAMIOCGET: {
+			paramiocget_t *ڈیٹا = (paramiocget_t *)arg;
 
-			if (data->deflt) {
-				data->ret = param_get_default_value(data->param, data->val);
+			اگر (ڈیٹا->deflt) {
+				ڈیٹا->ret = param_get_default_قدر(ڈیٹا->param, ڈیٹا->val);
 
-			} else {
-				data->ret = param_get(data->param, data->val);
+			} ورنہ {
+				ڈیٹا->ret = param_get(ڈیٹا->param, ڈیٹا->val);
 			}
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCAUTOSAVE: {
-			paramiocautosave_t *data = (paramiocautosave_t *)arg;
-			param_control_autosave(data->enable);
+	حالت PARAMIOCAUTOSAVE: {
+			paramiocautosave_t *ڈیٹا = (paramiocautosave_t *)arg;
+			param_control_autosave(ڈیٹا->enable);
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCSET: {
-			paramiocset_t *data = (paramiocset_t *)arg;
+	حالت PARAMIOCSET: {
+			paramiocset_t *ڈیٹا = (paramiocset_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_set(data->param, data->val);
+			اگر (ڈیٹا->notification) {
+				ڈیٹا->ret = param_سیٹ(ڈیٹا->param, ڈیٹا->val);
 
-			} else {
-				data->ret = param_set_no_notification(data->param, data->val);
+			} ورنہ {
+				ڈیٹا->ret = param_سیٹ_no_notification(ڈیٹا->param, ڈیٹا->val);
 			}
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCUSED: {
-			paramiocused_t *data = (paramiocused_t *)arg;
-			data->ret = param_used(data->param);
+	حالت PARAMIOCUSED: {
+			paramiocused_t *ڈیٹا = (paramiocused_t *)arg;
+			ڈیٹا->ret = param_مستعمل(ڈیٹا->param);
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCSETUSED: {
-			paramiocsetused_t *data = (paramiocsetused_t *)arg;
-			param_set_used(data->param);
+	حالت PARAMIOCSETUSED: {
+			paramiocsetused_t *ڈیٹا = (paramiocsetused_t *)arg;
+			param_سیٹ_مستعمل(ڈیٹا->param);
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCSETDEFAULT: {
-			paramiocsetdefault_t *data = (paramiocsetdefault_t *)arg;
-			data->ret = param_set_default_value(data->param, data->val);
+	حالت PARAMIOCSETDEFAULT: {
+			paramiocsetdefault_t *ڈیٹا = (paramiocsetdefault_t *)arg;
+			ڈیٹا->ret = param_سیٹ_default_قدر(ڈیٹا->param, ڈیٹا->val);
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCRESET: {
-			paramiocreset_t *data = (paramiocreset_t *)arg;
+	حالت PARAMIOCRESET: {
+			paramiocreset_t *ڈیٹا = (paramiocreset_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_reset(data->param);
+			اگر (ڈیٹا->notification) {
+				ڈیٹا->ret = param_reset(ڈیٹا->param);
 
-			} else {
-				data->ret = param_reset_no_notification(data->param);
+			} ورنہ {
+				ڈیٹا->ret = param_reset_no_notification(ڈیٹا->param);
 			}
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCRESETGROUP: {
-			paramiocresetgroup_t *data = (paramiocresetgroup_t *)arg;
+	حالت PARAMIOCRESETGROUP: {
+			paramiocresetgroup_t *ڈیٹا = (paramiocresetgroup_t *)arg;
 
-			if (data->type == PARAM_RESET_EXCLUDES) {
-				param_reset_excludes(data->group, data->num_in_group);
+			اگر (ڈیٹا->type == PARAM_RESET_EXCLUDES) {
+				param_reset_excludes(ڈیٹا->گروہ, ڈیٹا->عدد_اندر_گروہ);
 
-			} else if (data->type == PARAM_RESET_SPECIFIC) {
-				param_reset_specific(data->group, data->num_in_group);
+			} ورنہ اگر (ڈیٹا->type == PARAM_RESET_SPECIFIC) {
+				param_reset_specific(ڈیٹا->گروہ, ڈیٹا->عدد_اندر_گروہ);
 
-			} else {
+			} ورنہ {
 				param_reset_all();
 			}
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCSAVEDEFAULT: {
-			paramiocsavedefault_t *data = (paramiocsavedefault_t *)arg;
-			data->ret = param_save_default(data->blocking);
+	حالت PARAMIOCSAVEDEFAULT: {
+			paramiocsavedefault_t *ڈیٹا = (paramiocsavedefault_t *)arg;
+			ڈیٹا->ret = param_save_default(ڈیٹا->blocking);
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCLOADDEFAULT: {
-			paramiocloaddefault_t *data = (paramiocloaddefault_t *)arg;
-			data->ret = param_load_default();
+	حالت PARAMIOCLOADDEFAULT: {
+			paramiocloaddefault_t *ڈیٹا = (paramiocloaddefault_t *)arg;
+			ڈیٹا->ret = param_بھرو_default();
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCEXPORT: {
-			paramiocexport_t *data = (paramiocexport_t *)arg;
-			data->ret = param_export(data->filename, nullptr);
+	حالت PARAMIOCEXPORT: {
+			paramiocexport_t *ڈیٹا = (paramiocexport_t *)arg;
+			ڈیٹا->ret = param_export(ڈیٹا->filename, خالی_اشاریہ);
 		}
-		break;
+		توڑو;
 
-	case PARAMIOCHASH: {
-			paramiochash_t *data = (paramiochash_t *)arg;
-			data->ret = param_hash_check();
+	حالت PARAMIOCHASH: {
+			paramiochash_t *ڈیٹا = (paramiochash_t *)arg;
+			ڈیٹا->ret = param_hash_check();
 		}
-		break;
+		توڑو;
 
-	default:
+	طےشدہ:
 		ret = -ENOTTY;
-		break;
+		توڑو;
 	}
 
-	return ret;
+	واپس ret;
 }

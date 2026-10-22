@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#include <cmath>
+#شامل <cmath>
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
-#include <iostream>
+#شامل <gtest/gtest.h>
+#شامل <matrix/math.hpp>
+#شامل <iostream>
 
-using namespace matrix;
+استعمال نامخلا میٹرکس;
 
-template <typename T>
-T testFunction(const Vector<T, 3> &point)
+سانچہ <قسم_نام T>
+T testFunction(ثابت سمتیہ<T, 3> &نقطہ)
 {
 	// function is f(x,y,z) = x^2 + 2xy + 3y^2 + z
-	return point(0) * point(0)
-	       + 2.f * point(0) * point(1)
-	       + 3.f * point(1) * point(1)
-	       + point(2);
+	واپس نقطہ(0) * نقطہ(0)
+	       + 2.f * نقطہ(0) * نقطہ(1)
+	       + 3.f * نقطہ(1) * نقطہ(1)
+	       + نقطہ(2);
 }
 
-template <typename Scalar>
-Vector<Scalar, 3> positionError(const Vector<Scalar, 3> &positionState,
-				const Vector<Scalar, 3> &velocityStateBody,
-				const Quaternion<Scalar> &bodyOrientation,
-				const Vector<Scalar, 3> &positionMeasurement,
+سانچہ <قسم_نام Scalar>
+سمتیہ<Scalar, 3> positionError(ثابت سمتیہ<Scalar, 3> &positionState,
+				ثابت سمتیہ<Scalar, 3> &velocityStateBody,
+				ثابت Quaternion<Scalar> &bodyOrientation,
+				ثابت سمتیہ<Scalar, 3> &positionMeasurement,
 				Scalar dt
 			       )
 {
-	return positionMeasurement - (positionState +  bodyOrientation.rotateVector(velocityStateBody) * dt);
+	واپس positionMeasurement - (positionState +  bodyOrientation.rotate_سمتیہ(velocityStateBody) * dt);
 }
 
-TEST(MatrixDualTest, Dual)
+TEST(میٹرکس_Dual_Test, Dual)
 {
-	const Dual<float, 1> a(3, 0);
-	const Dual<float, 1> b(6, 0);
+	ثابت Dual<اعشاری, 1> a(3, 0);
+	ثابت Dual<اعشاری, 1> b(6, 0);
 
 	{
 		EXPECT_FLOAT_EQ(a.value, 3.f);
@@ -72,113 +72,113 @@ TEST(MatrixDualTest, Dual)
 
 	{
 		// addition
-		Dual<float, 1> c = a + b;
+		Dual<اعشاری, 1> c = a + b;
 		EXPECT_FLOAT_EQ(c.value, 9.f);
 		EXPECT_FLOAT_EQ(c.derivative(0), 2.f);
 
-		Dual<float, 1> d = +a;
+		Dual<اعشاری, 1> d = +a;
 		EXPECT_EQ(d, a);
 		d += b;
 		EXPECT_EQ(d, c);
 
-		Dual<float, 1> e = a;
+		Dual<اعشاری, 1> e = a;
 		e += b.value;
 		EXPECT_FLOAT_EQ(e.value, c.value);
 		EXPECT_EQ(e.derivative, a.derivative);
 
-		Dual<float, 1> f = b.value + a;
+		Dual<اعشاری, 1> f = b.value + a;
 		EXPECT_EQ(f, e);
 	}
 
 	{
 		// subtraction
-		Dual<float, 1> c = b - a;
+		Dual<اعشاری, 1> c = b - a;
 		EXPECT_FLOAT_EQ(c.value, 3.f);
 		EXPECT_FLOAT_EQ(c.derivative(0), 0.f);
 
-		Dual<float, 1> d = b;
+		Dual<اعشاری, 1> d = b;
 		EXPECT_EQ(d, b);
 		d -= a;
 		EXPECT_EQ(d, c);
 
-		Dual<float, 1> e = b;
+		Dual<اعشاری, 1> e = b;
 		e -= a.value;
 		EXPECT_FLOAT_EQ(e.value, c.value);
 		EXPECT_EQ(e.derivative, b.derivative);
 
-		Dual<float, 1> f = a.value - b;
+		Dual<اعشاری, 1> f = a.value - b;
 		EXPECT_EQ(f, -e);
 	}
 
 	{
 		// multiplication
-		Dual<float, 1> c = a * b;
+		Dual<اعشاری, 1> c = a * b;
 		EXPECT_FLOAT_EQ(c.value, 18.f);
 		EXPECT_FLOAT_EQ(c.derivative(0), 9.f);
 
-		Dual<float, 1> d = a;
+		Dual<اعشاری, 1> d = a;
 		EXPECT_EQ(d, a);
 		d *= b;
 		EXPECT_EQ(d, c);
 
-		Dual<float, 1> e = a;
+		Dual<اعشاری, 1> e = a;
 		e *= b.value;
 		EXPECT_FLOAT_EQ(e.value, c.value);
 		EXPECT_EQ(e.derivative, a.derivative * b.value);
 
-		Dual<float, 1> f = b.value * a;
+		Dual<اعشاری, 1> f = b.value * a;
 		EXPECT_EQ(f, e);
 	}
 
 	{
 		// division
-		Dual<float, 1> c = b / a;
+		Dual<اعشاری, 1> c = b / a;
 		EXPECT_FLOAT_EQ(c.value, 2.f);
 		EXPECT_FLOAT_EQ(c.derivative(0), -1.f / 3.f);
 
-		Dual<float, 1> d = b;
+		Dual<اعشاری, 1> d = b;
 		EXPECT_EQ(d, b);
 		d /= a;
 		EXPECT_EQ(d, c);
 
-		Dual<float, 1> e = b;
+		Dual<اعشاری, 1> e = b;
 		e /= a.value;
 		EXPECT_FLOAT_EQ(e.value, c.value);
 		EXPECT_EQ(e.derivative, b.derivative / a.value);
 
-		Dual<float, 1> f = a.value / b;
+		Dual<اعشاری, 1> f = a.value / b;
 		EXPECT_EQ(f, 1.f / e);
 	}
 
 	{
-		Dual<float, 1> blank;
+		Dual<اعشاری, 1> blank;
 		EXPECT_FLOAT_EQ(blank.value, 0.f);
 		EXPECT_FLOAT_EQ(blank.derivative(0), 0.f);
 	}
 
 	{
 		// sqrt
-		EXPECT_FLOAT_EQ(sqrt(a).value, std::sqrt(a.value));
-		EXPECT_FLOAT_EQ(sqrt(a).derivative(0), 1.f / sqrt(12.f));
+		EXPECT_FLOAT_EQ(جذر(a).value, std::جذر(a.value));
+		EXPECT_FLOAT_EQ(جذر(a).derivative(0), 1.f / جذر(12.f));
 	}
 
 	{
 		// abs
-		EXPECT_EQ(a, abs(-a));
-		EXPECT_NE(-a, abs(a));
-		EXPECT_EQ(-a, -abs(a));
+		EXPECT_EQ(a, مطلق_قدر(-a));
+		EXPECT_NE(-a, مطلق_قدر(a));
+		EXPECT_EQ(-a, -مطلق_قدر(a));
 	}
 
 	{
 		// ceil
-		Dual<float, 1> c(1.5, 0);
+		Dual<اعشاری, 1> c(1.5, 0);
 		EXPECT_FLOAT_EQ(ceil(c).value, ceil(c.value));
 		EXPECT_FLOAT_EQ(ceil(c).derivative(0), 0.f);
 	}
 
 	{
 		// floor
-		Dual<float, 1> c(1.5, 0);
+		Dual<اعشاری, 1> c(1.5, 0);
 		EXPECT_FLOAT_EQ(floor(c).value, floor(c.value));
 		EXPECT_FLOAT_EQ(floor(c).derivative(0), 0.f);
 	}
@@ -198,7 +198,7 @@ TEST(MatrixDualTest, Dual)
 	{
 		// isnan
 		EXPECT_FALSE(IsNan(a));
-		Dual<float, 1> c(std::sqrt(-1.f), 0);
+		Dual<اعشاری, 1> c(std::جذر(-1.f), 0);
 		EXPECT_TRUE(IsNan(c));
 	}
 
@@ -206,21 +206,21 @@ TEST(MatrixDualTest, Dual)
 		// isfinite/isinf
 		EXPECT_TRUE(IsFinite(a));
 		EXPECT_FALSE(IsInf(a));
-		Dual<float, 1> c(std::sqrt(-1.f), 0);
+		Dual<اعشاری, 1> c(std::جذر(-1.f), 0);
 		EXPECT_FALSE(IsFinite(c));
 		EXPECT_FALSE(IsInf(c));
-		Dual<float, 1> d(INFINITY, 0);
+		Dual<اعشاری, 1> d(INFINITY, 0);
 		EXPECT_FALSE(IsFinite(d));
 		EXPECT_TRUE(IsInf(d));
 	}
 
 	{
 		// sin/cos/tan
-		EXPECT_FLOAT_EQ(sin(a).value, sin(a.value));
-		EXPECT_FLOAT_EQ(sin(a).derivative(0), std::cos(a.value)); // sin'(x) = cos(x)
+		EXPECT_FLOAT_EQ(جیب(a).value, جیب(a.value));
+		EXPECT_FLOAT_EQ(جیب(a).derivative(0), std::جیب_تمام(a.value)); // sin'(x) = cos(x)
 
-		EXPECT_FLOAT_EQ(cos(a).value, cos(a.value));
-		EXPECT_FLOAT_EQ(cos(a).derivative(0), -std::sin(a.value)); // cos'(x) = -sin(x)
+		EXPECT_FLOAT_EQ(جیب_تمام(a).value, جیب_تمام(a.value));
+		EXPECT_FLOAT_EQ(جیب_تمام(a).derivative(0), -std::جیب(a.value)); // cos'(x) = -sin(x)
 
 		EXPECT_FLOAT_EQ(tan(a).value, tan(a.value));
 		EXPECT_FLOAT_EQ(tan(a).derivative(0), 1.f + std::tan(a.value)*std::tan(a.value)); // tan'(x) = 1 + tan^2(x)
@@ -228,12 +228,12 @@ TEST(MatrixDualTest, Dual)
 
 	{
 		// asin/acos/atan
-		Dual<float, 1> c(0.3f, 0);
+		Dual<اعشاری, 1> c(0.3f, 0);
 		EXPECT_FLOAT_EQ(asin(c).value, std::asin(c.value));
-		EXPECT_FLOAT_EQ(asin(c).derivative(0), 1.f / std::sqrt(1.f - 0.3f * 0.3f)); // asin'(x) = 1/sqrt(1-x^2)
+		EXPECT_FLOAT_EQ(asin(c).derivative(0), 1.f / std::جذر(1.f - 0.3f * 0.3f)); // asin'(x) = 1/sqrt(1-x^2)
 
 		EXPECT_FLOAT_EQ(acos(c).value, std::acos(c.value));
-		EXPECT_FLOAT_EQ(acos(c).derivative(0), -1.f / std::sqrt(1.f - 0.3f * 0.3f)); // acos'(x) = -1/sqrt(1-x^2)
+		EXPECT_FLOAT_EQ(acos(c).derivative(0), -1.f / std::جذر(1.f - 0.3f * 0.3f)); // acos'(x) = -1/sqrt(1-x^2)
 
 		EXPECT_FLOAT_EQ(atan(c).value, std::atan(c.value));
 		EXPECT_FLOAT_EQ(atan(c).derivative(0), 1.f / (1.f + 0.3f * 0.3f)); // tan'(x) = 1 + x^2
@@ -242,76 +242,76 @@ TEST(MatrixDualTest, Dual)
 	{
 		// atan2
 		EXPECT_FLOAT_EQ(atan2(a, b).value, atan2(a.value, b.value));
-		EXPECT_EQ(atan2(a, Dual<float, 1>(b.value)), atan(a / b.value)); // atan2'(y, x) = atan'(y/x)
+		EXPECT_EQ(atan2(a, Dual<اعشاری, 1>(b.value)), atan(a / b.value)); // atan2'(y, x) = atan'(y/x)
 	}
 
 	{
 		// partial derivatives
 		// function is f(x,y,z) = x^2 + 2xy + 3y^2 + z, we need with respect to d/dx and d/dy at the point (0.5, -0.8, 2)
 
-		using D = Dual<float, 2>;
+		استعمال D = Dual<اعشاری, 2>;
 
 		// set our starting point, requesting partial derivatives of x and y in column 0 and 1
-		Vector3<D> dualPoint(D(0.5f, 0), D(-0.8f, 1), D(2.f));
+		Vector3<D> dual_نقطہ(D(0.5f, 0), D(-0.8f, 1), D(2.f));
 
-		Dual<float, 2> dualResult = testFunction(dualPoint);
+		Dual<اعشاری, 2> dual_نتیجہ = testFunction(dual_نقطہ);
 
 		// compare to a numerical derivative:
-		Vector<float, 3> floatPoint = collectReals(dualPoint);
-		float floatResult = testFunction(floatPoint);
+		سمتیہ<اعشاری, 3> float_نقطہ = collectReals(dual_نقطہ);
+		اعشاری float_نتیجہ = testFunction(float_نقطہ);
 
-		float h = 0.0001f;
-		Vector<float, 3> floatPoint_plusDX = floatPoint;
-		floatPoint_plusDX(0) += h;
-		float floatResult_plusDX = testFunction(floatPoint_plusDX);
+		اعشاری h = 0.0001f;
+		سمتیہ<اعشاری, 3> float_نقطہ_plus_DX = float_نقطہ;
+		float_نقطہ_plus_DX(0) += h;
+		اعشاری float_نتیجہ_plus_DX = testFunction(float_نقطہ_plus_DX);
 
-		Vector<float, 3> floatPoint_plusDY = floatPoint;
-		floatPoint_plusDY(1) += h;
-		float floatResult_plusDY = testFunction(floatPoint_plusDY);
+		سمتیہ<اعشاری, 3> float_نقطہ_plus_DY = float_نقطہ;
+		float_نقطہ_plus_DY(1) += h;
+		اعشاری float_نتیجہ_plus_DY = testFunction(float_نقطہ_plus_DY);
 
-		Vector2f numerical_derivative((floatResult_plusDX - floatResult) / h,
-					      (floatResult_plusDY - floatResult) / h);
+		Vector2f numerical_derivative((float_نتیجہ_plus_DX - float_نتیجہ) / h,
+					      (float_نتیجہ_plus_DY - float_نتیجہ) / h);
 
-		EXPECT_EQ(dualResult.value, floatResult);
-		EXPECT_TRUE(isEqual(dualResult.derivative, numerical_derivative, 1e-2f));
+		EXPECT_EQ(dual_نتیجہ.value, float_نتیجہ);
+		EXPECT_TRUE(isEqual(dual_نتیجہ.derivative, numerical_derivative, 1e-2f));
 	}
 
 	{
 		// jacobian
 		// get residual of x/y/z with partial derivatives of rotation
 
-		Vector3f direct_error;
-		Matrix<float, 3, 4> numerical_jacobian;
+		Vector3f براہ_راست_error;
+		میٹرکس_2<اعشاری, 3, 4> numerical_jacobian;
 		{
 			Vector3f positionState(5, 6, 7);
 			Vector3f velocityState(-1, 0, 1);
 			Quaternionf velocityOrientation(0.2f, -0.1f, 0, 1);
 			Vector3f positionMeasurement(4.5f, 6.2f, 7.9f);
-			float dt = 0.1f;
+			اعشاری dt = 0.1f;
 
-			direct_error = positionError(positionState,
+			براہ_راست_error = positionError(positionState,
 						     velocityState,
 						     velocityOrientation,
 						     positionMeasurement,
 						     dt);
-			float h = 0.001f;
+			اعشاری h = 0.001f;
 
-			for (size_t i = 0; i < 4; i++) {
-				Quaternion<float> h4 = velocityOrientation;
+			برائے (size_t i = 0; i < 4; i++) {
+				Quaternion<اعشاری> h4 = velocityOrientation;
 				h4(i) += h;
-				numerical_jacobian.col(i) = (positionError(positionState,
+				numerical_jacobian.ستون(i) = (positionError(positionState,
 							     velocityState,
 							     h4,
 							     positionMeasurement,
 							     dt)
-							     - direct_error) / h;
+							     - براہ_راست_error) / h;
 			}
 		}
 		Vector3f auto_error;
-		Matrix<float, 3, 4> auto_jacobian;
+		میٹرکس_2<اعشاری, 3, 4> auto_jacobian;
 		{
-			using D4 = Dual<float, 4>;
-			using Vector3d4 = Vector3<D4>;
+			استعمال D4 = Dual<اعشاری, 4>;
+			استعمال Vector3d4 = Vector3<D4>;
 			Vector3d4 positionState(D4(5), D4(6), D4(7));
 			Vector3d4 velocityState(D4(-1), D4(0), D4(1));
 
@@ -331,7 +331,7 @@ TEST(MatrixDualTest, Dual)
 			auto_error = collectReals(error);
 			auto_jacobian = collectDerivatives(error);
 		}
-		EXPECT_EQ(direct_error, auto_error);
+		EXPECT_EQ(براہ_راست_error, auto_error);
 		EXPECT_TRUE(isEqual(numerical_jacobian, auto_jacobian, 1e-3f));
 	}
 }

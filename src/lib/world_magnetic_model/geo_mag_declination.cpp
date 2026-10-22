@@ -42,18 +42,18 @@
 *
 */
 
-#include "geo_mag_declination.h"
+#شامل "geo_mag_declination.h"
 
-#include "geo_magnetic_tables.hpp"
+#شامل "geo_magnetic_tables.hpp"
 
-#include <mathlib/mathlib.h>
+#شامل <mathlib/mathlib.h>
 
-#include <math.h>
-#include <stdint.h>
+#شامل <math.h>
+#شامل <stdint.h>
 
-using math::constrain;
+استعمال math::constrain;
 
-static unsigned get_lookup_table_index(float *val, float min, float max)
+ساکن غیرعلامتی get_lookup_جدول_اشاریہ(اعشاری *val, اعشاری min, اعشاری max)
 {
 	/* for the rare case of hitting the bounds exactly
 	 * the rounding logic wouldn't fit, so enforce it.
@@ -63,65 +63,65 @@ static unsigned get_lookup_table_index(float *val, float min, float max)
 	/* limit to (table bounds - 1) because bilinear interpolation requires checking (index + 1) */
 	*val = constrain(*val, min, max - SAMPLING_RES);
 
-	return static_cast<unsigned>((-(min) + *val) / SAMPLING_RES);
+	واپس static_cast<غیرعلامتی>((-(min) + *val) / SAMPLING_RES);
 }
 
-static float get_table_data(float latitude_deg, float longitude_deg, const int16_t table[LAT_DIM][LON_DIM])
+ساکن اعشاری get_جدول_ڈیٹا(اعشاری latitude_deg, اعشاری longitude_deg, ثابت int16_t جدول[LAT_DIM][LON_DIM])
 {
 	latitude_deg = math::constrain(latitude_deg, SAMPLING_MIN_LAT, SAMPLING_MAX_LAT);
 
-	if (longitude_deg > SAMPLING_MAX_LON) {
+	اگر (longitude_deg > SAMPLING_MAX_LON) {
 		longitude_deg -= 360.f;
 	}
 
-	if (longitude_deg < SAMPLING_MIN_LON) {
+	اگر (longitude_deg < SAMPLING_MIN_LON) {
 		longitude_deg += 360.f;
 	}
 
 	/* round down to nearest sampling resolution */
-	float min_lat = floorf(latitude_deg / SAMPLING_RES) * SAMPLING_RES;
-	float min_lon = floorf(longitude_deg / SAMPLING_RES) * SAMPLING_RES;
+	اعشاری min_lat = floorf(latitude_deg / SAMPLING_RES) * SAMPLING_RES;
+	اعشاری min_lon = floorf(longitude_deg / SAMPLING_RES) * SAMPLING_RES;
 
 	/* find index of nearest low sampling point */
-	unsigned min_lat_index = get_lookup_table_index(&min_lat, SAMPLING_MIN_LAT, SAMPLING_MAX_LAT);
-	unsigned min_lon_index = get_lookup_table_index(&min_lon, SAMPLING_MIN_LON, SAMPLING_MAX_LON);
+	غیرعلامتی min_lat_اشاریہ = get_lookup_جدول_اشاریہ(&min_lat, SAMPLING_MIN_LAT, SAMPLING_MAX_LAT);
+	غیرعلامتی min_lon_اشاریہ = get_lookup_جدول_اشاریہ(&min_lon, SAMPLING_MIN_LON, SAMPLING_MAX_LON);
 
-	const float data_sw = table[min_lat_index][min_lon_index];
-	const float data_se = table[min_lat_index][min_lon_index + 1];
-	const float data_ne = table[min_lat_index + 1][min_lon_index + 1];
-	const float data_nw = table[min_lat_index + 1][min_lon_index];
+	ثابت اعشاری ڈیٹا_sw = جدول[min_lat_اشاریہ][min_lon_اشاریہ];
+	ثابت اعشاری ڈیٹا_se = جدول[min_lat_اشاریہ][min_lon_اشاریہ + 1];
+	ثابت اعشاری ڈیٹا_ne = جدول[min_lat_اشاریہ + 1][min_lon_اشاریہ + 1];
+	ثابت اعشاری ڈیٹا_nw = جدول[min_lat_اشاریہ + 1][min_lon_اشاریہ];
 
 	/* perform bilinear interpolation on the four grid corners */
-	const float lat_scale = constrain((latitude_deg - min_lat) / SAMPLING_RES, 0.f, 1.f);
-	const float lon_scale = constrain((longitude_deg - min_lon) / SAMPLING_RES, 0.f, 1.f);
+	ثابت اعشاری lat_scale = constrain((latitude_deg - min_lat) / SAMPLING_RES, 0.f, 1.f);
+	ثابت اعشاری lon_scale = constrain((longitude_deg - min_lon) / SAMPLING_RES, 0.f, 1.f);
 
-	const float data_min = lon_scale * (data_se - data_sw) + data_sw;
-	const float data_max = lon_scale * (data_ne - data_nw) + data_nw;
+	ثابت اعشاری ڈیٹا_min = lon_scale * (ڈیٹا_se - ڈیٹا_sw) + ڈیٹا_sw;
+	ثابت اعشاری ڈیٹا_max = lon_scale * (ڈیٹا_ne - ڈیٹا_nw) + ڈیٹا_nw;
 
-	return lat_scale * (data_max - data_min) + data_min;
+	واپس lat_scale * (ڈیٹا_max - ڈیٹا_min) + ڈیٹا_min;
 }
 
-float get_mag_declination_degrees(float latitude_deg, float longitude_deg)
+اعشاری get_mag_declination_degrees(اعشاری latitude_deg, اعشاری longitude_deg)
 {
 	// table stored as scaled degrees
-	return get_table_data(latitude_deg, longitude_deg, declination_table) * WMM_DECLINATION_SCALE_TO_DEGREES;
+	واپس get_جدول_ڈیٹا(latitude_deg, longitude_deg, declination_جدول) * WMM_DECLINATION_SCALE_مقصد_DEGREES;
 }
 
-float get_mag_inclination_degrees(float latitude_deg, float longitude_deg)
+اعشاری get_mag_inclination_degrees(اعشاری latitude_deg, اعشاری longitude_deg)
 {
 	// table stored as scaled degrees
-	return get_table_data(latitude_deg, longitude_deg, inclination_table) * WMM_INCLINATION_SCALE_TO_DEGREES;
+	واپس get_جدول_ڈیٹا(latitude_deg, longitude_deg, inclination_جدول) * WMM_INCLINATION_SCALE_مقصد_DEGREES;
 }
 
-float get_mag_strength_gauss(float latitude_deg, float longitude_deg)
+اعشاری get_mag_strength_gauss(اعشاری latitude_deg, اعشاری longitude_deg)
 {
 	// 1 Gauss = 1e4 Tesla
-	return get_mag_strength_tesla(latitude_deg, longitude_deg) * 1e4f;
+	واپس get_mag_strength_tesla(latitude_deg, longitude_deg) * 1e4f;
 }
 
-float get_mag_strength_tesla(float latitude_deg, float longitude_deg)
+اعشاری get_mag_strength_tesla(اعشاری latitude_deg, اعشاری longitude_deg)
 {
 	// table stored as scaled nanotesla
-	return get_table_data(latitude_deg, longitude_deg, totalintensity_table)
-	       * WMM_TOTALINTENSITY_SCALE_TO_NANOTESLA * 1e-9f;
+	واپس get_جدول_ڈیٹا(latitude_deg, longitude_deg, totalintensity_جدول)
+	       * WMM_TOTALINTENSITY_SCALE_مقصد_NANOTESLA * 1e-9f;
 }

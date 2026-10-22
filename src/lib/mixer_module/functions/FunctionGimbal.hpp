@@ -31,35 +31,35 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include "FunctionProviderBase.hpp"
+#شامل "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gimbal_controls.h>
+#شامل <uORB/topics/gimbal_controls.h>
 
 /**
  * Functions: Gimbal_Roll .. Gimbal_Yaw
  */
-class FunctionGimbal : public FunctionProviderBase
+جماعت FunctionGimbal : عوامی Function_Provider_بنیاد
 {
-public:
-	FunctionGimbal() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGimbal(); }
+عوامی:
+	FunctionGimbal() = طےشدہ;
+	ساکن Function_Provider_بنیاد *allocate(ثابت Context &context) { واپس نیا FunctionGimbal(); }
 
-	void update() override
+	خالی update() override
 	{
 		gimbal_controls_s gimbal_controls;
 
-		if (_topic.update(&gimbal_controls)) {
-			_data[0] = gimbal_controls.control[gimbal_controls_s::INDEX_ROLL];
-			_data[1] = gimbal_controls.control[gimbal_controls_s::INDEX_PITCH];
-			_data[2] = gimbal_controls.control[gimbal_controls_s::INDEX_YAW];
+		اگر (_topic.update(&gimbal_controls)) {
+			ڈیٹا_3[0] = gimbal_controls.control[gimbal_controls_s::اشاریہ_ROLL];
+			ڈیٹا_3[1] = gimbal_controls.control[gimbal_controls_s::اشاریہ_PITCH];
+			ڈیٹا_3[2] = gimbal_controls.control[gimbal_controls_s::اشاریہ_YAW];
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Gimbal_Roll]; }
+	اعشاری value(OutputFunction func) override { واپس ڈیٹا_3[(صحیح)func - (صحیح)OutputFunction::Gimbal_Roll]; }
 
-private:
+نجی:
 	uORB::Subscription _topic{ORB_ID(gimbal_controls)};
-	float _data[3] { NAN, NAN, NAN };
+	اعشاری ڈیٹا_3[3] { NAN, NAN, NAN };
 };

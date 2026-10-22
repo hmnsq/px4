@@ -37,21 +37,21 @@
  * collection of rather simple mathematical functions that get used over and over again
  */
 
-#pragma once
+#ہدایت once
 
-#include "Limits.hpp"
+#شامل "Limits.hpp"
 
-#include <px4_platform_common/defines.h>
-#include <matrix/matrix/math.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <matrix/matrix/math.hpp>
 
-namespace math
+نامخلا math
 {
 
 // Type-safe signum function with zero treated as positive
-template<typename T>
-int signNoZero(T val)
+سانچہ<قسم_نام T>
+صحیح signNoZero(T val)
 {
-	return (T(0) <= val) - (val < T(0));
+	واپس (T(0) <= val) - (val < T(0));
 }
 
 /**
@@ -60,15 +60,15 @@ int signNoZero(T val)
  * @param[in] positive Truth value to take the sign from
  * @return 1 if positive is true, -1 if positive is false
  */
-inline int signFromBool(bool positive)
+اندرونی صحیح signFromBool(منطقی مثبت)
 {
-	return positive ? 1 : -1;
+	واپس مثبت ? 1 : -1;
 }
 
-template<typename T>
+سانچہ<قسم_نام T>
 T sq(T val)
 {
-	return val * val;
+	واپس val * val;
 }
 
 /*
@@ -80,12 +80,12 @@ T sq(T val)
  * 		1 - pure cubic function
  * @return result of function output
  */
-template<typename T>
-const T expo(const T &value, const T &e)
+سانچہ<قسم_نام T>
+ثابت T expo(ثابت T &value, ثابت T &e)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T ec = constrain(e, (T) 0, (T) 1);
-	return (1 - ec) * x + ec * x * x * x;
+	واپس (1 - ec) * x + ec * x * x * x;
 }
 
 /*
@@ -99,12 +99,12 @@ const T expo(const T &value, const T &e)
  * 		0.99 - very strong bent curve, stays zero until maximum stick input
  * @return result of function output
  */
-template<typename T>
-const T superexpo(const T &value, const T &e, const T &g)
+سانچہ<قسم_نام T>
+ثابت T superexpo(ثابت T &value, ثابت T &e, ثابت T &g)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T gc = constrain(g, (T) 0, (T) 0.99);
-	return expo(x, e) * (1 - gc) / (1 - fabsf(x) * gc);
+	واپس expo(x, e) * (1 - gc) / (1 - fabsf(x) * gc);
 }
 
 /*
@@ -121,21 +121,21 @@ const T superexpo(const T &value, const T &e, const T &g)
  * 		0.5 - deadzone is half of the span [-0.5,0.5]
  * 		0.99 - almost entire span is deadzone
  */
-template<typename T>
-const T deadzone(const T &value, const T &dz)
+سانچہ<قسم_نام T>
+ثابت T deadzone(ثابت T &value, ثابت T &dz)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T dzc = constrain(dz, (T) 0, (T) 0.99);
 	// Rescale the input such that we get a piecewise linear function that will be continuous with applied deadzone
-	T out = (x - matrix::sign(x) * dzc) / (1 - dzc);
+	T برآمد = (x - میٹرکس::sign(x) * dzc) / (1 - dzc);
 	// apply the deadzone (values zero around the middle)
-	return out * (fabsf(x) > dzc);
+	واپس برآمد * (fabsf(x) > dzc);
 }
 
-template<typename T>
-const T expo_deadzone(const T &value, const T &e, const T &dz)
+سانچہ<قسم_نام T>
+ثابت T expo_deadzone(ثابت T &value, ثابت T &e, ثابت T &dz)
 {
-	return expo(deadzone(value, dz), e);
+	واپس expo(deadzone(value, dz), e);
 }
 
 
@@ -148,20 +148,20 @@ const T expo_deadzone(const T &value, const T &e, const T &dz)
  * y_low -------
  *         x_low   x_high
  */
-template<typename T>
-const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_low, const T &y_high)
+سانچہ<قسم_نام T>
+ثابت T interpolate(ثابت T &value, ثابت T &x_کم, ثابت T &x_بلند, ثابت T &y_کم, ثابت T &y_بلند)
 {
-	if (value <= x_low) {
-		return y_low;
+	اگر (value <= x_کم) {
+		واپس y_کم;
 
-	} else if (value > x_high) {
-		return y_high;
+	} ورنہ اگر (value > x_بلند) {
+		واپس y_بلند;
 
-	} else {
+	} ورنہ {
 		/* linear function between the two points */
-		T a = (y_high - y_low) / (x_high - x_low);
-		T b = y_low - (a * x_low);
-		return (a * value) + b;
+		T a = (y_بلند - y_کم) / (x_بلند - x_کم);
+		T b = y_کم - (a * x_کم);
+		واپس (a * value) + b;
 	}
 }
 
@@ -177,11 +177,11 @@ const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_
  * y[0] -------
  *        0 1/(N-1) 2/(N-1) ... 1
  */
-template<typename T, size_t N>
-const T interpolateN(const T &value, const T(&y)[N])
+سانچہ<قسم_نام T, size_t N>
+ثابت T interpolateN(ثابت T &value, ثابت T(&y)[N])
 {
-	size_t index = constrain((int)(value * (N - 1)), 0, (int)(N - 2));
-	return interpolate(value, (T)index / (T)(N - 1), (T)(index + 1) / (T)(N - 1), y[index], y[index + 1]);
+	size_t اشاریہ = constrain((صحیح)(value * (N - 1)), 0, (صحیح)(N - 2));
+	واپس interpolate(value, (T)اشاریہ / (T)(N - 1), (T)(اشاریہ + 1) / (T)(N - 1), y[اشاریہ], y[اشاریہ + 1]);
 }
 
 /*
@@ -197,16 +197,16 @@ const T interpolateN(const T &value, const T(&y)[N])
  *          x[0] x[1] ... x[N-1]
  * Note: x[N] corner coordinates have to be sorted in ascending order
  */
-template<typename T, size_t N>
-const T interpolateNXY(const T &value, const T(&x)[N], const T(&y)[N])
+سانچہ<قسم_نام T, size_t N>
+ثابت T interpolateNXY(ثابت T &value, ثابت T(&x)[N], ثابت T(&y)[N])
 {
-	size_t index = 0;
+	size_t اشاریہ = 0;
 
-	while ((value > x[index + 1]) && (index < (N - 2))) {
-		index++;
+	جب ((value > x[اشاریہ + 1]) && (اشاریہ < (N - 2))) {
+		اشاریہ++;
 	}
 
-	return interpolate(value, x[index], x[index + 1], y[index], y[index + 1]);
+	واپس interpolate(value, x[اشاریہ], x[اشاریہ + 1], y[اشاریہ], y[اشاریہ + 1]);
 }
 
 /*
@@ -221,17 +221,17 @@ const T interpolateNXY(const T &value, const T(&x)[N], const T(&y)[N])
  * 0     -------
  *             0    1
  */
-template<typename T>
-const T sqrt_linear(const T &value)
+سانچہ<قسم_نام T>
+ثابت T sqrt_خطی(ثابت T &value)
 {
-	if (value < static_cast<T>(0)) {
-		return static_cast<T>(0);
+	اگر (value < static_cast<T>(0)) {
+		واپس static_cast<T>(0);
 
-	} else if (value < static_cast<T>(1)) {
-		return sqrtf(value);
+	} ورنہ اگر (value < static_cast<T>(1)) {
+		واپس sqrtf(value);
 
-	} else {
-		return value;
+	} ورنہ {
+		واپس value;
 	}
 }
 
@@ -241,30 +241,30 @@ const T sqrt_linear(const T &value)
  * s=1 returns b
  * Any value for s is valid.
  */
-template<typename T>
-const T lerp(const T &a, const T &b, const T &s)
+سانچہ<قسم_نام T>
+ثابت T lerp(ثابت T &a, ثابت T &b, ثابت T &s)
 {
-	return (static_cast<T>(1) - s) * a + s * b;
+	واپس (static_cast<T>(1) - s) * a + s * b;
 }
 
-template<typename T>
+سانچہ<قسم_نام T>
 constexpr T negate(T value)
 {
-	static_assert(sizeof(T) > 2, "implement for T");
-	return -value;
+	static_assert(حجم(T) > 2, "implement for T");
+	واپس -value;
 }
 
-template<>
+سانچہ<>
 constexpr int16_t negate<int16_t>(int16_t value)
 {
-	if (value == INT16_MAX) {
-		return INT16_MIN;
+	اگر (value == INT16_MAX) {
+		واپس INT16_MIN;
 
-	} else if (value == INT16_MIN) {
-		return INT16_MAX;
+	} ورنہ اگر (value == INT16_MIN) {
+		واپس INT16_MAX;
 	}
 
-	return -value;
+	واپس -value;
 }
 
 /*
@@ -272,31 +272,31 @@ constexpr int16_t negate<int16_t>(int16_t value)
  * in a given integer.
  */
 
-template<typename T>
-int countSetBits(T n)
+سانچہ<قسم_نام T>
+صحیح گنتی_سیٹ_بٹ(T n)
 {
-	return __builtin_popcount(n);
+	واپس __builtin_popcount(n);
 }
 
-template<typename T>
-int countTrailingZeros(T n)
+سانچہ<قسم_نام T>
+صحیح گنتی_Trailing_Zeros(T n)
 {
-	return n == 0 ? (int)(sizeof(T) * 8) : __builtin_ctz(n);
+	واپس n == 0 ? (صحیح)(حجم(T) * 8) : __builtin_ctz(n);
 }
 
-inline bool isFinite(const float &value)
+اندرونی منطقی isFinite(ثابت اعشاری &value)
 {
-	return PX4_ISFINITE(value);
+	واپس PX4_ISFINITE(value);
 }
 
-inline bool isFinite(const matrix::Vector2f &value)
+اندرونی منطقی isFinite(ثابت میٹرکس::Vector2f &value)
 {
-	return value.isAllFinite();
+	واپس value.isAllFinite();
 }
 
-inline bool isFinite(const matrix::Vector3f &value)
+اندرونی منطقی isFinite(ثابت میٹرکس::Vector3f &value)
 {
-	return value.isAllFinite();
+	واپس value.isAllFinite();
 }
 
 } /* namespace math */

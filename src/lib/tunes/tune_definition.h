@@ -31,11 +31,11 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) name,
-enum class TuneID {
-#include "tune_definition.desc"
+#تعریف_کرو PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) name,
+شمار class TuneID {
+#شامل "tune_definition.desc"
 	NONE = -1
 };
-#undef PX4_DEFINE_TUNE
+#تعریف_منسوخ PX4_DEFINE_TUNE

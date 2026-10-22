@@ -37,11 +37,11 @@
  * LED driver to control the onboard LED(s) via ioctl interface.
  */
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/px4_config.h>
-#include <lib/cdev/CDev.hpp>
-#include <drivers/drv_board_led.h>
-#include <stdio.h>
+#شامل <px4_platform_common/log.h>
+#شامل <px4_platform_common/px4_config.h>
+#شامل <lib/cdev/CDev.hpp>
+#شامل <drivers/drv_board_led.h>
+#شامل <stdio.h>
 
 /*
  * Ideally we'd be able to get these from arm_internal.h,
@@ -51,29 +51,29 @@
  * CONFIG_ARCH_LEDS configuration switch.
  */
 __BEGIN_DECLS
-extern void led_init();
-extern void led_on(int led);
-extern void led_off(int led);
-extern void led_toggle(int led);
+خارجی خالی led_init();
+خارجی خالی led_on(صحیح led);
+خارجی خالی led_off(صحیح led);
+خارجی خالی led_toggle(صحیح led);
 __END_DECLS
 
-class LED : cdev::CDev
+جماعت LED : cdev::CDev
 {
-public:
+عوامی:
 	LED();
-	~LED() override = default;
+	~LED() override = طےشدہ;
 
-	int	init() override;
-	int	ioctl(cdev::file_t *filp, int cmd, unsigned long arg) override;
+	صحیح	init() override;
+	صحیح	ioctl(cdev::file_t *filp, صحیح cmd, غیرعلامتی طویل arg) override;
 };
 
-LED::LED() : CDev(LED0_DEVICE_PATH)
+LED::LED() : CDev(LED0_DEVICE_راستہ)
 {
 	// force immediate init/device registration
 	init();
 }
 
-int
+صحیح
 LED::init()
 {
 	PX4_DEBUG("LED::init");
@@ -82,43 +82,43 @@ LED::init()
 
 	led_init();
 
-	return 0;
+	واپس 0;
 }
 
-int
-LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
+صحیح
+LED::ioctl(cdev::file_t *filp, صحیح cmd, غیرعلامتی طویل arg)
 {
-	int result = OK;
+	صحیح نتیجہ = OK;
 
-	switch (cmd) {
-	case LED_ON:
+	انتخاب (cmd) {
+	حالت LED_ON:
 		led_on(arg);
-		break;
+		توڑو;
 
-	case LED_OFF:
+	حالت LED_OFF:
 		led_off(arg);
-		break;
+		توڑو;
 
-	case LED_TOGGLE:
+	حالت LED_TOGGLE:
 		led_toggle(arg);
-		break;
+		توڑو;
 
-	default:
-		result = CDev::ioctl(filp, cmd, arg);
+	طےشدہ:
+		نتیجہ = CDev::ioctl(filp, cmd, arg);
 	}
 
-	return result;
+	واپس نتیجہ;
 }
 
-namespace
+نامخلا
 {
 LED	*gLED;
 }
 
-void
-drv_led_start(void)
+خالی
+drv_led_آغاز(خالی)
 {
-	if (gLED == nullptr) {
-		gLED = new LED;
+	اگر (gLED == خالی_اشاریہ) {
+		gLED = نیا LED;
 	}
 }

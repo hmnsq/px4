@@ -35,18 +35,18 @@
  * @file tunes.h
  */
 
-#pragma once
+#ہدایت once
 
-#include <errno.h>
-#include <uORB/uORB.h>
-#include <uORB/topics/tune_control.h>
-#include "tune_definition.h"
+#شامل <errno.h>
+#شامل <uORB/uORB.h>
+#شامل <uORB/topics/tune_control.h>
+#شامل "tune_definition.h"
 
-#define TUNE_DEFAULT_NOTE_LENGTH 4
-#define TUNE_DEFAULT_OCTAVE 4
-#define TUNE_DEFAULT_TEMPO 120
+#تعریف_کرو TUNE_DEFAULT_NOTE_لمبائی 4
+#تعریف_کرو TUNE_DEFAULT_OCTAVE 4
+#تعریف_کرو TUNE_DEFAULT_TEMPO 120
 
-#define TUNE_MAX_UPDATE_INTERVAL_US 100000
+#تعریف_کرو TUNE_MAX_UPDATE_INTERVAL_US 100000
 
 
 /**
@@ -56,20 +56,20 @@
  */
 class Tunes
 {
-public:
-	enum class NoteMode {NORMAL, LEGATO, STACCATO};
+عوامی:
+	شمار class Note_منوال {معمول, LEGATO, STACCATO};
 
-	enum class Status {
+	شمار class حالت_3 {
 		Continue = 1,
 		Stop = 0,
 		Error = -1,
 	};
 
-	enum class ControlResult {
+	شمار class Control_نتیجہ {
 		Success = 0,
 		AlreadyPlaying = 1,
 		InvalidTune = -EINVAL,
-		WouldInterrupt = -EBUSY,
+		Would_مداخلت = -EBUSY,
 	};
 
 	/**
@@ -79,12 +79,12 @@ public:
 	 * default_note_length: TUNE_DEFAULT_NOTE_LENGTH
 	 * default_mode: NORMAL
 	 */
-	Tunes(unsigned default_note_length = TUNE_DEFAULT_NOTE_LENGTH,
-	      NoteMode default_note_mode   = NoteMode::NORMAL,
-	      unsigned default_octave      = TUNE_DEFAULT_OCTAVE,
-	      unsigned default_tempo       = TUNE_DEFAULT_TEMPO);
+	Tunes(غیرعلامتی default_note_لمبائی = TUNE_DEFAULT_NOTE_لمبائی,
+	      Note_منوال default_note_منوال   = Note_منوال::معمول,
+	      غیرعلامتی default_octave      = TUNE_DEFAULT_OCTAVE,
+	      غیرعلامتی default_tempo       = TUNE_DEFAULT_TEMPO);
 
-	~Tunes() = default;
+	~Tunes() = طےشدہ;
 
 	/**
 	 * Set tune to be played using the message. If a tune is already being played
@@ -96,7 +96,7 @@ public:
 	 * 			ControlResult::AlreadyPlaying if same tune was already playing,
 	 * 			ControlResult::Success if new tune was set.
 	 */
-	ControlResult set_control(const tune_control_s &tune_control);
+	Control_نتیجہ سیٹ_control(ثابت tune_control_s &tune_control);
 
 	/**
 	 * Set tune to be played using a string.
@@ -106,7 +106,7 @@ public:
 	 *
 	 * @param  string    tune input string
 	 */
-	void set_string(const char *const string, uint8_t volume);
+	خالی سیٹ_string(ثابت حرف *ثابت string, uint8_t volume);
 
 	/**
 	 * Get next note in the current tune, which has been provided by either
@@ -116,7 +116,7 @@ public:
 	 * @param  silence   return silence duration (us)
 	 * @return           -1 for error, 0 for play one tone and 1 for continue a sequence
 	 */
-	Tunes::Status get_next_note(unsigned &frequency, unsigned &duration, unsigned &silence);
+	Tunes::حالت_3 get_اگلا_note(غیرعلامتی &frequency, غیرعلامتی &duration, غیرعلامتی &silence);
 
 	/**
 	 * Get next note in the current tune, which has been provided by either
@@ -127,19 +127,19 @@ public:
 	 * @param  volume    return the volume level of the note (between 0-100)
 	 * @return           -1 for no tune available/error, 0 to not play anything and 1 to play
 	 */
-	Tunes::Status get_next_note(unsigned &frequency, unsigned &duration,
-				    unsigned &silence, uint8_t &volume);
+	Tunes::حالت_3 get_اگلا_note(غیرعلامتی &frequency, غیرعلامتی &duration,
+				    غیرعلامتی &silence, uint8_t &volume);
 
 	/**
 	 *  Get the number of default tunes. This is useful for when a tune is
 	 *  requested via its tune ID.
 	 *  @return             Number of default tunes accessible via tune ID
 	 */
-	unsigned int get_default_tunes_size() const {return _default_tunes_size;}
+	غیرعلامتی صحیح get_default_tunes_سائز() ثابت {واپس default_tunes_سائز;}
 
-	unsigned int get_maximum_update_interval() {return (unsigned int)TUNE_MAX_UPDATE_INTERVAL_US;}
+	غیرعلامتی صحیح get_زیادہ_سے_زیادہ_update_interval() {واپس (غیرعلامتی صحیح)TUNE_MAX_UPDATE_INTERVAL_US;}
 
-private:
+نجی:
 
 	/**
 	 * Convert note to frequency
@@ -147,7 +147,7 @@ private:
 	 * @param  note unsigned value of the semitone from C
 	 * @return      frequency (Hz)
 	 */
-	uint32_t note_to_frequency(unsigned note) const;
+	uint32_t note_مقصد_frequency(غیرعلامتی note) ثابت;
 
 	/**
 	 * Calculate the duration in microseconds of play and silence for a
@@ -159,7 +159,7 @@ private:
 	 * @param  dots        extention of the note length
 	 * @return             duration of the note (us)
 	 */
-	unsigned note_duration(unsigned &silence, unsigned note_length, unsigned dots) const;
+	غیرعلامتی note_duration(غیرعلامتی &silence, غیرعلامتی note_لمبائی_2, غیرعلامتی dots) ثابت;
 
 	/**
 	 * Calculate the duration in microseconds of a rest corresponding to
@@ -169,69 +169,69 @@ private:
 	 * @param  dots        number of extension dots
 	 * @return             rest duration (us)
 	 */
-	unsigned rest_duration(unsigned rest_length, unsigned dots) const;
+	غیرعلامتی rest_duration(غیرعلامتی rest_لمبائی, غیرعلامتی dots) ثابت;
 
 	/**
 	 * Find the next character in the string, discard any whitespace.
 	 *
 	 * @return uppercase version of the char.
 	 */
-	int next_char();
+	صحیح اگلا_char();
 
 	/**
 	 * Extract a number from the string, consuming all the digit characters.
 	 *
 	 * @return extracted number.
 	 */
-	unsigned next_number();
+	غیرعلامتی اگلا_نمبر();
 
 	/**
 	 * Consume dot characters from the string
 	 *
 	 * @return number of consumed dots
 	 */
-	unsigned next_dots();
+	غیرعلامتی اگلا_dots();
 
 	/**
 	 * Reset the tune parameters. This is necessary when for example a tune moved
 	 * one or more octaves up or down. reset() should always be called before
 	 * (re)-starting a tune.
 	 */
-	void reset(bool repeat_flag);
+	خالی reset(bool repeat_flag);
 
-	Tunes::Status tune_end();
+	Tunes::حالت_3 tune_انتہا();
 
-	Tunes::Status tune_error();
+	Tunes::حالت_3 tune_error();
 
-	static const char *const  _default_tunes[];
-	static const bool         _default_tunes_interruptable[];
-	static const unsigned int _default_tunes_size;
-	static const uint8_t      _note_tab[];
+	ساکن ثابت حرف *ثابت  _default_tunes[];
+	ساکن ثابت bool         _default_tunes_interruptable[];
+	ساکن ثابت غیرعلامتی صحیح default_tunes_سائز;
+	ساکن ثابت uint8_t      _note_tab[];
 
-	const char *_next_tune      = nullptr; ///< next note in the string
-	const char *_tune           = nullptr; ///< current tune string
-	const char *_tune_start_ptr = nullptr; ///< pointer to repeat tune
+	ثابت حرف *اگلا_tune      = nullptr; ///< next note in the string
+	ثابت حرف *_tune           = nullptr; ///< current tune string
+	ثابت حرف *tune_آغاز_ptr = nullptr; ///< pointer to repeat tune
 
-	int _current_tune_id = static_cast<int>(TuneID::NONE);
+	صحیح _current_tune_id = static_cast<صحیح>(TuneID::NONE);
 
 	bool _repeat = false; ///< if true, tune restarts at end
 
-	unsigned int _default_note_length = TUNE_DEFAULT_NOTE_LENGTH;
-	NoteMode     _default_note_mode   = NoteMode::NORMAL;
-	unsigned int _default_octave      = TUNE_DEFAULT_OCTAVE;
-	unsigned int _default_tempo       = TUNE_DEFAULT_TEMPO;
+	غیرعلامتی صحیح default_note_لمبائی_2 = TUNE_DEFAULT_NOTE_لمبائی;
+	Note_منوال     default_note_منوال_2   = Note_منوال::معمول;
+	غیرعلامتی صحیح _default_octave      = TUNE_DEFAULT_OCTAVE;
+	غیرعلامتی صحیح _default_tempo       = TUNE_DEFAULT_TEMPO;
 
-	unsigned int _note_length         = TUNE_DEFAULT_NOTE_LENGTH;
-	NoteMode     _note_mode           = NoteMode::NORMAL;
-	unsigned int _octave              = TUNE_DEFAULT_OCTAVE;
-	unsigned int _tempo               = TUNE_DEFAULT_TEMPO;
+	غیرعلامتی صحیح note_لمبائی         = TUNE_DEFAULT_NOTE_لمبائی;
+	Note_منوال     note_منوال           = Note_منوال::معمول;
+	غیرعلامتی صحیح _octave              = TUNE_DEFAULT_OCTAVE;
+	غیرعلامتی صحیح _tempo               = TUNE_DEFAULT_TEMPO;
 
-	unsigned int _duration  = 0;
-	unsigned int _frequency = 0;
-	unsigned int _silence   = 0;
+	غیرعلامتی صحیح _duration  = 0;
+	غیرعلامتی صحیح _frequency = 0;
+	غیرعلامتی صحیح _silence   = 0;
 	uint8_t      _volume    = 0;
 
-	bool  _using_custom_msg = false;
+	bool  using_custom_پیغام = false;
 
 	bool _tunes_disabled{false};
 };

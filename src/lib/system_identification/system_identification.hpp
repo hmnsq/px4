@@ -37,66 +37,66 @@
  * @author Mathieu Bresciani <mathieu@auterion.com>
  */
 
-#pragma once
+#ہدایت once
 
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <matrix/matrix/math.hpp>
-#include <mathlib/mathlib.h>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
-#include <px4_platform_common/defines.h>
+#شامل <lib/mathlib/math/filter/AlphaFilter.hpp>
+#شامل <matrix/matrix/math.hpp>
+#شامل <mathlib/mathlib.h>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
 
-#include "arx_rls.hpp"
+#شامل "arx_rls.hpp"
 
-class SystemIdentification final
+جماعت SystemIdentification final
 {
-public:
-	SystemIdentification() = default;
-	~SystemIdentification() = default;
+عوامی:
+	SystemIdentification() = طےشدہ;
+	~SystemIdentification() = طےشدہ;
 
-	void reset(const matrix::Vector<float, 5> &id_state_init = {});
-	void update(float u, float y); // update filters and model
-	void update(); // update model only (to be called after updateFilters)
-	void updateFilters(float u, float y);
-	bool areFiltersInitialized() const { return _are_filters_initialized; }
-	void updateFitness();
-	const matrix::Vector<float, 5> &getCoefficients() const { return _rls.getCoefficients(); }
-	const matrix::Vector<float, 5> getVariances() const { return _rls.getVariances(); }
-	const matrix::Vector<float, 5> &getDiffEstimate() const { return _rls.getDiffEstimate(); }
-	float getFitness() const { return _fitness_lpf.getState(); }
-	float getInnovation() const { return _rls.getInnovation(); }
+	خالی reset(ثابت میٹرکس::سمتیہ<اعشاری, 5> &id_state_init = {});
+	خالی update(اعشاری u, اعشاری y); // update filters and model
+	خالی update(); // update model only (to be called after updateFilters)
+	خالی updateFilters(اعشاری u, اعشاری y);
+	منطقی areFiltersInitialized() ثابت { واپس _are_filters_initialized; }
+	خالی updateFitness();
+	ثابت میٹرکس::سمتیہ<اعشاری, 5> &getCoefficients() ثابت { واپس _rls.getCoefficients(); }
+	ثابت میٹرکس::سمتیہ<اعشاری, 5> getVariances() ثابت { واپس _rls.getVariances(); }
+	ثابت میٹرکس::سمتیہ<اعشاری, 5> &getDiffEstimate() ثابت { واپس _rls.getDiffEstimate(); }
+	اعشاری getFitness() ثابت { واپس _fitness_lpf.getState(); }
+	اعشاری getInnovation() ثابت { واپس _rls.getInnovation(); }
 
-	void setLpfCutoffFrequency(float sample_freq, float cutoff)
+	خالی سیٹ_Lpf_Cutoff_Frequency(اعشاری sample_freq, اعشاری cutoff)
 	{
-		_u_lpf.set_cutoff_frequency(sample_freq, cutoff);
-		_y_lpf.set_cutoff_frequency(sample_freq, cutoff);
+		_u_lpf.سیٹ_cutoff_frequency(sample_freq, cutoff);
+		_y_lpf.سیٹ_cutoff_frequency(sample_freq, cutoff);
 	}
-	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
+	خالی سیٹ_Hpf_Cutoff_Frequency(اعشاری sample_freq, اعشاری cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	void setForgettingFactor(float time_constant, float dt) { _rls.setForgettingFactor(time_constant, dt); }
-	void setFitnessLpfTimeConstant(float time_constant, float dt)
+	خالی سیٹ_Forgetting_ضربی_عدد(اعشاری وقت_constant_2, اعشاری dt) { _rls.سیٹ_Forgetting_ضربی_عدد(وقت_constant_2, dt); }
+	خالی سیٹ_Fitness_Lpf_وقت_Constant(اعشاری وقت_constant_2, اعشاری dt)
 	{
-		_fitness_lpf.setParameters(dt, time_constant);
+		_fitness_lpf.سیٹ_Parameters(dt, وقت_constant_2);
 		_dt = dt;
 	}
 
-	float getFilteredInputData() const { return _u_hpf; }
-	float getFilteredOutputData() const { return _y_hpf; }
+	اعشاری get_Filtered_داخلہ_ڈیٹا() ثابت { واپس _u_hpf; }
+	اعشاری get_Filtered_Output_ڈیٹا() ثابت { واپس _y_hpf; }
 
-private:
+نجی:
 	ArxRls<2, 2, 1> _rls;
-	math::LowPassFilter2p<float> _u_lpf{400.f, 30.f};
-	math::LowPassFilter2p<float> _y_lpf{400.f, 30.f};
+	math::کم_Pass_Filter2p<اعشاری> _u_lpf{400.f, 30.f};
+	math::کم_Pass_Filter2p<اعشاری> _y_lpf{400.f, 30.f};
 
 	//TODO: replace by HighPassFilter class
-	float _alpha_hpf{0.f};
-	float _u_hpf{0.f};
-	float _y_hpf{0.f};
+	اعشاری _alpha_hpf{0.f};
+	اعشاری _u_hpf{0.f};
+	اعشاری _y_hpf{0.f};
 
-	float _u_prev{0.f};
-	float _y_prev{0.f};
+	اعشاری u_پچھلا{0.f};
+	اعشاری y_پچھلا{0.f};
 
-	bool _are_filters_initialized{false};
+	منطقی _are_filters_initialized{جھوٹ};
 
-	AlphaFilter<float> _fitness_lpf;
-	float _dt{0.1f};
+	AlphaFilter<اعشاری> _fitness_lpf;
+	اعشاری _dt{0.1f};
 };

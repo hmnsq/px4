@@ -30,97 +30,97 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#pragma once
+#ہدایت once
 
-#include <stdint.h>
-#include <drivers/device/i2c.h>
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <uORB/topics/gpio_config.h>
-#include <uORB/topics/gpio_in.h>
-#include <uORB/topics/gpio_out.h>
-#include <uORB/PublicationMulti.hpp>
-#include <lib/perf/perf_counter.h>
-#include <drivers/drv_hrt.h>
-#include <px4_platform/gpio/mcp.hpp>
-#include <px4_platform_common/module.h>
+#شامل <stdint.h>
+#شامل <drivers/device/i2c.h>
+#شامل <px4_platform_common/i2c_spi_buses.h>
+#شامل <uORB/topics/gpio_config.h>
+#شامل <uORB/topics/gpio_in.h>
+#شامل <uORB/topics/gpio_out.h>
+#شامل <uORB/PublicationMulti.hpp>
+#شامل <lib/perf/perf_counter.h>
+#شامل <drivers/drv_hrt.h>
+#شامل <px4_platform/gpio/mcp.hpp>
+#شامل <px4_platform_common/module.h>
 
-static constexpr uint8_t I2C_ADDRESS_MCP23009 = 0x25;
-static constexpr uint8_t I2C_ADDRESS_MCP23017 = 0x27;
+ساکن constexpr uint8_t I2_C_پتہ_MCP23009 = 0x25;
+ساکن constexpr uint8_t I2_C_پتہ_MCP23017 = 0x27;
 
-enum class
+شمار جماعت
 PinType : uint8_t {
 	Output,
-	Input,
-	InputPullUp,
+	داخلہ_2,
+	داخلہ_Pull_اوپر,
 };
 
-struct MCP230XX_config_t {
+ساخت MCP230XX_config_t {
 	uint16_t device_type;
 	uint8_t i2c_addr = 0;
 	uint8_t i2c_bus = 0;
-	uint8_t first_minor = 0;
-	uint8_t num_pins = 8;
-	int num_banks = 1;
+	uint8_t پہلا_minor = 0;
+	uint8_t عدد_pins = 8;
+	صحیح عدد_banks = 1;
 	uint16_t interval = 10;
 	mcp_gpio_dev_s _gpio_handle[16];
-	CallbackHandler *_callback_handler = nullptr;
+	CallbackHandler *_callback_handler = خالی_اشاریہ;
 
 	uint16_t direction = 0xFFFF;
 	uint16_t state = 0x0000;
 	uint16_t pullup = 0x0000;
 };
 
-class MCP230XX :  public device::I2C, public I2CSPIDriver<MCP230XX>
+جماعت MCP230XX :  عوامی device::I2C, عوامی I2CSPIDriver<MCP230XX>
 {
-public:
-	MCP230XX(const I2CSPIDriverConfig &config);
-	virtual ~MCP230XX();
-	static I2CSPIDriverBase *instantiate(const I2CSPIDriverConfig &config, int runtime_instance);
-	static void print_usage();
+عوامی:
+	MCP230XX(ثابت I2CSPIDriverConfig &config);
+	مجازی ~MCP230XX();
+	ساکن I2_CSPIDriver_بنیاد *instantiate(ثابت I2CSPIDriverConfig &config, صحیح runtime_instance);
+	ساکن خالی print_usage();
 
-	void RunImpl();
-	void print_status() override;
-	void custom_method(const BusCLIArguments &cli) override;
-	int probe();
-	virtual int init();
+	خالی تسلسل_Impl();
+	خالی print_حالت() override;
+	خالی custom_طریقہ(ثابت BusCLIArguments &cli) override;
+	صحیح probe();
+	مجازی صحیح init();
 
-protected:
+محفوظ:
 	MCP230XX_config_t mcp_config;
 
-private:
-	uORB::SubscriptionCallbackWorkItem _gpio_out_sub{this, ORB_ID(gpio_out)};
-	uORB::SubscriptionCallbackWorkItem _gpio_config_sub{this, ORB_ID(gpio_config)};
-	uORB::PublicationMulti<gpio_in_s> _to_gpio_in{ORB_ID(gpio_in)};
+نجی:
+	uORB::Subscription_Callback_Work_شے gpio_برآمد_sub{یہ, ORB_ID(gpio_برآمد)};
+	uORB::Subscription_Callback_Work_شے _gpio_config_sub{یہ, ORB_ID(gpio_config)};
+	uORB::PublicationMulti<gpio_اندر_s> مقصد_gpio_اندر{ORB_ID(gpio_اندر_2)};
 
-	perf_counter_t _cycle_perf;
-	perf_counter_t _comms_errors;
-	perf_counter_t _register_check;
+	perf_شمار_t چکر_perf;
+	perf_شمار_t _comms_errors;
+	perf_شمار_t رجسٹر_check;
 
-	virtual int configure(uint16_t mask, PinType type);
-	virtual int read(uint16_t *mask);
-	int read_reg(uint8_t address, uint8_t &data);
-	int write(uint16_t mask_set, uint16_t mask_clear);
-	int write_reg(uint8_t address, uint8_t value);
-	int set_up();
-	int sanity_check();
-	int init_communication();
-	int init_uorb();
-	void cleanup_uorb();
+	مجازی صحیح configure(uint16_t نقاب, PinType type);
+	مجازی صحیح اقرأ(uint16_t *نقاب);
+	صحیح read_reg(uint8_t پتہ, uint8_t &ڈیٹا);
+	صحیح اكتب(uint16_t نقاب_سیٹ, uint16_t نقاب_clear);
+	صحیح write_reg(uint8_t پتہ, uint8_t value);
+	صحیح سیٹ_اوپر_2();
+	صحیح sanity_check();
+	صحیح init_communication();
+	صحیح init_uorb();
+	خالی cleanup_uorb();
 
-	virtual int get_olat(int bank, uint8_t *addr) = 0;
-	virtual int get_gppu(int bank, uint8_t *addr) = 0;
-	virtual int get_iodir(int bank, uint8_t *addr) = 0;
-	virtual int get_gpio(int bank, uint8_t *addr) = 0;
-	virtual int get_probe_reg(uint8_t *addr) = 0;
+	مجازی صحیح get_olat(صحیح bank, uint8_t *addr) = 0;
+	مجازی صحیح get_gppu(صحیح bank, uint8_t *addr) = 0;
+	مجازی صحیح get_iodir(صحیح bank, uint8_t *addr) = 0;
+	مجازی صحیح get_gpio(صحیح bank, uint8_t *addr) = 0;
+	مجازی صحیح get_probe_reg(uint8_t *addr) = 0;
 
 	uint16_t _olat;
 	uint16_t _iodir;
 	uint16_t _gppu;
 
 	uint16_t _checking_freq = 10;
-	int _count = 0;
+	صحیح گنتی_3 = 0;
 
-	enum class STATE : uint8_t {
+	شمار جماعت STATE : uint8_t {
 		INIT_COMMUNICATION,
 		CONFIGURE,
 		CHECK,

@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "Gyroscope.hpp"
+#شامل "Gyroscope.hpp"
 
-#include "Utilities.hpp"
+#شامل "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#شامل <lib/drivers/device/Device.hpp>
+#شامل <lib/parameters/param.h>
 
-using namespace matrix;
-using namespace time_literals;
+استعمال نامخلا میٹرکس;
+استعمال نامخلا وقت_literals;
 
-namespace calibration
+نامخلا calibration
 {
 
 Gyroscope::Gyroscope()
@@ -51,22 +51,22 @@ Gyroscope::Gyroscope()
 
 Gyroscope::Gyroscope(uint32_t device_id)
 {
-	set_device_id(device_id);
+	سیٹ_device_id(device_id);
 }
 
-Gyroscope::Gyroscope(uint32_t device_id, bool external)
+Gyroscope::Gyroscope(uint32_t device_id, منطقی external)
 {
-	set_device_id(device_id, external);
+	سیٹ_device_id(device_id, external);
 }
 
-void Gyroscope::set_device_id(uint32_t device_id)
+خالی Gyroscope::سیٹ_device_id(uint32_t device_id)
 {
-	set_device_id(device_id, device::device_is_external(device_id));
+	سیٹ_device_id(device_id, device::device_is_external(device_id));
 }
 
-void Gyroscope::set_device_id(uint32_t device_id, bool external)
+خالی Gyroscope::سیٹ_device_id(uint32_t device_id, منطقی external)
 {
-	if (_device_id != device_id || _external != external) {
+	اگر (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -74,219 +74,219 @@ void Gyroscope::set_device_id(uint32_t device_id, bool external)
 		Reset();
 
 		ParametersUpdate();
-		SensorCorrectionsUpdate(true);
+		SensorCorrectionsUpdate(سچ);
 	}
 }
 
-void Gyroscope::SensorCorrectionsUpdate(bool force)
+خالی Gyroscope::SensorCorrectionsUpdate(منطقی force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	اگر (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		اگر (_device_id == 0) {
+			واپس;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		اگر (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.gyro_device_ids[i] == _device_id) {
-					switch (i) {
-					case 0:
-						_thermal_offset = Vector3f{corrections.gyro_offset_0};
-						return;
-					case 1:
-						_thermal_offset = Vector3f{corrections.gyro_offset_1};
-						return;
-					case 2:
-						_thermal_offset = Vector3f{corrections.gyro_offset_2};
-						return;
-					case 3:
-						_thermal_offset = Vector3f{corrections.gyro_offset_3};
-						return;
+			برائے (صحیح i = 0; i < MAX_SENSOR_گنتی; i++) {
+				اگر (corrections.gyro_device_ids[i] == _device_id) {
+					انتخاب (i) {
+					حالت 0:
+						thermal_انحراف = Vector3f{corrections.gyro_انحراف_0};
+						واپس;
+					حالت 1:
+						thermal_انحراف = Vector3f{corrections.gyro_انحراف_1};
+						واپس;
+					حالت 2:
+						thermal_انحراف = Vector3f{corrections.gyro_انحراف_2};
+						واپس;
+					حالت 3:
+						thermal_انحراف = Vector3f{corrections.gyro_انحراف_3};
+						واپس;
 					}
 				}
 			}
 		}
 
 		// zero thermal offset if not found
-		_thermal_offset.zero();
+		thermal_انحراف.zero();
 	}
 }
 
-bool Gyroscope::set_offset(const Vector3f &offset)
+منطقی Gyroscope::سیٹ_انحراف(ثابت Vector3f &انحراف)
 {
-	if (Vector3f(_offset - offset).longerThan(0.01f) || (_calibration_count == 0)) {
-		if (offset.isAllFinite()) {
-			_offset = offset;
-			_calibration_count++;
-			return true;
+	اگر (Vector3f(انحراف_2 - انحراف).longerThan(0.01f) || (calibration_گنتی == 0)) {
+		اگر (انحراف.isAllFinite()) {
+			انحراف_2 = انحراف;
+			calibration_گنتی++;
+			واپس سچ;
 		}
 	}
 
-	return false;
+	واپس جھوٹ;
 }
 
-void Gyroscope::set_rotation(Rotation rotation)
+خالی Gyroscope::سیٹ_rotation(Rotation rotation)
 {
 	_rotation_enum = rotation;
 
 	// always apply board level adjustments
-	_rotation = Dcmf(GetSensorLevelAdjustment()) * get_rot_matrix(rotation);
+	_rotation = Dcmf(GetSensorLevelAdjustment()) * get_rot_میٹرکس(rotation);
 }
 
-bool Gyroscope::set_calibration_index(int calibration_index)
+منطقی Gyroscope::سیٹ_calibration_اشاریہ(صحیح calibration_اشاریہ)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
-		_calibration_index = calibration_index;
-		return true;
+	اگر ((calibration_اشاریہ >= 0) && (calibration_اشاریہ < MAX_SENSOR_گنتی)) {
+		calibration_اشاریہ_2 = calibration_اشاریہ;
+		واپس سچ;
 	}
 
-	return false;
+	واپس جھوٹ;
 }
 
-void Gyroscope::ParametersUpdate()
+خالی Gyroscope::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	اگر (_device_id == 0) {
+		واپس;
 	}
 
-	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
+	calibration_اشاریہ_2 = ڈھونڈو_Current_Calibration_اشاریہ(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	اگر (calibration_اشاریہ_2 == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
-		ParametersLoad();
+	} ورنہ {
+		Parameters_بھرو();
 	}
 }
 
-bool Gyroscope::ParametersLoad()
+منطقی Gyroscope::Parameters_بھرو()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	اگر (calibration_اشاریہ_2 >= 0 && calibration_اشاریہ_2 < MAX_SENSOR_گنتی) {
 		// CAL_GYROx_ROT
-		int32_t rotation_value = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
+		int32_t rotation_قدر = GetCalibrationParamInt32(SensorString(), "ROT", calibration_اشاریہ_2);
 
-		if (_external) {
-			if ((rotation_value >= ROTATION_MAX) || (rotation_value < 0)) {
+		اگر (_external) {
+			اگر ((rotation_قدر >= ROTATION_MAX) || (rotation_قدر < 0)) {
 				// invalid rotation, resetting
-				rotation_value = ROTATION_NONE;
+				rotation_قدر = ROTATION_NONE;
 			}
 
-			set_rotation(static_cast<Rotation>(rotation_value));
+			سیٹ_rotation(static_cast<Rotation>(rotation_قدر));
 
-		} else {
+		} ورنہ {
 			// internal sensors follow board rotation
-			set_rotation(GetBoardRotation());
+			سیٹ_rotation(GetBoardRotation());
 		}
 
 		// CAL_GYROx_PRIO
-		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
+		ترجیح_2 = GetCalibrationParamInt32(SensorString(), "PRIO", calibration_اشاریہ_2);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		اگر ((ترجیح_2 < 0) || (ترجیح_2 > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
-			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
+			ساکن constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			اگر (ترجیح_2 != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
-					_calibration_index, _priority);
+					calibration_اشاریہ_2, ترجیح_2);
 
-				SetCalibrationParam(SensorString(), "PRIO", _calibration_index, CAL_PRIO_UNINITIALIZED);
+				سیٹ_Calibration_Param(SensorString(), "PRIO", calibration_اشاریہ_2, CAL_PRIO_UNINITIALIZED);
 			}
 
-			_priority = _external ? DEFAULT_EXTERNAL_PRIORITY : DEFAULT_PRIORITY;
+			ترجیح_2 = _external ? DEFAULT_EXTERNAL_ترجیح : DEFAULT_ترجیح;
 		}
 
 		// CAL_GYROx_OFF{X,Y,Z}
-		set_offset(GetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index));
+		سیٹ_انحراف(GetCalibrationParamsVector3f(SensorString(), "OFF", calibration_اشاریہ_2));
 
-		return true;
+		واپس سچ;
 	}
 
-	return false;
+	واپس جھوٹ;
 }
 
-void Gyroscope::Reset()
+خالی Gyroscope::Reset()
 {
-	if (_external) {
-		set_rotation(ROTATION_NONE);
+	اگر (_external) {
+		سیٹ_rotation(ROTATION_NONE);
 
-	} else {
+	} ورنہ {
 		// internal sensors follow board rotation
-		set_rotation(GetBoardRotation());
+		سیٹ_rotation(GetBoardRotation());
 	}
 
-	_offset.zero();
+	انحراف_2.zero();
 
-	_thermal_offset.zero();
+	thermal_انحراف.zero();
 
-	_priority = _external ? DEFAULT_EXTERNAL_PRIORITY : DEFAULT_PRIORITY;
+	ترجیح_2 = _external ? DEFAULT_EXTERNAL_ترجیح : DEFAULT_ترجیح;
 
-	_calibration_index = -1;
+	calibration_اشاریہ_2 = -1;
 
-	_calibration_count = 0;
+	calibration_گنتی = 0;
 }
 
-bool Gyroscope::ParametersSave(int desired_calibration_index, bool force)
+منطقی Gyroscope::ParametersSave(صحیح desired_calibration_اشاریہ, منطقی force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
-		_calibration_index = desired_calibration_index;
+	اگر (force && desired_calibration_اشاریہ >= 0 && desired_calibration_اشاریہ < MAX_SENSOR_گنتی) {
+		calibration_اشاریہ_2 = desired_calibration_اشاریہ;
 
-	} else if (!force || (_calibration_index < 0)
-		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
+	} ورنہ اگر (!force || (calibration_اشاریہ_2 < 0)
+		   || (desired_calibration_اشاریہ != -1 && desired_calibration_اشاریہ != calibration_اشاریہ_2)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
-		int8_t calibration_index_prev = _calibration_index;
-		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
+		int8_t calibration_اشاریہ_پچھلا = calibration_اشاریہ_2;
+		calibration_اشاریہ_2 = ڈھونڈو_دستیاب_Calibration_اشاریہ(SensorString(), _device_id, desired_calibration_اشاریہ);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		اگر (calibration_اشاریہ_پچھلا >= 0 && (calibration_اشاریہ_پچھلا != calibration_اشاریہ_2)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
-				 calibration_index_prev, _calibration_index);
+				 calibration_اشاریہ_پچھلا, calibration_اشاریہ_2);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	اگر (calibration_اشاریہ_2 >= 0 && calibration_اشاریہ_2 < MAX_SENSOR_گنتی) {
 		// save calibration
-		bool success = true;
-		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
-		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
-		success &= SetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index, _offset);
+		منطقی success = سچ;
+		success &= سیٹ_Calibration_Param(SensorString(), "ID", calibration_اشاریہ_2, _device_id);
+		success &= سیٹ_Calibration_Param(SensorString(), "PRIO", calibration_اشاریہ_2, ترجیح_2);
+		success &= سیٹ_Calibration_Params_Vector3f(SensorString(), "OFF", calibration_اشاریہ_2, انحراف_2);
 
-		if (_external) {
-			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, (int32_t)_rotation_enum);
+		اگر (_external) {
+			success &= سیٹ_Calibration_Param(SensorString(), "ROT", calibration_اشاریہ_2, (int32_t)_rotation_enum);
 
-		} else {
-			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, -1); // internal
+		} ورنہ {
+			success &= سیٹ_Calibration_Param(SensorString(), "ROT", calibration_اشاریہ_2, -1); //اندرونی
 		}
 
-		return success;
+		واپس success;
 	}
 
-	return false;
+	واپس جھوٹ;
 }
 
-void Gyroscope::PrintStatus()
+خالی Gyroscope::Print_حالت()
 {
-	if (external()) {
+	اگر (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], Ext ROT: %d\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
+			     (دوہرا)انحراف_2(0), (دوہرا)انحراف_2(1), (دوہرا)انحراف_2(2),
 			     rotation_enum());
 
-	} else {
+	} ورنہ {
 		PX4_INFO_RAW("%s %" PRIu32 " EN: %d, offset: [%05.3f %05.3f %05.3f], Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2));
+			     (دوہرا)انحراف_2(0), (دوہرا)انحراف_2(1), (دوہرا)انحراف_2(2));
 	}
 
-	if (_thermal_offset.norm() > 0.f) {
+	اگر (thermal_انحراف.norm() > 0.f) {
 		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: [%.4f %.4f %.4f]\n", SensorString(), _device_id,
-			     (double)_thermal_offset(0), (double)_thermal_offset(1), (double)_thermal_offset(2));
+			     (دوہرا)thermal_انحراف(0), (دوہرا)thermal_انحراف(1), (دوہرا)thermal_انحراف(2));
 	}
 }
 

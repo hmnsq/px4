@@ -37,50 +37,50 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <assert.h>
+#شامل <time.h>
+#شامل <stdlib.h>
+#شامل <math.h>
+#شامل <mathlib/math/test/test.hpp>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+نامخلا control
 {
 
 /**
  * A 2nd order low pass filter block which uses the default px4 2nd order low pass filter
  */
-class __EXPORT BlockLowPass2 : public Block
+جماعت __EXPORT بلاک_کم_Pass2 : عوامی بلاک
 {
-public:
+عوامی:
 // methods
-	BlockLowPass2(SuperBlock *parent, const char *name, float sample_freq) :
-		Block(parent, name),
+	بلاک_کم_Pass2(Super_بلاک *والد, ثابت حرف *name, اعشاری sample_freq) :
+		بلاک(والد, name),
 		_state(0.0 / 0.0 /* initialize to invalid val, force into is_finite() check on first call */),
-		_fCut(this, ""), // only one parameter, no need to name
+		_fCut(یہ, ""), // only one parameter, no need to name
 		_fs(sample_freq),
 		_lp(_fs, _fCut.get())
 	{}
-	virtual ~BlockLowPass2() = default;
-	float update(float input);
+	مجازی ~بلاک_کم_Pass2() = طےشدہ;
+	اعشاری update(اعشاری داخلہ);
 // accessors
-	float getState() { return _state; }
-	float getFCutParam() { return _fCut.get(); }
-	void setState(float state) { _state = _lp.reset(state); }
-protected:
-// attributes
-	float _state;
-	control::BlockParamFloat _fCut;
-	float _fs;
-	math::LowPassFilter2p<float> _lp;
+	اعشاری getState() { واپس _state; }
+	اعشاری getFCutParam() { واپس _fCut.get(); }
+	خالی سیٹ_State(اعشاری state) { _state = _lp.reset(state); }
+محفوظ:
+//اوصاف
+	اعشاری _state;
+	control::بلاک_Param_Float _fCut;
+	اعشاری _fs;
+	math::کم_Pass_Filter2p<اعشاری> _lp;
 };
 
 } // namespace control

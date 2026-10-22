@@ -31,55 +31,55 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <array>
+#شامل <gtest/gtest.h>
+#شامل <array>
 
-#include <parameters/param.h>
-#include <uORB/topics/actuator_motors.h>
-#include <uORB/topics/actuator_servos.h>
-#include <uORB/topics/actuator_armed.h>
-#include <uORB/topics/actuator_test.h>
-#include <uORB/Publication.hpp>
-#include <uORB/Subscription.hpp>
+#شامل <parameters/param.h>
+#شامل <uORB/topics/actuator_motors.h>
+#شامل <uORB/topics/actuator_servos.h>
+#شامل <uORB/topics/actuator_armed.h>
+#شامل <uORB/topics/actuator_test.h>
+#شامل <uORB/Publication.hpp>
+#شامل <uORB/Subscription.hpp>
 
-#include "mixer_module.hpp"
+#شامل "mixer_module.hpp"
 
-#if defined(CONFIG_ARCH_BOARD_PX4_SITL)
-#define PARAM_PREFIX "PWM_MAIN"
-#else
-#define PARAM_PREFIX "HIL_ACT"
-#endif
+#اگر defined(CONFIG_ARCH_BOARD_PX4_SITL)
+#تعریف_کرو PARAM_سابقہ "PWM_MAIN"
+#ورنہ
+#تعریف_کرو PARAM_سابقہ "HIL_ACT"
+#اگر_ختم
 
-static constexpr int MAX_NUM_OUTPUTS = 8;
-static constexpr int DISARMED_VALUE = 900;
-static constexpr int FAILSAFE_VALUE = 800;
-static constexpr int MIN_VALUE = 1000;
-static constexpr int CENTER_VALUE = 1500;
-static constexpr int MAX_VALUE = 2000;
+ساکن constexpr صحیح MAX_عدد_OUTPUTS = 8;
+ساکن constexpr صحیح DISARMED_قدر = 900;
+ساکن constexpr صحیح FAILSAFE_قدر = 800;
+ساکن constexpr صحیح MIN_قدر = 1000;
+ساکن constexpr صحیح CENTER_قدر = 1500;
+ساکن constexpr صحیح MAX_قدر = 2000;
 
-class MixerModuleTest : public ::testing::Test
+جماعت MixerModuleTest : عوامی ::testing::Test
 {
-public:
-	void SetUp() override
+عوامی:
+	خالی سیٹ_اوپر() override
 	{
-		param_control_autosave(false);
+		param_control_autosave(جھوٹ);
 	}
 
-	int update(MixingOutput &mixing_output)
+	صحیح update(MixingOutput &mixing_output)
 	{
 		mixing_output.update();
 		// make sure output_limit switches to ON (if outputs enabled)
 		px4_usleep(50000 * 2);
 		mixing_output.update();
 		mixing_output.update();
-		return 3; // expected number of output updates
+		واپس 3; // expected number of output updates
 	}
 
 };
 
-class OutputModuleTest : public OutputModuleInterface
+جماعت OutputModuleTest : عوامی OutputModuleInterface
 {
-public:
+عوامی:
 	OutputModuleTest() : OutputModuleInterface(MODULE_NAME, px4::wq_configurations::hp_default) {};
 
 	~OutputModuleTest() override
@@ -90,65 +90,65 @@ public:
 		_actuator_armed_pub.unadvertise();
 	}
 
-	void Run() override
+	خالی تسلسل() override
 	{
-		was_scheduled = true;
+		was_scheduled = سچ;
 	}
 
-	bool updateOutputs(float outputs_[MAX_ACTUATORS], unsigned num_outputs_, unsigned num_control_groups_updated) override
+	منطقی updateOutputs(اعشاری outputs_[MAX_ACTUATORS], غیرعلامتی عدد_outputs_2, غیرعلامتی عدد_control_groups_updated) override
 	{
-		memcpy(outputs, outputs_, sizeof(outputs));
-		num_outputs = num_outputs_;
-		++num_updates;
-		return true;
+		حافظہ_نقل(outputs, outputs_, حجم(outputs));
+		عدد_outputs = عدد_outputs_2;
+		++عدد_updates;
+		واپس سچ;
 	}
 
-	void mixerChanged() override
+	خالی mixer_بدلا() override
 	{
-		mixer_changed = true;
+		mixer_بدلا_2 = سچ;
 	}
 
-	void configureFunctions(const std::array<int32_t, MAX_NUM_OUTPUTS> &functions)
+	خالی configureFunctions(ثابت std::array<int32_t, MAX_عدد_OUTPUTS> &functions)
 	{
-		for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-			char buffer[17];
+		برائے (صحیح i = 0; i < MAX_عدد_OUTPUTS; ++i) {
+			حرف بفر_2[17];
 
-			snprintf(buffer, sizeof(buffer), "%s_FUNC%u", PARAM_PREFIX, i + 1);
-			param_set(param_find(buffer), &functions[i]);
+			snprintf(بفر_2, حجم(بفر_2), "%s_FUNC%u", PARAM_سابقہ, i + 1);
+			param_سیٹ(param_ڈھونڈو(بفر_2), &functions[i]);
 		}
 
 		updateParams();
 	}
 
-	void sendMotors(const std::array<float, actuator_motors_s::NUM_CONTROLS> &motors, uint16_t reversible = 0)
+	خالی sendMotors(ثابت std::array<اعشاری, actuator_motors_s::عدد_CONTROLS> &motors, uint16_t reversible = 0)
 	{
 		actuator_motors_s actuator_motors{};
-		actuator_motors.timestamp = hrt_absolute_time();
+		actuator_motors.timestamp = hrt_absolute_وقت();
 		actuator_motors.reversible_flags = reversible;
 
-		for (unsigned i = 0; i < motors.size(); ++i) {
+		برائے (غیرعلامتی i = 0; i < motors.سائز(); ++i) {
 			actuator_motors.control[i] = motors[i];
 		}
 
 		_actuator_motors_pub.publish(actuator_motors);
 	}
 
-	void sendServos(const std::array<float, actuator_servos_s::NUM_CONTROLS> &servos)
+	خالی sendServos(ثابت std::array<اعشاری, actuator_servos_s::عدد_CONTROLS> &servos)
 	{
 		actuator_servos_s actuator_servos{};
-		actuator_servos.timestamp = hrt_absolute_time();
+		actuator_servos.timestamp = hrt_absolute_وقت();
 
-		for (unsigned i = 0; i < servos.size(); ++i) {
+		برائے (غیرعلامتی i = 0; i < servos.سائز(); ++i) {
 			actuator_servos.control[i] = servos[i];
 		}
 
 		_actuator_servos_pub.publish(actuator_servos);
 	}
 
-	void sendActuatorMotorTest(int function, float value, bool release_control)
+	خالی sendActuatorMotorTest(صحیح function, اعشاری value, منطقی release_control)
 	{
 		actuator_test_s actuator_test{};
-		actuator_test.timestamp = hrt_absolute_time();
+		actuator_test.timestamp = hrt_absolute_وقت();
 		actuator_test.function = function;
 		actuator_test.value = value;
 		actuator_test.action = release_control ? actuator_test_s::ACTION_RELEASE_CONTROL : actuator_test_s::ACTION_DO_CONTROL;
@@ -156,10 +156,10 @@ public:
 		_actuator_test_pub.publish(actuator_test);
 	}
 
-	void sendActuatorArmed(bool armed, bool termination = false, bool kill = false, bool prearm = false)
+	خالی sendActuatorArmed(منطقی armed, منطقی termination = جھوٹ, منطقی kill = جھوٹ, منطقی prearm = جھوٹ)
 	{
 		actuator_armed_s actuator_armed{};
-		actuator_armed.timestamp = hrt_absolute_time();
+		actuator_armed.timestamp = hrt_absolute_وقت();
 		actuator_armed.armed = armed;
 		actuator_armed.termination = termination;
 		actuator_armed.kill = kill;
@@ -167,21 +167,21 @@ public:
 		_actuator_armed_pub.publish(actuator_armed);
 	}
 
-	void reset()
+	خالی reset()
 	{
-		memset(outputs, 0, sizeof(outputs));
-		num_outputs = 0;
-		num_updates = 0;
-		mixer_changed = false;
+		memset(outputs, 0, حجم(outputs));
+		عدد_outputs = 0;
+		عدد_updates = 0;
+		mixer_بدلا_2 = جھوٹ;
 	}
 
-	float outputs[MAX_ACTUATORS] {};
-	int num_outputs{0};
-	int num_updates{0};
-	bool was_scheduled{false};
-	bool mixer_changed{false};
+	اعشاری outputs[MAX_ACTUATORS] {};
+	صحیح عدد_outputs{0};
+	صحیح عدد_updates{0};
+	منطقی was_scheduled{جھوٹ};
+	منطقی mixer_بدلا_2{جھوٹ};
 
-private:
+نجی:
 	uORB::Publication<actuator_test_s> _actuator_test_pub{ORB_ID(actuator_test)};
 	uORB::Publication<actuator_motors_s> _actuator_motors_pub{ORB_ID(actuator_motors)};
 	uORB::Publication<actuator_servos_s> _actuator_servos_pub{ORB_ID(actuator_servos)};
@@ -192,34 +192,34 @@ TEST_F(MixerModuleTest, basic)
 {
 	OutputModuleTest test_module;
 	test_module.configureFunctions({});
-	MixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
-	mixing_output.setAllDisarmedValues(DISARMED_VALUE);
-	mixing_output.setAllFailsafeValues(FAILSAFE_VALUE);
-	mixing_output.setAllMinValues(MIN_VALUE);
-	mixing_output.setAllCenterValues(CENTER_VALUE);
-	mixing_output.setAllMaxValues(MAX_VALUE);
-	EXPECT_EQ(test_module.num_updates, 0);
+	MixingOutput mixing_output{PARAM_سابقہ, MAX_عدد_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, جھوٹ, جھوٹ};
+	mixing_output.سیٹ_All_Disarmed_اقدار(DISARMED_قدر);
+	mixing_output.سیٹ_All_Failsafe_اقدار(FAILSAFE_قدر);
+	mixing_output.سیٹ_All_Min_اقدار(MIN_قدر);
+	mixing_output.سیٹ_All_Center_اقدار(CENTER_قدر);
+	mixing_output.سیٹ_All_Max_اقدار(MAX_قدر);
+	EXPECT_EQ(test_module.عدد_updates, 0);
 
 	// all functions disabled: expect to get one single update to process disabling the output signal
 	mixing_output.update();
-	mixing_output.updateSubscriptions(false);
+	mixing_output.updateSubscriptions(جھوٹ);
 	mixing_output.update();
-	EXPECT_EQ(test_module.num_updates, 1);
+	EXPECT_EQ(test_module.عدد_updates, 1);
 	mixing_output.update();
-	mixing_output.updateSubscriptions(false);
+	mixing_output.updateSubscriptions(جھوٹ);
 	mixing_output.update();
-	EXPECT_EQ(test_module.num_updates, 1);
+	EXPECT_EQ(test_module.عدد_updates, 1);
 	test_module.reset();
 
 	// configure motor, ensure all still disarmed
-	test_module.configureFunctions({(int)OutputFunction::Motor1});
-	mixing_output.updateSubscriptions(false);
-	EXPECT_TRUE(test_module.mixer_changed);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	test_module.configureFunctions({(صحیح)OutputFunction::Motor1});
+	mixing_output.updateSubscriptions(جھوٹ);
+	EXPECT_TRUE(test_module.mixer_بدلا_2);
+	EXPECT_EQ(test_module.عدد_updates, update(mixing_output));
+	EXPECT_EQ(test_module.عدد_outputs, MAX_عدد_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	برائے (صحیح i = 0; i < test_module.عدد_outputs; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_قدر);
 	}
 
 	test_module.reset();
@@ -228,48 +228,48 @@ TEST_F(MixerModuleTest, basic)
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
 	test_module.configureFunctions({
 		0,
-		(int)OutputFunction::Motor3,
-		(int)OutputFunction::Motor1,
-		(int)OutputFunction::Motor5});
+		(صحیح)OutputFunction::Motor3,
+		(صحیح)OutputFunction::Motor1,
+		(صحیح)OutputFunction::Motor5});
 
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(جھوٹ);
+	EXPECT_EQ(test_module.عدد_updates, update(mixing_output));
+	EXPECT_EQ(test_module.عدد_outputs, MAX_عدد_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	برائے (صحیح i = 0; i < test_module.عدد_outputs; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_قدر);
 	}
 
 	test_module.reset();
 
 
 	// actuator test
-	test_module.sendActuatorMotorTest((int)OutputFunction::Motor5, 1.f, false);
+	test_module.sendActuatorMotorTest((صحیح)OutputFunction::Motor5, 1.f, جھوٹ);
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(جھوٹ);
+	EXPECT_EQ(test_module.عدد_updates, update(mixing_output));
+	EXPECT_EQ(test_module.عدد_outputs, MAX_عدد_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
-		if (i == 3) {
-			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
+	برائے (صحیح i = 0; i < test_module.عدد_outputs; ++i) {
+		اگر (i == 3) {
+			EXPECT_EQ(test_module.outputs[i], MAX_قدر);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} ورنہ {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_قدر);
 		}
 	}
 
 	test_module.reset();
 
 	// stop
-	test_module.sendActuatorMotorTest((int)OutputFunction::Motor5, 0.f, true);
+	test_module.sendActuatorMotorTest((صحیح)OutputFunction::Motor5, 0.f, سچ);
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(جھوٹ);
+	EXPECT_EQ(test_module.عدد_updates, update(mixing_output));
+	EXPECT_EQ(test_module.عدد_outputs, MAX_عدد_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	برائے (صحیح i = 0; i < test_module.عدد_outputs; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_قدر);
 	}
 
 	test_module.reset();
@@ -282,50 +282,50 @@ TEST_F(MixerModuleTest, arming)
 	OutputModuleTest test_module;
 	test_module.configureFunctions({
 		0,
-		(int)OutputFunction::Motor3,
-		(int)OutputFunction::Motor1,
-		(int)OutputFunction::Motor5,
-		(int)OutputFunction::Servo3});
-	MixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
-	mixing_output.setAllDisarmedValues(DISARMED_VALUE);
-	mixing_output.setAllFailsafeValues(FAILSAFE_VALUE);
-	mixing_output.setAllMinValues(MIN_VALUE);
-	mixing_output.setAllCenterValues(CENTER_VALUE);
-	mixing_output.setAllMaxValues(MAX_VALUE);
+		(صحیح)OutputFunction::Motor3,
+		(صحیح)OutputFunction::Motor1,
+		(صحیح)OutputFunction::Motor5,
+		(صحیح)OutputFunction::Servo3});
+	MixingOutput mixing_output{PARAM_سابقہ, MAX_عدد_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, جھوٹ, جھوٹ};
+	mixing_output.سیٹ_All_Disarmed_اقدار(DISARMED_قدر);
+	mixing_output.سیٹ_All_Failsafe_اقدار(FAILSAFE_قدر);
+	mixing_output.سیٹ_All_Min_اقدار(MIN_قدر);
+	mixing_output.سیٹ_All_Center_اقدار(CENTER_قدر);
+	mixing_output.سیٹ_All_Max_اقدار(MAX_قدر);
 
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
-	test_module.sendActuatorArmed(false);
+	test_module.sendActuatorArmed(جھوٹ);
 
 	// ensure all disarmed
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(جھوٹ);
+	EXPECT_EQ(test_module.عدد_updates, update(mixing_output));
+	EXPECT_EQ(test_module.عدد_outputs, MAX_عدد_OUTPUTS);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	برائے (صحیح i = 0; i < MAX_عدد_OUTPUTS; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_قدر);
 	}
 
 	test_module.reset();
 
 	// arming
 	test_module.sendMotors({0.5f, 1.f, 0.1f, 0.2f, 1.f, 1.f, 1.f, 1.f});
-	test_module.sendActuatorArmed(true);
+	test_module.sendActuatorArmed(سچ);
 
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	EXPECT_EQ(test_module.عدد_updates, update(mixing_output));
+	EXPECT_EQ(test_module.عدد_outputs, MAX_عدد_OUTPUTS);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.1f + MIN_VALUE);
+	برائے (صحیح i = 0; i < MAX_عدد_OUTPUTS; ++i) {
+		اگر (i == 1) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_قدر - MIN_قدر) * 0.1f + MIN_قدر);
 
-		} else if (i == 2) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.5f + MIN_VALUE);
+		} ورنہ اگر (i == 2) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_قدر - MIN_قدر) * 0.5f + MIN_قدر);
 
-		} else if (i == 3) {
-			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
+		} ورنہ اگر (i == 3) {
+			EXPECT_EQ(test_module.outputs[i], MAX_قدر);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} ورنہ {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_قدر);
 		}
 	}
 
@@ -333,110 +333,110 @@ TEST_F(MixerModuleTest, arming)
 
 	// update motors
 	test_module.sendMotors({0.9f, 1.f, 0.24f, 0.2f, 0.f, 1.f, 1.f, 1.f});
-	mixing_output.updateSubscriptions(false);
+	mixing_output.updateSubscriptions(جھوٹ);
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.24f + MIN_VALUE);
+	برائے (صحیح i = 0; i < MAX_عدد_OUTPUTS; ++i) {
+		اگر (i == 1) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_قدر - MIN_قدر) * 0.24f + MIN_قدر);
 
-		} else if (i == 2) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.9f + MIN_VALUE);
+		} ورنہ اگر (i == 2) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_قدر - MIN_قدر) * 0.9f + MIN_قدر);
 
-		} else if (i == 3) {
-			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
+		} ورنہ اگر (i == 3) {
+			EXPECT_EQ(test_module.outputs[i], MIN_قدر);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} ورنہ {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_قدر);
 		}
 	}
 
 	test_module.reset();
 
 	// failsafe
-	test_module.sendActuatorArmed(true, true);
+	test_module.sendActuatorArmed(سچ, سچ);
 	test_module.sendMotors({0.5f, 1.f, 0.1f, 0.2f, 1.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		EXPECT_EQ(test_module.outputs[i], FAILSAFE_VALUE);
+	برائے (صحیح i = 0; i < MAX_عدد_OUTPUTS; ++i) {
+		EXPECT_EQ(test_module.outputs[i], FAILSAFE_قدر);
 	}
 
 	test_module.reset();
 
 	// restore
-	test_module.sendActuatorArmed(true, false);
+	test_module.sendActuatorArmed(سچ, جھوٹ);
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i >= 1 && i <= 3) {
-			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
+	برائے (صحیح i = 0; i < MAX_عدد_OUTPUTS; ++i) {
+		اگر (i >= 1 && i <= 3) {
+			EXPECT_EQ(test_module.outputs[i], MAX_قدر);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} ورنہ {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_قدر);
 		}
 	}
 
 	test_module.reset();
 
 	// manual lockdown
-	test_module.sendActuatorArmed(true, false, true);
+	test_module.sendActuatorArmed(سچ, جھوٹ, سچ);
 	test_module.sendMotors({0.5f, 1.f, 0.1f, 0.2f, 1.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	برائے (صحیح i = 0; i < MAX_عدد_OUTPUTS; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_قدر);
 	}
 
 	test_module.reset();
 
 	// restore
-	test_module.sendActuatorArmed(true, false);
+	test_module.sendActuatorArmed(سچ, جھوٹ);
 	test_module.sendMotors({0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i >= 1 && i <= 3) {
-			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
+	برائے (صحیح i = 0; i < MAX_عدد_OUTPUTS; ++i) {
+		اگر (i >= 1 && i <= 3) {
+			EXPECT_EQ(test_module.outputs[i], MIN_قدر);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} ورنہ {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_قدر);
 		}
 	}
 
 	test_module.reset();
 
 	// set motor 5 reversible: expect output to be in center when commanding to 0
-	test_module.sendActuatorArmed(true, false);
+	test_module.sendActuatorArmed(سچ, جھوٹ);
 	test_module.sendMotors({0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 1.f}, 1u << 4);
 	mixing_output.update();
 	EXPECT_EQ(mixing_output.reversibleOutputs(), 1u << 3);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
-			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
+	برائے (صحیح i = 0; i < MAX_عدد_OUTPUTS; ++i) {
+		اگر (i == 1) {
+			EXPECT_EQ(test_module.outputs[i], MIN_قدر);
 
-		} else if (i == 2) {
-			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
+		} ورنہ اگر (i == 2) {
+			EXPECT_EQ(test_module.outputs[i], MIN_قدر);
 
-		} else if (i == 3) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.5f + MIN_VALUE);
+		} ورنہ اگر (i == 3) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_قدر - MIN_قدر) * 0.5f + MIN_قدر);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} ورنہ {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_قدر);
 		}
 	}
 
 	test_module.reset();
 
 	// disarm
-	test_module.sendActuatorArmed(false);
+	test_module.sendActuatorArmed(جھوٹ);
 	test_module.sendMotors({0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 1.f}, 1u << 4);
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	برائے (صحیح i = 0; i < MAX_عدد_OUTPUTS; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_قدر);
 	}
 
 	test_module.reset();
@@ -448,29 +448,29 @@ TEST_F(MixerModuleTest, prearm)
 {
 	OutputModuleTest test_module;
 	test_module.configureFunctions({
-		(int)OutputFunction::Motor1,
-		(int)OutputFunction::Servo1});
-	MixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
-	mixing_output.setAllDisarmedValues(DISARMED_VALUE);
-	mixing_output.setAllFailsafeValues(FAILSAFE_VALUE);
-	mixing_output.setAllMinValues(MIN_VALUE);
-	mixing_output.setAllMaxValues(MAX_VALUE);
+		(صحیح)OutputFunction::Motor1,
+		(صحیح)OutputFunction::Servo1});
+	MixingOutput mixing_output{PARAM_سابقہ, MAX_عدد_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, جھوٹ, جھوٹ};
+	mixing_output.سیٹ_All_Disarmed_اقدار(DISARMED_قدر);
+	mixing_output.سیٹ_All_Failsafe_اقدار(FAILSAFE_قدر);
+	mixing_output.سیٹ_All_Min_اقدار(MIN_قدر);
+	mixing_output.سیٹ_All_Max_اقدار(MAX_قدر);
 
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
 	test_module.sendServos({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
-	test_module.sendActuatorArmed(false, false, false, true);
+	test_module.sendActuatorArmed(جھوٹ, جھوٹ, جھوٹ, سچ);
 
 	// ensure all disarmed, except the servo
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(جھوٹ);
+	EXPECT_EQ(test_module.عدد_updates, update(mixing_output));
+	EXPECT_EQ(test_module.عدد_outputs, MAX_عدد_OUTPUTS);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
-			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
+	برائے (صحیح i = 0; i < MAX_عدد_OUTPUTS; ++i) {
+		اگر (i == 1) {
+			EXPECT_EQ(test_module.outputs[i], MAX_قدر);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} ورنہ {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_قدر);
 		}
 	}
 
@@ -479,74 +479,74 @@ TEST_F(MixerModuleTest, prearm)
 	EXPECT_FALSE(test_module.was_scheduled);
 }
 
-class TestMixingOutput : public MixingOutput
+جماعت TestMixingOutput : عوامی MixingOutput
 {
-public:
-	TestMixingOutput(const char *param_prefix, uint8_t max_num_outputs, OutputModuleInterface &interface,
+عوامی:
+	TestMixingOutput(ثابت حرف *param_سابقہ, uint8_t max_عدد_outputs, OutputModuleInterface &interface,
 			 SchedulingPolicy scheduling_policy,
-			 bool support_esc_calibration, bool ramp_up = true)
-		: MixingOutput(param_prefix, max_num_outputs, interface, scheduling_policy, support_esc_calibration, ramp_up)
+			 منطقی support_esc_calibration, منطقی ramp_اوپر = سچ)
+		: MixingOutput(param_سابقہ, max_عدد_outputs, interface, scheduling_policy, support_esc_calibration, ramp_اوپر)
 	{};
-	float output_limit_calc_single(int i, float value) const { return MixingOutput::output_limit_calc_single(i, value); }
+	اعشاری output_حد_بندی_calc_single(صحیح i, اعشاری value) ثابت { واپس MixingOutput::output_حد_بندی_calc_single(i, value); }
 };
 
-TEST_F(MixerModuleTest, OutputLimitCalcSingle)
+TEST_F(MixerModuleTest, Output_حد_بندی_Calc_Single)
 {
 	OutputModuleTest test_module;
-	test_module.configureFunctions({(int)OutputFunction::Motor1});
-	TestMixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
+	test_module.configureFunctions({(صحیح)OutputFunction::Motor1});
+	TestMixingOutput mixing_output{PARAM_سابقہ, MAX_عدد_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, جھوٹ, جھوٹ};
 
-	mixing_output.setAllMinValues(MIN_VALUE); // default range [1000,2000]
-	mixing_output.setAllMaxValues(MAX_VALUE);
-	mixing_output.setAllCenterValues(CENTER_VALUE); // Set center to middle value
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.f), 1000); // In range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -.5f), 1250);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.f), 1500);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, .5f), 1750);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1.f), 2000);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.1f), 1000); // Out of range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1.1f), 2000);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1000.f), 1000); // Way ouf of range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1000.f), 2000);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.0005), 1500.25f);
-	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_limit_calc_single(0, 0.0005))), 1500); // Rounding down
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.0015), 1500.75f);
-	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_limit_calc_single(0, 0.0015))), 1501); // Rounding up
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.002), 1501); // Exact value
+	mixing_output.سیٹ_All_Min_اقدار(MIN_قدر); // default range [1000,2000]
+	mixing_output.سیٹ_All_Max_اقدار(MAX_قدر);
+	mixing_output.سیٹ_All_Center_اقدار(CENTER_قدر); // Set center to middle value
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, -1.f), 1000); // In range
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, -.5f), 1250);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 0.f), 1500);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, .5f), 1750);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 1.f), 2000);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, -1.1f), 1000); // Out of range
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 1.1f), 2000);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, -1000.f), 1000); // Way ouf of range
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 1000.f), 2000);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 0.0005), 1500.25f);
+	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_حد_بندی_calc_single(0, 0.0005))), 1500); // Rounding down
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 0.0015), 1500.75f);
+	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_حد_بندی_calc_single(0, 0.0015))), 1501); // Rounding up
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 0.002), 1501); // Exact value
 
-	mixing_output.setAllMinValues(0); // lower range [0,20]
-	mixing_output.setAllMaxValues(20);
-	mixing_output.setAllCenterValues(10); // Set center to middle value
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.f), 0); // In range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -.5f), 5);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.f), 10);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, .5f), 15);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1.f), 20);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.1f), 0); // Out of range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1.1f), 20);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1000.f), 0); // Way ouf of range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1000.f), 20);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.025), 10.25f);
-	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_limit_calc_single(0, 0.025))), 10); // Rounding down
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.075), 10.75f);
-	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_limit_calc_single(0, 0.075))), 11); // Rounding up
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.1), 11); // Exact value
+	mixing_output.سیٹ_All_Min_اقدار(0); // lower range [0,20]
+	mixing_output.سیٹ_All_Max_اقدار(20);
+	mixing_output.سیٹ_All_Center_اقدار(10); // Set center to middle value
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, -1.f), 0); // In range
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, -.5f), 5);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 0.f), 10);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, .5f), 15);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 1.f), 20);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, -1.1f), 0); // Out of range
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 1.1f), 20);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, -1000.f), 0); // Way ouf of range
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 1000.f), 20);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 0.025), 10.25f);
+	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_حد_بندی_calc_single(0, 0.025))), 10); // Rounding down
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 0.075), 10.75f);
+	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_حد_بندی_calc_single(0, 0.075))), 11); // Rounding up
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 0.1), 11); // Exact value
 
-	mixing_output.setAllMinValues(20); // inverted range [20,0]
-	mixing_output.setAllMaxValues(0);
-	mixing_output.setAllCenterValues(10); // Set center to middle value
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.f), 20); // In range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -.5f), 15);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.f), 10);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, .5f), 5);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1.f), 0);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.1f), 20); // Out of range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1.1f), 0);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1000.f), 20); // Way ouf of range
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 1000.f), 0);
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.025), 9.75f);
-	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_limit_calc_single(0, 0.025))), 10); // Rounding down
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.075), 9.25f);
-	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_limit_calc_single(0, 0.075))), 9); // Rounding up
-	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.1), 9); // Exact value
+	mixing_output.سیٹ_All_Min_اقدار(20); // inverted range [20,0]
+	mixing_output.سیٹ_All_Max_اقدار(0);
+	mixing_output.سیٹ_All_Center_اقدار(10); // Set center to middle value
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, -1.f), 20); // In range
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, -.5f), 15);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 0.f), 10);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, .5f), 5);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 1.f), 0);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, -1.1f), 20); // Out of range
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 1.1f), 0);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, -1000.f), 20); // Way ouf of range
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 1000.f), 0);
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 0.025), 9.75f);
+	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_حد_بندی_calc_single(0, 0.025))), 10); // Rounding down
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 0.075), 9.25f);
+	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_حد_بندی_calc_single(0, 0.075))), 9); // Rounding up
+	EXPECT_EQ(mixing_output.output_حد_بندی_calc_single(0, 0.1), 9); // Exact value
 }

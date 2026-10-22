@@ -37,28 +37,28 @@
  * PPM input decoder.
  */
 
-#pragma once
+#ہدایت once
 
-#include <drivers/drv_hrt.h>
+#شامل <drivers/drv_hrt.h>
 
 /**
  * Maximum number of channels that we will decode.
  */
-#define PPM_MAX_CHANNELS	12
+#تعریف_کرو PPM_MAX_CHANNELS	12
 
 /* PPM input nominal min/max values */
-#define PPM_MIN 1000
-#define PPM_MAX 2000
-#define PPM_MID ((PPM_MIN + PPM_MAX) / 2)
+#تعریف_کرو PPM_MIN 1000
+#تعریف_کرو PPM_MAX 2000
+#تعریف_کرو PPM_MID ((PPM_MIN + PPM_MAX) / 2)
 
 __BEGIN_DECLS
 
 /*
  * PPM decoder state
  */
-__EXPORT extern uint16_t	ppm_buffer[PPM_MAX_CHANNELS];	/**< decoded PPM channel values */
-__EXPORT extern uint16_t	ppm_frame_length;				/**< length of the decoded PPM frame (includes gap) */
-__EXPORT extern unsigned	ppm_decoded_channels;	/**< count of decoded channels */
-__EXPORT extern hrt_abstime	ppm_last_valid_decode;	/**< timestamp of the last valid decode */
+__EXPORT خارجی uint16_t	ppm_بفر[PPM_MAX_CHANNELS];	/**< decoded PPM channel values */
+__EXPORT خارجی uint16_t	ppm_چوکھٹا_لمبائی;				/**< length of the decoded PPM frame (includes gap) */
+__EXPORT خارجی غیرعلامتی	ppm_decoded_channels;	/**< count of decoded channels */
+__EXPORT خارجی hrt_abstime	ppm_آخری_valid_decode;	/**< timestamp of the last valid decode */
 
 __END_DECLS

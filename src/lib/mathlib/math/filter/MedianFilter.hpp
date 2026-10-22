@@ -38,83 +38,83 @@
  *
  */
 
-#pragma once
+#ہدایت once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#شامل <stdio.h>
+#شامل <stdlib.h>
+#شامل <stdint.h>
+#شامل <string.h>
 
-namespace math
+نامخلا math
 {
 
-template<typename U> struct is_floating_point { static constexpr bool value = false; };
-template<> struct is_floating_point<float> { static constexpr bool value = true; };
-template<> struct is_floating_point<double> { static constexpr bool value = true; };
-template<> struct is_floating_point<long double> { static constexpr bool value = true; };
+سانچہ<قسم_نام U> ساخت is_floating_point { ساکن constexpr منطقی value = جھوٹ; };
+سانچہ<> ساخت is_floating_point<اعشاری> { ساکن constexpr منطقی value = سچ; };
+سانچہ<> ساخت is_floating_point<دوہرا> { ساکن constexpr منطقی value = سچ; };
+سانچہ<> ساخت is_floating_point<طویل دوہرا> { ساکن constexpr منطقی value = سچ; };
 
-template<typename T, int WINDOW = 3>
-class MedianFilter
+سانچہ<قسم_نام T, صحیح کھڑکی = 3>
+جماعت MedianFilter
 {
-public:
-	static_assert(WINDOW >= 3, "MedianFilter window size must be >= 3");
-	static_assert(WINDOW % 2, "MedianFilter window size must be odd"); // odd
+عوامی:
+	static_assert(کھڑکی >= 3, "MedianFilter window size must be >= 3");
+	static_assert(کھڑکی % 2, "MedianFilter window size must be odd"); // odd
 
-	MedianFilter() = default;
+	MedianFilter() = طےشدہ;
 
-	void insert(const T &sample)
+	خالی داخل_کرو(ثابت T &sample)
 	{
-		_head = (_head + 1) % WINDOW;
-		_buffer[_head] = sample;
+		سر = (سر + 1) % کھڑکی;
+		بفر[سر] = sample;
 	}
 
 	T median()
 	{
-		T sorted[WINDOW];
-		memcpy(sorted, _buffer, sizeof(_buffer));
-		qsort(&sorted, WINDOW, sizeof(T), cmp);
+		T sorted[کھڑکی];
+		حافظہ_نقل(sorted, بفر, حجم(بفر));
+		qsort(&sorted, کھڑکی, حجم(T), cmp);
 
-		return sorted[WINDOW / 2];
+		واپس sorted[کھڑکی / 2];
 	}
 
-	T apply(const T &sample)
+	T apply(ثابت T &sample)
 	{
-		insert(sample);
-		return median();
+		داخل_کرو(sample);
+		واپس median();
 	}
 
-private:
+نجی:
 
-	static int cmp(const void *a, const void *b)
+	ساکن صحیح cmp(ثابت خالی *a, ثابت خالی *b)
 	{
-		const T va = *(const T *)a;
-		const T vb = *(const T *)b;
+		ثابت T va = *(ثابت T *)a;
+		ثابت T vb = *(ثابت T *)b;
 
-		if constexpr(is_floating_point<T>::value) {
-			if (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
-				return 0;
+		اگر constexpr(is_floating_point<T>::value) {
+			اگر (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
+				واپس 0;
 
-			} else if (!__builtin_isfinite(va)) {
-				return  1;
+			} ورنہ اگر (!__builtin_isfinite(va)) {
+				واپس  1;
 
-			} else if (!__builtin_isfinite(vb)) {
-				return -1;
+			} ورنہ اگر (!__builtin_isfinite(vb)) {
+				واپس -1;
 			}
 		}
 
-		if (va < vb) {
-			return -1;
+		اگر (va < vb) {
+			واپس -1;
 		}
 
-		if (va > vb) {
-			return  1;
+		اگر (va > vb) {
+			واپس  1;
 		}
 
-		return 0;
+		واپس 0;
 	}
 
-	T _buffer[WINDOW] {};
-	uint8_t _head{0};
+	T بفر[کھڑکی] {};
+	uint8_t سر{0};
 };
 
 } // namespace math

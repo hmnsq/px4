@@ -36,203 +36,203 @@
  * A wind and airspeed scale estimator.
  */
 
-#include "WindEstimator.hpp"
-#include "python/generated/init_wind_using_airspeed.h"
+#شامل "WindEstimator.hpp"
+#شامل "python/generated/init_wind_using_airspeed.h"
 
-bool
-WindEstimator::initialise(const matrix::Vector3f &velI, const float hor_vel_variance, const float heading_rad,
-			  const float tas_meas, const float tas_variance)
+منطقی
+WindEstimator::initialise(ثابت میٹرکس::Vector3f &velI, ثابت اعشاری hor_vel_variance, ثابت اعشاری heading_rad,
+			  ثابت اعشاری tas_meas, ثابت اعشاری tas_variance)
 {
-	if (PX4_ISFINITE(tas_meas) && PX4_ISFINITE(tas_variance)) {
+	اگر (PX4_ISFINITE(tas_meas) && PX4_ISFINITE(tas_variance)) {
 
-		constexpr float initial_heading_var = sq(math::radians(kInitialHeadingErrorDeg));
-		constexpr float initial_sideslip_var = sq(math::radians(kInitialBetaErrorDeg));
+		constexpr اعشاری initial_heading_var = sq(math::radians(kInitialHeadingErrorDeg));
+		constexpr اعشاری initial_sideslip_var = sq(math::radians(kInitialBetaErrorDeg));
 
-		matrix::SquareMatrix<float, 2> P_wind_init;
-		matrix::Vector2f wind_init;
+		میٹرکس::مربع_میٹرکس<اعشاری, 2> P_wind_init;
+		میٹرکس::Vector2f wind_init;
 
 		sym::InitWindUsingAirspeed(velI, heading_rad, tas_meas, hor_vel_variance, initial_heading_var, initial_sideslip_var,
 					   tas_variance,
 					   &wind_init, &P_wind_init);
 
 		_state.xy() = wind_init;
-		_state(INDEX_TAS_SCALE) = _scale_init;
-		_P.slice<2, 2>(0, 0) = P_wind_init;
+		_state(اشاریہ_TAS_SCALE) = _scale_init;
+		_P.قاش<2, 2>(0, 0) = P_wind_init;
 
-	} else {
+	} ورنہ {
 		// no airspeed available
-		_state.setZero();
-		_state(INDEX_TAS_SCALE) = 1.0f;
-		_P.setZero();
-		_P(INDEX_W_N, INDEX_W_N) = _P(INDEX_W_E, INDEX_W_E) = sq(kInitialWindError);
+		_state.سیٹ_Zero();
+		_state(اشاریہ_TAS_SCALE) = 1.0f;
+		_P.سیٹ_Zero();
+		_P(اشاریہ_W_N, اشاریہ_W_N) = _P(اشاریہ_W_E, اشاریہ_W_E) = sq(kInitialWindError);
 	}
 
-	_wind_estimator_reset = true;
-	_time_initialised = hrt_absolute_time();
+	_wind_estimator_reset = سچ;
+	وقت_initialised = hrt_absolute_وقت();
 
-	return true;
+	واپس سچ;
 }
 
-void
-WindEstimator::update(uint64_t time_now)
+خالی
+WindEstimator::update(uint64_t وقت_now)
 {
-	if (!_initialised) {
-		return;
+	اگر (!_initialised) {
+		واپس;
 	}
 
 	// set reset state to false (is set to true when initialise fuction is called later)
-	_wind_estimator_reset = false;
+	_wind_estimator_reset = جھوٹ;
 
 	// run covariance prediction at 1Hz
-	if (time_now - _time_last_update < 1_s || _time_last_update == 0) {
-		if (_time_last_update == 0) {
-			_time_last_update = time_now;
+	اگر (وقت_now - وقت_آخری_update < 1_s || وقت_آخری_update == 0) {
+		اگر (وقت_آخری_update == 0) {
+			وقت_آخری_update = وقت_now;
 		}
 
-		return;
+		واپس;
 	}
 
-	const float dt = (float)(time_now - _time_last_update) * 1e-6f;
-	_time_last_update = time_now;
+	ثابت اعشاری dt = (اعشاری)(وقت_now - وقت_آخری_update) * 1e-6f;
+	وقت_آخری_update = وقت_now;
 
 	// if airspeed scale is at default (1.0) and we are in the first 5 minutes of flight time, multiply kTasScalePsd by 100 for faster learning
-	const float tas_psd_multiplier = (fabsf(_scale_init - 1.0f) < FLT_EPSILON && (time_now - _time_initialised < kTASScaleFastLearnTime)) ?
+	ثابت اعشاری tas_psd_multiplier = (fabsf(_scale_init - 1.0f) < FLT_EPSILON && (وقت_now - وقت_initialised < k_TASScale_Fast_Learn_وقت)) ?
 					 kTASScalePSDMultiplier : 1.f;
 
-	matrix::Matrix3f Qk;
-	Qk(INDEX_W_N, INDEX_W_N) = _wind_psd * dt;
-	Qk(INDEX_W_E, INDEX_W_E) = Qk(INDEX_W_N, INDEX_W_N);
-	Qk(INDEX_TAS_SCALE, INDEX_TAS_SCALE) = kTasScalePsd * tas_psd_multiplier * dt;
+	میٹرکس::Matrix3f Qk;
+	Qk(اشاریہ_W_N, اشاریہ_W_N) = _wind_psd * dt;
+	Qk(اشاریہ_W_E, اشاریہ_W_E) = Qk(اشاریہ_W_N, اشاریہ_W_N);
+	Qk(اشاریہ_TAS_SCALE, اشاریہ_TAS_SCALE) = kTasScalePsd * tas_psd_multiplier * dt;
 	_P += Qk;
 }
 
-void
-WindEstimator::fuse_airspeed(uint64_t time_now, const float true_airspeed, const matrix::Vector3f &velI,
-			     const float hor_vel_variance, const matrix::Quatf &q_att)
+خالی
+WindEstimator::fuse_airspeed(uint64_t وقت_now, ثابت اعشاری true_airspeed, ثابت میٹرکس::Vector3f &velI,
+			     ثابت اعشاری hor_vel_variance, ثابت میٹرکس::Quatf &q_att)
 {
 
-	if (!_initialised) {
+	اگر (!_initialised) {
 		// try to initialise
-		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi(), true_airspeed, _tas_var);
-		return;
+		_initialised = initialise(velI, hor_vel_variance, میٹرکس::Eulerf(q_att).psi(), true_airspeed, _tas_var);
+		واپس;
 	}
 
 	// don't fuse faster than 10Hz
-	if (time_now - _time_last_airspeed_fuse < 100_ms) {
-		return;
+	اگر (وقت_now - وقت_آخری_airspeed_fuse < 100_ms) {
+		واپس;
 	}
 
-	_time_last_airspeed_fuse = time_now;
+	وقت_آخری_airspeed_fuse = وقت_now;
 
-	matrix::Matrix<float, 1, 3> H_tas;
-	matrix::Matrix<float, 3, 1> K;
+	میٹرکس::میٹرکس_2<اعشاری, 1, 3> H_tas;
+	میٹرکس::میٹرکس_2<اعشاری, 3, 1> K;
 
 	sym::FuseAirspeed(velI, _state, _P, true_airspeed, _tas_var, FLT_EPSILON,
 			  &H_tas, &K, &_tas_innov_var, &_tas_innov);
 
-	const bool meas_is_rejected = check_if_meas_is_rejected(_tas_innov, _tas_innov_var, kTasGate);
+	ثابت منطقی meas_is_rejected = check_if_meas_is_rejected(_tas_innov, _tas_innov_var, kTasGate);
 
-	if (_tas_innov_var < FLT_EPSILON) {
+	اگر (_tas_innov_var < FLT_EPSILON) {
 		// re init filter in case of a negative variance, and trigger early return to not fuse measurement
-		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi(), true_airspeed, _tas_var);
-		return;
+		_initialised = initialise(velI, hor_vel_variance, میٹرکس::Eulerf(q_att).psi(), true_airspeed, _tas_var);
+		واپس;
 
-	} else if (meas_is_rejected) {
-		return;
+	} ورنہ اگر (meas_is_rejected) {
+		واپس;
 	}
 
 	// apply correction to state
-	_state(INDEX_W_N) += _tas_innov * K(INDEX_W_N, 0);
-	_state(INDEX_W_E) += _tas_innov * K(INDEX_W_E, 0);
-	_state(INDEX_TAS_SCALE) += _tas_innov * K(INDEX_TAS_SCALE, 0);
+	_state(اشاریہ_W_N) += _tas_innov * K(اشاریہ_W_N, 0);
+	_state(اشاریہ_W_E) += _tas_innov * K(اشاریہ_W_E, 0);
+	_state(اشاریہ_TAS_SCALE) += _tas_innov * K(اشاریہ_TAS_SCALE, 0);
 
 	// update covariance matrix
 	_P = _P - K * H_tas * _P;
 
-	run_sanity_checks();
+	تسلسل_sanity_checks();
 }
 
-void
-WindEstimator::fuse_beta(uint64_t time_now, const matrix::Vector3f &velI, const float hor_vel_variance,
-			 const matrix::Quatf &q_att)
+خالی
+WindEstimator::fuse_beta(uint64_t وقت_now, ثابت میٹرکس::Vector3f &velI, ثابت اعشاری hor_vel_variance,
+			 ثابت میٹرکس::Quatf &q_att)
 {
-	if (!_initialised) {
-		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi());
-		return;
+	اگر (!_initialised) {
+		_initialised = initialise(velI, hor_vel_variance, میٹرکس::Eulerf(q_att).psi());
+		واپس;
 	}
 
 	// don't fuse faster than 10Hz
-	if (time_now - _time_last_beta_fuse < 100_ms) {
-		return;
+	اگر (وقت_now - وقت_آخری_beta_fuse < 100_ms) {
+		واپس;
 	}
 
-	_time_last_beta_fuse = time_now;
+	وقت_آخری_beta_fuse = وقت_now;
 
 
-	matrix::Matrix<float, 1, 3> H_beta;
-	matrix::Matrix<float, 3, 1> K;
+	میٹرکس::میٹرکس_2<اعشاری, 1, 3> H_beta;
+	میٹرکس::میٹرکس_2<اعشاری, 3, 1> K;
 
 	sym::FuseBeta(velI, _state, _P, q_att, kBetaVar, FLT_EPSILON,
 		      &H_beta, &K, &_beta_innov_var, &_beta_innov);
 
-	const bool meas_is_rejected = check_if_meas_is_rejected(_beta_innov, _beta_innov_var, kBetaGate);
+	ثابت منطقی meas_is_rejected = check_if_meas_is_rejected(_beta_innov, _beta_innov_var, kBetaGate);
 
-	if (_beta_innov_var < FLT_EPSILON) {
+	اگر (_beta_innov_var < FLT_EPSILON) {
 		// re init filter in case of a negative variance, and trigger early return to not fuse measurement
-		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi());
-		return;
+		_initialised = initialise(velI, hor_vel_variance, میٹرکس::Eulerf(q_att).psi());
+		واپس;
 
-	} else if (meas_is_rejected) {
-		return;
+	} ورنہ اگر (meas_is_rejected) {
+		واپس;
 	}
 
 	// apply correction to state
-	_state(INDEX_W_N) += _beta_innov * K(INDEX_W_N, 0);
-	_state(INDEX_W_E) += _beta_innov * K(INDEX_W_E, 0);
-	_state(INDEX_TAS_SCALE) += _beta_innov * K(INDEX_TAS_SCALE, 0);
+	_state(اشاریہ_W_N) += _beta_innov * K(اشاریہ_W_N, 0);
+	_state(اشاریہ_W_E) += _beta_innov * K(اشاریہ_W_E, 0);
+	_state(اشاریہ_TAS_SCALE) += _beta_innov * K(اشاریہ_TAS_SCALE, 0);
 
 	// update covariance matrix
 	_P = _P - K * H_beta * _P;
 
-	run_sanity_checks();
+	تسلسل_sanity_checks();
 }
 
-void
-WindEstimator::run_sanity_checks()
+خالی
+WindEstimator::تسلسل_sanity_checks()
 {
-	for (unsigned i = 0; i < 3; i++) {
-		if (_P(i, i) < 0.0f) {
+	برائے (غیرعلامتی i = 0; i < 3; i++) {
+		اگر (_P(i, i) < 0.0f) {
 			// ill-conditioned covariance matrix, reset filter
-			_initialised = false;
-			return;
+			_initialised = جھوٹ;
+			واپس;
 		}
 
 		// limit covariance diagonals if they grow too large
-		if (i < 2) {
+		اگر (i < 2) {
 			_P(i, i) = _P(i, i) > 25.0f ? 25.0f : _P(i, i);
 
-		} else if (i == 2) {
+		} ورنہ اگر (i == 2) {
 			_P(i, i) = _P(i, i) > 0.1f ? 0.1f : _P(i, i);
 		}
 	}
 
-	if (!_state.isAllFinite()) {
-		_initialised = false;
-		return;
+	اگر (!_state.isAllFinite()) {
+		_initialised = جھوٹ;
+		واپس;
 	}
 
 	// attain symmetry
-	for (unsigned row = 0; row < 3; row++) {
-		for (unsigned column = 0; column < row; column++) {
-			const float tmp = (_P(row, column) + _P(column, row)) * 0.5f;
-			_P(row, column) = tmp;
-			_P(column, row) = tmp;
+	برائے (غیرعلامتی صف = 0; صف < 3; صف++) {
+		برائے (غیرعلامتی عمود = 0; عمود < صف; عمود++) {
+			ثابت اعشاری tmp = (_P(صف, عمود) + _P(عمود, صف)) * 0.5f;
+			_P(صف, عمود) = tmp;
+			_P(عمود, صف) = tmp;
 		}
 	}
 }
 
-bool
-WindEstimator::check_if_meas_is_rejected(float innov, float innov_var, uint8_t gate_size)
+منطقی
+WindEstimator::check_if_meas_is_rejected(اعشاری innov, اعشاری innov_var, uint8_t gate_سائز)
 {
-	return (innov * innov > gate_size * gate_size * innov_var);
+	واپس (innov * innov > gate_سائز * gate_سائز * innov_var);
 }

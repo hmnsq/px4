@@ -33,39 +33,39 @@
 #
 ############################################################################
 
-import argparse
-import pathlib
-import sys
-import os
-import tempfile
-import json
+درآمد argparse
+درآمد pathlib
+درآمد sys
+درآمد os
+درآمد tempfile
+درآمد json
 
-try:
-    from rosidl_generator_type_description import generate_type_hash
-except ImportError:
+کوشش:
+    سے rosidl_generator_type_description درآمد generate_type_hash
+استثنا ImportError:
     # modifying sys.path and importing the Python package with the same
     # name as this script does not work on Windows
-    rosidl_generator_type_description_root = os.path.dirname(os.path.dirname(__file__))
-    rosidl_generator_type_description_module = os.path.join(
-        rosidl_generator_type_description_root, 'rosidl_generator_type_description', '__init__.py')
-    if not os.path.exists(rosidl_generator_type_description_module):
-        raise
-    from importlib.machinery import SourceFileLoader
+    rosidl_generator_type_description_جڑ = os.راستہ.dirname(os.راستہ.dirname(__file__))
+    rosidl_generator_type_description_module = os.راستہ.join(
+        rosidl_generator_type_description_جڑ, 'rosidl_generator_type_description', '__init__.py')
+    اگر نہیں os.راستہ.exists(rosidl_generator_type_description_module):
+        اٹھاؤ
+    سے importlib.machinery درآمد ماخذ_File_Loader
 
-    loader = SourceFileLoader('rosidl_generator_type_description', rosidl_generator_type_description_module)
-    rosidl_generator_type_description = loader.load_module()
+    loader = ماخذ_File_Loader('rosidl_generator_type_description', rosidl_generator_type_description_module)
+    rosidl_generator_type_description = loader.بھرو_module()
     generate_type_hash = rosidl_generator_type_description.generate_type_hash
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
+اگر __name__ == '__main__':
+    parser = argparse.دلیل_Parser(
         description=f'Convert px4 .idl files to rihs01')
-    parser.add_argument(
+    parser.جوڑو_دلیل(
         'interface_files', nargs='+',
         help='The interface files to convert')
-    parser.add_argument(
+    parser.جوڑو_دلیل(
         '--output-dir', '-o',
          help='The directory to save converted files (default: current directory)')
-    args = parser.parse_args(sys.argv[1:])
+    دلائل = parser.parse_دلائل(sys.argv[1:])
 
     # So for some odd reason rosidl doesn't do proper cli arguments but believes
     # that some magically crafted json is better
@@ -74,16 +74,16 @@ if __name__ == '__main__':
 
     type_hash_arguments = {}
     type_hash_arguments['package_name'] = "px4_msgs"
-    type_hash_arguments['output_dir'] = args.output_dir
+    type_hash_arguments['output_dir'] = دلائل.output_dir
     type_hash_arguments["idl_tuples"] = idl_files
 
-    for interface_file in args.interface_files:
+    برائے interface_file میں دلائل.interface_files:
         # So file path need to be magically encoded with a : to let the parser do its thing
 
-        interface_file = str(pathlib.Path(interface_file)).replace("px4/msg", "px4:msg")
+        interface_file = str(pathlib.راستہ_2(interface_file)).replace("px4/msg", "px4:msg")
         idl_files.append(interface_file)
 
-    json_file = tempfile.NamedTemporaryFile(mode="w+")
+    json_file = tempfile.NamedTemporaryFile(منوال="w+")
     json.dump(type_hash_arguments, json_file)
     json_file.flush()
 

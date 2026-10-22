@@ -6,103 +6,103 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ہدایت once
 
-#include "Vector.hpp"
+#شامل "Vector.hpp"
 
-namespace matrix
+نامخلا میٹرکس
 {
 
-template<typename Type>
-class Vector2 : public Vector<Type, 2>
+سانچہ<قسم_نام Type>
+جماعت Vector2 : عوامی سمتیہ<Type, 2>
 {
-public:
+عوامی:
 
-	using Matrix21 = Matrix<Type, 2, 1>;
-	using Vector3 = Vector<Type, 3>;
+	استعمال Matrix21 = میٹرکس_2<Type, 2, 1>;
+	استعمال Vector3 = سمتیہ<Type, 3>;
 
-	Vector2() = default;
+	Vector2() = طےشدہ;
 
-	Vector2(const Matrix21 &other) :
-		Vector<Type, 2>(other)
+	Vector2(ثابت Matrix21 &other) :
+		سمتیہ<Type, 2>(other)
 	{
 	}
 
-	explicit Vector2(const Type data_[2]) :
-		Vector<Type, 2>(data_)
+	صریح Vector2(ثابت Type ڈیٹا_2[2]) :
+		سمتیہ<Type, 2>(ڈیٹا_2)
 	{
 	}
 
 	Vector2(Type x, Type y)
 	{
-		Vector2 &v(*this);
+		Vector2 &v(*یہ);
 		v(0) = x;
 		v(1) = y;
 	}
 
-	using base = Vector<Type, 2>;
-	using base::base;
+	استعمال base = سمتیہ<Type, 2>;
+	استعمال base::base;
 
-	explicit Vector2(const Vector3 &other)
+	صریح Vector2(ثابت Vector3 &other)
 	{
-		Vector2 &v(*this);
+		Vector2 &v(*یہ);
 		v(0) = other(0);
 		v(1) = other(1);
 	}
 
-	Type cross(const Matrix21 &b) const
+	Type cross(ثابت Matrix21 &b) ثابت
 	{
-		const Vector2 &a(*this);
-		return a(0) * b(1, 0) - a(1) * b(0, 0);
+		ثابت Vector2 &a(*یہ);
+		واپس a(0) * b(1, 0) - a(1) * b(0, 0);
 	}
 
 	/**
 	 * Override matrix ops so Vector2 type is returned
 	 */
 
-	Vector2 operator+(Vector2 other) const
+	Vector2 عامل+(Vector2 other) ثابت
 	{
-		return Matrix21::operator+(other);
+		واپس Matrix21::عامل+(other);
 	}
 
-	Vector2 operator+(Type scalar) const
+	Vector2 عامل+(Type scalar) ثابت
 	{
-		return Matrix21::operator+(scalar);
+		واپس Matrix21::عامل+(scalar);
 	}
 
-	Vector2 operator-(Vector2 other) const
+	Vector2 عامل-(Vector2 other) ثابت
 	{
-		return Matrix21::operator-(other);
+		واپس Matrix21::عامل-(other);
 	}
 
-	Vector2 operator-(Type scalar) const
+	Vector2 عامل-(Type scalar) ثابت
 	{
-		return Matrix21::operator-(scalar);
+		واپس Matrix21::عامل-(scalar);
 	}
 
-	Vector2 operator-() const
+	Vector2 عامل-() ثابت
 	{
-		return Matrix21::operator-();
+		واپس Matrix21::عامل-();
 	}
 
-	Vector2 operator*(Type scalar) const
+	Vector2 عامل*(Type scalar) ثابت
 	{
-		return Matrix21::operator*(scalar);
+		واپس Matrix21::عامل*(scalar);
 	}
 
-	Type operator*(Vector2 b) const
+	Type عامل*(Vector2 b) ثابت
 	{
-		return Vector<Type, 2>::operator*(b);
+		واپس سمتیہ<Type, 2>::عامل*(b);
 	}
 
-	Type operator%(const Matrix21 &b) const
+	Type عامل%(ثابت Matrix21 &b) ثابت
 	{
-		return (*this).cross(b);
+		واپس (*یہ).cross(b);
 	}
 
 };
 
-using Vector2f = Vector2<float>;
-using Vector2d = Vector2<double>;
+استعمال Vector2f = Vector2<اعشاری>;
+استعمال Vector2d = Vector2<دوہرا>;
 
 } // namespace matrix

@@ -37,22 +37,22 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <assert.h>
+#شامل <time.h>
+#شامل <stdlib.h>
+#شامل <math.h>
+#شامل <mathlib/math/test/test.hpp>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+نامخلا control
 {
 
 /**
@@ -60,24 +60,24 @@ namespace control
  * The output of update is the input, bounded
  * by min/max.
  */
-class __EXPORT BlockLimit : public Block
+جماعت __EXPORT بلاک_حد_بندی : عوامی بلاک
 {
-public:
+عوامی:
 // methods
-	BlockLimit(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+	بلاک_حد_بندی(Super_بلاک *والد, ثابت حرف *name) :
+		بلاک(والد, name),
+		_min(یہ, "MIN"),
+		_max(یہ, "MAX")
 	{}
-	virtual ~BlockLimit() = default;
-	float update(float input);
+	مجازی ~بلاک_حد_بندی() = طےشدہ;
+	اعشاری update(اعشاری داخلہ);
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-protected:
-// attributes
-	control::BlockParamFloat _min;
-	control::BlockParamFloat _max;
+	اعشاری getMin() { واپس _min.get(); }
+	اعشاری getMax() { واپس _max.get(); }
+محفوظ:
+//اوصاف
+	control::بلاک_Param_Float _min;
+	control::بلاک_Param_Float _max;
 };
 
 } // namespace control

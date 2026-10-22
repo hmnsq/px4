@@ -36,31 +36,31 @@
  *
  * NuttX Character device functions
  */
-#include <errno.h>
+#شامل <errno.h>
 
-#include "cdev_platform.hpp"
-#include "../CDev.hpp"
+#شامل "cdev_platform.hpp"
+#شامل "../CDev.hpp"
 
-#include <sys/ioctl.h>
+#شامل <sys/ioctl.h>
 
-#ifdef CONFIG_DISABLE_POLL
+#اگر_تعریف_شدہ CONFIG_DISABLE_POLL
 # error This driver is not compatible with CONFIG_DISABLE_POLL
-#endif
+#اگر_ختم
 
-namespace cdev
+نامخلا cdev
 {
 
 /*
  * The standard NuttX operation dispatch table can't call C++ member functions
  * directly, so we have to bounce them through this dispatch table.
  */
-static int	cdev_open(file_t *filp);
-static int	cdev_close(file_t *filp);
-static ssize_t	cdev_read(file_t *filp, char *buffer, size_t buflen);
-static ssize_t	cdev_write(file_t *filp, const char *buffer, size_t buflen);
-static off_t	cdev_seek(file_t *filp, off_t offset, int whence);
-static int	cdev_ioctl(file_t *filp, int cmd, unsigned long arg);
-static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
+ساکن صحیح	cdev_open(file_t *filp);
+ساکن صحیح	cdev_close(file_t *filp);
+ساکن ssize_t	cdev_read(file_t *filp, حرف *بفر_2, size_t buflen);
+ساکن ssize_t	cdev_write(file_t *filp, ثابت حرف *بفر_2, size_t buflen);
+ساکن off_t	cdev_seek(file_t *filp, off_t انحراف, صحیح whence);
+ساکن صحیح	cdev_ioctl(file_t *filp, صحیح cmd, غیرعلامتی طویل arg);
+ساکن صحیح	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, منطقی تیاری);
 
 /**
  * Character device indirection table.
@@ -71,99 +71,99 @@ static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
  * Note that we use the GNU extension syntax here because we don't get designated
  * initialisers in gcc 4.6.
  */
-static const struct file_operations g_fops = {
+ساکن ثابت ساخت file_operations g_fops = {
 open	: cdev_open,
 close	: cdev_close,
-read	: cdev_read,
-write	: cdev_write,
+اقرأ	: cdev_read,
+اكتب	: cdev_write,
 seek	: cdev_seek,
 ioctl	: cdev_ioctl,
 poll	: cdev_poll,
-#ifndef CONFIG_DISABLE_PSEUDOFS_OPERATIONS
-unlink	: nullptr
-#endif
+#اگر_غیر_تعریف_شدہ CONFIG_DISABLE_PSEUDOFS_OPERATIONS
+unlink	: خالی_اشاریہ
+#اگر_ختم
 };
 
-const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { return g_fops; }
+ثابت cdev::px4_file_operations_t &cdev::CDev::fops_ref() { واپس g_fops; }
 
-static int
+ساکن صحیح
 cdev_open(file_t *filp)
 {
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_نجی);
 
-	return cdev->open(filp);
+	واپس cdev->open(filp);
 }
 
-static int
+ساکن صحیح
 cdev_close(file_t *filp)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	اگر ((filp->f_inode->i_crefs) == 0) {
+		واپس -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_نجی);
 
-	return cdev->close(filp);
+	واپس cdev->close(filp);
 }
 
-static ssize_t
-cdev_read(file_t *filp, char *buffer, size_t buflen)
+ساکن ssize_t
+cdev_read(file_t *filp, حرف *بفر_2, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	اگر ((filp->f_inode->i_crefs) == 0) {
+		واپس -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_نجی);
 
-	return cdev->read(filp, buffer, buflen);
+	واپس cdev->اقرأ(filp, بفر_2, buflen);
 }
 
-static ssize_t
-cdev_write(file_t *filp, const char *buffer, size_t buflen)
+ساکن ssize_t
+cdev_write(file_t *filp, ثابت حرف *بفر_2, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	اگر ((filp->f_inode->i_crefs) == 0) {
+		واپس -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_نجی);
 
-	return cdev->write(filp, buffer, buflen);
+	واپس cdev->اكتب(filp, بفر_2, buflen);
 }
 
-static off_t
-cdev_seek(file_t *filp, off_t offset, int whence)
+ساکن off_t
+cdev_seek(file_t *filp, off_t انحراف, صحیح whence)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	اگر ((filp->f_inode->i_crefs) == 0) {
+		واپس -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_نجی);
 
-	return cdev->seek(filp, offset, whence);
+	واپس cdev->seek(filp, انحراف, whence);
 }
 
-static int
-cdev_ioctl(file_t *filp, int cmd, unsigned long arg)
+ساکن صحیح
+cdev_ioctl(file_t *filp, صحیح cmd, غیرعلامتی طویل arg)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	اگر ((filp->f_inode->i_crefs) == 0) {
+		واپس -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_نجی);
 
-	return cdev->ioctl(filp, cmd, arg);
+	واپس cdev->ioctl(filp, cmd, arg);
 }
 
-static int
-cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup)
+ساکن صحیح
+cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, منطقی تیاری)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	اگر ((filp->f_inode->i_crefs) == 0) {
+		واپس -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_نجی);
 
-	return cdev->poll(filp, fds, setup);
+	واپس cdev->poll(filp, fds, تیاری);
 }
 
 } // namespace cdev

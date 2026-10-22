@@ -43,29 +43,29 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#pragma once
+#ہدایت once
 
-#include <cstddef>
-#include <cstdint>
+#شامل <cstddef>
+#شامل <cstdint>
 
-#include <uORB/topics/detect_and_avoid.h>	// UNIQUE_ID_ENCODING_*
-#include <uORB/topics/transponder_report.h>	// from_report()
+#شامل <uORB/topics/detect_and_avoid.h>	// UNIQUE_ID_ENCODING_*
+#شامل <uORB/topics/transponder_report.h>	// from_report()
 
 // Number of trailing identifier bytes packed into the 64-bit key. Max 8 (fits a uint64_t).
-static constexpr uint8_t kIdEncodingNbBytes{8};
+ساکن constexpr uint8_t k_Id_Encoding_Nb_بائٹیں{8};
 // Chars used to display a UAS id: 10 hex + null terminator. Max: 17 = 16 + null.
-static constexpr uint8_t kUtmGuidMsgLength{11};
+ساکن constexpr uint8_t k_Utm_Guid_پیغام_لمبائی{11};
 // ADS-B callsign string length: 8 chars + null terminator.
-static constexpr uint8_t kCallsignLength{9};
+ساکن constexpr uint8_t k_Callsign_لمبائی{9};
 // ICAO address string length: 6 hex chars + null terminator.
-static constexpr uint8_t kIcaoLength{7};
-static constexpr uint32_t kMaxIcaoAddress{0xFFFFFFu};
+ساکن constexpr uint8_t k_Icao_لمبائی{7};
+ساکن constexpr uint32_t k_Max_Icao_پتہ{0xFFFFFFu};
 // Length of a UAS ID (UTM GUID) byte array.
 // Similar to PX4_GUID_BYTE_LENGTH and transponder_report_s::uas_id;
-static constexpr uint8_t kUasIdByteLength{18};
+ساکن constexpr uint8_t k_Uas_Id_Byte_لمبائی{18};
 
 // The ownship identifiers used to reject self-detections.
-struct daa_ownship_ids_s {
+ساخت daa_ownship_ids_s {
 	int32_t icao{-1};         // ADSB_ICAO_ID convention: negative = unset
 	int32_t icao_2{-1};       // ADSB_ICAO_ID_2 convention: negative = unset
 	uint64_t callsign{0};     // packed with DaaEncodedId::callsign_to_uint64
@@ -79,12 +79,12 @@ struct daa_ownship_ids_s {
  * @c encoding is one of detect_and_avoid_s::UNIQUE_ID_ENCODING_* and tells the
  * codecs and to_string() how to interpret @c id.
  */
-struct DaaEncodedId {
+ساخت DaaEncodedId {
 	uint64_t id{0};
 	uint8_t encoding{detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO};
 
-	bool operator==(const DaaEncodedId &other) const { return encoding == other.encoding && id == other.id; }
-	bool operator!=(const DaaEncodedId &other) const { return !(*this == other); }
+	bool عامل==(ثابت DaaEncodedId &other) ثابت { واپس encoding == other.encoding && id == other.id; }
+	bool عامل!=(ثابت DaaEncodedId &other) ثابت { واپس !(*this == other); }
 
 	/**
 	 * @brief Pick the best available identifier from a transponder report.
@@ -92,7 +92,7 @@ struct DaaEncodedId {
 	 * Priority is a valid 24-bit ICAO address, ADS-B callsign, then UAS-ID.
 	 * Returns the default value when the report has no usable identifier.
 	 */
-	static DaaEncodedId from_report(const transponder_report_s &report);
+	ساکن DaaEncodedId from_report(ثابت transponder_report_s &report);
 
 	/**
 	 * @brief Identify a transponder traffic report.
@@ -100,16 +100,16 @@ struct DaaEncodedId {
 	 * Returns the extracted identifier, or id=0 (the default-constructed value) when the report
 	 * carries no usable identifier or matches ownship (self-detection).
 	 */
-	static DaaEncodedId identify_traffic_report(const transponder_report_s &report, const daa_ownship_ids_s &ownship_ids);
+	ساکن DaaEncodedId identify_traffic_report(ثابت transponder_report_s &report, ثابت daa_ownship_ids_s &ownship_ids);
 
 	// True if the report's identifier matches ownship (ICAO, callsign or UAS-ID).
-	static bool is_self_detection(const DaaEncodedId &encoded_id, const daa_ownship_ids_s &ownship_ids);
+	ساکن bool is_self_detection(ثابت DaaEncodedId &encoded_id, ثابت daa_ownship_ids_s &ownship_ids);
 
 	// Render to a null-terminated string per its encoding.
-	void to_string(char *buffer, size_t buffer_size) const;
+	خالی مقصد_string(حرف *بفر_2, size_t بفر_سائز) ثابت;
 
 	// Pack a callsign into a 64-bit key. Returns 0 if the input is not null-terminated.
-	static uint64_t callsign_to_uint64(const char callsign[kCallsignLength]);
+	ساکن uint64_t callsign_مقصد_uint64(ثابت حرف callsign[k_Callsign_لمبائی]);
 
 	/**
 	 * @brief Convert ADSB_CALLSIGN_1/2 parameter values to the packed callsign key.
@@ -119,17 +119,17 @@ struct DaaEncodedId {
 	 * byte. This conversion keeps ownship parameter IDs in the same representation as
 	 * callsigns received in transponder_report.
 	 */
-	static uint64_t callsign_params_to_uint64(int32_t callsign_part1, int32_t callsign_part2);
+	ساکن uint64_t callsign_params_مقصد_uint64(int32_t callsign_part1, int32_t callsign_part2);
 
 	// Inverse of callsign_to_uint64.
-	static void convert_uint64_callsign_to_str(uint64_t value, char callsign[kCallsignLength]);
+	ساکن خالی convert_uint64_callsign_مقصد_str(uint64_t قدر, حرف callsign[k_Callsign_لمبائی]);
 
 	// Pack the trailing bytes of a UAS-ID (UTM GUID) into a 64-bit key.
-	static uint64_t last_uas_id_bytes_to_uint64(const uint8_t uas_id[kUasIdByteLength]);
+	ساکن uint64_t آخری_uas_id_بائٹیں_مقصد_uint64(ثابت uint8_t uas_id[k_Uas_Id_Byte_لمبائی]);
 
 	// Render a packed UAS-ID key as a reduced lowercase hex string.
-	static void convert_uas_id_uint64_to_str(uint64_t uas_id_int, char uas_id_char_arr[kUtmGuidMsgLength]);
+	ساکن خالی convert_uas_id_uint64_مقصد_str(uint64_t uas_id_int, حرف uas_id_char_arr[k_Utm_Guid_پیغام_لمبائی]);
 
 	// Print the low 24 bits of an ICAO address as a 6-digit uppercase hex string.
-	static void convert_icao_uint32_to_hex_str(uint64_t value, char *buffer, size_t buffer_size);
+	ساکن خالی convert_icao_uint32_مقصد_hex_str(uint64_t قدر, حرف *بفر_2, size_t بفر_سائز);
 };

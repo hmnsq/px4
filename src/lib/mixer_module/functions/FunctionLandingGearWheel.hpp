@@ -31,33 +31,33 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include "FunctionProviderBase.hpp"
+#شامل "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear_wheel.h>
+#شامل <uORB/topics/landing_gear_wheel.h>
 
 /**
  * Functions: Landing_Gear_Wheel
  */
-class FunctionLandingGearWheel : public FunctionProviderBase
+جماعت FunctionLandingGearWheel : عوامی Function_Provider_بنیاد
 {
-public:
-	FunctionLandingGearWheel() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGearWheel(); }
+عوامی:
+	FunctionLandingGearWheel() = طےشدہ;
+	ساکن Function_Provider_بنیاد *allocate(ثابت Context &context) { واپس نیا FunctionLandingGearWheel(); }
 
-	void update() override
+	خالی update() override
 	{
 		landing_gear_wheel_s landing_gear_wheel;
 
-		if (_topic.update(&landing_gear_wheel)) {
-			_data = landing_gear_wheel.normalized_wheel_setpoint;
+		اگر (_topic.update(&landing_gear_wheel)) {
+			ڈیٹا_3 = landing_gear_wheel.normalized_wheel_setpoint;
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	اعشاری value(OutputFunction func) override { واپس ڈیٹا_3; }
 
-private:
+نجی:
 	uORB::Subscription _topic{ORB_ID(landing_gear_wheel)};
-	float _data{0.f};
+	اعشاری ڈیٹا_3{0.f};
 };
