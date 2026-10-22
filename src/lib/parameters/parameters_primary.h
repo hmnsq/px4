@@ -31,21 +31,21 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "param.h"
+#ಅನ್ತರ್ಭಾವ "param.h"
 
-struct param_primary_counters {
-	uint32_t set_value_request_received;
-	uint32_t set_value_response_sent;
-	uint32_t reset_sent;
-	uint32_t set_value_request_sent;
-	uint32_t set_value_response_received;
-	uint32_t set_used_received;
+ರಚನೆ param_primary_counters {
+	uint32_t ಗಣ_ಮೌಲ್ಯ_request_received;
+	uint32_t ಗಣ_ಮೌಲ್ಯ_response_ಕಳುಹಿಸಿದ;
+	uint32_t reset_ಕಳುಹಿಸಿದ;
+	uint32_t ಗಣ_ಮೌಲ್ಯ_request_ಕಳುಹಿಸಿದ;
+	uint32_t ಗಣ_ಮೌಲ್ಯ_response_received;
+	uint32_t ಗಣ_ಬಳಸಿದ_received;
 };
 
-void param_primary_init();
-void param_primary_set_value(param_t param, const void *val);
-void param_primary_reset(param_t param);
-void param_primary_reset_all();
-void param_primary_get_counters(struct param_primary_counters *cnt);
+ಶೂನ್ಯ param_primary_init();
+ಶೂನ್ಯ param_primary_ಗಣ_ಮೌಲ್ಯ(param_t param, ಸ್ಥಿರಾಂಕ ಶೂನ್ಯ *val);
+ಶೂನ್ಯ param_primary_reset(param_t param);
+ಶೂನ್ಯ param_primary_reset_all();
+ಶೂನ್ಯ param_primary_get_counters(ರಚನೆ param_primary_counters *cnt);

@@ -6,58 +6,58 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "Matrix.hpp"
+#ಅನ್ತರ್ಭಾವ "Matrix.hpp"
 
-namespace matrix
+ನಾಮಾಕಾಶ ಮಾತೃಕೆ
 {
 
-template<typename Type>
-class Scalar
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type>
+ವರ್ಗ Scalar
 {
-public:
-	Scalar() = delete;
+ಸಾರ್ವಜನಿಕ:
+	Scalar() = ಅಳಿಸು;
 
-	Scalar(const Matrix<Type, 1, 1> &other) :
-		_value{other(0, 0)}
+	Scalar(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<Type, 1, 1> &other) :
+		ಮೌಲ್ಯ_2{other(0, 0)}
 	{
 	}
 
-	Scalar(Type other) : _value(other)
+	Scalar(Type other) : ಮೌಲ್ಯ_2(other)
 	{
 	}
 
-	operator const Type &()
+	ಕ್ರಿಯಾಕಾರಕ ಸ್ಥಿರಾಂಕ Type &()
 	{
-		return _value;
+		ಹಿಂತಿರುಗಿ ಮೌಲ್ಯ_2;
 	}
 
-	operator Matrix<Type, 1, 1>() const
+	ಕ್ರಿಯಾಕಾರಕ ಮಾತೃಕೆ_2<Type, 1, 1>() ಸ್ಥಿರಾಂಕ
 	{
-		Matrix<Type, 1, 1> m;
-		m(0, 0) = _value;
-		return m;
+		ಮಾತೃಕೆ_2<Type, 1, 1> m;
+		m(0, 0) = ಮೌಲ್ಯ_2;
+		ಹಿಂತಿರುಗಿ m;
 	}
 
-	operator Vector<Type, 1>() const
+	ಕ್ರಿಯಾಕಾರಕ ಸದಿಶ<Type, 1>() ಸ್ಥಿರಾಂಕ
 	{
-		Vector<Type, 1> m;
-		m(0) = _value;
-		return m;
+		ಸದಿಶ<Type, 1> m;
+		m(0) = ಮೌಲ್ಯ_2;
+		ಹಿಂತಿರುಗಿ m;
 	}
 
-	bool operator==(const float other) const
+	ತಾರ್ಕಿಕ ಕ್ರಿಯಾಕಾರಕ==(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ other) ಸ್ಥಿರಾಂಕ
 	{
-		return isEqualF(_value, other);
+		ಹಿಂತಿರುಗಿ isEqualF(ಮೌಲ್ಯ_2, other);
 	}
 
-private:
-	const Type _value;
+ಖಾಸಗಿ:
+	ಸ್ಥಿರಾಂಕ Type ಮೌಲ್ಯ_2;
 
 };
 
-using Scalarf = Scalar<float>;
-using Scalard = Scalar<double>;
+ಬಳಸಿ Scalarf = Scalar<ದಶಮಾಂಶ>;
+ಬಳಸಿ Scalard = Scalar<ದ್ವಿಗುಣ>;
 
 } // namespace matrix

@@ -31,68 +31,68 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-TEST(MatrixCopyToTest, CopyTo)
+TEST(ಮಾತೃಕೆ_Copy_ಗಮ್ಯ_Test, Copy_ಗಮ್ಯ)
 {
 	// Vector3 copyTo
-	const Vector3f v(1, 2, 3);
-	float dst3[3] = {};
-	v.copyTo(dst3);
+	ಸ್ಥಿರಾಂಕ Vector3f v(1, 2, 3);
+	ದಶಮಾಂಶ dst3[3] = {};
+	v.copy_ಗಮ್ಯ(dst3);
 
-	for (size_t i = 0; i < 3; i++) {
+	ಗಾಗಿ (size_t i = 0; i < 3; i++) {
 		EXPECT_FLOAT_EQ(v(i), dst3[i]);
 	}
 
 	// Quaternion copyTo
 	Quatf q(1, 2, 3, 4);
-	float dst4[4] = {};
-	q.copyTo(dst4);
+	ದಶಮಾಂಶ dst4[4] = {};
+	q.copy_ಗಮ್ಯ(dst4);
 
-	for (size_t i = 0; i < 4; i++) {
+	ಗಾಗಿ (size_t i = 0; i < 4; i++) {
 		EXPECT_FLOAT_EQ(q(i), dst4[i]);
 	}
 
 	// Matrix copyTo
-	Matrix<float, 2, 3> A;
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 3> A;
 	A(0, 0) = 1;
 	A(0, 1) = 2;
 	A(0, 2) = 3;
 	A(1, 0) = 4;
 	A(1, 1) = 5;
 	A(1, 2) = 6;
-	float array_A[6] = {};
-	A.copyTo(array_A);
-	float array_row[6] = {1, 2, 3, 4, 5, 6};
+	ದಶಮಾಂಶ array_A[6] = {};
+	A.copy_ಗಮ್ಯ(array_A);
+	ದಶಮಾಂಶ array_ಅಡ್ಡಸಾಲು[6] = {1, 2, 3, 4, 5, 6};
 
-	for (size_t i = 0; i < 6; i++) {
-		EXPECT_FLOAT_EQ(array_A[i], array_row[i]);
+	ಗಾಗಿ (size_t i = 0; i < 6; i++) {
+		EXPECT_FLOAT_EQ(array_A[i], array_ಅಡ್ಡಸಾಲು[i]);
 	}
 
 	// Matrix copyToColumnMajor
-	A.copyToColumnMajor(array_A);
-	float array_column[6] = {1, 4, 2, 5, 3, 6};
+	A.copy_ಗಮ್ಯ_ಸ್ತಂಭ_Major(array_A);
+	ದಶಮಾಂಶ array_ಸ್ತಂಭ[6] = {1, 4, 2, 5, 3, 6};
 
-	for (size_t i = 0; i < 6; i++) {
-		EXPECT_FLOAT_EQ(array_A[i], array_column[i]);
+	ಗಾಗಿ (size_t i = 0; i < 6; i++) {
+		EXPECT_FLOAT_EQ(array_A[i], array_ಸ್ತಂಭ[i]);
 	}
 
 	// Slice copyTo
-	float dst5[2] = {};
-	v.slice<2, 1>(0, 0).copyTo(dst5);
+	ದಶಮಾಂಶ dst5[2] = {};
+	v.ತುಂಡು<2, 1>(0, 0).copy_ಗಮ್ಯ(dst5);
 
-	for (size_t i = 0; i < 2; i++) {
+	ಗಾಗಿ (size_t i = 0; i < 2; i++) {
 		EXPECT_FLOAT_EQ(v(i), dst5[i]);
 	}
 
-	float subarray_A[4] = {};
-	A.slice<2, 2>(0, 0).copyToColumnMajor(subarray_A);
-	float subarray_column[4] = {1, 4, 2, 5};
+	ದಶಮಾಂಶ subarray_A[4] = {};
+	A.ತುಂಡು<2, 2>(0, 0).copy_ಗಮ್ಯ_ಸ್ತಂಭ_Major(subarray_A);
+	ದಶಮಾಂಶ subarray_ಸ್ತಂಭ[4] = {1, 4, 2, 5};
 
-	for (size_t i = 0; i < 4; i++) {
-		EXPECT_FLOAT_EQ(subarray_A[i], subarray_column[i]);
+	ಗಾಗಿ (size_t i = 0; i < 4; i++) {
+		EXPECT_FLOAT_EQ(subarray_A[i], subarray_ಸ್ತಂಭ[i]);
 	}
 }

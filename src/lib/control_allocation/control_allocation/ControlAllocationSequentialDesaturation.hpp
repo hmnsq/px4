@@ -41,27 +41,27 @@
  * @author Roman Bapst <bapstroman@gmail.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "ControlAllocationPseudoInverse.hpp"
+#ಅನ್ತರ್ಭಾವ "ControlAllocationPseudoInverse.hpp"
 
-#include <px4_platform_common/module_params.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/module_params.h>
 
-class ControlAllocationSequentialDesaturation: public ControlAllocationPseudoInverse, public ModuleParams
+ವರ್ಗ Control_ಹಂಚಿಕೆ_Sequential_Desaturation: ಸಾರ್ವಜನಿಕ Control_ಹಂಚಿಕೆ_Pseudo_Inverse, ಸಾರ್ವಜನಿಕ ModuleParams
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 
-	ControlAllocationSequentialDesaturation() : ModuleParams(nullptr) {}
-	virtual ~ControlAllocationSequentialDesaturation() = default;
+	Control_ಹಂಚಿಕೆ_Sequential_Desaturation() : ModuleParams(ಶೂನ್ಯಸೂಚಕ) {}
+	ವಾಸ್ತವಿಕ ~Control_ಹಂಚಿಕೆ_Sequential_Desaturation() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	void allocate() override;
+	ಶೂನ್ಯ allocate() override;
 
-	void updateParameters() override;
+	ಶೂನ್ಯ updateParameters() override;
 
 	// This is the minimum actuator yaw granted when the controller is saturated.
 	// In the yaw-only case where outputs are saturated, thrust is reduced by up to this amount.
-	static constexpr float MINIMUM_YAW_MARGIN{0.15f};
-private:
+	ಸ್ಥಿರ constexpr ದಶಮಾಂಶ MINIMUM_YAW_MARGIN{0.15f};
+ಖಾಸಗಿ:
 
 	/**
 	 * Minimize the saturation of the actuators by adding or substracting a fraction of desaturation_vector.
@@ -78,8 +78,8 @@ private:
 	 * @param desaturation_vector vector that is added to the outputs, e.g. thrust_scale
 	 * @param increase_only if true, only allow to increase (add) a fraction of desaturation_vector
 	 */
-	void desaturateActuators(ActuatorVector &actuator_sp, const ActuatorVector &desaturation_vector,
-				 bool increase_only = false);
+	ಶೂನ್ಯ desaturateActuators(Actuator_ಸದಿಶ &actuator_sp, ಸ್ಥಿರಾಂಕ Actuator_ಸದಿಶ &desaturation_ಸದಿಶ,
+				 ತಾರ್ಕಿಕ increase_only = ಸುಳ್ಳು);
 
 	/**
 	 * Computes the gain k by which desaturation_vector has to be multiplied
@@ -87,7 +87,7 @@ private:
 	 *
 	 * @return desaturation gain
 	 */
-	float computeDesaturationGain(const ActuatorVector &desaturation_vector, const ActuatorVector &actuator_sp);
+	ದಶಮಾಂಶ computeDesaturationGain(ಸ್ಥಿರಾಂಕ Actuator_ಸದಿಶ &desaturation_ಸದಿಶ, ಸ್ಥಿರಾಂಕ Actuator_ಸದಿಶ &actuator_sp);
 
 	/**
 	 * Mix roll, pitch, yaw, thrust and set the actuator setpoint.
@@ -96,7 +96,7 @@ private:
 	 * thrust is increased/decreased as much as required to meet the demanded roll/pitch.
 	 * Yaw is not allowed to increase the thrust, @see mix_yaw() for the exact behavior.
 	 */
-	void mixAirmodeRP();
+	ಶೂನ್ಯ mixAirmodeRP();
 
 	/**
 	 * Mix roll, pitch, yaw, thrust and set the actuator setpoint.
@@ -105,7 +105,7 @@ private:
 	 * thrust is increased/decreased as much as required to meet demanded the roll/pitch/yaw,
 	 * while giving priority to roll and pitch over yaw.
 	 */
-	void mixAirmodeRPY();
+	ಶೂನ್ಯ mixAirmodeRPY();
 
 	/**
 	 * Mix roll, pitch, yaw, thrust and set the actuator setpoint.
@@ -115,7 +115,7 @@ private:
 	 * Thrust can be reduced to unsaturate the upper side.
 	 * @see mixYaw() for the exact yaw behavior.
 	 */
-	void mixAirmodeDisabled();
+	ಶೂನ್ಯ mixAirmodeDisabled();
 
 	/**
 	 * Mix yaw by updating the actuator setpoint (that already contains roll/pitch/thrust).
@@ -124,7 +124,7 @@ private:
 	 * some yaw control on the upper end. On the lower end thrust will never be increased,
 	 * but yaw is decreased as much as required.
 	 */
-	void mixYaw();
+	ಶೂನ್ಯ mixYaw();
 
 	DEFINE_PARAMETERS(
 		(ParamInt<px4::params::MC_AIRMODE>) _param_mc_airmode   ///< air-mode

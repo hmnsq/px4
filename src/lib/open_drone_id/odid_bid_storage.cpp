@@ -31,309 +31,309 @@
  *
  ****************************************************************************/
 
-#include "odid_bid_storage.hpp"
+#ಅನ್ತರ್ಭಾವ "odid_bid_storage.hpp"
 
-#include <fcntl.h>
-#include <stddef.h>
-#include <string.h>
-#include <unistd.h>
+#ಅನ್ತರ್ಭಾವ <fcntl.h>
+#ಅನ್ತರ್ಭಾವ <stddef.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
+#ಅನ್ತರ್ಭಾವ <unistd.h>
 
-#ifdef __PX4_NUTTX
-#include <nuttx/crc32.h>
-#include <px4_platform_common/px4_manifest.h>
-#else
-#include <crc32.h>
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __PX4_NUTTX
+#ಅನ್ತರ್ಭಾವ <nuttx/crc32.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/px4_manifest.h>
+#ಇಲ್ಲದಿದ್ದರೆ
+#ಅನ್ತರ್ಭಾವ <crc32.h>
+#ಆದರೆ_ಅಂತ್ಯ
 
-namespace open_drone_id
+ನಾಮಾಕಾಶ open_drone_id
 {
-namespace
+ನಾಮಾಕಾಶ
 {
 
-static constexpr uint32_t ODID_UASID_MAGIC = 0x4449444f; // "ODID"
-static constexpr uint8_t ODID_UASID_RECORD_VERSION = 1;
+ಸ್ಥಿರ constexpr uint32_t ODID_UASID_MAGIC = 0x4449444f; // "ODID"
+ಸ್ಥಿರ constexpr uint8_t ODID_UASID_ದಾಖಲೆ_ಆವೃತ್ತಿ = 1;
 
-struct __attribute__((packed)) UasIdRecord {
+ರಚನೆ __attribute__((packed)) Uas_Id_ದಾಖಲೆ {
 	uint32_t magic;
-	uint8_t version;
+	uint8_t ಆವೃತ್ತಿ;
 	uint8_t id_type;
 	uint8_t ua_type;
 	uint8_t reserved;
-	uint8_t uas_id[UAS_ID_SIZE];
-	uint32_t crc;
+	uint8_t uas_id[UAS_ID_ಗಾತ್ರ];
+	uint32_t ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ;
 };
 
-class BidStorageBackend
+ವರ್ಗ BidStorageBackend
 {
-public:
-	BidLockInfo get();
-	BidStoreResult checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE]);
+ಸಾರ್ವಜನಿಕ:
+	Bid_ಬೀಗ_Info get();
+	Bid_Store_ಫಲಿತಾಂಶ checkOrStore(uint8_t ua_type, ಸ್ಥಿರಾಂಕ uint8_t uas_id[UAS_ID_ಗಾತ್ರ]);
 
-private:
-	static bool uasIdIsEmpty(const uint8_t uas_id[UAS_ID_SIZE])
+ಖಾಸಗಿ:
+	ಸ್ಥಿರ ತಾರ್ಕಿಕ uas_Id_Is_ಖಾಲಿಗಳು(ಸ್ಥಿರಾಂಕ uint8_t uas_id[UAS_ID_ಗಾತ್ರ])
 	{
-		for (unsigned i = 0; i < UAS_ID_SIZE; ++i) {
-			if (uas_id[i] != 0) {
-				return false;
+		ಗಾಗಿ (ಚಿಹ್ನೆರಹಿತ i = 0; i < UAS_ID_ಗಾತ್ರ; ++i) {
+			ಆದರೆ (uas_id[i] != 0) {
+				ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 			}
 		}
 
-		return true;
+		ಹಿಂತಿರುಗಿ ನಿಜ;
 	}
 
-	static uint32_t recordCrc(const UasIdRecord &record)
+	ಸ್ಥಿರ uint32_t ದಾಖಲೆ_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ(ಸ್ಥಿರಾಂಕ Uas_Id_ದಾಖಲೆ &ದಾಖಲೆ)
 	{
-		return crc32(reinterpret_cast<const uint8_t *>(&record.version),
-			     offsetof(UasIdRecord, crc) - offsetof(UasIdRecord, version));
+		ಹಿಂತಿರುಗಿ ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_32(reinterpret_cast<ಸ್ಥಿರಾಂಕ uint8_t *>(&ದಾಖಲೆ.ಆವೃತ್ತಿ),
+			     offsetof(Uas_Id_ದಾಖಲೆ, ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ) - offsetof(Uas_Id_ದಾಖಲೆ, ಆವೃತ್ತಿ));
 	}
 
-	static bool recordValid(const UasIdRecord &record)
+	ಸ್ಥಿರ ತಾರ್ಕಿಕ ದಾಖಲೆ_Valid(ಸ್ಥಿರಾಂಕ Uas_Id_ದಾಖಲೆ &ದಾಖಲೆ)
 	{
-		return record.magic == ODID_UASID_MAGIC
-		       && record.version == ODID_UASID_RECORD_VERSION
-		       && record.id_type == UAS_ID_TYPE_SERIAL_NUMBER
-		       && !uasIdIsEmpty(record.uas_id)
-		       && record.crc == recordCrc(record);
+		ಹಿಂತಿರುಗಿ ದಾಖಲೆ.magic == ODID_UASID_MAGIC
+		       && ದಾಖಲೆ.ಆವೃತ್ತಿ == ODID_UASID_ದಾಖಲೆ_ಆವೃತ್ತಿ
+		       && ದಾಖಲೆ.id_type == UAS_ID_TYPE_SERIAL_ಸಂಖ್ಯೆ
+		       && !uas_Id_Is_ಖಾಲಿಗಳು(ದಾಖಲೆ.uas_id)
+		       && ದಾಖಲೆ.ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ == ದಾಖಲೆ_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ(ದಾಖಲೆ);
 	}
 
 	// Check if the record is all 0xff, which is the erased state of flash.
 	// This is needed to distinguish between an unwritten record and a record that was written with all bytes set to 0 (which would be invalid but not unwritten).
-	static bool recordBlank(const UasIdRecord &record)
+	ಸ್ಥಿರ ತಾರ್ಕಿಕ ದಾಖಲೆ_Blank(ಸ್ಥಿರಾಂಕ Uas_Id_ದಾಖಲೆ &ದಾಖಲೆ)
 	{
-		const uint8_t *bytes = reinterpret_cast<const uint8_t *>(&record);
+		ಸ್ಥಿರಾಂಕ uint8_t *ಬೈಟುಗಳು = reinterpret_cast<ಸ್ಥಿರಾಂಕ uint8_t *>(&ದಾಖಲೆ);
 
-		for (unsigned i = 0; i < sizeof(record); ++i) {
-			if (bytes[i] != 0xff) {
-				return false;
+		ಗಾಗಿ (ಚಿಹ್ನೆರಹಿತ i = 0; i < ಗಾತ್ರ(ದಾಖಲೆ); ++i) {
+			ಆದರೆ (ಬೈಟುಗಳು[i] != 0xff) {
+				ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 			}
 		}
 
-		return true;
+		ಹಿಂತಿರುಗಿ ನಿಜ;
 	}
 
-	static bool recordMatches(const UasIdRecord &record, const uint8_t uas_id[UAS_ID_SIZE])
+	ಸ್ಥಿರ ತಾರ್ಕಿಕ ದಾಖಲೆ_Matches(ಸ್ಥಿರಾಂಕ Uas_Id_ದಾಖಲೆ &ದಾಖಲೆ, ಸ್ಥಿರಾಂಕ uint8_t uas_id[UAS_ID_ಗಾತ್ರ])
 	{
-		return memcmp(record.uas_id, uas_id, UAS_ID_SIZE) == 0;
+		ಹಿಂತಿರುಗಿ memcmp(ದಾಖಲೆ.uas_id, uas_id, UAS_ID_ಗಾತ್ರ) == 0;
 	}
 
 	// Write the entire buffer to the file descriptor, handling short writes.
-	static bool writeAll(int fd, const void *buffer, size_t size)
+	ಸ್ಥಿರ ತಾರ್ಕಿಕ writeAll(ಪೂರ್ಣಾಂಕ fd, ಸ್ಥಿರಾಂಕ ಶೂನ್ಯ *ಬಫರ್_2, size_t ಗಾತ್ರ_2)
 	{
-		const uint8_t *bytes = static_cast<const uint8_t *>(buffer);
+		ಸ್ಥಿರಾಂಕ uint8_t *ಬೈಟುಗಳು = static_cast<ಸ್ಥಿರಾಂಕ uint8_t *>(ಬಫರ್_2);
 
-		while (size > 0) {
-			const ssize_t written = write(fd, bytes, size);
+		ಆಗ (ಗಾತ್ರ_2 > 0) {
+			ಸ್ಥಿರಾಂಕ ssize_t written = ಲಿಖ(fd, ಬೈಟುಗಳು, ಗಾತ್ರ_2);
 
-			if (written <= 0) {
-				return false;
+			ಆದರೆ (written <= 0) {
+				ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 			}
 
-			bytes += written;
-			size -= written;
+			ಬೈಟುಗಳು += written;
+			ಗಾತ್ರ_2 -= written;
 		}
 
-		return true;
+		ಹಿಂತಿರುಗಿ ನಿಜ;
 	}
 
 };
 
-static_assert(sizeof(UasIdRecord) <= 256, "OpenDroneID UAS ID record must fit in /fs/mtd_id");
+static_assert(ಗಾತ್ರ(Uas_Id_ದಾಖಲೆ) <= 256, "OpenDroneID UAS ID record must fit in /fs/mtd_id");
 
 // The UAS ID storage is only supported on PX4 targets with NuttX and an MTD partition named "ID".
 // On other platforms, the get() method will return StorageUnavailable and the checkOrStore() method will return Unsupported.
-BidLockInfo BidStorageBackend::get()
+Bid_ಬೀಗ_Info BidStorageBackend::get()
 {
-#if defined(__PX4_NUTTX)
-	const char *path = nullptr;
+#ಆದರೆ defined(__PX4_NUTTX)
+	ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *ಮಾರ್ಗ = ಶೂನ್ಯಸೂಚಕ;
 
-	if (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
-		return {BidLockState::StorageUnavailable, {}};
+	ಆದರೆ (px4_mtd_query("MTD_ID", ಶೂನ್ಯಸೂಚಕ, &ಮಾರ್ಗ) != 0 || ಮಾರ್ಗ == ಶೂನ್ಯಸೂಚಕ) {
+		ಹಿಂತಿರುಗಿ {Bid_ಬೀಗ_State::StorageUnavailable, {}};
 	}
 
-	int fd = open(path, O_RDONLY);
+	ಪೂರ್ಣಾಂಕ fd = open(ಮಾರ್ಗ, O_RDONLY);
 
-	if (fd < 0) {
-		return {BidLockState::StorageUnavailable, {}};
+	ಆದರೆ (fd < 0) {
+		ಹಿಂತಿರುಗಿ {Bid_ಬೀಗ_State::StorageUnavailable, {}};
 	}
 
-	UasIdRecord record{};
+	Uas_Id_ದಾಖಲೆ ದಾಖಲೆ{};
 
-	if (read(fd, &record, sizeof(record)) != sizeof(record)) {
+	ಆದರೆ (ಪಠ(fd, &ದಾಖಲೆ, ಗಾತ್ರ(ದಾಖಲೆ)) != ಗಾತ್ರ(ದಾಖಲೆ)) {
 		close(fd);
-		return {BidLockState::StorageUnavailable, {}};
+		ಹಿಂತಿರುಗಿ {Bid_ಬೀಗ_State::StorageUnavailable, {}};
 	}
 
 	close(fd);
 
-	if (recordValid(record)) {
-		BidLockInfo info{BidLockState::Locked, {}};
-		info.id.ua_type = record.ua_type;
-		memcpy(info.id.uas_id, record.uas_id, UAS_ID_SIZE);
-		return info;
+	ಆದರೆ (ದಾಖಲೆ_Valid(ದಾಖಲೆ)) {
+		Bid_ಬೀಗ_Info info{Bid_ಬೀಗ_State::Locked, {}};
+		info.id.ua_type = ದಾಖಲೆ.ua_type;
+		ಸ್ಮರಣೆ_ನಕಲು(info.id.uas_id, ದಾಖಲೆ.uas_id, UAS_ID_ಗಾತ್ರ);
+		ಹಿಂತಿರುಗಿ info;
 	}
 
-	if (recordBlank(record)) {
-		return {BidLockState::Empty, {}};
+	ಆದರೆ (ದಾಖಲೆ_Blank(ದಾಖಲೆ)) {
+		ಹಿಂತಿರುಗಿ {Bid_ಬೀಗ_State::ಖಾಲಿಗಳು_2, {}};
 	}
 
-	return {BidLockState::InvalidRecord, {}};
-#else
-	return {BidLockState::Unsupported, {}};
-#endif
+	ಹಿಂತಿರುಗಿ {Bid_ಬೀಗ_State::Invalid_ದಾಖಲೆ, {}};
+#ಇಲ್ಲದಿದ್ದರೆ
+	ಹಿಂತಿರುಗಿ {Bid_ಬೀಗ_State::Unsupported, {}};
+#ಆದರೆ_ಅಂತ್ಯ
 }
 
 // Check if the given UAS ID matches the stored one, or store it if the storage is empty.
 // The storage is write-once, so once a UAS ID is stored it cannot be changed (except by erasing the flash).
-BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE])
+Bid_Store_ಫಲಿತಾಂಶ BidStorageBackend::checkOrStore(uint8_t ua_type, ಸ್ಥಿರಾಂಕ uint8_t uas_id[UAS_ID_ಗಾತ್ರ])
 {
-	if (uasIdIsEmpty(uas_id)) {
-		return BidStoreResult::InvalidBasicId;
+	ಆದರೆ (uas_Id_Is_ಖಾಲಿಗಳು(uas_id)) {
+		ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::InvalidBasicId;
 	}
 
-#if defined(__PX4_NUTTX)
-	const char *path = nullptr;
+#ಆದರೆ defined(__PX4_NUTTX)
+	ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *ಮಾರ್ಗ = ಶೂನ್ಯಸೂಚಕ;
 
-	if (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
-		return BidStoreResult::StorageUnavailable;
+	ಆದರೆ (px4_mtd_query("MTD_ID", ಶೂನ್ಯಸೂಚಕ, &ಮಾರ್ಗ) != 0 || ಮಾರ್ಗ == ಶೂನ್ಯಸೂಚಕ) {
+		ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::StorageUnavailable;
 	}
 
-	int fd = open(path, O_RDWR);
+	ಪೂರ್ಣಾಂಕ fd = open(ಮಾರ್ಗ, O_RDWR);
 
-	if (fd < 0) {
-		return BidStoreResult::StorageUnavailable;
+	ಆದರೆ (fd < 0) {
+		ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::StorageUnavailable;
 	}
 
-	UasIdRecord existing{};
+	Uas_Id_ದಾಖಲೆ existing{};
 
-	if (read(fd, &existing, sizeof(existing)) != sizeof(existing)) {
+	ಆದರೆ (ಪಠ(fd, &existing, ಗಾತ್ರ(existing)) != ಗಾತ್ರ(existing)) {
 		close(fd);
-		return BidStoreResult::StorageUnavailable;
+		ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::StorageUnavailable;
 	}
 
-	if (recordValid(existing)) {
-		const BidStoreResult result = recordMatches(existing, uas_id)
-					      ? BidStoreResult::AlreadyLocked
-					      : BidStoreResult::AlreadyLockedDifferent;
+	ಆದರೆ (ದಾಖಲೆ_Valid(existing)) {
+		ಸ್ಥಿರಾಂಕ Bid_Store_ಫಲಿತಾಂಶ ಫಲಿತಾಂಶ = ದಾಖಲೆ_Matches(existing, uas_id)
+					      ? Bid_Store_ಫಲಿತಾಂಶ::AlreadyLocked
+					      : Bid_Store_ಫಲಿತಾಂಶ::AlreadyLockedDifferent;
 		close(fd);
-		return result;
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 	}
 
-	if (!recordBlank(existing)) {
+	ಆದರೆ (!ದಾಖಲೆ_Blank(existing)) {
 		close(fd);
-		return BidStoreResult::InvalidRecord;
+		ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::Invalid_ದಾಖಲೆ;
 	}
 
-	UasIdRecord record{};
-	record.magic = ODID_UASID_MAGIC;
-	record.version = ODID_UASID_RECORD_VERSION;
-	record.id_type = UAS_ID_TYPE_SERIAL_NUMBER;
-	record.ua_type = ua_type;
-	memcpy(record.uas_id, uas_id, UAS_ID_SIZE);
-	record.crc = recordCrc(record);
+	Uas_Id_ದಾಖಲೆ ದಾಖಲೆ{};
+	ದಾಖಲೆ.magic = ODID_UASID_MAGIC;
+	ದಾಖಲೆ.ಆವೃತ್ತಿ = ODID_UASID_ದಾಖಲೆ_ಆವೃತ್ತಿ;
+	ದಾಖಲೆ.id_type = UAS_ID_TYPE_SERIAL_ಸಂಖ್ಯೆ;
+	ದಾಖಲೆ.ua_type = ua_type;
+	ಸ್ಮರಣೆ_ನಕಲು(ದಾಖಲೆ.uas_id, uas_id, UAS_ID_ಗಾತ್ರ);
+	ದಾಖಲೆ.ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = ದಾಖಲೆ_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ(ದಾಖಲೆ);
 
-	const uint32_t magic = record.magic;
-	record.magic = 0xffffffff;
+	ಸ್ಥಿರಾಂಕ uint32_t magic = ದಾಖಲೆ.magic;
+	ದಾಖಲೆ.magic = 0xffffffff;
 
-	const bool written = lseek(fd, sizeof(record.magic), SEEK_SET) == static_cast<off_t>(sizeof(record.magic))
-			     && writeAll(fd, reinterpret_cast<const uint8_t *>(&record) + sizeof(record.magic),
-					 sizeof(record) - sizeof(record.magic))
+	ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ written = lseek(fd, ಗಾತ್ರ(ದಾಖಲೆ.magic), SEEK_SET) == static_cast<off_t>(ಗಾತ್ರ(ದಾಖಲೆ.magic))
+			     && writeAll(fd, reinterpret_cast<ಸ್ಥಿರಾಂಕ uint8_t *>(&ದಾಖಲೆ) + ಗಾತ್ರ(ದಾಖಲೆ.magic),
+					 ಗಾತ್ರ(ದಾಖಲೆ) - ಗಾತ್ರ(ದಾಖಲೆ.magic))
 			     && fsync(fd) == 0
 			     && lseek(fd, 0, SEEK_SET) == 0
-			     && writeAll(fd, &magic, sizeof(magic))
+			     && writeAll(fd, &magic, ಗಾತ್ರ(magic))
 			     && fsync(fd) == 0;
 
 	close(fd);
 
-	return written ? BidStoreResult::Stored : BidStoreResult::WriteError;
-#else
-	return BidStoreResult::Unsupported;
-#endif
+	ಹಿಂತಿರುಗಿ written ? Bid_Store_ಫಲಿತಾಂಶ::Stored : Bid_Store_ಫಲಿತಾಂಶ::WriteError;
+#ಇಲ್ಲದಿದ್ದರೆ
+	ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::Unsupported;
+#ಆದರೆ_ಅಂತ್ಯ
 }
 
 } // namespace
 
 // Public interface that uses the backend implementation.
-BidLockInfo BidStorage::get()
+Bid_ಬೀಗ_Info BidStorage::get()
 {
 	BidStorageBackend storage;
-	return storage.get();
+	ಹಿಂತಿರುಗಿ storage.get();
 }
 
-BidStoreResult BidStorage::checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE])
+Bid_Store_ಫಲಿತಾಂಶ BidStorage::checkOrStore(uint8_t ua_type, ಸ್ಥಿರಾಂಕ uint8_t uas_id[UAS_ID_ಗಾತ್ರ])
 {
 	BidStorageBackend storage;
-	return storage.checkOrStore(ua_type, uas_id);
+	ಹಿಂತಿರುಗಿ storage.checkOrStore(ua_type, uas_id);
 }
 
 //
-BidStoreResult BidLock::resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE],
+Bid_Store_ಫಲಿತಾಂಶ Bid_ಬೀಗ::resolve(uint8_t id_type, uint8_t ua_type, ಸ್ಥಿರಾಂಕ uint8_t uas_id[UAS_ID_ಗಾತ್ರ],
 				UasId &locked_id)
 {
-	if (id_type != UAS_ID_TYPE_SERIAL_NUMBER) {
-		return BidStoreResult::InvalidBasicId;
+	ಆದರೆ (id_type != UAS_ID_TYPE_SERIAL_ಸಂಖ್ಯೆ) {
+		ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::InvalidBasicId;
 	}
 
-	if (!_loaded) {
+	ಆದರೆ (!_loaded) {
 		_info = BidStorage::get();
-		_loaded = true;
+		_loaded = ನಿಜ;
 	}
 
-	if (_info.locked()) {
+	ಆದರೆ (_info.locked()) {
 		locked_id = _info.id;
-		return BidStoreResult::AlreadyLocked;
+		ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::AlreadyLocked;
 	}
 
-	if (_info.state != BidLockState::Empty) {
-		switch (_info.state) {
-		case BidLockState::InvalidRecord:
-			return BidStoreResult::InvalidRecord;
+	ಆದರೆ (_info.state != Bid_ಬೀಗ_State::ಖಾಲಿಗಳು_2) {
+		ಆಯ್ಕೆ (_info.state) {
+		ಸ್ಥಿತಿ Bid_ಬೀಗ_State::Invalid_ದಾಖಲೆ:
+			ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::Invalid_ದಾಖಲೆ;
 
-		case BidLockState::StorageUnavailable:
-			return BidStoreResult::StorageUnavailable;
+		ಸ್ಥಿತಿ Bid_ಬೀಗ_State::StorageUnavailable:
+			ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::StorageUnavailable;
 
-		case BidLockState::WriteError:
-			return BidStoreResult::WriteError;
+		ಸ್ಥಿತಿ Bid_ಬೀಗ_State::WriteError:
+			ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::WriteError;
 
-		case BidLockState::Unsupported:
-			return BidStoreResult::Unsupported;
+		ಸ್ಥಿತಿ Bid_ಬೀಗ_State::Unsupported:
+			ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::Unsupported;
 
-		case BidLockState::Empty:
-		case BidLockState::Locked:
-			break;
+		ಸ್ಥಿತಿ Bid_ಬೀಗ_State::ಖಾಲಿಗಳು_2:
+		ಸ್ಥಿತಿ Bid_ಬೀಗ_State::Locked:
+			ನಿಲ್ಲಿಸು;
 		}
 	}
 
-	const BidStoreResult result = BidStorage::checkOrStore(ua_type, uas_id);
+	ಸ್ಥಿರಾಂಕ Bid_Store_ಫಲಿತಾಂಶ ಫಲಿತಾಂಶ = BidStorage::checkOrStore(ua_type, uas_id);
 
-	switch (result) {
-	case BidStoreResult::Stored:
-		_info.state = BidLockState::Locked;
+	ಆಯ್ಕೆ (ಫಲಿತಾಂಶ) {
+	ಸ್ಥಿತಿ Bid_Store_ಫಲಿತಾಂಶ::Stored:
+		_info.state = Bid_ಬೀಗ_State::Locked;
 		_info.id.ua_type = ua_type;
-		memcpy(_info.id.uas_id, uas_id, UAS_ID_SIZE);
+		ಸ್ಮರಣೆ_ನಕಲು(_info.id.uas_id, uas_id, UAS_ID_ಗಾತ್ರ);
 		locked_id = _info.id;
-		return result;
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 
-	case BidStoreResult::AlreadyLocked:
-	case BidStoreResult::AlreadyLockedDifferent: {
+	ಸ್ಥಿತಿ Bid_Store_ಫಲಿತಾಂಶ::AlreadyLocked:
+	ಸ್ಥಿತಿ Bid_Store_ಫಲಿತಾಂಶ::AlreadyLockedDifferent: {
 			_info = BidStorage::get();
 
-			if (_info.locked()) {
+			ಆದರೆ (_info.locked()) {
 				locked_id = _info.id;
-				return BidStoreResult::AlreadyLocked;
+				ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::AlreadyLocked;
 			}
 
-			return BidStoreResult::InvalidRecord;
+			ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::Invalid_ದಾಖಲೆ;
 		}
 
-	case BidStoreResult::InvalidBasicId:
-	case BidStoreResult::StorageUnavailable:
-	case BidStoreResult::InvalidRecord:
-	case BidStoreResult::WriteError:
-	case BidStoreResult::Unsupported:
-		return result;
+	ಸ್ಥಿತಿ Bid_Store_ಫಲಿತಾಂಶ::InvalidBasicId:
+	ಸ್ಥಿತಿ Bid_Store_ಫಲಿತಾಂಶ::StorageUnavailable:
+	ಸ್ಥಿತಿ Bid_Store_ಫಲಿತಾಂಶ::Invalid_ದಾಖಲೆ:
+	ಸ್ಥಿತಿ Bid_Store_ಫಲಿತಾಂಶ::WriteError:
+	ಸ್ಥಿತಿ Bid_Store_ಫಲಿತಾಂಶ::Unsupported:
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 	}
 
-	return BidStoreResult::InvalidRecord;
+	ಹಿಂತಿರುಗಿ Bid_Store_ಫಲಿತಾಂಶ::Invalid_ದಾಖಲೆ;
 }
 
 } // namespace open_drone_id

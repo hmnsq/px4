@@ -31,50 +31,50 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/px4_config.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/log.h>
 
-#include <inttypes.h>
-#include <math.h>
+#ಅನ್ತರ್ಭಾವ <inttypes.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
 
-namespace calibration
+ನಾಮಾಕಾಶ calibration
 {
-class DifferentialPressure
+ವರ್ಗ DifferentialPressure
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 3; ///< also the airspeed selector's sensor limit
+ಸಾರ್ವಜನಿಕ:
+	ಸ್ಥಿರ constexpr ಪೂರ್ಣಾಂಕ MAX_SENSOR_ಎಣಿಕೆ = 3; ///< also the airspeed selector's sensor limit
 
-	static constexpr const char *SensorString() { return "DPRES"; }
+	ಸ್ಥಿರ constexpr ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *SensorString() { ಹಿಂತಿರುಗಿ "DPRES"; }
 
 	DifferentialPressure();
-	explicit DifferentialPressure(uint32_t device_id);
+	ಸ್ಪಷ್ಟ DifferentialPressure(uint32_t device_id);
 
-	~DifferentialPressure() = default;
+	~DifferentialPressure() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	void PrintStatus();
+	ಶೂನ್ಯ Print_ಸ್ಥಿತಿ();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id);
-	bool set_offset(const float &offset);
+	ತಾರ್ಕಿಕ ಗಣ_calibration_ಸೂಚ್ಯಂಕ(ಪೂರ್ಣಾಂಕ calibration_ಸೂಚ್ಯಂಕ);
+	ಶೂನ್ಯ ಗಣ_device_id(uint32_t device_id);
+	ತಾರ್ಕಿಕ ಗಣ_ಸ್ಥಾನಾಂತರ(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ &ಸ್ಥಾನಾಂತರ);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
+	ತಾರ್ಕಿಕ calibrated() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ (_device_id != 0) && (calibration_ಸೂಚ್ಯಂಕ_2 >= 0); }
+	uint8_t calibration_ಎಣಿಕೆ_2() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ calibration_ಎಣಿಕೆ; }
+	int8_t calibration_ಸೂಚ್ಯಂಕ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ calibration_ಸೂಚ್ಯಂಕ_2; }
+	uint32_t device_id() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _device_id; }
+	ತಾರ್ಕಿಕ external() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _external; }
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ &ಸ್ಥಾನಾಂತರ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಸ್ಥಾನಾಂತರ_2; }
 
 	/// remove the zero offset from a raw differential pressure reading [Pa]
-	inline float Correct(const float &data) const { return data - _offset; }
+	ಸಾಲೊಳಗೆ ದಶಮಾಂಶ Correct(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ &ದತ್ತಾಂಶ) ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ - ಸ್ಥಾನಾಂತರ_2; }
 
-	inline float Uncorrect(const float &corrected_data) const { return corrected_data + _offset; }
+	ಸಾಲೊಳಗೆ ದಶಮಾಂಶ Uncorrect(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ &corrected_ದತ್ತಾಂಶ) ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ corrected_ದತ್ತಾಂಶ + ಸ್ಥಾನಾಂತರ_2; }
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	ತಾರ್ಕಿಕ Parameters_ತುಂಬು();
+	ತಾರ್ಕಿಕ ParametersSave(ಪೂರ್ಣಾಂಕ desired_calibration_ಸೂಚ್ಯಂಕ = -1, ತಾರ್ಕಿಕ force = ಸುಳ್ಳು);
+	ಶೂನ್ಯ ParametersUpdate();
 
 	/**
 	 * Take over the offset left in SENS_DPRES_OFF, using slot 0.
@@ -82,23 +82,23 @@ public:
 	 *
 	 * @return true if the offset was adopted (the caller should save)
 	 */
-	bool AdoptLegacyOffset();
+	ತಾರ್ಕಿಕ Adopt_Legacy_ಸ್ಥಾನಾಂತರ();
 
 	/** mirror slot 0's offset into SENS_DPRES_OFF for ground stations that still read it */
-	void UpdateLegacyOffset() const;
+	ಶೂನ್ಯ Update_Legacy_ಸ್ಥಾನಾಂತರ() ಸ್ಥಿರಾಂಕ;
 
-	void Reset();
+	ಶೂನ್ಯ Reset();
 
-private:
-	static constexpr int kLegacyIndex{0};
-	static constexpr const char *kLegacyOffsetParam{"SENS_DPRES_OFF"};
+ಖಾಸಗಿ:
+	ಸ್ಥಿರ constexpr ಪೂರ್ಣಾಂಕ k_Legacy_ಸೂಚ್ಯಂಕ{0};
+	ಸ್ಥಿರ constexpr ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *k_Legacy_ಸ್ಥಾನಾಂತರ_Param{"SENS_DPRES_OFF"};
 
-	float _offset{0};
+	ದಶಮಾಂಶ ಸ್ಥಾನಾಂತರ_2{0};
 
-	int8_t _calibration_index{-1};
+	int8_t calibration_ಸೂಚ್ಯಂಕ_2{-1};
 	uint32_t _device_id{0};
-	uint8_t _calibration_count{0};
+	uint8_t calibration_ಎಣಿಕೆ{0};
 
-	bool _external{false};
+	ತಾರ್ಕಿಕ _external{ಸುಳ್ಳು};
 };
 } // namespace calibration

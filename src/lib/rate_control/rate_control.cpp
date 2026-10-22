@@ -35,67 +35,67 @@
  * @file rate_control.cpp
  */
 
-#include "rate_control.hpp"
-#include <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ "rate_control.hpp"
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-void RateControl::setPidGains(const Vector3f &P, const Vector3f &I, const Vector3f &D)
+ಶೂನ್ಯ ದರ_Control::ಗಣ_Pid_Gains(ಸ್ಥಿರಾಂಕ Vector3f &P, ಸ್ಥಿರಾಂಕ Vector3f &I, ಸ್ಥಿರಾಂಕ Vector3f &D)
 {
 	_gain_p = P;
 	_gain_i = I;
 	_gain_d = D;
 }
 
-void RateControl::setSaturationStatus(const Vector3<bool> &saturation_positive,
-				      const Vector3<bool> &saturation_negative)
+ಶೂನ್ಯ ದರ_Control::ಗಣ_Saturation_ಸ್ಥಿತಿ(ಸ್ಥಿರಾಂಕ Vector3<ತಾರ್ಕಿಕ> &saturation_ಧನಾತ್ಮಕ,
+				      ಸ್ಥಿರಾಂಕ Vector3<ತಾರ್ಕಿಕ> &saturation_negative)
 {
-	_control_allocator_saturation_positive = saturation_positive;
+	control_allocator_saturation_ಧನಾತ್ಮಕ = saturation_ಧನಾತ್ಮಕ;
 	_control_allocator_saturation_negative = saturation_negative;
 }
 
-void RateControl::setPositiveSaturationFlag(size_t axis, bool is_saturated)
+ಶೂನ್ಯ ದರ_Control::ಗಣ_ಧನಾತ್ಮಕ_Saturation_Flag(size_t axis, ತಾರ್ಕಿಕ is_saturated)
 {
-	if (axis < 3) {
-		_control_allocator_saturation_positive(axis) = is_saturated;
+	ಆದರೆ (axis < 3) {
+		control_allocator_saturation_ಧನಾತ್ಮಕ(axis) = is_saturated;
 	}
 }
 
-void RateControl::setNegativeSaturationFlag(size_t axis, bool is_saturated)
+ಶೂನ್ಯ ದರ_Control::ಗಣ_Negative_Saturation_Flag(size_t axis, ತಾರ್ಕಿಕ is_saturated)
 {
-	if (axis < 3) {
+	ಆದರೆ (axis < 3) {
 		_control_allocator_saturation_negative(axis) = is_saturated;
 	}
 }
 
-Vector3f RateControl::update(const Vector3f &rate, const Vector3f &rate_sp, const Vector3f &angular_accel,
-			     const float dt, const bool landed)
+Vector3f ದರ_Control::update(ಸ್ಥಿರಾಂಕ Vector3f &ದರ, ಸ್ಥಿರಾಂಕ Vector3f &ದರ_sp, ಸ್ಥಿರಾಂಕ Vector3f &angular_accel,
+			     ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ dt, ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ landed)
 {
 	// angular rates error
-	Vector3f rate_error = rate_sp - rate;
+	Vector3f ದರ_error = ದರ_sp - ದರ;
 
 	// PID control with feed forward
-	Vector3f torque = _gain_p.emult(rate_error) + _rate_int - _gain_d.emult(angular_accel) + _gain_ff.emult(rate_sp);
+	Vector3f torque = _gain_p.emult(ದರ_error) + ದರ_int - _gain_d.emult(angular_accel) + _gain_ff.emult(ದರ_sp);
 
 	// update integral only if we are not landed
-	if (!landed) {
-		updateIntegral(rate_error, dt);
+	ಆದರೆ (!landed) {
+		updateIntegral(ದರ_error, dt);
 	}
 
-	return torque;
+	ಹಿಂತಿರುಗಿ torque;
 }
 
-void RateControl::updateIntegral(Vector3f &rate_error, const float dt)
+ಶೂನ್ಯ ದರ_Control::updateIntegral(Vector3f &ದರ_error, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ dt)
 {
-	for (int i = 0; i < 3; i++) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 3; i++) {
 		// prevent further positive control saturation
-		if (_control_allocator_saturation_positive(i)) {
-			rate_error(i) = math::min(rate_error(i), 0.f);
+		ಆದರೆ (control_allocator_saturation_ಧನಾತ್ಮಕ(i)) {
+			ದರ_error(i) = math::min(ದರ_error(i), 0.f);
 		}
 
 		// prevent further negative control saturation
-		if (_control_allocator_saturation_negative(i)) {
-			rate_error(i) = math::max(rate_error(i), 0.f);
+		ಆದರೆ (_control_allocator_saturation_negative(i)) {
+			ದರ_error(i) = math::max(ದರ_error(i), 0.f);
 		}
 
 		// I term factor: reduce the I gain with increasing rate error.
@@ -104,22 +104,22 @@ void RateControl::updateIntegral(Vector3f &rate_error, const float dt)
 		// The formula leads to a gradual decrease w/o steps, while only affecting the cases where it should:
 		// with the parameter set to 400 degrees, up to 100 deg rate error, i_factor is almost 1 (having no effect),
 		// and up to 200 deg error leads to <25% reduction of I.
-		float i_factor = rate_error(i) / math::radians(400.f);
-		i_factor = math::max(0.0f, 1.f - i_factor * i_factor);
+		ದಶಮಾಂಶ i_ಗುಣಕ = ದರ_error(i) / math::radians(400.f);
+		i_ಗುಣಕ = math::max(0.0f, 1.f - i_ಗುಣಕ * i_ಗುಣಕ);
 
 		// Perform the integration using a first order method
-		float rate_i = _rate_int(i) + i_factor * _gain_i(i) * rate_error(i) * dt;
+		ದಶಮಾಂಶ ದರ_i = ದರ_int(i) + i_ಗುಣಕ * _gain_i(i) * ದರ_error(i) * dt;
 
 		// do not propagate the result if out of range or invalid
-		if (PX4_ISFINITE(rate_i)) {
-			_rate_int(i) = math::constrain(rate_i, -_lim_int(i), _lim_int(i));
+		ಆದರೆ (PX4_ISFINITE(ದರ_i)) {
+			ದರ_int(i) = math::constrain(ದರ_i, -_lim_int(i), _lim_int(i));
 		}
 	}
 }
 
-void RateControl::getRateControlStatus(rate_ctrl_status_s &rate_ctrl_status)
+ಶೂನ್ಯ ದರ_Control::get_ದರ_Control_ಸ್ಥಿತಿ(ದರ_ctrl_ಸ್ಥಿತಿ_s &ದರ_ctrl_ಸ್ಥಿತಿ)
 {
-	rate_ctrl_status.rollspeed_integ = _rate_int(0);
-	rate_ctrl_status.pitchspeed_integ = _rate_int(1);
-	rate_ctrl_status.yawspeed_integ = _rate_int(2);
+	ದರ_ctrl_ಸ್ಥಿತಿ.rollspeed_integ = ದರ_int(0);
+	ದರ_ctrl_ಸ್ಥಿತಿ.pitchspeed_integ = ದರ_int(1);
+	ದರ_ctrl_ಸ್ಥಿತಿ.yawspeed_integ = ದರ_int(2);
 }

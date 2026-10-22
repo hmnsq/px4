@@ -13,22 +13,22 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "SquareMatrix.hpp"
-#include "Vector3.hpp"
+#ಅನ್ತರ್ಭಾವ "SquareMatrix.hpp"
+#ಅನ್ತರ್ಭಾವ "Vector3.hpp"
 
-namespace matrix
+ನಾಮಾಕಾಶ ಮಾತೃಕೆ
 {
 
-template<typename Type>
-class AxisAngle;
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type>
+ವರ್ಗ AxisAngle;
 
-template<typename Type>
-class Euler;
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type>
+ವರ್ಗ Euler;
 
-template<typename Type>
-class Quaternion;
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type>
+ವರ್ಗ Quaternion;
 
 /**
  * Direction cosine matrix class
@@ -36,23 +36,23 @@ class Quaternion;
  * The rotation between two coordinate frames is
  * described by this class.
  */
-template<typename Type>
-class Dcm : public SquareMatrix<Type, 3>
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type>
+ವರ್ಗ Dcm : ಸಾರ್ವಜನಿಕ ವರ್ಗಫಲ_ಮಾತೃಕೆ<Type, 3>
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	/**
 	 * Standard constructor
 	 *
 	 * Initializes to identity
 	 */
-	Dcm() : SquareMatrix<Type, 3>(eye<Type, 3>()) {}
+	Dcm() : ವರ್ಗಫಲ_ಮಾತೃಕೆ<Type, 3>(eye<Type, 3>()) {}
 
 	/**
 	 * Constructor from array
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm(const Type data_[3][3]) : SquareMatrix<Type, 3>(data_)
+	ಸ್ಪಷ್ಟ Dcm(ಸ್ಥಿರಾಂಕ Type ದತ್ತಾಂಶ_2[3][3]) : ವರ್ಗಫಲ_ಮಾತೃಕೆ<Type, 3>(ದತ್ತಾಂಶ_2)
 	{
 	}
 
@@ -61,7 +61,7 @@ public:
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm(const Type data_[9]) : SquareMatrix<Type, 3>(data_)
+	ಸ್ಪಷ್ಟ Dcm(ಸ್ಥಿರಾಂಕ Type ದತ್ತಾಂಶ_2[9]) : ವರ್ಗಫಲ_ಮಾತೃಕೆ<Type, 3>(ದತ್ತಾಂಶ_2)
 	{
 	}
 
@@ -70,7 +70,7 @@ public:
 	 *
 	 * @param other Matrix33 to set dcm to
 	 */
-	Dcm(const Matrix<Type, 3, 3> &other) : SquareMatrix<Type, 3>(other)
+	Dcm(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<Type, 3, 3> &other) : ವರ್ಗಫಲ_ಮಾತೃಕೆ<Type, 3>(other)
 	{
 	}
 
@@ -82,22 +82,22 @@ public:
 	 *
 	 * @param q quaternion to set dcm to
 	 */
-	Dcm(const Quaternion<Type> &q)
+	Dcm(ಸ್ಥಿರಾಂಕ Quaternion<Type> &q)
 	{
-		Dcm &dcm = *this;
-		const Type a = q(0);
-		const Type b = q(1);
-		const Type c = q(2);
-		const Type d = q(3);
-		const Type ab = a * b;
-		const Type ac = a * c;
-		const Type ad = a * d;
-		const Type bb = b * b;
-		const Type bc = b * c;
-		const Type bd = b * d;
-		const Type cc = c * c;
-		const Type cd = c * d;
-		const Type dd = d * d;
+		Dcm &dcm = *ಇದು;
+		ಸ್ಥಿರಾಂಕ Type a = q(0);
+		ಸ್ಥಿರಾಂಕ Type b = q(1);
+		ಸ್ಥಿರಾಂಕ Type c = q(2);
+		ಸ್ಥಿರಾಂಕ Type d = q(3);
+		ಸ್ಥಿರಾಂಕ Type ab = a * b;
+		ಸ್ಥಿರಾಂಕ Type ac = a * c;
+		ಸ್ಥಿರಾಂಕ Type ad = a * d;
+		ಸ್ಥಿರಾಂಕ Type bb = b * b;
+		ಸ್ಥಿರಾಂಕ Type bc = b * c;
+		ಸ್ಥಿರಾಂಕ Type bd = b * d;
+		ಸ್ಥಿರಾಂಕ Type cc = c * c;
+		ಸ್ಥಿರಾಂಕ Type cd = c * d;
+		ಸ್ಥಿರಾಂಕ Type dd = d * d;
 		dcm(0, 0) = Type(1) - Type(2) * (cc + dd);
 		dcm(0, 1) = Type(2) * (bc - ad);
 		dcm(0, 2) = Type(2) * (ac + bd);
@@ -118,15 +118,15 @@ public:
 	 *
 	 * @param euler euler angle instance
 	 */
-	Dcm(const Euler<Type> &euler)
+	Dcm(ಸ್ಥಿರಾಂಕ Euler<Type> &euler)
 	{
-		Dcm &dcm = *this;
-		Type cosPhi = Type(std::cos(euler.phi()));
-		Type sinPhi = Type(std::sin(euler.phi()));
-		Type cosThe = Type(std::cos(euler.theta()));
-		Type sinThe = Type(std::sin(euler.theta()));
-		Type cosPsi = Type(std::cos(euler.psi()));
-		Type sinPsi = Type(std::sin(euler.psi()));
+		Dcm &dcm = *ಇದು;
+		Type cosPhi = Type(std::ಕೋಜ್ಯಾ(euler.phi()));
+		Type sinPhi = Type(std::ಜ್ಯಾ(euler.phi()));
+		Type cosThe = Type(std::ಕೋಜ್ಯಾ(euler.theta()));
+		Type sinThe = Type(std::ಜ್ಯಾ(euler.theta()));
+		Type cosPsi = Type(std::ಕೋಜ್ಯಾ(euler.psi()));
+		Type sinPsi = Type(std::ಜ್ಯಾ(euler.psi()));
 
 		dcm(0, 0) = cosThe * cosPsi;
 		dcm(0, 1) = -cosPhi * sinPsi + sinPhi * sinThe * cosPsi;
@@ -151,29 +151,29 @@ public:
 	 *
 	 * @param euler euler angle instance
 	 */
-	Dcm(const AxisAngle<Type> &aa)
+	Dcm(ಸ್ಥಿರಾಂಕ AxisAngle<Type> &aa)
 	{
-		Dcm &dcm = *this;
+		Dcm &dcm = *ಇದು;
 		dcm = Quaternion<Type>(aa);
 	}
 
-	Vector3<Type> vee() const // inverse to Vector.hat() operation
+	Vector3<Type> vee() ಸ್ಥಿರಾಂಕ // inverse to Vector.hat() operation
 	{
-		const Dcm &A(*this);
-		return {-A(1, 2), A(0, 2), -A(0, 1)};
+		ಸ್ಥಿರಾಂಕ Dcm &A(*ಇದು);
+		ಹಿಂತಿರುಗಿ {-A(1, 2), A(0, 2), -A(0, 1)};
 	}
 
-	void renormalize()
+	ಶೂನ್ಯ renormalize()
 	{
 		/* renormalize rows */
-		for (size_t r = 0; r < 3; r++) {
-			matrix::Vector3<Type> rvec(Matrix<Type, 1, 3>(this->Matrix<Type, 3, 3>::row(r)).transpose());
-			this->Matrix<Type, 3, 3>::row(r) = rvec.normalized();
+		ಗಾಗಿ (size_t r = 0; r < 3; r++) {
+			ಮಾತೃಕೆ::Vector3<Type> rvec(ಮಾತೃಕೆ_2<Type, 1, 3>(ಇದು->ಮಾತೃಕೆ_2<Type, 3, 3>::ಅಡ್ಡಸಾಲು(r)).transpose());
+			ಇದು->ಮಾತೃಕೆ_2<Type, 3, 3>::ಅಡ್ಡಸಾಲು(r) = rvec.normalized();
 		}
 	}
 };
 
-using Dcmf = Dcm<float>;
-using Dcmd = Dcm<double>;
+ಬಳಸಿ Dcmf = Dcm<ದಶಮಾಂಶ>;
+ಬಳಸಿ Dcmd = Dcm<ದ್ವಿಗುಣ>;
 
 } // namespace matrix

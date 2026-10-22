@@ -4,9 +4,9 @@
 // Do NOT modify by hand.
 // -----------------------------------------------------------------------------
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
 namespace sym {
 
@@ -28,37 +28,37 @@ namespace sym {
  *     wind: Matrix21
  *     P: Matrix22
  */
-template <typename Scalar>
-void InitWindUsingAirspeed(const matrix::Matrix<Scalar, 3, 1>& v_local, const Scalar heading,
-                           const Scalar airspeed, const Scalar v_var, const Scalar heading_var,
-                           const Scalar sideslip_var, const Scalar airspeed_var,
-                           matrix::Matrix<Scalar, 2, 1>* const wind = nullptr,
-                           matrix::Matrix<Scalar, 2, 2>* const P = nullptr) {
+ಮಾದರಿ <typename Scalar>
+ಶೂನ್ಯ InitWindUsingAirspeed(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<Scalar, 3, 1>& v_local, ಸ್ಥಿರಾಂಕ Scalar heading,
+                           ಸ್ಥಿರಾಂಕ Scalar airspeed, ಸ್ಥಿರಾಂಕ Scalar v_var, ಸ್ಥಿರಾಂಕ Scalar heading_var,
+                           ಸ್ಥಿರಾಂಕ Scalar sideslip_var, ಸ್ಥಿರಾಂಕ Scalar airspeed_var,
+                           ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<Scalar, 2, 1>* ಸ್ಥಿರಾಂಕ wind = nullptr,
+                           ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<Scalar, 2, 2>* ಸ್ಥಿರಾಂಕ P = nullptr) {
   // Total ops: 29
 
   // Input arrays
 
   // Intermediate terms (9)
-  const Scalar _tmp0 = std::cos(heading);
-  const Scalar _tmp1 = std::sin(heading);
-  const Scalar _tmp2 = std::pow(_tmp1, Scalar(2));
-  const Scalar _tmp3 = std::pow(airspeed, Scalar(2));
-  const Scalar _tmp4 = _tmp3 * sideslip_var;
-  const Scalar _tmp5 = _tmp3 * heading_var;
-  const Scalar _tmp6 = std::pow(_tmp0, Scalar(2));
-  const Scalar _tmp7 = _tmp0 * _tmp1;
-  const Scalar _tmp8 = -_tmp4 * _tmp7 - _tmp5 * _tmp7 + _tmp7 * airspeed_var;
+  ಸ್ಥಿರಾಂಕ Scalar _tmp0 = std::ಕೋಜ್ಯಾ(heading);
+  ಸ್ಥಿರಾಂಕ Scalar _tmp1 = std::ಜ್ಯಾ(heading);
+  ಸ್ಥಿರಾಂಕ Scalar _tmp2 = std::ಘಾತ(_tmp1, Scalar(2));
+  ಸ್ಥಿರಾಂಕ Scalar _tmp3 = std::ಘಾತ(airspeed, Scalar(2));
+  ಸ್ಥಿರಾಂಕ Scalar _tmp4 = _tmp3 * sideslip_var;
+  ಸ್ಥಿರಾಂಕ Scalar _tmp5 = _tmp3 * heading_var;
+  ಸ್ಥಿರಾಂಕ Scalar _tmp6 = std::ಘಾತ(_tmp0, Scalar(2));
+  ಸ್ಥಿರಾಂಕ Scalar _tmp7 = _tmp0 * _tmp1;
+  ಸ್ಥಿರಾಂಕ Scalar _tmp8 = -_tmp4 * _tmp7 - _tmp5 * _tmp7 + _tmp7 * airspeed_var;
 
   // Output terms (2)
-  if (wind != nullptr) {
-    matrix::Matrix<Scalar, 2, 1>& _wind = (*wind);
+  ಆದರೆ (wind != nullptr) {
+    ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<Scalar, 2, 1>& _wind = (*wind);
 
     _wind(0, 0) = -_tmp0 * airspeed + v_local(0, 0);
     _wind(1, 0) = -_tmp1 * airspeed + v_local(1, 0);
   }
 
-  if (P != nullptr) {
-    matrix::Matrix<Scalar, 2, 2>& _p = (*P);
+  ಆದರೆ (P != nullptr) {
+    ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<Scalar, 2, 2>& _p = (*P);
 
     _p(0, 0) = _tmp2 * _tmp4 + _tmp2 * _tmp5 + _tmp6 * airspeed_var + v_var;
     _p(1, 0) = _tmp8;

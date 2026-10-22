@@ -31,194 +31,194 @@
  *
  ****************************************************************************/
 
-#include "bl_update_flash.h"
+#ಅನ್ತರ್ಭಾವ "bl_update_flash.h"
 
-#include <px4_platform_common/px4_config.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/px4_config.h>
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sched.h>
-#include <sys/stat.h>
+#ಅನ್ತರ್ಭಾವ <stdint.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
+#ಅನ್ತರ್ಭಾವ <unistd.h>
+#ಅನ್ತರ್ಭಾವ <fcntl.h>
+#ಅನ್ತರ್ಭಾವ <sched.h>
+#ಅನ್ತರ್ಭಾವ <sys/stat.h>
 
-#include <arch/board/board.h>
+#ಅನ್ತರ್ಭಾವ <arch/board/board.h>
 
-#include <nuttx/progmem.h>
+#ಅನ್ತರ್ಭಾವ <nuttx/progmem.h>
 
-#if defined(BL_UPDATE_WATCHDOG)
+#ಆದರೆ defined(BL_UPDATE_WATCHDOG)
 #  include <drivers/drv_watchdog.h>
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
 #  define watchdog_pet()
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-#if defined(CONFIG_ARCH_CHIP_STM32H7)
-#  define BL_FILE_SIZE_LIMIT	128*1024
-#  define STM_RAM_BASE        STM32_AXISRAM_BASE
-#  define PAGE_SIZE_MATTERS   1
-#elif defined(CONFIG_ARCH_CHIP_STM32F7)
-#  define BL_FILE_SIZE_LIMIT	32*1024
-#  define STM_RAM_BASE        STM32_SRAM_BASE
-#else
-#  define BL_FILE_SIZE_LIMIT  16384
-#  define STM_RAM_BASE        STM32_SRAM_BASE
-#endif
+#ಆದರೆ defined(CONFIG_ARCH_CHIP_STM32H7)
+#  define BL_FILE_ಗಾತ್ರ_ಎಲ್ಲೆ	128*1024
+#  define STM_RAM_ತಳ        STM32_AXISRAM_ತಳ
+#  define ಪುಟ_ಗಾತ್ರ_MATTERS   1
+#ಅಥವಾಆದರೆ defined(CONFIG_ARCH_CHIP_STM32F7)
+#  define BL_FILE_ಗಾತ್ರ_ಎಲ್ಲೆ	32*1024
+#  define STM_RAM_ತಳ        STM32_SRAM_ತಳ
+#ಇಲ್ಲದಿದ್ದರೆ
+#  define BL_FILE_ಗಾತ್ರ_ಎಲ್ಲೆ  16384
+#  define STM_RAM_ತಳ        STM32_SRAM_ತಳ
+#ಆದರೆ_ಅಂತ್ಯ
 
-namespace bl_update
+ನಾಮಾಕಾಶ bl_update
 {
 
-#if defined (CONFIG_STM32_STM32F4XXX) || defined (CONFIG_ARCH_CHIP_STM32F7) || \
+#ಆದರೆ defined (CONFIG_STM32_STM32F4XXX) || defined (CONFIG_ARCH_CHIP_STM32F7) || \
     defined (CONFIG_ARCH_CHIP_STM32H7)
 
-static Result write_flash(const uint8_t *buf, size_t image_size)
+ಸ್ಥಿರ ಫಲಿತಾಂಶ_2 write_flash(ಸ್ಥಿರಾಂಕ uint8_t *buf, size_t image_ಗಾತ್ರ)
 {
-	uint8_t *base = (uint8_t *) PX4_FLASH_BASE;
+	uint8_t *base = (uint8_t *) PX4_FLASH_ತಳ;
 
-	if (memcmp(base, buf, image_size) == 0) {
-		return Result::Unchanged;
+	ಆದರೆ (memcmp(base, buf, image_ಗಾತ್ರ) == 0) {
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ_2::Unchanged;
 	}
 
 	/* prevent other tasks from running while we do this */
-	sched_lock();
+	sched_ಬೀಗ();
 
 	/* The IWDG may already be running (CAN nodes start it in the bootloader)
 	 * and nothing else gets to pet it while the scheduler is locked. */
 	watchdog_pet();
-	const bool erased = up_progmem_eraseblock(0) >= 0;
+	ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ erased = ಮೇಲೆ_progmem_eraseblock(0) >= 0;
 	watchdog_pet();
 
 	/* Program even if the erase reported an error: the old bootloader is
 	 * already damaged, and a failed program reports it below. */
-	const ssize_t size = up_progmem_write((size_t) base, buf, image_size);
+	ಸ್ಥಿರಾಂಕ ssize_t ಗಾತ್ರ_2 = ಮೇಲೆ_progmem_write((size_t) base, buf, image_ಗಾತ್ರ);
 	watchdog_pet();
 
 	/* re-lock the flash control register */
-	stm32_flash_lock();
+	stm32_flash_ಬೀಗ();
 
 	sched_unlock();
 
-	if (size != (ssize_t) image_size) {
-		return erased ? Result::ProgramFailed : Result::EraseFailed;
+	ಆದರೆ (ಗಾತ್ರ_2 != (ssize_t) image_ಗಾತ್ರ) {
+		ಹಿಂತಿರುಗಿ erased ? ಫಲಿತಾಂಶ_2::ಕಾರ್ಯಕ್ರಮ_Failed : ಫಲಿತಾಂಶ_2::EraseFailed;
 	}
 
-	if (memcmp(base, buf, image_size) != 0) {
-		return Result::VerifyFailed;
+	ಆದರೆ (memcmp(base, buf, image_ಗಾತ್ರ) != 0) {
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ_2::VerifyFailed;
 	}
 
-	return Result::Updated;
+	ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ_2::Updated;
 }
 
-Result flash(const char *path)
+ಫಲಿತಾಂಶ_2 flash(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *ಮಾರ್ಗ)
 {
-	int fd = open(path, O_RDONLY);
+	ಪೂರ್ಣಾಂಕ fd = open(ಮಾರ್ಗ, O_RDONLY);
 
-	if (fd < 0) {
-		return Result::OpenFailed;
+	ಆದರೆ (fd < 0) {
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ_2::OpenFailed;
 	}
 
-	struct stat s;
+	ರಚನೆ stat s;
 
-	if (fstat(fd, &s) != 0) {
+	ಆದರೆ (fstat(fd, &s) != 0) {
 		close(fd);
-		return Result::OpenFailed;
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ_2::OpenFailed;
 	}
 
-	if (s.st_size > BL_FILE_SIZE_LIMIT) {
+	ಆದರೆ (s.st_size > BL_FILE_ಗಾತ್ರ_ಎಲ್ಲೆ) {
 		close(fd);
-		return Result::TooLarge;
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ_2::TooLarge;
 	}
 
-	const size_t file_size = s.st_size;
+	ಸ್ಥಿರಾಂಕ size_t file_ಗಾತ್ರ = s.st_size;
 
 	/* up_progmem_write() rejects a size that is not a multiple of its
 	 * program unit, and by then the old bootloader is erased. */
-#if defined(PAGE_SIZE_MATTERS)
-	const size_t align_mask = up_progmem_pagesize(0) - 1;
-#else
-	const size_t align_mask = sizeof(uint32_t) - 1;
-#endif
-	const size_t image_size = (file_size + align_mask) & ~align_mask;
+#ಆದರೆ defined(ಪುಟ_ಗಾತ್ರ_MATTERS)
+	ಸ್ಥಿರಾಂಕ size_t align_ಮುಖವಾಡ = ಮೇಲೆ_progmem_pagesize(0) - 1;
+#ಇಲ್ಲದಿದ್ದರೆ
+	ಸ್ಥಿರಾಂಕ size_t align_ಮುಖವಾಡ = ಗಾತ್ರ(uint32_t) - 1;
+#ಆದರೆ_ಅಂತ್ಯ
+	ಸ್ಥಿರಾಂಕ size_t image_ಗಾತ್ರ = (file_ಗಾತ್ರ + align_ಮುಖವಾಡ) & ~align_ಮುಖವಾಡ;
 
-	uint8_t *buf = (uint8_t *)malloc(image_size);
+	uint8_t *buf = (uint8_t *)ಸ್ಮರಣೆ_ಕೊಡು(image_ಗಾತ್ರ);
 
-	if (buf == nullptr) {
+	ಆದರೆ (buf == ಶೂನ್ಯಸೂಚಕ) {
 		close(fd);
-		return Result::NoMemory;
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ_2::No_ಸ್ಮರಣೆ;
 	}
 
-	memset(buf, 0xff, image_size);
+	memset(buf, 0xff, image_ಗಾತ್ರ);
 
-	const ssize_t bytes_read = read(fd, buf, file_size);
+	ಸ್ಥಿರಾಂಕ ssize_t ಬೈಟುಗಳು_read = ಪಠ(fd, buf, file_ಗಾತ್ರ);
 	close(fd);
 
-	if (bytes_read != (ssize_t) file_size) {
-		free(buf);
-		return Result::ReadFailed;
+	ಆದರೆ (ಬೈಟುಗಳು_read != (ssize_t) file_ಗಾತ್ರ) {
+		ಬಿಡುಗಡೆ(buf);
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ_2::ReadFailed;
 	}
 
-	const uint32_t *hdr = (const uint32_t *)buf;
+	ಸ್ಥಿರಾಂಕ uint32_t *hdr = (ಸ್ಥಿರಾಂಕ uint32_t *)buf;
 
-	if ((hdr[0] < STM_RAM_BASE) ||			/* stack not below RAM */
-	    (hdr[0] > (STM_RAM_BASE + (128 * 1024))) ||	/* stack not above RAM */
-	    (hdr[1] < PX4_FLASH_BASE) ||			/* entrypoint not below flash */
-	    ((hdr[1] - PX4_FLASH_BASE) > BL_FILE_SIZE_LIMIT)) {	/* entrypoint not outside bootloader */
-		free(buf);
-		return Result::InvalidImage;
+	ಆದರೆ ((hdr[0] < STM_RAM_ತಳ) ||			/* stack not below RAM */
+	    (hdr[0] > (STM_RAM_ತಳ + (128 * 1024))) ||	/* stack not above RAM */
+	    (hdr[1] < PX4_FLASH_ತಳ) ||			/* entrypoint not below flash */
+	    ((hdr[1] - PX4_FLASH_ತಳ) > BL_FILE_ಗಾತ್ರ_ಎಲ್ಲೆ)) {	/* entrypoint not outside bootloader */
+		ಬಿಡುಗಡೆ(buf);
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ_2::InvalidImage;
 	}
 
-	const Result result = write_flash(buf, image_size);
-	free(buf);
-	return result;
+	ಸ್ಥಿರಾಂಕ ಫಲಿತಾಂಶ_2 ಫಲಿತಾಂಶ = write_flash(buf, image_ಗಾತ್ರ);
+	ಬಿಡುಗಡೆ(buf);
+	ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 }
 
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
 
-Result flash(const char *path)
+ಫಲಿತಾಂಶ_2 flash(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *ಮಾರ್ಗ)
 {
-	return Result::NotSupported;
+	ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ_2::NotSupported;
 }
 
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-const char *result_str(Result result)
+ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *ಫಲಿತಾಂಶ_str(ಫಲಿತಾಂಶ_2 ಫಲಿತಾಂಶ)
 {
-	switch (result) {
-	case Result::Updated:
-		return "bootloader updated";
+	ಆಯ್ಕೆ (ಫಲಿತಾಂಶ) {
+	ಸ್ಥಿತಿ ಫಲಿತಾಂಶ_2::Updated:
+		ಹಿಂತಿರುಗಿ "bootloader updated";
 
-	case Result::Unchanged:
-		return "bootloader unchanged";
+	ಸ್ಥಿತಿ ಫಲಿತಾಂಶ_2::Unchanged:
+		ಹಿಂತಿರುಗಿ "bootloader unchanged";
 
-	case Result::NotSupported:
-		return "not supported on this hardware";
+	ಸ್ಥಿತಿ ಫಲಿತಾಂಶ_2::NotSupported:
+		ಹಿಂತಿರುಗಿ "not supported on this hardware";
 
-	case Result::OpenFailed:
-		return "cannot open bootloader file";
+	ಸ್ಥಿತಿ ಫಲಿತಾಂಶ_2::OpenFailed:
+		ಹಿಂತಿರುಗಿ "cannot open bootloader file";
 
-	case Result::TooLarge:
-		return "bootloader file too large";
+	ಸ್ಥಿತಿ ಫಲಿತಾಂಶ_2::TooLarge:
+		ಹಿಂತಿರುಗಿ "bootloader file too large";
 
-	case Result::NoMemory:
-		return "out of memory";
+	ಸ್ಥಿತಿ ಫಲಿತಾಂಶ_2::No_ಸ್ಮರಣೆ:
+		ಹಿಂತಿರುಗಿ "out of memory";
 
-	case Result::ReadFailed:
-		return "bootloader file read error";
+	ಸ್ಥಿತಿ ಫಲಿತಾಂಶ_2::ReadFailed:
+		ಹಿಂತಿರುಗಿ "bootloader file read error";
 
-	case Result::InvalidImage:
-		return "not a bootloader image";
+	ಸ್ಥಿತಿ ಫಲಿತಾಂಶ_2::InvalidImage:
+		ಹಿಂತಿರುಗಿ "not a bootloader image";
 
-	case Result::EraseFailed:
-		return "flash erase failed, retry before rebooting";
+	ಸ್ಥಿತಿ ಫಲಿತಾಂಶ_2::EraseFailed:
+		ಹಿಂತಿರುಗಿ "flash erase failed, retry before rebooting";
 
-	case Result::ProgramFailed:
-		return "flash program failed, retry before rebooting";
+	ಸ್ಥಿತಿ ಫಲಿತಾಂಶ_2::ಕಾರ್ಯಕ್ರಮ_Failed:
+		ಹಿಂತಿರುಗಿ "flash program failed, retry before rebooting";
 
-	case Result::VerifyFailed:
-		return "verify failed, retry before rebooting";
+	ಸ್ಥಿತಿ ಫಲಿತಾಂಶ_2::VerifyFailed:
+		ಹಿಂತಿರುಗಿ "verify failed, retry before rebooting";
 	}
 
-	return "unknown error";
+	ಹಿಂತಿರುಗಿ "unknown error";
 }
 
 } // namespace bl_update

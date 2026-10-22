@@ -31,40 +31,40 @@
  *
  ****************************************************************************/
 
-#include "clock_offset_estimator.hpp"
+#ಅನ್ತರ್ಭಾವ "clock_offset_estimator.hpp"
 
-hrt_abstime ClockOffsetEstimator::toLocal(uint64_t remote_us, hrt_abstime local_us)
+hrt_abstime Clock_ಸ್ಥಾನಾಂತರ_Estimator::ಗಮ್ಯ_Local(uint64_t remote_us, hrt_abstime local_us)
 {
-	if (remote_us == 0) {
-		return 0;
+	ಆದರೆ (remote_us == 0) {
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
-	const int64_t lag = static_cast<int64_t>(local_us) - static_cast<int64_t>(remote_us);
+	ಸ್ಥಿರಾಂಕ int64_t lag = static_cast<int64_t>(local_us) - static_cast<int64_t>(remote_us);
 
-	if (!_initialized || lag > _link_offset_us + kResetThresholdUs) {
+	ಆದರೆ (!_initialized || lag > link_ಸ್ಥಾನಾಂತರ_us + k_Reset_ಮಿತಿ_Us) {
 		// Bootstrap, or remote-clock discontinuity.
-		_link_offset_us = lag;
-		_initialized = true;
+		link_ಸ್ಥಾನಾಂತರ_us = lag;
+		_initialized = ನಿಜ;
 
-	} else {
+	} ಇಲ್ಲದಿದ್ದರೆ {
 		// Drift the floor up at the worst-case relative clock rate so we don't
 		// pin below the true offset when HRT runs faster than the remote.
-		const hrt_abstime dt = (local_us > _last_update_us) ? (local_us - _last_update_us) : 0;
-		_link_offset_us += static_cast<int64_t>(dt) * kMaxClockDriftPpm / 1'000'000;
+		ಸ್ಥಿರಾಂಕ hrt_abstime dt = (local_us > ಕೊನೆಯ_update_us) ? (local_us - ಕೊನೆಯ_update_us) : 0;
+		link_ಸ್ಥಾನಾಂತರ_us += static_cast<int64_t>(dt) * kMaxClockDriftPpm / 1'000'000;
 
-		if (lag < _link_offset_us) {
-			_link_offset_us = lag;
+		ಆದರೆ (lag < link_ಸ್ಥಾನಾಂತರ_us) {
+			link_ಸ್ಥಾನಾಂತರ_us = lag;
 		}
 	}
 
-	_last_update_us = local_us;
+	ಕೊನೆಯ_update_us = local_us;
 
-	const int64_t result = static_cast<int64_t>(remote_us) + _link_offset_us;
+	ಸ್ಥಿರಾಂಕ int64_t ಫಲಿತಾಂಶ = static_cast<int64_t>(remote_us) + link_ಸ್ಥಾನಾಂತರ_us;
 
 	// Mapped HRT cannot lie after receipt.
-	if (result <= 0 || result > static_cast<int64_t>(local_us)) {
-		return 0;
+	ಆದರೆ (ಫಲಿತಾಂಶ <= 0 || ಫಲಿತಾಂಶ > static_cast<int64_t>(local_us)) {
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
-	return static_cast<hrt_abstime>(result);
+	ಹಿಂತಿರುಗಿ static_cast<hrt_abstime>(ಫಲಿತಾಂಶ);
 }

@@ -1,11 +1,11 @@
-#pragma once
+#ಸೂಚನೆ once
 
 // Fix for ctype_base.h character class masks
-#define _U 0x01
-#define _L 0x02
-#define _N 0x04
-#define _X 0x08
-#define _S 0x10
-#define _P 0x20
-#define _B 0x40
-#define _C 0x80
+#ವ್ಯಾಖ್ಯಾನಿಸು _U 0x01
+#ವ್ಯಾಖ್ಯಾನಿಸು _L 0x02
+#ವ್ಯಾಖ್ಯಾನಿಸು _N 0x04
+#ವ್ಯಾಖ್ಯಾನಿಸು _X 0x08
+#ವ್ಯಾಖ್ಯಾನಿಸು _S 0x10
+#ವ್ಯಾಖ್ಯಾನಿಸು _P 0x20
+#ವ್ಯಾಖ್ಯಾನಿಸು _B 0x40
+#ವ್ಯಾಖ್ಯಾನಿಸು _C 0x80

@@ -37,75 +37,75 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <containers/List.hpp>
-#include <px4_platform_common/defines.h>
-#include <parameters/param.h>
+#ಅನ್ತರ್ಭಾವ <containers/List.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <parameters/param.h>
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
-class Block;
+ವರ್ಗ ಖಂಡ;
 
 // A base class for block params that enables traversing linked list.
-class BlockParamBase : public ListNode<BlockParamBase *>
+ವರ್ಗ ಖಂಡ_Param_ತಳ : ಸಾರ್ವಜನಿಕ List_ಗಂಟು<ಖಂಡ_Param_ತಳ *>
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	/**
 	 * Instantiate a block param base.
 	 *
 	 * @param parent_prefix Set to true to include the parent name in the parameter name
 	 */
-	BlockParamBase(Block *parent, const char *name, bool parent_prefix = true);
-	virtual ~BlockParamBase() = default;
+	ಖಂಡ_Param_ತಳ(ಖಂಡ *ಪೋಷಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, ತಾರ್ಕಿಕ ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ = ನಿಜ);
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_Param_ತಳ() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	virtual bool update() = 0;
-	const char *getName() const { return param_name(_handle); }
+	ವಾಸ್ತವಿಕ ತಾರ್ಕಿಕ update() = 0;
+	ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *getName() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ param_name(_handle); }
 
-protected:
+ಸಂರಕ್ಷಿತ:
 	param_t _handle{PARAM_INVALID};
 };
 
 // Parameters that are tied to blocks for updating and naming.
-template <class T>
-class __EXPORT BlockParam final : public BlockParamBase
+ಮಾದರಿ <ವರ್ಗ T>
+ವರ್ಗ __EXPORT ಖಂಡ_Param final : ಸಾರ್ವಜನಿಕ ಖಂಡ_Param_ತಳ
 {
-public:
-	BlockParam(Block *block, const char *name, bool parent_prefix = true);
-	BlockParam(Block *block, const char *name, bool parent_prefix, T &extern_val);
+ಸಾರ್ವಜನಿಕ:
+	ಖಂಡ_Param(ಖಂಡ *ಖಂಡ_2, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, ತಾರ್ಕಿಕ ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ = ನಿಜ);
+	ಖಂಡ_Param(ಖಂಡ *ಖಂಡ_2, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, ತಾರ್ಕಿಕ ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ, T &extern_val);
 
-	~BlockParam() override = default;
+	~ಖಂಡ_Param() override = ಪೂರ್ವನಿಯೋಜಿತ;
 
 	// no copy, assignment, move, move assignment
-	BlockParam(const BlockParam &) = delete;
-	BlockParam &operator=(const BlockParam &) = delete;
-	BlockParam(BlockParam &&) = delete;
-	BlockParam &operator=(BlockParam &&) = delete;
+	ಖಂಡ_Param(ಸ್ಥಿರಾಂಕ ಖಂಡ_Param &) = ಅಳಿಸು;
+	ಖಂಡ_Param &ಕ್ರಿಯಾಕಾರಕ=(ಸ್ಥಿರಾಂಕ ಖಂಡ_Param &) = ಅಳಿಸು;
+	ಖಂಡ_Param(ಖಂಡ_Param &&) = ಅಳಿಸು;
+	ಖಂಡ_Param &ಕ್ರಿಯಾಕಾರಕ=(ಖಂಡ_Param &&) = ಅಳಿಸು;
 
-	T get() const { return _val; }
+	T get() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _val; }
 
 	// Store the parameter value to the parameter storage (@see param_set())
-	bool commit() { return (param_set(_handle, &_val) == PX4_OK); }
+	ತಾರ್ಕಿಕ commit() { ಹಿಂತಿರುಗಿ (param_ಗಣ(_handle, &_val) == PX4_OK); }
 
 	// Store the parameter value to the parameter storage, w/o notifying the system (@see param_set_no_notification())
-	bool commit_no_notification() { return (param_set_no_notification(_handle, &_val) == PX4_OK); }
+	ತಾರ್ಕಿಕ commit_no_notification() { ಹಿಂತಿರುಗಿ (param_ಗಣ_no_notification(_handle, &_val) == PX4_OK); }
 
-	void set(T val) { _val = val; }
+	ಶೂನ್ಯ ಗಣ(T val) { _val = val; }
 
-	bool update() override { return (param_get(_handle, &_val) == PX4_OK); }
+	ತಾರ್ಕಿಕ update() override { ಹಿಂತಿರುಗಿ (param_get(_handle, &_val) == PX4_OK); }
 
-protected:
+ಸಂರಕ್ಷಿತ:
 	T _val;
 };
 
-template <>
-bool BlockParam<bool>::update();
+ಮಾದರಿ <>
+ತಾರ್ಕಿಕ ಖಂಡ_Param<ತಾರ್ಕಿಕ>::update();
 
-typedef BlockParam<float> BlockParamFloat;
-typedef BlockParam<int32_t> BlockParamInt;
-typedef BlockParam<bool> BlockParamBool;
-typedef BlockParam<float &> BlockParamExtFloat;
-typedef BlockParam<int32_t &> BlockParamExtInt;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಖಂಡ_Param<ದಶಮಾಂಶ> ಖಂಡ_Param_Float;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಖಂಡ_Param<int32_t> ಖಂಡ_Param_Int;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಖಂಡ_Param<ತಾರ್ಕಿಕ> ಖಂಡ_Param_Bool;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಖಂಡ_Param<ದಶಮಾಂಶ &> ಖಂಡ_Param_Ext_Float;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಖಂಡ_Param<int32_t &> ಖಂಡ_Param_Ext_Int;
 
 } // namespace control

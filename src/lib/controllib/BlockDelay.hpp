@@ -37,78 +37,78 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
-template<class Type, size_t M, size_t N, size_t LEN>
-class __EXPORT BlockDelay: public Block
+ಮಾದರಿ<ವರ್ಗ Type, size_t M, size_t N, size_t LEN>
+ವರ್ಗ __EXPORT ಖಂಡ_Delay: ಸಾರ್ವಜನಿಕ ಖಂಡ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockDelay(SuperBlock *parent, const char *name) :
-		Block(parent, name),
+	ಖಂಡ_Delay(Super_ಖಂಡ *ಪೋಷಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) :
+		ಖಂಡ(ಪೋಷಕ, name),
 		_h(),
-		_index(0),
+		ಸೂಚ್ಯಂಕ_2(0),
 		_delay(-1)
 	{}
-	virtual ~BlockDelay() = default;
-	matrix::Matrix<Type, M, N> update(const matrix::Matrix<Type, M, N> &u)
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_Delay() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<Type, M, N> update(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<Type, M, N> &u)
 	{
 		// store current value
-		_h[_index] = u;
+		_h[ಸೂಚ್ಯಂಕ_2] = u;
 
 		// delay starts at zero, then increases to LEN
 		_delay += 1;
 
-		if (_delay > (int)(LEN - 1)) {
+		ಆದರೆ (_delay > (ಪೂರ್ಣಾಂಕ)(LEN - 1)) {
 			_delay = LEN - 1;
 		}
 
 		// compute position of delayed value
-		int j = _index - _delay;
+		ಪೂರ್ಣಾಂಕ j = ಸೂಚ್ಯಂಕ_2 - _delay;
 
-		if (j < 0) {
+		ಆದರೆ (j < 0) {
 			j += LEN;
 		}
 
 		// increment storage position
-		_index += 1;
+		ಸೂಚ್ಯಂಕ_2 += 1;
 
-		if (_index > (LEN - 1)) {
-			_index  = 0;
+		ಆದರೆ (ಸೂಚ್ಯಂಕ_2 > (LEN - 1)) {
+			ಸೂಚ್ಯಂಕ_2  = 0;
 		}
 
 		// get delayed value
-		return _h[j];
+		ಹಿಂತಿರುಗಿ _h[j];
 	}
-	matrix::Matrix<Type, M, N> get(size_t delay)
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<Type, M, N> get(size_t delay)
 	{
-		int j = _index - delay;
+		ಪೂರ್ಣಾಂಕ j = ಸೂಚ್ಯಂಕ_2 - delay;
 
-		if (j < 0) { j += LEN; }
+		ಆದರೆ (j < 0) { j += LEN; }
 
-		return _h[j];
+		ಹಿಂತಿರುಗಿ _h[j];
 	}
-private:
-// attributes
-	matrix::Matrix<Type, M, N> _h[LEN];
-	size_t _index;
-	int _delay;
+ಖಾಸಗಿ:
+//ಗುಣಲಕ್ಷಣಗಳು
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<Type, M, N> _h[LEN];
+	size_t ಸೂಚ್ಯಂಕ_2;
+	ಪೂರ್ಣಾಂಕ _delay;
 };
 
 } // namespace control

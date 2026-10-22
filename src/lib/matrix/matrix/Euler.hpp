@@ -13,9 +13,9 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-namespace matrix
+ನಾಮಾಕಾಶ ಮಾತೃಕೆ
 {
 
 /**
@@ -24,22 +24,22 @@ namespace matrix
  * This class describes the rotation from frame 1
  * to frame 2 via 3-2-1 intrinsic Tait-Bryan rotation sequence.
  */
-template<typename Type>
-class Euler : public Vector<Type, 3>
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type>
+ವರ್ಗ Euler : ಸಾರ್ವಜನಿಕ ಸದಿಶ<Type, 3>
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	/**
 	 * Standard constructor
 	 */
-	Euler() = default;
+	Euler() = ಪೂರ್ವನಿಯೋಜಿತ;
 
 	/**
 	 * Copy constructor
 	 *
 	 * @param other vector to copy
 	 */
-	Euler(const Vector<Type, 3> &other) :
-		Vector<Type, 3>(other)
+	Euler(ಸ್ಥಿರಾಂಕ ಸದಿಶ<Type, 3> &other) :
+		ಸದಿಶ<Type, 3>(other)
 	{
 	}
 
@@ -48,8 +48,8 @@ public:
 	 *
 	 * @param other Matrix31 to copy
 	 */
-	Euler(const Matrix<Type, 3, 1> &other) :
-		Vector<Type, 3>(other)
+	Euler(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<Type, 3, 1> &other) :
+		ಸದಿಶ<Type, 3>(other)
 	{
 	}
 
@@ -64,7 +64,7 @@ public:
 	 * @param theta_ rotation angle about Y axis
 	 * @param psi_ rotation angle about Z axis
 	 */
-	Euler(Type phi_, Type theta_, Type psi_) : Vector<Type, 3>()
+	Euler(Type phi_, Type theta_, Type psi_) : ಸದಿಶ<Type, 3>()
 	{
 		phi() = phi_;
 		theta() = theta_;
@@ -81,19 +81,19 @@ public:
 	 *
 	 * @param dcm Direction cosine matrix
 	*/
-	Euler(const Dcm<Type> &dcm)
+	Euler(ಸ್ಥಿರಾಂಕ Dcm<Type> &dcm)
 	{
 		theta() = std::asin(-dcm(2, 0));
 
-		if ((std::fabs(theta() - Type(M_PI / 2))) < Type(1.0e-3)) {
+		ಆದರೆ ((std::fabs(theta() - Type(M_PI / 2))) < Type(1.0e-3)) {
 			phi() = 0;
 			psi() = std::atan2(dcm(1, 2), dcm(0, 2));
 
-		} else if ((std::fabs(theta() + Type(M_PI / 2))) < Type(1.0e-3)) {
+		} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ ((std::fabs(theta() + Type(M_PI / 2))) < Type(1.0e-3)) {
 			phi() = 0;
 			psi() = std::atan2(-dcm(1, 2), -dcm(0, 2));
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			phi() = std::atan2(dcm(2, 1), dcm(2, 2));
 			psi() = std::atan2(dcm(1, 0), dcm(0, 0));
 		}
@@ -109,39 +109,39 @@ public:
 	 *
 	 * @param q quaternion
 	*/
-	Euler(const Quaternion<Type> &q) : Vector<Type, 3>(Euler(Dcm<Type>(q)))
+	Euler(ಸ್ಥಿರಾಂಕ Quaternion<Type> &q) : ಸದಿಶ<Type, 3>(Euler(Dcm<Type>(q)))
 	{
 	}
 
-	inline Type phi() const
+	ಸಾಲೊಳಗೆ Type phi() ಸ್ಥಿರಾಂಕ
 	{
-		return (*this)(0);
+		ಹಿಂತಿರುಗಿ (*ಇದು)(0);
 	}
-	inline Type theta() const
+	ಸಾಲೊಳಗೆ Type theta() ಸ್ಥಿರಾಂಕ
 	{
-		return (*this)(1);
+		ಹಿಂತಿರುಗಿ (*ಇದು)(1);
 	}
-	inline Type psi() const
+	ಸಾಲೊಳಗೆ Type psi() ಸ್ಥಿರಾಂಕ
 	{
-		return (*this)(2);
+		ಹಿಂತಿರುಗಿ (*ಇದು)(2);
 	}
 
-	inline Type &phi()
+	ಸಾಲೊಳಗೆ Type &phi()
 	{
-		return (*this)(0);
+		ಹಿಂತಿರುಗಿ (*ಇದು)(0);
 	}
-	inline Type &theta()
+	ಸಾಲೊಳಗೆ Type &theta()
 	{
-		return (*this)(1);
+		ಹಿಂತಿರುಗಿ (*ಇದು)(1);
 	}
-	inline Type &psi()
+	ಸಾಲೊಳಗೆ Type &psi()
 	{
-		return (*this)(2);
+		ಹಿಂತಿರುಗಿ (*ಇದು)(2);
 	}
 
 };
 
-using Eulerf = Euler<float>;
-using Eulerd = Euler<double>;
+ಬಳಸಿ Eulerf = Euler<ದಶಮಾಂಶ>;
+ಬಳಸಿ Eulerd = Euler<ದ್ವಿಗುಣ>;
 
 } // namespace matrix

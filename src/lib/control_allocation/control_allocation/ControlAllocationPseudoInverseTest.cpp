@@ -39,64 +39,64 @@
  * @author Julien Lecoeur <julien.lecoeur@gmail.com>
  */
 
-#include <gtest/gtest.h>
-#include <ControlAllocationPseudoInverse.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <ControlAllocationPseudoInverse.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-TEST(ControlAllocationTest, AllZeroCase)
+TEST(Control_ಹಂಚಿಕೆ_Test, AllZeroCase)
 {
-	ControlAllocationPseudoInverse method;
+	Control_ಹಂಚಿಕೆ_Pseudo_Inverse ವಿಧಾನ;
 
-	matrix::Vector<float, 6> control_sp;
-	matrix::Vector<float, 6> control_allocated;
-	matrix::Vector<float, 6> control_allocated_expected;
-	matrix::Matrix<float, 6, 16> effectiveness;
-	matrix::Vector<float, 16> actuator_sp;
-	matrix::Vector<float, 16> actuator_trim;
-	matrix::Vector<float, 16> linearization_point;
-	matrix::Vector<float, 16> actuator_sp_expected;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 6> control_sp;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 6> control_allocated;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 6> control_allocated_expected;
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 6, 16> effectiveness;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 16> actuator_sp;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 16> actuator_trim;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 16> linearization_ಬಿಂದು;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 16> actuator_sp_expected;
 
-	method.setEffectivenessMatrix(effectiveness, actuator_trim, linearization_point, 16, false);
-	method.setControlSetpoint(control_sp);
-	method.allocate();
-	method.clipActuatorSetpoint();
-	actuator_sp = method.getActuatorSetpoint();
-	control_allocated_expected = method.getAllocatedControl();
+	ವಿಧಾನ.ಗಣ_Effectiveness_ಮಾತೃಕೆ(effectiveness, actuator_trim, linearization_ಬಿಂದು, 16, ಸುಳ್ಳು);
+	ವಿಧಾನ.ಗಣ_Control_Setpoint(control_sp);
+	ವಿಧಾನ.allocate();
+	ವಿಧಾನ.clipActuatorSetpoint();
+	actuator_sp = ವಿಧಾನ.getActuatorSetpoint();
+	control_allocated_expected = ವಿಧಾನ.getAllocatedControl();
 
 	EXPECT_EQ(actuator_sp, actuator_sp_expected);
 	EXPECT_EQ(control_allocated, control_allocated_expected);
 }
 
-TEST(ControlAllocationMetricTest, AllZeroCase)
+TEST(Control_ಹಂಚಿಕೆ_Metric_Test, AllZeroCase)
 {
-	ControlAllocationPseudoInverse method;
+	Control_ಹಂಚಿಕೆ_Pseudo_Inverse ವಿಧಾನ;
 
-	matrix::Vector<float, 6> control_sp;
-	matrix::Vector<float, 6> control_allocated;
-	matrix::Vector<float, 6> control_allocated_expected;
-	matrix::Matrix<float, 6, 16> effectiveness;
-	matrix::Vector<float, 16> actuator_sp;
-	matrix::Vector<float, 16> actuator_trim;
-	matrix::Vector<float, 16> linearization_point;
-	matrix::Vector<float, 16> actuator_sp_expected;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 6> control_sp;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 6> control_allocated;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 6> control_allocated_expected;
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 6, 16> effectiveness;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 16> actuator_sp;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 16> actuator_trim;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 16> linearization_ಬಿಂದು;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 16> actuator_sp_expected;
 
-	method.setMetricAllocation(true);
-	method.setEffectivenessMatrix(effectiveness, actuator_trim, linearization_point, 16, false);
-	method.setControlSetpoint(control_sp);
-	method.allocate();
-	actuator_sp = method.getActuatorSetpoint();
-	control_allocated_expected = method.getAllocatedControl();
+	ವಿಧಾನ.ಗಣ_Metric_ಹಂಚಿಕೆ(ನಿಜ);
+	ವಿಧಾನ.ಗಣ_Effectiveness_ಮಾತೃಕೆ(effectiveness, actuator_trim, linearization_ಬಿಂದು, 16, ಸುಳ್ಳು);
+	ವಿಧಾನ.ಗಣ_Control_Setpoint(control_sp);
+	ವಿಧಾನ.allocate();
+	actuator_sp = ವಿಧಾನ.getActuatorSetpoint();
+	control_allocated_expected = ವಿಧಾನ.getAllocatedControl();
 
 	EXPECT_EQ(actuator_sp, actuator_sp_expected);
 	EXPECT_EQ(control_allocated, control_allocated_expected);
 }
 
-namespace
+ನಾಮಾಕಾಶ
 {
 
 // Surveyed hexarotor; rows roll/pitch/yaw/thrust xyz, one column per rotor
-constexpr float kSurveyedHexarotor[6][6] = {
+constexpr ದಶಮಾಂಶ kSurveyedHexarotor[6][6] = {
 	{-5.947500f,  5.934500f,  2.964000f, -2.853500f, -2.990000f,  2.840500f},
 	{ 0.071500f,  0.071500f,  5.063500f, -4.972500f,  5.063500f, -4.972500f},
 	{-0.325000f,  0.325000f, -0.325000f,  0.325000f,  0.325000f, -0.325000f},
@@ -105,40 +105,40 @@ constexpr float kSurveyedHexarotor[6][6] = {
 	{-6.500000f, -6.500000f, -6.500000f, -6.500000f, -6.500000f, -6.500000f}
 };
 
-Matrix<float, 6, 16> surveyedHexarotor(uint16_t stopped_mask)
+ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 6, 16> surveyedHexarotor(uint16_t stopped_ಮುಖವಾಡ)
 {
-	Matrix<float, 6, 16> effectiveness;
-	effectiveness.setZero();
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 6, 16> effectiveness;
+	effectiveness.ಗಣ_Zero();
 
-	for (int i = 0; i < 6; i++) {
-		if (stopped_mask & (1u << i)) {
-			continue;
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 6; i++) {
+		ಆದರೆ (stopped_ಮುಖವಾಡ & (1u << i)) {
+			ಮುಂದುವರಿ;
 		}
 
-		for (int axis = 0; axis < 6; axis++) {
+		ಗಾಗಿ (ಪೂರ್ಣಾಂಕ axis = 0; axis < 6; axis++) {
 			effectiveness(axis, i) = kSurveyedHexarotor[axis][i];
 		}
 	}
 
-	return effectiveness;
+	ಹಿಂತಿರುಗಿ effectiveness;
 }
 
-struct Rotor {
-	float px;
-	float py;
-	float km;
+ರಚನೆ Rotor {
+	ದಶಮಾಂಶ px;
+	ದಶಮಾಂಶ py;
+	ದಶಮಾಂಶ km;
 };
 
 // upward rotors as in ActuatorEffectivenessRotors
-Matrix<float, 6, 16> planarRotors(const Rotor *rotors, int count, uint16_t stopped_mask = 0)
+ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 6, 16> planarRotors(ಸ್ಥಿರಾಂಕ Rotor *rotors, ಪೂರ್ಣಾಂಕ ಎಣಿಕೆ_2, uint16_t stopped_ಮುಖವಾಡ = 0)
 {
-	constexpr float ct = 6.5f;
-	Matrix<float, 6, 16> effectiveness;
-	effectiveness.setZero();
+	constexpr ದಶಮಾಂಶ ct = 6.5f;
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 6, 16> effectiveness;
+	effectiveness.ಗಣ_Zero();
 
-	for (int i = 0; i < count; i++) {
-		if (stopped_mask & (1u << i)) {
-			continue;
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < ಎಣಿಕೆ_2; i++) {
+		ಆದರೆ (stopped_ಮುಖವಾಡ & (1u << i)) {
+			ಮುಂದುವರಿ;
 		}
 
 		effectiveness(0, i) = -ct * rotors[i].py;
@@ -147,7 +147,7 @@ Matrix<float, 6, 16> planarRotors(const Rotor *rotors, int count, uint16_t stopp
 		effectiveness(5, i) = -ct;
 	}
 
-	return effectiveness;
+	ಹಿಂತಿರುಗಿ effectiveness;
 }
 
 // In-tree geometries 4001_quad_x, 6001_hexa_x, 8001_octo_x
@@ -162,9 +162,9 @@ constexpr Rotor kOctoX[] = {{0.46f, 0.19f, -0.05f}, {-0.46f, -0.19f, -0.05f}, {0
 
 } // namespace
 
-TEST(ControlAllocationPseudoInverseTest, DropDependentAxesKeepsIndependentGeometries)
+TEST(Control_ಹಂಚಿಕೆ_Pseudo_Inverse_Test, DropDependentAxesKeepsIndependentGeometries)
 {
-	const Matrix<float, 6, 16> independent[] = {
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 6, 16> independent[] = {
 		planarRotors(kQuadX, 4),
 		planarRotors(kHexaX, 6),
 		planarRotors(kOctoX, 8),
@@ -174,17 +174,17 @@ TEST(ControlAllocationPseudoInverseTest, DropDependentAxesKeepsIndependentGeomet
 		planarRotors(kOctoX, 8, (1u << 0) | (1u << 1)),
 	};
 
-	for (const auto &original : independent) {
-		Matrix<float, 6, 16> effectiveness = original;
-		EXPECT_EQ(ControlAllocationPseudoInverse::dropDependentAxes(effectiveness), 0);
+	ಗಾಗಿ (ಸ್ಥಿರಾಂಕ ಸ್ವಯಂಚಾಲಿತ &original : independent) {
+		ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 6, 16> effectiveness = original;
+		EXPECT_EQ(Control_ಹಂಚಿಕೆ_Pseudo_Inverse::dropDependentAxes(effectiveness), 0);
 		EXPECT_EQ(effectiveness, original);
 	}
 }
 
-TEST(ControlAllocationPseudoInverseTest, DropDependentAxesDropsYawCollinearWithRoll)
+TEST(Control_ಹಂಚಿಕೆ_Pseudo_Inverse_Test, DropDependentAxesDropsYawCollinearWithRoll)
 {
 	// motor and its opposite stopped: roll and yaw collinear, yaw must go, never roll
-	const Matrix<float, 6, 16> reduced[] = {
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 6, 16> reduced[] = {
 		surveyedHexarotor((1u << 0) | (1u << 1)),
 		surveyedHexarotor((1u << 2) | (1u << 3)),
 		surveyedHexarotor((1u << 4) | (1u << 5)),
@@ -192,54 +192,54 @@ TEST(ControlAllocationPseudoInverseTest, DropDependentAxesDropsYawCollinearWithR
 		planarRotors(kHexaX, 6, (1u << 2) | (1u << 3)),
 	};
 
-	for (const auto &original : reduced) {
-		Matrix<float, 6, 16> effectiveness = original;
-		const uint8_t dropped = ControlAllocationPseudoInverse::dropDependentAxes(effectiveness);
-		EXPECT_EQ(dropped, 1u << ControlAllocation::YAW);
+	ಗಾಗಿ (ಸ್ಥಿರಾಂಕ ಸ್ವಯಂಚಾಲಿತ &original : reduced) {
+		ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 6, 16> effectiveness = original;
+		ಸ್ಥಿರಾಂಕ uint8_t dropped = Control_ಹಂಚಿಕೆ_Pseudo_Inverse::dropDependentAxes(effectiveness);
+		EXPECT_EQ(dropped, 1u << Control_ಹಂಚಿಕೆ::YAW);
 
-		for (int axis = 0; axis < 6; axis++) {
-			for (int i = 0; i < 16; i++) {
-				const float expected = (axis == ControlAllocation::YAW) ? 0.f : original(axis, i);
+		ಗಾಗಿ (ಪೂರ್ಣಾಂಕ axis = 0; axis < 6; axis++) {
+			ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 16; i++) {
+				ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ expected = (axis == Control_ಹಂಚಿಕೆ::YAW) ? 0.f : original(axis, i);
 				EXPECT_FLOAT_EQ(effectiveness(axis, i), expected);
 			}
 		}
 	}
 }
 
-TEST(ControlAllocationPseudoInverseTest, DroppedAxisIsUnallocatedOthersExact)
+TEST(Control_ಹಂಚಿಕೆ_Pseudo_Inverse_Test, DroppedAxisIsUnallocatedOthersExact)
 {
-	ControlAllocationPseudoInverse method;
-	Vector<float, 16> actuator_trim;
-	Vector<float, 16> linearization_point;
+	Control_ಹಂಚಿಕೆ_Pseudo_Inverse ವಿಧಾನ;
+	ಸದಿಶ<ದಶಮಾಂಶ, 16> actuator_trim;
+	ಸದಿಶ<ದಶಮಾಂಶ, 16> linearization_ಬಿಂದು;
 
-	method.setEffectivenessMatrix(surveyedHexarotor((1u << 0) | (1u << 1)), actuator_trim, linearization_point,
-				      16, false);
-	EXPECT_EQ(method.getDroppedAxes(), 1u << ControlAllocation::YAW);
+	ವಿಧಾನ.ಗಣ_Effectiveness_ಮಾತೃಕೆ(surveyedHexarotor((1u << 0) | (1u << 1)), actuator_trim, linearization_ಬಿಂದು,
+				      16, ಸುಳ್ಳು);
+	EXPECT_EQ(ವಿಧಾನ.getDroppedAxes(), 1u << Control_ಹಂಚಿಕೆ::YAW);
 
 	// yaw demand has nothing to act on
-	Vector<float, 6> control_sp;
-	control_sp(ControlAllocation::YAW) = 1.f;
-	method.setControlSetpoint(control_sp);
-	method.allocate();
-	const Vector<float, 16> no_actuation;
-	EXPECT_EQ(method.getActuatorSetpoint(), no_actuation);
-	EXPECT_FLOAT_EQ(method.getAllocatedControl()(ControlAllocation::YAW), 0.f);
+	ಸದಿಶ<ದಶಮಾಂಶ, 6> control_sp;
+	control_sp(Control_ಹಂಚಿಕೆ::YAW) = 1.f;
+	ವಿಧಾನ.ಗಣ_Control_Setpoint(control_sp);
+	ವಿಧಾನ.allocate();
+	ಸ್ಥಿರಾಂಕ ಸದಿಶ<ದಶಮಾಂಶ, 16> no_actuation;
+	EXPECT_EQ(ವಿಧಾನ.getActuatorSetpoint(), no_actuation);
+	EXPECT_FLOAT_EQ(ವಿಧಾನ.getAllocatedControl()(Control_ಹಂಚಿಕೆ::YAW), 0.f);
 
 	// remaining axes allocated exactly
-	control_sp.setZero();
-	control_sp(ControlAllocation::ROLL) = 0.01f;
-	control_sp(ControlAllocation::PITCH) = 0.024f;
-	control_sp(ControlAllocation::THRUST_Z) = -0.001f;
-	method.setControlSetpoint(control_sp);
-	method.allocate();
+	control_sp.ಗಣ_Zero();
+	control_sp(Control_ಹಂಚಿಕೆ::ROLL) = 0.01f;
+	control_sp(Control_ಹಂಚಿಕೆ::PITCH) = 0.024f;
+	control_sp(Control_ಹಂಚಿಕೆ::THRUST_Z) = -0.001f;
+	ವಿಧಾನ.ಗಣ_Control_Setpoint(control_sp);
+	ವಿಧಾನ.allocate();
 
-	const Vector<float, 6> allocated = method.getAllocatedControl();
-	EXPECT_NEAR(allocated(ControlAllocation::ROLL), 0.01f, 1e-4f);
-	EXPECT_NEAR(allocated(ControlAllocation::PITCH), 0.024f, 1e-4f);
-	EXPECT_NEAR(allocated(ControlAllocation::THRUST_Z), -0.001f, 1e-4f);
-	EXPECT_FLOAT_EQ(allocated(ControlAllocation::YAW), 0.f);
+	ಸ್ಥಿರಾಂಕ ಸದಿಶ<ದಶಮಾಂಶ, 6> allocated = ವಿಧಾನ.getAllocatedControl();
+	EXPECT_NEAR(allocated(Control_ಹಂಚಿಕೆ::ROLL), 0.01f, 1e-4f);
+	EXPECT_NEAR(allocated(Control_ಹಂಚಿಕೆ::PITCH), 0.024f, 1e-4f);
+	EXPECT_NEAR(allocated(Control_ಹಂಚಿಕೆ::THRUST_Z), -0.001f, 1e-4f);
+	EXPECT_FLOAT_EQ(allocated(Control_ಹಂಚಿಕೆ::YAW), 0.f);
 
-	for (int i = 0; i < 16; i++) {
-		EXPECT_LT(fabsf(method.getActuatorSetpoint()(i)), 0.01f) << "actuator " << i;
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 16; i++) {
+		EXPECT_LT(fabsf(ವಿಧಾನ.getActuatorSetpoint()(i)), 0.01f) << "actuator " << i;
 	}
 }

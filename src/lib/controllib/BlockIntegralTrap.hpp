@@ -37,22 +37,22 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
 /**
@@ -63,28 +63,28 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegralTrap : public SuperBlock
+ವರ್ಗ __EXPORT ಖಂಡ_Integral_Trap : ಸಾರ್ವಜನಿಕ Super_ಖಂಡ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockIntegralTrap(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
+	ಖಂಡ_Integral_Trap(Super_ಖಂಡ *ಪೋಷಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) :
+		Super_ಖಂಡ(ಪೋಷಕ, name),
 		_u(0),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegralTrap() = default;
-	float update(float input);
+		ಎಲ್ಲೆ(ಇದು, "") {}
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_Integral_Trap() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ದಶಮಾಂಶ update(ದಶಮಾಂಶ ಒಳಹರಿವು);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
-// attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
-	BlockLimitSym _limit; /**< limiter */
+	ದಶಮಾಂಶ getU() {ಹಿಂತಿರುಗಿ _u;}
+	ದಶಮಾಂಶ getY() {ಹಿಂತಿರುಗಿ _y;}
+	ದಶಮಾಂಶ getMax() {ಹಿಂತಿರುಗಿ ಎಲ್ಲೆ.getMax();}
+	ಶೂನ್ಯ ಗಣ_U(ದಶಮಾಂಶ u) {_u = u;}
+	ಶೂನ್ಯ ಗಣ_Y(ದಶಮಾಂಶ y) {_y = y;}
+ಸಂರಕ್ಷಿತ:
+//ಗುಣಲಕ್ಷಣಗಳು
+	ದಶಮಾಂಶ _u; /**< previous input */
+	ದಶಮಾಂಶ _y; /**< previous output */
+	ಖಂಡ_ಎಲ್ಲೆ_Sym ಎಲ್ಲೆ; /**< limiter */
 };
 
 } // namespace control

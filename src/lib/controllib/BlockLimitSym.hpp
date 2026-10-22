@@ -37,22 +37,22 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
 /**
@@ -60,21 +60,21 @@ namespace control
  * Same as limiter but with only a max, is used for
  * upper limit of +max, and lower limit of -max
  */
-class __EXPORT BlockLimitSym : public Block
+ವರ್ಗ __EXPORT ಖಂಡ_ಎಲ್ಲೆ_Sym : ಸಾರ್ವಜನಿಕ ಖಂಡ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockLimitSym(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_max(this, "MAX")
+	ಖಂಡ_ಎಲ್ಲೆ_Sym(Super_ಖಂಡ *ಪೋಷಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) :
+		ಖಂಡ(ಪೋಷಕ, name),
+		_max(ಇದು, "MAX")
 	{}
-	virtual ~BlockLimitSym() = default;
-	float update(float input);
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_ಎಲ್ಲೆ_Sym() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ದಶಮಾಂಶ update(ದಶಮಾಂಶ ಒಳಹರಿವು);
 // accessors
-	float getMax() { return _max.get(); }
-protected:
-// attributes
-	control::BlockParamFloat _max;
+	ದಶಮಾಂಶ getMax() { ಹಿಂತಿರುಗಿ _max.get(); }
+ಸಂರಕ್ಷಿತ:
+//ಗುಣಲಕ್ಷಣಗಳು
+	control::ಖಂಡ_Param_Float _max;
 };
 
 } // namespace control

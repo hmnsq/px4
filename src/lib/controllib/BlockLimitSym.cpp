@@ -37,24 +37,24 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <float.h>
 
-#include "blocks.hpp"
+#ಅನ್ತರ್ಭಾವ "blocks.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
-float BlockLimitSym::update(float input)
+ದಶಮಾಂಶ ಖಂಡ_ಎಲ್ಲೆ_Sym::update(ದಶಮಾಂಶ ಒಳಹರಿವು)
 {
-	if (input > getMax()) {
-		input = _max.get();
+	ಆದರೆ (ಒಳಹರಿವು > getMax()) {
+		ಒಳಹರಿವು = _max.get();
 
-	} else if (input < -getMax()) {
-		input = -getMax();
+	} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (ಒಳಹರಿವು < -getMax()) {
+		ಒಳಹರಿವು = -getMax();
 	}
 
-	return input;
+	ಹಿಂತಿರುಗಿ ಒಳಹರಿವು;
 }
 
 } // namespace control

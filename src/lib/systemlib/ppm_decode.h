@@ -37,28 +37,28 @@
  * PPM input decoder.
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <drivers/drv_hrt.h>
+#ಅನ್ತರ್ಭಾವ <drivers/drv_hrt.h>
 
 /**
  * Maximum number of channels that we will decode.
  */
-#define PPM_MAX_CHANNELS	12
+#ವ್ಯಾಖ್ಯಾನಿಸು PPM_MAX_CHANNELS	12
 
 /* PPM input nominal min/max values */
-#define PPM_MIN 1000
-#define PPM_MAX 2000
-#define PPM_MID ((PPM_MIN + PPM_MAX) / 2)
+#ವ್ಯಾಖ್ಯಾನಿಸು PPM_MIN 1000
+#ವ್ಯಾಖ್ಯಾನಿಸು PPM_MAX 2000
+#ವ್ಯಾಖ್ಯಾನಿಸು PPM_MID ((PPM_MIN + PPM_MAX) / 2)
 
 __BEGIN_DECLS
 
 /*
  * PPM decoder state
  */
-__EXPORT extern uint16_t	ppm_buffer[PPM_MAX_CHANNELS];	/**< decoded PPM channel values */
-__EXPORT extern uint16_t	ppm_frame_length;				/**< length of the decoded PPM frame (includes gap) */
-__EXPORT extern unsigned	ppm_decoded_channels;	/**< count of decoded channels */
-__EXPORT extern hrt_abstime	ppm_last_valid_decode;	/**< timestamp of the last valid decode */
+__EXPORT ಬಾಹ್ಯ uint16_t	ppm_ಬಫರ್[PPM_MAX_CHANNELS];	/**< decoded PPM channel values */
+__EXPORT ಬಾಹ್ಯ uint16_t	ppm_ಚೌಕಟ್ಟು_ಉದ್ದಳತೆ;				/**< length of the decoded PPM frame (includes gap) */
+__EXPORT ಬಾಹ್ಯ ಚಿಹ್ನೆರಹಿತ	ppm_decoded_channels;	/**< count of decoded channels */
+__EXPORT ಬಾಹ್ಯ hrt_abstime	ppm_ಕೊನೆಯ_valid_decode;	/**< timestamp of the last valid decode */
 
 __END_DECLS

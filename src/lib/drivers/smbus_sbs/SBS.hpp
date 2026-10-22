@@ -41,55 +41,55 @@
  * @author Nick Belanger <nbelanger@mail.skymul.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <lib/drivers/smbus/SMBus.hpp>
-#include <uORB/topics/battery_info.h>
-#include <uORB/topics/battery_status.h>
-#include <px4_platform_common/param.h>
-#include <lib/atmosphere/atmosphere.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/i2c_spi_buses.h>
+#ಅನ್ತರ್ಭಾವ <lib/drivers/smbus/SMBus.hpp>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/battery_info.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/battery_status.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/param.h>
+#ಅನ್ತರ್ಭಾವ <lib/atmosphere/atmosphere.h>
 
-using namespace time_literals;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಸಮಯ_literals;
 
-#define SBS_MEASUREMENT_INTERVAL_US             	100_ms          ///< time in microseconds, measure at 10Hz (not part of SBS spec)
+#ವ್ಯಾಖ್ಯಾನಿಸು SBS_MEASUREMENT_INTERVAL_US             	100_ms          ///< time in microseconds, measure at 10Hz (not part of SBS spec)
 
-template<class T>
-class SMBUS_SBS_BaseClass : public I2CSPIDriver<T>
+ಮಾದರಿ<ವರ್ಗ T>
+ವರ್ಗ SMBUS_SBS_ತಳ_Class : ಸಾರ್ವಜನಿಕ I2CSPIDriver<T>
 {
-public:
-	SMBUS_SBS_BaseClass(const I2CSPIDriverConfig &config, SMBus *interface);
-	SMBUS_SBS_BaseClass();
+ಸಾರ್ವಜನಿಕ:
+	SMBUS_SBS_ತಳ_Class(ಸ್ಥಿರಾಂಕ I2CSPIDriverConfig &config, SMBus *interface);
+	SMBUS_SBS_ತಳ_Class();
 
-	~SMBUS_SBS_BaseClass();
+	~SMBUS_SBS_ತಳ_Class();
 
-	static void print_usage();
+	ಸ್ಥಿರ ಶೂನ್ಯ print_usage();
 
-	friend SMBus;
+	ಮಿತ್ರ SMBus;
 
-	int populate_smbus_data(battery_status_s &msg, battery_info_s &battery_info);
+	ಪೂರ್ಣಾಂಕ populate_smbus_ದತ್ತಾಂಶ(battery_ಸ್ಥಿತಿ_s &ಸಂದೇಶ_2, battery_info_s &battery_info);
 
-	virtual void RunImpl(); // Can be overridden by derived implimentation
+	ವಾಸ್ತವಿಕ ಶೂನ್ಯ ಸತತ_Impl(); // Can be overridden by derived implimentation
 
-	virtual void custom_method(const BusCLIArguments &cli) = 0; //Has be overriden by derived implimentation
+	ವಾಸ್ತವಿಕ ಶೂನ್ಯ custom_ವಿಧಾನ(ಸ್ಥಿರಾಂಕ BusCLIArguments &cli) = 0; //Has be overriden by derived implimentation
 
 	/**
 	 * @brief Returns the SBS serial number of the battery device.
 	 * @return Returns the SBS serial number of the battery device.
 	 */
-	uint16_t get_serial_number();
+	uint16_t get_serial_ಸಂಖ್ಯೆ();
 
 	/**
 	* @brief Read info from battery on startup.
 	* @return Returns PX4_OK on success, PX4_ERROR on failure. Can be overridden by derived implimentation
 	*/
-	virtual int get_startup_info();
+	ವಾಸ್ತವಿಕ ಪೂರ್ಣಾಂಕ get_startup_info();
 
 	/**
 	 * @brief Gets the SBS manufacture date of the battery.
 	 * @return Returns PX4_OK on success, PX4_ERROR on failure.
 	 */
-	int manufacture_date();
+	ಪೂರ್ಣಾಂಕ manufacture_date();
 
 	/**
 	 * @brief Gets the SBS manufacturer name of the battery device.
@@ -98,234 +98,234 @@ public:
 	 *                   including the null character that is appended to the end.
 	 * @return Returns PX4_OK on success, PX4_ERROR on failure.
 	 */
-	int manufacturer_name(uint8_t *manufacturer_name, const uint8_t length);
+	ಪೂರ್ಣಾಂಕ manufacturer_name(uint8_t *manufacturer_name, ಸ್ಥಿರಾಂಕ uint8_t ಉದ್ದಳತೆ);
 
 	/**
 	 * @brief Enables or disables the cell under voltage protection emergency shut off.
 	 */
 
-	void suspend();
+	ಶೂನ್ಯ suspend();
 
-	void resume();
-	enum {
-		BATT_SMBUS_TEMP                         =	0x08,           ///< temperature register
+	ಶೂನ್ಯ resume();
+	ಎಣಿಕೆ {
+		BATT_SMBUS_ತಾತ್ಕಾಲಿಕ                         =	0x08,           ///< temperature register
 		BATT_SMBUS_VOLTAGE                      =       0x09,           ///< voltage register
 		BATT_SMBUS_CURRENT                      =       0x0A,           ///< current register
-		BATT_SMBUS_AVERAGE_CURRENT              =       0x0B,           ///< average current register
+		BATT_SMBUS_ಸರಾಸರಿ_ಮೌಲ್ಯ_CURRENT              =       0x0B,           ///< average current register
 		BATT_SMBUS_MAX_ERROR                    =       0x0C,           ///< max error
 		BATT_SMBUS_RELATIVE_SOC                 =       0x0D,           ///< Relative State Of Charge
 		BATT_SMBUS_ABSOLUTE_SOC                 =       0x0E,           ///< Absolute State of charge
-		BATT_SMBUS_REMAINING_CAPACITY           =       0x0F,           ///< predicted remaining battery capacity as a percentage
-		BATT_SMBUS_FULL_CHARGE_CAPACITY         =       0x10,           ///< capacity when fully charged
-		BATT_SMBUS_RUN_TIME_TO_EMPTY            =       0x11,           ///< predicted remaining battery capacity based on the present rate of discharge in min
-		BATT_SMBUS_AVERAGE_TIME_TO_EMPTY        =       0x12,           ///< predicted remaining battery capacity based on the present rate of discharge in min
-		BATT_SMBUS_CYCLE_COUNT                  =       0x17,           ///< number of cycles the battery has experienced
-		BATT_SMBUS_DESIGN_CAPACITY              =       0x18,           ///< design capacity register
+		BATT_SMBUS_ಉಳಿದ_ಸಾಮರ್ಥ್ಯ           =       0x0F,           ///< predicted remaining battery capacity as a percentage
+		BATT_SMBUS_ತುಂಬಿದ_CHARGE_ಸಾಮರ್ಥ್ಯ         =       0x10,           ///< capacity when fully charged
+		BATT_SMBUS_ಸತತ_ಸಮಯ_ಗಮ್ಯ_ಖಾಲಿಗಳು            =       0x11,           ///< predicted remaining battery capacity based on the present rate of discharge in min
+		BATT_SMBUS_ಸರಾಸರಿ_ಮೌಲ್ಯ_ಸಮಯ_ಗಮ್ಯ_ಖಾಲಿಗಳು        =       0x12,           ///< predicted remaining battery capacity based on the present rate of discharge in min
+		BATT_SMBUS_ಚಕ್ರ_ಎಣಿಕೆ                  =       0x17,           ///< number of cycles the battery has experienced
+		BATT_SMBUS_DESIGN_ಸಾಮರ್ಥ್ಯ              =       0x18,           ///< design capacity register
 		BATT_SMBUS_DESIGN_VOLTAGE               =       0x19,           ///< design voltage register
 		BATT_SMBUS_MANUFACTURER_NAME            =       0x20,           ///< manufacturer name
-		BATT_SMBUS_MANUFACTURER_NAME_SIZE       =       21,             ///< manufacturer name data size (not part of SBS spec)
+		BATT_SMBUS_MANUFACTURER_NAME_ಗಾತ್ರ       =       21,             ///< manufacturer name data size (not part of SBS spec)
 		BATT_SMBUS_DEVICE_NAME			=	0x21,		///< character string that contains the battery's name
 		BATT_SMBUS_MANUFACTURE_DATE             =       0x1B,           ///< manufacture date register
-		BATT_SMBUS_SERIAL_NUMBER                =       0x1C,           ///< serial number register
+		BATT_SMBUS_SERIAL_ಸಂಖ್ಯೆ                =       0x1C,           ///< serial number register
 		BATT_SMBUS_MANUFACTURER_ACCESS          =       0x00,
-		BATT_SMBUS_MANUFACTURER_DATA            =       0x23
+		BATT_SMBUS_MANUFACTURER_ದತ್ತಾಂಶ            =       0x23
 	} SBS_REGISTERS;
 
-protected:
+ಸಂರಕ್ಷಿತ:
 
 	SMBus *_interface;
 
-	perf_counter_t _cycle{perf_alloc(PC_ELAPSED, "batmon_cycle")}; // TODO
+	perf_counter_t ಚಕ್ರ{perf_alloc(PC_ELAPSED, "batmon_cycle")}; // TODO
 
-	orb_advert_t _battery_info_topic{nullptr};
-	orb_advert_t _batt_topic{nullptr};
+	orb_advert_t _battery_info_topic{ಶೂನ್ಯಸೂಚಕ};
+	orb_advert_t _batt_topic{ಶೂನ್ಯಸೂಚಕ};
 
 	/** @param _cell_count Number of series cell (retrieved from cell_count PX4 params) */
-	uint8_t _cell_count{0};
+	uint8_t cell_ಎಣಿಕೆ_2{0};
 
 	/** @param _batt_capacity Battery design capacity in mAh (0 means unknown). */
-	uint16_t _batt_capacity{0};
+	uint16_t batt_ಸಾಮರ್ಥ್ಯ{0};
 
 	/** @param _batt_startup_capacity Battery remaining capacity in mAh on startup. */
-	uint16_t _batt_startup_capacity{0};
+	uint16_t batt_startup_ಸಾಮರ್ಥ್ಯ{0};
 
 	/** @param _cycle_count The number of cycles the battery has experienced. */
-	uint16_t _cycle_count{0};
+	uint16_t ಚಕ್ರ_ಎಣಿಕೆ{0};
 
 	/** @param _serial_number Serial number register. */
-	uint16_t _serial_number{0};
+	uint16_t serial_ಸಂಖ್ಯೆ{0};
 
 	/** @param _manufacturer_name Name of the battery manufacturer. */
-	char _manufacturer_name[BATT_SMBUS_MANUFACTURER_NAME_SIZE + 1] {};	// Plus one for terminator
+	ಅಕ್ಷರ _manufacturer_name[BATT_SMBUS_MANUFACTURER_NAME_ಗಾತ್ರ + 1] {};	// Plus one for terminator
 
 	/** @param _manufacture_date Date of the battery manufacturing. */
 	uint16_t _manufacture_date{0};
 
 	/** @param _state_of_health state of health as read on connection  */
-	float _state_of_health{0.f}; // Not part of SBS, can be calculated from FullChargeCapacity
+	ದಶಮಾಂಶ state_ದ_health{0.f}; // Not part of SBS, can be calculated from FullChargeCapacity
 	// and DesignCapacity
 
-	void print_man_info();
+	ಶೂನ್ಯ print_man_info();
 
 };
 
-template<class T>
-SMBUS_SBS_BaseClass<T>::SMBUS_SBS_BaseClass(const I2CSPIDriverConfig &config, SMBus *interface):
+ಮಾದರಿ<ವರ್ಗ T>
+SMBUS_SBS_ತಳ_Class<T>::SMBUS_SBS_ತಳ_Class(ಸ್ಥಿರಾಂಕ I2CSPIDriverConfig &config, SMBus *interface):
 	I2CSPIDriver<T>(config),
 	_interface(interface)
 {
 	battery_info_s battery_info{};
-	battery_status_s new_report = {};
-	int SBS_instance_number = 0;
-	_battery_info_topic = orb_advertise_multi(ORB_ID(battery_info), &battery_info, &SBS_instance_number);
-	_batt_topic = orb_advertise_multi(ORB_ID(battery_status), &new_report, &SBS_instance_number);
+	battery_ಸ್ಥಿತಿ_s new_report = {};
+	ಪೂರ್ಣಾಂಕ SBS_instance_ಸಂಖ್ಯೆ = 0;
+	_battery_info_topic = orb_advertise_multi(ORB_ID(battery_info), &battery_info, &SBS_instance_ಸಂಖ್ಯೆ);
+	_batt_topic = orb_advertise_multi(ORB_ID(battery_ಸ್ಥಿತಿ), &new_report, &SBS_instance_ಸಂಖ್ಯೆ);
 	_interface->init();
 }
 
-template<class T>
-SMBUS_SBS_BaseClass<T>::~SMBUS_SBS_BaseClass()
+ಮಾದರಿ<ವರ್ಗ T>
+SMBUS_SBS_ತಳ_Class<T>::~SMBUS_SBS_ತಳ_Class()
 {
 	orb_unadvertise(_batt_topic);
-	perf_free(_cycle); // TODO
+	perf_free(ಚಕ್ರ); // TODO
 
-	if (_interface != nullptr) {
-		delete _interface;
+	ಆದರೆ (_interface != ಶೂನ್ಯಸೂಚಕ) {
+		ಅಳಿಸು _interface;
 	}
 
 }
 
-template<class T>
-void SMBUS_SBS_BaseClass<T>::suspend()
+ಮಾದರಿ<ವರ್ಗ T>
+ಶೂನ್ಯ SMBUS_SBS_ತಳ_Class<T>::suspend()
 {
-	this->ScheduleClear();
+	ಇದು->ವೇಳಾಪಟ್ಟಿ_Clear();
 }
 
-template<class T>
-void SMBUS_SBS_BaseClass<T>::resume()
+ಮಾದರಿ<ವರ್ಗ T>
+ಶೂನ್ಯ SMBUS_SBS_ತಳ_Class<T>::resume()
 {
-	this->ScheduleOnInterval(SBS_MEASUREMENT_INTERVAL_US);
+	ಇದು->ವೇಳಾಪಟ್ಟಿ_On_Interval(SBS_MEASUREMENT_INTERVAL_US);
 }
 
-template<class T>
-uint16_t SMBUS_SBS_BaseClass<T>::get_serial_number()
+ಮಾದರಿ<ವರ್ಗ T>
+uint16_t SMBUS_SBS_ತಳ_Class<T>::get_serial_ಸಂಖ್ಯೆ()
 {
-	uint16_t serial_num = 0;
+	uint16_t serial_ಅಂಕೆ = 0;
 
-	if (_interface->read_word(BATT_SMBUS_SERIAL_NUMBER, serial_num) == PX4_OK) {
-		return serial_num;
+	ಆದರೆ (_interface->read_ಶಬ್ದ(BATT_SMBUS_SERIAL_ಸಂಖ್ಯೆ, serial_ಅಂಕೆ) == PX4_OK) {
+		ಹಿಂತಿರುಗಿ serial_ಅಂಕೆ;
 	}
 
-	return PX4_ERROR;
+	ಹಿಂತಿರುಗಿ PX4_ERROR;
 }
 
-template<class T>
-int SMBUS_SBS_BaseClass<T>::get_startup_info()
+ಮಾದರಿ<ವರ್ಗ T>
+ಪೂರ್ಣಾಂಕ SMBUS_SBS_ತಳ_Class<T>::get_startup_info()
 {
-	int ret = PX4_OK;
+	ಪೂರ್ಣಾಂಕ ret = PX4_OK;
 
-	ret |= _interface->block_read(BATT_SMBUS_MANUFACTURER_NAME, _manufacturer_name, BATT_SMBUS_MANUFACTURER_NAME_SIZE,
-				      true);
-	_manufacturer_name[sizeof(_manufacturer_name) - 1] = '\0';
+	ret |= _interface->ಖಂಡ_read(BATT_SMBUS_MANUFACTURER_NAME, _manufacturer_name, BATT_SMBUS_MANUFACTURER_NAME_ಗಾತ್ರ,
+				      ನಿಜ);
+	_manufacturer_name[ಗಾತ್ರ(_manufacturer_name) - 1] = '\0';
 
-	uint16_t serial_num;
-	ret |= _interface->read_word(BATT_SMBUS_SERIAL_NUMBER, serial_num);
+	uint16_t serial_ಅಂಕೆ;
+	ret |= _interface->read_ಶಬ್ದ(BATT_SMBUS_SERIAL_ಸಂಖ್ಯೆ, serial_ಅಂಕೆ);
 
-	uint16_t remaining_cap;
-	ret |= _interface->read_word(BATT_SMBUS_REMAINING_CAPACITY, remaining_cap);
+	uint16_t ಉಳಿದ_cap;
+	ret |= _interface->read_ಶಬ್ದ(BATT_SMBUS_ಉಳಿದ_ಸಾಮರ್ಥ್ಯ, ಉಳಿದ_cap);
 
-	uint16_t cycle_count;
-	ret |= _interface->read_word(BATT_SMBUS_CYCLE_COUNT, cycle_count);
+	uint16_t ಚಕ್ರ_ಎಣಿಕೆ_2;
+	ret |= _interface->read_ಶಬ್ದ(BATT_SMBUS_ಚಕ್ರ_ಎಣಿಕೆ, ಚಕ್ರ_ಎಣಿಕೆ_2);
 
-	uint16_t full_cap;
-	ret |= _interface->read_word(BATT_SMBUS_FULL_CHARGE_CAPACITY, full_cap);
+	uint16_t ತುಂಬಿದ_cap;
+	ret |= _interface->read_ಶಬ್ದ(BATT_SMBUS_ತುಂಬಿದ_CHARGE_ಸಾಮರ್ಥ್ಯ, ತುಂಬಿದ_cap);
 
 	uint16_t manufacture_date;
-	ret |= _interface->read_word(BATT_SMBUS_MANUFACTURE_DATE, manufacture_date);
+	ret |= _interface->read_ಶಬ್ದ(BATT_SMBUS_MANUFACTURE_DATE, manufacture_date);
 
-	if (!ret) {
-		_serial_number = serial_num;
-		_batt_startup_capacity = (uint16_t)((float)remaining_cap);
-		_cycle_count = cycle_count;
-		_batt_capacity = (uint16_t)((float)full_cap);
+	ಆದರೆ (!ret) {
+		serial_ಸಂಖ್ಯೆ = serial_ಅಂಕೆ;
+		batt_startup_ಸಾಮರ್ಥ್ಯ = (uint16_t)((ದಶಮಾಂಶ)ಉಳಿದ_cap);
+		ಚಕ್ರ_ಎಣಿಕೆ = ಚಕ್ರ_ಎಣಿಕೆ_2;
+		batt_ಸಾಮರ್ಥ್ಯ = (uint16_t)((ದಶಮಾಂಶ)ತುಂಬಿದ_cap);
 		_manufacture_date = manufacture_date;
 	}
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 }
 
-template<class T>
-int SMBUS_SBS_BaseClass<T>::populate_smbus_data(battery_status_s &data, battery_info_s &battery_info)
+ಮಾದರಿ<ವರ್ಗ T>
+ಪೂರ್ಣಾಂಕ SMBUS_SBS_ತಳ_Class<T>::populate_smbus_ದತ್ತಾಂಶ(battery_ಸ್ಥಿತಿ_s &ದತ್ತಾಂಶ, battery_info_s &battery_info)
 {
 
 	// Temporary variable for storing SMBUS reads.
-	uint16_t result;
+	uint16_t ಫಲಿತಾಂಶ;
 
-	int ret = _interface->read_word(BATT_SMBUS_VOLTAGE, result);
+	ಪೂರ್ಣಾಂಕ ret = _interface->read_ಶಬ್ದ(BATT_SMBUS_VOLTAGE, ಫಲಿತಾಂಶ);
 
 	// Convert millivolts to volts.
-	data.voltage_v = ((float)result) * 0.001f;
+	ದತ್ತಾಂಶ.voltage_v = ((ದಶಮಾಂಶ)ಫಲಿತಾಂಶ) * 0.001f;
 
 	// Read current.
-	ret |= _interface->read_word(BATT_SMBUS_CURRENT, result);
+	ret |= _interface->read_ಶಬ್ದ(BATT_SMBUS_CURRENT, ಫಲಿತಾಂಶ);
 
-	data.current_a = (-1.0f * ((float)(*(int16_t *)&result)) * 0.001f);
-
-	// Read remaining capacity.
-	ret |= _interface->read_word(BATT_SMBUS_RELATIVE_SOC, result);
-	data.remaining = (float)result * 0.01f;
+	ದತ್ತಾಂಶ.current_a = (-1.0f * ((ದಶಮಾಂಶ)(*(int16_t *)&ಫಲಿತಾಂಶ)) * 0.001f);
 
 	// Read remaining capacity.
-	ret |= _interface->read_word(BATT_SMBUS_REMAINING_CAPACITY, result);
-	data.discharged_mah = _batt_startup_capacity - result;
+	ret |= _interface->read_ಶಬ್ದ(BATT_SMBUS_RELATIVE_SOC, ಫಲಿತಾಂಶ);
+	ದತ್ತಾಂಶ.ಉಳಿದ = (ದಶಮಾಂಶ)ಫಲಿತಾಂಶ * 0.01f;
+
+	// Read remaining capacity.
+	ret |= _interface->read_ಶಬ್ದ(BATT_SMBUS_ಉಳಿದ_ಸಾಮರ್ಥ್ಯ, ಫಲಿತಾಂಶ);
+	ದತ್ತಾಂಶ.discharged_mah = batt_startup_ಸಾಮರ್ಥ್ಯ - ಫಲಿತಾಂಶ;
 
 	// Read full capacity.
-	ret |= _interface->read_word(BATT_SMBUS_FULL_CHARGE_CAPACITY, result);
-	data.capacity = result;
+	ret |= _interface->read_ಶಬ್ದ(BATT_SMBUS_ತುಂಬಿದ_CHARGE_ಸಾಮರ್ಥ್ಯ, ಫಲಿತಾಂಶ);
+	ದತ್ತಾಂಶ.ಸಾಮರ್ಥ್ಯ = ಫಲಿತಾಂಶ;
 
 	// Read cycle count.
-	ret |= _interface->read_word(BATT_SMBUS_CYCLE_COUNT, result);
-	data.cycle_count = result;
+	ret |= _interface->read_ಶಬ್ದ(BATT_SMBUS_ಚಕ್ರ_ಎಣಿಕೆ, ಫಲಿತಾಂಶ);
+	ದತ್ತಾಂಶ.ಚಕ್ರ_ಎಣಿಕೆ_2 = ಫಲಿತಾಂಶ;
 
 	// Read serial number.
-	ret |= _interface->read_word(BATT_SMBUS_SERIAL_NUMBER, result);
-	snprintf(battery_info.serial_number, sizeof(battery_info.serial_number), "%" PRIu16, result);
+	ret |= _interface->read_ಶಬ್ದ(BATT_SMBUS_SERIAL_ಸಂಖ್ಯೆ, ಫಲಿತಾಂಶ);
+	snprintf(battery_info.serial_ಸಂಖ್ಯೆ_2, ಗಾತ್ರ(battery_info.serial_ಸಂಖ್ಯೆ_2), "%" PRIu16, ಫಲಿತಾಂಶ);
 
 	// Read battery temperature and covert to Celsius.
-	ret |= _interface->read_word(BATT_SMBUS_TEMP, result);
-	data.temperature = ((float)result * 0.1f) + atmosphere::kAbsoluteNullCelsius;
+	ret |= _interface->read_ಶಬ್ದ(BATT_SMBUS_ತಾತ್ಕಾಲಿಕ, ಫಲಿತಾಂಶ);
+	ದತ್ತಾಂಶ.temperature = ((ದಶಮಾಂಶ)ಫಲಿತಾಂಶ * 0.1f) + atmosphere::kAbsoluteNullCelsius;
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 
 }
 
-template<class T>
-void SMBUS_SBS_BaseClass<T>::RunImpl()
+ಮಾದರಿ<ವರ್ಗ T>
+ಶೂನ್ಯ SMBUS_SBS_ತಳ_Class<T>::ಸತತ_Impl()
 {
 
 	// Get the current time.
-	uint64_t now = hrt_absolute_time();
+	uint64_t now = hrt_absolute_ಸಮಯ();
 
 	// Read data from sensor.
-	battery_status_s new_report = {};
+	battery_ಸ್ಥಿತಿ_s new_report = {};
 
 	new_report.id = 1;
 
 	// Set time of reading.
 	new_report.timestamp = now;
 
-	new_report.connected = true;
+	new_report.connected = ನಿಜ;
 
 	battery_info_s battery_info{};
 	battery_info.timestamp = now;
 	battery_info.id = new_report.id;
 
-	int ret = populate_smbus_data(new_report, battery_info);
+	ಪೂರ್ಣಾಂಕ ret = populate_smbus_ದತ್ತಾಂಶ(new_report, battery_info);
 
-	new_report.cell_count = _cell_count;
+	new_report.cell_ಎಣಿಕೆ = cell_ಎಣಿಕೆ_2;
 
 	// Only publish if no errors.
-	if (!ret) {
-		orb_publish(ORB_ID(battery_status), _batt_topic, &new_report);
+	ಆದರೆ (!ret) {
+		orb_publish(ORB_ID(battery_ಸ್ಥಿತಿ), _batt_topic, &new_report);
 		orb_publish(ORB_ID(battery_info), _battery_info_topic, &battery_info);
 	}
 }

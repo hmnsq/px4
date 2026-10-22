@@ -51,23 +51,23 @@
  * Reference: https://www.spartnformat.org/
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <cstdint>
-#include <cstddef>
+#ಅನ್ತರ್ಭಾವ <cstdint>
+#ಅನ್ತರ್ಭಾವ <cstddef>
 
 namespace gnss
 {
 
-static constexpr uint8_t  SPARTN_PREAMBLE        = 0x73;
-static constexpr size_t   SPARTN_FRAME_START_LEN = 4;
-static constexpr size_t   SPARTN_MAX_PAYLOAD_LEN = 1023;
-static constexpr size_t   SPARTN_MAX_AUTH_LEN    = 64;
-static constexpr size_t   SPARTN_MAX_DESC_LEN    = 8;
-static constexpr size_t   SPARTN_MAX_CRC_LEN     = 4;
-static constexpr size_t   SPARTN_MAX_FRAME_LEN   =
-	SPARTN_FRAME_START_LEN + SPARTN_MAX_DESC_LEN + SPARTN_MAX_PAYLOAD_LEN +
-	SPARTN_MAX_AUTH_LEN + SPARTN_MAX_CRC_LEN;
+ಸ್ಥಿರ constexpr uint8_t  SPARTN_PREAMBLE        = 0x73;
+ಸ್ಥಿರ constexpr size_t   SPARTN_ಚೌಕಟ್ಟು_ಆರಂಭ_LEN = 4;
+ಸ್ಥಿರ constexpr size_t   SPARTN_MAX_PAYLOAD_LEN = 1023;
+ಸ್ಥಿರ constexpr size_t   SPARTN_MAX_AUTH_LEN    = 64;
+ಸ್ಥಿರ constexpr size_t   SPARTN_MAX_DESC_LEN    = 8;
+ಸ್ಥಿರ constexpr size_t   SPARTN_MAX_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_LEN     = 4;
+ಸ್ಥಿರ constexpr size_t   SPARTN_MAX_ಚೌಕಟ್ಟು_LEN   =
+	SPARTN_ಚೌಕಟ್ಟು_ಆರಂಭ_LEN + SPARTN_MAX_DESC_LEN + SPARTN_MAX_PAYLOAD_LEN +
+	SPARTN_MAX_AUTH_LEN + SPARTN_MAX_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_LEN;
 
 /**
  * Whether TF002 names a message type the format defines.
@@ -77,9 +77,9 @@ static constexpr size_t   SPARTN_MAX_FRAME_LEN   =
  * its full range and TF006 is only 4 bits over a non-byte-aligned field, so this
  * is the sole header check standing between a stray preamble and the message CRC.
  */
-inline bool spartn_message_type_defined(uint8_t message_type)
+ಸಾಲೊಳಗೆ bool spartn_ಸಂದೇಶ_type_defined(uint8_t ಸಂದೇಶ_type)
 {
-	return (message_type <= 4) || (message_type >= 120);
+	ಹಿಂತಿರುಗಿ (ಸಂದೇಶ_type <= 4) || (ಸಂದೇಶ_type >= 120);
 }
 
 /**
@@ -88,23 +88,23 @@ inline bool spartn_message_type_defined(uint8_t message_type)
  * @param auth_ind     TF014, authentication indicator; TF017 is present only above 1
  * @param emb_auth_len TF015, 0=64b, 1=96b, 2=128b, 3=256b, 4=512b
  */
-inline size_t spartn_auth_length_bytes(bool eaf, uint8_t auth_ind, uint8_t emb_auth_len)
+ಸಾಲೊಳಗೆ size_t spartn_auth_ಉದ್ದಳತೆ_ಬೈಟುಗಳು(bool eaf, uint8_t auth_ind, uint8_t emb_auth_len)
 {
-	if (!eaf || auth_ind <= 1) {
-		return 0;
+	ಆದರೆ (!eaf || auth_ind <= 1) {
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
-	static constexpr uint8_t kBytes[] = {8, 12, 16, 32, 64};
-	return (emb_auth_len < 5) ? kBytes[emb_auth_len] : 64;
+	ಸ್ಥಿರ constexpr uint8_t k_ಬೈಟುಗಳು[] = {8, 12, 16, 32, 64};
+	ಹಿಂತಿರುಗಿ (emb_auth_len < 5) ? k_ಬೈಟುಗಳು[emb_auth_len] : 64;
 }
 
 /**
  * Length of the description block (TF007..TF015), which follows the 4-byte
  * frame start and precedes the payload.
  */
-inline size_t spartn_desc_length_bytes(bool eaf, bool time_tag_32bit)
+ಸಾಲೊಳಗೆ size_t spartn_desc_ಉದ್ದಳತೆ_ಬೈಟುಗಳು(bool eaf, bool ಸಮಯ_ಟ್ಯಾಗ್_32bit)
 {
-	return (time_tag_32bit ? 6u : 4u) + (eaf ? 2u : 0u);
+	ಹಿಂತಿರುಗಿ (ಸಮಯ_ಟ್ಯಾಗ್_32bit ? 6u : 4u) + (eaf ? 2u : 0u);
 }
 
 /**
@@ -116,6 +116,6 @@ inline size_t spartn_desc_length_bytes(bool eaf, bool time_tag_32bit)
  *                 2=CRC-24 poly 0x864CFB, 3=CRC-32 poly 0x04C11DB7 init/xor ~0
  * @return         CRC value, in the low crc_type+1 bytes
  */
-uint32_t spartn_message_crc(const uint8_t *data, size_t len, uint8_t crc_type);
+uint32_t spartn_ಸಂದೇಶ_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ(ಸ್ಥಿರಾಂಕ uint8_t *ದತ್ತಾಂಶ, size_t len, uint8_t ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_type);
 
 } // namespace gnss

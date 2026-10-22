@@ -31,122 +31,122 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-TEST(MatrixSliceTest, Slice)
+TEST(ಮಾತೃಕೆ_ತುಂಡು_Test, ತುಂಡು_2)
 {
-	float data[9] = {0, 2, 3,
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ[9] = {0, 2, 3,
 			 4, 5, 6,
 			 7, 8, 10
 			};
-	SquareMatrix<float, 3> A(data);
+	ವರ್ಗಫಲ_ಮಾತೃಕೆ<ದಶಮಾಂಶ, 3> A(ದತ್ತಾಂಶ);
 
 	// Test row slicing
-	Matrix<float, 2, 3> B_rowslice(A.slice<2, 3>(1, 0));
-	float data_check_rowslice[6] = {
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 3> B_rowslice(A.ತುಂಡು<2, 3>(1, 0));
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_check_rowslice[6] = {
 		4, 5, 6,
 		7, 8, 10
 	};
-	Matrix<float, 2, 3> B_check_rowslice(data_check_rowslice);
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 3> B_check_rowslice(ದತ್ತಾಂಶ_check_rowslice);
 	EXPECT_EQ(B_rowslice, B_check_rowslice);
 
 	// Test column slicing
-	Matrix<float, 3, 2> B_colslice(A.slice<3, 2>(0, 1));
-	float data_check_colslice[6] = {
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 2> B_colslice(A.ತುಂಡು<3, 2>(0, 1));
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_check_colslice[6] = {
 		2, 3,
 		5, 6,
 		8, 10
 	};
-	Matrix<float, 3, 2> B_check_colslice(data_check_colslice);
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 2> B_check_colslice(ದತ್ತಾಂಶ_check_colslice);
 	EXPECT_EQ(B_colslice, B_check_colslice);
 
 	// Test slicing both
-	Matrix<float, 2, 2> B_bothslice(A.slice<2, 2>(1, 1));
-	float data_check_bothslice[4] = {
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 2> B_bothslice(A.ತುಂಡು<2, 2>(1, 1));
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_check_bothslice[4] = {
 		5, 6,
 		8, 10
 	};
-	Matrix<float, 2, 2> B_check_bothslice(data_check_bothslice);
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 2> B_check_bothslice(ದತ್ತಾಂಶ_check_bothslice);
 	EXPECT_EQ(B_bothslice, B_check_bothslice);
 
 	//Test block writing
-	float data_2[4] = {
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_2_2[4] = {
 		11, 12,
 		13, 14
 	};
 
-	Matrix<float, 2, 2> C(data_2);
-	A.slice<2, 2>(1, 1) = C;
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 2> C(ದತ್ತಾಂಶ_2_2);
+	A.ತುಂಡು<2, 2>(1, 1) = C;
 
-	float data_2_check[9] = {
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_2_check[9] = {
 		0, 2, 3,
 		4, 11, 12,
 		7, 13, 14
 	};
-	Matrix<float, 3, 3> D(data_2_check);
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 3> D(ದತ್ತಾಂಶ_2_check);
 	EXPECT_EQ(A, D);
 
 	//Test writing to slices
-	Matrix<float, 3, 1> E;
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 1> E;
 	E(0, 0) = -1;
 	E(1, 0) = 1;
 	E(2, 0) = 3;
 
-	Matrix<float, 2, 1> F;
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 1> F;
 	F(0, 0) = 9;
 	F(1, 0) = 11;
 
-	E.slice<2, 1>(0, 0) = F;
+	E.ತುಂಡು<2, 1>(0, 0) = F;
 
-	float data_3_check[3] = {9, 11, 3};
-	Matrix<float, 3, 1> G(data_3_check);
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_3_check[3] = {9, 11, 3};
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 1> G(ದತ್ತಾಂಶ_3_check);
 	EXPECT_EQ(E, G);
-	EXPECT_EQ(E, (Matrix<float, 3, 1>(E.slice<3, 1>(0, 0))));
+	EXPECT_EQ(E, (ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 1>(E.ತುಂಡು<3, 1>(0, 0))));
 
-	Matrix<float, 2, 1> H = E.slice<2, 1>(0, 0);
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 1> H = E.ತುಂಡು<2, 1>(0, 0);
 	EXPECT_EQ(H, F);
 
-	float data_4_check[5] = {3, 11, 9, 0, 0};
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_4_check[5] = {3, 11, 9, 0, 0};
 	{
 		// assigning row slices to each other
-		const Matrix<float, 3, 1> J(data_3_check);
-		Matrix<float, 5, 1> K;
-		K.row(2) = J.row(0);
-		K.row(1) = J.row(1);
-		K.row(0) = J.row(2);
+		ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 1> J(ದತ್ತಾಂಶ_3_check);
+		ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 5, 1> K;
+		K.ಅಡ್ಡಸಾಲು(2) = J.ಅಡ್ಡಸಾಲು(0);
+		K.ಅಡ್ಡಸಾಲು(1) = J.ಅಡ್ಡಸಾಲು(1);
+		K.ಅಡ್ಡಸಾಲು(0) = J.ಅಡ್ಡಸಾಲು(2);
 
-		Matrix<float, 5, 1> K_check(data_4_check);
+		ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 5, 1> K_check(ದತ್ತಾಂಶ_4_check);
 		EXPECT_EQ(K, K_check);
 	}
 	{
 		// assigning col slices to each other
-		const Matrix<float, 1, 3> J(data_3_check);
-		Matrix<float, 1, 5> K;
-		K.col(2) = J.col(0);
-		K.col(1) = J.col(1);
-		K.col(0) = J.col(2);
+		ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 1, 3> J(ದತ್ತಾಂಶ_3_check);
+		ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 1, 5> K;
+		K.ಲಂಬಸಾಲು(2) = J.ಲಂಬಸಾಲು(0);
+		K.ಲಂಬಸಾಲು(1) = J.ಲಂಬಸಾಲು(1);
+		K.ಲಂಬಸಾಲು(0) = J.ಲಂಬಸಾಲು(2);
 
-		Matrix<float, 1, 5> K_check(data_4_check);
+		ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 1, 5> K_check(ದತ್ತಾಂಶ_4_check);
 		EXPECT_EQ(K, K_check);
 	}
 
 	// check that slice of a slice works for reading
-	const Matrix<float, 3, 3> cm33(data);
-	Matrix<float, 2, 1> topRight = cm33.slice<2, 3>(0, 0).slice<2, 1>(0, 2);
-	float top_right_check[2] = {3, 6};
-	EXPECT_EQ(topRight, (Matrix<float, 2, 1>(top_right_check)));
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 3> cm33(ದತ್ತಾಂಶ);
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 1> ತುದಿ_ಬಲ = cm33.ತುಂಡು<2, 3>(0, 0).ತುಂಡು<2, 1>(0, 2);
+	ದಶಮಾಂಶ ತುದಿ_ಬಲ_check[2] = {3, 6};
+	EXPECT_EQ(ತುದಿ_ಬಲ, (ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 1>(ತುದಿ_ಬಲ_check)));
 
 	// check that slice of a slice works for writing
-	Matrix<float, 3, 3> m33(data);
-	m33.slice<2, 3>(0, 0).slice<2, 1>(0, 2) = Matrix<float, 2, 1>();
-	const float data_check[9] = {0, 2, 0,
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 3> m33(ದತ್ತಾಂಶ);
+	m33.ತುಂಡು<2, 3>(0, 0).ತುಂಡು<2, 1>(0, 2) = ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 1>();
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ ದತ್ತಾಂಶ_check[9] = {0, 2, 0,
 				     4, 5, 0,
 				     7, 8, 10
 				    };
-	EXPECT_EQ(m33, (Matrix<float, 3, 3>(data_check)));
+	EXPECT_EQ(m33, (ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 3>(ದತ್ತಾಂಶ_check)));
 
 	// longerThan
 	Vector3f v5;
@@ -158,185 +158,185 @@ TEST(MatrixSliceTest, Slice)
 	EXPECT_FLOAT_EQ(v5.xy().norm(), 5.f);
 
 	// min/max
-	EXPECT_FLOAT_EQ(m33.row(1).max(), 5.f);
-	EXPECT_FLOAT_EQ(m33.col(0).min(), 0.f);
-	EXPECT_FLOAT_EQ((m33.slice<2, 2>(1, 1).max()), 10.f);
+	EXPECT_FLOAT_EQ(m33.ಅಡ್ಡಸಾಲು(1).max(), 5.f);
+	EXPECT_FLOAT_EQ(m33.ಲಂಬಸಾಲು(0).min(), 0.f);
+	EXPECT_FLOAT_EQ((m33.ತುಂಡು<2, 2>(1, 1).max()), 10.f);
 
 	// assign scalar value to slice
-	Matrix<float, 3, 1> L;
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 1> L;
 	L(0, 0) = -1;
 	L(1, 0) = 1;
 	L(2, 0) = 3;
 
-	L.slice<2, 1>(0, 0) = 0.0f;
+	L.ತುಂಡು<2, 1>(0, 0) = 0.0f;
 
-	float data_5_check[3] = {0, 0, 3};
-	Matrix<float, 3, 1> M(data_5_check);
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_5_check[3] = {0, 0, 3};
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 1> M(ದತ್ತಾಂಶ_5_check);
 	EXPECT_EQ(L, M);
 
 	// return diagonal elements
-	float data_6[9] = {0, 2, 3,
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_6[9] = {0, 2, 3,
 			   4, 5, 6,
 			   7, 8, 10
 			  };
-	SquareMatrix<float, 3> N(data_6);
+	ವರ್ಗಫಲ_ಮಾತೃಕೆ<ದಶಮಾಂಶ, 3> N(ದತ್ತಾಂಶ_6);
 
-	Vector3f v6 = N.slice<3, 3>(0, 0).diag();
+	Vector3f v6 = N.ತುಂಡು<3, 3>(0, 0).diag();
 	Vector3f v6_check = {0, 5, 10};
 	EXPECT_EQ(v6, v6_check);
-	Vector2f v7 = N.slice<2, 3>(1, 0).diag();
+	Vector2f v7 = N.ತುಂಡು<2, 3>(1, 0).diag();
 	Vector2f v7_check = {4, 8};
 	EXPECT_EQ(v7, v7_check);
-	Vector2f v8 = N.slice<3, 2>(0, 1).diag();
+	Vector2f v8 = N.ತುಂಡು<3, 2>(0, 1).diag();
 	Vector2f v8_check = {2, 6};
 	EXPECT_EQ(v8, v8_check);
-	Vector2f v9(N.slice<1, 2>(1, 1));
+	Vector2f v9(N.ತುಂಡು<1, 2>(1, 1));
 	Vector2f v9_check = {5, 6};
 	EXPECT_EQ(v9, v9_check);
-	Vector3f v10(N.slice<1, 3>(1, 0));
+	Vector3f v10(N.ತುಂಡು<1, 3>(1, 0));
 	Vector3f v10_check = {4, 5, 6};
 	EXPECT_EQ(v10, v10_check);
 
 	// Different assignment operators
-	SquareMatrix3f O(data);
-	float operand_data [4] = {2, 1, -3, -1};
-	const SquareMatrix<float, 2> operand(operand_data);
+	ವರ್ಗಫಲ_Matrix3f O(ದತ್ತಾಂಶ);
+	ದಶಮಾಂಶ ಕಾರ್ಯಾಂಶ_ದತ್ತಾಂಶ [4] = {2, 1, -3, -1};
+	ಸ್ಥಿರಾಂಕ ವರ್ಗಫಲ_ಮಾತೃಕೆ<ದಶಮಾಂಶ, 2> ಕಾರ್ಯಾಂಶ(ಕಾರ್ಯಾಂಶ_ದತ್ತಾಂಶ);
 
-	O.slice<2, 2>(1, 0) += operand;
-	float O_check_data_1 [9] = {0, 2, 3,  6, 6, 6,  4, 7, 10};
-	EXPECT_EQ(O, SquareMatrix3f(O_check_data_1));
+	O.ತುಂಡು<2, 2>(1, 0) += ಕಾರ್ಯಾಂಶ;
+	ದಶಮಾಂಶ O_check_ದತ್ತಾಂಶ_1 [9] = {0, 2, 3,  6, 6, 6,  4, 7, 10};
+	EXPECT_EQ(O, ವರ್ಗಫಲ_Matrix3f(O_check_ದತ್ತಾಂಶ_1));
 
-	O = SquareMatrix3f(data);
-	O.slice<2, 1>(1, 1) += operand.slice<2, 1>(0, 0);
-	float O_check_data_2 [9] = {0, 2, 3,  4, 7, 6,  7, 5, 10};
-	EXPECT_EQ(O, SquareMatrix3f(O_check_data_2));
+	O = ವರ್ಗಫಲ_Matrix3f(ದತ್ತಾಂಶ);
+	O.ತುಂಡು<2, 1>(1, 1) += ಕಾರ್ಯಾಂಶ.ತುಂಡು<2, 1>(0, 0);
+	ದಶಮಾಂಶ O_check_ದತ್ತಾಂಶ_2 [9] = {0, 2, 3,  4, 7, 6,  7, 5, 10};
+	EXPECT_EQ(O, ವರ್ಗಫಲ_Matrix3f(O_check_ದತ್ತಾಂಶ_2));
 
-	O = SquareMatrix3f(data);
-	O.slice<3, 3>(0, 0) += -1;
-	float O_check_data_3 [9] = {-1, 1, 2,  3, 4, 5,  6, 7, 9};
-	EXPECT_EQ(O, SquareMatrix3f(O_check_data_3));
+	O = ವರ್ಗಫಲ_Matrix3f(ದತ್ತಾಂಶ);
+	O.ತುಂಡು<3, 3>(0, 0) += -1;
+	ದಶಮಾಂಶ O_check_ದತ್ತಾಂಶ_3 [9] = {-1, 1, 2,  3, 4, 5,  6, 7, 9};
+	EXPECT_EQ(O, ವರ್ಗಫಲ_Matrix3f(O_check_ದತ್ತಾಂಶ_3));
 
-	O = SquareMatrix3f(data);
-	O.col(1) += Vector3f{1, -2, 3};
-	float O_check_data_4 [9] = {0, 3, 3,  4, 3, 6,  7, 11, 10};
-	EXPECT_EQ(O, SquareMatrix3f(O_check_data_4));
+	O = ವರ್ಗಫಲ_Matrix3f(ದತ್ತಾಂಶ);
+	O.ಲಂಬಸಾಲು(1) += Vector3f{1, -2, 3};
+	ದಶಮಾಂಶ O_check_ದತ್ತಾಂಶ_4 [9] = {0, 3, 3,  4, 3, 6,  7, 11, 10};
+	EXPECT_EQ(O, ವರ್ಗಫಲ_Matrix3f(O_check_ದತ್ತಾಂಶ_4));
 
-	O = SquareMatrix3f(data);
-	O.slice<2, 2>(1, 0) -= operand;
-	float O_check_data_5 [9] = {0, 2, 3,  2, 4, 6,  10, 9, 10};
-	EXPECT_EQ(O, SquareMatrix3f(O_check_data_5));
+	O = ವರ್ಗಫಲ_Matrix3f(ದತ್ತಾಂಶ);
+	O.ತುಂಡು<2, 2>(1, 0) -= ಕಾರ್ಯಾಂಶ;
+	ದಶಮಾಂಶ O_check_ದತ್ತಾಂಶ_5 [9] = {0, 2, 3,  2, 4, 6,  10, 9, 10};
+	EXPECT_EQ(O, ವರ್ಗಫಲ_Matrix3f(O_check_ದತ್ತಾಂಶ_5));
 
-	O = SquareMatrix3f(data);
-	O.slice<2, 1>(1, 1) -= operand.slice<2, 1>(0, 0);
-	float O_check_data_6 [9] = {0, 2, 3,  4, 3, 6,  7, 11, 10};
-	EXPECT_EQ(O, SquareMatrix3f(O_check_data_6));
+	O = ವರ್ಗಫಲ_Matrix3f(ದತ್ತಾಂಶ);
+	O.ತುಂಡು<2, 1>(1, 1) -= ಕಾರ್ಯಾಂಶ.ತುಂಡು<2, 1>(0, 0);
+	ದಶಮಾಂಶ O_check_ದತ್ತಾಂಶ_6 [9] = {0, 2, 3,  4, 3, 6,  7, 11, 10};
+	EXPECT_EQ(O, ವರ್ಗಫಲ_Matrix3f(O_check_ದತ್ತಾಂಶ_6));
 
-	O = SquareMatrix3f(data);
-	O.slice<3, 3>(0, 0) -= -1;
-	float O_check_data_7 [9] = {1, 3, 4,  5, 6, 7,  8, 9, 11};
-	EXPECT_EQ(O, SquareMatrix3f(O_check_data_7));
+	O = ವರ್ಗಫಲ_Matrix3f(ದತ್ತಾಂಶ);
+	O.ತುಂಡು<3, 3>(0, 0) -= -1;
+	ದಶಮಾಂಶ O_check_ದತ್ತಾಂಶ_7 [9] = {1, 3, 4,  5, 6, 7,  8, 9, 11};
+	EXPECT_EQ(O, ವರ್ಗಫಲ_Matrix3f(O_check_ದತ್ತಾಂಶ_7));
 
-	O = SquareMatrix3f(data);
-	O.col(1) -= Vector3f{1, -2, 3};
-	float O_check_data_8 [9] = {0, 1, 3,  4, 7, 6,  7, 5, 10};
-	EXPECT_EQ(O, SquareMatrix3f(O_check_data_8));
+	O = ವರ್ಗಫಲ_Matrix3f(ದತ್ತಾಂಶ);
+	O.ಲಂಬಸಾಲು(1) -= Vector3f{1, -2, 3};
+	ದಶಮಾಂಶ O_check_ದತ್ತಾಂಶ_8 [9] = {0, 1, 3,  4, 7, 6,  7, 5, 10};
+	EXPECT_EQ(O, ವರ್ಗಫಲ_Matrix3f(O_check_ದತ್ತಾಂಶ_8));
 
-	O = SquareMatrix3f(data);
-	O.slice<2, 1>(1, 1) *= 5.f;
-	float O_check_data_9 [9] = {0, 2, 3,  4, 25, 6,  7, 40, 10};
-	EXPECT_EQ(O, SquareMatrix3f(O_check_data_9));
+	O = ವರ್ಗಫಲ_Matrix3f(ದತ್ತಾಂಶ);
+	O.ತುಂಡು<2, 1>(1, 1) *= 5.f;
+	ದಶಮಾಂಶ O_check_ದತ್ತಾಂಶ_9 [9] = {0, 2, 3,  4, 25, 6,  7, 40, 10};
+	EXPECT_EQ(O, ವರ್ಗಫಲ_Matrix3f(O_check_ದತ್ತಾಂಶ_9));
 
-	O = SquareMatrix3f(data);
-	O.slice<2, 1>(1, 1) /= 2.f;
-	float O_check_data_10 [9] = {0, 2, 3,  4, 2.5, 6,  7, 4, 10};
-	EXPECT_EQ(O, SquareMatrix3f(O_check_data_10));
+	O = ವರ್ಗಫಲ_Matrix3f(ದತ್ತಾಂಶ);
+	O.ತುಂಡು<2, 1>(1, 1) /= 2.f;
+	ದಶಮಾಂಶ O_check_ದತ್ತಾಂಶ_10 [9] = {0, 2, 3,  4, 2.5, 6,  7, 4, 10};
+	EXPECT_EQ(O, ವರ್ಗಫಲ_Matrix3f(O_check_ದತ್ತಾಂಶ_10));
 
 	// Different operations
-	O = SquareMatrix3f(data);
-	SquareMatrix<float, 2> res_11(O.slice<2, 2>(1, 1) * 2.f);
-	float O_check_data_11 [4] = {10, 12, 16, 20};
-	EXPECT_EQ(res_11, (SquareMatrix<float, 2>(O_check_data_11)));
+	O = ವರ್ಗಫಲ_Matrix3f(ದತ್ತಾಂಶ);
+	ವರ್ಗಫಲ_ಮಾತೃಕೆ<ದಶಮಾಂಶ, 2> res_11(O.ತುಂಡು<2, 2>(1, 1) * 2.f);
+	ದಶಮಾಂಶ O_check_ದತ್ತಾಂಶ_11 [4] = {10, 12, 16, 20};
+	EXPECT_EQ(res_11, (ವರ್ಗಫಲ_ಮಾತೃಕೆ<ದಶಮಾಂಶ, 2>(O_check_ದತ್ತಾಂಶ_11)));
 
-	O = SquareMatrix3f(data);
-	SquareMatrix<float, 2> res_12(O.slice<2, 2>(1, 1) / 2.f);
-	float O_check_data_12 [4] = {2.5, 3, 4, 5};
-	EXPECT_EQ(res_12, (SquareMatrix<float, 2>(O_check_data_12)));
+	O = ವರ್ಗಫಲ_Matrix3f(ದತ್ತಾಂಶ);
+	ವರ್ಗಫಲ_ಮಾತೃಕೆ<ದಶಮಾಂಶ, 2> res_12(O.ತುಂಡು<2, 2>(1, 1) / 2.f);
+	ದಶಮಾಂಶ O_check_ದತ್ತಾಂಶ_12 [4] = {2.5, 3, 4, 5};
+	EXPECT_EQ(res_12, (ವರ್ಗಫಲ_ಮಾತೃಕೆ<ದಶಮಾಂಶ, 2>(O_check_ದತ್ತಾಂಶ_12)));
 }
-TEST(MatrixSliceTest, SliceAdditions)
+TEST(ಮಾತೃಕೆ_ತುಂಡು_Test, ತುಂಡು_Additions)
 {
-	float data[9] = {0, 2, 3,
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ[9] = {0, 2, 3,
 			 4, 5, 6,
 			 7, 8, 10
 			};
-	SquareMatrix3f A{data};
+	ವರ್ಗಫಲ_Matrix3f A{ದತ್ತಾಂಶ};
 
-	float operand_data [4] = {2, 1,
+	ದಶಮಾಂಶ ಕಾರ್ಯಾಂಶ_ದತ್ತಾಂಶ [4] = {2, 1,
 				  -3, -1
 				 };
-	const SquareMatrix2f operand(operand_data);
+	ಸ್ಥಿರಾಂಕ ವರ್ಗಫಲ_Matrix2f ಕಾರ್ಯಾಂಶ(ಕಾರ್ಯಾಂಶ_ದತ್ತಾಂಶ);
 
 	// 2x2 Slice + 2x2 Matrix
-	SquareMatrix2f res_1 = A.slice<2, 2>(1, 0) + operand;
-	float res_1_check_data[4] = {6, 6,
+	ವರ್ಗಫಲ_Matrix2f res_1 = A.ತುಂಡು<2, 2>(1, 0) + ಕಾರ್ಯಾಂಶ;
+	ದಶಮಾಂಶ res_1_check_ದತ್ತಾಂಶ[4] = {6, 6,
 				     4, 7
 				    };
-	EXPECT_EQ(res_1, (SquareMatrix2f(res_1_check_data)));
+	EXPECT_EQ(res_1, (ವರ್ಗಫಲ_Matrix2f(res_1_check_ದತ್ತಾಂಶ)));
 
 	// 2x1 Slice + 2x1 Slice
-	Vector2f res_2 = A.slice<2, 1>(1, 1) + operand.slice<2, 1>(0, 0);
+	Vector2f res_2 = A.ತುಂಡು<2, 1>(1, 1) + ಕಾರ್ಯಾಂಶ.ತುಂಡು<2, 1>(0, 0);
 	EXPECT_EQ(res_2, Vector2f(7, 5));
 
 	// 3x3 Slice + Scalar
-	SquareMatrix3f res_3 = A.slice<3, 3>(0, 0) + (-1);
-	float res_3_check_data[9] = {-1, 1, 2,
+	ವರ್ಗಫಲ_Matrix3f res_3 = A.ತುಂಡು<3, 3>(0, 0) + (-1);
+	ದಶಮಾಂಶ res_3_check_ದತ್ತಾಂಶ[9] = {-1, 1, 2,
 				     3, 4, 5,
 				     6, 7, 9
 				    };
-	EXPECT_EQ(res_3, (SquareMatrix3f(res_3_check_data)));
+	EXPECT_EQ(res_3, (ವರ್ಗಫಲ_Matrix3f(res_3_check_ದತ್ತಾಂಶ)));
 
 	// 3x1 Slice + 3 Vector
-	Vector3f res_4 = A.col(1) + Vector3f(1, -2, 3);
+	Vector3f res_4 = A.ಲಂಬಸಾಲು(1) + Vector3f(1, -2, 3);
 	EXPECT_EQ(res_4, Vector3f(3, 3, 11));
 
 }
-TEST(MatrixSliceTest, SliceSubtractions)
+TEST(ಮಾತೃಕೆ_ತುಂಡು_Test, ತುಂಡು_Subtractions)
 {
-	float data[9] = {0, 2, 3,
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ[9] = {0, 2, 3,
 			 4, 5, 6,
 			 7, 8, 10
 			};
-	SquareMatrix3f A{data};
+	ವರ್ಗಫಲ_Matrix3f A{ದತ್ತಾಂಶ};
 
-	float operand_data[4] = {2, 1,
+	ದಶಮಾಂಶ ಕಾರ್ಯಾಂಶ_ದತ್ತಾಂಶ[4] = {2, 1,
 				 -3, -1
 				};
-	const SquareMatrix2f operand(operand_data);
+	ಸ್ಥಿರಾಂಕ ವರ್ಗಫಲ_Matrix2f ಕಾರ್ಯಾಂಶ(ಕಾರ್ಯಾಂಶ_ದತ್ತಾಂಶ);
 
 	// 2x2 Slice - 2x2 Matrix
-	SquareMatrix2f res_1 = A.slice<2, 2>(1, 0) - operand;
-	float res_1_check_data[4] = {2, 4,
+	ವರ್ಗಫಲ_Matrix2f res_1 = A.ತುಂಡು<2, 2>(1, 0) - ಕಾರ್ಯಾಂಶ;
+	ದಶಮಾಂಶ res_1_check_ದತ್ತಾಂಶ[4] = {2, 4,
 				     10, 9
 				    };
-	EXPECT_EQ(res_1, (SquareMatrix2f(res_1_check_data)));
+	EXPECT_EQ(res_1, (ವರ್ಗಫಲ_Matrix2f(res_1_check_ದತ್ತಾಂಶ)));
 
 	// 2x1 Slice - 2x1 Slice
-	Vector2f res_2 = A.slice<2, 1>(1, 1) - operand.slice<2, 1>(0, 0);
+	Vector2f res_2 = A.ತುಂಡು<2, 1>(1, 1) - ಕಾರ್ಯಾಂಶ.ತುಂಡು<2, 1>(0, 0);
 	EXPECT_EQ(res_2, Vector2f(3, 11));
 
 	// 3x3 Slice - Scalar
-	SquareMatrix3f res_3 = A.slice<3, 3>(0, 0) - (-1);
-	float res_3_check_data[9] = {1, 3, 4,
+	ವರ್ಗಫಲ_Matrix3f res_3 = A.ತುಂಡು<3, 3>(0, 0) - (-1);
+	ದಶಮಾಂಶ res_3_check_ದತ್ತಾಂಶ[9] = {1, 3, 4,
 				     5, 6, 7,
 				     8, 9, 11
 				    };
-	EXPECT_EQ(res_3, (SquareMatrix3f(res_3_check_data)));
+	EXPECT_EQ(res_3, (ವರ್ಗಫಲ_Matrix3f(res_3_check_ದತ್ತಾಂಶ)));
 
 	// 3x1 Slice - 3 Vector
-	Vector3f res_4 = A.col(1) - Vector3f(1, -2, 3);
+	Vector3f res_4 = A.ಲಂಬಸಾಲು(1) - Vector3f(1, -2, 3);
 	EXPECT_EQ(res_4, Vector3f(1, 7, 5));
 }
 
-TEST(MatrixSliceTest, XYAssignmentTest)
+TEST(ಮಾತೃಕೆ_ತುಂಡು_Test, XYAssignmentTest)
 {
 	Vector3f a(1, 2, 3);
 	Vector3f b(4, 5, 6);
@@ -345,20 +345,20 @@ TEST(MatrixSliceTest, XYAssignmentTest)
 	EXPECT_EQ(a, Vector3f(4, 5, 3));
 }
 
-TEST(MatrixSliceTest, Dot)
+TEST(ಮಾತೃಕೆ_ತುಂಡು_Test, Dot)
 {
-	float data[9] = {0, 2, 3,
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ[9] = {0, 2, 3,
 			 4, 5, 6,
 			 7, 8, 10
 			};
-	SquareMatrix3f A(data);
+	ವರ್ಗಫಲ_Matrix3f A(ದತ್ತಾಂಶ);
 
 	// row . row, within the same matrix
-	EXPECT_FLOAT_EQ(A.row(1).dot(A.row(2)), 4.f * 7.f + 5.f * 8.f + 6.f * 10.f);
+	EXPECT_FLOAT_EQ(A.ಅಡ್ಡಸಾಲು(1).dot(A.ಅಡ್ಡಸಾಲು(2)), 4.f * 7.f + 5.f * 8.f + 6.f * 10.f);
 
 	// col . col, within the same matrix
-	EXPECT_FLOAT_EQ(A.col(0).dot(A.col(1)), 0.f * 2.f + 4.f * 5.f + 7.f * 8.f);
+	EXPECT_FLOAT_EQ(A.ಲಂಬಸಾಲು(0).dot(A.ಲಂಬಸಾಲು(1)), 0.f * 2.f + 4.f * 5.f + 7.f * 8.f);
 
 	// self dot matches norm_squared()
-	EXPECT_FLOAT_EQ(A.row(1).dot(A.row(1)), A.row(1).norm_squared());
+	EXPECT_FLOAT_EQ(A.ಅಡ್ಡಸಾಲು(1).dot(A.ಅಡ್ಡಸಾಲು(1)), A.ಅಡ್ಡಸಾಲು(1).norm_squared());
 }

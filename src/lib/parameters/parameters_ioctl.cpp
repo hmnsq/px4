@@ -37,163 +37,163 @@
  * Protected build kernel space interface to global parameter store.
  */
 
-#define PARAM_IMPLEMENTATION
+#ವ್ಯಾಖ್ಯಾನಿಸು PARAM_IMPLEMENTATION
 
-#include <errno.h>
+#ಅನ್ತರ್ಭಾವ <errno.h>
 
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ "parameters_ioctl.h"
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
 
-int	param_ioctl(unsigned int cmd, unsigned long arg)
+ಪೂರ್ಣಾಂಕ	param_ioctl(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ cmd, ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ arg)
 {
-	int ret = OK;
+	ಪೂರ್ಣಾಂಕ ret = OK;
 
-	switch (cmd) {
-	case PARAMIOCNOTIFY: {
+	ಆಯ್ಕೆ (cmd) {
+	ಸ್ಥಿತಿ PARAMIOCNOTIFY: {
 			param_notify_changes();
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCFIND: {
-			paramiocfind_t *data = (paramiocfind_t *)arg;
+	ಸ್ಥಿತಿ PARAMIOCFIND: {
+			paramiocfind_t *ದತ್ತಾಂಶ = (paramiocfind_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_find(data->name);
+			ಆದರೆ (ದತ್ತಾಂಶ->notification) {
+				ದತ್ತಾಂಶ->ret = param_ಕಂಡುಹಿಡಿ(ದತ್ತಾಂಶ->name);
 
-			} else {
-				data->ret = param_find_no_notification(data->name);
+			} ಇಲ್ಲದಿದ್ದರೆ {
+				ದತ್ತಾಂಶ->ret = param_ಕಂಡುಹಿಡಿ_no_notification(ದತ್ತಾಂಶ->name);
 			}
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCCOUNTUSED: {
-			paramioccountused_t *data = (paramioccountused_t *)arg;
-			data->ret = param_count_used();
+	ಸ್ಥಿತಿ PARAMIOCCOUNTUSED: {
+			paramioccountused_t *ದತ್ತಾಂಶ = (paramioccountused_t *)arg;
+			ದತ್ತಾಂಶ->ret = param_ಎಣಿಕೆ_ಬಳಸಿದ();
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCFORUSEDINDEX: {
-			paramiocforusedindex_t *data = (paramiocforusedindex_t *)arg;
-			data->ret =  param_for_used_index(data->index);
+	ಸ್ಥಿತಿ PARAMIOCFORUSEDINDEX: {
+			paramiocforusedindex_t *ದತ್ತಾಂಶ = (paramiocforusedindex_t *)arg;
+			ದತ್ತಾಂಶ->ret =  param_for_ಬಳಸಿದ_ಸೂಚ್ಯಂಕ(ದತ್ತಾಂಶ->ಸೂಚ್ಯಂಕ);
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCGETUSEDINDEX: {
-			paramiocgetusedindex_t *data = (paramiocgetusedindex_t *)arg;
-			data->ret = param_get_used_index(data->param);
+	ಸ್ಥಿತಿ PARAMIOCGETUSEDINDEX: {
+			paramiocgetusedindex_t *ದತ್ತಾಂಶ = (paramiocgetusedindex_t *)arg;
+			ದತ್ತಾಂಶ->ret = param_get_ಬಳಸಿದ_ಸೂಚ್ಯಂಕ(ದತ್ತಾಂಶ->param);
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCUNSAVED: {
-			paramiocunsaved_t *data = (paramiocunsaved_t *)arg;
-			data->ret = param_value_unsaved(data->param);
+	ಸ್ಥಿತಿ PARAMIOCUNSAVED: {
+			paramiocunsaved_t *ದತ್ತಾಂಶ = (paramiocunsaved_t *)arg;
+			ದತ್ತಾಂಶ->ret = param_ಮೌಲ್ಯ_unsaved(ದತ್ತಾಂಶ->param);
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCGET: {
-			paramiocget_t *data = (paramiocget_t *)arg;
+	ಸ್ಥಿತಿ PARAMIOCGET: {
+			paramiocget_t *ದತ್ತಾಂಶ = (paramiocget_t *)arg;
 
-			if (data->deflt) {
-				data->ret = param_get_default_value(data->param, data->val);
+			ಆದರೆ (ದತ್ತಾಂಶ->deflt) {
+				ದತ್ತಾಂಶ->ret = param_get_default_ಮೌಲ್ಯ(ದತ್ತಾಂಶ->param, ದತ್ತಾಂಶ->val);
 
-			} else {
-				data->ret = param_get(data->param, data->val);
+			} ಇಲ್ಲದಿದ್ದರೆ {
+				ದತ್ತಾಂಶ->ret = param_get(ದತ್ತಾಂಶ->param, ದತ್ತಾಂಶ->val);
 			}
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCAUTOSAVE: {
-			paramiocautosave_t *data = (paramiocautosave_t *)arg;
-			param_control_autosave(data->enable);
+	ಸ್ಥಿತಿ PARAMIOCAUTOSAVE: {
+			paramiocautosave_t *ದತ್ತಾಂಶ = (paramiocautosave_t *)arg;
+			param_control_autosave(ದತ್ತಾಂಶ->enable);
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCSET: {
-			paramiocset_t *data = (paramiocset_t *)arg;
+	ಸ್ಥಿತಿ PARAMIOCSET: {
+			paramiocset_t *ದತ್ತಾಂಶ = (paramiocset_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_set(data->param, data->val);
+			ಆದರೆ (ದತ್ತಾಂಶ->notification) {
+				ದತ್ತಾಂಶ->ret = param_ಗಣ(ದತ್ತಾಂಶ->param, ದತ್ತಾಂಶ->val);
 
-			} else {
-				data->ret = param_set_no_notification(data->param, data->val);
+			} ಇಲ್ಲದಿದ್ದರೆ {
+				ದತ್ತಾಂಶ->ret = param_ಗಣ_no_notification(ದತ್ತಾಂಶ->param, ದತ್ತಾಂಶ->val);
 			}
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCUSED: {
-			paramiocused_t *data = (paramiocused_t *)arg;
-			data->ret = param_used(data->param);
+	ಸ್ಥಿತಿ PARAMIOCUSED: {
+			paramiocused_t *ದತ್ತಾಂಶ = (paramiocused_t *)arg;
+			ದತ್ತಾಂಶ->ret = param_ಬಳಸಿದ(ದತ್ತಾಂಶ->param);
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCSETUSED: {
-			paramiocsetused_t *data = (paramiocsetused_t *)arg;
-			param_set_used(data->param);
+	ಸ್ಥಿತಿ PARAMIOCSETUSED: {
+			paramiocsetused_t *ದತ್ತಾಂಶ = (paramiocsetused_t *)arg;
+			param_ಗಣ_ಬಳಸಿದ(ದತ್ತಾಂಶ->param);
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCSETDEFAULT: {
-			paramiocsetdefault_t *data = (paramiocsetdefault_t *)arg;
-			data->ret = param_set_default_value(data->param, data->val);
+	ಸ್ಥಿತಿ PARAMIOCSETDEFAULT: {
+			paramiocsetdefault_t *ದತ್ತಾಂಶ = (paramiocsetdefault_t *)arg;
+			ದತ್ತಾಂಶ->ret = param_ಗಣ_default_ಮೌಲ್ಯ(ದತ್ತಾಂಶ->param, ದತ್ತಾಂಶ->val);
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCRESET: {
-			paramiocreset_t *data = (paramiocreset_t *)arg;
+	ಸ್ಥಿತಿ PARAMIOCRESET: {
+			paramiocreset_t *ದತ್ತಾಂಶ = (paramiocreset_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_reset(data->param);
+			ಆದರೆ (ದತ್ತಾಂಶ->notification) {
+				ದತ್ತಾಂಶ->ret = param_reset(ದತ್ತಾಂಶ->param);
 
-			} else {
-				data->ret = param_reset_no_notification(data->param);
+			} ಇಲ್ಲದಿದ್ದರೆ {
+				ದತ್ತಾಂಶ->ret = param_reset_no_notification(ದತ್ತಾಂಶ->param);
 			}
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCRESETGROUP: {
-			paramiocresetgroup_t *data = (paramiocresetgroup_t *)arg;
+	ಸ್ಥಿತಿ PARAMIOCRESETGROUP: {
+			paramiocresetgroup_t *ದತ್ತಾಂಶ = (paramiocresetgroup_t *)arg;
 
-			if (data->type == PARAM_RESET_EXCLUDES) {
-				param_reset_excludes(data->group, data->num_in_group);
+			ಆದರೆ (ದತ್ತಾಂಶ->type == PARAM_RESET_EXCLUDES) {
+				param_reset_excludes(ದತ್ತಾಂಶ->ಗುಂಪು, ದತ್ತಾಂಶ->ಅಂಕೆ_ಒಳ_ಗುಂಪು);
 
-			} else if (data->type == PARAM_RESET_SPECIFIC) {
-				param_reset_specific(data->group, data->num_in_group);
+			} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (ದತ್ತಾಂಶ->type == PARAM_RESET_SPECIFIC) {
+				param_reset_specific(ದತ್ತಾಂಶ->ಗುಂಪು, ದತ್ತಾಂಶ->ಅಂಕೆ_ಒಳ_ಗುಂಪು);
 
-			} else {
+			} ಇಲ್ಲದಿದ್ದರೆ {
 				param_reset_all();
 			}
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCSAVEDEFAULT: {
-			paramiocsavedefault_t *data = (paramiocsavedefault_t *)arg;
-			data->ret = param_save_default(data->blocking);
+	ಸ್ಥಿತಿ PARAMIOCSAVEDEFAULT: {
+			paramiocsavedefault_t *ದತ್ತಾಂಶ = (paramiocsavedefault_t *)arg;
+			ದತ್ತಾಂಶ->ret = param_save_default(ದತ್ತಾಂಶ->blocking);
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCLOADDEFAULT: {
-			paramiocloaddefault_t *data = (paramiocloaddefault_t *)arg;
-			data->ret = param_load_default();
+	ಸ್ಥಿತಿ PARAMIOCLOADDEFAULT: {
+			paramiocloaddefault_t *ದತ್ತಾಂಶ = (paramiocloaddefault_t *)arg;
+			ದತ್ತಾಂಶ->ret = param_ತುಂಬು_default();
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCEXPORT: {
-			paramiocexport_t *data = (paramiocexport_t *)arg;
-			data->ret = param_export(data->filename, nullptr);
+	ಸ್ಥಿತಿ PARAMIOCEXPORT: {
+			paramiocexport_t *ದತ್ತಾಂಶ = (paramiocexport_t *)arg;
+			ದತ್ತಾಂಶ->ret = param_export(ದತ್ತಾಂಶ->filename, ಶೂನ್ಯಸೂಚಕ);
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case PARAMIOCHASH: {
-			paramiochash_t *data = (paramiochash_t *)arg;
-			data->ret = param_hash_check();
+	ಸ್ಥಿತಿ PARAMIOCHASH: {
+			paramiochash_t *ದತ್ತಾಂಶ = (paramiochash_t *)arg;
+			ದತ್ತಾಂಶ->ret = param_hash_check();
 		}
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	default:
+	ಪೂರ್ವನಿಯೋಜಿತ:
 		ret = -ENOTTY;
-		break;
+		ನಿಲ್ಲಿಸು;
 	}
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 }

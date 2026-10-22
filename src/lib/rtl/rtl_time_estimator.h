@@ -38,103 +38,103 @@
  *
  */
 
-#ifndef RTL_TIME_ESTIMATOR_H_
-#define RTL_TIME_ESTIMATOR_H_
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ RTL_ಸಮಯ_ESTIMATOR_H
+#ವ್ಯಾಖ್ಯಾನಿಸು RTL_ಸಮಯ_ESTIMATOR_H
 
-#include <px4_platform_common/module_params.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/module_params.h>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionInterval.hpp>
-#include <uORB/topics/parameter_update.h>
-#include <uORB/topics/rtl_time_estimate.h>
-#include <uORB/topics/vehicle_status.h>
-#include <uORB/topics/wind.h>
+#ಅನ್ತರ್ಭಾವ <uORB/Subscription.hpp>
+#ಅನ್ತರ್ಭಾವ <uORB/SubscriptionInterval.hpp>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/parameter_update.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/rtl_time_estimate.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/vehicle_status.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/wind.h>
 
-#include <matrix/Vector2.hpp>
+#ಅನ್ತರ್ಭಾವ <matrix/Vector2.hpp>
 
-using namespace time_literals;
+using namespace ಸಮಯ_literals;
 
 class Navigator;
 
-class RtlTimeEstimator : public ModuleParams
+class Rtl_ಸಮಯ_Estimator : ಸಾರ್ವಜನಿಕ ModuleParams
 {
-public:
-	RtlTimeEstimator();
-	~RtlTimeEstimator() = default;
+ಸಾರ್ವಜನಿಕ:
+	Rtl_ಸಮಯ_Estimator();
+	~Rtl_ಸಮಯ_Estimator() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	void update();
-	void reset() { _time_estimate = 0.f; _is_valid = false; };
-	rtl_time_estimate_s getEstimate() const;
-	void addDistance(float hor_dist, const matrix::Vector2f &hor_direction, float vert_dist);
-	void addVertDistance(float alt);
-	void addWait(float time_s);
-	void setVehicleType(uint8_t vehicle_type) { _vehicle_type = vehicle_type; };
+	ಶೂನ್ಯ update();
+	ಶೂನ್ಯ reset() { ಸಮಯ_estimate_2 = 0.f; _is_valid = false; };
+	rtl_ಸಮಯ_estimate_s getEstimate() ಸ್ಥಿರಾಂಕ;
+	ಶೂನ್ಯ ಕೂಡಿಸು_ದೂರ(ದಶಮಾಂಶ hor_dist, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector2f &hor_direction, ದಶಮಾಂಶ vert_dist);
+	ಶೂನ್ಯ ಕೂಡಿಸು_Vert_ದೂರ(ದಶಮಾಂಶ alt);
+	ಶೂನ್ಯ ಕೂಡಿಸು_Wait(ದಶಮಾಂಶ ಸಮಯ_s);
+	ಶೂನ್ಯ ಗಣ_Vehicle_Type(uint8_t vehicle_type) { _vehicle_type = vehicle_type; };
 
-private:
+ಖಾಸಗಿ:
 	/**
 	 * @brief Get the Cruise Ground Speed
 	 *
 	 * @param direction_norm normalized direction in which to fly
 	 * @return Ground speed in cruise mode [m/s].
 	 */
-	float getCruiseGroundSpeed(const matrix::Vector2f &direction_norm);
+	ದಶಮಾಂಶ get_Cruise_Ground_ವೇಗ(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector2f &direction_norm);
 
 	/**
 	 * @brief Get time estimate of vertical distance
 	 *
 	 */
-	float calcVertTimeEstimate(float alt);
+	ದಶಮಾಂಶ calc_Vert_ಸಮಯ_Estimate(ದಶಮಾಂಶ alt);
 
 	/**
 	 * @brief Get the climb rate
 	 *
 	 * @return Climb rate [m/s]
 	 */
-	float getClimbRate();
+	ದಶಮಾಂಶ get_Climb_ದರ();
 
 	/**
 	 * @brief Get the descend rate
 	 *
 	 * @return descend rate [m/s]
 	 */
-	float getDescendRate();
+	ದಶಮಾಂಶ get_Descend_ದರ();
 
 	/**
 	 * @brief Get the cruise speed
 	 *
 	 * @return cruise speed [m/s]
 	 */
-	float getCruiseSpeed();
+	ದಶಮಾಂಶ get_Cruise_ವೇಗ();
 
 	/**
 	 * @brief Get the horizontal wind velocity
 	 *
 	 * @return horizontal wind velocity.
 	 */
-	matrix::Vector2f get_wind();
+	ಮಾತೃಕೆ::Vector2f get_wind();
 
-	float _time_estimate{0.f}; 		/**< Accumulated time estimate [s] */
+	ದಶಮಾಂಶ ಸಮಯ_estimate_2{0.f}; 		/**< Accumulated time estimate [s] */
 	bool _is_valid{false};		/**< Checks if time estimate is valid */
 
-	uint8_t _vehicle_type{vehicle_status_s::VEHICLE_TYPE_ROTARY_WING}; /**< the defined vehicle type to use for the calculation*/
+	uint8_t _vehicle_type{vehicle_ಸ್ಥಿತಿ_s::VEHICLE_TYPE_ROTARY_WING}; /**< the defined vehicle type to use for the calculation*/
 
 	DEFINE_PARAMETERS(
-		(ParamFloat<px4::params::RTL_TIME_FACTOR>) _param_rtl_time_factor,  /**< Safety factory for safe time estimate */
-		(ParamInt<px4::params::RTL_TIME_MARGIN>)   _param_rtl_time_margin   /**< Safety margin for safe time estimate */
+		(ParamFloat<px4::params::RTL_ಸಮಯ_ಗುಣಕ>) param_rtl_ಸಮಯ_ಗುಣಕ,  /**< Safety factory for safe time estimate */
+		(ParamInt<px4::params::RTL_ಸಮಯ_MARGIN>)   param_rtl_ಸಮಯ_margin   /**< Safety margin for safe time estimate */
 	)
 
-	param_t		_param_mpc_z_v_auto_up{PARAM_INVALID}; 	/**< MC climb velocity parameter */
+	param_t		param_mpc_z_v_auto_ಮೇಲೆ{PARAM_INVALID}; 	/**< MC climb velocity parameter */
 	param_t		_param_mpc_z_v_auto_dn{PARAM_INVALID};  /**< MC descend velocity parameter */
-	param_t		_param_fw_climb_rate{PARAM_INVALID};    /**< FW climb speed parameter */
-	param_t		_param_fw_sink_rate{PARAM_INVALID};     /**< FW descend speed parameter */
+	param_t		param_fw_climb_ದರ{PARAM_INVALID};    /**< FW climb speed parameter */
+	param_t		param_fw_sink_ದರ{PARAM_INVALID};     /**< FW descend speed parameter */
 
 	param_t 	_param_fw_airspeed_trim{PARAM_INVALID}; /**< FW cruise airspeed parameter */
 	param_t 	_param_fw_gnd_spd_min{PARAM_INVALID}; /**< FW min groundspeed parameter */
 	param_t 	_param_mpc_xy_cruise{PARAM_INVALID};  	/**< MC horizontal cruise speed parameter */
-	param_t 	_param_rover_cruise_speed{PARAM_INVALID}; /**< Rover cruise speed parameter */
+	param_t 	param_rover_cruise_ವೇಗ{PARAM_INVALID}; /**< Rover cruise speed parameter */
 
 	uORB::SubscriptionInterval _parameter_update_sub{ORB_ID(parameter_update), 1_s}; /**< Parameter update topic */
-	uORB::SubscriptionData<wind_s>		_wind_sub{ORB_ID(wind)};		/**< wind topic */
+	uORB::Subscription_ದತ್ತಾಂಶ<wind_s>		_wind_sub{ORB_ID(wind)};		/**< wind topic */
 };
 
-#endif /* RTL_TIME_ESTIMATOR_H_ */
+#ಆದರೆ_ಅಂತ್ಯ /* RTL_TIME_ESTIMATOR_H_ */

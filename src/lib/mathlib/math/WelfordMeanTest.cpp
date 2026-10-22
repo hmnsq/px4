@@ -31,33 +31,33 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <random>
-#include <lib/matrix/matrix/math.hpp>
-#include "WelfordMean.hpp"
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <random>
+#ಅನ್ತರ್ಭಾವ <lib/matrix/matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ "WelfordMean.hpp"
 
-using namespace math;
-using matrix::Vector3f;
+ಬಳಸಿ ನಾಮಾಕಾಶ math;
+ಬಳಸಿ ಮಾತೃಕೆ::Vector3f;
 
-TEST(WelfordMeanTest, NoisySignal)
+TEST(Welford_ಸರಾಸರಿ_Test, NoisySignal)
 {
-	const float std_dev = 3.f;
-	std::normal_distribution<float> standard_normal_distribution{0.f, std_dev};
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ std_dev = 3.f;
+	std::ಸಾಮಾನ್ಯ_distribution<ದಶಮಾಂಶ> standard_ಸಾಮಾನ್ಯ_distribution{0.f, std_dev};
 	std::default_random_engine random_generator{}; // Pseudo-random generator with constant seed
-	random_generator.seed(42);
-	WelfordMean<float> welford{};
+	random_generator.ಬೀಜ(42);
+	Welford_ಸರಾಸರಿ<ದಶಮಾಂಶ> welford{};
 
-	for (int i = 0; i < 1000; i++) {
-		const float noisy_value = standard_normal_distribution(random_generator);
-		welford.update(noisy_value);
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 1000; i++) {
+		ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ noisy_ಮೌಲ್ಯ = standard_ಸಾಮಾನ್ಯ_distribution(random_generator);
+		welford.update(noisy_ಮೌಲ್ಯ);
 	}
 
 	EXPECT_TRUE(welford.valid());
-	const float mean = welford.mean();
-	const float var = welford.variance();
-	const float var_real = std_dev * std_dev;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ ಸರಾಸರಿ = welford.ಸರಾಸರಿ();
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ var = welford.variance();
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ var_real = std_dev * std_dev;
 
-	EXPECT_NEAR(mean, 0.f, 0.7f);
+	EXPECT_NEAR(ಸರಾಸರಿ, 0.f, 0.7f);
 
 	EXPECT_NEAR(var, var_real, 0.1f);
 

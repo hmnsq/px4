@@ -1,11 +1,11 @@
-from xml.sax.saxutils import escape
-import codecs
-import json
-import sys
+ತಃ xml.sax.saxutils ಆಮದು escape
+ಆಮದು codecs
+ಆಮದು json
+ಆಮದು sys
 
 
-class JsonOutput():
-    def __init__(self, groups, board):
+ವರ್ಗ JsonOutput():
+    ವ್ಯಾಖ್ಯಾನ __init__(self, groups, board):
         all_json=dict()
         all_json['version']=1
         all_params=[]
@@ -49,91 +49,91 @@ class JsonOutput():
 			}
         schema_map_fix_type = {
 			"reboot_required": ("rebootRequired", bool),
-			"decimal": ("decimalPlaces", int),
+			"decimal": ("decimalPlaces", ಪೂರ್ಣಾಂಕ),
 			}
         allowed_types = { "Uint8", "Int8", "Uint16", "Int16", "Uint32", "Int32", "Float"}
 
-        last_param_name = ""
-        board_specific_param_set = False
-        for group in groups:
-            group_name=group.GetName()
+        ಕೊನೆಯ_param_name = ""
+        board_specific_param_ಗಣ = ಸುಳ್ಳು
+        ಗಾಗಿ ಗುಂಪು ಒಳಗೆ groups:
+            ಗುಂಪು_name=ಗುಂಪು.GetName()
 
-            def get_typed_value(value: str, type_name: str):
-                if type_name == 'Float': return float(value)
-                if type_name == 'Int32': return int(value)
-                return value
+            ವ್ಯಾಖ್ಯಾನ get_typed_ಮೌಲ್ಯ(ಮೌಲ್ಯ: str, type_name: str):
+                ಆದರೆ type_name == 'Float': ಹಿಂತಿರುಗಿ ದಶಮಾಂಶ(ಮೌಲ್ಯ)
+                ಆದರೆ type_name == 'Int32': ಹಿಂತಿರುಗಿ ಪೂರ್ಣಾಂಕ(ಮೌಲ್ಯ)
+                ಹಿಂತಿರುಗಿ ಮೌಲ್ಯ
 
-            for param in group.GetParams():
-                if (last_param_name == param.GetName() and not board_specific_param_set) or last_param_name != param.GetName():
+            ಗಾಗಿ param ಒಳಗೆ ಗುಂಪು.GetParams():
+                ಆದರೆ (ಕೊನೆಯ_param_name == param.GetName() ಮತ್ತು ಅಲ್ಲ board_specific_param_ಗಣ) ಅಥವಾ ಕೊನೆಯ_param_name != param.GetName():
                     curr_param=dict()
                     curr_param['name'] = param.GetName()
                     type_name = param.GetType().capitalize()
                     curr_param['type'] = type_name
-                    if not type_name in allowed_types:
-                        print("Error: %s type not supported: curr_param['type']" % (curr_param['name'],curr_param['type']) )
+                    ಆದರೆ ಅಲ್ಲ type_name ಒಳಗೆ allowed_types:
+                        ಮುದ್ರಿಸು("Error: %s type not supported: curr_param['type']" % (curr_param['name'],curr_param['type']) )
                         sys.Exit(1)
-                    curr_param['default'] = get_typed_value(param.GetDefault(), type_name)
+                    curr_param['default'] = get_typed_ಮೌಲ್ಯ(param.GetDefault(), type_name)
 
-                    curr_param['group'] = group_name
-                    if param.GetCategory():
+                    curr_param['group'] = ಗುಂಪು_name
+                    ಆದರೆ param.GetCategory():
                         curr_param['category'] = param.GetCategory()
-                    else:
+                    ಇಲ್ಲದಿದ್ದರೆ:
                         curr_param['category'] = 'Standard'
 
-                    if param.GetVolatile():
-                        curr_param['volatile'] = True
-                    if param.GetReadonly():
-                        curr_param['readOnly'] = True
+                    ಆದರೆ param.GetVolatile():
+                        curr_param['volatile'] = ನಿಜ
+                    ಆದರೆ param.GetReadonly():
+                        curr_param['readOnly'] = ನಿಜ
 
-                    last_param_name = param.GetName()
-                    for code in param.GetFieldCodes():
-                        value = param.GetFieldValue(code)
-                        if code == "board":
-                            if value == board:
-                                board_specific_param_set = True
+                    ಕೊನೆಯ_param_name = param.GetName()
+                    ಗಾಗಿ ಸಂಕೇತ_2 ಒಳಗೆ param.Get_ಕ್ಷೇತ್ರ_Codes():
+                        ಮೌಲ್ಯ = param.Get_ಕ್ಷೇತ್ರ_ಮೌಲ್ಯ(ಸಂಕೇತ_2)
+                        ಆದರೆ ಸಂಕೇತ_2 == "board":
+                            ಆದರೆ ಮೌಲ್ಯ == board:
+                                board_specific_param_ಗಣ = ನಿಜ
                                 # JSON schema has no field for board_specific schema. Ignore.
-                            else:
+                            ಇಲ್ಲದಿದ್ದರೆ:
                                 #xml_group.remove(xml_param)
-                                continue
-                        else:
+                                ಮುಂದುವರಿ
+                        ಇಲ್ಲದಿದ್ದರೆ:
                             #map PX4 param field names to schema names
-                            if code in schema_map:
-                                curr_param[schema_map[code]] = value
-                            elif code in schema_map_typed:
-                                curr_param[schema_map_typed[code]] = get_typed_value(value, type_name)
-                            elif code in schema_map_fix_type:
-                                curr_param[schema_map_fix_type[code][0]] = schema_map_fix_type[code][1](value)
-                            else:
-                                print('ERROR: Field not in json schema: %s' % code)
+                            ಆದರೆ ಸಂಕೇತ_2 ಒಳಗೆ schema_map:
+                                curr_param[schema_map[ಸಂಕೇತ_2]] = ಮೌಲ್ಯ
+                            ಅಥವಾಆದರೆ ಸಂಕೇತ_2 ಒಳಗೆ schema_map_typed:
+                                curr_param[schema_map_typed[ಸಂಕೇತ_2]] = get_typed_ಮೌಲ್ಯ(ಮೌಲ್ಯ, type_name)
+                            ಅಥವಾಆದರೆ ಸಂಕೇತ_2 ಒಳಗೆ schema_map_fix_type:
+                                curr_param[schema_map_fix_type[ಸಂಕೇತ_2][0]] = schema_map_fix_type[ಸಂಕೇತ_2][1](ಮೌಲ್ಯ)
+                            ಇಲ್ಲದಿದ್ದರೆ:
+                                ಮುದ್ರಿಸು('ERROR: Field not in json schema: %s' % ಸಂಕೇತ_2)
                                 sys.exit(1)
 
 
-                if last_param_name != param.GetName():
-                    board_specific_param_set = False
+                ಆದರೆ ಕೊನೆಯ_param_name != param.GetName():
+                    board_specific_param_ಗಣ = ಸುಳ್ಳು
 
-                enum_codes=param.GetEnumCodes() or '' # Gets numerical values for parameter.
-                if enum_codes:
-                    enum_codes=sorted(enum_codes,key=float)
+                enum_codes=param.GetEnumCodes() ಅಥವಾ '' # Gets numerical values for parameter.
+                ಆದರೆ enum_codes:
+                    enum_codes=sorted(enum_codes,ಕೀಲಿ=ದಶಮಾಂಶ)
                     codes_list=list()
-                    for item in enum_codes:
-                        code_dict=dict()
-                        code_dict['value']=get_typed_value(item, type_name)
-                        code_dict['description']=param.GetEnumValue(item)
-                        codes_list.append(code_dict)
+                    ಗಾಗಿ ಅಂಶ ಒಳಗೆ enum_codes:
+                        ಸಂಕೇತ_dict=dict()
+                        ಸಂಕೇತ_dict['value']=get_typed_ಮೌಲ್ಯ(ಅಂಶ, type_name)
+                        ಸಂಕೇತ_dict['description']=param.Get_Enum_ಮೌಲ್ಯ(ಅಂಶ)
+                        codes_list.append(ಸಂಕೇತ_dict)
                     curr_param['values'] = codes_list
-                elif param.GetBoolean():
+                ಅಥವಾಆದರೆ param.GetBoolean():
                     curr_param['values'] = [
                         { 'value': 0, 'description': 'Disabled' },
                         { 'value': 1, 'description': 'Enabled' }
                     ]
 
 
-                if len(param.GetBitmaskList()) > 0:
+                ಆದರೆ ಉದ್ದ(param.GetBitmaskList()) > 0:
                     bitmasks_list=list()
-                    for index in param.GetBitmaskList():
+                    ಗಾಗಿ ಸೂಚ್ಯಂಕ ಒಳಗೆ param.GetBitmaskList():
                         bitmask_dict=dict()
-                        bitmask_dict['index']=int(index)
-                        bitmask_dict['description']=param.GetBitmaskBit(index)
+                        bitmask_dict['index']=ಪೂರ್ಣಾಂಕ(ಸೂಚ್ಯಂಕ)
+                        bitmask_dict['description']=param.Get_Bitmask_ಬಿಟ್(ಸೂಚ್ಯಂಕ)
                         bitmasks_list.append(bitmask_dict)
                     curr_param['bitmask'] = bitmasks_list
 
@@ -142,9 +142,9 @@ class JsonOutput():
 
 
         #Json string output.
-        self.output = json.dumps(all_json, sort_keys=True)
+        self.output = json.dumps(all_json, ವಿಂಗಡಿಸು_ಕೀಲಿಗಳು=ನಿಜ)
 
 
-    def Save(self, filename):
-        with codecs.open(filename, 'w', 'utf-8') as f:
-            f.write(self.output)
+    ವ್ಯಾಖ್ಯಾನ Save(self, filename):
+        ಜೊತೆ codecs.open(filename, 'w', 'utf-8') ಇವ f:
+            f.ಲಿಖ(self.output)

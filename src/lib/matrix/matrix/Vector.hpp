@@ -6,183 +6,183 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "Matrix.hpp"
+#ಅನ್ತರ್ಭಾವ "Matrix.hpp"
 
-namespace matrix
+ನಾಮಾಕಾಶ ಮಾತೃಕೆ
 {
 
-template<typename Type, size_t M>
-class Vector : public Matrix<Type, M, 1>
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type, size_t M>
+ವರ್ಗ ಸದಿಶ : ಸಾರ್ವಜನಿಕ ಮಾತೃಕೆ_2<Type, M, 1>
 {
-public:
-	using MatrixM1 = Matrix<Type, M, 1>;
+ಸಾರ್ವಜನಿಕ:
+	ಬಳಸಿ ಮಾತೃಕೆ_M1 = ಮಾತೃಕೆ_2<Type, M, 1>;
 
-	Vector() = default;
+	ಸದಿಶ() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	Vector(const MatrixM1 &other) :
-		MatrixM1(other)
+	ಸದಿಶ(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_M1 &other) :
+		ಮಾತೃಕೆ_M1(other)
 	{
 	}
 
-	explicit Vector(const Type data_[M]) :
-		MatrixM1(data_)
+	ಸ್ಪಷ್ಟ ಸದಿಶ(ಸ್ಥಿರಾಂಕ Type ದತ್ತಾಂಶ_2[M]) :
+		ಮಾತೃಕೆ_M1(ದತ್ತಾಂಶ_2)
 	{
 	}
 
-	template<size_t P, size_t Q>
-	Vector(const Slice<Type, M, 1, P, Q> &slice_in) :
-		Matrix<Type, M, 1>(slice_in)
+	ಮಾದರಿ<size_t P, size_t Q>
+	ಸದಿಶ(ಸ್ಥಿರಾಂಕ ತುಂಡು_2<Type, M, 1, P, Q> &ತುಂಡು_ಒಳ) :
+		ಮಾತೃಕೆ_2<Type, M, 1>(ತುಂಡು_ಒಳ)
 	{
 	}
 
-	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const Slice<Type, 1, M, P, Q> &slice_in)
+	ಮಾದರಿ<size_t P, size_t Q, size_t DUMMY = 1>
+	ಸದಿಶ(ಸ್ಥಿರಾಂಕ ತುಂಡು_2<Type, 1, M, P, Q> &ತುಂಡು_ಒಳ)
 	{
-		Vector &self(*this);
+		ಸದಿಶ &self(*ಇದು);
 
-		for (size_t i = 0; i < M; i++) {
-			self(i) = slice_in(0, i);
+		ಗಾಗಿ (size_t i = 0; i < M; i++) {
+			self(i) = ತುಂಡು_ಒಳ(0, i);
 		}
 	}
 
-	template<size_t P, size_t Q>
-	Vector(const ConstSlice<Type, M, 1, P, Q> &slice_in) :
-		Matrix<Type, M, 1>(slice_in)
+	ಮಾದರಿ<size_t P, size_t Q>
+	ಸದಿಶ(ಸ್ಥಿರಾಂಕ Const_ತುಂಡು<Type, M, 1, P, Q> &ತುಂಡು_ಒಳ) :
+		ಮಾತೃಕೆ_2<Type, M, 1>(ತುಂಡು_ಒಳ)
 	{
 	}
 
-	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const ConstSlice<Type, 1, M, P, Q> &slice_in)
+	ಮಾದರಿ<size_t P, size_t Q, size_t DUMMY = 1>
+	ಸದಿಶ(ಸ್ಥಿರಾಂಕ Const_ತುಂಡು<Type, 1, M, P, Q> &ತುಂಡು_ಒಳ)
 	{
-		Vector &self(*this);
+		ಸದಿಶ &self(*ಇದು);
 
-		for (size_t i = 0; i < M; i++) {
-			self(i) = slice_in(0, i);
+		ಗಾಗಿ (size_t i = 0; i < M; i++) {
+			self(i) = ತುಂಡು_ಒಳ(0, i);
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	ಸಾಲೊಳಗೆ ಸ್ಥಿರಾಂಕ Type &ಕ್ರಿಯಾಕಾರಕ()(size_t i) ಸ್ಥಿರಾಂಕ
 	{
-		assert(i < M);
+		ಪ್ರತಿಜ್ಞಾ(i < M);
 
-		const MatrixM1 &v = *this;
-		return v(i, 0);
+		ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_M1 &v = *ಇದು;
+		ಹಿಂತಿರುಗಿ v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	ಸಾಲೊಳಗೆ Type &ಕ್ರಿಯಾಕಾರಕ()(size_t i)
 	{
-		assert(i < M);
+		ಪ್ರತಿಜ್ಞಾ(i < M);
 
-		MatrixM1 &v = *this;
-		return v(i, 0);
+		ಮಾತೃಕೆ_M1 &v = *ಇದು;
+		ಹಿಂತಿರುಗಿ v(i, 0);
 	}
 
-	Type dot(const MatrixM1 &b) const
+	Type dot(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_M1 &b) ಸ್ಥಿರಾಂಕ
 	{
-		const Vector &a(*this);
+		ಸ್ಥಿರಾಂಕ ಸದಿಶ &a(*ಇದು);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		ಗಾಗಿ (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		ಹಿಂತಿರುಗಿ r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	ಸಾಲೊಳಗೆ Type ಕ್ರಿಯಾಕಾರಕ*(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_M1 &b) ಸ್ಥಿರಾಂಕ
 	{
-		const Vector &a(*this);
-		return a.dot(b);
+		ಸ್ಥಿರಾಂಕ ಸದಿಶ &a(*ಇದು);
+		ಹಿಂತಿರುಗಿ a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	ಸಾಲೊಳಗೆ ಸದಿಶ ಕ್ರಿಯಾಕಾರಕ*(Type b) ಸ್ಥಿರಾಂಕ
 	{
-		return Vector(MatrixM1::operator*(b));
+		ಹಿಂತಿರುಗಿ ಸದಿಶ(ಮಾತೃಕೆ_M1::ಕ್ರಿಯಾಕಾರಕ*(b));
 	}
 
-	Type norm() const
+	Type norm() ಸ್ಥಿರಾಂಕ
 	{
-		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		ಸ್ಥಿರಾಂಕ ಸದಿಶ &a(*ಇದು);
+		ಹಿಂತಿರುಗಿ Type(std::ವರ್ಗಮೂಲ(a.dot(a)));
 	}
 
-	Type norm_squared() const
+	Type norm_squared() ಸ್ಥಿರಾಂಕ
 	{
-		const Vector &a(*this);
-		return a.dot(a);
+		ಸ್ಥಿರಾಂಕ ಸದಿಶ &a(*ಇದು);
+		ಹಿಂತಿರುಗಿ a.dot(a);
 	}
 
-	inline Type length() const
+	ಸಾಲೊಳಗೆ Type ಉದ್ದಳತೆ() ಸ್ಥಿರಾಂಕ
 	{
-		return norm();
+		ಹಿಂತಿರುಗಿ norm();
 	}
 
-	inline void normalize()
+	ಸಾಲೊಳಗೆ ಶೂನ್ಯ normalize()
 	{
-		(*this) /= norm();
+		(*ಇದು) /= norm();
 	}
 
-	Vector unit() const
+	ಸದಿಶ unit() ಸ್ಥಿರಾಂಕ
 	{
-		return (*this) / norm();
+		ಹಿಂತಿರುಗಿ (*ಇದು) / norm();
 	}
 
-	Vector unit_or_zero(const Type eps = Type(1e-5)) const
+	ಸದಿಶ unit_or_zero(ಸ್ಥಿರಾಂಕ Type eps = Type(1e-5)) ಸ್ಥಿರಾಂಕ
 	{
-		const Type n = norm();
+		ಸ್ಥಿರಾಂಕ Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		ಆದರೆ (n > eps) {
+			ಹಿಂತಿರುಗಿ (*ಇದು) / n;
 		}
 
-		return Vector();
+		ಹಿಂತಿರುಗಿ ಸದಿಶ();
 	}
 
-	inline Vector normalized() const
+	ಸಾಲೊಳಗೆ ಸದಿಶ normalized() ಸ್ಥಿರಾಂಕ
 	{
-		return unit();
+		ಹಿಂತಿರುಗಿ unit();
 	}
 
-	bool longerThan(Type testVal) const
+	ತಾರ್ಕಿಕ longerThan(Type testVal) ಸ್ಥಿರಾಂಕ
 	{
-		return norm_squared() > testVal * testVal;
+		ಹಿಂತಿರುಗಿ norm_squared() > testVal * testVal;
 	}
 
-	Vector sqrt() const
+	ಸದಿಶ ವರ್ಗಮೂಲ() ಸ್ಥಿರಾಂಕ
 	{
-		const Vector &a(*this);
-		Vector r;
+		ಸ್ಥಿರಾಂಕ ಸದಿಶ &a(*ಇದು);
+		ಸದಿಶ r;
 
-		for (size_t i = 0; i < M; i++) {
-			r(i) = Type(std::sqrt(a(i)));
+		ಗಾಗಿ (size_t i = 0; i < M; i++) {
+			r(i) = Type(std::ವರ್ಗಮೂಲ(a(i)));
 		}
 
-		return r;
+		ಹಿಂತಿರುಗಿ r;
 	}
 
-	void print() const
+	ಶೂನ್ಯ print() ಸ್ಥಿರಾಂಕ
 	{
-		(*this).transpose().print();
+		(*ಇದು).transpose().print();
 	}
 
-	static size_t size()
+	ಸ್ಥಿರ size_t ಗಾತ್ರ_2()
 	{
-		return M;
+		ಹಿಂತಿರುಗಿ M;
 	}
 };
 
-template<typename OStream, typename Type, size_t M>
-OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು OStream, ಬಗೆ_ಹೆಸರು Type, size_t M>
+OStream &ಕ್ರಿಯಾಕಾರಕ<<(OStream &os, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ<Type, M> &ಸದಿಶ_2)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
-	vector.transpose().write_string(string, n);
+	ಅಕ್ಷರ string[n];
+	ಸದಿಶ_2.transpose().write_string(string, n);
 	os << string;
-	return os;
+	ಹಿಂತಿರುಗಿ os;
 }
 
 } // namespace matrix

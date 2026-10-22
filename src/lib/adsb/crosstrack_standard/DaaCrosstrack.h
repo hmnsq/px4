@@ -37,15 +37,15 @@
  *
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "../DaaHelper.h"
+#ಅನ್ತರ್ಭಾವ "../DaaHelper.h"
 
-#include <cstdint>
+#ಅನ್ತರ್ಭಾವ <cstdint>
 
-#include <px4_platform_common/module_params.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/module_params.h>
 
-static constexpr float kTrafficToUavDistanceExtension{1000.0f};
+ಸ್ಥಿರ constexpr ದಶಮಾಂಶ k_Traffic_ಗಮ್ಯ_Uav_ದೂರ_Extension{1000.0f};
 
 /**
  * @brief Crosstrack-distance DAA standard.
@@ -55,22 +55,22 @@ static constexpr float kTrafficToUavDistanceExtension{1000.0f};
  * vertical separation, and time-to-collision thresholds. Useful for
  * transponders that have a reliable heading but no standardised conflict zones.
  */
-class DaaCrosstrack : public ModuleParams
+class DaaCrosstrack : ಸಾರ್ವಜನಿಕ ModuleParams
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	DaaCrosstrack();
 
 	// Crosstrack-based conflict level for one traffic target.
-	uint8_t calculate_daa_stats(const aircraft_state_s &uav_state, const aircraft_state_s &traffic_state,
-				    daa_stats_s &daa_stats) const;
+	uint8_t calculate_daa_stats(ಸ್ಥಿರಾಂಕ aircraft_state_s &uav_state, ಸ್ಥಿರಾಂಕ aircraft_state_s &traffic_state,
+				    daa_stats_s &daa_stats) ಸ್ಥಿರಾಂಕ;
 
 	// Refresh the crosstrack thresholds from parameters. False on invalid values.
 	bool try_setting_params();
 
-private:
-	float _crosstrack_separation_m{500.f};
-	float _vertical_separation_m{500.f};
-	int _collision_time_threshold_s{60};
+ಖಾಸಗಿ:
+	ದಶಮಾಂಶ _crosstrack_separation_m{500.f};
+	ದಶಮಾಂಶ _vertical_separation_m{500.f};
+	ಪೂರ್ಣಾಂಕ collision_ಸಮಯ_ಮಿತಿ_s{60};
 
 	DEFINE_PARAMETERS(
 		(ParamFloat<px4::params::NAV_TRAFF_A_VER>) _param_nav_traff_a_ver,

@@ -37,56 +37,56 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
 /**
  * A uniform random number generator
  */
-class __EXPORT BlockRandUniform: public Block
+ವರ್ಗ __EXPORT ಖಂಡ_Rand_ಏಕರೂಪ: ಸಾರ್ವಜನಿಕ ಖಂಡ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockRandUniform(SuperBlock *parent,
-			 const char *name) :
-		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+	ಖಂಡ_Rand_ಏಕರೂಪ(Super_ಖಂಡ *ಪೋಷಕ,
+			 ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) :
+		ಖಂಡ(ಪೋಷಕ, name),
+		_min(ಇದು, "MIN"),
+		_max(ಇದು, "MAX")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandUniform() = default;
-	float update()
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_Rand_ಏಕರೂಪ() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ದಶಮಾಂಶ update()
 	{
-		static float rand_max = static_cast<float>(RAND_MAX);
-		float rand_val = rand();
-		float bounds = getMax() - getMin();
-		return getMin() + (rand_val * bounds) / rand_max;
+		ಸ್ಥಿರ ದಶಮಾಂಶ rand_max = static_cast<ದಶಮಾಂಶ>(RAND_MAX);
+		ದಶಮಾಂಶ rand_val = rand();
+		ದಶಮಾಂಶ bounds = getMax() - getMin();
+		ಹಿಂತಿರುಗಿ getMin() + (rand_val * bounds) / rand_max;
 	}
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-private:
-// attributes
-	control::BlockParamFloat _min;
-	control::BlockParamFloat _max;
+	ದಶಮಾಂಶ getMin() { ಹಿಂತಿರುಗಿ _min.get(); }
+	ದಶಮಾಂಶ getMax() { ಹಿಂತಿರುಗಿ _max.get(); }
+ಖಾಸಗಿ:
+//ಗುಣಲಕ್ಷಣಗಳು
+	control::ಖಂಡ_Param_Float _min;
+	control::ಖಂಡ_Param_Float _max;
 };
 
 } // namespace control

@@ -31,64 +31,64 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <stdint.h>
+#ಅನ್ತರ್ಭಾವ <stdint.h>
 
-namespace open_drone_id
+ನಾಮಾಕಾಶ open_drone_id
 {
 
-static constexpr uint8_t UAS_ID_SIZE = 20;
-static constexpr uint8_t UAS_ID_TYPE_SERIAL_NUMBER = 1;
-static constexpr int32_t UAS_ID_MODE_LOCK_FIRST_BASIC_ID = 1;
+ಸ್ಥಿರ constexpr uint8_t UAS_ID_ಗಾತ್ರ = 20;
+ಸ್ಥಿರ constexpr uint8_t UAS_ID_TYPE_SERIAL_ಸಂಖ್ಯೆ = 1;
+ಸ್ಥಿರ constexpr int32_t UAS_ID_ಬಹುಲಕ_ಬೀಗ_ಮೊದಲ_BASIC_ID = 1;
 
-struct UasId {
+ರಚನೆ UasId {
 	uint8_t ua_type{0};
-	uint8_t uas_id[UAS_ID_SIZE] {};
+	uint8_t uas_id[UAS_ID_ಗಾತ್ರ] {};
 };
 
-enum class BidLockState {
-	Empty,
+ಎಣಿಕೆ ವರ್ಗ Bid_ಬೀಗ_State {
+	ಖಾಲಿಗಳು_2,
 	Locked,
-	InvalidRecord,
+	Invalid_ದಾಖಲೆ,
 	StorageUnavailable,
 	WriteError,
 	Unsupported,
 };
 
-struct BidLockInfo {
-	BidLockState state{BidLockState::Unsupported};
+ರಚನೆ Bid_ಬೀಗ_Info {
+	Bid_ಬೀಗ_State state{Bid_ಬೀಗ_State::Unsupported};
 	UasId id{};
 
-	bool locked() const { return state == BidLockState::Locked; }
+	ತಾರ್ಕಿಕ locked() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ state == Bid_ಬೀಗ_State::Locked; }
 };
 
-enum class BidStoreResult {
+ಎಣಿಕೆ ವರ್ಗ Bid_Store_ಫಲಿತಾಂಶ {
 	Stored,
 	AlreadyLocked,
 	AlreadyLockedDifferent,
 	InvalidBasicId,
 	StorageUnavailable,
-	InvalidRecord,
+	Invalid_ದಾಖಲೆ,
 	WriteError,
 	Unsupported,
 };
 
-class BidStorage
+ವರ್ಗ BidStorage
 {
-public:
-	static BidLockInfo get();
-	static BidStoreResult checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE]);
+ಸಾರ್ವಜನಿಕ:
+	ಸ್ಥಿರ Bid_ಬೀಗ_Info get();
+	ಸ್ಥಿರ Bid_Store_ಫಲಿತಾಂಶ checkOrStore(uint8_t ua_type, ಸ್ಥಿರಾಂಕ uint8_t uas_id[UAS_ID_ಗಾತ್ರ]);
 };
 
-class BidLock
+ವರ್ಗ Bid_ಬೀಗ
 {
-public:
-	BidStoreResult resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE], UasId &locked_id);
+ಸಾರ್ವಜನಿಕ:
+	Bid_Store_ಫಲಿತಾಂಶ resolve(uint8_t id_type, uint8_t ua_type, ಸ್ಥಿರಾಂಕ uint8_t uas_id[UAS_ID_ಗಾತ್ರ], UasId &locked_id);
 
-private:
-	BidLockInfo _info{};
-	bool _loaded{false};
+ಖಾಸಗಿ:
+	Bid_ಬೀಗ_Info _info{};
+	ತಾರ್ಕಿಕ _loaded{ಸುಳ್ಳು};
 };
 
 } // namespace open_drone_id

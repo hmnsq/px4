@@ -36,186 +36,186 @@
  *
  * Protected build user space interface to global parameter store.
  */
-#define PARAM_IMPLEMENTATION
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <parameters/px4_parameters.hpp>
-#include <sys/boardctl.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#ವ್ಯಾಖ್ಯಾನಿಸು PARAM_IMPLEMENTATION
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ "parameters_ioctl.h"
+#ಅನ್ತರ್ಭಾವ <parameters/px4_parameters.hpp>
+#ಅನ್ತರ್ಭಾವ <sys/boardctl.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/log.h>
 
-#include "parameters_common.cpp"
+#ಅನ್ತರ್ಭಾವ "parameters_common.cpp"
 
-void
+ಶೂನ್ಯ
 param_notify_changes()
 {
-	boardctl(PARAMIOCNOTIFY, NULL);
+	boardctl(PARAMIOCNOTIFY, ಖಾಲಿ);
 }
 
-param_t param_find(const char *name)
+param_t param_ಕಂಡುಹಿಡಿ(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name)
 {
-	paramiocfind_t data = {name, true, PARAM_INVALID};
-	boardctl(PARAMIOCFIND, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocfind_t ದತ್ತಾಂಶ = {name, ನಿಜ, PARAM_INVALID};
+	boardctl(PARAMIOCFIND, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-param_t param_find_no_notification(const char *name)
+param_t param_ಕಂಡುಹಿಡಿ_no_notification(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name)
 {
-	paramiocfind_t data = {name, false, PARAM_INVALID};
-	boardctl(PARAMIOCFIND, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocfind_t ದತ್ತಾಂಶ = {name, ಸುಳ್ಳು, PARAM_INVALID};
+	boardctl(PARAMIOCFIND, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-unsigned param_count_used()
+ಚಿಹ್ನೆರಹಿತ param_ಎಣಿಕೆ_ಬಳಸಿದ()
 {
-	paramioccountused_t data = {0};
-	boardctl(PARAMIOCCOUNTUSED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramioccountused_t ದತ್ತಾಂಶ = {0};
+	boardctl(PARAMIOCCOUNTUSED, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-param_t param_for_used_index(unsigned index)
+param_t param_for_ಬಳಸಿದ_ಸೂಚ್ಯಂಕ(ಚಿಹ್ನೆರಹಿತ ಸೂಚ್ಯಂಕ)
 {
-	paramiocforusedindex_t data = {index, 0};
-	boardctl(PARAMIOCFORUSEDINDEX, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocforusedindex_t ದತ್ತಾಂಶ = {ಸೂಚ್ಯಂಕ, 0};
+	boardctl(PARAMIOCFORUSEDINDEX, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-int param_get_used_index(param_t param)
+ಪೂರ್ಣಾಂಕ param_get_ಬಳಸಿದ_ಸೂಚ್ಯಂಕ(param_t param)
 {
-	paramiocgetusedindex_t data = {param, 0};
-	boardctl(PARAMIOCGETUSEDINDEX, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocgetusedindex_t ದತ್ತಾಂಶ = {param, 0};
+	boardctl(PARAMIOCGETUSEDINDEX, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-bool
-param_value_unsaved(param_t param)
+ತಾರ್ಕಿಕ
+param_ಮೌಲ್ಯ_unsaved(param_t param)
 {
-	paramiocunsaved_t data = {param, false};
-	boardctl(PARAMIOCUNSAVED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocunsaved_t ದತ್ತಾಂಶ = {param, ಸುಳ್ಳು};
+	boardctl(PARAMIOCUNSAVED, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-int
-param_get(param_t param, void *val)
+ಪೂರ್ಣಾಂಕ
+param_get(param_t param, ಶೂನ್ಯ *val)
 {
-	paramiocget_t data = {param, false, val, PX4_ERROR};
-	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocget_t ದತ್ತಾಂಶ = {param, ಸುಳ್ಳು, val, PX4_ERROR};
+	boardctl(PARAMIOCGET, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-int
-param_get_default_value(param_t param, void *default_val)
+ಪೂರ್ಣಾಂಕ
+param_get_default_ಮೌಲ್ಯ(param_t param, ಶೂನ್ಯ *default_val)
 {
-	paramiocget_t data = {param, true, default_val, PX4_ERROR};
-	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocget_t ದತ್ತಾಂಶ = {param, ನಿಜ, default_val, PX4_ERROR};
+	boardctl(PARAMIOCGET, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-void
-param_control_autosave(bool enable)
+ಶೂನ್ಯ
+param_control_autosave(ತಾರ್ಕಿಕ enable)
 {
-	paramiocautosave_t data = {enable};
-	boardctl(PARAMIOCAUTOSAVE, reinterpret_cast<unsigned long>(&data));
+	paramiocautosave_t ದತ್ತಾಂಶ = {enable};
+	boardctl(PARAMIOCAUTOSAVE, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
 }
 
-int param_set(param_t param, const void *val)
+ಪೂರ್ಣಾಂಕ param_ಗಣ(param_t param, ಸ್ಥಿರಾಂಕ ಶೂನ್ಯ *val)
 {
-	paramiocset_t data = {param, true, val, PX4_ERROR};
-	boardctl(PARAMIOCSET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocset_t ದತ್ತಾಂಶ = {param, ನಿಜ, val, PX4_ERROR};
+	boardctl(PARAMIOCSET, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-int param_set_no_notification(param_t param, const void *val)
+ಪೂರ್ಣಾಂಕ param_ಗಣ_no_notification(param_t param, ಸ್ಥಿರಾಂಕ ಶೂನ್ಯ *val)
 {
-	paramiocset_t data = {param, false, val, PX4_ERROR};
-	boardctl(PARAMIOCSET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocset_t ದತ್ತಾಂಶ = {param, ಸುಳ್ಳು, val, PX4_ERROR};
+	boardctl(PARAMIOCSET, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-bool param_used(param_t param)
+ತಾರ್ಕಿಕ param_ಬಳಸಿದ(param_t param)
 {
-	paramiocused_t data = {param, false};
-	boardctl(PARAMIOCUSED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocused_t ದತ್ತಾಂಶ = {param, ಸುಳ್ಳು};
+	boardctl(PARAMIOCUSED, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-void param_set_used(param_t param)
+ಶೂನ್ಯ param_ಗಣ_ಬಳಸಿದ(param_t param)
 {
-	paramiocsetused_t data = {param};
-	boardctl(PARAMIOCSETUSED, reinterpret_cast<unsigned long>(&data));
+	paramiocsetused_t ದತ್ತಾಂಶ = {param};
+	boardctl(PARAMIOCSETUSED, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
 }
 
-int param_set_default_value(param_t param, const void *val)
+ಪೂರ್ಣಾಂಕ param_ಗಣ_default_ಮೌಲ್ಯ(param_t param, ಸ್ಥಿರಾಂಕ ಶೂನ್ಯ *val)
 {
-	paramiocsetdefault_t data = {param, val, PX4_ERROR};
-	boardctl(PARAMIOCSETDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocsetdefault_t ದತ್ತಾಂಶ = {param, val, PX4_ERROR};
+	boardctl(PARAMIOCSETDEFAULT, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-int param_reset(param_t param)
+ಪೂರ್ಣಾಂಕ param_reset(param_t param)
 {
-	paramiocreset_t data = {param, true, PX4_ERROR};
-	boardctl(PARAMIOCRESET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocreset_t ದತ್ತಾಂಶ = {param, ನಿಜ, PX4_ERROR};
+	boardctl(PARAMIOCRESET, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-int param_reset_no_notification(param_t param)
+ಪೂರ್ಣಾಂಕ param_reset_no_notification(param_t param)
 {
-	paramiocreset_t data = {param, false, PX4_ERROR};
-	boardctl(PARAMIOCRESET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocreset_t ದತ್ತಾಂಶ = {param, ಸುಳ್ಳು, PX4_ERROR};
+	boardctl(PARAMIOCRESET, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-void
+ಶೂನ್ಯ
 param_reset_all()
 {
-	paramiocresetgroup_t data = {PARAM_RESET_ALL, nullptr, 0};
-	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
+	paramiocresetgroup_t ದತ್ತಾಂಶ = {PARAM_RESET_ALL, ಶೂನ್ಯಸೂಚಕ, 0};
+	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
 }
 
-void
-param_reset_excludes(const char *excludes[], int num_excludes)
+ಶೂನ್ಯ
+param_reset_excludes(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *excludes[], ಪೂರ್ಣಾಂಕ ಅಂಕೆ_excludes)
 {
-	paramiocresetgroup_t data = {PARAM_RESET_EXCLUDES, excludes, num_excludes};
-	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
+	paramiocresetgroup_t ದತ್ತಾಂಶ = {PARAM_RESET_EXCLUDES, excludes, ಅಂಕೆ_excludes};
+	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
 }
 
-void
-param_reset_specific(const char *resets[], int num_resets)
+ಶೂನ್ಯ
+param_reset_specific(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *resets[], ಪೂರ್ಣಾಂಕ ಅಂಕೆ_resets)
 {
-	paramiocresetgroup_t data = {PARAM_RESET_SPECIFIC, resets, num_resets};
-	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
+	paramiocresetgroup_t ದತ್ತಾಂಶ = {PARAM_RESET_SPECIFIC, resets, ಅಂಕೆ_resets};
+	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
 }
 
-int param_save_default(bool blocking)
+ಪೂರ್ಣಾಂಕ param_save_default(ತಾರ್ಕಿಕ blocking)
 {
-	paramiocsavedefault_t data = {blocking, PX4_ERROR};
-	boardctl(PARAMIOCSAVEDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocsavedefault_t ದತ್ತಾಂಶ = {blocking, PX4_ERROR};
+	boardctl(PARAMIOCSAVEDEFAULT, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-int
-param_load_default()
+ಪೂರ್ಣಾಂಕ
+param_ತುಂಬು_default()
 {
-	paramiocloaddefault_t data = {PX4_ERROR};
-	boardctl(PARAMIOCLOADDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocloaddefault_t ದತ್ತಾಂಶ = {PX4_ERROR};
+	boardctl(PARAMIOCLOADDEFAULT, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
-int
-param_export(const char *filename, param_filter_func filter)
+ಪೂರ್ಣಾಂಕ
+param_export(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *filename, param_filter_func filter)
 {
-	paramiocexport_t data = {filename, PX4_ERROR};
+	paramiocexport_t ದತ್ತಾಂಶ = {filename, PX4_ERROR};
 
-	if (filter) { PX4_ERR("ERROR: filter not supported in userside blob"); }
+	ಆದರೆ (filter) { PX4_ERR("ERROR: filter not supported in userside blob"); }
 
-	boardctl(PARAMIOCEXPORT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	boardctl(PARAMIOCEXPORT, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }
 
 uint32_t param_hash_check()
 {
-	paramiochash_t data = {0};
-	boardctl(PARAMIOCHASH, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiochash_t ದತ್ತಾಂಶ = {0};
+	boardctl(PARAMIOCHASH, reinterpret_cast<ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ>(&ದತ್ತಾಂಶ));
+	ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ.ret;
 }

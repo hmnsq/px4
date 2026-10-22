@@ -39,16 +39,16 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "SlewRate.hpp"
+#ಅನ್ತರ್ಭಾವ "SlewRate.hpp"
 
-template<typename Type>
-class SlewRateYaw : public SlewRate<Type>
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type>
+ವರ್ಗ Slew_ದರ_Yaw : ಸಾರ್ವಜನಿಕ Slew_ದರ<Type>
 {
-public:
-	SlewRateYaw() = default;
-	~SlewRateYaw() = default;
+ಸಾರ್ವಜನಿಕ:
+	Slew_ದರ_Yaw() = ಪೂರ್ವನಿಯೋಜಿತ;
+	~Slew_ದರ_Yaw() = ಪೂರ್ವನಿಯೋಜಿತ;
 
 	/**
 	 * Update slewrate with yaw wrapping [-pi,pi]
@@ -56,9 +56,9 @@ public:
 	 * @param deltatime time in seconds since last update
 	 * @return actual value that complies with the slew rate
 	 */
-	Type update(const Type new_value, const float deltatime)
+	Type update(ಸ್ಥಿರಾಂಕ Type new_ಮೌಲ್ಯ, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ deltatime)
 	{
-		const Type d_wrapped = matrix::wrap_pi(new_value - this->_value);
-		return matrix::wrap_pi(SlewRate<Type>::update(this->_value + d_wrapped, deltatime));
+		ಸ್ಥಿರಾಂಕ Type d_wrapped = ಮಾತೃಕೆ::wrap_pi(new_ಮೌಲ್ಯ - ಇದು->ಮೌಲ್ಯ_2);
+		ಹಿಂತಿರುಗಿ ಮಾತೃಕೆ::wrap_pi(Slew_ದರ<Type>::update(ಇದು->ಮೌಲ್ಯ_2 + d_wrapped, deltatime));
 	}
 };

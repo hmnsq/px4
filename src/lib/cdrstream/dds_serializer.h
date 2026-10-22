@@ -31,18 +31,18 @@
  *
  ****************************************************************************/
 
-#ifndef DDS_CDRSTREAM_SERDER_H
-#define DDS_CDRSTREAM_SERDER_H
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ DDS_CDRSTREAM_SERDER_H
+#ವ್ಯಾಖ್ಯಾನಿಸು DDS_CDRSTREAM_SERDER_H
 
-#include <stdlib.h>
-#include <dds/cdr/dds_cdrstream.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <dds/cdr/dds_cdrstream.h>
 
-extern const struct dds_cdrstream_allocator dds_allocator;
-extern const uint8_t ros2_header[4];
+ಬಾಹ್ಯ ಸ್ಥಿರಾಂಕ ರಚನೆ dds_cdrstream_allocator dds_allocator;
+ಬಾಹ್ಯ ಸ್ಥಿರಾಂಕ uint8_t ros2_ಶೀರ್ಷಿಕೆ[4];
 
 // Max bytes the XCDR1 wire size can exceed the in-memory uORB struct (o_size):
 // CDR pads in declaration order while the struct is packed sorted-by-size.
 // Sizes outbound buffers and bounds inbound payloads before stack allocation.
-#define CDR_SAFETY_MARGIN 24
+#ವ್ಯಾಖ್ಯಾನಿಸು CDR_SAFETY_MARGIN 24
 
-#endif //DDS_CDRSTREAM_SERDER_H
+#ಆದರೆ_ಅಂತ್ಯ //DDS_CDRSTREAM_SERDER_H

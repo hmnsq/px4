@@ -37,11 +37,11 @@
  * LED driver to control the onboard LED(s) via ioctl interface.
  */
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/px4_config.h>
-#include <lib/cdev/CDev.hpp>
-#include <drivers/drv_board_led.h>
-#include <stdio.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/log.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/px4_config.h>
+#ಅನ್ತರ್ಭಾವ <lib/cdev/CDev.hpp>
+#ಅನ್ತರ್ಭಾವ <drivers/drv_board_led.h>
+#ಅನ್ತರ್ಭಾವ <stdio.h>
 
 /*
  * Ideally we'd be able to get these from arm_internal.h,
@@ -51,29 +51,29 @@
  * CONFIG_ARCH_LEDS configuration switch.
  */
 __BEGIN_DECLS
-extern void led_init();
-extern void led_on(int led);
-extern void led_off(int led);
-extern void led_toggle(int led);
+ಬಾಹ್ಯ ಶೂನ್ಯ led_init();
+ಬಾಹ್ಯ ಶೂನ್ಯ led_on(ಪೂರ್ಣಾಂಕ led);
+ಬಾಹ್ಯ ಶೂನ್ಯ led_off(ಪೂರ್ಣಾಂಕ led);
+ಬಾಹ್ಯ ಶೂನ್ಯ led_toggle(ಪೂರ್ಣಾಂಕ led);
 __END_DECLS
 
-class LED : cdev::CDev
+ವರ್ಗ LED : cdev::CDev
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	LED();
-	~LED() override = default;
+	~LED() override = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	int	init() override;
-	int	ioctl(cdev::file_t *filp, int cmd, unsigned long arg) override;
+	ಪೂರ್ಣಾಂಕ	init() override;
+	ಪೂರ್ಣಾಂಕ	ioctl(cdev::file_t *filp, ಪೂರ್ಣಾಂಕ cmd, ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ arg) override;
 };
 
-LED::LED() : CDev(LED0_DEVICE_PATH)
+LED::LED() : CDev(LED0_DEVICE_ಮಾರ್ಗ)
 {
 	// force immediate init/device registration
 	init();
 }
 
-int
+ಪೂರ್ಣಾಂಕ
 LED::init()
 {
 	PX4_DEBUG("LED::init");
@@ -82,43 +82,43 @@ LED::init()
 
 	led_init();
 
-	return 0;
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int
-LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
+ಪೂರ್ಣಾಂಕ
+LED::ioctl(cdev::file_t *filp, ಪೂರ್ಣಾಂಕ cmd, ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ arg)
 {
-	int result = OK;
+	ಪೂರ್ಣಾಂಕ ಫಲಿತಾಂಶ = OK;
 
-	switch (cmd) {
-	case LED_ON:
+	ಆಯ್ಕೆ (cmd) {
+	ಸ್ಥಿತಿ LED_ON:
 		led_on(arg);
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case LED_OFF:
+	ಸ್ಥಿತಿ LED_OFF:
 		led_off(arg);
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case LED_TOGGLE:
+	ಸ್ಥಿತಿ LED_TOGGLE:
 		led_toggle(arg);
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	default:
-		result = CDev::ioctl(filp, cmd, arg);
+	ಪೂರ್ವನಿಯೋಜಿತ:
+		ಫಲಿತಾಂಶ = CDev::ioctl(filp, cmd, arg);
 	}
 
-	return result;
+	ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 }
 
-namespace
+ನಾಮಾಕಾಶ
 {
 LED	*gLED;
 }
 
-void
-drv_led_start(void)
+ಶೂನ್ಯ
+drv_led_ಆರಂಭ(ಶೂನ್ಯ)
 {
-	if (gLED == nullptr) {
-		gLED = new LED;
+	ಆದರೆ (gLED == ಶೂನ್ಯಸೂಚಕ) {
+		gLED = ಹೊಸ LED;
 	}
 }

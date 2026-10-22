@@ -31,60 +31,60 @@
  *
  ****************************************************************************/
 
-#include "PID.hpp"
-#include "lib/mathlib/math/Functions.hpp"
+#ಅನ್ತರ್ಭಾವ "PID.hpp"
+#ಅನ್ತರ್ಭಾವ "lib/mathlib/math/Functions.hpp"
 
-void PID::setOutputLimit(const float lower_limit, const float upper_limit)
+ಶೂನ್ಯ PID::ಗಣ_Output_ಎಲ್ಲೆ(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ ಅಧೋ_ಎಲ್ಲೆ, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ ಊರ್ಧ್ವ_ಎಲ್ಲೆ)
 {
-	_lower_limit_output = lower_limit;
-	_upper_limit_output = upper_limit;
+	ಅಧೋ_ಎಲ್ಲೆ_output = ಅಧೋ_ಎಲ್ಲೆ;
+	ಊರ್ಧ್ವ_ಎಲ್ಲೆ_output = ಊರ್ಧ್ವ_ಎಲ್ಲೆ;
 }
 
-void PID::setGains(const float P, const float I, const float D)
+ಶೂನ್ಯ PID::ಗಣ_Gains(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ P, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ I, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ D)
 {
 	_gain_proportional = P;
 	_gain_integral = I;
 	_gain_derivative = D;
 }
 
-float PID::update(const float feedback, const float dt, const bool update_integral)
+ದಶಮಾಂಶ PID::update(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ feedback, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ dt, ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ update_integral)
 {
-	const float error = _setpoint - feedback;
-	const float derivative = updateDerivative(feedback, dt);
-	const float output = (_gain_feedforward * _setpoint) + (_gain_proportional * error) + _integral -
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ error = _setpoint - feedback;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ derivative = updateDerivative(feedback, dt);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ output = (_gain_feedforward * _setpoint) + (_gain_proportional * error) + _integral -
 			     (_gain_derivative * derivative);
-	const float output_constrained = math::constrain(output, _lower_limit_output, _upper_limit_output);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ output_constrained = math::constrain(output, ಅಧೋ_ಎಲ್ಲೆ_output, ಊರ್ಧ್ವ_ಎಲ್ಲೆ_output);
 
-	if (update_integral) {
+	ಆದರೆ (update_integral) {
 		updateIntegral(error, output - output_constrained, dt);
 	}
 
-	_last_feedback = feedback;
-	return output_constrained;
+	ಕೊನೆಯ_feedback = feedback;
+	ಹಿಂತಿರುಗಿ output_constrained;
 }
 
-void PID::updateIntegral(float error, const float saturation, const float dt)
+ಶೂನ್ಯ PID::updateIntegral(ದಶಮಾಂಶ error, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ saturation, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ dt)
 {
 	// Anti-windup: stop integrating in the direction that drives the output
 	// further into saturation (conditional integration)
-	if ((saturation > FLT_EPSILON && error > 0.f) || (saturation < -FLT_EPSILON && error < 0.f)) {
+	ಆದರೆ ((saturation > FLT_EPSILON && error > 0.f) || (saturation < -FLT_EPSILON && error < 0.f)) {
 		error = 0.f;
 	}
 
-	const float integral_new = _integral + _gain_integral * error * dt;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ integral_new = _integral + _gain_integral * error * dt;
 
-	if (std::isfinite(integral_new)) {
-		_integral = math::constrain(integral_new, -_limit_integral, _limit_integral);
+	ಆದರೆ (std::isfinite(integral_new)) {
+		_integral = math::constrain(integral_new, -ಎಲ್ಲೆ_integral, ಎಲ್ಲೆ_integral);
 	}
 }
 
-float PID::updateDerivative(float feedback, const float dt)
+ದಶಮಾಂಶ PID::updateDerivative(ದಶಮಾಂಶ feedback, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ dt)
 {
-	float feedback_change = 0.f;
+	ದಶಮಾಂಶ feedback_change = 0.f;
 
-	if ((dt > FLT_EPSILON) && std::isfinite(_last_feedback)) {
-		feedback_change = (feedback - _last_feedback) / dt;
+	ಆದರೆ ((dt > FLT_EPSILON) && std::isfinite(ಕೊನೆಯ_feedback)) {
+		feedback_change = (feedback - ಕೊನೆಯ_feedback) / dt;
 	}
 
-	return feedback_change;
+	ಹಿಂತಿರುಗಿ feedback_change;
 }

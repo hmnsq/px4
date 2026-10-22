@@ -37,51 +37,51 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
 /**
  * A high pass filter as described here:
  * http://en.wikipedia.org/wiki/High-pass_filter.
  */
-class __EXPORT BlockHighPass : public Block
+ವರ್ಗ __EXPORT ಖಂಡ_ಮೇಲಿನ_Pass : ಸಾರ್ವಜನಿಕ ಖಂಡ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockHighPass(SuperBlock *parent, const char *name) :
-		Block(parent, name),
+	ಖಂಡ_ಮೇಲಿನ_Pass(Super_ಖಂಡ *ಪೋಷಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) :
+		ಖಂಡ(ಪೋಷಕ, name),
 		_u(0),
 		_y(0),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(ಇದು, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockHighPass() = default;
-	float update(float input);
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_ಮೇಲಿನ_Pass() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ದಶಮಾಂಶ update(ದಶಮಾಂಶ ಒಳಹರಿವು);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getFCut() {return _fCut.get();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
-// attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
-	control::BlockParamFloat _fCut; /**< cut-off frequency, Hz */
+	ದಶಮಾಂಶ getU() {ಹಿಂತಿರುಗಿ _u;}
+	ದಶಮಾಂಶ getY() {ಹಿಂತಿರುಗಿ _y;}
+	ದಶಮಾಂಶ getFCut() {ಹಿಂತಿರುಗಿ _fCut.get();}
+	ಶೂನ್ಯ ಗಣ_U(ದಶಮಾಂಶ u) {_u = u;}
+	ಶೂನ್ಯ ಗಣ_Y(ದಶಮಾಂಶ y) {_y = y;}
+ಸಂರಕ್ಷಿತ:
+//ಗುಣಲಕ್ಷಣಗಳು
+	ದಶಮಾಂಶ _u; /**< previous input */
+	ದಶಮಾಂಶ _y; /**< previous output */
+	control::ಖಂಡ_Param_Float _fCut; /**< cut-off frequency, Hz */
 };
 
 } // namespace control

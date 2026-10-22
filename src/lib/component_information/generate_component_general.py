@@ -1,80 +1,80 @@
 #!/usr/bin/env python
 
-import argparse
-import json
-import lzma #to create .xz file
-import re
+ಆಮದು argparse
+ಆಮದು json
+ಆಮದು lzma #to create .xz file
+ಆಮದು re
 
-parser = argparse.ArgumentParser(description="""Generate the COMPONENT_GENERAL json file""")
-parser.add_argument('filename', metavar='component_general.json', help='JSON output file')
-parser.add_argument('--compress', action='store_true', help='Add a compressed output file')
-parser.add_argument('--type', metavar='type', action="append", default=[],
+parser = argparse.ವಾದ_Parser(description="""Generate the COMPONENT_GENERAL json file""")
+parser.ಕೂಡಿಸು_ವಾದ('filename', metavar='component_general.json', help='JSON output file')
+parser.ಕೂಡಿಸು_ವಾದ('--compress', action='store_true', help='Add a compressed output file')
+parser.ಕೂಡಿಸು_ವಾದ('--type', metavar='type', action="append", ಪೂರ್ವನಿಯೋಜಿತ=[],
         help='Metadata type (<type>,<metadata file>,<uri>,<fallback uri>,[translation uri])')
-parser.add_argument('--version-file', metavar='build_git_version.h', help='Git version file')
+parser.ಕೂಡಿಸು_ವಾದ('--version-file', metavar='build_git_version.h', help='Git version file')
 
-args = parser.parse_args()
-filename = args.filename
-compress = args.compress
-version_file = args.version_file
+ವಾದಗಳು = parser.parse_ವಾದಗಳು()
+filename = ವಾದಗಳು.filename
+compress = ವಾದಗಳು.compress
+ಆವೃತ್ತಿ_file = ವಾದಗಳು.ಆವೃತ್ತಿ_file
 
-version_dir = ''
-if version_file is not None:
-    for line in open(version_file, "r"):
-        version_search = re.search(r'PX4_GIT_TAG_OR_BRANCH_NAME\s+"(.+)"', line)
-        if version_search:
-            version_dir = version_search.group(1)
-            break
+ಆವೃತ್ತಿ_dir = ''
+ಆದರೆ ಆವೃತ್ತಿ_file ಆಗಿರುವ ಅಲ್ಲ ಏನೂಇಲ್ಲ:
+    ಗಾಗಿ ಸಾಲು ಒಳಗೆ open(ಆವೃತ್ತಿ_file, "r"):
+        ಆವೃತ್ತಿ_ಹುಡುಕು = re.ಹುಡುಕು(r'PX4_GIT_TAG_OR_BRANCH_NAME\s+"(.+)"', ಸಾಲು)
+        ಆದರೆ ಆವೃತ್ತಿ_ಹುಡುಕು:
+            ಆವೃತ್ತಿ_dir = ಆವೃತ್ತಿ_ಹುಡುಕು.ಗುಂಪು(1)
+            ನಿಲ್ಲಿಸು
 
 
-def save_compressed(filename):
+ವ್ಯಾಖ್ಯಾನ save_compressed(filename):
     #create lzma compressed version
     xz_filename=filename+'.xz'
-    with lzma.open(xz_filename, 'wt', preset=9) as f:
-        with open(filename, 'r') as content_file:
-            f.write(content_file.read())
+    ಜೊತೆ lzma.open(xz_filename, 'wt', preset=9) ಇವ f:
+        ಜೊತೆ open(filename, 'r') ಇವ content_file:
+            f.ಲಿಖ(content_file.ಪಠ())
 
 component_general = {}
 component_general['version'] = 1
 
-def create_table():
+ವ್ಯಾಖ್ಯಾನ create_ಕೋಷ್ಟಕ():
     a = []
-    for i in range(256):
+    ಗಾಗಿ i ಒಳಗೆ ಶ್ರೇಣಿ(256):
         k = i
-        for j in range(8):
-            if k & 1:
+        ಗಾಗಿ j ಒಳಗೆ ಶ್ರೇಣಿ(8):
+            ಆದರೆ k & 1:
                 k ^= 0x1db710640
             k >>= 1
         a.append(k)
-    return a
+    ಹಿಂತಿರುಗಿ a
 
 # MAVLink's CRC32
-def crc_update(buf, crc_table, crc):
-    for k in buf:
-        crc = (crc >> 8) ^ crc_table[(crc & 0xff) ^ k]
-    return crc
+ವ್ಯಾಖ್ಯಾನ ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_update(buf, ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_ಕೋಷ್ಟಕ, ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ):
+    ಗಾಗಿ k ಒಳಗೆ buf:
+        ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = (ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ >> 8) ^ ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_ಕೋಷ್ಟಕ[(ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ & 0xff) ^ k]
+    ಹಿಂತಿರುಗಿ ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ
 
-crc_table = create_table()
+ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_ಕೋಷ್ಟಕ = create_ಕೋಷ್ಟಕ()
 
 metadata_types = []
-for metadata_type_tuple in args.type:
-    type_id, metadata_file, uri, fallback_uri, translation_uri = metadata_type_tuple.split(',')
-    file_crc = 0
-    for line in open(metadata_file, "rb"):
-        file_crc = crc_update(line, crc_table, file_crc)
+ಗಾಗಿ metadata_type_tuple ಒಳಗೆ ವಾದಗಳು.type:
+    type_id, metadata_file, uri, fallback_uri, translation_uri = metadata_type_tuple.ವಿಭಜಿಸು(',')
+    file_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = 0
+    ಗಾಗಿ ಸಾಲು ಒಳಗೆ open(metadata_file, "rb"):
+        file_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_update(ಸಾಲು, ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_ಕೋಷ್ಟಕ, file_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ)
     json_type = {
-            'type': int(type_id),
-            'uri': uri.replace('{version}', version_dir),
-            'fileCrc': file_crc,
+            'type': ಪೂರ್ಣಾಂಕ(type_id),
+            'uri': uri.replace('{version}', ಆವೃತ್ತಿ_dir),
+            'fileCrc': file_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ,
             }
-    if len(fallback_uri) > 0:
-        json_type['uriFallback'] = fallback_uri.replace('{version}', version_dir)
-    if len(translation_uri) > 0:
+    ಆದರೆ ಉದ್ದ(fallback_uri) > 0:
+        json_type['uriFallback'] = fallback_uri.replace('{version}', ಆವೃತ್ತಿ_dir)
+    ಆದರೆ ಉದ್ದ(translation_uri) > 0:
         json_type['translationUri'] = translation_uri
     metadata_types.append(json_type)
 component_general['metadataTypes'] = metadata_types
 
-with open(filename, 'w') as outfile:
-    json.dump(component_general, outfile, sort_keys=True)
+ಜೊತೆ open(filename, 'w') ಇವ outfile:
+    json.dump(component_general, outfile, ವಿಂಗಡಿಸು_ಕೀಲಿಗಳು=ನಿಜ)
 
-if compress:
+ಆದರೆ compress:
     save_compressed(filename)

@@ -31,45 +31,45 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <limits.h>
+#ಅನ್ತರ್ಭಾವ <limits.h>
 
-#include <mixer_module/output_functions.hpp>
+#ಅನ್ತರ್ಭಾವ <mixer_module/output_functions.hpp>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionCallback.hpp>
+#ಅನ್ತರ್ಭಾವ <uORB/Subscription.hpp>
+#ಅನ್ತರ್ಭಾವ <uORB/SubscriptionCallback.hpp>
 
-#include <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
 
-class FunctionProviderBase
+ವರ್ಗ Function_Provider_ತಳ
 {
-public:
-	struct Context {
-		px4::WorkItem &work_item;
-		const float &thrust_factor;
+ಸಾರ್ವಜನಿಕ:
+	ರಚನೆ Context {
+		px4::Work_ಅಂಶ &work_ಅಂಶ;
+		ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ &thrust_ಗುಣಕ_2;
 	};
 
-	FunctionProviderBase() = default;
-	virtual ~FunctionProviderBase() = default;
+	Function_Provider_ತಳ() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ವಾಸ್ತವಿಕ ~Function_Provider_ತಳ() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	virtual void update() = 0;
+	ವಾಸ್ತವಿಕ ಶೂನ್ಯ update() = 0;
 
 	/**
 	 * Get the current output value for a given function
 	 * @return NAN (=disarmed) or value in range [-1, 1]
 	 */
-	virtual float value(OutputFunction func) = 0;
+	ವಾಸ್ತವಿಕ ದಶಮಾಂಶ value(OutputFunction func) = 0;
 
-	virtual float defaultFailsafeValue(OutputFunction func) const { return NAN; }
-	virtual bool allowPrearmControl() const { return true; }
+	ವಾಸ್ತವಿಕ ದಶಮಾಂಶ default_Failsafe_ಮೌಲ್ಯ(OutputFunction func) ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ NAN; }
+	ವಾಸ್ತವಿಕ ತಾರ್ಕಿಕ allowPrearmControl() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ನಿಜ; }
 
-	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { return nullptr; }
+	ವಾಸ್ತವಿಕ uORB::Subscription_Callback_Work_ಅಂಶ *subscriptionCallback() { ಹಿಂತಿರುಗಿ ಶೂನ್ಯಸೂಚಕ; }
 
-	virtual bool getLatestSampleTimestamp(hrt_abstime &t) const { return false; }
+	ವಾಸ್ತವಿಕ ತಾರ್ಕಿಕ getLatestSampleTimestamp(hrt_abstime &t) ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಸುಳ್ಳು; }
 
 	/**
 	 * Check whether the output (motor) is configured to be reversible
 	 */
-	virtual bool reversible(OutputFunction func) const { return false; }
+	ವಾಸ್ತವಿಕ ತಾರ್ಕಿಕ reversible(OutputFunction func) ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಸುಳ್ಳು; }
 };

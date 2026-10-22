@@ -31,75 +31,75 @@
  *
  ****************************************************************************/
 
-#include "AdsbConflict.h"
+#ಅನ್ತರ್ಭಾವ "AdsbConflict.h"
 
-#include <cmath>
+#ಅನ್ತರ್ಭಾವ <cmath>
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/log.h>
 
-bool AdsbConflict::valid_wgs84_coordinates(const double latitude, const double longitude)
+ತಾರ್ಕಿಕ AdsbConflict::valid_wgs84_coordinates(ಸ್ಥಿರಾಂಕ ದ್ವಿಗುಣ latitude, ಸ್ಥಿರಾಂಕ ದ್ವಿಗುಣ longitude)
 {
-	return PX4_ISFINITE(latitude) && PX4_ISFINITE(longitude)
+	ಹಿಂತಿರುಗಿ PX4_ISFINITE(latitude) && PX4_ISFINITE(longitude)
 	       && fabs(latitude) <= 90.0
 	       && fabs(longitude) <= 180.0;
 }
 
-bool AdsbConflict::calculate_daa_output(const daa_input_s &daa_input, detect_and_avoid_s &daa_output)
+ತಾರ್ಕಿಕ AdsbConflict::calculate_daa_output(ಸ್ಥಿರಾಂಕ daa_ಒಳಹರಿವು_s &daa_ಒಳಹರಿವು, detect_and_avoid_s &daa_output)
 {
-	const transponder_report_s &transponder_report = daa_input.transponder_report;
+	ಸ್ಥಿರಾಂಕ transponder_report_s &transponder_report = daa_ಒಳಹರಿವು.transponder_report;
 
-	const matrix::Vector2d traffic_lat_lon{transponder_report.lat, transponder_report.lon};
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector2d traffic_lat_lon{transponder_report.lat, transponder_report.lon};
 
-	if (!valid_wgs84_coordinates(daa_input.uav_lat_lon(0), daa_input.uav_lat_lon(1))
+	ಆದರೆ (!valid_wgs84_coordinates(daa_ಒಳಹರಿವು.uav_lat_lon(0), daa_ಒಳಹರಿವು.uav_lat_lon(1))
 	    || !valid_wgs84_coordinates(traffic_lat_lon(0), traffic_lat_lon(1))) {
 		PX4_DEBUG("DAA lib: invalid coordinates");
-		return false;
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 
-	if (!PX4_ISFINITE(daa_input.uav_alt) || !PX4_ISFINITE(transponder_report.altitude)) {
+	ಆದರೆ (!PX4_ISFINITE(daa_ಒಳಹರಿವು.uav_alt) || !PX4_ISFINITE(transponder_report.altitude)) {
 		PX4_DEBUG("DAA lib: invalid altitude");
-		return false;
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 
-	if (!(PX4_ISFINITE(transponder_report.hor_velocity) && transponder_report.hor_velocity >= 0.f
+	ಆದರೆ (!(PX4_ISFINITE(transponder_report.hor_velocity) && transponder_report.hor_velocity >= 0.f
 	      && PX4_ISFINITE(transponder_report.ver_velocity))) {
 		PX4_DEBUG("DAA lib: invalid traffic velocity");
-		return false;
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 
-	if (!daa_input.uav_vel_ned.isAllFinite()) {
+	ಆದರೆ (!daa_ಒಳಹರಿವು.uav_vel_ned.isAllFinite()) {
 		PX4_DEBUG("DAA lib: invalid ownship velocity");
-		return false;
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 
-#if !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
+#ಆದರೆ !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
 
-	if (!PX4_ISFINITE(transponder_report.heading)) {
+	ಆದರೆ (!PX4_ISFINITE(transponder_report.heading)) {
 		PX4_DEBUG("DAA lib: invalid traffic heading");
-		return false;
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 
-#endif // !CONFIG_NAVIGATOR_ADSB_F3442
+#ಆದರೆ_ಅಂತ್ಯ // !CONFIG_NAVIGATOR_ADSB_F3442
 
 	aircraft_state_s uav_state{};
-	uav_state.lat_lon = daa_input.uav_lat_lon;
-	uav_state.altitude = daa_input.uav_alt;
-	uav_state.velocity_ned = daa_input.uav_vel_ned;
+	uav_state.lat_lon = daa_ಒಳಹರಿವು.uav_lat_lon;
+	uav_state.altitude = daa_ಒಳಹರಿವು.uav_alt;
+	uav_state.velocity_ned = daa_ಒಳಹರಿವು.uav_vel_ned;
 
 	aircraft_state_s traffic_state{};
 	traffic_state.lat_lon = traffic_lat_lon;
 	traffic_state.altitude = transponder_report.altitude;
 	traffic_state.heading = transponder_report.heading;
 
-	if (PX4_ISFINITE(transponder_report.heading)) {
-		traffic_state.velocity_ned = matrix::Vector3f(
+	ಆದರೆ (PX4_ISFINITE(transponder_report.heading)) {
+		traffic_state.velocity_ned = ಮಾತೃಕೆ::Vector3f(
 						     cosf(transponder_report.heading) * transponder_report.hor_velocity,
 						     sinf(transponder_report.heading) * transponder_report.hor_velocity,
 						     -transponder_report.ver_velocity);
 
-	} else {
-		traffic_state.velocity_ned = matrix::Vector3f(transponder_report.hor_velocity, 0.f, -transponder_report.ver_velocity);
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		traffic_state.velocity_ned = ಮಾತೃಕೆ::Vector3f(transponder_report.hor_velocity, 0.f, -transponder_report.ver_velocity);
 	}
 
 	daa_stats_s daa_stats{};
@@ -107,12 +107,12 @@ bool AdsbConflict::calculate_daa_output(const daa_input_s &daa_input, detect_and
 	daa_output.aircraft_dist = daa_stats.aircraft_dist;
 	daa_output.aircraft_dist_hor = daa_stats.aircraft_dist_hor;
 	daa_output.aircraft_dist_vert = daa_stats.aircraft_dist_vert;
-	daa_output.expected_min_dist_time = daa_stats.expected_min_dist_time_sec;
+	daa_output.expected_min_dist_ಸಮಯ = daa_stats.expected_min_dist_ಸಮಯ_sec;
 
-	return true;
+	ಹಿಂತಿರುಗಿ ನಿಜ;
 }
 
-bool AdsbConflict::try_updating_params()
+ತಾರ್ಕಿಕ AdsbConflict::try_updating_params()
 {
-	return _daa.try_setting_params();
+	ಹಿಂತಿರುಗಿ _daa.try_setting_params();
 }

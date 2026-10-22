@@ -35,29 +35,29 @@
  * Run this test only using make tests TESTFILTER=unit-test_airspeed_fusion
  */
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
-#include <mathlib/math/Functions.hpp>
-#include "../python/generated/fuse_airspeed.h"
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/Functions.hpp>
+#ಅನ್ತರ್ಭಾವ "../python/generated/fuse_airspeed.h"
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
 TEST(TestAirspeedFusion, SingularityHandling)
 {
 	// GIVEN: all inputs set to zero (singularity point)
-	const float true_airspeed = 0.f;
-	const Vector3f vel_i{0.f, 0.f, 0.f};
-	const Vector3f state{0.f, 0.f, 0.f};
-	const Matrix<float, 3, 3> P;
-	const float tas_var = 0.f;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ true_airspeed = 0.f;
+	ಸ್ಥಿರಾಂಕ Vector3f vel_i{0.f, 0.f, 0.f};
+	ಸ್ಥಿರಾಂಕ Vector3f state{0.f, 0.f, 0.f};
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 3> P;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ tas_var = 0.f;
 
-	matrix::Matrix<float, 1, 3> H;
-	matrix::Matrix<float, 3, 1> K;
-	float innov_var;
-	float innov;
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 1, 3> H;
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 1> K;
+	ದಶಮಾಂಶ innov_var;
+	ದಶಮಾಂಶ innov;
 
 	// WHEN: no singularity handling is done
-	float epsilon = 0.f;
+	ದಶಮಾಂಶ epsilon = 0.f;
 	sym::FuseAirspeed(vel_i, state, P, true_airspeed, tas_var, epsilon,
 			  &H, &K, &innov_var, &innov);
 
@@ -79,7 +79,7 @@ TEST(TestAirspeedFusion, SingularityHandling)
 	// THEN: the returned values are finite and the Kalman gain is null
 	EXPECT_FLOAT_EQ(H(0, 0), 0.f) << H(0, 0);
 	EXPECT_FLOAT_EQ(H(0, 1), 0.f) << H(0, 1);
-	EXPECT_FLOAT_EQ(H(0, 2), std::sqrt(FLT_EPSILON)) << H(0, 2);
+	EXPECT_FLOAT_EQ(H(0, 2), std::ವರ್ಗಮೂಲ(FLT_EPSILON)) << H(0, 2);
 	EXPECT_TRUE(isEqual(K, Vector3f()));
 	EXPECT_FLOAT_EQ(innov_var, tas_var);
 	EXPECT_FLOAT_EQ(innov, 0.f);

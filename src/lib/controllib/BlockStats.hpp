@@ -37,65 +37,65 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
-template<class Type, size_t M>
-class __EXPORT BlockStats: public Block
+ಮಾದರಿ<ವರ್ಗ Type, size_t M>
+ವರ್ಗ __EXPORT ಖಂಡ_Stats: ಸಾರ್ವಜನಿಕ ಖಂಡ
 {
 
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockStats(SuperBlock *parent,
-		   const char *name) :
-		Block(parent, name),
-		_sum(),
-		_sumSq(),
-		_count(0)
+	ಖಂಡ_Stats(Super_ಖಂಡ *ಪೋಷಕ,
+		   ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) :
+		ಖಂಡ(ಪೋಷಕ, name),
+		ಮೊತ್ತ_2(),
+		ಮೊತ್ತ_Sq(),
+		ಎಣಿಕೆ_4(0)
 	{}
-	virtual ~BlockStats() = default;
-	void update(const matrix::Vector<Type, M> &u)
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_Stats() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ಶೂನ್ಯ update(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ<Type, M> &u)
 	{
-		_sum += u;
-		_sumSq += u.emult(u);
-		_count += 1;
+		ಮೊತ್ತ_2 += u;
+		ಮೊತ್ತ_Sq += u.emult(u);
+		ಎಣಿಕೆ_4 += 1;
 	}
-	void reset()
+	ಶೂನ್ಯ reset()
 	{
-		_sum.setZero();
-		_sumSq.setZero();
-		_count = 0;
+		ಮೊತ್ತ_2.ಗಣ_Zero();
+		ಮೊತ್ತ_Sq.ಗಣ_Zero();
+		ಎಣಿಕೆ_4 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
-	matrix::Vector<Type, M> getVar()
+	size_t get_ಎಣಿಕೆ() { ಹಿಂತಿರುಗಿ ಎಣಿಕೆ_4; }
+	ಮಾತೃಕೆ::ಸದಿಶ<Type, M> get_ಸರಾಸರಿ() { ಹಿಂತಿರುಗಿ ಮೊತ್ತ_2 / ಎಣಿಕೆ_4; }
+	ಮಾತೃಕೆ::ಸದಿಶ<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		ಹಿಂತಿರುಗಿ (ಮೊತ್ತ_Sq - ಮೊತ್ತ_2.emult(ಮೊತ್ತ_2) / ಎಣಿಕೆ_4) / ಎಣಿಕೆ_4;
 	}
-	matrix::Vector<Type, M> getStdDev()
+	ಮಾತೃಕೆ::ಸದಿಶ<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		ಹಿಂತಿರುಗಿ getVar().ವರ್ಗಮೂಲ();
 	}
-private:
-// attributes
-	matrix::Vector<Type, M> _sum;
-	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+ಖಾಸಗಿ:
+//ಗುಣಲಕ್ಷಣಗಳು
+	ಮಾತೃಕೆ::ಸದಿಶ<Type, M> ಮೊತ್ತ_2;
+	ಮಾತೃಕೆ::ಸದಿಶ<Type, M> ಮೊತ್ತ_Sq;
+	size_t ಎಣಿಕೆ_4;
 };
 
 } // namespace control

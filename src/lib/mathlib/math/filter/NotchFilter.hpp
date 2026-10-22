@@ -40,58 +40,58 @@
  * @author Samuel Garcin <samuel.garcin@wecorpindustries.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <mathlib/math/Functions.hpp>
-#include <cmath>
-#include <float.h>
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/Functions.hpp>
+#ಅನ್ತರ್ಭಾವ <cmath>
+#ಅನ್ತರ್ಭಾವ <float.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-namespace math
+ನಾಮಾಕಾಶ math
 {
 
-template<typename T>
-class NotchFilter
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು T>
+ವರ್ಗ NotchFilter
 {
-public:
-	NotchFilter() = default;
-	~NotchFilter() = default;
+ಸಾರ್ವಜನಿಕ:
+	NotchFilter() = ಪೂರ್ವನಿಯೋಜಿತ;
+	~NotchFilter() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	bool setParameters(float sample_freq, float notch_freq, float bandwidth);
+	ತಾರ್ಕಿಕ ಗಣ_Parameters(ದಶಮಾಂಶ sample_freq, ದಶಮಾಂಶ notch_freq, ದಶಮಾಂಶ bandwidth);
 
 	/**
 	 * Add a new raw value to the filter using the Direct Form I
 	 *
 	 * @return retrieve the filtered result
 	 */
-	inline T apply(const T &sample)
+	ಸಾಲೊಳಗೆ T apply(ಸ್ಥಿರಾಂಕ T &sample)
 	{
-		if (!_initialized) {
+		ಆದರೆ (!_initialized) {
 			reset(sample);
-			_initialized = true;
+			_initialized = ನಿಜ;
 		}
 
-		return applyInternal(sample);
+		ಹಿಂತಿರುಗಿ apply_ಆಂತರಿಕ(sample);
 	}
 
 	// Filter array of samples in place using the direct form I
-	inline void applyArray(T samples[], int num_samples)
+	ಸಾಲೊಳಗೆ ಶೂನ್ಯ applyArray(T samples[], ಪೂರ್ಣಾಂಕ ಅಂಕೆ_samples)
 	{
-		if (!_initialized) {
+		ಆದರೆ (!_initialized) {
 			reset(samples[0]);
-			_initialized = true;
+			_initialized = ನಿಜ;
 		}
 
-		for (int n = 0; n < num_samples; n++) {
-			samples[n] = applyInternal(samples[n]);
+		ಗಾಗಿ (ಪೂರ್ಣಾಂಕ n = 0; n < ಅಂಕೆ_samples; n++) {
+			samples[n] = apply_ಆಂತರಿಕ(samples[n]);
 		}
 	}
 
-	float getNotchFreq() const { return _notch_freq; }
-	float getBandwidth() const { return _bandwidth; }
+	ದಶಮಾಂಶ getNotchFreq() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _notch_freq; }
+	ದಶಮಾಂಶ getBandwidth() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _bandwidth; }
 
 	// Used in unit test only
-	void getCoefficients(float a[3], float b[3]) const
+	ಶೂನ್ಯ getCoefficients(ದಶಮಾಂಶ a[3], ದಶಮಾಂಶ b[3]) ಸ್ಥಿರಾಂಕ
 	{
 		a[0] = 1.f;
 		a[1] = _a1;
@@ -101,16 +101,16 @@ public:
 		b[2] = _b2;
 	}
 
-	float getMagnitudeResponse(float frequency) const
+	ದಶಮಾಂಶ getMagnitudeResponse(ದಶಮಾಂಶ frequency) ಸ್ಥಿರಾಂಕ
 	{
-		float w = 2.f * M_PI_F * frequency / _sample_freq;
+		ದಶಮಾಂಶ w = 2.f * M_PI_F * frequency / _sample_freq;
 
-		float numerator = _b0 * _b0 + _b1 * _b1 + _b2 * _b2
+		ದಶಮಾಂಶ numerator = _b0 * _b0 + _b1 * _b1 + _b2 * _b2
 				  + 2.f * (_b0 * _b1 + _b1 * _b2) * cosf(w) + 2.f * _b0 * _b2 * cosf(2.f * w);
 
-		float denominator = 1.f + _a1 * _a1 + _a2 * _a2 + 2.f * (_a1 + _a1 * _a2) * cosf(w) + 2.f * _a2 * cosf(2.f * w);
+		ದಶಮಾಂಶ denominator = 1.f + _a1 * _a1 + _a2 * _a2 + 2.f * (_a1 + _a1 * _a2) * cosf(w) + 2.f * _a2 * cosf(2.f * w);
 
-		return sqrtf(numerator / denominator);
+		ಹಿಂತಿರುಗಿ sqrtf(numerator / denominator);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public:
 	 * physical meaning if you use this method to change the filter's coefficients.
 	 * Used for creating clones of a specific filter.
 	 */
-	void setCoefficients(float a[2], float b[3])
+	ಶೂನ್ಯ ಗಣ_Coefficients(ದಶಮಾಂಶ a[2], ದಶಮಾಂಶ b[3])
 	{
 		_a1 = a[0];
 		_a2 = a[1];
@@ -128,25 +128,25 @@ public:
 		_b2 = b[2];
 	}
 
-	bool initialized() const { return _initialized; }
+	ತಾರ್ಕಿಕ initialized() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _initialized; }
 
-	void reset() { _initialized = false; }
+	ಶೂನ್ಯ reset() { _initialized = ಸುಳ್ಳು; }
 
-	void reset(const T &sample)
+	ಶೂನ್ಯ reset(ಸ್ಥಿರಾಂಕ T &sample)
 	{
-		const T input = isFinite(sample) ? sample : T{};
+		ಸ್ಥಿರಾಂಕ T ಒಳಹರಿವು = isFinite(sample) ? sample : T{};
 
-		_delay_element_1 = _delay_element_2 = input;
-		_delay_element_output_1 = _delay_element_output_2 = input * (_b0 + _b1 + _b2) / (1 + _a1 + _a2);
+		_delay_element_1 = _delay_element_2 = ಒಳಹರಿವು;
+		_delay_element_output_1 = _delay_element_output_2 = ಒಳಹರಿವು * (_b0 + _b1 + _b2) / (1 + _a1 + _a2);
 
-		if (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
+		ಆದರೆ (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
 			_delay_element_output_1 = _delay_element_output_2 = {};
 		}
 
-		_initialized = true;
+		_initialized = ನಿಜ;
 	}
 
-	void disable()
+	ಶೂನ್ಯ disable()
 	{
 		// no filtering
 		_notch_freq = 0.f;
@@ -160,17 +160,17 @@ public:
 		_a1 = 0.f;
 		_a2 = 0.f;
 
-		_initialized = false;
+		_initialized = ಸುಳ್ಳು;
 	}
 
-protected:
+ಸಂರಕ್ಷಿತ:
 
 	/**
 	 * Add a new raw value to the filter using the Direct Form I
 	 *
 	 * @return retrieve the filtered result
 	 */
-	inline T applyInternal(const T &sample)
+	ಸಾಲೊಳಗೆ T apply_ಆಂತರಿಕ(ಸ್ಥಿರಾಂಕ T &sample)
 	{
 		// Direct Form I implementation
 		T output = _b0 * sample + _b1 * _delay_element_1 + _b2 * _delay_element_2 - _a1 * _delay_element_output_1 - _a2 *
@@ -184,7 +184,7 @@ protected:
 		_delay_element_output_2 = _delay_element_output_1;
 		_delay_element_output_1 = output;
 
-		return output;
+		ಹಿಂತಿರುಗಿ output;
 	}
 
 	T _delay_element_1{};
@@ -193,18 +193,18 @@ protected:
 	T _delay_element_output_2{};
 
 	// All the coefficients are normalized by a0, so a0 becomes 1 here
-	float _a1{0.f};
-	float _a2{0.f};
+	ದಶಮಾಂಶ _a1{0.f};
+	ದಶಮಾಂಶ _a2{0.f};
 
-	float _b0{1.f};
-	float _b1{0.f};
-	float _b2{0.f};
+	ದಶಮಾಂಶ _b0{1.f};
+	ದಶಮಾಂಶ _b1{0.f};
+	ದಶಮಾಂಶ _b2{0.f};
 
-	float _notch_freq{};
-	float _bandwidth{};
-	float _sample_freq{};
+	ದಶಮಾಂಶ _notch_freq{};
+	ದಶಮಾಂಶ _bandwidth{};
+	ದಶಮಾಂಶ _sample_freq{};
 
-	bool _initialized{false};
+	ತಾರ್ಕಿಕ _initialized{ಸುಳ್ಳು};
 };
 
 /**
@@ -213,54 +213,54 @@ protected:
  * update the filtered frequency, refresh rate and quality factor while
  * conserving the filter's history
  */
-template<typename T>
-bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float bandwidth)
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು T>
+ತಾರ್ಕಿಕ NotchFilter<T>::ಗಣ_Parameters(ದಶಮಾಂಶ sample_freq, ದಶಮಾಂಶ notch_freq, ದಶಮಾಂಶ bandwidth)
 {
-	if ((sample_freq <= 0.f) || (notch_freq <= 0.f) || (bandwidth <= 0.f) || (notch_freq >= sample_freq / 2)
+	ಆದರೆ ((sample_freq <= 0.f) || (notch_freq <= 0.f) || (bandwidth <= 0.f) || (notch_freq >= sample_freq / 2)
 	    || !isFinite(sample_freq) || !isFinite(notch_freq) || !isFinite(bandwidth)) {
 
 		disable();
-		return false;
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 
-	const float freq_min = sample_freq * 0.001f;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ freq_min = sample_freq * 0.001f;
 
-	const float notch_freq_new = math::max(notch_freq, freq_min);
-	const float bandwidth_new = math::max(bandwidth, freq_min);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ notch_freq_new = math::max(notch_freq, freq_min);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ bandwidth_new = math::max(bandwidth, freq_min);
 
-	const float sample_freq_diff = fabsf(sample_freq - _sample_freq);
-	const float bandwidth_diff = fabsf(bandwidth_new - _bandwidth);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ sample_freq_diff = fabsf(sample_freq - _sample_freq);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ bandwidth_diff = fabsf(bandwidth_new - _bandwidth);
 
-	const bool sample_freq_change = (sample_freq_diff > FLT_EPSILON);
-	const bool bandwidth_change = (bandwidth_diff > FLT_EPSILON);
+	ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ sample_freq_change = (sample_freq_diff > FLT_EPSILON);
+	ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ bandwidth_change = (bandwidth_diff > FLT_EPSILON);
 
-	if (!sample_freq_change && !bandwidth_change) {
-		const float notch_freq_diff = fabsf(notch_freq_new - _notch_freq);
+	ಆದರೆ (!sample_freq_change && !bandwidth_change) {
+		ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ notch_freq_diff = fabsf(notch_freq_new - _notch_freq);
 
-		if (notch_freq_diff > FLT_EPSILON) {
+		ಆದರೆ (notch_freq_diff > FLT_EPSILON) {
 			// only notch frequency has changed
 			_notch_freq = notch_freq_new;
 
-			const float beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
+			ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
 
 			_b1 = 2.f * beta * _b0;
 			_a1 = _b1;
 
-			if (notch_freq_diff > _bandwidth) {
+			ಆದರೆ (notch_freq_diff > _bandwidth) {
 				// force reset
-				_initialized = false;
+				_initialized = ಸುಳ್ಳು;
 			}
 
-			if (!isFinite(_b1)) {
+			ಆದರೆ (!isFinite(_b1)) {
 				disable();
-				return false;
+				ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 			}
 
-			return true;
+			ಹಿಂತಿರುಗಿ ನಿಜ;
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			// no change, do nothing
-			return true;
+			ಹಿಂತಿರುಗಿ ನಿಜ;
 		}
 	}
 
@@ -268,9 +268,9 @@ bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float ba
 	_notch_freq = notch_freq_new;
 	_bandwidth = bandwidth_new;
 
-	const float alpha = tanf(M_PI_F * _bandwidth / _sample_freq);
-	const float beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
-	const float a0_inv = 1.f / (alpha + 1.f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ alpha = tanf(M_PI_F * _bandwidth / _sample_freq);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ a0_inv = 1.f / (alpha + 1.f);
 
 	_b0 = a0_inv;
 	_b1 = 2.f * beta * a0_inv;
@@ -279,20 +279,20 @@ bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float ba
 	_a1 = _b1;
 	_a2 = (1.f - alpha) * a0_inv;
 
-	if (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a2)) {
+	ಆದರೆ (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a2)) {
 		disable();
-		return false;
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 
 	// force reset if bandwidth or sample frequency changed by more than 1%
-	if (bandwidth_diff > 0.01f * _bandwidth) {
-		_initialized = false;
+	ಆದರೆ (bandwidth_diff > 0.01f * _bandwidth) {
+		_initialized = ಸುಳ್ಳು;
 
-	} else if (sample_freq_diff > 0.01f * _sample_freq) {
-		_initialized = false;
+	} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (sample_freq_diff > 0.01f * _sample_freq) {
+		_initialized = ಸುಳ್ಳು;
 	}
 
-	return true;
+	ಹಿಂತಿರುಗಿ ನಿಜ;
 }
 
 } // namespace math

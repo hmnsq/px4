@@ -31,68 +31,68 @@
  *
  ****************************************************************************/
 
-#include "PX4Rangefinder.hpp"
+#ಅನ್ತರ್ಭಾವ "PX4Rangefinder.hpp"
 
-#include <lib/drivers/device/Device.hpp>
+#ಅನ್ತರ್ಭಾವ <lib/drivers/device/Device.hpp>
 
-using namespace time_literals;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಸಮಯ_literals;
 
-PX4Rangefinder::PX4Rangefinder(const uint32_t device_id, const uint8_t device_orientation)
+PX4Rangefinder::PX4Rangefinder(ಸ್ಥಿರಾಂಕ uint32_t device_id, ಸ್ಥಿರಾಂಕ uint8_t device_orientation)
 {
-	set_device_id(device_id);
-	set_orientation(device_orientation);
-	set_rangefinder_type(distance_sensor_s::MAV_DISTANCE_SENSOR_LASER);
-	set_mode(distance_sensor_s::MODE_UNKNOWN);
+	ಗಣ_device_id(device_id);
+	ಗಣ_orientation(device_orientation);
+	ಗಣ_rangefinder_type(ದೂರ_sensor_s::MAV_ದೂರ_SENSOR_LASER);
+	ಗಣ_ಬಹುಲಕ(ದೂರ_sensor_s::ಬಹುಲಕ_UNKNOWN);
 }
 
 PX4Rangefinder::~PX4Rangefinder()
 {
-	_distance_sensor_pub.unadvertise();
+	ದೂರ_sensor_pub_2.unadvertise();
 }
 
-void PX4Rangefinder::set_device_type(uint8_t device_type)
+ಶೂನ್ಯ PX4Rangefinder::ಗಣ_device_type(uint8_t device_type)
 {
 	// current DeviceStructure
-	union device::Device::DeviceId device_id;
-	device_id.devid = _distance_sensor_pub.get().device_id;
+	ಒಕ್ಕೂಟ device::Device::DeviceId device_id;
+	device_id.devid = ದೂರ_sensor_pub_2.get().device_id;
 
 	// update to new device type
 	device_id.devid_s.devtype = device_type;
 
 	// copy back to report
-	_distance_sensor_pub.get().device_id = device_id.devid;
+	ದೂರ_sensor_pub_2.get().device_id = device_id.devid;
 }
 
-void PX4Rangefinder::set_orientation(const uint8_t device_orientation)
+ಶೂನ್ಯ PX4Rangefinder::ಗಣ_orientation(ಸ್ಥಿರಾಂಕ uint8_t device_orientation)
 {
-	_distance_sensor_pub.get().orientation = device_orientation;
+	ದೂರ_sensor_pub_2.get().orientation = device_orientation;
 }
 
-void PX4Rangefinder::update(const hrt_abstime &timestamp_sample, const float distance, const int8_t quality, const float *q, uint8_t q_len)
+ಶೂನ್ಯ PX4Rangefinder::update(ಸ್ಥಿರಾಂಕ hrt_abstime &timestamp_sample, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ ದೂರ, ಸ್ಥಿರಾಂಕ int8_t quality, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ *q, uint8_t q_len)
 {
-	distance_sensor_s &report = _distance_sensor_pub.get();
+	ದೂರ_sensor_s &report = ದೂರ_sensor_pub_2.get();
 	report.timestamp = timestamp_sample;
-	report.current_distance = distance;
+	report.current_ದೂರ = ದೂರ;
 	report.signal_quality = quality;
 
 	// if quality is unavailable (-1) set to 0 if distance is outside bounds
-	if (quality < 0) {
-		if ((distance < report.min_distance) || (distance > report.max_distance)) {
+	ಆದರೆ (quality < 0) {
+		ಆದರೆ ((ದೂರ < report.min_ದೂರ) || (ದೂರ > report.max_ದೂರ)) {
 			report.signal_quality = 0;
 		}
 	}
 
 	// Update the quaternion in the sample update
-	if (q != nullptr) {
-		memcpy(report.q, q, sizeof(float) * q_len);
+	ಆದರೆ (q != ಶೂನ್ಯಸೂಚಕ) {
+		ಸ್ಮರಣೆ_ನಕಲು(report.q, q, ಗಾತ್ರ(ದಶಮಾಂಶ) * q_len);
 	}
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_DISTANCE_SENSOR,
-					_distance_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+	ಆದರೆ (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_ದೂರ_SENSOR,
+					ದೂರ_sensor_pub_2.get_instance(), report, _stuck)) {
+		ಹಿಂತಿರುಗಿ;
 	}
 
-	_distance_sensor_pub.update();
+	ದೂರ_sensor_pub_2.update();
 }

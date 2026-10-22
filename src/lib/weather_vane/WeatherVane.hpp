@@ -40,43 +40,43 @@
  *
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/module_params.h>
-#include <matrix/matrix/math.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/vehicle_attitude_setpoint.h>
-#include <uORB/topics/vehicle_local_position.h>
-#include <uORB/topics/vehicle_control_mode.h>
-#include <uORB/topics/vehicle_status.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/module_params.h>
+#ಅನ್ತರ್ಭಾವ <matrix/matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <uORB/Subscription.hpp>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/vehicle_attitude_setpoint.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/vehicle_local_position.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/vehicle_control_mode.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/vehicle_status.h>
 
-class WeatherVane : public ModuleParams
+ವರ್ಗ WeatherVane : ಸಾರ್ವಜನಿಕ ModuleParams
 {
-public:
-	WeatherVane(ModuleParams *parent);
+ಸಾರ್ವಜನಿಕ:
+	WeatherVane(ModuleParams *ಪೋಷಕ);
 
-	~WeatherVane() = default;
+	~WeatherVane() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	void setNavigatorForceDisabled(bool navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
+	ಶೂನ್ಯ ಗಣ_Navigator_Force_Disabled(ತಾರ್ಕಿಕ navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
 
-	bool isActive() {return _is_active;}
+	ತಾರ್ಕಿಕ is_ಸಕ್ರಿಯ_3() {ಹಿಂತಿರುಗಿ is_ಸಕ್ರಿಯ_2;}
 
-	void update();
+	ಶೂನ್ಯ update();
 
-	float getWeathervaneYawrate();
+	ದಶಮಾಂಶ getWeathervaneYawrate();
 
-private:
+ಖಾಸಗಿ:
 	uORB::Subscription _vehicle_attitude_setpoint_sub{ORB_ID(vehicle_attitude_setpoint)};
 	uORB::Subscription _vehicle_local_position_sub{ORB_ID(vehicle_local_position)};
-	uORB::Subscription _vehicle_control_mode_sub{ORB_ID(vehicle_control_mode)};
-	uORB::Subscription _vehicle_status_sub{ORB_ID(vehicle_status)};
+	uORB::Subscription vehicle_control_ಬಹುಲಕ_sub{ORB_ID(vehicle_control_ಬಹುಲಕ)};
+	uORB::Subscription vehicle_ಸ್ಥಿತಿ_sub{ORB_ID(vehicle_ಸ್ಥಿತಿ)};
 
-	bool _is_active{false};
+	ತಾರ್ಕಿಕ is_ಸಕ್ರಿಯ_2{ಸುಳ್ಳು};
 
 	// local copies of status such that we don't need to copy uORB messages all the time
-	bool _flag_control_manual_enabled{false};
-	bool _flag_control_position_enabled{false};
-	bool _navigator_force_disabled{false};
+	ತಾರ್ಕಿಕ _flag_control_manual_enabled{ಸುಳ್ಳು};
+	ತಾರ್ಕಿಕ _flag_control_position_enabled{ಸುಳ್ಳು};
+	ತಾರ್ಕಿಕ _navigator_force_disabled{ಸುಳ್ಳು};
 
 	DEFINE_PARAMETERS(
 		(ParamBool<px4::params::WV_EN>) _param_wv_en,

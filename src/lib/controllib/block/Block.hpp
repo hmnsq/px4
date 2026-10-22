@@ -37,89 +37,89 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <containers/List.hpp>
-#include <controllib/block/BlockParam.hpp>
-#include <cstdint>
+#ಅನ್ತರ್ಭಾವ <containers/List.hpp>
+#ಅನ್ತರ್ಭಾವ <controllib/block/BlockParam.hpp>
+#ಅನ್ತರ್ಭಾವ <cstdint>
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
-static constexpr uint8_t maxChildrenPerBlock = 100;
-static constexpr uint8_t maxParamsPerBlock = 110;
-static constexpr uint8_t blockNameLengthMax = 40;
+ಸ್ಥಿರ constexpr uint8_t max_Children_ಪ್ರತಿ_ಖಂಡ = 100;
+ಸ್ಥಿರ constexpr uint8_t max_Params_ಪ್ರತಿ_ಖಂಡ = 110;
+ಸ್ಥಿರ constexpr uint8_t ಖಂಡ_Name_ಉದ್ದಳತೆ_Max = 40;
 
 // forward declaration
-class BlockParamBase;
-class SuperBlock;
+ವರ್ಗ ಖಂಡ_Param_ತಳ;
+ವರ್ಗ Super_ಖಂಡ;
 
 /**
  */
-class __EXPORT Block : public ListNode<Block *>
+ವರ್ಗ __EXPORT ಖಂಡ : ಸಾರ್ವಜನಿಕ List_ಗಂಟು<ಖಂಡ *>
 {
-public:
-	friend class BlockParamBase;
+ಸಾರ್ವಜನಿಕ:
+	ಮಿತ್ರ ವರ್ಗ ಖಂಡ_Param_ತಳ;
 
-	Block(SuperBlock *parent, const char *name);
-	virtual ~Block() = default;
+	ಖಂಡ(Super_ಖಂಡ *ಪೋಷಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name);
+	ವಾಸ್ತವಿಕ ~ಖಂಡ() = ಪೂರ್ವನಿಯೋಜಿತ;
 
 	// no copy, assignment, move, move assignment
-	Block(const Block &) = delete;
-	Block &operator=(const Block &) = delete;
-	Block(Block &&) = delete;
-	Block &operator=(Block &&) = delete;
+	ಖಂಡ(ಸ್ಥಿರಾಂಕ ಖಂಡ &) = ಅಳಿಸು;
+	ಖಂಡ &ಕ್ರಿಯಾಕಾರಕ=(ಸ್ಥಿರಾಂಕ ಖಂಡ &) = ಅಳಿಸು;
+	ಖಂಡ(ಖಂಡ &&) = ಅಳಿಸು;
+	ಖಂಡ &ಕ್ರಿಯಾಕಾರಕ=(ಖಂಡ &&) = ಅಳಿಸು;
 
-	void getName(char *name, size_t n);
+	ಶೂನ್ಯ getName(ಅಕ್ಷರ *name, size_t n);
 
-	virtual void updateParams();
+	ವಾಸ್ತವಿಕ ಶೂನ್ಯ updateParams();
 
-	virtual void setDt(float dt) { _dt = dt; }
-	float getDt() { return _dt; }
+	ವಾಸ್ತವಿಕ ಶೂನ್ಯ ಗಣ_Dt(ದಶಮಾಂಶ dt) { _dt = dt; }
+	ದಶಮಾಂಶ getDt() { ಹಿಂತಿರುಗಿ _dt; }
 
-protected:
+ಸಂರಕ್ಷಿತ:
 
-	virtual void updateParamsSubclass() {}
+	ವಾಸ್ತವಿಕ ಶೂನ್ಯ updateParamsSubclass() {}
 
-	SuperBlock *getParent() { return _parent; }
-	List<BlockParamBase *> &getParams() { return _params; }
+	Super_ಖಂಡ *get_ಪೋಷಕ() { ಹಿಂತಿರುಗಿ ಪೋಷಕ_2; }
+	List<ಖಂಡ_Param_ತಳ *> &getParams() { ಹಿಂತಿರುಗಿ _params; }
 
-	const char *_name;
-	SuperBlock *_parent;
-	float _dt{0.0f};
+	ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *_name;
+	Super_ಖಂಡ *ಪೋಷಕ_2;
+	ದಶಮಾಂಶ _dt{0.0f};
 
-	List<BlockParamBase *> _params;
+	List<ಖಂಡ_Param_ತಳ *> _params;
 };
 
-class __EXPORT SuperBlock :
-	public Block
+ವರ್ಗ __EXPORT Super_ಖಂಡ :
+	ಸಾರ್ವಜನಿಕ ಖಂಡ
 {
-public:
-	friend class Block;
+ಸಾರ್ವಜನಿಕ:
+	ಮಿತ್ರ ವರ್ಗ ಖಂಡ;
 
-	SuperBlock(SuperBlock *parent, const char *name) : Block(parent, name) {}
-	~SuperBlock() = default;
+	Super_ಖಂಡ(Super_ಖಂಡ *ಪೋಷಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) : ಖಂಡ(ಪೋಷಕ, name) {}
+	~Super_ಖಂಡ() = ಪೂರ್ವನಿಯೋಜಿತ;
 
 	// no copy, assignment, move, move assignment
-	SuperBlock(const SuperBlock &) = delete;
-	SuperBlock &operator=(const SuperBlock &) = delete;
-	SuperBlock(SuperBlock &&) = delete;
-	SuperBlock &operator=(SuperBlock &&) = delete;
+	Super_ಖಂಡ(ಸ್ಥಿರಾಂಕ Super_ಖಂಡ &) = ಅಳಿಸು;
+	Super_ಖಂಡ &ಕ್ರಿಯಾಕಾರಕ=(ಸ್ಥಿರಾಂಕ Super_ಖಂಡ &) = ಅಳಿಸು;
+	Super_ಖಂಡ(Super_ಖಂಡ &&) = ಅಳಿಸು;
+	Super_ಖಂಡ &ಕ್ರಿಯಾಕಾರಕ=(Super_ಖಂಡ &&) = ಅಳಿಸು;
 
-	void setDt(float dt) override;
+	ಶೂನ್ಯ ಗಣ_Dt(ದಶಮಾಂಶ dt) override;
 
-	void updateParams() override
+	ಶೂನ್ಯ updateParams() override
 	{
-		Block::updateParams();
+		ಖಂಡ::updateParams();
 
-		if (getChildren().getHead() != nullptr) { updateChildParams(); }
+		ಆದರೆ (getChildren().get_ತಲೆ() != ಶೂನ್ಯಸೂಚಕ) { update_ಮಗು_Params(); }
 	}
 
-protected:
-	List<Block *> &getChildren() { return _children; }
-	void updateChildParams();
+ಸಂರಕ್ಷಿತ:
+	List<ಖಂಡ *> &getChildren() { ಹಿಂತಿರುಗಿ _children; }
+	ಶೂನ್ಯ update_ಮಗು_Params();
 
-	List<Block *> _children;
+	List<ಖಂಡ *> _children;
 };
 
 

@@ -37,34 +37,34 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include "DaaEncodedId.h"
+#ಅನ್ತರ್ಭಾವ "DaaEncodedId.h"
 
-#include <cinttypes>
-#include <cstdio>
-#include <cstring>
+#ಅನ್ತರ್ಭಾವ <cinttypes>
+#ಅನ್ತರ್ಭಾವ <cstdio>
+#ಅನ್ತರ್ಭಾವ <cstring>
 
-#include <px4_platform_common/log.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/log.h>
 
-DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
+DaaEncodedId DaaEncodedId::from_report(ಸ್ಥಿರಾಂಕ transponder_report_s &report)
 {
-	if (report.icao_address > 0 && report.icao_address <= kMaxIcaoAddress) {
+	ಆದರೆ (report.icao_ವಿಳಾಸ > 0 && report.icao_ವಿಳಾಸ <= k_Max_Icao_ವಿಳಾಸ) {
 		PX4_DEBUG("DAA: Unique ID encoding: ICAO.");
-		return {
-			static_cast<uint64_t>(report.icao_address),
+		ಹಿಂತಿರುಗಿ {
+			static_cast<uint64_t>(report.icao_ವಿಳಾಸ),
 			detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO
 		};
 	}
 
-	if (report.icao_address > kMaxIcaoAddress) {
+	ಆದರೆ (report.icao_ವಿಳಾಸ > k_Max_Icao_ವಿಳಾಸ) {
 		PX4_DEBUG("DAA: invalid ICAO address");
 	}
 
-	if (report.flags & transponder_report_s::PX4_ADSB_FLAGS_VALID_CALLSIGN) {
+	ಆದರೆ (report.flags & transponder_report_s::PX4_ADSB_FLAGS_VALID_CALLSIGN) {
 		PX4_DEBUG("DAA: Unique ID encoding: Callsign.");
-		const uint64_t callsign_id = callsign_to_uint64(report.callsign);
+		ಸ್ಥಿರಾಂಕ uint64_t callsign_id = callsign_ಗಮ್ಯ_uint64(report.callsign);
 
-		if (callsign_id != 0) {
-			return {
+		ಆದರೆ (callsign_id != 0) {
+			ಹಿಂತಿರುಗಿ {
 				callsign_id,
 				detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN
 			};
@@ -74,21 +74,21 @@ DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
 		PX4_DEBUG("DAA: Failed to convert callsign to uint64.");
 	}
 
-	bool uas_id_valid = false;
+	ತಾರ್ಕಿಕ uas_id_valid = ಸುಳ್ಳು;
 
-	for (int i = 0; i < kUasIdByteLength; ++i) {
-		if (report.uas_id[i] != 0) {
-			uas_id_valid = true;
-			break;
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < k_Uas_Id_Byte_ಉದ್ದಳತೆ; ++i) {
+		ಆದರೆ (report.uas_id[i] != 0) {
+			uas_id_valid = ನಿಜ;
+			ನಿಲ್ಲಿಸು;
 		}
 	}
 
-	if (uas_id_valid) {
+	ಆದರೆ (uas_id_valid) {
 		PX4_DEBUG("DAA: Unique ID encoding: UAS id.");
-		const uint64_t uas_id = last_uas_id_bytes_to_uint64(report.uas_id);
+		ಸ್ಥಿರಾಂಕ uint64_t uas_id = ಕೊನೆಯ_uas_id_ಬೈಟುಗಳು_ಗಮ್ಯ_uint64(report.uas_id);
 
-		if (uas_id != 0) {
-			return {
+		ಆದರೆ (uas_id != 0) {
+			ಹಿಂತಿರುಗಿ {
 				uas_id,
 				detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID
 			};
@@ -97,185 +97,185 @@ DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
 		PX4_DEBUG("DAA: Failed to convert uas_id to uint64.");
 	}
 
-	return {};
+	ಹಿಂತಿರುಗಿ {};
 }
 
-DaaEncodedId DaaEncodedId::identify_traffic_report(const transponder_report_s &report,
-		const daa_ownship_ids_s &ownship_ids)
+DaaEncodedId DaaEncodedId::identify_traffic_report(ಸ್ಥಿರಾಂಕ transponder_report_s &report,
+		ಸ್ಥಿರಾಂಕ daa_ownship_ids_s &ownship_ids)
 {
-	const DaaEncodedId encoded_id = from_report(report);
+	ಸ್ಥಿರಾಂಕ DaaEncodedId encoded_id = from_report(report);
 
-	if (encoded_id.id == 0) {
+	ಆದರೆ (encoded_id.id == 0) {
 		PX4_DEBUG("DAA: No valid unique ID, skipping report");
-		return {};
+		ಹಿಂತಿರುಗಿ {};
 	}
 
-	if (is_self_detection(encoded_id, ownship_ids)) {
+	ಆದರೆ (is_self_detection(encoded_id, ownship_ids)) {
 		PX4_DEBUG("DAA: Self detection, skipping report.");
-		return {};
+		ಹಿಂತಿರುಗಿ {};
 	}
 
-	return encoded_id;
+	ಹಿಂತಿರುಗಿ encoded_id;
 }
 
-bool DaaEncodedId::is_self_detection(const DaaEncodedId &encoded_id, const daa_ownship_ids_s &ownship_ids)
+ತಾರ್ಕಿಕ DaaEncodedId::is_self_detection(ಸ್ಥಿರಾಂಕ DaaEncodedId &encoded_id, ಸ್ಥಿರಾಂಕ daa_ownship_ids_s &ownship_ids)
 {
-	switch (encoded_id.encoding) {
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
-			if (ownship_ids.icao >= 0
+	ಆಯ್ಕೆ (encoded_id.encoding) {
+	ಸ್ಥಿತಿ detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
+			ಆದರೆ (ownship_ids.icao >= 0
 			    && static_cast<uint32_t>(encoded_id.id) == static_cast<uint32_t>(ownship_ids.icao)) {
 				PX4_DEBUG("DAA: Received own main ICAO.");
-				return true;
+				ಹಿಂತಿರುಗಿ ನಿಜ;
 			}
 
-			if (ownship_ids.icao_2 >= 0
+			ಆದರೆ (ownship_ids.icao_2 >= 0
 			    && static_cast<uint32_t>(encoded_id.id) == static_cast<uint32_t>(ownship_ids.icao_2)) {
 				PX4_DEBUG("DAA: Received own secondary ICAO.");
-				return true;
+				ಹಿಂತಿರುಗಿ ನಿಜ;
 			}
 
-			break;
+			ನಿಲ್ಲಿಸು;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
-			if (encoded_id.id == ownship_ids.callsign) {
+	ಸ್ಥಿತಿ detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
+			ಆದರೆ (encoded_id.id == ownship_ids.callsign) {
 				PX4_DEBUG("DAA: Received own Callsign.");
-				return true;
+				ಹಿಂತಿರುಗಿ ನಿಜ;
 			}
 
-			break;
+			ನಿಲ್ಲಿಸು;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
-			if (ownship_ids.uas_id_valid && encoded_id.id == ownship_ids.uas_id) {
+	ಸ್ಥಿತಿ detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
+			ಆದರೆ (ownship_ids.uas_id_valid && encoded_id.id == ownship_ids.uas_id) {
 				PX4_DEBUG("DAA: Received own UAS ID.");
-				return true;
+				ಹಿಂತಿರುಗಿ ನಿಜ;
 			}
 
-			break;
+			ನಿಲ್ಲಿಸು;
 		}
 
-	default:
-		break;
+	ಪೂರ್ವನಿಯೋಜಿತ:
+		ನಿಲ್ಲಿಸು;
 	}
 
-	return false;
+	ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 }
 
-void DaaEncodedId::to_string(char *buffer, size_t buffer_size) const
+ಶೂನ್ಯ DaaEncodedId::ಗಮ್ಯ_string(ಅಕ್ಷರ *ಬಫರ್_2, size_t ಬಫರ್_ಗಾತ್ರ) ಸ್ಥಿರಾಂಕ
 {
-	if (buffer == nullptr || buffer_size == 0) { return; }
+	ಆದರೆ (ಬಫರ್_2 == ಶೂನ್ಯಸೂಚಕ || ಬಫರ್_ಗಾತ್ರ == 0) { ಹಿಂತಿರುಗಿ; }
 
-	memset(buffer, 0, buffer_size);
+	memset(ಬಫರ್_2, 0, ಬಫರ್_ಗಾತ್ರ);
 
-	switch (encoding) {
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
-			convert_icao_uint32_to_hex_str(id, buffer, buffer_size);
-			break;
+	ಆಯ್ಕೆ (encoding) {
+	ಸ್ಥಿತಿ detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
+			convert_icao_uint32_ಗಮ್ಯ_hex_str(id, ಬಫರ್_2, ಬಫರ್_ಗಾತ್ರ);
+			ನಿಲ್ಲಿಸು;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
-			char callsign[kCallsignLength] {};
-			convert_uint64_callsign_to_str(id, callsign);
+	ಸ್ಥಿತಿ detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
+			ಅಕ್ಷರ callsign[k_Callsign_ಉದ್ದಳತೆ] {};
+			convert_uint64_callsign_ಗಮ್ಯ_str(id, callsign);
 
 			// Keep malformed/custom publishers from injecting control
 			// characters into MAVLink status text.
-			for (char &character : callsign) {
-				const uint8_t byte = static_cast<uint8_t>(character);
+			ಗಾಗಿ (ಅಕ್ಷರ &character : callsign) {
+				ಸ್ಥಿರಾಂಕ uint8_t byte = static_cast<uint8_t>(character);
 
-				if (byte == 0) {
-					break;
+				ಆದರೆ (byte == 0) {
+					ನಿಲ್ಲಿಸು;
 				}
 
-				if (byte < 0x20 || byte > 0x7e) {
+				ಆದರೆ (byte < 0x20 || byte > 0x7e) {
 					character = '?';
 				}
 			}
 
-			snprintf(buffer, buffer_size, "%s", callsign);
-			break;
+			snprintf(ಬಫರ್_2, ಬಫರ್_ಗಾತ್ರ, "%s", callsign);
+			ನಿಲ್ಲಿಸು;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
-			char uas_id[kUtmGuidMsgLength] {};
-			convert_uas_id_uint64_to_str(id, uas_id);
-			snprintf(buffer, buffer_size, "%s", uas_id);
-			break;
+	ಸ್ಥಿತಿ detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
+			ಅಕ್ಷರ uas_id[k_Utm_Guid_ಸಂದೇಶ_ಉದ್ದಳತೆ] {};
+			convert_uas_id_uint64_ಗಮ್ಯ_str(id, uas_id);
+			snprintf(ಬಫರ್_2, ಬಫರ್_ಗಾತ್ರ, "%s", uas_id);
+			ನಿಲ್ಲಿಸು;
 		}
 
-	default:
-		snprintf(buffer, buffer_size, "Unknown ID.");
-		break;
+	ಪೂರ್ವನಿಯೋಜಿತ:
+		snprintf(ಬಫರ್_2, ಬಫರ್_ಗಾತ್ರ, "Unknown ID.");
+		ನಿಲ್ಲಿಸು;
 	}
 }
 
-uint64_t DaaEncodedId::callsign_to_uint64(const char callsign[kCallsignLength])
+uint64_t DaaEncodedId::callsign_ಗಮ್ಯ_uint64(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ callsign[k_Callsign_ಉದ್ದಳತೆ])
 {
-	if (callsign == nullptr) {
-		return 0;
+	ಆದರೆ (callsign == ಶೂನ್ಯಸೂಚಕ) {
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
-	bool null_terminated = false;
+	ತಾರ್ಕಿಕ null_terminated = ಸುಳ್ಳು;
 
-	for (size_t i = 0; i < kCallsignLength; ++i) {
-		if (callsign[i] == '\0') {
-			null_terminated = true;
-			break;
+	ಗಾಗಿ (size_t i = 0; i < k_Callsign_ಉದ್ದಳತೆ; ++i) {
+		ಆದರೆ (callsign[i] == '\0') {
+			null_terminated = ನಿಜ;
+			ನಿಲ್ಲಿಸು;
 		}
 	}
 
-	if (!null_terminated) {
-		return 0;
+	ಆದರೆ (!null_terminated) {
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
-	uint64_t result = 0;
+	uint64_t ಫಲಿತಾಂಶ = 0;
 
-	for (int i = 0; i < kIdEncodingNbBytes && callsign[i] != '\0'; ++i) {
-		result |= (static_cast<uint64_t>(static_cast<uint8_t>(callsign[i])) << (i * 8));
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < k_Id_Encoding_Nb_ಬೈಟುಗಳು && callsign[i] != '\0'; ++i) {
+		ಫಲಿತಾಂಶ |= (static_cast<uint64_t>(static_cast<uint8_t>(callsign[i])) << (i * 8));
 	}
 
-	return result;
+	ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 }
 
-uint64_t DaaEncodedId::callsign_params_to_uint64(const int32_t callsign_part1, const int32_t callsign_part2)
+uint64_t DaaEncodedId::callsign_params_ಗಮ್ಯ_uint64(ಸ್ಥಿರಾಂಕ int32_t callsign_part1, ಸ್ಥಿರಾಂಕ int32_t callsign_part2)
 {
-	const uint32_t parts[] {
+	ಸ್ಥಿರಾಂಕ uint32_t parts[] {
 		static_cast<uint32_t>(callsign_part1),
 		static_cast<uint32_t>(callsign_part2)
 	};
-	char callsign[kCallsignLength] {};
+	ಅಕ್ಷರ callsign[k_Callsign_ಉದ್ದಳತೆ] {};
 
-	for (size_t part_idx = 0; part_idx < 2; ++part_idx) {
-		for (size_t char_idx = 0; char_idx < sizeof(uint32_t); ++char_idx) {
-			const unsigned shift = static_cast<unsigned>((sizeof(uint32_t) - char_idx - 1) * 8);
-			callsign[part_idx * sizeof(uint32_t) + char_idx] = static_cast<char>((parts[part_idx] >> shift) & 0xffu);
+	ಗಾಗಿ (size_t part_idx = 0; part_idx < 2; ++part_idx) {
+		ಗಾಗಿ (size_t char_idx = 0; char_idx < ಗಾತ್ರ(uint32_t); ++char_idx) {
+			ಸ್ಥಿರಾಂಕ ಚಿಹ್ನೆರಹಿತ ಸರಿಸು = static_cast<ಚಿಹ್ನೆರಹಿತ>((ಗಾತ್ರ(uint32_t) - char_idx - 1) * 8);
+			callsign[part_idx * ಗಾತ್ರ(uint32_t) + char_idx] = static_cast<ಅಕ್ಷರ>((parts[part_idx] >> ಸರಿಸು) & 0xffu);
 		}
 	}
 
-	return callsign_to_uint64(callsign);
+	ಹಿಂತಿರುಗಿ callsign_ಗಮ್ಯ_uint64(callsign);
 }
 
-void DaaEncodedId::convert_uint64_callsign_to_str(uint64_t value, char callsign[kCallsignLength])
+ಶೂನ್ಯ DaaEncodedId::convert_uint64_callsign_ಗಮ್ಯ_str(uint64_t value, ಅಕ್ಷರ callsign[k_Callsign_ಉದ್ದಳತೆ])
 {
-	if (callsign == nullptr) {
-		return;
+	ಆದರೆ (callsign == ಶೂನ್ಯಸೂಚಕ) {
+		ಹಿಂತಿರುಗಿ;
 	}
 
-	memset(callsign, 0, kCallsignLength);
+	memset(callsign, 0, k_Callsign_ಉದ್ದಳತೆ);
 
-	const int max_chars = kCallsignLength - 1;
+	ಸ್ಥಿರಾಂಕ ಪೂರ್ಣಾಂಕ max_chars = k_Callsign_ಉದ್ದಳತೆ - 1;
 
-	if (value == 0) {
+	ಆದರೆ (value == 0) {
 		memset(callsign, '0', max_chars);
 
-	} else {
+	} ಇಲ್ಲದಿದ್ದರೆ {
 
-		for (int i = 0; i < max_chars; ++i) {
-			char c = (value >> (i * 8)) & 0xFF;
+		ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < max_chars; ++i) {
+			ಅಕ್ಷರ c = (value >> (i * 8)) & 0xFF;
 			callsign[i] = c;
 
-			if (c == 0) {
-				break;
+			ಆದರೆ (c == 0) {
+				ನಿಲ್ಲಿಸು;
 			}
 		}
 	}
@@ -283,54 +283,54 @@ void DaaEncodedId::convert_uint64_callsign_to_str(uint64_t value, char callsign[
 	callsign[max_chars] = '\0';
 }
 
-uint64_t DaaEncodedId::last_uas_id_bytes_to_uint64(const uint8_t uas_id[kUasIdByteLength])
+uint64_t DaaEncodedId::ಕೊನೆಯ_uas_id_ಬೈಟುಗಳು_ಗಮ್ಯ_uint64(ಸ್ಥಿರಾಂಕ uint8_t uas_id[k_Uas_Id_Byte_ಉದ್ದಳತೆ])
 {
-	if (uas_id == nullptr) {
-		return 0;
+	ಆದರೆ (uas_id == ಶೂನ್ಯಸೂಚಕ) {
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
 	uint64_t uas_id_int = 0;
 
 	// Pack the last kIdEncodingNbBytes bytes into the key.
-	for (int i = 0; i < kIdEncodingNbBytes; ++i) {
-		uas_id_int |= static_cast<uint64_t>(uas_id[kUasIdByteLength - kIdEncodingNbBytes + i]) << (i * 8);
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < k_Id_Encoding_Nb_ಬೈಟುಗಳು; ++i) {
+		uas_id_int |= static_cast<uint64_t>(uas_id[k_Uas_Id_Byte_ಉದ್ದಳತೆ - k_Id_Encoding_Nb_ಬೈಟುಗಳು + i]) << (i * 8);
 	}
 
-	return uas_id_int;
+	ಹಿಂತಿರುಗಿ uas_id_int;
 }
 
-void DaaEncodedId::convert_uas_id_uint64_to_str(const uint64_t uas_id_int, char uas_id_char_arr[kUtmGuidMsgLength])
+ಶೂನ್ಯ DaaEncodedId::convert_uas_id_uint64_ಗಮ್ಯ_str(ಸ್ಥಿರಾಂಕ uint64_t uas_id_int, ಅಕ್ಷರ uas_id_char_arr[k_Utm_Guid_ಸಂದೇಶ_ಉದ್ದಳತೆ])
 {
-	if (uas_id_char_arr == nullptr) {
-		return;
+	ಆದರೆ (uas_id_char_arr == ಶೂನ್ಯಸೂಚಕ) {
+		ಹಿಂತಿರುಗಿ;
 	}
 
-	static constexpr char kHexDigits[] = "0123456789abcdef";
+	ಸ್ಥಿರ constexpr ಅಕ್ಷರ kHexDigits[] = "0123456789abcdef";
 
-	if (uas_id_int == 0) {
-		memset(uas_id_char_arr, '0', kUtmGuidMsgLength - 1);
+	ಆದರೆ (uas_id_int == 0) {
+		memset(uas_id_char_arr, '0', k_Utm_Guid_ಸಂದೇಶ_ಉದ್ದಳತೆ - 1);
 
-	} else {
+	} ಇಲ್ಲದಿದ್ದರೆ {
 
 		// Render the low reduced_uas_id_length bytes as hex.
-		const int reduced_uas_id_length = (kUtmGuidMsgLength - 1) / 2;
+		ಸ್ಥಿರಾಂಕ ಪೂರ್ಣಾಂಕ reduced_uas_id_ಉದ್ದಳತೆ = (k_Utm_Guid_ಸಂದೇಶ_ಉದ್ದಳತೆ - 1) / 2;
 
-		for (int i = 0; i < reduced_uas_id_length; ++i) {
-			const uint8_t byte = static_cast<uint8_t>((uas_id_int >>(i * 8)) & 0xFF);
+		ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < reduced_uas_id_ಉದ್ದಳತೆ; ++i) {
+			ಸ್ಥಿರಾಂಕ uint8_t byte = static_cast<uint8_t>((uas_id_int >>(i * 8)) & 0xFF);
 			uas_id_char_arr[i * 2] = kHexDigits[byte >> 4];
 			uas_id_char_arr[i * 2 + 1] = kHexDigits[byte & 0x0F];
 		}
 	}
 
-	uas_id_char_arr[kUtmGuidMsgLength - 1] = '\0';
+	uas_id_char_arr[k_Utm_Guid_ಸಂದೇಶ_ಉದ್ದಳತೆ - 1] = '\0';
 }
 
-void DaaEncodedId::convert_icao_uint32_to_hex_str(uint64_t value, char *buffer, size_t buffer_size)
+ಶೂನ್ಯ DaaEncodedId::convert_icao_uint32_ಗಮ್ಯ_hex_str(uint64_t value, ಅಕ್ಷರ *ಬಫರ್_2, size_t ಬಫರ್_ಗಾತ್ರ)
 {
-	if (buffer == nullptr || buffer_size < kIcaoLength) {
-		return;
+	ಆದರೆ (ಬಫರ್_2 == ಶೂನ್ಯಸೂಚಕ || ಬಫರ್_ಗಾತ್ರ < k_Icao_ಉದ್ದಳತೆ) {
+		ಹಿಂತಿರುಗಿ;
 	}
 
-	const uint32_t icao_address = static_cast<uint32_t>(value & 0xFFFFFFu);
-	snprintf(buffer, buffer_size, "%06" PRIX32, icao_address);
+	ಸ್ಥಿರಾಂಕ uint32_t icao_ವಿಳಾಸ = static_cast<uint32_t>(value & 0xFFFFFFu);
+	snprintf(ಬಫರ್_2, ಬಫರ್_ಗಾತ್ರ, "%06" PRIX32, icao_ವಿಳಾಸ);
 }

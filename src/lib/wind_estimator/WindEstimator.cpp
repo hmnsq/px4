@@ -36,203 +36,203 @@
  * A wind and airspeed scale estimator.
  */
 
-#include "WindEstimator.hpp"
-#include "python/generated/init_wind_using_airspeed.h"
+#ಅನ್ತರ್ಭಾವ "WindEstimator.hpp"
+#ಅನ್ತರ್ಭಾವ "python/generated/init_wind_using_airspeed.h"
 
-bool
-WindEstimator::initialise(const matrix::Vector3f &velI, const float hor_vel_variance, const float heading_rad,
-			  const float tas_meas, const float tas_variance)
+ತಾರ್ಕಿಕ
+WindEstimator::initialise(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &velI, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ hor_vel_variance, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_rad,
+			  ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ tas_meas, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ tas_variance)
 {
-	if (PX4_ISFINITE(tas_meas) && PX4_ISFINITE(tas_variance)) {
+	ಆದರೆ (PX4_ISFINITE(tas_meas) && PX4_ISFINITE(tas_variance)) {
 
-		constexpr float initial_heading_var = sq(math::radians(kInitialHeadingErrorDeg));
-		constexpr float initial_sideslip_var = sq(math::radians(kInitialBetaErrorDeg));
+		constexpr ದಶಮಾಂಶ initial_heading_var = sq(math::radians(kInitialHeadingErrorDeg));
+		constexpr ದಶಮಾಂಶ initial_sideslip_var = sq(math::radians(kInitialBetaErrorDeg));
 
-		matrix::SquareMatrix<float, 2> P_wind_init;
-		matrix::Vector2f wind_init;
+		ಮಾತೃಕೆ::ವರ್ಗಫಲ_ಮಾತೃಕೆ<ದಶಮಾಂಶ, 2> P_wind_init;
+		ಮಾತೃಕೆ::Vector2f wind_init;
 
 		sym::InitWindUsingAirspeed(velI, heading_rad, tas_meas, hor_vel_variance, initial_heading_var, initial_sideslip_var,
 					   tas_variance,
 					   &wind_init, &P_wind_init);
 
 		_state.xy() = wind_init;
-		_state(INDEX_TAS_SCALE) = _scale_init;
-		_P.slice<2, 2>(0, 0) = P_wind_init;
+		_state(ಸೂಚ್ಯಂಕ_TAS_SCALE) = _scale_init;
+		_P.ತುಂಡು<2, 2>(0, 0) = P_wind_init;
 
-	} else {
+	} ಇಲ್ಲದಿದ್ದರೆ {
 		// no airspeed available
-		_state.setZero();
-		_state(INDEX_TAS_SCALE) = 1.0f;
-		_P.setZero();
-		_P(INDEX_W_N, INDEX_W_N) = _P(INDEX_W_E, INDEX_W_E) = sq(kInitialWindError);
+		_state.ಗಣ_Zero();
+		_state(ಸೂಚ್ಯಂಕ_TAS_SCALE) = 1.0f;
+		_P.ಗಣ_Zero();
+		_P(ಸೂಚ್ಯಂಕ_W_N, ಸೂಚ್ಯಂಕ_W_N) = _P(ಸೂಚ್ಯಂಕ_W_E, ಸೂಚ್ಯಂಕ_W_E) = sq(kInitialWindError);
 	}
 
-	_wind_estimator_reset = true;
-	_time_initialised = hrt_absolute_time();
+	_wind_estimator_reset = ನಿಜ;
+	ಸಮಯ_initialised = hrt_absolute_ಸಮಯ();
 
-	return true;
+	ಹಿಂತಿರುಗಿ ನಿಜ;
 }
 
-void
-WindEstimator::update(uint64_t time_now)
+ಶೂನ್ಯ
+WindEstimator::update(uint64_t ಸಮಯ_now)
 {
-	if (!_initialised) {
-		return;
+	ಆದರೆ (!_initialised) {
+		ಹಿಂತಿರುಗಿ;
 	}
 
 	// set reset state to false (is set to true when initialise fuction is called later)
-	_wind_estimator_reset = false;
+	_wind_estimator_reset = ಸುಳ್ಳು;
 
 	// run covariance prediction at 1Hz
-	if (time_now - _time_last_update < 1_s || _time_last_update == 0) {
-		if (_time_last_update == 0) {
-			_time_last_update = time_now;
+	ಆದರೆ (ಸಮಯ_now - ಸಮಯ_ಕೊನೆಯ_update < 1_s || ಸಮಯ_ಕೊನೆಯ_update == 0) {
+		ಆದರೆ (ಸಮಯ_ಕೊನೆಯ_update == 0) {
+			ಸಮಯ_ಕೊನೆಯ_update = ಸಮಯ_now;
 		}
 
-		return;
+		ಹಿಂತಿರುಗಿ;
 	}
 
-	const float dt = (float)(time_now - _time_last_update) * 1e-6f;
-	_time_last_update = time_now;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ dt = (ದಶಮಾಂಶ)(ಸಮಯ_now - ಸಮಯ_ಕೊನೆಯ_update) * 1e-6f;
+	ಸಮಯ_ಕೊನೆಯ_update = ಸಮಯ_now;
 
 	// if airspeed scale is at default (1.0) and we are in the first 5 minutes of flight time, multiply kTasScalePsd by 100 for faster learning
-	const float tas_psd_multiplier = (fabsf(_scale_init - 1.0f) < FLT_EPSILON && (time_now - _time_initialised < kTASScaleFastLearnTime)) ?
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ tas_psd_multiplier = (fabsf(_scale_init - 1.0f) < FLT_EPSILON && (ಸಮಯ_now - ಸಮಯ_initialised < k_TASScale_Fast_Learn_ಸಮಯ)) ?
 					 kTASScalePSDMultiplier : 1.f;
 
-	matrix::Matrix3f Qk;
-	Qk(INDEX_W_N, INDEX_W_N) = _wind_psd * dt;
-	Qk(INDEX_W_E, INDEX_W_E) = Qk(INDEX_W_N, INDEX_W_N);
-	Qk(INDEX_TAS_SCALE, INDEX_TAS_SCALE) = kTasScalePsd * tas_psd_multiplier * dt;
+	ಮಾತೃಕೆ::Matrix3f Qk;
+	Qk(ಸೂಚ್ಯಂಕ_W_N, ಸೂಚ್ಯಂಕ_W_N) = _wind_psd * dt;
+	Qk(ಸೂಚ್ಯಂಕ_W_E, ಸೂಚ್ಯಂಕ_W_E) = Qk(ಸೂಚ್ಯಂಕ_W_N, ಸೂಚ್ಯಂಕ_W_N);
+	Qk(ಸೂಚ್ಯಂಕ_TAS_SCALE, ಸೂಚ್ಯಂಕ_TAS_SCALE) = kTasScalePsd * tas_psd_multiplier * dt;
 	_P += Qk;
 }
 
-void
-WindEstimator::fuse_airspeed(uint64_t time_now, const float true_airspeed, const matrix::Vector3f &velI,
-			     const float hor_vel_variance, const matrix::Quatf &q_att)
+ಶೂನ್ಯ
+WindEstimator::fuse_airspeed(uint64_t ಸಮಯ_now, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ true_airspeed, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &velI,
+			     ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ hor_vel_variance, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Quatf &q_att)
 {
 
-	if (!_initialised) {
+	ಆದರೆ (!_initialised) {
 		// try to initialise
-		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi(), true_airspeed, _tas_var);
-		return;
+		_initialised = initialise(velI, hor_vel_variance, ಮಾತೃಕೆ::Eulerf(q_att).psi(), true_airspeed, _tas_var);
+		ಹಿಂತಿರುಗಿ;
 	}
 
 	// don't fuse faster than 10Hz
-	if (time_now - _time_last_airspeed_fuse < 100_ms) {
-		return;
+	ಆದರೆ (ಸಮಯ_now - ಸಮಯ_ಕೊನೆಯ_airspeed_fuse < 100_ms) {
+		ಹಿಂತಿರುಗಿ;
 	}
 
-	_time_last_airspeed_fuse = time_now;
+	ಸಮಯ_ಕೊನೆಯ_airspeed_fuse = ಸಮಯ_now;
 
-	matrix::Matrix<float, 1, 3> H_tas;
-	matrix::Matrix<float, 3, 1> K;
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 1, 3> H_tas;
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 1> K;
 
 	sym::FuseAirspeed(velI, _state, _P, true_airspeed, _tas_var, FLT_EPSILON,
 			  &H_tas, &K, &_tas_innov_var, &_tas_innov);
 
-	const bool meas_is_rejected = check_if_meas_is_rejected(_tas_innov, _tas_innov_var, kTasGate);
+	ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ meas_is_rejected = check_if_meas_is_rejected(_tas_innov, _tas_innov_var, kTasGate);
 
-	if (_tas_innov_var < FLT_EPSILON) {
+	ಆದರೆ (_tas_innov_var < FLT_EPSILON) {
 		// re init filter in case of a negative variance, and trigger early return to not fuse measurement
-		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi(), true_airspeed, _tas_var);
-		return;
+		_initialised = initialise(velI, hor_vel_variance, ಮಾತೃಕೆ::Eulerf(q_att).psi(), true_airspeed, _tas_var);
+		ಹಿಂತಿರುಗಿ;
 
-	} else if (meas_is_rejected) {
-		return;
+	} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (meas_is_rejected) {
+		ಹಿಂತಿರುಗಿ;
 	}
 
 	// apply correction to state
-	_state(INDEX_W_N) += _tas_innov * K(INDEX_W_N, 0);
-	_state(INDEX_W_E) += _tas_innov * K(INDEX_W_E, 0);
-	_state(INDEX_TAS_SCALE) += _tas_innov * K(INDEX_TAS_SCALE, 0);
+	_state(ಸೂಚ್ಯಂಕ_W_N) += _tas_innov * K(ಸೂಚ್ಯಂಕ_W_N, 0);
+	_state(ಸೂಚ್ಯಂಕ_W_E) += _tas_innov * K(ಸೂಚ್ಯಂಕ_W_E, 0);
+	_state(ಸೂಚ್ಯಂಕ_TAS_SCALE) += _tas_innov * K(ಸೂಚ್ಯಂಕ_TAS_SCALE, 0);
 
 	// update covariance matrix
 	_P = _P - K * H_tas * _P;
 
-	run_sanity_checks();
+	ಸತತ_sanity_checks();
 }
 
-void
-WindEstimator::fuse_beta(uint64_t time_now, const matrix::Vector3f &velI, const float hor_vel_variance,
-			 const matrix::Quatf &q_att)
+ಶೂನ್ಯ
+WindEstimator::fuse_beta(uint64_t ಸಮಯ_now, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &velI, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ hor_vel_variance,
+			 ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Quatf &q_att)
 {
-	if (!_initialised) {
-		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi());
-		return;
+	ಆದರೆ (!_initialised) {
+		_initialised = initialise(velI, hor_vel_variance, ಮಾತೃಕೆ::Eulerf(q_att).psi());
+		ಹಿಂತಿರುಗಿ;
 	}
 
 	// don't fuse faster than 10Hz
-	if (time_now - _time_last_beta_fuse < 100_ms) {
-		return;
+	ಆದರೆ (ಸಮಯ_now - ಸಮಯ_ಕೊನೆಯ_beta_fuse < 100_ms) {
+		ಹಿಂತಿರುಗಿ;
 	}
 
-	_time_last_beta_fuse = time_now;
+	ಸಮಯ_ಕೊನೆಯ_beta_fuse = ಸಮಯ_now;
 
 
-	matrix::Matrix<float, 1, 3> H_beta;
-	matrix::Matrix<float, 3, 1> K;
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 1, 3> H_beta;
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 1> K;
 
 	sym::FuseBeta(velI, _state, _P, q_att, kBetaVar, FLT_EPSILON,
 		      &H_beta, &K, &_beta_innov_var, &_beta_innov);
 
-	const bool meas_is_rejected = check_if_meas_is_rejected(_beta_innov, _beta_innov_var, kBetaGate);
+	ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ meas_is_rejected = check_if_meas_is_rejected(_beta_innov, _beta_innov_var, kBetaGate);
 
-	if (_beta_innov_var < FLT_EPSILON) {
+	ಆದರೆ (_beta_innov_var < FLT_EPSILON) {
 		// re init filter in case of a negative variance, and trigger early return to not fuse measurement
-		_initialised = initialise(velI, hor_vel_variance, matrix::Eulerf(q_att).psi());
-		return;
+		_initialised = initialise(velI, hor_vel_variance, ಮಾತೃಕೆ::Eulerf(q_att).psi());
+		ಹಿಂತಿರುಗಿ;
 
-	} else if (meas_is_rejected) {
-		return;
+	} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (meas_is_rejected) {
+		ಹಿಂತಿರುಗಿ;
 	}
 
 	// apply correction to state
-	_state(INDEX_W_N) += _beta_innov * K(INDEX_W_N, 0);
-	_state(INDEX_W_E) += _beta_innov * K(INDEX_W_E, 0);
-	_state(INDEX_TAS_SCALE) += _beta_innov * K(INDEX_TAS_SCALE, 0);
+	_state(ಸೂಚ್ಯಂಕ_W_N) += _beta_innov * K(ಸೂಚ್ಯಂಕ_W_N, 0);
+	_state(ಸೂಚ್ಯಂಕ_W_E) += _beta_innov * K(ಸೂಚ್ಯಂಕ_W_E, 0);
+	_state(ಸೂಚ್ಯಂಕ_TAS_SCALE) += _beta_innov * K(ಸೂಚ್ಯಂಕ_TAS_SCALE, 0);
 
 	// update covariance matrix
 	_P = _P - K * H_beta * _P;
 
-	run_sanity_checks();
+	ಸತತ_sanity_checks();
 }
 
-void
-WindEstimator::run_sanity_checks()
+ಶೂನ್ಯ
+WindEstimator::ಸತತ_sanity_checks()
 {
-	for (unsigned i = 0; i < 3; i++) {
-		if (_P(i, i) < 0.0f) {
+	ಗಾಗಿ (ಚಿಹ್ನೆರಹಿತ i = 0; i < 3; i++) {
+		ಆದರೆ (_P(i, i) < 0.0f) {
 			// ill-conditioned covariance matrix, reset filter
-			_initialised = false;
-			return;
+			_initialised = ಸುಳ್ಳು;
+			ಹಿಂತಿರುಗಿ;
 		}
 
 		// limit covariance diagonals if they grow too large
-		if (i < 2) {
+		ಆದರೆ (i < 2) {
 			_P(i, i) = _P(i, i) > 25.0f ? 25.0f : _P(i, i);
 
-		} else if (i == 2) {
+		} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (i == 2) {
 			_P(i, i) = _P(i, i) > 0.1f ? 0.1f : _P(i, i);
 		}
 	}
 
-	if (!_state.isAllFinite()) {
-		_initialised = false;
-		return;
+	ಆದರೆ (!_state.isAllFinite()) {
+		_initialised = ಸುಳ್ಳು;
+		ಹಿಂತಿರುಗಿ;
 	}
 
 	// attain symmetry
-	for (unsigned row = 0; row < 3; row++) {
-		for (unsigned column = 0; column < row; column++) {
-			const float tmp = (_P(row, column) + _P(column, row)) * 0.5f;
-			_P(row, column) = tmp;
-			_P(column, row) = tmp;
+	ಗಾಗಿ (ಚಿಹ್ನೆರಹಿತ ಅಡ್ಡಸಾಲು = 0; ಅಡ್ಡಸಾಲು < 3; ಅಡ್ಡಸಾಲು++) {
+		ಗಾಗಿ (ಚಿಹ್ನೆರಹಿತ ಸ್ತಂಭ = 0; ಸ್ತಂಭ < ಅಡ್ಡಸಾಲು; ಸ್ತಂಭ++) {
+			ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ tmp = (_P(ಅಡ್ಡಸಾಲು, ಸ್ತಂಭ) + _P(ಸ್ತಂಭ, ಅಡ್ಡಸಾಲು)) * 0.5f;
+			_P(ಅಡ್ಡಸಾಲು, ಸ್ತಂಭ) = tmp;
+			_P(ಸ್ತಂಭ, ಅಡ್ಡಸಾಲು) = tmp;
 		}
 	}
 }
 
-bool
-WindEstimator::check_if_meas_is_rejected(float innov, float innov_var, uint8_t gate_size)
+ತಾರ್ಕಿಕ
+WindEstimator::check_if_meas_is_rejected(ದಶಮಾಂಶ innov, ದಶಮಾಂಶ innov_var, uint8_t gate_ಗಾತ್ರ)
 {
-	return (innov * innov > gate_size * gate_size * innov_var);
+	ಹಿಂತಿರುಗಿ (innov * innov > gate_ಗಾತ್ರ * gate_ಗಾತ್ರ * innov_var);
 }

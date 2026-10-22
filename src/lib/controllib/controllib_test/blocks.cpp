@@ -37,269 +37,269 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <float.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <stdio.h>
+#ಅನ್ತರ್ಭಾವ <float.h>
 
-#include <controllib/blocks.hpp>
+#ಅನ್ತರ್ಭಾವ <controllib/blocks.hpp>
 
-#define ASSERT_CL(T) if (!(T)) { printf("FAIL\n"); return -1; }
+#ವ್ಯಾಖ್ಯಾನಿಸು ASSERT_CL(T) ಆದರೆ (!(T)) { ಬರೆ("FAIL\n"); ಹಿಂತಿರುಗಿ -1; }
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
-int basicBlocksTest();
-int blockLimitTest();
-int blockLimitSymTest();
-int blockLowPassTest();
-int blockHighPassTest();
-int blockLowPass2Test();
-int blockIntegralTest();
-int blockIntegralTrapTest();
-int blockDerivativeTest();
-int blockPTest();
-int blockPITest();
-int blockPDTest();
-int blockPIDTest();
-int blockOutputTest();
-int blockRandUniformTest();
-int blockRandGaussTest();
-int blockStatsTest();
-int blockDelayTest();
+ಪೂರ್ಣಾಂಕ basic_ಖಂಡಗಳು_Test();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_ಎಲ್ಲೆ_Test();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_ಎಲ್ಲೆ_Sym_Test();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_ಕೆಳಗಿನ_Pass_Test();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_ಮೇಲಿನ_Pass_Test();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_ಕೆಳಗಿನ_Pass2_Test();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Integral_Test();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Integral_Trap_Test();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Derivative_Test();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_PTest();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_PITest();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_PDTest();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_PIDTest();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Output_Test();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Rand_ಏಕರೂಪ_Test();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Rand_Gauss_Test();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Stats_Test();
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Delay_Test();
 
-int basicBlocksTest()
+ಪೂರ್ಣಾಂಕ basic_ಖಂಡಗಳು_Test()
 {
-	blockLimitTest();
-	blockLimitSymTest();
-	blockLowPassTest();
-	blockHighPassTest();
-	blockLowPass2Test();
-	blockIntegralTest();
-	blockIntegralTrapTest();
-	blockDerivativeTest();
-	blockPTest();
-	blockPITest();
-	blockPDTest();
-	blockPIDTest();
-	blockOutputTest();
+	ಖಂಡ_ಎಲ್ಲೆ_Test();
+	ಖಂಡ_ಎಲ್ಲೆ_Sym_Test();
+	ಖಂಡ_ಕೆಳಗಿನ_Pass_Test();
+	ಖಂಡ_ಮೇಲಿನ_Pass_Test();
+	ಖಂಡ_ಕೆಳಗಿನ_Pass2_Test();
+	ಖಂಡ_Integral_Test();
+	ಖಂಡ_Integral_Trap_Test();
+	ಖಂಡ_Derivative_Test();
+	ಖಂಡ_PTest();
+	ಖಂಡ_PITest();
+	ಖಂಡ_PDTest();
+	ಖಂಡ_PIDTest();
+	ಖಂಡ_Output_Test();
 	//blockRandUniformTest();
 	// known failures
 	// blockRandGaussTest();
-	blockStatsTest();
-	blockDelayTest();
-	return 0;
+	ಖಂಡ_Stats_Test();
+	ಖಂಡ_Delay_Test();
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockLimitTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_ಎಲ್ಲೆ_Test()
 {
-	printf("Test BlockLimit\t\t\t: ");
-	BlockLimit limit(NULL, "TEST");
+	ಬರೆ("Test BlockLimit\t\t\t: ");
+	ಖಂಡ_ಎಲ್ಲೆ ಎಲ್ಲೆ_2(ಖಾಲಿ, "TEST");
 	// initial state
-	ASSERT_CL(equal(1.0f, limit.getMax()));
-	ASSERT_CL(equal(-1.0f, limit.getMin()));
-	ASSERT_CL(equal(0.0f, limit.getDt()));
+	ASSERT_CL(equal(1.0f, ಎಲ್ಲೆ_2.getMax()));
+	ASSERT_CL(equal(-1.0f, ಎಲ್ಲೆ_2.getMin()));
+	ASSERT_CL(equal(0.0f, ಎಲ್ಲೆ_2.getDt()));
 	// update
-	ASSERT_CL(equal(-1.0f, limit.update(-2.0f)));
-	ASSERT_CL(equal(1.0f, limit.update(2.0f)));
-	ASSERT_CL(equal(0.0f, limit.update(0.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(-1.0f, ಎಲ್ಲೆ_2.update(-2.0f)));
+	ASSERT_CL(equal(1.0f, ಎಲ್ಲೆ_2.update(2.0f)));
+	ASSERT_CL(equal(0.0f, ಎಲ್ಲೆ_2.update(0.0f)));
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockLimitSymTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_ಎಲ್ಲೆ_Sym_Test()
 {
-	printf("Test BlockLimitSym\t\t: ");
-	BlockLimitSym limit(NULL, "TEST");
+	ಬರೆ("Test BlockLimitSym\t\t: ");
+	ಖಂಡ_ಎಲ್ಲೆ_Sym ಎಲ್ಲೆ_2(ಖಾಲಿ, "TEST");
 	// initial state
-	ASSERT_CL(equal(1.0f, limit.getMax()));
-	ASSERT_CL(equal(0.0f, limit.getDt()));
+	ASSERT_CL(equal(1.0f, ಎಲ್ಲೆ_2.getMax()));
+	ASSERT_CL(equal(0.0f, ಎಲ್ಲೆ_2.getDt()));
 	// update
-	ASSERT_CL(equal(-1.0f, limit.update(-2.0f)));
-	ASSERT_CL(equal(1.0f, limit.update(2.0f)));
-	ASSERT_CL(equal(0.0f, limit.update(0.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(-1.0f, ಎಲ್ಲೆ_2.update(-2.0f)));
+	ASSERT_CL(equal(1.0f, ಎಲ್ಲೆ_2.update(2.0f)));
+	ASSERT_CL(equal(0.0f, ಎಲ್ಲೆ_2.update(0.0f)));
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockLowPassTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_ಕೆಳಗಿನ_Pass_Test()
 {
-	printf("Test BlockLowPass\t\t: ");
-	BlockLowPass lowPass(NULL, "TEST_LP");
+	ಬರೆ("Test BlockLowPass\t\t: ");
+	ಖಂಡ_ಕೆಳಗಿನ_Pass ಕೆಳಗಿನ_Pass_2(ಖಾಲಿ, "TEST_LP");
 	// test initial state
-	ASSERT_CL(equal(10.0f, lowPass.getFCut()));
-	ASSERT_CL(equal(0.0f, lowPass.getState()));
-	ASSERT_CL(equal(0.0f, lowPass.getDt()));
+	ASSERT_CL(equal(10.0f, ಕೆಳಗಿನ_Pass_2.getFCut()));
+	ASSERT_CL(equal(0.0f, ಕೆಳಗಿನ_Pass_2.getState()));
+	ASSERT_CL(equal(0.0f, ಕೆಳಗಿನ_Pass_2.getDt()));
 	// set dt
-	lowPass.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, lowPass.getDt()));
+	ಕೆಳಗಿನ_Pass_2.ಗಣ_Dt(0.1f);
+	ASSERT_CL(equal(0.1f, ಕೆಳಗಿನ_Pass_2.getDt()));
 	// set state
-	lowPass.setState(1.0f);
-	ASSERT_CL(equal(1.0f, lowPass.getState()));
+	ಕೆಳಗಿನ_Pass_2.ಗಣ_State(1.0f);
+	ASSERT_CL(equal(1.0f, ಕೆಳಗಿನ_Pass_2.getState()));
 	// test update
-	ASSERT_CL(equal(1.8626974f, lowPass.update(2.0f)));
+	ASSERT_CL(equal(1.8626974f, ಕೆಳಗಿನ_Pass_2.update(2.0f)));
 
 	// test end condition
-	for (int i = 0; i < 100; i++) {
-		lowPass.update(2.0f);
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 100; i++) {
+		ಕೆಳಗಿನ_Pass_2.update(2.0f);
 	}
 
-	ASSERT_CL(equal(2.0f, lowPass.getState()));
-	ASSERT_CL(equal(2.0f, lowPass.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(2.0f, ಕೆಳಗಿನ_Pass_2.getState()));
+	ASSERT_CL(equal(2.0f, ಕೆಳಗಿನ_Pass_2.update(2.0f)));
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 };
 
-int blockHighPassTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_ಮೇಲಿನ_Pass_Test()
 {
-	printf("Test BlockHighPass\t\t: ");
-	BlockHighPass highPass(NULL, "TEST_HP");
+	ಬರೆ("Test BlockHighPass\t\t: ");
+	ಖಂಡ_ಮೇಲಿನ_Pass ಮೇಲಿನ_Pass(ಖಾಲಿ, "TEST_HP");
 	// test initial state
-	ASSERT_CL(equal(10.0f, highPass.getFCut()));
-	ASSERT_CL(equal(0.0f, highPass.getU()));
-	ASSERT_CL(equal(0.0f, highPass.getY()));
-	ASSERT_CL(equal(0.0f, highPass.getDt()));
+	ASSERT_CL(equal(10.0f, ಮೇಲಿನ_Pass.getFCut()));
+	ASSERT_CL(equal(0.0f, ಮೇಲಿನ_Pass.getU()));
+	ASSERT_CL(equal(0.0f, ಮೇಲಿನ_Pass.getY()));
+	ASSERT_CL(equal(0.0f, ಮೇಲಿನ_Pass.getDt()));
 	// set dt
-	highPass.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, highPass.getDt()));
+	ಮೇಲಿನ_Pass.ಗಣ_Dt(0.1f);
+	ASSERT_CL(equal(0.1f, ಮೇಲಿನ_Pass.getDt()));
 	// set state
-	highPass.setU(1.0f);
-	ASSERT_CL(equal(1.0f, highPass.getU()));
-	highPass.setY(1.0f);
-	ASSERT_CL(equal(1.0f, highPass.getY()));
+	ಮೇಲಿನ_Pass.ಗಣ_U(1.0f);
+	ASSERT_CL(equal(1.0f, ಮೇಲಿನ_Pass.getU()));
+	ಮೇಲಿನ_Pass.ಗಣ_Y(1.0f);
+	ASSERT_CL(equal(1.0f, ಮೇಲಿನ_Pass.getY()));
 	// test update
-	ASSERT_CL(equal(0.2746051f, highPass.update(2.0f)));
+	ASSERT_CL(equal(0.2746051f, ಮೇಲಿನ_Pass.update(2.0f)));
 
 	// test end condition
-	for (int i = 0; i < 100; i++) {
-		highPass.update(2.0f);
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 100; i++) {
+		ಮೇಲಿನ_Pass.update(2.0f);
 	}
 
-	ASSERT_CL(equal(0.0f, highPass.getY()));
-	ASSERT_CL(equal(0.0f, highPass.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(0.0f, ಮೇಲಿನ_Pass.getY()));
+	ASSERT_CL(equal(0.0f, ಮೇಲಿನ_Pass.update(2.0f)));
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockLowPass2Test()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_ಕೆಳಗಿನ_Pass2_Test()
 {
-	printf("Test BlockLowPass2\t\t: ");
-	BlockLowPass2 lowPass(NULL, "TEST_LP", 100);
+	ಬರೆ("Test BlockLowPass2\t\t: ");
+	ಖಂಡ_ಕೆಳಗಿನ_Pass2 ಕೆಳಗಿನ_Pass_2(ಖಾಲಿ, "TEST_LP", 100);
 	// test initial state
-	ASSERT_CL(equal(10.0f, lowPass.getFCutParam()));
-	ASSERT_CL(equal(0.0f, lowPass.getState()));
-	ASSERT_CL(equal(0.0f, lowPass.getDt()));
+	ASSERT_CL(equal(10.0f, ಕೆಳಗಿನ_Pass_2.getFCutParam()));
+	ASSERT_CL(equal(0.0f, ಕೆಳಗಿನ_Pass_2.getState()));
+	ASSERT_CL(equal(0.0f, ಕೆಳಗಿನ_Pass_2.getDt()));
 	// set dt
-	lowPass.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, lowPass.getDt()));
+	ಕೆಳಗಿನ_Pass_2.ಗಣ_Dt(0.1f);
+	ASSERT_CL(equal(0.1f, ಕೆಳಗಿನ_Pass_2.getDt()));
 	// set state
-	lowPass.setState(1.0f);
-	ASSERT_CL(equal(1.0f, lowPass.getState()));
+	ಕೆಳಗಿನ_Pass_2.ಗಣ_State(1.0f);
+	ASSERT_CL(equal(1.0f, ಕೆಳಗಿನ_Pass_2.getState()));
 	// test update
-	ASSERT_CL(equal(1.06745527f, lowPass.update(2.0f)));
+	ASSERT_CL(equal(1.06745527f, ಕೆಳಗಿನ_Pass_2.update(2.0f)));
 
 	// test end condition
-	for (int i = 0; i < 100; i++) {
-		lowPass.update(2.0f);
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 100; i++) {
+		ಕೆಳಗಿನ_Pass_2.update(2.0f);
 	}
 
-	ASSERT_CL(equal(2.0f, lowPass.getState()));
-	ASSERT_CL(equal(2.0f, lowPass.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(2.0f, ಕೆಳಗಿನ_Pass_2.getState()));
+	ASSERT_CL(equal(2.0f, ಕೆಳಗಿನ_Pass_2.update(2.0f)));
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 };
 
-int blockIntegralTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Integral_Test()
 {
-	printf("Test BlockIntegral\t\t: ");
-	BlockIntegral integral(NULL, "TEST_I");
+	ಬರೆ("Test BlockIntegral\t\t: ");
+	ಖಂಡ_Integral integral(ಖಾಲಿ, "TEST_I");
 	// test initial state
 	ASSERT_CL(equal(1.0f, integral.getMax()));
 	ASSERT_CL(equal(0.0f, integral.getDt()));
 	// set dt
-	integral.setDt(0.1f);
+	integral.ಗಣ_Dt(0.1f);
 	ASSERT_CL(equal(0.1f, integral.getDt()));
 	// set Y
-	integral.setY(0.9f);
+	integral.ಗಣ_Y(0.9f);
 	ASSERT_CL(equal(0.9f, integral.getY()));
 
 	// test exceed max
-	for (int i = 0; i < 100; i++) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 100; i++) {
 		integral.update(1.0f);
 	}
 
 	ASSERT_CL(equal(1.0f, integral.update(1.0f)));
 	// test exceed min
-	integral.setY(-0.9f);
+	integral.ಗಣ_Y(-0.9f);
 	ASSERT_CL(equal(-0.9f, integral.getY()));
 
-	for (int i = 0; i < 100; i++) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 100; i++) {
 		integral.update(-1.0f);
 	}
 
 	ASSERT_CL(equal(-1.0f, integral.update(-1.0f)));
 	// test update
-	integral.setY(0.1f);
+	integral.ಗಣ_Y(0.1f);
 	ASSERT_CL(equal(0.2f, integral.update(1.0)));
 	ASSERT_CL(equal(0.2f, integral.getY()));
-	printf("PASS\n");
-	return 0;
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockIntegralTrapTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Integral_Trap_Test()
 {
-	printf("Test BlockIntegralTrap\t\t: ");
-	BlockIntegralTrap integral(NULL, "TEST_I");
+	ಬರೆ("Test BlockIntegralTrap\t\t: ");
+	ಖಂಡ_Integral_Trap integral(ಖಾಲಿ, "TEST_I");
 	// test initial state
 	ASSERT_CL(equal(1.0f, integral.getMax()));
 	ASSERT_CL(equal(0.0f, integral.getDt()));
 	// set dt
-	integral.setDt(0.1f);
+	integral.ಗಣ_Dt(0.1f);
 	ASSERT_CL(equal(0.1f, integral.getDt()));
 	// set U
-	integral.setU(1.0f);
+	integral.ಗಣ_U(1.0f);
 	ASSERT_CL(equal(1.0f, integral.getU()));
 	// set Y
-	integral.setY(0.9f);
+	integral.ಗಣ_Y(0.9f);
 	ASSERT_CL(equal(0.9f, integral.getY()));
 
 	// test exceed max
-	for (int i = 0; i < 100; i++) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 100; i++) {
 		integral.update(1.0f);
 	}
 
 	ASSERT_CL(equal(1.0f, integral.update(1.0f)));
 	// test exceed min
-	integral.setU(-1.0f);
-	integral.setY(-0.9f);
+	integral.ಗಣ_U(-1.0f);
+	integral.ಗಣ_Y(-0.9f);
 	ASSERT_CL(equal(-0.9f, integral.getY()));
 
-	for (int i = 0; i < 100; i++) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 100; i++) {
 		integral.update(-1.0f);
 	}
 
 	ASSERT_CL(equal(-1.0f, integral.update(-1.0f)));
 	// test update
-	integral.setU(2.0f);
-	integral.setY(0.1f);
+	integral.ಗಣ_U(2.0f);
+	integral.ಗಣ_Y(0.1f);
 	ASSERT_CL(equal(0.25f, integral.update(1.0)));
 	ASSERT_CL(equal(0.25f, integral.getY()));
 	ASSERT_CL(equal(1.0f, integral.getU()));
-	printf("PASS\n");
-	return 0;
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockDerivativeTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Derivative_Test()
 {
-	printf("Test BlockDerivative\t\t: ");
-	BlockDerivative derivative(NULL, "TEST_D");
+	ಬರೆ("Test BlockDerivative\t\t: ");
+	ಖಂಡ_Derivative derivative(ಖಾಲಿ, "TEST_D");
 	// test initial state
 	ASSERT_CL(equal(0.0f, derivative.getU()));
 	ASSERT_CL(equal(10.0f, derivative.getLP()));
 	// set dt
-	derivative.setDt(0.1f);
+	derivative.ಗಣ_Dt(0.1f);
 	ASSERT_CL(equal(0.1f, derivative.getDt()));
 	// set U
-	derivative.setU(1.0f);
+	derivative.ಗಣ_U(1.0f);
 	ASSERT_CL(equal(1.0f, derivative.getU()));
 	// perform one update so initialized is set
 	derivative.update(1.0);
@@ -307,203 +307,203 @@ int blockDerivativeTest()
 	// test  update
 	ASSERT_CL(equal(8.6269744f, derivative.update(2.0f)));
 	ASSERT_CL(equal(2.0f, derivative.getU()));
-	printf("PASS\n");
-	return 0;
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockPTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_PTest()
 {
-	printf("Test BlockP\t\t\t: ");
-	BlockP blockP(NULL, "TEST_P");
+	ಬರೆ("Test BlockP\t\t\t: ");
+	ಖಂಡ_P ಖಂಡ_P_2(ಖಾಲಿ, "TEST_P");
 	// test initial state
-	ASSERT_CL(equal(0.2f, blockP.getKP()));
-	ASSERT_CL(equal(0.0f, blockP.getDt()));
+	ASSERT_CL(equal(0.2f, ಖಂಡ_P_2.getKP()));
+	ASSERT_CL(equal(0.0f, ಖಂಡ_P_2.getDt()));
 	// set dt
-	blockP.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, blockP.getDt()));
+	ಖಂಡ_P_2.ಗಣ_Dt(0.1f);
+	ASSERT_CL(equal(0.1f, ಖಂಡ_P_2.getDt()));
 	// test  update
-	ASSERT_CL(equal(0.4f, blockP.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(0.4f, ಖಂಡ_P_2.update(2.0f)));
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockPITest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_PITest()
 {
-	printf("Test BlockPI\t\t\t: ");
-	BlockPI blockPI(NULL, "TEST");
+	ಬರೆ("Test BlockPI\t\t\t: ");
+	ಖಂಡ_PI ಖಂಡ_PI_2(ಖಾಲಿ, "TEST");
 	// test initial state
-	ASSERT_CL(equal(0.2f, blockPI.getKP()));
-	ASSERT_CL(equal(0.1f, blockPI.getKI()));
-	ASSERT_CL(equal(0.0f, blockPI.getDt()));
-	ASSERT_CL(equal(1.0f, blockPI.getIntegral().getMax()));
+	ASSERT_CL(equal(0.2f, ಖಂಡ_PI_2.getKP()));
+	ASSERT_CL(equal(0.1f, ಖಂಡ_PI_2.getKI()));
+	ASSERT_CL(equal(0.0f, ಖಂಡ_PI_2.getDt()));
+	ASSERT_CL(equal(1.0f, ಖಂಡ_PI_2.getIntegral().getMax()));
 	// set dt
-	blockPI.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, blockPI.getDt()));
+	ಖಂಡ_PI_2.ಗಣ_Dt(0.1f);
+	ASSERT_CL(equal(0.1f, ಖಂಡ_PI_2.getDt()));
 	// set integral state
-	blockPI.getIntegral().setY(0.1f);
-	ASSERT_CL(equal(0.1f, blockPI.getIntegral().getY()));
+	ಖಂಡ_PI_2.getIntegral().ಗಣ_Y(0.1f);
+	ASSERT_CL(equal(0.1f, ಖಂಡ_PI_2.getIntegral().getY()));
 	// test  update
 	// 0.2*2 + 0.1*(2*0.1 + 0.1) = 0.43
-	ASSERT_CL(equal(0.43f, blockPI.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(0.43f, ಖಂಡ_PI_2.update(2.0f)));
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockPDTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_PDTest()
 {
-	printf("Test BlockPD\t\t\t: ");
-	BlockPD blockPD(NULL, "TEST");
+	ಬರೆ("Test BlockPD\t\t\t: ");
+	ಖಂಡ_PD ಖಂಡ_PD_2(ಖಾಲಿ, "TEST");
 	// test initial state
-	ASSERT_CL(equal(0.2f, blockPD.getKP()));
-	ASSERT_CL(equal(0.01f, blockPD.getKD()));
-	ASSERT_CL(equal(0.0f, blockPD.getDt()));
-	ASSERT_CL(equal(10.0f, blockPD.getDerivative().getLP()));
+	ASSERT_CL(equal(0.2f, ಖಂಡ_PD_2.getKP()));
+	ASSERT_CL(equal(0.01f, ಖಂಡ_PD_2.getKD()));
+	ASSERT_CL(equal(0.0f, ಖಂಡ_PD_2.getDt()));
+	ASSERT_CL(equal(10.0f, ಖಂಡ_PD_2.getDerivative().getLP()));
 	// set dt
-	blockPD.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, blockPD.getDt()));
+	ಖಂಡ_PD_2.ಗಣ_Dt(0.1f);
+	ASSERT_CL(equal(0.1f, ಖಂಡ_PD_2.getDt()));
 	// set derivative state
-	blockPD.getDerivative().setU(1.0f);
-	ASSERT_CL(equal(1.0f, blockPD.getDerivative().getU()));
+	ಖಂಡ_PD_2.getDerivative().ಗಣ_U(1.0f);
+	ASSERT_CL(equal(1.0f, ಖಂಡ_PD_2.getDerivative().getU()));
 	// perform one update so initialized is set
-	blockPD.getDerivative().update(1.0);
-	ASSERT_CL(equal(1.0f, blockPD.getDerivative().getU()));
+	ಖಂಡ_PD_2.getDerivative().update(1.0);
+	ASSERT_CL(equal(1.0f, ಖಂಡ_PD_2.getDerivative().getU()));
 	// test  update
 	// 0.2*2 + 0.1*(0.1*8.626...) = 0.486269744
-	ASSERT_CL(equal(0.486269744f, blockPD.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(0.486269744f, ಖಂಡ_PD_2.update(2.0f)));
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockPIDTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_PIDTest()
 {
-	printf("Test BlockPID\t\t\t: ");
-	BlockPID blockPID(NULL, "TEST");
+	ಬರೆ("Test BlockPID\t\t\t: ");
+	ಖಂಡ_PID ಖಂಡ_PID_2(ಖಾಲಿ, "TEST");
 	// test initial state
-	ASSERT_CL(equal(0.2f, blockPID.getKP()));
-	ASSERT_CL(equal(0.1f, blockPID.getKI()));
-	ASSERT_CL(equal(0.01f, blockPID.getKD()));
-	ASSERT_CL(equal(0.0f, blockPID.getDt()));
-	ASSERT_CL(equal(10.0f, blockPID.getDerivative().getLP()));
-	ASSERT_CL(equal(1.0f, blockPID.getIntegral().getMax()));
+	ASSERT_CL(equal(0.2f, ಖಂಡ_PID_2.getKP()));
+	ASSERT_CL(equal(0.1f, ಖಂಡ_PID_2.getKI()));
+	ASSERT_CL(equal(0.01f, ಖಂಡ_PID_2.getKD()));
+	ASSERT_CL(equal(0.0f, ಖಂಡ_PID_2.getDt()));
+	ASSERT_CL(equal(10.0f, ಖಂಡ_PID_2.getDerivative().getLP()));
+	ASSERT_CL(equal(1.0f, ಖಂಡ_PID_2.getIntegral().getMax()));
 	// set dt
-	blockPID.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, blockPID.getDt()));
+	ಖಂಡ_PID_2.ಗಣ_Dt(0.1f);
+	ASSERT_CL(equal(0.1f, ಖಂಡ_PID_2.getDt()));
 	// set derivative state
-	blockPID.getDerivative().setU(1.0f);
-	ASSERT_CL(equal(1.0f, blockPID.getDerivative().getU()));
+	ಖಂಡ_PID_2.getDerivative().ಗಣ_U(1.0f);
+	ASSERT_CL(equal(1.0f, ಖಂಡ_PID_2.getDerivative().getU()));
 	// perform one update so initialized is set
-	blockPID.getDerivative().update(1.0);
-	ASSERT_CL(equal(1.0f, blockPID.getDerivative().getU()));
+	ಖಂಡ_PID_2.getDerivative().update(1.0);
+	ASSERT_CL(equal(1.0f, ಖಂಡ_PID_2.getDerivative().getU()));
 	// set integral state
-	blockPID.getIntegral().setY(0.1f);
-	ASSERT_CL(equal(0.1f, blockPID.getIntegral().getY()));
+	ಖಂಡ_PID_2.getIntegral().ಗಣ_Y(0.1f);
+	ASSERT_CL(equal(0.1f, ಖಂಡ_PID_2.getIntegral().getY()));
 	// test  update
 	// 0.2*2 + 0.1*(2*0.1 + 0.1) + 0.1*(0.1*8.626...) = 0.5162697
-	ASSERT_CL(equal(0.5162697f, blockPID.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(0.5162697f, ಖಂಡ_PID_2.update(2.0f)));
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockOutputTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Output_Test()
 {
-	printf("Test BlockOutput\t\t: ");
-	BlockOutput blockOutput(NULL, "TEST");
+	ಬರೆ("Test BlockOutput\t\t: ");
+	ಖಂಡ_Output ಖಂಡ_Output_2(ಖಾಲಿ, "TEST");
 	// test initial state
-	ASSERT_CL(equal(0.0f, blockOutput.getDt()));
-	ASSERT_CL(equal(0.5f, blockOutput.get()));
-	ASSERT_CL(equal(-1.0f, blockOutput.getMin()));
-	ASSERT_CL(equal(1.0f, blockOutput.getMax()));
+	ASSERT_CL(equal(0.0f, ಖಂಡ_Output_2.getDt()));
+	ASSERT_CL(equal(0.5f, ಖಂಡ_Output_2.get()));
+	ASSERT_CL(equal(-1.0f, ಖಂಡ_Output_2.getMin()));
+	ASSERT_CL(equal(1.0f, ಖಂಡ_Output_2.getMax()));
 	// test update below min
-	blockOutput.update(-2.0f);
-	ASSERT_CL(equal(-1.0f, blockOutput.get()));
+	ಖಂಡ_Output_2.update(-2.0f);
+	ASSERT_CL(equal(-1.0f, ಖಂಡ_Output_2.get()));
 	// test update above max
-	blockOutput.update(2.0f);
-	ASSERT_CL(equal(1.0f, blockOutput.get()));
+	ಖಂಡ_Output_2.update(2.0f);
+	ASSERT_CL(equal(1.0f, ಖಂಡ_Output_2.get()));
 	// test trim
-	blockOutput.update(0.0f);
-	ASSERT_CL(equal(0.5f, blockOutput.get()));
-	printf("PASS\n");
-	return 0;
+	ಖಂಡ_Output_2.update(0.0f);
+	ASSERT_CL(equal(0.5f, ಖಂಡ_Output_2.get()));
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockRandUniformTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Rand_ಏಕರೂಪ_Test()
 {
 	srand(1234);
-	printf("Test BlockRandUniform\t\t: ");
-	BlockRandUniform blockRandUniform(NULL, "TEST");
+	ಬರೆ("Test BlockRandUniform\t\t: ");
+	ಖಂಡ_Rand_ಏಕರೂಪ ಖಂಡ_Rand_ಏಕರೂಪ_2(ಖಾಲಿ, "TEST");
 	// test initial state
-	ASSERT_CL(equal(0.0f, blockRandUniform.getDt()));
-	ASSERT_CL(equal(-1.0f, blockRandUniform.getMin()));
-	ASSERT_CL(equal(1.0f, blockRandUniform.getMax()));
+	ASSERT_CL(equal(0.0f, ಖಂಡ_Rand_ಏಕರೂಪ_2.getDt()));
+	ASSERT_CL(equal(-1.0f, ಖಂಡ_Rand_ಏಕರೂಪ_2.getMin()));
+	ASSERT_CL(equal(1.0f, ಖಂಡ_Rand_ಏಕರೂಪ_2.getMax()));
 	// test update
-	int n = 10000;
-	float mean = blockRandUniform.update();
+	ಪೂರ್ಣಾಂಕ n = 10000;
+	ದಶಮಾಂಶ ಸರಾಸರಿ = ಖಂಡ_Rand_ಏಕರೂಪ_2.update();
 
-	for (int i = 2; i < n + 1; i++) {
-		float val = blockRandUniform.update();
-		mean += (val - mean) / i;
-		ASSERT_CL(less_than_or_equal(val, blockRandUniform.getMax()));
-		ASSERT_CL(greater_than_or_equal(val, blockRandUniform.getMin()));
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 2; i < n + 1; i++) {
+		ದಶಮಾಂಶ val = ಖಂಡ_Rand_ಏಕರೂಪ_2.update();
+		ಸರಾಸರಿ += (val - ಸರಾಸರಿ) / i;
+		ASSERT_CL(less_than_or_equal(val, ಖಂಡ_Rand_ಏಕರೂಪ_2.getMax()));
+		ASSERT_CL(greater_than_or_equal(val, ಖಂಡ_Rand_ಏಕರೂಪ_2.getMin()));
 	}
 
-	ASSERT_CL(equal(mean, (blockRandUniform.getMin() +
-			       blockRandUniform.getMax()) / 2, 1e-1));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(ಸರಾಸರಿ, (ಖಂಡ_Rand_ಏಕರೂಪ_2.getMin() +
+			       ಖಂಡ_Rand_ಏಕರೂಪ_2.getMax()) / 2, 1e-1));
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockRandGaussTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Rand_Gauss_Test()
 {
 	srand(1234);
-	printf("Test BlockRandGauss\t\t: ");
-	BlockRandGauss blockRandGauss(NULL, "TEST");
+	ಬರೆ("Test BlockRandGauss\t\t: ");
+	ಖಂಡ_Rand_Gauss ಖಂಡ_Rand_Gauss_2(ಖಾಲಿ, "TEST");
 	// test initial state
-	ASSERT_CL(equal(0.0f, blockRandGauss.getDt()));
-	ASSERT_CL(equal(1.0f, blockRandGauss.getMean()));
-	ASSERT_CL(equal(2.0f, blockRandGauss.getStdDev()));
+	ASSERT_CL(equal(0.0f, ಖಂಡ_Rand_Gauss_2.getDt()));
+	ASSERT_CL(equal(1.0f, ಖಂಡ_Rand_Gauss_2.get_ಸರಾಸರಿ()));
+	ASSERT_CL(equal(2.0f, ಖಂಡ_Rand_Gauss_2.getStdDev()));
 	// test update
-	int n = 10000;
-	float mean = blockRandGauss.update();
-	float sum = 0;
+	ಪೂರ್ಣಾಂಕ n = 10000;
+	ದಶಮಾಂಶ ಸರಾಸರಿ = ಖಂಡ_Rand_Gauss_2.update();
+	ದಶಮಾಂಶ ಮೊತ್ತ = 0;
 
 	// recursive mean, stdev algorithm from Knuth
-	for (int i = 2; i < n + 1; i++) {
-		float val = blockRandGauss.update();
-		float newMean = mean + (val - mean) / i;
-		sum += (val - mean) * (val - newMean);
-		mean = newMean;
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 2; i < n + 1; i++) {
+		ದಶಮಾಂಶ val = ಖಂಡ_Rand_Gauss_2.update();
+		ದಶಮಾಂಶ new_ಸರಾಸರಿ = ಸರಾಸರಿ + (val - ಸರಾಸರಿ) / i;
+		ಮೊತ್ತ += (val - ಸರಾಸರಿ) * (val - new_ಸರಾಸರಿ);
+		ಸರಾಸರಿ = new_ಸರಾಸರಿ;
 	}
 
-	float stdDev = sqrt(sum / (n - 1));
-	(void)(stdDev);
-	ASSERT_CL(equal(mean, blockRandGauss.getMean(), 1e-1));
-	ASSERT_CL(equal(stdDev, blockRandGauss.getStdDev(), 1e-1));
-	printf("PASS\n");
-	return 0;
+	ದಶಮಾಂಶ stdDev = ವರ್ಗಮೂಲ(ಮೊತ್ತ / (n - 1));
+	(ಶೂನ್ಯ)(stdDev);
+	ASSERT_CL(equal(ಸರಾಸರಿ, ಖಂಡ_Rand_Gauss_2.get_ಸರಾಸರಿ(), 1e-1));
+	ASSERT_CL(equal(stdDev, ಖಂಡ_Rand_Gauss_2.getStdDev(), 1e-1));
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockStatsTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Stats_Test()
 {
-	printf("Test BlockStats\t\t\t: ");
-	BlockStats<float, 1> stats(NULL, "TEST");
-	ASSERT_CL(equal(0.0f, stats.getMean()(0)));
+	ಬರೆ("Test BlockStats\t\t\t: ");
+	ಖಂಡ_Stats<ದಶಮಾಂಶ, 1> stats(ಖಾಲಿ, "TEST");
+	ASSERT_CL(equal(0.0f, stats.get_ಸರಾಸರಿ()(0)));
 	ASSERT_CL(equal(0.0f, stats.getStdDev()(0)));
-	stats.update(matrix::Scalar<float>(1.0f));
-	stats.update(matrix::Scalar<float>(2));
-	ASSERT_CL(equal(1.5f, stats.getMean()(0)));
+	stats.update(ಮಾತೃಕೆ::Scalar<ದಶಮಾಂಶ>(1.0f));
+	stats.update(ಮಾತೃಕೆ::Scalar<ದಶಮಾಂಶ>(2));
+	ASSERT_CL(equal(1.5f, stats.get_ಸರಾಸರಿ()(0)));
 	ASSERT_CL(equal(0.5f, stats.getStdDev()(0)));
 	stats.reset();
-	ASSERT_CL(equal(0.0f, stats.getMean()(0)));
+	ASSERT_CL(equal(0.0f, stats.get_ಸರಾಸರಿ()(0)));
 	ASSERT_CL(equal(0.0f, stats.getStdDev()(0)));
-	printf("PASS\n");
-	return 0;
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int blockDelayTest()
+ಪೂರ್ಣಾಂಕ ಖಂಡ_Delay_Test()
 {
-	printf("Test BlockDelay\t\t\t: ");
-	using namespace matrix;
-	BlockDelay<float, 2, 1, 3> delay(NULL, "TEST");
+	ಬರೆ("Test BlockDelay\t\t\t: ");
+	ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
+	ಖಂಡ_Delay<ದಶಮಾಂಶ, 2, 1, 3> delay(ಖಾಲಿ, "TEST");
 	Vector2f u1(1, 2);
 	Vector2f y1 = delay.update(u1);
 	ASSERT_CL(equal(y1(0), u1(0)));
@@ -523,8 +523,8 @@ int blockDelayTest()
 	Vector2f y4 = delay.update(u4);
 	ASSERT_CL(equal(y4(0), u2(0)));
 	ASSERT_CL(equal(y4(1), u2(1)));
-	printf("PASS\n");
-	return 0;
+	ಬರೆ("PASS\n");
+	ಹಿಂತಿರುಗಿ 0;
 }
 
 } // namespace control

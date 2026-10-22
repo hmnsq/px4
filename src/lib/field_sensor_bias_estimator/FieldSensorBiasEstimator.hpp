@@ -46,20 +46,20 @@
  * http://www.roboticsproceedings.org/rss09/p50.pdf
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <matrix/matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <matrix/matrix/math.hpp>
 
-class FieldSensorBiasEstimator
+ವರ್ಗ ಕ್ಷೇತ್ರ_Sensor_Bias_Estimator
 {
-public:
-	FieldSensorBiasEstimator() = default;
-	~FieldSensorBiasEstimator() = default;
+ಸಾರ್ವಜನಿಕ:
+	ಕ್ಷೇತ್ರ_Sensor_Bias_Estimator() = ಪೂರ್ವನಿಯೋಜಿತ;
+	~ಕ್ಷೇತ್ರ_Sensor_Bias_Estimator() = ಪೂರ್ವನಿಯೋಜಿತ;
 
 	// Set initial states
-	void setField(const matrix::Vector3f &field) { _field_prev = field; }
-	void setBias(const matrix::Vector3f &bias) { _state_bias = bias; }
-	void setLearningGain(float learning_gain) { _learning_gain = learning_gain; }
+	ಶೂನ್ಯ ಗಣ_ಕ್ಷೇತ್ರ(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &ಕ್ಷೇತ್ರ) { ಕ್ಷೇತ್ರ_prev = ಕ್ಷೇತ್ರ; }
+	ಶೂನ್ಯ ಗಣ_Bias(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &bias) { _state_bias = bias; }
+	ಶೂನ್ಯ ಗಣ_Learning_Gain(ದಶಮಾಂಶ learning_gain) { _learning_gain = learning_gain; }
 
 	/**
 	 * Update the estimator and extract updated biases.
@@ -67,20 +67,20 @@ public:
 	 * @param field biased field sensor data
 	 * @param dt time in seconds since the last update
 	 */
-	void updateEstimate(const matrix::Vector3f &gyro, const matrix::Vector3f &field, const float dt)
+	ಶೂನ್ಯ updateEstimate(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &gyro, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &ಕ್ಷೇತ್ರ, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ dt)
 	{
-		const matrix::Vector3f field_pred = _field_prev + (-gyro % (_field_prev - _state_bias)) * dt;
-		const matrix::Vector3f field_innov = field - field_pred;
-		_state_bias += _learning_gain * (-gyro % field_innov) * dt;
-		_field_prev = field;
+		ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f ಕ್ಷೇತ್ರ_pred = ಕ್ಷೇತ್ರ_prev + (-gyro % (ಕ್ಷೇತ್ರ_prev - _state_bias)) * dt;
+		ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f ಕ್ಷೇತ್ರ_innov = ಕ್ಷೇತ್ರ - ಕ್ಷೇತ್ರ_pred;
+		_state_bias += _learning_gain * (-gyro % ಕ್ಷೇತ್ರ_innov) * dt;
+		ಕ್ಷೇತ್ರ_prev = ಕ್ಷೇತ್ರ;
 	}
 
-	const matrix::Vector3f &getField() { return _field_prev; }
-	const matrix::Vector3f &getBias() { return _state_bias; }
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &get_ಕ್ಷೇತ್ರ() { ಹಿಂತಿರುಗಿ ಕ್ಷೇತ್ರ_prev; }
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &getBias() { ಹಿಂತಿರುಗಿ _state_bias; }
 
-private:
-	// states
-	matrix::Vector3f _field_prev{};
-	matrix::Vector3f _state_bias{};
-	float _learning_gain{20.f};
+ಖಾಸಗಿ:
+	//ಸ್ಥಿತಿಗಳು
+	ಮಾತೃಕೆ::Vector3f ಕ್ಷೇತ್ರ_prev{};
+	ಮಾತೃಕೆ::Vector3f _state_bias{};
+	ದಶಮಾಂಶ _learning_gain{20.f};
 };

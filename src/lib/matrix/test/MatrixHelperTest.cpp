@@ -31,12 +31,12 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-TEST(MatrixHelperTest, SignFloat)
+TEST(ಮಾತೃಕೆ_Helper_Test, SignFloat)
 {
 	EXPECT_FLOAT_EQ(sign(-100.f), -1.f);
 	EXPECT_FLOAT_EQ(sign(-FLT_EPSILON), -1.f);
@@ -45,7 +45,7 @@ TEST(MatrixHelperTest, SignFloat)
 	EXPECT_FLOAT_EQ(sign(100.f), 1.f);
 }
 
-TEST(MatrixHelperTest, SignInt)
+TEST(ಮಾತೃಕೆ_Helper_Test, SignInt)
 {
 	EXPECT_FLOAT_EQ(sign(-100), -1);
 	EXPECT_FLOAT_EQ(sign(-1), -1);
@@ -54,7 +54,7 @@ TEST(MatrixHelperTest, SignInt)
 	EXPECT_FLOAT_EQ(sign(100), 1);
 }
 
-TEST(MatrixHelperTest, Helper)
+TEST(ಮಾತೃಕೆ_Helper_Test, Helper)
 {
 	// general wraps
 	EXPECT_FLOAT_EQ(wrap(4., 0., 10.), 4.);

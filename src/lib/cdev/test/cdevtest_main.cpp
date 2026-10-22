@@ -37,20 +37,20 @@
  *
  * @author Mark Charlebois <charlebm@gmail.com>
  */
-#include "cdevtest_example.h"
+#ಅನ್ತರ್ಭಾವ "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/init.h>
-#include <stdio.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/app.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/init.h>
+#ಅನ್ತರ್ಭಾವ <stdio.h>
 
-int PX4_MAIN(int argc, char **argv)
+ಪೂರ್ಣಾಂಕ PX4_MAIN(ಪೂರ್ಣಾಂಕ argc, ಅಕ್ಷರ **argv)
 {
 	px4::init(argc, argv, "cdevtest");
 
-	printf("cdevtest\n");
+	ಬರೆ("cdevtest\n");
 	CDevExample cdevtest;
-	cdevtest.main();
+	cdevtest.ಮುಖ್ಯ();
 
-	printf("goodbye\n");
-	return 0;
+	ಬರೆ("goodbye\n");
+	ಹಿಂತಿರುಗಿ 0;
 }

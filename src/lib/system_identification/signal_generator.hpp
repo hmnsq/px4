@@ -35,32 +35,32 @@
  * @file signal_generator.hpp
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-namespace signal_generator
+ನಾಮಾಕಾಶ signal_generator
 {
 
-inline float getLinearSineSweep(float f_start, float f_end, float duration, float t)
+ಸಾಲೊಳಗೆ ದಶಮಾಂಶ get_ರೇಖೀಯ_Sine_Sweep(ದಶಮಾಂಶ f_ಆರಂಭ, ದಶಮಾಂಶ f_ಕೊನೆ, ದಶಮಾಂಶ duration, ದಶಮಾಂಶ t)
 {
-	if (t > duration) {
-		return 0.f;
+	ಆದರೆ (t > duration) {
+		ಹಿಂತಿರುಗಿ 0.f;
 	}
 
-	const float w_start = f_start * M_TWOPI_F;
-	const float w_end = f_end * M_TWOPI_F;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ w_ಆರಂಭ = f_ಆರಂಭ * M_TWOPI_F;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ w_ಕೊನೆ = f_ಕೊನೆ * M_TWOPI_F;
 
-	return sinf(w_start * t + 0.5f * (w_end - w_start) * t * t / duration);
+	ಹಿಂತಿರುಗಿ sinf(w_ಆರಂಭ * t + 0.5f * (w_ಕೊನೆ - w_ಆರಂಭ) * t * t / duration);
 }
 
-inline float getLogSineSweep(float f_start, float f_end, float duration, float t)
+ಸಾಲೊಳಗೆ ದಶಮಾಂಶ getLogSineSweep(ದಶಮಾಂಶ f_ಆರಂಭ, ದಶಮಾಂಶ f_ಕೊನೆ, ದಶಮಾಂಶ duration, ದಶಮಾಂಶ t)
 {
-	if (t > duration) {
-		return 0.f;
+	ಆದರೆ (t > duration) {
+		ಹಿಂತಿರುಗಿ 0.f;
 	}
 
-	const float f_ratio = f_end / fmaxf(f_start, 0.1f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ f_ಅನುಪಾತ = f_ಕೊನೆ / fmaxf(f_ಆರಂಭ, 0.1f);
 
-	return sinf(M_TWOPI_F * f_start * duration * (powf(f_ratio, t / duration) - 1.f) / logf(f_ratio));
+	ಹಿಂತಿರುಗಿ sinf(M_TWOPI_F * f_ಆರಂಭ * duration * (powf(f_ಅನುಪಾತ, t / duration) - 1.f) / logf(f_ಅನುಪಾತ));
 }
 
 } /* namespace signal_generator */

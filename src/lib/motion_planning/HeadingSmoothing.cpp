@@ -31,30 +31,30 @@
  *
  ****************************************************************************/
 
-#include "HeadingSmoothing.hpp"
+#ಅನ್ತರ್ಭಾವ "HeadingSmoothing.hpp"
 
 HeadingSmoothing::HeadingSmoothing()
 {
-	_velocity_smoothing.setMaxVel(M_TWOPI_F); // "velocity" is heading. 2Pi limit is needed for correct angle wrapping
+	_velocity_smoothing.ಗಣ_Max_Vel(M_TWOPI_F); // "velocity" is heading. 2Pi limit is needed for correct angle wrapping
 }
 
-void HeadingSmoothing::reset(const float heading, const float heading_rate)
+ಶೂನ್ಯ HeadingSmoothing::reset(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_ದರ)
 {
-	_velocity_smoothing.setCurrentVelocity(matrix::wrap_pi(heading));
+	_velocity_smoothing.ಗಣ_Current_Velocity(ಮಾತೃಕೆ::wrap_pi(heading));
 
-	if (PX4_ISFINITE(heading_rate)) {
-		_velocity_smoothing.setCurrentAcceleration(heading_rate);
+	ಆದರೆ (PX4_ISFINITE(heading_ದರ)) {
+		_velocity_smoothing.ಗಣ_Current_Acceleration(heading_ದರ);
 	}
 }
 
-void HeadingSmoothing::update(const float heading_setpoint, const float time_elapsed)
+ಶೂನ್ಯ HeadingSmoothing::update(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_setpoint, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ ಸಮಯ_elapsed)
 {
-	const float delta_heading_wrapped = matrix::wrap_pi(heading_setpoint - getSmoothedHeading());
-	const float unwrapped_heading_setpoint = delta_heading_wrapped + getSmoothedHeading();
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ delta_heading_wrapped = ಮಾತೃಕೆ::wrap_pi(heading_setpoint - getSmoothedHeading());
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ unwrapped_heading_setpoint = delta_heading_wrapped + getSmoothedHeading();
 
 	_velocity_smoothing.updateDurations(unwrapped_heading_setpoint);
-	_velocity_smoothing.updateTraj(time_elapsed);
+	_velocity_smoothing.updateTraj(ಸಮಯ_elapsed);
 
-	const float wrapped_current_heading = matrix::wrap_pi(getSmoothedHeading());
-	_velocity_smoothing.setCurrentVelocity(wrapped_current_heading);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ wrapped_current_heading = ಮಾತೃಕೆ::wrap_pi(getSmoothedHeading());
+	_velocity_smoothing.ಗಣ_Current_Velocity(wrapped_current_heading);
 }

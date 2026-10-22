@@ -40,153 +40,153 @@
  *       that is supplied.  Should we just depend on the bus knowing?
  */
 
-#include "I2C.hpp"
+#ಅನ್ತರ್ಭಾವ "I2C.hpp"
 
-#if defined(CONFIG_I2C)
+#ಆದರೆ defined(CONFIG_I2C)
 
-#ifdef __PX4_LINUX
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __PX4_LINUX
 
-#include <linux/i2c.h>
-#include <linux/i2c-dev.h>
+#ಅನ್ತರ್ಭಾವ <linux/i2c.h>
+#ಅನ್ತರ್ಭಾವ <linux/i2c-dev.h>
 
-#include <px4_platform_common/i2c_spi_buses.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/i2c_spi_buses.h>
 
-namespace device
+ನಾಮಾಕಾಶ device
 {
 
-I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency) :
-	CDev(name, nullptr)
+I2C::I2C(uint8_t device_type, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, ಸ್ಥಿರಾಂಕ ಪೂರ್ಣಾಂಕ bus, ಸ್ಥಿರಾಂಕ uint16_t ವಿಳಾಸ, ಸ್ಥಿರಾಂಕ uint32_t frequency) :
+	CDev(name, ಶೂನ್ಯಸೂಚಕ)
 {
 	// fill in _device_id fields for a I2C device
 	_device_id.devid_s.devtype = device_type;
 	_device_id.devid_s.bus_type = DeviceBusType_I2C;
 	_device_id.devid_s.bus = bus;
-	_device_id.devid_s.address = address;
+	_device_id.devid_s.ವಿಳಾಸ = ವಿಳಾಸ;
 }
 
-I2C::I2C(const I2CSPIDriverConfig &config)
-	: I2C(config.devid_driver_index, config.module_name, config.bus, config.i2c_address, config.bus_frequency)
+I2C::I2C(ಸ್ಥಿರಾಂಕ I2CSPIDriverConfig &config)
+	: I2C(config.devid_driver_ಸೂಚ್ಯಂಕ, config.module_name, config.bus, config.i2c_ವಿಳಾಸ, config.bus_frequency)
 {
-	set_external(config.external);
+	ಗಣ_external(config.external);
 }
 
 I2C::~I2C()
 {
-	if (_fd >= 0) {
+	ಆದರೆ (_fd >= 0) {
 		::close(_fd);
 		_fd = -1;
 	}
 }
 
-int
+ಪೂರ್ಣಾಂಕ
 I2C::init()
 {
-	int ret = PX4_ERROR;
+	ಪೂರ್ಣಾಂಕ ret = PX4_ERROR;
 
-	if (_fd >= 0) {
-		return PX4_OK;
+	ಆದರೆ (_fd >= 0) {
+		ಹಿಂತಿರುಗಿ PX4_OK;
 	}
 
 	// Open the actual I2C device
-	char dev_path[16] {};
-	snprintf(dev_path, sizeof(dev_path), "/dev/i2c-%i", get_device_bus());
-	_fd = ::open(dev_path, O_RDWR);
+	ಅಕ್ಷರ dev_ಮಾರ್ಗ[16] {};
+	snprintf(dev_ಮಾರ್ಗ, ಗಾತ್ರ(dev_ಮಾರ್ಗ), "/dev/i2c-%i", get_device_bus());
+	_fd = ::open(dev_ಮಾರ್ಗ, O_RDWR);
 
-	if (_fd < 0) {
+	ಆದರೆ (_fd < 0) {
 		DEVICE_DEBUG("failed to init I2C");
 		ret = -ENOENT;
-		goto out;
+		ಹೋಗು ಹೊರಹೋಗು;
 	}
 
 	// call the probe function to check whether the device is present
 	ret = probe();
 
-	if (ret != OK) {
+	ಆದರೆ (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		goto out;
+		ಹೋಗು ಹೊರಹೋಗು;
 	}
 
 	// do base class init, which will create device node, etc
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ಆದರೆ (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		goto out;
+		ಹೋಗು ಹೊರಹೋಗು;
 	}
 
 	// tell the world where we are
-	DEVICE_DEBUG("on I2C bus %d at 0x%02x", get_device_bus(), get_device_address());
+	DEVICE_DEBUG("on I2C bus %d at 0x%02x", get_device_bus(), get_device_ವಿಳಾಸ());
 
-out:
+ಹೊರಹೋಗು:
 
-	if ((ret != OK) && !(_fd < 0)) {
+	ಆದರೆ ((ret != OK) && !(_fd < 0)) {
 		::close(_fd);
 		_fd = -1;
 	}
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 }
 
-int
-I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
+ಪೂರ್ಣಾಂಕ
+I2C::transfer(ಸ್ಥಿರಾಂಕ uint8_t *send, ಸ್ಥಿರಾಂಕ ಚಿಹ್ನೆರಹಿತ send_len, uint8_t *recv, ಸ್ಥಿರಾಂಕ ಚಿಹ್ನೆರಹಿತ recv_len)
 {
-	int ret = PX4_ERROR;
-	unsigned retry_count = 0;
+	ಪೂರ್ಣಾಂಕ ret = PX4_ERROR;
+	ಚಿಹ್ನೆರಹಿತ retry_ಎಣಿಕೆ = 0;
 
-	if (_fd < 0) {
+	ಆದರೆ (_fd < 0) {
 		PX4_ERR("I2C device not opened");
-		return PX4_ERROR;
+		ಹಿಂತಿರುಗಿ PX4_ERROR;
 	}
 
-	do {
+	ಮಾಡು {
 		DEVICE_DEBUG("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
-		unsigned msgs = 0;
-		struct i2c_msg msgv[2] {};
+		ಚಿಹ್ನೆರಹಿತ msgs = 0;
+		ರಚನೆ i2c_ಸಂದೇಶ msgv[2] {};
 
-		if (send_len > 0) {
-			msgv[msgs].addr = get_device_address();
+		ಆದರೆ (send_len > 0) {
+			msgv[msgs].addr = get_device_ವಿಳಾಸ();
 			msgv[msgs].flags = 0;
 			msgv[msgs].buf = const_cast<uint8_t *>(send);
 			msgv[msgs].len = send_len;
 			msgs++;
 		}
 
-		if (recv_len > 0) {
-			msgv[msgs].addr = get_device_address();
+		ಆದರೆ (recv_len > 0) {
+			msgv[msgs].addr = get_device_ವಿಳಾಸ();
 			msgv[msgs].flags = I2C_M_RD;
 			msgv[msgs].buf = recv;
 			msgv[msgs].len = recv_len;
 			msgs++;
 		}
 
-		if (msgs == 0) {
-			return -EINVAL;
+		ಆದರೆ (msgs == 0) {
+			ಹಿಂತಿರುಗಿ -EINVAL;
 		}
 
-		i2c_rdwr_ioctl_data packets{};
+		i2c_rdwr_ioctl_ದತ್ತಾಂಶ packets{};
 		packets.msgs  = msgv;
 		packets.nmsgs = msgs;
 
-		int ret_ioctl = ::ioctl(_fd, I2C_RDWR, (unsigned long)&packets);
+		ಪೂರ್ಣಾಂಕ ret_ioctl = ::ioctl(_fd, I2C_RDWR, (ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ)&packets);
 
-		if (ret_ioctl == -1) {
+		ಆದರೆ (ret_ioctl == -1) {
 			DEVICE_DEBUG("I2C transfer failed");
 			ret = PX4_ERROR;
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			// success
 			ret = PX4_OK;
-			break;
+			ನಿಲ್ಲಿಸು;
 		}
 
-	} while (retry_count++ < _retries);
+	} ಆಗ (retry_ಎಣಿಕೆ++ < _retries);
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 }
 
 } // namespace device
 
-#endif // __PX4_LINUX
+#ಆದರೆ_ಅಂತ್ಯ // __PX4_LINUX
 
-#endif // CONFIG_I2C
+#ಆದರೆ_ಅಂತ್ಯ // CONFIG_I2C

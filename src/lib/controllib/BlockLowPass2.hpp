@@ -37,50 +37,50 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
 /**
  * A 2nd order low pass filter block which uses the default px4 2nd order low pass filter
  */
-class __EXPORT BlockLowPass2 : public Block
+ವರ್ಗ __EXPORT ಖಂಡ_ಕೆಳಗಿನ_Pass2 : ಸಾರ್ವಜನಿಕ ಖಂಡ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockLowPass2(SuperBlock *parent, const char *name, float sample_freq) :
-		Block(parent, name),
+	ಖಂಡ_ಕೆಳಗಿನ_Pass2(Super_ಖಂಡ *ಪೋಷಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, ದಶಮಾಂಶ sample_freq) :
+		ಖಂಡ(ಪೋಷಕ, name),
 		_state(0.0 / 0.0 /* initialize to invalid val, force into is_finite() check on first call */),
-		_fCut(this, ""), // only one parameter, no need to name
+		_fCut(ಇದು, ""), // only one parameter, no need to name
 		_fs(sample_freq),
 		_lp(_fs, _fCut.get())
 	{}
-	virtual ~BlockLowPass2() = default;
-	float update(float input);
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_ಕೆಳಗಿನ_Pass2() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ದಶಮಾಂಶ update(ದಶಮಾಂಶ ಒಳಹರಿವು);
 // accessors
-	float getState() { return _state; }
-	float getFCutParam() { return _fCut.get(); }
-	void setState(float state) { _state = _lp.reset(state); }
-protected:
-// attributes
-	float _state;
-	control::BlockParamFloat _fCut;
-	float _fs;
-	math::LowPassFilter2p<float> _lp;
+	ದಶಮಾಂಶ getState() { ಹಿಂತಿರುಗಿ _state; }
+	ದಶಮಾಂಶ getFCutParam() { ಹಿಂತಿರುಗಿ _fCut.get(); }
+	ಶೂನ್ಯ ಗಣ_State(ದಶಮಾಂಶ state) { _state = _lp.reset(state); }
+ಸಂರಕ್ಷಿತ:
+//ಗುಣಲಕ್ಷಣಗಳು
+	ದಶಮಾಂಶ _state;
+	control::ಖಂಡ_Param_Float _fCut;
+	ದಶಮಾಂಶ _fs;
+	math::ಕೆಳಗಿನ_Pass_Filter2p<ದಶಮಾಂಶ> _lp;
 };
 
 } // namespace control

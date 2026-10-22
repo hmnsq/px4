@@ -39,13 +39,13 @@
  * @author Lorenz Meier <lm@inf.ethz.ch>
  */
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <cmath>
-#include "st24.h"
-#include "common_rc.h"
+#ಅನ್ತರ್ಭಾವ <stdbool.h>
+#ಅನ್ತರ್ಭಾವ <stdio.h>
+#ಅನ್ತರ್ಭಾವ <cmath>
+#ಅನ್ತರ್ಭಾವ "st24.h"
+#ಅನ್ತರ್ಭಾವ "common_rc.h"
 
-const char *decode_states[] = {"UNSYNCED",
+ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *decode_ಸ್ಥಿತಿಗಳು[] = {"UNSYNCED",
 			       "GOT_STX1",
 			       "GOT_STX2",
 			       "GOT_LEN",
@@ -54,196 +54,196 @@ const char *decode_states[] = {"UNSYNCED",
 			      };
 
 /* define range mapping here, -+100% -> 1000..2000 */
-#define ST24_RANGE_MIN 500.0f
-#define ST24_RANGE_MAX 3500.0f
+#ವ್ಯಾಖ್ಯಾನಿಸು ST24_RANGE_MIN 500.0f
+#ವ್ಯಾಖ್ಯಾನಿಸು ST24_RANGE_MAX 3500.0f
 
-#define ST24_TARGET_MIN 1000.0f
-#define ST24_TARGET_MAX 2000.0f
+#ವ್ಯಾಖ್ಯಾನಿಸು ST24_ಗುರಿ_MIN 1000.0f
+#ವ್ಯಾಖ್ಯಾನಿಸು ST24_ಗುರಿ_MAX 2000.0f
 
 /* pre-calculate the floating point stuff as far as possible at compile time */
-#define ST24_SCALE_FACTOR ((ST24_TARGET_MAX - ST24_TARGET_MIN) / (ST24_RANGE_MAX - ST24_RANGE_MIN))
-#define ST24_SCALE_OFFSET (int)(ST24_TARGET_MIN - (ST24_SCALE_FACTOR * ST24_RANGE_MIN + 0.5f))
+#ವ್ಯಾಖ್ಯಾನಿಸು ST24_SCALE_ಗುಣಕ ((ST24_ಗುರಿ_MAX - ST24_ಗುರಿ_MIN) / (ST24_RANGE_MAX - ST24_RANGE_MIN))
+#ವ್ಯಾಖ್ಯಾನಿಸು ST24_SCALE_ಸ್ಥಾನಾಂತರ (ಪೂರ್ಣಾಂಕ)(ST24_ಗುರಿ_MIN - (ST24_SCALE_ಗುಣಕ * ST24_RANGE_MIN + 0.5f))
 
-static enum ST24_DECODE_STATE _decode_state = ST24_DECODE_STATE_UNSYNCED;
-static uint8_t _rxlen;
+ಸ್ಥಿರ ಎಣಿಕೆ ST24_DECODE_STATE _decode_state = ST24_DECODE_STATE_UNSYNCED;
+ಸ್ಥಿರ uint8_t _rxlen;
 
-static ReceiverFcPacket &_rxpacket = rc_decode_buf._strxpacket;
+ಸ್ಥಿರ ReceiverFcPacket &_rxpacket = rc_decode_buf._strxpacket;
 
 uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len)
 {
-	uint8_t i, crc ;
-	crc = 0;
+	uint8_t i, ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ ;
+	ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = 0;
 
-	while (len--) {
-		for (i = 0x80; i != 0; i >>= 1) {
-			if ((crc & 0x80) != 0) {
-				crc <<= 1;
-				crc ^= 0x07;
+	ಆಗ (len--) {
+		ಗಾಗಿ (i = 0x80; i != 0; i >>= 1) {
+			ಆದರೆ ((ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ & 0x80) != 0) {
+				ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ <<= 1;
+				ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ ^= 0x07;
 
-			} else {
-				crc <<= 1;
+			} ಇಲ್ಲದಿದ್ದರೆ {
+				ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ <<= 1;
 			}
 
-			if ((*ptr & i) != 0) {
-				crc ^= 0x07;
+			ಆದರೆ ((*ptr & i) != 0) {
+				ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ ^= 0x07;
 			}
 		}
 
 		ptr++;
 	}
 
-	return (crc);
+	ಹಿಂತಿರುಗಿ (ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ);
 }
 
 
-int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *channel_count, uint16_t *channels,
-		uint16_t max_chan_count)
+ಪೂರ್ಣಾಂಕ st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *ಕಳೆದುಹೋದ_ಎಣಿಕೆ, uint16_t *channel_ಎಣಿಕೆ, uint16_t *channels,
+		uint16_t max_chan_ಎಣಿಕೆ)
 {
-	int ret = 1;
+	ಪೂರ್ಣಾಂಕ ret = 1;
 
-	switch (_decode_state) {
-	case ST24_DECODE_STATE_UNSYNCED:
-		if (byte == ST24_STX1) {
+	ಆಯ್ಕೆ (_decode_state) {
+	ಸ್ಥಿತಿ ST24_DECODE_STATE_UNSYNCED:
+		ಆದರೆ (byte == ST24_STX1) {
 			_decode_state = ST24_DECODE_STATE_GOT_STX1;
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			ret = 3;
 		}
 
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case ST24_DECODE_STATE_GOT_STX1:
-		if (byte == ST24_STX2) {
+	ಸ್ಥಿತಿ ST24_DECODE_STATE_GOT_STX1:
+		ಆದರೆ (byte == ST24_STX2) {
 			_decode_state = ST24_DECODE_STATE_GOT_STX2;
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			_decode_state = ST24_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case ST24_DECODE_STATE_GOT_STX2:
+	ಸ್ಥಿತಿ ST24_DECODE_STATE_GOT_STX2:
 
 		/* ensure no data overflow failure or hack is possible */
-		if ((unsigned)byte >= sizeof(_rxpacket.type) + sizeof(_rxpacket.crc8)
-		    && (unsigned)byte <= sizeof(_rxpacket.type) + sizeof(_rxpacket.st24_data) + sizeof(_rxpacket.crc8)) {
-			_rxpacket.length = byte;
+		ಆದರೆ ((ಚಿಹ್ನೆರಹಿತ)byte >= ಗಾತ್ರ(_rxpacket.type) + ಗಾತ್ರ(_rxpacket.crc8)
+		    && (ಚಿಹ್ನೆರಹಿತ)byte <= ಗಾತ್ರ(_rxpacket.type) + ಗಾತ್ರ(_rxpacket.st24_ದತ್ತಾಂಶ) + ಗಾತ್ರ(_rxpacket.crc8)) {
+			_rxpacket.ಉದ್ದಳತೆ = byte;
 			_rxlen = 0;
 			_decode_state = ST24_DECODE_STATE_GOT_LEN;
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			_decode_state = ST24_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case ST24_DECODE_STATE_GOT_LEN:
+	ಸ್ಥಿತಿ ST24_DECODE_STATE_GOT_LEN:
 		_rxpacket.type = byte;
 		_rxlen++;
-		_decode_state = (_rxlen == (_rxpacket.length - 1)) ? ST24_DECODE_STATE_GOT_DATA : ST24_DECODE_STATE_GOT_TYPE;
-		break;
+		_decode_state = (_rxlen == (_rxpacket.ಉದ್ದಳತೆ - 1)) ? ST24_DECODE_STATE_GOT_ದತ್ತಾಂಶ : ST24_DECODE_STATE_GOT_TYPE;
+		ನಿಲ್ಲಿಸು;
 
-	case ST24_DECODE_STATE_GOT_TYPE:
-		_rxpacket.st24_data[_rxlen - 1] = byte;
+	ಸ್ಥಿತಿ ST24_DECODE_STATE_GOT_TYPE:
+		_rxpacket.st24_ದತ್ತಾಂಶ[_rxlen - 1] = byte;
 		_rxlen++;
 
-		if (_rxlen == (_rxpacket.length - 1)) {
-			_decode_state = ST24_DECODE_STATE_GOT_DATA;
+		ಆದರೆ (_rxlen == (_rxpacket.ಉದ್ದಳತೆ - 1)) {
+			_decode_state = ST24_DECODE_STATE_GOT_ದತ್ತಾಂಶ;
 		}
 
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case ST24_DECODE_STATE_GOT_DATA:
+	ಸ್ಥಿತಿ ST24_DECODE_STATE_GOT_ದತ್ತಾಂಶ:
 		_rxpacket.crc8 = byte;
 		_rxlen++;
 
-		if (st24_common_crc8((uint8_t *) & (_rxpacket.length), _rxlen) == _rxpacket.crc8) {
+		ಆದರೆ (st24_common_crc8((uint8_t *) & (_rxpacket.ಉದ್ದಳತೆ), _rxlen) == _rxpacket.crc8) {
 
 			ret = 0;
 
 			/* decode the actual packet */
 
-			switch (_rxpacket.type) {
+			ಆಯ್ಕೆ (_rxpacket.type) {
 
-			case ST24_PACKET_TYPE_CHANNELDATA12: {
-					ChannelData12 *d = (ChannelData12 *)_rxpacket.st24_data;
-
-					// Scale from 0..255 to 100%.
-					*rssi = d->rssi * (100.0f / 255.0f);
-					*lost_count = d->lost_count;
-
-					/* this can lead to rounding of the strides */
-					*channel_count = (max_chan_count < 12) ? max_chan_count : 12;
-
-					unsigned stride_count = (*channel_count * 3) / 2;
-					unsigned chan_index = 0;
-
-					for (unsigned i = 0; i < stride_count; i += 3) {
-						channels[chan_index] = ((uint16_t)d->channel[i] << 4);
-						channels[chan_index] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
-						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
-						channels[chan_index] = (uint16_t)lroundf(channels[chan_index] * ST24_SCALE_FACTOR) + ST24_SCALE_OFFSET;
-						chan_index++;
-
-						channels[chan_index] = ((uint16_t)d->channel[i + 2]);
-						channels[chan_index] |= (((uint16_t)(0x0F & d->channel[i + 1])) << 8);
-						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
-						channels[chan_index] = (uint16_t)lroundf(channels[chan_index] * ST24_SCALE_FACTOR) + ST24_SCALE_OFFSET;
-						chan_index++;
-					}
-				}
-				break;
-
-			case ST24_PACKET_TYPE_CHANNELDATA24: {
-					ChannelData24 *d = (ChannelData24 *)&_rxpacket.st24_data;
+			ಸ್ಥಿತಿ ST24_PACKET_TYPE_CHANNELDATA12: {
+					ChannelData12 *d = (ChannelData12 *)_rxpacket.st24_ದತ್ತಾಂಶ;
 
 					// Scale from 0..255 to 100%.
 					*rssi = d->rssi * (100.0f / 255.0f);
-					*lost_count = d->lost_count;
+					*ಕಳೆದುಹೋದ_ಎಣಿಕೆ = d->ಕಳೆದುಹೋದ_ಎಣಿಕೆ;
 
 					/* this can lead to rounding of the strides */
-					*channel_count = (max_chan_count < 24) ? max_chan_count : 24;
+					*channel_ಎಣಿಕೆ = (max_chan_ಎಣಿಕೆ < 12) ? max_chan_ಎಣಿಕೆ : 12;
 
-					unsigned stride_count = (*channel_count * 3) / 2;
-					unsigned chan_index = 0;
+					ಚಿಹ್ನೆರಹಿತ stride_ಎಣಿಕೆ = (*channel_ಎಣಿಕೆ * 3) / 2;
+					ಚಿಹ್ನೆರಹಿತ chan_ಸೂಚ್ಯಂಕ = 0;
 
-					for (unsigned i = 0; i < stride_count; i += 3) {
-						channels[chan_index] = ((uint16_t)d->channel[i] << 4);
-						channels[chan_index] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
+					ಗಾಗಿ (ಚಿಹ್ನೆರಹಿತ i = 0; i < stride_ಎಣಿಕೆ; i += 3) {
+						channels[chan_ಸೂಚ್ಯಂಕ] = ((uint16_t)d->channel[i] << 4);
+						channels[chan_ಸೂಚ್ಯಂಕ] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
 						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
-						channels[chan_index] = static_cast<uint16_t>(lroundf(channels[chan_index] * ST24_SCALE_FACTOR) + ST24_SCALE_OFFSET);
-						chan_index++;
+						channels[chan_ಸೂಚ್ಯಂಕ] = (uint16_t)lroundf(channels[chan_ಸೂಚ್ಯಂಕ] * ST24_SCALE_ಗುಣಕ) + ST24_SCALE_ಸ್ಥಾನಾಂತರ;
+						chan_ಸೂಚ್ಯಂಕ++;
 
-						channels[chan_index] = ((uint16_t)d->channel[i + 2]);
-						channels[chan_index] |= (((uint16_t)(0x0F & d->channel[i + 1])) << 8);
+						channels[chan_ಸೂಚ್ಯಂಕ] = ((uint16_t)d->channel[i + 2]);
+						channels[chan_ಸೂಚ್ಯಂಕ] |= (((uint16_t)(0x0F & d->channel[i + 1])) << 8);
 						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
-						channels[chan_index] = static_cast<uint16_t>(lroundf(channels[chan_index] * ST24_SCALE_FACTOR) + ST24_SCALE_OFFSET);
-						chan_index++;
+						channels[chan_ಸೂಚ್ಯಂಕ] = (uint16_t)lroundf(channels[chan_ಸೂಚ್ಯಂಕ] * ST24_SCALE_ಗುಣಕ) + ST24_SCALE_ಸ್ಥಾನಾಂತರ;
+						chan_ಸೂಚ್ಯಂಕ++;
 					}
 				}
-				break;
+				ನಿಲ್ಲಿಸು;
 
-			case ST24_PACKET_TYPE_TRANSMITTERGPSDATA: {
+			ಸ್ಥಿತಿ ST24_PACKET_TYPE_CHANNELDATA24: {
+					ChannelData24 *d = (ChannelData24 *)&_rxpacket.st24_ದತ್ತಾಂಶ;
+
+					// Scale from 0..255 to 100%.
+					*rssi = d->rssi * (100.0f / 255.0f);
+					*ಕಳೆದುಹೋದ_ಎಣಿಕೆ = d->ಕಳೆದುಹೋದ_ಎಣಿಕೆ;
+
+					/* this can lead to rounding of the strides */
+					*channel_ಎಣಿಕೆ = (max_chan_ಎಣಿಕೆ < 24) ? max_chan_ಎಣಿಕೆ : 24;
+
+					ಚಿಹ್ನೆರಹಿತ stride_ಎಣಿಕೆ = (*channel_ಎಣಿಕೆ * 3) / 2;
+					ಚಿಹ್ನೆರಹಿತ chan_ಸೂಚ್ಯಂಕ = 0;
+
+					ಗಾಗಿ (ಚಿಹ್ನೆರಹಿತ i = 0; i < stride_ಎಣಿಕೆ; i += 3) {
+						channels[chan_ಸೂಚ್ಯಂಕ] = ((uint16_t)d->channel[i] << 4);
+						channels[chan_ಸೂಚ್ಯಂಕ] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
+						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
+						channels[chan_ಸೂಚ್ಯಂಕ] = static_cast<uint16_t>(lroundf(channels[chan_ಸೂಚ್ಯಂಕ] * ST24_SCALE_ಗುಣಕ) + ST24_SCALE_ಸ್ಥಾನಾಂತರ);
+						chan_ಸೂಚ್ಯಂಕ++;
+
+						channels[chan_ಸೂಚ್ಯಂಕ] = ((uint16_t)d->channel[i + 2]);
+						channels[chan_ಸೂಚ್ಯಂಕ] |= (((uint16_t)(0x0F & d->channel[i + 1])) << 8);
+						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
+						channels[chan_ಸೂಚ್ಯಂಕ] = static_cast<uint16_t>(lroundf(channels[chan_ಸೂಚ್ಯಂಕ] * ST24_SCALE_ಗುಣಕ) + ST24_SCALE_ಸ್ಥಾನಾಂತರ);
+						chan_ಸೂಚ್ಯಂಕ++;
+					}
+				}
+				ನಿಲ್ಲಿಸು;
+
+			ಸ್ಥಿತಿ ST24_PACKET_TYPE_TRANSMITTERGPSDATA: {
 
 					// ReceiverFcPacket* d = (ReceiverFcPacket*)&_rxpacket.st24_data;
 					/* we silently ignore this data for now, as it is unused */
 					ret = 5;
 				}
-				break;
+				ನಿಲ್ಲಿಸು;
 
-			default:
+			ಪೂರ್ವನಿಯೋಜಿತ:
 				ret = 2;
-				break;
+				ನಿಲ್ಲಿಸು;
 			}
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			/* decoding failed */
 			ret = 4;
 		}
 
 		_decode_state = ST24_DECODE_STATE_UNSYNCED;
-		break;
+		ನಿಲ್ಲಿಸು;
 	}
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 }

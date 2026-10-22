@@ -4,18 +4,18 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "Vector3.hpp"
+#ಅನ್ತರ್ಭಾವ "Vector3.hpp"
 
-namespace matrix
+ನಾಮಾಕಾಶ ಮಾತೃಕೆ
 {
 
-template <typename Type>
-class Euler;
+ಮಾದರಿ <ಬಗೆ_ಹೆಸರು Type>
+ವರ್ಗ Euler;
 
-template<typename Type>
-class Quaternion;
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type>
+ವರ್ಗ Quaternion;
 
 /**
  * AxisAngle class
@@ -23,33 +23,33 @@ class Quaternion;
  * The rotation between two coordinate frames is
  * described by this class.
  */
-template<typename Type>
-class AxisAngle : public Vector3<Type>
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type>
+ವರ್ಗ AxisAngle : ಸಾರ್ವಜನಿಕ Vector3<Type>
 {
-public:
-	using Matrix31 = Matrix<Type, 3, 1>;
+ಸಾರ್ವಜನಿಕ:
+	ಬಳಸಿ Matrix31 = ಮಾತೃಕೆ_2<Type, 3, 1>;
 
 	/**
 	 * Constructor from array
 	 *
 	 * @param data_ array
 	 */
-	explicit AxisAngle(const Type data_[3]) :
-		Vector3<Type>(data_)
+	ಸ್ಪಷ್ಟ AxisAngle(ಸ್ಥಿರಾಂಕ Type ದತ್ತಾಂಶ_2[3]) :
+		Vector3<Type>(ದತ್ತಾಂಶ_2)
 	{
 	}
 
 	/**
 	 * Standard constructor
 	 */
-	AxisAngle() = default;
+	AxisAngle() = ಪೂರ್ವನಿಯೋಜಿತ;
 
 	/**
 	 * Constructor from Matrix31
 	 *
 	 * @param other Matrix31 to copy
 	 */
-	AxisAngle(const Matrix31 &other) :
+	AxisAngle(ಸ್ಥಿರಾಂಕ Matrix31 &other) :
 		Vector3<Type>(other)
 	{
 	}
@@ -63,15 +63,15 @@ public:
 	 *
 	 * @param q quaternion
 	 */
-	AxisAngle(const Quaternion<Type> &q)
+	AxisAngle(ಸ್ಥಿರಾಂಕ Quaternion<Type> &q)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *ಇದು;
 		Type mag = q.imag().norm();
 
-		if (std::fabs(mag) >= Type(1e-10)) {
+		ಆದರೆ (std::fabs(mag) >= Type(1e-10)) {
 			v = q.imag() * Type(Type(2) * std::atan2(mag, q(0)) / mag);
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			v = q.imag() * Type(Type(2) * Type(sign(q(0))));
 		}
 	}
@@ -84,9 +84,9 @@ public:
 	 *
 	 * @param dcm dcm to set quaternion to
 	 */
-	AxisAngle(const Dcm<Type> &dcm)
+	AxisAngle(ಸ್ಥಿರಾಂಕ Dcm<Type> &dcm)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *ಇದು;
 		v = AxisAngle<Type>(Quaternion<Type>(dcm));
 	}
 
@@ -99,9 +99,9 @@ public:
 	 *
 	 * @param euler euler angle instance
 	 */
-	AxisAngle(const Euler<Type> &euler)
+	AxisAngle(ಸ್ಥಿರಾಂಕ Euler<Type> &euler)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *ಇದು;
 		v = AxisAngle<Type>(Quaternion<Type>(euler));
 	}
 
@@ -114,7 +114,7 @@ public:
 	 */
 	AxisAngle(Type x, Type y, Type z)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *ಇದು;
 		v(0) = x;
 		v(1) = y;
 		v(2) = z;
@@ -126,9 +126,9 @@ public:
 	 * @param axis An axis of rotation, normalized if not unit length
 	 * @param angle The amount to rotate
 	 */
-	AxisAngle(const Matrix31 &axis_, Type angle_)
+	AxisAngle(ಸ್ಥಿರಾಂಕ Matrix31 &axis_, Type angle_)
 	{
-		AxisAngle &v = *this;
+		AxisAngle &v = *ಇದು;
 		// make sure axis is a unit vector
 		Vector3<Type> a = axis_;
 		a = a.unit();
@@ -140,21 +140,21 @@ public:
 
 	Vector3<Type> axis()
 	{
-		if (Vector3<Type>::norm() > 0) {
-			return Vector3<Type>::unit();
+		ಆದರೆ (Vector3<Type>::norm() > 0) {
+			ಹಿಂತಿರುಗಿ Vector3<Type>::unit();
 
-		} else {
-			return Vector3<Type>(1, 0, 0);
+		} ಇಲ್ಲದಿದ್ದರೆ {
+			ಹಿಂತಿರುಗಿ Vector3<Type>(1, 0, 0);
 		}
 	}
 
 	Type angle()
 	{
-		return Vector3<Type>::norm();
+		ಹಿಂತಿರುಗಿ Vector3<Type>::norm();
 	}
 };
 
-using AxisAnglef = AxisAngle<float>;
-using AxisAngled = AxisAngle<double>;
+ಬಳಸಿ AxisAnglef = AxisAngle<ದಶಮಾಂಶ>;
+ಬಳಸಿ AxisAngled = AxisAngle<ದ್ವಿಗುಣ>;
 
 } // namespace matrix

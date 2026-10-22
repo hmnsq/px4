@@ -38,83 +38,83 @@
  *
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#ಅನ್ತರ್ಭಾವ <stdio.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <stdint.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
 
-namespace math
+ನಾಮಾಕಾಶ math
 {
 
-template<typename U> struct is_floating_point { static constexpr bool value = false; };
-template<> struct is_floating_point<float> { static constexpr bool value = true; };
-template<> struct is_floating_point<double> { static constexpr bool value = true; };
-template<> struct is_floating_point<long double> { static constexpr bool value = true; };
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು U> ರಚನೆ is_floating_point { ಸ್ಥಿರ constexpr ತಾರ್ಕಿಕ value = ಸುಳ್ಳು; };
+ಮಾದರಿ<> ರಚನೆ is_floating_point<ದಶಮಾಂಶ> { ಸ್ಥಿರ constexpr ತಾರ್ಕಿಕ value = ನಿಜ; };
+ಮಾದರಿ<> ರಚನೆ is_floating_point<ದ್ವಿಗುಣ> { ಸ್ಥಿರ constexpr ತಾರ್ಕಿಕ value = ನಿಜ; };
+ಮಾದರಿ<> ರಚನೆ is_floating_point<ದೀರ್ಘ ದ್ವಿಗುಣ> { ಸ್ಥಿರ constexpr ತಾರ್ಕಿಕ value = ನಿಜ; };
 
-template<typename T, int WINDOW = 3>
-class MedianFilter
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು T, ಪೂರ್ಣಾಂಕ ಕಿಟಕಿ = 3>
+ವರ್ಗ MedianFilter
 {
-public:
-	static_assert(WINDOW >= 3, "MedianFilter window size must be >= 3");
-	static_assert(WINDOW % 2, "MedianFilter window size must be odd"); // odd
+ಸಾರ್ವಜನಿಕ:
+	static_assert(ಕಿಟಕಿ >= 3, "MedianFilter window size must be >= 3");
+	static_assert(ಕಿಟಕಿ % 2, "MedianFilter window size must be odd"); // odd
 
-	MedianFilter() = default;
+	MedianFilter() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	void insert(const T &sample)
+	ಶೂನ್ಯ ಸೇರಿಸು(ಸ್ಥಿರಾಂಕ T &sample)
 	{
-		_head = (_head + 1) % WINDOW;
-		_buffer[_head] = sample;
+		ತಲೆ = (ತಲೆ + 1) % ಕಿಟಕಿ;
+		ಬಫರ್[ತಲೆ] = sample;
 	}
 
 	T median()
 	{
-		T sorted[WINDOW];
-		memcpy(sorted, _buffer, sizeof(_buffer));
-		qsort(&sorted, WINDOW, sizeof(T), cmp);
+		T sorted[ಕಿಟಕಿ];
+		ಸ್ಮರಣೆ_ನಕಲು(sorted, ಬಫರ್, ಗಾತ್ರ(ಬಫರ್));
+		qsort(&sorted, ಕಿಟಕಿ, ಗಾತ್ರ(T), cmp);
 
-		return sorted[WINDOW / 2];
+		ಹಿಂತಿರುಗಿ sorted[ಕಿಟಕಿ / 2];
 	}
 
-	T apply(const T &sample)
+	T apply(ಸ್ಥಿರಾಂಕ T &sample)
 	{
-		insert(sample);
-		return median();
+		ಸೇರಿಸು(sample);
+		ಹಿಂತಿರುಗಿ median();
 	}
 
-private:
+ಖಾಸಗಿ:
 
-	static int cmp(const void *a, const void *b)
+	ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ cmp(ಸ್ಥಿರಾಂಕ ಶೂನ್ಯ *a, ಸ್ಥಿರಾಂಕ ಶೂನ್ಯ *b)
 	{
-		const T va = *(const T *)a;
-		const T vb = *(const T *)b;
+		ಸ್ಥಿರಾಂಕ T va = *(ಸ್ಥಿರಾಂಕ T *)a;
+		ಸ್ಥಿರಾಂಕ T vb = *(ಸ್ಥಿರಾಂಕ T *)b;
 
-		if constexpr(is_floating_point<T>::value) {
-			if (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
-				return 0;
+		ಆದರೆ constexpr(is_floating_point<T>::value) {
+			ಆದರೆ (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
+				ಹಿಂತಿರುಗಿ 0;
 
-			} else if (!__builtin_isfinite(va)) {
-				return  1;
+			} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (!__builtin_isfinite(va)) {
+				ಹಿಂತಿರುಗಿ  1;
 
-			} else if (!__builtin_isfinite(vb)) {
-				return -1;
+			} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (!__builtin_isfinite(vb)) {
+				ಹಿಂತಿರುಗಿ -1;
 			}
 		}
 
-		if (va < vb) {
-			return -1;
+		ಆದರೆ (va < vb) {
+			ಹಿಂತಿರುಗಿ -1;
 		}
 
-		if (va > vb) {
-			return  1;
+		ಆದರೆ (va > vb) {
+			ಹಿಂತಿರುಗಿ  1;
 		}
 
-		return 0;
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
-	T _buffer[WINDOW] {};
-	uint8_t _head{0};
+	T ಬಫರ್[ಕಿಟಕಿ] {};
+	uint8_t ತಲೆ{0};
 };
 
 } // namespace math

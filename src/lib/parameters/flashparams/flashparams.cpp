@@ -42,36 +42,36 @@
  * foot print device.
  */
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/shutdown.h>
-#include <parameters/px4_parameters.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/log.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/posix.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/shutdown.h>
+#ಅನ್ತರ್ಭಾವ <parameters/px4_parameters.hpp>
 
-#include <string.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <errno.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
+#ಅನ್ತರ್ಭಾವ <stdbool.h>
+#ಅನ್ತರ್ಭಾವ <stdint.h>
+#ಅನ್ತರ್ಭಾವ <errno.h>
 
-#include <parameters/param.h>
+#ಅನ್ತರ್ಭಾವ <parameters/param.h>
 
-#include <lib/tinybson/tinybson.h>
-#include "flashparams.h"
-#include "flashfs.h"
-#include "../param_translation.h"
+#ಅನ್ತರ್ಭಾವ <lib/tinybson/tinybson.h>
+#ಅನ್ತರ್ಭಾವ "flashparams.h"
+#ಅನ್ತರ್ಭಾವ "flashfs.h"
+#ಅನ್ತರ್ಭಾವ "../param_translation.h"
 
-#if 0
-# define debug(fmt, args...)            do { warnx(fmt, ##args); } while(0)
-#else
-# define debug(fmt, args...)            do { } while(0)
-#endif
+#ಆದರೆ 0
+# define debug(fmt, ವಾದಗಳು...)            ಮಾಡು { warnx(fmt, ##args); } ಆಗ(0)
+#ಇಲ್ಲದಿದ್ದರೆ
+# define debug(fmt, ವಾದಗಳು...)            ಮಾಡು { } ಆಗ(0)
+#ಆದರೆ_ಅಂತ್ಯ
 
 
 /**
  * Storage for modified parameters.
  */
-struct param_wbuf_s {
-	union param_value_u     val;
+ರಚನೆ param_wbuf_s {
+	ಒಕ್ಕೂಟ param_ಮೌಲ್ಯ_u     val;
 	param_t                 param;
 };
 
@@ -96,22 +96,22 @@ struct param_wbuf_s {
  * drops those on its next save; here they stay until a compaction, and a
  * translation is only kept for a few releases. A snapshot cannot hold such a
  * record, so compacting for it does not repeat. */
-static bool log_stale;
+ಸ್ಥಿರ ತಾರ್ಕಿಕ log_stale;
 
 /* Replay failed inside a CRC-valid record. A delta appended behind it would
  * never be reached, so the next save rewrites the store. */
-static bool log_unreadable;
+ಸ್ಥಿರ ತಾರ್ಕಿಕ log_unreadable;
 
-static bool
+ಸ್ಥಿರ ತಾರ್ಕಿಕ
 any_unsaved(param_filter_func filter)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if ((filter == nullptr || filter(param)) && param_value_unsaved(param)) {
-			return true;
+	ಗಾಗಿ (param_t param = 0; param < user_config.PARAM_ಎಣಿಕೆ; param++) {
+		ಆದರೆ ((filter == ಶೂನ್ಯಸೂಚಕ || filter(param)) && param_ಮೌಲ್ಯ_unsaved(param)) {
+			ಹಿಂತಿರುಗಿ ನಿಜ;
 		}
 	}
 
-	return false;
+	ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 }
 
 /*
@@ -122,289 +122,289 @@ any_unsaved(param_filter_func filter)
  * default in force, is written as a BSON null so replay drops it, which is
  * what the file backend's "don't export defaults" gives after a reload.
  */
-static int
-encode_params(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+encode_params(bson_encoder_s *encoder, param_filter_func filter, ತಾರ್ಕಿಕ snapshot)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if (filter && !filter(param)) {
-			continue;
+	ಗಾಗಿ (param_t param = 0; param < user_config.PARAM_ಎಣಿಕೆ; param++) {
+		ಆದರೆ (filter && !filter(param)) {
+			ಮುಂದುವರಿ;
 		}
 
-		if (snapshot) {
-			if (!user_config.contains(param)) {
-				continue;
+		ಆದರೆ (snapshot) {
+			ಆದರೆ (!user_config.ಒಳಗೊಂಡಿದೆ(param)) {
+				ಮುಂದುವರಿ;
 			}
 
-		} else {
-			if (!param_value_unsaved(param)) {
-				continue;
+		} ಇಲ್ಲದಿದ್ದರೆ {
+			ಆದರೆ (!param_ಮೌಲ್ಯ_unsaved(param)) {
+				ಮುಂದುವರಿ;
 			}
 
-			if (!user_config.contains(param) || param_value_is_default(param)) {
-				if (bson_encoder_append_null(encoder, param_name(param))) {
+			ಆದರೆ (!user_config.ಒಳಗೊಂಡಿದೆ(param) || param_ಮೌಲ್ಯ_is_default(param)) {
+				ಆದರೆ (bson_encoder_append_null(encoder, param_name(param))) {
 					debug("BSON append failed for '%s'", param_name(param));
-					return -1;
+					ಹಿಂತಿರುಗಿ -1;
 				}
 
-				continue;
+				ಮುಂದುವರಿ;
 			}
 		}
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			if (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
+		ಆಯ್ಕೆ (param_type(param)) {
+		ಸ್ಥಿತಿ PARAM_TYPE_INT32:
+			ಆದರೆ (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				ಹಿಂತಿರುಗಿ -1;
 			}
 
-			break;
+			ನಿಲ್ಲಿಸು;
 
-		case PARAM_TYPE_FLOAT:
-			if (bson_encoder_append_double(encoder, param_name(param), (double)user_config.get(param).f)) {
+		ಸ್ಥಿತಿ PARAM_TYPE_FLOAT:
+			ಆದರೆ (bson_encoder_append_double(encoder, param_name(param), (ದ್ವಿಗುಣ)user_config.get(param).f)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				ಹಿಂತಿರುಗಿ -1;
 			}
 
-			break;
+			ನಿಲ್ಲಿಸು;
 
-		default:
+		ಪೂರ್ವನಿಯೋಜಿತ:
 			debug("unrecognized parameter type");
-			return -1;
+			ಹಿಂತಿರುಗಿ -1;
 		}
 	}
 
-	return 0;
+	ಹಿಂತಿರುಗಿ 0;
 }
 
 /* The caller frees bson_encoder_buf_data() whatever the result. */
-static int
-encode_document(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+encode_document(bson_encoder_s *encoder, param_filter_func filter, ತಾರ್ಕಿಕ snapshot)
 {
-	bson_encoder_init_buf(encoder, nullptr, 0);
+	bson_encoder_init_buf(encoder, ಶೂನ್ಯಸೂಚಕ, 0);
 
-	int result = encode_params(encoder, filter, snapshot);
+	ಪೂರ್ಣಾಂಕ ಫಲಿತಾಂಶ = encode_params(encoder, filter, snapshot);
 
-	if (result == 0) {
-		result = bson_encoder_fini(encoder);
+	ಆದರೆ (ಫಲಿತಾಂಶ == 0) {
+		ಫಲಿತಾಂಶ = bson_encoder_fini(encoder);
 	}
 
-	return result;
+	ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 }
 
-static int
-stage_write_buffer(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+stage_write_ಬಫರ್(bson_encoder_s *encoder, uint8_t **ಬಫರ್_2, size_t *enc_ಗಾತ್ರ)
 {
-	void *enc_buff = bson_encoder_buf_data(encoder);
-	*enc_size = bson_encoder_buf_size(encoder);
+	ಶೂನ್ಯ *enc_buff = bson_encoder_buf_ದತ್ತಾಂಶ(encoder);
+	*enc_ಗಾತ್ರ = bson_encoder_buf_ಗಾತ್ರ(encoder);
 
-	if (enc_buff == nullptr) {
-		return -ENOMEM;
+	ಆದರೆ (enc_buff == ಶೂನ್ಯಸೂಚಕ) {
+		ಹಿಂತಿರುಗಿ -ENOMEM;
 	}
 
-	size_t alloc_size = *enc_size;
-	int result = parameter_flashfs_alloc(parameters_token, buffer, &alloc_size);
+	size_t alloc_ಗಾತ್ರ = *enc_ಗಾತ್ರ;
+	ಪೂರ್ಣಾಂಕ ಫಲಿತಾಂಶ = parameter_flashfs_alloc(parameters_token, ಬಫರ್_2, &alloc_ಗಾತ್ರ);
 
-	if (result != OK) {
-		return result;
+	ಆದರೆ (ಫಲಿತಾಂಶ != OK) {
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 	}
 
-	if (alloc_size < *enc_size) {
+	ಆದರೆ (alloc_ಗಾತ್ರ < *enc_ಗಾತ್ರ) {
 		parameter_flashfs_free();
-		return -ENOMEM;
+		ಹಿಂತಿರುಗಿ -ENOMEM;
 	}
 
-	memcpy(*buffer, enc_buff, *enc_size);
-	return OK;
+	ಸ್ಮರಣೆ_ನಕಲು(*ಬಫರ್_2, enc_buff, *enc_ಗಾತ್ರ);
+	ಹಿಂತಿರುಗಿ OK;
 }
 
-static int
-commit_append(uint8_t *buffer, size_t enc_size)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+commit_append(uint8_t *ಬಫರ್_2, size_t enc_ಗಾತ್ರ)
 {
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	ಪೂರ್ಣಾಂಕ ಫಲಿತಾಂಶ = parameter_flashfs_write(parameters_token, ಬಫರ್_2, enc_ಗಾತ್ರ);
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	ಆದರೆ (ಫಲಿತಾಂಶ == (ಪೂರ್ಣಾಂಕ)enc_ಗಾತ್ರ) {
+		ಹಿಂತಿರುಗಿ OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ < 0 ? ಫಲಿತಾಂಶ : -EFBIG;
 }
 
-static int
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
 export_delta(param_filter_func filter)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, filter, false);
+	ಪೂರ್ಣಾಂಕ ಫಲಿತಾಂಶ = encode_document(&encoder, filter, ಸುಳ್ಳು);
 
-	if (result == 0) {
-		uint8_t *buffer;
-		size_t enc_size;
-		result = stage_write_buffer(&encoder, &buffer, &enc_size);
+	ಆದರೆ (ಫಲಿತಾಂಶ == 0) {
+		uint8_t *ಬಫರ್_2;
+		size_t enc_ಗಾತ್ರ;
+		ಫಲಿತಾಂಶ = stage_write_ಬಫರ್(&encoder, &ಬಫರ್_2, &enc_ಗಾತ್ರ);
 
-		if (result == OK) {
-			result = commit_append(buffer, enc_size);
+		ಆದರೆ (ಫಲಿತಾಂಶ == OK) {
+			ಫಲಿತಾಂಶ = commit_append(ಬಫರ್_2, enc_ಗಾತ್ರ);
 		}
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	ಬಿಡುಗಡೆ(bson_encoder_buf_ದತ್ತಾಂಶ(&encoder));
+	ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 }
 
 /* Everything that can fail before the erase, so a failure here leaves the
  * log untouched and still loadable. */
-static int
-stage_snapshot(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+stage_snapshot(bson_encoder_s *encoder, uint8_t **ಬಫರ್_2, size_t *enc_ಗಾತ್ರ)
 {
-	int result = stage_write_buffer(encoder, buffer, enc_size);
+	ಪೂರ್ಣಾಂಕ ಫಲಿತಾಂಶ = stage_write_ಬಫರ್(encoder, ಬಫರ್_2, enc_ಗಾತ್ರ);
 
-	if (result != OK) {
-		return result;
+	ಆದರೆ (ಫಲಿತಾಂಶ != OK) {
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 	}
 
-	if (*enc_size > parameter_flashfs_max_payload()) {
+	ಆದರೆ (*enc_ಗಾತ್ರ > parameter_flashfs_max_payload()) {
 		parameter_flashfs_free();
-		return -ENOSPC;
+		ಹಿಂತಿರುಗಿ -ENOSPC;
 	}
 
-	return OK;
+	ಹಿಂತಿರುಗಿ OK;
 }
 
-static int
-commit_snapshot(uint8_t *buffer, size_t enc_size)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+commit_snapshot(uint8_t *ಬಫರ್_2, size_t enc_ಗಾತ್ರ)
 {
-	if (parameter_flashfs_blank() != 1) {
-		int rv = parameter_flashfs_erase();
+	ಆದರೆ (parameter_flashfs_blank() != 1) {
+		ಪೂರ್ಣಾಂಕ rv = parameter_flashfs_erase();
 
-		if (rv < 0) {
+		ಆದರೆ (rv < 0) {
 			parameter_flashfs_free();
-			return rv;
+			ಹಿಂತಿರುಗಿ rv;
 		}
 	}
 
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	ಪೂರ್ಣಾಂಕ ಫಲಿತಾಂಶ = parameter_flashfs_write(parameters_token, ಬಫರ್_2, enc_ಗಾತ್ರ);
 
-	if (result != (int)enc_size && parameter_flashfs_blank() == 1) {
-		result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	ಆದರೆ (ಫಲಿತಾಂಶ != (ಪೂರ್ಣಾಂಕ)enc_ಗಾತ್ರ && parameter_flashfs_blank() == 1) {
+		ಫಲಿತಾಂಶ = parameter_flashfs_write(parameters_token, ಬಫರ್_2, enc_ಗಾತ್ರ);
 	}
 
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	ಆದರೆ (ಫಲಿತಾಂಶ == (ಪೂರ್ಣಾಂಕ)enc_ಗಾತ್ರ) {
+		ಹಿಂತಿರುಗಿ OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ < 0 ? ಫಲಿತಾಂಶ : -EFBIG;
 }
 
-static int
-compact_to_snapshot()
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+compact_ಗಮ್ಯ_snapshot()
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	ಪೂರ್ಣಾಂಕ ಫಲಿತಾಂಶ = encode_document(&encoder, ಶೂನ್ಯಸೂಚಕ, ನಿಜ);
 
-	if (result == 0) {
-		uint8_t *buffer;
-		size_t enc_size;
-		result = stage_snapshot(&encoder, &buffer, &enc_size);
+	ಆದರೆ (ಫಲಿತಾಂಶ == 0) {
+		uint8_t *ಬಫರ್_2;
+		size_t enc_ಗಾತ್ರ;
+		ಫಲಿತಾಂಶ = stage_snapshot(&encoder, &ಬಫರ್_2, &enc_ಗಾತ್ರ);
 
-		if (result == OK) {
-			result = commit_snapshot(buffer, enc_size);
+		ಆದರೆ (ಫಲಿತಾಂಶ == OK) {
+			ಫಲಿತಾಂಶ = commit_snapshot(ಬಫರ್_2, enc_ಗಾತ್ರ);
 		}
 	}
 
-	if (result == OK) {
-		log_unreadable = false;
+	ಆದರೆ (ಫಲಿತಾಂಶ == OK) {
+		log_unreadable = ಸುಳ್ಳು;
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	ಬಿಡುಗಡೆ(bson_encoder_buf_ದತ್ತಾಂಶ(&encoder));
+	ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 }
 
-static bool
-has_record(flash_file_token_t token)
+ಸ್ಥಿರ ತಾರ್ಕಿಕ
+has_ದಾಖಲೆ(flash_file_token_t token)
 {
-	uint8_t *buffer = nullptr;
-	size_t buf_size = 0;
-	return parameter_flashfs_read(token, &buffer, &buf_size) >= 0;
+	uint8_t *ಬಫರ್_2 = ಶೂನ್ಯಸೂಚಕ;
+	size_t buf_ಗಾತ್ರ = 0;
+	ಹಿಂತಿರುಗಿ parameter_flashfs_read(token, &ಬಫರ್_2, &buf_ಗಾತ್ರ) >= 0;
 }
 
-static int
-param_export_internal(param_filter_func filter)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+param_export_ಆಂತರಿಕ(param_filter_func filter)
 {
 	/* A delta only means something behind a snapshot that replays. A legacy
 	 * record still present means the boot migration did not run; replay
 	 * would take it over any delta appended behind it. */
-	if (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
-		return compact_to_snapshot();
+	ಆದರೆ (log_unreadable || has_ದಾಖಲೆ(parameters_legacy_token) || !has_ದಾಖಲೆ(parameters_token)) {
+		ಹಿಂತಿರುಗಿ compact_ಗಮ್ಯ_snapshot();
 	}
 
-	if (!any_unsaved(filter)) {
-		return 0;
+	ಆದರೆ (!any_unsaved(filter)) {
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
-	int result = export_delta(filter);
+	ಪೂರ್ಣಾಂಕ ಫಲಿತಾಂಶ = export_delta(filter);
 
-	if (result != -ENOSPC) {
-		return result;
+	ಆದರೆ (ಫಲಿತಾಂಶ != -ENOSPC) {
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 	}
 
 	/* Same-bank erase stalls the CPU for ~1 s; last resort when a single
 	 * save does not fit the tail. Compact writes the full RAM snapshot so a
 	 * filtered save cannot drop params not in the delta. */
 	PX4_WARN("flashparams: param sector full, compacting");
-	return compact_to_snapshot();
+	ಹಿಂತಿರುಗಿ compact_ಗಮ್ಯ_snapshot();
 }
 
 
-static bool
-record_is_stale(bson_node_t node)
+ಸ್ಥಿರ ತಾರ್ಕಿಕ
+ದಾಖಲೆ_is_stale(bson_ಗಂಟು_t ಗಂಟು_2)
 {
-	const param_t param = param_find_no_notification(node->name);
+	ಸ್ಥಿರಾಂಕ param_t param = param_ಕಂಡುಹಿಡಿ_no_notification(ಗಂಟು_2->name);
 
-	if (param == PARAM_INVALID) {
-		return true;
+	ಆದರೆ (param == PARAM_INVALID) {
+		ಹಿಂತಿರುಗಿ ನಿಜ;
 	}
 
-	switch (node->type) {
-	case BSON_INT32:
-		return param_type(param) != PARAM_TYPE_INT32;
+	ಆಯ್ಕೆ (ಗಂಟು_2->type) {
+	ಸ್ಥಿತಿ BSON_INT32:
+		ಹಿಂತಿರುಗಿ param_type(param) != PARAM_TYPE_INT32;
 
-	case BSON_DOUBLE:
-		return param_type(param) != PARAM_TYPE_FLOAT;
+	ಸ್ಥಿತಿ BSON_DOUBLE:
+		ಹಿಂತಿರುಗಿ param_type(param) != PARAM_TYPE_FLOAT;
 
-	default:
-		return false;
+	ಪೂರ್ವನಿಯೋಜಿತ:
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 }
 
-static int
-param_import_callback(bson_decoder_t decoder, bson_node_t node)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+param_import_callback(bson_decoder_t decoder, bson_ಗಂಟು_t ಗಂಟು_2)
 {
-	float f;
+	ದಶಮಾಂಶ f;
 	int32_t i;
-	void *v = nullptr;
-	int result = -1;
+	ಶೂನ್ಯ *v = ಶೂನ್ಯಸೂಚಕ;
+	ಪೂರ್ಣಾಂಕ ಫಲಿತಾಂಶ = -1;
 
 	/*
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	ಆದರೆ (ಗಂಟು_2->type == BSON_EOO) {
 		debug("end of parameters");
-		return 0;
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
 	/* A tombstone has no value. The decoder leaves the previous node's in
 	 * the union and the translations read it without a type check. */
-	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
+	ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ tombstone = ಗಂಟು_2->type == BSON_nullptr || ಗಂಟು_2->type == BSON_UNDEFINED;
 
-	if (!tombstone) {
-		if (record_is_stale(node)) {
-			log_stale = true;
+	ಆದರೆ (!tombstone) {
+		ಆದರೆ (ದಾಖಲೆ_is_stale(ಗಂಟು_2)) {
+			log_stale = ನಿಜ;
 		}
 
-		if (param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
-			return 1;
+		ಆದರೆ (param_modify_on_import(ಗಂಟು_2) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+			ಹಿಂತಿರುಗಿ 1;
 		}
 	}
 
@@ -412,122 +412,122 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	 * Find the parameter this node represents.  If we don't know it,
 	 * ignore the node.
 	 */
-	param_t param = param_find_no_notification(node->name);
+	param_t param = param_ಕಂಡುಹಿಡಿ_no_notification(ಗಂಟು_2->name);
 
-	if (param == PARAM_INVALID) {
-		debug("ignoring unrecognised parameter '%s'", node->name);
-		return 1;
+	ಆದರೆ (param == PARAM_INVALID) {
+		debug("ignoring unrecognised parameter '%s'", ಗಂಟು_2->name);
+		ಹಿಂತಿರುಗಿ 1;
 	}
 
 	/*
 	 * Handle setting the parameter from the node
 	 */
 
-	switch (node->type) {
-	case BSON_nullptr:
-	case BSON_UNDEFINED:
+	ಆಯ್ಕೆ (ಗಂಟು_2->type) {
+	ಸ್ಥಿತಿ BSON_nullptr:
+	ಸ್ಥಿತಿ BSON_UNDEFINED:
 		user_config.reset(param);
-		result = 1;
-		goto out;
+		ಫಲಿತಾಂಶ = 1;
+		ಹೋಗು ಹೊರಹೋಗು;
 
-	case BSON_INT32:
-		if (param_type(param) != PARAM_TYPE_INT32) {
-			PX4_WARN("unexpected type for %s", node->name);
-			result = 1; // just skip this entry
-			goto out;
+	ಸ್ಥಿತಿ BSON_INT32:
+		ಆದರೆ (param_type(param) != PARAM_TYPE_INT32) {
+			PX4_WARN("unexpected type for %s", ಗಂಟು_2->name);
+			ಫಲಿತಾಂಶ = 1; // just skip this entry
+			ಹೋಗು ಹೊರಹೋಗು;
 		}
 
-		i = node->i32;
+		i = ಗಂಟು_2->i32;
 		v = &i;
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case BSON_DOUBLE:
-		if (param_type(param) != PARAM_TYPE_FLOAT) {
-			PX4_WARN("unexpected type for %s", node->name);
-			result = 1; // just skip this entry
-			goto out;
+	ಸ್ಥಿತಿ BSON_DOUBLE:
+		ಆದರೆ (param_type(param) != PARAM_TYPE_FLOAT) {
+			PX4_WARN("unexpected type for %s", ಗಂಟು_2->name);
+			ಫಲಿತಾಂಶ = 1; // just skip this entry
+			ಹೋಗು ಹೊರಹೋಗು;
 		}
 
-		f = node->d;
+		f = ಗಂಟು_2->d;
 		v = &f;
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	default:
-		PX4_ERR("%s unrecognised node type %d", node->name, node->type);
-		result = 1; // just skip this entry
-		goto out;
+	ಪೂರ್ವನಿಯೋಜಿತ:
+		PX4_ERR("%s unrecognised node type %d", ಗಂಟು_2->name, ಗಂಟು_2->type);
+		ಫಲಿತಾಂಶ = 1; // just skip this entry
+		ಹೋಗು ಹೊರಹೋಗು;
 	}
 
-	if (param_set_external(param, v, true, true)) {
-		debug("error setting value for '%s'", node->name);
-		goto out;
+	ಆದರೆ (param_ಗಣ_external(param, v, ನಿಜ, ನಿಜ)) {
+		debug("error setting value for '%s'", ಗಂಟು_2->name);
+		ಹೋಗು ಹೊರಹೋಗು;
 	}
 
 	/* don't return zero, that means EOF */
-	result = 1;
+	ಫಲಿತಾಂಶ = 1;
 
-out:
-	return result;
+ಹೊರಹೋಗು:
+	ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 }
 
-static int
-import_one_entry(uint8_t *buffer, size_t buf_size, void *arg)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+import_one_ನಮೂದು(uint8_t *ಬಫರ್_2, size_t buf_ಗಾತ್ರ, ಶೂನ್ಯ *arg)
 {
-	int *result = static_cast<int *>(arg);
+	ಪೂರ್ಣಾಂಕ *ಫಲಿತಾಂಶ = static_cast<ಪೂರ್ಣಾಂಕ *>(arg);
 	bson_decoder_s decoder{};
 
-	if (bson_decoder_init_buf(&decoder, buffer, buf_size, param_import_callback)) {
+	ಆದರೆ (bson_decoder_init_buf(&decoder, ಬಫರ್_2, buf_ಗಾತ್ರ, param_import_callback)) {
 		debug("decoder init failed");
-		*result = -1;
-		return -1;
+		*ಫಲಿತಾಂಶ = -1;
+		ಹಿಂತಿರುಗಿ -1;
 	}
 
-	do {
-		*result = bson_decoder_next(&decoder);
+	ಮಾಡು {
+		*ಫಲಿತಾಂಶ = bson_decoder_ಮುಂದಿನ(&decoder);
 
-	} while (*result > 0);
+	} ಆಗ (*ಫಲಿತಾಂಶ > 0);
 
-	return *result < 0 ? *result : 0;
+	ಹಿಂತಿರುಗಿ *ಫಲಿತಾಂಶ < 0 ? *ಫಲಿತಾಂಶ : 0;
 }
 
-static int
-param_import_internal(bool *legacy)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+param_import_ಆಂತರಿಕ(ತಾರ್ಕಿಕ *legacy)
 {
-	int result = 0;
-	log_stale = false;
-	int n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &result);
+	ಪೂರ್ಣಾಂಕ ಫಲಿತಾಂಶ = 0;
+	log_stale = ಸುಳ್ಳು;
+	ಪೂರ್ಣಾಂಕ n = parameter_flashfs_walk(parameters_legacy_token, import_one_ನಮೂದು, &ಫಲಿತಾಂಶ);
 	*legacy = n > 0;
 
-	if (n == 0) {
-		n = parameter_flashfs_walk(parameters_token, import_one_entry, &result);
+	ಆದರೆ (n == 0) {
+		n = parameter_flashfs_walk(parameters_token, import_one_ನಮೂದು, &ಫಲಿತಾಂಶ);
 	}
 
-	if (n < 0) {
+	ಆದರೆ (n < 0) {
 		debug("flash walk failed (%d)", n);
-		log_unreadable = true;
-		return n;
+		log_unreadable = ನಿಜ;
+		ಹಿಂತಿರುಗಿ n;
 	}
 
-	if (n == 0) {
+	ಆದರೆ (n == 0) {
 		/* No valid entry found. A fully erased store is blank (first boot, or
 		 * after switching firmware): report "not yet stored" (1), matching the
 		 * convention used by param_load_default(). A store that holds data but
 		 * no valid entry (torn write, bit-rot, or foreign data) is corrupt and
 		 * must not be silently reseeded - report it so the boot recovery runs. */
-		if (parameter_flashfs_blank() == 1) {
-			return 1;
+		ಆದರೆ (parameter_flashfs_blank() == 1) {
+			ಹಿಂತಿರುಗಿ 1;
 		}
 
 		debug("flash holds data but no valid entry");
-		return -EILSEQ;
+		ಹಿಂತಿರುಗಿ -EILSEQ;
 	}
 
-	if (result < 0) {
+	ಆದರೆ (ಫಲಿತಾಂಶ < 0) {
 		debug("BSON error decoding parameters");
-		return result;
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 	}
 
-	return 0;
+	ಹಿಂತಿರುಗಿ 0;
 }
 
 /*
@@ -538,58 +538,58 @@ param_import_internal(bool *legacy)
  * the erase is an error: until then the log is intact and RAM holds what it
  * said, so the boot must not be reported as a corrupt store.
  */
-static int
-compact_after_import(bool legacy)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+compact_after_import(ತಾರ್ಕಿಕ legacy)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	ಪೂರ್ಣಾಂಕ ಫಲಿತಾಂಶ = encode_document(&encoder, ಶೂನ್ಯಸೂಚಕ, ನಿಜ);
 
-	if (result != 0) {
-		PX4_ERR("flashparams: snapshot encode failed (%d), log kept", result);
-		free(bson_encoder_buf_data(&encoder));
-		return 0;
+	ಆದರೆ (ಫಲಿತಾಂಶ != 0) {
+		PX4_ERR("flashparams: snapshot encode failed (%d), log kept", ಫಲಿತಾಂಶ);
+		ಬಿಡುಗಡೆ(bson_encoder_buf_ದತ್ತಾಂಶ(&encoder));
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
-	const size_t enc_size = bson_encoder_buf_size(&encoder);
-	int need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_size);
-	result = 0;
+	ಸ್ಥಿರಾಂಕ size_t enc_ಗಾತ್ರ = bson_encoder_buf_ಗಾತ್ರ(&encoder);
+	ಪೂರ್ಣಾಂಕ need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_ಗಾತ್ರ);
+	ಫಲಿತಾಂಶ = 0;
 
-	if (need > 0) {
-		uint8_t *buffer;
-		size_t staged_size;
-		result = stage_snapshot(&encoder, &buffer, &staged_size);
+	ಆದರೆ (need > 0) {
+		uint8_t *ಬಫರ್_2;
+		size_t staged_ಗಾತ್ರ;
+		ಫಲಿತಾಂಶ = stage_snapshot(&encoder, &ಬಫರ್_2, &staged_ಗಾತ್ರ);
 
-		if (result != OK) {
-			PX4_ERR("flashparams: cannot stage snapshot (%d), log kept", result);
-			result = 0;
+		ಆದರೆ (ಫಲಿತಾಂಶ != OK) {
+			PX4_ERR("flashparams: cannot stage snapshot (%d), log kept", ಫಲಿತಾಂಶ);
+			ಫಲಿತಾಂಶ = 0;
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			PX4_INFO("flashparams: compacting param sector%s", legacy ? " (legacy layout)" : "");
-			result = commit_snapshot(buffer, staged_size);
+			ಫಲಿತಾಂಶ = commit_snapshot(ಬಫರ್_2, staged_ಗಾತ್ರ);
 
-			if (result != OK) {
-				PX4_ERR("flashparams: compact failed (%d)", result);
+			ಆದರೆ (ಫಲಿತಾಂಶ != OK) {
+				PX4_ERR("flashparams: compact failed (%d)", ಫಲಿತಾಂಶ);
 			}
 		}
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	ಬಿಡುಗಡೆ(bson_encoder_buf_ದತ್ತಾಂಶ(&encoder));
+	ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 }
 
-int flash_param_save(param_filter_func filter)
+ಪೂರ್ಣಾಂಕ flash_param_save(param_filter_func filter)
 {
-	return param_export_internal(filter);
+	ಹಿಂತಿರುಗಿ param_export_ಆಂತರಿಕ(filter);
 }
 
-int flash_param_import()
+ಪೂರ್ಣಾಂಕ flash_param_import()
 {
-	bool legacy = false;
-	int result = param_import_internal(&legacy);
+	ತಾರ್ಕಿಕ legacy = ಸುಳ್ಳು;
+	ಪೂರ್ಣಾಂಕ ಫಲಿತಾಂಶ = param_import_ಆಂತರಿಕ(&legacy);
 
-	if (result != 0) {
-		return result;
+	ಆದರೆ (ಫಲಿತಾಂಶ != 0) {
+		ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 	}
 
-	return compact_after_import(legacy);
+	ಹಿಂತಿರುಗಿ compact_after_import(legacy);
 }

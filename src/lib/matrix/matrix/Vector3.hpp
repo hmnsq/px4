@@ -6,109 +6,109 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "Vector.hpp"
+#ಅನ್ತರ್ಭಾವ "Vector.hpp"
 
-namespace matrix
+ನಾಮಾಕಾಶ ಮಾತೃಕೆ
 {
 
-template <typename Type>
-class Dcm;
+ಮಾದರಿ <ಬಗೆ_ಹೆಸರು Type>
+ವರ್ಗ Dcm;
 
-template<typename Type>
-class Vector3 : public Vector<Type, 3>
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type>
+ವರ್ಗ Vector3 : ಸಾರ್ವಜನಿಕ ಸದಿಶ<Type, 3>
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 
-	using Matrix31 = Matrix<Type, 3, 1>;
+	ಬಳಸಿ Matrix31 = ಮಾತೃಕೆ_2<Type, 3, 1>;
 
-	Vector3() = default;
+	Vector3() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	Vector3(const Matrix31 &other) :
-		Vector<Type, 3>(other)
+	Vector3(ಸ್ಥಿರಾಂಕ Matrix31 &other) :
+		ಸದಿಶ<Type, 3>(other)
 	{
 	}
 
-	explicit Vector3(const Type data_[3]) :
-		Vector<Type, 3>(data_)
+	ಸ್ಪಷ್ಟ Vector3(ಸ್ಥಿರಾಂಕ Type ದತ್ತಾಂಶ_2[3]) :
+		ಸದಿಶ<Type, 3>(ದತ್ತಾಂಶ_2)
 	{
 	}
 
 	Vector3(Type x, Type y, Type z)
 	{
-		Vector3 &v(*this);
+		Vector3 &v(*ಇದು);
 		v(0) = x;
 		v(1) = y;
 		v(2) = z;
 	}
 
-	using base = Vector<Type, 3>;
-	using base::base;
+	ಬಳಸಿ base = ಸದಿಶ<Type, 3>;
+	ಬಳಸಿ base::base;
 
-	Vector3 cross(const Matrix31 &b) const
+	Vector3 cross(ಸ್ಥಿರಾಂಕ Matrix31 &b) ಸ್ಥಿರಾಂಕ
 	{
-		const Vector3 &a(*this);
-		return {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
+		ಸ್ಥಿರಾಂಕ Vector3 &a(*ಇದು);
+		ಹಿಂತಿರುಗಿ {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
 	}
 
 	/**
 	 * Override matrix ops so Vector3 type is returned
 	 */
 
-	inline Vector3 operator+(Vector3 other) const
+	ಸಾಲೊಳಗೆ Vector3 ಕ್ರಿಯಾಕಾರಕ+(Vector3 other) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix31::operator+(other);
+		ಹಿಂತಿರುಗಿ Matrix31::ಕ್ರಿಯಾಕಾರಕ+(other);
 	}
 
-	inline Vector3 operator+(Type scalar) const
+	ಸಾಲೊಳಗೆ Vector3 ಕ್ರಿಯಾಕಾರಕ+(Type scalar) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix31::operator+(scalar);
+		ಹಿಂತಿರುಗಿ Matrix31::ಕ್ರಿಯಾಕಾರಕ+(scalar);
 	}
 
-	inline Vector3 operator-(Vector3 other) const
+	ಸಾಲೊಳಗೆ Vector3 ಕ್ರಿಯಾಕಾರಕ-(Vector3 other) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix31::operator-(other);
+		ಹಿಂತಿರುಗಿ Matrix31::ಕ್ರಿಯಾಕಾರಕ-(other);
 	}
 
-	inline Vector3 operator-(Type scalar) const
+	ಸಾಲೊಳಗೆ Vector3 ಕ್ರಿಯಾಕಾರಕ-(Type scalar) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix31::operator-(scalar);
+		ಹಿಂತಿರುಗಿ Matrix31::ಕ್ರಿಯಾಕಾರಕ-(scalar);
 	}
 
-	inline Vector3 operator-() const
+	ಸಾಲೊಳಗೆ Vector3 ಕ್ರಿಯಾಕಾರಕ-() ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix31::operator-();
+		ಹಿಂತಿರುಗಿ Matrix31::ಕ್ರಿಯಾಕಾರಕ-();
 	}
 
-	inline Vector3 operator*(Type scalar) const
+	ಸಾಲೊಳಗೆ Vector3 ಕ್ರಿಯಾಕಾರಕ*(Type scalar) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix31::operator*(scalar);
+		ಹಿಂತಿರುಗಿ Matrix31::ಕ್ರಿಯಾಕಾರಕ*(scalar);
 	}
 
-	inline Type operator*(Vector3 b) const
+	ಸಾಲೊಳಗೆ Type ಕ್ರಿಯಾಕಾರಕ*(Vector3 b) ಸ್ಥಿರಾಂಕ
 	{
-		return Vector<Type, 3>::operator*(b);
+		ಹಿಂತಿರುಗಿ ಸದಿಶ<Type, 3>::ಕ್ರಿಯಾಕಾರಕ*(b);
 	}
 
-	inline Vector3 operator%(const Matrix31 &b) const
+	ಸಾಲೊಳಗೆ Vector3 ಕ್ರಿಯಾಕಾರಕ%(ಸ್ಥಿರಾಂಕ Matrix31 &b) ಸ್ಥಿರಾಂಕ
 	{
-		return (*this).cross(b);
+		ಹಿಂತಿರುಗಿ (*ಇದು).cross(b);
 	}
 
-	ConstSlice<Type, 2, 1, 3, 1> xy() const
+	Const_ತುಂಡು<Type, 2, 1, 3, 1> xy() ಸ್ಥಿರಾಂಕ
 	{
-		return {0, 0, this};
+		ಹಿಂತಿರುಗಿ {0, 0, ಇದು};
 	}
 
-	Slice<Type, 2, 1, 3, 1> xy()
+	ತುಂಡು_2<Type, 2, 1, 3, 1> xy()
 	{
-		return {0, 0, this};
+		ಹಿಂತಿರುಗಿ {0, 0, ಇದು};
 	}
 
-	Dcm<Type> hat() const      // inverse to Dcm.vee() operation
+	Dcm<Type> hat() ಸ್ಥಿರಾಂಕ      // inverse to Dcm.vee() operation
 	{
-		const Vector3 &v(*this);
+		ಸ್ಥಿರಾಂಕ Vector3 &v(*ಇದು);
 		Dcm<Type> A;
 		A(0, 0) = 0;
 		A(0, 1) = -v(2);
@@ -119,12 +119,12 @@ public:
 		A(2, 0) = -v(1);
 		A(2, 1) = v(0);
 		A(2, 2) = 0;
-		return A;
+		ಹಿಂತಿರುಗಿ A;
 	}
 
 };
 
-using Vector3f = Vector3<float>;
-using Vector3d = Vector3<double>;
+ಬಳಸಿ Vector3f = Vector3<ದಶಮಾಂಶ>;
+ಬಳಸಿ Vector3d = Vector3<ದ್ವಿಗುಣ>;
 
 } // namespace matrix

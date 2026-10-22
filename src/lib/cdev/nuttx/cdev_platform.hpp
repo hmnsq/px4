@@ -1,19 +1,19 @@
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <inttypes.h>
+#ಅನ್ತರ್ಭಾವ <inttypes.h>
 
-#include <nuttx/arch.h>
+#ಅನ್ತರ್ಭಾವ <nuttx/arch.h>
 
-#include <px4_platform_common/micro_hal.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/micro_hal.h>
 
-#define ATOMIC_ENTER irqstate_t flags = px4_enter_critical_section()
-#define ATOMIC_LEAVE px4_leave_critical_section(flags)
+#ವ್ಯಾಖ್ಯಾನಿಸು ATOMIC_ENTER irqstate_t flags = px4_enter_critical_section()
+#ವ್ಯಾಖ್ಯಾನಿಸು ATOMIC_LEAVE px4_leave_critical_section(flags)
 
-namespace cdev
+ನಾಮಾಕಾಶ cdev
 {
 
-using px4_file_operations_t = struct file_operations;
-using file_t = struct file;
+ಬಳಸಿ px4_file_operations_t = ರಚನೆ file_operations;
+ಬಳಸಿ file_t = ರಚನೆ file;
 
 } // namespace cdev

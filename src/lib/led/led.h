@@ -39,26 +39,26 @@
  * @author Beat Küng <beat-kueng@gmx.net>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <drivers/drv_hrt.h>
-#include <drivers/drv_led.h>
-#include <px4_platform_common/module_params.h>
-#include <lib/parameters/param.h>
-#include <lib/perf/perf_counter.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionInterval.hpp>
-#include <uORB/topics/led_control.h>
-#include <uORB/topics/parameter_update.h>
+#ಅನ್ತರ್ಭಾವ <drivers/drv_hrt.h>
+#ಅನ್ತರ್ಭಾವ <drivers/drv_led.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/module_params.h>
+#ಅನ್ತರ್ಭಾವ <lib/parameters/param.h>
+#ಅನ್ತರ್ಭಾವ <lib/perf/perf_counter.h>
+#ಅನ್ತರ್ಭಾವ <uORB/Subscription.hpp>
+#ಅನ್ತರ್ಭಾವ <uORB/SubscriptionInterval.hpp>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/led_control.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/parameter_update.h>
 
-using namespace time_literals;
+using namespace ಸಮಯ_literals;
 
-struct LedControlDataSingle {
+ರಚನೆ Led_Control_ದತ್ತಾಂಶ_Single {
 	uint8_t color{led_control_s::COLOR_OFF}; ///< one of led_control_s::COLOR_*
 	uint8_t brightness{0}; ///< brightness in [0, 255]
 };
-struct LedControlData {
-	LedControlDataSingle leds[BOARD_MAX_LEDS] {};
+ರಚನೆ Led_Control_ದತ್ತಾಂಶ {
+	Led_Control_ದತ್ತಾಂಶ_Single leds[BOARD_MAX_LEDS] {};
 };
 
 
@@ -66,21 +66,21 @@ struct LedControlData {
  ** class LedController
  * Handles the led_control topic: blinking, priorities and state updates.
  */
-class LedController : public ModuleParams
+class LedController : ಸಾರ್ವಜನಿಕ ModuleParams
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	LedController() : ModuleParams(nullptr) {}
 	~LedController() override
 	{
-		perf_free(_led_control_sub_lost_perf);
+		perf_free(led_control_sub_ಕಳೆದುಹೋದ_perf);
 	}
 
 	/**
 	 * get maximum time between two consecutive calls to update() in us.
 	 */
-	int maximum_update_interval() const
+	ಪೂರ್ಣಾಂಕ ಗರಿಷ್ಠ_update_interval() ಸ್ಥಿರಾಂಕ
 	{
-		return _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
+		ಹಿಂತಿರುಗಿ _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
 	}
 
 	/**
@@ -89,104 +89,104 @@ public:
 	 * @param control_data output structure (will always be set)
 	 * @return 1 if control_data set (state changed), 0 if control_data not changed (state did not change), <0 error otherwise
 	 */
-	int update(LedControlData &control_data);
+	ಪೂರ್ಣಾಂಕ update(Led_Control_ದತ್ತಾಂಶ &control_ದತ್ತಾಂಶ);
 
-	static constexpr int BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
-	static constexpr int BREATHE_STEPS = 64; /**< number of steps in breathe mode for a full on-off cycle */
+	ಸ್ಥಿರ constexpr ಪೂರ್ಣಾಂಕ BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
+	ಸ್ಥಿರ constexpr ಪೂರ್ಣಾಂಕ BREATHE_ಹೆಜ್ಜೆಗಳು = 64; /**< number of steps in breathe mode for a full on-off cycle */
 
-	static constexpr int BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
+	ಸ್ಥಿರ constexpr ಪೂರ್ಣಾಂಕ BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
-	static constexpr int BLINK_NORMAL_DURATION = 500 * 1000; /**< duration of half a blinking cycle
+	ಸ್ಥಿರ constexpr ಪೂರ್ಣಾಂಕ BLINK_ಸಾಮಾನ್ಯ_DURATION = 500 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
-	static constexpr int BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
+	ಸ್ಥಿರ constexpr ಪೂರ್ಣಾಂಕ BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
 
-private:
+ಖಾಸಗಿ:
 
 	/** set control_data based on current Led states */
-	inline void get_control_data(LedControlData &control_data);
+	ಸಾಲೊಳಗೆ ಶೂನ್ಯ get_control_ದತ್ತಾಂಶ(Led_Control_ದತ್ತಾಂಶ &control_ದತ್ತಾಂಶ);
 
-	struct PerPriorityData {
+	ರಚನೆ ಪ್ರತಿ_ಆದ್ಯತೆ_ದತ್ತಾಂಶ {
 		uint8_t color = 0; ///< one of led_control_s::COLOR_*
-		uint8_t mode = led_control_s::MODE_DISABLED; ///< one of led_control_s::MODE_*
-		uint8_t blink_times_left = 0; /**< how many times left to blink (MSB bit is used for infinite case).
+		uint8_t ಬಹುಲಕ = led_control_s::ಬಹುಲಕ_DISABLED; ///< one of led_control_s::MODE_*
+		uint8_t blink_times_ಎಡ = 0; /**< how many times left to blink (MSB bit is used for infinite case).
 									This limits the number of complete blink cycles to 64 (if not infinite) */
 	};
 
-	struct NextState {
+	ರಚನೆ ಮುಂದಿನ_State {
 		uint8_t color;
-		uint8_t mode;
-		uint8_t num_blinks;
-		uint8_t priority = led_control_s::MAX_PRIORITY + 1;
+		uint8_t ಬಹುಲಕ;
+		uint8_t ಅಂಕೆ_blinks;
+		uint8_t ಆದ್ಯತೆ = led_control_s::MAX_ಆದ್ಯತೆ + 1;
 
-		void set(const led_control_s &led_control)
+		ಶೂನ್ಯ ಗಣ(ಸ್ಥಿರಾಂಕ led_control_s &led_control)
 		{
 			color = led_control.color;
-			mode = led_control.mode;
-			num_blinks = led_control.num_blinks;
-			priority = led_control.priority;
+			ಬಹುಲಕ = led_control.ಬಹುಲಕ;
+			ಅಂಕೆ_blinks = led_control.ಅಂಕೆ_blinks;
+			ಆದ್ಯತೆ = led_control.ಆದ್ಯತೆ;
 
-			if (priority > led_control_s::MAX_PRIORITY) {
-				priority = led_control_s::MAX_PRIORITY;
+			ಆದರೆ (ಆದ್ಯತೆ > led_control_s::MAX_ಆದ್ಯತೆ) {
+				ಆದ್ಯತೆ = led_control_s::MAX_ಆದ್ಯತೆ;
 			}
 		}
-		void reset() { priority = led_control_s::MAX_PRIORITY + 1; }
-		bool is_valid() const { return priority != led_control_s::MAX_PRIORITY + 1; }
+		ಶೂನ್ಯ reset() { ಆದ್ಯತೆ = led_control_s::MAX_ಆದ್ಯತೆ + 1; }
+		bool is_valid() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಆದ್ಯತೆ != led_control_s::MAX_ಆದ್ಯತೆ + 1; }
 	};
 
-	struct PerLedData {
-		PerPriorityData priority[led_control_s::MAX_PRIORITY + 1];
-		uint16_t current_blinking_time = 0; ///< how long the Led was in current state (in 0.1 ms, wraps if > 6.5s)
-		NextState next_state;
+	ರಚನೆ ಪ್ರತಿ_Led_ದತ್ತಾಂಶ {
+		ಪ್ರತಿ_ಆದ್ಯತೆ_ದತ್ತಾಂಶ ಆದ್ಯತೆ[led_control_s::MAX_ಆದ್ಯತೆ + 1];
+		uint16_t current_blinking_ಸಮಯ = 0; ///< how long the Led was in current state (in 0.1 ms, wraps if > 6.5s)
+		ಮುಂದಿನ_State ಮುಂದಿನ_state;
 
-		void set(const led_control_s &led_control)
+		ಶೂನ್ಯ ಗಣ(ಸ್ಥಿರಾಂಕ led_control_s &led_control)
 		{
-			int next_priority = (int)led_control.priority;
-			priority[next_priority].color = led_control.color;
-			priority[next_priority].mode = led_control.mode;
+			ಪೂರ್ಣಾಂಕ ಮುಂದಿನ_ಆದ್ಯತೆ = (ಪೂರ್ಣಾಂಕ)led_control.ಆದ್ಯತೆ;
+			ಆದ್ಯತೆ[ಮುಂದಿನ_ಆದ್ಯತೆ].color = led_control.color;
+			ಆದ್ಯತೆ[ಮುಂದಿನ_ಆದ್ಯತೆ].ಬಹುಲಕ = led_control.ಬಹುಲಕ;
 
 			// initialise the flash counter
-			if (led_control.mode == led_control_s::MODE_FLASH) {
-				priority[next_priority].blink_times_left = led_control.num_blinks * 10;
+			ಆದರೆ (led_control.ಬಹುಲಕ == led_control_s::ಬಹುಲಕ_FLASH) {
+				ಆದ್ಯತೆ[ಮುಂದಿನ_ಆದ್ಯತೆ].blink_times_ಎಡ = led_control.ಅಂಕೆ_blinks * 10;
 
-			} else {
-				priority[next_priority].blink_times_left = led_control.num_blinks * 2;
+			} ಇಲ್ಲದಿದ್ದರೆ {
+				ಆದ್ಯತೆ[ಮುಂದಿನ_ಆದ್ಯತೆ].blink_times_ಎಡ = led_control.ಅಂಕೆ_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			ಆದರೆ (ಆದ್ಯತೆ[ಮುಂದಿನ_ಆದ್ಯತೆ].blink_times_ಎಡ == 0) {
 				// handle infinite case
-				priority[next_priority].blink_times_left = 246;
+				ಆದ್ಯತೆ[ಮುಂದಿನ_ಆದ್ಯತೆ].blink_times_ಎಡ = 246;
 			}
 		}
 
-		void apply_next_state()
+		ಶೂನ್ಯ apply_ಮುಂದಿನ_state()
 		{
-			int next_priority = (int)next_state.priority;
-			priority[next_priority].color = next_state.color;
-			priority[next_priority].mode = next_state.mode;
+			ಪೂರ್ಣಾಂಕ ಮುಂದಿನ_ಆದ್ಯತೆ = (ಪೂರ್ಣಾಂಕ)ಮುಂದಿನ_state.ಆದ್ಯತೆ;
+			ಆದ್ಯತೆ[ಮುಂದಿನ_ಆದ್ಯತೆ].color = ಮುಂದಿನ_state.color;
+			ಆದ್ಯತೆ[ಮುಂದಿನ_ಆದ್ಯತೆ].ಬಹುಲಕ = ಮುಂದಿನ_state.ಬಹುಲಕ;
 
-			if (next_state.mode == led_control_s::MODE_FLASH) {
-				priority[next_priority].blink_times_left = next_state.num_blinks * 10;
+			ಆದರೆ (ಮುಂದಿನ_state.ಬಹುಲಕ == led_control_s::ಬಹುಲಕ_FLASH) {
+				ಆದ್ಯತೆ[ಮುಂದಿನ_ಆದ್ಯತೆ].blink_times_ಎಡ = ಮುಂದಿನ_state.ಅಂಕೆ_blinks * 10;
 
-			} else {
-				priority[next_priority].blink_times_left = next_state.num_blinks * 2;
+			} ಇಲ್ಲದಿದ್ದರೆ {
+				ಆದ್ಯತೆ[ಮುಂದಿನ_ಆದ್ಯತೆ].blink_times_ಎಡ = ಮುಂದಿನ_state.ಅಂಕೆ_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			ಆದರೆ (ಆದ್ಯತೆ[ಮುಂದಿನ_ಆದ್ಯತೆ].blink_times_ಎಡ == 0) {
 				// handle infinite case
-				priority[next_priority].blink_times_left = 254;
+				ಆದ್ಯತೆ[ಮುಂದಿನ_ಆದ್ಯತೆ].blink_times_ಎಡ = 254;
 			}
 		}
 	};
 
-	PerLedData _states[BOARD_MAX_LEDS]; ///< keep current LED states
+	ಪ್ರತಿ_Led_ದತ್ತಾಂಶ ಸ್ಥಿತಿಗಳು[BOARD_MAX_LEDS]; ///< keep current LED states
 
 	uORB::Subscription _led_control_sub{ORB_ID(led_control)}; ///< uorb subscription
 	uORB::SubscriptionInterval _parameter_update_sub{ORB_ID(parameter_update), 1_s};
 
-	hrt_abstime _last_update_call{0};
+	hrt_abstime ಕೊನೆಯ_update_call{0};
 
-	perf_counter_t _led_control_sub_lost_perf{perf_alloc(PC_COUNT, MODULE_NAME": led_control message missed")};
+	perf_counter_t led_control_sub_ಕಳೆದುಹೋದ_perf{perf_alloc(PC_ಎಣಿಕೆ, MODULE_NAME": led_control message missed")};
 
 	uint8_t _max_brightness{UINT8_MAX};
 

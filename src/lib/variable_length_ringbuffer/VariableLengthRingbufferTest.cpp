@@ -31,64 +31,64 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <stdint.h>
-#include <string.h>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <stdint.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
 
 
-#include "VariableLengthRingbuffer.hpp"
+#ಅನ್ತರ್ಭಾವ "VariableLengthRingbuffer.hpp"
 
-class TempData
+ವರ್ಗ ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ
 {
-public:
-	TempData(size_t len)
+ಸಾರ್ವಜನಿಕ:
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ(size_t len)
 	{
-		_size = len;
-		_buf = new uint8_t[_size];
+		ಗಾತ್ರ_3 = len;
+		_buf = ಹೊಸ uint8_t[ಗಾತ್ರ_3];
 	}
 
-	~TempData()
+	~ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ()
 	{
-		delete[] _buf;
-		_buf = nullptr;
+		ಅಳಿಸು[] _buf;
+		_buf = ಶೂನ್ಯಸೂಚಕ;
 	}
 
-	uint8_t *buf() const
+	uint8_t *buf() ಸ್ಥಿರಾಂಕ
 	{
-		return _buf;
+		ಹಿಂತಿರುಗಿ _buf;
 	}
 
-	size_t size() const
+	size_t ಗಾತ್ರ_2() ಸ್ಥಿರಾಂಕ
 	{
-		return _size;
+		ಹಿಂತಿರುಗಿ ಗಾತ್ರ_3;
 	}
 
-	void paint(unsigned offset = 0)
+	ಶೂನ್ಯ paint(ಚಿಹ್ನೆರಹಿತ ಸ್ಥಾನಾಂತರ = 0)
 	{
-		for (size_t i = 0; i < _size; ++i) {
-			_buf[i] = (uint8_t)((i + offset) % UINT8_MAX);
+		ಗಾಗಿ (size_t i = 0; i < ಗಾತ್ರ_3; ++i) {
+			_buf[i] = (uint8_t)((i + ಸ್ಥಾನಾಂತರ) % UINT8_MAX);
 		}
 	}
 
-private:
-	uint8_t *_buf {nullptr};
-	size_t _size{0};
+ಖಾಸಗಿ:
+	uint8_t *_buf {ಶೂನ್ಯಸೂಚಕ};
+	size_t ಗಾತ್ರ_3{0};
 
 };
 
-bool operator==(const TempData &lhs, const TempData &rhs)
+ತಾರ್ಕಿಕ ಕ್ರಿಯಾಕಾರಕ==(ಸ್ಥಿರಾಂಕ ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ &lhs, ಸ್ಥಿರಾಂಕ ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ &rhs)
 {
-	if (lhs.size() != rhs.size()) {
-		return false;
+	ಆದರೆ (lhs.ಗಾತ್ರ_2() != rhs.ಗಾತ್ರ_2()) {
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 
-	return memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
+	ಹಿಂತಿರುಗಿ memcmp(lhs.buf(), rhs.buf(), lhs.ಗಾತ್ರ_2()) == 0;
 }
 
 
-TEST(VariableLengthRingbuffer, AllocateAndDeallocate)
+TEST(Variable_ಉದ್ದಳತೆ_Ringbuffer, AllocateAndDeallocate)
 {
-	VariableLengthRingbuffer buf;
+	Variable_ಉದ್ದಳತೆ_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 	buf.deallocate();
 
@@ -96,40 +96,40 @@ TEST(VariableLengthRingbuffer, AllocateAndDeallocate)
 	// The second time we forget to clean up, but we expect no leak.
 }
 
-TEST(VariableLengthRingbuffer, PushATooBigMessage)
+TEST(Variable_ಉದ್ದಳತೆ_Ringbuffer, ತಳ್ಳು_AToo_Big_ಸಂದೇಶ)
 {
-	VariableLengthRingbuffer buf;
+	Variable_ಉದ್ದಳತೆ_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{200};
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ ದತ್ತಾಂಶ{200};
 
 	// A message that doesn't fit should get rejected.
-	EXPECT_FALSE(buf.push_back(data.buf(), data.size()));
+	EXPECT_FALSE(buf.push_back(ದತ್ತಾಂಶ.buf(), ದತ್ತಾಂಶ.ಗಾತ್ರ_2()));
 }
 
-TEST(VariableLengthRingbuffer, PushAndPopOne)
+TEST(Variable_ಉದ್ದಳತೆ_Ringbuffer, ತಳ್ಳು_And_ತೆಗೆ_One)
 {
-	VariableLengthRingbuffer buf;
+	Variable_ಉದ್ದಳತೆ_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{20};
-	data.paint();
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ ದತ್ತಾಂಶ{20};
+	ದತ್ತಾಂಶ.paint();
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(ದತ್ತಾಂಶ.buf(), ದತ್ತಾಂಶ.ಗಾತ್ರ_2()));
 
 
 	// Out buffer is the same size
-	TempData out{20};
-	EXPECT_EQ(buf.pop_front(out.buf(), out.size()), 20);
-	EXPECT_EQ(data, out);
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ ಹೊರಹೋಗು{20};
+	EXPECT_EQ(buf.ತೆಗೆ_front(ಹೊರಹೋಗು.buf(), ಹೊರಹೋಗು.ಗಾತ್ರ_2()), 20);
+	EXPECT_EQ(ದತ್ತಾಂಶ, ಹೊರಹೋಗು);
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(ದತ್ತಾಂಶ.buf(), ದತ್ತಾಂಶ.ಗಾತ್ರ_2()));
 	// Out buffer is supposedly bigger
-	TempData out2{20};
-	EXPECT_EQ(buf.pop_front(out2.buf(), 21), 20);
-	EXPECT_EQ(data, out2);
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ out2{20};
+	EXPECT_EQ(buf.ತೆಗೆ_front(out2.buf(), 21), 20);
+	EXPECT_EQ(ದತ್ತಾಂಶ, out2);
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(ದತ್ತಾಂಶ.buf(), ದತ್ತಾಂಶ.ಗಾತ್ರ_2()));
 
 	// Disabled because it doesn't work reliably.
 	// For some reason the abort works when tests are filtered using TESTFILTER
@@ -141,117 +141,117 @@ TEST(VariableLengthRingbuffer, PushAndPopOne)
 	//EXPECT_DEATH(buf.pop_front(out3.buf(), out3.size()), ".*");
 }
 
-TEST(VariableLengthRingbuffer, PushAndPopSeveral)
+TEST(Variable_ಉದ್ದಳತೆ_Ringbuffer, ತಳ್ಳು_And_ತೆಗೆ_Several)
 {
-	VariableLengthRingbuffer buf;
+	Variable_ಉದ್ದಳತೆ_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{20};
-	data.paint();
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ ದತ್ತಾಂಶ{20};
+	ದತ್ತಾಂಶ.paint();
 
 	// 4 should fit
-	for (unsigned i = 0; i < 4; ++i) {
-		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	ಗಾಗಿ (ಚಿಹ್ನೆರಹಿತ i = 0; i < 4; ++i) {
+		EXPECT_TRUE(buf.push_back(ದತ್ತಾಂಶ.buf(), ದತ್ತಾಂಶ.ಗಾತ್ರ_2()));
 	}
 
 	// 5 won't because of overhead
-	EXPECT_FALSE(buf.push_back(data.buf(), data.size()));
+	EXPECT_FALSE(buf.push_back(ದತ್ತಾಂಶ.buf(), ದತ್ತಾಂಶ.ಗಾತ್ರ_2()));
 
 	// Take 4 back out
-	for (unsigned i = 0; i < 4; ++i) {
-		TempData out{20};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), data.size());
-		EXPECT_EQ(data, out);
+	ಗಾಗಿ (ಚಿಹ್ನೆರಹಿತ i = 0; i < 4; ++i) {
+		ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ ಹೊರಹೋಗು{20};
+		EXPECT_EQ(buf.ತೆಗೆ_front(ಹೊರಹೋಗು.buf(), ಹೊರಹೋಗು.ಗಾತ್ರ_2()), ದತ್ತಾಂಶ.ಗಾತ್ರ_2());
+		EXPECT_EQ(ದತ್ತಾಂಶ, ಹೊರಹೋಗು);
 	}
 
-	TempData out{20};
-	EXPECT_EQ(buf.pop_front(out.buf(), out.size()), 0);
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ ಹೊರಹೋಗು{20};
+	EXPECT_EQ(buf.ತೆಗೆ_front(ಹೊರಹೋಗು.buf(), ಹೊರಹೋಗು.ಗಾತ್ರ_2()), 0);
 }
 
-TEST(VariableLengthRingbuffer, PushAndPopSeveralVariableSize)
+TEST(Variable_ಉದ್ದಳತೆ_Ringbuffer, ತಳ್ಳು_And_ತೆಗೆ_Several_Variable_ಗಾತ್ರ)
 {
-	VariableLengthRingbuffer buf;
+	Variable_ಉದ್ದಳತೆ_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data1{50};
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ data1{50};
 	data1.paint();
-	EXPECT_TRUE(buf.push_back(data1.buf(), data1.size()));
+	EXPECT_TRUE(buf.push_back(data1.buf(), data1.ಗಾತ್ರ_2()));
 
-	TempData data2{30};
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ data2{30};
 	data2.paint(42);
-	EXPECT_TRUE(buf.push_back(data2.buf(), data2.size()));
+	EXPECT_TRUE(buf.push_back(data2.buf(), data2.ಗಾತ್ರ_2()));
 
 	// Supposedly more space
-	TempData out1{50};
-	EXPECT_EQ(buf.pop_front(out1.buf(), 100), data1.size());
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ out1{50};
+	EXPECT_EQ(buf.ತೆಗೆ_front(out1.buf(), 100), data1.ಗಾತ್ರ_2());
 	EXPECT_EQ(data1, out1);
 
-	TempData data3{50};
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ data3{50};
 	data3.paint(33);
-	EXPECT_TRUE(buf.push_back(data3.buf(), data3.size()));
+	EXPECT_TRUE(buf.push_back(data3.buf(), data3.ಗಾತ್ರ_2()));
 
 	// Supposedly more space
-	TempData out2{30};
-	EXPECT_EQ(buf.pop_front(out2.buf(), 100), data2.size());
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ out2{30};
+	EXPECT_EQ(buf.ತೆಗೆ_front(out2.buf(), 100), data2.ಗಾತ್ರ_2());
 	EXPECT_EQ(data2, out2);
 
 	// Supposedly more space
-	TempData out3{50};
-	EXPECT_EQ(buf.pop_front(out3.buf(), 100), data3.size());
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ out3{50};
+	EXPECT_EQ(buf.ತೆಗೆ_front(out3.buf(), 100), data3.ಗಾತ್ರ_2());
 	EXPECT_EQ(data3, out3);
 
-	TempData out4{100};
-	EXPECT_EQ(buf.pop_front(out4.buf(), out4.size()), 0);
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ out4{100};
+	EXPECT_EQ(buf.ತೆಗೆ_front(out4.buf(), out4.ಗಾತ್ರ_2()), 0);
 }
 
-TEST(VariableLengthRingbuffer, PushEmpty)
+TEST(Variable_ಉದ್ದಳತೆ_Ringbuffer, ತಳ್ಳು_ಖಾಲಿಗಳು)
 {
-	VariableLengthRingbuffer buf;
+	Variable_ಉದ್ದಳತೆ_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	EXPECT_FALSE(buf.push_back(nullptr, 0));
+	EXPECT_FALSE(buf.push_back(ಶೂನ್ಯಸೂಚಕ, 0));
 }
 
-TEST(VariableLengthRingbuffer, PopWithoutBuffer)
+TEST(Variable_ಉದ್ದಳತೆ_Ringbuffer, ತೆಗೆ_Without_ಬಫರ್)
 {
-	VariableLengthRingbuffer buf;
+	Variable_ಉದ್ದಳತೆ_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	EXPECT_FALSE(buf.push_back(nullptr, 0));
+	EXPECT_FALSE(buf.push_back(ಶೂನ್ಯಸೂಚಕ, 0));
 
-	TempData data{50};
-	data.paint();
+	ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ ದತ್ತಾಂಶ{50};
+	ದತ್ತಾಂಶ.paint();
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(ದತ್ತಾಂಶ.buf(), ದತ್ತಾಂಶ.ಗಾತ್ರ_2()));
 
 
-	EXPECT_EQ(buf.pop_front(nullptr, 50), 0);
+	EXPECT_EQ(buf.ತೆಗೆ_front(ಶೂನ್ಯಸೂಚಕ, 50), 0);
 }
 
-TEST(VariableLengthRingbuffer, EmptyAndNoSpaceForHeader)
+TEST(Variable_ಉದ್ದಳತೆ_Ringbuffer, ಖಾಲಿಗಳು_And_No_Space_For_ಶೀರ್ಷಿಕೆ)
 {
 	// Addressing a corner case where start and end are at the end
 	// and the same.
 
-	VariableLengthRingbuffer buf;
+	Variable_ಉದ್ದಳತೆ_Ringbuffer buf;
 	// Allocate 4+1 bytes more than the packet, 4 for the header, 1 for the start/end logic.
 	ASSERT_TRUE(buf.allocate(25));
 
 	{
-		TempData data{20};
-		data.paint();
-		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
-		TempData out{20};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-		EXPECT_EQ(data, out);
+		ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ ದತ್ತಾಂಶ{20};
+		ದತ್ತಾಂಶ.paint();
+		EXPECT_TRUE(buf.push_back(ದತ್ತಾಂಶ.buf(), ದತ್ತಾಂಶ.ಗಾತ್ರ_2()));
+		ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ ಹೊರಹೋಗು{20};
+		EXPECT_EQ(buf.ತೆಗೆ_front(ಹೊರಹೋಗು.buf(), ಹೊರಹೋಗು.ಗಾತ್ರ_2()), ಹೊರಹೋಗು.ಗಾತ್ರ_2());
+		EXPECT_EQ(ದತ್ತಾಂಶ, ಹೊರಹೋಗು);
 	}
 
 	{
-		TempData data{10};
-		data.paint();
-		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
-		TempData out{10};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-		EXPECT_EQ(data, out);
+		ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ ದತ್ತಾಂಶ{10};
+		ದತ್ತಾಂಶ.paint();
+		EXPECT_TRUE(buf.push_back(ದತ್ತಾಂಶ.buf(), ದತ್ತಾಂಶ.ಗಾತ್ರ_2()));
+		ತಾತ್ಕಾಲಿಕ_ದತ್ತಾಂಶ ಹೊರಹೋಗು{10};
+		EXPECT_EQ(buf.ತೆಗೆ_front(ಹೊರಹೋಗು.buf(), ಹೊರಹೋಗು.ಗಾತ್ರ_2()), ಹೊರಹೋಗು.ಗಾತ್ರ_2());
+		EXPECT_EQ(ದತ್ತಾಂಶ, ಹೊರಹೋಗು);
 	}
 }

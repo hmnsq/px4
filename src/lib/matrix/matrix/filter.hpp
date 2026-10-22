@@ -1,28 +1,28 @@
-#pragma once
+#ಸೂಚನೆ once
 
-#include "Scalar.hpp"
-#include "SquareMatrix.hpp"
+#ಅನ್ತರ್ಭಾವ "Scalar.hpp"
+#ಅನ್ತರ್ಭಾವ "SquareMatrix.hpp"
 
-namespace matrix
+ನಾಮಾಕಾಶ ಮಾತೃಕೆ
 {
 
-template<typename Type, size_t M, size_t N>
-int kalman_correct(
-	const Matrix<Type, M, M> &P,
-	const Matrix<Type, N, M> &C,
-	const Matrix<Type, N, N> &R,
-	const Matrix<Type, N, 1> &r,
-	Matrix<Type, M, 1> &dx,
-	Matrix<Type, M, M> &dP,
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type, size_t M, size_t N>
+ಪೂರ್ಣಾಂಕ kalman_correct(
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<Type, M, M> &P,
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<Type, N, M> &C,
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<Type, N, N> &R,
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<Type, N, 1> &r,
+	ಮಾತೃಕೆ_2<Type, M, 1> &dx,
+	ಮಾತೃಕೆ_2<Type, M, M> &dP,
 	Type &beta
 )
 {
-	SquareMatrix<Type, N> S_I = SquareMatrix<Type, N>(C * P * C.T() + R).I();
-	Matrix<Type, M, N> K = P * C.T() * S_I;
+	ವರ್ಗಫಲ_ಮಾತೃಕೆ<Type, N> S_I = ವರ್ಗಫಲ_ಮಾತೃಕೆ<Type, N>(C * P * C.T() + R).I();
+	ಮಾತೃಕೆ_2<Type, M, N> K = P * C.T() * S_I;
 	dx = K * r;
 	beta = Scalar<Type>(r.T() * S_I * r);
 	dP = K * C * P * (-1);
-	return 0;
+	ಹಿಂತಿರುಗಿ 0;
 }
 
 } // namespace matrix

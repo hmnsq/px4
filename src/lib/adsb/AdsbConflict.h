@@ -31,49 +31,49 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
 // Provides CONFIG_NAVIGATOR_ADSB_F3442 for the standard selection.
-#include <px4_boardconfig.h>
+#ಅನ್ತರ್ಭಾವ <px4_boardconfig.h>
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
-#include "f3442_standard/DaaF3442.h"
-#else
-#include "crosstrack_standard/DaaCrosstrack.h"
-#endif
+#ಆದರೆ defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#ಅನ್ತರ್ಭಾವ "f3442_standard/DaaF3442.h"
+#ಇಲ್ಲದಿದ್ದರೆ
+#ಅನ್ತರ್ಭಾವ "crosstrack_standard/DaaCrosstrack.h"
+#ಆದರೆ_ಅಂತ್ಯ
 
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-#include <uORB/topics/detect_and_avoid.h>
-#include <uORB/topics/transponder_report.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/detect_and_avoid.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/transponder_report.h>
 
-struct daa_input_s {
-	matrix::Vector2d uav_lat_lon{};
-	float uav_alt{0.f};
-	matrix::Vector3f uav_vel_ned{};
+ರಚನೆ daa_ಒಳಹರಿವು_s {
+	ಮಾತೃಕೆ::Vector2d uav_lat_lon{};
+	ದಶಮಾಂಶ uav_alt{0.f};
+	ಮಾತೃಕೆ::Vector3f uav_vel_ned{};
 	transponder_report_s transponder_report{};
 };
 
 class AdsbConflict
 {
-public:
-	AdsbConflict() = default;
-	~AdsbConflict() = default;
+ಸಾರ್ವಜನಿಕ:
+	AdsbConflict() = ಪೂರ್ವನಿಯೋಜಿತ;
+	~AdsbConflict() = ಪೂರ್ವನಿಯೋಜಿತ;
 
 	/**
 	 * @brief Validate ownship + transponder inputs and compute the DAA output.
 	 * Returns false on non-finite inputs or when the built standard needs a heading the report does not provide.
 	*/
-	bool calculate_daa_output(const daa_input_s &daa_input, detect_and_avoid_s &daa_output);
+	bool calculate_daa_output(ಸ್ಥಿರಾಂಕ daa_ಒಳಹರಿವು_s &daa_ಒಳಹರಿವು, detect_and_avoid_s &daa_output);
 
 	bool try_updating_params();
 
-	static bool valid_wgs84_coordinates(const double latitude, const double longitude);
+	ಸ್ಥಿರ bool valid_wgs84_coordinates(ಸ್ಥಿರಾಂಕ ದ್ವಿಗುಣ latitude, ಸ್ಥಿರಾಂಕ ದ್ವಿಗುಣ longitude);
 
-private:
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+ಖಾಸಗಿ:
+#ಆದರೆ defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	DaaF3442 _daa;
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
 	DaaCrosstrack _daa;
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 };

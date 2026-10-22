@@ -40,97 +40,97 @@
  *       that is supplied.  Should we just depend on the bus knowing?
  */
 
-#include "I2C.hpp"
+#ಅನ್ತರ್ಭಾವ "I2C.hpp"
 
-#if defined(CONFIG_I2C)
+#ಆದರೆ defined(CONFIG_I2C)
 
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <nuttx/i2c/i2c_master.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/i2c_spi_buses.h>
+#ಅನ್ತರ್ಭಾವ <nuttx/i2c/i2c_master.h>
 
-namespace device
+ನಾಮಾಕಾಶ device
 {
 /*
  *  N.B. By defaulting the value of _bus_clocks to non Zero
  *  All calls to init() will NOT set the buss frequency
  */
 
-unsigned int I2C::_bus_clocks[PX4_NUMBER_I2C_BUSES] = PX4_I2C_BUS_CLOCK_INIT;
+ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ I2C::_bus_clocks[PX4_ಸಂಖ್ಯೆ_I2_C_BUSES] = PX4_I2C_BUS_CLOCK_INIT;
 
-I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency) :
-	CDev(name, nullptr),
+I2C::I2C(uint8_t device_type, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, ಸ್ಥಿರಾಂಕ ಪೂರ್ಣಾಂಕ bus, ಸ್ಥಿರಾಂಕ uint16_t ವಿಳಾಸ, ಸ್ಥಿರಾಂಕ uint32_t frequency) :
+	CDev(name, ಶೂನ್ಯಸೂಚಕ),
 	_frequency(frequency)
 {
 	// fill in _device_id fields for a I2C device
 	_device_id.devid_s.devtype = device_type;
 	_device_id.devid_s.bus_type = DeviceBusType_I2C;
 	_device_id.devid_s.bus = bus;
-	_device_id.devid_s.address = address;
+	_device_id.devid_s.ವಿಳಾಸ = ವಿಳಾಸ;
 }
 
-I2C::I2C(const I2CSPIDriverConfig &config)
-	: I2C(config.devid_driver_index, config.module_name, config.bus, config.i2c_address, config.bus_frequency)
+I2C::I2C(ಸ್ಥಿರಾಂಕ I2CSPIDriverConfig &config)
+	: I2C(config.devid_driver_ಸೂಚ್ಯಂಕ, config.module_name, config.bus, config.i2c_ವಿಳಾಸ, config.bus_frequency)
 {
-	set_external(config.external);
+	ಗಣ_external(config.external);
 }
 
 I2C::~I2C()
 {
-	if (_dev) {
+	ಆದರೆ (_dev) {
 		px4_i2cbus_uninitialize(_dev);
-		_dev = nullptr;
+		_dev = ಶೂನ್ಯಸೂಚಕ;
 	}
 }
 
-int
-I2C::set_bus_clock(unsigned bus, unsigned clock_hz)
+ಪೂರ್ಣಾಂಕ
+I2C::ಗಣ_bus_clock(ಚಿಹ್ನೆರಹಿತ bus, ಚಿಹ್ನೆರಹಿತ clock_hz)
 {
-	int index = bus - 1;
+	ಪೂರ್ಣಾಂಕ ಸೂಚ್ಯಂಕ = bus - 1;
 
-	if (index < 0 || index >= static_cast<int>(sizeof(_bus_clocks) / sizeof(_bus_clocks[0]))) {
-		return -EINVAL;
+	ಆದರೆ (ಸೂಚ್ಯಂಕ < 0 || ಸೂಚ್ಯಂಕ >= static_cast<ಪೂರ್ಣಾಂಕ>(ಗಾತ್ರ(_bus_clocks) / ಗಾತ್ರ(_bus_clocks[0]))) {
+		ಹಿಂತಿರುಗಿ -EINVAL;
 	}
 
-	if (_bus_clocks[index] > 0) {
+	ಆದರೆ (_bus_clocks[ಸೂಚ್ಯಂಕ] > 0) {
 		// DEVICE_DEBUG("overriding clock of %u with %u Hz\n", _bus_clocks[index], clock_hz);
 	}
 
-	_bus_clocks[index] = clock_hz;
+	_bus_clocks[ಸೂಚ್ಯಂಕ] = clock_hz;
 
-	return OK;
+	ಹಿಂತಿರುಗಿ OK;
 }
 
-int
+ಪೂರ್ಣಾಂಕ
 I2C::init()
 {
-	int ret = PX4_ERROR;
-	unsigned bus_index;
+	ಪೂರ್ಣಾಂಕ ret = PX4_ERROR;
+	ಚಿಹ್ನೆರಹಿತ bus_ಸೂಚ್ಯಂಕ;
 
-	if (_dev != nullptr) {
-		return PX4_OK;
+	ಆದರೆ (_dev != ಶೂನ್ಯಸೂಚಕ) {
+		ಹಿಂತಿರುಗಿ PX4_OK;
 	}
 
 	// attach to the i2c bus
 	_dev = px4_i2cbus_initialize(get_device_bus());
 
-	if (_dev == nullptr) {
+	ಆದರೆ (_dev == ಶೂನ್ಯಸೂಚಕ) {
 		DEVICE_DEBUG("failed to init I2C");
 		ret = -ENOENT;
-		goto out;
+		ಹೋಗು ಹೊರಹೋಗು;
 	}
 
 	// the above call fails for a non-existing bus index,
 	// so the index math here is safe.
-	bus_index = get_device_bus() - 1;
+	bus_ಸೂಚ್ಯಂಕ = get_device_bus() - 1;
 
 	// abort if the max frequency we allow (the frequency we ask)
 	// is smaller than the bus frequency
-	if (_bus_clocks[bus_index] > _frequency) {
-		(void)px4_i2cbus_uninitialize(_dev);
-		_dev = nullptr;
+	ಆದರೆ (_bus_clocks[bus_ಸೂಚ್ಯಂಕ] > _frequency) {
+		(ಶೂನ್ಯ)px4_i2cbus_uninitialize(_dev);
+		_dev = ಶೂನ್ಯಸೂಚಕ;
 		DEVICE_LOG("FAIL: too slow for bus #%u: %u KHz, device max: %" PRIu32 " KHz)",
-			   get_device_bus(), _bus_clocks[bus_index] / 1000, _frequency / 1000);
+			   get_device_bus(), _bus_clocks[bus_ಸೂಚ್ಯಂಕ] / 1000, _frequency / 1000);
 		ret = -EINVAL;
-		goto out;
+		ಹೋಗು ಹೊರಹೋಗು;
 	}
 
 	// set frequency for this instance once to the bus speed
@@ -145,105 +145,105 @@ I2C::init()
 
 	// set the bus frequency on the first access if it has
 	// not been set yet
-	if (_bus_clocks[bus_index] == 0) {
-		_bus_clocks[bus_index] = _frequency;
+	ಆದರೆ (_bus_clocks[bus_ಸೂಚ್ಯಂಕ] == 0) {
+		_bus_clocks[bus_ಸೂಚ್ಯಂಕ] = _frequency;
 	}
 
 	// call the probe function to check whether the device is present
 	ret = probe();
 
-	if (ret != OK) {
+	ಆದರೆ (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		goto out;
+		ಹೋಗು ಹೊರಹೋಗು;
 	}
 
 	// do base class init, which will create device node, etc
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ಆದರೆ (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		goto out;
+		ಹೋಗು ಹೊರಹೋಗು;
 	}
 
 	// tell the world where we are
 	DEVICE_DEBUG("on I2C bus %d at 0x%02x (bus: %u KHz, max: %" PRIu32 " KHz)",
-		     get_device_bus(), get_device_address(), _bus_clocks[bus_index] / 1000, _frequency / 1000);
+		     get_device_bus(), get_device_ವಿಳಾಸ(), _bus_clocks[bus_ಸೂಚ್ಯಂಕ] / 1000, _frequency / 1000);
 
-out:
+ಹೊರಹೋಗು:
 
-	if ((ret != OK) && (_dev != nullptr)) {
+	ಆದರೆ ((ret != OK) && (_dev != ಶೂನ್ಯಸೂಚಕ)) {
 		px4_i2cbus_uninitialize(_dev);
-		_dev = nullptr;
+		_dev = ಶೂನ್ಯಸೂಚಕ;
 	}
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 }
 
-int
-I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
+ಪೂರ್ಣಾಂಕ
+I2C::transfer(ಸ್ಥಿರಾಂಕ uint8_t *send, ಸ್ಥಿರಾಂಕ ಚಿಹ್ನೆರಹಿತ send_len, uint8_t *recv, ಸ್ಥಿರಾಂಕ ಚಿಹ್ನೆರಹಿತ recv_len)
 {
-	int ret = PX4_ERROR;
-	unsigned retry_count = 0;
+	ಪೂರ್ಣಾಂಕ ret = PX4_ERROR;
+	ಚಿಹ್ನೆರಹಿತ retry_ಎಣಿಕೆ = 0;
 
-	if (_dev == nullptr) {
+	ಆದರೆ (_dev == ಶೂನ್ಯಸೂಚಕ) {
 		PX4_ERR("I2C device not opened");
-		return PX4_ERROR;
+		ಹಿಂತಿರುಗಿ PX4_ERROR;
 	}
 
-	do {
+	ಮಾಡು {
 		DEVICE_DEBUG("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
-		i2c_msg_s msgv[2] {};
-		unsigned msgs = 0;
+		i2c_ಸಂದೇಶ_s msgv[2] {};
+		ಚಿಹ್ನೆರಹಿತ msgs = 0;
 
-		if (send_len > 0) {
+		ಆದರೆ (send_len > 0) {
 			msgv[msgs].frequency = _bus_clocks[get_device_bus() - 1];
-			msgv[msgs].addr = get_device_address();
+			msgv[msgs].addr = get_device_ವಿಳಾಸ();
 			msgv[msgs].flags = 0;
-			msgv[msgs].buffer = const_cast<uint8_t *>(send);
-			msgv[msgs].length = send_len;
+			msgv[msgs].ಬಫರ್_2 = const_cast<uint8_t *>(send);
+			msgv[msgs].ಉದ್ದಳತೆ = send_len;
 			msgs++;
 		}
 
-		if (recv_len > 0) {
+		ಆದರೆ (recv_len > 0) {
 			msgv[msgs].frequency = _bus_clocks[get_device_bus() - 1];
-			msgv[msgs].addr = get_device_address();
+			msgv[msgs].addr = get_device_ವಿಳಾಸ();
 			msgv[msgs].flags = I2C_M_READ;
-			msgv[msgs].buffer = recv;
-			msgv[msgs].length = recv_len;
+			msgv[msgs].ಬಫರ್_2 = recv;
+			msgv[msgs].ಉದ್ದಳತೆ = recv_len;
 			msgs++;
 		}
 
-		if (msgs == 0) {
-			return -EINVAL;
+		ಆದರೆ (msgs == 0) {
+			ಹಿಂತಿರುಗಿ -EINVAL;
 		}
 
-		int ret_transfer = I2C_TRANSFER(_dev, &msgv[0], msgs);
+		ಪೂರ್ಣಾಂಕ ret_transfer = I2C_TRANSFER(_dev, &msgv[0], msgs);
 
-		if (ret_transfer != 0) {
+		ಆದರೆ (ret_transfer != 0) {
 			DEVICE_DEBUG("I2C transfer failed, result %d", ret_transfer);
 			ret = PX4_ERROR;
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			// success
 			ret = PX4_OK;
-			break;
+			ನಿಲ್ಲಿಸು;
 		}
 
 		// if we have already retried once, and we aren't going to give up, then reset the bus
-		if ((_retries > 0) && (retry_count < _retries)) {
-#if defined(CONFIG_I2C_RESET)
+		ಆದರೆ ((_retries > 0) && (retry_ಎಣಿಕೆ < _retries)) {
+#ಆದರೆ defined(CONFIG_I2C_RESET)
 			DEVICE_DEBUG("I2C bus: %d, Addr: %X, I2C_RESET %d/%d",
-				     get_device_bus(), get_device_address(), retry_count + 1, _retries);
+				     get_device_bus(), get_device_ವಿಳಾಸ(), retry_ಎಣಿಕೆ + 1, _retries);
 			I2C_RESET(_dev);
-#endif // CONFIG_I2C_RESET
+#ಆದರೆ_ಅಂತ್ಯ // CONFIG_I2C_RESET
 		}
 
-	} while (retry_count++ < _retries);
+	} ಆಗ (retry_ಎಣಿಕೆ++ < _retries);
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 }
 
 } // namespace device
 
-#endif // CONFIG_I2C
+#ಆದರೆ_ಅಂತ್ಯ // CONFIG_I2C

@@ -32,53 +32,53 @@
  ****************************************************************************/
 
 
-#include "PX4Barometer.hpp"
+#ಅನ್ತರ್ಭಾವ "PX4Barometer.hpp"
 
-#include <lib/drivers/device/Device.hpp>
+#ಅನ್ತರ್ಭಾವ <lib/drivers/device/Device.hpp>
 
 PX4Barometer::PX4Barometer(uint32_t device_id)
 {
-	set_device_id(device_id);
+	ಗಣ_device_id(device_id);
 	_report.temperature = 15; // if no temperature is set, report the sea level standard temperature of 15°C. As used in VehicleAirData
 }
 
-PX4Barometer::PX4Barometer(uint32_t device_id, bool external)
+PX4Barometer::PX4Barometer(uint32_t device_id, ತಾರ್ಕಿಕ external)
 {
-	set_device_id(device_id);
-	set_external(external);
+	ಗಣ_device_id(device_id);
+	ಗಣ_external(external);
 	_report.temperature = 15; // if no temperature is set, report the sea level standard temperature of 15°C. As used in VehicleAirData
 }
 
-void PX4Barometer::set_device_id(uint32_t device_id)
+ಶೂನ್ಯ PX4Barometer::ಗಣ_device_id(uint32_t device_id)
 {
 	_report.device_id = device_id;
 
-	if (!_external_forced) {
+	ಆದರೆ (!_external_forced) {
 		_report.is_external = device::device_is_external(device_id);
 	}
 }
 
-void PX4Barometer::set_external(bool external)
+ಶೂನ್ಯ PX4Barometer::ಗಣ_external(ತಾರ್ಕಿಕ external)
 {
 	_report.is_external = external;
-	_external_forced = true;
+	_external_forced = ನಿಜ;
 }
 
-void PX4Barometer::update(const hrt_abstime &timestamp_sample, float pressure)
+ಶೂನ್ಯ PX4Barometer::update(ಸ್ಥಿರಾಂಕ hrt_abstime &timestamp_sample, ದಶಮಾಂಶ pressure)
 {
-	if (!PX4_ISFINITE(pressure)) {
-		return;
+	ಆದರೆ (!PX4_ISFINITE(pressure)) {
+		ಹಿಂತಿರುಗಿ;
 	}
 
 	_report.timestamp_sample = timestamp_sample;
 	_report.pressure = pressure;
-	_report.timestamp = hrt_absolute_time();
+	_report.timestamp = hrt_absolute_ಸಮಯ();
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_BARO,
+	ಆದರೆ (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_BARO,
 					_sensor_pub.get_instance(), _report, _stuck)) {
-		return;
+		ಹಿಂತಿರುಗಿ;
 	}
 
 	_sensor_pub.publish(_report);

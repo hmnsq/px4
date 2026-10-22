@@ -8,223 +8,223 @@
  *
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "Vector.hpp"
+#ಅನ್ತರ್ಭಾವ "Vector.hpp"
 
-namespace matrix
+ನಾಮಾಕಾಶ ಮಾತೃಕೆ
 {
 // Vector that only store nonzero elements,
 // which indices are specified as parameter pack
-template<typename Type, size_t M, size_t... Idxs>
-class SparseVector
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type, size_t M, size_t... Idxs>
+ವರ್ಗ Sparse_ಸದಿಶ
 {
-private:
-	enum : size_t { N = sizeof...(Idxs) };
+ಖಾಸಗಿ:
+	ಎಣಿಕೆ : size_t { N = ಗಾತ್ರ...(Idxs) };
 
-	static constexpr bool duplicateIndices()
+	ಸ್ಥಿರ constexpr ತಾರ್ಕಿಕ duplicateIndices()
 	{
 		constexpr size_t indicies[] {Idxs...};
 
-		for (size_t i = 0; i < N; i++) {
-			for (size_t j = 0; j < i; j++) {
-				if (indicies[i] == indicies[j]) {
-					return true;
+		ಗಾಗಿ (size_t i = 0; i < N; i++) {
+			ಗಾಗಿ (size_t j = 0; j < i; j++) {
+				ಆದರೆ (indicies[i] == indicies[j]) {
+					ಹಿಂತಿರುಗಿ ನಿಜ;
 				}
 			}
 		}
 
-		return false;
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 
-	static constexpr size_t findMaxIndex()
+	ಸ್ಥಿರ constexpr size_t ಕಂಡುಹಿಡಿ_Max_ಸೂಚ್ಯಂಕ()
 	{
 		constexpr size_t indicies[] {Idxs...};
-		size_t maxIndex = 0;
+		size_t max_ಸೂಚ್ಯಂಕ = 0;
 
-		for (size_t i = 0; i < N; i++) {
-			if (maxIndex < indicies[i]) {
-				maxIndex = indicies[i];
+		ಗಾಗಿ (size_t i = 0; i < N; i++) {
+			ಆದರೆ (max_ಸೂಚ್ಯಂಕ < indicies[i]) {
+				max_ಸೂಚ್ಯಂಕ = indicies[i];
 			}
 		}
 
-		return maxIndex;
+		ಹಿಂತಿರುಗಿ max_ಸೂಚ್ಯಂಕ;
 	}
 
-	static constexpr size_t indexAt(size_t i)
+	ಸ್ಥಿರ constexpr size_t ಸೂಚ್ಯಂಕ_At(size_t i)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		return indicies[i];
+		ಹಿಂತಿರುಗಿ indicies[i];
 	}
 
 	static_assert(!duplicateIndices(), "Duplicate indices");
 	static_assert(N < M, "More entries than elements, use a dense vector");
 	static_assert(N > 0, "A sparse vector needs at least one element");
-	static_assert(findMaxIndex() < M, "Largest entry doesn't fit in sparse vector");
+	static_assert(ಕಂಡುಹಿಡಿ_Max_ಸೂಚ್ಯಂಕ() < M, "Largest entry doesn't fit in sparse vector");
 
-	Type _data[N] {};
+	Type ದತ್ತಾಂಶ_3[N] {};
 
-	static constexpr int findCompressedIndex(size_t index)
+	ಸ್ಥಿರ constexpr ಪೂರ್ಣಾಂಕ ಕಂಡುಹಿಡಿ_Compressed_ಸೂಚ್ಯಂಕ(size_t ಸೂಚ್ಯಂಕ)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		int compressedIndex = -1;
+		ಪೂರ್ಣಾಂಕ compressed_ಸೂಚ್ಯಂಕ = -1;
 
-		for (size_t i = 0; i < N; i++) {
-			if (index == indicies[i]) {
-				compressedIndex = static_cast<int>(i);
+		ಗಾಗಿ (size_t i = 0; i < N; i++) {
+			ಆದರೆ (ಸೂಚ್ಯಂಕ == indicies[i]) {
+				compressed_ಸೂಚ್ಯಂಕ = static_cast<ಪೂರ್ಣಾಂಕ>(i);
 			}
 		}
 
-		return compressedIndex;
+		ಹಿಂತಿರುಗಿ compressed_ಸೂಚ್ಯಂಕ;
 	}
 
-public:
-	constexpr size_t non_zeros() const
+ಸಾರ್ವಜನಿಕ:
+	constexpr size_t non_zeros() ಸ್ಥಿರಾಂಕ
 	{
-		return N;
+		ಹಿಂತಿರುಗಿ N;
 	}
 
-	constexpr size_t index(size_t i) const
+	constexpr size_t ಸೂಚ್ಯಂಕ(size_t i) ಸ್ಥಿರಾಂಕ
 	{
-		return indexAt(i);
+		ಹಿಂತಿರುಗಿ ಸೂಚ್ಯಂಕ_At(i);
 	}
 
-	SparseVector() = default;
+	Sparse_ಸದಿಶ() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	SparseVector(const matrix::Vector<Type, M> &data)
+	Sparse_ಸದಿಶ(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ<Type, M> &ದತ್ತಾಂಶ)
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] = data(indexAt(i));
+		ಗಾಗಿ (size_t i = 0; i < N; i++) {
+			ದತ್ತಾಂಶ_3[i] = ದತ್ತಾಂಶ(ಸೂಚ್ಯಂಕ_At(i));
 		}
 	}
 
-	explicit SparseVector(const Type data[N])
+	ಸ್ಪಷ್ಟ Sparse_ಸದಿಶ(ಸ್ಥಿರಾಂಕ Type ದತ್ತಾಂಶ[N])
 	{
-		memcpy(_data, data, sizeof(_data));
+		ಸ್ಮರಣೆ_ನಕಲು(ದತ್ತಾಂಶ_3, ದತ್ತಾಂಶ, ಗಾತ್ರ(ದತ್ತಾಂಶ_3));
 	}
 
-	template <size_t i>
-	inline Type at() const
+	ಮಾದರಿ <size_t i>
+	ಸಾಲೊಳಗೆ Type at() ಸ್ಥಿರಾಂಕ
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
-		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		constexpr ಪೂರ್ಣಾಂಕ compressed_ಸೂಚ್ಯಂಕ_2 = ಕಂಡುಹಿಡಿ_Compressed_ಸೂಚ್ಯಂಕ(i);
+		static_assert(compressed_ಸೂಚ್ಯಂಕ_2 >= 0, "cannot access unpopulated indices");
+		ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ_3[compressed_ಸೂಚ್ಯಂಕ_2];
 	}
 
-	template <size_t i>
-	inline Type &at()
+	ಮಾದರಿ <size_t i>
+	ಸಾಲೊಳಗೆ Type &at()
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
-		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		constexpr ಪೂರ್ಣಾಂಕ compressed_ಸೂಚ್ಯಂಕ_2 = ಕಂಡುಹಿಡಿ_Compressed_ಸೂಚ್ಯಂಕ(i);
+		static_assert(compressed_ಸೂಚ್ಯಂಕ_2 >= 0, "cannot access unpopulated indices");
+		ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ_3[compressed_ಸೂಚ್ಯಂಕ_2];
 	}
 
-	inline Type atCompressedIndex(size_t i) const
+	ಸಾಲೊಳಗೆ Type at_Compressed_ಸೂಚ್ಯಂಕ(size_t i) ಸ್ಥಿರಾಂಕ
 	{
-		assert(i < N);
-		return _data[i];
+		ಪ್ರತಿಜ್ಞಾ(i < N);
+		ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ_3[i];
 	}
 
-	inline Type &atCompressedIndex(size_t i)
+	ಸಾಲೊಳಗೆ Type &at_Compressed_ಸೂಚ್ಯಂಕ(size_t i)
 	{
-		assert(i < N);
-		return _data[i];
+		ಪ್ರತಿಜ್ಞಾ(i < N);
+		ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ_3[i];
 	}
 
-	void setZero()
+	ಶೂನ್ಯ ಗಣ_Zero()
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] = Type(0);
+		ಗಾಗಿ (size_t i = 0; i < N; i++) {
+			ದತ್ತಾಂಶ_3[i] = Type(0);
 		}
 	}
 
-	Type dot(const matrix::Vector<Type, M> &other) const
+	Type dot(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ<Type, M> &other) ಸ್ಥಿರಾಂಕ
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
-			accum += _data[i] * other(indexAt(i));
+		ಗಾಗಿ (size_t i = 0; i < N; i++) {
+			accum += ದತ್ತಾಂಶ_3[i] * other(ಸೂಚ್ಯಂಕ_At(i));
 		}
 
-		return accum;
+		ಹಿಂತಿರುಗಿ accum;
 	}
 
-	matrix::Vector<Type, M> operator+(const matrix::Vector<Type, M> &other) const
+	ಮಾತೃಕೆ::ಸದಿಶ<Type, M> ಕ್ರಿಯಾಕಾರಕ+(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ<Type, M> &other) ಸ್ಥಿರಾಂಕ
 	{
-		matrix::Vector<Type, M> vec = other;
+		ಮಾತೃಕೆ::ಸದಿಶ<Type, M> vec = other;
 
-		for (size_t i = 0; i < N; i++) {
-			vec(indexAt(i)) +=  _data[i];
+		ಗಾಗಿ (size_t i = 0; i < N; i++) {
+			vec(ಸೂಚ್ಯಂಕ_At(i)) +=  ದತ್ತಾಂಶ_3[i];
 		}
 
-		return vec;
+		ಹಿಂತಿರುಗಿ vec;
 	}
 
-	SparseVector &operator+=(Type t)
+	Sparse_ಸದಿಶ &ಕ್ರಿಯಾಕಾರಕ+=(Type t)
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] += t;
+		ಗಾಗಿ (size_t i = 0; i < N; i++) {
+			ದತ್ತಾಂಶ_3[i] += t;
 		}
 
-		return *this;
+		ಹಿಂತಿರುಗಿ *ಇದು;
 	}
 
-	Type norm_squared() const
+	Type norm_squared() ಸ್ಥಿರಾಂಕ
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
-			accum += _data[i] * _data[i];
+		ಗಾಗಿ (size_t i = 0; i < N; i++) {
+			accum += ದತ್ತಾಂಶ_3[i] * ದತ್ತಾಂಶ_3[i];
 		}
 
-		return accum;
+		ಹಿಂತಿರುಗಿ accum;
 	}
 
-	Type norm() const
+	Type norm() ಸ್ಥಿರಾಂಕ
 	{
-		return std::sqrt(norm_squared());
+		ಹಿಂತಿರುಗಿ std::ವರ್ಗಮೂಲ(norm_squared());
 	}
 
-	bool longerThan(Type testVal) const
+	ತಾರ್ಕಿಕ longerThan(Type testVal) ಸ್ಥಿರಾಂಕ
 	{
-		return norm_squared() > testVal * testVal;
+		ಹಿಂತಿರುಗಿ norm_squared() > testVal * testVal;
 	}
 };
 
-template<typename Type, size_t Q, size_t M, size_t ... Idxs>
-matrix::Vector<Type, Q> operator*(const matrix::Matrix<Type, Q, M> &mat,
-				  const matrix::SparseVector<Type, M, Idxs...> &vec)
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type, size_t Q, size_t M, size_t ... Idxs>
+ಮಾತೃಕೆ::ಸದಿಶ<Type, Q> ಕ್ರಿಯಾಕಾರಕ*(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<Type, Q, M> &mat,
+				  ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Sparse_ಸದಿಶ<Type, M, Idxs...> &vec)
 {
-	matrix::Vector<Type, Q> res;
+	ಮಾತೃಕೆ::ಸದಿಶ<Type, Q> res;
 
-	for (size_t i = 0; i < Q; i++) {
-		const Vector<Type, M> row = mat.row(i);
-		res(i) = vec.dot(row);
+	ಗಾಗಿ (size_t i = 0; i < Q; i++) {
+		ಸ್ಥಿರಾಂಕ ಸದಿಶ<Type, M> ಅಡ್ಡಸಾಲು = mat.ಅಡ್ಡಸಾಲು(i);
+		res(i) = vec.dot(ಅಡ್ಡಸಾಲು);
 	}
 
-	return res;
+	ಹಿಂತಿರುಗಿ res;
 }
 
 // returns x.T * A * x
-template<typename Type, size_t M, size_t ... Idxs>
-Type quadraticForm(const matrix::SquareMatrix<Type, M> &A, const matrix::SparseVector<Type, M, Idxs...> &x)
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type, size_t M, size_t ... Idxs>
+Type quadraticForm(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ವರ್ಗಫಲ_ಮಾತೃಕೆ<Type, M> &A, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Sparse_ಸದಿಶ<Type, M, Idxs...> &x)
 {
 	Type res = Type(0);
 
-	for (size_t i = 0; i < x.non_zeros(); i++) {
+	ಗಾಗಿ (size_t i = 0; i < x.non_zeros(); i++) {
 		Type tmp = Type(0);
 
-		for (size_t j = 0; j < x.non_zeros(); j++) {
-			tmp += A(x.index(i), x.index(j)) * x.atCompressedIndex(j);
+		ಗಾಗಿ (size_t j = 0; j < x.non_zeros(); j++) {
+			tmp += A(x.ಸೂಚ್ಯಂಕ(i), x.ಸೂಚ್ಯಂಕ(j)) * x.at_Compressed_ಸೂಚ್ಯಂಕ(j);
 		}
 
-		res += x.atCompressedIndex(i) * tmp;
+		res += x.at_Compressed_ಸೂಚ್ಯಂಕ(i) * tmp;
 	}
 
-	return res;
+	ಹಿಂತಿರುಗಿ res;
 }
 
-template<size_t M, size_t ... Idxs>
-using SparseVectorf = SparseVector<float, M, Idxs...>;
+ಮಾದರಿ<size_t M, size_t ... Idxs>
+ಬಳಸಿ SparseVectorf = Sparse_ಸದಿಶ<ದಶಮಾಂಶ, M, Idxs...>;
 
 }

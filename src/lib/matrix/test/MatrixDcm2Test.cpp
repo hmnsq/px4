@@ -31,19 +31,19 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/Dcm.hpp>
-#include <matrix/Dcm2.hpp>
-#include <matrix/Euler.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/Dcm.hpp>
+#ಅನ್ತರ್ಭಾವ <matrix/Dcm2.hpp>
+#ಅನ್ತರ್ಭಾವ <matrix/Euler.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-TEST(MatrixDcm2Test, CompareToDcm)
+TEST(ಮಾತೃಕೆ_Dcm2_Test, Compare_ಗಮ್ಯ_Dcm)
 {
 	// 2D matrix and 3D matrix rotating around yaw are equivalent
 	Dcm2f R2(1.f);
 	Dcmf R3(Eulerf(0.f, 0.f, 1.f));
-	EXPECT_EQ(Dcm2f(R3.slice<2, 2>(0, 0)), R2);
+	EXPECT_EQ(Dcm2f(R3.ತುಂಡು<2, 2>(0, 0)), R2);
 
 	// Rotating a 2D and a 3D vector respectively is equivalent
 	Vector2f v2(1.f, 2.f);
@@ -54,23 +54,23 @@ TEST(MatrixDcm2Test, CompareToDcm)
 	EXPECT_EQ(result2, result3.xy());
 }
 
-TEST(MatrixDcm2Test, 45DegreeRotation)
+TEST(ಮಾತೃಕೆ_Dcm2_Test, 45DegreeRotation)
 {
 	Vector2f v(1.0f, 0.0f);
 	v = Dcm2f(M_PI / 4.f) * v;
-	EXPECT_EQ(v, Vector2f(1.f, 1.f) * (sqrt(2) / 2));
+	EXPECT_EQ(v, Vector2f(1.f, 1.f) * (ವರ್ಗಮೂಲ(2) / 2));
 	v = Dcm2f(M_PI / 4.f) * v;
 	EXPECT_EQ(v, Vector2f(0.f, 1.f));
 	v = Dcm2f(M_PI / 4.f) * v;
-	EXPECT_EQ(v, Vector2f(-1.f, 1.f) * (sqrt(2) / 2));
+	EXPECT_EQ(v, Vector2f(-1.f, 1.f) * (ವರ್ಗಮೂಲ(2) / 2));
 	v = Dcm2f(M_PI / 4.f) * v;
 	EXPECT_EQ(v, Vector2f(-1.f, 0.f));
 	v = Dcm2f(M_PI / 4.f) * v;
-	EXPECT_EQ(v, Vector2f(-1.f, -1.f) * (sqrt(2) / 2));
+	EXPECT_EQ(v, Vector2f(-1.f, -1.f) * (ವರ್ಗಮೂಲ(2) / 2));
 	v = Dcm2f(M_PI / 4.f) * v;
 	EXPECT_EQ(v, Vector2f(0.f, -1.f));
 	v = Dcm2f(M_PI / 4.f) * v;
-	EXPECT_EQ(v, Vector2f(1.f, -1.f) * (sqrt(2) / 2));
+	EXPECT_EQ(v, Vector2f(1.f, -1.f) * (ವರ್ಗಮೂಲ(2) / 2));
 	v = Dcm2f(M_PI / 4.f) * v;
 	EXPECT_EQ(v, Vector2f(1.f, 0.f));
 }

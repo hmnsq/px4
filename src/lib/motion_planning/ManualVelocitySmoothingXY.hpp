@@ -36,88 +36,88 @@
  *
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <motion_planning/VelocitySmoothing.hpp>
+#ಅನ್ತರ್ಭಾವ <motion_planning/VelocitySmoothing.hpp>
 
-#include <matrix/matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <matrix/matrix/math.hpp>
 
-using matrix::Vector2f;
+ಬಳಸಿ ಮಾತೃಕೆ::Vector2f;
 
-class ManualVelocitySmoothingXY final
+ವರ್ಗ ManualVelocitySmoothingXY final
 {
-public:
-	ManualVelocitySmoothingXY() = default;
-	~ManualVelocitySmoothingXY() = default;
+ಸಾರ್ವಜನಿಕ:
+	ManualVelocitySmoothingXY() = ಪೂರ್ವನಿಯೋಜಿತ;
+	~ManualVelocitySmoothingXY() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	void reset(const Vector2f &accel, const Vector2f &vel, const Vector2f &pos);
-	void update(float dt, const Vector2f &velocity_target);
+	ಶೂನ್ಯ reset(ಸ್ಥಿರಾಂಕ Vector2f &accel, ಸ್ಥಿರಾಂಕ Vector2f &vel, ಸ್ಥಿರಾಂಕ Vector2f &pos);
+	ಶೂನ್ಯ update(ದಶಮಾಂಶ dt, ಸ್ಥಿರಾಂಕ Vector2f &velocity_ಗುರಿ);
 
-	void setVelSpFeedback(const Vector2f &fb) { _velocity_setpoint_feedback = fb; }
+	ಶೂನ್ಯ ಗಣ_Vel_Sp_Feedback(ಸ್ಥಿರಾಂಕ Vector2f &fb) { _velocity_setpoint_feedback = fb; }
 
-	void setMaxJerk(const float max_jerk)
+	ಶೂನ್ಯ ಗಣ_Max_Jerk(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ max_jerk)
 	{
-		_trajectory[0].setMaxJerk(max_jerk);
-		_trajectory[1].setMaxJerk(max_jerk);
+		_trajectory[0].ಗಣ_Max_Jerk(max_jerk);
+		_trajectory[1].ಗಣ_Max_Jerk(max_jerk);
 	}
-	float getMaxJerk() const { return _trajectory[0].getMaxJerk(); }
+	ದಶಮಾಂಶ getMaxJerk() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _trajectory[0].getMaxJerk(); }
 
-	void setMaxAccel(const float max_accel)
+	ಶೂನ್ಯ ಗಣ_Max_Accel(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ max_accel)
 	{
-		_trajectory[0].setMaxAccel(max_accel);
-		_trajectory[1].setMaxAccel(max_accel);
+		_trajectory[0].ಗಣ_Max_Accel(max_accel);
+		_trajectory[1].ಗಣ_Max_Accel(max_accel);
 	}
-	float getMaxAccel() const { return _trajectory[0].getMaxAccel(); }
+	ದಶಮಾಂಶ getMaxAccel() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _trajectory[0].getMaxAccel(); }
 
-	void setMaxVel(const float max_vel)
+	ಶೂನ್ಯ ಗಣ_Max_Vel(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ max_vel)
 	{
-		_trajectory[0].setMaxVel(max_vel);
-		_trajectory[1].setMaxVel(max_vel);
+		_trajectory[0].ಗಣ_Max_Vel(max_vel);
+		_trajectory[1].ಗಣ_Max_Vel(max_vel);
 	}
-	float getMaxVel() const { return _trajectory[0].getMaxVel(); }
+	ದಶಮಾಂಶ getMaxVel() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _trajectory[0].getMaxVel(); }
 
-	Vector2f getCurrentJerk() const { return _state.j; }
-	Vector2f getCurrentAcceleration() const { return _state.a; }
+	Vector2f getCurrentJerk() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _state.j; }
+	Vector2f getCurrentAcceleration() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _state.a; }
 
-	void setCurrentVelocity(const Vector2f &vel)
+	ಶೂನ್ಯ ಗಣ_Current_Velocity(ಸ್ಥಿರಾಂಕ Vector2f &vel)
 	{
 		_state.v = vel;
-		_trajectory[0].setCurrentVelocity(vel(0));
-		_trajectory[1].setCurrentVelocity(vel(1));
+		_trajectory[0].ಗಣ_Current_Velocity(vel(0));
+		_trajectory[1].ಗಣ_Current_Velocity(vel(1));
 	}
-	Vector2f getCurrentVelocity() const { return _state.v; }
+	Vector2f getCurrentVelocity() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _state.v; }
 
-	void setCurrentPosition(const Vector2f &pos)
+	ಶೂನ್ಯ ಗಣ_Current_Position(ಸ್ಥಿರಾಂಕ Vector2f &pos)
 	{
 		_state.x = pos;
-		_trajectory[0].setCurrentPosition(pos(0));
-		_trajectory[1].setCurrentPosition(pos(1));
+		_trajectory[0].ಗಣ_Current_Position(pos(0));
+		_trajectory[1].ಗಣ_Current_Position(pos(1));
 		_position_estimate = pos;
 
-		if (_position_lock_active) {
+		ಆದರೆ (position_ಬೀಗ_ಸಕ್ರಿಯ) {
 			_position_setpoint_locked = pos;
 		}
 	}
-	Vector2f getCurrentPosition() const { return _position_setpoint_locked; }
+	Vector2f getCurrentPosition() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _position_setpoint_locked; }
 
-	void setCurrentPositionEstimate(const Vector2f &pos) { _position_estimate = pos; }
+	ಶೂನ್ಯ ಗಣ_Current_Position_Estimate(ಸ್ಥಿರಾಂಕ Vector2f &pos) { _position_estimate = pos; }
 
-private:
-	void resetPositionLock();
-	void updateTrajectories(float dt);
-	void checkPositionLock(const Vector2f &velocity_target);
-	void updateTrajDurations(const Vector2f &velocity_target);
+ಖಾಸಗಿ:
+	ಶೂನ್ಯ reset_Position_ಬೀಗ();
+	ಶೂನ್ಯ updateTrajectories(ದಶಮಾಂಶ dt);
+	ಶೂನ್ಯ check_Position_ಬೀಗ(ಸ್ಥಿರಾಂಕ Vector2f &velocity_ಗುರಿ);
+	ಶೂನ್ಯ updateTrajDurations(ಸ್ಥಿರಾಂಕ Vector2f &velocity_ಗುರಿ);
 
 	VelocitySmoothing _trajectory[2]; ///< Trajectory in x and y directions
 
-	bool _position_lock_active{false};
+	ತಾರ್ಕಿಕ position_ಬೀಗ_ಸಕ್ರಿಯ{ಸುಳ್ಳು};
 
 	Vector2f _position_setpoint_locked{};
 
 	Vector2f _velocity_setpoint_feedback{};
 	Vector2f _position_estimate{};
 
-	struct {
+	ರಚನೆ {
 		Vector2f j;
 		Vector2f a;
 		Vector2f v;

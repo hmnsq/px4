@@ -34,11 +34,11 @@
 
 
 
-#include "Ringbuffer.hpp"
+#ಅನ್ತರ್ಭಾವ "Ringbuffer.hpp"
 
-#include <mathlib/mathlib.h>
-#include <assert.h>
-#include <string.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/mathlib.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
 
 
 Ringbuffer::~Ringbuffer()
@@ -46,137 +46,137 @@ Ringbuffer::~Ringbuffer()
 	deallocate();
 }
 
-bool Ringbuffer::allocate(size_t buffer_size)
+ತಾರ್ಕಿಕ Ringbuffer::allocate(size_t ಬಫರ್_ಗಾತ್ರ)
 {
-	assert(_ringbuffer == nullptr);
+	ಪ್ರತಿಜ್ಞಾ(_ringbuffer == ಶೂನ್ಯಸೂಚಕ);
 
-	_size = buffer_size;
-	_ringbuffer = new uint8_t[_size];
-	return _ringbuffer != nullptr;
+	ಗಾತ್ರ_3 = ಬಫರ್_ಗಾತ್ರ;
+	_ringbuffer = ಹೊಸ uint8_t[ಗಾತ್ರ_3];
+	ಹಿಂತಿರುಗಿ _ringbuffer != ಶೂನ್ಯಸೂಚಕ;
 }
 
-void Ringbuffer::deallocate()
+ಶೂನ್ಯ Ringbuffer::deallocate()
 {
-	delete[] _ringbuffer;
-	_ringbuffer = nullptr;
-	_size = 0;
-	_start = 0;
-	_end = 0;
+	ಅಳಿಸು[] _ringbuffer;
+	_ringbuffer = ಶೂನ್ಯಸೂಚಕ;
+	ಗಾತ್ರ_3 = 0;
+	ಆರಂಭ_3 = 0;
+	ಕೊನೆ_2 = 0;
 }
 
-size_t Ringbuffer::space_available() const
+size_t Ringbuffer::space_ಲಭ್ಯ() ಸ್ಥಿರಾಂಕ
 {
-	if (_start > _end) {
-		return _start - _end - 1;
+	ಆದರೆ (ಆರಂಭ_3 > ಕೊನೆ_2) {
+		ಹಿಂತಿರುಗಿ ಆರಂಭ_3 - ಕೊನೆ_2 - 1;
 
-	} else {
-		return _start - _end - 1 + _size;
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		ಹಿಂತಿರುಗಿ ಆರಂಭ_3 - ಕೊನೆ_2 - 1 + ಗಾತ್ರ_3;
 	}
 }
 
-size_t Ringbuffer::space_used() const
+size_t Ringbuffer::space_ಬಳಸಿದ() ಸ್ಥಿರಾಂಕ
 {
-	if (_start <= _end) {
-		return _end - _start;
+	ಆದರೆ (ಆರಂಭ_3 <= ಕೊನೆ_2) {
+		ಹಿಂತಿರುಗಿ ಕೊನೆ_2 - ಆರಂಭ_3;
 
-	} else {
+	} ಇಲ್ಲದಿದ್ದರೆ {
 		// Potential wrap around.
-		return _end - _start + _size;
+		ಹಿಂತಿರುಗಿ ಕೊನೆ_2 - ಆರಂಭ_3 + ಗಾತ್ರ_3;
 	}
 }
 
 
-bool Ringbuffer::push_back(const uint8_t *buf, size_t buf_len)
+ತಾರ್ಕಿಕ Ringbuffer::push_back(ಸ್ಥಿರಾಂಕ uint8_t *buf, size_t buf_len)
 {
-	if (buf_len == 0 || buf == nullptr) {
+	ಆದರೆ (buf_len == 0 || buf == ಶೂನ್ಯಸೂಚಕ) {
 		// Nothing to add, we better don't try.
-		return false;
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 
-	if (_start > _end) {
+	ಆದರೆ (ಆರಂಭ_3 > ಕೊನೆ_2) {
 		// Add after end up to start, no wrap around.
 
 		// Leave one byte free so that start don't end up the same
 		// which signals empty.
-		const size_t available = _start - _end - 1;
+		ಸ್ಥಿರಾಂಕ size_t ಲಭ್ಯ = ಆರಂಭ_3 - ಕೊನೆ_2 - 1;
 
-		if (available < buf_len) {
-			return false;
+		ಆದರೆ (ಲಭ್ಯ < buf_len) {
+			ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 		}
 
-		memcpy(&_ringbuffer[_end], buf, buf_len);
-		_end += buf_len;
+		ಸ್ಮರಣೆ_ನಕಲು(&_ringbuffer[ಕೊನೆ_2], buf, buf_len);
+		ಕೊನೆ_2 += buf_len;
 
-	} else {
+	} ಇಲ್ಲದಿದ್ದರೆ {
 		// Add after end, maybe wrap around.
-		const size_t available = _start - _end - 1 + _size;
+		ಸ್ಥಿರಾಂಕ size_t ಲಭ್ಯ = ಆರಂಭ_3 - ಕೊನೆ_2 - 1 + ಗಾತ್ರ_3;
 
-		if (available < buf_len) {
-			return false;
+		ಆದರೆ (ಲಭ್ಯ < buf_len) {
+			ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 		}
 
-		const size_t remaining_packet_len = _size - _end;
+		ಸ್ಥಿರಾಂಕ size_t ಉಳಿದ_packet_len = ಗಾತ್ರ_3 - ಕೊನೆ_2;
 
-		if (buf_len > remaining_packet_len) {
-			memcpy(&_ringbuffer[_end], buf, remaining_packet_len);
-			_end = 0;
+		ಆದರೆ (buf_len > ಉಳಿದ_packet_len) {
+			ಸ್ಮರಣೆ_ನಕಲು(&_ringbuffer[ಕೊನೆ_2], buf, ಉಳಿದ_packet_len);
+			ಕೊನೆ_2 = 0;
 
-			memcpy(&_ringbuffer[_end], buf + remaining_packet_len, buf_len - remaining_packet_len);
-			_end += buf_len - remaining_packet_len;
+			ಸ್ಮರಣೆ_ನಕಲು(&_ringbuffer[ಕೊನೆ_2], buf + ಉಳಿದ_packet_len, buf_len - ಉಳಿದ_packet_len);
+			ಕೊನೆ_2 += buf_len - ಉಳಿದ_packet_len;
 
-		} else {
-			memcpy(&_ringbuffer[_end], buf, buf_len);
-			_end += buf_len;
+		} ಇಲ್ಲದಿದ್ದರೆ {
+			ಸ್ಮರಣೆ_ನಕಲು(&_ringbuffer[ಕೊನೆ_2], buf, buf_len);
+			ಕೊನೆ_2 += buf_len;
 		}
 	}
 
-	return true;
+	ಹಿಂತಿರುಗಿ ನಿಜ;
 }
 
-size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
+size_t Ringbuffer::ತೆಗೆ_front(uint8_t *buf, size_t buf_max_len)
 {
-	if (buf == nullptr) {
+	ಆದರೆ (buf == ಶೂನ್ಯಸೂಚಕ) {
 		// User needs to supply a valid pointer.
-		return 0;
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
-	if (_start == _end) {
+	ಆದರೆ (ಆರಂಭ_3 == ಕೊನೆ_2) {
 		// Empty
-		return 0;
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
-	if (_start < _end) {
+	ಆದರೆ (ಆರಂಭ_3 < ಕೊನೆ_2) {
 
 		// No wrap around.
-		size_t to_copy_len = math::min(_end - _start, buf_max_len);
+		size_t ಗಮ್ಯ_copy_len = math::min(ಕೊನೆ_2 - ಆರಂಭ_3, buf_max_len);
 
-		memcpy(buf, &_ringbuffer[_start], to_copy_len);
-		_start += to_copy_len;
+		ಸ್ಮರಣೆ_ನಕಲು(buf, &_ringbuffer[ಆರಂಭ_3], ಗಮ್ಯ_copy_len);
+		ಆರಂಭ_3 += ಗಮ್ಯ_copy_len;
 
-		return to_copy_len;
+		ಹಿಂತಿರುಗಿ ಗಮ್ಯ_copy_len;
 
-	} else {
+	} ಇಲ್ಲದಿದ್ದರೆ {
 		// Potential wrap around.
-		size_t to_copy_len = _end - _start + _size;
+		size_t ಗಮ್ಯ_copy_len = ಕೊನೆ_2 - ಆರಂಭ_3 + ಗಾತ್ರ_3;
 
-		if (to_copy_len > buf_max_len) {
-			to_copy_len = buf_max_len;
+		ಆದರೆ (ಗಮ್ಯ_copy_len > buf_max_len) {
+			ಗಮ್ಯ_copy_len = buf_max_len;
 		}
 
-		const size_t remaining_buf_len = _size - _start;
+		ಸ್ಥಿರಾಂಕ size_t ಉಳಿದ_buf_len = ಗಾತ್ರ_3 - ಆರಂಭ_3;
 
-		if (to_copy_len > remaining_buf_len) {
+		ಆದರೆ (ಗಮ್ಯ_copy_len > ಉಳಿದ_buf_len) {
 
-			memcpy(buf, &_ringbuffer[_start], remaining_buf_len);
-			_start = 0;
-			memcpy(buf + remaining_buf_len, &_ringbuffer[_start], to_copy_len - remaining_buf_len);
-			_start += to_copy_len - remaining_buf_len;
+			ಸ್ಮರಣೆ_ನಕಲು(buf, &_ringbuffer[ಆರಂಭ_3], ಉಳಿದ_buf_len);
+			ಆರಂಭ_3 = 0;
+			ಸ್ಮರಣೆ_ನಕಲು(buf + ಉಳಿದ_buf_len, &_ringbuffer[ಆರಂಭ_3], ಗಮ್ಯ_copy_len - ಉಳಿದ_buf_len);
+			ಆರಂಭ_3 += ಗಮ್ಯ_copy_len - ಉಳಿದ_buf_len;
 
-		} else {
-			memcpy(buf, &_ringbuffer[_start], to_copy_len);
-			_start += to_copy_len;
+		} ಇಲ್ಲದಿದ್ದರೆ {
+			ಸ್ಮರಣೆ_ನಕಲು(buf, &_ringbuffer[ಆರಂಭ_3], ಗಮ್ಯ_copy_len);
+			ಆರಂಭ_3 += ಗಮ್ಯ_copy_len;
 		}
 
-		return to_copy_len;
+		ಹಿಂತಿರುಗಿ ಗಮ್ಯ_copy_len;
 	}
 }

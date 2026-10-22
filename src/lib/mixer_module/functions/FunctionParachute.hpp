@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "FunctionProviderBase.hpp"
+#ಅನ್ತರ್ಭಾವ "FunctionProviderBase.hpp"
 
 /**
  * Functions: Parachute
  */
-class FunctionParachute : public FunctionProviderBase
+ವರ್ಗ FunctionParachute : ಸಾರ್ವಜನಿಕ Function_Provider_ತಳ
 {
-public:
-	FunctionParachute() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionParachute(); }
+ಸಾರ್ವಜನಿಕ:
+	FunctionParachute() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ಸ್ಥಿರ Function_Provider_ತಳ *allocate(ಸ್ಥಿರಾಂಕ Context &context) { ಹಿಂತಿರುಗಿ ಹೊಸ FunctionParachute(); }
 
-	void update() override {}
-	float value(OutputFunction func) override { return -1.f; }
-	float defaultFailsafeValue(OutputFunction func) const override { return 1.f; }
+	ಶೂನ್ಯ update() override {}
+	ದಶಮಾಂಶ value(OutputFunction func) override { ಹಿಂತಿರುಗಿ -1.f; }
+	ದಶಮಾಂಶ default_Failsafe_ಮೌಲ್ಯ(OutputFunction func) ಸ್ಥಿರಾಂಕ override { ಹಿಂತಿರುಗಿ 1.f; }
 };

@@ -37,100 +37,100 @@
  * Test library code
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <stdio.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
 
-#include <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
 
-#include "test.hpp"
+#ಅನ್ತರ್ಭಾವ "test.hpp"
 
-bool __EXPORT equal(float a, float b, float epsilon)
+ತಾರ್ಕಿಕ __EXPORT equal(ದಶಮಾಂಶ a, ದಶಮಾಂಶ b, ದಶಮಾಂಶ epsilon)
 {
-	float diff = fabsf(a - b);
+	ದಶಮಾಂಶ diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	ಆದರೆ (diff > epsilon) {
+		ಬರೆ("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", ದ್ವಿಗುಣ(a), ದ್ವಿಗುಣ(b));
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 
-	} else { return true; }
+	} ಇಲ್ಲದಿದ್ದರೆ { ಹಿಂತಿರುಗಿ ನಿಜ; }
 }
 
-bool __EXPORT greater_than(float a, float b)
+ತಾರ್ಕಿಕ __EXPORT greater_than(ದಶಮಾಂಶ a, ದಶಮಾಂಶ b)
 {
-	if (a > b) {
-		return true;
+	ಆದರೆ (a > b) {
+		ಹಿಂತಿರುಗಿ ನಿಜ;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		ಬರೆ("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", ದ್ವಿಗುಣ(a), ದ್ವಿಗುಣ(b));
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 }
 
-bool __EXPORT less_than(float a, float b)
+ತಾರ್ಕಿಕ __EXPORT less_than(ದಶಮಾಂಶ a, ದಶಮಾಂಶ b)
 {
-	if (a < b) {
-		return true;
+	ಆದರೆ (a < b) {
+		ಹಿಂತಿರುಗಿ ನಿಜ;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		ಬರೆ("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", ದ್ವಿಗುಣ(a), ದ್ವಿಗುಣ(b));
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 }
 
-bool __EXPORT greater_than_or_equal(float a, float b)
+ತಾರ್ಕಿಕ __EXPORT greater_than_or_equal(ದಶಮಾಂಶ a, ದಶಮಾಂಶ b)
 {
-	if (a >= b) {
-		return true;
+	ಆದರೆ (a >= b) {
+		ಹಿಂತಿರುಗಿ ನಿಜ;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		ಬರೆ("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", ದ್ವಿಗುಣ(a), ದ್ವಿಗುಣ(b));
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 }
 
-bool __EXPORT less_than_or_equal(float a, float b)
+ತಾರ್ಕಿಕ __EXPORT less_than_or_equal(ದಶಮಾಂಶ a, ದಶಮಾಂಶ b)
 {
-	if (a <= b) {
-		return true;
+	ಆದರೆ (a <= b) {
+		ಹಿಂತಿರುಗಿ ನಿಜ;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		ಬರೆ("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", ದ್ವಿಗುಣ(a), ದ್ವಿಗುಣ(b));
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+ಶೂನ್ಯ __EXPORT float2SigExp(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ &ಅಂಕೆ, ದಶಮಾಂಶ &sig, ಪೂರ್ಣಾಂಕ &ಘಾತಾಂಕ)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	ಆದರೆ (!PX4_ISFINITE(ಅಂಕೆ)) {
 		sig = 0.0f;
-		exp = -99;
-		return;
+		ಘಾತಾಂಕ = -99;
+		ಹಿಂತಿರುಗಿ;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	ಆದರೆ (fabsf(ಅಂಕೆ) < 1.0e-38f) {
 		sig = 0;
-		exp = 0;
-		return;
+		ಘಾತಾಂಕ = 0;
+		ಹಿಂತಿರುಗಿ;
 	}
 
-	exp = log10f(fabsf(num));
+	ಘಾತಾಂಕ = log10f(fabsf(ಅಂಕೆ));
 
-	if (exp > 0) {
-		exp = ceil(exp);
+	ಆದರೆ (ಘಾತಾಂಕ > 0) {
+		ಘಾತಾಂಕ = ceil(ಘಾತಾಂಕ);
 
-	} else {
-		exp = floor(exp);
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		ಘಾತಾಂಕ = floor(ಘಾತಾಂಕ);
 	}
 
-	sig = num;
+	sig = ಅಂಕೆ;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	ಆದರೆ (ಘಾತಾಂಕ > 0) {
+		ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < ನಿರಪೇಕ್ಷ(ಘಾತಾಂಕ); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < ನಿರಪೇಕ್ಷ(ಘಾತಾಂಕ); i++) { sig *= 10; }
 	}
 }

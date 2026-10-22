@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-TEST(MatrixTransposeTest, Transpose)
+TEST(ಮಾತೃಕೆ_Transpose_Test, Transpose)
 {
-	float data[6] = {1, 2, 3, 4, 5, 6};
-	Matrix<float, 2, 3> A(data);
-	Matrix<float, 3, 2> A_T = A.transpose();
-	float data_check[6] = {1, 4, 2, 5, 3, 6};
-	Matrix<float, 3, 2> A_T_check(data_check);
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ[6] = {1, 2, 3, 4, 5, 6};
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 3> A(ದತ್ತಾಂಶ);
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 2> A_T = A.transpose();
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_check[6] = {1, 4, 2, 5, 3, 6};
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 2> A_T_check(ದತ್ತಾಂಶ_check);
 	EXPECT_EQ(A_T, A_T_check);
 }

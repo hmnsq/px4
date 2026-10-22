@@ -37,25 +37,25 @@
  *
  * @author Mark Charlebois <charlebm@gmail.com>
  */
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/app.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/app.h>
 
-class CDevNode;
+class CDev_ಗಂಟು;
 
 class CDevExample
 {
-public:
-	CDevExample() : _node(0) {}
+ಸಾರ್ವಜನಿಕ:
+	CDevExample() : ಗಂಟು(0) {}
 
 	~CDevExample();
 
-	int main();
+	ಪೂರ್ಣಾಂಕ ಮುಖ್ಯ();
 
-	static px4::AppState appState; /* track requests to terminate app */
+	ಸ್ಥಿರ px4::AppState appState; /* track requests to terminate app */
 
-private:
-	int do_poll(int fd, int timeout, int iterations, int delayms_after_poll);
+ಖಾಸಗಿ:
+	ಪೂರ್ಣಾಂಕ do_poll(ಪೂರ್ಣಾಂಕ fd, ಪೂರ್ಣಾಂಕ timeout, ಪೂರ್ಣಾಂಕ iterations, ಪೂರ್ಣಾಂಕ delayms_after_poll);
 
-	CDevNode *_node;
+	CDev_ಗಂಟು *ಗಂಟು;
 };

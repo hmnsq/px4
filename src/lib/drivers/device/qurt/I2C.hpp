@@ -37,48 +37,48 @@
  * Base class for devices connected via I2C.
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "../CDev.hpp"
-#include <px4_platform_common/i2c.h>
+#ಅನ್ತರ್ಭಾವ "../CDev.hpp"
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#ಆದರೆ defined(CONFIG_I2C)
 
-struct I2CSPIDriverConfig;
+ರಚನೆ I2CSPIDriverConfig;
 
-namespace device __EXPORT
+ನಾಮಾಕಾಶ device __EXPORT
 {
 
 /**
  * Abstract class for character device on I2C
  */
-class __EXPORT I2C : public CDev
+ವರ್ಗ __EXPORT I2C : ಸಾರ್ವಜನಿಕ CDev
 {
 
-public:
+ಸಾರ್ವಜನಿಕ:
 
 	// no copy, assignment, move, move assignment
-	I2C(const I2C &) = delete;
-	I2C &operator=(const I2C &) = delete;
-	I2C(I2C &&) = delete;
-	I2C &operator=(I2C &&) = delete;
+	I2C(ಸ್ಥಿರಾಂಕ I2C &) = ಅಳಿಸು;
+	I2C &ಕ್ರಿಯಾಕಾರಕ=(ಸ್ಥಿರಾಂಕ I2C &) = ಅಳಿಸು;
+	I2C(I2C &&) = ಅಳಿಸು;
+	I2C &ಕ್ರಿಯಾಕಾರಕ=(I2C &&) = ಅಳಿಸು;
 
-	virtual int	init() override;
+	ವಾಸ್ತವಿಕ ಪೂರ್ಣಾಂಕ	init() override;
 
-	typedef int (*_config_i2c_bus_func_t)(uint8_t, uint8_t, uint32_t);
-	typedef int (*_set_i2c_address_func_t)(int, uint8_t);
-	typedef int (*_i2c_transfer_func_t)(int, const uint8_t *, const unsigned, uint8_t *, const unsigned);
+	ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಪೂರ್ಣಾಂಕ (*_config_i2c_bus_func_t)(uint8_t, uint8_t, uint32_t);
+	ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಪೂರ್ಣಾಂಕ (*ಗಣ_i2c_ವಿಳಾಸ_func_t)(ಪೂರ್ಣಾಂಕ, uint8_t);
+	ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಪೂರ್ಣಾಂಕ (*_i2c_transfer_func_t)(ಪೂರ್ಣಾಂಕ, ಸ್ಥಿರಾಂಕ uint8_t *, ಸ್ಥಿರಾಂಕ ಚಿಹ್ನೆರಹಿತ, uint8_t *, ಸ್ಥಿರಾಂಕ ಚಿಹ್ನೆರಹಿತ);
 
-	static void configure_callbacks(_config_i2c_bus_func_t config_func,
-					_set_i2c_address_func_t addr_func,
+	ಸ್ಥಿರ ಶೂನ್ಯ configure_callbacks(_config_i2c_bus_func_t config_func,
+					ಗಣ_i2c_ವಿಳಾಸ_func_t addr_func,
 					_i2c_transfer_func_t transfer_func)
 	{
 		_config_i2c_bus = config_func;
-		_set_i2c_address = addr_func;
+		ಗಣ_i2c_ವಿಳಾಸ = addr_func;
 		_i2c_transfer = transfer_func;
 	}
 
-protected:
+ಸಂರಕ್ಷಿತ:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -94,16 +94,16 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
-	I2C(const I2CSPIDriverConfig &config);
-	virtual ~I2C();
+	I2C(uint8_t device_type, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, ಸ್ಥಿರಾಂಕ ಪೂರ್ಣಾಂಕ bus, ಸ್ಥಿರಾಂಕ uint16_t ವಿಳಾಸ, ಸ್ಥಿರಾಂಕ uint32_t frequency);
+	I2C(ಸ್ಥಿರಾಂಕ I2CSPIDriverConfig &config);
+	ವಾಸ್ತವಿಕ ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	ವಾಸ್ತವಿಕ ಪೂರ್ಣಾಂಕ	probe() { ಹಿಂತಿರುಗಿ PX4_OK; }
 
-	virtual void set_device_address(int address, bool log = true);
+	ವಾಸ್ತವಿಕ ಶೂನ್ಯ ಗಣ_device_ವಿಳಾಸ(ಪೂರ್ಣಾಂಕ ವಿಳಾಸ, ತಾರ್ಕಿಕ ಲಘುಗಣಕ = ನಿಜ);
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -117,25 +117,25 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	ಪೂರ್ಣಾಂಕ		transfer(ಸ್ಥಿರಾಂಕ uint8_t *send, ಸ್ಥಿರಾಂಕ ಚಿಹ್ನೆರಹಿತ send_len, uint8_t *recv, ಸ್ಥಿರಾಂಕ ಚಿಹ್ನೆರಹಿತ recv_len);
 
-private:
+ಖಾಸಗಿ:
 	uint32_t		               _frequency{0};
-	int                            _i2c_fd{-1};
-	pthread_mutex_t               *_mutex{nullptr};
+	ಪೂರ್ಣಾಂಕ                            _i2c_fd{-1};
+	pthread_mutex_t               *_mutex{ಶೂನ್ಯಸೂಚಕ};
 
-	static const int MAX_I2C_BUS{4};
+	ಸ್ಥಿರ ಸ್ಥಿರಾಂಕ ಪೂರ್ಣಾಂಕ MAX_I2C_BUS{4};
 
-	static _config_i2c_bus_func_t  _config_i2c_bus;
-	static _set_i2c_address_func_t _set_i2c_address;
-	static _i2c_transfer_func_t    _i2c_transfer;
+	ಸ್ಥಿರ _config_i2c_bus_func_t  _config_i2c_bus;
+	ಸ್ಥಿರ ಗಣ_i2c_ವಿಳಾಸ_func_t ಗಣ_i2c_ವಿಳಾಸ;
+	ಸ್ಥಿರ _i2c_transfer_func_t    _i2c_transfer;
 
-	static struct _bus_mutex_t {
-		int _bus;
+	ಸ್ಥಿರ ರಚನೆ _bus_mutex_t {
+		ಪೂರ್ಣಾಂಕ _bus;
 		pthread_mutex_t _mutex{PTHREAD_MUTEX_INITIALIZER};
 	} _bus_mutex[MAX_I2C_BUS];
 };
 
 } // namespace device
 
-#endif /* _DEVICE_I2C_H */
+#ಆದರೆ_ಅಂತ್ಯ /* _DEVICE_I2C_H */

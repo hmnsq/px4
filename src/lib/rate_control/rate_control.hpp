@@ -37,18 +37,18 @@
  * PID 3 axis angular rate / angular velocity control.
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <matrix/matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <matrix/matrix/math.hpp>
 
-#include <mathlib/mathlib.h>
-#include <uORB/topics/rate_ctrl_status.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/mathlib.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/rate_ctrl_status.h>
 
-class RateControl
+ವರ್ಗ ದರ_Control
 {
-public:
-	RateControl() = default;
-	~RateControl() = default;
+ಸಾರ್ವಜನಿಕ:
+	ದರ_Control() = ಪೂರ್ವನಿಯೋಜಿತ;
+	~ದರ_Control() = ಪೂರ್ವನಿಯೋಜಿತ;
 
 	/**
 	 * Set the rate control PID gains
@@ -56,35 +56,35 @@ public:
 	 * @param I 3D vector of integral gains
 	 * @param D 3D vector of derivative gains
 	 */
-	void setPidGains(const matrix::Vector3f &P, const matrix::Vector3f &I, const matrix::Vector3f &D);
+	ಶೂನ್ಯ ಗಣ_Pid_Gains(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &P, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &I, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &D);
 
 	/**
 	 * Set the mximum absolute value of the integrator for all axes
 	 * @param integrator_limit limit value for all axes x, y, z
 	 */
-	void setIntegratorLimit(const matrix::Vector3f &integrator_limit) { _lim_int = integrator_limit; };
+	ಶೂನ್ಯ ಗಣ_Integrator_ಎಲ್ಲೆ(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &integrator_ಎಲ್ಲೆ) { _lim_int = integrator_ಎಲ್ಲೆ; };
 
 	/**
 	 * Set direct rate to torque feed forward gain
 	 * @see _gain_ff
 	 * @param FF 3D vector of feed forward gains for body x,y,z axis
 	 */
-	void setFeedForwardGain(const matrix::Vector3f &FF) { _gain_ff = FF; };
+	ಶೂನ್ಯ ಗಣ_Feed_Forward_Gain(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &FF) { _gain_ff = FF; };
 
 	/**
 	 * Set saturation status
 	 * @param control saturation vector from control allocator
 	 */
-	void setSaturationStatus(const matrix::Vector3<bool> &saturation_positive,
-				 const matrix::Vector3<bool> &saturation_negative);
+	ಶೂನ್ಯ ಗಣ_Saturation_ಸ್ಥಿತಿ(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3<ತಾರ್ಕಿಕ> &saturation_ಧನಾತ್ಮಕ,
+				 ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3<ತಾರ್ಕಿಕ> &saturation_negative);
 
 	/**
 	 * Set individual saturation flags
 	 * @param axis 0 roll, 1 pitch, 2 yaw
 	 * @param is_saturated value to update the flag with
 	 */
-	void setPositiveSaturationFlag(size_t axis, bool is_saturated);
-	void setNegativeSaturationFlag(size_t axis, bool is_saturated);
+	ಶೂನ್ಯ ಗಣ_ಧನಾತ್ಮಕ_Saturation_Flag(size_t axis, ತಾರ್ಕಿಕ is_saturated);
+	ಶೂನ್ಯ ಗಣ_Negative_Saturation_Flag(size_t axis, ತಾರ್ಕಿಕ is_saturated);
 
 	/**
 	 * Run one control loop cycle calculation
@@ -93,24 +93,24 @@ public:
 	 * @param dt desired vehicle angular rate setpoint
 	 * @return [-1,1] normalized torque vector to apply to the vehicle
 	 */
-	matrix::Vector3f update(const matrix::Vector3f &rate, const matrix::Vector3f &rate_sp,
-				const matrix::Vector3f &angular_accel, const float dt, const bool landed);
+	ಮಾತೃಕೆ::Vector3f update(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &ದರ, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &ದರ_sp,
+				ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &angular_accel, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ dt, ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ landed);
 
 	/**
 	 * Set the integral term to 0 to prevent windup
 	 * @see _rate_int
 	 */
-	void resetIntegral() { _rate_int.zero(); }
+	ಶೂನ್ಯ resetIntegral() { ದರ_int.zero(); }
 
 	/**
 	 * Set the integral term to 0 for specific axes
 	 * @param  axis roll 0 / pitch 1 / yaw 2
 	 * @see _rate_int
 	 */
-	void resetIntegral(size_t axis)
+	ಶೂನ್ಯ resetIntegral(size_t axis)
 	{
-		if (axis < 3) {
-			_rate_int(axis) = 0.f;
+		ಆದರೆ (axis < 3) {
+			ದರ_int(axis) = 0.f;
 		}
 	}
 
@@ -118,22 +118,22 @@ public:
 	 * Get status message of controller for logging/debugging
 	 * @param rate_ctrl_status status message to fill with internal states
 	 */
-	void getRateControlStatus(rate_ctrl_status_s &rate_ctrl_status);
+	ಶೂನ್ಯ get_ದರ_Control_ಸ್ಥಿತಿ(ದರ_ctrl_ಸ್ಥಿತಿ_s &ದರ_ctrl_ಸ್ಥಿತಿ);
 
-private:
-	void updateIntegral(matrix::Vector3f &rate_error, const float dt);
+ಖಾಸಗಿ:
+	ಶೂನ್ಯ updateIntegral(ಮಾತೃಕೆ::Vector3f &ದರ_error, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ dt);
 
 	// Gains
-	matrix::Vector3f _gain_p; ///< rate control proportional gain for all axes x, y, z
-	matrix::Vector3f _gain_i; ///< rate control integral gain
-	matrix::Vector3f _gain_d; ///< rate control derivative gain
-	matrix::Vector3f _lim_int; ///< integrator term maximum absolute value
-	matrix::Vector3f _gain_ff; ///< direct rate to torque feed forward gain only useful for helicopters
+	ಮಾತೃಕೆ::Vector3f _gain_p; ///< rate control proportional gain for all axes x, y, z
+	ಮಾತೃಕೆ::Vector3f _gain_i; ///< rate control integral gain
+	ಮಾತೃಕೆ::Vector3f _gain_d; ///< rate control derivative gain
+	ಮಾತೃಕೆ::Vector3f _lim_int; ///< integrator term maximum absolute value
+	ಮಾತೃಕೆ::Vector3f _gain_ff; ///< direct rate to torque feed forward gain only useful for helicopters
 
 	// States
-	matrix::Vector3f _rate_int; ///< integral term of the rate controller
+	ಮಾತೃಕೆ::Vector3f ದರ_int; ///< integral term of the rate controller
 
 	// Feedback from control allocation
-	matrix::Vector<bool, 3> _control_allocator_saturation_negative;
-	matrix::Vector<bool, 3> _control_allocator_saturation_positive;
+	ಮಾತೃಕೆ::ಸದಿಶ<ತಾರ್ಕಿಕ, 3> _control_allocator_saturation_negative;
+	ಮಾತೃಕೆ::ಸದಿಶ<ತಾರ್ಕಿಕ, 3> control_allocator_saturation_ಧನಾತ್ಮಕ;
 };

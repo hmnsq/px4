@@ -31,35 +31,35 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "FunctionProviderBase.hpp"
+#ಅನ್ತರ್ಭಾವ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gimbal_controls.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/gimbal_controls.h>
 
 /**
  * Functions: Gimbal_Roll .. Gimbal_Yaw
  */
-class FunctionGimbal : public FunctionProviderBase
+ವರ್ಗ FunctionGimbal : ಸಾರ್ವಜನಿಕ Function_Provider_ತಳ
 {
-public:
-	FunctionGimbal() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGimbal(); }
+ಸಾರ್ವಜನಿಕ:
+	FunctionGimbal() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ಸ್ಥಿರ Function_Provider_ತಳ *allocate(ಸ್ಥಿರಾಂಕ Context &context) { ಹಿಂತಿರುಗಿ ಹೊಸ FunctionGimbal(); }
 
-	void update() override
+	ಶೂನ್ಯ update() override
 	{
 		gimbal_controls_s gimbal_controls;
 
-		if (_topic.update(&gimbal_controls)) {
-			_data[0] = gimbal_controls.control[gimbal_controls_s::INDEX_ROLL];
-			_data[1] = gimbal_controls.control[gimbal_controls_s::INDEX_PITCH];
-			_data[2] = gimbal_controls.control[gimbal_controls_s::INDEX_YAW];
+		ಆದರೆ (_topic.update(&gimbal_controls)) {
+			ದತ್ತಾಂಶ_3[0] = gimbal_controls.control[gimbal_controls_s::ಸೂಚ್ಯಂಕ_ROLL];
+			ದತ್ತಾಂಶ_3[1] = gimbal_controls.control[gimbal_controls_s::ಸೂಚ್ಯಂಕ_PITCH];
+			ದತ್ತಾಂಶ_3[2] = gimbal_controls.control[gimbal_controls_s::ಸೂಚ್ಯಂಕ_YAW];
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Gimbal_Roll]; }
+	ದಶಮಾಂಶ value(OutputFunction func) override { ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ_3[(ಪೂರ್ಣಾಂಕ)func - (ಪೂರ್ಣಾಂಕ)OutputFunction::Gimbal_Roll]; }
 
-private:
+ಖಾಸಗಿ:
 	uORB::Subscription _topic{ORB_ID(gimbal_controls)};
-	float _data[3] { NAN, NAN, NAN };
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_3[3] { NAN, NAN, NAN };
 };

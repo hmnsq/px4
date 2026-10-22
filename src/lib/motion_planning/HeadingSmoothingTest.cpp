@@ -36,112 +36,112 @@
  * Run exclusively this test with the command "make tests TESTFILTER=HeadingSmoothing"
  */
 
-#include "mathlib/math/Limits.hpp"
-#include <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ "mathlib/math/Limits.hpp"
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
 
-#include <motion_planning/HeadingSmoothing.hpp>
+#ಅನ್ತರ್ಭಾವ <motion_planning/HeadingSmoothing.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-class HeadingSmoothingTest : public ::testing::Test
+ವರ್ಗ HeadingSmoothingTest : ಸಾರ್ವಜನಿಕ ::testing::Test
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	HeadingSmoothingTest()
 	{
-		_smoothing.setMaxHeadingRate(15.f);
-		_smoothing.setMaxHeadingAccel(1.f);
+		_smoothing.ಗಣ_Max_Heading_ದರ(15.f);
+		_smoothing.ಗಣ_Max_Heading_Accel(1.f);
 	}
 
 	HeadingSmoothing _smoothing;
-	float _dt{.1f};
+	ದಶಮಾಂಶ _dt{.1f};
 };
 
 TEST_F(HeadingSmoothingTest, convergence)
 {
-	const float heading_current = math::radians(0.f);
-	const float heading_target = math::radians(5.f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_current = math::radians(0.f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_ಗುರಿ = math::radians(5.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(1.f / _dt);
+	ಸ್ಥಿರಾಂಕ ಪೂರ್ಣಾಂಕ nb_ಹೆಜ್ಜೆಗಳು = ceilf(1.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < nb_ಹೆಜ್ಜೆಗಳು; i++) {
+		_smoothing.update(heading_ಗುರಿ, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
-	EXPECT_EQ(heading_rate, 0.f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading = _smoothing.getSmoothedHeading();
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_ದರ = _smoothing.get_Smoothed_Heading_ದರ();
+	EXPECT_EQ(heading, heading_ಗುರಿ) << "heading (deg): " << math::degrees(heading);
+	EXPECT_EQ(heading_ದರ, 0.f);
 }
 
-TEST_F(HeadingSmoothingTest, zero_crossing)
+TEST_F(HeadingSmoothingTest, zero_ದಾಟುವಿಕೆ)
 {
-	const float heading_current = math::radians(-95.f);
-	const float heading_target = math::radians(5.f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_current = math::radians(-95.f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_ಗುರಿ = math::radians(5.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(4.f / _dt);
+	ಸ್ಥಿರಾಂಕ ಪೂರ್ಣಾಂಕ nb_ಹೆಜ್ಜೆಗಳು = ceilf(4.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < nb_ಹೆಜ್ಜೆಗಳು; i++) {
+		_smoothing.update(heading_ಗುರಿ, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
-	EXPECT_EQ(heading_rate, 0.f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading = _smoothing.getSmoothedHeading();
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_ದರ = _smoothing.get_Smoothed_Heading_ದರ();
+	EXPECT_EQ(heading, heading_ಗುರಿ) << "heading (deg): " << math::degrees(heading);
+	EXPECT_EQ(heading_ದರ, 0.f);
 }
 
 TEST_F(HeadingSmoothingTest, wrap_pi)
 {
-	const float heading_current = math::radians(-170.f);
-	const float heading_target = math::radians(170.f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_current = math::radians(-170.f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_ಗುರಿ = math::radians(170.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	ಸ್ಥಿರಾಂಕ ಪೂರ್ಣಾಂಕ nb_ಹೆಜ್ಜೆಗಳು = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < nb_ಹೆಜ್ಜೆಗಳು; i++) {
+		_smoothing.update(heading_ಗುರಿ, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
-	EXPECT_EQ(heading_rate, 0.f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading = _smoothing.getSmoothedHeading();
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_ದರ = _smoothing.get_Smoothed_Heading_ದರ();
+	EXPECT_EQ(heading, heading_ಗುರಿ) << "heading (deg): " << math::degrees(heading);
+	EXPECT_EQ(heading_ದರ, 0.f);
 }
 
-TEST_F(HeadingSmoothingTest, positive_rate)
+TEST_F(HeadingSmoothingTest, ಧನಾತ್ಮಕ_ದರ)
 {
-	const float max_heading_rate = .15f;
-	_smoothing.setMaxHeadingRate(max_heading_rate);
-	const float heading_current = math::radians(-170.f);
-	const float heading_target = math::radians(-20.f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ max_heading_ದರ = .15f;
+	_smoothing.ಗಣ_Max_Heading_ದರ(max_heading_ದರ);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_current = math::radians(-170.f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_ಗುರಿ = math::radians(-20.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	ಸ್ಥಿರಾಂಕ ಪೂರ್ಣಾಂಕ nb_ಹೆಜ್ಜೆಗಳು = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < nb_ಹೆಜ್ಜೆಗಳು; i++) {
+		_smoothing.update(heading_ಗುರಿ, _dt);
 	}
 
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading_rate, max_heading_rate);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_ದರ = _smoothing.get_Smoothed_Heading_ದರ();
+	EXPECT_EQ(heading_ದರ, max_heading_ದರ);
 }
 
-TEST_F(HeadingSmoothingTest, negative_rate)
+TEST_F(HeadingSmoothingTest, negative_ದರ)
 {
-	const float max_heading_rate = 0.15;
-	_smoothing.setMaxHeadingRate(max_heading_rate);
-	const float heading_current = math::radians(-20.f);
-	const float heading_target = math::radians(-140.f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ max_heading_ದರ = 0.15;
+	_smoothing.ಗಣ_Max_Heading_ದರ(max_heading_ದರ);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_current = math::radians(-20.f);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_ಗುರಿ = math::radians(-140.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	ಸ್ಥಿರಾಂಕ ಪೂರ್ಣಾಂಕ nb_ಹೆಜ್ಜೆಗಳು = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
-		_smoothing.update(heading_target, _dt);
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < nb_ಹೆಜ್ಜೆಗಳು; i++) {
+		_smoothing.update(heading_ಗುರಿ, _dt);
 	}
 
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
-	EXPECT_EQ(heading_rate, -max_heading_rate);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ heading_ದರ = _smoothing.get_Smoothed_Heading_ದರ();
+	EXPECT_EQ(heading_ದರ, -max_heading_ದರ);
 }

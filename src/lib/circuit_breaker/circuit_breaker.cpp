@@ -42,15 +42,15 @@
  * parameter needs to set to the key (magic).
  */
 
-#include "circuit_breaker.h"
+#ಅನ್ತರ್ಭಾವ "circuit_breaker.h"
 
-#include <stdint.h>
-#include <px4_platform_common/defines.h>
-#include <lib/parameters/param.h>
+#ಅನ್ತರ್ಭಾವ <stdint.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <lib/parameters/param.h>
 
-bool circuit_breaker_enabled(const char *breaker, int32_t magic)
+ತಾರ್ಕಿಕ circuit_breaker_enabled(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *breaker, int32_t magic)
 {
 	int32_t val = -1;
 
-	return (param_get(param_find(breaker), &val) == 0) && (val == magic);
+	ಹಿಂತಿರುಗಿ (param_get(param_ಕಂಡುಹಿಡಿ(breaker), &val) == 0) && (val == magic);
 }

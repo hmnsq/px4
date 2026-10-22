@@ -31,25 +31,25 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/integration.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/integration.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-Vector<float, 6> f(float t, const Matrix<float, 6, 1> &  /*y*/, const Matrix<float, 3, 1> &  /*u*/)
+ಸದಿಶ<ದಶಮಾಂಶ, 6> f(ದಶಮಾಂಶ t, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 6, 1> &  /*y*/, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 1> &  /*u*/)
 {
-	float v = -sin(t);
-	return v * ones<float, 6, 1>();
+	ದಶಮಾಂಶ v = -ಜ್ಯಾ(t);
+	ಹಿಂತಿರುಗಿ v * ones<ದಶಮಾಂಶ, 6, 1>();
 }
 
-TEST(MatrixIntegralTest, Integral)
+TEST(ಮಾತೃಕೆ_Integral_Test, Integral)
 {
-	Vector<float, 6> y = ones<float, 6, 1>();
-	Vector<float, 3> u = ones<float, 3, 1>();
-	float t0 = 0;
-	float tf = 2;
-	float h = 0.001f;
+	ಸದಿಶ<ದಶಮಾಂಶ, 6> y = ones<ದಶಮಾಂಶ, 6, 1>();
+	ಸದಿಶ<ದಶಮಾಂಶ, 3> u = ones<ದಶಮಾಂಶ, 3, 1>();
+	ದಶಮಾಂಶ t0 = 0;
+	ದಶಮಾಂಶ tf = 2;
+	ದಶಮಾಂಶ h = 0.001f;
 	integrate_rk4(f, y, u, t0, tf, h, y);
-	float v = 1 + std::cos(tf) - std::cos(t0);
-	EXPECT_EQ(y, (ones<float, 6, 1>()*v));
+	ದಶಮಾಂಶ v = 1 + std::ಕೋಜ್ಯಾ(tf) - std::ಕೋಜ್ಯಾ(t0);
+	EXPECT_EQ(y, (ones<ದಶಮಾಂಶ, 6, 1>()*v));
 }

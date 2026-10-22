@@ -36,12 +36,12 @@
  * Run this test only using make tests TESTFILTER=VelocitySmoothing
  */
 
-#include <gtest/gtest.h>
-#include <matrix/matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/matrix/math.hpp>
 
-#include "VelocitySmoothing.hpp"
+#ಅನ್ತರ್ಭಾವ "VelocitySmoothing.hpp"
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
 TEST(VelocitySmoothingBasicTest, AllZeroCase)
 {
@@ -53,7 +53,7 @@ TEST(VelocitySmoothingBasicTest, AllZeroCase)
 	trajectory.updateTraj(0.f);
 
 	// THEN: All the trajectories should still be zero
-	EXPECT_FLOAT_EQ(trajectory.getTotalTime(), 0.f);
+	EXPECT_FLOAT_EQ(trajectory.get_ಒಟ್ಟು_ಸಮಯ(), 0.f);
 	EXPECT_FLOAT_EQ(trajectory.getCurrentJerk(), 0.f);
 	EXPECT_FLOAT_EQ(trajectory.getCurrentAcceleration(), 0.f);
 	EXPECT_FLOAT_EQ(trajectory.getCurrentVelocity(), 0.f);
@@ -65,16 +65,16 @@ TEST(VelocitySmoothingBasicTest, DivisionByZeroComputeT1)
 	// GIVEN: A try to trigger division by zero in computeT1()
 	// zero jerk but enough input to go that code path
 	VelocitySmoothing trajectory;
-	trajectory.setMaxJerk(0.f);
-	trajectory.setMaxAccel(0.f);
-	trajectory.setMaxVel(1.f);
+	trajectory.ಗಣ_Max_Jerk(0.f);
+	trajectory.ಗಣ_Max_Accel(0.f);
+	trajectory.ಗಣ_Max_Vel(1.f);
 
 	// WHEN: We update it
 	trajectory.updateDurations(1.f);
 	trajectory.updateTraj(1.f);
 
 	// THEN: All the trajectories should still be zero
-	EXPECT_FLOAT_EQ(trajectory.getTotalTime(), 0.f);
+	EXPECT_FLOAT_EQ(trajectory.get_ಒಟ್ಟು_ಸಮಯ(), 0.f);
 	EXPECT_FLOAT_EQ(trajectory.getCurrentJerk(), 0.f);
 	EXPECT_FLOAT_EQ(trajectory.getCurrentAcceleration(), 0.f);
 	EXPECT_FLOAT_EQ(trajectory.getCurrentVelocity(), 0.f);
@@ -86,81 +86,81 @@ TEST(VelocitySmoothingBasicTest, DivisionByZeroSaturateT1ForAccel)
 	// GIVEN: We trigger division by zero in saturateT1ForAccel()
 	// zero jerk but enough input to go that code path
 	VelocitySmoothing trajectory(1.f, 0.f, 0.f);
-	trajectory.setMaxJerk(0.f);
-	trajectory.setMaxAccel(0.f);
-	trajectory.setMaxVel(1.f);
+	trajectory.ಗಣ_Max_Jerk(0.f);
+	trajectory.ಗಣ_Max_Accel(0.f);
+	trajectory.ಗಣ_Max_Vel(1.f);
 
 	// WHEN: We update it
 	trajectory.updateDurations(1.f);
 	trajectory.updateTraj(1.f);
 
 	// THEN: All the trajectories should still be zero
-	EXPECT_FLOAT_EQ(trajectory.getTotalTime(), 0.f);
+	EXPECT_FLOAT_EQ(trajectory.get_ಒಟ್ಟು_ಸಮಯ(), 0.f);
 	EXPECT_FLOAT_EQ(trajectory.getCurrentJerk(), 0.f);
 	EXPECT_FLOAT_EQ(trajectory.getCurrentAcceleration(), 0.f);
 	EXPECT_FLOAT_EQ(trajectory.getCurrentVelocity(), 0.f);
 	EXPECT_FLOAT_EQ(trajectory.getCurrentPosition(), 0.f);
 }
 
-class VelocitySmoothingTest : public ::testing::Test
+ವರ್ಗ VelocitySmoothingTest : ಸಾರ್ವಜನಿಕ ::testing::Test
 {
-public:
-	void setConstraints(float j_max, float a_max, float v_max);
-	void setInitialConditions(Vector3f acc, Vector3f vel, Vector3f pos);
-	void updateTrajectories(float dt, Vector3f velocity_setpoints);
+ಸಾರ್ವಜನಿಕ:
+	ಶೂನ್ಯ ಗಣ_Constraints(ದಶಮಾಂಶ j_max, ದಶಮಾಂಶ a_max, ದಶಮಾಂಶ v_max);
+	ಶೂನ್ಯ ಗಣ_Initial_Conditions(Vector3f acc, Vector3f vel, Vector3f pos);
+	ಶೂನ್ಯ updateTrajectories(ದಶಮಾಂಶ dt, Vector3f velocity_setpoints);
 
 	VelocitySmoothing _trajectories[3];
 };
 
-void VelocitySmoothingTest::setConstraints(float j_max, float a_max, float v_max)
+ಶೂನ್ಯ VelocitySmoothingTest::ಗಣ_Constraints(ದಶಮಾಂಶ j_max, ದಶಮಾಂಶ a_max, ದಶಮಾಂಶ v_max)
 {
-	for (int i = 0; i < 3; i++) {
-		_trajectories[i].setMaxJerk(j_max);
-		_trajectories[i].setMaxAccel(a_max);
-		_trajectories[i].setMaxVel(v_max);
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 3; i++) {
+		_trajectories[i].ಗಣ_Max_Jerk(j_max);
+		_trajectories[i].ಗಣ_Max_Accel(a_max);
+		_trajectories[i].ಗಣ_Max_Vel(v_max);
 	}
 }
 
-void VelocitySmoothingTest::setInitialConditions(Vector3f a0, Vector3f v0, Vector3f x0)
+ಶೂನ್ಯ VelocitySmoothingTest::ಗಣ_Initial_Conditions(Vector3f a0, Vector3f v0, Vector3f x0)
 {
-	for (int i = 0; i < 3; i++) {
-		_trajectories[i].setCurrentAcceleration(a0(i));
-		_trajectories[i].setCurrentVelocity(v0(i));
-		_trajectories[i].setCurrentPosition(x0(i));
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 3; i++) {
+		_trajectories[i].ಗಣ_Current_Acceleration(a0(i));
+		_trajectories[i].ಗಣ_Current_Velocity(v0(i));
+		_trajectories[i].ಗಣ_Current_Position(x0(i));
 	}
 }
 
-void VelocitySmoothingTest::updateTrajectories(float dt, Vector3f velocity_setpoints)
+ಶೂನ್ಯ VelocitySmoothingTest::updateTrajectories(ದಶಮಾಂಶ dt, Vector3f velocity_setpoints)
 {
-	for (int i = 0; i < 3; i++) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 3; i++) {
 		_trajectories[i].updateTraj(dt);
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentJerk()), _trajectories[i].getMaxJerk());
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentAcceleration()), _trajectories[i].getMaxAccel());
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentVelocity()), _trajectories[i].getMaxVel());
 	}
 
-	for (int i = 0; i < 3; i++) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 3; i++) {
 		_trajectories[i].updateDurations(velocity_setpoints(i));
 	}
 
-	VelocitySmoothing::timeSynchronization(_trajectories, 2);
+	VelocitySmoothing::ಸಮಯ_Synchronization(_trajectories, 2);
 }
 
-TEST_F(VelocitySmoothingTest, testTimeSynchronization)
+TEST_F(VelocitySmoothingTest, test_ಸಮಯ_Synchronization)
 {
 	// GIVEN: A set of constraints
-	const float j_max = 55.2f;
-	const float a_max = 6.f;
-	const float v_max = 6.f;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ j_max = 55.2f;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ a_max = 6.f;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ v_max = 6.f;
 
-	setConstraints(j_max, a_max, v_max);
+	ಗಣ_Constraints(j_max, a_max, v_max);
 
 	// AND: A set of initial conditions
 	Vector3f a0(0.22f, 0.f, 0.22f);
 	Vector3f v0(2.47f, -5.59e-6f, 2.47f);
 	Vector3f x0(0.f, 0.f, 0.f);
 
-	setInitialConditions(a0, v0, x0);
+	ಗಣ_Initial_Conditions(a0, v0, x0);
 
 	// WHEN: We generate trajectories (time synchronized in XY) with constant setpoints and dt
 	Vector3f velocity_setpoints(-3.f, 1.f, 0.f);
@@ -168,74 +168,74 @@ TEST_F(VelocitySmoothingTest, testTimeSynchronization)
 
 
 	// THEN: The X and Y trajectories should have the same total time (= time sunchronized)
-	EXPECT_LE(fabsf(_trajectories[0].getTotalTime() - _trajectories[1].getTotalTime()), 0.0001);
+	EXPECT_LE(fabsf(_trajectories[0].get_ಒಟ್ಟು_ಸಮಯ() - _trajectories[1].get_ಒಟ್ಟು_ಸಮಯ()), 0.0001);
 }
 
-TEST_F(VelocitySmoothingTest, testTimeSynchronizationSameDelta)
+TEST_F(VelocitySmoothingTest, test_ಸಮಯ_Synchronization_Same_Delta)
 {
 	// GIVEN: a set of initial conditions
 	Vector3f a0(0.f, 0.f, 0.f);
 	Vector3f v0(0.5f, -0.2f, 0.f);
 	Vector3f x0(0.f, 0.f, 0.f);
 
-	setInitialConditions(a0, v0, x0);
+	ಗಣ_Initial_Conditions(a0, v0, x0);
 
 	// WHEN: the same delta velocity is set to the XY-axes
-	const float delta_v = 0.3f;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ delta_v = 0.3f;
 	Vector3f velocity_setpoints{v0(0) + delta_v, v0(1) + delta_v, 0.f};
 
-	for (int i = 0; i < 3; i++) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 3; i++) {
 		_trajectories[i].updateDurations(velocity_setpoints(i));
 	}
 
-	VelocitySmoothing::timeSynchronization(_trajectories, 3);
+	VelocitySmoothing::ಸಮಯ_Synchronization(_trajectories, 3);
 
 	// THEN: they should have the same T1, T2 and T3 dirations
-	EXPECT_FLOAT_EQ(_trajectories[0].getTotalTime(), _trajectories[1].getTotalTime());
+	EXPECT_FLOAT_EQ(_trajectories[0].get_ಒಟ್ಟು_ಸಮಯ(), _trajectories[1].get_ಒಟ್ಟು_ಸಮಯ());
 	EXPECT_FLOAT_EQ(_trajectories[0].getT1(), _trajectories[1].getT1());
 	EXPECT_FLOAT_EQ(_trajectories[0].getT2(), _trajectories[1].getT2());
 	EXPECT_FLOAT_EQ(_trajectories[0].getT3(), _trajectories[1].getT3());
 
 	// AND: the Z axis should have the same duration but spend all its time in T2 (constant phase)
-	EXPECT_FLOAT_EQ(_trajectories[2].getTotalTime(), _trajectories[0].getTotalTime());
+	EXPECT_FLOAT_EQ(_trajectories[2].get_ಒಟ್ಟು_ಸಮಯ(), _trajectories[0].get_ಒಟ್ಟು_ಸಮಯ());
 	EXPECT_FLOAT_EQ(_trajectories[2].getT1(), 0.f);
-	EXPECT_FLOAT_EQ(_trajectories[2].getT2(), _trajectories[0].getTotalTime());
+	EXPECT_FLOAT_EQ(_trajectories[2].getT2(), _trajectories[0].get_ಒಟ್ಟು_ಸಮಯ());
 	EXPECT_FLOAT_EQ(_trajectories[2].getT3(), 0.f);
 }
 
 TEST_F(VelocitySmoothingTest, testConstantSetpoint)
 {
 	// GIVEN: A set of constraints
-	const float j_max = 55.2f;
-	const float a_max = 6.f;
-	const float v_max = 6.f;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ j_max = 55.2f;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ a_max = 6.f;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ v_max = 6.f;
 
-	setConstraints(j_max, a_max, v_max);
+	ಗಣ_Constraints(j_max, a_max, v_max);
 
 	// AND: A set of initial conditions
 	Vector3f a0(0.f, 0.f, 0.f);
 	Vector3f v0(0.f, 0.f, 0.f);
 	Vector3f x0(0.f, 0.f, 0.f);
 
-	setInitialConditions(a0, v0, x0);
+	ಗಣ_Initial_Conditions(a0, v0, x0);
 
 	// WHEN: We generate trajectories with constant setpoints and dt
 	Vector3f velocity_setpoints(-3.f, 0.f, -1.f);
 
 	// Compute the number of steps required to reach desired value
 	// The updateTrajectories is first called once to compute the total time
-	const float dt = 0.01;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ dt = 0.01;
 	updateTrajectories(0.f, velocity_setpoints);
-	float t123 = _trajectories[0].getTotalTime();
-	int nb_steps = ceilf(t123 / dt);
+	ದಶಮಾಂಶ t123 = _trajectories[0].get_ಒಟ್ಟು_ಸಮಯ();
+	ಪೂರ್ಣಾಂಕ nb_ಹೆಜ್ಜೆಗಳು = ceilf(t123 / dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < nb_ಹೆಜ್ಜೆಗಳು; i++) {
 		updateTrajectories(dt, velocity_setpoints);
 	}
 
 	// THEN: All the trajectories should have reached their
 	// final state: desired velocity target and zero acceleration
-	for (int i = 0; i < 3; i++) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 3; i++) {
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentVelocity() - velocity_setpoints(i)), 0.01f);
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentAcceleration()), 0.0001f);
 	}
@@ -248,19 +248,19 @@ TEST_F(VelocitySmoothingTest, testZeroSetpoint)
 	Vector3f v0(0.f, 0.f, 0.f);
 	Vector3f x0(0.f, 0.f, 0.f);
 
-	setInitialConditions(a0, v0, x0);
+	ಗಣ_Initial_Conditions(a0, v0, x0);
 
 	// AND: Zero setpoints
 	Vector3f velocity_setpoints(0.f, 0.f, 0.f);
-	const float dt = 0.01f;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ dt = 0.01f;
 
 	// WHEN: We run a few times the algorithm
-	for (int i = 0; i < 60; i++) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 60; i++) {
 		updateTrajectories(dt, velocity_setpoints);
 	}
 
 	// THEN: All the trajectories should still be zero
-	for (int i = 0; i < 3; i++) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 3; i++) {
 		EXPECT_FLOAT_EQ(_trajectories[i].getCurrentJerk(), 0.f);
 		EXPECT_FLOAT_EQ(_trajectories[i].getCurrentAcceleration(), 0.f);
 		EXPECT_FLOAT_EQ(_trajectories[i].getCurrentVelocity(), 0.f);

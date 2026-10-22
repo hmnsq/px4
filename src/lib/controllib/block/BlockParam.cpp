@@ -37,108 +37,108 @@
  * Controller library code
  */
 
-#include "Block.hpp"
-#include "BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "Block.hpp"
+#ಅನ್ತರ್ಭಾವ "BlockParam.hpp"
 
-#include <cstdio>
-#include <cstring>
+#ಅನ್ತರ್ಭಾವ <cstdio>
+#ಅನ್ತರ್ಭಾವ <cstring>
 
-#include <containers/List.hpp>
+#ಅನ್ತರ್ಭಾವ <containers/List.hpp>
 
-#include <px4_platform_common/log.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/log.h>
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
-BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_prefix)
+ಖಂಡ_Param_ತಳ::ಖಂಡ_Param_ತಳ(ಖಂಡ *ಪೋಷಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, ತಾರ್ಕಿಕ ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ)
 {
-	char fullname[blockNameLengthMax];
+	ಅಕ್ಷರ fullname[ಖಂಡ_Name_ಉದ್ದಳತೆ_Max];
 
-	if (parent == nullptr) {
-		strncpy(fullname, name, blockNameLengthMax - 1);
-		fullname[sizeof(fullname) - 1] = '\0';
+	ಆದರೆ (ಪೋಷಕ == ಶೂನ್ಯಸೂಚಕ) {
+		strncpy(fullname, name, ಖಂಡ_Name_ಉದ್ದಳತೆ_Max - 1);
+		fullname[ಗಾತ್ರ(fullname) - 1] = '\0';
 
-	} else {
-		char parentName[blockNameLengthMax];
-		parent->getName(parentName, blockNameLengthMax);
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		ಅಕ್ಷರ ಪೋಷಕ_Name[ಖಂಡ_Name_ಉದ್ದಳತೆ_Max];
+		ಪೋಷಕ->getName(ಪೋಷಕ_Name, ಖಂಡ_Name_ಉದ್ದಳತೆ_Max);
 
-		if (strcmp(name, "") == 0) {
-			strncpy(fullname, parentName, blockNameLengthMax);
+		ಆದರೆ (strcmp(name, "") == 0) {
+			strncpy(fullname, ಪೋಷಕ_Name, ಖಂಡ_Name_ಉದ್ದಳತೆ_Max);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[ಗಾತ್ರ(fullname) - 1] = '\0';
 
-		} else if (parent_prefix) {
-			if (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
+		} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ) {
+			ಆದರೆ (snprintf(fullname, ಖಂಡ_Name_ಉದ್ದಳತೆ_Max, "%s_%s", ಪೋಷಕ_Name, name) >= ಖಂಡ_Name_ಉದ್ದಳತೆ_Max) {
 				PX4_ERR("param too long: %s", name);
 			}
 
-		} else {
-			strncpy(fullname, name, blockNameLengthMax);
+		} ಇಲ್ಲದಿದ್ದರೆ {
+			strncpy(fullname, name, ಖಂಡ_Name_ಉದ್ದಳತೆ_Max);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[ಗಾತ್ರ(fullname) - 1] = '\0';
 		}
 
-		parent->getParams().add(this);
+		ಪೋಷಕ->getParams().ಕೂಡಿಸು(ಇದು);
 	}
 
-	_handle = param_find(fullname);
+	_handle = param_ಕಂಡುಹಿಡಿ(fullname);
 
-	if (_handle == PARAM_INVALID) {
+	ಆದರೆ (_handle == PARAM_INVALID) {
 		PX4_ERR("error finding param: %s", fullname);
 	}
 };
 
-template <>
-BlockParam<bool>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+ಮಾದರಿ <>
+ಖಂಡ_Param<ತಾರ್ಕಿಕ>::ಖಂಡ_Param(ಖಂಡ *ಖಂಡ_2, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, ತಾರ್ಕಿಕ ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ) :
+	ಖಂಡ_Param_ತಳ(ಖಂಡ_2, name, ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ),
 	_val()
 {
 	update();
 }
 
-template <>
-bool BlockParam<bool>::update()
+ಮಾದರಿ <>
+ತಾರ್ಕಿಕ ಖಂಡ_Param<ತಾರ್ಕಿಕ>::update()
 {
 	int32_t tmp = 0;
-	int ret = param_get(_handle, &tmp);
+	ಪೂರ್ಣಾಂಕ ret = param_get(_handle, &tmp);
 
-	if (tmp == 1) {
-		_val = true;
+	ಆದರೆ (tmp == 1) {
+		_val = ನಿಜ;
 
-	} else {
-		_val = false;
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		_val = ಸುಳ್ಳು;
 	}
 
-	return (ret == PX4_OK);
+	ಹಿಂತಿರುಗಿ (ret == PX4_OK);
 }
 
-template <>
-BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+ಮಾದರಿ <>
+ಖಂಡ_Param<int32_t>::ಖಂಡ_Param(ಖಂಡ *ಖಂಡ_2, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, ತಾರ್ಕಿಕ ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ) :
+	ಖಂಡ_Param_ತಳ(ಖಂಡ_2, name, ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ),
 	_val()
 {
 	update();
 }
 
-template <>
-BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+ಮಾದರಿ <>
+ಖಂಡ_Param<ದಶಮಾಂಶ>::ಖಂಡ_Param(ಖಂಡ *ಖಂಡ_2, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, ತಾರ್ಕಿಕ ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ) :
+	ಖಂಡ_Param_ತಳ(ಖಂಡ_2, name, ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ),
 	_val()
 {
 	update();
 }
 
-template <>
-BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_prefix, int32_t &extern_val) :
-	BlockParamBase(block, name, parent_prefix),
+ಮಾದರಿ <>
+ಖಂಡ_Param<int32_t &>::ಖಂಡ_Param(ಖಂಡ *ಖಂಡ_2, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, ತಾರ್ಕಿಕ ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ, int32_t &extern_val) :
+	ಖಂಡ_Param_ತಳ(ಖಂಡ_2, name, ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ),
 	_val(extern_val)
 {
 	update();
 }
 
-template <>
-BlockParam<float &>::BlockParam(Block *block, const char *name, bool parent_prefix, float &extern_val) :
-	BlockParamBase(block, name, parent_prefix),
+ಮಾದರಿ <>
+ಖಂಡ_Param<ದಶಮಾಂಶ &>::ಖಂಡ_Param(ಖಂಡ *ಖಂಡ_2, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, ತಾರ್ಕಿಕ ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ, ದಶಮಾಂಶ &extern_val) :
+	ಖಂಡ_Param_ತಳ(ಖಂಡ_2, name, ಪೋಷಕ_ಪೂರ್ವಪ್ರತ್ಯಯ),
 	_val(extern_val)
 {
 	update();

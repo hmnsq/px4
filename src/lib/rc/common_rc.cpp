@@ -1,31 +1,31 @@
 
-#include "common_rc.h"
+#ಅನ್ತರ್ಭಾವ "common_rc.h"
 
 __EXPORT rc_decode_buf_t rc_decode_buf;
 
-uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a)
+uint8_t crc8_dvb_s2(uint8_t ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ, uint8_t a)
 {
-	crc ^= a;
+	ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ ^= a;
 
-	for (int i = 0; i < 8; ++i) {
-		if (crc & 0x80) {
-			crc = (crc << 1) ^ 0xD5;
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 8; ++i) {
+		ಆದರೆ (ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ & 0x80) {
+			ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = (ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ << 1) ^ 0xD5;
 
-		} else {
-			crc = crc << 1;
+		} ಇಲ್ಲದಿದ್ದರೆ {
+			ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ << 1;
 		}
 	}
 
-	return crc;
+	ಹಿಂತಿರುಗಿ ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ;
 }
 
-uint8_t crc8_dvb_s2_buf(uint8_t *buf, int len)
+uint8_t crc8_dvb_s2_buf(uint8_t *buf, ಪೂರ್ಣಾಂಕ len)
 {
-	uint8_t crc = 0;
+	uint8_t ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = 0;
 
-	for (int i = 0; i < len; ++i) {
-		crc = crc8_dvb_s2(crc, buf[i]);
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < len; ++i) {
+		ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = crc8_dvb_s2(ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ, buf[i]);
 	}
 
-	return crc;
+	ಹಿಂತಿರುಗಿ ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ;
 }

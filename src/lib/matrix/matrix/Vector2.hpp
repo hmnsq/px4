@@ -6,103 +6,103 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "Vector.hpp"
+#ಅನ್ತರ್ಭಾವ "Vector.hpp"
 
-namespace matrix
+ನಾಮಾಕಾಶ ಮಾತೃಕೆ
 {
 
-template<typename Type>
-class Vector2 : public Vector<Type, 2>
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type>
+ವರ್ಗ Vector2 : ಸಾರ್ವಜನಿಕ ಸದಿಶ<Type, 2>
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 
-	using Matrix21 = Matrix<Type, 2, 1>;
-	using Vector3 = Vector<Type, 3>;
+	ಬಳಸಿ Matrix21 = ಮಾತೃಕೆ_2<Type, 2, 1>;
+	ಬಳಸಿ Vector3 = ಸದಿಶ<Type, 3>;
 
-	Vector2() = default;
+	Vector2() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	Vector2(const Matrix21 &other) :
-		Vector<Type, 2>(other)
+	Vector2(ಸ್ಥಿರಾಂಕ Matrix21 &other) :
+		ಸದಿಶ<Type, 2>(other)
 	{
 	}
 
-	explicit Vector2(const Type data_[2]) :
-		Vector<Type, 2>(data_)
+	ಸ್ಪಷ್ಟ Vector2(ಸ್ಥಿರಾಂಕ Type ದತ್ತಾಂಶ_2[2]) :
+		ಸದಿಶ<Type, 2>(ದತ್ತಾಂಶ_2)
 	{
 	}
 
 	Vector2(Type x, Type y)
 	{
-		Vector2 &v(*this);
+		Vector2 &v(*ಇದು);
 		v(0) = x;
 		v(1) = y;
 	}
 
-	using base = Vector<Type, 2>;
-	using base::base;
+	ಬಳಸಿ base = ಸದಿಶ<Type, 2>;
+	ಬಳಸಿ base::base;
 
-	explicit Vector2(const Vector3 &other)
+	ಸ್ಪಷ್ಟ Vector2(ಸ್ಥಿರಾಂಕ Vector3 &other)
 	{
-		Vector2 &v(*this);
+		Vector2 &v(*ಇದು);
 		v(0) = other(0);
 		v(1) = other(1);
 	}
 
-	Type cross(const Matrix21 &b) const
+	Type cross(ಸ್ಥಿರಾಂಕ Matrix21 &b) ಸ್ಥಿರಾಂಕ
 	{
-		const Vector2 &a(*this);
-		return a(0) * b(1, 0) - a(1) * b(0, 0);
+		ಸ್ಥಿರಾಂಕ Vector2 &a(*ಇದು);
+		ಹಿಂತಿರುಗಿ a(0) * b(1, 0) - a(1) * b(0, 0);
 	}
 
 	/**
 	 * Override matrix ops so Vector2 type is returned
 	 */
 
-	Vector2 operator+(Vector2 other) const
+	Vector2 ಕ್ರಿಯಾಕಾರಕ+(Vector2 other) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix21::operator+(other);
+		ಹಿಂತಿರುಗಿ Matrix21::ಕ್ರಿಯಾಕಾರಕ+(other);
 	}
 
-	Vector2 operator+(Type scalar) const
+	Vector2 ಕ್ರಿಯಾಕಾರಕ+(Type scalar) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix21::operator+(scalar);
+		ಹಿಂತಿರುಗಿ Matrix21::ಕ್ರಿಯಾಕಾರಕ+(scalar);
 	}
 
-	Vector2 operator-(Vector2 other) const
+	Vector2 ಕ್ರಿಯಾಕಾರಕ-(Vector2 other) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix21::operator-(other);
+		ಹಿಂತಿರುಗಿ Matrix21::ಕ್ರಿಯಾಕಾರಕ-(other);
 	}
 
-	Vector2 operator-(Type scalar) const
+	Vector2 ಕ್ರಿಯಾಕಾರಕ-(Type scalar) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix21::operator-(scalar);
+		ಹಿಂತಿರುಗಿ Matrix21::ಕ್ರಿಯಾಕಾರಕ-(scalar);
 	}
 
-	Vector2 operator-() const
+	Vector2 ಕ್ರಿಯಾಕಾರಕ-() ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix21::operator-();
+		ಹಿಂತಿರುಗಿ Matrix21::ಕ್ರಿಯಾಕಾರಕ-();
 	}
 
-	Vector2 operator*(Type scalar) const
+	Vector2 ಕ್ರಿಯಾಕಾರಕ*(Type scalar) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix21::operator*(scalar);
+		ಹಿಂತಿರುಗಿ Matrix21::ಕ್ರಿಯಾಕಾರಕ*(scalar);
 	}
 
-	Type operator*(Vector2 b) const
+	Type ಕ್ರಿಯಾಕಾರಕ*(Vector2 b) ಸ್ಥಿರಾಂಕ
 	{
-		return Vector<Type, 2>::operator*(b);
+		ಹಿಂತಿರುಗಿ ಸದಿಶ<Type, 2>::ಕ್ರಿಯಾಕಾರಕ*(b);
 	}
 
-	Type operator%(const Matrix21 &b) const
+	Type ಕ್ರಿಯಾಕಾರಕ%(ಸ್ಥಿರಾಂಕ Matrix21 &b) ಸ್ಥಿರಾಂಕ
 	{
-		return (*this).cross(b);
+		ಹಿಂತಿರುಗಿ (*ಇದು).cross(b);
 	}
 
 };
 
-using Vector2f = Vector2<float>;
-using Vector2d = Vector2<double>;
+ಬಳಸಿ Vector2f = Vector2<ದಶಮಾಂಶ>;
+ಬಳಸಿ Vector2d = Vector2<ದ್ವಿಗುಣ>;
 
 } // namespace matrix

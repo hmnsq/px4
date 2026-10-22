@@ -37,286 +37,286 @@
  * GNSS correction stream framing implementation.
  */
 
-#include "correction_framer.h"
+#ಅನ್ತರ್ಭಾವ "correction_framer.h"
 
-#include <cstring>
+#ಅನ್ತರ್ಭಾವ <cstring>
 
-namespace gnss
+ನಾಮಾಕಾಶ gnss
 {
 
-bool CorrectionFramer::isPreamble(uint8_t byte)
+ತಾರ್ಕಿಕ CorrectionFramer::isPreamble(uint8_t byte)
 {
-	if (byte == RTCM3_PREAMBLE) {
-		return true;
+	ಆದರೆ (byte == RTCM3_PREAMBLE) {
+		ಹಿಂತಿರುಗಿ ನಿಜ;
 	}
 
-	if (byte == UBX_SYNC1) {
-		return true;
+	ಆದರೆ (byte == UBX_SYNC1) {
+		ಹಿಂತಿರುಗಿ ನಿಜ;
 	}
 
-#if defined(CONFIG_GPS_SPARTN)
+#ಆದರೆ defined(CONFIG_GPS_SPARTN)
 
-	if (byte == SPARTN_PREAMBLE) {
-		return true;
+	ಆದರೆ (byte == SPARTN_PREAMBLE) {
+		ಹಿಂತಿರುಗಿ ನಿಜ;
 	}
 
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-	return false;
+	ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 }
 
-size_t CorrectionFramer::addData(const uint8_t *data, size_t len)
+size_t CorrectionFramer::ಕೂಡಿಸು_ದತ್ತಾಂಶ(ಸ್ಥಿರಾಂಕ uint8_t *ದತ್ತಾಂಶ, size_t len)
 {
-	const size_t space_available = BUFFER_SIZE - _buffer_len;
-	const size_t to_copy = (len < space_available) ? len : space_available;
+	ಸ್ಥಿರಾಂಕ size_t space_ಲಭ್ಯ = ಬಫರ್_ಗಾತ್ರ_2 - ಬಫರ್_len;
+	ಸ್ಥಿರಾಂಕ size_t ಗಮ್ಯ_copy = (len < space_ಲಭ್ಯ) ? len : space_ಲಭ್ಯ;
 
-	if (to_copy > 0) {
-		memcpy(&_buffer[_buffer_len], data, to_copy);
-		_buffer_len += to_copy;
+	ಆದರೆ (ಗಮ್ಯ_copy > 0) {
+		ಸ್ಮರಣೆ_ನಕಲು(&ಬಫರ್[ಬಫರ್_len], ದತ್ತಾಂಶ, ಗಮ್ಯ_copy);
+		ಬಫರ್_len += ಗಮ್ಯ_copy;
 	}
 
-	return to_copy;
+	ಹಿಂತಿರುಗಿ ಗಮ್ಯ_copy;
 }
 
-CorrectionFramer::Probe CorrectionFramer::probeRtcm3(size_t *frame_len) const
+CorrectionFramer::Probe CorrectionFramer::probeRtcm3(size_t *ಚೌಕಟ್ಟು_len) ಸ್ಥಿರಾಂಕ
 {
 	// Need at least the header to read the length
-	if (_buffer_len < RTCM3_HEADER_LEN) {
-		return Probe::NeedMoreData;
+	ಆದರೆ (ಬಫರ್_len < RTCM3_ಶೀರ್ಷಿಕೆ_LEN) {
+		ಹಿಂತಿರುಗಿ Probe::Need_ಇನ್ನಷ್ಟು_ದತ್ತಾಂಶ;
 	}
 
 	// The 10-bit field cannot exceed RTCM3_MAX_PAYLOAD_LEN, so the length alone
 	// never rejects a candidate: CRC-24Q is what validates the frame.
-	const size_t payload_len = rtcm3_payload_length(_buffer);
-	const size_t len = RTCM3_HEADER_LEN + payload_len + RTCM3_CRC_LEN;
+	ಸ್ಥಿರಾಂಕ size_t payload_len = rtcm3_payload_ಉದ್ದಳತೆ(ಬಫರ್);
+	ಸ್ಥಿರಾಂಕ size_t len = RTCM3_ಶೀರ್ಷಿಕೆ_LEN + payload_len + RTCM3_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_LEN;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	ಆದರೆ (ಬಫರ್_len < len) {
+		ಹಿಂತಿರುಗಿ Probe::Need_ಇನ್ನಷ್ಟು_ದತ್ತಾಂಶ;
 	}
 
-	const uint32_t calculated_crc = rtcm3_crc24q(_buffer, RTCM3_HEADER_LEN + payload_len);
-	const uint32_t received_crc = (static_cast<uint32_t>(_buffer[len - 3]) << 16) |
-				      (static_cast<uint32_t>(_buffer[len - 2]) << 8) |
-				      _buffer[len - 1];
+	ಸ್ಥಿರಾಂಕ uint32_t calculated_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = rtcm3_crc24q(ಬಫರ್, RTCM3_ಶೀರ್ಷಿಕೆ_LEN + payload_len);
+	ಸ್ಥಿರಾಂಕ uint32_t received_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = (static_cast<uint32_t>(ಬಫರ್[len - 3]) << 16) |
+				      (static_cast<uint32_t>(ಬಫರ್[len - 2]) << 8) |
+				      ಬಫರ್[len - 1];
 
-	if (calculated_crc != received_crc) {
-		return Probe::CrcError;
+	ಆದರೆ (calculated_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ != received_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ) {
+		ಹಿಂತಿರುಗಿ Probe::ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_Error;
 	}
 
-	*frame_len = len;
-	return Probe::Complete;
+	*ಚೌಕಟ್ಟು_len = len;
+	ಹಿಂತಿರುಗಿ Probe::Complete;
 }
 
-CorrectionFramer::Probe CorrectionFramer::probeUbx(size_t *frame_len) const
+CorrectionFramer::Probe CorrectionFramer::probeUbx(size_t *ಚೌಕಟ್ಟು_len) ಸ್ಥಿರಾಂಕ
 {
 	// Need sync1 + sync2 at minimum to reject a false preamble quickly
-	if (_buffer_len < 2) {
-		return Probe::NeedMoreData;
+	ಆದರೆ (ಬಫರ್_len < 2) {
+		ಹಿಂತಿರುಗಿ Probe::Need_ಇನ್ನಷ್ಟು_ದತ್ತಾಂಶ;
 	}
 
-	if (_buffer[1] != UBX_SYNC2) {
-		return Probe::InvalidHeader;
+	ಆದರೆ (ಬಫರ್[1] != UBX_SYNC2) {
+		ಹಿಂತಿರುಗಿ Probe::Invalid_ಶೀರ್ಷಿಕೆ;
 	}
 
-	if (_buffer_len < UBX_HEADER_LEN) {
-		return Probe::NeedMoreData;
+	ಆದರೆ (ಬಫರ್_len < UBX_ಶೀರ್ಷಿಕೆ_LEN) {
+		ಹಿಂತಿರುಗಿ Probe::Need_ಇನ್ನಷ್ಟು_ದತ್ತಾಂಶ;
 	}
 
-	const size_t payload_len = static_cast<size_t>(_buffer[4]) |
-				   (static_cast<size_t>(_buffer[5]) << 8);
+	ಸ್ಥಿರಾಂಕ size_t payload_len = static_cast<size_t>(ಬಫರ್[4]) |
+				   (static_cast<size_t>(ಬಫರ್[5]) << 8);
 
 	// Protocol allows larger payloads; reject beyond the injection cap so a
 	// garbage length cannot pin the buffer waiting for thousands of bytes.
-	if (payload_len > UBX_MAX_PAYLOAD_LEN) {
-		return Probe::InvalidHeader;
+	ಆದರೆ (payload_len > UBX_MAX_PAYLOAD_LEN) {
+		ಹಿಂತಿರುಗಿ Probe::Invalid_ಶೀರ್ಷಿಕೆ;
 	}
 
-	const size_t len = UBX_HEADER_LEN + payload_len + UBX_CK_LEN;
+	ಸ್ಥಿರಾಂಕ size_t len = UBX_ಶೀರ್ಷಿಕೆ_LEN + payload_len + UBX_CK_LEN;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	ಆದರೆ (ಬಫರ್_len < len) {
+		ಹಿಂತಿರುಗಿ Probe::Need_ಇನ್ನಷ್ಟು_ದತ್ತಾಂಶ;
 	}
 
 	// CK_A/CK_B cover Class..end of payload (not the sync bytes)
 	uint8_t ck_a = 0;
 	uint8_t ck_b = 0;
-	ubx_checksum(&_buffer[2], UBX_HEADER_LEN - 2 + payload_len, &ck_a, &ck_b);
+	ubx_checksum(&ಬಫರ್[2], UBX_ಶೀರ್ಷಿಕೆ_LEN - 2 + payload_len, &ck_a, &ck_b);
 
-	if ((ck_a != _buffer[len - 2]) || (ck_b != _buffer[len - 1])) {
-		return Probe::CrcError;
+	ಆದರೆ ((ck_a != ಬಫರ್[len - 2]) || (ck_b != ಬಫರ್[len - 1])) {
+		ಹಿಂತಿರುಗಿ Probe::ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_Error;
 	}
 
-	*frame_len = len;
-	return Probe::Complete;
+	*ಚೌಕಟ್ಟು_len = len;
+	ಹಿಂತಿರುಗಿ Probe::Complete;
 }
 
-#if defined(CONFIG_GPS_SPARTN)
-CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *frame_len) const
+#ಆದರೆ defined(CONFIG_GPS_SPARTN)
+CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *ಚೌಕಟ್ಟು_len) ಸ್ಥಿರಾಂಕ
 {
 	// Need TF002..TF006 to read the length and CRC type
-	if (_buffer_len < SPARTN_FRAME_START_LEN) {
-		return Probe::NeedMoreData;
+	ಆದರೆ (ಬಫರ್_len < SPARTN_ಚೌಕಟ್ಟು_ಆರಂಭ_LEN) {
+		ಹಿಂತಿರುಗಿ Probe::Need_ಇನ್ನಷ್ಟು_ದತ್ತಾಂಶ;
 	}
 
-	const uint8_t b1 = _buffer[1];
-	const uint8_t b2 = _buffer[2];
-	const uint8_t b3 = _buffer[3];
+	ಸ್ಥಿರಾಂಕ uint8_t b1 = ಬಫರ್[1];
+	ಸ್ಥಿರಾಂಕ uint8_t b2 = ಬಫರ್[2];
+	ಸ್ಥಿರಾಂಕ uint8_t b3 = ಬಫರ್[3];
 
 	// TF002 is the only header field with a checkable range. The 10-bit length
 	// spans its full range and TF006 is a 4-bit CRC over a non-byte-aligned
 	// field, so this is the only cheap guard before the message CRC.
-	if (!spartn_message_type_defined(b1 >> 1)) {
-		return Probe::InvalidHeader;
+	ಆದರೆ (!spartn_ಸಂದೇಶ_type_defined(b1 >> 1)) {
+		ಹಿಂತಿರುಗಿ Probe::Invalid_ಶೀರ್ಷಿಕೆ;
 	}
 
-	const uint16_t payload_len = static_cast<uint16_t>(((b1 & 0x01) << 9) | (b2 << 1) | (b3 >> 7));
-	const bool eaf = ((b3 >> 6) & 0x01) != 0;
-	const uint8_t crc_type = (b3 >> 4) & 0x03;
-	const size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
+	ಸ್ಥಿರಾಂಕ uint16_t payload_len = static_cast<uint16_t>(((b1 & 0x01) << 9) | (b2 << 1) | (b3 >> 7));
+	ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ eaf = ((b3 >> 6) & 0x01) != 0;
+	ಸ್ಥಿರಾಂಕ uint8_t ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_type = (b3 >> 4) & 0x03;
+	ಸ್ಥಿರಾಂಕ size_t ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_ಬೈಟುಗಳು = static_cast<size_t>(ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_type) + 1;
 
 	// TF008 (time tag type) sets the description block length
-	if (_buffer_len < SPARTN_FRAME_START_LEN + 1) {
-		return Probe::NeedMoreData;
+	ಆದರೆ (ಬಫರ್_len < SPARTN_ಚೌಕಟ್ಟು_ಆರಂಭ_LEN + 1) {
+		ಹಿಂತಿರುಗಿ Probe::Need_ಇನ್ನಷ್ಟು_ದತ್ತಾಂಶ;
 	}
 
-	const bool time_tag_32bit = ((_buffer[4] >> 3) & 0x01) != 0;
-	const size_t desc_len = spartn_desc_length_bytes(eaf, time_tag_32bit);
+	ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ ಸಮಯ_ಟ್ಯಾಗ್_32bit = ((ಬಫರ್[4] >> 3) & 0x01) != 0;
+	ಸ್ಥಿರಾಂಕ size_t desc_len = spartn_desc_ಉದ್ದಳತೆ_ಬೈಟುಗಳು(eaf, ಸಮಯ_ಟ್ಯಾಗ್_32bit);
 
-	if (_buffer_len < SPARTN_FRAME_START_LEN + desc_len) {
-		return Probe::NeedMoreData;
+	ಆದರೆ (ಬಫರ್_len < SPARTN_ಚೌಕಟ್ಟು_ಆರಂಭ_LEN + desc_len) {
+		ಹಿಂತಿರುಗಿ Probe::Need_ಇನ್ನಷ್ಟು_ದತ್ತಾಂಶ;
 	}
 
-	size_t auth_bytes = 0;
+	size_t auth_ಬೈಟುಗಳು = 0;
 
-	if (eaf) {
+	ಆದರೆ (eaf) {
 		// TF014/TF015 occupy the low 6 bits of the last description byte
-		const uint8_t last = _buffer[SPARTN_FRAME_START_LEN + desc_len - 1];
-		auth_bytes = spartn_auth_length_bytes(true, (last >> 3) & 0x07, last & 0x07);
+		ಸ್ಥಿರಾಂಕ uint8_t ಕೊನೆಯ = ಬಫರ್[SPARTN_ಚೌಕಟ್ಟು_ಆರಂಭ_LEN + desc_len - 1];
+		auth_ಬೈಟುಗಳು = spartn_auth_ಉದ್ದಳತೆ_ಬೈಟುಗಳು(ನಿಜ, (ಕೊನೆಯ >> 3) & 0x07, ಕೊನೆಯ & 0x07);
 	}
 
-	const size_t len = SPARTN_FRAME_START_LEN + desc_len + payload_len + auth_bytes + crc_bytes;
+	ಸ್ಥಿರಾಂಕ size_t len = SPARTN_ಚೌಕಟ್ಟು_ಆರಂಭ_LEN + desc_len + payload_len + auth_ಬೈಟುಗಳು + ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_ಬೈಟುಗಳು;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	ಆದರೆ (ಬಫರ್_len < len) {
+		ಹಿಂತಿರುಗಿ Probe::Need_ಇನ್ನಷ್ಟು_ದತ್ತಾಂಶ;
 	}
 
 	// Message CRC (TF018) covers TF002..TF017
-	const size_t core_len = len - 1 - crc_bytes;
-	const uint32_t calculated_crc = spartn_message_crc(&_buffer[1], core_len, crc_type);
-	uint32_t received_crc = 0;
+	ಸ್ಥಿರಾಂಕ size_t core_len = len - 1 - ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_ಬೈಟುಗಳು;
+	ಸ್ಥಿರಾಂಕ uint32_t calculated_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = spartn_ಸಂದೇಶ_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ(&ಬಫರ್[1], core_len, ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_type);
+	uint32_t received_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = 0;
 
-	for (size_t i = 0; i < crc_bytes; i++) {
-		received_crc = (received_crc << 8) | _buffer[len - crc_bytes + i];
+	ಗಾಗಿ (size_t i = 0; i < ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_ಬೈಟುಗಳು; i++) {
+		received_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = (received_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ << 8) | ಬಫರ್[len - ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_ಬೈಟುಗಳು + i];
 	}
 
-	if (calculated_crc != received_crc) {
-		return Probe::CrcError;
+	ಆದರೆ (calculated_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ != received_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ) {
+		ಹಿಂತಿರುಗಿ Probe::ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_Error;
 	}
 
-	*frame_len = len;
-	return Probe::Complete;
+	*ಚೌಕಟ್ಟು_len = len;
+	ಹಿಂತಿರುಗಿ Probe::Complete;
 }
-#endif // CONFIG_GPS_SPARTN
+#ಆದರೆ_ಅಂತ್ಯ // CONFIG_GPS_SPARTN
 
-const uint8_t *CorrectionFramer::getNextMessage(size_t *out_len, CorrectionProtocol *out_protocol)
+ಸ್ಥಿರಾಂಕ uint8_t *CorrectionFramer::get_ಮುಂದಿನ_ಸಂದೇಶ(size_t *ಹೊರಹೋಗು_len, CorrectionProtocol *ಹೊರಹೋಗು_protocol)
 {
-	while (_buffer_len > 0) {
+	ಆಗ (ಬಫರ್_len > 0) {
 		// Drop everything that cannot start a frame of any supported protocol
-		size_t to_drop = 0;
+		size_t ಗಮ್ಯ_drop = 0;
 
-		while ((to_drop < _buffer_len) && !isPreamble(_buffer[to_drop])) {
-			to_drop++;
+		ಆಗ ((ಗಮ್ಯ_drop < ಬಫರ್_len) && !isPreamble(ಬಫರ್[ಗಮ್ಯ_drop])) {
+			ಗಮ್ಯ_drop++;
 		}
 
-		if (to_drop > 0) {
-			_bytes_discarded += to_drop;
-			discardBytes(to_drop);
+		ಆದರೆ (ಗಮ್ಯ_drop > 0) {
+			ಬೈಟುಗಳು_discarded += ಗಮ್ಯ_drop;
+			discard_ಬೈಟುಗಳು(ಗಮ್ಯ_drop);
 		}
 
-		if (_buffer_len == 0) {
-			return nullptr;
+		ಆದರೆ (ಬಫರ್_len == 0) {
+			ಹಿಂತಿರುಗಿ ಶೂನ್ಯಸೂಚಕ;
 		}
 
-		size_t frame_len = 0;
+		size_t ಚೌಕಟ್ಟು_len = 0;
 		CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-		Probe result;
+		Probe ಫಲಿತಾಂಶ;
 
-		if (_buffer[0] == UBX_SYNC1) {
+		ಆದರೆ (ಬಫರ್[0] == UBX_SYNC1) {
 			protocol = CorrectionProtocol::Ubx;
-			result = probeUbx(&frame_len);
+			ಫಲಿತಾಂಶ = probeUbx(&ಚೌಕಟ್ಟು_len);
 
-#if defined(CONFIG_GPS_SPARTN)
+#ಆದರೆ defined(CONFIG_GPS_SPARTN)
 
-		} else if (_buffer[0] == SPARTN_PREAMBLE) {
+		} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (ಬಫರ್[0] == SPARTN_PREAMBLE) {
 			protocol = CorrectionProtocol::Spartn;
-			result = probeSpartn(&frame_len);
+			ಫಲಿತಾಂಶ = probeSpartn(&ಚೌಕಟ್ಟು_len);
 
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			// RTCM3 preamble (isPreamble already filtered other bytes)
 			protocol = CorrectionProtocol::Rtcm3;
-			result = probeRtcm3(&frame_len);
+			ಫಲಿತಾಂಶ = probeRtcm3(&ಚೌಕಟ್ಟು_len);
 		}
 
-		switch (result) {
-		case Probe::NeedMoreData:
-			return nullptr;
+		ಆಯ್ಕೆ (ಫಲಿತಾಂಶ) {
+		ಸ್ಥಿತಿ Probe::Need_ಇನ್ನಷ್ಟು_ದತ್ತಾಂಶ:
+			ಹಿಂತಿರುಗಿ ಶೂನ್ಯಸೂಚಕ;
 
-		case Probe::InvalidHeader:
-			_bytes_discarded++;
-			discardBytes(1);
-			continue;
+		ಸ್ಥಿತಿ Probe::Invalid_ಶೀರ್ಷಿಕೆ:
+			ಬೈಟುಗಳು_discarded++;
+			discard_ಬೈಟುಗಳು(1);
+			ಮುಂದುವರಿ;
 
-		case Probe::CrcError:
-			_crc_errors++;
-			discardBytes(1);
-			continue;
+		ಸ್ಥಿತಿ Probe::ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_Error:
+			ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_errors++;
+			discard_ಬೈಟುಗಳು(1);
+			ಮುಂದುವರಿ;
 
-		case Probe::Complete:
+		ಸ್ಥಿತಿ Probe::Complete:
 			_pending_protocol = protocol;
-			*out_len = frame_len;
+			*ಹೊರಹೋಗು_len = ಚೌಕಟ್ಟು_len;
 
-			if (out_protocol != nullptr) {
-				*out_protocol = protocol;
+			ಆದರೆ (ಹೊರಹೋಗು_protocol != ಶೂನ್ಯಸೂಚಕ) {
+				*ಹೊರಹೋಗು_protocol = protocol;
 			}
 
-			return _buffer;
+			ಹಿಂತಿರುಗಿ ಬಫರ್;
 		}
 	}
 
-	return nullptr;
+	ಹಿಂತಿರುಗಿ ಶೂನ್ಯಸೂಚಕ;
 }
 
-void CorrectionFramer::consumeMessage(size_t len)
+ಶೂನ್ಯ CorrectionFramer::consume_ಸಂದೇಶ(size_t len)
 {
-	discardBytes(len);
+	discard_ಬೈಟುಗಳು(len);
 	_messages_parsed++;
-	_total_frame_bytes += len;
+	ಒಟ್ಟು_ಚೌಕಟ್ಟು_ಬೈಟುಗಳು += len;
 
-	switch (_pending_protocol) {
-	case CorrectionProtocol::Rtcm3:
+	ಆಯ್ಕೆ (_pending_protocol) {
+	ಸ್ಥಿತಿ CorrectionProtocol::Rtcm3:
 		_rtcm3_messages++;
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case CorrectionProtocol::Spartn:
+	ಸ್ಥಿತಿ CorrectionProtocol::Spartn:
 		_spartn_messages++;
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case CorrectionProtocol::Ubx:
+	ಸ್ಥಿತಿ CorrectionProtocol::Ubx:
 		_ubx_messages++;
-		break;
+		ನಿಲ್ಲಿಸು;
 	}
 }
 
-void CorrectionFramer::discardBytes(size_t count)
+ಶೂನ್ಯ CorrectionFramer::discard_ಬೈಟುಗಳು(size_t ಎಣಿಕೆ_2)
 {
-	if (count >= _buffer_len) {
-		_buffer_len = 0;
+	ಆದರೆ (ಎಣಿಕೆ_2 >= ಬಫರ್_len) {
+		ಬಫರ್_len = 0;
 
-	} else {
-		memmove(_buffer, &_buffer[count], _buffer_len - count);
-		_buffer_len -= count;
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		memmove(ಬಫರ್, &ಬಫರ್[ಎಣಿಕೆ_2], ಬಫರ್_len - ಎಣಿಕೆ_2);
+		ಬಫರ್_len -= ಎಣಿಕೆ_2;
 	}
 }
 

@@ -1,20 +1,20 @@
 """
 Shared helper to load readonly parameter configuration from YAML.
 """
-import sys
+ಆಮದು sys
 
-try:
-    import yaml
-except ImportError as e:
-    print("Failed to import yaml: " + str(e))
-    print("")
-    print("You may need to install it using:")
-    print("    pip3 install --user pyyaml")
-    print("")
+ಪ್ರಯತ್ನಿಸು:
+    ಆಮದು yaml
+ಅಪವಾದ ImportError ಇವ e:
+    ಮುದ್ರಿಸು("Failed to import yaml: " + str(e))
+    ಮುದ್ರಿಸು("")
+    ಮುದ್ರಿಸು("You may need to install it using:")
+    ಮುದ್ರಿಸು("    pip3 install --user pyyaml")
+    ಮುದ್ರಿಸು("")
     sys.exit(1)
 
 
-def load_readonly_params(readonly_config, all_param_names):
+ವ್ಯಾಖ್ಯಾನ ತುಂಬು_readonly_params(readonly_config, all_param_ಹೆಸರುಗಳು):
     """
     Load readonly parameter config and return the set of readonly param names.
 
@@ -22,27 +22,27 @@ def load_readonly_params(readonly_config, all_param_names):
     @param all_param_names: set of all known parameter names
     @return: set of readonly parameter names
     """
-    if readonly_config is None:
-        return set()
+    ಆದರೆ readonly_config ಆಗಿರುವ ಏನೂಇಲ್ಲ:
+        ಹಿಂತಿರುಗಿ ಗಣ()
 
-    with open(readonly_config, 'r') as f:
-        config = yaml.safe_load(f)
+    ಜೊತೆ open(readonly_config, 'r') ಇವ f:
+        config = yaml.ಸುರಕ್ಷಿತ_ತುಂಬು(f)
 
-    mode = config.get('mode', 'block')
-    listed_params = set(config.get('parameters', []))
+    ಬಹುಲಕ = config.get('mode', 'block')
+    listed_params = ಗಣ(config.get('parameters', []))
 
     # Validate that all listed parameters actually exist
-    unknown = listed_params - all_param_names
-    if unknown:
-        print("Error: readonly_params.yaml lists unknown parameters: %s" % ', '.join(sorted(unknown)))
+    unknown = listed_params - all_param_ಹೆಸರುಗಳು
+    ಆದರೆ unknown:
+        ಮುದ್ರಿಸು("Error: readonly_params.yaml lists unknown parameters: %s" % ', '.join(sorted(unknown)))
         sys.exit(1)
 
-    if mode == 'block':
+    ಆದರೆ ಬಹುಲಕ == 'block':
         # Listed params are read-only
-        return listed_params
-    elif mode == 'allow':
+        ಹಿಂತಿರುಗಿ listed_params
+    ಅಥವಾಆದರೆ ಬಹುಲಕ == 'allow':
         # Only listed params are writable, all others are read-only
-        return all_param_names - listed_params
-    else:
-        print("Error: readonly_params.yaml has unknown mode '%s' (expected 'block' or 'allow')" % mode)
+        ಹಿಂತಿರುಗಿ all_param_ಹೆಸರುಗಳು - listed_params
+    ಇಲ್ಲದಿದ್ದರೆ:
+        ಮುದ್ರಿಸು("Error: readonly_params.yaml has unknown mode '%s' (expected 'block' or 'allow')" % ಬಹುಲಕ)
         sys.exit(1)

@@ -34,16 +34,16 @@ Description:
     Common functions used for the derivation of most estimators
 """
 
-from symforce import symbolic as sm
-from symforce import geo
-from symforce import typing as T
+ತಃ symforce ಆಮದು symbolic ಇವ sm
+ತಃ symforce ಆಮದು geo
+ತಃ symforce ಆಮದು typing ಇವ T
 
-import re
+ಆಮದು re
 
 # q: quaternion describing rotation from frame 1 to frame 2
 # returns a rotation matrix derived form q which describes the same
 # rotation
-def quat_to_rot(q):
+ವ್ಯಾಖ್ಯಾನ quat_ಗಮ್ಯ_rot(q):
     q0 = q[0]
     q1 = q[1]
     q2 = q[2]
@@ -53,55 +53,55 @@ def quat_to_rot(q):
                   [2*(q1*q2 + q0*q3), q0**2 - q1**2 + q2**2 - q3**2, 2*(q2*q3 - q0*q1)],
                    [2*(q1*q3-q0*q2), 2*(q2*q3 + q0*q1), q0**2 - q1**2 - q2**2 + q3**2]])
 
-    return Rot
+    ಹಿಂತಿರುಗಿ Rot
 
-def sign_no_zero(x) -> T.Scalar:
+ವ್ಯಾಖ್ಯಾನ sign_no_zero(x) -> T.Scalar:
     """
     Returns -1 if x is negative, 1 if x is positive, and 1 if x is zero
     """
-    return 2 * sm.Min(sm.sign(x), 0) + 1
+    ಹಿಂತಿರುಗಿ 2 * sm.Min(sm.sign(x), 0) + 1
 
-def add_epsilon_sign(expr, var, eps):
+ವ್ಯಾಖ್ಯಾನ ಕೂಡಿಸು_epsilon_sign(ಅಭಿವ್ಯಕ್ತಿ, var, eps):
     # Avoids a singularity at 0 while keeping the derivative correct
-    return expr.subs(var, var + eps * sign_no_zero(var))
+    ಹಿಂತಿರುಗಿ ಅಭಿವ್ಯಕ್ತಿ.subs(var, var + eps * sign_no_zero(var))
 
-def generate_px4_function(function_name, output_names):
-    from symforce.codegen import Codegen, CppConfig
-    import os
-    import fileinput
+ವ್ಯಾಖ್ಯಾನ generate_px4_function(function_name, output_ಹೆಸರುಗಳು):
+    ತಃ symforce.codegen ಆಮದು Codegen, CppConfig
+    ಆಮದು os
+    ಆಮದು fileinput
 
     codegen = Codegen.function(
             function_name,
-            output_names=output_names,
+            output_ಹೆಸರುಗಳು=output_ಹೆಸರುಗಳು,
             config=CppConfig())
     metadata = codegen.generate_function(
             output_dir="generated",
-            skip_directory_nesting=True)
+            skip_directory_nesting=ನಿಜ)
 
-    print("Files generated in {}:\n".format(metadata.output_dir))
-    for f in metadata.generated_files:
-        print("  |- {}".format(os.path.relpath(f, metadata.output_dir)))
+    ಮುದ್ರಿಸು("Files generated in {}:\n".format(metadata.output_dir))
+    ಗಾಗಿ f ಒಳಗೆ metadata.generated_files:
+        ಮುದ್ರಿಸು("  |- {}".format(os.ಮಾರ್ಗ.relpath(f, metadata.output_dir)))
 
     # Replace cstdlib and Eigen functions by PX4 equivalents
-    with fileinput.FileInput(os.path.abspath(metadata.generated_files[0]), inplace=True, backup='.bak') as file:
-        for line in file:
-            line = line.replace("std::max", "math::max")
-            line = line.replace("std::min", "math::min")
-            line = line.replace("Eigen", "matrix")
-            line = line.replace("matrix/Dense", "matrix/math.hpp")
+    ಜೊತೆ fileinput.File_ಒಳಹರಿವು(os.ಮಾರ್ಗ.abspath(metadata.generated_files[0]), inplace=ನಿಜ, backup='.bak') ಇವ file:
+        ಗಾಗಿ ಸಾಲು ಒಳಗೆ file:
+            ಸಾಲು = ಸಾಲು.replace("std::max", "math::max")
+            ಸಾಲು = ಸಾಲು.replace("std::min", "math::min")
+            ಸಾಲು = ಸಾಲು.replace("Eigen", "matrix")
+            ಸಾಲು = ಸಾಲು.replace("matrix/Dense", "matrix/math.hpp")
 
             # don't allow underscore + uppercase identifier naming (always reserved for any use)
-            line = re.sub(r'_([A-Z])', lambda x: '_' + x.group(1).lower(), line)
+            ಸಾಲು = re.sub(r'_([A-Z])', ಅನಾಮಿಕ x: '_' + x.ಗುಂಪು(1).ಅಧೋ(), ಸಾಲು)
 
-            print(line, end='')
+            ಮುದ್ರಿಸು(ಸಾಲು, ಕೊನೆ='')
 
-def generate_python_function(function_name, output_names):
-    from symforce.codegen import Codegen, PythonConfig
+ವ್ಯಾಖ್ಯಾನ generate_python_function(function_name, output_ಹೆಸರುಗಳು):
+    ತಃ symforce.codegen ಆಮದು Codegen, PythonConfig
     codegen = Codegen.function(
             function_name,
-            output_names=output_names,
+            output_ಹೆಸರುಗಳು=output_ಹೆಸರುಗಳು,
             config=PythonConfig())
 
     metadata = codegen.generate_function(
             output_dir="generated",
-            skip_directory_nesting=True)
+            skip_directory_nesting=ನಿಜ)

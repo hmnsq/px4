@@ -31,22 +31,22 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-TEST(MatrixUpperRightTriangleTest, UpperRightTriangle)
+TEST(ಮಾತೃಕೆ_ಊರ್ಧ್ವ_ಬಲ_Triangle_Test, ಊರ್ಧ್ವ_ಬಲ_Triangle)
 {
-	float data[9] = {1, 2, 3,
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ[9] = {1, 2, 3,
 			 4, 5, 6,
 			 7, 8, 10
 			};
-	float urt[6] = {1, 2, 3, 5, 6, 10};
+	ದಶಮಾಂಶ urt[6] = {1, 2, 3, 5, 6, 10};
 
-	SquareMatrix<float, 3> A(data);
+	ವರ್ಗಫಲ_ಮಾತೃಕೆ<ದಶಮಾಂಶ, 3> A(ದತ್ತಾಂಶ);
 
-	for (size_t i = 0; i < 6; i++) {
-		EXPECT_FLOAT_EQ(urt[i], A.upper_right_triangle()(i));
+	ಗಾಗಿ (size_t i = 0; i < 6; i++) {
+		EXPECT_FLOAT_EQ(urt[i], A.ಊರ್ಧ್ವ_ಬಲ_triangle()(i));
 	}
 }

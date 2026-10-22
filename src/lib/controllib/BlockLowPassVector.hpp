@@ -37,61 +37,61 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
-template<class Type, size_t M>
-class __EXPORT BlockLowPassVector: public Block
+ಮಾದರಿ<ವರ್ಗ Type, size_t M>
+ವರ್ಗ __EXPORT ಖಂಡ_ಕೆಳಗಿನ_Pass_ಸದಿಶ: ಸಾರ್ವಜನಿಕ ಖಂಡ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockLowPassVector(SuperBlock *parent,
-			   const char *name) :
-		Block(parent, name),
+	ಖಂಡ_ಕೆಳಗಿನ_Pass_ಸದಿಶ(Super_ಖಂಡ *ಪೋಷಕ,
+			   ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) :
+		ಖಂಡ(ಪೋಷಕ, name),
 		_state(),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(ಇದು, "") // only one parameter, no need to name
 	{
-		for (size_t i = 0; i < M; i++) {
+		ಗಾಗಿ (size_t i = 0; i < M; i++) {
 			_state(i) = 0.0f / 0.0f;
 		}
 	}
-	virtual ~BlockLowPassVector() = default;
-	matrix::Vector<Type, M> update(const matrix::Matrix<Type, M, 1> &input)
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_ಕೆಳಗಿನ_Pass_ಸದಿಶ() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ಮಾತೃಕೆ::ಸದಿಶ<Type, M> update(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<Type, M, 1> &ಒಳಹರಿವು)
 	{
-		for (size_t i = 0; i < M; i++) {
-			if (!PX4_ISFINITE(getState()(i))) {
-				setState(input);
+		ಗಾಗಿ (size_t i = 0; i < M; i++) {
+			ಆದರೆ (!PX4_ISFINITE(getState()(i))) {
+				ಗಣ_State(ಒಳಹರಿವು);
 			}
 		}
 
-		float b = 2 * M_PI_F * getFCut() * getDt();
-		float a = b / (1 + b);
-		setState(input * a + getState() * (1 - a));
-		return getState();
+		ದಶಮಾಂಶ b = 2 * M_PI_F * getFCut() * getDt();
+		ದಶಮಾಂಶ a = b / (1 + b);
+		ಗಣ_State(ಒಳಹರಿವು * a + getState() * (1 - a));
+		ಹಿಂತಿರುಗಿ getState();
 	}
 // accessors
-	matrix::Vector<Type, M> getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(const matrix::Vector<Type, M> &state) { _state = state; }
-private:
-// attributes
-	matrix::Vector<Type, M> _state;
-	control::BlockParamFloat _fCut;
+	ಮಾತೃಕೆ::ಸದಿಶ<Type, M> getState() { ಹಿಂತಿರುಗಿ _state; }
+	ದಶಮಾಂಶ getFCut() { ಹಿಂತಿರುಗಿ _fCut.get(); }
+	ಶೂನ್ಯ ಗಣ_State(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ<Type, M> &state) { _state = state; }
+ಖಾಸಗಿ:
+//ಗುಣಲಕ್ಷಣಗಳು
+	ಮಾತೃಕೆ::ಸದಿಶ<Type, M> _state;
+	control::ಖಂಡ_Param_Float _fCut;
 };
 
 } // namespace control

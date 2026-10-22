@@ -31,36 +31,36 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-TEST(MatrixSetIdentityTest, SetIdentity)
+TEST(ಮಾತೃಕೆ_ಗಣ_ತಟಸ್ಥ_Test, ಗಣ_ತಟಸ್ಥ_2)
 {
 	Matrix3f A;
-	A.setIdentity();
+	A.ಗಣ_ತಟಸ್ಥ();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	ಗಾಗಿ (size_t i = 0; i < 3; i++) {
+		ಗಾಗಿ (size_t j = 0; j < 3; j++) {
+			ಆದರೆ (i == j) {
 				EXPECT_FLOAT_EQ(A(i, j), 1);
 
-			} else {
+			} ಇಲ್ಲದಿದ್ದರೆ {
 				EXPECT_FLOAT_EQ(A(i, j), 0);
 			}
 		}
 	}
 
 	Matrix3f B;
-	B.identity();
+	B.ತಟಸ್ಥ();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	ಗಾಗಿ (size_t i = 0; i < 3; i++) {
+		ಗಾಗಿ (size_t j = 0; j < 3; j++) {
+			ಆದರೆ (i == j) {
 				EXPECT_FLOAT_EQ(B(i, j), 1);
 
-			} else {
+			} ಇಲ್ಲದಿದ್ದರೆ {
 				EXPECT_FLOAT_EQ(B(i, j), 0);
 			}
 		}

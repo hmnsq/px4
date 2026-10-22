@@ -38,12 +38,12 @@
  * @author Mathieu Bresciani <mathieu@auterion.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <matrix/matrix/math.hpp>
-#include <mathlib/mathlib.h>
+#ಅನ್ತರ್ಭಾವ <matrix/matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/mathlib.h>
 
-namespace pid_design
+ನಾಮಾಕಾಶ pid_design
 {
 
 /*
@@ -65,41 +65,41 @@ namespace pid_design
 * T.Yamatoto, K.Fujii and M.Kaneda, Design and implementation of a self-tuning pid controller, 1998
 */
 
-inline matrix::Vector3f computePidGmvc(const matrix::Vector3f &num, const matrix::Vector3f &den, float dt,
-				       float sigma = 0.1f, float delta = 1.f, float lbda = 0.5f)
+ಸಾಲೊಳಗೆ ಮಾತೃಕೆ::Vector3f computePidGmvc(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &ಅಂಕೆ, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &den, ದಶಮಾಂಶ dt,
+				       ದಶಮಾಂಶ sigma = 0.1f, ದಶಮಾಂಶ delta = 1.f, ದಶಮಾಂಶ lbda = 0.5f)
 {
 	sigma = math::constrain(sigma, 0.01f, 1.f);
 	delta = math::constrain(delta, 0.f, 1.f);
 	lbda = math::constrain(lbda, 0.f, 10.f);
 
-	const float a1 = den(1);
-	const float a2 = den(2);
-	const float b0 = num(0);
-	const float b1 = num(1);
-	const float b2 = num(2);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ a1 = den(1);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ a2 = den(2);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ b0 = ಅಂಕೆ(0);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ b1 = ಅಂಕೆ(1);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ b2 = ಅಂಕೆ(2);
 
 	// Solve GMVC law (see derivation in pid_synthesis_symbolic.py)
-	const float rho = dt / sigma;
-	const float mu = 0.25f * (1.f - delta) + 0.51f * delta; // mu is in the interval [0.25 0.51]
-	const float p1 = -2.f * expf(-rho / (2.f * mu)) * cosf(sqrtf(4.f * mu - 1.f) * rho / (2.f * mu));
-	const float p2 = expf(-rho / mu);
-	const float e1 = -a1 + p1 + 1.f;
-	const float f0 = -a1 * e1 + a1 - a2 + e1 + p2;
-	const float f1 = a1 * e1 - a2 * e1 + a2;
-	const float f2 = a2 * e1;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ rho = dt / sigma;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ mu = 0.25f * (1.f - delta) + 0.51f * delta; // mu is in the interval [0.25 0.51]
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ p1 = -2.f * expf(-rho / (2.f * mu)) * cosf(sqrtf(4.f * mu - 1.f) * rho / (2.f * mu));
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ p2 = expf(-rho / mu);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ e1 = -a1 + p1 + 1.f;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ f0 = -a1 * e1 + a1 - a2 + e1 + p2;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ f1 = a1 * e1 - a2 * e1 + a2;
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ f2 = a2 * e1;
 
 	// Translate to PID gains
-	const float nu = lbda + (e1 + 1.f) * (b0 + b1 + b2);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ nu = lbda + (e1 + 1.f) * (b0 + b1 + b2);
 
-	if (fabsf(nu) < FLT_EPSILON) {
-		return matrix::Vector3f();
+	ಆದರೆ (fabsf(nu) < FLT_EPSILON) {
+		ಹಿಂತಿರುಗಿ ಮಾತೃಕೆ::Vector3f();
 	}
 
-	const float kc = -(f1 + 2.f * f2) / nu;
-	float ki = -(f0 + f1 + f2) / (dt * (f1 + 2.f * f2));
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ kc = -(f1 + 2.f * f2) / nu;
+	ದಶಮಾಂಶ ki = -(f0 + f1 + f2) / (dt * (f1 + 2.f * f2));
 	ki /= 5.f; // This is not part of the original implementation but is required to produce reasonable gains
-	const float kd = -dt * f2 / (f1 + 2.f * f2);
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ kd = -dt * f2 / (f1 + 2.f * f2);
 
-	return matrix::Vector3f(kc, ki, kd);
+	ಹಿಂತಿರುಗಿ ಮಾತೃಕೆ::Vector3f(kc, ki, kd);
 }
 } // namespace pid_design

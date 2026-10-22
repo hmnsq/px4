@@ -31,64 +31,64 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "FunctionProviderBase.hpp"
+#ಅನ್ತರ್ಭಾವ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/manual_control_setpoint.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/manual_control_setpoint.h>
 
 /**
  * Functions: RC_Roll .. RCAUX_Max
  */
-class FunctionManualRC : public FunctionProviderBase
+ವರ್ಗ FunctionManualRC : ಸಾರ್ವಜನಿಕ Function_Provider_ತಳ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	FunctionManualRC()
 	{
-		resetAllToDisarmedValue();
+		reset_All_ಗಮ್ಯ_Disarmed_ಮೌಲ್ಯ();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionManualRC(); }
+	ಸ್ಥಿರ Function_Provider_ತಳ *allocate(ಸ್ಥಿರಾಂಕ Context &context) { ಹಿಂತಿರುಗಿ ಹೊಸ FunctionManualRC(); }
 
-	void update() override
+	ಶೂನ್ಯ update() override
 	{
 		manual_control_setpoint_s manual_control_setpoint;
 
-		if (_topic.update(&manual_control_setpoint)) {
-			if (manual_control_setpoint.valid) {
-				_data[0] = manual_control_setpoint.roll;
-				_data[1] = manual_control_setpoint.pitch;
-				_data[2] = manual_control_setpoint.throttle;
-				_data[3] = manual_control_setpoint.yaw;
-				_data[4] = manual_control_setpoint.flaps;
-				_data[5] = manual_control_setpoint.aux1;
-				_data[6] = manual_control_setpoint.aux2;
-				_data[7] = manual_control_setpoint.aux3;
-				_data[8] = manual_control_setpoint.aux4;
-				_data[9] = manual_control_setpoint.aux5;
-				_data[10] = manual_control_setpoint.aux6;
+		ಆದರೆ (_topic.update(&manual_control_setpoint)) {
+			ಆದರೆ (manual_control_setpoint.valid) {
+				ದತ್ತಾಂಶ_3[0] = manual_control_setpoint.roll;
+				ದತ್ತಾಂಶ_3[1] = manual_control_setpoint.pitch;
+				ದತ್ತಾಂಶ_3[2] = manual_control_setpoint.throttle;
+				ದತ್ತಾಂಶ_3[3] = manual_control_setpoint.yaw;
+				ದತ್ತಾಂಶ_3[4] = manual_control_setpoint.flaps;
+				ದತ್ತಾಂಶ_3[5] = manual_control_setpoint.aux1;
+				ದತ್ತಾಂಶ_3[6] = manual_control_setpoint.aux2;
+				ದತ್ತಾಂಶ_3[7] = manual_control_setpoint.aux3;
+				ದತ್ತಾಂಶ_3[8] = manual_control_setpoint.aux4;
+				ದತ್ತಾಂಶ_3[9] = manual_control_setpoint.aux5;
+				ದತ್ತಾಂಶ_3[10] = manual_control_setpoint.aux6;
 
-			} else {
-				resetAllToDisarmedValue();
+			} ಇಲ್ಲದಿದ್ದರೆ {
+				reset_All_ಗಮ್ಯ_Disarmed_ಮೌಲ್ಯ();
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::RC_Roll]; }
+	ದಶಮಾಂಶ value(OutputFunction func) override { ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ_3[(ಪೂರ್ಣಾಂಕ)func - (ಪೂರ್ಣಾಂಕ)OutputFunction::RC_Roll]; }
 
-private:
-	static constexpr int num_data_points = 11;
+ಖಾಸಗಿ:
+	ಸ್ಥಿರ constexpr ಪೂರ್ಣಾಂಕ ಅಂಕೆ_ದತ್ತಾಂಶ_points = 11;
 
-	void resetAllToDisarmedValue()
+	ಶೂನ್ಯ reset_All_ಗಮ್ಯ_Disarmed_ಮೌಲ್ಯ()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
-			_data[i] = NAN;
+		ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < ಅಂಕೆ_ದತ್ತಾಂಶ_points; ++i) {
+			ದತ್ತಾಂಶ_3[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
+	static_assert(ಅಂಕೆ_ದತ್ತಾಂಶ_points == (ಪೂರ್ಣಾಂಕ)OutputFunction::RC_AUXMax - (ಪೂರ್ಣಾಂಕ)OutputFunction::RC_Roll + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _topic{ORB_ID(manual_control_setpoint)};
-	float _data[num_data_points] {};
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_3[ಅಂಕೆ_ದತ್ತಾಂಶ_points] {};
 };

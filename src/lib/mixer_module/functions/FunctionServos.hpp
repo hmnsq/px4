@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "FunctionProviderBase.hpp"
+#ಅನ್ತರ್ಭಾವ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/actuator_servos.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/actuator_servos.h>
 
 /**
  * Functions: Servo1 ... ServoMax
  */
-class FunctionServos : public FunctionProviderBase
+ವರ್ಗ FunctionServos : ಸಾರ್ವಜನಿಕ Function_Provider_ತಳ
 {
-public:
-	static_assert(actuator_servos_s::NUM_CONTROLS == (int)OutputFunction::ServoMax - (int)OutputFunction::Servo1 + 1,
+ಸಾರ್ವಜನಿಕ:
+	static_assert(actuator_servos_s::ಅಂಕೆ_CONTROLS == (ಪೂರ್ಣಾಂಕ)OutputFunction::ServoMax - (ಪೂರ್ಣಾಂಕ)OutputFunction::Servo1 + 1,
 		      "Unexpected num servos");
 
-	FunctionServos(const Context &context) :
-		_topic(&context.work_item, ORB_ID(actuator_servos))
+	FunctionServos(ಸ್ಥಿರಾಂಕ Context &context) :
+		_topic(&context.work_ಅಂಶ, ORB_ID(actuator_servos))
 	{
-		for (int i = 0; i < actuator_servos_s::NUM_CONTROLS; ++i) {
-			_data.control[i] = NAN;
+		ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < actuator_servos_s::ಅಂಕೆ_CONTROLS; ++i) {
+			ದತ್ತಾಂಶ_3.control[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionServos(context); }
+	ಸ್ಥಿರ Function_Provider_ತಳ *allocate(ಸ್ಥಿರಾಂಕ Context &context) { ಹಿಂತಿರುಗಿ ಹೊಸ FunctionServos(context); }
 
-	void update() override { _topic.update(&_data); }
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Servo1]; }
+	ಶೂನ್ಯ update() override { _topic.update(&ದತ್ತಾಂಶ_3); }
+	ದಶಮಾಂಶ value(OutputFunction func) override { ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ_3.control[(ಪೂರ್ಣಾಂಕ)func - (ಪೂರ್ಣಾಂಕ)OutputFunction::Servo1]; }
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::Subscription_Callback_Work_ಅಂಶ *subscriptionCallback() override { ಹಿಂತಿರುಗಿ &_topic; }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 0.f; }
+	ದಶಮಾಂಶ default_Failsafe_ಮೌಲ್ಯ(OutputFunction func) ಸ್ಥಿರಾಂಕ override { ಹಿಂತಿರುಗಿ 0.f; }
 
-private:
-	uORB::SubscriptionCallbackWorkItem _topic;
-	actuator_servos_s _data{};
+ಖಾಸಗಿ:
+	uORB::Subscription_Callback_Work_ಅಂಶ _topic;
+	actuator_servos_s ದತ್ತಾಂಶ_3{};
 };

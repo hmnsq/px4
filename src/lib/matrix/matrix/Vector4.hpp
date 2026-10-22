@@ -39,47 +39,47 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "Vector.hpp"
+#ಅನ್ತರ್ಭಾವ "Vector.hpp"
 
-namespace matrix
+ನಾಮಾಕಾಶ ಮಾತೃಕೆ
 {
 
-template<typename Type>
-class Vector4 : public Vector<Type, 4>
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type>
+ವರ್ಗ Vector4 : ಸಾರ್ವಜನಿಕ ಸದಿಶ<Type, 4>
 {
-public:
-	using Matrix41 = Matrix<Type, 4, 1>;
+ಸಾರ್ವಜನಿಕ:
+	ಬಳಸಿ Matrix41 = ಮಾತೃಕೆ_2<Type, 4, 1>;
 
-	Vector4() = default;
+	Vector4() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	Vector4(const Matrix41 &other) :
-		Vector<Type, 4>(other)
+	Vector4(ಸ್ಥಿರಾಂಕ Matrix41 &other) :
+		ಸದಿಶ<Type, 4>(other)
 	{
 	}
 
-	explicit Vector4(const Type data_[3]) :
-		Vector<Type, 4>(data_)
+	ಸ್ಪಷ್ಟ Vector4(ಸ್ಥಿರಾಂಕ Type ದತ್ತಾಂಶ_2[3]) :
+		ಸದಿಶ<Type, 4>(ದತ್ತಾಂಶ_2)
 	{
 	}
 
 	Vector4(Type x1, Type x2, Type x3, Type x4)
 	{
-		Vector4 &v(*this);
+		Vector4 &v(*ಇದು);
 		v(0) = x1;
 		v(1) = x2;
 		v(2) = x3;
 		v(3) = x4;
 	}
 
-	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 4, 1, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	ಮಾದರಿ<size_t P, size_t Q>
+	Vector4(ಸ್ಥಿರಾಂಕ ತುಂಡು_2<Type, 4, 1, P, Q> &ತುಂಡು_ಒಳ) : ಸದಿಶ<Type, 4>(ತುಂಡು_ಒಳ)
 	{
 	}
 
-	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 1, 4, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	ಮಾದರಿ<size_t P, size_t Q>
+	Vector4(ಸ್ಥಿರಾಂಕ ತುಂಡು_2<Type, 1, 4, P, Q> &ತುಂಡು_ಒಳ) : ಸದಿಶ<Type, 4>(ತುಂಡು_ಒಳ)
 	{
 	}
 
@@ -87,43 +87,43 @@ public:
 	 * Override matrix ops so Vector4 type is returned
 	 */
 
-	Vector4 operator+(Vector4 other) const
+	Vector4 ಕ್ರಿಯಾಕಾರಕ+(Vector4 other) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix41::operator+(other);
+		ಹಿಂತಿರುಗಿ Matrix41::ಕ್ರಿಯಾಕಾರಕ+(other);
 	}
 
-	Vector4 operator+(Type scalar) const
+	Vector4 ಕ್ರಿಯಾಕಾರಕ+(Type scalar) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix41::operator+(scalar);
+		ಹಿಂತಿರುಗಿ Matrix41::ಕ್ರಿಯಾಕಾರಕ+(scalar);
 	}
 
-	Vector4 operator-(Vector4 other) const
+	Vector4 ಕ್ರಿಯಾಕಾರಕ-(Vector4 other) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix41::operator-(other);
+		ಹಿಂತಿರುಗಿ Matrix41::ಕ್ರಿಯಾಕಾರಕ-(other);
 	}
 
-	Vector4 operator-(Type scalar) const
+	Vector4 ಕ್ರಿಯಾಕಾರಕ-(Type scalar) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix41::operator-(scalar);
+		ಹಿಂತಿರುಗಿ Matrix41::ಕ್ರಿಯಾಕಾರಕ-(scalar);
 	}
 
-	Vector4 operator-() const
+	Vector4 ಕ್ರಿಯಾಕಾರಕ-() ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix41::operator-();
+		ಹಿಂತಿರುಗಿ Matrix41::ಕ್ರಿಯಾಕಾರಕ-();
 	}
 
-	Vector4 operator*(Type scalar) const
+	Vector4 ಕ್ರಿಯಾಕಾರಕ*(Type scalar) ಸ್ಥಿರಾಂಕ
 	{
-		return Matrix41::operator*(scalar);
+		ಹಿಂತಿರುಗಿ Matrix41::ಕ್ರಿಯಾಕಾರಕ*(scalar);
 	}
 
-	Type operator*(Vector4 b) const
+	Type ಕ್ರಿಯಾಕಾರಕ*(Vector4 b) ಸ್ಥಿರಾಂಕ
 	{
-		return Vector<Type, 4>::operator*(b);
+		ಹಿಂತಿರುಗಿ ಸದಿಶ<Type, 4>::ಕ್ರಿಯಾಕಾರಕ*(b);
 	}
 
 };
 
-using Vector4f = Vector4<float>;
+ಬಳಸಿ Vector4f = Vector4<ದಶಮಾಂಶ>;
 
 } // namespace matrix

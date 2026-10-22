@@ -33,41 +33,41 @@
 #
 ############################################################################
 
-import argparse
-import builtins
-import pathlib
-import sys
+ಆಮದು argparse
+ಆಮದು builtins
+ಆಮದು pathlib
+ಆಮದು sys
 
-from rosidl_adapter.msg import convert_msg_to_idl
+ತಃ rosidl_adapter.ಸಂದೇಶ_2 ಆಮದು convert_ಸಂದೇಶ_ಗಮ್ಯ_idl
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
+ಆದರೆ __name__ == '__main__':
+    parser = argparse.ವಾದ_Parser(
         description=f'Convert px4 .msg files to .idl')
-    parser.add_argument(
+    parser.ಕೂಡಿಸು_ವಾದ(
         'interface_files', nargs='+',
         help='The interface files to convert')
-    args = parser.parse_args(sys.argv[1:])
+    ವಾದಗಳು = parser.parse_ವಾದಗಳು(sys.argv[1:])
 
     # convert_msg_to_idl prints a Reading/Writing line per file. Filter those
     # via builtins.print instead of redirecting stdout, which the empy template
     # engine relies on and breaks if replaced. Errors still surface on stderr.
-    real_print = builtins.print
+    real_print = builtins.ಮುದ್ರಿಸು
 
-    def quiet_print(*pargs, **kwargs):
-        if pargs and isinstance(pargs[0], str) and \
+    ವ್ಯಾಖ್ಯಾನ quiet_print(*pargs, **kwargs):
+        ಆದರೆ pargs ಮತ್ತು isinstance(pargs[0], str) ಮತ್ತು \
                 pargs[0].startswith(('Reading input file:', 'Writing output file:')):
-            return
+            ಹಿಂತಿರುಗಿ
         real_print(*pargs, **kwargs)
 
-    builtins.print = quiet_print
-    try:
-        for interface_file in args.interface_files:
-            interface_file = pathlib.Path(interface_file)
-            package_dir = interface_file.parent.absolute()
+    builtins.ಮುದ್ರಿಸು = quiet_print
+    ಪ್ರಯತ್ನಿಸು:
+        ಗಾಗಿ interface_file ಒಳಗೆ ವಾದಗಳು.interface_files:
+            interface_file = pathlib.ಮಾರ್ಗ_2(interface_file)
+            package_dir = interface_file.ಪೋಷಕ.absolute()
 
-            convert_msg_to_idl(
+            convert_ಸಂದೇಶ_ಗಮ್ಯ_idl(
                 package_dir, 'px4_msgs',
-                interface_file.absolute().relative_to(package_dir),
-                interface_file.parent)
-    finally:
-        builtins.print = real_print
+                interface_file.absolute().relative_ಗಮ್ಯ(package_dir),
+                interface_file.ಪೋಷಕ)
+    ಕೊನೆಗೆ:
+        builtins.ಮುದ್ರಿಸು = real_print

@@ -37,60 +37,60 @@
  * @author Thomas Gubler <thomasgubler@gmail.com>
  * @author Mark Charlebois <mcharleb@gmail.com>
  */
-#include "cdevtest_example.h"
+#ಅನ್ತರ್ಭಾವ "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/tasks.h>
-#include <stdio.h>
-#include <string.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/app.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/tasks.h>
+#ಅನ್ತರ್ಭಾವ <stdio.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-extern "C" __EXPORT int cdev_test_main(int argc, char *argv[]);
-int cdev_test_main(int argc, char *argv[])
+ಬಾಹ್ಯ "C" __EXPORT ಪೂರ್ಣಾಂಕ cdev_test_main(ಪೂರ್ಣಾಂಕ argc, ಅಕ್ಷರ *argv[]);
+ಪೂರ್ಣಾಂಕ cdev_test_main(ಪೂರ್ಣಾಂಕ argc, ಅಕ್ಷರ *argv[])
 {
 
-	if (argc < 2) {
-		printf("usage: cdevtest {start|stop|status}\n");
-		return 1;
+	ಆದರೆ (argc < 2) {
+		ಬರೆ("usage: cdevtest {start|stop|status}\n");
+		ಹಿಂತಿರುಗಿ 1;
 	}
 
-	if (!strcmp(argv[1], "start")) {
+	ಆದರೆ (!strcmp(argv[1], "start")) {
 
-		if (CDevExample::appState.isRunning()) {
-			printf("already running\n");
+		ಆದರೆ (CDevExample::appState.isRunning()) {
+			ಬರೆ("already running\n");
 			/* this is not an error */
-			return 0;
+			ಹಿಂತಿರುಗಿ 0;
 		}
 
 		daemon_task = px4_task_spawn_cmd("cdevtest",
 						 SCHED_DEFAULT,
-						 SCHED_PRIORITY_MAX - 5,
+						 SCHED_ಆದ್ಯತೆ_MAX - 5,
 						 2000,
 						 PX4_MAIN,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+						 (argv) ? (ಅಕ್ಷರ *ಸ್ಥಿರಾಂಕ *)&argv[2] : (ಅಕ್ಷರ *ಸ್ಥಿರಾಂಕ *)ಶೂನ್ಯಸೂಚಕ);
 
-		return 0;
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
-	if (!strcmp(argv[1], "stop")) {
+	ಆದರೆ (!strcmp(argv[1], "stop")) {
 		CDevExample::appState.requestExit();
-		return 0;
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
-	if (!strcmp(argv[1], "status")) {
-		if (CDevExample::appState.isRunning()) {
-			printf("is running\n");
+	ಆದರೆ (!strcmp(argv[1], "status")) {
+		ಆದರೆ (CDevExample::appState.isRunning()) {
+			ಬರೆ("is running\n");
 
-		} else {
-			printf("not started\n");
+		} ಇಲ್ಲದಿದ್ದರೆ {
+			ಬರೆ("not started\n");
 		}
 
-		return 0;
+		ಹಿಂತಿರುಗಿ 0;
 	}
 
-	printf("usage: cdevtest_main {start|stop|status}\n");
-	return 1;
+	ಬರೆ("usage: cdevtest_main {start|stop|status}\n");
+	ಹಿಂತಿರುಗಿ 1;
 }

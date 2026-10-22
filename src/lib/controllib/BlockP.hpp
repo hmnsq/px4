@@ -37,45 +37,45 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
 /**
  * A proportional controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockP: public Block
+ವರ್ಗ __EXPORT ಖಂಡ_P: ಸಾರ್ವಜನಿಕ ಖಂಡ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockP(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_kP(this, "") // only one param, no need to name
+	ಖಂಡ_P(Super_ಖಂಡ *ಪೋಷಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) :
+		ಖಂಡ(ಪೋಷಕ, name),
+		_kP(ಇದು, "") // only one param, no need to name
 	{}
-	virtual ~BlockP() = default;
-	float update(float input)
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_P() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ದಶಮಾಂಶ update(ದಶಮಾಂಶ ಒಳಹರಿವು)
 	{
-		return getKP() * input;
+		ಹಿಂತಿರುಗಿ getKP() * ಒಳಹರಿವು;
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-protected:
-	control::BlockParamFloat _kP;
+	ದಶಮಾಂಶ getKP() { ಹಿಂತಿರುಗಿ _kP.get(); }
+ಸಂರಕ್ಷಿತ:
+	control::ಖಂಡ_Param_Float _kP;
 };
 
 } // namespace control

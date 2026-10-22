@@ -1,7 +1,7 @@
-#include <px4_random.h>
-#include <tomcrypt.h>
+#ಅನ್ತರ್ಭಾವ <px4_random.h>
+#ಅನ್ತರ್ಭಾವ <tomcrypt.h>
 
-struct ltc_hash_descriptor hash_descriptor[] = {
+ರಚನೆ ltc_hash_descriptor hash_descriptor[] = {
 	{
 		"sha256",
 		0,
@@ -14,34 +14,34 @@ struct ltc_hash_descriptor hash_descriptor[] = {
 
 		&sha256_init,
 		&sha256_process,
-		&sha256_done,
+		&sha256_ಮುಗಿದ,
 		&sha256_test,
-		NULL
+		ಖಾಲಿ
 	}
 };
 
-struct ltc_prng_descriptor prng_descriptor[] = {
+ರಚನೆ ltc_prng_descriptor prng_descriptor[] = {
 	{
 		"sprng", 0,
-		&sprng_start,
-		&sprng_add_entropy,
+		&sprng_ಆರಂಭ,
+		&sprng_ಕೂಡಿಸು_entropy,
 		&sprng_ready,
 		&sprng_read,
-		&sprng_done,
+		&sprng_ಮುಗಿದ,
 		&sprng_export,
 		&sprng_import,
 		&sprng_test
 	}
 };
 
-unsigned long rng_get_bytes(unsigned char *out,
-			    unsigned long outlen,
-			    void (*callback)(void))
+ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ rng_get_ಬೈಟುಗಳು(ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *ಹೊರಹೋಗು,
+			    ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ outlen,
+			    ಶೂನ್ಯ (*callback)(ಶೂನ್ಯ))
 {
-	return px4_get_secure_random((uint8_t *)out, (size_t)outlen);
+	ಹಿಂತಿರುಗಿ px4_get_secure_random((uint8_t *)ಹೊರಹೋಗು, (size_t)outlen);
 }
 
-void libtomcrypt_init(void)
+ಶೂನ್ಯ libtomcrypt_init(ಶೂನ್ಯ)
 {
 	ltc_mp = ltm_desc;
 }

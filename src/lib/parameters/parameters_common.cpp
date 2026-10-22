@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#include <string.h>
+#ಅನ್ತರ್ಭಾವ <string.h>
 
 /**
  * @file parameters_common.cpp
@@ -40,7 +40,7 @@
  *
  */
 
-static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(param_info_s);
+ಸ್ಥಿರ constexpr uint16_t param_info_ಎಣಿಕೆ = ಗಾತ್ರ(px4::parameters) / ಗಾತ್ರ(param_info_s);
 
 /**
  * Test whether a param_t is value.
@@ -48,119 +48,119 @@ static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(pa
  * @param param			The parameter handle to test.
  * @return			True if the handle is valid.
  */
-static constexpr bool handle_in_range(param_t param) { return (param < param_info_count); }
+ಸ್ಥಿರ constexpr ತಾರ್ಕಿಕ handle_ಒಳ_range(param_t param) { ಹಿಂತಿರುಗಿ (param < param_info_ಎಣಿಕೆ); }
 
-unsigned param_count()
+ಚಿಹ್ನೆರಹಿತ param_ಎಣಿಕೆ()
 {
-	return param_info_count;
+	ಹಿಂತಿರುಗಿ param_info_ಎಣಿಕೆ;
 }
 
-int param_get_index(param_t param)
+ಪೂರ್ಣಾಂಕ param_get_ಸೂಚ್ಯಂಕ(param_t param)
 {
-	if (handle_in_range(param)) {
-		return (unsigned)param;
+	ಆದರೆ (handle_ಒಳ_range(param)) {
+		ಹಿಂತಿರುಗಿ (ಚಿಹ್ನೆರಹಿತ)param;
 	}
 
-	return -1;
+	ಹಿಂತಿರುಗಿ -1;
 }
 
-param_t param_for_index(unsigned index)
+param_t param_for_ಸೂಚ್ಯಂಕ(ಚಿಹ್ನೆರಹಿತ ಸೂಚ್ಯಂಕ)
 {
-	if (index < param_info_count) {
-		return (param_t)index;
+	ಆದರೆ (ಸೂಚ್ಯಂಕ < param_info_ಎಣಿಕೆ) {
+		ಹಿಂತಿರುಗಿ (param_t)ಸೂಚ್ಯಂಕ;
 	}
 
-	return PARAM_INVALID;
+	ಹಿಂತಿರುಗಿ PARAM_INVALID;
 }
 
-const char *param_name(param_t param)
+ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *param_name(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters[param].name : nullptr;
+	ಹಿಂತಿರುಗಿ handle_ಒಳ_range(param) ? px4::parameters[param].name : ಶೂನ್ಯಸೂಚಕ;
 }
 
 param_type_t param_type(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
+	ಹಿಂತಿರುಗಿ handle_ಒಳ_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
 }
 
-bool param_is_volatile(param_t param)
+ತಾರ್ಕಿಕ param_is_volatile(param_t param)
 {
-	if (handle_in_range(param)) {
-		for (const auto &p : px4::parameters_volatile) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	ಆದರೆ (handle_ಒಳ_range(param)) {
+		ಗಾಗಿ (ಸ್ಥಿರಾಂಕ ಸ್ವಯಂಚಾಲಿತ &p : px4::parameters_volatile) {
+			ಆದರೆ (static_cast<px4::params>(param) == p) {
+				ಹಿಂತಿರುಗಿ ನಿಜ;
 			}
 		}
 	}
 
-	return false;
+	ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 }
 
-static bool params_locked = false;
+ಸ್ಥಿರ ತಾರ್ಕಿಕ params_locked = ಸುಳ್ಳು;
 
-bool param_is_readonly(param_t param)
+ತಾರ್ಕಿಕ param_is_readonly(param_t param)
 {
-	if (params_locked && handle_in_range(param)) {
-		for (const auto &p : px4::parameters_readonly) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	ಆದರೆ (params_locked && handle_ಒಳ_range(param)) {
+		ಗಾಗಿ (ಸ್ಥಿರಾಂಕ ಸ್ವಯಂಚಾಲಿತ &p : px4::parameters_readonly) {
+			ಆದರೆ (static_cast<px4::params>(param) == p) {
+				ಹಿಂತಿರುಗಿ ನಿಜ;
 			}
 		}
 	}
 
-	return false;
+	ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 }
 
-void param_lock_readonly()
+ಶೂನ್ಯ param_ಬೀಗ_readonly()
 {
-	params_locked = true;
+	params_locked = ನಿಜ;
 }
 
-size_t param_size(param_t param)
+size_t param_ಗಾತ್ರ(param_t param)
 {
-	if (handle_in_range(param)) {
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-		case PARAM_TYPE_FLOAT:
-			return 4;
+	ಆದರೆ (handle_ಒಳ_range(param)) {
+		ಆಯ್ಕೆ (param_type(param)) {
+		ಸ್ಥಿತಿ PARAM_TYPE_INT32:
+		ಸ್ಥಿತಿ PARAM_TYPE_FLOAT:
+			ಹಿಂತಿರುಗಿ 4;
 
-		default:
-			return 0;
+		ಪೂರ್ವನಿಯೋಜಿತ:
+			ಹಿಂತಿರುಗಿ 0;
 		}
 	}
 
-	return 0;
+	ಹಿಂತಿರುಗಿ 0;
 }
 
-int
-param_get_system_default_value(param_t param, void *default_val)
+ಪೂರ್ಣಾಂಕ
+param_get_system_default_ಮೌಲ್ಯ(param_t param, ಶೂನ್ಯ *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	ಆದರೆ (!handle_ಒಳ_range(param)) {
+		ಹಿಂತಿರುಗಿ PX4_ERROR;
 	}
 
-	int ret = PX4_OK;
+	ಪೂರ್ಣಾಂಕ ret = PX4_OK;
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
-		memcpy(default_val, &px4::parameters[param].val.i, param_size(param));
-		break;
+	ಆಯ್ಕೆ (param_type(param)) {
+	ಸ್ಥಿತಿ PARAM_TYPE_INT32:
+		ಸ್ಮರಣೆ_ನಕಲು(default_val, &px4::parameters[param].val.i, param_ಗಾತ್ರ(param));
+		ನಿಲ್ಲಿಸು;
 
-	case PARAM_TYPE_FLOAT:
-		memcpy(default_val, &px4::parameters[param].val.f, param_size(param));
-		break;
+	ಸ್ಥಿತಿ PARAM_TYPE_FLOAT:
+		ಸ್ಮರಣೆ_ನಕಲು(default_val, &px4::parameters[param].val.f, param_ಗಾತ್ರ(param));
+		ನಿಲ್ಲಿಸು;
 
-	default:
+	ಪೂರ್ವನಿಯೋಜಿತ:
 		ret = PX4_ERROR;
-		break;
+		ನಿಲ್ಲಿಸು;
 	}
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 }
 
-int
-param_get_mark_used(param_t param, void *val)
+ಪೂರ್ಣಾಂಕ
+param_get_mark_ಬಳಸಿದ(param_t param, ಶೂನ್ಯ *val)
 {
-	param_set_used(param);
-	return param_get(param, val);
+	param_ಗಣ_ಬಳಸಿದ(param);
+	ಹಿಂತಿರುಗಿ param_get(param, val);
 }

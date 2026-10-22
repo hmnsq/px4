@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
-struct traffic_data_s {
-	double lat_traffic;
-	double lon_traffic;
-	float alt_traffic;
-	float heading_traffic;
-	float vxy_traffic;
-	float vz_traffic;
-	bool in_conflict;
+ರಚನೆ traffic_ದತ್ತಾಂಶ_s {
+	ದ್ವಿಗುಣ lat_traffic;
+	ದ್ವಿಗುಣ lon_traffic;
+	ದಶಮಾಂಶ alt_traffic;
+	ದಶಮಾಂಶ heading_traffic;
+	ದಶಮಾಂಶ vxy_traffic;
+	ದಶಮಾಂಶ vz_traffic;
+	bool ಒಳ_conflict;
 };
 
 // traffic dataset generated using notebook in adsb/test_adsb_helper.ipynb
-static constexpr traffic_data_s kTrafficDataset[] = {
+ಸ್ಥಿರ constexpr traffic_ದತ್ತಾಂಶ_s kTrafficDataset[] = {
 
 	{3.270694516059187151e+01, -9.638379328402535862e+01, 4.470000000000000000e+02, -3.141592653589793116e+00, 2.042375980563040798e+02, 2.042375980563040798e+02, 0},
 	{3.270694516059187151e+01, -9.638379328402535862e+01, 7.900000000000000000e+02, -3.109129529502698386e+00, 2.500275609807847104e+03, 2.500275609807847104e+03, 0},

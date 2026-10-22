@@ -1,29 +1,29 @@
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <stdint.h>
+#ಅನ್ತರ್ಭಾವ <stdint.h>
 
-#include "crsf.h"
-#include "dsm.h"
-#include "ghst.hpp"
-#include "sbus.h"
-#include "st24.h"
-#include "sumd.h"
+#ಅನ್ತರ್ಭಾವ "crsf.h"
+#ಅನ್ತರ್ಭಾವ "dsm.h"
+#ಅನ್ತರ್ಭಾವ "ghst.hpp"
+#ಅನ್ತರ್ಭಾವ "sbus.h"
+#ಅನ್ತರ್ಭಾವ "st24.h"
+#ಅನ್ತರ್ಭಾವ "sumd.h"
 
-#pragma pack(push, 1)
-typedef  struct rc_decode_buf_ {
-	union {
-		crsf_frame_t crsf_frame;
-		ghst_frame_t ghst_frame;
+#ಸೂಚನೆ pack(ತಳ್ಳು, 1)
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ  ರಚನೆ rc_decode_buf_ {
+	ಒಕ್ಕೂಟ {
+		crsf_ಚೌಕಟ್ಟು_t crsf_ಚೌಕಟ್ಟು;
+		ghst_ಚೌಕಟ್ಟು_t ghst_ಚೌಕಟ್ಟು;
 		dsm_decode_t dsm;
-		sbus_frame_t sbus_frame;
+		sbus_ಚೌಕಟ್ಟು_t sbus_ಚೌಕಟ್ಟು;
 		ReceiverFcPacket _strxpacket;
 		ReceiverFcPacketHoTT _hottrxpacket;
 	};
 } rc_decode_buf_t;
-#pragma pack(pop)
+#ಸೂಚನೆ pack(ತೆಗೆ_2)
 
-extern rc_decode_buf_t rc_decode_buf;
+ಬಾಹ್ಯ rc_decode_buf_t rc_decode_buf;
 
-uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a);
-uint8_t crc8_dvb_s2_buf(uint8_t *buf, int len);
+uint8_t crc8_dvb_s2(uint8_t ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ, uint8_t a);
+uint8_t crc8_dvb_s2_buf(uint8_t *buf, ಪೂರ್ಣಾಂಕ len);

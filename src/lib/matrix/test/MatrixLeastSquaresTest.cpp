@@ -31,66 +31,66 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-int test_4x3(void);
-template<typename Type> int test_4x4(void);
-int test_4x4_type_double(void);
-int test_div_zero(void);
+ಪೂರ್ಣಾಂಕ test_4x3(ಶೂನ್ಯ);
+ಮಾದರಿ<ಬಗೆ_ಹೆಸರು Type> ಪೂರ್ಣಾಂಕ test_4x4(ಶೂನ್ಯ);
+ಪೂರ್ಣಾಂಕ test_4x4_type_double(ಶೂನ್ಯ);
+ಪೂರ್ಣಾಂಕ test_div_zero(ಶೂನ್ಯ);
 
-TEST(MatrixLeastSquaresTest, 4x3)
+TEST(ಮಾತೃಕೆ_ಕನಿಷ್ಠ_Squares_Test, 4x3)
 {
 	// Start with an (m x n) A matrix
-	float data[12] = {20.f, -10.f, -13.f,
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ[12] = {20.f, -10.f, -13.f,
 			  17.f,  16.f, -18.f,
 			  0.7f,  -0.8f,   0.9f,
 			  -1.f,  -1.1f,  -1.2f
 			 };
-	Matrix<float, 4, 3> A(data);
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 4, 3> A(ದತ್ತಾಂಶ);
 	Vector4f b(2.0f, 3.0f, 4.0f, 5.0f);
 	Vector3f x_check(-0.69168233f, -0.26227593f, -1.03767522f);
 
-	LeastSquaresSolver<float, 4, 3> qrd = LeastSquaresSolver<float, 4, 3>(A);
+	ಕನಿಷ್ಠ_Squares_Solver<ದಶಮಾಂಶ, 4, 3> qrd = ಕನಿಷ್ಠ_Squares_Solver<ದಶಮಾಂಶ, 4, 3>(A);
 
 	Vector3f x = qrd.solve(b);
 	EXPECT_EQ(x, x_check);
 }
 
-TEST(MatrixLeastSquaresTest, 4x4)
+TEST(ಮಾತೃಕೆ_ಕನಿಷ್ಠ_Squares_Test, 4x4)
 {
 	// Start with an (m x n) A matrix
-	const float data[16] = { 20.f, -10.f, -13.f,  21.f,
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ ದತ್ತಾಂಶ[16] = { 20.f, -10.f, -13.f,  21.f,
 				 17.f,  16.f, -18.f, -14.f,
 				 0.7f,  -0.8f,   0.9f,  -0.5f,
 				 -1.f,  -1.1f,  -1.2f,  -1.3f
 			       };
-	Matrix<float, 4, 4> A(data);
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 4, 4> A(ದತ್ತಾಂಶ);
 	Vector4f b(2.0f, 3.0f, 4.0f, 5.0f);
 	Vector4f x_check(0.97893433f, -2.80798701f, -0.03175765f, -2.19387649f);
 
-	LeastSquaresSolver<float, 4, 4> qrd = LeastSquaresSolver<float, 4, 4>(A);
+	ಕನಿಷ್ಠ_Squares_Solver<ದಶಮಾಂಶ, 4, 4> qrd = ಕನಿಷ್ಠ_Squares_Solver<ದಶಮಾಂಶ, 4, 4>(A);
 
 	Vector4f x = qrd.solve(b);
 	EXPECT_EQ(x, x_check);
 }
 
-TEST(MatrixLeastSquaresTest, ZeroDivision)
+TEST(ಮಾತೃಕೆ_ಕನಿಷ್ಠ_Squares_Test, ZeroDivision)
 {
-	float data[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-	Matrix<float, 2, 2> A(data);
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 2> A(ದತ್ತಾಂಶ);
 
-	float b_data[2] = {1.0f, 1.0f};
-	Vector<float, 2> b(b_data);
+	ದಶಮಾಂಶ b_ದತ್ತಾಂಶ[2] = {1.0f, 1.0f};
+	ಸದಿಶ<ದಶಮಾಂಶ, 2> b(b_ದತ್ತಾಂಶ);
 
 	// Implement such that x returns zeros if it reaches div by zero
-	float x_check_data[2] = {0.0f, 0.0f};
-	Vector<float, 2> x_check(x_check_data);
+	ದಶಮಾಂಶ x_check_ದತ್ತಾಂಶ[2] = {0.0f, 0.0f};
+	ಸದಿಶ<ದಶಮಾಂಶ, 2> x_check(x_check_ದತ್ತಾಂಶ);
 
-	LeastSquaresSolver<float, 2, 2> qrd = LeastSquaresSolver<float, 2, 2>(A);
+	ಕನಿಷ್ಠ_Squares_Solver<ದಶಮಾಂಶ, 2, 2> qrd = ಕನಿಷ್ಠ_Squares_Solver<ದಶಮಾಂಶ, 2, 2>(A);
 
-	Vector<float, 2> x = qrd.solve(b);
+	ಸದಿಶ<ದಶಮಾಂಶ, 2> x = qrd.solve(b);
 	EXPECT_EQ(x, x_check);
 }

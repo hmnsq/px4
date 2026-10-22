@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-TEST(MatrixMultiplicationTest, Multiplication)
+TEST(ಮಾತೃಕೆ_Multiplication_Test, Multiplication)
 {
-	float data[9] = {1, 0, 0, 0, 1, 0, 1, 0, 1};
-	Matrix3f A(data);
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ[9] = {1, 0, 0, 0, 1, 0, 1, 0, 1};
+	Matrix3f A(ದತ್ತಾಂಶ);
 
-	float data_check[9] = {1, 0, 0, 0, 1, 0, -1, 0, 1};
-	Matrix3f A_I(data_check);
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_check[9] = {1, 0, 0, 0, 1, 0, -1, 0, 1};
+	Matrix3f A_I(ದತ್ತಾಂಶ_check);
 	Matrix3f I;
-	I.setIdentity();
+	I.ಗಣ_ತಟಸ್ಥ();
 	Matrix3f R = A * A_I;
 	EXPECT_EQ(R, I);
 
@@ -54,47 +54,47 @@ TEST(MatrixMultiplicationTest, Multiplication)
 
 	EXPECT_EQ(R2, I);
 	EXPECT_NE(A, A_I);
-	Matrix3f A2 = eye<float, 3>() * 2;
+	Matrix3f A2 = eye<ದಶಮಾಂಶ, 3>() * 2;
 	Matrix3f B = A2.emult(A2);
-	Matrix3f B_check = eye<float, 3>() * 4;
-	Matrix3f C_check = eye<float, 3>() * 2;
+	Matrix3f B_check = eye<ದಶಮಾಂಶ, 3>() * 4;
+	Matrix3f C_check = eye<ದಶಮಾಂಶ, 3>() * 2;
 	EXPECT_EQ(B, B_check);
 	Matrix3f C = B_check.edivide(C_check);
 
-	float off_diagonal_nan[9] = {2, NAN, NAN, NAN, 2, NAN, NAN, NAN, 2};
+	ದಶಮಾಂಶ off_diagonal_nan[9] = {2, NAN, NAN, NAN, 2, NAN, NAN, NAN, 2};
 	// off diagonal are NANs because division by 0
 	EXPECT_EQ(C, Matrix3f(off_diagonal_nan));
 
 	// Test non-square matrix
-	float data_43[12] = {1, 3, 2,
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_43[12] = {1, 3, 2,
 			     2, 2, 1,
 			     5, 2, 1,
 			     2, 3, 4
 			    };
-	float data_32[6] = {2, 3,
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_32[6] = {2, 3,
 			    1, 7,
 			    5, 4
 			   };
 
-	Matrix<float, 4, 3> m43(data_43);
-	Matrix<float, 3, 2> m32(data_32);
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 4, 3> m43(ದತ್ತಾಂಶ_43);
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 2> m32(ದತ್ತಾಂಶ_32);
 
-	Matrix<float, 4, 2> m42 = m43 * m32;
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 4, 2> m42 = m43 * m32;
 
-	float data_42[8] = {15, 32,
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_42[8] = {15, 32,
 			    11, 24,
 			    17, 33,
 			    27, 43
 			   };
-	Matrix<float, 4, 2> m42_check(data_42);
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 4, 2> m42_check(ದತ್ತಾಂಶ_42);
 	EXPECT_EQ(m42, m42_check);
 
-	float data_42_plus2[8] = {17, 34,
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_42_plus2[8] = {17, 34,
 				  13, 26,
 				  19, 35,
 				  29, 45
 				 };
-	Matrix<float, 4, 2> m42_plus2_check(data_42_plus2);
-	Matrix<float, 4, 2> m42_plus2 = m42 - (-2);
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 4, 2> m42_plus2_check(ದತ್ತಾಂಶ_42_plus2);
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 4, 2> m42_plus2 = m42 - (-2);
 	EXPECT_EQ(m42_plus2, m42_plus2_check);
 }

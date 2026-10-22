@@ -35,21 +35,21 @@
  * @file default_tunes.cpp
  */
 
-#include "tunes.h"
+#ಅನ್ತರ್ಭಾವ "tunes.h"
 
-#define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) tune,
+#ವ್ಯಾಖ್ಯಾನಿಸು PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) tune,
 // Initialize default tunes
-const char *const Tunes::_default_tunes[] = {
-#include "tune_definition.desc"
+ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *ಸ್ಥಿರಾಂಕ Tunes::_default_tunes[] = {
+#ಅನ್ತರ್ಭಾವ "tune_definition.desc"
 };
-#undef PX4_DEFINE_TUNE
+#ವ್ಯಾಖ್ಯಾನ_ರದ್ದು PX4_DEFINE_TUNE
 
-#define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) interruptable,
+#ವ್ಯಾಖ್ಯಾನಿಸು PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) interruptable,
 // Initialize default tunes
-const bool Tunes::_default_tunes_interruptable[] = {
-#include "tune_definition.desc"
+ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ Tunes::_default_tunes_interruptable[] = {
+#ಅನ್ತರ್ಭಾವ "tune_definition.desc"
 };
-#undef PX4_DEFINE_TUNE
+#ವ್ಯಾಖ್ಯಾನ_ರದ್ದು PX4_DEFINE_TUNE
 
 // set default_tunes array size
-const unsigned int Tunes::_default_tunes_size =  sizeof(_default_tunes) / sizeof(_default_tunes[0]);
+ಸ್ಥಿರಾಂಕ ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ Tunes::default_tunes_ಗಾತ್ರ =  ಗಾತ್ರ(_default_tunes) / ಗಾತ್ರ(_default_tunes[0]);

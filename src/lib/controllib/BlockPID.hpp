@@ -37,60 +37,60 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
 /**
  * A proportional-integral-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPID: public SuperBlock
+ವರ್ಗ __EXPORT ಖಂಡ_PID: ಸಾರ್ವಜನಿಕ Super_ಖಂಡ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockPID(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kI(this, "I"),
-		_kD(this, "D")
+	ಖಂಡ_PID(Super_ಖಂಡ *ಪೋಷಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) :
+		Super_ಖಂಡ(ಪೋಷಕ, name),
+		_integral(ಇದು, "I"),
+		_derivative(ಇದು, "D"),
+		_kP(ಇದು, "P"),
+		_kI(ಇದು, "I"),
+		_kD(ಇದು, "D")
 	{}
-	virtual ~BlockPID() = default;
-	float update(float input)
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_PID() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ದಶಮಾಂಶ update(ದಶಮಾಂಶ ಒಳಹರಿವು)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input) +
-		       getKD() * getDerivative().update(input);
+		ಹಿಂತಿರುಗಿ getKP() * ಒಳಹರಿವು +
+		       getKI() * getIntegral().update(ಒಳಹರಿವು) +
+		       getKD() * getDerivative().update(ಒಳಹರಿವು);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	float getKD() { return _kD.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
-// attributes
-	BlockIntegral _integral;
-	BlockDerivative _derivative;
-	control::BlockParamFloat _kP;
-	control::BlockParamFloat _kI;
-	control::BlockParamFloat _kD;
+	ದಶಮಾಂಶ getKP() { ಹಿಂತಿರುಗಿ _kP.get(); }
+	ದಶಮಾಂಶ getKI() { ಹಿಂತಿರುಗಿ _kI.get(); }
+	ದಶಮಾಂಶ getKD() { ಹಿಂತಿರುಗಿ _kD.get(); }
+	ಖಂಡ_Integral &getIntegral() { ಹಿಂತಿರುಗಿ _integral; }
+	ಖಂಡ_Derivative &getDerivative() { ಹಿಂತಿರುಗಿ _derivative; }
+ಖಾಸಗಿ:
+//ಗುಣಲಕ್ಷಣಗಳು
+	ಖಂಡ_Integral _integral;
+	ಖಂಡ_Derivative _derivative;
+	control::ಖಂಡ_Param_Float _kP;
+	control::ಖಂಡ_Param_Float _kI;
+	control::ಖಂಡ_Param_Float _kD;
 };
 
 } // namespace control

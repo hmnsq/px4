@@ -37,70 +37,70 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
-class __EXPORT BlockRandGauss: public Block
+ವರ್ಗ __EXPORT ಖಂಡ_Rand_Gauss: ಸಾರ್ವಜನಿಕ ಖಂಡ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockRandGauss(SuperBlock *parent,
-		       const char *name) :
-		Block(parent, name),
-		_mean(this, "MEAN"),
-		_stdDev(this, "DEV")
+	ಖಂಡ_Rand_Gauss(Super_ಖಂಡ *ಪೋಷಕ,
+		       ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) :
+		ಖಂಡ(ಪೋಷಕ, name),
+		ಸರಾಸರಿ_2(ಇದು, "MEAN"),
+		_stdDev(ಇದು, "DEV")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandGauss() = default;
-	float update()
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_Rand_Gauss() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ದಶಮಾಂಶ update()
 	{
-		static float V1, V2, S;
-		static int phase = 0;
-		float X;
+		ಸ್ಥಿರ ದಶಮಾಂಶ V1, V2, S;
+		ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ phase = 0;
+		ದಶಮಾಂಶ X;
 
-		if (phase == 0) {
-			do {
-				float U1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-				float U2 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		ಆದರೆ (phase == 0) {
+			ಮಾಡು {
+				ದಶಮಾಂಶ U1 = static_cast<ದಶಮಾಂಶ>(rand()) / static_cast<ದಶಮಾಂಶ>(RAND_MAX);
+				ದಶಮಾಂಶ U2 = static_cast<ದಶಮಾಂಶ>(rand()) / static_cast<ದಶಮಾಂಶ>(RAND_MAX);
 				V1 = 2 * U1 - 1;
 				V2 = 2 * U2 - 1;
 				S = V1 * V1 + V2 * V2;
-			} while (S >= 1 || fabsf(S) < 1e-8f);
+			} ಆಗ (S >= 1 || fabsf(S) < 1e-8f);
 
-			X = V1 * float(sqrtf(-2 * float(logf(S)) / S));
+			X = V1 * ದಶಮಾಂಶ(sqrtf(-2 * ದಶಮಾಂಶ(logf(S)) / S));
 
-		} else {
-			X = V2 * float(sqrtf(-2 * float(logf(S)) / S));
+		} ಇಲ್ಲದಿದ್ದರೆ {
+			X = V2 * ದಶಮಾಂಶ(sqrtf(-2 * ದಶಮಾಂಶ(logf(S)) / S));
 		}
 
 		phase = 1 - phase;
-		return X * getStdDev() + getMean();
+		ಹಿಂತಿರುಗಿ X * getStdDev() + get_ಸರಾಸರಿ();
 	}
 // accessors
-	float getMean() { return _mean.get(); }
-	float getStdDev() { return _stdDev.get(); }
-private:
-// attributes
-	control::BlockParamFloat _mean;
-	control::BlockParamFloat _stdDev;
+	ದಶಮಾಂಶ get_ಸರಾಸರಿ() { ಹಿಂತಿರುಗಿ ಸರಾಸರಿ_2.get(); }
+	ದಶಮಾಂಶ getStdDev() { ಹಿಂತಿರುಗಿ _stdDev.get(); }
+ಖಾಸಗಿ:
+//ಗುಣಲಕ್ಷಣಗಳು
+	control::ಖಂಡ_Param_Float ಸರಾಸರಿ_2;
+	control::ಖಂಡ_Param_Float _stdDev;
 };
 
 } // namespace control

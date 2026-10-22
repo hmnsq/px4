@@ -31,79 +31,79 @@
  *
  ****************************************************************************/
 
-#include "ActuatorEffectiveness.hpp"
+#ಅನ್ತರ್ಭಾವ "ActuatorEffectiveness.hpp"
 
-#include <px4_platform_common/log.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/log.h>
 
-int ActuatorEffectiveness::Configuration::addActuator(ActuatorType type, const matrix::Vector3f &torque,
-		const matrix::Vector3f &thrust)
+ಪೂರ್ಣಾಂಕ ActuatorEffectiveness::Configuration::ಕೂಡಿಸು_Actuator(ActuatorType type, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &torque,
+		ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector3f &thrust)
 {
-	int actuator_idx = num_actuators_matrix[selected_matrix];
+	ಪೂರ್ಣಾಂಕ actuator_idx = ಅಂಕೆ_actuators_ಮಾತೃಕೆ[selected_ಮಾತೃಕೆ];
 
-	if (actuator_idx >= NUM_ACTUATORS) {
+	ಆದರೆ (actuator_idx >= ಅಂಕೆ_ACTUATORS) {
 		PX4_ERR("Too many actuators");
-		return -1;
+		ಹಿಂತಿರುಗಿ -1;
 	}
 
-	if ((int)type < (int)ActuatorType::COUNT - 1 && num_actuators[(int)type + 1] > 0) {
+	ಆದರೆ ((ಪೂರ್ಣಾಂಕ)type < (ಪೂರ್ಣಾಂಕ)ActuatorType::ಎಣಿಕೆ_3 - 1 && ಅಂಕೆ_actuators[(ಪೂರ್ಣಾಂಕ)type + 1] > 0) {
 		PX4_ERR("Trying to add actuators in the wrong order (add motors first, then servos)");
-		return -1;
+		ಹಿಂತಿರುಗಿ -1;
 	}
 
-	if (type == ActuatorType::MOTORS && selected_matrix != 0) {
-		PX4_ERR("Trying to add motors to matrix %d (add to matrix 0)", selected_matrix);
-		return -1;
+	ಆದರೆ (type == ActuatorType::MOTORS && selected_ಮಾತೃಕೆ != 0) {
+		PX4_ERR("Trying to add motors to matrix %d (add to matrix 0)", selected_ಮಾತೃಕೆ);
+		ಹಿಂತಿರುಗಿ -1;
 	}
 
-	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::ROLL, actuator_idx) = torque(0);
-	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::PITCH, actuator_idx) = torque(1);
-	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::YAW, actuator_idx) = torque(2);
-	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::THRUST_X, actuator_idx) = thrust(0);
-	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::THRUST_Y, actuator_idx) = thrust(1);
-	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::THRUST_Z, actuator_idx) = thrust(2);
-	matrix_selection_indexes[totalNumActuators()] = selected_matrix;
-	++num_actuators[(int)type];
-	return num_actuators_matrix[selected_matrix]++;
+	effectiveness_matrices[selected_ಮಾತೃಕೆ](ActuatorEffectiveness::ControlAxis::ROLL, actuator_idx) = torque(0);
+	effectiveness_matrices[selected_ಮಾತೃಕೆ](ActuatorEffectiveness::ControlAxis::PITCH, actuator_idx) = torque(1);
+	effectiveness_matrices[selected_ಮಾತೃಕೆ](ActuatorEffectiveness::ControlAxis::YAW, actuator_idx) = torque(2);
+	effectiveness_matrices[selected_ಮಾತೃಕೆ](ActuatorEffectiveness::ControlAxis::THRUST_X, actuator_idx) = thrust(0);
+	effectiveness_matrices[selected_ಮಾತೃಕೆ](ActuatorEffectiveness::ControlAxis::THRUST_Y, actuator_idx) = thrust(1);
+	effectiveness_matrices[selected_ಮಾತೃಕೆ](ActuatorEffectiveness::ControlAxis::THRUST_Z, actuator_idx) = thrust(2);
+	ಮಾತೃಕೆ_selection_indexes[ಒಟ್ಟು_ಅಂಕೆ_Actuators()] = selected_ಮಾತೃಕೆ;
+	++ಅಂಕೆ_actuators[(ಪೂರ್ಣಾಂಕ)type];
+	ಹಿಂತಿರುಗಿ ಅಂಕೆ_actuators_ಮಾತೃಕೆ[selected_ಮಾತೃಕೆ]++;
 }
 
-void ActuatorEffectiveness::Configuration::actuatorsAdded(ActuatorType type, int count)
+ಶೂನ್ಯ ActuatorEffectiveness::Configuration::actuatorsAdded(ActuatorType type, ಪೂರ್ಣಾಂಕ ಎಣಿಕೆ_2)
 {
-	int total_count = totalNumActuators();
+	ಪೂರ್ಣಾಂಕ ಒಟ್ಟು_ಎಣಿಕೆ = ಒಟ್ಟು_ಅಂಕೆ_Actuators();
 
-	for (int i = 0; i < count; ++i) {
-		matrix_selection_indexes[i + total_count] = selected_matrix;
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < ಎಣಿಕೆ_2; ++i) {
+		ಮಾತೃಕೆ_selection_indexes[i + ಒಟ್ಟು_ಎಣಿಕೆ] = selected_ಮಾತೃಕೆ;
 	}
 
-	num_actuators[(int)type] += count;
-	num_actuators_matrix[selected_matrix] += count;
+	ಅಂಕೆ_actuators[(ಪೂರ್ಣಾಂಕ)type] += ಎಣಿಕೆ_2;
+	ಅಂಕೆ_actuators_ಮಾತೃಕೆ[selected_ಮಾತೃಕೆ] += ಎಣಿಕೆ_2;
 }
 
-int ActuatorEffectiveness::Configuration::totalNumActuators() const
+ಪೂರ್ಣಾಂಕ ActuatorEffectiveness::Configuration::ಒಟ್ಟು_ಅಂಕೆ_Actuators() ಸ್ಥಿರಾಂಕ
 {
-	int total_count = 0;
+	ಪೂರ್ಣಾಂಕ ಒಟ್ಟು_ಎಣಿಕೆ = 0;
 
-	for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
-		total_count += num_actuators_matrix[i];
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < MAX_ಅಂಕೆ_MATRICES; ++i) {
+		ಒಟ್ಟು_ಎಣಿಕೆ += ಅಂಕೆ_actuators_ಮಾತೃಕೆ[i];
 	}
 
-	return total_count;
+	ಹಿಂತಿರುಗಿ ಒಟ್ಟು_ಎಣಿಕೆ;
 }
 
-ActuatorEffectiveness::ActuatorBitmask ActuatorEffectiveness::getStoppedMotors() const
+ActuatorEffectiveness::ActuatorBitmask ActuatorEffectiveness::getStoppedMotors() ಸ್ಥಿರಾಂಕ
 {
 	// Motors can be stopped (here) for two reasons. They can
 	// additionally be stopped in the ControlAllocator, due to motor
 	// failure.
 
 	//  a) because they are generally not used in the given flight phase.
-	ActuatorEffectiveness::ActuatorBitmask stopped_motors_mask = _stopped_motors_mask_due_to_flight_phase;
+	ActuatorEffectiveness::ActuatorBitmask stopped_motors_ಮುಖವಾಡ = stopped_motors_ಮುಖವಾಡ_due_ಗಮ್ಯ_flight_phase;
 
 	//  b) because the thrust setpoint in a given direction is NaN
-	if (_longitudinal_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.longitudinal; }
+	ಆದರೆ (_longitudinal_motors_stopped_by_thrust) { stopped_motors_ಮುಖವಾಡ |= _motor_direction_bitmasks.longitudinal; }
 
-	if (_lateral_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.lateral; }
+	ಆದರೆ (_lateral_motors_stopped_by_thrust) { stopped_motors_ಮುಖವಾಡ |= _motor_direction_bitmasks.lateral; }
 
-	if (_vertical_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.vertical; }
+	ಆದರೆ (_vertical_motors_stopped_by_thrust) { stopped_motors_ಮುಖವಾಡ |= _motor_direction_bitmasks.vertical; }
 
-	return stopped_motors_mask;
+	ಹಿಂತಿರುಗಿ stopped_motors_ಮುಖವಾಡ;
 }

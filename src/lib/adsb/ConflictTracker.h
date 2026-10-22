@@ -42,60 +42,60 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <containers/Array.hpp>
-#include <drivers/drv_hrt.h>
-#include <uORB/topics/detect_and_avoid.h>
-#include <uORB/topics/transponder_report.h>
+#ಅನ್ತರ್ಭಾವ <containers/Array.hpp>
+#ಅನ್ತರ್ಭಾವ <drivers/drv_hrt.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/detect_and_avoid.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/transponder_report.h>
 
-#include "DaaEncodedId.h"
+#ಅನ್ತರ್ಭಾವ "DaaEncodedId.h"
 
-static constexpr uint8_t kDaaMaxTraffic{5};
+ಸ್ಥಿರ constexpr uint8_t kDaaMaxTraffic{5};
 
-struct conflict_info_s {
+ರಚನೆ conflict_info_s {
 	DaaEncodedId encoded_id{};
 	hrt_abstime latest_update_timestamp{0};
 	uint8_t conflict_level{detect_and_avoid_s::DAA_CONFLICT_LVL_NONE};
-	float aircraft_dist{0.f}; // Distance to aircraft = sqrtf(dist_hor^2 + dist_vert^2)
+	ದಶಮಾಂಶ aircraft_dist{0.f}; // Distance to aircraft = sqrtf(dist_hor^2 + dist_vert^2)
 };
 
-enum class RemoveBufferCause : uint8_t {
+ಎಣಿಕೆ class Remove_ಬಫರ್_Cause : uint8_t {
 	kStaleConflict = 0,
-	kBufferFull = 1
+	k_ಬಫರ್_ತುಂಬಿದ = 1
 };
 
-enum class IgnoreTrafficCause : uint8_t {
-	kBufferFull = 0
+ಎಣಿಕೆ class IgnoreTrafficCause : uint8_t {
+	k_ಬಫರ್_ತುಂಬಿದ = 0
 };
 
-enum class ConflictTrackerChangeType : uint8_t {
+ಎಣಿಕೆ class ConflictTrackerChangeType : uint8_t {
 	kConflictAdded = 0,
-	kConflictLevelChanged = 1,
+	k_Conflict_Level_ಬದಲಾಯಿತು = 1,
 	kConflictRemoved = 2,
 	kReportIgnored = 3
 };
 
-struct conflict_tracker_change_s {
+ರಚನೆ conflict_tracker_change_s {
 	ConflictTrackerChangeType type{ConflictTrackerChangeType::kConflictAdded};
 	conflict_info_s conflict{};	// the affected entry (for kConflictRemoved: the removed entry)
-	uint8_t previous_level{detect_and_avoid_s::DAA_CONFLICT_LVL_NONE};	// kConflictLevelChanged only
-	RemoveBufferCause remove_cause{RemoveBufferCause::kStaleConflict};	// kConflictRemoved only
-	IgnoreTrafficCause ignore_cause{IgnoreTrafficCause::kBufferFull};	// kReportIgnored only
+	uint8_t ಹಿಂದಿನ_level{detect_and_avoid_s::DAA_CONFLICT_LVL_NONE};	// kConflictLevelChanged only
+	Remove_ಬಫರ್_Cause remove_cause{Remove_ಬಫರ್_Cause::kStaleConflict};	// kConflictRemoved only
+	IgnoreTrafficCause ignore_cause{IgnoreTrafficCause::k_ಬಫರ್_ತುಂಬಿದ};	// kReportIgnored only
 	// Required because the caller processes the full Uorb queue before emitting warnings
-	bool conflict_is_most_urgent{false};
+	bool conflict_is_most_ತುರ್ತು{false};
 };
 
 // A stale sweep can remove the full buffer and each queued report can replace one entry.
-static constexpr uint16_t kMaxConflictChangesPerCycle{kDaaMaxTraffic + 2 * transponder_report_s::ORB_QUEUE_LENGTH};
+ಸ್ಥಿರ constexpr uint16_t k_Max_Conflict_Changes_ಪ್ರತಿ_ಚಕ್ರ{kDaaMaxTraffic + 2 * transponder_report_s::ORB_ಸರತಿ_ಉದ್ದಳತೆ};
 
-using conflict_tracker_changes_s = px4::Array<conflict_tracker_change_s, kMaxConflictChangesPerCycle>;
+using conflict_tracker_changes_s = px4::Array<conflict_tracker_change_s, k_Max_Conflict_Changes_ಪ್ರತಿ_ಚಕ್ರ>;
 
 class ConflictTracker
 {
-public:
-	ConflictTracker() { reset_most_urgent(); }
-	~ConflictTracker() = default;
+ಸಾರ್ವಜನಿಕ:
+	ConflictTracker() { reset_most_ತುರ್ತು(); }
+	~ConflictTracker() = ಪೂರ್ವನಿಯೋಜಿತ;
 
 	/**
 	 * @brief Apply one evaluated report to the tracked set.
@@ -106,7 +106,7 @@ public:
 	 *
 	 * Emitted changes are appended to @p changes. Returns true if the tracked set changed.
 	 */
-	bool apply_conflict(const conflict_info_s &conflict, conflict_tracker_changes_s &changes);
+	bool apply_conflict(ಸ್ಥಿರಾಂಕ conflict_info_s &conflict, conflict_tracker_changes_s &changes);
 
 	/**
 	 * @brief Drop entries whose last update is older than @p timeout_us at time @p now.
@@ -114,41 +114,41 @@ public:
 	 * Emits one kConflictRemoved (kStaleConflict) change per dropped entry.
 	 * Returns true if at least one entry was removed.
 	 */
-	bool remove_stale_conflicts(const hrt_abstime now, const hrt_abstime timeout_us, conflict_tracker_changes_s &changes);
+	bool remove_stale_conflicts(ಸ್ಥಿರಾಂಕ hrt_abstime now, ಸ್ಥಿರಾಂಕ hrt_abstime timeout_us, conflict_tracker_changes_s &changes);
 
 	// Drop all conflicts and reset the most-urgent cache.
-	void clear();
+	ಶೂನ್ಯ clear();
 
 	// Recompute the cached most-urgent conflict from the buffer.
-	void refresh_most_urgent();
+	ಶೂನ್ಯ refresh_most_ತುರ್ತು();
 
 	// Cached value; only refresh_most_urgent() and clear() update it.
-	const conflict_info_s &most_urgent() const { return _most_urgent; }
+	ಸ್ಥಿರಾಂಕ conflict_info_s &most_ತುರ್ತು_2() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ most_ತುರ್ತು; }
 
 	// Highest-priority conflict in the buffer, or id=0 when empty.
-	conflict_info_s find_most_urgent() const;
+	conflict_info_s ಕಂಡುಹಿಡಿ_most_ತುರ್ತು() ಸ್ಥಿರಾಂಕ;
 
-	bool contains(const DaaEncodedId &encoded_id) const { return find_conflict_idx(encoded_id) >= 0; }
+	bool ಒಳಗೊಂಡಿದೆ(ಸ್ಥಿರಾಂಕ DaaEncodedId &encoded_id) ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಕಂಡುಹಿಡಿ_conflict_idx(encoded_id) >= 0; }
 
 	// Tracked entry for encoded_id, or id=0 when not tracked.
-	conflict_info_s get_conflict(const DaaEncodedId &encoded_id) const;
+	conflict_info_s get_conflict(ಸ್ಥಿರಾಂಕ DaaEncodedId &encoded_id) ಸ್ಥಿರಾಂಕ;
 
-	size_t size() const { return _buffer.size(); }
-	bool empty() const { return _buffer.empty(); }
+	size_t ಗಾತ್ರ_2() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಬಫರ್.ಗಾತ್ರ_2(); }
+	bool ಖಾಲಿಗಳು() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಬಫರ್.ಖಾಲಿಗಳು(); }
 
 	// Priority rules: higher conflict level first, ties broken by aircraft distance.
 	// Public so the priority policy can be unit tested directly.
-	static bool is_conflict_more_important(const conflict_info_s &new_conflict, const conflict_info_s &base_conflict);
-	static bool is_conflict_less_important(const conflict_info_s &new_conflict, const conflict_info_s &base_conflict);
+	ಸ್ಥಿರ bool is_conflict_ಇನ್ನಷ್ಟು_important(ಸ್ಥಿರಾಂಕ conflict_info_s &new_conflict, ಸ್ಥಿರಾಂಕ conflict_info_s &ತಳ_conflict);
+	ಸ್ಥಿರ bool is_conflict_less_important(ಸ್ಥಿರಾಂಕ conflict_info_s &new_conflict, ಸ್ಥಿರಾಂಕ conflict_info_s &ತಳ_conflict);
 
-private:
-	enum class ConflictPriority : uint8_t {
-		kMostUrgent,
-		kLeastUrgent
+ಖಾಸಗಿ:
+	ಎಣಿಕೆ class Conflict_ಆದ್ಯತೆ : uint8_t {
+		k_Most_ತುರ್ತು,
+		k_ಕನಿಷ್ಠ_ತುರ್ತು
 	};
 
 	/** @brief Insert a new conflict, replacing the least urgent entry when the buffer is full. */
-	bool add_conflict(const conflict_info_s &conflict, conflict_tracker_changes_s &changes);
+	bool ಕೂಡಿಸು_conflict(ಸ್ಥಿರಾಂಕ conflict_info_s &conflict, conflict_tracker_changes_s &changes);
 
 	/**
 	 * @brief Overwrite a tracked entry from a new report.
@@ -157,18 +157,18 @@ private:
 	 *
 	 * Emits kConflictLevelChanged when the level differs from the stored entry.
 	 */
-	bool update_conflict(const conflict_info_s &conflict, const int conflict_idx, conflict_tracker_changes_s &changes);
+	bool update_conflict(ಸ್ಥಿರಾಂಕ conflict_info_s &conflict, ಸ್ಥಿರಾಂಕ ಪೂರ್ಣಾಂಕ conflict_idx, conflict_tracker_changes_s &changes);
 
 	/** @brief Return the index of the most or least urgent entry, or -1 if the buffer is empty. */
-	int find_conflict_idx_by_priority(const ConflictPriority priority) const;
+	ಪೂರ್ಣಾಂಕ ಕಂಡುಹಿಡಿ_conflict_idx_by_ಆದ್ಯತೆ(ಸ್ಥಿರಾಂಕ Conflict_ಆದ್ಯತೆ ಆದ್ಯತೆ) ಸ್ಥಿರಾಂಕ;
 
 	/** @brief Return the buffer index of @p encoded_id, or -1 if not tracked. */
-	int find_conflict_idx(const DaaEncodedId &encoded_id) const;
+	ಪೂರ್ಣಾಂಕ ಕಂಡುಹಿಡಿ_conflict_idx(ಸ್ಥಿರಾಂಕ DaaEncodedId &encoded_id) ಸ್ಥಿರಾಂಕ;
 
-	void reset_most_urgent();
+	ಶೂನ್ಯ reset_most_ತುರ್ತು();
 
-	bool is_valid_idx(const int idx) const { return idx >= 0 && idx < static_cast<int>(_buffer.size()); }
+	bool is_valid_idx(ಸ್ಥಿರಾಂಕ ಪೂರ್ಣಾಂಕ idx) ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ idx >= 0 && idx < static_cast<ಪೂರ್ಣಾಂಕ>(ಬಫರ್.ಗಾತ್ರ_2()); }
 
-	px4::Array<conflict_info_s, kDaaMaxTraffic> _buffer{};
-	conflict_info_s _most_urgent{};
+	px4::Array<conflict_info_s, kDaaMaxTraffic> ಬಫರ್{};
+	conflict_info_s most_ತುರ್ತು{};
 };

@@ -31,14 +31,14 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <lib/rate_control/rate_control.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <lib/rate_control/rate_control.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-TEST(RateControlTest, AllZeroCase)
+TEST(ದರ_Control_Test, AllZeroCase)
 {
-	RateControl rate_control;
-	Vector3f torque = rate_control.update(Vector3f(), Vector3f(), Vector3f(), 0.f, false);
+	ದರ_Control ದರ_control;
+	Vector3f torque = ದರ_control.update(Vector3f(), Vector3f(), Vector3f(), 0.f, ಸುಳ್ಳು);
 	EXPECT_EQ(torque, Vector3f());
 }

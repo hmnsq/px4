@@ -31,12 +31,12 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-TEST(MatrixVector4Test, Vector4)
+TEST(ಮಾತೃಕೆ_Vector4_Test, Vector4)
 {
 	Vector4f a(1.f, 2.f, 3.f, 4.f);
 	EXPECT_EQ(a(0), 1.f);

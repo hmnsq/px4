@@ -37,124 +37,124 @@
  * Welford's online algorithm for computing mean and covariance of a vector.
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-namespace math
+ನಾಮಾಕಾಶ math
 {
 
-template <typename Type, size_t N>
-class WelfordMeanVector
+ಮಾದರಿ <ಬಗೆ_ಹೆಸರು Type, size_t N>
+ವರ್ಗ Welford_ಸರಾಸರಿ_ಸದಿಶ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const matrix::Vector<Type, N> &new_value)
+	ತಾರ್ಕಿಕ update(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ<Type, N> &new_ಮೌಲ್ಯ)
 	{
-		if (_count == 0) {
+		ಆದರೆ (ಎಣಿಕೆ_4 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
-			return false;
+			ಎಣಿಕೆ_4 = 1;
+			ಸರಾಸರಿ_2 = new_ಮೌಲ್ಯ;
+			ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 
-		} else if (_count == UINT16_MAX) {
+		} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (ಎಣಿಕೆ_4 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / ಎಣಿಕೆ_4;
 			_M2_accum.zero();
 
-			_count = 1;
+			ಎಣಿಕೆ_4 = 1;
 
-		} else {
-			_count++;
+		} ಇಲ್ಲದಿದ್ದರೆ {
+			ಎಣಿಕೆ_4++;
 		}
 
-		// mean
+		//ಸರಾಸರಿ
 		//  accumulates the mean of the entire dataset
 		//  use Kahan summation because delta can be very small compared to the mean
-		const matrix::Vector<Type, N> delta{new_value - _mean};
+		ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ<Type, N> delta{new_ಮೌಲ್ಯ - ಸರಾಸರಿ_2};
 		{
-			const matrix::Vector<Type, N> y = (delta / _count) - _mean_accum;
-			const matrix::Vector<Type, N> t = _mean + y;
-			_mean_accum = (t - _mean) - y;
-			_mean = t;
+			ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ<Type, N> y = (delta / ಎಣಿಕೆ_4) - ಸರಾಸರಿ_accum;
+			ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ<Type, N> t = ಸರಾಸರಿ_2 + y;
+			ಸರಾಸರಿ_accum = (t - ಸರಾಸರಿ_2) - y;
+			ಸರಾಸರಿ_2 = t;
 		}
 
-		if (!_mean.isAllFinite()) {
+		ಆದರೆ (!ಸರಾಸರಿ_2.isAllFinite()) {
 			reset();
-			return false;
+			ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 		}
 
 		// covariance
 		//  Kahan summation (upper triangle only)
 		{
 			// eg C(x,y) += dx * (y - mean_y)
-			matrix::SquareMatrix<Type, N> m2_change{};
+			ಮಾತೃಕೆ::ವರ್ಗಫಲ_ಮಾತೃಕೆ<Type, N> m2_change{};
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
-					m2_change(r, c) = delta(r) * (new_value(c) - _mean(c));
+			ಗಾಗಿ (size_t r = 0; r < N; r++) {
+				ಗಾಗಿ (size_t c = r; c < N; c++) {
+					m2_change(r, c) = delta(r) * (new_ಮೌಲ್ಯ(c) - ಸರಾಸರಿ_2(c));
 				}
 			}
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
+			ಗಾಗಿ (size_t r = 0; r < N; r++) {
+				ಗಾಗಿ (size_t c = r; c < N; c++) {
 
-					const Type y = m2_change(r, c) - _M2_accum(r, c);
-					const Type t = _M2(r, c) + y;
+					ಸ್ಥಿರಾಂಕ Type y = m2_change(r, c) - _M2_accum(r, c);
+					ಸ್ಥಿರಾಂಕ Type t = _M2(r, c) + y;
 					_M2_accum(r, c) = (t - _M2(r, c)) - y;
 
 					_M2(r, c) = t;
 				}
 
 				// protect against floating point precision causing negative variances
-				if (_M2(r, r) < 0) {
+				ಆದರೆ (_M2(r, r) < 0) {
 					_M2(r, r) = 0;
 				}
 			}
 
 			// make symmetric
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r + 1; c < N; c++) {
+			ಗಾಗಿ (size_t r = 0; r < N; r++) {
+				ಗಾಗಿ (size_t c = r + 1; c < N; c++) {
 					_M2(c, r) = _M2(r, c);
 				}
 			}
 		}
 
-		if (!_M2.isAllFinite()) {
+		ಆದರೆ (!_M2.isAllFinite()) {
 			reset();
-			return false;
+			ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 		}
 
-		return valid();
+		ಹಿಂತಿರುಗಿ valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	ತಾರ್ಕಿಕ valid() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಎಣಿಕೆ_4 > 2; }
+	ಸ್ವಯಂಚಾಲಿತ ಎಣಿಕೆ_2() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಎಣಿಕೆ_4; }
 
-	void reset()
+	ಶೂನ್ಯ reset()
 	{
-		_count = 0;
-		_mean.zero();
+		ಎಣಿಕೆ_4 = 0;
+		ಸರಾಸರಿ_2.zero();
 		_M2.zero();
 
-		_mean_accum.zero();
+		ಸರಾಸರಿ_accum.zero();
 		_M2_accum.zero();
 	}
 
-	matrix::Vector<Type, N> mean() const { return _mean; }
-	matrix::Vector<Type, N> variance() const { return _M2.diag() / (_count - 1); }
-	matrix::SquareMatrix<Type, N> covariance() const { return _M2 / (_count - 1); }
+	ಮಾತೃಕೆ::ಸದಿಶ<Type, N> ಸರಾಸರಿ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಸರಾಸರಿ_2; }
+	ಮಾತೃಕೆ::ಸದಿಶ<Type, N> variance() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _M2.diag() / (ಎಣಿಕೆ_4 - 1); }
+	ಮಾತೃಕೆ::ವರ್ಗಫಲ_ಮಾತೃಕೆ<Type, N> covariance() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _M2 / (ಎಣಿಕೆ_4 - 1); }
 
-	Type covariance(int x, int y) const { return _M2(x, y) / (_count - 1); }
+	Type covariance(ಪೂರ್ಣಾಂಕ x, ಪೂರ್ಣಾಂಕ y) ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _M2(x, y) / (ಎಣಿಕೆ_4 - 1); }
 
-private:
+ಖಾಸಗಿ:
 
-	matrix::Vector<Type, N> _mean{};
-	matrix::Vector<Type, N> _mean_accum{};  ///< kahan summation algorithm accumulator for mean
+	ಮಾತೃಕೆ::ಸದಿಶ<Type, N> ಸರಾಸರಿ_2{};
+	ಮಾತೃಕೆ::ಸದಿಶ<Type, N> ಸರಾಸರಿ_accum{};  ///< kahan summation algorithm accumulator for mean
 
-	matrix::SquareMatrix<Type, N> _M2{};
-	matrix::SquareMatrix<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
+	ಮಾತೃಕೆ::ವರ್ಗಫಲ_ಮಾತೃಕೆ<Type, N> _M2{};
+	ಮಾತೃಕೆ::ವರ್ಗಫಲ_ಮಾತೃಕೆ<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t ಎಣಿಕೆ_4{0};
 };
 
 } // namespace math

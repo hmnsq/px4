@@ -31,122 +31,122 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <ActuatorEffectivenessRotors.hpp>
-#include "ControlAllocationSequentialDesaturation.hpp"
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <ActuatorEffectivenessRotors.hpp>
+#ಅನ್ತರ್ಭಾವ "ControlAllocationSequentialDesaturation.hpp"
 
-using namespace matrix;
-using ActuatorVector = ControlAllocation::ActuatorVector;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
+ಬಳಸಿ Actuator_ಸದಿಶ = Control_ಹಂಚಿಕೆ::Actuator_ಸದಿಶ;
 
-TEST(ControlAllocationSequentialDesaturationTest, AllZeroCase)
+TEST(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test, AllZeroCase)
 {
-	ControlAllocationSequentialDesaturation control_allocation;
-	EXPECT_EQ(control_allocation.getActuatorSetpoint(), ActuatorVector());
-	control_allocation.allocate();
-	EXPECT_EQ(control_allocation.getActuatorSetpoint(), ActuatorVector());
+	Control_ಹಂಚಿಕೆ_Sequential_Desaturation control_ಹಂಚಿಕೆ;
+	EXPECT_EQ(control_ಹಂಚಿಕೆ.getActuatorSetpoint(), Actuator_ಸದಿಶ());
+	control_ಹಂಚಿಕೆ.allocate();
+	EXPECT_EQ(control_ಹಂಚಿಕೆ.getActuatorSetpoint(), Actuator_ಸದಿಶ());
 }
 
-TEST(ControlAllocationSequentialDesaturationTest, SetGetActuatorSetpoint)
+TEST(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test, ಗಣ_Get_Actuator_Setpoint)
 {
-	ControlAllocationSequentialDesaturation control_allocation;
-	float actuator_setpoint_array[ControlAllocation::NUM_ACTUATORS] = {1.f, 2.f, 3.f, 4.f, 5.f, 6.f};
-	ActuatorVector actuator_setpoint(actuator_setpoint_array);
-	control_allocation.setActuatorSetpoint(actuator_setpoint);
-	EXPECT_EQ(control_allocation.getActuatorSetpoint(), actuator_setpoint);
+	Control_ಹಂಚಿಕೆ_Sequential_Desaturation control_ಹಂಚಿಕೆ;
+	ದಶಮಾಂಶ actuator_setpoint_array[Control_ಹಂಚಿಕೆ::ಅಂಕೆ_ACTUATORS] = {1.f, 2.f, 3.f, 4.f, 5.f, 6.f};
+	Actuator_ಸದಿಶ actuator_setpoint(actuator_setpoint_array);
+	control_ಹಂಚಿಕೆ.ಗಣ_Actuator_Setpoint(actuator_setpoint);
+	EXPECT_EQ(control_ಹಂಚಿಕೆ.getActuatorSetpoint(), actuator_setpoint);
 }
 
-class ControlAllocationSequentialDesaturationTestQuadX : public ::testing::Test
+ವರ್ಗ Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X : ಸಾರ್ವಜನಿಕ ::testing::Test
 {
-public:
-	static constexpr uint8_t NUM_ACTUATORS = 4;
-	ControlAllocationSequentialDesaturation _control_allocation;
+ಸಾರ್ವಜನಿಕ:
+	ಸ್ಥಿರ constexpr uint8_t ಅಂಕೆ_ACTUATORS = 4;
+	Control_ಹಂಚಿಕೆ_Sequential_Desaturation control_ಹಂಚಿಕೆ_2;
 
-	void SetUp() override
+	ಶೂನ್ಯ ಗಣ_ಮೇಲೆ() override
 	{
-		param_control_autosave(false); // Disable autosaving parameters to avoid busy loop in param_set()
-		setAirmode(0); // No airmode by default
+		param_control_autosave(ಸುಳ್ಳು); // Disable autosaving parameters to avoid busy loop in param_set()
+		ಗಣ_Airmode(0); // No airmode by default
 
 		// Quadrotor x geometry
 		ActuatorEffectivenessRotors::Geometry quadx_geometry{};
-		quadx_geometry.num_rotors = 4;
+		quadx_geometry.ಅಂಕೆ_rotors = 4;
 		quadx_geometry.rotors[0].position = {1.f, 1.f, 0.f}; // clockwise motor numbering
 		quadx_geometry.rotors[1].position = {-1.f, 1.f, 0.f};
 		quadx_geometry.rotors[2].position = {-1.f, -1.f, 0.f};
 		quadx_geometry.rotors[3].position = {1.f, -1.f, 0.f};
-		quadx_geometry.rotors[0].moment_ratio = 1.f;
-		quadx_geometry.rotors[1].moment_ratio = -1.f;
-		quadx_geometry.rotors[2].moment_ratio = 1.f;
-		quadx_geometry.rotors[3].moment_ratio = -1.f;
+		quadx_geometry.rotors[0].moment_ಅನುಪಾತ = 1.f;
+		quadx_geometry.rotors[1].moment_ಅನುಪಾತ = -1.f;
+		quadx_geometry.rotors[2].moment_ಅನುಪಾತ = 1.f;
+		quadx_geometry.rotors[3].moment_ಅನುಪಾತ = -1.f;
 
-		for (int i = 0; i < 4; ++i) {
+		ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 4; ++i) {
 			quadx_geometry.rotors[i].axis = Vector3f(0.f, 0.f, -1.f); // thrust downwards
 			quadx_geometry.rotors[i].thrust_coef = 1.f;
-			quadx_geometry.rotors[i].tilt_index = -1;
+			quadx_geometry.rotors[i].tilt_ಸೂಚ್ಯಂಕ = -1;
 		}
 
 		// Compute actuator effectiveness
 		ActuatorEffectiveness::Configuration actuator_configuration{};
-		int num_actuators = ActuatorEffectivenessRotors::computeEffectivenessMatrix(quadx_geometry,
+		ಪೂರ್ಣಾಂಕ ಅಂಕೆ_actuators = ActuatorEffectivenessRotors::compute_Effectiveness_ಮಾತೃಕೆ(quadx_geometry,
 				    actuator_configuration.effectiveness_matrices[0],
-				    actuator_configuration.num_actuators_matrix[0]);
-		EXPECT_EQ(num_actuators, NUM_ACTUATORS);
-		actuator_configuration.actuatorsAdded(ActuatorType::MOTORS, num_actuators);
+				    actuator_configuration.ಅಂಕೆ_actuators_ಮಾತೃಕೆ[0]);
+		EXPECT_EQ(ಅಂಕೆ_actuators, ಅಂಕೆ_ACTUATORS);
+		actuator_configuration.actuatorsAdded(ActuatorType::MOTORS, ಅಂಕೆ_actuators);
 
 		// Load effectiveness into allocation
-		_control_allocation.setEffectivenessMatrix(actuator_configuration.effectiveness_matrices[0],
-				actuator_configuration.trim[0], actuator_configuration.linearization_point[0],
-				actuator_configuration.num_actuators_matrix[0], true /*update_normalization_scale*/);
+		control_ಹಂಚಿಕೆ_2.ಗಣ_Effectiveness_ಮಾತೃಕೆ(actuator_configuration.effectiveness_matrices[0],
+				actuator_configuration.trim[0], actuator_configuration.linearization_ಬಿಂದು[0],
+				actuator_configuration.ಅಂಕೆ_actuators_ಮಾತೃಕೆ[0], ನಿಜ /*update_normalization_scale*/);
 	}
 
-	void setAirmode(const int32_t mode)
+	ಶೂನ್ಯ ಗಣ_Airmode(ಸ್ಥಿರಾಂಕ int32_t ಬಹುಲಕ)
 	{
-		param_t param = param_find("MC_AIRMODE");
-		param_set(param, &mode);
-		_control_allocation.updateParameters();
+		param_t param = param_ಕಂಡುಹಿಡಿ("MC_AIRMODE");
+		param_ಗಣ(param, &ಬಹುಲಕ);
+		control_ಹಂಚಿಕೆ_2.updateParameters();
 	}
 
-	Vector4f allocate(float roll, float pitch, float yaw, float thrust)
+	Vector4f allocate(ದಶಮಾಂಶ roll, ದಶಮಾಂಶ pitch, ದಶಮಾಂಶ yaw, ದಶಮಾಂಶ thrust)
 	{
-		Vector<float, ControlAllocation::NUM_AXES> control_setpoint{};
-		control_setpoint(ControlAllocation::ControlAxis::ROLL) = roll;
-		control_setpoint(ControlAllocation::ControlAxis::PITCH) = pitch;
-		control_setpoint(ControlAllocation::ControlAxis::YAW) = yaw;
-		control_setpoint(ControlAllocation::ControlAxis::THRUST_Z) = thrust;
-		_control_allocation.setControlSetpoint(control_setpoint);
-		_control_allocation.allocate();
-		return getQuadOutputs();
+		ಸದಿಶ<ದಶಮಾಂಶ, Control_ಹಂಚಿಕೆ::ಅಂಕೆ_AXES> control_setpoint{};
+		control_setpoint(Control_ಹಂಚಿಕೆ::ControlAxis::ROLL) = roll;
+		control_setpoint(Control_ಹಂಚಿಕೆ::ControlAxis::PITCH) = pitch;
+		control_setpoint(Control_ಹಂಚಿಕೆ::ControlAxis::YAW) = yaw;
+		control_setpoint(Control_ಹಂಚಿಕೆ::ControlAxis::THRUST_Z) = thrust;
+		control_ಹಂಚಿಕೆ_2.ಗಣ_Control_Setpoint(control_setpoint);
+		control_ಹಂಚಿಕೆ_2.allocate();
+		ಹಿಂತಿರುಗಿ getQuadOutputs();
 	}
 
 	Vector4f getQuadOutputs()
 	{
-		const ActuatorVector &actuator_setpoint = _control_allocation.getActuatorSetpoint();
+		ಸ್ಥಿರಾಂಕ Actuator_ಸದಿಶ &actuator_setpoint = control_ಹಂಚಿಕೆ_2.getActuatorSetpoint();
 		// All unused actuators shall stay zero
-		static constexpr uint8_t NUM_UNUSED_ACTUATORS = ControlAllocation::NUM_ACTUATORS - 4;
+		ಸ್ಥಿರ constexpr uint8_t ಅಂಕೆ_ಬಳಸದ_ACTUATORS = Control_ಹಂಚಿಕೆ::ಅಂಕೆ_ACTUATORS - 4;
 		EXPECT_EQ(
-			(Vector<float, NUM_UNUSED_ACTUATORS>(actuator_setpoint.slice<NUM_UNUSED_ACTUATORS, 1>(4, 0))),
-			(Vector<float, NUM_UNUSED_ACTUATORS>())
+			(ಸದಿಶ<ದಶಮಾಂಶ, ಅಂಕೆ_ಬಳಸದ_ACTUATORS>(actuator_setpoint.ತುಂಡು<ಅಂಕೆ_ಬಳಸದ_ACTUATORS, 1>(4, 0))),
+			(ಸದಿಶ<ದಶಮಾಂಶ, ಅಂಕೆ_ಬಳಸದ_ACTUATORS>())
 		);
-		return Vector4f(actuator_setpoint.slice<4, 1>(0, 0));
+		ಹಿಂತಿರುಗಿ Vector4f(actuator_setpoint.ತುಂಡು<4, 1>(0, 0));
 	}
 };
 
 // Make constant available, see https://stackoverflow.com/questions/42756443/undefined-reference-with-gtest
-constexpr uint8_t ControlAllocationSequentialDesaturationTestQuadX::NUM_ACTUATORS;
+constexpr uint8_t Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X::ಅಂಕೆ_ACTUATORS;
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, Zero)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, Zero)
 {
 	EXPECT_EQ(allocate(0.f, 0.f, 0.f, 0.f), Vector4f());
 }
 
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, CollectiveThrust)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, CollectiveThrust)
 {
-	for (float thrust = 0.f; thrust <= (1.f + FLT_EPSILON); thrust += .1f) {
+	ಗಾಗಿ (ದಶಮಾಂಶ thrust = 0.f; thrust <= (1.f + FLT_EPSILON); thrust += .1f) {
 		EXPECT_EQ(allocate(0.f, 0.f, 0.f, -thrust), Vector4f(thrust, thrust, thrust, thrust));
 	}
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYaw)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, RollPitchYaw)
 {
 	EXPECT_EQ(allocate(1.f, 0.f, 0.f, -.5f), Vector4f(.25f, .25f, .75f, .75f));
 	EXPECT_EQ(allocate(-1.f, 0.f, 0.f, -.5f), Vector4f(.75f, .75f, .25f, .25f));
@@ -156,7 +156,7 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYaw)
 	EXPECT_EQ(allocate(0.f, 0.f, -1.f, -.5f), Vector4f(.25f, .75f, .25f, .75f));
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawFullThrust)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, Roll_Pitch_Yaw_ತುಂಬಿದ_Thrust)
 {
 	EXPECT_EQ(allocate(1.f, 0.f, 0.f, -1.f), Vector4f(.5f, .5f, 1.f, 1.f));
 	EXPECT_EQ(allocate(-1.f, 0.f, 0.f, -1.f), Vector4f(1.f, 1.f, .5f, .5f));
@@ -167,7 +167,7 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawFullThrust)
 	EXPECT_EQ(allocate(0.f, 0.f, -1.f, -1.f), Vector4f(.7f, 1.f, .7f, 1.f));
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawZeroThrust)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, RollPitchYawZeroThrust)
 {
 	// No axis is allocated
 	EXPECT_EQ(allocate(1.f, 0.f, 0.f, 0.f), Vector4f());
@@ -178,9 +178,9 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawZeroThrust)
 	EXPECT_EQ(allocate(0.f, 0.f, -1.f, 0.f), Vector4f());
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawZeroThrustAirmodeRP)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, RollPitchYawZeroThrustAirmodeRP)
 {
-	setAirmode(1); // Roll and pitch airmode
+	ಗಣ_Airmode(1); // Roll and pitch airmode
 	// Roll and pitch get fully allocated
 	EXPECT_EQ(allocate(1.f, 0.f, 0.f, 0.f), Vector4f(0.f, 0.f, 0.5f, 0.5f));
 	EXPECT_EQ(allocate(-1.f, 0.f, 0.f, 0.f), Vector4f(0.5f, 0.5f, 0.f, 0.f));
@@ -191,9 +191,9 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawZeroThrustA
 	EXPECT_EQ(allocate(0.f, 0.f, -1.f, 0.f), Vector4f());
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawZeroThrustAirmodeRPY)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, RollPitchYawZeroThrustAirmodeRPY)
 {
-	setAirmode(2); // Roll, pitch and yaw airmode
+	ಗಣ_Airmode(2); // Roll, pitch and yaw airmode
 	// All axis are fully allocated
 	EXPECT_EQ(allocate(1.f, 0.f, 0.f, 0.f), Vector4f(0.f, 0.f, 0.5f, 0.5f));
 	EXPECT_EQ(allocate(-1.f, 0.f, 0.f, 0.f), Vector4f(0.5f, 0.5f, 0.f, 0.f));
@@ -205,7 +205,7 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawZeroThrustA
 
 // This tests that yaw-only control setpoint at zero actuator setpoint results in zero actuator
 // allocation.
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledOnlyYaw)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, AirmodeDisabledOnlyYaw)
 {
 	EXPECT_EQ(allocate(0.f, 0.f, 1.f, 0.f), Vector4f(0.f, 0.f, 0.f, 0.f));
 }
@@ -213,61 +213,61 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledOnlyYaw)
 // This tests that a control setpoint for z-thrust returns the desired actuator setpoint.
 // Each motor should have an actuator setpoint that when summed together should be equal to
 // control setpoint.
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledThrustZ)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, AirmodeDisabledThrustZ)
 {
-	constexpr float THRUST = 0.75f;
+	constexpr ದಶಮಾಂಶ THRUST = 0.75f;
 	EXPECT_EQ(allocate(0.f, 0.f, 0.f, -THRUST), Vector4f(THRUST, THRUST, THRUST, THRUST));
 }
 
 // This tests that a control setpoint for z-thrust + yaw returns the desired actuator setpoint.
 // This test does not saturate the yaw response.
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledThrustAndYaw)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, AirmodeDisabledThrustAndYaw)
 {
-	constexpr float THRUST = 0.75f;
-	constexpr float YAW_TORQUE = 0.02f;
-	constexpr float YAW = YAW_TORQUE / NUM_ACTUATORS;
+	constexpr ದಶಮಾಂಶ THRUST = 0.75f;
+	constexpr ದಶಮಾಂಶ YAW_TORQUE = 0.02f;
+	constexpr ದಶಮಾಂಶ YAW = YAW_TORQUE / ಅಂಕೆ_ACTUATORS;
 	EXPECT_EQ(allocate(0.f, 0.f, YAW_TORQUE, -THRUST), Vector4f(THRUST + YAW, THRUST - YAW, THRUST + YAW, THRUST - YAW));
 }
 
 // This tests that a control setpoint for z-thrust + yaw returns the desired actuator setpoint.
 // This test saturates the yaw response, but does not reduce total thrust.
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledThrustAndSaturatedYaw)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, AirmodeDisabledThrustAndSaturatedYaw)
 {
-	constexpr float THRUST = 0.75f;
-	constexpr float YAW_TORQUE = 1.f;
-	constexpr float YAW = YAW_TORQUE / NUM_ACTUATORS;
+	constexpr ದಶಮಾಂಶ THRUST = 0.75f;
+	constexpr ದಶಮಾಂಶ YAW_TORQUE = 1.f;
+	constexpr ದಶಮಾಂಶ YAW = YAW_TORQUE / ಅಂಕೆ_ACTUATORS;
 	EXPECT_EQ(allocate(0.f, 0.f, YAW_TORQUE, -THRUST), Vector4f(THRUST + YAW, THRUST - YAW, THRUST + YAW, THRUST - YAW));
 }
 
 // This tests that a control setpoint for z-thrust + pitch returns the desired actuator setpoint.
 // This test does not saturate the pitch response.
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledThrustAndPitch)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, AirmodeDisabledThrustAndPitch)
 {
-	constexpr float THRUST = 0.75f;
-	constexpr float PITCH_TORQUE = 0.1f;
-	constexpr float PITCH = PITCH_TORQUE / NUM_ACTUATORS;
+	constexpr ದಶಮಾಂಶ THRUST = 0.75f;
+	constexpr ದಶಮಾಂಶ PITCH_TORQUE = 0.1f;
+	constexpr ದಶಮಾಂಶ PITCH = PITCH_TORQUE / ಅಂಕೆ_ACTUATORS;
 	EXPECT_EQ(allocate(0.f, PITCH_TORQUE, 0.f, -THRUST),
 		  Vector4f(THRUST + PITCH, THRUST - PITCH, THRUST - PITCH, THRUST + PITCH));
 }
 
 // This tests that a control setpoint for z-thrust + yaw returns the desired actuator setpoint.
 // This test saturates yaw and demonstrates reduction of thrust for yaw.
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledReducedThrustAndYaw)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, AirmodeDisabledReducedThrustAndYaw)
 {
-	constexpr float YAW_MARGIN = ControlAllocationSequentialDesaturation::MINIMUM_YAW_MARGIN;
+	constexpr ದಶಮಾಂಶ YAW_MARGIN = Control_ಹಂಚಿಕೆ_Sequential_Desaturation::MINIMUM_YAW_MARGIN;
 	EXPECT_EQ(allocate(0.f, 0.f, 1.f, -3.2f), Vector4f(1.f, 1.f - (2.f * YAW_MARGIN), 1.f, 1.f - (2.f * YAW_MARGIN)));
 }
 
 // This tests that a control setpoint for z-thrust + pitch returns the desired actuator setpoint.
 // This test saturates the pitch response such that thrust is reduced to (partially) compensate.
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledReducedThrustAndPitch)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, AirmodeDisabledReducedThrustAndPitch)
 {
 	EXPECT_EQ(allocate(0.f, 2.f, 0.f, -3.f), Vector4f(1.f, 0.f, 0.f, 1.f));
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, PreviousMixingTestsNoAirmode)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, ಹಿಂದಿನ_Mixing_Tests_No_Airmode)
 {
-	setAirmode(0); // No airmode
+	ಗಣ_Airmode(0); // No airmode
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.000f), Vector4f(0.000000f, 0.000000f, 0.000000f, 0.000000f)); // 1
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.100f), Vector4f(0.100000f, 0.100000f, 0.100000f, 0.100000f)); // 2
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.450f), Vector4f(0.450000f, 0.450000f, 0.450000f, 0.450000f)); // 3
@@ -335,9 +335,9 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, PreviousMixingTestsNoAi
 	EXPECT_EQ(allocate(-1.000f, 0.900f, 0.000f, -1.000f), Vector4f(1.000000f, 0.550000f, 0.050000f, 0.500000f)); // 65
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, PreviousMixingTestsAirmodeRP)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, ಹಿಂದಿನ_Mixing_Tests_Airmode_RP)
 {
-	setAirmode(1); // Roll and pitch airmode
+	ಗಣ_Airmode(1); // Roll and pitch airmode
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.000f), Vector4f(0.000000f, 0.000000f, 0.000000f, 0.000000f)); // 1
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.100f), Vector4f(0.100000f, 0.100000f, 0.100000f, 0.100000f)); // 2
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.450f), Vector4f(0.450000f, 0.450000f, 0.450000f, 0.450000f)); // 3
@@ -405,9 +405,9 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, PreviousMixingTestsAirm
 	EXPECT_EQ(allocate(-1.000f, 0.900f, 0.000f, -1.000f), Vector4f(1.000000f, 0.550000f, 0.050000f, 0.500000f)); // 65
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, PreviousMixingTestsAirmodeRPY)
+TEST_F(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test_Quad_X, ಹಿಂದಿನ_Mixing_Tests_Airmode_RPY)
 {
-	setAirmode(2); // Roll, pitch and yaw airmode
+	ಗಣ_Airmode(2); // Roll, pitch and yaw airmode
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.000f), Vector4f(0.000000f, 0.000000f, 0.000000f, 0.000000f)); // 1
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.100f), Vector4f(0.100000f, 0.100000f, 0.100000f, 0.100000f)); // 2
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.450f), Vector4f(0.450000f, 0.450000f, 0.450000f, 0.450000f)); // 3
@@ -477,10 +477,10 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, PreviousMixingTestsAirm
 
 // Hexarotor with a motor and its opposite stopped: roll and yaw collinear. The float pseudo-inverse
 // of that matrix used to be garbage and drove the remaining motors to full at zero thrust demand.
-TEST(ControlAllocationSequentialDesaturationTest, AirmodeDisabledNeverAddsThrustAfterMotorFailure)
+TEST(Control_ಹಂಚಿಕೆ_Sequential_Desaturation_Test, AirmodeDisabledNeverAddsThrustAfterMotorFailure)
 {
 	// rows roll/pitch/yaw/thrust xyz, one column per rotor
-	const float intact[6][6] = {
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ intact[6][6] = {
 		{-5.947500f,  5.934500f,  2.964000f, -2.853500f, -2.990000f,  2.840500f},
 		{ 0.071500f,  0.071500f,  5.063500f, -4.972500f,  5.063500f, -4.972500f},
 		{-0.325000f,  0.325000f, -0.325000f,  0.325000f,  0.325000f, -0.325000f},
@@ -489,54 +489,54 @@ TEST(ControlAllocationSequentialDesaturationTest, AirmodeDisabledNeverAddsThrust
 		{-6.500000f, -6.500000f, -6.500000f, -6.500000f, -6.500000f, -6.500000f}
 	};
 
-	auto make_effectiveness = [&intact](uint16_t stopped_mask) {
-		ActuatorEffectiveness::EffectivenessMatrix effectiveness;
-		effectiveness.setZero();
+	ಸ್ವಯಂಚಾಲಿತ make_effectiveness = [&intact](uint16_t stopped_ಮುಖವಾಡ) {
+		ActuatorEffectiveness::Effectiveness_ಮಾತೃಕೆ effectiveness;
+		effectiveness.ಗಣ_Zero();
 
-		for (int i = 0; i < 6; i++) {
-			if (stopped_mask & (1u << i)) {
-				continue;
+		ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 6; i++) {
+			ಆದರೆ (stopped_ಮುಖವಾಡ & (1u << i)) {
+				ಮುಂದುವರಿ;
 			}
 
-			for (int axis = 0; axis < 6; axis++) {
+			ಗಾಗಿ (ಪೂರ್ಣಾಂಕ axis = 0; axis < 6; axis++) {
 				effectiveness(axis, i) = intact[axis][i];
 			}
 		}
 
-		return effectiveness;
+		ಹಿಂತಿರುಗಿ effectiveness;
 	};
 
-	ControlAllocationSequentialDesaturation allocator;
-	allocator.setNormalizeRPY(true);
-	matrix::Vector<float, ActuatorEffectiveness::NUM_ACTUATORS> actuator_trim;
-	matrix::Vector<float, ActuatorEffectiveness::NUM_ACTUATORS> linearization_point;
+	Control_ಹಂಚಿಕೆ_Sequential_Desaturation allocator;
+	allocator.ಗಣ_Normalize_RPY(ನಿಜ);
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, ActuatorEffectiveness::ಅಂಕೆ_ACTUATORS> actuator_trim;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, ActuatorEffectiveness::ಅಂಕೆ_ACTUATORS> linearization_ಬಿಂದು;
 
 	// intact geometry first to capture the normalization scale, as ControlAllocator does
-	allocator.setEffectivenessMatrix(make_effectiveness(0), actuator_trim, linearization_point,
-					 ActuatorEffectiveness::NUM_ACTUATORS, true);
+	allocator.ಗಣ_Effectiveness_ಮಾತೃಕೆ(make_effectiveness(0), actuator_trim, linearization_ಬಿಂದು,
+					 ActuatorEffectiveness::ಅಂಕೆ_ACTUATORS, ನಿಜ);
 	allocator.allocate();
 
 	// rotors 0 and 1 stop, scale not recomputed
-	allocator.setHadActuatorFailure(true);
-	allocator.setEffectivenessMatrix(make_effectiveness((1u << 0) | (1u << 1)), actuator_trim,
-					 linearization_point, ActuatorEffectiveness::NUM_ACTUATORS, false);
+	allocator.ಗಣ_Had_Actuator_Failure(ನಿಜ);
+	allocator.ಗಣ_Effectiveness_ಮಾತೃಕೆ(make_effectiveness((1u << 0) | (1u << 1)), actuator_trim,
+					 linearization_ಬಿಂದು, ActuatorEffectiveness::ಅಂಕೆ_ACTUATORS, ಸುಳ್ಳು);
 
 	// attitude hold at zero thrust demand
-	matrix::Vector<float, ActuatorEffectiveness::NUM_AXES> control_sp;
-	control_sp(ControlAllocation::ControlAxis::ROLL) = 0.010f;
-	control_sp(ControlAllocation::ControlAxis::PITCH) = 0.024f;
-	control_sp(ControlAllocation::ControlAxis::YAW) = 0.f;
-	control_sp(ControlAllocation::ControlAxis::THRUST_X) = 0.f;
-	control_sp(ControlAllocation::ControlAxis::THRUST_Y) = 0.f;
-	control_sp(ControlAllocation::ControlAxis::THRUST_Z) = -0.001f;
-	allocator.setControlSetpoint(control_sp);
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, ActuatorEffectiveness::ಅಂಕೆ_AXES> control_sp;
+	control_sp(Control_ಹಂಚಿಕೆ::ControlAxis::ROLL) = 0.010f;
+	control_sp(Control_ಹಂಚಿಕೆ::ControlAxis::PITCH) = 0.024f;
+	control_sp(Control_ಹಂಚಿಕೆ::ControlAxis::YAW) = 0.f;
+	control_sp(Control_ಹಂಚಿಕೆ::ControlAxis::THRUST_X) = 0.f;
+	control_sp(Control_ಹಂಚಿಕೆ::ControlAxis::THRUST_Y) = 0.f;
+	control_sp(Control_ಹಂಚಿಕೆ::ControlAxis::THRUST_Z) = -0.001f;
+	allocator.ಗಣ_Control_Setpoint(control_sp);
 
 	// Since MC_AIRMODE was not set explicitly, assume airmode is disabled.
 	allocator.allocate();
 
-	const auto &actuator_sp = allocator.getActuatorSetpoint();
+	ಸ್ಥಿರಾಂಕ ಸ್ವಯಂಚಾಲಿತ &actuator_sp = allocator.getActuatorSetpoint();
 
-	for (int i = 0; i < ActuatorEffectiveness::NUM_ACTUATORS; ++i) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < ActuatorEffectiveness::ಅಂಕೆ_ACTUATORS; ++i) {
 		EXPECT_LT(actuator_sp(i), 0.1f) << "motor " << i;
 	}
 }

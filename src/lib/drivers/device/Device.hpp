@@ -37,29 +37,29 @@
  * Definitions for the generic base classes in the device framework.
  */
 
-#ifndef _DEVICE_DEVICE_HPP
-#define _DEVICE_DEVICE_HPP
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ _DEVICE_DEVICE_HPP
+#ವ್ಯಾಖ್ಯಾನಿಸು _DEVICE_DEVICE_HPP
 
-#include <cstdio>
+#ಅನ್ತರ್ಭಾವ <cstdio>
 
 /*
  * Includes here should only cover the needs of the framework definitions.
  */
-#include <px4_platform_common/i2c.h>
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/spi.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/i2c.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/log.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/px4_config.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/posix.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/spi.h>
 
-#include <drivers/drv_sensor.h>
+#ಅನ್ತರ್ಭಾವ <drivers/drv_sensor.h>
 
-#define DEVICE_LOG(FMT, ...) PX4_LOG_NAMED(_name, FMT, ##__VA_ARGS__)
-#define DEVICE_DEBUG(FMT, ...) PX4_LOG_NAMED_COND(_name, _debug_enabled, FMT, ##__VA_ARGS__)
+#ವ್ಯಾಖ್ಯಾನಿಸು DEVICE_LOG(FMT, ...) PX4_LOG_NAMED(_name, FMT, ##__VA_ARGS__)
+#ವ್ಯಾಖ್ಯಾನಿಸು DEVICE_DEBUG(FMT, ...) PX4_LOG_NAMED_COND(_name, _debug_enabled, FMT, ##__VA_ARGS__)
 
 /**
  * Namespace encapsulating all device framework classes, functions and data.
  */
-namespace device
+ನಾಮಾಕಾಶ device
 {
 
 /**
@@ -69,29 +69,29 @@ namespace device
  * inferred; onboard chips on a Shared bus must call set_external(false) via -I/-s).
  * UAVCAN, serial, MAVLink → external. Simulation → internal.
  */
-inline bool device_is_external(uint32_t device_id);
+ಸಾಲೊಳಗೆ ತಾರ್ಕಿಕ device_is_external(uint32_t device_id);
 
 /**
  * Fundamental base class for all physical drivers (I2C, SPI).
  *
  * This class provides the basic driver template for I2C and SPI devices
  */
-class __EXPORT Device
+ವರ್ಗ __EXPORT Device
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 
 	// no copy, assignment, move, move assignment
-	Device(const Device &) = delete;
-	Device &operator=(const Device &) = delete;
-	Device(Device &&) = delete;
-	Device &operator=(Device &&) = delete;
+	Device(ಸ್ಥಿರಾಂಕ Device &) = ಅಳಿಸು;
+	Device &ಕ್ರಿಯಾಕಾರಕ=(ಸ್ಥಿರಾಂಕ Device &) = ಅಳಿಸು;
+	Device(Device &&) = ಅಳಿಸು;
+	Device &ಕ್ರಿಯಾಕಾರಕ=(Device &&) = ಅಳಿಸು;
 
 	/**
 	 * Destructor.
 	 *
 	 * Public so that anonymous devices can be destroyed.
 	 */
-	virtual ~Device() = default;
+	ವಾಸ್ತವಿಕ ~Device() = ಪೂರ್ವನಿಯೋಜಿತ;
 
 	/*
 	 * Direct access methods.
@@ -102,7 +102,7 @@ public:
 	 *
 	 * @return	OK if the driver initialized OK, negative errno otherwise;
 	 */
-	virtual int	init() { return PX4_OK; }
+	ವಾಸ್ತವಿಕ ಪೂರ್ಣಾಂಕ	init() { ಹಿಂತಿರುಗಿ PX4_OK; }
 
 	/**
 	 * Read directly from the device.
@@ -114,7 +114,7 @@ public:
 	 * @param count		The number of items to read.
 	 * @return		The number of items read on success, negative errno otherwise.
 	 */
-	virtual int	read(unsigned address, void *data, unsigned count) { return -ENODEV; }
+	ವಾಸ್ತವಿಕ ಪೂರ್ಣಾಂಕ	ಪಠ(ಚಿಹ್ನೆರಹಿತ ವಿಳಾಸ, ಶೂನ್ಯ *ದತ್ತಾಂಶ, ಚಿಹ್ನೆರಹಿತ ಎಣಿಕೆ_2) { ಹಿಂತಿರುಗಿ -ENODEV; }
 
 	/**
 	 * Write directly to the device.
@@ -126,7 +126,7 @@ public:
 	 * @param count		The number of items to write.
 	 * @return		The number of items written on success, negative errno otherwise.
 	 */
-	virtual int	write(unsigned address, void *data, unsigned count) { return -ENODEV; }
+	ವಾಸ್ತವಿಕ ಪೂರ್ಣಾಂಕ	ಲಿಖ(ಚಿಹ್ನೆರಹಿತ ವಿಳಾಸ, ಶೂನ್ಯ *ದತ್ತಾಂಶ, ಚಿಹ್ನೆರಹಿತ ಎಣಿಕೆ_2) { ಹಿಂತಿರುಗಿ -ENODEV; }
 
 	/**
 	 * Read a register from the device.
@@ -134,7 +134,7 @@ public:
 	 * @param		The register to read.
 	 * @return		The value that was read.
 	 */
-	virtual uint8_t read_reg(unsigned reg) { return -ENODEV; }
+	ವಾಸ್ತವಿಕ uint8_t read_reg(ಚಿಹ್ನೆರಹಿತ reg) { ಹಿಂತಿರುಗಿ -ENODEV; }
 
 	/**
 	 * Write a register in the device.
@@ -143,7 +143,7 @@ public:
 	 * @param value		The new value to write.
 	 * @return		OK on success, negative errno otherwise.
 	 */
-	virtual int write_reg(unsigned reg, uint8_t value) { return -ENODEV; }
+	ವಾಸ್ತವಿಕ ಪೂರ್ಣಾಂಕ write_reg(ಚಿಹ್ನೆರಹಿತ reg, uint8_t value) { ಹಿಂತಿರುಗಿ -ENODEV; }
 
 	/**
 	 * Perform a device-specific operation.
@@ -152,10 +152,10 @@ public:
 	 * @param arg		An argument to the operation.
 	 * @return		Negative errno on error, OK or positive value on success.
 	 */
-	virtual int	ioctl(unsigned operation, unsigned &arg) { return -ENODEV; }
+	ವಾಸ್ತವಿಕ ಪೂರ್ಣಾಂಕ	ioctl(ಚಿಹ್ನೆರಹಿತ operation, ಚಿಹ್ನೆರಹಿತ &arg) { ಹಿಂತಿರುಗಿ -ENODEV; }
 
 	/** Device bus types for DEVID */
-	enum DeviceBusType {
+	ಎಣಿಕೆ DeviceBusType {
 		DeviceBusType_UNKNOWN = 0,
 		DeviceBusType_I2C     = 1,
 		DeviceBusType_SPI     = 2,
@@ -171,52 +171,52 @@ public:
 	  which makes it possible to transport over the MAVLink
 	  parameter protocol without loss of information.
 	 */
-	struct DeviceStructure {
+	ರಚನೆ DeviceStructure {
 		DeviceBusType bus_type : 3;
 		uint8_t bus: 5;    // which instance of the bus type
-		uint8_t address;   // address on the bus (eg. I2C address)
+		uint8_t ವಿಳಾಸ;   // address on the bus (eg. I2C address)
 		uint8_t devtype;   // device class specific device type
 	};
 
-	union DeviceId {
-		struct DeviceStructure devid_s;
+	ಒಕ್ಕೂಟ DeviceId {
+		ರಚನೆ DeviceStructure devid_s;
 		uint32_t devid{0};
 	};
 
-	uint32_t get_device_id() const { return _device_id.devid; }
+	uint32_t get_device_id() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _device_id.devid; }
 
 	/**
 	 * Return the bus type the device is connected to.
 	 *
 	 * @return The bus type
 	 */
-	DeviceBusType get_device_bus_type() const { return _device_id.devid_s.bus_type; }
-	void          set_device_bus_type(DeviceBusType bus_type) { _device_id.devid_s.bus_type = bus_type; }
+	DeviceBusType get_device_bus_type() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _device_id.devid_s.bus_type; }
+	ಶೂನ್ಯ          ಗಣ_device_bus_type(DeviceBusType bus_type) { _device_id.devid_s.bus_type = bus_type; }
 
-	static const char *get_device_bus_string(DeviceBusType bus)
+	ಸ್ಥಿರ ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *get_device_bus_string(DeviceBusType bus)
 	{
-		switch (bus) {
-		case DeviceBusType_I2C:
-			return "I2C";
+		ಆಯ್ಕೆ (bus) {
+		ಸ್ಥಿತಿ DeviceBusType_I2C:
+			ಹಿಂತಿರುಗಿ "I2C";
 
-		case DeviceBusType_SPI:
-			return "SPI";
+		ಸ್ಥಿತಿ DeviceBusType_SPI:
+			ಹಿಂತಿರುಗಿ "SPI";
 
-		case DeviceBusType_UAVCAN:
-			return "UAVCAN";
+		ಸ್ಥಿತಿ DeviceBusType_UAVCAN:
+			ಹಿಂತಿರುಗಿ "UAVCAN";
 
-		case DeviceBusType_SIMULATION:
-			return "SIMULATION";
+		ಸ್ಥಿತಿ DeviceBusType_SIMULATION:
+			ಹಿಂತಿರುಗಿ "SIMULATION";
 
-		case DeviceBusType_SERIAL:
-			return "SERIAL";
+		ಸ್ಥಿತಿ DeviceBusType_SERIAL:
+			ಹಿಂತಿರುಗಿ "SERIAL";
 
-		case DeviceBusType_MAVLINK:
-			return "MAVLINK";
+		ಸ್ಥಿತಿ DeviceBusType_MAVLINK:
+			ಹಿಂತಿರುಗಿ "MAVLINK";
 
-		case DeviceBusType_UNKNOWN:
-		default:
-			return "UNKNOWN";
+		ಸ್ಥಿತಿ DeviceBusType_UNKNOWN:
+		ಪೂರ್ವನಿಯೋಜಿತ:
+			ಹಿಂತಿರುಗಿ "UNKNOWN";
 		}
 	}
 
@@ -225,24 +225,24 @@ public:
 	 *
 	 * @return The bus ID
 	 */
-	uint8_t get_device_bus() const { return _device_id.devid_s.bus; }
-	void    set_device_bus(uint8_t bus) { _device_id.devid_s.bus = bus; }
+	uint8_t get_device_bus() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _device_id.devid_s.bus; }
+	ಶೂನ್ಯ    ಗಣ_device_bus(uint8_t bus) { _device_id.devid_s.bus = bus; }
 
 	/**
 	 * Return the bus address of the device.
 	 *
 	 * @return The bus address
 	 */
-	uint8_t	get_device_address() const { return _device_id.devid_s.address; }
-	void	set_device_address(int address) { _device_id.devid_s.address = address; }
+	uint8_t	get_device_ವಿಳಾಸ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _device_id.devid_s.ವಿಳಾಸ; }
+	ಶೂನ್ಯ	ಗಣ_device_ವಿಳಾಸ(ಪೂರ್ಣಾಂಕ ವಿಳಾಸ) { _device_id.devid_s.ವಿಳಾಸ = ವಿಳಾಸ; }
 
 	/**
 	 * Return the device type
 	 *
 	 * @return The device type
 	 */
-	uint8_t	get_device_type() const { return _device_id.devid_s.devtype; }
-	void	set_device_type(uint8_t devtype) { _device_id.devid_s.devtype = devtype; }
+	uint8_t	get_device_type() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _device_id.devid_s.devtype; }
+	ಶೂನ್ಯ	ಗಣ_device_type(uint8_t devtype) { _device_id.devid_s.devtype = devtype; }
 
 	/**
 	 * Print decoded device id string to a buffer.
@@ -252,17 +252,17 @@ public:
 	 * @param id	                        The device id.
 	 * @param return                        number of bytes written
 	 */
-	static int device_id_print_buffer(char *buffer, int length, uint32_t id)
+	ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ device_id_print_ಬಫರ್(ಅಕ್ಷರ *ಬಫರ್_2, ಪೂರ್ಣಾಂಕ ಉದ್ದಳತೆ, uint32_t id)
 	{
 		DeviceId dev_id{};
 		dev_id.devid = id;
 
-		int num_written = snprintf(buffer, length, "Type: 0x%02X, %s:%d (0x%02X)", dev_id.devid_s.devtype,
-					   get_device_bus_string(dev_id.devid_s.bus_type), dev_id.devid_s.bus, dev_id.devid_s.address);
+		ಪೂರ್ಣಾಂಕ ಅಂಕೆ_written = snprintf(ಬಫರ್_2, ಉದ್ದಳತೆ, "Type: 0x%02X, %s:%d (0x%02X)", dev_id.devid_s.devtype,
+					   get_device_bus_string(dev_id.devid_s.bus_type), dev_id.devid_s.bus, dev_id.devid_s.ವಿಳಾಸ);
 
-		buffer[length - 1] = 0; // ensure 0-termination
+		ಬಫರ್_2[ಉದ್ದಳತೆ - 1] = 0; // ensure 0-termination
 
-		return num_written;
+		ಹಿಂತಿರುಗಿ ಅಂಕೆ_written;
 	}
 
 	/**
@@ -270,28 +270,28 @@ public:
 	 *
 	 * I2C/SPI drivers set this from -I/-s vs -X/-S. Otherwise falls back to device_is_external().
 	 */
-	bool external() const { return _external_declared ? _external : device_is_external(_device_id.devid); }
+	ತಾರ್ಕಿಕ external() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _external_declared ? _external : device_is_external(_device_id.devid); }
 
-	void set_external(bool external) { _external = external; _external_declared = true; }
+	ಶೂನ್ಯ ಗಣ_external(ತಾರ್ಕಿಕ external) { _external = external; _external_declared = ನಿಜ; }
 
-protected:
-	union DeviceId	_device_id {};            	/**< device identifier information */
+ಸಂರಕ್ಷಿತ:
+	ಒಕ್ಕೂಟ DeviceId	_device_id {};            	/**< device identifier information */
 
-	bool		_external{false};
-	bool		_external_declared{false};
+	ತಾರ್ಕಿಕ		_external{ಸುಳ್ಳು};
+	ತಾರ್ಕಿಕ		_external_declared{ಸುಳ್ಳು};
 
-	const char	*_name{nullptr};		/**< driver name */
-	bool		_debug_enabled{false};		/**< if true, debug messages are printed */
+	ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ	*_name{ಶೂನ್ಯಸೂಚಕ};		/**< driver name */
+	ತಾರ್ಕಿಕ		_debug_enabled{ಸುಳ್ಳು};		/**< if true, debug messages are printed */
 
-	Device() = delete;
-	explicit Device(const char *name) : _name(name) {}
+	Device() = ಅಳಿಸು;
+	ಸ್ಪಷ್ಟ Device(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) : _name(name) {}
 
-	Device(uint8_t devtype, const char *name, DeviceBusType bus_type, uint8_t bus, uint8_t address) : _name(name)
+	Device(uint8_t devtype, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, DeviceBusType bus_type, uint8_t bus, uint8_t ವಿಳಾಸ) : _name(name)
 	{
-		set_device_type(devtype);
-		set_device_bus_type(bus_type);
-		set_device_bus(bus);
-		set_device_address(address);
+		ಗಣ_device_type(devtype);
+		ಗಣ_device_bus_type(bus_type);
+		ಗಣ_device_bus(bus);
+		ಗಣ_device_ವಿಳಾಸ(ವಿಳಾಸ);
 	}
 
 };
@@ -300,39 +300,39 @@ protected:
  * Inline so that no caller has to link the kernel-only drivers__device library: in a
  * protected build that would pull the kernel into the userspace image.
  */
-inline bool device_is_external(uint32_t device_id)
+ಸಾಲೊಳಗೆ ತಾರ್ಕಿಕ device_is_external(uint32_t device_id)
 {
 	Device::DeviceId id{};
 	id.devid = device_id;
 
-	switch (id.devid_s.bus_type) {
-	case Device::DeviceBusType_I2C:
-#if defined(CONFIG_I2C)
-		return px4_i2c_bus_topology(id.devid_s.bus) != BusTopology::Internal;
-#else
-		return true;
-#endif // CONFIG_I2C
+	ಆಯ್ಕೆ (id.devid_s.bus_type) {
+	ಸ್ಥಿತಿ Device::DeviceBusType_I2C:
+#ಆದರೆ defined(CONFIG_I2C)
+		ಹಿಂತಿರುಗಿ px4_i2c_bus_topology(id.devid_s.bus) != BusTopology::ಆಂತರಿಕ;
+#ಇಲ್ಲದಿದ್ದರೆ
+		ಹಿಂತಿರುಗಿ ನಿಜ;
+#ಆದರೆ_ಅಂತ್ಯ // CONFIG_I2C
 
-	case Device::DeviceBusType_SPI:
-#if defined(CONFIG_SPI)
-		return px4_spi_bus_topology(id.devid_s.bus) != BusTopology::Internal;
-#else
-		return true;
-#endif // CONFIG_SPI
+	ಸ್ಥಿತಿ Device::DeviceBusType_SPI:
+#ಆದರೆ defined(CONFIG_SPI)
+		ಹಿಂತಿರುಗಿ px4_spi_bus_topology(id.devid_s.bus) != BusTopology::ಆಂತರಿಕ;
+#ಇಲ್ಲದಿದ್ದರೆ
+		ಹಿಂತಿರುಗಿ ನಿಜ;
+#ಆದರೆ_ಅಂತ್ಯ // CONFIG_SPI
 
-	case Device::DeviceBusType_SIMULATION:
-		return false;
+	ಸ್ಥಿತಿ Device::DeviceBusType_SIMULATION:
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 
-	case Device::DeviceBusType_UAVCAN:
-	case Device::DeviceBusType_SERIAL:
-	case Device::DeviceBusType_MAVLINK:
-	case Device::DeviceBusType_UNKNOWN:
-		return true;
+	ಸ್ಥಿತಿ Device::DeviceBusType_UAVCAN:
+	ಸ್ಥಿತಿ Device::DeviceBusType_SERIAL:
+	ಸ್ಥಿತಿ Device::DeviceBusType_MAVLINK:
+	ಸ್ಥಿತಿ Device::DeviceBusType_UNKNOWN:
+		ಹಿಂತಿರುಗಿ ನಿಜ;
 	}
 
-	return true;
+	ಹಿಂತಿರುಗಿ ನಿಜ;
 }
 
 } // namespace device
 
-#endif /* _DEVICE_DEVICE_HPP */
+#ಆದರೆ_ಅಂತ್ಯ /* _DEVICE_DEVICE_HPP */

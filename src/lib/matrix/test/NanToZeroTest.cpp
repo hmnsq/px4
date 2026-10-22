@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/math.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-TEST(NanToZeroTest, NanToZero)
+TEST(Nan_ಗಮ್ಯ_Zero_Test, Nan_ಗಮ್ಯ_Zero)
 {
-	const float data[9]     = {-1.f, 0.f, +INFINITY, NAN, 0.f, -INFINITY, 1.f, 0.f, -NAN};
-	const float expected[9] = {-1.f, 0.f, +INFINITY, 0.f, 0.f, -INFINITY, 1.f, 0.f, 0.f};
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ ದತ್ತಾಂಶ[9]     = {-1.f, 0.f, +INFINITY, NAN, 0.f, -INFINITY, 1.f, 0.f, -NAN};
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ expected[9] = {-1.f, 0.f, +INFINITY, 0.f, 0.f, -INFINITY, 1.f, 0.f, 0.f};
 
-	Matrix<float, 3, 3> mat(data);
-	mat.nanToZero();
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 3> mat(ದತ್ತಾಂಶ);
+	mat.nan_ಗಮ್ಯ_Zero();
 
-	const Matrix<float, 3, 3> mat_expected(expected);
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 3, 3> mat_expected(expected);
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
+	ಗಾಗಿ (size_t i = 0; i < 3; i++) {
+		ಗಾಗಿ (size_t j = 0; j < 3; j++) {
 			EXPECT_FLOAT_EQ(mat(i, j), mat_expected(i, j));
 		}
 	}
 }
 
-TEST(NanToZeroTest, NoNanUnchanged)
+TEST(Nan_ಗಮ್ಯ_Zero_Test, NoNanUnchanged)
 {
-	const float data[4] = {-2.5f, 0.f, 3.14f, +INFINITY};
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ ದತ್ತಾಂಶ[4] = {-2.5f, 0.f, 3.14f, +INFINITY};
 
-	Matrix<float, 2, 2> mat(data);
-	mat.nanToZero();
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 2> mat(ದತ್ತಾಂಶ);
+	mat.nan_ಗಮ್ಯ_Zero();
 
-	const Matrix<float, 2, 2> mat_orig(data);
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 2, 2> mat_orig(ದತ್ತಾಂಶ);
 
-	for (size_t i = 0; i < 2; i++) {
-		for (size_t j = 0; j < 2; j++) {
+	ಗಾಗಿ (size_t i = 0; i < 2; i++) {
+		ಗಾಗಿ (size_t j = 0; j < 2; j++) {
 			EXPECT_FLOAT_EQ(mat(i, j), mat_orig(i, j));
 		}
 	}

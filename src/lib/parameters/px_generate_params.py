@@ -2,25 +2,25 @@
 """
 Param source code generation script.
 """
-from __future__ import print_function
-import xml.etree.ElementTree as ET
-import argparse
-import sys
+ತಃ __future__ ಆಮದು print_function
+ಆಮದು xml.etree.Element_ವೃಕ್ಷ ಇವ ET
+ಆಮದು argparse
+ಆಮದು sys
 
-try:
-    from jinja2 import Environment, FileSystemLoader
-except ImportError as e:
-    print("Failed to import jinja2: " + str(e))
-    print("")
-    print("You may need to install it using:")
-    print("    pip3 install --user jinja2")
-    print("")
+ಪ್ರಯತ್ನಿಸು:
+    ತಃ jinja2 ಆಮದು Environment, FileSystemLoader
+ಅಪವಾದ ImportError ಇವ e:
+    ಮುದ್ರಿಸು("Failed to import jinja2: " + str(e))
+    ಮುದ್ರಿಸು("")
+    ಮುದ್ರಿಸು("You may need to install it using:")
+    ಮುದ್ರಿಸು("    pip3 install --user jinja2")
+    ಮುದ್ರಿಸು("")
     sys.exit(1)
 
-import os
-from px4params.readonly_config import load_readonly_params
+ಆಮದು os
+ತಃ px4params.readonly_config ಆಮದು ತುಂಬು_readonly_params
 
-def generate(xml_file, dest='.', readonly_config=None):
+ವ್ಯಾಖ್ಯಾನ generate(xml_file, dest='.', readonly_config=ಏನೂಇಲ್ಲ):
     """
     Generate px4 param source from xml.
 
@@ -30,44 +30,44 @@ def generate(xml_file, dest='.', readonly_config=None):
         None means to scan everything.
     """
     # pylint: disable=broad-except
-    tree = ET.parse(xml_file)
-    root = tree.getroot()
+    ವೃಕ್ಷ = ET.parse(xml_file)
+    ಬೇರು = ವೃಕ್ಷ.getroot()
 
     params = []
-    for group in root:
-        if group.tag == "group" and "no_code_generation" not in group.attrib:
-            for param in group:
+    ಗಾಗಿ ಗುಂಪು ಒಳಗೆ ಬೇರು:
+        ಆದರೆ ಗುಂಪು.ಟ್ಯಾಗ್ == "group" ಮತ್ತು "no_code_generation" ಅಲ್ಲ ಒಳಗೆ ಗುಂಪು.attrib:
+            ಗಾಗಿ param ಒಳಗೆ ಗುಂಪು:
                 params.append(param)
 
-    params = sorted(params, key=lambda name: name.attrib["name"])
+    params = sorted(params, ಕೀಲಿ=ಅನಾಮಿಕ name: name.attrib["name"])
 
-    all_param_names = set(p.attrib["name"] for p in params)
-    readonly_params = load_readonly_params(readonly_config, all_param_names)
+    all_param_ಹೆಸರುಗಳು = ಗಣ(p.attrib["name"] ಗಾಗಿ p ಒಳಗೆ params)
+    readonly_params = ತುಂಬು_readonly_params(readonly_config, all_param_ಹೆಸರುಗಳು)
 
-    script_path = os.path.dirname(os.path.realpath(__file__))
+    script_ಮಾರ್ಗ = os.ಮಾರ್ಗ.dirname(os.ಮಾರ್ಗ.realpath(__file__))
 
     # for jinja docs see: http://jinja.pocoo.org/docs/2.9/api/
     env = Environment(
-        loader=FileSystemLoader(os.path.join(script_path, 'templates')))
+        loader=FileSystemLoader(os.ಮಾರ್ಗ.join(script_ಮಾರ್ಗ, 'templates')))
 
-    if not os.path.isdir(dest):
-        os.path.mkdir(dest)
+    ಆದರೆ ಅಲ್ಲ os.ಮಾರ್ಗ.isdir(dest):
+        os.ಮಾರ್ಗ.mkdir(dest)
 
     template_files = [
         'px4_parameters.hpp.jinja',
     ]
-    for template_file in template_files:
+    ಗಾಗಿ template_file ಒಳಗೆ template_files:
         template = env.get_template(template_file)
-        with open(os.path.join(
-                dest, template_file.replace('.jinja','')), 'w') as fid:
-            fid.write(template.render(params=params, readonly_params=readonly_params))
+        ಜೊತೆ open(os.ಮಾರ್ಗ.join(
+                dest, template_file.replace('.jinja','')), 'w') ಇವ fid:
+            fid.ಲಿಖ(template.render(params=params, readonly_params=readonly_params))
 
-if __name__ == "__main__":
-    arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument("--xml", help="parameter xml file")
-    arg_parser.add_argument("--dest", help="destination path", default=os.path.curdir)
-    arg_parser.add_argument("--readonly-config", help="path to readonly_params.yaml", default=None)
-    args = arg_parser.parse_args()
-    generate(xml_file=args.xml, dest=args.dest, readonly_config=args.readonly_config)
+ಆದರೆ __name__ == "__main__":
+    arg_parser = argparse.ವಾದ_Parser()
+    arg_parser.ಕೂಡಿಸು_ವಾದ("--xml", help="parameter xml file")
+    arg_parser.ಕೂಡಿಸು_ವಾದ("--dest", help="destination path", ಪೂರ್ವನಿಯೋಜಿತ=os.ಮಾರ್ಗ.curdir)
+    arg_parser.ಕೂಡಿಸು_ವಾದ("--readonly-config", help="path to readonly_params.yaml", ಪೂರ್ವನಿಯೋಜಿತ=ಏನೂಇಲ್ಲ)
+    ವಾದಗಳು = arg_parser.parse_ವಾದಗಳು()
+    generate(xml_file=ವಾದಗಳು.xml, dest=ವಾದಗಳು.dest, readonly_config=ವಾದಗಳು.readonly_config)
 
 #  vim: set et fenc=utf-8 ff=unix sts=4 sw=4 ts=4 :

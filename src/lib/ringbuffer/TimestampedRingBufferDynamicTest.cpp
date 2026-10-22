@@ -31,60 +31,60 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <math.h>
-#include "TimestampedRingBuffer.hpp"
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ "TimestampedRingBuffer.hpp"
 
-struct sample {
-	uint64_t time_us;
-	float data[3];
+ರಚನೆ sample {
+	uint64_t ಸಮಯ_us;
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ[3];
 };
 
 
-class TimestampedRingBufferDynamicTest : public ::testing::Test
+ವರ್ಗ Timestamped_Ring_ಬಫರ್_Dynamic_Test : ಸಾರ್ವಜನಿಕ ::testing::Test
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 
 	sample _x, _y, _z;
-	TimestampedRingBuffer<sample> *_buffer{nullptr};
+	Timestamped_Ring_ಬಫರ್<sample> *ಬಫರ್{ಶೂನ್ಯಸೂಚಕ};
 
-	void SetUp() override
+	ಶೂನ್ಯ ಗಣ_ಮೇಲೆ() override
 	{
-		_buffer = new TimestampedRingBuffer<sample>(3);
-		_x.time_us = 1000000;
-		_x.data[0] = _x.data[1] = _x.data[2] = 1.5f;
+		ಬಫರ್ = ಹೊಸ Timestamped_Ring_ಬಫರ್<sample>(3);
+		_x.ಸಮಯ_us = 1000000;
+		_x.ದತ್ತಾಂಶ[0] = _x.ದತ್ತಾಂಶ[1] = _x.ದತ್ತಾಂಶ[2] = 1.5f;
 
-		_y.time_us = 2000000;
-		_y.data[0] = _y.data[1] = _y.data[2] = 3.0f;
+		_y.ಸಮಯ_us = 2000000;
+		_y.ದತ್ತಾಂಶ[0] = _y.ದತ್ತಾಂಶ[1] = _y.ದತ್ತಾಂಶ[2] = 3.0f;
 
-		_z.time_us = 3000000;
-		_z.data[0] = _z.data[1] = _z.data[2] = 4.0f;
+		_z.ಸಮಯ_us = 3000000;
+		_z.ದತ್ತಾಂಶ[0] = _z.ದತ್ತಾಂಶ[1] = _z.ದತ್ತಾಂಶ[2] = 4.0f;
 	}
 
-	void TearDown() override
+	ಶೂನ್ಯ Tear_ಕೆಳಕ್ಕೆ() override
 	{
-		delete _buffer;
+		ಅಳಿಸು ಬಫರ್;
 	}
 };
 
-TEST_F(TimestampedRingBufferDynamicTest, goodInitialisation)
+TEST_F(Timestamped_Ring_ಬಫರ್_Dynamic_Test, goodInitialisation)
 {
 	// WHEN: buffer was allocated
 	// THEN: allocation should have succeed
-	EXPECT_TRUE(_buffer->allocate(3));
-	EXPECT_TRUE(_buffer->valid());
-	EXPECT_EQ(_buffer->get_length(), 3);
+	EXPECT_TRUE(ಬಫರ್->allocate(3));
+	EXPECT_TRUE(ಬಫರ್->valid());
+	EXPECT_EQ(ಬಫರ್->get_ಉದ್ದಳತೆ(), 3);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, RejectsInvalidSize)
+TEST_F(Timestamped_Ring_ಬಫರ್_Dynamic_Test, Rejects_Invalid_ಗಾತ್ರ)
 {
-	EXPECT_FALSE(_buffer->allocate(0));
-	EXPECT_FALSE(_buffer->allocate(UINT8_MAX + 1u));
-	EXPECT_TRUE(_buffer->valid());
-	EXPECT_EQ(_buffer->get_length(), 3);
+	EXPECT_FALSE(ಬಫರ್->allocate(0));
+	EXPECT_FALSE(ಬಫರ್->allocate(UINT8_MAX + 1u));
+	EXPECT_TRUE(ಬಫರ್->valid());
+	EXPECT_EQ(ಬಫರ್->get_ಉದ್ದಳತೆ(), 3);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, badInitialisation)
+TEST_F(Timestamped_Ring_ಬಫರ್_Dynamic_Test, badInitialisation)
 {
 	// WHEN: buffer allocation input is bad
 	// THEN: allocation should fail
@@ -94,75 +94,75 @@ TEST_F(TimestampedRingBufferDynamicTest, badInitialisation)
 	// ASSERT_EQ(false, _buffer->allocate(0));
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, orderOfSamples)
+TEST_F(Timestamped_Ring_ಬಫರ್_Dynamic_Test, ಕ್ರಮ_ದ_Samples)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
+	ASSERT_EQ(ನಿಜ, ಬಫರ್->allocate(3));
 	// GIVEN: allocated buffer
 	// WHEN: adding multiple samples
 	// THEN: they should be added in order
-	_buffer->push(_x);
+	ಬಫರ್->ತಳ್ಳು(_x);
 
-	EXPECT_EQ(_x.time_us, _buffer->get_newest().time_us);
-	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
+	EXPECT_EQ(_x.ಸಮಯ_us, ಬಫರ್->get_newest().ಸಮಯ_us);
+	EXPECT_EQ(_x.ಸಮಯ_us, ಬಫರ್->get_oldest().ಸಮಯ_us);
 
-	_buffer->push(_z);
-	_buffer->push(_y);
+	ಬಫರ್->ತಳ್ಳು(_z);
+	ಬಫರ್->ತಳ್ಳು(_y);
 
-	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
-	EXPECT_EQ(_y.time_us, _buffer->get_newest().time_us);
+	EXPECT_EQ(_x.ಸಮಯ_us, ಬಫರ್->get_oldest().ಸಮಯ_us);
+	EXPECT_EQ(_y.ಸಮಯ_us, ಬಫರ್->get_newest().ಸಮಯ_us);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, popSample)
+TEST_F(Timestamped_Ring_ಬಫರ್_Dynamic_Test, ತೆಗೆ_Sample)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(ನಿಜ, ಬಫರ್->allocate(3));
+	ಬಫರ್->ತಳ್ಳು(_x);
+	ಬಫರ್->ತಳ್ಳು(_y);
+	ಬಫರ್->ತಳ್ಳು(_z);
 
 	// GIVEN: allocated and filled buffer
 
-	sample pop = {};
+	sample ತೆಗೆ_2 = {};
 	// WHEN: we want to retrieve a sample that is older than any in the buffer
 	// THEN: we should not get any sample
-	EXPECT_FALSE(_buffer->pop_first_older_than(0, &pop));
+	EXPECT_FALSE(ಬಫರ್->ತೆಗೆ_ಮೊದಲ_older_than(0, &ತೆಗೆ_2));
 
 	// WHEN: when calling "pop_first_older_than"
 	// THEN: we should get the first sample from the head that is older
-	EXPECT_TRUE(_buffer->pop_first_older_than(_x.time_us + 1, &pop));
-	EXPECT_EQ(_x.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_y.time_us + 10, &pop));
-	EXPECT_EQ(_y.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 100, &pop));
-	EXPECT_EQ(_z.time_us, pop.time_us);
+	EXPECT_TRUE(ಬಫರ್->ತೆಗೆ_ಮೊದಲ_older_than(_x.ಸಮಯ_us + 1, &ತೆಗೆ_2));
+	EXPECT_EQ(_x.ಸಮಯ_us, ತೆಗೆ_2.ಸಮಯ_us);
+	EXPECT_TRUE(ಬಫರ್->ತೆಗೆ_ಮೊದಲ_older_than(_y.ಸಮಯ_us + 10, &ತೆಗೆ_2));
+	EXPECT_EQ(_y.ಸಮಯ_us, ತೆಗೆ_2.ಸಮಯ_us);
+	EXPECT_TRUE(ಬಫರ್->ತೆಗೆ_ಮೊದಲ_older_than(_z.ಸಮಯ_us + 100, &ತೆಗೆ_2));
+	EXPECT_EQ(_z.ಸಮಯ_us, ತೆಗೆ_2.ಸಮಯ_us);
 	// TODO: When changing the order of popping sample it does not behave as expected, fix this
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, askingForTooNewSample)
+TEST_F(Timestamped_Ring_ಬಫರ್_Dynamic_Test, askingForTooNewSample)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(ನಿಜ, ಬಫರ್->allocate(3));
+	ಬಫರ್->ತಳ್ಳು(_x);
+	ಬಫರ್->ತಳ್ಳು(_y);
+	ಬಫರ್->ತಳ್ಳು(_z);
 
-	sample pop = {};
+	sample ತೆಗೆ_2 = {};
 	// WHEN: all buffered samples are older by 0.1s than your query timestamp
 	// THEN: should get no sample returned
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 99000, &pop));
-	EXPECT_FALSE(_buffer->pop_first_older_than(_y.time_us + 100000, &pop));
+	EXPECT_TRUE(ಬಫರ್->ತೆಗೆ_ಮೊದಲ_older_than(_z.ಸಮಯ_us + 99000, &ತೆಗೆ_2));
+	EXPECT_FALSE(ಬಫರ್->ತೆಗೆ_ಮೊದಲ_older_than(_y.ಸಮಯ_us + 100000, &ತೆಗೆ_2));
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, reallocateBuffer)
+TEST_F(Timestamped_Ring_ಬಫರ್_Dynamic_Test, reallocate_ಬಫರ್)
 {
-	ASSERT_EQ(true, _buffer->allocate(5));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(ನಿಜ, ಬಫರ್->allocate(5));
+	ಬಫರ್->ತಳ್ಳು(_x);
+	ಬಫರ್->ತಳ್ಳು(_y);
+	ಬಫರ್->ತಳ್ಳು(_y);
+	ಬಫರ್->ತಳ್ಳು(_y);
+	ಬಫರ್->ತಳ್ಳು(_z);
 
 	// GIVEN: allocated and filled buffer
 	// WHEN: do another allocate call
-	EXPECT_TRUE(_buffer->allocate(3));
+	EXPECT_TRUE(ಬಫರ್->allocate(3));
 	// THEN: its length should update
-	EXPECT_EQ(3, _buffer->get_length());
+	EXPECT_EQ(3, ಬಫರ್->get_ಉದ್ದಳತೆ());
 }

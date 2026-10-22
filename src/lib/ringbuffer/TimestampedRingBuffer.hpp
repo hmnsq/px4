@@ -39,280 +39,280 @@
 * Note: This is not the same as `Ringbuffer` (byte FIFO) in `src/lib/ringbuffer/Ringbuffer.hpp`.
 */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <climits>
-#include <cstddef>
-#include <inttypes.h>
+#ಅನ್ತರ್ಭಾವ <climits>
+#ಅನ್ತರ್ಭಾವ <cstddef>
+#ಅನ್ತರ್ಭಾವ <inttypes.h>
 
-template <typename data_type, size_t SIZE = 0>
-class TimestampedRingBuffer;
+ಮಾದರಿ <ಬಗೆ_ಹೆಸರು ದತ್ತಾಂಶ_type, size_t ಗಾತ್ರ_4 = 0>
+ವರ್ಗ Timestamped_Ring_ಬಫರ್;
 
 /**
  * Static-size ring buffer specialization (SIZE > 0).
  */
-template <typename data_type, size_t SIZE>
-class TimestampedRingBuffer
+ಮಾದರಿ <ಬಗೆ_ಹೆಸರು ದತ್ತಾಂಶ_type, size_t ಗಾತ್ರ_4>
+ವರ್ಗ Timestamped_Ring_ಬಫರ್
 {
-public:
-	static_assert(SIZE > 0, "SIZE must be > 0");
-	static_assert(SIZE <= UINT8_MAX, "SIZE must fit in uint8_t");
-	static constexpr uint8_t kSize = static_cast<uint8_t>(SIZE);
+ಸಾರ್ವಜನಿಕ:
+	static_assert(ಗಾತ್ರ_4 > 0, "SIZE must be > 0");
+	static_assert(ಗಾತ್ರ_4 <= UINT8_MAX, "SIZE must fit in uint8_t");
+	ಸ್ಥಿರ constexpr uint8_t k_ಗಾತ್ರ = static_cast<uint8_t>(ಗಾತ್ರ_4);
 
-	TimestampedRingBuffer() = default;
-	~TimestampedRingBuffer() = default;
+	Timestamped_Ring_ಬಫರ್() = ಪೂರ್ವನಿಯೋಜಿತ;
+	~Timestamped_Ring_ಬಫರ್() = ಪೂರ್ವನಿಯೋಜಿತ;
 
 	// no copy, assignment, move, move assignment
-	TimestampedRingBuffer(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer &operator=(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
-	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
+	Timestamped_Ring_ಬಫರ್(ಸ್ಥಿರಾಂಕ Timestamped_Ring_ಬಫರ್ &) = ಅಳಿಸು;
+	Timestamped_Ring_ಬಫರ್ &ಕ್ರಿಯಾಕಾರಕ=(ಸ್ಥಿರಾಂಕ Timestamped_Ring_ಬಫರ್ &) = ಅಳಿಸು;
+	Timestamped_Ring_ಬಫರ್(Timestamped_Ring_ಬಫರ್ &&) = ಅಳಿಸು;
+	Timestamped_Ring_ಬಫರ್ &ಕ್ರಿಯಾಕಾರಕ=(Timestamped_Ring_ಬಫರ್ &&) = ಅಳಿಸು;
 
-	bool allocate(size_t size) { return size == SIZE; }
+	ತಾರ್ಕಿಕ allocate(size_t ಗಾತ್ರ_2) { ಹಿಂತಿರುಗಿ ಗಾತ್ರ_2 == ಗಾತ್ರ_4; }
 
-	bool valid() const { return SIZE > 0; }
+	ತಾರ್ಕಿಕ valid() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಗಾತ್ರ_4 > 0; }
 
-	void push(const data_type &sample)
+	ಶೂನ್ಯ ತಳ್ಳು(ಸ್ಥಿರಾಂಕ ದತ್ತಾಂಶ_type &sample)
 	{
-		_buffer[_head] = sample;
-		_head = next(_head);
+		ಬಫರ್[ತಲೆ] = sample;
+		ತಲೆ = ಮುಂದಿನ(ತಲೆ);
 
-		if (_entries < kSize) {
+		ಆದರೆ (_entries < k_ಗಾತ್ರ) {
 			_entries++;
 		}
 	}
 
-	uint8_t get_length() const { return kSize; }
+	uint8_t get_ಉದ್ದಳತೆ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ k_ಗಾತ್ರ; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	ದತ್ತಾಂಶ_type &ಕ್ರಿಯಾಕಾರಕ[](ಸ್ಥಿರಾಂಕ uint8_t ಸೂಚ್ಯಂಕ) { ಹಿಂತಿರುಗಿ ಬಫರ್[ಸೂಚ್ಯಂಕ]; }
 
-	const data_type &get_newest() const { return _buffer[get_newest_index()]; }
-	const data_type &get_oldest() const { return _buffer[get_oldest_index()]; }
+	ಸ್ಥಿರಾಂಕ ದತ್ತಾಂಶ_type &get_newest() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಬಫರ್[get_newest_ಸೂಚ್ಯಂಕ()]; }
+	ಸ್ಥಿರಾಂಕ ದತ್ತಾಂಶ_type &get_oldest() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಬಫರ್[get_oldest_ಸೂಚ್ಯಂಕ()]; }
 
-	uint8_t get_newest_index() const { return (_entries > 0) ? prev(_head) : 0; }
-	uint8_t get_oldest_index() const
+	uint8_t get_newest_ಸೂಚ್ಯಂಕ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ (_entries > 0) ? prev(ತಲೆ) : 0; }
+	uint8_t get_oldest_ಸೂಚ್ಯಂಕ() ಸ್ಥಿರಾಂಕ
 	{
-		if (_entries == 0) {
-			return 0;
+		ಆದರೆ (_entries == 0) {
+			ಹಿಂತಿರುಗಿ 0;
 		}
 
-		const uint16_t idx = static_cast<uint16_t>(_head) + static_cast<uint16_t>(kSize) - static_cast<uint16_t>(_entries);
-		return (idx >= kSize) ? static_cast<uint8_t>(idx - kSize) : static_cast<uint8_t>(idx);
+		ಸ್ಥಿರಾಂಕ uint16_t idx = static_cast<uint16_t>(ತಲೆ) + static_cast<uint16_t>(k_ಗಾತ್ರ) - static_cast<uint16_t>(_entries);
+		ಹಿಂತಿರುಗಿ (idx >= k_ಗಾತ್ರ) ? static_cast<uint8_t>(idx - k_ಗಾತ್ರ) : static_cast<uint8_t>(idx);
 	}
 
-	uint8_t next(uint8_t i) const { return (i + 1 >= kSize) ? 0 : i + 1; }
-	uint8_t prev(uint8_t i) const { return (i == 0) ? kSize - 1 : i - 1; }
+	uint8_t ಮುಂದಿನ(uint8_t i) ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ (i + 1 >= k_ಗಾತ್ರ) ? 0 : i + 1; }
+	uint8_t prev(uint8_t i) ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ (i == 0) ? k_ಗಾತ್ರ - 1 : i - 1; }
 
-	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
+	ತಾರ್ಕಿಕ ತೆಗೆ_ಮೊದಲ_older_than(ಸ್ಥಿರಾಂಕ uint64_t &timestamp, ದತ್ತಾಂಶ_type *sample)
 	{
 		// start looking from newest observation data
-		const uint8_t newest_idx = get_newest_index();
-		const uint8_t oldest_idx = get_oldest_index();
+		ಸ್ಥಿರಾಂಕ uint8_t newest_idx = get_newest_ಸೂಚ್ಯಂಕ();
+		ಸ್ಥಿರಾಂಕ uint8_t oldest_idx = get_oldest_ಸೂಚ್ಯಂಕ();
 
-		for (uint8_t i = 0; i < _entries; i++) {
-			int index = (newest_idx - i);
-			index = index < 0 ? kSize + index : index;
+		ಗಾಗಿ (uint8_t i = 0; i < _entries; i++) {
+			ಪೂರ್ಣಾಂಕ ಸೂಚ್ಯಂಕ = (newest_idx - i);
+			ಸೂಚ್ಯಂಕ = ಸೂಚ್ಯಂಕ < 0 ? k_ಗಾತ್ರ + ಸೂಚ್ಯಂಕ : ಸೂಚ್ಯಂಕ;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
-				*sample = _buffer[index];
+			ಆದರೆ (timestamp >= ಬಫರ್[ಸೂಚ್ಯಂಕ].ಸಮಯ_us && timestamp < ಬಫರ್[ಸೂಚ್ಯಂಕ].ಸಮಯ_us + (uint64_t)1e5) {
+				*sample = ಬಫರ್[ಸೂಚ್ಯಂಕ];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				const uint8_t index_u = static_cast<uint8_t>(index);
-				const uint8_t distance = (index_u >= oldest_idx) ? (index_u - oldest_idx) : (index_u + kSize - oldest_idx);
-				const uint8_t discard_count = distance + 1;
-				_entries = (_entries > discard_count) ? (_entries - discard_count) : 0;
-				_buffer[index].time_us = 0;
+				ಸ್ಥಿರಾಂಕ uint8_t ಸೂಚ್ಯಂಕ_u = static_cast<uint8_t>(ಸೂಚ್ಯಂಕ);
+				ಸ್ಥಿರಾಂಕ uint8_t ದೂರ = (ಸೂಚ್ಯಂಕ_u >= oldest_idx) ? (ಸೂಚ್ಯಂಕ_u - oldest_idx) : (ಸೂಚ್ಯಂಕ_u + k_ಗಾತ್ರ - oldest_idx);
+				ಸ್ಥಿರಾಂಕ uint8_t discard_ಎಣಿಕೆ = ದೂರ + 1;
+				_entries = (_entries > discard_ಎಣಿಕೆ) ? (_entries - discard_ಎಣಿಕೆ) : 0;
+				ಬಫರ್[ಸೂಚ್ಯಂಕ].ಸಮಯ_us = 0;
 
-				return true;
+				ಹಿಂತಿರುಗಿ ನಿಜ;
 			}
 		}
 
-		return false;
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 
-	int get_total_size() const
+	ಪೂರ್ಣಾಂಕ get_ಒಟ್ಟು_ಗಾತ್ರ() ಸ್ಥಿರಾಂಕ
 	{
-		static_assert(sizeof(TimestampedRingBuffer<data_type, SIZE>) <= static_cast<size_t>(INT_MAX),
+		static_assert(ಗಾತ್ರ(Timestamped_Ring_ಬಫರ್<ದತ್ತಾಂಶ_type, ಗಾತ್ರ_4>) <= static_cast<size_t>(ಗರಿಷ್ಠ_ಪೂರ್ಣಾಂಕ),
 			      "static ring buffer size must fit in int");
-		return static_cast<int>(sizeof(TimestampedRingBuffer<data_type, SIZE>));
+		ಹಿಂತಿರುಗಿ static_cast<ಪೂರ್ಣಾಂಕ>(ಗಾತ್ರ(Timestamped_Ring_ಬಫರ್<ದತ್ತಾಂಶ_type, ಗಾತ್ರ_4>));
 	}
 
-	int entries() const { return _entries; }
-	bool empty() const { return _entries == 0; }
+	ಪೂರ್ಣಾಂಕ entries() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _entries; }
+	ತಾರ್ಕಿಕ ಖಾಲಿಗಳು() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _entries == 0; }
 
-	void reset()
+	ಶೂನ್ಯ reset()
 	{
-		for (uint8_t i = 0; i < kSize; i++) {
-			_buffer[i].time_us = 0;
+		ಗಾಗಿ (uint8_t i = 0; i < k_ಗಾತ್ರ; i++) {
+			ಬಫರ್[i].ಸಮಯ_us = 0;
 		}
 
-		_head = 0;
+		ತಲೆ = 0;
 		_entries = 0;
 	}
 
-private:
-	data_type _buffer[SIZE] {};
+ಖಾಸಗಿ:
+	ದತ್ತಾಂಶ_type ಬಫರ್[ಗಾತ್ರ_4] {};
 
-	uint8_t _head{0};
+	uint8_t ತಲೆ{0};
 	uint8_t _entries{0};
 };
 
 /**
  * Dynamic-size ring buffer specialization (SIZE == 0).
  */
-template <typename data_type>
-class TimestampedRingBuffer<data_type, 0>
+ಮಾದರಿ <ಬಗೆ_ಹೆಸರು ದತ್ತಾಂಶ_type>
+ವರ್ಗ Timestamped_Ring_ಬಫರ್<ದತ್ತಾಂಶ_type, 0>
 {
-public:
-	explicit TimestampedRingBuffer(size_t size) { allocate(size); }
-	TimestampedRingBuffer() = delete;
-	~TimestampedRingBuffer() { delete[] _buffer; }
+ಸಾರ್ವಜನಿಕ:
+	ಸ್ಪಷ್ಟ Timestamped_Ring_ಬಫರ್(size_t ಗಾತ್ರ_2) { allocate(ಗಾತ್ರ_2); }
+	Timestamped_Ring_ಬಫರ್() = ಅಳಿಸು;
+	~Timestamped_Ring_ಬಫರ್() { ಅಳಿಸು[] ಬಫರ್; }
 
 	// no copy, assignment, move, move assignment
-	TimestampedRingBuffer(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer &operator=(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
-	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
+	Timestamped_Ring_ಬಫರ್(ಸ್ಥಿರಾಂಕ Timestamped_Ring_ಬಫರ್ &) = ಅಳಿಸು;
+	Timestamped_Ring_ಬಫರ್ &ಕ್ರಿಯಾಕಾರಕ=(ಸ್ಥಿರಾಂಕ Timestamped_Ring_ಬಫರ್ &) = ಅಳಿಸು;
+	Timestamped_Ring_ಬಫರ್(Timestamped_Ring_ಬಫರ್ &&) = ಅಳಿಸು;
+	Timestamped_Ring_ಬಫರ್ &ಕ್ರಿಯಾಕಾರಕ=(Timestamped_Ring_ಬಫರ್ &&) = ಅಳಿಸು;
 
-	bool allocate(size_t size)
+	ತಾರ್ಕಿಕ allocate(size_t ಗಾತ್ರ_2)
 	{
-		if (valid() && (size == _size)) {
+		ಆದರೆ (valid() && (ಗಾತ್ರ_2 == ಗಾತ್ರ_3)) {
 			// no change
-			return true;
+			ಹಿಂತಿರುಗಿ ನಿಜ;
 		}
 
-		if (size == 0 || size > UINT8_MAX) {
-			return false;
+		ಆದರೆ (ಗಾತ್ರ_2 == 0 || ಗಾತ್ರ_2 > UINT8_MAX) {
+			ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 		}
 
-		delete[] _buffer;
+		ಅಳಿಸು[] ಬಫರ್;
 
-		_buffer = new data_type[size] {};
+		ಬಫರ್ = ಹೊಸ ದತ್ತಾಂಶ_type[ಗಾತ್ರ_2] {};
 
-		if (_buffer == nullptr) {
-			return false;
+		ಆದರೆ (ಬಫರ್ == ಶೂನ್ಯಸೂಚಕ) {
+			ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 		}
 
-		_size = static_cast<uint8_t>(size);
+		ಗಾತ್ರ_3 = static_cast<uint8_t>(ಗಾತ್ರ_2);
 
 		// new[]{} already zeroed time_us, only reset the indices
-		_head = 0;
-		_tail = 0;
-		_first_write = true;
+		ತಲೆ = 0;
+		ಬಾಲ_2 = 0;
+		ಮೊದಲ_write = ನಿಜ;
 
-		return true;
+		ಹಿಂತಿರುಗಿ ನಿಜ;
 	}
 
-	bool valid() const { return (_buffer != nullptr) && (_size > 0); }
+	ತಾರ್ಕಿಕ valid() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ (ಬಫರ್ != ಶೂನ್ಯಸೂಚಕ) && (ಗಾತ್ರ_3 > 0); }
 
-	void push(const data_type &sample)
+	ಶೂನ್ಯ ತಳ್ಳು(ಸ್ಥಿರಾಂಕ ದತ್ತಾಂಶ_type &sample)
 	{
-		uint8_t head_new = _head;
+		uint8_t ತಲೆ_new = ತಲೆ;
 
-		if (!_first_write) {
-			head_new = next(_head);
+		ಆದರೆ (!ಮೊದಲ_write) {
+			ತಲೆ_new = ಮುಂದಿನ(ತಲೆ);
 		}
 
-		_buffer[head_new] = sample;
-		_head = head_new;
+		ಬಫರ್[ತಲೆ_new] = sample;
+		ತಲೆ = ತಲೆ_new;
 
 		// move tail if we overwrite it
-		if (_head == _tail && !_first_write) {
-			_tail = next(_tail);
+		ಆದರೆ (ತಲೆ == ಬಾಲ_2 && !ಮೊದಲ_write) {
+			ಬಾಲ_2 = ಮುಂದಿನ(ಬಾಲ_2);
 
-		} else {
-			_first_write = false;
+		} ಇಲ್ಲದಿದ್ದರೆ {
+			ಮೊದಲ_write = ಸುಳ್ಳು;
 		}
 	}
 
-	uint8_t get_length() const { return _size; }
+	uint8_t get_ಉದ್ದಳತೆ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಗಾತ್ರ_3; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	ದತ್ತಾಂಶ_type &ಕ್ರಿಯಾಕಾರಕ[](ಸ್ಥಿರಾಂಕ uint8_t ಸೂಚ್ಯಂಕ) { ಹಿಂತಿರುಗಿ ಬಫರ್[ಸೂಚ್ಯಂಕ]; }
 
-	const data_type &get_newest() const { return _buffer[_head]; }
-	const data_type &get_oldest() const { return _buffer[_tail]; }
+	ಸ್ಥಿರಾಂಕ ದತ್ತಾಂಶ_type &get_newest() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಬಫರ್[ತಲೆ]; }
+	ಸ್ಥಿರಾಂಕ ದತ್ತಾಂಶ_type &get_oldest() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಬಫರ್[ಬಾಲ_2]; }
 
-	uint8_t get_newest_index() const { return _head; }
-	uint8_t get_oldest_index() const { return _tail; }
+	uint8_t get_newest_ಸೂಚ್ಯಂಕ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ತಲೆ; }
+	uint8_t get_oldest_ಸೂಚ್ಯಂಕ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಬಾಲ_2; }
 
-	uint8_t next(uint8_t i) const { return (_size > 0) ? ((i + 1 >= _size) ? 0 : i + 1) : 0; }
-	uint8_t prev(uint8_t i) const { return (_size > 0) ? ((i == 0) ? (_size - 1) : (i - 1)) : 0; }
+	uint8_t ಮುಂದಿನ(uint8_t i) ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ (ಗಾತ್ರ_3 > 0) ? ((i + 1 >= ಗಾತ್ರ_3) ? 0 : i + 1) : 0; }
+	uint8_t prev(uint8_t i) ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ (ಗಾತ್ರ_3 > 0) ? ((i == 0) ? (ಗಾತ್ರ_3 - 1) : (i - 1)) : 0; }
 
-	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
+	ತಾರ್ಕಿಕ ತೆಗೆ_ಮೊದಲ_older_than(ಸ್ಥಿರಾಂಕ uint64_t &timestamp, ದತ್ತಾಂಶ_type *sample)
 	{
 		// start looking from newest observation data
-		for (uint8_t i = 0; i < _size; i++) {
-			int index = (_head - i);
-			index = index < 0 ? _size + index : index;
+		ಗಾಗಿ (uint8_t i = 0; i < ಗಾತ್ರ_3; i++) {
+			ಪೂರ್ಣಾಂಕ ಸೂಚ್ಯಂಕ = (ತಲೆ - i);
+			ಸೂಚ್ಯಂಕ = ಸೂಚ್ಯಂಕ < 0 ? ಗಾತ್ರ_3 + ಸೂಚ್ಯಂಕ : ಸೂಚ್ಯಂಕ;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
-				*sample = _buffer[index];
+			ಆದರೆ (timestamp >= ಬಫರ್[ಸೂಚ್ಯಂಕ].ಸಮಯ_us && timestamp < ಬಫರ್[ಸೂಚ್ಯಂಕ].ಸಮಯ_us + (uint64_t)1e5) {
+				*sample = ಬಫರ್[ಸೂಚ್ಯಂಕ];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				if (index == _head) {
-					_tail = _head;
-					_first_write = true;
+				ಆದರೆ (ಸೂಚ್ಯಂಕ == ತಲೆ) {
+					ಬಾಲ_2 = ತಲೆ;
+					ಮೊದಲ_write = ನಿಜ;
 
-				} else {
-					_tail = next(static_cast<uint8_t>(index));
+				} ಇಲ್ಲದಿದ್ದರೆ {
+					ಬಾಲ_2 = ಮುಂದಿನ(static_cast<uint8_t>(ಸೂಚ್ಯಂಕ));
 				}
 
-				_buffer[index].time_us = 0;
+				ಬಫರ್[ಸೂಚ್ಯಂಕ].ಸಮಯ_us = 0;
 
-				return true;
+				ಹಿಂತಿರುಗಿ ನಿಜ;
 			}
 
-			if (index == _tail) {
+			ಆದರೆ (ಸೂಚ್ಯಂಕ == ಬಾಲ_2) {
 				// we have reached the tail and haven't got a
-				// match
-				return false;
+				//ಹೊಂದಿಕೆ
+				ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 			}
 		}
 
-		return false;
+		ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 	}
 
-	int get_used_size() const { return sizeof(*this) + sizeof(data_type) * entries(); }
-	int get_total_size() const { return sizeof(*this) + sizeof(data_type) * _size; }
+	ಪೂರ್ಣಾಂಕ get_ಬಳಸಿದ_ಗಾತ್ರ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಗಾತ್ರ(*ಇದು) + ಗಾತ್ರ(ದತ್ತಾಂಶ_type) * entries(); }
+	ಪೂರ್ಣಾಂಕ get_ಒಟ್ಟು_ಗಾತ್ರ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಗಾತ್ರ(*ಇದು) + ಗಾತ್ರ(ದತ್ತಾಂಶ_type) * ಗಾತ್ರ_3; }
 
-	int entries() const
+	ಪೂರ್ಣಾಂಕ entries() ಸ್ಥಿರಾಂಕ
 	{
-		int count = 0;
+		ಪೂರ್ಣಾಂಕ ಎಣಿಕೆ_2 = 0;
 
-		for (uint8_t i = 0; i < _size; i++) {
-			if (_buffer[i].time_us != 0) {
-				count++;
+		ಗಾಗಿ (uint8_t i = 0; i < ಗಾತ್ರ_3; i++) {
+			ಆದರೆ (ಬಫರ್[i].ಸಮಯ_us != 0) {
+				ಎಣಿಕೆ_2++;
 			}
 		}
 
-		return count;
+		ಹಿಂತಿರುಗಿ ಎಣಿಕೆ_2;
 	}
 
-	bool empty() const { return entries() == 0; }
+	ತಾರ್ಕಿಕ ಖಾಲಿಗಳು() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ entries() == 0; }
 
-	void reset()
+	ಶೂನ್ಯ reset()
 	{
-		if (_buffer) {
-			for (uint8_t i = 0; i < _size; i++) {
-				_buffer[i].time_us = 0;
+		ಆದರೆ (ಬಫರ್) {
+			ಗಾಗಿ (uint8_t i = 0; i < ಗಾತ್ರ_3; i++) {
+				ಬಫರ್[i].ಸಮಯ_us = 0;
 			}
 
-			_head = 0;
-			_tail = 0;
-			_first_write = true;
+			ತಲೆ = 0;
+			ಬಾಲ_2 = 0;
+			ಮೊದಲ_write = ನಿಜ;
 		}
 	}
 
-private:
-	data_type *_buffer{nullptr};
+ಖಾಸಗಿ:
+	ದತ್ತಾಂಶ_type *ಬಫರ್{ಶೂನ್ಯಸೂಚಕ};
 
-	uint8_t _head{0};
-	uint8_t _tail{0};
-	uint8_t _size{0};
+	uint8_t ತಲೆ{0};
+	uint8_t ಬಾಲ_2{0};
+	uint8_t ಗಾತ್ರ_3{0};
 
-	bool _first_write{true};
+	ತಾರ್ಕಿಕ ಮೊದಲ_write{ನಿಜ};
 };

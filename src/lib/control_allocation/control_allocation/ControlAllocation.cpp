@@ -39,33 +39,33 @@
  * @author Julien Lecoeur <julien.lecoeur@gmail.com>
  */
 
-#include "ControlAllocation.hpp"
+#ಅನ್ತರ್ಭಾವ "ControlAllocation.hpp"
 
-ControlAllocation::ControlAllocation()
+Control_ಹಂಚಿಕೆ::Control_ಹಂಚಿಕೆ()
 {
-	_control_allocation_scale.setAll(1.f);
-	_actuator_min.setAll(0.f);
-	_actuator_max.setAll(1.f);
+	control_ಹಂಚಿಕೆ_scale.ಗಣ_All(1.f);
+	_actuator_min.ಗಣ_All(0.f);
+	_actuator_max.ಗಣ_All(1.f);
 }
 
-void
-ControlAllocation::setEffectivenessMatrix(
-	const matrix::Matrix<float, ControlAllocation::NUM_AXES, ControlAllocation::NUM_ACTUATORS> &effectiveness,
-	const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
-	bool update_normalization_scale)
+ಶೂನ್ಯ
+Control_ಹಂಚಿಕೆ::ಗಣ_Effectiveness_ಮಾತೃಕೆ(
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, Control_ಹಂಚಿಕೆ::ಅಂಕೆ_AXES, Control_ಹಂಚಿಕೆ::ಅಂಕೆ_ACTUATORS> &effectiveness,
+	ಸ್ಥಿರಾಂಕ Actuator_ಸದಿಶ &actuator_trim, ಸ್ಥಿರಾಂಕ Actuator_ಸದಿಶ &linearization_ಬಿಂದು, ಪೂರ್ಣಾಂಕ ಅಂಕೆ_actuators,
+	ತಾರ್ಕಿಕ update_normalization_scale)
 {
 	_effectiveness = effectiveness;
-	ActuatorVector linearization_point_clipped = linearization_point;
-	clipActuatorSetpoint(linearization_point_clipped);
-	_actuator_trim = actuator_trim + linearization_point_clipped;
+	Actuator_ಸದಿಶ linearization_ಬಿಂದು_clipped = linearization_ಬಿಂದು;
+	clipActuatorSetpoint(linearization_ಬಿಂದು_clipped);
+	_actuator_trim = actuator_trim + linearization_ಬಿಂದು_clipped;
 	clipActuatorSetpoint(_actuator_trim);
-	_num_actuators = num_actuators;
-	_control_trim = _effectiveness * linearization_point_clipped;
+	ಅಂಕೆ_actuators_2 = ಅಂಕೆ_actuators;
+	_control_trim = _effectiveness * linearization_ಬಿಂದು_clipped;
 }
 
-void
-ControlAllocation::setActuatorSetpoint(
-	const matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator_sp)
+ಶೂನ್ಯ
+Control_ಹಂಚಿಕೆ::ಗಣ_Actuator_Setpoint(
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, Control_ಹಂಚಿಕೆ::ಅಂಕೆ_ACTUATORS> &actuator_sp)
 {
 	// Set actuator setpoint
 	_actuator_sp = actuator_sp;
@@ -74,41 +74,41 @@ ControlAllocation::setActuatorSetpoint(
 	clipActuatorSetpoint(_actuator_sp);
 }
 
-void
-ControlAllocation::clipActuatorSetpoint(matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator) const
+ಶೂನ್ಯ
+Control_ಹಂಚಿಕೆ::clipActuatorSetpoint(ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, Control_ಹಂಚಿಕೆ::ಅಂಕೆ_ACTUATORS> &actuator) ಸ್ಥಿರಾಂಕ
 {
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_max(i) < _actuator_min(i)) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < ಅಂಕೆ_actuators_2; i++) {
+		ಆದರೆ (_actuator_max(i) < _actuator_min(i)) {
 			actuator(i) = _actuator_trim(i);
 
-		} else if (actuator(i) < _actuator_min(i)) {
+		} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (actuator(i) < _actuator_min(i)) {
 			actuator(i) = _actuator_min(i);
 
-		} else if (actuator(i) > _actuator_max(i)) {
+		} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (actuator(i) > _actuator_max(i)) {
 			actuator(i) = _actuator_max(i);
 		}
 	}
 }
 
-matrix::Vector<float, ControlAllocation::NUM_ACTUATORS>
-ControlAllocation::normalizeActuatorSetpoint(const matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator)
-const
+ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, Control_ಹಂಚಿಕೆ::ಅಂಕೆ_ACTUATORS>
+Control_ಹಂಚಿಕೆ::normalizeActuatorSetpoint(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, Control_ಹಂಚಿಕೆ::ಅಂಕೆ_ACTUATORS> &actuator)
+ಸ್ಥಿರಾಂಕ
 {
-	matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> actuator_normalized;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, Control_ಹಂಚಿಕೆ::ಅಂಕೆ_ACTUATORS> actuator_normalized;
 
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_min(i) < _actuator_max(i)) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < ಅಂಕೆ_actuators_2; i++) {
+		ಆದರೆ (_actuator_min(i) < _actuator_max(i)) {
 			actuator_normalized(i) = (actuator(i) - _actuator_min(i)) / (_actuator_max(i) - _actuator_min(i));
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			actuator_normalized(i) = (_actuator_trim(i) - _actuator_min(i)) / (_actuator_max(i) - _actuator_min(i));
 		}
 	}
 
-	return actuator_normalized;
+	ಹಿಂತಿರುಗಿ actuator_normalized;
 }
 
-void ControlAllocation::applySlewRateLimit(float dt)
+ಶೂನ್ಯ Control_ಹಂಚಿಕೆ::apply_Slew_ದರ_ಎಲ್ಲೆ(ದಶಮಾಂಶ dt)
 {
 	// For motors, an actuator setpoint of NaN represents switching off the
 	// motor (giving it disarmed PWM). Physically it results in zero thrust,
@@ -122,38 +122,38 @@ void ControlAllocation::applySlewRateLimit(float dt)
 	//  - NaN to nonzero: replace NaN by zero, then rise with slew rate to input
 	//  - between nonzero and 0: slew limit, then match input
 
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_slew_rate_limit(i) > FLT_EPSILON) {
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < ಅಂಕೆ_actuators_2; i++) {
+		ಆದರೆ (actuator_slew_ದರ_ಎಲ್ಲೆ(i) > FLT_EPSILON) {
 
-			float input = _actuator_sp(i);
-			float previous = _prev_actuator_sp(i);
+			ದಶಮಾಂಶ ಒಳಹರಿವು = _actuator_sp(i);
+			ದಶಮಾಂಶ ಹಿಂದಿನ = _prev_actuator_sp(i);
 
 			// Before slew limiting, transform NaN to 0, but remember if the input was NaN
-			const bool input_is_nan = !PX4_ISFINITE(input);
+			ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ ಒಳಹರಿವು_is_nan = !PX4_ISFINITE(ಒಳಹರಿವು);
 
-			if (input_is_nan) {
-				input = 0.f;
+			ಆದರೆ (ಒಳಹರಿವು_is_nan) {
+				ಒಳಹರಿವು = 0.f;
 			}
 
-			if (!PX4_ISFINITE(previous)) {
-				previous = 0.f;
+			ಆದರೆ (!PX4_ISFINITE(ಹಿಂದಿನ)) {
+				ಹಿಂದಿನ = 0.f;
 			}
 
 			// Slew limit without any NaN involved
-			const float delta_sp_max = dt * (_actuator_max(i) - _actuator_min(i)) / _actuator_slew_rate_limit(i);
-			const float delta_sp = input - previous;
+			ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ delta_sp_max = dt * (_actuator_max(i) - _actuator_min(i)) / actuator_slew_ದರ_ಎಲ್ಲೆ(i);
+			ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ delta_sp = ಒಳಹರಿವು - ಹಿಂದಿನ;
 
-			float output = input;
+			ದಶಮಾಂಶ output = ಒಳಹರಿವು;
 
-			if (delta_sp > delta_sp_max) {
-				output = previous + delta_sp_max;
+			ಆದರೆ (delta_sp > delta_sp_max) {
+				output = ಹಿಂದಿನ + delta_sp_max;
 
-			} else if (delta_sp < -delta_sp_max) {
-				output = previous - delta_sp_max;
+			} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (delta_sp < -delta_sp_max) {
+				output = ಹಿಂದಿನ - delta_sp_max;
 			}
 
 			// Transform back to NaN if appropriate
-			if (input_is_nan && fabsf(output) < FLT_EPSILON) {
+			ಆದರೆ (ಒಳಹರಿವು_is_nan && fabsf(output) < FLT_EPSILON) {
 				output = NAN;
 			}
 

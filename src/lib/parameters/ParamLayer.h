@@ -31,42 +31,42 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/atomic_bitset.h>
-#include "atomic_transaction.h"
-#include "param.h"
-#include <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/atomic_bitset.h>
+#ಅನ್ತರ್ಭಾವ "atomic_transaction.h"
+#ಅನ್ತರ್ಭಾವ "param.h"
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
 
 class ParamLayer
 {
-public:
-	static constexpr param_t PARAM_COUNT = sizeof(px4::parameters) / sizeof(param_info_s);
+ಸಾರ್ವಜನಿಕ:
+	ಸ್ಥಿರ constexpr param_t PARAM_ಎಣಿಕೆ = ಗಾತ್ರ(px4::parameters) / ಗಾತ್ರ(param_info_s);
 
-	ParamLayer(ParamLayer *parent = nullptr) : _parent(parent) {}
+	ParamLayer(ParamLayer *ಪೋಷಕ = nullptr) : ಪೋಷಕ_2(ಪೋಷಕ) {}
 
-	ParamLayer(const ParamLayer &) = delete;
-	ParamLayer &operator=(const ParamLayer &) = delete;
+	ParamLayer(ಸ್ಥಿರಾಂಕ ParamLayer &) = delete;
+	ParamLayer &ಕ್ರಿಯಾಕಾರಕ=(ಸ್ಥಿರಾಂಕ ParamLayer &) = delete;
 	ParamLayer(ParamLayer &&) = delete;
-	ParamLayer &operator=(ParamLayer &&) = delete;
+	ParamLayer &ಕ್ರಿಯಾಕಾರಕ=(ParamLayer &&) = delete;
 
 
-	virtual bool store(param_t param, param_value_u value) = 0;
+	ವಾಸ್ತವಿಕ bool store(param_t param, param_ಮೌಲ್ಯ_u ಮೌಲ್ಯ) = 0;
 
-	virtual bool contains(param_t param) const = 0;
+	ವಾಸ್ತವಿಕ bool ಒಳಗೊಂಡಿದೆ(param_t param) ಸ್ಥಿರಾಂಕ = 0;
 
-	virtual px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const = 0;
+	ವಾಸ್ತವಿಕ px4::AtomicBitset<PARAM_ಎಣಿಕೆ> containedAsBitset() ಸ್ಥಿರಾಂಕ = 0;
 
-	virtual param_value_u get(param_t param) const = 0;
+	ವಾಸ್ತವಿಕ param_ಮೌಲ್ಯ_u get(param_t param) ಸ್ಥಿರಾಂಕ = 0;
 
-	virtual void reset(param_t param) = 0;
+	ವಾಸ್ತವಿಕ ಶೂನ್ಯ reset(param_t param) = 0;
 
-	virtual void refresh(param_t param) = 0;
+	ವಾಸ್ತವಿಕ ಶೂನ್ಯ refresh(param_t param) = 0;
 
-	virtual int size() const = 0;
+	ವಾಸ್ತವಿಕ ಪೂರ್ಣಾಂಕ ಗಾತ್ರ_2() ಸ್ಥಿರಾಂಕ = 0;
 
-	virtual int byteSize() const = 0;
+	ವಾಸ್ತವಿಕ ಪೂರ್ಣಾಂಕ byte_ಗಾತ್ರ() ಸ್ಥಿರಾಂಕ = 0;
 
-protected:
-	ParamLayer *const _parent;
+ಸಂರಕ್ಷಿತ:
+	ParamLayer *ಸ್ಥಿರಾಂಕ ಪೋಷಕ_2;
 };

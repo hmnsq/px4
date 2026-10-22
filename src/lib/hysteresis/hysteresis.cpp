@@ -37,55 +37,55 @@
  * @author Julian Oes <julian@oes.ch>
  */
 
-#include "hysteresis.h"
+#ಅನ್ತರ್ಭಾವ "hysteresis.h"
 
-namespace systemlib
+ನಾಮಾಕಾಶ systemlib
 {
 
-Hysteresis::Hysteresis(bool initial_state)
+Hysteresis::Hysteresis(ತಾರ್ಕಿಕ initial_state)
 {
 	_state = _requested_state = initial_state;
 }
 
-void Hysteresis::set_hysteresis_time_from(const bool from_state, const hrt_abstime new_hysteresis_time_us)
+ಶೂನ್ಯ Hysteresis::ಗಣ_hysteresis_ಸಮಯ_from(ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ from_state, ಸ್ಥಿರಾಂಕ hrt_abstime new_hysteresis_ಸಮಯ_us)
 {
-	if (from_state) {
-		_time_from_true_us = new_hysteresis_time_us;
+	ಆದರೆ (from_state) {
+		ಸಮಯ_from_true_us = new_hysteresis_ಸಮಯ_us;
 
-	} else {
-		_time_from_false_us = new_hysteresis_time_us;
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		ಸಮಯ_from_false_us = new_hysteresis_ಸಮಯ_us;
 	}
 }
 
-void Hysteresis::set_state_and_update(const bool new_state, const hrt_abstime &now_us)
+ಶೂನ್ಯ Hysteresis::ಗಣ_state_and_update(ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ new_state, ಸ್ಥಿರಾಂಕ hrt_abstime &now_us)
 {
-	if (new_state != _state) {
-		if (new_state != _requested_state) {
+	ಆದರೆ (new_state != _state) {
+		ಆದರೆ (new_state != _requested_state) {
 			_requested_state = new_state;
-			_last_time_to_change_state = now_us;
+			ಕೊನೆಯ_ಸಮಯ_ಗಮ್ಯ_change_state = now_us;
 		}
 
-	} else {
+	} ಇಲ್ಲದಿದ್ದರೆ {
 		_requested_state = _state;
 	}
 
 	update(now_us);
 }
 
-void Hysteresis::update(const hrt_abstime &now_us)
+ಶೂನ್ಯ Hysteresis::update(ಸ್ಥಿರಾಂಕ hrt_abstime &now_us)
 {
-	if (_requested_state != _state) {
+	ಆದರೆ (_requested_state != _state) {
 
-		if (_state && !_requested_state) {
+		ಆದರೆ (_state && !_requested_state) {
 			// true -> false
-			if (now_us >= _last_time_to_change_state + _time_from_true_us) {
-				_state = false;
+			ಆದರೆ (now_us >= ಕೊನೆಯ_ಸಮಯ_ಗಮ್ಯ_change_state + ಸಮಯ_from_true_us) {
+				_state = ಸುಳ್ಳು;
 			}
 
-		} else if (!_state && _requested_state) {
+		} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (!_state && _requested_state) {
 			// false -> true
-			if (now_us >= _last_time_to_change_state + _time_from_false_us) {
-				_state = true;
+			ಆದರೆ (now_us >= ಕೊನೆಯ_ಸಮಯ_ಗಮ್ಯ_change_state + ಸಮಯ_from_false_us) {
+				_state = ನಿಜ;
 			}
 		}
 	}

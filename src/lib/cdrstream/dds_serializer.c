@@ -31,23 +31,23 @@
  *
  ****************************************************************************/
 
-#include "dds_serializer.h"
+#ಅನ್ತರ್ಭಾವ "dds_serializer.h"
 
 
-void *dds_malloc(size_t size)
+ಶೂನ್ಯ *dds_malloc(size_t ಗಾತ್ರ_2)
 {
-	return NULL;
+	ಹಿಂತಿರುಗಿ ಖಾಲಿ;
 }
-void *dds_realloc(void *ptr, size_t new_size)
+ಶೂನ್ಯ *dds_realloc(ಶೂನ್ಯ *ptr, size_t new_ಗಾತ್ರ)
 {
-	printf("Error CDR buffer is too small\n");
-	return NULL;
+	ಬರೆ("Error CDR buffer is too small\n");
+	ಹಿಂತಿರುಗಿ ಖಾಲಿ;
 }
-void dds_free(void *pt)
+ಶೂನ್ಯ dds_free(ಶೂನ್ಯ *pt)
 {
 
 }
-const struct dds_cdrstream_allocator dds_allocator = { dds_malloc, dds_realloc, dds_free };
+ಸ್ಥಿರಾಂಕ ರಚನೆ dds_cdrstream_allocator dds_allocator = { dds_malloc, dds_realloc, dds_free };
 
 // CDR Xtypes header {0x00, 0x01} indicates it's Little Endian (CDR_LE representation)
-const uint8_t ros2_header[4] = {0x00, 0x01, 0x00, 0x00};
+ಸ್ಥಿರಾಂಕ uint8_t ros2_ಶೀರ್ಷಿಕೆ[4] = {0x00, 0x01, 0x00, 0x00};

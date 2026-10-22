@@ -36,26 +36,26 @@
  * Run this test only using make tests TESTFILTER=ManualVelocitySmoothing
  */
 
-#include <gtest/gtest.h>
-#include <matrix/matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/matrix/math.hpp>
 
-#include <motion_planning/ManualVelocitySmoothingXY.hpp>
+#ಅನ್ತರ್ಭಾವ <motion_planning/ManualVelocitySmoothingXY.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-class ManualVelocitySmoothingXYTest : public ::testing::Test
+ವರ್ಗ ManualVelocitySmoothingXYTest : ಸಾರ್ವಜನಿಕ ::testing::Test
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	ManualVelocitySmoothingXY _smoothing;
 };
 
 
-TEST_F(ManualVelocitySmoothingXYTest, setGet)
+TEST_F(ManualVelocitySmoothingXYTest, ಗಣ_Get)
 {
 	// GIVEN: Some max values
-	_smoothing.setMaxJerk(11.f);
-	_smoothing.setMaxAccel(7.f);
-	_smoothing.setMaxVel(5.f);
+	_smoothing.ಗಣ_Max_Jerk(11.f);
+	_smoothing.ಗಣ_Max_Accel(7.f);
+	_smoothing.ಗಣ_Max_Vel(5.f);
 
 	// THEN: We should be able to get them back
 	EXPECT_FLOAT_EQ(_smoothing.getMaxJerk(), 11.f);
@@ -67,21 +67,21 @@ TEST_F(ManualVelocitySmoothingXYTest, getCurrentState)
 {
 	// GIVEN: the initial conditions
 	Vector2f v0(11.f, 13.f);
-	_smoothing.setCurrentVelocity(v0);
+	_smoothing.ಗಣ_Current_Velocity(v0);
 
 	// WHEN: we get the current state
-	Vector3f j_end;
-	Vector3f a_end;
-	Vector3f v_end;
-	Vector3f x_end;
-	j_end.xy() = _smoothing.getCurrentJerk();
-	a_end.xy() = _smoothing.getCurrentAcceleration();
-	v_end.xy() = _smoothing.getCurrentVelocity();
-	x_end.xy() = _smoothing.getCurrentPosition();
+	Vector3f j_ಕೊನೆ;
+	Vector3f a_ಕೊನೆ;
+	Vector3f v_ಕೊನೆ;
+	Vector3f x_ಕೊನೆ;
+	j_ಕೊನೆ.xy() = _smoothing.getCurrentJerk();
+	a_ಕೊನೆ.xy() = _smoothing.getCurrentAcceleration();
+	v_ಕೊನೆ.xy() = _smoothing.getCurrentVelocity();
+	x_ಕೊನೆ.xy() = _smoothing.getCurrentPosition();
 
 	// THEN: the returned values should match the input
-	EXPECT_EQ(j_end, Vector3f(0.f, 0.f, 0.f));
-	EXPECT_EQ(a_end, Vector3f(0.f, 0.f, 0.f));
-	EXPECT_EQ(v_end, Vector3f(11.f, 13.f, 0.f));
-	EXPECT_EQ(x_end, Vector3f(0.f, 0.f, 0.f));
+	EXPECT_EQ(j_ಕೊನೆ, Vector3f(0.f, 0.f, 0.f));
+	EXPECT_EQ(a_ಕೊನೆ, Vector3f(0.f, 0.f, 0.f));
+	EXPECT_EQ(v_ಕೊನೆ, Vector3f(11.f, 13.f, 0.f));
+	EXPECT_EQ(x_ಕೊನೆ, Vector3f(0.f, 0.f, 0.f));
 }

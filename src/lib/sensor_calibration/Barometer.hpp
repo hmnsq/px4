@@ -31,85 +31,85 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/sensor_correction.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/px4_config.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/log.h>
+#ಅನ್ತರ್ಭಾವ <uORB/Subscription.hpp>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/sensor_correction.h>
 
-namespace calibration
+ನಾಮಾಕಾಶ calibration
 {
-class Barometer
+ವರ್ಗ Barometer
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+ಸಾರ್ವಜನಿಕ:
+	ಸ್ಥಿರ constexpr ಪೂರ್ಣಾಂಕ MAX_SENSOR_ಎಣಿಕೆ = 4;
 
-	static constexpr uint8_t DEFAULT_PRIORITY = 50;
-	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
+	ಸ್ಥಿರ constexpr uint8_t DEFAULT_ಆದ್ಯತೆ = 50;
+	ಸ್ಥಿರ constexpr uint8_t DEFAULT_EXTERNAL_ಆದ್ಯತೆ = 75;
 
-	static constexpr const char *SensorString() { return "BARO"; }
+	ಸ್ಥಿರ constexpr ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *SensorString() { ಹಿಂತಿರುಗಿ "BARO"; }
 
 	Barometer();
-	explicit Barometer(uint32_t device_id);
-	Barometer(uint32_t device_id, bool external);
+	ಸ್ಪಷ್ಟ Barometer(uint32_t device_id);
+	Barometer(uint32_t device_id, ತಾರ್ಕಿಕ external);
 
-	~Barometer() = default;
+	~Barometer() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	void PrintStatus();
+	ಶೂನ್ಯ Print_ಸ್ಥಿತಿ();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
-	void set_device_id(uint32_t device_id, bool external);
-	bool set_offset(const float &offset);
+	ತಾರ್ಕಿಕ ಗಣ_calibration_ಸೂಚ್ಯಂಕ(ಪೂರ್ಣಾಂಕ calibration_ಸೂಚ್ಯಂಕ);
+	ಶೂನ್ಯ ಗಣ_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
+	ಶೂನ್ಯ ಗಣ_device_id(uint32_t device_id, ತಾರ್ಕಿಕ external);
+	ತಾರ್ಕಿಕ ಗಣ_ಸ್ಥಾನಾಂತರ(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ &ಸ್ಥಾನಾಂತರ);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const float &thermal_offset() const { return _thermal_offset; }
+	ತಾರ್ಕಿಕ calibrated() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ (_device_id != 0) && (calibration_ಸೂಚ್ಯಂಕ_2 >= 0); }
+	uint8_t calibration_ಎಣಿಕೆ_2() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ calibration_ಎಣಿಕೆ; }
+	int8_t calibration_ಸೂಚ್ಯಂಕ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ calibration_ಸೂಚ್ಯಂಕ_2; }
+	uint32_t device_id() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _device_id; }
+	ತಾರ್ಕಿಕ enabled() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ (ಆದ್ಯತೆ_2 > 0); }
+	ತಾರ್ಕಿಕ external() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _external; }
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ &ಸ್ಥಾನಾಂತರ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಸ್ಥಾನಾಂತರ_2; }
+	ಸ್ಥಿರಾಂಕ int32_t &ಆದ್ಯತೆ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಆದ್ಯತೆ_2; }
+	ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ &thermal_ಸ್ಥಾನಾಂತರ_2() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ thermal_ಸ್ಥಾನಾಂತರ; }
 
 	// apply offsets
-	inline float Correct(const float &data) const
+	ಸಾಲೊಳಗೆ ದಶಮಾಂಶ Correct(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ &ದತ್ತಾಂಶ) ಸ್ಥಿರಾಂಕ
 	{
-		return data - _thermal_offset - _offset;
+		ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ - thermal_ಸ್ಥಾನಾಂತರ - ಸ್ಥಾನಾಂತರ_2;
 	}
 
-	inline float Uncorrect(const float &corrected_data) const
+	ಸಾಲೊಳಗೆ ದಶಮಾಂಶ Uncorrect(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ &corrected_ದತ್ತಾಂಶ) ಸ್ಥಿರಾಂಕ
 	{
-		return corrected_data + _thermal_offset + _offset;
+		ಹಿಂತಿರುಗಿ corrected_ದತ್ತಾಂಶ + thermal_ಸ್ಥಾನಾಂತರ + ಸ್ಥಾನಾಂತರ_2;
 	}
 
 	// Compute sensor offset from bias (board frame)
-	float BiasCorrectedSensorOffset(const float &bias) const
+	ದಶಮಾಂಶ Bias_Corrected_Sensor_ಸ್ಥಾನಾಂತರ(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ &bias) ಸ್ಥಿರಾಂಕ
 	{
-		return bias + _thermal_offset + _offset;
+		ಹಿಂತಿರುಗಿ bias + thermal_ಸ್ಥಾನಾಂತರ + ಸ್ಥಾನಾಂತರ_2;
 	}
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	ತಾರ್ಕಿಕ Parameters_ತುಂಬು();
+	ತಾರ್ಕಿಕ ParametersSave(ಪೂರ್ಣಾಂಕ desired_calibration_ಸೂಚ್ಯಂಕ = -1, ತಾರ್ಕಿಕ force = ಸುಳ್ಳು);
+	ಶೂನ್ಯ ParametersUpdate();
 
-	void Reset();
+	ಶೂನ್ಯ Reset();
 
-	void SensorCorrectionsUpdate(bool force = false);
+	ಶೂನ್ಯ SensorCorrectionsUpdate(ತಾರ್ಕಿಕ force = ಸುಳ್ಳು);
 
-private:
+ಖಾಸಗಿ:
 	uORB::Subscription _sensor_correction_sub{ORB_ID(sensor_correction)};
 
-	float _offset{0};
-	float _thermal_offset{0};
+	ದಶಮಾಂಶ ಸ್ಥಾನಾಂತರ_2{0};
+	ದಶಮಾಂಶ thermal_ಸ್ಥಾನಾಂತರ{0};
 
-	int8_t _calibration_index{-1};
+	int8_t calibration_ಸೂಚ್ಯಂಕ_2{-1};
 	uint32_t _device_id{0};
-	int32_t _priority{-1};
+	int32_t ಆದ್ಯತೆ_2{-1};
 
-	bool _external{false};
+	ತಾರ್ಕಿಕ _external{ಸುಳ್ಳು};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_ಎಣಿಕೆ{0};
 };
 } // namespace calibration

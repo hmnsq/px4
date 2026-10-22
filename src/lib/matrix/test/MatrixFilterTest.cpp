@@ -31,29 +31,29 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/filter.hpp>
-#include <matrix/Vector.hpp>
+#ಅನ್ತರ್ಭಾವ <gtest/gtest.h>
+#ಅನ್ತರ್ಭಾವ <matrix/filter.hpp>
+#ಅನ್ತರ್ಭಾವ <matrix/Vector.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-TEST(MatrixFilterTest, Filter)
+TEST(ಮಾತೃಕೆ_Filter_Test, Filter)
 {
-	const size_t n_x = 6;
-	const size_t n_y = 5;
-	SquareMatrix<float, n_x> P = eye<float, n_x>();
-	SquareMatrix<float, n_y> R = eye<float, n_y>();
-	Matrix<float, n_y, n_x> C;
-	C.setIdentity();
-	float data[] = {1, 2, 3, 4, 5};
-	Vector<float, n_y> r(data);
+	ಸ್ಥಿರಾಂಕ size_t n_x = 6;
+	ಸ್ಥಿರಾಂಕ size_t n_y = 5;
+	ವರ್ಗಫಲ_ಮಾತೃಕೆ<ದಶಮಾಂಶ, n_x> P = eye<ದಶಮಾಂಶ, n_x>();
+	ವರ್ಗಫಲ_ಮಾತೃಕೆ<ದಶಮಾಂಶ, n_y> R = eye<ದಶಮಾಂಶ, n_y>();
+	ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, n_y, n_x> C;
+	C.ಗಣ_ತಟಸ್ಥ();
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ[] = {1, 2, 3, 4, 5};
+	ಸದಿಶ<ದಶಮಾಂಶ, n_y> r(ದತ್ತಾಂಶ);
 
-	Vector<float, n_x> dx;
-	SquareMatrix<float, n_x> dP;
-	float beta = 0;
-	kalman_correct<float, 6, 5>(P, C, R, r, dx, dP, beta);
+	ಸದಿಶ<ದಶಮಾಂಶ, n_x> dx;
+	ವರ್ಗಫಲ_ಮಾತೃಕೆ<ದಶಮಾಂಶ, n_x> dP;
+	ದಶಮಾಂಶ beta = 0;
+	kalman_correct<ದಶಮಾಂಶ, 6, 5>(P, C, R, r, dx, dP, beta);
 
-	float data_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
-	Vector<float, n_x> dx_check(data_check);
+	ದಶಮಾಂಶ ದತ್ತಾಂಶ_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
+	ಸದಿಶ<ದಶಮಾಂಶ, n_x> dx_check(ದತ್ತಾಂಶ_check);
 	EXPECT_EQ(dx, dx_check);
 }

@@ -37,39 +37,39 @@
  * SPARTN transport-layer implementation.
  */
 
-#include "spartn.h"
+#ಅನ್ತರ್ಭಾವ "spartn.h"
 
-namespace gnss
+ನಾಮಾಕಾಶ gnss
 {
 
-uint32_t spartn_message_crc(const uint8_t *data, size_t len, uint8_t crc_type)
+uint32_t spartn_ಸಂದೇಶ_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ(ಸ್ಥಿರಾಂಕ uint8_t *ದತ್ತಾಂಶ, size_t len, uint8_t ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_type)
 {
 	// Use uint64_t so n==32 (CRC-32) does not shift a 32-bit value by 32.
-	const unsigned n = 8u * (static_cast<unsigned>(crc_type) + 1u);
-	const uint64_t poly = (crc_type == 0) ? 0x07ull :
-			      (crc_type == 1) ? 0x1021ull :
-			      (crc_type == 2) ? 0x864CFBull : 0x04C11DB7ull;
-	const uint64_t top = 1ull << n;
-	const uint64_t g = top | poly;
-	uint64_t crc = (crc_type == 3) ? 0xFFFFFFFFull : 0ull;
+	ಸ್ಥಿರಾಂಕ ಚಿಹ್ನೆರಹಿತ n = 8u * (static_cast<ಚಿಹ್ನೆರಹಿತ>(ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_type) + 1u);
+	ಸ್ಥಿರಾಂಕ uint64_t poly = (ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_type == 0) ? 0x07ull :
+			      (ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_type == 1) ? 0x1021ull :
+			      (ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_type == 2) ? 0x864CFBull : 0x04C11DB7ull;
+	ಸ್ಥಿರಾಂಕ uint64_t ತುದಿ = 1ull << n;
+	ಸ್ಥಿರಾಂಕ uint64_t g = ತುದಿ | poly;
+	uint64_t ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = (ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_type == 3) ? 0xFFFFFFFFull : 0ull;
 
-	for (size_t i = 0; i < len; i++) {
-		crc ^= static_cast<uint64_t>(data[i]) << (n - 8);
+	ಗಾಗಿ (size_t i = 0; i < len; i++) {
+		ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ ^= static_cast<uint64_t>(ದತ್ತಾಂಶ[i]) << (n - 8);
 
-		for (int b = 0; b < 8; b++) {
-			crc <<= 1;
+		ಗಾಗಿ (ಪೂರ್ಣಾಂಕ b = 0; b < 8; b++) {
+			ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ <<= 1;
 
-			if (crc & top) {
-				crc ^= g;
+			ಆದರೆ (ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ & ತುದಿ) {
+				ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ ^= g;
 			}
 		}
 	}
 
-	if (crc_type == 3) {
-		crc ^= 0xFFFFFFFFull;
+	ಆದರೆ (ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_type == 3) {
+		ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ ^= 0xFFFFFFFFull;
 	}
 
-	return static_cast<uint32_t>(crc & (top - 1ull));
+	ಹಿಂತಿರುಗಿ static_cast<uint32_t>(ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ & (ತುದಿ - 1ull));
 }
 
 } // namespace gnss

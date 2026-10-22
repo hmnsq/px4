@@ -31,100 +31,100 @@
  *
  ****************************************************************************/
 
-#include "ObstacleMath.hpp"
-#include <mathlib/math/Limits.hpp>
+#ಅನ್ತರ್ಭಾವ "ObstacleMath.hpp"
+#ಅನ್ತರ್ಭಾವ <mathlib/math/Limits.hpp>
 
-using namespace matrix;
+ಬಳಸಿ ನಾಮಾಕಾಶ ಮಾತೃಕೆ;
 
-namespace ObstacleMath
+ನಾಮಾಕಾಶ ObstacleMath
 {
 
-void project_distance_on_horizontal_plane(float &distance, const float yaw, const matrix::Quatf &q_world_vehicle)
+ಶೂನ್ಯ project_ದೂರ_on_horizontal_plane(ದಶಮಾಂಶ &ದೂರ, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ yaw, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Quatf &q_world_vehicle)
 {
-	const Quatf q_vehicle_sensor(Quatf(cosf(yaw / 2.f), 0.f, 0.f, sinf(yaw / 2.f)));
-	const Quatf q_world_sensor = q_world_vehicle * q_vehicle_sensor;
-	const Vector3f forward(1.f, 0.f, 0.f);
-	const Vector3f sensor_direction_in_world = q_world_sensor.rotateVector(forward);
+	ಸ್ಥಿರಾಂಕ Quatf q_vehicle_sensor(Quatf(cosf(yaw / 2.f), 0.f, 0.f, sinf(yaw / 2.f)));
+	ಸ್ಥಿರಾಂಕ Quatf q_world_sensor = q_world_vehicle * q_vehicle_sensor;
+	ಸ್ಥಿರಾಂಕ Vector3f forward(1.f, 0.f, 0.f);
+	ಸ್ಥಿರಾಂಕ Vector3f sensor_direction_ಒಳ_world = q_world_sensor.rotate_ಸದಿಶ(forward);
 
-	float horizontal_projection_scale = sensor_direction_in_world.xy().norm();
+	ದಶಮಾಂಶ horizontal_projection_scale = sensor_direction_ಒಳ_world.xy().norm();
 	horizontal_projection_scale = math::constrain(horizontal_projection_scale, FLT_EPSILON, 1.0f);
-	distance *= horizontal_projection_scale;
+	ದೂರ *= horizontal_projection_scale;
 }
 
-int get_bin_at_angle(float bin_width, float angle)
+ಪೂರ್ಣಾಂಕ get_bin_at_angle(ದಶಮಾಂಶ bin_ಅಗಲ, ದಶಮಾಂಶ angle)
 {
-	int bin_at_angle = (int)round(matrix::wrap(angle, 0.f, 360.f) / bin_width);
-	return wrap_bin(bin_at_angle, 360 / bin_width);
+	ಪೂರ್ಣಾಂಕ bin_at_angle = (ಪೂರ್ಣಾಂಕ)round(ಮಾತೃಕೆ::wrap(angle, 0.f, 360.f) / bin_ಅಗಲ);
+	ಹಿಂತಿರುಗಿ wrap_bin(bin_at_angle, 360 / bin_ಅಗಲ);
 }
 
-float get_lower_bound_angle(int bin, float bin_width, float angle_offset)
+ದಶಮಾಂಶ get_ಅಧೋ_bound_angle(ಪೂರ್ಣಾಂಕ bin, ದಶಮಾಂಶ bin_ಅಗಲ, ದಶಮಾಂಶ angle_ಸ್ಥಾನಾಂತರ)
 {
-	bin = wrap_bin(bin, 360 / bin_width);
-	return wrap_360(bin * bin_width + angle_offset - bin_width / 2.f);
+	bin = wrap_bin(bin, 360 / bin_ಅಗಲ);
+	ಹಿಂತಿರುಗಿ wrap_360(bin * bin_ಅಗಲ + angle_ಸ್ಥಾನಾಂತರ - bin_ಅಗಲ / 2.f);
 }
 
-int get_offset_bin_index(int bin, float bin_width, float angle_offset)
+ಪೂರ್ಣಾಂಕ get_ಸ್ಥಾನಾಂತರ_bin_ಸೂಚ್ಯಂಕ(ಪೂರ್ಣಾಂಕ bin, ದಶಮಾಂಶ bin_ಅಗಲ, ದಶಮಾಂಶ angle_ಸ್ಥಾನಾಂತರ)
 {
-	int offset = get_bin_at_angle(bin_width, angle_offset);
-	return wrap_bin(bin - offset, 360 / bin_width);
+	ಪೂರ್ಣಾಂಕ ಸ್ಥಾನಾಂತರ = get_bin_at_angle(bin_ಅಗಲ, angle_ಸ್ಥಾನಾಂತರ);
+	ಹಿಂತಿರುಗಿ wrap_bin(bin - ಸ್ಥಾನಾಂತರ, 360 / bin_ಅಗಲ);
 }
 
-float sensor_orientation_to_yaw_offset(const SensorOrientation orientation, const float q[4])
+ದಶಮಾಂಶ sensor_orientation_ಗಮ್ಯ_yaw_ಸ್ಥಾನಾಂತರ(ಸ್ಥಿರಾಂಕ SensorOrientation orientation, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ q[4])
 {
-	float offset = 0.0f;
+	ದಶಮಾಂಶ ಸ್ಥಾನಾಂತರ = 0.0f;
 
-	switch (orientation) {
-	case SensorOrientation::ROTATION_YAW_0:
-		offset = 0.0f;
-		break;
+	ಆಯ್ಕೆ (orientation) {
+	ಸ್ಥಿತಿ SensorOrientation::ROTATION_YAW_0:
+		ಸ್ಥಾನಾಂತರ = 0.0f;
+		ನಿಲ್ಲಿಸು;
 
-	case SensorOrientation::ROTATION_YAW_45:
-		offset = M_PI_F / 4.0f;
-		break;
+	ಸ್ಥಿತಿ SensorOrientation::ROTATION_YAW_45:
+		ಸ್ಥಾನಾಂತರ = M_PI_F / 4.0f;
+		ನಿಲ್ಲಿಸು;
 
-	case SensorOrientation::ROTATION_YAW_90:
-		offset = M_PI_F / 2.0f;
-		break;
+	ಸ್ಥಿತಿ SensorOrientation::ROTATION_YAW_90:
+		ಸ್ಥಾನಾಂತರ = M_PI_F / 2.0f;
+		ನಿಲ್ಲಿಸು;
 
-	case SensorOrientation::ROTATION_YAW_135:
-		offset = 3.0f * M_PI_F / 4.0f;
-		break;
+	ಸ್ಥಿತಿ SensorOrientation::ROTATION_YAW_135:
+		ಸ್ಥಾನಾಂತರ = 3.0f * M_PI_F / 4.0f;
+		ನಿಲ್ಲಿಸು;
 
-	case SensorOrientation::ROTATION_YAW_180:
-		offset = M_PI_F;
-		break;
+	ಸ್ಥಿತಿ SensorOrientation::ROTATION_YAW_180:
+		ಸ್ಥಾನಾಂತರ = M_PI_F;
+		ನಿಲ್ಲಿಸು;
 
-	case SensorOrientation::ROTATION_YAW_225:
-		offset = -3.0f * M_PI_F / 4.0f;
-		break;
+	ಸ್ಥಿತಿ SensorOrientation::ROTATION_YAW_225:
+		ಸ್ಥಾನಾಂತರ = -3.0f * M_PI_F / 4.0f;
+		ನಿಲ್ಲಿಸು;
 
-	case SensorOrientation::ROTATION_YAW_270:
-		offset = -M_PI_F / 2.0f;
-		break;
+	ಸ್ಥಿತಿ SensorOrientation::ROTATION_YAW_270:
+		ಸ್ಥಾನಾಂತರ = -M_PI_F / 2.0f;
+		ನಿಲ್ಲಿಸು;
 
-	case SensorOrientation::ROTATION_YAW_315:
-		offset = -M_PI_F / 4.0f;
-		break;
+	ಸ್ಥಿತಿ SensorOrientation::ROTATION_YAW_315:
+		ಸ್ಥಾನಾಂತರ = -M_PI_F / 4.0f;
+		ನಿಲ್ಲಿಸು;
 
-	case SensorOrientation::ROTATION_CUSTOM:
-		if (q != nullptr) {
-			offset = Eulerf(Quatf(q)).psi();
+	ಸ್ಥಿತಿ SensorOrientation::ROTATION_CUSTOM:
+		ಆದರೆ (q != ಶೂನ್ಯಸೂಚಕ) {
+			ಸ್ಥಾನಾಂತರ = Eulerf(Quatf(q)).psi();
 		}
 
-		break;
+		ನಿಲ್ಲಿಸು;
 	}
 
-	return offset;
+	ಹಿಂತಿರುಗಿ ಸ್ಥಾನಾಂತರ;
 }
 
-int wrap_bin(int bin, int bin_count)
+ಪೂರ್ಣಾಂಕ wrap_bin(ಪೂರ್ಣಾಂಕ bin, ಪೂರ್ಣಾಂಕ bin_ಎಣಿಕೆ)
 {
-	return (bin + bin_count) % bin_count;
+	ಹಿಂತಿರುಗಿ (bin + bin_ಎಣಿಕೆ) % bin_ಎಣಿಕೆ;
 }
 
-float wrap_360(const float angle)
+ದಶಮಾಂಶ wrap_360(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ angle)
 {
-	return matrix::wrap(angle, 0.0f, 360.0f);
+	ಹಿಂತಿರುಗಿ ಮಾತೃಕೆ::wrap(angle, 0.0f, 360.0f);
 }
 
 } // ObstacleMath

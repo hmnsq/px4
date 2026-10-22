@@ -35,481 +35,481 @@
  * @file tunes.cpp
  */
 
-#include "tunes.h"
+#ಅನ್ತರ್ಭಾವ "tunes.h"
 
-#include <px4_platform_common/log.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/log.h>
 
-#include <lib/circuit_breaker/circuit_breaker.h>
+#ಅನ್ತರ್ಭಾವ <lib/circuit_breaker/circuit_breaker.h>
 
-#include <math.h>
-#include <ctype.h>
-#include <errno.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <ctype.h>
+#ಅನ್ತರ್ಭಾವ <errno.h>
 
-#define BEAT_TIME_CONVERSION_MS (60 * 1000 * 4)
-#define BEAT_TIME_CONVERSION_US (BEAT_TIME_CONVERSION_MS * 1000)
-#define BEAT_TIME_CONVERSION    BEAT_TIME_CONVERSION_US
+#ವ್ಯಾಖ್ಯಾನಿಸು BEAT_ಸಮಯ_CONVERSION_MS (60 * 1000 * 4)
+#ವ್ಯಾಖ್ಯಾನಿಸು BEAT_ಸಮಯ_CONVERSION_US (BEAT_ಸಮಯ_CONVERSION_MS * 1000)
+#ವ್ಯಾಖ್ಯಾನಿಸು BEAT_ಸಮಯ_CONVERSION    BEAT_ಸಮಯ_CONVERSION_US
 
 // semitone offsets from C for the characters 'A'-'G'
-const uint8_t Tunes::_note_tab[] = {9, 11, 0, 2, 4, 5, 7};
+ಸ್ಥಿರಾಂಕ uint8_t Tunes::_note_tab[] = {9, 11, 0, 2, 4, 5, 7};
 
-Tunes::Tunes(unsigned default_note_length, NoteMode default_note_mode,
-	     unsigned default_octave, unsigned default_tempo):
-	_default_note_length(default_note_length),
-	_default_note_mode(default_note_mode),
+Tunes::Tunes(ಚಿಹ್ನೆರಹಿತ default_note_ಉದ್ದಳತೆ, Note_ಬಹುಲಕ default_note_ಬಹುಲಕ,
+	     ಚಿಹ್ನೆರಹಿತ default_octave, ಚಿಹ್ನೆರಹಿತ default_tempo):
+	default_note_ಉದ್ದಳತೆ_2(default_note_ಉದ್ದಳತೆ),
+	default_note_ಬಹುಲಕ_2(default_note_ಬಹುಲಕ),
 	_default_octave(default_octave),
 	_default_tempo(default_tempo)
 {
-	if (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_KEY)) {
-		_tunes_disabled = true;
+	ಆದರೆ (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_ಕೀಲಿ)) {
+		_tunes_disabled = ನಿಜ;
 	}
 
-	reset(false);
+	reset(ಸುಳ್ಳು);
 }
 
-void Tunes::reset(bool repeat_flag)
+ಶೂನ್ಯ Tunes::reset(ತಾರ್ಕಿಕ repeat_flag)
 {
 	// reset pointer
-	if (!repeat_flag)	{
-		_tune = nullptr;
-		_next_tune = nullptr;
+	ಆದರೆ (!repeat_flag)	{
+		_tune = ಶೂನ್ಯಸೂಚಕ;
+		ಮುಂದಿನ_tune = ಶೂನ್ಯಸೂಚಕ;
 
-	} else {
-		_tune = _tune_start_ptr;
-		_next_tune = _tune;
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		_tune = tune_ಆರಂಭ_ptr;
+		ಮುಂದಿನ_tune = _tune;
 	}
 
 	// reset music parameter
-	_note_length = _default_note_length;
-	_note_mode   = _default_note_mode;
+	note_ಉದ್ದಳತೆ = default_note_ಉದ್ದಳತೆ_2;
+	note_ಬಹುಲಕ   = default_note_ಬಹುಲಕ_2;
 	_octave      = _default_octave;
 	_tempo       = _default_tempo;
 }
 
-Tunes::ControlResult Tunes::set_control(const tune_control_s &tune_control)
+Tunes::Control_ಫಲಿತಾಂಶ Tunes::ಗಣ_control(ಸ್ಥಿರಾಂಕ tune_control_s &tune_control)
 {
 	// Sanity check
-	if (tune_control.tune_id >= _default_tunes_size) {
-		return ControlResult::InvalidTune;
+	ಆದರೆ (tune_control.tune_id >= default_tunes_ಗಾತ್ರ) {
+		ಹಿಂತಿರುಗಿ Control_ಫಲಿತಾಂಶ::InvalidTune;
 	}
 
 	// Accept new tune or a stop?
-	if (_tune == nullptr ||  	   // No tune is currently being played
+	ಆದರೆ (_tune == ಶೂನ್ಯಸೂಚಕ ||  	   // No tune is currently being played
 	    tune_control.tune_override ||  // Override interrupts everything
 	    _default_tunes_interruptable[_current_tune_id]) {
 
 		// Check if this exact tune is already being played back
-		if (tune_control.tune_id != static_cast<int>(TuneID::CUSTOM) &&
+		ಆದರೆ (tune_control.tune_id != static_cast<ಪೂರ್ಣಾಂಕ>(TuneID::CUSTOM) &&
 		    _tune == _default_tunes[tune_control.tune_id]) {
-			return ControlResult::AlreadyPlaying; // Nothing to do
+			ಹಿಂತಿರುಗಿ Control_ಫಲಿತಾಂಶ::AlreadyPlaying; // Nothing to do
 		}
 
 		// Reset repeat flag. Can jump to true again while tune is being parsed later
-		_repeat = false;
+		_repeat = ಸುಳ್ಳು;
 
 		// Reset octave, tempo etc.
 		reset(_repeat);
 
 		// Volume will remain valid for the entire tune, unless interrupted.
-		if (tune_control.volume <= tune_control_s::VOLUME_LEVEL_MAX) {
+		ಆದರೆ (tune_control.volume <= tune_control_s::VOLUME_LEVEL_MAX) {
 			_volume = tune_control.volume;
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			_volume = tune_control_s::VOLUME_LEVEL_MAX;
 		}
 
 
 		// Special treatment for custom tunes
-		if (tune_control.tune_id == static_cast<int>(TuneID::CUSTOM)) {
-			_using_custom_msg = true;
-			_frequency        = (unsigned)tune_control.frequency;
-			_duration         = (unsigned)tune_control.duration;
-			_silence          = (unsigned)tune_control.silence;
+		ಆದರೆ (tune_control.tune_id == static_cast<ಪೂರ್ಣಾಂಕ>(TuneID::CUSTOM)) {
+			using_custom_ಸಂದೇಶ = ನಿಜ;
+			_frequency        = (ಚಿಹ್ನೆರಹಿತ)tune_control.frequency;
+			_duration         = (ಚಿಹ್ನೆರಹಿತ)tune_control.duration;
+			_silence          = (ಚಿಹ್ನೆರಹಿತ)tune_control.silence;
 
-		} else {
-			_using_custom_msg = false;
+		} ಇಲ್ಲದಿದ್ದರೆ {
+			using_custom_ಸಂದೇಶ = ಸುಳ್ಳು;
 			_tune             = _default_tunes[tune_control.tune_id];
-			_tune_start_ptr   = _tune;
-			_next_tune        = _tune;
+			tune_ಆರಂಭ_ptr   = _tune;
+			ಮುಂದಿನ_tune        = _tune;
 		}
 
 		_current_tune_id = tune_control.tune_id;
-		return ControlResult::Success;
+		ಹಿಂತಿರುಗಿ Control_ಫಲಿತಾಂಶ::Success;
 	}
 
-	return ControlResult::WouldInterrupt;
+	ಹಿಂತಿರುಗಿ Control_ಫಲಿತಾಂಶ::Would_ಅಡಚಣೆ;
 }
 
-void Tunes::set_string(const char *const string, uint8_t volume)
+ಶೂನ್ಯ Tunes::ಗಣ_string(ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *ಸ್ಥಿರಾಂಕ string, uint8_t volume)
 {
 	// Only play new tune if nothing is being played currently.
-	if (_tune == nullptr) {
+	ಆದರೆ (_tune == ಶೂನ್ಯಸೂಚಕ) {
 		// Set tune string the first time.
 		_tune           = string;
-		_tune_start_ptr = string;
-		_next_tune      = _tune;
+		tune_ಆರಂಭ_ptr = string;
+		ಮುಂದಿನ_tune      = _tune;
 
-		if (volume <= tune_control_s::VOLUME_LEVEL_MAX) {
+		ಆದರೆ (volume <= tune_control_s::VOLUME_LEVEL_MAX) {
 			_volume = volume;
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			_volume = tune_control_s::VOLUME_LEVEL_MAX;
 		}
 	}
 }
 
-Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsigned &silence, uint8_t &volume)
+Tunes::ಸ್ಥಿತಿ_3 Tunes::get_ಮುಂದಿನ_note(ಚಿಹ್ನೆರಹಿತ &frequency, ಚಿಹ್ನೆರಹಿತ &duration, ಚಿಹ್ನೆರಹಿತ &silence, uint8_t &volume)
 {
-	if (_tunes_disabled) {
+	ಆದರೆ (_tunes_disabled) {
 		frequency = 0;
 		duration = 0;
 		silence = 0;
 		volume = 0;
-		return Tunes::Status::Stop;
+		ಹಿಂತಿರುಗಿ Tunes::ಸ್ಥಿತಿ_3::Stop;
 	}
 
-	Tunes::Status ret = get_next_note(frequency, duration, silence);
+	Tunes::ಸ್ಥಿತಿ_3 ret = get_ಮುಂದಿನ_note(frequency, duration, silence);
 
 	// Check if note should not be heard -> adjust volume to 0 to be safe.
-	if (frequency == 0 || duration == 0) {
+	ಆದರೆ (frequency == 0 || duration == 0) {
 		volume = 0;
 
-	} else {
+	} ಇಲ್ಲದಿದ್ದರೆ {
 		volume = _volume;
 	}
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 }
 
-Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsigned &silence)
+Tunes::ಸ್ಥಿತಿ_3 Tunes::get_ಮುಂದಿನ_note(ಚಿಹ್ನೆರಹಿತ &frequency, ಚಿಹ್ನೆರಹಿತ &duration, ಚಿಹ್ನೆರಹಿತ &silence)
 {
-	if (_tunes_disabled) {
+	ಆದರೆ (_tunes_disabled) {
 		frequency = 0;
 		duration = 0;
 		silence = 0;
-		return Tunes::Status::Stop;
+		ಹಿಂತಿರುಗಿ Tunes::ಸ್ಥಿತಿ_3::Stop;
 	}
 
 	// Return the values for frequency and duration if the custom msg was received.
-	if (_using_custom_msg) {
-		_using_custom_msg = false;
+	ಆದರೆ (using_custom_ಸಂದೇಶ) {
+		using_custom_ಸಂದೇಶ = ಸುಳ್ಳು;
 		duration  = _duration;
 		frequency = _frequency;
 		silence   = _silence;
-		return Tunes::Status::Continue;
+		ಹಿಂತಿರುಗಿ Tunes::ಸ್ಥಿತಿ_3::Continue;
 	}
 
 	// Make sure we still have a tune.
-	if ((_next_tune == nullptr) || (_tune == nullptr)) {
-		return tune_error();
+	ಆದರೆ ((ಮುಂದಿನ_tune == ಶೂನ್ಯಸೂಚಕ) || (_tune == ಶೂನ್ಯಸೂಚಕ)) {
+		ಹಿಂತಿರುಗಿ tune_error();
 	}
 
 	// Parse characters out of the string until we have resolved a note.
-	unsigned note = 0;
-	unsigned note_length = _note_length;
+	ಚಿಹ್ನೆರಹಿತ note = 0;
+	ಚಿಹ್ನೆರಹಿತ note_ಉದ್ದಳತೆ_2 = note_ಉದ್ದಳತೆ;
 
-	while (note == 0) {
+	ಆಗ (note == 0) {
 		// we always need at least one character from the string.
-		int c = next_char();
+		ಪೂರ್ಣಾಂಕ c = ಮುಂದಿನ_char();
 
-		if (c == 0) {
+		ಆದರೆ (c == 0) {
 			silence = 0;
-			return tune_end();
+			ಹಿಂತಿರುಗಿ tune_ಕೊನೆ();
 		}
 
-		_next_tune++;
+		ಮುಂದಿನ_tune++;
 
-		switch (c) {
+		ಆಯ್ಕೆ (c) {
 
-		case 'V':	// Select volume.
+		ಸ್ಥಿತಿ 'V':	// Select volume.
 			// Consume volume if specified in tune but ignore
 			// MML compatibility
-			next_number();
-			break;
+			ಮುಂದಿನ_ಸಂಖ್ಯೆ();
+			ನಿಲ್ಲಿಸು;
 
-		case 'L':	// Select note length.
-			_note_length = next_number();
+		ಸ್ಥಿತಿ 'L':	// Select note length.
+			note_ಉದ್ದಳತೆ = ಮುಂದಿನ_ಸಂಖ್ಯೆ();
 
-			if (_note_length < 1) {
-				return tune_error();
+			ಆದರೆ (note_ಉದ್ದಳತೆ < 1) {
+				ಹಿಂತಿರುಗಿ tune_error();
 			}
 
-			break;
+			ನಿಲ್ಲಿಸು;
 
-		case 'O':	// Select octave.
-			_octave = next_number();
+		ಸ್ಥಿತಿ 'O':	// Select octave.
+			_octave = ಮುಂದಿನ_ಸಂಖ್ಯೆ();
 
-			if (_octave > 6) {
+			ಆದರೆ (_octave > 6) {
 				_octave = 6;
 			}
 
-			break;
+			ನಿಲ್ಲಿಸು;
 
-		case '<':	// Decrease octave.
-			if (_octave > 0) {
+		ಸ್ಥಿತಿ '<':	// Decrease octave.
+			ಆದರೆ (_octave > 0) {
 				_octave--;
 			}
 
-			break;
+			ನಿಲ್ಲಿಸು;
 
-		case '>':	// Increase octave.
-			if (_octave < 6) {
+		ಸ್ಥಿತಿ '>':	// Increase octave.
+			ಆದರೆ (_octave < 6) {
 				_octave++;
 			}
 
-			break;
+			ನಿಲ್ಲಿಸು;
 
-		case 'M':	// Select inter-note gap.
-			c = next_char();
+		ಸ್ಥಿತಿ 'M':	// Select inter-note gap.
+			c = ಮುಂದಿನ_char();
 
-			if (c == 0) {
-				return tune_error();
+			ಆದರೆ (c == 0) {
+				ಹಿಂತಿರುಗಿ tune_error();
 			}
 
-			_next_tune++;
+			ಮುಂದಿನ_tune++;
 
-			switch (c) {
-			case 'N':
-				_note_mode = NoteMode::NORMAL;
-				break;
+			ಆಯ್ಕೆ (c) {
+			ಸ್ಥಿತಿ 'N':
+				note_ಬಹುಲಕ = Note_ಬಹುಲಕ::ಸಾಮಾನ್ಯ;
+				ನಿಲ್ಲಿಸು;
 
-			case 'L':
-				_note_mode = NoteMode::LEGATO;
-				break;
+			ಸ್ಥಿತಿ 'L':
+				note_ಬಹುಲಕ = Note_ಬಹುಲಕ::LEGATO;
+				ನಿಲ್ಲಿಸು;
 
-			case 'S':
-				_note_mode = NoteMode::STACCATO;
-				break;
+			ಸ್ಥಿತಿ 'S':
+				note_ಬಹುಲಕ = Note_ಬಹುಲಕ::STACCATO;
+				ನಿಲ್ಲಿಸು;
 
-			case 'F':
-				_repeat = false;
-				break;
+			ಸ್ಥಿತಿ 'F':
+				_repeat = ಸುಳ್ಳು;
+				ನಿಲ್ಲಿಸು;
 
-			case 'B':
-				_repeat = true;
-				break;
+			ಸ್ಥಿತಿ 'B':
+				_repeat = ನಿಜ;
+				ನಿಲ್ಲಿಸು;
 
-			default:
-				return tune_error();
+			ಪೂರ್ವನಿಯೋಜಿತ:
+				ಹಿಂತಿರುಗಿ tune_error();
 			}
 
-			break;
+			ನಿಲ್ಲಿಸು;
 
-		case 'P':	// Pause for a note length.
-		case 'R':
+		ಸ್ಥಿತಿ 'P':	// Pause for a note length.
+		ಸ್ಥಿತಿ 'R':
 			frequency = 0;
 			duration = 0;
-			note_length = next_number();
-			silence = rest_duration(note_length, next_dots());
-			return Tunes::Status::Continue;
+			note_ಉದ್ದಳತೆ_2 = ಮುಂದಿನ_ಸಂಖ್ಯೆ();
+			silence = rest_duration(note_ಉದ್ದಳತೆ_2, ಮುಂದಿನ_dots());
+			ಹಿಂತಿರುಗಿ Tunes::ಸ್ಥಿತಿ_3::Continue;
 
-		case 'T': {	// Change tempo.
-				unsigned nt = next_number();
+		ಸ್ಥಿತಿ 'T': {	// Change tempo.
+				ಚಿಹ್ನೆರಹಿತ nt = ಮುಂದಿನ_ಸಂಖ್ಯೆ();
 
-				if ((nt >= 32) && (nt <= 255)) {
+				ಆದರೆ ((nt >= 32) && (nt <= 255)) {
 					_tempo = nt;
 
-				} else {
-					return tune_error();
+				} ಇಲ್ಲದಿದ್ದರೆ {
+					ಹಿಂತಿರುಗಿ tune_error();
 				}
 
-				break;
+				ನಿಲ್ಲಿಸು;
 			}
 
-		case 'N':	// Play an arbitrary note.
-			note = next_number();
+		ಸ್ಥಿತಿ 'N':	// Play an arbitrary note.
+			note = ಮುಂದಿನ_ಸಂಖ್ಯೆ();
 
-			if (note > 84) {
-				return tune_error();
+			ಆದರೆ (note > 84) {
+				ಹಿಂತಿರುಗಿ tune_error();
 			}
 
-			if (note == 0) {
+			ಆದರೆ (note == 0) {
 				// This is a rest - pause for the current note length.
-				silence = rest_duration(_note_length, next_dots());
-				return Tunes::Status::Continue;
+				silence = rest_duration(note_ಉದ್ದಳತೆ, ಮುಂದಿನ_dots());
+				ಹಿಂತಿರುಗಿ Tunes::ಸ್ಥಿತಿ_3::Continue;
 			}
 
-			break;
+			ನಿಲ್ಲಿಸು;
 
-		case 'A'...'G':	// Play a note in the current octave.
+		ಸ್ಥಿತಿ 'A'...'G':	// Play a note in the current octave.
 			note = _note_tab[c - 'A'] + (_octave * 12) + 1;
-			c = next_char();
+			c = ಮುಂದಿನ_char();
 
-			switch (c) {
-			case '#':	// Up a semitone.
-			case '+':
-				if (note < 84) {
+			ಆಯ್ಕೆ (c) {
+			ಸ್ಥಿತಿ '#':	// Up a semitone.
+			ಸ್ಥಿತಿ '+':
+				ಆದರೆ (note < 84) {
 					note++;
 				}
 
-				_next_tune++;
-				break;
+				ಮುಂದಿನ_tune++;
+				ನಿಲ್ಲಿಸು;
 
-			case '-':	// Down a semitone.
-				if (note > 1) {
+			ಸ್ಥಿತಿ '-':	// Down a semitone.
+				ಆದರೆ (note > 1) {
 					note--;
 				}
 
-				_next_tune++;
-				break;
+				ಮುಂದಿನ_tune++;
+				ನಿಲ್ಲಿಸು;
 
-			default:
+			ಪೂರ್ವನಿಯೋಜಿತ:
 				// 0 / No next char here is OK.
-				break;
+				ನಿಲ್ಲಿಸು;
 			}
 
 			// Shorthand length notation.
-			note_length = next_number();
+			note_ಉದ್ದಳತೆ_2 = ಮುಂದಿನ_ಸಂಖ್ಯೆ();
 
-			if (note_length == 0) {
-				note_length = _note_length;
+			ಆದರೆ (note_ಉದ್ದಳತೆ_2 == 0) {
+				note_ಉದ್ದಳತೆ_2 = note_ಉದ್ದಳತೆ;
 			}
 
-			break;
+			ನಿಲ್ಲಿಸು;
 
-		default:
-			return tune_error();
+		ಪೂರ್ವನಿಯೋಜಿತ:
+			ಹಿಂತಿರುಗಿ tune_error();
 		}
 	}
 
 	// Compute the duration of the note and the following silence (if any).
-	duration = note_duration(silence, note_length, next_dots());
+	duration = note_duration(silence, note_ಉದ್ದಳತೆ_2, ಮುಂದಿನ_dots());
 
 	// Compute the note frequency.
-	frequency = note_to_frequency(note);
-	return Tunes::Status::Continue;
+	frequency = note_ಗಮ್ಯ_frequency(note);
+	ಹಿಂತಿರುಗಿ Tunes::ಸ್ಥಿತಿ_3::Continue;
 }
 
-Tunes::Status Tunes::tune_end()
+Tunes::ಸ್ಥಿತಿ_3 Tunes::tune_ಕೊನೆ()
 {
-	if (_tunes_disabled) {
-		return Tunes::Status::Stop;
+	ಆದರೆ (_tunes_disabled) {
+		ಹಿಂತಿರುಗಿ Tunes::ಸ್ಥಿತಿ_3::Stop;
 	}
 
 	// Restore intial parameters.
 	reset(_repeat);
 
 	// Stop or restart the tune.
-	if (_repeat) {
-		return Tunes::Status::Continue;
+	ಆದರೆ (_repeat) {
+		ಹಿಂತಿರುಗಿ Tunes::ಸ್ಥಿತಿ_3::Continue;
 
-	} else {
-		return Tunes::Status::Stop;
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		ಹಿಂತಿರುಗಿ Tunes::ಸ್ಥಿತಿ_3::Stop;
 	}
 }
 
-Tunes::Status Tunes::tune_error()
+Tunes::ಸ್ಥಿತಿ_3 Tunes::tune_error()
 {
-	if (_tunes_disabled) {
-		return Tunes::Status::Stop;
+	ಆದರೆ (_tunes_disabled) {
+		ಹಿಂತಿರುಗಿ Tunes::ಸ್ಥಿತಿ_3::Stop;
 	}
 
 	// The tune appears to be bad (unexpected EOF, bad character, etc.).
-	if (_next_tune != nullptr) {
-		PX4_WARN("Tune error at: %s", _next_tune);
+	ಆದರೆ (ಮುಂದಿನ_tune != ಶೂನ್ಯಸೂಚಕ) {
+		PX4_WARN("Tune error at: %s", ಮುಂದಿನ_tune);
 	}
 
-	_repeat = false;	// Don't loop on error.
+	_repeat = ಸುಳ್ಳು;	// Don't loop on error.
 	reset(_repeat);
-	return Tunes::Status::Error;
+	ಹಿಂತಿರುಗಿ Tunes::ಸ್ಥಿತಿ_3::Error;
 }
 
-uint32_t Tunes::note_to_frequency(unsigned note) const
+uint32_t Tunes::note_ಗಮ್ಯ_frequency(ಚಿಹ್ನೆರಹಿತ note) ಸ್ಥಿರಾಂಕ
 {
 	// Compute the frequency (Hz).
-	return (unsigned)(880.0f * powf(2.0f, ((int)note - 46) / 12.0f));
+	ಹಿಂತಿರುಗಿ (ಚಿಹ್ನೆರಹಿತ)(880.0f * powf(2.0f, ((ಪೂರ್ಣಾಂಕ)note - 46) / 12.0f));
 }
 
-unsigned Tunes::note_duration(unsigned &silence, unsigned note_length, unsigned dots) const
+ಚಿಹ್ನೆರಹಿತ Tunes::note_duration(ಚಿಹ್ನೆರಹಿತ &silence, ಚಿಹ್ನೆರಹಿತ note_ಉದ್ದಳತೆ_2, ಚಿಹ್ನೆರಹಿತ dots) ಸ್ಥಿರಾಂಕ
 {
-	unsigned whole_note_period = BEAT_TIME_CONVERSION / _tempo;
+	ಚಿಹ್ನೆರಹಿತ ಸಂಪೂರ್ಣ_note_period = BEAT_ಸಮಯ_CONVERSION / _tempo;
 
-	if (note_length == 0) {
-		note_length = 1;
+	ಆದರೆ (note_ಉದ್ದಳತೆ_2 == 0) {
+		note_ಉದ್ದಳತೆ_2 = 1;
 	}
 
-	unsigned note_period = whole_note_period / note_length;
+	ಚಿಹ್ನೆರಹಿತ note_period = ಸಂಪೂರ್ಣ_note_period / note_ಉದ್ದಳತೆ_2;
 
-	switch (_note_mode) {
-	case NoteMode::NORMAL:
+	ಆಯ್ಕೆ (note_ಬಹುಲಕ) {
+	ಸ್ಥಿತಿ Note_ಬಹುಲಕ::ಸಾಮಾನ್ಯ:
 		silence = note_period / 8;
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case NoteMode::STACCATO:
+	ಸ್ಥಿತಿ Note_ಬಹುಲಕ::STACCATO:
 		silence = note_period / 4;
-		break;
+		ನಿಲ್ಲಿಸು;
 
-	case NoteMode::LEGATO:
-	default:
+	ಸ್ಥಿತಿ Note_ಬಹುಲಕ::LEGATO:
+	ಪೂರ್ವನಿಯೋಜಿತ:
 		silence = 0;
-		break;
+		ನಿಲ್ಲಿಸು;
 	}
 
 	note_period -= silence;
 
-	unsigned dot_extension = note_period / 2;
+	ಚಿಹ್ನೆರಹಿತ dot_extension = note_period / 2;
 
-	while (dots--) {
+	ಆಗ (dots--) {
 		note_period += dot_extension;
 		dot_extension /= 2;
 	}
 
-	return note_period;
+	ಹಿಂತಿರುಗಿ note_period;
 }
 
-unsigned Tunes::rest_duration(unsigned rest_length, unsigned dots) const
+ಚಿಹ್ನೆರಹಿತ Tunes::rest_duration(ಚಿಹ್ನೆರಹಿತ rest_ಉದ್ದಳತೆ, ಚಿಹ್ನೆರಹಿತ dots) ಸ್ಥಿರಾಂಕ
 {
-	unsigned whole_note_period = BEAT_TIME_CONVERSION / _tempo;
+	ಚಿಹ್ನೆರಹಿತ ಸಂಪೂರ್ಣ_note_period = BEAT_ಸಮಯ_CONVERSION / _tempo;
 
-	if (rest_length == 0) {
-		rest_length = 1;
+	ಆದರೆ (rest_ಉದ್ದಳತೆ == 0) {
+		rest_ಉದ್ದಳತೆ = 1;
 	}
 
-	unsigned rest_period = whole_note_period / rest_length;
+	ಚಿಹ್ನೆರಹಿತ rest_period = ಸಂಪೂರ್ಣ_note_period / rest_ಉದ್ದಳತೆ;
 
-	unsigned dot_extension = rest_period / 2;
+	ಚಿಹ್ನೆರಹಿತ dot_extension = rest_period / 2;
 
-	while (dots--) {
+	ಆಗ (dots--) {
 		rest_period += dot_extension;
 		dot_extension /= 2;
 	}
 
-	return rest_period;
+	ಹಿಂತಿರುಗಿ rest_period;
 }
 
-int Tunes::next_char()
+ಪೂರ್ಣಾಂಕ Tunes::ಮುಂದಿನ_char()
 {
-	while (isspace(*_next_tune)) {
-		_next_tune++;
+	ಆಗ (ಖಾಲಿಯೇ(*ಮುಂದಿನ_tune)) {
+		ಮುಂದಿನ_tune++;
 	}
 
-	return toupper(*_next_tune);
+	ಹಿಂತಿರುಗಿ ದೊಡ್ಡ_ಅಕ್ಷರ(*ಮುಂದಿನ_tune);
 }
 
-unsigned Tunes::next_number()
+ಚಿಹ್ನೆರಹಿತ Tunes::ಮುಂದಿನ_ಸಂಖ್ಯೆ()
 {
-	unsigned number = 0;
-	int next_character;
+	ಚಿಹ್ನೆರಹಿತ ಸಂಖ್ಯೆ = 0;
+	ಪೂರ್ಣಾಂಕ ಮುಂದಿನ_character;
 
-	for (;;) {
-		next_character = next_char();
+	ಗಾಗಿ (;;) {
+		ಮುಂದಿನ_character = ಮುಂದಿನ_char();
 
-		if (!isdigit(next_character)) {
-			return number;
+		ಆದರೆ (!ಅಂಕಿಯೇ(ಮುಂದಿನ_character)) {
+			ಹಿಂತಿರುಗಿ ಸಂಖ್ಯೆ;
 		}
 
-		_next_tune++;
-		number = (number * 10) + (next_character - '0');
+		ಮುಂದಿನ_tune++;
+		ಸಂಖ್ಯೆ = (ಸಂಖ್ಯೆ * 10) + (ಮುಂದಿನ_character - '0');
 	}
 }
 
-unsigned Tunes::next_dots()
+ಚಿಹ್ನೆರಹಿತ Tunes::ಮುಂದಿನ_dots()
 {
-	unsigned dots = 0;
+	ಚಿಹ್ನೆರಹಿತ dots = 0;
 
-	while (next_char() == '.') {
-		_next_tune++;
+	ಆಗ (ಮುಂದಿನ_char() == '.') {
+		ಮುಂದಿನ_tune++;
 		dots++;
 	}
 
-	return dots;
+	ಹಿಂತಿರುಗಿ dots;
 }

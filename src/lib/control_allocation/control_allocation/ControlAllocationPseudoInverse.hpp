@@ -43,21 +43,21 @@
  * @author Julien Lecoeur <julien.lecoeur@gmail.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "ControlAllocation.hpp"
+#ಅನ್ತರ್ಭಾವ "ControlAllocation.hpp"
 
-class ControlAllocationPseudoInverse: public ControlAllocation
+ವರ್ಗ Control_ಹಂಚಿಕೆ_Pseudo_Inverse: ಸಾರ್ವಜನಿಕ Control_ಹಂಚಿಕೆ
 {
-public:
-	ControlAllocationPseudoInverse() = default;
-	virtual ~ControlAllocationPseudoInverse() = default;
+ಸಾರ್ವಜನಿಕ:
+	Control_ಹಂಚಿಕೆ_Pseudo_Inverse() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ವಾಸ್ತವಿಕ ~Control_ಹಂಚಿಕೆ_Pseudo_Inverse() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	void allocate() override;
-	void setEffectivenessMatrix(const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness,
-				    const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
-				    bool update_normalization_scale) override;
-	void setMetricAllocation(bool metric_allocation) { _metric_allocation = metric_allocation; }
+	ಶೂನ್ಯ allocate() override;
+	ಶೂನ್ಯ ಗಣ_Effectiveness_ಮಾತೃಕೆ(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, ಅಂಕೆ_AXES, ಅಂಕೆ_ACTUATORS> &effectiveness,
+				    ಸ್ಥಿರಾಂಕ Actuator_ಸದಿಶ &actuator_trim, ಸ್ಥಿರಾಂಕ Actuator_ಸದಿಶ &linearization_ಬಿಂದು, ಪೂರ್ಣಾಂಕ ಅಂಕೆ_actuators,
+				    ತಾರ್ಕಿಕ update_normalization_scale) override;
+	ಶೂನ್ಯ ಗಣ_Metric_ಹಂಚಿಕೆ(ತಾರ್ಕಿಕ metric_ಹಂಚಿಕೆ_2) { metric_ಹಂಚಿಕೆ = metric_ಹಂಚಿಕೆ_2; }
 
 	/**
 	 * Zero the rows of axes that are (nearly) dependent on higher-priority axes
@@ -66,29 +66,29 @@ public:
 	 *
 	 * @return bitmask over ControlAxis of the dropped axes
 	 */
-	static uint8_t dropDependentAxes(matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness);
+	ಸ್ಥಿರ uint8_t dropDependentAxes(ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, ಅಂಕೆ_AXES, ಅಂಕೆ_ACTUATORS> &effectiveness);
 
-protected:
-	matrix::Matrix<float, NUM_ACTUATORS, NUM_AXES> _mix;
+ಸಂರಕ್ಷಿತ:
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, ಅಂಕೆ_ACTUATORS, ಅಂಕೆ_AXES> _mix;
 
-	bool _mix_update_needed{false};
-	bool _metric_allocation{false};
+	ತಾರ್ಕಿಕ _mix_update_needed{ಸುಳ್ಳು};
+	ತಾರ್ಕಿಕ metric_ಹಂಚಿಕೆ{ಸುಳ್ಳು};
 
 	/**
 	 * Recalculate pseudo inverse if required.
 	 *
 	 */
-	void updatePseudoInverse();
+	ಶೂನ್ಯ updatePseudoInverse();
 
-private:
+ಖಾಸಗಿ:
 	/**
 	 * Minimum independence for a control axis to be kept: squared norm of the unit axis row
 	 * after removing its projection onto the higher-priority axes (sin^2 of the angle to their
 	 * span, unit-free). 1e-2 (~5.7 deg) bounds the pseudo-inverse gain along the axis to ~10x.
 	 */
-	static constexpr float kMinAxisIndependence = 1e-2f;
+	ಸ್ಥಿರ constexpr ದಶಮಾಂಶ kMinAxisIndependence = 1e-2f;
 
-	void normalizeControlAllocationMatrix();
-	void updateControlAllocationMatrixScale();
-	bool _normalization_needs_update{false};
+	ಶೂನ್ಯ normalize_Control_ಹಂಚಿಕೆ_ಮಾತೃಕೆ();
+	ಶೂನ್ಯ update_Control_ಹಂಚಿಕೆ_ಮಾತೃಕೆ_Scale();
+	ತಾರ್ಕಿಕ _normalization_needs_update{ಸುಳ್ಳು};
 };

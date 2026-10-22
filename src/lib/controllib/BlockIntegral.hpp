@@ -37,16 +37,16 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "BlockLimitSym.hpp"
+#ಅನ್ತರ್ಭಾವ "BlockLimitSym.hpp"
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
 /**
@@ -56,24 +56,24 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegral: public SuperBlock
+ವರ್ಗ __EXPORT ಖಂಡ_Integral: ಸಾರ್ವಜನಿಕ Super_ಖಂಡ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockIntegral(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
+	ಖಂಡ_Integral(Super_ಖಂಡ *ಪೋಷಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) :
+		Super_ಖಂಡ(ಪೋಷಕ, name),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegral() = default;
-	float update(float input);
+		ಎಲ್ಲೆ(ಇದು, "") {}
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_Integral() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ದಶಮಾಂಶ update(ದಶಮಾಂಶ ಒಳಹರಿವು);
 // accessors
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setY(float y) {_y = y;}
-protected:
-// attributes
-	float _y; /**< previous output */
-	BlockLimitSym _limit; /**< limiter */
+	ದಶಮಾಂಶ getY() {ಹಿಂತಿರುಗಿ _y;}
+	ದಶಮಾಂಶ getMax() {ಹಿಂತಿರುಗಿ ಎಲ್ಲೆ.getMax();}
+	ಶೂನ್ಯ ಗಣ_Y(ದಶಮಾಂಶ y) {_y = y;}
+ಸಂರಕ್ಷಿತ:
+//ಗುಣಲಕ್ಷಣಗಳು
+	ದಶಮಾಂಶ _y; /**< previous output */
+	ಖಂಡ_ಎಲ್ಲೆ_Sym ಎಲ್ಲೆ; /**< limiter */
 };
 
 } // namespace control

@@ -37,98 +37,98 @@
  * Welford's online algorithm for computing mean and variance.
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <lib/mathlib/mathlib.h>
+#ಅನ್ತರ್ಭಾವ <lib/mathlib/mathlib.h>
 
-namespace math
+ನಾಮಾಕಾಶ math
 {
 
-template <typename Type = float>
-class WelfordMean
+ಮಾದರಿ <ಬಗೆ_ಹೆಸರು Type = ದಶಮಾಂಶ>
+ವರ್ಗ Welford_ಸರಾಸರಿ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const Type &new_value)
+	ತಾರ್ಕಿಕ update(ಸ್ಥಿರಾಂಕ Type &new_ಮೌಲ್ಯ)
 	{
-		if (_count == 0) {
+		ಆದರೆ (ಎಣಿಕೆ_4 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
-			return false;
+			ಎಣಿಕೆ_4 = 1;
+			ಸರಾಸರಿ_2 = new_ಮೌಲ್ಯ;
+			ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 
-		} else if (_count == UINT16_MAX) {
+		} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (ಎಣಿಕೆ_4 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / ಎಣಿಕೆ_4;
 			_M2_accum = 0;
 
-			_count = 1;
+			ಎಣಿಕೆ_4 = 1;
 
-		} else {
-			_count++;
+		} ಇಲ್ಲದಿದ್ದರೆ {
+			ಎಣಿಕೆ_4++;
 		}
 
 		// mean accumulates the mean of the entire dataset
 		// delta can be very small compared to the mean, use algorithm to minimise numerical error
-		const Type delta{new_value - _mean};
-		const Type mean_change = delta / _count;
-		_mean = kahanSummation(_mean, mean_change, _mean_accum);
+		ಸ್ಥಿರಾಂಕ Type delta{new_ಮೌಲ್ಯ - ಸರಾಸರಿ_2};
+		ಸ್ಥಿರಾಂಕ Type ಸರಾಸರಿ_change = delta / ಎಣಿಕೆ_4;
+		ಸರಾಸರಿ_2 = kahanSummation(ಸರಾಸರಿ_2, ಸರಾಸರಿ_change, ಸರಾಸರಿ_accum);
 
 		// M2 aggregates the squared distance from the mean
 		// count aggregates the number of samples seen so far
-		const Type M2_change = delta * (new_value - _mean);
+		ಸ್ಥಿರಾಂಕ Type M2_change = delta * (new_ಮೌಲ್ಯ - ಸರಾಸರಿ_2);
 		_M2 = kahanSummation(_M2, M2_change, _M2_accum);
 
 		// protect against floating point precision causing negative variances
 		_M2 = math::max(_M2, 0.f);
 
-		if (!PX4_ISFINITE(_mean) || !PX4_ISFINITE(_M2)) {
+		ಆದರೆ (!PX4_ISFINITE(ಸರಾಸರಿ_2) || !PX4_ISFINITE(_M2)) {
 			reset();
-			return false;
+			ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 		}
 
-		return valid();
+		ಹಿಂತಿರುಗಿ valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	ತಾರ್ಕಿಕ valid() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಎಣಿಕೆ_4 > 2; }
+	ಸ್ವಯಂಚಾಲಿತ ಎಣಿಕೆ_2() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಎಣಿಕೆ_4; }
 
-	void reset()
+	ಶೂನ್ಯ reset()
 	{
-		_count = 0;
-		_mean = 0;
+		ಎಣಿಕೆ_4 = 0;
+		ಸರಾಸರಿ_2 = 0;
 		_M2 = 0;
 
-		_mean_accum = 0;
+		ಸರಾಸರಿ_accum = 0;
 		_M2_accum = 0;
 	}
 
-	Type mean() const { return _mean; }
-	Type variance() const { return _M2 / (_count - 1); }
-	Type standard_deviation() const { return std::sqrt(variance()); }
+	Type ಸರಾಸರಿ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ ಸರಾಸರಿ_2; }
+	Type variance() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _M2 / (ಎಣಿಕೆ_4 - 1); }
+	Type standard_deviation() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ std::ವರ್ಗಮೂಲ(variance()); }
 
-private:
+ಖಾಸಗಿ:
 
 	// Use Kahan summation algorithm to get the sum of "sum_previous" and "input".
 	// This function relies on the caller to be responsible for keeping a copy of
 	// "accumulator" and passing this value at the next iteration.
 	// Ref: https://en.wikipedia.org/wiki/Kahan_summation_algorithm
-	inline Type kahanSummation(Type sum_previous, Type input, Type &accumulator)
+	ಸಾಲೊಳಗೆ Type kahanSummation(Type ಮೊತ್ತ_ಹಿಂದಿನ, Type ಒಳಹರಿವು, Type &ಸಂಚಯಕ)
 	{
-		const Type y = input - accumulator;
-		const Type t = sum_previous + y;
-		accumulator = (t - sum_previous) - y;
-		return t;
+		ಸ್ಥಿರಾಂಕ Type y = ಒಳಹರಿವು - ಸಂಚಯಕ;
+		ಸ್ಥಿರಾಂಕ Type t = ಮೊತ್ತ_ಹಿಂದಿನ + y;
+		ಸಂಚಯಕ = (t - ಮೊತ್ತ_ಹಿಂದಿನ) - y;
+		ಹಿಂತಿರುಗಿ t;
 	}
 
-	Type _mean{};
+	Type ಸರಾಸರಿ_2{};
 	Type _M2{};
 
-	Type _mean_accum{};  ///< kahan summation algorithm accumulator for mean
+	Type ಸರಾಸರಿ_accum{};  ///< kahan summation algorithm accumulator for mean
 	Type _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t ಎಣಿಕೆ_4{0};
 };
 
 } // namespace math

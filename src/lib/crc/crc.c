@@ -38,9 +38,9 @@
  * Included Files
  ****************************************************************************/
 
-#include <stdint.h>
-#include <stdlib.h>
-#include "crc.h"
+#ಅನ್ತರ್ಭಾವ <stdint.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ "crc.h"
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -86,22 +86,22 @@
  *
  ****************************************************************************/
 
-uint16_t crc16_add(uint16_t crc, uint8_t value)
+uint16_t crc16_ಕೂಡಿಸು(uint16_t ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ, uint8_t ಮೌಲ್ಯ)
 {
 	uint32_t i;
-	const uint16_t poly = 0x1021u;
-	crc ^= (uint16_t)((uint16_t) value << 8u);
+	ಸ್ಥಿರಾಂಕ uint16_t poly = 0x1021u;
+	ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ ^= (uint16_t)((uint16_t) ಮೌಲ್ಯ << 8u);
 
-	for (i = 0; i < 8; i++) {
-		if (crc & (1u << 15u)) {
-			crc = (uint16_t)((crc << 1u) ^ poly);
+	ಗಾಗಿ (i = 0; i < 8; i++) {
+		ಆದರೆ (ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ & (1u << 15u)) {
+			ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = (uint16_t)((ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ << 1u) ^ poly);
 
-		} else {
-			crc = (uint16_t)(crc << 1u);
+		} ಇಲ್ಲದಿದ್ದರೆ {
+			ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = (uint16_t)(ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ << 1u);
 		}
 	}
 
-	return crc;
+	ಹಿಂತಿರುಗಿ ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ;
 }
 
 /****************************************************************************
@@ -121,15 +121,15 @@ uint16_t crc16_add(uint16_t crc, uint8_t value)
  *
  ****************************************************************************/
 
-uint16_t crc16_signature(uint16_t initial, size_t length, const uint8_t *bytes)
+uint16_t crc16_signature(uint16_t initial, size_t ಉದ್ದಳತೆ, ಸ್ಥಿರಾಂಕ uint8_t *ಬೈಟುಗಳು)
 {
 	size_t i;
 
-	for (i = 0u; i < length; i++) {
-		initial = crc16_add(initial, bytes[i]);
+	ಗಾಗಿ (i = 0u; i < ಉದ್ದಳತೆ; i++) {
+		initial = crc16_ಕೂಡಿಸು(initial, ಬೈಟುಗಳು[i]);
 	}
 
-	return initial ^ CRC16_OUTPUT_XOR;
+	ಹಿಂತಿರುಗಿ initial ^ CRC16_OUTPUT_XOR;
 }
 
 /****************************************************************************
@@ -148,25 +148,25 @@ uint16_t crc16_signature(uint16_t initial, size_t length, const uint8_t *bytes)
  *
  ****************************************************************************/
 
-uint32_t crc32_signature(uint32_t acc, size_t length, const uint8_t *bytes)
+uint32_t ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_32_signature(uint32_t acc, size_t ಉದ್ದಳತೆ, ಸ್ಥಿರಾಂಕ uint8_t *ಬೈಟುಗಳು)
 {
 	size_t i;
-	const uint32_t poly = 0xedb88320u;
-	const uint8_t  bits = 8u;
-	uint8_t        w = bits;
+	ಸ್ಥಿರಾಂಕ uint32_t poly = 0xedb88320u;
+	ಸ್ಥಿರಾಂಕ uint8_t  ಬಿಟ್ಟುಗಳು = 8u;
+	uint8_t        w = ಬಿಟ್ಟುಗಳು;
 
-	for (i = 0u; i < length; i++) {
-		acc ^= bytes[i];
-		w = bits;
+	ಗಾಗಿ (i = 0u; i < ಉದ್ದಳತೆ; i++) {
+		acc ^= ಬೈಟುಗಳು[i];
+		w = ಬಿಟ್ಟುಗಳು;
 
-		while (w--) {
-			const uint32_t xor = -(acc & 1);
+		ಆಗ (w--) {
+			ಸ್ಥಿರಾಂಕ uint32_t xor = -(acc & 1);
 			acc >>= 1;
 			acc ^= (poly & xor);
 		}
 	}
 
-	return acc;
+	ಹಿಂತಿರುಗಿ acc;
 }
 
 
@@ -187,25 +187,25 @@ uint32_t crc32_signature(uint32_t acc, size_t length, const uint8_t *bytes)
  *
  ****************************************************************************/
 __EXPORT
-uint64_t crc64_add_word(uint64_t crc, uint32_t value)
+uint64_t crc64_ಕೂಡಿಸು_ಶಬ್ದ(uint64_t ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ, uint32_t ಮೌಲ್ಯ)
 {
 	uint32_t i, j;
 	uint8_t byte;
-	const uint64_t poly = 0x42F0E1EBA9EA3693ull;
+	ಸ್ಥಿರಾಂಕ uint64_t poly = 0x42F0E1EBA9EA3693ull;
 
-	for (j = 0; j < 4; j++) {
-		byte = ((uint8_t *) &value)[j];
-		crc ^= (uint64_t) byte << 56u;
+	ಗಾಗಿ (j = 0; j < 4; j++) {
+		byte = ((uint8_t *) &ಮೌಲ್ಯ)[j];
+		ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ ^= (uint64_t) byte << 56u;
 
-		for (i = 0; i < 8; i++) {
-			if (crc & (1ull << 63u)) {
-				crc = (uint64_t)(crc << 1u) ^ poly;
+		ಗಾಗಿ (i = 0; i < 8; i++) {
+			ಆದರೆ (ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ & (1ull << 63u)) {
+				ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = (uint64_t)(ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ << 1u) ^ poly;
 
-			} else {
-				crc = (uint64_t)(crc << 1u);
+			} ಇಲ್ಲದಿದ್ದರೆ {
+				ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ = (uint64_t)(ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ << 1u);
 			}
 		}
 	}
 
-	return crc;
+	ಹಿಂತಿರುಗಿ ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ;
 }

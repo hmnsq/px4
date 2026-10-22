@@ -38,50 +38,50 @@
  *
  */
 
-#include "rtl_time_estimator.h"
+#ಅನ್ತರ್ಭಾವ "rtl_time_estimator.h"
 
-#include <float.h>
-#include <math.h>
+#ಅನ್ತರ್ಭಾವ <float.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
 
-#include <px4_platform_common/defines.h>
-#include <drivers/drv_hrt.h>
-#include <uORB/topics/vehicle_status.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <drivers/drv_hrt.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/vehicle_status.h>
 
-RtlTimeEstimator::RtlTimeEstimator() : ModuleParams(nullptr)
+Rtl_ಸಮಯ_Estimator::Rtl_ಸಮಯ_Estimator() : ModuleParams(ಶೂನ್ಯಸೂಚಕ)
 {
-	_param_mpc_z_v_auto_up = param_find("MPC_Z_V_AUTO_UP");
-	_param_mpc_z_v_auto_dn = param_find("MPC_Z_V_AUTO_DN");
-	_param_fw_climb_rate = param_find("FW_T_CLMB_R_SP");
-	_param_fw_sink_rate = param_find("FW_T_SINK_R_SP");
-	_param_fw_airspeed_trim = param_find("FW_AIRSPD_TRIM");
-	_param_fw_gnd_spd_min = param_find("FW_GND_SPD_MIN");
-	_param_mpc_xy_cruise = param_find("MPC_XY_CRUISE");
-	_param_rover_cruise_speed = param_find("RO_SPEED_LIM");
+	param_mpc_z_v_auto_ಮೇಲೆ = param_ಕಂಡುಹಿಡಿ("MPC_Z_V_AUTO_UP");
+	_param_mpc_z_v_auto_dn = param_ಕಂಡುಹಿಡಿ("MPC_Z_V_AUTO_DN");
+	param_fw_climb_ದರ = param_ಕಂಡುಹಿಡಿ("FW_T_CLMB_R_SP");
+	param_fw_sink_ದರ = param_ಕಂಡುಹಿಡಿ("FW_T_SINK_R_SP");
+	_param_fw_airspeed_trim = param_ಕಂಡುಹಿಡಿ("FW_AIRSPD_TRIM");
+	_param_fw_gnd_spd_min = param_ಕಂಡುಹಿಡಿ("FW_GND_SPD_MIN");
+	_param_mpc_xy_cruise = param_ಕಂಡುಹಿಡಿ("MPC_XY_CRUISE");
+	param_rover_cruise_ವೇಗ = param_ಕಂಡುಹಿಡಿ("RO_SPEED_LIM");
 };
 
-rtl_time_estimate_s RtlTimeEstimator::getEstimate() const
+rtl_ಸಮಯ_estimate_s Rtl_ಸಮಯ_Estimator::getEstimate() ಸ್ಥಿರಾಂಕ
 {
-	rtl_time_estimate_s time_estimate{};
+	rtl_ಸಮಯ_estimate_s ಸಮಯ_estimate{};
 
-	if (_is_valid && PX4_ISFINITE(_time_estimate)) {
-		time_estimate.valid = true;
-		time_estimate.time_estimate = _time_estimate;
+	ಆದರೆ (_is_valid && PX4_ISFINITE(ಸಮಯ_estimate_2)) {
+		ಸಮಯ_estimate.valid = ನಿಜ;
+		ಸಮಯ_estimate.ಸಮಯ_estimate = ಸಮಯ_estimate_2;
 		// Use actual time estimate to compute the safer time estimate with additional scale factor and a margin
-		time_estimate.safe_time_estimate = _param_rtl_time_factor.get() * _time_estimate + _param_rtl_time_margin.get();
+		ಸಮಯ_estimate.ಸುರಕ್ಷಿತ_ಸಮಯ_estimate = param_rtl_ಸಮಯ_ಗುಣಕ.get() * ಸಮಯ_estimate_2 + param_rtl_ಸಮಯ_margin.get();
 
-	} else {
-		time_estimate.valid = false;
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		ಸಮಯ_estimate.valid = ಸುಳ್ಳು;
 	}
 
-	time_estimate.timestamp = hrt_absolute_time();
-	return time_estimate;
+	ಸಮಯ_estimate.timestamp = hrt_absolute_ಸಮಯ();
+	ಹಿಂತಿರುಗಿ ಸಮಯ_estimate;
 }
 
-void RtlTimeEstimator::update()
+ಶೂನ್ಯ Rtl_ಸಮಯ_Estimator::update()
 {
 	_wind_sub.update();
 
-	if (_parameter_update_sub.updated()) {
+	ಆದರೆ (_parameter_update_sub.updated()) {
 		parameter_update_s param_update;
 		_parameter_update_sub.copy(&param_update);
 
@@ -91,56 +91,56 @@ void RtlTimeEstimator::update()
 	}
 }
 
-void RtlTimeEstimator::addVertDistance(float alt)
+ಶೂನ್ಯ Rtl_ಸಮಯ_Estimator::ಕೂಡಿಸು_Vert_ದೂರ(ದಶಮಾಂಶ alt)
 {
-	if (PX4_ISFINITE(alt)) {
-		_is_valid = true;
+	ಆದರೆ (PX4_ISFINITE(alt)) {
+		_is_valid = ನಿಜ;
 
-		_time_estimate += calcVertTimeEstimate(alt);
+		ಸಮಯ_estimate_2 += calc_Vert_ಸಮಯ_Estimate(alt);
 	}
 }
 
-void RtlTimeEstimator::addDistance(float hor_dist, const matrix::Vector2f &direction, float vert_dist)
+ಶೂನ್ಯ Rtl_ಸಮಯ_Estimator::ಕೂಡಿಸು_ದೂರ(ದಶಮಾಂಶ hor_dist, ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector2f &direction, ದಶಮಾಂಶ vert_dist)
 {
-	if (PX4_ISFINITE(hor_dist) && PX4_ISFINITE(vert_dist)) {
-		_is_valid = true;
+	ಆದರೆ (PX4_ISFINITE(hor_dist) && PX4_ISFINITE(vert_dist)) {
+		_is_valid = ನಿಜ;
 
-		float hor_time_estimate{0.f};
+		ದಶಮಾಂಶ hor_ಸಮಯ_estimate{0.f};
 
-		if (hor_dist > FLT_EPSILON && PX4_ISFINITE(hor_dist)) {
-			hor_time_estimate = hor_dist / getCruiseGroundSpeed(direction.normalized());
+		ಆದರೆ (hor_dist > FLT_EPSILON && PX4_ISFINITE(hor_dist)) {
+			hor_ಸಮಯ_estimate = hor_dist / get_Cruise_Ground_ವೇಗ(direction.normalized());
 		}
 
-		float ver_time_estimate{calcVertTimeEstimate(vert_dist)};
+		ದಶಮಾಂಶ ver_ಸಮಯ_estimate{calc_Vert_ಸಮಯ_Estimate(vert_dist)};
 
-		_time_estimate += math::max(hor_time_estimate, ver_time_estimate);
+		ಸಮಯ_estimate_2 += math::max(hor_ಸಮಯ_estimate, ver_ಸಮಯ_estimate);
 
 	}
 }
 
-void RtlTimeEstimator::addWait(float time_s)
+ಶೂನ್ಯ Rtl_ಸಮಯ_Estimator::ಕೂಡಿಸು_Wait(ದಶಮಾಂಶ ಸಮಯ_s)
 {
-	if (PX4_ISFINITE(time_s)) {
-		_is_valid = true;
+	ಆದರೆ (PX4_ISFINITE(ಸಮಯ_s)) {
+		_is_valid = ನಿಜ;
 
-		if (time_s > FLT_EPSILON) {
-			_time_estimate += time_s;
+		ಆದರೆ (ಸಮಯ_s > FLT_EPSILON) {
+			ಸಮಯ_estimate_2 += ಸಮಯ_s;
 		}
 	}
 }
 
-float RtlTimeEstimator::getCruiseGroundSpeed(const matrix::Vector2f &direction_norm)
+ದಶಮಾಂಶ Rtl_ಸಮಯ_Estimator::get_Cruise_Ground_ವೇಗ(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::Vector2f &direction_norm)
 {
-	float cruise_speed = getCruiseSpeed();
+	ದಶಮಾಂಶ cruise_ವೇಗ_2 = get_Cruise_ವೇಗ();
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		matrix::Vector2f wind = get_wind();
+	ಆದರೆ (_vehicle_type == vehicle_ಸ್ಥಿತಿ_s::VEHICLE_TYPE_FIXED_WING) {
+		ಮಾತೃಕೆ::Vector2f wind = get_wind();
 
-		const float wind_along_dir = wind.dot(direction_norm);
-		const float wind_across_dir = matrix::Vector2f(wind - direction_norm * wind_along_dir).norm();
+		ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ wind_along_dir = wind.dot(direction_norm);
+		ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ wind_across_dir = ಮಾತೃಕೆ::Vector2f(wind - direction_norm * wind_along_dir).norm();
 
 		// Note: use fminf so that we don't _rely_ on tailwind towards direction to make Return more efficient
-		const float ground_speed = sqrtf(cruise_speed * cruise_speed - wind_across_dir * wind_across_dir) + fminf(
+		ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ ground_ವೇಗ = sqrtf(cruise_ವೇಗ_2 * cruise_ವೇಗ_2 - wind_across_dir * wind_across_dir) + fminf(
 						   0.f, wind_along_dir);
 
 		// Assume that minimum ground speed is always satisfied. If
@@ -148,108 +148,108 @@ float RtlTimeEstimator::getCruiseGroundSpeed(const matrix::Vector2f &direction_n
 		// the assumption always holds. Otherwise it breaks down when
 		// flying upwind, and the return time estimate is optimistic.
 
-		float fw_gnd_spd_min = 5.0f;
+		ದಶಮಾಂಶ fw_gnd_spd_min = 5.0f;
 
-		if (_param_fw_gnd_spd_min != PARAM_INVALID) {
+		ಆದರೆ (_param_fw_gnd_spd_min != PARAM_INVALID) {
 			param_get(_param_fw_gnd_spd_min, &fw_gnd_spd_min);
 		}
 
-		cruise_speed = fmaxf(ground_speed, fw_gnd_spd_min);
+		cruise_ವೇಗ_2 = fmaxf(ground_ವೇಗ, fw_gnd_spd_min);
 	}
 
-	return cruise_speed;
+	ಹಿಂತಿರುಗಿ cruise_ವೇಗ_2;
 }
 
-float RtlTimeEstimator::calcVertTimeEstimate(float alt)
+ದಶಮಾಂಶ Rtl_ಸಮಯ_Estimator::calc_Vert_ಸಮಯ_Estimate(ದಶಮಾಂಶ alt)
 {
-	float vertical_rate{0.1f};
-	float time_estimate{0.f};
+	ದಶಮಾಂಶ vertical_ದರ{0.1f};
+	ದಶಮಾಂಶ ಸಮಯ_estimate{0.f};
 
-	if (alt > FLT_EPSILON) {
-		vertical_rate = getClimbRate();
+	ಆದರೆ (alt > FLT_EPSILON) {
+		vertical_ದರ = get_Climb_ದರ();
 
-	} else {
-		vertical_rate = getDescendRate();
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		vertical_ದರ = get_Descend_ದರ();
 	}
 
-	float abs_alt = fabsf(alt);
+	ದಶಮಾಂಶ abs_alt = fabsf(alt);
 
-	if (abs_alt > FLT_EPSILON) {
-		time_estimate = abs_alt / vertical_rate;
+	ಆದರೆ (abs_alt > FLT_EPSILON) {
+		ಸಮಯ_estimate = abs_alt / vertical_ದರ;
 	}
 
-	return time_estimate;
+	ಹಿಂತಿರುಗಿ ಸಮಯ_estimate;
 }
 
-float RtlTimeEstimator::getCruiseSpeed()
+ದಶಮಾಂಶ Rtl_ಸಮಯ_Estimator::get_Cruise_ವೇಗ()
 {
-	float ret = 1e6f;
+	ದಶಮಾಂಶ ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_xy_cruise == PARAM_INVALID || param_get(_param_mpc_xy_cruise, &ret) != PX4_OK) {
+	ಆದರೆ (_vehicle_type == vehicle_ಸ್ಥಿತಿ_s::VEHICLE_TYPE_ROTARY_WING) {
+		ಆದರೆ (_param_mpc_xy_cruise == PARAM_INVALID || param_get(_param_mpc_xy_cruise, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		if (_param_fw_airspeed_trim == PARAM_INVALID || param_get(_param_fw_airspeed_trim, &ret) != PX4_OK) {
+	} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (_vehicle_type == vehicle_ಸ್ಥಿತಿ_s::VEHICLE_TYPE_FIXED_WING) {
+		ಆದರೆ (_param_fw_airspeed_trim == PARAM_INVALID || param_get(_param_fw_airspeed_trim, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROVER) {
-		if (_param_rover_cruise_speed == PARAM_INVALID || param_get(_param_rover_cruise_speed, &ret) != PX4_OK) {
+	} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (_vehicle_type == vehicle_ಸ್ಥಿತಿ_s::VEHICLE_TYPE_ROVER) {
+		ಆದರೆ (param_rover_cruise_ವೇಗ == PARAM_INVALID || param_get(param_rover_cruise_ವೇಗ, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 }
 
-matrix::Vector2f RtlTimeEstimator::get_wind()
+ಮಾತೃಕೆ::Vector2f Rtl_ಸಮಯ_Estimator::get_wind()
 {
 	_wind_sub.update();
-	matrix::Vector2f wind{};
+	ಮಾತೃಕೆ::Vector2f wind{};
 
-	if (hrt_absolute_time() - _wind_sub.get().timestamp < 1_s) {
+	ಆದರೆ (hrt_absolute_ಸಮಯ() - _wind_sub.get().timestamp < 1_s) {
 		wind(0) = _wind_sub.get().windspeed_north;
 		wind(1) = _wind_sub.get().windspeed_east;
 	}
 
-	return wind;
+	ಹಿಂತಿರುಗಿ wind;
 }
 
-float RtlTimeEstimator::getClimbRate()
+ದಶಮಾಂಶ Rtl_ಸಮಯ_Estimator::get_Climb_ದರ()
 {
-	float ret = 1e6f;
+	ದಶಮಾಂಶ ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_z_v_auto_up == PARAM_INVALID || param_get(_param_mpc_z_v_auto_up, &ret) != PX4_OK) {
+	ಆದರೆ (_vehicle_type == vehicle_ಸ್ಥಿತಿ_s::VEHICLE_TYPE_ROTARY_WING) {
+		ಆದರೆ (param_mpc_z_v_auto_ಮೇಲೆ == PARAM_INVALID || param_get(param_mpc_z_v_auto_ಮೇಲೆ, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+	} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (_vehicle_type == vehicle_ಸ್ಥಿತಿ_s::VEHICLE_TYPE_FIXED_WING) {
 
-		if (_param_fw_climb_rate == PARAM_INVALID || param_get(_param_fw_climb_rate, &ret) != PX4_OK) {
+		ಆದರೆ (param_fw_climb_ದರ == PARAM_INVALID || param_get(param_fw_climb_ದರ, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 }
 
-float RtlTimeEstimator::getDescendRate()
+ದಶಮಾಂಶ Rtl_ಸಮಯ_Estimator::get_Descend_ದರ()
 {
-	float ret = 1e6f;
+	ದಶಮಾಂಶ ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_z_v_auto_dn == PARAM_INVALID || param_get(_param_mpc_z_v_auto_dn, &ret) != PX4_OK) {
+	ಆದರೆ (_vehicle_type == vehicle_ಸ್ಥಿತಿ_s::VEHICLE_TYPE_ROTARY_WING) {
+		ಆದರೆ (_param_mpc_z_v_auto_dn == PARAM_INVALID || param_get(_param_mpc_z_v_auto_dn, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		if (_param_fw_sink_rate == PARAM_INVALID || param_get(_param_fw_sink_rate, &ret) != PX4_OK) {
+	} ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (_vehicle_type == vehicle_ಸ್ಥಿತಿ_s::VEHICLE_TYPE_FIXED_WING) {
+		ಆದರೆ (param_fw_sink_ದರ == PARAM_INVALID || param_get(param_fw_sink_ದರ, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 }

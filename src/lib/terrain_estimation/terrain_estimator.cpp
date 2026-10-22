@@ -36,59 +36,59 @@
  * A terrain estimation kalman filter.
  */
 
-#include "terrain_estimator.h"
-#include <lib/geo/geo.h>
-#include <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ "terrain_estimator.h"
+#ಅನ್ತರ್ಭಾವ <lib/geo/geo.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
 
-#define DISTANCE_TIMEOUT 100000		// time in usec after which laser is considered dead
+#ವ್ಯಾಖ್ಯಾನಿಸು ದೂರ_TIMEOUT 100000		// time in usec after which laser is considered dead
 
 TerrainEstimator::TerrainEstimator() :
-	_distance_last(0.0f),
-	_terrain_valid(false),
-	_time_last_distance(0),
-	_time_last_gnss(0)
+	ದೂರ_ಕೊನೆಯ(0.0f),
+	_terrain_valid(ಸುಳ್ಳು),
+	ಸಮಯ_ಕೊನೆಯ_ದೂರ(0),
+	ಸಮಯ_ಕೊನೆಯ_gnss(0)
 {
 	_x.zero();
 	_u_z = 0.0f;
-	_P.setIdentity();
+	_P.ಗಣ_ತಟಸ್ಥ();
 }
 
-bool TerrainEstimator::is_distance_valid(float distance)
+ತಾರ್ಕಿಕ TerrainEstimator::is_ದೂರ_valid(ದಶಮಾಂಶ ದೂರ)
 {
-	return (distance < 40.0f && distance > 0.00001f);
+	ಹಿಂತಿರುಗಿ (ದೂರ < 40.0f && ದೂರ > 0.00001f);
 }
 
-void TerrainEstimator::predict(float dt, const struct vehicle_attitude_s *attitude,
-			       const struct sensor_combined_s *sensor,
-			       const struct distance_sensor_s *distance)
+ಶೂನ್ಯ TerrainEstimator::predict(ದಶಮಾಂಶ dt, ಸ್ಥಿರಾಂಕ ರಚನೆ vehicle_attitude_s *attitude,
+			       ಸ್ಥಿರಾಂಕ ರಚನೆ sensor_combined_s *sensor,
+			       ಸ್ಥಿರಾಂಕ ರಚನೆ ದೂರ_sensor_s *ದೂರ)
 {
-	matrix::Dcmf R_att = matrix::Quatf(attitude->q);
-	matrix::Vector3f a{sensor->accelerometer_m_s2[0], sensor->accelerometer_m_s2[1], sensor->accelerometer_m_s2[2]};
-	matrix::Vector<float, 3> u;
+	ಮಾತೃಕೆ::Dcmf R_att = ಮಾತೃಕೆ::Quatf(attitude->q);
+	ಮಾತೃಕೆ::Vector3f a{sensor->accelerometer_m_s2[0], sensor->accelerometer_m_s2[1], sensor->accelerometer_m_s2[2]};
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 3> u;
 	u = R_att * a;
 	_u_z = u(2) + CONSTANTS_ONE_G; // compensate for gravity
 
 	// dynamics matrix
-	matrix::Matrix<float, n_x, n_x> A;
-	A.setZero();
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, n_x, n_x> A;
+	A.ಗಣ_Zero();
 	A(0, 1) = 1;
 	A(1, 2) = 1;
 
 	// input matrix
-	matrix::Matrix<float, n_x, 1>  B;
-	B.setZero();
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, n_x, 1>  B;
+	B.ಗಣ_Zero();
 	B(1, 0) = 1;
 
 	// input noise variance
-	float R = 0.135f;
+	ದಶಮಾಂಶ R = 0.135f;
 
 	// process noise convariance
-	matrix::Matrix<float, n_x, n_x>  Q;
+	ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, n_x, n_x>  Q;
 	Q(0, 0) = 0;
 	Q(1, 1) = 0;
 
 	// do prediction
-	matrix::Vector<float, n_x>  dx = (A * _x) * dt;
+	ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, n_x>  dx = (A * _x) * dt;
 	dx(1) += B(1, 0) * _u_z * dt;
 
 	// propagate state and covariance matrix
@@ -97,81 +97,81 @@ void TerrainEstimator::predict(float dt, const struct vehicle_attitude_s *attitu
 	       B * R * B.transpose() + Q) * dt;
 }
 
-void TerrainEstimator::measurement_update(uint64_t time_ref, const struct sensor_gnss_s *gnss,
-		const struct distance_sensor_s *distance,
-		const struct vehicle_attitude_s *attitude)
+ಶೂನ್ಯ TerrainEstimator::measurement_update(uint64_t ಸಮಯ_ref, ಸ್ಥಿರಾಂಕ ರಚನೆ sensor_gnss_s *gnss,
+		ಸ್ಥಿರಾಂಕ ರಚನೆ ದೂರ_sensor_s *ದೂರ,
+		ಸ್ಥಿರಾಂಕ ರಚನೆ vehicle_attitude_s *attitude)
 {
 	// terrain estimate is invalid if we have range sensor timeout
-	if (time_ref - distance->timestamp > DISTANCE_TIMEOUT) {
-		_terrain_valid = false;
+	ಆದರೆ (ಸಮಯ_ref - ದೂರ->timestamp > ದೂರ_TIMEOUT) {
+		_terrain_valid = ಸುಳ್ಳು;
 	}
 
-	if (distance->timestamp > _time_last_distance) {
-		matrix::Quatf q(attitude->q);
-		matrix::Eulerf euler(q);
-		float d = distance->current_distance;
+	ಆದರೆ (ದೂರ->timestamp > ಸಮಯ_ಕೊನೆಯ_ದೂರ) {
+		ಮಾತೃಕೆ::Quatf q(attitude->q);
+		ಮಾತೃಕೆ::Eulerf euler(q);
+		ದಶಮಾಂಶ d = ದೂರ->current_ದೂರ;
 
-		matrix::Matrix<float, 1, n_x> C;
+		ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 1, n_x> C;
 		C(0, 0) = -1; // measured altitude,
 
-		float R = 0.009f;
+		ದಶಮಾಂಶ R = 0.009f;
 
-		matrix::Vector<float, 1> y;
+		ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 1> y;
 		y(0) = d * cosf(euler.phi()) * cosf(euler.theta());
 
 		// residual
-		matrix::Matrix<float, 1, 1> S_I = (C * _P * C.transpose());
+		ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 1, 1> S_I = (C * _P * C.transpose());
 		S_I(0, 0) += R;
-		S_I = matrix::inv<float, 1> (S_I);
-		matrix::Vector<float, 1> r = y - C * _x;
+		S_I = ಮಾತೃಕೆ::inv<ದಶಮಾಂಶ, 1> (S_I);
+		ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 1> r = y - C * _x;
 
-		matrix::Matrix<float, n_x, 1> K = _P * C.transpose() * S_I;
+		ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, n_x, 1> K = _P * C.transpose() * S_I;
 
 		// some sort of outlayer rejection
-		if (fabsf(distance->current_distance - _distance_last) < 1.0f) {
+		ಆದರೆ (fabsf(ದೂರ->current_ದೂರ - ದೂರ_ಕೊನೆಯ) < 1.0f) {
 			_x += K * r;
 			_P -= K * C * _P;
 		}
 
 		// if the current and the last range measurement are bad then we consider the terrain
 		// estimate to be invalid
-		if (!is_distance_valid(distance->current_distance) && !is_distance_valid(_distance_last)) {
-			_terrain_valid = false;
+		ಆದರೆ (!is_ದೂರ_valid(ದೂರ->current_ದೂರ) && !is_ದೂರ_valid(ದೂರ_ಕೊನೆಯ)) {
+			_terrain_valid = ಸುಳ್ಳು;
 
-		} else {
-			_terrain_valid = true;
+		} ಇಲ್ಲದಿದ್ದರೆ {
+			_terrain_valid = ನಿಜ;
 		}
 
-		_time_last_distance = distance->timestamp;
-		_distance_last = distance->current_distance;
+		ಸಮಯ_ಕೊನೆಯ_ದೂರ = ದೂರ->timestamp;
+		ದೂರ_ಕೊನೆಯ = ದೂರ->current_ದೂರ;
 	}
 
-	if (gnss->timestamp > _time_last_gnss && gnss->fix_type >= 3) {
-		matrix::Matrix<float, 1, n_x> C;
+	ಆದರೆ (gnss->timestamp > ಸಮಯ_ಕೊನೆಯ_gnss && gnss->fix_type >= 3) {
+		ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 1, n_x> C;
 		C(0, 1) = 1;
 
-		float R = 0.056f;
+		ದಶಮಾಂಶ R = 0.056f;
 
-		matrix::Vector<float, 1> y;
-		y(0) = gnss->vel_down;
+		ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 1> y;
+		y(0) = gnss->vel_ಕೆಳಕ್ಕೆ;
 
 		// residual
-		matrix::Matrix<float, 1, 1> S_I = (C * _P * C.transpose());
+		ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, 1, 1> S_I = (C * _P * C.transpose());
 		S_I(0, 0) += R;
-		S_I = matrix::inv<float, 1>(S_I);
-		matrix::Vector<float, 1> r = y - C * _x;
+		S_I = ಮಾತೃಕೆ::inv<ದಶಮಾಂಶ, 1>(S_I);
+		ಮಾತೃಕೆ::ಸದಿಶ<ದಶಮಾಂಶ, 1> r = y - C * _x;
 
-		matrix::Matrix<float, n_x, 1> K = _P * C.transpose() * S_I;
+		ಮಾತೃಕೆ::ಮಾತೃಕೆ_2<ದಶಮಾಂಶ, n_x, 1> K = _P * C.transpose() * S_I;
 		_x += K * r;
 		_P -= K * C * _P;
 
-		_time_last_gnss = gnss->timestamp;
+		ಸಮಯ_ಕೊನೆಯ_gnss = gnss->timestamp;
 	}
 
 	// reinitialise filter if we find bad data
-	if (!_x.isAllFinite() || !_P.isAllFinite()) {
+	ಆದರೆ (!_x.isAllFinite() || !_P.isAllFinite()) {
 		_x.zero();
-		_P.setZero();
+		_P.ಗಣ_Zero();
 		_P(0, 0) = _P(1, 1) = _P(2, 2) = 0.1f;
 	}
 

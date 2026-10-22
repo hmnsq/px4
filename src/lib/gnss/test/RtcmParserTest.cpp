@@ -38,173 +38,173 @@
  * Consolidates: GoodSender, PartialSender, Helper, Buffer, Stats, EdgeCase tests.
  */
 
-#include "RtcmTestCommon.hpp"
+#ಅನ್ತರ್ಭಾವ "RtcmTestCommon.hpp"
 
 // =============================================================================
 // Helper function tests
 // =============================================================================
 
-TEST_F(RtcmTest, PayloadLength_MasksReservedBits)
+TEST_F(RtcmTest, Payload_ಉದ್ದಳತೆ_Masks_Reserved_ಬಿಟ್ಟುಗಳು)
 {
 	// Reserved bits set to 1, length should still be extracted correctly
-	uint8_t frame[] = {RTCM3_PREAMBLE, 0xFF, 0xFF};  // Reserved=0x3F, Length=1023
-	EXPECT_EQ(rtcm3_payload_length(frame), 1023u);
+	uint8_t ಚೌಕಟ್ಟು[] = {RTCM3_PREAMBLE, 0xFF, 0xFF};  // Reserved=0x3F, Length=1023
+	EXPECT_EQ(rtcm3_payload_ಉದ್ದಳತೆ(ಚೌಕಟ್ಟು), 1023u);
 }
 
-TEST_F(RtcmTest, MessageType_Extraction)
+TEST_F(RtcmTest, ಸಂದೇಶ_Type_Extraction)
 {
-	auto frame = buildValidFrame(1005, {});
-	EXPECT_EQ(rtcm3_message_type(frame.data()), 1005u);
+	ಸ್ವಯಂಚಾಲಿತ ಚೌಕಟ್ಟು = build_Valid_ಚೌಕಟ್ಟು(1005, {});
+	EXPECT_EQ(rtcm3_ಸಂದೇಶ_type(ಚೌಕಟ್ಟು.ದತ್ತಾಂಶ()), 1005u);
 }
 
 // =============================================================================
 // Good sender tests - valid frames, happy path
 // =============================================================================
 
-TEST_F(RtcmTest, SingleMinimalFrame)
+TEST_F(RtcmTest, Single_ಕನಿಷ್ಠತಮ_ಚೌಕಟ್ಟು)
 {
-	auto frame = buildRawFrame({0x00, 0x00});
-	parser.addData(frame.data(), frame.size());
+	ಸ್ವಯಂಚಾಲಿತ ಚೌಕಟ್ಟು = build_Raw_ಚೌಕಟ್ಟು({0x00, 0x00});
+	parser.ಕೂಡಿಸು_ದತ್ತಾಂಶ(ಚೌಕಟ್ಟು.ದತ್ತಾಂಶ(), ಚೌಕಟ್ಟು.ಗಾತ್ರ_2());
 
 	size_t len = 0;
-	const uint8_t *msg = parser.getNextMessage(&len);
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_2 = parser.get_ಮುಂದಿನ_ಸಂದೇಶ(&len);
 
-	ASSERT_NE(msg, nullptr);
-	EXPECT_EQ(len, frame.size());
+	ASSERT_NE(ಸಂದೇಶ_2, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, ಚೌಕಟ್ಟು.ಗಾತ್ರ_2());
 
-	parser.consumeMessage(len);
-	auto stats = parser.getStats();
+	parser.consume_ಸಂದೇಶ(len);
+	ಸ್ವಯಂಚಾಲಿತ stats = parser.getStats();
 	EXPECT_EQ(stats.messages_parsed, 1u);
-	EXPECT_EQ(stats.crc_errors, 0u);
+	EXPECT_EQ(stats.ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_errors_2, 0u);
 }
 
-TEST_F(RtcmTest, SingleMaximalFrame)
+TEST_F(RtcmTest, Single_Maximal_ಚೌಕಟ್ಟು)
 {
-	std::vector<uint8_t> payload(RTCM3_MAX_PAYLOAD_LEN, 0xAA);
-	auto frame = buildRawFrame(payload);
-	parser.addData(frame.data(), frame.size());
+	std::ಸದಿಶ_2<uint8_t> payload(RTCM3_MAX_PAYLOAD_LEN, 0xAA);
+	ಸ್ವಯಂಚಾಲಿತ ಚೌಕಟ್ಟು = build_Raw_ಚೌಕಟ್ಟು(payload);
+	parser.ಕೂಡಿಸು_ದತ್ತಾಂಶ(ಚೌಕಟ್ಟು.ದತ್ತಾಂಶ(), ಚೌಕಟ್ಟು.ಗಾತ್ರ_2());
 
 	size_t len = 0;
-	const uint8_t *msg = parser.getNextMessage(&len);
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_2 = parser.get_ಮುಂದಿನ_ಸಂದೇಶ(&len);
 
-	ASSERT_NE(msg, nullptr);
-	EXPECT_EQ(len, RTCM3_MAX_FRAME_LEN);
+	ASSERT_NE(ಸಂದೇಶ_2, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, RTCM3_MAX_ಚೌಕಟ್ಟು_LEN);
 }
 
-TEST_F(RtcmTest, MultipleFramesInSequence)
+TEST_F(RtcmTest, ಅಪವರ್ತ್ಯ_ಚೌಕಟ್ಟುಗಳು_ಒಳ_Sequence)
 {
-	auto frame1 = buildValidFrame(1005, {0x01, 0x02, 0x03});
-	auto frame2 = buildValidFrame(1077, {0x04, 0x05, 0x06, 0x07});
-	auto frame3 = buildValidFrame(1087, {0x08});
+	ಸ್ವಯಂಚಾಲಿತ frame1 = build_Valid_ಚೌಕಟ್ಟು(1005, {0x01, 0x02, 0x03});
+	ಸ್ವಯಂಚಾಲಿತ frame2 = build_Valid_ಚೌಕಟ್ಟು(1077, {0x04, 0x05, 0x06, 0x07});
+	ಸ್ವಯಂಚಾಲಿತ frame3 = build_Valid_ಚೌಕಟ್ಟು(1087, {0x08});
 
-	parser.addData(frame1.data(), frame1.size());
-	parser.addData(frame2.data(), frame2.size());
-	parser.addData(frame3.data(), frame3.size());
+	parser.ಕೂಡಿಸು_ದತ್ತಾಂಶ(frame1.ದತ್ತಾಂಶ(), frame1.ಗಾತ್ರ_2());
+	parser.ಕೂಡಿಸು_ದತ್ತಾಂಶ(frame2.ದತ್ತಾಂಶ(), frame2.ಗಾತ್ರ_2());
+	parser.ಕೂಡಿಸು_ದತ್ತಾಂಶ(frame3.ದತ್ತಾಂಶ(), frame3.ಗಾತ್ರ_2());
 
 	size_t len;
-	int count = 0;
+	ಪೂರ್ಣಾಂಕ ಎಣಿಕೆ_2 = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
-		parser.consumeMessage(len);
-		count++;
+	ಆಗ (parser.get_ಮುಂದಿನ_ಸಂದೇಶ(&len) != ಶೂನ್ಯಸೂಚಕ) {
+		parser.consume_ಸಂದೇಶ(len);
+		ಎಣಿಕೆ_2++;
 	}
 
-	EXPECT_EQ(count, 3);
+	EXPECT_EQ(ಎಣಿಕೆ_2, 3);
 }
 
-TEST_F(RtcmTest, FrameArrivesInChunks)
+TEST_F(RtcmTest, ಚೌಕಟ್ಟು_Arrives_ಒಳ_Chunks)
 {
-	auto frame = buildValidFrame(1005, {0x01, 0x02, 0x03, 0x04, 0x05});
+	ಸ್ವಯಂಚಾಲಿತ ಚೌಕಟ್ಟು = build_Valid_ಚೌಕಟ್ಟು(1005, {0x01, 0x02, 0x03, 0x04, 0x05});
 
 	// Feed one byte at a time
-	for (size_t i = 0; i < frame.size() - 1; i++) {
-		parser.addData(&frame[i], 1);
+	ಗಾಗಿ (size_t i = 0; i < ಚೌಕಟ್ಟು.ಗಾತ್ರ_2() - 1; i++) {
+		parser.ಕೂಡಿಸು_ದತ್ತಾಂಶ(&ಚೌಕಟ್ಟು[i], 1);
 		size_t len;
-		EXPECT_EQ(parser.getNextMessage(&len), nullptr);
+		EXPECT_EQ(parser.get_ಮುಂದಿನ_ಸಂದೇಶ(&len), ಶೂನ್ಯಸೂಚಕ);
 	}
 
-	parser.addData(&frame[frame.size() - 1], 1);
+	parser.ಕೂಡಿಸು_ದತ್ತಾಂಶ(&ಚೌಕಟ್ಟು[ಚೌಕಟ್ಟು.ಗಾತ್ರ_2() - 1], 1);
 
 	size_t len;
-	ASSERT_NE(parser.getNextMessage(&len), nullptr);
-	EXPECT_EQ(len, frame.size());
+	ASSERT_NE(parser.get_ಮುಂದಿನ_ಸಂದೇಶ(&len), ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, ಚೌಕಟ್ಟು.ಗಾತ್ರ_2());
 }
 
 // =============================================================================
 // Partially good sender tests - mix of valid and invalid
 // =============================================================================
 
-TEST_F(RtcmTest, GarbageBeforeValidFrame)
+TEST_F(RtcmTest, Garbage_Before_Valid_ಚೌಕಟ್ಟು)
 {
-	std::vector<uint8_t> data;
+	std::ಸದಿಶ_2<uint8_t> ದತ್ತಾಂಶ;
 
 	// 50 bytes of garbage
-	for (int i = 0; i < 50; i++) {
-		data.push_back(0x00 + i);
+	ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < 50; i++) {
+		ದತ್ತಾಂಶ.push_back(0x00 + i);
 	}
 
-	auto frame = buildValidFrame(1005, {0x01, 0x02});
-	data.insert(data.end(), frame.begin(), frame.end());
+	ಸ್ವಯಂಚಾಲಿತ ಚೌಕಟ್ಟು = build_Valid_ಚೌಕಟ್ಟು(1005, {0x01, 0x02});
+	ದತ್ತಾಂಶ.ಸೇರಿಸು(ದತ್ತಾಂಶ.ಕೊನೆ(), ಚೌಕಟ್ಟು.begin(), ಚೌಕಟ್ಟು.ಕೊನೆ());
 
-	parser.addData(data.data(), data.size());
+	parser.ಕೂಡಿಸು_ದತ್ತಾಂಶ(ದತ್ತಾಂಶ.ದತ್ತಾಂಶ(), ದತ್ತಾಂಶ.ಗಾತ್ರ_2());
 
 	size_t len;
-	const uint8_t *msg = parser.getNextMessage(&len);
-	ASSERT_NE(msg, nullptr);
-	EXPECT_EQ(rtcm3_message_type(msg), 1005u);
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_2 = parser.get_ಮುಂದಿನ_ಸಂದೇಶ(&len);
+	ASSERT_NE(ಸಂದೇಶ_2, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(rtcm3_ಸಂದೇಶ_type(ಸಂದೇಶ_2), 1005u);
 
-	parser.consumeMessage(len);
-	EXPECT_EQ(parser.getStats().bytes_discarded, 50u);
+	parser.consume_ಸಂದೇಶ(len);
+	EXPECT_EQ(parser.getStats().ಬೈಟುಗಳು_discarded_2, 50u);
 }
 
-TEST_F(RtcmTest, ValidFrameBadFrameValid)
+TEST_F(RtcmTest, Valid_ಚೌಕಟ್ಟು_Bad_ಚೌಕಟ್ಟು_Valid)
 {
-	auto frame1 = buildValidFrame(1005, {0x01});
-	auto bad_frame = buildBadCrcFrame({0x02, 0x03});
-	auto frame2 = buildValidFrame(1077, {0x04});
+	ಸ್ವಯಂಚಾಲಿತ frame1 = build_Valid_ಚೌಕಟ್ಟು(1005, {0x01});
+	ಸ್ವಯಂಚಾಲಿತ bad_ಚೌಕಟ್ಟು = build_Bad_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_ಚೌಕಟ್ಟು({0x02, 0x03});
+	ಸ್ವಯಂಚಾಲಿತ frame2 = build_Valid_ಚೌಕಟ್ಟು(1077, {0x04});
 
-	parser.addData(frame1.data(), frame1.size());
-	parser.addData(bad_frame.data(), bad_frame.size());
-	parser.addData(frame2.data(), frame2.size());
+	parser.ಕೂಡಿಸು_ದತ್ತಾಂಶ(frame1.ದತ್ತಾಂಶ(), frame1.ಗಾತ್ರ_2());
+	parser.ಕೂಡಿಸು_ದತ್ತಾಂಶ(bad_ಚೌಕಟ್ಟು.ದತ್ತಾಂಶ(), bad_ಚೌಕಟ್ಟು.ಗಾತ್ರ_2());
+	parser.ಕೂಡಿಸು_ದತ್ತಾಂಶ(frame2.ದತ್ತಾಂಶ(), frame2.ಗಾತ್ರ_2());
 
 	size_t len;
-	int valid_count = 0;
+	ಪೂರ್ಣಾಂಕ valid_ಎಣಿಕೆ = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
-		parser.consumeMessage(len);
-		valid_count++;
+	ಆಗ (parser.get_ಮುಂದಿನ_ಸಂದೇಶ(&len) != ಶೂನ್ಯಸೂಚಕ) {
+		parser.consume_ಸಂದೇಶ(len);
+		valid_ಎಣಿಕೆ++;
 	}
 
-	EXPECT_EQ(valid_count, 2);
-	EXPECT_EQ(parser.getStats().crc_errors, 1u);
+	EXPECT_EQ(valid_ಎಣಿಕೆ, 2);
+	EXPECT_EQ(parser.getStats().ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_errors_2, 1u);
 }
 
 // =============================================================================
 // Buffer and edge case tests
 // =============================================================================
 
-TEST_F(RtcmTest, BufferOverflowProtection)
+TEST_F(RtcmTest, ಬಫರ್_ಅತಿಪ್ರವಾಹ_Protection)
 {
-	std::vector<uint8_t> large_data(CorrectionFramer::BUFFER_SIZE + 1000, 0xAA);
-	size_t added = parser.addData(large_data.data(), large_data.size());
+	std::ಸದಿಶ_2<uint8_t> large_ದತ್ತಾಂಶ(CorrectionFramer::ಬಫರ್_ಗಾತ್ರ_2 + 1000, 0xAA);
+	size_t added = parser.ಕೂಡಿಸು_ದತ್ತಾಂಶ(large_ದತ್ತಾಂಶ.ದತ್ತಾಂಶ(), large_ದತ್ತಾಂಶ.ಗಾತ್ರ_2());
 
-	EXPECT_EQ(added, CorrectionFramer::BUFFER_SIZE);
+	EXPECT_EQ(added, CorrectionFramer::ಬಫರ್_ಗಾತ್ರ_2);
 }
 
-TEST_F(RtcmTest, EmptyPayloadFrame)
+TEST_F(RtcmTest, ಖಾಲಿಗಳು_Payload_ಚೌಕಟ್ಟು)
 {
-	auto frame = buildRawFrame({});
-	parser.addData(frame.data(), frame.size());
+	ಸ್ವಯಂಚಾಲಿತ ಚೌಕಟ್ಟು = build_Raw_ಚೌಕಟ್ಟು({});
+	parser.ಕೂಡಿಸು_ದತ್ತಾಂಶ(ಚೌಕಟ್ಟು.ದತ್ತಾಂಶ(), ಚೌಕಟ್ಟು.ಗಾತ್ರ_2());
 
 	size_t len;
-	ASSERT_NE(parser.getNextMessage(&len), nullptr);
-	EXPECT_EQ(len, RTCM3_HEADER_LEN + RTCM3_CRC_LEN);
+	ASSERT_NE(parser.get_ಮುಂದಿನ_ಸಂದೇಶ(&len), ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, RTCM3_ಶೀರ್ಷಿಕೆ_LEN + RTCM3_ಚಕ್ರೀಯ_ಪರೀಕ್ಷೆ_LEN);
 }
 
-TEST_F(RtcmTest, GetNextOnEmptyBuffer)
+TEST_F(RtcmTest, Get_ಮುಂದಿನ_On_ಖಾಲಿಗಳು_ಬಫರ್)
 {
 	size_t len;
-	EXPECT_EQ(parser.getNextMessage(&len), nullptr);
+	EXPECT_EQ(parser.get_ಮುಂದಿನ_ಸಂದೇಶ(&len), ಶೂನ್ಯಸೂಚಕ);
 }
 
 // =============================================================================
@@ -216,38 +216,38 @@ TEST_F(RtcmTest, GetNextOnEmptyBuffer)
 TEST_F(RtcmTest, GpsRtcmAssemblerReturnsUnfragmentedPayload)
 {
 	// GIVEN: A small payload that fits in one packet.
-	const std::vector<uint8_t> payload {0x01, 0x02, 0x03, 0x04};
+	ಸ್ಥಿರಾಂಕ std::ಸದಿಶ_2<uint8_t> payload {0x01, 0x02, 0x03, 0x04};
 	size_t len = 0;
 
 	// WHEN: The payload is added without the fragmented flag.
-	const uint8_t *message = gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(false, 0, 9), payload.data(), payload.size(), 10,
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ಸುಳ್ಳು, 0, 9), payload.ದತ್ತಾಂಶ(), payload.ಗಾತ್ರ_2(), 10,
 				 len);
 
 	// THEN: The assembler returns the full payload unchanged.
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, payload.size());
-	EXPECT_EQ(memcmp(message, payload.data(), payload.size()), 0);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, payload.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, payload.ದತ್ತಾಂಶ(), payload.ಗಾತ್ರ_2()), 0);
 }
 
 // WHAT: Verify that the unfragmented path accepts the largest payload the helper stores.
 // WHY: This keeps the direct helper's explicit size guard covered even though
 // MAVLink GPS_RTCM_DATA packets top out at 180 payload bytes.
-TEST_F(RtcmTest, GpsRtcmAssemblerAcceptsMaxSizeUnfragmentedPayload)
+TEST_F(RtcmTest, Gps_Rtcm_Assembler_ಸ್ವೀಕರಿಸು_Max_ಗಾತ್ರ_Unfragmented_Payload)
 {
 	// GIVEN: A payload that is exactly as large as the assembler's internal
 	// message buffer. This exceeds what MAVLink can carry in one packet, but the
 	// direct helper still needs a checked upper bound.
-	std::vector<uint8_t> payload(GPS_RTCM_MAX_MESSAGE_LEN);
-	std::iota(payload.begin(), payload.end(), 0);
+	std::ಸದಿಶ_2<uint8_t> payload(GPS_RTCM_MAX_ಸಂದೇಶ_LEN);
+	std::iota(payload.begin(), payload.ಕೊನೆ(), 0);
 	size_t len = 0;
 
 	// WHEN: The payload is added as a single unfragmented packet.
-	const uint8_t *message = gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(false), payload.data(), payload.size(), 10, len);
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ಸುಳ್ಳು), payload.ದತ್ತಾಂಶ(), payload.ಗಾತ್ರ_2(), 10, len);
 
 	// THEN: The assembler accepts it and returns the original bytes unchanged.
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, payload.size());
-	EXPECT_EQ(memcmp(message, payload.data(), payload.size()), 0);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, payload.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, payload.ದತ್ತಾಂಶ(), payload.ಗಾತ್ರ_2()), 0);
 }
 
 // WHAT: Verify that oversized fragmented packets are rejected.
@@ -255,15 +255,15 @@ TEST_F(RtcmTest, GpsRtcmAssemblerAcceptsMaxSizeUnfragmentedPayload)
 TEST_F(RtcmTest, GpsRtcmAssemblerRejectsOversizedFragment)
 {
 	// GIVEN: A fragmented packet that exceeds the protocol fragment size limit.
-	std::vector<uint8_t> oversized_fragment(GPS_RTCM_MAX_FRAGMENT_LEN + 1, 0x5a);
+	std::ಸದಿಶ_2<uint8_t> oversized_fragment(GPS_RTCM_MAX_FRAGMENT_LEN + 1, 0x5a);
 	size_t len = 123;
 
 	// WHEN: The oversized fragment is passed to the assembler.
-	const uint8_t *message = gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 0, 6), oversized_fragment.data(),
-				 oversized_fragment.size(), 10, len);
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 0, 6), oversized_fragment.ದತ್ತಾಂಶ(),
+				 oversized_fragment.ಗಾತ್ರ_2(), 10, len);
 
 	// THEN: The fragment is rejected and no payload is returned.
-	EXPECT_EQ(message, nullptr);
+	EXPECT_EQ(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
 	EXPECT_EQ(len, 0u);
 }
 
@@ -272,26 +272,26 @@ TEST_F(RtcmTest, GpsRtcmAssemblerRejectsOversizedFragment)
 TEST_F(RtcmTest, GpsRtcmAssemblerReordersFragments)
 {
 	// GIVEN: A payload that spans three fragments with a non-full final fragment.
-	std::vector<uint8_t> payload(GPS_RTCM_MAX_FRAGMENT_LEN * 2 + 25);
-	std::iota(payload.begin(), payload.end(), 0);
-	const uint8_t flags0 = buildGpsRtcmFlags(true, 0, 7);
-	const uint8_t flags1 = buildGpsRtcmFlags(true, 1, 7);
-	const uint8_t flags2 = buildGpsRtcmFlags(true, 2, 7);
+	std::ಸದಿಶ_2<uint8_t> payload(GPS_RTCM_MAX_FRAGMENT_LEN * 2 + 25);
+	std::iota(payload.begin(), payload.ಕೊನೆ(), 0);
+	ಸ್ಥಿರಾಂಕ uint8_t flags0 = buildGpsRtcmFlags(ನಿಜ, 0, 7);
+	ಸ್ಥಿರಾಂಕ uint8_t flags1 = buildGpsRtcmFlags(ನಿಜ, 1, 7);
+	ಸ್ಥಿರಾಂಕ uint8_t flags2 = buildGpsRtcmFlags(ನಿಜ, 2, 7);
 
 	size_t len = 0;
 
 	// WHEN: The later fragments arrive before fragment 0.
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(flags1, &payload[GPS_RTCM_MAX_FRAGMENT_LEN], GPS_RTCM_MAX_FRAGMENT_LEN, 10, len),
-		  nullptr);
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(flags2, &payload[GPS_RTCM_MAX_FRAGMENT_LEN * 2], 25, 20, len), nullptr);
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(flags1, &payload[GPS_RTCM_MAX_FRAGMENT_LEN], GPS_RTCM_MAX_FRAGMENT_LEN, 10, len),
+		  ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(flags2, &payload[GPS_RTCM_MAX_FRAGMENT_LEN * 2], 25, 20, len), ಶೂನ್ಯಸೂಚಕ);
 
 	// WHEN: Fragment 0 finally arrives.
-	const uint8_t *message = gps_rtcm_assembler.addPacket(flags0, payload.data(), GPS_RTCM_MAX_FRAGMENT_LEN, 30, len);
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(flags0, payload.ದತ್ತಾಂಶ(), GPS_RTCM_MAX_FRAGMENT_LEN, 30, len);
 
 	// THEN: The assembler emits the full payload in the correct order.
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, payload.size());
-	EXPECT_EQ(memcmp(message, payload.data(), payload.size()), 0);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, payload.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, payload.ದತ್ತಾಂಶ(), payload.ಗಾತ್ರ_2()), 0);
 }
 
 // WHAT: Verify that a duplicate fragment with identical content is handled.
@@ -299,32 +299,32 @@ TEST_F(RtcmTest, GpsRtcmAssemblerReordersFragments)
 TEST_F(RtcmTest, GpsRtcmAssemblerIgnoresDuplicateMatchingFragment)
 {
 	// GIVEN: A payload that spans one full fragment and one non-full fragment.
-	std::vector<uint8_t> payload(GPS_RTCM_MAX_FRAGMENT_LEN + 12);
-	std::iota(payload.begin(), payload.end(), 0);
-	const uint8_t flags0 = buildGpsRtcmFlags(true, 0, 5);
-	const uint8_t flags1 = buildGpsRtcmFlags(true, 1, 5);
+	std::ಸದಿಶ_2<uint8_t> payload(GPS_RTCM_MAX_FRAGMENT_LEN + 12);
+	std::iota(payload.begin(), payload.ಕೊನೆ(), 0);
+	ಸ್ಥಿರಾಂಕ uint8_t flags0 = buildGpsRtcmFlags(ನಿಜ, 0, 5);
+	ಸ್ಥಿರಾಂಕ uint8_t flags1 = buildGpsRtcmFlags(ನಿಜ, 1, 5);
 	size_t len = 0;
 
 	// WHEN: Fragment 0 is received twice with the same content.
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(flags0, payload.data(), GPS_RTCM_MAX_FRAGMENT_LEN, 10, len), nullptr);
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(flags0, payload.data(), GPS_RTCM_MAX_FRAGMENT_LEN, 11, len), nullptr);
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(flags0, payload.ದತ್ತಾಂಶ(), GPS_RTCM_MAX_FRAGMENT_LEN, 10, len), ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(flags0, payload.ದತ್ತಾಂಶ(), GPS_RTCM_MAX_FRAGMENT_LEN, 11, len), ಶೂನ್ಯಸೂಚಕ);
 
 	// WHEN: The non-full final fragment arrives.
-	const uint8_t *message = gps_rtcm_assembler.addPacket(flags1, &payload[GPS_RTCM_MAX_FRAGMENT_LEN], 12, 20, len);
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(flags1, &payload[GPS_RTCM_MAX_FRAGMENT_LEN], 12, 20, len);
 
 	// THEN: The assembler still returns the expected full payload once.
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, payload.size());
-	EXPECT_EQ(memcmp(message, payload.data(), payload.size()), 0);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, payload.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, payload.ದತ್ತಾಂಶ(), payload.ಗಾತ್ರ_2()), 0);
 }
 
-struct GpsRtcmSequenceChangeCase {
-	const char *name;
-	std::vector<uint8_t> old_fragment_ids;
+ರಚನೆ GpsRtcmSequenceChangeCase {
+	ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name;
+	std::ಸದಿಶ_2<uint8_t> old_fragment_ids;
 	size_t expected_flushed_fragments;
 };
 
-class GpsRtcmSequenceChangeTest : public RtcmTest, public ::testing::WithParamInterface<GpsRtcmSequenceChangeCase>
+ವರ್ಗ GpsRtcmSequenceChangeTest : ಸಾರ್ವಜನಿಕ RtcmTest, ಸಾರ್ವಜನಿಕ ::testing::WithParamInterface<GpsRtcmSequenceChangeCase>
 {
 };
 
@@ -332,68 +332,68 @@ class GpsRtcmSequenceChangeTest : public RtcmTest, public ::testing::WithParamIn
 // when every buffered fragment is a full 180-byte prefix starting at fragment 0.
 // WHY: This keeps the receiver compatible with older QGC senders while still
 // rejecting partial buffers that have a missing fragment in the middle.
-TEST_P(GpsRtcmSequenceChangeTest, GpsRtcmAssemblerFlushesOnlyGapFreeFullPrefixOnSequenceChange)
+TEST_P(GpsRtcmSequenceChangeTest, Gps_Rtcm_Assembler_Flushes_Only_Gap_Free_ತುಂಬಿದ_ಪೂರ್ವಪ್ರತ್ಯಯ_On_Sequence_Change)
 {
-	const GpsRtcmSequenceChangeCase &param = GetParam();
-	const uint8_t old_sequence_id = 9;
-	const uint8_t new_sequence_id = 10;
+	ಸ್ಥಿರಾಂಕ GpsRtcmSequenceChangeCase &param = GetParam();
+	ಸ್ಥಿರಾಂಕ uint8_t old_sequence_id = 9;
+	ಸ್ಥಿರಾಂಕ uint8_t new_sequence_id = 10;
 	size_t len = 0;
 	uint64_t timestamp = 10;
-	std::vector<std::vector<uint8_t>> old_fragments(GPS_RTCM_MAX_FRAGMENTS);
+	std::ಸದಿಶ_2<std::ಸದಿಶ_2<uint8_t>> old_fragments(GPS_RTCM_MAX_FRAGMENTS);
 
 	// GIVEN: A buffered old sequence with full-sized fragments as described by
 	// the parameter set, followed by a new sequence that starts with fragment 0.
-	for (const uint8_t fragment_id : param.old_fragment_ids) {
+	ಗಾಗಿ (ಸ್ಥಿರಾಂಕ uint8_t fragment_id : param.old_fragment_ids) {
 		old_fragments[fragment_id].resize(GPS_RTCM_MAX_FRAGMENT_LEN);
-		std::iota(old_fragments[fragment_id].begin(), old_fragments[fragment_id].end(),
+		std::iota(old_fragments[fragment_id].begin(), old_fragments[fragment_id].ಕೊನೆ(),
 			  static_cast<uint8_t>(0x20 + fragment_id * 0x10));
-		EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, fragment_id, old_sequence_id),
-						       old_fragments[fragment_id].data(), old_fragments[fragment_id].size(), timestamp, len),
-			  nullptr);
+		EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, fragment_id, old_sequence_id),
+						       old_fragments[fragment_id].ದತ್ತಾಂಶ(), old_fragments[fragment_id].ಗಾತ್ರ_2(), timestamp, len),
+			  ಶೂನ್ಯಸೂಚಕ);
 		EXPECT_EQ(len, 0u);
 		timestamp += 10;
 	}
 
-	std::vector<uint8_t> expected_old_message;
+	std::ಸದಿಶ_2<uint8_t> expected_old_ಸಂದೇಶ;
 
-	for (size_t fragment_id = 0; fragment_id < param.expected_flushed_fragments; fragment_id++) {
-		expected_old_message.insert(expected_old_message.end(), old_fragments[fragment_id].begin(), old_fragments[fragment_id].end());
+	ಗಾಗಿ (size_t fragment_id = 0; fragment_id < param.expected_flushed_fragments; fragment_id++) {
+		expected_old_ಸಂದೇಶ.ಸೇರಿಸು(expected_old_ಸಂದೇಶ.ಕೊನೆ(), old_fragments[fragment_id].begin(), old_fragments[fragment_id].ಕೊನೆ());
 	}
 
-	std::vector<uint8_t> new_fragment0(GPS_RTCM_MAX_FRAGMENT_LEN);
-	std::iota(new_fragment0.begin(), new_fragment0.end(), static_cast<uint8_t>(0x70));
+	std::ಸದಿಶ_2<uint8_t> new_fragment0(GPS_RTCM_MAX_FRAGMENT_LEN);
+	std::iota(new_fragment0.begin(), new_fragment0.ಕೊನೆ(), static_cast<uint8_t>(0x70));
 
 	// WHEN: A packet for the next sequence arrives.
-	const uint8_t *message = gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 0, new_sequence_id), new_fragment0.data(),
-				 new_fragment0.size(), timestamp, len);
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 0, new_sequence_id), new_fragment0.ದತ್ತಾಂಶ(),
+				 new_fragment0.ಗಾತ್ರ_2(), timestamp, len);
 
 	// THEN: Only a gap-free run of full 180-byte fragments from fragment 0 is
 	// flushed. Any gap in the buffered old sequence emits nothing.
-	if (expected_old_message.empty()) {
-		EXPECT_EQ(message, nullptr);
+	ಆದರೆ (expected_old_ಸಂದೇಶ.ಖಾಲಿಗಳು()) {
+		EXPECT_EQ(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
 		EXPECT_EQ(len, 0u);
 
-	} else {
-		ASSERT_NE(message, nullptr);
-		EXPECT_EQ(len, expected_old_message.size());
-		EXPECT_EQ(memcmp(message, expected_old_message.data(), expected_old_message.size()), 0);
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+		EXPECT_EQ(len, expected_old_ಸಂದೇಶ.ಗಾತ್ರ_2());
+		EXPECT_EQ(memcmp(ಸಂದೇಶ_3, expected_old_ಸಂದೇಶ.ದತ್ತಾಂಶ(), expected_old_ಸಂದೇಶ.ಗಾತ್ರ_2()), 0);
 	}
 
-	std::vector<uint8_t> new_fragment1(7);
-	std::iota(new_fragment1.begin(), new_fragment1.end(), static_cast<uint8_t>(0x90));
-	message = gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 1, new_sequence_id), new_fragment1.data(), new_fragment1.size(),
+	std::ಸದಿಶ_2<uint8_t> new_fragment1(7);
+	std::iota(new_fragment1.begin(), new_fragment1.ಕೊನೆ(), static_cast<uint8_t>(0x90));
+	ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 1, new_sequence_id), new_fragment1.ದತ್ತಾಂಶ(), new_fragment1.ಗಾತ್ರ_2(),
 					       timestamp + 10, len);
 
-	std::vector<uint8_t> expected_new_message = new_fragment0;
-	expected_new_message.insert(expected_new_message.end(), new_fragment1.begin(), new_fragment1.end());
+	std::ಸದಿಶ_2<uint8_t> expected_new_ಸಂದೇಶ = new_fragment0;
+	expected_new_ಸಂದೇಶ.ಸೇರಿಸು(expected_new_ಸಂದೇಶ.ಕೊನೆ(), new_fragment1.begin(), new_fragment1.ಕೊನೆ());
 
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, expected_new_message.size());
-	EXPECT_EQ(memcmp(message, expected_new_message.data(), expected_new_message.size()), 0);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, expected_new_ಸಂದೇಶ.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, expected_new_ಸಂದೇಶ.ದತ್ತಾಂಶ(), expected_new_ಸಂದೇಶ.ಗಾತ್ರ_2()), 0);
 }
 
 INSTANTIATE_TEST_SUITE_P(RolloverFlushCases, GpsRtcmSequenceChangeTest,
-			 ::testing::Values(
+			 ::testing::ಮೌಲ್ಯಗಳು(
 				 GpsRtcmSequenceChangeCase {"Single180ByteFragment", {0}, 1},
 				 GpsRtcmSequenceChangeCase {"Two180ByteFragments", {0, 1}, 2},
 				 GpsRtcmSequenceChangeCase {"Three180ByteFragments", {0, 1, 2}, 3},
@@ -401,9 +401,9 @@ INSTANTIATE_TEST_SUITE_P(RolloverFlushCases, GpsRtcmSequenceChangeTest,
 				 GpsRtcmSequenceChangeCase {"GapAfterFragmentZero", {0, 2}, 0},
 				 GpsRtcmSequenceChangeCase {"GapBeforeFragmentThree", {0, 1, 3}, 0}
 			 ),
-			 [](const ::testing::TestParamInfo<GpsRtcmSequenceChangeCase> &test_param_info)
+			 [](ಸ್ಥಿರಾಂಕ ::testing::TestParamInfo<GpsRtcmSequenceChangeCase> &test_param_info)
 {
-	return test_param_info.param.name;
+	ಹಿಂತಿರುಗಿ test_param_info.param.name;
 });
 
 // WHAT: Verify that the fragmented sequence-change path can emit both the
@@ -411,38 +411,38 @@ INSTANTIATE_TEST_SUITE_P(RolloverFlushCases, GpsRtcmSequenceChangeTest,
 // WHY: A non-full fragment 0 is already a complete fragmented message. This
 // only happens if the sender sets the fragmented bit on a packet that would
 // normally be sent unfragmented, but PX4 still needs to handle it safely.
-TEST_F(RtcmTest, GpsRtcmAssemblerQueuesSingleFragmentMessageAfterSequenceChangeFlush)
+TEST_F(RtcmTest, Gps_Rtcm_Assembler_Queues_Single_Fragment_ಸಂದೇಶ_After_Sequence_Change_Flush)
 {
 	// GIVEN: An old exact-180-byte fragmented message and a new sequence whose
 	// fragment 0 is non-full, so it is also the final fragment even though a
 	// compliant sender would usually send it as unfragmented.
-	std::vector<uint8_t> old_payload(GPS_RTCM_MAX_FRAGMENT_LEN);
-	std::iota(old_payload.begin(), old_payload.end(), 0);
-	std::vector<uint8_t> new_payload(23);
-	std::iota(new_payload.begin(), new_payload.end(), static_cast<uint8_t>(0x80));
+	std::ಸದಿಶ_2<uint8_t> old_payload(GPS_RTCM_MAX_FRAGMENT_LEN);
+	std::iota(old_payload.begin(), old_payload.ಕೊನೆ(), 0);
+	std::ಸದಿಶ_2<uint8_t> new_payload(23);
+	std::iota(new_payload.begin(), new_payload.ಕೊನೆ(), static_cast<uint8_t>(0x80));
 	size_t len = 0;
 
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 0, 9), old_payload.data(),
-					       old_payload.size(), 10, len), nullptr);
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 0, 9), old_payload.ದತ್ತಾಂಶ(),
+					       old_payload.ಗಾತ್ರ_2(), 10, len), ಶೂನ್ಯಸೂಚಕ);
 
 	// WHEN: A new sequence starts with a non-full fragment 0, which completes
 	// the new message immediately while also flushing the old sequence.
-	const uint8_t *message = gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 0, 10), new_payload.data(),
-				 new_payload.size(), 20, len);
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 0, 10), new_payload.ದತ್ತಾಂಶ(),
+				 new_payload.ಗಾತ್ರ_2(), 20, len);
 
 	// THEN: addPacket() returns the older flushed message first.
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, old_payload.size());
-	EXPECT_EQ(memcmp(message, old_payload.data(), old_payload.size()), 0);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, old_payload.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, old_payload.ದತ್ತಾಂಶ(), old_payload.ಗಾತ್ರ_2()), 0);
 
-	message = gps_rtcm_assembler.takeDeferredMessage(len);
+	ಸಂದೇಶ_3 = gps_rtcm_assembler.take_Deferred_ಸಂದೇಶ(len);
 
 	// THEN: The new short complete message is queued and can be drained
 	// immediately afterwards.
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, new_payload.size());
-	EXPECT_EQ(memcmp(message, new_payload.data(), new_payload.size()), 0);
-	EXPECT_EQ(gps_rtcm_assembler.takeDeferredMessage(len), nullptr);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, new_payload.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, new_payload.ದತ್ತಾಂಶ(), new_payload.ಗಾತ್ರ_2()), 0);
+	EXPECT_EQ(gps_rtcm_assembler.take_Deferred_ಸಂದೇಶ(len), ಶೂನ್ಯಸೂಚಕ);
 	EXPECT_EQ(len, 0u);
 }
 
@@ -450,37 +450,37 @@ TEST_F(RtcmTest, GpsRtcmAssemblerQueuesSingleFragmentMessageAfterSequenceChangeF
 // message and the new unfragmented packet from one call.
 // WHY: This covers the separate unfragmented branch, which uses the same
 // compatibility fallback but does not go through fragmented reassembly.
-TEST_F(RtcmTest, GpsRtcmAssemblerQueuesSecondUnfragmentedMessageAfterLegacyFlush)
+TEST_F(RtcmTest, Gps_Rtcm_Assembler_Queues_ಎರಡನೇ_Unfragmented_ಸಂದೇಶ_After_Legacy_Flush)
 {
 	// GIVEN: An old exact-180-byte fragmented message followed by a new
 	// unfragmented packet.
-	std::vector<uint8_t> old_payload(GPS_RTCM_MAX_FRAGMENT_LEN);
-	std::iota(old_payload.begin(), old_payload.end(), 0);
-	std::vector<uint8_t> new_payload(23);
-	std::iota(new_payload.begin(), new_payload.end(), static_cast<uint8_t>(0xa0));
+	std::ಸದಿಶ_2<uint8_t> old_payload(GPS_RTCM_MAX_FRAGMENT_LEN);
+	std::iota(old_payload.begin(), old_payload.ಕೊನೆ(), 0);
+	std::ಸದಿಶ_2<uint8_t> new_payload(23);
+	std::iota(new_payload.begin(), new_payload.ಕೊನೆ(), static_cast<uint8_t>(0xa0));
 	size_t len = 0;
 
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 0, 11), old_payload.data(),
-					       old_payload.size(), 10, len), nullptr);
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 0, 11), old_payload.ದತ್ತಾಂಶ(),
+					       old_payload.ಗಾತ್ರ_2(), 10, len), ಶೂನ್ಯಸೂಚಕ);
 
 	// WHEN: The next packet arrives without the fragmented flag.
-	const uint8_t *message = gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(false, 0, 12), new_payload.data(),
-				 new_payload.size(), 20, len);
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ಸುಳ್ಳು, 0, 12), new_payload.ದತ್ತಾಂಶ(),
+				 new_payload.ಗಾತ್ರ_2(), 20, len);
 
 	// THEN: addPacket() returns the older flushed message first from
 	// _assembled_message; the new unfragmented payload is deferred.
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, old_payload.size());
-	EXPECT_EQ(memcmp(message, old_payload.data(), old_payload.size()), 0);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, old_payload.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, old_payload.ದತ್ತಾಂಶ(), old_payload.ಗಾತ್ರ_2()), 0);
 
-	message = gps_rtcm_assembler.takeDeferredMessage(len);
+	ಸಂದೇಶ_3 = gps_rtcm_assembler.take_Deferred_ಸಂದೇಶ(len);
 
 	// THEN: The new unfragmented payload is queued and can be drained
 	// immediately afterwards.
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, new_payload.size());
-	EXPECT_EQ(memcmp(message, new_payload.data(), new_payload.size()), 0);
-	EXPECT_EQ(gps_rtcm_assembler.takeDeferredMessage(len), nullptr);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, new_payload.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, new_payload.ದತ್ತಾಂಶ(), new_payload.ಗಾತ್ರ_2()), 0);
+	EXPECT_EQ(gps_rtcm_assembler.take_Deferred_ಸಂದೇಶ(len), ಶೂನ್ಯಸೂಚಕ);
 	EXPECT_EQ(len, 0u);
 }
 
@@ -491,103 +491,103 @@ TEST_F(RtcmTest, GpsRtcmAssemblerQueuesSecondUnfragmentedMessageAfterLegacyFlush
 TEST_F(RtcmTest, GpsRtcmAssemblerCompletesOnShortTerminalBeforeSequenceChange)
 {
 	// GIVEN: A payload with one full fragment and one short terminal fragment.
-	std::vector<uint8_t> payload(GPS_RTCM_MAX_FRAGMENT_LEN + 23);
-	std::iota(payload.begin(), payload.end(), 0);
+	std::ಸದಿಶ_2<uint8_t> payload(GPS_RTCM_MAX_FRAGMENT_LEN + 23);
+	std::iota(payload.begin(), payload.ಕೊನೆ(), 0);
 	size_t len = 0;
 
 	// WHEN: The fragmented payload arrives in order and completes on the short
 	// final fragment.
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 0, 3), payload.data(),
-					       GPS_RTCM_MAX_FRAGMENT_LEN, 10, len), nullptr);
-	const uint8_t *message = gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 1, 3),
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 0, 3), payload.ದತ್ತಾಂಶ(),
+					       GPS_RTCM_MAX_FRAGMENT_LEN, 10, len), ಶೂನ್ಯಸೂಚಕ);
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 1, 3),
 				 &payload[GPS_RTCM_MAX_FRAGMENT_LEN], 23, 20, len);
 
 	// THEN: The message completes immediately, without waiting for a later
 	// sequence change.
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, payload.size());
-	EXPECT_EQ(memcmp(message, payload.data(), payload.size()), 0);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, payload.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, payload.ದತ್ತಾಂಶ(), payload.ಗಾತ್ರ_2()), 0);
 }
 
 // WHAT: Verify that four full-sized fragments complete a message explicitly.
 // WHY: The exact 720-byte case must not rely on an accidental fallback path.
-TEST_F(RtcmTest, GpsRtcmAssemblerCompletesOnFourthFullFragment)
+TEST_F(RtcmTest, Gps_Rtcm_Assembler_Completes_On_Fourth_ತುಂಬಿದ_Fragment)
 {
 	// GIVEN: A payload that uses all four 180-byte fragment slots.
-	std::vector<uint8_t> payload(GPS_RTCM_MAX_MESSAGE_LEN);
-	std::iota(payload.begin(), payload.end(), 0);
+	std::ಸದಿಶ_2<uint8_t> payload(GPS_RTCM_MAX_ಸಂದೇಶ_LEN);
+	std::iota(payload.begin(), payload.ಕೊನೆ(), 0);
 
 	size_t len = 0;
 
 	// WHEN: The first three full fragments arrive.
-	for (uint8_t fragment = 0; fragment < GPS_RTCM_MAX_FRAGMENTS - 1; fragment++) {
-		EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, fragment, 3),
+	ಗಾಗಿ (uint8_t fragment = 0; fragment < GPS_RTCM_MAX_FRAGMENTS - 1; fragment++) {
+		EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, fragment, 3),
 						       &payload[fragment * GPS_RTCM_MAX_FRAGMENT_LEN], GPS_RTCM_MAX_FRAGMENT_LEN, 10 + fragment, len),
-			  nullptr);
+			  ಶೂನ್ಯಸೂಚಕ);
 	}
 
 	// WHEN: The fourth full fragment arrives.
-	const uint8_t *message = gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 3, 3),
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 3, 3),
 				 &payload[3 * GPS_RTCM_MAX_FRAGMENT_LEN], GPS_RTCM_MAX_FRAGMENT_LEN, 20, len);
 
 	// THEN: The assembler emits the completed 720-byte payload.
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, payload.size());
-	EXPECT_EQ(memcmp(message, payload.data(), payload.size()), 0);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, payload.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, payload.ದತ್ತಾಂಶ(), payload.ಗಾತ್ರ_2()), 0);
 }
 
 // WHAT: Verify that an exact multiple of 180 bytes below 720 bytes can be
 // completed with an empty terminating fragment.
 // WHY: Per the MAVLink completion rule, the receiver only knows the message is
 // shorter than 4 fragments after the first non-full fragment arrives.
-TEST_F(RtcmTest, GpsRtcmAssemblerCompletesOnZeroLengthTerminatingFragment)
+TEST_F(RtcmTest, Gps_Rtcm_Assembler_Completes_On_Zero_ಉದ್ದಳತೆ_Terminating_Fragment)
 {
 	// GIVEN: A 360-byte payload split into two full fragments.
-	std::vector<uint8_t> payload(GPS_RTCM_MAX_FRAGMENT_LEN * 2);
-	std::iota(payload.begin(), payload.end(), 0);
+	std::ಸದಿಶ_2<uint8_t> payload(GPS_RTCM_MAX_FRAGMENT_LEN * 2);
+	std::iota(payload.begin(), payload.ಕೊನೆ(), 0);
 
 	size_t len = 0;
 
 	// WHEN: The two full fragments arrive.
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 0, 11), payload.data(),
-					       GPS_RTCM_MAX_FRAGMENT_LEN, 10, len), nullptr);
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 1, 11),
-					       payload.data() + GPS_RTCM_MAX_FRAGMENT_LEN, GPS_RTCM_MAX_FRAGMENT_LEN, 20, len), nullptr);
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 0, 11), payload.ದತ್ತಾಂಶ(),
+					       GPS_RTCM_MAX_FRAGMENT_LEN, 10, len), ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 1, 11),
+					       payload.ದತ್ತಾಂಶ() + GPS_RTCM_MAX_FRAGMENT_LEN, GPS_RTCM_MAX_FRAGMENT_LEN, 20, len), ಶೂನ್ಯಸೂಚಕ);
 
 	// WHEN: An empty fragment marks the end of the MAVLink fragmented payload.
-	const uint8_t *message = gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 2, 11),
-				 payload.data() + payload.size(), 0, 30, len);
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 2, 11),
+				 payload.ದತ್ತಾಂಶ() + payload.ಗಾತ್ರ_2(), 0, 30, len);
 
 	// THEN: The assembler returns the original 360-byte payload.
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, payload.size());
-	EXPECT_EQ(memcmp(message, payload.data(), payload.size()), 0);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, payload.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, payload.ದತ್ತಾಂಶ(), payload.ಗಾತ್ರ_2()), 0);
 }
 
 // WHAT: Verify that a stale partial buffer is dropped after the timeout.
 // WHY: This prevents an old fragment from being mixed into a later message with the same sequence ID.
-TEST_F(RtcmTest, GpsRtcmAssemblerDropsStalePartialMessage)
+TEST_F(RtcmTest, Gps_Rtcm_Assembler_Drops_Stale_Partial_ಸಂದೇಶ)
 {
 	// GIVEN: A payload that spans one full fragment and one non-full fragment.
-	std::vector<uint8_t> payload(GPS_RTCM_MAX_FRAGMENT_LEN + 15, 0x44);
+	std::ಸದಿಶ_2<uint8_t> payload(GPS_RTCM_MAX_FRAGMENT_LEN + 15, 0x44);
 
 	size_t len = 0;
 
 	// WHEN: Fragment 0 is followed by a late fragment 1 after the timeout window.
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 0, 4), payload.data(), GPS_RTCM_MAX_FRAGMENT_LEN, 10,
-					       len), nullptr);
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 1, 4),
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 0, 4), payload.ದತ್ತಾಂಶ(), GPS_RTCM_MAX_FRAGMENT_LEN, 10,
+					       len), ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 1, 4),
 					       &payload[GPS_RTCM_MAX_FRAGMENT_LEN], 15, 10 + GPS_RTCM_FRAGMENT_TIMEOUT_US + 1, len),
-		  nullptr);
+		  ಶೂನ್ಯಸೂಚಕ);
 
 	// WHEN: The matching fragment 0 arrives after the timeout reset.
-	const uint8_t *message = gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 0, 4), payload.data(),
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 0, 4), payload.ದತ್ತಾಂಶ(),
 				 GPS_RTCM_MAX_FRAGMENT_LEN, 10 + GPS_RTCM_FRAGMENT_TIMEOUT_US + 2, len);
 
 	// THEN: The fresh out-of-order pair is reconstructed without reusing the stale pre-timeout state.
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, payload.size());
-	EXPECT_EQ(memcmp(message, payload.data(), payload.size()), 0);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, payload.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, payload.ದತ್ತಾಂಶ(), payload.ಗಾತ್ರ_2()), 0);
 }
 
 // WHAT: Verify that a conflicting fragment slot restarts assembly from the
@@ -598,57 +598,57 @@ TEST_F(RtcmTest, GpsRtcmAssemblerRestartsOnFragmentContentMismatch)
 {
 	// GIVEN: Two different payloads that reuse the same fragment slot under the
 	// same sequence ID.
-	std::vector<uint8_t> old_fragment(GPS_RTCM_MAX_FRAGMENT_LEN, 0x55);
-	std::vector<uint8_t> payload(GPS_RTCM_MAX_FRAGMENT_LEN * 2 + 12);
-	std::iota(payload.begin(), payload.end(), 0);
+	std::ಸದಿಶ_2<uint8_t> old_fragment(GPS_RTCM_MAX_FRAGMENT_LEN, 0x55);
+	std::ಸದಿಶ_2<uint8_t> payload(GPS_RTCM_MAX_FRAGMENT_LEN * 2 + 12);
+	std::iota(payload.begin(), payload.ಕೊನೆ(), 0);
 	size_t len = 0;
 
 	// WHEN: Fragment 1 is first buffered with old content, then replaced with
 	// new content for the same sequence ID.
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 1, 9), old_fragment.data(),
-					       old_fragment.size(), 10, len), nullptr);
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 1, 9),
-					       &payload[GPS_RTCM_MAX_FRAGMENT_LEN], GPS_RTCM_MAX_FRAGMENT_LEN, 20, len), nullptr);
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 1, 9), old_fragment.ದತ್ತಾಂಶ(),
+					       old_fragment.ಗಾತ್ರ_2(), 10, len), ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 1, 9),
+					       &payload[GPS_RTCM_MAX_FRAGMENT_LEN], GPS_RTCM_MAX_FRAGMENT_LEN, 20, len), ಶೂನ್ಯಸೂಚಕ);
 
 	// WHEN: The remaining fragments for the new buffer arrive.
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 0, 9), payload.data(),
-					       GPS_RTCM_MAX_FRAGMENT_LEN, 30, len), nullptr);
-	const uint8_t *message = gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 2, 9),
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 0, 9), payload.ದತ್ತಾಂಶ(),
+					       GPS_RTCM_MAX_FRAGMENT_LEN, 30, len), ಶೂನ್ಯಸೂಚಕ);
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 2, 9),
 				 &payload[GPS_RTCM_MAX_FRAGMENT_LEN * 2], 12, 40, len);
 
 	// THEN: The assembler returns the newer payload, not the abandoned partial buffer.
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, payload.size());
-	EXPECT_EQ(memcmp(message, payload.data(), payload.size()), 0);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, payload.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, payload.ದತ್ತಾಂಶ(), payload.ಗಾತ್ರ_2()), 0);
 }
 
 // WHAT: Verify that a non-full fragment cannot appear before an already buffered higher fragment.
 // WHY: Once a fragment claims to be the first non-full fragment, any stored
 // higher fragment makes the buffered message internally inconsistent and the
 // buffer must be dropped.
-TEST_F(RtcmTest, GpsRtcmAssemblerRejectsNonFullFragmentBeforeBufferedHigherFragment)
+TEST_F(RtcmTest, Gps_Rtcm_Assembler_Rejects_Non_ತುಂಬಿದ_Fragment_Before_Buffered_Higher_Fragment)
 {
 	// GIVEN: An out-of-order higher fragment and a later valid two-fragment message with the same sequence ID.
-	std::vector<uint8_t> garbage_fragment(GPS_RTCM_MAX_FRAGMENT_LEN, 0x77);
-	std::vector<uint8_t> payload(GPS_RTCM_MAX_FRAGMENT_LEN + 16, 0x88);
+	std::ಸದಿಶ_2<uint8_t> garbage_fragment(GPS_RTCM_MAX_FRAGMENT_LEN, 0x77);
+	std::ಸದಿಶ_2<uint8_t> payload(GPS_RTCM_MAX_FRAGMENT_LEN + 16, 0x88);
 	size_t len = 0;
 
 	// WHEN: A higher fragment is buffered first.
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 2, 10), garbage_fragment.data(),
-					       garbage_fragment.size(), 10, len), nullptr);
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 2, 10), garbage_fragment.ದತ್ತಾಂಶ(),
+					       garbage_fragment.ಗಾತ್ರ_2(), 10, len), ಶೂನ್ಯಸೂಚಕ);
 
 	// WHEN: A non-full lower fragment arrives and would incorrectly claim the message already ended.
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 1, 10), &payload[GPS_RTCM_MAX_FRAGMENT_LEN], 16, 20,
-					       len), nullptr);
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 1, 10), &payload[GPS_RTCM_MAX_FRAGMENT_LEN], 16, 20,
+					       len), ಶೂನ್ಯಸೂಚಕ);
 
 	// WHEN: A clean message is sent afterwards with the same sequence ID.
-	EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 0, 10), payload.data(),
-					       GPS_RTCM_MAX_FRAGMENT_LEN, 30, len), nullptr);
-	const uint8_t *message = gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, 1, 10),
+	EXPECT_EQ(gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 0, 10), payload.ದತ್ತಾಂಶ(),
+					       GPS_RTCM_MAX_FRAGMENT_LEN, 30, len), ಶೂನ್ಯಸೂಚಕ);
+	ಸ್ಥಿರಾಂಕ uint8_t *ಸಂದೇಶ_3 = gps_rtcm_assembler.ಕೂಡಿಸು_Packet(buildGpsRtcmFlags(ನಿಜ, 1, 10),
 				 &payload[GPS_RTCM_MAX_FRAGMENT_LEN], 16, 40, len);
 
 	// THEN: The inconsistent partial buffer was discarded and the clean message reconstructs normally.
-	ASSERT_NE(message, nullptr);
-	EXPECT_EQ(len, payload.size());
-	EXPECT_EQ(memcmp(message, payload.data(), payload.size()), 0);
+	ASSERT_NE(ಸಂದೇಶ_3, ಶೂನ್ಯಸೂಚಕ);
+	EXPECT_EQ(len, payload.ಗಾತ್ರ_2());
+	EXPECT_EQ(memcmp(ಸಂದೇಶ_3, payload.ದತ್ತಾಂಶ(), payload.ಗಾತ್ರ_2()), 0);
 }

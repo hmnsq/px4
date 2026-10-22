@@ -37,54 +37,54 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <assert.h>
+#ಅನ್ತರ್ಭಾವ <time.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/test/test.hpp>
+#ಅನ್ತರ್ಭಾವ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 /**
  * An output trim/ saturation block
  */
-class __EXPORT BlockOutput: public SuperBlock
+ವರ್ಗ __EXPORT ಖಂಡ_Output: ಸಾರ್ವಜನಿಕ Super_ಖಂಡ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockOutput(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_trim(this, "TRIM"),
-		_limit(this, ""),
+	ಖಂಡ_Output(Super_ಖಂಡ *ಪೋಷಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) :
+		Super_ಖಂಡ(ಪೋಷಕ, name),
+		_trim(ಇದು, "TRIM"),
+		ಎಲ್ಲೆ(ಇದು, ""),
 		_val(0)
 	{
 		update(0);
 	}
 
-	virtual ~BlockOutput() = default;
-	void update(float input)
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_Output() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ಶೂನ್ಯ update(ದಶಮಾಂಶ ಒಳಹರಿವು)
 	{
-		_val = _limit.update(input + getTrim());
+		_val = ಎಲ್ಲೆ.update(ಒಳಹರಿವು + getTrim());
 	}
 // accessors
-	float getMin() { return _limit.getMin(); }
-	float getMax() { return _limit.getMax(); }
-	float getTrim() { return _trim.get(); }
-	float get() { return _val; }
-private:
-// attributes
-	control::BlockParamFloat _trim;
-	BlockLimit _limit;
-	float _val;
+	ದಶಮಾಂಶ getMin() { ಹಿಂತಿರುಗಿ ಎಲ್ಲೆ.getMin(); }
+	ದಶಮಾಂಶ getMax() { ಹಿಂತಿರುಗಿ ಎಲ್ಲೆ.getMax(); }
+	ದಶಮಾಂಶ getTrim() { ಹಿಂತಿರುಗಿ _trim.get(); }
+	ದಶಮಾಂಶ get() { ಹಿಂತಿರುಗಿ _val; }
+ಖಾಸಗಿ:
+//ಗುಣಲಕ್ಷಣಗಳು
+	control::ಖಂಡ_Param_Float _trim;
+	ಖಂಡ_ಎಲ್ಲೆ ಎಲ್ಲೆ;
+	ದಶಮಾಂಶ _val;
 };
 
 } // namespace control

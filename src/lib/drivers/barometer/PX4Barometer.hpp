@@ -31,38 +31,38 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <math.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
 
-#include <drivers/drv_hrt.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/sensor_baro.h>
+#ಅನ್ತರ್ಭಾವ <drivers/drv_hrt.h>
+#ಅನ್ತರ್ಭಾವ <uORB/PublicationMulti.hpp>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/sensor_baro.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#ಅನ್ತರ್ಭಾವ <lib/failure_injection/FailureInjection.hpp>
 
-class PX4Barometer
+ವರ್ಗ PX4Barometer
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	PX4Barometer(uint32_t device_id);
-	PX4Barometer(uint32_t device_id, bool external);
+	PX4Barometer(uint32_t device_id, ತಾರ್ಕಿಕ external);
 
-	void set_device_id(uint32_t device_id);
-	void set_external(bool external);
-	void set_error_count(uint32_t error_count) { _report.error_count = error_count; }
-	void set_temperature(float temperature) { _report.temperature = temperature; }
+	ಶೂನ್ಯ ಗಣ_device_id(uint32_t device_id);
+	ಶೂನ್ಯ ಗಣ_external(ತಾರ್ಕಿಕ external);
+	ಶೂನ್ಯ ಗಣ_error_ಎಣಿಕೆ(uint32_t error_ಎಣಿಕೆ) { _report.error_ಎಣಿಕೆ = error_ಎಣಿಕೆ; }
+	ಶೂನ್ಯ ಗಣ_temperature(ದಶಮಾಂಶ temperature) { _report.temperature = temperature; }
 
-	void update(const hrt_abstime &timestamp_sample, float pressure);
+	ಶೂನ್ಯ update(ಸ್ಥಿರಾಂಕ hrt_abstime &timestamp_sample, ದಶಮಾಂಶ pressure);
 
-	int get_instance() { return _sensor_pub.get_instance(); };
-	uint32_t get_device_id() const { return _report.device_id; }
+	ಪೂರ್ಣಾಂಕ get_instance() { ಹಿಂತಿರುಗಿ _sensor_pub.get_instance(); };
+	uint32_t get_device_id() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _report.device_id; }
 
-private:
+ಖಾಸಗಿ:
 	uORB::PublicationMulti<sensor_baro_s> _sensor_pub{ORB_ID(sensor_baro)};
 
 	sensor_baro_s	_report{};
 
-	bool		_external_forced{false}; // classification set by the driver, do not re-derive from the device id
+	ತಾರ್ಕಿಕ		_external_forced{ಸುಳ್ಳು}; // classification set by the driver, do not re-derive from the device id
 
 	failure_injection::Config _failure_config;
 	failure_injection::Stuck<sensor_baro_s> _stuck;

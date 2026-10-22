@@ -36,31 +36,31 @@
  *
  * NuttX Character device functions
  */
-#include <errno.h>
+#ಅನ್ತರ್ಭಾವ <errno.h>
 
-#include "cdev_platform.hpp"
-#include "../CDev.hpp"
+#ಅನ್ತರ್ಭಾವ "cdev_platform.hpp"
+#ಅನ್ತರ್ಭಾವ "../CDev.hpp"
 
-#include <sys/ioctl.h>
+#ಅನ್ತರ್ಭಾವ <sys/ioctl.h>
 
-#ifdef CONFIG_DISABLE_POLL
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ CONFIG_DISABLE_POLL
 # error This driver is not compatible with CONFIG_DISABLE_POLL
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-namespace cdev
+ನಾಮಾಕಾಶ cdev
 {
 
 /*
  * The standard NuttX operation dispatch table can't call C++ member functions
  * directly, so we have to bounce them through this dispatch table.
  */
-static int	cdev_open(file_t *filp);
-static int	cdev_close(file_t *filp);
-static ssize_t	cdev_read(file_t *filp, char *buffer, size_t buflen);
-static ssize_t	cdev_write(file_t *filp, const char *buffer, size_t buflen);
-static off_t	cdev_seek(file_t *filp, off_t offset, int whence);
-static int	cdev_ioctl(file_t *filp, int cmd, unsigned long arg);
-static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ	cdev_open(file_t *filp);
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ	cdev_close(file_t *filp);
+ಸ್ಥಿರ ssize_t	cdev_read(file_t *filp, ಅಕ್ಷರ *ಬಫರ್_2, size_t buflen);
+ಸ್ಥಿರ ssize_t	cdev_write(file_t *filp, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *ಬಫರ್_2, size_t buflen);
+ಸ್ಥಿರ off_t	cdev_seek(file_t *filp, off_t ಸ್ಥಾನಾಂತರ, ಪೂರ್ಣಾಂಕ whence);
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ	cdev_ioctl(file_t *filp, ಪೂರ್ಣಾಂಕ cmd, ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ arg);
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, ತಾರ್ಕಿಕ ಸಿದ್ಧತೆ);
 
 /**
  * Character device indirection table.
@@ -71,99 +71,99 @@ static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
  * Note that we use the GNU extension syntax here because we don't get designated
  * initialisers in gcc 4.6.
  */
-static const struct file_operations g_fops = {
+ಸ್ಥಿರ ಸ್ಥಿರಾಂಕ ರಚನೆ file_operations g_fops = {
 open	: cdev_open,
 close	: cdev_close,
-read	: cdev_read,
-write	: cdev_write,
+ಪಠ	: cdev_read,
+ಲಿಖ	: cdev_write,
 seek	: cdev_seek,
 ioctl	: cdev_ioctl,
 poll	: cdev_poll,
-#ifndef CONFIG_DISABLE_PSEUDOFS_OPERATIONS
-unlink	: nullptr
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ CONFIG_DISABLE_PSEUDOFS_OPERATIONS
+unlink	: ಶೂನ್ಯಸೂಚಕ
+#ಆದರೆ_ಅಂತ್ಯ
 };
 
-const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { return g_fops; }
+ಸ್ಥಿರಾಂಕ cdev::px4_file_operations_t &cdev::CDev::fops_ref() { ಹಿಂತಿರುಗಿ g_fops; }
 
-static int
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
 cdev_open(file_t *filp)
 {
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_ಖಾಸಗಿ);
 
-	return cdev->open(filp);
+	ಹಿಂತಿರುಗಿ cdev->open(filp);
 }
 
-static int
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
 cdev_close(file_t *filp)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ಆದರೆ ((filp->f_inode->i_crefs) == 0) {
+		ಹಿಂತಿರುಗಿ -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_ಖಾಸಗಿ);
 
-	return cdev->close(filp);
+	ಹಿಂತಿರುಗಿ cdev->close(filp);
 }
 
-static ssize_t
-cdev_read(file_t *filp, char *buffer, size_t buflen)
+ಸ್ಥಿರ ssize_t
+cdev_read(file_t *filp, ಅಕ್ಷರ *ಬಫರ್_2, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ಆದರೆ ((filp->f_inode->i_crefs) == 0) {
+		ಹಿಂತಿರುಗಿ -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_ಖಾಸಗಿ);
 
-	return cdev->read(filp, buffer, buflen);
+	ಹಿಂತಿರುಗಿ cdev->ಪಠ(filp, ಬಫರ್_2, buflen);
 }
 
-static ssize_t
-cdev_write(file_t *filp, const char *buffer, size_t buflen)
+ಸ್ಥಿರ ssize_t
+cdev_write(file_t *filp, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *ಬಫರ್_2, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ಆದರೆ ((filp->f_inode->i_crefs) == 0) {
+		ಹಿಂತಿರುಗಿ -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_ಖಾಸಗಿ);
 
-	return cdev->write(filp, buffer, buflen);
+	ಹಿಂತಿರುಗಿ cdev->ಲಿಖ(filp, ಬಫರ್_2, buflen);
 }
 
-static off_t
-cdev_seek(file_t *filp, off_t offset, int whence)
+ಸ್ಥಿರ off_t
+cdev_seek(file_t *filp, off_t ಸ್ಥಾನಾಂತರ, ಪೂರ್ಣಾಂಕ whence)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ಆದರೆ ((filp->f_inode->i_crefs) == 0) {
+		ಹಿಂತಿರುಗಿ -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_ಖಾಸಗಿ);
 
-	return cdev->seek(filp, offset, whence);
+	ಹಿಂತಿರುಗಿ cdev->seek(filp, ಸ್ಥಾನಾಂತರ, whence);
 }
 
-static int
-cdev_ioctl(file_t *filp, int cmd, unsigned long arg)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+cdev_ioctl(file_t *filp, ಪೂರ್ಣಾಂಕ cmd, ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ arg)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ಆದರೆ ((filp->f_inode->i_crefs) == 0) {
+		ಹಿಂತಿರುಗಿ -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_ಖಾಸಗಿ);
 
-	return cdev->ioctl(filp, cmd, arg);
+	ಹಿಂತಿರುಗಿ cdev->ioctl(filp, cmd, arg);
 }
 
-static int
-cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, ತಾರ್ಕಿಕ ಸಿದ್ಧತೆ)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	ಆದರೆ ((filp->f_inode->i_crefs) == 0) {
+		ಹಿಂತಿರುಗಿ -ENODEV;
 	}
 
-	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
+	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_ಖಾಸಗಿ);
 
-	return cdev->poll(filp, fds, setup);
+	ಹಿಂತಿರುಗಿ cdev->poll(filp, fds, ಸಿದ್ಧತೆ);
 }
 
 } // namespace cdev

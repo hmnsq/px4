@@ -37,19 +37,19 @@
  * Controller library code
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include "BlockLowPass.hpp"
+#ಅನ್ತರ್ಭಾವ "BlockLowPass.hpp"
 
-#include <px4_platform_common/defines.h>
-#include <math.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/defines.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ಅನ್ತರ್ಭಾವ "block/Block.hpp"
+#ಅನ್ತರ್ಭಾವ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ಅನ್ತರ್ಭಾವ "matrix/math.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
 /**
@@ -58,17 +58,17 @@ namespace control
  * This has a built in low pass filter.
  * @see LowPass
  */
-class __EXPORT BlockDerivative : public SuperBlock
+ವರ್ಗ __EXPORT ಖಂಡ_Derivative : ಸಾರ್ವಜನಿಕ Super_ಖಂಡ
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 // methods
-	BlockDerivative(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
+	ಖಂಡ_Derivative(Super_ಖಂಡ *ಪೋಷಕ, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name) :
+		Super_ಖಂಡ(ಪೋಷಕ, name),
 		_u(0),
-		_initialized(false),
-		_lowPass(this, "LP")
+		_initialized(ಸುಳ್ಳು),
+		ಕೆಳಗಿನ_Pass(ಇದು, "LP")
 	{}
-	virtual ~BlockDerivative() = default;
+	ವಾಸ್ತವಿಕ ~ಖಂಡ_Derivative() = ಪೂರ್ವನಿಯೋಜಿತ;
 
 	/**
 	 * Update the state and get current derivative
@@ -84,18 +84,18 @@ public:
 	 * @param input the variable to calculate the derivative of
 	 * @return the current derivative
 	 */
-	float update(float input);
+	ದಶಮಾಂಶ update(ದಶಮಾಂಶ ಒಳಹರಿವು);
 // accessors
-	void setU(float u) {_u = u;}
-	void reset() { _initialized = false; };
-	float getU() {return _u;}
-	float getLP() {return _lowPass.getFCut();}
-	float getO() { return _lowPass.getState(); }
-protected:
-// attributes
-	float _u; /**< previous input */
-	bool _initialized;
-	BlockLowPass _lowPass; /**< low pass filter */
+	ಶೂನ್ಯ ಗಣ_U(ದಶಮಾಂಶ u) {_u = u;}
+	ಶೂನ್ಯ reset() { _initialized = ಸುಳ್ಳು; };
+	ದಶಮಾಂಶ getU() {ಹಿಂತಿರುಗಿ _u;}
+	ದಶಮಾಂಶ getLP() {ಹಿಂತಿರುಗಿ ಕೆಳಗಿನ_Pass.getFCut();}
+	ದಶಮಾಂಶ getO() { ಹಿಂತಿರುಗಿ ಕೆಳಗಿನ_Pass.getState(); }
+ಸಂರಕ್ಷಿತ:
+//ಗುಣಲಕ್ಷಣಗಳು
+	ದಶಮಾಂಶ _u; /**< previous input */
+	ತಾರ್ಕಿಕ _initialized;
+	ಖಂಡ_ಕೆಳಗಿನ_Pass ಕೆಳಗಿನ_Pass; /**< low pass filter */
 };
 
 } // namespace control

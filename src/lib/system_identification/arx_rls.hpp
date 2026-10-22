@@ -55,14 +55,14 @@
  * @author Mathieu Bresciani <mathieu@auterion.com>
  */
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <matrix/matrix/math.hpp>
+#ಅನ್ತರ್ಭಾವ <matrix/matrix/math.hpp>
 
-template<size_t N, size_t M, size_t D>
-class ArxRls final
+ಮಾದರಿ<size_t N, size_t M, size_t D>
+ವರ್ಗ ArxRls final
 {
-public:
+ಸಾರ್ವಜನಿಕ:
 	ArxRls()
 	{
 		static_assert(N >= M, "The transfer function needs to be proper");
@@ -70,38 +70,38 @@ public:
 		reset();
 	}
 
-	~ArxRls() = default;
+	~ArxRls() = ಪೂರ್ವನಿಯೋಜಿತ;
 
-	void setForgettingFactor(float time_constant, float dt) { _lambda = 1.f - dt / time_constant; }
-	void setForgettingFactor(float lambda) { _lambda = lambda; }
+	ಶೂನ್ಯ ಗಣ_Forgetting_ಗುಣಕ(ದಶಮಾಂಶ ಸಮಯ_constant_2, ದಶಮಾಂಶ dt) { _lambda = 1.f - dt / ಸಮಯ_constant_2; }
+	ಶೂನ್ಯ ಗಣ_Forgetting_ಗುಣಕ(ದಶಮಾಂಶ lambda) { _lambda = lambda; }
 
 	/*
 	 * return the vector of estimated parameters
 	 * [a_1 .. a_n b_0 .. b_m]'
 	 */
-	const matrix::Vector < float, N + M + 1 > &getCoefficients() const { return _theta_hat; }
-	const matrix::Vector < float, N + M + 1 > getVariances() const { return _P.diag(); }
-	float getInnovation() const { return _innovation; }
-	const matrix::Vector < float, N + M + 1 > &getDiffEstimate() const { return _diff_theta_hat; }
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ < ದಶಮಾಂಶ, N + M + 1 > &getCoefficients() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _theta_hat; }
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ < ದಶಮಾಂಶ, N + M + 1 > getVariances() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _P.diag(); }
+	ದಶಮಾಂಶ getInnovation() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _innovation; }
+	ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ < ದಶಮಾಂಶ, N + M + 1 > &getDiffEstimate() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _diff_theta_hat; }
 
-	void reset(const matrix::Vector < float, N + M + 1 > &theta_init = {})
+	ಶೂನ್ಯ reset(ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ < ದಶಮಾಂಶ, N + M + 1 > &theta_init = {})
 	{
 		/* _P.uncorrelateCovarianceSetVariance<N + M + 1>(0, 10e3f); // does not work */
-		_P.setZero();
+		_P.ಗಣ_Zero();
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
+		ಗಾಗಿ (size_t i = 0; i < (N + M + 1); i++) {
 			_P(i, i) = 10e3f;
 		}
 
-		_diff_theta_hat.setZero();
+		_diff_theta_hat.ಗಣ_Zero();
 
 		_theta_hat = theta_init;
 
-		for (size_t i = 0; i < M + D + 1; i++) {
+		ಗಾಗಿ (size_t i = 0; i < M + D + 1; i++) {
 			_u[i] = 0.f;
 		}
 
-		for (size_t i = 0; i < N + 1; i++) {
+		ಗಾಗಿ (size_t i = 0; i < N + 1; i++) {
 			_y[i] = 0.f;
 		}
 
@@ -109,100 +109,100 @@ public:
 		_innovation = 0.f;
 	}
 
-	void update(float u, float y)
+	ಶೂನ್ಯ update(ದಶಮಾಂಶ u, ದಶಮಾಂಶ y)
 	{
-		const matrix::Vector < float, N + M + 1 > theta_prev = _theta_hat;
+		ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ < ದಶಮಾಂಶ, N + M + 1 > theta_prev = _theta_hat;
 
-		addInputOutput(u, y);
+		ಕೂಡಿಸು_ಒಳಹರಿವು_Output(u, y);
 
-		if (!isBufferFull()) {
+		ಆದರೆ (!is_ಬಫರ್_ತುಂಬಿದ()) {
 			// Do not start to update the RLS algorithm when the
 			// buffer still contains zeros
-			return;
+			ಹಿಂತಿರುಗಿ;
 		}
 
-		const matrix::Vector < float, N + M + 1 > phi = constructDesignVector();
-		const matrix::Matrix < float, 1, N + M + 1 > phi_t = phi.transpose();
+		ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಸದಿಶ < ದಶಮಾಂಶ, N + M + 1 > phi = construct_Design_ಸದಿಶ();
+		ಸ್ಥಿರಾಂಕ ಮಾತೃಕೆ::ಮಾತೃಕೆ_2 < ದಶಮಾಂಶ, 1, N + M + 1 > phi_t = phi.transpose();
 
 		_P = (_P - _P * phi * phi_t * _P / (_lambda + (phi_t * _P * phi)(0, 0))) / _lambda;
 		_innovation = _y[N] - (phi_t * _theta_hat)(0, 0);
 		_theta_hat = _theta_hat + _P * phi * _innovation;
 
-		for (size_t i = 0; i < N + M + 1; i++) {
+		ಗಾಗಿ (size_t i = 0; i < N + M + 1; i++) {
 			_diff_theta_hat(i) = fabsf(_theta_hat(i) - theta_prev(i));
 		}
 
 		/* fixCovarianceErrors(); // TODO: this could help against ill-conditioned matrix but needs more testing*/
 	}
 
-private:
-	void addInputOutput(float u, float y)
+ಖಾಸಗಿ:
+	ಶೂನ್ಯ ಕೂಡಿಸು_ಒಳಹರಿವು_Output(ದಶಮಾಂಶ u, ದಶಮಾಂಶ y)
 	{
-		shiftRegisters();
+		ಸರಿಸು_Registers();
 		_u[M + D] = u;
 		_y[N] = y;
 
-		if (!isBufferFull()) {
+		ಆದರೆ (!is_ಬಫರ್_ತುಂಬಿದ()) {
 			_nb_samples++;
 		}
 	}
 
-	void shiftRegisters()
+	ಶೂನ್ಯ ಸರಿಸು_Registers()
 	{
-		for (size_t i = 0; i < N; i++) {
+		ಗಾಗಿ (size_t i = 0; i < N; i++) {
 			_y[i] = _y[i + 1];
 		}
 
-		for (size_t i = 0; i < (M + D); i++) {
+		ಗಾಗಿ (size_t i = 0; i < (M + D); i++) {
 			_u[i] = _u[i + 1];
 		}
 	}
 
-	bool isBufferFull() const { return _nb_samples > (M + N + D); }
+	ತಾರ್ಕಿಕ is_ಬಫರ್_ತುಂಬಿದ() ಸ್ಥಿರಾಂಕ { ಹಿಂತಿರುಗಿ _nb_samples > (M + N + D); }
 
-	matrix::Vector < float, N + M + 1 > constructDesignVector() const
+	ಮಾತೃಕೆ::ಸದಿಶ < ದಶಮಾಂಶ, N + M + 1 > construct_Design_ಸದಿಶ() ಸ್ಥಿರಾಂಕ
 	{
-		matrix::Vector < float, N + M + 1 > phi;
+		ಮಾತೃಕೆ::ಸದಿಶ < ದಶಮಾಂಶ, N + M + 1 > phi;
 
-		for (size_t i = 0; i < N; i++) {
+		ಗಾಗಿ (size_t i = 0; i < N; i++) {
 			phi(i) = -_y[N - i - 1];
 		}
 
-		int j = 0;
+		ಪೂರ್ಣಾಂಕ j = 0;
 
-		for (size_t i = N; i < (N + M + 1); i++) {
+		ಗಾಗಿ (size_t i = N; i < (N + M + 1); i++) {
 			phi(i) = _u[M - j];
 			j++;
 		}
 
-		return phi;
+		ಹಿಂತಿರುಗಿ phi;
 	}
 
-	void fixCovarianceErrors()
+	ಶೂನ್ಯ fixCovarianceErrors()
 	{
-		float max_var = 0.f;
+		ದಶಮಾಂಶ max_var = 0.f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) > max_var) {
+		ಗಾಗಿ (size_t i = 0; i < (N + M + 1); i++) {
+			ಆದರೆ (_P(i, i) > max_var) {
 				max_var = _P(i, i);
 			}
 		}
 
-		const float min_var_allowed = max_var * 0.1f;
+		ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ min_var_allowed = max_var * 0.1f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) < min_var_allowed) {
+		ಗಾಗಿ (size_t i = 0; i < (N + M + 1); i++) {
+			ಆದರೆ (_P(i, i) < min_var_allowed) {
 				_P(i, i) = min_var_allowed;
 			}
 		}
 	}
 
-	matrix::SquareMatrix < float, N + M + 1 > _P;
-	matrix::Vector < float, N + M + 1 > _theta_hat;
-	matrix::Vector < float, N + M + 1 > _diff_theta_hat;
-	float _innovation{};
-	float _u[M + D + 1] {};
-	float _y[N + 1] {};
-	unsigned _nb_samples{0};
-	float _lambda{1.f};
+	ಮಾತೃಕೆ::ವರ್ಗಫಲ_ಮಾತೃಕೆ < ದಶಮಾಂಶ, N + M + 1 > _P;
+	ಮಾತೃಕೆ::ಸದಿಶ < ದಶಮಾಂಶ, N + M + 1 > _theta_hat;
+	ಮಾತೃಕೆ::ಸದಿಶ < ದಶಮಾಂಶ, N + M + 1 > _diff_theta_hat;
+	ದಶಮಾಂಶ _innovation{};
+	ದಶಮಾಂಶ _u[M + D + 1] {};
+	ದಶಮಾಂಶ _y[N + 1] {};
+	ಚಿಹ್ನೆರಹಿತ _nb_samples{0};
+	ದಶಮಾಂಶ _lambda{1.f};
 };

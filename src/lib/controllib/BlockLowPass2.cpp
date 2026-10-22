@@ -37,26 +37,26 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#ಅನ್ತರ್ಭಾವ <math.h>
+#ಅನ್ತರ್ಭಾವ <float.h>
 
-#include "blocks.hpp"
+#ಅನ್ತರ್ಭಾವ "blocks.hpp"
 
-namespace control
+ನಾಮಾಕಾಶ control
 {
 
-float BlockLowPass2::update(float input)
+ದಶಮಾಂಶ ಖಂಡ_ಕೆಳಗಿನ_Pass2::update(ದಶಮಾಂಶ ಒಳಹರಿವು)
 {
-	if (!PX4_ISFINITE(getState())) {
-		setState(input);
+	ಆದರೆ (!PX4_ISFINITE(getState())) {
+		ಗಣ_State(ಒಳಹರಿವು);
 	}
 
-	if (fabsf(_lp.get_cutoff_freq() - getFCutParam()) > FLT_EPSILON) {
-		_lp.set_cutoff_frequency(_fs, getFCutParam());
+	ಆದರೆ (fabsf(_lp.get_cutoff_freq() - getFCutParam()) > FLT_EPSILON) {
+		_lp.ಗಣ_cutoff_frequency(_fs, getFCutParam());
 	}
 
-	_state = _lp.apply(input);
-	return _state;
+	_state = _lp.apply(ಒಳಹರಿವು);
+	ಹಿಂತಿರುಗಿ _state;
 }
 
 } // namespace control

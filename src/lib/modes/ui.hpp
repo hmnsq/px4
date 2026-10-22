@@ -31,46 +31,46 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <uORB/topics/vehicle_status.h>
+#ಅನ್ತರ್ಭಾವ <uORB/topics/vehicle_status.h>
 
-#include <stdint.h>
+#ಅನ್ತರ್ಭಾವ <stdint.h>
 
-namespace mode_util
+ನಾಮಾಕಾಶ ಬಹುಲಕ_util
 {
 
 /**
  * @return Bitmask with all valid modes
  */
-static inline uint32_t getValidNavStates(uint32_t mode_not_supported = 0)
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ uint32_t get_Valid_Nav_ಸ್ಥಿತಿಗಳು(uint32_t ಬಹುಲಕ_not_supported = 0)
 {
-	return ((1u << vehicle_status_s::NAVIGATION_STATE_MANUAL) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_ALTCTL) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_ALTITUDE_CRUISE) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_MANUAL_PARKING) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_POSCTL) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_GUIDED_COURSE) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_RTL) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_POSITION_SLOW) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_ACRO) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_TERMINATION) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_OFFBOARD) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_STAB) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_LAND) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_DESCEND) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_FOLLOW_TARGET) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_PRECLAND) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_ORBIT) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF)) & ~mode_not_supported;
+	ಹಿಂತಿರುಗಿ ((1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_MANUAL) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_ALTCTL) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_ALTITUDE_CRUISE) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_MANUAL_PARKING) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_POSCTL) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_AUTO_MISSION) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_AUTO_LOITER) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_GUIDED_ಕೋರ್ಸು) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_AUTO_RTL) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_POSITION_SLOW) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_ACRO) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_TERMINATION) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_OFFBOARD) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_STAB) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_AUTO_TAKEOFF) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_AUTO_LAND) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_DESCEND) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_AUTO_FOLLOW_ಗುರಿ) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_AUTO_PRECLAND) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_ORBIT) |
+		(1u << vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF)) & ~ಬಹುಲಕ_not_supported;
 
-	static_assert(vehicle_status_s::NAVIGATION_STATE_MAX  == 31, "update valid nav states");
+	static_assert(vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_MAX  == 31, "update valid nav states");
 }
 
-inline const char *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX] = {
+ಸಾಲೊಳಗೆ ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *ಸ್ಥಿರಾಂಕ nav_state_ಹೆಸರುಗಳು[vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_MAX] = {
 	"Manual",
 	"Altitude",
 	"Position",
@@ -110,49 +110,49 @@ inline const char *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX]
  * The position control mode is shown as "Cruise" for fixed-wing vehicles (including VTOLs in
  * forward flight, which report VEHICLE_TYPE_FIXED_WING) and as "Position" for all other types.
  */
-static inline const char *nav_state_name(uint8_t nav_state, uint8_t vehicle_type)
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *nav_state_name(uint8_t nav_state, uint8_t vehicle_type)
 {
-	if (nav_state >= vehicle_status_s::NAVIGATION_STATE_MAX) {
-		return "(unknown)";
+	ಆದರೆ (nav_state >= vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_MAX) {
+		ಹಿಂತಿರುಗಿ "(unknown)";
 	}
 
-	if (nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL
-	    && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		return "Cruise";
+	ಆದರೆ (nav_state == vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_POSCTL
+	    && vehicle_type == vehicle_ಸ್ಥಿತಿ_s::VEHICLE_TYPE_FIXED_WING) {
+		ಹಿಂತಿರುಗಿ "Cruise";
 	}
 
-	return nav_state_names[nav_state];
+	ಹಿಂತಿರುಗಿ nav_state_ಹೆಸರುಗಳು[nav_state];
 }
 
 /**
  * @return returns true for advanced modes
  */
-static inline bool isAdvanced(uint8_t nav_state)
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ತಾರ್ಕಿಕ isAdvanced(uint8_t nav_state)
 {
-	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL: return false;
+	ಆಯ್ಕೆ (nav_state) {
+	ಸ್ಥಿತಿ vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_ALTCTL: ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL: return false;
+	ಸ್ಥಿತಿ vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_POSCTL: ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL1: return false;
+	ಸ್ಥಿತಿ vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_EXTERNAL1: ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL2: return false;
+	ಸ್ಥಿತಿ vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_EXTERNAL2: ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL3: return false;
+	ಸ್ಥಿತಿ vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_EXTERNAL3: ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL4: return false;
+	ಸ್ಥಿತಿ vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_EXTERNAL4: ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL5: return false;
+	ಸ್ಥಿತಿ vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_EXTERNAL5: ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL6: return false;
+	ಸ್ಥಿತಿ vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_EXTERNAL6: ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL7: return false;
+	ಸ್ಥಿತಿ vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_EXTERNAL7: ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL8: return false;
+	ಸ್ಥಿತಿ vehicle_ಸ್ಥಿತಿ_s::NAVIGATION_STATE_EXTERNAL8: ಹಿಂತಿರುಗಿ ಸುಳ್ಳು;
 
 	}
 
-	return true;
+	ಹಿಂತಿರುಗಿ ನಿಜ;
 }
 
 } // namespace mode_util

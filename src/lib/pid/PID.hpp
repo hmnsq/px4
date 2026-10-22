@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ಸೂಚನೆ once
 
-#include <cmath>
+#ಅನ್ತರ್ಭಾವ <cmath>
 
-class PID
+ವರ್ಗ PID
 {
-public:
-	PID() = default;
-	virtual ~PID() = default;
-	void setOutputLimit(const float limit) {setOutputLimit(-limit, limit);}
-	void setOutputLimit(const float lower_limit, const float upper_limit);
-	void setIntegralLimit(const float limit) { _limit_integral = limit; }
-	void setGains(const float P, const float I, const float D);
-	void setSetpoint(const float setpoint) { _setpoint = setpoint; }
-	void setFeedForwardGain(const float feedforward_gain) { _gain_feedforward = feedforward_gain; }
-	float update(const float feedback, const float dt, const bool update_integral = true);
-	float getIntegral() { return _integral; }
-	void resetIntegral() { _integral = 0.f; }
-	void resetDerivative() { _last_feedback = NAN; }
-private:
-	void updateIntegral(float error, const float saturation, const float dt);
-	float updateDerivative(float feedback, const float dt);
+ಸಾರ್ವಜನಿಕ:
+	PID() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ವಾಸ್ತವಿಕ ~PID() = ಪೂರ್ವನಿಯೋಜಿತ;
+	ಶೂನ್ಯ ಗಣ_Output_ಎಲ್ಲೆ(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ ಎಲ್ಲೆ_2) {ಗಣ_Output_ಎಲ್ಲೆ(-ಎಲ್ಲೆ_2, ಎಲ್ಲೆ_2);}
+	ಶೂನ್ಯ ಗಣ_Output_ಎಲ್ಲೆ(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ ಅಧೋ_ಎಲ್ಲೆ, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ ಊರ್ಧ್ವ_ಎಲ್ಲೆ);
+	ಶೂನ್ಯ ಗಣ_Integral_ಎಲ್ಲೆ(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ ಎಲ್ಲೆ_2) { ಎಲ್ಲೆ_integral = ಎಲ್ಲೆ_2; }
+	ಶೂನ್ಯ ಗಣ_Gains(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ P, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ I, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ D);
+	ಶೂನ್ಯ ಗಣ_Setpoint(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ setpoint) { _setpoint = setpoint; }
+	ಶೂನ್ಯ ಗಣ_Feed_Forward_Gain(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ feedforward_gain) { _gain_feedforward = feedforward_gain; }
+	ದಶಮಾಂಶ update(ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ feedback, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ dt, ಸ್ಥಿರಾಂಕ ತಾರ್ಕಿಕ update_integral = ನಿಜ);
+	ದಶಮಾಂಶ getIntegral() { ಹಿಂತಿರುಗಿ _integral; }
+	ಶೂನ್ಯ resetIntegral() { _integral = 0.f; }
+	ಶೂನ್ಯ resetDerivative() { ಕೊನೆಯ_feedback = NAN; }
+ಖಾಸಗಿ:
+	ಶೂನ್ಯ updateIntegral(ದಶಮಾಂಶ error, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ saturation, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ dt);
+	ದಶಮಾಂಶ updateDerivative(ದಶಮಾಂಶ feedback, ಸ್ಥಿರಾಂಕ ದಶಮಾಂಶ dt);
 
-	float _setpoint{0.f}; ///< current setpoint to track
-	float _integral{0.f}; ///< integral state
-	float _last_feedback{NAN};
+	ದಶಮಾಂಶ _setpoint{0.f}; ///< current setpoint to track
+	ದಶಮಾಂಶ _integral{0.f}; ///< integral state
+	ದಶಮಾಂಶ ಕೊನೆಯ_feedback{NAN};
 
 	// Gains, Limits
-	float _gain_feedforward{0.f};
-	float _gain_proportional{0.f};
-	float _gain_integral{0.f};
-	float _gain_derivative{0.f};
-	float _limit_integral{0.f};
-	float _lower_limit_output{0.f};
-	float _upper_limit_output{0.f};
+	ದಶಮಾಂಶ _gain_feedforward{0.f};
+	ದಶಮಾಂಶ _gain_proportional{0.f};
+	ದಶಮಾಂಶ _gain_integral{0.f};
+	ದಶಮಾಂಶ _gain_derivative{0.f};
+	ದಶಮಾಂಶ ಎಲ್ಲೆ_integral{0.f};
+	ದಶಮಾಂಶ ಅಧೋ_ಎಲ್ಲೆ_output{0.f};
+	ದಶಮಾಂಶ ಊರ್ಧ್ವ_ಎಲ್ಲೆ_output{0.f};
 };

@@ -40,38 +40,38 @@
  *       that is supplied.  Should we just depend on the bus knowing?
  */
 
-#include "I2C.hpp"
+#ಅನ್ತರ್ಭಾವ "I2C.hpp"
 
-#if defined(CONFIG_I2C)
+#ಆದರೆ defined(CONFIG_I2C)
 
-#include <px4_platform_common/time.h>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/i2c_spi_buses.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/time.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/px4_config.h>
+#ಅನ್ತರ್ಭಾವ <px4_platform_common/i2c_spi_buses.h>
 
-extern "C" {
-	__EXPORT void fc_uninitialize_i2c_bus(int fd);
+ಬಾಹ್ಯ "C" {
+	__EXPORT ಶೂನ್ಯ fc_uninitialize_i2c_bus(ಪೂರ್ಣಾಂಕ fd);
 }
 
-namespace device
+ನಾಮಾಕಾಶ device
 {
 
-I2C::_config_i2c_bus_func_t  I2C::_config_i2c_bus  = NULL;
-I2C::_set_i2c_address_func_t I2C::_set_i2c_address = NULL;
-I2C::_i2c_transfer_func_t    I2C::_i2c_transfer    = NULL;
+I2C::_config_i2c_bus_func_t  I2C::_config_i2c_bus  = ಖಾಲಿ;
+I2C::ಗಣ_i2c_ವಿಳಾಸ_func_t I2C::ಗಣ_i2c_ವಿಳಾಸ = ಖಾಲಿ;
+I2C::_i2c_transfer_func_t    I2C::_i2c_transfer    = ಖಾಲಿ;
 
 // There is a mutex per I2C bus. A mutex isn't required with normal
 // use since per bus I2C accesses are made via work item tied to a per bus thread.
 // But it is here anyways in case someone decides to use the bus in some different
 // custom code that has a separate thread.
-struct I2C::_bus_mutex_t I2C::_bus_mutex[I2C::MAX_I2C_BUS] = {
+ರಚನೆ I2C::_bus_mutex_t I2C::_bus_mutex[I2C::MAX_I2C_BUS] = {
 	{1, PTHREAD_MUTEX_INITIALIZER},
 	{2, PTHREAD_MUTEX_INITIALIZER},
 	{4, PTHREAD_MUTEX_INITIALIZER},
 	{5, PTHREAD_MUTEX_INITIALIZER}
 };
 
-I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency) :
-	CDev(name, nullptr),
+I2C::I2C(uint8_t device_type, ಸ್ಥಿರಾಂಕ ಅಕ್ಷರ *name, ಸ್ಥಿರಾಂಕ ಪೂರ್ಣಾಂಕ bus, ಸ್ಥಿರಾಂಕ uint16_t ವಿಳಾಸ, ಸ್ಥಿರಾಂಕ uint32_t frequency) :
+	CDev(name, ಶೂನ್ಯಸೂಚಕ),
 	_frequency(frequency / 1000)
 {
 	_device_id.devid = 0;
@@ -80,129 +80,129 @@ I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t ad
 	_device_id.devid_s.devtype = device_type;
 	_device_id.devid_s.bus_type = DeviceBusType_I2C;
 	_device_id.devid_s.bus = bus;
-	_device_id.devid_s.address = address;
+	_device_id.devid_s.ವಿಳಾಸ = ವಿಳಾಸ;
 
 	PX4_INFO("*** I2C Device ID 0x%x %d", _device_id.devid, _device_id.devid);
 }
 
-I2C::I2C(const I2CSPIDriverConfig &config)
-	: I2C(config.devid_driver_index, config.module_name, config.bus, config.i2c_address, config.bus_frequency)
+I2C::I2C(ಸ್ಥಿರಾಂಕ I2CSPIDriverConfig &config)
+	: I2C(config.devid_driver_ಸೂಚ್ಯಂಕ, config.module_name, config.bus, config.i2c_ವಿಳಾಸ, config.bus_frequency)
 {
-	set_external(config.external);
+	ಗಣ_external(config.external);
 }
 
 I2C::~I2C()
 {
 }
 
-int
+ಪೂರ್ಣಾಂಕ
 I2C::init()
 {
-	int ret = PX4_ERROR;
+	ಪೂರ್ಣಾಂಕ ret = PX4_ERROR;
 
-	if (_i2c_fd != -1) {
-		return PX4_OK;
+	ಆದರೆ (_i2c_fd != -1) {
+		ಹಿಂತಿರುಗಿ PX4_OK;
 	}
 
-	if (_config_i2c_bus == NULL) {
+	ಆದರೆ (_config_i2c_bus == ಖಾಲಿ) {
 		PX4_ERR("NULL i2c init function");
-		goto out;
+		ಹೋಗು ಹೊರಹೋಗು;
 	}
 
-	if (_mutex == nullptr) {
-		for (int i = 0; i < MAX_I2C_BUS; i++) {
-			if (get_device_bus() == _bus_mutex[i]._bus) {
+	ಆದರೆ (_mutex == ಶೂನ್ಯಸೂಚಕ) {
+		ಗಾಗಿ (ಪೂರ್ಣಾಂಕ i = 0; i < MAX_I2C_BUS; i++) {
+			ಆದರೆ (get_device_bus() == _bus_mutex[i]._bus) {
 				_mutex = &_bus_mutex[i]._mutex;
-				break;
+				ನಿಲ್ಲಿಸು;
 			}
 		}
 
-		if (_mutex == nullptr) {
+		ಆದರೆ (_mutex == ಶೂನ್ಯಸೂಚಕ) {
 			PX4_ERR("NULL i2c bus mutex");
-			goto out;
+			ಹೋಗು ಹೊರಹೋಗು;
 
-		} else {
+		} ಇಲ್ಲದಿದ್ದರೆ {
 			PX4_INFO("Set up I2C bus mutex for bus %d", get_device_bus());
 		}
 	}
 
 	pthread_mutex_lock(_mutex);
 	// Open the actual I2C device
-	_i2c_fd = _config_i2c_bus(get_device_bus(), get_device_address(), _frequency);
+	_i2c_fd = _config_i2c_bus(get_device_bus(), get_device_ವಿಳಾಸ(), _frequency);
 	pthread_mutex_unlock(_mutex);
 
-	if (_i2c_fd == -1) {
+	ಆದರೆ (_i2c_fd == -1) {
 		PX4_ERR("i2c init failed");
-		goto out;
+		ಹೋಗು ಹೊರಹೋಗು;
 	}
 
 	// call the probe function to check whether the device is present
 	ret = probe();
 
-	if (ret != OK) {
+	ಆದರೆ (ret != OK) {
 		PX4_ERR("i2c probe failed");
 		fc_uninitialize_i2c_bus(_i2c_fd);
 		_i2c_fd = -1;
-		goto out;
+		ಹೋಗು ಹೊರಹೋಗು;
 	}
 
 	// do base class init, which will create device node, etc
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ಆದರೆ (ret != OK) {
 		PX4_ERR("i2c cdev init failed");
-		goto out;
+		ಹೋಗು ಹೊರಹೋಗು;
 	}
 
 	// tell the world where we are
 	// PX4_INFO("on I2C bus %d at 0x%02x", get_device_bus(), get_device_address());
 
-out:
+ಹೊರಹೋಗು:
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 }
 
-void
-I2C::set_device_address(int address, bool log)
+ಶೂನ್ಯ
+I2C::ಗಣ_device_ವಿಳಾಸ(ಪೂರ್ಣಾಂಕ ವಿಳಾಸ, ತಾರ್ಕಿಕ ಲಘುಗಣಕ)
 {
-	if ((_i2c_fd != PX4_ERROR) && (_set_i2c_address != NULL)) {
-		if (log) {
-			PX4_INFO("Set i2c address 0x%x, fd %d", address, _i2c_fd);
+	ಆದರೆ ((_i2c_fd != PX4_ERROR) && (ಗಣ_i2c_ವಿಳಾಸ != ಖಾಲಿ)) {
+		ಆದರೆ (ಲಘುಗಣಕ) {
+			PX4_INFO("Set i2c address 0x%x, fd %d", ವಿಳಾಸ, _i2c_fd);
 		}
 
 		pthread_mutex_lock(_mutex);
-		_set_i2c_address(_i2c_fd, address);
+		ಗಣ_i2c_ವಿಳಾಸ(_i2c_fd, ವಿಳಾಸ);
 		pthread_mutex_unlock(_mutex);
 
-		Device::set_device_address(address);
+		Device::ಗಣ_device_ವಿಳಾಸ(ವಿಳಾಸ);
 	}
 }
 
 
-int
-I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
+ಪೂರ್ಣಾಂಕ
+I2C::transfer(ಸ್ಥಿರಾಂಕ uint8_t *send, ಸ್ಥಿರಾಂಕ ಚಿಹ್ನೆರಹಿತ send_len, uint8_t *recv, ಸ್ಥಿರಾಂಕ ಚಿಹ್ನೆರಹಿತ recv_len)
 {
-	int ret = PX4_ERROR;
-	unsigned retry_count = 1;
+	ಪೂರ್ಣಾಂಕ ret = PX4_ERROR;
+	ಚಿಹ್ನೆರಹಿತ retry_ಎಣಿಕೆ = 1;
 
-	if ((_i2c_fd != PX4_ERROR) && (_i2c_transfer != NULL)) {
-		do {
+	ಆದರೆ ((_i2c_fd != PX4_ERROR) && (_i2c_transfer != ಖಾಲಿ)) {
+		ಮಾಡು {
 			// PX4_INFO("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
 			pthread_mutex_lock(_mutex);
 			ret = _i2c_transfer(_i2c_fd, send, send_len, recv, recv_len);
 			pthread_mutex_unlock(_mutex);
 
-			if (ret != PX4_ERROR) { break; }
+			ಆದರೆ (ret != PX4_ERROR) { ನಿಲ್ಲಿಸು; }
 
 			px4_usleep(1000);
 
-		} while (retry_count++ < _retries);
+		} ಆಗ (retry_ಎಣಿಕೆ++ < _retries);
 	}
 
-	return ret;
+	ಹಿಂತಿರುಗಿ ret;
 }
 
 } // namespace device
 
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
