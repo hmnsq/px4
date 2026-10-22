@@ -31,15 +31,15 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <cmath>
-#include <unistd.h>
+#ضمن <gtest/gtest.h>
+#ضمن <cmath>
+#ضمن <unistd.h>
 
-#include "TECS.hpp"
+#ضمن "TECS.hpp"
 
-using namespace math;
+using نطاق math;
 
-namespace
+نطاق
 {
 
 // Representative fixed-wing parameter set, enough to exercise the pitch control loop.
@@ -75,7 +75,7 @@ TECSControl::Param makeParam()
 	param.load_factor_correction = 0.f;
 	param.load_factor = 1.f;
 	param.fast_descend = 0.f;
-	return param;
+	أرجع param;
 }
 
 TECSControl::Flag makeFlag()
@@ -83,17 +83,17 @@ TECSControl::Flag makeFlag()
 	TECSControl::Flag flag{};
 	flag.airspeed_enabled = true;
 	flag.detect_underspeed_enabled = true;
-	return flag;
+	أرجع flag;
 }
 
-TECSControl::Input makeInput()
+TECSControl::مدخل_2 make_مدخل()
 {
-	TECSControl::Input input{};
-	input.altitude = 100.f;
-	input.altitude_rate = 0.f;
-	input.tas = 15.f;
-	input.tas_rate = 0.f;
-	return input;
+	TECSControl::مدخل_2 مدخل{};
+	مدخل.altitude = 100.f;
+	مدخل.altitude_rate = 0.f;
+	مدخل.tas = 15.f;
+	مدخل.tas_rate = 0.f;
+	أرجع مدخل;
 }
 
 TECSControl::Setpoint makeSetpoint()
@@ -103,20 +103,20 @@ TECSControl::Setpoint makeSetpoint()
 	setpoint.altitude_reference.alt_rate = 0.f;
 	setpoint.altitude_rate_setpoint_direct = NAN;
 	setpoint.tas_setpoint = 15.f;
-	return setpoint;
+	أرجع setpoint;
 }
 
 // Run the detector for one cycle and report the resulting underspeed ratio.
-float underspeedRatio(float tas, TECSControl::Param param, const TECSControl::Flag &flag)
+عائم underspeedRatio(عائم tas, TECSControl::Param param, ثابت TECSControl::Flag &flag)
 {
 	TECSControl control;
-	TECSControl::Input input = makeInput();
-	input.tas = tas;
+	TECSControl::مدخل_2 مدخل = make_مدخل();
+	مدخل.tas = tas;
 
-	control.initialize(makeSetpoint(), input, param, flag);
-	control.update(0.02f, makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), مدخل, param, flag);
+	control.update(0.02f, makeSetpoint(), مدخل, param, flag);
 
-	return control.getUnderspeedRatio();
+	أرجع control.getUnderspeedRatio();
 }
 
 } // namespace
@@ -125,39 +125,39 @@ float underspeedRatio(float tas, TECSControl::Param param, const TECSControl::Fl
 // true airspeed setpoint, mirroring what happens on the energy/speed side when exiting
 // offboard velocity mode) must not permanently corrupt the pitch integrator. Regression
 // test for the in-flight NaN lockup reported in #25906.
-TEST(TECSControlTest, PitchIntegratorRejectsNonFiniteInput)
+TEST(TECSControlTest, Pitch_Integrator_Rejects_Non_Finite_مدخل)
 {
 	TECSControl control;
 	TECSControl::Param param = makeParam();
-	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	ثابت TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::مدخل_2 مدخل = make_مدخل();
 
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), مدخل, param, flag);
 
 	// Run a few healthy cycles so the integrator builds up some steady-state memory.
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 120.f; // climb demand drives the integrator off zero
-	const float dt = 0.02f;
+	ثابت عائم dt = 0.02f;
 
-	for (int i = 0; i < 50; i++) {
-		control.update(dt, setpoint, input, param, flag);
+	لكل (صحيح i = 0; i < 50; i++) {
+		control.update(dt, setpoint, مدخل, param, flag);
 	}
 
-	const float integrator_before = control.getDebugOutput().pitch_integrator;
+	ثابت عائم integrator_before = control.getDebugOutput().pitch_integrator;
 	ASSERT_TRUE(PX4_ISFINITE(integrator_before));
 
 	// Inject a single non-finite setpoint, the kind of one-frame glitch seen on mode exit.
 	TECSControl::Setpoint bad_setpoint = setpoint;
 	bad_setpoint.tas_setpoint = NAN;
-	control.update(dt, bad_setpoint, input, param, flag);
+	control.update(dt, bad_setpoint, مدخل, param, flag);
 
 	// The bad frame must not propagate into the integrator or the pitch demand.
 	EXPECT_TRUE(PX4_ISFINITE(control.getDebugOutput().pitch_integrator));
 	EXPECT_TRUE(PX4_ISFINITE(control.getPitchSetpoint()));
 
 	// Resume healthy updates, the controller must still produce finite output.
-	for (int i = 0; i < 10; i++) {
-		control.update(dt, setpoint, input, param, flag);
+	لكل (صحيح i = 0; i < 10; i++) {
+		control.update(dt, setpoint, مدخل, param, flag);
 		EXPECT_TRUE(PX4_ISFINITE(control.getDebugOutput().pitch_integrator));
 		EXPECT_TRUE(PX4_ISFINITE(control.getPitchSetpoint()));
 	}
@@ -172,28 +172,28 @@ TEST(TECSControlTest, PitchIntegratorResetsCorruptedState)
 {
 	TECSControl control;
 	TECSControl::Param param = makeParam();
-	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	ثابت TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::مدخل_2 مدخل = make_مدخل();
 
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), مدخل, param, flag);
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 120.f;
-	const float dt = 0.02f;
+	ثابت عائم dt = 0.02f;
 
 	// Pre-corrupt the integrator state, bypassing the input guard entirely.
 	control._pitch_integ_state = NAN;
 
 	// A single healthy update must detect and clear the corrupted state.
-	control.update(dt, setpoint, input, param, flag);
+	control.update(dt, setpoint, مدخل, param, flag);
 
 	EXPECT_TRUE(PX4_ISFINITE(control._pitch_integ_state));
 	EXPECT_TRUE(PX4_ISFINITE(control.getDebugOutput().pitch_integrator));
 	EXPECT_TRUE(PX4_ISFINITE(control.getPitchSetpoint()));
 
 	// And the controller keeps producing finite output afterwards.
-	for (int i = 0; i < 10; i++) {
-		control.update(dt, setpoint, input, param, flag);
+	لكل (صحيح i = 0; i < 10; i++) {
+		control.update(dt, setpoint, مدخل, param, flag);
 		EXPECT_TRUE(PX4_ISFINITE(control._pitch_integ_state));
 		EXPECT_TRUE(PX4_ISFINITE(control.getPitchSetpoint()));
 	}
@@ -201,21 +201,21 @@ TEST(TECSControlTest, PitchIntegratorResetsCorruptedState)
 
 // Repeated non-finite input across many consecutive frames must never brick the controller:
 // every cycle has to keep both the integrator state and the pitch setpoint finite.
-TEST(TECSControlTest, PitchIntegratorSurvivesSustainedNonFiniteInput)
+TEST(TECSControlTest, Pitch_Integrator_Survives_Sustained_Non_Finite_مدخل)
 {
 	TECSControl control;
 	TECSControl::Param param = makeParam();
-	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	ثابت TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::مدخل_2 مدخل = make_مدخل();
 
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), مدخل, param, flag);
 
 	TECSControl::Setpoint bad_setpoint = makeSetpoint();
 	bad_setpoint.tas_setpoint = NAN;
-	const float dt = 0.02f;
+	ثابت عائم dt = 0.02f;
 
-	for (int i = 0; i < 100; i++) {
-		control.update(dt, bad_setpoint, input, param, flag);
+	لكل (صحيح i = 0; i < 100; i++) {
+		control.update(dt, bad_setpoint, مدخل, param, flag);
 		EXPECT_TRUE(PX4_ISFINITE(control.getDebugOutput().pitch_integrator));
 		EXPECT_TRUE(PX4_ISFINITE(control.getPitchSetpoint()));
 	}
@@ -232,14 +232,14 @@ TEST(TECSControlTest, PitchOutputUsesMinimumAirspeedBelowIt)
 	param.pitch_min = -1.5f;
 
 	TECSControl::Flag flag = makeFlag();
-	flag.detect_underspeed_enabled = false; // underspeed handling would shift the weights to speed
+	flag.detect_underspeed_enabled = خطأ; // underspeed handling would shift the weights to speed
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 102.f; // small climb demand
 
-	TECSControl::Input below_min = makeInput();
+	TECSControl::مدخل_2 below_min = make_مدخل();
 	below_min.tas = 0.2f * param.tas_min;
-	TECSControl::Input at_min = makeInput();
+	TECSControl::مدخل_2 at_min = make_مدخل();
 	at_min.tas = param.tas_min;
 
 	TECSControl control_below_min;
@@ -268,11 +268,11 @@ TEST(TECSTest, ReportsConfiguredAltitudeTimeConstant)
 TEST(TECSTest, ResetWithoutValidAirspeedKeepsCommandsFinite)
 {
 	TECS tecs;
-	tecs.enable_airspeed(false);
+	tecs.enable_airspeed(خطأ);
 	tecs.set_integrator_gain_pitch(0.1f);
 	tecs.set_integrator_gain_throttle(0.1f);
 
-	const TECS::Input input{
+	ثابت TECS::مدخل_2 مدخل{
 		.altitude = 100.f,
 		.altitude_rate = 0.f,
 		.altitude_setpoint = 110.f,
@@ -291,18 +291,18 @@ TEST(TECSTest, ResetWithoutValidAirspeedKeepsCommandsFinite)
 	};
 
 	// The first update resets the controller, the following ones run it with a valid time step.
-	for (int i = 0; i < 20; i++) {
+	لكل (صحيح i = 0; i < 20; i++) {
 		usleep(20000);
-		tecs.update(input);
+		tecs.update(مدخل);
 		EXPECT_TRUE(PX4_ISFINITE(tecs.get_pitch_setpoint())) << "update " << i;
 		EXPECT_TRUE(PX4_ISFINITE(tecs.get_throttle_setpoint())) << "update " << i;
 	}
 }
 
-namespace
+نطاق
 {
 
-constexpr float kDt = 0.02f;
+constexpr عائم kDt = 0.02f;
 
 TECSAltitudeReferenceModel::Param makeReferenceParam()
 {
@@ -312,7 +312,7 @@ TECSAltitudeReferenceModel::Param makeReferenceParam()
 	param.vert_accel_limit = 5.f;
 	param.max_climb_rate = 5.f;
 	param.max_sink_rate = 5.f;
-	return param;
+	أرجع param;
 }
 
 } // namespace
@@ -326,7 +326,7 @@ TEST(TECSAirspeedFilterTest, ConvergesToMeasurement)
 	TECSAirspeedFilter filter;
 	filter.initialize(10.f, 15.f, true);
 
-	for (int i = 0; i < 500; i++) {
+	لكل (صحيح i = 0; i < 500; i++) {
 		filter.update(kDt, {.equivalent_airspeed = 20.f, .equivalent_airspeed_rate = 0.f}, {.equivalent_airspeed_trim = 15.f},
 			      true);
 	}
@@ -342,9 +342,9 @@ TEST(TECSAirspeedFilterTest, FallsBackToTrimWithoutSensor)
 	TECSAirspeedFilter filter;
 	filter.initialize(20.f, 15.f, true);
 
-	for (int i = 0; i < 500; i++) {
+	لكل (صحيح i = 0; i < 500; i++) {
 		filter.update(kDt, {.equivalent_airspeed = 20.f, .equivalent_airspeed_rate = 0.f}, {.equivalent_airspeed_trim = 15.f},
-			      false);
+			      خطأ);
 	}
 
 	EXPECT_NEAR(filter.getState().speed, 15.f, 0.01f);
@@ -357,7 +357,7 @@ TEST(TECSAirspeedFilterTest, InitializesToTrimWithoutValidMeasurement)
 	filter.initialize(NAN, 15.f, true);
 	EXPECT_FLOAT_EQ(filter.getState().speed, 15.f);
 
-	filter.initialize(20.f, 15.f, false);
+	filter.initialize(20.f, 15.f, خطأ);
 	EXPECT_FLOAT_EQ(filter.getState().speed, 15.f);
 	EXPECT_FLOAT_EQ(filter.getState().speed_rate, 0.f);
 }
@@ -367,7 +367,7 @@ TEST(TECSAirspeedFilterTest, NeverEstimatesNegativeAirspeed)
 	TECSAirspeedFilter filter;
 	filter.initialize(1.f, 15.f, true);
 
-	for (int i = 0; i < 200; i++) {
+	لكل (صحيح i = 0; i < 200; i++) {
 		filter.update(kDt, {.equivalent_airspeed = 0.f, .equivalent_airspeed_rate = -50.f}, {.equivalent_airspeed_trim = 15.f},
 			      true);
 		ASSERT_GE(filter.getState().speed, 0.f) << "update " << i;
@@ -381,13 +381,13 @@ TEST(TECSAirspeedFilterTest, NeverEstimatesNegativeAirspeed)
 // The reference climbs no faster than the target climb rate and reaches the altitude setpoint.
 TEST(TECSAltitudeReferenceModelTest, ClimbsAtTargetRateToSetpoint)
 {
-	const TECSAltitudeReferenceModel::Param param = makeReferenceParam();
+	ثابت TECSAltitudeReferenceModel::Param param = makeReferenceParam();
 	TECSAltitudeReferenceModel model;
 	model.initialize({.alt = 100.f, .alt_rate = 0.f});
 
-	float max_rate = 0.f;
+	عائم max_rate = 0.f;
 
-	for (int i = 0; i < 3000; i++) {
+	لكل (صحيح i = 0; i < 3000; i++) {
 		model.update(kDt, {.alt = 150.f, .alt_rate = NAN}, 100.f, 0.f, param);
 		max_rate = fmaxf(max_rate, model.getAltitudeReference().alt_rate);
 	}
@@ -402,11 +402,11 @@ TEST(TECSAltitudeReferenceModelTest, ClimbsAtTargetRateToSetpoint)
 // A height rate setpoint is passed on as a direct, ramped height rate setpoint instead of an altitude reference.
 TEST(TECSAltitudeReferenceModelTest, FollowsHeightRateSetpoint)
 {
-	const TECSAltitudeReferenceModel::Param param = makeReferenceParam();
+	ثابت TECSAltitudeReferenceModel::Param param = makeReferenceParam();
 	TECSAltitudeReferenceModel model;
 	model.initialize({.alt = 100.f, .alt_rate = 0.f});
 
-	for (int i = 0; i < 500; i++) {
+	لكل (صحيح i = 0; i < 500; i++) {
 		model.update(kDt, {.alt = NAN, .alt_rate = 2.f}, 100.f, 0.f, param);
 	}
 
@@ -416,11 +416,11 @@ TEST(TECSAltitudeReferenceModelTest, FollowsHeightRateSetpoint)
 // Without any setpoint, the reference holds the current altitude.
 TEST(TECSAltitudeReferenceModelTest, HoldsCurrentAltitudeWithoutSetpoint)
 {
-	const TECSAltitudeReferenceModel::Param param = makeReferenceParam();
+	ثابت TECSAltitudeReferenceModel::Param param = makeReferenceParam();
 	TECSAltitudeReferenceModel model;
 	model.initialize({.alt = 100.f, .alt_rate = 0.f});
 
-	for (int i = 0; i < 500; i++) {
+	لكل (صحيح i = 0; i < 500; i++) {
 		model.update(kDt, {.alt = NAN, .alt_rate = NAN}, 120.f, 0.f, param);
 	}
 
@@ -434,9 +434,9 @@ TEST(TECSAltitudeReferenceModelTest, HoldsCurrentAltitudeWithoutSetpoint)
 // Initialization always runs the altitude loop: a direct height rate setpoint must not change the initial commands.
 TEST(TECSControlTest, InitializeIgnoresDirectHeightRateSetpoint)
 {
-	const TECSControl::Param param = makeParam();
-	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	ثابت TECSControl::Param param = makeParam();
+	ثابت TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::مدخل_2 مدخل = make_مدخل();
 
 	TECSControl::Setpoint without_direct = makeSetpoint();
 	without_direct.altitude_reference.alt = 110.f;
@@ -444,9 +444,9 @@ TEST(TECSControlTest, InitializeIgnoresDirectHeightRateSetpoint)
 	with_direct.altitude_rate_setpoint_direct = 4.f;
 
 	TECSControl control_without;
-	control_without.initialize(without_direct, input, param, flag);
+	control_without.initialize(without_direct, مدخل, param, flag);
 	TECSControl control_with;
-	control_with.initialize(with_direct, input, param, flag);
+	control_with.initialize(with_direct, مدخل, param, flag);
 
 	EXPECT_FLOAT_EQ(control_with.getPitchSetpoint(), control_without.getPitchSetpoint());
 	EXPECT_FLOAT_EQ(control_with.getThrottleSetpoint(), control_without.getThrottleSetpoint());
@@ -457,16 +457,16 @@ TEST(TECSControlTest, InitializeIgnoresDirectHeightRateSetpoint)
 // During updates, a finite direct height rate setpoint replaces the altitude loop.
 TEST(TECSControlTest, UpdateUsesDirectHeightRateSetpoint)
 {
-	const TECSControl::Param param = makeParam();
-	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	ثابت TECSControl::Param param = makeParam();
+	ثابت TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::مدخل_2 مدخل = make_مدخل();
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), مدخل, param, flag);
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_rate_setpoint_direct = 2.f;
-	control.update(kDt, setpoint, input, param, flag);
+	control.update(kDt, setpoint, مدخل, param, flag);
 
 	EXPECT_FLOAT_EQ(control.getDebugOutput().altitude_rate_control, 2.f);
 }
@@ -476,24 +476,24 @@ TEST(TECSControlTest, PitchIntegratorDoesNotWindUpAtPitchLimit)
 {
 	TECSControl::Param param = makeParam();
 	param.pitch_max = radians(3.f);
-	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	ثابت TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::مدخل_2 مدخل = make_مدخل();
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 150.f; // climb demand the pitch limit cannot satisfy
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), مدخل, param, flag);
 
-	for (int i = 0; i < 100; i++) {
-		control.update(kDt, setpoint, input, param, flag);
+	لكل (صحيح i = 0; i < 100; i++) {
+		control.update(kDt, setpoint, مدخل, param, flag);
 	}
 
 	ASSERT_FLOAT_EQ(control.getPitchSetpoint(), param.pitch_max);
-	const float integrator_saturated = control.getDebugOutput().pitch_integrator;
+	ثابت عائم integrator_saturated = control.getDebugOutput().pitch_integrator;
 
-	for (int i = 0; i < 500; i++) {
-		control.update(kDt, setpoint, input, param, flag);
+	لكل (صحيح i = 0; i < 500; i++) {
+		control.update(kDt, setpoint, مدخل, param, flag);
 		EXPECT_LE(control.getDebugOutput().pitch_integrator, integrator_saturated) << "update " << i;
 	}
 }
@@ -506,18 +506,18 @@ TEST(TECSControlTest, ThrottleIntegratorHoldsWithEqualThrottleLimits)
 	param.throttle_min = 0.4f;
 	param.throttle_max = 0.4f;
 	param.throttle_trim = 0.4f;
-	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	ثابت TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::مدخل_2 مدخل = make_مدخل();
 
-	for (const float altitude_setpoint : {150.f, 50.f}) {
+	لكل (ثابت عائم altitude_setpoint : {150.f, 50.f}) {
 		TECSControl::Setpoint setpoint = makeSetpoint();
 		setpoint.altitude_reference.alt = altitude_setpoint;
 
 		TECSControl control;
-		control.initialize(makeSetpoint(), input, param, flag);
+		control.initialize(makeSetpoint(), مدخل, param, flag);
 
-		for (int i = 0; i < 200; i++) {
-			control.update(kDt, setpoint, input, param, flag);
+		لكل (صحيح i = 0; i < 200; i++) {
+			control.update(kDt, setpoint, مدخل, param, flag);
 			EXPECT_FLOAT_EQ(control.getThrottleSetpoint(), 0.4f);
 			EXPECT_FLOAT_EQ(control.getDebugOutput().throttle_integrator, 0.f)
 					<< "altitude setpoint " << altitude_setpoint << ", update " << i;
@@ -529,20 +529,20 @@ TEST(TECSControlTest, ThrottleRespectsSlewRate)
 {
 	TECSControl::Param param = makeParam();
 	param.throttle_slewrate = 0.5f;
-	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	ثابت TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::مدخل_2 مدخل = make_مدخل();
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 150.f; // step in demand
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), input, param, flag);
-	const float max_step = kDt * (param.throttle_max - param.throttle_min) * param.throttle_slewrate;
+	control.initialize(makeSetpoint(), مدخل, param, flag);
+	ثابت عائم max_step = kDt * (param.throttle_max - param.throttle_min) * param.throttle_slewrate;
 
-	float previous = control.getThrottleSetpoint();
+	عائم previous = control.getThrottleSetpoint();
 
-	for (int i = 0; i < 100; i++) {
-		control.update(kDt, setpoint, input, param, flag);
+	لكل (صحيح i = 0; i < 100; i++) {
+		control.update(kDt, setpoint, مدخل, param, flag);
 		EXPECT_LE(fabsf(control.getThrottleSetpoint() - previous), max_step + 1e-6f) << "update " << i;
 		previous = control.getThrottleSetpoint();
 	}
@@ -555,20 +555,20 @@ TEST(TECSControlTest, PitchRespectsVerticalAccelerationLimit)
 {
 	TECSControl::Param param = makeParam();
 	param.vert_accel_limit = 2.f;
-	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	ثابت TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::مدخل_2 مدخل = make_مدخل();
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 150.f;
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), input, param, flag);
-	const float max_step = kDt * param.vert_accel_limit / input.tas;
+	control.initialize(makeSetpoint(), مدخل, param, flag);
+	ثابت عائم max_step = kDt * param.vert_accel_limit / مدخل.tas;
 
-	float previous = control.getPitchSetpoint();
+	عائم previous = control.getPitchSetpoint();
 
-	for (int i = 0; i < 100; i++) {
-		control.update(kDt, setpoint, input, param, flag);
+	لكل (صحيح i = 0; i < 100; i++) {
+		control.update(kDt, setpoint, مدخل, param, flag);
 		EXPECT_LE(fabsf(control.getPitchSetpoint() - previous), max_step + 1e-6f) << "update " << i;
 		previous = control.getPitchSetpoint();
 	}
@@ -582,14 +582,14 @@ TEST(TECSControlTest, FastDescendCommandsMinimumThrottle)
 	TECSControl::Param param = makeParam();
 	param.throttle_min = 0.1f;
 	param.fast_descend = 1.f;
-	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	ثابت TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::مدخل_2 مدخل = make_مدخل();
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), مدخل, param, flag);
 
-	for (int i = 0; i < 50; i++) {
-		control.update(kDt, makeSetpoint(), input, param, flag);
+	لكل (صحيح i = 0; i < 50; i++) {
+		control.update(kDt, makeSetpoint(), مدخل, param, flag);
 	}
 
 	EXPECT_FLOAT_EQ(control.getThrottleSetpoint(), param.throttle_min);
@@ -598,16 +598,16 @@ TEST(TECSControlTest, FastDescendCommandsMinimumThrottle)
 // Far below the minimum airspeed the controller is fully undersped and commands maximum throttle.
 TEST(TECSControlTest, UnderspeedCommandsMaximumThrottle)
 {
-	const TECSControl::Param param = makeParam();
-	const TECSControl::Flag flag = makeFlag();
-	TECSControl::Input input = makeInput();
-	input.tas = 0.3f * param.tas_min;
+	ثابت TECSControl::Param param = makeParam();
+	ثابت TECSControl::Flag flag = makeFlag();
+	TECSControl::مدخل_2 مدخل = make_مدخل();
+	مدخل.tas = 0.3f * param.tas_min;
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), مدخل, param, flag);
 
-	for (int i = 0; i < 50; i++) {
-		control.update(kDt, makeSetpoint(), input, param, flag);
+	لكل (صحيح i = 0; i < 50; i++) {
+		control.update(kDt, makeSetpoint(), مدخل, param, flag);
 	}
 
 	EXPECT_FLOAT_EQ(control.getUnderspeedRatio(), 1.f);
@@ -617,11 +617,11 @@ TEST(TECSControlTest, UnderspeedCommandsMaximumThrottle)
 // Without airspeed, there is no underspeed detection and airspeed errors do not reach pitch or throttle.
 TEST(TECSControlTest, AirspeedlessIgnoresAirspeed)
 {
-	const TECSControl::Param param = makeParam();
+	ثابت TECSControl::Param param = makeParam();
 	TECSControl::Flag flag = makeFlag();
-	flag.airspeed_enabled = false;
+	flag.airspeed_enabled = خطأ;
 
-	TECSControl::Input slow = makeInput();
+	TECSControl::مدخل_2 slow = make_مدخل();
 	slow.tas = 0.3f * param.tas_min;
 	TECSControl::Setpoint fast_setpoint = makeSetpoint();
 	fast_setpoint.tas_setpoint = 25.f;
@@ -631,7 +631,7 @@ TEST(TECSControlTest, AirspeedlessIgnoresAirspeed)
 	TECSControl control_reference;
 	control_reference.initialize(makeSetpoint(), slow, param, flag);
 
-	for (int i = 0; i < 50; i++) {
+	لكل (صحيح i = 0; i < 50; i++) {
 		control_slow.update(kDt, fast_setpoint, slow, param, flag);
 		control_reference.update(kDt, makeSetpoint(), slow, param, flag);
 	}
@@ -652,14 +652,14 @@ TEST(TECSControlTest, PitchIntegratorUsesMinimumAirspeedBelowIt)
 	param.pitch_min = -1.5f;
 
 	TECSControl::Flag flag = makeFlag();
-	flag.detect_underspeed_enabled = false;
+	flag.detect_underspeed_enabled = خطأ;
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 102.f;
 
-	TECSControl::Input below_min = makeInput();
+	TECSControl::مدخل_2 below_min = make_مدخل();
 	below_min.tas = 0.2f * param.tas_min;
-	TECSControl::Input at_min = makeInput();
+	TECSControl::مدخل_2 at_min = make_مدخل();
 	at_min.tas = param.tas_min;
 
 	TECSControl control_below_min;
@@ -677,17 +677,17 @@ TEST(TECSControlTest, PitchIntegratorUsesMinimumAirspeedBelowIt)
 // A non-finite airspeed must not produce a non-finite pitch command.
 TEST(TECSControlTest, NonFiniteAirspeedKeepsPitchFinite)
 {
-	const TECSControl::Param param = makeParam();
-	const TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::Param param = makeParam();
+	ثابت TECSControl::Flag flag = makeFlag();
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), makeInput(), param, flag);
+	control.initialize(makeSetpoint(), make_مدخل(), param, flag);
 
-	TECSControl::Input input = makeInput();
-	input.tas = NAN;
+	TECSControl::مدخل_2 مدخل = make_مدخل();
+	مدخل.tas = NAN;
 
-	for (int i = 0; i < 50; i++) {
-		control.update(kDt, makeSetpoint(), input, param, flag);
+	لكل (صحيح i = 0; i < 50; i++) {
+		control.update(kDt, makeSetpoint(), مدخل, param, flag);
 		EXPECT_TRUE(PX4_ISFINITE(control.getPitchSetpoint())) << "update " << i;
 	}
 }
@@ -700,13 +700,13 @@ TEST(TECSControlTest, LoadFactorCorrectionAddsThrottle)
 	level.integrator_gain_throttle = 0.f;
 	TECSControl::Param banked = level;
 	banked.load_factor = 1.f / cosf(radians(30.f));
-	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	ثابت TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::مدخل_2 مدخل = make_مدخل();
 
 	TECSControl control_level;
-	control_level.initialize(makeSetpoint(), input, level, flag);
+	control_level.initialize(makeSetpoint(), مدخل, level, flag);
 	TECSControl control_banked;
-	control_banked.initialize(makeSetpoint(), input, banked, flag);
+	control_banked.initialize(makeSetpoint(), مدخل, banked, flag);
 
 	EXPECT_GT(control_banked.getThrottleSetpoint(), control_level.getThrottleSetpoint());
 }
@@ -715,18 +715,18 @@ TEST(TECSControlTest, LoadFactorCorrectionAddsThrottle)
 TEST(TECSControlTest, LevelFlightPitchIsFedForward)
 {
 	TECSControl::Param param = makeParam();
-	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	ثابت TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::مدخل_2 مدخل = make_مدخل();
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 102.f; // small climb demand, well inside the pitch limits
 
 	TECSControl control_without;
-	control_without.initialize(setpoint, input, param, flag);
+	control_without.initialize(setpoint, مدخل, param, flag);
 
 	param.level_flight_pitch = radians(4.f);
 	TECSControl control_with;
-	control_with.initialize(setpoint, input, param, flag);
+	control_with.initialize(setpoint, مدخل, param, flag);
 
 	EXPECT_NEAR(control_with.getPitchSetpoint() - control_without.getPitchSetpoint(), radians(4.f), 1e-6f);
 }
@@ -737,15 +737,15 @@ TEST(TECSControlTest, PitchLimitsAreAbsolute)
 	TECSControl::Param param = makeParam();
 	param.level_flight_pitch = radians(10.f);
 	param.pitch_max = radians(5.f);
-	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	ثابت TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::مدخل_2 مدخل = make_مدخل();
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), مدخل, param, flag);
 	EXPECT_FLOAT_EQ(control.getPitchSetpoint(), param.pitch_max);
 
-	for (int i = 0; i < 100; i++) {
-		control.update(kDt, makeSetpoint(), input, param, flag);
+	لكل (صحيح i = 0; i < 100; i++) {
+		control.update(kDt, makeSetpoint(), مدخل, param, flag);
 		EXPECT_LE(control.getPitchSetpoint(), param.pitch_max) << "update " << i;
 	}
 
@@ -757,13 +757,13 @@ TEST(TECSControlTest, NonFiniteDemandFallsBackToLevelFlightPitch)
 {
 	TECSControl::Param param = makeParam();
 	param.level_flight_pitch = radians(4.f);
-	const TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::Flag flag = makeFlag();
 
 	TECSControl::Setpoint bad_setpoint = makeSetpoint();
 	bad_setpoint.tas_setpoint = NAN;
 
 	TECSControl control;
-	control.initialize(bad_setpoint, makeInput(), param, flag); // integrator reset to zero
+	control.initialize(bad_setpoint, make_مدخل(), param, flag); // integrator reset to zero
 
 	EXPECT_FLOAT_EQ(control.getPitchSetpoint(), param.level_flight_pitch);
 }
@@ -773,7 +773,7 @@ TEST(TECSControlTest, NonFiniteDemandFallsBackToLevelFlightPitch)
 TEST(TECSUnderspeedTest, NoMitigationAtOrAboveMinimumAirspeed)
 {
 	TECSControl::Param param = makeParam(); // tas_min = 10, trim = 15
-	const TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::Flag flag = makeFlag();
 
 	EXPECT_FLOAT_EQ(underspeedRatio(20.f, param, flag), 0.f);
 	EXPECT_FLOAT_EQ(underspeedRatio(12.f, param, flag), 0.f);
@@ -783,7 +783,7 @@ TEST(TECSUnderspeedTest, NoMitigationAtOrAboveMinimumAirspeed)
 TEST(TECSUnderspeedTest, RampsLinearlyOverBandBelowMinimumAirspeed)
 {
 	TECSControl::Param param = makeParam(); // band is [9, 10] m/s
-	const TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::Flag flag = makeFlag();
 
 	EXPECT_NEAR(underspeedRatio(9.75f, param, flag), 0.25f, 1e-5f);
 	EXPECT_NEAR(underspeedRatio(9.5f, param, flag), 0.5f, 1e-5f);
@@ -793,7 +793,7 @@ TEST(TECSUnderspeedTest, RampsLinearlyOverBandBelowMinimumAirspeed)
 TEST(TECSUnderspeedTest, SaturatesAtFullMitigationBelowBand)
 {
 	TECSControl::Param param = makeParam();
-	const TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::Flag flag = makeFlag();
 
 	EXPECT_FLOAT_EQ(underspeedRatio(9.f, param, flag), 1.f); // bottom of the band
 	EXPECT_FLOAT_EQ(underspeedRatio(5.f, param, flag), 1.f);
@@ -805,7 +805,7 @@ TEST(TECSUnderspeedTest, RampWidthScalesWithMinimumAirspeed)
 {
 	TECSControl::Param param = makeParam();
 	param.tas_min = 20.f; // band is [18, 20] m/s
-	const TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::Flag flag = makeFlag();
 
 	EXPECT_FLOAT_EQ(underspeedRatio(20.f, param, flag), 0.f);
 	EXPECT_NEAR(underspeedRatio(19.f, param, flag), 0.5f, 1e-5f);
@@ -817,7 +817,7 @@ TEST(TECSUnderspeedTest, RampEndsHalfwayToStallAirspeed)
 {
 	TECSControl::Param param = makeParam();
 	param.tas_stall = 9.f; // band is [9.5, 10] m/s
-	const TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::Flag flag = makeFlag();
 
 	EXPECT_FLOAT_EQ(underspeedRatio(10.f, param, flag), 0.f);
 	EXPECT_NEAR(underspeedRatio(9.75f, param, flag), 0.5f, 1e-5f);
@@ -828,9 +828,9 @@ TEST(TECSUnderspeedTest, RampEndsHalfwayToStallAirspeed)
 TEST(TECSUnderspeedTest, StallAirspeedAtOrAboveMinimumAirspeed)
 {
 	TECSControl::Param param = makeParam();
-	const TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::Flag flag = makeFlag();
 
-	for (const float tas_stall : {10.f, 12.f}) {
+	لكل (ثابت عائم tas_stall : {10.f, 12.f}) {
 		param.tas_stall = tas_stall;
 		EXPECT_FLOAT_EQ(underspeedRatio(10.f, param, flag), 0.f);
 		EXPECT_FLOAT_EQ(underspeedRatio(9.99f, param, flag), 1.f);
@@ -842,43 +842,43 @@ TEST(TECSUnderspeedTest, NoMitigationWhenDetectionDisabled)
 	TECSControl::Param param = makeParam();
 
 	TECSControl::Flag flag = makeFlag();
-	flag.detect_underspeed_enabled = false;
+	flag.detect_underspeed_enabled = خطأ;
 	EXPECT_FLOAT_EQ(underspeedRatio(5.f, param, flag), 0.f);
 
 	flag = makeFlag();
-	flag.airspeed_enabled = false;
+	flag.airspeed_enabled = خطأ;
 	EXPECT_FLOAT_EQ(underspeedRatio(5.f, param, flag), 0.f);
 }
 
-namespace
+نطاق
 {
 
 // Pitch setpoint after holding altitude for a while with the given airspeed, airspeed setpoint and airspeed rate.
-float pitchSetpointAtSpeed(float tas, float tas_setpoint, float pitch_speed_weight, float tas_rate = 0.f)
+عائم pitchSetpointAtSpeed(عائم tas, عائم tas_setpoint, عائم pitch_speed_weight, عائم tas_rate = 0.f)
 {
 	TECSControl control;
 	TECSControl::Param param = makeParam();
 	param.pitch_speed_weight = pitch_speed_weight;
-	const TECSControl::Flag flag = makeFlag();
+	ثابت TECSControl::Flag flag = makeFlag();
 
-	TECSControl::Input input = makeInput();
-	input.tas = tas;
-	input.tas_rate = tas_rate;
+	TECSControl::مدخل_2 مدخل = make_مدخل();
+	مدخل.tas = tas;
+	مدخل.tas_rate = tas_rate;
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.tas_setpoint = tas_setpoint;
 
-	control.initialize(setpoint, input, param, flag);
+	control.initialize(setpoint, مدخل, param, flag);
 
-	for (int i = 0; i < 100; i++) {
-		control.update(0.02f, setpoint, input, param, flag);
+	لكل (صحيح i = 0; i < 100; i++) {
+		control.update(0.02f, setpoint, مدخل, param, flag);
 	}
 
-	return control.getPitchSetpoint();
+	أرجع control.getPitchSetpoint();
 }
 
 // Fixed-wing TECS configured the way the fw controller does, driven at ~50 Hz.
-void configureTECS(TECS &tecs)
+فراغ configureTECS(TECS &tecs)
 {
 	tecs.enable_airspeed(true);
 	tecs.set_detect_underspeed_enabled(true);
@@ -894,10 +894,10 @@ void configureTECS(TECS &tecs)
 	tecs.set_speed_weight(1.f);
 }
 
-void runTECS(TECS &tecs, float altitude, float hgt_setpoint, float equivalent_airspeed, int cycles,
-	     float eas_to_tas = 1.f)
+فراغ runTECS(TECS &tecs, عائم altitude, عائم hgt_setpoint, عائم equivalent_airspeed, صحيح cycles,
+	     عائم eas_to_tas = 1.f)
 {
-	for (int i = 0; i < cycles; i++) {
+	لكل (صحيح i = 0; i < cycles; i++) {
 		tecs.update({
 			.altitude = altitude,
 			.altitude_rate = 0.f,
@@ -926,8 +926,8 @@ void runTECS(TECS &tecs, float altitude, float hgt_setpoint, float equivalent_ai
 TEST(TECSControlTest, NoPitchDownToAccelerateAboveTrim)
 {
 	// WHEN flying above trim airspeed (15 m/s) with a higher airspeed setpoint, at nominal and altitude priority
-	const float pitch_nominal_weight = pitchSetpointAtSpeed(20.f, 30.f, 1.f);
-	const float pitch_altitude_priority = pitchSetpointAtSpeed(20.f, 30.f, 0.f);
+	ثابت عائم pitch_nominal_weight = pitchSetpointAtSpeed(20.f, 30.f, 1.f);
+	ثابت عائم pitch_altitude_priority = pitchSetpointAtSpeed(20.f, 30.f, 0.f);
 
 	// THEN the pitch loop holds altitude and does not pitch down
 	EXPECT_NEAR(pitch_nominal_weight, 0.f, 1e-4f);
@@ -938,8 +938,8 @@ TEST(TECSControlTest, NoPitchDownToAccelerateAboveTrim)
 TEST(TECSControlTest, PitchDownToAccelerateBelowTrim)
 {
 	// WHEN flying below trim airspeed with the setpoint at trim, and with the setpoint above trim
-	const float pitch_setpoint_at_trim = pitchSetpointAtSpeed(12.f, 15.f, 1.f);
-	const float pitch_setpoint_above_trim = pitchSetpointAtSpeed(12.f, 30.f, 1.f);
+	ثابت عائم pitch_setpoint_at_trim = pitchSetpointAtSpeed(12.f, 15.f, 1.f);
+	ثابت عائم pitch_setpoint_above_trim = pitchSetpointAtSpeed(12.f, 30.f, 1.f);
 
 	// THEN the pitch loop pitches down, but only as much as needed to reach trim airspeed
 	EXPECT_LT(pitch_setpoint_at_trim, 0.f);
@@ -950,7 +950,7 @@ TEST(TECSControlTest, PitchDownToAccelerateBelowTrim)
 TEST(TECSControlTest, PitchDownToAccelerateAboveTrimWithSpeedPriority)
 {
 	// WHEN flying above trim airspeed with a higher airspeed setpoint and full speed priority
-	const float pitch = pitchSetpointAtSpeed(20.f, 30.f, 2.f);
+	ثابت عائم pitch = pitchSetpointAtSpeed(20.f, 30.f, 2.f);
 
 	// THEN the pitch loop pitches down to accelerate
 	EXPECT_LT(pitch, 0.f);
@@ -961,8 +961,8 @@ TEST(TECSControlTest, PitchDownToAccelerateAboveTrimWithSpeedPriority)
 TEST(TECSControlTest, NoPitchUpWhileThrottleAcceleratesAboveTrim)
 {
 	// WHEN accelerating between trim airspeed (15 m/s) and the airspeed setpoint, at nominal and altitude priority
-	const float pitch_accelerating = pitchSetpointAtSpeed(18.f, 25.f, 1.f, 1.f);
-	const float pitch_steady = pitchSetpointAtSpeed(18.f, 25.f, 1.f, 0.f);
+	ثابت عائم pitch_accelerating = pitchSetpointAtSpeed(18.f, 25.f, 1.f, 1.f);
+	ثابت عائم pitch_steady = pitchSetpointAtSpeed(18.f, 25.f, 1.f, 0.f);
 
 	// THEN the pitch setpoint is the same as without acceleration
 	EXPECT_NEAR(pitch_accelerating, pitch_steady, 1e-5f);
@@ -972,8 +972,8 @@ TEST(TECSControlTest, NoPitchUpWhileThrottleAcceleratesAboveTrim)
 TEST(TECSControlTest, PitchUpOnAccelerationAboveSetpoint)
 {
 	// WHEN accelerating above the airspeed setpoint
-	const float pitch_accelerating = pitchSetpointAtSpeed(22.f, 20.f, 1.f, 1.f);
-	const float pitch_steady = pitchSetpointAtSpeed(22.f, 20.f, 1.f, 0.f);
+	ثابت عائم pitch_accelerating = pitchSetpointAtSpeed(22.f, 20.f, 1.f, 1.f);
+	ثابت عائم pitch_steady = pitchSetpointAtSpeed(22.f, 20.f, 1.f, 0.f);
 
 	// THEN the pitch loop pitches up more than without acceleration
 	EXPECT_GT(pitch_accelerating, pitch_steady + 1e-3f);
@@ -983,7 +983,7 @@ TEST(TECSControlTest, PitchUpOnAccelerationAboveSetpoint)
 TEST(TECSControlTest, PitchUpOnOverspeed)
 {
 	// WHEN flying faster than the airspeed setpoint
-	const float pitch = pitchSetpointAtSpeed(25.f, 20.f, 1.f);
+	ثابت عائم pitch = pitchSetpointAtSpeed(25.f, 20.f, 1.f);
 
 	// THEN the pitch loop pitches up to slow down
 	EXPECT_GT(pitch, 0.f);
@@ -996,26 +996,26 @@ TEST(TECSControlTest, KineticSetpointAndEstimateFadeEquallyAboveTrim)
 	TECSControl::Param param = makeParam();
 	param.pitch_speed_weight = 1.5f;
 	TECSControl::Flag flag = makeFlag();
-	flag.detect_underspeed_enabled = false;
+	flag.detect_underspeed_enabled = خطأ;
 
 	TECSControl::Setpoint setpoint = makeSetpoint(); // altitude reference at the current altitude
 	setpoint.tas_setpoint = 18.f;
 
-	TECSControl::Input input = makeInput();
-	input.tas = 17.f; // between trim (15 m/s) and the setpoint
-	input.tas_rate = (setpoint.tas_setpoint - input.tas) * param.airspeed_error_gain; // the commanded acceleration
+	TECSControl::مدخل_2 مدخل = make_مدخل();
+	مدخل.tas = 17.f; // between trim (15 m/s) and the setpoint
+	مدخل.tas_rate = (setpoint.tas_setpoint - مدخل.tas) * param.airspeed_error_gain; // the commanded acceleration
 
 	TECSControl control;
-	control.initialize(setpoint, input, param, flag);
+	control.initialize(setpoint, مدخل, param, flag);
 
-	const TECSControl::DebugOutput &debug = control.getDebugOutput();
+	ثابت TECSControl::DebugOutput &debug = control.getDebugOutput();
 	EXPECT_NEAR(debug.energy_balance_rate_sp, debug.energy_balance_rate_estimate, 1e-4f);
 }
 
 // The stall airspeed is converted to TAS the same way as the minimum airspeed.
 TEST(TECSUnderspeedTest, StallAirspeedIsConvertedToTrueAirspeed)
 {
-	for (const float eas_to_tas : {1.f, 1.5f}) {
+	لكل (ثابت عائم eas_to_tas : {1.f, 1.5f}) {
 		TECS tecs;
 		configureTECS(tecs);
 		tecs.set_equivalent_airspeed_stall(9.f); // band is [9.5, 10] m/s EAS
@@ -1034,8 +1034,8 @@ TEST(TECSUnderspeedTest, AltitudeReferenceIsHeldAtCurrentAltitudeWhileUndersped)
 	TECS tecs;
 	configureTECS(tecs);
 
-	const float altitude = 100.f;
-	const float hgt_setpoint = 200.f; // large standing climb demand
+	ثابت عائم altitude = 100.f;
+	ثابت عائم hgt_setpoint = 200.f; // large standing climb demand
 
 	runTECS(tecs, altitude, hgt_setpoint, 8.f /* well below the 10 m/s minimum */, 25);
 
@@ -1050,8 +1050,8 @@ TEST(TECSUnderspeedTest, AltitudeReferenceTracksSetpointWhenNotUndersped)
 	TECS tecs;
 	configureTECS(tecs);
 
-	const float altitude = 100.f;
-	const float hgt_setpoint = 200.f;
+	ثابت عائم altitude = 100.f;
+	ثابت عائم hgt_setpoint = 200.f;
 
 	runTECS(tecs, altitude, hgt_setpoint, 20.f, 25);
 

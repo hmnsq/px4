@@ -35,21 +35,21 @@
  * @file default_tunes.cpp
  */
 
-#include "tunes.h"
+#ضمن "tunes.h"
 
 #define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) tune,
 // Initialize default tunes
-const char *const Tunes::_default_tunes[] = {
-#include "tune_definition.desc"
+ثابت حرف *ثابت Tunes::_default_tunes[] = {
+#ضمن "tune_definition.desc"
 };
 #undef PX4_DEFINE_TUNE
 
 #define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) interruptable,
 // Initialize default tunes
-const bool Tunes::_default_tunes_interruptable[] = {
-#include "tune_definition.desc"
+ثابت منطقي Tunes::_default_tunes_interruptable[] = {
+#ضمن "tune_definition.desc"
 };
 #undef PX4_DEFINE_TUNE
 
 // set default_tunes array size
-const unsigned int Tunes::_default_tunes_size =  sizeof(_default_tunes) / sizeof(_default_tunes[0]);
+ثابت unsigned صحيح Tunes::_default_tunes_size =  حجم(_default_tunes) / حجم(_default_tunes[0]);
