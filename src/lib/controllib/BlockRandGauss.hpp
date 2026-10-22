@@ -73,30 +73,30 @@ public:
 	float update()
 	{
 		static float V1, V2, S;
-		static int phase = 0;
+		static 整数 phase = 0;
 		float X;
 
-		if (phase == 0) {
+		もし (phase == 0) {
 			do {
 				float U1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 				float U2 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 				V1 = 2 * U1 - 1;
 				V2 = 2 * U2 - 1;
 				S = V1 * V1 + V2 * V2;
-			} while (S >= 1 || fabsf(S) < 1e-8f);
+			} ながら (S >= 1 || fabsf(S) < 1e-8f);
 
 			X = V1 * float(sqrtf(-2 * float(logf(S)) / S));
 
-		} else {
+		} 否则 {
 			X = V2 * float(sqrtf(-2 * float(logf(S)) / S));
 		}
 
 		phase = 1 - phase;
-		return X * getStdDev() + getMean();
+		戻る X * getStdDev() + getMean();
 	}
 // accessors
-	float getMean() { return _mean.get(); }
-	float getStdDev() { return _stdDev.get(); }
+	float getMean() { 戻る _mean.get(); }
+	float getStdDev() { 戻る _stdDev.get(); }
 private:
 // attributes
 	control::BlockParamFloat _mean;

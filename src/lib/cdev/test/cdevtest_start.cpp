@@ -44,25 +44,25 @@
 #include <stdio.h>
 #include <string.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+static 整数 daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-extern "C" __EXPORT int cdev_test_main(int argc, char *argv[]);
-int cdev_test_main(int argc, char *argv[])
+extern "C" __EXPORT 整数 cdev_test_main(整数 argc, char *argv[]);
+整数 cdev_test_main(整数 argc, char *argv[])
 {
 
-	if (argc < 2) {
+	もし (argc < 2) {
 		printf("usage: cdevtest {start|stop|status}\n");
-		return 1;
+		戻る 1;
 	}
 
-	if (!strcmp(argv[1], "start")) {
+	もし (!strcmp(argv[1], "start")) {
 
-		if (CDevExample::appState.isRunning()) {
+		もし (CDevExample::appState.isRunning()) {
 			printf("already running\n");
 			/* this is not an error */
-			return 0;
+			戻る 0;
 		}
 
 		daemon_task = px4_task_spawn_cmd("cdevtest",
@@ -72,25 +72,25 @@ int cdev_test_main(int argc, char *argv[])
 						 PX4_MAIN,
 						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
 
-		return 0;
+		戻る 0;
 	}
 
-	if (!strcmp(argv[1], "stop")) {
+	もし (!strcmp(argv[1], "stop")) {
 		CDevExample::appState.requestExit();
-		return 0;
+		戻る 0;
 	}
 
-	if (!strcmp(argv[1], "status")) {
-		if (CDevExample::appState.isRunning()) {
+	もし (!strcmp(argv[1], "status")) {
+		もし (CDevExample::appState.isRunning()) {
 			printf("is running\n");
 
-		} else {
+		} 否则 {
 			printf("not started\n");
 		}
 
-		return 0;
+		戻る 0;
 	}
 
 	printf("usage: cdevtest_main {start|stop|status}\n");
-	return 1;
+	戻る 1;
 }

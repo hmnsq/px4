@@ -45,7 +45,7 @@ namespace mode_util
  */
 static inline uint32_t getValidNavStates(uint32_t mode_not_supported = 0)
 {
-	return ((1u << vehicle_status_s::NAVIGATION_STATE_MANUAL) |
+	戻る ((1u << vehicle_status_s::NAVIGATION_STATE_MANUAL) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_ALTCTL) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_ALTITUDE_CRUISE) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_MANUAL_PARKING) |
@@ -112,16 +112,16 @@ inline const char *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX]
  */
 static inline const char *nav_state_name(uint8_t nav_state, uint8_t vehicle_type)
 {
-	if (nav_state >= vehicle_status_s::NAVIGATION_STATE_MAX) {
-		return "(unknown)";
+	もし (nav_state >= vehicle_status_s::NAVIGATION_STATE_MAX) {
+		戻る "(unknown)";
 	}
 
-	if (nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL
+	もし (nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL
 	    && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		return "Cruise";
+		戻る "Cruise";
 	}
 
-	return nav_state_names[nav_state];
+	戻る nav_state_names[nav_state];
 }
 
 /**
@@ -130,29 +130,29 @@ static inline const char *nav_state_name(uint8_t nav_state, uint8_t vehicle_type
 static inline bool isAdvanced(uint8_t nav_state)
 {
 	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL: return false;
+	case vehicle_status_s::NAVIGATION_STATE_ALTCTL: 戻る false;
 
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL: return false;
+	case vehicle_status_s::NAVIGATION_STATE_POSCTL: 戻る false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL1: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL1: 戻る false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL2: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL2: 戻る false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL3: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL3: 戻る false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL4: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL4: 戻る false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL5: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL5: 戻る false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL6: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL6: 戻る false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL7: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL7: 戻る false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL8: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL8: 戻る false;
 
 	}
 
-	return true;
+	戻る true;
 }
 
 } // namespace mode_util

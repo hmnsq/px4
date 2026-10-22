@@ -60,10 +60,10 @@
 #include "flashfs.h"
 #include "../param_translation.h"
 
-#if 0
-# define debug(fmt, args...)            do { warnx(fmt, ##args); } while(0)
-#else
-# define debug(fmt, args...)            do { } while(0)
+#もし 0
+# define debug(fmt, args...)            do { warnx(fmt, ##args); } ながら(0)
+#否则
+# define debug(fmt, args...)            do { } ながら(0)
 #endif
 
 
@@ -105,13 +105,13 @@ static bool log_unreadable;
 static bool
 any_unsaved(param_filter_func filter)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if ((filter == nullptr || filter(param)) && param_value_unsaved(param)) {
-			return true;
+	ために (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
+		もし ((filter == nullptr || filter(param)) && param_value_unsaved(param)) {
+			戻る true;
 		}
 	}
 
-	return false;
+	戻る false;
 }
 
 /*
@@ -122,28 +122,28 @@ any_unsaved(param_filter_func filter)
  * default in force, is written as a BSON null so replay drops it, which is
  * what the file backend's "don't export defaults" gives after a reload.
  */
-static int
+static 整数
 encode_params(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if (filter && !filter(param)) {
+	ために (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
+		もし (filter && !filter(param)) {
 			continue;
 		}
 
-		if (snapshot) {
-			if (!user_config.contains(param)) {
+		もし (snapshot) {
+			もし (!user_config.contains(param)) {
 				continue;
 			}
 
-		} else {
-			if (!param_value_unsaved(param)) {
+		} 否则 {
+			もし (!param_value_unsaved(param)) {
 				continue;
 			}
 
-			if (!user_config.contains(param) || param_value_is_default(param)) {
-				if (bson_encoder_append_null(encoder, param_name(param))) {
+			もし (!user_config.contains(param) || param_value_is_default(param)) {
+				もし (bson_encoder_append_null(encoder, param_name(param))) {
 					debug("BSON append failed for '%s'", param_name(param));
-					return -1;
+					戻る -1;
 				}
 
 				continue;
@@ -152,172 +152,172 @@ encode_params(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
 
 		switch (param_type(param)) {
 		case PARAM_TYPE_INT32:
-			if (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
+			もし (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				戻る -1;
 			}
 
 			break;
 
 		case PARAM_TYPE_FLOAT:
-			if (bson_encoder_append_double(encoder, param_name(param), (double)user_config.get(param).f)) {
+			もし (bson_encoder_append_double(encoder, param_name(param), (double)user_config.get(param).f)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				戻る -1;
 			}
 
 			break;
 
 		default:
 			debug("unrecognized parameter type");
-			return -1;
+			戻る -1;
 		}
 	}
 
-	return 0;
+	戻る 0;
 }
 
 /* The caller frees bson_encoder_buf_data() whatever the result. */
-static int
+static 整数
 encode_document(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
 {
 	bson_encoder_init_buf(encoder, nullptr, 0);
 
-	int result = encode_params(encoder, filter, snapshot);
+	整数 result = encode_params(encoder, filter, snapshot);
 
-	if (result == 0) {
+	もし (result == 0) {
 		result = bson_encoder_fini(encoder);
 	}
 
-	return result;
+	戻る result;
 }
 
-static int
+static 整数
 stage_write_buffer(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
 {
 	void *enc_buff = bson_encoder_buf_data(encoder);
 	*enc_size = bson_encoder_buf_size(encoder);
 
-	if (enc_buff == nullptr) {
-		return -ENOMEM;
+	もし (enc_buff == nullptr) {
+		戻る -ENOMEM;
 	}
 
 	size_t alloc_size = *enc_size;
-	int result = parameter_flashfs_alloc(parameters_token, buffer, &alloc_size);
+	整数 result = parameter_flashfs_alloc(parameters_token, buffer, &alloc_size);
 
-	if (result != OK) {
-		return result;
+	もし (result != OK) {
+		戻る result;
 	}
 
-	if (alloc_size < *enc_size) {
+	もし (alloc_size < *enc_size) {
 		parameter_flashfs_free();
-		return -ENOMEM;
+		戻る -ENOMEM;
 	}
 
 	memcpy(*buffer, enc_buff, *enc_size);
-	return OK;
+	戻る OK;
 }
 
-static int
+static 整数
 commit_append(uint8_t *buffer, size_t enc_size)
 {
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	整数 result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	もし (result == (整数)enc_size) {
+		戻る OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	戻る result < 0 ? result : -EFBIG;
 }
 
-static int
+static 整数
 export_delta(param_filter_func filter)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, filter, false);
+	整数 result = encode_document(&encoder, filter, false);
 
-	if (result == 0) {
+	もし (result == 0) {
 		uint8_t *buffer;
 		size_t enc_size;
 		result = stage_write_buffer(&encoder, &buffer, &enc_size);
 
-		if (result == OK) {
+		もし (result == OK) {
 			result = commit_append(buffer, enc_size);
 		}
 	}
 
 	free(bson_encoder_buf_data(&encoder));
-	return result;
+	戻る result;
 }
 
 /* Everything that can fail before the erase, so a failure here leaves the
  * log untouched and still loadable. */
-static int
+static 整数
 stage_snapshot(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
 {
-	int result = stage_write_buffer(encoder, buffer, enc_size);
+	整数 result = stage_write_buffer(encoder, buffer, enc_size);
 
-	if (result != OK) {
-		return result;
+	もし (result != OK) {
+		戻る result;
 	}
 
-	if (*enc_size > parameter_flashfs_max_payload()) {
+	もし (*enc_size > parameter_flashfs_max_payload()) {
 		parameter_flashfs_free();
-		return -ENOSPC;
+		戻る -ENOSPC;
 	}
 
-	return OK;
+	戻る OK;
 }
 
-static int
+static 整数
 commit_snapshot(uint8_t *buffer, size_t enc_size)
 {
-	if (parameter_flashfs_blank() != 1) {
-		int rv = parameter_flashfs_erase();
+	もし (parameter_flashfs_blank() != 1) {
+		整数 rv = parameter_flashfs_erase();
 
-		if (rv < 0) {
+		もし (rv < 0) {
 			parameter_flashfs_free();
-			return rv;
+			戻る rv;
 		}
 	}
 
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	整数 result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 
-	if (result != (int)enc_size && parameter_flashfs_blank() == 1) {
+	もし (result != (整数)enc_size && parameter_flashfs_blank() == 1) {
 		result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 	}
 
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	もし (result == (整数)enc_size) {
+		戻る OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	戻る result < 0 ? result : -EFBIG;
 }
 
-static int
+static 整数
 compact_to_snapshot()
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	整数 result = encode_document(&encoder, nullptr, true);
 
-	if (result == 0) {
+	もし (result == 0) {
 		uint8_t *buffer;
 		size_t enc_size;
 		result = stage_snapshot(&encoder, &buffer, &enc_size);
 
-		if (result == OK) {
+		もし (result == OK) {
 			result = commit_snapshot(buffer, enc_size);
 		}
 	}
 
-	if (result == OK) {
+	もし (result == OK) {
 		log_unreadable = false;
 	}
 
 	free(bson_encoder_buf_data(&encoder));
-	return result;
+	戻る result;
 }
 
 static bool
@@ -325,34 +325,34 @@ has_record(flash_file_token_t token)
 {
 	uint8_t *buffer = nullptr;
 	size_t buf_size = 0;
-	return parameter_flashfs_read(token, &buffer, &buf_size) >= 0;
+	戻る parameter_flashfs_read(token, &buffer, &buf_size) >= 0;
 }
 
-static int
+static 整数
 param_export_internal(param_filter_func filter)
 {
 	/* A delta only means something behind a snapshot that replays. A legacy
 	 * record still present means the boot migration did not run; replay
 	 * would take it over any delta appended behind it. */
-	if (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
-		return compact_to_snapshot();
+	もし (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
+		戻る compact_to_snapshot();
 	}
 
-	if (!any_unsaved(filter)) {
-		return 0;
+	もし (!any_unsaved(filter)) {
+		戻る 0;
 	}
 
-	int result = export_delta(filter);
+	整数 result = export_delta(filter);
 
-	if (result != -ENOSPC) {
-		return result;
+	もし (result != -ENOSPC) {
+		戻る result;
 	}
 
 	/* Same-bank erase stalls the CPU for ~1 s; last resort when a single
 	 * save does not fit the tail. Compact writes the full RAM snapshot so a
 	 * filtered save cannot drop params not in the delta. */
 	PX4_WARN("flashparams: param sector full, compacting");
-	return compact_to_snapshot();
+	戻る compact_to_snapshot();
 }
 
 
@@ -361,50 +361,50 @@ record_is_stale(bson_node_t node)
 {
 	const param_t param = param_find_no_notification(node->name);
 
-	if (param == PARAM_INVALID) {
-		return true;
+	もし (param == PARAM_INVALID) {
+		戻る true;
 	}
 
 	switch (node->type) {
 	case BSON_INT32:
-		return param_type(param) != PARAM_TYPE_INT32;
+		戻る param_type(param) != PARAM_TYPE_INT32;
 
 	case BSON_DOUBLE:
-		return param_type(param) != PARAM_TYPE_FLOAT;
+		戻る param_type(param) != PARAM_TYPE_FLOAT;
 
 	default:
-		return false;
+		戻る false;
 	}
 }
 
-static int
+static 整数
 param_import_callback(bson_decoder_t decoder, bson_node_t node)
 {
 	float f;
 	int32_t i;
 	void *v = nullptr;
-	int result = -1;
+	整数 result = -1;
 
 	/*
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	もし (node->type == BSON_EOO) {
 		debug("end of parameters");
-		return 0;
+		戻る 0;
 	}
 
 	/* A tombstone has no value. The decoder leaves the previous node's in
 	 * the union and the translations read it without a type check. */
 	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
 
-	if (!tombstone) {
-		if (record_is_stale(node)) {
+	もし (!tombstone) {
+		もし (record_is_stale(node)) {
 			log_stale = true;
 		}
 
-		if (param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
-			return 1;
+		もし (param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+			戻る 1;
 		}
 	}
 
@@ -414,9 +414,9 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	 */
 	param_t param = param_find_no_notification(node->name);
 
-	if (param == PARAM_INVALID) {
+	もし (param == PARAM_INVALID) {
 		debug("ignoring unrecognised parameter '%s'", node->name);
-		return 1;
+		戻る 1;
 	}
 
 	/*
@@ -431,7 +431,7 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 		goto out;
 
 	case BSON_INT32:
-		if (param_type(param) != PARAM_TYPE_INT32) {
+		もし (param_type(param) != PARAM_TYPE_INT32) {
 			PX4_WARN("unexpected type for %s", node->name);
 			result = 1; // just skip this entry
 			goto out;
@@ -442,7 +442,7 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 		break;
 
 	case BSON_DOUBLE:
-		if (param_type(param) != PARAM_TYPE_FLOAT) {
+		もし (param_type(param) != PARAM_TYPE_FLOAT) {
 			PX4_WARN("unexpected type for %s", node->name);
 			result = 1; // just skip this entry
 			goto out;
@@ -458,7 +458,7 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 		goto out;
 	}
 
-	if (param_set_external(param, v, true, true)) {
+	もし (param_set_external(param, v, true, true)) {
 		debug("error setting value for '%s'", node->name);
 		goto out;
 	}
@@ -467,67 +467,67 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	result = 1;
 
 out:
-	return result;
+	戻る result;
 }
 
-static int
+static 整数
 import_one_entry(uint8_t *buffer, size_t buf_size, void *arg)
 {
-	int *result = static_cast<int *>(arg);
+	整数 *result = static_cast<整数 *>(arg);
 	bson_decoder_s decoder{};
 
-	if (bson_decoder_init_buf(&decoder, buffer, buf_size, param_import_callback)) {
+	もし (bson_decoder_init_buf(&decoder, buffer, buf_size, param_import_callback)) {
 		debug("decoder init failed");
 		*result = -1;
-		return -1;
+		戻る -1;
 	}
 
 	do {
 		*result = bson_decoder_next(&decoder);
 
-	} while (*result > 0);
+	} ながら (*result > 0);
 
-	return *result < 0 ? *result : 0;
+	戻る *result < 0 ? *result : 0;
 }
 
-static int
+static 整数
 param_import_internal(bool *legacy)
 {
-	int result = 0;
+	整数 result = 0;
 	log_stale = false;
-	int n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &result);
+	整数 n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &result);
 	*legacy = n > 0;
 
-	if (n == 0) {
+	もし (n == 0) {
 		n = parameter_flashfs_walk(parameters_token, import_one_entry, &result);
 	}
 
-	if (n < 0) {
+	もし (n < 0) {
 		debug("flash walk failed (%d)", n);
 		log_unreadable = true;
-		return n;
+		戻る n;
 	}
 
-	if (n == 0) {
+	もし (n == 0) {
 		/* No valid entry found. A fully erased store is blank (first boot, or
 		 * after switching firmware): report "not yet stored" (1), matching the
 		 * convention used by param_load_default(). A store that holds data but
 		 * no valid entry (torn write, bit-rot, or foreign data) is corrupt and
 		 * must not be silently reseeded - report it so the boot recovery runs. */
-		if (parameter_flashfs_blank() == 1) {
-			return 1;
+		もし (parameter_flashfs_blank() == 1) {
+			戻る 1;
 		}
 
 		debug("flash holds data but no valid entry");
-		return -EILSEQ;
+		戻る -EILSEQ;
 	}
 
-	if (result < 0) {
+	もし (result < 0) {
 		debug("BSON error decoding parameters");
-		return result;
+		戻る result;
 	}
 
-	return 0;
+	戻る 0;
 }
 
 /*
@@ -538,58 +538,58 @@ param_import_internal(bool *legacy)
  * the erase is an error: until then the log is intact and RAM holds what it
  * said, so the boot must not be reported as a corrupt store.
  */
-static int
+static 整数
 compact_after_import(bool legacy)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	整数 result = encode_document(&encoder, nullptr, true);
 
-	if (result != 0) {
+	もし (result != 0) {
 		PX4_ERR("flashparams: snapshot encode failed (%d), log kept", result);
 		free(bson_encoder_buf_data(&encoder));
-		return 0;
+		戻る 0;
 	}
 
 	const size_t enc_size = bson_encoder_buf_size(&encoder);
-	int need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_size);
+	整数 need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_size);
 	result = 0;
 
-	if (need > 0) {
+	もし (need > 0) {
 		uint8_t *buffer;
 		size_t staged_size;
 		result = stage_snapshot(&encoder, &buffer, &staged_size);
 
-		if (result != OK) {
+		もし (result != OK) {
 			PX4_ERR("flashparams: cannot stage snapshot (%d), log kept", result);
 			result = 0;
 
-		} else {
+		} 否则 {
 			PX4_INFO("flashparams: compacting param sector%s", legacy ? " (legacy layout)" : "");
 			result = commit_snapshot(buffer, staged_size);
 
-			if (result != OK) {
+			もし (result != OK) {
 				PX4_ERR("flashparams: compact failed (%d)", result);
 			}
 		}
 	}
 
 	free(bson_encoder_buf_data(&encoder));
-	return result;
+	戻る result;
 }
 
-int flash_param_save(param_filter_func filter)
+整数 flash_param_save(param_filter_func filter)
 {
-	return param_export_internal(filter);
+	戻る param_export_internal(filter);
 }
 
-int flash_param_import()
+整数 flash_param_import()
 {
 	bool legacy = false;
-	int result = param_import_internal(&legacy);
+	整数 result = param_import_internal(&legacy);
 
-	if (result != 0) {
-		return result;
+	もし (result != 0) {
+		戻る result;
 	}
 
-	return compact_after_import(legacy);
+	戻る compact_after_import(legacy);
 }

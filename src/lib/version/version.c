@@ -37,11 +37,11 @@
 
 #include <string.h>
 
-#if !defined(CONFIG_CDCACM_PRODUCTID)
+#もし !defined(CONFIG_CDCACM_PRODUCTID)
 # define CONFIG_CDCACM_PRODUCTID 0
 #endif
 
-#if defined(__PX4_LINUX)
+#もし defined(__PX4_LINUX)
 #include <sys/utsname.h>
 #endif
 
@@ -60,7 +60,7 @@ enum FIRMWARE_TYPE {
 
 const char *px4_build_uri(void)
 {
-	return STRINGIFY(BUILD_URI);
+	戻る STRINGIFY(BUILD_URI);
 }
 
 uint32_t version_tag_to_number(const char *tag)
@@ -72,9 +72,9 @@ uint32_t version_tag_to_number(const char *tag)
 	size_t dash_count = 0;
 	size_t point_count = 0;
 	char version[3] = {0, 0, 0};
-	int firmware_type = FIRMWARE_TYPE_RELEASE;
+	整数 firmware_type = FIRMWARE_TYPE_RELEASE;
 
-	for (size_t i = 0; i < strlen(tag); i++) {
+	ために (size_t i = 0; i < strlen(tag); i++) {
 		switch (tag[i]) {
 		case '-':
 			dash_count++;
@@ -85,7 +85,7 @@ uint32_t version_tag_to_number(const char *tag)
 			break;
 
 		case 'r':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
+			もし (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
 				firmware_type = FIRMWARE_TYPE_RC;
 
 			}
@@ -97,10 +97,10 @@ uint32_t version_tag_to_number(const char *tag)
 			break;
 
 		case 't':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
+			もし (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
-			} else {
+			} 否则 {
 				firmware_type = FIRMWARE_TYPE_BETA;
 
 			}
@@ -108,7 +108,7 @@ uint32_t version_tag_to_number(const char *tag)
 			break;
 
 		case 'v':
-			if (i > 0) {
+			もし (i > 0) {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
 			}
@@ -120,24 +120,24 @@ uint32_t version_tag_to_number(const char *tag)
 		}
 	}
 
-	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
+	もし ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
 	    (dash_count == 2 && point_count == 2) ||
 	    (dash_count == 3 && point_count == 4) ||
 	    (dash_count == 4 && point_count == 4)) {
 		firmware_type = FIRMWARE_TYPE_DEV;
 	}
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (buffer_counter > 2) {
+	ために (size_t i = 0; i < strlen(tag); i++) {
+		もし (buffer_counter > 2) {
 			continue;
 		}
 
-		if (tag[i] >= '0' && tag[i] <= '9') {
+		もし (tag[i] >= '0' && tag[i] <= '9') {
 			buffer = (buffer == -1) ? 0 : buffer;
 			buffer = buffer * 10 + (tag[i] - '0');
 
-		} else {
-			if (buffer >= 0) {
+		} 否则 {
+			もし (buffer >= 0) {
 				version[buffer_counter] = buffer;
 				buffer_counter++;
 			}
@@ -146,30 +146,30 @@ uint32_t version_tag_to_number(const char *tag)
 		}
 	}
 
-	if (buffer >= 0) {
+	もし (buffer >= 0) {
 		version[buffer_counter] = buffer;
 		buffer_counter++;
 	}
 
-	if (buffer_counter <= 0) {
+	もし (buffer_counter <= 0) {
 		firmware_type = 0x00;
 	}
 
-	if (buffer_counter == 3 || buffer_counter == 6) {
+	もし (buffer_counter == 3 || buffer_counter == 6) {
 		version_number = ((uint8_t)version[0] << 8 * 3) |
 				 ((uint8_t)version[1] << 8 * 2) |
 				 ((uint8_t)version[2] << 8 * 1) | firmware_type;
 
-	} else {
+	} 否则 {
 		version_number = 0;
 	}
 
-	return version_number;
+	戻る version_number;
 }
 
 uint32_t px4_firmware_version(void)
 {
-	return version_tag_to_number(PX4_GIT_TAG_STR);
+	戻る version_tag_to_number(PX4_GIT_TAG_STR);
 }
 
 uint32_t version_tag_to_vendor_version_number(const char *tag)
@@ -181,9 +181,9 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 	char version[6] = {0, 0, 0, 0, 0, 0};
 	size_t dash_count = 0;
 	size_t point_count = 0;
-	int firmware_type = FIRMWARE_TYPE_RELEASE;
+	整数 firmware_type = FIRMWARE_TYPE_RELEASE;
 
-	for (size_t i = 0; i < strlen(tag); i++) {
+	ために (size_t i = 0; i < strlen(tag); i++) {
 		switch (tag[i]) {
 		case '-':
 			dash_count++;
@@ -194,7 +194,7 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 			break;
 
 		case 'r':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
+			もし (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
 				firmware_type = FIRMWARE_TYPE_RC;
 
 			}
@@ -206,10 +206,10 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 			break;
 
 		case 't':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
+			もし (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
-			} else {
+			} 否则 {
 				firmware_type = FIRMWARE_TYPE_BETA;
 
 			}
@@ -217,7 +217,7 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 			break;
 
 		case 'v':
-			if (i > 0) {
+			もし (i > 0) {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
 			}
@@ -229,25 +229,25 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 		}
 	}
 
-	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
+	もし ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
 	    (dash_count == 2 && point_count == 2) ||
 	    (dash_count == 3 && point_count == 4) ||
 	    (dash_count == 4 && point_count == 4)) {
 		firmware_type = FIRMWARE_TYPE_DEV;
 	}
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (buffer_counter > 5) {
+	ために (size_t i = 0; i < strlen(tag); i++) {
+		もし (buffer_counter > 5) {
 			continue;
 		}
 
-		if (tag[i] >= '0' && tag[i] <= '9') {
+		もし (tag[i] >= '0' && tag[i] <= '9') {
 			buffer = (buffer == -1) ? 0 : buffer;
 			buffer = buffer * 10 + (tag[i] - '0');
 
-		} else {
-			if (buffer >= 0) {
-				if (buffer_counter + 1 == 4 && tag[i] == '-') {
+		} 否则 {
+			もし (buffer >= 0) {
+				もし (buffer_counter + 1 == 4 && tag[i] == '-') {
 					break;
 				}
 
@@ -259,152 +259,152 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 		}
 	}
 
-	if (buffer >= 0 && (buffer_counter + 1 == 3 || buffer_counter + 1 == 6)) {
+	もし (buffer >= 0 && (buffer_counter + 1 == 3 || buffer_counter + 1 == 6)) {
 		version[buffer_counter] = buffer;
 		buffer_counter++;
 	}
 
-	if (buffer_counter == 6) {
+	もし (buffer_counter == 6) {
 		version_number = ((uint8_t)version[3] << 8 * 3) |
 				 ((uint8_t)version[4] << 8 * 2) |
 				 ((uint8_t)version[5] << 8 * 1) | firmware_type;
 
-	} else if (buffer_counter == 3) {
+	} 否则 もし (buffer_counter == 3) {
 		version_number = firmware_type;
 
-	} else {
+	} 否则 {
 		version_number = 0;
 	}
 
-	return version_number;
+	戻る version_number;
 }
 
 uint32_t px4_firmware_vendor_version(void)
 {
-	return version_tag_to_vendor_version_number(PX4_GIT_TAG_STR);
+	戻る version_tag_to_vendor_version_number(PX4_GIT_TAG_STR);
 }
 
 const char *px4_firmware_git_branch(void)
 {
-	return PX4_GIT_BRANCH_NAME;
+	戻る PX4_GIT_BRANCH_NAME;
 }
 
 uint32_t px4_board_version(void)
 {
-#if defined(__PX4_NUTTX)
-	return CONFIG_CDCACM_PRODUCTID;
-#else
-	return 1;
+#もし defined(__PX4_NUTTX)
+	戻る CONFIG_CDCACM_PRODUCTID;
+#否则
+	戻る 1;
 #endif
 }
 
 uint32_t px4_os_version(void)
 {
-#if defined(__PX4_DARWIN) || defined(__PX4_CYGWIN) || defined(__PX4_QURT)
-	return 0; //TODO: implement version for Darwin, Cygwin, QuRT
+#もし defined(__PX4_DARWIN) || defined(__PX4_CYGWIN) || defined(__PX4_QURT)
+	戻る 0; //TODO: implement version for Darwin, Cygwin, QuRT
 #elif defined(__PX4_LINUX)
 	struct utsname name;
 
-	if (uname(&name) == 0) {
+	もし (uname(&name) == 0) {
 		char *c = name.release;
 
 		// cut the part after the first '-'
-		while (*c && *c != '-') {
+		ながら (*c && *c != '-') {
 			++c;
 		}
 
 		*c = 0;
-		return version_tag_to_number(name.release);
+		戻る version_tag_to_number(name.release);
 
-	} else {
-		return 0;
+	} 否则 {
+		戻る 0;
 	}
 
 #elif defined(__PX4_NUTTX)
-	return version_tag_to_number(NUTTX_GIT_TAG_STR);
-#else
+	戻る version_tag_to_number(NUTTX_GIT_TAG_STR);
+#否则
 # error "px4_os_version not implemented for current OS"
 #endif
 }
 
 const char *px4_os_version_string(void)
 {
-#if defined(__PX4_NUTTX)
-	return NUTTX_GIT_VERSION_STR;
-#else
-	return NULL;
+#もし defined(__PX4_NUTTX)
+	戻る NUTTX_GIT_VERSION_STR;
+#否则
+	戻る NULL;
 #endif
 }
 
 const char *px4_os_name(void)
 {
-#if defined(__PX4_DARWIN)
-	return "Darwin";
+#もし defined(__PX4_DARWIN)
+	戻る "Darwin";
 #elif defined(__PX4_LINUX)
-	return "Linux";
+	戻る "Linux";
 #elif defined(__PX4_QURT)
-	return "QuRT";
+	戻る "QuRT";
 #elif defined(__PX4_NUTTX)
-	return "NuttX";
+	戻る "NuttX";
 #elif defined(__PX4_CYGWIN)
-	return "Cygwin";
-#else
+	戻る "Cygwin";
+#否则
 # error "px4_os_name not implemented for current OS"
 #endif
 }
 
 const char *px4_toolchain_name(void)
 {
-#if defined(__clang__)
-	return "Clang/LLVM";
+#もし defined(__clang__)
+	戻る "Clang/LLVM";
 #elif defined(__ICC) || defined(__INTEL_COMPILER)
-	return "Intel ICC";
+	戻る "Intel ICC";
 #elif defined(__GNUC__) || defined(__GNUG__)
-	return "GNU GCC";
+	戻る "GNU GCC";
 #elif defined(_MSC_VER)
-	return "MS Visual Studio";
-#else
-	return "Unknown";
+	戻る "MS Visual Studio";
+#否则
+	戻る "Unknown";
 #endif
 }
 
 const char *px4_toolchain_version(void)
 {
 #ifdef __VERSION__
-	return __VERSION__;
-#else
-	return "";
+	戻る __VERSION__;
+#否则
+	戻る "";
 #endif
 }
 
 const char *px4_firmware_version_string(void)
 {
-	return PX4_GIT_VERSION_STR;
+	戻る PX4_GIT_VERSION_STR;
 }
 
 uint64_t px4_firmware_version_binary(void)
 {
-	return PX4_GIT_VERSION_BINARY;
+	戻る PX4_GIT_VERSION_BINARY;
 }
 
 
 #ifdef MAVLINK_LIB_GIT_VERSION_BINARY
 uint64_t px4_mavlink_lib_version_binary(void)
 {
-	return MAVLINK_LIB_GIT_VERSION_BINARY;
+	戻る MAVLINK_LIB_GIT_VERSION_BINARY;
 }
 #endif /* MAVLINK_LIB_GIT_VERSION_BINARY */
 
 uint64_t px4_os_version_binary(void)
 {
 #ifdef NUTTX_GIT_VERSION_BINARY
-	return NUTTX_GIT_VERSION_BINARY;
-#else
-	return 0;
+	戻る NUTTX_GIT_VERSION_BINARY;
+#否则
+	戻る 0;
 #endif
 }
 
 const char *px4_firmware_oem_version_string(void)
 {
-	return PX4_GIT_OEM_VERSION_STR;
+	戻る PX4_GIT_OEM_VERSION_STR;
 }

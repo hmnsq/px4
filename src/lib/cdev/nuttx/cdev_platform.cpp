@@ -54,13 +54,13 @@ namespace cdev
  * The standard NuttX operation dispatch table can't call C++ member functions
  * directly, so we have to bounce them through this dispatch table.
  */
-static int	cdev_open(file_t *filp);
-static int	cdev_close(file_t *filp);
+static 整数	cdev_open(file_t *filp);
+static 整数	cdev_close(file_t *filp);
 static ssize_t	cdev_read(file_t *filp, char *buffer, size_t buflen);
 static ssize_t	cdev_write(file_t *filp, const char *buffer, size_t buflen);
-static off_t	cdev_seek(file_t *filp, off_t offset, int whence);
-static int	cdev_ioctl(file_t *filp, int cmd, unsigned long arg);
-static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
+static off_t	cdev_seek(file_t *filp, off_t offset, 整数 whence);
+static 整数	cdev_ioctl(file_t *filp, 整数 cmd, unsigned long arg);
+static 整数	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
 
 /**
  * Character device indirection table.
@@ -84,86 +84,86 @@ unlink	: nullptr
 #endif
 };
 
-const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { return g_fops; }
+const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { 戻る g_fops; }
 
-static int
+static 整数
 cdev_open(file_t *filp)
 {
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->open(filp);
+	戻る cdev->open(filp);
 }
 
-static int
+static 整数
 cdev_close(file_t *filp)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	もし ((filp->f_inode->i_crefs) == 0) {
+		戻る -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->close(filp);
+	戻る cdev->close(filp);
 }
 
 static ssize_t
 cdev_read(file_t *filp, char *buffer, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	もし ((filp->f_inode->i_crefs) == 0) {
+		戻る -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->read(filp, buffer, buflen);
+	戻る cdev->read(filp, buffer, buflen);
 }
 
 static ssize_t
 cdev_write(file_t *filp, const char *buffer, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	もし ((filp->f_inode->i_crefs) == 0) {
+		戻る -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->write(filp, buffer, buflen);
+	戻る cdev->write(filp, buffer, buflen);
 }
 
 static off_t
-cdev_seek(file_t *filp, off_t offset, int whence)
+cdev_seek(file_t *filp, off_t offset, 整数 whence)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	もし ((filp->f_inode->i_crefs) == 0) {
+		戻る -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->seek(filp, offset, whence);
+	戻る cdev->seek(filp, offset, whence);
 }
 
-static int
-cdev_ioctl(file_t *filp, int cmd, unsigned long arg)
+static 整数
+cdev_ioctl(file_t *filp, 整数 cmd, unsigned long arg)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	もし ((filp->f_inode->i_crefs) == 0) {
+		戻る -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->ioctl(filp, cmd, arg);
+	戻る cdev->ioctl(filp, cmd, arg);
 }
 
-static int
+static 整数
 cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	もし ((filp->f_inode->i_crefs) == 0) {
+		戻る -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->poll(filp, fds, setup);
+	戻る cdev->poll(filp, fds, setup);
 }
 
 } // namespace cdev

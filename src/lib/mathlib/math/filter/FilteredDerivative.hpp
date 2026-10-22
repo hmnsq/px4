@@ -94,24 +94,24 @@ public:
 	 */
 	const T &update(const T &sample)
 	{
-		if (_initialized) {
-			if (_sample_interval > FLT_EPSILON) {
+		もし (_initialized) {
+			もし (_sample_interval > FLT_EPSILON) {
 				_alpha_filter.update((sample - _previous_sample) / _sample_interval);
 
-			} else {
+			} 否则 {
 				_initialized = false;
 			}
 
-		} else {
+		} 否则 {
 			// don't update in the first iteration
 			_initialized = true;
 		}
 
 		_previous_sample = sample;
-		return _alpha_filter.getState();
+		戻る _alpha_filter.getState();
 	}
 
-	const T &getState() const { return _alpha_filter.getState(); }
+	const T &getState() const { 戻る _alpha_filter.getState(); }
 
 	// delete mixing seconds with microseconds explicitly -> better compiler error
 	void setParameters(uint64_t sample_interval_us, float time_constant_s) = delete;

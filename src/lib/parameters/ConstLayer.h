@@ -43,32 +43,32 @@ public:
 
 	bool store(param_t param, param_value_u value) override
 	{
-		return false;
+		戻る false;
 	}
 
 	bool contains(param_t param) const override
 	{
-		return param < PARAM_COUNT;
+		戻る param < PARAM_COUNT;
 	}
 
 	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
 	{
 		px4::AtomicBitset<PARAM_COUNT> set;
 
-		for (int i = 0; i < PARAM_COUNT; i++) {
+		ために (整数 i = 0; i < PARAM_COUNT; i++) {
 			set.set(i);
 		}
 
-		return set;
+		戻る set;
 	}
 
 	param_value_u get(param_t param) const override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		もし (param >= PARAM_COUNT) {
+			戻る {0};
 		}
 
-		return px4::parameters[param].val;
+		戻る px4::parameters[param].val;
 	}
 
 	void reset(param_t param) override
@@ -81,13 +81,13 @@ public:
 		// Do nothing
 	}
 
-	int size() const override
+	整数 size() const override
 	{
-		return PARAM_COUNT;
+		戻る PARAM_COUNT;
 	}
 
-	int byteSize() const override
+	整数 byteSize() const override
 	{
-		return PARAM_COUNT * sizeof(param_info_s);
+		戻る PARAM_COUNT * sizeof(param_info_s);
 	}
 };

@@ -72,7 +72,7 @@ protected:
 		ubx_checksum(&frame[2], UBX_HEADER_LEN - 2 + payload_len, &ck_a, &ck_b);
 		frame.push_back(ck_a);
 		frame.push_back(ck_b);
-		return frame;
+		戻る frame;
 	}
 
 	std::vector<uint8_t> buildRtcmFrame(std::mt19937 &rng, size_t payload_len)
@@ -82,9 +82,9 @@ protected:
 		frame.push_back(static_cast<uint8_t>((payload_len >> 8) & 0x03));
 		frame.push_back(static_cast<uint8_t>(payload_len & 0xFF));
 
-		std::uniform_int_distribution<int> byte(0, 255);
+		std::uniform_int_distribution<整数> byte(0, 255);
 
-		for (size_t i = 0; i < payload_len; i++) {
+		ために (size_t i = 0; i < payload_len; i++) {
 			frame.push_back(static_cast<uint8_t>(byte(rng)));
 		}
 
@@ -92,10 +92,10 @@ protected:
 		frame.push_back((crc >> 16) & 0xFF);
 		frame.push_back((crc >> 8) & 0xFF);
 		frame.push_back(crc & 0xFF);
-		return frame;
+		戻る frame;
 	}
 
-#if defined(CONFIG_GPS_SPARTN)
+#もし defined(CONFIG_GPS_SPARTN)
 	std::vector<uint8_t> buildSpartnFrame(uint8_t msg_type, const std::vector<uint8_t> &payload,
 					      uint8_t crc_type = 0)
 	{
@@ -121,11 +121,11 @@ protected:
 		const uint32_t crc = spartn_message_crc(&frame[1], frame.size() - 1, crc_type);
 		const size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
 
-		for (int i = static_cast<int>(crc_bytes) - 1; i >= 0; i--) {
+		ために (整数 i = static_cast<整数>(crc_bytes) - 1; i >= 0; i--) {
 			frame.push_back(static_cast<uint8_t>((crc >>(8 * i)) & 0xFF));
 		}
 
-		return frame;
+		戻る frame;
 	}
 #endif
 };
@@ -190,10 +190,10 @@ TEST_F(UbxTest, MultipleFrames)
 	stream.insert(stream.end(), f2.begin(), f2.end());
 	parser.addData(stream.data(), stream.size());
 
-	int count = 0;
+	整数 count = 0;
 	size_t len = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
+	ながら (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
 		count++;
 	}
@@ -206,7 +206,7 @@ TEST_F(UbxTest, ChunkedArrival)
 {
 	auto frame = buildUbxFrame(0x13, 0x01, {0x10, 0x20, 0x30, 0x40});
 
-	for (size_t i = 0; i < frame.size(); i++) {
+	ために (size_t i = 0; i < frame.size(); i++) {
 		parser.addData(&frame[i], 1);
 		// No complete frame until the last byte
 	}
@@ -306,7 +306,7 @@ TEST_F(UbxTest, MgaThenRtcm3)
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
 
-	while (parser.getNextMessage(&len, &protocol) != nullptr) {
+	ながら (parser.getNextMessage(&len, &protocol) != nullptr) {
 		seen.push_back(protocol);
 		parser.consumeMessage(len);
 	}
@@ -320,7 +320,7 @@ TEST_F(UbxTest, MgaThenRtcm3)
 	EXPECT_EQ(parser.getStats().crc_errors, 0u);
 }
 
-#if defined(CONFIG_GPS_SPARTN)
+#もし defined(CONFIG_GPS_SPARTN)
 TEST_F(UbxTest, MgaThenSpartn)
 {
 	auto mga = buildUbxFrame(0x13, 0x00, {0xDE, 0xAD});
@@ -338,7 +338,7 @@ TEST_F(UbxTest, MgaThenSpartn)
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
 
-	while (parser.getNextMessage(&len, &protocol) != nullptr) {
+	ながら (parser.getNextMessage(&len, &protocol) != nullptr) {
 		seen.push_back(protocol);
 		parser.consumeMessage(len);
 	}

@@ -188,13 +188,13 @@ TEST(MatrixAttitudeTest, Attitude)
 	Dcmf A = eye<float, 3>();
 	Dcmf R(euler_check);
 
-	for (size_t i = 0; i < 1000; i++) {
+	ために (size_t i = 0; i < 1000; i++) {
 		A = R * A;
 	}
 
 	A.renormalize();
 
-	for (size_t r = 0; r < 3; r++) {
+	ために (size_t r = 0; r < 3; r++) {
 		Vector3f rvec(matrix::Matrix<float, 1, 3>(A.row(r)).transpose());
 		EXPECT_FLOAT_EQ(1.0f, rvec.length());
 	}
@@ -204,27 +204,27 @@ TEST(MatrixAttitudeTest, Attitude)
 	double rad2deg = 180.0 / M_PI;
 
 	// euler dcm round trip check
-	for (double roll = -90; roll <= 90; roll += 90) {
-		for (double pitch = -90; pitch <= 90; pitch += 90) {
-			for (double yaw = -179; yaw <= 180; yaw += 90) {
+	ために (double roll = -90; roll <= 90; roll += 90) {
+		ために (double pitch = -90; pitch <= 90; pitch += 90) {
+			ために (double yaw = -179; yaw <= 180; yaw += 90) {
 				// note if theta = pi/2, then roll is set to zero
 				double roll_expected = roll;
 				double yaw_expected = yaw;
 
-				if (isEqualF(pitch, 90.0)) {
+				もし (isEqualF(pitch, 90.0)) {
 					roll_expected = 0;
 					yaw_expected = yaw - roll;
 
-				} else if (isEqualF(pitch, -90.0)) {
+				} 否则 もし (isEqualF(pitch, -90.0)) {
 					roll_expected = 0;
 					yaw_expected = yaw + roll;
 				}
 
-				if (yaw_expected < -180) {
+				もし (yaw_expected < -180) {
 					yaw_expected += 360;
 				}
 
-				if (yaw_expected > 180) {
+				もし (yaw_expected > 180) {
 					yaw_expected -= 360;
 				}
 
@@ -425,7 +425,7 @@ TEST(MatrixAttitudeTest, Attitude)
 	float q_array[] = {0.9833f, -0.0343f, -0.1060f, -0.1436f};
 	Quaternion<float>q_from_array(q_array);
 
-	for (size_t i = 0; i < 4; i++) {
+	ために (size_t i = 0; i < 4; i++) {
 		EXPECT_FLOAT_EQ(q_from_array(i), q_array[i]);
 	}
 

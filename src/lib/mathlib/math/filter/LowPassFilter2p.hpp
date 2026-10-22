@@ -60,11 +60,11 @@ public:
 	// Change filter parameters
 	void set_cutoff_frequency(float sample_freq, float cutoff_freq)
 	{
-		if ((sample_freq <= 0.f) || (cutoff_freq <= 0.f) || (cutoff_freq >= sample_freq / 2)
+		もし ((sample_freq <= 0.f) || (cutoff_freq <= 0.f) || (cutoff_freq >= sample_freq / 2)
 		    || !isFinite(sample_freq) || !isFinite(cutoff_freq)) {
 
 			disable();
-			return;
+			戻る;
 		}
 
 		// reset delay elements on filter change
@@ -85,7 +85,7 @@ public:
 		_a1 = 2.f * (ohm * ohm - 1.f) / c;
 		_a2 = (1.f - 2.f * cosf(M_PI_F / 4.f) * ohm + ohm * ohm) / c;
 
-		if (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a1) || !isFinite(_a2)) {
+		もし (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a1) || !isFinite(_a2)) {
 			disable();
 		}
 	}
@@ -105,22 +105,22 @@ public:
 		_delay_element_2 = _delay_element_1;
 		_delay_element_1 = delay_element_0;
 
-		return output;
+		戻る output;
 	}
 
 	// Filter array of samples in place using the Direct form II.
-	inline void applyArray(T samples[], int num_samples)
+	inline void applyArray(T samples[], 整数 num_samples)
 	{
-		for (int n = 0; n < num_samples; n++) {
+		ために (整数 n = 0; n < num_samples; n++) {
 			samples[n] = apply(samples[n]);
 		}
 	}
 
 	// Return the cutoff frequency
-	float get_cutoff_freq() const { return _cutoff_freq; }
+	float get_cutoff_freq() const { 戻る _cutoff_freq; }
 
 	// Return the sample frequency
-	float get_sample_freq() const { return _sample_freq; }
+	float get_sample_freq() const { 戻る _sample_freq; }
 
 	float getMagnitudeResponse(float frequency) const;
 
@@ -129,18 +129,18 @@ public:
 	{
 		const T input = isFinite(sample) ? sample : T{};
 
-		if (fabsf(1 + _a1 + _a2) > FLT_EPSILON) {
+		もし (fabsf(1 + _a1 + _a2) > FLT_EPSILON) {
 			_delay_element_1 = _delay_element_2 = input / (1 + _a1 + _a2);
 
-			if (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
+			もし (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
 				_delay_element_1 = _delay_element_2 = input;
 			}
 
-		} else {
+		} 否则 {
 			_delay_element_1 = _delay_element_2 = input;
 		}
 
-		return apply(input);
+		戻る apply(input);
 	}
 
 	void disable()

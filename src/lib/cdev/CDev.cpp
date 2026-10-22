@@ -52,9 +52,9 @@ CDev::CDev(const char *devname) :
 {
 	PX4_DEBUG("CDev::CDev");
 
-	int ret = px4_sem_init(&_lock, 0, 1);
+	整数 ret = px4_sem_init(&_lock, 0, 1);
 
-	if (ret != 0) {
+	もし (ret != 0) {
 		PX4_DEBUG("SEM INIT FAIL: ret %d", ret);
 	}
 }
@@ -63,141 +63,141 @@ CDev::~CDev()
 {
 	PX4_DEBUG("CDev::~CDev");
 
-	if (_registered) {
+	もし (_registered) {
 		unregister_driver(_devname);
 	}
 
-	if (_pollset) {
+	もし (_pollset) {
 		delete[](_pollset);
 	}
 
 	px4_sem_destroy(&_lock);
 }
 
-int
+整数
 CDev::register_class_devname(const char *class_devname)
 {
 	PX4_DEBUG("CDev::register_class_devname %s", class_devname);
 
-	if (class_devname == nullptr) {
-		return -EINVAL;
+	もし (class_devname == nullptr) {
+		戻る -EINVAL;
 	}
 
-	int class_instance = 0;
-	int ret = -ENOSPC;
+	整数 class_instance = 0;
+	整数 ret = -ENOSPC;
 
-	while (class_instance < 4) {
+	ながら (class_instance < 4) {
 		char name[32];
 		snprintf(name, sizeof(name), "%s%d", class_devname, class_instance);
 		ret = register_driver(name, &fops_ref(), 0666, (void *)this);
 
-		if (ret == OK) {
+		もし (ret == OK) {
 			break;
 		}
 
 		class_instance++;
 	}
 
-	if (class_instance == 4) {
-		return ret;
+	もし (class_instance == 4) {
+		戻る ret;
 	}
 
-	return class_instance;
+	戻る class_instance;
 }
 
-int
+整数
 CDev::unregister_class_devname(const char *class_devname, unsigned class_instance)
 {
 	PX4_DEBUG("CDev::unregister_class_devname");
 
 	char name[32];
 	snprintf(name, sizeof(name), "%s%u", class_devname, class_instance);
-	return unregister_driver(name);
+	戻る unregister_driver(name);
 }
 
-int
+整数
 CDev::init()
 {
 	PX4_DEBUG("CDev::init");
 
-	int ret = PX4_OK;
+	整数 ret = PX4_OK;
 
 	// now register the driver
-	if (_devname != nullptr) {
+	もし (_devname != nullptr) {
 		ret = register_driver(_devname, &fops_ref(), 0666, (void *)this);
 
-		if (ret == PX4_OK) {
+		もし (ret == PX4_OK) {
 			_registered = true;
 		}
 
-	} else {
+	} 否则 {
 		ret = -ENODEV;
 	}
 
-	return ret;
+	戻る ret;
 }
 
 /*
  * Default implementations of the character device interface
  */
-int
+整数
 CDev::open(file_t *filep)
 {
 	PX4_DEBUG("CDev::open");
-	int ret = PX4_OK;
+	整数 ret = PX4_OK;
 
 	lock();
 	/* increment the open count */
 	_open_count++;
 
-	if (_open_count == 1) {
+	もし (_open_count == 1) {
 
 		/* first-open callback may decline the open */
 		ret = open_first(filep);
 
-		if (ret != PX4_OK) {
+		もし (ret != PX4_OK) {
 			_open_count--;
 		}
 	}
 
 	unlock();
 
-	return ret;
+	戻る ret;
 }
 
-int
+整数
 CDev::close(file_t *filep)
 {
 	PX4_DEBUG("CDev::close");
-	int ret = PX4_OK;
+	整数 ret = PX4_OK;
 
 	lock();
 
-	if (_open_count > 0) {
+	もし (_open_count > 0) {
 		/* decrement the open count */
 		_open_count--;
 
 		/* callback cannot decline the close */
-		if (_open_count == 0) {
+		もし (_open_count == 0) {
 			ret = close_last(filep);
 		}
 
-	} else {
+	} 否则 {
 		ret = -EBADF;
 	}
 
 	unlock();
 
-	return ret;
+	戻る ret;
 }
 
-int
+整数
 CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 {
 	PX4_DEBUG("CDev::Poll %s", setup ? "setup" : "teardown");
-	int ret = PX4_OK;
+	整数 ret = PX4_OK;
 
-	if (setup) {
+	もし (setup) {
 		/*
 		 * Save the file pointer in the pollfd for the subclass'
 		 * benefit.
@@ -213,11 +213,11 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 		/*
 		 * Try to store the fds for later use and handle array resizing.
 		 */
-		while ((ret = store_poll_waiter(fds)) == -ENFILE) {
+		ながら ((ret = store_poll_waiter(fds)) == -ENFILE) {
 
 			// No free slot found. Resize the pollset. This is expensive, but it's only needed initially.
 
-			if (_max_pollwaiters >= 256 / 2) { //_max_pollwaiters is uint8_t
+			もし (_max_pollwaiters >= 256 / 2) { //_max_pollwaiters is uint8_t
 				ret = -ENOMEM;
 				break;
 			}
@@ -235,14 +235,14 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 			flags = px4_enter_critical_section();
 #endif
 
-			if (prev_pollset == _pollset) {
+			もし (prev_pollset == _pollset) {
 				// no one else updated the _pollset meanwhile, so we're good to go
-				if (!new_pollset) {
+				もし (!new_pollset) {
 					ret = -ENOMEM;
 					break;
 				}
 
-				if (_max_pollwaiters > 0) {
+				もし (_max_pollwaiters > 0) {
 					memset(new_pollset + _max_pollwaiters, 0, sizeof(px4_pollfd_struct_t *) * (new_count - _max_pollwaiters));
 					memcpy(new_pollset, _pollset, sizeof(px4_pollfd_struct_t *) * _max_pollwaiters);
 				}
@@ -256,7 +256,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 				px4_leave_critical_section(flags);
 #endif
 
-				if (prev_pollset) {
+				もし (prev_pollset) {
 					delete[](prev_pollset);
 				}
 
@@ -279,7 +279,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 #endif
 		}
 
-		if (ret == PX4_OK) {
+		もし (ret == PX4_OK) {
 
 			/*
 			 * Check to see whether we should send a poll notification
@@ -290,13 +290,13 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 			/* yes? invoke the callback */
 #ifdef __PX4_NUTTX
 
-			if (fds->revents != 0 && fds->cb != nullptr) {
+			もし (fds->revents != 0 && fds->cb != nullptr) {
 				fds->cb(fds);
 			}
 
-#else
+#否则
 
-			if (fds->revents != 0) {
+			もし (fds->revents != 0) {
 				px4_sem_post(fds->sem);
 			}
 
@@ -306,7 +306,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 
 		ATOMIC_LEAVE;
 
-	} else {
+	} 否则 {
 		ATOMIC_ENTER;
 		/*
 		 * Handle a teardown request.
@@ -315,7 +315,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 		ATOMIC_LEAVE;
 	}
 
-	return ret;
+	戻る ret;
 }
 
 void
@@ -326,8 +326,8 @@ CDev::poll_notify(px4_pollevent_t events)
 	/* lock against poll() as well as other wakeups */
 	ATOMIC_ENTER;
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (nullptr != _pollset[i]) {
+	ために (unsigned i = 0; i < _max_pollwaiters; i++) {
+		もし (nullptr != _pollset[i]) {
 			poll_notify_one(_pollset[i], events);
 		}
 	}
@@ -347,54 +347,54 @@ CDev::poll_notify_one(px4_pollfd_struct_t *fds, px4_pollevent_t events)
 
 #ifdef __PX4_NUTTX
 
-	if (fds->revents != 0 && fds->cb != nullptr) {
+	もし (fds->revents != 0 && fds->cb != nullptr) {
 		fds->cb(fds);
 	}
 
-#else
+#否则
 
-	if (fds->revents != 0) {
+	もし (fds->revents != 0) {
 		px4_sem_post(fds->sem);
 	}
 
 #endif
 }
 
-int
+整数
 CDev::store_poll_waiter(px4_pollfd_struct_t *fds)
 {
 	// Look for a free slot.
 	PX4_DEBUG("CDev::store_poll_waiter");
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (nullptr == _pollset[i]) {
+	ために (unsigned i = 0; i < _max_pollwaiters; i++) {
+		もし (nullptr == _pollset[i]) {
 
 			/* save the pollfd */
 			_pollset[i] = fds;
 
-			return PX4_OK;
+			戻る PX4_OK;
 		}
 	}
 
-	return -ENFILE;
+	戻る -ENFILE;
 }
 
-int
+整数
 CDev::remove_poll_waiter(px4_pollfd_struct_t *fds)
 {
 	PX4_DEBUG("CDev::remove_poll_waiter");
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (fds == _pollset[i]) {
+	ために (unsigned i = 0; i < _max_pollwaiters; i++) {
+		もし (fds == _pollset[i]) {
 
 			_pollset[i] = nullptr;
-			return PX4_OK;
+			戻る PX4_OK;
 
 		}
 	}
 
 	PX4_DEBUG("poll: bad fd state");
-	return -EINVAL;
+	戻る -EINVAL;
 }
 
 } // namespace cdev

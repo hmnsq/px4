@@ -49,7 +49,7 @@ public:
 	Vector3 cross(const Matrix31 &b) const
 	{
 		const Vector3 &a(*this);
-		return {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
+		戻る {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
 	}
 
 	/**
@@ -58,52 +58,52 @@ public:
 
 	inline Vector3 operator+(Vector3 other) const
 	{
-		return Matrix31::operator+(other);
+		戻る Matrix31::operator+(other);
 	}
 
 	inline Vector3 operator+(Type scalar) const
 	{
-		return Matrix31::operator+(scalar);
+		戻る Matrix31::operator+(scalar);
 	}
 
 	inline Vector3 operator-(Vector3 other) const
 	{
-		return Matrix31::operator-(other);
+		戻る Matrix31::operator-(other);
 	}
 
 	inline Vector3 operator-(Type scalar) const
 	{
-		return Matrix31::operator-(scalar);
+		戻る Matrix31::operator-(scalar);
 	}
 
 	inline Vector3 operator-() const
 	{
-		return Matrix31::operator-();
+		戻る Matrix31::operator-();
 	}
 
 	inline Vector3 operator*(Type scalar) const
 	{
-		return Matrix31::operator*(scalar);
+		戻る Matrix31::operator*(scalar);
 	}
 
 	inline Type operator*(Vector3 b) const
 	{
-		return Vector<Type, 3>::operator*(b);
+		戻る Vector<Type, 3>::operator*(b);
 	}
 
 	inline Vector3 operator%(const Matrix31 &b) const
 	{
-		return (*this).cross(b);
+		戻る (*this).cross(b);
 	}
 
 	ConstSlice<Type, 2, 1, 3, 1> xy() const
 	{
-		return {0, 0, this};
+		戻る {0, 0, this};
 	}
 
 	Slice<Type, 2, 1, 3, 1> xy()
 	{
-		return {0, 0, this};
+		戻る {0, 0, this};
 	}
 
 	Dcm<Type> hat() const      // inverse to Dcm.vee() operation
@@ -119,7 +119,7 @@ public:
 		A(2, 0) = -v(1);
 		A(2, 1) = v(0);
 		A(2, 2) = 0;
-		return A;
+		戻る A;
 	}
 
 };

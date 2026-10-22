@@ -78,11 +78,11 @@ void ManualVelocitySmoothingZ::updateTrajectories(float dt)
 
 void ManualVelocitySmoothingZ::updateTrajConstraints(float velocity_target)
 {
-	if (velocity_target < 0.f) { // up
+	もし (velocity_target < 0.f) { // up
 		_trajectory.setMaxAccel(_max_accel_up);
 		_trajectory.setMaxVel(_max_vel_up);
 
-	} else { // down
+	} 否则 { // down
 		_trajectory.setMaxAccel(_max_accel_down);
 		_trajectory.setMaxVel(_max_vel_down);
 	}
@@ -98,16 +98,16 @@ void ManualVelocitySmoothingZ::checkPositionLock(float velocity_target)
 	 * This is why the previous input of the velocity controller
 	 * is used to set current velocity of the trajectory.
 	 */
-	if (fabsf(_state.v) < 0.1f &&
+	もし (fabsf(_state.v) < 0.1f &&
 	    fabsf(_state.a) < .2f &&
 	    fabsf(velocity_target) <= FLT_EPSILON) {
 		// Lock position
 		_position_lock_active = true;
 		_position_setpoint_locked = _state.x;
 
-	} else {
+	} 否则 {
 		// Unlock position
-		if (_position_lock_active) {
+		もし (_position_lock_active) {
 			// Start the trajectory at the current velocity setpoint
 			_trajectory.setCurrentVelocity(_velocity_setpoint_feedback);
 			_state.v = _velocity_setpoint_feedback;

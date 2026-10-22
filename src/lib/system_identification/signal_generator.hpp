@@ -42,25 +42,25 @@ namespace signal_generator
 
 inline float getLinearSineSweep(float f_start, float f_end, float duration, float t)
 {
-	if (t > duration) {
-		return 0.f;
+	もし (t > duration) {
+		戻る 0.f;
 	}
 
 	const float w_start = f_start * M_TWOPI_F;
 	const float w_end = f_end * M_TWOPI_F;
 
-	return sinf(w_start * t + 0.5f * (w_end - w_start) * t * t / duration);
+	戻る sinf(w_start * t + 0.5f * (w_end - w_start) * t * t / duration);
 }
 
 inline float getLogSineSweep(float f_start, float f_end, float duration, float t)
 {
-	if (t > duration) {
-		return 0.f;
+	もし (t > duration) {
+		戻る 0.f;
 	}
 
 	const float f_ratio = f_end / fmaxf(f_start, 0.1f);
 
-	return sinf(M_TWOPI_F * f_start * duration * (powf(f_ratio, t / duration) - 1.f) / logf(f_ratio));
+	戻る sinf(M_TWOPI_F * f_start * duration * (powf(f_ratio, t / duration) - 1.f) / logf(f_ratio));
 }
 
 } /* namespace signal_generator */

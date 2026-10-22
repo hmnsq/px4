@@ -61,7 +61,7 @@ public:
 	virtual ~BlockParamBase() = default;
 
 	virtual bool update() = 0;
-	const char *getName() const { return param_name(_handle); }
+	const char *getName() const { 戻る param_name(_handle); }
 
 protected:
 	param_t _handle{PARAM_INVALID};
@@ -83,17 +83,17 @@ public:
 	BlockParam(BlockParam &&) = delete;
 	BlockParam &operator=(BlockParam &&) = delete;
 
-	T get() const { return _val; }
+	T get() const { 戻る _val; }
 
 	// Store the parameter value to the parameter storage (@see param_set())
-	bool commit() { return (param_set(_handle, &_val) == PX4_OK); }
+	bool commit() { 戻る (param_set(_handle, &_val) == PX4_OK); }
 
 	// Store the parameter value to the parameter storage, w/o notifying the system (@see param_set_no_notification())
-	bool commit_no_notification() { return (param_set_no_notification(_handle, &_val) == PX4_OK); }
+	bool commit_no_notification() { 戻る (param_set_no_notification(_handle, &_val) == PX4_OK); }
 
 	void set(T val) { _val = val; }
 
-	bool update() override { return (param_get(_handle, &_val) == PX4_OK); }
+	bool update() override { 戻る (param_get(_handle, &_val) == PX4_OK); }
 
 protected:
 	T _val;

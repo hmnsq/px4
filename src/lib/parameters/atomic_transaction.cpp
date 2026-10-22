@@ -56,6 +56,6 @@ void AtomicTransaction::initialize()
 
 pthread_mutex_t *AtomicTransaction::_get_mutex()
 {
-	return &_param_mutex;
+	戻る &_param_mutex;
 }
 #endif

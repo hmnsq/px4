@@ -61,13 +61,13 @@ namespace trajectory
 inline float computeMaxSpeedFromDistance(const float jerk, const float accel, const float braking_distance,
 		const float final_speed)
 {
-	auto sqr = [](float f) {return f * f;};
+	auto sqr = [](float f) {戻る f * f;};
 	float b =  4.0f * sqr(accel) / jerk;
 	float c = - 2.0f * accel * braking_distance - sqr(final_speed);
 	float max_speed = 0.5f * (-b + sqrtf(sqr(b) - 4.0f * c));
 
 	// don't slow down more than the end speed, even if the conservative accel ramp time requests it
-	return fmaxf(max_speed, final_speed);
+	戻る fmaxf(max_speed, final_speed);
 }
 
 /* Compute the maximum tangential speed in a circle defined by two line segments of length "d"
@@ -89,7 +89,7 @@ inline float computeMaxSpeedInWaypoint(const float alpha, const float accel, con
 	float tan_alpha = tanf(alpha / 2.0f);
 	float max_speed_in_turn = sqrtf(accel * d * tan_alpha);
 
-	return max_speed_in_turn;
+	戻る max_speed_in_turn;
 }
 
 /* Compute the braking distance given a maximum acceleration, maximum jerk and a maximum delay acceleration.
@@ -107,7 +107,7 @@ inline float computeMaxSpeedInWaypoint(const float alpha, const float accel, con
 inline float computeBrakingDistanceFromVelocity(const float velocity, const float jerk, const float accel,
 		const float accel_delay_max)
 {
-	return velocity * (velocity / (2.0f * accel) + accel_delay_max / jerk);
+	戻る velocity * (velocity / (2.0f * accel) + accel_delay_max / jerk);
 }
 
 /* Compute the maximum distance between a point and a circle given a direction vector pointing from the point
@@ -138,15 +138,15 @@ inline float getMaxDistanceToCircle(const matrix::Vector2f &pos, const matrix::V
 
 	float distance_to_circle;
 
-	if (delta >= 0.f && direction.longerThan(0.f)) {
+	もし (delta >= 0.f && direction.longerThan(0.f)) {
 		distance_to_circle = fmaxf((-b + sqrtf(delta)) / 2.f, 0.f);
 
-	} else {
+	} 否则 {
 		// Never intersecting the circle
 		distance_to_circle = NAN;
 	}
 
-	return distance_to_circle;
+	戻る distance_to_circle;
 }
 
 } /* namespace traj */

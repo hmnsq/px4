@@ -43,44 +43,44 @@
 class FunctionMotors : public FunctionProviderBase
 {
 public:
-	static_assert(actuator_motors_s::NUM_CONTROLS == (int)OutputFunction::MotorMax - (int)OutputFunction::Motor1 + 1,
+	static_assert(actuator_motors_s::NUM_CONTROLS == (整数)OutputFunction::MotorMax - (整数)OutputFunction::Motor1 + 1,
 		      "Unexpected num motors");
 
-	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (int)OutputFunction::Motor1, "Unexpected motor idx");
+	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (整数)OutputFunction::Motor1, "Unexpected motor idx");
 
 	FunctionMotors(const Context &context) :
 		_topic(&context.work_item, ORB_ID(actuator_motors)),
 		_thrust_factor(context.thrust_factor)
 	{
-		for (int i = 0; i < actuator_motors_s::NUM_CONTROLS; ++i) {
+		ために (整数 i = 0; i < actuator_motors_s::NUM_CONTROLS; ++i) {
 			_data.control[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionMotors(context); }
+	static FunctionProviderBase *allocate(const Context &context) { 戻る new FunctionMotors(context); }
 
 	void update() override
 	{
-		if (_topic.update(&_data)) {
+		もし (_topic.update(&_data)) {
 			updateValues(_data.reversible_flags, _thrust_factor, _data.control, actuator_motors_s::NUM_CONTROLS);
 		}
 	}
 
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Motor1]; }
+	float value(OutputFunction func) override { 戻る _data.control[(整数)func - (整数)OutputFunction::Motor1]; }
 
-#if defined(CONFIG_DRIVERS_UAVCANNODE)
-	bool allowPrearmControl() const override { return true; }
-#else
-	bool allowPrearmControl() const override { return false; }
+#もし defined(CONFIG_DRIVERS_UAVCANNODE)
+	bool allowPrearmControl() const override { 戻る true; }
+#否则
+	bool allowPrearmControl() const override { 戻る false; }
 #endif
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { 戻る &_topic; }
 
-	bool getLatestSampleTimestamp(hrt_abstime &t) const override { t = _data.timestamp_sample; return t != 0; }
+	bool getLatestSampleTimestamp(hrt_abstime &t) const override { t = _data.timestamp_sample; 戻る t != 0; }
 
-	static inline void updateValues(uint32_t reversible, float thrust_factor, float *values, int num_values)
+	static inline void updateValues(uint32_t reversible, float thrust_factor, float *values, 整数 num_values)
 	{
-		if (thrust_factor > FLT_EPSILON && thrust_factor <= 1.f) {
+		もし (thrust_factor > FLT_EPSILON && thrust_factor <= 1.f) {
 			// thrust factor
 			//  rel_thrust = factor * x^2 + (1-factor) * x,
 			const float a = thrust_factor;
@@ -90,15 +90,15 @@ public:
 			const float tmp1 = b / (2.f * a);
 			const float tmp2 = b * b / (4.f * a * a);
 
-			for (int i = 0; i < num_values; ++i) {
+			ために (整数 i = 0; i < num_values; ++i) {
 
 				const float control = values[i];
 
-				if (PX4_ISFINITE(control)) {
-					if (control > FLT_EPSILON) {
+				もし (PX4_ISFINITE(control)) {
+					もし (control > FLT_EPSILON) {
 						values[i] = -tmp1 + sqrtf(tmp2 + (control / a));
 
-					} else if (control < -FLT_EPSILON) {
+					} 否则 もし (control < -FLT_EPSILON) {
 						values[i] =  tmp1 - sqrtf(tmp2 - (control / a));
 
 					}
@@ -106,12 +106,12 @@ public:
 			}
 		}
 
-		for (int i = 0; i < num_values; ++i) {
-			if ((reversible & (1u << i)) == 0) {
-				if (values[i] < -FLT_EPSILON) {
+		ために (整数 i = 0; i < num_values; ++i) {
+			もし ((reversible & (1u << i)) == 0) {
+				もし (values[i] < -FLT_EPSILON) {
 					values[i] = NAN;
 
-				} else {
+				} 否则 {
 					// remap from [0, 1] to [-1, 1]
 					values[i] = values[i] * 2.f - 1.f;
 				}
@@ -119,7 +119,7 @@ public:
 		}
 	}
 
-	bool reversible(OutputFunction func) const override { return _data.reversible_flags & (1u << ((int)func - (int)OutputFunction::Motor1)); }
+	bool reversible(OutputFunction func) const override { 戻る _data.reversible_flags & (1u << ((整数)func - (整数)OutputFunction::Motor1)); }
 
 private:
 	uORB::SubscriptionCallbackWorkItem _topic;

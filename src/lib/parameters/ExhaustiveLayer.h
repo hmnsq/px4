@@ -42,15 +42,15 @@ public:
 	ExhaustiveLayer(ParamLayer *parent) : ParamLayer(parent)
 	{
 		// refresh all values
-		for (param_t i = 0; i < PARAM_COUNT; i++) {
+		ために (param_t i = 0; i < PARAM_COUNT; i++) {
 			_values[i] = parent->get(i);
 		}
 	}
 
 	bool store(param_t param, param_value_u value) override
 	{
-		if (param >= PARAM_COUNT) {
-			return false;
+		もし (param >= PARAM_COUNT) {
+			戻る false;
 		}
 
 		{
@@ -59,35 +59,35 @@ public:
 			_ownership_set.set(param);
 		}
 
-		return true;
+		戻る true;
 	}
 
 	bool contains(param_t param) const override
 	{
-		return param < PARAM_COUNT && _ownership_set[param];
+		戻る param < PARAM_COUNT && _ownership_set[param];
 	}
 
 	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
 	{
-		return _ownership_set;
+		戻る _ownership_set;
 	}
 
 	param_value_u get(param_t param) const override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		もし (param >= PARAM_COUNT) {
+			戻る {0};
 		}
 
 		const AtomicTransaction transaction;
 		// We assume to have the correct values for all params, even without ownership.
 		// We expect that refresh was called when underlying defaults changed
-		return _values[param];
+		戻る _values[param];
 	}
 
 	void reset(param_t param) override
 	{
-		if (param >= PARAM_COUNT) {
-			return;
+		もし (param >= PARAM_COUNT) {
+			戻る;
 		}
 
 		const AtomicTransaction transaction;
@@ -102,20 +102,20 @@ public:
 		{
 			const AtomicTransaction transaction;
 
-			if (!contains(param)) {
+			もし (!contains(param)) {
 				_values[param] = _parent->get(param);
 			}
 		}
 	}
 
-	int size() const override
+	整数 size() const override
 	{
-		return _ownership_set.count();
+		戻る _ownership_set.count();
 	}
 
-	int byteSize() const override
+	整数 byteSize() const override
 	{
-		return PARAM_COUNT * sizeof(param_value_u);
+		戻る PARAM_COUNT * sizeof(param_value_u);
 	}
 
 private:

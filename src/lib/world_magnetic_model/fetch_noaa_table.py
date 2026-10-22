@@ -46,7 +46,7 @@ SAMPLING_MIN_LON = -180
 SAMPLING_MAX_LON = 180
 
 def constrain(n, nmin, nmax):
-    return max(min(nmin, n), nmax)
+    戻る max(min(nmin, n), nmax)
 
 header = """/****************************************************************************
  *
@@ -88,8 +88,8 @@ print(header)
 
 print('#include <stdint.h>\n')
 
-LAT_DIM=int((SAMPLING_MAX_LAT-SAMPLING_MIN_LAT)/SAMPLING_RES)+1
-LON_DIM=int((SAMPLING_MAX_LON-SAMPLING_MIN_LON)/SAMPLING_RES)+1
+LAT_DIM=整数((SAMPLING_MAX_LAT-SAMPLING_MIN_LAT)/SAMPLING_RES)+1
+LON_DIM=整数((SAMPLING_MAX_LON-SAMPLING_MIN_LON)/SAMPLING_RES)+1
 
 print('static constexpr float SAMPLING_RES = {}'.format(SAMPLING_RES) + ';')
 print('static constexpr float SAMPLING_MIN_LAT = {}'.format(SAMPLING_MIN_LAT) + ';')
@@ -114,10 +114,10 @@ data = json.loads(f.read())
 
 world_magnitude_model_units = data['units']
 
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+ために latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     world_magnitude_model[latitude] = {}
 
-    for longitude in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
+    ために longitude in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
         params = urllib.parse.urlencode({'lat1': latitude, 'lon1': longitude, 'lon2': SAMPLING_MAX_LON, 'resultFormat': 'json'})
         f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (key, params))
         data = json.loads(f.read())
@@ -135,18 +135,18 @@ def print_wmm_table(key_name):
     value_max = float('-inf')
     value_max_lat_lon = ()
 
-    for latitude, lat_row in world_magnitude_model.items():
+    ために latitude, lat_row in world_magnitude_model.items():
         #print(latitude, lat_row)
-        for longitude, result in lat_row.items():
+        ために longitude, result in lat_row.items():
             #print(result)
 
             value = float(result[key_name])
 
-            if (value > value_max):
+            もし (value > value_max):
                 value_max = value
                 value_max_lat_lon = (latitude, longitude)
 
-            if (value < value_min):
+            もし (value < value_min):
                 value_min = value
                 value_min_lat_lon = (latitude, longitude)
 
@@ -164,33 +164,33 @@ def print_wmm_table(key_name):
     print('// Date: {},'.format(data['result'][0]['date']))
     print('static constexpr const int16_t {}_table[{}][{}]'.format(key_name, LAT_DIM, LON_DIM) + " {")
     print('\t//    LONGITUDE: ', end='')
-    for l in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
+    ために l in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
         print('{0:6d},'.format(l), end='')
     print('')
 
-    for latitude, lat_row in world_magnitude_model.items():
+    ために latitude, lat_row in world_magnitude_model.items():
         print('\t/* LAT: {0:3d} */'.format(latitude) + ' { ', end='')
         latitude_blackout_zone = False
 
-        for longitude, result in lat_row.items():
+        ために longitude, result in lat_row.items():
 
             value = float(result[key_name])
 
             # value scaled to fit into int16_t
-            value_int = int(round(value * value_scale))
+            value_int = 整数(round(value * value_scale))
             print('{0:6d},'.format(value_int), end='')
 
             # blackout warning at this latitude
             try:
-                if result['warning']:
+                もし result['warning']:
                     latitude_blackout_zone = True
 
             except:
                 pass
 
-        if latitude_blackout_zone:
+        もし latitude_blackout_zone:
             print(' }, // WARNING! black out zone')
-        else:
+        否则:
             print(' },')
 
     print("};")

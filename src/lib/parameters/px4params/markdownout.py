@@ -24,7 +24,7 @@ If a listed parameter is missing from the Firmware see: [Finding/Updating Parame
         BOARD_SPECIFIC_GROUPS = ['Actuator Outputs']
         PARAM_IS_OUTPUT_TIMER = ['PWM_MAIN_TIM0', 'PWM_MAIN_TIM1', 'PWM_MAIN_TIM2', 'PWM_AUX_TIM0', 'PWM_AUX_TIM1', 'PWM_AUX_TIM2', 'PWM_AUX_TIM3']
 
-        for group in groups:
+        ために group in groups:
             result += f'## {group.GetName()}\n\n'
 
             # Wrap each group, and each parameter within it, so the docs theme can skip rendering
@@ -34,7 +34,7 @@ If a listed parameter is missing from the Firmware see: [Finding/Updating Parame
 
             group_is_board_specific = (group.GetName() in BOARD_SPECIFIC_GROUPS)
 
-            for param in group.GetParams():
+            ために param in group.GetParams():
                 name = param.GetName()
 
                 # Apply note if either the group is board specific
@@ -46,14 +46,14 @@ If a listed parameter is missing from the Firmware see: [Finding/Updating Parame
                 short_desc = param.GetFieldValue("short_desc") or ''
 
                 # Add fullstop to short_desc if not present
-                if short_desc:
-                    if not short_desc.strip().endswith('.'):
+                もし short_desc:
+                    もし not short_desc.strip().endswith('.'):
                         short_desc += "."
 
                 long_desc = param.GetFieldValue("long_desc") or ''
 
                 #Strip out short text from start of long text, if it ends in fullstop
-                if long_desc.startswith(short_desc):
+                もし long_desc.startswith(short_desc):
                     long_desc = long_desc[len(short_desc):].lstrip()
 
                 min_val = param.GetFieldValue("min") or ''
@@ -73,52 +73,52 @@ If a listed parameter is missing from the Firmware see: [Finding/Updating Parame
                 enum_codes=param.GetEnumCodes() or '' # Gets numerical values for parameter.
                 enum_output=''
                 # Format codes and their descriptions for display.
-                if enum_codes:
+                もし enum_codes:
                     enum_output+='**Values:**\n\n'
                     enum_codes=sorted(enum_codes,key=float)
-                    for item in enum_codes:
+                    ために item in enum_codes:
                         enum_output+=f"- `{item}`: {param.GetEnumValue(item)}\n"
                     enum_output+='\n\n'
 
                 bitmask_list=param.GetBitmaskList() #Gets bitmask values for parameter
                 bitmask_output=''
                 #Format bitmask values
-                if bitmask_list:
+                もし bitmask_list:
                     bitmask_output+='**Bitmask:**\n\n'
-                    for bit in bitmask_list:
+                    ために bit in bitmask_list:
                         bit_text = param.GetBitmaskBit(bit)
                         bitmask_output+=f"- `{bit}`: {bit_text}\n"
                     bitmask_output+='\n\n'
 
-                if is_boolean:
+                もし is_boolean:
                     BOOLEAN_LABELS = {
                         '0': 'Disabled',
                         '1': 'Enabled'
                     }
                     # Give def_value an explanatory string (is def_value if no match)
-                    def_val = f"{BOOLEAN_LABELS[def_val]} ({def_val})" if def_val in BOOLEAN_LABELS else def_val
+                    def_val = f"{BOOLEAN_LABELS[def_val]} ({def_val})" もし def_val in BOOLEAN_LABELS 否则 def_val
 
                     # Format values and their descriptions for display.
                     boolean_values = '**Values:**\n\n'
-                    for key, label in BOOLEAN_LABELS.items():
+                    ために key, label in BOOLEAN_LABELS.items():
                         boolean_values += f"- `{key}`: {label}\n"
                     boolean_values += '\n'
 
                 result += '<div class="param">\n\n'
                 result += f'### {name} (`{type}`)' + ' {#' + name + '}\n\n'
-                if apply_note_board_specific_group:
+                もし apply_note_board_specific_group:
                     result += f'<Badge type="warning" text="This parameter is only present on some boards." />\n\n'
-                if apply_timer_param_note:
+                もし apply_timer_param_note:
                     result += f'<Badge type="info" text="The exact output numbers where this timer applies are board-specific." />\n\n'
-                if short_desc:
+                もし short_desc:
                     result += f'{short_desc}\n\n'
-                if long_desc:
+                もし long_desc:
                     result += f'{long_desc}\n\n'
-                if is_boolean:
+                もし is_boolean:
                     result += boolean_values
-                if enum_codes:
+                もし enum_codes:
                     result += enum_output
-                if bitmask_list:
+                もし bitmask_list:
                     result += bitmask_output
                 # Format the ranges as a table.
                 is_readonly = param.GetReadonly()

@@ -124,13 +124,13 @@ public:
 	 */
 	float switchDistance(float wp_radius) const;
 
-	float getCourseSetpoint() const { return course_sp_; }
-	float getLateralAccelerationSetpoint() const { return lateral_accel_ff_; }
-	float getBearingFeasibility() const { return feas_; }
-	float getBearingFeasibilityOnTrack() const { return feas_on_track_; }
-	float getSignedTrackError() const { return signed_track_error_; }
-	float getTrackErrorBound() const { return track_error_bound_; }
-	float getAdaptedPeriod() const { return adapted_period_; }
+	float getCourseSetpoint() const { 戻る course_sp_; }
+	float getLateralAccelerationSetpoint() const { 戻る lateral_accel_ff_; }
+	float getBearingFeasibility() const { 戻る feas_; }
+	float getBearingFeasibilityOnTrack() const { 戻る feas_on_track_; }
+	float getSignedTrackError() const { 戻る signed_track_error_; }
+	float getTrackErrorBound() const { 戻る track_error_bound_; }
+	float getAdaptedPeriod() const { 戻る adapted_period_; }
 
 private:
 	static constexpr float NPFG_EPSILON = 1.0e-6; // small number *bigger than machine epsilon

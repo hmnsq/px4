@@ -90,7 +90,7 @@ MixingOutput::MixingOutput(const char *param_prefix, uint8_t max_num_outputs, Ou
 
 	initParamHandles(instance_start);
 
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	ために (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_failsafe_value[i] = UINT16_MAX;
 	}
 
@@ -113,7 +113,7 @@ void MixingOutput::initParamHandles(const uint8_t instance_start)
 {
 	char param_name[17];
 
-	for (unsigned i = 0; i < _max_num_outputs; ++i) {
+	ために (unsigned i = 0; i < _max_num_outputs; ++i) {
 		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "FUNC", i + instance_start);
 		_param_handles[i].function = param_find(param_name);
 		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "DIS", i + instance_start);
@@ -137,15 +137,15 @@ void MixingOutput::printStatus() const
 	PX4_INFO("Param prefix: %s", _param_prefix);
 	perf_print_counter(_control_latency_perf);
 
-	if (_wq_switched) {
+	もし (_wq_switched) {
 		PX4_INFO("Switched to rate_ctrl work queue");
 	}
 
 	PX4_INFO_RAW("Channel Configuration:\n");
 
-	for (unsigned i = 0; i < _max_num_outputs; i++) {
+	ために (unsigned i = 0; i < _max_num_outputs; i++) {
 		PX4_INFO_RAW("Channel %2d: func: %3d, value: %.2f, failsafe: %.2f, disarmed: %d, min: %d, max: %d, center: %d\n",
-			     i, (int)_function_assignment[i], (double)_current_output_value[i], (double)actualFailsafeValue(i),
+			     i, (整数)_function_assignment[i], (double)_current_output_value[i], (double)actualFailsafeValue(i),
 			     _disarmed_value[i], _min_value[i], _max_value[i], _center_value[i]);
 	}
 }
@@ -156,41 +156,41 @@ void MixingOutput::updateParams()
 
 	bool function_changed = false;
 
-	for (unsigned i = 0; i < _max_num_outputs; i++) {
+	ために (unsigned i = 0; i < _max_num_outputs; i++) {
 		int32_t val;
 
-		if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
-			if (val != (int32_t)_function_assignment[i]) {
+		もし (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
+			もし (val != (int32_t)_function_assignment[i]) {
 				function_changed = true;
 			}
 
 			// we set _function_assignment[i] later to ensure _functions[i] is updated at the same time
 		}
 
-		if (_param_handles[i].disarmed != PARAM_INVALID && param_get(_param_handles[i].disarmed, &val) == 0) {
+		もし (_param_handles[i].disarmed != PARAM_INVALID && param_get(_param_handles[i].disarmed, &val) == 0) {
 			_disarmed_value[i] = val;
 		}
 
-		if (_param_handles[i].min != PARAM_INVALID && param_get(_param_handles[i].min, &val) == 0) {
+		もし (_param_handles[i].min != PARAM_INVALID && param_get(_param_handles[i].min, &val) == 0) {
 			_min_value[i] = val;
 		}
 
-		if (_param_handles[i].center != PARAM_INVALID && param_get(_param_handles[i].center, &val) == 0) {
+		もし (_param_handles[i].center != PARAM_INVALID && param_get(_param_handles[i].center, &val) == 0) {
 			_center_value[i] = val;
 		}
 
-		if (_param_handles[i].max != PARAM_INVALID && param_get(_param_handles[i].max, &val) == 0) {
+		もし (_param_handles[i].max != PARAM_INVALID && param_get(_param_handles[i].max, &val) == 0) {
 			_max_value[i] = val;
 		}
 
-		if (_min_value[i] > _max_value[i]) {
+		もし (_min_value[i] > _max_value[i]) {
 			uint16_t tmp = _min_value[i];
 			_min_value[i] = _max_value[i];
 			_max_value[i] = tmp;
 		}
 
 
-		if (_param_handles[i].failsafe != PARAM_INVALID && param_get(_param_handles[i].failsafe, &val) == 0) {
+		もし (_param_handles[i].failsafe != PARAM_INVALID && param_get(_param_handles[i].failsafe, &val) == 0) {
 			_failsafe_value[i] = val;
 		}
 	}
@@ -198,23 +198,23 @@ void MixingOutput::updateParams()
 	_reverse_output_mask = 0;
 	int32_t rev_range_param;
 
-	if (_param_handle_rev_range != PARAM_INVALID && param_get(_param_handle_rev_range, &rev_range_param) == 0) {
+	もし (_param_handle_rev_range != PARAM_INVALID && param_get(_param_handle_rev_range, &rev_range_param) == 0) {
 		_reverse_output_mask = rev_range_param;
 	}
 
-	if (function_changed) {
+	もし (function_changed) {
 		_need_function_update = true;
 	}
 }
 
 void MixingOutput::cleanupFunctions()
 {
-	if (_subscription_callback) {
+	もし (_subscription_callback) {
 		_subscription_callback->unregisterCallback();
 		_subscription_callback = nullptr;
 	}
 
-	for (int i = 0; i < MAX_ACTUATORS; ++i) {
+	ために (整数 i = 0; i < MAX_ACTUATORS; ++i) {
 		delete _function_allocated[i];
 		_function_allocated[i] = nullptr;
 		_functions[i] = nullptr;
@@ -223,8 +223,8 @@ void MixingOutput::cleanupFunctions()
 
 bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 {
-	if (!_need_function_update || _armed.armed) {
-		return false;
+	もし (!_need_function_update || _armed.armed) {
+		戻る false;
 	}
 
 	// must be locked to potentially change WorkQueue
@@ -232,7 +232,7 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 
 	_has_backup_schedule = false;
 
-	if (_scheduling_policy == SchedulingPolicy::Auto) {
+	もし (_scheduling_policy == SchedulingPolicy::Auto) {
 		// first clear everything
 		unregister();
 		_interface.ScheduleClear();
@@ -240,24 +240,24 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 		bool switch_requested = false;
 
 		// potentially switch work queue if we run motor outputs
-		for (unsigned i = 0; i < _max_num_outputs; i++) {
+		ために (unsigned i = 0; i < _max_num_outputs; i++) {
 			// read function directly from param, as _function_assignment[i] is updated later
 			int32_t function;
 
-			if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &function) == 0) {
-				if (function >= (int32_t)OutputFunction::Motor1 && function <= (int32_t)OutputFunction::MotorMax) {
+			もし (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &function) == 0) {
+				もし (function >= (int32_t)OutputFunction::Motor1 && function <= (int32_t)OutputFunction::MotorMax) {
 					switch_requested = true;
 				}
 			}
 		}
 
-		if (allow_wq_switch && !_wq_switched && switch_requested) {
-			if (_interface.ChangeWorkQueue(px4::wq_configurations::rate_ctrl)) {
+		もし (allow_wq_switch && !_wq_switched && switch_requested) {
+			もし (_interface.ChangeWorkQueue(px4::wq_configurations::rate_ctrl)) {
 				// let the new WQ handle the subscribe update
 				_wq_switched = true;
 				_interface.ScheduleNow();
 				unlock();
-				return false;
+				戻る false;
 			}
 		}
 	}
@@ -268,51 +268,51 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 	cleanupFunctions();
 
 	const FunctionProviderBase::Context context{_interface, _param_thr_mdl_fac.reference()};
-	int provider_indexes[MAX_ACTUATORS] {};
-	int next_provider = 0;
-	int subscription_callback_provider_index = INT_MAX;
+	整数 provider_indexes[MAX_ACTUATORS] {};
+	整数 next_provider = 0;
+	整数 subscription_callback_provider_index = INT_MAX;
 	bool all_disabled = true;
 
-	for (int i = 0; i < _max_num_outputs; ++i) {
+	ために (整数 i = 0; i < _max_num_outputs; ++i) {
 		int32_t val;
 
-		if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
+		もし (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
 			_function_assignment[i] = (OutputFunction)val;
 
-		} else {
+		} 否则 {
 			_function_assignment[i] = OutputFunction::Disabled;
 		}
 
-		for (int p = 0; p < (int)(sizeof(all_function_providers) / sizeof(all_function_providers[0])); ++p) {
-			if (_function_assignment[i] >= all_function_providers[p].min_func &&
+		ために (整数 p = 0; p < (整数)(sizeof(all_function_providers) / sizeof(all_function_providers[0])); ++p) {
+			もし (_function_assignment[i] >= all_function_providers[p].min_func &&
 			    _function_assignment[i] <= all_function_providers[p].max_func) {
 				all_disabled = false;
-				int found_index = -1;
+				整数 found_index = -1;
 
-				for (int existing = 0; existing < next_provider; ++existing) {
-					if (provider_indexes[existing] == p) {
+				ために (整数 existing = 0; existing < next_provider; ++existing) {
+					もし (provider_indexes[existing] == p) {
 						found_index = existing;
 						break;
 					}
 				}
 
-				if (found_index >= 0) {
+				もし (found_index >= 0) {
 					_functions[i] = _function_allocated[found_index];
 
-				} else {
+				} 否则 {
 					_function_allocated[next_provider] = all_function_providers[p].constructor(context);
 
-					if (_function_allocated[next_provider]) {
+					もし (_function_allocated[next_provider]) {
 						_functions[i] = _function_allocated[next_provider];
 						provider_indexes[next_provider++] = p;
 
 						// lowest provider takes precedence for scheduling
-						if (p < subscription_callback_provider_index && _functions[i]->subscriptionCallback()) {
+						もし (p < subscription_callback_provider_index && _functions[i]->subscriptionCallback()) {
 							subscription_callback_provider_index = p;
 							_subscription_callback = _functions[i]->subscriptionCallback();
 						}
 
-					} else {
+					} 否则 {
 						PX4_ERR("function alloc failed");
 					}
 				}
@@ -324,27 +324,27 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 
 	hrt_abstime fixed_rate_scheduling_interval = 4_ms; // schedule at 250Hz
 
-	if (_max_topic_update_interval_us > fixed_rate_scheduling_interval) {
+	もし (_max_topic_update_interval_us > fixed_rate_scheduling_interval) {
 		fixed_rate_scheduling_interval = _max_topic_update_interval_us;
 	}
 
-	if (_scheduling_policy == SchedulingPolicy::Auto) {
-		if (_subscription_callback) {
-			if (_subscription_callback->registerCallback()) {
+	もし (_scheduling_policy == SchedulingPolicy::Auto) {
+		もし (_subscription_callback) {
+			もし (_subscription_callback->registerCallback()) {
 				PX4_DEBUG("Scheduling via callback");
 				_has_backup_schedule = true;
 				_interface.ScheduleDelayed(50_ms);
 
-			} else {
+			} 否则 {
 				PX4_ERR("registerCallback failed, scheduling at fixed rate");
 				_interface.ScheduleOnInterval(fixed_rate_scheduling_interval);
 			}
 
-		} else if (all_disabled) {
+		} 否则 もし (all_disabled) {
 			_interface.ScheduleOnInterval(_lowrate_schedule_interval);
 			PX4_DEBUG("Scheduling at low rate");
 
-		} else {
+		} 否则 {
 			_interface.ScheduleOnInterval(fixed_rate_scheduling_interval);
 			PX4_DEBUG("Scheduling at fixed rate");
 		}
@@ -359,21 +359,21 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 
 	_interface.mixerChanged();
 
-	return true;
+	戻る true;
 }
 
 void MixingOutput::setMaxTopicUpdateRate(unsigned max_topic_update_interval_us)
 {
 	_max_topic_update_interval_us = max_topic_update_interval_us;
 
-	if (_subscription_callback) {
+	もし (_subscription_callback) {
 		_subscription_callback->set_interval_us(_max_topic_update_interval_us);
 	}
 }
 
 void MixingOutput::setAllMinValues(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	ために (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].min = PARAM_INVALID;
 		_min_value[i] = value;
 	}
@@ -381,7 +381,7 @@ void MixingOutput::setAllMinValues(uint16_t value)
 
 void MixingOutput::setAllCenterValues(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	ために (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].center = PARAM_INVALID;
 		_center_value[i] = value;
 	}
@@ -389,7 +389,7 @@ void MixingOutput::setAllCenterValues(uint16_t value)
 
 void MixingOutput::setAllMaxValues(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	ために (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].max = PARAM_INVALID;
 		_max_value[i] = value;
 	}
@@ -397,7 +397,7 @@ void MixingOutput::setAllMaxValues(uint16_t value)
 
 void MixingOutput::setAllFailsafeValues(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	ために (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].failsafe = PARAM_INVALID;
 		_failsafe_value[i] = value;
 	}
@@ -405,7 +405,7 @@ void MixingOutput::setAllFailsafeValues(uint16_t value)
 
 void MixingOutput::setAllDisarmedValues(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	ために (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].disarmed = PARAM_INVALID;
 		_disarmed_value[i] = value;
 	}
@@ -413,7 +413,7 @@ void MixingOutput::setAllDisarmedValues(uint16_t value)
 
 void MixingOutput::unregister()
 {
-	if (_subscription_callback) {
+	もし (_subscription_callback) {
 		_subscription_callback->unregisterCallback();
 	}
 }
@@ -421,10 +421,10 @@ void MixingOutput::unregister()
 bool MixingOutput::update()
 {
 	// check arming state
-	if (_armed_sub.update(&_armed)) {
+	もし (_armed_sub.update(&_armed)) {
 		_armed.in_esc_calibration_mode &= _support_esc_calibration;
 
-		if (_ignore_lockdown) {
+		もし (_ignore_lockdown) {
 			_armed.lockdown = false;
 		}
 
@@ -437,11 +437,11 @@ bool MixingOutput::update()
 	bool has_updates = _subscription_callback && _subscription_callback->updated();
 
 	// update topics
-	for (int i = 0; i < MAX_ACTUATORS && _function_allocated[i]; ++i) {
+	ために (整数 i = 0; i < MAX_ACTUATORS && _function_allocated[i]; ++i) {
 		_function_allocated[i]->update();
 	}
 
-	if (_has_backup_schedule) {
+	もし (_has_backup_schedule) {
 		_interface.ScheduleDelayed(50_ms);
 	}
 
@@ -454,31 +454,31 @@ bool MixingOutput::update()
 	const uint32_t reversible_mask_prev = _reversible_mask;
 	_reversible_mask = 0;
 
-	for (int i = 0; i < _max_num_outputs; ++i) {
-		if (_functions[i]) {
+	ために (整数 i = 0; i < _max_num_outputs; ++i) {
+		もし (_functions[i]) {
 			all_disabled = false;
 
-			if (_armed.armed || (_armed.prearmed && _functions[i]->allowPrearmControl())) {
+			もし (_armed.armed || (_armed.prearmed && _functions[i]->allowPrearmControl())) {
 				outputs[i] = _functions[i]->value(_function_assignment[i]);
 
-			} else {
+			} 否则 {
 				outputs[i] = NAN;
 			}
 
 			_reversible_mask |= (uint32_t)_functions[i]->reversible(_function_assignment[i]) << i;
 
-		} else {
+		} 否则 {
 			outputs[i] = NAN;
 		}
 	}
 
-	if (_reversible_mask != reversible_mask_prev) {
+	もし (_reversible_mask != reversible_mask_prev) {
 		_interface.reversibleMaskChanged(_reversible_mask);
 	}
 
 	// Send output if any function mapped or one last disabling sample
-	if (!all_disabled || !_was_all_disabled) {
-		if (!_armed.armed && !_armed.kill) {
+	もし (!all_disabled || !_was_all_disabled) {
+		もし (!_armed.armed && !_armed.kill) {
 			_actuator_test.overrideValues(outputs, _max_num_outputs);
 		}
 
@@ -487,25 +487,25 @@ bool MixingOutput::update()
 
 	_was_all_disabled = all_disabled;
 
-	return true;
+	戻る true;
 }
 
 void
 MixingOutput::limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updates)
 {
-	if (_armed.lockdown || _armed.kill) {
+	もし (_armed.lockdown || _armed.kill) {
 		// overwrite outputs in case of lockdown with disarmed values
-		for (size_t i = 0; i < _max_num_outputs; i++) {
+		ために (size_t i = 0; i < _max_num_outputs; i++) {
 			_current_output_value[i] = _disarmed_value[i];
 		}
 
-	} else if (_armed.termination) {
+	} 否则 もし (_armed.termination) {
 		// Overwrite outputs with _failsafe_value when terminated
-		for (size_t i = 0; i < _max_num_outputs; i++) {
+		ために (size_t i = 0; i < _max_num_outputs; i++) {
 			_current_output_value[i] = actualFailsafeValue(i);
 		}
 
-	} else {
+	} 否则 {
 		// the output limit call takes care of out of band errors, NaN and constrains
 		output_limit_calc(_throttle_armed || _actuator_test.inTestMode(), _max_num_outputs, outputs);
 	}
@@ -513,23 +513,23 @@ MixingOutput::limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updat
 	// We must calibrate the PWM and Oneshot ESCs to a consistent range of 1000-2000us (gets mapped to 125-250us for Oneshot)
 	// Doing so makes calibrations consistent among different configurations and hence PWM minimum and maximum have a consistent effect
 	// hence the defaults for these parameters also make most setups work out of the box
-	if (_armed.in_esc_calibration_mode) {
+	もし (_armed.in_esc_calibration_mode) {
 		static constexpr float PWM_CALIBRATION_LOW = 1000.f;
 		static constexpr float PWM_CALIBRATION_HIGH = 2000.f;
 
-		for (int i = 0; i < _max_num_outputs; i++) {
-			if (fabsf(_current_output_value[i] - (float)_min_value[i]) < 0.5f) {
+		ために (整数 i = 0; i < _max_num_outputs; i++) {
+			もし (fabsf(_current_output_value[i] - (float)_min_value[i]) < 0.5f) {
 				_current_output_value[i] = PWM_CALIBRATION_LOW;
 			}
 
-			if (fabsf(_current_output_value[i] - (float)_max_value[i]) < 0.5f) {
+			もし (fabsf(_current_output_value[i] - (float)_max_value[i]) < 0.5f) {
 				_current_output_value[i] = PWM_CALIBRATION_HIGH;
 			}
 		}
 	}
 
 	/* now return the outputs to the driver */
-	if (_interface.updateOutputs(_current_output_value, _max_num_outputs, has_updates)) {
+	もし (_interface.updateOutputs(_current_output_value, _max_num_outputs, has_updates)) {
 		actuator_outputs_s actuator_outputs{};
 		setAndPublishActuatorOutputs(_max_num_outputs, actuator_outputs);
 
@@ -537,20 +537,20 @@ MixingOutput::limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updat
 	}
 }
 
-float MixingOutput::output_limit_calc_single(int i, float value) const
+float MixingOutput::output_limit_calc_single(整数 i, float value) const
 {
 	// check for invalid / disabled channels
-	if (!PX4_ISFINITE(value)) {
-		return _disarmed_value[i];
+	もし (!PX4_ISFINITE(value)) {
+		戻る _disarmed_value[i];
 	}
 
-	if (_reverse_output_mask & (1 << i)) {
+	もし (_reverse_output_mask & (1 << i)) {
 		value = -1.f * value;
 	}
 
 	float output = _disarmed_value[i];
 
-	if (((_function_assignment[i] >= OutputFunction::Servo1
+	もし (((_function_assignment[i] >= OutputFunction::Servo1
 	      && _function_assignment[i] <= OutputFunction::ServoMax) || _function_assignment[i] == OutputFunction::Landing_Gear_Wheel
 	     || (_function_assignment[i] >= OutputFunction::Gimbal_Roll
 		 && _function_assignment[i] <= OutputFunction::Gimbal_Yaw))
@@ -561,15 +561,15 @@ float MixingOutput::output_limit_calc_single(int i, float value) const
 	}
 
 	// Everything except servos, or if center is not set
-	else {
+	否则 {
 		output = math::interpolate(value, -1.f, 1.f, static_cast<float>(_min_value[i]), static_cast<float>(_max_value[i]));
 	}
 
-	return output;
+	戻る output;
 }
 
 void
-MixingOutput::output_limit_calc(const bool armed, const int num_channels, const float output[MAX_ACTUATORS])
+MixingOutput::output_limit_calc(const bool armed, const 整数 num_channels, const float output[MAX_ACTUATORS])
 {
 	// time to slowly ramp up the ESCs
 	static constexpr hrt_abstime RAMP_TIME_US = 500_ms;
@@ -577,11 +577,11 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 	/* first evaluate state changes */
 	switch (_output_state) {
 	case OutputLimitState::OFF:
-		if (armed) {
-			if (_output_ramp_up) {
+		もし (armed) {
+			もし (_output_ramp_up) {
 				_output_state = OutputLimitState::RAMP;
 
-			} else {
+			} 否则 {
 				_output_state = OutputLimitState::ON;
 			}
 
@@ -592,17 +592,17 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 		break;
 
 	case OutputLimitState::RAMP:
-		if (!armed) {
+		もし (!armed) {
 			_output_state = OutputLimitState::OFF;
 
-		} else if (hrt_elapsed_time(&_output_time_armed) >= RAMP_TIME_US) {
+		} 否则 もし (hrt_elapsed_time(&_output_time_armed) >= RAMP_TIME_US) {
 			_output_state = OutputLimitState::ON;
 		}
 
 		break;
 
 	case OutputLimitState::ON:
-		if (!armed) {
+		もし (!armed) {
 			_output_state = OutputLimitState::OFF;
 		}
 
@@ -617,14 +617,14 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 	 */
 	auto local_limit_state = _output_state;
 
-	if (isPrearmed()) {
+	もし (isPrearmed()) {
 		local_limit_state = OutputLimitState::ON;
 	}
 
 	// then set _current_output_value based on state
 	switch (local_limit_state) {
 	case OutputLimitState::OFF:
-		for (int i = 0; i < num_channels; i++) {
+		ために (整数 i = 0; i < num_channels; i++) {
 			_current_output_value[i] = _disarmed_value[i];
 		}
 
@@ -634,11 +634,11 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 			hrt_abstime diff = hrt_elapsed_time(&_output_time_armed);
 			float progress = static_cast<float>(diff) / RAMP_TIME_US;
 
-			if (progress > 1.f) {
+			もし (progress > 1.f) {
 				progress = 1.f;
 			}
 
-			for (int i = 0; i < num_channels; i++) {
+			ために (整数 i = 0; i < num_channels; i++) {
 				// Ramp from disarmed value to currently desired output that would apply without ramp
 				float desired_output = output_limit_calc_single(i, output[i]);
 				_current_output_value[i] = _disarmed_value[i] + progress * (desired_output - _disarmed_value[i]);
@@ -647,7 +647,7 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 		break;
 
 	case OutputLimitState::ON:
-		for (int i = 0; i < num_channels; i++) {
+		ために (整数 i = 0; i < num_channels; i++) {
 			_current_output_value[i] = output_limit_calc_single(i, output[i]);
 		}
 
@@ -660,7 +660,7 @@ MixingOutput::setAndPublishActuatorOutputs(unsigned num_outputs, actuator_output
 {
 	actuator_outputs.noutputs = num_outputs;
 
-	for (size_t i = 0; i < num_outputs; ++i) {
+	ために (size_t i = 0; i < num_outputs; ++i) {
 		actuator_outputs.output[i] = _current_output_value[i];
 	}
 
@@ -672,31 +672,31 @@ void
 MixingOutput::updateLatencyPerfCounter(const actuator_outputs_s &actuator_outputs)
 {
 	// Just check the first function. It means we only get the latency if motors are assigned first, which is the default
-	if (_function_allocated[0]) {
+	もし (_function_allocated[0]) {
 		hrt_abstime timestamp_sample;
 
-		if (_function_allocated[0]->getLatestSampleTimestamp(timestamp_sample)) {
+		もし (_function_allocated[0]->getLatestSampleTimestamp(timestamp_sample)) {
 			perf_set_elapsed(_control_latency_perf, actuator_outputs.timestamp - timestamp_sample);
 		}
 	}
 }
 
-float MixingOutput::actualFailsafeValue(int index) const
+float MixingOutput::actualFailsafeValue(整数 index) const
 {
 	float value = 0;
 
-	if (_failsafe_value[index] == UINT16_MAX) { // if set to default, use the one provided by the function
+	もし (_failsafe_value[index] == UINT16_MAX) { // if set to default, use the one provided by the function
 		float default_failsafe = NAN;
 
-		if (_functions[index]) {
+		もし (_functions[index]) {
 			default_failsafe = _functions[index]->defaultFailsafeValue(_function_assignment[index]);
 		}
 
 		value = output_limit_calc_single(index, default_failsafe);
 
-	} else {
+	} 否则 {
 		value = static_cast<float>(_failsafe_value[index]);
 	}
 
-	return value;
+	戻る value;
 }

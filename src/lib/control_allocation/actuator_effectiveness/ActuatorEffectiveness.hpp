@@ -72,8 +72,8 @@ public:
 	ActuatorEffectiveness() = default;
 	virtual ~ActuatorEffectiveness() = default;
 
-	static constexpr int NUM_ACTUATORS = 16;
-	static constexpr int NUM_AXES = 6;
+	static constexpr 整数 NUM_ACTUATORS = 16;
+	static constexpr 整数 NUM_AXES = 6;
 
 	enum ControlAxis {
 		ROLL = 0,
@@ -84,7 +84,7 @@ public:
 		THRUST_Z
 	};
 
-	static constexpr int MAX_NUM_MATRICES = 2;
+	static constexpr 整数 MAX_NUM_MATRICES = 2;
 
 	using EffectivenessMatrix = matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS>;
 	using ActuatorVector = matrix::Vector<float, NUM_ACTUATORS>;
@@ -104,27 +104,27 @@ public:
 		/**
 		 * Add an actuator to the selected matrix, returning the index, or -1 on error
 		 */
-		int addActuator(ActuatorType type, const matrix::Vector3f &torque, const matrix::Vector3f &thrust);
+		整数 addActuator(ActuatorType type, const matrix::Vector3f &torque, const matrix::Vector3f &thrust);
 
 		/**
 		 * Call this after manually adding N actuators to the selected matrix
 		 */
-		void actuatorsAdded(ActuatorType type, int count);
+		void actuatorsAdded(ActuatorType type, 整数 count);
 
-		int totalNumActuators() const;
+		整数 totalNumActuators() const;
 
 		/// Configured effectiveness matrix. Actuators are expected to be filled in order, motors first, then servos
 		EffectivenessMatrix effectiveness_matrices[MAX_NUM_MATRICES];
 
-		int num_actuators_matrix[MAX_NUM_MATRICES]; ///< current amount, and next actuator index to fill in to effectiveness_matrices
+		整数 num_actuators_matrix[MAX_NUM_MATRICES]; ///< current amount, and next actuator index to fill in to effectiveness_matrices
 		ActuatorVector trim[MAX_NUM_MATRICES];
 
 		ActuatorVector linearization_point[MAX_NUM_MATRICES];
 
-		int selected_matrix;
+		整数 selected_matrix;
 
 		uint8_t matrix_selection_indexes[NUM_ACTUATORS * MAX_NUM_MATRICES];
-		int num_actuators[(int)ActuatorType::COUNT];
+		整数 num_actuators[(整数)ActuatorType::COUNT];
 	};
 
 	/**
@@ -141,14 +141,14 @@ public:
 	 * Get the number of effectiveness matrices. Must be <= MAX_NUM_MATRICES.
 	 * This is expected to stay constant.
 	 */
-	virtual int numMatrices() const { return 1; }
+	virtual 整数 numMatrices() const { 戻る 1; }
 
 	/**
 	 * Get the desired allocation method(s) for each matrix, if configured as AUTO
 	 */
 	virtual void getDesiredAllocationMethod(AllocationMethod allocation_method_out[MAX_NUM_MATRICES]) const
 	{
-		for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
+		ために (整数 i = 0; i < MAX_NUM_MATRICES; ++i) {
 			allocation_method_out[i] = AllocationMethod::PSEUDO_INVERSE;
 		}
 	}
@@ -158,7 +158,7 @@ public:
 	 */
 	virtual void getNormalizeRPY(bool normalize[MAX_NUM_MATRICES]) const
 	{
-		for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
+		ために (整数 i = 0; i < MAX_NUM_MATRICES; ++i) {
 			normalize[i] = false;
 		}
 	}
@@ -168,7 +168,7 @@ public:
 	 *
 	 * @return true if updated and matrix is set
 	 */
-	virtual bool getEffectivenessMatrix(Configuration &configuration, EffectivenessUpdateReason external_update) { return false;}
+	virtual bool getEffectivenessMatrix(Configuration &configuration, EffectivenessUpdateReason external_update) { 戻る false;}
 
 	/**
 	 * Get the current flight phase
@@ -177,7 +177,7 @@ public:
 	 */
 	const FlightPhase &getFlightPhase() const
 	{
-		return _flight_phase;
+		戻る _flight_phase;
 	}
 
 	/**
@@ -191,7 +191,7 @@ public:
 	 *
 	 * @param actuator_sp input & output setpoint
 	 */
-	virtual void allocateAuxilaryControls(const float dt, int matrix_index, ActuatorVector &actuator_sp) {}
+	virtual void allocateAuxilaryControls(const float dt, 整数 matrix_index, ActuatorVector &actuator_sp) {}
 
 	/**
 	 * Callback from the control allocation, allowing to manipulate the setpoint.
@@ -199,7 +199,7 @@ public:
 	 * It is called after the matrix multiplication and before final clipping.
 	 * @param actuator_sp input & output setpoint
 	 */
-	virtual void updateSetpoint(const matrix::Vector<float, NUM_AXES> &control_sp, int matrix_index,
+	virtual void updateSetpoint(const matrix::Vector<float, NUM_AXES> &control_sp, 整数 matrix_index,
 				    ActuatorVector &actuator_sp, const ActuatorVector &actuator_min, const ActuatorVector &actuator_max) {}
 
 	/**
@@ -211,7 +211,7 @@ public:
 	 * Fill in the unallocated torque and thrust, customized by effectiveness type.
 	 * Can be implemented for every type separately. If not implemented then the effectivenes matrix is used instead.
 	 */
-	virtual void getUnallocatedControl(int matrix_index, control_allocator_status_s &status) {}
+	virtual void getUnallocatedControl(整数 matrix_index, control_allocator_status_s &status) {}
 
 	/**
 	 * Override the collective tilt setpoint that would normally come from

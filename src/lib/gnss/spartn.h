@@ -79,7 +79,7 @@ static constexpr size_t   SPARTN_MAX_FRAME_LEN   =
  */
 inline bool spartn_message_type_defined(uint8_t message_type)
 {
-	return (message_type <= 4) || (message_type >= 120);
+	戻る (message_type <= 4) || (message_type >= 120);
 }
 
 /**
@@ -90,12 +90,12 @@ inline bool spartn_message_type_defined(uint8_t message_type)
  */
 inline size_t spartn_auth_length_bytes(bool eaf, uint8_t auth_ind, uint8_t emb_auth_len)
 {
-	if (!eaf || auth_ind <= 1) {
-		return 0;
+	もし (!eaf || auth_ind <= 1) {
+		戻る 0;
 	}
 
 	static constexpr uint8_t kBytes[] = {8, 12, 16, 32, 64};
-	return (emb_auth_len < 5) ? kBytes[emb_auth_len] : 64;
+	戻る (emb_auth_len < 5) ? kBytes[emb_auth_len] : 64;
 }
 
 /**
@@ -104,7 +104,7 @@ inline size_t spartn_auth_length_bytes(bool eaf, uint8_t auth_ind, uint8_t emb_a
  */
 inline size_t spartn_desc_length_bytes(bool eaf, bool time_tag_32bit)
 {
-	return (time_tag_32bit ? 6u : 4u) + (eaf ? 2u : 0u);
+	戻る (time_tag_32bit ? 6u : 4u) + (eaf ? 2u : 0u);
 }
 
 /**

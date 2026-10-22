@@ -61,15 +61,15 @@ public:
 	 */
 	virtual float value(OutputFunction func) = 0;
 
-	virtual float defaultFailsafeValue(OutputFunction func) const { return NAN; }
-	virtual bool allowPrearmControl() const { return true; }
+	virtual float defaultFailsafeValue(OutputFunction func) const { 戻る NAN; }
+	virtual bool allowPrearmControl() const { 戻る true; }
 
-	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { return nullptr; }
+	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { 戻る nullptr; }
 
-	virtual bool getLatestSampleTimestamp(hrt_abstime &t) const { return false; }
+	virtual bool getLatestSampleTimestamp(hrt_abstime &t) const { 戻る false; }
 
 	/**
 	 * Check whether the output (motor) is configured to be reversible
 	 */
-	virtual bool reversible(OutputFunction func) const { return false; }
+	virtual bool reversible(OutputFunction func) const { 戻る false; }
 };

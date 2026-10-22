@@ -45,77 +45,77 @@
 
 #include "tinybson.h"
 
-#if 0
-# define debug(fmt, args...)		do { PX4_INFO("BSON: " fmt, ##args); } while(0)
-#else
-# define debug(fmt, args...)		do { } while(0)
+#もし 0
+# define debug(fmt, args...)		do { PX4_INFO("BSON: " fmt, ##args); } ながら(0)
+#否则
+# define debug(fmt, args...)		do { } ながら(0)
 #endif
 
-#define CODER_CHECK(_c)		do { if ((_c)->dead) { PX4_ERR("coder dead"); return -1; }} while(0)
-#define CODER_KILL(_c, _reason)	do { PX4_ERR("killed: %s", _reason); (_c)->dead = true; return -1; } while(0)
+#define CODER_CHECK(_c)		do { もし ((_c)->dead) { PX4_ERR("coder dead"); 戻る -1; }} ながら(0)
+#define CODER_KILL(_c, _reason)	do { PX4_ERR("killed: %s", _reason); (_c)->dead = true; 戻る -1; } ながら(0)
 
-static int
+static 整数
 read_x(bson_decoder_t decoder, void *p, size_t s)
 {
 	CODER_CHECK(decoder);
 
-	if (decoder->fd > -1) {
-		int ret = ::read(decoder->fd, p, s);
+	もし (decoder->fd > -1) {
+		整数 ret = ::read(decoder->fd, p, s);
 
-		if (ret == s) {
+		もし (ret == s) {
 			decoder->total_decoded_size += ret;
-			return 0;
+			戻る 0;
 		}
 
-		return -1;
+		戻る -1;
 	}
 
-	if (decoder->buf != nullptr) {
+	もし (decoder->buf != nullptr) {
 		/* staged operations to avoid integer overflow for corrupt data */
-		if (s >= decoder->bufsize) {
+		もし (s >= decoder->bufsize) {
 			CODER_KILL(decoder, "buffer too small for read");
 		}
 
-		if ((decoder->bufsize - s) < decoder->bufpos) {
+		もし ((decoder->bufsize - s) < decoder->bufpos) {
 			CODER_KILL(decoder, "not enough data for read");
 		}
 
 		memcpy(p, (decoder->buf + decoder->bufpos), s);
 		decoder->bufpos += s;
 		decoder->total_decoded_size += s;
-		return 0;
+		戻る 0;
 	}
 
 	debug("no source");
-	return -1;
+	戻る -1;
 }
 
-static int
+static 整数
 read_int8(bson_decoder_t decoder, int8_t *b)
 {
-	return read_x(decoder, b, sizeof(*b));
+	戻る read_x(decoder, b, sizeof(*b));
 }
 
-static int
+static 整数
 read_int32(bson_decoder_t decoder, int32_t *i)
 {
-	return read_x(decoder, i, sizeof(*i));
+	戻る read_x(decoder, i, sizeof(*i));
 }
 
-static int
+static 整数
 read_int64(bson_decoder_t decoder, int64_t *i)
 {
-	return read_x(decoder, i, sizeof(*i));
+	戻る read_x(decoder, i, sizeof(*i));
 }
 
-static int
+static 整数
 read_double(bson_decoder_t decoder, double *d)
 {
-	return read_x(decoder, d, sizeof(*d));
+	戻る read_x(decoder, d, sizeof(*d));
 }
 
-int
-bson_decoder_init_file(bson_decoder_t decoder, int fd, bson_decoder_callback callback)
+整数
+bson_decoder_init_file(bson_decoder_t decoder, 整数 fd, bson_decoder_callback callback)
 {
 	decoder->fd = fd;
 	decoder->callback = callback;
@@ -123,38 +123,38 @@ bson_decoder_init_file(bson_decoder_t decoder, int fd, bson_decoder_callback cal
 	decoder->node.type = BSON_UNDEFINED;
 
 	// read document size
-	if (read_int32(decoder, &decoder->total_document_size)) {
+	もし (read_int32(decoder, &decoder->total_document_size)) {
 		CODER_KILL(decoder, "failed reading length");
 	}
 
 	debug("total document size = %" PRIi32, decoder->total_document_size);
 
 	// The length is signed and comes from the document itself
-	if (decoder->total_document_size < 0) {
+	もし (decoder->total_document_size < 0) {
 		CODER_KILL(decoder, "negative document length");
 	}
 
 	/* ready for decoding */
-	return 0;
+	戻る 0;
 }
 
-int
+整数
 bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_decoder_callback callback)
 {
 	/* argument sanity */
-	if ((buf == nullptr) || (callback == nullptr)) {
-		return -1;
+	もし ((buf == nullptr) || (callback == nullptr)) {
+		戻る -1;
 	}
 
 	decoder->fd = -1;
 	decoder->buf = (uint8_t *)buf;
 	decoder->dead = false;
 
-	if (bufsize == 0) {
+	もし (bufsize == 0) {
 		decoder->bufsize = *(uint32_t *)buf;
 		debug("auto-detected %zu byte object", decoder->bufsize);
 
-	} else {
+	} 否则 {
 		decoder->bufsize = bufsize;
 	}
 
@@ -168,7 +168,7 @@ bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_
 	// read document size
 	decoder->total_document_size = 0;
 
-	if (read_int32(decoder, &decoder->total_document_size)) {
+	もし (read_int32(decoder, &decoder->total_document_size)) {
 		CODER_KILL(decoder, "failed reading length");
 	}
 
@@ -176,19 +176,19 @@ bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_
 
 	// A negative length would skip the size check below, which only rejects lengths above
 	// the buffer
-	if (decoder->total_document_size < 0) {
+	もし (decoder->total_document_size < 0) {
 		CODER_KILL(decoder, "negative document length");
 	}
 
-	if ((decoder->total_document_size > 0) && (decoder->total_document_size > (int)decoder->bufsize)) {
+	もし ((decoder->total_document_size > 0) && (decoder->total_document_size > (整数)decoder->bufsize)) {
 		CODER_KILL(decoder, "document length larger than buffer");
 	}
 
 	/* ready for decoding */
-	return 0;
+	戻る 0;
 }
 
-int
+整数
 bson_decoder_next(bson_decoder_t decoder)
 {
 	int8_t	tbyte;
@@ -197,25 +197,25 @@ bson_decoder_next(bson_decoder_t decoder)
 	CODER_CHECK(decoder);
 
 	/* if the previous node was EOO, pop a nesting level */
-	if (decoder->node.type == BSON_EOO) {
-		if (decoder->nesting > 0) {
+	もし (decoder->node.type == BSON_EOO) {
+		もし (decoder->nesting > 0) {
 			decoder->nesting--;
 		}
 
 		/* if the nesting level is now zero, the top-level document is done */
-		if (decoder->nesting == 0) {
+		もし (decoder->nesting == 0) {
 			/* like kill but not an error */
 			debug("nesting is zero, document is done");
 			decoder->fd = -1;
 
 			/* return end-of-file to the caller */
-			return 0;
+			戻る 0;
 		}
 	}
 
 	/* if there are unread bytes pending in the stream, discard them */
-	while (decoder->pending > 0) {
-		if (read_int8(decoder, &tbyte)) {
+	ながら (decoder->pending > 0) {
+		もし (read_int8(decoder, &tbyte)) {
 			CODER_KILL(decoder, "read error discarding pending bytes");
 		}
 
@@ -223,7 +223,7 @@ bson_decoder_next(bson_decoder_t decoder)
 	}
 
 	/* get the type byte */
-	if (read_int8(decoder, &tbyte)) {
+	もし (read_int8(decoder, &tbyte)) {
 		CODER_KILL(decoder, "read error on type byte");
 	}
 
@@ -233,29 +233,29 @@ bson_decoder_next(bson_decoder_t decoder)
 	debug("got type byte 0x%02x", decoder->node.type);
 
 	/* EOO is special; it has no name/data following */
-	if (decoder->node.type == BSON_EOO) {
+	もし (decoder->node.type == BSON_EOO) {
 		decoder->node.name[0] = '\0';
 
-	} else if ((int)decoder->node.type == 0xff) { // indicates erased FLASH
+	} 否则 もし ((整数)decoder->node.type == 0xff) { // indicates erased FLASH
 		decoder->dead = true;
-		return -ENODATA;
+		戻る -ENODATA;
 
-	} else {
+	} 否则 {
 
 		/* get the node name */
 		nlen = 0;
 
-		for (;;) {
-			if (nlen >= BSON_MAXNAME) {
+		ために (;;) {
+			もし (nlen >= BSON_MAXNAME) {
 				PX4_ERR("node name overflow, type:0x%02x, name:%.32s", decoder->node.type, decoder->node.name);
 				CODER_KILL(decoder, "node name overflow");
 			}
 
-			if (read_int8(decoder, (int8_t *)&decoder->node.name[nlen])) {
+			もし (read_int8(decoder, (int8_t *)&decoder->node.name[nlen])) {
 				CODER_KILL(decoder, "read error on node name");
 			}
 
-			if (decoder->node.name[nlen] == '\0') {
+			もし (decoder->node.name[nlen] == '\0') {
 				break;
 			}
 
@@ -266,7 +266,7 @@ bson_decoder_next(bson_decoder_t decoder)
 
 		switch (decoder->node.type) {
 		case BSON_DOUBLE:
-			if (read_double(decoder, &decoder->node.d)) {
+			もし (read_double(decoder, &decoder->node.d)) {
 				CODER_KILL(decoder, "read error on BSON_DOUBLE");
 			}
 
@@ -274,7 +274,7 @@ bson_decoder_next(bson_decoder_t decoder)
 			break;
 
 		case BSON_STRING:
-			if (read_int32(decoder, &decoder->pending)) {
+			もし (read_int32(decoder, &decoder->pending)) {
 				CODER_KILL(decoder, "read error on BSON_STRING length");
 			}
 
@@ -282,11 +282,11 @@ bson_decoder_next(bson_decoder_t decoder)
 			break;
 
 		case BSON_BINDATA:
-			if (read_int32(decoder, &decoder->pending)) {
+			もし (read_int32(decoder, &decoder->pending)) {
 				CODER_KILL(decoder, "read error on BSON_BINDATA size");
 			}
 
-			if (read_int8(decoder, &tbyte)) {
+			もし (read_int8(decoder, &tbyte)) {
 				CODER_KILL(decoder, "read error on BSON_BINDATA subtype");
 			}
 
@@ -295,7 +295,7 @@ bson_decoder_next(bson_decoder_t decoder)
 			break;
 
 		case BSON_BOOL:
-			if (read_int8(decoder, &tbyte)) {
+			もし (read_int8(decoder, &tbyte)) {
 				CODER_KILL(decoder, "read error on BSON_BOOL");
 			}
 
@@ -304,7 +304,7 @@ bson_decoder_next(bson_decoder_t decoder)
 			break;
 
 		case BSON_INT32:
-			if (read_int32(decoder, &decoder->node.i32)) {
+			もし (read_int32(decoder, &decoder->node.i32)) {
 				CODER_KILL(decoder, "read error on BSON_INT");
 			}
 
@@ -312,7 +312,7 @@ bson_decoder_next(bson_decoder_t decoder)
 			break;
 
 		case BSON_INT64:
-			if (read_int64(decoder, &decoder->node.i64)) {
+			もし (read_int64(decoder, &decoder->node.i64)) {
 				CODER_KILL(decoder, "read error on BSON_INT");
 			}
 
@@ -330,84 +330,84 @@ bson_decoder_next(bson_decoder_t decoder)
 	}
 
 	/* call the callback and pass its results back */
-	return decoder->callback(decoder, &decoder->node);
+	戻る decoder->callback(decoder, &decoder->node);
 }
 
-int
+整数
 bson_decoder_copy_data(bson_decoder_t decoder, void *buf)
 {
-	int result;
+	整数 result;
 
 	CODER_CHECK(decoder);
 
 	/* copy data */
 	result = read_x(decoder, buf, decoder->pending);
 
-	if (result != 0) {
+	もし (result != 0) {
 		CODER_KILL(decoder, "read error on copy_data");
 	}
 
 	/* pending count is discharged */
 	decoder->pending = 0;
-	return 0;
+	戻る 0;
 }
 
 size_t
 bson_decoder_data_pending(bson_decoder_t decoder)
 {
-	return decoder->pending;
+	戻る decoder->pending;
 }
 
-static int
+static 整数
 write_x(bson_encoder_t encoder, const void *p, size_t s)
 {
 	CODER_CHECK(encoder);
 
 	/* bson file encoder (non-buffered) */
-	if (encoder->fd > -1 && encoder->buf == nullptr) {
-		int ret = ::write(encoder->fd, p, s);
+	もし (encoder->fd > -1 && encoder->buf == nullptr) {
+		整数 ret = ::write(encoder->fd, p, s);
 
-		if (ret == s) {
+		もし (ret == s) {
 			encoder->total_document_size += ret;
-			return 0;
+			戻る 0;
 		}
 
-		return -1;
+		戻る -1;
 	}
 
 	/* do we need to extend the buffer? */
-	while ((encoder->bufpos + s) > encoder->bufsize) {
+	ながら ((encoder->bufpos + s) > encoder->bufsize) {
 
 		/* bson buffered file encoder */
-		if (encoder->fd > -1) {
+		もし (encoder->fd > -1) {
 			// write to disk
 			debug("writing buffer (%d) to disk", encoder->bufpos);
-			int ret = ::write(encoder->fd, encoder->buf, encoder->bufpos);
+			整数 ret = ::write(encoder->fd, encoder->buf, encoder->bufpos);
 
-			if (ret == (int)encoder->bufpos) {
+			もし (ret == (整数)encoder->bufpos) {
 				// reset buffer to beginning and continue
 				encoder->bufpos = 0;
 				encoder->total_document_size += ret;
 
-				if ((encoder->bufpos + s) > encoder->bufsize) {
+				もし ((encoder->bufpos + s) > encoder->bufsize) {
 					CODER_KILL(encoder, "fixed-size buffer overflow");
 				}
 
 				break;
 
-			} else {
+			} 否则 {
 				PX4_ERR("file write error %d, errno:%d (%s)", ret, errno, strerror(errno));
 				CODER_KILL(encoder, "file write error");
 			}
 		}
 
-		if (!encoder->realloc_ok) {
+		もし (!encoder->realloc_ok) {
 			CODER_KILL(encoder, "fixed-size buffer overflow");
 		}
 
 		uint8_t *newbuf = (uint8_t *)realloc(encoder->buf, encoder->bufsize + BSON_BUF_INCREMENT);
 
-		if (newbuf == nullptr) {
+		もし (newbuf == nullptr) {
 			CODER_KILL(encoder, "could not grow buffer");
 		}
 
@@ -420,62 +420,62 @@ write_x(bson_encoder_t encoder, const void *p, size_t s)
 	encoder->bufpos += s;
 	debug("appended %zu bytes", s);
 
-	return 0;
+	戻る 0;
 }
 
-static int
+static 整数
 write_int8(bson_encoder_t encoder, int8_t b)
 {
-	return write_x(encoder, &b, sizeof(b));
+	戻る write_x(encoder, &b, sizeof(b));
 }
 
-static int
+static 整数
 write_int32(bson_encoder_t encoder, int32_t i)
 {
-	return write_x(encoder, &i, sizeof(i));
+	戻る write_x(encoder, &i, sizeof(i));
 }
 
-static int
+static 整数
 write_int64(bson_encoder_t encoder, int64_t i)
 {
-	return write_x(encoder, &i, sizeof(i));
+	戻る write_x(encoder, &i, sizeof(i));
 }
 
-static int
+static 整数
 write_double(bson_encoder_t encoder, double d)
 {
-	return write_x(encoder, &d, sizeof(d));
+	戻る write_x(encoder, &d, sizeof(d));
 }
 
-static int
+static 整数
 write_name(bson_encoder_t encoder, const char *name)
 {
 	size_t len = strlen(name);
 
-	if (len > BSON_MAXNAME) {
+	もし (len > BSON_MAXNAME) {
 		CODER_KILL(encoder, "node name too long");
 	}
 
-	return write_x(encoder, name, len + 1);
+	戻る write_x(encoder, name, len + 1);
 }
 
-int
-bson_encoder_init_file(bson_encoder_t encoder, int fd)
+整数
+bson_encoder_init_file(bson_encoder_t encoder, 整数 fd)
 {
 	encoder->fd = fd;
 	encoder->buf = nullptr;
 	encoder->dead = false;
 	encoder->total_document_size = 0;
 
-	if (write_int32(encoder, 0)) {
+	もし (write_int32(encoder, 0)) {
 		CODER_KILL(encoder, "write error on document length");
 	}
 
-	return 0;
+	戻る 0;
 }
 
-int
-bson_encoder_init_buf_file(bson_encoder_t encoder, int fd, void *buf, unsigned bufsize)
+整数
+bson_encoder_init_buf_file(bson_encoder_t encoder, 整数 fd, void *buf, unsigned bufsize)
 {
 	encoder->fd = fd;
 	encoder->buf = (uint8_t *)buf;
@@ -485,49 +485,49 @@ bson_encoder_init_buf_file(bson_encoder_t encoder, int fd, void *buf, unsigned b
 	encoder->realloc_ok = false;
 	encoder->total_document_size = 0;
 
-	if (write_int32(encoder, 0)) {
+	もし (write_int32(encoder, 0)) {
 		CODER_KILL(encoder, "write error on document length");
 	}
 
-	return 0;
+	戻る 0;
 }
 
-int
+整数
 bson_encoder_init_buf(bson_encoder_t encoder, void *buf, unsigned bufsize)
 {
 	encoder->buf = (uint8_t *)buf;
 
-	if (encoder->buf == nullptr) {
+	もし (encoder->buf == nullptr) {
 		encoder->realloc_ok = true;
 
-	} else {
+	} 否则 {
 		encoder->bufsize = bufsize;
 	}
 
-	if (write_int32(encoder, 0)) {
+	もし (write_int32(encoder, 0)) {
 		CODER_KILL(encoder, "write error on document length");
 	}
 
-	return 0;
+	戻る 0;
 }
 
-int
+整数
 bson_encoder_fini(bson_encoder_t encoder)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_EOO)) {
+	もし (write_int8(encoder, BSON_EOO)) {
 		CODER_KILL(encoder, "write error on document terminator");
 	}
 
-	if (encoder->fd > -1 && encoder->buf != nullptr && encoder->bufpos > 0) {
+	もし (encoder->fd > -1 && encoder->buf != nullptr && encoder->bufpos > 0) {
 		/* write final buffer to disk */
-		int ret = ::write(encoder->fd, encoder->buf, encoder->bufpos);
+		整数 ret = ::write(encoder->fd, encoder->buf, encoder->bufpos);
 
-		if (ret == (int)encoder->bufpos) {
+		もし (ret == (整数)encoder->bufpos) {
 			encoder->total_document_size += ret;
 
-		} else {
+		} 否则 {
 			CODER_KILL(encoder, "write error");
 		}
 	}
@@ -536,8 +536,8 @@ bson_encoder_fini(bson_encoder_t encoder)
 	const int32_t bson_doc_bytes = (encoder->fd > -1) ? encoder->total_document_size : (int32_t)encoder->bufpos;
 	debug("writing document size %" PRIi32, bson_doc_bytes);
 
-	if (encoder->fd > -1) {
-		if ((lseek(encoder->fd, 0, SEEK_SET) != 0)
+	もし (encoder->fd > -1) {
+		もし ((lseek(encoder->fd, 0, SEEK_SET) != 0)
 		    || (::write(encoder->fd, &bson_doc_bytes, sizeof(bson_doc_bytes)) != sizeof(bson_doc_bytes))) {
 
 			CODER_KILL(encoder, "write error on document length");
@@ -545,24 +545,24 @@ bson_encoder_fini(bson_encoder_t encoder)
 
 		::fsync(encoder->fd);
 
-	} else if (encoder->buf != nullptr) {
+	} 否则 もし (encoder->buf != nullptr) {
 		/* update buffer length */
 		memcpy(encoder->buf, &bson_doc_bytes, sizeof(bson_doc_bytes));
 	}
 
-	return 0;
+	戻る 0;
 }
 
-int
+整数
 bson_encoder_buf_size(bson_encoder_t encoder)
 {
 	CODER_CHECK(encoder);
 
-	if (encoder->fd > -1) {
-		return -1;
+	もし (encoder->fd > -1) {
+		戻る -1;
 	}
 
-	return encoder->bufpos;
+	戻る encoder->bufpos;
 }
 
 void *
@@ -570,69 +570,69 @@ bson_encoder_buf_data(bson_encoder_t encoder)
 {
 	/* note, no CODER_CHECK here as the caller has to clean up dead buffers */
 
-	if (encoder->fd > -1) {
-		return nullptr;
+	もし (encoder->fd > -1) {
+		戻る nullptr;
 	}
 
-	return encoder->buf;
+	戻る encoder->buf;
 }
 
-int bson_encoder_append_bool(bson_encoder_t encoder, const char *name, bool value)
+整数 bson_encoder_append_bool(bson_encoder_t encoder, const char *name, bool value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_BOOL) ||
+	もし (write_int8(encoder, BSON_BOOL) ||
 	    write_name(encoder, name) ||
 	    write_int8(encoder, value ? 1 : 0)) {
 		CODER_KILL(encoder, "write error on BSON_BOOL");
 	}
 
-	return 0;
+	戻る 0;
 }
 
-int
+整数
 bson_encoder_append_int32(bson_encoder_t encoder, const char *name, int32_t value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_INT32) ||
+	もし (write_int8(encoder, BSON_INT32) ||
 	    write_name(encoder, name) ||
 	    write_int32(encoder, value)) {
 		CODER_KILL(encoder, "write error on BSON_INT32");
 	}
 
-	return 0;
+	戻る 0;
 }
 
-int
+整数
 bson_encoder_append_int64(bson_encoder_t encoder, const char *name, int64_t value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_INT64) ||
+	もし (write_int8(encoder, BSON_INT64) ||
 	    write_name(encoder, name) ||
 	    write_int64(encoder, value)) {
 		CODER_KILL(encoder, "write error on BSON_INT64");
 	}
 
-	return 0;
+	戻る 0;
 }
 
-int
+整数
 bson_encoder_append_double(bson_encoder_t encoder, const char *name, double value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_DOUBLE) ||
+	もし (write_int8(encoder, BSON_DOUBLE) ||
 	    write_name(encoder, name) ||
 	    write_double(encoder, value)) {
 		CODER_KILL(encoder, "write error on BSON_DOUBLE");
 	}
 
-	return 0;
+	戻る 0;
 }
 
-int
+整数
 bson_encoder_append_string(bson_encoder_t encoder, const char *name, const char *string)
 {
 	size_t len;
@@ -641,23 +641,23 @@ bson_encoder_append_string(bson_encoder_t encoder, const char *name, const char 
 
 	len = strlen(string) + 1;	/* include trailing nul */
 
-	if (write_int8(encoder, BSON_STRING) ||
+	もし (write_int8(encoder, BSON_STRING) ||
 	    write_name(encoder, name) ||
 	    write_int32(encoder, len) ||
 	    write_x(encoder, string, len)) {
 		CODER_KILL(encoder, "write error on BSON_STRING");
 	}
 
-	return 0;
+	戻る 0;
 }
 
-int
+整数
 bson_encoder_append_binary(bson_encoder_t encoder, const char *name, bson_binary_subtype_t subtype, size_t size,
 			   const void *data)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_BINDATA) ||
+	もし (write_int8(encoder, BSON_BINDATA) ||
 	    write_name(encoder, name) ||
 	    write_int32(encoder, size) ||
 	    write_int8(encoder, subtype) ||
@@ -665,18 +665,18 @@ bson_encoder_append_binary(bson_encoder_t encoder, const char *name, bson_binary
 		CODER_KILL(encoder, "write error on BSON_BINDATA");
 	}
 
-	return 0;
+	戻る 0;
 }
 
-int
+整数
 bson_encoder_append_null(bson_encoder_t encoder, const char *name)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_nullptr) ||
+	もし (write_int8(encoder, BSON_nullptr) ||
 	    write_name(encoder, name)) {
 		CODER_KILL(encoder, "write error on BSON_nullptr");
 	}
 
-	return 0;
+	戻る 0;
 }

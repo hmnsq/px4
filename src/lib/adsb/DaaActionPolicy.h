@@ -65,12 +65,12 @@ enum class NotifyLandedActCause : uint8_t {
 
 // Action parameter values (NAV_TRAFF_AVOID / DAA_LVL_*_ACT convention), read by the caller.
 struct daa_action_params_s {
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#もし defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	int32_t lvl_low_act {0};
 	int32_t lvl_med_act{0};
 	int32_t lvl_high_act{0};
 	int32_t lvl_crit_act{0};
-#else
+#否则
 	int32_t traff_avoid {0};
 #endif // CONFIG_NAVIGATOR_ADSB_F3442
 };

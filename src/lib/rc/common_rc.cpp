@@ -7,25 +7,25 @@ uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a)
 {
 	crc ^= a;
 
-	for (int i = 0; i < 8; ++i) {
-		if (crc & 0x80) {
+	ために (整数 i = 0; i < 8; ++i) {
+		もし (crc & 0x80) {
 			crc = (crc << 1) ^ 0xD5;
 
-		} else {
+		} 否则 {
 			crc = crc << 1;
 		}
 	}
 
-	return crc;
+	戻る crc;
 }
 
-uint8_t crc8_dvb_s2_buf(uint8_t *buf, int len)
+uint8_t crc8_dvb_s2_buf(uint8_t *buf, 整数 len)
 {
 	uint8_t crc = 0;
 
-	for (int i = 0; i < len; ++i) {
+	ために (整数 i = 0; i < len; ++i) {
 		crc = crc8_dvb_s2(crc, buf[i]);
 	}
 
-	return crc;
+	戻る crc;
 }

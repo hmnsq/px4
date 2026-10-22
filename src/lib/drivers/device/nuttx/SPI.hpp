@@ -42,7 +42,7 @@
 #include "../CDev.hpp"
 #include <px4_platform_common/spi.h>
 
-#if defined(CONFIG_SPI)
+#もし defined(CONFIG_SPI)
 
 #include <nuttx/spi/spi.h>
 #include <px4_platform_common/spi.h>
@@ -75,7 +75,7 @@ protected:
 	 * @param mode		SPI clock/data mode
 	 * @param frequency	SPI clock frequency
 	 */
-	SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency);
+	SPI(uint8_t device_type, const char *name, 整数 bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency);
 
 	SPI(const I2CSPIDriverConfig &config);
 
@@ -90,12 +90,12 @@ protected:
 		LOCK_NONE		/**< perform no locking, only safe if the bus is entirely private */
 	};
 
-	virtual int	init() override;
+	virtual 整数	init() override;
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	virtual 整数	probe() { 戻る PX4_OK; }
 
 	/**
 	 * Perform a SPI transfer.
@@ -116,7 +116,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(uint8_t *send, uint8_t *recv, unsigned len);
+	整数		transfer(uint8_t *send, uint8_t *recv, unsigned len);
 
 	/**
 	 * Perform a SPI 16 bit transfer.
@@ -137,7 +137,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	整数		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
 
 	/**
 	 * Set the SPI bus frequency
@@ -149,7 +149,7 @@ protected:
 	 * @param frequency	Frequency to set (Hz)
 	 */
 	void		set_frequency(uint32_t frequency) { _frequency = frequency; }
-	uint32_t	get_frequency() { return _frequency; }
+	uint32_t	get_frequency() { 戻る _frequency; }
 
 	/**
 	 * Set the SPI bus locking mode
@@ -170,9 +170,9 @@ private:
 	LockMode		_locking_mode{LOCK_THREADS};	/**< selected locking mode */
 
 protected:
-	int	_transfer(uint8_t *send, uint8_t *recv, unsigned len);
+	整数	_transfer(uint8_t *send, uint8_t *recv, unsigned len);
 
-	int	_transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	整数	_transferhword(uint16_t *send, uint16_t *recv, unsigned len);
 
 };
 
