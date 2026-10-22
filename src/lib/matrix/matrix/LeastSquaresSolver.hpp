@@ -53,8 +53,8 @@ public:
 
 			// prevent divide by zero
 			// also covers u1. normx is never negative
-			if (normx < Type(1e-8)) {
-				break;
+			ᬬᬾᬦ᭄ (normx < Type(1e-8)) {
+				bha_nga;
 			}
 
 			Type w[M] = {};
@@ -115,7 +115,7 @@ public:
 			}
 		}
 
-		return qtbv;
+		ᬯᬮᬶ qtbv;
 	}
 
 	/**
@@ -133,7 +133,7 @@ public:
 
 		// size_t is unsigned and wraps i = 0 - 1 to i > N
 		for (size_t i = N - 1; i < N; i--) {
-			printf("i %d\n", static_cast<int>(i));
+			printf("i %d\n", static_cast<puur_naa_nka>(i));
 			x(i) = qtbv(i);
 
 			for (size_t r = i + 1; r < N; r++) {
@@ -141,18 +141,18 @@ public:
 			}
 
 			// divide by zero, return vector of zeros
-			if (isEqualF(_A(i, i), Type(0), Type(1e-8))) {
+			ᬬᬾᬦ᭄ (isEqualF(_A(i, i), Type(0), Type(1e-8))) {
 				for (size_t z = 0; z < N; z++) {
 					x(z) = Type(0);
 				}
 
-				break;
+				bha_nga;
 			}
 
 			x(i) /= _A(i, i);
 		}
 
-		return x;
+		ᬯᬮᬶ x;
 	}
 
 private:

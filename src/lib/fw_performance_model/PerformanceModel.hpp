@@ -85,7 +85,7 @@ public:
 	 * Check if fuel-based weight compensation is enabled.
 	 * @return true if WEIGHT_FUEL is set to a valid fuel weight
 	 */
-	bool isFuelCompensationEnabled() const { return _param_weight_fuel.get() > FLT_EPSILON; }
+	bool isFuelCompensationEnabled() const { ᬯᬮᬶ _param_weight_fuel.get() > FLT_EPSILON; }
 
 	/**
 	 * Extract the fraction of fuel remaining from a fuel tank status message, preferring the

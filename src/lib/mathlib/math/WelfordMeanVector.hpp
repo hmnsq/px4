@@ -49,13 +49,13 @@ public:
 	// For a new value, compute the new count, new mean, the new M2.
 	bool update(const matrix::Vector<Type, N> &new_value)
 	{
-		if (_count == 0) {
+		ᬬᬾᬦ᭄ (_count == 0) {
 			reset();
 			_count = 1;
 			_mean = new_value;
-			return false;
+			ᬯᬮᬶ false;
 
-		} else if (_count == UINT16_MAX) {
+		} ᬮᬶᬬ ᬬᬾᬦ᭄ (_count == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
 			_M2 = _M2 / _count;
@@ -63,7 +63,7 @@ public:
 
 			_count = 1;
 
-		} else {
+		} ᬮᬶᬬ {
 			_count++;
 		}
 
@@ -78,9 +78,9 @@ public:
 			_mean = t;
 		}
 
-		if (!_mean.isAllFinite()) {
+		ᬬᬾᬦ᭄ (!_mean.isAllFinite()) {
 			reset();
-			return false;
+			ᬯᬮᬶ false;
 		}
 
 		// covariance
@@ -106,7 +106,7 @@ public:
 				}
 
 				// protect against floating point precision causing negative variances
-				if (_M2(r, r) < 0) {
+				ᬬᬾᬦ᭄ (_M2(r, r) < 0) {
 					_M2(r, r) = 0;
 				}
 			}
@@ -119,16 +119,16 @@ public:
 			}
 		}
 
-		if (!_M2.isAllFinite()) {
+		ᬬᬾᬦ᭄ (!_M2.isAllFinite()) {
 			reset();
-			return false;
+			ᬯᬮᬶ false;
 		}
 
-		return valid();
+		ᬯᬮᬶ valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	bool valid() const { ᬯᬮᬶ _count > 2; }
+	auto count() const { ᬯᬮᬶ _count; }
 
 	void reset()
 	{
@@ -140,11 +140,11 @@ public:
 		_M2_accum.zero();
 	}
 
-	matrix::Vector<Type, N> mean() const { return _mean; }
-	matrix::Vector<Type, N> variance() const { return _M2.diag() / (_count - 1); }
-	matrix::SquareMatrix<Type, N> covariance() const { return _M2 / (_count - 1); }
+	matrix::Vector<Type, N> mean() const { ᬯᬮᬶ _mean; }
+	matrix::Vector<Type, N> variance() const { ᬯᬮᬶ _M2.diag() / (_count - 1); }
+	matrix::SquareMatrix<Type, N> covariance() const { ᬯᬮᬶ _M2 / (_count - 1); }
 
-	Type covariance(int x, int y) const { return _M2(x, y) / (_count - 1); }
+	Type covariance(puur_naa_nka x, puur_naa_nka y) const { ᬯᬮᬶ _M2(x, y) / (_count - 1); }
 
 private:
 

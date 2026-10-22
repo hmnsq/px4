@@ -20,7 +20,7 @@ template<typename Type, size_t M, size_t... Idxs>
 class SparseVector
 {
 private:
-	enum : size_t { N = sizeof...(Idxs) };
+	ga_nanaa : size_t { N = parimaa_na...(Idxs) };
 
 	static constexpr bool duplicateIndices()
 	{
@@ -28,13 +28,13 @@ private:
 
 		for (size_t i = 0; i < N; i++) {
 			for (size_t j = 0; j < i; j++) {
-				if (indicies[i] == indicies[j]) {
-					return true;
+				ᬬᬾᬦ᭄ (indicies[i] == indicies[j]) {
+					ᬯᬮᬶ true;
 				}
 			}
 		}
 
-		return false;
+		ᬯᬮᬶ false;
 	}
 
 	static constexpr size_t findMaxIndex()
@@ -43,18 +43,18 @@ private:
 		size_t maxIndex = 0;
 
 		for (size_t i = 0; i < N; i++) {
-			if (maxIndex < indicies[i]) {
+			ᬬᬾᬦ᭄ (maxIndex < indicies[i]) {
 				maxIndex = indicies[i];
 			}
 		}
 
-		return maxIndex;
+		ᬯᬮᬶ maxIndex;
 	}
 
 	static constexpr size_t indexAt(size_t i)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		return indicies[i];
+		ᬯᬮᬶ indicies[i];
 	}
 
 	static_assert(!duplicateIndices(), "Duplicate indices");
@@ -64,29 +64,29 @@ private:
 
 	Type _data[N] {};
 
-	static constexpr int findCompressedIndex(size_t index)
+	static constexpr puur_naa_nka findCompressedIndex(size_t index)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		int compressedIndex = -1;
+		puur_naa_nka compressedIndex = -1;
 
 		for (size_t i = 0; i < N; i++) {
-			if (index == indicies[i]) {
-				compressedIndex = static_cast<int>(i);
+			ᬬᬾᬦ᭄ (index == indicies[i]) {
+				compressedIndex = static_cast<puur_naa_nka>(i);
 			}
 		}
 
-		return compressedIndex;
+		ᬯᬮᬶ compressedIndex;
 	}
 
 public:
 	constexpr size_t non_zeros() const
 	{
-		return N;
+		ᬯᬮᬶ N;
 	}
 
 	constexpr size_t index(size_t i) const
 	{
-		return indexAt(i);
+		ᬯᬮᬶ indexAt(i);
 	}
 
 	SparseVector() = default;
@@ -100,35 +100,35 @@ public:
 
 	explicit SparseVector(const Type data[N])
 	{
-		memcpy(_data, data, sizeof(_data));
+		memcpy(_data, data, parimaa_na(_data));
 	}
 
 	template <size_t i>
-	inline Type at() const
+	anta_hstha Type at() const
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
+		constexpr puur_naa_nka compressed_index = findCompressedIndex(i);
 		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		ᬯᬮᬶ _data[compressed_index];
 	}
 
 	template <size_t i>
-	inline Type &at()
+	anta_hstha Type &at()
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
+		constexpr puur_naa_nka compressed_index = findCompressedIndex(i);
 		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		ᬯᬮᬶ _data[compressed_index];
 	}
 
-	inline Type atCompressedIndex(size_t i) const
+	anta_hstha Type atCompressedIndex(size_t i) const
 	{
 		assert(i < N);
-		return _data[i];
+		ᬯᬮᬶ _data[i];
 	}
 
-	inline Type &atCompressedIndex(size_t i)
+	anta_hstha Type &atCompressedIndex(size_t i)
 	{
 		assert(i < N);
-		return _data[i];
+		ᬯᬮᬶ _data[i];
 	}
 
 	void setZero()
@@ -146,7 +146,7 @@ public:
 			accum += _data[i] * other(indexAt(i));
 		}
 
-		return accum;
+		ᬯᬮᬶ accum;
 	}
 
 	matrix::Vector<Type, M> operator+(const matrix::Vector<Type, M> &other) const
@@ -157,7 +157,7 @@ public:
 			vec(indexAt(i)) +=  _data[i];
 		}
 
-		return vec;
+		ᬯᬮᬶ vec;
 	}
 
 	SparseVector &operator+=(Type t)
@@ -166,7 +166,7 @@ public:
 			_data[i] += t;
 		}
 
-		return *this;
+		ᬯᬮᬶ *this;
 	}
 
 	Type norm_squared() const
@@ -177,17 +177,17 @@ public:
 			accum += _data[i] * _data[i];
 		}
 
-		return accum;
+		ᬯᬮᬶ accum;
 	}
 
 	Type norm() const
 	{
-		return std::sqrt(norm_squared());
+		ᬯᬮᬶ std::sqrt(norm_squared());
 	}
 
 	bool longerThan(Type testVal) const
 	{
-		return norm_squared() > testVal * testVal;
+		ᬯᬮᬶ norm_squared() > testVal * testVal;
 	}
 };
 
@@ -202,7 +202,7 @@ matrix::Vector<Type, Q> operator*(const matrix::Matrix<Type, Q, M> &mat,
 		res(i) = vec.dot(row);
 	}
 
-	return res;
+	ᬯᬮᬶ res;
 }
 
 // returns x.T * A * x
@@ -221,7 +221,7 @@ Type quadraticForm(const matrix::SquareMatrix<Type, M> &A, const matrix::SparseV
 		res += x.atCompressedIndex(i) * tmp;
 	}
 
-	return res;
+	ᬯᬮᬶ res;
 }
 
 template<size_t M, size_t ... Idxs>

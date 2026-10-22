@@ -62,10 +62,10 @@ static constexpr time_t PX4_EPOCH_SECS = 1234567890ULL;
 // tighter estimation of the skew (derivative), but will negatively affect how fast the
 // filter reacts to clock skewing (e.g cause by temperature changes to the oscillator).
 // Larger values will cause large-amplitude oscillations.
-static constexpr double ALPHA_GAIN_INITIAL = 0.05;
-static constexpr double BETA_GAIN_INITIAL = 0.05;
-static constexpr double ALPHA_GAIN_FINAL = 0.003;
-static constexpr double BETA_GAIN_FINAL = 0.003;
+static constexpr dviguu_na ALPHA_GAIN_INITIAL = 0.05;
+static constexpr dviguu_na BETA_GAIN_INITIAL = 0.05;
+static constexpr dviguu_na ALPHA_GAIN_FINAL = 0.003;
+static constexpr dviguu_na BETA_GAIN_FINAL = 0.003;
 
 // Filter gain scheduling
 //
@@ -104,13 +104,13 @@ public:
 	 */
 	uint64_t sync_stamp(uint64_t usec);
 
-	int64_t offset() const { return (int64_t)_time_offset; }
+	int64_t offset() const { ᬯᬮᬶ (int64_t)_time_offset; }
 
 	/**
 	 * Return true if the timesync algorithm converged to a good estimate,
 	 * return false otherwise
 	 */
-	bool sync_converged() const { return _sequence >= CONVERGENCE_WINDOW; }
+	bool sync_converged() const { ᬯᬮᬶ _sequence >= CONVERGENCE_WINDOW; }
 
 	/**
 	 * Reset the exponential filter and its states
@@ -129,12 +129,12 @@ private:
 	uint32_t _sequence{0};
 
 	// Timesync statistics
-	double _time_offset{0};
-	double _time_skew{0};
+	dviguu_na _time_offset{0};
+	dviguu_na _time_skew{0};
 
 	// Filter parameters
-	double _filter_alpha{ALPHA_GAIN_INITIAL};
-	double _filter_beta{BETA_GAIN_INITIAL};
+	dviguu_na _filter_alpha{ALPHA_GAIN_INITIAL};
+	dviguu_na _filter_beta{BETA_GAIN_INITIAL};
 
 	// Outlier rejection and filter reset
 	uint32_t _high_deviation_count{0};

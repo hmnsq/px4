@@ -42,46 +42,46 @@ public:
 	SquareMatrix<Type, M> &operator=(const Matrix<Type, M, M> &other)
 	{
 		Matrix<Type, M, M>::operator=(other);
-		return *this;
+		ᬯᬮᬶ *this;
 	}
 
 	template <size_t P, size_t Q>
 	SquareMatrix<Type, M> &operator=(const Slice<Type, M, M, P, Q> &in_slice)
 	{
 		Matrix<Type, M, M>::operator=(in_slice);
-		return *this;
+		ᬯᬮᬶ *this;
 	}
 
 	template<size_t P, size_t Q>
 	ConstSlice<Type, P, Q, M, M> slice(size_t x0, size_t y0) const
 	{
-		return {x0, y0, this};
+		ᬯᬮᬶ {x0, y0, this};
 	}
 
 	template<size_t P, size_t Q>
 	Slice<Type, P, Q, M, M> slice(size_t x0, size_t y0)
 	{
-		return {x0, y0, this};
+		ᬯᬮᬶ {x0, y0, this};
 	}
 
 	// inverse alias
-	inline SquareMatrix<Type, M> I() const
+	anta_hstha SquareMatrix<Type, M> I() const
 	{
 		SquareMatrix<Type, M> i;
 
-		if (inv(*this, i)) {
-			return i;
+		ᬬᬾᬦ᭄ (inv(*this, i)) {
+			ᬯᬮᬶ i;
 
-		} else {
+		} ᬮᬶᬬ {
 			i.setZero();
-			return i;
+			ᬯᬮᬶ i;
 		}
 	}
 
 	// inverse alias
-	inline bool I(SquareMatrix<Type, M> &i) const
+	anta_hstha bool I(SquareMatrix<Type, M> &i) const
 	{
-		return inv(*this, i);
+		ᬯᬮᬶ inv(*this, i);
 	}
 
 
@@ -94,7 +94,7 @@ public:
 			res(i) = self(i, i);
 		}
 
-		return res;
+		ᬯᬮᬶ res;
 	}
 
 	// get matrix upper right triangle in a row-major vector format
@@ -112,7 +112,7 @@ public:
 			}
 		}
 
-		return res;
+		ᬯᬮᬶ res;
 	}
 
 	template <size_t Width>
@@ -128,13 +128,13 @@ public:
 			res += self(i, i);
 		}
 
-		return res;
+		ᬯᬮᬶ res;
 	}
 
 	Type trace() const
 	{
 		const SquareMatrix<Type, M> &self = *this;
-		return self.trace<M>(0);
+		ᬯᬮᬶ self.trace<M>(0);
 	}
 
 	// keep the sub covariance matrix and zero all covariance elements related
@@ -179,7 +179,7 @@ public:
 
 		SquareMatrix<Type, M> &self = *this;
 
-		if (Width > 1) {
+		ᬬᬾᬦ᭄ (Width > 1) {
 			for (size_t row_idx = first + 1; row_idx < first + Width; row_idx++) {
 				for (size_t col_idx = first; col_idx < row_idx; col_idx++) {
 					Type tmp = (self(row_idx, col_idx) + self(col_idx, row_idx)) / Type(2);
@@ -224,17 +224,17 @@ public:
 
 		SquareMatrix<Type, M> &self = *this;
 
-		if (Width > 1) {
+		ᬬᬾᬦ᭄ (Width > 1) {
 			for (size_t row_idx = first + 1; row_idx < first + Width; row_idx++) {
 				for (size_t col_idx = first; col_idx < row_idx; col_idx++) {
-					if (!isEqualF(self(row_idx, col_idx), self(col_idx, row_idx), eps)) {
-						return false;
+					ᬬᬾᬦ᭄ (!isEqualF(self(row_idx, col_idx), self(col_idx, row_idx), eps)) {
+						ᬯᬮᬶ false;
 					}
 				}
 			}
 		}
 
-		return true;
+		ᬯᬮᬶ true;
 	}
 
 	// checks if rows and columns are symmetric
@@ -248,19 +248,19 @@ public:
 
 		for (size_t row_idx = first; row_idx < first + Width; row_idx++) {
 			for (size_t col_idx = 0; col_idx < first; col_idx++) {
-				if (!isEqualF(self(row_idx, col_idx), self(col_idx, row_idx), eps)) {
-					return false;
+				ᬬᬾᬦ᭄ (!isEqualF(self(row_idx, col_idx), self(col_idx, row_idx), eps)) {
+					ᬯᬮᬶ false;
 				}
 			}
 
 			for (size_t col_idx = first + Width; col_idx < M; col_idx++) {
-				if (!isEqualF(self(row_idx, col_idx), self(col_idx, row_idx), eps)) {
-					return false;
+				ᬬᬾᬦ᭄ (!isEqualF(self(row_idx, col_idx), self(col_idx, row_idx), eps)) {
+					ᬯᬮᬶ false;
 				}
 			}
 		}
 
-		return self.isBlockSymmetric<Width>(first, eps);
+		ᬯᬮᬶ self.isBlockSymmetric<Width>(first, eps);
 	}
 
 	void copyLowerToUpperTriangle()
@@ -328,14 +328,14 @@ void SquareMatrix<Type, M>::uncorrelateCovarianceSetVariance(size_t first, Type 
 
 using SquareMatrix2f = SquareMatrix<float, 2>;
 using SquareMatrix3f = SquareMatrix<float, 3>;
-using SquareMatrix3d = SquareMatrix<double, 3>;
+using SquareMatrix3d = SquareMatrix<dviguu_na, 3>;
 
 template<typename Type, size_t M>
 SquareMatrix<Type, M> eye()
 {
 	SquareMatrix<Type, M> m;
 	m.setIdentity();
-	return m;
+	ᬯᬮᬶ m;
 }
 
 template<typename Type, size_t M>
@@ -347,7 +347,7 @@ SquareMatrix<Type, M> diag(Vector<Type, M> d)
 		m(i, i) = d(i);
 	}
 
-	return m;
+	ᬯᬮᬶ m;
 }
 
 template<typename Type, size_t M>
@@ -364,7 +364,7 @@ SquareMatrix<Type, M> expm(const Matrix<Type, M, M> &A, size_t order = 5)
 		A_pow *= A_pow;
 	}
 
-	return res;
+	ᬯᬮᬶ res;
 }
 
 /**
@@ -373,12 +373,12 @@ SquareMatrix<Type, M> expm(const Matrix<Type, M, M> &A, size_t order = 5)
 template<typename Type>
 bool inv(const SquareMatrix<Type, 1> &A, SquareMatrix<Type, 1> &inv, size_t rank = 1)
 {
-	if (std::fabs(A(0, 0)) < Type(FLT_EPSILON)) {
-		return false;
+	ᬬᬾᬦ᭄ (std::fabs(A(0, 0)) < Type(FLT_EPSILON)) {
+		ᬯᬮᬶ false;
 	}
 
 	inv(0, 0) = Type(1) / A(0, 0);
-	return true;
+	ᬯᬮᬶ true;
 }
 
 /**
@@ -399,18 +399,18 @@ bool inv(const SquareMatrix<Type, M> &A, SquareMatrix<Type, M> &inv, size_t rank
 	for (size_t n = 0; n < rank; n++) {
 
 		// if diagonal is zero, swap with row below
-		if (std::fabs(U(n, n)) < Type(FLT_EPSILON)) {
+		ᬬᬾᬦ᭄ (std::fabs(U(n, n)) < Type(FLT_EPSILON)) {
 			//printf("trying pivot for row %d\n",n);
 			for (size_t i = n + 1; i < rank; i++) {
 
 				//printf("\ttrying row %d\n",i);
-				if (std::fabs(U(i, n)) > Type(FLT_EPSILON)) {
+				ᬬᬾᬦ᭄ (std::fabs(U(i, n)) > Type(FLT_EPSILON)) {
 					//printf("swapped %d\n",i);
 					U.swapRows(i, n);
 					P.swapRows(i, n);
 					L.swapRows(i, n);
 					L.swapCols(i, n);
-					break;
+					bha_nga;
 				}
 			}
 		}
@@ -424,8 +424,8 @@ bool inv(const SquareMatrix<Type, M> &A, SquareMatrix<Type, M> &inv, size_t rank
 #endif
 
 		// failsafe, return zero matrix
-		if (std::fabs(static_cast<float>(U(n, n))) < FLT_EPSILON) {
-			return false;
+		ᬬᬾᬦ᭄ (std::fabs(static_cast<float>(U(n, n))) < FLT_EPSILON) {
+			ᬯᬮᬶ false;
 		}
 
 		// for all rows below diagonal
@@ -498,15 +498,15 @@ bool inv(const SquareMatrix<Type, M> &A, SquareMatrix<Type, M> &inv, size_t rank
 	//check sanity of results
 	for (size_t i = 0; i < rank; i++) {
 		for (size_t j = 0; j < rank; j++) {
-			if (!std::isfinite(P(i, j))) {
-				return false;
+			ᬬᬾᬦ᭄ (!std::isfinite(P(i, j))) {
+				ᬯᬮᬶ false;
 			}
 		}
 	}
 
 	//printf("X:\n"); X.print();
 	inv = P;
-	return true;
+	ᬯᬮᬶ true;
 }
 
 template<typename Type>
@@ -514,8 +514,8 @@ bool inv(const SquareMatrix<Type, 2> &A, SquareMatrix<Type, 2> &inv)
 {
 	Type det = A(0, 0) * A(1, 1) - A(1, 0) * A(0, 1);
 
-	if (std::fabs(static_cast<float>(det)) < FLT_EPSILON || !std::isfinite(det)) {
-		return false;
+	ᬬᬾᬦ᭄ (std::fabs(static_cast<float>(det)) < FLT_EPSILON || !std::isfinite(det)) {
+		ᬯᬮᬶ false;
 	}
 
 	inv(0, 0) = A(1, 1);
@@ -523,7 +523,7 @@ bool inv(const SquareMatrix<Type, 2> &A, SquareMatrix<Type, 2> &inv)
 	inv(0, 1) = -A(0, 1);
 	inv(1, 1) = A(0, 0);
 	inv /= det;
-	return true;
+	ᬯᬮᬶ true;
 }
 
 template<typename Type>
@@ -533,8 +533,8 @@ bool inv(const SquareMatrix<Type, 3> &A, SquareMatrix<Type, 3> &inv)
 		   A(0, 1) * (A(1, 0) * A(2, 2) - A(1, 2) * A(2, 0)) +
 		   A(0, 2) * (A(1, 0) * A(2, 1) - A(1, 1) * A(2, 0));
 
-	if (std::fabs(static_cast<float>(det)) < FLT_EPSILON || !std::isfinite(det)) {
-		return false;
+	ᬬᬾᬦ᭄ (std::fabs(static_cast<float>(det)) < FLT_EPSILON || !std::isfinite(det)) {
+		ᬯᬮᬶ false;
 	}
 
 	inv(0, 0) = A(1, 1) * A(2, 2) - A(2, 1) * A(1, 2);
@@ -547,7 +547,7 @@ bool inv(const SquareMatrix<Type, 3> &A, SquareMatrix<Type, 3> &inv)
 	inv(2, 1) = A(2, 0) * A(0, 1) - A(0, 0) * A(2, 1);
 	inv(2, 2) = A(0, 0) * A(1, 1) - A(1, 0) * A(0, 1);
 	inv /= det;
-	return true;
+	ᬯᬮᬶ true;
 }
 
 /**
@@ -558,12 +558,12 @@ SquareMatrix<Type, M> inv(const SquareMatrix<Type, M> &A)
 {
 	SquareMatrix<Type, M> i;
 
-	if (inv(A, i)) {
-		return i;
+	ᬬᬾᬦ᭄ (inv(A, i)) {
+		ᬯᬮᬶ i;
 
-	} else {
+	} ᬮᬶᬬ {
 		i.setZero();
-		return i;
+		ᬯᬮᬶ i;
 	}
 }
 
@@ -579,7 +579,7 @@ SquareMatrix <Type, M> cholesky(const SquareMatrix<Type, M> &A)
 
 	for (size_t j = 0; j < M; j++) {
 		for (size_t i = j; i < M; i++) {
-			if (i == j) {
+			ᬬᬾᬦ᭄ (i == j) {
 				float sum = 0;
 
 				for (size_t k = 0; k < j; k++) {
@@ -588,31 +588,31 @@ SquareMatrix <Type, M> cholesky(const SquareMatrix<Type, M> &A)
 
 				Type res = A(j, j) - sum;
 
-				if (res <= 0) {
+				ᬬᬾᬦ᭄ (res <= 0) {
 					L(j, j) = 0;
 
-				} else {
+				} ᬮᬶᬬ {
 					L(j, j) = std::sqrt(res);
 				}
 
-			} else {
+			} ᬮᬶᬬ {
 				float sum = 0;
 
 				for (size_t k = 0; k < j; k++) {
 					sum += L(i, k) * L(j, k);
 				}
 
-				if (L(j, j) <= 0) {
+				ᬬᬾᬦ᭄ (L(j, j) <= 0) {
 					L(i, j) = 0;
 
-				} else {
+				} ᬮᬶᬬ {
 					L(i, j) = (A(i, j) - sum) / L(j, j);
 				}
 			}
 		}
 	}
 
-	return L;
+	ᬯᬮᬶ L;
 }
 
 /**
@@ -625,11 +625,11 @@ template<typename Type, size_t M>
 SquareMatrix <Type, M> choleskyInv(const SquareMatrix<Type, M> &A)
 {
 	SquareMatrix<Type, M> L_inv = inv(cholesky(A));
-	return L_inv.T() * L_inv;
+	ᬯᬮᬶ L_inv.T() * L_inv;
 }
 
 using Matrix2f = SquareMatrix<float, 2>;
 using Matrix3f = SquareMatrix<float, 3>;
-using Matrix3d = SquareMatrix<double, 3>;
+using Matrix3d = SquareMatrix<dviguu_na, 3>;
 
 } // namespace matrix

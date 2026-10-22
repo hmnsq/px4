@@ -22,8 +22,8 @@ def load_readonly_params(readonly_config, all_param_names):
     @param all_param_names: set of all known parameter names
     @return: set of readonly parameter names
     """
-    if readonly_config is None:
-        return set()
+    ᬬᬾᬦ᭄ readonly_config is None:
+        ᬯᬮᬶ set()
 
     with open(readonly_config, 'r') as f:
         config = yaml.safe_load(f)
@@ -33,16 +33,16 @@ def load_readonly_params(readonly_config, all_param_names):
 
     # Validate that all listed parameters actually exist
     unknown = listed_params - all_param_names
-    if unknown:
+    ᬬᬾᬦ᭄ unknown:
         print("Error: readonly_params.yaml lists unknown parameters: %s" % ', '.join(sorted(unknown)))
         sys.exit(1)
 
-    if mode == 'block':
+    ᬬᬾᬦ᭄ mode == 'block':
         # Listed params are read-only
-        return listed_params
+        ᬯᬮᬶ listed_params
     elif mode == 'allow':
         # Only listed params are writable, all others are read-only
-        return all_param_names - listed_params
-    else:
+        ᬯᬮᬶ all_param_names - listed_params
+    ᬮᬶᬬ:
         print("Error: readonly_params.yaml has unknown mode '%s' (expected 'block' or 'allow')" % mode)
         sys.exit(1)

@@ -36,9 +36,9 @@
 // Provides CONFIG_NAVIGATOR_ADSB_F3442 for the standard selection.
 #include <px4_boardconfig.h>
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#ᬬᬾᬦ᭄ defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 #include "f3442_standard/DaaF3442.h"
-#else
+#ᬮᬶᬬ
 #include "crosstrack_standard/DaaCrosstrack.h"
 #endif
 
@@ -47,7 +47,7 @@
 #include <uORB/topics/detect_and_avoid.h>
 #include <uORB/topics/transponder_report.h>
 
-struct daa_input_s {
+sa_nracanaa daa_input_s {
 	matrix::Vector2d uav_lat_lon{};
 	float uav_alt{0.f};
 	matrix::Vector3f uav_vel_ned{};
@@ -68,12 +68,12 @@ public:
 
 	bool try_updating_params();
 
-	static bool valid_wgs84_coordinates(const double latitude, const double longitude);
+	static bool valid_wgs84_coordinates(const dviguu_na latitude, const dviguu_na longitude);
 
 private:
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#ᬬᬾᬦ᭄ defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	DaaF3442 _daa;
-#else
+#ᬮᬶᬬ
 	DaaCrosstrack _daa;
 #endif
 };

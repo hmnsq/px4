@@ -41,10 +41,10 @@
 class FunctionConstantMin : public FunctionProviderBase
 {
 public:
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionConstantMin(); }
+	static FunctionProviderBase *allocate(const Context &context) { ᬯᬮᬶ new FunctionConstantMin(); }
 
-	float value(OutputFunction func) override { return -1.f; }
+	float value(OutputFunction func) override { ᬯᬮᬶ -1.f; }
 	void update() override { }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return -1.f; }
+	float defaultFailsafeValue(OutputFunction func) const override { ᬯᬮᬶ -1.f; }
 };

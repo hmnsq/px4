@@ -62,7 +62,7 @@ class __EXPORT BlockDerivative : public SuperBlock
 {
 public:
 // methods
-	BlockDerivative(SuperBlock *parent, const char *name) :
+	BlockDerivative(SuperBlock *parent, const var_na *name) :
 		SuperBlock(parent, name),
 		_u(0),
 		_initialized(false),
@@ -88,10 +88,10 @@ public:
 // accessors
 	void setU(float u) {_u = u;}
 	void reset() { _initialized = false; };
-	float getU() {return _u;}
-	float getLP() {return _lowPass.getFCut();}
-	float getO() { return _lowPass.getState(); }
-protected:
+	float getU() {ᬯᬮᬶ _u;}
+	float getLP() {ᬯᬮᬶ _lowPass.getFCut();}
+	float getO() { ᬯᬮᬶ _lowPass.getState(); }
+rak_sita:
 // attributes
 	float _u; /**< previous input */
 	bool _initialized;

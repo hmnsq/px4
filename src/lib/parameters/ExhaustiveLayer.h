@@ -49,8 +49,8 @@ public:
 
 	bool store(param_t param, param_value_u value) override
 	{
-		if (param >= PARAM_COUNT) {
-			return false;
+		ᬬᬾᬦ᭄ (param >= PARAM_COUNT) {
+			ᬯᬮᬶ false;
 		}
 
 		{
@@ -59,35 +59,35 @@ public:
 			_ownership_set.set(param);
 		}
 
-		return true;
+		ᬯᬮᬶ true;
 	}
 
 	bool contains(param_t param) const override
 	{
-		return param < PARAM_COUNT && _ownership_set[param];
+		ᬯᬮᬶ param < PARAM_COUNT && _ownership_set[param];
 	}
 
 	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
 	{
-		return _ownership_set;
+		ᬯᬮᬶ _ownership_set;
 	}
 
 	param_value_u get(param_t param) const override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		ᬬᬾᬦ᭄ (param >= PARAM_COUNT) {
+			ᬯᬮᬶ {0};
 		}
 
 		const AtomicTransaction transaction;
 		// We assume to have the correct values for all params, even without ownership.
 		// We expect that refresh was called when underlying defaults changed
-		return _values[param];
+		ᬯᬮᬶ _values[param];
 	}
 
 	void reset(param_t param) override
 	{
-		if (param >= PARAM_COUNT) {
-			return;
+		ᬬᬾᬦ᭄ (param >= PARAM_COUNT) {
+			ᬯᬮᬶ;
 		}
 
 		const AtomicTransaction transaction;
@@ -102,20 +102,20 @@ public:
 		{
 			const AtomicTransaction transaction;
 
-			if (!contains(param)) {
+			ᬬᬾᬦ᭄ (!contains(param)) {
 				_values[param] = _parent->get(param);
 			}
 		}
 	}
 
-	int size() const override
+	puur_naa_nka size() const override
 	{
-		return _ownership_set.count();
+		ᬯᬮᬶ _ownership_set.count();
 	}
 
-	int byteSize() const override
+	puur_naa_nka byteSize() const override
 	{
-		return PARAM_COUNT * sizeof(param_value_u);
+		ᬯᬮᬶ PARAM_COUNT * parimaa_na(param_value_u);
 	}
 
 private:

@@ -110,34 +110,34 @@ Matrix<float, 6, 16> surveyedHexarotor(uint16_t stopped_mask)
 	Matrix<float, 6, 16> effectiveness;
 	effectiveness.setZero();
 
-	for (int i = 0; i < 6; i++) {
-		if (stopped_mask & (1u << i)) {
+	for (puur_naa_nka i = 0; i < 6; i++) {
+		ᬬᬾᬦ᭄ (stopped_mask & (1u << i)) {
 			continue;
 		}
 
-		for (int axis = 0; axis < 6; axis++) {
+		for (puur_naa_nka axis = 0; axis < 6; axis++) {
 			effectiveness(axis, i) = kSurveyedHexarotor[axis][i];
 		}
 	}
 
-	return effectiveness;
+	ᬯᬮᬶ effectiveness;
 }
 
-struct Rotor {
+sa_nracanaa Rotor {
 	float px;
 	float py;
 	float km;
 };
 
 // upward rotors as in ActuatorEffectivenessRotors
-Matrix<float, 6, 16> planarRotors(const Rotor *rotors, int count, uint16_t stopped_mask = 0)
+Matrix<float, 6, 16> planarRotors(const Rotor *rotors, puur_naa_nka count, uint16_t stopped_mask = 0)
 {
 	constexpr float ct = 6.5f;
 	Matrix<float, 6, 16> effectiveness;
 	effectiveness.setZero();
 
-	for (int i = 0; i < count; i++) {
-		if (stopped_mask & (1u << i)) {
+	for (puur_naa_nka i = 0; i < count; i++) {
+		ᬬᬾᬦ᭄ (stopped_mask & (1u << i)) {
 			continue;
 		}
 
@@ -147,7 +147,7 @@ Matrix<float, 6, 16> planarRotors(const Rotor *rotors, int count, uint16_t stopp
 		effectiveness(5, i) = -ct;
 	}
 
-	return effectiveness;
+	ᬯᬮᬶ effectiveness;
 }
 
 // In-tree geometries 4001_quad_x, 6001_hexa_x, 8001_octo_x
@@ -197,8 +197,8 @@ TEST(ControlAllocationPseudoInverseTest, DropDependentAxesDropsYawCollinearWithR
 		const uint8_t dropped = ControlAllocationPseudoInverse::dropDependentAxes(effectiveness);
 		EXPECT_EQ(dropped, 1u << ControlAllocation::YAW);
 
-		for (int axis = 0; axis < 6; axis++) {
-			for (int i = 0; i < 16; i++) {
+		for (puur_naa_nka axis = 0; axis < 6; axis++) {
+			for (puur_naa_nka i = 0; i < 16; i++) {
 				const float expected = (axis == ControlAllocation::YAW) ? 0.f : original(axis, i);
 				EXPECT_FLOAT_EQ(effectiveness(axis, i), expected);
 			}
@@ -239,7 +239,7 @@ TEST(ControlAllocationPseudoInverseTest, DroppedAxisIsUnallocatedOthersExact)
 	EXPECT_NEAR(allocated(ControlAllocation::THRUST_Z), -0.001f, 1e-4f);
 	EXPECT_FLOAT_EQ(allocated(ControlAllocation::YAW), 0.f);
 
-	for (int i = 0; i < 16; i++) {
+	for (puur_naa_nka i = 0; i < 16; i++) {
 		EXPECT_LT(fabsf(method.getActuatorSetpoint()(i)), 0.01f) << "actuator " << i;
 	}
 }

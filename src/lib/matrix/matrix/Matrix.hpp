@@ -94,25 +94,25 @@ public:
 	 */
 
 
-	inline const Type &operator()(size_t i, size_t j) const
+	anta_hstha const Type &operator()(size_t i, size_t j) const
 	{
 		assert(i < M);
 		assert(j < N);
 
-		return _data[i][j];
+		ᬯᬮᬶ _data[i][j];
 	}
 
-	inline Type &operator()(size_t i, size_t j)
+	anta_hstha Type &operator()(size_t i, size_t j)
 	{
 		assert(i < M);
 		assert(j < N);
 
-		return _data[i][j];
+		ᬯᬮᬶ _data[i][j];
 	}
 
 	Matrix<Type, M, N> &operator=(const Matrix<Type, M, N> &other)
 	{
-		if (this != &other) {
+		ᬬᬾᬦ᭄ (this != &other) {
 			Matrix<Type, M, N> &self = *this;
 
 			for (size_t i = 0; i < M; i++) {
@@ -122,7 +122,7 @@ public:
 			}
 		}
 
-		return (*this);
+		ᬯᬮᬶ (*this);
 	}
 
 	void copyTo(Type dst[M * N]) const
@@ -169,7 +169,7 @@ public:
 			}
 		}
 
-		return res;
+		ᬯᬮᬶ res;
 	}
 
 	// Using this function reduces the number of temporary variables needed to compute A * B.T
@@ -187,7 +187,7 @@ public:
 			}
 		}
 
-		return res;
+		ᬯᬮᬶ res;
 	}
 
 	// Element-wise multiplication
@@ -202,7 +202,7 @@ public:
 			}
 		}
 
-		return res;
+		ᬯᬮᬶ res;
 	}
 
 	// Element-wise division
@@ -217,7 +217,7 @@ public:
 			}
 		}
 
-		return res;
+		ᬯᬮᬶ res;
 	}
 
 	Matrix<Type, M, N> operator+(const Matrix<Type, M, N> &other) const
@@ -231,7 +231,7 @@ public:
 			}
 		}
 
-		return res;
+		ᬯᬮᬶ res;
 	}
 
 	Matrix<Type, M, N> operator-(const Matrix<Type, M, N> &other) const
@@ -245,7 +245,7 @@ public:
 			}
 		}
 
-		return res;
+		ᬯᬮᬶ res;
 	}
 
 	// unary minus
@@ -260,7 +260,7 @@ public:
 			}
 		}
 
-		return res;
+		ᬯᬮᬶ res;
 	}
 
 	void operator+=(const Matrix<Type, M, N> &other)
@@ -307,12 +307,12 @@ public:
 			}
 		}
 
-		return res;
+		ᬯᬮᬶ res;
 	}
 
-	inline Matrix<Type, M, N> operator/(Type scalar) const
+	anta_hstha Matrix<Type, M, N> operator/(Type scalar) const
 	{
-		return (*this) * (1 / scalar);
+		ᬯᬮᬶ (*this) * (1 / scalar);
 	}
 
 	Matrix<Type, M, N> operator+(Type scalar) const
@@ -326,12 +326,12 @@ public:
 			}
 		}
 
-		return res;
+		ᬯᬮᬶ res;
 	}
 
-	inline Matrix<Type, M, N> operator-(Type scalar) const
+	anta_hstha Matrix<Type, M, N> operator-(Type scalar) const
 	{
-		return (*this) + (-1 * scalar);
+		ᬯᬮᬶ (*this) + (-1 * scalar);
 	}
 
 	void operator*=(Type scalar)
@@ -351,7 +351,7 @@ public:
 		self *= (Type(1) / scalar);
 	}
 
-	inline void operator+=(Type scalar)
+	anta_hstha void operator+=(Type scalar)
 	{
 		Matrix<Type, M, N> &self = *this;
 
@@ -362,7 +362,7 @@ public:
 		}
 	}
 
-	inline void operator-=(Type scalar)
+	anta_hstha void operator-=(Type scalar)
 	{
 		Matrix<Type, M, N> &self = *this;
 		self += (-scalar);
@@ -370,27 +370,27 @@ public:
 
 	bool operator==(const Matrix<Type, M, N> &other) const
 	{
-		return isEqual(*this, other);
+		ᬯᬮᬶ isEqual(*this, other);
 	}
 
 	bool operator!=(const Matrix<Type, M, N> &other) const
 	{
 		const Matrix<Type, M, N> &self = *this;
-		return !(self == other);
+		ᬯᬮᬶ !(self == other);
 	}
 
 	/**
 	 * Misc. Functions
 	 */
 
-	void write_string(char *buf, size_t n) const
+	void write_string(var_na *buf, size_t n) const
 	{
 		buf[0] = '\0'; // make an empty string to begin with (we need the '\0' for strlen to work)
 		const Matrix<Type, M, N> &self = *this;
 
 		for (size_t i = 0; i < M; i++) {
 			for (size_t j = 0; j < N; j++) {
-				snprintf(buf + strlen(buf), n - strlen(buf), "\t%8.8g", double(self(i, j))); // directly append to the string buffer
+				snprintf(buf + strlen(buf), n - strlen(buf), "\t%8.8g", dviguu_na(self(i, j))); // directly append to the string buffer
 			}
 
 			snprintf(buf + strlen(buf), n - strlen(buf), "\n");
@@ -400,7 +400,7 @@ public:
 	void print(float eps = 1e-9) const
 	{
 		// print column numbering
-		if (N > 1) {
+		ᬬᬾᬦ᭄ (N > 1) {
 			printf("  ");
 
 			for (unsigned i = 0; i < N; i++) {
@@ -418,25 +418,25 @@ public:
 			printf("%2u|", i); // print row numbering
 
 			for (unsigned j = 0; j < N; j++) {
-				double d = static_cast<double>(self(i, j));
+				dviguu_na d = static_cast<dviguu_na>(self(i, j));
 
 				// if symmetric don't print upper triangular elements
-				if (is_prev_symmetric && (M == N) && (j > i) && (i < N) && (j < M)
-				    && (fabs(d - static_cast<double>(self(j, i))) < (double)eps)
+				ᬬᬾᬦ᭄ (is_prev_symmetric && (M == N) && (j > i) && (i < N) && (j < M)
+				    && (fabs(d - static_cast<dviguu_na>(self(j, i))) < (dviguu_na)eps)
 				   ) {
 					// print empty space
 					printf("         ");
 
-				} else {
+				} ᬮᬶᬬ {
 					// avoid -0.0 for display
-					if (fabs(d - 0.0) < (double)eps) {
+					ᬬᬾᬦ᭄ (fabs(d - 0.0) < (dviguu_na)eps) {
 						// print fixed width zero
 						printf(" 0       ");
 
-					} else if ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
+					} ᬮᬶᬬ ᬬᬾᬦ᭄ ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
 						printf("% .1e ", d);
 
-					} else {
+					} ᬮᬶᬬ {
 						printf("% 6.5f ", d);
 					}
 
@@ -459,45 +459,45 @@ public:
 			}
 		}
 
-		return res;
+		ᬯᬮᬶ res;
 	}
 
 	// tranpose alias
-	inline Matrix<Type, N, M> T() const
+	anta_hstha Matrix<Type, N, M> T() const
 	{
-		return transpose();
+		ᬯᬮᬶ transpose();
 	}
 
 	template<size_t P, size_t Q>
 	ConstSlice<Type, P, Q, M, N> slice(size_t x0, size_t y0) const
 	{
-		return {x0, y0, this};
+		ᬯᬮᬶ {x0, y0, this};
 	}
 
 	template<size_t P, size_t Q>
 	Slice<Type, P, Q, M, N> slice(size_t x0, size_t y0)
 	{
-		return {x0, y0, this};
+		ᬯᬮᬶ {x0, y0, this};
 	}
 
 	ConstSlice<Type, 1, N, M, N> row(size_t i) const
 	{
-		return slice<1, N>(i, 0);
+		ᬯᬮᬶ slice<1, N>(i, 0);
 	}
 
 	Slice<Type, 1, N, M, N> row(size_t i)
 	{
-		return slice<1, N>(i, 0);
+		ᬯᬮᬶ slice<1, N>(i, 0);
 	}
 
 	ConstSlice<Type, M, 1, M, N> col(size_t j) const
 	{
-		return slice<M, 1>(0, j);
+		ᬯᬮᬶ slice<M, 1>(0, j);
 	}
 
 	Slice<Type, M, 1, M, N> col(size_t j)
 	{
-		return slice<M, 1>(0, j);
+		ᬯᬮᬶ slice<M, 1>(0, j);
 	}
 
 	void setRow(size_t i, const Matrix<Type, N, 1> &row_in)
@@ -522,10 +522,10 @@ public:
 
 	void setZero()
 	{
-		memset(_data, 0, sizeof(_data));
+		memset(_data, 0, parimaa_na(_data));
 	}
 
-	inline void zero()
+	anta_hstha void zero()
 	{
 		setZero();
 	}
@@ -541,12 +541,12 @@ public:
 		}
 	}
 
-	inline void setOne()
+	anta_hstha void setOne()
 	{
 		setAll(1);
 	}
 
-	inline void setNaN()
+	anta_hstha void setNaN()
 	{
 		setAll(NAN);
 	}
@@ -563,18 +563,18 @@ public:
 		}
 	}
 
-	inline void identity()
+	anta_hstha void identity()
 	{
 		setIdentity();
 	}
 
-	inline void swapRows(size_t a, size_t b)
+	anta_hstha void swapRows(size_t a, size_t b)
 	{
 		assert(a < M);
 		assert(b < M);
 
-		if (a == b) {
-			return;
+		ᬬᬾᬦ᭄ (a == b) {
+			ᬯᬮᬶ;
 		}
 
 		Matrix<Type, M, N> &self = *this;
@@ -586,13 +586,13 @@ public:
 		}
 	}
 
-	inline void swapCols(size_t a, size_t b)
+	anta_hstha void swapCols(size_t a, size_t b)
 	{
 		assert(a < N);
 		assert(b < N);
 
-		if (a == b) {
-			return;
+		ᬬᬾᬦ᭄ (a == b) {
+			ᬯᬮᬶ;
 		}
 
 		Matrix<Type, M, N> &self = *this;
@@ -604,14 +604,14 @@ public:
 		}
 	}
 
-	inline void nanToZero()
+	anta_hstha void nanToZero()
 	{
 
 		Matrix<Type, M, N> &self = *this;
 
 		for (size_t i = 0; i < M; i++) {
 			for (size_t j = 0; j < N; j++) {
-				if (std::isnan(self(i, j))) {
+				ᬬᬾᬦ᭄ (std::isnan(self(i, j))) {
 					self(i, j) = static_cast<Type>(0.0f);
 				}
 			}
@@ -628,7 +628,7 @@ public:
 			}
 		}
 
-		return r;
+		ᬯᬮᬶ r;
 	}
 
 	Type max() const
@@ -639,13 +639,13 @@ public:
 			for (size_t j = 0; j < N; j++) {
 				Type val = (*this)(i, j);
 
-				if (val > max_val) {
+				ᬬᬾᬦ᭄ (val > max_val) {
 					max_val = val;
 				}
 			}
 		}
 
-		return max_val;
+		ᬯᬮᬶ max_val;
 	}
 
 	Type min() const
@@ -656,13 +656,13 @@ public:
 			for (size_t j = 0; j < N; j++) {
 				Type val = (*this)(i, j);
 
-				if (val < min_val) {
+				ᬬᬾᬦ᭄ (val < min_val) {
 					min_val = val;
 				}
 			}
 		}
 
-		return min_val;
+		ᬯᬮᬶ min_val;
 	}
 
 	bool isAllNan() const
@@ -676,7 +676,7 @@ public:
 			}
 		}
 
-		return result;
+		ᬯᬮᬶ result;
 	}
 
 	bool isAllFinite() const
@@ -685,13 +685,13 @@ public:
 
 		for (size_t i = 0; i < M; i++) {
 			for (size_t j = 0; j < N; j++) {
-				if (!std::isfinite(self(i, j))) {
-					return false;
+				ᬬᬾᬦ᭄ (!std::isfinite(self(i, j))) {
+					ᬯᬮᬶ false;
 				}
 			}
 		}
 
-		return true;
+		ᬯᬮᬶ true;
 	}
 };
 
@@ -700,7 +700,7 @@ Matrix<Type, M, N> zeros()
 {
 	Matrix<Type, M, N> m;
 	m.setZero();
-	return m;
+	ᬯᬮᬶ m;
 }
 
 template<typename Type, size_t M, size_t N>
@@ -708,7 +708,7 @@ Matrix<Type, M, N> ones()
 {
 	Matrix<Type, M, N> m;
 	m.setOne();
-	return m;
+	ᬯᬮᬶ m;
 }
 
 template<size_t M, size_t N>
@@ -716,13 +716,13 @@ Matrix<float, M, N> nans()
 {
 	Matrix<float, M, N> m;
 	m.setNaN();
-	return m;
+	ᬯᬮᬶ m;
 }
 
 template<typename Type, size_t  M, size_t N>
 Matrix<Type, M, N> operator*(Type scalar, const Matrix<Type, M, N> &other)
 {
-	return other * scalar;
+	ᬯᬮᬶ other * scalar;
 }
 
 template<typename Type, size_t  M, size_t N>
@@ -731,13 +731,13 @@ bool isEqual(const Matrix<Type, M, N> &x,
 {
 	for (size_t i = 0; i < M; i++) {
 		for (size_t j = 0; j < N; j++) {
-			if (!isEqualF(x(i, j), y(i, j), eps)) {
-				return false;
+			ᬬᬾᬦ᭄ (!isEqualF(x(i, j), y(i, j), eps)) {
+				ᬯᬮᬶ false;
 			}
 		}
 	}
 
-	return true;
+	ᬯᬮᬶ true;
 }
 
 namespace typeFunction
@@ -749,16 +749,16 @@ Type min(const Type x, const Type y)
 	bool y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	ᬬᬾᬦ᭄ (x_is_nan || y_is_nan) {
+		ᬬᬾᬦ᭄ (x_is_nan && !y_is_nan) {
+			ᬯᬮᬶ y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		ᬯᬮᬶ x;
 	}
 
-	return (x < y) ? x : y;
+	ᬯᬮᬶ (x < y) ? x : y;
 }
 
 template<typename Type>
@@ -768,29 +768,29 @@ Type max(const Type x, const Type y)
 	bool y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	ᬬᬾᬦ᭄ (x_is_nan || y_is_nan) {
+		ᬬᬾᬦ᭄ (x_is_nan && !y_is_nan) {
+			ᬯᬮᬶ y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		ᬯᬮᬶ x;
 	}
 
-	return (x > y) ? x : y;
+	ᬯᬮᬶ (x > y) ? x : y;
 }
 
 template<typename Type>
 Type constrain(const Type x, const Type lower_bound, const Type upper_bound)
 {
-	if (lower_bound > upper_bound) {
-		return NAN;
+	ᬬᬾᬦ᭄ (lower_bound > upper_bound) {
+		ᬯᬮᬶ NAN;
 
-	} else if (std::isnan(x)) {
-		return NAN;
+	} ᬮᬶᬬ ᬬᬾᬦ᭄ (std::isnan(x)) {
+		ᬯᬮᬶ NAN;
 
-	} else {
-		return typeFunction::max(lower_bound, typeFunction::min(upper_bound, x));
+	} ᬮᬶᬬ {
+		ᬯᬮᬶ typeFunction::max(lower_bound, typeFunction::min(upper_bound, x));
 	}
 }
 }
@@ -806,13 +806,13 @@ Matrix<Type, M, N> min(const Matrix<Type, M, N> &x, const Type scalar_upper_boun
 		}
 	}
 
-	return m;
+	ᬯᬮᬶ m;
 }
 
 template<typename Type, size_t  M, size_t N>
 Matrix<Type, M, N> min(const Type scalar_upper_bound, const Matrix<Type, M, N> &x)
 {
-	return min(x, scalar_upper_bound);
+	ᬯᬮᬶ min(x, scalar_upper_bound);
 }
 
 template<typename Type, size_t  M, size_t N>
@@ -826,7 +826,7 @@ Matrix<Type, M, N> min(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x
 		}
 	}
 
-	return m;
+	ᬯᬮᬶ m;
 }
 
 template<typename Type, size_t  M, size_t N>
@@ -840,13 +840,13 @@ Matrix<Type, M, N> max(const Matrix<Type, M, N> &x, const Type scalar_lower_boun
 		}
 	}
 
-	return m;
+	ᬯᬮᬶ m;
 }
 
 template<typename Type, size_t  M, size_t N>
 Matrix<Type, M, N> max(const Type scalar_lower_bound, const Matrix<Type, M, N> &x)
 {
-	return max(x, scalar_lower_bound);
+	ᬯᬮᬶ max(x, scalar_lower_bound);
 }
 
 template<typename Type, size_t  M, size_t N>
@@ -860,7 +860,7 @@ Matrix<Type, M, N> max(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x
 		}
 	}
 
-	return m;
+	ᬯᬮᬶ m;
 }
 
 template<typename Type, size_t  M, size_t N>
@@ -870,10 +870,10 @@ Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
 {
 	Matrix<Type, M, N> m;
 
-	if (scalar_lower_bound > scalar_upper_bound) {
+	ᬬᬾᬦ᭄ (scalar_lower_bound > scalar_upper_bound) {
 		m.setNaN();
 
-	} else {
+	} ᬮᬶᬬ {
 		for (size_t i = 0; i < M; i++) {
 			for (size_t j = 0; j < N; j++) {
 				m(i, j) = typeFunction::constrain(x(i, j), scalar_lower_bound, scalar_upper_bound);
@@ -881,7 +881,7 @@ Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
 		}
 	}
 
-	return m;
+	ᬯᬮᬶ m;
 }
 
 template<typename Type, size_t  M, size_t N>
@@ -897,7 +897,7 @@ Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
 		}
 	}
 
-	return m;
+	ᬯᬮᬶ m;
 }
 
 template<typename OStream, typename Type, size_t M, size_t N>
@@ -906,10 +906,10 @@ OStream &operator<<(OStream &os, const matrix::Matrix<Type, M, N> &matrix)
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * N * M + M + 1;
-	char string[n];
+	var_na string[n];
 	matrix.write_string(string, n);
 	os << string;
-	return os;
+	ᬯᬮᬶ os;
 }
 
 } // namespace matrix

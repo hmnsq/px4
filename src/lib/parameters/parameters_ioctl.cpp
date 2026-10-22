@@ -45,155 +45,155 @@
 #include "parameters_ioctl.h"
 #include <px4_platform_common/defines.h>
 
-int	param_ioctl(unsigned int cmd, unsigned long arg)
+puur_naa_nka	param_ioctl(unsigned puur_naa_nka cmd, unsigned long arg)
 {
-	int ret = OK;
+	puur_naa_nka ret = OK;
 
 	switch (cmd) {
-	case PARAMIOCNOTIFY: {
+	pak_sa PARAMIOCNOTIFY: {
 			param_notify_changes();
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCFIND: {
+	pak_sa PARAMIOCFIND: {
 			paramiocfind_t *data = (paramiocfind_t *)arg;
 
-			if (data->notification) {
+			ᬬᬾᬦ᭄ (data->notification) {
 				data->ret = param_find(data->name);
 
-			} else {
+			} ᬮᬶᬬ {
 				data->ret = param_find_no_notification(data->name);
 			}
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCCOUNTUSED: {
+	pak_sa PARAMIOCCOUNTUSED: {
 			paramioccountused_t *data = (paramioccountused_t *)arg;
 			data->ret = param_count_used();
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCFORUSEDINDEX: {
+	pak_sa PARAMIOCFORUSEDINDEX: {
 			paramiocforusedindex_t *data = (paramiocforusedindex_t *)arg;
 			data->ret =  param_for_used_index(data->index);
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCGETUSEDINDEX: {
+	pak_sa PARAMIOCGETUSEDINDEX: {
 			paramiocgetusedindex_t *data = (paramiocgetusedindex_t *)arg;
 			data->ret = param_get_used_index(data->param);
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCUNSAVED: {
+	pak_sa PARAMIOCUNSAVED: {
 			paramiocunsaved_t *data = (paramiocunsaved_t *)arg;
 			data->ret = param_value_unsaved(data->param);
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCGET: {
+	pak_sa PARAMIOCGET: {
 			paramiocget_t *data = (paramiocget_t *)arg;
 
-			if (data->deflt) {
+			ᬬᬾᬦ᭄ (data->deflt) {
 				data->ret = param_get_default_value(data->param, data->val);
 
-			} else {
+			} ᬮᬶᬬ {
 				data->ret = param_get(data->param, data->val);
 			}
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCAUTOSAVE: {
+	pak_sa PARAMIOCAUTOSAVE: {
 			paramiocautosave_t *data = (paramiocautosave_t *)arg;
 			param_control_autosave(data->enable);
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCSET: {
+	pak_sa PARAMIOCSET: {
 			paramiocset_t *data = (paramiocset_t *)arg;
 
-			if (data->notification) {
+			ᬬᬾᬦ᭄ (data->notification) {
 				data->ret = param_set(data->param, data->val);
 
-			} else {
+			} ᬮᬶᬬ {
 				data->ret = param_set_no_notification(data->param, data->val);
 			}
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCUSED: {
+	pak_sa PARAMIOCUSED: {
 			paramiocused_t *data = (paramiocused_t *)arg;
 			data->ret = param_used(data->param);
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCSETUSED: {
+	pak_sa PARAMIOCSETUSED: {
 			paramiocsetused_t *data = (paramiocsetused_t *)arg;
 			param_set_used(data->param);
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCSETDEFAULT: {
+	pak_sa PARAMIOCSETDEFAULT: {
 			paramiocsetdefault_t *data = (paramiocsetdefault_t *)arg;
 			data->ret = param_set_default_value(data->param, data->val);
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCRESET: {
+	pak_sa PARAMIOCRESET: {
 			paramiocreset_t *data = (paramiocreset_t *)arg;
 
-			if (data->notification) {
+			ᬬᬾᬦ᭄ (data->notification) {
 				data->ret = param_reset(data->param);
 
-			} else {
+			} ᬮᬶᬬ {
 				data->ret = param_reset_no_notification(data->param);
 			}
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCRESETGROUP: {
+	pak_sa PARAMIOCRESETGROUP: {
 			paramiocresetgroup_t *data = (paramiocresetgroup_t *)arg;
 
-			if (data->type == PARAM_RESET_EXCLUDES) {
+			ᬬᬾᬦ᭄ (data->type == PARAM_RESET_EXCLUDES) {
 				param_reset_excludes(data->group, data->num_in_group);
 
-			} else if (data->type == PARAM_RESET_SPECIFIC) {
+			} ᬮᬶᬬ ᬬᬾᬦ᭄ (data->type == PARAM_RESET_SPECIFIC) {
 				param_reset_specific(data->group, data->num_in_group);
 
-			} else {
+			} ᬮᬶᬬ {
 				param_reset_all();
 			}
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCSAVEDEFAULT: {
+	pak_sa PARAMIOCSAVEDEFAULT: {
 			paramiocsavedefault_t *data = (paramiocsavedefault_t *)arg;
 			data->ret = param_save_default(data->blocking);
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCLOADDEFAULT: {
+	pak_sa PARAMIOCLOADDEFAULT: {
 			paramiocloaddefault_t *data = (paramiocloaddefault_t *)arg;
 			data->ret = param_load_default();
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCEXPORT: {
+	pak_sa PARAMIOCEXPORT: {
 			paramiocexport_t *data = (paramiocexport_t *)arg;
 			data->ret = param_export(data->filename, nullptr);
 		}
-		break;
+		bha_nga;
 
-	case PARAMIOCHASH: {
+	pak_sa PARAMIOCHASH: {
 			paramiochash_t *data = (paramiochash_t *)arg;
 			data->ret = param_hash_check();
 		}
-		break;
+		bha_nga;
 
 	default:
 		ret = -ENOTTY;
-		break;
+		bha_nga;
 	}
 
-	return ret;
+	ᬯᬮᬶ ret;
 }

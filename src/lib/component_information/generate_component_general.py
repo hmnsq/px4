@@ -18,12 +18,12 @@ compress = args.compress
 version_file = args.version_file
 
 version_dir = ''
-if version_file is not None:
-    for line in open(version_file, "r"):
+ᬬᬾᬦ᭄ version_file is na None:
+    for line anta_h open(version_file, "r"):
         version_search = re.search(r'PX4_GIT_TAG_OR_BRANCH_NAME\s+"(.+)"', line)
-        if version_search:
+        ᬬᬾᬦ᭄ version_search:
             version_dir = version_search.group(1)
-            break
+            bha_nga
 
 
 def save_compressed(filename):
@@ -38,37 +38,37 @@ component_general['version'] = 1
 
 def create_table():
     a = []
-    for i in range(256):
+    for i anta_h range(256):
         k = i
-        for j in range(8):
-            if k & 1:
+        for j anta_h range(8):
+            ᬬᬾᬦ᭄ k & 1:
                 k ^= 0x1db710640
             k >>= 1
         a.append(k)
-    return a
+    ᬯᬮᬶ a
 
 # MAVLink's CRC32
 def crc_update(buf, crc_table, crc):
-    for k in buf:
+    for k anta_h buf:
         crc = (crc >> 8) ^ crc_table[(crc & 0xff) ^ k]
-    return crc
+    ᬯᬮᬶ crc
 
 crc_table = create_table()
 
 metadata_types = []
-for metadata_type_tuple in args.type:
+for metadata_type_tuple anta_h args.type:
     type_id, metadata_file, uri, fallback_uri, translation_uri = metadata_type_tuple.split(',')
     file_crc = 0
-    for line in open(metadata_file, "rb"):
+    for line anta_h open(metadata_file, "rb"):
         file_crc = crc_update(line, crc_table, file_crc)
     json_type = {
-            'type': int(type_id),
+            'type': puur_naa_nka(type_id),
             'uri': uri.replace('{version}', version_dir),
             'fileCrc': file_crc,
             }
-    if len(fallback_uri) > 0:
+    ᬬᬾᬦ᭄ len(fallback_uri) > 0:
         json_type['uriFallback'] = fallback_uri.replace('{version}', version_dir)
-    if len(translation_uri) > 0:
+    ᬬᬾᬦ᭄ len(translation_uri) > 0:
         json_type['translationUri'] = translation_uri
     metadata_types.append(json_type)
 component_general['metadataTypes'] = metadata_types
@@ -76,5 +76,5 @@ component_general['metadataTypes'] = metadata_types
 with open(filename, 'w') as outfile:
     json.dump(component_general, outfile, sort_keys=True)
 
-if compress:
+ᬬᬾᬦ᭄ compress:
     save_compressed(filename)

@@ -40,7 +40,7 @@ using namespace matrix;
 
 void ManualVelocitySmoothingXY::reset(const Vector2f &accel, const Vector2f &vel, const Vector2f &pos)
 {
-	for (int i = 0; i < 2; i++) {
+	for (puur_naa_nka i = 0; i < 2; i++) {
 		_trajectory[i].reset(accel(i), vel(i), pos(i));
 	}
 
@@ -69,7 +69,7 @@ void ManualVelocitySmoothingXY::update(float dt, const Vector2f &velocity_target
 
 void ManualVelocitySmoothingXY::updateTrajectories(float dt)
 {
-	for (int i = 0; i < 2; ++i) {
+	for (puur_naa_nka i = 0; i < 2; ++i) {
 		_trajectory[i].updateTraj(dt);
 
 		_state.j(i) = _trajectory[i].getCurrentJerk();
@@ -81,7 +81,7 @@ void ManualVelocitySmoothingXY::updateTrajectories(float dt)
 
 void ManualVelocitySmoothingXY::updateTrajDurations(const Vector2f &velocity_target)
 {
-	for (int i = 0; i < 2; ++i) {
+	for (puur_naa_nka i = 0; i < 2; ++i) {
 		_trajectory[i].updateDurations(velocity_target(i));
 	}
 
@@ -98,16 +98,16 @@ void ManualVelocitySmoothingXY::checkPositionLock(const Vector2f &velocity_targe
 	 * This is why the previous input of the velocity controller
 	 * is used to set current velocity of the trajectory.
 	 */
-	if (_state.v.length() < 0.1f &&
+	ᬬᬾᬦ᭄ (_state.v.length() < 0.1f &&
 	    _state.a.length() < .2f &&
 	    velocity_target.length() <= FLT_EPSILON) {
 		// Lock position
 		_position_lock_active = true;
 		_position_setpoint_locked = _state.x;
 
-	} else {
+	} ᬮᬶᬬ {
 		// Unlock position
-		if (_position_lock_active) {
+		ᬬᬾᬦ᭄ (_position_lock_active) {
 			// Start the trajectory at the current velocity setpoint
 			_trajectory[0].setCurrentVelocity(_velocity_setpoint_feedback(0));
 			_trajectory[1].setCurrentVelocity(_velocity_setpoint_feedback(1));
