@@ -31,33 +31,33 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "FunctionProviderBase.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear_wheel.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/landing_gear_wheel.h>
 
 /**
  * Functions: Landing_Gear_Wheel
  */
-class FunctionLandingGearWheel : public FunctionProviderBase
+ਵਰਗ FunctionLandingGearWheel : ਜਨਤਕ Function_Provider_ਅਧਾਰ
 {
-public:
-	FunctionLandingGearWheel() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGearWheel(); }
+ਜਨਤਕ:
+	FunctionLandingGearWheel() = ਮੂਲ;
+	ਸਥਿਰ Function_Provider_ਅਧਾਰ *allocate(ਅਚਲ Context &context) { ਵਾਪਸ ਨਵਾਂ FunctionLandingGearWheel(); }
 
-	void update() override
+	ਖਾਲੀ update() override
 	{
 		landing_gear_wheel_s landing_gear_wheel;
 
-		if (_topic.update(&landing_gear_wheel)) {
-			_data = landing_gear_wheel.normalized_wheel_setpoint;
+		ਜੇ (_topic.update(&landing_gear_wheel)) {
+			ਅੰਕੜੇ_3 = landing_gear_wheel.normalized_wheel_setpoint;
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	ਦਸ਼ਮਲਵ value(OutputFunction func) override { ਵਾਪਸ ਅੰਕੜੇ_3; }
 
-private:
+ਨਿਜੀ:
 	uORB::Subscription _topic{ORB_ID(landing_gear_wheel)};
-	float _data{0.f};
+	ਦਸ਼ਮਲਵ ਅੰਕੜੇ_3{0.f};
 };

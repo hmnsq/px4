@@ -2,71 +2,71 @@
 # Injects params from XML file into a param_group
 #
 
-from __future__ import print_function
-from px4params import srcscanner, srcparser, xmlout, markdownout
-from .srcparser import ParameterGroup, Parameter
+ਤਃ __future__ ਆਯਾਤ print_function
+ਤਃ px4params ਆਯਾਤ srcscanner, srcparser, xmlout, markdownout
+ਤਃ .srcparser ਆਯਾਤ Parameter_ਸਮੂਹ, Parameter
 
-import xml.etree.ElementTree as ET
-import sys
+ਆਯਾਤ xml.etree.Element_ਰੁੱਖ ਇਵ ET
+ਆਯਾਤ sys
 
 
-class XMLInject():
-    def __init__(self, injected_xml_filename):
+ਵਰਗ XMLInject():
+    ਪਰਿਭਾਸ਼ਾ __init__(self, injected_xml_filename):
         self.groups=[]
 
-        valid_parameter_attributes = set(["category", "default", "name", "type", "volatile", "boolean"])
-        valid_field_tags = set(["board","short_desc", "long_desc", "min", "max", "unit", "decimal", "increment", "reboot_required"])
-        valid_other_top_level_tags = set(["group","values"])
+        valid_parameter_ਗੁਣ = ਸੈੱਟ(["category", "default", "name", "type", "volatile", "boolean"])
+        valid_ਖੇਤਰ_ਟੈਗ_ਸੂਚੀ = ਸੈੱਟ(["board","short_desc", "long_desc", "min", "max", "unit", "decimal", "increment", "reboot_required"])
+        valid_other_ਸਿਖਰ_level_ਟੈਗ_ਸੂਚੀ = ਸੈੱਟ(["group","values"])
 
         importtree = ET.parse(injected_xml_filename)
         injectgroups = importtree.getroot().findall("group")
-        not_handled_parameter_tags=set()
-        not_handled_parameter_attributes=set()
-        for igroup in injectgroups:
-            group_name=igroup.get('name')
-            imported_group = ParameterGroup(group_name)
-            no_code_generation=igroup.get('no_code_generation')
-            if no_code_generation:
-                imported_group.no_code_generation=no_code_generation
-            for iparam in igroup:
+        not_handled_parameter_ਟੈਗ_ਸੂਚੀ=ਸੈੱਟ()
+        not_handled_parameter_ਗੁਣ=ਸੈੱਟ()
+        ਲਈ igroup ਵਿੱਚ injectgroups:
+            ਸਮੂਹ_name=igroup.get('name')
+            imported_ਸਮੂਹ = Parameter_ਸਮੂਹ(ਸਮੂਹ_name)
+            no_ਕੋਡ_generation=igroup.get('no_code_generation')
+            ਜੇ no_ਕੋਡ_generation:
+                imported_ਸਮੂਹ.no_ਕੋਡ_generation=no_ਕੋਡ_generation
+            ਲਈ iparam ਵਿੱਚ igroup:
                 param_name=iparam.get('name')
                 param_type=iparam.get('type')
                 new_param= Parameter(param_name, param_type)
                 #get other param info stored as attributes
-                for param_attrib in iparam.attrib:
-                    if param_attrib not in valid_parameter_attributes:
-                        not_handled_parameter_attributes.add(param_attrib)
-                    elif param_attrib == 'category':
-                        new_param.SetCategory(iparam.get('category'))
-                    elif param_attrib == 'default':
-                        new_param.default = iparam.get('default')
-                    elif param_attrib == 'volatile':
-                        new_param.SetVolatile()
-                    elif param_attrib == "boolean":
-                        new_param.SetBoolean()
+                ਲਈ param_attrib ਵਿੱਚ iparam.attrib:
+                    ਜੇ param_attrib ਨਹੀਂ ਵਿੱਚ valid_parameter_ਗੁਣ:
+                        not_handled_parameter_ਗੁਣ.ਜੋੜੋ(param_attrib)
+                    ਜਾਂਜੇ param_attrib == 'category':
+                        new_param.ਸੈੱਟ_Category(iparam.get('category'))
+                    ਜਾਂਜੇ param_attrib == 'default':
+                        new_param.ਮੂਲ = iparam.get('default')
+                    ਜਾਂਜੇ param_attrib == 'volatile':
+                        new_param.ਸੈੱਟ_Volatile()
+                    ਜਾਂਜੇ param_attrib == "boolean":
+                        new_param.ਸੈੱਟ_Boolean()
 
                 #get param info stored as child tags
-                for child in iparam:
-                    if child.tag in valid_field_tags:
-                        new_param.SetField(child.tag, child.text)
-                    elif child.tag == 'values':
-                        for value in child:
-                            new_param.SetEnumValue(value.get('code'), value.text)
-                    elif child.tag == 'bitmask':
-                        for bit in child:
-                            new_param.SetBitmaskBit(bit.get('index'), bit.text)
-                    else:
-                        not_handled_parameter_tags.add(child.tag)                      
+                ਲਈ ਬੱਚਾ ਵਿੱਚ iparam:
+                    ਜੇ ਬੱਚਾ.ਟੈਗ ਵਿੱਚ valid_ਖੇਤਰ_ਟੈਗ_ਸੂਚੀ:
+                        new_param.ਸੈੱਟ_ਖੇਤਰ_2(ਬੱਚਾ.ਟੈਗ, ਬੱਚਾ.ਪਾਠ)
+                    ਜਾਂਜੇ ਬੱਚਾ.ਟੈਗ == 'values':
+                        ਲਈ ਮੁੱਲ ਵਿੱਚ ਬੱਚਾ:
+                            new_param.ਸੈੱਟ_Enum_ਮੁੱਲ(ਮੁੱਲ.get('code'), ਮੁੱਲ.ਪਾਠ)
+                    ਜਾਂਜੇ ਬੱਚਾ.ਟੈਗ == 'bitmask':
+                        ਲਈ ਦੋਆਧਾਰੀ_ਅੰਕ ਵਿੱਚ ਬੱਚਾ:
+                            new_param.ਸੈੱਟ_Bitmask_ਦੋਆਧਾਰੀ_ਅੰਕ(ਦੋਆਧਾਰੀ_ਅੰਕ.get('index'), ਦੋਆਧਾਰੀ_ਅੰਕ.ਪਾਠ)
+                    ਨਹੀਂਤਾਂ:
+                        not_handled_parameter_ਟੈਗ_ਸੂਚੀ.ਜੋੜੋ(ਬੱਚਾ.ਟੈਗ)                      
             
-                imported_group.AddParameter(new_param)
-            self.groups.append(imported_group)
+                imported_ਸਮੂਹ.ਜੋੜੋ_Parameter(new_param)
+            self.groups.append(imported_ਸਮੂਹ)
 
                     
-        if not_handled_parameter_tags or not_handled_parameter_attributes:
-            print("WARNING: Injected file parameter has unhandled child tags: %s" % not_handled_parameter_tags)
-            print("WARNING: Injected file parameter has unhandled attributes: %s" % not_handled_parameter_attributes)
+        ਜੇ not_handled_parameter_ਟੈਗ_ਸੂਚੀ ਜਾਂ not_handled_parameter_ਗੁਣ:
+            ਛਾਪੋ("WARNING: Injected file parameter has unhandled child tags: %s" % not_handled_parameter_ਟੈਗ_ਸੂਚੀ)
+            ਛਾਪੋ("WARNING: Injected file parameter has unhandled attributes: %s" % not_handled_parameter_ਗੁਣ)
 
         
 
-    def injected(self):
-        return self.groups
+    ਪਰਿਭਾਸ਼ਾ injected(self):
+        ਵਾਪਸ self.groups

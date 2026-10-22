@@ -37,165 +37,165 @@
  *
  */
 
-#include "CollisionPrevention.hpp"
-#include "ObstacleMath.hpp"
-#include <px4_platform_common/events.h>
-#include <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "CollisionPrevention.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "ObstacleMath.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/events.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
 
 
-using namespace matrix;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ;
 
-CollisionPrevention::CollisionPrevention(ModuleParams *parent) :
-	ModuleParams(parent)
+CollisionPrevention::CollisionPrevention(ModuleParams *ਮਾਪਾ) :
+	ModuleParams(ਮਾਪਾ)
 {
-	static_assert(BIN_SIZE >= 5, "BIN_SIZE must be at least 5");
-	static_assert(360 % BIN_SIZE == 0, "BIN_SIZE must divide 360 evenly");
+	static_assert(BIN_ਮਾਪ >= 5, "BIN_SIZE must be at least 5");
+	static_assert(360 % BIN_ਮਾਪ == 0, "BIN_SIZE must divide 360 evenly");
 
 	// initialize internal obstacle map
-	_obstacle_map_body_frame.frame = obstacle_distance_s::MAV_FRAME_BODY_FRD;
-	_obstacle_map_body_frame.increment = BIN_SIZE;
-	_obstacle_map_body_frame.min_distance = UINT16_MAX;
+	obstacle_map_body_ਚੌਖਟਾ.ਚੌਖਟਾ = obstacle_ਦੂਰੀ_s::MAV_ਚੌਖਟਾ_BODY_FRD;
+	obstacle_map_body_ਚੌਖਟਾ.increment = BIN_ਮਾਪ;
+	obstacle_map_body_ਚੌਖਟਾ.min_ਦੂਰੀ = UINT16_MAX;
 
-	for (uint32_t i = 0 ; i < BIN_COUNT; i++) {
-		_obstacle_map_body_frame.distances[i] = UINT16_MAX;
+	ਲਈ (uint32_t i = 0 ; i < BIN_ਗਿਣਤੀ; i++) {
+		obstacle_map_body_ਚੌਖਟਾ.distances[i] = UINT16_MAX;
 	}
 }
 
-hrt_abstime CollisionPrevention::getTime()
+hrt_abstime CollisionPrevention::get_ਸਮਾਂ()
 {
-	return hrt_absolute_time();
+	ਵਾਪਸ hrt_absolute_ਸਮਾਂ();
 }
 
-hrt_abstime CollisionPrevention::getElapsedTime(const hrt_abstime *ptr)
+hrt_abstime CollisionPrevention::get_Elapsed_ਸਮਾਂ(ਅਚਲ hrt_abstime *ptr)
 {
-	return hrt_absolute_time() - *ptr;
+	ਵਾਪਸ hrt_absolute_ਸਮਾਂ() - *ptr;
 }
 
-bool CollisionPrevention::is_active()
+ਤਾਰਕਿਕ CollisionPrevention::is_ਸਰਗਰਮ()
 {
-	bool activated = _param_cp_dist.get() > 0;
+	ਤਾਰਕਿਕ activated = _param_cp_dist.get() > 0;
 
-	if (activated && !_was_active) {
-		_time_activated = getTime();
+	ਜੇ (activated && !was_ਸਰਗਰਮ) {
+		ਸਮਾਂ_activated = get_ਸਮਾਂ();
 	}
 
-	_was_active = activated;
-	return activated;
+	was_ਸਰਗਰਮ = activated;
+	ਵਾਪਸ activated;
 }
 
-void CollisionPrevention::modifySetpoint(Vector2f &setpoint_accel, const Vector2f &setpoint_vel)
+ਖਾਲੀ CollisionPrevention::modifySetpoint(Vector2f &setpoint_accel, ਅਚਲ Vector2f &setpoint_vel)
 {
-	if (_vehicle_attitude_sub.updated()) {
+	ਜੇ (_vehicle_attitude_sub.updated()) {
 		vehicle_attitude_s vehicle_attitude;
 
-		if (_vehicle_attitude_sub.copy(&vehicle_attitude)) {
+		ਜੇ (_vehicle_attitude_sub.copy(&vehicle_attitude)) {
 			_vehicle_attitude = Quatf(vehicle_attitude.q);
 			_vehicle_yaw = Eulerf(_vehicle_attitude).psi();
 		}
 	}
 
 	//calculate movement constraints based on range data
-	const Vector2f original_setpoint = setpoint_accel;
+	ਅਚਲ Vector2f original_setpoint = setpoint_accel;
 	_updateObstacleMap();
-	_updateObstacleData();
+	update_Obstacle_ਅੰਕੜੇ();
 	_calculateConstrainedSetpoint(setpoint_accel, setpoint_vel);
 
 	// publish constraints
 	collision_constraints_s	constraints{};
-	original_setpoint.copyTo(constraints.original_setpoint);
-	setpoint_accel.copyTo(constraints.adapted_setpoint);
-	constraints.timestamp = getTime();
+	original_setpoint.copy_ਮੰਜ਼ਿਲ(constraints.original_setpoint);
+	setpoint_accel.copy_ਮੰਜ਼ਿਲ(constraints.adapted_setpoint);
+	constraints.timestamp = get_ਸਮਾਂ();
 	_constraints_pub.publish(constraints);
 }
 
-void CollisionPrevention::_updateObstacleMap()
+ਖਾਲੀ CollisionPrevention::_updateObstacleMap()
 {
 	// add distance sensor data
-	for (auto &dist_sens_sub : _distance_sensor_subs) {
-		distance_sensor_s distance_sensor;
+	ਲਈ (ਸਵੈਚਾਲਿਤ &dist_sens_sub : ਦੂਰੀ_sensor_subs) {
+		ਦੂਰੀ_sensor_s ਦੂਰੀ_sensor;
 
-		if (dist_sens_sub.update(&distance_sensor)) {
+		ਜੇ (dist_sens_sub.update(&ਦੂਰੀ_sensor)) {
 			// consider only instances with valid data and orientations useful for collision prevention
-			if ((getElapsedTime(&distance_sensor.timestamp) < RANGE_STREAM_TIMEOUT_US) &&
-			    (distance_sensor.orientation != distance_sensor_s::ROTATION_DOWNWARD_FACING) &&
-			    (distance_sensor.orientation != distance_sensor_s::ROTATION_UPWARD_FACING)) {
+			ਜੇ ((get_Elapsed_ਸਮਾਂ(&ਦੂਰੀ_sensor.timestamp) < RANGE_ਧਾਰਾ_TIMEOUT_US) &&
+			    (ਦੂਰੀ_sensor.orientation != ਦੂਰੀ_sensor_s::ROTATION_DOWNWARD_FACING) &&
+			    (ਦੂਰੀ_sensor.orientation != ਦੂਰੀ_sensor_s::ROTATION_UPWARD_FACING)) {
 
 				// update message description
-				_obstacle_map_body_frame.timestamp = math::max(_obstacle_map_body_frame.timestamp, distance_sensor.timestamp);
-				_obstacle_map_body_frame.max_distance = math::max(_obstacle_map_body_frame.max_distance,
-									(uint16_t)(distance_sensor.max_distance * 100.0f));
-				_obstacle_map_body_frame.min_distance = math::min(_obstacle_map_body_frame.min_distance,
-									(uint16_t)(distance_sensor.min_distance * 100.0f));
+				obstacle_map_body_ਚੌਖਟਾ.timestamp = math::max(obstacle_map_body_ਚੌਖਟਾ.timestamp, ਦੂਰੀ_sensor.timestamp);
+				obstacle_map_body_ਚੌਖਟਾ.max_ਦੂਰੀ = math::max(obstacle_map_body_ਚੌਖਟਾ.max_ਦੂਰੀ,
+									(uint16_t)(ਦੂਰੀ_sensor.max_ਦੂਰੀ * 100.0f));
+				obstacle_map_body_ਚੌਖਟਾ.min_ਦੂਰੀ = math::min(obstacle_map_body_ਚੌਖਟਾ.min_ਦੂਰੀ,
+									(uint16_t)(ਦੂਰੀ_sensor.min_ਦੂਰੀ * 100.0f));
 
-				_addDistanceSensorData(distance_sensor, _vehicle_attitude);
+				ਜੋੜੋ_ਦੂਰੀ_Sensor_ਅੰਕੜੇ(ਦੂਰੀ_sensor, _vehicle_attitude);
 			}
 		}
 	}
 
 	// add obstacle distance data
-	if (_sub_obstacle_distance.update()) {
-		const obstacle_distance_s &obstacle_distance = _sub_obstacle_distance.get();
+	ਜੇ (sub_obstacle_ਦੂਰੀ.update()) {
+		ਅਚਲ obstacle_ਦੂਰੀ_s &obstacle_ਦੂਰੀ = sub_obstacle_ਦੂਰੀ.get();
 
 		// Update map with obstacle data if the data is not stale
-		if (getElapsedTime(&obstacle_distance.timestamp) < RANGE_STREAM_TIMEOUT_US && obstacle_distance.increment > 0.f) {
+		ਜੇ (get_Elapsed_ਸਮਾਂ(&obstacle_ਦੂਰੀ.timestamp) < RANGE_ਧਾਰਾ_TIMEOUT_US && obstacle_ਦੂਰੀ.increment > 0.f) {
 			//update message description
-			_obstacle_map_body_frame.timestamp = math::max(_obstacle_map_body_frame.timestamp, obstacle_distance.timestamp);
-			_obstacle_map_body_frame.max_distance = math::max(_obstacle_map_body_frame.max_distance,
-								obstacle_distance.max_distance);
-			_obstacle_map_body_frame.min_distance = math::min(_obstacle_map_body_frame.min_distance,
-								obstacle_distance.min_distance);
-			_addObstacleSensorData(obstacle_distance, _vehicle_yaw);
+			obstacle_map_body_ਚੌਖਟਾ.timestamp = math::max(obstacle_map_body_ਚੌਖਟਾ.timestamp, obstacle_ਦੂਰੀ.timestamp);
+			obstacle_map_body_ਚੌਖਟਾ.max_ਦੂਰੀ = math::max(obstacle_map_body_ਚੌਖਟਾ.max_ਦੂਰੀ,
+								obstacle_ਦੂਰੀ.max_ਦੂਰੀ);
+			obstacle_map_body_ਚੌਖਟਾ.min_ਦੂਰੀ = math::min(obstacle_map_body_ਚੌਖਟਾ.min_ਦੂਰੀ,
+								obstacle_ਦੂਰੀ.min_ਦੂਰੀ);
+			ਜੋੜੋ_Obstacle_Sensor_ਅੰਕੜੇ(obstacle_ਦੂਰੀ, _vehicle_yaw);
 		}
 	}
 
 	// publish fused obtacle distance message with data from offboard obstacle_distance and distance sensor
-	_obstacle_distance_fused_pub.publish(_obstacle_map_body_frame);
+	obstacle_ਦੂਰੀ_fused_pub.publish(obstacle_map_body_ਚੌਖਟਾ);
 }
 
-void CollisionPrevention::_updateObstacleData()
+ਖਾਲੀ CollisionPrevention::update_Obstacle_ਅੰਕੜੇ()
 {
-	_obstacle_data_present = false;
+	obstacle_ਅੰਕੜੇ_present = ਝੂਠ;
 	_closest_dist = UINT16_MAX;
-	_closest_dist_dir.setZero();
+	_closest_dist_dir.ਸੈੱਟ_Zero();
 
-	for (int i = 0; i < BIN_COUNT; i++) {
+	ਲਈ (ਪੂਰਨ i = 0; i < BIN_ਗਿਣਤੀ; i++) {
 		// if the data is stale, reset the bin
-		if (getTime() - _data_timestamps[i] > RANGE_STREAM_TIMEOUT_US) {
-			_obstacle_map_body_frame.distances[i] = UINT16_MAX;
+		ਜੇ (get_ਸਮਾਂ() - ਅੰਕੜੇ_timestamps[i] > RANGE_ਧਾਰਾ_TIMEOUT_US) {
+			obstacle_map_body_ਚੌਖਟਾ.distances[i] = UINT16_MAX;
 		}
 
-		float angle = wrap_2pi(_vehicle_yaw + math::radians((float)i * BIN_SIZE +
-				       _obstacle_map_body_frame.angle_offset));
-		const Vector2f bin_direction = {cosf(angle), sinf(angle)};
-		const uint16_t bin_distance = _obstacle_map_body_frame.distances[i];
+		ਦਸ਼ਮਲਵ angle = wrap_2pi(_vehicle_yaw + math::radians((ਦਸ਼ਮਲਵ)i * BIN_ਮਾਪ +
+				       obstacle_map_body_ਚੌਖਟਾ.angle_ਵਿੱਥ));
+		ਅਚਲ Vector2f bin_direction = {cosf(angle), sinf(angle)};
+		ਅਚਲ uint16_t bin_ਦੂਰੀ = obstacle_map_body_ਚੌਖਟਾ.distances[i];
 
 		// check if there is avaliable data and the data of the map is not stale
-		if (bin_distance < UINT16_MAX
-		    && (getTime() - _obstacle_map_body_frame.timestamp) < RANGE_STREAM_TIMEOUT_US) {
-			_obstacle_data_present = true;
+		ਜੇ (bin_ਦੂਰੀ < UINT16_MAX
+		    && (get_ਸਮਾਂ() - obstacle_map_body_ਚੌਖਟਾ.timestamp) < RANGE_ਧਾਰਾ_TIMEOUT_US) {
+			obstacle_ਅੰਕੜੇ_present = ਸੱਚ;
 		}
 
-		if (bin_distance * 0.01f < _closest_dist) {
-			_closest_dist = bin_distance * 0.01f;
+		ਜੇ (bin_ਦੂਰੀ * 0.01f < _closest_dist) {
+			_closest_dist = bin_ਦੂਰੀ * 0.01f;
 			_closest_dist_dir = bin_direction;
 		}
 	}
 }
 
-void CollisionPrevention::_calculateConstrainedSetpoint(Vector2f &setpoint_accel, const Vector2f &setpoint_vel)
+ਖਾਲੀ CollisionPrevention::_calculateConstrainedSetpoint(Vector2f &setpoint_accel, ਅਚਲ Vector2f &setpoint_vel)
 {
-	const float setpoint_length = setpoint_accel.norm();
-	_min_dist_to_keep = math::max(_obstacle_map_body_frame.min_distance / 100.0f, _param_cp_dist.get());
+	ਅਚਲ ਦਸ਼ਮਲਵ setpoint_ਲੰਮਾਈ = setpoint_accel.norm();
+	min_dist_ਮੰਜ਼ਿਲ_keep = math::max(obstacle_map_body_ਚੌਖਟਾ.min_ਦੂਰੀ / 100.0f, _param_cp_dist.get());
 
-	const hrt_abstime now = getTime();
+	ਅਚਲ hrt_abstime now = get_ਸਮਾਂ();
 
-	const bool is_stick_deflected = setpoint_length > 0.001f;
+	ਅਚਲ ਤਾਰਕਿਕ is_stick_deflected = setpoint_ਲੰਮਾਈ > 0.001f;
 
-	if (_obstacle_data_present && is_stick_deflected) {
+	ਜੇ (obstacle_ਅੰਕੜੇ_present && is_stick_deflected) {
 
 		_transformSetpoint(setpoint_accel);
 
-		float vel_comp_accel = INFINITY;
+		ਦਸ਼ਮਲਵ vel_comp_accel = INFINITY;
 		Vector2f vel_comp_accel_dir{};
 
 		_getVelocityCompensationAcceleration(_vehicle_yaw, setpoint_vel, now,
@@ -203,70 +203,70 @@ void CollisionPrevention::_calculateConstrainedSetpoint(Vector2f &setpoint_accel
 
 		Vector2f constr_accel_setpoint{};
 
-		if (_checkSetpointDirectionFeasability()) {
-			constr_accel_setpoint = _constrainAccelerationSetpoint(setpoint_length);
+		ਜੇ (_checkSetpointDirectionFeasability()) {
+			constr_accel_setpoint = _constrainAccelerationSetpoint(setpoint_ਲੰਮਾਈ);
 		}
 
 		setpoint_accel = constr_accel_setpoint + vel_comp_accel * vel_comp_accel_dir;
 
-	} else if (!_obstacle_data_present) {
+	} ਨਹੀਂਤਾਂ ਜੇ (!obstacle_ਅੰਕੜੇ_present) {
 		// allow no movement
-		setpoint_accel.setZero();
+		setpoint_accel.ਸੈੱਟ_Zero();
 
 		// if distance data is stale, switch to Loiter
-		if (getElapsedTime(&_last_timeout_warning) > 1_s && getElapsedTime(&_time_activated) > 1_s) {
-			if ((now - _obstacle_map_body_frame.timestamp) > TIMEOUT_HOLD_US &&
-			    getElapsedTime(&_time_activated) > TIMEOUT_HOLD_US) {
+		ਜੇ (get_Elapsed_ਸਮਾਂ(&ਆਖਰੀ_timeout_warning) > 1_s && get_Elapsed_ਸਮਾਂ(&ਸਮਾਂ_activated) > 1_s) {
+			ਜੇ ((now - obstacle_map_body_ਚੌਖਟਾ.timestamp) > TIMEOUT_HOLD_US &&
+			    get_Elapsed_ਸਮਾਂ(&ਸਮਾਂ_activated) > TIMEOUT_HOLD_US) {
 				_publishVehicleCmdDoLoiter();
 			}
 
 			PX4_WARN("No obstacle data, not moving...");
-			_last_timeout_warning = now;
+			ਆਖਰੀ_timeout_warning = now;
 		}
 	}
 }
 
 // TODO this gives false output if the offset is not a multiple of the resolution. to be fixed...
-void CollisionPrevention::_addObstacleSensorData(const obstacle_distance_s &obstacle, const float vehicle_yaw)
+ਖਾਲੀ CollisionPrevention::ਜੋੜੋ_Obstacle_Sensor_ਅੰਕੜੇ(ਅਚਲ obstacle_ਦੂਰੀ_s &obstacle, ਅਚਲ ਦਸ਼ਮਲਵ vehicle_yaw)
 {
 
-	float vehicle_orientation_deg = math::degrees(vehicle_yaw);
+	ਦਸ਼ਮਲਵ vehicle_orientation_deg = math::degrees(vehicle_yaw);
 
 
-	if (obstacle.frame == obstacle.MAV_FRAME_GLOBAL || obstacle.frame == obstacle.MAV_FRAME_LOCAL_NED) {
+	ਜੇ (obstacle.ਚੌਖਟਾ == obstacle.MAV_ਚੌਖਟਾ_GLOBAL || obstacle.ਚੌਖਟਾ == obstacle.MAV_ਚੌਖਟਾ_LOCAL_NED) {
 		// Obstacle message arrives in local_origin frame (north aligned)
 		// corresponding data index (convert to world frame and shift by msg offset)
-		for (int i = 0; i < BIN_COUNT; i++) {
-			for (int j = 0; (j < 360 / obstacle.increment) && (j < BIN_COUNT); j++) {
-				float bin_lower_angle = ObstacleMath::get_lower_bound_angle(i, _obstacle_map_body_frame.increment,
-							_obstacle_map_body_frame.angle_offset);
-				float bin_upper_angle = ObstacleMath::get_lower_bound_angle(i + 1, _obstacle_map_body_frame.increment,
-							_obstacle_map_body_frame.angle_offset);
-				float msg_lower_angle = ObstacleMath::get_lower_bound_angle(j, obstacle.increment,
-							obstacle.angle_offset - vehicle_orientation_deg);
-				float msg_upper_angle = ObstacleMath::get_lower_bound_angle(j + 1, obstacle.increment,
-							obstacle.angle_offset - vehicle_orientation_deg);
+		ਲਈ (ਪੂਰਨ i = 0; i < BIN_ਗਿਣਤੀ; i++) {
+			ਲਈ (ਪੂਰਨ j = 0; (j < 360 / obstacle.increment) && (j < BIN_ਗਿਣਤੀ); j++) {
+				ਦਸ਼ਮਲਵ bin_ਹੇਠਲਾ_angle = ObstacleMath::get_ਹੇਠਲਾ_bound_angle(i, obstacle_map_body_ਚੌਖਟਾ.increment,
+							obstacle_map_body_ਚੌਖਟਾ.angle_ਵਿੱਥ);
+				ਦਸ਼ਮਲਵ bin_ਉੱਤਲਾ_angle = ObstacleMath::get_ਹੇਠਲਾ_bound_angle(i + 1, obstacle_map_body_ਚੌਖਟਾ.increment,
+							obstacle_map_body_ਚੌਖਟਾ.angle_ਵਿੱਥ);
+				ਦਸ਼ਮਲਵ ਸੁਨੇਹਾ_ਹੇਠਲਾ_angle = ObstacleMath::get_ਹੇਠਲਾ_bound_angle(j, obstacle.increment,
+							obstacle.angle_ਵਿੱਥ - vehicle_orientation_deg);
+				ਦਸ਼ਮਲਵ ਸੁਨੇਹਾ_ਉੱਤਲਾ_angle = ObstacleMath::get_ਹੇਠਲਾ_bound_angle(j + 1, obstacle.increment,
+							obstacle.angle_ਵਿੱਥ - vehicle_orientation_deg);
 
 				// if a bin stretches over the 0/360 degree line, adjust the angles
-				if (bin_lower_angle > bin_upper_angle) {
-					bin_lower_angle -= 360;
+				ਜੇ (bin_ਹੇਠਲਾ_angle > bin_ਉੱਤਲਾ_angle) {
+					bin_ਹੇਠਲਾ_angle -= 360;
 				}
 
-				if (msg_lower_angle > msg_upper_angle) {
-					msg_lower_angle -= 360;
+				ਜੇ (ਸੁਨੇਹਾ_ਹੇਠਲਾ_angle > ਸੁਨੇਹਾ_ਉੱਤਲਾ_angle) {
+					ਸੁਨੇਹਾ_ਹੇਠਲਾ_angle -= 360;
 				}
 
 				// Check for overlaps.
-				if ((msg_lower_angle > bin_lower_angle && msg_lower_angle < bin_upper_angle) ||
-				    (msg_upper_angle > bin_lower_angle && msg_upper_angle < bin_upper_angle) ||
-				    (msg_lower_angle <= bin_lower_angle && msg_upper_angle >= bin_upper_angle) ||
-				    (msg_lower_angle >= bin_lower_angle && msg_upper_angle <= bin_upper_angle)) {
-					if (obstacle.distances[j] != UINT16_MAX) {
-						if (_enterData(i, obstacle.max_distance * 0.01f, obstacle.distances[j] * 0.01f)) {
-							_obstacle_map_body_frame.distances[i] = obstacle.distances[j];
-							_data_timestamps[i] = _obstacle_map_body_frame.timestamp;
-							_data_maxranges[i] = obstacle.max_distance;
-							_data_fov[i] = 1;
+				ਜੇ ((ਸੁਨੇਹਾ_ਹੇਠਲਾ_angle > bin_ਹੇਠਲਾ_angle && ਸੁਨੇਹਾ_ਹੇਠਲਾ_angle < bin_ਉੱਤਲਾ_angle) ||
+				    (ਸੁਨੇਹਾ_ਉੱਤਲਾ_angle > bin_ਹੇਠਲਾ_angle && ਸੁਨੇਹਾ_ਉੱਤਲਾ_angle < bin_ਉੱਤਲਾ_angle) ||
+				    (ਸੁਨੇਹਾ_ਹੇਠਲਾ_angle <= bin_ਹੇਠਲਾ_angle && ਸੁਨੇਹਾ_ਉੱਤਲਾ_angle >= bin_ਉੱਤਲਾ_angle) ||
+				    (ਸੁਨੇਹਾ_ਹੇਠਲਾ_angle >= bin_ਹੇਠਲਾ_angle && ਸੁਨੇਹਾ_ਉੱਤਲਾ_angle <= bin_ਉੱਤਲਾ_angle)) {
+					ਜੇ (obstacle.distances[j] != UINT16_MAX) {
+						ਜੇ (enter_ਅੰਕੜੇ(i, obstacle.max_ਦੂਰੀ * 0.01f, obstacle.distances[j] * 0.01f)) {
+							obstacle_map_body_ਚੌਖਟਾ.distances[i] = obstacle.distances[j];
+							ਅੰਕੜੇ_timestamps[i] = obstacle_map_body_ਚੌਖਟਾ.timestamp;
+							ਅੰਕੜੇ_maxranges[i] = obstacle.max_ਦੂਰੀ;
+							ਅੰਕੜੇ_fov[i] = 1;
 						}
 					}
 				}
@@ -274,39 +274,39 @@ void CollisionPrevention::_addObstacleSensorData(const obstacle_distance_s &obst
 			}
 		}
 
-	} else if (obstacle.frame == obstacle.MAV_FRAME_BODY_FRD) {
+	} ਨਹੀਂਤਾਂ ਜੇ (obstacle.ਚੌਖਟਾ == obstacle.MAV_ਚੌਖਟਾ_BODY_FRD) {
 		// Obstacle message arrives in body frame (front aligned)
 		// corresponding data index (shift by msg offset)
-		for (int i = 0; i < BIN_COUNT; i++) {
-			for (int j = 0; (j < 360 / obstacle.increment) && (j < BIN_COUNT); j++) {
-				float bin_lower_angle = ObstacleMath::get_lower_bound_angle(i, _obstacle_map_body_frame.increment,
-							_obstacle_map_body_frame.angle_offset);
-				float bin_upper_angle = ObstacleMath::get_lower_bound_angle(i + 1, _obstacle_map_body_frame.increment,
-							_obstacle_map_body_frame.angle_offset);
-				float msg_lower_angle = ObstacleMath::get_lower_bound_angle(j, obstacle.increment, obstacle.angle_offset);
-				float msg_upper_angle = ObstacleMath::get_lower_bound_angle(j + 1, obstacle.increment, obstacle.angle_offset);
+		ਲਈ (ਪੂਰਨ i = 0; i < BIN_ਗਿਣਤੀ; i++) {
+			ਲਈ (ਪੂਰਨ j = 0; (j < 360 / obstacle.increment) && (j < BIN_ਗਿਣਤੀ); j++) {
+				ਦਸ਼ਮਲਵ bin_ਹੇਠਲਾ_angle = ObstacleMath::get_ਹੇਠਲਾ_bound_angle(i, obstacle_map_body_ਚੌਖਟਾ.increment,
+							obstacle_map_body_ਚੌਖਟਾ.angle_ਵਿੱਥ);
+				ਦਸ਼ਮਲਵ bin_ਉੱਤਲਾ_angle = ObstacleMath::get_ਹੇਠਲਾ_bound_angle(i + 1, obstacle_map_body_ਚੌਖਟਾ.increment,
+							obstacle_map_body_ਚੌਖਟਾ.angle_ਵਿੱਥ);
+				ਦਸ਼ਮਲਵ ਸੁਨੇਹਾ_ਹੇਠਲਾ_angle = ObstacleMath::get_ਹੇਠਲਾ_bound_angle(j, obstacle.increment, obstacle.angle_ਵਿੱਥ);
+				ਦਸ਼ਮਲਵ ਸੁਨੇਹਾ_ਉੱਤਲਾ_angle = ObstacleMath::get_ਹੇਠਲਾ_bound_angle(j + 1, obstacle.increment, obstacle.angle_ਵਿੱਥ);
 
 				// if a bin stretches over the 0/360 degree line, adjust the angles
-				if (bin_lower_angle > bin_upper_angle) {
-					bin_lower_angle -= 360;
+				ਜੇ (bin_ਹੇਠਲਾ_angle > bin_ਉੱਤਲਾ_angle) {
+					bin_ਹੇਠਲਾ_angle -= 360;
 				}
 
-				if (msg_lower_angle > msg_upper_angle) {
-					msg_lower_angle -= 360;
+				ਜੇ (ਸੁਨੇਹਾ_ਹੇਠਲਾ_angle > ਸੁਨੇਹਾ_ਉੱਤਲਾ_angle) {
+					ਸੁਨੇਹਾ_ਹੇਠਲਾ_angle -= 360;
 				}
 
 				// Check for overlaps.
-				if ((msg_lower_angle > bin_lower_angle && msg_lower_angle < bin_upper_angle) ||
-				    (msg_upper_angle > bin_lower_angle && msg_upper_angle < bin_upper_angle) ||
-				    (msg_lower_angle <= bin_lower_angle && msg_upper_angle >= bin_upper_angle) ||
-				    (msg_lower_angle >= bin_lower_angle && msg_upper_angle <= bin_upper_angle)) {
-					if (obstacle.distances[j] != UINT16_MAX) {
+				ਜੇ ((ਸੁਨੇਹਾ_ਹੇਠਲਾ_angle > bin_ਹੇਠਲਾ_angle && ਸੁਨੇਹਾ_ਹੇਠਲਾ_angle < bin_ਉੱਤਲਾ_angle) ||
+				    (ਸੁਨੇਹਾ_ਉੱਤਲਾ_angle > bin_ਹੇਠਲਾ_angle && ਸੁਨੇਹਾ_ਉੱਤਲਾ_angle < bin_ਉੱਤਲਾ_angle) ||
+				    (ਸੁਨੇਹਾ_ਹੇਠਲਾ_angle <= bin_ਹੇਠਲਾ_angle && ਸੁਨੇਹਾ_ਉੱਤਲਾ_angle >= bin_ਉੱਤਲਾ_angle) ||
+				    (ਸੁਨੇਹਾ_ਹੇਠਲਾ_angle >= bin_ਹੇਠਲਾ_angle && ਸੁਨੇਹਾ_ਉੱਤਲਾ_angle <= bin_ਉੱਤਲਾ_angle)) {
+					ਜੇ (obstacle.distances[j] != UINT16_MAX) {
 
-						if (_enterData(i, obstacle.max_distance * 0.01f, obstacle.distances[j] * 0.01f)) {
-							_obstacle_map_body_frame.distances[i] = obstacle.distances[j];
-							_data_timestamps[i] = _obstacle_map_body_frame.timestamp;
-							_data_maxranges[i] = obstacle.max_distance;
-							_data_fov[i] = 1;
+						ਜੇ (enter_ਅੰਕੜੇ(i, obstacle.max_ਦੂਰੀ * 0.01f, obstacle.distances[j] * 0.01f)) {
+							obstacle_map_body_ਚੌਖਟਾ.distances[i] = obstacle.distances[j];
+							ਅੰਕੜੇ_timestamps[i] = obstacle_map_body_ਚੌਖਟਾ.timestamp;
+							ਅੰਕੜੇ_maxranges[i] = obstacle.max_ਦੂਰੀ;
+							ਅੰਕੜੇ_fov[i] = 1;
 						}
 					}
 				}
@@ -314,16 +314,16 @@ void CollisionPrevention::_addObstacleSensorData(const obstacle_distance_s &obst
 			}
 		}
 
-	} else {
+	} ਨਹੀਂਤਾਂ {
 		mavlink_log_critical(&_mavlink_log_pub, "Obstacle message received in unsupported frame %i\t",
-				     obstacle.frame);
+				     obstacle.ਚੌਖਟਾ);
 		events::send<uint8_t>(events::ID("col_prev_unsup_frame"), events::Log::Error,
-				      "Obstacle message received in unsupported frame {1}", obstacle.frame);
+				      "Obstacle message received in unsupported frame {1}", obstacle.ਚੌਖਟਾ);
 	}
 }
 
-bool
-CollisionPrevention::_enterData(int map_index, float sensor_range, float sensor_reading)
+ਤਾਰਕਿਕ
+CollisionPrevention::enter_ਅੰਕੜੇ(ਪੂਰਨ map_ਸੂਚਕਾਂਕ, ਦਸ਼ਮਲਵ sensor_range, ਦਸ਼ਮਲਵ sensor_reading)
 {
 	//use data from this sensor if:
 	//1. this sensor data is in range, the bin contains already valid data and this data is coming from the same or less range sensor
@@ -333,239 +333,239 @@ CollisionPrevention::_enterData(int map_index, float sensor_range, float sensor_
 
 	uint16_t sensor_range_cm = static_cast<uint16_t>(lroundf(100.0f * sensor_range)); //convert to cm
 
-	if (sensor_reading < sensor_range) {
-		if ((_obstacle_map_body_frame.distances[map_index] < _data_maxranges[map_index]
-		     && sensor_range_cm <= _data_maxranges[map_index])
-		    || _obstacle_map_body_frame.distances[map_index] >= _data_maxranges[map_index]) {
+	ਜੇ (sensor_reading < sensor_range) {
+		ਜੇ ((obstacle_map_body_ਚੌਖਟਾ.distances[map_ਸੂਚਕਾਂਕ] < ਅੰਕੜੇ_maxranges[map_ਸੂਚਕਾਂਕ]
+		     && sensor_range_cm <= ਅੰਕੜੇ_maxranges[map_ਸੂਚਕਾਂਕ])
+		    || obstacle_map_body_ਚੌਖਟਾ.distances[map_ਸੂਚਕਾਂਕ] >= ਅੰਕੜੇ_maxranges[map_ਸੂਚਕਾਂਕ]) {
 
-			return true;
+			ਵਾਪਸ ਸੱਚ;
 		}
 
-	} else {
-		if ((_obstacle_map_body_frame.distances[map_index] >= _data_maxranges[map_index]
-		     && sensor_range_cm >= _data_maxranges[map_index])
-		    || (_obstacle_map_body_frame.distances[map_index] < _data_maxranges[map_index]
-			&& sensor_range_cm == _data_maxranges[map_index])) {
+	} ਨਹੀਂਤਾਂ {
+		ਜੇ ((obstacle_map_body_ਚੌਖਟਾ.distances[map_ਸੂਚਕਾਂਕ] >= ਅੰਕੜੇ_maxranges[map_ਸੂਚਕਾਂਕ]
+		     && sensor_range_cm >= ਅੰਕੜੇ_maxranges[map_ਸੂਚਕਾਂਕ])
+		    || (obstacle_map_body_ਚੌਖਟਾ.distances[map_ਸੂਚਕਾਂਕ] < ਅੰਕੜੇ_maxranges[map_ਸੂਚਕਾਂਕ]
+			&& sensor_range_cm == ਅੰਕੜੇ_maxranges[map_ਸੂਚਕਾਂਕ])) {
 
-			return true;
+			ਵਾਪਸ ਸੱਚ;
 		}
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-bool
+ਤਾਰਕਿਕ
 CollisionPrevention::_checkSetpointDirectionFeasability()
 {
-	if (_setpoint_index < 0 || _setpoint_index >= BIN_COUNT) {
-		return false; // treat out-of-bounds as unsafe
+	ਜੇ (setpoint_ਸੂਚਕਾਂਕ < 0 || setpoint_ਸੂਚਕਾਂਕ >= BIN_ਗਿਣਤੀ) {
+		ਵਾਪਸ ਝੂਠ; // treat out-of-bounds as unsafe
 	}
 
-	const bool no_data = (_obstacle_map_body_frame.distances[_setpoint_index] == UINT16_MAX);
-	const bool allow_movement_towards_no_data = _param_cp_go_no_data.get();
-	const bool fov_at_setpoint = _data_fov[_setpoint_index];
+	ਅਚਲ ਤਾਰਕਿਕ no_ਅੰਕੜੇ = (obstacle_map_body_ਚੌਖਟਾ.distances[setpoint_ਸੂਚਕਾਂਕ] == UINT16_MAX);
+	ਅਚਲ ਤਾਰਕਿਕ allow_movement_towards_no_ਅੰਕੜੇ = param_cp_go_no_ਅੰਕੜੇ.get();
+	ਅਚਲ ਤਾਰਕਿਕ fov_at_setpoint = ਅੰਕੜੇ_fov[setpoint_ਸੂਚਕਾਂਕ];
 
 	// The setpoint is feasible if:
 	// 1. There is actual data at the setpoint (no_data == false), OR
 	// 2. There is no data, but movement into no-data bins is allowed and the setpoint is outside the sensor FOV.
-	return !no_data || (allow_movement_towards_no_data && !fov_at_setpoint);
+	ਵਾਪਸ !no_ਅੰਕੜੇ || (allow_movement_towards_no_ਅੰਕੜੇ && !fov_at_setpoint);
 }
 
-void
-CollisionPrevention::_transformSetpoint(const Vector2f &setpoint)
+ਖਾਲੀ
+CollisionPrevention::_transformSetpoint(ਅਚਲ Vector2f &setpoint)
 {
-	const float sp_angle_body_frame = atan2f(setpoint(1), setpoint(0)) - _vehicle_yaw;
-	const float sp_angle_with_offset_deg = ObstacleMath::wrap_360(math::degrees(sp_angle_body_frame) -
-					       _obstacle_map_body_frame.angle_offset);
-	_setpoint_index = floor(sp_angle_with_offset_deg / BIN_SIZE);
+	ਅਚਲ ਦਸ਼ਮਲਵ sp_angle_body_ਚੌਖਟਾ = atan2f(setpoint(1), setpoint(0)) - _vehicle_yaw;
+	ਅਚਲ ਦਸ਼ਮਲਵ sp_angle_with_ਵਿੱਥ_deg = ObstacleMath::wrap_360(math::degrees(sp_angle_body_ਚੌਖਟਾ) -
+					       obstacle_map_body_ਚੌਖਟਾ.angle_ਵਿੱਥ);
+	setpoint_ਸੂਚਕਾਂਕ = floor(sp_angle_with_ਵਿੱਥ_deg / BIN_ਮਾਪ);
 	// change setpoint direction slightly (max by _param_cp_guide_ang degrees) to help guide through narrow gaps
 	_setpoint_dir = setpoint.unit_or_zero();
-	_adaptSetpointDirection(_setpoint_dir, _setpoint_index, _vehicle_yaw);
+	_adaptSetpointDirection(_setpoint_dir, setpoint_ਸੂਚਕਾਂਕ, _vehicle_yaw);
 }
 
-void
-CollisionPrevention::_addDistanceSensorData(distance_sensor_s &distance_sensor, const Quatf &vehicle_attitude)
+ਖਾਲੀ
+CollisionPrevention::ਜੋੜੋ_ਦੂਰੀ_Sensor_ਅੰਕੜੇ(ਦੂਰੀ_sensor_s &ਦੂਰੀ_sensor, ਅਚਲ Quatf &vehicle_attitude)
 {
 	// clamp at maximum sensor range
-	float distance_reading = math::min(distance_sensor.current_distance, distance_sensor.max_distance);
+	ਦਸ਼ਮਲਵ ਦੂਰੀ_reading = math::min(ਦੂਰੀ_sensor.current_ਦੂਰੀ, ਦੂਰੀ_sensor.max_ਦੂਰੀ);
 
 	// negative values indicate out of range but valid measurements.
-	if (fabsf(distance_sensor.current_distance - -1.f) < FLT_EPSILON && distance_sensor.signal_quality == 0) {
-		distance_reading = distance_sensor.max_distance;
+	ਜੇ (fabsf(ਦੂਰੀ_sensor.current_ਦੂਰੀ - -1.f) < FLT_EPSILON && ਦੂਰੀ_sensor.signal_quality == 0) {
+		ਦੂਰੀ_reading = ਦੂਰੀ_sensor.max_ਦੂਰੀ;
 	}
 
 	// discard values below min range
-	if (distance_reading > distance_sensor.min_distance) {
-		float sensor_yaw_body_rad = ObstacleMath::sensor_orientation_to_yaw_offset(static_cast<ObstacleMath::SensorOrientation>
-					    (distance_sensor.orientation), distance_sensor.q);
-		float sensor_yaw_body_deg = math::degrees(wrap_2pi(sensor_yaw_body_rad));
+	ਜੇ (ਦੂਰੀ_reading > ਦੂਰੀ_sensor.min_ਦੂਰੀ) {
+		ਦਸ਼ਮਲਵ sensor_yaw_body_rad = ObstacleMath::sensor_orientation_ਮੰਜ਼ਿਲ_yaw_ਵਿੱਥ(static_cast<ObstacleMath::SensorOrientation>
+					    (ਦੂਰੀ_sensor.orientation), ਦੂਰੀ_sensor.q);
+		ਦਸ਼ਮਲਵ sensor_yaw_body_deg = math::degrees(wrap_2pi(sensor_yaw_body_rad));
 
 		// calculate the field of view boundary bin indices
-		int lower_bound = (int)round((sensor_yaw_body_deg  - math::degrees(distance_sensor.h_fov / 2.0f)) / BIN_SIZE);
-		int upper_bound = (int)round((sensor_yaw_body_deg  + math::degrees(distance_sensor.h_fov / 2.0f)) / BIN_SIZE);
+		ਪੂਰਨ ਹੇਠਲਾ_bound = (ਪੂਰਨ)round((sensor_yaw_body_deg  - math::degrees(ਦੂਰੀ_sensor.h_fov / 2.0f)) / BIN_ਮਾਪ);
+		ਪੂਰਨ ਉੱਤਲਾ_bound = (ਪੂਰਨ)round((sensor_yaw_body_deg  + math::degrees(ਦੂਰੀ_sensor.h_fov / 2.0f)) / BIN_ਮਾਪ);
 
-		if (distance_reading < distance_sensor.max_distance) {
-			ObstacleMath::project_distance_on_horizontal_plane(distance_reading, sensor_yaw_body_rad, vehicle_attitude);
+		ਜੇ (ਦੂਰੀ_reading < ਦੂਰੀ_sensor.max_ਦੂਰੀ) {
+			ObstacleMath::project_ਦੂਰੀ_on_horizontal_plane(ਦੂਰੀ_reading, sensor_yaw_body_rad, vehicle_attitude);
 		}
 
-		uint16_t sensor_range = static_cast<uint16_t>(lroundf(100.0f * distance_sensor.max_distance)); // convert to cm
+		uint16_t sensor_range = static_cast<uint16_t>(lroundf(100.0f * ਦੂਰੀ_sensor.max_ਦੂਰੀ)); // convert to cm
 
-		for (int bin = lower_bound; bin <= upper_bound; ++bin) {
-			int wrapped_bin = ObstacleMath::wrap_bin(bin, BIN_COUNT);
+		ਲਈ (ਪੂਰਨ bin = ਹੇਠਲਾ_bound; bin <= ਉੱਤਲਾ_bound; ++bin) {
+			ਪੂਰਨ wrapped_bin = ObstacleMath::wrap_bin(bin, BIN_ਗਿਣਤੀ);
 
-			if (_enterData(wrapped_bin, distance_sensor.max_distance, distance_reading)) {
-				_obstacle_map_body_frame.distances[wrapped_bin] = static_cast<uint16_t>(lroundf(100.0f * distance_reading));
-				_data_timestamps[wrapped_bin] = _obstacle_map_body_frame.timestamp;
-				_data_maxranges[wrapped_bin] = sensor_range;
-				_data_fov[wrapped_bin] = 1;
+			ਜੇ (enter_ਅੰਕੜੇ(wrapped_bin, ਦੂਰੀ_sensor.max_ਦੂਰੀ, ਦੂਰੀ_reading)) {
+				obstacle_map_body_ਚੌਖਟਾ.distances[wrapped_bin] = static_cast<uint16_t>(lroundf(100.0f * ਦੂਰੀ_reading));
+				ਅੰਕੜੇ_timestamps[wrapped_bin] = obstacle_map_body_ਚੌਖਟਾ.timestamp;
+				ਅੰਕੜੇ_maxranges[wrapped_bin] = sensor_range;
+				ਅੰਕੜੇ_fov[wrapped_bin] = 1;
 			}
 		}
 	}
 }
 
-void
-CollisionPrevention::_adaptSetpointDirection(Vector2f &setpoint_dir, int &setpoint_index, float vehicle_yaw_angle_rad)
+ਖਾਲੀ
+CollisionPrevention::_adaptSetpointDirection(Vector2f &setpoint_dir, ਪੂਰਨ &setpoint_ਸੂਚਕਾਂਕ_2, ਦਸ਼ਮਲਵ vehicle_yaw_angle_rad)
 {
-	const int guidance_bins = floor(_param_cp_guide_ang.get() / BIN_SIZE);
-	const int sp_index_original = setpoint_index;
-	float best_cost = 9999.f;
-	int new_sp_index = setpoint_index;
+	ਅਚਲ ਪੂਰਨ guidance_bins = floor(_param_cp_guide_ang.get() / BIN_ਮਾਪ);
+	ਅਚਲ ਪੂਰਨ sp_ਸੂਚਕਾਂਕ_original = setpoint_ਸੂਚਕਾਂਕ_2;
+	ਦਸ਼ਮਲਵ ਉੱਤਮ_ਲਾਗਤ = 9999.f;
+	ਪੂਰਨ new_sp_ਸੂਚਕਾਂਕ = setpoint_ਸੂਚਕਾਂਕ_2;
 
-	for (int i = sp_index_original - guidance_bins; i <= sp_index_original + guidance_bins; i++) {
+	ਲਈ (ਪੂਰਨ i = sp_ਸੂਚਕਾਂਕ_original - guidance_bins; i <= sp_ਸੂਚਕਾਂਕ_original + guidance_bins; i++) {
 
 		// apply moving average filter to the distance array to be able to center in larger gaps
-		const int filter_size = 1;
-		float mean_dist = 0;
+		ਅਚਲ ਪੂਰਨ filter_ਮਾਪ = 1;
+		ਦਸ਼ਮਲਵ ਔਸਤ_dist = 0;
 
-		for (int j = i - filter_size; j <= i + filter_size; j++) {
-			int bin = ObstacleMath::wrap_bin(j, BIN_COUNT);
+		ਲਈ (ਪੂਰਨ j = i - filter_ਮਾਪ; j <= i + filter_ਮਾਪ; j++) {
+			ਪੂਰਨ bin = ObstacleMath::wrap_bin(j, BIN_ਗਿਣਤੀ);
 
-			if (_obstacle_map_body_frame.distances[bin] == UINT16_MAX) {
-				mean_dist += _param_cp_dist.get() * 100.f;
+			ਜੇ (obstacle_map_body_ਚੌਖਟਾ.distances[bin] == UINT16_MAX) {
+				ਔਸਤ_dist += _param_cp_dist.get() * 100.f;
 
-			} else {
-				mean_dist += _obstacle_map_body_frame.distances[bin];
+			} ਨਹੀਂਤਾਂ {
+				ਔਸਤ_dist += obstacle_map_body_ਚੌਖਟਾ.distances[bin];
 			}
 		}
 
-		const int bin = ObstacleMath::wrap_bin(i, BIN_COUNT);
-		mean_dist = mean_dist / (2.f * filter_size + 1.f);
-		const float deviation_cost = _param_cp_dist.get() * 50.f * abs(i - sp_index_original);
-		const float bin_cost = deviation_cost - mean_dist - _obstacle_map_body_frame.distances[bin];
+		ਅਚਲ ਪੂਰਨ bin = ObstacleMath::wrap_bin(i, BIN_ਗਿਣਤੀ);
+		ਔਸਤ_dist = ਔਸਤ_dist / (2.f * filter_ਮਾਪ + 1.f);
+		ਅਚਲ ਦਸ਼ਮਲਵ deviation_ਲਾਗਤ = _param_cp_dist.get() * 50.f * ਨਿਰਪੇਖ(i - sp_ਸੂਚਕਾਂਕ_original);
+		ਅਚਲ ਦਸ਼ਮਲਵ bin_ਲਾਗਤ = deviation_ਲਾਗਤ - ਔਸਤ_dist - obstacle_map_body_ਚੌਖਟਾ.distances[bin];
 
-		if (bin_cost < best_cost && _obstacle_map_body_frame.distances[bin] != UINT16_MAX) {
-			best_cost = bin_cost;
-			new_sp_index = bin;
+		ਜੇ (bin_ਲਾਗਤ < ਉੱਤਮ_ਲਾਗਤ && obstacle_map_body_ਚੌਖਟਾ.distances[bin] != UINT16_MAX) {
+			ਉੱਤਮ_ਲਾਗਤ = bin_ਲਾਗਤ;
+			new_sp_ਸੂਚਕਾਂਕ = bin;
 		}
 	}
 
 	//only change setpoint direction if it was moved to a different bin
-	if (new_sp_index != setpoint_index) {
-		float angle = math::radians((float)new_sp_index * BIN_SIZE + _obstacle_map_body_frame.angle_offset);
+	ਜੇ (new_sp_ਸੂਚਕਾਂਕ != setpoint_ਸੂਚਕਾਂਕ_2) {
+		ਦਸ਼ਮਲਵ angle = math::radians((ਦਸ਼ਮਲਵ)new_sp_ਸੂਚਕਾਂਕ * BIN_ਮਾਪ + obstacle_map_body_ਚੌਖਟਾ.angle_ਵਿੱਥ);
 		angle = wrap_2pi(vehicle_yaw_angle_rad + angle);
 		setpoint_dir = {cosf(angle), sinf(angle)};
-		setpoint_index = new_sp_index;
+		setpoint_ਸੂਚਕਾਂਕ_2 = new_sp_ਸੂਚਕਾਂਕ;
 	}
 }
 
-float CollisionPrevention::_getObstacleDistance(const Vector2f &direction)
+ਦਸ਼ਮਲਵ CollisionPrevention::get_Obstacle_ਦੂਰੀ(ਅਚਲ Vector2f &direction)
 {
-	float obstacle_distance = 0.f;
-	const float direction_norm = direction.norm();
+	ਦਸ਼ਮਲਵ obstacle_ਦੂਰੀ = 0.f;
+	ਅਚਲ ਦਸ਼ਮਲਵ direction_norm = direction.norm();
 
-	if (direction_norm > FLT_EPSILON) {
+	ਜੇ (direction_norm > FLT_EPSILON) {
 		Vector2f dir = direction / direction_norm;
-		const float sp_angle_body_frame = atan2f(dir(1), dir(0)) - _vehicle_yaw;
-		const float sp_angle_with_offset_deg =
-			ObstacleMath::wrap_360(math::degrees(sp_angle_body_frame) - _obstacle_map_body_frame.angle_offset);
+		ਅਚਲ ਦਸ਼ਮਲਵ sp_angle_body_ਚੌਖਟਾ = atan2f(dir(1), dir(0)) - _vehicle_yaw;
+		ਅਚਲ ਦਸ਼ਮਲਵ sp_angle_with_ਵਿੱਥ_deg =
+			ObstacleMath::wrap_360(math::degrees(sp_angle_body_ਚੌਖਟਾ) - obstacle_map_body_ਚੌਖਟਾ.angle_ਵਿੱਥ);
 
-		const int dir_index = ObstacleMath::get_bin_at_angle(BIN_SIZE, sp_angle_with_offset_deg);
-		obstacle_distance   = _obstacle_map_body_frame.distances[dir_index] * 0.01f;
+		ਅਚਲ ਪੂਰਨ dir_ਸੂਚਕਾਂਕ = ObstacleMath::get_bin_at_angle(BIN_ਮਾਪ, sp_angle_with_ਵਿੱਥ_deg);
+		obstacle_ਦੂਰੀ   = obstacle_map_body_ਚੌਖਟਾ.distances[dir_ਸੂਚਕਾਂਕ] * 0.01f;
 	}
 
-	return obstacle_distance;
+	ਵਾਪਸ obstacle_ਦੂਰੀ;
 }
 
 Vector2f
-CollisionPrevention::_constrainAccelerationSetpoint(const float &setpoint_length)
+CollisionPrevention::_constrainAccelerationSetpoint(ਅਚਲ ਦਸ਼ਮਲਵ &setpoint_ਲੰਮਾਈ)
 {
 	Vector2f new_setpoint{};
-	const Vector2f normal_component = _closest_dist_dir * (_setpoint_dir.dot(_closest_dist_dir));
-	const Vector2f tangential_component = _setpoint_dir - normal_component;
+	ਅਚਲ Vector2f ਸਾਧਾਰਨ_component = _closest_dist_dir * (_setpoint_dir.dot(_closest_dist_dir));
+	ਅਚਲ Vector2f tangential_component = _setpoint_dir - ਸਾਧਾਰਨ_component;
 
-	const float normal_scale = _getScale(_closest_dist);
+	ਅਚਲ ਦਸ਼ਮਲਵ ਸਾਧਾਰਨ_scale = _getScale(_closest_dist);
 
 
-	const float closest_dist_tangential = _getObstacleDistance(tangential_component);
-	const float tangential_scale = _getScale(closest_dist_tangential);
+	ਅਚਲ ਦਸ਼ਮਲਵ closest_dist_tangential = get_Obstacle_ਦੂਰੀ(tangential_component);
+	ਅਚਲ ਦਸ਼ਮਲਵ tangential_scale = _getScale(closest_dist_tangential);
 
 
 	// only scale accelerations towards the obstacle
-	if (_closest_dist_dir.dot(_setpoint_dir) > 0) {
-		new_setpoint = (tangential_component * tangential_scale + normal_component * normal_scale) * setpoint_length;
+	ਜੇ (_closest_dist_dir.dot(_setpoint_dir) > 0) {
+		new_setpoint = (tangential_component * tangential_scale + ਸਾਧਾਰਨ_component * ਸਾਧਾਰਨ_scale) * setpoint_ਲੰਮਾਈ;
 
-	} else {
-		new_setpoint = _setpoint_dir * setpoint_length;
+	} ਨਹੀਂਤਾਂ {
+		new_setpoint = _setpoint_dir * setpoint_ਲੰਮਾਈ;
 	}
 
-	return new_setpoint;
+	ਵਾਪਸ new_setpoint;
 }
 
-float
-CollisionPrevention::_getScale(const float &reference_distance)
+ਦਸ਼ਮਲਵ
+CollisionPrevention::_getScale(ਅਚਲ ਦਸ਼ਮਲਵ &reference_ਦੂਰੀ)
 {
-	float scale = (reference_distance - _min_dist_to_keep);
-	const float scale_distance = math::max(_min_dist_to_keep, _param_mpc_vel_manual.get() / _param_mpc_xy_p.get());
+	ਦਸ਼ਮਲਵ scale = (reference_ਦੂਰੀ - min_dist_ਮੰਜ਼ਿਲ_keep);
+	ਅਚਲ ਦਸ਼ਮਲਵ scale_ਦੂਰੀ = math::max(min_dist_ਮੰਜ਼ਿਲ_keep, _param_mpc_vel_manual.get() / _param_mpc_xy_p.get());
 
 	// if scale is positive, square it and scale it with the scale_distance
-	scale = scale > 0 ? powf(scale / scale_distance, 2) : scale;
+	scale = scale > 0 ? powf(scale / scale_ਦੂਰੀ, 2) : scale;
 	scale = math::min(scale, 1.0f);
-	return scale;
+	ਵਾਪਸ scale;
 }
 
-void CollisionPrevention::_getVelocityCompensationAcceleration(const float vehicle_yaw_angle_rad,
-		const Vector2f &setpoint_vel,
-		const hrt_abstime now, float &vel_comp_accel, Vector2f &vel_comp_accel_dir)
+ਖਾਲੀ CollisionPrevention::_getVelocityCompensationAcceleration(ਅਚਲ ਦਸ਼ਮਲਵ vehicle_yaw_angle_rad,
+		ਅਚਲ Vector2f &setpoint_vel,
+		ਅਚਲ hrt_abstime now, ਦਸ਼ਮਲਵ &vel_comp_accel, Vector2f &vel_comp_accel_dir)
 {
-	for (int i = 0; i < BIN_COUNT; i++) {
-		const float max_range = _data_maxranges[i] * 0.01f;
+	ਲਈ (ਪੂਰਨ i = 0; i < BIN_ਗਿਣਤੀ; i++) {
+		ਅਚਲ ਦਸ਼ਮਲਵ max_range = ਅੰਕੜੇ_maxranges[i] * 0.01f;
 
 		// get the vector pointing into the direction of current bin
-		float bin_angle = wrap_2pi(vehicle_yaw_angle_rad
-					   + math::radians((float)i * BIN_SIZE + _obstacle_map_body_frame.angle_offset));
+		ਦਸ਼ਮਲਵ bin_angle = wrap_2pi(vehicle_yaw_angle_rad
+					   + math::radians((ਦਸ਼ਮਲਵ)i * BIN_ਮਾਪ + obstacle_map_body_ਚੌਖਟਾ.angle_ਵਿੱਥ));
 
-		const Vector2f bin_direction = { cosf(bin_angle), sinf(bin_angle) };
-		float bin_distance = _obstacle_map_body_frame.distances[i];
+		ਅਚਲ Vector2f bin_direction = { cosf(bin_angle), sinf(bin_angle) };
+		ਦਸ਼ਮਲਵ bin_ਦੂਰੀ = obstacle_map_body_ਚੌਖਟਾ.distances[i];
 
 		// only consider bins which are between min and max values
-		if (bin_distance > _obstacle_map_body_frame.min_distance && bin_distance < UINT16_MAX) {
-			const float distance = bin_distance * 0.01f;
+		ਜੇ (bin_ਦੂਰੀ > obstacle_map_body_ਚੌਖਟਾ.min_ਦੂਰੀ && bin_ਦੂਰੀ < UINT16_MAX) {
+			ਅਚਲ ਦਸ਼ਮਲਵ ਦੂਰੀ = bin_ਦੂਰੀ * 0.01f;
 
 			// Assume current velocity is sufficiently close to the setpoint velocity, this breaks down if flying high
 			// acceleration maneuvers
-			const float curr_vel_parallel = math::max(0.f, setpoint_vel.dot(bin_direction));
-			float delay_distance = curr_vel_parallel * _param_cp_delay.get();
+			ਅਚਲ ਦਸ਼ਮਲਵ curr_vel_parallel = math::max(0.f, setpoint_vel.dot(bin_direction));
+			ਦਸ਼ਮਲਵ delay_ਦੂਰੀ = curr_vel_parallel * _param_cp_delay.get();
 
-			const hrt_abstime data_age = now - _data_timestamps[i];
+			ਅਚਲ hrt_abstime ਅੰਕੜੇ_age = now - ਅੰਕੜੇ_timestamps[i];
 
-			if (distance < max_range) {
-				delay_distance += curr_vel_parallel * (data_age * 1e-6f);
+			ਜੇ (ਦੂਰੀ < max_range) {
+				delay_ਦੂਰੀ += curr_vel_parallel * (ਅੰਕੜੇ_age * 1e-6f);
 			}
 
-			const float stop_distance = distance - _min_dist_to_keep - delay_distance;
+			ਅਚਲ ਦਸ਼ਮਲਵ stop_ਦੂਰੀ = ਦੂਰੀ - min_dist_ਮੰਜ਼ਿਲ_keep - delay_ਦੂਰੀ;
 
-			float curr_acc_vel_constraint;
+			ਦਸ਼ਮਲਵ curr_acc_vel_constraint;
 
-			if (stop_distance >= 0.f) {
-				const float max_vel = math::trajectory::computeMaxSpeedFromDistance(_param_mpc_jerk_max.get(),
-						      _param_mpc_acc_hor.get(), stop_distance, 0.f);
+			ਜੇ (stop_ਦੂਰੀ >= 0.f) {
+				ਅਚਲ ਦਸ਼ਮਲਵ max_vel = math::trajectory::compute_Max_ਰਫਤਾਰ_From_ਦੂਰੀ(_param_mpc_jerk_max.get(),
+						      _param_mpc_acc_hor.get(), stop_ਦੂਰੀ, 0.f);
 				curr_acc_vel_constraint = _param_mpc_xy_vel_p_acc.get() * math::min(max_vel - curr_vel_parallel, 0.f);
 
-			} else {
+			} ਨਹੀਂਤਾਂ {
 				curr_acc_vel_constraint = -1.f * _param_mpc_xy_vel_p_acc.get() * curr_vel_parallel;
 			}
 
-			if (curr_acc_vel_constraint < vel_comp_accel) {
+			ਜੇ (curr_acc_vel_constraint < vel_comp_accel) {
 				vel_comp_accel = curr_acc_vel_constraint;
 				vel_comp_accel_dir = bin_direction;
 			}
@@ -573,19 +573,19 @@ void CollisionPrevention::_getVelocityCompensationAcceleration(const float vehic
 	}
 }
 
-void CollisionPrevention::_publishVehicleCmdDoLoiter()
+ਖਾਲੀ CollisionPrevention::_publishVehicleCmdDoLoiter()
 {
 	vehicle_command_s command{};
-	command.command = vehicle_command_s::VEHICLE_CMD_DO_SET_MODE;
+	command.command = vehicle_command_s::VEHICLE_CMD_DO_ਸੈੱਟ_ਬਹੁਲਕ;
 	command.param1 = 1.f; // base mode VEHICLE_MODE_FLAG_CUSTOM_MODE_ENABLED
-	command.param2 = (float)PX4_CUSTOM_MAIN_MODE_AUTO;
-	command.param3 = (float)PX4_CUSTOM_SUB_MODE_AUTO_LOITER;
-	command.target_system = 1;
-	command.target_component = 1;
-	command.source_system = 1;
-	command.source_component = 1;
-	command.confirmation = false;
-	command.from_external = false;
-	command.timestamp = getTime();
+	command.param2 = (ਦਸ਼ਮਲਵ)PX4_CUSTOM_MAIN_ਬਹੁਲਕ_AUTO;
+	command.param3 = (ਦਸ਼ਮਲਵ)PX4_CUSTOM_SUB_ਬਹੁਲਕ_AUTO_LOITER;
+	command.ਨਿਸ਼ਾਨਾ_system = 1;
+	command.ਨਿਸ਼ਾਨਾ_component = 1;
+	command.ਸਰੋਤ_system = 1;
+	command.ਸਰੋਤ_component = 1;
+	command.confirmation = ਝੂਠ;
+	command.from_external = ਝੂਠ;
+	command.timestamp = get_ਸਮਾਂ();
 	_vehicle_command_pub.publish(command);
 }

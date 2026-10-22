@@ -1,35 +1,35 @@
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <inttypes.h>
-#include <string.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <inttypes.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <string.h>
 
-#define ATOMIC_ENTER lock()
-#define ATOMIC_LEAVE unlock()
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ATOMIC_ENTER ਤਾਲਾ()
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ATOMIC_LEAVE unlock()
 
-namespace cdev
+ਨਾਮਾਕਾਸ਼ cdev
 {
 
-struct file_operations {
-	void *op;
+ਬਣਤਰ file_operations {
+	ਖਾਲੀ *op;
 };
 
-using px4_file_operations_t = struct file_operations;
-using mode_t = uint32_t;
+ਵਰਤੋਂ px4_file_operations_t = ਬਣਤਰ file_operations;
+ਵਰਤੋਂ mode_t = uint32_t;
 
-class CDev;
+ਵਰਗ CDev;
 
-struct file_t {
-	int f_oflags{0};
-	void *f_priv{nullptr};
-	CDev *cdev{nullptr};
+ਬਣਤਰ file_t {
+	ਪੂਰਨ f_oflags{0};
+	ਖਾਲੀ *f_priv{ਖਾਲੀ_ਸੂਚਕ};
+	CDev *cdev{ਖਾਲੀ_ਸੂਚਕ};
 
-	file_t() = default;
-	file_t(int f, CDev *c) : f_oflags(f), cdev(c) {}
+	file_t() = ਮੂਲ;
+	file_t(ਪੂਰਨ f, CDev *c) : f_oflags(f), cdev(c) {}
 };
 
 } // namespace cdev
 
-extern "C" __EXPORT int register_driver(const char *name, const cdev::px4_file_operations_t *fops,
-					cdev::mode_t mode, void *data);
-extern "C" __EXPORT int unregister_driver(const char *path);
+ਬਾਹਰੀ "C" __EXPORT ਪੂਰਨ ਰਜਿਸਟਰ_driver(ਅਚਲ ਅੱਖਰ *name, ਅਚਲ cdev::px4_file_operations_t *fops,
+					cdev::mode_t ਬਹੁਲਕ, ਖਾਲੀ *ਅੰਕੜੇ);
+ਬਾਹਰੀ "C" __EXPORT ਪੂਰਨ unregister_driver(ਅਚਲ ਅੱਖਰ *ਰਸਤਾ);

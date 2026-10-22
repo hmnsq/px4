@@ -36,119 +36,119 @@
  * A wind and airspeed scale estimator.
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <drivers/drv_hrt.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/drv_hrt.h>
 
-#include <mathlib/mathlib.h>
-#include <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/mathlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
 
-#include "python/generated/fuse_airspeed.h"
-#include "python/generated/fuse_beta.h"
-#include "python/generated/init_wind_using_airspeed.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "python/generated/fuse_airspeed.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "python/generated/fuse_beta.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "python/generated/init_wind_using_airspeed.h"
 
-using namespace time_literals;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਸਮਾਂ_literals;
 
-class WindEstimator
+ਵਰਗ WindEstimator
 {
-public:
-	WindEstimator() = default;
-	~WindEstimator() = default;
+ਜਨਤਕ:
+	WindEstimator() = ਮੂਲ;
+	~WindEstimator() = ਮੂਲ;
 
 	// no copy, assignment, move, move assignment
-	WindEstimator(const WindEstimator &) = delete;
-	WindEstimator &operator=(const WindEstimator &) = delete;
-	WindEstimator(WindEstimator &&) = delete;
-	WindEstimator &operator=(WindEstimator &&) = delete;
+	WindEstimator(ਅਚਲ WindEstimator &) = ਮਿਟਾਓ;
+	WindEstimator &ਸੰਚਾਲਕ=(ਅਚਲ WindEstimator &) = ਮਿਟਾਓ;
+	WindEstimator(WindEstimator &&) = ਮਿਟਾਓ;
+	WindEstimator &ਸੰਚਾਲਕ=(WindEstimator &&) = ਮਿਟਾਓ;
 
-	void update(uint64_t time_now);
+	ਖਾਲੀ update(uint64_t ਸਮਾਂ_now);
 
-	void fuse_airspeed(uint64_t time_now, float true_airspeed, const matrix::Vector3f &velI,
-			   const float hor_vel_variance, const matrix::Quatf &q_att);
-	void fuse_beta(uint64_t time_now, const matrix::Vector3f &velI, const float hor_vel_variance,
-		       const matrix::Quatf &q_att);
+	ਖਾਲੀ fuse_airspeed(uint64_t ਸਮਾਂ_now, ਦਸ਼ਮਲਵ true_airspeed, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &velI,
+			   ਅਚਲ ਦਸ਼ਮਲਵ hor_vel_variance, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Quatf &q_att);
+	ਖਾਲੀ fuse_beta(uint64_t ਸਮਾਂ_now, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &velI, ਅਚਲ ਦਸ਼ਮਲਵ hor_vel_variance,
+		       ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Quatf &q_att);
 
-	bool is_estimate_valid() { return _initialised; }
+	ਤਾਰਕਿਕ is_estimate_valid() { ਵਾਪਸ _initialised; }
 
-	bool check_if_meas_is_rejected(float innov, float innov_var, uint8_t gate_size);
+	ਤਾਰਕਿਕ check_if_meas_is_rejected(ਦਸ਼ਮਲਵ innov, ਦਸ਼ਮਲਵ innov_var, uint8_t gate_ਮਾਪ);
 
-	matrix::Vector2f get_wind() { return matrix::Vector2f{_state(INDEX_W_N), _state(INDEX_W_E)}; }
+	ਮੈਟ੍ਰਿਕਸ::Vector2f get_wind() { ਵਾਪਸ ਮੈਟ੍ਰਿਕਸ::Vector2f{_state(ਸੂਚਕਾਂਕ_W_N), _state(ਸੂਚਕਾਂਕ_W_E)}; }
 
 	// invert scale (CAS = IAS * scale), protect agains division by 0, constrain to [0.1, 10]
-	float get_tas_scale() { return 1.f / math::constrain(_state(INDEX_TAS_SCALE), 0.1f, 10.0f); }
-	float get_tas_scale_var() { return _P(INDEX_TAS_SCALE, INDEX_TAS_SCALE); }
-	float get_tas_innov() { return _tas_innov; }
-	float get_tas_innov_var() { return _tas_innov_var; }
-	float get_beta_innov() { return _beta_innov; }
-	float get_beta_innov_var() { return _beta_innov_var; }
-	matrix::Vector2f  get_wind_var() { return matrix::Vector2f{_P(INDEX_W_N, INDEX_W_N), _P(INDEX_W_E, INDEX_W_E)}; }
-	bool get_wind_estimator_reset() { return _wind_estimator_reset; }
+	ਦਸ਼ਮਲਵ get_tas_scale() { ਵਾਪਸ 1.f / math::constrain(_state(ਸੂਚਕਾਂਕ_TAS_SCALE), 0.1f, 10.0f); }
+	ਦਸ਼ਮਲਵ get_tas_scale_var() { ਵਾਪਸ _P(ਸੂਚਕਾਂਕ_TAS_SCALE, ਸੂਚਕਾਂਕ_TAS_SCALE); }
+	ਦਸ਼ਮਲਵ get_tas_innov() { ਵਾਪਸ _tas_innov; }
+	ਦਸ਼ਮਲਵ get_tas_innov_var() { ਵਾਪਸ _tas_innov_var; }
+	ਦਸ਼ਮਲਵ get_beta_innov() { ਵਾਪਸ _beta_innov; }
+	ਦਸ਼ਮਲਵ get_beta_innov_var() { ਵਾਪਸ _beta_innov_var; }
+	ਮੈਟ੍ਰਿਕਸ::Vector2f  get_wind_var() { ਵਾਪਸ ਮੈਟ੍ਰਿਕਸ::Vector2f{_P(ਸੂਚਕਾਂਕ_W_N, ਸੂਚਕਾਂਕ_W_N), _P(ਸੂਚਕਾਂਕ_W_E, ਸੂਚਕਾਂਕ_W_E)}; }
+	ਤਾਰਕਿਕ get_wind_estimator_reset() { ਵਾਪਸ _wind_estimator_reset; }
 
 	// unaided, the state uncertainty (diagonal of sqrt(P)) grows by the process noise spectral density every second
-	void set_wind_process_noise_spectral_density(float wind_nsd) { _wind_psd = wind_nsd * wind_nsd; }
+	ਖਾਲੀ ਸੈੱਟ_wind_process_noise_spectral_density(ਦਸ਼ਮਲਵ wind_nsd) { _wind_psd = wind_nsd * wind_nsd; }
 
-	void set_tas_noise(float tas_sigma) { _tas_var = tas_sigma * tas_sigma; }
+	ਖਾਲੀ ਸੈੱਟ_tas_noise(ਦਸ਼ਮਲਵ tas_sigma) { _tas_var = tas_sigma * tas_sigma; }
 
-	void set_scale_init(float scale_init) {_scale_init = 1.f / math::constrain(scale_init, 0.1f, 10.f); }
+	ਖਾਲੀ ਸੈੱਟ_scale_init(ਦਸ਼ਮਲਵ scale_init) {_scale_init = 1.f / math::constrain(scale_init, 0.1f, 10.f); }
 
-	void reset_scale_to_init()
+	ਖਾਲੀ reset_scale_ਮੰਜ਼ਿਲ_init()
 	{
-		_state(INDEX_TAS_SCALE) = _scale_init;
-		auto P_wind = _P.slice<2, 2>(0, 0);
-		_P.setZero();
-		_P.slice<2, 2>(0, 0) = P_wind;
+		_state(ਸੂਚਕਾਂਕ_TAS_SCALE) = _scale_init;
+		ਸਵੈਚਾਲਿਤ P_wind = _P.ਟੁਕੜਾ<2, 2>(0, 0);
+		_P.ਸੈੱਟ_Zero();
+		_P.ਟੁਕੜਾ<2, 2>(0, 0) = P_wind;
 	}
 
-private:
-	enum {
-		INDEX_W_N = 0,
-		INDEX_W_E,
-		INDEX_TAS_SCALE
+ਨਿਜੀ:
+	ਗਿਣਤੀ {
+		ਸੂਚਕਾਂਕ_W_N = 0,
+		ਸੂਚਕਾਂਕ_W_E,
+		ਸੂਚਕਾਂਕ_TAS_SCALE
 	};	///< enum which can be used to access state.
 
-	static constexpr float kInitialWindError =
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kInitialWindError =
 		2.5f; // initial uncertainty of each wind state when filter is initialised without airspeed [m/s]
-	static constexpr float kInitialBetaErrorDeg =
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kInitialBetaErrorDeg =
 		15.0f;	// sidelip uncertainty used to initialise the filter with a true airspeed measurement [deg]
-	static constexpr float kInitialHeadingErrorDeg =
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kInitialHeadingErrorDeg =
 		10.0f; // heading uncertainty used to initialise the filter with a true airspeed measurement [deg]
 
-	matrix::Vector3f _state{0.f, 0.f, 1.f};
-	matrix::Matrix3f _P;		///< state covariance matrix
+	ਮੈਟ੍ਰਿਕਸ::Vector3f _state{0.f, 0.f, 1.f};
+	ਮੈਟ੍ਰਿਕਸ::Matrix3f _P;		///< state covariance matrix
 
-	float _tas_innov{0.0f};	///< true airspeed innovation
-	float _tas_innov_var{0.0f};	///< true airspeed innovation variance
+	ਦਸ਼ਮਲਵ _tas_innov{0.0f};	///< true airspeed innovation
+	ਦਸ਼ਮਲਵ _tas_innov_var{0.0f};	///< true airspeed innovation variance
 
-	float _beta_innov{0.0f};	///< sideslip innovation
-	float _beta_innov_var{0.0f};	///< sideslip innovation variance
+	ਦਸ਼ਮਲਵ _beta_innov{0.0f};	///< sideslip innovation
+	ਦਸ਼ਮਲਵ _beta_innov_var{0.0f};	///< sideslip innovation variance
 
-	bool _initialised{false};	///< True: filter has been initialised
+	ਤਾਰਕਿਕ _initialised{ਝੂਠ};	///< True: filter has been initialised
 
-	float _wind_psd{0.01f};	///< wind process noise power spectral density (m^2/s^4/Hz), (0.1 m/s^2/sqrt(Hz))^2
-	static constexpr float kTasScalePsd{1e-8f};	///< true airspeed scale process noise power spectral density (1/s^2/Hz), (0.0001 1/s/sqrt(Hz))^2
-	float _tas_var{1.96f};		///< true airspeed measurement noise variance (m/s)^2, (1.4 m/s)^2
-	static constexpr float kBetaVar{0.0225f};	///< sideslip measurement noise variance (rad)^2, (0.15 rad)^2
-	static constexpr uint8_t kTasGate{4};	///< airspeed fusion gate size (SD)
-	static constexpr uint8_t kBetaGate{1};	///< sideslip fusion gate size (SD)
+	ਦਸ਼ਮਲਵ _wind_psd{0.01f};	///< wind process noise power spectral density (m^2/s^4/Hz), (0.1 m/s^2/sqrt(Hz))^2
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kTasScalePsd{1e-8f};	///< true airspeed scale process noise power spectral density (1/s^2/Hz), (0.0001 1/s/sqrt(Hz))^2
+	ਦਸ਼ਮਲਵ _tas_var{1.96f};		///< true airspeed measurement noise variance (m/s)^2, (1.4 m/s)^2
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kBetaVar{0.0225f};	///< sideslip measurement noise variance (rad)^2, (0.15 rad)^2
+	ਸਥਿਰ constexpr uint8_t kTasGate{4};	///< airspeed fusion gate size (SD)
+	ਸਥਿਰ constexpr uint8_t kBetaGate{1};	///< sideslip fusion gate size (SD)
 
-	float _scale_init{1.f};
+	ਦਸ਼ਮਲਵ _scale_init{1.f};
 
-	uint64_t _time_last_airspeed_fuse = 0;	///< timestamp of last airspeed fusion
-	uint64_t _time_last_beta_fuse = 0;	///< timestamp of last sideslip fusion
-	uint64_t _time_last_update = 0;		///< timestamp of last covariance prediction
-	uint64_t _time_initialised = 0;         ///< timestamp when estimator is initialised
+	uint64_t ਸਮਾਂ_ਆਖਰੀ_airspeed_fuse = 0;	///< timestamp of last airspeed fusion
+	uint64_t ਸਮਾਂ_ਆਖਰੀ_beta_fuse = 0;	///< timestamp of last sideslip fusion
+	uint64_t ਸਮਾਂ_ਆਖਰੀ_update = 0;		///< timestamp of last covariance prediction
+	uint64_t ਸਮਾਂ_initialised = 0;         ///< timestamp when estimator is initialised
 
-	static constexpr float kTASScalePSDMultiplier = 100;
-	static constexpr hrt_abstime kTASScaleFastLearnTime = 300_s;
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kTASScalePSDMultiplier = 100;
+	ਸਥਿਰ constexpr hrt_abstime k_TASScale_Fast_Learn_ਸਮਾਂ = 300_s;
 
-	bool _wind_estimator_reset = false; ///< wind estimator was reset in this cycle
+	ਤਾਰਕਿਕ _wind_estimator_reset = ਝੂਠ; ///< wind estimator was reset in this cycle
 
 	// initialise state and state covariance matrix
-	bool initialise(const matrix::Vector3f &velI, const float hor_vel_variance, const float heading_rad,
-			const float tas_meas = NAN, const float tas_variance = NAN);
+	ਤਾਰਕਿਕ initialise(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &velI, ਅਚਲ ਦਸ਼ਮਲਵ hor_vel_variance, ਅਚਲ ਦਸ਼ਮਲਵ heading_rad,
+			ਅਚਲ ਦਸ਼ਮਲਵ tas_meas = NAN, ਅਚਲ ਦਸ਼ਮਲਵ tas_variance = NAN);
 
-	void run_sanity_checks();
+	ਖਾਲੀ ਲੜੀਵਾਰ_sanity_checks();
 
 	// return the square of two floating point numbers
-	static constexpr float sq(float var) { return var * var; }
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ sq(ਦਸ਼ਮਲਵ var) { ਵਾਪਸ var * var; }
 };

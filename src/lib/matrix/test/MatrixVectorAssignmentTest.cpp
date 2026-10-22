@@ -31,12 +31,12 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
 
-using namespace matrix;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ;
 
-TEST(MatrixVectorAssignmentTest, VectorAssignment)
+TEST(ਮੈਟ੍ਰਿਕਸ_ਸਦਿਸ਼_Assignment_Test, ਸਦਿਸ਼_Assignment)
 {
 	Vector3f v;
 	v(0) = 1;
@@ -53,7 +53,7 @@ TEST(MatrixVectorAssignmentTest, VectorAssignment)
 	EXPECT_FLOAT_EQ(v2(1), 5);
 	EXPECT_FLOAT_EQ(v2(2), 6);
 
-	SquareMatrix<float, 3> m = diag(Vector3f(1, 2, 3));
+	ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<ਦਸ਼ਮਲਵ, 3> m = diag(Vector3f(1, 2, 3));
 	EXPECT_FLOAT_EQ(m(0, 0), 1);
 	EXPECT_FLOAT_EQ(m(1, 1), 2);
 	EXPECT_FLOAT_EQ(m(2, 2), 3);

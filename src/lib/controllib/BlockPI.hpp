@@ -37,52 +37,52 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <assert.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <time.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/test/test.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/Block.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "matrix/math.hpp"
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
 /**
  * A proportional-integral controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPI: public SuperBlock
+ਵਰਗ __EXPORT ਖੰਡ_PI: ਜਨਤਕ Super_ਖੰਡ
 {
-public:
+ਜਨਤਕ:
 // methods
-	BlockPI(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_kP(this, "P"),
-		_kI(this, "I")
+	ਖੰਡ_PI(Super_ਖੰਡ *ਮਾਪਾ, ਅਚਲ ਅੱਖਰ *name) :
+		Super_ਖੰਡ(ਮਾਪਾ, name),
+		_integral(ਇਹ, "I"),
+		_kP(ਇਹ, "P"),
+		_kI(ਇਹ, "I")
 	{}
-	virtual ~BlockPI() = default;
-	float update(float input)
+	ਆਭਾਸੀ ~ਖੰਡ_PI() = ਮੂਲ;
+	ਦਸ਼ਮਲਵ update(ਦਸ਼ਮਲਵ ਨਿਵੇਸ਼)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input);
+		ਵਾਪਸ getKP() * ਨਿਵੇਸ਼ +
+		       getKI() * getIntegral().update(ਨਿਵੇਸ਼);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-private:
-	BlockIntegral _integral;
-	control::BlockParamFloat _kP;
-	control::BlockParamFloat _kI;
+	ਦਸ਼ਮਲਵ getKP() { ਵਾਪਸ _kP.get(); }
+	ਦਸ਼ਮਲਵ getKI() { ਵਾਪਸ _kI.get(); }
+	ਖੰਡ_Integral &getIntegral() { ਵਾਪਸ _integral; }
+ਨਿਜੀ:
+	ਖੰਡ_Integral _integral;
+	control::ਖੰਡ_Param_Float _kP;
+	control::ਖੰਡ_Param_Float _kI;
 };
 
 } // namespace control

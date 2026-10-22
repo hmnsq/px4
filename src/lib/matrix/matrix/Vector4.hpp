@@ -39,47 +39,47 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "Vector.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Vector.hpp"
 
-namespace matrix
+ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ
 {
 
-template<typename Type>
-class Vector4 : public Vector<Type, 4>
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type>
+ਵਰਗ Vector4 : ਜਨਤਕ ਸਦਿਸ਼<Type, 4>
 {
-public:
-	using Matrix41 = Matrix<Type, 4, 1>;
+ਜਨਤਕ:
+	ਵਰਤੋਂ Matrix41 = ਮੈਟ੍ਰਿਕਸ_2<Type, 4, 1>;
 
-	Vector4() = default;
+	Vector4() = ਮੂਲ;
 
-	Vector4(const Matrix41 &other) :
-		Vector<Type, 4>(other)
+	Vector4(ਅਚਲ Matrix41 &other) :
+		ਸਦਿਸ਼<Type, 4>(other)
 	{
 	}
 
-	explicit Vector4(const Type data_[3]) :
-		Vector<Type, 4>(data_)
+	ਸਪਸ਼ਟ Vector4(ਅਚਲ Type ਅੰਕੜੇ_2[3]) :
+		ਸਦਿਸ਼<Type, 4>(ਅੰਕੜੇ_2)
 	{
 	}
 
 	Vector4(Type x1, Type x2, Type x3, Type x4)
 	{
-		Vector4 &v(*this);
+		Vector4 &v(*ਇਹ);
 		v(0) = x1;
 		v(1) = x2;
 		v(2) = x3;
 		v(3) = x4;
 	}
 
-	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 4, 1, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	ਸਾਂਚਾ<size_t P, size_t Q>
+	Vector4(ਅਚਲ ਟੁਕੜਾ_2<Type, 4, 1, P, Q> &ਟੁਕੜਾ_ਵਿੱਚ) : ਸਦਿਸ਼<Type, 4>(ਟੁਕੜਾ_ਵਿੱਚ)
 	{
 	}
 
-	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 1, 4, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	ਸਾਂਚਾ<size_t P, size_t Q>
+	Vector4(ਅਚਲ ਟੁਕੜਾ_2<Type, 1, 4, P, Q> &ਟੁਕੜਾ_ਵਿੱਚ) : ਸਦਿਸ਼<Type, 4>(ਟੁਕੜਾ_ਵਿੱਚ)
 	{
 	}
 
@@ -87,43 +87,43 @@ public:
 	 * Override matrix ops so Vector4 type is returned
 	 */
 
-	Vector4 operator+(Vector4 other) const
+	Vector4 ਸੰਚਾਲਕ+(Vector4 other) ਅਚਲ
 	{
-		return Matrix41::operator+(other);
+		ਵਾਪਸ Matrix41::ਸੰਚਾਲਕ+(other);
 	}
 
-	Vector4 operator+(Type scalar) const
+	Vector4 ਸੰਚਾਲਕ+(Type scalar) ਅਚਲ
 	{
-		return Matrix41::operator+(scalar);
+		ਵਾਪਸ Matrix41::ਸੰਚਾਲਕ+(scalar);
 	}
 
-	Vector4 operator-(Vector4 other) const
+	Vector4 ਸੰਚਾਲਕ-(Vector4 other) ਅਚਲ
 	{
-		return Matrix41::operator-(other);
+		ਵਾਪਸ Matrix41::ਸੰਚਾਲਕ-(other);
 	}
 
-	Vector4 operator-(Type scalar) const
+	Vector4 ਸੰਚਾਲਕ-(Type scalar) ਅਚਲ
 	{
-		return Matrix41::operator-(scalar);
+		ਵਾਪਸ Matrix41::ਸੰਚਾਲਕ-(scalar);
 	}
 
-	Vector4 operator-() const
+	Vector4 ਸੰਚਾਲਕ-() ਅਚਲ
 	{
-		return Matrix41::operator-();
+		ਵਾਪਸ Matrix41::ਸੰਚਾਲਕ-();
 	}
 
-	Vector4 operator*(Type scalar) const
+	Vector4 ਸੰਚਾਲਕ*(Type scalar) ਅਚਲ
 	{
-		return Matrix41::operator*(scalar);
+		ਵਾਪਸ Matrix41::ਸੰਚਾਲਕ*(scalar);
 	}
 
-	Type operator*(Vector4 b) const
+	Type ਸੰਚਾਲਕ*(Vector4 b) ਅਚਲ
 	{
-		return Vector<Type, 4>::operator*(b);
+		ਵਾਪਸ ਸਦਿਸ਼<Type, 4>::ਸੰਚਾਲਕ*(b);
 	}
 
 };
 
-using Vector4f = Vector4<float>;
+ਵਰਤੋਂ Vector4f = Vector4<ਦਸ਼ਮਲਵ>;
 
 } // namespace matrix

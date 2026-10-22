@@ -39,36 +39,36 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <mathlib/mathlib.h>
-#include <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/mathlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
 
-template<typename Type>
-class SlewRate
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type>
+ਵਰਗ Slew_ਦਰ
 {
-public:
-	SlewRate() = default;
-	SlewRate(Type initial_value) { setForcedValue(initial_value); }
-	~SlewRate() = default;
+ਜਨਤਕ:
+	Slew_ਦਰ() = ਮੂਲ;
+	Slew_ਦਰ(Type initial_ਮੁੱਲ) { ਸੈੱਟ_Forced_ਮੁੱਲ(initial_ਮੁੱਲ); }
+	~Slew_ਦਰ() = ਮੂਲ;
 
 	/**
 	 * Set maximum rate of change for the value
 	 * @param slew_rate maximum rate of change
 	 */
-	void setSlewRate(const Type slew_rate) { _slew_rate = slew_rate; }
+	ਖਾਲੀ ਸੈੱਟ_Slew_ਦਰ(ਅਚਲ Type slew_ਦਰ) { slew_ਦਰ_2 = slew_ਦਰ; }
 
 	/**
 	 * Set value ignoring slew rate for initialization purpose
 	 * @param value new applied value
 	 */
-	void setForcedValue(const Type value) { _value = value; }
+	ਖਾਲੀ ਸੈੱਟ_Forced_ਮੁੱਲ(ਅਚਲ Type value) { ਮੁੱਲ_2 = value; }
 
 	/**
 	 * Get value from last update of the slew rate
 	 * @return current value the slew rate is at
 	 */
-	Type getState() const { return _value; }
+	Type getState() ਅਚਲ { ਵਾਪਸ ਮੁੱਲ_2; }
 
 	/**
 	 * Update slewrate
@@ -76,17 +76,17 @@ public:
 	 * @param deltatime time in seconds since last update
 	 * @return actual value that complies with the slew rate
 	 */
-	Type update(const Type new_value, const float deltatime)
+	Type update(ਅਚਲ Type new_ਮੁੱਲ, ਅਚਲ ਦਸ਼ਮਲਵ deltatime)
 	{
 		// Limit the rate of change of the value
-		const Type dvalue_desired = new_value - _value;
-		const Type dvalue_max = _slew_rate * deltatime;
-		const Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
-		_value += dvalue;
-		return _value;
+		ਅਚਲ Type dvalue_desired = new_ਮੁੱਲ - ਮੁੱਲ_2;
+		ਅਚਲ Type dvalue_max = slew_ਦਰ_2 * deltatime;
+		ਅਚਲ Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
+		ਮੁੱਲ_2 += dvalue;
+		ਵਾਪਸ ਮੁੱਲ_2;
 	}
 
-protected:
-	Type _slew_rate{}; ///< maximum rate of change for the value
-	Type _value{}; ///< state to keep last value of the slew rate
+ਸੁਰੱਖਿਅਤ:
+	Type slew_ਦਰ_2{}; ///< maximum rate of change for the value
+	Type ਮੁੱਲ_2{}; ///< state to keep last value of the slew rate
 };

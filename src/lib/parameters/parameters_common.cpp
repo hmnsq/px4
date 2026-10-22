@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#include <string.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <string.h>
 
 /**
  * @file parameters_common.cpp
@@ -40,7 +40,7 @@
  *
  */
 
-static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(param_info_s);
+ਸਥਿਰ constexpr uint16_t param_info_ਗਿਣਤੀ = ਆਕਾਰ(px4::parameters) / ਆਕਾਰ(param_info_s);
 
 /**
  * Test whether a param_t is value.
@@ -48,119 +48,119 @@ static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(pa
  * @param param			The parameter handle to test.
  * @return			True if the handle is valid.
  */
-static constexpr bool handle_in_range(param_t param) { return (param < param_info_count); }
+ਸਥਿਰ constexpr ਤਾਰਕਿਕ handle_ਵਿੱਚ_range(param_t param) { ਵਾਪਸ (param < param_info_ਗਿਣਤੀ); }
 
-unsigned param_count()
+ਬਿਨਾਨਿਸ਼ਾਨੀ param_ਗਿਣਤੀ()
 {
-	return param_info_count;
+	ਵਾਪਸ param_info_ਗਿਣਤੀ;
 }
 
-int param_get_index(param_t param)
+ਪੂਰਨ param_get_ਸੂਚਕਾਂਕ(param_t param)
 {
-	if (handle_in_range(param)) {
-		return (unsigned)param;
+	ਜੇ (handle_ਵਿੱਚ_range(param)) {
+		ਵਾਪਸ (ਬਿਨਾਨਿਸ਼ਾਨੀ)param;
 	}
 
-	return -1;
+	ਵਾਪਸ -1;
 }
 
-param_t param_for_index(unsigned index)
+param_t param_for_ਸੂਚਕਾਂਕ(ਬਿਨਾਨਿਸ਼ਾਨੀ ਸੂਚਕਾਂਕ)
 {
-	if (index < param_info_count) {
-		return (param_t)index;
+	ਜੇ (ਸੂਚਕਾਂਕ < param_info_ਗਿਣਤੀ) {
+		ਵਾਪਸ (param_t)ਸੂਚਕਾਂਕ;
 	}
 
-	return PARAM_INVALID;
+	ਵਾਪਸ PARAM_INVALID;
 }
 
-const char *param_name(param_t param)
+ਅਚਲ ਅੱਖਰ *param_name(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters[param].name : nullptr;
+	ਵਾਪਸ handle_ਵਿੱਚ_range(param) ? px4::parameters[param].name : ਖਾਲੀ_ਸੂਚਕ;
 }
 
 param_type_t param_type(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
+	ਵਾਪਸ handle_ਵਿੱਚ_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
 }
 
-bool param_is_volatile(param_t param)
+ਤਾਰਕਿਕ param_is_volatile(param_t param)
 {
-	if (handle_in_range(param)) {
-		for (const auto &p : px4::parameters_volatile) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	ਜੇ (handle_ਵਿੱਚ_range(param)) {
+		ਲਈ (ਅਚਲ ਸਵੈਚਾਲਿਤ &p : px4::parameters_volatile) {
+			ਜੇ (static_cast<px4::params>(param) == p) {
+				ਵਾਪਸ ਸੱਚ;
 			}
 		}
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-static bool params_locked = false;
+ਸਥਿਰ ਤਾਰਕਿਕ params_locked = ਝੂਠ;
 
-bool param_is_readonly(param_t param)
+ਤਾਰਕਿਕ param_is_readonly(param_t param)
 {
-	if (params_locked && handle_in_range(param)) {
-		for (const auto &p : px4::parameters_readonly) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	ਜੇ (params_locked && handle_ਵਿੱਚ_range(param)) {
+		ਲਈ (ਅਚਲ ਸਵੈਚਾਲਿਤ &p : px4::parameters_readonly) {
+			ਜੇ (static_cast<px4::params>(param) == p) {
+				ਵਾਪਸ ਸੱਚ;
 			}
 		}
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-void param_lock_readonly()
+ਖਾਲੀ param_ਤਾਲਾ_readonly()
 {
-	params_locked = true;
+	params_locked = ਸੱਚ;
 }
 
-size_t param_size(param_t param)
+size_t param_ਮਾਪ(param_t param)
 {
-	if (handle_in_range(param)) {
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-		case PARAM_TYPE_FLOAT:
-			return 4;
+	ਜੇ (handle_ਵਿੱਚ_range(param)) {
+		ਚੋਣ (param_type(param)) {
+		ਹਾਲਤ PARAM_TYPE_INT32:
+		ਹਾਲਤ PARAM_TYPE_FLOAT:
+			ਵਾਪਸ 4;
 
-		default:
-			return 0;
+		ਮੂਲ:
+			ਵਾਪਸ 0;
 		}
 	}
 
-	return 0;
+	ਵਾਪਸ 0;
 }
 
-int
-param_get_system_default_value(param_t param, void *default_val)
+ਪੂਰਨ
+param_get_system_default_ਮੁੱਲ(param_t param, ਖਾਲੀ *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	ਜੇ (!handle_ਵਿੱਚ_range(param)) {
+		ਵਾਪਸ PX4_ERROR;
 	}
 
-	int ret = PX4_OK;
+	ਪੂਰਨ ret = PX4_OK;
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
-		memcpy(default_val, &px4::parameters[param].val.i, param_size(param));
-		break;
+	ਚੋਣ (param_type(param)) {
+	ਹਾਲਤ PARAM_TYPE_INT32:
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ(default_val, &px4::parameters[param].val.i, param_ਮਾਪ(param));
+		ਰੋਕੋ;
 
-	case PARAM_TYPE_FLOAT:
-		memcpy(default_val, &px4::parameters[param].val.f, param_size(param));
-		break;
+	ਹਾਲਤ PARAM_TYPE_FLOAT:
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ(default_val, &px4::parameters[param].val.f, param_ਮਾਪ(param));
+		ਰੋਕੋ;
 
-	default:
+	ਮੂਲ:
 		ret = PX4_ERROR;
-		break;
+		ਰੋਕੋ;
 	}
 
-	return ret;
+	ਵਾਪਸ ret;
 }
 
-int
-param_get_mark_used(param_t param, void *val)
+ਪੂਰਨ
+param_get_mark_ਵਰਤਿਆ(param_t param, ਖਾਲੀ *val)
 {
-	param_set_used(param);
-	return param_get(param, val);
+	param_ਸੈੱਟ_ਵਰਤਿਆ(param);
+	ਵਾਪਸ param_get(param, val);
 }

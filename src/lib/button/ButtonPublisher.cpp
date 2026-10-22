@@ -38,47 +38,47 @@
  *
  */
 
-#include <button/ButtonPublisher.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <button/ButtonPublisher.hpp>
 
-using namespace time_literals;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਸਮਾਂ_literals;
 
 ButtonPublisher::ButtonPublisher()
 {
 	_safety_button_pub.advertise();
 }
 
-void ButtonPublisher::safetyButtonTriggerEvent()
+ਖਾਲੀ ButtonPublisher::safetyButtonTriggerEvent()
 {
 
 
 	button_event_s safety_button{};
-	safety_button.triggered = true;
-	safety_button.timestamp = hrt_absolute_time();
+	safety_button.triggered = ਸੱਚ;
+	safety_button.timestamp = hrt_absolute_ਸਮਾਂ();
 
 	_safety_button_pub.publish(safety_button);
 }
 
-void ButtonPublisher::pairingButtonTriggerEvent()
+ਖਾਲੀ ButtonPublisher::pairingButtonTriggerEvent()
 {
 	vehicle_command_s vcmd{};
-	vcmd.command = vehicle_command_s::VEHICLE_CMD_START_RX_PAIR;
+	vcmd.command = vehicle_command_s::VEHICLE_CMD_ਸ਼ੁਰੂ_RX_PAIR;
 	vcmd.param1 = 10.f; // GCS pairing request handled by a companion.
-	vcmd.timestamp = hrt_absolute_time();
+	vcmd.timestamp = hrt_absolute_ਸਮਾਂ();
 	_vehicle_command_pub.publish(vcmd);
 	PX4_DEBUG("Sending GCS pairing request");
 
 	led_control_s led_control{};
-	led_control.led_mask = 0xff;
-	led_control.mode = led_control_s::MODE_BLINK_FAST;
+	led_control.led_ਨਕਾਬ = 0xff;
+	led_control.ਬਹੁਲਕ = led_control_s::ਬਹੁਲਕ_BLINK_FAST;
 	led_control.color = led_control_s::COLOR_WHITE;
-	led_control.num_blinks = 20;
-	led_control.priority = 2;
-	led_control.timestamp = hrt_absolute_time();
+	led_control.ਅੰਕ_blinks = 20;
+	led_control.ਤਰਜੀਹ = 2;
+	led_control.timestamp = hrt_absolute_ਸਮਾਂ();
 	_led_control_pub.publish(led_control);
 
 	tune_control_s tune_control{};
-	tune_control.tune_id = tune_control_s::TUNE_ID_NOTIFY_POSITIVE;
+	tune_control.tune_id = tune_control_s::TUNE_ID_NOTIFY_ਸਕਾਰਾਤਮਕ;
 	tune_control.volume = tune_control_s::VOLUME_LEVEL_DEFAULT;
-	tune_control.timestamp = hrt_absolute_time();
+	tune_control.timestamp = hrt_absolute_ਸਮਾਂ();
 	_tune_control_pub.publish(tune_control);
 }

@@ -46,31 +46,31 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "SquareMatrix.hpp"
-#include "Vector2.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "SquareMatrix.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Vector2.hpp"
 
-namespace matrix
+ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ
 {
 
-template<typename Type>
-class Dcm2 : public SquareMatrix<Type, 2>
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type>
+ਵਰਗ Dcm2 : ਜਨਤਕ ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, 2>
 {
-public:
+ਜਨਤਕ:
 	/**
 	 * Standard constructor
 	 *
 	 * Initializes to identity
 	 */
-	Dcm2() : SquareMatrix<Type, 2>(eye<Type, 2>()) {}
+	Dcm2() : ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, 2>(eye<Type, 2>()) {}
 
 	/**
 	 * Constructor from array
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm2(const Type data_[2][2]) : SquareMatrix<Type, 2>(data_)
+	ਸਪਸ਼ਟ Dcm2(ਅਚਲ Type ਅੰਕੜੇ_2[2][2]) : ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, 2>(ਅੰਕੜੇ_2)
 	{
 	}
 
@@ -79,7 +79,7 @@ public:
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm2(const Type data_[4]) : SquareMatrix<Type, 2>(data_)
+	ਸਪਸ਼ਟ Dcm2(ਅਚਲ Type ਅੰਕੜੇ_2[4]) : ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, 2>(ਅੰਕੜੇ_2)
 	{
 	}
 
@@ -88,7 +88,7 @@ public:
 	 *
 	 * @param other Matrix22 to set dcm to
 	 */
-	Dcm2(const Matrix<Type, 2, 2> &other) : SquareMatrix<Type, 2>(other)
+	Dcm2(ਅਚਲ ਮੈਟ੍ਰਿਕਸ_2<Type, 2, 2> &other) : ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, 2>(other)
 	{
 	}
 
@@ -100,11 +100,11 @@ public:
 	 *
 	 * @param angle from frame 1 to frame 2 in radians
 	 */
-	Dcm2(const Type angle)
+	Dcm2(ਅਚਲ Type angle)
 	{
-		Dcm2 &dcm = *this;
-		Type sin_angle = std::sin(angle);
-		Type cos_angle = std::cos(angle);
+		Dcm2 &dcm = *ਇਹ;
+		Type sin_angle = std::ਜੀਵਾ(angle);
+		Type cos_angle = std::ਕੋਜੀਵਾ(angle);
 
 		dcm(0, 0) = cos_angle;
 		dcm(0, 1) = -sin_angle;
@@ -112,17 +112,17 @@ public:
 		dcm(1, 1) = cos_angle;
 	}
 
-	void renormalize()
+	ਖਾਲੀ renormalize()
 	{
 		// renormalize rows
-		for (size_t r = 0; r < 2; r++) {
-			Vector2<Type> rvec(Matrix<Type, 1, 2>(this->row(r)).transpose());
-			this->row(r) = rvec.normalized();
+		ਲਈ (size_t r = 0; r < 2; r++) {
+			Vector2<Type> rvec(ਮੈਟ੍ਰਿਕਸ_2<Type, 1, 2>(ਇਹ->ਪੰਕਤੀ(r)).transpose());
+			ਇਹ->ਪੰਕਤੀ(r) = rvec.normalized();
 		}
 	}
 };
 
-using Dcm2f = Dcm2<float>;
-using Dcm2d = Dcm2<double>;
+ਵਰਤੋਂ Dcm2f = Dcm2<ਦਸ਼ਮਲਵ>;
+ਵਰਤੋਂ Dcm2d = Dcm2<ਦੁੱਗਣਾ>;
 
 } // namespace matrix

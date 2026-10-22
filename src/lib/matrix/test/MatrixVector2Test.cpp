@@ -32,12 +32,12 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
 
-using namespace matrix;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ;
 
-TEST(MatrixVector2Test, Vector2)
+TEST(ਮੈਟ੍ਰਿਕਸ_Vector2_Test, Vector2)
 {
 	Vector2f a(1, 0);
 	Vector2f b(0, 1);
@@ -47,7 +47,7 @@ TEST(MatrixVector2Test, Vector2)
 	EXPECT_FLOAT_EQ(c(0), 0.f);
 	EXPECT_FLOAT_EQ(c(1), 0.f);
 
-	Matrix<float, 2, 1> d(a);
+	ਮੈਟ੍ਰਿਕਸ_2<ਦਸ਼ਮਲਵ, 2, 1> d(a);
 	EXPECT_FLOAT_EQ(d(0, 0), 1.f);
 	EXPECT_FLOAT_EQ(d(1, 0), 0.f);
 
@@ -55,8 +55,8 @@ TEST(MatrixVector2Test, Vector2)
 	EXPECT_FLOAT_EQ(e(0), 1.f);
 	EXPECT_FLOAT_EQ(e(1), 0.f);
 
-	float data[] = {4, 5};
-	Vector2f f(data);
+	ਦਸ਼ਮਲਵ ਅੰਕੜੇ[] = {4, 5};
+	Vector2f f(ਅੰਕੜੇ);
 	EXPECT_FLOAT_EQ(f(0), 4.f);
 	EXPECT_FLOAT_EQ(f(1), 5.f);
 

@@ -31,42 +31,42 @@
  *
  ****************************************************************************/
 
-#include "ManualVelocitySmoothingZ.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "ManualVelocitySmoothingZ.hpp"
 
-#include <mathlib/mathlib.h>
-#include <float.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/mathlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <float.h>
 
-void ManualVelocitySmoothingZ::reset(float accel, float vel, float pos)
+ਖਾਲੀ ManualVelocitySmoothingZ::reset(ਦਸ਼ਮਲਵ accel, ਦਸ਼ਮਲਵ vel, ਦਸ਼ਮਲਵ pos)
 {
 	_trajectory.reset(accel, vel, pos);
 
-	resetPositionLock();
+	reset_Position_ਤਾਲਾ();
 }
 
-void ManualVelocitySmoothingZ::resetPositionLock()
+ਖਾਲੀ ManualVelocitySmoothingZ::reset_Position_ਤਾਲਾ()
 {
-	_position_lock_active = false;
+	position_ਤਾਲਾ_ਸਰਗਰਮ = ਝੂਠ;
 	_position_setpoint_locked = NAN;
 }
 
-void ManualVelocitySmoothingZ::update(float dt, float velocity_target)
+ਖਾਲੀ ManualVelocitySmoothingZ::update(ਦਸ਼ਮਲਵ dt, ਦਸ਼ਮਲਵ velocity_ਨਿਸ਼ਾਨਾ)
 {
 	// Update state
 	updateTrajectories(dt);
 
 	// Set max accel/vel/jerk
 	// Has to be done before _updateTrajDurations()
-	updateTrajConstraints(velocity_target);
+	updateTrajConstraints(velocity_ਨਿਸ਼ਾਨਾ);
 
 	// Lock or unlock position
 	// Has to be done before _updateTrajDurations()
-	checkPositionLock(velocity_target);
+	check_Position_ਤਾਲਾ(velocity_ਨਿਸ਼ਾਨਾ);
 
 	// Update durations
-	_trajectory.updateDurations(velocity_target);
+	_trajectory.updateDurations(velocity_ਨਿਸ਼ਾਨਾ);
 }
 
-void ManualVelocitySmoothingZ::updateTrajectories(float dt)
+ਖਾਲੀ ManualVelocitySmoothingZ::updateTrajectories(ਦਸ਼ਮਲਵ dt)
 {
 	_trajectory.updateTraj(dt);
 
@@ -76,19 +76,19 @@ void ManualVelocitySmoothingZ::updateTrajectories(float dt)
 	_state.x = _trajectory.getCurrentPosition();
 }
 
-void ManualVelocitySmoothingZ::updateTrajConstraints(float velocity_target)
+ਖਾਲੀ ManualVelocitySmoothingZ::updateTrajConstraints(ਦਸ਼ਮਲਵ velocity_ਨਿਸ਼ਾਨਾ)
 {
-	if (velocity_target < 0.f) { // up
-		_trajectory.setMaxAccel(_max_accel_up);
-		_trajectory.setMaxVel(_max_vel_up);
+	ਜੇ (velocity_ਨਿਸ਼ਾਨਾ < 0.f) { //ਉੱਪਰ
+		_trajectory.ਸੈੱਟ_Max_Accel(max_accel_ਉੱਪਰ);
+		_trajectory.ਸੈੱਟ_Max_Vel(max_vel_ਉੱਪਰ);
 
-	} else { // down
-		_trajectory.setMaxAccel(_max_accel_down);
-		_trajectory.setMaxVel(_max_vel_down);
+	} ਨਹੀਂਤਾਂ { //ਥੱਲੇ
+		_trajectory.ਸੈੱਟ_Max_Accel(max_accel_ਥੱਲੇ);
+		_trajectory.ਸੈੱਟ_Max_Vel(max_vel_ਥੱਲੇ);
 	}
 }
 
-void ManualVelocitySmoothingZ::checkPositionLock(float velocity_target)
+ਖਾਲੀ ManualVelocitySmoothingZ::check_Position_ਤਾਲਾ(ਦਸ਼ਮਲਵ velocity_ਨਿਸ਼ਾਨਾ)
 {
 	/**
 	 * During a position lock -> position unlock transition, we have to make sure that the velocity setpoint
@@ -98,22 +98,22 @@ void ManualVelocitySmoothingZ::checkPositionLock(float velocity_target)
 	 * This is why the previous input of the velocity controller
 	 * is used to set current velocity of the trajectory.
 	 */
-	if (fabsf(_state.v) < 0.1f &&
+	ਜੇ (fabsf(_state.v) < 0.1f &&
 	    fabsf(_state.a) < .2f &&
-	    fabsf(velocity_target) <= FLT_EPSILON) {
+	    fabsf(velocity_ਨਿਸ਼ਾਨਾ) <= FLT_EPSILON) {
 		// Lock position
-		_position_lock_active = true;
+		position_ਤਾਲਾ_ਸਰਗਰਮ = ਸੱਚ;
 		_position_setpoint_locked = _state.x;
 
-	} else {
+	} ਨਹੀਂਤਾਂ {
 		// Unlock position
-		if (_position_lock_active) {
+		ਜੇ (position_ਤਾਲਾ_ਸਰਗਰਮ) {
 			// Start the trajectory at the current velocity setpoint
-			_trajectory.setCurrentVelocity(_velocity_setpoint_feedback);
+			_trajectory.ਸੈੱਟ_Current_Velocity(_velocity_setpoint_feedback);
 			_state.v = _velocity_setpoint_feedback;
-			resetPositionLock();
+			reset_Position_ਤਾਲਾ();
 		}
 
-		_trajectory.setCurrentPosition(_position_estimate);
+		_trajectory.ਸੈੱਟ_Current_Position(_position_estimate);
 	}
 }

@@ -37,98 +37,98 @@
  * Welford's online algorithm for computing mean and variance.
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <lib/mathlib/mathlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/mathlib/mathlib.h>
 
-namespace math
+ਨਾਮਾਕਾਸ਼ math
 {
 
-template <typename Type = float>
-class WelfordMean
+ਸਾਂਚਾ <ਕਿਸਮ_ਨਾਂ Type = ਦਸ਼ਮਲਵ>
+ਵਰਗ Welford_ਔਸਤ
 {
-public:
+ਜਨਤਕ:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const Type &new_value)
+	ਤਾਰਕਿਕ update(ਅਚਲ Type &new_ਮੁੱਲ)
 	{
-		if (_count == 0) {
+		ਜੇ (ਗਿਣਤੀ_4 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
-			return false;
+			ਗਿਣਤੀ_4 = 1;
+			ਔਸਤ_2 = new_ਮੁੱਲ;
+			ਵਾਪਸ ਝੂਠ;
 
-		} else if (_count == UINT16_MAX) {
+		} ਨਹੀਂਤਾਂ ਜੇ (ਗਿਣਤੀ_4 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / ਗਿਣਤੀ_4;
 			_M2_accum = 0;
 
-			_count = 1;
+			ਗਿਣਤੀ_4 = 1;
 
-		} else {
-			_count++;
+		} ਨਹੀਂਤਾਂ {
+			ਗਿਣਤੀ_4++;
 		}
 
 		// mean accumulates the mean of the entire dataset
 		// delta can be very small compared to the mean, use algorithm to minimise numerical error
-		const Type delta{new_value - _mean};
-		const Type mean_change = delta / _count;
-		_mean = kahanSummation(_mean, mean_change, _mean_accum);
+		ਅਚਲ Type delta{new_ਮੁੱਲ - ਔਸਤ_2};
+		ਅਚਲ Type ਔਸਤ_change = delta / ਗਿਣਤੀ_4;
+		ਔਸਤ_2 = kahanSummation(ਔਸਤ_2, ਔਸਤ_change, ਔਸਤ_accum);
 
 		// M2 aggregates the squared distance from the mean
 		// count aggregates the number of samples seen so far
-		const Type M2_change = delta * (new_value - _mean);
+		ਅਚਲ Type M2_change = delta * (new_ਮੁੱਲ - ਔਸਤ_2);
 		_M2 = kahanSummation(_M2, M2_change, _M2_accum);
 
 		// protect against floating point precision causing negative variances
 		_M2 = math::max(_M2, 0.f);
 
-		if (!PX4_ISFINITE(_mean) || !PX4_ISFINITE(_M2)) {
+		ਜੇ (!PX4_ISFINITE(ਔਸਤ_2) || !PX4_ISFINITE(_M2)) {
 			reset();
-			return false;
+			ਵਾਪਸ ਝੂਠ;
 		}
 
-		return valid();
+		ਵਾਪਸ valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	ਤਾਰਕਿਕ valid() ਅਚਲ { ਵਾਪਸ ਗਿਣਤੀ_4 > 2; }
+	ਸਵੈਚਾਲਿਤ ਗਿਣਤੀ_2() ਅਚਲ { ਵਾਪਸ ਗਿਣਤੀ_4; }
 
-	void reset()
+	ਖਾਲੀ reset()
 	{
-		_count = 0;
-		_mean = 0;
+		ਗਿਣਤੀ_4 = 0;
+		ਔਸਤ_2 = 0;
 		_M2 = 0;
 
-		_mean_accum = 0;
+		ਔਸਤ_accum = 0;
 		_M2_accum = 0;
 	}
 
-	Type mean() const { return _mean; }
-	Type variance() const { return _M2 / (_count - 1); }
-	Type standard_deviation() const { return std::sqrt(variance()); }
+	Type ਔਸਤ() ਅਚਲ { ਵਾਪਸ ਔਸਤ_2; }
+	Type variance() ਅਚਲ { ਵਾਪਸ _M2 / (ਗਿਣਤੀ_4 - 1); }
+	Type standard_deviation() ਅਚਲ { ਵਾਪਸ std::ਵਰਗਮੂਲ(variance()); }
 
-private:
+ਨਿਜੀ:
 
 	// Use Kahan summation algorithm to get the sum of "sum_previous" and "input".
 	// This function relies on the caller to be responsible for keeping a copy of
 	// "accumulator" and passing this value at the next iteration.
 	// Ref: https://en.wikipedia.org/wiki/Kahan_summation_algorithm
-	inline Type kahanSummation(Type sum_previous, Type input, Type &accumulator)
+	ਸਤਰਅੰਦਰ Type kahanSummation(Type ਜੋੜ_ਪਿਛਲਾ, Type ਨਿਵੇਸ਼, Type &ਸੰਚਾਇਕ)
 	{
-		const Type y = input - accumulator;
-		const Type t = sum_previous + y;
-		accumulator = (t - sum_previous) - y;
-		return t;
+		ਅਚਲ Type y = ਨਿਵੇਸ਼ - ਸੰਚਾਇਕ;
+		ਅਚਲ Type t = ਜੋੜ_ਪਿਛਲਾ + y;
+		ਸੰਚਾਇਕ = (t - ਜੋੜ_ਪਿਛਲਾ) - y;
+		ਵਾਪਸ t;
 	}
 
-	Type _mean{};
+	Type ਔਸਤ_2{};
 	Type _M2{};
 
-	Type _mean_accum{};  ///< kahan summation algorithm accumulator for mean
+	Type ਔਸਤ_accum{};  ///< kahan summation algorithm accumulator for mean
 	Type _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t ਗਿਣਤੀ_4{0};
 };
 
 } // namespace math

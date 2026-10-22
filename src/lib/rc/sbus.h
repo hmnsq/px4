@@ -39,20 +39,20 @@
  * @author Lorenz Meier <lorenz@px4.io>
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <stdint.h>
-#include <stdbool.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdbool.h>
 
 __BEGIN_DECLS
 
-#define SBUS_FRAME_SIZE			25
-#define SBUS_BUFFER_SIZE		(SBUS_FRAME_SIZE + SBUS_FRAME_SIZE / 2)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS_ਚੌਖਟਾ_ਮਾਪ			25
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS_ਬਫਰ_ਮਾਪ		(SBUS_ਚੌਖਟਾ_ਮਾਪ + SBUS_ਚੌਖਟਾ_ਮਾਪ / 2)
 
-typedef   uint8_t sbus_frame_t[SBUS_FRAME_SIZE + (SBUS_FRAME_SIZE / 2)];
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ   uint8_t sbus_ਚੌਖਟਾ_t[SBUS_ਚੌਖਟਾ_ਮਾਪ + (SBUS_ਚੌਖਟਾ_ਮਾਪ / 2)];
 
 
-__EXPORT int	sbus_init(const char *device, bool singlewire);
+__EXPORT ਪੂਰਨ	sbus_init(ਅਚਲ ਅੱਖਰ *device, bool singlewire);
 
 /**
  * Parse serial bytes on the S.BUS bus
@@ -71,19 +71,19 @@ __EXPORT int	sbus_init(const char *device, bool singlewire);
  * provides a degree of protection. Of course, it would be better
  * if we didn't drop bytes...
  */
-__EXPORT int	sbus_config(int sbus_fd, bool singlewire);
-__EXPORT bool	sbus_input(int sbus_fd, uint16_t *values, uint16_t *num_values, bool *sbus_failsafe,
-			   bool *sbus_frame_drop,
+__EXPORT ਪੂਰਨ	sbus_config(ਪੂਰਨ sbus_fd, bool singlewire);
+__EXPORT bool	sbus_ਨਿਵੇਸ਼(ਪੂਰਨ sbus_fd, uint16_t *ਮੁੱਲਾਂ_2, uint16_t *ਅੰਕ_ਮੁੱਲਾਂ, bool *sbus_failsafe,
+			   bool *sbus_ਚੌਖਟਾ_drop,
 			   uint16_t max_channels);
-__EXPORT bool	sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
-			   uint16_t *num_values, bool *sbus_failsafe, bool *sbus_frame_drop, unsigned *frame_drops, uint16_t max_channels);
-__EXPORT void	sbus1_output(int sbus_fd, uint16_t *values, uint16_t num_values);
-__EXPORT void	sbus2_output(int sbus_fd, uint16_t *values, uint16_t num_values);
-__EXPORT void	sbus1_set_output_rate_hz(uint16_t rate_hz);
+__EXPORT bool	sbus_parse(uint64_t now, uint8_t *ਚੌਖਟਾ, ਬਿਨਾਨਿਸ਼ਾਨੀ len, uint16_t *ਮੁੱਲਾਂ_2,
+			   uint16_t *ਅੰਕ_ਮੁੱਲਾਂ, bool *sbus_failsafe, bool *sbus_ਚੌਖਟਾ_drop, ਬਿਨਾਨਿਸ਼ਾਨੀ *ਚੌਖਟਾ_drops, uint16_t max_channels);
+__EXPORT ਖਾਲੀ	sbus1_output(ਪੂਰਨ sbus_fd, uint16_t *ਮੁੱਲਾਂ_2, uint16_t ਅੰਕ_ਮੁੱਲਾਂ);
+__EXPORT ਖਾਲੀ	sbus2_output(ਪੂਰਨ sbus_fd, uint16_t *ਮੁੱਲਾਂ_2, uint16_t ਅੰਕ_ਮੁੱਲਾਂ);
+__EXPORT ਖਾਲੀ	sbus1_ਸੈੱਟ_output_ਦਰ_hz(uint16_t ਦਰ_hz);
 
 /**
  * The number of incomplete frames we encountered
  */
-__EXPORT unsigned	sbus_dropped_frames(void);
+__EXPORT ਬਿਨਾਨਿਸ਼ਾਨੀ	sbus_dropped_ਚੌਖਟੇ(ਖਾਲੀ);
 
 __END_DECLS

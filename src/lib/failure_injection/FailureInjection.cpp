@@ -31,199 +31,199 @@
  *
  ****************************************************************************/
 
-#include "FailureInjection.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "FailureInjection.hpp"
 
-#if defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
+#ਜੇ defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
 
-#include <parameters/param.h>
-#include <uORB/topics/battery_status.h>
-#include <uORB/topics/sensor_gnss.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <parameters/param.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/battery_status.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/sensor_gnss.h>
 
-namespace failure_injection
+ਨਾਮਾਕਾਸ਼ failure_injection
 {
 
-bool Config::update()
+ਤਾਰਕਿਕ Config::update()
 {
 	failure_injection_s cfg;
 
-	if (_sub.update(&cfg)) {
-		set(cfg);
-		return true;
+	ਜੇ (_sub.update(&cfg)) {
+		ਸੈੱਟ(cfg);
+		ਵਾਪਸ ਸੱਚ;
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-void Config::set(const failure_injection_s &cfg)
+ਖਾਲੀ Config::ਸੈੱਟ(ਅਚਲ failure_injection_s &cfg)
 {
-	_count = (cfg.count <= failure_injection_s::MAX_FAILURES) ? cfg.count : failure_injection_s::MAX_FAILURES;
+	ਗਿਣਤੀ_4 = (cfg.ਗਿਣਤੀ_2 <= failure_injection_s::MAX_FAILURES) ? cfg.ਗਿਣਤੀ_2 : failure_injection_s::MAX_FAILURES;
 
-	for (uint8_t i = 0; i < _count; i++) {
+	ਲਈ (uint8_t i = 0; i < ਗਿਣਤੀ_4; i++) {
 		_unit[i] = cfg.unit[i];
-		_instance_mask[i] = cfg.instance_mask[i];
-		_failure_type[i] = static_cast<Mode>(cfg.failure_type[i]);
+		instance_ਨਕਾਬ[i] = cfg.instance_ਨਕਾਬ_2[i];
+		_failure_type[i] = static_cast<ਬਹੁਲਕ_2>(cfg.failure_type[i]);
 	}
 }
 
-Mode Config::mode(uint8_t unit, uint8_t instance) const
+ਬਹੁਲਕ_2 Config::ਬਹੁਲਕ(uint8_t unit, uint8_t instance) ਅਚਲ
 {
-	for (uint8_t i = 0; i < _count; i++) {
-		if (_unit[i] != unit) {
-			continue;
+	ਲਈ (uint8_t i = 0; i < ਗਿਣਤੀ_4; i++) {
+		ਜੇ (_unit[i] != unit) {
+			ਜਾਰੀ;
 		}
 
 		// instance == 0 matches any instance of the unit; otherwise match the
 		// 1-based instance against the bitmask (0xFFFF covers all instances).
-		if (instance == 0 || (instance <= 16 && (_instance_mask[i] & (1u << (instance - 1))))) {
-			return _failure_type[i];
+		ਜੇ (instance == 0 || (instance <= 16 && (instance_ਨਕਾਬ[i] & (1u << (instance - 1))))) {
+			ਵਾਪਸ _failure_type[i];
 		}
 	}
 
-	return Mode::Ok;
+	ਵਾਪਸ ਬਹੁਲਕ_2::Ok;
 }
 
-bool process_battery(const Config &config, uint8_t instance, battery_status_s &battery_status)
+ਤਾਰਕਿਕ process_battery(ਅਚਲ Config &config, uint8_t instance, battery_ਸਥਿਤੀ_s &battery_ਸਥਿਤੀ)
 {
-	const Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_BATTERY, instance);
-	static constexpr float trigger_margin = 0.01f; // report remaining charge just below the threshold
+	ਅਚਲ ਬਹੁਲਕ_2 ਬਹੁਲਕ = config.ਬਹੁਲਕ(failure_injection_s::FAILURE_UNIT_SYSTEM_BATTERY, instance);
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ trigger_margin = 0.01f; // report remaining charge just below the threshold
 
-	if (mode == Mode::Off) {
+	ਜੇ (ਬਹੁਲਕ == ਬਹੁਲਕ_2::Off) {
 		// Suppress the publication so the pack reads disconnected.
-		return false;
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	if (mode != Mode::Wrong) {
-		return true;
+	ਜੇ (ਬਹੁਲਕ != ਬਹੁਲਕ_2::Wrong) {
+		ਵਾਪਸ ਸੱਚ;
 	}
 
-	static const param_t level_handle = param_find("SYS_FAIL_BAT_LVL");
-	static const param_t low_thr_handle = param_find("BAT_LOW_THR");
-	static const param_t crit_thr_handle = param_find("BAT_CRIT_THR");
-	static const param_t emergen_thr_handle = param_find("BAT_EMERGEN_THR");
+	ਸਥਿਰ ਅਚਲ param_t level_handle = param_ਲੱਭੋ("SYS_FAIL_BAT_LVL");
+	ਸਥਿਰ ਅਚਲ param_t ਨੀਵਾਂ_thr_handle = param_ਲੱਭੋ("BAT_LOW_THR");
+	ਸਥਿਰ ਅਚਲ param_t crit_thr_handle = param_ਲੱਭੋ("BAT_CRIT_THR");
+	ਸਥਿਰ ਅਚਲ param_t emergen_thr_handle = param_ਲੱਭੋ("BAT_EMERGEN_THR");
 
-	int32_t level = battery_status_s::WARNING_CRITICAL;
+	int32_t level = battery_ਸਥਿਤੀ_s::WARNING_CRITICAL;
 	param_get(level_handle, &level);
 
-	param_t threshold_handle = crit_thr_handle;
+	param_t ਹੱਦ_handle = crit_thr_handle;
 
-	switch (level) {
-	case battery_status_s::WARNING_LOW:
-		threshold_handle = low_thr_handle;
-		break;
+	ਚੋਣ (level) {
+	ਹਾਲਤ battery_ਸਥਿਤੀ_s::WARNING_ਨੀਵਾਂ:
+		ਹੱਦ_handle = ਨੀਵਾਂ_thr_handle;
+		ਰੋਕੋ;
 
-	case battery_status_s::WARNING_EMERGENCY:
-		threshold_handle = emergen_thr_handle;
-		break;
+	ਹਾਲਤ battery_ਸਥਿਤੀ_s::WARNING_EMERGENCY:
+		ਹੱਦ_handle = emergen_thr_handle;
+		ਰੋਕੋ;
 
-	case battery_status_s::WARNING_CRITICAL:
-	default:
-		level = battery_status_s::WARNING_CRITICAL;
-		threshold_handle = crit_thr_handle;
-		break;
+	ਹਾਲਤ battery_ਸਥਿਤੀ_s::WARNING_CRITICAL:
+	ਮੂਲ:
+		level = battery_ਸਥਿਤੀ_s::WARNING_CRITICAL;
+		ਹੱਦ_handle = crit_thr_handle;
+		ਰੋਕੋ;
 	}
 
-	battery_status.warning = level;
+	battery_ਸਥਿਤੀ.warning = level;
 
 
 	// Report the remaining charge just below the selected threshold so the
 	// matching stage of the low-battery failsafe triggers.
-	float threshold = 0.f;
-	param_get(threshold_handle, &threshold);
-	battery_status.remaining = (threshold > trigger_margin) ? (threshold - trigger_margin) : 0.f;
+	ਦਸ਼ਮਲਵ ਹੱਦ = 0.f;
+	param_get(ਹੱਦ_handle, &ਹੱਦ);
+	battery_ਸਥਿਤੀ.ਬਚਿਆ = (ਹੱਦ > trigger_margin) ? (ਹੱਦ - trigger_margin) : 0.f;
 
-	return true;
+	ਵਾਪਸ ਸੱਚ;
 }
 
-bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
+ਤਾਰਕਿਕ process_gnss(ਅਚਲ Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
 		  Stuck<sensor_gnss_s> &stuck)
 {
-	const Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SENSOR_GPS, uorb_instance + 1);
+	ਅਚਲ ਬਹੁਲਕ_2 ਬਹੁਲਕ = config.ਬਹੁਲਕ(failure_injection_s::FAILURE_UNIT_SENSOR_GPS, uorb_instance + 1);
 
 	// Off and Stuck are message-agnostic; run them first so the Stuck cache keeps the
 	// uncorrupted sample and a later Stuck replays a healthy fix.
-	if (!process(mode, sensor_gnss, stuck)) {
-		return false;
+	ਜੇ (!process(ਬਹੁਲਕ, sensor_gnss, stuck)) {
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	if (mode == Mode::Wrong) {
-		static const param_t fix_type_handle = param_find("SYS_FAIL_GPS_WRG");
+	ਜੇ (ਬਹੁਲਕ == ਬਹੁਲਕ_2::Wrong) {
+		ਸਥਿਰ ਅਚਲ param_t fix_type_handle = param_ਲੱਭੋ("SYS_FAIL_GPS_WRG");
 
 		int32_t fix_type = sensor_gnss_s::FIX_TYPE_2D;
 		param_get(fix_type_handle, &fix_type);
 		sensor_gnss.fix_type = (uint8_t)fix_type;
 
-		static const param_t jamming_state_handle = param_find("SYS_FAIL_GPS_JAM");
+		ਸਥਿਰ ਅਚਲ param_t jamming_state_handle = param_ਲੱਭੋ("SYS_FAIL_GPS_JAM");
 
 		int32_t jamming_state = sensor_gnss_s::JAMMING_STATE_UNKNOWN;
 		param_get(jamming_state_handle, &jamming_state);
 
-		if (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
+		ਜੇ (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
 			sensor_gnss.jamming_state = (uint8_t)jamming_state;
 		}
 	}
 
-	return true;
+	ਵਾਪਸ ਸੱਚ;
 }
 
-esc_status_s process_esc(const Config &config, const esc_status_s &status)
+esc_ਸਥਿਤੀ_s process_esc(ਅਚਲ Config &config, ਅਚਲ esc_ਸਥਿਤੀ_s &ਸਥਿਤੀ)
 {
-	esc_status_s result = status;
+	esc_ਸਥਿਤੀ_s ਨਤੀਜਾ = ਸਥਿਤੀ;
 
-	for (int i = 0; i < result.esc_count && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
-		const uint8_t function = result.esc[i].actuator_function;
+	ਲਈ (ਪੂਰਨ i = 0; i < ਨਤੀਜਾ.esc_ਗਿਣਤੀ && i < esc_ਸਥਿਤੀ_s::CONNECTED_ESC_MAX; i++) {
+		ਅਚਲ uint8_t function = ਨਤੀਜਾ.esc[i].actuator_function;
 
-		if (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
-			continue; // not a motor output
+		ਜੇ (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
+			ਜਾਰੀ; // not a motor output
 		}
 
-		const uint8_t instance = function - esc_report_s::ACTUATOR_FUNCTION_MOTOR1 + 1; // 1-based ESC instance
+		ਅਚਲ uint8_t instance = function - esc_report_s::ACTUATOR_FUNCTION_MOTOR1 + 1; // 1-based ESC instance
 
-		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_ESC, instance)) {
-		case Mode::Off:
-			result.esc_online_flags &= ~(1u << i);
-			result.esc_armed_flags &= ~(1u << i);
-			result.esc[i] = esc_report_s{};
-			result.esc[i].actuator_function = function;
-			break;
+		ਚੋਣ (config.ਬਹੁਲਕ(failure_injection_s::FAILURE_UNIT_SYSTEM_ESC, instance)) {
+		ਹਾਲਤ ਬਹੁਲਕ_2::Off:
+			ਨਤੀਜਾ.esc_online_flags &= ~(1u << i);
+			ਨਤੀਜਾ.esc_armed_flags &= ~(1u << i);
+			ਨਤੀਜਾ.esc[i] = esc_report_s{};
+			ਨਤੀਜਾ.esc[i].actuator_function = function;
+			ਰੋਕੋ;
 
-		case Mode::Wrong:
-			result.esc[i].esc_voltage *= 0.1f;
-			result.esc[i].esc_current *= 0.1f;
-			result.esc[i].esc_rpm *= 10;
-			break;
+		ਹਾਲਤ ਬਹੁਲਕ_2::Wrong:
+			ਨਤੀਜਾ.esc[i].esc_voltage *= 0.1f;
+			ਨਤੀਜਾ.esc[i].esc_current *= 0.1f;
+			ਨਤੀਜਾ.esc[i].esc_rpm *= 10;
+			ਰੋਕੋ;
 
-		default:
-			break;
+		ਮੂਲ:
+			ਰੋਕੋ;
 		}
 	}
 
-	return result;
+	ਵਾਪਸ ਨਤੀਜਾ;
 }
 
-MotorFailureMasks process_motor(const Config &config)
+MotorFailureMasks process_motor(ਅਚਲ Config &config)
 {
 	MotorFailureMasks masks{};
 
-	for (int i = 0; i < esc_status_s::CONNECTED_ESC_MAX; i++) {
-		const uint16_t bit = 1u << i;
+	ਲਈ (ਪੂਰਨ i = 0; i < esc_ਸਥਿਤੀ_s::CONNECTED_ESC_MAX; i++) {
+		ਅਚਲ uint16_t bit = 1u << i;
 
-		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_MOTOR, i + 1)) {
-		case Mode::Off:
-			masks.failure_mask |= bit;
-			break;
+		ਚੋਣ (config.ਬਹੁਲਕ(failure_injection_s::FAILURE_UNIT_SYSTEM_MOTOR, i + 1)) {
+		ਹਾਲਤ ਬਹੁਲਕ_2::Off:
+			masks.failure_ਨਕਾਬ |= bit;
+			ਰੋਕੋ;
 
-		case Mode::Wrong:
-			masks.stop_mask |= bit;
-			break;
+		ਹਾਲਤ ਬਹੁਲਕ_2::Wrong:
+			masks.stop_ਨਕਾਬ |= bit;
+			ਰੋਕੋ;
 
-		default:
-			break;
+		ਮੂਲ:
+			ਰੋਕੋ;
 		}
 	}
 
-	return masks;
+	ਵਾਪਸ masks;
 }
 
 } // namespace failure_injection
 
-#endif // CONFIG_MODULES_FAILURE_INJECTION_MANAGER
+#ਜੇ_ਅੰਤ // CONFIG_MODULES_FAILURE_INJECTION_MANAGER

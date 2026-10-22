@@ -51,66 +51,66 @@
  * CCASSERT(predicate) Will generate a compile time error it the
  * predicate is false
  */
-#include <assert.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <assert.h>
 
-#ifndef _PX4_MACROS_H
-#define _PX4_MACROS_H
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ _PX4_MACROS_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ _PX4_MACROS_H
 
 
-#if !defined(arraySize)
-#define arraySize(a) (sizeof((a))/sizeof((a[0])))
-#endif
+#ਜੇ !defined(array_ਮਾਪ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ array_ਮਾਪ(a) (ਆਕਾਰ((a))/ਆਕਾਰ((a[0])))
+#ਜੇ_ਅੰਤ
 
-#if !defined(NO_BLOAT)
-#if defined(__BASE_FILE__)
-#define _FILE_NAME_ __BASE_FILE__
-#else
-#define _FILE_NAME_ __FILE__
-#endif
-#else
-#define _FILE_NAME_ ""
-#endif
+#ਜੇ !defined(NO_BLOAT)
+#ਜੇ defined(__BASE_FILE__)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ _FILE_NAME_ __BASE_FILE__
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ _FILE_NAME_ __FILE__
+#ਜੇ_ਅੰਤ
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ _FILE_NAME_ ""
+#ਜੇ_ਅੰਤ
 
-#if !defined(INVALID_CASE)
-#define INVALID_CASE(c) printf("Invalid Case %d, %s:%d",(c),__BASE_FILE__,__LINE__) /* todo use PANIC */
-#endif
+#ਜੇ !defined(INVALID_CASE)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ INVALID_CASE(c) ਲਿਖੋ("Invalid Case %d, %s:%d",(c),__BASE_FILE__,__LINE__) /* todo use PANIC */
+#ਜੇ_ਅੰਤ
 
-#if !defined(UNUSED)
-#define UNUSED(var) (void)(var)
-#endif
+#ਜੇ !defined(ਅਣਵਰਤਿਆ_2)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਅਣਵਰਤਿਆ_2(var) (ਖਾਲੀ)(var)
+#ਜੇ_ਅੰਤ
 
-#if !defined(CAT)
-#if !defined(_CAT)
-#define _CAT(a, b) a ## b
-#endif
-#define CAT(a, b) _CAT(a, b)
-#endif
+#ਜੇ !defined(CAT)
+#ਜੇ !defined(_CAT)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ _CAT(a, b) a ## b
+#ਜੇ_ਅੰਤ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CAT(a, b) _CAT(a, b)
+#ਜੇ_ਅੰਤ
 
-#if !defined(FREEZE_STR)
+#ਜੇ !defined(FREEZE_STR)
 #  define FREEZE_STR(s) #s
-#endif
+#ਜੇ_ਅੰਤ
 
-#if !defined(STRINGIFY)
-#define STRINGIFY(s) FREEZE_STR(s)
-#endif
+#ਜੇ !defined(STRINGIFY)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ STRINGIFY(s) FREEZE_STR(s)
+#ਜੇ_ਅੰਤ
 
-#if !defined(CCASSERT)
-#if defined(static_assert)
+#ਜੇ !defined(CCASSERT)
+#ਜੇ defined(static_assert)
 #		define CCASSERT(predicate) static_assert(predicate, STRINGIFY(predicate))
-#	else
-#		define CCASSERT(predicate) _x_CCASSERT_LINE(predicate, __LINE__)
-#		if !defined(_x_CCASSERT_LINE)
-#			define _x_CCASSERT_LINE(predicate, line) typedef char CAT(constraint_violated_on_line_,line)[2*((predicate)!=0)-1] __attribute__ ((unused)) ;
+#	ਨਹੀਂਤਾਂ
+#		define CCASSERT(predicate) x_CCASSERT_ਸਤਰ(predicate, __LINE__)
+#		ਜੇ !defined(x_CCASSERT_ਸਤਰ)
+#			define x_CCASSERT_ਸਤਰ(predicate, ਸਤਰ) ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਅੱਖਰ CAT(constraint_violated_on_ਸਤਰ,ਸਤਰ)[2*((predicate)!=0)-1] __attribute__ ((ਅਣਵਰਤਿਆ)) ;
 #		endif
 #	endif
-#endif
+#ਜੇ_ਅੰਤ
 
-#if !defined(DO_PRAGMA)
+#ਜੇ !defined(DO_PRAGMA)
 #  define DO_PRAGMA(x) _Pragma (#x)
-#endif
+#ਜੇ_ਅੰਤ
 
-#if !defined(TODO)
-#  define TODO(x) DO_PRAGMA(message ("TODO - " #x))
-#endif
+#ਜੇ !defined(TODO)
+#  define TODO(x) DO_PRAGMA(ਸੁਨੇਹਾ_3 ("TODO - " #x))
+#ਜੇ_ਅੰਤ
 
-#endif /* _PX4_MACROS_H */
+#ਜੇ_ਅੰਤ /* _PX4_MACROS_H */

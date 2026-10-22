@@ -31,16 +31,16 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <lib/conversion/rotation.h>
-#include <lib/mathlib/mathlib.h>
-#include <lib/parameters/param.h>
-#include <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/px4_config.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/log.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/conversion/rotation.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/mathlib/mathlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/parameters/param.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
 
-namespace calibration
+ਨਾਮਾਕਾਸ਼ calibration
 {
 
 /**
@@ -50,7 +50,7 @@ namespace calibration
  * @param device_id
  * @return int8_t Valid calibration index on success, -1 otherwise
  */
-int8_t FindCurrentCalibrationIndex(const char *sensor_type, uint32_t device_id);
+int8_t ਲੱਭੋ_Current_Calibration_ਸੂਚਕਾਂਕ(ਅਚਲ ਅੱਖਰ *sensor_type, uint32_t device_id);
 
 /**
  * @brief Find sensor's calibration index if it exists, otherwise select an available slot.
@@ -60,7 +60,7 @@ int8_t FindCurrentCalibrationIndex(const char *sensor_type, uint32_t device_id);
  * @param preferred_index preferred index (optional)
  * @return int8_t Valid calibration index on success, -1 otherwise
  */
-int8_t FindAvailableCalibrationIndex(const char *sensor_type, uint32_t device_id, int8_t preferred_index = -1);
+int8_t ਲੱਭੋ_ਉਪਲਬਧ_Calibration_ਸੂਚਕਾਂਕ(ਅਚਲ ਅੱਖਰ *sensor_type, uint32_t device_id, int8_t preferred_ਸੂਚਕਾਂਕ = -1);
 
 /**
  * @brief Get sensor calibration parameter value.
@@ -70,8 +70,8 @@ int8_t FindAvailableCalibrationIndex(const char *sensor_type, uint32_t device_id
  * @param instance
  * @return int32_t The calibration value.
  */
-int32_t GetCalibrationParamInt32(const char *sensor_type, const char *cal_type, uint8_t instance);
-float GetCalibrationParamFloat(const char *sensor_type, const char *cal_type, uint8_t instance);
+int32_t GetCalibrationParamInt32(ਅਚਲ ਅੱਖਰ *sensor_type, ਅਚਲ ਅੱਖਰ *cal_type, uint8_t instance);
+ਦਸ਼ਮਲਵ GetCalibrationParamFloat(ਅਚਲ ਅੱਖਰ *sensor_type, ਅਚਲ ਅੱਖਰ *cal_type, uint8_t instance);
 
 /**
  * @brief Set a single calibration parameter.
@@ -82,21 +82,21 @@ float GetCalibrationParamFloat(const char *sensor_type, const char *cal_type, ui
  * @param value int32_t parameter value
  * @return true if the parameter name was valid and value saved successfully, false otherwise.
  */
-template<typename T>
-bool SetCalibrationParam(const char *sensor_type, const char *cal_type, uint8_t instance, T value)
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ T>
+ਤਾਰਕਿਕ ਸੈੱਟ_Calibration_Param(ਅਚਲ ਅੱਖਰ *sensor_type, ਅਚਲ ਅੱਖਰ *cal_type, uint8_t instance, T value)
 {
-	char str[20] {};
+	ਅੱਖਰ str[20] {};
 
 	// eg CAL_MAGn_ID/CAL_MAGn_ROT
-	snprintf(str, sizeof(str), "CAL_%s%u_%s", sensor_type, instance, cal_type);
+	snprintf(str, ਆਕਾਰ(str), "CAL_%s%u_%s", sensor_type, instance, cal_type);
 
-	int ret = param_set_no_notification(param_find(str), &value);
+	ਪੂਰਨ ret = param_ਸੈੱਟ_no_notification(param_ਲੱਭੋ(str), &value);
 
-	if (ret != PX4_OK) {
+	ਜੇ (ret != PX4_OK) {
 		PX4_ERR("failed to set %s", str);
 	}
 
-	return ret == PX4_OK;
+	ਵਾਪਸ ret == PX4_OK;
 }
 
 /**
@@ -107,7 +107,7 @@ bool SetCalibrationParam(const char *sensor_type, const char *cal_type, uint8_t 
  * @param instance Calibration index (0 - 3)
  * @return matrix::Vector3f Vector of calibration values.
  */
-matrix::Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance);
+ਮੈਟ੍ਰਿਕਸ::Vector3f GetCalibrationParamsVector3f(ਅਚਲ ਅੱਖਰ *sensor_type, ਅਚਲ ਅੱਖਰ *cal_type, uint8_t instance);
 
 /**
  * @brief Set the Calibration Params Vector 3f object
@@ -118,15 +118,15 @@ matrix::Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const cha
  * @param values Vector of calibration values x, y, z.
  * @return true if the parameter name was valid and all values saved successfully, false otherwise.
  */
-bool SetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance,
-				  matrix::Vector3f values);
+ਤਾਰਕਿਕ ਸੈੱਟ_Calibration_Params_Vector3f(ਅਚਲ ਅੱਖਰ *sensor_type, ਅਚਲ ਅੱਖਰ *cal_type, uint8_t instance,
+				  ਮੈਟ੍ਰਿਕਸ::Vector3f ਮੁੱਲਾਂ_2);
 
 /**
  * @brief Get the board sensor level adjustment (SENS_BOARD_X_OFF, SENS_BOARD_Y_OFF, SENS_BOARD_Z_OFF).
  *
  * @return matrix::Eulerf
  */
-matrix::Eulerf GetSensorLevelAdjustment();
+ਮੈਟ੍ਰਿਕਸ::Eulerf GetSensorLevelAdjustment();
 
 /**
  * @brief Get the board rotation.
@@ -140,6 +140,6 @@ Rotation GetBoardRotation();
  *
  * @return matrix::Dcmf
  */
-matrix::Dcmf GetBoardRotationMatrix();
+ਮੈਟ੍ਰਿਕਸ::Dcmf Get_Board_Rotation_ਮੈਟ੍ਰਿਕਸ();
 
 } // namespace calibration

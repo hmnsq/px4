@@ -70,194 +70,194 @@
  *
 ******************************************************************/
 
-#include <gtest/gtest.h>
-#include <lib/pure_pursuit/PurePursuit.hpp>
-#include <uORB/topics/pure_pursuit_status.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/pure_pursuit/PurePursuit.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/pure_pursuit_status.h>
 
-using namespace matrix;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ;
 
-TEST(PurePursuitTest, InvalidSpeed)
+TEST(ਸ਼ੁੱਧ_Pursuit_Test, Invalid_ਰਫਤਾਰ)
 {
 	//      V   C
 	//         /
 	//  	  /
 	//	 /
 	//	P
-	pure_pursuit_status_s pure_pursuit{};
-	const Vector2f curr_wp_ned(10.f, 10.f);
-	const Vector2f prev_wp_ned(0.f, 0.f);
-	const Vector2f curr_pos_ned(10.f, 0.f);
+	ਸ਼ੁੱਧ_pursuit_ਸਥਿਤੀ_s ਸ਼ੁੱਧ_pursuit{};
+	ਅਚਲ Vector2f curr_wp_ned(10.f, 10.f);
+	ਅਚਲ Vector2f prev_wp_ned(0.f, 0.f);
+	ਅਚਲ Vector2f curr_pos_ned(10.f, 0.f);
 	// NaN speed
-	const float target_bearing1 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, curr_wp_ned, prev_wp_ned,
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing1 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, curr_wp_ned, prev_wp_ned,
 				      curr_pos_ned, NAN);
-	EXPECT_FALSE(PX4_ISFINITE(target_bearing1));
+	EXPECT_FALSE(PX4_ISFINITE(ਨਿਸ਼ਾਨਾ_bearing1));
 }
 
-TEST(PurePursuitTest, InvalidWaypoints)
+TEST(ਸ਼ੁੱਧ_Pursuit_Test, InvalidWaypoints)
 {
 	//	V   C
 	//         /
 	//  	  /
 	//	 /
 	//	P
-	pure_pursuit_status_s pure_pursuit{};
-	const Vector2f curr_wp_ned(10.f, 10.f);
-	const Vector2f prev_wp_ned(0.f, 0.f);
-	const Vector2f curr_pos_ned(10.f, 0.f);
-	const float lookahead_distance{5.f};
+	ਸ਼ੁੱਧ_pursuit_ਸਥਿਤੀ_s ਸ਼ੁੱਧ_pursuit{};
+	ਅਚਲ Vector2f curr_wp_ned(10.f, 10.f);
+	ਅਚਲ Vector2f prev_wp_ned(0.f, 0.f);
+	ਅਚਲ Vector2f curr_pos_ned(10.f, 0.f);
+	ਅਚਲ ਦਸ਼ਮਲਵ lookahead_ਦੂਰੀ{5.f};
 	// Prev WP is NAN
-	const float target_bearing1 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, curr_wp_ned, Vector2f(NAN,
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing1 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, curr_wp_ned, Vector2f(NAN,
 				      NAN), curr_pos_ned,
-				      lookahead_distance);
+				      lookahead_ਦੂਰੀ);
 	// Curr WP is NAN
-	const float target_bearing2 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(NAN, NAN),
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing2 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(NAN, NAN),
 				      prev_wp_ned, curr_pos_ned,
-				      lookahead_distance);
+				      lookahead_ਦੂਰੀ);
 
 	// Curr Pos is NAN
-	const float target_bearing3 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, curr_wp_ned, prev_wp_ned,
-				      Vector2f(NAN, NAN), lookahead_distance);
-	EXPECT_FALSE(PX4_ISFINITE(target_bearing1));
-	EXPECT_FALSE(PX4_ISFINITE(target_bearing2));
-	EXPECT_FALSE(PX4_ISFINITE(target_bearing3));
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing3 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, curr_wp_ned, prev_wp_ned,
+				      Vector2f(NAN, NAN), lookahead_ਦੂਰੀ);
+	EXPECT_FALSE(PX4_ISFINITE(ਨਿਸ਼ਾਨਾ_bearing1));
+	EXPECT_FALSE(PX4_ISFINITE(ਨਿਸ਼ਾਨਾ_bearing2));
+	EXPECT_FALSE(PX4_ISFINITE(ਨਿਸ਼ਾਨਾ_bearing3));
 }
 
-TEST(PurePursuitTest, OutOfLookahead)
+TEST(ਸ਼ੁੱਧ_Pursuit_Test, ਬਾਹਰਲਾ_ਦਾ_Lookahead)
 {
-	pure_pursuit_status_s pure_pursuit{};
-	const float lookahead_distance{5.f};
+	ਸ਼ੁੱਧ_pursuit_ਸਥਿਤੀ_s ਸ਼ੁੱਧ_pursuit{};
+	ਅਚਲ ਦਸ਼ਮਲਵ lookahead_ਦੂਰੀ{5.f};
 	//	V   C
 	//         /
 	//  	  /
 	//	 /
 	//	P
-	const float target_bearing1 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(10.f, 10.f),
-				      Vector2f(0.f, 0.f), Vector2f(10.f, 0.f), lookahead_distance);
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing1 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(10.f, 10.f),
+				      Vector2f(0.f, 0.f), Vector2f(10.f, 0.f), lookahead_ਦੂਰੀ);
 	//	    V
 	//
 	//	P ----- C
-	const float target_bearing2 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
-				      Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), lookahead_distance);
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing2 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
+				      Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), lookahead_ਦੂਰੀ);
 	// V
 	//
 	//     P ------ C
-	const float target_bearing3 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
-				      Vector2f(0.f, 10.f), Vector2f(10.f, 0.f), lookahead_distance);
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing3 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
+				      Vector2f(0.f, 10.f), Vector2f(10.f, 0.f), lookahead_ਦੂਰੀ);
 	//		V
 	//
 	// P ------ C
-	const float target_bearing4 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 10.f),
-				      Vector2f(0.f, 0.f), Vector2f(10.f, 20.f), lookahead_distance);
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing4 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 10.f),
+				      Vector2f(0.f, 0.f), Vector2f(10.f, 20.f), lookahead_ਦੂਰੀ);
 
-	EXPECT_NEAR(target_bearing1, M_PI_2_F + M_PI_4_F, FLT_EPSILON); // Fallback: Bearing to closest point on path
-	EXPECT_NEAR(fabsf(target_bearing2), M_PI_F, 1e-6f); 	// Fallback: Bearing to closest point on path, +-pi is the same bearing
-	EXPECT_NEAR(target_bearing3, M_PI_F - atan2f(10, 10), FLT_EPSILON); // Fallback: Bearing to previous waypoint
-	EXPECT_NEAR(target_bearing4, -M_PI_F + atan2f(10, 10), FLT_EPSILON); // Fallback: Bearing to current waypoint
+	EXPECT_NEAR(ਨਿਸ਼ਾਨਾ_bearing1, M_PI_2_F + M_PI_4_F, FLT_EPSILON); // Fallback: Bearing to closest point on path
+	EXPECT_NEAR(fabsf(ਨਿਸ਼ਾਨਾ_bearing2), M_PI_F, 1e-6f); 	// Fallback: Bearing to closest point on path, +-pi is the same bearing
+	EXPECT_NEAR(ਨਿਸ਼ਾਨਾ_bearing3, M_PI_F - atan2f(10, 10), FLT_EPSILON); // Fallback: Bearing to previous waypoint
+	EXPECT_NEAR(ਨਿਸ਼ਾਨਾ_bearing4, -M_PI_F + atan2f(10, 10), FLT_EPSILON); // Fallback: Bearing to current waypoint
 }
 
-TEST(PurePursuitTest, WaypointOverlap)
+TEST(ਸ਼ੁੱਧ_Pursuit_Test, WaypointOverlap)
 {
-	pure_pursuit_status_s pure_pursuit{};
-	const float lookahead_distance{5.f};
+	ਸ਼ੁੱਧ_pursuit_ਸਥਿਤੀ_s ਸ਼ੁੱਧ_pursuit{};
+	ਅਚਲ ਦਸ਼ਮਲਵ lookahead_ਦੂਰੀ{5.f};
 	//	    C/P
 	//
 	//
 	//
 	//	V
-	const float target_bearing1 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(10.f, 10.f),
-				      Vector2f(10.f, 10.f), Vector2f(0.f, 0.f), lookahead_distance);
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing1 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(10.f, 10.f),
+				      Vector2f(10.f, 10.f), Vector2f(0.f, 0.f), lookahead_ਦੂਰੀ);
 	//	    V
 	//
 	//
 	//
 	//	C/P
-	const float target_bearing2 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 0.f),
-				      Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), lookahead_distance);
-	EXPECT_NEAR(target_bearing1, M_PI_4_F, FLT_EPSILON); 		   // Fallback: Bearing to closest point on path
-	EXPECT_NEAR(target_bearing2, -(M_PI_4_F + M_PI_2_F), FLT_EPSILON); // Fallback: Bearing to closest point on path
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing2 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 0.f),
+				      Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), lookahead_ਦੂਰੀ);
+	EXPECT_NEAR(ਨਿਸ਼ਾਨਾ_bearing1, M_PI_4_F, FLT_EPSILON); 		   // Fallback: Bearing to closest point on path
+	EXPECT_NEAR(ਨਿਸ਼ਾਨਾ_bearing2, -(M_PI_4_F + M_PI_2_F), FLT_EPSILON); // Fallback: Bearing to closest point on path
 }
 
-TEST(PurePursuitTest, CurrAndPrevSameNorthCoordinate)
+TEST(ਸ਼ੁੱਧ_Pursuit_Test, CurrAndPrevSameNorthCoordinate)
 {
-	pure_pursuit_status_s pure_pursuit{};
-	const float lookahead_distance{5.f};
+	ਸ਼ੁੱਧ_pursuit_ਸਥਿਤੀ_s ਸ਼ੁੱਧ_pursuit{};
+	ਅਚਲ ਦਸ਼ਮਲਵ lookahead_ਦੂਰੀ{5.f};
 	//	P -- V -- C
-	const float target_bearing1 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
-				      Vector2f(0.f, 0.f), Vector2f(0.f, 10.f), lookahead_distance);
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing1 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
+				      Vector2f(0.f, 0.f), Vector2f(0.f, 10.f), lookahead_ਦੂਰੀ);
 
 	//	     V
 	//	P ------ C
-	const float target_bearing2 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
-				      Vector2f(0.f, 0.f), Vector2f(5.f / sqrtf(2.f), 10.f), lookahead_distance);
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing2 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
+				      Vector2f(0.f, 0.f), Vector2f(5.f / sqrtf(2.f), 10.f), lookahead_ਦੂਰੀ);
 	//	     V
 	//	C ------ P
-	const float target_bearing3 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 0.f),
-				      Vector2f(0.f, 20.f), Vector2f(5.f / sqrtf(2.f), 10.f), lookahead_distance);
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing3 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 0.f),
+				      Vector2f(0.f, 20.f), Vector2f(5.f / sqrtf(2.f), 10.f), lookahead_ਦੂਰੀ);
 	//	     V
 	//
 	//	P ------ C
-	const float target_bearing4 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
-				      Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), lookahead_distance);
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing4 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
+				      Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), lookahead_ਦੂਰੀ);
 
-	EXPECT_NEAR(target_bearing1, M_PI_2_F, FLT_EPSILON);
-	EXPECT_NEAR(target_bearing2, M_PI_2_F + M_PI_4_F, FLT_EPSILON);
-	EXPECT_NEAR(target_bearing3, -(M_PI_2_F + M_PI_4_F), FLT_EPSILON);
-	EXPECT_NEAR(fabsf(target_bearing4), M_PI_F, 1e-6f); // Fallback: Bearing to closest point on path, +-pi is the same bearing
+	EXPECT_NEAR(ਨਿਸ਼ਾਨਾ_bearing1, M_PI_2_F, FLT_EPSILON);
+	EXPECT_NEAR(ਨਿਸ਼ਾਨਾ_bearing2, M_PI_2_F + M_PI_4_F, FLT_EPSILON);
+	EXPECT_NEAR(ਨਿਸ਼ਾਨਾ_bearing3, -(M_PI_2_F + M_PI_4_F), FLT_EPSILON);
+	EXPECT_NEAR(fabsf(ਨਿਸ਼ਾਨਾ_bearing4), M_PI_F, 1e-6f); // Fallback: Bearing to closest point on path, +-pi is the same bearing
 }
 
-TEST(PurePursuitTest, VehiclePastCurrentWaypoint)
+TEST(ਸ਼ੁੱਧ_Pursuit_Test, VehiclePastCurrentWaypoint)
 {
-	pure_pursuit_status_s pure_pursuit{};
-	const float lookahead_distance{5.f};
+	ਸ਼ੁੱਧ_pursuit_ਸਥਿਤੀ_s ਸ਼ੁੱਧ_pursuit{};
+	ਅਚਲ ਦਸ਼ਮਲਵ lookahead_ਦੂਰੀ{5.f};
 	// The vehicle has passed the current waypoint by more than the lookahead and sits on the extended path.
 	// The lookahead intersection would lie even further along the extension; the waypoint has to be targeted instead.
 	//	P ------ C ------ V
-	const float target_bearing1 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 10.f),
-				      Vector2f(0.f, 0.f), Vector2f(0.f, 20.f), lookahead_distance);
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing1 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 10.f),
+				      Vector2f(0.f, 0.f), Vector2f(0.f, 20.f), lookahead_ਦੂਰੀ);
 	// Off the extended path, but within the lookahead corridor
 	//		   V
 	//	P ------ C
-	const float target_bearing2 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 10.f),
-				      Vector2f(0.f, 0.f), Vector2f(2.f, 20.f), lookahead_distance);
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing2 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 10.f),
+				      Vector2f(0.f, 0.f), Vector2f(2.f, 20.f), lookahead_ਦੂਰੀ);
 	// Still ahead of the current waypoint: regular pure pursuit is unaffected
 	//	P -- V -- C
-	const float target_bearing3 = PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 10.f),
-				      Vector2f(0.f, 0.f), Vector2f(0.f, 2.f), lookahead_distance);
+	ਅਚਲ ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing3 = ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 10.f),
+				      Vector2f(0.f, 0.f), Vector2f(0.f, 2.f), lookahead_ਦੂਰੀ);
 
-	EXPECT_NEAR(target_bearing1, -M_PI_2_F, FLT_EPSILON);			 // Back to the current waypoint
-	EXPECT_NEAR(target_bearing2, atan2f(-10.f, -2.f), FLT_EPSILON); // Back to the current waypoint
-	EXPECT_NEAR(target_bearing3, M_PI_2_F, FLT_EPSILON);			 // Along the path
+	EXPECT_NEAR(ਨਿਸ਼ਾਨਾ_bearing1, -M_PI_2_F, FLT_EPSILON);			 // Back to the current waypoint
+	EXPECT_NEAR(ਨਿਸ਼ਾਨਾ_bearing2, atan2f(-10.f, -2.f), FLT_EPSILON); // Back to the current waypoint
+	EXPECT_NEAR(ਨਿਸ਼ਾਨਾ_bearing3, M_PI_2_F, FLT_EPSILON);			 // Along the path
 }
 
-TEST(PurePursuitTest, CrosstrackError)
+TEST(ਸ਼ੁੱਧ_Pursuit_Test, CrosstrackError)
 {
-	pure_pursuit_status_s pure_pursuit{};
-	const float lookahead_distance{5.f};
+	ਸ਼ੁੱਧ_pursuit_ਸਥਿਤੀ_s ਸ਼ੁੱਧ_pursuit{};
+	ਅਚਲ ਦਸ਼ਮਲਵ lookahead_ਦੂਰੀ{5.f};
 	//	    V
 	//
 	//	P ----- C
-	PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
-				       Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), lookahead_distance);
-	const float crosstrack1 = pure_pursuit.crosstrack_error;
+	ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
+				       Vector2f(0.f, 0.f), Vector2f(10.f, 10.f), lookahead_ਦੂਰੀ);
+	ਅਚਲ ਦਸ਼ਮਲਵ crosstrack1 = ਸ਼ੁੱਧ_pursuit.crosstrack_error;
 
 	//	    V
 	//	P ----- C
-	PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
-				       Vector2f(0.f, 0.f), Vector2f(5.f, 10.f), lookahead_distance);
-	const float crosstrack2 = pure_pursuit.crosstrack_error;
+	ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
+				       Vector2f(0.f, 0.f), Vector2f(5.f, 10.f), lookahead_ਦੂਰੀ);
+	ਅਚਲ ਦਸ਼ਮਲਵ crosstrack2 = ਸ਼ੁੱਧ_pursuit.crosstrack_error;
 
 	//	P ----- C
 	//
 	//	    V
-	PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
-				       Vector2f(0.f, 0.f), Vector2f(-10.f, 10.f), lookahead_distance);
-	const float crosstrack3 = pure_pursuit.crosstrack_error;
+	ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
+				       Vector2f(0.f, 0.f), Vector2f(-10.f, 10.f), lookahead_ਦੂਰੀ);
+	ਅਚਲ ਦਸ਼ਮਲਵ crosstrack3 = ਸ਼ੁੱਧ_pursuit.crosstrack_error;
 
 	//	P ----- C
 	//	    V
-	PurePursuit::calcTargetBearing(pure_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
-				       Vector2f(0.f, 0.f), Vector2f(-5.f, 10.f), lookahead_distance);
-	const float crosstrack4 = pure_pursuit.crosstrack_error;
+	ਸ਼ੁੱਧ_Pursuit::calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit, 1.f, 10.f, 1.f, Vector2f(0.f, 20.f),
+				       Vector2f(0.f, 0.f), Vector2f(-5.f, 10.f), lookahead_ਦੂਰੀ);
+	ਅਚਲ ਦਸ਼ਮਲਵ crosstrack4 = ਸ਼ੁੱਧ_pursuit.crosstrack_error;
 
 	EXPECT_NEAR(crosstrack1, -10.f, FLT_EPSILON);
 	EXPECT_NEAR(crosstrack2, -5.f, FLT_EPSILON);

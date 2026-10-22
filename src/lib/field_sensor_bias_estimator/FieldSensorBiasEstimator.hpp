@@ -46,20 +46,20 @@
  * http://www.roboticsproceedings.org/rss09/p50.pdf
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <matrix/matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/matrix/math.hpp>
 
-class FieldSensorBiasEstimator
+ਵਰਗ ਖੇਤਰ_Sensor_Bias_Estimator
 {
-public:
-	FieldSensorBiasEstimator() = default;
-	~FieldSensorBiasEstimator() = default;
+ਜਨਤਕ:
+	ਖੇਤਰ_Sensor_Bias_Estimator() = ਮੂਲ;
+	~ਖੇਤਰ_Sensor_Bias_Estimator() = ਮੂਲ;
 
 	// Set initial states
-	void setField(const matrix::Vector3f &field) { _field_prev = field; }
-	void setBias(const matrix::Vector3f &bias) { _state_bias = bias; }
-	void setLearningGain(float learning_gain) { _learning_gain = learning_gain; }
+	ਖਾਲੀ ਸੈੱਟ_ਖੇਤਰ(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &ਖੇਤਰ) { ਖੇਤਰ_prev = ਖੇਤਰ; }
+	ਖਾਲੀ ਸੈੱਟ_Bias(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &bias) { _state_bias = bias; }
+	ਖਾਲੀ ਸੈੱਟ_Learning_Gain(ਦਸ਼ਮਲਵ learning_gain) { _learning_gain = learning_gain; }
 
 	/**
 	 * Update the estimator and extract updated biases.
@@ -67,20 +67,20 @@ public:
 	 * @param field biased field sensor data
 	 * @param dt time in seconds since the last update
 	 */
-	void updateEstimate(const matrix::Vector3f &gyro, const matrix::Vector3f &field, const float dt)
+	ਖਾਲੀ updateEstimate(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &gyro, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &ਖੇਤਰ, ਅਚਲ ਦਸ਼ਮਲਵ dt)
 	{
-		const matrix::Vector3f field_pred = _field_prev + (-gyro % (_field_prev - _state_bias)) * dt;
-		const matrix::Vector3f field_innov = field - field_pred;
-		_state_bias += _learning_gain * (-gyro % field_innov) * dt;
-		_field_prev = field;
+		ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f ਖੇਤਰ_pred = ਖੇਤਰ_prev + (-gyro % (ਖੇਤਰ_prev - _state_bias)) * dt;
+		ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f ਖੇਤਰ_innov = ਖੇਤਰ - ਖੇਤਰ_pred;
+		_state_bias += _learning_gain * (-gyro % ਖੇਤਰ_innov) * dt;
+		ਖੇਤਰ_prev = ਖੇਤਰ;
 	}
 
-	const matrix::Vector3f &getField() { return _field_prev; }
-	const matrix::Vector3f &getBias() { return _state_bias; }
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &get_ਖੇਤਰ() { ਵਾਪਸ ਖੇਤਰ_prev; }
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &getBias() { ਵਾਪਸ _state_bias; }
 
-private:
-	// states
-	matrix::Vector3f _field_prev{};
-	matrix::Vector3f _state_bias{};
-	float _learning_gain{20.f};
+ਨਿਜੀ:
+	//ਹਾਲਤਾਂ
+	ਮੈਟ੍ਰਿਕਸ::Vector3f ਖੇਤਰ_prev{};
+	ਮੈਟ੍ਰਿਕਸ::Vector3f _state_bias{};
+	ਦਸ਼ਮਲਵ _learning_gain{20.f};
 };

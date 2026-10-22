@@ -38,139 +38,139 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include "DaaF3442.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "DaaF3442.h"
 
-#include <float.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <float.h>
 
-#include <lib/geo/geo.h>
-#include <lib/mathlib/mathlib.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
-#include <uORB/topics/detect_and_avoid.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/geo/geo.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/mathlib/mathlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/log.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/detect_and_avoid.h>
 
 DaaF3442::DaaF3442() :
-	ModuleParams(nullptr)
+	ModuleParams(ਖਾਲੀ_ਸੂਚਕ)
 {
 }
 
-bool DaaF3442::try_setting_params()
+ਤਾਰਕਿਕ DaaF3442::try_setting_params()
 {
 	updateParams();
 
-	const matrix::Vector2f nmac_bounds{_param_daa_lvl_critical_rad.get(), _param_daa_lvl_critical_hgt.get()};
-	const matrix::Vector2f wc_bounds{_param_daa_lvl_high_rad.get(), _param_daa_lvl_high_hgt.get()};
-	const int32_t nmac_latency = _param_daa_lvl_medium_time.get();
-	const int32_t wc_latency = _param_daa_lvl_low_time.get();
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f nmac_bounds{_param_daa_lvl_critical_rad.get(), _param_daa_lvl_critical_hgt.get()};
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f wc_bounds{param_daa_lvl_ਉੱਚਾ_rad.get(), param_daa_lvl_ਉੱਚਾ_hgt.get()};
+	ਅਚਲ int32_t nmac_latency = param_daa_lvl_medium_ਸਮਾਂ.get();
+	ਅਚਲ int32_t wc_latency = param_daa_lvl_ਨੀਵਾਂ_ਸਮਾਂ.get();
 
-	const bool nmac_ok = nmac_bounds.isAllFinite() && nmac_bounds.min() > 0.f;
-	const bool wc_ok = wc_bounds.isAllFinite() && wc_bounds.min() > 0.f;
-	const bool ordering_ok = nmac_ok && wc_ok && (wc_bounds - nmac_bounds).min() >= 0.f;
-	const bool latencies_ok = nmac_latency >= 0 && wc_latency >= nmac_latency;
+	ਅਚਲ ਤਾਰਕਿਕ nmac_ok = nmac_bounds.isAllFinite() && nmac_bounds.min() > 0.f;
+	ਅਚਲ ਤਾਰਕਿਕ wc_ok = wc_bounds.isAllFinite() && wc_bounds.min() > 0.f;
+	ਅਚਲ ਤਾਰਕਿਕ ordering_ok = nmac_ok && wc_ok && (wc_bounds - nmac_bounds).min() >= 0.f;
+	ਅਚਲ ਤਾਰਕਿਕ latencies_ok = nmac_latency >= 0 && wc_latency >= nmac_latency;
 
-	if (!(nmac_ok && wc_ok && ordering_ok && latencies_ok)) {
+	ਜੇ (!(nmac_ok && wc_ok && ordering_ok && latencies_ok)) {
 		PX4_ERR("DAA: invalid F3442 parameters");
-		return false;
+		ਵਾਪਸ ਝੂਠ;
 	}
 
 	_nmac_bounds_m = nmac_bounds;
 	_wc_bounds_m = wc_bounds;
-	_aug_nmac_latency_s = static_cast<float>(nmac_latency);
-	_aug_wc_latency_s = static_cast<float>(wc_latency);
+	_aug_nmac_latency_s = static_cast<ਦਸ਼ਮਲਵ>(nmac_latency);
+	_aug_wc_latency_s = static_cast<ਦਸ਼ਮਲਵ>(wc_latency);
 
-	return true;
+	ਵਾਪਸ ਸੱਚ;
 }
 
-bool DaaF3442::is_in_bounds(const matrix::Vector2f &distance, const matrix::Vector2f &bounds)
+ਤਾਰਕਿਕ DaaF3442::is_ਵਿੱਚ_bounds(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &ਦੂਰੀ, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &bounds)
 {
-	if (!bounds.isAllFinite() || bounds.min() < 0.f) {
+	ਜੇ (!bounds.isAllFinite() || bounds.min() < 0.f) {
 		PX4_DEBUG("F34 bounds nan/neg");
-		return false;
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	if (!distance.isAllFinite() || distance.min() < 0.f) {
+	ਜੇ (!ਦੂਰੀ.isAllFinite() || ਦੂਰੀ.min() < 0.f) {
 		PX4_DEBUG("F34 dist nan/neg");
-		return false;
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	return (distance - bounds).max() <= 0.f;
+	ਵਾਪਸ (ਦੂਰੀ - bounds).max() <= 0.f;
 }
 
-void DaaF3442::calculate_aircraft_conflict_volume(const matrix::Vector2f &base_bounds,
-		const matrix::Vector2f &vel,
-		const float latency, matrix::Vector2f &augmented_bounds)
+ਖਾਲੀ DaaF3442::calculate_aircraft_conflict_volume(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &ਅਧਾਰ_bounds,
+		ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &vel,
+		ਅਚਲ ਦਸ਼ਮਲਵ latency, ਮੈਟ੍ਰਿਕਸ::Vector2f &augmented_bounds)
 {
 	// Symmetric (abs) to cover sudden course changes.
-	augmented_bounds = base_bounds + vel.abs() * fabsf(latency);
+	augmented_bounds = ਅਧਾਰ_bounds + vel.ਨਿਰਪੇਖ() * fabsf(latency);
 }
 
-void DaaF3442::calculate_augmented_boundaries(const matrix::Vector2f &base_bounds,
-		const matrix::Vector2f &uav_vel_hor_vert,
-		const matrix::Vector2f &traffic_vel, const float latency, matrix::Vector2f &augmented_bounds)
+ਖਾਲੀ DaaF3442::calculate_augmented_boundaries(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &ਅਧਾਰ_bounds,
+		ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &uav_vel_hor_vert,
+		ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &traffic_vel, ਅਚਲ ਦਸ਼ਮਲਵ latency, ਮੈਟ੍ਰਿਕਸ::Vector2f &augmented_bounds)
 {
-	matrix::Vector2f uav_bounds{};
-	calculate_aircraft_conflict_volume(base_bounds, uav_vel_hor_vert, latency, uav_bounds);
+	ਮੈਟ੍ਰਿਕਸ::Vector2f uav_bounds{};
+	calculate_aircraft_conflict_volume(ਅਧਾਰ_bounds, uav_vel_hor_vert, latency, uav_bounds);
 
-	matrix::Vector2f traffic_bounds{};
-	calculate_aircraft_conflict_volume(base_bounds, traffic_vel, latency, traffic_bounds);
+	ਮੈਟ੍ਰਿਕਸ::Vector2f traffic_bounds{};
+	calculate_aircraft_conflict_volume(ਅਧਾਰ_bounds, traffic_vel, latency, traffic_bounds);
 
 	augmented_bounds = uav_bounds + traffic_bounds;
 }
 
-uint8_t DaaF3442::calculate_conflict_level(const matrix::Vector2f &distance,
-		const matrix::Vector2f &uav_vel_hor_vert, const matrix::Vector2f &traffic_vel) const
+uint8_t DaaF3442::calculate_conflict_level(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &ਦੂਰੀ,
+		ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &uav_vel_hor_vert, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &traffic_vel) ਅਚਲ
 {
 	// Severity is imposed by evaluation order; HIGH and MEDIUM may overlap without containment.
 
 	// Multiply by two because both aircraft have their respective NMAC bounds
-	if (is_in_bounds(distance, 2.f * _nmac_bounds_m)) {
+	ਜੇ (is_ਵਿੱਚ_bounds(ਦੂਰੀ, 2.f * _nmac_bounds_m)) {
 		PX4_DEBUG("F3442: NMAC breach");
-		return detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL;
+		ਵਾਪਸ detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL;
 	}
 
 	// Multiply by two because both aircraft have their respective WC bounds
-	if (is_in_bounds(distance, 2.f * _wc_bounds_m)) {
+	ਜੇ (is_ਵਿੱਚ_bounds(ਦੂਰੀ, 2.f * _wc_bounds_m)) {
 		PX4_DEBUG("F3442: WC breach");
-		return detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH;
+		ਵਾਪਸ detect_and_avoid_s::DAA_CONFLICT_LVL_ਉੱਚਾ;
 	}
 
-	matrix::Vector2f aug_nmac_bounds{};
+	ਮੈਟ੍ਰਿਕਸ::Vector2f aug_nmac_bounds{};
 	calculate_augmented_boundaries(_nmac_bounds_m, uav_vel_hor_vert, traffic_vel, _aug_nmac_latency_s, aug_nmac_bounds);
 
-	if (is_in_bounds(distance, aug_nmac_bounds)) {
+	ਜੇ (is_ਵਿੱਚ_bounds(ਦੂਰੀ, aug_nmac_bounds)) {
 		PX4_DEBUG("F3442: AUG_NMAC breach");
-		return detect_and_avoid_s::DAA_CONFLICT_LVL_MEDIUM;
+		ਵਾਪਸ detect_and_avoid_s::DAA_CONFLICT_LVL_MEDIUM;
 	}
 
-	matrix::Vector2f aug_wc_bounds{};
+	ਮੈਟ੍ਰਿਕਸ::Vector2f aug_wc_bounds{};
 	calculate_augmented_boundaries(_wc_bounds_m, uav_vel_hor_vert, traffic_vel, _aug_wc_latency_s, aug_wc_bounds);
 
-	if (is_in_bounds(distance, aug_wc_bounds)) {
+	ਜੇ (is_ਵਿੱਚ_bounds(ਦੂਰੀ, aug_wc_bounds)) {
 		PX4_DEBUG("F3442: AUG_WC breach");
-		return detect_and_avoid_s::DAA_CONFLICT_LVL_LOW;
+		ਵਾਪਸ detect_and_avoid_s::DAA_CONFLICT_LVL_ਨੀਵਾਂ;
 	}
 
-	return detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
+	ਵਾਪਸ detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
 }
 
-uint8_t DaaF3442::calculate_daa_stats(const aircraft_state_s &uav_state, const aircraft_state_s &traffic_state,
-				      daa_stats_s &daa_stats) const
+uint8_t DaaF3442::calculate_daa_stats(ਅਚਲ aircraft_state_s &uav_state, ਅਚਲ aircraft_state_s &traffic_state,
+				      daa_stats_s &daa_stats) ਅਚਲ
 {
-	float horizontal_dist{0.f};
-	float vertical_dist{0.f};
-	get_distance_to_point_global_wgs84(uav_state.lat_lon(0), uav_state.lat_lon(1), uav_state.altitude,
+	ਦਸ਼ਮਲਵ horizontal_dist{0.f};
+	ਦਸ਼ਮਲਵ vertical_dist{0.f};
+	get_ਦੂਰੀ_ਮੰਜ਼ਿਲ_ਬਿੰਦੂ_global_wgs84(uav_state.lat_lon(0), uav_state.lat_lon(1), uav_state.altitude,
 					   traffic_state.lat_lon(0), traffic_state.lat_lon(1), traffic_state.altitude, &horizontal_dist, &vertical_dist);
 
-	const float aircraft_dist = hypotf(horizontal_dist, vertical_dist);
+	ਅਚਲ ਦਸ਼ਮਲਵ aircraft_dist = hypotf(horizontal_dist, vertical_dist);
 	daa_stats.aircraft_dist = aircraft_dist;
 	daa_stats.aircraft_dist_hor = horizontal_dist;
 	daa_stats.aircraft_dist_vert = fabsf(vertical_dist);
-	const float relative_uav_traffic_speed = calculate_relative_uav_traffic_speed(uav_state, traffic_state);
-	daa_stats.expected_min_dist_time_sec = relative_uav_traffic_speed > FLT_EPSILON ?
-					       aircraft_dist / relative_uav_traffic_speed : 0.f;
+	ਅਚਲ ਦਸ਼ਮਲਵ relative_uav_traffic_ਰਫਤਾਰ = calculate_relative_uav_traffic_ਰਫਤਾਰ(uav_state, traffic_state);
+	daa_stats.expected_min_dist_ਸਮਾਂ_sec = relative_uav_traffic_ਰਫਤਾਰ > FLT_EPSILON ?
+					       aircraft_dist / relative_uav_traffic_ਰਫਤਾਰ : 0.f;
 
-	const matrix::Vector2f distance(fabsf(horizontal_dist), fabsf(vertical_dist));
-	const matrix::Vector2f uav_vel_hor_vert = calculate_horizontal_vertical_speed_magnitudes(uav_state);
-	const matrix::Vector2f traffic_vel_hor_vert = calculate_horizontal_vertical_speed_magnitudes(traffic_state);
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f ਦੂਰੀ(fabsf(horizontal_dist), fabsf(vertical_dist));
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f uav_vel_hor_vert = calculate_horizontal_vertical_ਰਫਤਾਰ_magnitudes(uav_state);
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f traffic_vel_hor_vert = calculate_horizontal_vertical_ਰਫਤਾਰ_magnitudes(traffic_state);
 
-	return calculate_conflict_level(distance, uav_vel_hor_vert, traffic_vel_hor_vert);
+	ਵਾਪਸ calculate_conflict_level(ਦੂਰੀ, uav_vel_hor_vert, traffic_vel_hor_vert);
 }

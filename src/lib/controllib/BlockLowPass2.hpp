@@ -37,50 +37,50 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <assert.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <time.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/test/test.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/Block.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "matrix/math.hpp"
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
 /**
  * A 2nd order low pass filter block which uses the default px4 2nd order low pass filter
  */
-class __EXPORT BlockLowPass2 : public Block
+ਵਰਗ __EXPORT ਖੰਡ_ਨੀਵਾਂ_Pass2 : ਜਨਤਕ ਖੰਡ
 {
-public:
+ਜਨਤਕ:
 // methods
-	BlockLowPass2(SuperBlock *parent, const char *name, float sample_freq) :
-		Block(parent, name),
+	ਖੰਡ_ਨੀਵਾਂ_Pass2(Super_ਖੰਡ *ਮਾਪਾ, ਅਚਲ ਅੱਖਰ *name, ਦਸ਼ਮਲਵ sample_freq) :
+		ਖੰਡ(ਮਾਪਾ, name),
 		_state(0.0 / 0.0 /* initialize to invalid val, force into is_finite() check on first call */),
-		_fCut(this, ""), // only one parameter, no need to name
+		_fCut(ਇਹ, ""), // only one parameter, no need to name
 		_fs(sample_freq),
 		_lp(_fs, _fCut.get())
 	{}
-	virtual ~BlockLowPass2() = default;
-	float update(float input);
+	ਆਭਾਸੀ ~ਖੰਡ_ਨੀਵਾਂ_Pass2() = ਮੂਲ;
+	ਦਸ਼ਮਲਵ update(ਦਸ਼ਮਲਵ ਨਿਵੇਸ਼);
 // accessors
-	float getState() { return _state; }
-	float getFCutParam() { return _fCut.get(); }
-	void setState(float state) { _state = _lp.reset(state); }
-protected:
-// attributes
-	float _state;
-	control::BlockParamFloat _fCut;
-	float _fs;
-	math::LowPassFilter2p<float> _lp;
+	ਦਸ਼ਮਲਵ getState() { ਵਾਪਸ _state; }
+	ਦਸ਼ਮਲਵ getFCutParam() { ਵਾਪਸ _fCut.get(); }
+	ਖਾਲੀ ਸੈੱਟ_State(ਦਸ਼ਮਲਵ state) { _state = _lp.reset(state); }
+ਸੁਰੱਖਿਅਤ:
+//ਗੁਣ
+	ਦਸ਼ਮਲਵ _state;
+	control::ਖੰਡ_Param_Float _fCut;
+	ਦਸ਼ਮਲਵ _fs;
+	math::ਨੀਵਾਂ_Pass_Filter2p<ਦਸ਼ਮਲਵ> _lp;
 };
 
 } // namespace control

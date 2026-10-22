@@ -35,21 +35,21 @@
  * @file default_tunes.cpp
  */
 
-#include "tunes.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "tunes.h"
 
-#define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) tune,
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) tune,
 // Initialize default tunes
-const char *const Tunes::_default_tunes[] = {
-#include "tune_definition.desc"
+ਅਚਲ ਅੱਖਰ *ਅਚਲ Tunes::_default_tunes[] = {
+#ਅਨ੍ਤਰ੍ਭਾਵ "tune_definition.desc"
 };
-#undef PX4_DEFINE_TUNE
+#ਪਰਿਭਾਸ਼ਾ_ਰੱਦ PX4_DEFINE_TUNE
 
-#define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) interruptable,
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) interruptable,
 // Initialize default tunes
-const bool Tunes::_default_tunes_interruptable[] = {
-#include "tune_definition.desc"
+ਅਚਲ ਤਾਰਕਿਕ Tunes::_default_tunes_interruptable[] = {
+#ਅਨ੍ਤਰ੍ਭਾਵ "tune_definition.desc"
 };
-#undef PX4_DEFINE_TUNE
+#ਪਰਿਭਾਸ਼ਾ_ਰੱਦ PX4_DEFINE_TUNE
 
 // set default_tunes array size
-const unsigned int Tunes::_default_tunes_size =  sizeof(_default_tunes) / sizeof(_default_tunes[0]);
+ਅਚਲ ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ Tunes::default_tunes_ਮਾਪ =  ਆਕਾਰ(_default_tunes) / ਆਕਾਰ(_default_tunes[0]);

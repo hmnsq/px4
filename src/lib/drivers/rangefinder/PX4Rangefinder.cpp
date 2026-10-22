@@ -31,68 +31,68 @@
  *
  ****************************************************************************/
 
-#include "PX4Rangefinder.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "PX4Rangefinder.hpp"
 
-#include <lib/drivers/device/Device.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/drivers/device/Device.hpp>
 
-using namespace time_literals;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਸਮਾਂ_literals;
 
-PX4Rangefinder::PX4Rangefinder(const uint32_t device_id, const uint8_t device_orientation)
+PX4Rangefinder::PX4Rangefinder(ਅਚਲ uint32_t device_id, ਅਚਲ uint8_t device_orientation)
 {
-	set_device_id(device_id);
-	set_orientation(device_orientation);
-	set_rangefinder_type(distance_sensor_s::MAV_DISTANCE_SENSOR_LASER);
-	set_mode(distance_sensor_s::MODE_UNKNOWN);
+	ਸੈੱਟ_device_id(device_id);
+	ਸੈੱਟ_orientation(device_orientation);
+	ਸੈੱਟ_rangefinder_type(ਦੂਰੀ_sensor_s::MAV_ਦੂਰੀ_SENSOR_LASER);
+	ਸੈੱਟ_ਬਹੁਲਕ(ਦੂਰੀ_sensor_s::ਬਹੁਲਕ_UNKNOWN);
 }
 
 PX4Rangefinder::~PX4Rangefinder()
 {
-	_distance_sensor_pub.unadvertise();
+	ਦੂਰੀ_sensor_pub_2.unadvertise();
 }
 
-void PX4Rangefinder::set_device_type(uint8_t device_type)
+ਖਾਲੀ PX4Rangefinder::ਸੈੱਟ_device_type(uint8_t device_type)
 {
 	// current DeviceStructure
-	union device::Device::DeviceId device_id;
-	device_id.devid = _distance_sensor_pub.get().device_id;
+	ਸੰਘ device::Device::DeviceId device_id;
+	device_id.devid = ਦੂਰੀ_sensor_pub_2.get().device_id;
 
 	// update to new device type
 	device_id.devid_s.devtype = device_type;
 
 	// copy back to report
-	_distance_sensor_pub.get().device_id = device_id.devid;
+	ਦੂਰੀ_sensor_pub_2.get().device_id = device_id.devid;
 }
 
-void PX4Rangefinder::set_orientation(const uint8_t device_orientation)
+ਖਾਲੀ PX4Rangefinder::ਸੈੱਟ_orientation(ਅਚਲ uint8_t device_orientation)
 {
-	_distance_sensor_pub.get().orientation = device_orientation;
+	ਦੂਰੀ_sensor_pub_2.get().orientation = device_orientation;
 }
 
-void PX4Rangefinder::update(const hrt_abstime &timestamp_sample, const float distance, const int8_t quality, const float *q, uint8_t q_len)
+ਖਾਲੀ PX4Rangefinder::update(ਅਚਲ hrt_abstime &timestamp_sample, ਅਚਲ ਦਸ਼ਮਲਵ ਦੂਰੀ, ਅਚਲ int8_t quality, ਅਚਲ ਦਸ਼ਮਲਵ *q, uint8_t q_len)
 {
-	distance_sensor_s &report = _distance_sensor_pub.get();
+	ਦੂਰੀ_sensor_s &report = ਦੂਰੀ_sensor_pub_2.get();
 	report.timestamp = timestamp_sample;
-	report.current_distance = distance;
+	report.current_ਦੂਰੀ = ਦੂਰੀ;
 	report.signal_quality = quality;
 
 	// if quality is unavailable (-1) set to 0 if distance is outside bounds
-	if (quality < 0) {
-		if ((distance < report.min_distance) || (distance > report.max_distance)) {
+	ਜੇ (quality < 0) {
+		ਜੇ ((ਦੂਰੀ < report.min_ਦੂਰੀ) || (ਦੂਰੀ > report.max_ਦੂਰੀ)) {
 			report.signal_quality = 0;
 		}
 	}
 
 	// Update the quaternion in the sample update
-	if (q != nullptr) {
-		memcpy(report.q, q, sizeof(float) * q_len);
+	ਜੇ (q != ਖਾਲੀ_ਸੂਚਕ) {
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ(report.q, q, ਆਕਾਰ(ਦਸ਼ਮਲਵ) * q_len);
 	}
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_DISTANCE_SENSOR,
-					_distance_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+	ਜੇ (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_ਦੂਰੀ_SENSOR,
+					ਦੂਰੀ_sensor_pub_2.get_instance(), report, _stuck)) {
+		ਵਾਪਸ;
 	}
 
-	_distance_sensor_pub.update();
+	ਦੂਰੀ_sensor_pub_2.update();
 }

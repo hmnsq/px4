@@ -31,26 +31,26 @@
  *
  ****************************************************************************/
 
-#include "autosave.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "autosave.h"
 
-#include <px4_platform_common/log.h>
-#include <uORB/topics/actuator_armed.h>
-#include <uORB/Subscription.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/log.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/actuator_armed.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/Subscription.hpp>
 
-#include "param.h"
-#include "atomic_transaction.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "param.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "atomic_transaction.h"
 
-using namespace time_literals;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਸਮਾਂ_literals;
 
 ParamAutosave::ParamAutosave()
-	: ScheduledWorkItem(MODULE_NAME, px4::wq_configurations::lp_default)
+	: Scheduled_Work_ਵਸਤੂ(MODULE_NAME, px4::wq_configurations::lp_default)
 {
 }
 
-void ParamAutosave::request()
+ਖਾਲੀ ParamAutosave::request()
 {
-	if (_scheduled.load() || _disabled) {
-		return;
+	ਜੇ (_scheduled.ਲੱਦੋ() || _disabled) {
+		ਵਾਪਸ;
 	}
 
 	// wait at least 300ms before saving, because:
@@ -59,72 +59,72 @@ void ParamAutosave::request()
 	//   looks at all unsaved params.
 	hrt_abstime delay = 300_ms;
 
-	static constexpr const hrt_abstime rate_limit = 2_s; // rate-limit saving to 2 seconds
-	const hrt_abstime last_save_elapsed = hrt_elapsed_time(&_last_timestamp);
+	ਸਥਿਰ constexpr ਅਚਲ hrt_abstime ਦਰ_ਹੱਦਬੰਦੀ = 2_s; // rate-limit saving to 2 seconds
+	ਅਚਲ hrt_abstime ਆਖਰੀ_save_elapsed = hrt_elapsed_ਸਮਾਂ(&ਆਖਰੀ_timestamp);
 
-	if (last_save_elapsed < rate_limit && rate_limit > last_save_elapsed + delay) {
-		delay = rate_limit - last_save_elapsed;
+	ਜੇ (ਆਖਰੀ_save_elapsed < ਦਰ_ਹੱਦਬੰਦੀ && ਦਰ_ਹੱਦਬੰਦੀ > ਆਖਰੀ_save_elapsed + delay) {
+		delay = ਦਰ_ਹੱਦਬੰਦੀ - ਆਖਰੀ_save_elapsed;
 	}
 
-	_scheduled.store(true);
-	ScheduleDelayed(delay);
+	_scheduled.store(ਸੱਚ);
+	ਸਮਾਂ_ਸਾਰਣੀ_Delayed(delay);
 }
 
-void ParamAutosave::enable(bool enable)
+ਖਾਲੀ ParamAutosave::enable(ਤਾਰਕਿਕ enable)
 {
 	AtomicTransaction transaction;
 	_disabled = !enable;
 
-	if (!enable && _scheduled.load()) {
-		_scheduled.store(false);
-		px4::ScheduledWorkItem::ScheduleClear();
+	ਜੇ (!enable && _scheduled.ਲੱਦੋ()) {
+		_scheduled.store(ਝੂਠ);
+		px4::Scheduled_Work_ਵਸਤੂ::ਸਮਾਂ_ਸਾਰਣੀ_Clear();
 	}
 }
 
-void ParamAutosave::Run()
+ਖਾਲੀ ParamAutosave::ਲੜੀਵਾਰ()
 {
-	bool disabled = false;
+	ਤਾਰਕਿਕ disabled = ਝੂਠ;
 
-	if (!param_get_default_file()) {
+	ਜੇ (!param_get_default_file()) {
 		// In case we save to FLASH, defer param writes until disarmed,
 		// as writing to FLASH can stall the entire CPU (in rare cases around 300ms on STM32F7)
-		uORB::SubscriptionData<actuator_armed_s> armed_sub{ORB_ID(actuator_armed)};
+		uORB::Subscription_ਅੰਕੜੇ<actuator_armed_s> armed_sub{ORB_ID(actuator_armed)};
 
-		if (armed_sub.get().armed) {
-			ScheduleDelayed(1_s);
-			return;
+		ਜੇ (armed_sub.get().armed) {
+			ਸਮਾਂ_ਸਾਰਣੀ_Delayed(1_s);
+			ਵਾਪਸ;
 		}
 	}
 
 	{
-		const AtomicTransaction transaction;
-		_last_timestamp = hrt_absolute_time();
+		ਅਚਲ AtomicTransaction transaction;
+		ਆਖਰੀ_timestamp = hrt_absolute_ਸਮਾਂ();
 		// Note that the order is important here: we first clear _scheduled, then save the parameters, as during export,
 		// more parameter changes could happen.
-		_scheduled.store(false);
+		_scheduled.store(ਝੂਠ);
 		disabled = _disabled;
 	}
 
-	if (disabled) {
-		return;
+	ਜੇ (disabled) {
+		ਵਾਪਸ;
 	}
 
 	PX4_DEBUG("Autosaving params");
-	int ret = param_save_default(false);
+	ਪੂਰਨ ret = param_save_default(ਝੂਠ);
 
-	if (ret != PX4_OK) {
+	ਜੇ (ret != PX4_OK) {
 		// re-request to be saved in the future, try 3 times at most
-		if (_retry_count < 3) {
-			_retry_count++;
+		ਜੇ (retry_ਗਿਣਤੀ_2 < 3) {
+			retry_ਗਿਣਤੀ_2++;
 			PX4_INFO("param auto save unavailable (%i), retrying..", ret);
 			request();
 
-		} else {
+		} ਨਹੀਂਤਾਂ {
 			PX4_ERR("param auto save failed (%i)", ret);
-			_retry_count = 0;
+			retry_ਗਿਣਤੀ_2 = 0;
 		}
 
-	} else {
-		_retry_count = 0;
+	} ਨਹੀਂਤਾਂ {
+		retry_ਗਿਣਤੀ_2 = 0;
 	}
 }

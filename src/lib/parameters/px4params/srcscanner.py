@@ -1,45 +1,45 @@
-import os
-import re
-import codecs
-import sys
+ਆਯਾਤ os
+ਆਯਾਤ re
+ਆਯਾਤ codecs
+ਆਯਾਤ sys
 
-class SourceScanner(object):
+ਵਰਗ ਸਰੋਤ_Scanner(object):
     """
     Traverses directory tree, reads all source files, and passes their contents
     to the Parser.
     """
 
-    def ScanDir(self, srcdirs, parser):
+    ਪਰਿਭਾਸ਼ਾ ਜਾਂਚ_Dir(self, srcdirs, parser):
         """
         Scans provided path and passes all found contents to the parser using
         parser.Parse method.
         """
         extensions1 = tuple([".h"])
         extensions2 = tuple([".c"])
-        for srcdir in srcdirs:
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions1):
-                    path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions2):
-                    path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-        return True
+        ਲਈ srcdir ਵਿੱਚ srcdirs:
+            ਲਈ filename ਵਿੱਚ os.listdir(srcdir):
+                ਜੇ filename.endswith(extensions1):
+                    ਰਸਤਾ = os.ਰਸਤਾ.join(srcdir, filename)
+                    ਜੇ ਨਹੀਂ self.ਜਾਂਚ_File(ਰਸਤਾ, parser):
+                        ਵਾਪਸ ਝੂਠ
+            ਲਈ filename ਵਿੱਚ os.listdir(srcdir):
+                ਜੇ filename.endswith(extensions2):
+                    ਰਸਤਾ = os.ਰਸਤਾ.join(srcdir, filename)
+                    ਜੇ ਨਹੀਂ self.ਜਾਂਚ_File(ਰਸਤਾ, parser):
+                        ਵਾਪਸ ਝੂਠ
+        ਵਾਪਸ ਸੱਚ
 
-    def ScanFile(self, path, parser):
+    ਪਰਿਭਾਸ਼ਾ ਜਾਂਚ_File(self, ਰਸਤਾ, parser):
         """
         Scans provided file and passes its contents to the parser using
         parser.Parse method.
         """
 
-        with codecs.open(path, 'r', 'utf-8') as f:
-            try:
-                contents = f.read()
-            except:
+        ਨਾਲ codecs.open(ਰਸਤਾ, 'r', 'utf-8') ਇਵ f:
+            ਕੋਸ਼ਿਸ਼:
+                contents = f.ਪਠ()
+            ਅਪਵਾਦ:
                 contents = ''
-                print('Failed reading file: %s, skipping content.' % path)
-                pass
-        return parser.Parse(contents)
+                ਛਾਪੋ('Failed reading file: %s, skipping content.' % ਰਸਤਾ)
+                ਲੰਘੋ
+        ਵਾਪਸ parser.Parse(contents)

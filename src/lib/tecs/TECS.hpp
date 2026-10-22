@@ -37,52 +37,52 @@
  * @author Paul Riseborough
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <drivers/drv_hrt.h>
-#include <mathlib/mathlib.h>
-#include <matrix/math.hpp>
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <motion_planning/VelocitySmoothing.hpp>
-#include <motion_planning/ManualVelocitySmoothingZ.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/drv_hrt.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/mathlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/mathlib/math/filter/AlphaFilter.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <motion_planning/VelocitySmoothing.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <motion_planning/ManualVelocitySmoothingZ.hpp>
 
-using namespace time_literals;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਸਮਾਂ_literals;
 
-#ifndef FRIEND_TEST // for gtest
-#define FRIEND_TEST(a, b)
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ FRIEND_TEST // for gtest
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FRIEND_TEST(a, b)
+#ਜੇ_ਅੰਤ
 
-class TECSAirspeedFilter
+ਵਰਗ TECSAirspeedFilter
 {
-public:
+ਜਨਤਕ:
 	/**
 	 * @brief State of the equivalent airspeed filter.
 	 *
 	 */
-	struct AirspeedFilterState {
-		float speed;		///< speed of the air in EAS [m/s]
-		float speed_rate;	///< rate of speed of the air [m/s²]
+	ਬਣਤਰ AirspeedFilterState {
+		ਦਸ਼ਮਲਵ ਰਫਤਾਰ;		///< speed of the air in EAS [m/s]
+		ਦਸ਼ਮਲਵ ਰਫਤਾਰ_ਦਰ;	///< rate of speed of the air [m/s²]
 	};
 
 	/**
 	 * @brief Parameters of the airspeed filter.
 	 *
 	 */
-	struct Param {
-		float equivalent_airspeed_trim; 	///< the trim value of the equivalent airspeed [m/s].
+	ਬਣਤਰ Param {
+		ਦਸ਼ਮਲਵ equivalent_airspeed_trim; 	///< the trim value of the equivalent airspeed [m/s].
 	};
 
 	/**
 	 * @brief Input, which will be filtered.
 	 *
 	 */
-	struct Input {
-		float equivalent_airspeed; 	///< the measured equivalent airspeed in [m/s].
-		float equivalent_airspeed_rate;	///< the measured rate of equivalent airspeed in [m/s²].
+	ਬਣਤਰ ਨਿਵੇਸ਼_2 {
+		ਦਸ਼ਮਲਵ equivalent_airspeed; 	///< the measured equivalent airspeed in [m/s].
+		ਦਸ਼ਮਲਵ equivalent_airspeed_ਦਰ;	///< the measured rate of equivalent airspeed in [m/s²].
 	};
-public:
-	TECSAirspeedFilter() = default;
-	~TECSAirspeedFilter() = default;
+ਜਨਤਕ:
+	TECSAirspeedFilter() = ਮੂਲ;
+	~TECSAirspeedFilter() = ਮੂਲ;
 	/**
 	 * @brief Initialize filter
 	 *
@@ -90,8 +90,8 @@ public:
 	 * @param[in] equivalent_airspeed_trim is the equivalent airspeed trim (vehicle setting) in [m/s].
 	 * @param[in] airspeed_sensor_available boolean if the airspeed sensor is available.
 	 */
-	void initialize(float equivalent_airspeed, const float equivalent_airspeed_trim,
-			const bool airspeed_sensor_available);
+	ਖਾਲੀ initialize(ਦਸ਼ਮਲਵ equivalent_airspeed, ਅਚਲ ਦਸ਼ਮਲਵ equivalent_airspeed_trim,
+			ਅਚਲ ਤਾਰਕਿਕ airspeed_sensor_ਉਪਲਬਧ);
 
 	/**
 	 * @brief Update filter
@@ -101,18 +101,18 @@ public:
 	 * @param[in] param are the filter parameters.
 	 * @param[in] airspeed_sensor_available boolean if the airspeed sensor is available.
 	 */
-	void update(float dt, const Input &input, const Param &param, const bool airspeed_sensor_available);
+	ਖਾਲੀ update(ਦਸ਼ਮਲਵ dt, ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼, ਅਚਲ Param &param, ਅਚਲ ਤਾਰਕਿਕ airspeed_sensor_ਉਪਲਬਧ);
 
 	/**
 	 * @brief Get the filtered airspeed states.
 	 *
 	 * @return Current state of the airspeed filter.
 	 */
-	AirspeedFilterState getState() const;
+	AirspeedFilterState getState() ਅਚਲ;
 
-private:
+ਨਿਜੀ:
 	// States
-	AirspeedFilterState _airspeed_state{.speed = 0.0f, .speed_rate = 0.0f};	///< Complementary filter state
+	AirspeedFilterState _airspeed_state{.ਰਫਤਾਰ = 0.0f, .ਰਫਤਾਰ_ਦਰ = 0.0f};	///< Complementary filter state
 
 	// Steady-state Kalman gains for the 2-state (airspeed, airspeed_rate) complementary filter.
 	//
@@ -128,46 +128,46 @@ private:
 	//
 	// To recompute if any noise value changes:
 	//   python3 -c "import math; sm=0.07; sr=0.2; sp=0.2; a=1/sm; b=sp/sr**2; d=a+b; n=math.sqrt(sp*(2*a+b)); print(a*n/d, b/d, a*a*sp/d, b*n/d)"
-	static constexpr float kKg00{1.91940287f};
-	static constexpr float kKg01{0.25925926f};
-	static constexpr float kKg10{2.11640212f};
-	static constexpr float kKg11{0.67179101f};
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kKg00{1.91940287f};
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kKg01{0.25925926f};
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kKg10{2.11640212f};
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kKg11{0.67179101f};
 };
 
-class TECSAltitudeReferenceModel
+ਵਰਗ TECSAltitudeReferenceModel
 {
-public:
+ਜਨਤਕ:
 	/**
 	 * @brief Altitude reference state.
 	 *
 	 */
-	struct AltitudeReferenceState {
-		float alt; 	///< Reference altitude amsl in [m].
-		float alt_rate;	///< Reference altitude rate in [m/s].
+	ਬਣਤਰ AltitudeReferenceState {
+		ਦਸ਼ਮਲਵ alt; 	///< Reference altitude amsl in [m].
+		ਦਸ਼ਮਲਵ alt_ਦਰ;	///< Reference altitude rate in [m/s].
 	};
 
 	/**
 	 * @brief Parameters for the reference model.
 	 *
 	 */
-	struct Param {
-		float target_climbrate;	///< The target climbrate in [m/s].
-		float target_sinkrate;	///< The target sinkrate in [m/s].
-		float vert_accel_limit;	///< Magnitude of the maximum vertical acceleration allowed [m/s²].
-		float max_climb_rate;	///< Climb rate produced by max allowed throttle [m/s].
-		float max_sink_rate;	///< Maximum sink rate (with min throttle, max speed) [m/s].
+	ਬਣਤਰ Param {
+		ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_climbrate;	///< The target climbrate in [m/s].
+		ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_sinkrate;	///< The target sinkrate in [m/s].
+		ਦਸ਼ਮਲਵ vert_accel_ਹੱਦਬੰਦੀ;	///< Magnitude of the maximum vertical acceleration allowed [m/s²].
+		ਦਸ਼ਮਲਵ max_climb_ਦਰ;	///< Climb rate produced by max allowed throttle [m/s].
+		ਦਸ਼ਮਲਵ max_sink_ਦਰ;	///< Maximum sink rate (with min throttle, max speed) [m/s].
 	};
 
-public:
-	TECSAltitudeReferenceModel() = default;
-	~TECSAltitudeReferenceModel() = default;
+ਜਨਤਕ:
+	TECSAltitudeReferenceModel() = ਮੂਲ;
+	~TECSAltitudeReferenceModel() = ਮੂਲ;
 
 	/**
 	 * @brief Initialize reference models.
 	 *
 	 * @param[in] state is the current altitude state of the vehicle.
 	 */
-	void initialize(const AltitudeReferenceState &state);
+	ਖਾਲੀ initialize(ਅਚਲ AltitudeReferenceState &state);
 
 	/**
 	 * @brief Update reference models.
@@ -178,133 +178,133 @@ public:
 	 * @param[in] height_rate is the current height rate in [m/s].
 	 * @param[in] param are the reference model parameters.
 	 */
-	void update(float dt, const AltitudeReferenceState &setpoint, float altitude, float height_rate, const Param &param);
+	ਖਾਲੀ update(ਦਸ਼ਮਲਵ dt, ਅਚਲ AltitudeReferenceState &setpoint, ਦਸ਼ਮਲਵ altitude, ਦਸ਼ਮਲਵ ਉਚਾਈ_ਦਰ, ਅਚਲ Param &param);
 
 	/**
 	 * @brief Get the current altitude reference of altitude reference model.
 	 *
 	 * @return Altitude reference state.
 	 */
-	AltitudeReferenceState getAltitudeReference() const;
+	AltitudeReferenceState getAltitudeReference() ਅਚਲ;
 
 	/**
 	 * @brief Get the Height Rate Setpoint directly from the velocity trajectory generator
 	 *
 	 * @return float direct height rate setpoint [m/s]
 	 */
-	float getHeightRateSetpointDirect() const {return _height_rate_setpoint_direct; }
+	ਦਸ਼ਮਲਵ get_ਉਚਾਈ_ਦਰ_Setpoint_ਸਿੱਧਾ() ਅਚਲ {ਵਾਪਸ ਉਚਾਈ_ਦਰ_setpoint_ਸਿੱਧਾ; }
 
 
-private:
-	static constexpr float JERK_MAX = 1000.f;	///< Magnitude of the maximum jerk allowed [m/s³].
+ਨਿਜੀ:
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ JERK_MAX = 1000.f;	///< Magnitude of the maximum jerk allowed [m/s³].
 
 	// State
 	VelocitySmoothing
 	_alt_control_traj_generator;		///< Generates altitude rate and altitude setpoint trajectory when altitude is commanded.
 	ManualVelocitySmoothingZ
 	_velocity_control_traj_generator;	///< generates height rate trajectory when height rate is commanded
-	float _height_rate_setpoint_direct{NAN}; ///< generated direct height rate setpoint
+	ਦਸ਼ਮਲਵ ਉਚਾਈ_ਦਰ_setpoint_ਸਿੱਧਾ{NAN}; ///< generated direct height rate setpoint
 };
 
-class TECSControl
+ਵਰਗ TECSControl
 {
-public:
+ਜਨਤਕ:
 	/**
 	 * @brief The control parameters.
 	 *
 	 */
-	struct Param {
+	ਬਣਤਰ Param {
 		// Vehicle specific params
-		float max_sink_rate;			///< Maximum sink rate (with min throttle and max speed) [m/s].
-		float min_sink_rate;			///< Minimum sink rate (with min throttle and trim speed) [m/s].
-		float max_climb_rate;			///< Climb rate produced by max allowed throttle [m/s].
-		float vert_accel_limit;			///< Magnitude of the maximum vertical acceleration allowed [m/s²].
-		float equivalent_airspeed_trim;		///< Equivalent cruise airspeed for airspeed less mode [m/s].
-		float tas_min;				///< True airspeed demand lower limit [m/s].
-		float tas_stall;			///< True stall airspeed [m/s].
-		float tas_max;				///< True airspeed demand upper limit [m/s].
-		float tas_trim;				///< True airspeed trim [m/s].
-		float pitch_max;			///< Maximum absolute pitch angle setpoint [rad].
-		float pitch_min;			///< Minimum absolute pitch angle setpoint [rad].
-		float level_flight_pitch;		///< Pitch angle in level flight at trim airspeed, fed forward at zero climb angle [rad].
-		float throttle_trim;		///< Normalized throttle required to fly level at calibrated airspeed setpoint [0,1]
-		float throttle_max;			///< Normalized throttle upper limit.
-		float throttle_min;			///< Normalized throttle lower limit.
+		ਦਸ਼ਮਲਵ max_sink_ਦਰ;			///< Maximum sink rate (with min throttle and max speed) [m/s].
+		ਦਸ਼ਮਲਵ min_sink_ਦਰ;			///< Minimum sink rate (with min throttle and trim speed) [m/s].
+		ਦਸ਼ਮਲਵ max_climb_ਦਰ;			///< Climb rate produced by max allowed throttle [m/s].
+		ਦਸ਼ਮਲਵ vert_accel_ਹੱਦਬੰਦੀ;			///< Magnitude of the maximum vertical acceleration allowed [m/s²].
+		ਦਸ਼ਮਲਵ equivalent_airspeed_trim;		///< Equivalent cruise airspeed for airspeed less mode [m/s].
+		ਦਸ਼ਮਲਵ tas_min;				///< True airspeed demand lower limit [m/s].
+		ਦਸ਼ਮਲਵ tas_stall;			///< True stall airspeed [m/s].
+		ਦਸ਼ਮਲਵ tas_max;				///< True airspeed demand upper limit [m/s].
+		ਦਸ਼ਮਲਵ tas_trim;				///< True airspeed trim [m/s].
+		ਦਸ਼ਮਲਵ pitch_max;			///< Maximum absolute pitch angle setpoint [rad].
+		ਦਸ਼ਮਲਵ pitch_min;			///< Minimum absolute pitch angle setpoint [rad].
+		ਦਸ਼ਮਲਵ level_flight_pitch;		///< Pitch angle in level flight at trim airspeed, fed forward at zero climb angle [rad].
+		ਦਸ਼ਮਲਵ throttle_trim;		///< Normalized throttle required to fly level at calibrated airspeed setpoint [0,1]
+		ਦਸ਼ਮਲਵ throttle_max;			///< Normalized throttle upper limit.
+		ਦਸ਼ਮਲਵ throttle_min;			///< Normalized throttle lower limit.
 
 		// Altitude control param
-		float altitude_error_gain;		///< Altitude error inverse time constant [1/s].
-		float altitude_setpoint_gain_ff;	///< Gain from altitude demand derivative to demanded climb rate.
+		ਦਸ਼ਮਲਵ altitude_error_gain;		///< Altitude error inverse time constant [1/s].
+		ਦਸ਼ਮਲਵ altitude_setpoint_gain_ff;	///< Gain from altitude demand derivative to demanded climb rate.
 
 		// Airspeed control param
-		float airspeed_error_gain;				///< Airspeed error inverse time constant [1/s].
+		ਦਸ਼ਮਲਵ airspeed_error_gain;				///< Airspeed error inverse time constant [1/s].
 
 		// Energy control param
-		float ste_rate_time_const;				///< Filter time constant for specific total energy rate (damping path) [s].
-		float seb_rate_ff;					///< Specific energy balance rate feedforward gain.
+		ਦਸ਼ਮਲਵ ste_ਦਰ_ਸਮਾਂ_const;				///< Filter time constant for specific total energy rate (damping path) [s].
+		ਦਸ਼ਮਲਵ seb_ਦਰ_ff;					///< Specific energy balance rate feedforward gain.
 
 		// Pitch control param
-		float pitch_speed_weight;				///< Speed control weighting used by pitch demand calculation.
-		float integrator_gain_pitch;				///< Integrator gain used by the pitch demand calculation.
-		float pitch_damping_gain;				///< Damping gain of the pitch demand calculation [s].
+		ਦਸ਼ਮਲਵ pitch_ਰਫਤਾਰ_ਭਾਰ;				///< Speed control weighting used by pitch demand calculation.
+		ਦਸ਼ਮਲਵ integrator_gain_pitch;				///< Integrator gain used by the pitch demand calculation.
+		ਦਸ਼ਮਲਵ pitch_damping_gain;				///< Damping gain of the pitch demand calculation [s].
 
 		// Throttle control param
-		float integrator_gain_throttle;				///< Integrator gain used by the throttle demand calculation.
-		float throttle_damping_gain;				///< Damping gain of the throttle demand calculation [s].
-		float throttle_slewrate;				///< Throttle demand slew rate limit [1/s].
+		ਦਸ਼ਮਲਵ integrator_gain_throttle;				///< Integrator gain used by the throttle demand calculation.
+		ਦਸ਼ਮਲਵ throttle_damping_gain;				///< Damping gain of the throttle demand calculation [s].
+		ਦਸ਼ਮਲਵ throttle_slewrate;				///< Throttle demand slew rate limit [1/s].
 
-		float load_factor_correction;				///< Gain from normal load factor increase to total energy rate demand [m²/s³].
-		float load_factor;					///< Additional normal load factor.
+		ਦਸ਼ਮਲਵ ਲੱਦੋ_ਗੁਣਕ_correction;				///< Gain from normal load factor increase to total energy rate demand [m²/s³].
+		ਦਸ਼ਮਲਵ ਲੱਦੋ_ਗੁਣਕ;					///< Additional normal load factor.
 
-		float fast_descend;
+		ਦਸ਼ਮਲਵ fast_descend;
 	};
 
 	/**
 	 * @brief The debug output
 	 *
 	 */
-	struct DebugOutput {
-		float altitude_rate_control;			///< Altitude rate setpoint from altitude control loop [m/s].
-		float true_airspeed_derivative_control;		///< Airspeed rate setpoint from airspeed control loop [m/s²].
-		float total_energy_rate_estimate;		///< Total energy rate estimate [m²/s³].
-		float total_energy_rate_sp;			///< Total energy rate setpoint [m²/s³].
-		float energy_balance_rate_estimate;		///< Energy balance rate estimate [m²/s³].
-		float energy_balance_rate_sp;			///< Energy balance rate setpoint [m²/s³].
-		float pitch_integrator;				///< Pitch control integrator state, a correction added to the pitch setpoint [rad].
-		float throttle_integrator;			///< Throttle control integrator state [-].
+	ਬਣਤਰ DebugOutput {
+		ਦਸ਼ਮਲਵ altitude_ਦਰ_control;			///< Altitude rate setpoint from altitude control loop [m/s].
+		ਦਸ਼ਮਲਵ true_airspeed_derivative_control;		///< Airspeed rate setpoint from airspeed control loop [m/s²].
+		ਦਸ਼ਮਲਵ ਕੁੱਲ_energy_ਦਰ_estimate;		///< Total energy rate estimate [m²/s³].
+		ਦਸ਼ਮਲਵ ਕੁੱਲ_energy_ਦਰ_sp;			///< Total energy rate setpoint [m²/s³].
+		ਦਸ਼ਮਲਵ energy_balance_ਦਰ_estimate;		///< Energy balance rate estimate [m²/s³].
+		ਦਸ਼ਮਲਵ energy_balance_ਦਰ_sp;			///< Energy balance rate setpoint [m²/s³].
+		ਦਸ਼ਮਲਵ pitch_integrator;				///< Pitch control integrator state, a correction added to the pitch setpoint [rad].
+		ਦਸ਼ਮਲਵ throttle_integrator;			///< Throttle control integrator state [-].
 	};
 
 	/**
 	 * @brief Given setpoint to control.
 	 *
 	 */
-	struct Setpoint {
+	ਬਣਤਰ Setpoint {
 		TECSAltitudeReferenceModel::AltitudeReferenceState altitude_reference;	///< Altitude/height rate reference.
-		float altitude_rate_setpoint_direct;					///< Direct height rate setpoint.
-		float tas_setpoint;						///< True airspeed setpoint.
+		ਦਸ਼ਮਲਵ altitude_ਦਰ_setpoint_ਸਿੱਧਾ;					///< Direct height rate setpoint.
+		ਦਸ਼ਮਲਵ tas_setpoint;						///< True airspeed setpoint.
 	};
 
 	/**
 	 * @brief Given current measurement from the UAS.
 	 *
 	 */
-	struct Input {
-		float altitude;		///< Current altitude amsl of the UAS [m].
-		float altitude_rate;	///< Current altitude rate of the UAS [m/s].
-		float tas;		///< Current true airspeed of the UAS [m/s].
-		float tas_rate;		///< Current true airspeed rate of the UAS [m/s²].
+	ਬਣਤਰ ਨਿਵੇਸ਼_2 {
+		ਦਸ਼ਮਲਵ altitude;		///< Current altitude amsl of the UAS [m].
+		ਦਸ਼ਮਲਵ altitude_ਦਰ;	///< Current altitude rate of the UAS [m/s].
+		ਦਸ਼ਮਲਵ tas;		///< Current true airspeed of the UAS [m/s].
+		ਦਸ਼ਮਲਵ tas_ਦਰ;		///< Current true airspeed rate of the UAS [m/s²].
 	};
 
 	/**
 	 * @brief Control flags.
 	 *
 	 */
-	struct Flag {
-		bool airspeed_enabled;			///< Flag if the airspeed sensor is enabled.
-		bool detect_underspeed_enabled;		///< Flag if underspeed detection is enabled.
+	ਬਣਤਰ Flag {
+		ਤਾਰਕਿਕ airspeed_enabled;			///< Flag if the airspeed sensor is enabled.
+		ਤਾਰਕਿਕ detect_underspeed_enabled;		///< Flag if underspeed detection is enabled.
 	};
-public:
-	TECSControl() = default;
-	~TECSControl() = default;
+ਜਨਤਕ:
+	TECSControl() = ਮੂਲ;
+	~TECSControl() = ਮੂਲ;
 	/**
 	 * @brief Initialization of the state.
 	 *
@@ -313,7 +313,7 @@ public:
 	 * @param[in] param is the current parameter set.
 	 * @param[in] flag is the current activated flags.
 	 */
-	void initialize(const Setpoint &setpoint, const Input &input, const Param &param, const Flag &flag);
+	ਖਾਲੀ initialize(ਅਚਲ Setpoint &setpoint, ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼, ਅਚਲ Param &param, ਅਚਲ Flag &flag);
 	/**
 	 * @brief Update state and output.
 	 *
@@ -323,38 +323,38 @@ public:
 	 * @param[in] param is the current parameter set.
 	 * @param[in] flag is the current activated flags.
 	 */
-	void update(float dt, const Setpoint &setpoint, const Input &input, const Param &param, const Flag &flag);
+	ਖਾਲੀ update(ਦਸ਼ਮਲਵ dt, ਅਚਲ Setpoint &setpoint, ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼, ਅਚਲ Param &param, ਅਚਲ Flag &flag);
 	/**
 	 * @brief Reset the control loop integrals.
 	 *
 	 */
-	void resetIntegrals();
+	ਖਾਲੀ resetIntegrals();
 	/**
 	 * @brief Get the underspeed ratio.
 	 *
 	 * @return Ratio of detected underspeed [0,1].
 	 */
-	float getUnderspeedRatio() const {return _ratio_undersped;}
+	ਦਸ਼ਮਲਵ get_Underspeed_ਅਨੁਪਾਤ() ਅਚਲ {ਵਾਪਸ ਅਨੁਪਾਤ_undersped;}
 	/**
 	 * @brief Get the throttle setpoint.
 	 *
 	 * @return throttle setpoint.
 	 */
-	float getThrottleSetpoint() const {return _throttle_setpoint;}
+	ਦਸ਼ਮਲਵ getThrottleSetpoint() ਅਚਲ {ਵਾਪਸ _throttle_setpoint;}
 	/**
 	 * @brief Get the pitch setpoint.
 	 *
 	 * @return The commanded absolute pitch angle [rad].
 	 */
-	float getPitchSetpoint() const {return _pitch_setpoint;}
+	ਦਸ਼ਮਲਵ getPitchSetpoint() ਅਚਲ {ਵਾਪਸ _pitch_setpoint;}
 	/**
 	 * @brief Get the Debug Output
 	 *
 	 * @return the debug output struct.
 	 */
-	const DebugOutput &getDebugOutput() const { return _debug_output; }
+	ਅਚਲ DebugOutput &getDebugOutput() ਅਚਲ { ਵਾਪਸ _debug_output; }
 
-private:
+ਨਿਜੀ:
 	// Allows the regression test to pre-corrupt _pitch_integ_state and verify the
 	// safety reset in _calcPitchControlUpdate, which the public update() path cannot
 	// reach on its own because the integrator-input guard rejects bad input first.
@@ -364,9 +364,9 @@ private:
 	 * @brief Specific total energy rate limit.
 	 *
 	 */
-	struct STERateLimit {
-		float STE_rate_max;	///< Maximum specific total energy rate limit [m²/s³].
-		float STE_rate_min;	///< Minimal specific total energy rate limit [m²/s³].
+	ਬਣਤਰ STERate_ਹੱਦਬੰਦੀ {
+		ਦਸ਼ਮਲਵ STE_ਦਰ_max;	///< Maximum specific total energy rate limit [m²/s³].
+		ਦਸ਼ਮਲਵ STE_ਦਰ_min;	///< Minimal specific total energy rate limit [m²/s³].
 	};
 
 	/**
@@ -374,60 +374,60 @@ private:
 	 * setpoint and current state estimate value as input to a controller.
 	 *
 	 */
-	struct ControlValues {
-		float setpoint;		///< Control setpoint.
-		float estimate;		///< Control estimate of current state value.
+	ਬਣਤਰ Control_ਮੁੱਲਾਂ {
+		ਦਸ਼ਮਲਵ setpoint;		///< Control setpoint.
+		ਦਸ਼ਮਲਵ estimate;		///< Control estimate of current state value.
 	};
 
 	/**
 	 * @brief Calculated specific energy rates.
 	 *
 	 */
-	struct SpecificEnergyRates {
-		ControlValues ske_rate;	///< Specific kinetic energy rate [m²/s³].
-		ControlValues spe_rate;	///< Specific potential energy rate [m²/s³].
+	ਬਣਤਰ SpecificEnergyRates {
+		Control_ਮੁੱਲਾਂ ske_ਦਰ;	///< Specific kinetic energy rate [m²/s³].
+		Control_ਮੁੱਲਾਂ spe_ਦਰ;	///< Specific potential energy rate [m²/s³].
 	};
 
 	/**
 	 * @brief Altitude rate and airspeed setpoints from the outer loops, from which the energy rate setpoints follow.
 	 *
 	 */
-	struct OuterLoopSetpoints {
-		float altitude_rate_setpoint;	///< Controlled altitude rate setpoint [m/s].
-		float tas_rate_setpoint;	///< Controlled true airspeed rate setpoint [m/s²].
+	ਬਣਤਰ OuterLoopSetpoints {
+		ਦਸ਼ਮਲਵ altitude_ਦਰ_setpoint;	///< Controlled altitude rate setpoint [m/s].
+		ਦਸ਼ਮਲਵ tas_ਦਰ_setpoint;	///< Controlled true airspeed rate setpoint [m/s²].
 	};
 
 	/**
 	 * @brief Weight factors for specific energy.
 	 *
 	 */
-	struct SpecificEnergyWeighting {
-		float spe_weighting;	///< Specific potential energy weight.
-		float ske_weighting;	///< Specific kinetic energy weight.
+	ਬਣਤਰ SpecificEnergyWeighting {
+		ਦਸ਼ਮਲਵ spe_weighting;	///< Specific potential energy weight.
+		ਦਸ਼ਮਲਵ ske_weighting;	///< Specific kinetic energy weight.
 	};
 
-private:
+ਨਿਜੀ:
 	/**
 	 * @brief Get control error from setpoint and estimate
 	 *
 	 * @param val is the current control setpoint and estimate.
 	 * @return error value
 	 */
-	static constexpr float _getControlError(TECSControl::ControlValues val) {return (val.setpoint - val.estimate);}
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ _getControlError(TECSControl::Control_ਮੁੱਲਾਂ val) {ਵਾਪਸ (val.setpoint - val.estimate);}
 	/**
 	 * @brief Calculate specific total energy rate limits.
 	 *
 	 * @param[in] param are the control parameters.
 	 * @return Specific total energy rate limits in [m²/s³].
 	 */
-	STERateLimit _calculateTotalEnergyRateLimit(const Param &param) const;
+	STERate_ਹੱਦਬੰਦੀ calculate_ਕੁੱਲ_Energy_ਦਰ_ਹੱਦਬੰਦੀ(ਅਚਲ Param &param) ਅਚਲ;
 	/**
 	 * @brief Gain from specific total energy rate error to throttle.
 	 *
 	 * @param[in] limit is the specific total energy rate limits in [m²/s³].
 	 * @return throttle per specific total energy rate [s³/m²].
 	 */
-	static float _steRateToThrottle(const STERateLimit &limit) { return 1.0f / (limit.STE_rate_max - limit.STE_rate_min); }
+	ਸਥਿਰ ਦਸ਼ਮਲਵ ste_ਦਰ_ਮੰਜ਼ਿਲ_Throttle(ਅਚਲ STERate_ਹੱਦਬੰਦੀ &ਹੱਦਬੰਦੀ_2) { ਵਾਪਸ 1.0f / (ਹੱਦਬੰਦੀ_2.STE_ਦਰ_max - ਹੱਦਬੰਦੀ_2.STE_ਦਰ_min); }
 	/**
 	 * @brief calculate airspeed control proportional output.
 	 *
@@ -438,8 +438,8 @@ private:
 	 * @param flag	is the control flags.
 	 * @return controlled airspeed rate setpoint in [m/s²].
 	 */
-	float _calcAirspeedControlOutput(const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
-					 const Param &param, const Flag &flag) const;
+	ਦਸ਼ਮਲਵ _calcAirspeedControlOutput(ਅਚਲ Setpoint &setpoint, ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼, ਅਚਲ STERate_ਹੱਦਬੰਦੀ &ਹੱਦਬੰਦੀ_2,
+					 ਅਚਲ Param &param, ਅਚਲ Flag &flag) ਅਚਲ;
 	/**
 	 * @brief calculate altitude control proportional output.
 	 *
@@ -448,7 +448,7 @@ private:
 	 * @param param is the control parameters.
 	 * @return controlled altitude rate setpoint in [m/s].
 	 */
-	float _calcAltitudeControlOutput(const Setpoint &setpoint, const Input &input, const Param &param) const;
+	ਦਸ਼ਮਲਵ _calcAltitudeControlOutput(ਅਚਲ Setpoint &setpoint, ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼, ਅਚਲ Param &param) ਅਚਲ;
 	/**
 	 * @brief Run the airspeed and altitude outer loops and the underspeed detection.
 	 *
@@ -461,8 +461,8 @@ private:
 	 * @param flag is the control flags.
 	 * @return Specific energy rates in [m²/s³].
 	 */
-	SpecificEnergyRates _updateOuterLoops(const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
-					      const Param &param, const Flag &flag);
+	SpecificEnergyRates _updateOuterLoops(ਅਚਲ Setpoint &setpoint, ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼, ਅਚਲ STERate_ਹੱਦਬੰਦੀ &ਹੱਦਬੰਦੀ_2,
+					      ਅਚਲ Param &param, ਅਚਲ Flag &flag);
 	/**
 	 * @brief Calculate specific energy rates.
 	 *
@@ -470,7 +470,7 @@ private:
 	 * @param input is the current input measurement of the UAS.
 	 * @return Specific energy rates in [m²/s³].
 	 */
-	SpecificEnergyRates _calcSpecificEnergyRates(const OuterLoopSetpoints &control_setpoint, const Input &input) const;
+	SpecificEnergyRates _calcSpecificEnergyRates(ਅਚਲ OuterLoopSetpoints &control_setpoint, ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼) ਅਚਲ;
 	/**
 	 * @brief Detect underspeed.
 	 *
@@ -478,7 +478,7 @@ private:
 	 * @param param is the control parameters.
 	 * @param flag is the control flags.
 	 */
-	void _detectUnderspeed(const Input &input, const Param &param, const Flag &flag);
+	ਖਾਲੀ _detectUnderspeed(ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼, ਅਚਲ Param &param, ਅਚਲ Flag &flag);
 	/**
 	 * @brief Update specific energy balance weights.
 	 *
@@ -486,7 +486,7 @@ private:
 	 * @param flag is the control flags.
 	 * @return Weights used for the specific energy balance.
 	 */
-	SpecificEnergyWeighting _updateSpeedAltitudeWeights(const Param &param, const Flag &flag);
+	SpecificEnergyWeighting update_ਰਫਤਾਰ_Altitude_Weights(ਅਚਲ Param &param, ਅਚਲ Flag &flag);
 	/**
 	 * @brief Calculate the specific kinetic energy rate setpoint used by the pitch loop.
 	 *
@@ -498,8 +498,8 @@ private:
 	 * @param weight is the weighting use of the potential and kinetic energy.
 	 * @return specific kinetic energy rate setpoint in [m²/s³].
 	 */
-	float _calcPitchControlSkeRateSetpoint(const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
-					       const Param &param, const Flag &flag, const SpecificEnergyWeighting &weight) const;
+	ਦਸ਼ਮਲਵ calc_Pitch_Control_Ske_ਦਰ_Setpoint(ਅਚਲ Setpoint &setpoint, ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼, ਅਚਲ STERate_ਹੱਦਬੰਦੀ &ਹੱਦਬੰਦੀ_2,
+					       ਅਚਲ Param &param, ਅਚਲ Flag &flag, ਅਚਲ SpecificEnergyWeighting &ਭਾਰ) ਅਚਲ;
 	/**
 	 * @brief Specific energy rates as seen by the pitch loop.
 	 *
@@ -516,9 +516,9 @@ private:
 	 * @param weight is the weighting use of the potential and kinetic energy.
 	 * @return specific energy rates for the pitch loop in [m²/s³].
 	 */
-	SpecificEnergyRates _calcPitchControlEnergyRates(const Setpoint &setpoint, const Input &input,
-			const STERateLimit &limit, const SpecificEnergyRates &specific_energy_rates, const Param &param,
-			const Flag &flag, const SpecificEnergyWeighting &weight) const;
+	SpecificEnergyRates _calcPitchControlEnergyRates(ਅਚਲ Setpoint &setpoint, ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼,
+			ਅਚਲ STERate_ਹੱਦਬੰਦੀ &ਹੱਦਬੰਦੀ_2, ਅਚਲ SpecificEnergyRates &specific_energy_rates, ਅਚਲ Param &param,
+			ਅਚਲ Flag &flag, ਅਚਲ SpecificEnergyWeighting &ਭਾਰ) ਅਚਲ;
 	/**
 	 * @brief Calculate pitch control.
 	 *
@@ -530,8 +530,8 @@ private:
 	 * @param param is the control parameters.
 	 * @param flag is the control flags.
 	 */
-	void _calcPitchControl(float dt, const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
-			       const SpecificEnergyRates &specific_energy_rate, const Param &param, const Flag &flag);
+	ਖਾਲੀ _calcPitchControl(ਦਸ਼ਮਲਵ dt, ਅਚਲ Setpoint &setpoint, ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼, ਅਚਲ STERate_ਹੱਦਬੰਦੀ &ਹੱਦਬੰਦੀ_2,
+			       ਅਚਲ SpecificEnergyRates &specific_energy_ਦਰ, ਅਚਲ Param &param, ਅਚਲ Flag &flag);
 
 	/**
 	 * @brief Calculate pitch control specific energy balance rates.
@@ -540,8 +540,8 @@ private:
 	 * @param specific_energy_rate is the specific energy rates in [m²/s³].
 	 * @return specific energy balance rate values in [m²/s³].
 	 */
-	ControlValues _calcPitchControlSebRate(const SpecificEnergyWeighting &weight,
-					       const SpecificEnergyRates &specific_energy_rate) const;
+	Control_ਮੁੱਲਾਂ calc_Pitch_Control_Seb_ਦਰ(ਅਚਲ SpecificEnergyWeighting &ਭਾਰ,
+					       ਅਚਲ SpecificEnergyRates &specific_energy_ਦਰ) ਅਚਲ;
 
 	/**
 	 * @brief Calculate the pitch control update function.
@@ -552,7 +552,7 @@ private:
 	 * @param seb_rate is the specific energy balance rate in [m²/s³].
 	 * @param param is the control parameters.
 	 */
-	void _calcPitchControlUpdate(float dt, const Input &input, const ControlValues &seb_rate, const Param &param);
+	ਖਾਲੀ _calcPitchControlUpdate(ਦਸ਼ਮਲਵ dt, ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼, ਅਚਲ Control_ਮੁੱਲਾਂ &seb_ਦਰ, ਅਚਲ Param &param);
 
 	/**
 	 * @brief Derivative of the specific energy balance rate with respect to the climb angle.
@@ -564,7 +564,7 @@ private:
 	 * @param param is the control parameters.
 	 * @return climb angle to specific energy balance rate gain in [m²/s³/rad].
 	 */
-	static float _climbAngleToSebRate(const Input &input, const Param &param);
+	ਸਥਿਰ ਦਸ਼ਮਲਵ climb_Angle_ਮੰਜ਼ਿਲ_Seb_ਦਰ(ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼, ਅਚਲ Param &param);
 
 	/**
 	 * @brief Calculate the pitch control output function.
@@ -574,7 +574,7 @@ private:
 	 * @param param is the control parameters.
 	 * @return absolute pitch setpoint [rad].
 	 */
-	float _calcPitchControlOutput(const Input &input, const ControlValues &seb_rate, const Param &param) const;
+	ਦਸ਼ਮਲਵ _calcPitchControlOutput(ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼, ਅਚਲ Control_ਮੁੱਲਾਂ &seb_ਦਰ, ਅਚਲ Param &param) ਅਚਲ;
 
 	/**
 	 * @brief Update controlled throttle setpoint.
@@ -585,8 +585,8 @@ private:
 	 * @param param is the control parameters.
 	 * @param flag is the control flags.
 	 */
-	void _calcThrottleControl(float dt, const STERateLimit &limit, const SpecificEnergyRates &specific_energy_rate,
-				  const Param &param, const Flag &flag);
+	ਖਾਲੀ _calcThrottleControl(ਦਸ਼ਮਲਵ dt, ਅਚਲ STERate_ਹੱਦਬੰਦੀ &ਹੱਦਬੰਦੀ_2, ਅਚਲ SpecificEnergyRates &specific_energy_ਦਰ,
+				  ਅਚਲ Param &param, ਅਚਲ Flag &flag);
 
 	/**
 	 * @brief Calculate throttle control specific total energy
@@ -596,8 +596,8 @@ private:
 	 * @param param is the control parameters.
 	 * @return specific total energy rate values in [m²/s³]
 	 */
-	ControlValues _calcThrottleControlSteRate(const STERateLimit &limit, const SpecificEnergyRates &specific_energy_rate,
-			const Param &param) const;
+	Control_ਮੁੱਲਾਂ calc_Throttle_Control_Ste_ਦਰ(ਅਚਲ STERate_ਹੱਦਬੰਦੀ &ਹੱਦਬੰਦੀ_2, ਅਚਲ SpecificEnergyRates &specific_energy_ਦਰ,
+			ਅਚਲ Param &param) ਅਚਲ;
 
 	/**
 	 * @brief Calculate the throttle control update function.
@@ -609,8 +609,8 @@ private:
 	 * @param param is the control parameters.
 	 * @param flag is the control flags.
 	 */
-	void _calcThrottleControlUpdate(float dt, const STERateLimit &limit, const ControlValues &ste_rate, const Param &param,
-					const Flag &flag);
+	ਖਾਲੀ _calcThrottleControlUpdate(ਦਸ਼ਮਲਵ dt, ਅਚਲ STERate_ਹੱਦਬੰਦੀ &ਹੱਦਬੰਦੀ_2, ਅਚਲ Control_ਮੁੱਲਾਂ &ste_ਦਰ, ਅਚਲ Param &param,
+					ਅਚਲ Flag &flag);
 
 	/**
 	 * @brief Calculate the throttle control output function.
@@ -621,77 +621,77 @@ private:
 	 * @param flag is the control flags.
 	 * @return throttle setpoint in [0,1].
 	 */
-	float _calcThrottleControlOutput(const STERateLimit &limit, const ControlValues &ste_rate, const Param &param,
-					 const Flag &flag) const;
+	ਦਸ਼ਮਲਵ _calcThrottleControlOutput(ਅਚਲ STERate_ਹੱਦਬੰਦੀ &ਹੱਦਬੰਦੀ_2, ਅਚਲ Control_ਮੁੱਲਾਂ &ste_ਦਰ, ਅਚਲ Param &param,
+					 ਅਚਲ Flag &flag) ਅਚਲ;
 
-private:
+ਨਿਜੀ:
 	// State
-	AlphaFilter<float> _ste_rate_estimate_filter;		///< Low pass filter for the specific total energy rate.
-	float _pitch_integ_state{0.0f};				///< Pitch integrator state [rad].
-	float _fast_descend_prev{0.0f};				///< Fast descend ratio of the last update [0,1].
-	float _throttle_integ_state{0.0f};			///< Throttle integrator state [-].
+	AlphaFilter<ਦਸ਼ਮਲਵ> ste_ਦਰ_estimate_filter;		///< Low pass filter for the specific total energy rate.
+	ਦਸ਼ਮਲਵ _pitch_integ_state{0.0f};				///< Pitch integrator state [rad].
+	ਦਸ਼ਮਲਵ _fast_descend_prev{0.0f};				///< Fast descend ratio of the last update [0,1].
+	ਦਸ਼ਮਲਵ _throttle_integ_state{0.0f};			///< Throttle integrator state [-].
 
 	// Output
 	DebugOutput _debug_output;				///< Debug output.
-	float _pitch_setpoint{0.0f};				///< Controlled absolute pitch setpoint [rad].
-	float _throttle_setpoint{0.0f};				///< Controlled throttle setpoint [0,1].
-	float _ratio_undersped{0.0f};				///< A continuous representation of how "undersped" the TAS is [0,1]
+	ਦਸ਼ਮਲਵ _pitch_setpoint{0.0f};				///< Controlled absolute pitch setpoint [rad].
+	ਦਸ਼ਮਲਵ _throttle_setpoint{0.0f};				///< Controlled throttle setpoint [0,1].
+	ਦਸ਼ਮਲਵ ਅਨੁਪਾਤ_undersped{0.0f};				///< A continuous representation of how "undersped" the TAS is [0,1]
 };
 
-class TECS
+ਵਰਗ TECS
 {
-public:
-	struct DebugOutput {
+ਜਨਤਕ:
+	ਬਣਤਰ DebugOutput {
 		TECSControl::DebugOutput control;
-		float true_airspeed_sp;
-		float true_airspeed_filtered;
-		float true_airspeed_derivative;
-		float altitude_reference;
-		float height_rate_reference;
-		float height_rate_direct;
-		float fast_descend;
+		ਦਸ਼ਮਲਵ true_airspeed_sp;
+		ਦਸ਼ਮਲਵ true_airspeed_filtered;
+		ਦਸ਼ਮਲਵ true_airspeed_derivative;
+		ਦਸ਼ਮਲਵ altitude_reference;
+		ਦਸ਼ਮਲਵ ਉਚਾਈ_ਦਰ_reference;
+		ਦਸ਼ਮਲਵ ਉਚਾਈ_ਦਰ_ਸਿੱਧਾ;
+		ਦਸ਼ਮਲਵ fast_descend;
 	};
 
 	/**
 	 * @brief Vehicle state, setpoints and limits for one control update.
 	 *
 	 */
-	struct Input {
-		float altitude;				///< Current altitude amsl [m].
-		float altitude_rate;			///< Current altitude rate [m/s].
-		float altitude_setpoint;		///< Altitude setpoint amsl [m], NAN if not set.
-		float altitude_rate_setpoint{NAN};	///< Altitude rate setpoint [m/s], NAN if not set.
-		float equivalent_airspeed;		///< Current equivalent airspeed [m/s].
-		float speed_deriv_forward;		///< Current forward acceleration, used as true airspeed rate [m/s²].
-		float equivalent_airspeed_setpoint;	///< Equivalent airspeed setpoint [m/s].
-		float eas_to_tas;			///< Conversion factor from equivalent to true airspeed [-].
-		float throttle_min;			///< Normalized throttle lower limit.
-		float throttle_max;			///< Normalized throttle upper limit.
-		float throttle_trim;			///< Normalized throttle required to fly level at the airspeed setpoint.
-		float pitch_min;			///< Minimum absolute pitch angle setpoint [rad].
-		float pitch_max;			///< Maximum absolute pitch angle setpoint [rad].
-		float target_climbrate;			///< Climb rate the reference model targets [m/s].
-		float target_sinkrate;			///< Sink rate the reference model targets [m/s].
+	ਬਣਤਰ ਨਿਵੇਸ਼_2 {
+		ਦਸ਼ਮਲਵ altitude;				///< Current altitude amsl [m].
+		ਦਸ਼ਮਲਵ altitude_ਦਰ;			///< Current altitude rate [m/s].
+		ਦਸ਼ਮਲਵ altitude_setpoint;		///< Altitude setpoint amsl [m], NAN if not set.
+		ਦਸ਼ਮਲਵ altitude_ਦਰ_setpoint{NAN};	///< Altitude rate setpoint [m/s], NAN if not set.
+		ਦਸ਼ਮਲਵ equivalent_airspeed;		///< Current equivalent airspeed [m/s].
+		ਦਸ਼ਮਲਵ ਰਫਤਾਰ_deriv_forward;		///< Current forward acceleration, used as true airspeed rate [m/s²].
+		ਦਸ਼ਮਲਵ equivalent_airspeed_setpoint;	///< Equivalent airspeed setpoint [m/s].
+		ਦਸ਼ਮਲਵ eas_ਮੰਜ਼ਿਲ_tas;			///< Conversion factor from equivalent to true airspeed [-].
+		ਦਸ਼ਮਲਵ throttle_min;			///< Normalized throttle lower limit.
+		ਦਸ਼ਮਲਵ throttle_max;			///< Normalized throttle upper limit.
+		ਦਸ਼ਮਲਵ throttle_trim;			///< Normalized throttle required to fly level at the airspeed setpoint.
+		ਦਸ਼ਮਲਵ pitch_min;			///< Minimum absolute pitch angle setpoint [rad].
+		ਦਸ਼ਮਲਵ pitch_max;			///< Maximum absolute pitch angle setpoint [rad].
+		ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_climbrate;			///< Climb rate the reference model targets [m/s].
+		ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_sinkrate;			///< Sink rate the reference model targets [m/s].
 	};
 
-public:
-	TECS() = default;
-	~TECS() = default;
+ਜਨਤਕ:
+	TECS() = ਮੂਲ;
+	~TECS() = ਮੂਲ;
 
 	// no copy, assignment, move, move assignment
-	TECS(const TECS &) = delete;
-	TECS &operator=(const TECS &) = delete;
-	TECS(TECS &&) = delete;
-	TECS &operator=(TECS &&) = delete;
+	TECS(ਅਚਲ TECS &) = ਮਿਟਾਓ;
+	TECS &ਸੰਚਾਲਕ=(ਅਚਲ TECS &) = ਮਿਟਾਓ;
+	TECS(TECS &&) = ਮਿਟਾਓ;
+	TECS &ਸੰਚਾਲਕ=(TECS &&) = ਮਿਟਾਓ;
 
-	const DebugOutput &getStatus() const { return _debug_status; }
+	ਅਚਲ DebugOutput &get_ਸਥਿਤੀ() ਅਚਲ { ਵਾਪਸ debug_ਸਥਿਤੀ; }
 
 	/**
 	 * Set the airspeed enable state
 	 *
 	 * @param[in] enabled is true if the airspeed measurement is used for control.
 	 */
-	void enable_airspeed(bool enabled) { _control_flag.airspeed_enabled = enabled; }
+	ਖਾਲੀ enable_airspeed(ਤਾਰਕਿਕ enabled) { _control_flag.airspeed_enabled = enabled; }
 
 	/**
 	 * @brief Update the control loop calculations
@@ -701,53 +701,53 @@ public:
 	 *
 	 * @param[in] input is the current vehicle state, setpoints and limits.
 	 */
-	void update(const Input &input);
+	ਖਾਲੀ update(ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼);
 
-	void resetIntegrals()
+	ਖਾਲੀ resetIntegrals()
 	{
 		_control.resetIntegrals();
 	}
 
-	void set_detect_underspeed_enabled(bool enabled) { _control_flag.detect_underspeed_enabled = enabled; }
+	ਖਾਲੀ ਸੈੱਟ_detect_underspeed_enabled(ਤਾਰਕਿਕ enabled) { _control_flag.detect_underspeed_enabled = enabled; }
 
 	// setters for parameters
 
-	void set_integrator_gain_throttle(float gain) { _control_param.integrator_gain_throttle = gain;}
-	void set_integrator_gain_pitch(float gain) { _control_param.integrator_gain_pitch = gain; }
+	ਖਾਲੀ ਸੈੱਟ_integrator_gain_throttle(ਦਸ਼ਮਲਵ gain) { _control_param.integrator_gain_throttle = gain;}
+	ਖਾਲੀ ਸੈੱਟ_integrator_gain_pitch(ਦਸ਼ਮਲਵ gain) { _control_param.integrator_gain_pitch = gain; }
 
-	void set_max_sink_rate(float max_sink_rate) { _control_param.max_sink_rate = max_sink_rate; _reference_param.max_sink_rate = max_sink_rate; }
-	void set_min_sink_rate(float min_sink_rate) { _control_param.min_sink_rate = min_sink_rate; }
-	void set_max_climb_rate(float climb_rate) { _control_param.max_climb_rate = climb_rate; _reference_param.max_climb_rate = climb_rate; }
+	ਖਾਲੀ ਸੈੱਟ_max_sink_ਦਰ(ਦਸ਼ਮਲਵ max_sink_ਦਰ) { _control_param.max_sink_ਦਰ = max_sink_ਦਰ; _reference_param.max_sink_ਦਰ = max_sink_ਦਰ; }
+	ਖਾਲੀ ਸੈੱਟ_min_sink_ਦਰ(ਦਸ਼ਮਲਵ min_sink_ਦਰ) { _control_param.min_sink_ਦਰ = min_sink_ਦਰ; }
+	ਖਾਲੀ ਸੈੱਟ_max_climb_ਦਰ(ਦਸ਼ਮਲਵ climb_ਦਰ) { _control_param.max_climb_ਦਰ = climb_ਦਰ; _reference_param.max_climb_ਦਰ = climb_ਦਰ; }
 
-	void set_altitude_rate_ff(float altitude_rate_ff) { _control_param.altitude_setpoint_gain_ff = altitude_rate_ff; }
-	void set_altitude_error_time_constant(float time_const) { _control_param.altitude_error_gain = 1.0f / math::max(time_const, 0.1f); }
-	void set_fast_descend_altitude_error(float altitude_error) { _fast_descend_alt_err = altitude_error; }
+	ਖਾਲੀ ਸੈੱਟ_altitude_ਦਰ_ff(ਦਸ਼ਮਲਵ altitude_ਦਰ_ff) { _control_param.altitude_setpoint_gain_ff = altitude_ਦਰ_ff; }
+	ਖਾਲੀ ਸੈੱਟ_altitude_error_ਸਮਾਂ_constant(ਦਸ਼ਮਲਵ ਸਮਾਂ_const) { _control_param.altitude_error_gain = 1.0f / math::max(ਸਮਾਂ_const, 0.1f); }
+	ਖਾਲੀ ਸੈੱਟ_fast_descend_altitude_error(ਦਸ਼ਮਲਵ altitude_error) { _fast_descend_alt_err = altitude_error; }
 
-	void set_equivalent_airspeed_min(float airspeed) { _equivalent_airspeed_min = airspeed; }
-	void set_equivalent_airspeed_stall(float airspeed) { _equivalent_airspeed_stall = airspeed; }
-	void set_equivalent_airspeed_max(float airspeed) { _equivalent_airspeed_max = airspeed; }
-	void set_equivalent_airspeed_trim(float airspeed) { _control_param.equivalent_airspeed_trim = airspeed; _airspeed_filter_param.equivalent_airspeed_trim = airspeed; }
+	ਖਾਲੀ ਸੈੱਟ_equivalent_airspeed_min(ਦਸ਼ਮਲਵ airspeed) { _equivalent_airspeed_min = airspeed; }
+	ਖਾਲੀ ਸੈੱਟ_equivalent_airspeed_stall(ਦਸ਼ਮਲਵ airspeed) { _equivalent_airspeed_stall = airspeed; }
+	ਖਾਲੀ ਸੈੱਟ_equivalent_airspeed_max(ਦਸ਼ਮਲਵ airspeed) { _equivalent_airspeed_max = airspeed; }
+	ਖਾਲੀ ਸੈੱਟ_equivalent_airspeed_trim(ਦਸ਼ਮਲਵ airspeed) { _control_param.equivalent_airspeed_trim = airspeed; _airspeed_filter_param.equivalent_airspeed_trim = airspeed; }
 
-	void set_pitch_damping(float damping) { _control_param.pitch_damping_gain = damping; }
-	void set_vertical_accel_limit(float limit) { _reference_param.vert_accel_limit = limit; _control_param.vert_accel_limit = limit; }
+	ਖਾਲੀ ਸੈੱਟ_pitch_damping(ਦਸ਼ਮਲਵ damping) { _control_param.pitch_damping_gain = damping; }
+	ਖਾਲੀ ਸੈੱਟ_vertical_accel_ਹੱਦਬੰਦੀ(ਦਸ਼ਮਲਵ ਹੱਦਬੰਦੀ_2) { _reference_param.vert_accel_ਹੱਦਬੰਦੀ = ਹੱਦਬੰਦੀ_2; _control_param.vert_accel_ਹੱਦਬੰਦੀ = ਹੱਦਬੰਦੀ_2; }
 
-	void set_speed_weight(float weight) { _control_param.pitch_speed_weight = weight; }
-	void set_airspeed_error_time_constant(float time_const) { _control_param.airspeed_error_gain = 1.0f / math::max(time_const, 0.1f); }
+	ਖਾਲੀ ਸੈੱਟ_ਰਫਤਾਰ_ਭਾਰ(ਦਸ਼ਮਲਵ ਭਾਰ) { _control_param.pitch_ਰਫਤਾਰ_ਭਾਰ = ਭਾਰ; }
+	ਖਾਲੀ ਸੈੱਟ_airspeed_error_ਸਮਾਂ_constant(ਦਸ਼ਮਲਵ ਸਮਾਂ_const) { _control_param.airspeed_error_gain = 1.0f / math::max(ਸਮਾਂ_const, 0.1f); }
 
-	void set_throttle_damp(float throttle_damp) { _control_param.throttle_damping_gain = throttle_damp; }
-	void set_throttle_slewrate(float slewrate) { _control_param.throttle_slewrate = slewrate; }
+	ਖਾਲੀ ਸੈੱਟ_throttle_damp(ਦਸ਼ਮਲਵ throttle_damp) { _control_param.throttle_damping_gain = throttle_damp; }
+	ਖਾਲੀ ਸੈੱਟ_throttle_slewrate(ਦਸ਼ਮਲਵ slewrate) { _control_param.throttle_slewrate = slewrate; }
 
-	void set_roll_throttle_compensation(float compensation) { _control_param.load_factor_correction = compensation; }
-	void set_load_factor(float load_factor) { _control_param.load_factor = load_factor; }
+	ਖਾਲੀ ਸੈੱਟ_roll_throttle_compensation(ਦਸ਼ਮਲਵ compensation) { _control_param.ਲੱਦੋ_ਗੁਣਕ_correction = compensation; }
+	ਖਾਲੀ ਸੈੱਟ_ਲੱਦੋ_ਗੁਣਕ(ਦਸ਼ਮਲਵ ਲੱਦੋ_ਗੁਣਕ) { _control_param.ਲੱਦੋ_ਗੁਣਕ = ਲੱਦੋ_ਗੁਣਕ; }
 
-	void set_ste_rate_time_const(float time_const) { _control_param.ste_rate_time_const = time_const; }
+	ਖਾਲੀ ਸੈੱਟ_ste_ਦਰ_ਸਮਾਂ_const(ਦਸ਼ਮਲਵ ਸਮਾਂ_const) { _control_param.ste_ਦਰ_ਸਮਾਂ_const = ਸਮਾਂ_const; }
 
-	void set_seb_rate_ff_gain(float ff_gain) { _control_param.seb_rate_ff = ff_gain; }
+	ਖਾਲੀ ਸੈੱਟ_seb_ਦਰ_ff_gain(ਦਸ਼ਮਲਵ ff_gain) { _control_param.seb_ਦਰ_ff = ff_gain; }
 
 	/**
 	 * Set the pitch angle in level flight at trim airspeed [rad], fed forward as the pitch at zero climb angle
 	 */
-	void set_level_flight_pitch(float pitch) { _control_param.level_flight_pitch = pitch; }
+	ਖਾਲੀ ਸੈੱਟ_level_flight_pitch(ਦਸ਼ਮਲਵ pitch) { _control_param.level_flight_pitch = pitch; }
 
 	/**
 	 * Handle the altitude reset
@@ -758,10 +758,10 @@ public:
 	 * @param[in] altitude is the altitude amsl after the reset [m].
 	 * @param[in] altitude_rate is the current altitude rate [m/s].
 	 */
-	void handle_alt_step(float altitude, float altitude_rate)
+	ਖਾਲੀ handle_alt_ਕਦਮ(ਦਸ਼ਮਲਵ altitude, ਦਸ਼ਮਲਵ altitude_ਦਰ)
 	{
 		TECSAltitudeReferenceModel::AltitudeReferenceState init_state{ .alt = altitude,
-				.alt_rate = altitude_rate};
+				.alt_ਦਰ = altitude_ਦਰ};
 
 		// reset altitude reference model.
 		_altitude_reference_model.initialize(init_state);
@@ -770,23 +770,23 @@ public:
 	/**
 	 * Returns the absolute pitch setpoint [rad]
 	 */
-	float get_pitch_setpoint() const {return _control.getPitchSetpoint();}
-	float get_throttle_setpoint() const {return _control.getThrottleSetpoint();}
+	ਦਸ਼ਮਲਵ get_pitch_setpoint() ਅਚਲ {ਵਾਪਸ _control.getPitchSetpoint();}
+	ਦਸ਼ਮਲਵ get_throttle_setpoint() ਅਚਲ {ਵਾਪਸ _control.getThrottleSetpoint();}
 
 	/**
 	 * Returns the altitude tracking time constant
 	 */
-	float get_altitude_error_time_constant() const { return 1.0f / _control_param.altitude_error_gain; }
+	ਦਸ਼ਮਲਵ get_altitude_error_ਸਮਾਂ_constant() ਅਚਲ { ਵਾਪਸ 1.0f / _control_param.altitude_error_gain; }
 
-	float get_underspeed_ratio() const { return _control.getUnderspeedRatio(); }
+	ਦਸ਼ਮਲਵ get_underspeed_ਅਨੁਪਾਤ() ਅਚਲ { ਵਾਪਸ _control.get_Underspeed_ਅਨੁਪਾਤ(); }
 
-private:
+ਨਿਜੀ:
 	/**
 	 * @brief Initialize the control parameters
 	 *
 	 * @param[in] input is the current vehicle state, setpoints and limits.
 	 */
-	void initControlParams(const Input &input);
+	ਖਾਲੀ initControlParams(ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼);
 
 	/**
 	 * @brief calculate true airspeed setpoint
@@ -797,14 +797,14 @@ private:
 	 * @param eas_setpoint is the desired equivalent airspeed setpoint [m/s]
 	 * @return true airspeed setpoint[m/s]
 	 */
-	float calcTrueAirspeedSetpoint(float eas_to_tas, float eas_setpoint);
+	ਦਸ਼ਮਲਵ calcTrueAirspeedSetpoint(ਦਸ਼ਮਲਵ eas_ਮੰਜ਼ਿਲ_tas, ਦਸ਼ਮਲਵ eas_setpoint);
 
 	/**
 	 * @brief Initialize the control loop
 	 *
 	 * @param[in] input is the current vehicle state, setpoints and limits.
 	 */
-	void initialize(const Input &input);
+	ਖਾਲੀ initialize(ਅਚਲ ਨਿਵੇਸ਼_2 &ਨਿਵੇਸ਼);
 
 	TECSControl 			_control;			///< Control submodule.
 	TECSAirspeedFilter 		_airspeed_filter;		///< Airspeed filter submodule.
@@ -812,19 +812,19 @@ private:
 
 	hrt_abstime _update_timestamp{0};				///< last timestamp of the update function call.
 
-	float _equivalent_airspeed_min{10.0f};				///< equivalent airspeed demand lower limit (m/sec)
-	float _equivalent_airspeed_stall{7.0f};				///< equivalent stall airspeed (m/sec)
-	float _equivalent_airspeed_max{20.0f};				///< equivalent airspeed demand upper limit (m/sec)
-	float _fast_descend_alt_err{-1.f};	 				///< Altitude difference between current altitude to altitude setpoint needed to descend with higher airspeed [m].
-	float _fast_descend{0.f};					///< Value for fast descend in [0,1]. continuous value used to flatten the high speed value out when close to target altitude.
+	ਦਸ਼ਮਲਵ _equivalent_airspeed_min{10.0f};				///< equivalent airspeed demand lower limit (m/sec)
+	ਦਸ਼ਮਲਵ _equivalent_airspeed_stall{7.0f};				///< equivalent stall airspeed (m/sec)
+	ਦਸ਼ਮਲਵ _equivalent_airspeed_max{20.0f};				///< equivalent airspeed demand upper limit (m/sec)
+	ਦਸ਼ਮਲਵ _fast_descend_alt_err{-1.f};	 				///< Altitude difference between current altitude to altitude setpoint needed to descend with higher airspeed [m].
+	ਦਸ਼ਮਲਵ _fast_descend{0.f};					///< Value for fast descend in [0,1]. continuous value used to flatten the high speed value out when close to target altitude.
 	hrt_abstime _enabled_fast_descend_timestamp{0U};		///< timestamp at activation of fast descend mode
 
-	static constexpr float DT_MIN = 0.001f;				///< minimum allowed value of _dt (sec)
-	static constexpr float DT_MAX = 1.0f;				///< max value of _dt allowed before a filter state reset is performed (sec)
-	static constexpr hrt_abstime FAST_DESCEND_RAMP_UP_TIME = 2_s; 	///< Ramp up time until fast descend is fully engaged
-	static constexpr float FAST_DESCEND_HEIGHT_MARGIN = 5.f;	///< Height above setpoint where fast descend ends [m]
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ DT_MIN = 0.001f;				///< minimum allowed value of _dt (sec)
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ DT_MAX = 1.0f;				///< max value of _dt allowed before a filter state reset is performed (sec)
+	ਸਥਿਰ constexpr hrt_abstime FAST_DESCEND_RAMP_ਉੱਪਰ_ਸਮਾਂ = 2_s; 	///< Ramp up time until fast descend is fully engaged
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ FAST_DESCEND_ਉਚਾਈ_MARGIN = 5.f;	///< Height above setpoint where fast descend ends [m]
 
-	DebugOutput _debug_status{};
+	DebugOutput debug_ਸਥਿਤੀ{};
 
 	// Params
 	/// Airspeed filter parameters.
@@ -833,18 +833,18 @@ private:
 	};
 	/// Reference model parameters.
 	TECSAltitudeReferenceModel::Param _reference_param{
-		.target_climbrate = 2.0f,
-		.target_sinkrate = 2.0f,
-		.vert_accel_limit = 0.0f,
-		.max_climb_rate = 2.0f,
-		.max_sink_rate = 2.0f,
+		.ਨਿਸ਼ਾਨਾ_climbrate = 2.0f,
+		.ਨਿਸ਼ਾਨਾ_sinkrate = 2.0f,
+		.vert_accel_ਹੱਦਬੰਦੀ = 0.0f,
+		.max_climb_ਦਰ = 2.0f,
+		.max_sink_ਦਰ = 2.0f,
 	};
 	/// Control parameters.
 	TECSControl::Param _control_param{
-		.max_sink_rate = 5.0f,
-		.min_sink_rate = 2.0f,
-		.max_climb_rate = 5.0f,
-		.vert_accel_limit = 0.0f,
+		.max_sink_ਦਰ = 5.0f,
+		.min_sink_ਦਰ = 2.0f,
+		.max_climb_ਦਰ = 5.0f,
+		.vert_accel_ਹੱਦਬੰਦੀ = 0.0f,
 		.equivalent_airspeed_trim = 15.0f,
 		.tas_min = 10.0f,
 		.tas_stall = 7.0f,
@@ -859,22 +859,22 @@ private:
 		.altitude_error_gain = 0.2f,
 		.altitude_setpoint_gain_ff = 0.0f,
 		.airspeed_error_gain = 0.1f,
-		.ste_rate_time_const = 0.1f,
-		.seb_rate_ff = 1.0f,
-		.pitch_speed_weight = 1.0f,
+		.ste_ਦਰ_ਸਮਾਂ_const = 0.1f,
+		.seb_ਦਰ_ff = 1.0f,
+		.pitch_ਰਫਤਾਰ_ਭਾਰ = 1.0f,
 		.integrator_gain_pitch = 0.0f,
 		.pitch_damping_gain = 0.0f,
 		.integrator_gain_throttle = 0.0f,
 		.throttle_damping_gain = 0.0f,
 		.throttle_slewrate = 0.0f,
-		.load_factor_correction = 0.0f,
-		.load_factor = 1.0f,
+		.ਲੱਦੋ_ਗੁਣਕ_correction = 0.0f,
+		.ਲੱਦੋ_ਗੁਣਕ = 1.0f,
 		.fast_descend = 0.f
 	};
 
 	TECSControl::Flag _control_flag{
-		.airspeed_enabled = false,
-		.detect_underspeed_enabled = false,
+		.airspeed_enabled = ਝੂਠ,
+		.detect_underspeed_enabled = ਝੂਠ,
 	};
 
 	/**
@@ -883,5 +883,5 @@ private:
 	 * @param alt_setpoint is the altitude setpoint
 	 * @param alt is the current altitude
 	 */
-	void _setFastDescend(float alt_setpoint, float alt);
+	ਖਾਲੀ ਸੈੱਟ_Fast_Descend(ਦਸ਼ਮਲਵ alt_setpoint, ਦਸ਼ਮਲਵ alt);
 };

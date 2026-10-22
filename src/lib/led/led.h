@@ -39,26 +39,26 @@
  * @author Beat Küng <beat-kueng@gmx.net>
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <drivers/drv_hrt.h>
-#include <drivers/drv_led.h>
-#include <px4_platform_common/module_params.h>
-#include <lib/parameters/param.h>
-#include <lib/perf/perf_counter.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionInterval.hpp>
-#include <uORB/topics/led_control.h>
-#include <uORB/topics/parameter_update.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/drv_hrt.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/drv_led.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/module_params.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/parameters/param.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/perf/perf_counter.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/Subscription.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/SubscriptionInterval.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/led_control.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/parameter_update.h>
 
-using namespace time_literals;
+using namespace ਸਮਾਂ_literals;
 
-struct LedControlDataSingle {
+ਬਣਤਰ Led_Control_ਅੰਕੜੇ_Single {
 	uint8_t color{led_control_s::COLOR_OFF}; ///< one of led_control_s::COLOR_*
 	uint8_t brightness{0}; ///< brightness in [0, 255]
 };
-struct LedControlData {
-	LedControlDataSingle leds[BOARD_MAX_LEDS] {};
+ਬਣਤਰ Led_Control_ਅੰਕੜੇ {
+	Led_Control_ਅੰਕੜੇ_Single leds[BOARD_MAX_LEDS] {};
 };
 
 
@@ -66,21 +66,21 @@ struct LedControlData {
  ** class LedController
  * Handles the led_control topic: blinking, priorities and state updates.
  */
-class LedController : public ModuleParams
+class LedController : ਜਨਤਕ ModuleParams
 {
-public:
+ਜਨਤਕ:
 	LedController() : ModuleParams(nullptr) {}
 	~LedController() override
 	{
-		perf_free(_led_control_sub_lost_perf);
+		perf_free(led_control_sub_ਗੁਆਚਾ_perf);
 	}
 
 	/**
 	 * get maximum time between two consecutive calls to update() in us.
 	 */
-	int maximum_update_interval() const
+	ਪੂਰਨ ਵੱਧ_ਤੋਂ_ਵੱਧ_update_interval() ਅਚਲ
 	{
-		return _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
+		ਵਾਪਸ _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
 	}
 
 	/**
@@ -89,104 +89,104 @@ public:
 	 * @param control_data output structure (will always be set)
 	 * @return 1 if control_data set (state changed), 0 if control_data not changed (state did not change), <0 error otherwise
 	 */
-	int update(LedControlData &control_data);
+	ਪੂਰਨ update(Led_Control_ਅੰਕੜੇ &control_ਅੰਕੜੇ);
 
-	static constexpr int BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
-	static constexpr int BREATHE_STEPS = 64; /**< number of steps in breathe mode for a full on-off cycle */
+	ਸਥਿਰ constexpr ਪੂਰਨ BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
+	ਸਥਿਰ constexpr ਪੂਰਨ BREATHE_ਕਦਮਾਂ = 64; /**< number of steps in breathe mode for a full on-off cycle */
 
-	static constexpr int BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
+	ਸਥਿਰ constexpr ਪੂਰਨ BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
-	static constexpr int BLINK_NORMAL_DURATION = 500 * 1000; /**< duration of half a blinking cycle
+	ਸਥਿਰ constexpr ਪੂਰਨ BLINK_ਸਾਧਾਰਨ_DURATION = 500 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
-	static constexpr int BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
+	ਸਥਿਰ constexpr ਪੂਰਨ BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
 
-private:
+ਨਿਜੀ:
 
 	/** set control_data based on current Led states */
-	inline void get_control_data(LedControlData &control_data);
+	ਸਤਰਅੰਦਰ ਖਾਲੀ get_control_ਅੰਕੜੇ(Led_Control_ਅੰਕੜੇ &control_ਅੰਕੜੇ);
 
-	struct PerPriorityData {
+	ਬਣਤਰ ਪ੍ਰਤੀ_ਤਰਜੀਹ_ਅੰਕੜੇ {
 		uint8_t color = 0; ///< one of led_control_s::COLOR_*
-		uint8_t mode = led_control_s::MODE_DISABLED; ///< one of led_control_s::MODE_*
-		uint8_t blink_times_left = 0; /**< how many times left to blink (MSB bit is used for infinite case).
+		uint8_t ਬਹੁਲਕ = led_control_s::ਬਹੁਲਕ_DISABLED; ///< one of led_control_s::MODE_*
+		uint8_t blink_times_ਖੱਬਾ = 0; /**< how many times left to blink (MSB bit is used for infinite case).
 									This limits the number of complete blink cycles to 64 (if not infinite) */
 	};
 
-	struct NextState {
+	ਬਣਤਰ ਅਗਲਾ_State {
 		uint8_t color;
-		uint8_t mode;
-		uint8_t num_blinks;
-		uint8_t priority = led_control_s::MAX_PRIORITY + 1;
+		uint8_t ਬਹੁਲਕ;
+		uint8_t ਅੰਕ_blinks;
+		uint8_t ਤਰਜੀਹ = led_control_s::MAX_ਤਰਜੀਹ + 1;
 
-		void set(const led_control_s &led_control)
+		ਖਾਲੀ ਸੈੱਟ(ਅਚਲ led_control_s &led_control)
 		{
 			color = led_control.color;
-			mode = led_control.mode;
-			num_blinks = led_control.num_blinks;
-			priority = led_control.priority;
+			ਬਹੁਲਕ = led_control.ਬਹੁਲਕ;
+			ਅੰਕ_blinks = led_control.ਅੰਕ_blinks;
+			ਤਰਜੀਹ = led_control.ਤਰਜੀਹ;
 
-			if (priority > led_control_s::MAX_PRIORITY) {
-				priority = led_control_s::MAX_PRIORITY;
+			ਜੇ (ਤਰਜੀਹ > led_control_s::MAX_ਤਰਜੀਹ) {
+				ਤਰਜੀਹ = led_control_s::MAX_ਤਰਜੀਹ;
 			}
 		}
-		void reset() { priority = led_control_s::MAX_PRIORITY + 1; }
-		bool is_valid() const { return priority != led_control_s::MAX_PRIORITY + 1; }
+		ਖਾਲੀ reset() { ਤਰਜੀਹ = led_control_s::MAX_ਤਰਜੀਹ + 1; }
+		bool is_valid() ਅਚਲ { ਵਾਪਸ ਤਰਜੀਹ != led_control_s::MAX_ਤਰਜੀਹ + 1; }
 	};
 
-	struct PerLedData {
-		PerPriorityData priority[led_control_s::MAX_PRIORITY + 1];
-		uint16_t current_blinking_time = 0; ///< how long the Led was in current state (in 0.1 ms, wraps if > 6.5s)
-		NextState next_state;
+	ਬਣਤਰ ਪ੍ਰਤੀ_Led_ਅੰਕੜੇ {
+		ਪ੍ਰਤੀ_ਤਰਜੀਹ_ਅੰਕੜੇ ਤਰਜੀਹ[led_control_s::MAX_ਤਰਜੀਹ + 1];
+		uint16_t current_blinking_ਸਮਾਂ = 0; ///< how long the Led was in current state (in 0.1 ms, wraps if > 6.5s)
+		ਅਗਲਾ_State ਅਗਲਾ_state;
 
-		void set(const led_control_s &led_control)
+		ਖਾਲੀ ਸੈੱਟ(ਅਚਲ led_control_s &led_control)
 		{
-			int next_priority = (int)led_control.priority;
-			priority[next_priority].color = led_control.color;
-			priority[next_priority].mode = led_control.mode;
+			ਪੂਰਨ ਅਗਲਾ_ਤਰਜੀਹ = (ਪੂਰਨ)led_control.ਤਰਜੀਹ;
+			ਤਰਜੀਹ[ਅਗਲਾ_ਤਰਜੀਹ].color = led_control.color;
+			ਤਰਜੀਹ[ਅਗਲਾ_ਤਰਜੀਹ].ਬਹੁਲਕ = led_control.ਬਹੁਲਕ;
 
 			// initialise the flash counter
-			if (led_control.mode == led_control_s::MODE_FLASH) {
-				priority[next_priority].blink_times_left = led_control.num_blinks * 10;
+			ਜੇ (led_control.ਬਹੁਲਕ == led_control_s::ਬਹੁਲਕ_FLASH) {
+				ਤਰਜੀਹ[ਅਗਲਾ_ਤਰਜੀਹ].blink_times_ਖੱਬਾ = led_control.ਅੰਕ_blinks * 10;
 
-			} else {
-				priority[next_priority].blink_times_left = led_control.num_blinks * 2;
+			} ਨਹੀਂਤਾਂ {
+				ਤਰਜੀਹ[ਅਗਲਾ_ਤਰਜੀਹ].blink_times_ਖੱਬਾ = led_control.ਅੰਕ_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			ਜੇ (ਤਰਜੀਹ[ਅਗਲਾ_ਤਰਜੀਹ].blink_times_ਖੱਬਾ == 0) {
 				// handle infinite case
-				priority[next_priority].blink_times_left = 246;
+				ਤਰਜੀਹ[ਅਗਲਾ_ਤਰਜੀਹ].blink_times_ਖੱਬਾ = 246;
 			}
 		}
 
-		void apply_next_state()
+		ਖਾਲੀ apply_ਅਗਲਾ_state()
 		{
-			int next_priority = (int)next_state.priority;
-			priority[next_priority].color = next_state.color;
-			priority[next_priority].mode = next_state.mode;
+			ਪੂਰਨ ਅਗਲਾ_ਤਰਜੀਹ = (ਪੂਰਨ)ਅਗਲਾ_state.ਤਰਜੀਹ;
+			ਤਰਜੀਹ[ਅਗਲਾ_ਤਰਜੀਹ].color = ਅਗਲਾ_state.color;
+			ਤਰਜੀਹ[ਅਗਲਾ_ਤਰਜੀਹ].ਬਹੁਲਕ = ਅਗਲਾ_state.ਬਹੁਲਕ;
 
-			if (next_state.mode == led_control_s::MODE_FLASH) {
-				priority[next_priority].blink_times_left = next_state.num_blinks * 10;
+			ਜੇ (ਅਗਲਾ_state.ਬਹੁਲਕ == led_control_s::ਬਹੁਲਕ_FLASH) {
+				ਤਰਜੀਹ[ਅਗਲਾ_ਤਰਜੀਹ].blink_times_ਖੱਬਾ = ਅਗਲਾ_state.ਅੰਕ_blinks * 10;
 
-			} else {
-				priority[next_priority].blink_times_left = next_state.num_blinks * 2;
+			} ਨਹੀਂਤਾਂ {
+				ਤਰਜੀਹ[ਅਗਲਾ_ਤਰਜੀਹ].blink_times_ਖੱਬਾ = ਅਗਲਾ_state.ਅੰਕ_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			ਜੇ (ਤਰਜੀਹ[ਅਗਲਾ_ਤਰਜੀਹ].blink_times_ਖੱਬਾ == 0) {
 				// handle infinite case
-				priority[next_priority].blink_times_left = 254;
+				ਤਰਜੀਹ[ਅਗਲਾ_ਤਰਜੀਹ].blink_times_ਖੱਬਾ = 254;
 			}
 		}
 	};
 
-	PerLedData _states[BOARD_MAX_LEDS]; ///< keep current LED states
+	ਪ੍ਰਤੀ_Led_ਅੰਕੜੇ ਹਾਲਤਾਂ[BOARD_MAX_LEDS]; ///< keep current LED states
 
 	uORB::Subscription _led_control_sub{ORB_ID(led_control)}; ///< uorb subscription
 	uORB::SubscriptionInterval _parameter_update_sub{ORB_ID(parameter_update), 1_s};
 
-	hrt_abstime _last_update_call{0};
+	hrt_abstime ਆਖਰੀ_update_call{0};
 
-	perf_counter_t _led_control_sub_lost_perf{perf_alloc(PC_COUNT, MODULE_NAME": led_control message missed")};
+	perf_counter_t led_control_sub_ਗੁਆਚਾ_perf{perf_alloc(PC_ਗਿਣਤੀ, MODULE_NAME": led_control message missed")};
 
 	uint8_t _max_brightness{UINT8_MAX};
 

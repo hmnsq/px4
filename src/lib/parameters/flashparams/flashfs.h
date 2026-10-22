@@ -43,12 +43,12 @@
  *
  */
 
-#ifndef _SYSTEMLIB_FLASHPARAMS_NUTTX_PARAM_H
-#define _SYSTEMLIB_FLASHPARAMS_NUTTX_PARAM_H
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ _SYSTEMLIB_FLASHPARAMS_NUTTX_PARAM_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ _SYSTEMLIB_FLASHPARAMS_NUTTX_PARAM_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <stddef.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdbool.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stddef.h>
 
 
 
@@ -60,9 +60,9 @@
  * memory needed to commit the recored + ~20 bytes. For the syslib's parameter
  * this would be the size of the bson representations of the data
  */
-#if !defined(PARAMETER_BUFFER_SIZE)
-#define PARAMETER_BUFFER_SIZE 512
-#endif
+#ਜੇ !defined(PARAMETER_ਬਫਰ_ਮਾਪ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PARAMETER_ਬਫਰ_ਮਾਪ 512
+#ਜੇ_ਅੰਤ
 
 __BEGIN_DECLS
 
@@ -71,12 +71,12 @@ __BEGIN_DECLS
  *  is like a file name
  *
  */
-typedef uint32_t flash_file_tokens_t;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ uint32_t flash_file_ਟੋਕਨ_t;
 
-typedef struct flash_file_token_t {
-	union {
-		flash_file_tokens_t t;
-		uint8_t n[sizeof(flash_file_tokens_t)];
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ flash_file_token_t {
+	ਸੰਘ {
+		flash_file_ਟੋਕਨ_t t;
+		uint8_t n[ਆਕਾਰ(flash_file_ਟੋਕਨ_t)];
 	};
 } flash_file_token_t;
 
@@ -87,8 +87,8 @@ typedef struct flash_file_token_t {
  * that firmware ignores parameters_token records, so it boots on defaults
  * from a log-format store rather than a partial set.
  */
-__EXPORT extern const flash_file_token_t parameters_token;
-__EXPORT extern const flash_file_token_t parameters_legacy_token;
+__EXPORT ਬਾਹਰੀ ਅਚਲ flash_file_token_t parameters_token;
+__EXPORT ਬਾਹਰੀ ਅਚਲ flash_file_token_t parameters_legacy_token;
 
 /* Define the elements of the array passed to the
  * parameter_flashfs_init function
@@ -100,10 +100,10 @@ __EXPORT extern const flash_file_token_t parameters_legacy_token;
  *       {0, 0, 0},
  *
  */
-typedef struct sector_descriptor_t {
-	uint16_t      page;
-	uint32_t      size;
-	uint32_t      address;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ sector_descriptor_t {
+	uint16_t      ਪੰਨਾ;
+	uint32_t      ਮਾਪ;
+	uint32_t      ਪਤਾ;
 } sector_descriptor_t;
 
 
@@ -135,7 +135,7 @@ typedef struct sector_descriptor_t {
  *
  ****************************************************************************/
 
-__EXPORT int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16_t size);
+__EXPORT ਪੂਰਨ parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *ਬਫਰ_2, uint16_t ਮਾਪ);
 
 /****************************************************************************
  * Name: parameter_flashfs_read
@@ -157,7 +157,7 @@ __EXPORT int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffe
  *
  ****************************************************************************/
 
-__EXPORT int parameter_flashfs_read(flash_file_token_t ft, uint8_t **buffer, size_t *buf_size);
+__EXPORT ਪੂਰਨ parameter_flashfs_read(flash_file_token_t ft, uint8_t **ਬਫਰ_2, size_t *buf_ਮਾਪ);
 
 /****************************************************************************
  * Name: parameter_flashfs_walk
@@ -171,9 +171,9 @@ __EXPORT int parameter_flashfs_read(flash_file_token_t ft, uint8_t **buffer, siz
  *
  ****************************************************************************/
 
-typedef int (*parameter_flashfs_walk_cb)(uint8_t *buffer, size_t buf_size, void *arg);
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਪੂਰਨ (*parameter_flashfs_walk_cb)(uint8_t *ਬਫਰ_2, size_t buf_ਮਾਪ, ਖਾਲੀ *arg);
 
-__EXPORT int parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb cb, void *arg);
+__EXPORT ਪੂਰਨ parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb cb, ਖਾਲੀ *arg);
 
 /****************************************************************************
  * Name: parameter_flashfs_blank
@@ -191,7 +191,7 @@ __EXPORT int parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_
  *
  ****************************************************************************/
 
-__EXPORT int parameter_flashfs_blank(void);
+__EXPORT ਪੂਰਨ parameter_flashfs_blank(ਖਾਲੀ);
 
 /****************************************************************************
  * Name: parameter_flashfs_write
@@ -214,7 +214,7 @@ __EXPORT int parameter_flashfs_blank(void);
  *
  ****************************************************************************/
 
-__EXPORT int parameter_flashfs_write(flash_file_token_t ft, uint8_t *buffer, size_t buf_size);
+__EXPORT ਪੂਰਨ parameter_flashfs_write(flash_file_token_t ft, uint8_t *ਬਫਰ_2, size_t buf_ਮਾਪ);
 
 /****************************************************************************
  * Name: parameter_flashfs_erase
@@ -230,7 +230,7 @@ __EXPORT int parameter_flashfs_write(flash_file_token_t ft, uint8_t *buffer, siz
  *
  ****************************************************************************/
 
-__EXPORT int parameter_flashfs_erase(void);
+__EXPORT ਪੂਰਨ parameter_flashfs_erase(ਖਾਲੀ);
 
 /****************************************************************************
  * Name: parameter_flashfs_needs_compact
@@ -249,7 +249,7 @@ __EXPORT int parameter_flashfs_erase(void);
  *
  ****************************************************************************/
 
-__EXPORT int parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_size);
+__EXPORT ਪੂਰਨ parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_ਮਾਪ);
 
 /****************************************************************************
  * Name: parameter_flashfs_max_payload
@@ -259,7 +259,7 @@ __EXPORT int parameter_flashfs_needs_compact(flash_file_token_t token, size_t sn
  *
  ****************************************************************************/
 
-__EXPORT size_t parameter_flashfs_max_payload(void);
+__EXPORT size_t parameter_flashfs_max_payload(ਖਾਲੀ);
 
 /****************************************************************************
  * Name: parameter_flashfs_alloc
@@ -281,7 +281,7 @@ __EXPORT size_t parameter_flashfs_max_payload(void);
  *
  ****************************************************************************/
 
-__EXPORT int parameter_flashfs_alloc(flash_file_token_t ft, uint8_t **buffer, size_t *buf_size);
+__EXPORT ਪੂਰਨ parameter_flashfs_alloc(flash_file_token_t ft, uint8_t **ਬਫਰ_2, size_t *buf_ਮਾਪ);
 
 
 /****************************************************************************
@@ -293,7 +293,7 @@ __EXPORT int parameter_flashfs_alloc(flash_file_token_t ft, uint8_t **buffer, si
  *
  ****************************************************************************/
 
-__EXPORT void parameter_flashfs_free(void);
+__EXPORT ਖਾਲੀ parameter_flashfs_free(ਖਾਲੀ);
 
 __END_DECLS
-#endif /* _SYSTEMLIB_FLASHPARAMS_NUTTX_PARAM_H */
+#ਜੇ_ਅੰਤ /* _SYSTEMLIB_FLASHPARAMS_NUTTX_PARAM_H */

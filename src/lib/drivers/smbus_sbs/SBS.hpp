@@ -41,55 +41,55 @@
  * @author Nick Belanger <nbelanger@mail.skymul.com>
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <lib/drivers/smbus/SMBus.hpp>
-#include <uORB/topics/battery_info.h>
-#include <uORB/topics/battery_status.h>
-#include <px4_platform_common/param.h>
-#include <lib/atmosphere/atmosphere.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/i2c_spi_buses.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/drivers/smbus/SMBus.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/battery_info.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/battery_status.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/param.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/atmosphere/atmosphere.h>
 
-using namespace time_literals;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਸਮਾਂ_literals;
 
-#define SBS_MEASUREMENT_INTERVAL_US             	100_ms          ///< time in microseconds, measure at 10Hz (not part of SBS spec)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBS_MEASUREMENT_INTERVAL_US             	100_ms          ///< time in microseconds, measure at 10Hz (not part of SBS spec)
 
-template<class T>
-class SMBUS_SBS_BaseClass : public I2CSPIDriver<T>
+ਸਾਂਚਾ<ਵਰਗ T>
+ਵਰਗ SMBUS_SBS_ਅਧਾਰ_Class : ਜਨਤਕ I2CSPIDriver<T>
 {
-public:
-	SMBUS_SBS_BaseClass(const I2CSPIDriverConfig &config, SMBus *interface);
-	SMBUS_SBS_BaseClass();
+ਜਨਤਕ:
+	SMBUS_SBS_ਅਧਾਰ_Class(ਅਚਲ I2CSPIDriverConfig &config, SMBus *interface);
+	SMBUS_SBS_ਅਧਾਰ_Class();
 
-	~SMBUS_SBS_BaseClass();
+	~SMBUS_SBS_ਅਧਾਰ_Class();
 
-	static void print_usage();
+	ਸਥਿਰ ਖਾਲੀ print_usage();
 
-	friend SMBus;
+	ਮਿੱਤਰ SMBus;
 
-	int populate_smbus_data(battery_status_s &msg, battery_info_s &battery_info);
+	ਪੂਰਨ populate_smbus_ਅੰਕੜੇ(battery_ਸਥਿਤੀ_s &ਸੁਨੇਹਾ_2, battery_info_s &battery_info);
 
-	virtual void RunImpl(); // Can be overridden by derived implimentation
+	ਆਭਾਸੀ ਖਾਲੀ ਲੜੀਵਾਰ_Impl(); // Can be overridden by derived implimentation
 
-	virtual void custom_method(const BusCLIArguments &cli) = 0; //Has be overriden by derived implimentation
+	ਆਭਾਸੀ ਖਾਲੀ custom_ਵਿਧੀ(ਅਚਲ BusCLIArguments &cli) = 0; //Has be overriden by derived implimentation
 
 	/**
 	 * @brief Returns the SBS serial number of the battery device.
 	 * @return Returns the SBS serial number of the battery device.
 	 */
-	uint16_t get_serial_number();
+	uint16_t get_serial_ਸੰਖਿਆ();
 
 	/**
 	* @brief Read info from battery on startup.
 	* @return Returns PX4_OK on success, PX4_ERROR on failure. Can be overridden by derived implimentation
 	*/
-	virtual int get_startup_info();
+	ਆਭਾਸੀ ਪੂਰਨ get_startup_info();
 
 	/**
 	 * @brief Gets the SBS manufacture date of the battery.
 	 * @return Returns PX4_OK on success, PX4_ERROR on failure.
 	 */
-	int manufacture_date();
+	ਪੂਰਨ manufacture_date();
 
 	/**
 	 * @brief Gets the SBS manufacturer name of the battery device.
@@ -98,234 +98,234 @@ public:
 	 *                   including the null character that is appended to the end.
 	 * @return Returns PX4_OK on success, PX4_ERROR on failure.
 	 */
-	int manufacturer_name(uint8_t *manufacturer_name, const uint8_t length);
+	ਪੂਰਨ manufacturer_name(uint8_t *manufacturer_name, ਅਚਲ uint8_t ਲੰਮਾਈ);
 
 	/**
 	 * @brief Enables or disables the cell under voltage protection emergency shut off.
 	 */
 
-	void suspend();
+	ਖਾਲੀ suspend();
 
-	void resume();
-	enum {
-		BATT_SMBUS_TEMP                         =	0x08,           ///< temperature register
+	ਖਾਲੀ resume();
+	ਗਿਣਤੀ {
+		BATT_SMBUS_ਆਰਜ਼ੀ                         =	0x08,           ///< temperature register
 		BATT_SMBUS_VOLTAGE                      =       0x09,           ///< voltage register
 		BATT_SMBUS_CURRENT                      =       0x0A,           ///< current register
-		BATT_SMBUS_AVERAGE_CURRENT              =       0x0B,           ///< average current register
+		BATT_SMBUS_ਔਸਤਨ_CURRENT              =       0x0B,           ///< average current register
 		BATT_SMBUS_MAX_ERROR                    =       0x0C,           ///< max error
 		BATT_SMBUS_RELATIVE_SOC                 =       0x0D,           ///< Relative State Of Charge
 		BATT_SMBUS_ABSOLUTE_SOC                 =       0x0E,           ///< Absolute State of charge
-		BATT_SMBUS_REMAINING_CAPACITY           =       0x0F,           ///< predicted remaining battery capacity as a percentage
-		BATT_SMBUS_FULL_CHARGE_CAPACITY         =       0x10,           ///< capacity when fully charged
-		BATT_SMBUS_RUN_TIME_TO_EMPTY            =       0x11,           ///< predicted remaining battery capacity based on the present rate of discharge in min
-		BATT_SMBUS_AVERAGE_TIME_TO_EMPTY        =       0x12,           ///< predicted remaining battery capacity based on the present rate of discharge in min
-		BATT_SMBUS_CYCLE_COUNT                  =       0x17,           ///< number of cycles the battery has experienced
-		BATT_SMBUS_DESIGN_CAPACITY              =       0x18,           ///< design capacity register
+		BATT_SMBUS_ਬਚਿਆ_ਸਮਰੱਥਾ           =       0x0F,           ///< predicted remaining battery capacity as a percentage
+		BATT_SMBUS_ਭਰਿਆ_CHARGE_ਸਮਰੱਥਾ         =       0x10,           ///< capacity when fully charged
+		BATT_SMBUS_ਲੜੀਵਾਰ_ਸਮਾਂ_ਮੰਜ਼ਿਲ_ਖਾਲੀ_ਥਾਵਾਂ            =       0x11,           ///< predicted remaining battery capacity based on the present rate of discharge in min
+		BATT_SMBUS_ਔਸਤਨ_ਸਮਾਂ_ਮੰਜ਼ਿਲ_ਖਾਲੀ_ਥਾਵਾਂ        =       0x12,           ///< predicted remaining battery capacity based on the present rate of discharge in min
+		BATT_SMBUS_ਚੱਕਰ_ਗਿਣਤੀ                  =       0x17,           ///< number of cycles the battery has experienced
+		BATT_SMBUS_DESIGN_ਸਮਰੱਥਾ              =       0x18,           ///< design capacity register
 		BATT_SMBUS_DESIGN_VOLTAGE               =       0x19,           ///< design voltage register
 		BATT_SMBUS_MANUFACTURER_NAME            =       0x20,           ///< manufacturer name
-		BATT_SMBUS_MANUFACTURER_NAME_SIZE       =       21,             ///< manufacturer name data size (not part of SBS spec)
+		BATT_SMBUS_MANUFACTURER_NAME_ਮਾਪ       =       21,             ///< manufacturer name data size (not part of SBS spec)
 		BATT_SMBUS_DEVICE_NAME			=	0x21,		///< character string that contains the battery's name
 		BATT_SMBUS_MANUFACTURE_DATE             =       0x1B,           ///< manufacture date register
-		BATT_SMBUS_SERIAL_NUMBER                =       0x1C,           ///< serial number register
+		BATT_SMBUS_SERIAL_ਸੰਖਿਆ                =       0x1C,           ///< serial number register
 		BATT_SMBUS_MANUFACTURER_ACCESS          =       0x00,
-		BATT_SMBUS_MANUFACTURER_DATA            =       0x23
+		BATT_SMBUS_MANUFACTURER_ਅੰਕੜੇ            =       0x23
 	} SBS_REGISTERS;
 
-protected:
+ਸੁਰੱਖਿਅਤ:
 
 	SMBus *_interface;
 
-	perf_counter_t _cycle{perf_alloc(PC_ELAPSED, "batmon_cycle")}; // TODO
+	perf_counter_t ਚੱਕਰ{perf_alloc(PC_ELAPSED, "batmon_cycle")}; // TODO
 
-	orb_advert_t _battery_info_topic{nullptr};
-	orb_advert_t _batt_topic{nullptr};
+	orb_advert_t _battery_info_topic{ਖਾਲੀ_ਸੂਚਕ};
+	orb_advert_t _batt_topic{ਖਾਲੀ_ਸੂਚਕ};
 
 	/** @param _cell_count Number of series cell (retrieved from cell_count PX4 params) */
-	uint8_t _cell_count{0};
+	uint8_t cell_ਗਿਣਤੀ_2{0};
 
 	/** @param _batt_capacity Battery design capacity in mAh (0 means unknown). */
-	uint16_t _batt_capacity{0};
+	uint16_t batt_ਸਮਰੱਥਾ{0};
 
 	/** @param _batt_startup_capacity Battery remaining capacity in mAh on startup. */
-	uint16_t _batt_startup_capacity{0};
+	uint16_t batt_startup_ਸਮਰੱਥਾ{0};
 
 	/** @param _cycle_count The number of cycles the battery has experienced. */
-	uint16_t _cycle_count{0};
+	uint16_t ਚੱਕਰ_ਗਿਣਤੀ{0};
 
 	/** @param _serial_number Serial number register. */
-	uint16_t _serial_number{0};
+	uint16_t serial_ਸੰਖਿਆ{0};
 
 	/** @param _manufacturer_name Name of the battery manufacturer. */
-	char _manufacturer_name[BATT_SMBUS_MANUFACTURER_NAME_SIZE + 1] {};	// Plus one for terminator
+	ਅੱਖਰ _manufacturer_name[BATT_SMBUS_MANUFACTURER_NAME_ਮਾਪ + 1] {};	// Plus one for terminator
 
 	/** @param _manufacture_date Date of the battery manufacturing. */
 	uint16_t _manufacture_date{0};
 
 	/** @param _state_of_health state of health as read on connection  */
-	float _state_of_health{0.f}; // Not part of SBS, can be calculated from FullChargeCapacity
+	ਦਸ਼ਮਲਵ state_ਦਾ_health{0.f}; // Not part of SBS, can be calculated from FullChargeCapacity
 	// and DesignCapacity
 
-	void print_man_info();
+	ਖਾਲੀ print_man_info();
 
 };
 
-template<class T>
-SMBUS_SBS_BaseClass<T>::SMBUS_SBS_BaseClass(const I2CSPIDriverConfig &config, SMBus *interface):
+ਸਾਂਚਾ<ਵਰਗ T>
+SMBUS_SBS_ਅਧਾਰ_Class<T>::SMBUS_SBS_ਅਧਾਰ_Class(ਅਚਲ I2CSPIDriverConfig &config, SMBus *interface):
 	I2CSPIDriver<T>(config),
 	_interface(interface)
 {
 	battery_info_s battery_info{};
-	battery_status_s new_report = {};
-	int SBS_instance_number = 0;
-	_battery_info_topic = orb_advertise_multi(ORB_ID(battery_info), &battery_info, &SBS_instance_number);
-	_batt_topic = orb_advertise_multi(ORB_ID(battery_status), &new_report, &SBS_instance_number);
+	battery_ਸਥਿਤੀ_s new_report = {};
+	ਪੂਰਨ SBS_instance_ਸੰਖਿਆ = 0;
+	_battery_info_topic = orb_advertise_multi(ORB_ID(battery_info), &battery_info, &SBS_instance_ਸੰਖਿਆ);
+	_batt_topic = orb_advertise_multi(ORB_ID(battery_ਸਥਿਤੀ), &new_report, &SBS_instance_ਸੰਖਿਆ);
 	_interface->init();
 }
 
-template<class T>
-SMBUS_SBS_BaseClass<T>::~SMBUS_SBS_BaseClass()
+ਸਾਂਚਾ<ਵਰਗ T>
+SMBUS_SBS_ਅਧਾਰ_Class<T>::~SMBUS_SBS_ਅਧਾਰ_Class()
 {
 	orb_unadvertise(_batt_topic);
-	perf_free(_cycle); // TODO
+	perf_free(ਚੱਕਰ); // TODO
 
-	if (_interface != nullptr) {
-		delete _interface;
+	ਜੇ (_interface != ਖਾਲੀ_ਸੂਚਕ) {
+		ਮਿਟਾਓ _interface;
 	}
 
 }
 
-template<class T>
-void SMBUS_SBS_BaseClass<T>::suspend()
+ਸਾਂਚਾ<ਵਰਗ T>
+ਖਾਲੀ SMBUS_SBS_ਅਧਾਰ_Class<T>::suspend()
 {
-	this->ScheduleClear();
+	ਇਹ->ਸਮਾਂ_ਸਾਰਣੀ_Clear();
 }
 
-template<class T>
-void SMBUS_SBS_BaseClass<T>::resume()
+ਸਾਂਚਾ<ਵਰਗ T>
+ਖਾਲੀ SMBUS_SBS_ਅਧਾਰ_Class<T>::resume()
 {
-	this->ScheduleOnInterval(SBS_MEASUREMENT_INTERVAL_US);
+	ਇਹ->ਸਮਾਂ_ਸਾਰਣੀ_On_Interval(SBS_MEASUREMENT_INTERVAL_US);
 }
 
-template<class T>
-uint16_t SMBUS_SBS_BaseClass<T>::get_serial_number()
+ਸਾਂਚਾ<ਵਰਗ T>
+uint16_t SMBUS_SBS_ਅਧਾਰ_Class<T>::get_serial_ਸੰਖਿਆ()
 {
-	uint16_t serial_num = 0;
+	uint16_t serial_ਅੰਕ = 0;
 
-	if (_interface->read_word(BATT_SMBUS_SERIAL_NUMBER, serial_num) == PX4_OK) {
-		return serial_num;
+	ਜੇ (_interface->read_ਸ਼ਬਦ(BATT_SMBUS_SERIAL_ਸੰਖਿਆ, serial_ਅੰਕ) == PX4_OK) {
+		ਵਾਪਸ serial_ਅੰਕ;
 	}
 
-	return PX4_ERROR;
+	ਵਾਪਸ PX4_ERROR;
 }
 
-template<class T>
-int SMBUS_SBS_BaseClass<T>::get_startup_info()
+ਸਾਂਚਾ<ਵਰਗ T>
+ਪੂਰਨ SMBUS_SBS_ਅਧਾਰ_Class<T>::get_startup_info()
 {
-	int ret = PX4_OK;
+	ਪੂਰਨ ret = PX4_OK;
 
-	ret |= _interface->block_read(BATT_SMBUS_MANUFACTURER_NAME, _manufacturer_name, BATT_SMBUS_MANUFACTURER_NAME_SIZE,
-				      true);
-	_manufacturer_name[sizeof(_manufacturer_name) - 1] = '\0';
+	ret |= _interface->ਖੰਡ_read(BATT_SMBUS_MANUFACTURER_NAME, _manufacturer_name, BATT_SMBUS_MANUFACTURER_NAME_ਮਾਪ,
+				      ਸੱਚ);
+	_manufacturer_name[ਆਕਾਰ(_manufacturer_name) - 1] = '\0';
 
-	uint16_t serial_num;
-	ret |= _interface->read_word(BATT_SMBUS_SERIAL_NUMBER, serial_num);
+	uint16_t serial_ਅੰਕ;
+	ret |= _interface->read_ਸ਼ਬਦ(BATT_SMBUS_SERIAL_ਸੰਖਿਆ, serial_ਅੰਕ);
 
-	uint16_t remaining_cap;
-	ret |= _interface->read_word(BATT_SMBUS_REMAINING_CAPACITY, remaining_cap);
+	uint16_t ਬਚਿਆ_cap;
+	ret |= _interface->read_ਸ਼ਬਦ(BATT_SMBUS_ਬਚਿਆ_ਸਮਰੱਥਾ, ਬਚਿਆ_cap);
 
-	uint16_t cycle_count;
-	ret |= _interface->read_word(BATT_SMBUS_CYCLE_COUNT, cycle_count);
+	uint16_t ਚੱਕਰ_ਗਿਣਤੀ_2;
+	ret |= _interface->read_ਸ਼ਬਦ(BATT_SMBUS_ਚੱਕਰ_ਗਿਣਤੀ, ਚੱਕਰ_ਗਿਣਤੀ_2);
 
-	uint16_t full_cap;
-	ret |= _interface->read_word(BATT_SMBUS_FULL_CHARGE_CAPACITY, full_cap);
+	uint16_t ਭਰਿਆ_cap;
+	ret |= _interface->read_ਸ਼ਬਦ(BATT_SMBUS_ਭਰਿਆ_CHARGE_ਸਮਰੱਥਾ, ਭਰਿਆ_cap);
 
 	uint16_t manufacture_date;
-	ret |= _interface->read_word(BATT_SMBUS_MANUFACTURE_DATE, manufacture_date);
+	ret |= _interface->read_ਸ਼ਬਦ(BATT_SMBUS_MANUFACTURE_DATE, manufacture_date);
 
-	if (!ret) {
-		_serial_number = serial_num;
-		_batt_startup_capacity = (uint16_t)((float)remaining_cap);
-		_cycle_count = cycle_count;
-		_batt_capacity = (uint16_t)((float)full_cap);
+	ਜੇ (!ret) {
+		serial_ਸੰਖਿਆ = serial_ਅੰਕ;
+		batt_startup_ਸਮਰੱਥਾ = (uint16_t)((ਦਸ਼ਮਲਵ)ਬਚਿਆ_cap);
+		ਚੱਕਰ_ਗਿਣਤੀ = ਚੱਕਰ_ਗਿਣਤੀ_2;
+		batt_ਸਮਰੱਥਾ = (uint16_t)((ਦਸ਼ਮਲਵ)ਭਰਿਆ_cap);
 		_manufacture_date = manufacture_date;
 	}
 
-	return ret;
+	ਵਾਪਸ ret;
 }
 
-template<class T>
-int SMBUS_SBS_BaseClass<T>::populate_smbus_data(battery_status_s &data, battery_info_s &battery_info)
+ਸਾਂਚਾ<ਵਰਗ T>
+ਪੂਰਨ SMBUS_SBS_ਅਧਾਰ_Class<T>::populate_smbus_ਅੰਕੜੇ(battery_ਸਥਿਤੀ_s &ਅੰਕੜੇ, battery_info_s &battery_info)
 {
 
 	// Temporary variable for storing SMBUS reads.
-	uint16_t result;
+	uint16_t ਨਤੀਜਾ;
 
-	int ret = _interface->read_word(BATT_SMBUS_VOLTAGE, result);
+	ਪੂਰਨ ret = _interface->read_ਸ਼ਬਦ(BATT_SMBUS_VOLTAGE, ਨਤੀਜਾ);
 
 	// Convert millivolts to volts.
-	data.voltage_v = ((float)result) * 0.001f;
+	ਅੰਕੜੇ.voltage_v = ((ਦਸ਼ਮਲਵ)ਨਤੀਜਾ) * 0.001f;
 
 	// Read current.
-	ret |= _interface->read_word(BATT_SMBUS_CURRENT, result);
+	ret |= _interface->read_ਸ਼ਬਦ(BATT_SMBUS_CURRENT, ਨਤੀਜਾ);
 
-	data.current_a = (-1.0f * ((float)(*(int16_t *)&result)) * 0.001f);
-
-	// Read remaining capacity.
-	ret |= _interface->read_word(BATT_SMBUS_RELATIVE_SOC, result);
-	data.remaining = (float)result * 0.01f;
+	ਅੰਕੜੇ.current_a = (-1.0f * ((ਦਸ਼ਮਲਵ)(*(int16_t *)&ਨਤੀਜਾ)) * 0.001f);
 
 	// Read remaining capacity.
-	ret |= _interface->read_word(BATT_SMBUS_REMAINING_CAPACITY, result);
-	data.discharged_mah = _batt_startup_capacity - result;
+	ret |= _interface->read_ਸ਼ਬਦ(BATT_SMBUS_RELATIVE_SOC, ਨਤੀਜਾ);
+	ਅੰਕੜੇ.ਬਚਿਆ = (ਦਸ਼ਮਲਵ)ਨਤੀਜਾ * 0.01f;
+
+	// Read remaining capacity.
+	ret |= _interface->read_ਸ਼ਬਦ(BATT_SMBUS_ਬਚਿਆ_ਸਮਰੱਥਾ, ਨਤੀਜਾ);
+	ਅੰਕੜੇ.discharged_mah = batt_startup_ਸਮਰੱਥਾ - ਨਤੀਜਾ;
 
 	// Read full capacity.
-	ret |= _interface->read_word(BATT_SMBUS_FULL_CHARGE_CAPACITY, result);
-	data.capacity = result;
+	ret |= _interface->read_ਸ਼ਬਦ(BATT_SMBUS_ਭਰਿਆ_CHARGE_ਸਮਰੱਥਾ, ਨਤੀਜਾ);
+	ਅੰਕੜੇ.ਸਮਰੱਥਾ = ਨਤੀਜਾ;
 
 	// Read cycle count.
-	ret |= _interface->read_word(BATT_SMBUS_CYCLE_COUNT, result);
-	data.cycle_count = result;
+	ret |= _interface->read_ਸ਼ਬਦ(BATT_SMBUS_ਚੱਕਰ_ਗਿਣਤੀ, ਨਤੀਜਾ);
+	ਅੰਕੜੇ.ਚੱਕਰ_ਗਿਣਤੀ_2 = ਨਤੀਜਾ;
 
 	// Read serial number.
-	ret |= _interface->read_word(BATT_SMBUS_SERIAL_NUMBER, result);
-	snprintf(battery_info.serial_number, sizeof(battery_info.serial_number), "%" PRIu16, result);
+	ret |= _interface->read_ਸ਼ਬਦ(BATT_SMBUS_SERIAL_ਸੰਖਿਆ, ਨਤੀਜਾ);
+	snprintf(battery_info.serial_ਸੰਖਿਆ_2, ਆਕਾਰ(battery_info.serial_ਸੰਖਿਆ_2), "%" PRIu16, ਨਤੀਜਾ);
 
 	// Read battery temperature and covert to Celsius.
-	ret |= _interface->read_word(BATT_SMBUS_TEMP, result);
-	data.temperature = ((float)result * 0.1f) + atmosphere::kAbsoluteNullCelsius;
+	ret |= _interface->read_ਸ਼ਬਦ(BATT_SMBUS_ਆਰਜ਼ੀ, ਨਤੀਜਾ);
+	ਅੰਕੜੇ.temperature = ((ਦਸ਼ਮਲਵ)ਨਤੀਜਾ * 0.1f) + atmosphere::kAbsoluteNullCelsius;
 
-	return ret;
+	ਵਾਪਸ ret;
 
 }
 
-template<class T>
-void SMBUS_SBS_BaseClass<T>::RunImpl()
+ਸਾਂਚਾ<ਵਰਗ T>
+ਖਾਲੀ SMBUS_SBS_ਅਧਾਰ_Class<T>::ਲੜੀਵਾਰ_Impl()
 {
 
 	// Get the current time.
-	uint64_t now = hrt_absolute_time();
+	uint64_t now = hrt_absolute_ਸਮਾਂ();
 
 	// Read data from sensor.
-	battery_status_s new_report = {};
+	battery_ਸਥਿਤੀ_s new_report = {};
 
 	new_report.id = 1;
 
 	// Set time of reading.
 	new_report.timestamp = now;
 
-	new_report.connected = true;
+	new_report.connected = ਸੱਚ;
 
 	battery_info_s battery_info{};
 	battery_info.timestamp = now;
 	battery_info.id = new_report.id;
 
-	int ret = populate_smbus_data(new_report, battery_info);
+	ਪੂਰਨ ret = populate_smbus_ਅੰਕੜੇ(new_report, battery_info);
 
-	new_report.cell_count = _cell_count;
+	new_report.cell_ਗਿਣਤੀ = cell_ਗਿਣਤੀ_2;
 
 	// Only publish if no errors.
-	if (!ret) {
-		orb_publish(ORB_ID(battery_status), _batt_topic, &new_report);
+	ਜੇ (!ret) {
+		orb_publish(ORB_ID(battery_ਸਥਿਤੀ), _batt_topic, &new_report);
 		orb_publish(ORB_ID(battery_info), _battery_info_topic, &battery_info);
 	}
 }

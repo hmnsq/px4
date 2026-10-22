@@ -31,49 +31,49 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
 // Provides CONFIG_NAVIGATOR_ADSB_F3442 for the standard selection.
-#include <px4_boardconfig.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_boardconfig.h>
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
-#include "f3442_standard/DaaF3442.h"
-#else
-#include "crosstrack_standard/DaaCrosstrack.h"
-#endif
+#ਜੇ defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#ਅਨ੍ਤਰ੍ਭਾਵ "f3442_standard/DaaF3442.h"
+#ਨਹੀਂਤਾਂ
+#ਅਨ੍ਤਰ੍ਭਾਵ "crosstrack_standard/DaaCrosstrack.h"
+#ਜੇ_ਅੰਤ
 
-#include <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
 
-#include <uORB/topics/detect_and_avoid.h>
-#include <uORB/topics/transponder_report.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/detect_and_avoid.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/transponder_report.h>
 
-struct daa_input_s {
-	matrix::Vector2d uav_lat_lon{};
-	float uav_alt{0.f};
-	matrix::Vector3f uav_vel_ned{};
+ਬਣਤਰ daa_ਨਿਵੇਸ਼_s {
+	ਮੈਟ੍ਰਿਕਸ::Vector2d uav_lat_lon{};
+	ਦਸ਼ਮਲਵ uav_alt{0.f};
+	ਮੈਟ੍ਰਿਕਸ::Vector3f uav_vel_ned{};
 	transponder_report_s transponder_report{};
 };
 
 class AdsbConflict
 {
-public:
-	AdsbConflict() = default;
-	~AdsbConflict() = default;
+ਜਨਤਕ:
+	AdsbConflict() = ਮੂਲ;
+	~AdsbConflict() = ਮੂਲ;
 
 	/**
 	 * @brief Validate ownship + transponder inputs and compute the DAA output.
 	 * Returns false on non-finite inputs or when the built standard needs a heading the report does not provide.
 	*/
-	bool calculate_daa_output(const daa_input_s &daa_input, detect_and_avoid_s &daa_output);
+	bool calculate_daa_output(ਅਚਲ daa_ਨਿਵੇਸ਼_s &daa_ਨਿਵੇਸ਼, detect_and_avoid_s &daa_output);
 
 	bool try_updating_params();
 
-	static bool valid_wgs84_coordinates(const double latitude, const double longitude);
+	ਸਥਿਰ bool valid_wgs84_coordinates(ਅਚਲ ਦੁੱਗਣਾ latitude, ਅਚਲ ਦੁੱਗਣਾ longitude);
 
-private:
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+ਨਿਜੀ:
+#ਜੇ defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	DaaF3442 _daa;
-#else
+#ਨਹੀਂਤਾਂ
 	DaaCrosstrack _daa;
-#endif
+#ਜੇ_ਅੰਤ
 };

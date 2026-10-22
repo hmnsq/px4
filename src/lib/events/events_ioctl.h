@@ -37,15 +37,15 @@
  * User space - kernel space interface for dispatching events.
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform/board_ctrl.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/events.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform/board_ctrl.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/events.h>
 
-#define _EVENTSIOC(_n) (_PX4_IOC(_EVENTSIOCBASE, _n))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ _EVENTSIOC(_n) (_PX4_IOC(_EVENTSIOCBASE, _n))
 
-#define EVENTSIOCSEND _EVENTSIOC(1)
-typedef struct eventiocsend {
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ EVENTSIOCSEND _EVENTSIOC(1)
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ eventiocsend {
 	event_s &event;
 } eventiocsend_t;

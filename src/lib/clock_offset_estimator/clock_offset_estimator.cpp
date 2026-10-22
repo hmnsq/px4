@@ -31,40 +31,40 @@
  *
  ****************************************************************************/
 
-#include "clock_offset_estimator.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "clock_offset_estimator.hpp"
 
-hrt_abstime ClockOffsetEstimator::toLocal(uint64_t remote_us, hrt_abstime local_us)
+hrt_abstime Clock_ਵਿੱਥ_Estimator::ਮੰਜ਼ਿਲ_Local(uint64_t remote_us, hrt_abstime local_us)
 {
-	if (remote_us == 0) {
-		return 0;
+	ਜੇ (remote_us == 0) {
+		ਵਾਪਸ 0;
 	}
 
-	const int64_t lag = static_cast<int64_t>(local_us) - static_cast<int64_t>(remote_us);
+	ਅਚਲ int64_t lag = static_cast<int64_t>(local_us) - static_cast<int64_t>(remote_us);
 
-	if (!_initialized || lag > _link_offset_us + kResetThresholdUs) {
+	ਜੇ (!_initialized || lag > link_ਵਿੱਥ_us + k_Reset_ਹੱਦ_Us) {
 		// Bootstrap, or remote-clock discontinuity.
-		_link_offset_us = lag;
-		_initialized = true;
+		link_ਵਿੱਥ_us = lag;
+		_initialized = ਸੱਚ;
 
-	} else {
+	} ਨਹੀਂਤਾਂ {
 		// Drift the floor up at the worst-case relative clock rate so we don't
 		// pin below the true offset when HRT runs faster than the remote.
-		const hrt_abstime dt = (local_us > _last_update_us) ? (local_us - _last_update_us) : 0;
-		_link_offset_us += static_cast<int64_t>(dt) * kMaxClockDriftPpm / 1'000'000;
+		ਅਚਲ hrt_abstime dt = (local_us > ਆਖਰੀ_update_us) ? (local_us - ਆਖਰੀ_update_us) : 0;
+		link_ਵਿੱਥ_us += static_cast<int64_t>(dt) * kMaxClockDriftPpm / 1'000'000;
 
-		if (lag < _link_offset_us) {
-			_link_offset_us = lag;
+		ਜੇ (lag < link_ਵਿੱਥ_us) {
+			link_ਵਿੱਥ_us = lag;
 		}
 	}
 
-	_last_update_us = local_us;
+	ਆਖਰੀ_update_us = local_us;
 
-	const int64_t result = static_cast<int64_t>(remote_us) + _link_offset_us;
+	ਅਚਲ int64_t ਨਤੀਜਾ = static_cast<int64_t>(remote_us) + link_ਵਿੱਥ_us;
 
 	// Mapped HRT cannot lie after receipt.
-	if (result <= 0 || result > static_cast<int64_t>(local_us)) {
-		return 0;
+	ਜੇ (ਨਤੀਜਾ <= 0 || ਨਤੀਜਾ > static_cast<int64_t>(local_us)) {
+		ਵਾਪਸ 0;
 	}
 
-	return static_cast<hrt_abstime>(result);
+	ਵਾਪਸ static_cast<hrt_abstime>(ਨਤੀਜਾ);
 }

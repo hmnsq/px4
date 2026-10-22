@@ -37,108 +37,108 @@
  * Controller library code
  */
 
-#include "Block.hpp"
-#include "BlockParam.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Block.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "BlockParam.hpp"
 
-#include <cstdio>
-#include <cstring>
+#ਅਨ੍ਤਰ੍ਭਾਵ <cstdio>
+#ਅਨ੍ਤਰ੍ਭਾਵ <cstring>
 
-#include <containers/List.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <containers/List.hpp>
 
-#include <px4_platform_common/log.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/log.h>
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
-BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_prefix)
+ਖੰਡ_Param_ਅਧਾਰ::ਖੰਡ_Param_ਅਧਾਰ(ਖੰਡ *ਮਾਪਾ, ਅਚਲ ਅੱਖਰ *name, ਤਾਰਕਿਕ ਮਾਪਾ_ਅਗੇਤਰ)
 {
-	char fullname[blockNameLengthMax];
+	ਅੱਖਰ fullname[ਖੰਡ_Name_ਲੰਮਾਈ_Max];
 
-	if (parent == nullptr) {
-		strncpy(fullname, name, blockNameLengthMax - 1);
-		fullname[sizeof(fullname) - 1] = '\0';
+	ਜੇ (ਮਾਪਾ == ਖਾਲੀ_ਸੂਚਕ) {
+		strncpy(fullname, name, ਖੰਡ_Name_ਲੰਮਾਈ_Max - 1);
+		fullname[ਆਕਾਰ(fullname) - 1] = '\0';
 
-	} else {
-		char parentName[blockNameLengthMax];
-		parent->getName(parentName, blockNameLengthMax);
+	} ਨਹੀਂਤਾਂ {
+		ਅੱਖਰ ਮਾਪਾ_Name[ਖੰਡ_Name_ਲੰਮਾਈ_Max];
+		ਮਾਪਾ->getName(ਮਾਪਾ_Name, ਖੰਡ_Name_ਲੰਮਾਈ_Max);
 
-		if (strcmp(name, "") == 0) {
-			strncpy(fullname, parentName, blockNameLengthMax);
+		ਜੇ (strcmp(name, "") == 0) {
+			strncpy(fullname, ਮਾਪਾ_Name, ਖੰਡ_Name_ਲੰਮਾਈ_Max);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[ਆਕਾਰ(fullname) - 1] = '\0';
 
-		} else if (parent_prefix) {
-			if (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
+		} ਨਹੀਂਤਾਂ ਜੇ (ਮਾਪਾ_ਅਗੇਤਰ) {
+			ਜੇ (snprintf(fullname, ਖੰਡ_Name_ਲੰਮਾਈ_Max, "%s_%s", ਮਾਪਾ_Name, name) >= ਖੰਡ_Name_ਲੰਮਾਈ_Max) {
 				PX4_ERR("param too long: %s", name);
 			}
 
-		} else {
-			strncpy(fullname, name, blockNameLengthMax);
+		} ਨਹੀਂਤਾਂ {
+			strncpy(fullname, name, ਖੰਡ_Name_ਲੰਮਾਈ_Max);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[ਆਕਾਰ(fullname) - 1] = '\0';
 		}
 
-		parent->getParams().add(this);
+		ਮਾਪਾ->getParams().ਜੋੜੋ(ਇਹ);
 	}
 
-	_handle = param_find(fullname);
+	_handle = param_ਲੱਭੋ(fullname);
 
-	if (_handle == PARAM_INVALID) {
+	ਜੇ (_handle == PARAM_INVALID) {
 		PX4_ERR("error finding param: %s", fullname);
 	}
 };
 
-template <>
-BlockParam<bool>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+ਸਾਂਚਾ <>
+ਖੰਡ_Param<ਤਾਰਕਿਕ>::ਖੰਡ_Param(ਖੰਡ *ਖੰਡ_2, ਅਚਲ ਅੱਖਰ *name, ਤਾਰਕਿਕ ਮਾਪਾ_ਅਗੇਤਰ) :
+	ਖੰਡ_Param_ਅਧਾਰ(ਖੰਡ_2, name, ਮਾਪਾ_ਅਗੇਤਰ),
 	_val()
 {
 	update();
 }
 
-template <>
-bool BlockParam<bool>::update()
+ਸਾਂਚਾ <>
+ਤਾਰਕਿਕ ਖੰਡ_Param<ਤਾਰਕਿਕ>::update()
 {
 	int32_t tmp = 0;
-	int ret = param_get(_handle, &tmp);
+	ਪੂਰਨ ret = param_get(_handle, &tmp);
 
-	if (tmp == 1) {
-		_val = true;
+	ਜੇ (tmp == 1) {
+		_val = ਸੱਚ;
 
-	} else {
-		_val = false;
+	} ਨਹੀਂਤਾਂ {
+		_val = ਝੂਠ;
 	}
 
-	return (ret == PX4_OK);
+	ਵਾਪਸ (ret == PX4_OK);
 }
 
-template <>
-BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+ਸਾਂਚਾ <>
+ਖੰਡ_Param<int32_t>::ਖੰਡ_Param(ਖੰਡ *ਖੰਡ_2, ਅਚਲ ਅੱਖਰ *name, ਤਾਰਕਿਕ ਮਾਪਾ_ਅਗੇਤਰ) :
+	ਖੰਡ_Param_ਅਧਾਰ(ਖੰਡ_2, name, ਮਾਪਾ_ਅਗੇਤਰ),
 	_val()
 {
 	update();
 }
 
-template <>
-BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+ਸਾਂਚਾ <>
+ਖੰਡ_Param<ਦਸ਼ਮਲਵ>::ਖੰਡ_Param(ਖੰਡ *ਖੰਡ_2, ਅਚਲ ਅੱਖਰ *name, ਤਾਰਕਿਕ ਮਾਪਾ_ਅਗੇਤਰ) :
+	ਖੰਡ_Param_ਅਧਾਰ(ਖੰਡ_2, name, ਮਾਪਾ_ਅਗੇਤਰ),
 	_val()
 {
 	update();
 }
 
-template <>
-BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_prefix, int32_t &extern_val) :
-	BlockParamBase(block, name, parent_prefix),
+ਸਾਂਚਾ <>
+ਖੰਡ_Param<int32_t &>::ਖੰਡ_Param(ਖੰਡ *ਖੰਡ_2, ਅਚਲ ਅੱਖਰ *name, ਤਾਰਕਿਕ ਮਾਪਾ_ਅਗੇਤਰ, int32_t &extern_val) :
+	ਖੰਡ_Param_ਅਧਾਰ(ਖੰਡ_2, name, ਮਾਪਾ_ਅਗੇਤਰ),
 	_val(extern_val)
 {
 	update();
 }
 
-template <>
-BlockParam<float &>::BlockParam(Block *block, const char *name, bool parent_prefix, float &extern_val) :
-	BlockParamBase(block, name, parent_prefix),
+ਸਾਂਚਾ <>
+ਖੰਡ_Param<ਦਸ਼ਮਲਵ &>::ਖੰਡ_Param(ਖੰਡ *ਖੰਡ_2, ਅਚਲ ਅੱਖਰ *name, ਤਾਰਕਿਕ ਮਾਪਾ_ਅਗੇਤਰ, ਦਸ਼ਮਲਵ &extern_val) :
+	ਖੰਡ_Param_ਅਧਾਰ(ਖੰਡ_2, name, ਮਾਪਾ_ਅਗੇਤਰ),
 	_val(extern_val)
 {
 	update();

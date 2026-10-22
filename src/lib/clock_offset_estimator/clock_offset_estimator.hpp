@@ -31,35 +31,35 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <stdint.h>
-#include <drivers/drv_hrt.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/drv_hrt.h>
 
 // Estimates the offset between a remote node's clock and the FC HRT timebase
 // with a leaky-min filter on (HRT_recv - remote_ts), then maps remote
 // timestamps into HRT. Residual bias is the minimum observed transport delay;
 // the offset drifts upward between observations to track clock skew, and
 // hard-resets on jumps larger than any plausible transport stall.
-class ClockOffsetEstimator
+ਵਰਗ Clock_ਵਿੱਥ_Estimator
 {
-public:
-	ClockOffsetEstimator() = default;
-	~ClockOffsetEstimator() = default;
+ਜਨਤਕ:
+	Clock_ਵਿੱਥ_Estimator() = ਮੂਲ;
+	~Clock_ਵਿੱਥ_Estimator() = ਮੂਲ;
 
 	// Returns the HRT estimate of the remote event, or 0 if unavailable.
 	// remote_us: remote timestamp [us], same epoch across calls; 0 if unknown.
 	// local_us:  HRT when the carrying message arrived.
-	hrt_abstime toLocal(uint64_t remote_us, hrt_abstime local_us);
+	hrt_abstime ਮੰਜ਼ਿਲ_Local(uint64_t remote_us, hrt_abstime local_us);
 
-private:
+ਨਿਜੀ:
 	// 100 ppm envelopes raw HSE crystals over temperature; TCXOs are a few ppm.
-	static constexpr int64_t kMaxClockDriftPpm{100};
+	ਸਥਿਰ constexpr int64_t kMaxClockDriftPpm{100};
 
 	// Upward lag jumps beyond this are treated as remote-clock discontinuities.
-	static constexpr int64_t kResetThresholdUs{500'000};
+	ਸਥਿਰ constexpr int64_t k_Reset_ਹੱਦ_Us{500'000};
 
-	int64_t     _link_offset_us{0};
-	hrt_abstime _last_update_us{0};
-	bool        _initialized{false};
+	int64_t     link_ਵਿੱਥ_us{0};
+	hrt_abstime ਆਖਰੀ_update_us{0};
+	ਤਾਰਕਿਕ        _initialized{ਝੂਠ};
 };

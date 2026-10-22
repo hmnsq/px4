@@ -36,27 +36,27 @@
  *
  */
 
-#include <geo/geo.h>
-#include "atmosphere.h"
-namespace atmosphere
+#ਅਨ੍ਤਰ੍ਭਾਵ <geo/geo.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "atmosphere.h"
+ਨਾਮਾਕਾਸ਼ atmosphere
 {
 
 
-float getDensityFromPressureAndTemp(const float pressure_pa, const float temperature_celsius)
+ਦਸ਼ਮਲਵ get_Density_From_Pressure_And_ਆਰਜ਼ੀ(ਅਚਲ ਦਸ਼ਮਲਵ pressure_pa, ਅਚਲ ਦਸ਼ਮਲਵ temperature_celsius)
 {
-	return (pressure_pa / (kAirGasConstant * (temperature_celsius - kAbsoluteNullCelsius)));
+	ਵਾਪਸ (pressure_pa / (kAirGasConstant * (temperature_celsius - kAbsoluteNullCelsius)));
 }
-float getPressureFromAltitude(const float altitude_m)
+ਦਸ਼ਮਲਵ getPressureFromAltitude(ਅਚਲ ਦਸ਼ਮਲਵ altitude_m)
 {
 
-	return kPressRefSeaLevelPa * powf((altitude_m * kTempGradient + kTempRefKelvin) / kTempRefKelvin,
-					  -CONSTANTS_ONE_G / (kTempGradient * kAirGasConstant));
+	ਵਾਪਸ kPressRefSeaLevelPa * powf((altitude_m * k_ਆਰਜ਼ੀ_Gradient + k_ਆਰਜ਼ੀ_Ref_Kelvin) / k_ਆਰਜ਼ੀ_Ref_Kelvin,
+					  -CONSTANTS_ONE_G / (k_ਆਰਜ਼ੀ_Gradient * kAirGasConstant));
 }
-float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa)
+ਦਸ਼ਮਲਵ getAltitudeFromPressure(ਦਸ਼ਮਲਵ pressure_pa, ਦਸ਼ਮਲਵ pressure_sealevel_pa)
 {
 	// calculate altitude using the hypsometric equation
 
-	const float pressure_ratio = pressure_pa / pressure_sealevel_pa;
+	ਅਚਲ ਦਸ਼ਮਲਵ pressure_ਅਨੁਪਾਤ = pressure_pa / pressure_sealevel_pa;
 
 	/*
 	 * Solve:
@@ -67,12 +67,12 @@ float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa)
 	 * h = -------------------------------  + h1
 	 *                   a
 	 */
-	return (((powf(pressure_ratio, (-(kTempGradient * kAirGasConstant) / CONSTANTS_ONE_G))) * kTempRefKelvin) -
-		kTempRefKelvin) / kTempGradient;
+	ਵਾਪਸ (((powf(pressure_ਅਨੁਪਾਤ, (-(k_ਆਰਜ਼ੀ_Gradient * kAirGasConstant) / CONSTANTS_ONE_G))) * k_ਆਰਜ਼ੀ_Ref_Kelvin) -
+		k_ਆਰਜ਼ੀ_Ref_Kelvin) / k_ਆਰਜ਼ੀ_Gradient;
 
 }
-float getStandardTemperatureAtAltitude(float altitude_m)
+ਦਸ਼ਮਲਵ getStandardTemperatureAtAltitude(ਦਸ਼ਮਲਵ altitude_m)
 {
-	return 15.0f + kTempGradient * altitude_m;
+	ਵਾਪਸ 15.0f + k_ਆਰਜ਼ੀ_Gradient * altitude_m;
 }
 }

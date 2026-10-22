@@ -37,70 +37,70 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <assert.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <time.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/test/test.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/Block.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "matrix/math.hpp"
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
-class __EXPORT BlockRandGauss: public Block
+ਵਰਗ __EXPORT ਖੰਡ_Rand_Gauss: ਜਨਤਕ ਖੰਡ
 {
-public:
+ਜਨਤਕ:
 // methods
-	BlockRandGauss(SuperBlock *parent,
-		       const char *name) :
-		Block(parent, name),
-		_mean(this, "MEAN"),
-		_stdDev(this, "DEV")
+	ਖੰਡ_Rand_Gauss(Super_ਖੰਡ *ਮਾਪਾ,
+		       ਅਚਲ ਅੱਖਰ *name) :
+		ਖੰਡ(ਮਾਪਾ, name),
+		ਔਸਤ_2(ਇਹ, "MEAN"),
+		_stdDev(ਇਹ, "DEV")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandGauss() = default;
-	float update()
+	ਆਭਾਸੀ ~ਖੰਡ_Rand_Gauss() = ਮੂਲ;
+	ਦਸ਼ਮਲਵ update()
 	{
-		static float V1, V2, S;
-		static int phase = 0;
-		float X;
+		ਸਥਿਰ ਦਸ਼ਮਲਵ V1, V2, S;
+		ਸਥਿਰ ਪੂਰਨ phase = 0;
+		ਦਸ਼ਮਲਵ X;
 
-		if (phase == 0) {
-			do {
-				float U1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-				float U2 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		ਜੇ (phase == 0) {
+			ਕਰੋ {
+				ਦਸ਼ਮਲਵ U1 = static_cast<ਦਸ਼ਮਲਵ>(rand()) / static_cast<ਦਸ਼ਮਲਵ>(RAND_MAX);
+				ਦਸ਼ਮਲਵ U2 = static_cast<ਦਸ਼ਮਲਵ>(rand()) / static_cast<ਦਸ਼ਮਲਵ>(RAND_MAX);
 				V1 = 2 * U1 - 1;
 				V2 = 2 * U2 - 1;
 				S = V1 * V1 + V2 * V2;
-			} while (S >= 1 || fabsf(S) < 1e-8f);
+			} ਜਦੋਂ (S >= 1 || fabsf(S) < 1e-8f);
 
-			X = V1 * float(sqrtf(-2 * float(logf(S)) / S));
+			X = V1 * ਦਸ਼ਮਲਵ(sqrtf(-2 * ਦਸ਼ਮਲਵ(logf(S)) / S));
 
-		} else {
-			X = V2 * float(sqrtf(-2 * float(logf(S)) / S));
+		} ਨਹੀਂਤਾਂ {
+			X = V2 * ਦਸ਼ਮਲਵ(sqrtf(-2 * ਦਸ਼ਮਲਵ(logf(S)) / S));
 		}
 
 		phase = 1 - phase;
-		return X * getStdDev() + getMean();
+		ਵਾਪਸ X * getStdDev() + get_ਔਸਤ();
 	}
 // accessors
-	float getMean() { return _mean.get(); }
-	float getStdDev() { return _stdDev.get(); }
-private:
-// attributes
-	control::BlockParamFloat _mean;
-	control::BlockParamFloat _stdDev;
+	ਦਸ਼ਮਲਵ get_ਔਸਤ() { ਵਾਪਸ ਔਸਤ_2.get(); }
+	ਦਸ਼ਮਲਵ getStdDev() { ਵਾਪਸ _stdDev.get(); }
+ਨਿਜੀ:
+//ਗੁਣ
+	control::ਖੰਡ_Param_Float ਔਸਤ_2;
+	control::ਖੰਡ_Param_Float _stdDev;
 };
 
 } // namespace control

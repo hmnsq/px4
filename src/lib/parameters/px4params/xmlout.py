@@ -1,84 +1,84 @@
-import xml.etree.ElementTree as ET
-import codecs
+ਆਯਾਤ xml.etree.Element_ਰੁੱਖ ਇਵ ET
+ਆਯਾਤ codecs
 
-def indent(elem, level=0):
+ਪਰਿਭਾਸ਼ਾ indent(elem, level=0):
     i = "\n" + level*"  "
-    if len(elem):
-        if not elem.text or not elem.text.strip():
-            elem.text = i + "  "
-        if not elem.tail or not elem.tail.strip():
-            elem.tail = i
-        for elem in elem:
+    ਜੇ ਲੰਬਾਈ(elem):
+        ਜੇ ਨਹੀਂ elem.ਪਾਠ ਜਾਂ ਨਹੀਂ elem.ਪਾਠ.strip():
+            elem.ਪਾਠ = i + "  "
+        ਜੇ ਨਹੀਂ elem.ਪੂਛ ਜਾਂ ਨਹੀਂ elem.ਪੂਛ.strip():
+            elem.ਪੂਛ = i
+        ਲਈ elem ਵਿੱਚ elem:
             indent(elem, level+1)
-        if not elem.tail or not elem.tail.strip():
-            elem.tail = i
-    else:
-        if level and (not elem.tail or not elem.tail.strip()):
-            elem.tail = i
+        ਜੇ ਨਹੀਂ elem.ਪੂਛ ਜਾਂ ਨਹੀਂ elem.ਪੂਛ.strip():
+            elem.ਪੂਛ = i
+    ਨਹੀਂਤਾਂ:
+        ਜੇ level ਅਤੇ (ਨਹੀਂ elem.ਪੂਛ ਜਾਂ ਨਹੀਂ elem.ਪੂਛ.strip()):
+            elem.ਪੂਛ = i
 
-class XMLOutput():
+ਵਰਗ XMLOutput():
 
-    def __init__(self, groups, board):
+    ਪਰਿਭਾਸ਼ਾ __init__(self, groups, board):
         xml_parameters = ET.Element("parameters")
-        xml_version = ET.SubElement(xml_parameters, "version")
-        xml_version.text = "3"
-        xml_version = ET.SubElement(xml_parameters, "parameter_version_major")
-        xml_version.text = "1"
-        xml_version = ET.SubElement(xml_parameters, "parameter_version_minor")
-        xml_version.text = "15"
-        last_param_name = ""
-        board_specific_param_set = False
-        for group in groups:
-            xml_group = ET.SubElement(xml_parameters, "group")
-            xml_group.attrib["name"] = group.GetName()
-            if group.no_code_generation:
-                xml_group.attrib["no_code_generation"] = group.no_code_generation
-            for param in group.GetParams():
-                if (last_param_name == param.GetName() and not board_specific_param_set) or last_param_name != param.GetName():
-                    xml_param = ET.SubElement(xml_group, "parameter")
+        xml_ਸੰਸਕਰਣ = ET.SubElement(xml_parameters, "version")
+        xml_ਸੰਸਕਰਣ.ਪਾਠ = "3"
+        xml_ਸੰਸਕਰਣ = ET.SubElement(xml_parameters, "parameter_version_major")
+        xml_ਸੰਸਕਰਣ.ਪਾਠ = "1"
+        xml_ਸੰਸਕਰਣ = ET.SubElement(xml_parameters, "parameter_version_minor")
+        xml_ਸੰਸਕਰਣ.ਪਾਠ = "15"
+        ਆਖਰੀ_param_name = ""
+        board_specific_param_ਸੈੱਟ = ਝੂਠ
+        ਲਈ ਸਮੂਹ ਵਿੱਚ groups:
+            xml_ਸਮੂਹ = ET.SubElement(xml_parameters, "group")
+            xml_ਸਮੂਹ.attrib["name"] = ਸਮੂਹ.GetName()
+            ਜੇ ਸਮੂਹ.no_ਕੋਡ_generation:
+                xml_ਸਮੂਹ.attrib["no_code_generation"] = ਸਮੂਹ.no_ਕੋਡ_generation
+            ਲਈ param ਵਿੱਚ ਸਮੂਹ.GetParams():
+                ਜੇ (ਆਖਰੀ_param_name == param.GetName() ਅਤੇ ਨਹੀਂ board_specific_param_ਸੈੱਟ) ਜਾਂ ਆਖਰੀ_param_name != param.GetName():
+                    xml_param = ET.SubElement(xml_ਸਮੂਹ, "parameter")
                     xml_param.attrib["name"] = param.GetName()
                     xml_param.attrib["default"] = param.GetDefault()
                     xml_param.attrib["type"] = param.GetType()
-                    if param.GetVolatile():
+                    ਜੇ param.GetVolatile():
                         xml_param.attrib["volatile"] = "true"
-                    if param.GetBoolean():
+                    ਜੇ param.GetBoolean():
                         xml_param.attrib["boolean"] = "true"
-                    if param.GetReadonly():
+                    ਜੇ param.GetReadonly():
                         xml_param.attrib["readonly"] = "true"
-                    if (param.GetCategory()):
+                    ਜੇ (param.GetCategory()):
                         xml_param.attrib["category"] = param.GetCategory()
-                    last_param_name = param.GetName()
-                    for code in param.GetFieldCodes():
-                        value = param.GetFieldValue(code)
-                        if code == "board":
-                            if value == board:
-                                board_specific_param_set = True
-                                xml_field = ET.SubElement(xml_param, code)
-                                xml_field.text = value
-                            else:
-                                xml_group.remove(xml_param)
-                        else:
-                            xml_field = ET.SubElement(xml_param, code)
-                            xml_field.text = value
-                if last_param_name != param.GetName():
-                    board_specific_param_set = False
+                    ਆਖਰੀ_param_name = param.GetName()
+                    ਲਈ ਕੋਡ ਵਿੱਚ param.Get_ਖੇਤਰ_Codes():
+                        ਮੁੱਲ = param.Get_ਖੇਤਰ_ਮੁੱਲ(ਕੋਡ)
+                        ਜੇ ਕੋਡ == "board":
+                            ਜੇ ਮੁੱਲ == board:
+                                board_specific_param_ਸੈੱਟ = ਸੱਚ
+                                xml_ਖੇਤਰ = ET.SubElement(xml_param, ਕੋਡ)
+                                xml_ਖੇਤਰ.ਪਾਠ = ਮੁੱਲ
+                            ਨਹੀਂਤਾਂ:
+                                xml_ਸਮੂਹ.remove(xml_param)
+                        ਨਹੀਂਤਾਂ:
+                            xml_ਖੇਤਰ = ET.SubElement(xml_param, ਕੋਡ)
+                            xml_ਖੇਤਰ.ਪਾਠ = ਮੁੱਲ
+                ਜੇ ਆਖਰੀ_param_name != param.GetName():
+                    board_specific_param_ਸੈੱਟ = ਝੂਠ
                 
-                if len(param.GetEnumCodes()) > 0:
-                    xml_values = ET.SubElement(xml_param, "values")
-                    for code in param.GetEnumCodes():
-                        xml_value = ET.SubElement(xml_values, "value")
-                        xml_value.attrib["code"] = code;
-                        xml_value.text = param.GetEnumValue(code)
+                ਜੇ ਲੰਬਾਈ(param.GetEnumCodes()) > 0:
+                    xml_ਮੁੱਲਾਂ = ET.SubElement(xml_param, "values")
+                    ਲਈ ਕੋਡ ਵਿੱਚ param.GetEnumCodes():
+                        xml_ਮੁੱਲ = ET.SubElement(xml_ਮੁੱਲਾਂ, "value")
+                        xml_ਮੁੱਲ.attrib["code"] = ਕੋਡ;
+                        xml_ਮੁੱਲ.ਪਾਠ = param.Get_Enum_ਮੁੱਲ(ਕੋਡ)
 
-                if len(param.GetBitmaskList()) > 0:
-                    xml_values = ET.SubElement(xml_param, "bitmask")
-                    for index in param.GetBitmaskList():
-                        xml_value = ET.SubElement(xml_values, "bit")
-                        xml_value.attrib["index"] = index;
-                        xml_value.text = param.GetBitmaskBit(index)
+                ਜੇ ਲੰਬਾਈ(param.GetBitmaskList()) > 0:
+                    xml_ਮੁੱਲਾਂ = ET.SubElement(xml_param, "bitmask")
+                    ਲਈ ਸੂਚਕਾਂਕ ਵਿੱਚ param.GetBitmaskList():
+                        xml_ਮੁੱਲ = ET.SubElement(xml_ਮੁੱਲਾਂ, "bit")
+                        xml_ਮੁੱਲ.attrib["index"] = ਸੂਚਕਾਂਕ;
+                        xml_ਮੁੱਲ.ਪਾਠ = param.Get_Bitmask_ਦੋਆਧਾਰੀ_ਅੰਕ(ਸੂਚਕਾਂਕ)
 
         indent(xml_parameters)
-        self.xml_document = ET.ElementTree(xml_parameters)
+        self.xml_document = ET.Element_ਰੁੱਖ(xml_parameters)
 
-    def Save(self, filename):
-        self.xml_document.write(filename, encoding="UTF-8")
+    ਪਰਿਭਾਸ਼ਾ Save(self, filename):
+        self.xml_document.ਲਿਖ(filename, encoding="UTF-8")

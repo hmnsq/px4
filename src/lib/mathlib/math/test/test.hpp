@@ -37,23 +37,23 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
 //#include <assert.h>
 //#include <time.h>
 //#include <stdlib.h>
 
-bool equal(float a, float b, float eps = 1e-5);
+ਤਾਰਕਿਕ equal(ਦਸ਼ਮਲਵ a, ਦਸ਼ਮਲਵ b, ਦਸ਼ਮਲਵ eps = 1e-5);
 
-bool greater_than(float a, float b);
+ਤਾਰਕਿਕ greater_than(ਦਸ਼ਮਲਵ a, ਦਸ਼ਮਲਵ b);
 
-bool less_than(float a, float b);
+ਤਾਰਕਿਕ less_than(ਦਸ਼ਮਲਵ a, ਦਸ਼ਮਲਵ b);
 
-bool greater_than_or_equal(float a, float b);
+ਤਾਰਕਿਕ greater_than_or_equal(ਦਸ਼ਮਲਵ a, ਦਸ਼ਮਲਵ b);
 
-bool less_than_or_equal(float a, float b);
+ਤਾਰਕਿਕ less_than_or_equal(ਦਸ਼ਮਲਵ a, ਦਸ਼ਮਲਵ b);
 
-void float2SigExp(
-	const float &num,
-	float &sig,
-	int &exp);
+ਖਾਲੀ float2SigExp(
+	ਅਚਲ ਦਸ਼ਮਲਵ &ਅੰਕ,
+	ਦਸ਼ਮਲਵ &sig,
+	ਪੂਰਨ &ਘਾਤਾਂਕ);

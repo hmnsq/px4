@@ -1,31 +1,31 @@
 
-#include "common_rc.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "common_rc.h"
 
 __EXPORT rc_decode_buf_t rc_decode_buf;
 
-uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a)
+uint8_t crc8_dvb_s2(uint8_t ਚੱਕਰੀ_ਜਾਂਚ, uint8_t a)
 {
-	crc ^= a;
+	ਚੱਕਰੀ_ਜਾਂਚ ^= a;
 
-	for (int i = 0; i < 8; ++i) {
-		if (crc & 0x80) {
-			crc = (crc << 1) ^ 0xD5;
+	ਲਈ (ਪੂਰਨ i = 0; i < 8; ++i) {
+		ਜੇ (ਚੱਕਰੀ_ਜਾਂਚ & 0x80) {
+			ਚੱਕਰੀ_ਜਾਂਚ = (ਚੱਕਰੀ_ਜਾਂਚ << 1) ^ 0xD5;
 
-		} else {
-			crc = crc << 1;
+		} ਨਹੀਂਤਾਂ {
+			ਚੱਕਰੀ_ਜਾਂਚ = ਚੱਕਰੀ_ਜਾਂਚ << 1;
 		}
 	}
 
-	return crc;
+	ਵਾਪਸ ਚੱਕਰੀ_ਜਾਂਚ;
 }
 
-uint8_t crc8_dvb_s2_buf(uint8_t *buf, int len)
+uint8_t crc8_dvb_s2_buf(uint8_t *buf, ਪੂਰਨ len)
 {
-	uint8_t crc = 0;
+	uint8_t ਚੱਕਰੀ_ਜਾਂਚ = 0;
 
-	for (int i = 0; i < len; ++i) {
-		crc = crc8_dvb_s2(crc, buf[i]);
+	ਲਈ (ਪੂਰਨ i = 0; i < len; ++i) {
+		ਚੱਕਰੀ_ਜਾਂਚ = crc8_dvb_s2(ਚੱਕਰੀ_ਜਾਂਚ, buf[i]);
 	}
 
-	return crc;
+	ਵਾਪਸ ਚੱਕਰੀ_ਜਾਂਚ;
 }

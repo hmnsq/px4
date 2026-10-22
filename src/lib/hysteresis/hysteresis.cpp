@@ -37,55 +37,55 @@
  * @author Julian Oes <julian@oes.ch>
  */
 
-#include "hysteresis.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "hysteresis.h"
 
-namespace systemlib
+ਨਾਮਾਕਾਸ਼ systemlib
 {
 
-Hysteresis::Hysteresis(bool initial_state)
+Hysteresis::Hysteresis(ਤਾਰਕਿਕ initial_state)
 {
 	_state = _requested_state = initial_state;
 }
 
-void Hysteresis::set_hysteresis_time_from(const bool from_state, const hrt_abstime new_hysteresis_time_us)
+ਖਾਲੀ Hysteresis::ਸੈੱਟ_hysteresis_ਸਮਾਂ_from(ਅਚਲ ਤਾਰਕਿਕ from_state, ਅਚਲ hrt_abstime new_hysteresis_ਸਮਾਂ_us)
 {
-	if (from_state) {
-		_time_from_true_us = new_hysteresis_time_us;
+	ਜੇ (from_state) {
+		ਸਮਾਂ_from_true_us = new_hysteresis_ਸਮਾਂ_us;
 
-	} else {
-		_time_from_false_us = new_hysteresis_time_us;
+	} ਨਹੀਂਤਾਂ {
+		ਸਮਾਂ_from_false_us = new_hysteresis_ਸਮਾਂ_us;
 	}
 }
 
-void Hysteresis::set_state_and_update(const bool new_state, const hrt_abstime &now_us)
+ਖਾਲੀ Hysteresis::ਸੈੱਟ_state_and_update(ਅਚਲ ਤਾਰਕਿਕ new_state, ਅਚਲ hrt_abstime &now_us)
 {
-	if (new_state != _state) {
-		if (new_state != _requested_state) {
+	ਜੇ (new_state != _state) {
+		ਜੇ (new_state != _requested_state) {
 			_requested_state = new_state;
-			_last_time_to_change_state = now_us;
+			ਆਖਰੀ_ਸਮਾਂ_ਮੰਜ਼ਿਲ_change_state = now_us;
 		}
 
-	} else {
+	} ਨਹੀਂਤਾਂ {
 		_requested_state = _state;
 	}
 
 	update(now_us);
 }
 
-void Hysteresis::update(const hrt_abstime &now_us)
+ਖਾਲੀ Hysteresis::update(ਅਚਲ hrt_abstime &now_us)
 {
-	if (_requested_state != _state) {
+	ਜੇ (_requested_state != _state) {
 
-		if (_state && !_requested_state) {
+		ਜੇ (_state && !_requested_state) {
 			// true -> false
-			if (now_us >= _last_time_to_change_state + _time_from_true_us) {
-				_state = false;
+			ਜੇ (now_us >= ਆਖਰੀ_ਸਮਾਂ_ਮੰਜ਼ਿਲ_change_state + ਸਮਾਂ_from_true_us) {
+				_state = ਝੂਠ;
 			}
 
-		} else if (!_state && _requested_state) {
+		} ਨਹੀਂਤਾਂ ਜੇ (!_state && _requested_state) {
 			// false -> true
-			if (now_us >= _last_time_to_change_state + _time_from_false_us) {
-				_state = true;
+			ਜੇ (now_us >= ਆਖਰੀ_ਸਮਾਂ_ਮੰਜ਼ਿਲ_change_state + ਸਮਾਂ_from_false_us) {
+				_state = ਸੱਚ;
 			}
 		}
 	}

@@ -31,38 +31,38 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#ifdef __PX4_NUTTX
-#include "px4_platform_common/micro_hal.h"
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __PX4_NUTTX
+#ਅਨ੍ਤਰ੍ਭਾਵ "px4_platform_common/micro_hal.h"
+#ਜੇ_ਅੰਤ
 
-#ifdef __PX4_POSIX
-#include <pthread.h>
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __PX4_POSIX
+#ਅਨ੍ਤਰ੍ਭਾਵ <pthread.h>
+#ਜੇ_ਅੰਤ
 
 
 class AtomicTransaction
 {
-private:
-#ifdef __PX4_NUTTX
+ਨਿਜੀ:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __PX4_NUTTX
 	irqstate_t _irq_state;
-#endif
+#ਜੇ_ਅੰਤ
 
-#ifdef __PX4_POSIX
-	static pthread_mutex_t *_get_mutex();
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __PX4_POSIX
+	ਸਥਿਰ pthread_mutex_t *_get_mutex();
+#ਜੇ_ਅੰਤ
 
-public:
-#ifdef __PX4_POSIX
+ਜਨਤਕ:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __PX4_POSIX
 	// Initialize the recursive param mutex. Must be called once before any thread
 	// accesses parameters (done from param_init()).
-	static void initialize();
-#endif
+	ਸਥਿਰ ਖਾਲੀ initialize();
+#ਜੇ_ਅੰਤ
 
 	AtomicTransaction()
 	{
-		lock();
+		ਤਾਲਾ();
 	}
 
 	~AtomicTransaction()
@@ -70,23 +70,23 @@ public:
 		unlock();
 	}
 
-	void lock()
+	ਖਾਲੀ ਤਾਲਾ()
 	{
-#ifdef __PX4_NUTTX
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __PX4_NUTTX
 		_irq_state = px4_enter_critical_section();
-#endif
-#ifdef __PX4_POSIX
+#ਜੇ_ਅੰਤ
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __PX4_POSIX
 		pthread_mutex_lock(_get_mutex());
-#endif
+#ਜੇ_ਅੰਤ
 	}
 
-	void unlock()
+	ਖਾਲੀ unlock()
 	{
-#ifdef __PX4_NUTTX
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __PX4_NUTTX
 		px4_leave_critical_section(_irq_state);
-#endif
-#ifdef __PX4_POSIX
+#ਜੇ_ਅੰਤ
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __PX4_POSIX
 		pthread_mutex_unlock(_get_mutex());
-#endif
+#ਜੇ_ਅੰਤ
 	}
 };

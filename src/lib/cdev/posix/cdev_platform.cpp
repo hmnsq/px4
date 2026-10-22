@@ -32,326 +32,326 @@
  *
  ****************************************************************************/
 
-#include "cdev_platform.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "cdev_platform.hpp"
 
-#include "../CDev.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "../CDev.hpp"
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/time.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/log.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/posix.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/time.h>
 
-#include <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
 
-static const cdev::px4_file_operations_t g_fops = {};
-const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { return g_fops; }
+ਸਥਿਰ ਅਚਲ cdev::px4_file_operations_t g_fops = {};
+ਅਚਲ cdev::px4_file_operations_t &cdev::CDev::fops_ref() { ਵਾਪਸ g_fops; }
 
 pthread_mutex_t devmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t filemutex = PTHREAD_MUTEX_INITIALIZER;
 
-struct px4_dev_t {
-	char *name{nullptr};
-	cdev::CDev *cdev{nullptr};
+ਬਣਤਰ px4_dev_t {
+	ਅੱਖਰ *name{ਖਾਲੀ_ਸੂਚਕ};
+	cdev::CDev *cdev{ਖਾਲੀ_ਸੂਚਕ};
 
-	px4_dev_t(const char *n, cdev::CDev *c) : cdev(c)
+	px4_dev_t(ਅਚਲ ਅੱਖਰ *n, cdev::CDev *c) : cdev(c)
 	{
 		name = strdup(n);
 	}
 
 	~px4_dev_t()
 	{
-		free(name);
+		ਮੁਕਤ(name);
 	}
-private:
-	px4_dev_t() = default;
+ਨਿਜੀ:
+	px4_dev_t() = ਮੂਲ;
 };
 
-#define PX4_MAX_FD 512
-static px4_dev_t *devmap[PX4_MAX_FD] {};
-static cdev::file_t filemap[PX4_MAX_FD] {};
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PX4_MAX_FD 512
+ਸਥਿਰ px4_dev_t *devmap[PX4_MAX_FD] {};
+ਸਥਿਰ cdev::file_t filemap[PX4_MAX_FD] {};
 
-class VFile : public cdev::CDev
+ਵਰਗ VFile : ਜਨਤਕ cdev::CDev
 {
-public:
-	VFile(const char *fname, mode_t mode) : cdev::CDev(fname) {}
-	~VFile() override = default;
+ਜਨਤਕ:
+	VFile(ਅਚਲ ਅੱਖਰ *fname, mode_t ਬਹੁਲਕ) : cdev::CDev(fname) {}
+	~VFile() override = ਮੂਲ;
 
-	ssize_t write(cdev::file_t *handlep, const char *buffer, size_t buflen) override
+	ssize_t ਲਿਖ(cdev::file_t *handlep, ਅਚਲ ਅੱਖਰ *ਬਫਰ_2, size_t buflen) override
 	{
 		// ignore what was written, but let pollers know something was written
 		poll_notify(POLLIN);
-		return buflen;
+		ਵਾਪਸ buflen;
 	}
 };
 
-static cdev::CDev *getDev(const char *path)
+ਸਥਿਰ cdev::CDev *getDev(ਅਚਲ ਅੱਖਰ *ਰਸਤਾ)
 {
 	pthread_mutex_lock(&devmutex);
 
-	for (const auto &dev : devmap) {
-		if (dev && (strcmp(dev->name, path) == 0)) {
+	ਲਈ (ਅਚਲ ਸਵੈਚਾਲਿਤ &dev : devmap) {
+		ਜੇ (dev && (strcmp(dev->name, ਰਸਤਾ) == 0)) {
 			pthread_mutex_unlock(&devmutex);
-			return dev->cdev;
+			ਵਾਪਸ dev->cdev;
 		}
 	}
 
 	pthread_mutex_unlock(&devmutex);
 
-	return nullptr;
+	ਵਾਪਸ ਖਾਲੀ_ਸੂਚਕ;
 }
 
-static cdev::CDev *getFile(int fd)
+ਸਥਿਰ cdev::CDev *getFile(ਪੂਰਨ fd)
 {
 	pthread_mutex_lock(&filemutex);
-	cdev::CDev *dev = nullptr;
+	cdev::CDev *dev = ਖਾਲੀ_ਸੂਚਕ;
 
-	if (fd < PX4_MAX_FD && fd >= 0) {
+	ਜੇ (fd < PX4_MAX_FD && fd >= 0) {
 		dev = filemap[fd].cdev;
 	}
 
 	pthread_mutex_unlock(&filemutex);
-	return dev;
+	ਵਾਪਸ dev;
 }
 
-extern "C" {
+ਬਾਹਰੀ "C" {
 
-	int register_driver(const char *name, const cdev::px4_file_operations_t *fops, cdev::mode_t mode, void *data)
+	ਪੂਰਨ ਰਜਿਸਟਰ_driver(ਅਚਲ ਅੱਖਰ *name, ਅਚਲ cdev::px4_file_operations_t *fops, cdev::mode_t ਬਹੁਲਕ, ਖਾਲੀ *ਅੰਕੜੇ)
 	{
 		PX4_DEBUG("CDev::register_driver %s", name);
-		int ret = -ENOSPC;
+		ਪੂਰਨ ret = -ENOSPC;
 
-		if (name == nullptr || data == nullptr) {
-			return -EINVAL;
+		ਜੇ (name == ਖਾਲੀ_ਸੂਚਕ || ਅੰਕੜੇ == ਖਾਲੀ_ਸੂਚਕ) {
+			ਵਾਪਸ -EINVAL;
 		}
 
 		pthread_mutex_lock(&devmutex);
 
 		// Make sure the device does not already exist
-		for (const auto &dev : devmap) {
-			if (dev && (strcmp(dev->name, name) == 0)) {
+		ਲਈ (ਅਚਲ ਸਵੈਚਾਲਿਤ &dev : devmap) {
+			ਜੇ (dev && (strcmp(dev->name, name) == 0)) {
 				pthread_mutex_unlock(&devmutex);
-				return -EEXIST;
+				ਵਾਪਸ -EEXIST;
 			}
 		}
 
-		for (auto &dev : devmap) {
-			if (dev == nullptr) {
-				dev = new px4_dev_t(name, (cdev::CDev *)data);
+		ਲਈ (ਸਵੈਚਾਲਿਤ &dev : devmap) {
+			ਜੇ (dev == ਖਾਲੀ_ਸੂਚਕ) {
+				dev = ਨਵਾਂ px4_dev_t(name, (cdev::CDev *)ਅੰਕੜੇ);
 				PX4_DEBUG("Registered DEV %s", name);
 				ret = PX4_OK;
-				break;
+				ਰੋਕੋ;
 			}
 		}
 
 		pthread_mutex_unlock(&devmutex);
 
-		if (ret != PX4_OK) {
+		ਜੇ (ret != PX4_OK) {
 			PX4_ERR("No free devmap entries - increase devmap size");
 		}
 
-		return ret;
+		ਵਾਪਸ ret;
 	}
 
-	int unregister_driver(const char *name)
+	ਪੂਰਨ unregister_driver(ਅਚਲ ਅੱਖਰ *name)
 	{
 		PX4_DEBUG("CDev::unregister_driver %s", name);
-		int ret = -EINVAL;
+		ਪੂਰਨ ret = -EINVAL;
 
-		if (name == nullptr) {
-			return -EINVAL;
+		ਜੇ (name == ਖਾਲੀ_ਸੂਚਕ) {
+			ਵਾਪਸ -EINVAL;
 		}
 
 		pthread_mutex_lock(&devmutex);
 
-		for (auto &dev : devmap) {
-			if (dev && (strcmp(name, dev->name) == 0)) {
-				delete dev;
-				dev = nullptr;
+		ਲਈ (ਸਵੈਚਾਲਿਤ &dev : devmap) {
+			ਜੇ (dev && (strcmp(name, dev->name) == 0)) {
+				ਮਿਟਾਓ dev;
+				dev = ਖਾਲੀ_ਸੂਚਕ;
 				PX4_DEBUG("Unregistered DEV %s", name);
 				ret = PX4_OK;
-				break;
+				ਰੋਕੋ;
 			}
 		}
 
 		pthread_mutex_unlock(&devmutex);
 
-		return ret;
+		ਵਾਪਸ ret;
 	}
 
-	int px4_open(const char *path, int flags, ...)
+	ਪੂਰਨ px4_open(ਅਚਲ ਅੱਖਰ *ਰਸਤਾ, ਪੂਰਨ flags, ...)
 	{
 		PX4_DEBUG("px4_open");
-		cdev::CDev *dev = getDev(path);
-		int ret = 0;
-		int i;
-		mode_t mode;
+		cdev::CDev *dev = getDev(ਰਸਤਾ);
+		ਪੂਰਨ ret = 0;
+		ਪੂਰਨ i;
+		mode_t ਬਹੁਲਕ;
 
-		if (!dev && (flags & PX4_F_WRONLY) != 0 &&
-		    strncmp(path, "/obj/", 5) != 0 &&
-		    strncmp(path, "/dev/", 5) != 0) {
+		ਜੇ (!dev && (flags & PX4_F_WRONLY) != 0 &&
+		    ਲੜੀ_ਤੁਲਨਾ(ਰਸਤਾ, "/obj/", 5) != 0 &&
+		    ਲੜੀ_ਤੁਲਨਾ(ਰਸਤਾ, "/dev/", 5) != 0) {
 			va_list p;
-			va_start(p, flags);
-			mode = va_arg(p, int);
-			va_end(p);
+			va_ਸ਼ੁਰੂ(p, flags);
+			ਬਹੁਲਕ = va_arg(p, ਪੂਰਨ);
+			va_ਸਿਰਾ(p);
 
 			// Create the file
-			PX4_DEBUG("Creating virtual file %s", path);
-			dev = new VFile(path, mode);
-			register_driver(path, nullptr, 0666, (void *)dev);
+			PX4_DEBUG("Creating virtual file %s", ਰਸਤਾ);
+			dev = ਨਵਾਂ VFile(ਰਸਤਾ, ਬਹੁਲਕ);
+			ਰਜਿਸਟਰ_driver(ਰਸਤਾ, ਖਾਲੀ_ਸੂਚਕ, 0666, (ਖਾਲੀ *)dev);
 		}
 
-		if (dev) {
+		ਜੇ (dev) {
 			pthread_mutex_lock(&filemutex);
 
-			for (i = 0; i < PX4_MAX_FD; ++i) {
-				if (filemap[i].cdev == nullptr) {
+			ਲਈ (i = 0; i < PX4_MAX_FD; ++i) {
+				ਜੇ (filemap[i].cdev == ਖਾਲੀ_ਸੂਚਕ) {
 					filemap[i] = cdev::file_t(flags, dev);
-					break;
+					ਰੋਕੋ;
 				}
 			}
 
 			pthread_mutex_unlock(&filemutex);
 
-			if (i < PX4_MAX_FD) {
+			ਜੇ (i < PX4_MAX_FD) {
 				ret = dev->open(&filemap[i]);
 
-			} else {
+			} ਨਹੀਂਤਾਂ {
 
-				const unsigned NAMELEN = 32;
-				char thread_name[NAMELEN] {};
+				ਅਚਲ ਬਿਨਾਨਿਸ਼ਾਨੀ NAMELEN = 32;
+				ਅੱਖਰ thread_name[NAMELEN] {};
 
-				PX4_WARN("%s: exceeded maximum number of file descriptors, accessing %s", thread_name, path);
-#ifndef __PX4_QURT
-				int nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
+				PX4_WARN("%s: exceeded maximum number of file descriptors, accessing %s", thread_name, ਰਸਤਾ);
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __PX4_QURT
+				ਪੂਰਨ nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
 
-				if (nret || thread_name[0] == 0) {
+				ਜੇ (nret || thread_name[0] == 0) {
 					PX4_WARN("failed getting thread name");
 				}
 
-#endif
+#ਜੇ_ਅੰਤ
 
 				ret = -ENOENT;
 			}
 
-		} else {
+		} ਨਹੀਂਤਾਂ {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		ਜੇ (ret < 0) {
 			errno = -ret;
-			return -1;
+			ਵਾਪਸ -1;
 		}
 
 		PX4_DEBUG("px4_open fd = %d", i);
-		return i;
+		ਵਾਪਸ i;
 	}
 
-	int px4_close(int fd)
+	ਪੂਰਨ px4_close(ਪੂਰਨ fd)
 	{
-		int ret;
+		ਪੂਰਨ ret;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		ਜੇ (dev) {
 			pthread_mutex_lock(&filemutex);
 			ret = dev->close(&filemap[fd]);
 
-			filemap[fd].cdev = nullptr;
+			filemap[fd].cdev = ਖਾਲੀ_ਸੂਚਕ;
 
 			pthread_mutex_unlock(&filemutex);
 			PX4_DEBUG("px4_close fd = %d", fd);
 
-		} else {
+		} ਨਹੀਂਤਾਂ {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		ਜੇ (ret < 0) {
 			ret = PX4_ERROR;
 		}
 
-		return ret;
+		ਵਾਪਸ ret;
 	}
 
-	ssize_t px4_read(int fd, void *buffer, size_t buflen)
+	ssize_t px4_read(ਪੂਰਨ fd, ਖਾਲੀ *ਬਫਰ_2, size_t buflen)
 	{
-		int ret;
+		ਪੂਰਨ ret;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		ਜੇ (dev) {
 			PX4_DEBUG("px4_read fd = %d", fd);
-			ret = dev->read(&filemap[fd], (char *)buffer, buflen);
+			ret = dev->ਪਠ(&filemap[fd], (ਅੱਖਰ *)ਬਫਰ_2, buflen);
 
-		} else {
+		} ਨਹੀਂਤਾਂ {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		ਜੇ (ret < 0) {
 			ret = PX4_ERROR;
 		}
 
-		return ret;
+		ਵਾਪਸ ret;
 	}
 
-	ssize_t px4_write(int fd, const void *buffer, size_t buflen)
+	ssize_t px4_write(ਪੂਰਨ fd, ਅਚਲ ਖਾਲੀ *ਬਫਰ_2, size_t buflen)
 	{
-		int ret;
+		ਪੂਰਨ ret;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		ਜੇ (dev) {
 			PX4_DEBUG("px4_write fd = %d", fd);
-			ret = dev->write(&filemap[fd], (const char *)buffer, buflen);
+			ret = dev->ਲਿਖ(&filemap[fd], (ਅਚਲ ਅੱਖਰ *)ਬਫਰ_2, buflen);
 
-		} else {
+		} ਨਹੀਂਤਾਂ {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		ਜੇ (ret < 0) {
 			ret = PX4_ERROR;
 		}
 
-		return ret;
+		ਵਾਪਸ ret;
 	}
 
-	int px4_ioctl(int fd, int cmd, unsigned long arg)
+	ਪੂਰਨ px4_ioctl(ਪੂਰਨ fd, ਪੂਰਨ cmd, ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ arg)
 	{
 		PX4_DEBUG("px4_ioctl fd = %d", fd);
-		int ret = 0;
+		ਪੂਰਨ ret = 0;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		ਜੇ (dev) {
 			ret = dev->ioctl(&filemap[fd], cmd, arg);
 
-		} else {
+		} ਨਹੀਂਤਾਂ {
 			ret = -EINVAL;
 		}
 
-		return ret;
+		ਵਾਪਸ ret;
 	}
 
-	int px4_poll(px4_pollfd_struct_t *fds, unsigned int nfds, int timeout)
+	ਪੂਰਨ px4_poll(px4_pollfd_struct_t *fds, ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ nfds, ਪੂਰਨ timeout)
 	{
-		if (nfds == 0) {
+		ਜੇ (nfds == 0) {
 			PX4_WARN("px4_poll with no fds");
-			return -1;
+			ਵਾਪਸ -1;
 		}
 
 		px4_sem_t sem;
-		int count = 0;
-		int ret = -1;
+		ਪੂਰਨ ਗਿਣਤੀ_2 = 0;
+		ਪੂਰਨ ret = -1;
 
-		const unsigned NAMELEN = 32;
-		char thread_name[NAMELEN] {};
+		ਅਚਲ ਬਿਨਾਨਿਸ਼ਾਨੀ NAMELEN = 32;
+		ਅੱਖਰ thread_name[NAMELEN] {};
 
-#ifndef __PX4_QURT
-		int nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __PX4_QURT
+		ਪੂਰਨ nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
 
-		if (nret || thread_name[0] == 0) {
+		ਜੇ (nret || thread_name[0] == 0) {
 			PX4_WARN("failed getting thread name");
 		}
 
-#endif
+#ਜੇ_ਅੰਤ
 
 		PX4_DEBUG("Called px4_poll timeout = %d", timeout);
 
@@ -361,51 +361,51 @@ extern "C" {
 		px4_sem_setprotocol(&sem, SEM_PRIO_NONE);
 
 		// Go through all fds and check them for a pollable state
-		bool fd_pollable = false;
+		ਤਾਰਕਿਕ fd_pollable = ਝੂਠ;
 
-		for (unsigned int i = 0; i < nfds; ++i) {
+		ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ i = 0; i < nfds; ++i) {
 			fds[i].sem     = &sem;
 			fds[i].revents = 0;
-			fds[i].priv    = nullptr;
+			fds[i].priv    = ਖਾਲੀ_ਸੂਚਕ;
 
 			cdev::CDev *dev = getFile(fds[i].fd);
 
 			// If fd is valid
-			if (dev) {
+			ਜੇ (dev) {
 				PX4_DEBUG("%s: px4_poll: CDev->poll(setup) %d", thread_name, fds[i].fd);
-				ret = dev->poll(&filemap[fds[i].fd], &fds[i], true);
+				ret = dev->poll(&filemap[fds[i].fd], &fds[i], ਸੱਚ);
 
-				if (ret < 0) {
+				ਜੇ (ret < 0) {
 					PX4_WARN("%s: px4_poll() error: %s", thread_name, strerror(errno));
-					break;
+					ਰੋਕੋ;
 				}
 
-				if (ret >= 0) {
-					fd_pollable = true;
+				ਜੇ (ret >= 0) {
+					fd_pollable = ਸੱਚ;
 				}
 			}
 		}
 
 		// If any FD can be polled, lock the semaphore and
 		// check for new data
-		if (fd_pollable) {
-			if (timeout > 0) {
+		ਜੇ (fd_pollable) {
+			ਜੇ (timeout > 0) {
 				// Get the current time
-				struct timespec ts;
-#if defined(__PX4_DARWIN) && !defined(ENABLE_LOCKSTEP_SCHEDULER)
+				ਬਣਤਰ timespec ts;
+#ਜੇ defined(__PX4_DARWIN) && !defined(ENABLE_LOCKSTEP_SCHEDULER)
 				// macOS has no pthread_condattr_setclock(), so px4_sem_t's condition
 				// variable waits on CLOCK_REALTIME (px4_sem_init()). Use that clock here
 				// too. CLOCK_MONOTONIC counts from boot, so the deadline would land
 				// decades in the past and px4_sem_timedwait() would return immediately.
 				px4_clock_gettime(CLOCK_REALTIME, &ts);
-#else
+#ਨਹੀਂਤਾਂ
 				// Note, we can't actually use CLOCK_MONOTONIC on macOS
 				// but that's hidden and implemented in px4_clock_gettime.
 				px4_clock_gettime(CLOCK_MONOTONIC, &ts);
-#endif
+#ਜੇ_ਅੰਤ
 
 				// Calculate an absolute time in the future
-				const unsigned billion = (1000 * 1000 * 1000);
+				ਅਚਲ ਬਿਨਾਨਿਸ਼ਾਨੀ billion = (1000 * 1000 * 1000);
 				uint64_t nsecs = ts.tv_nsec + ((uint64_t)timeout * 1000 * 1000);
 				ts.tv_sec += nsecs / billion;
 				nsecs -= (nsecs / billion) * billion;
@@ -413,32 +413,32 @@ extern "C" {
 
 				ret = px4_sem_timedwait(&sem, &ts);
 
-				if (ret && errno != ETIMEDOUT) {
+				ਜੇ (ret && errno != ETIMEDOUT) {
 					PX4_WARN("%s: px4_poll() sem error: %s", thread_name, strerror(errno));
 				}
 
-			} else if (timeout < 0) {
+			} ਨਹੀਂਤਾਂ ਜੇ (timeout < 0) {
 				px4_sem_wait(&sem);
 			}
 
 			// We have waited now (or not, depending on timeout),
 			// go through all fds and count how many have data
-			for (unsigned int i = 0; i < nfds; ++i) {
+			ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ i = 0; i < nfds; ++i) {
 
 				cdev::CDev *dev = getFile(fds[i].fd);
 
 				// If fd is valid
-				if (dev) {
+				ਜੇ (dev) {
 					PX4_DEBUG("%s: px4_poll: CDev->poll(teardown) %d", thread_name, fds[i].fd);
-					ret = dev->poll(&filemap[fds[i].fd], &fds[i], false);
+					ret = dev->poll(&filemap[fds[i].fd], &fds[i], ਝੂਠ);
 
-					if (ret < 0) {
+					ਜੇ (ret < 0) {
 						PX4_WARN("%s: px4_poll() 2nd poll fail", thread_name);
-						break;
+						ਰੋਕੋ;
 					}
 
-					if (fds[i].revents) {
-						count += 1;
+					ਜੇ (fds[i].revents) {
+						ਗਿਣਤੀ_2 += 1;
 					}
 				}
 			}
@@ -448,28 +448,28 @@ extern "C" {
 
 		// Return the positive count if present,
 		// return the negative error number if failed
-		return (count) ? count : ret;
+		ਵਾਪਸ (ਗਿਣਤੀ_2) ? ਗਿਣਤੀ_2 : ret;
 	}
 
-	int px4_access(const char *pathname, int mode)
+	ਪੂਰਨ px4_access(ਅਚਲ ਅੱਖਰ *pathname, ਪੂਰਨ ਬਹੁਲਕ)
 	{
-		if (mode != F_OK) {
+		ਜੇ (ਬਹੁਲਕ != F_OK) {
 			errno = EINVAL;
-			return -1;
+			ਵਾਪਸ -1;
 		}
 
 		cdev::CDev *dev = getDev(pathname);
-		return (dev != nullptr) ? 0 : -1;
+		ਵਾਪਸ (dev != ਖਾਲੀ_ਸੂਚਕ) ? 0 : -1;
 	}
 
-	void px4_show_files()
+	ਖਾਲੀ px4_show_files()
 	{
 		PX4_INFO("Files:");
 
 		pthread_mutex_lock(&devmutex);
 
-		for (const auto &dev : devmap) {
-			if (dev) {
+		ਲਈ (ਅਚਲ ਸਵੈਚਾਲਿਤ &dev : devmap) {
+			ਜੇ (dev) {
 				PX4_INFO_RAW("   %s\n", dev->name);
 			}
 		}

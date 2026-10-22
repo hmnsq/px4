@@ -37,59 +37,59 @@
  * Controller library code
  */
 
-#include "Block.hpp"
-#include "BlockParam.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Block.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "BlockParam.hpp"
 
-#include <cstdio>
-#include <cstring>
+#ਅਨ੍ਤਰ੍ਭਾਵ <cstdio>
+#ਅਨ੍ਤਰ੍ਭਾਵ <cstring>
 
-#include <px4_platform_common/log.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/log.h>
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
-Block::Block(SuperBlock *parent, const char *name) :
+ਖੰਡ::ਖੰਡ(Super_ਖੰਡ *ਮਾਪਾ, ਅਚਲ ਅੱਖਰ *name) :
 	_name(name),
-	_parent(parent)
+	ਮਾਪਾ_2(ਮਾਪਾ)
 {
-	if (getParent() != nullptr) {
-		getParent()->getChildren().add(this);
+	ਜੇ (get_ਮਾਪਾ() != ਖਾਲੀ_ਸੂਚਕ) {
+		get_ਮਾਪਾ()->getChildren().ਜੋੜੋ(ਇਹ);
 	}
 }
 
-void Block::getName(char *buf, size_t n)
+ਖਾਲੀ ਖੰਡ::getName(ਅੱਖਰ *buf, size_t n)
 {
-	if (getParent() == nullptr) {
+	ਜੇ (get_ਮਾਪਾ() == ਖਾਲੀ_ਸੂਚਕ) {
 		strncpy(buf, _name, n);
 		// ensure string is terminated
 		buf[n - 1] = '\0';
 
-	} else {
-		char parentName[blockNameLengthMax];
-		getParent()->getName(parentName, n);
+	} ਨਹੀਂਤਾਂ {
+		ਅੱਖਰ ਮਾਪਾ_Name[ਖੰਡ_Name_ਲੰਮਾਈ_Max];
+		get_ਮਾਪਾ()->getName(ਮਾਪਾ_Name, n);
 
-		if (!strcmp(_name, "")) {
-			strncpy(buf, parentName, n);
+		ਜੇ (!strcmp(_name, "")) {
+			strncpy(buf, ਮਾਪਾ_Name, n);
 			// ensure string is terminated
 			buf[n - 1] = '\0';
 
-		} else {
-			snprintf(buf, n, "%s_%s", parentName, _name);
+		} ਨਹੀਂਤਾਂ {
+			snprintf(buf, n, "%s_%s", ਮਾਪਾ_Name, _name);
 		}
 	}
 }
 
-void Block::updateParams()
+ਖਾਲੀ ਖੰਡ::updateParams()
 {
-	BlockParamBase *param = getParams().getHead();
-	int count = 0;
+	ਖੰਡ_Param_ਅਧਾਰ *param = getParams().get_ਸਿਰ();
+	ਪੂਰਨ ਗਿਣਤੀ_2 = 0;
 
-	while (param != nullptr) {
-		if (count++ > maxParamsPerBlock) {
-			char name[blockNameLengthMax];
-			getName(name, blockNameLengthMax);
+	ਜਦੋਂ (param != ਖਾਲੀ_ਸੂਚਕ) {
+		ਜੇ (ਗਿਣਤੀ_2++ > max_Params_ਪ੍ਰਤੀ_ਖੰਡ) {
+			ਅੱਖਰ name[ਖੰਡ_Name_ਲੰਮਾਈ_Max];
+			getName(name, ਖੰਡ_Name_ਲੰਮਾਈ_Max);
 			PX4_ERR("exceeded max params for block: %s", name);
-			break;
+			ਰੋਕੋ;
 		}
 
 		//printf("updating param: %s\n", param->getName());
@@ -100,43 +100,43 @@ void Block::updateParams()
 	updateParamsSubclass();
 }
 
-void SuperBlock::setDt(float dt)
+ਖਾਲੀ Super_ਖੰਡ::ਸੈੱਟ_Dt(ਦਸ਼ਮਲਵ dt)
 {
-	Block::setDt(dt);
-	Block *child = getChildren().getHead();
-	int count = 0;
+	ਖੰਡ::ਸੈੱਟ_Dt(dt);
+	ਖੰਡ *ਬੱਚਾ = getChildren().get_ਸਿਰ();
+	ਪੂਰਨ ਗਿਣਤੀ_2 = 0;
 
-	while (child != nullptr) {
-		if (count++ > maxChildrenPerBlock) {
-			char name[blockNameLengthMax];
-			getName(name, blockNameLengthMax);
+	ਜਦੋਂ (ਬੱਚਾ != ਖਾਲੀ_ਸੂਚਕ) {
+		ਜੇ (ਗਿਣਤੀ_2++ > max_Children_ਪ੍ਰਤੀ_ਖੰਡ) {
+			ਅੱਖਰ name[ਖੰਡ_Name_ਲੰਮਾਈ_Max];
+			getName(name, ਖੰਡ_Name_ਲੰਮਾਈ_Max);
 			PX4_ERR("exceeded max children for block: %s", name);
-			break;
+			ਰੋਕੋ;
 		}
 
-		child->setDt(dt);
-		child = child->getSibling();
+		ਬੱਚਾ->ਸੈੱਟ_Dt(dt);
+		ਬੱਚਾ = ਬੱਚਾ->getSibling();
 	}
 }
 
-void SuperBlock::updateChildParams()
+ਖਾਲੀ Super_ਖੰਡ::update_ਬੱਚਾ_Params()
 {
-	Block *child = getChildren().getHead();
-	int count = 0;
+	ਖੰਡ *ਬੱਚਾ = getChildren().get_ਸਿਰ();
+	ਪੂਰਨ ਗਿਣਤੀ_2 = 0;
 
-	while (child != nullptr) {
-		if (count++ > maxChildrenPerBlock) {
-			char name[blockNameLengthMax];
-			getName(name, blockNameLengthMax);
+	ਜਦੋਂ (ਬੱਚਾ != ਖਾਲੀ_ਸੂਚਕ) {
+		ਜੇ (ਗਿਣਤੀ_2++ > max_Children_ਪ੍ਰਤੀ_ਖੰਡ) {
+			ਅੱਖਰ name[ਖੰਡ_Name_ਲੰਮਾਈ_Max];
+			getName(name, ਖੰਡ_Name_ਲੰਮਾਈ_Max);
 			PX4_ERR("exceeded max children for block: %s", name);
-			break;
+			ਰੋਕੋ;
 		}
 
-		child->updateParams();
-		child = child->getSibling();
+		ਬੱਚਾ->updateParams();
+		ਬੱਚਾ = ਬੱਚਾ->getSibling();
 	}
 }
 
 } // namespace control
 
-template class List<control::BlockParamBase *>;
+ਸਾਂਚਾ ਵਰਗ List<control::ਖੰਡ_Param_ਅਧਾਰ *>;

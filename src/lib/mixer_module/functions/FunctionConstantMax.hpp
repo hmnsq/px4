@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "FunctionProviderBase.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "FunctionProviderBase.hpp"
 
 /**
  * Functions: Constant_Max
  */
-class FunctionConstantMax : public FunctionProviderBase
+ਵਰਗ FunctionConstantMax : ਜਨਤਕ Function_Provider_ਅਧਾਰ
 {
-public:
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionConstantMax(); }
+ਜਨਤਕ:
+	ਸਥਿਰ Function_Provider_ਅਧਾਰ *allocate(ਅਚਲ Context &context) { ਵਾਪਸ ਨਵਾਂ FunctionConstantMax(); }
 
-	float value(OutputFunction func) override { return 1.f; }
-	void update() override { }
+	ਦਸ਼ਮਲਵ value(OutputFunction func) override { ਵਾਪਸ 1.f; }
+	ਖਾਲੀ update() override { }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 1.f; }
+	ਦਸ਼ਮਲਵ default_Failsafe_ਮੁੱਲ(OutputFunction func) ਅਚਲ override { ਵਾਪਸ 1.f; }
 };

@@ -37,65 +37,65 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <assert.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <time.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/test/test.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/Block.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "matrix/math.hpp"
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
-template<class Type, size_t M>
-class __EXPORT BlockStats: public Block
+ਸਾਂਚਾ<ਵਰਗ Type, size_t M>
+ਵਰਗ __EXPORT ਖੰਡ_Stats: ਜਨਤਕ ਖੰਡ
 {
 
-public:
+ਜਨਤਕ:
 // methods
-	BlockStats(SuperBlock *parent,
-		   const char *name) :
-		Block(parent, name),
-		_sum(),
-		_sumSq(),
-		_count(0)
+	ਖੰਡ_Stats(Super_ਖੰਡ *ਮਾਪਾ,
+		   ਅਚਲ ਅੱਖਰ *name) :
+		ਖੰਡ(ਮਾਪਾ, name),
+		ਜੋੜ_2(),
+		ਜੋੜ_Sq(),
+		ਗਿਣਤੀ_4(0)
 	{}
-	virtual ~BlockStats() = default;
-	void update(const matrix::Vector<Type, M> &u)
+	ਆਭਾਸੀ ~ਖੰਡ_Stats() = ਮੂਲ;
+	ਖਾਲੀ update(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> &u)
 	{
-		_sum += u;
-		_sumSq += u.emult(u);
-		_count += 1;
+		ਜੋੜ_2 += u;
+		ਜੋੜ_Sq += u.emult(u);
+		ਗਿਣਤੀ_4 += 1;
 	}
-	void reset()
+	ਖਾਲੀ reset()
 	{
-		_sum.setZero();
-		_sumSq.setZero();
-		_count = 0;
+		ਜੋੜ_2.ਸੈੱਟ_Zero();
+		ਜੋੜ_Sq.ਸੈੱਟ_Zero();
+		ਗਿਣਤੀ_4 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
-	matrix::Vector<Type, M> getVar()
+	size_t get_ਗਿਣਤੀ() { ਵਾਪਸ ਗਿਣਤੀ_4; }
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> get_ਔਸਤ() { ਵਾਪਸ ਜੋੜ_2 / ਗਿਣਤੀ_4; }
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		ਵਾਪਸ (ਜੋੜ_Sq - ਜੋੜ_2.emult(ਜੋੜ_2) / ਗਿਣਤੀ_4) / ਗਿਣਤੀ_4;
 	}
-	matrix::Vector<Type, M> getStdDev()
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		ਵਾਪਸ getVar().ਵਰਗਮੂਲ();
 	}
-private:
-// attributes
-	matrix::Vector<Type, M> _sum;
-	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+ਨਿਜੀ:
+//ਗੁਣ
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> ਜੋੜ_2;
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> ਜੋੜ_Sq;
+	size_t ਗਿਣਤੀ_4;
 };
 
 } // namespace control

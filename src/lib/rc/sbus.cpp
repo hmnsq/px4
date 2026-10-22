@@ -37,48 +37,48 @@
  * Serial protocol decoder for the Futaba S.bus protocol.
  */
 
-#include <px4_platform_common/px4_config.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/px4_config.h>
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <fcntl.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <unistd.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <string.h>
 
-#ifdef TIOCSSINGLEWIRE
-#include <sys/ioctl.h>
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ TIOCSSINGLEWIRE
+#ਅਨ੍ਤਰ੍ਭਾਵ <sys/ioctl.h>
+#ਜੇ_ਅੰਤ
 
-#include "sbus.h"
-#include "common_rc.h"
-#include <drivers/drv_hrt.h>
-#include <lib/mathlib/mathlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "sbus.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "common_rc.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/drv_hrt.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/mathlib/mathlib.h>
 
-using namespace time_literals;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਸਮਾਂ_literals;
 
-#define SBUS_DEBUG_LEVEL 	0 /* Set debug output level */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS_DEBUG_LEVEL 	0 /* Set debug output level */
 
-#if defined(__PX4_LINUX)
-#include <sys/ioctl.h>
-#include <asm-generic/termbits.h>
-#else
-#include <termios.h>
-#endif
+#ਜੇ defined(__PX4_LINUX)
+#ਅਨ੍ਤਰ੍ਭਾਵ <sys/ioctl.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <asm-generic/termbits.h>
+#ਨਹੀਂਤਾਂ
+#ਅਨ੍ਤਰ੍ਭਾਵ <termios.h>
+#ਜੇ_ਅੰਤ
 
-#define SBUS_START_SYMBOL	0x0f
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS_ਸ਼ੁਰੂ_ਚਿੰਨ੍ਹ	0x0f
 
-#define SBUS_INPUT_CHANNELS	16
-#define SBUS_FLAGS_BYTE		23
-#define SBUS_FAILSAFE_BIT	3
-#define SBUS_FRAMELOST_BIT	2
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS_ਨਿਵੇਸ਼_CHANNELS	16
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS_FLAGS_BYTE		23
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS_FAILSAFE_ਦੋਆਧਾਰੀ_ਅੰਕ	3
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS_FRAMELOST_ਦੋਆਧਾਰੀ_ਅੰਕ	2
 
 // testing with a SBUS->PWM adapter shows that
 // above 300Hz SBUS becomes unreliable. 333 would
 // be the theoretical achievable, but at 333Hz some
 // frames are lost
-#define SBUS1_MAX_RATE_HZ	300
-#define SBUS1_MIN_RATE_HZ	50
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS1_MAX_ਦਰ_HZ	300
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS1_MIN_ਦਰ_HZ	50
 
 // this is the rate of the old code
-#define SBUS1_DEFAULT_RATE_HZ	72
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS1_DEFAULT_ਦਰ_HZ	72
 
 /*
   Measured values with Futaba FX-30/R6108SB:
@@ -88,29 +88,29 @@ using namespace time_literals;
 */
 
 /* define range mapping here, -+100% -> 1000..2000 */
-#define SBUS_RANGE_MIN 200.0f
-#define SBUS_RANGE_MAX 1800.0f
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS_RANGE_MIN 200.0f
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS_RANGE_MAX 1800.0f
 
-#define SBUS_TARGET_MIN 1000.0f
-#define SBUS_TARGET_MAX 2000.0f
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS_ਨਿਸ਼ਾਨਾ_MIN 1000.0f
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS_ਨਿਸ਼ਾਨਾ_MAX 2000.0f
 
-#if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
+#ਜੇ defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
 #  include <stdio.h>
-#endif
+#ਜੇ_ਅੰਤ
 
 /* pre-calculate the floating point stuff as far as possible at compile time */
-#define SBUS_SCALE_FACTOR ((SBUS_TARGET_MAX - SBUS_TARGET_MIN) / (SBUS_RANGE_MAX - SBUS_RANGE_MIN))
-#define SBUS_SCALE_OFFSET (int)(SBUS_TARGET_MIN - (SBUS_SCALE_FACTOR * SBUS_RANGE_MIN + 0.5f))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS_SCALE_ਗੁਣਕ ((SBUS_ਨਿਸ਼ਾਨਾ_MAX - SBUS_ਨਿਸ਼ਾਨਾ_MIN) / (SBUS_RANGE_MAX - SBUS_RANGE_MIN))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS_SCALE_ਵਿੱਥ (ਪੂਰਨ)(SBUS_ਨਿਸ਼ਾਨਾ_MIN - (SBUS_SCALE_ਗੁਣਕ * SBUS_RANGE_MIN + 0.5f))
 
-static hrt_abstime last_rx_time;
-static hrt_abstime last_txframe_time = 0;
+ਸਥਿਰ hrt_abstime ਆਖਰੀ_rx_ਸਮਾਂ;
+ਸਥਿਰ hrt_abstime ਆਖਰੀ_txframe_ਸਮਾਂ = 0;
 
-#define SBUS2_FRAME_SIZE_RX_VOLTAGE	3
-#define SBUS2_FRAME_SIZE_GPS_DIGIT	3
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS2_ਚੌਖਟਾ_ਮਾਪ_RX_VOLTAGE	3
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SBUS2_ਚੌਖਟਾ_ਮਾਪ_GPS_DIGIT	3
 
-static enum SBUS2_DECODE_STATE {
+ਸਥਿਰ ਗਿਣਤੀ SBUS2_DECODE_STATE {
 	SBUS2_DECODE_STATE_DESYNC = 0xFFF,
-	SBUS2_DECODE_STATE_SBUS_START = 0x2FF,
+	SBUS2_DECODE_STATE_SBUS_ਸ਼ੁਰੂ = 0x2FF,
 	SBUS2_DECODE_STATE_SBUS1_SYNC = 0x00,
 	SBUS2_DECODE_STATE_SBUS2_SYNC = 0x1FF,
 	SBUS2_DECODE_STATE_SBUS2_RX_VOLTAGE = 0x04,
@@ -119,49 +119,49 @@ static enum SBUS2_DECODE_STATE {
 	SBUS2_DECODE_STATE_SBUS2_DATA2 = 0x34
 } sbus_decode_state = SBUS2_DECODE_STATE_DESYNC;
 
-static sbus_frame_t	 &sbus_frame = rc_decode_buf.sbus_frame;
+ਸਥਿਰ sbus_ਚੌਖਟਾ_t	 &sbus_ਚੌਖਟਾ = rc_decode_buf.sbus_ਚੌਖਟਾ;
 
-static unsigned partial_frame_count;
-static unsigned sbus1_frame_delay = (1000U * 1000U) / SBUS1_DEFAULT_RATE_HZ;
+ਸਥਿਰ ਬਿਨਾਨਿਸ਼ਾਨੀ partial_ਚੌਖਟਾ_ਗਿਣਤੀ;
+ਸਥਿਰ ਬਿਨਾਨਿਸ਼ਾਨੀ sbus1_ਚੌਖਟਾ_delay = (1000U * 1000U) / SBUS1_DEFAULT_ਦਰ_HZ;
 
-static unsigned sbus_frame_drops;
+ਸਥਿਰ ਬਿਨਾਨਿਸ਼ਾਨੀ sbus_ਚੌਖਟਾ_drops;
 
-unsigned
-sbus_dropped_frames()
+ਬਿਨਾਨਿਸ਼ਾਨੀ
+sbus_dropped_ਚੌਖਟੇ()
 {
-	return sbus_frame_drops;
+	ਵਾਪਸ sbus_ਚੌਖਟਾ_drops;
 }
 
-static bool
-sbus_decode(uint64_t frame_time, uint8_t *frame, uint16_t *values, uint16_t *num_values,
-	    bool *sbus_failsafe, bool *sbus_frame_drop, uint16_t max_values);
+ਸਥਿਰ ਤਾਰਕਿਕ
+sbus_decode(uint64_t ਚੌਖਟਾ_ਸਮਾਂ, uint8_t *ਚੌਖਟਾ, uint16_t *ਮੁੱਲਾਂ_2, uint16_t *ਅੰਕ_ਮੁੱਲਾਂ,
+	    ਤਾਰਕਿਕ *sbus_failsafe, ਤਾਰਕਿਕ *sbus_ਚੌਖਟਾ_drop, uint16_t max_ਮੁੱਲਾਂ);
 
-int
-sbus_init(const char *device, bool singlewire)
+ਪੂਰਨ
+sbus_init(ਅਚਲ ਅੱਖਰ *device, ਤਾਰਕਿਕ singlewire)
 {
-	int sbus_fd = open(device, O_RDWR | O_NONBLOCK);
+	ਪੂਰਨ sbus_fd = open(device, O_RDWR | O_NONBLOCK);
 
-	int ret = sbus_config(sbus_fd, singlewire);
+	ਪੂਰਨ ret = sbus_config(sbus_fd, singlewire);
 
-	if (!ret) {
-		return sbus_fd;
+	ਜੇ (!ret) {
+		ਵਾਪਸ sbus_fd;
 
-	} else {
-		return -1;
+	} ਨਹੀਂਤਾਂ {
+		ਵਾਪਸ -1;
 	}
 }
 
-int
-sbus_config(int sbus_fd, bool singlewire)
+ਪੂਰਨ
+sbus_config(ਪੂਰਨ sbus_fd, ਤਾਰਕਿਕ singlewire)
 {
-	int ret = -1;
+	ਪੂਰਨ ret = -1;
 
-#if defined(__PX4_LINUX)
+#ਜੇ defined(__PX4_LINUX)
 
-	struct termios2 tio = {};
+	ਬਣਤਰ termios2 tio = {};
 
-	if (0 != ioctl(sbus_fd, TCGETS2, &tio)) {
-		return ret;
+	ਜੇ (0 != ioctl(sbus_fd, TCGETS2, &tio)) {
+		ਵਾਪਸ ret;
 	}
 
 	/**
@@ -182,15 +182,15 @@ sbus_config(int sbus_fd, bool singlewire)
 	tio.c_cc[VMIN] = 25;
 	tio.c_cc[VTIME] = 0;
 
-	if (0 != ioctl(sbus_fd, TCSETS2, &tio)) {
-		return ret;
+	ਜੇ (0 != ioctl(sbus_fd, TCSETS2, &tio)) {
+		ਵਾਪਸ ret;
 	}
 
 	ret = 0;
-#else
+#ਨਹੀਂਤਾਂ
 
-	if (sbus_fd >= 0) {
-		struct termios t;
+	ਜੇ (sbus_fd >= 0) {
+		ਬਣਤਰ termios t;
 
 		/* 100000bps, even parity, two stop bits */
 		tcgetattr(sbus_fd, &t);
@@ -198,97 +198,97 @@ sbus_config(int sbus_fd, bool singlewire)
 		t.c_cflag |= (CSTOPB | PARENB);
 		tcsetattr(sbus_fd, TCSANOW, &t);
 
-		if (singlewire) {
+		ਜੇ (singlewire) {
 			/* only defined in configs capable of IOCTL
 			 * Note It is never turned off
 			 */
-#ifdef TIOCSSINGLEWIRE
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ TIOCSSINGLEWIRE
 			ioctl(sbus_fd, TIOCSSINGLEWIRE, SER_SINGLEWIRE_ENABLED);
-#endif
+#ਜੇ_ਅੰਤ
 		}
 
 		ret = 0;
 	}
 
-#endif
+#ਜੇ_ਅੰਤ
 	/* initialise the decoder */
-	partial_frame_count = 0;
-	last_rx_time = hrt_absolute_time();
-	sbus_frame_drops = 0;
+	partial_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
+	ਆਖਰੀ_rx_ਸਮਾਂ = hrt_absolute_ਸਮਾਂ();
+	sbus_ਚੌਖਟਾ_drops = 0;
 
-	return ret;
+	ਵਾਪਸ ret;
 }
 
-void
-sbus1_output(int sbus_fd, uint16_t *values, uint16_t num_values)
+ਖਾਲੀ
+sbus1_output(ਪੂਰਨ sbus_fd, uint16_t *ਮੁੱਲਾਂ_2, uint16_t ਅੰਕ_ਮੁੱਲਾਂ)
 {
 	uint8_t byteindex = 1; /*Data starts one byte into the sbus frame. */
-	uint8_t offset = 0;
+	uint8_t ਵਿੱਥ = 0;
 	uint16_t value;
 	hrt_abstime now;
 
-	now = hrt_absolute_time();
+	now = hrt_absolute_ਸਮਾਂ();
 
-	if ((now - last_txframe_time) > sbus1_frame_delay) {
-		last_txframe_time = now;
-		uint8_t	oframe[SBUS_FRAME_SIZE] = { 0x0f };
+	ਜੇ ((now - ਆਖਰੀ_txframe_ਸਮਾਂ) > sbus1_ਚੌਖਟਾ_delay) {
+		ਆਖਰੀ_txframe_ਸਮਾਂ = now;
+		uint8_t	oframe[SBUS_ਚੌਖਟਾ_ਮਾਪ] = { 0x0f };
 
 		/* 16 is sbus number of servos/channels minus 2 single bit channels.
 		* currently ignoring single bit channels.  */
 
-		for (unsigned i = 0; (i < num_values) && (i < 16); ++i) {
-			long scaled = lround((values[i] - SBUS_SCALE_OFFSET) / SBUS_SCALE_FACTOR);
+		ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; (i < ਅੰਕ_ਮੁੱਲਾਂ) && (i < 16); ++i) {
+			ਲੰਮਾ scaled = lround((ਮੁੱਲਾਂ_2[i] - SBUS_SCALE_ਵਿੱਥ) / SBUS_SCALE_ਗੁਣਕ);
 
 			/* limit to 11 bits before the cast: a value below the scale offset (an output with no
 			 * function is 0) is negative and would wrap to full scale */
-			if (scaled < 0) {
+			ਜੇ (scaled < 0) {
 				scaled = 0;
 
-			} else if (scaled > 0x07ff) {
+			} ਨਹੀਂਤਾਂ ਜੇ (scaled > 0x07ff) {
 				scaled = 0x07ff;
 			}
 
 			value = static_cast<uint16_t>(scaled);
 
-			while (offset >= 8) {
+			ਜਦੋਂ (ਵਿੱਥ >= 8) {
 				++byteindex;
-				offset -= 8;
+				ਵਿੱਥ -= 8;
 			}
 
-			oframe[byteindex] |= (value << (offset)) & 0xff;
-			oframe[byteindex + 1] |= (value >> (8 - offset)) & 0xff;
-			oframe[byteindex + 2] |= (value >> (16 - offset)) & 0xff;
-			offset += 11;
+			oframe[byteindex] |= (value << (ਵਿੱਥ)) & 0xff;
+			oframe[byteindex + 1] |= (value >> (8 - ਵਿੱਥ)) & 0xff;
+			oframe[byteindex + 2] |= (value >> (16 - ਵਿੱਥ)) & 0xff;
+			ਵਿੱਥ += 11;
 		}
 
-		write(sbus_fd, oframe, SBUS_FRAME_SIZE);
+		ਲਿਖ(sbus_fd, oframe, SBUS_ਚੌਖਟਾ_ਮਾਪ);
 	}
 }
-void
-sbus2_output(int sbus_fd, uint16_t *values, uint16_t num_values)
+ਖਾਲੀ
+sbus2_output(ਪੂਰਨ sbus_fd, uint16_t *ਮੁੱਲਾਂ_2, uint16_t ਅੰਕ_ਮੁੱਲਾਂ)
 {
-	sbus1_output(sbus_fd, values, num_values);
+	sbus1_output(sbus_fd, ਮੁੱਲਾਂ_2, ਅੰਕ_ਮੁੱਲਾਂ);
 }
 
-bool
-sbus_input(int sbus_fd, uint16_t *values, uint16_t *num_values, bool *sbus_failsafe, bool *sbus_frame_drop,
+ਤਾਰਕਿਕ
+sbus_ਨਿਵੇਸ਼(ਪੂਰਨ sbus_fd, uint16_t *ਮੁੱਲਾਂ_2, uint16_t *ਅੰਕ_ਮੁੱਲਾਂ, ਤਾਰਕਿਕ *sbus_failsafe, ਤਾਰਕਿਕ *sbus_ਚੌਖਟਾ_drop,
 	   uint16_t max_channels)
 {
 	/*
 	 * Fetch bytes, but no more than we would need to complete
 	 * a complete frame.
 	 */
-	uint8_t buf[SBUS_FRAME_SIZE * 2];
+	uint8_t buf[SBUS_ਚੌਖਟਾ_ਮਾਪ * 2];
 
-	int ret = read(sbus_fd, &buf[0], SBUS_FRAME_SIZE);
+	ਪੂਰਨ ret = ਪਠ(sbus_fd, &buf[0], SBUS_ਚੌਖਟਾ_ਮਾਪ);
 
 	/* if the read failed for any reason, just give up here */
-	if (ret < 1) {
-		return false;
+	ਜੇ (ret < 1) {
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	const hrt_abstime now = hrt_absolute_time();
-#ifdef __PX4_NUTTX /* limit time-based hardening to RTOS's where we have reliable timing */
+	ਅਚਲ hrt_abstime now = hrt_absolute_ਸਮਾਂ();
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __PX4_NUTTX /* limit time-based hardening to RTOS's where we have reliable timing */
 
 	/*
 	 * The S.BUS protocol doesn't provide reliable framing,
@@ -305,128 +305,128 @@ sbus_input(int sbus_fd, uint16_t *values, uint16_t *num_values, bool *sbus_fails
 	 * provides a degree of protection. Of course, it would be better
 	 * if we didn't drop bytes...
 	 */
-	if (now - last_rx_time > 4_ms) {
-		if (partial_frame_count > 0) {
-			partial_frame_count = 0;
+	ਜੇ (now - ਆਖਰੀ_rx_ਸਮਾਂ > 4_ms) {
+		ਜੇ (partial_ਚੌਖਟਾ_ਗਿਣਤੀ > 0) {
+			partial_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
 			sbus_decode_state = SBUS2_DECODE_STATE_DESYNC;
-#if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
-			printf("SBUS: RESET (TIME LIM)\n");
-#endif
+#ਜੇ defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
+			ਲਿਖੋ("SBUS: RESET (TIME LIM)\n");
+#ਜੇ_ਅੰਤ
 		}
 	}
 
-#endif /* __PX4_NUTTX */
+#ਜੇ_ਅੰਤ /* __PX4_NUTTX */
 
 	/*
 	 * Try to decode something with what we got
 	 */
-	return sbus_parse(now, &buf[0], ret, values, num_values, sbus_failsafe,
-			  sbus_frame_drop, &sbus_frame_drops, max_channels);
+	ਵਾਪਸ sbus_parse(now, &buf[0], ret, ਮੁੱਲਾਂ_2, ਅੰਕ_ਮੁੱਲਾਂ, sbus_failsafe,
+			  sbus_ਚੌਖਟਾ_drop, &sbus_ਚੌਖਟਾ_drops, max_channels);
 }
 
-bool
-sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
-	   uint16_t *num_values, bool *sbus_failsafe, bool *sbus_frame_drop, unsigned *frame_drops, uint16_t max_channels)
+ਤਾਰਕਿਕ
+sbus_parse(uint64_t now, uint8_t *ਚੌਖਟਾ, ਬਿਨਾਨਿਸ਼ਾਨੀ len, uint16_t *ਮੁੱਲਾਂ_2,
+	   uint16_t *ਅੰਕ_ਮੁੱਲਾਂ, ਤਾਰਕਿਕ *sbus_failsafe, ਤਾਰਕਿਕ *sbus_ਚੌਖਟਾ_drop, ਬਿਨਾਨਿਸ਼ਾਨੀ *ਚੌਖਟਾ_drops, uint16_t max_channels)
 {
 
-	last_rx_time = now;
+	ਆਖਰੀ_rx_ਸਮਾਂ = now;
 
 	/* this is set by the decoding state machine and will default to false
 	 * once everything that was decodable has been decoded.
 	 */
-	bool decode_ret = false;
+	ਤਾਰਕਿਕ decode_ret = ਝੂਠ;
 
 	/* keep decoding until we have consumed the buffer */
-	for (unsigned d = 0; d < len; d++) {
+	ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ d = 0; d < len; d++) {
 
 		/* overflow check */
-		if (partial_frame_count == sizeof(sbus_frame) / sizeof(sbus_frame[0])) {
-			partial_frame_count = 0;
+		ਜੇ (partial_ਚੌਖਟਾ_ਗਿਣਤੀ == ਆਕਾਰ(sbus_ਚੌਖਟਾ) / ਆਕਾਰ(sbus_ਚੌਖਟਾ[0])) {
+			partial_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
 			sbus_decode_state = SBUS2_DECODE_STATE_DESYNC;
-#if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
-			printf("SBUS2: RESET (BUF LIM)\n");
-#endif
+#ਜੇ defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
+			ਲਿਖੋ("SBUS2: RESET (BUF LIM)\n");
+#ਜੇ_ਅੰਤ
 		}
 
-		if (partial_frame_count == SBUS_FRAME_SIZE) {
-			partial_frame_count = 0;
+		ਜੇ (partial_ਚੌਖਟਾ_ਗਿਣਤੀ == SBUS_ਚੌਖਟਾ_ਮਾਪ) {
+			partial_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
 			sbus_decode_state = SBUS2_DECODE_STATE_DESYNC;
-#if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
-			printf("SBUS2: RESET (PACKET LIM)\n");
-#endif
+#ਜੇ defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
+			ਲਿਖੋ("SBUS2: RESET (PACKET LIM)\n");
+#ਜੇ_ਅੰਤ
 		}
 
-#if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 1
-		printf("sbus state: %s%s%s%s%s%s, count: %d, val: %02x\n",
+#ਜੇ defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 1
+		ਲਿਖੋ("sbus state: %s%s%s%s%s%s, count: %d, val: %02x\n",
 		       (sbus_decode_state == SBUS2_DECODE_STATE_DESYNC) ? "SBUS2_DECODE_STATE_DESYNC" : "",
-		       (sbus_decode_state == SBUS2_DECODE_STATE_SBUS_START) ? "SBUS2_DECODE_STATE_SBUS_START" : "",
+		       (sbus_decode_state == SBUS2_DECODE_STATE_SBUS_ਸ਼ੁਰੂ) ? "SBUS2_DECODE_STATE_SBUS_START" : "",
 		       (sbus_decode_state == SBUS2_DECODE_STATE_SBUS1_SYNC) ? "SBUS2_DECODE_STATE_SBUS1_SYNC" : "",
 		       (sbus_decode_state == SBUS2_DECODE_STATE_SBUS2_SYNC) ? "SBUS2_DECODE_STATE_SBUS2_SYNC" : "",
 		       (sbus_decode_state == SBUS2_DECODE_STATE_SBUS2_RX_VOLTAGE) ? "SBUS2_DECODE_STATE_SBUS2_RX_VOLTAGE" : "",
 		       (sbus_decode_state == SBUS2_DECODE_STATE_SBUS2_GPS) ? "SBUS2_DECODE_STATE_SBUS2_GPS" : "",
-		       partial_frame_count,
-		       (unsigned)frame[d]);
-#endif
+		       partial_ਚੌਖਟਾ_ਗਿਣਤੀ,
+		       (ਬਿਨਾਨਿਸ਼ਾਨੀ)ਚੌਖਟਾ[d]);
+#ਜੇ_ਅੰਤ
 
-		switch (sbus_decode_state) {
-		case SBUS2_DECODE_STATE_DESYNC:
+		ਚੋਣ (sbus_decode_state) {
+		ਹਾਲਤ SBUS2_DECODE_STATE_DESYNC:
 
 		/* fall through */
-		case SBUS2_DECODE_STATE_SBUS_START:
+		ਹਾਲਤ SBUS2_DECODE_STATE_SBUS_ਸ਼ੁਰੂ:
 
 			/* we are de-synced and only interested in the frame marker */
-			if (frame[d] == SBUS_START_SYMBOL) {
+			ਜੇ (ਚੌਖਟਾ[d] == SBUS_ਸ਼ੁਰੂ_ਚਿੰਨ੍ਹ) {
 				sbus_decode_state = SBUS2_DECODE_STATE_SBUS2_SYNC;
-				partial_frame_count = 0;
-				sbus_frame[partial_frame_count++] = frame[d];
+				partial_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
+				sbus_ਚੌਖਟਾ[partial_ਚੌਖਟਾ_ਗਿਣਤੀ++] = ਚੌਖਟਾ[d];
 			}
 
-			break;
+			ਰੋਕੋ;
 
-		case SBUS2_DECODE_STATE_SBUS1_SYNC:
+		ਹਾਲਤ SBUS2_DECODE_STATE_SBUS1_SYNC:
 
 		/* fall through */
-		case SBUS2_DECODE_STATE_SBUS2_SYNC: {
-				sbus_frame[partial_frame_count++] = frame[d];
+		ਹਾਲਤ SBUS2_DECODE_STATE_SBUS2_SYNC: {
+				sbus_ਚੌਖਟਾ[partial_ਚੌਖਟਾ_ਗਿਣਤੀ++] = ਚੌਖਟਾ[d];
 
 				/* decode whatever we got and expect */
-				if (partial_frame_count < SBUS_FRAME_SIZE) {
-					break;
+				ਜੇ (partial_ਚੌਖਟਾ_ਗਿਣਤੀ < SBUS_ਚੌਖਟਾ_ਮਾਪ) {
+					ਰੋਕੋ;
 				}
 
 				/*
 				 * Great, it looks like we might have a frame. Go ahead and decode it.
 				 */
-				decode_ret = sbus_decode(now, sbus_frame, values, num_values, sbus_failsafe, sbus_frame_drop, max_channels);
+				decode_ret = sbus_decode(now, sbus_ਚੌਖਟਾ, ਮੁੱਲਾਂ_2, ਅੰਕ_ਮੁੱਲਾਂ, sbus_failsafe, sbus_ਚੌਖਟਾ_drop, max_channels);
 
 				/*
 				 * Offset recovery: If decoding failed, check if there is a second
 				 * start marker in the packet.
 				 */
-				unsigned start_index = 0;
+				ਬਿਨਾਨਿਸ਼ਾਨੀ ਸ਼ੁਰੂ_ਸੂਚਕਾਂਕ = 0;
 
-				if (!decode_ret && sbus_decode_state == SBUS2_DECODE_STATE_DESYNC) {
+				ਜੇ (!decode_ret && sbus_decode_state == SBUS2_DECODE_STATE_DESYNC) {
 
-					for (unsigned i = 1; i < partial_frame_count; i++) {
-						if (sbus_frame[i] == SBUS_START_SYMBOL) {
-							start_index = i;
-							break;
+					ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 1; i < partial_ਚੌਖਟਾ_ਗਿਣਤੀ; i++) {
+						ਜੇ (sbus_ਚੌਖਟਾ[i] == SBUS_ਸ਼ੁਰੂ_ਚਿੰਨ੍ਹ) {
+							ਸ਼ੁਰੂ_ਸੂਚਕਾਂਕ = i;
+							ਰੋਕੋ;
 						}
 					}
 
 					/* we found a second start marker */
-					if (start_index != 0) {
+					ਜੇ (ਸ਼ੁਰੂ_ਸੂਚਕਾਂਕ != 0) {
 						/* shift everything in the buffer and reset the state machine */
-						for (unsigned i = 0; i < partial_frame_count - start_index; i++) {
-							sbus_frame[i] = sbus_frame[i + start_index];
+						ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < partial_ਚੌਖਟਾ_ਗਿਣਤੀ - ਸ਼ੁਰੂ_ਸੂਚਕਾਂਕ; i++) {
+							sbus_ਚੌਖਟਾ[i] = sbus_ਚੌਖਟਾ[i + ਸ਼ੁਰੂ_ਸੂਚਕਾਂਕ];
 						}
 
-						partial_frame_count -= start_index;
-						sbus_decode_state = SBUS2_DECODE_STATE_SBUS_START;
+						partial_ਚੌਖਟਾ_ਗਿਣਤੀ -= ਸ਼ੁਰੂ_ਸੂਚਕਾਂਕ;
+						sbus_decode_state = SBUS2_DECODE_STATE_SBUS_ਸ਼ੁਰੂ;
 
-#if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
-						printf("DECODE RECOVERY: %d\n", start_index);
-#endif
+#ਜੇ defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
+						ਲਿਖੋ("DECODE RECOVERY: %d\n", ਸ਼ੁਰੂ_ਸੂਚਕਾਂਕ);
+#ਜੇ_ਅੰਤ
 					}
 				}
 
@@ -434,104 +434,104 @@ sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 				 * decoding run, reset the frame count for successful and
 				 * unsuccessful decode runs.
 				 */
-				if (start_index == 0) {
-					partial_frame_count = 0;
+				ਜੇ (ਸ਼ੁਰੂ_ਸੂਚਕਾਂਕ == 0) {
+					partial_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
 				}
 
-				if (decode_ret) {
-					sbus_decode_state = SBUS2_DECODE_STATE_SBUS_START;
+				ਜੇ (decode_ret) {
+					sbus_decode_state = SBUS2_DECODE_STATE_SBUS_ਸ਼ੁਰੂ;
 				}
 
 			}
-			break;
+			ਰੋਕੋ;
 
-		case SBUS2_DECODE_STATE_SBUS2_RX_VOLTAGE: {
-				sbus_frame[partial_frame_count++] = frame[d];
+		ਹਾਲਤ SBUS2_DECODE_STATE_SBUS2_RX_VOLTAGE: {
+				sbus_ਚੌਖਟਾ[partial_ਚੌਖਟਾ_ਗਿਣਤੀ++] = ਚੌਖਟਾ[d];
 
-				if (partial_frame_count == 1 && sbus_frame[0] == SBUS_START_SYMBOL) {
+				ਜੇ (partial_ਚੌਖਟਾ_ਗਿਣਤੀ == 1 && sbus_ਚੌਖਟਾ[0] == SBUS_ਸ਼ੁਰੂ_ਚਿੰਨ੍ਹ) {
 					/* this slot is unused and in fact S.BUS2 sync */
 					sbus_decode_state = SBUS2_DECODE_STATE_SBUS2_SYNC;
 				}
 
-				if (partial_frame_count < SBUS2_FRAME_SIZE_RX_VOLTAGE) {
-					break;
+				ਜੇ (partial_ਚੌਖਟਾ_ਗਿਣਤੀ < SBUS2_ਚੌਖਟਾ_ਮਾਪ_RX_VOLTAGE) {
+					ਰੋਕੋ;
 				}
 
 				/* find out which payload we're dealing with in this slot */
-				switch (sbus_frame[0]) {
-				case 0x03: {
+				ਚੋਣ (sbus_ਚੌਖਟਾ[0]) {
+				ਹਾਲਤ 0x03: {
 						// Observed values:
 						// (frame[0] == 0x3 && frame[1] == 0x84 && frame[2] == 0x0)
 						// (frame[0] == 0x3 && frame[1] == 0xc4 && frame[2] == 0x0)
 						// (frame[0] == 0x3 && frame[1] == 0x80 && frame[2] == 0x2f)
 						// (frame[0] == 0x3 && frame[1] == 0xc0 && frame[2] == 0x2f)
-#if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 2
-						uint16_t rx_voltage = (sbus_frame[1] << 8) | sbus_frame[2];
-						printf("rx_voltage %d\n", (int)rx_voltage);
-#endif
+#ਜੇ defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 2
+						uint16_t rx_voltage = (sbus_ਚੌਖਟਾ[1] << 8) | sbus_ਚੌਖਟਾ[2];
+						ਲਿਖੋ("rx_voltage %d\n", (ਪੂਰਨ)rx_voltage);
+#ਜੇ_ਅੰਤ
 					}
 
-					partial_frame_count = 0;
-					break;
+					partial_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
+					ਰੋਕੋ;
 
-				default:
+				ਮੂਲ:
 					/* this is not what we expect it to be, go back to sync */
 					sbus_decode_state = SBUS2_DECODE_STATE_DESYNC;
-					sbus_frame_drops++;
+					sbus_ਚੌਖਟਾ_drops++;
 				}
 
 			}
-			break;
+			ਰੋਕੋ;
 
-		case SBUS2_DECODE_STATE_SBUS2_GPS: {
-				sbus_frame[partial_frame_count++] = frame[d];
+		ਹਾਲਤ SBUS2_DECODE_STATE_SBUS2_GPS: {
+				sbus_ਚੌਖਟਾ[partial_ਚੌਖਟਾ_ਗਿਣਤੀ++] = ਚੌਖਟਾ[d];
 
-				if (partial_frame_count == 1 && sbus_frame[0] == SBUS_START_SYMBOL) {
+				ਜੇ (partial_ਚੌਖਟਾ_ਗਿਣਤੀ == 1 && sbus_ਚੌਖਟਾ[0] == SBUS_ਸ਼ੁਰੂ_ਚਿੰਨ੍ਹ) {
 					/* this slot is unused and in fact S.BUS2 sync */
 					sbus_decode_state = SBUS2_DECODE_STATE_SBUS2_SYNC;
 				}
 
-				if (partial_frame_count < 24) {
-					break;
+				ਜੇ (partial_ਚੌਖਟਾ_ਗਿਣਤੀ < 24) {
+					ਰੋਕੋ;
 				}
 
 				/* find out which payload we're dealing with in this slot */
-				switch (sbus_frame[0]) {
-				case 0x13: {
-#if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
-						uint16_t gps_something = (frame[1] << 8) | frame[2];
-						printf("gps_something %d\n", (int)gps_something);
-#endif
+				ਚੋਣ (sbus_ਚੌਖਟਾ[0]) {
+				ਹਾਲਤ 0x13: {
+#ਜੇ defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
+						uint16_t gps_something = (ਚੌਖਟਾ[1] << 8) | ਚੌਖਟਾ[2];
+						ਲਿਖੋ("gps_something %d\n", (ਪੂਰਨ)gps_something);
+#ਜੇ_ਅੰਤ
 					}
 
-					partial_frame_count = 0;
-					break;
+					partial_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
+					ਰੋਕੋ;
 
-				default:
+				ਮੂਲ:
 					/* this is not what we expect it to be, go back to sync */
 					sbus_decode_state = SBUS2_DECODE_STATE_DESYNC;
-					sbus_frame_drops++;
+					sbus_ਚੌਖਟਾ_drops++;
 					/* throw unknown bytes away */
 				}
 			}
-			break;
+			ਰੋਕੋ;
 
-		default:
-#if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
-			printf("UNKNOWN PROTO STATE");
-#endif
-			decode_ret = false;
+		ਮੂਲ:
+#ਜੇ defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
+			ਲਿਖੋ("UNKNOWN PROTO STATE");
+#ਜੇ_ਅੰਤ
+			decode_ret = ਝੂਠ;
 		}
 
 
 	}
 
-	if (frame_drops) {
-		*frame_drops = sbus_frame_drops;
+	ਜੇ (ਚੌਖਟਾ_drops) {
+		*ਚੌਖਟਾ_drops = sbus_ਚੌਖਟਾ_drops;
 	}
 
 	/* return false as default */
-	return decode_ret;
+	ਵਾਪਸ decode_ret;
 }
 
 /*
@@ -545,13 +545,13 @@ sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
  * - mask for the data byte
  * - left shift applied to the result into the channel value
  */
-struct sbus_bit_pick {
+ਬਣਤਰ sbus_ਦੋਆਧਾਰੀ_ਅੰਕ_pick {
 	uint8_t byte;
 	uint8_t rshift;
-	uint8_t mask;
+	uint8_t ਨਕਾਬ;
 	uint8_t lshift;
 };
-static const struct sbus_bit_pick sbus_decoder[SBUS_INPUT_CHANNELS][3] = {
+ਸਥਿਰ ਅਚਲ ਬਣਤਰ sbus_ਦੋਆਧਾਰੀ_ਅੰਕ_pick sbus_decoder[SBUS_ਨਿਵੇਸ਼_CHANNELS][3] = {
 	/*  0 */ { { 0, 0, 0xff, 0}, { 1, 0, 0x07, 8}, { 0, 0, 0x00,  0} },
 	/*  1 */ { { 1, 3, 0x1f, 0}, { 2, 0, 0x3f, 5}, { 0, 0, 0x00,  0} },
 	/*  2 */ { { 2, 6, 0x03, 0}, { 3, 0, 0xff, 2}, { 4, 0, 0x01, 10} },
@@ -570,77 +570,77 @@ static const struct sbus_bit_pick sbus_decoder[SBUS_INPUT_CHANNELS][3] = {
 	/* 15 */ { {20, 5, 0x07, 0}, {21, 0, 0xff, 3}, { 0, 0, 0x00,  0} }
 };
 
-bool
-sbus_decode(uint64_t frame_time, uint8_t *frame, uint16_t *values, uint16_t *num_values,
-	    bool *sbus_failsafe, bool *sbus_frame_drop, uint16_t max_values)
+ਤਾਰਕਿਕ
+sbus_decode(uint64_t ਚੌਖਟਾ_ਸਮਾਂ, uint8_t *ਚੌਖਟਾ, uint16_t *ਮੁੱਲਾਂ_2, uint16_t *ਅੰਕ_ਮੁੱਲਾਂ,
+	    ਤਾਰਕਿਕ *sbus_failsafe, ਤਾਰਕਿਕ *sbus_ਚੌਖਟਾ_drop, uint16_t max_ਮੁੱਲਾਂ)
 {
 
 	/* check frame boundary markers to avoid out-of-sync cases */
-	if (frame[0] != SBUS_START_SYMBOL) {
-		sbus_frame_drops++;
-#if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
-		printf("DECODE FAIL: ");
+	ਜੇ (ਚੌਖਟਾ[0] != SBUS_ਸ਼ੁਰੂ_ਚਿੰਨ੍ਹ) {
+		sbus_ਚੌਖਟਾ_drops++;
+#ਜੇ defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
+		ਲਿਖੋ("DECODE FAIL: ");
 
-		for (unsigned i = 0; i < SBUS_FRAME_SIZE; i++) {
-			printf("%0x ", frame[i]);
+		ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < SBUS_ਚੌਖਟਾ_ਮਾਪ; i++) {
+			ਲਿਖੋ("%0x ", ਚੌਖਟਾ[i]);
 		}
 
-		printf("\n");
-#endif
+		ਲਿਖੋ("\n");
+#ਜੇ_ਅੰਤ
 		sbus_decode_state = SBUS2_DECODE_STATE_DESYNC;
-		return false;
+		ਵਾਪਸ ਝੂਠ;
 	}
 
 	/* the last byte in the frame indicates what frame will follow after this one */
-	switch (frame[24]) {
-	case 0x00:
+	ਚੋਣ (ਚੌਖਟਾ[24]) {
+	ਹਾਲਤ 0x00:
 		/* this is S.BUS 1 */
 		sbus_decode_state = SBUS2_DECODE_STATE_SBUS1_SYNC;
-		break;
+		ਰੋਕੋ;
 
-	case 0x04:
+	ਹਾਲਤ 0x04:
 		/* receiver voltage */
 		sbus_decode_state = SBUS2_DECODE_STATE_SBUS2_RX_VOLTAGE;
-		break;
+		ਰੋਕੋ;
 
-	case 0x14:
+	ਹਾਲਤ 0x14:
 		/* GPS / baro */
 		sbus_decode_state = SBUS2_DECODE_STATE_SBUS2_GPS;
-		break;
+		ਰੋਕੋ;
 
-	case 0x24:
+	ਹਾਲਤ 0x24:
 		/* Unknown SBUS2 data */
 		sbus_decode_state = SBUS2_DECODE_STATE_SBUS2_SYNC;
-		break;
+		ਰੋਕੋ;
 
-	case 0x34:
+	ਹਾਲਤ 0x34:
 		/* Unknown SBUS2 data */
 		sbus_decode_state = SBUS2_DECODE_STATE_SBUS2_SYNC;
-		break;
+		ਰੋਕੋ;
 
-	default:
-#if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
-		printf("DECODE FAIL: END MARKER\n");
-#endif
+	ਮੂਲ:
+#ਜੇ defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
+		ਲਿਖੋ("DECODE FAIL: END MARKER\n");
+#ਜੇ_ਅੰਤ
 		sbus_decode_state = SBUS2_DECODE_STATE_DESYNC;
-		return false;
+		ਵਾਪਸ ਝੂਠ;
 	}
 
 	/* we have received something we think is a frame */
-	unsigned chancount = (max_values > SBUS_INPUT_CHANNELS) ?
-			     SBUS_INPUT_CHANNELS : max_values;
+	ਬਿਨਾਨਿਸ਼ਾਨੀ chancount = (max_ਮੁੱਲਾਂ > SBUS_ਨਿਵੇਸ਼_CHANNELS) ?
+			     SBUS_ਨਿਵੇਸ਼_CHANNELS : max_ਮੁੱਲਾਂ;
 
 	/* use the decoder matrix to extract channel data */
-	for (unsigned channel = 0; channel < chancount; channel++) {
-		unsigned value = 0;
+	ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ channel = 0; channel < chancount; channel++) {
+		ਬਿਨਾਨਿਸ਼ਾਨੀ value = 0;
 
-		for (unsigned pick = 0; pick < 3; pick++) {
-			const struct sbus_bit_pick *decode = &sbus_decoder[channel][pick];
+		ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ pick = 0; pick < 3; pick++) {
+			ਅਚਲ ਬਣਤਰ sbus_ਦੋਆਧਾਰੀ_ਅੰਕ_pick *decode = &sbus_decoder[channel][pick];
 
-			if (decode->mask != 0) {
-				unsigned piece = frame[1 + decode->byte];
+			ਜੇ (decode->ਨਕਾਬ != 0) {
+				ਬਿਨਾਨਿਸ਼ਾਨੀ piece = ਚੌਖਟਾ[1 + decode->byte];
 				piece >>= decode->rshift;
-				piece &= decode->mask;
+				piece &= decode->ਨਕਾਬ;
 				piece <<= decode->lshift;
 
 				value |= piece;
@@ -649,51 +649,51 @@ sbus_decode(uint64_t frame_time, uint8_t *frame, uint16_t *values, uint16_t *num
 
 
 		/* convert 0-2048 values to 1000-2000 ppm encoding in a not too sloppy fashion */
-		values[channel] = static_cast<uint16_t>(lround(value * SBUS_SCALE_FACTOR) + SBUS_SCALE_OFFSET);
+		ਮੁੱਲਾਂ_2[channel] = static_cast<uint16_t>(lround(value * SBUS_SCALE_ਗੁਣਕ) + SBUS_SCALE_ਵਿੱਥ);
 	}
 
 	/* decode switch channels if data fields are wide enough */
-	if (max_values > 17 && chancount > 15) {
+	ਜੇ (max_ਮੁੱਲਾਂ > 17 && chancount > 15) {
 		chancount = 18;
 
 		/* channel 17 (index 16) */
-		values[16] = ((frame[SBUS_FLAGS_BYTE] & (1 << 0)) ? 1000 : 0) + 998;
+		ਮੁੱਲਾਂ_2[16] = ((ਚੌਖਟਾ[SBUS_FLAGS_BYTE] & (1 << 0)) ? 1000 : 0) + 998;
 		/* channel 18 (index 17) */
-		values[17] = ((frame[SBUS_FLAGS_BYTE] & (1 << 1)) ? 1000 : 0) + 998;
+		ਮੁੱਲਾਂ_2[17] = ((ਚੌਖਟਾ[SBUS_FLAGS_BYTE] & (1 << 1)) ? 1000 : 0) + 998;
 	}
 
 	/* note the number of channels decoded */
-	*num_values = chancount;
+	*ਅੰਕ_ਮੁੱਲਾਂ = chancount;
 
 	/* decode and handle failsafe and frame-lost flags */
-	if (frame[SBUS_FLAGS_BYTE] & (1 << SBUS_FAILSAFE_BIT)) { /* failsafe */
+	ਜੇ (ਚੌਖਟਾ[SBUS_FLAGS_BYTE] & (1 << SBUS_FAILSAFE_ਦੋਆਧਾਰੀ_ਅੰਕ)) { /* failsafe */
 		/* report that we failed to read anything valid off the receiver */
-		*sbus_failsafe = true;
-		*sbus_frame_drop = true;
+		*sbus_failsafe = ਸੱਚ;
+		*sbus_ਚੌਖਟਾ_drop = ਸੱਚ;
 
-	} else if (frame[SBUS_FLAGS_BYTE] & (1 << SBUS_FRAMELOST_BIT)) { /* a frame was lost */
+	} ਨਹੀਂਤਾਂ ਜੇ (ਚੌਖਟਾ[SBUS_FLAGS_BYTE] & (1 << SBUS_FRAMELOST_ਦੋਆਧਾਰੀ_ਅੰਕ)) { /* a frame was lost */
 		/* set a special warning flag
 		 *
 		 * Attention! This flag indicates a skipped frame only, not a total link loss! Handling this
 		 * condition as fail-safe greatly reduces the reliability and range of the radio link,
 		 * e.g. by prematurely issuing return-to-launch!!! */
 
-		*sbus_failsafe = false;
-		*sbus_frame_drop = true;
+		*sbus_failsafe = ਝੂਠ;
+		*sbus_ਚੌਖਟਾ_drop = ਸੱਚ;
 
-	} else {
-		*sbus_failsafe = false;
-		*sbus_frame_drop = false;
+	} ਨਹੀਂਤਾਂ {
+		*sbus_failsafe = ਝੂਠ;
+		*sbus_ਚੌਖਟਾ_drop = ਝੂਠ;
 	}
 
-	return true;
+	ਵਾਪਸ ਸੱਚ;
 }
 
 /*
   set output rate of SBUS in Hz
  */
-void sbus1_set_output_rate_hz(uint16_t rate_hz)
+ਖਾਲੀ sbus1_ਸੈੱਟ_output_ਦਰ_hz(uint16_t ਦਰ_hz)
 {
-	sbus1_frame_delay = (1000U * 1000U) / math::constrain(rate_hz, (uint16_t)SBUS1_MIN_RATE_HZ,
-			    (uint16_t)SBUS1_MAX_RATE_HZ);
+	sbus1_ਚੌਖਟਾ_delay = (1000U * 1000U) / math::constrain(ਦਰ_hz, (uint16_t)SBUS1_MIN_ਦਰ_HZ,
+			    (uint16_t)SBUS1_MAX_ਦਰ_HZ);
 }

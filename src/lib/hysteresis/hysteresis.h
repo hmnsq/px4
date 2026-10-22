@@ -39,34 +39,34 @@
  * @author Julian Oes <julian@oes.ch>
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <drivers/drv_hrt.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/drv_hrt.h>
 
 namespace systemlib
 {
 
 class Hysteresis
 {
-public:
-	Hysteresis() = default;
+ਜਨਤਕ:
+	Hysteresis() = ਮੂਲ;
 	explicit Hysteresis(bool initial_state);
-	~Hysteresis() = default;
+	~Hysteresis() = ਮੂਲ;
 
-	bool get_state() const { return _state; }
+	bool get_state() ਅਚਲ { ਵਾਪਸ _state; }
 
-	void set_hysteresis_time_from(const bool from_state, const hrt_abstime new_hysteresis_time_us);
+	ਖਾਲੀ ਸੈੱਟ_hysteresis_ਸਮਾਂ_from(ਅਚਲ bool from_state, ਅਚਲ hrt_abstime new_hysteresis_ਸਮਾਂ_us);
 
-	void set_state_and_update(const bool new_state, const hrt_abstime &now_us);
+	ਖਾਲੀ ਸੈੱਟ_state_and_update(ਅਚਲ bool new_state, ਅਚਲ hrt_abstime &now_us);
 
-	void update(const hrt_abstime &now_us);
+	ਖਾਲੀ update(ਅਚਲ hrt_abstime &now_us);
 
-private:
+ਨਿਜੀ:
 
-	hrt_abstime _last_time_to_change_state = 0;
+	hrt_abstime ਆਖਰੀ_ਸਮਾਂ_ਮੰਜ਼ਿਲ_change_state = 0;
 
-	hrt_abstime _time_from_true_us = 0;
-	hrt_abstime _time_from_false_us = 0;
+	hrt_abstime ਸਮਾਂ_from_true_us = 0;
+	hrt_abstime ਸਮਾਂ_from_false_us = 0;
 
 	bool _state = false;
 	bool _requested_state = false;

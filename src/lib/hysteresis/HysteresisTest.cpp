@@ -36,169 +36,169 @@
  * Tests for system timing hysteresis.
  */
 
-#include <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
 
-#include "hysteresis.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "hysteresis.h"
 
 
-static constexpr hrt_abstime SOME_START_TIME = 1558359616134000llu;
+ਸਥਿਰ constexpr hrt_abstime SOME_ਸ਼ੁਰੂ_ਸਮਾਂ = 1558359616134000llu;
 
 
 TEST(Hysteresis, InitFalse)
 {
-	systemlib::Hysteresis hysteresis(false);
+	systemlib::Hysteresis hysteresis(ਝੂਠ);
 	EXPECT_FALSE(hysteresis.get_state());
 }
 
 TEST(Hysteresis, InitTrue)
 {
-	systemlib::Hysteresis hysteresis(true);
+	systemlib::Hysteresis hysteresis(ਸੱਚ);
 	EXPECT_TRUE(hysteresis.get_state());
 }
 
 TEST(Hysteresis, Zero)
 {
-	hrt_abstime time_us = SOME_START_TIME;
+	hrt_abstime ਸਮਾਂ_us = SOME_ਸ਼ੁਰੂ_ਸਮਾਂ;
 
 	// Default is 0 hysteresis.
-	systemlib::Hysteresis hysteresis(false);
+	systemlib::Hysteresis hysteresis(ਝੂਠ);
 	EXPECT_FALSE(hysteresis.get_state());
 
 	// Change and see result immediately.
-	hysteresis.set_state_and_update(true, time_us);
+	hysteresis.ਸੈੱਟ_state_and_update(ਸੱਚ, ਸਮਾਂ_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.ਸੈੱਟ_state_and_update(ਝੂਠ, ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	hysteresis.set_state_and_update(true, time_us);
+	hysteresis.ਸੈੱਟ_state_and_update(ਸੱਚ, ਸਮਾਂ_us);
 	EXPECT_TRUE(hysteresis.get_state());
 
-	time_us += 1000;
+	ਸਮਾਂ_us += 1000;
 	// A wait won't change anything.
-	hysteresis.update(time_us);
+	hysteresis.update(ਸਮਾਂ_us);
 	EXPECT_TRUE(hysteresis.get_state());
 }
 
-TEST(Hysteresis, ChangeAfterTime)
+TEST(Hysteresis, Change_After_ਸਮਾਂ)
 {
-	hrt_abstime time_us = SOME_START_TIME;
+	hrt_abstime ਸਮਾਂ_us = SOME_ਸ਼ੁਰੂ_ਸਮਾਂ;
 
-	systemlib::Hysteresis hysteresis(false);
-	hysteresis.set_hysteresis_time_from(false, 5000);
-	hysteresis.set_hysteresis_time_from(true, 3000);
+	systemlib::Hysteresis hysteresis(ਝੂਠ);
+	hysteresis.ਸੈੱਟ_hysteresis_ਸਮਾਂ_from(ਝੂਠ, 5000);
+	hysteresis.ਸੈੱਟ_hysteresis_ਸਮਾਂ_from(ਸੱਚ, 3000);
 
 	// Change to true.
-	hysteresis.set_state_and_update(true, time_us);
+	hysteresis.ਸੈੱਟ_state_and_update(ਸੱਚ, ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 4000;
-	hysteresis.update(time_us);
+	ਸਮਾਂ_us += 4000;
+	hysteresis.update(ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 2000;
-	hysteresis.update(time_us);
+	ਸਮਾਂ_us += 2000;
+	hysteresis.update(ਸਮਾਂ_us);
 	EXPECT_TRUE(hysteresis.get_state());
 
 	// Change back to false.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.ਸੈੱਟ_state_and_update(ਝੂਠ, ਸਮਾਂ_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	time_us += 1000;
-	hysteresis.update(time_us);
+	ਸਮਾਂ_us += 1000;
+	hysteresis.update(ਸਮਾਂ_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.update(time_us);
+	ਸਮਾਂ_us += 3000;
+	hysteresis.update(ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
 }
 
-TEST(Hysteresis, HysteresisChanged)
+TEST(Hysteresis, Hysteresis_ਬਦਲਿਆ)
 {
-	hrt_abstime time_us = SOME_START_TIME;
+	hrt_abstime ਸਮਾਂ_us = SOME_ਸ਼ੁਰੂ_ਸਮਾਂ;
 
-	systemlib::Hysteresis hysteresis(false);
-	hysteresis.set_hysteresis_time_from(true, 2000);
-	hysteresis.set_hysteresis_time_from(false, 5000);
+	systemlib::Hysteresis hysteresis(ਝੂਠ);
+	hysteresis.ਸੈੱਟ_hysteresis_ਸਮਾਂ_from(ਸੱਚ, 2000);
+	hysteresis.ਸੈੱਟ_hysteresis_ਸਮਾਂ_from(ਝੂਠ, 5000);
 
 	// Change to true.
-	hysteresis.set_state_and_update(true, time_us);
+	hysteresis.ਸੈੱਟ_state_and_update(ਸੱਚ, ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.update(time_us);
+	ਸਮਾਂ_us += 3000;
+	hysteresis.update(ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.update(time_us);
+	ਸਮਾਂ_us += 3000;
+	hysteresis.update(ਸਮਾਂ_us);
 	EXPECT_TRUE(hysteresis.get_state());
 
 	// Change hysteresis time.
-	hysteresis.set_hysteresis_time_from(true, 10000);
+	hysteresis.ਸੈੱਟ_hysteresis_ਸਮਾਂ_from(ਸੱਚ, 10000);
 
 	// Change back to false.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.ਸੈੱਟ_state_and_update(ਝੂਠ, ਸਮਾਂ_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	time_us += 7000;
-	hysteresis.update(time_us);
+	ਸਮਾਂ_us += 7000;
+	hysteresis.update(ਸਮਾਂ_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	time_us += 5000;
-	hysteresis.update(time_us);
+	ਸਮਾਂ_us += 5000;
+	hysteresis.update(ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
 }
 
-TEST(Hysteresis, ChangeAfterMultipleSets)
+TEST(Hysteresis, Change_After_ਗੁਣਜ_Sets)
 {
-	hrt_abstime time_us = SOME_START_TIME;
+	hrt_abstime ਸਮਾਂ_us = SOME_ਸ਼ੁਰੂ_ਸਮਾਂ;
 
-	systemlib::Hysteresis hysteresis(false);
-	hysteresis.set_hysteresis_time_from(true, 5000);
-	hysteresis.set_hysteresis_time_from(false, 5000);
+	systemlib::Hysteresis hysteresis(ਝੂਠ);
+	hysteresis.ਸੈੱਟ_hysteresis_ਸਮਾਂ_from(ਸੱਚ, 5000);
+	hysteresis.ਸੈੱਟ_hysteresis_ਸਮਾਂ_from(ਝੂਠ, 5000);
 
 	// Change to true.
-	hysteresis.set_state_and_update(true, time_us);
+	hysteresis.ਸੈੱਟ_state_and_update(ਸੱਚ, ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.set_state_and_update(true, time_us);
+	ਸਮਾਂ_us += 3000;
+	hysteresis.ਸੈੱਟ_state_and_update(ਸੱਚ, ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.set_state_and_update(true, time_us);
+	ਸਮਾਂ_us += 3000;
+	hysteresis.ਸੈੱਟ_state_and_update(ਸੱਚ, ਸਮਾਂ_us);
 	EXPECT_TRUE(hysteresis.get_state());
 
 	// Change to false.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.ਸੈੱਟ_state_and_update(ਝੂਠ, ਸਮਾਂ_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.set_state_and_update(false, time_us);
+	ਸਮਾਂ_us += 3000;
+	hysteresis.ਸੈੱਟ_state_and_update(ਝੂਠ, ਸਮਾਂ_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.set_state_and_update(false, time_us);
+	ਸਮਾਂ_us += 3000;
+	hysteresis.ਸੈੱਟ_state_and_update(ਝੂਠ, ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
 }
 
-TEST(Hysteresis, TakeChangeBack)
+TEST(Hysteresis, Take_Change_ਪਿੱਠ)
 {
-	hrt_abstime time_us = SOME_START_TIME;
+	hrt_abstime ਸਮਾਂ_us = SOME_ਸ਼ੁਰੂ_ਸਮਾਂ;
 
-	systemlib::Hysteresis hysteresis(false);
-	hysteresis.set_hysteresis_time_from(false, 5000);
+	systemlib::Hysteresis hysteresis(ਝੂਠ);
+	hysteresis.ਸੈੱਟ_hysteresis_ਸਮਾਂ_from(ਝੂਠ, 5000);
 
 	// Change to true.
-	hysteresis.set_state_and_update(true, time_us);
+	hysteresis.ਸੈੱਟ_state_and_update(ਸੱਚ, ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.update(time_us);
+	ਸਮਾਂ_us += 3000;
+	hysteresis.update(ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
 	// Change your mind to false.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.ਸੈੱਟ_state_and_update(ਝੂਠ, ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 6000;
-	hysteresis.update(time_us);
+	ਸਮਾਂ_us += 6000;
+	hysteresis.update(ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
 
 	// And true again
-	hysteresis.set_state_and_update(true, time_us);
+	hysteresis.ਸੈੱਟ_state_and_update(ਸੱਚ, ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.update(time_us);
+	ਸਮਾਂ_us += 3000;
+	hysteresis.update(ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
-	time_us += 3000;
-	hysteresis.update(time_us);
+	ਸਮਾਂ_us += 3000;
+	hysteresis.update(ਸਮਾਂ_us);
 	EXPECT_TRUE(hysteresis.get_state());
 
 	// The other directory is immediate.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.ਸੈੱਟ_state_and_update(ਝੂਠ, ਸਮਾਂ_us);
 	EXPECT_FALSE(hysteresis.get_state());
 }

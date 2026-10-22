@@ -31,42 +31,42 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/atomic_bitset.h>
-#include "atomic_transaction.h"
-#include "param.h"
-#include <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/atomic_bitset.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "atomic_transaction.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "param.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
 
 class ParamLayer
 {
-public:
-	static constexpr param_t PARAM_COUNT = sizeof(px4::parameters) / sizeof(param_info_s);
+ਜਨਤਕ:
+	ਸਥਿਰ constexpr param_t PARAM_ਗਿਣਤੀ = ਆਕਾਰ(px4::parameters) / ਆਕਾਰ(param_info_s);
 
-	ParamLayer(ParamLayer *parent = nullptr) : _parent(parent) {}
+	ParamLayer(ParamLayer *ਮਾਪਾ = nullptr) : ਮਾਪਾ_2(ਮਾਪਾ) {}
 
-	ParamLayer(const ParamLayer &) = delete;
-	ParamLayer &operator=(const ParamLayer &) = delete;
+	ParamLayer(ਅਚਲ ParamLayer &) = delete;
+	ParamLayer &ਸੰਚਾਲਕ=(ਅਚਲ ParamLayer &) = delete;
 	ParamLayer(ParamLayer &&) = delete;
-	ParamLayer &operator=(ParamLayer &&) = delete;
+	ParamLayer &ਸੰਚਾਲਕ=(ParamLayer &&) = delete;
 
 
-	virtual bool store(param_t param, param_value_u value) = 0;
+	ਆਭਾਸੀ bool store(param_t param, param_ਮੁੱਲ_u ਮੁੱਲ) = 0;
 
-	virtual bool contains(param_t param) const = 0;
+	ਆਭਾਸੀ bool ਸ਼ਾਮਲ_ਹੈ(param_t param) ਅਚਲ = 0;
 
-	virtual px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const = 0;
+	ਆਭਾਸੀ px4::AtomicBitset<PARAM_ਗਿਣਤੀ> containedAsBitset() ਅਚਲ = 0;
 
-	virtual param_value_u get(param_t param) const = 0;
+	ਆਭਾਸੀ param_ਮੁੱਲ_u get(param_t param) ਅਚਲ = 0;
 
-	virtual void reset(param_t param) = 0;
+	ਆਭਾਸੀ ਖਾਲੀ reset(param_t param) = 0;
 
-	virtual void refresh(param_t param) = 0;
+	ਆਭਾਸੀ ਖਾਲੀ refresh(param_t param) = 0;
 
-	virtual int size() const = 0;
+	ਆਭਾਸੀ ਪੂਰਨ ਮਾਪ() ਅਚਲ = 0;
 
-	virtual int byteSize() const = 0;
+	ਆਭਾਸੀ ਪੂਰਨ byte_ਮਾਪ() ਅਚਲ = 0;
 
-protected:
-	ParamLayer *const _parent;
+ਸੁਰੱਖਿਅਤ:
+	ParamLayer *ਅਚਲ ਮਾਪਾ_2;
 };

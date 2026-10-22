@@ -6,183 +6,183 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "Matrix.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Matrix.hpp"
 
-namespace matrix
+ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ
 {
 
-template<typename Type, size_t M>
-class Vector : public Matrix<Type, M, 1>
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type, size_t M>
+ਵਰਗ ਸਦਿਸ਼ : ਜਨਤਕ ਮੈਟ੍ਰਿਕਸ_2<Type, M, 1>
 {
-public:
-	using MatrixM1 = Matrix<Type, M, 1>;
+ਜਨਤਕ:
+	ਵਰਤੋਂ ਮੈਟ੍ਰਿਕਸ_M1 = ਮੈਟ੍ਰਿਕਸ_2<Type, M, 1>;
 
-	Vector() = default;
+	ਸਦਿਸ਼() = ਮੂਲ;
 
-	Vector(const MatrixM1 &other) :
-		MatrixM1(other)
+	ਸਦਿਸ਼(ਅਚਲ ਮੈਟ੍ਰਿਕਸ_M1 &other) :
+		ਮੈਟ੍ਰਿਕਸ_M1(other)
 	{
 	}
 
-	explicit Vector(const Type data_[M]) :
-		MatrixM1(data_)
+	ਸਪਸ਼ਟ ਸਦਿਸ਼(ਅਚਲ Type ਅੰਕੜੇ_2[M]) :
+		ਮੈਟ੍ਰਿਕਸ_M1(ਅੰਕੜੇ_2)
 	{
 	}
 
-	template<size_t P, size_t Q>
-	Vector(const Slice<Type, M, 1, P, Q> &slice_in) :
-		Matrix<Type, M, 1>(slice_in)
+	ਸਾਂਚਾ<size_t P, size_t Q>
+	ਸਦਿਸ਼(ਅਚਲ ਟੁਕੜਾ_2<Type, M, 1, P, Q> &ਟੁਕੜਾ_ਵਿੱਚ) :
+		ਮੈਟ੍ਰਿਕਸ_2<Type, M, 1>(ਟੁਕੜਾ_ਵਿੱਚ)
 	{
 	}
 
-	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const Slice<Type, 1, M, P, Q> &slice_in)
+	ਸਾਂਚਾ<size_t P, size_t Q, size_t DUMMY = 1>
+	ਸਦਿਸ਼(ਅਚਲ ਟੁਕੜਾ_2<Type, 1, M, P, Q> &ਟੁਕੜਾ_ਵਿੱਚ)
 	{
-		Vector &self(*this);
+		ਸਦਿਸ਼ &self(*ਇਹ);
 
-		for (size_t i = 0; i < M; i++) {
-			self(i) = slice_in(0, i);
+		ਲਈ (size_t i = 0; i < M; i++) {
+			self(i) = ਟੁਕੜਾ_ਵਿੱਚ(0, i);
 		}
 	}
 
-	template<size_t P, size_t Q>
-	Vector(const ConstSlice<Type, M, 1, P, Q> &slice_in) :
-		Matrix<Type, M, 1>(slice_in)
+	ਸਾਂਚਾ<size_t P, size_t Q>
+	ਸਦਿਸ਼(ਅਚਲ Const_ਟੁਕੜਾ<Type, M, 1, P, Q> &ਟੁਕੜਾ_ਵਿੱਚ) :
+		ਮੈਟ੍ਰਿਕਸ_2<Type, M, 1>(ਟੁਕੜਾ_ਵਿੱਚ)
 	{
 	}
 
-	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const ConstSlice<Type, 1, M, P, Q> &slice_in)
+	ਸਾਂਚਾ<size_t P, size_t Q, size_t DUMMY = 1>
+	ਸਦਿਸ਼(ਅਚਲ Const_ਟੁਕੜਾ<Type, 1, M, P, Q> &ਟੁਕੜਾ_ਵਿੱਚ)
 	{
-		Vector &self(*this);
+		ਸਦਿਸ਼ &self(*ਇਹ);
 
-		for (size_t i = 0; i < M; i++) {
-			self(i) = slice_in(0, i);
+		ਲਈ (size_t i = 0; i < M; i++) {
+			self(i) = ਟੁਕੜਾ_ਵਿੱਚ(0, i);
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	ਸਤਰਅੰਦਰ ਅਚਲ Type &ਸੰਚਾਲਕ()(size_t i) ਅਚਲ
 	{
-		assert(i < M);
+		ਪ੍ਰਤਿਜ੍ਞਾ(i < M);
 
-		const MatrixM1 &v = *this;
-		return v(i, 0);
+		ਅਚਲ ਮੈਟ੍ਰਿਕਸ_M1 &v = *ਇਹ;
+		ਵਾਪਸ v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	ਸਤਰਅੰਦਰ Type &ਸੰਚਾਲਕ()(size_t i)
 	{
-		assert(i < M);
+		ਪ੍ਰਤਿਜ੍ਞਾ(i < M);
 
-		MatrixM1 &v = *this;
-		return v(i, 0);
+		ਮੈਟ੍ਰਿਕਸ_M1 &v = *ਇਹ;
+		ਵਾਪਸ v(i, 0);
 	}
 
-	Type dot(const MatrixM1 &b) const
+	Type dot(ਅਚਲ ਮੈਟ੍ਰਿਕਸ_M1 &b) ਅਚਲ
 	{
-		const Vector &a(*this);
+		ਅਚਲ ਸਦਿਸ਼ &a(*ਇਹ);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		ਲਈ (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		ਵਾਪਸ r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	ਸਤਰਅੰਦਰ Type ਸੰਚਾਲਕ*(ਅਚਲ ਮੈਟ੍ਰਿਕਸ_M1 &b) ਅਚਲ
 	{
-		const Vector &a(*this);
-		return a.dot(b);
+		ਅਚਲ ਸਦਿਸ਼ &a(*ਇਹ);
+		ਵਾਪਸ a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	ਸਤਰਅੰਦਰ ਸਦਿਸ਼ ਸੰਚਾਲਕ*(Type b) ਅਚਲ
 	{
-		return Vector(MatrixM1::operator*(b));
+		ਵਾਪਸ ਸਦਿਸ਼(ਮੈਟ੍ਰਿਕਸ_M1::ਸੰਚਾਲਕ*(b));
 	}
 
-	Type norm() const
+	Type norm() ਅਚਲ
 	{
-		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		ਅਚਲ ਸਦਿਸ਼ &a(*ਇਹ);
+		ਵਾਪਸ Type(std::ਵਰਗਮੂਲ(a.dot(a)));
 	}
 
-	Type norm_squared() const
+	Type norm_squared() ਅਚਲ
 	{
-		const Vector &a(*this);
-		return a.dot(a);
+		ਅਚਲ ਸਦਿਸ਼ &a(*ਇਹ);
+		ਵਾਪਸ a.dot(a);
 	}
 
-	inline Type length() const
+	ਸਤਰਅੰਦਰ Type ਲੰਮਾਈ() ਅਚਲ
 	{
-		return norm();
+		ਵਾਪਸ norm();
 	}
 
-	inline void normalize()
+	ਸਤਰਅੰਦਰ ਖਾਲੀ normalize()
 	{
-		(*this) /= norm();
+		(*ਇਹ) /= norm();
 	}
 
-	Vector unit() const
+	ਸਦਿਸ਼ unit() ਅਚਲ
 	{
-		return (*this) / norm();
+		ਵਾਪਸ (*ਇਹ) / norm();
 	}
 
-	Vector unit_or_zero(const Type eps = Type(1e-5)) const
+	ਸਦਿਸ਼ unit_or_zero(ਅਚਲ Type eps = Type(1e-5)) ਅਚਲ
 	{
-		const Type n = norm();
+		ਅਚਲ Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		ਜੇ (n > eps) {
+			ਵਾਪਸ (*ਇਹ) / n;
 		}
 
-		return Vector();
+		ਵਾਪਸ ਸਦਿਸ਼();
 	}
 
-	inline Vector normalized() const
+	ਸਤਰਅੰਦਰ ਸਦਿਸ਼ normalized() ਅਚਲ
 	{
-		return unit();
+		ਵਾਪਸ unit();
 	}
 
-	bool longerThan(Type testVal) const
+	ਤਾਰਕਿਕ longerThan(Type testVal) ਅਚਲ
 	{
-		return norm_squared() > testVal * testVal;
+		ਵਾਪਸ norm_squared() > testVal * testVal;
 	}
 
-	Vector sqrt() const
+	ਸਦਿਸ਼ ਵਰਗਮੂਲ() ਅਚਲ
 	{
-		const Vector &a(*this);
-		Vector r;
+		ਅਚਲ ਸਦਿਸ਼ &a(*ਇਹ);
+		ਸਦਿਸ਼ r;
 
-		for (size_t i = 0; i < M; i++) {
-			r(i) = Type(std::sqrt(a(i)));
+		ਲਈ (size_t i = 0; i < M; i++) {
+			r(i) = Type(std::ਵਰਗਮੂਲ(a(i)));
 		}
 
-		return r;
+		ਵਾਪਸ r;
 	}
 
-	void print() const
+	ਖਾਲੀ print() ਅਚਲ
 	{
-		(*this).transpose().print();
+		(*ਇਹ).transpose().print();
 	}
 
-	static size_t size()
+	ਸਥਿਰ size_t ਮਾਪ()
 	{
-		return M;
+		ਵਾਪਸ M;
 	}
 };
 
-template<typename OStream, typename Type, size_t M>
-OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ OStream, ਕਿਸਮ_ਨਾਂ Type, size_t M>
+OStream &ਸੰਚਾਲਕ<<(OStream &os, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> &ਸਦਿਸ਼_2)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
-	vector.transpose().write_string(string, n);
+	ਅੱਖਰ string[n];
+	ਸਦਿਸ਼_2.transpose().write_string(string, n);
 	os << string;
-	return os;
+	ਵਾਪਸ os;
 }
 
 } // namespace matrix

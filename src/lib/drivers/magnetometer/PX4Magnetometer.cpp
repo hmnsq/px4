@@ -32,37 +32,37 @@
  ****************************************************************************/
 
 
-#include "PX4Magnetometer.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "PX4Magnetometer.hpp"
 
-#include <lib/drivers/device/Device.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/drivers/device/Device.hpp>
 
-PX4Magnetometer::PX4Magnetometer(uint32_t device_id, enum Rotation rotation) :
+PX4Magnetometer::PX4Magnetometer(uint32_t device_id, ਗਿਣਤੀ Rotation rotation) :
 	PX4Magnetometer(device_id, rotation, device::device_is_external(device_id))
 {
-	_external_forced = false;
+	_external_forced = ਝੂਠ;
 }
 
-PX4Magnetometer::PX4Magnetometer(uint32_t device_id, enum Rotation rotation, bool external) :
+PX4Magnetometer::PX4Magnetometer(uint32_t device_id, ਗਿਣਤੀ Rotation rotation, ਤਾਰਕਿਕ external) :
 	_device_id{device_id},
 	_rotation{rotation},
 	_is_external{external},
-	_external_forced{true}
+	_external_forced{ਸੱਚ}
 {
 }
 
-void PX4Magnetometer::set_device_id(uint32_t device_id)
+ਖਾਲੀ PX4Magnetometer::ਸੈੱਟ_device_id(uint32_t device_id)
 {
 	_device_id = device_id;
 
-	if (!_external_forced) {
+	ਜੇ (!_external_forced) {
 		_is_external = device::device_is_external(device_id);
 	}
 }
 
-void PX4Magnetometer::set_external(bool external)
+ਖਾਲੀ PX4Magnetometer::ਸੈੱਟ_external(ਤਾਰਕਿਕ external)
 {
 	_is_external = external;
-	_external_forced = true;
+	_external_forced = ਸੱਚ;
 }
 
 PX4Magnetometer::~PX4Magnetometer()
@@ -70,10 +70,10 @@ PX4Magnetometer::~PX4Magnetometer()
 	_sensor_pub.unadvertise();
 }
 
-void PX4Magnetometer::set_device_type(uint8_t devtype)
+ਖਾਲੀ PX4Magnetometer::ਸੈੱਟ_device_type(uint8_t devtype)
 {
 	// current DeviceStructure
-	union device::Device::DeviceId device_id;
+	ਸੰਘ device::Device::DeviceId device_id;
 	device_id.devid = _device_id;
 
 	// update to new device type
@@ -83,7 +83,7 @@ void PX4Magnetometer::set_device_type(uint8_t devtype)
 	_device_id = device_id.devid;
 }
 
-void PX4Magnetometer::update(const hrt_abstime &timestamp_sample, float x, float y, float z)
+ਖਾਲੀ PX4Magnetometer::update(ਅਚਲ hrt_abstime &timestamp_sample, ਦਸ਼ਮਲਵ x, ਦਸ਼ਮਲਵ y, ਦਸ਼ਮਲਵ z)
 {
 	sensor_mag_s report;
 	report.timestamp_sample = timestamp_sample;
@@ -91,7 +91,7 @@ void PX4Magnetometer::update(const hrt_abstime &timestamp_sample, float x, float
 	report.is_external = _is_external;
 	report.temperature = _temperature;
 	report.range = _range;
-	report.error_count = _error_count;
+	report.error_ਗਿਣਤੀ = error_ਗਿਣਤੀ_2;
 
 	// Apply rotation (before scaling)
 	rotate_3f(_rotation, x, y, z);
@@ -100,13 +100,13 @@ void PX4Magnetometer::update(const hrt_abstime &timestamp_sample, float x, float
 	report.y = y * _scale;
 	report.z = z * _scale;
 
-	report.timestamp = hrt_absolute_time();
+	report.timestamp = hrt_absolute_ਸਮਾਂ();
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_MAG,
+	ਜੇ (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_MAG,
 					_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		ਵਾਪਸ;
 	}
 
 	_sensor_pub.publish(report);

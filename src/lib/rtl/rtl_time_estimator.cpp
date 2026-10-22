@@ -38,50 +38,50 @@
  *
  */
 
-#include "rtl_time_estimator.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "rtl_time_estimator.h"
 
-#include <float.h>
-#include <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <float.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
 
-#include <px4_platform_common/defines.h>
-#include <drivers/drv_hrt.h>
-#include <uORB/topics/vehicle_status.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/drv_hrt.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/vehicle_status.h>
 
-RtlTimeEstimator::RtlTimeEstimator() : ModuleParams(nullptr)
+Rtl_ਸਮਾਂ_Estimator::Rtl_ਸਮਾਂ_Estimator() : ModuleParams(ਖਾਲੀ_ਸੂਚਕ)
 {
-	_param_mpc_z_v_auto_up = param_find("MPC_Z_V_AUTO_UP");
-	_param_mpc_z_v_auto_dn = param_find("MPC_Z_V_AUTO_DN");
-	_param_fw_climb_rate = param_find("FW_T_CLMB_R_SP");
-	_param_fw_sink_rate = param_find("FW_T_SINK_R_SP");
-	_param_fw_airspeed_trim = param_find("FW_AIRSPD_TRIM");
-	_param_fw_gnd_spd_min = param_find("FW_GND_SPD_MIN");
-	_param_mpc_xy_cruise = param_find("MPC_XY_CRUISE");
-	_param_rover_cruise_speed = param_find("RO_SPEED_LIM");
+	param_mpc_z_v_auto_ਉੱਪਰ = param_ਲੱਭੋ("MPC_Z_V_AUTO_UP");
+	_param_mpc_z_v_auto_dn = param_ਲੱਭੋ("MPC_Z_V_AUTO_DN");
+	param_fw_climb_ਦਰ = param_ਲੱਭੋ("FW_T_CLMB_R_SP");
+	param_fw_sink_ਦਰ = param_ਲੱਭੋ("FW_T_SINK_R_SP");
+	_param_fw_airspeed_trim = param_ਲੱਭੋ("FW_AIRSPD_TRIM");
+	_param_fw_gnd_spd_min = param_ਲੱਭੋ("FW_GND_SPD_MIN");
+	_param_mpc_xy_cruise = param_ਲੱਭੋ("MPC_XY_CRUISE");
+	param_rover_cruise_ਰਫਤਾਰ = param_ਲੱਭੋ("RO_SPEED_LIM");
 };
 
-rtl_time_estimate_s RtlTimeEstimator::getEstimate() const
+rtl_ਸਮਾਂ_estimate_s Rtl_ਸਮਾਂ_Estimator::getEstimate() ਅਚਲ
 {
-	rtl_time_estimate_s time_estimate{};
+	rtl_ਸਮਾਂ_estimate_s ਸਮਾਂ_estimate{};
 
-	if (_is_valid && PX4_ISFINITE(_time_estimate)) {
-		time_estimate.valid = true;
-		time_estimate.time_estimate = _time_estimate;
+	ਜੇ (_is_valid && PX4_ISFINITE(ਸਮਾਂ_estimate_2)) {
+		ਸਮਾਂ_estimate.valid = ਸੱਚ;
+		ਸਮਾਂ_estimate.ਸਮਾਂ_estimate = ਸਮਾਂ_estimate_2;
 		// Use actual time estimate to compute the safer time estimate with additional scale factor and a margin
-		time_estimate.safe_time_estimate = _param_rtl_time_factor.get() * _time_estimate + _param_rtl_time_margin.get();
+		ਸਮਾਂ_estimate.ਸੁਰੱਖਿਅਤ_ਸਮਾਂ_estimate = param_rtl_ਸਮਾਂ_ਗੁਣਕ.get() * ਸਮਾਂ_estimate_2 + param_rtl_ਸਮਾਂ_margin.get();
 
-	} else {
-		time_estimate.valid = false;
+	} ਨਹੀਂਤਾਂ {
+		ਸਮਾਂ_estimate.valid = ਝੂਠ;
 	}
 
-	time_estimate.timestamp = hrt_absolute_time();
-	return time_estimate;
+	ਸਮਾਂ_estimate.timestamp = hrt_absolute_ਸਮਾਂ();
+	ਵਾਪਸ ਸਮਾਂ_estimate;
 }
 
-void RtlTimeEstimator::update()
+ਖਾਲੀ Rtl_ਸਮਾਂ_Estimator::update()
 {
 	_wind_sub.update();
 
-	if (_parameter_update_sub.updated()) {
+	ਜੇ (_parameter_update_sub.updated()) {
 		parameter_update_s param_update;
 		_parameter_update_sub.copy(&param_update);
 
@@ -91,56 +91,56 @@ void RtlTimeEstimator::update()
 	}
 }
 
-void RtlTimeEstimator::addVertDistance(float alt)
+ਖਾਲੀ Rtl_ਸਮਾਂ_Estimator::ਜੋੜੋ_Vert_ਦੂਰੀ(ਦਸ਼ਮਲਵ alt)
 {
-	if (PX4_ISFINITE(alt)) {
-		_is_valid = true;
+	ਜੇ (PX4_ISFINITE(alt)) {
+		_is_valid = ਸੱਚ;
 
-		_time_estimate += calcVertTimeEstimate(alt);
+		ਸਮਾਂ_estimate_2 += calc_Vert_ਸਮਾਂ_Estimate(alt);
 	}
 }
 
-void RtlTimeEstimator::addDistance(float hor_dist, const matrix::Vector2f &direction, float vert_dist)
+ਖਾਲੀ Rtl_ਸਮਾਂ_Estimator::ਜੋੜੋ_ਦੂਰੀ(ਦਸ਼ਮਲਵ hor_dist, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &direction, ਦਸ਼ਮਲਵ vert_dist)
 {
-	if (PX4_ISFINITE(hor_dist) && PX4_ISFINITE(vert_dist)) {
-		_is_valid = true;
+	ਜੇ (PX4_ISFINITE(hor_dist) && PX4_ISFINITE(vert_dist)) {
+		_is_valid = ਸੱਚ;
 
-		float hor_time_estimate{0.f};
+		ਦਸ਼ਮਲਵ hor_ਸਮਾਂ_estimate{0.f};
 
-		if (hor_dist > FLT_EPSILON && PX4_ISFINITE(hor_dist)) {
-			hor_time_estimate = hor_dist / getCruiseGroundSpeed(direction.normalized());
+		ਜੇ (hor_dist > FLT_EPSILON && PX4_ISFINITE(hor_dist)) {
+			hor_ਸਮਾਂ_estimate = hor_dist / get_Cruise_Ground_ਰਫਤਾਰ(direction.normalized());
 		}
 
-		float ver_time_estimate{calcVertTimeEstimate(vert_dist)};
+		ਦਸ਼ਮਲਵ ver_ਸਮਾਂ_estimate{calc_Vert_ਸਮਾਂ_Estimate(vert_dist)};
 
-		_time_estimate += math::max(hor_time_estimate, ver_time_estimate);
+		ਸਮਾਂ_estimate_2 += math::max(hor_ਸਮਾਂ_estimate, ver_ਸਮਾਂ_estimate);
 
 	}
 }
 
-void RtlTimeEstimator::addWait(float time_s)
+ਖਾਲੀ Rtl_ਸਮਾਂ_Estimator::ਜੋੜੋ_Wait(ਦਸ਼ਮਲਵ ਸਮਾਂ_s)
 {
-	if (PX4_ISFINITE(time_s)) {
-		_is_valid = true;
+	ਜੇ (PX4_ISFINITE(ਸਮਾਂ_s)) {
+		_is_valid = ਸੱਚ;
 
-		if (time_s > FLT_EPSILON) {
-			_time_estimate += time_s;
+		ਜੇ (ਸਮਾਂ_s > FLT_EPSILON) {
+			ਸਮਾਂ_estimate_2 += ਸਮਾਂ_s;
 		}
 	}
 }
 
-float RtlTimeEstimator::getCruiseGroundSpeed(const matrix::Vector2f &direction_norm)
+ਦਸ਼ਮਲਵ Rtl_ਸਮਾਂ_Estimator::get_Cruise_Ground_ਰਫਤਾਰ(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &direction_norm)
 {
-	float cruise_speed = getCruiseSpeed();
+	ਦਸ਼ਮਲਵ cruise_ਰਫਤਾਰ_2 = get_Cruise_ਰਫਤਾਰ();
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		matrix::Vector2f wind = get_wind();
+	ਜੇ (_vehicle_type == vehicle_ਸਥਿਤੀ_s::VEHICLE_TYPE_FIXED_WING) {
+		ਮੈਟ੍ਰਿਕਸ::Vector2f wind = get_wind();
 
-		const float wind_along_dir = wind.dot(direction_norm);
-		const float wind_across_dir = matrix::Vector2f(wind - direction_norm * wind_along_dir).norm();
+		ਅਚਲ ਦਸ਼ਮਲਵ wind_along_dir = wind.dot(direction_norm);
+		ਅਚਲ ਦਸ਼ਮਲਵ wind_across_dir = ਮੈਟ੍ਰਿਕਸ::Vector2f(wind - direction_norm * wind_along_dir).norm();
 
 		// Note: use fminf so that we don't _rely_ on tailwind towards direction to make Return more efficient
-		const float ground_speed = sqrtf(cruise_speed * cruise_speed - wind_across_dir * wind_across_dir) + fminf(
+		ਅਚਲ ਦਸ਼ਮਲਵ ground_ਰਫਤਾਰ = sqrtf(cruise_ਰਫਤਾਰ_2 * cruise_ਰਫਤਾਰ_2 - wind_across_dir * wind_across_dir) + fminf(
 						   0.f, wind_along_dir);
 
 		// Assume that minimum ground speed is always satisfied. If
@@ -148,108 +148,108 @@ float RtlTimeEstimator::getCruiseGroundSpeed(const matrix::Vector2f &direction_n
 		// the assumption always holds. Otherwise it breaks down when
 		// flying upwind, and the return time estimate is optimistic.
 
-		float fw_gnd_spd_min = 5.0f;
+		ਦਸ਼ਮਲਵ fw_gnd_spd_min = 5.0f;
 
-		if (_param_fw_gnd_spd_min != PARAM_INVALID) {
+		ਜੇ (_param_fw_gnd_spd_min != PARAM_INVALID) {
 			param_get(_param_fw_gnd_spd_min, &fw_gnd_spd_min);
 		}
 
-		cruise_speed = fmaxf(ground_speed, fw_gnd_spd_min);
+		cruise_ਰਫਤਾਰ_2 = fmaxf(ground_ਰਫਤਾਰ, fw_gnd_spd_min);
 	}
 
-	return cruise_speed;
+	ਵਾਪਸ cruise_ਰਫਤਾਰ_2;
 }
 
-float RtlTimeEstimator::calcVertTimeEstimate(float alt)
+ਦਸ਼ਮਲਵ Rtl_ਸਮਾਂ_Estimator::calc_Vert_ਸਮਾਂ_Estimate(ਦਸ਼ਮਲਵ alt)
 {
-	float vertical_rate{0.1f};
-	float time_estimate{0.f};
+	ਦਸ਼ਮਲਵ vertical_ਦਰ{0.1f};
+	ਦਸ਼ਮਲਵ ਸਮਾਂ_estimate{0.f};
 
-	if (alt > FLT_EPSILON) {
-		vertical_rate = getClimbRate();
+	ਜੇ (alt > FLT_EPSILON) {
+		vertical_ਦਰ = get_Climb_ਦਰ();
 
-	} else {
-		vertical_rate = getDescendRate();
+	} ਨਹੀਂਤਾਂ {
+		vertical_ਦਰ = get_Descend_ਦਰ();
 	}
 
-	float abs_alt = fabsf(alt);
+	ਦਸ਼ਮਲਵ abs_alt = fabsf(alt);
 
-	if (abs_alt > FLT_EPSILON) {
-		time_estimate = abs_alt / vertical_rate;
+	ਜੇ (abs_alt > FLT_EPSILON) {
+		ਸਮਾਂ_estimate = abs_alt / vertical_ਦਰ;
 	}
 
-	return time_estimate;
+	ਵਾਪਸ ਸਮਾਂ_estimate;
 }
 
-float RtlTimeEstimator::getCruiseSpeed()
+ਦਸ਼ਮਲਵ Rtl_ਸਮਾਂ_Estimator::get_Cruise_ਰਫਤਾਰ()
 {
-	float ret = 1e6f;
+	ਦਸ਼ਮਲਵ ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_xy_cruise == PARAM_INVALID || param_get(_param_mpc_xy_cruise, &ret) != PX4_OK) {
+	ਜੇ (_vehicle_type == vehicle_ਸਥਿਤੀ_s::VEHICLE_TYPE_ROTARY_WING) {
+		ਜੇ (_param_mpc_xy_cruise == PARAM_INVALID || param_get(_param_mpc_xy_cruise, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		if (_param_fw_airspeed_trim == PARAM_INVALID || param_get(_param_fw_airspeed_trim, &ret) != PX4_OK) {
+	} ਨਹੀਂਤਾਂ ਜੇ (_vehicle_type == vehicle_ਸਥਿਤੀ_s::VEHICLE_TYPE_FIXED_WING) {
+		ਜੇ (_param_fw_airspeed_trim == PARAM_INVALID || param_get(_param_fw_airspeed_trim, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROVER) {
-		if (_param_rover_cruise_speed == PARAM_INVALID || param_get(_param_rover_cruise_speed, &ret) != PX4_OK) {
+	} ਨਹੀਂਤਾਂ ਜੇ (_vehicle_type == vehicle_ਸਥਿਤੀ_s::VEHICLE_TYPE_ROVER) {
+		ਜੇ (param_rover_cruise_ਰਫਤਾਰ == PARAM_INVALID || param_get(param_rover_cruise_ਰਫਤਾਰ, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	ਵਾਪਸ ret;
 }
 
-matrix::Vector2f RtlTimeEstimator::get_wind()
+ਮੈਟ੍ਰਿਕਸ::Vector2f Rtl_ਸਮਾਂ_Estimator::get_wind()
 {
 	_wind_sub.update();
-	matrix::Vector2f wind{};
+	ਮੈਟ੍ਰਿਕਸ::Vector2f wind{};
 
-	if (hrt_absolute_time() - _wind_sub.get().timestamp < 1_s) {
+	ਜੇ (hrt_absolute_ਸਮਾਂ() - _wind_sub.get().timestamp < 1_s) {
 		wind(0) = _wind_sub.get().windspeed_north;
 		wind(1) = _wind_sub.get().windspeed_east;
 	}
 
-	return wind;
+	ਵਾਪਸ wind;
 }
 
-float RtlTimeEstimator::getClimbRate()
+ਦਸ਼ਮਲਵ Rtl_ਸਮਾਂ_Estimator::get_Climb_ਦਰ()
 {
-	float ret = 1e6f;
+	ਦਸ਼ਮਲਵ ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_z_v_auto_up == PARAM_INVALID || param_get(_param_mpc_z_v_auto_up, &ret) != PX4_OK) {
+	ਜੇ (_vehicle_type == vehicle_ਸਥਿਤੀ_s::VEHICLE_TYPE_ROTARY_WING) {
+		ਜੇ (param_mpc_z_v_auto_ਉੱਪਰ == PARAM_INVALID || param_get(param_mpc_z_v_auto_ਉੱਪਰ, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+	} ਨਹੀਂਤਾਂ ਜੇ (_vehicle_type == vehicle_ਸਥਿਤੀ_s::VEHICLE_TYPE_FIXED_WING) {
 
-		if (_param_fw_climb_rate == PARAM_INVALID || param_get(_param_fw_climb_rate, &ret) != PX4_OK) {
+		ਜੇ (param_fw_climb_ਦਰ == PARAM_INVALID || param_get(param_fw_climb_ਦਰ, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	ਵਾਪਸ ret;
 }
 
-float RtlTimeEstimator::getDescendRate()
+ਦਸ਼ਮਲਵ Rtl_ਸਮਾਂ_Estimator::get_Descend_ਦਰ()
 {
-	float ret = 1e6f;
+	ਦਸ਼ਮਲਵ ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_z_v_auto_dn == PARAM_INVALID || param_get(_param_mpc_z_v_auto_dn, &ret) != PX4_OK) {
+	ਜੇ (_vehicle_type == vehicle_ਸਥਿਤੀ_s::VEHICLE_TYPE_ROTARY_WING) {
+		ਜੇ (_param_mpc_z_v_auto_dn == PARAM_INVALID || param_get(_param_mpc_z_v_auto_dn, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		if (_param_fw_sink_rate == PARAM_INVALID || param_get(_param_fw_sink_rate, &ret) != PX4_OK) {
+	} ਨਹੀਂਤਾਂ ਜੇ (_vehicle_type == vehicle_ਸਥਿਤੀ_s::VEHICLE_TYPE_FIXED_WING) {
+		ਜੇ (param_fw_sink_ਦਰ == PARAM_INVALID || param_get(param_fw_sink_ਦਰ, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	ਵਾਪਸ ret;
 }

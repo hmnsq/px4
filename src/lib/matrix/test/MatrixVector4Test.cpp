@@ -31,12 +31,12 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
 
-using namespace matrix;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ;
 
-TEST(MatrixVector4Test, Vector4)
+TEST(ਮੈਟ੍ਰਿਕਸ_Vector4_Test, Vector4)
 {
 	Vector4f a(1.f, 2.f, 3.f, 4.f);
 	EXPECT_EQ(a(0), 1.f);

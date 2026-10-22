@@ -56,22 +56,22 @@
  *     https://tstastny.github.io/pdf/tstastny_phd_thesis_wcover.pdf
  */
 
-#ifndef PX4_AIRSPEEDDIRECTIONONTROLLER_HPP
-#define PX4_AIRSPEEDDIRECTIONONTROLLER_HPP
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ PX4_AIRSPEEDDIRECTIONONTROLLER_HPP
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PX4_AIRSPEEDDIRECTIONONTROLLER_HPP
 
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/mathlib/mathlib.h>
 
-class AirspeedDirectionController
+ਵਰਗ AirspeedDirectionController
 {
-public:
+ਜਨਤਕ:
 	AirspeedDirectionController();
 
-	void setPGainFromPeriodAndDamping(float damping, float period) {p_gain_ = 4.f * M_PI_F * damping / math::max(period, FLT_EPSILON);}
-	float controlHeading(const float heading_sp, const float heading, const float airspeed) const;
+	ਖਾਲੀ ਸੈੱਟ_PGain_From_Period_And_Damping(ਦਸ਼ਮਲਵ damping, ਦਸ਼ਮਲਵ period) {p_gain_ = 4.f * M_PI_F * damping / math::max(period, FLT_EPSILON);}
+	ਦਸ਼ਮਲਵ controlHeading(ਅਚਲ ਦਸ਼ਮਲਵ heading_sp, ਅਚਲ ਦਸ਼ਮਲਵ heading, ਅਚਲ ਦਸ਼ਮਲਵ airspeed) ਅਚਲ;
 
-private:
-	float p_gain_{0.8885f}; // proportional gain (computed from period_ and damping_) [rad/s]
+ਨਿਜੀ:
+	ਦਸ਼ਮਲਵ p_gain_{0.8885f}; // proportional gain (computed from period_ and damping_) [rad/s]
 };
 
-#endif //PX4_AIRSPEEDDIRECTIONONTROLLER_HPP
+#ਜੇ_ਅੰਤ //PX4_AIRSPEEDDIRECTIONONTROLLER_HPP

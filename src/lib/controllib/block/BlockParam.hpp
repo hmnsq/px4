@@ -37,75 +37,75 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <containers/List.hpp>
-#include <px4_platform_common/defines.h>
-#include <parameters/param.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <containers/List.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <parameters/param.h>
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
-class Block;
+ਵਰਗ ਖੰਡ;
 
 // A base class for block params that enables traversing linked list.
-class BlockParamBase : public ListNode<BlockParamBase *>
+ਵਰਗ ਖੰਡ_Param_ਅਧਾਰ : ਜਨਤਕ List_ਗੰਢ<ਖੰਡ_Param_ਅਧਾਰ *>
 {
-public:
+ਜਨਤਕ:
 	/**
 	 * Instantiate a block param base.
 	 *
 	 * @param parent_prefix Set to true to include the parent name in the parameter name
 	 */
-	BlockParamBase(Block *parent, const char *name, bool parent_prefix = true);
-	virtual ~BlockParamBase() = default;
+	ਖੰਡ_Param_ਅਧਾਰ(ਖੰਡ *ਮਾਪਾ, ਅਚਲ ਅੱਖਰ *name, ਤਾਰਕਿਕ ਮਾਪਾ_ਅਗੇਤਰ = ਸੱਚ);
+	ਆਭਾਸੀ ~ਖੰਡ_Param_ਅਧਾਰ() = ਮੂਲ;
 
-	virtual bool update() = 0;
-	const char *getName() const { return param_name(_handle); }
+	ਆਭਾਸੀ ਤਾਰਕਿਕ update() = 0;
+	ਅਚਲ ਅੱਖਰ *getName() ਅਚਲ { ਵਾਪਸ param_name(_handle); }
 
-protected:
+ਸੁਰੱਖਿਅਤ:
 	param_t _handle{PARAM_INVALID};
 };
 
 // Parameters that are tied to blocks for updating and naming.
-template <class T>
-class __EXPORT BlockParam final : public BlockParamBase
+ਸਾਂਚਾ <ਵਰਗ T>
+ਵਰਗ __EXPORT ਖੰਡ_Param final : ਜਨਤਕ ਖੰਡ_Param_ਅਧਾਰ
 {
-public:
-	BlockParam(Block *block, const char *name, bool parent_prefix = true);
-	BlockParam(Block *block, const char *name, bool parent_prefix, T &extern_val);
+ਜਨਤਕ:
+	ਖੰਡ_Param(ਖੰਡ *ਖੰਡ_2, ਅਚਲ ਅੱਖਰ *name, ਤਾਰਕਿਕ ਮਾਪਾ_ਅਗੇਤਰ = ਸੱਚ);
+	ਖੰਡ_Param(ਖੰਡ *ਖੰਡ_2, ਅਚਲ ਅੱਖਰ *name, ਤਾਰਕਿਕ ਮਾਪਾ_ਅਗੇਤਰ, T &extern_val);
 
-	~BlockParam() override = default;
+	~ਖੰਡ_Param() override = ਮੂਲ;
 
 	// no copy, assignment, move, move assignment
-	BlockParam(const BlockParam &) = delete;
-	BlockParam &operator=(const BlockParam &) = delete;
-	BlockParam(BlockParam &&) = delete;
-	BlockParam &operator=(BlockParam &&) = delete;
+	ਖੰਡ_Param(ਅਚਲ ਖੰਡ_Param &) = ਮਿਟਾਓ;
+	ਖੰਡ_Param &ਸੰਚਾਲਕ=(ਅਚਲ ਖੰਡ_Param &) = ਮਿਟਾਓ;
+	ਖੰਡ_Param(ਖੰਡ_Param &&) = ਮਿਟਾਓ;
+	ਖੰਡ_Param &ਸੰਚਾਲਕ=(ਖੰਡ_Param &&) = ਮਿਟਾਓ;
 
-	T get() const { return _val; }
+	T get() ਅਚਲ { ਵਾਪਸ _val; }
 
 	// Store the parameter value to the parameter storage (@see param_set())
-	bool commit() { return (param_set(_handle, &_val) == PX4_OK); }
+	ਤਾਰਕਿਕ commit() { ਵਾਪਸ (param_ਸੈੱਟ(_handle, &_val) == PX4_OK); }
 
 	// Store the parameter value to the parameter storage, w/o notifying the system (@see param_set_no_notification())
-	bool commit_no_notification() { return (param_set_no_notification(_handle, &_val) == PX4_OK); }
+	ਤਾਰਕਿਕ commit_no_notification() { ਵਾਪਸ (param_ਸੈੱਟ_no_notification(_handle, &_val) == PX4_OK); }
 
-	void set(T val) { _val = val; }
+	ਖਾਲੀ ਸੈੱਟ(T val) { _val = val; }
 
-	bool update() override { return (param_get(_handle, &_val) == PX4_OK); }
+	ਤਾਰਕਿਕ update() override { ਵਾਪਸ (param_get(_handle, &_val) == PX4_OK); }
 
-protected:
+ਸੁਰੱਖਿਅਤ:
 	T _val;
 };
 
-template <>
-bool BlockParam<bool>::update();
+ਸਾਂਚਾ <>
+ਤਾਰਕਿਕ ਖੰਡ_Param<ਤਾਰਕਿਕ>::update();
 
-typedef BlockParam<float> BlockParamFloat;
-typedef BlockParam<int32_t> BlockParamInt;
-typedef BlockParam<bool> BlockParamBool;
-typedef BlockParam<float &> BlockParamExtFloat;
-typedef BlockParam<int32_t &> BlockParamExtInt;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਖੰਡ_Param<ਦਸ਼ਮਲਵ> ਖੰਡ_Param_Float;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਖੰਡ_Param<int32_t> ਖੰਡ_Param_Int;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਖੰਡ_Param<ਤਾਰਕਿਕ> ਖੰਡ_Param_Bool;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਖੰਡ_Param<ਦਸ਼ਮਲਵ &> ਖੰਡ_Param_Ext_Float;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਖੰਡ_Param<int32_t &> ਖੰਡ_Param_Ext_Int;
 
 } // namespace control

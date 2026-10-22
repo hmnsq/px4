@@ -31,284 +31,284 @@
  *
  ****************************************************************************/
 
-#include "parameters_primary.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "parameters_primary.h"
 
-#include "uORB/uORBManager.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "uORB/uORBManager.hpp"
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/tasks.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/log.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/tasks.h>
 
 // uORB topics needed to keep parameter server and client in sync
-#include <uORB/topics/parameter_reset_request.h>
-#include <uORB/topics/parameter_set_used_request.h>
-#include <uORB/topics/parameter_set_value_request.h>
-#include <uORB/topics/parameter_set_value_response.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/parameter_reset_request.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/parameter_set_used_request.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/parameter_set_value_request.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/parameter_set_value_response.h>
 
 // Debug flag
-static bool debug = false;
+ਸਥਿਰ ਤਾਰਕਿਕ debug = ਝੂਠ;
 
-static struct param_primary_counters param_primary_counters;
+ਸਥਿਰ ਬਣਤਰ param_primary_counters param_primary_counters;
 
-#define TIMEOUT_WAIT 1000
-#define TIMEOUT_COUNT 50
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ TIMEOUT_WAIT 1000
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ TIMEOUT_ਗਿਣਤੀ 50
 
-static px4_task_t sync_thread_tid;
-static const char *sync_thread_name = "param_primary_sync";
+ਸਥਿਰ px4_task_t sync_thread_tid;
+ਸਥਿਰ ਅਚਲ ਅੱਖਰ *sync_thread_name = "param_primary_sync";
 
-static orb_advert_t param_set_value_req_h = nullptr;
-static orb_advert_t param_reset_req_h     = nullptr;
+ਸਥਿਰ orb_advert_t param_ਸੈੱਟ_ਮੁੱਲ_req_h = ਖਾਲੀ_ਸੂਚਕ;
+ਸਥਿਰ orb_advert_t param_reset_req_h     = ਖਾਲੀ_ਸੂਚਕ;
 
-static orb_sub_t param_set_rsp_fd = ORB_SUB_INVALID;
+ਸਥਿਰ orb_sub_t param_ਸੈੱਟ_rsp_fd = ORB_SUB_INVALID;
 
-static int primary_sync_thread(int argc, char *argv[])
+ਸਥਿਰ ਪੂਰਨ primary_sync_thread(ਪੂਰਨ argc, ਅੱਖਰ *argv[])
 {
 	// Need to wait until the uORB and muORB are ready
 	// Check for uORB initialization with get_instance
-	while (uORB::Manager::get_instance() == nullptr) { px4_usleep(100); }
+	ਜਦੋਂ (uORB::Manager::get_instance() == ਖਾਲੀ_ਸੂਚਕ) { px4_usleep(100); }
 
 	// Check for muORB initialization with get_uorb_communicator
-	while (uORB::Manager::get_instance()->get_uorb_communicator() == nullptr) { px4_usleep(100); }
+	ਜਦੋਂ (uORB::Manager::get_instance()->get_uorb_communicator() == ਖਾਲੀ_ਸੂਚਕ) { px4_usleep(100); }
 
-	orb_advert_t _set_value_rsp_h = nullptr;
+	orb_advert_t ਸੈੱਟ_ਮੁੱਲ_rsp_h = ਖਾਲੀ_ਸੂਚਕ;
 
-	orb_sub_t _set_used_req_fd  = orb_subscribe(ORB_ID(parameter_set_used_request));
-	orb_sub_t _set_value_req_fd = orb_subscribe(ORB_ID(parameter_primary_set_value_request));
+	orb_sub_t ਸੈੱਟ_ਵਰਤਿਆ_req_fd  = orb_subscribe(ORB_ID(parameter_ਸੈੱਟ_ਵਰਤਿਆ_request));
+	orb_sub_t ਸੈੱਟ_ਮੁੱਲ_req_fd = orb_subscribe(ORB_ID(parameter_primary_ਸੈੱਟ_ਮੁੱਲ_request));
 
-	struct parameter_set_used_request_s   _set_used_request;
-	struct parameter_set_value_request_s  _set_value_request;
-	struct parameter_set_value_response_s _set_value_response;
+	ਬਣਤਰ parameter_ਸੈੱਟ_ਵਰਤਿਆ_request_s   ਸੈੱਟ_ਵਰਤਿਆ_request;
+	ਬਣਤਰ parameter_ਸੈੱਟ_ਮੁੱਲ_request_s  ਸੈੱਟ_ਮੁੱਲ_request;
+	ਬਣਤਰ parameter_ਸੈੱਟ_ਮੁੱਲ_response_s ਸੈੱਟ_ਮੁੱਲ_response;
 
-	px4_pollfd_struct_t fds[2] = { { .fd = _set_used_req_fd,  .events = POLLIN },
-		{ .fd = _set_value_req_fd, .events = POLLIN }
+	px4_pollfd_struct_t fds[2] = { { .fd = ਸੈੱਟ_ਵਰਤਿਆ_req_fd,  .events = POLLIN },
+		{ .fd = ਸੈੱਟ_ਮੁੱਲ_req_fd, .events = POLLIN }
 	};
 
 	PX4_INFO("Starting parameter primary sync thread");
 
-	while (true) {
+	ਜਦੋਂ (ਸੱਚ) {
 		px4_poll(fds, 2, 1000);
 
-		if (fds[0].revents & POLLIN) {
-			bool updated = true;
+		ਜੇ (fds[0].revents & POLLIN) {
+			ਤਾਰਕਿਕ updated = ਸੱਚ;
 
-			while (updated) {
-				orb_copy(ORB_ID(parameter_set_used_request), _set_used_req_fd, &_set_used_request);
+			ਜਦੋਂ (updated) {
+				orb_copy(ORB_ID(parameter_ਸੈੱਟ_ਵਰਤਿਆ_request), ਸੈੱਟ_ਵਰਤਿਆ_req_fd, &ਸੈੱਟ_ਵਰਤਿਆ_request);
 
-				if (debug) {
-					PX4_INFO("Got parameter_set_used_request for %s", param_name(_set_used_request.parameter_index));
+				ਜੇ (debug) {
+					PX4_INFO("Got parameter_set_used_request for %s", param_name(ਸੈੱਟ_ਵਰਤਿਆ_request.parameter_ਸੂਚਕਾਂਕ));
 				}
 
-				param_primary_counters.set_used_received++;
+				param_primary_counters.ਸੈੱਟ_ਵਰਤਿਆ_received++;
 
-				param_find(param_name(_set_used_request.parameter_index));
+				param_ਲੱਭੋ(param_name(ਸੈੱਟ_ਵਰਤਿਆ_request.parameter_ਸੂਚਕਾਂਕ));
 
-				(void) orb_check(_set_used_req_fd, &updated);
+				(ਖਾਲੀ) orb_check(ਸੈੱਟ_ਵਰਤਿਆ_req_fd, &updated);
 			}
 
 		}
 
-		if (fds[1].revents & POLLIN) {
-			bool updated = true;
+		ਜੇ (fds[1].revents & POLLIN) {
+			ਤਾਰਕਿਕ updated = ਸੱਚ;
 
-			while (updated) {
-				orb_copy(ORB_ID(parameter_primary_set_value_request), _set_value_req_fd, &_set_value_request);
+			ਜਦੋਂ (updated) {
+				orb_copy(ORB_ID(parameter_primary_ਸੈੱਟ_ਮੁੱਲ_request), ਸੈੱਟ_ਮੁੱਲ_req_fd, &ਸੈੱਟ_ਮੁੱਲ_request);
 
-				if (debug) {
-					PX4_INFO("Got parameter_primary_set_value_request for %s", param_name(_set_value_request.parameter_index));
+				ਜੇ (debug) {
+					PX4_INFO("Got parameter_primary_set_value_request for %s", param_name(ਸੈੱਟ_ਮੁੱਲ_request.parameter_ਸੂਚਕਾਂਕ));
 				}
 
-				param_primary_counters.set_value_request_received++;
+				param_primary_counters.ਸੈੱਟ_ਮੁੱਲ_request_received++;
 
-				param_t param = _set_value_request.parameter_index;
+				param_t param = ਸੈੱਟ_ਮੁੱਲ_request.parameter_ਸੂਚਕਾਂਕ;
 
-				switch (param_type(param)) {
-				case PARAM_TYPE_INT32:
-					param_set_no_remote_update(param, (const void *) &_set_value_request.int_value, true);
-					break;
+				ਚੋਣ (param_type(param)) {
+				ਹਾਲਤ PARAM_TYPE_INT32:
+					param_ਸੈੱਟ_no_remote_update(param, (ਅਚਲ ਖਾਲੀ *) &ਸੈੱਟ_ਮੁੱਲ_request.int_ਮੁੱਲ, ਸੱਚ);
+					ਰੋਕੋ;
 
-				case PARAM_TYPE_FLOAT:
-					param_set_no_remote_update(param, (const void *) &_set_value_request.float_value, true);
-					break;
+				ਹਾਲਤ PARAM_TYPE_FLOAT:
+					param_ਸੈੱਟ_no_remote_update(param, (ਅਚਲ ਖਾਲੀ *) &ਸੈੱਟ_ਮੁੱਲ_request.float_ਮੁੱਲ, ਸੱਚ);
+					ਰੋਕੋ;
 
-				default:
+				ਮੂਲ:
 					PX4_ERR("Parameter must be either int or float");
-					break;
+					ਰੋਕੋ;
 				}
 
-				_set_value_response.timestamp = hrt_absolute_time();
-				_set_value_response.request_timestamp = _set_value_request.timestamp;
-				_set_value_response.parameter_index = _set_value_request.parameter_index;
+				ਸੈੱਟ_ਮੁੱਲ_response.timestamp = hrt_absolute_ਸਮਾਂ();
+				ਸੈੱਟ_ਮੁੱਲ_response.request_timestamp = ਸੈੱਟ_ਮੁੱਲ_request.timestamp;
+				ਸੈੱਟ_ਮੁੱਲ_response.parameter_ਸੂਚਕਾਂਕ = ਸੈੱਟ_ਮੁੱਲ_request.parameter_ਸੂਚਕਾਂਕ;
 
-				if (_set_value_rsp_h == nullptr) {
-					_set_value_rsp_h = orb_advertise(ORB_ID(parameter_primary_set_value_response), &_set_value_response);
+				ਜੇ (ਸੈੱਟ_ਮੁੱਲ_rsp_h == ਖਾਲੀ_ਸੂਚਕ) {
+					ਸੈੱਟ_ਮੁੱਲ_rsp_h = orb_advertise(ORB_ID(parameter_primary_ਸੈੱਟ_ਮੁੱਲ_response), &ਸੈੱਟ_ਮੁੱਲ_response);
 
-				} else {
-					orb_publish(ORB_ID(parameter_primary_set_value_response), _set_value_rsp_h, &_set_value_response);
+				} ਨਹੀਂਤਾਂ {
+					orb_publish(ORB_ID(parameter_primary_ਸੈੱਟ_ਮੁੱਲ_response), ਸੈੱਟ_ਮੁੱਲ_rsp_h, &ਸੈੱਟ_ਮੁੱਲ_response);
 				}
 
-				param_primary_counters.set_value_response_sent++;
+				param_primary_counters.ਸੈੱਟ_ਮੁੱਲ_response_ਭੇਜਿਆ++;
 
-				(void) orb_check(_set_value_req_fd, &updated);
+				(ਖਾਲੀ) orb_check(ਸੈੱਟ_ਮੁੱਲ_req_fd, &updated);
 			}
 		}
 	}
 
-	return 0;
+	ਵਾਪਸ 0;
 }
 
-void param_primary_init()
+ਖਾਲੀ param_primary_init()
 {
 
 	sync_thread_tid = px4_task_spawn_cmd(sync_thread_name,
 					     SCHED_DEFAULT,
-					     SCHED_PRIORITY_PARAMS,
+					     SCHED_ਤਰਜੀਹ_PARAMS,
 					     (1024 * 4),
 					     primary_sync_thread,
-					     NULL);
+					     ਨਿਰਾ);
 
 }
 
 // void param_primary_set_value(param_t param, const void *val, bool from_file)
-void param_primary_set_value(param_t param, const void *val)
+ਖਾਲੀ param_primary_ਸੈੱਟ_ਮੁੱਲ(param_t param, ਅਚਲ ਖਾਲੀ *val)
 {
-	bool send_request = true;
-	struct parameter_set_value_request_s req;
-	req.timestamp = hrt_absolute_time();
-	req.parameter_index = param;
+	ਤਾਰਕਿਕ send_request = ਸੱਚ;
+	ਬਣਤਰ parameter_ਸੈੱਟ_ਮੁੱਲ_request_s req;
+	req.timestamp = hrt_absolute_ਸਮਾਂ();
+	req.parameter_ਸੂਚਕਾਂਕ = param;
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
-		req.int_value = *(int32_t *)val;
+	ਚੋਣ (param_type(param)) {
+	ਹਾਲਤ PARAM_TYPE_INT32:
+		req.int_ਮੁੱਲ = *(int32_t *)val;
 
-		if (debug) {
-			PX4_INFO("*** Setting %s to %d ***", param_name(req.parameter_index), req.int_value);
+		ਜੇ (debug) {
+			PX4_INFO("*** Setting %s to %d ***", param_name(req.parameter_ਸੂਚਕਾਂਕ), req.int_ਮੁੱਲ);
 		}
 
-		break;
+		ਰੋਕੋ;
 
-	case PARAM_TYPE_FLOAT:
-		req.float_value = *(float *)val;
+	ਹਾਲਤ PARAM_TYPE_FLOAT:
+		req.float_ਮੁੱਲ = *(ਦਸ਼ਮਲਵ *)val;
 
-		if (debug) {
-			PX4_INFO("*** Setting %s to %f ***", param_name(req.parameter_index), (double) req.float_value);
+		ਜੇ (debug) {
+			PX4_INFO("*** Setting %s to %f ***", param_name(req.parameter_ਸੂਚਕਾਂਕ), (ਦੁੱਗਣਾ) req.float_ਮੁੱਲ);
 		}
 
-		break;
+		ਰੋਕੋ;
 
-	default:
+	ਮੂਲ:
 		PX4_ERR("Parameter must be either int or float");
-		send_request = false;
-		break;
+		send_request = ਝੂਠ;
+		ਰੋਕੋ;
 	}
 
-	if (!orb_sub_valid(param_set_rsp_fd)) {
-		if (debug) {
+	ਜੇ (!orb_sub_valid(param_ਸੈੱਟ_rsp_fd)) {
+		ਜੇ (debug) {
 			PX4_INFO("Subscribing to parameter_client_set_value_response");
 		}
 
-		param_set_rsp_fd = orb_subscribe(ORB_ID(parameter_remote_set_value_response));
+		param_ਸੈੱਟ_rsp_fd = orb_subscribe(ORB_ID(parameter_remote_ਸੈੱਟ_ਮੁੱਲ_response));
 
-		if (!orb_sub_valid(param_set_rsp_fd)) {
+		ਜੇ (!orb_sub_valid(param_ਸੈੱਟ_rsp_fd)) {
 			PX4_ERR("Subscription to parameter_remote_set_value_response failed");
 
-		} else {
-			if (debug) {
+		} ਨਹੀਂਤਾਂ {
+			ਜੇ (debug) {
 				PX4_INFO("Subscription to parameter_client_set_value_response succeeded");
 			}
 		}
 	}
 
-	if (send_request) {
-		if (debug) {
-			PX4_INFO("Sending param set request to remote for %s", param_name(req.parameter_index));
+	ਜੇ (send_request) {
+		ਜੇ (debug) {
+			PX4_INFO("Sending param set request to remote for %s", param_name(req.parameter_ਸੂਚਕਾਂਕ));
 		}
 
-		if (param_set_value_req_h == nullptr) {
-			param_set_value_req_h = orb_advertise(ORB_ID(parameter_remote_set_value_request), nullptr);
+		ਜੇ (param_ਸੈੱਟ_ਮੁੱਲ_req_h == ਖਾਲੀ_ਸੂਚਕ) {
+			param_ਸੈੱਟ_ਮੁੱਲ_req_h = orb_advertise(ORB_ID(parameter_remote_ਸੈੱਟ_ਮੁੱਲ_request), ਖਾਲੀ_ਸੂਚਕ);
 		}
 
-		orb_publish(ORB_ID(parameter_remote_set_value_request), param_set_value_req_h, &req);
+		orb_publish(ORB_ID(parameter_remote_ਸੈੱਟ_ਮੁੱਲ_request), param_ਸੈੱਟ_ਮੁੱਲ_req_h, &req);
 
-		param_primary_counters.set_value_request_sent++;
+		param_primary_counters.ਸੈੱਟ_ਮੁੱਲ_request_ਭੇਜਿਆ++;
 
 		// Wait for response
-		bool updated = false;
+		ਤਾਰਕਿਕ updated = ਝੂਠ;
 
-		if (debug) {
-			PX4_INFO("Waiting for parameter_client_set_value_response for %s", param_name(req.parameter_index));
+		ਜੇ (debug) {
+			PX4_INFO("Waiting for parameter_client_set_value_response for %s", param_name(req.parameter_ਸੂਚਕਾਂਕ));
 		}
 
 		px4_usleep(TIMEOUT_WAIT);
-		int count = TIMEOUT_COUNT;
+		ਪੂਰਨ ਗਿਣਤੀ_2 = TIMEOUT_ਗਿਣਤੀ;
 
-		while (--count) {
-			(void) orb_check(param_set_rsp_fd, &updated);
+		ਜਦੋਂ (--ਗਿਣਤੀ_2) {
+			(ਖਾਲੀ) orb_check(param_ਸੈੱਟ_rsp_fd, &updated);
 
-			struct parameter_set_value_response_s rsp;
+			ਬਣਤਰ parameter_ਸੈੱਟ_ਮੁੱਲ_response_s rsp;
 
-			while (updated) {
+			ਜਦੋਂ (updated) {
 
-				orb_copy(ORB_ID(parameter_remote_set_value_response), param_set_rsp_fd, &rsp);
+				orb_copy(ORB_ID(parameter_remote_ਸੈੱਟ_ਮੁੱਲ_response), param_ਸੈੱਟ_rsp_fd, &rsp);
 
-				if ((rsp.request_timestamp == req.timestamp) && (rsp.parameter_index == req.parameter_index)) {
-					if (debug) {
-						PX4_INFO("Got parameter_remote_set_value_response for %s", param_name(req.parameter_index));
+				ਜੇ ((rsp.request_timestamp == req.timestamp) && (rsp.parameter_ਸੂਚਕਾਂਕ == req.parameter_ਸੂਚਕਾਂਕ)) {
+					ਜੇ (debug) {
+						PX4_INFO("Got parameter_remote_set_value_response for %s", param_name(req.parameter_ਸੂਚਕਾਂਕ));
 					}
 
-					param_primary_counters.set_value_response_received++;
-					return;
+					param_primary_counters.ਸੈੱਟ_ਮੁੱਲ_response_received++;
+					ਵਾਪਸ;
 				}
 
-				(void) orb_check(param_set_rsp_fd, &updated);
+				(ਖਾਲੀ) orb_check(param_ਸੈੱਟ_rsp_fd, &updated);
 			}
 
 			px4_usleep(TIMEOUT_WAIT);
 		}
 
-		PX4_ERR("Timeout waiting for parameter_client_set_value_response for %s", param_name(req.parameter_index));
+		PX4_ERR("Timeout waiting for parameter_client_set_value_response for %s", param_name(req.parameter_ਸੂਚਕਾਂਕ));
 	}
 }
 
-static void param_primary_reset_internal(param_t param, bool reset_all)
+ਸਥਿਰ ਖਾਲੀ param_primary_reset_ਅੰਦਰੂਨੀ(param_t param, ਤਾਰਕਿਕ reset_all)
 {
-	if (debug) {
+	ਜੇ (debug) {
 		PX4_INFO("Param reset at primary");
 	}
 
-	struct parameter_reset_request_s req;
+	ਬਣਤਰ parameter_reset_request_s req;
 
-	req.timestamp = hrt_absolute_time();
+	req.timestamp = hrt_absolute_ਸਮਾਂ();
 
 	req.reset_all = reset_all;
 
-	if (reset_all == false) {
-		req.parameter_index = param;
+	ਜੇ (reset_all == ਝੂਠ) {
+		req.parameter_ਸੂਚਕਾਂਕ = param;
 	}
 
-	if (debug) {
+	ਜੇ (debug) {
 		PX4_INFO("Sending param reset request to remote");
 	}
 
-	if (param_reset_req_h == nullptr) {
+	ਜੇ (param_reset_req_h == ਖਾਲੀ_ਸੂਚਕ) {
 		param_reset_req_h = orb_advertise(ORB_ID(parameter_reset_request), &req);
 
-	} else {
+	} ਨਹੀਂਤਾਂ {
 		orb_publish(ORB_ID(parameter_reset_request), param_reset_req_h, &req);
 	}
 
-	param_primary_counters.reset_sent++;
+	param_primary_counters.reset_ਭੇਜਿਆ++;
 }
 
-void param_primary_reset(param_t param)
+ਖਾਲੀ param_primary_reset(param_t param)
 {
-	param_primary_reset_internal(param, false);
+	param_primary_reset_ਅੰਦਰੂਨੀ(param, ਝੂਠ);
 }
 
-void param_primary_reset_all()
+ਖਾਲੀ param_primary_reset_all()
 {
-	param_primary_reset_internal(0, true);
+	param_primary_reset_ਅੰਦਰੂਨੀ(0, ਸੱਚ);
 }
 
-void param_primary_get_counters(struct param_primary_counters *cnt)
+ਖਾਲੀ param_primary_get_counters(ਬਣਤਰ param_primary_counters *cnt)
 {
 	*cnt = param_primary_counters;
 }

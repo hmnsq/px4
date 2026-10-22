@@ -37,26 +37,26 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <float.h>
 
-#include "blocks.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "blocks.hpp"
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
-float BlockLowPass2::update(float input)
+ਦਸ਼ਮਲਵ ਖੰਡ_ਨੀਵਾਂ_Pass2::update(ਦਸ਼ਮਲਵ ਨਿਵੇਸ਼)
 {
-	if (!PX4_ISFINITE(getState())) {
-		setState(input);
+	ਜੇ (!PX4_ISFINITE(getState())) {
+		ਸੈੱਟ_State(ਨਿਵੇਸ਼);
 	}
 
-	if (fabsf(_lp.get_cutoff_freq() - getFCutParam()) > FLT_EPSILON) {
-		_lp.set_cutoff_frequency(_fs, getFCutParam());
+	ਜੇ (fabsf(_lp.get_cutoff_freq() - getFCutParam()) > FLT_EPSILON) {
+		_lp.ਸੈੱਟ_cutoff_frequency(_fs, getFCutParam());
 	}
 
-	_state = _lp.apply(input);
-	return _state;
+	_state = _lp.apply(ਨਿਵੇਸ਼);
+	ਵਾਪਸ _state;
 }
 
 } // namespace control

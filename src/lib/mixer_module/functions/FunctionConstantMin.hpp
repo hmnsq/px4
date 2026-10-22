@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "FunctionProviderBase.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "FunctionProviderBase.hpp"
 
 /**
  * Functions: Constant_Min
  */
-class FunctionConstantMin : public FunctionProviderBase
+ਵਰਗ FunctionConstantMin : ਜਨਤਕ Function_Provider_ਅਧਾਰ
 {
-public:
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionConstantMin(); }
+ਜਨਤਕ:
+	ਸਥਿਰ Function_Provider_ਅਧਾਰ *allocate(ਅਚਲ Context &context) { ਵਾਪਸ ਨਵਾਂ FunctionConstantMin(); }
 
-	float value(OutputFunction func) override { return -1.f; }
-	void update() override { }
+	ਦਸ਼ਮਲਵ value(OutputFunction func) override { ਵਾਪਸ -1.f; }
+	ਖਾਲੀ update() override { }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return -1.f; }
+	ਦਸ਼ਮਲਵ default_Failsafe_ਮੁੱਲ(OutputFunction func) ਅਚਲ override { ਵਾਪਸ -1.f; }
 };

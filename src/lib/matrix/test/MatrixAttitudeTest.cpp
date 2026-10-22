@@ -31,29 +31,29 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
 
-using namespace matrix;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ;
 
-TEST(MatrixAttitudeTest, Attitude)
+TEST(ਮੈਟ੍ਰਿਕਸ_Attitude_Test, Attitude)
 {
 	// check data
 	Eulerf euler_check(0.1f, 0.2f, 0.3f);
 	Quatf q_check(0.98334744f, 0.0342708f, 0.10602051f, .14357218f);
-	float dcm_data[] =  {
+	ਦਸ਼ਮਲਵ dcm_ਅੰਕੜੇ[] =  {
 		0.93629336f, -0.27509585f,  0.21835066f,
 		0.28962948f,  0.95642509f, -0.03695701f,
 		-0.19866933f,  0.0978434f,  0.97517033f
 	};
-	Dcmf dcm_check(dcm_data);
+	Dcmf dcm_check(dcm_ਅੰਕੜੇ);
 
 	// euler ctor
 	EXPECT_EQ(euler_check, Vector3f(0.1f, 0.2f, 0.3f));
 
 	// euler default ctor
 	Eulerf e;
-	Eulerf e_zero = zeros<float, 3, 1>();
+	Eulerf e_zero = zeros<ਦਸ਼ਮਲਵ, 3, 1>();
 	EXPECT_EQ(e, e_zero);
 	EXPECT_EQ(e, e);
 
@@ -73,27 +73,27 @@ TEST(MatrixAttitudeTest, Attitude)
 	// quaternion ctor: vector to vector
 	// identity test
 	Quatf quat_v(v, v);
-	EXPECT_EQ(quat_v.rotateVector(v), v);
+	EXPECT_EQ(quat_v.rotate_ਸਦਿਸ਼(v), v);
 	// random test (vector norm can not be preserved with a pure rotation)
 	Vector3f v1(-80.1f, 1.5f, -6.89f);
 	quat_v = Quatf(v1, v);
-	EXPECT_EQ(quat_v.rotateVector(v1).normalized() * v.norm(), v);
+	EXPECT_EQ(quat_v.rotate_ਸਦਿਸ਼(v1).normalized() * v.norm(), v);
 	// special 180 degree case 1
 	v1 = Vector3f(0.f, 1.f, 1.f);
 	quat_v = Quatf(v1, -v1);
-	EXPECT_EQ(quat_v.rotateVector(v1), -v1);
+	EXPECT_EQ(quat_v.rotate_ਸਦਿਸ਼(v1), -v1);
 	// special 180 degree case 2
 	v1 = Vector3f(1.f, 2.f, 0.f);
 	quat_v = Quatf(v1, -v1);
-	EXPECT_EQ(quat_v.rotateVector(v1), -v1);
+	EXPECT_EQ(quat_v.rotate_ਸਦਿਸ਼(v1), -v1);
 	// special 180 degree case 3
 	v1 = Vector3f(0.f, 0.f, 1.f);
 	quat_v = Quatf(v1, -v1);
-	EXPECT_EQ(quat_v.rotateVector(v1), -v1);
+	EXPECT_EQ(quat_v.rotate_ਸਦਿਸ਼(v1), -v1);
 	// special 180 degree case 4
 	v1 = Vector3f(1.f, 1.f, 1.f);
 	quat_v = Quatf(v1, -v1);
-	EXPECT_EQ(quat_v.rotateVector(v1), -v1);
+	EXPECT_EQ(quat_v.rotate_ਸਦਿਸ਼(v1), -v1);
 
 	// quat normalization
 	q.normalize();
@@ -117,12 +117,12 @@ TEST(MatrixAttitudeTest, Attitude)
 	q = Quatf(0.999993000008167f, 0.000999997666668f,
 		  0.001999995333337f, -0.002999993000005f);
 	{
-		float M_data[] =  {
+		ਦਸ਼ਮਲਵ M_ਅੰਕੜੇ[] =  {
 			0.499997833331311f, 0.001500333333644f,  0.000999499999533f,
 			-0.001499666666356f, 0.499998333331778f, -0.000501000000933f,
 			-0.001000500000467f, 0.000498999999067f,  0.499999166665889f
 		};
-		M = Dcmf(M_data);
+		M = Dcmf(M_ਅੰਕੜੇ);
 	}
 	EXPECT_EQ(q, Quatf::expq(v));
 	EXPECT_EQ(M, Quatf::inv_r_jacobian(v));
@@ -132,19 +132,19 @@ TEST(MatrixAttitudeTest, Attitude)
 	q = Quatf(-0.825299062075259f, -0.150921327219964f,
 		  0.301842654439929f, -0.452763981659893f);
 	{
-		float M_data[] =  {
+		ਦਸ਼ਮਲਵ M_ਅੰਕੜੇ[] =  {
 			2.574616981530584f, -1.180828156687602f, -1.478757764968596f,
 			1.819171843312398f,  2.095859216561988f,  0.457515529937193f,
 			0.521242235031404f,  1.457515529937193f,  1.297929608280994f
 		};
-		M = Dcmf(M_data);
+		M = Dcmf(M_ਅੰਕੜੇ);
 	}
 	EXPECT_EQ(q, Quatf::expq(v));
 	EXPECT_EQ(M, Quatf::inv_r_jacobian(v));
 
 	// quaternion kinematic update
 	q = Quatf();
-	float h = 0.001f;  // sampling time [s]
+	ਦਸ਼ਮਲਵ h = 0.001f;  // sampling time [s]
 	Vector3f w_B = Vector3f(0.1f, 0.2f, 0.3f); // body rate in body frame
 	Quatf qa = q + 0.5f * h * q.derivative1(w_B);
 	qa.normalize();
@@ -173,7 +173,7 @@ TEST(MatrixAttitudeTest, Attitude)
 
 	// dcm default ctor
 	Dcmf dcm2;
-	SquareMatrix<float, 3> I = eye<float, 3>();
+	ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<ਦਸ਼ਮਲਵ, 3> I = eye<ਦਸ਼ਮਲਵ, 3>();
 	EXPECT_EQ(dcm2, I);
 
 	// dcm to euler
@@ -185,86 +185,86 @@ TEST(MatrixAttitudeTest, Attitude)
 	EXPECT_EQ(q2, q_check);
 
 	// dcm renormalize
-	Dcmf A = eye<float, 3>();
+	Dcmf A = eye<ਦਸ਼ਮਲਵ, 3>();
 	Dcmf R(euler_check);
 
-	for (size_t i = 0; i < 1000; i++) {
+	ਲਈ (size_t i = 0; i < 1000; i++) {
 		A = R * A;
 	}
 
 	A.renormalize();
 
-	for (size_t r = 0; r < 3; r++) {
-		Vector3f rvec(matrix::Matrix<float, 1, 3>(A.row(r)).transpose());
-		EXPECT_FLOAT_EQ(1.0f, rvec.length());
+	ਲਈ (size_t r = 0; r < 3; r++) {
+		Vector3f rvec(ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<ਦਸ਼ਮਲਵ, 1, 3>(A.ਪੰਕਤੀ(r)).transpose());
+		EXPECT_FLOAT_EQ(1.0f, rvec.ਲੰਮਾਈ());
 	}
 
 	// constants
-	double deg2rad = M_PI / 180.0;
-	double rad2deg = 180.0 / M_PI;
+	ਦੁੱਗਣਾ deg2rad = M_PI / 180.0;
+	ਦੁੱਗਣਾ rad2deg = 180.0 / M_PI;
 
 	// euler dcm round trip check
-	for (double roll = -90; roll <= 90; roll += 90) {
-		for (double pitch = -90; pitch <= 90; pitch += 90) {
-			for (double yaw = -179; yaw <= 180; yaw += 90) {
+	ਲਈ (ਦੁੱਗਣਾ roll = -90; roll <= 90; roll += 90) {
+		ਲਈ (ਦੁੱਗਣਾ pitch = -90; pitch <= 90; pitch += 90) {
+			ਲਈ (ਦੁੱਗਣਾ yaw = -179; yaw <= 180; yaw += 90) {
 				// note if theta = pi/2, then roll is set to zero
-				double roll_expected = roll;
-				double yaw_expected = yaw;
+				ਦੁੱਗਣਾ roll_expected = roll;
+				ਦੁੱਗਣਾ yaw_expected = yaw;
 
-				if (isEqualF(pitch, 90.0)) {
+				ਜੇ (isEqualF(pitch, 90.0)) {
 					roll_expected = 0;
 					yaw_expected = yaw - roll;
 
-				} else if (isEqualF(pitch, -90.0)) {
+				} ਨਹੀਂਤਾਂ ਜੇ (isEqualF(pitch, -90.0)) {
 					roll_expected = 0;
 					yaw_expected = yaw + roll;
 				}
 
-				if (yaw_expected < -180) {
+				ਜੇ (yaw_expected < -180) {
 					yaw_expected += 360;
 				}
 
-				if (yaw_expected > 180) {
+				ਜੇ (yaw_expected > 180) {
 					yaw_expected -= 360;
 				}
 
 				//printf("roll:%d pitch:%d yaw:%d\n", roll, pitch, yaw);
-				Euler<double> euler_expected(
+				Euler<ਦੁੱਗਣਾ> euler_expected(
 					deg2rad * roll_expected,
 					deg2rad * pitch,
 					deg2rad * yaw_expected);
-				Euler<double> euler(
+				Euler<ਦੁੱਗਣਾ> euler(
 					deg2rad * roll,
 					deg2rad * pitch,
 					deg2rad * yaw);
-				Dcm<double> dcm_from_euler(euler);
+				Dcm<ਦੁੱਗਣਾ> dcm_from_euler(euler);
 				//dcm_from_euler.print();
-				Euler<double> euler_out(dcm_from_euler);
-				EXPECT_EQ(rad2deg * euler_expected, rad2deg * euler_out);
+				Euler<ਦੁੱਗਣਾ> euler_ਬਾਹਰਲਾ(dcm_from_euler);
+				EXPECT_EQ(rad2deg * euler_expected, rad2deg * euler_ਬਾਹਰਲਾ);
 
 				Eulerf eulerf_expected(
-					float(deg2rad)*float(roll_expected),
-					float(deg2rad)*float(pitch),
-					float(deg2rad)*float(yaw_expected));
-				Eulerf eulerf(float(deg2rad)*float(roll),
-					      float(deg2rad)*float(pitch),
-					      float(deg2rad)*float(yaw));
-				Dcm<float> dcm_from_eulerf;
+					ਦਸ਼ਮਲਵ(deg2rad)*ਦਸ਼ਮਲਵ(roll_expected),
+					ਦਸ਼ਮਲਵ(deg2rad)*ਦਸ਼ਮਲਵ(pitch),
+					ਦਸ਼ਮਲਵ(deg2rad)*ਦਸ਼ਮਲਵ(yaw_expected));
+				Eulerf eulerf(ਦਸ਼ਮਲਵ(deg2rad)*ਦਸ਼ਮਲਵ(roll),
+					      ਦਸ਼ਮਲਵ(deg2rad)*ਦਸ਼ਮਲਵ(pitch),
+					      ਦਸ਼ਮਲਵ(deg2rad)*ਦਸ਼ਮਲਵ(yaw));
+				Dcm<ਦਸ਼ਮਲਵ> dcm_from_eulerf;
 				dcm_from_eulerf = eulerf;
-				Euler<float> euler_outf(dcm_from_eulerf);
-				EXPECT_EQ(float(rad2deg)*eulerf_expected,
-					  float(rad2deg)*euler_outf);
+				Euler<ਦਸ਼ਮਲਵ> euler_outf(dcm_from_eulerf);
+				EXPECT_EQ(ਦਸ਼ਮਲਵ(rad2deg)*eulerf_expected,
+					  ਦਸ਼ਮਲਵ(rad2deg)*euler_outf);
 			}
 		}
 	}
 
 	// quaterion copy ctors
-	float data_v4[] = {1, 2, 3, 4};
-	Vector4f v4(data_v4);
+	ਦਸ਼ਮਲਵ ਅੰਕੜੇ_v4[] = {1, 2, 3, 4};
+	Vector4f v4(ਅੰਕੜੇ_v4);
 	Quatf q_from_v(v4);
 	EXPECT_EQ(q_from_v, v4);
 
-	Matrix<float, 4, 1> m4(data_v4);
+	ਮੈਟ੍ਰਿਕਸ_2<ਦਸ਼ਮਲਵ, 4, 1> m4(ਅੰਕੜੇ_v4);
 	Quatf q_from_m(m4);
 	EXPECT_EQ(q_from_m, m4);
 
@@ -287,7 +287,7 @@ TEST(MatrixAttitudeTest, Attitude)
 	EXPECT_EQ(q_prod_check, q_check);
 
 	// Quaternion scalar multiplication
-	float scalar = 0.5;
+	ਦਸ਼ਮਲਵ scalar = 0.5;
 	Quatf q_scalar_mul(1.0f, 2.0f, 3.0f, 4.0f);
 	Quatf q_scalar_mul_check(1.0f * scalar, 2.0f * scalar,
 				 3.0f * scalar,  4.0f * scalar);
@@ -365,9 +365,9 @@ TEST(MatrixAttitudeTest, Attitude)
 	EXPECT_EQ(q_canonical_5, q_canonical_ref_5);
 
 	// quaternion setIdentity
-	Quatf q_nonIdentity(-0.7f, 0.4f, 0.5f, -0.3f);
-	q_nonIdentity.setIdentity();
-	EXPECT_EQ(q_nonIdentity, Quatf());
+	Quatf q_non_ਪਛਾਣ_ਤੱਤ(-0.7f, 0.4f, 0.5f, -0.3f);
+	q_non_ਪਛਾਣ_ਤੱਤ.ਸੈੱਟ_ਪਛਾਣ_ਤੱਤ();
+	EXPECT_EQ(q_non_ਪਛਾਣ_ਤੱਤ, Quatf());
 
 	// non-unit quaternion invese
 	Quatf q_nonunit(0.1f, 0.2f, 0.3f, 0.4f);
@@ -377,14 +377,14 @@ TEST(MatrixAttitudeTest, Attitude)
 	Vector3f rot(1.f, 0.f, 0.f);
 	Quatf q_test;
 	q_test.rotate(rot);
-	Quatf q_true(std::cos(1.0f / 2), sin(1.0f / 2), 0.0f, 0.0f);
+	Quatf q_true(std::ਕੋਜੀਵਾ(1.0f / 2), ਜੀਵਾ(1.0f / 2), 0.0f, 0.0f);
 	EXPECT_EQ(q_test, q_true);
 
 	// rotate quaternion (zero rotation)
 	rot(0) = rot(1) = rot(2) = 0.0f;
 	q_test = Quatf();
 	q_test.rotate(rot);
-	q_true = Quatf(std::cos(0.0f), sin(0.0f), 0.0f, 0.0f);
+	q_true = Quatf(std::ਕੋਜੀਵਾ(0.0f), ਜੀਵਾ(0.0f), 0.0f, 0.0f);
 	EXPECT_EQ(q_test, q_true);
 
 	// rotate quaternion (random non-commutating rotation)
@@ -395,7 +395,7 @@ TEST(MatrixAttitudeTest, Attitude)
 	EXPECT_EQ(q, q_true);
 
 	// get rotation axis from quaternion (nonzero rotation)
-	q = Quatf(std::cos(1.0f / 2), 0.0f, sin(1.0f / 2), 0.0f);
+	q = Quatf(std::ਕੋਜੀਵਾ(1.0f / 2), 0.0f, ਜੀਵਾ(1.0f / 2), 0.0f);
 	rot = AxisAnglef(q);
 	EXPECT_FLOAT_EQ(rot(0), 0.0f);
 	EXPECT_FLOAT_EQ(rot(1), 1.0f);
@@ -415,35 +415,35 @@ TEST(MatrixAttitudeTest, Attitude)
 	EXPECT_EQ(q, q_true);
 
 	// from axis angle, with length of vector the rotation
-	float n = float(std::sqrt(4 * M_PI_F * M_PI_F / 3));
+	ਦਸ਼ਮਲਵ n = ਦਸ਼ਮਲਵ(std::ਵਰਗਮੂਲ(4 * M_PI_F * M_PI_F / 3));
 	q = AxisAnglef(n, n, n);
 	EXPECT_EQ(q, Quatf(-1, 0, 0, 0));
 	q = AxisAnglef(0, 0, 0);
 	EXPECT_EQ(q, Quatf(1, 0, 0, 0));
 
 	// Quaternion initialisation per array
-	float q_array[] = {0.9833f, -0.0343f, -0.1060f, -0.1436f};
-	Quaternion<float>q_from_array(q_array);
+	ਦਸ਼ਮਲਵ q_array[] = {0.9833f, -0.0343f, -0.1060f, -0.1436f};
+	Quaternion<ਦਸ਼ਮਲਵ>q_from_array(q_array);
 
-	for (size_t i = 0; i < 4; i++) {
+	ਲਈ (size_t i = 0; i < 4; i++) {
 		EXPECT_FLOAT_EQ(q_from_array(i), q_array[i]);
 	}
 
 	// axis angle
 	AxisAnglef aa_true(Vector3f(1.0f, 2.0f, 3.0f));
 	EXPECT_EQ(aa_true, Vector3f(1.0f, 2.0f, 3.0f));
-	AxisAnglef aa_empty;
-	EXPECT_EQ(aa_empty, AxisAnglef(0.0f, 0.0f, 0.0f));
-	float aa_data[] =  {4.0f, 5.0f, 6.0f};
-	AxisAnglef aa_data_init(aa_data);
-	EXPECT_EQ(aa_data_init, AxisAnglef(4.0f, 5.0f, 6.0f));
+	AxisAnglef aa_ਖਾਲੀ_ਥਾਵਾਂ;
+	EXPECT_EQ(aa_ਖਾਲੀ_ਥਾਵਾਂ, AxisAnglef(0.0f, 0.0f, 0.0f));
+	ਦਸ਼ਮਲਵ aa_ਅੰਕੜੇ[] =  {4.0f, 5.0f, 6.0f};
+	AxisAnglef aa_ਅੰਕੜੇ_init(aa_ਅੰਕੜੇ);
+	EXPECT_EQ(aa_ਅੰਕੜੇ_init, AxisAnglef(4.0f, 5.0f, 6.0f));
 
 	AxisAnglef aa_norm_check(Vector3f(0.0f, 0.0f, 0.0f));
 	EXPECT_EQ(aa_norm_check.axis(), Vector3f(1, 0, 0));
 	EXPECT_FLOAT_EQ(aa_norm_check.angle(), 0.0f);
 
 	q = Quatf(-0.29555112749297824f, 0.25532186f,  0.51064372f,  0.76596558f);
-	float r_array[9] = {-0.6949206f, 0.713521f, 0.089292854f, -0.19200698f, -0.30378509f, 0.93319237f, 0.69297814f, 0.63134968f, 0.34810752f};
+	ਦਸ਼ਮਲਵ r_array[9] = {-0.6949206f, 0.713521f, 0.089292854f, -0.19200698f, -0.30378509f, 0.93319237f, 0.69297814f, 0.63134968f, 0.34810752f};
 	R = Dcmf(r_array);
 	EXPECT_EQ(q.imag(), Vector3f(0.25532186f,  0.51064372f,  0.76596558f));
 
@@ -457,8 +457,8 @@ TEST(MatrixAttitudeTest, Attitude)
 
 	// conjugate
 	v = Vector3f(1.5f, 2.2f, 3.2f);
-	EXPECT_EQ(q.rotateVectorInverse(v1), Dcmf(q).T()*v1);
-	EXPECT_EQ(q.rotateVector(v1), Dcmf(q)*v1);
+	EXPECT_EQ(q.rotate_ਸਦਿਸ਼_Inverse(v1), Dcmf(q).T()*v1);
+	EXPECT_EQ(q.rotate_ਸਦਿਸ਼(v1), Dcmf(q)*v1);
 
 	AxisAnglef aa_q_init(q);
 	EXPECT_EQ(aa_q_init, AxisAnglef(1.0f, 2.0f, 3.0f));

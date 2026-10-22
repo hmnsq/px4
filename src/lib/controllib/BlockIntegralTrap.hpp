@@ -37,22 +37,22 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <assert.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <time.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/test/test.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/Block.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "matrix/math.hpp"
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
 /**
@@ -63,28 +63,28 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegralTrap : public SuperBlock
+ਵਰਗ __EXPORT ਖੰਡ_Integral_Trap : ਜਨਤਕ Super_ਖੰਡ
 {
-public:
+ਜਨਤਕ:
 // methods
-	BlockIntegralTrap(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
+	ਖੰਡ_Integral_Trap(Super_ਖੰਡ *ਮਾਪਾ, ਅਚਲ ਅੱਖਰ *name) :
+		Super_ਖੰਡ(ਮਾਪਾ, name),
 		_u(0),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegralTrap() = default;
-	float update(float input);
+		ਹੱਦਬੰਦੀ(ਇਹ, "") {}
+	ਆਭਾਸੀ ~ਖੰਡ_Integral_Trap() = ਮੂਲ;
+	ਦਸ਼ਮਲਵ update(ਦਸ਼ਮਲਵ ਨਿਵੇਸ਼);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
-// attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
-	BlockLimitSym _limit; /**< limiter */
+	ਦਸ਼ਮਲਵ getU() {ਵਾਪਸ _u;}
+	ਦਸ਼ਮਲਵ getY() {ਵਾਪਸ _y;}
+	ਦਸ਼ਮਲਵ getMax() {ਵਾਪਸ ਹੱਦਬੰਦੀ.getMax();}
+	ਖਾਲੀ ਸੈੱਟ_U(ਦਸ਼ਮਲਵ u) {_u = u;}
+	ਖਾਲੀ ਸੈੱਟ_Y(ਦਸ਼ਮਲਵ y) {_y = y;}
+ਸੁਰੱਖਿਅਤ:
+//ਗੁਣ
+	ਦਸ਼ਮਲਵ _u; /**< previous input */
+	ਦਸ਼ਮਲਵ _y; /**< previous output */
+	ਖੰਡ_ਹੱਦਬੰਦੀ_Sym ਹੱਦਬੰਦੀ; /**< limiter */
 };
 
 } // namespace control

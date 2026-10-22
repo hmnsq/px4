@@ -40,43 +40,43 @@
  *
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/module_params.h>
-#include <matrix/matrix/math.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/vehicle_attitude_setpoint.h>
-#include <uORB/topics/vehicle_local_position.h>
-#include <uORB/topics/vehicle_control_mode.h>
-#include <uORB/topics/vehicle_status.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/module_params.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/Subscription.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/vehicle_attitude_setpoint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/vehicle_local_position.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/vehicle_control_mode.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/vehicle_status.h>
 
-class WeatherVane : public ModuleParams
+ਵਰਗ WeatherVane : ਜਨਤਕ ModuleParams
 {
-public:
-	WeatherVane(ModuleParams *parent);
+ਜਨਤਕ:
+	WeatherVane(ModuleParams *ਮਾਪਾ);
 
-	~WeatherVane() = default;
+	~WeatherVane() = ਮੂਲ;
 
-	void setNavigatorForceDisabled(bool navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
+	ਖਾਲੀ ਸੈੱਟ_Navigator_Force_Disabled(ਤਾਰਕਿਕ navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
 
-	bool isActive() {return _is_active;}
+	ਤਾਰਕਿਕ is_ਸਰਗਰਮ_3() {ਵਾਪਸ is_ਸਰਗਰਮ_2;}
 
-	void update();
+	ਖਾਲੀ update();
 
-	float getWeathervaneYawrate();
+	ਦਸ਼ਮਲਵ getWeathervaneYawrate();
 
-private:
+ਨਿਜੀ:
 	uORB::Subscription _vehicle_attitude_setpoint_sub{ORB_ID(vehicle_attitude_setpoint)};
 	uORB::Subscription _vehicle_local_position_sub{ORB_ID(vehicle_local_position)};
-	uORB::Subscription _vehicle_control_mode_sub{ORB_ID(vehicle_control_mode)};
-	uORB::Subscription _vehicle_status_sub{ORB_ID(vehicle_status)};
+	uORB::Subscription vehicle_control_ਬਹੁਲਕ_sub{ORB_ID(vehicle_control_ਬਹੁਲਕ)};
+	uORB::Subscription vehicle_ਸਥਿਤੀ_sub{ORB_ID(vehicle_ਸਥਿਤੀ)};
 
-	bool _is_active{false};
+	ਤਾਰਕਿਕ is_ਸਰਗਰਮ_2{ਝੂਠ};
 
 	// local copies of status such that we don't need to copy uORB messages all the time
-	bool _flag_control_manual_enabled{false};
-	bool _flag_control_position_enabled{false};
-	bool _navigator_force_disabled{false};
+	ਤਾਰਕਿਕ _flag_control_manual_enabled{ਝੂਠ};
+	ਤਾਰਕਿਕ _flag_control_position_enabled{ਝੂਠ};
+	ਤਾਰਕਿਕ _navigator_force_disabled{ਝੂਠ};
 
 	DEFINE_PARAMETERS(
 		(ParamBool<px4::params::WV_EN>) _param_wv_en,

@@ -37,100 +37,100 @@
  * Test library code
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdio.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
 
-#include <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
 
-#include "test.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "test.hpp"
 
-bool __EXPORT equal(float a, float b, float epsilon)
+ਤਾਰਕਿਕ __EXPORT equal(ਦਸ਼ਮਲਵ a, ਦਸ਼ਮਲਵ b, ਦਸ਼ਮਲਵ epsilon)
 {
-	float diff = fabsf(a - b);
+	ਦਸ਼ਮਲਵ diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	ਜੇ (diff > epsilon) {
+		ਲਿਖੋ("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", ਦੁੱਗਣਾ(a), ਦੁੱਗਣਾ(b));
+		ਵਾਪਸ ਝੂਠ;
 
-	} else { return true; }
+	} ਨਹੀਂਤਾਂ { ਵਾਪਸ ਸੱਚ; }
 }
 
-bool __EXPORT greater_than(float a, float b)
+ਤਾਰਕਿਕ __EXPORT greater_than(ਦਸ਼ਮਲਵ a, ਦਸ਼ਮਲਵ b)
 {
-	if (a > b) {
-		return true;
+	ਜੇ (a > b) {
+		ਵਾਪਸ ਸੱਚ;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ਨਹੀਂਤਾਂ {
+		ਲਿਖੋ("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", ਦੁੱਗਣਾ(a), ਦੁੱਗਣਾ(b));
+		ਵਾਪਸ ਝੂਠ;
 	}
 }
 
-bool __EXPORT less_than(float a, float b)
+ਤਾਰਕਿਕ __EXPORT less_than(ਦਸ਼ਮਲਵ a, ਦਸ਼ਮਲਵ b)
 {
-	if (a < b) {
-		return true;
+	ਜੇ (a < b) {
+		ਵਾਪਸ ਸੱਚ;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ਨਹੀਂਤਾਂ {
+		ਲਿਖੋ("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", ਦੁੱਗਣਾ(a), ਦੁੱਗਣਾ(b));
+		ਵਾਪਸ ਝੂਠ;
 	}
 }
 
-bool __EXPORT greater_than_or_equal(float a, float b)
+ਤਾਰਕਿਕ __EXPORT greater_than_or_equal(ਦਸ਼ਮਲਵ a, ਦਸ਼ਮਲਵ b)
 {
-	if (a >= b) {
-		return true;
+	ਜੇ (a >= b) {
+		ਵਾਪਸ ਸੱਚ;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ਨਹੀਂਤਾਂ {
+		ਲਿਖੋ("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", ਦੁੱਗਣਾ(a), ਦੁੱਗਣਾ(b));
+		ਵਾਪਸ ਝੂਠ;
 	}
 }
 
-bool __EXPORT less_than_or_equal(float a, float b)
+ਤਾਰਕਿਕ __EXPORT less_than_or_equal(ਦਸ਼ਮਲਵ a, ਦਸ਼ਮਲਵ b)
 {
-	if (a <= b) {
-		return true;
+	ਜੇ (a <= b) {
+		ਵਾਪਸ ਸੱਚ;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ਨਹੀਂਤਾਂ {
+		ਲਿਖੋ("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", ਦੁੱਗਣਾ(a), ਦੁੱਗਣਾ(b));
+		ਵਾਪਸ ਝੂਠ;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+ਖਾਲੀ __EXPORT float2SigExp(ਅਚਲ ਦਸ਼ਮਲਵ &ਅੰਕ, ਦਸ਼ਮਲਵ &sig, ਪੂਰਨ &ਘਾਤਾਂਕ)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	ਜੇ (!PX4_ISFINITE(ਅੰਕ)) {
 		sig = 0.0f;
-		exp = -99;
-		return;
+		ਘਾਤਾਂਕ = -99;
+		ਵਾਪਸ;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	ਜੇ (fabsf(ਅੰਕ) < 1.0e-38f) {
 		sig = 0;
-		exp = 0;
-		return;
+		ਘਾਤਾਂਕ = 0;
+		ਵਾਪਸ;
 	}
 
-	exp = log10f(fabsf(num));
+	ਘਾਤਾਂਕ = log10f(fabsf(ਅੰਕ));
 
-	if (exp > 0) {
-		exp = ceil(exp);
+	ਜੇ (ਘਾਤਾਂਕ > 0) {
+		ਘਾਤਾਂਕ = ceil(ਘਾਤਾਂਕ);
 
-	} else {
-		exp = floor(exp);
+	} ਨਹੀਂਤਾਂ {
+		ਘਾਤਾਂਕ = floor(ਘਾਤਾਂਕ);
 	}
 
-	sig = num;
+	sig = ਅੰਕ;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	ਜੇ (ਘਾਤਾਂਕ > 0) {
+		ਲਈ (ਪੂਰਨ i = 0; i < ਨਿਰਪੇਖ(ਘਾਤਾਂਕ); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} ਨਹੀਂਤਾਂ {
+		ਲਈ (ਪੂਰਨ i = 0; i < ਨਿਰਪੇਖ(ਘਾਤਾਂਕ); i++) { sig *= 10; }
 	}
 }

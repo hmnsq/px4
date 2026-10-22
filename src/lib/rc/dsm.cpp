@@ -39,57 +39,57 @@
  * Decodes into the global PPM buffer and updates accordingly.
  */
 
-#include <px4_platform_common/px4_config.h>
-#include <board_config.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/px4_config.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <board_config.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/log.h>
 
-#include <fcntl.h>
-#include <math.h>
-#include <unistd.h>
-#include <termios.h>
-#include <string.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <fcntl.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <unistd.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <termios.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <string.h>
 
-#include "dsm.h"
-#include "spektrum_rssi.h"
-#include "common_rc.h"
-#include <drivers/drv_hrt.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "dsm.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "spektrum_rssi.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "common_rc.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/drv_hrt.h>
 
-#include <include/containers/Bitset.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <include/containers/Bitset.hpp>
 
-#if defined(__PX4_NUTTX)
-#include <nuttx/arch.h>
-#define dsm_udelay(arg)    up_udelay(arg)
-#else
-#define dsm_udelay(arg) px4_usleep(arg)
-#endif
+#ਜੇ defined(__PX4_NUTTX)
+#ਅਨ੍ਤਰ੍ਭਾਵ <nuttx/arch.h>
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dsm_udelay(arg)    ਉੱਪਰ_udelay(arg)
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dsm_udelay(arg) px4_usleep(arg)
+#ਜੇ_ਅੰਤ
 
 // #define DSM_DEBUG
 
-static enum DSM_DECODE_STATE {
+ਸਥਿਰ ਗਿਣਤੀ DSM_DECODE_STATE {
 	DSM_DECODE_STATE_DESYNC = 0,
 	DSM_DECODE_STATE_SYNC
 } dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 
-typedef struct {
-	hrt_abstime last_seen;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ {
+	hrt_abstime ਆਖਰੀ_ਵੇਖਿਆ;
 	uint16_t value;
 } dsm_channel_t;
 
-static dsm_channel_t channel_buffer[DSM_MAX_CHANNEL_COUNT];
+ਸਥਿਰ dsm_channel_t channel_ਬਫਰ[DSM_MAX_CHANNEL_ਗਿਣਤੀ];
 
-static int dsm_fd = -1;						/**< File handle to the DSM UART */
-static hrt_abstime dsm_last_rx_time;            /**< Timestamp when we last received data */
-static hrt_abstime dsm_last_frame_time;		/**< Timestamp for start of last valid dsm frame */
-static dsm_frame_t &dsm_frame = rc_decode_buf.dsm.frame;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
-static dsm_buf_t &dsm_buf = rc_decode_buf.dsm.buf;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
+ਸਥਿਰ ਪੂਰਨ dsm_fd = -1;						/**< File handle to the DSM UART */
+ਸਥਿਰ hrt_abstime dsm_ਆਖਰੀ_rx_ਸਮਾਂ;            /**< Timestamp when we last received data */
+ਸਥਿਰ hrt_abstime dsm_ਆਖਰੀ_ਚੌਖਟਾ_ਸਮਾਂ;		/**< Timestamp for start of last valid dsm frame */
+ਸਥਿਰ dsm_ਚੌਖਟਾ_t &dsm_ਚੌਖਟਾ = rc_decode_buf.dsm.ਚੌਖਟਾ;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
+ਸਥਿਰ dsm_buf_t &dsm_buf = rc_decode_buf.dsm.buf;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
 
-static unsigned dsm_partial_frame_count;	/**< Count of bytes received for current dsm frame */
-static unsigned dsm_channel_shift = 0;			/**< Channel resolution, 0=unknown, 10=10 bit (1024), 11=11 bit (2048) */
-static unsigned dsm_frame_drops = 0;			/**< Count of incomplete DSM frames */
-static uint16_t dsm_chan_count = 0;         /**< DSM channel count */
+ਸਥਿਰ ਬਿਨਾਨਿਸ਼ਾਨੀ dsm_partial_ਚੌਖਟਾ_ਗਿਣਤੀ;	/**< Count of bytes received for current dsm frame */
+ਸਥਿਰ ਬਿਨਾਨਿਸ਼ਾਨੀ dsm_channel_ਖਿਸਕਾਓ = 0;			/**< Channel resolution, 0=unknown, 10=10 bit (1024), 11=11 bit (2048) */
+ਸਥਿਰ ਬਿਨਾਨਿਸ਼ਾਨੀ dsm_ਚੌਖਟਾ_drops = 0;			/**< Count of incomplete DSM frames */
+ਸਥਿਰ uint16_t dsm_chan_ਗਿਣਤੀ = 0;         /**< DSM channel count */
 
-static constexpr uint8_t CHANNEL_UNUSED = 0xFF;
+ਸਥਿਰ constexpr uint8_t CHANNEL_ਅਣਵਰਤਿਆ = 0xFF;
 
 /**
  * Attempt to decode a single channel raw channel datum
@@ -116,31 +116,31 @@ static constexpr uint8_t CHANNEL_UNUSED = 0xFF;
  * @param[out] value pointer to returned channel value
  * @return true=raw value successfully decoded
  */
-static bool dsm_decode_channel(uint16_t raw, unsigned shift, uint8_t &channel, uint16_t &value)
+ਸਥਿਰ ਤਾਰਕਿਕ dsm_decode_channel(uint16_t raw, ਬਿਨਾਨਿਸ਼ਾਨੀ ਖਿਸਕਾਓ, uint8_t &channel, uint16_t &value)
 {
-	if (shift == 10) {
+	ਜੇ (ਖਿਸਕਾਓ == 10) {
 		// 1024 Mode: This format is used only by DSM2/22ms mode. All other modes use 2048 data.
 		//  Bits 15-10 Channel ID
 		//  Bits 9-0   Servo Position
-		static constexpr uint16_t MASK_1024_CHANID = 0xFC00;
-		static constexpr uint16_t MASK_1024_SXPOS = 0x03FF;
+		ਸਥਿਰ constexpr uint16_t ਨਕਾਬ_1024_CHANID = 0xFC00;
+		ਸਥਿਰ constexpr uint16_t ਨਕਾਬ_1024_SXPOS = 0x03FF;
 
-		channel = (raw & MASK_1024_CHANID) >> 10; // 6 bits
+		channel = (raw & ਨਕਾਬ_1024_CHANID) >> 10; // 6 bits
 
-		const uint16_t servo_position = (raw & MASK_1024_SXPOS); // 10 bits
+		ਅਚਲ uint16_t servo_position = (raw & ਨਕਾਬ_1024_SXPOS); // 10 bits
 
-		if (channel >= DSM_MAX_CHANNEL_COUNT) {
+		ਜੇ (channel >= DSM_MAX_CHANNEL_ਗਿਣਤੀ) {
 			PX4_DEBUG("invalid channel: %d\n", channel);
-			return false;
+			ਵਾਪਸ ਝੂਠ;
 		}
 
 		// PWM_OUT = (ServoPosition x 1.166μs) + Offset
-		static constexpr uint16_t offset = 903; // microseconds
-		value = roundf(servo_position * 1.166f) + offset;
+		ਸਥਿਰ constexpr uint16_t ਵਿੱਥ = 903; // microseconds
+		value = roundf(servo_position * 1.166f) + ਵਿੱਥ;
 
-		return true;
+		ਵਾਪਸ ਸੱਚ;
 
-	} else if (shift == 11) {
+	} ਨਹੀਂਤਾਂ ਜੇ (ਖਿਸਕਾਓ == 11) {
 		// 2048 Mode
 		//  Bits 15    Servo Phase
 		//  Bits 14-11 Channel ID
@@ -149,53 +149,53 @@ static bool dsm_decode_channel(uint16_t raw, unsigned shift, uint8_t &channel, u
 		uint16_t servo_position = 0;
 
 		// from Spektrum Remote Receiver Interfacing Rev G Page 6
-		const bool phase = (raw >> 15) & 0x01; // the phase is part of the X-Plus address (bit 15)
+		ਅਚਲ ਤਾਰਕਿਕ phase = (raw >> 15) & 0x01; // the phase is part of the X-Plus address (bit 15)
 		uint8_t chan = (raw >> 11) & 0x0F;
 
-		if (chan < 12) {
+		ਜੇ (chan < 12) {
 			// Normal channels
-			static constexpr uint16_t MASK_2048_SXPOS = 0x07FF;
-			servo_position = (raw & MASK_2048_SXPOS);
+			ਸਥਿਰ constexpr uint16_t ਨਕਾਬ_2048_SXPOS = 0x07FF;
+			servo_position = (raw & ਨਕਾਬ_2048_SXPOS);
 
-		} else if (chan == 12) {
+		} ਨਹੀਂਤਾਂ ਜੇ (chan == 12) {
 			// XPlus channels
 			chan += ((raw >> 9) & 0x03);
 
-			if (phase) {
+			ਜੇ (phase) {
 				chan += 4;
 			}
 
-			if (chan >= DSM_MAX_CHANNEL_COUNT) {
-				return false;
+			ਜੇ (chan >= DSM_MAX_CHANNEL_ਗਿਣਤੀ) {
+				ਵਾਪਸ ਝੂਠ;
 			}
 
 			servo_position = (raw & 0x01FF) << 2;
 
 			channel = chan;
 
-		} else if (chan == 0x0F && phase) {
+		} ਨਹੀਂਤਾਂ ਜੇ (chan == 0x0F && phase) {
 			// When the channel content is all bits set, and the phase is also set, this is the blank channel
-			channel = CHANNEL_UNUSED;
-			return true;
+			channel = CHANNEL_ਅਣਵਰਤਿਆ;
+			ਵਾਪਸ ਸੱਚ;
 
-		} else {
+		} ਨਹੀਂਤਾਂ {
 			// This will be the case for an unused channel (raw 16bit content will be 0xffff)
 			PX4_DEBUG("invalid: %d %d\n", chan, phase);
-			return false;
+			ਵਾਪਸ ਝੂਠ;
 		}
 
 		channel = chan;
 
 		// PWM_OUT = (ServoPosition x 0.583μs) + Offset
-		static constexpr uint16_t offset = 903; // microseconds
-		value = roundf(servo_position * 0.583f) + offset;
+		ਸਥਿਰ constexpr uint16_t ਵਿੱਥ = 903; // microseconds
+		value = roundf(servo_position * 0.583f) + ਵਿੱਥ;
 
 		PX4_DEBUG(stderr, "CH%d=%d(0x%02x), ", channel, value, raw);
 
-		return true;
+		ਵਾਪਸ ਸੱਚ;
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
 /**
@@ -203,100 +203,100 @@ static bool dsm_decode_channel(uint16_t raw, unsigned shift, uint8_t &channel, u
  *
  * @param[in] reset true=reset the 10/11 bit state to unknown
  */
-static bool dsm_guess_format(bool reset)
+ਸਥਿਰ ਤਾਰਕਿਕ dsm_guess_format(ਤਾਰਕਿਕ reset)
 {
-	static uint32_t cs10 = 0;
-	static uint32_t cs11 = 0;
-	static uint16_t good_cs10_frame_count = 0;
-	static uint16_t good_cs11_frame_count = 0;
-	static uint16_t samples = 0;
-	static uint16_t seen_channels_count_cs11[DSM_MAX_CHANNEL_COUNT] {};
-	static uint16_t seen_channels_count_cs10[DSM_MAX_CHANNEL_COUNT] {};
+	ਸਥਿਰ uint32_t cs10 = 0;
+	ਸਥਿਰ uint32_t cs11 = 0;
+	ਸਥਿਰ uint16_t good_cs10_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
+	ਸਥਿਰ uint16_t good_cs11_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
+	ਸਥਿਰ uint16_t samples = 0;
+	ਸਥਿਰ uint16_t ਵੇਖਿਆ_channels_ਗਿਣਤੀ_cs11[DSM_MAX_CHANNEL_ਗਿਣਤੀ] {};
+	ਸਥਿਰ uint16_t ਵੇਖਿਆ_channels_ਗਿਣਤੀ_cs10[DSM_MAX_CHANNEL_ਗਿਣਤੀ] {};
 
 	/* reset the 10/11 bit sniffed channel masks */
-	if (reset) {
+	ਜੇ (reset) {
 		PX4_DEBUG("dsm_guess_format reset");
 		cs10 = 0;
 		cs11 = 0;
 		samples = 0;
 
-		dsm_channel_shift = 0;
-		good_cs10_frame_count = 0;
-		good_cs11_frame_count = 0;
+		dsm_channel_ਖਿਸਕਾਓ = 0;
+		good_cs10_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
+		good_cs11_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
 
-		for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
-			seen_channels_count_cs10[i] = 0;
-			seen_channels_count_cs11[i] = 0;
+		ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < DSM_MAX_CHANNEL_ਗਿਣਤੀ; i++) {
+			ਵੇਖਿਆ_channels_ਗਿਣਤੀ_cs10[i] = 0;
+			ਵੇਖਿਆ_channels_ਗਿਣਤੀ_cs11[i] = 0;
 		}
 
-		return false;
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	px4::Bitset<DSM_MAX_CHANNEL_COUNT> channels_found_10;
-	px4::Bitset<DSM_MAX_CHANNEL_COUNT> channels_found_11;
+	px4::Bitset<DSM_MAX_CHANNEL_ਗਿਣਤੀ> channels_ਮਿਲਿਆ_10;
+	px4::Bitset<DSM_MAX_CHANNEL_ਗਿਣਤੀ> channels_ਮਿਲਿਆ_11;
 
-	bool cs10_frame_valid = true;
-	bool cs11_frame_valid = true;
+	ਤਾਰਕਿਕ cs10_ਚੌਖਟਾ_valid = ਸੱਚ;
+	ਤਾਰਕਿਕ cs11_ਚੌਖਟਾ_valid = ਸੱਚ;
 
 	/* scan the channels in the current dsm_frame in both 10- and 11-bit mode */
-	for (unsigned i = 0; i < DSM_FRAME_CHANNELS; i++) {
+	ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < DSM_ਚੌਖਟਾ_CHANNELS; i++) {
 
-		uint8_t *dp = &dsm_frame[2 + (2 * i)];
+		uint8_t *dp = &dsm_ਚੌਖਟਾ[2 + (2 * i)];
 		uint16_t raw = (dp[0] << 8) | dp[1];
 
 		uint8_t channel = 0;
 		uint16_t value = 0;
 
 		/* if the channel decodes, remember the assigned number */
-		if (dsm_decode_channel(raw, 10, channel, value)) {
-			if (channel == CHANNEL_UNUSED) {
-				continue;
+		ਜੇ (dsm_decode_channel(raw, 10, channel, value)) {
+			ਜੇ (channel == CHANNEL_ਅਣਵਰਤਿਆ) {
+				ਜਾਰੀ;
 			}
 
 			// invalidate entire frame (for 1024) if channel already found, no duplicate channels per DSM frame
-			if (channels_found_10[channel]) {
-				cs10_frame_valid = false;
+			ਜੇ (channels_ਮਿਲਿਆ_10[channel]) {
+				cs10_ਚੌਖਟਾ_valid = ਝੂਠ;
 
-			} else {
-				seen_channels_count_cs10[channel]++;
-				channels_found_10.set(channel);
+			} ਨਹੀਂਤਾਂ {
+				ਵੇਖਿਆ_channels_ਗਿਣਤੀ_cs10[channel]++;
+				channels_ਮਿਲਿਆ_10.ਸੈੱਟ(channel);
 			}
 		}
 
-		if (dsm_decode_channel(raw, 11, channel, value)) {
-			if (channel == CHANNEL_UNUSED) {
-				continue;
+		ਜੇ (dsm_decode_channel(raw, 11, channel, value)) {
+			ਜੇ (channel == CHANNEL_ਅਣਵਰਤਿਆ) {
+				ਜਾਰੀ;
 			}
 
 			// invalidate entire frame (for 2048) if channel already found, no duplicate channels per DSM frame
-			if (channels_found_11[channel]) {
-				cs11_frame_valid = false;
+			ਜੇ (channels_ਮਿਲਿਆ_11[channel]) {
+				cs11_ਚੌਖਟਾ_valid = ਝੂਠ;
 
-			} else {
-				seen_channels_count_cs11[channel]++;
+			} ਨਹੀਂਤਾਂ {
+				ਵੇਖਿਆ_channels_ਗਿਣਤੀ_cs11[channel]++;
 
-				channels_found_11.set(channel);
+				channels_ਮਿਲਿਆ_11.ਸੈੱਟ(channel);
 			}
 		}
 	}
 
 	// add valid cs10 channels
-	if (cs10_frame_valid) {
-		good_cs10_frame_count++;
+	ਜੇ (cs10_ਚੌਖਟਾ_valid) {
+		good_cs10_ਚੌਖਟਾ_ਗਿਣਤੀ++;
 
-		for (unsigned channel = 0; channel < DSM_MAX_CHANNEL_COUNT; channel++) {
-			if (channels_found_10[channel]) {
+		ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ channel = 0; channel < DSM_MAX_CHANNEL_ਗਿਣਤੀ; channel++) {
+			ਜੇ (channels_ਮਿਲਿਆ_10[channel]) {
 				cs10 |= 1 << channel;
 			}
 		}
 	}
 
 	// add valid cs11 channels
-	if (cs11_frame_valid) {
-		good_cs11_frame_count++;
+	ਜੇ (cs11_ਚੌਖਟਾ_valid) {
+		good_cs11_ਚੌਖਟਾ_ਗਿਣਤੀ++;
 
-		for (unsigned channel = 0; channel < DSM_MAX_CHANNEL_COUNT; channel++) {
-			if (channels_found_11[channel]) {
+		ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ channel = 0; channel < DSM_MAX_CHANNEL_ਗਿਣਤੀ; channel++) {
+			ਜੇ (channels_ਮਿਲਿਆ_11[channel]) {
 				cs11 |= 1 << channel;
 			}
 		}
@@ -305,8 +305,8 @@ static bool dsm_guess_format(bool reset)
 	samples++;
 
 	/* wait until we have seen plenty of frames */
-	if (samples < 15) {
-		return false;
+	ਜੇ (samples < 15) {
+		ਵਾਪਸ ਝੂਠ;
 	}
 
 	/*
@@ -317,138 +317,138 @@ static bool dsm_guess_format(bool reset)
 	*  Channels must begin at 0 and no channel gaps after that (ie, the last channel is the one before the first unseen channel starting from zero)
 	 */
 
-	bool cs10_channel_gap_found = false;
-	bool cs11_channel_gap_found = false;
-	bool valid_channel_counts_cs10 = false;
-	bool valid_channel_counts_cs11 = false;
-	uint32_t cs10_channel_count = 0;
-	uint32_t cs11_channel_count = 0;
-	bool found_channels_end = false;
+	ਤਾਰਕਿਕ cs10_channel_gap_ਮਿਲਿਆ = ਝੂਠ;
+	ਤਾਰਕਿਕ cs11_channel_gap_ਮਿਲਿਆ = ਝੂਠ;
+	ਤਾਰਕਿਕ valid_channel_counts_cs10 = ਝੂਠ;
+	ਤਾਰਕਿਕ valid_channel_counts_cs11 = ਝੂਠ;
+	uint32_t cs10_channel_ਗਿਣਤੀ = 0;
+	uint32_t cs11_channel_ਗਿਣਤੀ = 0;
+	ਤਾਰਕਿਕ ਮਿਲਿਆ_channels_ਸਿਰਾ = ਝੂਠ;
 
 	// Count of allowed bad frames
-	static constexpr uint16_t bad_samples_allowance = 5;
-	static constexpr uint16_t minimum_channel_count = 5;
-	static constexpr uint16_t minimum_channel_seen_count = 4;
+	ਸਥਿਰ constexpr uint16_t bad_samples_allowance = 5;
+	ਸਥਿਰ constexpr uint16_t minimum_channel_ਗਿਣਤੀ = 5;
+	ਸਥਿਰ constexpr uint16_t minimum_channel_ਵੇਖਿਆ_ਗਿਣਤੀ = 4;
 
 	// Check for continous channels in 10bit decoding
-	found_channels_end = false;
+	ਮਿਲਿਆ_channels_ਸਿਰਾ = ਝੂਠ;
 
-	for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
+	ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < DSM_MAX_CHANNEL_ਗਿਣਤੀ; i++) {
 		// This bit is set
-		if (cs10 & (1 << i)) {
-			if (found_channels_end) {
+		ਜੇ (cs10 & (1 << i)) {
+			ਜੇ (ਮਿਲਿਆ_channels_ਸਿਰਾ) {
 				// Channel gap found
-				cs10_channel_gap_found = true;
-				break;
+				cs10_channel_gap_ਮਿਲਿਆ = ਸੱਚ;
+				ਰੋਕੋ;
 			}
 
-		} else {
-			if (!found_channels_end) {
-				cs10_channel_count = i;
+		} ਨਹੀਂਤਾਂ {
+			ਜੇ (!ਮਿਲਿਆ_channels_ਸਿਰਾ) {
+				cs10_channel_ਗਿਣਤੀ = i;
 			}
 
-			found_channels_end = true;
+			ਮਿਲਿਆ_channels_ਸਿਰਾ = ਸੱਚ;
 		}
 	}
 
 	// Check for continous channels in 11bit decoding
-	found_channels_end = false;
+	ਮਿਲਿਆ_channels_ਸਿਰਾ = ਝੂਠ;
 
-	for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
+	ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < DSM_MAX_CHANNEL_ਗਿਣਤੀ; i++) {
 		// This bit is set
-		if (cs11 & (1 << i)) {
-			if (found_channels_end) {
+		ਜੇ (cs11 & (1 << i)) {
+			ਜੇ (ਮਿਲਿਆ_channels_ਸਿਰਾ) {
 				// Channel gap found
-				cs11_channel_gap_found = true;
-				break;
+				cs11_channel_gap_ਮਿਲਿਆ = ਸੱਚ;
+				ਰੋਕੋ;
 			}
 
-		} else {
-			if (!found_channels_end) {
-				cs11_channel_count = i;
+		} ਨਹੀਂਤਾਂ {
+			ਜੇ (!ਮਿਲਿਆ_channels_ਸਿਰਾ) {
+				cs11_channel_ਗਿਣਤੀ = i;
 			}
 
-			found_channels_end = true;
+			ਮਿਲਿਆ_channels_ਸਿਰਾ = ਸੱਚ;
 		}
 	}
 
 	// Check channel seen counts C10
-	if (cs10_channel_count && !cs10_channel_gap_found) {
-		valid_channel_counts_cs10 = true;
+	ਜੇ (cs10_channel_ਗਿਣਤੀ && !cs10_channel_gap_ਮਿਲਿਆ) {
+		valid_channel_counts_cs10 = ਸੱਚ;
 
-		for (unsigned i = 0; i < ((cs10_channel_count > 12) ? 12 : cs10_channel_count); i++) {
-			if (seen_channels_count_cs10[i] < minimum_channel_seen_count) {
-				valid_channel_counts_cs10 = false;
-				break;
+		ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < ((cs10_channel_ਗਿਣਤੀ > 12) ? 12 : cs10_channel_ਗਿਣਤੀ); i++) {
+			ਜੇ (ਵੇਖਿਆ_channels_ਗਿਣਤੀ_cs10[i] < minimum_channel_ਵੇਖਿਆ_ਗਿਣਤੀ) {
+				valid_channel_counts_cs10 = ਝੂਠ;
+				ਰੋਕੋ;
 			}
 
 		}
 	}
 
 	// Check channel seen counts C11
-	if (cs11_channel_count && !cs11_channel_gap_found) {
-		valid_channel_counts_cs11 = true;
+	ਜੇ (cs11_channel_ਗਿਣਤੀ && !cs11_channel_gap_ਮਿਲਿਆ) {
+		valid_channel_counts_cs11 = ਸੱਚ;
 
-		for (unsigned i = 0; i < ((cs11_channel_count > 12) ? 12 : cs11_channel_count); i++) {
-			if (seen_channels_count_cs11[i] < minimum_channel_seen_count) {
-				valid_channel_counts_cs11 = false;
-				break;
+		ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < ((cs11_channel_ਗਿਣਤੀ > 12) ? 12 : cs11_channel_ਗਿਣਤੀ); i++) {
+			ਜੇ (ਵੇਖਿਆ_channels_ਗਿਣਤੀ_cs11[i] < minimum_channel_ਵੇਖਿਆ_ਗਿਣਤੀ) {
+				valid_channel_counts_cs11 = ਝੂਠ;
+				ਰੋਕੋ;
 			}
 
 		}
 	}
 
-#ifdef DSM_DEBUG
-	printf("DSM guess: CS10 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs10_frame_count,
-	       cs10_channel_gap_found, cs10_channel_count, valid_channel_counts_cs10);
-	printf("DSM guess: CS11 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs11_frame_count,
-	       cs11_channel_gap_found, cs11_channel_count, valid_channel_counts_cs11);
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ DSM_DEBUG
+	ਲਿਖੋ("DSM guess: CS10 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs10_ਚੌਖਟਾ_ਗਿਣਤੀ,
+	       cs10_channel_gap_ਮਿਲਿਆ, cs10_channel_ਗਿਣਤੀ, valid_channel_counts_cs10);
+	ਲਿਖੋ("DSM guess: CS11 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs11_ਚੌਖਟਾ_ਗਿਣਤੀ,
+	       cs11_channel_gap_ਮਿਲਿਆ, cs11_channel_ਗਿਣਤੀ, valid_channel_counts_cs11);
+#ਜੇ_ਅੰਤ
 
-	if (good_cs11_frame_count > samples - bad_samples_allowance && !cs11_channel_gap_found
-	    && cs11_channel_count >= minimum_channel_count && valid_channel_counts_cs11) {
-#ifdef DSM_DEBUG
-		printf("DSM guess: CS11 guessed!\n");
-#endif
-		dsm_chan_count = cs11_channel_count;
-		dsm_channel_shift = 11;
-		return true;
+	ਜੇ (good_cs11_ਚੌਖਟਾ_ਗਿਣਤੀ > samples - bad_samples_allowance && !cs11_channel_gap_ਮਿਲਿਆ
+	    && cs11_channel_ਗਿਣਤੀ >= minimum_channel_ਗਿਣਤੀ && valid_channel_counts_cs11) {
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ DSM_DEBUG
+		ਲਿਖੋ("DSM guess: CS11 guessed!\n");
+#ਜੇ_ਅੰਤ
+		dsm_chan_ਗਿਣਤੀ = cs11_channel_ਗਿਣਤੀ;
+		dsm_channel_ਖਿਸਕਾਓ = 11;
+		ਵਾਪਸ ਸੱਚ;
 	}
 
-	if (good_cs10_frame_count > samples - bad_samples_allowance && !cs10_channel_gap_found
-	    && cs10_channel_count >= minimum_channel_count && valid_channel_counts_cs10) {
-#ifdef DSM_DEBUG
-		printf("DSM guess: CS10 guessed!\n");
-#endif
-		dsm_chan_count = cs10_channel_count;
-		dsm_channel_shift = 10;
-		return true;
+	ਜੇ (good_cs10_ਚੌਖਟਾ_ਗਿਣਤੀ > samples - bad_samples_allowance && !cs10_channel_gap_ਮਿਲਿਆ
+	    && cs10_channel_ਗਿਣਤੀ >= minimum_channel_ਗਿਣਤੀ && valid_channel_counts_cs10) {
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ DSM_DEBUG
+		ਲਿਖੋ("DSM guess: CS10 guessed!\n");
+#ਜੇ_ਅੰਤ
+		dsm_chan_ਗਿਣਤੀ = cs10_channel_ਗਿਣਤੀ;
+		dsm_channel_ਖਿਸਕਾਓ = 10;
+		ਵਾਪਸ ਸੱਚ;
 	}
 
 	/* call ourselves to reset our state ... we have to try again */
-#ifdef DSM_DEBUG
-	printf("DSM: format detect fail\n");
-#endif
-	dsm_guess_format(true);
-	return false;
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ DSM_DEBUG
+	ਲਿਖੋ("DSM: format detect fail\n");
+#ਜੇ_ਅੰਤ
+	dsm_guess_format(ਸੱਚ);
+	ਵਾਪਸ ਝੂਠ;
 }
 
-int dsm_config(int fd)
+ਪੂਰਨ dsm_config(ਪੂਰਨ fd)
 {
-#ifdef SPEKTRUM_POWER_CONFIG
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ SPEKTRUM_POWER_CONFIG
 	// Enable power controls for Spektrum receiver
 	SPEKTRUM_POWER_CONFIG();
-#endif
-#ifdef SPEKTRUM_POWER
+#ਜੇ_ਅੰਤ
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ SPEKTRUM_POWER
 	// enable power on DSM connector
-	SPEKTRUM_POWER(true);
-#endif
+	SPEKTRUM_POWER(ਸੱਚ);
+#ਜੇ_ਅੰਤ
 
-	int ret = -1;
+	ਪੂਰਨ ret = -1;
 
-	if (fd >= 0) {
+	ਜੇ (fd >= 0) {
 
-		struct termios t;
+		ਬਣਤਰ termios t;
 
 		/* 115200bps, no parity, one stop bit */
 		tcgetattr(fd, &t);
@@ -457,33 +457,33 @@ int dsm_config(int fd)
 		tcsetattr(fd, TCSANOW, &t);
 
 		/* initialise the decoder */
-		dsm_partial_frame_count = 0;
-		dsm_last_rx_time = hrt_absolute_time();
+		dsm_partial_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
+		dsm_ਆਖਰੀ_rx_ਸਮਾਂ = hrt_absolute_ਸਮਾਂ();
 
 		/* reset the format detector */
-		dsm_guess_format(true);
+		dsm_guess_format(ਸੱਚ);
 
 		ret = 0;
 	}
 
-	return ret;
+	ਵਾਪਸ ret;
 }
 
-void dsm_proto_init()
+ਖਾਲੀ dsm_proto_init()
 {
-	dsm_channel_shift = 0;
-	dsm_frame_drops = 0;
-	dsm_chan_count = 0;
+	dsm_channel_ਖਿਸਕਾਓ = 0;
+	dsm_ਚੌਖਟਾ_drops = 0;
+	dsm_chan_ਗਿਣਤੀ = 0;
 
 	dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 
-	for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
-		channel_buffer[i].last_seen = 0;
-		channel_buffer[i].value = 0;
+	ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < DSM_MAX_CHANNEL_ਗਿਣਤੀ; i++) {
+		channel_ਬਫਰ[i].ਆਖਰੀ_ਵੇਖਿਆ = 0;
+		channel_ਬਫਰ[i].value = 0;
 	}
 
 	/* reset the format detector */
-	dsm_guess_format(true);
+	dsm_guess_format(ਸੱਚ);
 }
 
 /**
@@ -493,103 +493,103 @@ void dsm_proto_init()
  *
  * @param[in] device Device name of DSM UART
  */
-int dsm_init(const char *device)
+ਪੂਰਨ dsm_init(ਅਚਲ ਅੱਖਰ *device)
 {
-	if (dsm_fd < 0) {
+	ਜੇ (dsm_fd < 0) {
 		dsm_fd = open(device, O_RDWR | O_NONBLOCK);
 	}
 
 	dsm_proto_init();
 
-	int ret = dsm_config(dsm_fd);
+	ਪੂਰਨ ret = dsm_config(dsm_fd);
 
-	if (!ret) {
-		return dsm_fd;
+	ਜੇ (!ret) {
+		ਵਾਪਸ dsm_fd;
 
-	} else {
-		return -1;
+	} ਨਹੀਂਤਾਂ {
+		ਵਾਪਸ -1;
 	}
 }
 
-void dsm_deinit()
+ਖਾਲੀ dsm_deinit()
 {
-#ifdef SPEKTRUM_POWER_PASSIVE
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ SPEKTRUM_POWER_PASSIVE
 	// Turn power controls to passive
 	SPEKTRUM_POWER_PASSIVE();
-#endif
+#ਜੇ_ਅੰਤ
 
-	if (dsm_fd >= 0) {
+	ਜੇ (dsm_fd >= 0) {
 		close(dsm_fd);
 	}
 
 	dsm_fd = -1;
 }
 
-#if defined(SPEKTRUM_POWER)
+#ਜੇ defined(SPEKTRUM_POWER)
 /**
  * Handle DSM satellite receiver bind mode handler
  *
  * @param[in] cmd commands - dsm_bind_power_down, dsm_bind_power_up, dsm_bind_set_rx_out, dsm_bind_send_pulses, dsm_bind_reinit_uart
  * @param[in] pulses Number of pulses for dsm_bind_send_pulses command
  */
-void dsm_bind(uint16_t cmd, int pulses)
+ਖਾਲੀ dsm_bind(uint16_t cmd, ਪੂਰਨ pulses)
 {
-	if (dsm_fd < 0) {
-		return;
+	ਜੇ (dsm_fd < 0) {
+		ਵਾਪਸ;
 	}
 
-	switch (cmd) {
-	case DSM_CMD_BIND_POWER_DOWN:
+	ਚੋਣ (cmd) {
+	ਹਾਲਤ DSM_CMD_BIND_POWER_ਥੱਲੇ:
 		// power down DSM satellite
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_POWER_DOWN\n");
-#endif
-		SPEKTRUM_POWER(false);
-		break;
+#ਜੇ defined(DSM_DEBUG)
+		ਲਿਖੋ("DSM: DSM_CMD_BIND_POWER_DOWN\n");
+#ਜੇ_ਅੰਤ
+		SPEKTRUM_POWER(ਝੂਠ);
+		ਰੋਕੋ;
 
-	case DSM_CMD_BIND_POWER_UP:
+	ਹਾਲਤ DSM_CMD_BIND_POWER_ਉੱਪਰ:
 		// power up DSM satellite
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_POWER_UP\n");
-#endif
-		SPEKTRUM_POWER(true);
-		dsm_guess_format(true);
-		break;
+#ਜੇ defined(DSM_DEBUG)
+		ਲਿਖੋ("DSM: DSM_CMD_BIND_POWER_UP\n");
+#ਜੇ_ਅੰਤ
+		SPEKTRUM_POWER(ਸੱਚ);
+		dsm_guess_format(ਸੱਚ);
+		ਰੋਕੋ;
 
-	case DSM_CMD_BIND_SET_RX_OUT:
+	ਹਾਲਤ DSM_CMD_BIND_ਸੈੱਟ_RX_ਬਾਹਰਲਾ:
 		// Set UART RX pin to active output mode
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_SET_RX_OUT\n");
-#endif
+#ਜੇ defined(DSM_DEBUG)
+		ਲਿਖੋ("DSM: DSM_CMD_BIND_SET_RX_OUT\n");
+#ਜੇ_ਅੰਤ
 		SPEKTRUM_RX_AS_GPIO_OUTPUT();
-		break;
+		ਰੋਕੋ;
 
-	case DSM_CMD_BIND_SEND_PULSES:
+	ਹਾਲਤ DSM_CMD_BIND_SEND_PULSES:
 		// Pulse RX pin a number of times
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_SEND_PULSES\n");
-#endif
+#ਜੇ defined(DSM_DEBUG)
+		ਲਿਖੋ("DSM: DSM_CMD_BIND_SEND_PULSES\n");
+#ਜੇ_ਅੰਤ
 
-		for (int i = 0; i < pulses; i++) {
+		ਲਈ (ਪੂਰਨ i = 0; i < pulses; i++) {
 			dsm_udelay(120);
-			SPEKTRUM_OUT(false);
+			SPEKTRUM_ਬਾਹਰਲਾ(ਝੂਠ);
 			dsm_udelay(120);
-			SPEKTRUM_OUT(true);
+			SPEKTRUM_ਬਾਹਰਲਾ(ਸੱਚ);
 		}
 
-		break;
+		ਰੋਕੋ;
 
-	case DSM_CMD_BIND_REINIT_UART:
+	ਹਾਲਤ DSM_CMD_BIND_REINIT_UART:
 		// Restore USART RX pin to RS232 receive mode
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_REINIT_UART\n");
-#endif
+#ਜੇ defined(DSM_DEBUG)
+		ਲਿਖੋ("DSM: DSM_CMD_BIND_REINIT_UART\n");
+#ਜੇ_ਅੰਤ
 		SPEKTRUM_RX_AS_UART();
-		break;
+		ਰੋਕੋ;
 
 	}
 }
-#endif
+#ਜੇ_ਅੰਤ
 
 /**
  * Decode the entire dsm frame (all contained channels)
@@ -598,22 +598,22 @@ void dsm_bind(uint16_t cmd, int pulses)
  * @param[out] num_values pointer to number of raw channel values returned
  * @return true=DSM frame successfully decoded, false=no update
  */
-bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count,
+ਤਾਰਕਿਕ dsm_decode(hrt_abstime ਚੌਖਟਾ_ਸਮਾਂ, ਤਾਰਕਿਕ *dsm_11_ਦੋਆਧਾਰੀ_ਅੰਕ, ਬਿਨਾਨਿਸ਼ਾਨੀ channel_ਗਿਣਤੀ,
 		int8_t *rssi_percent)
 {
 	// If we haven't seen a new frame recently or haven't guessed the DSM encoding, try to guess
-	if (((frame_time - dsm_last_frame_time) > 1000000) && (dsm_channel_shift != 0)) {
-		dsm_guess_format(true);
+	ਜੇ (((ਚੌਖਟਾ_ਸਮਾਂ - dsm_ਆਖਰੀ_ਚੌਖਟਾ_ਸਮਾਂ) > 1000000) && (dsm_channel_ਖਿਸਕਾਓ != 0)) {
+		dsm_guess_format(ਸੱਚ);
 	}
 
 	/* if we don't know the dsm_frame format, update the guessing state machine */
-	if (dsm_channel_shift == 0) {
-		if (!dsm_guess_format(false)) {
-			return false;
+	ਜੇ (dsm_channel_ਖਿਸਕਾਓ == 0) {
+		ਜੇ (!dsm_guess_format(ਝੂਠ)) {
+			ਵਾਪਸ ਝੂਠ;
 		}
 
 		// We have our first packet so we're in sync
-		dsm_last_rx_time = hrt_absolute_time();
+		dsm_ਆਖਰੀ_rx_ਸਮਾਂ = hrt_absolute_ਸਮਾਂ();
 	}
 
 	/*
@@ -624,22 +624,22 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
 	 */
 
 	// The SPM4649T with firmware version 1.1RC9 or later will have RSSI in place of fades
-	if (rssi_percent) {
-		if (((int8_t *)dsm_frame)[0] < 0) {
+	ਜੇ (rssi_percent) {
+		ਜੇ (((int8_t *)dsm_ਚੌਖਟਾ)[0] < 0) {
 			/*
 			 * RSSI is a signed integer between -42dBm and -92dBm
 			 * If signal is lost, the value is -128
 			 */
-			int8_t dbm = (int8_t)dsm_frame[0];
+			int8_t dbm = (int8_t)dsm_ਚੌਖਟਾ[0];
 
-			if (dbm == -128) {
+			ਜੇ (dbm == -128) {
 				*rssi_percent = 0;
 
-			} else {
-				*rssi_percent = spek_dbm_to_percent(dbm);
+			} ਨਹੀਂਤਾਂ {
+				*rssi_percent = spek_dbm_ਮੰਜ਼ਿਲ_percent(dbm);
 			}
 
-		} else {
+		} ਨਹੀਂਤਾਂ {
 			/* if we don't know the rssi, anything over 100 will invalidate it */
 			*rssi_percent = 127;
 		}
@@ -653,42 +653,42 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
 	 * seven channels are being transmitted.
 	 */
 
-	px4::Bitset<DSM_MAX_CHANNEL_COUNT> channels_found;
+	px4::Bitset<DSM_MAX_CHANNEL_ਗਿਣਤੀ> channels_ਮਿਲਿਆ;
 
-	for (unsigned i = 0; i < DSM_FRAME_CHANNELS; i++) {
+	ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < DSM_ਚੌਖਟਾ_CHANNELS; i++) {
 
-		uint8_t *dp = &dsm_frame[2 + (2 * i)];
+		uint8_t *dp = &dsm_ਚੌਖਟਾ[2 + (2 * i)];
 		uint16_t raw = (dp[0] << 8) | dp[1];
 
 		uint8_t channel = 0;
 		uint16_t value = 0;
 
-		if (!dsm_decode_channel(raw, dsm_channel_shift, channel, value)) {
-			dsm_frame_drops++;
-			return false;
+		ਜੇ (!dsm_decode_channel(raw, dsm_channel_ਖਿਸਕਾਓ, channel, value)) {
+			dsm_ਚੌਖਟਾ_drops++;
+			ਵਾਪਸ ਝੂਠ;
 		}
 
-		if (channel == CHANNEL_UNUSED) {
-			continue;
+		ਜੇ (channel == CHANNEL_ਅਣਵਰਤਿਆ) {
+			ਜਾਰੀ;
 		}
 
 		// abort if channel already found, no duplicate channels per DSM frame
-		if (channels_found[channel]) {
+		ਜੇ (channels_ਮਿਲਿਆ[channel]) {
 			PX4_DEBUG("duplicate channel %d\n\n", channel);
-			dsm_guess_format(true);
-			dsm_frame_drops++;
-			return false;
+			dsm_guess_format(ਸੱਚ);
+			dsm_ਚੌਖਟਾ_drops++;
+			ਵਾਪਸ ਝੂਠ;
 
-		} else {
-			channels_found.set(channel);
+		} ਨਹੀਂਤਾਂ {
+			channels_ਮਿਲਿਆ.ਸੈੱਟ(channel);
 		}
 
 		/* reset bit guessing state machine if the channel index is out of bounds */
-		if (channel >= DSM_MAX_CHANNEL_COUNT || channel >= channel_count) {
-			PX4_DEBUG("channel %d > %d (DSM_MAX_CHANNEL_COUNT)", channel, DSM_MAX_CHANNEL_COUNT);
-			dsm_guess_format(true);
-			dsm_frame_drops++;
-			return false;
+		ਜੇ (channel >= DSM_MAX_CHANNEL_ਗਿਣਤੀ || channel >= channel_ਗਿਣਤੀ) {
+			PX4_DEBUG("channel %d > %d (DSM_MAX_CHANNEL_COUNT)", channel, DSM_MAX_CHANNEL_ਗਿਣਤੀ);
+			dsm_guess_format(ਸੱਚ);
+			dsm_ਚੌਖਟਾ_drops++;
+			ਵਾਪਸ ਝੂਠ;
 		}
 
 		/*
@@ -698,37 +698,37 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
 		 * Specifically, the first four channels in rc_channel_data are roll, pitch, thrust, yaw,
 		 * but the first four channels from the DSM receiver are thrust, roll, pitch, yaw.
 		 */
-		switch (channel) {
-		case 0:
+		ਚੋਣ (channel) {
+		ਹਾਲਤ 0:
 			channel = 2; // Spektrum Throttle (0) -> 2
-			break;
+			ਰੋਕੋ;
 
-		case 1:
+		ਹਾਲਤ 1:
 			channel = 0; // Spektrum Aileron (1) -> 0
-			break;
+			ਰੋਕੋ;
 
-		case 2:
+		ਹਾਲਤ 2:
 			channel = 1; // Spektrum Elevator (2) -> 1
 
-		default:
-			break;
+		ਮੂਲ:
+			ਰੋਕੋ;
 		}
 
-		channel_buffer[channel].value = value;
-		channel_buffer[channel].last_seen = frame_time;
+		channel_ਬਫਰ[channel].value = value;
+		channel_ਬਫਰ[channel].ਆਖਰੀ_ਵੇਖਿਆ = ਚੌਖਟਾ_ਸਮਾਂ;
 	}
 
 	/* Set the 11-bit data indicator */
-	*dsm_11_bit = (dsm_channel_shift == 11);
+	*dsm_11_ਦੋਆਧਾਰੀ_ਅੰਕ = (dsm_channel_ਖਿਸਕਾਓ == 11);
 
 	/* we have received something we think is a dsm_frame */
-	dsm_last_frame_time = frame_time;
+	dsm_ਆਖਰੀ_ਚੌਖਟਾ_ਸਮਾਂ = ਚੌਖਟਾ_ਸਮਾਂ;
 
-#ifdef DSM_DEBUG
-	printf("PARSED PACKET\n");
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ DSM_DEBUG
+	ਲਿਖੋ("PARSED PACKET\n");
+#ਜੇ_ਅੰਤ
 
-	return true;
+	ਵਾਪਸ ਸੱਚ;
 }
 
 /**
@@ -755,8 +755,8 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
  * @param[in] max_values maximum number of channels the receiver can process
  * @return true=decoded raw channel values updated, false=no update
  */
-bool dsm_input(int fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit, uint8_t *n_bytes, uint8_t **bytes,
-	       int8_t *rssi, unsigned *frame_drops, unsigned max_values)
+ਤਾਰਕਿਕ dsm_ਨਿਵੇਸ਼(ਪੂਰਨ fd, uint16_t *ਮੁੱਲਾਂ_2, uint16_t *ਅੰਕ_ਮੁੱਲਾਂ, ਤਾਰਕਿਕ *dsm_11_ਦੋਆਧਾਰੀ_ਅੰਕ, uint8_t *n_ਬਾਈਟਾਂ, uint8_t **ਬਾਈਟਾਂ,
+	       int8_t *rssi, ਬਿਨਾਨਿਸ਼ਾਨੀ *ਚੌਖਟਾ_drops, ਬਿਨਾਨਿਸ਼ਾਨੀ max_ਮੁੱਲਾਂ)
 {
 	/*
 	 * The DSMX/2 protocol doesn't provide reliable framing,
@@ -770,165 +770,165 @@ bool dsm_input(int fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit,
 	 * provides a degree of protection. Of course, it would be better
 	 * if we didn't drop bytes...
 	 */
-	const hrt_abstime now = hrt_absolute_time();
+	ਅਚਲ hrt_abstime now = hrt_absolute_ਸਮਾਂ();
 
 	/*
 	 * Fetch bytes, but no more than we would need to complete
 	 * a complete frame.
 	 */
 
-	int ret = read(fd, &dsm_buf[0], sizeof(dsm_buf) / sizeof(dsm_buf[0]));
+	ਪੂਰਨ ret = ਪਠ(fd, &dsm_buf[0], ਆਕਾਰ(dsm_buf) / ਆਕਾਰ(dsm_buf[0]));
 
 	/* if the read failed for any reason, just give up here */
-	if (ret < 1) {
-		return false;
+	ਜੇ (ret < 1) {
+		ਵਾਪਸ ਝੂਠ;
 
-	} else {
-		*n_bytes = ret;
-		*bytes = &dsm_buf[0];
+	} ਨਹੀਂਤਾਂ {
+		*n_ਬਾਈਟਾਂ = ret;
+		*ਬਾਈਟਾਂ = &dsm_buf[0];
 	}
 
 	/*
 	 * Try to decode something with what we got
 	 */
-	return dsm_parse(now, &dsm_buf[0], ret, values, num_values, dsm_11_bit, &dsm_frame_drops, rssi, max_values);
+	ਵਾਪਸ dsm_parse(now, &dsm_buf[0], ret, ਮੁੱਲਾਂ_2, ਅੰਕ_ਮੁੱਲਾਂ, dsm_11_ਦੋਆਧਾਰੀ_ਅੰਕ, &dsm_ਚੌਖਟਾ_drops, rssi, max_ਮੁੱਲਾਂ);
 }
 
-bool dsm_parse(const uint64_t now, const uint8_t *frame, const unsigned len, uint16_t *values,
-	       uint16_t *num_values, bool *dsm_11_bit, unsigned *frame_drops, int8_t *rssi_percent, uint16_t max_channels)
+ਤਾਰਕਿਕ dsm_parse(ਅਚਲ uint64_t now, ਅਚਲ uint8_t *ਚੌਖਟਾ, ਅਚਲ ਬਿਨਾਨਿਸ਼ਾਨੀ len, uint16_t *ਮੁੱਲਾਂ_2,
+	       uint16_t *ਅੰਕ_ਮੁੱਲਾਂ, ਤਾਰਕਿਕ *dsm_11_ਦੋਆਧਾਰੀ_ਅੰਕ, ਬਿਨਾਨਿਸ਼ਾਨੀ *ਚੌਖਟਾ_drops, int8_t *rssi_percent, uint16_t max_channels)
 {
 	/* this is set by the decoding state machine and will default to false
 	 * once everything that was decodable has been decoded.
 	 */
-	bool channel_data_available = false;
-	unsigned channel_output_count;
+	ਤਾਰਕਿਕ channel_ਅੰਕੜੇ_ਉਪਲਬਧ = ਝੂਠ;
+	ਬਿਨਾਨਿਸ਼ਾਨੀ channel_output_ਗਿਣਤੀ;
 
 	/* keep decoding until we have consumed the buffer */
-	for (unsigned d = 0; d < len; d++) {
+	ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ d = 0; d < len; d++) {
 
 		/* overflow check */
-		if (dsm_partial_frame_count == sizeof(dsm_frame) / sizeof(dsm_frame[0])) {
-			dsm_partial_frame_count = 0;
+		ਜੇ (dsm_partial_ਚੌਖਟਾ_ਗਿਣਤੀ == ਆਕਾਰ(dsm_ਚੌਖਟਾ) / ਆਕਾਰ(dsm_ਚੌਖਟਾ[0])) {
+			dsm_partial_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
 			dsm_decode_state = DSM_DECODE_STATE_DESYNC;
-#ifdef DSM_DEBUG
-			printf("DSM: RESET (BUF LIM)\n");
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ DSM_DEBUG
+			ਲਿਖੋ("DSM: RESET (BUF LIM)\n");
+#ਜੇ_ਅੰਤ
 		}
 
-		if (dsm_partial_frame_count == DSM_FRAME_SIZE) {
-			dsm_partial_frame_count = 0;
+		ਜੇ (dsm_partial_ਚੌਖਟਾ_ਗਿਣਤੀ == DSM_ਚੌਖਟਾ_ਮਾਪ) {
+			dsm_partial_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
 			dsm_decode_state = DSM_DECODE_STATE_DESYNC;
-#ifdef DSM_DEBUG
-			printf("DSM: RESET (PACKET LIM)\n");
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ DSM_DEBUG
+			ਲਿਖੋ("DSM: RESET (PACKET LIM)\n");
+#ਜੇ_ਅੰਤ
 		}
 
-#ifdef DSM_DEBUG
-#if 0
-		printf("dsm state: %s%s, count: %d, val: %02x\n",
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ DSM_DEBUG
+#ਜੇ 0
+		ਲਿਖੋ("dsm state: %s%s, count: %d, val: %02x\n",
 		       (dsm_decode_state == DSM_DECODE_STATE_DESYNC) ? "DSM_DECODE_STATE_DESYNC" : "",
 		       (dsm_decode_state == DSM_DECODE_STATE_SYNC) ? "DSM_DECODE_STATE_SYNC" : "",
-		       dsm_partial_frame_count,
-		       (unsigned)frame[d]);
-#endif
-#endif
+		       dsm_partial_ਚੌਖਟਾ_ਗਿਣਤੀ,
+		       (ਬਿਨਾਨਿਸ਼ਾਨੀ)ਚੌਖਟਾ[d]);
+#ਜੇ_ਅੰਤ
+#ਜੇ_ਅੰਤ
 
-		switch (dsm_decode_state) {
-		case DSM_DECODE_STATE_DESYNC:
+		ਚੋਣ (dsm_decode_state) {
+		ਹਾਲਤ DSM_DECODE_STATE_DESYNC:
 
 			/* we are de-synced and only interested in the frame marker */
-			if ((now - dsm_last_rx_time) > 5000) {
+			ਜੇ ((now - dsm_ਆਖਰੀ_rx_ਸਮਾਂ) > 5000) {
 				dsm_decode_state = DSM_DECODE_STATE_SYNC;
-				dsm_partial_frame_count = 0;
-				dsm_frame[dsm_partial_frame_count++] = frame[d];
+				dsm_partial_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
+				dsm_ਚੌਖਟਾ[dsm_partial_ਚੌਖਟਾ_ਗਿਣਤੀ++] = ਚੌਖਟਾ[d];
 			}
 
-			break;
+			ਰੋਕੋ;
 
-		case DSM_DECODE_STATE_SYNC: {
-				dsm_frame[dsm_partial_frame_count++] = frame[d];
+		ਹਾਲਤ DSM_DECODE_STATE_SYNC: {
+				dsm_ਚੌਖਟਾ[dsm_partial_ਚੌਖਟਾ_ਗਿਣਤੀ++] = ਚੌਖਟਾ[d];
 
 				/* decode whatever we got and expect */
-				if (dsm_partial_frame_count < DSM_FRAME_SIZE) {
-					break;
+				ਜੇ (dsm_partial_ਚੌਖਟਾ_ਗਿਣਤੀ < DSM_ਚੌਖਟਾ_ਮਾਪ) {
+					ਰੋਕੋ;
 				}
 
 				// We've collected a full frame, parse it
-				channel_data_available = dsm_decode(now, dsm_11_bit, dsm_chan_count, rssi_percent);
+				channel_ਅੰਕੜੇ_ਉਪਲਬਧ = dsm_decode(now, dsm_11_ਦੋਆਧਾਰੀ_ਅੰਕ, dsm_chan_ਗਿਣਤੀ, rssi_percent);
 
 				// Frame consumed, reset the buffer count
-				dsm_partial_frame_count = 0;
+				dsm_partial_ਚੌਖਟਾ_ਗਿਣਤੀ = 0;
 
 				/* if decoding failed, set proto to desync */
-				if (!channel_data_available) {
+				ਜੇ (!channel_ਅੰਕੜੇ_ਉਪਲਬਧ) {
 					dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 				}
 			}
-			break;
+			ਰੋਕੋ;
 
-		default:
-#ifdef DSM_DEBUG
-			printf("UNKNOWN PROTO STATE");
-#endif
-			channel_data_available = false;
+		ਮੂਲ:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ DSM_DEBUG
+			ਲਿਖੋ("UNKNOWN PROTO STATE");
+#ਜੇ_ਅੰਤ
+			channel_ਅੰਕੜੇ_ਉਪਲਬਧ = ਝੂਠ;
 		}
 	}
 
-	if (frame_drops) {
-		*frame_drops = dsm_frame_drops;
+	ਜੇ (ਚੌਖਟਾ_drops) {
+		*ਚੌਖਟਾ_drops = dsm_ਚੌਖਟਾ_drops;
 	}
 
-	if (channel_data_available) {
+	ਜੇ (channel_ਅੰਕੜੇ_ਉਪਲਬਧ) {
 		// Check if any channels have been absent for too long
-		for (unsigned i = 0; i < dsm_chan_count; i++) {
-			if (now - channel_buffer[i].last_seen > 50 * 1000) {
-				return false;
+		ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < dsm_chan_ਗਿਣਤੀ; i++) {
+			ਜੇ (now - channel_ਬਫਰ[i].ਆਖਰੀ_ਵੇਖਿਆ > 50 * 1000) {
+				ਵਾਪਸ ਝੂਠ;
 			}
 		}
 
 		// Overflow protect
-		if (max_channels >= DSM_MAX_CHANNEL_COUNT) {
-			max_channels = DSM_MAX_CHANNEL_COUNT;
+		ਜੇ (max_channels >= DSM_MAX_CHANNEL_ਗਿਣਤੀ) {
+			max_channels = DSM_MAX_CHANNEL_ਗਿਣਤੀ;
 		}
 
 		// Cap returned channels to max_channels if we've seen more
-		if (dsm_chan_count > max_channels) {
-			channel_output_count = max_channels;
+		ਜੇ (dsm_chan_ਗਿਣਤੀ > max_channels) {
+			channel_output_ਗਿਣਤੀ = max_channels;
 
-		} else {
-			channel_output_count = dsm_chan_count;
+		} ਨਹੀਂਤਾਂ {
+			channel_output_ਗਿਣਤੀ = dsm_chan_ਗਿਣਤੀ;
 		}
 
-		*num_values = channel_output_count;
+		*ਅੰਕ_ਮੁੱਲਾਂ = channel_output_ਗਿਣਤੀ;
 
 		// Copy the full list of collected channels
-		for (unsigned i = 0; i < channel_output_count; i++) {
+		ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < channel_output_ਗਿਣਤੀ; i++) {
 			// Channels which do not have a value yet (because their frame has not been seen yet)
 			// will have a zero. If we come across a blank channel, keep storing values, but we
 			// won't return that we have a valid frame just yet.
-			if (channel_buffer[i].value) {
-				values[i] = channel_buffer[i].value;
+			ਜੇ (channel_ਬਫਰ[i].value) {
+				ਮੁੱਲਾਂ_2[i] = channel_ਬਫਰ[i].value;
 
-			} else {
-				channel_data_available = false;
+			} ਨਹੀਂਤਾਂ {
+				channel_ਅੰਕੜੇ_ਉਪਲਬਧ = ਝੂਠ;
 			}
 		}
 	}
 
-#ifdef DSM_DEBUG
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ DSM_DEBUG
 
-	if (channel_data_available) {
-		printf("frame drops: %u, chan #: %u\n", dsm_frame_drops, dsm_chan_count);
+	ਜੇ (channel_ਅੰਕੜੇ_ਉਪਲਬਧ) {
+		ਲਿਖੋ("frame drops: %u, chan #: %u\n", dsm_ਚੌਖਟਾ_drops, dsm_chan_ਗਿਣਤੀ);
 
-		for (unsigned i = 0; i < dsm_chan_count; i++) {
-			printf("dsm_decode: #CH %02u: %u\n", i + 1, values[i]);
+		ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < dsm_chan_ਗਿਣਤੀ; i++) {
+			ਲਿਖੋ("dsm_decode: #CH %02u: %u\n", i + 1, ਮੁੱਲਾਂ_2[i]);
 		}
 	}
 
-#endif
+#ਜੇ_ਅੰਤ
 
-	dsm_last_rx_time = now;
+	dsm_ਆਖਰੀ_rx_ਸਮਾਂ = now;
 
 	/* return false as default */
-	return channel_data_available;
+	ਵਾਪਸ channel_ਅੰਕੜੇ_ਉਪਲਬਧ;
 }

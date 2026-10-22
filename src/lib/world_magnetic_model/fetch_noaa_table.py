@@ -32,12 +32,12 @@
 #
 ############################################################################
 
-import math
-import numpy
-import json
-import statistics
-import sys
-import urllib.request
+ਆਯਾਤ math
+ਆਯਾਤ numpy
+ਆਯਾਤ json
+ਆਯਾਤ statistics
+ਆਯਾਤ sys
+ਆਯਾਤ urllib.request
 
 SAMPLING_RES = 10
 SAMPLING_MIN_LAT = -90
@@ -45,10 +45,10 @@ SAMPLING_MAX_LAT = 90
 SAMPLING_MIN_LON = -180
 SAMPLING_MAX_LON = 180
 
-def constrain(n, nmin, nmax):
-    return max(min(nmin, n), nmax)
+ਪਰਿਭਾਸ਼ਾ constrain(n, nmin, nmax):
+    ਵਾਪਸ max(min(nmin, n), nmax)
 
-header = """/****************************************************************************
+ਸਿਰਲੇਖ = """/****************************************************************************
  *
  *   Copyright (c) 2020-2024 PX4 Development Team. All rights reserved.
  *
@@ -82,26 +82,26 @@ header = """/*******************************************************************
  ****************************************************************************/
 """
 
-key=sys.argv[1] # NOAA key (https://www.ngdc.noaa.gov/geomag/CalcSurvey.shtml)
+ਕੁੰਜੀ=sys.argv[1] # NOAA key (https://www.ngdc.noaa.gov/geomag/CalcSurvey.shtml)
 
-print(header)
+ਛਾਪੋ(ਸਿਰਲੇਖ)
 
-print('#include <stdint.h>\n')
+ਛਾਪੋ('#include <stdint.h>\n')
 
-LAT_DIM=int((SAMPLING_MAX_LAT-SAMPLING_MIN_LAT)/SAMPLING_RES)+1
-LON_DIM=int((SAMPLING_MAX_LON-SAMPLING_MIN_LON)/SAMPLING_RES)+1
+LAT_DIM=ਪੂਰਨ((SAMPLING_MAX_LAT-SAMPLING_MIN_LAT)/SAMPLING_RES)+1
+LON_DIM=ਪੂਰਨ((SAMPLING_MAX_LON-SAMPLING_MIN_LON)/SAMPLING_RES)+1
 
-print('static constexpr float SAMPLING_RES = {}'.format(SAMPLING_RES) + ';')
-print('static constexpr float SAMPLING_MIN_LAT = {}'.format(SAMPLING_MIN_LAT) + ';')
-print('static constexpr float SAMPLING_MAX_LAT = {}'.format(SAMPLING_MAX_LAT) + ';')
-print('static constexpr float SAMPLING_MIN_LON = {}'.format(SAMPLING_MIN_LON) + ';')
-print('static constexpr float SAMPLING_MAX_LON = {}'.format(SAMPLING_MAX_LON) + ';')
-print('')
-print('static constexpr int LAT_DIM = {}'.format(LAT_DIM) + ';')
-print('static constexpr int LON_DIM = {}'.format(LON_DIM) + ';')
-print('\n')
+ਛਾਪੋ('static constexpr float SAMPLING_RES = {}'.format(SAMPLING_RES) + ';')
+ਛਾਪੋ('static constexpr float SAMPLING_MIN_LAT = {}'.format(SAMPLING_MIN_LAT) + ';')
+ਛਾਪੋ('static constexpr float SAMPLING_MAX_LAT = {}'.format(SAMPLING_MAX_LAT) + ';')
+ਛਾਪੋ('static constexpr float SAMPLING_MIN_LON = {}'.format(SAMPLING_MIN_LON) + ';')
+ਛਾਪੋ('static constexpr float SAMPLING_MAX_LON = {}'.format(SAMPLING_MAX_LON) + ';')
+ਛਾਪੋ('')
+ਛਾਪੋ('static constexpr int LAT_DIM = {}'.format(LAT_DIM) + ';')
+ਛਾਪੋ('static constexpr int LON_DIM = {}'.format(LON_DIM) + ';')
+ਛਾਪੋ('\n')
 
-print('// *INDENT-OFF*\n\n\n')
+ਛਾਪੋ('// *INDENT-OFF*\n\n\n')
 
 
 
@@ -109,98 +109,98 @@ print('// *INDENT-OFF*\n\n\n')
 world_magnitude_model = {} # lat/lon dictionary with grid result
 
 params = urllib.parse.urlencode({'lat1': 0, 'lon1': 0, 'resultFormat': 'json'})
-f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (key, params))
-data = json.loads(f.read())
+f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (ਕੁੰਜੀ, params))
+ਅੰਕੜੇ = json.loads(f.ਪਠ())
 
-world_magnitude_model_units = data['units']
+world_magnitude_model_units = ਅੰਕੜੇ['units']
 
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+ਲਈ latitude ਵਿੱਚ ਸੀਮਾ(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     world_magnitude_model[latitude] = {}
 
-    for longitude in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
+    ਲਈ longitude ਵਿੱਚ ਸੀਮਾ(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
         params = urllib.parse.urlencode({'lat1': latitude, 'lon1': longitude, 'lon2': SAMPLING_MAX_LON, 'resultFormat': 'json'})
-        f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (key, params))
-        data = json.loads(f.read())
+        f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (ਕੁੰਜੀ, params))
+        ਅੰਕੜੇ = json.loads(f.ਪਠ())
         #print(json.dumps(data, indent = 4)) # debugging
 
-        world_magnitude_model[latitude][longitude] = data['result'][0]
+        world_magnitude_model[latitude][longitude] = ਅੰਕੜੇ['result'][0]
         #print(world_magnitude_model[latitude][longitude])
 
 
-def print_wmm_table(key_name):
+ਪਰਿਭਾਸ਼ਾ print_wmm_ਸਾਰਣੀ(ਕੁੰਜੀ_name):
 
-    value_min = float('inf')
-    value_min_lat_lon = ()
+    ਮੁੱਲ_min = ਦਸ਼ਮਲਵ('inf')
+    ਮੁੱਲ_min_lat_lon = ()
 
-    value_max = float('-inf')
-    value_max_lat_lon = ()
+    ਮੁੱਲ_max = ਦਸ਼ਮਲਵ('-inf')
+    ਮੁੱਲ_max_lat_lon = ()
 
-    for latitude, lat_row in world_magnitude_model.items():
+    ਲਈ latitude, lat_ਪੰਕਤੀ ਵਿੱਚ world_magnitude_model.ਚੀਜ਼ਾਂ_2():
         #print(latitude, lat_row)
-        for longitude, result in lat_row.items():
+        ਲਈ longitude, ਨਤੀਜਾ ਵਿੱਚ lat_ਪੰਕਤੀ.ਚੀਜ਼ਾਂ_2():
             #print(result)
 
-            value = float(result[key_name])
+            ਮੁੱਲ = ਦਸ਼ਮਲਵ(ਨਤੀਜਾ[ਕੁੰਜੀ_name])
 
-            if (value > value_max):
-                value_max = value
-                value_max_lat_lon = (latitude, longitude)
+            ਜੇ (ਮੁੱਲ > ਮੁੱਲ_max):
+                ਮੁੱਲ_max = ਮੁੱਲ
+                ਮੁੱਲ_max_lat_lon = (latitude, longitude)
 
-            if (value < value_min):
-                value_min = value
-                value_min_lat_lon = (latitude, longitude)
+            ਜੇ (ਮੁੱਲ < ਮੁੱਲ_min):
+                ਮੁੱਲ_min = ਮੁੱਲ
+                ਮੁੱਲ_min_lat_lon = (latitude, longitude)
 
     # scale the values to fit into int16_t
-    value_scale_max = abs(numpy.iinfo(numpy.int16).max) / abs(value_max)
-    value_scale_min = abs(numpy.iinfo(numpy.int16).min) / abs(value_min)
-    value_scale = min(value_scale_max, value_scale_min)
+    ਮੁੱਲ_scale_max = abs(numpy.iinfo(numpy.int16).max) / abs(ਮੁੱਲ_max)
+    ਮੁੱਲ_scale_min = abs(numpy.iinfo(numpy.int16).min) / abs(ਮੁੱਲ_min)
+    ਮੁੱਲ_scale = min(ਮੁੱਲ_scale_max, ਮੁੱਲ_scale_min)
 
-    units_str = world_magnitude_model_units[key_name].split(' ')[0]
+    units_str = world_magnitude_model_units[ਕੁੰਜੀ_name].ਵੰਡੋ(' ')[0]
 
     # print the table
-    print('// Magnetic {} data in {:.4g} {}'.format(key_name, 1.0 / value_scale, units_str))
-    print('// Model: {},'.format(data['model']))
-    print('// Version: {},'.format(data['version']))
-    print('// Date: {},'.format(data['result'][0]['date']))
-    print('static constexpr const int16_t {}_table[{}][{}]'.format(key_name, LAT_DIM, LON_DIM) + " {")
-    print('\t//    LONGITUDE: ', end='')
-    for l in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
-        print('{0:6d},'.format(l), end='')
-    print('')
+    ਛਾਪੋ('// Magnetic {} data in {:.4g} {}'.format(ਕੁੰਜੀ_name, 1.0 / ਮੁੱਲ_scale, units_str))
+    ਛਾਪੋ('// Model: {},'.format(ਅੰਕੜੇ['model']))
+    ਛਾਪੋ('// Version: {},'.format(ਅੰਕੜੇ['version']))
+    ਛਾਪੋ('// Date: {},'.format(ਅੰਕੜੇ['result'][0]['date']))
+    ਛਾਪੋ('static constexpr const int16_t {}_table[{}][{}]'.format(ਕੁੰਜੀ_name, LAT_DIM, LON_DIM) + " {")
+    ਛਾਪੋ('\t//    LONGITUDE: ', ਸਿਰਾ='')
+    ਲਈ l ਵਿੱਚ ਸੀਮਾ(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
+        ਛਾਪੋ('{0:6d},'.format(l), ਸਿਰਾ='')
+    ਛਾਪੋ('')
 
-    for latitude, lat_row in world_magnitude_model.items():
-        print('\t/* LAT: {0:3d} */'.format(latitude) + ' { ', end='')
-        latitude_blackout_zone = False
+    ਲਈ latitude, lat_ਪੰਕਤੀ ਵਿੱਚ world_magnitude_model.ਚੀਜ਼ਾਂ_2():
+        ਛਾਪੋ('\t/* LAT: {0:3d} */'.format(latitude) + ' { ', ਸਿਰਾ='')
+        latitude_blackout_zone = ਝੂਠ
 
-        for longitude, result in lat_row.items():
+        ਲਈ longitude, ਨਤੀਜਾ ਵਿੱਚ lat_ਪੰਕਤੀ.ਚੀਜ਼ਾਂ_2():
 
-            value = float(result[key_name])
+            ਮੁੱਲ = ਦਸ਼ਮਲਵ(ਨਤੀਜਾ[ਕੁੰਜੀ_name])
 
             # value scaled to fit into int16_t
-            value_int = int(round(value * value_scale))
-            print('{0:6d},'.format(value_int), end='')
+            ਮੁੱਲ_int = ਪੂਰਨ(round(ਮੁੱਲ * ਮੁੱਲ_scale))
+            ਛਾਪੋ('{0:6d},'.format(ਮੁੱਲ_int), ਸਿਰਾ='')
 
             # blackout warning at this latitude
-            try:
-                if result['warning']:
-                    latitude_blackout_zone = True
+            ਕੋਸ਼ਿਸ਼:
+                ਜੇ ਨਤੀਜਾ['warning']:
+                    latitude_blackout_zone = ਸੱਚ
 
-            except:
-                pass
+            ਅਪਵਾਦ:
+                ਲੰਘੋ
 
-        if latitude_blackout_zone:
-            print(' }, // WARNING! black out zone')
-        else:
-            print(' },')
+        ਜੇ latitude_blackout_zone:
+            ਛਾਪੋ(' }, // WARNING! black out zone')
+        ਨਹੀਂਤਾਂ:
+            ਛਾਪੋ(' },')
 
-    print("};")
+    ਛਾਪੋ("};")
 
-    print('static constexpr float WMM_{}_SCALE_TO_{} = {:.9g}f;'.format(key_name.upper(), units_str.upper(), 1.0 / value_scale))
-    print('static constexpr float WMM_{}_MIN_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(key_name.upper(), units_str.upper(), value_min, value_min_lat_lon[0], value_min_lat_lon[1]))
-    print('static constexpr float WMM_{}_MAX_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(key_name.upper(), units_str.upper(), value_max, value_max_lat_lon[0], value_max_lat_lon[1]))
-    print("\n")
+    ਛਾਪੋ('static constexpr float WMM_{}_SCALE_TO_{} = {:.9g}f;'.format(ਕੁੰਜੀ_name.ਉੱਤਲਾ(), units_str.ਉੱਤਲਾ(), 1.0 / ਮੁੱਲ_scale))
+    ਛਾਪੋ('static constexpr float WMM_{}_MIN_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(ਕੁੰਜੀ_name.ਉੱਤਲਾ(), units_str.ਉੱਤਲਾ(), ਮੁੱਲ_min, ਮੁੱਲ_min_lat_lon[0], ਮੁੱਲ_min_lat_lon[1]))
+    ਛਾਪੋ('static constexpr float WMM_{}_MAX_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(ਕੁੰਜੀ_name.ਉੱਤਲਾ(), units_str.ਉੱਤਲਾ(), ਮੁੱਲ_max, ਮੁੱਲ_max_lat_lon[0], ਮੁੱਲ_max_lat_lon[1]))
+    ਛਾਪੋ("\n")
 
 
-print_wmm_table('declination')
-print_wmm_table('inclination')
-print_wmm_table('totalintensity')
+print_wmm_ਸਾਰਣੀ('declination')
+print_wmm_ਸਾਰਣੀ('inclination')
+print_wmm_ਸਾਰਣੀ('totalintensity')

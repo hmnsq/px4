@@ -37,11 +37,11 @@
  * LED driver to control the onboard LED(s) via ioctl interface.
  */
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/px4_config.h>
-#include <lib/cdev/CDev.hpp>
-#include <drivers/drv_board_led.h>
-#include <stdio.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/log.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/px4_config.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/cdev/CDev.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/drv_board_led.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdio.h>
 
 /*
  * Ideally we'd be able to get these from arm_internal.h,
@@ -51,29 +51,29 @@
  * CONFIG_ARCH_LEDS configuration switch.
  */
 __BEGIN_DECLS
-extern void led_init();
-extern void led_on(int led);
-extern void led_off(int led);
-extern void led_toggle(int led);
+ਬਾਹਰੀ ਖਾਲੀ led_init();
+ਬਾਹਰੀ ਖਾਲੀ led_on(ਪੂਰਨ led);
+ਬਾਹਰੀ ਖਾਲੀ led_off(ਪੂਰਨ led);
+ਬਾਹਰੀ ਖਾਲੀ led_toggle(ਪੂਰਨ led);
 __END_DECLS
 
-class LED : cdev::CDev
+ਵਰਗ LED : cdev::CDev
 {
-public:
+ਜਨਤਕ:
 	LED();
-	~LED() override = default;
+	~LED() override = ਮੂਲ;
 
-	int	init() override;
-	int	ioctl(cdev::file_t *filp, int cmd, unsigned long arg) override;
+	ਪੂਰਨ	init() override;
+	ਪੂਰਨ	ioctl(cdev::file_t *filp, ਪੂਰਨ cmd, ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ arg) override;
 };
 
-LED::LED() : CDev(LED0_DEVICE_PATH)
+LED::LED() : CDev(LED0_DEVICE_ਰਸਤਾ)
 {
 	// force immediate init/device registration
 	init();
 }
 
-int
+ਪੂਰਨ
 LED::init()
 {
 	PX4_DEBUG("LED::init");
@@ -82,43 +82,43 @@ LED::init()
 
 	led_init();
 
-	return 0;
+	ਵਾਪਸ 0;
 }
 
-int
-LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
+ਪੂਰਨ
+LED::ioctl(cdev::file_t *filp, ਪੂਰਨ cmd, ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ arg)
 {
-	int result = OK;
+	ਪੂਰਨ ਨਤੀਜਾ = OK;
 
-	switch (cmd) {
-	case LED_ON:
+	ਚੋਣ (cmd) {
+	ਹਾਲਤ LED_ON:
 		led_on(arg);
-		break;
+		ਰੋਕੋ;
 
-	case LED_OFF:
+	ਹਾਲਤ LED_OFF:
 		led_off(arg);
-		break;
+		ਰੋਕੋ;
 
-	case LED_TOGGLE:
+	ਹਾਲਤ LED_TOGGLE:
 		led_toggle(arg);
-		break;
+		ਰੋਕੋ;
 
-	default:
-		result = CDev::ioctl(filp, cmd, arg);
+	ਮੂਲ:
+		ਨਤੀਜਾ = CDev::ioctl(filp, cmd, arg);
 	}
 
-	return result;
+	ਵਾਪਸ ਨਤੀਜਾ;
 }
 
-namespace
+ਨਾਮਾਕਾਸ਼
 {
 LED	*gLED;
 }
 
-void
-drv_led_start(void)
+ਖਾਲੀ
+drv_led_ਸ਼ੁਰੂ(ਖਾਲੀ)
 {
-	if (gLED == nullptr) {
-		gLED = new LED;
+	ਜੇ (gLED == ਖਾਲੀ_ਸੂਚਕ) {
+		gLED = ਨਵਾਂ LED;
 	}
 }

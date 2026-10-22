@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "FunctionProviderBase.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "FunctionProviderBase.hpp"
 
 /**
  * Functions: Parachute
  */
-class FunctionParachute : public FunctionProviderBase
+ਵਰਗ FunctionParachute : ਜਨਤਕ Function_Provider_ਅਧਾਰ
 {
-public:
-	FunctionParachute() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionParachute(); }
+ਜਨਤਕ:
+	FunctionParachute() = ਮੂਲ;
+	ਸਥਿਰ Function_Provider_ਅਧਾਰ *allocate(ਅਚਲ Context &context) { ਵਾਪਸ ਨਵਾਂ FunctionParachute(); }
 
-	void update() override {}
-	float value(OutputFunction func) override { return -1.f; }
-	float defaultFailsafeValue(OutputFunction func) const override { return 1.f; }
+	ਖਾਲੀ update() override {}
+	ਦਸ਼ਮਲਵ value(OutputFunction func) override { ਵਾਪਸ -1.f; }
+	ਦਸ਼ਮਲਵ default_Failsafe_ਮੁੱਲ(OutputFunction func) ਅਚਲ override { ਵਾਪਸ 1.f; }
 };

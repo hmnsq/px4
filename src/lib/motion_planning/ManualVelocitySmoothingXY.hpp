@@ -36,88 +36,88 @@
  *
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <motion_planning/VelocitySmoothing.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <motion_planning/VelocitySmoothing.hpp>
 
-#include <matrix/matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/matrix/math.hpp>
 
-using matrix::Vector2f;
+ਵਰਤੋਂ ਮੈਟ੍ਰਿਕਸ::Vector2f;
 
-class ManualVelocitySmoothingXY final
+ਵਰਗ ManualVelocitySmoothingXY final
 {
-public:
-	ManualVelocitySmoothingXY() = default;
-	~ManualVelocitySmoothingXY() = default;
+ਜਨਤਕ:
+	ManualVelocitySmoothingXY() = ਮੂਲ;
+	~ManualVelocitySmoothingXY() = ਮੂਲ;
 
-	void reset(const Vector2f &accel, const Vector2f &vel, const Vector2f &pos);
-	void update(float dt, const Vector2f &velocity_target);
+	ਖਾਲੀ reset(ਅਚਲ Vector2f &accel, ਅਚਲ Vector2f &vel, ਅਚਲ Vector2f &pos);
+	ਖਾਲੀ update(ਦਸ਼ਮਲਵ dt, ਅਚਲ Vector2f &velocity_ਨਿਸ਼ਾਨਾ);
 
-	void setVelSpFeedback(const Vector2f &fb) { _velocity_setpoint_feedback = fb; }
+	ਖਾਲੀ ਸੈੱਟ_Vel_Sp_Feedback(ਅਚਲ Vector2f &fb) { _velocity_setpoint_feedback = fb; }
 
-	void setMaxJerk(const float max_jerk)
+	ਖਾਲੀ ਸੈੱਟ_Max_Jerk(ਅਚਲ ਦਸ਼ਮਲਵ max_jerk)
 	{
-		_trajectory[0].setMaxJerk(max_jerk);
-		_trajectory[1].setMaxJerk(max_jerk);
+		_trajectory[0].ਸੈੱਟ_Max_Jerk(max_jerk);
+		_trajectory[1].ਸੈੱਟ_Max_Jerk(max_jerk);
 	}
-	float getMaxJerk() const { return _trajectory[0].getMaxJerk(); }
+	ਦਸ਼ਮਲਵ getMaxJerk() ਅਚਲ { ਵਾਪਸ _trajectory[0].getMaxJerk(); }
 
-	void setMaxAccel(const float max_accel)
+	ਖਾਲੀ ਸੈੱਟ_Max_Accel(ਅਚਲ ਦਸ਼ਮਲਵ max_accel)
 	{
-		_trajectory[0].setMaxAccel(max_accel);
-		_trajectory[1].setMaxAccel(max_accel);
+		_trajectory[0].ਸੈੱਟ_Max_Accel(max_accel);
+		_trajectory[1].ਸੈੱਟ_Max_Accel(max_accel);
 	}
-	float getMaxAccel() const { return _trajectory[0].getMaxAccel(); }
+	ਦਸ਼ਮਲਵ getMaxAccel() ਅਚਲ { ਵਾਪਸ _trajectory[0].getMaxAccel(); }
 
-	void setMaxVel(const float max_vel)
+	ਖਾਲੀ ਸੈੱਟ_Max_Vel(ਅਚਲ ਦਸ਼ਮਲਵ max_vel)
 	{
-		_trajectory[0].setMaxVel(max_vel);
-		_trajectory[1].setMaxVel(max_vel);
+		_trajectory[0].ਸੈੱਟ_Max_Vel(max_vel);
+		_trajectory[1].ਸੈੱਟ_Max_Vel(max_vel);
 	}
-	float getMaxVel() const { return _trajectory[0].getMaxVel(); }
+	ਦਸ਼ਮਲਵ getMaxVel() ਅਚਲ { ਵਾਪਸ _trajectory[0].getMaxVel(); }
 
-	Vector2f getCurrentJerk() const { return _state.j; }
-	Vector2f getCurrentAcceleration() const { return _state.a; }
+	Vector2f getCurrentJerk() ਅਚਲ { ਵਾਪਸ _state.j; }
+	Vector2f getCurrentAcceleration() ਅਚਲ { ਵਾਪਸ _state.a; }
 
-	void setCurrentVelocity(const Vector2f &vel)
+	ਖਾਲੀ ਸੈੱਟ_Current_Velocity(ਅਚਲ Vector2f &vel)
 	{
 		_state.v = vel;
-		_trajectory[0].setCurrentVelocity(vel(0));
-		_trajectory[1].setCurrentVelocity(vel(1));
+		_trajectory[0].ਸੈੱਟ_Current_Velocity(vel(0));
+		_trajectory[1].ਸੈੱਟ_Current_Velocity(vel(1));
 	}
-	Vector2f getCurrentVelocity() const { return _state.v; }
+	Vector2f getCurrentVelocity() ਅਚਲ { ਵਾਪਸ _state.v; }
 
-	void setCurrentPosition(const Vector2f &pos)
+	ਖਾਲੀ ਸੈੱਟ_Current_Position(ਅਚਲ Vector2f &pos)
 	{
 		_state.x = pos;
-		_trajectory[0].setCurrentPosition(pos(0));
-		_trajectory[1].setCurrentPosition(pos(1));
+		_trajectory[0].ਸੈੱਟ_Current_Position(pos(0));
+		_trajectory[1].ਸੈੱਟ_Current_Position(pos(1));
 		_position_estimate = pos;
 
-		if (_position_lock_active) {
+		ਜੇ (position_ਤਾਲਾ_ਸਰਗਰਮ) {
 			_position_setpoint_locked = pos;
 		}
 	}
-	Vector2f getCurrentPosition() const { return _position_setpoint_locked; }
+	Vector2f getCurrentPosition() ਅਚਲ { ਵਾਪਸ _position_setpoint_locked; }
 
-	void setCurrentPositionEstimate(const Vector2f &pos) { _position_estimate = pos; }
+	ਖਾਲੀ ਸੈੱਟ_Current_Position_Estimate(ਅਚਲ Vector2f &pos) { _position_estimate = pos; }
 
-private:
-	void resetPositionLock();
-	void updateTrajectories(float dt);
-	void checkPositionLock(const Vector2f &velocity_target);
-	void updateTrajDurations(const Vector2f &velocity_target);
+ਨਿਜੀ:
+	ਖਾਲੀ reset_Position_ਤਾਲਾ();
+	ਖਾਲੀ updateTrajectories(ਦਸ਼ਮਲਵ dt);
+	ਖਾਲੀ check_Position_ਤਾਲਾ(ਅਚਲ Vector2f &velocity_ਨਿਸ਼ਾਨਾ);
+	ਖਾਲੀ updateTrajDurations(ਅਚਲ Vector2f &velocity_ਨਿਸ਼ਾਨਾ);
 
 	VelocitySmoothing _trajectory[2]; ///< Trajectory in x and y directions
 
-	bool _position_lock_active{false};
+	ਤਾਰਕਿਕ position_ਤਾਲਾ_ਸਰਗਰਮ{ਝੂਠ};
 
 	Vector2f _position_setpoint_locked{};
 
 	Vector2f _velocity_setpoint_feedback{};
 	Vector2f _position_estimate{};
 
-	struct {
+	ਬਣਤਰ {
 		Vector2f j;
 		Vector2f a;
 		Vector2f v;

@@ -31,64 +31,64 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <stdint.h>
-#include <string.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <string.h>
 
 
-#include "VariableLengthRingbuffer.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "VariableLengthRingbuffer.hpp"
 
-class TempData
+ਵਰਗ ਆਰਜ਼ੀ_ਅੰਕੜੇ
 {
-public:
-	TempData(size_t len)
+ਜਨਤਕ:
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ(size_t len)
 	{
-		_size = len;
-		_buf = new uint8_t[_size];
+		ਮਾਪ_2 = len;
+		_buf = ਨਵਾਂ uint8_t[ਮਾਪ_2];
 	}
 
-	~TempData()
+	~ਆਰਜ਼ੀ_ਅੰਕੜੇ()
 	{
-		delete[] _buf;
-		_buf = nullptr;
+		ਮਿਟਾਓ[] _buf;
+		_buf = ਖਾਲੀ_ਸੂਚਕ;
 	}
 
-	uint8_t *buf() const
+	uint8_t *buf() ਅਚਲ
 	{
-		return _buf;
+		ਵਾਪਸ _buf;
 	}
 
-	size_t size() const
+	size_t ਮਾਪ() ਅਚਲ
 	{
-		return _size;
+		ਵਾਪਸ ਮਾਪ_2;
 	}
 
-	void paint(unsigned offset = 0)
+	ਖਾਲੀ paint(ਬਿਨਾਨਿਸ਼ਾਨੀ ਵਿੱਥ = 0)
 	{
-		for (size_t i = 0; i < _size; ++i) {
-			_buf[i] = (uint8_t)((i + offset) % UINT8_MAX);
+		ਲਈ (size_t i = 0; i < ਮਾਪ_2; ++i) {
+			_buf[i] = (uint8_t)((i + ਵਿੱਥ) % UINT8_MAX);
 		}
 	}
 
-private:
-	uint8_t *_buf {nullptr};
-	size_t _size{0};
+ਨਿਜੀ:
+	uint8_t *_buf {ਖਾਲੀ_ਸੂਚਕ};
+	size_t ਮਾਪ_2{0};
 
 };
 
-bool operator==(const TempData &lhs, const TempData &rhs)
+ਤਾਰਕਿਕ ਸੰਚਾਲਕ==(ਅਚਲ ਆਰਜ਼ੀ_ਅੰਕੜੇ &lhs, ਅਚਲ ਆਰਜ਼ੀ_ਅੰਕੜੇ &rhs)
 {
-	if (lhs.size() != rhs.size()) {
-		return false;
+	ਜੇ (lhs.ਮਾਪ() != rhs.ਮਾਪ()) {
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	return memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
+	ਵਾਪਸ memcmp(lhs.buf(), rhs.buf(), lhs.ਮਾਪ()) == 0;
 }
 
 
-TEST(VariableLengthRingbuffer, AllocateAndDeallocate)
+TEST(Variable_ਲੰਮਾਈ_Ringbuffer, AllocateAndDeallocate)
 {
-	VariableLengthRingbuffer buf;
+	Variable_ਲੰਮਾਈ_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 	buf.deallocate();
 
@@ -96,40 +96,40 @@ TEST(VariableLengthRingbuffer, AllocateAndDeallocate)
 	// The second time we forget to clean up, but we expect no leak.
 }
 
-TEST(VariableLengthRingbuffer, PushATooBigMessage)
+TEST(Variable_ਲੰਮਾਈ_Ringbuffer, ਧੱਕੋ_AToo_Big_ਸੁਨੇਹਾ)
 {
-	VariableLengthRingbuffer buf;
+	Variable_ਲੰਮਾਈ_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{200};
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ ਅੰਕੜੇ{200};
 
 	// A message that doesn't fit should get rejected.
-	EXPECT_FALSE(buf.push_back(data.buf(), data.size()));
+	EXPECT_FALSE(buf.push_back(ਅੰਕੜੇ.buf(), ਅੰਕੜੇ.ਮਾਪ()));
 }
 
-TEST(VariableLengthRingbuffer, PushAndPopOne)
+TEST(Variable_ਲੰਮਾਈ_Ringbuffer, ਧੱਕੋ_And_ਕੱਢੋ_One)
 {
-	VariableLengthRingbuffer buf;
+	Variable_ਲੰਮਾਈ_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{20};
-	data.paint();
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ ਅੰਕੜੇ{20};
+	ਅੰਕੜੇ.paint();
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(ਅੰਕੜੇ.buf(), ਅੰਕੜੇ.ਮਾਪ()));
 
 
 	// Out buffer is the same size
-	TempData out{20};
-	EXPECT_EQ(buf.pop_front(out.buf(), out.size()), 20);
-	EXPECT_EQ(data, out);
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ ਬਾਹਰਲਾ{20};
+	EXPECT_EQ(buf.ਕੱਢੋ_front(ਬਾਹਰਲਾ.buf(), ਬਾਹਰਲਾ.ਮਾਪ()), 20);
+	EXPECT_EQ(ਅੰਕੜੇ, ਬਾਹਰਲਾ);
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(ਅੰਕੜੇ.buf(), ਅੰਕੜੇ.ਮਾਪ()));
 	// Out buffer is supposedly bigger
-	TempData out2{20};
-	EXPECT_EQ(buf.pop_front(out2.buf(), 21), 20);
-	EXPECT_EQ(data, out2);
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ out2{20};
+	EXPECT_EQ(buf.ਕੱਢੋ_front(out2.buf(), 21), 20);
+	EXPECT_EQ(ਅੰਕੜੇ, out2);
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(ਅੰਕੜੇ.buf(), ਅੰਕੜੇ.ਮਾਪ()));
 
 	// Disabled because it doesn't work reliably.
 	// For some reason the abort works when tests are filtered using TESTFILTER
@@ -141,117 +141,117 @@ TEST(VariableLengthRingbuffer, PushAndPopOne)
 	//EXPECT_DEATH(buf.pop_front(out3.buf(), out3.size()), ".*");
 }
 
-TEST(VariableLengthRingbuffer, PushAndPopSeveral)
+TEST(Variable_ਲੰਮਾਈ_Ringbuffer, ਧੱਕੋ_And_ਕੱਢੋ_Several)
 {
-	VariableLengthRingbuffer buf;
+	Variable_ਲੰਮਾਈ_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{20};
-	data.paint();
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ ਅੰਕੜੇ{20};
+	ਅੰਕੜੇ.paint();
 
 	// 4 should fit
-	for (unsigned i = 0; i < 4; ++i) {
-		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < 4; ++i) {
+		EXPECT_TRUE(buf.push_back(ਅੰਕੜੇ.buf(), ਅੰਕੜੇ.ਮਾਪ()));
 	}
 
 	// 5 won't because of overhead
-	EXPECT_FALSE(buf.push_back(data.buf(), data.size()));
+	EXPECT_FALSE(buf.push_back(ਅੰਕੜੇ.buf(), ਅੰਕੜੇ.ਮਾਪ()));
 
 	// Take 4 back out
-	for (unsigned i = 0; i < 4; ++i) {
-		TempData out{20};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), data.size());
-		EXPECT_EQ(data, out);
+	ਲਈ (ਬਿਨਾਨਿਸ਼ਾਨੀ i = 0; i < 4; ++i) {
+		ਆਰਜ਼ੀ_ਅੰਕੜੇ ਬਾਹਰਲਾ{20};
+		EXPECT_EQ(buf.ਕੱਢੋ_front(ਬਾਹਰਲਾ.buf(), ਬਾਹਰਲਾ.ਮਾਪ()), ਅੰਕੜੇ.ਮਾਪ());
+		EXPECT_EQ(ਅੰਕੜੇ, ਬਾਹਰਲਾ);
 	}
 
-	TempData out{20};
-	EXPECT_EQ(buf.pop_front(out.buf(), out.size()), 0);
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ ਬਾਹਰਲਾ{20};
+	EXPECT_EQ(buf.ਕੱਢੋ_front(ਬਾਹਰਲਾ.buf(), ਬਾਹਰਲਾ.ਮਾਪ()), 0);
 }
 
-TEST(VariableLengthRingbuffer, PushAndPopSeveralVariableSize)
+TEST(Variable_ਲੰਮਾਈ_Ringbuffer, ਧੱਕੋ_And_ਕੱਢੋ_Several_Variable_ਮਾਪ)
 {
-	VariableLengthRingbuffer buf;
+	Variable_ਲੰਮਾਈ_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data1{50};
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ data1{50};
 	data1.paint();
-	EXPECT_TRUE(buf.push_back(data1.buf(), data1.size()));
+	EXPECT_TRUE(buf.push_back(data1.buf(), data1.ਮਾਪ()));
 
-	TempData data2{30};
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ data2{30};
 	data2.paint(42);
-	EXPECT_TRUE(buf.push_back(data2.buf(), data2.size()));
+	EXPECT_TRUE(buf.push_back(data2.buf(), data2.ਮਾਪ()));
 
 	// Supposedly more space
-	TempData out1{50};
-	EXPECT_EQ(buf.pop_front(out1.buf(), 100), data1.size());
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ out1{50};
+	EXPECT_EQ(buf.ਕੱਢੋ_front(out1.buf(), 100), data1.ਮਾਪ());
 	EXPECT_EQ(data1, out1);
 
-	TempData data3{50};
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ data3{50};
 	data3.paint(33);
-	EXPECT_TRUE(buf.push_back(data3.buf(), data3.size()));
+	EXPECT_TRUE(buf.push_back(data3.buf(), data3.ਮਾਪ()));
 
 	// Supposedly more space
-	TempData out2{30};
-	EXPECT_EQ(buf.pop_front(out2.buf(), 100), data2.size());
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ out2{30};
+	EXPECT_EQ(buf.ਕੱਢੋ_front(out2.buf(), 100), data2.ਮਾਪ());
 	EXPECT_EQ(data2, out2);
 
 	// Supposedly more space
-	TempData out3{50};
-	EXPECT_EQ(buf.pop_front(out3.buf(), 100), data3.size());
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ out3{50};
+	EXPECT_EQ(buf.ਕੱਢੋ_front(out3.buf(), 100), data3.ਮਾਪ());
 	EXPECT_EQ(data3, out3);
 
-	TempData out4{100};
-	EXPECT_EQ(buf.pop_front(out4.buf(), out4.size()), 0);
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ out4{100};
+	EXPECT_EQ(buf.ਕੱਢੋ_front(out4.buf(), out4.ਮਾਪ()), 0);
 }
 
-TEST(VariableLengthRingbuffer, PushEmpty)
+TEST(Variable_ਲੰਮਾਈ_Ringbuffer, ਧੱਕੋ_ਖਾਲੀ_ਥਾਵਾਂ)
 {
-	VariableLengthRingbuffer buf;
+	Variable_ਲੰਮਾਈ_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	EXPECT_FALSE(buf.push_back(nullptr, 0));
+	EXPECT_FALSE(buf.push_back(ਖਾਲੀ_ਸੂਚਕ, 0));
 }
 
-TEST(VariableLengthRingbuffer, PopWithoutBuffer)
+TEST(Variable_ਲੰਮਾਈ_Ringbuffer, ਕੱਢੋ_Without_ਬਫਰ)
 {
-	VariableLengthRingbuffer buf;
+	Variable_ਲੰਮਾਈ_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	EXPECT_FALSE(buf.push_back(nullptr, 0));
+	EXPECT_FALSE(buf.push_back(ਖਾਲੀ_ਸੂਚਕ, 0));
 
-	TempData data{50};
-	data.paint();
+	ਆਰਜ਼ੀ_ਅੰਕੜੇ ਅੰਕੜੇ{50};
+	ਅੰਕੜੇ.paint();
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(ਅੰਕੜੇ.buf(), ਅੰਕੜੇ.ਮਾਪ()));
 
 
-	EXPECT_EQ(buf.pop_front(nullptr, 50), 0);
+	EXPECT_EQ(buf.ਕੱਢੋ_front(ਖਾਲੀ_ਸੂਚਕ, 50), 0);
 }
 
-TEST(VariableLengthRingbuffer, EmptyAndNoSpaceForHeader)
+TEST(Variable_ਲੰਮਾਈ_Ringbuffer, ਖਾਲੀ_ਥਾਵਾਂ_And_No_Space_For_ਸਿਰਲੇਖ)
 {
 	// Addressing a corner case where start and end are at the end
 	// and the same.
 
-	VariableLengthRingbuffer buf;
+	Variable_ਲੰਮਾਈ_Ringbuffer buf;
 	// Allocate 4+1 bytes more than the packet, 4 for the header, 1 for the start/end logic.
 	ASSERT_TRUE(buf.allocate(25));
 
 	{
-		TempData data{20};
-		data.paint();
-		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
-		TempData out{20};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-		EXPECT_EQ(data, out);
+		ਆਰਜ਼ੀ_ਅੰਕੜੇ ਅੰਕੜੇ{20};
+		ਅੰਕੜੇ.paint();
+		EXPECT_TRUE(buf.push_back(ਅੰਕੜੇ.buf(), ਅੰਕੜੇ.ਮਾਪ()));
+		ਆਰਜ਼ੀ_ਅੰਕੜੇ ਬਾਹਰਲਾ{20};
+		EXPECT_EQ(buf.ਕੱਢੋ_front(ਬਾਹਰਲਾ.buf(), ਬਾਹਰਲਾ.ਮਾਪ()), ਬਾਹਰਲਾ.ਮਾਪ());
+		EXPECT_EQ(ਅੰਕੜੇ, ਬਾਹਰਲਾ);
 	}
 
 	{
-		TempData data{10};
-		data.paint();
-		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
-		TempData out{10};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-		EXPECT_EQ(data, out);
+		ਆਰਜ਼ੀ_ਅੰਕੜੇ ਅੰਕੜੇ{10};
+		ਅੰਕੜੇ.paint();
+		EXPECT_TRUE(buf.push_back(ਅੰਕੜੇ.buf(), ਅੰਕੜੇ.ਮਾਪ()));
+		ਆਰਜ਼ੀ_ਅੰਕੜੇ ਬਾਹਰਲਾ{10};
+		EXPECT_EQ(buf.ਕੱਢੋ_front(ਬਾਹਰਲਾ.buf(), ਬਾਹਰਲਾ.ਮਾਪ()), ਬਾਹਰਲਾ.ਮਾਪ());
+		EXPECT_EQ(ਅੰਕੜੇ, ਬਾਹਰਲਾ);
 	}
 }

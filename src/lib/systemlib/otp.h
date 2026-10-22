@@ -40,58 +40,58 @@
  *
  */
 
-#ifndef OTP_H_
-#define OTP_H_
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ OTP_H_
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ OTP_H_
 
-#define ADDR_OTP_START			0x1FFF7800
-#define ADDR_OTP_LOCK_START		0x1FFF7A00
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ADDR_OTP_ਸ਼ੁਰੂ			0x1FFF7800
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ADDR_OTP_ਤਾਲਾ_ਸ਼ੁਰੂ		0x1FFF7A00
 
-#define OTP_LOCK_LOCKED			0x00
-#define OTP_LOCK_UNLOCKED		0xFF
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ OTP_ਤਾਲਾ_LOCKED			0x00
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ OTP_ਤਾਲਾ_UNLOCKED		0xFF
 
 
 
-#include <unistd.h>
-#include <stdint.h>
-#include <stdio.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <unistd.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdio.h>
 
 // possible flash statuses
-#define F_BUSY 1
-#define F_ERROR_WRP 2
-#define F_ERROR_PROGRAM 3
-#define F_ERROR_OPERATION 4
-#define F_COMPLETE 5
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_BUSY 1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_ERROR_WRP 2
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_ERROR_ਪ੍ਰੋਗਰਾਮ 3
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_ERROR_OPERATION 4
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_COMPLETE 5
 
-typedef struct {
-	volatile unsigned long accesscontrol;      // 0x00
-	volatile unsigned long key;     //  0x04
-	volatile unsigned long optionkey;  //  0x08
-	volatile unsigned long status;       // 0x0C
-	volatile unsigned long control;       // 0x10
-	volatile unsigned long optioncontrol;    //0x14
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ {
+	ਅਸਥਿਰ ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ accesscontrol;      // 0x00
+	ਅਸਥਿਰ ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ਕੁੰਜੀ;     //  0x04
+	ਅਸਥਿਰ ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ optionkey;  //  0x08
+	ਅਸਥਿਰ ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ਸਥਿਤੀ;       // 0x0C
+	ਅਸਥਿਰ ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ control;       // 0x10
+	ਅਸਥਿਰ ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ optioncontrol;    //0x14
 } flash_registers;
 
-#define PERIPH_BASE           ((unsigned long)0x40000000) //Peripheral base address
-#define AHB1PERIPH_BASE       (PERIPH_BASE + 0x00020000)
-#define F_R_BASE          (AHB1PERIPH_BASE + 0x3C00)
-#define FLASH               ((flash_registers *) F_R_BASE)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PERIPH_ਅਧਾਰ           ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)0x40000000) //Peripheral base address
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ AHB1_PERIPH_ਅਧਾਰ       (PERIPH_ਅਧਾਰ + 0x00020000)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_R_ਅਧਾਰ          (AHB1_PERIPH_ਅਧਾਰ + 0x3C00)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FLASH               ((flash_registers *) F_R_ਅਧਾਰ)
 
-#define F_BSY ((unsigned long)0x00010000) //FLASH Busy flag bit
-#define F_OPERR ((unsigned long)0x00000002) //FLASH operation Error flag bit
-#define F_WRPERR ((unsigned long)0x00000010) //FLASH Write protected error flag bit
-#define CR_PSIZE_MASK ((unsigned long)0xFFFFFCFF)
-#define F_PSIZE_WORD ((unsigned long)0x00000200)
-#define F_PSIZE_BYTE ((unsigned long)0x00000000)
-#define F_CR_PG ((unsigned long)0x00000001) // a bit in the F_CR register
-#define F_CR_LOCK ((unsigned long)0x80000000) // also another bit.
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_BSY ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)0x00010000) //FLASH Busy flag bit
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_OPERR ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)0x00000002) //FLASH operation Error flag bit
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_WRPERR ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)0x00000010) //FLASH Write protected error flag bit
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CR_PSIZE_ਨਕਾਬ ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)0xFFFFFCFF)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_PSIZE_ਸ਼ਬਦ ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)0x00000200)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_PSIZE_BYTE ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)0x00000000)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_CR_PG ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)0x00000001) // a bit in the F_CR register
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_CR_ਤਾਲਾ ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)0x80000000) // also another bit.
 
-#define F_KEY1 ((unsigned long)0x45670123)
-#define F_KEY2 ((unsigned long)0xCDEF89AB)
-#define IS_F_ADDRESS(ADDRESS) ((((ADDRESS) >= 0x08000000) && ((ADDRESS) < 0x080FFFFF)) || (((ADDRESS) >= 0x1FFF7800) && ((ADDRESS) < 0x1FFF7A0F)))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_KEY1 ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)0x45670123)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ F_KEY2 ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)0xCDEF89AB)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ IS_F_ਪਤਾ(ਪਤਾ_3) ((((ਪਤਾ_3) >= 0x08000000) && ((ਪਤਾ_3) < 0x080FFFFF)) || (((ਪਤਾ_3) >= 0x1FFF7800) && ((ਪਤਾ_3) < 0x1FFF7A0F)))
 
 
 
-#pragma pack(push, 1)
+#ਹਦਾਇਤ pack(ਧੱਕੋ, 1)
 
 /*
  * The OTP area is divided into 16 OTP data blocks of 32 bytes and one lock OTP block of 16 bytes.
@@ -101,46 +101,46 @@ typedef struct {
  * contain 0x00 and 0xFF values, otherwise the OTP bytes might not be taken into account correctly.
  */
 
-struct otp {
+ਬਣਤਰ otp {
 	// first 32 bytes =  the '0' Block
-	char		id[4];		///4 bytes < 'P' 'X' '4' '\n'
+	ਅੱਖਰ		id[4];		///4 bytes < 'P' 'X' '4' '\n'
 	uint8_t		id_type;	///1 byte < 0 for USB VID, 1 for generic VID
 	uint32_t	vid;        ///4 bytes
 	uint32_t	pid;        ///4 bytes
-	char        unused[19];  ///19 bytes
+	ਅੱਖਰ        ਅਣਵਰਤਿਆ[19];  ///19 bytes
 	// Cert-of-Auth is next 4 blocks ie 1-4  ( where zero is first block )
-	char        signature[128];
+	ਅੱਖਰ        signature[128];
 	// insert extras here
-	uint32_t	lock_bytes[4];
+	uint32_t	ਤਾਲਾ_ਬਾਈਟਾਂ[4];
 };
 
-struct otp_lock {
-	uint8_t		lock_bytes[16];
+ਬਣਤਰ otp_ਤਾਲਾ {
+	uint8_t		ਤਾਲਾ_ਬਾਈਟਾਂ[16];
 };
-#pragma pack(pop)
+#ਹਦਾਇਤ pack(ਕੱਢੋ)
 
-#define ADDR_F_SIZE		0x1FFF7A22
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ADDR_F_ਮਾਪ		0x1FFF7A22
 
-#pragma pack(push, 1)
-union udid {
+#ਹਦਾਇਤ pack(ਧੱਕੋ, 1)
+ਸੰਘ udid {
 	uint32_t	serial[3];
-	uint8_t  data[12];
+	uint8_t  ਅੰਕੜੇ[12];
 };
-#pragma pack(pop)
+#ਹਦਾਇਤ pack(ਕੱਢੋ)
 
 __BEGIN_DECLS
 
-__EXPORT void F_unlock(void);
-__EXPORT void F_lock(void);
-__EXPORT int val_read(void *dest, volatile const void *src, int bytes);
-__EXPORT int val_write(volatile void *dest, const void *src, int bytes);
-__EXPORT int write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, char *signature);
-__EXPORT int lock_otp(void);
+__EXPORT ਖਾਲੀ F_unlock(ਖਾਲੀ);
+__EXPORT ਖਾਲੀ F_ਤਾਲਾ(ਖਾਲੀ);
+__EXPORT ਪੂਰਨ val_read(ਖਾਲੀ *dest, ਅਸਥਿਰ ਅਚਲ ਖਾਲੀ *src, ਪੂਰਨ ਬਾਈਟਾਂ);
+__EXPORT ਪੂਰਨ val_write(ਅਸਥਿਰ ਖਾਲੀ *dest, ਅਚਲ ਖਾਲੀ *src, ਪੂਰਨ ਬਾਈਟਾਂ);
+__EXPORT ਪੂਰਨ write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, ਅੱਖਰ *signature);
+__EXPORT ਪੂਰਨ ਤਾਲਾ_otp(ਖਾਲੀ);
 
 
-__EXPORT int F_write_byte(unsigned long Address, uint8_t Data);
-__EXPORT int F_write_word(unsigned long Address, uint32_t Data);
+__EXPORT ਪੂਰਨ F_write_byte(ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ਪਤਾ_2, uint8_t ਅੰਕੜੇ_4);
+__EXPORT ਪੂਰਨ F_write_ਸ਼ਬਦ(ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ਪਤਾ_2, uint32_t ਅੰਕੜੇ_4);
 
 __END_DECLS
 
-#endif
+#ਜੇ_ਅੰਤ

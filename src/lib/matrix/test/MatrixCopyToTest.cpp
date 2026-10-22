@@ -31,68 +31,68 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
 
-using namespace matrix;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ;
 
-TEST(MatrixCopyToTest, CopyTo)
+TEST(ਮੈਟ੍ਰਿਕਸ_Copy_ਮੰਜ਼ਿਲ_Test, Copy_ਮੰਜ਼ਿਲ)
 {
 	// Vector3 copyTo
-	const Vector3f v(1, 2, 3);
-	float dst3[3] = {};
-	v.copyTo(dst3);
+	ਅਚਲ Vector3f v(1, 2, 3);
+	ਦਸ਼ਮਲਵ dst3[3] = {};
+	v.copy_ਮੰਜ਼ਿਲ(dst3);
 
-	for (size_t i = 0; i < 3; i++) {
+	ਲਈ (size_t i = 0; i < 3; i++) {
 		EXPECT_FLOAT_EQ(v(i), dst3[i]);
 	}
 
 	// Quaternion copyTo
 	Quatf q(1, 2, 3, 4);
-	float dst4[4] = {};
-	q.copyTo(dst4);
+	ਦਸ਼ਮਲਵ dst4[4] = {};
+	q.copy_ਮੰਜ਼ਿਲ(dst4);
 
-	for (size_t i = 0; i < 4; i++) {
+	ਲਈ (size_t i = 0; i < 4; i++) {
 		EXPECT_FLOAT_EQ(q(i), dst4[i]);
 	}
 
 	// Matrix copyTo
-	Matrix<float, 2, 3> A;
+	ਮੈਟ੍ਰਿਕਸ_2<ਦਸ਼ਮਲਵ, 2, 3> A;
 	A(0, 0) = 1;
 	A(0, 1) = 2;
 	A(0, 2) = 3;
 	A(1, 0) = 4;
 	A(1, 1) = 5;
 	A(1, 2) = 6;
-	float array_A[6] = {};
-	A.copyTo(array_A);
-	float array_row[6] = {1, 2, 3, 4, 5, 6};
+	ਦਸ਼ਮਲਵ array_A[6] = {};
+	A.copy_ਮੰਜ਼ਿਲ(array_A);
+	ਦਸ਼ਮਲਵ array_ਪੰਕਤੀ[6] = {1, 2, 3, 4, 5, 6};
 
-	for (size_t i = 0; i < 6; i++) {
-		EXPECT_FLOAT_EQ(array_A[i], array_row[i]);
+	ਲਈ (size_t i = 0; i < 6; i++) {
+		EXPECT_FLOAT_EQ(array_A[i], array_ਪੰਕਤੀ[i]);
 	}
 
 	// Matrix copyToColumnMajor
-	A.copyToColumnMajor(array_A);
-	float array_column[6] = {1, 4, 2, 5, 3, 6};
+	A.copy_ਮੰਜ਼ਿਲ_ਕਾਲਮ_Major(array_A);
+	ਦਸ਼ਮਲਵ array_ਕਾਲਮ[6] = {1, 4, 2, 5, 3, 6};
 
-	for (size_t i = 0; i < 6; i++) {
-		EXPECT_FLOAT_EQ(array_A[i], array_column[i]);
+	ਲਈ (size_t i = 0; i < 6; i++) {
+		EXPECT_FLOAT_EQ(array_A[i], array_ਕਾਲਮ[i]);
 	}
 
 	// Slice copyTo
-	float dst5[2] = {};
-	v.slice<2, 1>(0, 0).copyTo(dst5);
+	ਦਸ਼ਮਲਵ dst5[2] = {};
+	v.ਟੁਕੜਾ<2, 1>(0, 0).copy_ਮੰਜ਼ਿਲ(dst5);
 
-	for (size_t i = 0; i < 2; i++) {
+	ਲਈ (size_t i = 0; i < 2; i++) {
 		EXPECT_FLOAT_EQ(v(i), dst5[i]);
 	}
 
-	float subarray_A[4] = {};
-	A.slice<2, 2>(0, 0).copyToColumnMajor(subarray_A);
-	float subarray_column[4] = {1, 4, 2, 5};
+	ਦਸ਼ਮਲਵ subarray_A[4] = {};
+	A.ਟੁਕੜਾ<2, 2>(0, 0).copy_ਮੰਜ਼ਿਲ_ਕਾਲਮ_Major(subarray_A);
+	ਦਸ਼ਮਲਵ subarray_ਕਾਲਮ[4] = {1, 4, 2, 5};
 
-	for (size_t i = 0; i < 4; i++) {
-		EXPECT_FLOAT_EQ(subarray_A[i], subarray_column[i]);
+	ਲਈ (size_t i = 0; i < 4; i++) {
+		EXPECT_FLOAT_EQ(subarray_A[i], subarray_ਕਾਲਮ[i]);
 	}
 }

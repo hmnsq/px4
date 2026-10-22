@@ -43,13 +43,13 @@
  *
  */
 
-#ifndef _SYSTEMLIB_FLASHPARAMS_FLASHPARAMS_H
-#define _SYSTEMLIB_FLASHPARAMS_FLASHPARAMS_H
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ _SYSTEMLIB_FLASHPARAMS_FLASHPARAMS_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ _SYSTEMLIB_FLASHPARAMS_FLASHPARAMS_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <sys/types.h>
-#include "../DynamicSparseLayer.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdbool.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <sys/types.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "../DynamicSparseLayer.h"
 
 __BEGIN_DECLS
 
@@ -58,14 +58,14 @@ __BEGIN_DECLS
  * the param_values and 2 functions to be global
  */
 
-__EXPORT extern DynamicSparseLayer user_config;
-__EXPORT int param_set_external(param_t param, const void *val, bool mark_saved, bool notify_changes);
-__EXPORT void param_get_external(param_t param, void *val);
+__EXPORT ਬਾਹਰੀ DynamicSparseLayer user_config;
+__EXPORT ਪੂਰਨ param_ਸੈੱਟ_external(param_t param, ਅਚਲ ਖਾਲੀ *val, bool mark_saved, bool notify_changes);
+__EXPORT ਖਾਲੀ param_get_external(param_t param, ਖਾਲੀ *val);
 
 /* The interface hooks to the Flash based storage. The caller is responsible for locking */
-__EXPORT int flash_param_save(param_filter_func filter);
-__EXPORT int flash_param_import();
+__EXPORT ਪੂਰਨ flash_param_save(param_filter_func filter);
+__EXPORT ਪੂਰਨ flash_param_import();
 
 __END_DECLS
 
-#endif /* _SYSTEMLIB_FLASHPARAMS_FLASHPARAMS_H */
+#ਜੇ_ਅੰਤ /* _SYSTEMLIB_FLASHPARAMS_FLASHPARAMS_H */

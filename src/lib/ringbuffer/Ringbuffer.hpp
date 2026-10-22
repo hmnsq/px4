@@ -33,10 +33,10 @@
 
 
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <stdint.h>
-#include <pthread.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <pthread.h>
 
 
 // FIFO ringbuffer implementation.
@@ -47,14 +47,14 @@
 //
 // The buffer is not thread-safe.
 
-class Ringbuffer
+ਵਰਗ Ringbuffer
 {
-public:
+ਜਨਤਕ:
 	/* @brief Constructor
 	 *
 	 * @note Does not allocate automatically.
 	 */
-	Ringbuffer() = default;
+	Ringbuffer() = ਮੂਲ;
 
 	/*
 	 * @brief Destructor
@@ -69,28 +69,28 @@ public:
 	 *
 	 * @returns false if allocation fails.
 	 */
-	bool allocate(size_t buffer_size);
+	ਤਾਰਕਿਕ allocate(size_t ਬਫਰ_ਮਾਪ);
 
 	/*
 	 * @brief Deallocate ringbuffer
 	 *
 	 * @note only required to deallocate and reallocate again.
 	 */
-	void deallocate();
+	ਖਾਲੀ deallocate();
 
 	/*
 	 * @brief Space available to copy bytes into
 	 *
 	 * @returns number of free bytes.
 	 */
-	size_t space_available() const;
+	size_t space_ਉਪਲਬਧ() ਅਚਲ;
 
 	/*
 	 * @brief Space used to copy data from
 	 *
 	 * @returns number of used bytes.
 	 */
-	size_t space_used() const;
+	size_t space_ਵਰਤਿਆ() ਅਚਲ;
 
 	/*
 	 * @brief Copy data into ringbuffer
@@ -100,7 +100,7 @@ public:
 	 *
 	 * @returns true if packet could be copied into buffer.
 	 */
-	bool push_back(const uint8_t *buf, size_t buf_len);
+	ਤਾਰਕਿਕ push_back(ਅਚਲ uint8_t *buf, size_t buf_len);
 
 	/*
 	 * @brief Get data from ringbuffer
@@ -110,11 +110,11 @@ public:
 	 *
 	 * @returns 0 if buffer is empty.
 	 */
-	size_t pop_front(uint8_t *buf, size_t max_buf_len);
+	size_t ਕੱਢੋ_front(uint8_t *buf, size_t max_buf_len);
 
-private:
-	size_t _size {0};
-	uint8_t *_ringbuffer {nullptr};
-	size_t _start{0};
-	size_t _end{0};
+ਨਿਜੀ:
+	size_t ਮਾਪ_2 {0};
+	uint8_t *_ringbuffer {ਖਾਲੀ_ਸੂਚਕ};
+	size_t ਸ਼ੁਰੂ_3{0};
+	size_t ਸਿਰਾ_2{0};
 };

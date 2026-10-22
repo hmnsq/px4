@@ -30,31 +30,31 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <stdint.h>
-#include <uORB/topics/gpio_in.h>
-#include <uORB/SubscriptionCallback.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/gpio_in.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/SubscriptionCallback.hpp>
 
-class CallbackHandler : public uORB::SubscriptionCallback
+ਵਰਗ CallbackHandler : ਜਨਤਕ uORB::SubscriptionCallback
 {
-public:
+ਜਨਤਕ:
 	uint32_t dev_id;
-	uint16_t input{0};
+	uint16_t ਨਿਵੇਸ਼{0};
 
 	CallbackHandler(orb_id_t id) : uORB::SubscriptionCallback(id) {}
-	virtual ~CallbackHandler() {}
+	ਆਭਾਸੀ ~CallbackHandler() {}
 
-	void call(unsigned generation) override
+	ਖਾਲੀ call(ਬਿਨਾਨਿਸ਼ਾਨੀ generation) override
 	{
-		px4::msg::GpioIn new_input;
+		px4::ਸੁਨੇਹਾ_2::Gpio_ਵਿੱਚ new_ਨਿਵੇਸ਼;
 
-		for (int i = 0; i < new_input.MAX_INSTANCES; i++) {
+		ਲਈ (ਪੂਰਨ i = 0; i < new_ਨਿਵੇਸ਼.MAX_INSTANCES; i++) {
 			ChangeInstance(i);
 
-			if (update(&new_input) && new_input.device_id == dev_id) {
-				input = new_input.state;
-				break;
+			ਜੇ (update(&new_ਨਿਵੇਸ਼) && new_ਨਿਵੇਸ਼.device_id == dev_id) {
+				ਨਿਵੇਸ਼ = new_ਨਿਵੇਸ਼.state;
+				ਰੋਕੋ;
 			}
 		}
 	}

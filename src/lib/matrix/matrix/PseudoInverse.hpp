@@ -7,12 +7,12 @@
  * @author Julian Kent <julian@auterion.com>
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "SquareMatrix.hpp"
-#include "Vector.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "SquareMatrix.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Vector.hpp"
 
-namespace matrix
+ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ
 {
 
 /**
@@ -21,37 +21,37 @@ namespace matrix
  *
  * Courrieu, P. (2008). Fast Computation of Moore-Penrose Inverse Matrices, 8(2), 25–29. http://arxiv.org/abs/0804.4809
  */
-template<typename Type, size_t M, size_t N>
-bool geninv(const Matrix<Type, M, N> &G, Matrix<Type, N, M> &res)
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type, size_t M, size_t N>
+ਤਾਰਕਿਕ geninv(ਅਚਲ ਮੈਟ੍ਰਿਕਸ_2<Type, M, N> &G, ਮੈਟ੍ਰਿਕਸ_2<Type, N, M> &res)
 {
 	size_t rank;
 
-	if (M <= N) {
-		SquareMatrix<Type, M> A = G * G.transpose();
-		SquareMatrix<Type, M> L = fullRankCholesky(A, rank);
+	ਜੇ (M <= N) {
+		ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, M> A = G * G.transpose();
+		ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, M> L = ਭਰਿਆ_Rank_Cholesky(A, rank);
 
 		A = L.transpose() * L;
-		SquareMatrix<Type, M> X;
+		ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, M> X;
 
-		if (!inv(A, X, rank)) {
-			res = Matrix<Type, N, M>();
-			return false; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
+		ਜੇ (!inv(A, X, rank)) {
+			res = ਮੈਟ੍ਰਿਕਸ_2<Type, N, M>();
+			ਵਾਪਸ ਝੂਠ; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
 		}
 
 		// doing an intermediate assignment reduces stack usage
 		A = X * X * L.transpose();
 		res = G.transpose() * (L * A);
 
-	} else {
-		SquareMatrix<Type, N> A = G.transpose() * G;
-		SquareMatrix<Type, N> L = fullRankCholesky(A, rank);
+	} ਨਹੀਂਤਾਂ {
+		ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, N> A = G.transpose() * G;
+		ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, N> L = ਭਰਿਆ_Rank_Cholesky(A, rank);
 
 		A = L.transpose() * L;
-		SquareMatrix<Type, N> X;
+		ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, N> X;
 
-		if (!inv(A, X, rank)) {
-			res = Matrix<Type, N, M>();
-			return false; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
+		ਜੇ (!inv(A, X, rank)) {
+			res = ਮੈਟ੍ਰਿਕਸ_2<Type, N, M>();
+			ਵਾਪਸ ਝੂਠ; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
 		}
 
 		// doing an intermediate assignment reduces stack usage
@@ -59,46 +59,46 @@ bool geninv(const Matrix<Type, M, N> &G, Matrix<Type, N, M> &res)
 		res = (L * A) * G.transpose();
 	}
 
-	return true;
+	ਵਾਪਸ ਸੱਚ;
 }
 
 
-template<typename Type>
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type>
 Type typeEpsilon();
 
-template<> inline
-float typeEpsilon<float>()
+ਸਾਂਚਾ<> ਸਤਰਅੰਦਰ
+ਦਸ਼ਮਲਵ typeEpsilon<ਦਸ਼ਮਲਵ>()
 {
-	return FLT_EPSILON;
+	ਵਾਪਸ FLT_EPSILON;
 }
 
 /**
  * Full rank Cholesky factorization of A
  */
-template<typename Type, size_t N>
-SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type, size_t N>
+ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, N> ਭਰਿਆ_Rank_Cholesky(ਅਚਲ ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, N> &A,
 				       size_t &rank)
 {
 	// Loses one ulp accuracy per row of diag, relative to largest magnitude
-	const Type tol = N * typeEpsilon<Type>() * A.diag().max();
+	ਅਚਲ Type tol = N * typeEpsilon<Type>() * A.diag().max();
 
-	Matrix<Type, N, N> L;
+	ਮੈਟ੍ਰਿਕਸ_2<Type, N, N> L;
 
 	size_t r = 0;
 
-	for (size_t k = 0; k < N; k++) {
+	ਲਈ (size_t k = 0; k < N; k++) {
 
-		if (r == 0) {
-			for (size_t i = k; i < N; i++) {
+		ਜੇ (r == 0) {
+			ਲਈ (size_t i = k; i < N; i++) {
 				L(i, r) = A(i, k);
 			}
 
-		} else {
-			for (size_t i = k; i < N; i++) {
+		} ਨਹੀਂਤਾਂ {
+			ਲਈ (size_t i = k; i < N; i++) {
 				// Compute LL = L[k:n, :r] * L[k, :r].T
 				Type LL = Type();
 
-				for (size_t j = 0; j < r; j++) {
+				ਲਈ (size_t j = 0; j < r; j++) {
 					LL += L(i, j) * L(k, j);
 				}
 
@@ -106,11 +106,11 @@ SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
 			}
 		}
 
-		if (L(k, r) > tol) {
-			L(k, r) = std::sqrt(L(k, r));
+		ਜੇ (L(k, r) > tol) {
+			L(k, r) = std::ਵਰਗਮੂਲ(L(k, r));
 
-			if (k < N - 1) {
-				for (size_t i = k + 1; i < N; i++) {
+			ਜੇ (k < N - 1) {
+				ਲਈ (size_t i = k + 1; i < N; i++) {
 					L(i, r) = L(i, r) / L(k, r);
 				}
 			}
@@ -122,7 +122,7 @@ SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
 	// Return rank
 	rank = r;
 
-	return L;
+	ਵਾਪਸ L;
 }
 
 } // namespace matrix

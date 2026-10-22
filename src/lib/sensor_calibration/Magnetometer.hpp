@@ -31,95 +31,95 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <lib/conversion/rotation.h>
-#include <lib/matrix/matrix/math.hpp>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/battery_status.h>
-#include <uORB/topics/sensor_correction.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/conversion/rotation.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/matrix/matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/px4_config.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/log.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/Subscription.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/battery_status.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/sensor_correction.h>
 
-namespace calibration
+ਨਾਮਾਕਾਸ਼ calibration
 {
-class Magnetometer
+ਵਰਗ Magnetometer
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+ਜਨਤਕ:
+	ਸਥਿਰ constexpr ਪੂਰਨ MAX_SENSOR_ਗਿਣਤੀ = 4;
 
-	static constexpr uint8_t DEFAULT_PRIORITY = 50;
-	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
+	ਸਥਿਰ constexpr uint8_t DEFAULT_ਤਰਜੀਹ = 50;
+	ਸਥਿਰ constexpr uint8_t DEFAULT_EXTERNAL_ਤਰਜੀਹ = 75;
 
-	static constexpr const char *SensorString() { return "MAG"; }
+	ਸਥਿਰ constexpr ਅਚਲ ਅੱਖਰ *SensorString() { ਵਾਪਸ "MAG"; }
 
 	Magnetometer();
-	explicit Magnetometer(uint32_t device_id);
-	Magnetometer(uint32_t device_id, bool external);
+	ਸਪਸ਼ਟ Magnetometer(uint32_t device_id);
+	Magnetometer(uint32_t device_id, ਤਾਰਕਿਕ external);
 
-	~Magnetometer() = default;
+	~Magnetometer() = ਮੂਲ;
 
-	void PrintStatus();
+	ਖਾਲੀ Print_ਸਥਿਤੀ();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
-	void set_device_id(uint32_t device_id, bool external);
-	bool set_offset(const matrix::Vector3f &offset);
-	bool set_scale(const matrix::Vector3f &scale);
-	bool set_offdiagonal(const matrix::Vector3f &offdiagonal);
+	ਤਾਰਕਿਕ ਸੈੱਟ_calibration_ਸੂਚਕਾਂਕ(ਪੂਰਨ calibration_ਸੂਚਕਾਂਕ);
+	ਖਾਲੀ ਸੈੱਟ_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
+	ਖਾਲੀ ਸੈੱਟ_device_id(uint32_t device_id, ਤਾਰਕਿਕ external);
+	ਤਾਰਕਿਕ ਸੈੱਟ_ਵਿੱਥ(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &ਵਿੱਥ);
+	ਤਾਰਕਿਕ ਸੈੱਟ_scale(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &scale);
+	ਤਾਰਕਿਕ ਸੈੱਟ_offdiagonal(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &offdiagonal);
 
 	/**
 	 * @brief Set the rotation enum & corresponding rotation matrix for Magnetometer
 	 *
 	 * @param rotation Rotation enum
 	 */
-	void set_rotation(Rotation rotation);
+	ਖਾਲੀ ਸੈੱਟ_rotation(Rotation rotation);
 
 	/**
 	 * @brief Set the custom rotation & rotation enum to ROTATION_CUSTOM for Magnetometer
 	 *
 	 * @param rotation Rotation euler angles
 	 */
-	void set_custom_rotation(const matrix::Eulerf &rotation);
+	ਖਾਲੀ ਸੈੱਟ_custom_rotation(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Eulerf &rotation);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	void disable() { _priority = 0; }
-	bool external() const { return _external; }
-	const matrix::Vector3f &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const matrix::Dcmf &rotation() const { return _rotation; }
-	const Rotation &rotation_enum() const { return _rotation_enum; }
-	const matrix::Matrix3f &scale() const { return _scale; }
+	ਤਾਰਕਿਕ calibrated() ਅਚਲ { ਵਾਪਸ (_device_id != 0) && (calibration_ਸੂਚਕਾਂਕ_2 >= 0); }
+	uint8_t calibration_ਗਿਣਤੀ_2() ਅਚਲ { ਵਾਪਸ calibration_ਗਿਣਤੀ; }
+	int8_t calibration_ਸੂਚਕਾਂਕ() ਅਚਲ { ਵਾਪਸ calibration_ਸੂਚਕਾਂਕ_2; }
+	uint32_t device_id() ਅਚਲ { ਵਾਪਸ _device_id; }
+	ਤਾਰਕਿਕ enabled() ਅਚਲ { ਵਾਪਸ (ਤਰਜੀਹ_2 > 0); }
+	ਖਾਲੀ disable() { ਤਰਜੀਹ_2 = 0; }
+	ਤਾਰਕਿਕ external() ਅਚਲ { ਵਾਪਸ _external; }
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &ਵਿੱਥ() ਅਚਲ { ਵਾਪਸ ਵਿੱਥ_2; }
+	ਅਚਲ int32_t &ਤਰਜੀਹ() ਅਚਲ { ਵਾਪਸ ਤਰਜੀਹ_2; }
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Dcmf &rotation() ਅਚਲ { ਵਾਪਸ _rotation; }
+	ਅਚਲ Rotation &rotation_enum() ਅਚਲ { ਵਾਪਸ _rotation_enum; }
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Matrix3f &scale() ਅਚਲ { ਵਾਪਸ _scale; }
 
 	// apply offsets and scale
 	// rotate corrected measurements from sensor to body frame
-	inline matrix::Vector3f Correct(const matrix::Vector3f &data) const
+	ਸਤਰਅੰਦਰ ਮੈਟ੍ਰਿਕਸ::Vector3f Correct(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &ਅੰਕੜੇ) ਅਚਲ
 	{
-		return _rotation * (_scale * ((data + _power * _power_compensation) - _offset));
+		ਵਾਪਸ _rotation * (_scale * ((ਅੰਕੜੇ + _power * _power_compensation) - ਵਿੱਥ_2));
 	}
 
 	// Compute sensor offset from bias (board frame)
-	matrix::Vector3f BiasCorrectedSensorOffset(const matrix::Vector3f &bias) const
+	ਮੈਟ੍ਰਿਕਸ::Vector3f Bias_Corrected_Sensor_ਵਿੱਥ(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &bias) ਅਚਲ
 	{
 		// updated calibration offset = existing offset + bias rotated to sensor frame and unscaled
-		return _offset + (_scale.I() * _rotation.T() * bias);
+		ਵਾਪਸ ਵਿੱਥ_2 + (_scale.I() * _rotation.T() * bias);
 	}
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	ਤਾਰਕਿਕ Parameters_ਲੱਦੋ();
+	ਤਾਰਕਿਕ ParametersSave(ਪੂਰਨ desired_calibration_ਸੂਚਕਾਂਕ = -1, ਤਾਰਕਿਕ force = ਝੂਠ);
+	ਖਾਲੀ ParametersUpdate();
 
-	void Reset();
+	ਖਾਲੀ Reset();
 
-	void SensorCorrectionsUpdate(bool force = false);
+	ਖਾਲੀ SensorCorrectionsUpdate(ਤਾਰਕਿਕ force = ਝੂਠ);
 
-	void UpdatePower(float power) { _power = power; }
+	ਖਾਲੀ UpdatePower(ਦਸ਼ਮਲਵ power) { _power = power; }
 
-private:
+ਨਿਜੀ:
 	uORB::Subscription _sensor_correction_sub{ORB_ID(sensor_correction)};
 
 	Rotation _rotation_enum{ROTATION_NONE};
@@ -127,23 +127,23 @@ private:
 	/**
 	 * @brief 3 x 3 Rotation matrix that translates from sensor frame (XYZ) to vehicle body frame (FRD)
 	 */
-	matrix::Dcmf _rotation;
+	ਮੈਟ੍ਰਿਕਸ::Dcmf _rotation;
 
-	matrix::Eulerf _rotation_custom_euler{0.f, 0.f, 0.f}; // custom rotation euler angles (optional)
+	ਮੈਟ੍ਰਿਕਸ::Eulerf _rotation_custom_euler{0.f, 0.f, 0.f}; // custom rotation euler angles (optional)
 
-	matrix::Vector3f _offset;
-	matrix::Matrix3f _scale;
-	matrix::Vector3f _thermal_offset;
-	matrix::Vector3f _power_compensation;
+	ਮੈਟ੍ਰਿਕਸ::Vector3f ਵਿੱਥ_2;
+	ਮੈਟ੍ਰਿਕਸ::Matrix3f _scale;
+	ਮੈਟ੍ਰਿਕਸ::Vector3f thermal_ਵਿੱਥ;
+	ਮੈਟ੍ਰਿਕਸ::Vector3f _power_compensation;
 
-	float _power{0.f};
+	ਦਸ਼ਮਲਵ _power{0.f};
 
-	int8_t _calibration_index{-1};
+	int8_t calibration_ਸੂਚਕਾਂਕ_2{-1};
 	uint32_t _device_id{0};
-	int32_t _priority{-1};
+	int32_t ਤਰਜੀਹ_2{-1};
 
-	bool _external{false};
+	ਤਾਰਕਿਕ _external{ਝੂਠ};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_ਗਿਣਤੀ{0};
 };
 } // namespace calibration

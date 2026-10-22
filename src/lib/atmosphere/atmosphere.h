@@ -36,25 +36,25 @@
  *
  */
 
-#ifndef PX4_SRC_LIB_ATMOSPHERE_ATMOSPHERE_H_
-#define PX4_SRC_LIB_ATMOSPHERE_ATMOSPHERE_H_
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ PX4_SRC_LIB_ATMOSPHERE_ATMOSPHERE_H_
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PX4_SRC_LIB_ATMOSPHERE_ATMOSPHERE_H_
 
 namespace atmosphere
 {
 
 // NOTE: We are currently only modelling the first layer of the US Standard Atmosphere 1976.
 // This means that the functions are only valid up to an altitude of 11km.
-static constexpr float kAirDensitySeaLevelStandardAtmos = 1.225f;				// kg/m^3
+ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kAirDensitySeaLevelStandardAtmos = 1.225f;				// kg/m^3
 
 // [kg/m^3] air density of standard atmosphere at 11000m above mean sea level (this is the upper limit for the standard
 // atmosphere model we are using, see atmosphere lib used)
-static constexpr float kAirDensityStandardAtmos11000Amsl = 0.3639;
+ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kAirDensityStandardAtmos11000Amsl = 0.3639;
 
-static constexpr float kAirGasConstant = 287.1f;					// J/(kg * K)
-static constexpr float kAbsoluteNullCelsius = -273.15f;				// °C
-static constexpr float kTempRefKelvin = 15.f - kAbsoluteNullCelsius; // temperature at base height in Kelvin
-static constexpr float kTempGradient = -6.5f / 1000.f; // temperature gradient in degrees per meter
-static constexpr float kPressRefSeaLevelPa = 101325.f; // pressure at sea level in Pa
+ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kAirGasConstant = 287.1f;					// J/(kg * K)
+ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kAbsoluteNullCelsius = -273.15f;				// °C
+ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ k_ਆਰਜ਼ੀ_Ref_Kelvin = 15.f - kAbsoluteNullCelsius; // temperature at base height in Kelvin
+ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ k_ਆਰਜ਼ੀ_Gradient = -6.5f / 1000.f; // temperature gradient in degrees per meter
+ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ kPressRefSeaLevelPa = 101325.f; // pressure at sea level in Pa
 
 /**
 * Calculate air density given air pressure and temperature.
@@ -62,14 +62,14 @@ static constexpr float kPressRefSeaLevelPa = 101325.f; // pressure at sea level 
 * @param pressure_pa ambient pressure in Pa
 * @param temperature_celsius ambient temperature in degrees Celsius
 */
-float getDensityFromPressureAndTemp(const float pressure_pa, const float temperature_celsius);
+ਦਸ਼ਮਲਵ get_Density_From_Pressure_And_ਆਰਜ਼ੀ(ਅਚਲ ਦਸ਼ਮਲਵ pressure_pa, ਅਚਲ ਦਸ਼ਮਲਵ temperature_celsius);
 
 /**
 * Calculate standard airpressure given altitude.
 *
 * @param altitude_m altitude above MSL in meters in the standard atmosphere
 */
-float getPressureFromAltitude(const float altitude_m);
+ਦਸ਼ਮਲਵ getPressureFromAltitude(ਅਚਲ ਦਸ਼ਮਲਵ altitude_m);
 
 /**
 * Calculate altitude from air pressure and temperature.
@@ -77,7 +77,7 @@ float getPressureFromAltitude(const float altitude_m);
 * @param pressure_pa ambient pressure in Pa
 * @param pressure_sealevel_pa sea level pressure in Pa
 */
-float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa);
+ਦਸ਼ਮਲਵ getAltitudeFromPressure(ਦਸ਼ਮਲਵ pressure_pa, ਦਸ਼ਮਲਵ pressure_sealevel_pa);
 
 /**
 * Get standard temperature at altitude.
@@ -85,7 +85,7 @@ float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa);
 * @param altitude_m Altitude msl in meters
 * @return Standard temperature in degrees Celsius
 */
-float getStandardTemperatureAtAltitude(float altitude_m);
+ਦਸ਼ਮਲਵ getStandardTemperatureAtAltitude(ਦਸ਼ਮਲਵ altitude_m);
 }
 
-#endif //PX4_SRC_LIB_ATMOSPHERE_ATMOSPHERE_H_
+#ਜੇ_ਅੰਤ //PX4_SRC_LIB_ATMOSPHERE_ATMOSPHERE_H_

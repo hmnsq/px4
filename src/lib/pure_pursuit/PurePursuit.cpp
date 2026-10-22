@@ -31,79 +31,79 @@
  *
  ****************************************************************************/
 
-#include "PurePursuit.hpp"
-using namespace matrix;
-namespace PurePursuit
+#ਅਨ੍ਤਰ੍ਭਾਵ "PurePursuit.hpp"
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ;
+ਨਾਮਾਕਾਸ਼ ਸ਼ੁੱਧ_Pursuit
 {
-float calcTargetBearing(pure_pursuit_status_s &pure_pursuit_status, const float lookahead_gain,
-			const float lookahead_max, const float lookahead_min, const Vector2f &curr_wp_ned, const Vector2f &prev_wp_ned,
-			const Vector2f &curr_pos_ned, const float vehicle_speed)
+ਦਸ਼ਮਲਵ calc_ਨਿਸ਼ਾਨਾ_Bearing(ਸ਼ੁੱਧ_pursuit_ਸਥਿਤੀ_s &ਸ਼ੁੱਧ_pursuit_ਸਥਿਤੀ, ਅਚਲ ਦਸ਼ਮਲਵ lookahead_gain,
+			ਅਚਲ ਦਸ਼ਮਲਵ lookahead_max, ਅਚਲ ਦਸ਼ਮਲਵ lookahead_min, ਅਚਲ Vector2f &curr_wp_ned, ਅਚਲ Vector2f &prev_wp_ned,
+			ਅਚਲ Vector2f &curr_pos_ned, ਅਚਲ ਦਸ਼ਮਲਵ vehicle_ਰਫਤਾਰ)
 {
 	// Check input validity
-	if (!curr_wp_ned.isAllFinite() || !curr_pos_ned.isAllFinite() || !PX4_ISFINITE(vehicle_speed)
+	ਜੇ (!curr_wp_ned.isAllFinite() || !curr_pos_ned.isAllFinite() || !PX4_ISFINITE(vehicle_ਰਫਤਾਰ)
 	    || !prev_wp_ned.isAllFinite()) {
-		return NAN;
+		ਵਾਪਸ NAN;
 	}
 
-	const float lookahead_distance = math::constrain(lookahead_gain * fabsf(vehicle_speed), lookahead_min, lookahead_max);
-	const Vector2f curr_pos_to_curr_wp = curr_wp_ned - curr_pos_ned;
-	const Vector2f prev_wp_to_curr_wp = curr_wp_ned - prev_wp_ned;
-	const Vector2f prev_wp_to_curr_pos = curr_pos_ned - prev_wp_ned;
-	const Vector2f prev_wp_to_curr_wp_u = prev_wp_to_curr_wp.unit_or_zero();
-	const float distance_along_path = prev_wp_to_curr_pos *
-					  prev_wp_to_curr_wp_u; // Signed distance of the current position along the path, from the previous waypoint
-	const Vector2f position_along_path = distance_along_path *
-					     prev_wp_to_curr_wp_u; // Projection of prev_wp_to_curr_pos onto prev_wp_to_curr_wp
-	const Vector2f curr_pos_to_path = position_along_path -
-					  prev_wp_to_curr_pos; // Shortest vector from the current position to the path
-	const float crosstrack_error = sign(prev_wp_to_curr_wp(1) * curr_pos_to_path(
-			0) - prev_wp_to_curr_wp(0) * curr_pos_to_path(1)) * curr_pos_to_path.norm();
-	const float bearing_to_curr_waypoint = matrix::wrap_pi(atan2f(curr_pos_to_curr_wp(1), curr_pos_to_curr_wp(0)));
-	float target_bearing{NAN};
+	ਅਚਲ ਦਸ਼ਮਲਵ lookahead_ਦੂਰੀ = math::constrain(lookahead_gain * fabsf(vehicle_ਰਫਤਾਰ), lookahead_min, lookahead_max);
+	ਅਚਲ Vector2f curr_pos_ਮੰਜ਼ਿਲ_curr_wp = curr_wp_ned - curr_pos_ned;
+	ਅਚਲ Vector2f prev_wp_ਮੰਜ਼ਿਲ_curr_wp = curr_wp_ned - prev_wp_ned;
+	ਅਚਲ Vector2f prev_wp_ਮੰਜ਼ਿਲ_curr_pos = curr_pos_ned - prev_wp_ned;
+	ਅਚਲ Vector2f prev_wp_ਮੰਜ਼ਿਲ_curr_wp_u = prev_wp_ਮੰਜ਼ਿਲ_curr_wp.unit_or_zero();
+	ਅਚਲ ਦਸ਼ਮਲਵ ਦੂਰੀ_along_ਰਸਤਾ = prev_wp_ਮੰਜ਼ਿਲ_curr_pos *
+					  prev_wp_ਮੰਜ਼ਿਲ_curr_wp_u; // Signed distance of the current position along the path, from the previous waypoint
+	ਅਚਲ Vector2f position_along_ਰਸਤਾ = ਦੂਰੀ_along_ਰਸਤਾ *
+					     prev_wp_ਮੰਜ਼ਿਲ_curr_wp_u; // Projection of prev_wp_to_curr_pos onto prev_wp_to_curr_wp
+	ਅਚਲ Vector2f curr_pos_ਮੰਜ਼ਿਲ_ਰਸਤਾ = position_along_ਰਸਤਾ -
+					  prev_wp_ਮੰਜ਼ਿਲ_curr_pos; // Shortest vector from the current position to the path
+	ਅਚਲ ਦਸ਼ਮਲਵ crosstrack_error = sign(prev_wp_ਮੰਜ਼ਿਲ_curr_wp(1) * curr_pos_ਮੰਜ਼ਿਲ_ਰਸਤਾ(
+			0) - prev_wp_ਮੰਜ਼ਿਲ_curr_wp(0) * curr_pos_ਮੰਜ਼ਿਲ_ਰਸਤਾ(1)) * curr_pos_ਮੰਜ਼ਿਲ_ਰਸਤਾ.norm();
+	ਅਚਲ ਦਸ਼ਮਲਵ bearing_ਮੰਜ਼ਿਲ_curr_waypoint = ਮੈਟ੍ਰਿਕਸ::wrap_pi(atan2f(curr_pos_ਮੰਜ਼ਿਲ_curr_wp(1), curr_pos_ਮੰਜ਼ਿਲ_curr_wp(0)));
+	ਦਸ਼ਮਲਵ ਨਿਸ਼ਾਨਾ_bearing{NAN};
 
-	if (curr_pos_to_curr_wp.norm() < lookahead_distance
-	    || prev_wp_to_curr_wp.norm() < FLT_EPSILON
-	    || distance_along_path > prev_wp_to_curr_wp.norm()) {
+	ਜੇ (curr_pos_ਮੰਜ਼ਿਲ_curr_wp.norm() < lookahead_ਦੂਰੀ
+	    || prev_wp_ਮੰਜ਼ਿਲ_curr_wp.norm() < FLT_EPSILON
+	    || ਦੂਰੀ_along_ਰਸਤਾ > prev_wp_ਮੰਜ਼ਿਲ_curr_wp.norm()) {
 		// Target current waypoint if closer to it than lookahead, if the waypoints overlap, or if the vehicle has passed
 		// the current waypoint: the lookahead intersection would otherwise lie on the extension of the path beyond it
 		// and lead the vehicle further away
-		target_bearing = bearing_to_curr_waypoint;
+		ਨਿਸ਼ਾਨਾ_bearing = bearing_ਮੰਜ਼ਿਲ_curr_waypoint;
 
-	} else if (fabsf(crosstrack_error) >
-		   lookahead_distance) { // Path segment is outside of lookahead (No intersection point)
+	} ਨਹੀਂਤਾਂ ਜੇ (fabsf(crosstrack_error) >
+		   lookahead_ਦੂਰੀ) { // Path segment is outside of lookahead (No intersection point)
 
-		const Vector2f prev_wp_to_closest_point_on_path = curr_pos_to_path + prev_wp_to_curr_pos;
-		const Vector2f curr_wp_to_closest_point_on_path = curr_pos_to_path - curr_pos_to_curr_wp;
+		ਅਚਲ Vector2f prev_wp_ਮੰਜ਼ਿਲ_closest_ਬਿੰਦੂ_on_ਰਸਤਾ = curr_pos_ਮੰਜ਼ਿਲ_ਰਸਤਾ + prev_wp_ਮੰਜ਼ਿਲ_curr_pos;
+		ਅਚਲ Vector2f curr_wp_ਮੰਜ਼ਿਲ_closest_ਬਿੰਦੂ_on_ਰਸਤਾ = curr_pos_ਮੰਜ਼ਿਲ_ਰਸਤਾ - curr_pos_ਮੰਜ਼ਿਲ_curr_wp;
 
-		if (prev_wp_to_closest_point_on_path * prev_wp_to_curr_wp <
+		ਜੇ (prev_wp_ਮੰਜ਼ਿਲ_closest_ਬਿੰਦੂ_on_ਰਸਤਾ * prev_wp_ਮੰਜ਼ਿਲ_curr_wp <
 		    FLT_EPSILON) { // Target previous waypoint if closest point is on the the extended path segment "behind" previous waypoint
-			target_bearing = matrix::wrap_pi(atan2f(-prev_wp_to_curr_pos(1), -prev_wp_to_curr_pos(0)));
+			ਨਿਸ਼ਾਨਾ_bearing = ਮੈਟ੍ਰਿਕਸ::wrap_pi(atan2f(-prev_wp_ਮੰਜ਼ਿਲ_curr_pos(1), -prev_wp_ਮੰਜ਼ਿਲ_curr_pos(0)));
 
-		} else if (curr_wp_to_closest_point_on_path * prev_wp_to_curr_wp >
+		} ਨਹੀਂਤਾਂ ਜੇ (curr_wp_ਮੰਜ਼ਿਲ_closest_ਬਿੰਦੂ_on_ਰਸਤਾ * prev_wp_ਮੰਜ਼ਿਲ_curr_wp >
 			   FLT_EPSILON) { // Target current waypoint if closest point is on the extended path segment "ahead" of current waypoint
-			target_bearing = bearing_to_curr_waypoint;
+			ਨਿਸ਼ਾਨਾ_bearing = bearing_ਮੰਜ਼ਿਲ_curr_waypoint;
 
-		} else { // Target closest point on path
-			target_bearing = matrix::wrap_pi(atan2f(curr_pos_to_path(1), curr_pos_to_path(0)));
+		} ਨਹੀਂਤਾਂ { // Target closest point on path
+			ਨਿਸ਼ਾਨਾ_bearing = ਮੈਟ੍ਰਿਕਸ::wrap_pi(atan2f(curr_pos_ਮੰਜ਼ਿਲ_ਰਸਤਾ(1), curr_pos_ਮੰਜ਼ਿਲ_ਰਸਤਾ(0)));
 		}
 
 
-	} else { // Regular pure pursuit
-		const float line_extension = sqrt(powf(lookahead_distance, 2.f) - powf(curr_pos_to_path.norm(),
+	} ਨਹੀਂਤਾਂ { // Regular pure pursuit
+		ਅਚਲ ਦਸ਼ਮਲਵ ਸਤਰ_extension = ਵਰਗਮੂਲ(powf(lookahead_ਦੂਰੀ, 2.f) - powf(curr_pos_ਮੰਜ਼ਿਲ_ਰਸਤਾ.norm(),
 						  2.f)); // Length of the vector from the endpoint of distance_on_line_segment to the intersection point
-		const Vector2f prev_wp_to_intersection_point = position_along_path + line_extension *
-				prev_wp_to_curr_wp_u;
-		const Vector2f curr_pos_to_intersection_point = prev_wp_to_intersection_point - prev_wp_to_curr_pos;
-		target_bearing = matrix::wrap_pi(atan2f(curr_pos_to_intersection_point(1), curr_pos_to_intersection_point(0)));
+		ਅਚਲ Vector2f prev_wp_ਮੰਜ਼ਿਲ_intersection_ਬਿੰਦੂ = position_along_ਰਸਤਾ + ਸਤਰ_extension *
+				prev_wp_ਮੰਜ਼ਿਲ_curr_wp_u;
+		ਅਚਲ Vector2f curr_pos_ਮੰਜ਼ਿਲ_intersection_ਬਿੰਦੂ = prev_wp_ਮੰਜ਼ਿਲ_intersection_ਬਿੰਦੂ - prev_wp_ਮੰਜ਼ਿਲ_curr_pos;
+		ਨਿਸ਼ਾਨਾ_bearing = ਮੈਟ੍ਰਿਕਸ::wrap_pi(atan2f(curr_pos_ਮੰਜ਼ਿਲ_intersection_ਬਿੰਦੂ(1), curr_pos_ਮੰਜ਼ਿਲ_intersection_ਬਿੰਦੂ(0)));
 	}
 
 
-	pure_pursuit_status.lookahead_distance = lookahead_distance;
-	pure_pursuit_status.target_bearing = target_bearing;
-	pure_pursuit_status.crosstrack_error = crosstrack_error;
-	pure_pursuit_status.distance_to_waypoint = curr_pos_to_curr_wp.norm();
-	pure_pursuit_status.bearing_to_waypoint = bearing_to_curr_waypoint;
-	return target_bearing;
+	ਸ਼ੁੱਧ_pursuit_ਸਥਿਤੀ.lookahead_ਦੂਰੀ = lookahead_ਦੂਰੀ;
+	ਸ਼ੁੱਧ_pursuit_ਸਥਿਤੀ.ਨਿਸ਼ਾਨਾ_bearing = ਨਿਸ਼ਾਨਾ_bearing;
+	ਸ਼ੁੱਧ_pursuit_ਸਥਿਤੀ.crosstrack_error = crosstrack_error;
+	ਸ਼ੁੱਧ_pursuit_ਸਥਿਤੀ.ਦੂਰੀ_ਮੰਜ਼ਿਲ_waypoint = curr_pos_ਮੰਜ਼ਿਲ_curr_wp.norm();
+	ਸ਼ੁੱਧ_pursuit_ਸਥਿਤੀ.bearing_ਮੰਜ਼ਿਲ_waypoint = bearing_ਮੰਜ਼ਿਲ_curr_waypoint;
+	ਵਾਪਸ ਨਿਸ਼ਾਨਾ_bearing;
 
 }
 } // Pure Pursuit

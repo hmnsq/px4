@@ -41,83 +41,83 @@
  * https://ntrs.nasa.gov/api/citations/20120015662/downloads/20120015662.pdf
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
 // PX4 includes
-#include <drivers/drv_hrt.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/drv_hrt.h>
 
 // Libraries
-#include <math.h>
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <matrix/matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/mathlib/math/filter/AlphaFilter.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/matrix/math.hpp>
 
 // uORB includes
-#include <uORB/Publication.hpp>
-#include <uORB/topics/gain_compression.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/Publication.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/gain_compression.h>
 
-class GainCompression
+ਵਰਗ GainCompression
 {
-public:
-	void reset()
+ਜਨਤਕ:
+	ਖਾਲੀ reset()
 	{
 		_compression_gain = 1.f;
 		_hpf = 0.f;
 		_lpf.reset(0.f);
-		_input_initialized = false;
+		ਨਿਵੇਸ਼_initialized = ਝੂਠ;
 	}
-	float update(float input, float dt);
+	ਦਸ਼ਮਲਵ update(ਦਸ਼ਮਲਵ ਨਿਵੇਸ਼, ਦਸ਼ਮਲਵ dt);
 
-	void setLpfCutoffFrequency(float sample_freq, float cutoff)
+	ਖਾਲੀ ਸੈੱਟ_Lpf_Cutoff_Frequency(ਦਸ਼ਮਲਵ sample_freq, ਦਸ਼ਮਲਵ cutoff)
 	{
-		_lpf.setCutoffFreq(sample_freq, cutoff);
+		_lpf.ਸੈੱਟ_Cutoff_Freq(sample_freq, cutoff);
 	}
-	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
+	ਖਾਲੀ ਸੈੱਟ_Hpf_Cutoff_Frequency(ਦਸ਼ਮਲਵ sample_freq, ਦਸ਼ਮਲਵ cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	float getSpectralDamperHpf() const { return _hpf * _hpf; }
-	float getSpectralDamperLpf() const { return _lpf.getState(); }
-	void setCompressionGainMin(float gain_min) { _compression_gain_min = gain_min; }
+	ਦਸ਼ਮਲਵ getSpectralDamperHpf() ਅਚਲ { ਵਾਪਸ _hpf * _hpf; }
+	ਦਸ਼ਮਲਵ getSpectralDamperLpf() ਅਚਲ { ਵਾਪਸ _lpf.getState(); }
+	ਖਾਲੀ ਸੈੱਟ_Compression_Gain_Min(ਦਸ਼ਮਲਵ gain_min) { _compression_gain_min = gain_min; }
 
-private:
-	float _compression_gain{1.f};
-	float _compression_gain_min{0.3f};
+ਨਿਜੀ:
+	ਦਸ਼ਮਲਵ _compression_gain{1.f};
+	ਦਸ਼ਮਲਵ _compression_gain_min{0.3f};
 
-	float _alpha_hpf{0.f};
-	float _hpf{0.f};
+	ਦਸ਼ਮਲਵ _alpha_hpf{0.f};
+	ਦਸ਼ਮਲਵ _hpf{0.f};
 
-	float _input_prev{0.f};
-	bool _input_initialized{false};
+	ਦਸ਼ਮਲਵ ਨਿਵੇਸ਼_prev{0.f};
+	ਤਾਰਕਿਕ ਨਿਵੇਸ਼_initialized{ਝੂਠ};
 
-	AlphaFilter<float> _lpf;
+	AlphaFilter<ਦਸ਼ਮਲਵ> _lpf;
 
-	static constexpr float _kSpectralDamperGain{200.f}; // tuned based on flight test data to obtain a quick response
-	static constexpr float _kLeakageGain{0.1f}; // 1/time_constant, slow enough to not interfere with the controller
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ _kSpectralDamperGain{200.f}; // tuned based on flight test data to obtain a quick response
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ _kLeakageGain{0.1f}; // 1/time_constant, slow enough to not interfere with the controller
 
 };
 
-class GainCompression3d
+ਵਰਗ GainCompression3d
 {
-public:
+ਜਨਤਕ:
 	GainCompression3d();
-	~GainCompression3d() = default;
+	~GainCompression3d() = ਮੂਲ;
 
-	void reset();
-	void update(const matrix::Vector3f &input, float dt);
-	const matrix::Vector3f &getGains() const { return _gains; };
+	ਖਾਲੀ reset();
+	ਖਾਲੀ update(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &ਨਿਵੇਸ਼, ਦਸ਼ਮਲਵ dt);
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector3f &getGains() ਅਚਲ { ਵਾਪਸ _gains; };
 
-	void setEnabled(bool enabled) { _enabled = enabled; }
-	void setCompressionGainMin(float gain_min);
+	ਖਾਲੀ ਸੈੱਟ_Enabled(ਤਾਰਕਿਕ enabled) { _enabled = enabled; }
+	ਖਾਲੀ ਸੈੱਟ_Compression_Gain_Min(ਦਸ਼ਮਲਵ gain_min);
 
-private:
+ਨਿਜੀ:
 	// uORB publications
 	uORB::Publication<gain_compression_s> _gain_compression_pub{ORB_ID(gain_compression)};
 
 	GainCompression _compression_gains[3];
-	matrix::Vector3f _gains{1.f, 1.f, 1.f};
+	ਮੈਟ੍ਰਿਕਸ::Vector3f _gains{1.f, 1.f, 1.f};
 
-	bool _enabled{false};
+	ਤਾਰਕਿਕ _enabled{ਝੂਠ};
 
-	hrt_abstime _time_last_publication{0};
+	hrt_abstime ਸਮਾਂ_ਆਖਰੀ_publication{0};
 
-	static constexpr float _kLpfCutoffFrequency{5.f}; // Just above the control bandwidth of most UAVs
-	static constexpr float _kHpfCutoffFrequency{2.f * _kLpfCutoffFrequency}; // 1 Octave above LPF cutoff, as recommended by the reference paper
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ _kLpfCutoffFrequency{5.f}; // Just above the control bandwidth of most UAVs
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ _kHpfCutoffFrequency{2.f * _kLpfCutoffFrequency}; // 1 Octave above LPF cutoff, as recommended by the reference paper
 };

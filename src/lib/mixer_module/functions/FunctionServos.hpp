@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "FunctionProviderBase.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/actuator_servos.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/actuator_servos.h>
 
 /**
  * Functions: Servo1 ... ServoMax
  */
-class FunctionServos : public FunctionProviderBase
+ਵਰਗ FunctionServos : ਜਨਤਕ Function_Provider_ਅਧਾਰ
 {
-public:
-	static_assert(actuator_servos_s::NUM_CONTROLS == (int)OutputFunction::ServoMax - (int)OutputFunction::Servo1 + 1,
+ਜਨਤਕ:
+	static_assert(actuator_servos_s::ਅੰਕ_CONTROLS == (ਪੂਰਨ)OutputFunction::ServoMax - (ਪੂਰਨ)OutputFunction::Servo1 + 1,
 		      "Unexpected num servos");
 
-	FunctionServos(const Context &context) :
-		_topic(&context.work_item, ORB_ID(actuator_servos))
+	FunctionServos(ਅਚਲ Context &context) :
+		_topic(&context.work_ਵਸਤੂ, ORB_ID(actuator_servos))
 	{
-		for (int i = 0; i < actuator_servos_s::NUM_CONTROLS; ++i) {
-			_data.control[i] = NAN;
+		ਲਈ (ਪੂਰਨ i = 0; i < actuator_servos_s::ਅੰਕ_CONTROLS; ++i) {
+			ਅੰਕੜੇ_3.control[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionServos(context); }
+	ਸਥਿਰ Function_Provider_ਅਧਾਰ *allocate(ਅਚਲ Context &context) { ਵਾਪਸ ਨਵਾਂ FunctionServos(context); }
 
-	void update() override { _topic.update(&_data); }
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Servo1]; }
+	ਖਾਲੀ update() override { _topic.update(&ਅੰਕੜੇ_3); }
+	ਦਸ਼ਮਲਵ value(OutputFunction func) override { ਵਾਪਸ ਅੰਕੜੇ_3.control[(ਪੂਰਨ)func - (ਪੂਰਨ)OutputFunction::Servo1]; }
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::Subscription_Callback_Work_ਵਸਤੂ *subscriptionCallback() override { ਵਾਪਸ &_topic; }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 0.f; }
+	ਦਸ਼ਮਲਵ default_Failsafe_ਮੁੱਲ(OutputFunction func) ਅਚਲ override { ਵਾਪਸ 0.f; }
 
-private:
-	uORB::SubscriptionCallbackWorkItem _topic;
-	actuator_servos_s _data{};
+ਨਿਜੀ:
+	uORB::Subscription_Callback_Work_ਵਸਤੂ _topic;
+	actuator_servos_s ਅੰਕੜੇ_3{};
 };

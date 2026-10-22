@@ -4,9 +4,9 @@
 // Do NOT modify by hand.
 // -----------------------------------------------------------------------------
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
 
 namespace sym {
 
@@ -29,69 +29,69 @@ namespace sym {
  *     innov_var: Scalar
  *     innov: Scalar
  */
-template <typename Scalar>
-void FuseBeta(const matrix::Matrix<Scalar, 3, 1>& v_local, const matrix::Matrix<Scalar, 3, 1>& state,
-              const matrix::Matrix<Scalar, 3, 3>& P, const matrix::Matrix<Scalar, 4, 1>& q_att,
-              const Scalar R, const Scalar epsilon, matrix::Matrix<Scalar, 1, 3>* const H = nullptr,
-              matrix::Matrix<Scalar, 3, 1>* const K = nullptr, Scalar* const innov_var = nullptr,
-              Scalar* const innov = nullptr) {
+ਸਾਂਚਾ <typename Scalar>
+ਖਾਲੀ FuseBeta(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Scalar, 3, 1>& v_local, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Scalar, 3, 1>& state,
+              ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Scalar, 3, 3>& P, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Scalar, 4, 1>& q_att,
+              ਅਚਲ Scalar R, ਅਚਲ Scalar epsilon, ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Scalar, 1, 3>* ਅਚਲ H = nullptr,
+              ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Scalar, 3, 1>* ਅਚਲ K = nullptr, Scalar* ਅਚਲ innov_var = nullptr,
+              Scalar* ਅਚਲ innov = nullptr) {
   // Total ops: 75
 
   // Input arrays
 
   // Intermediate terms (23)
-  const Scalar _tmp0 = 2 * v_local(2, 0);
-  const Scalar _tmp1 = std::pow(q_att(1, 0), Scalar(2));
-  const Scalar _tmp2 = std::pow(q_att(2, 0), Scalar(2));
-  const Scalar _tmp3 = std::pow(q_att(0, 0), Scalar(2)) - std::pow(q_att(3, 0), Scalar(2));
-  const Scalar _tmp4 = _tmp1 - _tmp2 + _tmp3;
-  const Scalar _tmp5 = -state(0, 0) + v_local(0, 0);
-  const Scalar _tmp6 = -state(1, 0) + v_local(1, 0);
-  const Scalar _tmp7 = q_att(0, 0) * q_att(3, 0);
-  const Scalar _tmp8 = q_att(1, 0) * q_att(2, 0);
-  const Scalar _tmp9 = 2 * _tmp7 + 2 * _tmp8;
-  const Scalar _tmp10 = _tmp0 * (-q_att(0, 0) * q_att(2, 0) + q_att(1, 0) * q_att(3, 0)) +
+  ਅਚਲ Scalar _tmp0 = 2 * v_local(2, 0);
+  ਅਚਲ Scalar _tmp1 = std::ਘਾਤ(q_att(1, 0), Scalar(2));
+  ਅਚਲ Scalar _tmp2 = std::ਘਾਤ(q_att(2, 0), Scalar(2));
+  ਅਚਲ Scalar _tmp3 = std::ਘਾਤ(q_att(0, 0), Scalar(2)) - std::ਘਾਤ(q_att(3, 0), Scalar(2));
+  ਅਚਲ Scalar _tmp4 = _tmp1 - _tmp2 + _tmp3;
+  ਅਚਲ Scalar _tmp5 = -state(0, 0) + v_local(0, 0);
+  ਅਚਲ Scalar _tmp6 = -state(1, 0) + v_local(1, 0);
+  ਅਚਲ Scalar _tmp7 = q_att(0, 0) * q_att(3, 0);
+  ਅਚਲ Scalar _tmp8 = q_att(1, 0) * q_att(2, 0);
+  ਅਚਲ Scalar _tmp9 = 2 * _tmp7 + 2 * _tmp8;
+  ਅਚਲ Scalar _tmp10 = _tmp0 * (-q_att(0, 0) * q_att(2, 0) + q_att(1, 0) * q_att(3, 0)) +
                         _tmp4 * _tmp5 + _tmp6 * _tmp9;
-  const Scalar _tmp11 =
+  ਅਚਲ Scalar _tmp11 =
       _tmp10 + epsilon * (2 * math::min<Scalar>(0, (((_tmp10) > 0) - ((_tmp10) < 0))) + 1);
-  const Scalar _tmp12 = Scalar(1.0) / (_tmp11);
-  const Scalar _tmp13 = -2 * _tmp7 + 2 * _tmp8;
-  const Scalar _tmp14 = -_tmp1 + _tmp2 + _tmp3;
-  const Scalar _tmp15 = _tmp0 * (q_att(0, 0) * q_att(1, 0) + q_att(2, 0) * q_att(3, 0)) +
+  ਅਚਲ Scalar _tmp12 = Scalar(1.0) / (_tmp11);
+  ਅਚਲ Scalar _tmp13 = -2 * _tmp7 + 2 * _tmp8;
+  ਅਚਲ Scalar _tmp14 = -_tmp1 + _tmp2 + _tmp3;
+  ਅਚਲ Scalar _tmp15 = _tmp0 * (q_att(0, 0) * q_att(1, 0) + q_att(2, 0) * q_att(3, 0)) +
                         _tmp13 * _tmp5 + _tmp14 * _tmp6;
-  const Scalar _tmp16 = _tmp15 / std::pow(_tmp11, Scalar(2));
-  const Scalar _tmp17 = -_tmp12 * _tmp13 + _tmp16 * _tmp4;
-  const Scalar _tmp18 = -_tmp12 * _tmp14 + _tmp16 * _tmp9;
-  const Scalar _tmp19 = P(0, 0) * _tmp17;
-  const Scalar _tmp20 = P(1, 1) * _tmp18;
-  const Scalar _tmp21 =
+  ਅਚਲ Scalar _tmp16 = _tmp15 / std::ਘਾਤ(_tmp11, Scalar(2));
+  ਅਚਲ Scalar _tmp17 = -_tmp12 * _tmp13 + _tmp16 * _tmp4;
+  ਅਚਲ Scalar _tmp18 = -_tmp12 * _tmp14 + _tmp16 * _tmp9;
+  ਅਚਲ Scalar _tmp19 = P(0, 0) * _tmp17;
+  ਅਚਲ Scalar _tmp20 = P(1, 1) * _tmp18;
+  ਅਚਲ Scalar _tmp21 =
       R + _tmp17 * (P(1, 0) * _tmp18 + _tmp19) + _tmp18 * (P(0, 1) * _tmp17 + _tmp20);
-  const Scalar _tmp22 = Scalar(1.0) / (math::max<Scalar>(_tmp21, epsilon));
+  ਅਚਲ Scalar _tmp22 = Scalar(1.0) / (math::max<Scalar>(_tmp21, epsilon));
 
   // Output terms (4)
-  if (H != nullptr) {
-    matrix::Matrix<Scalar, 1, 3>& _h = (*H);
+  ਜੇ (H != nullptr) {
+    ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Scalar, 1, 3>& _h = (*H);
 
     _h(0, 0) = _tmp17;
     _h(0, 1) = _tmp18;
     _h(0, 2) = 0;
   }
 
-  if (K != nullptr) {
-    matrix::Matrix<Scalar, 3, 1>& _k = (*K);
+  ਜੇ (K != nullptr) {
+    ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Scalar, 3, 1>& _k = (*K);
 
     _k(0, 0) = _tmp22 * (P(0, 1) * _tmp18 + _tmp19);
     _k(1, 0) = _tmp22 * (P(1, 0) * _tmp17 + _tmp20);
     _k(2, 0) = _tmp22 * (P(2, 0) * _tmp17 + P(2, 1) * _tmp18);
   }
 
-  if (innov_var != nullptr) {
+  ਜੇ (innov_var != nullptr) {
     Scalar& _innov_var = (*innov_var);
 
     _innov_var = _tmp21;
   }
 
-  if (innov != nullptr) {
+  ਜੇ (innov != nullptr) {
     Scalar& _innov = (*innov);
 
     _innov = -_tmp12 * _tmp15;

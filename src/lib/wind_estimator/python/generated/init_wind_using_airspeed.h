@@ -4,9 +4,9 @@
 // Do NOT modify by hand.
 // -----------------------------------------------------------------------------
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
 
 namespace sym {
 
@@ -28,37 +28,37 @@ namespace sym {
  *     wind: Matrix21
  *     P: Matrix22
  */
-template <typename Scalar>
-void InitWindUsingAirspeed(const matrix::Matrix<Scalar, 3, 1>& v_local, const Scalar heading,
-                           const Scalar airspeed, const Scalar v_var, const Scalar heading_var,
-                           const Scalar sideslip_var, const Scalar airspeed_var,
-                           matrix::Matrix<Scalar, 2, 1>* const wind = nullptr,
-                           matrix::Matrix<Scalar, 2, 2>* const P = nullptr) {
+ਸਾਂਚਾ <typename Scalar>
+ਖਾਲੀ InitWindUsingAirspeed(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Scalar, 3, 1>& v_local, ਅਚਲ Scalar heading,
+                           ਅਚਲ Scalar airspeed, ਅਚਲ Scalar v_var, ਅਚਲ Scalar heading_var,
+                           ਅਚਲ Scalar sideslip_var, ਅਚਲ Scalar airspeed_var,
+                           ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Scalar, 2, 1>* ਅਚਲ wind = nullptr,
+                           ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Scalar, 2, 2>* ਅਚਲ P = nullptr) {
   // Total ops: 29
 
   // Input arrays
 
   // Intermediate terms (9)
-  const Scalar _tmp0 = std::cos(heading);
-  const Scalar _tmp1 = std::sin(heading);
-  const Scalar _tmp2 = std::pow(_tmp1, Scalar(2));
-  const Scalar _tmp3 = std::pow(airspeed, Scalar(2));
-  const Scalar _tmp4 = _tmp3 * sideslip_var;
-  const Scalar _tmp5 = _tmp3 * heading_var;
-  const Scalar _tmp6 = std::pow(_tmp0, Scalar(2));
-  const Scalar _tmp7 = _tmp0 * _tmp1;
-  const Scalar _tmp8 = -_tmp4 * _tmp7 - _tmp5 * _tmp7 + _tmp7 * airspeed_var;
+  ਅਚਲ Scalar _tmp0 = std::ਕੋਜੀਵਾ(heading);
+  ਅਚਲ Scalar _tmp1 = std::ਜੀਵਾ(heading);
+  ਅਚਲ Scalar _tmp2 = std::ਘਾਤ(_tmp1, Scalar(2));
+  ਅਚਲ Scalar _tmp3 = std::ਘਾਤ(airspeed, Scalar(2));
+  ਅਚਲ Scalar _tmp4 = _tmp3 * sideslip_var;
+  ਅਚਲ Scalar _tmp5 = _tmp3 * heading_var;
+  ਅਚਲ Scalar _tmp6 = std::ਘਾਤ(_tmp0, Scalar(2));
+  ਅਚਲ Scalar _tmp7 = _tmp0 * _tmp1;
+  ਅਚਲ Scalar _tmp8 = -_tmp4 * _tmp7 - _tmp5 * _tmp7 + _tmp7 * airspeed_var;
 
   // Output terms (2)
-  if (wind != nullptr) {
-    matrix::Matrix<Scalar, 2, 1>& _wind = (*wind);
+  ਜੇ (wind != nullptr) {
+    ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Scalar, 2, 1>& _wind = (*wind);
 
     _wind(0, 0) = -_tmp0 * airspeed + v_local(0, 0);
     _wind(1, 0) = -_tmp1 * airspeed + v_local(1, 0);
   }
 
-  if (P != nullptr) {
-    matrix::Matrix<Scalar, 2, 2>& _p = (*P);
+  ਜੇ (P != nullptr) {
+    ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Scalar, 2, 2>& _p = (*P);
 
     _p(0, 0) = _tmp2 * _tmp4 + _tmp2 * _tmp5 + _tmp6 * airspeed_var + v_var;
     _p(1, 0) = _tmp8;

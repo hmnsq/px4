@@ -1,80 +1,80 @@
 #!/usr/bin/env python
 
-import argparse
-import json
-import lzma #to create .xz file
-import re
+ਆਯਾਤ argparse
+ਆਯਾਤ json
+ਆਯਾਤ lzma #to create .xz file
+ਆਯਾਤ re
 
-parser = argparse.ArgumentParser(description="""Generate the COMPONENT_GENERAL json file""")
-parser.add_argument('filename', metavar='component_general.json', help='JSON output file')
-parser.add_argument('--compress', action='store_true', help='Add a compressed output file')
-parser.add_argument('--type', metavar='type', action="append", default=[],
+parser = argparse.ਦਲੀਲ_Parser(description="""Generate the COMPONENT_GENERAL json file""")
+parser.ਜੋੜੋ_ਦਲੀਲ('filename', metavar='component_general.json', help='JSON output file')
+parser.ਜੋੜੋ_ਦਲੀਲ('--compress', action='store_true', help='Add a compressed output file')
+parser.ਜੋੜੋ_ਦਲੀਲ('--type', metavar='type', action="append", ਮੂਲ=[],
         help='Metadata type (<type>,<metadata file>,<uri>,<fallback uri>,[translation uri])')
-parser.add_argument('--version-file', metavar='build_git_version.h', help='Git version file')
+parser.ਜੋੜੋ_ਦਲੀਲ('--version-file', metavar='build_git_version.h', help='Git version file')
 
-args = parser.parse_args()
-filename = args.filename
-compress = args.compress
-version_file = args.version_file
+ਦਲੀਲਾਂ = parser.parse_ਦਲੀਲਾਂ()
+filename = ਦਲੀਲਾਂ.filename
+compress = ਦਲੀਲਾਂ.compress
+ਸੰਸਕਰਣ_file = ਦਲੀਲਾਂ.ਸੰਸਕਰਣ_file
 
-version_dir = ''
-if version_file is not None:
-    for line in open(version_file, "r"):
-        version_search = re.search(r'PX4_GIT_TAG_OR_BRANCH_NAME\s+"(.+)"', line)
-        if version_search:
-            version_dir = version_search.group(1)
-            break
+ਸੰਸਕਰਣ_dir = ''
+ਜੇ ਸੰਸਕਰਣ_file ਹੈ ਨਹੀਂ ਕੁਝ_ਨਹੀਂ:
+    ਲਈ ਸਤਰ ਵਿੱਚ open(ਸੰਸਕਰਣ_file, "r"):
+        ਸੰਸਕਰਣ_ਖੋਜ = re.ਖੋਜ(r'PX4_GIT_TAG_OR_BRANCH_NAME\s+"(.+)"', ਸਤਰ)
+        ਜੇ ਸੰਸਕਰਣ_ਖੋਜ:
+            ਸੰਸਕਰਣ_dir = ਸੰਸਕਰਣ_ਖੋਜ.ਸਮੂਹ(1)
+            ਰੋਕੋ
 
 
-def save_compressed(filename):
+ਪਰਿਭਾਸ਼ਾ save_compressed(filename):
     #create lzma compressed version
     xz_filename=filename+'.xz'
-    with lzma.open(xz_filename, 'wt', preset=9) as f:
-        with open(filename, 'r') as content_file:
-            f.write(content_file.read())
+    ਨਾਲ lzma.open(xz_filename, 'wt', preset=9) ਇਵ f:
+        ਨਾਲ open(filename, 'r') ਇਵ content_file:
+            f.ਲਿਖ(content_file.ਪਠ())
 
 component_general = {}
 component_general['version'] = 1
 
-def create_table():
+ਪਰਿਭਾਸ਼ਾ create_ਸਾਰਣੀ():
     a = []
-    for i in range(256):
+    ਲਈ i ਵਿੱਚ ਸੀਮਾ(256):
         k = i
-        for j in range(8):
-            if k & 1:
+        ਲਈ j ਵਿੱਚ ਸੀਮਾ(8):
+            ਜੇ k & 1:
                 k ^= 0x1db710640
             k >>= 1
         a.append(k)
-    return a
+    ਵਾਪਸ a
 
 # MAVLink's CRC32
-def crc_update(buf, crc_table, crc):
-    for k in buf:
-        crc = (crc >> 8) ^ crc_table[(crc & 0xff) ^ k]
-    return crc
+ਪਰਿਭਾਸ਼ਾ ਚੱਕਰੀ_ਜਾਂਚ_update(buf, ਚੱਕਰੀ_ਜਾਂਚ_ਸਾਰਣੀ, ਚੱਕਰੀ_ਜਾਂਚ):
+    ਲਈ k ਵਿੱਚ buf:
+        ਚੱਕਰੀ_ਜਾਂਚ = (ਚੱਕਰੀ_ਜਾਂਚ >> 8) ^ ਚੱਕਰੀ_ਜਾਂਚ_ਸਾਰਣੀ[(ਚੱਕਰੀ_ਜਾਂਚ & 0xff) ^ k]
+    ਵਾਪਸ ਚੱਕਰੀ_ਜਾਂਚ
 
-crc_table = create_table()
+ਚੱਕਰੀ_ਜਾਂਚ_ਸਾਰਣੀ = create_ਸਾਰਣੀ()
 
 metadata_types = []
-for metadata_type_tuple in args.type:
-    type_id, metadata_file, uri, fallback_uri, translation_uri = metadata_type_tuple.split(',')
-    file_crc = 0
-    for line in open(metadata_file, "rb"):
-        file_crc = crc_update(line, crc_table, file_crc)
+ਲਈ metadata_type_tuple ਵਿੱਚ ਦਲੀਲਾਂ.type:
+    type_id, metadata_file, uri, fallback_uri, translation_uri = metadata_type_tuple.ਵੰਡੋ(',')
+    file_ਚੱਕਰੀ_ਜਾਂਚ = 0
+    ਲਈ ਸਤਰ ਵਿੱਚ open(metadata_file, "rb"):
+        file_ਚੱਕਰੀ_ਜਾਂਚ = ਚੱਕਰੀ_ਜਾਂਚ_update(ਸਤਰ, ਚੱਕਰੀ_ਜਾਂਚ_ਸਾਰਣੀ, file_ਚੱਕਰੀ_ਜਾਂਚ)
     json_type = {
-            'type': int(type_id),
-            'uri': uri.replace('{version}', version_dir),
-            'fileCrc': file_crc,
+            'type': ਪੂਰਨ(type_id),
+            'uri': uri.replace('{version}', ਸੰਸਕਰਣ_dir),
+            'fileCrc': file_ਚੱਕਰੀ_ਜਾਂਚ,
             }
-    if len(fallback_uri) > 0:
-        json_type['uriFallback'] = fallback_uri.replace('{version}', version_dir)
-    if len(translation_uri) > 0:
+    ਜੇ ਲੰਬਾਈ(fallback_uri) > 0:
+        json_type['uriFallback'] = fallback_uri.replace('{version}', ਸੰਸਕਰਣ_dir)
+    ਜੇ ਲੰਬਾਈ(translation_uri) > 0:
         json_type['translationUri'] = translation_uri
     metadata_types.append(json_type)
 component_general['metadataTypes'] = metadata_types
 
-with open(filename, 'w') as outfile:
-    json.dump(component_general, outfile, sort_keys=True)
+ਨਾਲ open(filename, 'w') ਇਵ outfile:
+    json.dump(component_general, outfile, ਛਾਂਟੋ_ਕੁੰਜੀਆਂ=ਸੱਚ)
 
-if compress:
+ਜੇ compress:
     save_compressed(filename)

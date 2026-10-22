@@ -37,17 +37,17 @@
  * User space interface for dispatching events.
  */
 
-#include <sys/boardctl.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <sys/boardctl.h>
 
-#include "events_ioctl.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "events_ioctl.h"
 
-namespace events
+ਨਾਮਾਕਾਸ਼ events
 {
 
-void send(event_s &event)
+ਖਾਲੀ send(event_s &event)
 {
-	eventiocsend_t data = {event};
-	boardctl(EVENTSIOCSEND, reinterpret_cast<unsigned long>(&data));
+	eventiocsend_t ਅੰਕੜੇ = {event};
+	boardctl(EVENTSIOCSEND, reinterpret_cast<ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ>(&ਅੰਕੜੇ));
 }
 
 } /* namespace events */

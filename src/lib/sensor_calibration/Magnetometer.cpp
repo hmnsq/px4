@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "Magnetometer.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Magnetometer.hpp"
 
-#include "Utilities.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/drivers/device/Device.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/parameters/param.h>
 
-using namespace matrix;
-using namespace time_literals;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਸਮਾਂ_literals;
 
-namespace calibration
+ਨਾਮਾਕਾਸ਼ calibration
 {
 
 Magnetometer::Magnetometer()
@@ -51,22 +51,22 @@ Magnetometer::Magnetometer()
 
 Magnetometer::Magnetometer(uint32_t device_id)
 {
-	set_device_id(device_id);
+	ਸੈੱਟ_device_id(device_id);
 }
 
-Magnetometer::Magnetometer(uint32_t device_id, bool external)
+Magnetometer::Magnetometer(uint32_t device_id, ਤਾਰਕਿਕ external)
 {
-	set_device_id(device_id, external);
+	ਸੈੱਟ_device_id(device_id, external);
 }
 
-void Magnetometer::set_device_id(uint32_t device_id)
+ਖਾਲੀ Magnetometer::ਸੈੱਟ_device_id(uint32_t device_id)
 {
-	set_device_id(device_id, device::device_is_external(device_id));
+	ਸੈੱਟ_device_id(device_id, device::device_is_external(device_id));
 }
 
-void Magnetometer::set_device_id(uint32_t device_id, bool external)
+ਖਾਲੀ Magnetometer::ਸੈੱਟ_device_id(uint32_t device_id, ਤਾਰਕਿਕ external)
 {
-	if (_device_id != device_id || _external != external) {
+	ਜੇ (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -74,82 +74,82 @@ void Magnetometer::set_device_id(uint32_t device_id, bool external)
 		Reset();
 
 		ParametersUpdate();
-		SensorCorrectionsUpdate(true);
+		SensorCorrectionsUpdate(ਸੱਚ);
 	}
 }
 
-void Magnetometer::SensorCorrectionsUpdate(bool force)
+ਖਾਲੀ Magnetometer::SensorCorrectionsUpdate(ਤਾਰਕਿਕ force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	ਜੇ (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		ਜੇ (_device_id == 0) {
+			ਵਾਪਸ;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		ਜੇ (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.mag_device_ids[i] == _device_id) {
-					switch (i) {
-					case 0:
-						_thermal_offset = Vector3f{corrections.mag_offset_0};
-						return;
-					case 1:
-						_thermal_offset = Vector3f{corrections.mag_offset_1};
-						return;
-					case 2:
-						_thermal_offset = Vector3f{corrections.mag_offset_2};
-						return;
-					case 3:
-						_thermal_offset = Vector3f{corrections.mag_offset_3};
-						return;
+			ਲਈ (ਪੂਰਨ i = 0; i < MAX_SENSOR_ਗਿਣਤੀ; i++) {
+				ਜੇ (corrections.mag_device_ids[i] == _device_id) {
+					ਚੋਣ (i) {
+					ਹਾਲਤ 0:
+						thermal_ਵਿੱਥ = Vector3f{corrections.mag_ਵਿੱਥ_0};
+						ਵਾਪਸ;
+					ਹਾਲਤ 1:
+						thermal_ਵਿੱਥ = Vector3f{corrections.mag_ਵਿੱਥ_1};
+						ਵਾਪਸ;
+					ਹਾਲਤ 2:
+						thermal_ਵਿੱਥ = Vector3f{corrections.mag_ਵਿੱਥ_2};
+						ਵਾਪਸ;
+					ਹਾਲਤ 3:
+						thermal_ਵਿੱਥ = Vector3f{corrections.mag_ਵਿੱਥ_3};
+						ਵਾਪਸ;
 					}
 				}
 			}
 		}
 
 		// zero thermal offset if not found
-		_thermal_offset.zero();
+		thermal_ਵਿੱਥ.zero();
 	}
 }
 
-bool Magnetometer::set_offset(const Vector3f &offset)
+ਤਾਰਕਿਕ Magnetometer::ਸੈੱਟ_ਵਿੱਥ(ਅਚਲ Vector3f &ਵਿੱਥ)
 {
-	if (Vector3f(_offset - offset).longerThan(0.005f)) {
-		if (offset.isAllFinite()) {
-			_offset = offset;
-			_calibration_count++;
-			return true;
+	ਜੇ (Vector3f(ਵਿੱਥ_2 - ਵਿੱਥ).longerThan(0.005f)) {
+		ਜੇ (ਵਿੱਥ.isAllFinite()) {
+			ਵਿੱਥ_2 = ਵਿੱਥ;
+			calibration_ਗਿਣਤੀ++;
+			ਵਾਪਸ ਸੱਚ;
 		}
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-bool Magnetometer::set_scale(const Vector3f &scale)
+ਤਾਰਕਿਕ Magnetometer::ਸੈੱਟ_scale(ਅਚਲ Vector3f &scale)
 {
-	if (Vector3f(_scale.diag() - scale).longerThan(0.01f)) {
-		if (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
+	ਜੇ (Vector3f(_scale.diag() - scale).longerThan(0.01f)) {
+		ਜੇ (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
 			_scale(0, 0) = scale(0);
 			_scale(1, 1) = scale(1);
 			_scale(2, 2) = scale(2);
 
-			_calibration_count++;
-			return true;
+			calibration_ਗਿਣਤੀ++;
+			ਵਾਪਸ ਸੱਚ;
 		}
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-bool Magnetometer::set_offdiagonal(const Vector3f &offdiagonal)
+ਤਾਰਕਿਕ Magnetometer::ਸੈੱਟ_offdiagonal(ਅਚਲ Vector3f &offdiagonal)
 {
-	if (Vector3f(Vector3f{_scale(0, 1), _scale(0, 2), _scale(1, 2)} - offdiagonal).longerThan(0.01f)) {
-		if (offdiagonal.isAllFinite()) {
+	ਜੇ (Vector3f(Vector3f{_scale(0, 1), _scale(0, 2), _scale(1, 2)} - offdiagonal).longerThan(0.01f)) {
+		ਜੇ (offdiagonal.isAllFinite()) {
 
 			_scale(0, 1) = offdiagonal(0);
 			_scale(1, 0) = offdiagonal(0);
@@ -160,32 +160,32 @@ bool Magnetometer::set_offdiagonal(const Vector3f &offdiagonal)
 			_scale(1, 2) = offdiagonal(2);
 			_scale(2, 1) = offdiagonal(2);
 
-			_calibration_count++;
-			return true;
+			calibration_ਗਿਣਤੀ++;
+			ਵਾਪਸ ਸੱਚ;
 		}
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-void Magnetometer::set_rotation(const Rotation rotation)
+ਖਾਲੀ Magnetometer::ਸੈੱਟ_rotation(ਅਚਲ Rotation rotation)
 {
-	if (rotation < ROTATION_MAX) {
+	ਜੇ (rotation < ROTATION_MAX) {
 		_rotation_enum = rotation;
 
-	} else {
+	} ਨਹੀਂਤਾਂ {
 		// invalid rotation, resetting
 		_rotation_enum = ROTATION_NONE;
 	}
 
 	// always apply level adjustments
-	_rotation = Dcmf(GetSensorLevelAdjustment()) * get_rot_matrix(_rotation_enum);
+	_rotation = Dcmf(GetSensorLevelAdjustment()) * get_rot_ਮੈਟ੍ਰਿਕਸ(_rotation_enum);
 
 	// clear any custom rotation
 	_rotation_custom_euler.zero();
 }
 
-void Magnetometer::set_custom_rotation(const Eulerf &rotation)
+ਖਾਲੀ Magnetometer::ਸੈੱਟ_custom_rotation(ਅਚਲ Eulerf &rotation)
 {
 	_rotation_enum = ROTATION_CUSTOM;
 
@@ -203,207 +203,207 @@ void Magnetometer::set_custom_rotation(const Eulerf &rotation)
 	// values properly (i.e. finding Vehicle's true Forward-Right-Down frame in a user's perspective)
 }
 
-bool Magnetometer::set_calibration_index(int calibration_index)
+ਤਾਰਕਿਕ Magnetometer::ਸੈੱਟ_calibration_ਸੂਚਕਾਂਕ(ਪੂਰਨ calibration_ਸੂਚਕਾਂਕ)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
-		_calibration_index = calibration_index;
-		return true;
+	ਜੇ ((calibration_ਸੂਚਕਾਂਕ >= 0) && (calibration_ਸੂਚਕਾਂਕ < MAX_SENSOR_ਗਿਣਤੀ)) {
+		calibration_ਸੂਚਕਾਂਕ_2 = calibration_ਸੂਚਕਾਂਕ;
+		ਵਾਪਸ ਸੱਚ;
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-void Magnetometer::ParametersUpdate()
+ਖਾਲੀ Magnetometer::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	ਜੇ (_device_id == 0) {
+		ਵਾਪਸ;
 	}
 
-	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
+	calibration_ਸੂਚਕਾਂਕ_2 = ਲੱਭੋ_Current_Calibration_ਸੂਚਕਾਂਕ(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	ਜੇ (calibration_ਸੂਚਕਾਂਕ_2 == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
-		ParametersLoad();
+	} ਨਹੀਂਤਾਂ {
+		Parameters_ਲੱਦੋ();
 	}
 }
 
-bool Magnetometer::ParametersLoad()
+ਤਾਰਕਿਕ Magnetometer::Parameters_ਲੱਦੋ()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	ਜੇ (calibration_ਸੂਚਕਾਂਕ_2 >= 0 && calibration_ਸੂਚਕਾਂਕ_2 < MAX_SENSOR_ਗਿਣਤੀ) {
 		// CAL_MAGx_ROT
-		int32_t rotation_value = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
+		int32_t rotation_ਮੁੱਲ = GetCalibrationParamInt32(SensorString(), "ROT", calibration_ਸੂਚਕਾਂਕ_2);
 
-		const float euler_roll_deg = GetCalibrationParamFloat(SensorString(), "ROLL", _calibration_index);
-		const float euler_pitch_deg = GetCalibrationParamFloat(SensorString(), "PITCH", _calibration_index);
-		const float euler_yaw_deg = GetCalibrationParamFloat(SensorString(), "YAW", _calibration_index);
+		ਅਚਲ ਦਸ਼ਮਲਵ euler_roll_deg = GetCalibrationParamFloat(SensorString(), "ROLL", calibration_ਸੂਚਕਾਂਕ_2);
+		ਅਚਲ ਦਸ਼ਮਲਵ euler_pitch_deg = GetCalibrationParamFloat(SensorString(), "PITCH", calibration_ਸੂਚਕਾਂਕ_2);
+		ਅਚਲ ਦਸ਼ਮਲਵ euler_yaw_deg = GetCalibrationParamFloat(SensorString(), "YAW", calibration_ਸੂਚਕਾਂਕ_2);
 
-		if (_external) {
-			if (((rotation_value >= ROTATION_MAX) && (rotation_value != ROTATION_CUSTOM)) || (rotation_value < 0)) {
+		ਜੇ (_external) {
+			ਜੇ (((rotation_ਮੁੱਲ >= ROTATION_MAX) && (rotation_ਮੁੱਲ != ROTATION_CUSTOM)) || (rotation_ਮੁੱਲ < 0)) {
 				// invalid rotation, resetting
-				rotation_value = ROTATION_NONE;
+				rotation_ਮੁੱਲ = ROTATION_NONE;
 			}
 
 			// if CAL_MAGx_{ROLL,PITCH,YAW} manually set then CAL_MAGx_ROT needs to be ROTATION_CUSTOM
-			if ((rotation_value != ROTATION_CUSTOM)
+			ਜੇ ((rotation_ਮੁੱਲ != ROTATION_CUSTOM)
 			    && ((fabsf(euler_roll_deg) > FLT_EPSILON)
 				|| (fabsf(euler_pitch_deg) > FLT_EPSILON)
 				|| (fabsf(euler_yaw_deg) > FLT_EPSILON))) {
 
-				rotation_value = ROTATION_CUSTOM;
-				SetCalibrationParam(SensorString(), "ROT", _calibration_index, rotation_value);
+				rotation_ਮੁੱਲ = ROTATION_CUSTOM;
+				ਸੈੱਟ_Calibration_Param(SensorString(), "ROT", calibration_ਸੂਚਕਾਂਕ_2, rotation_ਮੁੱਲ);
 			}
 
 			// Handle custom specified euler angle
-			if (rotation_value == ROTATION_CUSTOM) {
+			ਜੇ (rotation_ਮੁੱਲ == ROTATION_CUSTOM) {
 
-				const matrix::Eulerf rotation_custom_euler{
+				ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Eulerf rotation_custom_euler{
 					math::radians(euler_roll_deg),
 					math::radians(euler_pitch_deg),
 					math::radians(euler_yaw_deg)};
 
-				set_custom_rotation(rotation_custom_euler);
+				ਸੈੱਟ_custom_rotation(rotation_custom_euler);
 
-			} else {
-				set_rotation(static_cast<Rotation>(rotation_value));
+			} ਨਹੀਂਤਾਂ {
+				ਸੈੱਟ_rotation(static_cast<Rotation>(rotation_ਮੁੱਲ));
 			}
 
-		} else {
+		} ਨਹੀਂਤਾਂ {
 			// internal sensors follow board rotation
-			set_rotation(GetBoardRotation());
+			ਸੈੱਟ_rotation(GetBoardRotation());
 		}
 
 		// CAL_MAGx_PRIO
-		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
+		ਤਰਜੀਹ_2 = GetCalibrationParamInt32(SensorString(), "PRIO", calibration_ਸੂਚਕਾਂਕ_2);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		ਜੇ ((ਤਰਜੀਹ_2 < 0) || (ਤਰਜੀਹ_2 > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
-			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
+			ਸਥਿਰ constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			ਜੇ (ਤਰਜੀਹ_2 != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
-					_calibration_index, _priority);
+					calibration_ਸੂਚਕਾਂਕ_2, ਤਰਜੀਹ_2);
 
-				SetCalibrationParam(SensorString(), "PRIO", _calibration_index, CAL_PRIO_UNINITIALIZED);
+				ਸੈੱਟ_Calibration_Param(SensorString(), "PRIO", calibration_ਸੂਚਕਾਂਕ_2, CAL_PRIO_UNINITIALIZED);
 			}
 
-			_priority = _external ? DEFAULT_EXTERNAL_PRIORITY : DEFAULT_PRIORITY;
+			ਤਰਜੀਹ_2 = _external ? DEFAULT_EXTERNAL_ਤਰਜੀਹ : DEFAULT_ਤਰਜੀਹ;
 		}
 
 		// CAL_MAGx_OFF{X,Y,Z}
-		set_offset(GetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index));
+		ਸੈੱਟ_ਵਿੱਥ(GetCalibrationParamsVector3f(SensorString(), "OFF", calibration_ਸੂਚਕਾਂਕ_2));
 
 		// CAL_MAGx_SCALE{X,Y,Z}
-		set_scale(GetCalibrationParamsVector3f(SensorString(), "SCALE", _calibration_index));
+		ਸੈੱਟ_scale(GetCalibrationParamsVector3f(SensorString(), "SCALE", calibration_ਸੂਚਕਾਂਕ_2));
 
 		// CAL_MAGx_ODIAG{X,Y,Z}
-		set_offdiagonal(GetCalibrationParamsVector3f(SensorString(), "ODIAG", _calibration_index));
+		ਸੈੱਟ_offdiagonal(GetCalibrationParamsVector3f(SensorString(), "ODIAG", calibration_ਸੂਚਕਾਂਕ_2));
 
 		// CAL_MAGx_COMP{X,Y,Z}
-		_power_compensation = GetCalibrationParamsVector3f(SensorString(), "COMP", _calibration_index);
+		_power_compensation = GetCalibrationParamsVector3f(SensorString(), "COMP", calibration_ਸੂਚਕਾਂਕ_2);
 
-		return true;
+		ਵਾਪਸ ਸੱਚ;
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-void Magnetometer::Reset()
+ਖਾਲੀ Magnetometer::Reset()
 {
-	if (_external) {
-		set_rotation(ROTATION_NONE);
+	ਜੇ (_external) {
+		ਸੈੱਟ_rotation(ROTATION_NONE);
 
-	} else {
+	} ਨਹੀਂਤਾਂ {
 		// internal sensors follow board rotation
-		set_rotation(GetBoardRotation());
+		ਸੈੱਟ_rotation(GetBoardRotation());
 	}
 
-	_offset.zero();
-	_scale.setIdentity();
+	ਵਿੱਥ_2.zero();
+	_scale.ਸੈੱਟ_ਪਛਾਣ_ਤੱਤ();
 
 	_power_compensation.zero();
 	_power = 0.f;
 
-	_priority = _external ? DEFAULT_EXTERNAL_PRIORITY : DEFAULT_PRIORITY;
+	ਤਰਜੀਹ_2 = _external ? DEFAULT_EXTERNAL_ਤਰਜੀਹ : DEFAULT_ਤਰਜੀਹ;
 
-	_calibration_index = -1;
+	calibration_ਸੂਚਕਾਂਕ_2 = -1;
 
-	_calibration_count = 0;
+	calibration_ਗਿਣਤੀ = 0;
 }
 
-bool Magnetometer::ParametersSave(int desired_calibration_index, bool force)
+ਤਾਰਕਿਕ Magnetometer::ParametersSave(ਪੂਰਨ desired_calibration_ਸੂਚਕਾਂਕ, ਤਾਰਕਿਕ force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
-		_calibration_index = desired_calibration_index;
+	ਜੇ (force && desired_calibration_ਸੂਚਕਾਂਕ >= 0 && desired_calibration_ਸੂਚਕਾਂਕ < MAX_SENSOR_ਗਿਣਤੀ) {
+		calibration_ਸੂਚਕਾਂਕ_2 = desired_calibration_ਸੂਚਕਾਂਕ;
 
-	} else if (!force || (_calibration_index < 0)
-		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
+	} ਨਹੀਂਤਾਂ ਜੇ (!force || (calibration_ਸੂਚਕਾਂਕ_2 < 0)
+		   || (desired_calibration_ਸੂਚਕਾਂਕ != -1 && desired_calibration_ਸੂਚਕਾਂਕ != calibration_ਸੂਚਕਾਂਕ_2)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
-		int8_t calibration_index_prev = _calibration_index;
-		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
+		int8_t calibration_ਸੂਚਕਾਂਕ_prev = calibration_ਸੂਚਕਾਂਕ_2;
+		calibration_ਸੂਚਕਾਂਕ_2 = ਲੱਭੋ_ਉਪਲਬਧ_Calibration_ਸੂਚਕਾਂਕ(SensorString(), _device_id, desired_calibration_ਸੂਚਕਾਂਕ);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		ਜੇ (calibration_ਸੂਚਕਾਂਕ_prev >= 0 && (calibration_ਸੂਚਕਾਂਕ_prev != calibration_ਸੂਚਕਾਂਕ_2)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
-				 calibration_index_prev, _calibration_index);
+				 calibration_ਸੂਚਕਾਂਕ_prev, calibration_ਸੂਚਕਾਂਕ_2);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	ਜੇ (calibration_ਸੂਚਕਾਂਕ_2 >= 0 && calibration_ਸੂਚਕਾਂਕ_2 < MAX_SENSOR_ਗਿਣਤੀ) {
 		// save calibration
-		bool success = true;
-		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
-		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
-		success &= SetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index, _offset);
+		ਤਾਰਕਿਕ success = ਸੱਚ;
+		success &= ਸੈੱਟ_Calibration_Param(SensorString(), "ID", calibration_ਸੂਚਕਾਂਕ_2, _device_id);
+		success &= ਸੈੱਟ_Calibration_Param(SensorString(), "PRIO", calibration_ਸੂਚਕਾਂਕ_2, ਤਰਜੀਹ_2);
+		success &= ਸੈੱਟ_Calibration_Params_Vector3f(SensorString(), "OFF", calibration_ਸੂਚਕਾਂਕ_2, ਵਿੱਥ_2);
 
-		const Vector3f scale{_scale.diag()};
-		success &= SetCalibrationParamsVector3f(SensorString(), "SCALE", _calibration_index, scale);
+		ਅਚਲ Vector3f scale{_scale.diag()};
+		success &= ਸੈੱਟ_Calibration_Params_Vector3f(SensorString(), "SCALE", calibration_ਸੂਚਕਾਂਕ_2, scale);
 
-		const Vector3f off_diag{_scale(0, 1), _scale(0, 2), _scale(1, 2)};
-		success &= SetCalibrationParamsVector3f(SensorString(), "ODIAG", _calibration_index, off_diag);
+		ਅਚਲ Vector3f off_diag{_scale(0, 1), _scale(0, 2), _scale(1, 2)};
+		success &= ਸੈੱਟ_Calibration_Params_Vector3f(SensorString(), "ODIAG", calibration_ਸੂਚਕਾਂਕ_2, off_diag);
 
-		success &= SetCalibrationParamsVector3f(SensorString(), "COMP", _calibration_index, _power_compensation);
+		success &= ਸੈੱਟ_Calibration_Params_Vector3f(SensorString(), "COMP", calibration_ਸੂਚਕਾਂਕ_2, _power_compensation);
 
-		if (_external) {
-			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, (int32_t)_rotation_enum);
+		ਜੇ (_external) {
+			success &= ਸੈੱਟ_Calibration_Param(SensorString(), "ROT", calibration_ਸੂਚਕਾਂਕ_2, (int32_t)_rotation_enum);
 
-		} else {
-			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, -1); // internal
+		} ਨਹੀਂਤਾਂ {
+			success &= ਸੈੱਟ_Calibration_Param(SensorString(), "ROT", calibration_ਸੂਚਕਾਂਕ_2, -1); //ਅੰਦਰੂਨੀ
 		}
 
-		success &= SetCalibrationParam(SensorString(), "ROLL", _calibration_index, math::degrees(_rotation_custom_euler(0)));
-		success &= SetCalibrationParam(SensorString(), "PITCH", _calibration_index, math::degrees(_rotation_custom_euler(1)));
-		success &= SetCalibrationParam(SensorString(), "YAW", _calibration_index, math::degrees(_rotation_custom_euler(2)));
+		success &= ਸੈੱਟ_Calibration_Param(SensorString(), "ROLL", calibration_ਸੂਚਕਾਂਕ_2, math::degrees(_rotation_custom_euler(0)));
+		success &= ਸੈੱਟ_Calibration_Param(SensorString(), "PITCH", calibration_ਸੂਚਕਾਂਕ_2, math::degrees(_rotation_custom_euler(1)));
+		success &= ਸੈੱਟ_Calibration_Param(SensorString(), "YAW", calibration_ਸੂਚਕਾਂਕ_2, math::degrees(_rotation_custom_euler(2)));
 
-		return success;
+		ਵਾਪਸ success;
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-void Magnetometer::PrintStatus()
+ਖਾਲੀ Magnetometer::Print_ਸਥਿਤੀ()
 {
-	if (external()) {
+	ਜੇ (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Ext ROT: %d\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
-			     (double)_scale(0, 0), (double)_scale(1, 1), (double)_scale(2, 2),
+			     (ਦੁੱਗਣਾ)ਵਿੱਥ_2(0), (ਦੁੱਗਣਾ)ਵਿੱਥ_2(1), (ਦੁੱਗਣਾ)ਵਿੱਥ_2(2),
+			     (ਦੁੱਗਣਾ)_scale(0, 0), (ਦੁੱਗਣਾ)_scale(1, 1), (ਦੁੱਗਣਾ)_scale(2, 2),
 			     rotation_enum());
 
-	} else {
+	} ਨਹੀਂਤਾਂ {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
-			     (double)_scale(0, 0), (double)_scale(1, 1), (double)_scale(2, 2));
+			     (ਦੁੱਗਣਾ)ਵਿੱਥ_2(0), (ਦੁੱਗਣਾ)ਵਿੱਥ_2(1), (ਦੁੱਗਣਾ)ਵਿੱਥ_2(2),
+			     (ਦੁੱਗਣਾ)_scale(0, 0), (ਦੁੱਗਣਾ)_scale(1, 1), (ਦੁੱਗਣਾ)_scale(2, 2));
 	}
 
-#if defined(DEBUG_BUILD)
+#ਜੇ defined(DEBUG_BUILD)
 	_scale.print();
-#endif // DEBUG_BUILD
+#ਜੇ_ਅੰਤ // DEBUG_BUILD
 }
 
 } // namespace calibration

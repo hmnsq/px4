@@ -37,51 +37,51 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <assert.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <time.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/test/test.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/Block.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "matrix/math.hpp"
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
 /**
  * A high pass filter as described here:
  * http://en.wikipedia.org/wiki/High-pass_filter.
  */
-class __EXPORT BlockHighPass : public Block
+ਵਰਗ __EXPORT ਖੰਡ_ਉੱਚਾ_Pass : ਜਨਤਕ ਖੰਡ
 {
-public:
+ਜਨਤਕ:
 // methods
-	BlockHighPass(SuperBlock *parent, const char *name) :
-		Block(parent, name),
+	ਖੰਡ_ਉੱਚਾ_Pass(Super_ਖੰਡ *ਮਾਪਾ, ਅਚਲ ਅੱਖਰ *name) :
+		ਖੰਡ(ਮਾਪਾ, name),
 		_u(0),
 		_y(0),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(ਇਹ, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockHighPass() = default;
-	float update(float input);
+	ਆਭਾਸੀ ~ਖੰਡ_ਉੱਚਾ_Pass() = ਮੂਲ;
+	ਦਸ਼ਮਲਵ update(ਦਸ਼ਮਲਵ ਨਿਵੇਸ਼);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getFCut() {return _fCut.get();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
-// attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
-	control::BlockParamFloat _fCut; /**< cut-off frequency, Hz */
+	ਦਸ਼ਮਲਵ getU() {ਵਾਪਸ _u;}
+	ਦਸ਼ਮਲਵ getY() {ਵਾਪਸ _y;}
+	ਦਸ਼ਮਲਵ getFCut() {ਵਾਪਸ _fCut.get();}
+	ਖਾਲੀ ਸੈੱਟ_U(ਦਸ਼ਮਲਵ u) {_u = u;}
+	ਖਾਲੀ ਸੈੱਟ_Y(ਦਸ਼ਮਲਵ y) {_y = y;}
+ਸੁਰੱਖਿਅਤ:
+//ਗੁਣ
+	ਦਸ਼ਮਲਵ _u; /**< previous input */
+	ਦਸ਼ਮਲਵ _y; /**< previous output */
+	control::ਖੰਡ_Param_Float _fCut; /**< cut-off frequency, Hz */
 };
 
 } // namespace control

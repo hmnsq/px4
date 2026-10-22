@@ -37,54 +37,54 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <assert.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <time.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/test/test.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/Block.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "matrix/math.hpp"
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 /**
  * An output trim/ saturation block
  */
-class __EXPORT BlockOutput: public SuperBlock
+ਵਰਗ __EXPORT ਖੰਡ_Output: ਜਨਤਕ Super_ਖੰਡ
 {
-public:
+ਜਨਤਕ:
 // methods
-	BlockOutput(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_trim(this, "TRIM"),
-		_limit(this, ""),
+	ਖੰਡ_Output(Super_ਖੰਡ *ਮਾਪਾ, ਅਚਲ ਅੱਖਰ *name) :
+		Super_ਖੰਡ(ਮਾਪਾ, name),
+		_trim(ਇਹ, "TRIM"),
+		ਹੱਦਬੰਦੀ(ਇਹ, ""),
 		_val(0)
 	{
 		update(0);
 	}
 
-	virtual ~BlockOutput() = default;
-	void update(float input)
+	ਆਭਾਸੀ ~ਖੰਡ_Output() = ਮੂਲ;
+	ਖਾਲੀ update(ਦਸ਼ਮਲਵ ਨਿਵੇਸ਼)
 	{
-		_val = _limit.update(input + getTrim());
+		_val = ਹੱਦਬੰਦੀ.update(ਨਿਵੇਸ਼ + getTrim());
 	}
 // accessors
-	float getMin() { return _limit.getMin(); }
-	float getMax() { return _limit.getMax(); }
-	float getTrim() { return _trim.get(); }
-	float get() { return _val; }
-private:
-// attributes
-	control::BlockParamFloat _trim;
-	BlockLimit _limit;
-	float _val;
+	ਦਸ਼ਮਲਵ getMin() { ਵਾਪਸ ਹੱਦਬੰਦੀ.getMin(); }
+	ਦਸ਼ਮਲਵ getMax() { ਵਾਪਸ ਹੱਦਬੰਦੀ.getMax(); }
+	ਦਸ਼ਮਲਵ getTrim() { ਵਾਪਸ _trim.get(); }
+	ਦਸ਼ਮਲਵ get() { ਵਾਪਸ _val; }
+ਨਿਜੀ:
+//ਗੁਣ
+	control::ਖੰਡ_Param_Float _trim;
+	ਖੰਡ_ਹੱਦਬੰਦੀ ਹੱਦਬੰਦੀ;
+	ਦਸ਼ਮਲਵ _val;
 };
 
 } // namespace control

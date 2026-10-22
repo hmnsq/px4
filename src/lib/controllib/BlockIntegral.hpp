@@ -37,16 +37,16 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "BlockLimitSym.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "BlockLimitSym.hpp"
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/Block.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "matrix/math.hpp"
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
 /**
@@ -56,24 +56,24 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegral: public SuperBlock
+ਵਰਗ __EXPORT ਖੰਡ_Integral: ਜਨਤਕ Super_ਖੰਡ
 {
-public:
+ਜਨਤਕ:
 // methods
-	BlockIntegral(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
+	ਖੰਡ_Integral(Super_ਖੰਡ *ਮਾਪਾ, ਅਚਲ ਅੱਖਰ *name) :
+		Super_ਖੰਡ(ਮਾਪਾ, name),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegral() = default;
-	float update(float input);
+		ਹੱਦਬੰਦੀ(ਇਹ, "") {}
+	ਆਭਾਸੀ ~ਖੰਡ_Integral() = ਮੂਲ;
+	ਦਸ਼ਮਲਵ update(ਦਸ਼ਮਲਵ ਨਿਵੇਸ਼);
 // accessors
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setY(float y) {_y = y;}
-protected:
-// attributes
-	float _y; /**< previous output */
-	BlockLimitSym _limit; /**< limiter */
+	ਦਸ਼ਮਲਵ getY() {ਵਾਪਸ _y;}
+	ਦਸ਼ਮਲਵ getMax() {ਵਾਪਸ ਹੱਦਬੰਦੀ.getMax();}
+	ਖਾਲੀ ਸੈੱਟ_Y(ਦਸ਼ਮਲਵ y) {_y = y;}
+ਸੁਰੱਖਿਅਤ:
+//ਗੁਣ
+	ਦਸ਼ਮਲਵ _y; /**< previous output */
+	ਖੰਡ_ਹੱਦਬੰਦੀ_Sym ਹੱਦਬੰਦੀ; /**< limiter */
 };
 
 } // namespace control

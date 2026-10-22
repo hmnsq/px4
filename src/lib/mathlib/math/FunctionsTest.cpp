@@ -31,10 +31,10 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "Functions.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "Functions.hpp"
 
-using namespace math;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ math;
 
 TEST(FunctionsTest, signNoZero)
 {
@@ -49,8 +49,8 @@ TEST(FunctionsTest, signNoZero)
 
 TEST(FunctionsTest, signFromBool)
 {
-	EXPECT_EQ(signFromBool(true), 1);
-	EXPECT_EQ(signFromBool(false), -1);
+	EXPECT_EQ(signFromBool(ਸੱਚ), 1);
+	EXPECT_EQ(signFromBool(ਝੂਠ), -1);
 	EXPECT_EQ(signFromBool(100), 1);
 	EXPECT_EQ(signFromBool(-100), 1);
 	EXPECT_EQ(signFromBool(0), -1);
@@ -178,8 +178,8 @@ TEST(FunctionsTest, interpolate)
 
 TEST(FunctionsTest, interpolateNXY)
 {
-	float x[3] = {0.f, .5f, 1.5f};
-	float y[3] = {1.f, 2.f, 3.f};
+	ਦਸ਼ਮਲਵ x[3] = {0.f, .5f, 1.5f};
+	ਦਸ਼ਮਲਵ y[3] = {1.f, 2.f, 3.f};
 
 	// factor of *2, offset +1
 	EXPECT_FLOAT_EQ(interpolateNXY(-12.f, x, y), 1.f);
@@ -193,15 +193,15 @@ TEST(FunctionsTest, interpolateNXY)
 	EXPECT_FLOAT_EQ(interpolateNXY(12.f, x, y), 3.f);
 }
 
-TEST(FunctionsTest, sqrt_linear)
+TEST(FunctionsTest, sqrt_ਰੇਖਿਕ)
 {
-	EXPECT_FLOAT_EQ(sqrt_linear(-12.f), 0.f);
-	EXPECT_FLOAT_EQ(sqrt_linear(-2.f), 0.f);
-	EXPECT_FLOAT_EQ(sqrt_linear(0.f), 0.f);
-	EXPECT_FLOAT_EQ(sqrt_linear(.5f), 0.70710678f);
-	EXPECT_FLOAT_EQ(sqrt_linear(1.f), 1.f);
-	EXPECT_FLOAT_EQ(sqrt_linear(2.f), 2.f);
-	EXPECT_FLOAT_EQ(sqrt_linear(120.f), 120.f);
+	EXPECT_FLOAT_EQ(sqrt_ਰੇਖਿਕ(-12.f), 0.f);
+	EXPECT_FLOAT_EQ(sqrt_ਰੇਖਿਕ(-2.f), 0.f);
+	EXPECT_FLOAT_EQ(sqrt_ਰੇਖਿਕ(0.f), 0.f);
+	EXPECT_FLOAT_EQ(sqrt_ਰੇਖਿਕ(.5f), 0.70710678f);
+	EXPECT_FLOAT_EQ(sqrt_ਰੇਖਿਕ(1.f), 1.f);
+	EXPECT_FLOAT_EQ(sqrt_ਰੇਖਿਕ(2.f), 2.f);
+	EXPECT_FLOAT_EQ(sqrt_ਰੇਖਿਕ(120.f), 120.f);
 }
 
 TEST(FunctionsTest, lerp)
@@ -216,37 +216,37 @@ TEST(FunctionsTest, lerp)
 	EXPECT_FLOAT_EQ(lerp(-.4f, .3f, 1.1f), .37f);
 }
 
-TEST(FunctionsTest, countSetBits)
+TEST(FunctionsTest, ਗਿਣਤੀ_ਸੈੱਟ_ਬਿੱਟ)
 {
-	EXPECT_EQ(countSetBits(255), 8);
-	EXPECT_EQ(countSetBits(65535), 16);
-	EXPECT_EQ(countSetBits(0), 0);
-	EXPECT_EQ(countSetBits(0xffffffffu), 32);
-	EXPECT_EQ(countSetBits(754323), 9);
+	EXPECT_EQ(ਗਿਣਤੀ_ਸੈੱਟ_ਬਿੱਟ(255), 8);
+	EXPECT_EQ(ਗਿਣਤੀ_ਸੈੱਟ_ਬਿੱਟ(65535), 16);
+	EXPECT_EQ(ਗਿਣਤੀ_ਸੈੱਟ_ਬਿੱਟ(0), 0);
+	EXPECT_EQ(ਗਿਣਤੀ_ਸੈੱਟ_ਬਿੱਟ(0xffffffffu), 32);
+	EXPECT_EQ(ਗਿਣਤੀ_ਸੈੱਟ_ਬਿੱਟ(754323), 9);
 }
 
-TEST(FunctionsTest, countTrailingZeros)
+TEST(FunctionsTest, ਗਿਣਤੀ_Trailing_Zeros)
 {
-	EXPECT_EQ(countTrailingZeros(1u), 0);
-	EXPECT_EQ(countTrailingZeros(2u), 1);
-	EXPECT_EQ(countTrailingZeros(8u), 3);
-	EXPECT_EQ(countTrailingZeros(256u), 8);
-	EXPECT_EQ(countTrailingZeros(0xffffffffu), 0);
-	EXPECT_EQ(countTrailingZeros(0x80000000u), 31);
-	EXPECT_EQ(countTrailingZeros(0u), 32);
-	EXPECT_EQ(countTrailingZeros((uint8_t)0u), 8);
+	EXPECT_EQ(ਗਿਣਤੀ_Trailing_Zeros(1u), 0);
+	EXPECT_EQ(ਗਿਣਤੀ_Trailing_Zeros(2u), 1);
+	EXPECT_EQ(ਗਿਣਤੀ_Trailing_Zeros(8u), 3);
+	EXPECT_EQ(ਗਿਣਤੀ_Trailing_Zeros(256u), 8);
+	EXPECT_EQ(ਗਿਣਤੀ_Trailing_Zeros(0xffffffffu), 0);
+	EXPECT_EQ(ਗਿਣਤੀ_Trailing_Zeros(0x80000000u), 31);
+	EXPECT_EQ(ਗਿਣਤੀ_Trailing_Zeros(0u), 32);
+	EXPECT_EQ(ਗਿਣਤੀ_Trailing_Zeros((uint8_t)0u), 8);
 }
 
 TEST(FunctionsTest, isFiniteVector3f)
 {
-	EXPECT_TRUE(isFinite(matrix::Vector3f()));
-	EXPECT_TRUE(isFinite(matrix::Vector3f(0.f, 1.f, 2.f)));
-	EXPECT_FALSE(isFinite(matrix::Vector3f(0.f, 0.f, INFINITY)));
-	EXPECT_FALSE(isFinite(matrix::Vector3f(0.f, 0.f, NAN)));
-	EXPECT_FALSE(isFinite(matrix::Vector3f(0.f, NAN, 0.f)));
-	EXPECT_FALSE(isFinite(matrix::Vector3f(0.f, NAN, NAN)));
-	EXPECT_FALSE(isFinite(matrix::Vector3f(NAN, 0.f, 0.f)));
-	EXPECT_FALSE(isFinite(matrix::Vector3f(NAN, 0.f, NAN)));
-	EXPECT_FALSE(isFinite(matrix::Vector3f(NAN, NAN, 0.f)));
-	EXPECT_FALSE(isFinite(matrix::Vector3f(NAN, NAN, NAN)));
+	EXPECT_TRUE(isFinite(ਮੈਟ੍ਰਿਕਸ::Vector3f()));
+	EXPECT_TRUE(isFinite(ਮੈਟ੍ਰਿਕਸ::Vector3f(0.f, 1.f, 2.f)));
+	EXPECT_FALSE(isFinite(ਮੈਟ੍ਰਿਕਸ::Vector3f(0.f, 0.f, INFINITY)));
+	EXPECT_FALSE(isFinite(ਮੈਟ੍ਰਿਕਸ::Vector3f(0.f, 0.f, NAN)));
+	EXPECT_FALSE(isFinite(ਮੈਟ੍ਰਿਕਸ::Vector3f(0.f, NAN, 0.f)));
+	EXPECT_FALSE(isFinite(ਮੈਟ੍ਰਿਕਸ::Vector3f(0.f, NAN, NAN)));
+	EXPECT_FALSE(isFinite(ਮੈਟ੍ਰਿਕਸ::Vector3f(NAN, 0.f, 0.f)));
+	EXPECT_FALSE(isFinite(ਮੈਟ੍ਰਿਕਸ::Vector3f(NAN, 0.f, NAN)));
+	EXPECT_FALSE(isFinite(ਮੈਟ੍ਰਿਕਸ::Vector3f(NAN, NAN, 0.f)));
+	EXPECT_FALSE(isFinite(ਮੈਟ੍ਰਿਕਸ::Vector3f(NAN, NAN, NAN)));
 }

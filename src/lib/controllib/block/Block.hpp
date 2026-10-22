@@ -37,89 +37,89 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <containers/List.hpp>
-#include <controllib/block/BlockParam.hpp>
-#include <cstdint>
+#ਅਨ੍ਤਰ੍ਭਾਵ <containers/List.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <controllib/block/BlockParam.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <cstdint>
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
-static constexpr uint8_t maxChildrenPerBlock = 100;
-static constexpr uint8_t maxParamsPerBlock = 110;
-static constexpr uint8_t blockNameLengthMax = 40;
+ਸਥਿਰ constexpr uint8_t max_Children_ਪ੍ਰਤੀ_ਖੰਡ = 100;
+ਸਥਿਰ constexpr uint8_t max_Params_ਪ੍ਰਤੀ_ਖੰਡ = 110;
+ਸਥਿਰ constexpr uint8_t ਖੰਡ_Name_ਲੰਮਾਈ_Max = 40;
 
 // forward declaration
-class BlockParamBase;
-class SuperBlock;
+ਵਰਗ ਖੰਡ_Param_ਅਧਾਰ;
+ਵਰਗ Super_ਖੰਡ;
 
 /**
  */
-class __EXPORT Block : public ListNode<Block *>
+ਵਰਗ __EXPORT ਖੰਡ : ਜਨਤਕ List_ਗੰਢ<ਖੰਡ *>
 {
-public:
-	friend class BlockParamBase;
+ਜਨਤਕ:
+	ਮਿੱਤਰ ਵਰਗ ਖੰਡ_Param_ਅਧਾਰ;
 
-	Block(SuperBlock *parent, const char *name);
-	virtual ~Block() = default;
+	ਖੰਡ(Super_ਖੰਡ *ਮਾਪਾ, ਅਚਲ ਅੱਖਰ *name);
+	ਆਭਾਸੀ ~ਖੰਡ() = ਮੂਲ;
 
 	// no copy, assignment, move, move assignment
-	Block(const Block &) = delete;
-	Block &operator=(const Block &) = delete;
-	Block(Block &&) = delete;
-	Block &operator=(Block &&) = delete;
+	ਖੰਡ(ਅਚਲ ਖੰਡ &) = ਮਿਟਾਓ;
+	ਖੰਡ &ਸੰਚਾਲਕ=(ਅਚਲ ਖੰਡ &) = ਮਿਟਾਓ;
+	ਖੰਡ(ਖੰਡ &&) = ਮਿਟਾਓ;
+	ਖੰਡ &ਸੰਚਾਲਕ=(ਖੰਡ &&) = ਮਿਟਾਓ;
 
-	void getName(char *name, size_t n);
+	ਖਾਲੀ getName(ਅੱਖਰ *name, size_t n);
 
-	virtual void updateParams();
+	ਆਭਾਸੀ ਖਾਲੀ updateParams();
 
-	virtual void setDt(float dt) { _dt = dt; }
-	float getDt() { return _dt; }
+	ਆਭਾਸੀ ਖਾਲੀ ਸੈੱਟ_Dt(ਦਸ਼ਮਲਵ dt) { _dt = dt; }
+	ਦਸ਼ਮਲਵ getDt() { ਵਾਪਸ _dt; }
 
-protected:
+ਸੁਰੱਖਿਅਤ:
 
-	virtual void updateParamsSubclass() {}
+	ਆਭਾਸੀ ਖਾਲੀ updateParamsSubclass() {}
 
-	SuperBlock *getParent() { return _parent; }
-	List<BlockParamBase *> &getParams() { return _params; }
+	Super_ਖੰਡ *get_ਮਾਪਾ() { ਵਾਪਸ ਮਾਪਾ_2; }
+	List<ਖੰਡ_Param_ਅਧਾਰ *> &getParams() { ਵਾਪਸ _params; }
 
-	const char *_name;
-	SuperBlock *_parent;
-	float _dt{0.0f};
+	ਅਚਲ ਅੱਖਰ *_name;
+	Super_ਖੰਡ *ਮਾਪਾ_2;
+	ਦਸ਼ਮਲਵ _dt{0.0f};
 
-	List<BlockParamBase *> _params;
+	List<ਖੰਡ_Param_ਅਧਾਰ *> _params;
 };
 
-class __EXPORT SuperBlock :
-	public Block
+ਵਰਗ __EXPORT Super_ਖੰਡ :
+	ਜਨਤਕ ਖੰਡ
 {
-public:
-	friend class Block;
+ਜਨਤਕ:
+	ਮਿੱਤਰ ਵਰਗ ਖੰਡ;
 
-	SuperBlock(SuperBlock *parent, const char *name) : Block(parent, name) {}
-	~SuperBlock() = default;
+	Super_ਖੰਡ(Super_ਖੰਡ *ਮਾਪਾ, ਅਚਲ ਅੱਖਰ *name) : ਖੰਡ(ਮਾਪਾ, name) {}
+	~Super_ਖੰਡ() = ਮੂਲ;
 
 	// no copy, assignment, move, move assignment
-	SuperBlock(const SuperBlock &) = delete;
-	SuperBlock &operator=(const SuperBlock &) = delete;
-	SuperBlock(SuperBlock &&) = delete;
-	SuperBlock &operator=(SuperBlock &&) = delete;
+	Super_ਖੰਡ(ਅਚਲ Super_ਖੰਡ &) = ਮਿਟਾਓ;
+	Super_ਖੰਡ &ਸੰਚਾਲਕ=(ਅਚਲ Super_ਖੰਡ &) = ਮਿਟਾਓ;
+	Super_ਖੰਡ(Super_ਖੰਡ &&) = ਮਿਟਾਓ;
+	Super_ਖੰਡ &ਸੰਚਾਲਕ=(Super_ਖੰਡ &&) = ਮਿਟਾਓ;
 
-	void setDt(float dt) override;
+	ਖਾਲੀ ਸੈੱਟ_Dt(ਦਸ਼ਮਲਵ dt) override;
 
-	void updateParams() override
+	ਖਾਲੀ updateParams() override
 	{
-		Block::updateParams();
+		ਖੰਡ::updateParams();
 
-		if (getChildren().getHead() != nullptr) { updateChildParams(); }
+		ਜੇ (getChildren().get_ਸਿਰ() != ਖਾਲੀ_ਸੂਚਕ) { update_ਬੱਚਾ_Params(); }
 	}
 
-protected:
-	List<Block *> &getChildren() { return _children; }
-	void updateChildParams();
+ਸੁਰੱਖਿਅਤ:
+	List<ਖੰਡ *> &getChildren() { ਵਾਪਸ _children; }
+	ਖਾਲੀ update_ਬੱਚਾ_Params();
 
-	List<Block *> _children;
+	List<ਖੰਡ *> _children;
 };
 
 

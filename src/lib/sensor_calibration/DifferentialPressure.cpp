@@ -31,16 +31,16 @@
  *
  ****************************************************************************/
 
-#include "DifferentialPressure.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "DifferentialPressure.hpp"
 
-#include "Utilities.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/drivers/device/Device.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/parameters/param.h>
 
-#include <float.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <float.h>
 
-namespace calibration
+ਨਾਮਾਕਾਸ਼ calibration
 {
 
 DifferentialPressure::DifferentialPressure()
@@ -50,14 +50,14 @@ DifferentialPressure::DifferentialPressure()
 
 DifferentialPressure::DifferentialPressure(uint32_t device_id)
 {
-	set_device_id(device_id);
+	ਸੈੱਟ_device_id(device_id);
 }
 
-void DifferentialPressure::set_device_id(uint32_t device_id)
+ਖਾਲੀ DifferentialPressure::ਸੈੱਟ_device_id(uint32_t device_id)
 {
-	const bool external = device::device_is_external(device_id);
+	ਅਚਲ ਤਾਰਕਿਕ external = device::device_is_external(device_id);
 
-	if (_device_id != device_id || _external != external) {
+	ਜੇ (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -68,153 +68,153 @@ void DifferentialPressure::set_device_id(uint32_t device_id)
 	}
 }
 
-bool DifferentialPressure::set_offset(const float &offset)
+ਤਾਰਕਿਕ DifferentialPressure::ਸੈੱਟ_ਵਿੱਥ(ਅਚਲ ਦਸ਼ਮਲਵ &ਵਿੱਥ)
 {
-	if (fabsf(_offset - offset) > 0.01f) {
-		if (PX4_ISFINITE(offset)) {
-			_offset = offset;
-			_calibration_count++;
-			return true;
+	ਜੇ (fabsf(ਵਿੱਥ_2 - ਵਿੱਥ) > 0.01f) {
+		ਜੇ (PX4_ISFINITE(ਵਿੱਥ)) {
+			ਵਿੱਥ_2 = ਵਿੱਥ;
+			calibration_ਗਿਣਤੀ++;
+			ਵਾਪਸ ਸੱਚ;
 		}
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-bool DifferentialPressure::set_calibration_index(int calibration_index)
+ਤਾਰਕਿਕ DifferentialPressure::ਸੈੱਟ_calibration_ਸੂਚਕਾਂਕ(ਪੂਰਨ calibration_ਸੂਚਕਾਂਕ)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
-		_calibration_index = calibration_index;
-		return true;
+	ਜੇ ((calibration_ਸੂਚਕਾਂਕ >= 0) && (calibration_ਸੂਚਕਾਂਕ < MAX_SENSOR_ਗਿਣਤੀ)) {
+		calibration_ਸੂਚਕਾਂਕ_2 = calibration_ਸੂਚਕਾਂਕ;
+		ਵਾਪਸ ਸੱਚ;
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-void DifferentialPressure::ParametersUpdate()
+ਖਾਲੀ DifferentialPressure::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	ਜੇ (_device_id == 0) {
+		ਵਾਪਸ;
 	}
 
-	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
+	calibration_ਸੂਚਕਾਂਕ_2 = ਲੱਭੋ_Current_Calibration_ਸੂਚਕਾਂਕ(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	ਜੇ (calibration_ਸੂਚਕਾਂਕ_2 == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
-		ParametersLoad();
+	} ਨਹੀਂਤਾਂ {
+		Parameters_ਲੱਦੋ();
 	}
 }
 
-bool DifferentialPressure::ParametersLoad()
+ਤਾਰਕਿਕ DifferentialPressure::Parameters_ਲੱਦੋ()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	ਜੇ (calibration_ਸੂਚਕਾਂਕ_2 >= 0 && calibration_ਸੂਚਕਾਂਕ_2 < MAX_SENSOR_ਗਿਣਤੀ) {
 		// CAL_DPRESx_OFF
-		set_offset(GetCalibrationParamFloat(SensorString(), "OFF", _calibration_index));
+		ਸੈੱਟ_ਵਿੱਥ(GetCalibrationParamFloat(SensorString(), "OFF", calibration_ਸੂਚਕਾਂਕ_2));
 
-		return true;
+		ਵਾਪਸ ਸੱਚ;
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-bool DifferentialPressure::AdoptLegacyOffset()
+ਤਾਰਕਿਕ DifferentialPressure::Adopt_Legacy_ਵਿੱਥ()
 {
-	if ((_device_id == 0) || calibrated()) {
-		return false;
+	ਜੇ ((_device_id == 0) || calibrated()) {
+		ਵਾਪਸ ਝੂਠ;
 	}
 
 	// slot 0 must still be free, otherwise another sensor already owns the legacy offset
-	if (GetCalibrationParamInt32(SensorString(), "ID", kLegacyIndex) != 0) {
-		return false;
+	ਜੇ (GetCalibrationParamInt32(SensorString(), "ID", k_Legacy_ਸੂਚਕਾਂਕ) != 0) {
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	float legacy_offset = 0.f;
+	ਦਸ਼ਮਲਵ legacy_ਵਿੱਥ = 0.f;
 
-	if (param_get(param_find(kLegacyOffsetParam), &legacy_offset) != PX4_OK) {
-		return false;
+	ਜੇ (param_get(param_ਲੱਭੋ(k_Legacy_ਵਿੱਥ_Param), &legacy_ਵਿੱਥ) != PX4_OK) {
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	if (!PX4_ISFINITE(legacy_offset) || (fabsf(legacy_offset) < FLT_EPSILON)) {
-		return false;
+	ਜੇ (!PX4_ISFINITE(legacy_ਵਿੱਥ) || (fabsf(legacy_ਵਿੱਥ) < FLT_EPSILON)) {
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	_offset = legacy_offset;
-	_calibration_index = kLegacyIndex;
+	ਵਿੱਥ_2 = legacy_ਵਿੱਥ;
+	calibration_ਸੂਚਕਾਂਕ_2 = k_Legacy_ਸੂਚਕਾਂਕ;
 
-	PX4_INFO("%s %" PRIu32 " adopted %s %.3f Pa", SensorString(), _device_id, kLegacyOffsetParam, (double)_offset);
+	PX4_INFO("%s %" PRIu32 " adopted %s %.3f Pa", SensorString(), _device_id, k_Legacy_ਵਿੱਥ_Param, (ਦੁੱਗਣਾ)ਵਿੱਥ_2);
 
-	return true;
+	ਵਾਪਸ ਸੱਚ;
 }
 
-void DifferentialPressure::UpdateLegacyOffset() const
+ਖਾਲੀ DifferentialPressure::Update_Legacy_ਵਿੱਥ() ਅਚਲ
 {
 	// keep SENS_DPRES_OFF in step with slot 0 so that ground stations reading it can still tell
 	// whether airspeed has been calibrated
-	if (_calibration_index != kLegacyIndex) {
-		return;
+	ਜੇ (calibration_ਸੂਚਕਾਂਕ_2 != k_Legacy_ਸੂਚਕਾਂਕ) {
+		ਵਾਪਸ;
 	}
 
-	const param_t handle = param_find(kLegacyOffsetParam);
+	ਅਚਲ param_t handle = param_ਲੱਭੋ(k_Legacy_ਵਿੱਥ_Param);
 
-	if (handle == PARAM_INVALID) {
-		return;
+	ਜੇ (handle == PARAM_INVALID) {
+		ਵਾਪਸ;
 	}
 
-	float offset = _offset;
-	param_set_no_notification(handle, &offset);
+	ਦਸ਼ਮਲਵ ਵਿੱਥ = ਵਿੱਥ_2;
+	param_ਸੈੱਟ_no_notification(handle, &ਵਿੱਥ);
 }
 
-void DifferentialPressure::Reset()
+ਖਾਲੀ DifferentialPressure::Reset()
 {
-	_offset = 0;
+	ਵਿੱਥ_2 = 0;
 
-	_calibration_index = -1;
+	calibration_ਸੂਚਕਾਂਕ_2 = -1;
 
-	_calibration_count = 0;
+	calibration_ਗਿਣਤੀ = 0;
 }
 
-bool DifferentialPressure::ParametersSave(int desired_calibration_index, bool force)
+ਤਾਰਕਿਕ DifferentialPressure::ParametersSave(ਪੂਰਨ desired_calibration_ਸੂਚਕਾਂਕ, ਤਾਰਕਿਕ force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
-		_calibration_index = desired_calibration_index;
+	ਜੇ (force && desired_calibration_ਸੂਚਕਾਂਕ >= 0 && desired_calibration_ਸੂਚਕਾਂਕ < MAX_SENSOR_ਗਿਣਤੀ) {
+		calibration_ਸੂਚਕਾਂਕ_2 = desired_calibration_ਸੂਚਕਾਂਕ;
 
-	} else if (!force || (_calibration_index < 0)
-		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
+	} ਨਹੀਂਤਾਂ ਜੇ (!force || (calibration_ਸੂਚਕਾਂਕ_2 < 0)
+		   || (desired_calibration_ਸੂਚਕਾਂਕ != -1 && desired_calibration_ਸੂਚਕਾਂਕ != calibration_ਸੂਚਕਾਂਕ_2)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
-		int8_t calibration_index_prev = _calibration_index;
-		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
+		int8_t calibration_ਸੂਚਕਾਂਕ_prev = calibration_ਸੂਚਕਾਂਕ_2;
+		calibration_ਸੂਚਕਾਂਕ_2 = ਲੱਭੋ_ਉਪਲਬਧ_Calibration_ਸੂਚਕਾਂਕ(SensorString(), _device_id, desired_calibration_ਸੂਚਕਾਂਕ);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		ਜੇ (calibration_ਸੂਚਕਾਂਕ_prev >= 0 && (calibration_ਸੂਚਕਾਂਕ_prev != calibration_ਸੂਚਕਾਂਕ_2)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
-				 calibration_index_prev, _calibration_index);
+				 calibration_ਸੂਚਕਾਂਕ_prev, calibration_ਸੂਚਕਾਂਕ_2);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	ਜੇ (calibration_ਸੂਚਕਾਂਕ_2 >= 0 && calibration_ਸੂਚਕਾਂਕ_2 < MAX_SENSOR_ਗਿਣਤੀ) {
 		// save calibration
-		bool success = true;
-		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
-		success &= SetCalibrationParam(SensorString(), "OFF", _calibration_index, _offset);
+		ਤਾਰਕਿਕ success = ਸੱਚ;
+		success &= ਸੈੱਟ_Calibration_Param(SensorString(), "ID", calibration_ਸੂਚਕਾਂਕ_2, _device_id);
+		success &= ਸੈੱਟ_Calibration_Param(SensorString(), "OFF", calibration_ਸੂਚਕਾਂਕ_2, ਵਿੱਥ_2);
 
-		UpdateLegacyOffset();
+		Update_Legacy_ਵਿੱਥ();
 
-		return success;
+		ਵਾਪਸ success;
 	}
 
 	// index 3 is possible: FindAvailableCalibrationIndex() searches four slots, we define three
-	PX4_ERR("%s %" PRIu32 " no free calibration slot (got %" PRIi8 ")", SensorString(), _device_id, _calibration_index);
+	PX4_ERR("%s %" PRIu32 " no free calibration slot (got %" PRIi8 ")", SensorString(), _device_id, calibration_ਸੂਚਕਾਂਕ_2);
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-void DifferentialPressure::PrintStatus()
+ਖਾਲੀ DifferentialPressure::Print_ਸਥਿਤੀ()
 {
 	PX4_INFO_RAW("%s %" PRIu32 " offset: %05.3f Pa, %s\n",
-		     SensorString(), device_id(), (double)_offset,
+		     SensorString(), device_id(), (ਦੁੱਗਣਾ)ਵਿੱਥ_2,
 		     external() ? "Ext" : "Internal");
 }
 

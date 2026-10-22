@@ -37,34 +37,34 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include "DaaEncodedId.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "DaaEncodedId.h"
 
-#include <cinttypes>
-#include <cstdio>
-#include <cstring>
+#ਅਨ੍ਤਰ੍ਭਾਵ <cinttypes>
+#ਅਨ੍ਤਰ੍ਭਾਵ <cstdio>
+#ਅਨ੍ਤਰ੍ਭਾਵ <cstring>
 
-#include <px4_platform_common/log.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/log.h>
 
-DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
+DaaEncodedId DaaEncodedId::from_report(ਅਚਲ transponder_report_s &report)
 {
-	if (report.icao_address > 0 && report.icao_address <= kMaxIcaoAddress) {
+	ਜੇ (report.icao_ਪਤਾ > 0 && report.icao_ਪਤਾ <= k_Max_Icao_ਪਤਾ) {
 		PX4_DEBUG("DAA: Unique ID encoding: ICAO.");
-		return {
-			static_cast<uint64_t>(report.icao_address),
+		ਵਾਪਸ {
+			static_cast<uint64_t>(report.icao_ਪਤਾ),
 			detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO
 		};
 	}
 
-	if (report.icao_address > kMaxIcaoAddress) {
+	ਜੇ (report.icao_ਪਤਾ > k_Max_Icao_ਪਤਾ) {
 		PX4_DEBUG("DAA: invalid ICAO address");
 	}
 
-	if (report.flags & transponder_report_s::PX4_ADSB_FLAGS_VALID_CALLSIGN) {
+	ਜੇ (report.flags & transponder_report_s::PX4_ADSB_FLAGS_VALID_CALLSIGN) {
 		PX4_DEBUG("DAA: Unique ID encoding: Callsign.");
-		const uint64_t callsign_id = callsign_to_uint64(report.callsign);
+		ਅਚਲ uint64_t callsign_id = callsign_ਮੰਜ਼ਿਲ_uint64(report.callsign);
 
-		if (callsign_id != 0) {
-			return {
+		ਜੇ (callsign_id != 0) {
+			ਵਾਪਸ {
 				callsign_id,
 				detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN
 			};
@@ -74,21 +74,21 @@ DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
 		PX4_DEBUG("DAA: Failed to convert callsign to uint64.");
 	}
 
-	bool uas_id_valid = false;
+	ਤਾਰਕਿਕ uas_id_valid = ਝੂਠ;
 
-	for (int i = 0; i < kUasIdByteLength; ++i) {
-		if (report.uas_id[i] != 0) {
-			uas_id_valid = true;
-			break;
+	ਲਈ (ਪੂਰਨ i = 0; i < k_Uas_Id_Byte_ਲੰਮਾਈ; ++i) {
+		ਜੇ (report.uas_id[i] != 0) {
+			uas_id_valid = ਸੱਚ;
+			ਰੋਕੋ;
 		}
 	}
 
-	if (uas_id_valid) {
+	ਜੇ (uas_id_valid) {
 		PX4_DEBUG("DAA: Unique ID encoding: UAS id.");
-		const uint64_t uas_id = last_uas_id_bytes_to_uint64(report.uas_id);
+		ਅਚਲ uint64_t uas_id = ਆਖਰੀ_uas_id_ਬਾਈਟਾਂ_ਮੰਜ਼ਿਲ_uint64(report.uas_id);
 
-		if (uas_id != 0) {
-			return {
+		ਜੇ (uas_id != 0) {
+			ਵਾਪਸ {
 				uas_id,
 				detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID
 			};
@@ -97,185 +97,185 @@ DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
 		PX4_DEBUG("DAA: Failed to convert uas_id to uint64.");
 	}
 
-	return {};
+	ਵਾਪਸ {};
 }
 
-DaaEncodedId DaaEncodedId::identify_traffic_report(const transponder_report_s &report,
-		const daa_ownship_ids_s &ownship_ids)
+DaaEncodedId DaaEncodedId::identify_traffic_report(ਅਚਲ transponder_report_s &report,
+		ਅਚਲ daa_ownship_ids_s &ownship_ids)
 {
-	const DaaEncodedId encoded_id = from_report(report);
+	ਅਚਲ DaaEncodedId encoded_id = from_report(report);
 
-	if (encoded_id.id == 0) {
+	ਜੇ (encoded_id.id == 0) {
 		PX4_DEBUG("DAA: No valid unique ID, skipping report");
-		return {};
+		ਵਾਪਸ {};
 	}
 
-	if (is_self_detection(encoded_id, ownship_ids)) {
+	ਜੇ (is_self_detection(encoded_id, ownship_ids)) {
 		PX4_DEBUG("DAA: Self detection, skipping report.");
-		return {};
+		ਵਾਪਸ {};
 	}
 
-	return encoded_id;
+	ਵਾਪਸ encoded_id;
 }
 
-bool DaaEncodedId::is_self_detection(const DaaEncodedId &encoded_id, const daa_ownship_ids_s &ownship_ids)
+ਤਾਰਕਿਕ DaaEncodedId::is_self_detection(ਅਚਲ DaaEncodedId &encoded_id, ਅਚਲ daa_ownship_ids_s &ownship_ids)
 {
-	switch (encoded_id.encoding) {
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
-			if (ownship_ids.icao >= 0
+	ਚੋਣ (encoded_id.encoding) {
+	ਹਾਲਤ detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
+			ਜੇ (ownship_ids.icao >= 0
 			    && static_cast<uint32_t>(encoded_id.id) == static_cast<uint32_t>(ownship_ids.icao)) {
 				PX4_DEBUG("DAA: Received own main ICAO.");
-				return true;
+				ਵਾਪਸ ਸੱਚ;
 			}
 
-			if (ownship_ids.icao_2 >= 0
+			ਜੇ (ownship_ids.icao_2 >= 0
 			    && static_cast<uint32_t>(encoded_id.id) == static_cast<uint32_t>(ownship_ids.icao_2)) {
 				PX4_DEBUG("DAA: Received own secondary ICAO.");
-				return true;
+				ਵਾਪਸ ਸੱਚ;
 			}
 
-			break;
+			ਰੋਕੋ;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
-			if (encoded_id.id == ownship_ids.callsign) {
+	ਹਾਲਤ detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
+			ਜੇ (encoded_id.id == ownship_ids.callsign) {
 				PX4_DEBUG("DAA: Received own Callsign.");
-				return true;
+				ਵਾਪਸ ਸੱਚ;
 			}
 
-			break;
+			ਰੋਕੋ;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
-			if (ownship_ids.uas_id_valid && encoded_id.id == ownship_ids.uas_id) {
+	ਹਾਲਤ detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
+			ਜੇ (ownship_ids.uas_id_valid && encoded_id.id == ownship_ids.uas_id) {
 				PX4_DEBUG("DAA: Received own UAS ID.");
-				return true;
+				ਵਾਪਸ ਸੱਚ;
 			}
 
-			break;
+			ਰੋਕੋ;
 		}
 
-	default:
-		break;
+	ਮੂਲ:
+		ਰੋਕੋ;
 	}
 
-	return false;
+	ਵਾਪਸ ਝੂਠ;
 }
 
-void DaaEncodedId::to_string(char *buffer, size_t buffer_size) const
+ਖਾਲੀ DaaEncodedId::ਮੰਜ਼ਿਲ_string(ਅੱਖਰ *ਬਫਰ_2, size_t ਬਫਰ_ਮਾਪ) ਅਚਲ
 {
-	if (buffer == nullptr || buffer_size == 0) { return; }
+	ਜੇ (ਬਫਰ_2 == ਖਾਲੀ_ਸੂਚਕ || ਬਫਰ_ਮਾਪ == 0) { ਵਾਪਸ; }
 
-	memset(buffer, 0, buffer_size);
+	memset(ਬਫਰ_2, 0, ਬਫਰ_ਮਾਪ);
 
-	switch (encoding) {
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
-			convert_icao_uint32_to_hex_str(id, buffer, buffer_size);
-			break;
+	ਚੋਣ (encoding) {
+	ਹਾਲਤ detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
+			convert_icao_uint32_ਮੰਜ਼ਿਲ_hex_str(id, ਬਫਰ_2, ਬਫਰ_ਮਾਪ);
+			ਰੋਕੋ;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
-			char callsign[kCallsignLength] {};
-			convert_uint64_callsign_to_str(id, callsign);
+	ਹਾਲਤ detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
+			ਅੱਖਰ callsign[k_Callsign_ਲੰਮਾਈ] {};
+			convert_uint64_callsign_ਮੰਜ਼ਿਲ_str(id, callsign);
 
 			// Keep malformed/custom publishers from injecting control
 			// characters into MAVLink status text.
-			for (char &character : callsign) {
-				const uint8_t byte = static_cast<uint8_t>(character);
+			ਲਈ (ਅੱਖਰ &character : callsign) {
+				ਅਚਲ uint8_t byte = static_cast<uint8_t>(character);
 
-				if (byte == 0) {
-					break;
+				ਜੇ (byte == 0) {
+					ਰੋਕੋ;
 				}
 
-				if (byte < 0x20 || byte > 0x7e) {
+				ਜੇ (byte < 0x20 || byte > 0x7e) {
 					character = '?';
 				}
 			}
 
-			snprintf(buffer, buffer_size, "%s", callsign);
-			break;
+			snprintf(ਬਫਰ_2, ਬਫਰ_ਮਾਪ, "%s", callsign);
+			ਰੋਕੋ;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
-			char uas_id[kUtmGuidMsgLength] {};
-			convert_uas_id_uint64_to_str(id, uas_id);
-			snprintf(buffer, buffer_size, "%s", uas_id);
-			break;
+	ਹਾਲਤ detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
+			ਅੱਖਰ uas_id[k_Utm_Guid_ਸੁਨੇਹਾ_ਲੰਮਾਈ] {};
+			convert_uas_id_uint64_ਮੰਜ਼ਿਲ_str(id, uas_id);
+			snprintf(ਬਫਰ_2, ਬਫਰ_ਮਾਪ, "%s", uas_id);
+			ਰੋਕੋ;
 		}
 
-	default:
-		snprintf(buffer, buffer_size, "Unknown ID.");
-		break;
+	ਮੂਲ:
+		snprintf(ਬਫਰ_2, ਬਫਰ_ਮਾਪ, "Unknown ID.");
+		ਰੋਕੋ;
 	}
 }
 
-uint64_t DaaEncodedId::callsign_to_uint64(const char callsign[kCallsignLength])
+uint64_t DaaEncodedId::callsign_ਮੰਜ਼ਿਲ_uint64(ਅਚਲ ਅੱਖਰ callsign[k_Callsign_ਲੰਮਾਈ])
 {
-	if (callsign == nullptr) {
-		return 0;
+	ਜੇ (callsign == ਖਾਲੀ_ਸੂਚਕ) {
+		ਵਾਪਸ 0;
 	}
 
-	bool null_terminated = false;
+	ਤਾਰਕਿਕ null_terminated = ਝੂਠ;
 
-	for (size_t i = 0; i < kCallsignLength; ++i) {
-		if (callsign[i] == '\0') {
-			null_terminated = true;
-			break;
+	ਲਈ (size_t i = 0; i < k_Callsign_ਲੰਮਾਈ; ++i) {
+		ਜੇ (callsign[i] == '\0') {
+			null_terminated = ਸੱਚ;
+			ਰੋਕੋ;
 		}
 	}
 
-	if (!null_terminated) {
-		return 0;
+	ਜੇ (!null_terminated) {
+		ਵਾਪਸ 0;
 	}
 
-	uint64_t result = 0;
+	uint64_t ਨਤੀਜਾ = 0;
 
-	for (int i = 0; i < kIdEncodingNbBytes && callsign[i] != '\0'; ++i) {
-		result |= (static_cast<uint64_t>(static_cast<uint8_t>(callsign[i])) << (i * 8));
+	ਲਈ (ਪੂਰਨ i = 0; i < k_Id_Encoding_Nb_ਬਾਈਟਾਂ && callsign[i] != '\0'; ++i) {
+		ਨਤੀਜਾ |= (static_cast<uint64_t>(static_cast<uint8_t>(callsign[i])) << (i * 8));
 	}
 
-	return result;
+	ਵਾਪਸ ਨਤੀਜਾ;
 }
 
-uint64_t DaaEncodedId::callsign_params_to_uint64(const int32_t callsign_part1, const int32_t callsign_part2)
+uint64_t DaaEncodedId::callsign_params_ਮੰਜ਼ਿਲ_uint64(ਅਚਲ int32_t callsign_part1, ਅਚਲ int32_t callsign_part2)
 {
-	const uint32_t parts[] {
+	ਅਚਲ uint32_t parts[] {
 		static_cast<uint32_t>(callsign_part1),
 		static_cast<uint32_t>(callsign_part2)
 	};
-	char callsign[kCallsignLength] {};
+	ਅੱਖਰ callsign[k_Callsign_ਲੰਮਾਈ] {};
 
-	for (size_t part_idx = 0; part_idx < 2; ++part_idx) {
-		for (size_t char_idx = 0; char_idx < sizeof(uint32_t); ++char_idx) {
-			const unsigned shift = static_cast<unsigned>((sizeof(uint32_t) - char_idx - 1) * 8);
-			callsign[part_idx * sizeof(uint32_t) + char_idx] = static_cast<char>((parts[part_idx] >> shift) & 0xffu);
+	ਲਈ (size_t part_idx = 0; part_idx < 2; ++part_idx) {
+		ਲਈ (size_t char_idx = 0; char_idx < ਆਕਾਰ(uint32_t); ++char_idx) {
+			ਅਚਲ ਬਿਨਾਨਿਸ਼ਾਨੀ ਖਿਸਕਾਓ = static_cast<ਬਿਨਾਨਿਸ਼ਾਨੀ>((ਆਕਾਰ(uint32_t) - char_idx - 1) * 8);
+			callsign[part_idx * ਆਕਾਰ(uint32_t) + char_idx] = static_cast<ਅੱਖਰ>((parts[part_idx] >> ਖਿਸਕਾਓ) & 0xffu);
 		}
 	}
 
-	return callsign_to_uint64(callsign);
+	ਵਾਪਸ callsign_ਮੰਜ਼ਿਲ_uint64(callsign);
 }
 
-void DaaEncodedId::convert_uint64_callsign_to_str(uint64_t value, char callsign[kCallsignLength])
+ਖਾਲੀ DaaEncodedId::convert_uint64_callsign_ਮੰਜ਼ਿਲ_str(uint64_t value, ਅੱਖਰ callsign[k_Callsign_ਲੰਮਾਈ])
 {
-	if (callsign == nullptr) {
-		return;
+	ਜੇ (callsign == ਖਾਲੀ_ਸੂਚਕ) {
+		ਵਾਪਸ;
 	}
 
-	memset(callsign, 0, kCallsignLength);
+	memset(callsign, 0, k_Callsign_ਲੰਮਾਈ);
 
-	const int max_chars = kCallsignLength - 1;
+	ਅਚਲ ਪੂਰਨ max_chars = k_Callsign_ਲੰਮਾਈ - 1;
 
-	if (value == 0) {
+	ਜੇ (value == 0) {
 		memset(callsign, '0', max_chars);
 
-	} else {
+	} ਨਹੀਂਤਾਂ {
 
-		for (int i = 0; i < max_chars; ++i) {
-			char c = (value >> (i * 8)) & 0xFF;
+		ਲਈ (ਪੂਰਨ i = 0; i < max_chars; ++i) {
+			ਅੱਖਰ c = (value >> (i * 8)) & 0xFF;
 			callsign[i] = c;
 
-			if (c == 0) {
-				break;
+			ਜੇ (c == 0) {
+				ਰੋਕੋ;
 			}
 		}
 	}
@@ -283,54 +283,54 @@ void DaaEncodedId::convert_uint64_callsign_to_str(uint64_t value, char callsign[
 	callsign[max_chars] = '\0';
 }
 
-uint64_t DaaEncodedId::last_uas_id_bytes_to_uint64(const uint8_t uas_id[kUasIdByteLength])
+uint64_t DaaEncodedId::ਆਖਰੀ_uas_id_ਬਾਈਟਾਂ_ਮੰਜ਼ਿਲ_uint64(ਅਚਲ uint8_t uas_id[k_Uas_Id_Byte_ਲੰਮਾਈ])
 {
-	if (uas_id == nullptr) {
-		return 0;
+	ਜੇ (uas_id == ਖਾਲੀ_ਸੂਚਕ) {
+		ਵਾਪਸ 0;
 	}
 
 	uint64_t uas_id_int = 0;
 
 	// Pack the last kIdEncodingNbBytes bytes into the key.
-	for (int i = 0; i < kIdEncodingNbBytes; ++i) {
-		uas_id_int |= static_cast<uint64_t>(uas_id[kUasIdByteLength - kIdEncodingNbBytes + i]) << (i * 8);
+	ਲਈ (ਪੂਰਨ i = 0; i < k_Id_Encoding_Nb_ਬਾਈਟਾਂ; ++i) {
+		uas_id_int |= static_cast<uint64_t>(uas_id[k_Uas_Id_Byte_ਲੰਮਾਈ - k_Id_Encoding_Nb_ਬਾਈਟਾਂ + i]) << (i * 8);
 	}
 
-	return uas_id_int;
+	ਵਾਪਸ uas_id_int;
 }
 
-void DaaEncodedId::convert_uas_id_uint64_to_str(const uint64_t uas_id_int, char uas_id_char_arr[kUtmGuidMsgLength])
+ਖਾਲੀ DaaEncodedId::convert_uas_id_uint64_ਮੰਜ਼ਿਲ_str(ਅਚਲ uint64_t uas_id_int, ਅੱਖਰ uas_id_char_arr[k_Utm_Guid_ਸੁਨੇਹਾ_ਲੰਮਾਈ])
 {
-	if (uas_id_char_arr == nullptr) {
-		return;
+	ਜੇ (uas_id_char_arr == ਖਾਲੀ_ਸੂਚਕ) {
+		ਵਾਪਸ;
 	}
 
-	static constexpr char kHexDigits[] = "0123456789abcdef";
+	ਸਥਿਰ constexpr ਅੱਖਰ kHexDigits[] = "0123456789abcdef";
 
-	if (uas_id_int == 0) {
-		memset(uas_id_char_arr, '0', kUtmGuidMsgLength - 1);
+	ਜੇ (uas_id_int == 0) {
+		memset(uas_id_char_arr, '0', k_Utm_Guid_ਸੁਨੇਹਾ_ਲੰਮਾਈ - 1);
 
-	} else {
+	} ਨਹੀਂਤਾਂ {
 
 		// Render the low reduced_uas_id_length bytes as hex.
-		const int reduced_uas_id_length = (kUtmGuidMsgLength - 1) / 2;
+		ਅਚਲ ਪੂਰਨ reduced_uas_id_ਲੰਮਾਈ = (k_Utm_Guid_ਸੁਨੇਹਾ_ਲੰਮਾਈ - 1) / 2;
 
-		for (int i = 0; i < reduced_uas_id_length; ++i) {
-			const uint8_t byte = static_cast<uint8_t>((uas_id_int >>(i * 8)) & 0xFF);
+		ਲਈ (ਪੂਰਨ i = 0; i < reduced_uas_id_ਲੰਮਾਈ; ++i) {
+			ਅਚਲ uint8_t byte = static_cast<uint8_t>((uas_id_int >>(i * 8)) & 0xFF);
 			uas_id_char_arr[i * 2] = kHexDigits[byte >> 4];
 			uas_id_char_arr[i * 2 + 1] = kHexDigits[byte & 0x0F];
 		}
 	}
 
-	uas_id_char_arr[kUtmGuidMsgLength - 1] = '\0';
+	uas_id_char_arr[k_Utm_Guid_ਸੁਨੇਹਾ_ਲੰਮਾਈ - 1] = '\0';
 }
 
-void DaaEncodedId::convert_icao_uint32_to_hex_str(uint64_t value, char *buffer, size_t buffer_size)
+ਖਾਲੀ DaaEncodedId::convert_icao_uint32_ਮੰਜ਼ਿਲ_hex_str(uint64_t value, ਅੱਖਰ *ਬਫਰ_2, size_t ਬਫਰ_ਮਾਪ)
 {
-	if (buffer == nullptr || buffer_size < kIcaoLength) {
-		return;
+	ਜੇ (ਬਫਰ_2 == ਖਾਲੀ_ਸੂਚਕ || ਬਫਰ_ਮਾਪ < k_Icao_ਲੰਮਾਈ) {
+		ਵਾਪਸ;
 	}
 
-	const uint32_t icao_address = static_cast<uint32_t>(value & 0xFFFFFFu);
-	snprintf(buffer, buffer_size, "%06" PRIX32, icao_address);
+	ਅਚਲ uint32_t icao_ਪਤਾ = static_cast<uint32_t>(value & 0xFFFFFFu);
+	snprintf(ਬਫਰ_2, ਬਫਰ_ਮਾਪ, "%06" PRIX32, icao_ਪਤਾ);
 }

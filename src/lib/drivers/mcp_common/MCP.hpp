@@ -30,97 +30,97 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <stdint.h>
-#include <drivers/device/i2c.h>
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <uORB/topics/gpio_config.h>
-#include <uORB/topics/gpio_in.h>
-#include <uORB/topics/gpio_out.h>
-#include <uORB/PublicationMulti.hpp>
-#include <lib/perf/perf_counter.h>
-#include <drivers/drv_hrt.h>
-#include <px4_platform/gpio/mcp.hpp>
-#include <px4_platform_common/module.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/device/i2c.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/i2c_spi_buses.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/gpio_config.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/gpio_in.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/gpio_out.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/PublicationMulti.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/perf/perf_counter.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/drv_hrt.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform/gpio/mcp.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/module.h>
 
-static constexpr uint8_t I2C_ADDRESS_MCP23009 = 0x25;
-static constexpr uint8_t I2C_ADDRESS_MCP23017 = 0x27;
+ਸਥਿਰ constexpr uint8_t I2_C_ਪਤਾ_MCP23009 = 0x25;
+ਸਥਿਰ constexpr uint8_t I2_C_ਪਤਾ_MCP23017 = 0x27;
 
-enum class
+ਗਿਣਤੀ ਵਰਗ
 PinType : uint8_t {
 	Output,
-	Input,
-	InputPullUp,
+	ਨਿਵੇਸ਼_2,
+	ਨਿਵੇਸ਼_Pull_ਉੱਪਰ,
 };
 
-struct MCP230XX_config_t {
+ਬਣਤਰ MCP230XX_config_t {
 	uint16_t device_type;
 	uint8_t i2c_addr = 0;
 	uint8_t i2c_bus = 0;
-	uint8_t first_minor = 0;
-	uint8_t num_pins = 8;
-	int num_banks = 1;
+	uint8_t ਪਹਿਲਾ_minor = 0;
+	uint8_t ਅੰਕ_pins = 8;
+	ਪੂਰਨ ਅੰਕ_banks = 1;
 	uint16_t interval = 10;
 	mcp_gpio_dev_s _gpio_handle[16];
-	CallbackHandler *_callback_handler = nullptr;
+	CallbackHandler *_callback_handler = ਖਾਲੀ_ਸੂਚਕ;
 
 	uint16_t direction = 0xFFFF;
 	uint16_t state = 0x0000;
 	uint16_t pullup = 0x0000;
 };
 
-class MCP230XX :  public device::I2C, public I2CSPIDriver<MCP230XX>
+ਵਰਗ MCP230XX :  ਜਨਤਕ device::I2C, ਜਨਤਕ I2CSPIDriver<MCP230XX>
 {
-public:
-	MCP230XX(const I2CSPIDriverConfig &config);
-	virtual ~MCP230XX();
-	static I2CSPIDriverBase *instantiate(const I2CSPIDriverConfig &config, int runtime_instance);
-	static void print_usage();
+ਜਨਤਕ:
+	MCP230XX(ਅਚਲ I2CSPIDriverConfig &config);
+	ਆਭਾਸੀ ~MCP230XX();
+	ਸਥਿਰ I2_CSPIDriver_ਅਧਾਰ *instantiate(ਅਚਲ I2CSPIDriverConfig &config, ਪੂਰਨ runtime_instance);
+	ਸਥਿਰ ਖਾਲੀ print_usage();
 
-	void RunImpl();
-	void print_status() override;
-	void custom_method(const BusCLIArguments &cli) override;
-	int probe();
-	virtual int init();
+	ਖਾਲੀ ਲੜੀਵਾਰ_Impl();
+	ਖਾਲੀ print_ਸਥਿਤੀ() override;
+	ਖਾਲੀ custom_ਵਿਧੀ(ਅਚਲ BusCLIArguments &cli) override;
+	ਪੂਰਨ probe();
+	ਆਭਾਸੀ ਪੂਰਨ init();
 
-protected:
+ਸੁਰੱਖਿਅਤ:
 	MCP230XX_config_t mcp_config;
 
-private:
-	uORB::SubscriptionCallbackWorkItem _gpio_out_sub{this, ORB_ID(gpio_out)};
-	uORB::SubscriptionCallbackWorkItem _gpio_config_sub{this, ORB_ID(gpio_config)};
-	uORB::PublicationMulti<gpio_in_s> _to_gpio_in{ORB_ID(gpio_in)};
+ਨਿਜੀ:
+	uORB::Subscription_Callback_Work_ਵਸਤੂ gpio_ਬਾਹਰਲਾ_sub{ਇਹ, ORB_ID(gpio_ਬਾਹਰਲਾ)};
+	uORB::Subscription_Callback_Work_ਵਸਤੂ _gpio_config_sub{ਇਹ, ORB_ID(gpio_config)};
+	uORB::PublicationMulti<gpio_ਵਿੱਚ_s> ਮੰਜ਼ਿਲ_gpio_ਵਿੱਚ{ORB_ID(gpio_ਵਿੱਚ_2)};
 
-	perf_counter_t _cycle_perf;
+	perf_counter_t ਚੱਕਰ_perf;
 	perf_counter_t _comms_errors;
-	perf_counter_t _register_check;
+	perf_counter_t ਰਜਿਸਟਰ_check;
 
-	virtual int configure(uint16_t mask, PinType type);
-	virtual int read(uint16_t *mask);
-	int read_reg(uint8_t address, uint8_t &data);
-	int write(uint16_t mask_set, uint16_t mask_clear);
-	int write_reg(uint8_t address, uint8_t value);
-	int set_up();
-	int sanity_check();
-	int init_communication();
-	int init_uorb();
-	void cleanup_uorb();
+	ਆਭਾਸੀ ਪੂਰਨ configure(uint16_t ਨਕਾਬ, PinType type);
+	ਆਭਾਸੀ ਪੂਰਨ ਪਠ(uint16_t *ਨਕਾਬ);
+	ਪੂਰਨ read_reg(uint8_t ਪਤਾ, uint8_t &ਅੰਕੜੇ);
+	ਪੂਰਨ ਲਿਖ(uint16_t ਨਕਾਬ_ਸੈੱਟ, uint16_t ਨਕਾਬ_clear);
+	ਪੂਰਨ write_reg(uint8_t ਪਤਾ, uint8_t value);
+	ਪੂਰਨ ਸੈੱਟ_ਉੱਪਰ_2();
+	ਪੂਰਨ sanity_check();
+	ਪੂਰਨ init_communication();
+	ਪੂਰਨ init_uorb();
+	ਖਾਲੀ cleanup_uorb();
 
-	virtual int get_olat(int bank, uint8_t *addr) = 0;
-	virtual int get_gppu(int bank, uint8_t *addr) = 0;
-	virtual int get_iodir(int bank, uint8_t *addr) = 0;
-	virtual int get_gpio(int bank, uint8_t *addr) = 0;
-	virtual int get_probe_reg(uint8_t *addr) = 0;
+	ਆਭਾਸੀ ਪੂਰਨ get_olat(ਪੂਰਨ bank, uint8_t *addr) = 0;
+	ਆਭਾਸੀ ਪੂਰਨ get_gppu(ਪੂਰਨ bank, uint8_t *addr) = 0;
+	ਆਭਾਸੀ ਪੂਰਨ get_iodir(ਪੂਰਨ bank, uint8_t *addr) = 0;
+	ਆਭਾਸੀ ਪੂਰਨ get_gpio(ਪੂਰਨ bank, uint8_t *addr) = 0;
+	ਆਭਾਸੀ ਪੂਰਨ get_probe_reg(uint8_t *addr) = 0;
 
 	uint16_t _olat;
 	uint16_t _iodir;
 	uint16_t _gppu;
 
 	uint16_t _checking_freq = 10;
-	int _count = 0;
+	ਪੂਰਨ ਗਿਣਤੀ_4 = 0;
 
-	enum class STATE : uint8_t {
+	ਗਿਣਤੀ ਵਰਗ STATE : uint8_t {
 		INIT_COMMUNICATION,
 		CONFIGURE,
 		CHECK,

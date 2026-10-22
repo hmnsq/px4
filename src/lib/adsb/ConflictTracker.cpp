@@ -38,22 +38,22 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include "ConflictTracker.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "ConflictTracker.h"
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/log.h>
 
-namespace
+ਨਾਮਾਕਾਸ਼
 {
 
-void append_change(conflict_tracker_changes_s &changes, const conflict_tracker_change_s &change)
+ਖਾਲੀ append_change(conflict_tracker_changes_s &changes, ਅਚਲ conflict_tracker_change_s &change)
 {
-	if (!changes.push_back(change)) {
+	ਜੇ (!changes.push_back(change)) {
 		PX4_ERR("DAA: conflict changes overflow");
 	}
 }
 
-void record_ignored(conflict_tracker_changes_s &changes, const conflict_info_s &conflict, const IgnoreTrafficCause cause)
+ਖਾਲੀ ਰਿਕਾਰਡ_ignored(conflict_tracker_changes_s &changes, ਅਚਲ conflict_info_s &conflict, ਅਚਲ IgnoreTrafficCause cause)
 {
 	conflict_tracker_change_s change{};
 	change.type = ConflictTrackerChangeType::kReportIgnored;
@@ -62,7 +62,7 @@ void record_ignored(conflict_tracker_changes_s &changes, const conflict_info_s &
 	append_change(changes, change);
 }
 
-void record_removed(conflict_tracker_changes_s &changes, const conflict_info_s &conflict, const RemoveBufferCause cause)
+ਖਾਲੀ ਰਿਕਾਰਡ_removed(conflict_tracker_changes_s &changes, ਅਚਲ conflict_info_s &conflict, ਅਚਲ Remove_ਬਫਰ_Cause cause)
 {
 	conflict_tracker_change_s change{};
 	change.type = ConflictTrackerChangeType::kConflictRemoved;
@@ -73,211 +73,211 @@ void record_removed(conflict_tracker_changes_s &changes, const conflict_info_s &
 
 } // namespace
 
-bool ConflictTracker::apply_conflict(const conflict_info_s &conflict, conflict_tracker_changes_s &changes)
+ਤਾਰਕਿਕ ConflictTracker::apply_conflict(ਅਚਲ conflict_info_s &conflict, conflict_tracker_changes_s &changes)
 {
-	if (conflict.encoded_id.id == 0
+	ਜੇ (conflict.encoded_id.id == 0
 	    || conflict.conflict_level > detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL
 	    || !PX4_ISFINITE(conflict.aircraft_dist)
 	    || conflict.aircraft_dist < 0.f) {
 		PX4_ERR("DAA: invalid conflict");
-		return false;
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	const int conflict_idx = find_conflict_idx(conflict.encoded_id);
+	ਅਚਲ ਪੂਰਨ conflict_idx = ਲੱਭੋ_conflict_idx(conflict.encoded_id);
 
-	if (conflict_idx < 0) {
-		if (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
-			return false;
+	ਜੇ (conflict_idx < 0) {
+		ਜੇ (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
+			ਵਾਪਸ ਝੂਠ;
 		}
 
-		return add_conflict(conflict, changes);
+		ਵਾਪਸ ਜੋੜੋ_conflict(conflict, changes);
 	}
 
-	return update_conflict(conflict, conflict_idx, changes);
+	ਵਾਪਸ update_conflict(conflict, conflict_idx, changes);
 }
 
-bool ConflictTracker::add_conflict(const conflict_info_s &conflict, conflict_tracker_changes_s &changes)
+ਤਾਰਕਿਕ ConflictTracker::ਜੋੜੋ_conflict(ਅਚਲ conflict_info_s &conflict, conflict_tracker_changes_s &changes)
 {
-	if (_buffer.size() < _buffer.max_size()) {
-		_buffer.push_back(conflict);
+	ਜੇ (ਬਫਰ.ਮਾਪ() < ਬਫਰ.max_ਮਾਪ()) {
+		ਬਫਰ.push_back(conflict);
 
 		conflict_tracker_change_s change{};
 		change.type = ConflictTrackerChangeType::kConflictAdded;
 		change.conflict = conflict;
 		append_change(changes, change);
-		return true;
+		ਵਾਪਸ ਸੱਚ;
 	}
 
-	const int least_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kLeastUrgent);
+	ਅਚਲ ਪੂਰਨ ਘੱਟ_ਤੋਂ_ਘੱਟ_ਜ਼ਰੂਰੀ_conflict_idx = ਲੱਭੋ_conflict_idx_by_ਤਰਜੀਹ(Conflict_ਤਰਜੀਹ::k_ਘੱਟ_ਤੋਂ_ਘੱਟ_ਜ਼ਰੂਰੀ);
 
-	if (!is_conflict_more_important(conflict, _buffer[least_urgent_conflict_idx])) {
+	ਜੇ (!is_conflict_ਹੋਰ_important(conflict, ਬਫਰ[ਘੱਟ_ਤੋਂ_ਘੱਟ_ਜ਼ਰੂਰੀ_conflict_idx])) {
 		PX4_DEBUG("DAA: new conflict does not outrank tracked conflicts, ignoring.");
-		record_ignored(changes, conflict, IgnoreTrafficCause::kBufferFull);
-		return false;
+		ਰਿਕਾਰਡ_ignored(changes, conflict, IgnoreTrafficCause::k_ਬਫਰ_ਭਰਿਆ);
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	const conflict_info_s removed_conflict = _buffer[least_urgent_conflict_idx];
-	_buffer[least_urgent_conflict_idx] = conflict;
-	record_removed(changes, removed_conflict, RemoveBufferCause::kBufferFull);
+	ਅਚਲ conflict_info_s removed_conflict = ਬਫਰ[ਘੱਟ_ਤੋਂ_ਘੱਟ_ਜ਼ਰੂਰੀ_conflict_idx];
+	ਬਫਰ[ਘੱਟ_ਤੋਂ_ਘੱਟ_ਜ਼ਰੂਰੀ_conflict_idx] = conflict;
+	ਰਿਕਾਰਡ_removed(changes, removed_conflict, Remove_ਬਫਰ_Cause::k_ਬਫਰ_ਭਰਿਆ);
 
 	conflict_tracker_change_s change{};
 	change.type = ConflictTrackerChangeType::kConflictAdded;
 	change.conflict = conflict;
 	append_change(changes, change);
-	return true;
+	ਵਾਪਸ ਸੱਚ;
 }
 
-bool ConflictTracker::update_conflict(const conflict_info_s &conflict, const int conflict_idx,
+ਤਾਰਕਿਕ ConflictTracker::update_conflict(ਅਚਲ conflict_info_s &conflict, ਅਚਲ ਪੂਰਨ conflict_idx,
 				      conflict_tracker_changes_s &changes)
 {
-	const uint8_t previous_conflict_level = _buffer[conflict_idx].conflict_level;
+	ਅਚਲ uint8_t ਪਿਛਲਾ_conflict_level = ਬਫਰ[conflict_idx].conflict_level;
 
-	if (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
+	ਜੇ (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
 		PX4_DEBUG("DAA: Conflict avoided");
-		_buffer.remove(conflict_idx);
+		ਬਫਰ.remove(conflict_idx);
 
-	} else {
-		_buffer[conflict_idx] = conflict;
+	} ਨਹੀਂਤਾਂ {
+		ਬਫਰ[conflict_idx] = conflict;
 	}
 
-	if (conflict.conflict_level != previous_conflict_level) {
+	ਜੇ (conflict.conflict_level != ਪਿਛਲਾ_conflict_level) {
 		conflict_tracker_change_s change{};
-		change.type = ConflictTrackerChangeType::kConflictLevelChanged;
+		change.type = ConflictTrackerChangeType::k_Conflict_Level_ਬਦਲਿਆ;
 		change.conflict = conflict;
-		change.previous_level = previous_conflict_level;
+		change.ਪਿਛਲਾ_level = ਪਿਛਲਾ_conflict_level;
 
-		const int most_urgent_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
-		change.conflict_is_most_urgent = (_most_urgent.encoded_id == conflict.encoded_id)
-						 || (is_valid_idx(most_urgent_idx)
-						     && _buffer[most_urgent_idx].encoded_id == conflict.encoded_id);
+		ਅਚਲ ਪੂਰਨ most_ਜ਼ਰੂਰੀ_idx = ਲੱਭੋ_conflict_idx_by_ਤਰਜੀਹ(Conflict_ਤਰਜੀਹ::k_Most_ਜ਼ਰੂਰੀ);
+		change.conflict_is_most_ਜ਼ਰੂਰੀ = (most_ਜ਼ਰੂਰੀ.encoded_id == conflict.encoded_id)
+						 || (is_valid_idx(most_ਜ਼ਰੂਰੀ_idx)
+						     && ਬਫਰ[most_ਜ਼ਰੂਰੀ_idx].encoded_id == conflict.encoded_id);
 
 		append_change(changes, change);
 	}
 
-	return true;
+	ਵਾਪਸ ਸੱਚ;
 }
 
-bool ConflictTracker::remove_stale_conflicts(const hrt_abstime now, const hrt_abstime timeout_us,
+ਤਾਰਕਿਕ ConflictTracker::remove_stale_conflicts(ਅਚਲ hrt_abstime now, ਅਚਲ hrt_abstime timeout_us,
 		conflict_tracker_changes_s &changes)
 {
-	int nb_conflicts_removed = 0;
+	ਪੂਰਨ nb_conflicts_removed = 0;
 
 	// Iterate backwards because Array::remove() shifts later entries left.
-	for (int idx = (static_cast<int>(_buffer.size()) - 1); idx >= 0; --idx) {
-		const hrt_abstime latest_update = _buffer[idx].latest_update_timestamp;
+	ਲਈ (ਪੂਰਨ idx = (static_cast<ਪੂਰਨ>(ਬਫਰ.ਮਾਪ()) - 1); idx >= 0; --idx) {
+		ਅਚਲ hrt_abstime latest_update = ਬਫਰ[idx].latest_update_timestamp;
 
-		if (latest_update == 0 || latest_update > now || (now - latest_update) > timeout_us) {
-			const conflict_info_s removed_conflict = _buffer[idx];
-			_buffer.remove(idx);
-			record_removed(changes, removed_conflict, RemoveBufferCause::kStaleConflict);
+		ਜੇ (latest_update == 0 || latest_update > now || (now - latest_update) > timeout_us) {
+			ਅਚਲ conflict_info_s removed_conflict = ਬਫਰ[idx];
+			ਬਫਰ.remove(idx);
+			ਰਿਕਾਰਡ_removed(changes, removed_conflict, Remove_ਬਫਰ_Cause::kStaleConflict);
 			nb_conflicts_removed++;
 		}
 	}
 
-	if (nb_conflicts_removed > 0) {
+	ਜੇ (nb_conflicts_removed > 0) {
 		PX4_DEBUG("DAA: removed %d stale conflicts from buffer", nb_conflicts_removed);
 	}
 
-	return nb_conflicts_removed > 0;
+	ਵਾਪਸ nb_conflicts_removed > 0;
 }
 
-void ConflictTracker::clear()
+ਖਾਲੀ ConflictTracker::clear()
 {
-	_buffer.clear();
-	reset_most_urgent();
+	ਬਫਰ.clear();
+	reset_most_ਜ਼ਰੂਰੀ();
 }
 
-void ConflictTracker::reset_most_urgent()
+ਖਾਲੀ ConflictTracker::reset_most_ਜ਼ਰੂਰੀ()
 {
-	static constexpr float kNoConflictDistance{9999.f};
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ k_No_Conflict_ਦੂਰੀ{9999.f};
 	PX4_DEBUG("DAA: reset most urgent buffer to null.");
-	_most_urgent = {};
-	_most_urgent.aircraft_dist = kNoConflictDistance;
+	most_ਜ਼ਰੂਰੀ = {};
+	most_ਜ਼ਰੂਰੀ.aircraft_dist = k_No_Conflict_ਦੂਰੀ;
 }
 
-void ConflictTracker::refresh_most_urgent()
+ਖਾਲੀ ConflictTracker::refresh_most_ਜ਼ਰੂਰੀ()
 {
-	if (_buffer.empty()) {
+	ਜੇ (ਬਫਰ.ਖਾਲੀ_ਥਾਵਾਂ()) {
 		PX4_DEBUG("DAA: refresh_most_urgent empty buffer.");
-		reset_most_urgent();
-		return;
+		reset_most_ਜ਼ਰੂਰੀ();
+		ਵਾਪਸ;
 	}
 
-	_most_urgent = find_most_urgent();
+	most_ਜ਼ਰੂਰੀ = ਲੱਭੋ_most_ਜ਼ਰੂਰੀ();
 }
 
-conflict_info_s ConflictTracker::find_most_urgent() const
+conflict_info_s ConflictTracker::ਲੱਭੋ_most_ਜ਼ਰੂਰੀ() ਅਚਲ
 {
-	const int most_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
+	ਅਚਲ ਪੂਰਨ most_ਜ਼ਰੂਰੀ_conflict_idx = ਲੱਭੋ_conflict_idx_by_ਤਰਜੀਹ(Conflict_ਤਰਜੀਹ::k_Most_ਜ਼ਰੂਰੀ);
 
-	if (!is_valid_idx(most_urgent_conflict_idx)) {
-		return {};
+	ਜੇ (!is_valid_idx(most_ਜ਼ਰੂਰੀ_conflict_idx)) {
+		ਵਾਪਸ {};
 	}
 
-	return _buffer[most_urgent_conflict_idx];
+	ਵਾਪਸ ਬਫਰ[most_ਜ਼ਰੂਰੀ_conflict_idx];
 }
 
-conflict_info_s ConflictTracker::get_conflict(const DaaEncodedId &encoded_id) const
+conflict_info_s ConflictTracker::get_conflict(ਅਚਲ DaaEncodedId &encoded_id) ਅਚਲ
 {
-	const int conflict_idx = find_conflict_idx(encoded_id);
+	ਅਚਲ ਪੂਰਨ conflict_idx = ਲੱਭੋ_conflict_idx(encoded_id);
 
-	if (!is_valid_idx(conflict_idx)) {
-		return {};
+	ਜੇ (!is_valid_idx(conflict_idx)) {
+		ਵਾਪਸ {};
 	}
 
-	return _buffer[conflict_idx];
+	ਵਾਪਸ ਬਫਰ[conflict_idx];
 }
 
-int ConflictTracker::find_conflict_idx_by_priority(const ConflictPriority priority) const
+ਪੂਰਨ ConflictTracker::ਲੱਭੋ_conflict_idx_by_ਤਰਜੀਹ(ਅਚਲ Conflict_ਤਰਜੀਹ ਤਰਜੀਹ) ਅਚਲ
 {
-	const int buff_size = static_cast<int>(_buffer.size());
+	ਅਚਲ ਪੂਰਨ buff_ਮਾਪ = static_cast<ਪੂਰਨ>(ਬਫਰ.ਮਾਪ());
 
-	if (buff_size < 1) {
-		return -1;
+	ਜੇ (buff_ਮਾਪ < 1) {
+		ਵਾਪਸ -1;
 	}
 
-	int best_idx = 0;
+	ਪੂਰਨ ਉੱਤਮ_idx = 0;
 
-	for (int i = 1; i < buff_size; ++i) {
-		const bool is_better = (priority == ConflictPriority::kMostUrgent)
-				       ? is_conflict_more_important(_buffer[i], _buffer[best_idx])
-				       : is_conflict_less_important(_buffer[i], _buffer[best_idx]);
+	ਲਈ (ਪੂਰਨ i = 1; i < buff_ਮਾਪ; ++i) {
+		ਅਚਲ ਤਾਰਕਿਕ is_better = (ਤਰਜੀਹ == Conflict_ਤਰਜੀਹ::k_Most_ਜ਼ਰੂਰੀ)
+				       ? is_conflict_ਹੋਰ_important(ਬਫਰ[i], ਬਫਰ[ਉੱਤਮ_idx])
+				       : is_conflict_less_important(ਬਫਰ[i], ਬਫਰ[ਉੱਤਮ_idx]);
 
-		if (is_better) {
-			best_idx = i;
+		ਜੇ (is_better) {
+			ਉੱਤਮ_idx = i;
 		}
 	}
 
-	return best_idx;
+	ਵਾਪਸ ਉੱਤਮ_idx;
 }
 
-int ConflictTracker::find_conflict_idx(const DaaEncodedId &encoded_id) const
+ਪੂਰਨ ConflictTracker::ਲੱਭੋ_conflict_idx(ਅਚਲ DaaEncodedId &encoded_id) ਅਚਲ
 {
-	for (size_t i = 0; i < _buffer.size(); i++) {
-		if (_buffer[i].encoded_id == encoded_id) {
-			return static_cast<int>(i);
+	ਲਈ (size_t i = 0; i < ਬਫਰ.ਮਾਪ(); i++) {
+		ਜੇ (ਬਫਰ[i].encoded_id == encoded_id) {
+			ਵਾਪਸ static_cast<ਪੂਰਨ>(i);
 		}
 	}
 
-	return -1;
+	ਵਾਪਸ -1;
 }
 
-bool ConflictTracker::is_conflict_less_important(const conflict_info_s &new_conflict,
-		const conflict_info_s &base_conflict)
+ਤਾਰਕਿਕ ConflictTracker::is_conflict_less_important(ਅਚਲ conflict_info_s &new_conflict,
+		ਅਚਲ conflict_info_s &ਅਧਾਰ_conflict)
 {
-	if (new_conflict.conflict_level != base_conflict.conflict_level) {
-		return new_conflict.conflict_level < base_conflict.conflict_level;
+	ਜੇ (new_conflict.conflict_level != ਅਧਾਰ_conflict.conflict_level) {
+		ਵਾਪਸ new_conflict.conflict_level < ਅਧਾਰ_conflict.conflict_level;
 	}
 
-	return new_conflict.aircraft_dist > base_conflict.aircraft_dist;
+	ਵਾਪਸ new_conflict.aircraft_dist > ਅਧਾਰ_conflict.aircraft_dist;
 }
 
-bool ConflictTracker::is_conflict_more_important(const conflict_info_s &new_conflict,
-		const conflict_info_s &base_conflict)
+ਤਾਰਕਿਕ ConflictTracker::is_conflict_ਹੋਰ_important(ਅਚਲ conflict_info_s &new_conflict,
+		ਅਚਲ conflict_info_s &ਅਧਾਰ_conflict)
 {
-	if (new_conflict.conflict_level != base_conflict.conflict_level) {
-		return new_conflict.conflict_level > base_conflict.conflict_level;
+	ਜੇ (new_conflict.conflict_level != ਅਧਾਰ_conflict.conflict_level) {
+		ਵਾਪਸ new_conflict.conflict_level > ਅਧਾਰ_conflict.conflict_level;
 	}
 
-	return new_conflict.aircraft_dist < base_conflict.aircraft_dist;
+	ਵਾਪਸ new_conflict.aircraft_dist < ਅਧਾਰ_conflict.aircraft_dist;
 }

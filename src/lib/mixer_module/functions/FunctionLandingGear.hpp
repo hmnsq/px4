@@ -31,38 +31,38 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "FunctionProviderBase.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/landing_gear.h>
 
 /**
  * Functions: Landing_Gear
  */
-class FunctionLandingGear : public FunctionProviderBase
+ਵਰਗ FunctionLandingGear : ਜਨਤਕ Function_Provider_ਅਧਾਰ
 {
-public:
-	FunctionLandingGear() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGear(); }
+ਜਨਤਕ:
+	FunctionLandingGear() = ਮੂਲ;
+	ਸਥਿਰ Function_Provider_ਅਧਾਰ *allocate(ਅਚਲ Context &context) { ਵਾਪਸ ਨਵਾਂ FunctionLandingGear(); }
 
-	void update() override
+	ਖਾਲੀ update() override
 	{
 		landing_gear_s landing_gear;
 
-		if (_topic.update(&landing_gear)) {
-			if (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
-				_data = -1.f;
+		ਜੇ (_topic.update(&landing_gear)) {
+			ਜੇ (landing_gear.landing_gear == landing_gear_s::GEAR_ਥੱਲੇ) {
+				ਅੰਕੜੇ_3 = -1.f;
 
-			} else if (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
-				_data = 1.f;
+			} ਨਹੀਂਤਾਂ ਜੇ (landing_gear.landing_gear == landing_gear_s::GEAR_ਉੱਪਰ) {
+				ਅੰਕੜੇ_3 = 1.f;
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	ਦਸ਼ਮਲਵ value(OutputFunction func) override { ਵਾਪਸ ਅੰਕੜੇ_3; }
 
-private:
+ਨਿਜੀ:
 	uORB::Subscription _topic{ORB_ID(landing_gear)};
-	float _data{-1.f};
+	ਦਸ਼ਮਲਵ ਅੰਕੜੇ_3{-1.f};
 };

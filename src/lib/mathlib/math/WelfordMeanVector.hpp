@@ -37,124 +37,124 @@
  * Welford's online algorithm for computing mean and covariance of a vector.
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-namespace math
+ਨਾਮਾਕਾਸ਼ math
 {
 
-template <typename Type, size_t N>
-class WelfordMeanVector
+ਸਾਂਚਾ <ਕਿਸਮ_ਨਾਂ Type, size_t N>
+ਵਰਗ Welford_ਔਸਤ_ਸਦਿਸ਼
 {
-public:
+ਜਨਤਕ:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const matrix::Vector<Type, N> &new_value)
+	ਤਾਰਕਿਕ update(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, N> &new_ਮੁੱਲ)
 	{
-		if (_count == 0) {
+		ਜੇ (ਗਿਣਤੀ_4 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
-			return false;
+			ਗਿਣਤੀ_4 = 1;
+			ਔਸਤ_2 = new_ਮੁੱਲ;
+			ਵਾਪਸ ਝੂਠ;
 
-		} else if (_count == UINT16_MAX) {
+		} ਨਹੀਂਤਾਂ ਜੇ (ਗਿਣਤੀ_4 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / ਗਿਣਤੀ_4;
 			_M2_accum.zero();
 
-			_count = 1;
+			ਗਿਣਤੀ_4 = 1;
 
-		} else {
-			_count++;
+		} ਨਹੀਂਤਾਂ {
+			ਗਿਣਤੀ_4++;
 		}
 
-		// mean
+		//ਔਸਤ
 		//  accumulates the mean of the entire dataset
 		//  use Kahan summation because delta can be very small compared to the mean
-		const matrix::Vector<Type, N> delta{new_value - _mean};
+		ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, N> delta{new_ਮੁੱਲ - ਔਸਤ_2};
 		{
-			const matrix::Vector<Type, N> y = (delta / _count) - _mean_accum;
-			const matrix::Vector<Type, N> t = _mean + y;
-			_mean_accum = (t - _mean) - y;
-			_mean = t;
+			ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, N> y = (delta / ਗਿਣਤੀ_4) - ਔਸਤ_accum;
+			ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, N> t = ਔਸਤ_2 + y;
+			ਔਸਤ_accum = (t - ਔਸਤ_2) - y;
+			ਔਸਤ_2 = t;
 		}
 
-		if (!_mean.isAllFinite()) {
+		ਜੇ (!ਔਸਤ_2.isAllFinite()) {
 			reset();
-			return false;
+			ਵਾਪਸ ਝੂਠ;
 		}
 
 		// covariance
 		//  Kahan summation (upper triangle only)
 		{
 			// eg C(x,y) += dx * (y - mean_y)
-			matrix::SquareMatrix<Type, N> m2_change{};
+			ਮੈਟ੍ਰਿਕਸ::ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, N> m2_change{};
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
-					m2_change(r, c) = delta(r) * (new_value(c) - _mean(c));
+			ਲਈ (size_t r = 0; r < N; r++) {
+				ਲਈ (size_t c = r; c < N; c++) {
+					m2_change(r, c) = delta(r) * (new_ਮੁੱਲ(c) - ਔਸਤ_2(c));
 				}
 			}
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
+			ਲਈ (size_t r = 0; r < N; r++) {
+				ਲਈ (size_t c = r; c < N; c++) {
 
-					const Type y = m2_change(r, c) - _M2_accum(r, c);
-					const Type t = _M2(r, c) + y;
+					ਅਚਲ Type y = m2_change(r, c) - _M2_accum(r, c);
+					ਅਚਲ Type t = _M2(r, c) + y;
 					_M2_accum(r, c) = (t - _M2(r, c)) - y;
 
 					_M2(r, c) = t;
 				}
 
 				// protect against floating point precision causing negative variances
-				if (_M2(r, r) < 0) {
+				ਜੇ (_M2(r, r) < 0) {
 					_M2(r, r) = 0;
 				}
 			}
 
 			// make symmetric
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r + 1; c < N; c++) {
+			ਲਈ (size_t r = 0; r < N; r++) {
+				ਲਈ (size_t c = r + 1; c < N; c++) {
 					_M2(c, r) = _M2(r, c);
 				}
 			}
 		}
 
-		if (!_M2.isAllFinite()) {
+		ਜੇ (!_M2.isAllFinite()) {
 			reset();
-			return false;
+			ਵਾਪਸ ਝੂਠ;
 		}
 
-		return valid();
+		ਵਾਪਸ valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	ਤਾਰਕਿਕ valid() ਅਚਲ { ਵਾਪਸ ਗਿਣਤੀ_4 > 2; }
+	ਸਵੈਚਾਲਿਤ ਗਿਣਤੀ_2() ਅਚਲ { ਵਾਪਸ ਗਿਣਤੀ_4; }
 
-	void reset()
+	ਖਾਲੀ reset()
 	{
-		_count = 0;
-		_mean.zero();
+		ਗਿਣਤੀ_4 = 0;
+		ਔਸਤ_2.zero();
 		_M2.zero();
 
-		_mean_accum.zero();
+		ਔਸਤ_accum.zero();
 		_M2_accum.zero();
 	}
 
-	matrix::Vector<Type, N> mean() const { return _mean; }
-	matrix::Vector<Type, N> variance() const { return _M2.diag() / (_count - 1); }
-	matrix::SquareMatrix<Type, N> covariance() const { return _M2 / (_count - 1); }
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, N> ਔਸਤ() ਅਚਲ { ਵਾਪਸ ਔਸਤ_2; }
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, N> variance() ਅਚਲ { ਵਾਪਸ _M2.diag() / (ਗਿਣਤੀ_4 - 1); }
+	ਮੈਟ੍ਰਿਕਸ::ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, N> covariance() ਅਚਲ { ਵਾਪਸ _M2 / (ਗਿਣਤੀ_4 - 1); }
 
-	Type covariance(int x, int y) const { return _M2(x, y) / (_count - 1); }
+	Type covariance(ਪੂਰਨ x, ਪੂਰਨ y) ਅਚਲ { ਵਾਪਸ _M2(x, y) / (ਗਿਣਤੀ_4 - 1); }
 
-private:
+ਨਿਜੀ:
 
-	matrix::Vector<Type, N> _mean{};
-	matrix::Vector<Type, N> _mean_accum{};  ///< kahan summation algorithm accumulator for mean
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, N> ਔਸਤ_2{};
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, N> ਔਸਤ_accum{};  ///< kahan summation algorithm accumulator for mean
 
-	matrix::SquareMatrix<Type, N> _M2{};
-	matrix::SquareMatrix<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
+	ਮੈਟ੍ਰਿਕਸ::ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, N> _M2{};
+	ਮੈਟ੍ਰਿਕਸ::ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t ਗਿਣਤੀ_4{0};
 };
 
 } // namespace math

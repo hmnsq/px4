@@ -31,29 +31,29 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/filter.hpp>
-#include <matrix/Vector.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/filter.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/Vector.hpp>
 
-using namespace matrix;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ;
 
-TEST(MatrixFilterTest, Filter)
+TEST(ਮੈਟ੍ਰਿਕਸ_Filter_Test, Filter)
 {
-	const size_t n_x = 6;
-	const size_t n_y = 5;
-	SquareMatrix<float, n_x> P = eye<float, n_x>();
-	SquareMatrix<float, n_y> R = eye<float, n_y>();
-	Matrix<float, n_y, n_x> C;
-	C.setIdentity();
-	float data[] = {1, 2, 3, 4, 5};
-	Vector<float, n_y> r(data);
+	ਅਚਲ size_t n_x = 6;
+	ਅਚਲ size_t n_y = 5;
+	ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<ਦਸ਼ਮਲਵ, n_x> P = eye<ਦਸ਼ਮਲਵ, n_x>();
+	ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<ਦਸ਼ਮਲਵ, n_y> R = eye<ਦਸ਼ਮਲਵ, n_y>();
+	ਮੈਟ੍ਰਿਕਸ_2<ਦਸ਼ਮਲਵ, n_y, n_x> C;
+	C.ਸੈੱਟ_ਪਛਾਣ_ਤੱਤ();
+	ਦਸ਼ਮਲਵ ਅੰਕੜੇ[] = {1, 2, 3, 4, 5};
+	ਸਦਿਸ਼<ਦਸ਼ਮਲਵ, n_y> r(ਅੰਕੜੇ);
 
-	Vector<float, n_x> dx;
-	SquareMatrix<float, n_x> dP;
-	float beta = 0;
-	kalman_correct<float, 6, 5>(P, C, R, r, dx, dP, beta);
+	ਸਦਿਸ਼<ਦਸ਼ਮਲਵ, n_x> dx;
+	ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<ਦਸ਼ਮਲਵ, n_x> dP;
+	ਦਸ਼ਮਲਵ beta = 0;
+	kalman_correct<ਦਸ਼ਮਲਵ, 6, 5>(P, C, R, r, dx, dP, beta);
 
-	float data_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
-	Vector<float, n_x> dx_check(data_check);
+	ਦਸ਼ਮਲਵ ਅੰਕੜੇ_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
+	ਸਦਿਸ਼<ਦਸ਼ਮਲਵ, n_x> dx_check(ਅੰਕੜੇ_check);
 	EXPECT_EQ(dx, dx_check);
 }

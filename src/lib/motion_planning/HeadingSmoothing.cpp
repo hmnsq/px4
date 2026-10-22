@@ -31,30 +31,30 @@
  *
  ****************************************************************************/
 
-#include "HeadingSmoothing.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "HeadingSmoothing.hpp"
 
 HeadingSmoothing::HeadingSmoothing()
 {
-	_velocity_smoothing.setMaxVel(M_TWOPI_F); // "velocity" is heading. 2Pi limit is needed for correct angle wrapping
+	_velocity_smoothing.ਸੈੱਟ_Max_Vel(M_TWOPI_F); // "velocity" is heading. 2Pi limit is needed for correct angle wrapping
 }
 
-void HeadingSmoothing::reset(const float heading, const float heading_rate)
+ਖਾਲੀ HeadingSmoothing::reset(ਅਚਲ ਦਸ਼ਮਲਵ heading, ਅਚਲ ਦਸ਼ਮਲਵ heading_ਦਰ)
 {
-	_velocity_smoothing.setCurrentVelocity(matrix::wrap_pi(heading));
+	_velocity_smoothing.ਸੈੱਟ_Current_Velocity(ਮੈਟ੍ਰਿਕਸ::wrap_pi(heading));
 
-	if (PX4_ISFINITE(heading_rate)) {
-		_velocity_smoothing.setCurrentAcceleration(heading_rate);
+	ਜੇ (PX4_ISFINITE(heading_ਦਰ)) {
+		_velocity_smoothing.ਸੈੱਟ_Current_Acceleration(heading_ਦਰ);
 	}
 }
 
-void HeadingSmoothing::update(const float heading_setpoint, const float time_elapsed)
+ਖਾਲੀ HeadingSmoothing::update(ਅਚਲ ਦਸ਼ਮਲਵ heading_setpoint, ਅਚਲ ਦਸ਼ਮਲਵ ਸਮਾਂ_elapsed)
 {
-	const float delta_heading_wrapped = matrix::wrap_pi(heading_setpoint - getSmoothedHeading());
-	const float unwrapped_heading_setpoint = delta_heading_wrapped + getSmoothedHeading();
+	ਅਚਲ ਦਸ਼ਮਲਵ delta_heading_wrapped = ਮੈਟ੍ਰਿਕਸ::wrap_pi(heading_setpoint - getSmoothedHeading());
+	ਅਚਲ ਦਸ਼ਮਲਵ unwrapped_heading_setpoint = delta_heading_wrapped + getSmoothedHeading();
 
 	_velocity_smoothing.updateDurations(unwrapped_heading_setpoint);
-	_velocity_smoothing.updateTraj(time_elapsed);
+	_velocity_smoothing.updateTraj(ਸਮਾਂ_elapsed);
 
-	const float wrapped_current_heading = matrix::wrap_pi(getSmoothedHeading());
-	_velocity_smoothing.setCurrentVelocity(wrapped_current_heading);
+	ਅਚਲ ਦਸ਼ਮਲਵ wrapped_current_heading = ਮੈਟ੍ਰਿਕਸ::wrap_pi(getSmoothedHeading());
+	_velocity_smoothing.ਸੈੱਟ_Current_Velocity(wrapped_current_heading);
 }

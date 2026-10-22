@@ -40,71 +40,71 @@
  * @author Juraj Ciberlin <jciberlin1@gmail.com>
  */
 
-#if 0 // enable non-verbose debugging
-#define GHST_DEBUG PX4_WARN
-#else
-#define GHST_DEBUG(...)
-#endif
+#ਜੇ 0 // enable non-verbose debugging
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ GHST_DEBUG PX4_WARN
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ GHST_DEBUG(...)
+#ਜੇ_ਅੰਤ
 
-#if 0 // verbose debugging. Careful when enabling: it leads to too much output, causing dropped bytes
-#define GHST_VERBOSE PX4_WARN
-#else
-#define GHST_VERBOSE(...)
-#endif
+#ਜੇ 0 // verbose debugging. Careful when enabling: it leads to too much output, causing dropped bytes
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ GHST_VERBOSE PX4_WARN
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ GHST_VERBOSE(...)
+#ਜੇ_ਅੰਤ
 
-#include <drivers/drv_hrt.h>
-#include <termios.h>
-#include <string.h>
-#include <unistd.h>
-#include <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/drv_hrt.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <termios.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <string.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <unistd.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
 
 // TODO: include RSSI dBm to percentage conversion for ghost receiver
-#include "spektrum_rssi.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "spektrum_rssi.h"
 
-#include "ghst.hpp"
-#include "common_rc.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "ghst.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "common_rc.h"
 
-#define MIN(a,b) (((a)<(b))?(a):(b))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MIN(a,b) (((a)<(b))?(a):(b))
 
-#define GHST_FRAME_PAYLOAD_SIZE_TELEMETRY	(10U)
-#define GHST_FRAME_CRC_SIZE			(1U)
-#define GHST_FRAME_TYPE_SIZE			(1U)
-#define GHST_TYPE_DATA_CRC_SIZE			(12U)
-#define GHST_ADDR_FC				(130U)
-#define GHST_MAX_NUM_CHANNELS			(16)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ GHST_ਚੌਖਟਾ_PAYLOAD_ਮਾਪ_TELEMETRY	(10U)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ GHST_ਚੌਖਟਾ_ਚੱਕਰੀ_ਜਾਂਚ_ਮਾਪ			(1U)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ GHST_ਚੌਖਟਾ_TYPE_ਮਾਪ			(1U)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ GHST_TYPE_ਅੰਕੜੇ_ਚੱਕਰੀ_ਜਾਂਚ_ਮਾਪ			(12U)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ GHST_ADDR_FC				(130U)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ GHST_MAX_ਅੰਕ_CHANNELS			(16)
 
-enum class ghst_parser_state_t : uint8_t {
+ਗਿਣਤੀ ਵਰਗ ghst_parser_state_t : uint8_t {
 	unsynced = 0U,
 	synced
 };
 
 // only RSSI frame contains value of RSSI, if it is not received, send last received RSSI/LQ
-static ghstLinkStatistics_t last_link_stats = { .rssi_pct = -1, .rssi_dbm = NAN, .link_quality = 0 };
+ਸਥਿਰ ghstLinkStatistics_t ਆਖਰੀ_link_stats = { .rssi_pct = -1, .rssi_dbm = NAN, .link_quality = 0 };
 
-static ghst_frame_t &ghst_frame = rc_decode_buf.ghst_frame;
-static uint32_t current_frame_position = 0U;
-static ghst_parser_state_t parser_state = ghst_parser_state_t::unsynced;
+ਸਥਿਰ ghst_ਚੌਖਟਾ_t &ghst_ਚੌਖਟਾ = rc_decode_buf.ghst_ਚੌਖਟਾ;
+ਸਥਿਰ uint32_t current_ਚੌਖਟਾ_position = 0U;
+ਸਥਿਰ ghst_parser_state_t parser_state = ghst_parser_state_t::unsynced;
 
-static uint16_t prev_rc_vals[GHST_MAX_NUM_CHANNELS];
+ਸਥਿਰ uint16_t prev_rc_vals[GHST_MAX_ਅੰਕ_CHANNELS];
 
 /**
  * parse the current ghst_frame buffer
  */
-static bool ghst_parse_buffer(uint16_t *values, ghstLinkStatistics_t *link_stats, uint16_t *num_values,
+ਸਥਿਰ ਤਾਰਕਿਕ ghst_parse_ਬਫਰ(uint16_t *ਮੁੱਲਾਂ_2, ghstLinkStatistics_t *link_stats, uint16_t *ਅੰਕ_ਮੁੱਲਾਂ,
 			      uint16_t max_channels);
 
-int ghst_config(int uart_fd)
+ਪੂਰਨ ghst_config(ਪੂਰਨ uart_fd)
 {
-	struct termios t;
-	int ret_val;
+	ਬਣਤਰ termios t;
+	ਪੂਰਨ ret_val;
 
 	// no parity, one stop bit
 	tcgetattr(uart_fd, &t);
 	cfsetspeed(&t, GHST_BAUDRATE);
 	t.c_cflag &= ~(CSTOPB | PARENB);
-	memset(prev_rc_vals, static_cast<int>(UINT16_MAX), sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+	memset(prev_rc_vals, static_cast<ਪੂਰਨ>(UINT16_MAX), ਆਕਾਰ(uint16_t) * GHST_MAX_ਅੰਕ_CHANNELS);
 	ret_val = tcsetattr(uart_fd, TCSANOW, &t);
-	return ret_val;
+	ਵਾਪਸ ret_val;
 }
 
 /**
@@ -112,62 +112,62 @@ int ghst_config(int uart_fd)
  * @param chan_value channel value in [172, 1811]
  * @return PWM channel value in [1000, 2000]
  */
-static uint16_t convert_channel_value(unsigned chan_value);
+ਸਥਿਰ uint16_t convert_channel_ਮੁੱਲ(ਬਿਨਾਨਿਸ਼ਾਨੀ chan_ਮੁੱਲ);
 
 
-bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *values,
-		ghstLinkStatistics_t *link_stats, uint16_t *num_values, uint16_t max_channels)
+ਤਾਰਕਿਕ ghst_parse(ਅਚਲ uint64_t now, ਅਚਲ uint8_t *ਚੌਖਟਾ, ਬਿਨਾਨਿਸ਼ਾਨੀ len, uint16_t *ਮੁੱਲਾਂ_2,
+		ghstLinkStatistics_t *link_stats, uint16_t *ਅੰਕ_ਮੁੱਲਾਂ, uint16_t max_channels)
 {
-	bool success = false;
-	uint8_t *ghst_frame_ptr = (uint8_t *)&ghst_frame;
+	ਤਾਰਕਿਕ success = ਝੂਠ;
+	uint8_t *ghst_ਚੌਖਟਾ_ptr = (uint8_t *)&ghst_ਚੌਖਟਾ;
 
-	memcpy(values, prev_rc_vals, sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+	ਸਮ੍ਰਿਤੀ_ਨਕਲ(ਮੁੱਲਾਂ_2, prev_rc_vals, ਆਕਾਰ(uint16_t) * GHST_MAX_ਅੰਕ_CHANNELS);
 
-	while (len > 0U) {
+	ਜਦੋਂ (len > 0U) {
 
 		// fill in the ghst_buffer, as much as we can
-		const uint32_t current_len = MIN(len, sizeof(ghst_frame_t) - current_frame_position);
-		memcpy(ghst_frame_ptr + current_frame_position, frame, current_len);
-		current_frame_position += current_len;
+		ਅਚਲ uint32_t current_len = MIN(len, ਆਕਾਰ(ghst_ਚੌਖਟਾ_t) - current_ਚੌਖਟਾ_position);
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ(ghst_ਚੌਖਟਾ_ptr + current_ਚੌਖਟਾ_position, ਚੌਖਟਾ, current_len);
+		current_ਚੌਖਟਾ_position += current_len;
 
 		// protection to guarantee parsing progress
-		if (current_len == 0U) {
+		ਜੇ (current_len == 0U) {
 			GHST_DEBUG("========== parser bug: no progress (%u) ===========", len);
 
-			for (uint32_t i = 0U; i < current_frame_position; ++i) {
-				GHST_DEBUG("ghst_frame_ptr[%u]: 0x%x", i, ghst_frame_ptr[i]);
+			ਲਈ (uint32_t i = 0U; i < current_ਚੌਖਟਾ_position; ++i) {
+				GHST_DEBUG("ghst_frame_ptr[%u]: 0x%x", i, ghst_ਚੌਖਟਾ_ptr[i]);
 			}
 
 			// reset the parser
-			current_frame_position = 0U;
+			current_ਚੌਖਟਾ_position = 0U;
 			parser_state = ghst_parser_state_t::unsynced;
-			success = false;
+			success = ਝੂਠ;
 
-		} else {
+		} ਨਹੀਂਤਾਂ {
 			len -= current_len;
-			frame += current_len;
+			ਚੌਖਟਾ += current_len;
 
-			if (ghst_parse_buffer(values, link_stats, num_values, max_channels)) {
-				success = true;
+			ਜੇ (ghst_parse_ਬਫਰ(ਮੁੱਲਾਂ_2, link_stats, ਅੰਕ_ਮੁੱਲਾਂ, max_channels)) {
+				success = ਸੱਚ;
 			}
 		}
 	}
 
-	return success;
+	ਵਾਪਸ success;
 }
 
-uint8_t ghst_frame_CRC(const ghst_frame_t &frame)
+uint8_t ghst_ਚੌਖਟਾ_ਚੱਕਰੀ_ਜਾਂਚ(ਅਚਲ ghst_ਚੌਖਟਾ_t &ਚੌਖਟਾ)
 {
-	uint8_t crc = crc8_dvb_s2(0U, frame.type);
+	uint8_t ਚੱਕਰੀ_ਜਾਂਚ = crc8_dvb_s2(0U, ਚੌਖਟਾ.type);
 
-	for (uint32_t i = 0U; i < frame.header.length - GHST_FRAME_CRC_SIZE - GHST_FRAME_TYPE_SIZE; ++i) {
-		crc = crc8_dvb_s2(crc, frame.payload[i]);
+	ਲਈ (uint32_t i = 0U; i < ਚੌਖਟਾ.ਸਿਰਲੇਖ.ਲੰਮਾਈ - GHST_ਚੌਖਟਾ_ਚੱਕਰੀ_ਜਾਂਚ_ਮਾਪ - GHST_ਚੌਖਟਾ_TYPE_ਮਾਪ; ++i) {
+		ਚੱਕਰੀ_ਜਾਂਚ = crc8_dvb_s2(ਚੱਕਰੀ_ਜਾਂਚ, ਚੌਖਟਾ.payload[i]);
 	}
 
-	return crc;
+	ਵਾਪਸ ਚੱਕਰੀ_ਜਾਂਚ;
 }
 
-static uint16_t convert_channel_value(unsigned int chan_value)
+ਸਥਿਰ uint16_t convert_channel_ਮੁੱਲ(ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ chan_ਮੁੱਲ)
 {
 	/*
 	 *       RC     PWM
@@ -175,264 +175,264 @@ static uint16_t convert_channel_value(unsigned int chan_value)
 	 * mid  992 -> 1500us
 	 * max 1811 -> 2012us
 	 */
-	static constexpr float scale = (2012.0F - 988.0F) / (1811.0F - 172.0F);
-	static constexpr float offset = 988.0F - (172.0F * scale);
-	float scaled_chan_value = scale * static_cast<float>(chan_value);
-	float scaled_chan_value_with_offset = scaled_chan_value + offset;
-	uint16_t converted_chan_value = static_cast<uint16_t>(scaled_chan_value_with_offset);
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ scale = (2012.0F - 988.0F) / (1811.0F - 172.0F);
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ ਵਿੱਥ = 988.0F - (172.0F * scale);
+	ਦਸ਼ਮਲਵ scaled_chan_ਮੁੱਲ = scale * static_cast<ਦਸ਼ਮਲਵ>(chan_ਮੁੱਲ);
+	ਦਸ਼ਮਲਵ scaled_chan_ਮੁੱਲ_with_ਵਿੱਥ = scaled_chan_ਮੁੱਲ + ਵਿੱਥ;
+	uint16_t converted_chan_ਮੁੱਲ = static_cast<uint16_t>(scaled_chan_ਮੁੱਲ_with_ਵਿੱਥ);
 
-	return converted_chan_value;
+	ਵਾਪਸ converted_chan_ਮੁੱਲ;
 }
 
-static bool ghst_parse_buffer(uint16_t *values, ghstLinkStatistics_t *link_stats, uint16_t *num_values,
+ਸਥਿਰ ਤਾਰਕਿਕ ghst_parse_ਬਫਰ(uint16_t *ਮੁੱਲਾਂ_2, ghstLinkStatistics_t *link_stats, uint16_t *ਅੰਕ_ਮੁੱਲਾਂ,
 			      uint16_t max_channels)
 {
-	uint8_t *ghst_frame_ptr = (uint8_t *)&ghst_frame;
+	uint8_t *ghst_ਚੌਖਟਾ_ptr = (uint8_t *)&ghst_ਚੌਖਟਾ;
 
-	if (parser_state == ghst_parser_state_t::unsynced) {
+	ਜੇ (parser_state == ghst_parser_state_t::unsynced) {
 		// there is no sync yet, try to find an RC packet by searching for a matching frame length and type
-		for (uint32_t i = 1U; i < current_frame_position - 1U; ++i) {
-			if ((ghst_frame_ptr[i + 1U] >= static_cast<uint8_t>(ghstFrameType::frameTypeFirst)) &&
-			    (ghst_frame_ptr[i + 1U] <= static_cast<uint8_t>(ghstFrameType::frameTypeLast))) {
-				if (ghst_frame_ptr[i] == GHST_TYPE_DATA_CRC_SIZE) {
+		ਲਈ (uint32_t i = 1U; i < current_ਚੌਖਟਾ_position - 1U; ++i) {
+			ਜੇ ((ghst_ਚੌਖਟਾ_ptr[i + 1U] >= static_cast<uint8_t>(ghst_ਚੌਖਟਾ_Type::ਚੌਖਟਾ_Type_ਪਹਿਲਾ)) &&
+			    (ghst_ਚੌਖਟਾ_ptr[i + 1U] <= static_cast<uint8_t>(ghst_ਚੌਖਟਾ_Type::ਚੌਖਟਾ_Type_ਆਖਰੀ))) {
+				ਜੇ (ghst_ਚੌਖਟਾ_ptr[i] == GHST_TYPE_ਅੰਕੜੇ_ਚੱਕਰੀ_ਜਾਂਚ_ਮਾਪ) {
 					parser_state = ghst_parser_state_t::synced;
-					uint32_t frame_offset = i - 1U;
-					GHST_VERBOSE("RC channels found at offset %u", frame_offset);
+					uint32_t ਚੌਖਟਾ_ਵਿੱਥ = i - 1U;
+					GHST_VERBOSE("RC channels found at offset %u", ਚੌਖਟਾ_ਵਿੱਥ);
 
 					// move the rest of the buffer to the beginning
-					if (frame_offset != 0U) {
-						memmove(ghst_frame_ptr, ghst_frame_ptr + frame_offset, current_frame_position - frame_offset);
-						current_frame_position -= frame_offset;
+					ਜੇ (ਚੌਖਟਾ_ਵਿੱਥ != 0U) {
+						memmove(ghst_ਚੌਖਟਾ_ptr, ghst_ਚੌਖਟਾ_ptr + ਚੌਖਟਾ_ਵਿੱਥ, current_ਚੌਖਟਾ_position - ਚੌਖਟਾ_ਵਿੱਥ);
+						current_ਚੌਖਟਾ_position -= ਚੌਖਟਾ_ਵਿੱਥ;
 					}
 
-					break;
+					ਰੋਕੋ;
 				}
 			}
 		}
 	}
 
-	if (parser_state != ghst_parser_state_t::synced) {
-		if (current_frame_position >= sizeof(ghst_frame_t)) {
+	ਜੇ (parser_state != ghst_parser_state_t::synced) {
+		ਜੇ (current_ਚੌਖਟਾ_position >= ਆਕਾਰ(ghst_ਚੌਖਟਾ_t)) {
 			// discard most of the data, but keep the last 3 bytes (otherwise we could miss the frame start)
-			current_frame_position = 3U;
+			current_ਚੌਖਟਾ_position = 3U;
 
-			memcpy(ghst_frame_ptr, ghst_frame_ptr + sizeof(ghst_frame_t) - current_frame_position, current_frame_position);
+			ਸਮ੍ਰਿਤੀ_ਨਕਲ(ghst_ਚੌਖਟਾ_ptr, ghst_ਚੌਖਟਾ_ptr + ਆਕਾਰ(ghst_ਚੌਖਟਾ_t) - current_ਚੌਖਟਾ_position, current_ਚੌਖਟਾ_position);
 
 			GHST_VERBOSE("Discarding buffer");
 		}
 
-		return false;
+		ਵਾਪਸ ਝੂਠ;
 	}
 
 
-	if (current_frame_position < 3U) {
+	ਜੇ (current_ਚੌਖਟਾ_position < 3U) {
 		// wait until we have the address, length and type
-		return false;
+		ਵਾਪਸ ਝੂਠ;
 	}
 
 	// now we have at least the header and the type
 
-	const unsigned current_frame_length = ghst_frame.header.length + sizeof(ghst_frame_header_t);
+	ਅਚਲ ਬਿਨਾਨਿਸ਼ਾਨੀ current_ਚੌਖਟਾ_ਲੰਮਾਈ = ghst_ਚੌਖਟਾ.ਸਿਰਲੇਖ.ਲੰਮਾਈ + ਆਕਾਰ(ghst_ਚੌਖਟਾ_ਸਿਰਲੇਖ_t);
 
-	if ((current_frame_length > sizeof(ghst_frame_t)) || (current_frame_length < 4U)) {
+	ਜੇ ((current_ਚੌਖਟਾ_ਲੰਮਾਈ > ਆਕਾਰ(ghst_ਚੌਖਟਾ_t)) || (current_ਚੌਖਟਾ_ਲੰਮਾਈ < 4U)) {
 		// frame too long or bogus (frame length should be longer than 4, at least 1 address, 1 length, 1 type, 1 data, 1 crc)
 		// discard everything and go into unsynced state
-		current_frame_position = 0U;
+		current_ਚੌਖਟਾ_position = 0U;
 		parser_state = ghst_parser_state_t::unsynced;
-		GHST_DEBUG("Frame too long/bogus (%u, type=%u) -> unsync", current_frame_length, ghst_frame.type);
-		return false;
+		GHST_DEBUG("Frame too long/bogus (%u, type=%u) -> unsync", current_ਚੌਖਟਾ_ਲੰਮਾਈ, ghst_ਚੌਖਟਾ.type);
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	if (current_frame_position < current_frame_length) {
+	ਜੇ (current_ਚੌਖਟਾ_position < current_ਚੌਖਟਾ_ਲੰਮਾਈ) {
 		// we do not have the full frame yet -> wait for more data
-		GHST_VERBOSE("waiting for more data (%u < %u)", current_frame_position, current_frame_length);
-		return false;
+		GHST_VERBOSE("waiting for more data (%u < %u)", current_ਚੌਖਟਾ_position, current_ਚੌਖਟਾ_ਲੰਮਾਈ);
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	bool ret = false;
+	ਤਾਰਕਿਕ ret = ਝੂਠ;
 
 	// now we have the full frame
 
-	if ((ghst_frame.type >= static_cast<uint8_t>(ghstFrameType::frameTypeFirst)) &&
-	    (ghst_frame.type <= static_cast<uint8_t>(ghstFrameType::frameTypeLast)) &&
-	    (ghst_frame.header.length == GHST_TYPE_DATA_CRC_SIZE) &&
-	    (ghst_frame.header.device_address == GHST_ADDR_FC)) {
-		const uint8_t crc = ghst_frame.payload[ghst_frame.header.length - 2U];
+	ਜੇ ((ghst_ਚੌਖਟਾ.type >= static_cast<uint8_t>(ghst_ਚੌਖਟਾ_Type::ਚੌਖਟਾ_Type_ਪਹਿਲਾ)) &&
+	    (ghst_ਚੌਖਟਾ.type <= static_cast<uint8_t>(ghst_ਚੌਖਟਾ_Type::ਚੌਖਟਾ_Type_ਆਖਰੀ)) &&
+	    (ghst_ਚੌਖਟਾ.ਸਿਰਲੇਖ.ਲੰਮਾਈ == GHST_TYPE_ਅੰਕੜੇ_ਚੱਕਰੀ_ਜਾਂਚ_ਮਾਪ) &&
+	    (ghst_ਚੌਖਟਾ.ਸਿਰਲੇਖ.device_ਪਤਾ == GHST_ADDR_FC)) {
+		ਅਚਲ uint8_t ਚੱਕਰੀ_ਜਾਂਚ = ghst_ਚੌਖਟਾ.payload[ghst_ਚੌਖਟਾ.ਸਿਰਲੇਖ.ਲੰਮਾਈ - 2U];
 
-		if (crc == ghst_frame_CRC(ghst_frame)) {
-			const ghstPayloadData_t *const rcChannels = (ghstPayloadData_t *)&ghst_frame.payload;
-			*num_values = MIN(max_channels, GHST_MAX_NUM_CHANNELS);
+		ਜੇ (ਚੱਕਰੀ_ਜਾਂਚ == ghst_ਚੌਖਟਾ_ਚੱਕਰੀ_ਜਾਂਚ(ghst_ਚੌਖਟਾ)) {
+			ਅਚਲ ghst_Payload_ਅੰਕੜੇ_t *ਅਚਲ rcChannels = (ghst_Payload_ਅੰਕੜੇ_t *)&ghst_ਚੌਖਟਾ.payload;
+			*ਅੰਕ_ਮੁੱਲਾਂ = MIN(max_channels, GHST_MAX_ਅੰਕ_CHANNELS);
 
 			// all frames contain data from chan1to4
-			if (max_channels > 0U) { values[0] = convert_channel_value(rcChannels->chan1to4.chan1 >> 1U); }
+			ਜੇ (max_channels > 0U) { ਮੁੱਲਾਂ_2[0] = convert_channel_ਮੁੱਲ(rcChannels->chan1to4.chan1 >> 1U); }
 
-			if (max_channels > 1U) { values[1] = convert_channel_value(rcChannels->chan1to4.chan2 >> 1U); }
+			ਜੇ (max_channels > 1U) { ਮੁੱਲਾਂ_2[1] = convert_channel_ਮੁੱਲ(rcChannels->chan1to4.chan2 >> 1U); }
 
-			if (max_channels > 2U) { values[2] = convert_channel_value(rcChannels->chan1to4.chan3 >> 1U); }
+			ਜੇ (max_channels > 2U) { ਮੁੱਲਾਂ_2[2] = convert_channel_ਮੁੱਲ(rcChannels->chan1to4.chan3 >> 1U); }
 
-			if (max_channels > 3U) { values[3] = convert_channel_value(rcChannels->chan1to4.chan4 >> 1U); }
+			ਜੇ (max_channels > 3U) { ਮੁੱਲਾਂ_2[3] = convert_channel_ਮੁੱਲ(rcChannels->chan1to4.chan4 >> 1U); }
 
-			if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType5to8)) {
-				if (max_channels > 4U) { values[4] = convert_channel_value(rcChannels->chanA << 3U); }
+			ਜੇ (ghst_ਚੌਖਟਾ.type == static_cast<uint8_t>(ghst_ਚੌਖਟਾ_Type::ਚੌਖਟਾ_Type5to8)) {
+				ਜੇ (max_channels > 4U) { ਮੁੱਲਾਂ_2[4] = convert_channel_ਮੁੱਲ(rcChannels->chanA << 3U); }
 
-				if (max_channels > 5U) { values[5] = convert_channel_value(rcChannels->chanB << 3U); }
+				ਜੇ (max_channels > 5U) { ਮੁੱਲਾਂ_2[5] = convert_channel_ਮੁੱਲ(rcChannels->chanB << 3U); }
 
-				if (max_channels > 6U) { values[6] = convert_channel_value(rcChannels->chanC << 3U); }
+				ਜੇ (max_channels > 6U) { ਮੁੱਲਾਂ_2[6] = convert_channel_ਮੁੱਲ(rcChannels->chanC << 3U); }
 
-				if (max_channels > 7U) { values[7] = convert_channel_value(rcChannels->chanD << 3U); }
+				ਜੇ (max_channels > 7U) { ਮੁੱਲਾਂ_2[7] = convert_channel_ਮੁੱਲ(rcChannels->chanD << 3U); }
 
-			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType9to12)) {
-				if (max_channels > 8U) { values[8] = convert_channel_value(rcChannels->chanA << 3U); }
+			} ਨਹੀਂਤਾਂ ਜੇ (ghst_ਚੌਖਟਾ.type == static_cast<uint8_t>(ghst_ਚੌਖਟਾ_Type::ਚੌਖਟਾ_Type9to12)) {
+				ਜੇ (max_channels > 8U) { ਮੁੱਲਾਂ_2[8] = convert_channel_ਮੁੱਲ(rcChannels->chanA << 3U); }
 
-				if (max_channels > 9U) { values[9] = convert_channel_value(rcChannels->chanB << 3U); }
+				ਜੇ (max_channels > 9U) { ਮੁੱਲਾਂ_2[9] = convert_channel_ਮੁੱਲ(rcChannels->chanB << 3U); }
 
-				if (max_channels > 10U) { values[10] = convert_channel_value(rcChannels->chanC << 3U); }
+				ਜੇ (max_channels > 10U) { ਮੁੱਲਾਂ_2[10] = convert_channel_ਮੁੱਲ(rcChannels->chanC << 3U); }
 
-				if (max_channels > 11U) { values[11] = convert_channel_value(rcChannels->chanD << 3U); }
+				ਜੇ (max_channels > 11U) { ਮੁੱਲਾਂ_2[11] = convert_channel_ਮੁੱਲ(rcChannels->chanD << 3U); }
 
-			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType13to16)) {
-				if (max_channels > 12U) { values[12] = convert_channel_value(rcChannels->chanA << 3U); }
+			} ਨਹੀਂਤਾਂ ਜੇ (ghst_ਚੌਖਟਾ.type == static_cast<uint8_t>(ghst_ਚੌਖਟਾ_Type::ਚੌਖਟਾ_Type13to16)) {
+				ਜੇ (max_channels > 12U) { ਮੁੱਲਾਂ_2[12] = convert_channel_ਮੁੱਲ(rcChannels->chanA << 3U); }
 
-				if (max_channels > 13U) { values[13] = convert_channel_value(rcChannels->chanB << 3U); }
+				ਜੇ (max_channels > 13U) { ਮੁੱਲਾਂ_2[13] = convert_channel_ਮੁੱਲ(rcChannels->chanB << 3U); }
 
-				if (max_channels > 14U) { values[14] = convert_channel_value(rcChannels->chanC << 3U); }
+				ਜੇ (max_channels > 14U) { ਮੁੱਲਾਂ_2[14] = convert_channel_ਮੁੱਲ(rcChannels->chanC << 3U); }
 
-				if (max_channels > 15U) { values[15] = convert_channel_value(rcChannels->chanD << 3U); }
+				ਜੇ (max_channels > 15U) { ਮੁੱਲਾਂ_2[15] = convert_channel_ਮੁੱਲ(rcChannels->chanD << 3U); }
 
-			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameTypeRssi)) {
-				const ghstPayloadRssi_t *const rssiValues = (ghstPayloadRssi_t *)&ghst_frame.payload;
+			} ਨਹੀਂਤਾਂ ਜੇ (ghst_ਚੌਖਟਾ.type == static_cast<uint8_t>(ghst_ਚੌਖਟਾ_Type::ਚੌਖਟਾ_Type_Rssi)) {
+				ਅਚਲ ghstPayloadRssi_t *ਅਚਲ rssi_ਮੁੱਲਾਂ = (ghstPayloadRssi_t *)&ghst_ਚੌਖਟਾ.payload;
 				// TODO: call function for RSSI dBm to percentage conversion for ghost receiver
-				last_link_stats.rssi_pct = spek_dbm_to_percent(static_cast<int8_t>
-							   (rssiValues->rssidBm));	// rssidBm sign inverted (90 = -90dBm)
-				last_link_stats.rssi_dbm = -rssiValues->rssidBm;
-				last_link_stats.link_quality = rssiValues->lq;						// 0 - 100
+				ਆਖਰੀ_link_stats.rssi_pct = spek_dbm_ਮੰਜ਼ਿਲ_percent(static_cast<int8_t>
+							   (rssi_ਮੁੱਲਾਂ->rssidBm));	// rssidBm sign inverted (90 = -90dBm)
+				ਆਖਰੀ_link_stats.rssi_dbm = -rssi_ਮੁੱਲਾਂ->rssidBm;
+				ਆਖਰੀ_link_stats.link_quality = rssi_ਮੁੱਲਾਂ->lq;						// 0 - 100
 
-			} else {
-				GHST_DEBUG("Frame type: %u", ghst_frame.type);
+			} ਨਹੀਂਤਾਂ {
+				GHST_DEBUG("Frame type: %u", ghst_ਚੌਖਟਾ.type);
 			}
 
-			*link_stats = last_link_stats;
+			*link_stats = ਆਖਰੀ_link_stats;
 
-			memcpy(prev_rc_vals, values, sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+			ਸਮ੍ਰਿਤੀ_ਨਕਲ(prev_rc_vals, ਮੁੱਲਾਂ_2, ਆਕਾਰ(uint16_t) * GHST_MAX_ਅੰਕ_CHANNELS);
 
 			GHST_VERBOSE("Got Channels");
 
-			ret = true;
+			ret = ਸੱਚ;
 
-		} else {
+		} ਨਹੀਂਤਾਂ {
 			GHST_DEBUG("CRC check failed");
 		}
 
-	} else {
-		GHST_DEBUG("Got Non-RC frame (len=%u, type=%u)", current_frame_length, ghst_frame.type);
+	} ਨਹੀਂਤਾਂ {
+		GHST_DEBUG("Got Non-RC frame (len=%u, type=%u)", current_ਚੌਖਟਾ_ਲੰਮਾਈ, ghst_ਚੌਖਟਾ.type);
 	}
 
 	// either reset or move the rest of the buffer
-	if (current_frame_position > current_frame_length) {
-		GHST_VERBOSE("Moving buffer (%u > %u)", current_frame_position, current_frame_length);
-		memmove(ghst_frame_ptr, ghst_frame_ptr + current_frame_length, current_frame_position - current_frame_length);
-		current_frame_position -= current_frame_length;
+	ਜੇ (current_ਚੌਖਟਾ_position > current_ਚੌਖਟਾ_ਲੰਮਾਈ) {
+		GHST_VERBOSE("Moving buffer (%u > %u)", current_ਚੌਖਟਾ_position, current_ਚੌਖਟਾ_ਲੰਮਾਈ);
+		memmove(ghst_ਚੌਖਟਾ_ptr, ghst_ਚੌਖਟਾ_ptr + current_ਚੌਖਟਾ_ਲੰਮਾਈ, current_ਚੌਖਟਾ_position - current_ਚੌਖਟਾ_ਲੰਮਾਈ);
+		current_ਚੌਖਟਾ_position -= current_ਚੌਖਟਾ_ਲੰਮਾਈ;
 
-	} else {
-		current_frame_position = 0U;
+	} ਨਹੀਂਤਾਂ {
+		current_ਚੌਖਟਾ_position = 0U;
 	}
 
-	return ret;
+	ਵਾਪਸ ret;
 }
 
 /**
  * write an uint8_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint8_t(uint8_t *buf, int &offset, uint8_t value)
+ਸਥਿਰ ਸਤਰਅੰਦਰ ਖਾਲੀ write_uint8_t(uint8_t *buf, ਪੂਰਨ &ਵਿੱਥ, uint8_t value)
 {
-	buf[offset++] = value;
+	buf[ਵਿੱਥ++] = value;
 }
 
 /**
  * write an uint16_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint16_t(uint8_t *buf, int &offset, uint16_t value)
+ਸਥਿਰ ਸਤਰਅੰਦਰ ਖਾਲੀ write_uint16_t(uint8_t *buf, ਪੂਰਨ &ਵਿੱਥ, uint16_t value)
 {
-	buf[offset] = value & 0xFFU;
-	buf[offset + 1] = value >> 8U;
-	offset += 2;
+	buf[ਵਿੱਥ] = value & 0xFFU;
+	buf[ਵਿੱਥ + 1] = value >> 8U;
+	ਵਿੱਥ += 2;
 }
 
 /**
  * write an uint32_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint32_t(uint8_t *buf, int &offset, uint32_t value)
+ਸਥਿਰ ਸਤਰਅੰਦਰ ਖਾਲੀ write_uint32_t(uint8_t *buf, ਪੂਰਨ &ਵਿੱਥ, uint32_t value)
 {
 	// Little Endian
-	buf[offset] = value & 0xFFU;
-	buf[offset + 1] = (value & 0xFF00) >> 8U;
-	buf[offset + 2] = (value & 0xFF0000) >> 16U;
-	buf[offset + 3] = (value & 0xFF000000) >> 24U;
-	offset += 4;
+	buf[ਵਿੱਥ] = value & 0xFFU;
+	buf[ਵਿੱਥ + 1] = (value & 0xFF00) >> 8U;
+	buf[ਵਿੱਥ + 2] = (value & 0xFF0000) >> 16U;
+	buf[ਵਿੱਥ + 3] = (value & 0xFF000000) >> 24U;
+	ਵਿੱਥ += 4;
 }
 
 /**
  * write frame header
  */
-static inline void write_frame_header(uint8_t *buf, int &offset, ghstTelemetryType type, uint8_t payload_size)
+ਸਥਿਰ ਸਤਰਅੰਦਰ ਖਾਲੀ write_ਚੌਖਟਾ_ਸਿਰਲੇਖ(uint8_t *buf, ਪੂਰਨ &ਵਿੱਥ, ghstTelemetryType type, uint8_t payload_ਮਾਪ)
 {
-	write_uint8_t(buf, offset, static_cast<uint8_t>(ghstAddress::rxAddress));
-	write_uint8_t(buf, offset, payload_size + GHST_FRAME_CRC_SIZE + GHST_FRAME_TYPE_SIZE);
-	write_uint8_t(buf, offset, static_cast<uint8_t>(type));
+	write_uint8_t(buf, ਵਿੱਥ, static_cast<uint8_t>(ghst_ਪਤਾ::rx_ਪਤਾ));
+	write_uint8_t(buf, ਵਿੱਥ, payload_ਮਾਪ + GHST_ਚੌਖਟਾ_ਚੱਕਰੀ_ਜਾਂਚ_ਮਾਪ + GHST_ਚੌਖਟਾ_TYPE_ਮਾਪ);
+	write_uint8_t(buf, ਵਿੱਥ, static_cast<uint8_t>(type));
 }
 
 /**
  * write frame CRC
  */
-static inline void write_frame_crc(uint8_t *buf, int &offset, int buf_size)
+ਸਥਿਰ ਸਤਰਅੰਦਰ ਖਾਲੀ write_ਚੌਖਟਾ_ਚੱਕਰੀ_ਜਾਂਚ(uint8_t *buf, ਪੂਰਨ &ਵਿੱਥ, ਪੂਰਨ buf_ਮਾਪ)
 {
-	write_uint8_t(buf, offset, crc8_dvb_s2_buf(buf + 2U, buf_size - 3));
+	write_uint8_t(buf, ਵਿੱਥ, crc8_dvb_s2_buf(buf + 2U, buf_ਮਾਪ - 3));
 }
 
-bool ghst_send_telemetry_battery_status(int uart_fd, uint16_t voltage_in_10mV,
-					uint16_t current_in_10mA, uint16_t fuel_in_10mAh)
+ਤਾਰਕਿਕ ghst_send_telemetry_battery_ਸਥਿਤੀ(ਪੂਰਨ uart_fd, uint16_t voltage_ਵਿੱਚ_10m_V,
+					uint16_t current_ਵਿੱਚ_10m_A, uint16_t fuel_ਵਿੱਚ_10m_Ah)
 {
-	uint8_t buf[GHST_FRAME_PAYLOAD_SIZE_TELEMETRY + 4U]; // address, frame length, type, crc
-	int offset = 0;
-	write_frame_header(buf, offset, ghstTelemetryType::batteryPack, GHST_FRAME_PAYLOAD_SIZE_TELEMETRY);
-	write_uint16_t(buf, offset, voltage_in_10mV);
-	write_uint16_t(buf, offset, current_in_10mA);
-	write_uint16_t(buf, offset, fuel_in_10mAh);
-	write_uint8_t(buf, offset, 0x00U); // empty
-	write_uint8_t(buf, offset, 0x00U); // empty
-	write_uint8_t(buf, offset, 0x00U); // empty
-	write_uint8_t(buf, offset, 0x00U); // empty
-	write_frame_crc(buf, offset, sizeof(buf));
+	uint8_t buf[GHST_ਚੌਖਟਾ_PAYLOAD_ਮਾਪ_TELEMETRY + 4U]; // address, frame length, type, crc
+	ਪੂਰਨ ਵਿੱਥ = 0;
+	write_ਚੌਖਟਾ_ਸਿਰਲੇਖ(buf, ਵਿੱਥ, ghstTelemetryType::batteryPack, GHST_ਚੌਖਟਾ_PAYLOAD_ਮਾਪ_TELEMETRY);
+	write_uint16_t(buf, ਵਿੱਥ, voltage_ਵਿੱਚ_10m_V);
+	write_uint16_t(buf, ਵਿੱਥ, current_ਵਿੱਚ_10m_A);
+	write_uint16_t(buf, ਵਿੱਥ, fuel_ਵਿੱਚ_10m_Ah);
+	write_uint8_t(buf, ਵਿੱਥ, 0x00U); //ਖਾਲੀ_ਥਾਵਾਂ
+	write_uint8_t(buf, ਵਿੱਥ, 0x00U); //ਖਾਲੀ_ਥਾਵਾਂ
+	write_uint8_t(buf, ਵਿੱਥ, 0x00U); //ਖਾਲੀ_ਥਾਵਾਂ
+	write_uint8_t(buf, ਵਿੱਥ, 0x00U); //ਖਾਲੀ_ਥਾਵਾਂ
+	write_ਚੌਖਟਾ_ਚੱਕਰੀ_ਜਾਂਚ(buf, ਵਿੱਥ, ਆਕਾਰ(buf));
 
-	return write(uart_fd, buf, offset) == offset;
+	ਵਾਪਸ ਲਿਖ(uart_fd, buf, ਵਿੱਥ) == ਵਿੱਥ;
 }
 
-bool ghst_send_telemetry_gps1_status(int uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude)
+ਤਾਰਕਿਕ ghst_send_telemetry_gps1_ਸਥਿਤੀ(ਪੂਰਨ uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude)
 {
-	uint8_t buf[GHST_FRAME_PAYLOAD_SIZE_TELEMETRY + 4U]; // address, frame length, type, crc
-	int offset = 0;
-	write_frame_header(buf, offset, ghstTelemetryType::gpsPrimary, GHST_FRAME_PAYLOAD_SIZE_TELEMETRY);
-	write_uint32_t(buf, offset, latitude);
-	write_uint32_t(buf, offset, longitude);
-	write_uint16_t(buf, offset, altitude);
-	write_frame_crc(buf, offset, sizeof(buf));
+	uint8_t buf[GHST_ਚੌਖਟਾ_PAYLOAD_ਮਾਪ_TELEMETRY + 4U]; // address, frame length, type, crc
+	ਪੂਰਨ ਵਿੱਥ = 0;
+	write_ਚੌਖਟਾ_ਸਿਰਲੇਖ(buf, ਵਿੱਥ, ghstTelemetryType::gpsPrimary, GHST_ਚੌਖਟਾ_PAYLOAD_ਮਾਪ_TELEMETRY);
+	write_uint32_t(buf, ਵਿੱਥ, latitude);
+	write_uint32_t(buf, ਵਿੱਥ, longitude);
+	write_uint16_t(buf, ਵਿੱਥ, altitude);
+	write_ਚੌਖਟਾ_ਚੱਕਰੀ_ਜਾਂਚ(buf, ਵਿੱਥ, ਆਕਾਰ(buf));
 
-	return write(uart_fd, buf, offset) == offset;
+	ਵਾਪਸ ਲਿਖ(uart_fd, buf, ਵਿੱਥ) == ਵਿੱਥ;
 }
 
-bool ghst_send_telemetry_gps2_status(int uart_fd, uint16_t ground_speed, uint16_t ground_course, uint8_t numSats,
+ਤਾਰਕਿਕ ghst_send_telemetry_gps2_ਸਥਿਤੀ(ਪੂਰਨ uart_fd, uint16_t ground_ਰਫਤਾਰ, uint16_t ground_ਕੋਰਸ, uint8_t ਅੰਕ_Sats,
 				     uint16_t home_dist, uint16_t home_dir, uint8_t flags)
 {
-	uint8_t buf[GHST_FRAME_PAYLOAD_SIZE_TELEMETRY + 4U]; // address, frame length, type, crc
-	int offset = 0;
-	write_frame_header(buf, offset, ghstTelemetryType::gpsSecondary, GHST_FRAME_PAYLOAD_SIZE_TELEMETRY);
-	write_uint16_t(buf, offset, ground_speed);
-	write_uint16_t(buf, offset, ground_course);
-	write_uint8_t(buf, offset, numSats);
-	write_uint16_t(buf, offset, home_dist);
-	write_uint16_t(buf, offset, home_dir);
-	write_uint8_t(buf, offset, flags);
-	write_frame_crc(buf, offset, sizeof(buf));
+	uint8_t buf[GHST_ਚੌਖਟਾ_PAYLOAD_ਮਾਪ_TELEMETRY + 4U]; // address, frame length, type, crc
+	ਪੂਰਨ ਵਿੱਥ = 0;
+	write_ਚੌਖਟਾ_ਸਿਰਲੇਖ(buf, ਵਿੱਥ, ghstTelemetryType::gpsSecondary, GHST_ਚੌਖਟਾ_PAYLOAD_ਮਾਪ_TELEMETRY);
+	write_uint16_t(buf, ਵਿੱਥ, ground_ਰਫਤਾਰ);
+	write_uint16_t(buf, ਵਿੱਥ, ground_ਕੋਰਸ);
+	write_uint8_t(buf, ਵਿੱਥ, ਅੰਕ_Sats);
+	write_uint16_t(buf, ਵਿੱਥ, home_dist);
+	write_uint16_t(buf, ਵਿੱਥ, home_dir);
+	write_uint8_t(buf, ਵਿੱਥ, flags);
+	write_ਚੌਖਟਾ_ਚੱਕਰੀ_ਜਾਂਚ(buf, ਵਿੱਥ, ਆਕਾਰ(buf));
 
-	return write(uart_fd, buf, offset) == offset;
+	ਵਾਪਸ ਲਿਖ(uart_fd, buf, ਵਿੱਥ) == ਵਿੱਥ;
 }

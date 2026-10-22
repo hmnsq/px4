@@ -31,64 +31,64 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "FunctionProviderBase.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/manual_control_setpoint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/manual_control_setpoint.h>
 
 /**
  * Functions: RC_Roll .. RCAUX_Max
  */
-class FunctionManualRC : public FunctionProviderBase
+ਵਰਗ FunctionManualRC : ਜਨਤਕ Function_Provider_ਅਧਾਰ
 {
-public:
+ਜਨਤਕ:
 	FunctionManualRC()
 	{
-		resetAllToDisarmedValue();
+		reset_All_ਮੰਜ਼ਿਲ_Disarmed_ਮੁੱਲ();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionManualRC(); }
+	ਸਥਿਰ Function_Provider_ਅਧਾਰ *allocate(ਅਚਲ Context &context) { ਵਾਪਸ ਨਵਾਂ FunctionManualRC(); }
 
-	void update() override
+	ਖਾਲੀ update() override
 	{
 		manual_control_setpoint_s manual_control_setpoint;
 
-		if (_topic.update(&manual_control_setpoint)) {
-			if (manual_control_setpoint.valid) {
-				_data[0] = manual_control_setpoint.roll;
-				_data[1] = manual_control_setpoint.pitch;
-				_data[2] = manual_control_setpoint.throttle;
-				_data[3] = manual_control_setpoint.yaw;
-				_data[4] = manual_control_setpoint.flaps;
-				_data[5] = manual_control_setpoint.aux1;
-				_data[6] = manual_control_setpoint.aux2;
-				_data[7] = manual_control_setpoint.aux3;
-				_data[8] = manual_control_setpoint.aux4;
-				_data[9] = manual_control_setpoint.aux5;
-				_data[10] = manual_control_setpoint.aux6;
+		ਜੇ (_topic.update(&manual_control_setpoint)) {
+			ਜੇ (manual_control_setpoint.valid) {
+				ਅੰਕੜੇ_3[0] = manual_control_setpoint.roll;
+				ਅੰਕੜੇ_3[1] = manual_control_setpoint.pitch;
+				ਅੰਕੜੇ_3[2] = manual_control_setpoint.throttle;
+				ਅੰਕੜੇ_3[3] = manual_control_setpoint.yaw;
+				ਅੰਕੜੇ_3[4] = manual_control_setpoint.flaps;
+				ਅੰਕੜੇ_3[5] = manual_control_setpoint.aux1;
+				ਅੰਕੜੇ_3[6] = manual_control_setpoint.aux2;
+				ਅੰਕੜੇ_3[7] = manual_control_setpoint.aux3;
+				ਅੰਕੜੇ_3[8] = manual_control_setpoint.aux4;
+				ਅੰਕੜੇ_3[9] = manual_control_setpoint.aux5;
+				ਅੰਕੜੇ_3[10] = manual_control_setpoint.aux6;
 
-			} else {
-				resetAllToDisarmedValue();
+			} ਨਹੀਂਤਾਂ {
+				reset_All_ਮੰਜ਼ਿਲ_Disarmed_ਮੁੱਲ();
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::RC_Roll]; }
+	ਦਸ਼ਮਲਵ value(OutputFunction func) override { ਵਾਪਸ ਅੰਕੜੇ_3[(ਪੂਰਨ)func - (ਪੂਰਨ)OutputFunction::RC_Roll]; }
 
-private:
-	static constexpr int num_data_points = 11;
+ਨਿਜੀ:
+	ਸਥਿਰ constexpr ਪੂਰਨ ਅੰਕ_ਅੰਕੜੇ_points = 11;
 
-	void resetAllToDisarmedValue()
+	ਖਾਲੀ reset_All_ਮੰਜ਼ਿਲ_Disarmed_ਮੁੱਲ()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
-			_data[i] = NAN;
+		ਲਈ (ਪੂਰਨ i = 0; i < ਅੰਕ_ਅੰਕੜੇ_points; ++i) {
+			ਅੰਕੜੇ_3[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
+	static_assert(ਅੰਕ_ਅੰਕੜੇ_points == (ਪੂਰਨ)OutputFunction::RC_AUXMax - (ਪੂਰਨ)OutputFunction::RC_Roll + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _topic{ORB_ID(manual_control_setpoint)};
-	float _data[num_data_points] {};
+	ਦਸ਼ਮਲਵ ਅੰਕੜੇ_3[ਅੰਕ_ਅੰਕੜੇ_points] {};
 };

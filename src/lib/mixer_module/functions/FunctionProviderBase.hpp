@@ -31,45 +31,45 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <limits.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <limits.h>
 
-#include <mixer_module/output_functions.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mixer_module/output_functions.hpp>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionCallback.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/Subscription.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/SubscriptionCallback.hpp>
 
-#include <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
 
-class FunctionProviderBase
+ਵਰਗ Function_Provider_ਅਧਾਰ
 {
-public:
-	struct Context {
-		px4::WorkItem &work_item;
-		const float &thrust_factor;
+ਜਨਤਕ:
+	ਬਣਤਰ Context {
+		px4::Work_ਵਸਤੂ &work_ਵਸਤੂ;
+		ਅਚਲ ਦਸ਼ਮਲਵ &thrust_ਗੁਣਕ_2;
 	};
 
-	FunctionProviderBase() = default;
-	virtual ~FunctionProviderBase() = default;
+	Function_Provider_ਅਧਾਰ() = ਮੂਲ;
+	ਆਭਾਸੀ ~Function_Provider_ਅਧਾਰ() = ਮੂਲ;
 
-	virtual void update() = 0;
+	ਆਭਾਸੀ ਖਾਲੀ update() = 0;
 
 	/**
 	 * Get the current output value for a given function
 	 * @return NAN (=disarmed) or value in range [-1, 1]
 	 */
-	virtual float value(OutputFunction func) = 0;
+	ਆਭਾਸੀ ਦਸ਼ਮਲਵ value(OutputFunction func) = 0;
 
-	virtual float defaultFailsafeValue(OutputFunction func) const { return NAN; }
-	virtual bool allowPrearmControl() const { return true; }
+	ਆਭਾਸੀ ਦਸ਼ਮਲਵ default_Failsafe_ਮੁੱਲ(OutputFunction func) ਅਚਲ { ਵਾਪਸ NAN; }
+	ਆਭਾਸੀ ਤਾਰਕਿਕ allowPrearmControl() ਅਚਲ { ਵਾਪਸ ਸੱਚ; }
 
-	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { return nullptr; }
+	ਆਭਾਸੀ uORB::Subscription_Callback_Work_ਵਸਤੂ *subscriptionCallback() { ਵਾਪਸ ਖਾਲੀ_ਸੂਚਕ; }
 
-	virtual bool getLatestSampleTimestamp(hrt_abstime &t) const { return false; }
+	ਆਭਾਸੀ ਤਾਰਕਿਕ getLatestSampleTimestamp(hrt_abstime &t) ਅਚਲ { ਵਾਪਸ ਝੂਠ; }
 
 	/**
 	 * Check whether the output (motor) is configured to be reversible
 	 */
-	virtual bool reversible(OutputFunction func) const { return false; }
+	ਆਭਾਸੀ ਤਾਰਕਿਕ reversible(OutputFunction func) ਅਚਲ { ਵਾਪਸ ਝੂਠ; }
 };

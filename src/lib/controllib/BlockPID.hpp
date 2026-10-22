@@ -37,60 +37,60 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <assert.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <time.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/test/test.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/Block.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "matrix/math.hpp"
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
 /**
  * A proportional-integral-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPID: public SuperBlock
+ਵਰਗ __EXPORT ਖੰਡ_PID: ਜਨਤਕ Super_ਖੰਡ
 {
-public:
+ਜਨਤਕ:
 // methods
-	BlockPID(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kI(this, "I"),
-		_kD(this, "D")
+	ਖੰਡ_PID(Super_ਖੰਡ *ਮਾਪਾ, ਅਚਲ ਅੱਖਰ *name) :
+		Super_ਖੰਡ(ਮਾਪਾ, name),
+		_integral(ਇਹ, "I"),
+		_derivative(ਇਹ, "D"),
+		_kP(ਇਹ, "P"),
+		_kI(ਇਹ, "I"),
+		_kD(ਇਹ, "D")
 	{}
-	virtual ~BlockPID() = default;
-	float update(float input)
+	ਆਭਾਸੀ ~ਖੰਡ_PID() = ਮੂਲ;
+	ਦਸ਼ਮਲਵ update(ਦਸ਼ਮਲਵ ਨਿਵੇਸ਼)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input) +
-		       getKD() * getDerivative().update(input);
+		ਵਾਪਸ getKP() * ਨਿਵੇਸ਼ +
+		       getKI() * getIntegral().update(ਨਿਵੇਸ਼) +
+		       getKD() * getDerivative().update(ਨਿਵੇਸ਼);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	float getKD() { return _kD.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
-// attributes
-	BlockIntegral _integral;
-	BlockDerivative _derivative;
-	control::BlockParamFloat _kP;
-	control::BlockParamFloat _kI;
-	control::BlockParamFloat _kD;
+	ਦਸ਼ਮਲਵ getKP() { ਵਾਪਸ _kP.get(); }
+	ਦਸ਼ਮਲਵ getKI() { ਵਾਪਸ _kI.get(); }
+	ਦਸ਼ਮਲਵ getKD() { ਵਾਪਸ _kD.get(); }
+	ਖੰਡ_Integral &getIntegral() { ਵਾਪਸ _integral; }
+	ਖੰਡ_Derivative &getDerivative() { ਵਾਪਸ _derivative; }
+ਨਿਜੀ:
+//ਗੁਣ
+	ਖੰਡ_Integral _integral;
+	ਖੰਡ_Derivative _derivative;
+	control::ਖੰਡ_Param_Float _kP;
+	control::ਖੰਡ_Param_Float _kI;
+	control::ਖੰਡ_Param_Float _kD;
 };
 
 } // namespace control

@@ -56,62 +56,62 @@
  *     https://tstastny.github.io/pdf/tstastny_phd_thesis_wcover.pdf
  */
 
-#ifndef PX4_DIRECTIONALGUIDANCE_HPP
-#define PX4_DIRECTIONALGUIDANCE_HPP
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ PX4_DIRECTIONALGUIDANCE_HPP
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PX4_DIRECTIONALGUIDANCE_HPP
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/mathlib/mathlib.h>
 
-struct DirectionalGuidanceOutput {
-	float course_setpoint{NAN};
-	float lateral_acceleration_feedforward{NAN};
+ਬਣਤਰ DirectionalGuidanceOutput {
+	ਦਸ਼ਮਲਵ ਕੋਰਸ_setpoint{NAN};
+	ਦਸ਼ਮਲਵ lateral_acceleration_feedforward{NAN};
 };
 
-class DirectionalGuidance
+ਵਰਗ DirectionalGuidance
 {
-public:
+ਜਨਤਕ:
 
 	DirectionalGuidance();
 
-	DirectionalGuidanceOutput guideToPath(const matrix::Vector2f &curr_pos_local, const matrix::Vector2f &ground_vel,
-					      const matrix::Vector2f &wind_vel,
-					      const matrix::Vector2f &unit_path_tangent, const matrix::Vector2f &position_on_path,
-					      const float path_curvature);
+	DirectionalGuidanceOutput guide_ਮੰਜ਼ਿਲ_ਰਸਤਾ(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &curr_pos_local, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &ground_vel,
+					      ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &wind_vel,
+					      ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &unit_ਰਸਤਾ_tangent, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &position_on_ਰਸਤਾ,
+					      ਅਚਲ ਦਸ਼ਮਲਵ ਰਸਤਾ_curvature);
 	/*
 	 * Set the nominal controller period [s].
 	 */
-	void setPeriod(float period) { period_ = math::max(period, NPFG_EPSILON); }
+	ਖਾਲੀ ਸੈੱਟ_Period(ਦਸ਼ਮਲਵ period) { period_ = math::max(period, NPFG_EPSILON); }
 
 	/*
 	 * Set the nominal controller damping ratio.
 	 */
-	void setDamping(float damping) { damping_ = math::constrain(damping, NPFG_EPSILON, 1.0f); }
+	ਖਾਲੀ ਸੈੱਟ_Damping(ਦਸ਼ਮਲਵ damping) { damping_ = math::constrain(damping, NPFG_EPSILON, 1.0f); }
 
 	/*
 	 * Enable automatic lower bounding of the user set controller period.
 	 */
-	void enablePeriodLB(const bool en) { en_period_lb_ = en; }
+	ਖਾਲੀ enablePeriodLB(ਅਚਲ ਤਾਰਕਿਕ en) { en_period_lb_ = en; }
 
 	/*
 	 * Enable automatic adaptation of the user set controller period for track keeping
 	 * performance.
 	 */
-	void enablePeriodUB(const bool en) { en_period_ub_ = en; }
+	ਖਾਲੀ enablePeriodUB(ਅਚਲ ਤਾਰਕਿਕ en) { en_period_ub_ = en; }
 
 
 	/*
 	 * Set the autopilot roll response time constant [s].
 	 */
-	void setRollTimeConst(float tc) { roll_time_const_ = tc; }
+	ਖਾਲੀ ਸੈੱਟ_Roll_ਸਮਾਂ_Const(ਦਸ਼ਮਲਵ tc) { roll_ਸਮਾਂ_const = tc; }
 
 	/*
 	* Set the switch distance multiplier.
 	*/
-	void setSwitchDistanceMultiplier(float mult) { switch_distance_multiplier_ = math::max(mult, 0.1f); }
+	ਖਾਲੀ ਸੈੱਟ_Switch_ਦੂਰੀ_Multiplier(ਦਸ਼ਮਲਵ mult) { switch_ਦੂਰੀ_multiplier = math::max(mult, 0.1f); }
 
 	/*
 	 * Set the period safety factor.
 	 */
-	void setPeriodSafetyFactor(float sf) { period_safety_factor_ = math::max(sf, 1.0f); }
+	ਖਾਲੀ ਸੈੱਟ_Period_Safety_ਗੁਣਕ(ਦਸ਼ਮਲਵ sf) { period_safety_ਗੁਣਕ = math::max(sf, 1.0f); }
 	/*
 	 * [Copied directly from ECL_L1_Pos_Controller]
 	 *
@@ -122,56 +122,56 @@ public:
 	 *
 	 * @param[in] wp_radius The switching radius the waypoint has set.
 	 */
-	float switchDistance(float wp_radius) const;
+	ਦਸ਼ਮਲਵ switch_ਦੂਰੀ(ਦਸ਼ਮਲਵ wp_radius) ਅਚਲ;
 
-	float getCourseSetpoint() const { return course_sp_; }
-	float getLateralAccelerationSetpoint() const { return lateral_accel_ff_; }
-	float getBearingFeasibility() const { return feas_; }
-	float getBearingFeasibilityOnTrack() const { return feas_on_track_; }
-	float getSignedTrackError() const { return signed_track_error_; }
-	float getTrackErrorBound() const { return track_error_bound_; }
-	float getAdaptedPeriod() const { return adapted_period_; }
+	ਦਸ਼ਮਲਵ get_ਕੋਰਸ_Setpoint() ਅਚਲ { ਵਾਪਸ ਕੋਰਸ_sp; }
+	ਦਸ਼ਮਲਵ getLateralAccelerationSetpoint() ਅਚਲ { ਵਾਪਸ lateral_accel_ff_; }
+	ਦਸ਼ਮਲਵ getBearingFeasibility() ਅਚਲ { ਵਾਪਸ feas_; }
+	ਦਸ਼ਮਲਵ getBearingFeasibilityOnTrack() ਅਚਲ { ਵਾਪਸ feas_on_track_; }
+	ਦਸ਼ਮਲਵ getSignedTrackError() ਅਚਲ { ਵਾਪਸ signed_track_error_; }
+	ਦਸ਼ਮਲਵ getTrackErrorBound() ਅਚਲ { ਵਾਪਸ track_error_bound_; }
+	ਦਸ਼ਮਲਵ getAdaptedPeriod() ਅਚਲ { ਵਾਪਸ adapted_period_; }
 
-private:
-	static constexpr float NPFG_EPSILON = 1.0e-6; // small number *bigger than machine epsilon
-	static constexpr float MIN_RADIUS = 0.5f; // minimum effective radius (avoid singularities) [m]
-	static constexpr float AIRSPEED_BUFFER = 1.5f; // airspeed buffer [m/s] (must be > 0)
+ਨਿਜੀ:
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ NPFG_EPSILON = 1.0e-6; // small number *bigger than machine epsilon
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ MIN_RADIUS = 0.5f; // minimum effective radius (avoid singularities) [m]
+	ਸਥਿਰ constexpr ਦਸ਼ਮਲਵ AIRSPEED_ਬਫਰ = 1.5f; // airspeed buffer [m/s] (must be > 0)
 
-	float period_{10.0f}; // nominal (desired) period -- user defined [s]
-	float damping_{0.7071f}; // nominal (desired) damping ratio -- user defined
-	float adapted_period_{10.0f}; // auto-adapted period (if stability bounds enabled) [s]
+	ਦਸ਼ਮਲਵ period_{10.0f}; // nominal (desired) period -- user defined [s]
+	ਦਸ਼ਮਲਵ damping_{0.7071f}; // nominal (desired) damping ratio -- user defined
+	ਦਸ਼ਮਲਵ adapted_period_{10.0f}; // auto-adapted period (if stability bounds enabled) [s]
 
 	/*
 	 * user defined guidance settings
 	 */
 
 	// guidance options
-	bool en_period_lb_{true}; // enables automatic lower bound constraints on controller period
-	bool en_period_ub_{true}; // enables automatic upper bound constraints on controller period (remains disabled if lower bound is disabled)
+	ਤਾਰਕਿਕ en_period_lb_{ਸੱਚ}; // enables automatic lower bound constraints on controller period
+	ਤਾਰਕਿਕ en_period_ub_{ਸੱਚ}; // enables automatic upper bound constraints on controller period (remains disabled if lower bound is disabled)
 
 	// guidance settings
-	float roll_time_const_{0.0f}; // autopilot roll response time constant [s]
+	ਦਸ਼ਮਲਵ roll_ਸਮਾਂ_const{0.0f}; // autopilot roll response time constant [s]
 
 	// guidance parameters
-	float switch_distance_multiplier_{0.32f}; // a value multiplied by the track error boundary resulting in a lower switch distance
+	ਦਸ਼ਮਲਵ switch_ਦੂਰੀ_multiplier{0.32f}; // a value multiplied by the track error boundary resulting in a lower switch distance
 	// ^as the bearing angle changes quadratically (instead of linearly as in L1), the time constant (automatically calculated for on track stability) proportional track error boundary typically over estimates the required switching distance
-	float period_safety_factor_{1.5f}; // multiplied by the minimum period for conservative lower bound
+	ਦਸ਼ਮਲਵ period_safety_ਗੁਣਕ{1.5f}; // multiplied by the minimum period for conservative lower bound
 
 	/*
 	* internal guidance states
 	*/
 
 	//bearing feasibility
-	float feas_{1.0f}; // continous representation of bearing feasibility in [0,1] (0=infeasible, 1=feasible)
-	float feas_on_track_{1.0f}; // continuous bearing feasibility "on track"
+	ਦਸ਼ਮਲਵ feas_{1.0f}; // continous representation of bearing feasibility in [0,1] (0=infeasible, 1=feasible)
+	ਦਸ਼ਮਲਵ feas_on_track_{1.0f}; // continuous bearing feasibility "on track"
 
 	// track proximity
-	float track_error_bound_{212.13f}; // the current ground speed dependent track error bound [m]
-	float track_proximity_{0.0f}; // value in [0,1] indicating proximity to track, 0 = at track error boundary or beyond, 1 = on track
-	float signed_track_error_{0.0f}; // signed track error [m]
-	matrix::Vector2f bearing_vec_{matrix::Vector2f{1.0f, 0.0f}}; // bearing unit vector
-	float course_sp_{0.f}; // course setpoint [rad]
-	float lateral_accel_ff_{0.f}; // lateral acceleration feedforward [m/s^2]
+	ਦਸ਼ਮਲਵ track_error_bound_{212.13f}; // the current ground speed dependent track error bound [m]
+	ਦਸ਼ਮਲਵ track_proximity_{0.0f}; // value in [0,1] indicating proximity to track, 0 = at track error boundary or beyond, 1 = on track
+	ਦਸ਼ਮਲਵ signed_track_error_{0.0f}; // signed track error [m]
+	ਮੈਟ੍ਰਿਕਸ::Vector2f bearing_vec_{ਮੈਟ੍ਰਿਕਸ::Vector2f{1.0f, 0.0f}}; // bearing unit vector
+	ਦਸ਼ਮਲਵ ਕੋਰਸ_sp{0.f}; // course setpoint [rad]
+	ਦਸ਼ਮਲਵ lateral_accel_ff_{0.f}; // lateral acceleration feedforward [m/s^2]
 
 	/*
 	 * Cacluates a continuous representation of the bearing feasibility from [0,1].
@@ -183,8 +183,8 @@ private:
 	 * @param[in] wind_speed Wind speed [m/s]
 	 * @return bearing feasibility
 	 */
-	float bearingFeasibility(float wind_cross_bearing, const float wind_dot_bearing, const float airspeed,
-				 const float wind_speed) const;
+	ਦਸ਼ਮਲਵ bearingFeasibility(ਦਸ਼ਮਲਵ wind_cross_bearing, ਅਚਲ ਦਸ਼ਮਲਵ wind_dot_bearing, ਅਚਲ ਦਸ਼ਮਲਵ airspeed,
+				 ਅਚਲ ਦਸ਼ਮਲਵ wind_ਰਫਤਾਰ) ਅਚਲ;
 	/*
 	 * Adapts the controller period considering user defined inputs, current flight
 	 * condition, path properties, and stability bounds.
@@ -200,9 +200,9 @@ private:
 	 * @param[in] feas_on_track Bearing feasibility on track at the closest point
 	 * @return Adapted period [s]
 	 */
-	float adaptPeriod(const float ground_speed, const float airspeed, const float wind_speed,
-			  const float track_error, const float path_curvature, const matrix::Vector2f &wind_vel,
-			  const matrix::Vector2f &unit_path_tangent, const float feas_on_track) const;
+	ਦਸ਼ਮਲਵ adaptPeriod(ਅਚਲ ਦਸ਼ਮਲਵ ground_ਰਫਤਾਰ, ਅਚਲ ਦਸ਼ਮਲਵ airspeed, ਅਚਲ ਦਸ਼ਮਲਵ wind_ਰਫਤਾਰ,
+			  ਅਚਲ ਦਸ਼ਮਲਵ track_error, ਅਚਲ ਦਸ਼ਮਲਵ ਰਸਤਾ_curvature, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &wind_vel,
+			  ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &unit_ਰਸਤਾ_tangent, ਅਚਲ ਦਸ਼ਮਲਵ feas_on_track) ਅਚਲ;
 	/*
 	 * Returns normalized (unitless) and constrained track error [0,1].
 	 *
@@ -210,7 +210,7 @@ private:
 	 * @param[in] track_error_bound Track error boundary [m]
 	 * @return Normalized track error
 	 */
-	float normalizedTrackError(const float track_error, const float track_error_bound) const;
+	ਦਸ਼ਮਲਵ normalizedTrackError(ਅਚਲ ਦਸ਼ਮਲਵ track_error, ਅਚਲ ਦਸ਼ਮਲਵ track_error_bound) ਅਚਲ;
 
 	/*
 	 * Cacluates an approximation of the wind factor (see [TODO: include citation]).
@@ -219,7 +219,7 @@ private:
 	 * @param[in] wind_speed Wind speed [m/s]
 	 * @return Non-dimensional wind factor approximation
 	 */
-	float windFactor(const float airspeed, const float wind_speed) const;
+	ਦਸ਼ਮਲਵ wind_ਗੁਣਕ_2(ਅਚਲ ਦਸ਼ਮਲਵ airspeed, ਅਚਲ ਦਸ਼ਮਲਵ wind_ਰਫਤਾਰ) ਅਚਲ;
 
 	/*
 	 * Calculates a theoretical upper bound on the user defined period to maintain
@@ -230,7 +230,7 @@ private:
 	 * @param[in] wind_factor Non-dimensional wind factor (see [TODO: include citation])
 	 * @return Period upper bound [s]
 	 */
-	float periodUpperBound(const float air_turn_rate, const float wind_factor, const float feas_on_track) const;
+	ਦਸ਼ਮਲਵ period_ਉੱਤਲਾ_Bound(ਅਚਲ ਦਸ਼ਮਲਵ air_turn_ਦਰ, ਅਚਲ ਦਸ਼ਮਲਵ wind_ਗੁਣਕ, ਅਚਲ ਦਸ਼ਮਲਵ feas_on_track) ਅਚਲ;
 
 	/*
 	 * Calculates a theoretical lower bound on the user defined period to avoid
@@ -243,7 +243,7 @@ private:
 	 * @param[in] wind_factor Non-dimensional wind factor (see [TODO: include citation])
 	 * @return Period lower bound [s]
 	 */
-	float periodLowerBound(const float air_turn_rate, const float wind_factor, const float feas_on_track) const;
+	ਦਸ਼ਮਲਵ period_ਹੇਠਲਾ_Bound(ਅਚਲ ਦਸ਼ਮਲਵ air_turn_ਦਰ, ਅਚਲ ਦਸ਼ਮਲਵ wind_ਗੁਣਕ, ਅਚਲ ਦਸ਼ਮਲਵ feas_on_track) ਅਚਲ;
 
 	/*
 	 * Computes a continous non-dimensional track proximity [0,1] - 0 when the
@@ -253,7 +253,7 @@ private:
 	 *            from the unit track error vector [rad]
 	 * @return Track proximity
 	 */
-	float trackProximity(const float look_ahead_ang) const;
+	ਦਸ਼ਮਲਵ trackProximity(ਅਚਲ ਦਸ਼ਮਲਵ look_ahead_ang) ਅਚਲ;
 
 	/*
 	 * Calculates a ground speed modulated track error bound under which the
@@ -264,7 +264,7 @@ private:
 	 * @param[in] time_const Controller time constant [s]
 	 * @return Track error boundary [m]
 	 */
-	float trackErrorBound(const float ground_speed, const float time_const) const;
+	ਦਸ਼ਮਲਵ trackErrorBound(ਅਚਲ ਦਸ਼ਮਲਵ ground_ਰਫਤਾਰ, ਅਚਲ ਦਸ਼ਮਲਵ ਸਮਾਂ_const) ਅਚਲ;
 
 	/*
 	 * Calculates the required controller time constant to achieve the desired
@@ -275,7 +275,7 @@ private:
 	 * @param[in] damping Desired system damping ratio
 	 * @return Time constant [s]
 	 */
-	float timeConst(const float period, const float damping) const;
+	ਦਸ਼ਮਲਵ ਸਮਾਂ_Const(ਅਚਲ ਦਸ਼ਮਲਵ period, ਅਚਲ ਦਸ਼ਮਲਵ damping) ਅਚਲ;
 
 	/*
 	 * Cacluates the look ahead angle as a quadratic function of the normalized
@@ -284,7 +284,7 @@ private:
 	 * @param[in] normalized_track_error Normalized track error (track error / track error boundary)
 	 * @return Look ahead angle [rad]
 	 */
-	float lookAheadAngle(const float normalized_track_error) const;
+	ਦਸ਼ਮਲਵ lookAheadAngle(ਅਚਲ ਦਸ਼ਮਲਵ normalized_track_error) ਅਚਲ;
 	/*
 	 * Calculates the bearing vector and track proximity transitioning variable
 	 * from the look-ahead angle mapping.
@@ -297,8 +297,8 @@ private:
 	 *            determined by path normal direction) [m]
 	 * @return Unit bearing vector
 	 */
-	matrix::Vector2f bearingVec(const matrix::Vector2f &unit_path_tangent, const float look_ahead_ang,
-				    const float signed_track_error) const;
+	ਮੈਟ੍ਰਿਕਸ::Vector2f bearingVec(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &unit_ਰਸਤਾ_tangent, ਅਚਲ ਦਸ਼ਮਲਵ look_ahead_ang,
+				    ਅਚਲ ਦਸ਼ਮਲਵ signed_track_error) ਅਚਲ;
 
 	/*
 	 * Projection of the air velocity vector onto the bearing line considering
@@ -308,7 +308,7 @@ private:
 	 * @param[in] wind_cross_bearing 2D cross product of wind velocity and bearing vector [m/s]
 	 * @return Projection of air velocity vector on bearing vector [m/s]
 	 */
-	float projectAirspOnBearing(const float airspeed, const float wind_cross_bearing) const;
+	ਦਸ਼ਮਲਵ projectAirspOnBearing(ਅਚਲ ਦਸ਼ਮਲਵ airspeed, ਅਚਲ ਦਸ਼ਮਲਵ wind_cross_bearing) ਅਚਲ;
 	/*
 	 * Calculates an additional feed-forward lateral acceleration demand considering
 	 * the path curvature.
@@ -324,10 +324,10 @@ private:
 	 * @param[in] path_curvature Path curvature at closest point on track [m^-1]
 	 * @return Feed-forward lateral acceleration command [m/s^2]
 	 */
-	float lateralAccelFF(const matrix::Vector2f &unit_path_tangent, const matrix::Vector2f &ground_vel,
-			     const float wind_dot_upt, const float wind_cross_upt, const float airspeed,
-			     const float wind_speed, const float signed_track_error, const float path_curvature) const;
+	ਦਸ਼ਮਲਵ lateralAccelFF(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &unit_ਰਸਤਾ_tangent, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Vector2f &ground_vel,
+			     ਅਚਲ ਦਸ਼ਮਲਵ wind_dot_upt, ਅਚਲ ਦਸ਼ਮਲਵ wind_cross_upt, ਅਚਲ ਦਸ਼ਮਲਵ airspeed,
+			     ਅਚਲ ਦਸ਼ਮਲਵ wind_ਰਫਤਾਰ, ਅਚਲ ਦਸ਼ਮਲਵ signed_track_error, ਅਚਲ ਦਸ਼ਮਲਵ ਰਸਤਾ_curvature) ਅਚਲ;
 
 };
 
-#endif //PX4_DIRECTIONALGUIDANCE_HPP
+#ਜੇ_ਅੰਤ //PX4_DIRECTIONALGUIDANCE_HPP

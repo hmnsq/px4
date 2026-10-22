@@ -1,28 +1,28 @@
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "Scalar.hpp"
-#include "SquareMatrix.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Scalar.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "SquareMatrix.hpp"
 
-namespace matrix
+ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ
 {
 
-template<typename Type, size_t M, size_t N>
-int kalman_correct(
-	const Matrix<Type, M, M> &P,
-	const Matrix<Type, N, M> &C,
-	const Matrix<Type, N, N> &R,
-	const Matrix<Type, N, 1> &r,
-	Matrix<Type, M, 1> &dx,
-	Matrix<Type, M, M> &dP,
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type, size_t M, size_t N>
+ਪੂਰਨ kalman_correct(
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ_2<Type, M, M> &P,
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ_2<Type, N, M> &C,
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ_2<Type, N, N> &R,
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ_2<Type, N, 1> &r,
+	ਮੈਟ੍ਰਿਕਸ_2<Type, M, 1> &dx,
+	ਮੈਟ੍ਰਿਕਸ_2<Type, M, M> &dP,
 	Type &beta
 )
 {
-	SquareMatrix<Type, N> S_I = SquareMatrix<Type, N>(C * P * C.T() + R).I();
-	Matrix<Type, M, N> K = P * C.T() * S_I;
+	ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, N> S_I = ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, N>(C * P * C.T() + R).I();
+	ਮੈਟ੍ਰਿਕਸ_2<Type, M, N> K = P * C.T() * S_I;
 	dx = K * r;
 	beta = Scalar<Type>(r.T() * S_I * r);
 	dP = K * C * P * (-1);
-	return 0;
+	ਵਾਪਸ 0;
 }
 
 } // namespace matrix

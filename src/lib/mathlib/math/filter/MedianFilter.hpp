@@ -38,83 +38,83 @@
  *
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdio.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <string.h>
 
-namespace math
+ਨਾਮਾਕਾਸ਼ math
 {
 
-template<typename U> struct is_floating_point { static constexpr bool value = false; };
-template<> struct is_floating_point<float> { static constexpr bool value = true; };
-template<> struct is_floating_point<double> { static constexpr bool value = true; };
-template<> struct is_floating_point<long double> { static constexpr bool value = true; };
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ U> ਬਣਤਰ is_floating_point { ਸਥਿਰ constexpr ਤਾਰਕਿਕ value = ਝੂਠ; };
+ਸਾਂਚਾ<> ਬਣਤਰ is_floating_point<ਦਸ਼ਮਲਵ> { ਸਥਿਰ constexpr ਤਾਰਕਿਕ value = ਸੱਚ; };
+ਸਾਂਚਾ<> ਬਣਤਰ is_floating_point<ਦੁੱਗਣਾ> { ਸਥਿਰ constexpr ਤਾਰਕਿਕ value = ਸੱਚ; };
+ਸਾਂਚਾ<> ਬਣਤਰ is_floating_point<ਲੰਮਾ ਦੁੱਗਣਾ> { ਸਥਿਰ constexpr ਤਾਰਕਿਕ value = ਸੱਚ; };
 
-template<typename T, int WINDOW = 3>
-class MedianFilter
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ T, ਪੂਰਨ ਖਿੜਕੀ = 3>
+ਵਰਗ MedianFilter
 {
-public:
-	static_assert(WINDOW >= 3, "MedianFilter window size must be >= 3");
-	static_assert(WINDOW % 2, "MedianFilter window size must be odd"); // odd
+ਜਨਤਕ:
+	static_assert(ਖਿੜਕੀ >= 3, "MedianFilter window size must be >= 3");
+	static_assert(ਖਿੜਕੀ % 2, "MedianFilter window size must be odd"); // odd
 
-	MedianFilter() = default;
+	MedianFilter() = ਮੂਲ;
 
-	void insert(const T &sample)
+	ਖਾਲੀ ਪਾਓ(ਅਚਲ T &sample)
 	{
-		_head = (_head + 1) % WINDOW;
-		_buffer[_head] = sample;
+		ਸਿਰ = (ਸਿਰ + 1) % ਖਿੜਕੀ;
+		ਬਫਰ[ਸਿਰ] = sample;
 	}
 
 	T median()
 	{
-		T sorted[WINDOW];
-		memcpy(sorted, _buffer, sizeof(_buffer));
-		qsort(&sorted, WINDOW, sizeof(T), cmp);
+		T sorted[ਖਿੜਕੀ];
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ(sorted, ਬਫਰ, ਆਕਾਰ(ਬਫਰ));
+		qsort(&sorted, ਖਿੜਕੀ, ਆਕਾਰ(T), cmp);
 
-		return sorted[WINDOW / 2];
+		ਵਾਪਸ sorted[ਖਿੜਕੀ / 2];
 	}
 
-	T apply(const T &sample)
+	T apply(ਅਚਲ T &sample)
 	{
-		insert(sample);
-		return median();
+		ਪਾਓ(sample);
+		ਵਾਪਸ median();
 	}
 
-private:
+ਨਿਜੀ:
 
-	static int cmp(const void *a, const void *b)
+	ਸਥਿਰ ਪੂਰਨ cmp(ਅਚਲ ਖਾਲੀ *a, ਅਚਲ ਖਾਲੀ *b)
 	{
-		const T va = *(const T *)a;
-		const T vb = *(const T *)b;
+		ਅਚਲ T va = *(ਅਚਲ T *)a;
+		ਅਚਲ T vb = *(ਅਚਲ T *)b;
 
-		if constexpr(is_floating_point<T>::value) {
-			if (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
-				return 0;
+		ਜੇ constexpr(is_floating_point<T>::value) {
+			ਜੇ (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
+				ਵਾਪਸ 0;
 
-			} else if (!__builtin_isfinite(va)) {
-				return  1;
+			} ਨਹੀਂਤਾਂ ਜੇ (!__builtin_isfinite(va)) {
+				ਵਾਪਸ  1;
 
-			} else if (!__builtin_isfinite(vb)) {
-				return -1;
+			} ਨਹੀਂਤਾਂ ਜੇ (!__builtin_isfinite(vb)) {
+				ਵਾਪਸ -1;
 			}
 		}
 
-		if (va < vb) {
-			return -1;
+		ਜੇ (va < vb) {
+			ਵਾਪਸ -1;
 		}
 
-		if (va > vb) {
-			return  1;
+		ਜੇ (va > vb) {
+			ਵਾਪਸ  1;
 		}
 
-		return 0;
+		ਵਾਪਸ 0;
 	}
 
-	T _buffer[WINDOW] {};
-	uint8_t _head{0};
+	T ਬਫਰ[ਖਿੜਕੀ] {};
+	uint8_t ਸਿਰ{0};
 };
 
 } // namespace math

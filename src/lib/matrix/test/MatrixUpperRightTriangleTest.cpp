@@ -31,22 +31,22 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
 
-using namespace matrix;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ;
 
-TEST(MatrixUpperRightTriangleTest, UpperRightTriangle)
+TEST(ਮੈਟ੍ਰਿਕਸ_ਉੱਤਲਾ_ਸੱਜਾ_Triangle_Test, ਉੱਤਲਾ_ਸੱਜਾ_Triangle)
 {
-	float data[9] = {1, 2, 3,
+	ਦਸ਼ਮਲਵ ਅੰਕੜੇ[9] = {1, 2, 3,
 			 4, 5, 6,
 			 7, 8, 10
 			};
-	float urt[6] = {1, 2, 3, 5, 6, 10};
+	ਦਸ਼ਮਲਵ urt[6] = {1, 2, 3, 5, 6, 10};
 
-	SquareMatrix<float, 3> A(data);
+	ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<ਦਸ਼ਮਲਵ, 3> A(ਅੰਕੜੇ);
 
-	for (size_t i = 0; i < 6; i++) {
-		EXPECT_FLOAT_EQ(urt[i], A.upper_right_triangle()(i));
+	ਲਈ (size_t i = 0; i < 6; i++) {
+		EXPECT_FLOAT_EQ(urt[i], A.ਉੱਤਲਾ_ਸੱਜਾ_triangle()(i));
 	}
 }

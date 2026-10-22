@@ -38,101 +38,101 @@
  *
  */
 
-#include "SPI.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "SPI.hpp"
 
-#if defined(CONFIG_SPI)
+#ਜੇ defined(CONFIG_SPI)
 
-#ifdef __PX4_LINUX
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __PX4_LINUX
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <linux/types.h>
-#include <linux/spi/spidev.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <fcntl.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <unistd.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <sys/ioctl.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <linux/types.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <linux/spi/spidev.h>
 
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <px4_platform_common/px4_config.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/i2c_spi_buses.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/px4_config.h>
 
-namespace device
+ਨਾਮਾਕਾਸ਼ device
 {
 
-SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
-	CDev(name, nullptr),
+SPI::SPI(uint8_t device_type, ਅਚਲ ਅੱਖਰ *name, ਪੂਰਨ bus, uint32_t device, ਗਿਣਤੀ spi_ਬਹੁਲਕ_e ਬਹੁਲਕ, uint32_t frequency) :
+	CDev(name, ਖਾਲੀ_ਸੂਚਕ),
 	_device(device),
-	_mode(mode),
+	_mode(ਬਹੁਲਕ),
 	_frequency(frequency)
 {
 	_device_id.devid_s.devtype = device_type;
 	// fill in _device_id fields for a SPI device
 	_device_id.devid_s.bus_type = DeviceBusType_SPI;
 	_device_id.devid_s.bus = bus;
-	_device_id.devid_s.address = (uint8_t)device;
+	_device_id.devid_s.ਪਤਾ = (uint8_t)device;
 }
 
-SPI::SPI(const I2CSPIDriverConfig &config)
-	: SPI(config.devid_driver_index, config.module_name, config.bus, config.spi_devid, config.spi_mode,
+SPI::SPI(ਅਚਲ I2CSPIDriverConfig &config)
+	: SPI(config.devid_driver_ਸੂਚਕਾਂਕ, config.module_name, config.bus, config.spi_devid, config.spi_ਬਹੁਲਕ,
 	      config.bus_frequency)
 {
-	set_external(config.external);
+	ਸੈੱਟ_external(config.external);
 }
 
 SPI::~SPI()
 {
-	if (_fd >= 0) {
+	ਜੇ (_fd >= 0) {
 		::close(_fd);
 		_fd = -1;
 	}
 }
 
-int
+ਪੂਰਨ
 SPI::init()
 {
 	// Open the actual SPI device
-	char dev_path[16];
-	snprintf(dev_path, sizeof(dev_path), "/dev/spidev%i.%i", get_device_bus(), PX4_SPI_DEV_ID(_device));
-	DEVICE_DEBUG("%s", dev_path);
-	_fd = ::open(dev_path, O_RDWR);
+	ਅੱਖਰ dev_ਰਸਤਾ[16];
+	snprintf(dev_ਰਸਤਾ, ਆਕਾਰ(dev_ਰਸਤਾ), "/dev/spidev%i.%i", get_device_bus(), PX4_SPI_DEV_ID(_device));
+	DEVICE_DEBUG("%s", dev_ਰਸਤਾ);
+	_fd = ::open(dev_ਰਸਤਾ, O_RDWR);
 
-	if (_fd < 0) {
-		PX4_ERR("could not open %s", dev_path);
-		return PX4_ERROR;
+	ਜੇ (_fd < 0) {
+		PX4_ERR("could not open %s", dev_ਰਸਤਾ);
+		ਵਾਪਸ PX4_ERROR;
 	}
 
 	/* call the probe function to check whether the device is present */
-	int ret = probe();
+	ਪੂਰਨ ret = probe();
 
-	if (ret != OK) {
+	ਜੇ (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		return ret;
+		ਵਾਪਸ ret;
 	}
 
 	/* do base class init, which will create the device node, etc. */
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ਜੇ (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		return ret;
+		ਵਾਪਸ ret;
 	}
 
 	/* tell the world where we are */
 	DEVICE_DEBUG("on SPI bus %d at %d (%u KHz)", get_device_bus(), PX4_SPI_DEV_ID(_device), _frequency / 1000);
 
-	return PX4_OK;
+	ਵਾਪਸ PX4_OK;
 }
 
-int
-SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
+ਪੂਰਨ
+SPI::transfer(uint8_t *send, uint8_t *recv, ਬਿਨਾਨਿਸ਼ਾਨੀ len)
 {
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	ਜੇ ((send == ਖਾਲੀ_ਸੂਚਕ) && (recv == ਖਾਲੀ_ਸੂਚਕ)) {
+		ਵਾਪਸ -EINVAL;
 	}
 
 	// set write mode of SPI
-	int result = ::ioctl(_fd, SPI_IOC_WR_MODE, &_mode);
+	ਪੂਰਨ ਨਤੀਜਾ = ::ioctl(_fd, SPI_IOC_WR_ਬਹੁਲਕ, &_mode);
 
-	if (result == -1) {
+	ਜੇ (ਨਤੀਜਾ == -1) {
 		PX4_ERR("can’t set spi mode");
-		return PX4_ERROR;
+		ਵਾਪਸ PX4_ERROR;
 	}
 
 	spi_ioc_transfer spi_transfer{};
@@ -140,40 +140,40 @@ SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 	spi_transfer.tx_buf = (uint64_t)send;
 	spi_transfer.rx_buf = (uint64_t)recv;
 	spi_transfer.len = len;
-	spi_transfer.speed_hz = _frequency;
-	spi_transfer.bits_per_word = 8;
+	spi_transfer.ਰਫਤਾਰ_hz = _frequency;
+	spi_transfer.ਬਿੱਟ_ਪ੍ਰਤੀ_ਸ਼ਬਦ = 8;
 
-	result = ::ioctl(_fd, SPI_IOC_MESSAGE(1), &spi_transfer);
+	ਨਤੀਜਾ = ::ioctl(_fd, SPI_IOC_ਸੁਨੇਹਾ(1), &spi_transfer);
 
-	if (result != (int)len) {
-		PX4_ERR("write failed. Reported %d bytes written (%s)", result, strerror(errno));
-		return PX4_ERROR;
+	ਜੇ (ਨਤੀਜਾ != (ਪੂਰਨ)len) {
+		PX4_ERR("write failed. Reported %d bytes written (%s)", ਨਤੀਜਾ, strerror(errno));
+		ਵਾਪਸ PX4_ERROR;
 	}
 
-	return PX4_OK;
+	ਵਾਪਸ PX4_OK;
 }
 
-int
-SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
+ਪੂਰਨ
+SPI::transferhword(uint16_t *send, uint16_t *recv, ਬਿਨਾਨਿਸ਼ਾਨੀ len)
 {
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	ਜੇ ((send == ਖਾਲੀ_ਸੂਚਕ) && (recv == ਖਾਲੀ_ਸੂਚਕ)) {
+		ਵਾਪਸ -EINVAL;
 	}
 
 	// set write mode of SPI
-	int result = ::ioctl(_fd, SPI_IOC_WR_MODE, &_mode);
+	ਪੂਰਨ ਨਤੀਜਾ = ::ioctl(_fd, SPI_IOC_WR_ਬਹੁਲਕ, &_mode);
 
-	if (result == -1) {
+	ਜੇ (ਨਤੀਜਾ == -1) {
 		PX4_ERR("can’t set spi mode");
-		return PX4_ERROR;
+		ਵਾਪਸ PX4_ERROR;
 	}
 
-	int bits = 16;
-	result = ::ioctl(_fd, SPI_IOC_WR_BITS_PER_WORD, &bits);
+	ਪੂਰਨ ਬਿੱਟ = 16;
+	ਨਤੀਜਾ = ::ioctl(_fd, SPI_IOC_WR_ਬਿੱਟ_ਪ੍ਰਤੀ_ਸ਼ਬਦ, &ਬਿੱਟ);
 
-	if (result == -1) {
+	ਜੇ (ਨਤੀਜਾ == -1) {
 		PX4_ERR("can’t set 16 bit spi mode");
-		return PX4_ERROR;
+		ਵਾਪਸ PX4_ERROR;
 	}
 
 	spi_ioc_transfer spi_transfer[1] {};
@@ -181,22 +181,22 @@ SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 	spi_transfer[0].tx_buf = (uint64_t)send;
 	spi_transfer[0].rx_buf = (uint64_t)recv;
 	spi_transfer[0].len = len * 2;
-	spi_transfer[0].speed_hz = _frequency;
+	spi_transfer[0].ਰਫਤਾਰ_hz = _frequency;
 	//spi_transfer[0].bits_per_word = 8;
 	//spi_transfer[0].delay_usecs = 10;
-	spi_transfer[0].cs_change = true;
+	spi_transfer[0].cs_change = ਸੱਚ;
 
-	result = ::ioctl(_fd, SPI_IOC_MESSAGE(1), &spi_transfer);
+	ਨਤੀਜਾ = ::ioctl(_fd, SPI_IOC_ਸੁਨੇਹਾ(1), &spi_transfer);
 
-	if (result != (int)(len * 2)) {
-		PX4_ERR("write failed. Reported %d bytes written (%s)", result, strerror(errno));
-		return PX4_ERROR;
+	ਜੇ (ਨਤੀਜਾ != (ਪੂਰਨ)(len * 2)) {
+		PX4_ERR("write failed. Reported %d bytes written (%s)", ਨਤੀਜਾ, strerror(errno));
+		ਵਾਪਸ PX4_ERROR;
 	}
 
-	return PX4_OK;
+	ਵਾਪਸ PX4_OK;
 }
 
 } // namespace device
 
-#endif // __PX4_LINUX
-#endif // CONFIG_SPI
+#ਜੇ_ਅੰਤ // __PX4_LINUX
+#ਜੇ_ਅੰਤ // CONFIG_SPI

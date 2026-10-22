@@ -34,11 +34,11 @@
 
 
 
-#include "Ringbuffer.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Ringbuffer.hpp"
 
-#include <mathlib/mathlib.h>
-#include <assert.h>
-#include <string.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/mathlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <assert.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <string.h>
 
 
 Ringbuffer::~Ringbuffer()
@@ -46,137 +46,137 @@ Ringbuffer::~Ringbuffer()
 	deallocate();
 }
 
-bool Ringbuffer::allocate(size_t buffer_size)
+ਤਾਰਕਿਕ Ringbuffer::allocate(size_t ਬਫਰ_ਮਾਪ)
 {
-	assert(_ringbuffer == nullptr);
+	ਪ੍ਰਤਿਜ੍ਞਾ(_ringbuffer == ਖਾਲੀ_ਸੂਚਕ);
 
-	_size = buffer_size;
-	_ringbuffer = new uint8_t[_size];
-	return _ringbuffer != nullptr;
+	ਮਾਪ_2 = ਬਫਰ_ਮਾਪ;
+	_ringbuffer = ਨਵਾਂ uint8_t[ਮਾਪ_2];
+	ਵਾਪਸ _ringbuffer != ਖਾਲੀ_ਸੂਚਕ;
 }
 
-void Ringbuffer::deallocate()
+ਖਾਲੀ Ringbuffer::deallocate()
 {
-	delete[] _ringbuffer;
-	_ringbuffer = nullptr;
-	_size = 0;
-	_start = 0;
-	_end = 0;
+	ਮਿਟਾਓ[] _ringbuffer;
+	_ringbuffer = ਖਾਲੀ_ਸੂਚਕ;
+	ਮਾਪ_2 = 0;
+	ਸ਼ੁਰੂ_3 = 0;
+	ਸਿਰਾ_2 = 0;
 }
 
-size_t Ringbuffer::space_available() const
+size_t Ringbuffer::space_ਉਪਲਬਧ() ਅਚਲ
 {
-	if (_start > _end) {
-		return _start - _end - 1;
+	ਜੇ (ਸ਼ੁਰੂ_3 > ਸਿਰਾ_2) {
+		ਵਾਪਸ ਸ਼ੁਰੂ_3 - ਸਿਰਾ_2 - 1;
 
-	} else {
-		return _start - _end - 1 + _size;
+	} ਨਹੀਂਤਾਂ {
+		ਵਾਪਸ ਸ਼ੁਰੂ_3 - ਸਿਰਾ_2 - 1 + ਮਾਪ_2;
 	}
 }
 
-size_t Ringbuffer::space_used() const
+size_t Ringbuffer::space_ਵਰਤਿਆ() ਅਚਲ
 {
-	if (_start <= _end) {
-		return _end - _start;
+	ਜੇ (ਸ਼ੁਰੂ_3 <= ਸਿਰਾ_2) {
+		ਵਾਪਸ ਸਿਰਾ_2 - ਸ਼ੁਰੂ_3;
 
-	} else {
+	} ਨਹੀਂਤਾਂ {
 		// Potential wrap around.
-		return _end - _start + _size;
+		ਵਾਪਸ ਸਿਰਾ_2 - ਸ਼ੁਰੂ_3 + ਮਾਪ_2;
 	}
 }
 
 
-bool Ringbuffer::push_back(const uint8_t *buf, size_t buf_len)
+ਤਾਰਕਿਕ Ringbuffer::push_back(ਅਚਲ uint8_t *buf, size_t buf_len)
 {
-	if (buf_len == 0 || buf == nullptr) {
+	ਜੇ (buf_len == 0 || buf == ਖਾਲੀ_ਸੂਚਕ) {
 		// Nothing to add, we better don't try.
-		return false;
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	if (_start > _end) {
+	ਜੇ (ਸ਼ੁਰੂ_3 > ਸਿਰਾ_2) {
 		// Add after end up to start, no wrap around.
 
 		// Leave one byte free so that start don't end up the same
 		// which signals empty.
-		const size_t available = _start - _end - 1;
+		ਅਚਲ size_t ਉਪਲਬਧ = ਸ਼ੁਰੂ_3 - ਸਿਰਾ_2 - 1;
 
-		if (available < buf_len) {
-			return false;
+		ਜੇ (ਉਪਲਬਧ < buf_len) {
+			ਵਾਪਸ ਝੂਠ;
 		}
 
-		memcpy(&_ringbuffer[_end], buf, buf_len);
-		_end += buf_len;
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ(&_ringbuffer[ਸਿਰਾ_2], buf, buf_len);
+		ਸਿਰਾ_2 += buf_len;
 
-	} else {
+	} ਨਹੀਂਤਾਂ {
 		// Add after end, maybe wrap around.
-		const size_t available = _start - _end - 1 + _size;
+		ਅਚਲ size_t ਉਪਲਬਧ = ਸ਼ੁਰੂ_3 - ਸਿਰਾ_2 - 1 + ਮਾਪ_2;
 
-		if (available < buf_len) {
-			return false;
+		ਜੇ (ਉਪਲਬਧ < buf_len) {
+			ਵਾਪਸ ਝੂਠ;
 		}
 
-		const size_t remaining_packet_len = _size - _end;
+		ਅਚਲ size_t ਬਚਿਆ_packet_len = ਮਾਪ_2 - ਸਿਰਾ_2;
 
-		if (buf_len > remaining_packet_len) {
-			memcpy(&_ringbuffer[_end], buf, remaining_packet_len);
-			_end = 0;
+		ਜੇ (buf_len > ਬਚਿਆ_packet_len) {
+			ਸਮ੍ਰਿਤੀ_ਨਕਲ(&_ringbuffer[ਸਿਰਾ_2], buf, ਬਚਿਆ_packet_len);
+			ਸਿਰਾ_2 = 0;
 
-			memcpy(&_ringbuffer[_end], buf + remaining_packet_len, buf_len - remaining_packet_len);
-			_end += buf_len - remaining_packet_len;
+			ਸਮ੍ਰਿਤੀ_ਨਕਲ(&_ringbuffer[ਸਿਰਾ_2], buf + ਬਚਿਆ_packet_len, buf_len - ਬਚਿਆ_packet_len);
+			ਸਿਰਾ_2 += buf_len - ਬਚਿਆ_packet_len;
 
-		} else {
-			memcpy(&_ringbuffer[_end], buf, buf_len);
-			_end += buf_len;
+		} ਨਹੀਂਤਾਂ {
+			ਸਮ੍ਰਿਤੀ_ਨਕਲ(&_ringbuffer[ਸਿਰਾ_2], buf, buf_len);
+			ਸਿਰਾ_2 += buf_len;
 		}
 	}
 
-	return true;
+	ਵਾਪਸ ਸੱਚ;
 }
 
-size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
+size_t Ringbuffer::ਕੱਢੋ_front(uint8_t *buf, size_t buf_max_len)
 {
-	if (buf == nullptr) {
+	ਜੇ (buf == ਖਾਲੀ_ਸੂਚਕ) {
 		// User needs to supply a valid pointer.
-		return 0;
+		ਵਾਪਸ 0;
 	}
 
-	if (_start == _end) {
+	ਜੇ (ਸ਼ੁਰੂ_3 == ਸਿਰਾ_2) {
 		// Empty
-		return 0;
+		ਵਾਪਸ 0;
 	}
 
-	if (_start < _end) {
+	ਜੇ (ਸ਼ੁਰੂ_3 < ਸਿਰਾ_2) {
 
 		// No wrap around.
-		size_t to_copy_len = math::min(_end - _start, buf_max_len);
+		size_t ਮੰਜ਼ਿਲ_copy_len = math::min(ਸਿਰਾ_2 - ਸ਼ੁਰੂ_3, buf_max_len);
 
-		memcpy(buf, &_ringbuffer[_start], to_copy_len);
-		_start += to_copy_len;
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ(buf, &_ringbuffer[ਸ਼ੁਰੂ_3], ਮੰਜ਼ਿਲ_copy_len);
+		ਸ਼ੁਰੂ_3 += ਮੰਜ਼ਿਲ_copy_len;
 
-		return to_copy_len;
+		ਵਾਪਸ ਮੰਜ਼ਿਲ_copy_len;
 
-	} else {
+	} ਨਹੀਂਤਾਂ {
 		// Potential wrap around.
-		size_t to_copy_len = _end - _start + _size;
+		size_t ਮੰਜ਼ਿਲ_copy_len = ਸਿਰਾ_2 - ਸ਼ੁਰੂ_3 + ਮਾਪ_2;
 
-		if (to_copy_len > buf_max_len) {
-			to_copy_len = buf_max_len;
+		ਜੇ (ਮੰਜ਼ਿਲ_copy_len > buf_max_len) {
+			ਮੰਜ਼ਿਲ_copy_len = buf_max_len;
 		}
 
-		const size_t remaining_buf_len = _size - _start;
+		ਅਚਲ size_t ਬਚਿਆ_buf_len = ਮਾਪ_2 - ਸ਼ੁਰੂ_3;
 
-		if (to_copy_len > remaining_buf_len) {
+		ਜੇ (ਮੰਜ਼ਿਲ_copy_len > ਬਚਿਆ_buf_len) {
 
-			memcpy(buf, &_ringbuffer[_start], remaining_buf_len);
-			_start = 0;
-			memcpy(buf + remaining_buf_len, &_ringbuffer[_start], to_copy_len - remaining_buf_len);
-			_start += to_copy_len - remaining_buf_len;
+			ਸਮ੍ਰਿਤੀ_ਨਕਲ(buf, &_ringbuffer[ਸ਼ੁਰੂ_3], ਬਚਿਆ_buf_len);
+			ਸ਼ੁਰੂ_3 = 0;
+			ਸਮ੍ਰਿਤੀ_ਨਕਲ(buf + ਬਚਿਆ_buf_len, &_ringbuffer[ਸ਼ੁਰੂ_3], ਮੰਜ਼ਿਲ_copy_len - ਬਚਿਆ_buf_len);
+			ਸ਼ੁਰੂ_3 += ਮੰਜ਼ਿਲ_copy_len - ਬਚਿਆ_buf_len;
 
-		} else {
-			memcpy(buf, &_ringbuffer[_start], to_copy_len);
-			_start += to_copy_len;
+		} ਨਹੀਂਤਾਂ {
+			ਸਮ੍ਰਿਤੀ_ਨਕਲ(buf, &_ringbuffer[ਸ਼ੁਰੂ_3], ਮੰਜ਼ਿਲ_copy_len);
+			ਸ਼ੁਰੂ_3 += ਮੰਜ਼ਿਲ_copy_len;
 		}
 
-		return to_copy_len;
+		ਵਾਪਸ ਮੰਜ਼ਿਲ_copy_len;
 	}
 }

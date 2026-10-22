@@ -42,74 +42,74 @@
  *
 ******************************************************************/
 
-#include <gtest/gtest.h>
-#include <lib/npfg/CourseToAirspeedRefMapper.hpp>
-#include <lib/npfg/AirspeedDirectionController.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/npfg/CourseToAirspeedRefMapper.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/npfg/AirspeedDirectionController.hpp>
 
-using namespace matrix;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ;
 
 TEST(NpfgTest, NoWind)
 {
-	CourseToAirspeedRefMapper _course_to_airspeed;
+	ਕੋਰਸ_ਮੰਜ਼ਿਲ_Airspeed_Ref_Mapper ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed;
 
 	// GIVEN
-	const Vector2f wind_vel(0.f, 0.f);
-	float bearing = 0.f;
-	float airspeed_max = 20.f;
-	float min_ground_speed = 5.0f;
-	float airspeed_setpoint = 15.f;
+	ਅਚਲ Vector2f wind_vel(0.f, 0.f);
+	ਦਸ਼ਮਲਵ bearing = 0.f;
+	ਦਸ਼ਮਲਵ airspeed_max = 20.f;
+	ਦਸ਼ਮਲਵ min_ground_ਰਫਤਾਰ = 5.0f;
+	ਦਸ਼ਮਲਵ airspeed_setpoint = 15.f;
 
 	// WHEN: we update bearing and airspeed magnitude augmentation
-	float min_airspeed_for_bearing = _course_to_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
-					 airspeed_max, min_ground_speed);
+	ਦਸ਼ਮਲਵ min_airspeed_for_bearing = ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
+					 airspeed_max, min_ground_ਰਫਤਾਰ);
 
-	float airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
+	ਦਸ਼ਮਲਵ airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
 
-	float heading_setpoint = _course_to_airspeed.mapCourseSetpointToHeadingSetpoint(bearing, wind_vel,
+	ਦਸ਼ਮਲਵ heading_setpoint = ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.map_ਕੋਰਸ_Setpoint_ਮੰਜ਼ਿਲ_Heading_Setpoint(bearing, wind_vel,
 				 airspeed_setpoint_adapted);
 
 	// THEN: expect heading due North with a min airspeed equal to min_ground_speed
 	EXPECT_NEAR(heading_setpoint, 0.f, 0.01f);
-	EXPECT_NEAR(min_airspeed_for_bearing, min_ground_speed, FLT_EPSILON);
+	EXPECT_NEAR(min_airspeed_for_bearing, min_ground_ਰਫਤਾਰ, FLT_EPSILON);
 
 	// GIVEN: bearing due East
 	bearing = M_PI_2_F;
 	airspeed_max = 20.f;
-	min_ground_speed = 5.0f;
+	min_ground_ਰਫਤਾਰ = 5.0f;
 
 	// WHEN: we update bearing and airspeed magnitude augmentation
-	min_airspeed_for_bearing = _course_to_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
-				   airspeed_max, min_ground_speed);
+	min_airspeed_for_bearing = ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
+				   airspeed_max, min_ground_ਰਫਤਾਰ);
 
 	airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
 
-	heading_setpoint = matrix::wrap_pi(_course_to_airspeed.mapCourseSetpointToHeadingSetpoint(bearing, wind_vel,
+	heading_setpoint = ਮੈਟ੍ਰਿਕਸ::wrap_pi(ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.map_ਕੋਰਸ_Setpoint_ਮੰਜ਼ਿਲ_Heading_Setpoint(bearing, wind_vel,
 					   airspeed_setpoint_adapted));
 
 
 	// THEN: expect heading due East with a min airspeed equal to min_ground_speed
 	EXPECT_NEAR(heading_setpoint, M_PI_2_F,  0.01f);
-	EXPECT_NEAR(min_airspeed_for_bearing, min_ground_speed, FLT_EPSILON);
+	EXPECT_NEAR(min_airspeed_for_bearing, min_ground_ਰਫਤਾਰ, FLT_EPSILON);
 }
 
 TEST(NpfgTest, LightCrossWind)
 {
-	CourseToAirspeedRefMapper _course_to_airspeed;
+	ਕੋਰਸ_ਮੰਜ਼ਿਲ_Airspeed_Ref_Mapper ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed;
 
 	// GIVEN
-	const Vector2f wind_vel(0.f, 6.f);
-	float bearing = 0.f;
-	float airspeed_max = 20.f;
-	float min_ground_speed = 5.0f;
-	float airspeed_setpoint = 15.f;
+	ਅਚਲ Vector2f wind_vel(0.f, 6.f);
+	ਦਸ਼ਮਲਵ bearing = 0.f;
+	ਦਸ਼ਮਲਵ airspeed_max = 20.f;
+	ਦਸ਼ਮਲਵ min_ground_ਰਫਤਾਰ = 5.0f;
+	ਦਸ਼ਮਲਵ airspeed_setpoint = 15.f;
 
 	// WHEN: we update bearing and airspeed magnitude augmentation
-	float min_airspeed_for_bearing = _course_to_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
-					 airspeed_max, min_ground_speed);
+	ਦਸ਼ਮਲਵ min_airspeed_for_bearing = ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
+					 airspeed_max, min_ground_ਰਫਤਾਰ);
 
-	float airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
+	ਦਸ਼ਮਲਵ airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
 
-	float heading_setpoint = matrix::wrap_pi(_course_to_airspeed.mapCourseSetpointToHeadingSetpoint(bearing, wind_vel,
+	ਦਸ਼ਮਲਵ heading_setpoint = ਮੈਟ੍ਰਿਕਸ::wrap_pi(ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.map_ਕੋਰਸ_Setpoint_ਮੰਜ਼ਿਲ_Heading_Setpoint(bearing, wind_vel,
 				 airspeed_setpoint_adapted));
 
 	// THEN: expect heading -0.4115168 with a min airspeed of to 7.8 (sqrt(25+36))
@@ -119,15 +119,15 @@ TEST(NpfgTest, LightCrossWind)
 	// GIVEN: bearing due South
 	bearing = M_PI_F;
 	airspeed_max = 20.f;
-	min_ground_speed = 5.0f;
+	min_ground_ਰਫਤਾਰ = 5.0f;
 
 	// WHEN: we update bearing and airspeed magnitude augmentation
-	min_airspeed_for_bearing = _course_to_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
-				   airspeed_max, min_ground_speed);
+	min_airspeed_for_bearing = ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
+				   airspeed_max, min_ground_ਰਫਤਾਰ);
 
 	airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
 
-	heading_setpoint = matrix::wrap_pi(_course_to_airspeed.mapCourseSetpointToHeadingSetpoint(bearing, wind_vel,
+	heading_setpoint = ਮੈਟ੍ਰਿਕਸ::wrap_pi(ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.map_ਕੋਰਸ_Setpoint_ਮੰਜ਼ਿਲ_Heading_Setpoint(bearing, wind_vel,
 					   airspeed_setpoint_adapted));
 
 	// THEN: expect heading of -2.73 and a min airspeed of 7.8 (sqrt(25+36))
@@ -135,49 +135,49 @@ TEST(NpfgTest, LightCrossWind)
 	EXPECT_NEAR(min_airspeed_for_bearing, 7.8f, 0.1f);
 }
 
-TEST(NpfgTest, StrongHeadWind)
+TEST(NpfgTest, Strong_ਸਿਰ_Wind)
 {
-	CourseToAirspeedRefMapper _course_to_airspeed;
+	ਕੋਰਸ_ਮੰਜ਼ਿਲ_Airspeed_Ref_Mapper ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed;
 
 	// GIVEN: bearing due North and wind from the North
-	const Vector2f wind_vel(-16.f, 0.f);
-	float bearing = 0.f;
-	float airspeed_max = 25.f;
-	float min_ground_speed = 5.0f;
-	float airspeed_setpoint = 15.f;
+	ਅਚਲ Vector2f wind_vel(-16.f, 0.f);
+	ਦਸ਼ਮਲਵ bearing = 0.f;
+	ਦਸ਼ਮਲਵ airspeed_max = 25.f;
+	ਦਸ਼ਮਲਵ min_ground_ਰਫਤਾਰ = 5.0f;
+	ਦਸ਼ਮਲਵ airspeed_setpoint = 15.f;
 
 	// WHEN: we update bearing and airspeed magnitude augmentation
-	float min_airspeed_for_bearing = _course_to_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
-					 airspeed_max, min_ground_speed);
+	ਦਸ਼ਮਲਵ min_airspeed_for_bearing = ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
+					 airspeed_max, min_ground_ਰਫਤਾਰ);
 
-	float airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
+	ਦਸ਼ਮਲਵ airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
 
-	float heading_setpoint = matrix::wrap_pi(_course_to_airspeed.mapCourseSetpointToHeadingSetpoint(bearing, wind_vel,
+	ਦਸ਼ਮਲਵ heading_setpoint = ਮੈਟ੍ਰਿਕਸ::wrap_pi(ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.map_ਕੋਰਸ_Setpoint_ਮੰਜ਼ਿਲ_Heading_Setpoint(bearing, wind_vel,
 				 airspeed_setpoint_adapted));
 
 	// THEN: expect heading due North with a min airspeed equal to 16+min_ground_speed
 	EXPECT_NEAR(heading_setpoint, 0.f, 0.01f);
-	EXPECT_NEAR(min_airspeed_for_bearing, 16 + min_ground_speed, 0.1f);
+	EXPECT_NEAR(min_airspeed_for_bearing, 16 + min_ground_ਰਫਤਾਰ, 0.1f);
 }
 
-TEST(NpfgTest, StrongTailWind)
+TEST(NpfgTest, Strong_ਪੂਛ_Wind)
 {
-	CourseToAirspeedRefMapper _course_to_airspeed;
+	ਕੋਰਸ_ਮੰਜ਼ਿਲ_Airspeed_Ref_Mapper ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed;
 
 	// GIVEN: bearing due East and wind from the West
-	const Vector2f wind_vel(0.f, 16.f);
-	float bearing = M_PI_2_F;
-	float airspeed_max = 25.f;
-	float min_ground_speed = 5.0f;
-	float airspeed_setpoint = 15.f;
+	ਅਚਲ Vector2f wind_vel(0.f, 16.f);
+	ਦਸ਼ਮਲਵ bearing = M_PI_2_F;
+	ਦਸ਼ਮਲਵ airspeed_max = 25.f;
+	ਦਸ਼ਮਲਵ min_ground_ਰਫਤਾਰ = 5.0f;
+	ਦਸ਼ਮਲਵ airspeed_setpoint = 15.f;
 
 	// WHEN: we update bearing and airspeed magnitude augmentation
-	float min_airspeed_for_bearing = _course_to_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
-					 airspeed_max, min_ground_speed);
+	ਦਸ਼ਮਲਵ min_airspeed_for_bearing = ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
+					 airspeed_max, min_ground_ਰਫਤਾਰ);
 
-	float airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
+	ਦਸ਼ਮਲਵ airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
 
-	float heading_setpoint = matrix::wrap_pi(_course_to_airspeed.mapCourseSetpointToHeadingSetpoint(bearing, wind_vel,
+	ਦਸ਼ਮਲਵ heading_setpoint = ਮੈਟ੍ਰਿਕਸ::wrap_pi(ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.map_ਕੋਰਸ_Setpoint_ਮੰਜ਼ਿਲ_Heading_Setpoint(bearing, wind_vel,
 				 airspeed_setpoint_adapted));
 
 	// THEN: expect heading due East with a min airspeed at 0
@@ -185,26 +185,26 @@ TEST(NpfgTest, StrongTailWind)
 	EXPECT_NEAR(min_airspeed_for_bearing, 0.f, 0.1f);
 }
 
-TEST(NpfgTest, ExcessHeadWind)
+TEST(NpfgTest, Excess_ਸਿਰ_Wind)
 {
 	// TEST DESCRIPTION: infeasible bearing, with |wind| = |airspeed|. Align with wind
 
-	CourseToAirspeedRefMapper _course_to_airspeed;
+	ਕੋਰਸ_ਮੰਜ਼ਿਲ_Airspeed_Ref_Mapper ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed;
 
 	// GIVEN: bearing due North and wind from the North
-	const Vector2f wind_vel(-25.f, 0.f);
-	float bearing = 0.f;
-	float airspeed_max = 25.f;
-	float min_ground_speed = 5.0f;
-	float airspeed_setpoint = 15.f;
+	ਅਚਲ Vector2f wind_vel(-25.f, 0.f);
+	ਦਸ਼ਮਲਵ bearing = 0.f;
+	ਦਸ਼ਮਲਵ airspeed_max = 25.f;
+	ਦਸ਼ਮਲਵ min_ground_ਰਫਤਾਰ = 5.0f;
+	ਦਸ਼ਮਲਵ airspeed_setpoint = 15.f;
 
 	// WHEN: we update bearing and airspeed magnitude augmentation
-	float min_airspeed_for_bearing = _course_to_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
-					 airspeed_max, min_ground_speed);
+	ਦਸ਼ਮਲਵ min_airspeed_for_bearing = ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
+					 airspeed_max, min_ground_ਰਫਤਾਰ);
 
-	float airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
+	ਦਸ਼ਮਲਵ airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
 
-	float heading_setpoint = matrix::wrap_pi(_course_to_airspeed.mapCourseSetpointToHeadingSetpoint(bearing, wind_vel,
+	ਦਸ਼ਮਲਵ heading_setpoint = ਮੈਟ੍ਰਿਕਸ::wrap_pi(ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.map_ਕੋਰਸ_Setpoint_ਮੰਜ਼ਿਲ_Heading_Setpoint(bearing, wind_vel,
 				 airspeed_setpoint_adapted));
 
 	// THEN: expect heading sp due North with a min airspeed equal to airspeed_max
@@ -214,8 +214,8 @@ TEST(NpfgTest, ExcessHeadWind)
 	// WHEN: we increase the maximum airspeed
 	airspeed_max = 35.f;
 
-	min_airspeed_for_bearing = _course_to_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
-				   airspeed_max, min_ground_speed);
+	min_airspeed_for_bearing = ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
+				   airspeed_max, min_ground_ਰਫਤਾਰ);
 
 	// THEN: expect the minimum airspeed to be high enough to maintain minimum groundspeed
 	EXPECT_NEAR(min_airspeed_for_bearing, 30.f, 0.1f);
@@ -227,12 +227,12 @@ TEST(NpfgTest, ExcessHeadWind)
 	airspeed_max = 25.f;
 
 	// WHEN: we update bearing and airspeed magnitude augmentation
-	min_airspeed_for_bearing = _course_to_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
-				   airspeed_max, min_ground_speed);
+	min_airspeed_for_bearing = ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
+				   airspeed_max, min_ground_ਰਫਤਾਰ);
 
 	airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
 
-	heading_setpoint = matrix::wrap_pi(_course_to_airspeed.mapCourseSetpointToHeadingSetpoint(bearing, wind_vel,
+	heading_setpoint = ਮੈਟ੍ਰਿਕਸ::wrap_pi(ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.map_ਕੋਰਸ_Setpoint_ਮੰਜ਼ਿਲ_Heading_Setpoint(bearing, wind_vel,
 					   airspeed_setpoint_adapted));
 
 	// THEN: expect heading sp due North with a min airspeed equal to airspeed_max
@@ -247,12 +247,12 @@ TEST(NpfgTest, ExcessHeadWind)
 	airspeed_max = 20.f;
 
 	// WHEN: we update bearing and airspeed magnitude augmentation
-	min_airspeed_for_bearing = _course_to_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
-				   airspeed_max, min_ground_speed);
+	min_airspeed_for_bearing = ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
+				   airspeed_max, min_ground_ਰਫਤਾਰ);
 
 	airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
 
-	heading_setpoint = matrix::wrap_pi(_course_to_airspeed.mapCourseSetpointToHeadingSetpoint(bearing, wind_vel,
+	heading_setpoint = ਮੈਟ੍ਰਿਕਸ::wrap_pi(ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.map_ਕੋਰਸ_Setpoint_ਮੰਜ਼ਿਲ_Heading_Setpoint(bearing, wind_vel,
 					   airspeed_setpoint_adapted));
 
 	// THEN: expect heading setpoint to be between the target bearing and the cross wind
@@ -261,24 +261,24 @@ TEST(NpfgTest, ExcessHeadWind)
 	EXPECT_NEAR(min_airspeed_for_bearing, airspeed_max, 0.1f);
 }
 
-TEST(NpfgTest, ExcessTailWind)
+TEST(NpfgTest, Excess_ਪੂਛ_Wind)
 {
-	CourseToAirspeedRefMapper _course_to_airspeed;
+	ਕੋਰਸ_ਮੰਜ਼ਿਲ_Airspeed_Ref_Mapper ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed;
 
 	// GIVEN: bearing due East and wind from the West
-	const Vector2f wind_vel(0.f, 25.f);
-	float bearing = M_PI_2_F;
-	float airspeed_max = 25.f;
-	float min_ground_speed = 5.0f;
-	float airspeed_setpoint = 15.f;
+	ਅਚਲ Vector2f wind_vel(0.f, 25.f);
+	ਦਸ਼ਮਲਵ bearing = M_PI_2_F;
+	ਦਸ਼ਮਲਵ airspeed_max = 25.f;
+	ਦਸ਼ਮਲਵ min_ground_ਰਫਤਾਰ = 5.0f;
+	ਦਸ਼ਮਲਵ airspeed_setpoint = 15.f;
 
 	// WHEN: we update bearing and airspeed magnitude augmentation
-	const float min_airspeed_for_bearing = _course_to_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
-					       airspeed_max, min_ground_speed);
+	ਅਚਲ ਦਸ਼ਮਲਵ min_airspeed_for_bearing = ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
+					       airspeed_max, min_ground_ਰਫਤਾਰ);
 
-	float airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
+	ਦਸ਼ਮਲਵ airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
 
-	float heading_setpoint = matrix::wrap_pi(_course_to_airspeed.mapCourseSetpointToHeadingSetpoint(bearing, wind_vel,
+	ਦਸ਼ਮਲਵ heading_setpoint = ਮੈਟ੍ਰਿਕਸ::wrap_pi(ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.map_ਕੋਰਸ_Setpoint_ਮੰਜ਼ਿਲ_Heading_Setpoint(bearing, wind_vel,
 				 airspeed_setpoint_adapted));
 
 	// THEN: expect heading due East with a min airspeed equal to 0
@@ -291,22 +291,22 @@ TEST(NpfgTest, ExcessCrossWind)
 	// TEST DESCRIPTION: infeasible bearing, with |wind| > |airspeed|. Aircraft should have a heading between the target bearing
 	// and wind direction to minimize drift while still attempting to reach the bearing.
 
-	CourseToAirspeedRefMapper _course_to_airspeed;
+	ਕੋਰਸ_ਮੰਜ਼ਿਲ_Airspeed_Ref_Mapper ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed;
 
 	// GIVEN: bearing due North, strong wind due East
-	const Vector2f wind_vel(0, 30.f);
-	float bearing = 0.f;
-	float airspeed_max = 25.f;
-	float min_ground_speed = 5.f;
-	float airspeed_setpoint = 15.f;
+	ਅਚਲ Vector2f wind_vel(0, 30.f);
+	ਦਸ਼ਮਲਵ bearing = 0.f;
+	ਦਸ਼ਮਲਵ airspeed_max = 25.f;
+	ਦਸ਼ਮਲਵ min_ground_ਰਫਤਾਰ = 5.f;
+	ਦਸ਼ਮਲਵ airspeed_setpoint = 15.f;
 
 	// WHEN: we update bearing and airspeed magnitude augmentation
-	float min_airspeed_for_bearing = _course_to_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
-					 airspeed_max, min_ground_speed);
+	ਦਸ਼ਮਲਵ min_airspeed_for_bearing = ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
+					 airspeed_max, min_ground_ਰਫਤਾਰ);
 
-	float airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
+	ਦਸ਼ਮਲਵ airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
 
-	float heading_setpoint = matrix::wrap_pi(_course_to_airspeed.mapCourseSetpointToHeadingSetpoint(bearing, wind_vel,
+	ਦਸ਼ਮਲਵ heading_setpoint = ਮੈਟ੍ਰਿਕਸ::wrap_pi(ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.map_ਕੋਰਸ_Setpoint_ਮੰਜ਼ਿਲ_Heading_Setpoint(bearing, wind_vel,
 				 airspeed_setpoint_adapted));
 
 	// THEN: expect heading setpoint to be between the target bearing and the cross wind
@@ -318,12 +318,12 @@ TEST(NpfgTest, ExcessCrossWind)
 
 	airspeed_max = 30.f;
 
-	min_airspeed_for_bearing = _course_to_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
-				   airspeed_max, min_ground_speed);
+	min_airspeed_for_bearing = ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.getMinAirspeedForCurrentBearing(bearing, wind_vel,
+				   airspeed_max, min_ground_ਰਫਤਾਰ);
 
 	airspeed_setpoint_adapted = math::constrain(airspeed_setpoint, min_airspeed_for_bearing, airspeed_max);
 
-	heading_setpoint = matrix::wrap_pi(_course_to_airspeed.mapCourseSetpointToHeadingSetpoint(bearing, wind_vel,
+	heading_setpoint = ਮੈਟ੍ਰਿਕਸ::wrap_pi(ਕੋਰਸ_ਮੰਜ਼ਿਲ_airspeed.map_ਕੋਰਸ_Setpoint_ਮੰਜ਼ਿਲ_Heading_Setpoint(bearing, wind_vel,
 					   airspeed_setpoint_adapted));
 
 	EXPECT_NEAR(heading_setpoint, -M_PI_F / 2.f, 0.01f);
@@ -333,15 +333,15 @@ TEST(NpfgTest, ExcessCrossWind)
 TEST(NpfgTest, HeadingControl)
 {
 	AirspeedDirectionController _airspeed_reference_controller;
-	const float p_gain = 0.8885f;
+	ਅਚਲ ਦਸ਼ਮਲਵ p_gain = 0.8885f;
 
 	// GIVEN: that we are already aligned with out heading setpoint
-	float heading_sp = 0.f;
-	float heading = 0.f;
-	float airspeed = 15.f;
+	ਦਸ਼ਮਲਵ heading_sp = 0.f;
+	ਦਸ਼ਮਲਵ heading = 0.f;
+	ਦਸ਼ਮਲਵ airspeed = 15.f;
 
 	// WHEN: we compute the lateral acceleration setpoint
-	float lateral_acceleration_setpoint = _airspeed_reference_controller.controlHeading(heading_sp, heading, airspeed);
+	ਦਸ਼ਮਲਵ lateral_acceleration_setpoint = _airspeed_reference_controller.controlHeading(heading_sp, heading, airspeed);
 
 	// THEN: we expect 0 lateral acceleration
 	EXPECT_NEAR(lateral_acceleration_setpoint, 0.f, 0.01f);

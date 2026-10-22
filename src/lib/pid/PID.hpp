@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <cmath>
+#ਅਨ੍ਤਰ੍ਭਾਵ <cmath>
 
-class PID
+ਵਰਗ PID
 {
-public:
-	PID() = default;
-	virtual ~PID() = default;
-	void setOutputLimit(const float limit) {setOutputLimit(-limit, limit);}
-	void setOutputLimit(const float lower_limit, const float upper_limit);
-	void setIntegralLimit(const float limit) { _limit_integral = limit; }
-	void setGains(const float P, const float I, const float D);
-	void setSetpoint(const float setpoint) { _setpoint = setpoint; }
-	void setFeedForwardGain(const float feedforward_gain) { _gain_feedforward = feedforward_gain; }
-	float update(const float feedback, const float dt, const bool update_integral = true);
-	float getIntegral() { return _integral; }
-	void resetIntegral() { _integral = 0.f; }
-	void resetDerivative() { _last_feedback = NAN; }
-private:
-	void updateIntegral(float error, const float saturation, const float dt);
-	float updateDerivative(float feedback, const float dt);
+ਜਨਤਕ:
+	PID() = ਮੂਲ;
+	ਆਭਾਸੀ ~PID() = ਮੂਲ;
+	ਖਾਲੀ ਸੈੱਟ_Output_ਹੱਦਬੰਦੀ(ਅਚਲ ਦਸ਼ਮਲਵ ਹੱਦਬੰਦੀ_2) {ਸੈੱਟ_Output_ਹੱਦਬੰਦੀ(-ਹੱਦਬੰਦੀ_2, ਹੱਦਬੰਦੀ_2);}
+	ਖਾਲੀ ਸੈੱਟ_Output_ਹੱਦਬੰਦੀ(ਅਚਲ ਦਸ਼ਮਲਵ ਹੇਠਲਾ_ਹੱਦਬੰਦੀ, ਅਚਲ ਦਸ਼ਮਲਵ ਉੱਤਲਾ_ਹੱਦਬੰਦੀ);
+	ਖਾਲੀ ਸੈੱਟ_Integral_ਹੱਦਬੰਦੀ(ਅਚਲ ਦਸ਼ਮਲਵ ਹੱਦਬੰਦੀ_2) { ਹੱਦਬੰਦੀ_integral = ਹੱਦਬੰਦੀ_2; }
+	ਖਾਲੀ ਸੈੱਟ_Gains(ਅਚਲ ਦਸ਼ਮਲਵ P, ਅਚਲ ਦਸ਼ਮਲਵ I, ਅਚਲ ਦਸ਼ਮਲਵ D);
+	ਖਾਲੀ ਸੈੱਟ_Setpoint(ਅਚਲ ਦਸ਼ਮਲਵ setpoint) { _setpoint = setpoint; }
+	ਖਾਲੀ ਸੈੱਟ_Feed_Forward_Gain(ਅਚਲ ਦਸ਼ਮਲਵ feedforward_gain) { _gain_feedforward = feedforward_gain; }
+	ਦਸ਼ਮਲਵ update(ਅਚਲ ਦਸ਼ਮਲਵ feedback, ਅਚਲ ਦਸ਼ਮਲਵ dt, ਅਚਲ ਤਾਰਕਿਕ update_integral = ਸੱਚ);
+	ਦਸ਼ਮਲਵ getIntegral() { ਵਾਪਸ _integral; }
+	ਖਾਲੀ resetIntegral() { _integral = 0.f; }
+	ਖਾਲੀ resetDerivative() { ਆਖਰੀ_feedback = NAN; }
+ਨਿਜੀ:
+	ਖਾਲੀ updateIntegral(ਦਸ਼ਮਲਵ error, ਅਚਲ ਦਸ਼ਮਲਵ saturation, ਅਚਲ ਦਸ਼ਮਲਵ dt);
+	ਦਸ਼ਮਲਵ updateDerivative(ਦਸ਼ਮਲਵ feedback, ਅਚਲ ਦਸ਼ਮਲਵ dt);
 
-	float _setpoint{0.f}; ///< current setpoint to track
-	float _integral{0.f}; ///< integral state
-	float _last_feedback{NAN};
+	ਦਸ਼ਮਲਵ _setpoint{0.f}; ///< current setpoint to track
+	ਦਸ਼ਮਲਵ _integral{0.f}; ///< integral state
+	ਦਸ਼ਮਲਵ ਆਖਰੀ_feedback{NAN};
 
 	// Gains, Limits
-	float _gain_feedforward{0.f};
-	float _gain_proportional{0.f};
-	float _gain_integral{0.f};
-	float _gain_derivative{0.f};
-	float _limit_integral{0.f};
-	float _lower_limit_output{0.f};
-	float _upper_limit_output{0.f};
+	ਦਸ਼ਮਲਵ _gain_feedforward{0.f};
+	ਦਸ਼ਮਲਵ _gain_proportional{0.f};
+	ਦਸ਼ਮਲਵ _gain_integral{0.f};
+	ਦਸ਼ਮਲਵ _gain_derivative{0.f};
+	ਦਸ਼ਮਲਵ ਹੱਦਬੰਦੀ_integral{0.f};
+	ਦਸ਼ਮਲਵ ਹੇਠਲਾ_ਹੱਦਬੰਦੀ_output{0.f};
+	ਦਸ਼ਮਲਵ ਉੱਤਲਾ_ਹੱਦਬੰਦੀ_output{0.f};
 };

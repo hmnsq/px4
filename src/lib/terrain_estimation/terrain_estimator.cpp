@@ -36,59 +36,59 @@
  * A terrain estimation kalman filter.
  */
 
-#include "terrain_estimator.h"
-#include <lib/geo/geo.h>
-#include <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "terrain_estimator.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/geo/geo.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
 
-#define DISTANCE_TIMEOUT 100000		// time in usec after which laser is considered dead
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਦੂਰੀ_TIMEOUT 100000		// time in usec after which laser is considered dead
 
 TerrainEstimator::TerrainEstimator() :
-	_distance_last(0.0f),
-	_terrain_valid(false),
-	_time_last_distance(0),
-	_time_last_gnss(0)
+	ਦੂਰੀ_ਆਖਰੀ(0.0f),
+	_terrain_valid(ਝੂਠ),
+	ਸਮਾਂ_ਆਖਰੀ_ਦੂਰੀ(0),
+	ਸਮਾਂ_ਆਖਰੀ_gnss(0)
 {
 	_x.zero();
 	_u_z = 0.0f;
-	_P.setIdentity();
+	_P.ਸੈੱਟ_ਪਛਾਣ_ਤੱਤ();
 }
 
-bool TerrainEstimator::is_distance_valid(float distance)
+ਤਾਰਕਿਕ TerrainEstimator::is_ਦੂਰੀ_valid(ਦਸ਼ਮਲਵ ਦੂਰੀ)
 {
-	return (distance < 40.0f && distance > 0.00001f);
+	ਵਾਪਸ (ਦੂਰੀ < 40.0f && ਦੂਰੀ > 0.00001f);
 }
 
-void TerrainEstimator::predict(float dt, const struct vehicle_attitude_s *attitude,
-			       const struct sensor_combined_s *sensor,
-			       const struct distance_sensor_s *distance)
+ਖਾਲੀ TerrainEstimator::predict(ਦਸ਼ਮਲਵ dt, ਅਚਲ ਬਣਤਰ vehicle_attitude_s *attitude,
+			       ਅਚਲ ਬਣਤਰ sensor_combined_s *sensor,
+			       ਅਚਲ ਬਣਤਰ ਦੂਰੀ_sensor_s *ਦੂਰੀ)
 {
-	matrix::Dcmf R_att = matrix::Quatf(attitude->q);
-	matrix::Vector3f a{sensor->accelerometer_m_s2[0], sensor->accelerometer_m_s2[1], sensor->accelerometer_m_s2[2]};
-	matrix::Vector<float, 3> u;
+	ਮੈਟ੍ਰਿਕਸ::Dcmf R_att = ਮੈਟ੍ਰਿਕਸ::Quatf(attitude->q);
+	ਮੈਟ੍ਰਿਕਸ::Vector3f a{sensor->accelerometer_m_s2[0], sensor->accelerometer_m_s2[1], sensor->accelerometer_m_s2[2]};
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<ਦਸ਼ਮਲਵ, 3> u;
 	u = R_att * a;
 	_u_z = u(2) + CONSTANTS_ONE_G; // compensate for gravity
 
 	// dynamics matrix
-	matrix::Matrix<float, n_x, n_x> A;
-	A.setZero();
+	ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<ਦਸ਼ਮਲਵ, n_x, n_x> A;
+	A.ਸੈੱਟ_Zero();
 	A(0, 1) = 1;
 	A(1, 2) = 1;
 
 	// input matrix
-	matrix::Matrix<float, n_x, 1>  B;
-	B.setZero();
+	ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<ਦਸ਼ਮਲਵ, n_x, 1>  B;
+	B.ਸੈੱਟ_Zero();
 	B(1, 0) = 1;
 
 	// input noise variance
-	float R = 0.135f;
+	ਦਸ਼ਮਲਵ R = 0.135f;
 
 	// process noise convariance
-	matrix::Matrix<float, n_x, n_x>  Q;
+	ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<ਦਸ਼ਮਲਵ, n_x, n_x>  Q;
 	Q(0, 0) = 0;
 	Q(1, 1) = 0;
 
 	// do prediction
-	matrix::Vector<float, n_x>  dx = (A * _x) * dt;
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<ਦਸ਼ਮਲਵ, n_x>  dx = (A * _x) * dt;
 	dx(1) += B(1, 0) * _u_z * dt;
 
 	// propagate state and covariance matrix
@@ -97,81 +97,81 @@ void TerrainEstimator::predict(float dt, const struct vehicle_attitude_s *attitu
 	       B * R * B.transpose() + Q) * dt;
 }
 
-void TerrainEstimator::measurement_update(uint64_t time_ref, const struct sensor_gnss_s *gnss,
-		const struct distance_sensor_s *distance,
-		const struct vehicle_attitude_s *attitude)
+ਖਾਲੀ TerrainEstimator::measurement_update(uint64_t ਸਮਾਂ_ref, ਅਚਲ ਬਣਤਰ sensor_gnss_s *gnss,
+		ਅਚਲ ਬਣਤਰ ਦੂਰੀ_sensor_s *ਦੂਰੀ,
+		ਅਚਲ ਬਣਤਰ vehicle_attitude_s *attitude)
 {
 	// terrain estimate is invalid if we have range sensor timeout
-	if (time_ref - distance->timestamp > DISTANCE_TIMEOUT) {
-		_terrain_valid = false;
+	ਜੇ (ਸਮਾਂ_ref - ਦੂਰੀ->timestamp > ਦੂਰੀ_TIMEOUT) {
+		_terrain_valid = ਝੂਠ;
 	}
 
-	if (distance->timestamp > _time_last_distance) {
-		matrix::Quatf q(attitude->q);
-		matrix::Eulerf euler(q);
-		float d = distance->current_distance;
+	ਜੇ (ਦੂਰੀ->timestamp > ਸਮਾਂ_ਆਖਰੀ_ਦੂਰੀ) {
+		ਮੈਟ੍ਰਿਕਸ::Quatf q(attitude->q);
+		ਮੈਟ੍ਰਿਕਸ::Eulerf euler(q);
+		ਦਸ਼ਮਲਵ d = ਦੂਰੀ->current_ਦੂਰੀ;
 
-		matrix::Matrix<float, 1, n_x> C;
+		ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<ਦਸ਼ਮਲਵ, 1, n_x> C;
 		C(0, 0) = -1; // measured altitude,
 
-		float R = 0.009f;
+		ਦਸ਼ਮਲਵ R = 0.009f;
 
-		matrix::Vector<float, 1> y;
+		ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<ਦਸ਼ਮਲਵ, 1> y;
 		y(0) = d * cosf(euler.phi()) * cosf(euler.theta());
 
 		// residual
-		matrix::Matrix<float, 1, 1> S_I = (C * _P * C.transpose());
+		ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<ਦਸ਼ਮਲਵ, 1, 1> S_I = (C * _P * C.transpose());
 		S_I(0, 0) += R;
-		S_I = matrix::inv<float, 1> (S_I);
-		matrix::Vector<float, 1> r = y - C * _x;
+		S_I = ਮੈਟ੍ਰਿਕਸ::inv<ਦਸ਼ਮਲਵ, 1> (S_I);
+		ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<ਦਸ਼ਮਲਵ, 1> r = y - C * _x;
 
-		matrix::Matrix<float, n_x, 1> K = _P * C.transpose() * S_I;
+		ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<ਦਸ਼ਮਲਵ, n_x, 1> K = _P * C.transpose() * S_I;
 
 		// some sort of outlayer rejection
-		if (fabsf(distance->current_distance - _distance_last) < 1.0f) {
+		ਜੇ (fabsf(ਦੂਰੀ->current_ਦੂਰੀ - ਦੂਰੀ_ਆਖਰੀ) < 1.0f) {
 			_x += K * r;
 			_P -= K * C * _P;
 		}
 
 		// if the current and the last range measurement are bad then we consider the terrain
 		// estimate to be invalid
-		if (!is_distance_valid(distance->current_distance) && !is_distance_valid(_distance_last)) {
-			_terrain_valid = false;
+		ਜੇ (!is_ਦੂਰੀ_valid(ਦੂਰੀ->current_ਦੂਰੀ) && !is_ਦੂਰੀ_valid(ਦੂਰੀ_ਆਖਰੀ)) {
+			_terrain_valid = ਝੂਠ;
 
-		} else {
-			_terrain_valid = true;
+		} ਨਹੀਂਤਾਂ {
+			_terrain_valid = ਸੱਚ;
 		}
 
-		_time_last_distance = distance->timestamp;
-		_distance_last = distance->current_distance;
+		ਸਮਾਂ_ਆਖਰੀ_ਦੂਰੀ = ਦੂਰੀ->timestamp;
+		ਦੂਰੀ_ਆਖਰੀ = ਦੂਰੀ->current_ਦੂਰੀ;
 	}
 
-	if (gnss->timestamp > _time_last_gnss && gnss->fix_type >= 3) {
-		matrix::Matrix<float, 1, n_x> C;
+	ਜੇ (gnss->timestamp > ਸਮਾਂ_ਆਖਰੀ_gnss && gnss->fix_type >= 3) {
+		ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<ਦਸ਼ਮਲਵ, 1, n_x> C;
 		C(0, 1) = 1;
 
-		float R = 0.056f;
+		ਦਸ਼ਮਲਵ R = 0.056f;
 
-		matrix::Vector<float, 1> y;
-		y(0) = gnss->vel_down;
+		ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<ਦਸ਼ਮਲਵ, 1> y;
+		y(0) = gnss->vel_ਥੱਲੇ;
 
 		// residual
-		matrix::Matrix<float, 1, 1> S_I = (C * _P * C.transpose());
+		ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<ਦਸ਼ਮਲਵ, 1, 1> S_I = (C * _P * C.transpose());
 		S_I(0, 0) += R;
-		S_I = matrix::inv<float, 1>(S_I);
-		matrix::Vector<float, 1> r = y - C * _x;
+		S_I = ਮੈਟ੍ਰਿਕਸ::inv<ਦਸ਼ਮਲਵ, 1>(S_I);
+		ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<ਦਸ਼ਮਲਵ, 1> r = y - C * _x;
 
-		matrix::Matrix<float, n_x, 1> K = _P * C.transpose() * S_I;
+		ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<ਦਸ਼ਮਲਵ, n_x, 1> K = _P * C.transpose() * S_I;
 		_x += K * r;
 		_P -= K * C * _P;
 
-		_time_last_gnss = gnss->timestamp;
+		ਸਮਾਂ_ਆਖਰੀ_gnss = gnss->timestamp;
 	}
 
 	// reinitialise filter if we find bad data
-	if (!_x.isAllFinite() || !_P.isAllFinite()) {
+	ਜੇ (!_x.isAllFinite() || !_P.isAllFinite()) {
 		_x.zero();
-		_P.setZero();
+		_P.ਸੈੱਟ_Zero();
 		_P(0, 0) = _P(1, 1) = _P(2, 2) = 0.1f;
 	}
 

@@ -37,66 +37,66 @@
  * @author Mathieu Bresciani <mathieu@auterion.com>
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <matrix/matrix/math.hpp>
-#include <mathlib/mathlib.h>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
-#include <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <lib/mathlib/math/filter/AlphaFilter.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/mathlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/filter/LowPassFilter2p.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
 
-#include "arx_rls.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "arx_rls.hpp"
 
-class SystemIdentification final
+ਵਰਗ SystemIdentification final
 {
-public:
-	SystemIdentification() = default;
-	~SystemIdentification() = default;
+ਜਨਤਕ:
+	SystemIdentification() = ਮੂਲ;
+	~SystemIdentification() = ਮੂਲ;
 
-	void reset(const matrix::Vector<float, 5> &id_state_init = {});
-	void update(float u, float y); // update filters and model
-	void update(); // update model only (to be called after updateFilters)
-	void updateFilters(float u, float y);
-	bool areFiltersInitialized() const { return _are_filters_initialized; }
-	void updateFitness();
-	const matrix::Vector<float, 5> &getCoefficients() const { return _rls.getCoefficients(); }
-	const matrix::Vector<float, 5> getVariances() const { return _rls.getVariances(); }
-	const matrix::Vector<float, 5> &getDiffEstimate() const { return _rls.getDiffEstimate(); }
-	float getFitness() const { return _fitness_lpf.getState(); }
-	float getInnovation() const { return _rls.getInnovation(); }
+	ਖਾਲੀ reset(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<ਦਸ਼ਮਲਵ, 5> &id_state_init = {});
+	ਖਾਲੀ update(ਦਸ਼ਮਲਵ u, ਦਸ਼ਮਲਵ y); // update filters and model
+	ਖਾਲੀ update(); // update model only (to be called after updateFilters)
+	ਖਾਲੀ updateFilters(ਦਸ਼ਮਲਵ u, ਦਸ਼ਮਲਵ y);
+	ਤਾਰਕਿਕ areFiltersInitialized() ਅਚਲ { ਵਾਪਸ _are_filters_initialized; }
+	ਖਾਲੀ updateFitness();
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<ਦਸ਼ਮਲਵ, 5> &getCoefficients() ਅਚਲ { ਵਾਪਸ _rls.getCoefficients(); }
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<ਦਸ਼ਮਲਵ, 5> getVariances() ਅਚਲ { ਵਾਪਸ _rls.getVariances(); }
+	ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<ਦਸ਼ਮਲਵ, 5> &getDiffEstimate() ਅਚਲ { ਵਾਪਸ _rls.getDiffEstimate(); }
+	ਦਸ਼ਮਲਵ getFitness() ਅਚਲ { ਵਾਪਸ _fitness_lpf.getState(); }
+	ਦਸ਼ਮਲਵ getInnovation() ਅਚਲ { ਵਾਪਸ _rls.getInnovation(); }
 
-	void setLpfCutoffFrequency(float sample_freq, float cutoff)
+	ਖਾਲੀ ਸੈੱਟ_Lpf_Cutoff_Frequency(ਦਸ਼ਮਲਵ sample_freq, ਦਸ਼ਮਲਵ cutoff)
 	{
-		_u_lpf.set_cutoff_frequency(sample_freq, cutoff);
-		_y_lpf.set_cutoff_frequency(sample_freq, cutoff);
+		_u_lpf.ਸੈੱਟ_cutoff_frequency(sample_freq, cutoff);
+		_y_lpf.ਸੈੱਟ_cutoff_frequency(sample_freq, cutoff);
 	}
-	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
+	ਖਾਲੀ ਸੈੱਟ_Hpf_Cutoff_Frequency(ਦਸ਼ਮਲਵ sample_freq, ਦਸ਼ਮਲਵ cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	void setForgettingFactor(float time_constant, float dt) { _rls.setForgettingFactor(time_constant, dt); }
-	void setFitnessLpfTimeConstant(float time_constant, float dt)
+	ਖਾਲੀ ਸੈੱਟ_Forgetting_ਗੁਣਕ(ਦਸ਼ਮਲਵ ਸਮਾਂ_constant_2, ਦਸ਼ਮਲਵ dt) { _rls.ਸੈੱਟ_Forgetting_ਗੁਣਕ(ਸਮਾਂ_constant_2, dt); }
+	ਖਾਲੀ ਸੈੱਟ_Fitness_Lpf_ਸਮਾਂ_Constant(ਦਸ਼ਮਲਵ ਸਮਾਂ_constant_2, ਦਸ਼ਮਲਵ dt)
 	{
-		_fitness_lpf.setParameters(dt, time_constant);
+		_fitness_lpf.ਸੈੱਟ_Parameters(dt, ਸਮਾਂ_constant_2);
 		_dt = dt;
 	}
 
-	float getFilteredInputData() const { return _u_hpf; }
-	float getFilteredOutputData() const { return _y_hpf; }
+	ਦਸ਼ਮਲਵ get_Filtered_ਨਿਵੇਸ਼_ਅੰਕੜੇ() ਅਚਲ { ਵਾਪਸ _u_hpf; }
+	ਦਸ਼ਮਲਵ get_Filtered_Output_ਅੰਕੜੇ() ਅਚਲ { ਵਾਪਸ _y_hpf; }
 
-private:
+ਨਿਜੀ:
 	ArxRls<2, 2, 1> _rls;
-	math::LowPassFilter2p<float> _u_lpf{400.f, 30.f};
-	math::LowPassFilter2p<float> _y_lpf{400.f, 30.f};
+	math::ਨੀਵਾਂ_Pass_Filter2p<ਦਸ਼ਮਲਵ> _u_lpf{400.f, 30.f};
+	math::ਨੀਵਾਂ_Pass_Filter2p<ਦਸ਼ਮਲਵ> _y_lpf{400.f, 30.f};
 
 	//TODO: replace by HighPassFilter class
-	float _alpha_hpf{0.f};
-	float _u_hpf{0.f};
-	float _y_hpf{0.f};
+	ਦਸ਼ਮਲਵ _alpha_hpf{0.f};
+	ਦਸ਼ਮਲਵ _u_hpf{0.f};
+	ਦਸ਼ਮਲਵ _y_hpf{0.f};
 
-	float _u_prev{0.f};
-	float _y_prev{0.f};
+	ਦਸ਼ਮਲਵ _u_prev{0.f};
+	ਦਸ਼ਮਲਵ _y_prev{0.f};
 
-	bool _are_filters_initialized{false};
+	ਤਾਰਕਿਕ _are_filters_initialized{ਝੂਠ};
 
-	AlphaFilter<float> _fitness_lpf;
-	float _dt{0.1f};
+	AlphaFilter<ਦਸ਼ਮਲਵ> _fitness_lpf;
+	ਦਸ਼ਮਲਵ _dt{0.1f};
 };

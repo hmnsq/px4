@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#include "RtcmTestCommon.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "RtcmTestCommon.hpp"
 
-TEST_F(RtcmTest, CRC24Q_EmptyData)
+TEST_F(RtcmTest, CRC24_Q_ਖਾਲੀ_ਥਾਵਾਂ_ਅੰਕੜੇ)
 {
-	uint32_t crc = rtcm3_crc24q(nullptr, 0);
-	EXPECT_EQ(crc, 0u);
+	uint32_t ਚੱਕਰੀ_ਜਾਂਚ = rtcm3_crc24q(ਖਾਲੀ_ਸੂਚਕ, 0);
+	EXPECT_EQ(ਚੱਕਰੀ_ਜਾਂਚ, 0u);
 }
 
-TEST_F(RtcmTest, CRC24Q_KnownValue)
+TEST_F(RtcmTest, CRC24_Q_ਗਿਆਤ_ਮੁੱਲ)
 {
 	// Test with known RTCM data
-	uint8_t data[] = {0xD3, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04};
-	uint32_t crc = rtcm3_crc24q(data, sizeof(data));
+	uint8_t ਅੰਕੜੇ[] = {0xD3, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04};
+	uint32_t ਚੱਕਰੀ_ਜਾਂਚ = rtcm3_crc24q(ਅੰਕੜੇ, ਆਕਾਰ(ਅੰਕੜੇ));
 	// CRC should be a 24-bit value
-	EXPECT_EQ(crc & 0xFF000000, 0u);
-	EXPECT_NE(crc, 0u);
+	EXPECT_EQ(ਚੱਕਰੀ_ਜਾਂਚ & 0xFF000000, 0u);
+	EXPECT_NE(ਚੱਕਰੀ_ਜਾਂਚ, 0u);
 }

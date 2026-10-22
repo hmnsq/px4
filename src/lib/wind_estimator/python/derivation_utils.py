@@ -34,16 +34,16 @@ Description:
     Common functions used for the derivation of most estimators
 """
 
-from symforce import symbolic as sm
-from symforce import geo
-from symforce import typing as T
+ਤਃ symforce ਆਯਾਤ symbolic ਇਵ sm
+ਤਃ symforce ਆਯਾਤ geo
+ਤਃ symforce ਆਯਾਤ typing ਇਵ T
 
-import re
+ਆਯਾਤ re
 
 # q: quaternion describing rotation from frame 1 to frame 2
 # returns a rotation matrix derived form q which describes the same
 # rotation
-def quat_to_rot(q):
+ਪਰਿਭਾਸ਼ਾ quat_ਮੰਜ਼ਿਲ_rot(q):
     q0 = q[0]
     q1 = q[1]
     q2 = q[2]
@@ -53,55 +53,55 @@ def quat_to_rot(q):
                   [2*(q1*q2 + q0*q3), q0**2 - q1**2 + q2**2 - q3**2, 2*(q2*q3 - q0*q1)],
                    [2*(q1*q3-q0*q2), 2*(q2*q3 + q0*q1), q0**2 - q1**2 - q2**2 + q3**2]])
 
-    return Rot
+    ਵਾਪਸ Rot
 
-def sign_no_zero(x) -> T.Scalar:
+ਪਰਿਭਾਸ਼ਾ sign_no_zero(x) -> T.Scalar:
     """
     Returns -1 if x is negative, 1 if x is positive, and 1 if x is zero
     """
-    return 2 * sm.Min(sm.sign(x), 0) + 1
+    ਵਾਪਸ 2 * sm.Min(sm.sign(x), 0) + 1
 
-def add_epsilon_sign(expr, var, eps):
+ਪਰਿਭਾਸ਼ਾ ਜੋੜੋ_epsilon_sign(ਵਿਅੰਜਕ, var, eps):
     # Avoids a singularity at 0 while keeping the derivative correct
-    return expr.subs(var, var + eps * sign_no_zero(var))
+    ਵਾਪਸ ਵਿਅੰਜਕ.subs(var, var + eps * sign_no_zero(var))
 
-def generate_px4_function(function_name, output_names):
-    from symforce.codegen import Codegen, CppConfig
-    import os
-    import fileinput
+ਪਰਿਭਾਸ਼ਾ generate_px4_function(function_name, output_ਨਾਂ):
+    ਤਃ symforce.codegen ਆਯਾਤ Codegen, CppConfig
+    ਆਯਾਤ os
+    ਆਯਾਤ fileinput
 
     codegen = Codegen.function(
             function_name,
-            output_names=output_names,
+            output_ਨਾਂ=output_ਨਾਂ,
             config=CppConfig())
     metadata = codegen.generate_function(
             output_dir="generated",
-            skip_directory_nesting=True)
+            skip_directory_nesting=ਸੱਚ)
 
-    print("Files generated in {}:\n".format(metadata.output_dir))
-    for f in metadata.generated_files:
-        print("  |- {}".format(os.path.relpath(f, metadata.output_dir)))
+    ਛਾਪੋ("Files generated in {}:\n".format(metadata.output_dir))
+    ਲਈ f ਵਿੱਚ metadata.generated_files:
+        ਛਾਪੋ("  |- {}".format(os.ਰਸਤਾ.relpath(f, metadata.output_dir)))
 
     # Replace cstdlib and Eigen functions by PX4 equivalents
-    with fileinput.FileInput(os.path.abspath(metadata.generated_files[0]), inplace=True, backup='.bak') as file:
-        for line in file:
-            line = line.replace("std::max", "math::max")
-            line = line.replace("std::min", "math::min")
-            line = line.replace("Eigen", "matrix")
-            line = line.replace("matrix/Dense", "matrix/math.hpp")
+    ਨਾਲ fileinput.File_ਨਿਵੇਸ਼(os.ਰਸਤਾ.abspath(metadata.generated_files[0]), inplace=ਸੱਚ, backup='.bak') ਇਵ file:
+        ਲਈ ਸਤਰ ਵਿੱਚ file:
+            ਸਤਰ = ਸਤਰ.replace("std::max", "math::max")
+            ਸਤਰ = ਸਤਰ.replace("std::min", "math::min")
+            ਸਤਰ = ਸਤਰ.replace("Eigen", "matrix")
+            ਸਤਰ = ਸਤਰ.replace("matrix/Dense", "matrix/math.hpp")
 
             # don't allow underscore + uppercase identifier naming (always reserved for any use)
-            line = re.sub(r'_([A-Z])', lambda x: '_' + x.group(1).lower(), line)
+            ਸਤਰ = re.sub(r'_([A-Z])', ਅਨਾਮ x: '_' + x.ਸਮੂਹ(1).ਹੇਠਲਾ(), ਸਤਰ)
 
-            print(line, end='')
+            ਛਾਪੋ(ਸਤਰ, ਸਿਰਾ='')
 
-def generate_python_function(function_name, output_names):
-    from symforce.codegen import Codegen, PythonConfig
+ਪਰਿਭਾਸ਼ਾ generate_python_function(function_name, output_ਨਾਂ):
+    ਤਃ symforce.codegen ਆਯਾਤ Codegen, PythonConfig
     codegen = Codegen.function(
             function_name,
-            output_names=output_names,
+            output_ਨਾਂ=output_ਨਾਂ,
             config=PythonConfig())
 
     metadata = codegen.generate_function(
             output_dir="generated",
-            skip_directory_nesting=True)
+            skip_directory_nesting=ਸੱਚ)

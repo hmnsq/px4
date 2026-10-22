@@ -31,36 +31,36 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <matrix/math.hpp>
 
-using namespace matrix;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ;
 
-TEST(MatrixSetIdentityTest, SetIdentity)
+TEST(ਮੈਟ੍ਰਿਕਸ_ਸੈੱਟ_ਪਛਾਣ_ਤੱਤ_Test, ਸੈੱਟ_ਪਛਾਣ_ਤੱਤ_2)
 {
 	Matrix3f A;
-	A.setIdentity();
+	A.ਸੈੱਟ_ਪਛਾਣ_ਤੱਤ();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	ਲਈ (size_t i = 0; i < 3; i++) {
+		ਲਈ (size_t j = 0; j < 3; j++) {
+			ਜੇ (i == j) {
 				EXPECT_FLOAT_EQ(A(i, j), 1);
 
-			} else {
+			} ਨਹੀਂਤਾਂ {
 				EXPECT_FLOAT_EQ(A(i, j), 0);
 			}
 		}
 	}
 
 	Matrix3f B;
-	B.identity();
+	B.ਪਛਾਣ_ਤੱਤ();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	ਲਈ (size_t i = 0; i < 3; i++) {
+		ਲਈ (size_t j = 0; j < 3; j++) {
+			ਜੇ (i == j) {
 				EXPECT_FLOAT_EQ(B(i, j), 1);
 
-			} else {
+			} ਨਹੀਂਤਾਂ {
 				EXPECT_FLOAT_EQ(B(i, j), 0);
 			}
 		}

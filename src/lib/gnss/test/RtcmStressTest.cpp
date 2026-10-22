@@ -31,44 +31,44 @@
  *
  ****************************************************************************/
 
-#include "RtcmTestCommon.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "RtcmTestCommon.hpp"
 
-TEST_F(RtcmTest, Stress_ManySmallValidFrames)
+TEST_F(RtcmTest, Stress_Many_Small_Valid_ਚੌਖਟੇ)
 {
 	// Simulate a good sender sending many small messages
 	// Process as we go to avoid buffer overflow
-	const int num_frames = 1000;
-	int count = 0;
+	ਅਚਲ ਪੂਰਨ ਅੰਕ_ਚੌਖਟੇ = 1000;
+	ਪੂਰਨ ਗਿਣਤੀ_2 = 0;
 
-	for (int i = 0; i < num_frames; i++) {
-		auto frame = buildValidFrame(1005 + (i % 100), {static_cast<uint8_t>(i & 0xFF)});
-		parser.addData(frame.data(), frame.size());
+	ਲਈ (ਪੂਰਨ i = 0; i < ਅੰਕ_ਚੌਖਟੇ; i++) {
+		ਸਵੈਚਾਲਿਤ ਚੌਖਟਾ = build_Valid_ਚੌਖਟਾ(1005 + (i % 100), {static_cast<uint8_t>(i & 0xFF)});
+		parser.ਜੋੜੋ_ਅੰਕੜੇ(ਚੌਖਟਾ.ਅੰਕੜੇ(), ਚੌਖਟਾ.ਮਾਪ());
 
 		// Consume available messages after each add
 		size_t len;
 
-		while (parser.getNextMessage(&len) != nullptr) {
-			parser.consumeMessage(len);
-			count++;
+		ਜਦੋਂ (parser.get_ਅਗਲਾ_ਸੁਨੇਹਾ(&len) != ਖਾਲੀ_ਸੂਚਕ) {
+			parser.consume_ਸੁਨੇਹਾ(len);
+			ਗਿਣਤੀ_2++;
 		}
 	}
 
-	EXPECT_EQ(count, num_frames);
-	auto stats = parser.getStats();
-	EXPECT_EQ(stats.messages_parsed, static_cast<uint32_t>(num_frames));
-	EXPECT_EQ(stats.bytes_discarded, 0u);
-	EXPECT_EQ(stats.crc_errors, 0u);
+	EXPECT_EQ(ਗਿਣਤੀ_2, ਅੰਕ_ਚੌਖਟੇ);
+	ਸਵੈਚਾਲਿਤ stats = parser.getStats();
+	EXPECT_EQ(stats.messages_parsed, static_cast<uint32_t>(ਅੰਕ_ਚੌਖਟੇ));
+	EXPECT_EQ(stats.ਬਾਈਟਾਂ_discarded_2, 0u);
+	EXPECT_EQ(stats.ਚੱਕਰੀ_ਜਾਂਚ_errors_2, 0u);
 }
 
-TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
+TEST_F(RtcmTest, Stress_Long_Garbage_ਧਾਰਾ_Then_Valid)
 {
 	// This tests the pathological case Alex mentioned: lots of invalid data
 	// causing many memmove operations during preamble search
-	const size_t garbage_size = 10000;
-	std::vector<uint8_t> garbage(garbage_size);
+	ਅਚਲ size_t garbage_ਮਾਪ = 10000;
+	std::ਸਦਿਸ਼_2<uint8_t> garbage(garbage_ਮਾਪ);
 	std::mt19937 rng(99);
 
-	for (auto &byte : garbage) {
+	ਲਈ (ਸਵੈਚਾਲਿਤ &byte : garbage) {
 		// Avoid every protocol preamble to ensure maximum discards: 0xD3 (RTCM3)
 		// and 0x73 (SPARTN), which the framer also treats as a frame start when
 		// CONFIG_GPS_SPARTN is enabled.
@@ -76,55 +76,55 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 	}
 
 	// Add in chunks to simulate streaming
-	size_t offset = 0;
+	size_t ਵਿੱਥ = 0;
 
-	while (offset < garbage.size()) {
-		size_t chunk = std::min<size_t>(256, garbage.size() - offset);
-		parser.addData(&garbage[offset], chunk);
+	ਜਦੋਂ (ਵਿੱਥ < garbage.ਮਾਪ()) {
+		size_t chunk = std::min<size_t>(256, garbage.ਮਾਪ() - ਵਿੱਥ);
+		parser.ਜੋੜੋ_ਅੰਕੜੇ(&garbage[ਵਿੱਥ], chunk);
 
 		// Try to parse (forces discarding)
 		size_t len;
-		parser.getNextMessage(&len);
-		offset += chunk;
+		parser.get_ਅਗਲਾ_ਸੁਨੇਹਾ(&len);
+		ਵਿੱਥ += chunk;
 	}
 
 	// Now add a valid frame
-	auto valid = buildValidFrame(1005, {0x01, 0x02, 0x03});
-	parser.addData(valid.data(), valid.size());
+	ਸਵੈਚਾਲਿਤ valid = build_Valid_ਚੌਖਟਾ(1005, {0x01, 0x02, 0x03});
+	parser.ਜੋੜੋ_ਅੰਕੜੇ(valid.ਅੰਕੜੇ(), valid.ਮਾਪ());
 
 	size_t len;
-	const uint8_t *msg = parser.getNextMessage(&len);
-	ASSERT_NE(msg, nullptr);
+	ਅਚਲ uint8_t *ਸੁਨੇਹਾ_2 = parser.get_ਅਗਲਾ_ਸੁਨੇਹਾ(&len);
+	ASSERT_NE(ਸੁਨੇਹਾ_2, ਖਾਲੀ_ਸੂਚਕ);
 
-	parser.consumeMessage(len);
-	auto stats = parser.getStats();
+	parser.consume_ਸੁਨੇਹਾ(len);
+	ਸਵੈਚਾਲਿਤ stats = parser.getStats();
 	EXPECT_EQ(stats.messages_parsed, 1u);
-	EXPECT_EQ(stats.bytes_discarded, garbage_size);
+	EXPECT_EQ(stats.ਬਾਈਟਾਂ_discarded_2, garbage_ਮਾਪ);
 }
 
 TEST_F(RtcmTest, Stress_InterleavedGarbageAndValid)
 {
 	// Simulate a flaky sender that mixes garbage with valid frames
-	const int num_valid = 100;
-	int parsed = 0;
+	ਅਚਲ ਪੂਰਨ ਅੰਕ_valid = 100;
+	ਪੂਰਨ parsed = 0;
 
-	for (int i = 0; i < num_valid; i++) {
+	ਲਈ (ਪੂਰਨ i = 0; i < ਅੰਕ_valid; i++) {
 		// Add some garbage (variable amount)
-		std::vector<uint8_t> garbage(10 + (i % 50), 0xAA);
-		parser.addData(garbage.data(), garbage.size());
+		std::ਸਦਿਸ਼_2<uint8_t> garbage(10 + (i % 50), 0xAA);
+		parser.ਜੋੜੋ_ਅੰਕੜੇ(garbage.ਅੰਕੜੇ(), garbage.ਮਾਪ());
 
 		// Add valid frame
-		auto frame = buildValidFrame(1005, {static_cast<uint8_t>(i)});
-		parser.addData(frame.data(), frame.size());
+		ਸਵੈਚਾਲਿਤ ਚੌਖਟਾ = build_Valid_ਚੌਖਟਾ(1005, {static_cast<uint8_t>(i)});
+		parser.ਜੋੜੋ_ਅੰਕੜੇ(ਚੌਖਟਾ.ਅੰਕੜੇ(), ਚੌਖਟਾ.ਮਾਪ());
 
 		// Parse what we can
 		size_t len;
 
-		while (parser.getNextMessage(&len) != nullptr) {
-			parser.consumeMessage(len);
+		ਜਦੋਂ (parser.get_ਅਗਲਾ_ਸੁਨੇਹਾ(&len) != ਖਾਲੀ_ਸੂਚਕ) {
+			parser.consume_ਸੁਨੇਹਾ(len);
 			parsed++;
 		}
 	}
 
-	EXPECT_EQ(parsed, num_valid);
+	EXPECT_EQ(parsed, ਅੰਕ_valid);
 }

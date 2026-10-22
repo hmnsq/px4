@@ -37,163 +37,163 @@
  * Protected build kernel space interface to global parameter store.
  */
 
-#define PARAM_IMPLEMENTATION
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PARAM_IMPLEMENTATION
 
-#include <errno.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <errno.h>
 
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "param.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "parameters_ioctl.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
 
-int	param_ioctl(unsigned int cmd, unsigned long arg)
+ਪੂਰਨ	param_ioctl(ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ cmd, ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ arg)
 {
-	int ret = OK;
+	ਪੂਰਨ ret = OK;
 
-	switch (cmd) {
-	case PARAMIOCNOTIFY: {
+	ਚੋਣ (cmd) {
+	ਹਾਲਤ PARAMIOCNOTIFY: {
 			param_notify_changes();
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCFIND: {
-			paramiocfind_t *data = (paramiocfind_t *)arg;
+	ਹਾਲਤ PARAMIOCFIND: {
+			paramiocfind_t *ਅੰਕੜੇ = (paramiocfind_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_find(data->name);
+			ਜੇ (ਅੰਕੜੇ->notification) {
+				ਅੰਕੜੇ->ret = param_ਲੱਭੋ(ਅੰਕੜੇ->name);
 
-			} else {
-				data->ret = param_find_no_notification(data->name);
+			} ਨਹੀਂਤਾਂ {
+				ਅੰਕੜੇ->ret = param_ਲੱਭੋ_no_notification(ਅੰਕੜੇ->name);
 			}
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCCOUNTUSED: {
-			paramioccountused_t *data = (paramioccountused_t *)arg;
-			data->ret = param_count_used();
+	ਹਾਲਤ PARAMIOCCOUNTUSED: {
+			paramioccountused_t *ਅੰਕੜੇ = (paramioccountused_t *)arg;
+			ਅੰਕੜੇ->ret = param_ਗਿਣਤੀ_ਵਰਤਿਆ();
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCFORUSEDINDEX: {
-			paramiocforusedindex_t *data = (paramiocforusedindex_t *)arg;
-			data->ret =  param_for_used_index(data->index);
+	ਹਾਲਤ PARAMIOCFORUSEDINDEX: {
+			paramiocforusedindex_t *ਅੰਕੜੇ = (paramiocforusedindex_t *)arg;
+			ਅੰਕੜੇ->ret =  param_for_ਵਰਤਿਆ_ਸੂਚਕਾਂਕ(ਅੰਕੜੇ->ਸੂਚਕਾਂਕ);
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCGETUSEDINDEX: {
-			paramiocgetusedindex_t *data = (paramiocgetusedindex_t *)arg;
-			data->ret = param_get_used_index(data->param);
+	ਹਾਲਤ PARAMIOCGETUSEDINDEX: {
+			paramiocgetusedindex_t *ਅੰਕੜੇ = (paramiocgetusedindex_t *)arg;
+			ਅੰਕੜੇ->ret = param_get_ਵਰਤਿਆ_ਸੂਚਕਾਂਕ(ਅੰਕੜੇ->param);
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCUNSAVED: {
-			paramiocunsaved_t *data = (paramiocunsaved_t *)arg;
-			data->ret = param_value_unsaved(data->param);
+	ਹਾਲਤ PARAMIOCUNSAVED: {
+			paramiocunsaved_t *ਅੰਕੜੇ = (paramiocunsaved_t *)arg;
+			ਅੰਕੜੇ->ret = param_ਮੁੱਲ_unsaved(ਅੰਕੜੇ->param);
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCGET: {
-			paramiocget_t *data = (paramiocget_t *)arg;
+	ਹਾਲਤ PARAMIOCGET: {
+			paramiocget_t *ਅੰਕੜੇ = (paramiocget_t *)arg;
 
-			if (data->deflt) {
-				data->ret = param_get_default_value(data->param, data->val);
+			ਜੇ (ਅੰਕੜੇ->deflt) {
+				ਅੰਕੜੇ->ret = param_get_default_ਮੁੱਲ(ਅੰਕੜੇ->param, ਅੰਕੜੇ->val);
 
-			} else {
-				data->ret = param_get(data->param, data->val);
+			} ਨਹੀਂਤਾਂ {
+				ਅੰਕੜੇ->ret = param_get(ਅੰਕੜੇ->param, ਅੰਕੜੇ->val);
 			}
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCAUTOSAVE: {
-			paramiocautosave_t *data = (paramiocautosave_t *)arg;
-			param_control_autosave(data->enable);
+	ਹਾਲਤ PARAMIOCAUTOSAVE: {
+			paramiocautosave_t *ਅੰਕੜੇ = (paramiocautosave_t *)arg;
+			param_control_autosave(ਅੰਕੜੇ->enable);
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCSET: {
-			paramiocset_t *data = (paramiocset_t *)arg;
+	ਹਾਲਤ PARAMIOCSET: {
+			paramiocset_t *ਅੰਕੜੇ = (paramiocset_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_set(data->param, data->val);
+			ਜੇ (ਅੰਕੜੇ->notification) {
+				ਅੰਕੜੇ->ret = param_ਸੈੱਟ(ਅੰਕੜੇ->param, ਅੰਕੜੇ->val);
 
-			} else {
-				data->ret = param_set_no_notification(data->param, data->val);
+			} ਨਹੀਂਤਾਂ {
+				ਅੰਕੜੇ->ret = param_ਸੈੱਟ_no_notification(ਅੰਕੜੇ->param, ਅੰਕੜੇ->val);
 			}
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCUSED: {
-			paramiocused_t *data = (paramiocused_t *)arg;
-			data->ret = param_used(data->param);
+	ਹਾਲਤ PARAMIOCUSED: {
+			paramiocused_t *ਅੰਕੜੇ = (paramiocused_t *)arg;
+			ਅੰਕੜੇ->ret = param_ਵਰਤਿਆ(ਅੰਕੜੇ->param);
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCSETUSED: {
-			paramiocsetused_t *data = (paramiocsetused_t *)arg;
-			param_set_used(data->param);
+	ਹਾਲਤ PARAMIOCSETUSED: {
+			paramiocsetused_t *ਅੰਕੜੇ = (paramiocsetused_t *)arg;
+			param_ਸੈੱਟ_ਵਰਤਿਆ(ਅੰਕੜੇ->param);
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCSETDEFAULT: {
-			paramiocsetdefault_t *data = (paramiocsetdefault_t *)arg;
-			data->ret = param_set_default_value(data->param, data->val);
+	ਹਾਲਤ PARAMIOCSETDEFAULT: {
+			paramiocsetdefault_t *ਅੰਕੜੇ = (paramiocsetdefault_t *)arg;
+			ਅੰਕੜੇ->ret = param_ਸੈੱਟ_default_ਮੁੱਲ(ਅੰਕੜੇ->param, ਅੰਕੜੇ->val);
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCRESET: {
-			paramiocreset_t *data = (paramiocreset_t *)arg;
+	ਹਾਲਤ PARAMIOCRESET: {
+			paramiocreset_t *ਅੰਕੜੇ = (paramiocreset_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_reset(data->param);
+			ਜੇ (ਅੰਕੜੇ->notification) {
+				ਅੰਕੜੇ->ret = param_reset(ਅੰਕੜੇ->param);
 
-			} else {
-				data->ret = param_reset_no_notification(data->param);
+			} ਨਹੀਂਤਾਂ {
+				ਅੰਕੜੇ->ret = param_reset_no_notification(ਅੰਕੜੇ->param);
 			}
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCRESETGROUP: {
-			paramiocresetgroup_t *data = (paramiocresetgroup_t *)arg;
+	ਹਾਲਤ PARAMIOCRESETGROUP: {
+			paramiocresetgroup_t *ਅੰਕੜੇ = (paramiocresetgroup_t *)arg;
 
-			if (data->type == PARAM_RESET_EXCLUDES) {
-				param_reset_excludes(data->group, data->num_in_group);
+			ਜੇ (ਅੰਕੜੇ->type == PARAM_RESET_EXCLUDES) {
+				param_reset_excludes(ਅੰਕੜੇ->ਸਮੂਹ, ਅੰਕੜੇ->ਅੰਕ_ਵਿੱਚ_ਸਮੂਹ);
 
-			} else if (data->type == PARAM_RESET_SPECIFIC) {
-				param_reset_specific(data->group, data->num_in_group);
+			} ਨਹੀਂਤਾਂ ਜੇ (ਅੰਕੜੇ->type == PARAM_RESET_SPECIFIC) {
+				param_reset_specific(ਅੰਕੜੇ->ਸਮੂਹ, ਅੰਕੜੇ->ਅੰਕ_ਵਿੱਚ_ਸਮੂਹ);
 
-			} else {
+			} ਨਹੀਂਤਾਂ {
 				param_reset_all();
 			}
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCSAVEDEFAULT: {
-			paramiocsavedefault_t *data = (paramiocsavedefault_t *)arg;
-			data->ret = param_save_default(data->blocking);
+	ਹਾਲਤ PARAMIOCSAVEDEFAULT: {
+			paramiocsavedefault_t *ਅੰਕੜੇ = (paramiocsavedefault_t *)arg;
+			ਅੰਕੜੇ->ret = param_save_default(ਅੰਕੜੇ->blocking);
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCLOADDEFAULT: {
-			paramiocloaddefault_t *data = (paramiocloaddefault_t *)arg;
-			data->ret = param_load_default();
+	ਹਾਲਤ PARAMIOCLOADDEFAULT: {
+			paramiocloaddefault_t *ਅੰਕੜੇ = (paramiocloaddefault_t *)arg;
+			ਅੰਕੜੇ->ret = param_ਲੱਦੋ_default();
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCEXPORT: {
-			paramiocexport_t *data = (paramiocexport_t *)arg;
-			data->ret = param_export(data->filename, nullptr);
+	ਹਾਲਤ PARAMIOCEXPORT: {
+			paramiocexport_t *ਅੰਕੜੇ = (paramiocexport_t *)arg;
+			ਅੰਕੜੇ->ret = param_export(ਅੰਕੜੇ->filename, ਖਾਲੀ_ਸੂਚਕ);
 		}
-		break;
+		ਰੋਕੋ;
 
-	case PARAMIOCHASH: {
-			paramiochash_t *data = (paramiochash_t *)arg;
-			data->ret = param_hash_check();
+	ਹਾਲਤ PARAMIOCHASH: {
+			paramiochash_t *ਅੰਕੜੇ = (paramiochash_t *)arg;
+			ਅੰਕੜੇ->ret = param_hash_check();
 		}
-		break;
+		ਰੋਕੋ;
 
-	default:
+	ਮੂਲ:
 		ret = -ENOTTY;
-		break;
+		ਰੋਕੋ;
 	}
 
-	return ret;
+	ਵਾਪਸ ret;
 }

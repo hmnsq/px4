@@ -31,47 +31,47 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <mixer_module/output_functions.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mixer_module/output_functions.hpp>
 
-#include <drivers/drv_pwm_output.h>
-#include <uORB/topics/actuator_test.h>
-#include <uORB/topics/actuator_motors.h>
-#include <uORB/topics/actuator_servos_trim.h>
-#include <uORB/Subscription.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <drivers/drv_pwm_output.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/actuator_test.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/actuator_motors.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/actuator_servos_trim.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/Subscription.hpp>
 
-static_assert(actuator_test_s::FUNCTION_MOTOR1 == (int)OutputFunction::Motor1, "define mismatch");
-static_assert(actuator_test_s::MAX_NUM_MOTORS == (int)OutputFunction::MotorMax - (int)OutputFunction::Motor1 + 1,
+static_assert(actuator_test_s::FUNCTION_MOTOR1 == (ਪੂਰਨ)OutputFunction::Motor1, "define mismatch");
+static_assert(actuator_test_s::MAX_ਅੰਕ_MOTORS == (ਪੂਰਨ)OutputFunction::MotorMax - (ਪੂਰਨ)OutputFunction::Motor1 + 1,
 	      "count mismatch");
-static_assert(actuator_test_s::FUNCTION_SERVO1 == (int)OutputFunction::Servo1, "define mismatch");
-static_assert(actuator_test_s::MAX_NUM_SERVOS == (int)OutputFunction::ServoMax - (int)OutputFunction::Servo1 + 1,
+static_assert(actuator_test_s::FUNCTION_SERVO1 == (ਪੂਰਨ)OutputFunction::Servo1, "define mismatch");
+static_assert(actuator_test_s::MAX_ਅੰਕ_SERVOS == (ਪੂਰਨ)OutputFunction::ServoMax - (ਪੂਰਨ)OutputFunction::Servo1 + 1,
 	      "count mismatch");
 
-class ActuatorTest
+ਵਰਗ ActuatorTest
 {
-public:
-	static constexpr int MAX_ACTUATORS = PWM_OUTPUT_MAX_CHANNELS;
+ਜਨਤਕ:
+	ਸਥਿਰ constexpr ਪੂਰਨ MAX_ACTUATORS = PWM_OUTPUT_MAX_CHANNELS;
 
-	ActuatorTest(const OutputFunction function_assignments[MAX_ACTUATORS]);
+	ActuatorTest(ਅਚਲ OutputFunction function_assignments[MAX_ACTUATORS]);
 
-	void reset();
+	ਖਾਲੀ reset();
 
-	void update(int num_outputs, float thrust_curve);
+	ਖਾਲੀ update(ਪੂਰਨ ਅੰਕ_outputs, ਦਸ਼ਮਲਵ thrust_ਵਕਰ);
 
-	void overrideValues(float outputs[MAX_ACTUATORS], int num_outputs);
+	ਖਾਲੀ override_ਮੁੱਲਾਂ(ਦਸ਼ਮਲਵ outputs[MAX_ACTUATORS], ਪੂਰਨ ਅੰਕ_outputs);
 
-	bool inTestMode() const { return _in_test_mode; }
+	ਤਾਰਕਿਕ ਵਿੱਚ_Test_ਬਹੁਲਕ() ਅਚਲ { ਵਾਪਸ ਵਿੱਚ_test_ਬਹੁਲਕ_2; }
 
-private:
+ਨਿਜੀ:
 
 	uORB::Subscription _actuator_test_sub{ORB_ID(actuator_test)};
 	uORB::Subscription _actuator_motors_sub{ORB_ID(actuator_motors)};
 	uORB::Subscription _actuator_servos_trim_sub{ORB_ID(actuator_servos_trim)};
-	bool _in_test_mode{false};
-	hrt_abstime _next_timeout{0};
+	ਤਾਰਕਿਕ ਵਿੱਚ_test_ਬਹੁਲਕ_2{ਝੂਠ};
+	hrt_abstime ਅਗਲਾ_timeout{0};
 
-	float _current_outputs[MAX_ACTUATORS];
-	bool _output_overridden[MAX_ACTUATORS];
-	const OutputFunction *_function_assignments;
+	ਦਸ਼ਮਲਵ _current_outputs[MAX_ACTUATORS];
+	ਤਾਰਕਿਕ _output_overridden[MAX_ACTUATORS];
+	ਅਚਲ OutputFunction *_function_assignments;
 };

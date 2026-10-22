@@ -37,45 +37,45 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <assert.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <time.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/test/test.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/Block.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "matrix/math.hpp"
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
 /**
  * A proportional controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockP: public Block
+ਵਰਗ __EXPORT ਖੰਡ_P: ਜਨਤਕ ਖੰਡ
 {
-public:
+ਜਨਤਕ:
 // methods
-	BlockP(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_kP(this, "") // only one param, no need to name
+	ਖੰਡ_P(Super_ਖੰਡ *ਮਾਪਾ, ਅਚਲ ਅੱਖਰ *name) :
+		ਖੰਡ(ਮਾਪਾ, name),
+		_kP(ਇਹ, "") // only one param, no need to name
 	{}
-	virtual ~BlockP() = default;
-	float update(float input)
+	ਆਭਾਸੀ ~ਖੰਡ_P() = ਮੂਲ;
+	ਦਸ਼ਮਲਵ update(ਦਸ਼ਮਲਵ ਨਿਵੇਸ਼)
 	{
-		return getKP() * input;
+		ਵਾਪਸ getKP() * ਨਿਵੇਸ਼;
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-protected:
-	control::BlockParamFloat _kP;
+	ਦਸ਼ਮਲਵ getKP() { ਵਾਪਸ _kP.get(); }
+ਸੁਰੱਖਿਅਤ:
+	control::ਖੰਡ_Param_Float _kP;
 };
 
 } // namespace control

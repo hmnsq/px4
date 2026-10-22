@@ -1,29 +1,29 @@
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
 
-#include "crsf.h"
-#include "dsm.h"
-#include "ghst.hpp"
-#include "sbus.h"
-#include "st24.h"
-#include "sumd.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "crsf.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "dsm.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "ghst.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "sbus.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "st24.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "sumd.h"
 
-#pragma pack(push, 1)
-typedef  struct rc_decode_buf_ {
-	union {
-		crsf_frame_t crsf_frame;
-		ghst_frame_t ghst_frame;
+#ਹਦਾਇਤ pack(ਧੱਕੋ, 1)
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ  ਬਣਤਰ rc_decode_buf_ {
+	ਸੰਘ {
+		crsf_ਚੌਖਟਾ_t crsf_ਚੌਖਟਾ;
+		ghst_ਚੌਖਟਾ_t ghst_ਚੌਖਟਾ;
 		dsm_decode_t dsm;
-		sbus_frame_t sbus_frame;
+		sbus_ਚੌਖਟਾ_t sbus_ਚੌਖਟਾ;
 		ReceiverFcPacket _strxpacket;
 		ReceiverFcPacketHoTT _hottrxpacket;
 	};
 } rc_decode_buf_t;
-#pragma pack(pop)
+#ਹਦਾਇਤ pack(ਕੱਢੋ)
 
-extern rc_decode_buf_t rc_decode_buf;
+ਬਾਹਰੀ rc_decode_buf_t rc_decode_buf;
 
-uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a);
-uint8_t crc8_dvb_s2_buf(uint8_t *buf, int len);
+uint8_t crc8_dvb_s2(uint8_t ਚੱਕਰੀ_ਜਾਂਚ, uint8_t a);
+uint8_t crc8_dvb_s2_buf(uint8_t *buf, ਪੂਰਨ len);

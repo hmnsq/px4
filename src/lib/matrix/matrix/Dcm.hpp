@@ -13,22 +13,22 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "SquareMatrix.hpp"
-#include "Vector3.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "SquareMatrix.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Vector3.hpp"
 
-namespace matrix
+ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ
 {
 
-template<typename Type>
-class AxisAngle;
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type>
+ਵਰਗ AxisAngle;
 
-template<typename Type>
-class Euler;
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type>
+ਵਰਗ Euler;
 
-template<typename Type>
-class Quaternion;
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type>
+ਵਰਗ Quaternion;
 
 /**
  * Direction cosine matrix class
@@ -36,23 +36,23 @@ class Quaternion;
  * The rotation between two coordinate frames is
  * described by this class.
  */
-template<typename Type>
-class Dcm : public SquareMatrix<Type, 3>
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type>
+ਵਰਗ Dcm : ਜਨਤਕ ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, 3>
 {
-public:
+ਜਨਤਕ:
 	/**
 	 * Standard constructor
 	 *
 	 * Initializes to identity
 	 */
-	Dcm() : SquareMatrix<Type, 3>(eye<Type, 3>()) {}
+	Dcm() : ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, 3>(eye<Type, 3>()) {}
 
 	/**
 	 * Constructor from array
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm(const Type data_[3][3]) : SquareMatrix<Type, 3>(data_)
+	ਸਪਸ਼ਟ Dcm(ਅਚਲ Type ਅੰਕੜੇ_2[3][3]) : ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, 3>(ਅੰਕੜੇ_2)
 	{
 	}
 
@@ -61,7 +61,7 @@ public:
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm(const Type data_[9]) : SquareMatrix<Type, 3>(data_)
+	ਸਪਸ਼ਟ Dcm(ਅਚਲ Type ਅੰਕੜੇ_2[9]) : ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, 3>(ਅੰਕੜੇ_2)
 	{
 	}
 
@@ -70,7 +70,7 @@ public:
 	 *
 	 * @param other Matrix33 to set dcm to
 	 */
-	Dcm(const Matrix<Type, 3, 3> &other) : SquareMatrix<Type, 3>(other)
+	Dcm(ਅਚਲ ਮੈਟ੍ਰਿਕਸ_2<Type, 3, 3> &other) : ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, 3>(other)
 	{
 	}
 
@@ -82,22 +82,22 @@ public:
 	 *
 	 * @param q quaternion to set dcm to
 	 */
-	Dcm(const Quaternion<Type> &q)
+	Dcm(ਅਚਲ Quaternion<Type> &q)
 	{
-		Dcm &dcm = *this;
-		const Type a = q(0);
-		const Type b = q(1);
-		const Type c = q(2);
-		const Type d = q(3);
-		const Type ab = a * b;
-		const Type ac = a * c;
-		const Type ad = a * d;
-		const Type bb = b * b;
-		const Type bc = b * c;
-		const Type bd = b * d;
-		const Type cc = c * c;
-		const Type cd = c * d;
-		const Type dd = d * d;
+		Dcm &dcm = *ਇਹ;
+		ਅਚਲ Type a = q(0);
+		ਅਚਲ Type b = q(1);
+		ਅਚਲ Type c = q(2);
+		ਅਚਲ Type d = q(3);
+		ਅਚਲ Type ab = a * b;
+		ਅਚਲ Type ac = a * c;
+		ਅਚਲ Type ad = a * d;
+		ਅਚਲ Type bb = b * b;
+		ਅਚਲ Type bc = b * c;
+		ਅਚਲ Type bd = b * d;
+		ਅਚਲ Type cc = c * c;
+		ਅਚਲ Type cd = c * d;
+		ਅਚਲ Type dd = d * d;
 		dcm(0, 0) = Type(1) - Type(2) * (cc + dd);
 		dcm(0, 1) = Type(2) * (bc - ad);
 		dcm(0, 2) = Type(2) * (ac + bd);
@@ -118,15 +118,15 @@ public:
 	 *
 	 * @param euler euler angle instance
 	 */
-	Dcm(const Euler<Type> &euler)
+	Dcm(ਅਚਲ Euler<Type> &euler)
 	{
-		Dcm &dcm = *this;
-		Type cosPhi = Type(std::cos(euler.phi()));
-		Type sinPhi = Type(std::sin(euler.phi()));
-		Type cosThe = Type(std::cos(euler.theta()));
-		Type sinThe = Type(std::sin(euler.theta()));
-		Type cosPsi = Type(std::cos(euler.psi()));
-		Type sinPsi = Type(std::sin(euler.psi()));
+		Dcm &dcm = *ਇਹ;
+		Type cosPhi = Type(std::ਕੋਜੀਵਾ(euler.phi()));
+		Type sinPhi = Type(std::ਜੀਵਾ(euler.phi()));
+		Type cosThe = Type(std::ਕੋਜੀਵਾ(euler.theta()));
+		Type sinThe = Type(std::ਜੀਵਾ(euler.theta()));
+		Type cosPsi = Type(std::ਕੋਜੀਵਾ(euler.psi()));
+		Type sinPsi = Type(std::ਜੀਵਾ(euler.psi()));
 
 		dcm(0, 0) = cosThe * cosPsi;
 		dcm(0, 1) = -cosPhi * sinPsi + sinPhi * sinThe * cosPsi;
@@ -151,29 +151,29 @@ public:
 	 *
 	 * @param euler euler angle instance
 	 */
-	Dcm(const AxisAngle<Type> &aa)
+	Dcm(ਅਚਲ AxisAngle<Type> &aa)
 	{
-		Dcm &dcm = *this;
+		Dcm &dcm = *ਇਹ;
 		dcm = Quaternion<Type>(aa);
 	}
 
-	Vector3<Type> vee() const // inverse to Vector.hat() operation
+	Vector3<Type> vee() ਅਚਲ // inverse to Vector.hat() operation
 	{
-		const Dcm &A(*this);
-		return {-A(1, 2), A(0, 2), -A(0, 1)};
+		ਅਚਲ Dcm &A(*ਇਹ);
+		ਵਾਪਸ {-A(1, 2), A(0, 2), -A(0, 1)};
 	}
 
-	void renormalize()
+	ਖਾਲੀ renormalize()
 	{
 		/* renormalize rows */
-		for (size_t r = 0; r < 3; r++) {
-			matrix::Vector3<Type> rvec(Matrix<Type, 1, 3>(this->Matrix<Type, 3, 3>::row(r)).transpose());
-			this->Matrix<Type, 3, 3>::row(r) = rvec.normalized();
+		ਲਈ (size_t r = 0; r < 3; r++) {
+			ਮੈਟ੍ਰਿਕਸ::Vector3<Type> rvec(ਮੈਟ੍ਰਿਕਸ_2<Type, 1, 3>(ਇਹ->ਮੈਟ੍ਰਿਕਸ_2<Type, 3, 3>::ਪੰਕਤੀ(r)).transpose());
+			ਇਹ->ਮੈਟ੍ਰਿਕਸ_2<Type, 3, 3>::ਪੰਕਤੀ(r) = rvec.normalized();
 		}
 	}
 };
 
-using Dcmf = Dcm<float>;
-using Dcmd = Dcm<double>;
+ਵਰਤੋਂ Dcmf = Dcm<ਦਸ਼ਮਲਵ>;
+ਵਰਤੋਂ Dcmd = Dcm<ਦੁੱਗਣਾ>;
 
 } // namespace matrix

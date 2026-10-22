@@ -5,74 +5,74 @@
 # Note: Can lead to slightly different results than the online estimation due to the fact that
 # the log frequency of the voltage and current are not the same as the online frequency.
 
-from pyulog import ULog
-import matplotlib.pyplot as plt
-import numpy as np
-import argparse
+ਤਃ pyulog ਆਯਾਤ ULog
+ਆਯਾਤ matplotlib.pyplot ਇਵ plt
+ਆਯਾਤ numpy ਇਵ np
+ਆਯਾਤ argparse
 
-def getData(log, topic_name, variable_name, instance=0):
-    for elem in log.data_list:
-        if elem.name == topic_name and instance == elem.multi_id:
-            return elem.data[variable_name]
-    return np.array([])
+ਪਰਿਭਾਸ਼ਾ get_ਅੰਕੜੇ(log, topic_name, variable_name, instance=0):
+    ਲਈ elem ਵਿੱਚ log.ਅੰਕੜੇ_list:
+        ਜੇ elem.name == topic_name ਅਤੇ instance == elem.multi_id:
+            ਵਾਪਸ elem.ਅੰਕੜੇ[variable_name]
+    ਵਾਪਸ np.array([])
 
-def us2s(time_us):
-    return time_us * 1e-6
+ਪਰਿਭਾਸ਼ਾ us2s(ਸਮਾਂ_us):
+    ਵਾਪਸ ਸਮਾਂ_us * 1e-6
 
-def getParam(log, param_name):
-    if param_name in log.initial_parameters:
-        return log.initial_parameters[param_name]
-    else:
-        print(f"Parameter {param_name} not found in log.")
-    return None
+ਪਰਿਭਾਸ਼ਾ getParam(log, param_name):
+    ਜੇ param_name ਵਿੱਚ log.initial_parameters:
+        ਵਾਪਸ log.initial_parameters[param_name]
+    ਨਹੀਂਤਾਂ:
+        ਛਾਪੋ(f"Parameter {param_name} not found in log.")
+    ਵਾਪਸ ਕੁਝ_ਨਹੀਂ
 
-def rls_update(theta, P, x, V, I, lam):
+ਪਰਿਭਾਸ਼ਾ rls_update(theta, P, x, V, I, lam):
     gamma = P @ x / (lam + x.T @ P @ x)
     error = V - x.T @ theta
-    data_cov = x.T @ P @ x
-    theta_temp = theta + gamma * error
-    P_temp = (P - gamma @ x.T @ P) / lam
-    if (abs(np.linalg.norm(P)) < abs(np.linalg.norm(P_temp))):
+    ਅੰਕੜੇ_cov = x.T @ P @ x
+    theta_ਆਰਜ਼ੀ = theta + gamma * error
+    P_ਆਰਜ਼ੀ = (P - gamma @ x.T @ P) / lam
+    ਜੇ (abs(np.linalg.norm(P)) < abs(np.linalg.norm(P_ਆਰਜ਼ੀ))):
         theta_corr = np.array([V + theta[1] * I, theta[1]]) # Correct OCV estimation
         P_corr = P
-        return theta_corr, P_corr, error, data_cov, 0, 0
-    return theta_temp, P_temp, error, data_cov, gamma[0], gamma[1]
+        ਵਾਪਸ theta_corr, P_corr, error, ਅੰਕੜੇ_cov, 0, 0
+    ਵਾਪਸ theta_ਆਰਜ਼ੀ, P_ਆਰਜ਼ੀ, error, ਅੰਕੜੇ_cov, gamma[0], gamma[1]
 
-def main(log_name, n_cells, full_cell, empty_cell, lam):
+ਪਰਿਭਾਸ਼ਾ ਮੁੱਖ(log_name, n_cells, ਭਰਿਆ_cell, ਖਾਲੀ_ਥਾਵਾਂ_cell, lam):
     log = ULog(log_name)
 
     log_n_cells = getParam(log, 'BAT1_N_CELLS')
-    log_full_cell = getParam(log, 'BAT1_V_CHARGED')
-    log_empty_cell = getParam(log, 'BAT1_V_EMPTY')
+    log_ਭਰਿਆ_cell = getParam(log, 'BAT1_V_CHARGED')
+    log_ਖਾਲੀ_ਥਾਵਾਂ_cell = getParam(log, 'BAT1_V_EMPTY')
 
     # Debug information
-    print(f"Extracted from log - BAT1_N_CELLS: {log_n_cells}, BAT1_V_CHARGED: {log_full_cell}, BAT1_V_EMPTY: {log_empty_cell}")
+    ਛਾਪੋ(f"Extracted from log - BAT1_N_CELLS: {log_n_cells}, BAT1_V_CHARGED: {log_full_cell}, BAT1_V_EMPTY: {log_empty_cell}")
 
     # Use log parameters unless overridden
-    if n_cells is None:
+    ਜੇ n_cells ਹੈ ਕੁਝ_ਨਹੀਂ:
         n_cells = log_n_cells
-    else:
-        print(f"Using override for n_cells: {n_cells}")
-    if full_cell is None:
-        full_cell = log_full_cell
-    else:
-        print(f"Using override for full_cell: {full_cell}")
-    if empty_cell is None:
-        empty_cell = log_empty_cell
-    else:
-        print(f"Using override for empty_cell: {empty_cell}")
+    ਨਹੀਂਤਾਂ:
+        ਛਾਪੋ(f"Using override for n_cells: {n_cells}")
+    ਜੇ ਭਰਿਆ_cell ਹੈ ਕੁਝ_ਨਹੀਂ:
+        ਭਰਿਆ_cell = log_ਭਰਿਆ_cell
+    ਨਹੀਂਤਾਂ:
+        ਛਾਪੋ(f"Using override for full_cell: {full_cell}")
+    ਜੇ ਖਾਲੀ_ਥਾਵਾਂ_cell ਹੈ ਕੁਝ_ਨਹੀਂ:
+        ਖਾਲੀ_ਥਾਵਾਂ_cell = log_ਖਾਲੀ_ਥਾਵਾਂ_cell
+    ਨਹੀਂਤਾਂ:
+        ਛਾਪੋ(f"Using override for empty_cell: {empty_cell}")
 
     # Debug information for final parameter values
-    print(f"Using parameters - n_cells: {n_cells}, full_cell: {full_cell}, empty_cell: {empty_cell}")
+    ਛਾਪੋ(f"Using parameters - n_cells: {n_cells}, full_cell: {full_cell}, empty_cell: {empty_cell}")
 
-    timestamps = us2s(getData(log, 'battery_status', 'timestamp'))
-    I = getData(log, 'battery_status', 'current_a')
-    V = getData(log, 'battery_status', 'voltage_v')
-    remaining = getData(log, 'battery_status', 'remaining')
+    timestamps = us2s(get_ਅੰਕੜੇ(log, 'battery_status', 'timestamp'))
+    I = get_ਅੰਕੜੇ(log, 'battery_status', 'current_a')
+    V = get_ਅੰਕੜੇ(log, 'battery_status', 'voltage_v')
+    ਬਚਿਆ = get_ਅੰਕੜੇ(log, 'battery_status', 'remaining')
 
-    if not timestamps.size or not I.size or not V.size or not remaining.size:
-        print("Error: Incomplete data.")
-        return
+    ਜੇ ਨਹੀਂ timestamps.ਮਾਪ ਜਾਂ ਨਹੀਂ I.ਮਾਪ ਜਾਂ ਨਹੀਂ V.ਮਾਪ ਜਾਂ ਨਹੀਂ ਬਚਿਆ.ਮਾਪ:
+        ਛਾਪੋ("Error: Incomplete data.")
+        ਵਾਪਸ
 
     # Initializations
     theta = np.array([[V[0] + 0.005 * n_cells * I[0]], [0.005 * n_cells]])  # Initial VOC and R
@@ -84,75 +84,75 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
     R_est = np.zeros_like(I)
     error_hist = np.zeros_like(I)
     v_est = np.zeros_like(I)
-    internal_resistance_stable = np.zeros_like(I)
-    internal_resistance_stable[-1] = 0.005
+    ਅੰਦਰੂਨੀ_resistance_stable = np.zeros_like(I)
+    ਅੰਦਰੂਨੀ_resistance_stable[-1] = 0.005
     cov_norm = np.zeros_like(I)
     r_cov = np.zeros_like(I)
     ocv_cov = np.zeros_like(I)
     mixed_cov = np.zeros_like(I)
-    data_cov_hist = np.zeros_like(I)
+    ਅੰਕੜੇ_cov_hist = np.zeros_like(I)
     gamma_voc_hist = np.zeros_like(I)
     gamma_r_hist = np.zeros_like(I)
 
-    for index in range(len(I)):
+    ਲਈ ਸੂਚਕਾਂਕ ਵਿੱਚ ਸੀਮਾ(ਲੰਬਾਈ(I)):
         # RLS algorithm
-        x = np.array([[1.0], [-I[index]]]) # Input vector
-        theta, P, error, data_cov, gamma_voc_hist[index], gamma_r_hist[index] = rls_update(theta, P, x, V[index], I[index], lam) # Run RLS
+        x = np.array([[1.0], [-I[ਸੂਚਕਾਂਕ]]]) # Input vector
+        theta, P, error, ਅੰਕੜੇ_cov, gamma_voc_hist[ਸੂਚਕਾਂਕ], gamma_r_hist[ਸੂਚਕਾਂਕ] = rls_update(theta, P, x, V[ਸੂਚਕਾਂਕ], I[ਸੂਚਕਾਂਕ], lam) # Run RLS
 
         # For plotting
-        VOC_est[index] = theta[0][0]
-        R_est[index] = theta[1][0]
-        error_hist[index] = error
-        v_est[index] = x.T @ theta
-        cov_norm[index] = abs(np.linalg.norm(P))
-        ocv_cov[index] = P[0][0]
-        r_cov[index] = P[1][1]
-        mixed_cov[index] = P[0][1]
-        data_cov_hist[index] = data_cov
-        internal_resistance_stable[index] = max(R_est[index]/n_cells, 0.001)
+        VOC_est[ਸੂਚਕਾਂਕ] = theta[0][0]
+        R_est[ਸੂਚਕਾਂਕ] = theta[1][0]
+        error_hist[ਸੂਚਕਾਂਕ] = error
+        v_est[ਸੂਚਕਾਂਕ] = x.T @ theta
+        cov_norm[ਸੂਚਕਾਂਕ] = abs(np.linalg.norm(P))
+        ocv_cov[ਸੂਚਕਾਂਕ] = P[0][0]
+        r_cov[ਸੂਚਕਾਂਕ] = P[1][1]
+        mixed_cov[ਸੂਚਕਾਂਕ] = P[0][1]
+        ਅੰਕੜੇ_cov_hist[ਸੂਚਕਾਂਕ] = ਅੰਕੜੇ_cov
+        ਅੰਦਰੂਨੀ_resistance_stable[ਸੂਚਕਾਂਕ] = max(R_est[ਸੂਚਕਾਂਕ]/n_cells, 0.001)
 
     # Plot data
-    print("Internal Resistance mean (per cell): ", np.mean(R_est) / n_cells)
+    ਛਾਪੋ("Internal Resistance mean (per cell): ", np.ਔਸਤ(R_est) / n_cells)
 
     # Summary plot
-    sumFig = plt.figure("Battery Estimation with RLS")
+    ਜੋੜ_Fig = plt.figure("Battery Estimation with RLS")
 
     volt = plt.subplot(2, 3, 1)
     volt.plot(timestamps, V, label='Measured voltage')
     volt.plot(timestamps, v_est, label='Estimated voltage')
-    volt.plot(timestamps, np.array(V) + np.array(internal_resistance_stable) * np.array(I) * n_cells, label='OCV estimate')
-    ocv_smoothed = np.convolve(np.array(V) + np.array(internal_resistance_stable) * np.array(I) * n_cells, np.ones(30)/30, mode='full')[0:np.size(timestamps)]
+    volt.plot(timestamps, np.array(V) + np.array(ਅੰਦਰੂਨੀ_resistance_stable) * np.array(I) * n_cells, label='OCV estimate')
+    ocv_smoothed = np.convolve(np.array(V) + np.array(ਅੰਦਰੂਨੀ_resistance_stable) * np.array(I) * n_cells, np.ones(30)/30, ਬਹੁਲਕ='full')[0:np.ਮਾਪ(timestamps)]
     ocv_smoothed[0:30] = ocv_smoothed[31]
     volt.plot(timestamps, ocv_smoothed, label='OCV estimate smoothed')
-    volt.plot(timestamps, np.full_like(I, full_cell * n_cells), label='100% SOC')
-    volt.set_title("Measured Voltage vs Estimated voltage vs Estimated Open circuit voltage [V]")
+    volt.plot(timestamps, np.ਭਰਿਆ_like(I, ਭਰਿਆ_cell * n_cells), label='100% SOC')
+    volt.ਸੈੱਟ_title("Measured Voltage vs Estimated voltage vs Estimated Open circuit voltage [V]")
     volt.legend()
 
     intR = plt.subplot(2, 3, 2)
     intR.plot(timestamps, np.array(R_est) * 1000 / n_cells, label='Internal resistance estimate')
-    intR.set_title("Internal resistance estimate (per cell) [mOhm]")
+    intR.ਸੈੱਟ_title("Internal resistance estimate (per cell) [mOhm]")
     intR.legend()
 
     soc = plt.subplot(2, 3, 3)
-    soc.plot(timestamps, remaining, label='SoC logged')
-    soc.plot(timestamps, np.interp((np.array(V) + np.array(internal_resistance_stable) * n_cells * np.array(I)) / n_cells, [empty_cell, full_cell], [0, 1]), label='SoC with estimator')
-    soc.plot(timestamps, np.interp(ocv_smoothed / n_cells, [empty_cell, full_cell], [0, 1]), label='SoC with estimator smoothed')
-    soc.set_title("State of charge")
+    soc.plot(timestamps, ਬਚਿਆ, label='SoC logged')
+    soc.plot(timestamps, np.interp((np.array(V) + np.array(ਅੰਦਰੂਨੀ_resistance_stable) * n_cells * np.array(I)) / n_cells, [ਖਾਲੀ_ਥਾਵਾਂ_cell, ਭਰਿਆ_cell], [0, 1]), label='SoC with estimator')
+    soc.plot(timestamps, np.interp(ocv_smoothed / n_cells, [ਖਾਲੀ_ਥਾਵਾਂ_cell, ਭਰਿਆ_cell], [0, 1]), label='SoC with estimator smoothed')
+    soc.ਸੈੱਟ_title("State of charge")
     soc.legend()
 
     curr = plt.subplot(2, 3, 4)
     curr.plot(timestamps, I, label='Measured current')
-    curr.set_title("Measured Current [A]")
+    curr.ਸੈੱਟ_title("Measured Current [A]")
     curr.legend()
 
     err = plt.subplot(2, 3, 5)
     err.plot(timestamps, error_hist, label='$Error$')
-    err.set_title("Voltage estimation error [V]")
+    err.ਸੈੱਟ_title("Voltage estimation error [V]")
     err.legend()
 
     cov = plt.subplot(2, 3, 6)
     cov.plot(timestamps, cov_norm, label = 'Covariance norm')
-    cov.set_title("Covariance norm")
+    cov.ਸੈੱਟ_title("Covariance norm")
     cov.legend()
 
     # # SoC estimation plots
@@ -197,12 +197,12 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
 
     plt.show()
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Estimate battery parameters from ulog file.')
-    parser.add_argument('-f', type = str,   required = True,  help = 'Full path to ulog file')
-    parser.add_argument('-c', type = float, required = False, help = 'Number of cells in battery')
-    parser.add_argument('-u', type = float, required = False, default = None, help = 'Full cell voltage')
-    parser.add_argument('-e', type = float, required = False, default = None,  help = 'Empty cell voltage')
-    parser.add_argument('-l', type = float, required = False, default = 0.99, help = 'Forgetting factor')
-    args = parser.parse_args()
-    main(args.f, args.c, args.u, args.e, args.l)
+ਜੇ __name__ == "__main__":
+    parser = argparse.ਦਲੀਲ_Parser(description='Estimate battery parameters from ulog file.')
+    parser.ਜੋੜੋ_ਦਲੀਲ('-f', type = str,   required = ਸੱਚ,  help = 'Full path to ulog file')
+    parser.ਜੋੜੋ_ਦਲੀਲ('-c', type = ਦਸ਼ਮਲਵ, required = ਝੂਠ, help = 'Number of cells in battery')
+    parser.ਜੋੜੋ_ਦਲੀਲ('-u', type = ਦਸ਼ਮਲਵ, required = ਝੂਠ, ਮੂਲ = ਕੁਝ_ਨਹੀਂ, help = 'Full cell voltage')
+    parser.ਜੋੜੋ_ਦਲੀਲ('-e', type = ਦਸ਼ਮਲਵ, required = ਝੂਠ, ਮੂਲ = ਕੁਝ_ਨਹੀਂ,  help = 'Empty cell voltage')
+    parser.ਜੋੜੋ_ਦਲੀਲ('-l', type = ਦਸ਼ਮਲਵ, required = ਝੂਠ, ਮੂਲ = 0.99, help = 'Forgetting factor')
+    ਦਲੀਲਾਂ = parser.parse_ਦਲੀਲਾਂ()
+    ਮੁੱਖ(ਦਲੀਲਾਂ.f, ਦਲੀਲਾਂ.c, ਦਲੀਲਾਂ.u, ਦਲੀਲਾਂ.e, ਦਲੀਲਾਂ.l)

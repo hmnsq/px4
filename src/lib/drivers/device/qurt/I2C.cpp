@@ -40,38 +40,38 @@
  *       that is supplied.  Should we just depend on the bus knowing?
  */
 
-#include "I2C.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "I2C.hpp"
 
-#if defined(CONFIG_I2C)
+#ਜੇ defined(CONFIG_I2C)
 
-#include <px4_platform_common/time.h>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/i2c_spi_buses.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/time.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/px4_config.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/i2c_spi_buses.h>
 
-extern "C" {
-	__EXPORT void fc_uninitialize_i2c_bus(int fd);
+ਬਾਹਰੀ "C" {
+	__EXPORT ਖਾਲੀ fc_uninitialize_i2c_bus(ਪੂਰਨ fd);
 }
 
-namespace device
+ਨਾਮਾਕਾਸ਼ device
 {
 
-I2C::_config_i2c_bus_func_t  I2C::_config_i2c_bus  = NULL;
-I2C::_set_i2c_address_func_t I2C::_set_i2c_address = NULL;
-I2C::_i2c_transfer_func_t    I2C::_i2c_transfer    = NULL;
+I2C::_config_i2c_bus_func_t  I2C::_config_i2c_bus  = ਨਿਰਾ;
+I2C::ਸੈੱਟ_i2c_ਪਤਾ_func_t I2C::ਸੈੱਟ_i2c_ਪਤਾ = ਨਿਰਾ;
+I2C::_i2c_transfer_func_t    I2C::_i2c_transfer    = ਨਿਰਾ;
 
 // There is a mutex per I2C bus. A mutex isn't required with normal
 // use since per bus I2C accesses are made via work item tied to a per bus thread.
 // But it is here anyways in case someone decides to use the bus in some different
 // custom code that has a separate thread.
-struct I2C::_bus_mutex_t I2C::_bus_mutex[I2C::MAX_I2C_BUS] = {
+ਬਣਤਰ I2C::_bus_mutex_t I2C::_bus_mutex[I2C::MAX_I2C_BUS] = {
 	{1, PTHREAD_MUTEX_INITIALIZER},
 	{2, PTHREAD_MUTEX_INITIALIZER},
 	{4, PTHREAD_MUTEX_INITIALIZER},
 	{5, PTHREAD_MUTEX_INITIALIZER}
 };
 
-I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency) :
-	CDev(name, nullptr),
+I2C::I2C(uint8_t device_type, ਅਚਲ ਅੱਖਰ *name, ਅਚਲ ਪੂਰਨ bus, ਅਚਲ uint16_t ਪਤਾ, ਅਚਲ uint32_t frequency) :
+	CDev(name, ਖਾਲੀ_ਸੂਚਕ),
 	_frequency(frequency / 1000)
 {
 	_device_id.devid = 0;
@@ -80,129 +80,129 @@ I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t ad
 	_device_id.devid_s.devtype = device_type;
 	_device_id.devid_s.bus_type = DeviceBusType_I2C;
 	_device_id.devid_s.bus = bus;
-	_device_id.devid_s.address = address;
+	_device_id.devid_s.ਪਤਾ = ਪਤਾ;
 
 	PX4_INFO("*** I2C Device ID 0x%x %d", _device_id.devid, _device_id.devid);
 }
 
-I2C::I2C(const I2CSPIDriverConfig &config)
-	: I2C(config.devid_driver_index, config.module_name, config.bus, config.i2c_address, config.bus_frequency)
+I2C::I2C(ਅਚਲ I2CSPIDriverConfig &config)
+	: I2C(config.devid_driver_ਸੂਚਕਾਂਕ, config.module_name, config.bus, config.i2c_ਪਤਾ, config.bus_frequency)
 {
-	set_external(config.external);
+	ਸੈੱਟ_external(config.external);
 }
 
 I2C::~I2C()
 {
 }
 
-int
+ਪੂਰਨ
 I2C::init()
 {
-	int ret = PX4_ERROR;
+	ਪੂਰਨ ret = PX4_ERROR;
 
-	if (_i2c_fd != -1) {
-		return PX4_OK;
+	ਜੇ (_i2c_fd != -1) {
+		ਵਾਪਸ PX4_OK;
 	}
 
-	if (_config_i2c_bus == NULL) {
+	ਜੇ (_config_i2c_bus == ਨਿਰਾ) {
 		PX4_ERR("NULL i2c init function");
-		goto out;
+		ਜਾਓ ਬਾਹਰਲਾ;
 	}
 
-	if (_mutex == nullptr) {
-		for (int i = 0; i < MAX_I2C_BUS; i++) {
-			if (get_device_bus() == _bus_mutex[i]._bus) {
+	ਜੇ (_mutex == ਖਾਲੀ_ਸੂਚਕ) {
+		ਲਈ (ਪੂਰਨ i = 0; i < MAX_I2C_BUS; i++) {
+			ਜੇ (get_device_bus() == _bus_mutex[i]._bus) {
 				_mutex = &_bus_mutex[i]._mutex;
-				break;
+				ਰੋਕੋ;
 			}
 		}
 
-		if (_mutex == nullptr) {
+		ਜੇ (_mutex == ਖਾਲੀ_ਸੂਚਕ) {
 			PX4_ERR("NULL i2c bus mutex");
-			goto out;
+			ਜਾਓ ਬਾਹਰਲਾ;
 
-		} else {
+		} ਨਹੀਂਤਾਂ {
 			PX4_INFO("Set up I2C bus mutex for bus %d", get_device_bus());
 		}
 	}
 
 	pthread_mutex_lock(_mutex);
 	// Open the actual I2C device
-	_i2c_fd = _config_i2c_bus(get_device_bus(), get_device_address(), _frequency);
+	_i2c_fd = _config_i2c_bus(get_device_bus(), get_device_ਪਤਾ(), _frequency);
 	pthread_mutex_unlock(_mutex);
 
-	if (_i2c_fd == -1) {
+	ਜੇ (_i2c_fd == -1) {
 		PX4_ERR("i2c init failed");
-		goto out;
+		ਜਾਓ ਬਾਹਰਲਾ;
 	}
 
 	// call the probe function to check whether the device is present
 	ret = probe();
 
-	if (ret != OK) {
+	ਜੇ (ret != OK) {
 		PX4_ERR("i2c probe failed");
 		fc_uninitialize_i2c_bus(_i2c_fd);
 		_i2c_fd = -1;
-		goto out;
+		ਜਾਓ ਬਾਹਰਲਾ;
 	}
 
 	// do base class init, which will create device node, etc
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ਜੇ (ret != OK) {
 		PX4_ERR("i2c cdev init failed");
-		goto out;
+		ਜਾਓ ਬਾਹਰਲਾ;
 	}
 
 	// tell the world where we are
 	// PX4_INFO("on I2C bus %d at 0x%02x", get_device_bus(), get_device_address());
 
-out:
+ਬਾਹਰਲਾ:
 
-	return ret;
+	ਵਾਪਸ ret;
 }
 
-void
-I2C::set_device_address(int address, bool log)
+ਖਾਲੀ
+I2C::ਸੈੱਟ_device_ਪਤਾ(ਪੂਰਨ ਪਤਾ, ਤਾਰਕਿਕ ਲਘੂਗਣਕ)
 {
-	if ((_i2c_fd != PX4_ERROR) && (_set_i2c_address != NULL)) {
-		if (log) {
-			PX4_INFO("Set i2c address 0x%x, fd %d", address, _i2c_fd);
+	ਜੇ ((_i2c_fd != PX4_ERROR) && (ਸੈੱਟ_i2c_ਪਤਾ != ਨਿਰਾ)) {
+		ਜੇ (ਲਘੂਗਣਕ) {
+			PX4_INFO("Set i2c address 0x%x, fd %d", ਪਤਾ, _i2c_fd);
 		}
 
 		pthread_mutex_lock(_mutex);
-		_set_i2c_address(_i2c_fd, address);
+		ਸੈੱਟ_i2c_ਪਤਾ(_i2c_fd, ਪਤਾ);
 		pthread_mutex_unlock(_mutex);
 
-		Device::set_device_address(address);
+		Device::ਸੈੱਟ_device_ਪਤਾ(ਪਤਾ);
 	}
 }
 
 
-int
-I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
+ਪੂਰਨ
+I2C::transfer(ਅਚਲ uint8_t *send, ਅਚਲ ਬਿਨਾਨਿਸ਼ਾਨੀ send_len, uint8_t *recv, ਅਚਲ ਬਿਨਾਨਿਸ਼ਾਨੀ recv_len)
 {
-	int ret = PX4_ERROR;
-	unsigned retry_count = 1;
+	ਪੂਰਨ ret = PX4_ERROR;
+	ਬਿਨਾਨਿਸ਼ਾਨੀ retry_ਗਿਣਤੀ = 1;
 
-	if ((_i2c_fd != PX4_ERROR) && (_i2c_transfer != NULL)) {
-		do {
+	ਜੇ ((_i2c_fd != PX4_ERROR) && (_i2c_transfer != ਨਿਰਾ)) {
+		ਕਰੋ {
 			// PX4_INFO("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
 			pthread_mutex_lock(_mutex);
 			ret = _i2c_transfer(_i2c_fd, send, send_len, recv, recv_len);
 			pthread_mutex_unlock(_mutex);
 
-			if (ret != PX4_ERROR) { break; }
+			ਜੇ (ret != PX4_ERROR) { ਰੋਕੋ; }
 
 			px4_usleep(1000);
 
-		} while (retry_count++ < _retries);
+		} ਜਦੋਂ (retry_ਗਿਣਤੀ++ < _retries);
 	}
 
-	return ret;
+	ਵਾਪਸ ret;
 }
 
 } // namespace device
 
-#endif
+#ਜੇ_ਅੰਤ

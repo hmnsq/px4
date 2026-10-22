@@ -6,58 +6,58 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "Matrix.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Matrix.hpp"
 
-namespace matrix
+ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ
 {
 
-template<typename Type>
-class Scalar
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type>
+ਵਰਗ Scalar
 {
-public:
-	Scalar() = delete;
+ਜਨਤਕ:
+	Scalar() = ਮਿਟਾਓ;
 
-	Scalar(const Matrix<Type, 1, 1> &other) :
-		_value{other(0, 0)}
+	Scalar(ਅਚਲ ਮੈਟ੍ਰਿਕਸ_2<Type, 1, 1> &other) :
+		ਮੁੱਲ_2{other(0, 0)}
 	{
 	}
 
-	Scalar(Type other) : _value(other)
+	Scalar(Type other) : ਮੁੱਲ_2(other)
 	{
 	}
 
-	operator const Type &()
+	ਸੰਚਾਲਕ ਅਚਲ Type &()
 	{
-		return _value;
+		ਵਾਪਸ ਮੁੱਲ_2;
 	}
 
-	operator Matrix<Type, 1, 1>() const
+	ਸੰਚਾਲਕ ਮੈਟ੍ਰਿਕਸ_2<Type, 1, 1>() ਅਚਲ
 	{
-		Matrix<Type, 1, 1> m;
-		m(0, 0) = _value;
-		return m;
+		ਮੈਟ੍ਰਿਕਸ_2<Type, 1, 1> m;
+		m(0, 0) = ਮੁੱਲ_2;
+		ਵਾਪਸ m;
 	}
 
-	operator Vector<Type, 1>() const
+	ਸੰਚਾਲਕ ਸਦਿਸ਼<Type, 1>() ਅਚਲ
 	{
-		Vector<Type, 1> m;
-		m(0) = _value;
-		return m;
+		ਸਦਿਸ਼<Type, 1> m;
+		m(0) = ਮੁੱਲ_2;
+		ਵਾਪਸ m;
 	}
 
-	bool operator==(const float other) const
+	ਤਾਰਕਿਕ ਸੰਚਾਲਕ==(ਅਚਲ ਦਸ਼ਮਲਵ other) ਅਚਲ
 	{
-		return isEqualF(_value, other);
+		ਵਾਪਸ isEqualF(ਮੁੱਲ_2, other);
 	}
 
-private:
-	const Type _value;
+ਨਿਜੀ:
+	ਅਚਲ Type ਮੁੱਲ_2;
 
 };
 
-using Scalarf = Scalar<float>;
-using Scalard = Scalar<double>;
+ਵਰਤੋਂ Scalarf = Scalar<ਦਸ਼ਮਲਵ>;
+ਵਰਤੋਂ Scalard = Scalar<ਦੁੱਗਣਾ>;
 
 } // namespace matrix

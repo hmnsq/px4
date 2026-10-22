@@ -8,223 +8,223 @@
  *
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "Vector.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Vector.hpp"
 
-namespace matrix
+ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ
 {
 // Vector that only store nonzero elements,
 // which indices are specified as parameter pack
-template<typename Type, size_t M, size_t... Idxs>
-class SparseVector
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type, size_t M, size_t... Idxs>
+ਵਰਗ Sparse_ਸਦਿਸ਼
 {
-private:
-	enum : size_t { N = sizeof...(Idxs) };
+ਨਿਜੀ:
+	ਗਿਣਤੀ : size_t { N = ਆਕਾਰ...(Idxs) };
 
-	static constexpr bool duplicateIndices()
+	ਸਥਿਰ constexpr ਤਾਰਕਿਕ duplicateIndices()
 	{
 		constexpr size_t indicies[] {Idxs...};
 
-		for (size_t i = 0; i < N; i++) {
-			for (size_t j = 0; j < i; j++) {
-				if (indicies[i] == indicies[j]) {
-					return true;
+		ਲਈ (size_t i = 0; i < N; i++) {
+			ਲਈ (size_t j = 0; j < i; j++) {
+				ਜੇ (indicies[i] == indicies[j]) {
+					ਵਾਪਸ ਸੱਚ;
 				}
 			}
 		}
 
-		return false;
+		ਵਾਪਸ ਝੂਠ;
 	}
 
-	static constexpr size_t findMaxIndex()
+	ਸਥਿਰ constexpr size_t ਲੱਭੋ_Max_ਸੂਚਕਾਂਕ()
 	{
 		constexpr size_t indicies[] {Idxs...};
-		size_t maxIndex = 0;
+		size_t max_ਸੂਚਕਾਂਕ = 0;
 
-		for (size_t i = 0; i < N; i++) {
-			if (maxIndex < indicies[i]) {
-				maxIndex = indicies[i];
+		ਲਈ (size_t i = 0; i < N; i++) {
+			ਜੇ (max_ਸੂਚਕਾਂਕ < indicies[i]) {
+				max_ਸੂਚਕਾਂਕ = indicies[i];
 			}
 		}
 
-		return maxIndex;
+		ਵਾਪਸ max_ਸੂਚਕਾਂਕ;
 	}
 
-	static constexpr size_t indexAt(size_t i)
+	ਸਥਿਰ constexpr size_t ਸੂਚਕਾਂਕ_At(size_t i)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		return indicies[i];
+		ਵਾਪਸ indicies[i];
 	}
 
 	static_assert(!duplicateIndices(), "Duplicate indices");
 	static_assert(N < M, "More entries than elements, use a dense vector");
 	static_assert(N > 0, "A sparse vector needs at least one element");
-	static_assert(findMaxIndex() < M, "Largest entry doesn't fit in sparse vector");
+	static_assert(ਲੱਭੋ_Max_ਸੂਚਕਾਂਕ() < M, "Largest entry doesn't fit in sparse vector");
 
-	Type _data[N] {};
+	Type ਅੰਕੜੇ_3[N] {};
 
-	static constexpr int findCompressedIndex(size_t index)
+	ਸਥਿਰ constexpr ਪੂਰਨ ਲੱਭੋ_Compressed_ਸੂਚਕਾਂਕ(size_t ਸੂਚਕਾਂਕ)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		int compressedIndex = -1;
+		ਪੂਰਨ compressed_ਸੂਚਕਾਂਕ = -1;
 
-		for (size_t i = 0; i < N; i++) {
-			if (index == indicies[i]) {
-				compressedIndex = static_cast<int>(i);
+		ਲਈ (size_t i = 0; i < N; i++) {
+			ਜੇ (ਸੂਚਕਾਂਕ == indicies[i]) {
+				compressed_ਸੂਚਕਾਂਕ = static_cast<ਪੂਰਨ>(i);
 			}
 		}
 
-		return compressedIndex;
+		ਵਾਪਸ compressed_ਸੂਚਕਾਂਕ;
 	}
 
-public:
-	constexpr size_t non_zeros() const
+ਜਨਤਕ:
+	constexpr size_t non_zeros() ਅਚਲ
 	{
-		return N;
+		ਵਾਪਸ N;
 	}
 
-	constexpr size_t index(size_t i) const
+	constexpr size_t ਸੂਚਕਾਂਕ(size_t i) ਅਚਲ
 	{
-		return indexAt(i);
+		ਵਾਪਸ ਸੂਚਕਾਂਕ_At(i);
 	}
 
-	SparseVector() = default;
+	Sparse_ਸਦਿਸ਼() = ਮੂਲ;
 
-	SparseVector(const matrix::Vector<Type, M> &data)
+	Sparse_ਸਦਿਸ਼(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> &ਅੰਕੜੇ)
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] = data(indexAt(i));
+		ਲਈ (size_t i = 0; i < N; i++) {
+			ਅੰਕੜੇ_3[i] = ਅੰਕੜੇ(ਸੂਚਕਾਂਕ_At(i));
 		}
 	}
 
-	explicit SparseVector(const Type data[N])
+	ਸਪਸ਼ਟ Sparse_ਸਦਿਸ਼(ਅਚਲ Type ਅੰਕੜੇ[N])
 	{
-		memcpy(_data, data, sizeof(_data));
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ(ਅੰਕੜੇ_3, ਅੰਕੜੇ, ਆਕਾਰ(ਅੰਕੜੇ_3));
 	}
 
-	template <size_t i>
-	inline Type at() const
+	ਸਾਂਚਾ <size_t i>
+	ਸਤਰਅੰਦਰ Type at() ਅਚਲ
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
-		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		constexpr ਪੂਰਨ compressed_ਸੂਚਕਾਂਕ_2 = ਲੱਭੋ_Compressed_ਸੂਚਕਾਂਕ(i);
+		static_assert(compressed_ਸੂਚਕਾਂਕ_2 >= 0, "cannot access unpopulated indices");
+		ਵਾਪਸ ਅੰਕੜੇ_3[compressed_ਸੂਚਕਾਂਕ_2];
 	}
 
-	template <size_t i>
-	inline Type &at()
+	ਸਾਂਚਾ <size_t i>
+	ਸਤਰਅੰਦਰ Type &at()
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
-		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		constexpr ਪੂਰਨ compressed_ਸੂਚਕਾਂਕ_2 = ਲੱਭੋ_Compressed_ਸੂਚਕਾਂਕ(i);
+		static_assert(compressed_ਸੂਚਕਾਂਕ_2 >= 0, "cannot access unpopulated indices");
+		ਵਾਪਸ ਅੰਕੜੇ_3[compressed_ਸੂਚਕਾਂਕ_2];
 	}
 
-	inline Type atCompressedIndex(size_t i) const
+	ਸਤਰਅੰਦਰ Type at_Compressed_ਸੂਚਕਾਂਕ(size_t i) ਅਚਲ
 	{
-		assert(i < N);
-		return _data[i];
+		ਪ੍ਰਤਿਜ੍ਞਾ(i < N);
+		ਵਾਪਸ ਅੰਕੜੇ_3[i];
 	}
 
-	inline Type &atCompressedIndex(size_t i)
+	ਸਤਰਅੰਦਰ Type &at_Compressed_ਸੂਚਕਾਂਕ(size_t i)
 	{
-		assert(i < N);
-		return _data[i];
+		ਪ੍ਰਤਿਜ੍ਞਾ(i < N);
+		ਵਾਪਸ ਅੰਕੜੇ_3[i];
 	}
 
-	void setZero()
+	ਖਾਲੀ ਸੈੱਟ_Zero()
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] = Type(0);
+		ਲਈ (size_t i = 0; i < N; i++) {
+			ਅੰਕੜੇ_3[i] = Type(0);
 		}
 	}
 
-	Type dot(const matrix::Vector<Type, M> &other) const
+	Type dot(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> &other) ਅਚਲ
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
-			accum += _data[i] * other(indexAt(i));
+		ਲਈ (size_t i = 0; i < N; i++) {
+			accum += ਅੰਕੜੇ_3[i] * other(ਸੂਚਕਾਂਕ_At(i));
 		}
 
-		return accum;
+		ਵਾਪਸ accum;
 	}
 
-	matrix::Vector<Type, M> operator+(const matrix::Vector<Type, M> &other) const
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> ਸੰਚਾਲਕ+(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> &other) ਅਚਲ
 	{
-		matrix::Vector<Type, M> vec = other;
+		ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> vec = other;
 
-		for (size_t i = 0; i < N; i++) {
-			vec(indexAt(i)) +=  _data[i];
+		ਲਈ (size_t i = 0; i < N; i++) {
+			vec(ਸੂਚਕਾਂਕ_At(i)) +=  ਅੰਕੜੇ_3[i];
 		}
 
-		return vec;
+		ਵਾਪਸ vec;
 	}
 
-	SparseVector &operator+=(Type t)
+	Sparse_ਸਦਿਸ਼ &ਸੰਚਾਲਕ+=(Type t)
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] += t;
+		ਲਈ (size_t i = 0; i < N; i++) {
+			ਅੰਕੜੇ_3[i] += t;
 		}
 
-		return *this;
+		ਵਾਪਸ *ਇਹ;
 	}
 
-	Type norm_squared() const
+	Type norm_squared() ਅਚਲ
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
-			accum += _data[i] * _data[i];
+		ਲਈ (size_t i = 0; i < N; i++) {
+			accum += ਅੰਕੜੇ_3[i] * ਅੰਕੜੇ_3[i];
 		}
 
-		return accum;
+		ਵਾਪਸ accum;
 	}
 
-	Type norm() const
+	Type norm() ਅਚਲ
 	{
-		return std::sqrt(norm_squared());
+		ਵਾਪਸ std::ਵਰਗਮੂਲ(norm_squared());
 	}
 
-	bool longerThan(Type testVal) const
+	ਤਾਰਕਿਕ longerThan(Type testVal) ਅਚਲ
 	{
-		return norm_squared() > testVal * testVal;
+		ਵਾਪਸ norm_squared() > testVal * testVal;
 	}
 };
 
-template<typename Type, size_t Q, size_t M, size_t ... Idxs>
-matrix::Vector<Type, Q> operator*(const matrix::Matrix<Type, Q, M> &mat,
-				  const matrix::SparseVector<Type, M, Idxs...> &vec)
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type, size_t Q, size_t M, size_t ... Idxs>
+ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, Q> ਸੰਚਾਲਕ*(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Type, Q, M> &mat,
+				  ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Sparse_ਸਦਿਸ਼<Type, M, Idxs...> &vec)
 {
-	matrix::Vector<Type, Q> res;
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, Q> res;
 
-	for (size_t i = 0; i < Q; i++) {
-		const Vector<Type, M> row = mat.row(i);
-		res(i) = vec.dot(row);
+	ਲਈ (size_t i = 0; i < Q; i++) {
+		ਅਚਲ ਸਦਿਸ਼<Type, M> ਪੰਕਤੀ = mat.ਪੰਕਤੀ(i);
+		res(i) = vec.dot(ਪੰਕਤੀ);
 	}
 
-	return res;
+	ਵਾਪਸ res;
 }
 
 // returns x.T * A * x
-template<typename Type, size_t M, size_t ... Idxs>
-Type quadraticForm(const matrix::SquareMatrix<Type, M> &A, const matrix::SparseVector<Type, M, Idxs...> &x)
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type, size_t M, size_t ... Idxs>
+Type quadraticForm(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਵਰਗਫਲ_ਮੈਟ੍ਰਿਕਸ<Type, M> &A, ਅਚਲ ਮੈਟ੍ਰਿਕਸ::Sparse_ਸਦਿਸ਼<Type, M, Idxs...> &x)
 {
 	Type res = Type(0);
 
-	for (size_t i = 0; i < x.non_zeros(); i++) {
+	ਲਈ (size_t i = 0; i < x.non_zeros(); i++) {
 		Type tmp = Type(0);
 
-		for (size_t j = 0; j < x.non_zeros(); j++) {
-			tmp += A(x.index(i), x.index(j)) * x.atCompressedIndex(j);
+		ਲਈ (size_t j = 0; j < x.non_zeros(); j++) {
+			tmp += A(x.ਸੂਚਕਾਂਕ(i), x.ਸੂਚਕਾਂਕ(j)) * x.at_Compressed_ਸੂਚਕਾਂਕ(j);
 		}
 
-		res += x.atCompressedIndex(i) * tmp;
+		res += x.at_Compressed_ਸੂਚਕਾਂਕ(i) * tmp;
 	}
 
-	return res;
+	ਵਾਪਸ res;
 }
 
-template<size_t M, size_t ... Idxs>
-using SparseVectorf = SparseVector<float, M, Idxs...>;
+ਸਾਂਚਾ<size_t M, size_t ... Idxs>
+ਵਰਤੋਂ SparseVectorf = Sparse_ਸਦਿਸ਼<ਦਸ਼ਮਲਵ, M, Idxs...>;
 
 }

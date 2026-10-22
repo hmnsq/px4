@@ -31,64 +31,64 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
 
-namespace open_drone_id
+ਨਾਮਾਕਾਸ਼ open_drone_id
 {
 
-static constexpr uint8_t UAS_ID_SIZE = 20;
-static constexpr uint8_t UAS_ID_TYPE_SERIAL_NUMBER = 1;
-static constexpr int32_t UAS_ID_MODE_LOCK_FIRST_BASIC_ID = 1;
+ਸਥਿਰ constexpr uint8_t UAS_ID_ਮਾਪ = 20;
+ਸਥਿਰ constexpr uint8_t UAS_ID_TYPE_SERIAL_ਸੰਖਿਆ = 1;
+ਸਥਿਰ constexpr int32_t UAS_ID_ਬਹੁਲਕ_ਤਾਲਾ_ਪਹਿਲਾ_BASIC_ID = 1;
 
-struct UasId {
+ਬਣਤਰ UasId {
 	uint8_t ua_type{0};
-	uint8_t uas_id[UAS_ID_SIZE] {};
+	uint8_t uas_id[UAS_ID_ਮਾਪ] {};
 };
 
-enum class BidLockState {
-	Empty,
+ਗਿਣਤੀ ਵਰਗ Bid_ਤਾਲਾ_State {
+	ਖਾਲੀ_ਥਾਵਾਂ_2,
 	Locked,
-	InvalidRecord,
+	Invalid_ਰਿਕਾਰਡ,
 	StorageUnavailable,
 	WriteError,
 	Unsupported,
 };
 
-struct BidLockInfo {
-	BidLockState state{BidLockState::Unsupported};
+ਬਣਤਰ Bid_ਤਾਲਾ_Info {
+	Bid_ਤਾਲਾ_State state{Bid_ਤਾਲਾ_State::Unsupported};
 	UasId id{};
 
-	bool locked() const { return state == BidLockState::Locked; }
+	ਤਾਰਕਿਕ locked() ਅਚਲ { ਵਾਪਸ state == Bid_ਤਾਲਾ_State::Locked; }
 };
 
-enum class BidStoreResult {
+ਗਿਣਤੀ ਵਰਗ Bid_Store_ਨਤੀਜਾ {
 	Stored,
 	AlreadyLocked,
 	AlreadyLockedDifferent,
 	InvalidBasicId,
 	StorageUnavailable,
-	InvalidRecord,
+	Invalid_ਰਿਕਾਰਡ,
 	WriteError,
 	Unsupported,
 };
 
-class BidStorage
+ਵਰਗ BidStorage
 {
-public:
-	static BidLockInfo get();
-	static BidStoreResult checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE]);
+ਜਨਤਕ:
+	ਸਥਿਰ Bid_ਤਾਲਾ_Info get();
+	ਸਥਿਰ Bid_Store_ਨਤੀਜਾ checkOrStore(uint8_t ua_type, ਅਚਲ uint8_t uas_id[UAS_ID_ਮਾਪ]);
 };
 
-class BidLock
+ਵਰਗ Bid_ਤਾਲਾ
 {
-public:
-	BidStoreResult resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE], UasId &locked_id);
+ਜਨਤਕ:
+	Bid_Store_ਨਤੀਜਾ resolve(uint8_t id_type, uint8_t ua_type, ਅਚਲ uint8_t uas_id[UAS_ID_ਮਾਪ], UasId &locked_id);
 
-private:
-	BidLockInfo _info{};
-	bool _loaded{false};
+ਨਿਜੀ:
+	Bid_ਤਾਲਾ_Info _info{};
+	ਤਾਰਕਿਕ _loaded{ਝੂਠ};
 };
 
 } // namespace open_drone_id

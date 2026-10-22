@@ -62,38 +62,38 @@
  *
  */
 
-#ifndef _SYSTEMLIB_ERR_H
-#define _SYSTEMLIB_ERR_H
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ _SYSTEMLIB_ERR_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ _SYSTEMLIB_ERR_H
 
-#include <px4_platform_common/log.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/log.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdarg.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <errno.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
 
 __BEGIN_DECLS
 
 
-#ifdef __PX4_NUTTX
-#define EXIT(eval) exit(eval)
-#else
-#define EXIT(eval) px4_task_exit(eval)
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __PX4_NUTTX
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ EXIT(eval) ਬਾਹਰ_ਨਿਕਲੋ(eval)
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ EXIT(eval) px4_task_exit(eval)
+#ਜੇ_ਅੰਤ
 
 
-#define err(eval, ...)		do { \
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ err(eval, ...)		ਕਰੋ { \
 		PX4_ERR(__VA_ARGS__); \
 		PX4_ERR("Task exited with errno=%i\n", errno); \
 		EXIT(eval); \
-	} while(0)
+	} ਜਦੋਂ(0)
 
-#define errx(eval, ...)		do { \
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ errx(eval, ...)		ਕਰੋ { \
 		PX4_ERR(__VA_ARGS__); \
 		EXIT(eval); \
-	} while(0)
+	} ਜਦੋਂ(0)
 
-#define warn(...) 		PX4_WARN(__VA_ARGS__)
-#define warnx(...) 		PX4_WARN(__VA_ARGS__)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ warn(...) 		PX4_WARN(__VA_ARGS__)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ warnx(...) 		PX4_WARN(__VA_ARGS__)
 
 __END_DECLS
 
-#endif
+#ਜੇ_ਅੰਤ

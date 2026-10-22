@@ -31,51 +31,51 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <gtest/gtest.h>
-#include "correction_framer.h"
-#include <vector>
-#include <cstring>
-#include <numeric>
-#include <random>
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "correction_framer.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ <vector>
+#ਅਨ੍ਤਰ੍ਭਾਵ <cstring>
+#ਅਨ੍ਤਰ੍ਭਾਵ <numeric>
+#ਅਨ੍ਤਰ੍ਭਾਵ <random>
 
-using namespace gnss;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ gnss;
 
-class RtcmTest : public ::testing::Test
+ਵਰਗ RtcmTest : ਜਨਤਕ ::testing::Test
 {
-protected:
+ਸੁਰੱਖਿਅਤ:
 	CorrectionFramer parser;
-	GpsRtcmMessageAssembler gps_rtcm_assembler;
+	Gps_Rtcm_ਸੁਨੇਹਾ_Assembler gps_rtcm_assembler;
 
-	uint8_t buildGpsRtcmFlags(bool fragmented, uint8_t fragment_id = 0, uint8_t sequence_id = 0)
+	uint8_t buildGpsRtcmFlags(ਤਾਰਕਿਕ fragmented, uint8_t fragment_id = 0, uint8_t sequence_id = 0)
 	{
 		uint8_t flags = fragmented ? GPS_RTCM_FLAG_FRAGMENTED : 0;
-		flags |= (fragment_id & GPS_RTCM_FLAG_FRAGMENT_ID_MASK) << GPS_RTCM_FLAG_FRAGMENT_ID_SHIFT;
-		flags |= (sequence_id & GPS_RTCM_FLAG_SEQUENCE_ID_MASK) << GPS_RTCM_FLAG_SEQUENCE_ID_SHIFT;
-		return flags;
+		flags |= (fragment_id & GPS_RTCM_FLAG_FRAGMENT_ID_ਨਕਾਬ) << GPS_RTCM_FLAG_FRAGMENT_ID_ਖਿਸਕਾਓ;
+		flags |= (sequence_id & GPS_RTCM_FLAG_SEQUENCE_ID_ਨਕਾਬ) << GPS_RTCM_FLAG_SEQUENCE_ID_ਖਿਸਕਾਓ;
+		ਵਾਪਸ flags;
 	}
 
 	// Helper to build a valid RTCM3 frame with proper CRC
-	std::vector<uint8_t> buildValidFrame(uint16_t msg_type, const std::vector<uint8_t> &payload_data)
+	std::ਸਦਿਸ਼_2<uint8_t> build_Valid_ਚੌਖਟਾ(uint16_t ਸੁਨੇਹਾ_type_2, ਅਚਲ std::ਸਦਿਸ਼_2<uint8_t> &payload_ਅੰਕੜੇ)
 	{
 		// Payload = 12-bit message type + rest of payload_data
 		// Message type is stored in first 12 bits of payload
-		std::vector<uint8_t> payload;
-		payload.push_back((msg_type >> 4) & 0xFF);
-		payload.push_back(((msg_type & 0x0F) << 4) | (payload_data.empty() ? 0 : (payload_data[0] >> 4)));
+		std::ਸਦਿਸ਼_2<uint8_t> payload;
+		payload.push_back((ਸੁਨੇਹਾ_type_2 >> 4) & 0xFF);
+		payload.push_back(((ਸੁਨੇਹਾ_type_2 & 0x0F) << 4) | (payload_ਅੰਕੜੇ.ਖਾਲੀ_ਥਾਵਾਂ() ? 0 : (payload_ਅੰਕੜੇ[0] >> 4)));
 
-		for (size_t i = 0; i < payload_data.size(); i++) {
-			uint8_t current = (payload_data[i] << 4) & 0xF0;
+		ਲਈ (size_t i = 0; i < payload_ਅੰਕੜੇ.ਮਾਪ(); i++) {
+			uint8_t current = (payload_ਅੰਕੜੇ[i] << 4) & 0xF0;
 
-			if (i + 1 < payload_data.size()) {
-				current |= (payload_data[i + 1] >> 4) & 0x0F;
+			ਜੇ (i + 1 < payload_ਅੰਕੜੇ.ਮਾਪ()) {
+				current |= (payload_ਅੰਕੜੇ[i + 1] >> 4) & 0x0F;
 			}
 
 			payload.push_back(current);
 		}
 
-		return buildRawFrame(payload);
+		ਵਾਪਸ build_Raw_ਚੌਖਟਾ(payload);
 	}
 
 	// Helper to build a frame with raw payload bytes (no message type encoding)
@@ -83,34 +83,34 @@ protected:
 	// Keep this helper out-of-line to avoid a GCC false positive on the
 	// inlined std::vector::push_back.
 	// See https://github.com/PX4/PX4-Autopilot/issues/26875 for details.
-	__attribute__((noinline)) std::vector<uint8_t> buildRawFrame(const std::vector<uint8_t> &payload)
+	__attribute__((noinline)) std::ਸਦਿਸ਼_2<uint8_t> build_Raw_ਚੌਖਟਾ(ਅਚਲ std::ਸਦਿਸ਼_2<uint8_t> &payload)
 	{
-		std::vector<uint8_t> frame;
-		size_t payload_len = payload.size();
+		std::ਸਦਿਸ਼_2<uint8_t> ਚੌਖਟਾ;
+		size_t payload_len = payload.ਮਾਪ();
 
 		// Header: preamble + length
-		frame.push_back(RTCM3_PREAMBLE);
-		frame.push_back((payload_len >> 8) & 0x03);  // Upper 2 bits of length (reserved bits = 0)
-		frame.push_back(payload_len & 0xFF);         // Lower 8 bits of length
+		ਚੌਖਟਾ.push_back(RTCM3_PREAMBLE);
+		ਚੌਖਟਾ.push_back((payload_len >> 8) & 0x03);  // Upper 2 bits of length (reserved bits = 0)
+		ਚੌਖਟਾ.push_back(payload_len & 0xFF);         // Lower 8 bits of length
 
 		// Payload
-		frame.insert(frame.end(), payload.begin(), payload.end());
+		ਚੌਖਟਾ.ਪਾਓ(ਚੌਖਟਾ.ਸਿਰਾ(), payload.begin(), payload.ਸਿਰਾ());
 
-		// CRC
-		uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
-		frame.push_back((crc >> 16) & 0xFF);
-		frame.push_back((crc >> 8) & 0xFF);
-		frame.push_back(crc & 0xFF);
+		//ਚੱਕਰੀ_ਜਾਂਚ
+		uint32_t ਚੱਕਰੀ_ਜਾਂਚ = rtcm3_crc24q(ਚੌਖਟਾ.ਅੰਕੜੇ(), ਚੌਖਟਾ.ਮਾਪ());
+		ਚੌਖਟਾ.push_back((ਚੱਕਰੀ_ਜਾਂਚ >> 16) & 0xFF);
+		ਚੌਖਟਾ.push_back((ਚੱਕਰੀ_ਜਾਂਚ >> 8) & 0xFF);
+		ਚੌਖਟਾ.push_back(ਚੱਕਰੀ_ਜਾਂਚ & 0xFF);
 
-		return frame;
+		ਵਾਪਸ ਚੌਖਟਾ;
 	}
 
 	// Helper to build a frame with bad CRC
-	std::vector<uint8_t> buildBadCrcFrame(const std::vector<uint8_t> &payload)
+	std::ਸਦਿਸ਼_2<uint8_t> build_Bad_ਚੱਕਰੀ_ਜਾਂਚ_ਚੌਖਟਾ(ਅਚਲ std::ਸਦਿਸ਼_2<uint8_t> &payload)
 	{
-		auto frame = buildRawFrame(payload);
+		ਸਵੈਚਾਲਿਤ ਚੌਖਟਾ = build_Raw_ਚੌਖਟਾ(payload);
 		// Corrupt the CRC
-		frame[frame.size() - 1] ^= 0xFF;
-		return frame;
+		ਚੌਖਟਾ[ਚੌਖਟਾ.ਮਾਪ() - 1] ^= 0xFF;
+		ਵਾਪਸ ਚੌਖਟਾ;
 	}
 };

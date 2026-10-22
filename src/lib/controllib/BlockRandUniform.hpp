@@ -37,56 +37,56 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <assert.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <time.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/test/test.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/Block.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "matrix/math.hpp"
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
 /**
  * A uniform random number generator
  */
-class __EXPORT BlockRandUniform: public Block
+ਵਰਗ __EXPORT ਖੰਡ_Rand_ਇਕਸਾਰ: ਜਨਤਕ ਖੰਡ
 {
-public:
+ਜਨਤਕ:
 // methods
-	BlockRandUniform(SuperBlock *parent,
-			 const char *name) :
-		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+	ਖੰਡ_Rand_ਇਕਸਾਰ(Super_ਖੰਡ *ਮਾਪਾ,
+			 ਅਚਲ ਅੱਖਰ *name) :
+		ਖੰਡ(ਮਾਪਾ, name),
+		_min(ਇਹ, "MIN"),
+		_max(ਇਹ, "MAX")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandUniform() = default;
-	float update()
+	ਆਭਾਸੀ ~ਖੰਡ_Rand_ਇਕਸਾਰ() = ਮੂਲ;
+	ਦਸ਼ਮਲਵ update()
 	{
-		static float rand_max = static_cast<float>(RAND_MAX);
-		float rand_val = rand();
-		float bounds = getMax() - getMin();
-		return getMin() + (rand_val * bounds) / rand_max;
+		ਸਥਿਰ ਦਸ਼ਮਲਵ rand_max = static_cast<ਦਸ਼ਮਲਵ>(RAND_MAX);
+		ਦਸ਼ਮਲਵ rand_val = rand();
+		ਦਸ਼ਮਲਵ bounds = getMax() - getMin();
+		ਵਾਪਸ getMin() + (rand_val * bounds) / rand_max;
 	}
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-private:
-// attributes
-	control::BlockParamFloat _min;
-	control::BlockParamFloat _max;
+	ਦਸ਼ਮਲਵ getMin() { ਵਾਪਸ _min.get(); }
+	ਦਸ਼ਮਲਵ getMax() { ਵਾਪਸ _max.get(); }
+ਨਿਜੀ:
+//ਗੁਣ
+	control::ਖੰਡ_Param_Float _min;
+	control::ਖੰਡ_Param_Float _max;
 };
 
 } // namespace control

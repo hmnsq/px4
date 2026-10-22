@@ -37,61 +37,61 @@
  * Controller library code
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <assert.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <time.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/test/test.hpp>
+#ਅਨ੍ਤਰ੍ਭਾਵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/Block.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "matrix/math.hpp"
 
-namespace control
+ਨਾਮਾਕਾਸ਼ control
 {
 
-template<class Type, size_t M>
-class __EXPORT BlockLowPassVector: public Block
+ਸਾਂਚਾ<ਵਰਗ Type, size_t M>
+ਵਰਗ __EXPORT ਖੰਡ_ਨੀਵਾਂ_Pass_ਸਦਿਸ਼: ਜਨਤਕ ਖੰਡ
 {
-public:
+ਜਨਤਕ:
 // methods
-	BlockLowPassVector(SuperBlock *parent,
-			   const char *name) :
-		Block(parent, name),
+	ਖੰਡ_ਨੀਵਾਂ_Pass_ਸਦਿਸ਼(Super_ਖੰਡ *ਮਾਪਾ,
+			   ਅਚਲ ਅੱਖਰ *name) :
+		ਖੰਡ(ਮਾਪਾ, name),
 		_state(),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(ਇਹ, "") // only one parameter, no need to name
 	{
-		for (size_t i = 0; i < M; i++) {
+		ਲਈ (size_t i = 0; i < M; i++) {
 			_state(i) = 0.0f / 0.0f;
 		}
 	}
-	virtual ~BlockLowPassVector() = default;
-	matrix::Vector<Type, M> update(const matrix::Matrix<Type, M, 1> &input)
+	ਆਭਾਸੀ ~ਖੰਡ_ਨੀਵਾਂ_Pass_ਸਦਿਸ਼() = ਮੂਲ;
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> update(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਮੈਟ੍ਰਿਕਸ_2<Type, M, 1> &ਨਿਵੇਸ਼)
 	{
-		for (size_t i = 0; i < M; i++) {
-			if (!PX4_ISFINITE(getState()(i))) {
-				setState(input);
+		ਲਈ (size_t i = 0; i < M; i++) {
+			ਜੇ (!PX4_ISFINITE(getState()(i))) {
+				ਸੈੱਟ_State(ਨਿਵੇਸ਼);
 			}
 		}
 
-		float b = 2 * M_PI_F * getFCut() * getDt();
-		float a = b / (1 + b);
-		setState(input * a + getState() * (1 - a));
-		return getState();
+		ਦਸ਼ਮਲਵ b = 2 * M_PI_F * getFCut() * getDt();
+		ਦਸ਼ਮਲਵ a = b / (1 + b);
+		ਸੈੱਟ_State(ਨਿਵੇਸ਼ * a + getState() * (1 - a));
+		ਵਾਪਸ getState();
 	}
 // accessors
-	matrix::Vector<Type, M> getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(const matrix::Vector<Type, M> &state) { _state = state; }
-private:
-// attributes
-	matrix::Vector<Type, M> _state;
-	control::BlockParamFloat _fCut;
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> getState() { ਵਾਪਸ _state; }
+	ਦਸ਼ਮਲਵ getFCut() { ਵਾਪਸ _fCut.get(); }
+	ਖਾਲੀ ਸੈੱਟ_State(ਅਚਲ ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> &state) { _state = state; }
+ਨਿਜੀ:
+//ਗੁਣ
+	ਮੈਟ੍ਰਿਕਸ::ਸਦਿਸ਼<Type, M> _state;
+	control::ਖੰਡ_Param_Float _fCut;
 };
 
 } // namespace control

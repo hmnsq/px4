@@ -31,127 +31,127 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <math.h>
-#include "TimestampedRingBuffer.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ <gtest/gtest.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <math.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "TimestampedRingBuffer.hpp"
 
-struct Sample {
-	uint64_t time_us;
-	float data[3];
+ਬਣਤਰ Sample {
+	uint64_t ਸਮਾਂ_us;
+	ਦਸ਼ਮਲਵ ਅੰਕੜੇ[3];
 };
 
 
-class TimestampedRingBufferStaticTest : public ::testing::Test
+ਵਰਗ Timestamped_Ring_ਬਫਰ_Static_Test : ਜਨਤਕ ::testing::Test
 {
-public:
+ਜਨਤਕ:
 	Sample _x, _y, _z, _w;
-	TimestampedRingBuffer<Sample, 3> *_buffer{nullptr};
+	Timestamped_Ring_ਬਫਰ<Sample, 3> *ਬਫਰ{ਖਾਲੀ_ਸੂਚਕ};
 
-	void SetUp() override
+	ਖਾਲੀ ਸੈੱਟ_ਉੱਪਰ() override
 	{
-		_buffer = new TimestampedRingBuffer<Sample, 3>();
-		_x.time_us = 1000000;
-		_x.data[0] = _x.data[1] = _x.data[2] = 1.5f;
+		ਬਫਰ = ਨਵਾਂ Timestamped_Ring_ਬਫਰ<Sample, 3>();
+		_x.ਸਮਾਂ_us = 1000000;
+		_x.ਅੰਕੜੇ[0] = _x.ਅੰਕੜੇ[1] = _x.ਅੰਕੜੇ[2] = 1.5f;
 
-		_y.time_us = 2000000;
-		_y.data[0] = _y.data[1] = _y.data[2] = 3.0f;
+		_y.ਸਮਾਂ_us = 2000000;
+		_y.ਅੰਕੜੇ[0] = _y.ਅੰਕੜੇ[1] = _y.ਅੰਕੜੇ[2] = 3.0f;
 
-		_z.time_us = 3000000;
-		_z.data[0] = _z.data[1] = _z.data[2] = 4.0f;
+		_z.ਸਮਾਂ_us = 3000000;
+		_z.ਅੰਕੜੇ[0] = _z.ਅੰਕੜੇ[1] = _z.ਅੰਕੜੇ[2] = 4.0f;
 
-		_w.time_us = 4000000;
-		_w.data[0] = _w.data[1] = _w.data[2] = 5.0f;
+		_w.ਸਮਾਂ_us = 4000000;
+		_w.ਅੰਕੜੇ[0] = _w.ਅੰਕੜੇ[1] = _w.ਅੰਕੜੇ[2] = 5.0f;
 	}
 
-	void TearDown() override
+	ਖਾਲੀ Tear_ਥੱਲੇ() override
 	{
-		delete _buffer;
+		ਮਿਟਾਓ ਬਫਰ;
 	}
 };
 
-TEST_F(TimestampedRingBufferStaticTest, goodInitialisation)
+TEST_F(Timestamped_Ring_ਬਫਰ_Static_Test, goodInitialisation)
 {
 	// WHEN: buffer was allocated
 	// THEN: allocation should have succeed
-	EXPECT_TRUE(_buffer->valid());
-	EXPECT_FALSE(_buffer->allocate(2));
-	EXPECT_EQ(_buffer->get_length(), 3);
+	EXPECT_TRUE(ਬਫਰ->valid());
+	EXPECT_FALSE(ਬਫਰ->allocate(2));
+	EXPECT_EQ(ਬਫਰ->get_ਲੰਮਾਈ(), 3);
 }
 
-TEST_F(TimestampedRingBufferStaticTest, NextPrevHelpers)
+TEST_F(Timestamped_Ring_ਬਫਰ_Static_Test, ਅਗਲਾ_Prev_Helpers)
 {
-	EXPECT_EQ(_buffer->next(0), 1);
-	EXPECT_EQ(_buffer->next(1), 2);
-	EXPECT_EQ(_buffer->next(2), 0);
+	EXPECT_EQ(ਬਫਰ->ਅਗਲਾ(0), 1);
+	EXPECT_EQ(ਬਫਰ->ਅਗਲਾ(1), 2);
+	EXPECT_EQ(ਬਫਰ->ਅਗਲਾ(2), 0);
 
-	EXPECT_EQ(_buffer->prev(0), 2);
-	EXPECT_EQ(_buffer->prev(1), 0);
-	EXPECT_EQ(_buffer->prev(2), 1);
+	EXPECT_EQ(ਬਫਰ->prev(0), 2);
+	EXPECT_EQ(ਬਫਰ->prev(1), 0);
+	EXPECT_EQ(ਬਫਰ->prev(2), 1);
 }
 
-TEST_F(TimestampedRingBufferStaticTest, PushWrapAndIndices)
+TEST_F(Timestamped_Ring_ਬਫਰ_Static_Test, ਧੱਕੋ_Wrap_And_Indices)
 {
-	_buffer->reset();
-	ASSERT_TRUE(_buffer->empty());
+	ਬਫਰ->reset();
+	ASSERT_TRUE(ਬਫਰ->ਖਾਲੀ_ਥਾਵਾਂ());
 
-	_buffer->push(_x);
-	_buffer->push(_y);
-	EXPECT_EQ(_buffer->entries(), 2);
-	_buffer->push(_z);
+	ਬਫਰ->ਧੱਕੋ(_x);
+	ਬਫਰ->ਧੱਕੋ(_y);
+	EXPECT_EQ(ਬਫਰ->entries(), 2);
+	ਬਫਰ->ਧੱਕੋ(_z);
 
-	EXPECT_EQ(_buffer->entries(), 3);
-	EXPECT_EQ(_buffer->get_oldest().time_us, _x.time_us);
-	EXPECT_EQ(_buffer->get_newest().time_us, _z.time_us);
+	EXPECT_EQ(ਬਫਰ->entries(), 3);
+	EXPECT_EQ(ਬਫਰ->get_oldest().ਸਮਾਂ_us, _x.ਸਮਾਂ_us);
+	EXPECT_EQ(ਬਫਰ->get_newest().ਸਮਾਂ_us, _z.ਸਮਾਂ_us);
 
 	// Overwrite once (ring wrap-around).
-	_buffer->push(_w);
+	ਬਫਰ->ਧੱਕੋ(_w);
 
-	EXPECT_EQ(_buffer->entries(), 3);
-	EXPECT_EQ(_buffer->get_oldest().time_us, _y.time_us);
-	EXPECT_EQ(_buffer->get_newest().time_us, _w.time_us);
+	EXPECT_EQ(ਬਫਰ->entries(), 3);
+	EXPECT_EQ(ਬਫਰ->get_oldest().ਸਮਾਂ_us, _y.ਸਮਾਂ_us);
+	EXPECT_EQ(ਬਫਰ->get_newest().ਸਮਾਂ_us, _w.ਸਮਾਂ_us);
 }
 
-TEST_F(TimestampedRingBufferStaticTest, PopFirstOlderThanDiscardsOlderHistory)
+TEST_F(Timestamped_Ring_ਬਫਰ_Static_Test, ਕੱਢੋ_ਪਹਿਲਾ_Older_Than_Discards_Older_History)
 {
-	_buffer->reset();
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ਬਫਰ->reset();
+	ਬਫਰ->ਧੱਕੋ(_x);
+	ਬਫਰ->ਧੱਕੋ(_y);
+	ਬਫਰ->ਧੱਕੋ(_z);
 
-	Sample pop = {};
+	Sample ਕੱਢੋ = {};
 
 	// Query timestamp older than any in the buffer: no match.
-	EXPECT_FALSE(_buffer->pop_first_older_than(0, &pop));
+	EXPECT_FALSE(ਬਫਰ->ਕੱਢੋ_ਪਹਿਲਾ_older_than(0, &ਕੱਢੋ));
 
 	// Pop y (also discards x), leaving z as the only remaining Sample.
-	EXPECT_TRUE(_buffer->pop_first_older_than(_y.time_us + 10, &pop));
-	EXPECT_EQ(pop.time_us, _y.time_us);
+	EXPECT_TRUE(ਬਫਰ->ਕੱਢੋ_ਪਹਿਲਾ_older_than(_y.ਸਮਾਂ_us + 10, &ਕੱਢੋ));
+	EXPECT_EQ(ਕੱਢੋ.ਸਮਾਂ_us, _y.ਸਮਾਂ_us);
 
-	EXPECT_EQ(_buffer->entries(), 1);
-	EXPECT_EQ(_buffer->get_oldest().time_us, _z.time_us);
-	EXPECT_EQ(_buffer->get_newest().time_us, _z.time_us);
+	EXPECT_EQ(ਬਫਰ->entries(), 1);
+	EXPECT_EQ(ਬਫਰ->get_oldest().ਸਮਾਂ_us, _z.ਸਮਾਂ_us);
+	EXPECT_EQ(ਬਫਰ->get_newest().ਸਮਾਂ_us, _z.ਸਮਾਂ_us);
 
 	// Pop z (buffer becomes empty).
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 1, &pop));
-	EXPECT_EQ(pop.time_us, _z.time_us);
-	EXPECT_TRUE(_buffer->empty());
+	EXPECT_TRUE(ਬਫਰ->ਕੱਢੋ_ਪਹਿਲਾ_older_than(_z.ਸਮਾਂ_us + 1, &ਕੱਢੋ));
+	EXPECT_EQ(ਕੱਢੋ.ਸਮਾਂ_us, _z.ਸਮਾਂ_us);
+	EXPECT_TRUE(ਬਫਰ->ਖਾਲੀ_ਥਾਵਾਂ());
 }
 
-TEST_F(TimestampedRingBufferStaticTest, ResetClearsTimestamps)
+TEST_F(Timestamped_Ring_ਬਫਰ_Static_Test, ResetClearsTimestamps)
 {
-	_buffer->push(_x);
-	_buffer->push(_y);
-	EXPECT_FALSE(_buffer->empty());
+	ਬਫਰ->ਧੱਕੋ(_x);
+	ਬਫਰ->ਧੱਕੋ(_y);
+	EXPECT_FALSE(ਬਫਰ->ਖਾਲੀ_ਥਾਵਾਂ());
 
-	_buffer->reset();
-	EXPECT_TRUE(_buffer->empty());
+	ਬਫਰ->reset();
+	EXPECT_TRUE(ਬਫਰ->ਖਾਲੀ_ਥਾਵਾਂ());
 
-	for (uint8_t i = 0; i < _buffer->get_length(); i++) {
-		EXPECT_EQ((*_buffer)[i].time_us, 0u);
+	ਲਈ (uint8_t i = 0; i < ਬਫਰ->get_ਲੰਮਾਈ(); i++) {
+		EXPECT_EQ((*ਬਫਰ)[i].ਸਮਾਂ_us, 0u);
 	}
 }
 
-TEST_F(TimestampedRingBufferStaticTest, TotalSizeReflectsInlineStorage)
+TEST_F(Timestamped_Ring_ਬਫਰ_Static_Test, ਕੁੱਲ_ਮਾਪ_Reflects_Inline_Storage)
 {
-	EXPECT_EQ(_buffer->get_total_size(), static_cast<int>(sizeof(TimestampedRingBuffer<Sample, 3>)));
+	EXPECT_EQ(ਬਫਰ->get_ਕੁੱਲ_ਮਾਪ(), static_cast<ਪੂਰਨ>(ਆਕਾਰ(Timestamped_Ring_ਬਫਰ<Sample, 3>)));
 }

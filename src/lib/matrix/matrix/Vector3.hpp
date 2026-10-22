@@ -6,109 +6,109 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include "Vector.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ "Vector.hpp"
 
-namespace matrix
+ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ
 {
 
-template <typename Type>
-class Dcm;
+ਸਾਂਚਾ <ਕਿਸਮ_ਨਾਂ Type>
+ਵਰਗ Dcm;
 
-template<typename Type>
-class Vector3 : public Vector<Type, 3>
+ਸਾਂਚਾ<ਕਿਸਮ_ਨਾਂ Type>
+ਵਰਗ Vector3 : ਜਨਤਕ ਸਦਿਸ਼<Type, 3>
 {
-public:
+ਜਨਤਕ:
 
-	using Matrix31 = Matrix<Type, 3, 1>;
+	ਵਰਤੋਂ Matrix31 = ਮੈਟ੍ਰਿਕਸ_2<Type, 3, 1>;
 
-	Vector3() = default;
+	Vector3() = ਮੂਲ;
 
-	Vector3(const Matrix31 &other) :
-		Vector<Type, 3>(other)
+	Vector3(ਅਚਲ Matrix31 &other) :
+		ਸਦਿਸ਼<Type, 3>(other)
 	{
 	}
 
-	explicit Vector3(const Type data_[3]) :
-		Vector<Type, 3>(data_)
+	ਸਪਸ਼ਟ Vector3(ਅਚਲ Type ਅੰਕੜੇ_2[3]) :
+		ਸਦਿਸ਼<Type, 3>(ਅੰਕੜੇ_2)
 	{
 	}
 
 	Vector3(Type x, Type y, Type z)
 	{
-		Vector3 &v(*this);
+		Vector3 &v(*ਇਹ);
 		v(0) = x;
 		v(1) = y;
 		v(2) = z;
 	}
 
-	using base = Vector<Type, 3>;
-	using base::base;
+	ਵਰਤੋਂ base = ਸਦਿਸ਼<Type, 3>;
+	ਵਰਤੋਂ base::base;
 
-	Vector3 cross(const Matrix31 &b) const
+	Vector3 cross(ਅਚਲ Matrix31 &b) ਅਚਲ
 	{
-		const Vector3 &a(*this);
-		return {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
+		ਅਚਲ Vector3 &a(*ਇਹ);
+		ਵਾਪਸ {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
 	}
 
 	/**
 	 * Override matrix ops so Vector3 type is returned
 	 */
 
-	inline Vector3 operator+(Vector3 other) const
+	ਸਤਰਅੰਦਰ Vector3 ਸੰਚਾਲਕ+(Vector3 other) ਅਚਲ
 	{
-		return Matrix31::operator+(other);
+		ਵਾਪਸ Matrix31::ਸੰਚਾਲਕ+(other);
 	}
 
-	inline Vector3 operator+(Type scalar) const
+	ਸਤਰਅੰਦਰ Vector3 ਸੰਚਾਲਕ+(Type scalar) ਅਚਲ
 	{
-		return Matrix31::operator+(scalar);
+		ਵਾਪਸ Matrix31::ਸੰਚਾਲਕ+(scalar);
 	}
 
-	inline Vector3 operator-(Vector3 other) const
+	ਸਤਰਅੰਦਰ Vector3 ਸੰਚਾਲਕ-(Vector3 other) ਅਚਲ
 	{
-		return Matrix31::operator-(other);
+		ਵਾਪਸ Matrix31::ਸੰਚਾਲਕ-(other);
 	}
 
-	inline Vector3 operator-(Type scalar) const
+	ਸਤਰਅੰਦਰ Vector3 ਸੰਚਾਲਕ-(Type scalar) ਅਚਲ
 	{
-		return Matrix31::operator-(scalar);
+		ਵਾਪਸ Matrix31::ਸੰਚਾਲਕ-(scalar);
 	}
 
-	inline Vector3 operator-() const
+	ਸਤਰਅੰਦਰ Vector3 ਸੰਚਾਲਕ-() ਅਚਲ
 	{
-		return Matrix31::operator-();
+		ਵਾਪਸ Matrix31::ਸੰਚਾਲਕ-();
 	}
 
-	inline Vector3 operator*(Type scalar) const
+	ਸਤਰਅੰਦਰ Vector3 ਸੰਚਾਲਕ*(Type scalar) ਅਚਲ
 	{
-		return Matrix31::operator*(scalar);
+		ਵਾਪਸ Matrix31::ਸੰਚਾਲਕ*(scalar);
 	}
 
-	inline Type operator*(Vector3 b) const
+	ਸਤਰਅੰਦਰ Type ਸੰਚਾਲਕ*(Vector3 b) ਅਚਲ
 	{
-		return Vector<Type, 3>::operator*(b);
+		ਵਾਪਸ ਸਦਿਸ਼<Type, 3>::ਸੰਚਾਲਕ*(b);
 	}
 
-	inline Vector3 operator%(const Matrix31 &b) const
+	ਸਤਰਅੰਦਰ Vector3 ਸੰਚਾਲਕ%(ਅਚਲ Matrix31 &b) ਅਚਲ
 	{
-		return (*this).cross(b);
+		ਵਾਪਸ (*ਇਹ).cross(b);
 	}
 
-	ConstSlice<Type, 2, 1, 3, 1> xy() const
+	Const_ਟੁਕੜਾ<Type, 2, 1, 3, 1> xy() ਅਚਲ
 	{
-		return {0, 0, this};
+		ਵਾਪਸ {0, 0, ਇਹ};
 	}
 
-	Slice<Type, 2, 1, 3, 1> xy()
+	ਟੁਕੜਾ_2<Type, 2, 1, 3, 1> xy()
 	{
-		return {0, 0, this};
+		ਵਾਪਸ {0, 0, ਇਹ};
 	}
 
-	Dcm<Type> hat() const      // inverse to Dcm.vee() operation
+	Dcm<Type> hat() ਅਚਲ      // inverse to Dcm.vee() operation
 	{
-		const Vector3 &v(*this);
+		ਅਚਲ Vector3 &v(*ਇਹ);
 		Dcm<Type> A;
 		A(0, 0) = 0;
 		A(0, 1) = -v(2);
@@ -119,12 +119,12 @@ public:
 		A(2, 0) = -v(1);
 		A(2, 1) = v(0);
 		A(2, 2) = 0;
-		return A;
+		ਵਾਪਸ A;
 	}
 
 };
 
-using Vector3f = Vector3<float>;
-using Vector3d = Vector3<double>;
+ਵਰਤੋਂ Vector3f = Vector3<ਦਸ਼ਮਲਵ>;
+ਵਰਤੋਂ Vector3d = Vector3<ਦੁੱਗਣਾ>;
 
 } // namespace matrix

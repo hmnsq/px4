@@ -31,46 +31,46 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ਹਦਾਇਤ once
 
-#include <uORB/topics/vehicle_status.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <uORB/topics/vehicle_status.h>
 
-#include <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
 
-namespace mode_util
+ਨਾਮਾਕਾਸ਼ ਬਹੁਲਕ_util
 {
 
 /**
  * @return Bitmask with all valid modes
  */
-static inline uint32_t getValidNavStates(uint32_t mode_not_supported = 0)
+ਸਥਿਰ ਸਤਰਅੰਦਰ uint32_t get_Valid_Nav_ਹਾਲਤਾਂ(uint32_t ਬਹੁਲਕ_not_supported = 0)
 {
-	return ((1u << vehicle_status_s::NAVIGATION_STATE_MANUAL) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_ALTCTL) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_ALTITUDE_CRUISE) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_MANUAL_PARKING) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_POSCTL) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_GUIDED_COURSE) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_RTL) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_POSITION_SLOW) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_ACRO) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_TERMINATION) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_OFFBOARD) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_STAB) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_LAND) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_DESCEND) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_FOLLOW_TARGET) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_PRECLAND) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_ORBIT) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF)) & ~mode_not_supported;
+	ਵਾਪਸ ((1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_MANUAL) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_ALTCTL) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_ALTITUDE_CRUISE) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_MANUAL_PARKING) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_POSCTL) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_AUTO_MISSION) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_AUTO_LOITER) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_GUIDED_ਕੋਰਸ) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_AUTO_RTL) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_POSITION_SLOW) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_ACRO) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_TERMINATION) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_OFFBOARD) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_STAB) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_AUTO_TAKEOFF) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_AUTO_LAND) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_DESCEND) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_AUTO_FOLLOW_ਨਿਸ਼ਾਨਾ) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_AUTO_PRECLAND) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_ORBIT) |
+		(1u << vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF)) & ~ਬਹੁਲਕ_not_supported;
 
-	static_assert(vehicle_status_s::NAVIGATION_STATE_MAX  == 31, "update valid nav states");
+	static_assert(vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_MAX  == 31, "update valid nav states");
 }
 
-inline const char *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX] = {
+ਸਤਰਅੰਦਰ ਅਚਲ ਅੱਖਰ *ਅਚਲ nav_state_ਨਾਂ[vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_MAX] = {
 	"Manual",
 	"Altitude",
 	"Position",
@@ -110,49 +110,49 @@ inline const char *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX]
  * The position control mode is shown as "Cruise" for fixed-wing vehicles (including VTOLs in
  * forward flight, which report VEHICLE_TYPE_FIXED_WING) and as "Position" for all other types.
  */
-static inline const char *nav_state_name(uint8_t nav_state, uint8_t vehicle_type)
+ਸਥਿਰ ਸਤਰਅੰਦਰ ਅਚਲ ਅੱਖਰ *nav_state_name(uint8_t nav_state, uint8_t vehicle_type)
 {
-	if (nav_state >= vehicle_status_s::NAVIGATION_STATE_MAX) {
-		return "(unknown)";
+	ਜੇ (nav_state >= vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_MAX) {
+		ਵਾਪਸ "(unknown)";
 	}
 
-	if (nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL
-	    && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		return "Cruise";
+	ਜੇ (nav_state == vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_POSCTL
+	    && vehicle_type == vehicle_ਸਥਿਤੀ_s::VEHICLE_TYPE_FIXED_WING) {
+		ਵਾਪਸ "Cruise";
 	}
 
-	return nav_state_names[nav_state];
+	ਵਾਪਸ nav_state_ਨਾਂ[nav_state];
 }
 
 /**
  * @return returns true for advanced modes
  */
-static inline bool isAdvanced(uint8_t nav_state)
+ਸਥਿਰ ਸਤਰਅੰਦਰ ਤਾਰਕਿਕ isAdvanced(uint8_t nav_state)
 {
-	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL: return false;
+	ਚੋਣ (nav_state) {
+	ਹਾਲਤ vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_ALTCTL: ਵਾਪਸ ਝੂਠ;
 
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL: return false;
+	ਹਾਲਤ vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_POSCTL: ਵਾਪਸ ਝੂਠ;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL1: return false;
+	ਹਾਲਤ vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_EXTERNAL1: ਵਾਪਸ ਝੂਠ;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL2: return false;
+	ਹਾਲਤ vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_EXTERNAL2: ਵਾਪਸ ਝੂਠ;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL3: return false;
+	ਹਾਲਤ vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_EXTERNAL3: ਵਾਪਸ ਝੂਠ;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL4: return false;
+	ਹਾਲਤ vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_EXTERNAL4: ਵਾਪਸ ਝੂਠ;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL5: return false;
+	ਹਾਲਤ vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_EXTERNAL5: ਵਾਪਸ ਝੂਠ;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL6: return false;
+	ਹਾਲਤ vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_EXTERNAL6: ਵਾਪਸ ਝੂਠ;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL7: return false;
+	ਹਾਲਤ vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_EXTERNAL7: ਵਾਪਸ ਝੂਠ;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL8: return false;
+	ਹਾਲਤ vehicle_ਸਥਿਤੀ_s::NAVIGATION_STATE_EXTERNAL8: ਵਾਪਸ ਝੂਠ;
 
 	}
 
-	return true;
+	ਵਾਪਸ ਸੱਚ;
 }
 
 } // namespace mode_util

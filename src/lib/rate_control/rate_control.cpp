@@ -35,67 +35,67 @@
  * @file rate_control.cpp
  */
 
-#include "rate_control.hpp"
-#include <px4_platform_common/defines.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "rate_control.hpp"
+#ਅਨ੍ਤਰ੍ਭਾਵ <px4_platform_common/defines.h>
 
-using namespace matrix;
+ਵਰਤੋਂ ਨਾਮਾਕਾਸ਼ ਮੈਟ੍ਰਿਕਸ;
 
-void RateControl::setPidGains(const Vector3f &P, const Vector3f &I, const Vector3f &D)
+ਖਾਲੀ ਦਰ_Control::ਸੈੱਟ_Pid_Gains(ਅਚਲ Vector3f &P, ਅਚਲ Vector3f &I, ਅਚਲ Vector3f &D)
 {
 	_gain_p = P;
 	_gain_i = I;
 	_gain_d = D;
 }
 
-void RateControl::setSaturationStatus(const Vector3<bool> &saturation_positive,
-				      const Vector3<bool> &saturation_negative)
+ਖਾਲੀ ਦਰ_Control::ਸੈੱਟ_Saturation_ਸਥਿਤੀ(ਅਚਲ Vector3<ਤਾਰਕਿਕ> &saturation_ਸਕਾਰਾਤਮਕ,
+				      ਅਚਲ Vector3<ਤਾਰਕਿਕ> &saturation_negative)
 {
-	_control_allocator_saturation_positive = saturation_positive;
+	control_allocator_saturation_ਸਕਾਰਾਤਮਕ = saturation_ਸਕਾਰਾਤਮਕ;
 	_control_allocator_saturation_negative = saturation_negative;
 }
 
-void RateControl::setPositiveSaturationFlag(size_t axis, bool is_saturated)
+ਖਾਲੀ ਦਰ_Control::ਸੈੱਟ_ਸਕਾਰਾਤਮਕ_Saturation_Flag(size_t axis, ਤਾਰਕਿਕ is_saturated)
 {
-	if (axis < 3) {
-		_control_allocator_saturation_positive(axis) = is_saturated;
+	ਜੇ (axis < 3) {
+		control_allocator_saturation_ਸਕਾਰਾਤਮਕ(axis) = is_saturated;
 	}
 }
 
-void RateControl::setNegativeSaturationFlag(size_t axis, bool is_saturated)
+ਖਾਲੀ ਦਰ_Control::ਸੈੱਟ_Negative_Saturation_Flag(size_t axis, ਤਾਰਕਿਕ is_saturated)
 {
-	if (axis < 3) {
+	ਜੇ (axis < 3) {
 		_control_allocator_saturation_negative(axis) = is_saturated;
 	}
 }
 
-Vector3f RateControl::update(const Vector3f &rate, const Vector3f &rate_sp, const Vector3f &angular_accel,
-			     const float dt, const bool landed)
+Vector3f ਦਰ_Control::update(ਅਚਲ Vector3f &ਦਰ, ਅਚਲ Vector3f &ਦਰ_sp, ਅਚਲ Vector3f &angular_accel,
+			     ਅਚਲ ਦਸ਼ਮਲਵ dt, ਅਚਲ ਤਾਰਕਿਕ landed)
 {
 	// angular rates error
-	Vector3f rate_error = rate_sp - rate;
+	Vector3f ਦਰ_error = ਦਰ_sp - ਦਰ;
 
 	// PID control with feed forward
-	Vector3f torque = _gain_p.emult(rate_error) + _rate_int - _gain_d.emult(angular_accel) + _gain_ff.emult(rate_sp);
+	Vector3f torque = _gain_p.emult(ਦਰ_error) + ਦਰ_int - _gain_d.emult(angular_accel) + _gain_ff.emult(ਦਰ_sp);
 
 	// update integral only if we are not landed
-	if (!landed) {
-		updateIntegral(rate_error, dt);
+	ਜੇ (!landed) {
+		updateIntegral(ਦਰ_error, dt);
 	}
 
-	return torque;
+	ਵਾਪਸ torque;
 }
 
-void RateControl::updateIntegral(Vector3f &rate_error, const float dt)
+ਖਾਲੀ ਦਰ_Control::updateIntegral(Vector3f &ਦਰ_error, ਅਚਲ ਦਸ਼ਮਲਵ dt)
 {
-	for (int i = 0; i < 3; i++) {
+	ਲਈ (ਪੂਰਨ i = 0; i < 3; i++) {
 		// prevent further positive control saturation
-		if (_control_allocator_saturation_positive(i)) {
-			rate_error(i) = math::min(rate_error(i), 0.f);
+		ਜੇ (control_allocator_saturation_ਸਕਾਰਾਤਮਕ(i)) {
+			ਦਰ_error(i) = math::min(ਦਰ_error(i), 0.f);
 		}
 
 		// prevent further negative control saturation
-		if (_control_allocator_saturation_negative(i)) {
-			rate_error(i) = math::max(rate_error(i), 0.f);
+		ਜੇ (_control_allocator_saturation_negative(i)) {
+			ਦਰ_error(i) = math::max(ਦਰ_error(i), 0.f);
 		}
 
 		// I term factor: reduce the I gain with increasing rate error.
@@ -104,22 +104,22 @@ void RateControl::updateIntegral(Vector3f &rate_error, const float dt)
 		// The formula leads to a gradual decrease w/o steps, while only affecting the cases where it should:
 		// with the parameter set to 400 degrees, up to 100 deg rate error, i_factor is almost 1 (having no effect),
 		// and up to 200 deg error leads to <25% reduction of I.
-		float i_factor = rate_error(i) / math::radians(400.f);
-		i_factor = math::max(0.0f, 1.f - i_factor * i_factor);
+		ਦਸ਼ਮਲਵ i_ਗੁਣਕ = ਦਰ_error(i) / math::radians(400.f);
+		i_ਗੁਣਕ = math::max(0.0f, 1.f - i_ਗੁਣਕ * i_ਗੁਣਕ);
 
 		// Perform the integration using a first order method
-		float rate_i = _rate_int(i) + i_factor * _gain_i(i) * rate_error(i) * dt;
+		ਦਸ਼ਮਲਵ ਦਰ_i = ਦਰ_int(i) + i_ਗੁਣਕ * _gain_i(i) * ਦਰ_error(i) * dt;
 
 		// do not propagate the result if out of range or invalid
-		if (PX4_ISFINITE(rate_i)) {
-			_rate_int(i) = math::constrain(rate_i, -_lim_int(i), _lim_int(i));
+		ਜੇ (PX4_ISFINITE(ਦਰ_i)) {
+			ਦਰ_int(i) = math::constrain(ਦਰ_i, -_lim_int(i), _lim_int(i));
 		}
 	}
 }
 
-void RateControl::getRateControlStatus(rate_ctrl_status_s &rate_ctrl_status)
+ਖਾਲੀ ਦਰ_Control::get_ਦਰ_Control_ਸਥਿਤੀ(ਦਰ_ctrl_ਸਥਿਤੀ_s &ਦਰ_ctrl_ਸਥਿਤੀ)
 {
-	rate_ctrl_status.rollspeed_integ = _rate_int(0);
-	rate_ctrl_status.pitchspeed_integ = _rate_int(1);
-	rate_ctrl_status.yawspeed_integ = _rate_int(2);
+	ਦਰ_ctrl_ਸਥਿਤੀ.rollspeed_integ = ਦਰ_int(0);
+	ਦਰ_ctrl_ਸਥਿਤੀ.pitchspeed_integ = ਦਰ_int(1);
+	ਦਰ_ctrl_ਸਥਿਤੀ.yawspeed_integ = ਦਰ_int(2);
 }
