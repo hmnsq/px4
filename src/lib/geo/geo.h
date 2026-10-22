@@ -45,23 +45,23 @@
 
 #pragma once
 
-#include <stdbool.h>
-#include <stdint.h>
+#अन्तर्भाव <stdbool.h>
+#अन्तर्भाव <stdint.h>
 
-#include <lib/mathlib/mathlib.h>
-#include <lib/matrix/matrix/math.hpp>
+#अन्तर्भाव <lib/mathlib/mathlib.h>
+#अन्तर्भाव <lib/matrix/matrix/math.hpp>
 
-static constexpr float CONSTANTS_ONE_G = 9.80665f;						// m/s^2
-static constexpr double CONSTANTS_RADIUS_OF_EARTH = 6371000;					// meters (m)
-static constexpr float  CONSTANTS_RADIUS_OF_EARTH_F = CONSTANTS_RADIUS_OF_EARTH;		// meters (m)
-static constexpr float CONSTANTS_EARTH_SPIN_RATE = 7.2921150e-5f;				// radians/second (rad/s)
+स्थिर constexpr भिन्न CONSTANTS_ONE_G = 9.80665f;						// m/s^2
+स्थिर constexpr द्विगुण CONSTANTS_RADIUS_OF_EARTH = 6371000;					// meters (m)
+स्थिर constexpr भिन्न  CONSTANTS_RADIUS_OF_EARTH_F = CONSTANTS_RADIUS_OF_EARTH;		// meters (m)
+स्थिर constexpr भिन्न CONSTANTS_EARTH_SPIN_RATE = 7.2921150e-5f;				// radians/second (rad/s)
 
 
 // XXX remove
-struct crosstrack_error_s {
+संरचना crosstrack_error_s {
 	bool past_end;		// Flag indicating we are past the end of the line/arc segment
-	float distance;		// Distance in meters to closest point on line/arc
-	float bearing;		// Bearing in radians to closest point on line/arc
+	भिन्न distance;		// Distance in meters to closest point on line/arc
+	भिन्न bearing;		// Bearing in radians to closest point on line/arc
 } ;
 
 
@@ -73,7 +73,7 @@ struct crosstrack_error_s {
  * @param lat_next next waypoint position in degrees (47.1234567°, not 471234567°)
  * @param lon_next next waypoint position in degrees (8.1234567°, not 81234567°)
  */
-float get_distance_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next);
+भिन्न get_distance_to_next_waypoint(द्विगुण lat_now, द्विगुण lon_now, द्विगुण lat_next, द्विगुण lon_next);
 
 /**
  * Creates a new waypoint C on the line of two given waypoints (A, B) at certain distance
@@ -87,8 +87,8 @@ float get_distance_to_next_waypoint(double lat_now, double lon_now, double lat_n
  * @param lat_target latitude of target waypoint C in degrees (47.1234567°, not 471234567°)
  * @param lon_target longitude of target waypoint C in degrees (47.1234567°, not 471234567°)
  */
-void create_waypoint_from_line_and_dist(double lat_A, double lon_A, double lat_B, double lon_B, float dist,
-					double *lat_target, double *lon_target);
+शून्य create_waypoint_from_पंक्ति_and_dist(द्विगुण lat_A, द्विगुण lon_A, द्विगुण lat_B, द्विगुण lon_B, भिन्न dist,
+					द्विगुण *lat_target, द्विगुण *lon_target);
 
 /**
  * Creates a waypoint from given waypoint, distance and bearing
@@ -101,8 +101,8 @@ void create_waypoint_from_line_and_dist(double lat_A, double lon_A, double lat_B
  * @param lat_target latitude of target waypoint in degrees (47.1234567°, not 471234567°)
  * @param lon_target longitude of target waypoint in degrees (47.1234567°, not 471234567°)
  */
-void waypoint_from_heading_and_distance(double lat_start, double lon_start, float bearing, float dist,
-					double *lat_target, double *lon_target);
+शून्य waypoint_from_heading_and_distance(द्विगुण lat_start, द्विगुण lon_start, भिन्न bearing, भिन्न dist,
+					द्विगुण *lat_target, द्विगुण *lon_target);
 
 /**
  * Returns the bearing to the next waypoint in radians.
@@ -112,37 +112,37 @@ void waypoint_from_heading_and_distance(double lat_start, double lon_start, floa
  * @param lat_next next waypoint position in degrees (47.1234567°, not 471234567°)
  * @param lon_next next waypoint position in degrees (8.1234567°, not 81234567°)
  */
-float get_bearing_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next);
+भिन्न get_bearing_to_next_waypoint(द्विगुण lat_now, द्विगुण lon_now, द्विगुण lat_next, द्विगुण lon_next);
 
-void get_vector_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next, float *v_n,
-				 float *v_e);
+शून्य get_vector_to_next_waypoint(द्विगुण lat_now, द्विगुण lon_now, द्विगुण lat_next, द्विगुण lon_next, भिन्न *v_n,
+				 भिन्न *v_e);
 
-void get_vector_to_next_waypoint_fast(double lat_now, double lon_now, double lat_next, double lon_next, float *v_n,
-				      float *v_e);
+शून्य get_vector_to_next_waypoint_fast(द्विगुण lat_now, द्विगुण lon_now, द्विगुण lat_next, द्विगुण lon_next, भिन्न *v_n,
+				      भिन्न *v_e);
 
-void add_vector_to_global_position(double lat_now, double lon_now, float v_n, float v_e, double *lat_res,
-				   double *lon_res);
+शून्य add_vector_to_global_position(द्विगुण lat_now, द्विगुण lon_now, भिन्न v_n, भिन्न v_e, द्विगुण *lat_res,
+				   द्विगुण *lon_res);
 
-int get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat_now, double lon_now,
-			 double lat_start, double lon_start, double lat_end, double lon_end);
+पूर्णाङ्क get_distance_to_पंक्ति(संरचना crosstrack_error_s &crosstrack_error, द्विगुण lat_now, द्विगुण lon_now,
+			 द्विगुण lat_start, द्विगुण lon_start, द्विगुण lat_end, द्विगुण lon_end);
 
-int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_now, double lon_now,
-			double lat_center, double lon_center,
-			float radius, float arc_start_bearing, float arc_sweep);
+पूर्णाङ्क get_distance_to_arc(संरचना crosstrack_error_s *crosstrack_error, द्विगुण lat_now, द्विगुण lon_now,
+			द्विगुण lat_center, द्विगुण lon_center,
+			भिन्न radius, भिन्न arc_start_bearing, भिन्न arc_sweep);
 
 /*
  * Calculate distance in global frame
  */
-float get_distance_to_point_global_wgs84(double lat_now, double lon_now, float alt_now,
-		double lat_next, double lon_next, float alt_next,
-		float *dist_xy, float *dist_z);
+भिन्न get_distance_to_point_global_wgs84(द्विगुण lat_now, द्विगुण lon_now, भिन्न alt_now,
+		द्विगुण lat_next, द्विगुण lon_next, भिन्न alt_next,
+		भिन्न *dist_xy, भिन्न *dist_z);
 
 /*
  * Calculate distance in local frame (NED)
  */
-float mavlink_wpm_distance_to_point_local(float x_now, float y_now, float z_now,
-		float x_next, float y_next, float z_next,
-		float *dist_xy, float *dist_z);
+भिन्न mavlink_wpm_distance_to_point_local(भिन्न x_now, भिन्न y_now, भिन्न z_now,
+		भिन्न x_next, भिन्न y_next, भिन्न z_next,
+		भिन्न *dist_xy, भिन्न *dist_z);
 
 
 /**
@@ -150,26 +150,26 @@ float mavlink_wpm_distance_to_point_local(float x_now, float y_now, float z_now,
  */
 class MapProjection final
 {
-private:
+गुप्त:
 	uint64_t _ref_timestamp{0};
-	double _ref_lat{0.0};
-	double _ref_lon{0.0};
-	double _ref_sin_lat{0.0};
-	double _ref_cos_lat{0.0};
+	द्विगुण _ref_lat{0.0};
+	द्विगुण _ref_lon{0.0};
+	द्विगुण _ref_sin_lat{0.0};
+	द्विगुण _ref_cos_lat{0.0};
 	bool _ref_init_done{false};
 
-public:
+सार्वजनिक:
 	/**
 	 * @brief Construct a new Map Projection object
 	 * The generated object will be uninitialized.
 	 * To initialize, use the `initReference` function
 	 */
-	MapProjection() = default;
+	MapProjection() = स्वभाव;
 
 	/**
 	 * @brief Construct and initialize a new Map Projection object
 	 */
-	MapProjection(double lat_0, double lon_0, uint64_t timestamp = 0)
+	MapProjection(द्विगुण lat_0, द्विगुण lon_0, uint64_t timestamp = 0)
 	{
 		initReference(lat_0, lon_0, timestamp);
 	}
@@ -182,27 +182,27 @@ public:
 	 * @param lat in degrees (47.1234567°, not 471234567°)
 	 * @param lon in degrees (8.1234567°, not 81234567°)
 	 */
-	void initReference(double lat_0, double lon_0, uint64_t timestamp = 0);
+	शून्य initReference(द्विगुण lat_0, द्विगुण lon_0, uint64_t timestamp = 0);
 
 	/**
 	 * @return true, if the map reference has been initialized before
 	 */
-	bool isInitialized() const { return _ref_init_done; };
+	bool isInitialized() ध्रुव { प्रत्यागम _ref_init_done; };
 
 	/**
 	 * @return the timestamp of the reference which the map projection was initialized with
 	 */
-	uint64_t getProjectionReferenceTimestamp() const { return _ref_timestamp; };
+	uint64_t getProjectionReferenceTimestamp() ध्रुव { प्रत्यागम _ref_timestamp; };
 
 	/**
 	 * @return the projection reference latitude in degrees
 	 */
-	double getProjectionReferenceLat() const { return math::degrees(_ref_lat); };
+	द्विगुण getProjectionReferenceLat() ध्रुव { प्रत्यागम math::degrees(_ref_lat); };
 
 	/**
 	 * @return the projection reference longitude in degrees
 	 */
-	double getProjectionReferenceLon() const { return math::degrees(_ref_lon); };
+	द्विगुण getProjectionReferenceLon() ध्रुव { प्रत्यागम math::degrees(_ref_lon); };
 
 	/**
 	 * Transform a point in the geographic coordinate system to the local
@@ -212,7 +212,7 @@ public:
 	 * @param x north
 	 * @param y east
 	 */
-	void project(double lat, double lon, float &x, float &y) const;
+	शून्य project(द्विगुण lat, द्विगुण lon, भिन्न &x, भिन्न &y) ध्रुव;
 
 	/**
 	 * Transform a point in the geographic coordinate system to the local
@@ -221,11 +221,11 @@ public:
 	 * @param lon in degrees (8.1234567°, not 81234567°)
 	 * @return the point in local coordinates as north / east
 	 */
-	inline matrix::Vector2f project(double lat, double lon) const
+	अन्तःस्थ matrix::Vector2f project(द्विगुण lat, द्विगुण lon) ध्रुव
 	{
 		matrix::Vector2f res;
 		project(lat, lon, res(0), res(1));
-		return res;
+		प्रत्यागम res;
 	}
 
 	/**
@@ -237,5 +237,5 @@ public:
 	 * @param lat in degrees (47.1234567°, not 471234567°)
 	 * @param lon in degrees (8.1234567°, not 81234567°)
 	 */
-	void reproject(float x, float y, double &lat, double &lon) const;
+	शून्य reproject(भिन्न x, भिन्न y, द्विगुण &lat, द्विगुण &lon) ध्रुव;
 };
