@@ -43,7 +43,7 @@
 #include <px4_platform_common/init.h>
 #include <stdio.h>
 
-int PX4_MAIN(int argc, char **argv)
+පූර්ණ_සංඛ්‍යා PX4_MAIN(පූර්ණ_සංඛ්‍යා argc, var_na **argv)
 {
 	px4::init(argc, argv, "cdevtest");
 
@@ -52,5 +52,5 @@ int PX4_MAIN(int argc, char **argv)
 	cdevtest.main();
 
 	printf("goodbye\n");
-	return 0;
+	ආපසු 0;
 }

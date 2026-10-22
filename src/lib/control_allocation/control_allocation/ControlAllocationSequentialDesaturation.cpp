@@ -50,17 +50,17 @@ ControlAllocationSequentialDesaturation::allocate()
 	_prev_actuator_sp = _actuator_sp;
 
 	switch (_param_mc_airmode.get()) {
-	case 1:
+	pak_sa 1:
 		mixAirmodeRP();
-		break;
+		bha_nga;
 
-	case 2:
+	pak_sa 2:
 		mixAirmodeRPY();
-		break;
+		bha_nga;
 
 	default:
 		mixAirmodeDisabled();
-		break;
+		bha_nga;
 	}
 }
 
@@ -70,17 +70,17 @@ void ControlAllocationSequentialDesaturation::desaturateActuators(
 {
 	float gain = computeDesaturationGain(desaturation_vector, actuator_sp);
 
-	if (increase_only && gain < 0.f) {
-		return;
+	නම් (increase_only && gain < 0.f) {
+		ආපසු;
 	}
 
-	for (int i = 0; i < _num_actuators; i++) {
+	සඳහා (පූර්ණ_සංඛ්‍යා i = 0; i < _num_actuators; i++) {
 		actuator_sp(i) += gain * desaturation_vector(i);
 	}
 
 	gain = 0.5f * computeDesaturationGain(desaturation_vector, actuator_sp);
 
-	for (int i = 0; i < _num_actuators; i++) {
+	සඳහා (පූර්ණ_සංඛ්‍යා i = 0; i < _num_actuators; i++) {
 		actuator_sp(i) += gain * desaturation_vector(i);
 	}
 }
@@ -91,31 +91,31 @@ float ControlAllocationSequentialDesaturation::computeDesaturationGain(const Act
 	float k_min = 0.f;
 	float k_max = 0.f;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	සඳහා (පූර්ණ_සංඛ්‍යා i = 0; i < _num_actuators; i++) {
 		// Do not use try to desaturate using an actuator with weak effectiveness to avoid large desaturation gains
-		if (fabsf(desaturation_vector(i)) < 0.2f) {
+		නම් (fabsf(desaturation_vector(i)) < 0.2f) {
 			continue;
 		}
 
-		if (actuator_sp(i) < _actuator_min(i)) {
+		නම් (actuator_sp(i) < _actuator_min(i)) {
 			float k = (_actuator_min(i) - actuator_sp(i)) / desaturation_vector(i);
 
-			if (k < k_min) { k_min = k; }
+			නම් (k < k_min) { k_min = k; }
 
-			if (k > k_max) { k_max = k; }
+			නම් (k > k_max) { k_max = k; }
 		}
 
-		if (actuator_sp(i) > _actuator_max(i)) {
+		නම් (actuator_sp(i) > _actuator_max(i)) {
 			float k = (_actuator_max(i) - actuator_sp(i)) / desaturation_vector(i);
 
-			if (k < k_min) { k_min = k; }
+			නම් (k < k_min) { k_min = k; }
 
-			if (k > k_max) { k_max = k; }
+			නම් (k > k_max) { k_max = k; }
 		}
 	}
 
 	// Reduce the saturation as much as possible
-	return k_min + k_max;
+	ආපසු k_min + k_max;
 }
 
 void
@@ -126,7 +126,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeRP()
 	// Mix without yaw
 	ActuatorVector thrust_z;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	සඳහා (පූර්ණ_සංඛ්‍යා i = 0; i < _num_actuators; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -151,7 +151,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeRPY()
 	ActuatorVector thrust_z;
 	ActuatorVector yaw;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	සඳහා (පූර්ණ_සංඛ්‍යා i = 0; i < _num_actuators; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -180,7 +180,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeDisabled()
 	ActuatorVector roll;
 	ActuatorVector pitch;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	සඳහා (පූර්ණ_සංඛ්‍යා i = 0; i < _num_actuators; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -210,7 +210,7 @@ ControlAllocationSequentialDesaturation::mixYaw()
 	ActuatorVector yaw;
 	ActuatorVector thrust_z;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	සඳහා (පූර්ණ_සංඛ්‍යා i = 0; i < _num_actuators; i++) {
 		_actuator_sp(i) += _mix(i, ControlAxis::YAW) * (_control_sp(ControlAxis::YAW) - _control_trim(ControlAxis::YAW));
 		yaw(i) = _mix(i, ControlAxis::YAW);
 		thrust_z(i) = _mix(i, ControlAxis::THRUST_Z);

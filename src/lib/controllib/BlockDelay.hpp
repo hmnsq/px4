@@ -60,7 +60,7 @@ class __EXPORT BlockDelay: public Block
 {
 public:
 // methods
-	BlockDelay(SuperBlock *parent, const char *name) :
+	BlockDelay(SuperBlock *parent, const var_na *name) :
 		Block(parent, name),
 		_h(),
 		_index(0),
@@ -75,40 +75,40 @@ public:
 		// delay starts at zero, then increases to LEN
 		_delay += 1;
 
-		if (_delay > (int)(LEN - 1)) {
+		නම් (_delay > (පූර්ණ_සංඛ්‍යා)(LEN - 1)) {
 			_delay = LEN - 1;
 		}
 
 		// compute position of delayed value
-		int j = _index - _delay;
+		පූර්ණ_සංඛ්‍යා j = _index - _delay;
 
-		if (j < 0) {
+		නම් (j < 0) {
 			j += LEN;
 		}
 
 		// increment storage position
 		_index += 1;
 
-		if (_index > (LEN - 1)) {
+		නම් (_index > (LEN - 1)) {
 			_index  = 0;
 		}
 
 		// get delayed value
-		return _h[j];
+		ආපසු _h[j];
 	}
 	matrix::Matrix<Type, M, N> get(size_t delay)
 	{
-		int j = _index - delay;
+		පූර්ණ_සංඛ්‍යා j = _index - delay;
 
-		if (j < 0) { j += LEN; }
+		නම් (j < 0) { j += LEN; }
 
-		return _h[j];
+		ආපසු _h[j];
 	}
 private:
 // attributes
 	matrix::Matrix<Type, M, N> _h[LEN];
 	size_t _index;
-	int _delay;
+	පූර්ණ_සංඛ්‍යා _delay;
 };
 
 } // namespace control

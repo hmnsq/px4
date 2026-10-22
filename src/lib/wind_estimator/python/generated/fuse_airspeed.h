@@ -57,7 +57,7 @@ void FuseAirspeed(const matrix::Matrix<Scalar, 3, 1>& v_local,
   const Scalar _tmp10 = Scalar(1.0) / (math::max<Scalar>(_tmp9, epsilon));
 
   // Output terms (4)
-  if (H != nullptr) {
+  නම් (H != nullptr) {
     matrix::Matrix<Scalar, 1, 3>& _h = (*H);
 
     _h(0, 0) = -_tmp4;
@@ -65,7 +65,7 @@ void FuseAirspeed(const matrix::Matrix<Scalar, 3, 1>& v_local,
     _h(0, 2) = _tmp2;
   }
 
-  if (K != nullptr) {
+  නම් (K != nullptr) {
     matrix::Matrix<Scalar, 3, 1>& _k = (*K);
 
     _k(0, 0) = _tmp10 * (-P(0, 1) * _tmp5 + P(0, 2) * _tmp2 + _tmp6);
@@ -73,13 +73,13 @@ void FuseAirspeed(const matrix::Matrix<Scalar, 3, 1>& v_local,
     _k(2, 0) = _tmp10 * (-P(2, 0) * _tmp4 - P(2, 1) * _tmp5 + _tmp8);
   }
 
-  if (innov_var != nullptr) {
+  නම් (innov_var != nullptr) {
     Scalar& _innov_var = (*innov_var);
 
     _innov_var = _tmp9;
   }
 
-  if (innov != nullptr) {
+  නම් (innov != nullptr) {
     Scalar& _innov = (*innov);
 
     _innov = -_tmp2 * state(2, 0) + airspeed;

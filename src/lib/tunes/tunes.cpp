@@ -59,7 +59,7 @@ Tunes::Tunes(unsigned default_note_length, NoteMode default_note_mode,
 	_default_octave(default_octave),
 	_default_tempo(default_tempo)
 {
-	if (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_KEY)) {
+	නම් (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_KEY)) {
 		_tunes_disabled = true;
 	}
 
@@ -69,11 +69,11 @@ Tunes::Tunes(unsigned default_note_length, NoteMode default_note_mode,
 void Tunes::reset(bool repeat_flag)
 {
 	// reset pointer
-	if (!repeat_flag)	{
+	නම් (!repeat_flag)	{
 		_tune = nullptr;
 		_next_tune = nullptr;
 
-	} else {
+	} නැතහොත් {
 		_tune = _tune_start_ptr;
 		_next_tune = _tune;
 	}
@@ -88,19 +88,19 @@ void Tunes::reset(bool repeat_flag)
 Tunes::ControlResult Tunes::set_control(const tune_control_s &tune_control)
 {
 	// Sanity check
-	if (tune_control.tune_id >= _default_tunes_size) {
-		return ControlResult::InvalidTune;
+	නම් (tune_control.tune_id >= _default_tunes_size) {
+		ආපසු ControlResult::InvalidTune;
 	}
 
 	// Accept new tune or a stop?
-	if (_tune == nullptr ||  	   // No tune is currently being played
+	නම් (_tune == nullptr ||  	   // No tune is currently being played
 	    tune_control.tune_override ||  // Override interrupts everything
 	    _default_tunes_interruptable[_current_tune_id]) {
 
 		// Check if this exact tune is already being played back
-		if (tune_control.tune_id != static_cast<int>(TuneID::CUSTOM) &&
+		නම් (tune_control.tune_id != static_cast<පූර්ණ_සංඛ්‍යා>(TuneID::CUSTOM) &&
 		    _tune == _default_tunes[tune_control.tune_id]) {
-			return ControlResult::AlreadyPlaying; // Nothing to do
+			ආපසු ControlResult::AlreadyPlaying; // Nothing to do
 		}
 
 		// Reset repeat flag. Can jump to true again while tune is being parsed later
@@ -110,22 +110,22 @@ Tunes::ControlResult Tunes::set_control(const tune_control_s &tune_control)
 		reset(_repeat);
 
 		// Volume will remain valid for the entire tune, unless interrupted.
-		if (tune_control.volume <= tune_control_s::VOLUME_LEVEL_MAX) {
+		නම් (tune_control.volume <= tune_control_s::VOLUME_LEVEL_MAX) {
 			_volume = tune_control.volume;
 
-		} else {
+		} නැතහොත් {
 			_volume = tune_control_s::VOLUME_LEVEL_MAX;
 		}
 
 
 		// Special treatment for custom tunes
-		if (tune_control.tune_id == static_cast<int>(TuneID::CUSTOM)) {
+		නම් (tune_control.tune_id == static_cast<පූර්ණ_සංඛ්‍යා>(TuneID::CUSTOM)) {
 			_using_custom_msg = true;
 			_frequency        = (unsigned)tune_control.frequency;
 			_duration         = (unsigned)tune_control.duration;
 			_silence          = (unsigned)tune_control.silence;
 
-		} else {
+		} නැතහොත් {
 			_using_custom_msg = false;
 			_tune             = _default_tunes[tune_control.tune_id];
 			_tune_start_ptr   = _tune;
@@ -133,25 +133,25 @@ Tunes::ControlResult Tunes::set_control(const tune_control_s &tune_control)
 		}
 
 		_current_tune_id = tune_control.tune_id;
-		return ControlResult::Success;
+		ආපසු ControlResult::Success;
 	}
 
-	return ControlResult::WouldInterrupt;
+	ආපසු ControlResult::WouldInterrupt;
 }
 
-void Tunes::set_string(const char *const string, uint8_t volume)
+void Tunes::set_string(const var_na *const string, uint8_t volume)
 {
 	// Only play new tune if nothing is being played currently.
-	if (_tune == nullptr) {
+	නම් (_tune == nullptr) {
 		// Set tune string the first time.
 		_tune           = string;
 		_tune_start_ptr = string;
 		_next_tune      = _tune;
 
-		if (volume <= tune_control_s::VOLUME_LEVEL_MAX) {
+		නම් (volume <= tune_control_s::VOLUME_LEVEL_MAX) {
 			_volume = volume;
 
-		} else {
+		} නැතහොත් {
 			_volume = tune_control_s::VOLUME_LEVEL_MAX;
 		}
 	}
@@ -159,215 +159,215 @@ void Tunes::set_string(const char *const string, uint8_t volume)
 
 Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsigned &silence, uint8_t &volume)
 {
-	if (_tunes_disabled) {
+	නම් (_tunes_disabled) {
 		frequency = 0;
 		duration = 0;
 		silence = 0;
 		volume = 0;
-		return Tunes::Status::Stop;
+		ආපසු Tunes::Status::Stop;
 	}
 
 	Tunes::Status ret = get_next_note(frequency, duration, silence);
 
 	// Check if note should not be heard -> adjust volume to 0 to be safe.
-	if (frequency == 0 || duration == 0) {
+	නම් (frequency == 0 || duration == 0) {
 		volume = 0;
 
-	} else {
+	} නැතහොත් {
 		volume = _volume;
 	}
 
-	return ret;
+	ආපසු ret;
 }
 
 Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsigned &silence)
 {
-	if (_tunes_disabled) {
+	නම් (_tunes_disabled) {
 		frequency = 0;
 		duration = 0;
 		silence = 0;
-		return Tunes::Status::Stop;
+		ආපසු Tunes::Status::Stop;
 	}
 
 	// Return the values for frequency and duration if the custom msg was received.
-	if (_using_custom_msg) {
+	නම් (_using_custom_msg) {
 		_using_custom_msg = false;
 		duration  = _duration;
 		frequency = _frequency;
 		silence   = _silence;
-		return Tunes::Status::Continue;
+		ආපසු Tunes::Status::Continue;
 	}
 
 	// Make sure we still have a tune.
-	if ((_next_tune == nullptr) || (_tune == nullptr)) {
-		return tune_error();
+	නම් ((_next_tune == nullptr) || (_tune == nullptr)) {
+		ආපසු tune_error();
 	}
 
 	// Parse characters out of the string until we have resolved a note.
 	unsigned note = 0;
 	unsigned note_length = _note_length;
 
-	while (note == 0) {
+	අතරතුර (note == 0) {
 		// we always need at least one character from the string.
-		int c = next_char();
+		පූර්ණ_සංඛ්‍යා c = next_char();
 
-		if (c == 0) {
+		නම් (c == 0) {
 			silence = 0;
-			return tune_end();
+			ආපසු tune_end();
 		}
 
 		_next_tune++;
 
 		switch (c) {
 
-		case 'V':	// Select volume.
+		pak_sa 'V':	// Select volume.
 			// Consume volume if specified in tune but ignore
 			// MML compatibility
 			next_number();
-			break;
+			bha_nga;
 
-		case 'L':	// Select note length.
+		pak_sa 'L':	// Select note length.
 			_note_length = next_number();
 
-			if (_note_length < 1) {
-				return tune_error();
+			නම් (_note_length < 1) {
+				ආපසු tune_error();
 			}
 
-			break;
+			bha_nga;
 
-		case 'O':	// Select octave.
+		pak_sa 'O':	// Select octave.
 			_octave = next_number();
 
-			if (_octave > 6) {
+			නම් (_octave > 6) {
 				_octave = 6;
 			}
 
-			break;
+			bha_nga;
 
-		case '<':	// Decrease octave.
-			if (_octave > 0) {
+		pak_sa '<':	// Decrease octave.
+			නම් (_octave > 0) {
 				_octave--;
 			}
 
-			break;
+			bha_nga;
 
-		case '>':	// Increase octave.
-			if (_octave < 6) {
+		pak_sa '>':	// Increase octave.
+			නම් (_octave < 6) {
 				_octave++;
 			}
 
-			break;
+			bha_nga;
 
-		case 'M':	// Select inter-note gap.
+		pak_sa 'M':	// Select inter-note gap.
 			c = next_char();
 
-			if (c == 0) {
-				return tune_error();
+			නම් (c == 0) {
+				ආපසු tune_error();
 			}
 
 			_next_tune++;
 
 			switch (c) {
-			case 'N':
+			pak_sa 'N':
 				_note_mode = NoteMode::NORMAL;
-				break;
+				bha_nga;
 
-			case 'L':
+			pak_sa 'L':
 				_note_mode = NoteMode::LEGATO;
-				break;
+				bha_nga;
 
-			case 'S':
+			pak_sa 'S':
 				_note_mode = NoteMode::STACCATO;
-				break;
+				bha_nga;
 
-			case 'F':
+			pak_sa 'F':
 				_repeat = false;
-				break;
+				bha_nga;
 
-			case 'B':
+			pak_sa 'B':
 				_repeat = true;
-				break;
+				bha_nga;
 
 			default:
-				return tune_error();
+				ආපසු tune_error();
 			}
 
-			break;
+			bha_nga;
 
-		case 'P':	// Pause for a note length.
-		case 'R':
+		pak_sa 'P':	// Pause for a note length.
+		pak_sa 'R':
 			frequency = 0;
 			duration = 0;
 			note_length = next_number();
 			silence = rest_duration(note_length, next_dots());
-			return Tunes::Status::Continue;
+			ආපසු Tunes::Status::Continue;
 
-		case 'T': {	// Change tempo.
+		pak_sa 'T': {	// Change tempo.
 				unsigned nt = next_number();
 
-				if ((nt >= 32) && (nt <= 255)) {
+				නම් ((nt >= 32) && (nt <= 255)) {
 					_tempo = nt;
 
-				} else {
-					return tune_error();
+				} නැතහොත් {
+					ආපසු tune_error();
 				}
 
-				break;
+				bha_nga;
 			}
 
-		case 'N':	// Play an arbitrary note.
+		pak_sa 'N':	// Play an arbitrary note.
 			note = next_number();
 
-			if (note > 84) {
-				return tune_error();
+			නම් (note > 84) {
+				ආපසු tune_error();
 			}
 
-			if (note == 0) {
+			නම් (note == 0) {
 				// This is a rest - pause for the current note length.
 				silence = rest_duration(_note_length, next_dots());
-				return Tunes::Status::Continue;
+				ආපසු Tunes::Status::Continue;
 			}
 
-			break;
+			bha_nga;
 
-		case 'A'...'G':	// Play a note in the current octave.
+		pak_sa 'A'...'G':	// Play a note in the current octave.
 			note = _note_tab[c - 'A'] + (_octave * 12) + 1;
 			c = next_char();
 
 			switch (c) {
-			case '#':	// Up a semitone.
-			case '+':
-				if (note < 84) {
+			pak_sa '#':	// Up a semitone.
+			pak_sa '+':
+				නම් (note < 84) {
 					note++;
 				}
 
 				_next_tune++;
-				break;
+				bha_nga;
 
-			case '-':	// Down a semitone.
-				if (note > 1) {
+			pak_sa '-':	// Down a semitone.
+				නම් (note > 1) {
 					note--;
 				}
 
 				_next_tune++;
-				break;
+				bha_nga;
 
 			default:
 				// 0 / No next char here is OK.
-				break;
+				bha_nga;
 			}
 
 			// Shorthand length notation.
 			note_length = next_number();
 
-			if (note_length == 0) {
+			නම් (note_length == 0) {
 				note_length = _note_length;
 			}
 
-			break;
+			bha_nga;
 
 		default:
-			return tune_error();
+			ආපසු tune_error();
 		}
 	}
 
@@ -376,91 +376,91 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 
 	// Compute the note frequency.
 	frequency = note_to_frequency(note);
-	return Tunes::Status::Continue;
+	ආපසු Tunes::Status::Continue;
 }
 
 Tunes::Status Tunes::tune_end()
 {
-	if (_tunes_disabled) {
-		return Tunes::Status::Stop;
+	නම් (_tunes_disabled) {
+		ආපසු Tunes::Status::Stop;
 	}
 
 	// Restore intial parameters.
 	reset(_repeat);
 
 	// Stop or restart the tune.
-	if (_repeat) {
-		return Tunes::Status::Continue;
+	නම් (_repeat) {
+		ආපසු Tunes::Status::Continue;
 
-	} else {
-		return Tunes::Status::Stop;
+	} නැතහොත් {
+		ආපසු Tunes::Status::Stop;
 	}
 }
 
 Tunes::Status Tunes::tune_error()
 {
-	if (_tunes_disabled) {
-		return Tunes::Status::Stop;
+	නම් (_tunes_disabled) {
+		ආපසු Tunes::Status::Stop;
 	}
 
 	// The tune appears to be bad (unexpected EOF, bad character, etc.).
-	if (_next_tune != nullptr) {
+	නම් (_next_tune != nullptr) {
 		PX4_WARN("Tune error at: %s", _next_tune);
 	}
 
 	_repeat = false;	// Don't loop on error.
 	reset(_repeat);
-	return Tunes::Status::Error;
+	ආපසු Tunes::Status::Error;
 }
 
 uint32_t Tunes::note_to_frequency(unsigned note) const
 {
 	// Compute the frequency (Hz).
-	return (unsigned)(880.0f * powf(2.0f, ((int)note - 46) / 12.0f));
+	ආපසු (unsigned)(880.0f * powf(2.0f, ((පූර්ණ_සංඛ්‍යා)note - 46) / 12.0f));
 }
 
 unsigned Tunes::note_duration(unsigned &silence, unsigned note_length, unsigned dots) const
 {
 	unsigned whole_note_period = BEAT_TIME_CONVERSION / _tempo;
 
-	if (note_length == 0) {
+	නම් (note_length == 0) {
 		note_length = 1;
 	}
 
 	unsigned note_period = whole_note_period / note_length;
 
 	switch (_note_mode) {
-	case NoteMode::NORMAL:
+	pak_sa NoteMode::NORMAL:
 		silence = note_period / 8;
-		break;
+		bha_nga;
 
-	case NoteMode::STACCATO:
+	pak_sa NoteMode::STACCATO:
 		silence = note_period / 4;
-		break;
+		bha_nga;
 
-	case NoteMode::LEGATO:
+	pak_sa NoteMode::LEGATO:
 	default:
 		silence = 0;
-		break;
+		bha_nga;
 	}
 
 	note_period -= silence;
 
 	unsigned dot_extension = note_period / 2;
 
-	while (dots--) {
+	අතරතුර (dots--) {
 		note_period += dot_extension;
 		dot_extension /= 2;
 	}
 
-	return note_period;
+	ආපසු note_period;
 }
 
 unsigned Tunes::rest_duration(unsigned rest_length, unsigned dots) const
 {
 	unsigned whole_note_period = BEAT_TIME_CONVERSION / _tempo;
 
-	if (rest_length == 0) {
+	නම් (rest_length == 0) {
 		rest_length = 1;
 	}
 
@@ -468,33 +468,33 @@ unsigned Tunes::rest_duration(unsigned rest_length, unsigned dots) const
 
 	unsigned dot_extension = rest_period / 2;
 
-	while (dots--) {
+	අතරතුර (dots--) {
 		rest_period += dot_extension;
 		dot_extension /= 2;
 	}
 
-	return rest_period;
+	ආපසු rest_period;
 }
 
-int Tunes::next_char()
+පූර්ණ_සංඛ්‍යා Tunes::next_char()
 {
-	while (isspace(*_next_tune)) {
+	අතරතුර (isspace(*_next_tune)) {
 		_next_tune++;
 	}
 
-	return toupper(*_next_tune);
+	ආපසු toupper(*_next_tune);
 }
 
 unsigned Tunes::next_number()
 {
 	unsigned number = 0;
-	int next_character;
+	පූර්ණ_සංඛ්‍යා next_character;
 
-	for (;;) {
+	සඳහා (;;) {
 		next_character = next_char();
 
-		if (!isdigit(next_character)) {
-			return number;
+		නම් (!isdigit(next_character)) {
+			ආපසු number;
 		}
 
 		_next_tune++;
@@ -506,10 +506,10 @@ unsigned Tunes::next_dots()
 {
 	unsigned dots = 0;
 
-	while (next_char() == '.') {
+	අතරතුර (next_char() == '.') {
 		_next_tune++;
 		dots++;
 	}
 
-	return dots;
+	ආපසු dots;
 }

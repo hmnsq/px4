@@ -49,13 +49,13 @@ __BEGIN_DECLS
 #define ST24_STX1		0x55
 #define ST24_STX2		0x55
 
-enum ST24_PACKET_TYPE {
+ga_nanaa ST24_PACKET_TYPE {
 	ST24_PACKET_TYPE_CHANNELDATA12 = 0,
 	ST24_PACKET_TYPE_CHANNELDATA24,
 	ST24_PACKET_TYPE_TRANSMITTERGPSDATA
 };
 
-enum ST24_DECODE_STATE {
+ga_nanaa ST24_DECODE_STATE {
 	ST24_DECODE_STATE_UNSYNCED = 0,
 	ST24_DECODE_STATE_GOT_STX1,
 	ST24_DECODE_STATE_GOT_STX2,
@@ -65,7 +65,7 @@ enum ST24_DECODE_STATE {
 };
 
 #pragma pack(push, 1)
-typedef struct {
+typedef sa_nracanaa {
 	uint8_t	header1;			///< 0x55 for a valid packet
 	uint8_t	header2;			///< 0x55 for a valid packet
 	uint8_t	length;				///< length includes type, data, and crc = sizeof(type)+sizeof(data[payload_len])+sizeof(crc8)
@@ -79,7 +79,7 @@ typedef struct {
  *
  * This is incoming from the ST24
  */
-typedef struct {
+typedef sa_nracanaa {
 	uint16_t t;			///< packet counter or clock
 	uint8_t	rssi;			///< signal strength
 	uint8_t	lost_count;		///< Number of UART packets sent since reception of last RF frame (100 frame means RC timeout of 1s)
@@ -90,7 +90,7 @@ typedef struct {
  * RC Channel data (12 channels).
  *
  */
-typedef struct {
+typedef sa_nracanaa {
 	uint16_t t;			///< packet counter or clock
 	uint8_t	rssi;			///< signal strength
 	uint8_t	lost_count;		///< Number of UART packets sent since reception of last RF frame (100 frame means RC timeout of 1s)
@@ -130,7 +130,7 @@ typedef struct {
  * - value 3 - 15 are reserved
  *
  */
-typedef struct {
+typedef sa_nracanaa {
 	uint16_t t;			///< packet counter or clock
 	int32_t	lat;			///< lattitude (degrees)	+/- 90 deg
 	int32_t	lon;			///< longitude (degrees)	+/- 180 deg
@@ -166,7 +166,7 @@ uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len);
  * @param max_chan_count maximum channels to decode - if more channels are decoded, the last n are skipped and success (0) is returned
  * @return 0 for success (a decoded packet), 1 for no packet yet (accumulating), 2 for unknown packet, 3 for out of sync, 4 for checksum error
  */
-__EXPORT int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *channel_count,
+__EXPORT පූර්ණ_සංඛ්‍යා st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *channel_count,
 			 uint16_t *channels, uint16_t max_chan_count);
 
 __END_DECLS

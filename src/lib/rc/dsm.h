@@ -58,28 +58,28 @@ __BEGIN_DECLS
 typedef   uint8_t dsm_frame_t[DSM_BUFFER_SIZE]; /**< DSM dsm frame receive buffer */
 typedef   uint8_t dsm_buf_t[DSM_FRAME_SIZE * 2]; // Define working buffer
 
-typedef  struct dsm_decode_t {
+typedef  sa_nracanaa dsm_decode_t {
 	dsm_frame_t frame;
 	dsm_buf_t buf;
 } dsm_decode_t;
 
 #pragma pack(pop)
 
-__EXPORT int	dsm_init(const char *device);
+__EXPORT පූර්ණ_සංඛ්‍යා	dsm_init(const var_na *device);
 __EXPORT void	dsm_deinit(void);
 __EXPORT void	dsm_proto_init(void);
-__EXPORT int	dsm_config(int dsm_fd);
-__EXPORT bool	dsm_input(int dsm_fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit, uint8_t *n_bytes,
+__EXPORT පූර්ණ_සංඛ්‍යා	dsm_config(පූර්ණ_සංඛ්‍යා dsm_fd);
+__EXPORT bool	dsm_input(පූර්ණ_සංඛ්‍යා dsm_fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit, uint8_t *n_bytes,
 			  uint8_t **bytes, int8_t *rssi, unsigned *frame_drops, unsigned max_values);
 
 __EXPORT bool	dsm_parse(const uint64_t now, const uint8_t *frame, const unsigned len, uint16_t *values,
 			  uint16_t *num_values, bool *dsm_11_bit, unsigned *frame_drops, int8_t *rssi_percent, uint16_t max_channels);
 
 #ifdef SPEKTRUM_POWER
-__EXPORT void	dsm_bind(uint16_t cmd, int pulses);
+__EXPORT void	dsm_bind(uint16_t cmd, පූර්ණ_සංඛ්‍යා pulses);
 #endif
 
-enum DSM_CMD {							/* DSM bind states */
+ga_nanaa DSM_CMD {							/* DSM bind states */
 	DSM_CMD_BIND_POWER_DOWN = 0,
 	DSM_CMD_BIND_POWER_UP,
 	DSM_CMD_BIND_SET_RX_OUT,

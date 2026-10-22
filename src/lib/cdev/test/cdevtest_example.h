@@ -50,12 +50,12 @@ public:
 
 	~CDevExample();
 
-	int main();
+	පූර්ණ_සංඛ්‍යා main();
 
 	static px4::AppState appState; /* track requests to terminate app */
 
 private:
-	int do_poll(int fd, int timeout, int iterations, int delayms_after_poll);
+	පූර්ණ_සංඛ්‍යා do_poll(පූර්ණ_සංඛ්‍යා fd, පූර්ණ_සංඛ්‍යා timeout, පූර්ණ_සංඛ්‍යා iterations, පූර්ණ_සංඛ්‍යා delayms_after_poll);
 
 	CDevNode *_node;
 };

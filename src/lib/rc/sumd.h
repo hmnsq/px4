@@ -56,7 +56,7 @@ __BEGIN_DECLS
 
 
 #pragma pack(push, 1)
-typedef struct {
+typedef sa_nracanaa {
 	uint8_t	header;							///< 0xA8 for a valid packet
 	uint8_t	status;							///< 0x01 valid and live SUMD data frame / 0x00 = SUMH / 0x81 = Failsafe
 	uint8_t	length;							///< Channels
@@ -102,7 +102,7 @@ uint8_t sumd_crc8(uint8_t crc, uint8_t value);
 __EXPORT int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channel_count,
 				 uint16_t *channels, uint16_t max_chan_count, bool *failsafe);
 */
-__EXPORT int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channel_count,
+__EXPORT පූර්ණ_සංඛ්‍යා sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channel_count,
 			 uint16_t *channels, uint16_t max_chan_count, bool *failsafe);
 
 

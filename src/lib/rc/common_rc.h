@@ -11,8 +11,8 @@
 #include "sumd.h"
 
 #pragma pack(push, 1)
-typedef  struct rc_decode_buf_ {
-	union {
+typedef  sa_nracanaa rc_decode_buf_ {
+	sa_ngha {
 		crsf_frame_t crsf_frame;
 		ghst_frame_t ghst_frame;
 		dsm_decode_t dsm;
@@ -26,4 +26,4 @@ typedef  struct rc_decode_buf_ {
 extern rc_decode_buf_t rc_decode_buf;
 
 uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a);
-uint8_t crc8_dvb_s2_buf(uint8_t *buf, int len);
+uint8_t crc8_dvb_s2_buf(uint8_t *buf, පූර්ණ_සංඛ්‍යා len);

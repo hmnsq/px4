@@ -43,7 +43,7 @@ GainCompression3d::GainCompression3d()
 
 void GainCompression3d::reset()
 {
-	for (unsigned i = 0; i < 3; i++) {
+	සඳහා (unsigned i = 0; i < 3; i++) {
 		_compression_gains[i].reset();
 	}
 
@@ -52,23 +52,23 @@ void GainCompression3d::reset()
 
 void GainCompression3d::setCompressionGainMin(const float gain_min)
 {
-	for (unsigned i = 0; i < 3; i++) {
+	සඳහා (unsigned i = 0; i < 3; i++) {
 		_compression_gains[i].setCompressionGainMin(gain_min);
 	}
 }
 
 void GainCompression3d::update(const Vector3f &input, const float dt)
 {
-	if (!_enabled) {
+	නම් (!_enabled) {
 		reset();
-		return;
+		ආපසු;
 	}
 
 	Vector3f hpf;
 	Vector3f lpf;
 	const float sample_freq = 1.f / math::constrain(dt, 0.125e-3f, 100e-3f); // supports rate loops up to 8kHz
 
-	for (unsigned i = 0; i < 3; i++) {
+	සඳහා (unsigned i = 0; i < 3; i++) {
 		_compression_gains[i].setLpfCutoffFrequency(sample_freq, _kLpfCutoffFrequency);
 		_compression_gains[i].setHpfCutoffFrequency(sample_freq, _kHpfCutoffFrequency);
 
@@ -80,7 +80,7 @@ void GainCompression3d::update(const Vector3f &input, const float dt)
 
 	const hrt_abstime now = hrt_absolute_time();
 
-	if ((now - _time_last_publication) > 100_ms) {
+	නම් ((now - _time_last_publication) > 100_ms) {
 		gain_compression_s msg;
 		msg.timestamp = now;
 		_gains.copyTo(msg.compression_gains);
@@ -94,11 +94,11 @@ void GainCompression3d::update(const Vector3f &input, const float dt)
 
 float GainCompression::update(const float input, const float dt)
 {
-	if (!PX4_ISFINITE(input)) {
-		return _compression_gain;
+	නම් (!PX4_ISFINITE(input)) {
+		ආපසු _compression_gain;
 	}
 
-	if (!_input_initialized) {
+	නම් (!_input_initialized) {
 		// seed the high-pass filter to avoid detecting a step on the first sample after a reset
 		_input_prev = input;
 		_input_initialized = true;
@@ -117,5 +117,5 @@ float GainCompression::update(const float input, const float dt)
 	const float ka_dot = spectral_damping + leakage;
 	_compression_gain = math::constrain(_compression_gain + ka_dot * dt, _compression_gain_min, 1.f);
 
-	return _compression_gain;
+	ආපසු _compression_gain;
 }

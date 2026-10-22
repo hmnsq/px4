@@ -39,7 +39,7 @@
 
 #define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) tune,
 // Initialize default tunes
-const char *const Tunes::_default_tunes[] = {
+const var_na *const Tunes::_default_tunes[] = {
 #include "tune_definition.desc"
 };
 #undef PX4_DEFINE_TUNE
@@ -52,4 +52,4 @@ const bool Tunes::_default_tunes_interruptable[] = {
 #undef PX4_DEFINE_TUNE
 
 // set default_tunes array size
-const unsigned int Tunes::_default_tunes_size =  sizeof(_default_tunes) / sizeof(_default_tunes[0]);
+const unsigned පූර්ණ_සංඛ්‍යා Tunes::_default_tunes_size =  parimaa_na(_default_tunes) / parimaa_na(_default_tunes[0]);

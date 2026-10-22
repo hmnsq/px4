@@ -43,11 +43,11 @@
 #   * Human-readable description in Markdown page format for the PX4 dev guide
 #
 
-from __future__ import print_function
+ta_h __future__ import print_function
 import sys
 import os
 import argparse
-from px4params import srcscanner, srcparser, injectxmlparams, xmlout, markdownout, jsonout, readonly_config
+ta_h px4params import srcscanner, srcparser, injectxmlparams, xmlout, markdownout, jsonout, readonly_config
 
 import lzma #to create .xz file
 import json
@@ -110,7 +110,7 @@ def main():
     args = parser.parse_args()
 
     # Check for valid command
-    if not (args.xml or args.markdown or args.json):
+    නම් na (args.xml or args.markdown or args.json):
         print("Error: You need to specify at least one output method!\n")
         parser.print_usage()
         sys.exit(1)
@@ -120,17 +120,17 @@ def main():
     parser = srcparser.SourceParser()
 
     # Scan directories, and parse the files
-    if (args.verbose):
+    නම් (args.verbose):
         print("Scanning source path " + str(args.src_path))
 
-    if not scanner.ScanDir(args.src_path, parser):
+    නම් na scanner.ScanDir(args.src_path, parser):
         sys.exit(1)
 
-    if not parser.Validate():
+    නම් na parser.Validate():
         sys.exit(1)
     param_groups = parser.GetParamGroups()
 
-    if len(param_groups) == 0:
+    නම් len(param_groups) == 0:
         print("Warning: no parameters found")
 
 
@@ -138,60 +138,60 @@ def main():
     cur_dir = os.path.dirname(os.path.realpath(__file__))
 
     override_dict = json.loads(args.overrides)
-    if len(override_dict.keys()) > 0:
-        for group in param_groups:
-            for param in group.GetParams():
+    නම් len(override_dict.keys()) > 0:
+        සඳහා group anta_h param_groups:
+            සඳහා param anta_h group.GetParams():
                 name = param.GetName()
-                if name in override_dict.keys():
+                නම් name anta_h override_dict.keys():
                     val = str(override_dict[param.GetName()])
                     param.default = val
                     print("OVERRIDING {:s} to {:s}!!!!!".format(name, val))
 
     # Mark readonly parameters
-    if args.readonly_config:
+    නම් args.readonly_config:
         all_param_names = set()
-        for group in param_groups:
-            for param in group.GetParams():
+        සඳහා group anta_h param_groups:
+            සඳහා param anta_h group.GetParams():
                 all_param_names.add(param.GetName())
         readonly_params = readonly_config.load_readonly_params(args.readonly_config, all_param_names)
-        for group in param_groups:
-            for param in group.GetParams():
-                if param.GetName() in readonly_params:
+        සඳහා group anta_h param_groups:
+            සඳහා param anta_h group.GetParams():
+                නම් param.GetName() anta_h readonly_params:
                     param.SetReadonly()
 
     output_files = []
 
     # Output to XML file
-    if args.xml:
-        if args.verbose:
+    නම් args.xml:
+        නම් args.verbose:
             print("Creating XML file " + args.xml)
         out = xmlout.XMLOutput(param_groups, args.board)
         out.Save(args.xml)
         output_files.append(args.xml)
 
     # Output to Markdown/HTML tables
-    if args.markdown:
-        if args.verbose:
+    නම් args.markdown:
+        නම් args.verbose:
             print("Creating markdown file " + args.markdown)
         out = markdownout.MarkdownTablesOutput(param_groups)
         out.Save(args.markdown)
         output_files.append(args.markdown)
 
     # Output to JSON file
-    if args.json:
-        if args.verbose:
+    නම් args.json:
+        නම් args.verbose:
             print("Creating Json file " + args.json)
         cur_dir = os.path.dirname(os.path.realpath(__file__))
         out = jsonout.JsonOutput(param_groups, args.board)
         out.Save(args.json)
         output_files.append(args.json)
 
-    if args.compress:
-        for f in output_files:
-            if args.verbose:
+    නම් args.compress:
+        සඳහා f anta_h output_files:
+            නම් args.verbose:
                 print("Compressing file " + f)
             save_compressed(f)
 
 
-if __name__ == "__main__":
+නම් __name__ == "__main__":
     main()

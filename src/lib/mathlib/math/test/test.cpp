@@ -49,88 +49,88 @@ bool __EXPORT equal(float a, float b, float epsilon)
 {
 	float diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	නම් (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ආපසු false;
 
-	} else { return true; }
+	} නැතහොත් { ආපසු true; }
 }
 
 bool __EXPORT greater_than(float a, float b)
 {
-	if (a > b) {
-		return true;
+	නම් (a > b) {
+		ආපසු true;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} නැතහොත් {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ආපසු false;
 	}
 }
 
 bool __EXPORT less_than(float a, float b)
 {
-	if (a < b) {
-		return true;
+	නම් (a < b) {
+		ආපසු true;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} නැතහොත් {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ආපසු false;
 	}
 }
 
 bool __EXPORT greater_than_or_equal(float a, float b)
 {
-	if (a >= b) {
-		return true;
+	නම් (a >= b) {
+		ආපසු true;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} නැතහොත් {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ආපසු false;
 	}
 }
 
 bool __EXPORT less_than_or_equal(float a, float b)
 {
-	if (a <= b) {
-		return true;
+	නම් (a <= b) {
+		ආපසු true;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} නැතහොත් {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ආපසු false;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+void __EXPORT float2SigExp(const float &num, float &sig, පූර්ණ_සංඛ්‍යා &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	නම් (!PX4_ISFINITE(num)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		ආපසු;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	නම් (fabsf(num) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		ආපසු;
 	}
 
 	exp = log10f(fabsf(num));
 
-	if (exp > 0) {
+	නම් (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} නැතහොත් {
 		exp = floor(exp);
 	}
 
 	sig = num;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	නම් (exp > 0) {
+		සඳහා (පූර්ණ_සංඛ්‍යා i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} නැතහොත් {
+		සඳහා (පූර්ණ_සංඛ්‍යා i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

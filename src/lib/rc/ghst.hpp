@@ -50,11 +50,11 @@ __BEGIN_DECLS
 #define GHST_BAUDRATE		(420000u)
 #define GHST_PAYLOAD_MAX_SIZE	(14u)
 
-enum class ghstAddress {
+ga_nanaa class ghstAddress {
 	rxAddress = 0x89	// Rx address
 };
 
-enum class ghstFrameType {
+ga_nanaa class ghstFrameType {
 	frameTypeFirst	= 0x10,	// first frame type
 	frameType5to8	= 0x10,	// channel 5-8
 	frameType9to12	= 0x11,	// channel 9-12
@@ -63,51 +63,51 @@ enum class ghstFrameType {
 	frameTypeLast	= 0x1f	// last frame type
 };
 
-enum class ghstTelemetryType {
+ga_nanaa class ghstTelemetryType {
 	batteryPack = 0x23,	// battery pack status frame type
 	gpsPrimary = 0x25,	// GPS primary data (lat/long/alt)
 	gpsSecondary = 0x26	// GPS secondary data (course, dist, flags)
 };
 
-struct ghst_frame_header_t {
+sa_nracanaa ghst_frame_header_t {
 	uint8_t device_address;			// device address
 	uint8_t length;				// length
 };
 
-struct ghst_frame_t {
+sa_nracanaa ghst_frame_t {
 	ghst_frame_header_t header;			// header
 	uint8_t type;					// frame type
 	uint8_t payload[GHST_PAYLOAD_MAX_SIZE + 1U];	// payload data including 1 byte CRC at the end
 };
 
 // Channel data (1-4)
-typedef struct {
-	unsigned int chan1: 12;
-	unsigned int chan2: 12;
-	unsigned int chan3: 12;
-	unsigned int chan4: 12;
+typedef sa_nracanaa {
+	unsigned පූර්ණ_සංඛ්‍යා chan1: 12;
+	unsigned පූර්ණ_සංඛ්‍යා chan2: 12;
+	unsigned පූර්ණ_සංඛ්‍යා chan3: 12;
+	unsigned පූර්ණ_සංඛ්‍යා chan4: 12;
 } __attribute__((__packed__)) ghstChannelData_t;
 
 // Payload data
-typedef struct {
+typedef sa_nracanaa {
 	ghstChannelData_t chan1to4;
-	unsigned int chanA: 8;
-	unsigned int chanB: 8;
-	unsigned int chanC: 8;
-	unsigned int chanD: 8;
+	unsigned පූර්ණ_සංඛ්‍යා chanA: 8;
+	unsigned පූර්ණ_සංඛ්‍යා chanB: 8;
+	unsigned පූර්ණ_සංඛ්‍යා chanC: 8;
+	unsigned පූර්ණ_සංඛ්‍යා chanD: 8;
 } __attribute__((__packed__)) ghstPayloadData_t;
 
 // Payload data - RSSI frame type
-typedef struct {
+typedef sa_nracanaa {
 	ghstChannelData_t chan1to4;
-	unsigned int lq: 8;		// link quality
-	unsigned int rssidBm: 8;	// RSSI [dBm]
-	unsigned int rfMode: 8;		// RF mode
-	int txPowerdBm: 8;		// Tx power [dBm]
+	unsigned පූර්ණ_සංඛ්‍යා lq: 8;		// link quality
+	unsigned පූර්ණ_සංඛ්‍යා rssidBm: 8;	// RSSI [dBm]
+	unsigned පූර්ණ_සංඛ්‍යා rfMode: 8;		// RF mode
+	පූර්ණ_සංඛ්‍යා txPowerdBm: 8;		// Tx power [dBm]
 } __attribute__((__packed__)) ghstPayloadRssi_t;
 
 // Link statistics for internal transport
-typedef struct {
+typedef sa_nracanaa {
 	int8_t rssi_pct;
 	float rssi_dbm;
 	int8_t link_quality;
@@ -118,7 +118,7 @@ typedef struct {
  * @param uart_fd UART file descriptor
  * @return 0 on success, -errno otherwise
  */
-__EXPORT int ghst_config(int uart_fd);
+__EXPORT පූර්ණ_සංඛ්‍යා ghst_config(පූර්ණ_සංඛ්‍යා uart_fd);
 
 
 /**
@@ -145,7 +145,7 @@ __EXPORT bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len,
  * @param fuel_in_10mAh Fuel [10 mAh]
  * @return true on success
  */
-__EXPORT bool ghst_send_telemetry_battery_status(int uart_fd, uint16_t voltage_in_10mV,
+__EXPORT bool ghst_send_telemetry_battery_status(පූර්ණ_සංඛ්‍යා uart_fd, uint16_t voltage_in_10mV,
 		uint16_t current_in_10mA, uint16_t fuel_in_10mAh);
 
 /**
@@ -156,7 +156,7 @@ __EXPORT bool ghst_send_telemetry_battery_status(int uart_fd, uint16_t voltage_i
  * @param altitude GPS altitude [1m]
  * @return true on success
  */
-__EXPORT bool ghst_send_telemetry_gps1_status(int uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude);
+__EXPORT bool ghst_send_telemetry_gps1_status(පූර්ණ_සංඛ්‍යා uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude);
 
 /**
  * Send secondary GPS information
@@ -169,6 +169,6 @@ __EXPORT bool ghst_send_telemetry_gps1_status(int uart_fd, uint32_t latitude, ui
  * @param flags GPS Flags
  * @return true on success
  */
-__EXPORT bool ghst_send_telemetry_gps2_status(int uart_fd, uint16_t ground_speed, uint16_t ground_course,
+__EXPORT bool ghst_send_telemetry_gps2_status(පූර්ණ_සංඛ්‍යා uart_fd, uint16_t ground_speed, uint16_t ground_course,
 		uint8_t num_sats, uint16_t home_dist, uint16_t home_dir, uint8_t flags);
 __END_DECLS

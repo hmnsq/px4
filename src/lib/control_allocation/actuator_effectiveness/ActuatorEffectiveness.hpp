@@ -46,21 +46,21 @@
 #include <matrix/matrix/math.hpp>
 #include <uORB/topics/control_allocator_status.h>
 
-enum class AllocationMethod {
+ga_nanaa class AllocationMethod {
 	NONE = -1,
 	PSEUDO_INVERSE = 0,
 	SEQUENTIAL_DESATURATION = 1,
 	AUTO = 2,
 };
 
-enum class ActuatorType {
+ga_nanaa class ActuatorType {
 	MOTORS = 0,
 	SERVOS,
 
 	COUNT
 };
 
-enum class EffectivenessUpdateReason {
+ga_nanaa class EffectivenessUpdateReason {
 	NO_EXTERNAL_UPDATE = 0,
 	CONFIGURATION_UPDATE = 1, ///< config changes (parameter)
 	MOTOR_ACTIVATION_UPDATE = 2, ///< motor failure detected or certain redundant motors are switched off to save energy
@@ -72,10 +72,10 @@ public:
 	ActuatorEffectiveness() = default;
 	virtual ~ActuatorEffectiveness() = default;
 
-	static constexpr int NUM_ACTUATORS = 16;
-	static constexpr int NUM_AXES = 6;
+	static constexpr පූර්ණ_සංඛ්‍යා NUM_ACTUATORS = 16;
+	static constexpr පූර්ණ_සංඛ්‍යා NUM_AXES = 6;
 
-	enum ControlAxis {
+	ga_nanaa ControlAxis {
 		ROLL = 0,
 		PITCH,
 		YAW,
@@ -84,47 +84,47 @@ public:
 		THRUST_Z
 	};
 
-	static constexpr int MAX_NUM_MATRICES = 2;
+	static constexpr පූර්ණ_සංඛ්‍යා MAX_NUM_MATRICES = 2;
 
 	using EffectivenessMatrix = matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS>;
 	using ActuatorVector = matrix::Vector<float, NUM_ACTUATORS>;
 	using ActuatorBitmask = uint32_t;
 
-	static_assert(NUM_ACTUATORS <= 8 * sizeof(ActuatorBitmask),
+	static_assert(NUM_ACTUATORS <= 8 * parimaa_na(ActuatorBitmask),
 		      "NUM_ACTUATORS exceeds the number of bits available in the mask type.");
 
-	enum class FlightPhase {
+	ga_nanaa class FlightPhase {
 		HOVER_FLIGHT = 0,
 		FORWARD_FLIGHT = 1,
 		TRANSITION_HF_TO_FF = 2,
 		TRANSITION_FF_TO_HF = 3
 	};
 
-	struct Configuration {
+	sa_nracanaa Configuration {
 		/**
 		 * Add an actuator to the selected matrix, returning the index, or -1 on error
 		 */
-		int addActuator(ActuatorType type, const matrix::Vector3f &torque, const matrix::Vector3f &thrust);
+		පූර්ණ_සංඛ්‍යා addActuator(ActuatorType type, const matrix::Vector3f &torque, const matrix::Vector3f &thrust);
 
 		/**
 		 * Call this after manually adding N actuators to the selected matrix
 		 */
-		void actuatorsAdded(ActuatorType type, int count);
+		void actuatorsAdded(ActuatorType type, පූර්ණ_සංඛ්‍යා count);
 
-		int totalNumActuators() const;
+		පූර්ණ_සංඛ්‍යා totalNumActuators() const;
 
 		/// Configured effectiveness matrix. Actuators are expected to be filled in order, motors first, then servos
 		EffectivenessMatrix effectiveness_matrices[MAX_NUM_MATRICES];
 
-		int num_actuators_matrix[MAX_NUM_MATRICES]; ///< current amount, and next actuator index to fill in to effectiveness_matrices
+		පූර්ණ_සංඛ්‍යා num_actuators_matrix[MAX_NUM_MATRICES]; ///< current amount, and next actuator index to fill in to effectiveness_matrices
 		ActuatorVector trim[MAX_NUM_MATRICES];
 
 		ActuatorVector linearization_point[MAX_NUM_MATRICES];
 
-		int selected_matrix;
+		පූර්ණ_සංඛ්‍යා selected_matrix;
 
 		uint8_t matrix_selection_indexes[NUM_ACTUATORS * MAX_NUM_MATRICES];
-		int num_actuators[(int)ActuatorType::COUNT];
+		පූර්ණ_සංඛ්‍යා num_actuators[(පූර්ණ_සංඛ්‍යා)ActuatorType::COUNT];
 	};
 
 	/**
@@ -141,14 +141,14 @@ public:
 	 * Get the number of effectiveness matrices. Must be <= MAX_NUM_MATRICES.
 	 * This is expected to stay constant.
 	 */
-	virtual int numMatrices() const { return 1; }
+	virtual පූර්ණ_සංඛ්‍යා numMatrices() const { ආපසු 1; }
 
 	/**
 	 * Get the desired allocation method(s) for each matrix, if configured as AUTO
 	 */
 	virtual void getDesiredAllocationMethod(AllocationMethod allocation_method_out[MAX_NUM_MATRICES]) const
 	{
-		for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
+		සඳහා (පූර්ණ_සංඛ්‍යා i = 0; i < MAX_NUM_MATRICES; ++i) {
 			allocation_method_out[i] = AllocationMethod::PSEUDO_INVERSE;
 		}
 	}
@@ -158,7 +158,7 @@ public:
 	 */
 	virtual void getNormalizeRPY(bool normalize[MAX_NUM_MATRICES]) const
 	{
-		for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
+		සඳහා (පූර්ණ_සංඛ්‍යා i = 0; i < MAX_NUM_MATRICES; ++i) {
 			normalize[i] = false;
 		}
 	}
@@ -168,7 +168,7 @@ public:
 	 *
 	 * @return true if updated and matrix is set
 	 */
-	virtual bool getEffectivenessMatrix(Configuration &configuration, EffectivenessUpdateReason external_update) { return false;}
+	virtual bool getEffectivenessMatrix(Configuration &configuration, EffectivenessUpdateReason external_update) { ආපසු false;}
 
 	/**
 	 * Get the current flight phase
@@ -177,13 +177,13 @@ public:
 	 */
 	const FlightPhase &getFlightPhase() const
 	{
-		return _flight_phase;
+		ආපසු _flight_phase;
 	}
 
 	/**
 	 * Display name
 	 */
-	virtual const char *name() const = 0;
+	virtual const var_na *name() const = 0;
 
 	/**
 	 * Callback from the control allocation, allowing to manipulate the setpoint.
@@ -191,7 +191,7 @@ public:
 	 *
 	 * @param actuator_sp input & output setpoint
 	 */
-	virtual void allocateAuxilaryControls(const float dt, int matrix_index, ActuatorVector &actuator_sp) {}
+	virtual void allocateAuxilaryControls(const float dt, පූර්ණ_සංඛ්‍යා matrix_index, ActuatorVector &actuator_sp) {}
 
 	/**
 	 * Callback from the control allocation, allowing to manipulate the setpoint.
@@ -199,7 +199,7 @@ public:
 	 * It is called after the matrix multiplication and before final clipping.
 	 * @param actuator_sp input & output setpoint
 	 */
-	virtual void updateSetpoint(const matrix::Vector<float, NUM_AXES> &control_sp, int matrix_index,
+	virtual void updateSetpoint(const matrix::Vector<float, NUM_AXES> &control_sp, පූර්ණ_සංඛ්‍යා matrix_index,
 				    ActuatorVector &actuator_sp, const ActuatorVector &actuator_min, const ActuatorVector &actuator_max) {}
 
 	/**
@@ -211,7 +211,7 @@ public:
 	 * Fill in the unallocated torque and thrust, customized by effectiveness type.
 	 * Can be implemented for every type separately. If not implemented then the effectivenes matrix is used instead.
 	 */
-	virtual void getUnallocatedControl(int matrix_index, control_allocator_status_s &status) {}
+	virtual void getUnallocatedControl(පූර්ණ_සංඛ්‍යා matrix_index, control_allocator_status_s &status) {}
 
 	/**
 	 * Override the collective tilt setpoint that would normally come from
@@ -234,9 +234,9 @@ public:
 		_vertical_motors_stopped_by_thrust = !PX4_ISFINITE(thrust_sp(2));
 	}
 
-protected:
+rak_sita:
 
-	struct MotorDirectionBitmasks {
+	sa_nracanaa MotorDirectionBitmasks {
 		ActuatorBitmask longitudinal{};
 		ActuatorBitmask lateral{};
 		ActuatorBitmask vertical{};

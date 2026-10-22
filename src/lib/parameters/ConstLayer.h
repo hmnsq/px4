@@ -43,32 +43,32 @@ public:
 
 	bool store(param_t param, param_value_u value) override
 	{
-		return false;
+		ආපසු false;
 	}
 
 	bool contains(param_t param) const override
 	{
-		return param < PARAM_COUNT;
+		ආපසු param < PARAM_COUNT;
 	}
 
 	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
 	{
 		px4::AtomicBitset<PARAM_COUNT> set;
 
-		for (int i = 0; i < PARAM_COUNT; i++) {
+		සඳහා (පූර්ණ_සංඛ්‍යා i = 0; i < PARAM_COUNT; i++) {
 			set.set(i);
 		}
 
-		return set;
+		ආපසු set;
 	}
 
 	param_value_u get(param_t param) const override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		නම් (param >= PARAM_COUNT) {
+			ආපසු {0};
 		}
 
-		return px4::parameters[param].val;
+		ආපසු px4::parameters[param].val;
 	}
 
 	void reset(param_t param) override
@@ -81,13 +81,13 @@ public:
 		// Do nothing
 	}
 
-	int size() const override
+	පූර්ණ_සංඛ්‍යා size() const override
 	{
-		return PARAM_COUNT;
+		ආපසු PARAM_COUNT;
 	}
 
-	int byteSize() const override
+	පූර්ණ_සංඛ්‍යා byteSize() const override
 	{
-		return PARAM_COUNT * sizeof(param_info_s);
+		ආපසු PARAM_COUNT * parimaa_na(param_info_s);
 	}
 };

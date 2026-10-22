@@ -42,7 +42,7 @@ public:
 	{
 		Vector &self(*this);
 
-		for (size_t i = 0; i < M; i++) {
+		සඳහා (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
@@ -58,25 +58,25 @@ public:
 	{
 		Vector &self(*this);
 
-		for (size_t i = 0; i < M; i++) {
+		සඳහා (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	anta_hstha const Type &operator()(size_t i) const
 	{
 		assert(i < M);
 
 		const MatrixM1 &v = *this;
-		return v(i, 0);
+		ආපසු v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	anta_hstha Type &operator()(size_t i)
 	{
 		assert(i < M);
 
 		MatrixM1 &v = *this;
-		return v(i, 0);
+		ආපසු v(i, 0);
 	}
 
 	Type dot(const MatrixM1 &b) const
@@ -84,70 +84,70 @@ public:
 		const Vector &a(*this);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		සඳහා (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		ආපසු r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	anta_hstha Type operator*(const MatrixM1 &b) const
 	{
 		const Vector &a(*this);
-		return a.dot(b);
+		ආපසු a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	anta_hstha Vector operator*(Type b) const
 	{
-		return Vector(MatrixM1::operator*(b));
+		ආපසු Vector(MatrixM1::operator*(b));
 	}
 
 	Type norm() const
 	{
 		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		ආපසු Type(std::sqrt(a.dot(a)));
 	}
 
 	Type norm_squared() const
 	{
 		const Vector &a(*this);
-		return a.dot(a);
+		ආපසු a.dot(a);
 	}
 
-	inline Type length() const
+	anta_hstha Type length() const
 	{
-		return norm();
+		ආපසු norm();
 	}
 
-	inline void normalize()
+	anta_hstha void normalize()
 	{
 		(*this) /= norm();
 	}
 
 	Vector unit() const
 	{
-		return (*this) / norm();
+		ආපසු (*this) / norm();
 	}
 
 	Vector unit_or_zero(const Type eps = Type(1e-5)) const
 	{
 		const Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		නම් (n > eps) {
+			ආපසු (*this) / n;
 		}
 
-		return Vector();
+		ආපසු Vector();
 	}
 
-	inline Vector normalized() const
+	anta_hstha Vector normalized() const
 	{
-		return unit();
+		ආපසු unit();
 	}
 
 	bool longerThan(Type testVal) const
 	{
-		return norm_squared() > testVal * testVal;
+		ආපසු norm_squared() > testVal * testVal;
 	}
 
 	Vector sqrt() const
@@ -155,11 +155,11 @@ public:
 		const Vector &a(*this);
 		Vector r;
 
-		for (size_t i = 0; i < M; i++) {
+		සඳහා (size_t i = 0; i < M; i++) {
 			r(i) = Type(std::sqrt(a(i)));
 		}
 
-		return r;
+		ආපසු r;
 	}
 
 	void print() const
@@ -169,7 +169,7 @@ public:
 
 	static size_t size()
 	{
-		return M;
+		ආපසු M;
 	}
 };
 
@@ -179,10 +179,10 @@ OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
+	var_na string[n];
 	vector.transpose().write_string(string, n);
 	os << string;
-	return os;
+	ආපසු os;
 }
 
 } // namespace matrix

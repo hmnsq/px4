@@ -49,116 +49,116 @@
 #define PARAMIOCNOTIFY	_PARAMIOC(1)
 
 #define PARAMIOCFIND	_PARAMIOC(2)
-typedef struct paramiocfind {
-	const char *name;
+typedef sa_nracanaa paramiocfind {
+	const var_na *name;
 	const bool notification;
 	param_t ret;
 } paramiocfind_t;
 
 
 #define PARAMIOCCOUNTUSED	_PARAMIOC(3)
-typedef struct paramioccountused {
+typedef sa_nracanaa paramioccountused {
 	unsigned ret;
 } paramioccountused_t;
 
 #define PARAMIOCFORUSEDINDEX	_PARAMIOC(4)
-typedef struct paramiocforusedindex {
+typedef sa_nracanaa paramiocforusedindex {
 	const unsigned index;
 	param_t ret;
 } paramiocforusedindex_t;
 
 #define PARAMIOCGETUSEDINDEX	_PARAMIOC(5)
-typedef struct paramiocgetusedindex {
+typedef sa_nracanaa paramiocgetusedindex {
 	const param_t param;
 	unsigned ret;
 } paramiocgetusedindex_t;
 
 #define PARAMIOCUNSAVED	_PARAMIOC(6)
-typedef struct paramiocunsaved {
+typedef sa_nracanaa paramiocunsaved {
 	const param_t param;
 	bool ret;
 } paramiocunsaved_t;
 
 #define PARAMIOCGET	_PARAMIOC(7)
-typedef struct paramiocget {
+typedef sa_nracanaa paramiocget {
 	const param_t param;
 	const bool deflt;
 	void *const val;
-	int ret;
+	පූර්ණ_සංඛ්‍යා ret;
 } paramiocget_t;
 
 #define PARAMIOCAUTOSAVE	_PARAMIOC(8)
-typedef struct paramiocautosave {
+typedef sa_nracanaa paramiocautosave {
 	const bool enable;
 } paramiocautosave_t;
 
 #define PARAMIOCSET	_PARAMIOC(9)
-typedef struct paramiocset {
+typedef sa_nracanaa paramiocset {
 	const param_t param;
 	const bool notification;
 	const void *val;
-	int ret;
+	පූර්ණ_සංඛ්‍යා ret;
 } paramiocset_t;
 
 #define PARAMIOCUSED	_PARAMIOC(10)
-typedef struct paramiocused {
+typedef sa_nracanaa paramiocused {
 	const param_t param;
 	bool ret;
 } paramiocused_t;
 
 #define PARAMIOCSETUSED	_PARAMIOC(11)
-typedef struct paramiocsetused {
+typedef sa_nracanaa paramiocsetused {
 	const param_t param;
 } paramiocsetused_t;
 
 #define PARAMIOCSETDEFAULT	_PARAMIOC(12)
-typedef struct paramiocsetdefault {
+typedef sa_nracanaa paramiocsetdefault {
 	const param_t param;
 	const void *val;
-	int ret;
+	පූර්ණ_සංඛ්‍යා ret;
 } paramiocsetdefault_t;
 
 #define PARAMIOCRESET	_PARAMIOC(13)
-typedef struct paramiocreset {
+typedef sa_nracanaa paramiocreset {
 	const param_t param;
 	const bool notification;
-	int ret;
+	පූර්ණ_සංඛ්‍යා ret;
 } paramiocreset_t;
 
 #define PARAMIOCRESETGROUP	_PARAMIOC(14)
-typedef enum {
+typedef ga_nanaa {
 	PARAM_RESET_ALL,
 	PARAM_RESET_EXCLUDES,
 	PARAM_RESET_SPECIFIC
 } param_reset_type_t;
 
-typedef struct paramiocresetgroup {
+typedef sa_nracanaa paramiocresetgroup {
 	param_reset_type_t type;
-	const char **group;
-	const int num_in_group;
+	const var_na **group;
+	const පූර්ණ_සංඛ්‍යා num_in_group;
 } paramiocresetgroup_t;
 
 #define PARAMIOCSAVEDEFAULT	_PARAMIOC(15)
-typedef struct paramiocsavedefault {
+typedef sa_nracanaa paramiocsavedefault {
 	bool blocking;
-	int ret;
+	පූර්ණ_සංඛ්‍යා ret;
 } paramiocsavedefault_t;
 
 #define PARAMIOCLOADDEFAULT	_PARAMIOC(16)
-typedef struct paramiocloaddefault {
-	int ret;
+typedef sa_nracanaa paramiocloaddefault {
+	පූර්ණ_සංඛ්‍යා ret;
 } paramiocloaddefault_t;
 
 
 #define PARAMIOCEXPORT	_PARAMIOC(17)
-typedef struct paramiocexport {
-	const char *filename;
-	int ret;
+typedef sa_nracanaa paramiocexport {
+	const var_na *filename;
+	පූර්ණ_සංඛ්‍යා ret;
 } paramiocexport_t;
 
 #define PARAMIOCHASH	_PARAMIOC(18)
-typedef struct paramiochash {
+typedef sa_nracanaa paramiochash {
 	uint32_t ret;
 } paramiochash_t;
 
-int param_ioctl(unsigned int cmd, unsigned long arg);
+පූර්ණ_සංඛ්‍යා param_ioctl(unsigned පූර්ණ_සංඛ්‍යා cmd, unsigned long arg);

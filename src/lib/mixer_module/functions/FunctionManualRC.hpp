@@ -48,14 +48,14 @@ public:
 		resetAllToDisarmedValue();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionManualRC(); }
+	static FunctionProviderBase *allocate(const Context &context) { ආපසු new FunctionManualRC(); }
 
 	void update() override
 	{
 		manual_control_setpoint_s manual_control_setpoint;
 
-		if (_topic.update(&manual_control_setpoint)) {
-			if (manual_control_setpoint.valid) {
+		නම් (_topic.update(&manual_control_setpoint)) {
+			නම් (manual_control_setpoint.valid) {
 				_data[0] = manual_control_setpoint.roll;
 				_data[1] = manual_control_setpoint.pitch;
 				_data[2] = manual_control_setpoint.throttle;
@@ -68,25 +68,25 @@ public:
 				_data[9] = manual_control_setpoint.aux5;
 				_data[10] = manual_control_setpoint.aux6;
 
-			} else {
+			} නැතහොත් {
 				resetAllToDisarmedValue();
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::RC_Roll]; }
+	float value(OutputFunction func) override { ආපසු _data[(පූර්ණ_සංඛ්‍යා)func - (පූර්ණ_සංඛ්‍යා)OutputFunction::RC_Roll]; }
 
 private:
-	static constexpr int num_data_points = 11;
+	static constexpr පූර්ණ_සංඛ්‍යා num_data_points = 11;
 
 	void resetAllToDisarmedValue()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
+		සඳහා (පූර්ණ_සංඛ්‍යා i = 0; i < num_data_points; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
+	static_assert(num_data_points == (පූර්ණ_සංඛ්‍යා)OutputFunction::RC_AUXMax - (පූර්ණ_සංඛ්‍යා)OutputFunction::RC_Roll + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _topic{ORB_ID(manual_control_setpoint)};

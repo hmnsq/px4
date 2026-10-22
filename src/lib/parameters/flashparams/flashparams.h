@@ -59,12 +59,12 @@ __BEGIN_DECLS
  */
 
 __EXPORT extern DynamicSparseLayer user_config;
-__EXPORT int param_set_external(param_t param, const void *val, bool mark_saved, bool notify_changes);
+__EXPORT පූර්ණ_සංඛ්‍යා param_set_external(param_t param, const void *val, bool mark_saved, bool notify_changes);
 __EXPORT void param_get_external(param_t param, void *val);
 
 /* The interface hooks to the Flash based storage. The caller is responsible for locking */
-__EXPORT int flash_param_save(param_filter_func filter);
-__EXPORT int flash_param_import();
+__EXPORT පූර්ණ_සංඛ්‍යා flash_param_save(param_filter_func filter);
+__EXPORT පූර්ණ_සංඛ්‍යා flash_param_import();
 
 __END_DECLS
 

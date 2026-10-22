@@ -48,7 +48,7 @@
 #include <stdbool.h>
 
 /** subset of the BSON node types we might care about */
-typedef enum {
+typedef ga_nanaa {
 	BSON_EOO       = 0,
 	BSON_DOUBLE    = 1,
 	BSON_STRING    = 2,
@@ -64,7 +64,7 @@ typedef enum {
 	BSON_INT64     = 18
 } bson_type_t;
 
-typedef enum bson_binary_subtype {
+typedef ga_nanaa bson_binary_subtype {
 	BSON_BIN_BINARY = 0,
 	BSON_BIN_USER = 128
 } bson_binary_subtype_t;
@@ -82,30 +82,30 @@ typedef enum bson_binary_subtype {
 /**
  * Node structure passed to the callback.
  */
-typedef struct bson_node_s {
-	char			name[BSON_MAXNAME];
+typedef sa_nracanaa bson_node_s {
+	var_na			name[BSON_MAXNAME];
 	bson_type_t		type;
 	bson_binary_subtype_t	subtype;
-	union {
-		double  d;   // bson type 1
+	sa_ngha {
+		dviguu_na  d;   // bson type 1
 		bool    b;   // bson type 8
 		int32_t i32; // bson type 16
 		int64_t i64; // bson type 18
 	};
 } *bson_node_t;
 
-typedef struct bson_decoder_s *bson_decoder_t;
+typedef sa_nracanaa bson_decoder_s *bson_decoder_t;
 
 /**
  * Node callback.
  *
  * The node callback function's return value is returned by bson_decoder_next.
  */
-typedef int	(* bson_decoder_callback)(bson_decoder_t decoder, bson_node_t node);
+typedef පූර්ණ_සංඛ්‍යා	(* bson_decoder_callback)(bson_decoder_t decoder, bson_node_t node);
 
-struct bson_decoder_s {
+sa_nracanaa bson_decoder_s {
 	/* file reader state */
-	int			fd{-1};
+	පූර්ණ_සංඛ්‍යා			fd{-1};
 
 	/* buffer reader state */
 	uint8_t			*buf{nullptr};
@@ -115,7 +115,7 @@ struct bson_decoder_s {
 	bool			dead{false};
 	bson_decoder_callback	callback;
 	unsigned		nesting{0};
-	struct bson_node_s	node {};
+	sa_nracanaa bson_node_s	node {};
 	int32_t			pending{0};
 
 	int32_t                 total_document_size{0};
@@ -137,7 +137,7 @@ struct bson_decoder_s {
  * @param callback		Callback to be invoked by bson_decoder_next
  * @return			Zero on success.
  */
-__EXPORT int bson_decoder_init_file(bson_decoder_t decoder, int fd, bson_decoder_callback callback);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_decoder_init_file(bson_decoder_t decoder, පූර්ණ_සංඛ්‍යා fd, bson_decoder_callback callback);
 
 /**
  * Initialise the decoder to read from a buffer in memory.
@@ -150,7 +150,7 @@ __EXPORT int bson_decoder_init_file(bson_decoder_t decoder, int fd, bson_decoder
  * @param callback		Callback to be invoked by bson_decoder_next
  * @return			Zero on success.
  */
-__EXPORT int bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_decoder_callback callback);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_decoder_callback callback);
 
 /**
  * Process the next node from the stream and invoke the callback.
@@ -159,14 +159,14 @@ __EXPORT int bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned b
  * @return			-1 if parsing encountered an error, 0 if the BSON stream has ended,
  *				otherwise the return value from the callback.
  */
-__EXPORT int bson_decoder_next(bson_decoder_t decoder);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_decoder_next(bson_decoder_t decoder);
 
 /**
  * Copy node data.
  *
  * @param decoder		Decoder state, must have been initialised with bson_decoder_init.
  */
-__EXPORT int bson_decoder_copy_data(bson_decoder_t decoder, void *buf);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_decoder_copy_data(bson_decoder_t decoder, void *buf);
 
 /**
  * Report copyable data size.
@@ -178,9 +178,9 @@ __EXPORT size_t bson_decoder_data_pending(bson_decoder_t decoder);
 /**
  * Encoder state structure.
  */
-typedef struct bson_encoder_s {
+typedef sa_nracanaa bson_encoder_s {
 	/* file writer state */
-	int		fd{-1};
+	පූර්ණ_සංඛ්‍යා		fd{-1};
 
 	/* buffer writer state */
 	uint8_t		*buf{nullptr};
@@ -201,7 +201,7 @@ typedef struct bson_encoder_s {
  * @param fd			File to write to.
  * @return			Zero on success.
  */
-__EXPORT int bson_encoder_init_file(bson_encoder_t encoder, int fd);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_encoder_init_file(bson_encoder_t encoder, පූර්ණ_සංඛ්‍යා fd);
 
 /**
  * Initialze the encoder for writing to a file.
@@ -212,7 +212,7 @@ __EXPORT int bson_encoder_init_file(bson_encoder_t encoder, int fd);
  * @param bufsize		Supplied buffer size
  * @return			Zero on success.
  */
-__EXPORT int bson_encoder_init_buf_file(bson_encoder_t encoder, int fd, void *buf, unsigned bufsize);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_encoder_init_buf_file(bson_encoder_t encoder, පූර්ණ_සංඛ්‍යා fd, void *buf, unsigned bufsize);
 
 /**
  * Initialze the encoder for writing to a buffer.
@@ -224,19 +224,19 @@ __EXPORT int bson_encoder_init_buf_file(bson_encoder_t encoder, int fd, void *bu
  *				the buffer is supplied, the size of the supplied buffer.
  * @return			Zero on success.
  */
-__EXPORT int bson_encoder_init_buf(bson_encoder_t encoder, void *buf, unsigned bufsize);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_encoder_init_buf(bson_encoder_t encoder, void *buf, unsigned bufsize);
 
 /**
  * Finalise the encoded stream.
  *
  * @param encoder		The encoder to finalise.
  */
-__EXPORT int bson_encoder_fini(bson_encoder_t encoder);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_encoder_fini(bson_encoder_t encoder);
 
 /**
  * Fetch the size of the encoded object; only valid for buffer operations.
  */
-__EXPORT int bson_encoder_buf_size(bson_encoder_t encoder);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_encoder_buf_size(bson_encoder_t encoder);
 
 /**
  * Get a pointer to the encoded object buffer.
@@ -253,7 +253,7 @@ __EXPORT void *bson_encoder_buf_data(bson_encoder_t encoder);
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_bool(bson_encoder_t encoder, const char *name, bool value);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_encoder_append_bool(bson_encoder_t encoder, const var_na *name, bool value);
 
 /**
  * Append an int32 to the encoded stream.
@@ -262,7 +262,7 @@ __EXPORT int bson_encoder_append_bool(bson_encoder_t encoder, const char *name, 
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_int32(bson_encoder_t encoder, const char *name, int32_t value);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_encoder_append_int32(bson_encoder_t encoder, const var_na *name, int32_t value);
 
 /**
  * Append an int64 to the encoded stream.
@@ -271,7 +271,7 @@ __EXPORT int bson_encoder_append_int32(bson_encoder_t encoder, const char *name,
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_int64(bson_encoder_t encoder, const char *name, int64_t value);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_encoder_append_int64(bson_encoder_t encoder, const var_na *name, int64_t value);
 
 /**
  * Append a double to the encoded stream
@@ -280,7 +280,7 @@ __EXPORT int bson_encoder_append_int64(bson_encoder_t encoder, const char *name,
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_double(bson_encoder_t encoder, const char *name, double value);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_encoder_append_double(bson_encoder_t encoder, const var_na *name, dviguu_na value);
 
 /**
  * Append a string to the encoded stream.
@@ -289,7 +289,7 @@ __EXPORT int bson_encoder_append_double(bson_encoder_t encoder, const char *name
  * @param name			Node name.
  * @param string		Nul-terminated C string.
  */
-__EXPORT int bson_encoder_append_string(bson_encoder_t encoder, const char *name, const char *string);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_encoder_append_string(bson_encoder_t encoder, const var_na *name, const var_na *string);
 
 /**
  * Append a binary blob to the encoded stream.
@@ -300,13 +300,13 @@ __EXPORT int bson_encoder_append_string(bson_encoder_t encoder, const char *name
  * @param size			Data size.
  * @param data			Buffer containing data to be encoded.
  */
-__EXPORT int bson_encoder_append_binary(bson_encoder_t encoder, const char *name, bson_binary_subtype_t subtype,
+__EXPORT පූර්ණ_සංඛ්‍යා bson_encoder_append_binary(bson_encoder_t encoder, const var_na *name, bson_binary_subtype_t subtype,
 					size_t size, const void *data);
 
 /**
  * Append a BSON null (type 0x0A). Name only; no value payload.
  */
-__EXPORT int bson_encoder_append_null(bson_encoder_t encoder, const char *name);
+__EXPORT පූර්ණ_සංඛ්‍යා bson_encoder_append_null(bson_encoder_t encoder, const var_na *name);
 
 
 #endif

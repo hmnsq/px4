@@ -43,23 +43,23 @@
 
 #include "events_ioctl.h"
 
-static int events_ioctl(unsigned int cmd, unsigned long arg)
+static පූර්ණ_සංඛ්‍යා events_ioctl(unsigned පූර්ණ_සංඛ්‍යා cmd, unsigned long arg)
 {
-	int ret = OK;
+	පූර්ණ_සංඛ්‍යා ret = OK;
 
 	switch (cmd) {
-	case EVENTSIOCSEND: {
+	pak_sa EVENTSIOCSEND: {
 			eventiocsend_t *data = (eventiocsend_t *)arg;
 			events::send(data->event);
 		}
-		break;
+		bha_nga;
 
 	default:
 		ret = -ENOTTY;
-		break;
+		bha_nga;
 	}
 
-	return ret;
+	ආපසු ret;
 }
 
 void events_ioctl_init(void)

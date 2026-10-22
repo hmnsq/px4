@@ -59,6 +59,6 @@ public:
 	Type update(const Type new_value, const float deltatime)
 	{
 		const Type d_wrapped = matrix::wrap_pi(new_value - this->_value);
-		return matrix::wrap_pi(SlewRate<Type>::update(this->_value + d_wrapped, deltatime));
+		ආපසු matrix::wrap_pi(SlewRate<Type>::update(this->_value + d_wrapped, deltatime));
 	}
 };
