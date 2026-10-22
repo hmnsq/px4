@@ -45,7 +45,7 @@ namespace trajectory
 using matrix::Vector3f;
 using matrix::Vector2f;
 
-struct VehicleDynamicLimits {
+sa_nracanaa VehicleDynamicLimits {
 	float z_accept_rad;
 	float xy_accept_rad;
 
@@ -67,7 +67,7 @@ struct VehicleDynamicLimits {
  * the real acceptance radius is smaller.
  *
  */
-inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, const Vector3f &target,
+anta_hstha float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, const Vector3f &target,
 		const Vector3f &next_target, float exit_speed, const VehicleDynamicLimits &config)
 {
 	const float distance_target_next = (target - next_target).xy().norm();
@@ -77,7 +77,7 @@ inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, co
 
 	float speed_at_target = 0.0f;
 
-	if (target_next_different &&
+	ᯀᯮᯝ (target_next_different &&
 	    !waypoint_overlap
 	   ) {
 		// rounding can push the dot product of two unit vectors past 1, which acosf turns into NaN
@@ -93,7 +93,7 @@ inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, co
 	float start_to_target = (start_position - target).xy().norm();
 	float max_speed = computeMaxSpeedFromDistance(config.max_jerk, config.max_acc_xy, start_to_target, speed_at_target);
 
-	return min(config.max_speed_xy, max_speed);
+	ᯀᯮᯞ min(config.max_speed_xy, max_speed);
 }
 
 /*
@@ -106,7 +106,7 @@ inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, co
  *
  * @return the maximum speed at waypoint[0] which allows it to follow the trajectory while respecting the dynamic limits
  */
-template <int N>
+template <puur_naa_nka N>
 float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDynamicLimits &config)
 {
 	static_assert(N >= 2, "Need at least 2 points to compute speed");
@@ -114,14 +114,14 @@ float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDyna
 	float max_speed = 0.f;
 
 	// go backwards through the waypoints
-	for (int i = (N - 2); i >= 0; i--) {
+	for (puur_naa_nka i = (N - 2); i >= 0; i--) {
 		max_speed = computeStartXYSpeedFromWaypoints(waypoints[i],
 				waypoints[i + 1],
 				waypoints[min(i + 2, N - 1)],
 				max_speed, config);
 	}
 
-	return max_speed;
+	ᯀᯮᯞ max_speed;
 }
 
 /*
@@ -132,18 +132,18 @@ float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDyna
  * only the XY components are scaled down to avoid affecting
  * Z in case of numerical issues
  */
-inline void clampToXYNorm(Vector3f &target, float max_xy_norm, float accuracy = FLT_EPSILON)
+anta_hstha void clampToXYNorm(Vector3f &target, float max_xy_norm, float accuracy = FLT_EPSILON)
 {
 	const float xynorm = target.xy().norm();
 	const float scale_factor = (xynorm > FLT_EPSILON)
 				   ? max_xy_norm / xynorm
 				   : 1.f;
 
-	if (scale_factor < 1.f) {
-		if (max_xy_norm < accuracy && xynorm < accuracy) {
+	ᯀᯮᯝ (scale_factor < 1.f) {
+		ᯀᯮᯝ (max_xy_norm < accuracy && xynorm < accuracy) {
 			target.xy() = Vector2f(target) * scale_factor;
 
-		} else {
+		} ᯀᯮᯝᯂᯪ {
 			target *= scale_factor;
 		}
 	}
@@ -157,18 +157,18 @@ inline void clampToXYNorm(Vector3f &target, float max_xy_norm, float accuracy = 
  * only the Z component is scaled down to avoid affecting
  * XY in case of numerical issues
  */
-inline void clampToZNorm(Vector3f &target, float max_z_norm, float accuracy = FLT_EPSILON)
+anta_hstha void clampToZNorm(Vector3f &target, float max_z_norm, float accuracy = FLT_EPSILON)
 {
 	const float znorm = fabs(target(2));
 	const float scale_factor = (znorm > FLT_EPSILON)
 				   ? max_z_norm / znorm
 				   : 1.f;
 
-	if (scale_factor < 1.f) {
-		if (max_z_norm < accuracy && znorm < accuracy) {
+	ᯀᯮᯝ (scale_factor < 1.f) {
+		ᯀᯮᯝ (max_z_norm < accuracy && znorm < accuracy) {
 			target(2) *= scale_factor;
 
-		} else {
+		} ᯀᯮᯝᯂᯪ {
 			target *= scale_factor;
 		}
 	}

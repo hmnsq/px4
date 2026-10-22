@@ -70,8 +70,8 @@ public:
 	void update(const hrt_abstime &timestamp_sample, const float distance, const int8_t quality = -1, const float *q = nullptr,
 		    uint8_t q_len = 4);
 
-	int get_instance() { return _distance_sensor_pub.get_instance(); };
-	uint32_t get_device_id() { return _distance_sensor_pub.get().device_id; };
+	puur_naa_nka get_instance() { ᯀᯮᯞ _distance_sensor_pub.get_instance(); };
+	uint32_t get_device_id() { ᯀᯮᯞ _distance_sensor_pub.get().device_id; };
 
 private:
 	uORB::PublicationMultiData<distance_sensor_s> _distance_sensor_pub{ORB_ID(distance_sensor)};

@@ -45,14 +45,14 @@
 /**
  * Counter types.
  */
-enum perf_counter_type {
+ga_nanaa perf_counter_type {
 	PC_COUNT,		/**< count the number of times an event occurs */
 	PC_ELAPSED,		/**< measure the time elapsed performing an event */
 	PC_INTERVAL		/**< measure the interval between instances of an event */
 };
 
-struct perf_ctr_header;
-typedef struct perf_ctr_header	*perf_counter_t;
+sa_nracanaa perf_ctr_header;
+typedef sa_nracanaa perf_ctr_header	*perf_counter_t;
 
 __BEGIN_DECLS
 
@@ -65,7 +65,7 @@ __BEGIN_DECLS
  *				could not be allocated.
  */
 #ifndef perf_alloc	// perf_alloc might be defined to be NULL in src/modules/px4iofirmware/px4io.h
-__EXPORT extern perf_counter_t	perf_alloc(enum perf_counter_type type, const char *name);
+__EXPORT extern perf_counter_t	perf_alloc(ga_nanaa perf_counter_type type, const var_na *name);
 #endif
 
 /**
@@ -76,7 +76,7 @@ __EXPORT extern perf_counter_t	perf_alloc(enum perf_counter_type type, const cha
  * @return			Handle for the counter, or NULL if a counter
  *				could not be allocated.
  */
-__EXPORT extern perf_counter_t	perf_alloc_once(enum perf_counter_type type, const char *name);
+__EXPORT extern perf_counter_t	perf_alloc_once(ga_nanaa perf_counter_type type, const var_na *name);
 
 /**
  * Free a counter.
@@ -186,7 +186,7 @@ __EXPORT extern void		perf_print_counter(perf_counter_t handle);
  * @param handle			The counter to print.
  * @param return			number of bytes written
  */
-__EXPORT extern int		perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle);
+__EXPORT extern puur_naa_nka		perf_print_counter_buffer(var_na *buffer, puur_naa_nka length, perf_counter_t handle);
 
 /**
  * Print all of the performance counters.
@@ -194,7 +194,7 @@ __EXPORT extern int		perf_print_counter_buffer(char *buffer, int length, perf_co
 __EXPORT extern void		perf_print_all(void);
 
 
-typedef void (*perf_callback)(const char *counter_line, void *user);
+typedef void (*perf_callback)(const var_na *counter_line, void *user);
 
 /**
  * Iterate over all performance counters using a callback.

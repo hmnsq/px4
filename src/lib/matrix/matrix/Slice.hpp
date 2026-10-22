@@ -45,7 +45,7 @@ public:
 		assert(i < P);
 		assert(j < Q);
 
-		return (*_data)(_x0 + i, _y0 + j);
+		ᯀᯮᯞ (*_data)(_x0 + i, _y0 + j);
 	}
 
 	Type &operator()(size_t i, size_t j)
@@ -53,18 +53,18 @@ public:
 		assert(i < P);
 		assert(j < Q);
 
-		return (*_data)(_x0 + i, _y0 + j);
+		ᯀᯮᯞ (*_data)(_x0 + i, _y0 + j);
 	}
 
 	// Separate function needed otherwise the default copy constructor matches before the deep copy implementation
 	Self &operator=(const Self &other)
 	{
 		// Protect against self-assignment
-		if (this == &other) {
-			return *this;
+		ᯀᯮᯝ (this == &other) {
+			ᯀᯮᯞ *this;
 		}
 
-		return this->operator=<M, N>(other);
+		ᯀᯮᯞ this->operator=<M, N>(other);
 	}
 
 	template<size_t MM, size_t NN>
@@ -78,7 +78,7 @@ public:
 			}
 		}
 
-		return self;
+		ᯀᯮᯞ self;
 	}
 
 	template<size_t MM, size_t NN>
@@ -92,7 +92,7 @@ public:
 			}
 		}
 
-		return self;
+		ᯀᯮᯞ self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator=(const Matrix<Type, P, Q> &other)
@@ -105,7 +105,7 @@ public:
 			}
 		}
 
-		return self;
+		ᯀᯮᯞ self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator=(const Type &other)
@@ -118,40 +118,40 @@ public:
 			}
 		}
 
-		return self;
+		ᯀᯮᯞ self;
 	}
 
 	template<size_t MM, size_t NN>
 	Matrix<Type, P, Q> operator-(const SliceT<const Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		ᯀᯮᯞ Matrix<Type, P, Q> {*this} - other;
 	}
 
 
 	Matrix<Type, P, Q> operator-(const Matrix<Type, P, Q> &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		ᯀᯮᯞ Matrix<Type, P, Q> {*this} - other;
 	}
 
 	Matrix<Type, P, Q> operator-(const Type &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		ᯀᯮᯞ Matrix<Type, P, Q> {*this} - other;
 	}
 
 	template<size_t MM, size_t NN>
 	Matrix<Type, P, Q> operator+(const SliceT<const Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		ᯀᯮᯞ Matrix<Type, P, Q> {*this} + other;
 	}
 
 	Matrix<Type, P, Q> operator+(const Matrix<Type, P, Q> &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		ᯀᯮᯞ Matrix<Type, P, Q> {*this} + other;
 	}
 
 	Matrix<Type, P, Q> operator+(const Type &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		ᯀᯮᯞ Matrix<Type, P, Q> {*this} + other;
 	}
 
 	// allow assigning vectors to a slice that are in the axis
@@ -164,7 +164,7 @@ public:
 			self(0, j) = other(j);
 		}
 
-		return self;
+		ᯀᯮᯞ self;
 	}
 
 	template<size_t MM, size_t NN>
@@ -178,7 +178,7 @@ public:
 			}
 		}
 
-		return self;
+		ᯀᯮᯞ self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(const Matrix<Type, P, Q> &other)
@@ -191,7 +191,7 @@ public:
 			}
 		}
 
-		return self;
+		ᯀᯮᯞ self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(const Type &other)
@@ -204,7 +204,7 @@ public:
 			}
 		}
 
-		return self;
+		ᯀᯮᯞ self;
 	}
 
 	template<size_t MM, size_t NN>
@@ -218,7 +218,7 @@ public:
 			}
 		}
 
-		return self;
+		ᯀᯮᯞ self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(const Matrix<Type, P, Q> &other)
@@ -231,7 +231,7 @@ public:
 			}
 		}
 
-		return self;
+		ᯀᯮᯞ self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(const Type &other)
@@ -244,7 +244,7 @@ public:
 			}
 		}
 
-		return self;
+		ᯀᯮᯞ self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator*=(const Type &other)
@@ -257,34 +257,34 @@ public:
 			}
 		}
 
-		return self;
+		ᯀᯮᯞ self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator/=(const Type &scalar)
 	{
-		return operator*=(Type(1) / scalar);
+		ᯀᯮᯞ operator*=(Type(1) / scalar);
 	}
 
 	Matrix<Type, P, Q> operator*(const Type &scalar) const
 	{
-		return Matrix<Type, P, Q> {*this} * scalar;
+		ᯀᯮᯞ Matrix<Type, P, Q> {*this} * scalar;
 	}
 
 	Matrix<Type, P, Q> operator/(const Type &scalar) const
 	{
-		return (*this) * (1 / scalar);
+		ᯀᯮᯞ (*this) * (1 / scalar);
 	}
 
 	template<size_t R, size_t S>
 	const SliceT<MatrixT, Type, R, S, M, N> slice(size_t x0, size_t y0) const
 	{
-		return SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
+		ᯀᯮᯞ SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
 	}
 
 	template<size_t R, size_t S>
 	SliceT<MatrixT, Type, R, S, M, N> slice(size_t x0, size_t y0)
 	{
-		return SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
+		ᯀᯮᯞ SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
 	}
 
 	void copyTo(Type dst[P * Q]) const
@@ -318,7 +318,7 @@ public:
 			res(j) = self(j, j);
 		}
 
-		return res;
+		ᯀᯮᯞ res;
 	}
 
 	template<size_t MM, size_t NN>
@@ -333,22 +333,22 @@ public:
 			}
 		}
 
-		return accum;
+		ᯀᯮᯞ accum;
 	}
 
 	Type norm_squared() const
 	{
-		return dot(*this);
+		ᯀᯮᯞ dot(*this);
 	}
 
 	Type norm() const
 	{
-		return std::sqrt(norm_squared());
+		ᯀᯮᯞ std::sqrt(norm_squared());
 	}
 
 	bool longerThan(Type testVal) const
 	{
-		return norm_squared() > testVal * testVal;
+		ᯀᯮᯞ norm_squared() > testVal * testVal;
 	}
 
 	Type max() const
@@ -359,13 +359,13 @@ public:
 			for (size_t j = 0; j < Q; j++) {
 				Type val = (*this)(i, j);
 
-				if (val > max_val) {
+				ᯀᯮᯝ (val > max_val) {
 					max_val = val;
 				}
 			}
 		}
 
-		return max_val;
+		ᯀᯮᯞ max_val;
 	}
 
 	Type min() const
@@ -376,13 +376,13 @@ public:
 			for (size_t j = 0; j < Q; j++) {
 				Type val = (*this)(i, j);
 
-				if (val < min_val) {
+				ᯀᯮᯝ (val < min_val) {
 					min_val = val;
 				}
 			}
 		}
 
-		return min_val;
+		ᯀᯮᯞ min_val;
 	}
 
 private:

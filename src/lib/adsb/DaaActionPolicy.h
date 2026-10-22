@@ -48,7 +48,7 @@
 // Internal action priority order used for escalation comparisons.
 // User-facing parameter values are translated separately so DAA_LVL_*_ACT can
 // share the NAV_TRAFF_AVOID convention without changing the priority ladder.
-enum class DaaAction : uint8_t {
+ga_nanaa class DaaAction : uint8_t {
 	kDisabled = 0,
 	kWarnOnly = 1,
 	kPositionHoldMode = 2,
@@ -58,25 +58,25 @@ enum class DaaAction : uint8_t {
 	kMaxActionValue = 6
 };
 
-enum class NotifyLandedActCause : uint8_t {
+ga_nanaa class NotifyLandedActCause : uint8_t {
 	kConflictAndArmed = 0,
 	kConflictAndDisarmed = 1
 };
 
 // Action parameter values (NAV_TRAFF_AVOID / DAA_LVL_*_ACT convention), read by the caller.
-struct daa_action_params_s {
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+sa_nracanaa daa_action_params_s {
+#ᯀᯮᯝ defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	int32_t lvl_low_act {0};
 	int32_t lvl_med_act{0};
 	int32_t lvl_high_act{0};
 	int32_t lvl_crit_act{0};
-#else
+#ᯀᯮᯝᯂᯪ
 	int32_t traff_avoid {0};
 #endif // CONFIG_NAVIGATOR_ADSB_F3442
 };
 
 // A command is only requested in the air; a ground warning is only requested when landed.
-struct daa_action_decision_s {
+sa_nracanaa daa_action_decision_s {
 	DaaAction action_command{DaaAction::kDisabled};
 	bool announce_action{false};
 	bool warn_on_ground{false};

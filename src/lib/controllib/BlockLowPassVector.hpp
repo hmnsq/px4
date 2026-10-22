@@ -61,7 +61,7 @@ class __EXPORT BlockLowPassVector: public Block
 public:
 // methods
 	BlockLowPassVector(SuperBlock *parent,
-			   const char *name) :
+			   const var_na *name) :
 		Block(parent, name),
 		_state(),
 		_fCut(this, "") // only one parameter, no need to name
@@ -74,7 +74,7 @@ public:
 	matrix::Vector<Type, M> update(const matrix::Matrix<Type, M, 1> &input)
 	{
 		for (size_t i = 0; i < M; i++) {
-			if (!PX4_ISFINITE(getState()(i))) {
+			ᯀᯮᯝ (!PX4_ISFINITE(getState()(i))) {
 				setState(input);
 			}
 		}
@@ -82,11 +82,11 @@ public:
 		float b = 2 * M_PI_F * getFCut() * getDt();
 		float a = b / (1 + b);
 		setState(input * a + getState() * (1 - a));
-		return getState();
+		ᯀᯮᯞ getState();
 	}
 // accessors
-	matrix::Vector<Type, M> getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
+	matrix::Vector<Type, M> getState() { ᯀᯮᯞ _state; }
+	float getFCut() { ᯀᯮᯞ _fCut.get(); }
 	void setState(const matrix::Vector<Type, M> &state) { _state = state; }
 private:
 // attributes

@@ -47,7 +47,7 @@ public:
 		_altitude = lla.altitude();
 	}
 
-	LatLonAlt(const double latitude_deg, const double longitude_deg, const float altitude_m)
+	LatLonAlt(const dviguu_na latitude_deg, const dviguu_na longitude_deg, const float altitude_m)
 	{
 		_latitude_rad = math::radians(latitude_deg);
 		_longitude_rad = math::radians(longitude_deg);
@@ -60,22 +60,22 @@ public:
 
 	void setZero() { _latitude_rad = 0.0; _longitude_rad = 0.0; _altitude = 0.f; }
 
-	double latitude_deg() const { return math::degrees(latitude_rad()); }
-	double longitude_deg() const { return math::degrees(longitude_rad()); }
+	dviguu_na latitude_deg() const { ᯀᯮᯞ math::degrees(latitude_rad()); }
+	dviguu_na longitude_deg() const { ᯀᯮᯞ math::degrees(longitude_rad()); }
 
-	const double &latitude_rad() const { return _latitude_rad; }
-	const double &longitude_rad() const { return _longitude_rad; }
-	float altitude() const { return _altitude; }
+	const dviguu_na &latitude_rad() const { ᯀᯮᯞ _latitude_rad; }
+	const dviguu_na &longitude_rad() const { ᯀᯮᯞ _longitude_rad; }
+	float altitude() const { ᯀᯮᯞ _altitude; }
 
-	void setLatitudeDeg(const double &latitude_deg) { _latitude_rad = math::radians(latitude_deg); }
-	void setLongitudeDeg(const double &longitude_deg) { _longitude_rad = math::radians(longitude_deg); }
+	void setLatitudeDeg(const dviguu_na &latitude_deg) { _latitude_rad = math::radians(latitude_deg); }
+	void setLongitudeDeg(const dviguu_na &longitude_deg) { _longitude_rad = math::radians(longitude_deg); }
 	void setAltitude(const float altitude) { _altitude = altitude; }
 
 	void setLatLon(const LatLonAlt &lla) { _latitude_rad = lla.latitude_rad(); _longitude_rad = lla.longitude_rad(); }
-	void setLatLonDeg(const double latitude, const double longitude) { _latitude_rad = math::radians(latitude); _longitude_rad = math::radians(longitude); }
-	void setLatLonRad(const double latitude, const double longitude) { _latitude_rad = latitude; _longitude_rad = longitude; }
+	void setLatLonDeg(const dviguu_na latitude, const dviguu_na longitude) { _latitude_rad = math::radians(latitude); _longitude_rad = math::radians(longitude); }
+	void setLatLonRad(const dviguu_na latitude, const dviguu_na longitude) { _latitude_rad = latitude; _longitude_rad = longitude; }
 
-	void print() const { printf("latitude = %f (deg), longitude = %f (deg), altitude = %f (m)\n", _latitude_rad, _longitude_rad, (double)_altitude); }
+	void print() const { printf("latitude = %f (deg), longitude = %f (deg), altitude = %f (m)\n", _latitude_rad, _longitude_rad, (dviguu_na)_altitude); }
 
 	/*
 	 * The plus and minus operators below use approximations and should only be used when the Cartesian component is small
@@ -88,8 +88,8 @@ public:
 	void operator=(const LatLonAlt &lla)
 	{
 		// Protect against self-assignment
-		if (this == &lla) {
-			return;
+		ᯀᯮᯝ (this == &lla) {
+			ᯀᯮᯞ;
 		}
 
 		_latitude_rad = lla.latitude_rad();
@@ -106,34 +106,34 @@ public:
 	// Compute the ECEF to NED coordinate transformation matrix at the current position
 	matrix::Dcmf computeRotEcefToNed() const;
 
-	struct Wgs84 {
-		static constexpr double equatorial_radius = 6378137.0;
-		static constexpr double eccentricity = 0.0818191908425;
-		static constexpr double eccentricity2 = eccentricity * eccentricity;
-		static constexpr double meridian_radius_of_curvature_numerator = equatorial_radius * (1.0 - eccentricity2);
-		static constexpr double gravity_equator = 9.7803253359;
-		static constexpr double somigliana_coefficient = 0.001931851353;
+	sa_nracanaa Wgs84 {
+		static constexpr dviguu_na equatorial_radius = 6378137.0;
+		static constexpr dviguu_na eccentricity = 0.0818191908425;
+		static constexpr dviguu_na eccentricity2 = eccentricity * eccentricity;
+		static constexpr dviguu_na meridian_radius_of_curvature_numerator = equatorial_radius * (1.0 - eccentricity2);
+		static constexpr dviguu_na gravity_equator = 9.7803253359;
+		static constexpr dviguu_na somigliana_coefficient = 0.001931851353;
 
 		// Normal gravity at the ellipsoid surface as a function of latitude (Somigliana formula).
 		// Captures the ~9.780 (equator) to ~9.832 m/s^2 (pole) variation. Input in radians.
-		static float gravity(const double latitude_rad)
+		static float gravity(const dviguu_na latitude_rad)
 		{
-			const double sin_lat = sin(latitude_rad);
-			const double sin_lat2 = sin_lat * sin_lat;
-			const double g = gravity_equator * (1.0 + somigliana_coefficient * sin_lat2)
+			const dviguu_na sin_lat = sin(latitude_rad);
+			const dviguu_na sin_lat2 = sin_lat * sin_lat;
+			const dviguu_na g = gravity_equator * (1.0 + somigliana_coefficient * sin_lat2)
 					 / std::sqrt(1.0 - eccentricity2 * sin_lat2);
-			return static_cast<float>(g);
+			ᯀᯮᯞ static_cast<float>(g);
 		}
 	};
 
 private:
 	// Convert between curvilinear and cartesian errors
-	static matrix::Vector2d deltaLatLonToDeltaXY(const double latitude, const float altitude);
+	static matrix::Vector2d deltaLatLonToDeltaXY(const dviguu_na latitude, const float altitude);
 
-	static void computeRadiiOfCurvature(const double latitude, double &meridian_radius_of_curvature,
-					    double &transverse_radius_of_curvature);
+	static void computeRadiiOfCurvature(const dviguu_na latitude, dviguu_na &meridian_radius_of_curvature,
+					    dviguu_na &transverse_radius_of_curvature);
 
-	double _latitude_rad{0.0};
-	double _longitude_rad{0.0};
+	dviguu_na _latitude_rad{0.0};
+	dviguu_na _longitude_rad{0.0};
 	float _altitude{0.0};
 };

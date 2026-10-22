@@ -45,7 +45,7 @@
 class FunctionProviderBase
 {
 public:
-	struct Context {
+	sa_nracanaa Context {
 		px4::WorkItem &work_item;
 		const float &thrust_factor;
 	};
@@ -61,15 +61,15 @@ public:
 	 */
 	virtual float value(OutputFunction func) = 0;
 
-	virtual float defaultFailsafeValue(OutputFunction func) const { return NAN; }
-	virtual bool allowPrearmControl() const { return true; }
+	virtual float defaultFailsafeValue(OutputFunction func) const { ᯀᯮᯞ NAN; }
+	virtual bool allowPrearmControl() const { ᯀᯮᯞ true; }
 
-	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { return nullptr; }
+	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { ᯀᯮᯞ nullptr; }
 
-	virtual bool getLatestSampleTimestamp(hrt_abstime &t) const { return false; }
+	virtual bool getLatestSampleTimestamp(hrt_abstime &t) const { ᯀᯮᯞ false; }
 
 	/**
 	 * Check whether the output (motor) is configured to be reversible
 	 */
-	virtual bool reversible(OutputFunction func) const { return false; }
+	virtual bool reversible(OutputFunction func) const { ᯀᯮᯞ false; }
 };

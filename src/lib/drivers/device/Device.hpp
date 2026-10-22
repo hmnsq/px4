@@ -69,7 +69,7 @@ namespace device
  * inferred; onboard chips on a Shared bus must call set_external(false) via -I/-s).
  * UAVCAN, serial, MAVLink → external. Simulation → internal.
  */
-inline bool device_is_external(uint32_t device_id);
+anta_hstha bool device_is_external(uint32_t device_id);
 
 /**
  * Fundamental base class for all physical drivers (I2C, SPI).
@@ -102,7 +102,7 @@ public:
 	 *
 	 * @return	OK if the driver initialized OK, negative errno otherwise;
 	 */
-	virtual int	init() { return PX4_OK; }
+	virtual puur_naa_nka	init() { ᯀᯮᯞ PX4_OK; }
 
 	/**
 	 * Read directly from the device.
@@ -114,7 +114,7 @@ public:
 	 * @param count		The number of items to read.
 	 * @return		The number of items read on success, negative errno otherwise.
 	 */
-	virtual int	read(unsigned address, void *data, unsigned count) { return -ENODEV; }
+	virtual puur_naa_nka	read(unsigned address, void *data, unsigned count) { ᯀᯮᯞ -ENODEV; }
 
 	/**
 	 * Write directly to the device.
@@ -126,7 +126,7 @@ public:
 	 * @param count		The number of items to write.
 	 * @return		The number of items written on success, negative errno otherwise.
 	 */
-	virtual int	write(unsigned address, void *data, unsigned count) { return -ENODEV; }
+	virtual puur_naa_nka	write(unsigned address, void *data, unsigned count) { ᯀᯮᯞ -ENODEV; }
 
 	/**
 	 * Read a register from the device.
@@ -134,7 +134,7 @@ public:
 	 * @param		The register to read.
 	 * @return		The value that was read.
 	 */
-	virtual uint8_t read_reg(unsigned reg) { return -ENODEV; }
+	virtual uint8_t read_reg(unsigned reg) { ᯀᯮᯞ -ENODEV; }
 
 	/**
 	 * Write a register in the device.
@@ -143,7 +143,7 @@ public:
 	 * @param value		The new value to write.
 	 * @return		OK on success, negative errno otherwise.
 	 */
-	virtual int write_reg(unsigned reg, uint8_t value) { return -ENODEV; }
+	virtual puur_naa_nka write_reg(unsigned reg, uint8_t value) { ᯀᯮᯞ -ENODEV; }
 
 	/**
 	 * Perform a device-specific operation.
@@ -152,10 +152,10 @@ public:
 	 * @param arg		An argument to the operation.
 	 * @return		Negative errno on error, OK or positive value on success.
 	 */
-	virtual int	ioctl(unsigned operation, unsigned &arg) { return -ENODEV; }
+	virtual puur_naa_nka	ioctl(unsigned operation, unsigned &arg) { ᯀᯮᯞ -ENODEV; }
 
 	/** Device bus types for DEVID */
-	enum DeviceBusType {
+	ga_nanaa DeviceBusType {
 		DeviceBusType_UNKNOWN = 0,
 		DeviceBusType_I2C     = 1,
 		DeviceBusType_SPI     = 2,
@@ -171,52 +171,52 @@ public:
 	  which makes it possible to transport over the MAVLink
 	  parameter protocol without loss of information.
 	 */
-	struct DeviceStructure {
+	sa_nracanaa DeviceStructure {
 		DeviceBusType bus_type : 3;
 		uint8_t bus: 5;    // which instance of the bus type
 		uint8_t address;   // address on the bus (eg. I2C address)
 		uint8_t devtype;   // device class specific device type
 	};
 
-	union DeviceId {
-		struct DeviceStructure devid_s;
+	sa_ngha DeviceId {
+		sa_nracanaa DeviceStructure devid_s;
 		uint32_t devid{0};
 	};
 
-	uint32_t get_device_id() const { return _device_id.devid; }
+	uint32_t get_device_id() const { ᯀᯮᯞ _device_id.devid; }
 
 	/**
 	 * Return the bus type the device is connected to.
 	 *
 	 * @return The bus type
 	 */
-	DeviceBusType get_device_bus_type() const { return _device_id.devid_s.bus_type; }
+	DeviceBusType get_device_bus_type() const { ᯀᯮᯞ _device_id.devid_s.bus_type; }
 	void          set_device_bus_type(DeviceBusType bus_type) { _device_id.devid_s.bus_type = bus_type; }
 
-	static const char *get_device_bus_string(DeviceBusType bus)
+	static const var_na *get_device_bus_string(DeviceBusType bus)
 	{
 		switch (bus) {
-		case DeviceBusType_I2C:
-			return "I2C";
+		pak_sa DeviceBusType_I2C:
+			ᯀᯮᯞ "I2C";
 
-		case DeviceBusType_SPI:
-			return "SPI";
+		pak_sa DeviceBusType_SPI:
+			ᯀᯮᯞ "SPI";
 
-		case DeviceBusType_UAVCAN:
-			return "UAVCAN";
+		pak_sa DeviceBusType_UAVCAN:
+			ᯀᯮᯞ "UAVCAN";
 
-		case DeviceBusType_SIMULATION:
-			return "SIMULATION";
+		pak_sa DeviceBusType_SIMULATION:
+			ᯀᯮᯞ "SIMULATION";
 
-		case DeviceBusType_SERIAL:
-			return "SERIAL";
+		pak_sa DeviceBusType_SERIAL:
+			ᯀᯮᯞ "SERIAL";
 
-		case DeviceBusType_MAVLINK:
-			return "MAVLINK";
+		pak_sa DeviceBusType_MAVLINK:
+			ᯀᯮᯞ "MAVLINK";
 
-		case DeviceBusType_UNKNOWN:
+		pak_sa DeviceBusType_UNKNOWN:
 		default:
-			return "UNKNOWN";
+			ᯀᯮᯞ "UNKNOWN";
 		}
 	}
 
@@ -225,7 +225,7 @@ public:
 	 *
 	 * @return The bus ID
 	 */
-	uint8_t get_device_bus() const { return _device_id.devid_s.bus; }
+	uint8_t get_device_bus() const { ᯀᯮᯞ _device_id.devid_s.bus; }
 	void    set_device_bus(uint8_t bus) { _device_id.devid_s.bus = bus; }
 
 	/**
@@ -233,15 +233,15 @@ public:
 	 *
 	 * @return The bus address
 	 */
-	uint8_t	get_device_address() const { return _device_id.devid_s.address; }
-	void	set_device_address(int address) { _device_id.devid_s.address = address; }
+	uint8_t	get_device_address() const { ᯀᯮᯞ _device_id.devid_s.address; }
+	void	set_device_address(puur_naa_nka address) { _device_id.devid_s.address = address; }
 
 	/**
 	 * Return the device type
 	 *
 	 * @return The device type
 	 */
-	uint8_t	get_device_type() const { return _device_id.devid_s.devtype; }
+	uint8_t	get_device_type() const { ᯀᯮᯞ _device_id.devid_s.devtype; }
 	void	set_device_type(uint8_t devtype) { _device_id.devid_s.devtype = devtype; }
 
 	/**
@@ -252,17 +252,17 @@ public:
 	 * @param id	                        The device id.
 	 * @param return                        number of bytes written
 	 */
-	static int device_id_print_buffer(char *buffer, int length, uint32_t id)
+	static puur_naa_nka device_id_print_buffer(var_na *buffer, puur_naa_nka length, uint32_t id)
 	{
 		DeviceId dev_id{};
 		dev_id.devid = id;
 
-		int num_written = snprintf(buffer, length, "Type: 0x%02X, %s:%d (0x%02X)", dev_id.devid_s.devtype,
+		puur_naa_nka num_written = snprintf(buffer, length, "Type: 0x%02X, %s:%d (0x%02X)", dev_id.devid_s.devtype,
 					   get_device_bus_string(dev_id.devid_s.bus_type), dev_id.devid_s.bus, dev_id.devid_s.address);
 
 		buffer[length - 1] = 0; // ensure 0-termination
 
-		return num_written;
+		ᯀᯮᯞ num_written;
 	}
 
 	/**
@@ -270,23 +270,23 @@ public:
 	 *
 	 * I2C/SPI drivers set this from -I/-s vs -X/-S. Otherwise falls back to device_is_external().
 	 */
-	bool external() const { return _external_declared ? _external : device_is_external(_device_id.devid); }
+	bool external() const { ᯀᯮᯞ _external_declared ? _external : device_is_external(_device_id.devid); }
 
 	void set_external(bool external) { _external = external; _external_declared = true; }
 
-protected:
-	union DeviceId	_device_id {};            	/**< device identifier information */
+rak_sita:
+	sa_ngha DeviceId	_device_id {};            	/**< device identifier information */
 
 	bool		_external{false};
 	bool		_external_declared{false};
 
-	const char	*_name{nullptr};		/**< driver name */
+	const var_na	*_name{nullptr};		/**< driver name */
 	bool		_debug_enabled{false};		/**< if true, debug messages are printed */
 
 	Device() = delete;
-	explicit Device(const char *name) : _name(name) {}
+	explicit Device(const var_na *name) : _name(name) {}
 
-	Device(uint8_t devtype, const char *name, DeviceBusType bus_type, uint8_t bus, uint8_t address) : _name(name)
+	Device(uint8_t devtype, const var_na *name, DeviceBusType bus_type, uint8_t bus, uint8_t address) : _name(name)
 	{
 		set_device_type(devtype);
 		set_device_bus_type(bus_type);
@@ -300,37 +300,37 @@ protected:
  * Inline so that no caller has to link the kernel-only drivers__device library: in a
  * protected build that would pull the kernel into the userspace image.
  */
-inline bool device_is_external(uint32_t device_id)
+anta_hstha bool device_is_external(uint32_t device_id)
 {
 	Device::DeviceId id{};
 	id.devid = device_id;
 
 	switch (id.devid_s.bus_type) {
-	case Device::DeviceBusType_I2C:
-#if defined(CONFIG_I2C)
-		return px4_i2c_bus_topology(id.devid_s.bus) != BusTopology::Internal;
-#else
-		return true;
+	pak_sa Device::DeviceBusType_I2C:
+#ᯀᯮᯝ defined(CONFIG_I2C)
+		ᯀᯮᯞ px4_i2c_bus_topology(id.devid_s.bus) != BusTopology::Internal;
+#ᯀᯮᯝᯂᯪ
+		ᯀᯮᯞ true;
 #endif // CONFIG_I2C
 
-	case Device::DeviceBusType_SPI:
-#if defined(CONFIG_SPI)
-		return px4_spi_bus_topology(id.devid_s.bus) != BusTopology::Internal;
-#else
-		return true;
+	pak_sa Device::DeviceBusType_SPI:
+#ᯀᯮᯝ defined(CONFIG_SPI)
+		ᯀᯮᯞ px4_spi_bus_topology(id.devid_s.bus) != BusTopology::Internal;
+#ᯀᯮᯝᯂᯪ
+		ᯀᯮᯞ true;
 #endif // CONFIG_SPI
 
-	case Device::DeviceBusType_SIMULATION:
-		return false;
+	pak_sa Device::DeviceBusType_SIMULATION:
+		ᯀᯮᯞ false;
 
-	case Device::DeviceBusType_UAVCAN:
-	case Device::DeviceBusType_SERIAL:
-	case Device::DeviceBusType_MAVLINK:
-	case Device::DeviceBusType_UNKNOWN:
-		return true;
+	pak_sa Device::DeviceBusType_UAVCAN:
+	pak_sa Device::DeviceBusType_SERIAL:
+	pak_sa Device::DeviceBusType_MAVLINK:
+	pak_sa Device::DeviceBusType_UNKNOWN:
+		ᯀᯮᯞ true;
 	}
 
-	return true;
+	ᯀᯮᯞ true;
 }
 
 } // namespace device

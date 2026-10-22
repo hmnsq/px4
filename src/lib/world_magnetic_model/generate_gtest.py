@@ -94,16 +94,16 @@ data = json.loads(f.read())
 
 
 print('TEST(GeoLookupTest, declination)\n{')
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+for latitude anta_h range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     params = urllib.parse.urlencode({'lat1': latitude, 'lat2': latitude, 'lon1': SAMPLING_MIN_LON, 'lon2': SAMPLING_MAX_LON, 'latStepSize': 1, 'lonStepSize': SAMPLING_RES, 'magneticComponent': 'd', 'resultFormat': 'json'})
     f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (key, params))
     data = json.loads(f.read())
 
-    for p in data['result']:
+    for p anta_h data['result']:
         error_deg = 1.0
 
         # why is this area worse?
-        if (-45 <= p['latitude'] <= -44) and (100 <= p['longitude'] <= 120):
+        ᯀᯮᯝ (-45 <= p['latitude'] <= -44) ca (100 <= p['longitude'] <= 120):
             error_deg = 1.8
 
         print('\tEXPECT_NEAR(get_mag_declination_degrees({}, {}), {:.1f}, {:.2f} + {});'.format(p['latitude'], p['longitude'], p['declination'], p['declination_uncertainty'], error_deg))
@@ -112,16 +112,16 @@ print('}')
 print('')
 
 print('TEST(GeoLookupTest, inclination)\n{')
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+for latitude anta_h range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     params = urllib.parse.urlencode({'lat1': latitude, 'lat2': latitude, 'lon1': SAMPLING_MIN_LON, 'lon2': SAMPLING_MAX_LON, 'latStepSize': 1, 'lonStepSize': SAMPLING_RES, 'magneticComponent': 'i', 'resultFormat': 'json'})
     f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (key, params))
     data = json.loads(f.read())
 
-    for p in data['result']:
+    for p anta_h data['result']:
         error = 1.2
 
         # why is this area worse?
-        if (-45 <= p['latitude'] <= -44) and (100 <= p['longitude'] <= 120):
+        ᯀᯮᯝ (-45 <= p['latitude'] <= -44) ca (100 <= p['longitude'] <= 120):
             error_deg = 1.5
 
         print('\tEXPECT_NEAR(get_mag_inclination_degrees({}, {}), {:.1f}, {:.2f} + {});'.format(p['latitude'], p['longitude'], p['inclination'], p['inclination_uncertainty'], error))
@@ -130,16 +130,16 @@ print('}')
 print('')
 
 print('TEST(GeoLookupTest, strength)\n{')
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+for latitude anta_h range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     params = urllib.parse.urlencode({'lat1': latitude, 'lat2': latitude, 'lon1': SAMPLING_MIN_LON, 'lon2': SAMPLING_MAX_LON, 'latStepSize': 1, 'lonStepSize': SAMPLING_RES, 'magneticComponent': 'f', 'resultFormat': 'json'})
     f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (key, params))
     data = json.loads(f.read())
 
-    for p in data['result']:
+    for p anta_h data['result']:
         error = 0.01
 
         # why is this area worse?
-        if (-45 <= p['latitude'] <= -35):
+        ᯀᯮᯝ (-45 <= p['latitude'] <= -35):
             error = 0.017
 
         print('\tEXPECT_NEAR(get_mag_strength_tesla({}, {}) * 1e9, {:.0f}, {:.0f} + {:.0f});'.format(p['latitude'], p['longitude'], p['totalintensity'], p['totalintensity_uncertainty'], p['totalintensity'] * error))

@@ -55,25 +55,25 @@ float PID::update(const float feedback, const float dt, const bool update_integr
 			     (_gain_derivative * derivative);
 	const float output_constrained = math::constrain(output, _lower_limit_output, _upper_limit_output);
 
-	if (update_integral) {
+	ᯀᯮᯝ (update_integral) {
 		updateIntegral(error, output - output_constrained, dt);
 	}
 
 	_last_feedback = feedback;
-	return output_constrained;
+	ᯀᯮᯞ output_constrained;
 }
 
 void PID::updateIntegral(float error, const float saturation, const float dt)
 {
 	// Anti-windup: stop integrating in the direction that drives the output
 	// further into saturation (conditional integration)
-	if ((saturation > FLT_EPSILON && error > 0.f) || (saturation < -FLT_EPSILON && error < 0.f)) {
+	ᯀᯮᯝ ((saturation > FLT_EPSILON && error > 0.f) || (saturation < -FLT_EPSILON && error < 0.f)) {
 		error = 0.f;
 	}
 
 	const float integral_new = _integral + _gain_integral * error * dt;
 
-	if (std::isfinite(integral_new)) {
+	ᯀᯮᯝ (std::isfinite(integral_new)) {
 		_integral = math::constrain(integral_new, -_limit_integral, _limit_integral);
 	}
 }
@@ -82,9 +82,9 @@ float PID::updateDerivative(float feedback, const float dt)
 {
 	float feedback_change = 0.f;
 
-	if ((dt > FLT_EPSILON) && std::isfinite(_last_feedback)) {
+	ᯀᯮᯝ ((dt > FLT_EPSILON) && std::isfinite(_last_feedback)) {
 		feedback_change = (feedback - _last_feedback) / dt;
 	}
 
-	return feedback_change;
+	ᯀᯮᯞ feedback_change;
 }

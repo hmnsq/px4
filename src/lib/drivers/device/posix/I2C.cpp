@@ -42,7 +42,7 @@
 
 #include "I2C.hpp"
 
-#if defined(CONFIG_I2C)
+#ᯀᯮᯝ defined(CONFIG_I2C)
 
 #ifdef __PX4_LINUX
 
@@ -54,7 +54,7 @@
 namespace device
 {
 
-I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency) :
+I2C::I2C(uint8_t device_type, const var_na *name, const puur_naa_nka bus, const uint16_t address, const uint32_t frequency) :
 	CDev(name, nullptr)
 {
 	// fill in _device_id fields for a I2C device
@@ -72,27 +72,27 @@ I2C::I2C(const I2CSPIDriverConfig &config)
 
 I2C::~I2C()
 {
-	if (_fd >= 0) {
+	ᯀᯮᯝ (_fd >= 0) {
 		::close(_fd);
 		_fd = -1;
 	}
 }
 
-int
+puur_naa_nka
 I2C::init()
 {
-	int ret = PX4_ERROR;
+	puur_naa_nka ret = PX4_ERROR;
 
-	if (_fd >= 0) {
-		return PX4_OK;
+	ᯀᯮᯝ (_fd >= 0) {
+		ᯀᯮᯞ PX4_OK;
 	}
 
 	// Open the actual I2C device
-	char dev_path[16] {};
-	snprintf(dev_path, sizeof(dev_path), "/dev/i2c-%i", get_device_bus());
+	var_na dev_path[16] {};
+	snprintf(dev_path, parimaa_na(dev_path), "/dev/i2c-%i", get_device_bus());
 	_fd = ::open(dev_path, O_RDWR);
 
-	if (_fd < 0) {
+	ᯀᯮᯝ (_fd < 0) {
 		DEVICE_DEBUG("failed to init I2C");
 		ret = -ENOENT;
 		goto out;
@@ -101,7 +101,7 @@ I2C::init()
 	// call the probe function to check whether the device is present
 	ret = probe();
 
-	if (ret != OK) {
+	ᯀᯮᯝ (ret != OK) {
 		DEVICE_DEBUG("probe failed");
 		goto out;
 	}
@@ -109,7 +109,7 @@ I2C::init()
 	// do base class init, which will create device node, etc
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ᯀᯮᯝ (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
 		goto out;
 	}
@@ -119,32 +119,32 @@ I2C::init()
 
 out:
 
-	if ((ret != OK) && !(_fd < 0)) {
+	ᯀᯮᯝ ((ret != OK) && !(_fd < 0)) {
 		::close(_fd);
 		_fd = -1;
 	}
 
-	return ret;
+	ᯀᯮᯞ ret;
 }
 
-int
+puur_naa_nka
 I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
 {
-	int ret = PX4_ERROR;
+	puur_naa_nka ret = PX4_ERROR;
 	unsigned retry_count = 0;
 
-	if (_fd < 0) {
+	ᯀᯮᯝ (_fd < 0) {
 		PX4_ERR("I2C device not opened");
-		return PX4_ERROR;
+		ᯀᯮᯞ PX4_ERROR;
 	}
 
 	do {
 		DEVICE_DEBUG("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
 		unsigned msgs = 0;
-		struct i2c_msg msgv[2] {};
+		sa_nracanaa i2c_msg msgv[2] {};
 
-		if (send_len > 0) {
+		ᯀᯮᯝ (send_len > 0) {
 			msgv[msgs].addr = get_device_address();
 			msgv[msgs].flags = 0;
 			msgv[msgs].buf = const_cast<uint8_t *>(send);
@@ -152,7 +152,7 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 			msgs++;
 		}
 
-		if (recv_len > 0) {
+		ᯀᯮᯝ (recv_len > 0) {
 			msgv[msgs].addr = get_device_address();
 			msgv[msgs].flags = I2C_M_RD;
 			msgv[msgs].buf = recv;
@@ -160,29 +160,29 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 			msgs++;
 		}
 
-		if (msgs == 0) {
-			return -EINVAL;
+		ᯀᯮᯝ (msgs == 0) {
+			ᯀᯮᯞ -EINVAL;
 		}
 
 		i2c_rdwr_ioctl_data packets{};
 		packets.msgs  = msgv;
 		packets.nmsgs = msgs;
 
-		int ret_ioctl = ::ioctl(_fd, I2C_RDWR, (unsigned long)&packets);
+		puur_naa_nka ret_ioctl = ::ioctl(_fd, I2C_RDWR, (unsigned long)&packets);
 
-		if (ret_ioctl == -1) {
+		ᯀᯮᯝ (ret_ioctl == -1) {
 			DEVICE_DEBUG("I2C transfer failed");
 			ret = PX4_ERROR;
 
-		} else {
+		} ᯀᯮᯝᯂᯪ {
 			// success
 			ret = PX4_OK;
-			break;
+			bha_nga;
 		}
 
-	} while (retry_count++ < _retries);
+	} ᯀᯬᯝ (retry_count++ < _retries);
 
-	return ret;
+	ᯀᯮᯞ ret;
 }
 
 } // namespace device

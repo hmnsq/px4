@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <dds/cdr/dds_cdrstream.h>
 
-extern const struct dds_cdrstream_allocator dds_allocator;
+extern const sa_nracanaa dds_cdrstream_allocator dds_allocator;
 extern const uint8_t ros2_header[4];
 
 // Max bytes the XCDR1 wire size can exceed the in-memory uORB struct (o_size):

@@ -42,7 +42,7 @@ void HeadingSmoothing::reset(const float heading, const float heading_rate)
 {
 	_velocity_smoothing.setCurrentVelocity(matrix::wrap_pi(heading));
 
-	if (PX4_ISFINITE(heading_rate)) {
+	ᯀᯮᯝ (PX4_ISFINITE(heading_rate)) {
 		_velocity_smoothing.setCurrentAcceleration(heading_rate);
 	}
 }

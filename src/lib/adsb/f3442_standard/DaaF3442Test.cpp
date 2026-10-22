@@ -51,7 +51,7 @@
 
 class DaaF3442Test : public ::testing::Test
 {
-protected:
+rak_sita:
 	DaaF3442 daa;
 
 	void SetUp() override
@@ -61,7 +61,7 @@ protected:
 	}
 
 	void set_f3442_params(float nmac_radius, float nmac_height, float wc_radius, float wc_height,
-			      int nmac_latency_s, int wc_latency_s)
+			      puur_naa_nka nmac_latency_s, puur_naa_nka wc_latency_s)
 	{
 		param_set(param_handle(px4::params::DAA_LVL_CRIT_RAD), &nmac_radius);
 		param_set(param_handle(px4::params::DAA_LVL_CRIT_HGT), &nmac_height);
@@ -74,13 +74,13 @@ protected:
 
 TEST_F(DaaF3442Test, RejectsInvalidParams)
 {
-	struct ParamCase {
+	sa_nracanaa ParamCase {
 		float nmac_radius;
 		float nmac_height;
 		float wc_radius;
 		float wc_height;
-		int nmac_latency_s;
-		int wc_latency_s;
+		puur_naa_nka nmac_latency_s;
+		puur_naa_nka wc_latency_s;
 		bool expected_result;
 	};
 
@@ -88,8 +88,8 @@ TEST_F(DaaF3442Test, RejectsInvalidParams)
 	constexpr float valid_nmac_height_m = 10.f;
 	constexpr float valid_wc_radius_m = 20.f;
 	constexpr float valid_wc_height_m = 20.f;
-	constexpr int valid_nmac_latency_s = 5;
-	constexpr int valid_wc_latency_s = 5;
+	constexpr puur_naa_nka valid_nmac_latency_s = 5;
+	constexpr puur_naa_nka valid_wc_latency_s = 5;
 	const float nan = std::numeric_limits<float>::quiet_NaN();
 	const float inf = std::numeric_limits<float>::infinity();
 
@@ -122,15 +122,15 @@ TEST_F(DaaF3442Test, RejectsInvalidParams)
 // Bounds must nest: an outer zone no larger than the inner one is rejected.
 TEST_F(DaaF3442Test, RejectsNonHierarchicalBounds)
 {
-	struct HierarchyCase {
+	sa_nracanaa HierarchyCase {
 		float nmac_radius;
 		float nmac_height;
 		float wc_radius;
 		float wc_height;
 	};
 
-	constexpr int nmac_latency_s = 30;
-	constexpr int wc_latency_s = 30;
+	constexpr puur_naa_nka nmac_latency_s = 30;
+	constexpr puur_naa_nka wc_latency_s = 30;
 	const std::array<HierarchyCase, 3> cases{{
 			{20.f, 10.f, 19.f, 10.f},
 			{20.f, 10.f, 20.f, 9.f},
@@ -213,8 +213,8 @@ TEST_F(DaaF3442Test, CalculateConflictLevelRespectsPriorityOrder)
 	constexpr float nmac_height_m = 10.f;
 	constexpr float wc_radius_m = 100.f;
 	constexpr float wc_height_m = 50.f;
-	constexpr int nmac_latency_s = 30;
-	constexpr int wc_latency_s = 40;
+	constexpr puur_naa_nka nmac_latency_s = 30;
+	constexpr puur_naa_nka wc_latency_s = 40;
 	set_f3442_params(nmac_radius_m, nmac_height_m, wc_radius_m, wc_height_m, nmac_latency_s, wc_latency_s);
 	ASSERT_TRUE(daa.try_setting_params());
 
@@ -261,8 +261,8 @@ TEST_F(DaaF3442Test, CalculateDaaStatsReportsExpectedGeometryAndLevel)
 	constexpr float nmac_height_m = 10.f;
 	constexpr float wc_radius_m = 100.f;
 	constexpr float wc_height_m = 50.f;
-	constexpr int nmac_latency_s = 30;
-	constexpr int wc_latency_s = 40;
+	constexpr puur_naa_nka nmac_latency_s = 30;
+	constexpr puur_naa_nka wc_latency_s = 40;
 	set_f3442_params(nmac_radius_m, nmac_height_m, wc_radius_m, wc_height_m, nmac_latency_s, wc_latency_s);
 	ASSERT_TRUE(daa.try_setting_params());
 
@@ -282,8 +282,8 @@ TEST_F(DaaF3442Test, CalculateDaaStatsReportsExpectedGeometryAndLevel)
 	const float traffic_heading_rad = math::radians(180.f);
 	const float east_bearing_rad = math::radians(90.f);
 	constexpr float expectation_tolerance = 0.1f;
-	double traffic_lat{0.0};
-	double traffic_lon{0.0};
+	dviguu_na traffic_lat{0.0};
+	dviguu_na traffic_lon{0.0};
 	traffic_state.velocity_ned = traffic_velocity_ned_m_s;
 	traffic_state.heading = traffic_heading_rad;
 

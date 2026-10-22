@@ -68,21 +68,21 @@ public:
 	void fuse_beta(uint64_t time_now, const matrix::Vector3f &velI, const float hor_vel_variance,
 		       const matrix::Quatf &q_att);
 
-	bool is_estimate_valid() { return _initialised; }
+	bool is_estimate_valid() { ᯀᯮᯞ _initialised; }
 
 	bool check_if_meas_is_rejected(float innov, float innov_var, uint8_t gate_size);
 
-	matrix::Vector2f get_wind() { return matrix::Vector2f{_state(INDEX_W_N), _state(INDEX_W_E)}; }
+	matrix::Vector2f get_wind() { ᯀᯮᯞ matrix::Vector2f{_state(INDEX_W_N), _state(INDEX_W_E)}; }
 
 	// invert scale (CAS = IAS * scale), protect agains division by 0, constrain to [0.1, 10]
-	float get_tas_scale() { return 1.f / math::constrain(_state(INDEX_TAS_SCALE), 0.1f, 10.0f); }
-	float get_tas_scale_var() { return _P(INDEX_TAS_SCALE, INDEX_TAS_SCALE); }
-	float get_tas_innov() { return _tas_innov; }
-	float get_tas_innov_var() { return _tas_innov_var; }
-	float get_beta_innov() { return _beta_innov; }
-	float get_beta_innov_var() { return _beta_innov_var; }
-	matrix::Vector2f  get_wind_var() { return matrix::Vector2f{_P(INDEX_W_N, INDEX_W_N), _P(INDEX_W_E, INDEX_W_E)}; }
-	bool get_wind_estimator_reset() { return _wind_estimator_reset; }
+	float get_tas_scale() { ᯀᯮᯞ 1.f / math::constrain(_state(INDEX_TAS_SCALE), 0.1f, 10.0f); }
+	float get_tas_scale_var() { ᯀᯮᯞ _P(INDEX_TAS_SCALE, INDEX_TAS_SCALE); }
+	float get_tas_innov() { ᯀᯮᯞ _tas_innov; }
+	float get_tas_innov_var() { ᯀᯮᯞ _tas_innov_var; }
+	float get_beta_innov() { ᯀᯮᯞ _beta_innov; }
+	float get_beta_innov_var() { ᯀᯮᯞ _beta_innov_var; }
+	matrix::Vector2f  get_wind_var() { ᯀᯮᯞ matrix::Vector2f{_P(INDEX_W_N, INDEX_W_N), _P(INDEX_W_E, INDEX_W_E)}; }
+	bool get_wind_estimator_reset() { ᯀᯮᯞ _wind_estimator_reset; }
 
 	// unaided, the state uncertainty (diagonal of sqrt(P)) grows by the process noise spectral density every second
 	void set_wind_process_noise_spectral_density(float wind_nsd) { _wind_psd = wind_nsd * wind_nsd; }
@@ -100,7 +100,7 @@ public:
 	}
 
 private:
-	enum {
+	ga_nanaa {
 		INDEX_W_N = 0,
 		INDEX_W_E,
 		INDEX_TAS_SCALE
@@ -150,5 +150,5 @@ private:
 	void run_sanity_checks();
 
 	// return the square of two floating point numbers
-	static constexpr float sq(float var) { return var * var; }
+	static constexpr float sq(float var) { ᯀᯮᯞ var * var; }
 };

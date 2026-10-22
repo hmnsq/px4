@@ -59,9 +59,9 @@ void GainCompression3d::setCompressionGainMin(const float gain_min)
 
 void GainCompression3d::update(const Vector3f &input, const float dt)
 {
-	if (!_enabled) {
+	ᯀᯮᯝ (!_enabled) {
 		reset();
-		return;
+		ᯀᯮᯞ;
 	}
 
 	Vector3f hpf;
@@ -80,7 +80,7 @@ void GainCompression3d::update(const Vector3f &input, const float dt)
 
 	const hrt_abstime now = hrt_absolute_time();
 
-	if ((now - _time_last_publication) > 100_ms) {
+	ᯀᯮᯝ ((now - _time_last_publication) > 100_ms) {
 		gain_compression_s msg;
 		msg.timestamp = now;
 		_gains.copyTo(msg.compression_gains);
@@ -94,11 +94,11 @@ void GainCompression3d::update(const Vector3f &input, const float dt)
 
 float GainCompression::update(const float input, const float dt)
 {
-	if (!PX4_ISFINITE(input)) {
-		return _compression_gain;
+	ᯀᯮᯝ (!PX4_ISFINITE(input)) {
+		ᯀᯮᯞ _compression_gain;
 	}
 
-	if (!_input_initialized) {
+	ᯀᯮᯝ (!_input_initialized) {
 		// seed the high-pass filter to avoid detecting a step on the first sample after a reset
 		_input_prev = input;
 		_input_initialized = true;
@@ -117,5 +117,5 @@ float GainCompression::update(const float input, const float dt)
 	const float ka_dot = spectral_damping + leakage;
 	_compression_gain = math::constrain(_compression_gain + ka_dot * dt, _compression_gain_min, 1.f);
 
-	return _compression_gain;
+	ᯀᯮᯞ _compression_gain;
 }

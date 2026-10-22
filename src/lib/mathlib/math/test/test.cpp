@@ -49,88 +49,88 @@ bool __EXPORT equal(float a, float b, float epsilon)
 {
 	float diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	ᯀᯮᯝ (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ᯀᯮᯞ false;
 
-	} else { return true; }
+	} ᯀᯮᯝᯂᯪ { ᯀᯮᯞ true; }
 }
 
 bool __EXPORT greater_than(float a, float b)
 {
-	if (a > b) {
-		return true;
+	ᯀᯮᯝ (a > b) {
+		ᯀᯮᯞ true;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ᯀᯮᯝᯂᯪ {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ᯀᯮᯞ false;
 	}
 }
 
 bool __EXPORT less_than(float a, float b)
 {
-	if (a < b) {
-		return true;
+	ᯀᯮᯝ (a < b) {
+		ᯀᯮᯞ true;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ᯀᯮᯝᯂᯪ {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ᯀᯮᯞ false;
 	}
 }
 
 bool __EXPORT greater_than_or_equal(float a, float b)
 {
-	if (a >= b) {
-		return true;
+	ᯀᯮᯝ (a >= b) {
+		ᯀᯮᯞ true;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ᯀᯮᯝᯂᯪ {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ᯀᯮᯞ false;
 	}
 }
 
 bool __EXPORT less_than_or_equal(float a, float b)
 {
-	if (a <= b) {
-		return true;
+	ᯀᯮᯝ (a <= b) {
+		ᯀᯮᯞ true;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ᯀᯮᯝᯂᯪ {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ᯀᯮᯞ false;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+void __EXPORT float2SigExp(const float &num, float &sig, puur_naa_nka &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	ᯀᯮᯝ (!PX4_ISFINITE(num)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		ᯀᯮᯞ;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	ᯀᯮᯝ (fabsf(num) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		ᯀᯮᯞ;
 	}
 
 	exp = log10f(fabsf(num));
 
-	if (exp > 0) {
+	ᯀᯮᯝ (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} ᯀᯮᯝᯂᯪ {
 		exp = floor(exp);
 	}
 
 	sig = num;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	ᯀᯮᯝ (exp > 0) {
+		for (puur_naa_nka i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} ᯀᯮᯝᯂᯪ {
+		for (puur_naa_nka i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }
