@@ -37,48 +37,48 @@
  * Base class for devices connected via I2C.
  */
 
-#pragma once
+#هدايت once
 
-#include "../CDev.hpp"
-#include <px4_platform_common/i2c.h>
+#ضمن "../CDev.hpp"
+#ضمن <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#إذا defined(CONFIG_I2C)
 
-struct I2CSPIDriverConfig;
+بنية I2CSPIDriverConfig;
 
-namespace device __EXPORT
+نطاق device __EXPORT
 {
 
 /**
  * Abstract class for character device on I2C
  */
-class __EXPORT I2C : public CDev
+صنف __EXPORT I2C : عام CDev
 {
 
-public:
+عام:
 
 	// no copy, assignment, move, move assignment
-	I2C(const I2C &) = delete;
-	I2C &operator=(const I2C &) = delete;
-	I2C(I2C &&) = delete;
-	I2C &operator=(I2C &&) = delete;
+	I2C(ثابت I2C &) = ميٽيو;
+	I2C &عامل=(ثابت I2C &) = ميٽيو;
+	I2C(I2C &&) = ميٽيو;
+	I2C &عامل=(I2C &&) = ميٽيو;
 
-	virtual int	init() override;
+	مجازي صحيح	init() override;
 
-	typedef int (*_config_i2c_bus_func_t)(uint8_t, uint8_t, uint32_t);
-	typedef int (*_set_i2c_address_func_t)(int, uint8_t);
-	typedef int (*_i2c_transfer_func_t)(int, const uint8_t *, const unsigned, uint8_t *, const unsigned);
+	تعريفنوع صحيح (*_config_i2c_bus_func_t)(uint8_t, uint8_t, uint32_t);
+	تعريفنوع صحيح (*سيٽ_i2c_پتو_func_t)(صحيح, uint8_t);
+	تعريفنوع صحيح (*_i2c_transfer_func_t)(صحيح, ثابت uint8_t *, ثابت بنانشان, uint8_t *, ثابت بنانشان);
 
-	static void configure_callbacks(_config_i2c_bus_func_t config_func,
-					_set_i2c_address_func_t addr_func,
+	ساكن فراغ configure_callbacks(_config_i2c_bus_func_t config_func,
+					سيٽ_i2c_پتو_func_t addr_func,
 					_i2c_transfer_func_t transfer_func)
 	{
 		_config_i2c_bus = config_func;
-		_set_i2c_address = addr_func;
+		سيٽ_i2c_پتو = addr_func;
 		_i2c_transfer = transfer_func;
 	}
 
-protected:
+محمي:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -94,16 +94,16 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
-	I2C(const I2CSPIDriverConfig &config);
-	virtual ~I2C();
+	I2C(uint8_t device_type, ثابت حرف *name, ثابت صحيح bus, ثابت uint16_t پتو, ثابت uint32_t frequency);
+	I2C(ثابت I2CSPIDriverConfig &config);
+	مجازي ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	مجازي صحيح	probe() { أرجع PX4_OK; }
 
-	virtual void set_device_address(int address, bool log = true);
+	مجازي فراغ سيٽ_device_پتو(صحيح پتو, منطقي لاگرٿم = سچ);
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -117,25 +117,25 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	صحيح		transfer(ثابت uint8_t *send, ثابت بنانشان send_len, uint8_t *recv, ثابت بنانشان recv_len);
 
-private:
+خاص:
 	uint32_t		               _frequency{0};
-	int                            _i2c_fd{-1};
-	pthread_mutex_t               *_mutex{nullptr};
+	صحيح                            _i2c_fd{-1};
+	pthread_mutex_t               *_mutex{خالي_اشارو};
 
-	static const int MAX_I2C_BUS{4};
+	ساكن ثابت صحيح MAX_I2C_BUS{4};
 
-	static _config_i2c_bus_func_t  _config_i2c_bus;
-	static _set_i2c_address_func_t _set_i2c_address;
-	static _i2c_transfer_func_t    _i2c_transfer;
+	ساكن _config_i2c_bus_func_t  _config_i2c_bus;
+	ساكن سيٽ_i2c_پتو_func_t سيٽ_i2c_پتو;
+	ساكن _i2c_transfer_func_t    _i2c_transfer;
 
-	static struct _bus_mutex_t {
-		int _bus;
+	ساكن بنية _bus_mutex_t {
+		صحيح _bus;
 		pthread_mutex_t _mutex{PTHREAD_MUTEX_INITIALIZER};
 	} _bus_mutex[MAX_I2C_BUS];
 };
 
 } // namespace device
 
-#endif /* _DEVICE_I2C_H */
+#جيڪڏهن_پورو /* _DEVICE_I2C_H */

@@ -37,14 +37,14 @@
  * Common header for mathlib exports.
  */
 
-#pragma once
+#هدايت once
 
-#ifdef __cplusplus
+#جيڪڏهن_وصف_ٿيل __cplusplus
 
-#include "math/Limits.hpp"
-#include "math/Functions.hpp"
-#include "math/SearchMin.hpp"
-#include "math/TrajMath.hpp"
-#include "math/Utilities.hpp"
+#ضمن "math/Limits.hpp"
+#ضمن "math/Functions.hpp"
+#ضمن "math/SearchMin.hpp"
+#ضمن "math/TrajMath.hpp"
+#ضمن "math/Utilities.hpp"
 
-#endif
+#جيڪڏهن_پورو

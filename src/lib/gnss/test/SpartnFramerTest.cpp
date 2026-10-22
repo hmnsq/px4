@@ -38,75 +38,75 @@
  * cross-protocol resync behaviour that motivates sharing one buffer.
  */
 
-#include <gtest/gtest.h>
-#include "correction_framer.h"
+#ضمن <gtest/gtest.h>
+#ضمن "correction_framer.h"
 
-#include <vector>
-#include <cstring>
-#include <random>
+#ضمن <vector>
+#ضمن <cstring>
+#ضمن <random>
 
-using namespace gnss;
+استعمال نطاق gnss;
 
-class SpartnTest : public ::testing::Test
+صنف SpartnTest : عام ::testing::Test
 {
-protected:
+محمي:
 	CorrectionFramer parser;
 
 	// Build unencrypted frame with 16-bit time tag and given CRC type.
-	std::vector<uint8_t> buildFrame(uint8_t msg_type, uint8_t msg_subtype,
-					const std::vector<uint8_t> &payload,
-					uint8_t crc_type = 0)
+	std::ويڪٽر_2<uint8_t> build_چوکٺو(uint8_t نياپو_type, uint8_t نياپو_subtype,
+					ثابت std::ويڪٽر_2<uint8_t> &payload,
+					uint8_t چڪري_جاچ_type = 0)
 	{
-		const size_t payload_len = payload.size();
-		std::vector<uint8_t> frame;
-		frame.push_back(SPARTN_PREAMBLE);
+		ثابت size_t payload_len = payload.سائيز();
+		std::ويڪٽر_2<uint8_t> چوکٺو;
+		چوکٺو.push_back(SPARTN_PREAMBLE);
 
 		// TF002-TF006 (frame CRC nibble left 0; not checked by the framer)
-		uint8_t b1 = static_cast<uint8_t>(((msg_type & 0x7F) << 1) | ((payload_len >> 9) & 0x01));
+		uint8_t b1 = static_cast<uint8_t>(((نياپو_type & 0x7F) << 1) | ((payload_len >> 9) & 0x01));
 		uint8_t b2 = static_cast<uint8_t>((payload_len >> 1) & 0xFF);
-		uint8_t b3 = static_cast<uint8_t>(((payload_len & 0x01) << 7) | ((crc_type & 0x03) << 4));
-		frame.push_back(b1);
-		frame.push_back(b2);
-		frame.push_back(b3);
+		uint8_t b3 = static_cast<uint8_t>(((payload_len & 0x01) << 7) | ((چڪري_جاچ_type & 0x03) << 4));
+		چوکٺو.push_back(b1);
+		چوکٺو.push_back(b2);
+		چوکٺو.push_back(b3);
 
 		// 4-byte description, 16-bit time tag
-		frame.push_back(static_cast<uint8_t>((msg_subtype & 0x0F) << 4));
-		frame.push_back(0x00);
-		frame.push_back(0x00);
-		frame.push_back(0x00);
+		چوکٺو.push_back(static_cast<uint8_t>((نياپو_subtype & 0x0F) << 4));
+		چوکٺو.push_back(0x00);
+		چوکٺو.push_back(0x00);
+		چوکٺو.push_back(0x00);
 
-		frame.insert(frame.end(), payload.begin(), payload.end());
+		چوکٺو.وجهو(چوکٺو.پڇاڙي(), payload.begin(), payload.پڇاڙي());
 
 		// Message CRC over TF002..end of payload
-		const uint32_t crc = spartn_message_crc(&frame[1], frame.size() - 1, crc_type);
-		const size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
+		ثابت uint32_t چڪري_جاچ = spartn_پيغام_چڪري_جاچ(&چوکٺو[1], چوکٺو.سائيز() - 1, چڪري_جاچ_type);
+		ثابت size_t چڪري_جاچ_بائيٽون = static_cast<size_t>(چڪري_جاچ_type) + 1;
 
-		for (int i = static_cast<int>(crc_bytes) - 1; i >= 0; i--) {
-			frame.push_back(static_cast<uint8_t>((crc >>(8 * i)) & 0xFF));
+		لكل (صحيح i = static_cast<صحيح>(چڪري_جاچ_بائيٽون) - 1; i >= 0; i--) {
+			چوکٺو.push_back(static_cast<uint8_t>((چڪري_جاچ >>(8 * i)) & 0xFF));
 		}
 
-		return frame;
+		أرجع چوکٺو;
 	}
 
 	// Build a well-formed RTCM3 frame with a deterministic pseudo-random payload.
-	std::vector<uint8_t> buildRtcmFrame(std::mt19937 &rng, size_t payload_len)
+	std::ويڪٽر_2<uint8_t> build_Rtcm_چوکٺو(std::mt19937 &rng, size_t payload_len)
 	{
-		std::vector<uint8_t> frame;
-		frame.push_back(RTCM3_PREAMBLE);
-		frame.push_back(static_cast<uint8_t>((payload_len >> 8) & 0x03));
-		frame.push_back(static_cast<uint8_t>(payload_len & 0xFF));
+		std::ويڪٽر_2<uint8_t> چوکٺو;
+		چوکٺو.push_back(RTCM3_PREAMBLE);
+		چوکٺو.push_back(static_cast<uint8_t>((payload_len >> 8) & 0x03));
+		چوکٺو.push_back(static_cast<uint8_t>(payload_len & 0xFF));
 
-		std::uniform_int_distribution<int> byte(0, 255);
+		std::هڪجهڙو_int_distribution<صحيح> byte(0, 255);
 
-		for (size_t i = 0; i < payload_len; i++) {
-			frame.push_back(static_cast<uint8_t>(byte(rng)));
+		لكل (size_t i = 0; i < payload_len; i++) {
+			چوکٺو.push_back(static_cast<uint8_t>(byte(rng)));
 		}
 
-		const uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
-		frame.push_back((crc >> 16) & 0xFF);
-		frame.push_back((crc >> 8) & 0xFF);
-		frame.push_back(crc & 0xFF);
-		return frame;
+		ثابت uint32_t چڪري_جاچ = rtcm3_crc24q(چوکٺو.معلومات(), چوکٺو.سائيز());
+		چوکٺو.push_back((چڪري_جاچ >> 16) & 0xFF);
+		چوکٺو.push_back((چڪري_جاچ >> 8) & 0xFF);
+		چوکٺو.push_back(چڪري_جاچ & 0xFF);
+		أرجع چوکٺو;
 	}
 };
 
@@ -117,122 +117,122 @@ protected:
 // Vectors taken from the pyspartn reference implementation's test suite
 // (semuconsulting/pyspartn, tests/test_static.py), which computes the same
 // TF018 CRCs independently of this code.
-TEST_F(SpartnTest, MessageCrcMatchesReferenceVectors)
+TEST_F(SpartnTest, پيغام_چڪري_جاچ_Matches_Reference_Vectors)
 {
-	const uint8_t msg[] = {'H', 'i', '!'};
+	ثابت uint8_t نياپو[] = {'H', 'i', '!'};
 
-	EXPECT_EQ(spartn_message_crc(msg, sizeof(msg), 0), 0x78u);
-	EXPECT_EQ(spartn_message_crc(msg, sizeof(msg), 1), 0x31FDu);
-	EXPECT_EQ(spartn_message_crc(msg, sizeof(msg), 2), 0x33220Fu);
-	EXPECT_EQ(spartn_message_crc(msg, sizeof(msg), 3), 0x9523B4B4u);
+	EXPECT_EQ(spartn_پيغام_چڪري_جاچ(نياپو, حجم(نياپو), 0), 0x78u);
+	EXPECT_EQ(spartn_پيغام_چڪري_جاچ(نياپو, حجم(نياپو), 1), 0x31FDu);
+	EXPECT_EQ(spartn_پيغام_چڪري_جاچ(نياپو, حجم(نياپو), 2), 0x33220Fu);
+	EXPECT_EQ(spartn_پيغام_چڪري_جاچ(نياپو, حجم(نياپو), 3), 0x9523B4B4u);
 }
 
 // =============================================================================
 // Framing
 // =============================================================================
 
-TEST_F(SpartnTest, SingleMinimalFrame)
+TEST_F(SpartnTest, Single_گهٽتر_چوکٺو)
 {
-	auto frame = buildFrame(0, 0, {0xAA, 0xBB});
-	parser.addData(frame.data(), frame.size());
+	خودڪار چوکٺو = build_چوکٺو(0, 0, {0xAA, 0xBB});
+	parser.جوڙيو_معلومات(چوکٺو.معلومات(), چوکٺو.سائيز());
 
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-	const uint8_t *msg = parser.getNextMessage(&len, &protocol);
-	ASSERT_NE(msg, nullptr);
+	ثابت uint8_t *نياپو = parser.get_ايندڙ_پيغام(&len, &protocol);
+	ASSERT_NE(نياپو, خالي_اشارو);
 	EXPECT_EQ(protocol, CorrectionProtocol::Spartn);
-	EXPECT_EQ(len, frame.size());
-	EXPECT_EQ(0, memcmp(msg, frame.data(), frame.size()));
-	parser.consumeMessage(len);
+	EXPECT_EQ(len, چوکٺو.سائيز());
+	EXPECT_EQ(0, memcmp(نياپو, چوکٺو.معلومات(), چوکٺو.سائيز()));
+	parser.consume_پيغام(len);
 	EXPECT_EQ(parser.getStats().messages_parsed, 1u);
 	EXPECT_EQ(parser.getStats().spartn_messages, 1u);
-	EXPECT_EQ(parser.getStats().crc_errors, 0u);
+	EXPECT_EQ(parser.getStats().چڪري_جاچ_errors_2, 0u);
 }
 
-TEST_F(SpartnTest, MultipleFrames)
+TEST_F(SpartnTest, گڻو_چوکٺا)
 {
-	auto f1 = buildFrame(0, 0, {0x01});
-	auto f2 = buildFrame(1, 0, {0x02, 0x03});
-	std::vector<uint8_t> stream;
-	stream.insert(stream.end(), f1.begin(), f1.end());
-	stream.insert(stream.end(), f2.begin(), f2.end());
-	parser.addData(stream.data(), stream.size());
+	خودڪار f1 = build_چوکٺو(0, 0, {0x01});
+	خودڪار f2 = build_چوکٺو(1, 0, {0x02, 0x03});
+	std::ويڪٽر_2<uint8_t> وهڪرو;
+	وهڪرو.وجهو(وهڪرو.پڇاڙي(), f1.begin(), f1.پڇاڙي());
+	وهڪرو.وجهو(وهڪرو.پڇاڙي(), f2.begin(), f2.پڇاڙي());
+	parser.جوڙيو_معلومات(وهڪرو.معلومات(), وهڪرو.سائيز());
 
-	int count = 0;
+	صحيح ڳڻپ = 0;
 	size_t len = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
-		parser.consumeMessage(len);
-		count++;
+	طالما (parser.get_ايندڙ_پيغام(&len) != خالي_اشارو) {
+		parser.consume_پيغام(len);
+		ڳڻپ++;
 	}
 
-	EXPECT_EQ(count, 2);
+	EXPECT_EQ(ڳڻپ, 2);
 	EXPECT_EQ(parser.getStats().spartn_messages, 2u);
 }
 
-TEST_F(SpartnTest, ChunkedArrival)
+TEST_F(SpartnTest, Chunked_آمد)
 {
-	auto frame = buildFrame(0, 1, {0x10, 0x20, 0x30});
+	خودڪار چوکٺو = build_چوکٺو(0, 1, {0x10, 0x20, 0x30});
 
-	for (size_t i = 0; i < frame.size(); i++) {
-		parser.addData(&frame[i], 1);
+	لكل (size_t i = 0; i < چوکٺو.سائيز(); i++) {
+		parser.جوڙيو_معلومات(&چوکٺو[i], 1);
 	}
 
 	size_t len = 0;
-	ASSERT_NE(parser.getNextMessage(&len), nullptr);
-	EXPECT_EQ(len, frame.size());
+	ASSERT_NE(parser.get_ايندڙ_پيغام(&len), خالي_اشارو);
+	EXPECT_EQ(len, چوکٺو.سائيز());
 }
 
-TEST_F(SpartnTest, NoiseBeforeFrame)
+TEST_F(SpartnTest, Noise_Before_چوکٺو)
 {
-	auto frame = buildFrame(0, 0, {0x55});
-	std::vector<uint8_t> stream = {0x00, 0xFF, 0x01};
-	stream.insert(stream.end(), frame.begin(), frame.end());
-	parser.addData(stream.data(), stream.size());
+	خودڪار چوکٺو = build_چوکٺو(0, 0, {0x55});
+	std::ويڪٽر_2<uint8_t> وهڪرو = {0x00, 0xFF, 0x01};
+	وهڪرو.وجهو(وهڪرو.پڇاڙي(), چوکٺو.begin(), چوکٺو.پڇاڙي());
+	parser.جوڙيو_معلومات(وهڪرو.معلومات(), وهڪرو.سائيز());
 
 	size_t len = 0;
-	ASSERT_NE(parser.getNextMessage(&len), nullptr);
-	EXPECT_GT(parser.getStats().bytes_discarded, 0u);
+	ASSERT_NE(parser.get_ايندڙ_پيغام(&len), خالي_اشارو);
+	EXPECT_GT(parser.getStats().بائيٽون_discarded_2, 0u);
 }
 
-TEST_F(SpartnTest, BadMessageCrc)
+TEST_F(SpartnTest, Bad_پيغام_چڪري_جاچ)
 {
-	auto frame = buildFrame(0, 0, {0x11, 0x22});
-	frame.back() ^= 0xFF;
-	parser.addData(frame.data(), frame.size());
+	خودڪار چوکٺو = build_چوکٺو(0, 0, {0x11, 0x22});
+	چوکٺو.پٺ() ^= 0xFF;
+	parser.جوڙيو_معلومات(چوکٺو.معلومات(), چوکٺو.سائيز());
 
 	size_t len = 0;
-	EXPECT_EQ(parser.getNextMessage(&len), nullptr);
-	EXPECT_GE(parser.getStats().crc_errors, 1u);
+	EXPECT_EQ(parser.get_ايندڙ_پيغام(&len), خالي_اشارو);
+	EXPECT_GE(parser.getStats().چڪري_جاچ_errors_2, 1u);
 }
 
-TEST_F(SpartnTest, Crc16Frame)
+TEST_F(SpartnTest, Crc16_چوکٺو)
 {
-	auto frame = buildFrame(0, 0, {0xDE, 0xAD}, 1);
-	parser.addData(frame.data(), frame.size());
+	خودڪار چوکٺو = build_چوکٺو(0, 0, {0xDE, 0xAD}, 1);
+	parser.جوڙيو_معلومات(چوکٺو.معلومات(), چوکٺو.سائيز());
 
 	size_t len = 0;
-	ASSERT_NE(parser.getNextMessage(&len), nullptr);
-	parser.consumeMessage(len);
-	EXPECT_EQ(parser.getStats().crc_errors, 0u);
+	ASSERT_NE(parser.get_ايندڙ_پيغام(&len), خالي_اشارو);
+	parser.consume_پيغام(len);
+	EXPECT_EQ(parser.getStats().چڪري_جاچ_errors_2, 0u);
 }
 
 // TF002 5-119 is reserved by SPARTN 2.x, so a frame claiming one cannot be real
 // even if its message CRC checks out.
-TEST_F(SpartnTest, RejectsReservedMessageType)
+TEST_F(SpartnTest, Rejects_Reserved_پيغام_Type)
 {
-	EXPECT_TRUE(spartn_message_type_defined(0));
-	EXPECT_TRUE(spartn_message_type_defined(4));
-	EXPECT_FALSE(spartn_message_type_defined(5));
-	EXPECT_FALSE(spartn_message_type_defined(119));
-	EXPECT_TRUE(spartn_message_type_defined(120));
-	EXPECT_TRUE(spartn_message_type_defined(127));
+	EXPECT_TRUE(spartn_پيغام_type_defined(0));
+	EXPECT_TRUE(spartn_پيغام_type_defined(4));
+	EXPECT_FALSE(spartn_پيغام_type_defined(5));
+	EXPECT_FALSE(spartn_پيغام_type_defined(119));
+	EXPECT_TRUE(spartn_پيغام_type_defined(120));
+	EXPECT_TRUE(spartn_پيغام_type_defined(127));
 
-	auto frame = buildFrame(50, 0, {0x11, 0x22});
-	parser.addData(frame.data(), frame.size());
+	خودڪار چوکٺو = build_چوکٺو(50, 0, {0x11, 0x22});
+	parser.جوڙيو_معلومات(چوکٺو.معلومات(), چوکٺو.سائيز());
 
 	size_t len = 0;
-	EXPECT_EQ(parser.getNextMessage(&len), nullptr);
+	EXPECT_EQ(parser.get_ايندڙ_پيغام(&len), خالي_اشارو);
 	EXPECT_EQ(parser.getStats().spartn_messages, 0u);
 }
 
@@ -246,43 +246,43 @@ TEST_F(SpartnTest, RejectsReservedMessageType)
 // independent SPARTN framer over the same bytes would instead scan inside RTCM3
 // payloads, where the only remaining check is the message CRC that TF005 permits
 // to be 8 bits wide.
-TEST_F(SpartnTest, RtcmStreamIsNeverFramedAsSpartn)
+TEST_F(SpartnTest, Rtcm_وهڪرو_Is_Never_Framed_As_Spartn)
 {
 	std::mt19937 rng(1);
-	std::uniform_int_distribution<int> payload_len(60, 500);
+	std::هڪجهڙو_int_distribution<صحيح> payload_len(60, 500);
 
-	size_t frames_in = 0;
-	size_t frames_out = 0;
+	size_t چوکٺا_اندريون = 0;
+	size_t چوکٺا_ٻاهريون = 0;
 	size_t generated = 0;
-	std::vector<uint8_t> stream;
+	std::ويڪٽر_2<uint8_t> وهڪرو;
 
 	// ~1 MB of RTCM3, about 17 min of a 1 kB/s RTK correction stream
-	while (generated < 1000000) {
-		auto frame = buildRtcmFrame(rng, payload_len(rng));
-		generated += frame.size();
-		frames_in++;
-		stream.insert(stream.end(), frame.begin(), frame.end());
+	طالما (generated < 1000000) {
+		خودڪار چوکٺو = build_Rtcm_چوکٺو(rng, payload_len(rng));
+		generated += چوکٺو.سائيز();
+		چوکٺا_اندريون++;
+		وهڪرو.وجهو(وهڪرو.پڇاڙي(), چوکٺو.begin(), چوکٺو.پڇاڙي());
 
 		// Feed in MAVLink GPS_RTCM_DATA sized chunks
-		while (stream.size() >= 180) {
-			parser.addData(stream.data(), 180);
+		طالما (وهڪرو.سائيز() >= 180) {
+			parser.جوڙيو_معلومات(وهڪرو.معلومات(), 180);
 
 			size_t len = 0;
 			CorrectionProtocol protocol = CorrectionProtocol::Spartn;
 
-			while (parser.getNextMessage(&len, &protocol) != nullptr) {
+			طالما (parser.get_ايندڙ_پيغام(&len, &protocol) != خالي_اشارو) {
 				EXPECT_EQ(protocol, CorrectionProtocol::Rtcm3);
-				parser.consumeMessage(len);
-				frames_out++;
+				parser.consume_پيغام(len);
+				چوکٺا_ٻاهريون++;
 			}
 
-			stream.erase(stream.begin(), stream.begin() + 180);
+			وهڪرو.erase(وهڪرو.begin(), وهڪرو.begin() + 180);
 		}
 	}
 
 	// Every RTCM3 frame is recovered, and no part of the stream is framed as SPARTN
 	EXPECT_EQ(parser.getStats().spartn_messages, 0u);
-	EXPECT_EQ(parser.getStats().rtcm3_messages, frames_out);
-	EXPECT_GE(frames_out, frames_in - 1);
-	EXPECT_EQ(parser.getStats().crc_errors, 0u);
+	EXPECT_EQ(parser.getStats().rtcm3_messages, چوکٺا_ٻاهريون);
+	EXPECT_GE(چوکٺا_ٻاهريون, چوکٺا_اندريون - 1);
+	EXPECT_EQ(parser.getStats().چڪري_جاچ_errors_2, 0u);
 }

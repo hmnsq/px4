@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#pragma once
+#هدايت once
 
-#include "FunctionProviderBase.hpp"
+#ضمن "FunctionProviderBase.hpp"
 
 /**
  * Functions: Constant_Min
  */
-class FunctionConstantMin : public FunctionProviderBase
+صنف FunctionConstantMin : عام Function_Provider_بنياد
 {
-public:
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionConstantMin(); }
+عام:
+	ساكن Function_Provider_بنياد *allocate(ثابت Context &context) { أرجع جديد FunctionConstantMin(); }
 
-	float value(OutputFunction func) override { return -1.f; }
-	void update() override { }
+	عائم value(OutputFunction func) override { أرجع -1.f; }
+	فراغ update() override { }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return -1.f; }
+	عائم default_Failsafe_قدر(OutputFunction func) ثابت override { أرجع -1.f; }
 };

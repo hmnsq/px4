@@ -31,84 +31,84 @@
  *
  ****************************************************************************/
 
-#include "dijkstra.h"
+#ضمن "dijkstra.h"
 
-namespace dijkstra
+نطاق dijkstra
 {
 
-bool solveBackward(const int num_nodes, const int goal, const float *cost, const bool symmetric,
-		   float *best_cost, int *next_node, bool *visited)
+منطقي solveBackward(ثابت صحيح انگ_nodes, ثابت صحيح goal, ثابت عائم *لاڳت, ثابت منطقي متناظر,
+		   عائم *بهترين_لاڳت, صحيح *ايندڙ_ڳنڍ, منطقي *گهميل)
 {
-	if (num_nodes <= 0 || goal < 0 || goal >= num_nodes
-	    || cost == nullptr || best_cost == nullptr || next_node == nullptr || visited == nullptr) {
-		return false;
+	إذا (انگ_nodes <= 0 || goal < 0 || goal >= انگ_nodes
+	    || لاڳت == خالي_اشارو || بهترين_لاڳت == خالي_اشارو || ايندڙ_ڳنڍ == خالي_اشارو || گهميل == خالي_اشارو) {
+		أرجع خطأ;
 	}
 
-	for (int i = 0; i < num_nodes; ++i) {
-		best_cost[i] = kUnreachable;
-		next_node[i] = -1;
-		visited[i] = false;
+	لكل (صحيح i = 0; i < انگ_nodes; ++i) {
+		بهترين_لاڳت[i] = kUnreachable;
+		ايندڙ_ڳنڍ[i] = -1;
+		گهميل[i] = خطأ;
 	}
 
-	best_cost[goal] = 0.f;
-	visited[goal] = true;
+	بهترين_لاڳت[goal] = 0.f;
+	گهميل[goal] = سچ;
 
 	// O(N^2) Dijkstra on the reverse graph. Each iteration relaxes incoming edges
 	// v -> u using cost(v, u) and, in the same sweep over v, tracks the smallest
 	// best_cost among still-unvisited nodes — that argmin is the u for the next
 	// iteration. The very first u is `goal` (the only node with best_cost == 0).
-	int u = goal;
-	float u_cost = 0.f;
+	صحيح u = goal;
+	عائم u_لاڳت = 0.f;
 
-	for (int iter = 0; iter < num_nodes - 1; ++iter) {
-		int next_u = -1;
-		float next_cost = kUnreachable;
+	لكل (صحيح iter = 0; iter < انگ_nodes - 1; ++iter) {
+		صحيح ايندڙ_u = -1;
+		عائم ايندڙ_لاڳت = kUnreachable;
 
-		for (int v = 0; v < num_nodes; ++v) {
-			if (visited[v]) {
-				continue;
+		لكل (صحيح v = 0; v < انگ_nodes; ++v) {
+			إذا (گهميل[v]) {
+				استمر;
 			}
 
 			// Edge v -> u. For asymmetric layout, look up the (v, u) entry directly.
 			// For symmetric packed upper-triangular: index by the unordered pair {v, u}.
-			float edge;
+			عائم ڪنارو_2;
 
-			if (symmetric) {
-				edge = cost[symmetricPairIndex(v, u, num_nodes)];
+			إذا (متناظر) {
+				ڪنارو_2 = لاڳت[متناظر_Pair_اشاريو_2(v, u, انگ_nodes)];
 
-			} else {
-				edge = cost[v * num_nodes + u];
+			} وإلا {
+				ڪنارو_2 = لاڳت[v * انگ_nodes + u];
 			}
 
 			// Treat +INFINITY and NaN as missing edges. `edge < kUnreachable` is false for
 			// both because NaN is unordered and INFINITY < INFINITY is false.
-			if (edge < kUnreachable) {
-				const float candidate = u_cost + edge;
+			إذا (ڪنارو_2 < kUnreachable) {
+				ثابت عائم candidate = u_لاڳت + ڪنارو_2;
 
-				if (candidate < best_cost[v]) {
-					best_cost[v] = candidate;
-					next_node[v] = u;
+				إذا (candidate < بهترين_لاڳت[v]) {
+					بهترين_لاڳت[v] = candidate;
+					ايندڙ_ڳنڍ[v] = u;
 				}
 			}
 
 			// Same sweep: track argmin of best_cost over unvisited nodes for the next iter.
-			if (best_cost[v] < next_cost) {
-				next_cost = best_cost[v];
-				next_u = v;
+			إذا (بهترين_لاڳت[v] < ايندڙ_لاڳت) {
+				ايندڙ_لاڳت = بهترين_لاڳت[v];
+				ايندڙ_u = v;
 			}
 		}
 
-		if (next_u < 0) {
+		إذا (ايندڙ_u < 0) {
 			// No unvisited node is reachable; remaining nodes stay at kUnreachable.
-			break;
+			اكسر;
 		}
 
-		visited[next_u] = true;
-		u = next_u;
-		u_cost = next_cost;
+		گهميل[ايندڙ_u] = سچ;
+		u = ايندڙ_u;
+		u_لاڳت = ايندڙ_لاڳت;
 	}
 
-	return true;
+	أرجع سچ;
 }
 
 } // namespace dijkstra

@@ -37,19 +37,19 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#ضمن <math.h>
+#ضمن <float.h>
 
-#include "blocks.hpp"
+#ضمن "blocks.hpp"
 
-namespace control
+نطاق control
 {
 
-float BlockIntegral::update(float input)
+عائم بلاڪ_Integral::update(عائم داخلا)
 {
 	// trapezoidal integration
-	setY(_limit.update(getY() + input * getDt()));
-	return getY();
+	سيٽ_Y(حد_بندي.update(getY() + داخلا * getDt()));
+	أرجع getY();
 }
 
 } // namespace control

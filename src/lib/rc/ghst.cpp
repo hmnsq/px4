@@ -40,71 +40,71 @@
  * @author Juraj Ciberlin <jciberlin1@gmail.com>
  */
 
-#if 0 // enable non-verbose debugging
-#define GHST_DEBUG PX4_WARN
-#else
-#define GHST_DEBUG(...)
-#endif
+#إذا 0 // enable non-verbose debugging
+#وصف_ڪريو GHST_DEBUG PX4_WARN
+#وإلا
+#وصف_ڪريو GHST_DEBUG(...)
+#جيڪڏهن_پورو
 
-#if 0 // verbose debugging. Careful when enabling: it leads to too much output, causing dropped bytes
-#define GHST_VERBOSE PX4_WARN
-#else
-#define GHST_VERBOSE(...)
-#endif
+#إذا 0 // verbose debugging. Careful when enabling: it leads to too much output, causing dropped bytes
+#وصف_ڪريو GHST_VERBOSE PX4_WARN
+#وإلا
+#وصف_ڪريو GHST_VERBOSE(...)
+#جيڪڏهن_پورو
 
-#include <drivers/drv_hrt.h>
-#include <termios.h>
-#include <string.h>
-#include <unistd.h>
-#include <math.h>
+#ضمن <drivers/drv_hrt.h>
+#ضمن <termios.h>
+#ضمن <string.h>
+#ضمن <unistd.h>
+#ضمن <math.h>
 
 // TODO: include RSSI dBm to percentage conversion for ghost receiver
-#include "spektrum_rssi.h"
+#ضمن "spektrum_rssi.h"
 
-#include "ghst.hpp"
-#include "common_rc.h"
+#ضمن "ghst.hpp"
+#ضمن "common_rc.h"
 
-#define MIN(a,b) (((a)<(b))?(a):(b))
+#وصف_ڪريو MIN(a,b) (((a)<(b))?(a):(b))
 
-#define GHST_FRAME_PAYLOAD_SIZE_TELEMETRY	(10U)
-#define GHST_FRAME_CRC_SIZE			(1U)
-#define GHST_FRAME_TYPE_SIZE			(1U)
-#define GHST_TYPE_DATA_CRC_SIZE			(12U)
-#define GHST_ADDR_FC				(130U)
-#define GHST_MAX_NUM_CHANNELS			(16)
+#وصف_ڪريو GHST_چوکٺو_PAYLOAD_سائيز_TELEMETRY	(10U)
+#وصف_ڪريو GHST_چوکٺو_چڪري_جاچ_سائيز			(1U)
+#وصف_ڪريو GHST_چوکٺو_TYPE_سائيز			(1U)
+#وصف_ڪريو GHST_TYPE_معلومات_چڪري_جاچ_سائيز			(12U)
+#وصف_ڪريو GHST_ADDR_FC				(130U)
+#وصف_ڪريو GHST_MAX_انگ_CHANNELS			(16)
 
-enum class ghst_parser_state_t : uint8_t {
+تعداد صنف ghst_parser_state_t : uint8_t {
 	unsynced = 0U,
 	synced
 };
 
 // only RSSI frame contains value of RSSI, if it is not received, send last received RSSI/LQ
-static ghstLinkStatistics_t last_link_stats = { .rssi_pct = -1, .rssi_dbm = NAN, .link_quality = 0 };
+ساكن ghstLinkStatistics_t آخري_link_stats = { .rssi_pct = -1, .rssi_dbm = NAN, .link_quality = 0 };
 
-static ghst_frame_t &ghst_frame = rc_decode_buf.ghst_frame;
-static uint32_t current_frame_position = 0U;
-static ghst_parser_state_t parser_state = ghst_parser_state_t::unsynced;
+ساكن ghst_چوکٺو_t &ghst_چوکٺو = rc_decode_buf.ghst_چوکٺو;
+ساكن uint32_t current_چوکٺو_position = 0U;
+ساكن ghst_parser_state_t parser_state = ghst_parser_state_t::unsynced;
 
-static uint16_t prev_rc_vals[GHST_MAX_NUM_CHANNELS];
+ساكن uint16_t prev_rc_vals[GHST_MAX_انگ_CHANNELS];
 
 /**
  * parse the current ghst_frame buffer
  */
-static bool ghst_parse_buffer(uint16_t *values, ghstLinkStatistics_t *link_stats, uint16_t *num_values,
+ساكن منطقي ghst_parse_بفر(uint16_t *قدرون_2, ghstLinkStatistics_t *link_stats, uint16_t *انگ_قدرون,
 			      uint16_t max_channels);
 
-int ghst_config(int uart_fd)
+صحيح ghst_config(صحيح uart_fd)
 {
-	struct termios t;
-	int ret_val;
+	بنية termios t;
+	صحيح ret_val;
 
 	// no parity, one stop bit
 	tcgetattr(uart_fd, &t);
 	cfsetspeed(&t, GHST_BAUDRATE);
 	t.c_cflag &= ~(CSTOPB | PARENB);
-	memset(prev_rc_vals, static_cast<int>(UINT16_MAX), sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+	memset(prev_rc_vals, static_cast<صحيح>(UINT16_MAX), حجم(uint16_t) * GHST_MAX_انگ_CHANNELS);
 	ret_val = tcsetattr(uart_fd, TCSANOW, &t);
-	return ret_val;
+	أرجع ret_val;
 }
 
 /**
@@ -112,62 +112,62 @@ int ghst_config(int uart_fd)
  * @param chan_value channel value in [172, 1811]
  * @return PWM channel value in [1000, 2000]
  */
-static uint16_t convert_channel_value(unsigned chan_value);
+ساكن uint16_t convert_channel_قدر(بنانشان chan_قدر);
 
 
-bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *values,
-		ghstLinkStatistics_t *link_stats, uint16_t *num_values, uint16_t max_channels)
+منطقي ghst_parse(ثابت uint64_t now, ثابت uint8_t *چوکٺو, بنانشان len, uint16_t *قدرون_2,
+		ghstLinkStatistics_t *link_stats, uint16_t *انگ_قدرون, uint16_t max_channels)
 {
-	bool success = false;
-	uint8_t *ghst_frame_ptr = (uint8_t *)&ghst_frame;
+	منطقي success = خطأ;
+	uint8_t *ghst_چوکٺو_ptr = (uint8_t *)&ghst_چوکٺو;
 
-	memcpy(values, prev_rc_vals, sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+	يادگيري_نقل(قدرون_2, prev_rc_vals, حجم(uint16_t) * GHST_MAX_انگ_CHANNELS);
 
-	while (len > 0U) {
+	طالما (len > 0U) {
 
 		// fill in the ghst_buffer, as much as we can
-		const uint32_t current_len = MIN(len, sizeof(ghst_frame_t) - current_frame_position);
-		memcpy(ghst_frame_ptr + current_frame_position, frame, current_len);
-		current_frame_position += current_len;
+		ثابت uint32_t current_len = MIN(len, حجم(ghst_چوکٺو_t) - current_چوکٺو_position);
+		يادگيري_نقل(ghst_چوکٺو_ptr + current_چوکٺو_position, چوکٺو, current_len);
+		current_چوکٺو_position += current_len;
 
 		// protection to guarantee parsing progress
-		if (current_len == 0U) {
+		إذا (current_len == 0U) {
 			GHST_DEBUG("========== parser bug: no progress (%u) ===========", len);
 
-			for (uint32_t i = 0U; i < current_frame_position; ++i) {
-				GHST_DEBUG("ghst_frame_ptr[%u]: 0x%x", i, ghst_frame_ptr[i]);
+			لكل (uint32_t i = 0U; i < current_چوکٺو_position; ++i) {
+				GHST_DEBUG("ghst_frame_ptr[%u]: 0x%x", i, ghst_چوکٺو_ptr[i]);
 			}
 
 			// reset the parser
-			current_frame_position = 0U;
+			current_چوکٺو_position = 0U;
 			parser_state = ghst_parser_state_t::unsynced;
-			success = false;
+			success = خطأ;
 
-		} else {
+		} وإلا {
 			len -= current_len;
-			frame += current_len;
+			چوکٺو += current_len;
 
-			if (ghst_parse_buffer(values, link_stats, num_values, max_channels)) {
-				success = true;
+			إذا (ghst_parse_بفر(قدرون_2, link_stats, انگ_قدرون, max_channels)) {
+				success = سچ;
 			}
 		}
 	}
 
-	return success;
+	أرجع success;
 }
 
-uint8_t ghst_frame_CRC(const ghst_frame_t &frame)
+uint8_t ghst_چوکٺو_چڪري_جاچ(ثابت ghst_چوکٺو_t &چوکٺو)
 {
-	uint8_t crc = crc8_dvb_s2(0U, frame.type);
+	uint8_t چڪري_جاچ = crc8_dvb_s2(0U, چوکٺو.type);
 
-	for (uint32_t i = 0U; i < frame.header.length - GHST_FRAME_CRC_SIZE - GHST_FRAME_TYPE_SIZE; ++i) {
-		crc = crc8_dvb_s2(crc, frame.payload[i]);
+	لكل (uint32_t i = 0U; i < چوکٺو.سرو.ڊيگهائي - GHST_چوکٺو_چڪري_جاچ_سائيز - GHST_چوکٺو_TYPE_سائيز; ++i) {
+		چڪري_جاچ = crc8_dvb_s2(چڪري_جاچ, چوکٺو.payload[i]);
 	}
 
-	return crc;
+	أرجع چڪري_جاچ;
 }
 
-static uint16_t convert_channel_value(unsigned int chan_value)
+ساكن uint16_t convert_channel_قدر(بنانشان صحيح chan_قدر)
 {
 	/*
 	 *       RC     PWM
@@ -175,264 +175,264 @@ static uint16_t convert_channel_value(unsigned int chan_value)
 	 * mid  992 -> 1500us
 	 * max 1811 -> 2012us
 	 */
-	static constexpr float scale = (2012.0F - 988.0F) / (1811.0F - 172.0F);
-	static constexpr float offset = 988.0F - (172.0F * scale);
-	float scaled_chan_value = scale * static_cast<float>(chan_value);
-	float scaled_chan_value_with_offset = scaled_chan_value + offset;
-	uint16_t converted_chan_value = static_cast<uint16_t>(scaled_chan_value_with_offset);
+	ساكن constexpr عائم scale = (2012.0F - 988.0F) / (1811.0F - 172.0F);
+	ساكن constexpr عائم وٿي = 988.0F - (172.0F * scale);
+	عائم scaled_chan_قدر = scale * static_cast<عائم>(chan_قدر);
+	عائم scaled_chan_قدر_with_وٿي = scaled_chan_قدر + وٿي;
+	uint16_t converted_chan_قدر = static_cast<uint16_t>(scaled_chan_قدر_with_وٿي);
 
-	return converted_chan_value;
+	أرجع converted_chan_قدر;
 }
 
-static bool ghst_parse_buffer(uint16_t *values, ghstLinkStatistics_t *link_stats, uint16_t *num_values,
+ساكن منطقي ghst_parse_بفر(uint16_t *قدرون_2, ghstLinkStatistics_t *link_stats, uint16_t *انگ_قدرون,
 			      uint16_t max_channels)
 {
-	uint8_t *ghst_frame_ptr = (uint8_t *)&ghst_frame;
+	uint8_t *ghst_چوکٺو_ptr = (uint8_t *)&ghst_چوکٺو;
 
-	if (parser_state == ghst_parser_state_t::unsynced) {
+	إذا (parser_state == ghst_parser_state_t::unsynced) {
 		// there is no sync yet, try to find an RC packet by searching for a matching frame length and type
-		for (uint32_t i = 1U; i < current_frame_position - 1U; ++i) {
-			if ((ghst_frame_ptr[i + 1U] >= static_cast<uint8_t>(ghstFrameType::frameTypeFirst)) &&
-			    (ghst_frame_ptr[i + 1U] <= static_cast<uint8_t>(ghstFrameType::frameTypeLast))) {
-				if (ghst_frame_ptr[i] == GHST_TYPE_DATA_CRC_SIZE) {
+		لكل (uint32_t i = 1U; i < current_چوکٺو_position - 1U; ++i) {
+			إذا ((ghst_چوکٺو_ptr[i + 1U] >= static_cast<uint8_t>(ghst_چوکٺو_Type::چوکٺو_Type_پهريون)) &&
+			    (ghst_چوکٺو_ptr[i + 1U] <= static_cast<uint8_t>(ghst_چوکٺو_Type::چوکٺو_Type_آخري))) {
+				إذا (ghst_چوکٺو_ptr[i] == GHST_TYPE_معلومات_چڪري_جاچ_سائيز) {
 					parser_state = ghst_parser_state_t::synced;
-					uint32_t frame_offset = i - 1U;
-					GHST_VERBOSE("RC channels found at offset %u", frame_offset);
+					uint32_t چوکٺو_وٿي = i - 1U;
+					GHST_VERBOSE("RC channels found at offset %u", چوکٺو_وٿي);
 
 					// move the rest of the buffer to the beginning
-					if (frame_offset != 0U) {
-						memmove(ghst_frame_ptr, ghst_frame_ptr + frame_offset, current_frame_position - frame_offset);
-						current_frame_position -= frame_offset;
+					إذا (چوکٺو_وٿي != 0U) {
+						memmove(ghst_چوکٺو_ptr, ghst_چوکٺو_ptr + چوکٺو_وٿي, current_چوکٺو_position - چوکٺو_وٿي);
+						current_چوکٺو_position -= چوکٺو_وٿي;
 					}
 
-					break;
+					اكسر;
 				}
 			}
 		}
 	}
 
-	if (parser_state != ghst_parser_state_t::synced) {
-		if (current_frame_position >= sizeof(ghst_frame_t)) {
+	إذا (parser_state != ghst_parser_state_t::synced) {
+		إذا (current_چوکٺو_position >= حجم(ghst_چوکٺو_t)) {
 			// discard most of the data, but keep the last 3 bytes (otherwise we could miss the frame start)
-			current_frame_position = 3U;
+			current_چوکٺو_position = 3U;
 
-			memcpy(ghst_frame_ptr, ghst_frame_ptr + sizeof(ghst_frame_t) - current_frame_position, current_frame_position);
+			يادگيري_نقل(ghst_چوکٺو_ptr, ghst_چوکٺو_ptr + حجم(ghst_چوکٺو_t) - current_چوکٺو_position, current_چوکٺو_position);
 
 			GHST_VERBOSE("Discarding buffer");
 		}
 
-		return false;
+		أرجع خطأ;
 	}
 
 
-	if (current_frame_position < 3U) {
+	إذا (current_چوکٺو_position < 3U) {
 		// wait until we have the address, length and type
-		return false;
+		أرجع خطأ;
 	}
 
 	// now we have at least the header and the type
 
-	const unsigned current_frame_length = ghst_frame.header.length + sizeof(ghst_frame_header_t);
+	ثابت بنانشان current_چوکٺو_ڊيگهائي = ghst_چوکٺو.سرو.ڊيگهائي + حجم(ghst_چوکٺو_سرو_t);
 
-	if ((current_frame_length > sizeof(ghst_frame_t)) || (current_frame_length < 4U)) {
+	إذا ((current_چوکٺو_ڊيگهائي > حجم(ghst_چوکٺو_t)) || (current_چوکٺو_ڊيگهائي < 4U)) {
 		// frame too long or bogus (frame length should be longer than 4, at least 1 address, 1 length, 1 type, 1 data, 1 crc)
 		// discard everything and go into unsynced state
-		current_frame_position = 0U;
+		current_چوکٺو_position = 0U;
 		parser_state = ghst_parser_state_t::unsynced;
-		GHST_DEBUG("Frame too long/bogus (%u, type=%u) -> unsync", current_frame_length, ghst_frame.type);
-		return false;
+		GHST_DEBUG("Frame too long/bogus (%u, type=%u) -> unsync", current_چوکٺو_ڊيگهائي, ghst_چوکٺو.type);
+		أرجع خطأ;
 	}
 
-	if (current_frame_position < current_frame_length) {
+	إذا (current_چوکٺو_position < current_چوکٺو_ڊيگهائي) {
 		// we do not have the full frame yet -> wait for more data
-		GHST_VERBOSE("waiting for more data (%u < %u)", current_frame_position, current_frame_length);
-		return false;
+		GHST_VERBOSE("waiting for more data (%u < %u)", current_چوکٺو_position, current_چوکٺو_ڊيگهائي);
+		أرجع خطأ;
 	}
 
-	bool ret = false;
+	منطقي ret = خطأ;
 
 	// now we have the full frame
 
-	if ((ghst_frame.type >= static_cast<uint8_t>(ghstFrameType::frameTypeFirst)) &&
-	    (ghst_frame.type <= static_cast<uint8_t>(ghstFrameType::frameTypeLast)) &&
-	    (ghst_frame.header.length == GHST_TYPE_DATA_CRC_SIZE) &&
-	    (ghst_frame.header.device_address == GHST_ADDR_FC)) {
-		const uint8_t crc = ghst_frame.payload[ghst_frame.header.length - 2U];
+	إذا ((ghst_چوکٺو.type >= static_cast<uint8_t>(ghst_چوکٺو_Type::چوکٺو_Type_پهريون)) &&
+	    (ghst_چوکٺو.type <= static_cast<uint8_t>(ghst_چوکٺو_Type::چوکٺو_Type_آخري)) &&
+	    (ghst_چوکٺو.سرو.ڊيگهائي == GHST_TYPE_معلومات_چڪري_جاچ_سائيز) &&
+	    (ghst_چوکٺو.سرو.device_پتو == GHST_ADDR_FC)) {
+		ثابت uint8_t چڪري_جاچ = ghst_چوکٺو.payload[ghst_چوکٺو.سرو.ڊيگهائي - 2U];
 
-		if (crc == ghst_frame_CRC(ghst_frame)) {
-			const ghstPayloadData_t *const rcChannels = (ghstPayloadData_t *)&ghst_frame.payload;
-			*num_values = MIN(max_channels, GHST_MAX_NUM_CHANNELS);
+		إذا (چڪري_جاچ == ghst_چوکٺو_چڪري_جاچ(ghst_چوکٺو)) {
+			ثابت ghst_Payload_معلومات_t *ثابت rcChannels = (ghst_Payload_معلومات_t *)&ghst_چوکٺو.payload;
+			*انگ_قدرون = MIN(max_channels, GHST_MAX_انگ_CHANNELS);
 
 			// all frames contain data from chan1to4
-			if (max_channels > 0U) { values[0] = convert_channel_value(rcChannels->chan1to4.chan1 >> 1U); }
+			إذا (max_channels > 0U) { قدرون_2[0] = convert_channel_قدر(rcChannels->chan1to4.chan1 >> 1U); }
 
-			if (max_channels > 1U) { values[1] = convert_channel_value(rcChannels->chan1to4.chan2 >> 1U); }
+			إذا (max_channels > 1U) { قدرون_2[1] = convert_channel_قدر(rcChannels->chan1to4.chan2 >> 1U); }
 
-			if (max_channels > 2U) { values[2] = convert_channel_value(rcChannels->chan1to4.chan3 >> 1U); }
+			إذا (max_channels > 2U) { قدرون_2[2] = convert_channel_قدر(rcChannels->chan1to4.chan3 >> 1U); }
 
-			if (max_channels > 3U) { values[3] = convert_channel_value(rcChannels->chan1to4.chan4 >> 1U); }
+			إذا (max_channels > 3U) { قدرون_2[3] = convert_channel_قدر(rcChannels->chan1to4.chan4 >> 1U); }
 
-			if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType5to8)) {
-				if (max_channels > 4U) { values[4] = convert_channel_value(rcChannels->chanA << 3U); }
+			إذا (ghst_چوکٺو.type == static_cast<uint8_t>(ghst_چوکٺو_Type::چوکٺو_Type5to8)) {
+				إذا (max_channels > 4U) { قدرون_2[4] = convert_channel_قدر(rcChannels->chanA << 3U); }
 
-				if (max_channels > 5U) { values[5] = convert_channel_value(rcChannels->chanB << 3U); }
+				إذا (max_channels > 5U) { قدرون_2[5] = convert_channel_قدر(rcChannels->chanB << 3U); }
 
-				if (max_channels > 6U) { values[6] = convert_channel_value(rcChannels->chanC << 3U); }
+				إذا (max_channels > 6U) { قدرون_2[6] = convert_channel_قدر(rcChannels->chanC << 3U); }
 
-				if (max_channels > 7U) { values[7] = convert_channel_value(rcChannels->chanD << 3U); }
+				إذا (max_channels > 7U) { قدرون_2[7] = convert_channel_قدر(rcChannels->chanD << 3U); }
 
-			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType9to12)) {
-				if (max_channels > 8U) { values[8] = convert_channel_value(rcChannels->chanA << 3U); }
+			} وإلا إذا (ghst_چوکٺو.type == static_cast<uint8_t>(ghst_چوکٺو_Type::چوکٺو_Type9to12)) {
+				إذا (max_channels > 8U) { قدرون_2[8] = convert_channel_قدر(rcChannels->chanA << 3U); }
 
-				if (max_channels > 9U) { values[9] = convert_channel_value(rcChannels->chanB << 3U); }
+				إذا (max_channels > 9U) { قدرون_2[9] = convert_channel_قدر(rcChannels->chanB << 3U); }
 
-				if (max_channels > 10U) { values[10] = convert_channel_value(rcChannels->chanC << 3U); }
+				إذا (max_channels > 10U) { قدرون_2[10] = convert_channel_قدر(rcChannels->chanC << 3U); }
 
-				if (max_channels > 11U) { values[11] = convert_channel_value(rcChannels->chanD << 3U); }
+				إذا (max_channels > 11U) { قدرون_2[11] = convert_channel_قدر(rcChannels->chanD << 3U); }
 
-			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType13to16)) {
-				if (max_channels > 12U) { values[12] = convert_channel_value(rcChannels->chanA << 3U); }
+			} وإلا إذا (ghst_چوکٺو.type == static_cast<uint8_t>(ghst_چوکٺو_Type::چوکٺو_Type13to16)) {
+				إذا (max_channels > 12U) { قدرون_2[12] = convert_channel_قدر(rcChannels->chanA << 3U); }
 
-				if (max_channels > 13U) { values[13] = convert_channel_value(rcChannels->chanB << 3U); }
+				إذا (max_channels > 13U) { قدرون_2[13] = convert_channel_قدر(rcChannels->chanB << 3U); }
 
-				if (max_channels > 14U) { values[14] = convert_channel_value(rcChannels->chanC << 3U); }
+				إذا (max_channels > 14U) { قدرون_2[14] = convert_channel_قدر(rcChannels->chanC << 3U); }
 
-				if (max_channels > 15U) { values[15] = convert_channel_value(rcChannels->chanD << 3U); }
+				إذا (max_channels > 15U) { قدرون_2[15] = convert_channel_قدر(rcChannels->chanD << 3U); }
 
-			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameTypeRssi)) {
-				const ghstPayloadRssi_t *const rssiValues = (ghstPayloadRssi_t *)&ghst_frame.payload;
+			} وإلا إذا (ghst_چوکٺو.type == static_cast<uint8_t>(ghst_چوکٺو_Type::چوکٺو_Type_Rssi)) {
+				ثابت ghstPayloadRssi_t *ثابت rssi_قدرون = (ghstPayloadRssi_t *)&ghst_چوکٺو.payload;
 				// TODO: call function for RSSI dBm to percentage conversion for ghost receiver
-				last_link_stats.rssi_pct = spek_dbm_to_percent(static_cast<int8_t>
-							   (rssiValues->rssidBm));	// rssidBm sign inverted (90 = -90dBm)
-				last_link_stats.rssi_dbm = -rssiValues->rssidBm;
-				last_link_stats.link_quality = rssiValues->lq;						// 0 - 100
+				آخري_link_stats.rssi_pct = spek_dbm_منزل_percent(static_cast<int8_t>
+							   (rssi_قدرون->rssidBm));	// rssidBm sign inverted (90 = -90dBm)
+				آخري_link_stats.rssi_dbm = -rssi_قدرون->rssidBm;
+				آخري_link_stats.link_quality = rssi_قدرون->lq;						// 0 - 100
 
-			} else {
-				GHST_DEBUG("Frame type: %u", ghst_frame.type);
+			} وإلا {
+				GHST_DEBUG("Frame type: %u", ghst_چوکٺو.type);
 			}
 
-			*link_stats = last_link_stats;
+			*link_stats = آخري_link_stats;
 
-			memcpy(prev_rc_vals, values, sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+			يادگيري_نقل(prev_rc_vals, قدرون_2, حجم(uint16_t) * GHST_MAX_انگ_CHANNELS);
 
 			GHST_VERBOSE("Got Channels");
 
-			ret = true;
+			ret = سچ;
 
-		} else {
+		} وإلا {
 			GHST_DEBUG("CRC check failed");
 		}
 
-	} else {
-		GHST_DEBUG("Got Non-RC frame (len=%u, type=%u)", current_frame_length, ghst_frame.type);
+	} وإلا {
+		GHST_DEBUG("Got Non-RC frame (len=%u, type=%u)", current_چوکٺو_ڊيگهائي, ghst_چوکٺو.type);
 	}
 
 	// either reset or move the rest of the buffer
-	if (current_frame_position > current_frame_length) {
-		GHST_VERBOSE("Moving buffer (%u > %u)", current_frame_position, current_frame_length);
-		memmove(ghst_frame_ptr, ghst_frame_ptr + current_frame_length, current_frame_position - current_frame_length);
-		current_frame_position -= current_frame_length;
+	إذا (current_چوکٺو_position > current_چوکٺو_ڊيگهائي) {
+		GHST_VERBOSE("Moving buffer (%u > %u)", current_چوکٺو_position, current_چوکٺو_ڊيگهائي);
+		memmove(ghst_چوکٺو_ptr, ghst_چوکٺو_ptr + current_چوکٺو_ڊيگهائي, current_چوکٺو_position - current_چوکٺو_ڊيگهائي);
+		current_چوکٺو_position -= current_چوکٺو_ڊيگهائي;
 
-	} else {
-		current_frame_position = 0U;
+	} وإلا {
+		current_چوکٺو_position = 0U;
 	}
 
-	return ret;
+	أرجع ret;
 }
 
 /**
  * write an uint8_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint8_t(uint8_t *buf, int &offset, uint8_t value)
+ساكن مضمن فراغ write_uint8_t(uint8_t *buf, صحيح &وٿي, uint8_t value)
 {
-	buf[offset++] = value;
+	buf[وٿي++] = value;
 }
 
 /**
  * write an uint16_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint16_t(uint8_t *buf, int &offset, uint16_t value)
+ساكن مضمن فراغ write_uint16_t(uint8_t *buf, صحيح &وٿي, uint16_t value)
 {
-	buf[offset] = value & 0xFFU;
-	buf[offset + 1] = value >> 8U;
-	offset += 2;
+	buf[وٿي] = value & 0xFFU;
+	buf[وٿي + 1] = value >> 8U;
+	وٿي += 2;
 }
 
 /**
  * write an uint32_t value to a buffer at a given offset and increment the offset
  */
-static inline void write_uint32_t(uint8_t *buf, int &offset, uint32_t value)
+ساكن مضمن فراغ write_uint32_t(uint8_t *buf, صحيح &وٿي, uint32_t value)
 {
 	// Little Endian
-	buf[offset] = value & 0xFFU;
-	buf[offset + 1] = (value & 0xFF00) >> 8U;
-	buf[offset + 2] = (value & 0xFF0000) >> 16U;
-	buf[offset + 3] = (value & 0xFF000000) >> 24U;
-	offset += 4;
+	buf[وٿي] = value & 0xFFU;
+	buf[وٿي + 1] = (value & 0xFF00) >> 8U;
+	buf[وٿي + 2] = (value & 0xFF0000) >> 16U;
+	buf[وٿي + 3] = (value & 0xFF000000) >> 24U;
+	وٿي += 4;
 }
 
 /**
  * write frame header
  */
-static inline void write_frame_header(uint8_t *buf, int &offset, ghstTelemetryType type, uint8_t payload_size)
+ساكن مضمن فراغ write_چوکٺو_سرو(uint8_t *buf, صحيح &وٿي, ghstTelemetryType type, uint8_t payload_سائيز)
 {
-	write_uint8_t(buf, offset, static_cast<uint8_t>(ghstAddress::rxAddress));
-	write_uint8_t(buf, offset, payload_size + GHST_FRAME_CRC_SIZE + GHST_FRAME_TYPE_SIZE);
-	write_uint8_t(buf, offset, static_cast<uint8_t>(type));
+	write_uint8_t(buf, وٿي, static_cast<uint8_t>(ghst_پتو::rx_پتو));
+	write_uint8_t(buf, وٿي, payload_سائيز + GHST_چوکٺو_چڪري_جاچ_سائيز + GHST_چوکٺو_TYPE_سائيز);
+	write_uint8_t(buf, وٿي, static_cast<uint8_t>(type));
 }
 
 /**
  * write frame CRC
  */
-static inline void write_frame_crc(uint8_t *buf, int &offset, int buf_size)
+ساكن مضمن فراغ write_چوکٺو_چڪري_جاچ(uint8_t *buf, صحيح &وٿي, صحيح buf_سائيز)
 {
-	write_uint8_t(buf, offset, crc8_dvb_s2_buf(buf + 2U, buf_size - 3));
+	write_uint8_t(buf, وٿي, crc8_dvb_s2_buf(buf + 2U, buf_سائيز - 3));
 }
 
-bool ghst_send_telemetry_battery_status(int uart_fd, uint16_t voltage_in_10mV,
-					uint16_t current_in_10mA, uint16_t fuel_in_10mAh)
+منطقي ghst_send_telemetry_battery_حالت(صحيح uart_fd, uint16_t voltage_اندريون_10m_V,
+					uint16_t current_اندريون_10m_A, uint16_t fuel_اندريون_10m_Ah)
 {
-	uint8_t buf[GHST_FRAME_PAYLOAD_SIZE_TELEMETRY + 4U]; // address, frame length, type, crc
-	int offset = 0;
-	write_frame_header(buf, offset, ghstTelemetryType::batteryPack, GHST_FRAME_PAYLOAD_SIZE_TELEMETRY);
-	write_uint16_t(buf, offset, voltage_in_10mV);
-	write_uint16_t(buf, offset, current_in_10mA);
-	write_uint16_t(buf, offset, fuel_in_10mAh);
-	write_uint8_t(buf, offset, 0x00U); // empty
-	write_uint8_t(buf, offset, 0x00U); // empty
-	write_uint8_t(buf, offset, 0x00U); // empty
-	write_uint8_t(buf, offset, 0x00U); // empty
-	write_frame_crc(buf, offset, sizeof(buf));
+	uint8_t buf[GHST_چوکٺو_PAYLOAD_سائيز_TELEMETRY + 4U]; // address, frame length, type, crc
+	صحيح وٿي = 0;
+	write_چوکٺو_سرو(buf, وٿي, ghstTelemetryType::batteryPack, GHST_چوکٺو_PAYLOAD_سائيز_TELEMETRY);
+	write_uint16_t(buf, وٿي, voltage_اندريون_10m_V);
+	write_uint16_t(buf, وٿي, current_اندريون_10m_A);
+	write_uint16_t(buf, وٿي, fuel_اندريون_10m_Ah);
+	write_uint8_t(buf, وٿي, 0x00U); //خالي_جايون
+	write_uint8_t(buf, وٿي, 0x00U); //خالي_جايون
+	write_uint8_t(buf, وٿي, 0x00U); //خالي_جايون
+	write_uint8_t(buf, وٿي, 0x00U); //خالي_جايون
+	write_چوکٺو_چڪري_جاچ(buf, وٿي, حجم(buf));
 
-	return write(uart_fd, buf, offset) == offset;
+	أرجع اكتب(uart_fd, buf, وٿي) == وٿي;
 }
 
-bool ghst_send_telemetry_gps1_status(int uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude)
+منطقي ghst_send_telemetry_gps1_حالت(صحيح uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude)
 {
-	uint8_t buf[GHST_FRAME_PAYLOAD_SIZE_TELEMETRY + 4U]; // address, frame length, type, crc
-	int offset = 0;
-	write_frame_header(buf, offset, ghstTelemetryType::gpsPrimary, GHST_FRAME_PAYLOAD_SIZE_TELEMETRY);
-	write_uint32_t(buf, offset, latitude);
-	write_uint32_t(buf, offset, longitude);
-	write_uint16_t(buf, offset, altitude);
-	write_frame_crc(buf, offset, sizeof(buf));
+	uint8_t buf[GHST_چوکٺو_PAYLOAD_سائيز_TELEMETRY + 4U]; // address, frame length, type, crc
+	صحيح وٿي = 0;
+	write_چوکٺو_سرو(buf, وٿي, ghstTelemetryType::gpsPrimary, GHST_چوکٺو_PAYLOAD_سائيز_TELEMETRY);
+	write_uint32_t(buf, وٿي, latitude);
+	write_uint32_t(buf, وٿي, longitude);
+	write_uint16_t(buf, وٿي, altitude);
+	write_چوکٺو_چڪري_جاچ(buf, وٿي, حجم(buf));
 
-	return write(uart_fd, buf, offset) == offset;
+	أرجع اكتب(uart_fd, buf, وٿي) == وٿي;
 }
 
-bool ghst_send_telemetry_gps2_status(int uart_fd, uint16_t ground_speed, uint16_t ground_course, uint8_t numSats,
+منطقي ghst_send_telemetry_gps2_حالت(صحيح uart_fd, uint16_t ground_رفتار, uint16_t ground_ڪورس, uint8_t انگ_Sats,
 				     uint16_t home_dist, uint16_t home_dir, uint8_t flags)
 {
-	uint8_t buf[GHST_FRAME_PAYLOAD_SIZE_TELEMETRY + 4U]; // address, frame length, type, crc
-	int offset = 0;
-	write_frame_header(buf, offset, ghstTelemetryType::gpsSecondary, GHST_FRAME_PAYLOAD_SIZE_TELEMETRY);
-	write_uint16_t(buf, offset, ground_speed);
-	write_uint16_t(buf, offset, ground_course);
-	write_uint8_t(buf, offset, numSats);
-	write_uint16_t(buf, offset, home_dist);
-	write_uint16_t(buf, offset, home_dir);
-	write_uint8_t(buf, offset, flags);
-	write_frame_crc(buf, offset, sizeof(buf));
+	uint8_t buf[GHST_چوکٺو_PAYLOAD_سائيز_TELEMETRY + 4U]; // address, frame length, type, crc
+	صحيح وٿي = 0;
+	write_چوکٺو_سرو(buf, وٿي, ghstTelemetryType::gpsSecondary, GHST_چوکٺو_PAYLOAD_سائيز_TELEMETRY);
+	write_uint16_t(buf, وٿي, ground_رفتار);
+	write_uint16_t(buf, وٿي, ground_ڪورس);
+	write_uint8_t(buf, وٿي, انگ_Sats);
+	write_uint16_t(buf, وٿي, home_dist);
+	write_uint16_t(buf, وٿي, home_dir);
+	write_uint8_t(buf, وٿي, flags);
+	write_چوکٺو_چڪري_جاچ(buf, وٿي, حجم(buf));
 
-	return write(uart_fd, buf, offset) == offset;
+	أرجع اكتب(uart_fd, buf, وٿي) == وٿي;
 }

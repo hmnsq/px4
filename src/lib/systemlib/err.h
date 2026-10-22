@@ -62,38 +62,38 @@
  *
  */
 
-#ifndef _SYSTEMLIB_ERR_H
-#define _SYSTEMLIB_ERR_H
+#جيڪڏهن_وصف_نه_ٿيل _SYSTEMLIB_ERR_H
+#وصف_ڪريو _SYSTEMLIB_ERR_H
 
-#include <px4_platform_common/log.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <stdlib.h>
+#ضمن <px4_platform_common/log.h>
+#ضمن <stdarg.h>
+#ضمن <errno.h>
+#ضمن <stdlib.h>
 
 __BEGIN_DECLS
 
 
-#ifdef __PX4_NUTTX
-#define EXIT(eval) exit(eval)
-#else
-#define EXIT(eval) px4_task_exit(eval)
-#endif
+#جيڪڏهن_وصف_ٿيل __PX4_NUTTX
+#وصف_ڪريو EXIT(eval) ٻاهر_نڪرو(eval)
+#وإلا
+#وصف_ڪريو EXIT(eval) px4_task_exit(eval)
+#جيڪڏهن_پورو
 
 
-#define err(eval, ...)		do { \
+#وصف_ڪريو err(eval, ...)		افعل { \
 		PX4_ERR(__VA_ARGS__); \
 		PX4_ERR("Task exited with errno=%i\n", errno); \
 		EXIT(eval); \
-	} while(0)
+	} طالما(0)
 
-#define errx(eval, ...)		do { \
+#وصف_ڪريو errx(eval, ...)		افعل { \
 		PX4_ERR(__VA_ARGS__); \
 		EXIT(eval); \
-	} while(0)
+	} طالما(0)
 
-#define warn(...) 		PX4_WARN(__VA_ARGS__)
-#define warnx(...) 		PX4_WARN(__VA_ARGS__)
+#وصف_ڪريو warn(...) 		PX4_WARN(__VA_ARGS__)
+#وصف_ڪريو warnx(...) 		PX4_WARN(__VA_ARGS__)
 
 __END_DECLS
 
-#endif
+#جيڪڏهن_پورو

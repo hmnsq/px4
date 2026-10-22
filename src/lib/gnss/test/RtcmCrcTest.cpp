@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#include "RtcmTestCommon.hpp"
+#ضمن "RtcmTestCommon.hpp"
 
-TEST_F(RtcmTest, CRC24Q_EmptyData)
+TEST_F(RtcmTest, CRC24_Q_خالي_جايون_معلومات)
 {
-	uint32_t crc = rtcm3_crc24q(nullptr, 0);
-	EXPECT_EQ(crc, 0u);
+	uint32_t چڪري_جاچ = rtcm3_crc24q(خالي_اشارو, 0);
+	EXPECT_EQ(چڪري_جاچ, 0u);
 }
 
-TEST_F(RtcmTest, CRC24Q_KnownValue)
+TEST_F(RtcmTest, CRC24_Q_معلوم_قدر)
 {
 	// Test with known RTCM data
-	uint8_t data[] = {0xD3, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04};
-	uint32_t crc = rtcm3_crc24q(data, sizeof(data));
+	uint8_t معلومات[] = {0xD3, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04};
+	uint32_t چڪري_جاچ = rtcm3_crc24q(معلومات, حجم(معلومات));
 	// CRC should be a 24-bit value
-	EXPECT_EQ(crc & 0xFF000000, 0u);
-	EXPECT_NE(crc, 0u);
+	EXPECT_EQ(چڪري_جاچ & 0xFF000000, 0u);
+	EXPECT_NE(چڪري_جاچ, 0u);
 }

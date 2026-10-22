@@ -39,57 +39,57 @@
  * Decodes into the global PPM buffer and updates accordingly.
  */
 
-#include <px4_platform_common/px4_config.h>
-#include <board_config.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#ضمن <px4_platform_common/px4_config.h>
+#ضمن <board_config.h>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <px4_platform_common/log.h>
 
-#include <fcntl.h>
-#include <math.h>
-#include <unistd.h>
-#include <termios.h>
-#include <string.h>
+#ضمن <fcntl.h>
+#ضمن <math.h>
+#ضمن <unistd.h>
+#ضمن <termios.h>
+#ضمن <string.h>
 
-#include "dsm.h"
-#include "spektrum_rssi.h"
-#include "common_rc.h"
-#include <drivers/drv_hrt.h>
+#ضمن "dsm.h"
+#ضمن "spektrum_rssi.h"
+#ضمن "common_rc.h"
+#ضمن <drivers/drv_hrt.h>
 
-#include <include/containers/Bitset.hpp>
+#ضمن <include/containers/Bitset.hpp>
 
-#if defined(__PX4_NUTTX)
-#include <nuttx/arch.h>
-#define dsm_udelay(arg)    up_udelay(arg)
-#else
-#define dsm_udelay(arg) px4_usleep(arg)
-#endif
+#إذا defined(__PX4_NUTTX)
+#ضمن <nuttx/arch.h>
+#وصف_ڪريو dsm_udelay(arg)    مٿي_udelay(arg)
+#وإلا
+#وصف_ڪريو dsm_udelay(arg) px4_usleep(arg)
+#جيڪڏهن_پورو
 
 // #define DSM_DEBUG
 
-static enum DSM_DECODE_STATE {
+ساكن تعداد DSM_DECODE_STATE {
 	DSM_DECODE_STATE_DESYNC = 0,
 	DSM_DECODE_STATE_SYNC
 } dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 
-typedef struct {
-	hrt_abstime last_seen;
+تعريفنوع بنية {
+	hrt_abstime آخري_ڏٺل;
 	uint16_t value;
 } dsm_channel_t;
 
-static dsm_channel_t channel_buffer[DSM_MAX_CHANNEL_COUNT];
+ساكن dsm_channel_t channel_بفر[DSM_MAX_CHANNEL_ڳڻپ];
 
-static int dsm_fd = -1;						/**< File handle to the DSM UART */
-static hrt_abstime dsm_last_rx_time;            /**< Timestamp when we last received data */
-static hrt_abstime dsm_last_frame_time;		/**< Timestamp for start of last valid dsm frame */
-static dsm_frame_t &dsm_frame = rc_decode_buf.dsm.frame;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
-static dsm_buf_t &dsm_buf = rc_decode_buf.dsm.buf;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
+ساكن صحيح dsm_fd = -1;						/**< File handle to the DSM UART */
+ساكن hrt_abstime dsm_آخري_rx_وقت;            /**< Timestamp when we last received data */
+ساكن hrt_abstime dsm_آخري_چوکٺو_وقت;		/**< Timestamp for start of last valid dsm frame */
+ساكن dsm_چوکٺو_t &dsm_چوکٺو = rc_decode_buf.dsm.چوکٺو;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
+ساكن dsm_buf_t &dsm_buf = rc_decode_buf.dsm.buf;	/**< DSM_BUFFER_SIZE DSM dsm frame receive buffer */
 
-static unsigned dsm_partial_frame_count;	/**< Count of bytes received for current dsm frame */
-static unsigned dsm_channel_shift = 0;			/**< Channel resolution, 0=unknown, 10=10 bit (1024), 11=11 bit (2048) */
-static unsigned dsm_frame_drops = 0;			/**< Count of incomplete DSM frames */
-static uint16_t dsm_chan_count = 0;         /**< DSM channel count */
+ساكن بنانشان dsm_partial_چوکٺو_ڳڻپ;	/**< Count of bytes received for current dsm frame */
+ساكن بنانشان dsm_channel_سرڪايو = 0;			/**< Channel resolution, 0=unknown, 10=10 bit (1024), 11=11 bit (2048) */
+ساكن بنانشان dsm_چوکٺو_drops = 0;			/**< Count of incomplete DSM frames */
+ساكن uint16_t dsm_chan_ڳڻپ = 0;         /**< DSM channel count */
 
-static constexpr uint8_t CHANNEL_UNUSED = 0xFF;
+ساكن constexpr uint8_t CHANNEL_اڻ_استعمال_ٿيل = 0xFF;
 
 /**
  * Attempt to decode a single channel raw channel datum
@@ -116,31 +116,31 @@ static constexpr uint8_t CHANNEL_UNUSED = 0xFF;
  * @param[out] value pointer to returned channel value
  * @return true=raw value successfully decoded
  */
-static bool dsm_decode_channel(uint16_t raw, unsigned shift, uint8_t &channel, uint16_t &value)
+ساكن منطقي dsm_decode_channel(uint16_t raw, بنانشان سرڪايو, uint8_t &channel, uint16_t &value)
 {
-	if (shift == 10) {
+	إذا (سرڪايو == 10) {
 		// 1024 Mode: This format is used only by DSM2/22ms mode. All other modes use 2048 data.
 		//  Bits 15-10 Channel ID
 		//  Bits 9-0   Servo Position
-		static constexpr uint16_t MASK_1024_CHANID = 0xFC00;
-		static constexpr uint16_t MASK_1024_SXPOS = 0x03FF;
+		ساكن constexpr uint16_t نقاب_1024_CHANID = 0xFC00;
+		ساكن constexpr uint16_t نقاب_1024_SXPOS = 0x03FF;
 
-		channel = (raw & MASK_1024_CHANID) >> 10; // 6 bits
+		channel = (raw & نقاب_1024_CHANID) >> 10; // 6 bits
 
-		const uint16_t servo_position = (raw & MASK_1024_SXPOS); // 10 bits
+		ثابت uint16_t servo_position = (raw & نقاب_1024_SXPOS); // 10 bits
 
-		if (channel >= DSM_MAX_CHANNEL_COUNT) {
+		إذا (channel >= DSM_MAX_CHANNEL_ڳڻپ) {
 			PX4_DEBUG("invalid channel: %d\n", channel);
-			return false;
+			أرجع خطأ;
 		}
 
 		// PWM_OUT = (ServoPosition x 1.166μs) + Offset
-		static constexpr uint16_t offset = 903; // microseconds
-		value = roundf(servo_position * 1.166f) + offset;
+		ساكن constexpr uint16_t وٿي = 903; // microseconds
+		value = roundf(servo_position * 1.166f) + وٿي;
 
-		return true;
+		أرجع سچ;
 
-	} else if (shift == 11) {
+	} وإلا إذا (سرڪايو == 11) {
 		// 2048 Mode
 		//  Bits 15    Servo Phase
 		//  Bits 14-11 Channel ID
@@ -149,53 +149,53 @@ static bool dsm_decode_channel(uint16_t raw, unsigned shift, uint8_t &channel, u
 		uint16_t servo_position = 0;
 
 		// from Spektrum Remote Receiver Interfacing Rev G Page 6
-		const bool phase = (raw >> 15) & 0x01; // the phase is part of the X-Plus address (bit 15)
+		ثابت منطقي phase = (raw >> 15) & 0x01; // the phase is part of the X-Plus address (bit 15)
 		uint8_t chan = (raw >> 11) & 0x0F;
 
-		if (chan < 12) {
+		إذا (chan < 12) {
 			// Normal channels
-			static constexpr uint16_t MASK_2048_SXPOS = 0x07FF;
-			servo_position = (raw & MASK_2048_SXPOS);
+			ساكن constexpr uint16_t نقاب_2048_SXPOS = 0x07FF;
+			servo_position = (raw & نقاب_2048_SXPOS);
 
-		} else if (chan == 12) {
+		} وإلا إذا (chan == 12) {
 			// XPlus channels
 			chan += ((raw >> 9) & 0x03);
 
-			if (phase) {
+			إذا (phase) {
 				chan += 4;
 			}
 
-			if (chan >= DSM_MAX_CHANNEL_COUNT) {
-				return false;
+			إذا (chan >= DSM_MAX_CHANNEL_ڳڻپ) {
+				أرجع خطأ;
 			}
 
 			servo_position = (raw & 0x01FF) << 2;
 
 			channel = chan;
 
-		} else if (chan == 0x0F && phase) {
+		} وإلا إذا (chan == 0x0F && phase) {
 			// When the channel content is all bits set, and the phase is also set, this is the blank channel
-			channel = CHANNEL_UNUSED;
-			return true;
+			channel = CHANNEL_اڻ_استعمال_ٿيل;
+			أرجع سچ;
 
-		} else {
+		} وإلا {
 			// This will be the case for an unused channel (raw 16bit content will be 0xffff)
 			PX4_DEBUG("invalid: %d %d\n", chan, phase);
-			return false;
+			أرجع خطأ;
 		}
 
 		channel = chan;
 
 		// PWM_OUT = (ServoPosition x 0.583μs) + Offset
-		static constexpr uint16_t offset = 903; // microseconds
-		value = roundf(servo_position * 0.583f) + offset;
+		ساكن constexpr uint16_t وٿي = 903; // microseconds
+		value = roundf(servo_position * 0.583f) + وٿي;
 
 		PX4_DEBUG(stderr, "CH%d=%d(0x%02x), ", channel, value, raw);
 
-		return true;
+		أرجع سچ;
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
 /**
@@ -203,100 +203,100 @@ static bool dsm_decode_channel(uint16_t raw, unsigned shift, uint8_t &channel, u
  *
  * @param[in] reset true=reset the 10/11 bit state to unknown
  */
-static bool dsm_guess_format(bool reset)
+ساكن منطقي dsm_guess_format(منطقي reset)
 {
-	static uint32_t cs10 = 0;
-	static uint32_t cs11 = 0;
-	static uint16_t good_cs10_frame_count = 0;
-	static uint16_t good_cs11_frame_count = 0;
-	static uint16_t samples = 0;
-	static uint16_t seen_channels_count_cs11[DSM_MAX_CHANNEL_COUNT] {};
-	static uint16_t seen_channels_count_cs10[DSM_MAX_CHANNEL_COUNT] {};
+	ساكن uint32_t cs10 = 0;
+	ساكن uint32_t cs11 = 0;
+	ساكن uint16_t good_cs10_چوکٺو_ڳڻپ = 0;
+	ساكن uint16_t good_cs11_چوکٺو_ڳڻپ = 0;
+	ساكن uint16_t samples = 0;
+	ساكن uint16_t ڏٺل_channels_ڳڻپ_cs11[DSM_MAX_CHANNEL_ڳڻپ] {};
+	ساكن uint16_t ڏٺل_channels_ڳڻپ_cs10[DSM_MAX_CHANNEL_ڳڻپ] {};
 
 	/* reset the 10/11 bit sniffed channel masks */
-	if (reset) {
+	إذا (reset) {
 		PX4_DEBUG("dsm_guess_format reset");
 		cs10 = 0;
 		cs11 = 0;
 		samples = 0;
 
-		dsm_channel_shift = 0;
-		good_cs10_frame_count = 0;
-		good_cs11_frame_count = 0;
+		dsm_channel_سرڪايو = 0;
+		good_cs10_چوکٺو_ڳڻپ = 0;
+		good_cs11_چوکٺو_ڳڻپ = 0;
 
-		for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
-			seen_channels_count_cs10[i] = 0;
-			seen_channels_count_cs11[i] = 0;
+		لكل (بنانشان i = 0; i < DSM_MAX_CHANNEL_ڳڻپ; i++) {
+			ڏٺل_channels_ڳڻپ_cs10[i] = 0;
+			ڏٺل_channels_ڳڻپ_cs11[i] = 0;
 		}
 
-		return false;
+		أرجع خطأ;
 	}
 
-	px4::Bitset<DSM_MAX_CHANNEL_COUNT> channels_found_10;
-	px4::Bitset<DSM_MAX_CHANNEL_COUNT> channels_found_11;
+	px4::Bitset<DSM_MAX_CHANNEL_ڳڻپ> channels_مليو_10;
+	px4::Bitset<DSM_MAX_CHANNEL_ڳڻپ> channels_مليو_11;
 
-	bool cs10_frame_valid = true;
-	bool cs11_frame_valid = true;
+	منطقي cs10_چوکٺو_valid = سچ;
+	منطقي cs11_چوکٺو_valid = سچ;
 
 	/* scan the channels in the current dsm_frame in both 10- and 11-bit mode */
-	for (unsigned i = 0; i < DSM_FRAME_CHANNELS; i++) {
+	لكل (بنانشان i = 0; i < DSM_چوکٺو_CHANNELS; i++) {
 
-		uint8_t *dp = &dsm_frame[2 + (2 * i)];
+		uint8_t *dp = &dsm_چوکٺو[2 + (2 * i)];
 		uint16_t raw = (dp[0] << 8) | dp[1];
 
 		uint8_t channel = 0;
 		uint16_t value = 0;
 
 		/* if the channel decodes, remember the assigned number */
-		if (dsm_decode_channel(raw, 10, channel, value)) {
-			if (channel == CHANNEL_UNUSED) {
-				continue;
+		إذا (dsm_decode_channel(raw, 10, channel, value)) {
+			إذا (channel == CHANNEL_اڻ_استعمال_ٿيل) {
+				استمر;
 			}
 
 			// invalidate entire frame (for 1024) if channel already found, no duplicate channels per DSM frame
-			if (channels_found_10[channel]) {
-				cs10_frame_valid = false;
+			إذا (channels_مليو_10[channel]) {
+				cs10_چوکٺو_valid = خطأ;
 
-			} else {
-				seen_channels_count_cs10[channel]++;
-				channels_found_10.set(channel);
+			} وإلا {
+				ڏٺل_channels_ڳڻپ_cs10[channel]++;
+				channels_مليو_10.سيٽ(channel);
 			}
 		}
 
-		if (dsm_decode_channel(raw, 11, channel, value)) {
-			if (channel == CHANNEL_UNUSED) {
-				continue;
+		إذا (dsm_decode_channel(raw, 11, channel, value)) {
+			إذا (channel == CHANNEL_اڻ_استعمال_ٿيل) {
+				استمر;
 			}
 
 			// invalidate entire frame (for 2048) if channel already found, no duplicate channels per DSM frame
-			if (channels_found_11[channel]) {
-				cs11_frame_valid = false;
+			إذا (channels_مليو_11[channel]) {
+				cs11_چوکٺو_valid = خطأ;
 
-			} else {
-				seen_channels_count_cs11[channel]++;
+			} وإلا {
+				ڏٺل_channels_ڳڻپ_cs11[channel]++;
 
-				channels_found_11.set(channel);
+				channels_مليو_11.سيٽ(channel);
 			}
 		}
 	}
 
 	// add valid cs10 channels
-	if (cs10_frame_valid) {
-		good_cs10_frame_count++;
+	إذا (cs10_چوکٺو_valid) {
+		good_cs10_چوکٺو_ڳڻپ++;
 
-		for (unsigned channel = 0; channel < DSM_MAX_CHANNEL_COUNT; channel++) {
-			if (channels_found_10[channel]) {
+		لكل (بنانشان channel = 0; channel < DSM_MAX_CHANNEL_ڳڻپ; channel++) {
+			إذا (channels_مليو_10[channel]) {
 				cs10 |= 1 << channel;
 			}
 		}
 	}
 
 	// add valid cs11 channels
-	if (cs11_frame_valid) {
-		good_cs11_frame_count++;
+	إذا (cs11_چوکٺو_valid) {
+		good_cs11_چوکٺو_ڳڻپ++;
 
-		for (unsigned channel = 0; channel < DSM_MAX_CHANNEL_COUNT; channel++) {
-			if (channels_found_11[channel]) {
+		لكل (بنانشان channel = 0; channel < DSM_MAX_CHANNEL_ڳڻپ; channel++) {
+			إذا (channels_مليو_11[channel]) {
 				cs11 |= 1 << channel;
 			}
 		}
@@ -305,8 +305,8 @@ static bool dsm_guess_format(bool reset)
 	samples++;
 
 	/* wait until we have seen plenty of frames */
-	if (samples < 15) {
-		return false;
+	إذا (samples < 15) {
+		أرجع خطأ;
 	}
 
 	/*
@@ -317,138 +317,138 @@ static bool dsm_guess_format(bool reset)
 	*  Channels must begin at 0 and no channel gaps after that (ie, the last channel is the one before the first unseen channel starting from zero)
 	 */
 
-	bool cs10_channel_gap_found = false;
-	bool cs11_channel_gap_found = false;
-	bool valid_channel_counts_cs10 = false;
-	bool valid_channel_counts_cs11 = false;
-	uint32_t cs10_channel_count = 0;
-	uint32_t cs11_channel_count = 0;
-	bool found_channels_end = false;
+	منطقي cs10_channel_gap_مليو = خطأ;
+	منطقي cs11_channel_gap_مليو = خطأ;
+	منطقي valid_channel_counts_cs10 = خطأ;
+	منطقي valid_channel_counts_cs11 = خطأ;
+	uint32_t cs10_channel_ڳڻپ = 0;
+	uint32_t cs11_channel_ڳڻپ = 0;
+	منطقي مليو_channels_پڇاڙي = خطأ;
 
 	// Count of allowed bad frames
-	static constexpr uint16_t bad_samples_allowance = 5;
-	static constexpr uint16_t minimum_channel_count = 5;
-	static constexpr uint16_t minimum_channel_seen_count = 4;
+	ساكن constexpr uint16_t bad_samples_allowance = 5;
+	ساكن constexpr uint16_t minimum_channel_ڳڻپ = 5;
+	ساكن constexpr uint16_t minimum_channel_ڏٺل_ڳڻپ = 4;
 
 	// Check for continous channels in 10bit decoding
-	found_channels_end = false;
+	مليو_channels_پڇاڙي = خطأ;
 
-	for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
+	لكل (بنانشان i = 0; i < DSM_MAX_CHANNEL_ڳڻپ; i++) {
 		// This bit is set
-		if (cs10 & (1 << i)) {
-			if (found_channels_end) {
+		إذا (cs10 & (1 << i)) {
+			إذا (مليو_channels_پڇاڙي) {
 				// Channel gap found
-				cs10_channel_gap_found = true;
-				break;
+				cs10_channel_gap_مليو = سچ;
+				اكسر;
 			}
 
-		} else {
-			if (!found_channels_end) {
-				cs10_channel_count = i;
+		} وإلا {
+			إذا (!مليو_channels_پڇاڙي) {
+				cs10_channel_ڳڻپ = i;
 			}
 
-			found_channels_end = true;
+			مليو_channels_پڇاڙي = سچ;
 		}
 	}
 
 	// Check for continous channels in 11bit decoding
-	found_channels_end = false;
+	مليو_channels_پڇاڙي = خطأ;
 
-	for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
+	لكل (بنانشان i = 0; i < DSM_MAX_CHANNEL_ڳڻپ; i++) {
 		// This bit is set
-		if (cs11 & (1 << i)) {
-			if (found_channels_end) {
+		إذا (cs11 & (1 << i)) {
+			إذا (مليو_channels_پڇاڙي) {
 				// Channel gap found
-				cs11_channel_gap_found = true;
-				break;
+				cs11_channel_gap_مليو = سچ;
+				اكسر;
 			}
 
-		} else {
-			if (!found_channels_end) {
-				cs11_channel_count = i;
+		} وإلا {
+			إذا (!مليو_channels_پڇاڙي) {
+				cs11_channel_ڳڻپ = i;
 			}
 
-			found_channels_end = true;
+			مليو_channels_پڇاڙي = سچ;
 		}
 	}
 
 	// Check channel seen counts C10
-	if (cs10_channel_count && !cs10_channel_gap_found) {
-		valid_channel_counts_cs10 = true;
+	إذا (cs10_channel_ڳڻپ && !cs10_channel_gap_مليو) {
+		valid_channel_counts_cs10 = سچ;
 
-		for (unsigned i = 0; i < ((cs10_channel_count > 12) ? 12 : cs10_channel_count); i++) {
-			if (seen_channels_count_cs10[i] < minimum_channel_seen_count) {
-				valid_channel_counts_cs10 = false;
-				break;
+		لكل (بنانشان i = 0; i < ((cs10_channel_ڳڻپ > 12) ? 12 : cs10_channel_ڳڻپ); i++) {
+			إذا (ڏٺل_channels_ڳڻپ_cs10[i] < minimum_channel_ڏٺل_ڳڻپ) {
+				valid_channel_counts_cs10 = خطأ;
+				اكسر;
 			}
 
 		}
 	}
 
 	// Check channel seen counts C11
-	if (cs11_channel_count && !cs11_channel_gap_found) {
-		valid_channel_counts_cs11 = true;
+	إذا (cs11_channel_ڳڻپ && !cs11_channel_gap_مليو) {
+		valid_channel_counts_cs11 = سچ;
 
-		for (unsigned i = 0; i < ((cs11_channel_count > 12) ? 12 : cs11_channel_count); i++) {
-			if (seen_channels_count_cs11[i] < minimum_channel_seen_count) {
-				valid_channel_counts_cs11 = false;
-				break;
+		لكل (بنانشان i = 0; i < ((cs11_channel_ڳڻپ > 12) ? 12 : cs11_channel_ڳڻپ); i++) {
+			إذا (ڏٺل_channels_ڳڻپ_cs11[i] < minimum_channel_ڏٺل_ڳڻپ) {
+				valid_channel_counts_cs11 = خطأ;
+				اكسر;
 			}
 
 		}
 	}
 
-#ifdef DSM_DEBUG
-	printf("DSM guess: CS10 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs10_frame_count,
-	       cs10_channel_gap_found, cs10_channel_count, valid_channel_counts_cs10);
-	printf("DSM guess: CS11 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs11_frame_count,
-	       cs11_channel_gap_found, cs11_channel_count, valid_channel_counts_cs11);
-#endif
+#جيڪڏهن_وصف_ٿيل DSM_DEBUG
+	لکو("DSM guess: CS10 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs10_چوکٺو_ڳڻپ,
+	       cs10_channel_gap_مليو, cs10_channel_ڳڻپ, valid_channel_counts_cs10);
+	لکو("DSM guess: CS11 (%li good frames, %i gap found, %li channel count, %i dist)\r\n", good_cs11_چوکٺو_ڳڻپ,
+	       cs11_channel_gap_مليو, cs11_channel_ڳڻپ, valid_channel_counts_cs11);
+#جيڪڏهن_پورو
 
-	if (good_cs11_frame_count > samples - bad_samples_allowance && !cs11_channel_gap_found
-	    && cs11_channel_count >= minimum_channel_count && valid_channel_counts_cs11) {
-#ifdef DSM_DEBUG
-		printf("DSM guess: CS11 guessed!\n");
-#endif
-		dsm_chan_count = cs11_channel_count;
-		dsm_channel_shift = 11;
-		return true;
+	إذا (good_cs11_چوکٺو_ڳڻپ > samples - bad_samples_allowance && !cs11_channel_gap_مليو
+	    && cs11_channel_ڳڻپ >= minimum_channel_ڳڻپ && valid_channel_counts_cs11) {
+#جيڪڏهن_وصف_ٿيل DSM_DEBUG
+		لکو("DSM guess: CS11 guessed!\n");
+#جيڪڏهن_پورو
+		dsm_chan_ڳڻپ = cs11_channel_ڳڻپ;
+		dsm_channel_سرڪايو = 11;
+		أرجع سچ;
 	}
 
-	if (good_cs10_frame_count > samples - bad_samples_allowance && !cs10_channel_gap_found
-	    && cs10_channel_count >= minimum_channel_count && valid_channel_counts_cs10) {
-#ifdef DSM_DEBUG
-		printf("DSM guess: CS10 guessed!\n");
-#endif
-		dsm_chan_count = cs10_channel_count;
-		dsm_channel_shift = 10;
-		return true;
+	إذا (good_cs10_چوکٺو_ڳڻپ > samples - bad_samples_allowance && !cs10_channel_gap_مليو
+	    && cs10_channel_ڳڻپ >= minimum_channel_ڳڻپ && valid_channel_counts_cs10) {
+#جيڪڏهن_وصف_ٿيل DSM_DEBUG
+		لکو("DSM guess: CS10 guessed!\n");
+#جيڪڏهن_پورو
+		dsm_chan_ڳڻپ = cs10_channel_ڳڻپ;
+		dsm_channel_سرڪايو = 10;
+		أرجع سچ;
 	}
 
 	/* call ourselves to reset our state ... we have to try again */
-#ifdef DSM_DEBUG
-	printf("DSM: format detect fail\n");
-#endif
-	dsm_guess_format(true);
-	return false;
+#جيڪڏهن_وصف_ٿيل DSM_DEBUG
+	لکو("DSM: format detect fail\n");
+#جيڪڏهن_پورو
+	dsm_guess_format(سچ);
+	أرجع خطأ;
 }
 
-int dsm_config(int fd)
+صحيح dsm_config(صحيح fd)
 {
-#ifdef SPEKTRUM_POWER_CONFIG
+#جيڪڏهن_وصف_ٿيل SPEKTRUM_POWER_CONFIG
 	// Enable power controls for Spektrum receiver
 	SPEKTRUM_POWER_CONFIG();
-#endif
-#ifdef SPEKTRUM_POWER
+#جيڪڏهن_پورو
+#جيڪڏهن_وصف_ٿيل SPEKTRUM_POWER
 	// enable power on DSM connector
-	SPEKTRUM_POWER(true);
-#endif
+	SPEKTRUM_POWER(سچ);
+#جيڪڏهن_پورو
 
-	int ret = -1;
+	صحيح ret = -1;
 
-	if (fd >= 0) {
+	إذا (fd >= 0) {
 
-		struct termios t;
+		بنية termios t;
 
 		/* 115200bps, no parity, one stop bit */
 		tcgetattr(fd, &t);
@@ -457,33 +457,33 @@ int dsm_config(int fd)
 		tcsetattr(fd, TCSANOW, &t);
 
 		/* initialise the decoder */
-		dsm_partial_frame_count = 0;
-		dsm_last_rx_time = hrt_absolute_time();
+		dsm_partial_چوکٺو_ڳڻپ = 0;
+		dsm_آخري_rx_وقت = hrt_absolute_وقت();
 
 		/* reset the format detector */
-		dsm_guess_format(true);
+		dsm_guess_format(سچ);
 
 		ret = 0;
 	}
 
-	return ret;
+	أرجع ret;
 }
 
-void dsm_proto_init()
+فراغ dsm_proto_init()
 {
-	dsm_channel_shift = 0;
-	dsm_frame_drops = 0;
-	dsm_chan_count = 0;
+	dsm_channel_سرڪايو = 0;
+	dsm_چوکٺو_drops = 0;
+	dsm_chan_ڳڻپ = 0;
 
 	dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 
-	for (unsigned i = 0; i < DSM_MAX_CHANNEL_COUNT; i++) {
-		channel_buffer[i].last_seen = 0;
-		channel_buffer[i].value = 0;
+	لكل (بنانشان i = 0; i < DSM_MAX_CHANNEL_ڳڻپ; i++) {
+		channel_بفر[i].آخري_ڏٺل = 0;
+		channel_بفر[i].value = 0;
 	}
 
 	/* reset the format detector */
-	dsm_guess_format(true);
+	dsm_guess_format(سچ);
 }
 
 /**
@@ -493,103 +493,103 @@ void dsm_proto_init()
  *
  * @param[in] device Device name of DSM UART
  */
-int dsm_init(const char *device)
+صحيح dsm_init(ثابت حرف *device)
 {
-	if (dsm_fd < 0) {
+	إذا (dsm_fd < 0) {
 		dsm_fd = open(device, O_RDWR | O_NONBLOCK);
 	}
 
 	dsm_proto_init();
 
-	int ret = dsm_config(dsm_fd);
+	صحيح ret = dsm_config(dsm_fd);
 
-	if (!ret) {
-		return dsm_fd;
+	إذا (!ret) {
+		أرجع dsm_fd;
 
-	} else {
-		return -1;
+	} وإلا {
+		أرجع -1;
 	}
 }
 
-void dsm_deinit()
+فراغ dsm_deinit()
 {
-#ifdef SPEKTRUM_POWER_PASSIVE
+#جيڪڏهن_وصف_ٿيل SPEKTRUM_POWER_PASSIVE
 	// Turn power controls to passive
 	SPEKTRUM_POWER_PASSIVE();
-#endif
+#جيڪڏهن_پورو
 
-	if (dsm_fd >= 0) {
+	إذا (dsm_fd >= 0) {
 		close(dsm_fd);
 	}
 
 	dsm_fd = -1;
 }
 
-#if defined(SPEKTRUM_POWER)
+#إذا defined(SPEKTRUM_POWER)
 /**
  * Handle DSM satellite receiver bind mode handler
  *
  * @param[in] cmd commands - dsm_bind_power_down, dsm_bind_power_up, dsm_bind_set_rx_out, dsm_bind_send_pulses, dsm_bind_reinit_uart
  * @param[in] pulses Number of pulses for dsm_bind_send_pulses command
  */
-void dsm_bind(uint16_t cmd, int pulses)
+فراغ dsm_bind(uint16_t cmd, صحيح pulses)
 {
-	if (dsm_fd < 0) {
-		return;
+	إذا (dsm_fd < 0) {
+		أرجع;
 	}
 
-	switch (cmd) {
-	case DSM_CMD_BIND_POWER_DOWN:
+	بدل (cmd) {
+	حالة DSM_CMD_BIND_POWER_هيٺ_ڏانهن:
 		// power down DSM satellite
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_POWER_DOWN\n");
-#endif
-		SPEKTRUM_POWER(false);
-		break;
+#إذا defined(DSM_DEBUG)
+		لکو("DSM: DSM_CMD_BIND_POWER_DOWN\n");
+#جيڪڏهن_پورو
+		SPEKTRUM_POWER(خطأ);
+		اكسر;
 
-	case DSM_CMD_BIND_POWER_UP:
+	حالة DSM_CMD_BIND_POWER_مٿي:
 		// power up DSM satellite
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_POWER_UP\n");
-#endif
-		SPEKTRUM_POWER(true);
-		dsm_guess_format(true);
-		break;
+#إذا defined(DSM_DEBUG)
+		لکو("DSM: DSM_CMD_BIND_POWER_UP\n");
+#جيڪڏهن_پورو
+		SPEKTRUM_POWER(سچ);
+		dsm_guess_format(سچ);
+		اكسر;
 
-	case DSM_CMD_BIND_SET_RX_OUT:
+	حالة DSM_CMD_BIND_سيٽ_RX_ٻاهريون:
 		// Set UART RX pin to active output mode
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_SET_RX_OUT\n");
-#endif
+#إذا defined(DSM_DEBUG)
+		لکو("DSM: DSM_CMD_BIND_SET_RX_OUT\n");
+#جيڪڏهن_پورو
 		SPEKTRUM_RX_AS_GPIO_OUTPUT();
-		break;
+		اكسر;
 
-	case DSM_CMD_BIND_SEND_PULSES:
+	حالة DSM_CMD_BIND_SEND_PULSES:
 		// Pulse RX pin a number of times
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_SEND_PULSES\n");
-#endif
+#إذا defined(DSM_DEBUG)
+		لکو("DSM: DSM_CMD_BIND_SEND_PULSES\n");
+#جيڪڏهن_پورو
 
-		for (int i = 0; i < pulses; i++) {
+		لكل (صحيح i = 0; i < pulses; i++) {
 			dsm_udelay(120);
-			SPEKTRUM_OUT(false);
+			SPEKTRUM_ٻاهريون(خطأ);
 			dsm_udelay(120);
-			SPEKTRUM_OUT(true);
+			SPEKTRUM_ٻاهريون(سچ);
 		}
 
-		break;
+		اكسر;
 
-	case DSM_CMD_BIND_REINIT_UART:
+	حالة DSM_CMD_BIND_REINIT_UART:
 		// Restore USART RX pin to RS232 receive mode
-#if defined(DSM_DEBUG)
-		printf("DSM: DSM_CMD_BIND_REINIT_UART\n");
-#endif
+#إذا defined(DSM_DEBUG)
+		لکو("DSM: DSM_CMD_BIND_REINIT_UART\n");
+#جيڪڏهن_پورو
 		SPEKTRUM_RX_AS_UART();
-		break;
+		اكسر;
 
 	}
 }
-#endif
+#جيڪڏهن_پورو
 
 /**
  * Decode the entire dsm frame (all contained channels)
@@ -598,22 +598,22 @@ void dsm_bind(uint16_t cmd, int pulses)
  * @param[out] num_values pointer to number of raw channel values returned
  * @return true=DSM frame successfully decoded, false=no update
  */
-bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count,
+منطقي dsm_decode(hrt_abstime چوکٺو_وقت, منطقي *dsm_11_ٻٽو_انگ, بنانشان channel_ڳڻپ,
 		int8_t *rssi_percent)
 {
 	// If we haven't seen a new frame recently or haven't guessed the DSM encoding, try to guess
-	if (((frame_time - dsm_last_frame_time) > 1000000) && (dsm_channel_shift != 0)) {
-		dsm_guess_format(true);
+	إذا (((چوکٺو_وقت - dsm_آخري_چوکٺو_وقت) > 1000000) && (dsm_channel_سرڪايو != 0)) {
+		dsm_guess_format(سچ);
 	}
 
 	/* if we don't know the dsm_frame format, update the guessing state machine */
-	if (dsm_channel_shift == 0) {
-		if (!dsm_guess_format(false)) {
-			return false;
+	إذا (dsm_channel_سرڪايو == 0) {
+		إذا (!dsm_guess_format(خطأ)) {
+			أرجع خطأ;
 		}
 
 		// We have our first packet so we're in sync
-		dsm_last_rx_time = hrt_absolute_time();
+		dsm_آخري_rx_وقت = hrt_absolute_وقت();
 	}
 
 	/*
@@ -624,22 +624,22 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
 	 */
 
 	// The SPM4649T with firmware version 1.1RC9 or later will have RSSI in place of fades
-	if (rssi_percent) {
-		if (((int8_t *)dsm_frame)[0] < 0) {
+	إذا (rssi_percent) {
+		إذا (((int8_t *)dsm_چوکٺو)[0] < 0) {
 			/*
 			 * RSSI is a signed integer between -42dBm and -92dBm
 			 * If signal is lost, the value is -128
 			 */
-			int8_t dbm = (int8_t)dsm_frame[0];
+			int8_t dbm = (int8_t)dsm_چوکٺو[0];
 
-			if (dbm == -128) {
+			إذا (dbm == -128) {
 				*rssi_percent = 0;
 
-			} else {
-				*rssi_percent = spek_dbm_to_percent(dbm);
+			} وإلا {
+				*rssi_percent = spek_dbm_منزل_percent(dbm);
 			}
 
-		} else {
+		} وإلا {
 			/* if we don't know the rssi, anything over 100 will invalidate it */
 			*rssi_percent = 127;
 		}
@@ -653,42 +653,42 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
 	 * seven channels are being transmitted.
 	 */
 
-	px4::Bitset<DSM_MAX_CHANNEL_COUNT> channels_found;
+	px4::Bitset<DSM_MAX_CHANNEL_ڳڻپ> channels_مليو;
 
-	for (unsigned i = 0; i < DSM_FRAME_CHANNELS; i++) {
+	لكل (بنانشان i = 0; i < DSM_چوکٺو_CHANNELS; i++) {
 
-		uint8_t *dp = &dsm_frame[2 + (2 * i)];
+		uint8_t *dp = &dsm_چوکٺو[2 + (2 * i)];
 		uint16_t raw = (dp[0] << 8) | dp[1];
 
 		uint8_t channel = 0;
 		uint16_t value = 0;
 
-		if (!dsm_decode_channel(raw, dsm_channel_shift, channel, value)) {
-			dsm_frame_drops++;
-			return false;
+		إذا (!dsm_decode_channel(raw, dsm_channel_سرڪايو, channel, value)) {
+			dsm_چوکٺو_drops++;
+			أرجع خطأ;
 		}
 
-		if (channel == CHANNEL_UNUSED) {
-			continue;
+		إذا (channel == CHANNEL_اڻ_استعمال_ٿيل) {
+			استمر;
 		}
 
 		// abort if channel already found, no duplicate channels per DSM frame
-		if (channels_found[channel]) {
+		إذا (channels_مليو[channel]) {
 			PX4_DEBUG("duplicate channel %d\n\n", channel);
-			dsm_guess_format(true);
-			dsm_frame_drops++;
-			return false;
+			dsm_guess_format(سچ);
+			dsm_چوکٺو_drops++;
+			أرجع خطأ;
 
-		} else {
-			channels_found.set(channel);
+		} وإلا {
+			channels_مليو.سيٽ(channel);
 		}
 
 		/* reset bit guessing state machine if the channel index is out of bounds */
-		if (channel >= DSM_MAX_CHANNEL_COUNT || channel >= channel_count) {
-			PX4_DEBUG("channel %d > %d (DSM_MAX_CHANNEL_COUNT)", channel, DSM_MAX_CHANNEL_COUNT);
-			dsm_guess_format(true);
-			dsm_frame_drops++;
-			return false;
+		إذا (channel >= DSM_MAX_CHANNEL_ڳڻپ || channel >= channel_ڳڻپ) {
+			PX4_DEBUG("channel %d > %d (DSM_MAX_CHANNEL_COUNT)", channel, DSM_MAX_CHANNEL_ڳڻپ);
+			dsm_guess_format(سچ);
+			dsm_چوکٺو_drops++;
+			أرجع خطأ;
 		}
 
 		/*
@@ -698,37 +698,37 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
 		 * Specifically, the first four channels in rc_channel_data are roll, pitch, thrust, yaw,
 		 * but the first four channels from the DSM receiver are thrust, roll, pitch, yaw.
 		 */
-		switch (channel) {
-		case 0:
+		بدل (channel) {
+		حالة 0:
 			channel = 2; // Spektrum Throttle (0) -> 2
-			break;
+			اكسر;
 
-		case 1:
+		حالة 1:
 			channel = 0; // Spektrum Aileron (1) -> 0
-			break;
+			اكسر;
 
-		case 2:
+		حالة 2:
 			channel = 1; // Spektrum Elevator (2) -> 1
 
-		default:
-			break;
+		افتراضي:
+			اكسر;
 		}
 
-		channel_buffer[channel].value = value;
-		channel_buffer[channel].last_seen = frame_time;
+		channel_بفر[channel].value = value;
+		channel_بفر[channel].آخري_ڏٺل = چوکٺو_وقت;
 	}
 
 	/* Set the 11-bit data indicator */
-	*dsm_11_bit = (dsm_channel_shift == 11);
+	*dsm_11_ٻٽو_انگ = (dsm_channel_سرڪايو == 11);
 
 	/* we have received something we think is a dsm_frame */
-	dsm_last_frame_time = frame_time;
+	dsm_آخري_چوکٺو_وقت = چوکٺو_وقت;
 
-#ifdef DSM_DEBUG
-	printf("PARSED PACKET\n");
-#endif
+#جيڪڏهن_وصف_ٿيل DSM_DEBUG
+	لکو("PARSED PACKET\n");
+#جيڪڏهن_پورو
 
-	return true;
+	أرجع سچ;
 }
 
 /**
@@ -755,8 +755,8 @@ bool dsm_decode(hrt_abstime frame_time, bool *dsm_11_bit, unsigned channel_count
  * @param[in] max_values maximum number of channels the receiver can process
  * @return true=decoded raw channel values updated, false=no update
  */
-bool dsm_input(int fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit, uint8_t *n_bytes, uint8_t **bytes,
-	       int8_t *rssi, unsigned *frame_drops, unsigned max_values)
+منطقي dsm_داخلا(صحيح fd, uint16_t *قدرون_2, uint16_t *انگ_قدرون, منطقي *dsm_11_ٻٽو_انگ, uint8_t *n_بائيٽون, uint8_t **بائيٽون,
+	       int8_t *rssi, بنانشان *چوکٺو_drops, بنانشان max_قدرون)
 {
 	/*
 	 * The DSMX/2 protocol doesn't provide reliable framing,
@@ -770,165 +770,165 @@ bool dsm_input(int fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit,
 	 * provides a degree of protection. Of course, it would be better
 	 * if we didn't drop bytes...
 	 */
-	const hrt_abstime now = hrt_absolute_time();
+	ثابت hrt_abstime now = hrt_absolute_وقت();
 
 	/*
 	 * Fetch bytes, but no more than we would need to complete
 	 * a complete frame.
 	 */
 
-	int ret = read(fd, &dsm_buf[0], sizeof(dsm_buf) / sizeof(dsm_buf[0]));
+	صحيح ret = اقرأ(fd, &dsm_buf[0], حجم(dsm_buf) / حجم(dsm_buf[0]));
 
 	/* if the read failed for any reason, just give up here */
-	if (ret < 1) {
-		return false;
+	إذا (ret < 1) {
+		أرجع خطأ;
 
-	} else {
-		*n_bytes = ret;
-		*bytes = &dsm_buf[0];
+	} وإلا {
+		*n_بائيٽون = ret;
+		*بائيٽون = &dsm_buf[0];
 	}
 
 	/*
 	 * Try to decode something with what we got
 	 */
-	return dsm_parse(now, &dsm_buf[0], ret, values, num_values, dsm_11_bit, &dsm_frame_drops, rssi, max_values);
+	أرجع dsm_parse(now, &dsm_buf[0], ret, قدرون_2, انگ_قدرون, dsm_11_ٻٽو_انگ, &dsm_چوکٺو_drops, rssi, max_قدرون);
 }
 
-bool dsm_parse(const uint64_t now, const uint8_t *frame, const unsigned len, uint16_t *values,
-	       uint16_t *num_values, bool *dsm_11_bit, unsigned *frame_drops, int8_t *rssi_percent, uint16_t max_channels)
+منطقي dsm_parse(ثابت uint64_t now, ثابت uint8_t *چوکٺو, ثابت بنانشان len, uint16_t *قدرون_2,
+	       uint16_t *انگ_قدرون, منطقي *dsm_11_ٻٽو_انگ, بنانشان *چوکٺو_drops, int8_t *rssi_percent, uint16_t max_channels)
 {
 	/* this is set by the decoding state machine and will default to false
 	 * once everything that was decodable has been decoded.
 	 */
-	bool channel_data_available = false;
-	unsigned channel_output_count;
+	منطقي channel_معلومات_موجود = خطأ;
+	بنانشان channel_output_ڳڻپ;
 
 	/* keep decoding until we have consumed the buffer */
-	for (unsigned d = 0; d < len; d++) {
+	لكل (بنانشان d = 0; d < len; d++) {
 
 		/* overflow check */
-		if (dsm_partial_frame_count == sizeof(dsm_frame) / sizeof(dsm_frame[0])) {
-			dsm_partial_frame_count = 0;
+		إذا (dsm_partial_چوکٺو_ڳڻپ == حجم(dsm_چوکٺو) / حجم(dsm_چوکٺو[0])) {
+			dsm_partial_چوکٺو_ڳڻپ = 0;
 			dsm_decode_state = DSM_DECODE_STATE_DESYNC;
-#ifdef DSM_DEBUG
-			printf("DSM: RESET (BUF LIM)\n");
-#endif
+#جيڪڏهن_وصف_ٿيل DSM_DEBUG
+			لکو("DSM: RESET (BUF LIM)\n");
+#جيڪڏهن_پورو
 		}
 
-		if (dsm_partial_frame_count == DSM_FRAME_SIZE) {
-			dsm_partial_frame_count = 0;
+		إذا (dsm_partial_چوکٺو_ڳڻپ == DSM_چوکٺو_سائيز) {
+			dsm_partial_چوکٺو_ڳڻپ = 0;
 			dsm_decode_state = DSM_DECODE_STATE_DESYNC;
-#ifdef DSM_DEBUG
-			printf("DSM: RESET (PACKET LIM)\n");
-#endif
+#جيڪڏهن_وصف_ٿيل DSM_DEBUG
+			لکو("DSM: RESET (PACKET LIM)\n");
+#جيڪڏهن_پورو
 		}
 
-#ifdef DSM_DEBUG
-#if 0
-		printf("dsm state: %s%s, count: %d, val: %02x\n",
+#جيڪڏهن_وصف_ٿيل DSM_DEBUG
+#إذا 0
+		لکو("dsm state: %s%s, count: %d, val: %02x\n",
 		       (dsm_decode_state == DSM_DECODE_STATE_DESYNC) ? "DSM_DECODE_STATE_DESYNC" : "",
 		       (dsm_decode_state == DSM_DECODE_STATE_SYNC) ? "DSM_DECODE_STATE_SYNC" : "",
-		       dsm_partial_frame_count,
-		       (unsigned)frame[d]);
-#endif
-#endif
+		       dsm_partial_چوکٺو_ڳڻپ,
+		       (بنانشان)چوکٺو[d]);
+#جيڪڏهن_پورو
+#جيڪڏهن_پورو
 
-		switch (dsm_decode_state) {
-		case DSM_DECODE_STATE_DESYNC:
+		بدل (dsm_decode_state) {
+		حالة DSM_DECODE_STATE_DESYNC:
 
 			/* we are de-synced and only interested in the frame marker */
-			if ((now - dsm_last_rx_time) > 5000) {
+			إذا ((now - dsm_آخري_rx_وقت) > 5000) {
 				dsm_decode_state = DSM_DECODE_STATE_SYNC;
-				dsm_partial_frame_count = 0;
-				dsm_frame[dsm_partial_frame_count++] = frame[d];
+				dsm_partial_چوکٺو_ڳڻپ = 0;
+				dsm_چوکٺو[dsm_partial_چوکٺو_ڳڻپ++] = چوکٺو[d];
 			}
 
-			break;
+			اكسر;
 
-		case DSM_DECODE_STATE_SYNC: {
-				dsm_frame[dsm_partial_frame_count++] = frame[d];
+		حالة DSM_DECODE_STATE_SYNC: {
+				dsm_چوکٺو[dsm_partial_چوکٺو_ڳڻپ++] = چوکٺو[d];
 
 				/* decode whatever we got and expect */
-				if (dsm_partial_frame_count < DSM_FRAME_SIZE) {
-					break;
+				إذا (dsm_partial_چوکٺو_ڳڻپ < DSM_چوکٺو_سائيز) {
+					اكسر;
 				}
 
 				// We've collected a full frame, parse it
-				channel_data_available = dsm_decode(now, dsm_11_bit, dsm_chan_count, rssi_percent);
+				channel_معلومات_موجود = dsm_decode(now, dsm_11_ٻٽو_انگ, dsm_chan_ڳڻپ, rssi_percent);
 
 				// Frame consumed, reset the buffer count
-				dsm_partial_frame_count = 0;
+				dsm_partial_چوکٺو_ڳڻپ = 0;
 
 				/* if decoding failed, set proto to desync */
-				if (!channel_data_available) {
+				إذا (!channel_معلومات_موجود) {
 					dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 				}
 			}
-			break;
+			اكسر;
 
-		default:
-#ifdef DSM_DEBUG
-			printf("UNKNOWN PROTO STATE");
-#endif
-			channel_data_available = false;
+		افتراضي:
+#جيڪڏهن_وصف_ٿيل DSM_DEBUG
+			لکو("UNKNOWN PROTO STATE");
+#جيڪڏهن_پورو
+			channel_معلومات_موجود = خطأ;
 		}
 	}
 
-	if (frame_drops) {
-		*frame_drops = dsm_frame_drops;
+	إذا (چوکٺو_drops) {
+		*چوکٺو_drops = dsm_چوکٺو_drops;
 	}
 
-	if (channel_data_available) {
+	إذا (channel_معلومات_موجود) {
 		// Check if any channels have been absent for too long
-		for (unsigned i = 0; i < dsm_chan_count; i++) {
-			if (now - channel_buffer[i].last_seen > 50 * 1000) {
-				return false;
+		لكل (بنانشان i = 0; i < dsm_chan_ڳڻپ; i++) {
+			إذا (now - channel_بفر[i].آخري_ڏٺل > 50 * 1000) {
+				أرجع خطأ;
 			}
 		}
 
 		// Overflow protect
-		if (max_channels >= DSM_MAX_CHANNEL_COUNT) {
-			max_channels = DSM_MAX_CHANNEL_COUNT;
+		إذا (max_channels >= DSM_MAX_CHANNEL_ڳڻپ) {
+			max_channels = DSM_MAX_CHANNEL_ڳڻپ;
 		}
 
 		// Cap returned channels to max_channels if we've seen more
-		if (dsm_chan_count > max_channels) {
-			channel_output_count = max_channels;
+		إذا (dsm_chan_ڳڻپ > max_channels) {
+			channel_output_ڳڻپ = max_channels;
 
-		} else {
-			channel_output_count = dsm_chan_count;
+		} وإلا {
+			channel_output_ڳڻپ = dsm_chan_ڳڻپ;
 		}
 
-		*num_values = channel_output_count;
+		*انگ_قدرون = channel_output_ڳڻپ;
 
 		// Copy the full list of collected channels
-		for (unsigned i = 0; i < channel_output_count; i++) {
+		لكل (بنانشان i = 0; i < channel_output_ڳڻپ; i++) {
 			// Channels which do not have a value yet (because their frame has not been seen yet)
 			// will have a zero. If we come across a blank channel, keep storing values, but we
 			// won't return that we have a valid frame just yet.
-			if (channel_buffer[i].value) {
-				values[i] = channel_buffer[i].value;
+			إذا (channel_بفر[i].value) {
+				قدرون_2[i] = channel_بفر[i].value;
 
-			} else {
-				channel_data_available = false;
+			} وإلا {
+				channel_معلومات_موجود = خطأ;
 			}
 		}
 	}
 
-#ifdef DSM_DEBUG
+#جيڪڏهن_وصف_ٿيل DSM_DEBUG
 
-	if (channel_data_available) {
-		printf("frame drops: %u, chan #: %u\n", dsm_frame_drops, dsm_chan_count);
+	إذا (channel_معلومات_موجود) {
+		لکو("frame drops: %u, chan #: %u\n", dsm_چوکٺو_drops, dsm_chan_ڳڻپ);
 
-		for (unsigned i = 0; i < dsm_chan_count; i++) {
-			printf("dsm_decode: #CH %02u: %u\n", i + 1, values[i]);
+		لكل (بنانشان i = 0; i < dsm_chan_ڳڻپ; i++) {
+			لکو("dsm_decode: #CH %02u: %u\n", i + 1, قدرون_2[i]);
 		}
 	}
 
-#endif
+#جيڪڏهن_پورو
 
-	dsm_last_rx_time = now;
+	dsm_آخري_rx_وقت = now;
 
 	/* return false as default */
-	return channel_data_available;
+	أرجع channel_معلومات_موجود;
 }

@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/math.hpp>
 
-using namespace matrix;
+استعمال نطاق ميٽرڪس;
 
-TEST(MatrixScalarMultiplicationTest, ScalarMultiplication)
+TEST(ميٽرڪس_Scalar_Multiplication_Test, ScalarMultiplication)
 {
-	float data[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-	Matrix3f A(data);
+	عائم معلومات[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+	Matrix3f A(معلومات);
 	A = A * 2;
-	float data_check[9] = {2, 4, 6, 8, 10, 12, 14, 16, 18};
-	Matrix3f A_check(data_check);
+	عائم معلومات_check[9] = {2, 4, 6, 8, 10, 12, 14, 16, 18};
+	Matrix3f A_check(معلومات_check);
 	EXPECT_EQ(A, A_check);
 }

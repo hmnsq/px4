@@ -31,127 +31,127 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <math.h>
-#include "TimestampedRingBuffer.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن <math.h>
+#ضمن "TimestampedRingBuffer.hpp"
 
-struct Sample {
-	uint64_t time_us;
-	float data[3];
+بنية Sample {
+	uint64_t وقت_us;
+	عائم معلومات[3];
 };
 
 
-class TimestampedRingBufferStaticTest : public ::testing::Test
+صنف Timestamped_Ring_بفر_Static_Test : عام ::testing::Test
 {
-public:
+عام:
 	Sample _x, _y, _z, _w;
-	TimestampedRingBuffer<Sample, 3> *_buffer{nullptr};
+	Timestamped_Ring_بفر<Sample, 3> *بفر{خالي_اشارو};
 
-	void SetUp() override
+	فراغ سيٽ_مٿي() override
 	{
-		_buffer = new TimestampedRingBuffer<Sample, 3>();
-		_x.time_us = 1000000;
-		_x.data[0] = _x.data[1] = _x.data[2] = 1.5f;
+		بفر = جديد Timestamped_Ring_بفر<Sample, 3>();
+		_x.وقت_us = 1000000;
+		_x.معلومات[0] = _x.معلومات[1] = _x.معلومات[2] = 1.5f;
 
-		_y.time_us = 2000000;
-		_y.data[0] = _y.data[1] = _y.data[2] = 3.0f;
+		_y.وقت_us = 2000000;
+		_y.معلومات[0] = _y.معلومات[1] = _y.معلومات[2] = 3.0f;
 
-		_z.time_us = 3000000;
-		_z.data[0] = _z.data[1] = _z.data[2] = 4.0f;
+		_z.وقت_us = 3000000;
+		_z.معلومات[0] = _z.معلومات[1] = _z.معلومات[2] = 4.0f;
 
-		_w.time_us = 4000000;
-		_w.data[0] = _w.data[1] = _w.data[2] = 5.0f;
+		_w.وقت_us = 4000000;
+		_w.معلومات[0] = _w.معلومات[1] = _w.معلومات[2] = 5.0f;
 	}
 
-	void TearDown() override
+	فراغ Tear_هيٺ_ڏانهن() override
 	{
-		delete _buffer;
+		ميٽيو بفر;
 	}
 };
 
-TEST_F(TimestampedRingBufferStaticTest, goodInitialisation)
+TEST_F(Timestamped_Ring_بفر_Static_Test, goodInitialisation)
 {
 	// WHEN: buffer was allocated
 	// THEN: allocation should have succeed
-	EXPECT_TRUE(_buffer->valid());
-	EXPECT_FALSE(_buffer->allocate(2));
-	EXPECT_EQ(_buffer->get_length(), 3);
+	EXPECT_TRUE(بفر->valid());
+	EXPECT_FALSE(بفر->allocate(2));
+	EXPECT_EQ(بفر->get_ڊيگهائي(), 3);
 }
 
-TEST_F(TimestampedRingBufferStaticTest, NextPrevHelpers)
+TEST_F(Timestamped_Ring_بفر_Static_Test, ايندڙ_Prev_Helpers)
 {
-	EXPECT_EQ(_buffer->next(0), 1);
-	EXPECT_EQ(_buffer->next(1), 2);
-	EXPECT_EQ(_buffer->next(2), 0);
+	EXPECT_EQ(بفر->ايندڙ(0), 1);
+	EXPECT_EQ(بفر->ايندڙ(1), 2);
+	EXPECT_EQ(بفر->ايندڙ(2), 0);
 
-	EXPECT_EQ(_buffer->prev(0), 2);
-	EXPECT_EQ(_buffer->prev(1), 0);
-	EXPECT_EQ(_buffer->prev(2), 1);
+	EXPECT_EQ(بفر->prev(0), 2);
+	EXPECT_EQ(بفر->prev(1), 0);
+	EXPECT_EQ(بفر->prev(2), 1);
 }
 
-TEST_F(TimestampedRingBufferStaticTest, PushWrapAndIndices)
+TEST_F(Timestamped_Ring_بفر_Static_Test, ڌڪو_Wrap_And_Indices)
 {
-	_buffer->reset();
-	ASSERT_TRUE(_buffer->empty());
+	بفر->reset();
+	ASSERT_TRUE(بفر->خالي_جايون());
 
-	_buffer->push(_x);
-	_buffer->push(_y);
-	EXPECT_EQ(_buffer->entries(), 2);
-	_buffer->push(_z);
+	بفر->ڌڪو(_x);
+	بفر->ڌڪو(_y);
+	EXPECT_EQ(بفر->entries(), 2);
+	بفر->ڌڪو(_z);
 
-	EXPECT_EQ(_buffer->entries(), 3);
-	EXPECT_EQ(_buffer->get_oldest().time_us, _x.time_us);
-	EXPECT_EQ(_buffer->get_newest().time_us, _z.time_us);
+	EXPECT_EQ(بفر->entries(), 3);
+	EXPECT_EQ(بفر->get_oldest().وقت_us, _x.وقت_us);
+	EXPECT_EQ(بفر->get_newest().وقت_us, _z.وقت_us);
 
 	// Overwrite once (ring wrap-around).
-	_buffer->push(_w);
+	بفر->ڌڪو(_w);
 
-	EXPECT_EQ(_buffer->entries(), 3);
-	EXPECT_EQ(_buffer->get_oldest().time_us, _y.time_us);
-	EXPECT_EQ(_buffer->get_newest().time_us, _w.time_us);
+	EXPECT_EQ(بفر->entries(), 3);
+	EXPECT_EQ(بفر->get_oldest().وقت_us, _y.وقت_us);
+	EXPECT_EQ(بفر->get_newest().وقت_us, _w.وقت_us);
 }
 
-TEST_F(TimestampedRingBufferStaticTest, PopFirstOlderThanDiscardsOlderHistory)
+TEST_F(Timestamped_Ring_بفر_Static_Test, ڪڍو_پهريون_Older_Than_Discards_Older_History)
 {
-	_buffer->reset();
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	بفر->reset();
+	بفر->ڌڪو(_x);
+	بفر->ڌڪو(_y);
+	بفر->ڌڪو(_z);
 
-	Sample pop = {};
+	Sample ڪڍو = {};
 
 	// Query timestamp older than any in the buffer: no match.
-	EXPECT_FALSE(_buffer->pop_first_older_than(0, &pop));
+	EXPECT_FALSE(بفر->ڪڍو_پهريون_older_than(0, &ڪڍو));
 
 	// Pop y (also discards x), leaving z as the only remaining Sample.
-	EXPECT_TRUE(_buffer->pop_first_older_than(_y.time_us + 10, &pop));
-	EXPECT_EQ(pop.time_us, _y.time_us);
+	EXPECT_TRUE(بفر->ڪڍو_پهريون_older_than(_y.وقت_us + 10, &ڪڍو));
+	EXPECT_EQ(ڪڍو.وقت_us, _y.وقت_us);
 
-	EXPECT_EQ(_buffer->entries(), 1);
-	EXPECT_EQ(_buffer->get_oldest().time_us, _z.time_us);
-	EXPECT_EQ(_buffer->get_newest().time_us, _z.time_us);
+	EXPECT_EQ(بفر->entries(), 1);
+	EXPECT_EQ(بفر->get_oldest().وقت_us, _z.وقت_us);
+	EXPECT_EQ(بفر->get_newest().وقت_us, _z.وقت_us);
 
 	// Pop z (buffer becomes empty).
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 1, &pop));
-	EXPECT_EQ(pop.time_us, _z.time_us);
-	EXPECT_TRUE(_buffer->empty());
+	EXPECT_TRUE(بفر->ڪڍو_پهريون_older_than(_z.وقت_us + 1, &ڪڍو));
+	EXPECT_EQ(ڪڍو.وقت_us, _z.وقت_us);
+	EXPECT_TRUE(بفر->خالي_جايون());
 }
 
-TEST_F(TimestampedRingBufferStaticTest, ResetClearsTimestamps)
+TEST_F(Timestamped_Ring_بفر_Static_Test, ResetClearsTimestamps)
 {
-	_buffer->push(_x);
-	_buffer->push(_y);
-	EXPECT_FALSE(_buffer->empty());
+	بفر->ڌڪو(_x);
+	بفر->ڌڪو(_y);
+	EXPECT_FALSE(بفر->خالي_جايون());
 
-	_buffer->reset();
-	EXPECT_TRUE(_buffer->empty());
+	بفر->reset();
+	EXPECT_TRUE(بفر->خالي_جايون());
 
-	for (uint8_t i = 0; i < _buffer->get_length(); i++) {
-		EXPECT_EQ((*_buffer)[i].time_us, 0u);
+	لكل (uint8_t i = 0; i < بفر->get_ڊيگهائي(); i++) {
+		EXPECT_EQ((*بفر)[i].وقت_us, 0u);
 	}
 }
 
-TEST_F(TimestampedRingBufferStaticTest, TotalSizeReflectsInlineStorage)
+TEST_F(Timestamped_Ring_بفر_Static_Test, ڪل_سائيز_Reflects_Inline_Storage)
 {
-	EXPECT_EQ(_buffer->get_total_size(), static_cast<int>(sizeof(TimestampedRingBuffer<Sample, 3>)));
+	EXPECT_EQ(بفر->get_ڪل_سائيز(), static_cast<صحيح>(حجم(Timestamped_Ring_بفر<Sample, 3>)));
 }

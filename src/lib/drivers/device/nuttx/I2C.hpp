@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#pragma once
+#هدايت once
 
 /**
  * @file I2C.hpp
@@ -39,37 +39,37 @@
  * Base class for devices connected via I2C.
  */
 
-#include "../CDev.hpp"
-#include <px4_platform_common/i2c.h>
+#ضمن "../CDev.hpp"
+#ضمن <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#إذا defined(CONFIG_I2C)
 
-#include <nuttx/i2c/i2c_master.h>
+#ضمن <nuttx/i2c/i2c_master.h>
 
-struct I2CSPIDriverConfig;
+بنية I2CSPIDriverConfig;
 
-namespace device __EXPORT
+نطاق device __EXPORT
 {
 
 /**
  * Abstract class for character device on I2C
  */
-class __EXPORT I2C : public CDev
+صنف __EXPORT I2C : عام CDev
 {
 
-public:
+عام:
 
 	// no copy, assignment, move, move assignment
-	I2C(const I2C &) = delete;
-	I2C &operator=(const I2C &) = delete;
-	I2C(I2C &&) = delete;
-	I2C &operator=(I2C &&) = delete;
+	I2C(ثابت I2C &) = ميٽيو;
+	I2C &عامل=(ثابت I2C &) = ميٽيو;
+	I2C(I2C &&) = ميٽيو;
+	I2C &عامل=(I2C &&) = ميٽيو;
 
-	virtual int	init() override;
+	مجازي صحيح	init() override;
 
-	static int	set_bus_clock(unsigned bus, unsigned clock_hz);
+	ساكن صحيح	سيٽ_bus_clock(بنانشان bus, بنانشان clock_hz);
 
-protected:
+محمي:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -85,14 +85,14 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
-	I2C(const I2CSPIDriverConfig &config);
-	virtual ~I2C();
+	I2C(uint8_t device_type, ثابت حرف *name, ثابت صحيح bus, ثابت uint16_t پتو, ثابت uint32_t frequency);
+	I2C(ثابت I2CSPIDriverConfig &config);
+	مجازي ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	مجازي صحيح	probe() { أرجع PX4_OK; }
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -106,16 +106,16 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	صحيح		transfer(ثابت uint8_t *send, ثابت بنانشان send_len, uint8_t *recv, ثابت بنانشان recv_len);
 
-private:
-	static unsigned	int	_bus_clocks[PX4_NUMBER_I2C_BUSES];
+خاص:
+	ساكن بنانشان	صحيح	_bus_clocks[PX4_عدد_I2_C_BUSES];
 
-	const uint32_t		_frequency;
-	i2c_master_s		*_dev{nullptr};
+	ثابت uint32_t		_frequency;
+	i2c_master_s		*_dev{خالي_اشارو};
 
 };
 
 } // namespace device
 
-#endif // CONFIG_I2C
+#جيڪڏهن_پورو // CONFIG_I2C

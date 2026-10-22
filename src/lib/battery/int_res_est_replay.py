@@ -5,74 +5,74 @@
 # Note: Can lead to slightly different results than the online estimation due to the fact that
 # the log frequency of the voltage and current are not the same as the online frequency.
 
-from pyulog import ULog
-import matplotlib.pyplot as plt
-import numpy as np
-import argparse
+من pyulog استورد ULog
+استورد matplotlib.pyplot كـ plt
+استورد numpy كـ np
+استورد argparse
 
-def getData(log, topic_name, variable_name, instance=0):
-    for elem in log.data_list:
-        if elem.name == topic_name and instance == elem.multi_id:
-            return elem.data[variable_name]
-    return np.array([])
+وصف get_معلومات(log, topic_name, variable_name, instance=0):
+    لكل elem في log.معلومات_list:
+        إذا elem.name == topic_name و instance == elem.multi_id:
+            أرجع elem.معلومات[variable_name]
+    أرجع np.array([])
 
-def us2s(time_us):
-    return time_us * 1e-6
+وصف us2s(وقت_us):
+    أرجع وقت_us * 1e-6
 
-def getParam(log, param_name):
-    if param_name in log.initial_parameters:
-        return log.initial_parameters[param_name]
-    else:
-        print(f"Parameter {param_name} not found in log.")
-    return None
+وصف getParam(log, param_name):
+    إذا param_name في log.initial_parameters:
+        أرجع log.initial_parameters[param_name]
+    وإلا:
+        ڇاپيو(f"Parameter {param_name} not found in log.")
+    أرجع ڪجهه_نه
 
-def rls_update(theta, P, x, V, I, lam):
+وصف rls_update(theta, P, x, V, I, lam):
     gamma = P @ x / (lam + x.T @ P @ x)
     error = V - x.T @ theta
-    data_cov = x.T @ P @ x
-    theta_temp = theta + gamma * error
-    P_temp = (P - gamma @ x.T @ P) / lam
-    if (abs(np.linalg.norm(P)) < abs(np.linalg.norm(P_temp))):
+    معلومات_cov = x.T @ P @ x
+    theta_عارضي = theta + gamma * error
+    P_عارضي = (P - gamma @ x.T @ P) / lam
+    إذا (abs(np.linalg.norm(P)) < abs(np.linalg.norm(P_عارضي))):
         theta_corr = np.array([V + theta[1] * I, theta[1]]) # Correct OCV estimation
         P_corr = P
-        return theta_corr, P_corr, error, data_cov, 0, 0
-    return theta_temp, P_temp, error, data_cov, gamma[0], gamma[1]
+        أرجع theta_corr, P_corr, error, معلومات_cov, 0, 0
+    أرجع theta_عارضي, P_عارضي, error, معلومات_cov, gamma[0], gamma[1]
 
-def main(log_name, n_cells, full_cell, empty_cell, lam):
+وصف مکيه(log_name, n_cells, ڀريل_cell, خالي_جايون_cell, lam):
     log = ULog(log_name)
 
     log_n_cells = getParam(log, 'BAT1_N_CELLS')
-    log_full_cell = getParam(log, 'BAT1_V_CHARGED')
-    log_empty_cell = getParam(log, 'BAT1_V_EMPTY')
+    log_ڀريل_cell = getParam(log, 'BAT1_V_CHARGED')
+    log_خالي_جايون_cell = getParam(log, 'BAT1_V_EMPTY')
 
     # Debug information
-    print(f"Extracted from log - BAT1_N_CELLS: {log_n_cells}, BAT1_V_CHARGED: {log_full_cell}, BAT1_V_EMPTY: {log_empty_cell}")
+    ڇاپيو(f"Extracted from log - BAT1_N_CELLS: {log_n_cells}, BAT1_V_CHARGED: {log_full_cell}, BAT1_V_EMPTY: {log_empty_cell}")
 
     # Use log parameters unless overridden
-    if n_cells is None:
+    إذا n_cells آهي ڪجهه_نه:
         n_cells = log_n_cells
-    else:
-        print(f"Using override for n_cells: {n_cells}")
-    if full_cell is None:
-        full_cell = log_full_cell
-    else:
-        print(f"Using override for full_cell: {full_cell}")
-    if empty_cell is None:
-        empty_cell = log_empty_cell
-    else:
-        print(f"Using override for empty_cell: {empty_cell}")
+    وإلا:
+        ڇاپيو(f"Using override for n_cells: {n_cells}")
+    إذا ڀريل_cell آهي ڪجهه_نه:
+        ڀريل_cell = log_ڀريل_cell
+    وإلا:
+        ڇاپيو(f"Using override for full_cell: {full_cell}")
+    إذا خالي_جايون_cell آهي ڪجهه_نه:
+        خالي_جايون_cell = log_خالي_جايون_cell
+    وإلا:
+        ڇاپيو(f"Using override for empty_cell: {empty_cell}")
 
     # Debug information for final parameter values
-    print(f"Using parameters - n_cells: {n_cells}, full_cell: {full_cell}, empty_cell: {empty_cell}")
+    ڇاپيو(f"Using parameters - n_cells: {n_cells}, full_cell: {full_cell}, empty_cell: {empty_cell}")
 
-    timestamps = us2s(getData(log, 'battery_status', 'timestamp'))
-    I = getData(log, 'battery_status', 'current_a')
-    V = getData(log, 'battery_status', 'voltage_v')
-    remaining = getData(log, 'battery_status', 'remaining')
+    timestamps = us2s(get_معلومات(log, 'battery_status', 'timestamp'))
+    I = get_معلومات(log, 'battery_status', 'current_a')
+    V = get_معلومات(log, 'battery_status', 'voltage_v')
+    بچيل = get_معلومات(log, 'battery_status', 'remaining')
 
-    if not timestamps.size or not I.size or not V.size or not remaining.size:
-        print("Error: Incomplete data.")
-        return
+    إذا ليس timestamps.سائيز أو ليس I.سائيز أو ليس V.سائيز أو ليس بچيل.سائيز:
+        ڇاپيو("Error: Incomplete data.")
+        أرجع
 
     # Initializations
     theta = np.array([[V[0] + 0.005 * n_cells * I[0]], [0.005 * n_cells]])  # Initial VOC and R
@@ -84,75 +84,75 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
     R_est = np.zeros_like(I)
     error_hist = np.zeros_like(I)
     v_est = np.zeros_like(I)
-    internal_resistance_stable = np.zeros_like(I)
-    internal_resistance_stable[-1] = 0.005
+    اندروني_resistance_stable = np.zeros_like(I)
+    اندروني_resistance_stable[-1] = 0.005
     cov_norm = np.zeros_like(I)
     r_cov = np.zeros_like(I)
     ocv_cov = np.zeros_like(I)
     mixed_cov = np.zeros_like(I)
-    data_cov_hist = np.zeros_like(I)
+    معلومات_cov_hist = np.zeros_like(I)
     gamma_voc_hist = np.zeros_like(I)
     gamma_r_hist = np.zeros_like(I)
 
-    for index in range(len(I)):
+    لكل اشاريو في سلسلو(ڊيگهه(I)):
         # RLS algorithm
-        x = np.array([[1.0], [-I[index]]]) # Input vector
-        theta, P, error, data_cov, gamma_voc_hist[index], gamma_r_hist[index] = rls_update(theta, P, x, V[index], I[index], lam) # Run RLS
+        x = np.array([[1.0], [-I[اشاريو]]]) # Input vector
+        theta, P, error, معلومات_cov, gamma_voc_hist[اشاريو], gamma_r_hist[اشاريو] = rls_update(theta, P, x, V[اشاريو], I[اشاريو], lam) # Run RLS
 
         # For plotting
-        VOC_est[index] = theta[0][0]
-        R_est[index] = theta[1][0]
-        error_hist[index] = error
-        v_est[index] = x.T @ theta
-        cov_norm[index] = abs(np.linalg.norm(P))
-        ocv_cov[index] = P[0][0]
-        r_cov[index] = P[1][1]
-        mixed_cov[index] = P[0][1]
-        data_cov_hist[index] = data_cov
-        internal_resistance_stable[index] = max(R_est[index]/n_cells, 0.001)
+        VOC_est[اشاريو] = theta[0][0]
+        R_est[اشاريو] = theta[1][0]
+        error_hist[اشاريو] = error
+        v_est[اشاريو] = x.T @ theta
+        cov_norm[اشاريو] = abs(np.linalg.norm(P))
+        ocv_cov[اشاريو] = P[0][0]
+        r_cov[اشاريو] = P[1][1]
+        mixed_cov[اشاريو] = P[0][1]
+        معلومات_cov_hist[اشاريو] = معلومات_cov
+        اندروني_resistance_stable[اشاريو] = max(R_est[اشاريو]/n_cells, 0.001)
 
     # Plot data
-    print("Internal Resistance mean (per cell): ", np.mean(R_est) / n_cells)
+    ڇاپيو("Internal Resistance mean (per cell): ", np.سراسري(R_est) / n_cells)
 
     # Summary plot
-    sumFig = plt.figure("Battery Estimation with RLS")
+    جوڙ_Fig = plt.figure("Battery Estimation with RLS")
 
     volt = plt.subplot(2, 3, 1)
     volt.plot(timestamps, V, label='Measured voltage')
     volt.plot(timestamps, v_est, label='Estimated voltage')
-    volt.plot(timestamps, np.array(V) + np.array(internal_resistance_stable) * np.array(I) * n_cells, label='OCV estimate')
-    ocv_smoothed = np.convolve(np.array(V) + np.array(internal_resistance_stable) * np.array(I) * n_cells, np.ones(30)/30, mode='full')[0:np.size(timestamps)]
+    volt.plot(timestamps, np.array(V) + np.array(اندروني_resistance_stable) * np.array(I) * n_cells, label='OCV estimate')
+    ocv_smoothed = np.convolve(np.array(V) + np.array(اندروني_resistance_stable) * np.array(I) * n_cells, np.ones(30)/30, گهڻائي='full')[0:np.سائيز(timestamps)]
     ocv_smoothed[0:30] = ocv_smoothed[31]
     volt.plot(timestamps, ocv_smoothed, label='OCV estimate smoothed')
-    volt.plot(timestamps, np.full_like(I, full_cell * n_cells), label='100% SOC')
-    volt.set_title("Measured Voltage vs Estimated voltage vs Estimated Open circuit voltage [V]")
+    volt.plot(timestamps, np.ڀريل_like(I, ڀريل_cell * n_cells), label='100% SOC')
+    volt.سيٽ_title("Measured Voltage vs Estimated voltage vs Estimated Open circuit voltage [V]")
     volt.legend()
 
     intR = plt.subplot(2, 3, 2)
     intR.plot(timestamps, np.array(R_est) * 1000 / n_cells, label='Internal resistance estimate')
-    intR.set_title("Internal resistance estimate (per cell) [mOhm]")
+    intR.سيٽ_title("Internal resistance estimate (per cell) [mOhm]")
     intR.legend()
 
     soc = plt.subplot(2, 3, 3)
-    soc.plot(timestamps, remaining, label='SoC logged')
-    soc.plot(timestamps, np.interp((np.array(V) + np.array(internal_resistance_stable) * n_cells * np.array(I)) / n_cells, [empty_cell, full_cell], [0, 1]), label='SoC with estimator')
-    soc.plot(timestamps, np.interp(ocv_smoothed / n_cells, [empty_cell, full_cell], [0, 1]), label='SoC with estimator smoothed')
-    soc.set_title("State of charge")
+    soc.plot(timestamps, بچيل, label='SoC logged')
+    soc.plot(timestamps, np.interp((np.array(V) + np.array(اندروني_resistance_stable) * n_cells * np.array(I)) / n_cells, [خالي_جايون_cell, ڀريل_cell], [0, 1]), label='SoC with estimator')
+    soc.plot(timestamps, np.interp(ocv_smoothed / n_cells, [خالي_جايون_cell, ڀريل_cell], [0, 1]), label='SoC with estimator smoothed')
+    soc.سيٽ_title("State of charge")
     soc.legend()
 
     curr = plt.subplot(2, 3, 4)
     curr.plot(timestamps, I, label='Measured current')
-    curr.set_title("Measured Current [A]")
+    curr.سيٽ_title("Measured Current [A]")
     curr.legend()
 
     err = plt.subplot(2, 3, 5)
     err.plot(timestamps, error_hist, label='$Error$')
-    err.set_title("Voltage estimation error [V]")
+    err.سيٽ_title("Voltage estimation error [V]")
     err.legend()
 
     cov = plt.subplot(2, 3, 6)
     cov.plot(timestamps, cov_norm, label = 'Covariance norm')
-    cov.set_title("Covariance norm")
+    cov.سيٽ_title("Covariance norm")
     cov.legend()
 
     # # SoC estimation plots
@@ -197,12 +197,12 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
 
     plt.show()
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Estimate battery parameters from ulog file.')
-    parser.add_argument('-f', type = str,   required = True,  help = 'Full path to ulog file')
-    parser.add_argument('-c', type = float, required = False, help = 'Number of cells in battery')
-    parser.add_argument('-u', type = float, required = False, default = None, help = 'Full cell voltage')
-    parser.add_argument('-e', type = float, required = False, default = None,  help = 'Empty cell voltage')
-    parser.add_argument('-l', type = float, required = False, default = 0.99, help = 'Forgetting factor')
-    args = parser.parse_args()
-    main(args.f, args.c, args.u, args.e, args.l)
+إذا __name__ == "__main__":
+    parser = argparse.دليل_Parser(description='Estimate battery parameters from ulog file.')
+    parser.جوڙيو_دليل('-f', type = str,   required = سچ,  help = 'Full path to ulog file')
+    parser.جوڙيو_دليل('-c', type = عائم, required = خطأ, help = 'Number of cells in battery')
+    parser.جوڙيو_دليل('-u', type = عائم, required = خطأ, افتراضي = ڪجهه_نه, help = 'Full cell voltage')
+    parser.جوڙيو_دليل('-e', type = عائم, required = خطأ, افتراضي = ڪجهه_نه,  help = 'Empty cell voltage')
+    parser.جوڙيو_دليل('-l', type = عائم, required = خطأ, افتراضي = 0.99, help = 'Forgetting factor')
+    دليلون = parser.parse_دليلون()
+    مکيه(دليلون.f, دليلون.c, دليلون.u, دليلون.e, دليلون.l)

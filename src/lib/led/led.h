@@ -39,26 +39,26 @@
  * @author Beat Küng <beat-kueng@gmx.net>
  */
 
-#pragma once
+#هدايت once
 
-#include <drivers/drv_hrt.h>
-#include <drivers/drv_led.h>
-#include <px4_platform_common/module_params.h>
-#include <lib/parameters/param.h>
-#include <lib/perf/perf_counter.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionInterval.hpp>
-#include <uORB/topics/led_control.h>
-#include <uORB/topics/parameter_update.h>
+#ضمن <drivers/drv_hrt.h>
+#ضمن <drivers/drv_led.h>
+#ضمن <px4_platform_common/module_params.h>
+#ضمن <lib/parameters/param.h>
+#ضمن <lib/perf/perf_counter.h>
+#ضمن <uORB/Subscription.hpp>
+#ضمن <uORB/SubscriptionInterval.hpp>
+#ضمن <uORB/topics/led_control.h>
+#ضمن <uORB/topics/parameter_update.h>
 
-using namespace time_literals;
+using namespace وقت_literals;
 
-struct LedControlDataSingle {
+بنية Led_Control_معلومات_Single {
 	uint8_t color{led_control_s::COLOR_OFF}; ///< one of led_control_s::COLOR_*
 	uint8_t brightness{0}; ///< brightness in [0, 255]
 };
-struct LedControlData {
-	LedControlDataSingle leds[BOARD_MAX_LEDS] {};
+بنية Led_Control_معلومات {
+	Led_Control_معلومات_Single leds[BOARD_MAX_LEDS] {};
 };
 
 
@@ -66,21 +66,21 @@ struct LedControlData {
  ** class LedController
  * Handles the led_control topic: blinking, priorities and state updates.
  */
-class LedController : public ModuleParams
+class LedController : عام ModuleParams
 {
-public:
+عام:
 	LedController() : ModuleParams(nullptr) {}
 	~LedController() override
 	{
-		perf_free(_led_control_sub_lost_perf);
+		perf_free(led_control_sub_گم_perf);
 	}
 
 	/**
 	 * get maximum time between two consecutive calls to update() in us.
 	 */
-	int maximum_update_interval() const
+	صحيح وڌ_کان_وڌ_update_interval() ثابت
 	{
-		return _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
+		أرجع _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
 	}
 
 	/**
@@ -89,104 +89,104 @@ public:
 	 * @param control_data output structure (will always be set)
 	 * @return 1 if control_data set (state changed), 0 if control_data not changed (state did not change), <0 error otherwise
 	 */
-	int update(LedControlData &control_data);
+	صحيح update(Led_Control_معلومات &control_معلومات);
 
-	static constexpr int BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
-	static constexpr int BREATHE_STEPS = 64; /**< number of steps in breathe mode for a full on-off cycle */
+	ساكن constexpr صحيح BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
+	ساكن constexpr صحيح BREATHE_قدمن = 64; /**< number of steps in breathe mode for a full on-off cycle */
 
-	static constexpr int BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
+	ساكن constexpr صحيح BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
-	static constexpr int BLINK_NORMAL_DURATION = 500 * 1000; /**< duration of half a blinking cycle
+	ساكن constexpr صحيح BLINK_عام_DURATION = 500 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
-	static constexpr int BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
+	ساكن constexpr صحيح BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
 
-private:
+خاص:
 
 	/** set control_data based on current Led states */
-	inline void get_control_data(LedControlData &control_data);
+	مضمن فراغ get_control_معلومات(Led_Control_معلومات &control_معلومات);
 
-	struct PerPriorityData {
+	بنية في_ترجيح_معلومات {
 		uint8_t color = 0; ///< one of led_control_s::COLOR_*
-		uint8_t mode = led_control_s::MODE_DISABLED; ///< one of led_control_s::MODE_*
-		uint8_t blink_times_left = 0; /**< how many times left to blink (MSB bit is used for infinite case).
+		uint8_t گهڻائي = led_control_s::گهڻائي_DISABLED; ///< one of led_control_s::MODE_*
+		uint8_t blink_times_کاٻو = 0; /**< how many times left to blink (MSB bit is used for infinite case).
 									This limits the number of complete blink cycles to 64 (if not infinite) */
 	};
 
-	struct NextState {
+	بنية ايندڙ_State {
 		uint8_t color;
-		uint8_t mode;
-		uint8_t num_blinks;
-		uint8_t priority = led_control_s::MAX_PRIORITY + 1;
+		uint8_t گهڻائي;
+		uint8_t انگ_blinks;
+		uint8_t ترجيح = led_control_s::MAX_ترجيح + 1;
 
-		void set(const led_control_s &led_control)
+		فراغ سيٽ(ثابت led_control_s &led_control)
 		{
 			color = led_control.color;
-			mode = led_control.mode;
-			num_blinks = led_control.num_blinks;
-			priority = led_control.priority;
+			گهڻائي = led_control.گهڻائي;
+			انگ_blinks = led_control.انگ_blinks;
+			ترجيح = led_control.ترجيح;
 
-			if (priority > led_control_s::MAX_PRIORITY) {
-				priority = led_control_s::MAX_PRIORITY;
+			إذا (ترجيح > led_control_s::MAX_ترجيح) {
+				ترجيح = led_control_s::MAX_ترجيح;
 			}
 		}
-		void reset() { priority = led_control_s::MAX_PRIORITY + 1; }
-		bool is_valid() const { return priority != led_control_s::MAX_PRIORITY + 1; }
+		فراغ reset() { ترجيح = led_control_s::MAX_ترجيح + 1; }
+		bool is_valid() ثابت { أرجع ترجيح != led_control_s::MAX_ترجيح + 1; }
 	};
 
-	struct PerLedData {
-		PerPriorityData priority[led_control_s::MAX_PRIORITY + 1];
-		uint16_t current_blinking_time = 0; ///< how long the Led was in current state (in 0.1 ms, wraps if > 6.5s)
-		NextState next_state;
+	بنية في_Led_معلومات {
+		في_ترجيح_معلومات ترجيح[led_control_s::MAX_ترجيح + 1];
+		uint16_t current_blinking_وقت = 0; ///< how long the Led was in current state (in 0.1 ms, wraps if > 6.5s)
+		ايندڙ_State ايندڙ_state;
 
-		void set(const led_control_s &led_control)
+		فراغ سيٽ(ثابت led_control_s &led_control)
 		{
-			int next_priority = (int)led_control.priority;
-			priority[next_priority].color = led_control.color;
-			priority[next_priority].mode = led_control.mode;
+			صحيح ايندڙ_ترجيح = (صحيح)led_control.ترجيح;
+			ترجيح[ايندڙ_ترجيح].color = led_control.color;
+			ترجيح[ايندڙ_ترجيح].گهڻائي = led_control.گهڻائي;
 
 			// initialise the flash counter
-			if (led_control.mode == led_control_s::MODE_FLASH) {
-				priority[next_priority].blink_times_left = led_control.num_blinks * 10;
+			إذا (led_control.گهڻائي == led_control_s::گهڻائي_FLASH) {
+				ترجيح[ايندڙ_ترجيح].blink_times_کاٻو = led_control.انگ_blinks * 10;
 
-			} else {
-				priority[next_priority].blink_times_left = led_control.num_blinks * 2;
+			} وإلا {
+				ترجيح[ايندڙ_ترجيح].blink_times_کاٻو = led_control.انگ_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			إذا (ترجيح[ايندڙ_ترجيح].blink_times_کاٻو == 0) {
 				// handle infinite case
-				priority[next_priority].blink_times_left = 246;
+				ترجيح[ايندڙ_ترجيح].blink_times_کاٻو = 246;
 			}
 		}
 
-		void apply_next_state()
+		فراغ apply_ايندڙ_state()
 		{
-			int next_priority = (int)next_state.priority;
-			priority[next_priority].color = next_state.color;
-			priority[next_priority].mode = next_state.mode;
+			صحيح ايندڙ_ترجيح = (صحيح)ايندڙ_state.ترجيح;
+			ترجيح[ايندڙ_ترجيح].color = ايندڙ_state.color;
+			ترجيح[ايندڙ_ترجيح].گهڻائي = ايندڙ_state.گهڻائي;
 
-			if (next_state.mode == led_control_s::MODE_FLASH) {
-				priority[next_priority].blink_times_left = next_state.num_blinks * 10;
+			إذا (ايندڙ_state.گهڻائي == led_control_s::گهڻائي_FLASH) {
+				ترجيح[ايندڙ_ترجيح].blink_times_کاٻو = ايندڙ_state.انگ_blinks * 10;
 
-			} else {
-				priority[next_priority].blink_times_left = next_state.num_blinks * 2;
+			} وإلا {
+				ترجيح[ايندڙ_ترجيح].blink_times_کاٻو = ايندڙ_state.انگ_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			إذا (ترجيح[ايندڙ_ترجيح].blink_times_کاٻو == 0) {
 				// handle infinite case
-				priority[next_priority].blink_times_left = 254;
+				ترجيح[ايندڙ_ترجيح].blink_times_کاٻو = 254;
 			}
 		}
 	};
 
-	PerLedData _states[BOARD_MAX_LEDS]; ///< keep current LED states
+	في_Led_معلومات حالتون[BOARD_MAX_LEDS]; ///< keep current LED states
 
 	uORB::Subscription _led_control_sub{ORB_ID(led_control)}; ///< uorb subscription
 	uORB::SubscriptionInterval _parameter_update_sub{ORB_ID(parameter_update), 1_s};
 
-	hrt_abstime _last_update_call{0};
+	hrt_abstime آخري_update_call{0};
 
-	perf_counter_t _led_control_sub_lost_perf{perf_alloc(PC_COUNT, MODULE_NAME": led_control message missed")};
+	perf_counter_t led_control_sub_گم_perf{perf_alloc(PC_ڳڻپ, MODULE_NAME": led_control message missed")};
 
 	uint8_t _max_brightness{UINT8_MAX};
 

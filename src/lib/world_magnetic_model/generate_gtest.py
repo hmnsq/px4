@@ -32,9 +32,9 @@
 #
 ############################################################################
 
-import json
-import sys
-import urllib.request
+استورد json
+استورد sys
+استورد urllib.request
 
 SAMPLING_RES = 5
 SAMPLING_MIN_LAT = -50
@@ -42,7 +42,7 @@ SAMPLING_MAX_LAT = 60
 SAMPLING_MIN_LON = -180
 SAMPLING_MAX_LON = 180
 
-header = """/****************************************************************************
+سرو = """/****************************************************************************
  *
  *   Copyright (c) 2020-2024 PX4 Development Team. All rights reserved.
  *
@@ -82,65 +82,65 @@ header = """/*******************************************************************
 #include "geo_mag_declination.h"
 """
 
-print(header)
+ڇاپيو(سرو)
 
-print('')
+ڇاپيو('')
 
 # Declination
 params = urllib.parse.urlencode({'lat1': 0, 'lat2': 0, 'lon1': 0, 'lon2': 0, 'latStepSize': 1, 'lonStepSize': 1, 'magneticComponent': 'd', 'resultFormat': 'json'})
-key=sys.argv[1] # NOAA key (https://www.ngdc.noaa.gov/geomag/CalcSurvey.shtml)
-f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (key, params))
-data = json.loads(f.read())
+ڪنجي=sys.argv[1] # NOAA key (https://www.ngdc.noaa.gov/geomag/CalcSurvey.shtml)
+f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (ڪنجي, params))
+معلومات = json.loads(f.اقرأ())
 
 
-print('TEST(GeoLookupTest, declination)\n{')
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+ڇاپيو('TEST(GeoLookupTest, declination)\n{')
+لكل latitude في سلسلو(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     params = urllib.parse.urlencode({'lat1': latitude, 'lat2': latitude, 'lon1': SAMPLING_MIN_LON, 'lon2': SAMPLING_MAX_LON, 'latStepSize': 1, 'lonStepSize': SAMPLING_RES, 'magneticComponent': 'd', 'resultFormat': 'json'})
-    f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (key, params))
-    data = json.loads(f.read())
+    f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (ڪنجي, params))
+    معلومات = json.loads(f.اقرأ())
 
-    for p in data['result']:
+    لكل p في معلومات['result']:
         error_deg = 1.0
 
         # why is this area worse?
-        if (-45 <= p['latitude'] <= -44) and (100 <= p['longitude'] <= 120):
+        إذا (-45 <= p['latitude'] <= -44) و (100 <= p['longitude'] <= 120):
             error_deg = 1.8
 
-        print('\tEXPECT_NEAR(get_mag_declination_degrees({}, {}), {:.1f}, {:.2f} + {});'.format(p['latitude'], p['longitude'], p['declination'], p['declination_uncertainty'], error_deg))
-print('}')
+        ڇاپيو('\tEXPECT_NEAR(get_mag_declination_degrees({}, {}), {:.1f}, {:.2f} + {});'.format(p['latitude'], p['longitude'], p['declination'], p['declination_uncertainty'], error_deg))
+ڇاپيو('}')
 
-print('')
+ڇاپيو('')
 
-print('TEST(GeoLookupTest, inclination)\n{')
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+ڇاپيو('TEST(GeoLookupTest, inclination)\n{')
+لكل latitude في سلسلو(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     params = urllib.parse.urlencode({'lat1': latitude, 'lat2': latitude, 'lon1': SAMPLING_MIN_LON, 'lon2': SAMPLING_MAX_LON, 'latStepSize': 1, 'lonStepSize': SAMPLING_RES, 'magneticComponent': 'i', 'resultFormat': 'json'})
-    f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (key, params))
-    data = json.loads(f.read())
+    f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (ڪنجي, params))
+    معلومات = json.loads(f.اقرأ())
 
-    for p in data['result']:
+    لكل p في معلومات['result']:
         error = 1.2
 
         # why is this area worse?
-        if (-45 <= p['latitude'] <= -44) and (100 <= p['longitude'] <= 120):
+        إذا (-45 <= p['latitude'] <= -44) و (100 <= p['longitude'] <= 120):
             error_deg = 1.5
 
-        print('\tEXPECT_NEAR(get_mag_inclination_degrees({}, {}), {:.1f}, {:.2f} + {});'.format(p['latitude'], p['longitude'], p['inclination'], p['inclination_uncertainty'], error))
-print('}')
+        ڇاپيو('\tEXPECT_NEAR(get_mag_inclination_degrees({}, {}), {:.1f}, {:.2f} + {});'.format(p['latitude'], p['longitude'], p['inclination'], p['inclination_uncertainty'], error))
+ڇاپيو('}')
 
-print('')
+ڇاپيو('')
 
-print('TEST(GeoLookupTest, strength)\n{')
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+ڇاپيو('TEST(GeoLookupTest, strength)\n{')
+لكل latitude في سلسلو(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     params = urllib.parse.urlencode({'lat1': latitude, 'lat2': latitude, 'lon1': SAMPLING_MIN_LON, 'lon2': SAMPLING_MAX_LON, 'latStepSize': 1, 'lonStepSize': SAMPLING_RES, 'magneticComponent': 'f', 'resultFormat': 'json'})
-    f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (key, params))
-    data = json.loads(f.read())
+    f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (ڪنجي, params))
+    معلومات = json.loads(f.اقرأ())
 
-    for p in data['result']:
+    لكل p في معلومات['result']:
         error = 0.01
 
         # why is this area worse?
-        if (-45 <= p['latitude'] <= -35):
+        إذا (-45 <= p['latitude'] <= -35):
             error = 0.017
 
-        print('\tEXPECT_NEAR(get_mag_strength_tesla({}, {}) * 1e9, {:.0f}, {:.0f} + {:.0f});'.format(p['latitude'], p['longitude'], p['totalintensity'], p['totalintensity_uncertainty'], p['totalintensity'] * error))
-print('}')
+        ڇاپيو('\tEXPECT_NEAR(get_mag_strength_tesla({}, {}) * 1e9, {:.0f}, {:.0f} + {:.0f});'.format(p['latitude'], p['longitude'], p['totalintensity'], p['totalintensity_uncertainty'], p['totalintensity'] * error))
+ڇاپيو('}')

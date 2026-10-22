@@ -31,33 +31,33 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <random>
-#include <lib/matrix/matrix/math.hpp>
-#include "WelfordMean.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن <random>
+#ضمن <lib/matrix/matrix/math.hpp>
+#ضمن "WelfordMean.hpp"
 
-using namespace math;
-using matrix::Vector3f;
+استعمال نطاق math;
+استعمال ميٽرڪس::Vector3f;
 
-TEST(WelfordMeanTest, NoisySignal)
+TEST(Welford_سراسري_Test, NoisySignal)
 {
-	const float std_dev = 3.f;
-	std::normal_distribution<float> standard_normal_distribution{0.f, std_dev};
+	ثابت عائم std_dev = 3.f;
+	std::عام_distribution<عائم> standard_عام_distribution{0.f, std_dev};
 	std::default_random_engine random_generator{}; // Pseudo-random generator with constant seed
-	random_generator.seed(42);
-	WelfordMean<float> welford{};
+	random_generator.ٻج(42);
+	Welford_سراسري<عائم> welford{};
 
-	for (int i = 0; i < 1000; i++) {
-		const float noisy_value = standard_normal_distribution(random_generator);
-		welford.update(noisy_value);
+	لكل (صحيح i = 0; i < 1000; i++) {
+		ثابت عائم noisy_قدر = standard_عام_distribution(random_generator);
+		welford.update(noisy_قدر);
 	}
 
 	EXPECT_TRUE(welford.valid());
-	const float mean = welford.mean();
-	const float var = welford.variance();
-	const float var_real = std_dev * std_dev;
+	ثابت عائم سراسري = welford.سراسري();
+	ثابت عائم var = welford.variance();
+	ثابت عائم var_real = std_dev * std_dev;
 
-	EXPECT_NEAR(mean, 0.f, 0.7f);
+	EXPECT_NEAR(سراسري, 0.f, 0.7f);
 
 	EXPECT_NEAR(var, var_real, 0.1f);
 

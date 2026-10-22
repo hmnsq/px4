@@ -39,13 +39,13 @@
  * @author Lorenz Meier <lm@inf.ethz.ch>
  */
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <cmath>
-#include "st24.h"
-#include "common_rc.h"
+#ضمن <stdbool.h>
+#ضمن <stdio.h>
+#ضمن <cmath>
+#ضمن "st24.h"
+#ضمن "common_rc.h"
 
-const char *decode_states[] = {"UNSYNCED",
+ثابت حرف *decode_حالتون[] = {"UNSYNCED",
 			       "GOT_STX1",
 			       "GOT_STX2",
 			       "GOT_LEN",
@@ -54,196 +54,196 @@ const char *decode_states[] = {"UNSYNCED",
 			      };
 
 /* define range mapping here, -+100% -> 1000..2000 */
-#define ST24_RANGE_MIN 500.0f
-#define ST24_RANGE_MAX 3500.0f
+#وصف_ڪريو ST24_RANGE_MIN 500.0f
+#وصف_ڪريو ST24_RANGE_MAX 3500.0f
 
-#define ST24_TARGET_MIN 1000.0f
-#define ST24_TARGET_MAX 2000.0f
+#وصف_ڪريو ST24_هدف_MIN 1000.0f
+#وصف_ڪريو ST24_هدف_MAX 2000.0f
 
 /* pre-calculate the floating point stuff as far as possible at compile time */
-#define ST24_SCALE_FACTOR ((ST24_TARGET_MAX - ST24_TARGET_MIN) / (ST24_RANGE_MAX - ST24_RANGE_MIN))
-#define ST24_SCALE_OFFSET (int)(ST24_TARGET_MIN - (ST24_SCALE_FACTOR * ST24_RANGE_MIN + 0.5f))
+#وصف_ڪريو ST24_SCALE_ضرب_ڪندڙ ((ST24_هدف_MAX - ST24_هدف_MIN) / (ST24_RANGE_MAX - ST24_RANGE_MIN))
+#وصف_ڪريو ST24_SCALE_وٿي (صحيح)(ST24_هدف_MIN - (ST24_SCALE_ضرب_ڪندڙ * ST24_RANGE_MIN + 0.5f))
 
-static enum ST24_DECODE_STATE _decode_state = ST24_DECODE_STATE_UNSYNCED;
-static uint8_t _rxlen;
+ساكن تعداد ST24_DECODE_STATE _decode_state = ST24_DECODE_STATE_UNSYNCED;
+ساكن uint8_t _rxlen;
 
-static ReceiverFcPacket &_rxpacket = rc_decode_buf._strxpacket;
+ساكن ReceiverFcPacket &_rxpacket = rc_decode_buf._strxpacket;
 
 uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len)
 {
-	uint8_t i, crc ;
-	crc = 0;
+	uint8_t i, چڪري_جاچ ;
+	چڪري_جاچ = 0;
 
-	while (len--) {
-		for (i = 0x80; i != 0; i >>= 1) {
-			if ((crc & 0x80) != 0) {
-				crc <<= 1;
-				crc ^= 0x07;
+	طالما (len--) {
+		لكل (i = 0x80; i != 0; i >>= 1) {
+			إذا ((چڪري_جاچ & 0x80) != 0) {
+				چڪري_جاچ <<= 1;
+				چڪري_جاچ ^= 0x07;
 
-			} else {
-				crc <<= 1;
+			} وإلا {
+				چڪري_جاچ <<= 1;
 			}
 
-			if ((*ptr & i) != 0) {
-				crc ^= 0x07;
+			إذا ((*ptr & i) != 0) {
+				چڪري_جاچ ^= 0x07;
 			}
 		}
 
 		ptr++;
 	}
 
-	return (crc);
+	أرجع (چڪري_جاچ);
 }
 
 
-int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *channel_count, uint16_t *channels,
-		uint16_t max_chan_count)
+صحيح st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *گم_ڳڻپ, uint16_t *channel_ڳڻپ, uint16_t *channels,
+		uint16_t max_chan_ڳڻپ)
 {
-	int ret = 1;
+	صحيح ret = 1;
 
-	switch (_decode_state) {
-	case ST24_DECODE_STATE_UNSYNCED:
-		if (byte == ST24_STX1) {
+	بدل (_decode_state) {
+	حالة ST24_DECODE_STATE_UNSYNCED:
+		إذا (byte == ST24_STX1) {
 			_decode_state = ST24_DECODE_STATE_GOT_STX1;
 
-		} else {
+		} وإلا {
 			ret = 3;
 		}
 
-		break;
+		اكسر;
 
-	case ST24_DECODE_STATE_GOT_STX1:
-		if (byte == ST24_STX2) {
+	حالة ST24_DECODE_STATE_GOT_STX1:
+		إذا (byte == ST24_STX2) {
 			_decode_state = ST24_DECODE_STATE_GOT_STX2;
 
-		} else {
+		} وإلا {
 			_decode_state = ST24_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		اكسر;
 
-	case ST24_DECODE_STATE_GOT_STX2:
+	حالة ST24_DECODE_STATE_GOT_STX2:
 
 		/* ensure no data overflow failure or hack is possible */
-		if ((unsigned)byte >= sizeof(_rxpacket.type) + sizeof(_rxpacket.crc8)
-		    && (unsigned)byte <= sizeof(_rxpacket.type) + sizeof(_rxpacket.st24_data) + sizeof(_rxpacket.crc8)) {
-			_rxpacket.length = byte;
+		إذا ((بنانشان)byte >= حجم(_rxpacket.type) + حجم(_rxpacket.crc8)
+		    && (بنانشان)byte <= حجم(_rxpacket.type) + حجم(_rxpacket.st24_معلومات) + حجم(_rxpacket.crc8)) {
+			_rxpacket.ڊيگهائي = byte;
 			_rxlen = 0;
 			_decode_state = ST24_DECODE_STATE_GOT_LEN;
 
-		} else {
+		} وإلا {
 			_decode_state = ST24_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		اكسر;
 
-	case ST24_DECODE_STATE_GOT_LEN:
+	حالة ST24_DECODE_STATE_GOT_LEN:
 		_rxpacket.type = byte;
 		_rxlen++;
-		_decode_state = (_rxlen == (_rxpacket.length - 1)) ? ST24_DECODE_STATE_GOT_DATA : ST24_DECODE_STATE_GOT_TYPE;
-		break;
+		_decode_state = (_rxlen == (_rxpacket.ڊيگهائي - 1)) ? ST24_DECODE_STATE_GOT_معلومات : ST24_DECODE_STATE_GOT_TYPE;
+		اكسر;
 
-	case ST24_DECODE_STATE_GOT_TYPE:
-		_rxpacket.st24_data[_rxlen - 1] = byte;
+	حالة ST24_DECODE_STATE_GOT_TYPE:
+		_rxpacket.st24_معلومات[_rxlen - 1] = byte;
 		_rxlen++;
 
-		if (_rxlen == (_rxpacket.length - 1)) {
-			_decode_state = ST24_DECODE_STATE_GOT_DATA;
+		إذا (_rxlen == (_rxpacket.ڊيگهائي - 1)) {
+			_decode_state = ST24_DECODE_STATE_GOT_معلومات;
 		}
 
-		break;
+		اكسر;
 
-	case ST24_DECODE_STATE_GOT_DATA:
+	حالة ST24_DECODE_STATE_GOT_معلومات:
 		_rxpacket.crc8 = byte;
 		_rxlen++;
 
-		if (st24_common_crc8((uint8_t *) & (_rxpacket.length), _rxlen) == _rxpacket.crc8) {
+		إذا (st24_common_crc8((uint8_t *) & (_rxpacket.ڊيگهائي), _rxlen) == _rxpacket.crc8) {
 
 			ret = 0;
 
 			/* decode the actual packet */
 
-			switch (_rxpacket.type) {
+			بدل (_rxpacket.type) {
 
-			case ST24_PACKET_TYPE_CHANNELDATA12: {
-					ChannelData12 *d = (ChannelData12 *)_rxpacket.st24_data;
-
-					// Scale from 0..255 to 100%.
-					*rssi = d->rssi * (100.0f / 255.0f);
-					*lost_count = d->lost_count;
-
-					/* this can lead to rounding of the strides */
-					*channel_count = (max_chan_count < 12) ? max_chan_count : 12;
-
-					unsigned stride_count = (*channel_count * 3) / 2;
-					unsigned chan_index = 0;
-
-					for (unsigned i = 0; i < stride_count; i += 3) {
-						channels[chan_index] = ((uint16_t)d->channel[i] << 4);
-						channels[chan_index] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
-						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
-						channels[chan_index] = (uint16_t)lroundf(channels[chan_index] * ST24_SCALE_FACTOR) + ST24_SCALE_OFFSET;
-						chan_index++;
-
-						channels[chan_index] = ((uint16_t)d->channel[i + 2]);
-						channels[chan_index] |= (((uint16_t)(0x0F & d->channel[i + 1])) << 8);
-						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
-						channels[chan_index] = (uint16_t)lroundf(channels[chan_index] * ST24_SCALE_FACTOR) + ST24_SCALE_OFFSET;
-						chan_index++;
-					}
-				}
-				break;
-
-			case ST24_PACKET_TYPE_CHANNELDATA24: {
-					ChannelData24 *d = (ChannelData24 *)&_rxpacket.st24_data;
+			حالة ST24_PACKET_TYPE_CHANNELDATA12: {
+					ChannelData12 *d = (ChannelData12 *)_rxpacket.st24_معلومات;
 
 					// Scale from 0..255 to 100%.
 					*rssi = d->rssi * (100.0f / 255.0f);
-					*lost_count = d->lost_count;
+					*گم_ڳڻپ = d->گم_ڳڻپ;
 
 					/* this can lead to rounding of the strides */
-					*channel_count = (max_chan_count < 24) ? max_chan_count : 24;
+					*channel_ڳڻپ = (max_chan_ڳڻپ < 12) ? max_chan_ڳڻپ : 12;
 
-					unsigned stride_count = (*channel_count * 3) / 2;
-					unsigned chan_index = 0;
+					بنانشان stride_ڳڻپ = (*channel_ڳڻپ * 3) / 2;
+					بنانشان chan_اشاريو = 0;
 
-					for (unsigned i = 0; i < stride_count; i += 3) {
-						channels[chan_index] = ((uint16_t)d->channel[i] << 4);
-						channels[chan_index] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
+					لكل (بنانشان i = 0; i < stride_ڳڻپ; i += 3) {
+						channels[chan_اشاريو] = ((uint16_t)d->channel[i] << 4);
+						channels[chan_اشاريو] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
 						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
-						channels[chan_index] = static_cast<uint16_t>(lroundf(channels[chan_index] * ST24_SCALE_FACTOR) + ST24_SCALE_OFFSET);
-						chan_index++;
+						channels[chan_اشاريو] = (uint16_t)lroundf(channels[chan_اشاريو] * ST24_SCALE_ضرب_ڪندڙ) + ST24_SCALE_وٿي;
+						chan_اشاريو++;
 
-						channels[chan_index] = ((uint16_t)d->channel[i + 2]);
-						channels[chan_index] |= (((uint16_t)(0x0F & d->channel[i + 1])) << 8);
+						channels[chan_اشاريو] = ((uint16_t)d->channel[i + 2]);
+						channels[chan_اشاريو] |= (((uint16_t)(0x0F & d->channel[i + 1])) << 8);
 						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
-						channels[chan_index] = static_cast<uint16_t>(lroundf(channels[chan_index] * ST24_SCALE_FACTOR) + ST24_SCALE_OFFSET);
-						chan_index++;
+						channels[chan_اشاريو] = (uint16_t)lroundf(channels[chan_اشاريو] * ST24_SCALE_ضرب_ڪندڙ) + ST24_SCALE_وٿي;
+						chan_اشاريو++;
 					}
 				}
-				break;
+				اكسر;
 
-			case ST24_PACKET_TYPE_TRANSMITTERGPSDATA: {
+			حالة ST24_PACKET_TYPE_CHANNELDATA24: {
+					ChannelData24 *d = (ChannelData24 *)&_rxpacket.st24_معلومات;
+
+					// Scale from 0..255 to 100%.
+					*rssi = d->rssi * (100.0f / 255.0f);
+					*گم_ڳڻپ = d->گم_ڳڻپ;
+
+					/* this can lead to rounding of the strides */
+					*channel_ڳڻپ = (max_chan_ڳڻپ < 24) ? max_chan_ڳڻپ : 24;
+
+					بنانشان stride_ڳڻپ = (*channel_ڳڻپ * 3) / 2;
+					بنانشان chan_اشاريو = 0;
+
+					لكل (بنانشان i = 0; i < stride_ڳڻپ; i += 3) {
+						channels[chan_اشاريو] = ((uint16_t)d->channel[i] << 4);
+						channels[chan_اشاريو] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
+						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
+						channels[chan_اشاريو] = static_cast<uint16_t>(lroundf(channels[chan_اشاريو] * ST24_SCALE_ضرب_ڪندڙ) + ST24_SCALE_وٿي);
+						chan_اشاريو++;
+
+						channels[chan_اشاريو] = ((uint16_t)d->channel[i + 2]);
+						channels[chan_اشاريو] |= (((uint16_t)(0x0F & d->channel[i + 1])) << 8);
+						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
+						channels[chan_اشاريو] = static_cast<uint16_t>(lroundf(channels[chan_اشاريو] * ST24_SCALE_ضرب_ڪندڙ) + ST24_SCALE_وٿي);
+						chan_اشاريو++;
+					}
+				}
+				اكسر;
+
+			حالة ST24_PACKET_TYPE_TRANSMITTERGPSDATA: {
 
 					// ReceiverFcPacket* d = (ReceiverFcPacket*)&_rxpacket.st24_data;
 					/* we silently ignore this data for now, as it is unused */
 					ret = 5;
 				}
-				break;
+				اكسر;
 
-			default:
+			افتراضي:
 				ret = 2;
-				break;
+				اكسر;
 			}
 
-		} else {
+		} وإلا {
 			/* decoding failed */
 			ret = 4;
 		}
 
 		_decode_state = ST24_DECODE_STATE_UNSYNCED;
-		break;
+		اكسر;
 	}
 
-	return ret;
+	أرجع ret;
 }

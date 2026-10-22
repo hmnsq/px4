@@ -36,27 +36,27 @@
  *
  */
 
-#include <geo/geo.h>
-#include "atmosphere.h"
-namespace atmosphere
+#ضمن <geo/geo.h>
+#ضمن "atmosphere.h"
+نطاق atmosphere
 {
 
 
-float getDensityFromPressureAndTemp(const float pressure_pa, const float temperature_celsius)
+عائم get_Density_From_Pressure_And_عارضي(ثابت عائم pressure_pa, ثابت عائم temperature_celsius)
 {
-	return (pressure_pa / (kAirGasConstant * (temperature_celsius - kAbsoluteNullCelsius)));
+	أرجع (pressure_pa / (kAirGasConstant * (temperature_celsius - kAbsoluteNullCelsius)));
 }
-float getPressureFromAltitude(const float altitude_m)
+عائم getPressureFromAltitude(ثابت عائم altitude_m)
 {
 
-	return kPressRefSeaLevelPa * powf((altitude_m * kTempGradient + kTempRefKelvin) / kTempRefKelvin,
-					  -CONSTANTS_ONE_G / (kTempGradient * kAirGasConstant));
+	أرجع kPressRefSeaLevelPa * powf((altitude_m * k_عارضي_Gradient + k_عارضي_Ref_Kelvin) / k_عارضي_Ref_Kelvin,
+					  -CONSTANTS_ONE_G / (k_عارضي_Gradient * kAirGasConstant));
 }
-float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa)
+عائم getAltitudeFromPressure(عائم pressure_pa, عائم pressure_sealevel_pa)
 {
 	// calculate altitude using the hypsometric equation
 
-	const float pressure_ratio = pressure_pa / pressure_sealevel_pa;
+	ثابت عائم pressure_تناسب = pressure_pa / pressure_sealevel_pa;
 
 	/*
 	 * Solve:
@@ -67,12 +67,12 @@ float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa)
 	 * h = -------------------------------  + h1
 	 *                   a
 	 */
-	return (((powf(pressure_ratio, (-(kTempGradient * kAirGasConstant) / CONSTANTS_ONE_G))) * kTempRefKelvin) -
-		kTempRefKelvin) / kTempGradient;
+	أرجع (((powf(pressure_تناسب, (-(k_عارضي_Gradient * kAirGasConstant) / CONSTANTS_ONE_G))) * k_عارضي_Ref_Kelvin) -
+		k_عارضي_Ref_Kelvin) / k_عارضي_Gradient;
 
 }
-float getStandardTemperatureAtAltitude(float altitude_m)
+عائم getStandardTemperatureAtAltitude(عائم altitude_m)
 {
-	return 15.0f + kTempGradient * altitude_m;
+	أرجع 15.0f + k_عارضي_Gradient * altitude_m;
 }
 }

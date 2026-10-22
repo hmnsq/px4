@@ -31,58 +31,58 @@
  *
  ****************************************************************************/
 
-#pragma once
+#هدايت once
 
-#include "FunctionProviderBase.hpp"
+#ضمن "FunctionProviderBase.hpp"
 
-#include <math.h>
-#include <uORB/topics/vehicle_command.h>
+#ضمن <math.h>
+#ضمن <uORB/topics/vehicle_command.h>
 
 /**
  * Functions: Peripheral_via_Actuator_Set1 ... Peripheral_via_Actuator_Set6
  */
-class FunctionActuatorSet : public FunctionProviderBase
+صنف Function_Actuator_سيٽ : عام Function_Provider_بنياد
 {
-public:
-	FunctionActuatorSet()
+عام:
+	Function_Actuator_سيٽ()
 	{
-		for (int i = 0; i < max_num_actuators; ++i) {
-			_data[i] = NAN;
+		لكل (صحيح i = 0; i < max_انگ_actuators; ++i) {
+			معلومات_3[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionActuatorSet(); }
+	ساكن Function_Provider_بنياد *allocate(ثابت Context &context) { أرجع جديد Function_Actuator_سيٽ(); }
 
-	void update() override
+	فراغ update() override
 	{
 		vehicle_command_s vehicle_command;
 
-		while (_topic.update(&vehicle_command)) {
-			if (vehicle_command.command == vehicle_command_s::VEHICLE_CMD_DO_SET_ACTUATOR) {
-				int index = static_cast<int>(lroundf(vehicle_command.param7));
+		طالما (_topic.update(&vehicle_command)) {
+			إذا (vehicle_command.command == vehicle_command_s::VEHICLE_CMD_DO_سيٽ_ACTUATOR) {
+				صحيح اشاريو = static_cast<صحيح>(lroundf(vehicle_command.param7));
 
-				if (index == 0) {
-					if (PX4_ISFINITE(vehicle_command.param1)) { _data[0] = vehicle_command.param1; }
+				إذا (اشاريو == 0) {
+					إذا (PX4_ISFINITE(vehicle_command.param1)) { معلومات_3[0] = vehicle_command.param1; }
 
-					if (PX4_ISFINITE(vehicle_command.param2)) {_data[1] = vehicle_command.param2; }
+					إذا (PX4_ISFINITE(vehicle_command.param2)) {معلومات_3[1] = vehicle_command.param2; }
 
-					if (PX4_ISFINITE(vehicle_command.param3)) {_data[2] = vehicle_command.param3; }
+					إذا (PX4_ISFINITE(vehicle_command.param3)) {معلومات_3[2] = vehicle_command.param3; }
 
-					if (PX4_ISFINITE(vehicle_command.param4)) {_data[3] = vehicle_command.param4; }
+					إذا (PX4_ISFINITE(vehicle_command.param4)) {معلومات_3[3] = vehicle_command.param4; }
 
-					if (PX4_ISFINITE(vehicle_command.param5)) {_data[4] = vehicle_command.param5; }
+					إذا (PX4_ISFINITE(vehicle_command.param5)) {معلومات_3[4] = vehicle_command.param5; }
 
-					if (PX4_ISFINITE(vehicle_command.param6)) {_data[5] = vehicle_command.param6; }
+					إذا (PX4_ISFINITE(vehicle_command.param6)) {معلومات_3[5] = vehicle_command.param6; }
 				}
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Peripheral_via_Actuator_Set1]; }
+	عائم value(OutputFunction func) override { أرجع معلومات_3[(صحيح)func - (صحيح)OutputFunction::Peripheral_ذريعي_Actuator_Set1]; }
 
-private:
-	static constexpr int max_num_actuators = 6;
+خاص:
+	ساكن constexpr صحيح max_انگ_actuators = 6;
 
 	uORB::Subscription _topic{ORB_ID(vehicle_command)};
-	float _data[max_num_actuators] {};
+	عائم معلومات_3[max_انگ_actuators] {};
 };

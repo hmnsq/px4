@@ -51,66 +51,66 @@
  * CCASSERT(predicate) Will generate a compile time error it the
  * predicate is false
  */
-#include <assert.h>
+#ضمن <assert.h>
 
-#ifndef _PX4_MACROS_H
-#define _PX4_MACROS_H
+#جيڪڏهن_وصف_نه_ٿيل _PX4_MACROS_H
+#وصف_ڪريو _PX4_MACROS_H
 
 
-#if !defined(arraySize)
-#define arraySize(a) (sizeof((a))/sizeof((a[0])))
-#endif
+#إذا !defined(array_سائيز)
+#وصف_ڪريو array_سائيز(a) (حجم((a))/حجم((a[0])))
+#جيڪڏهن_پورو
 
-#if !defined(NO_BLOAT)
-#if defined(__BASE_FILE__)
-#define _FILE_NAME_ __BASE_FILE__
-#else
-#define _FILE_NAME_ __FILE__
-#endif
-#else
-#define _FILE_NAME_ ""
-#endif
+#إذا !defined(NO_BLOAT)
+#إذا defined(__BASE_FILE__)
+#وصف_ڪريو _FILE_NAME_ __BASE_FILE__
+#وإلا
+#وصف_ڪريو _FILE_NAME_ __FILE__
+#جيڪڏهن_پورو
+#وإلا
+#وصف_ڪريو _FILE_NAME_ ""
+#جيڪڏهن_پورو
 
-#if !defined(INVALID_CASE)
-#define INVALID_CASE(c) printf("Invalid Case %d, %s:%d",(c),__BASE_FILE__,__LINE__) /* todo use PANIC */
-#endif
+#إذا !defined(INVALID_CASE)
+#وصف_ڪريو INVALID_CASE(c) لکو("Invalid Case %d, %s:%d",(c),__BASE_FILE__,__LINE__) /* todo use PANIC */
+#جيڪڏهن_پورو
 
-#if !defined(UNUSED)
-#define UNUSED(var) (void)(var)
-#endif
+#إذا !defined(اڻ_استعمال_ٿيل_2)
+#وصف_ڪريو اڻ_استعمال_ٿيل_2(var) (فراغ)(var)
+#جيڪڏهن_پورو
 
-#if !defined(CAT)
-#if !defined(_CAT)
-#define _CAT(a, b) a ## b
-#endif
-#define CAT(a, b) _CAT(a, b)
-#endif
+#إذا !defined(CAT)
+#إذا !defined(_CAT)
+#وصف_ڪريو _CAT(a, b) a ## b
+#جيڪڏهن_پورو
+#وصف_ڪريو CAT(a, b) _CAT(a, b)
+#جيڪڏهن_پورو
 
-#if !defined(FREEZE_STR)
+#إذا !defined(FREEZE_STR)
 #  define FREEZE_STR(s) #s
-#endif
+#جيڪڏهن_پورو
 
-#if !defined(STRINGIFY)
-#define STRINGIFY(s) FREEZE_STR(s)
-#endif
+#إذا !defined(STRINGIFY)
+#وصف_ڪريو STRINGIFY(s) FREEZE_STR(s)
+#جيڪڏهن_پورو
 
-#if !defined(CCASSERT)
-#if defined(static_assert)
+#إذا !defined(CCASSERT)
+#إذا defined(static_assert)
 #		define CCASSERT(predicate) static_assert(predicate, STRINGIFY(predicate))
-#	else
-#		define CCASSERT(predicate) _x_CCASSERT_LINE(predicate, __LINE__)
-#		if !defined(_x_CCASSERT_LINE)
-#			define _x_CCASSERT_LINE(predicate, line) typedef char CAT(constraint_violated_on_line_,line)[2*((predicate)!=0)-1] __attribute__ ((unused)) ;
+#	وإلا
+#		define CCASSERT(predicate) x_CCASSERT_سٽ(predicate, __LINE__)
+#		إذا !defined(x_CCASSERT_سٽ)
+#			define x_CCASSERT_سٽ(predicate, سٽ) تعريفنوع حرف CAT(constraint_violated_on_سٽ,سٽ)[2*((predicate)!=0)-1] __attribute__ ((اڻ_استعمال_ٿيل)) ;
 #		endif
 #	endif
-#endif
+#جيڪڏهن_پورو
 
-#if !defined(DO_PRAGMA)
+#إذا !defined(DO_PRAGMA)
 #  define DO_PRAGMA(x) _Pragma (#x)
-#endif
+#جيڪڏهن_پورو
 
-#if !defined(TODO)
-#  define TODO(x) DO_PRAGMA(message ("TODO - " #x))
-#endif
+#إذا !defined(TODO)
+#  define TODO(x) DO_PRAGMA(پيغام_2 ("TODO - " #x))
+#جيڪڏهن_پورو
 
-#endif /* _PX4_MACROS_H */
+#جيڪڏهن_پورو /* _PX4_MACROS_H */

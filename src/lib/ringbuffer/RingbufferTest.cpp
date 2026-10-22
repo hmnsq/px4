@@ -31,58 +31,58 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <stdint.h>
-#include <string.h>
+#ضمن <gtest/gtest.h>
+#ضمن <stdint.h>
+#ضمن <string.h>
 
 
-#include "Ringbuffer.hpp"
+#ضمن "Ringbuffer.hpp"
 
-class TempData
+صنف عارضي_معلومات
 {
-public:
-	TempData(size_t len)
+عام:
+	عارضي_معلومات(size_t len)
 	{
-		_size = len;
-		_buf = new uint8_t[_size];
+		سائيز_2 = len;
+		_buf = جديد uint8_t[سائيز_2];
 	}
 
-	~TempData()
+	~عارضي_معلومات()
 	{
-		delete[] _buf;
-		_buf = nullptr;
+		ميٽيو[] _buf;
+		_buf = خالي_اشارو;
 	}
 
-	uint8_t *buf() const
+	uint8_t *buf() ثابت
 	{
-		return _buf;
+		أرجع _buf;
 	}
 
-	size_t size() const
+	size_t سائيز() ثابت
 	{
-		return _size;
+		أرجع سائيز_2;
 	}
 
-	void paint(unsigned offset = 0)
+	فراغ paint(بنانشان وٿي = 0)
 	{
-		for (size_t i = 0; i < _size; ++i) {
-			_buf[i] = (uint8_t)((i + offset) % UINT8_MAX);
+		لكل (size_t i = 0; i < سائيز_2; ++i) {
+			_buf[i] = (uint8_t)((i + وٿي) % UINT8_MAX);
 		}
 	}
 
-private:
-	uint8_t *_buf {nullptr};
-	size_t _size{0};
+خاص:
+	uint8_t *_buf {خالي_اشارو};
+	size_t سائيز_2{0};
 
 };
 
-bool operator==(const TempData &lhs, const TempData &rhs)
+منطقي عامل==(ثابت عارضي_معلومات &lhs, ثابت عارضي_معلومات &rhs)
 {
-	if (lhs.size() != rhs.size()) {
-		return false;
+	إذا (lhs.سائيز() != rhs.سائيز()) {
+		أرجع خطأ;
 	}
 
-	return memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
+	أرجع memcmp(lhs.buf(), rhs.buf(), lhs.سائيز()) == 0;
 }
 
 
@@ -96,48 +96,48 @@ TEST(Ringbuffer, AllocateAndDeallocate)
 	// The second time we forget to clean up, but we expect no leak.
 }
 
-class RingbufferReallocation : public ::testing::TestWithParam<size_t>
+صنف RingbufferReallocation : عام ::testing::TestWithParam<size_t>
 {
-protected:
-	void check_reallocated(Ringbuffer &buf)
+محمي:
+	فراغ check_reallocated(Ringbuffer &buf)
 	{
-		const size_t capacity = GetParam();
+		ثابت size_t صلاحيت = GetParam();
 		buf.deallocate();
-		ASSERT_TRUE(buf.allocate(capacity));
+		ASSERT_TRUE(buf.allocate(صلاحيت));
 		// Keep these non-fatal so stale indices still reach the sanitizer-backed
 		// write/read below, which catches out-of-bounds reuse after shrinking.
-		EXPECT_EQ(buf.space_used(), 0u);
-		EXPECT_EQ(buf.space_available(), capacity - 1);
+		EXPECT_EQ(buf.space_استعمال_ٿيل(), 0u);
+		EXPECT_EQ(buf.space_موجود(), صلاحيت - 1);
 
 		uint8_t byte = 0;
-		EXPECT_EQ(buf.pop_front(&byte, sizeof(byte)), 0u);
+		EXPECT_EQ(buf.ڪڍو_front(&byte, حجم(byte)), 0u);
 
-		TempData data{capacity - 1};
-		data.paint(41);
-		ASSERT_TRUE(buf.push_back(data.buf(), data.size()));
-		EXPECT_EQ(buf.space_used(), data.size());
-		EXPECT_EQ(buf.space_available(), 0u);
-		EXPECT_FALSE(buf.push_back(&byte, sizeof(byte)));
+		عارضي_معلومات معلومات{صلاحيت - 1};
+		معلومات.paint(41);
+		ASSERT_TRUE(buf.push_back(معلومات.buf(), معلومات.سائيز()));
+		EXPECT_EQ(buf.space_استعمال_ٿيل(), معلومات.سائيز());
+		EXPECT_EQ(buf.space_موجود(), 0u);
+		EXPECT_FALSE(buf.push_back(&byte, حجم(byte)));
 
-		TempData out{data.size()};
-		ASSERT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-		EXPECT_EQ(data, out);
-		EXPECT_EQ(buf.space_used(), 0u);
-		EXPECT_EQ(buf.space_available(), capacity - 1);
-		EXPECT_EQ(buf.pop_front(&byte, sizeof(byte)), 0u);
+		عارضي_معلومات ٻاهريون{معلومات.سائيز()};
+		ASSERT_EQ(buf.ڪڍو_front(ٻاهريون.buf(), ٻاهريون.سائيز()), ٻاهريون.سائيز());
+		EXPECT_EQ(معلومات, ٻاهريون);
+		EXPECT_EQ(buf.space_استعمال_ٿيل(), 0u);
+		EXPECT_EQ(buf.space_موجود(), صلاحيت - 1);
+		EXPECT_EQ(buf.ڪڍو_front(&byte, حجم(byte)), 0u);
 	}
 };
 
-TEST_P(RingbufferReallocation, PartiallyUsed)
+TEST_P(RingbufferReallocation, Partially_استعمال_ٿيل)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(16));
-	TempData data{4};
-	data.paint();
-	ASSERT_TRUE(buf.push_back(data.buf(), data.size()));
-	TempData out{2};
-	ASSERT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-	ASSERT_EQ(buf.space_used(), 2u);
+	عارضي_معلومات معلومات{4};
+	معلومات.paint();
+	ASSERT_TRUE(buf.push_back(معلومات.buf(), معلومات.سائيز()));
+	عارضي_معلومات ٻاهريون{2};
+	ASSERT_EQ(buf.ڪڍو_front(ٻاهريون.buf(), ٻاهريون.سائيز()), ٻاهريون.سائيز());
+	ASSERT_EQ(buf.space_استعمال_ٿيل(), 2u);
 
 	check_reallocated(buf);
 }
@@ -146,13 +146,13 @@ TEST_P(RingbufferReallocation, Drained)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(16));
-	TempData data{12};
-	data.paint();
-	ASSERT_TRUE(buf.push_back(data.buf(), data.size()));
-	TempData out{data.size()};
-	ASSERT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-	ASSERT_EQ(data, out);
-	ASSERT_EQ(buf.space_used(), 0u);
+	عارضي_معلومات معلومات{12};
+	معلومات.paint();
+	ASSERT_TRUE(buf.push_back(معلومات.buf(), معلومات.سائيز()));
+	عارضي_معلومات ٻاهريون{معلومات.سائيز()};
+	ASSERT_EQ(buf.ڪڍو_front(ٻاهريون.buf(), ٻاهريون.سائيز()), ٻاهريون.سائيز());
+	ASSERT_EQ(معلومات, ٻاهريون);
+	ASSERT_EQ(buf.space_استعمال_ٿيل(), 0u);
 
 	check_reallocated(buf);
 }
@@ -161,146 +161,146 @@ TEST_P(RingbufferReallocation, Wrapped)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(16));
-	TempData first{12};
+	عارضي_معلومات first{12};
 	first.paint();
-	ASSERT_TRUE(buf.push_back(first.buf(), first.size()));
-	TempData out{10};
-	ASSERT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
+	ASSERT_TRUE(buf.push_back(first.buf(), first.سائيز()));
+	عارضي_معلومات ٻاهريون{10};
+	ASSERT_EQ(buf.ڪڍو_front(ٻاهريون.buf(), ٻاهريون.سائيز()), ٻاهريون.سائيز());
 
 	// Wrap the tail while the head is still near the end of the old allocation.
-	TempData second{8};
+	عارضي_معلومات second{8};
 	second.paint(12);
-	ASSERT_TRUE(buf.push_back(second.buf(), second.size()));
-	ASSERT_EQ(buf.space_used(), 10u);
+	ASSERT_TRUE(buf.push_back(second.buf(), second.سائيز()));
+	ASSERT_EQ(buf.space_استعمال_ٿيل(), 10u);
 
 	check_reallocated(buf);
 }
 
-INSTANTIATE_TEST_SUITE_P(NewCapacity, RingbufferReallocation, ::testing::Values(size_t{8}, size_t{32}));
+INSTANTIATE_TEST_SUITE_P(New_صلاحيت, RingbufferReallocation, ::testing::قدرون(size_t{8}, size_t{32}));
 
-TEST(Ringbuffer, PushATooBigMessage)
+TEST(Ringbuffer, ڌڪو_AToo_Big_پيغام)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{200};
+	عارضي_معلومات معلومات{200};
 
 	// A message that doesn't fit should get rejected.
-	EXPECT_FALSE(buf.push_back(data.buf(), data.size()));
+	EXPECT_FALSE(buf.push_back(معلومات.buf(), معلومات.سائيز()));
 }
 
-TEST(Ringbuffer, PushAndPopOne)
+TEST(Ringbuffer, ڌڪو_And_ڪڍو_One)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{20};
-	data.paint();
+	عارضي_معلومات معلومات{20};
+	معلومات.paint();
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(معلومات.buf(), معلومات.سائيز()));
 
-	EXPECT_EQ(buf.space_used(), 20);
-	EXPECT_EQ(buf.space_available(), 79);
+	EXPECT_EQ(buf.space_استعمال_ٿيل(), 20);
+	EXPECT_EQ(buf.space_موجود(), 79);
 
 	// Get everything
-	TempData out{20};
-	EXPECT_EQ(buf.pop_front(out.buf(), out.size()), 20);
-	EXPECT_EQ(data, out);
+	عارضي_معلومات ٻاهريون{20};
+	EXPECT_EQ(buf.ڪڍو_front(ٻاهريون.buf(), ٻاهريون.سائيز()), 20);
+	EXPECT_EQ(معلومات, ٻاهريون);
 
 	// Nothing remaining
-	EXPECT_EQ(buf.pop_front(out.buf(), out.size()), 0);
+	EXPECT_EQ(buf.ڪڍو_front(ٻاهريون.buf(), ٻاهريون.سائيز()), 0);
 }
 
-TEST(Ringbuffer, PushAndPopSeveral)
+TEST(Ringbuffer, ڌڪو_And_ڪڍو_Several)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{90};
-	data.paint();
+	عارضي_معلومات معلومات{90};
+	معلومات.paint();
 
 	// 9 little chunks in
-	for (unsigned i = 0; i < 9; ++i) {
-		EXPECT_TRUE(buf.push_back(data.buf() + i * 10, 10));
+	لكل (بنانشان i = 0; i < 9; ++i) {
+		EXPECT_TRUE(buf.push_back(معلومات.buf() + i * 10, 10));
 	}
 
 	// 10 won't because of overhead inside the buffer
-	EXPECT_FALSE(buf.push_back(data.buf(), 10));
+	EXPECT_FALSE(buf.push_back(معلومات.buf(), 10));
 
-	TempData out{90};
+	عارضي_معلومات ٻاهريون{90};
 	// Take it back out in 2 big steps
-	EXPECT_EQ(buf.pop_front(out.buf(), 50), 50);
-	EXPECT_EQ(buf.pop_front(out.buf() + 50, 40), 40);
-	EXPECT_EQ(data, out);
+	EXPECT_EQ(buf.ڪڍو_front(ٻاهريون.buf(), 50), 50);
+	EXPECT_EQ(buf.ڪڍو_front(ٻاهريون.buf() + 50, 40), 40);
+	EXPECT_EQ(معلومات, ٻاهريون);
 }
 
-TEST(Ringbuffer, PushAndTryToPopMore)
+TEST(Ringbuffer, ڌڪو_And_Try_منزل_ڪڍو_وڌيڪ)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data1{50};
+	عارضي_معلومات data1{50};
 	data1.paint();
-	EXPECT_TRUE(buf.push_back(data1.buf(), data1.size()));
+	EXPECT_TRUE(buf.push_back(data1.buf(), data1.سائيز()));
 
-	TempData out1{80};
-	EXPECT_EQ(buf.pop_front(out1.buf(), out1.size()), data1.size());
+	عارضي_معلومات out1{80};
+	EXPECT_EQ(buf.ڪڍو_front(out1.buf(), out1.سائيز()), data1.سائيز());
 }
 
-TEST(Ringbuffer, PushAndPopSeveralInterleaved)
+TEST(Ringbuffer, ڌڪو_And_ڪڍو_Several_Interleaved)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data1{50};
+	عارضي_معلومات data1{50};
 	data1.paint();
-	EXPECT_TRUE(buf.push_back(data1.buf(), data1.size()));
+	EXPECT_TRUE(buf.push_back(data1.buf(), data1.سائيز()));
 
-	TempData data2{30};
+	عارضي_معلومات data2{30};
 	data2.paint(50);
-	EXPECT_TRUE(buf.push_back(data2.buf(), data2.size()));
+	EXPECT_TRUE(buf.push_back(data2.buf(), data2.سائيز()));
 
-	TempData out12{80};
-	EXPECT_EQ(buf.pop_front(out12.buf(), out12.size()), out12.size());
+	عارضي_معلومات out12{80};
+	EXPECT_EQ(buf.ڪڍو_front(out12.buf(), out12.سائيز()), out12.سائيز());
 
-	TempData out12_ref{80};
+	عارضي_معلومات out12_ref{80};
 	out12_ref.paint();
 	EXPECT_EQ(out12_ref, out12);
 
-	TempData data3{50};
+	عارضي_معلومات data3{50};
 	data3.paint(33);
-	EXPECT_TRUE(buf.push_back(data3.buf(), data3.size()));
+	EXPECT_TRUE(buf.push_back(data3.buf(), data3.سائيز()));
 
-	TempData out3{50};
-	EXPECT_EQ(buf.pop_front(out3.buf(), out3.size()), data3.size());
+	عارضي_معلومات out3{50};
+	EXPECT_EQ(buf.ڪڍو_front(out3.buf(), out3.سائيز()), data3.سائيز());
 	EXPECT_EQ(data3, out3);
 }
 
-TEST(Ringbuffer, PushEmpty)
+TEST(Ringbuffer, ڌڪو_خالي_جايون)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	EXPECT_FALSE(buf.push_back(nullptr, 0));
+	EXPECT_FALSE(buf.push_back(خالي_اشارو, 0));
 }
 
-TEST(Ringbuffer, PopWithoutBuffer)
+TEST(Ringbuffer, ڪڍو_Without_بفر)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	EXPECT_FALSE(buf.push_back(nullptr, 0));
+	EXPECT_FALSE(buf.push_back(خالي_اشارو, 0));
 
-	TempData data{50};
-	data.paint();
+	عارضي_معلومات معلومات{50};
+	معلومات.paint();
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(معلومات.buf(), معلومات.سائيز()));
 
 
-	EXPECT_EQ(buf.pop_front(nullptr, 50), 0);
+	EXPECT_EQ(buf.ڪڍو_front(خالي_اشارو, 50), 0);
 }
 
-TEST(Ringbuffer, EmptyAndNoSpaceForHeader)
+TEST(Ringbuffer, خالي_جايون_And_No_Space_For_سرو)
 {
 	// Addressing a corner case where start and end are at the end
 	// and the same.
@@ -310,20 +310,20 @@ TEST(Ringbuffer, EmptyAndNoSpaceForHeader)
 	ASSERT_TRUE(buf.allocate(21));
 
 	{
-		TempData data{20};
-		data.paint();
-		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
-		TempData out{20};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-		EXPECT_EQ(data, out);
+		عارضي_معلومات معلومات{20};
+		معلومات.paint();
+		EXPECT_TRUE(buf.push_back(معلومات.buf(), معلومات.سائيز()));
+		عارضي_معلومات ٻاهريون{20};
+		EXPECT_EQ(buf.ڪڍو_front(ٻاهريون.buf(), ٻاهريون.سائيز()), ٻاهريون.سائيز());
+		EXPECT_EQ(معلومات, ٻاهريون);
 	}
 
 	{
-		TempData data{10};
-		data.paint();
-		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
-		TempData out{10};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-		EXPECT_EQ(data, out);
+		عارضي_معلومات معلومات{10};
+		معلومات.paint();
+		EXPECT_TRUE(buf.push_back(معلومات.buf(), معلومات.سائيز()));
+		عارضي_معلومات ٻاهريون{10};
+		EXPECT_EQ(buf.ڪڍو_front(ٻاهريون.buf(), ٻاهريون.سائيز()), ٻاهريون.سائيز());
+		EXPECT_EQ(معلومات, ٻاهريون);
 	}
 }

@@ -31,50 +31,50 @@
  *
  ****************************************************************************/
 
-#pragma once
+#هدايت once
 
-#include <drivers/drv_hrt.h>
-#include <lib/conversion/rotation.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/sensor_mag.h>
+#ضمن <drivers/drv_hrt.h>
+#ضمن <lib/conversion/rotation.h>
+#ضمن <uORB/PublicationMulti.hpp>
+#ضمن <uORB/topics/sensor_mag.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#ضمن <lib/failure_injection/FailureInjection.hpp>
 
-static constexpr float microTesla2Gauss(float micro_tesla) { return micro_tesla * 0.01f; }
+ساكن constexpr عائم microTesla2Gauss(عائم micro_tesla) { أرجع micro_tesla * 0.01f; }
 
-class PX4Magnetometer
+صنف PX4Magnetometer
 {
-public:
-	PX4Magnetometer(uint32_t device_id, enum Rotation rotation = ROTATION_NONE);
-	PX4Magnetometer(uint32_t device_id, enum Rotation rotation, bool external);
+عام:
+	PX4Magnetometer(uint32_t device_id, تعداد Rotation rotation = ROTATION_NONE);
+	PX4Magnetometer(uint32_t device_id, تعداد Rotation rotation, منطقي external);
 	~PX4Magnetometer();
 
-	void set_device_id(uint32_t device_id);
-	void set_device_type(uint8_t devtype);
-	void set_external(bool external);
-	void set_error_count(uint32_t error_count) { _error_count = error_count; }
-	void set_range(float range) { _range = range; }
-	void set_scale(float scale) { _scale = scale; }
-	void set_temperature(float temperature) { _temperature = temperature; }
+	فراغ سيٽ_device_id(uint32_t device_id);
+	فراغ سيٽ_device_type(uint8_t devtype);
+	فراغ سيٽ_external(منطقي external);
+	فراغ سيٽ_error_ڳڻپ(uint32_t error_ڳڻپ) { error_ڳڻپ_2 = error_ڳڻپ; }
+	فراغ سيٽ_range(عائم range) { _range = range; }
+	فراغ سيٽ_scale(عائم scale) { _scale = scale; }
+	فراغ سيٽ_temperature(عائم temperature) { _temperature = temperature; }
 
-	void update(const hrt_abstime &timestamp_sample, float x, float y, float z);
+	فراغ update(ثابت hrt_abstime &timestamp_sample, عائم x, عائم y, عائم z);
 
-	int get_instance() { return _sensor_pub.get_instance(); };
-	uint32_t get_device_id() const { return _device_id; }
+	صحيح get_instance() { أرجع _sensor_pub.get_instance(); };
+	uint32_t get_device_id() ثابت { أرجع _device_id; }
 
-private:
+خاص:
 	uORB::PublicationMulti<sensor_mag_s> _sensor_pub{ORB_ID(sensor_mag)};
 
 	uint32_t		_device_id{0};
-	const enum Rotation	_rotation;
+	ثابت تعداد Rotation	_rotation;
 
-	bool			_is_external{false};
-	bool			_external_forced{false}; // classification set by the driver, do not re-derive from the device id
+	منطقي			_is_external{خطأ};
+	منطقي			_external_forced{خطأ}; // classification set by the driver, do not re-derive from the device id
 
-	float			_range{0.f};
-	float			_scale{1.f};
-	float			_temperature{NAN};
-	uint32_t		_error_count{0};
+	عائم			_range{0.f};
+	عائم			_scale{1.f};
+	عائم			_temperature{NAN};
+	uint32_t		error_ڳڻپ_2{0};
 
 	failure_injection::Config _failure_config;
 	failure_injection::Stuck<sensor_mag_s> _stuck;

@@ -39,44 +39,44 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#pragma once
+#هدايت once
 
-#include <stdint.h>
+#ضمن <stdint.h>
 
-#include <px4_platform_common/defines.h> // Provides CONFIG_NAVIGATOR_ADSB_F3442
+#ضمن <px4_platform_common/defines.h> // Provides CONFIG_NAVIGATOR_ADSB_F3442
 
 // Internal action priority order used for escalation comparisons.
 // User-facing parameter values are translated separately so DAA_LVL_*_ACT can
 // share the NAV_TRAFF_AVOID convention without changing the priority ladder.
-enum class DaaAction : uint8_t {
+تعداد class DaaAction : uint8_t {
 	kDisabled = 0,
 	kWarnOnly = 1,
-	kPositionHoldMode = 2,
-	kReturnMode = 3,
-	kLandMode = 4,
+	k_Position_Hold_گهڻائي = 2,
+	k_Return_گهڻائي = 3,
+	k_Land_گهڻائي = 4,
 	kTerminate = 5,
-	kMaxActionValue = 6
+	k_Max_Action_قدر = 6
 };
 
-enum class NotifyLandedActCause : uint8_t {
+تعداد class NotifyLandedActCause : uint8_t {
 	kConflictAndArmed = 0,
 	kConflictAndDisarmed = 1
 };
 
 // Action parameter values (NAV_TRAFF_AVOID / DAA_LVL_*_ACT convention), read by the caller.
-struct daa_action_params_s {
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
-	int32_t lvl_low_act {0};
+بنية daa_action_params_s {
+#إذا defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+	int32_t lvl_هيٺيون_act {0};
 	int32_t lvl_med_act{0};
-	int32_t lvl_high_act{0};
+	int32_t lvl_مٿاهون_act{0};
 	int32_t lvl_crit_act{0};
-#else
+#وإلا
 	int32_t traff_avoid {0};
-#endif // CONFIG_NAVIGATOR_ADSB_F3442
+#جيڪڏهن_پورو // CONFIG_NAVIGATOR_ADSB_F3442
 };
 
 // A command is only requested in the air; a ground warning is only requested when landed.
-struct daa_action_decision_s {
+بنية daa_action_decision_s {
 	DaaAction action_command{DaaAction::kDisabled};
 	bool announce_action{false};
 	bool warn_on_ground{false};
@@ -85,7 +85,7 @@ struct daa_action_decision_s {
 
 class DaaActionPolicy
 {
-public:
+عام:
 	/**
 	 * @brief Decide the automated response to a most urgent conflict level escalation.
 	 *
@@ -95,9 +95,9 @@ public:
 	 * In the air, commands are requested only on level escalation and only when stronger
 	 * than the current navigator state. Unchanged levels and de-escalations do not act.
 	 */
-	static daa_action_decision_s decide(const uint8_t conflict_level, const uint8_t prev_conflict_level,
-					    const uint8_t nav_state, const bool landed, const bool armed,
-					    const DaaAction previous_action, const daa_action_params_s &params);
+	ساكن daa_action_decision_s decide(ثابت uint8_t conflict_level, ثابت uint8_t prev_conflict_level,
+					    ثابت uint8_t nav_state, ثابت bool landed, ثابت bool armed,
+					    ثابت DaaAction اڳيون_action, ثابت daa_action_params_s &params);
 
 	/**
 	 * @brief Map a conflict level to a DAA action.
@@ -105,17 +105,17 @@ public:
 	 * For F3442, a disabled level falls back only to zones guaranteed to contain
 	 * the reported zone.
 	 */
-	static DaaAction action_from_conflict_level(const uint8_t conflict_level, const daa_action_params_s &params);
+	ساكن DaaAction action_from_conflict_level(ثابت uint8_t conflict_level, ثابت daa_action_params_s &params);
 
 	// True if requested_action is more urgent than the mode equivalent of nav_state.
-	static bool action_escalates_above_nav_state(const DaaAction requested_action, const uint8_t nav_state);
+	ساكن bool action_escalates_above_nav_state(ثابت DaaAction requested_action, ثابت uint8_t nav_state);
 
 	// DAA action equivalent to a navigation state (used to gate escalation).
-	static DaaAction nav_state_to_equivalent_daa_action(const uint8_t nav_state);
+	ساكن DaaAction nav_state_منزل_equivalent_daa_action(ثابت uint8_t nav_state);
 
 	// Convert a user-facing action param value into the internal DaaAction enum.
-	static DaaAction action_param_to_daa_action(const int32_t action_param);
+	ساكن DaaAction action_param_منزل_daa_action(ثابت int32_t action_param);
 
 	// Inverse of action_param_to_daa_action.
-	static uint8_t daa_action_to_action_param(const DaaAction action);
+	ساكن uint8_t daa_action_منزل_action_param(ثابت DaaAction action);
 };

@@ -37,78 +37,78 @@
  * Controller library code
  */
 
-#pragma once
+#هدايت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
-template<class Type, size_t M, size_t N, size_t LEN>
-class __EXPORT BlockDelay: public Block
+سانچو<صنف Type, size_t M, size_t N, size_t LEN>
+صنف __EXPORT بلاڪ_Delay: عام بلاڪ
 {
-public:
+عام:
 // methods
-	BlockDelay(SuperBlock *parent, const char *name) :
-		Block(parent, name),
+	بلاڪ_Delay(Super_بلاڪ *والد, ثابت حرف *name) :
+		بلاڪ(والد, name),
 		_h(),
-		_index(0),
+		اشاريو_2(0),
 		_delay(-1)
 	{}
-	virtual ~BlockDelay() = default;
-	matrix::Matrix<Type, M, N> update(const matrix::Matrix<Type, M, N> &u)
+	مجازي ~بلاڪ_Delay() = افتراضي;
+	ميٽرڪس::ميٽرڪس_2<Type, M, N> update(ثابت ميٽرڪس::ميٽرڪس_2<Type, M, N> &u)
 	{
 		// store current value
-		_h[_index] = u;
+		_h[اشاريو_2] = u;
 
 		// delay starts at zero, then increases to LEN
 		_delay += 1;
 
-		if (_delay > (int)(LEN - 1)) {
+		إذا (_delay > (صحيح)(LEN - 1)) {
 			_delay = LEN - 1;
 		}
 
 		// compute position of delayed value
-		int j = _index - _delay;
+		صحيح j = اشاريو_2 - _delay;
 
-		if (j < 0) {
+		إذا (j < 0) {
 			j += LEN;
 		}
 
 		// increment storage position
-		_index += 1;
+		اشاريو_2 += 1;
 
-		if (_index > (LEN - 1)) {
-			_index  = 0;
+		إذا (اشاريو_2 > (LEN - 1)) {
+			اشاريو_2  = 0;
 		}
 
 		// get delayed value
-		return _h[j];
+		أرجع _h[j];
 	}
-	matrix::Matrix<Type, M, N> get(size_t delay)
+	ميٽرڪس::ميٽرڪس_2<Type, M, N> get(size_t delay)
 	{
-		int j = _index - delay;
+		صحيح j = اشاريو_2 - delay;
 
-		if (j < 0) { j += LEN; }
+		إذا (j < 0) { j += LEN; }
 
-		return _h[j];
+		أرجع _h[j];
 	}
-private:
-// attributes
-	matrix::Matrix<Type, M, N> _h[LEN];
-	size_t _index;
-	int _delay;
+خاص:
+//خاصيتون
+	ميٽرڪس::ميٽرڪس_2<Type, M, N> _h[LEN];
+	size_t اشاريو_2;
+	صحيح _delay;
 };
 
 } // namespace control

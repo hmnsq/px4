@@ -37,22 +37,22 @@
  * Controller library code
  */
 
-#pragma once
+#هدايت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
 /**
@@ -63,28 +63,28 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegralTrap : public SuperBlock
+صنف __EXPORT بلاڪ_Integral_Trap : عام Super_بلاڪ
 {
-public:
+عام:
 // methods
-	BlockIntegralTrap(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
+	بلاڪ_Integral_Trap(Super_بلاڪ *والد, ثابت حرف *name) :
+		Super_بلاڪ(والد, name),
 		_u(0),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegralTrap() = default;
-	float update(float input);
+		حد_بندي(هذا, "") {}
+	مجازي ~بلاڪ_Integral_Trap() = افتراضي;
+	عائم update(عائم داخلا);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
-// attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
-	BlockLimitSym _limit; /**< limiter */
+	عائم getU() {أرجع _u;}
+	عائم getY() {أرجع _y;}
+	عائم getMax() {أرجع حد_بندي.getMax();}
+	فراغ سيٽ_U(عائم u) {_u = u;}
+	فراغ سيٽ_Y(عائم y) {_y = y;}
+محمي:
+//خاصيتون
+	عائم _u; /**< previous input */
+	عائم _y; /**< previous output */
+	بلاڪ_حد_بندي_Sym حد_بندي; /**< limiter */
 };
 
 } // namespace control

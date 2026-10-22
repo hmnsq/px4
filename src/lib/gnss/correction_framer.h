@@ -64,34 +64,34 @@
  *   }
  */
 
-#pragma once
+#هدايت once
 
-#include <px4_boardconfig.h> // CONFIG_GPS_SPARTN
+#ضمن <px4_boardconfig.h> // CONFIG_GPS_SPARTN
 
-#include <cstdint>
-#include <cstddef>
+#ضمن <cstdint>
+#ضمن <cstddef>
 
-#include "rtcm.h"
-#include "ubx.h"
+#ضمن "rtcm.h"
+#ضمن "ubx.h"
 
-#if defined(CONFIG_GPS_SPARTN)
+#إذا defined(CONFIG_GPS_SPARTN)
 # include "spartn.h"
-#endif
+#جيڪڏهن_پورو
 
 namespace gnss
 {
 
-enum class CorrectionProtocol : uint8_t {
+تعداد class CorrectionProtocol : uint8_t {
 	Rtcm3,
 	Spartn,
 	Ubx,
 };
 
-struct CorrectionFramerStats {
+بنية CorrectionFramerStats {
 	uint32_t messages_parsed;   ///< Frames successfully parsed and consumed
-	uint32_t crc_errors;        ///< Frames rejected by their CRC / checksum
-	uint32_t bytes_discarded;   ///< Bytes discarded while searching for a frame
-	uint32_t total_frame_bytes; ///< Total bytes in successfully parsed frames
+	uint32_t چڪري_جاچ_errors_2;        ///< Frames rejected by their CRC / checksum
+	uint32_t بائيٽون_discarded_2;   ///< Bytes discarded while searching for a frame
+	uint32_t ڪل_چوکٺو_بائيٽون_2; ///< Total bytes in successfully parsed frames
 	uint32_t rtcm3_messages;    ///< Subset of messages_parsed that were RTCM3
 	uint32_t spartn_messages;   ///< Subset of messages_parsed that were SPARTN
 	uint32_t ubx_messages;      ///< Subset of messages_parsed that were UBX
@@ -99,20 +99,20 @@ struct CorrectionFramerStats {
 
 class CorrectionFramer
 {
-public:
-	static constexpr size_t MAX_FRAME_LEN =
-#if defined(CONFIG_GPS_SPARTN)
-		(SPARTN_MAX_FRAME_LEN > RTCM3_MAX_FRAME_LEN)
-		? ((SPARTN_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? SPARTN_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN)
-		: ((RTCM3_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? RTCM3_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN);
-#else
-		(RTCM3_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? RTCM3_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN;
-#endif
+عام:
+	ساكن constexpr size_t MAX_چوکٺو_LEN =
+#إذا defined(CONFIG_GPS_SPARTN)
+		(SPARTN_MAX_چوکٺو_LEN > RTCM3_MAX_چوکٺو_LEN)
+		? ((SPARTN_MAX_چوکٺو_LEN > UBX_MAX_چوکٺو_LEN) ? SPARTN_MAX_چوکٺو_LEN : UBX_MAX_چوکٺو_LEN)
+		: ((RTCM3_MAX_چوکٺو_LEN > UBX_MAX_چوکٺو_LEN) ? RTCM3_MAX_چوکٺو_LEN : UBX_MAX_چوکٺو_LEN);
+#وإلا
+		(RTCM3_MAX_چوکٺو_LEN > UBX_MAX_چوکٺو_LEN) ? RTCM3_MAX_چوکٺو_LEN : UBX_MAX_چوکٺو_LEN;
+#جيڪڏهن_پورو
 
 	// Enough for 2 max-size frames to handle overlap
-	static constexpr size_t BUFFER_SIZE = MAX_FRAME_LEN * 2;
+	ساكن constexpr size_t بفر_سائيز_2 = MAX_چوکٺو_LEN * 2;
 
-	CorrectionFramer() = default;
+	CorrectionFramer() = افتراضي;
 
 	/**
 	 * Add data to the framer buffer.
@@ -121,7 +121,7 @@ public:
 	 * @param len  Number of bytes to add
 	 * @return     Number of bytes actually added (may be less if the buffer is full)
 	 */
-	size_t addData(const uint8_t *data, size_t len);
+	size_t جوڙيو_معلومات(ثابت uint8_t *معلومات, size_t len);
 
 	/**
 	 * Get a pointer to the next complete frame without consuming it.
@@ -135,43 +135,43 @@ public:
 	 * @return             Pointer to the frame, or nullptr if no complete valid
 	 *                     frame is available
 	 */
-	const uint8_t *getNextMessage(size_t *out_len, CorrectionProtocol *out_protocol = nullptr);
+	ثابت uint8_t *get_ايندڙ_پيغام(size_t *ٻاهريون_len, CorrectionProtocol *ٻاهريون_protocol = nullptr);
 
 	/**
 	 * Consume (remove) the frame returned by the preceding getNextMessage().
 	 *
 	 * @param len Number of bytes to remove, as returned by getNextMessage()
 	 */
-	void consumeMessage(size_t len);
+	فراغ consume_پيغام(size_t len);
 
-	size_t bufferedBytes() const { return _buffer_len; }
+	size_t buffered_بائيٽون() ثابت { أرجع بفر_len; }
 
-	CorrectionFramerStats getStats() const
+	CorrectionFramerStats getStats() ثابت
 	{
-		return {_messages_parsed, _crc_errors, _bytes_discarded, _total_frame_bytes,
+		أرجع {_messages_parsed, چڪري_جاچ_errors, بائيٽون_discarded, ڪل_چوکٺو_بائيٽون,
 			_rtcm3_messages, _spartn_messages, _ubx_messages};
 	}
 
-private:
-	enum class Probe {
-		NeedMoreData,  ///< Could still become a valid frame, wait for more bytes
-		InvalidHeader, ///< Cannot be a frame start
-		CrcError,      ///< Frame is complete but failed its CRC / checksum
+خاص:
+	تعداد class Probe {
+		Need_وڌيڪ_معلومات,  ///< Could still become a valid frame, wait for more bytes
+		Invalid_سرو, ///< Cannot be a frame start
+		چڪري_جاچ_Error,      ///< Frame is complete but failed its CRC / checksum
 		Complete,
 	};
 
-	static bool isPreamble(uint8_t byte);
+	ساكن bool isPreamble(uint8_t byte);
 
-	Probe probeRtcm3(size_t *frame_len) const;
-	Probe probeUbx(size_t *frame_len) const;
-#if defined(CONFIG_GPS_SPARTN)
-	Probe probeSpartn(size_t *frame_len) const;
-#endif
+	Probe probeRtcm3(size_t *چوکٺو_len) ثابت;
+	Probe probeUbx(size_t *چوکٺو_len) ثابت;
+#إذا defined(CONFIG_GPS_SPARTN)
+	Probe probeSpartn(size_t *چوکٺو_len) ثابت;
+#جيڪڏهن_پورو
 
-	void discardBytes(size_t count);
+	فراغ discard_بائيٽون(size_t ڳڻپ);
 
-	uint8_t  _buffer[BUFFER_SIZE] {};
-	size_t   _buffer_len {0};
+	uint8_t  بفر[بفر_سائيز_2] {};
+	size_t   بفر_len {0};
 
 	// Protocol of the frame returned by the last getNextMessage(), applied to
 	// the per-protocol counters once consumeMessage() commits it.
@@ -179,9 +179,9 @@ private:
 
 	// Statistics
 	uint32_t _messages_parsed {0};
-	uint32_t _crc_errors {0};
-	uint32_t _bytes_discarded {0};
-	uint32_t _total_frame_bytes {0};
+	uint32_t چڪري_جاچ_errors {0};
+	uint32_t بائيٽون_discarded {0};
+	uint32_t ڪل_چوکٺو_بائيٽون {0};
 	uint32_t _rtcm3_messages {0};
 	uint32_t _spartn_messages {0};
 	uint32_t _ubx_messages {0};

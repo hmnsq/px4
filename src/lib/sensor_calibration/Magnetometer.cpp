@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "Magnetometer.hpp"
+#ضمن "Magnetometer.hpp"
 
-#include "Utilities.hpp"
+#ضمن "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#ضمن <lib/drivers/device/Device.hpp>
+#ضمن <lib/parameters/param.h>
 
-using namespace matrix;
-using namespace time_literals;
+استعمال نطاق ميٽرڪس;
+استعمال نطاق وقت_literals;
 
-namespace calibration
+نطاق calibration
 {
 
 Magnetometer::Magnetometer()
@@ -51,22 +51,22 @@ Magnetometer::Magnetometer()
 
 Magnetometer::Magnetometer(uint32_t device_id)
 {
-	set_device_id(device_id);
+	سيٽ_device_id(device_id);
 }
 
-Magnetometer::Magnetometer(uint32_t device_id, bool external)
+Magnetometer::Magnetometer(uint32_t device_id, منطقي external)
 {
-	set_device_id(device_id, external);
+	سيٽ_device_id(device_id, external);
 }
 
-void Magnetometer::set_device_id(uint32_t device_id)
+فراغ Magnetometer::سيٽ_device_id(uint32_t device_id)
 {
-	set_device_id(device_id, device::device_is_external(device_id));
+	سيٽ_device_id(device_id, device::device_is_external(device_id));
 }
 
-void Magnetometer::set_device_id(uint32_t device_id, bool external)
+فراغ Magnetometer::سيٽ_device_id(uint32_t device_id, منطقي external)
 {
-	if (_device_id != device_id || _external != external) {
+	إذا (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -74,82 +74,82 @@ void Magnetometer::set_device_id(uint32_t device_id, bool external)
 		Reset();
 
 		ParametersUpdate();
-		SensorCorrectionsUpdate(true);
+		SensorCorrectionsUpdate(سچ);
 	}
 }
 
-void Magnetometer::SensorCorrectionsUpdate(bool force)
+فراغ Magnetometer::SensorCorrectionsUpdate(منطقي force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	إذا (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		إذا (_device_id == 0) {
+			أرجع;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		إذا (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.mag_device_ids[i] == _device_id) {
-					switch (i) {
-					case 0:
-						_thermal_offset = Vector3f{corrections.mag_offset_0};
-						return;
-					case 1:
-						_thermal_offset = Vector3f{corrections.mag_offset_1};
-						return;
-					case 2:
-						_thermal_offset = Vector3f{corrections.mag_offset_2};
-						return;
-					case 3:
-						_thermal_offset = Vector3f{corrections.mag_offset_3};
-						return;
+			لكل (صحيح i = 0; i < MAX_SENSOR_ڳڻپ; i++) {
+				إذا (corrections.mag_device_ids[i] == _device_id) {
+					بدل (i) {
+					حالة 0:
+						thermal_وٿي = Vector3f{corrections.mag_وٿي_0};
+						أرجع;
+					حالة 1:
+						thermal_وٿي = Vector3f{corrections.mag_وٿي_1};
+						أرجع;
+					حالة 2:
+						thermal_وٿي = Vector3f{corrections.mag_وٿي_2};
+						أرجع;
+					حالة 3:
+						thermal_وٿي = Vector3f{corrections.mag_وٿي_3};
+						أرجع;
 					}
 				}
 			}
 		}
 
 		// zero thermal offset if not found
-		_thermal_offset.zero();
+		thermal_وٿي.zero();
 	}
 }
 
-bool Magnetometer::set_offset(const Vector3f &offset)
+منطقي Magnetometer::سيٽ_وٿي(ثابت Vector3f &وٿي)
 {
-	if (Vector3f(_offset - offset).longerThan(0.005f)) {
-		if (offset.isAllFinite()) {
-			_offset = offset;
-			_calibration_count++;
-			return true;
+	إذا (Vector3f(وٿي_2 - وٿي).longerThan(0.005f)) {
+		إذا (وٿي.isAllFinite()) {
+			وٿي_2 = وٿي;
+			calibration_ڳڻپ++;
+			أرجع سچ;
 		}
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-bool Magnetometer::set_scale(const Vector3f &scale)
+منطقي Magnetometer::سيٽ_scale(ثابت Vector3f &scale)
 {
-	if (Vector3f(_scale.diag() - scale).longerThan(0.01f)) {
-		if (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
+	إذا (Vector3f(_scale.diag() - scale).longerThan(0.01f)) {
+		إذا (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
 			_scale(0, 0) = scale(0);
 			_scale(1, 1) = scale(1);
 			_scale(2, 2) = scale(2);
 
-			_calibration_count++;
-			return true;
+			calibration_ڳڻپ++;
+			أرجع سچ;
 		}
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-bool Magnetometer::set_offdiagonal(const Vector3f &offdiagonal)
+منطقي Magnetometer::سيٽ_offdiagonal(ثابت Vector3f &offdiagonal)
 {
-	if (Vector3f(Vector3f{_scale(0, 1), _scale(0, 2), _scale(1, 2)} - offdiagonal).longerThan(0.01f)) {
-		if (offdiagonal.isAllFinite()) {
+	إذا (Vector3f(Vector3f{_scale(0, 1), _scale(0, 2), _scale(1, 2)} - offdiagonal).longerThan(0.01f)) {
+		إذا (offdiagonal.isAllFinite()) {
 
 			_scale(0, 1) = offdiagonal(0);
 			_scale(1, 0) = offdiagonal(0);
@@ -160,32 +160,32 @@ bool Magnetometer::set_offdiagonal(const Vector3f &offdiagonal)
 			_scale(1, 2) = offdiagonal(2);
 			_scale(2, 1) = offdiagonal(2);
 
-			_calibration_count++;
-			return true;
+			calibration_ڳڻپ++;
+			أرجع سچ;
 		}
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void Magnetometer::set_rotation(const Rotation rotation)
+فراغ Magnetometer::سيٽ_rotation(ثابت Rotation rotation)
 {
-	if (rotation < ROTATION_MAX) {
+	إذا (rotation < ROTATION_MAX) {
 		_rotation_enum = rotation;
 
-	} else {
+	} وإلا {
 		// invalid rotation, resetting
 		_rotation_enum = ROTATION_NONE;
 	}
 
 	// always apply level adjustments
-	_rotation = Dcmf(GetSensorLevelAdjustment()) * get_rot_matrix(_rotation_enum);
+	_rotation = Dcmf(GetSensorLevelAdjustment()) * get_rot_ميٽرڪس(_rotation_enum);
 
 	// clear any custom rotation
 	_rotation_custom_euler.zero();
 }
 
-void Magnetometer::set_custom_rotation(const Eulerf &rotation)
+فراغ Magnetometer::سيٽ_custom_rotation(ثابت Eulerf &rotation)
 {
 	_rotation_enum = ROTATION_CUSTOM;
 
@@ -203,207 +203,207 @@ void Magnetometer::set_custom_rotation(const Eulerf &rotation)
 	// values properly (i.e. finding Vehicle's true Forward-Right-Down frame in a user's perspective)
 }
 
-bool Magnetometer::set_calibration_index(int calibration_index)
+منطقي Magnetometer::سيٽ_calibration_اشاريو(صحيح calibration_اشاريو)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
-		_calibration_index = calibration_index;
-		return true;
+	إذا ((calibration_اشاريو >= 0) && (calibration_اشاريو < MAX_SENSOR_ڳڻپ)) {
+		calibration_اشاريو_2 = calibration_اشاريو;
+		أرجع سچ;
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void Magnetometer::ParametersUpdate()
+فراغ Magnetometer::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	إذا (_device_id == 0) {
+		أرجع;
 	}
 
-	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
+	calibration_اشاريو_2 = ڳوليو_Current_Calibration_اشاريو(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	إذا (calibration_اشاريو_2 == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
-		ParametersLoad();
+	} وإلا {
+		Parameters_ڀريو();
 	}
 }
 
-bool Magnetometer::ParametersLoad()
+منطقي Magnetometer::Parameters_ڀريو()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	إذا (calibration_اشاريو_2 >= 0 && calibration_اشاريو_2 < MAX_SENSOR_ڳڻپ) {
 		// CAL_MAGx_ROT
-		int32_t rotation_value = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
+		int32_t rotation_قدر = GetCalibrationParamInt32(SensorString(), "ROT", calibration_اشاريو_2);
 
-		const float euler_roll_deg = GetCalibrationParamFloat(SensorString(), "ROLL", _calibration_index);
-		const float euler_pitch_deg = GetCalibrationParamFloat(SensorString(), "PITCH", _calibration_index);
-		const float euler_yaw_deg = GetCalibrationParamFloat(SensorString(), "YAW", _calibration_index);
+		ثابت عائم euler_roll_deg = GetCalibrationParamFloat(SensorString(), "ROLL", calibration_اشاريو_2);
+		ثابت عائم euler_pitch_deg = GetCalibrationParamFloat(SensorString(), "PITCH", calibration_اشاريو_2);
+		ثابت عائم euler_yaw_deg = GetCalibrationParamFloat(SensorString(), "YAW", calibration_اشاريو_2);
 
-		if (_external) {
-			if (((rotation_value >= ROTATION_MAX) && (rotation_value != ROTATION_CUSTOM)) || (rotation_value < 0)) {
+		إذا (_external) {
+			إذا (((rotation_قدر >= ROTATION_MAX) && (rotation_قدر != ROTATION_CUSTOM)) || (rotation_قدر < 0)) {
 				// invalid rotation, resetting
-				rotation_value = ROTATION_NONE;
+				rotation_قدر = ROTATION_NONE;
 			}
 
 			// if CAL_MAGx_{ROLL,PITCH,YAW} manually set then CAL_MAGx_ROT needs to be ROTATION_CUSTOM
-			if ((rotation_value != ROTATION_CUSTOM)
+			إذا ((rotation_قدر != ROTATION_CUSTOM)
 			    && ((fabsf(euler_roll_deg) > FLT_EPSILON)
 				|| (fabsf(euler_pitch_deg) > FLT_EPSILON)
 				|| (fabsf(euler_yaw_deg) > FLT_EPSILON))) {
 
-				rotation_value = ROTATION_CUSTOM;
-				SetCalibrationParam(SensorString(), "ROT", _calibration_index, rotation_value);
+				rotation_قدر = ROTATION_CUSTOM;
+				سيٽ_Calibration_Param(SensorString(), "ROT", calibration_اشاريو_2, rotation_قدر);
 			}
 
 			// Handle custom specified euler angle
-			if (rotation_value == ROTATION_CUSTOM) {
+			إذا (rotation_قدر == ROTATION_CUSTOM) {
 
-				const matrix::Eulerf rotation_custom_euler{
+				ثابت ميٽرڪس::Eulerf rotation_custom_euler{
 					math::radians(euler_roll_deg),
 					math::radians(euler_pitch_deg),
 					math::radians(euler_yaw_deg)};
 
-				set_custom_rotation(rotation_custom_euler);
+				سيٽ_custom_rotation(rotation_custom_euler);
 
-			} else {
-				set_rotation(static_cast<Rotation>(rotation_value));
+			} وإلا {
+				سيٽ_rotation(static_cast<Rotation>(rotation_قدر));
 			}
 
-		} else {
+		} وإلا {
 			// internal sensors follow board rotation
-			set_rotation(GetBoardRotation());
+			سيٽ_rotation(GetBoardRotation());
 		}
 
 		// CAL_MAGx_PRIO
-		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
+		ترجيح_2 = GetCalibrationParamInt32(SensorString(), "PRIO", calibration_اشاريو_2);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		إذا ((ترجيح_2 < 0) || (ترجيح_2 > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
-			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
+			ساكن constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			إذا (ترجيح_2 != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
-					_calibration_index, _priority);
+					calibration_اشاريو_2, ترجيح_2);
 
-				SetCalibrationParam(SensorString(), "PRIO", _calibration_index, CAL_PRIO_UNINITIALIZED);
+				سيٽ_Calibration_Param(SensorString(), "PRIO", calibration_اشاريو_2, CAL_PRIO_UNINITIALIZED);
 			}
 
-			_priority = _external ? DEFAULT_EXTERNAL_PRIORITY : DEFAULT_PRIORITY;
+			ترجيح_2 = _external ? DEFAULT_EXTERNAL_ترجيح : DEFAULT_ترجيح;
 		}
 
 		// CAL_MAGx_OFF{X,Y,Z}
-		set_offset(GetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index));
+		سيٽ_وٿي(GetCalibrationParamsVector3f(SensorString(), "OFF", calibration_اشاريو_2));
 
 		// CAL_MAGx_SCALE{X,Y,Z}
-		set_scale(GetCalibrationParamsVector3f(SensorString(), "SCALE", _calibration_index));
+		سيٽ_scale(GetCalibrationParamsVector3f(SensorString(), "SCALE", calibration_اشاريو_2));
 
 		// CAL_MAGx_ODIAG{X,Y,Z}
-		set_offdiagonal(GetCalibrationParamsVector3f(SensorString(), "ODIAG", _calibration_index));
+		سيٽ_offdiagonal(GetCalibrationParamsVector3f(SensorString(), "ODIAG", calibration_اشاريو_2));
 
 		// CAL_MAGx_COMP{X,Y,Z}
-		_power_compensation = GetCalibrationParamsVector3f(SensorString(), "COMP", _calibration_index);
+		_power_compensation = GetCalibrationParamsVector3f(SensorString(), "COMP", calibration_اشاريو_2);
 
-		return true;
+		أرجع سچ;
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void Magnetometer::Reset()
+فراغ Magnetometer::Reset()
 {
-	if (_external) {
-		set_rotation(ROTATION_NONE);
+	إذا (_external) {
+		سيٽ_rotation(ROTATION_NONE);
 
-	} else {
+	} وإلا {
 		// internal sensors follow board rotation
-		set_rotation(GetBoardRotation());
+		سيٽ_rotation(GetBoardRotation());
 	}
 
-	_offset.zero();
-	_scale.setIdentity();
+	وٿي_2.zero();
+	_scale.سيٽ_سڃاڻپ_عنصر();
 
 	_power_compensation.zero();
 	_power = 0.f;
 
-	_priority = _external ? DEFAULT_EXTERNAL_PRIORITY : DEFAULT_PRIORITY;
+	ترجيح_2 = _external ? DEFAULT_EXTERNAL_ترجيح : DEFAULT_ترجيح;
 
-	_calibration_index = -1;
+	calibration_اشاريو_2 = -1;
 
-	_calibration_count = 0;
+	calibration_ڳڻپ = 0;
 }
 
-bool Magnetometer::ParametersSave(int desired_calibration_index, bool force)
+منطقي Magnetometer::ParametersSave(صحيح desired_calibration_اشاريو, منطقي force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
-		_calibration_index = desired_calibration_index;
+	إذا (force && desired_calibration_اشاريو >= 0 && desired_calibration_اشاريو < MAX_SENSOR_ڳڻپ) {
+		calibration_اشاريو_2 = desired_calibration_اشاريو;
 
-	} else if (!force || (_calibration_index < 0)
-		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
+	} وإلا إذا (!force || (calibration_اشاريو_2 < 0)
+		   || (desired_calibration_اشاريو != -1 && desired_calibration_اشاريو != calibration_اشاريو_2)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
-		int8_t calibration_index_prev = _calibration_index;
-		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
+		int8_t calibration_اشاريو_prev = calibration_اشاريو_2;
+		calibration_اشاريو_2 = ڳوليو_موجود_Calibration_اشاريو(SensorString(), _device_id, desired_calibration_اشاريو);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		إذا (calibration_اشاريو_prev >= 0 && (calibration_اشاريو_prev != calibration_اشاريو_2)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
-				 calibration_index_prev, _calibration_index);
+				 calibration_اشاريو_prev, calibration_اشاريو_2);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	إذا (calibration_اشاريو_2 >= 0 && calibration_اشاريو_2 < MAX_SENSOR_ڳڻپ) {
 		// save calibration
-		bool success = true;
-		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
-		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
-		success &= SetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index, _offset);
+		منطقي success = سچ;
+		success &= سيٽ_Calibration_Param(SensorString(), "ID", calibration_اشاريو_2, _device_id);
+		success &= سيٽ_Calibration_Param(SensorString(), "PRIO", calibration_اشاريو_2, ترجيح_2);
+		success &= سيٽ_Calibration_Params_Vector3f(SensorString(), "OFF", calibration_اشاريو_2, وٿي_2);
 
-		const Vector3f scale{_scale.diag()};
-		success &= SetCalibrationParamsVector3f(SensorString(), "SCALE", _calibration_index, scale);
+		ثابت Vector3f scale{_scale.diag()};
+		success &= سيٽ_Calibration_Params_Vector3f(SensorString(), "SCALE", calibration_اشاريو_2, scale);
 
-		const Vector3f off_diag{_scale(0, 1), _scale(0, 2), _scale(1, 2)};
-		success &= SetCalibrationParamsVector3f(SensorString(), "ODIAG", _calibration_index, off_diag);
+		ثابت Vector3f off_diag{_scale(0, 1), _scale(0, 2), _scale(1, 2)};
+		success &= سيٽ_Calibration_Params_Vector3f(SensorString(), "ODIAG", calibration_اشاريو_2, off_diag);
 
-		success &= SetCalibrationParamsVector3f(SensorString(), "COMP", _calibration_index, _power_compensation);
+		success &= سيٽ_Calibration_Params_Vector3f(SensorString(), "COMP", calibration_اشاريو_2, _power_compensation);
 
-		if (_external) {
-			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, (int32_t)_rotation_enum);
+		إذا (_external) {
+			success &= سيٽ_Calibration_Param(SensorString(), "ROT", calibration_اشاريو_2, (int32_t)_rotation_enum);
 
-		} else {
-			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, -1); // internal
+		} وإلا {
+			success &= سيٽ_Calibration_Param(SensorString(), "ROT", calibration_اشاريو_2, -1); //اندروني
 		}
 
-		success &= SetCalibrationParam(SensorString(), "ROLL", _calibration_index, math::degrees(_rotation_custom_euler(0)));
-		success &= SetCalibrationParam(SensorString(), "PITCH", _calibration_index, math::degrees(_rotation_custom_euler(1)));
-		success &= SetCalibrationParam(SensorString(), "YAW", _calibration_index, math::degrees(_rotation_custom_euler(2)));
+		success &= سيٽ_Calibration_Param(SensorString(), "ROLL", calibration_اشاريو_2, math::degrees(_rotation_custom_euler(0)));
+		success &= سيٽ_Calibration_Param(SensorString(), "PITCH", calibration_اشاريو_2, math::degrees(_rotation_custom_euler(1)));
+		success &= سيٽ_Calibration_Param(SensorString(), "YAW", calibration_اشاريو_2, math::degrees(_rotation_custom_euler(2)));
 
-		return success;
+		أرجع success;
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void Magnetometer::PrintStatus()
+فراغ Magnetometer::Print_حالت()
 {
-	if (external()) {
+	إذا (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Ext ROT: %d\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
-			     (double)_scale(0, 0), (double)_scale(1, 1), (double)_scale(2, 2),
+			     (مزدوج)وٿي_2(0), (مزدوج)وٿي_2(1), (مزدوج)وٿي_2(2),
+			     (مزدوج)_scale(0, 0), (مزدوج)_scale(1, 1), (مزدوج)_scale(2, 2),
 			     rotation_enum());
 
-	} else {
+	} وإلا {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
-			     (double)_scale(0, 0), (double)_scale(1, 1), (double)_scale(2, 2));
+			     (مزدوج)وٿي_2(0), (مزدوج)وٿي_2(1), (مزدوج)وٿي_2(2),
+			     (مزدوج)_scale(0, 0), (مزدوج)_scale(1, 1), (مزدوج)_scale(2, 2));
 	}
 
-#if defined(DEBUG_BUILD)
+#إذا defined(DEBUG_BUILD)
 	_scale.print();
-#endif // DEBUG_BUILD
+#جيڪڏهن_پورو // DEBUG_BUILD
 }
 
 } // namespace calibration

@@ -1,60 +1,60 @@
 #!/usr/bin/env python
 
-import argparse
-import os
-import hashlib
+استورد argparse
+استورد os
+استورد hashlib
 
-parser = argparse.ArgumentParser(description="""Generate the COMPONENT_INFORMATION checksums (CRC32) header file""")
-parser.add_argument('--output', metavar='checksums.h', help='output file')
-parser.add_argument('files', nargs='+', metavar='input_file.json', help='files to generate CRC from')
+parser = argparse.دليل_Parser(description="""Generate the COMPONENT_INFORMATION checksums (CRC32) header file""")
+parser.جوڙيو_دليل('--output', metavar='checksums.h', help='output file')
+parser.جوڙيو_دليل('files', nargs='+', metavar='input_file.json', help='files to generate CRC from')
 
-args = parser.parse_args()
-filename = args.output
-files = args.files
+دليلون = parser.parse_دليلون()
+filename = دليلون.output
+files = دليلون.files
 
-def create_table():
+وصف create_جدول():
     a = []
-    for i in range(256):
+    لكل i في سلسلو(256):
         k = i
-        for j in range(8):
-            if k & 1:
+        لكل j في سلسلو(8):
+            إذا k & 1:
                 k ^= 0x1db710640
             k >>= 1
         a.append(k)
-    return a
+    أرجع a
 
 # MAVLink's CRC32
-def crc_update(buf, crc_table, crc):
-    for k in buf:
-        crc = (crc >> 8) ^ crc_table[(crc & 0xff) ^ k]
-    return crc
+وصف چڪري_جاچ_update(buf, چڪري_جاچ_جدول, چڪري_جاچ):
+    لكل k في buf:
+        چڪري_جاچ = (چڪري_جاچ >> 8) ^ چڪري_جاچ_جدول[(چڪري_جاچ & 0xff) ^ k]
+    أرجع چڪري_جاچ
 
-crc_table = create_table()
+چڪري_جاچ_جدول = create_جدول()
 
-def sha256sum(filename):
+وصف sha256sum(filename):
     h  = hashlib.sha256()
     b  = bytearray(128*1024)
     mv = memoryview(b)
-    with open(filename, 'rb', buffering=0) as f:
-        for n in iter(lambda : f.readinto(mv), 0):
+    سان open(filename, 'rb', buffering=0) كـ f:
+        لكل n في iter(مجهول : f.readinto(mv), 0):
             h.update(mv[:n])
-    return h.hexdigest()
+    أرجع h.hexdigest()
 
 
-with open(filename, 'w') as outfile:
-    outfile.write("#pragma once\n")
-    outfile.write("#include <stdint.h>\n")
-    outfile.write("namespace component_information {\n")
-    for filename in files:
-        file_crc = 0
-        for line in open(filename, "rb"):
-            file_crc = crc_update(line, crc_table, file_crc)
+سان open(filename, 'w') كـ outfile:
+    outfile.اكتب("#pragma once\n")
+    outfile.اكتب("#include <stdint.h>\n")
+    outfile.اكتب("namespace component_information {\n")
+    لكل filename في files:
+        file_چڪري_جاچ = 0
+        لكل سٽ في open(filename, "rb"):
+            file_چڪري_جاچ = چڪري_جاچ_update(سٽ, چڪري_جاچ_جدول, file_چڪري_جاچ)
         file_sha256 = sha256sum(filename)
 
-        basename = os.path.basename(filename)
-        identifier = basename.split('.')[0]
-        outfile.write("static constexpr uint32_t {:}_crc = {:};\n".format(identifier, file_crc))
-        outfile.write("static constexpr const char *{:}_sha256 = \"{:}\";\n".format(identifier, file_sha256))
+        basename = os.رستو.basename(filename)
+        identifier = basename.ورهايو('.')[0]
+        outfile.اكتب("static constexpr uint32_t {:}_crc = {:};\n".format(identifier, file_چڪري_جاچ))
+        outfile.اكتب("static constexpr const char *{:}_sha256 = \"{:}\";\n".format(identifier, file_sha256))
 
 
-    outfile.write("}\n")
+    outfile.اكتب("}\n")

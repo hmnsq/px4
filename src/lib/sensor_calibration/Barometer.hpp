@@ -31,85 +31,85 @@
  *
  ****************************************************************************/
 
-#pragma once
+#هدايت once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/sensor_correction.h>
+#ضمن <px4_platform_common/px4_config.h>
+#ضمن <px4_platform_common/log.h>
+#ضمن <uORB/Subscription.hpp>
+#ضمن <uORB/topics/sensor_correction.h>
 
-namespace calibration
+نطاق calibration
 {
-class Barometer
+صنف Barometer
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+عام:
+	ساكن constexpr صحيح MAX_SENSOR_ڳڻپ = 4;
 
-	static constexpr uint8_t DEFAULT_PRIORITY = 50;
-	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
+	ساكن constexpr uint8_t DEFAULT_ترجيح = 50;
+	ساكن constexpr uint8_t DEFAULT_EXTERNAL_ترجيح = 75;
 
-	static constexpr const char *SensorString() { return "BARO"; }
+	ساكن constexpr ثابت حرف *SensorString() { أرجع "BARO"; }
 
 	Barometer();
-	explicit Barometer(uint32_t device_id);
-	Barometer(uint32_t device_id, bool external);
+	واضح Barometer(uint32_t device_id);
+	Barometer(uint32_t device_id, منطقي external);
 
-	~Barometer() = default;
+	~Barometer() = افتراضي;
 
-	void PrintStatus();
+	فراغ Print_حالت();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
-	void set_device_id(uint32_t device_id, bool external);
-	bool set_offset(const float &offset);
+	منطقي سيٽ_calibration_اشاريو(صحيح calibration_اشاريو);
+	فراغ سيٽ_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
+	فراغ سيٽ_device_id(uint32_t device_id, منطقي external);
+	منطقي سيٽ_وٿي(ثابت عائم &وٿي);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const float &thermal_offset() const { return _thermal_offset; }
+	منطقي calibrated() ثابت { أرجع (_device_id != 0) && (calibration_اشاريو_2 >= 0); }
+	uint8_t calibration_ڳڻپ_2() ثابت { أرجع calibration_ڳڻپ; }
+	int8_t calibration_اشاريو() ثابت { أرجع calibration_اشاريو_2; }
+	uint32_t device_id() ثابت { أرجع _device_id; }
+	منطقي enabled() ثابت { أرجع (ترجيح_2 > 0); }
+	منطقي external() ثابت { أرجع _external; }
+	ثابت عائم &وٿي() ثابت { أرجع وٿي_2; }
+	ثابت int32_t &ترجيح() ثابت { أرجع ترجيح_2; }
+	ثابت عائم &thermal_وٿي_2() ثابت { أرجع thermal_وٿي; }
 
 	// apply offsets
-	inline float Correct(const float &data) const
+	مضمن عائم Correct(ثابت عائم &معلومات) ثابت
 	{
-		return data - _thermal_offset - _offset;
+		أرجع معلومات - thermal_وٿي - وٿي_2;
 	}
 
-	inline float Uncorrect(const float &corrected_data) const
+	مضمن عائم Uncorrect(ثابت عائم &corrected_معلومات) ثابت
 	{
-		return corrected_data + _thermal_offset + _offset;
+		أرجع corrected_معلومات + thermal_وٿي + وٿي_2;
 	}
 
 	// Compute sensor offset from bias (board frame)
-	float BiasCorrectedSensorOffset(const float &bias) const
+	عائم Bias_Corrected_Sensor_وٿي(ثابت عائم &bias) ثابت
 	{
-		return bias + _thermal_offset + _offset;
+		أرجع bias + thermal_وٿي + وٿي_2;
 	}
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	منطقي Parameters_ڀريو();
+	منطقي ParametersSave(صحيح desired_calibration_اشاريو = -1, منطقي force = خطأ);
+	فراغ ParametersUpdate();
 
-	void Reset();
+	فراغ Reset();
 
-	void SensorCorrectionsUpdate(bool force = false);
+	فراغ SensorCorrectionsUpdate(منطقي force = خطأ);
 
-private:
+خاص:
 	uORB::Subscription _sensor_correction_sub{ORB_ID(sensor_correction)};
 
-	float _offset{0};
-	float _thermal_offset{0};
+	عائم وٿي_2{0};
+	عائم thermal_وٿي{0};
 
-	int8_t _calibration_index{-1};
+	int8_t calibration_اشاريو_2{-1};
 	uint32_t _device_id{0};
-	int32_t _priority{-1};
+	int32_t ترجيح_2{-1};
 
-	bool _external{false};
+	منطقي _external{خطأ};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_ڳڻپ{0};
 };
 } // namespace calibration

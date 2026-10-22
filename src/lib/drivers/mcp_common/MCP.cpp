@@ -30,137 +30,137 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#include "MCP.hpp"
-#include <drivers/gpio/mcp23009/MCP23009.hpp>
-#include <drivers/gpio/mcp23017/MCP23017.hpp>
+#ضمن "MCP.hpp"
+#ضمن <drivers/gpio/mcp23009/MCP23009.hpp>
+#ضمن <drivers/gpio/mcp23017/MCP23017.hpp>
 
-MCP230XX::MCP230XX(const I2CSPIDriverConfig &config) :
+MCP230XX::MCP230XX(ثابت I2CSPIDriverConfig &config) :
 	I2C(config),
 	I2CSPIDriver(config),
-	_cycle_perf(perf_alloc(PC_ELAPSED, MODULE_NAME": single-sample")),
-	_comms_errors(perf_alloc(PC_COUNT, MODULE_NAME": comms errors")),
-	_register_check(perf_alloc(PC_COUNT, MODULE_NAME": register check"))
+	چڪر_perf(perf_alloc(PC_ELAPSED, MODULE_NAME": single-sample")),
+	_comms_errors(perf_alloc(PC_ڳڻپ, MODULE_NAME": comms errors")),
+	رجسٽر_check(perf_alloc(PC_ڳڻپ, MODULE_NAME": register check"))
 {
 }
 
 MCP230XX::~MCP230XX()
 {
-	ScheduleClear();
-	perf_free(_cycle_perf);
+	وقت_جدول_Clear();
+	perf_free(چڪر_perf);
 	perf_free(_comms_errors);
-	perf_free(_register_check);
+	perf_free(رجسٽر_check);
 }
 
-int MCP230XX::init_uorb()
+صحيح MCP230XX::init_uorb()
 {
-	if (!_gpio_config_sub.registerCallback() ||
-	    !_gpio_out_sub.registerCallback()) {
+	إذا (!_gpio_config_sub.رجسٽر_Callback() ||
+	    !gpio_ٻاهريون_sub.رجسٽر_Callback()) {
 		PX4_ERR("callback registration failed");
-		return PX4_ERROR;
+		أرجع PX4_ERROR;
 	}
 
-	return PX4_OK;
+	أرجع PX4_OK;
 }
 
-void MCP230XX::cleanup_uorb()
+فراغ MCP230XX::cleanup_uorb()
 {
 	_gpio_config_sub.unregisterCallback();
-	_gpio_out_sub.unregisterCallback();
-	mcp230XX_unregister_gpios(mcp_config.first_minor, mcp_config.num_pins, mcp_config._gpio_handle);
+	gpio_ٻاهريون_sub.unregisterCallback();
+	mcp230XX_unregister_gpios(mcp_config.پهريون_minor, mcp_config.انگ_pins, mcp_config._gpio_handle);
 }
 
-int MCP230XX::read(uint16_t *mask)
+صحيح MCP230XX::اقرأ(uint16_t *نقاب)
 {
-	*mask = 0;
-	int ret = PX4_OK;
+	*نقاب = 0;
+	صحيح ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	لكل (صحيح i = 0; i < mcp_config.انگ_banks; i++) {
 		uint8_t gpio_addr;
-		uint8_t data;
+		uint8_t معلومات;
 
 		ret |= get_gpio(i, &gpio_addr);
-		ret |= read_reg(gpio_addr, data);
+		ret |= read_reg(gpio_addr, معلومات);
 
-		*mask |= (((uint16_t) data) << (8 * i));
+		*نقاب |= (((uint16_t) معلومات) << (8 * i));
 	}
 
-	return ret;
+	أرجع ret;
 }
 
-int MCP230XX::write(const uint16_t mask_set, const uint16_t mask_clear)
+صحيح MCP230XX::اكتب(ثابت uint16_t نقاب_سيٽ, ثابت uint16_t نقاب_clear)
 {
-	int ret = PX4_OK;
-	_olat = (_olat & ~mask_clear) | mask_set;
+	صحيح ret = PX4_OK;
+	_olat = (_olat & ~نقاب_clear) | نقاب_سيٽ;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	لكل (صحيح i = 0; i < mcp_config.انگ_banks; i++) {
 		uint8_t reg_addr;
-		uint8_t data;
+		uint8_t معلومات;
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 
 		ret = get_olat(i, &reg_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		إذا (ret != PX4_OK) {
+			أرجع ret;
 		}
 
 		ret |= write_reg(reg_addr, curr_olat);
-		ret |= read_reg(reg_addr, data);
+		ret |= read_reg(reg_addr, معلومات);
 
-		if (ret != PX4_OK || data != curr_olat) {
-			return PX4_ERROR;
+		إذا (ret != PX4_OK || معلومات != curr_olat) {
+			أرجع PX4_ERROR;
 		}
 	}
 
-	return ret;
+	أرجع ret;
 }
 
-int MCP230XX::read_reg(const uint8_t address, uint8_t &data)
+صحيح MCP230XX::read_reg(ثابت uint8_t پتو, uint8_t &معلومات)
 {
-	int ret = transfer(&address, 1, &data, 1);
+	صحيح ret = transfer(&پتو, 1, &معلومات, 1);
 
-	if (ret != PX4_OK) {
-		perf_count(_comms_errors);
+	إذا (ret != PX4_OK) {
+		perf_ڳڻپ(_comms_errors);
 	}
 
-	return ret;
+	أرجع ret;
 }
 
-int MCP230XX::write_reg(const uint8_t address, const uint8_t value)
+صحيح MCP230XX::write_reg(ثابت uint8_t پتو, ثابت uint8_t value)
 {
-	uint8_t data[2] = {address, value};
-	int ret = transfer(data, 2, nullptr, 0);
+	uint8_t معلومات[2] = {پتو, value};
+	صحيح ret = transfer(معلومات, 2, خالي_اشارو, 0);
 
-	if (ret != PX4_OK) {
-		perf_count(_comms_errors);
+	إذا (ret != PX4_OK) {
+		perf_ڳڻپ(_comms_errors);
 	}
 
-	return ret;
+	أرجع ret;
 }
 
-int MCP230XX::configure(const uint16_t mask, PinType type)
+صحيح MCP230XX::configure(ثابت uint16_t نقاب, PinType type)
 {
-	switch (type) {
-	case PinType::Input:
-		_iodir |= mask;
-		_gppu &= ~mask;
-		break;
+	بدل (type) {
+	حالة PinType::داخلا_2:
+		_iodir |= نقاب;
+		_gppu &= ~نقاب;
+		اكسر;
 
-	case PinType::InputPullUp:
-		_iodir |= mask;
-		_gppu |= mask;
-		break;
+	حالة PinType::داخلا_Pull_مٿي:
+		_iodir |= نقاب;
+		_gppu |= نقاب;
+		اكسر;
 
-	case PinType::Output:
-		_iodir &= ~mask;
-		break;
+	حالة PinType::Output:
+		_iodir &= ~نقاب;
+		اكسر;
 
-	default:
-		return -EINVAL;
+	افتراضي:
+		أرجع -EINVAL;
 	}
 
-	int ret = PX4_OK;
+	صحيح ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	لكل (صحيح i = 0; i < mcp_config.انگ_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
 		uint8_t iodir_addr;
@@ -169,51 +169,51 @@ int MCP230XX::configure(const uint16_t mask, PinType type)
 		ret = get_iodir(i, &iodir_addr);
 		ret |= get_gppu(i, &gppu_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		إذا (ret != PX4_OK) {
+			أرجع ret;
 		}
 
 		ret = write_reg(iodir_addr, curr_iodir);
 		ret |= write_reg(gppu_addr, curr_gppu);
 
-		if (ret != PX4_OK) {
+		إذا (ret != PX4_OK) {
 			PX4_ERR("MCP configure failed");
-			return ret;
+			أرجع ret;
 		}
 	}
 
-	return PX4_OK;
+	أرجع PX4_OK;
 }
 
-int MCP230XX::init()
+صحيح MCP230XX::init()
 {
-	int ret = I2C::init();
+	صحيح ret = I2C::init();
 
-	if (ret != PX4_OK) {
+	إذا (ret != PX4_OK) {
 		PX4_ERR("I2C init failed");
-		return ret;
+		أرجع ret;
 	}
 
-	ScheduleNow();
-	return PX4_OK;
+	وقت_جدول_Now();
+	أرجع PX4_OK;
 }
 
-int MCP230XX::init_communication()
+صحيح MCP230XX::init_communication()
 {
-	int ret = mcp230XX_register_gpios(mcp_config.i2c_bus, mcp_config.i2c_addr, mcp_config.first_minor, _iodir, mcp_config.num_pins,
+	صحيح ret = mcp230_XX_رجسٽر_gpios(mcp_config.i2c_bus, mcp_config.i2c_addr, mcp_config.پهريون_minor, _iodir, mcp_config.انگ_pins,
 					  mcp_config.device_type, mcp_config._gpio_handle);
 	ret |= init_uorb();
-	return ret;
+	أرجع ret;
 }
 
-int MCP230XX::set_up()
+صحيح MCP230XX::سيٽ_مٿي_2()
 {
-	int ret = PX4_OK;
+	صحيح ret = PX4_OK;
 	uint8_t iodir_addr;
 	uint8_t olat_addr;
 	uint8_t gppu_addr;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	لكل (صحيح i = 0; i < mcp_config.انگ_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
@@ -222,27 +222,27 @@ int MCP230XX::set_up()
 		ret |= get_iodir(i, &iodir_addr);
 		ret |= get_gppu(i, &gppu_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		إذا (ret != PX4_OK) {
+			أرجع ret;
 		}
 
 		ret |= write_reg(iodir_addr, curr_iodir);
 		ret |= write_reg(olat_addr, curr_olat);
 		ret |= write_reg(gppu_addr, curr_gppu);
 
-		if (ret != PX4_OK) {
-			return ret;
+		إذا (ret != PX4_OK) {
+			أرجع ret;
 		}
 	}
 
-	return ret;
+	أرجع ret;
 }
 
-int MCP230XX::sanity_check()
+صحيح MCP230XX::sanity_check()
 {
-	int ret = PX4_OK;
+	صحيح ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	لكل (صحيح i = 0; i < mcp_config.انگ_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
@@ -263,214 +263,214 @@ int MCP230XX::sanity_check()
 		ret |= read_reg(olat_addr, read_olat);
 		ret |= read_reg(gppu_addr, read_gppu);
 
-		if (read_iodir != curr_iodir || read_olat != curr_olat || read_gppu != curr_gppu) {
-			perf_count(_register_check);
-			return PX4_ERROR;
+		إذا (read_iodir != curr_iodir || read_olat != curr_olat || read_gppu != curr_gppu) {
+			perf_ڳڻپ(رجسٽر_check);
+			أرجع PX4_ERROR;
 		}
 	}
 
-	return ret;
+	أرجع ret;
 }
 
-int MCP230XX::probe()
+صحيح MCP230XX::probe()
 {
 	// no whoami, try to read IOCONA
-	uint8_t data;
+	uint8_t معلومات;
 	uint8_t addr;
-	int ret = PX4_OK;
+	صحيح ret = PX4_OK;
 
-	for (int i = 0; i < 10; i++) {
+	لكل (صحيح i = 0; i < 10; i++) {
 		ret = get_probe_reg(&addr);
 
-		if (ret == PX4_OK) {
-			ret = read_reg(addr, data);
+		إذا (ret == PX4_OK) {
+			ret = read_reg(addr, معلومات);
 
-			if (ret == PX4_OK) {
-				return PX4_OK;
+			إذا (ret == PX4_OK) {
+				أرجع PX4_OK;
 			}
 		}
 
 		px4_usleep(10'000);
 	}
 
-	return PX4_ERROR;
+	أرجع PX4_ERROR;
 }
 
-void MCP230XX::RunImpl()
+فراغ MCP230XX::لاڳيتو_Impl()
 {
-	if (should_exit()) {
+	إذا (should_exit()) {
 		cleanup_uorb();
 		exit_and_cleanup();
-		return;
+		أرجع;
 	}
 
-	int ret = PX4_OK;
+	صحيح ret = PX4_OK;
 
-	switch (_curr_state) {
-	case STATE::INIT_COMMUNICATION:
+	بدل (_curr_state) {
+	حالة STATE::INIT_COMMUNICATION:
 		ret = init_communication();
 
-		if (ret == PX4_OK) {
+		إذا (ret == PX4_OK) {
 			_curr_state = STATE::CONFIGURE;
-			ScheduleNow();
+			وقت_جدول_Now();
 
-		} else {
-			ScheduleDelayed(mcp_config.interval * 1000);
+		} وإلا {
+			وقت_جدول_Delayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		اكسر;
 
-	case STATE::CONFIGURE:
-		ret = set_up();
+	حالة STATE::CONFIGURE:
+		ret = سيٽ_مٿي_2();
 
-		if (ret == PX4_OK) {
+		إذا (ret == PX4_OK) {
 			_curr_state = STATE::CHECK;
-			ScheduleNow();
+			وقت_جدول_Now();
 
-		} else {
-			ScheduleDelayed(mcp_config.interval * 1000);
+		} وإلا {
+			وقت_جدول_Delayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		اكسر;
 
-	case STATE::CHECK:
+	حالة STATE::CHECK:
 		ret = sanity_check();
 
-		if (ret == PX4_OK) {
+		إذا (ret == PX4_OK) {
 			_curr_state = STATE::RUNNING;
-			ScheduleOnInterval(mcp_config.interval * 1000);
+			وقت_جدول_On_Interval(mcp_config.interval * 1000);
 
-		} else {
+		} وإلا {
 			_curr_state = STATE::CONFIGURE;
-			ScheduleDelayed(mcp_config.interval * 1000);
+			وقت_جدول_Delayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		اكسر;
 
-	case STATE::RUNNING:
-		perf_begin(_cycle_perf);
+	حالة STATE::RUNNING:
+		perf_begin(چڪر_perf);
 		gpio_config_s config;
 
-		if (_gpio_config_sub.update(&config) && config.device_id == get_device_id()) {
-			PinType type = PinType::Input;
+		إذا (_gpio_config_sub.update(&config) && config.device_id == get_device_id()) {
+			PinType type = PinType::داخلا_2;
 
-			switch (config.config) {
-			case config.INPUT_PULLUP:	type = PinType::InputPullUp; break;
+			بدل (config.config) {
+			حالة config.داخلا_PULLUP:	type = PinType::داخلا_Pull_مٿي; اكسر;
 
-			case config.OUTPUT:		type = PinType::Output; break;
+			حالة config.OUTPUT:		type = PinType::Output; اكسر;
 			}
 
-			ret |= write(config.state, config.mask);
-			ret |= configure(config.mask, type);
+			ret |= اكتب(config.state, config.نقاب);
+			ret |= configure(config.نقاب, type);
 		}
 
-		gpio_out_s output;
+		gpio_ٻاهريون_s output;
 
-		if (_gpio_out_sub.update(&output) && output.device_id == get_device_id()) {
-			ret |= write(output.state, output.mask);
+		إذا (gpio_ٻاهريون_sub.update(&output) && output.device_id == get_device_id()) {
+			ret |= اكتب(output.state, output.نقاب);
 		}
 
 		{
-			gpio_in_s _gpio_in;
-			_gpio_in.timestamp = hrt_absolute_time();
-			_gpio_in.device_id = get_device_id();
-			uint16_t input = 0;
+			gpio_اندريون_s gpio_اندريون;
+			gpio_اندريون.timestamp = hrt_absolute_وقت();
+			gpio_اندريون.device_id = get_device_id();
+			uint16_t داخلا = 0;
 
-			if (read(&input) == PX4_OK) {
-				_gpio_in.state = input;
-				_to_gpio_in.publish(_gpio_in);
+			إذا (اقرأ(&داخلا) == PX4_OK) {
+				gpio_اندريون.state = داخلا;
+				منزل_gpio_اندريون.publish(gpio_اندريون);
 			}
 		}
 
-		_count++;
+		ڳڻپ_3++;
 
-		if (_count >= _checking_freq || ret != PX4_OK) {
+		إذا (ڳڻپ_3 >= _checking_freq || ret != PX4_OK) {
 			_curr_state = STATE::CHECK;
-			_count = 0;
-			ScheduleClear();
-			ScheduleNow();
+			ڳڻپ_3 = 0;
+			وقت_جدول_Clear();
+			وقت_جدول_Now();
 		}
 
-		perf_end(_cycle_perf);
+		perf_پڇاڙي(چڪر_perf);
 	}
 }
 
-void MCP230XX::print_status()
+فراغ MCP230XX::print_حالت()
 {
-	I2CSPIDriverBase::print_status();
-	perf_print_counter(_cycle_perf);
+	I2_CSPIDriver_بنياد::print_حالت();
+	perf_print_counter(چڪر_perf);
 	perf_print_counter(_comms_errors);
-	perf_print_counter(_register_check);
+	perf_print_counter(رجسٽر_check);
 }
 
-void MCP230XX::custom_method(const BusCLIArguments &cli)
+فراغ MCP230XX::custom_طريقو(ثابت BusCLIArguments &cli)
 {
-	switch (cli.custom1) {
-	case 0: {
+	بدل (cli.custom1) {
+	حالة 0: {
 			// write: only pins configured as outputs are affected
-			const uint16_t outputs = (uint16_t)~_iodir;
-			const uint16_t state = (uint16_t)cli.custom2;
+			ثابت uint16_t outputs = (uint16_t)~_iodir;
+			ثابت uint16_t state = (uint16_t)cli.custom2;
 
-			if (write(state & outputs, (uint16_t)~state & outputs) != PX4_OK) {
+			إذا (اكتب(state & outputs, (uint16_t)~state & outputs) != PX4_OK) {
 				PX4_ERR("write failed");
 			}
 
-			break;
+			اكسر;
 		}
 	}
 }
 
-void MCP230XX::print_usage()
+فراغ MCP230XX::print_usage()
 {
 	PRINT_MODULE_USAGE_NAME("mcp230xx", "driver");
 	PRINT_MODULE_USAGE_COMMAND("start");
-	PRINT_MODULE_USAGE_PARAMS_I2C_SPI_DRIVER(true, false);
-	PRINT_MODULE_USAGE_PARAMS_I2C_ADDRESS(0x27);
-	PRINT_MODULE_USAGE_PARAM_INT('D', 0, 0, 65535, "Direction (1=Input, 0=Output)", true);
-	PRINT_MODULE_USAGE_PARAM_INT('O', 0, 0, 65535, "Output", true);
-	PRINT_MODULE_USAGE_PARAM_INT('P', 0, 0, 65535, "Pullups", true);
-	PRINT_MODULE_USAGE_PARAM_INT('U', 0, 0, 1000, "Update Interval [ms]", true);
-	PRINT_MODULE_USAGE_PARAM_INT('M', 0, 0, 255, "First minor number", true);
+	PRINT_MODULE_USAGE_PARAMS_I2C_SPI_DRIVER(سچ, خطأ);
+	PRINT_MODULE_USAGE_PARAMS_I2_C_پتو(0x27);
+	PRINT_MODULE_USAGE_PARAM_INT('D', 0, 0, 65535, "Direction (1=Input, 0=Output)", سچ);
+	PRINT_MODULE_USAGE_PARAM_INT('O', 0, 0, 65535, "Output", سچ);
+	PRINT_MODULE_USAGE_PARAM_INT('P', 0, 0, 65535, "Pullups", سچ);
+	PRINT_MODULE_USAGE_PARAM_INT('U', 0, 0, 1000, "Update Interval [ms]", سچ);
+	PRINT_MODULE_USAGE_PARAM_INT('M', 0, 0, 255, "First minor number", سچ);
 	PRINT_MODULE_USAGE_COMMAND_DESCR("write", "Set the output pins to the state given with -O");
 	PRINT_MODULE_USAGE_DEFAULT_COMMANDS();
 }
 
-I2CSPIDriverBase *MCP230XX::instantiate(const I2CSPIDriverConfig &config, int runtime_instance)
+I2_CSPIDriver_بنياد *MCP230XX::instantiate(ثابت I2CSPIDriverConfig &config, صحيح runtime_instance)
 {
-	MCP230XX *instance = nullptr;
+	MCP230XX *instance = خالي_اشارو;
 
-	switch (config.devid_driver_index) {
-	case DRV_GPIO_DEVTYPE_MCP23009:
-		instance = new MCP23009(config);
-		break;
+	بدل (config.devid_driver_اشاريو) {
+	حالة DRV_GPIO_DEVTYPE_MCP23009:
+		instance = جديد MCP23009(config);
+		اكسر;
 
-	case DRV_GPIO_DEVTYPE_MCP23017:
-		instance = new MCP23017(config);
-		break;
+	حالة DRV_GPIO_DEVTYPE_MCP23017:
+		instance = جديد MCP23017(config);
+		اكسر;
 
-	default:
-		instance = nullptr;
-		break;
+	افتراضي:
+		instance = خالي_اشارو;
+		اكسر;
 	}
 
-	if (!instance) {
+	إذا (!instance) {
 		PX4_ERR("alloc failed");
-		return nullptr;
+		أرجع خالي_اشارو;
 	}
 
-	MCP230XX_config_t tmp_config = *static_cast<const MCP230XX_config_t *>(config.custom_data);
+	MCP230XX_config_t tmp_config = *static_cast<ثابت MCP230XX_config_t *>(config.custom_معلومات);
 	instance->mcp_config = tmp_config;
 	instance->mcp_config.i2c_bus = config.bus;
-	instance->mcp_config.i2c_addr = config.i2c_address;
+	instance->mcp_config.i2c_addr = config.i2c_پتو;
 
-	if (OK != instance->init()) {
-		delete instance;
-		return nullptr;
+	إذا (OK != instance->init()) {
+		ميٽيو instance;
+		أرجع خالي_اشارو;
 	}
 
 	instance->_iodir = instance->mcp_config.direction;
 	instance->_olat = instance->mcp_config.state;
 	instance->_gppu = instance->mcp_config.pullup;
 
-	return instance;
+	أرجع instance;
 }

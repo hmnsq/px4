@@ -31,26 +31,26 @@
  *
  ****************************************************************************/
 
-#include "autosave.h"
+#ضمن "autosave.h"
 
-#include <px4_platform_common/log.h>
-#include <uORB/topics/actuator_armed.h>
-#include <uORB/Subscription.hpp>
+#ضمن <px4_platform_common/log.h>
+#ضمن <uORB/topics/actuator_armed.h>
+#ضمن <uORB/Subscription.hpp>
 
-#include "param.h"
-#include "atomic_transaction.h"
+#ضمن "param.h"
+#ضمن "atomic_transaction.h"
 
-using namespace time_literals;
+استعمال نطاق وقت_literals;
 
 ParamAutosave::ParamAutosave()
-	: ScheduledWorkItem(MODULE_NAME, px4::wq_configurations::lp_default)
+	: Scheduled_Work_شي(MODULE_NAME, px4::wq_configurations::lp_default)
 {
 }
 
-void ParamAutosave::request()
+فراغ ParamAutosave::request()
 {
-	if (_scheduled.load() || _disabled) {
-		return;
+	إذا (_scheduled.ڀريو() || _disabled) {
+		أرجع;
 	}
 
 	// wait at least 300ms before saving, because:
@@ -59,72 +59,72 @@ void ParamAutosave::request()
 	//   looks at all unsaved params.
 	hrt_abstime delay = 300_ms;
 
-	static constexpr const hrt_abstime rate_limit = 2_s; // rate-limit saving to 2 seconds
-	const hrt_abstime last_save_elapsed = hrt_elapsed_time(&_last_timestamp);
+	ساكن constexpr ثابت hrt_abstime شرح_حد_بندي = 2_s; // rate-limit saving to 2 seconds
+	ثابت hrt_abstime آخري_save_elapsed = hrt_elapsed_وقت(&آخري_timestamp);
 
-	if (last_save_elapsed < rate_limit && rate_limit > last_save_elapsed + delay) {
-		delay = rate_limit - last_save_elapsed;
+	إذا (آخري_save_elapsed < شرح_حد_بندي && شرح_حد_بندي > آخري_save_elapsed + delay) {
+		delay = شرح_حد_بندي - آخري_save_elapsed;
 	}
 
-	_scheduled.store(true);
-	ScheduleDelayed(delay);
+	_scheduled.store(سچ);
+	وقت_جدول_Delayed(delay);
 }
 
-void ParamAutosave::enable(bool enable)
+فراغ ParamAutosave::enable(منطقي enable)
 {
 	AtomicTransaction transaction;
 	_disabled = !enable;
 
-	if (!enable && _scheduled.load()) {
-		_scheduled.store(false);
-		px4::ScheduledWorkItem::ScheduleClear();
+	إذا (!enable && _scheduled.ڀريو()) {
+		_scheduled.store(خطأ);
+		px4::Scheduled_Work_شي::وقت_جدول_Clear();
 	}
 }
 
-void ParamAutosave::Run()
+فراغ ParamAutosave::لاڳيتو()
 {
-	bool disabled = false;
+	منطقي disabled = خطأ;
 
-	if (!param_get_default_file()) {
+	إذا (!param_get_default_file()) {
 		// In case we save to FLASH, defer param writes until disarmed,
 		// as writing to FLASH can stall the entire CPU (in rare cases around 300ms on STM32F7)
-		uORB::SubscriptionData<actuator_armed_s> armed_sub{ORB_ID(actuator_armed)};
+		uORB::Subscription_معلومات<actuator_armed_s> armed_sub{ORB_ID(actuator_armed)};
 
-		if (armed_sub.get().armed) {
-			ScheduleDelayed(1_s);
-			return;
+		إذا (armed_sub.get().armed) {
+			وقت_جدول_Delayed(1_s);
+			أرجع;
 		}
 	}
 
 	{
-		const AtomicTransaction transaction;
-		_last_timestamp = hrt_absolute_time();
+		ثابت AtomicTransaction transaction;
+		آخري_timestamp = hrt_absolute_وقت();
 		// Note that the order is important here: we first clear _scheduled, then save the parameters, as during export,
 		// more parameter changes could happen.
-		_scheduled.store(false);
+		_scheduled.store(خطأ);
 		disabled = _disabled;
 	}
 
-	if (disabled) {
-		return;
+	إذا (disabled) {
+		أرجع;
 	}
 
 	PX4_DEBUG("Autosaving params");
-	int ret = param_save_default(false);
+	صحيح ret = param_save_default(خطأ);
 
-	if (ret != PX4_OK) {
+	إذا (ret != PX4_OK) {
 		// re-request to be saved in the future, try 3 times at most
-		if (_retry_count < 3) {
-			_retry_count++;
+		إذا (retry_ڳڻپ_2 < 3) {
+			retry_ڳڻپ_2++;
 			PX4_INFO("param auto save unavailable (%i), retrying..", ret);
 			request();
 
-		} else {
+		} وإلا {
 			PX4_ERR("param auto save failed (%i)", ret);
-			_retry_count = 0;
+			retry_ڳڻپ_2 = 0;
 		}
 
-	} else {
-		_retry_count = 0;
+	} وإلا {
+		retry_ڳڻپ_2 = 0;
 	}
 }

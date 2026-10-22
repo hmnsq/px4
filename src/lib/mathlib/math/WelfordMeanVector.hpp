@@ -37,124 +37,124 @@
  * Welford's online algorithm for computing mean and covariance of a vector.
  */
 
-#pragma once
+#هدايت once
 
-namespace math
+نطاق math
 {
 
-template <typename Type, size_t N>
-class WelfordMeanVector
+سانچو <قسم_نالو Type, size_t N>
+صنف Welford_سراسري_ويڪٽر
 {
-public:
+عام:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const matrix::Vector<Type, N> &new_value)
+	منطقي update(ثابت ميٽرڪس::ويڪٽر<Type, N> &new_قدر)
 	{
-		if (_count == 0) {
+		إذا (ڳڻپ_3 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
-			return false;
+			ڳڻپ_3 = 1;
+			سراسري_2 = new_قدر;
+			أرجع خطأ;
 
-		} else if (_count == UINT16_MAX) {
+		} وإلا إذا (ڳڻپ_3 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / ڳڻپ_3;
 			_M2_accum.zero();
 
-			_count = 1;
+			ڳڻپ_3 = 1;
 
-		} else {
-			_count++;
+		} وإلا {
+			ڳڻپ_3++;
 		}
 
-		// mean
+		//سراسري
 		//  accumulates the mean of the entire dataset
 		//  use Kahan summation because delta can be very small compared to the mean
-		const matrix::Vector<Type, N> delta{new_value - _mean};
+		ثابت ميٽرڪس::ويڪٽر<Type, N> delta{new_قدر - سراسري_2};
 		{
-			const matrix::Vector<Type, N> y = (delta / _count) - _mean_accum;
-			const matrix::Vector<Type, N> t = _mean + y;
-			_mean_accum = (t - _mean) - y;
-			_mean = t;
+			ثابت ميٽرڪس::ويڪٽر<Type, N> y = (delta / ڳڻپ_3) - سراسري_accum;
+			ثابت ميٽرڪس::ويڪٽر<Type, N> t = سراسري_2 + y;
+			سراسري_accum = (t - سراسري_2) - y;
+			سراسري_2 = t;
 		}
 
-		if (!_mean.isAllFinite()) {
+		إذا (!سراسري_2.isAllFinite()) {
 			reset();
-			return false;
+			أرجع خطأ;
 		}
 
 		// covariance
 		//  Kahan summation (upper triangle only)
 		{
 			// eg C(x,y) += dx * (y - mean_y)
-			matrix::SquareMatrix<Type, N> m2_change{};
+			ميٽرڪس::چورس_ميٽرڪس<Type, N> m2_change{};
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
-					m2_change(r, c) = delta(r) * (new_value(c) - _mean(c));
+			لكل (size_t r = 0; r < N; r++) {
+				لكل (size_t c = r; c < N; c++) {
+					m2_change(r, c) = delta(r) * (new_قدر(c) - سراسري_2(c));
 				}
 			}
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
+			لكل (size_t r = 0; r < N; r++) {
+				لكل (size_t c = r; c < N; c++) {
 
-					const Type y = m2_change(r, c) - _M2_accum(r, c);
-					const Type t = _M2(r, c) + y;
+					ثابت Type y = m2_change(r, c) - _M2_accum(r, c);
+					ثابت Type t = _M2(r, c) + y;
 					_M2_accum(r, c) = (t - _M2(r, c)) - y;
 
 					_M2(r, c) = t;
 				}
 
 				// protect against floating point precision causing negative variances
-				if (_M2(r, r) < 0) {
+				إذا (_M2(r, r) < 0) {
 					_M2(r, r) = 0;
 				}
 			}
 
 			// make symmetric
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r + 1; c < N; c++) {
+			لكل (size_t r = 0; r < N; r++) {
+				لكل (size_t c = r + 1; c < N; c++) {
 					_M2(c, r) = _M2(r, c);
 				}
 			}
 		}
 
-		if (!_M2.isAllFinite()) {
+		إذا (!_M2.isAllFinite()) {
 			reset();
-			return false;
+			أرجع خطأ;
 		}
 
-		return valid();
+		أرجع valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	منطقي valid() ثابت { أرجع ڳڻپ_3 > 2; }
+	خودڪار ڳڻپ() ثابت { أرجع ڳڻپ_3; }
 
-	void reset()
+	فراغ reset()
 	{
-		_count = 0;
-		_mean.zero();
+		ڳڻپ_3 = 0;
+		سراسري_2.zero();
 		_M2.zero();
 
-		_mean_accum.zero();
+		سراسري_accum.zero();
 		_M2_accum.zero();
 	}
 
-	matrix::Vector<Type, N> mean() const { return _mean; }
-	matrix::Vector<Type, N> variance() const { return _M2.diag() / (_count - 1); }
-	matrix::SquareMatrix<Type, N> covariance() const { return _M2 / (_count - 1); }
+	ميٽرڪس::ويڪٽر<Type, N> سراسري() ثابت { أرجع سراسري_2; }
+	ميٽرڪس::ويڪٽر<Type, N> variance() ثابت { أرجع _M2.diag() / (ڳڻپ_3 - 1); }
+	ميٽرڪس::چورس_ميٽرڪس<Type, N> covariance() ثابت { أرجع _M2 / (ڳڻپ_3 - 1); }
 
-	Type covariance(int x, int y) const { return _M2(x, y) / (_count - 1); }
+	Type covariance(صحيح x, صحيح y) ثابت { أرجع _M2(x, y) / (ڳڻپ_3 - 1); }
 
-private:
+خاص:
 
-	matrix::Vector<Type, N> _mean{};
-	matrix::Vector<Type, N> _mean_accum{};  ///< kahan summation algorithm accumulator for mean
+	ميٽرڪس::ويڪٽر<Type, N> سراسري_2{};
+	ميٽرڪس::ويڪٽر<Type, N> سراسري_accum{};  ///< kahan summation algorithm accumulator for mean
 
-	matrix::SquareMatrix<Type, N> _M2{};
-	matrix::SquareMatrix<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
+	ميٽرڪس::چورس_ميٽرڪس<Type, N> _M2{};
+	ميٽرڪس::چورس_ميٽرڪس<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t ڳڻپ_3{0};
 };
 
 } // namespace math

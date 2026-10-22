@@ -40,58 +40,58 @@
  *
  */
 
-#ifndef OTP_H_
-#define OTP_H_
+#جيڪڏهن_وصف_نه_ٿيل OTP_H_
+#وصف_ڪريو OTP_H_
 
-#define ADDR_OTP_START			0x1FFF7800
-#define ADDR_OTP_LOCK_START		0x1FFF7A00
+#وصف_ڪريو ADDR_OTP_شروعات			0x1FFF7800
+#وصف_ڪريو ADDR_OTP_تالو_شروعات		0x1FFF7A00
 
-#define OTP_LOCK_LOCKED			0x00
-#define OTP_LOCK_UNLOCKED		0xFF
+#وصف_ڪريو OTP_تالو_LOCKED			0x00
+#وصف_ڪريو OTP_تالو_UNLOCKED		0xFF
 
 
 
-#include <unistd.h>
-#include <stdint.h>
-#include <stdio.h>
+#ضمن <unistd.h>
+#ضمن <stdint.h>
+#ضمن <stdio.h>
 
 // possible flash statuses
-#define F_BUSY 1
-#define F_ERROR_WRP 2
-#define F_ERROR_PROGRAM 3
-#define F_ERROR_OPERATION 4
-#define F_COMPLETE 5
+#وصف_ڪريو F_BUSY 1
+#وصف_ڪريو F_ERROR_WRP 2
+#وصف_ڪريو F_ERROR_پروگرام 3
+#وصف_ڪريو F_ERROR_OPERATION 4
+#وصف_ڪريو F_COMPLETE 5
 
-typedef struct {
-	volatile unsigned long accesscontrol;      // 0x00
-	volatile unsigned long key;     //  0x04
-	volatile unsigned long optionkey;  //  0x08
-	volatile unsigned long status;       // 0x0C
-	volatile unsigned long control;       // 0x10
-	volatile unsigned long optioncontrol;    //0x14
+تعريفنوع بنية {
+	متطاير بنانشان ڊگهو accesscontrol;      // 0x00
+	متطاير بنانشان ڊگهو ڪنجي;     //  0x04
+	متطاير بنانشان ڊگهو optionkey;  //  0x08
+	متطاير بنانشان ڊگهو حالت;       // 0x0C
+	متطاير بنانشان ڊگهو control;       // 0x10
+	متطاير بنانشان ڊگهو optioncontrol;    //0x14
 } flash_registers;
 
-#define PERIPH_BASE           ((unsigned long)0x40000000) //Peripheral base address
-#define AHB1PERIPH_BASE       (PERIPH_BASE + 0x00020000)
-#define F_R_BASE          (AHB1PERIPH_BASE + 0x3C00)
-#define FLASH               ((flash_registers *) F_R_BASE)
+#وصف_ڪريو PERIPH_بنياد           ((بنانشان ڊگهو)0x40000000) //Peripheral base address
+#وصف_ڪريو AHB1_PERIPH_بنياد       (PERIPH_بنياد + 0x00020000)
+#وصف_ڪريو F_R_بنياد          (AHB1_PERIPH_بنياد + 0x3C00)
+#وصف_ڪريو FLASH               ((flash_registers *) F_R_بنياد)
 
-#define F_BSY ((unsigned long)0x00010000) //FLASH Busy flag bit
-#define F_OPERR ((unsigned long)0x00000002) //FLASH operation Error flag bit
-#define F_WRPERR ((unsigned long)0x00000010) //FLASH Write protected error flag bit
-#define CR_PSIZE_MASK ((unsigned long)0xFFFFFCFF)
-#define F_PSIZE_WORD ((unsigned long)0x00000200)
-#define F_PSIZE_BYTE ((unsigned long)0x00000000)
-#define F_CR_PG ((unsigned long)0x00000001) // a bit in the F_CR register
-#define F_CR_LOCK ((unsigned long)0x80000000) // also another bit.
+#وصف_ڪريو F_BSY ((بنانشان ڊگهو)0x00010000) //FLASH Busy flag bit
+#وصف_ڪريو F_OPERR ((بنانشان ڊگهو)0x00000002) //FLASH operation Error flag bit
+#وصف_ڪريو F_WRPERR ((بنانشان ڊگهو)0x00000010) //FLASH Write protected error flag bit
+#وصف_ڪريو CR_PSIZE_نقاب ((بنانشان ڊگهو)0xFFFFFCFF)
+#وصف_ڪريو F_PSIZE_لفظ ((بنانشان ڊگهو)0x00000200)
+#وصف_ڪريو F_PSIZE_BYTE ((بنانشان ڊگهو)0x00000000)
+#وصف_ڪريو F_CR_PG ((بنانشان ڊگهو)0x00000001) // a bit in the F_CR register
+#وصف_ڪريو F_CR_تالو ((بنانشان ڊگهو)0x80000000) // also another bit.
 
-#define F_KEY1 ((unsigned long)0x45670123)
-#define F_KEY2 ((unsigned long)0xCDEF89AB)
-#define IS_F_ADDRESS(ADDRESS) ((((ADDRESS) >= 0x08000000) && ((ADDRESS) < 0x080FFFFF)) || (((ADDRESS) >= 0x1FFF7800) && ((ADDRESS) < 0x1FFF7A0F)))
+#وصف_ڪريو F_KEY1 ((بنانشان ڊگهو)0x45670123)
+#وصف_ڪريو F_KEY2 ((بنانشان ڊگهو)0xCDEF89AB)
+#وصف_ڪريو IS_F_پتو(پتو_3) ((((پتو_3) >= 0x08000000) && ((پتو_3) < 0x080FFFFF)) || (((پتو_3) >= 0x1FFF7800) && ((پتو_3) < 0x1FFF7A0F)))
 
 
 
-#pragma pack(push, 1)
+#هدايت pack(ڌڪو, 1)
 
 /*
  * The OTP area is divided into 16 OTP data blocks of 32 bytes and one lock OTP block of 16 bytes.
@@ -101,46 +101,46 @@ typedef struct {
  * contain 0x00 and 0xFF values, otherwise the OTP bytes might not be taken into account correctly.
  */
 
-struct otp {
+بنية otp {
 	// first 32 bytes =  the '0' Block
-	char		id[4];		///4 bytes < 'P' 'X' '4' '\n'
+	حرف		id[4];		///4 bytes < 'P' 'X' '4' '\n'
 	uint8_t		id_type;	///1 byte < 0 for USB VID, 1 for generic VID
 	uint32_t	vid;        ///4 bytes
 	uint32_t	pid;        ///4 bytes
-	char        unused[19];  ///19 bytes
+	حرف        اڻ_استعمال_ٿيل[19];  ///19 bytes
 	// Cert-of-Auth is next 4 blocks ie 1-4  ( where zero is first block )
-	char        signature[128];
+	حرف        signature[128];
 	// insert extras here
-	uint32_t	lock_bytes[4];
+	uint32_t	تالو_بائيٽون[4];
 };
 
-struct otp_lock {
-	uint8_t		lock_bytes[16];
+بنية otp_تالو {
+	uint8_t		تالو_بائيٽون[16];
 };
-#pragma pack(pop)
+#هدايت pack(ڪڍو)
 
-#define ADDR_F_SIZE		0x1FFF7A22
+#وصف_ڪريو ADDR_F_سائيز		0x1FFF7A22
 
-#pragma pack(push, 1)
-union udid {
+#هدايت pack(ڌڪو, 1)
+اتحاد udid {
 	uint32_t	serial[3];
-	uint8_t  data[12];
+	uint8_t  معلومات[12];
 };
-#pragma pack(pop)
+#هدايت pack(ڪڍو)
 
 __BEGIN_DECLS
 
-__EXPORT void F_unlock(void);
-__EXPORT void F_lock(void);
-__EXPORT int val_read(void *dest, volatile const void *src, int bytes);
-__EXPORT int val_write(volatile void *dest, const void *src, int bytes);
-__EXPORT int write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, char *signature);
-__EXPORT int lock_otp(void);
+__EXPORT فراغ F_unlock(فراغ);
+__EXPORT فراغ F_تالو(فراغ);
+__EXPORT صحيح val_read(فراغ *dest, متطاير ثابت فراغ *src, صحيح بائيٽون);
+__EXPORT صحيح val_write(متطاير فراغ *dest, ثابت فراغ *src, صحيح بائيٽون);
+__EXPORT صحيح write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, حرف *signature);
+__EXPORT صحيح تالو_otp(فراغ);
 
 
-__EXPORT int F_write_byte(unsigned long Address, uint8_t Data);
-__EXPORT int F_write_word(unsigned long Address, uint32_t Data);
+__EXPORT صحيح F_write_byte(بنانشان ڊگهو پتو_2, uint8_t معلومات_4);
+__EXPORT صحيح F_write_لفظ(بنانشان ڊگهو پتو_2, uint32_t معلومات_4);
 
 __END_DECLS
 
-#endif
+#جيڪڏهن_پورو

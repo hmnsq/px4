@@ -39,56 +39,56 @@
  * @author Lorenz Meier <lorenz@px4.io>
  */
 
-#pragma once
+#هدايت once
 
-#include <stdint.h>
+#ضمن <stdint.h>
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/defines.h>
+#ضمن <px4_platform_common/px4_config.h>
+#ضمن <px4_platform_common/defines.h>
 
 __BEGIN_DECLS
 
-#define DSM_FRAME_SIZE		16		/**< DSM frame size in bytes */
-#define DSM_FRAME_CHANNELS	7		/**< Max supported DSM channels per frame */
-#define DSM_MAX_CHANNEL_COUNT   20  /**< Max channel count of any DSM RC */
-#define DSM_BUFFER_SIZE		(DSM_FRAME_SIZE + DSM_FRAME_SIZE / 2)
+#وصف_ڪريو DSM_چوکٺو_سائيز		16		/**< DSM frame size in bytes */
+#وصف_ڪريو DSM_چوکٺو_CHANNELS	7		/**< Max supported DSM channels per frame */
+#وصف_ڪريو DSM_MAX_CHANNEL_ڳڻپ   20  /**< Max channel count of any DSM RC */
+#وصف_ڪريو DSM_بفر_سائيز		(DSM_چوکٺو_سائيز + DSM_چوکٺو_سائيز / 2)
 
 
-#pragma pack(push, 1)
-typedef   uint8_t dsm_frame_t[DSM_BUFFER_SIZE]; /**< DSM dsm frame receive buffer */
-typedef   uint8_t dsm_buf_t[DSM_FRAME_SIZE * 2]; // Define working buffer
+#هدايت pack(ڌڪو, 1)
+تعريفنوع   uint8_t dsm_چوکٺو_t[DSM_بفر_سائيز]; /**< DSM dsm frame receive buffer */
+تعريفنوع   uint8_t dsm_buf_t[DSM_چوکٺو_سائيز * 2]; // Define working buffer
 
-typedef  struct dsm_decode_t {
-	dsm_frame_t frame;
+تعريفنوع  بنية dsm_decode_t {
+	dsm_چوکٺو_t چوکٺو;
 	dsm_buf_t buf;
 } dsm_decode_t;
 
-#pragma pack(pop)
+#هدايت pack(ڪڍو)
 
-__EXPORT int	dsm_init(const char *device);
-__EXPORT void	dsm_deinit(void);
-__EXPORT void	dsm_proto_init(void);
-__EXPORT int	dsm_config(int dsm_fd);
-__EXPORT bool	dsm_input(int dsm_fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit, uint8_t *n_bytes,
-			  uint8_t **bytes, int8_t *rssi, unsigned *frame_drops, unsigned max_values);
+__EXPORT صحيح	dsm_init(ثابت حرف *device);
+__EXPORT فراغ	dsm_deinit(فراغ);
+__EXPORT فراغ	dsm_proto_init(فراغ);
+__EXPORT صحيح	dsm_config(صحيح dsm_fd);
+__EXPORT bool	dsm_داخلا(صحيح dsm_fd, uint16_t *قدرون_2, uint16_t *انگ_قدرون, bool *dsm_11_ٻٽو_انگ, uint8_t *n_بائيٽون,
+			  uint8_t **بائيٽون, int8_t *rssi, بنانشان *چوکٺو_drops, بنانشان max_قدرون);
 
-__EXPORT bool	dsm_parse(const uint64_t now, const uint8_t *frame, const unsigned len, uint16_t *values,
-			  uint16_t *num_values, bool *dsm_11_bit, unsigned *frame_drops, int8_t *rssi_percent, uint16_t max_channels);
+__EXPORT bool	dsm_parse(ثابت uint64_t now, ثابت uint8_t *چوکٺو, ثابت بنانشان len, uint16_t *قدرون_2,
+			  uint16_t *انگ_قدرون, bool *dsm_11_ٻٽو_انگ, بنانشان *چوکٺو_drops, int8_t *rssi_percent, uint16_t max_channels);
 
-#ifdef SPEKTRUM_POWER
-__EXPORT void	dsm_bind(uint16_t cmd, int pulses);
-#endif
+#جيڪڏهن_وصف_ٿيل SPEKTRUM_POWER
+__EXPORT فراغ	dsm_bind(uint16_t cmd, صحيح pulses);
+#جيڪڏهن_پورو
 
-enum DSM_CMD {							/* DSM bind states */
-	DSM_CMD_BIND_POWER_DOWN = 0,
-	DSM_CMD_BIND_POWER_UP,
-	DSM_CMD_BIND_SET_RX_OUT,
+تعداد DSM_CMD {							/* DSM bind states */
+	DSM_CMD_BIND_POWER_هيٺ_ڏانهن = 0,
+	DSM_CMD_BIND_POWER_مٿي,
+	DSM_CMD_BIND_سيٽ_RX_ٻاهريون,
 	DSM_CMD_BIND_SEND_PULSES,
 	DSM_CMD_BIND_REINIT_UART
 };
 
-#define DSM2_BIND_PULSES 3	/* DSM_BIND_START parameter, pulses required to start pairing DSM2 22ms */
-#define DSMX_BIND_PULSES 7	/* DSM_BIND_START parameter, pulses required to start pairing DSMx 22ms */
-#define DSMX8_BIND_PULSES 9     /* DSM_BIND_START parameter, pulses required to start pairing DSMx 11ms */
+#وصف_ڪريو DSM2_BIND_PULSES 3	/* DSM_BIND_START parameter, pulses required to start pairing DSM2 22ms */
+#وصف_ڪريو DSMX_BIND_PULSES 7	/* DSM_BIND_START parameter, pulses required to start pairing DSMx 22ms */
+#وصف_ڪريو DSMX8_BIND_PULSES 9     /* DSM_BIND_START parameter, pulses required to start pairing DSMx 11ms */
 
 __END_DECLS

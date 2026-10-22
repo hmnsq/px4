@@ -30,14 +30,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#pragma once
+#هدايت once
 
-#ifdef __PX4_NUTTX
-#include "nuttx/I2C.hpp"
-#elif defined(__PX4_QURT)
-#include "qurt/I2C.hpp"
-#else
-#include "posix/I2C.hpp"
-#endif
+#جيڪڏهن_وصف_ٿيل __PX4_NUTTX
+#ضمن "nuttx/I2C.hpp"
+#وإلاإذا defined(__PX4_QURT)
+#ضمن "qurt/I2C.hpp"
+#وإلا
+#ضمن "posix/I2C.hpp"
+#جيڪڏهن_پورو
 
-#include <board_config.h>
+#ضمن <board_config.h>

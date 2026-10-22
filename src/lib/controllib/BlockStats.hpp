@@ -37,65 +37,65 @@
  * Controller library code
  */
 
-#pragma once
+#هدايت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
-template<class Type, size_t M>
-class __EXPORT BlockStats: public Block
+سانچو<صنف Type, size_t M>
+صنف __EXPORT بلاڪ_Stats: عام بلاڪ
 {
 
-public:
+عام:
 // methods
-	BlockStats(SuperBlock *parent,
-		   const char *name) :
-		Block(parent, name),
-		_sum(),
-		_sumSq(),
-		_count(0)
+	بلاڪ_Stats(Super_بلاڪ *والد,
+		   ثابت حرف *name) :
+		بلاڪ(والد, name),
+		جوڙ_2(),
+		جوڙ_Sq(),
+		ڳڻپ_3(0)
 	{}
-	virtual ~BlockStats() = default;
-	void update(const matrix::Vector<Type, M> &u)
+	مجازي ~بلاڪ_Stats() = افتراضي;
+	فراغ update(ثابت ميٽرڪس::ويڪٽر<Type, M> &u)
 	{
-		_sum += u;
-		_sumSq += u.emult(u);
-		_count += 1;
+		جوڙ_2 += u;
+		جوڙ_Sq += u.emult(u);
+		ڳڻپ_3 += 1;
 	}
-	void reset()
+	فراغ reset()
 	{
-		_sum.setZero();
-		_sumSq.setZero();
-		_count = 0;
+		جوڙ_2.سيٽ_Zero();
+		جوڙ_Sq.سيٽ_Zero();
+		ڳڻپ_3 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
-	matrix::Vector<Type, M> getVar()
+	size_t get_ڳڻپ() { أرجع ڳڻپ_3; }
+	ميٽرڪس::ويڪٽر<Type, M> get_سراسري() { أرجع جوڙ_2 / ڳڻپ_3; }
+	ميٽرڪس::ويڪٽر<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		أرجع (جوڙ_Sq - جوڙ_2.emult(جوڙ_2) / ڳڻپ_3) / ڳڻپ_3;
 	}
-	matrix::Vector<Type, M> getStdDev()
+	ميٽرڪس::ويڪٽر<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		أرجع getVar().جذر();
 	}
-private:
-// attributes
-	matrix::Vector<Type, M> _sum;
-	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+خاص:
+//خاصيتون
+	ميٽرڪس::ويڪٽر<Type, M> جوڙ_2;
+	ميٽرڪس::ويڪٽر<Type, M> جوڙ_Sq;
+	size_t ڳڻپ_3;
 };
 
 } // namespace control

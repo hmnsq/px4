@@ -38,9 +38,9 @@
  * Included Files
  ****************************************************************************/
 
-#include <stdint.h>
-#include <stdlib.h>
-#include "crc.h"
+#ضمن <stdint.h>
+#ضمن <stdlib.h>
+#ضمن "crc.h"
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -86,22 +86,22 @@
  *
  ****************************************************************************/
 
-uint16_t crc16_add(uint16_t crc, uint8_t value)
+uint16_t crc16_جوڙيو(uint16_t چڪري_جاچ, uint8_t قدر)
 {
 	uint32_t i;
-	const uint16_t poly = 0x1021u;
-	crc ^= (uint16_t)((uint16_t) value << 8u);
+	ثابت uint16_t poly = 0x1021u;
+	چڪري_جاچ ^= (uint16_t)((uint16_t) قدر << 8u);
 
-	for (i = 0; i < 8; i++) {
-		if (crc & (1u << 15u)) {
-			crc = (uint16_t)((crc << 1u) ^ poly);
+	لكل (i = 0; i < 8; i++) {
+		إذا (چڪري_جاچ & (1u << 15u)) {
+			چڪري_جاچ = (uint16_t)((چڪري_جاچ << 1u) ^ poly);
 
-		} else {
-			crc = (uint16_t)(crc << 1u);
+		} وإلا {
+			چڪري_جاچ = (uint16_t)(چڪري_جاچ << 1u);
 		}
 	}
 
-	return crc;
+	أرجع چڪري_جاچ;
 }
 
 /****************************************************************************
@@ -121,15 +121,15 @@ uint16_t crc16_add(uint16_t crc, uint8_t value)
  *
  ****************************************************************************/
 
-uint16_t crc16_signature(uint16_t initial, size_t length, const uint8_t *bytes)
+uint16_t crc16_signature(uint16_t initial, size_t ڊيگهائي, ثابت uint8_t *بائيٽون)
 {
 	size_t i;
 
-	for (i = 0u; i < length; i++) {
-		initial = crc16_add(initial, bytes[i]);
+	لكل (i = 0u; i < ڊيگهائي; i++) {
+		initial = crc16_جوڙيو(initial, بائيٽون[i]);
 	}
 
-	return initial ^ CRC16_OUTPUT_XOR;
+	أرجع initial ^ CRC16_OUTPUT_XOR;
 }
 
 /****************************************************************************
@@ -148,25 +148,25 @@ uint16_t crc16_signature(uint16_t initial, size_t length, const uint8_t *bytes)
  *
  ****************************************************************************/
 
-uint32_t crc32_signature(uint32_t acc, size_t length, const uint8_t *bytes)
+uint32_t چڪري_جاچ_32_signature(uint32_t acc, size_t ڊيگهائي, ثابت uint8_t *بائيٽون)
 {
 	size_t i;
-	const uint32_t poly = 0xedb88320u;
-	const uint8_t  bits = 8u;
-	uint8_t        w = bits;
+	ثابت uint32_t poly = 0xedb88320u;
+	ثابت uint8_t  بٽ = 8u;
+	uint8_t        w = بٽ;
 
-	for (i = 0u; i < length; i++) {
-		acc ^= bytes[i];
-		w = bits;
+	لكل (i = 0u; i < ڊيگهائي; i++) {
+		acc ^= بائيٽون[i];
+		w = بٽ;
 
-		while (w--) {
-			const uint32_t xor = -(acc & 1);
+		طالما (w--) {
+			ثابت uint32_t xor = -(acc & 1);
 			acc >>= 1;
 			acc ^= (poly & xor);
 		}
 	}
 
-	return acc;
+	أرجع acc;
 }
 
 
@@ -187,25 +187,25 @@ uint32_t crc32_signature(uint32_t acc, size_t length, const uint8_t *bytes)
  *
  ****************************************************************************/
 __EXPORT
-uint64_t crc64_add_word(uint64_t crc, uint32_t value)
+uint64_t crc64_جوڙيو_لفظ(uint64_t چڪري_جاچ, uint32_t قدر)
 {
 	uint32_t i, j;
 	uint8_t byte;
-	const uint64_t poly = 0x42F0E1EBA9EA3693ull;
+	ثابت uint64_t poly = 0x42F0E1EBA9EA3693ull;
 
-	for (j = 0; j < 4; j++) {
-		byte = ((uint8_t *) &value)[j];
-		crc ^= (uint64_t) byte << 56u;
+	لكل (j = 0; j < 4; j++) {
+		byte = ((uint8_t *) &قدر)[j];
+		چڪري_جاچ ^= (uint64_t) byte << 56u;
 
-		for (i = 0; i < 8; i++) {
-			if (crc & (1ull << 63u)) {
-				crc = (uint64_t)(crc << 1u) ^ poly;
+		لكل (i = 0; i < 8; i++) {
+			إذا (چڪري_جاچ & (1ull << 63u)) {
+				چڪري_جاچ = (uint64_t)(چڪري_جاچ << 1u) ^ poly;
 
-			} else {
-				crc = (uint64_t)(crc << 1u);
+			} وإلا {
+				چڪري_جاچ = (uint64_t)(چڪري_جاچ << 1u);
 			}
 		}
 	}
 
-	return crc;
+	أرجع چڪري_جاچ;
 }

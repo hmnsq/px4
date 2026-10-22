@@ -11,367 +11,367 @@
  * @author Julian Kent <julian@auterion.com>
  */
 
-#pragma once
+#هدايت once
 
-#include <cmath>
+#ضمن <cmath>
 
-#include "Scalar.hpp"
-#include "Vector.hpp"
+#ضمن "Scalar.hpp"
+#ضمن "Vector.hpp"
 
-namespace matrix
+نطاق ميٽرڪس
 {
 
-template <typename Scalar, size_t N>
-struct Dual {
-	enum : size_t { WIDTH = N };
+سانچو <قسم_نالو Scalar, size_t N>
+بنية Dual {
+	تعداد : size_t { ويڪر = N };
 
 	Scalar value {};
-	Vector<Scalar, N> derivative;
+	ويڪٽر<Scalar, N> derivative;
 
-	Dual() = default;
+	Dual() = افتراضي;
 
-	explicit Dual(Scalar v, size_t inputDimension = 65535)
+	واضح Dual(Scalar v, size_t داخلا_Dimension = 65535)
 	{
 		value = v;
 
-		if (inputDimension < N) {
-			derivative(inputDimension) = Scalar(1);
+		إذا (داخلا_Dimension < N) {
+			derivative(داخلا_Dimension) = Scalar(1);
 		}
 	}
 
-	explicit Dual(Scalar v, const Vector<Scalar, N> &d) :
+	واضح Dual(Scalar v, ثابت ويڪٽر<Scalar, N> &d) :
 		value(v), derivative(d)
 	{}
 
-	Dual<Scalar, N> &operator=(const Scalar &a)
+	Dual<Scalar, N> &عامل=(ثابت Scalar &a)
 	{
-		derivative.setZero();
+		derivative.سيٽ_Zero();
 		value = a;
-		return *this;
+		أرجع *هذا;
 	}
 
-	Dual<Scalar, N> &operator +=(const Dual<Scalar, N> &a)
+	Dual<Scalar, N> &عامل +=(ثابت Dual<Scalar, N> &a)
 	{
-		return (*this = *this + a);
+		أرجع (*هذا = *هذا + a);
 	}
 
-	Dual<Scalar, N> &operator *=(const Dual<Scalar, N> &a)
+	Dual<Scalar, N> &عامل *=(ثابت Dual<Scalar, N> &a)
 	{
-		return (*this = *this * a);
+		أرجع (*هذا = *هذا * a);
 	}
 
-	Dual<Scalar, N> &operator -=(const Dual<Scalar, N> &a)
+	Dual<Scalar, N> &عامل -=(ثابت Dual<Scalar, N> &a)
 	{
-		return (*this = *this - a);
+		أرجع (*هذا = *هذا - a);
 	}
 
-	Dual<Scalar, N> &operator /=(const Dual<Scalar, N> &a)
+	Dual<Scalar, N> &عامل /=(ثابت Dual<Scalar, N> &a)
 	{
-		return (*this = *this / a);
+		أرجع (*هذا = *هذا / a);
 	}
 
-	Dual<Scalar, N> &operator +=(Scalar a)
+	Dual<Scalar, N> &عامل +=(Scalar a)
 	{
-		return (*this = *this + a);
+		أرجع (*هذا = *هذا + a);
 	}
 
-	Dual<Scalar, N> &operator -=(Scalar a)
+	Dual<Scalar, N> &عامل -=(Scalar a)
 	{
-		return (*this = *this - a);
+		أرجع (*هذا = *هذا - a);
 	}
 
-	Dual<Scalar, N> &operator *=(Scalar a)
+	Dual<Scalar, N> &عامل *=(Scalar a)
 	{
-		return (*this = *this * a);
+		أرجع (*هذا = *هذا * a);
 	}
 
-	Dual<Scalar, N> &operator /=(Scalar a)
+	Dual<Scalar, N> &عامل /=(Scalar a)
 	{
-		return (*this = *this / a);
+		أرجع (*هذا = *هذا / a);
 	}
 
-	bool operator==(const Dual<Scalar, N> &other) const
+	منطقي عامل==(ثابت Dual<Scalar, N> &other) ثابت
 	{
-		return isEqualF(value, other.value) && (derivative == other.derivative);
+		أرجع isEqualF(value, other.value) && (derivative == other.derivative);
 	}
 
-	bool operator!=(const Dual<Scalar, N> &other) const
+	منطقي عامل!=(ثابت Dual<Scalar, N> &other) ثابت
 	{
-		const Dual<Scalar, N> &self = *this;
-		return !(self == other);
+		ثابت Dual<Scalar, N> &self = *هذا;
+		أرجع !(self == other);
 	}
 };
 
 // operators
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator+(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> عامل+(ثابت Dual<Scalar, N> &a)
 {
-	return a;
+	أرجع a;
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator-(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> عامل-(ثابت Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(-a.value, -a.derivative);
+	أرجع Dual<Scalar, N>(-a.value, -a.derivative);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator+(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> عامل+(ثابت Dual<Scalar, N> &a, ثابت Dual<Scalar, N> &b)
 {
-	return Dual<Scalar, N>(a.value + b.value, a.derivative + b.derivative);
+	أرجع Dual<Scalar, N>(a.value + b.value, a.derivative + b.derivative);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator-(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> عامل-(ثابت Dual<Scalar, N> &a, ثابت Dual<Scalar, N> &b)
 {
-	return a + (-b);
+	أرجع a + (-b);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator+(const Dual<Scalar, N> &a, Scalar b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> عامل+(ثابت Dual<Scalar, N> &a, Scalar b)
 {
-	return Dual<Scalar, N>(a.value + b, a.derivative);
+	أرجع Dual<Scalar, N>(a.value + b, a.derivative);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator-(const Dual<Scalar, N> &a, Scalar b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> عامل-(ثابت Dual<Scalar, N> &a, Scalar b)
 {
-	return a + (-b);
+	أرجع a + (-b);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator+(Scalar a, const Dual<Scalar, N> &b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> عامل+(Scalar a, ثابت Dual<Scalar, N> &b)
 {
-	return Dual<Scalar, N>(a + b.value, b.derivative);
+	أرجع Dual<Scalar, N>(a + b.value, b.derivative);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator-(Scalar a, const Dual<Scalar, N> &b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> عامل-(Scalar a, ثابت Dual<Scalar, N> &b)
 {
-	return a + (-b);
+	أرجع a + (-b);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator*(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> عامل*(ثابت Dual<Scalar, N> &a, ثابت Dual<Scalar, N> &b)
 {
-	return Dual<Scalar, N>(a.value * b.value, a.value * b.derivative + b.value * a.derivative);
+	أرجع Dual<Scalar, N>(a.value * b.value, a.value * b.derivative + b.value * a.derivative);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator*(const Dual<Scalar, N> &a, Scalar b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> عامل*(ثابت Dual<Scalar, N> &a, Scalar b)
 {
-	return Dual<Scalar, N>(a.value * b, a.derivative * b);
+	أرجع Dual<Scalar, N>(a.value * b, a.derivative * b);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator*(Scalar a, const Dual<Scalar, N> &b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> عامل*(Scalar a, ثابت Dual<Scalar, N> &b)
 {
-	return b * a;
+	أرجع b * a;
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator/(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> عامل/(ثابت Dual<Scalar, N> &a, ثابت Dual<Scalar, N> &b)
 {
-	const Scalar inv_b_real = Scalar(1) / b.value;
-	return Dual<Scalar, N>(a.value * inv_b_real, a.derivative * inv_b_real -
+	ثابت Scalar inv_b_real = Scalar(1) / b.value;
+	أرجع Dual<Scalar, N>(a.value * inv_b_real, a.derivative * inv_b_real -
 			       a.value * b.derivative * inv_b_real * inv_b_real);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator/(const Dual<Scalar, N> &a, Scalar b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> عامل/(ثابت Dual<Scalar, N> &a, Scalar b)
 {
-	return a * (Scalar(1) / b);
+	أرجع a * (Scalar(1) / b);
 }
 
-template <typename Scalar, size_t N>
-Dual<Scalar, N> operator/(Scalar a, const Dual<Scalar, N> &b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> عامل/(Scalar a, ثابت Dual<Scalar, N> &b)
 {
-	const Scalar inv_b_real = Scalar(1) / b.value;
-	return Dual<Scalar, N>(a * inv_b_real, (-inv_b_real * a * inv_b_real) * b.derivative);
+	ثابت Scalar inv_b_real = Scalar(1) / b.value;
+	أرجع Dual<Scalar, N>(a * inv_b_real, (-inv_b_real * a * inv_b_real) * b.derivative);
 }
 
 // basic math
 
 // sqrt
-template <typename Scalar, size_t N>
-Dual<Scalar, N> sqrt(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> جذر(ثابت Dual<Scalar, N> &a)
 {
-	Scalar real = std::sqrt(a.value);
-	return Dual<Scalar, N>(real, a.derivative * (Scalar(1) / (Scalar(2) * real)));
+	Scalar real = std::جذر(a.value);
+	أرجع Dual<Scalar, N>(real, a.derivative * (Scalar(1) / (Scalar(2) * real)));
 }
 
 // abs
-template <typename Scalar, size_t N>
-Dual<Scalar, N> abs(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> مطلق_قدر(ثابت Dual<Scalar, N> &a)
 {
-	return a.value >= Scalar(0) ? a : -a;
+	أرجع a.value >= Scalar(0) ? a : -a;
 }
 
 // ceil
-template <typename Scalar, size_t N>
-Dual<Scalar, N> ceil(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> ceil(ثابت Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(std::ceil(a.value));
+	أرجع Dual<Scalar, N>(std::ceil(a.value));
 }
 
 // floor
-template <typename Scalar, size_t N>
-Dual<Scalar, N> floor(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> floor(ثابت Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(std::floor(a.value));
+	أرجع Dual<Scalar, N>(std::floor(a.value));
 }
 
 // fmod
-template <typename Scalar, size_t N>
-Dual<Scalar, N> fmod(const Dual<Scalar, N> &a, Scalar mod)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> fmod(ثابت Dual<Scalar, N> &a, Scalar mod)
 {
-	return Dual<Scalar, N>(a.value - Scalar(size_t(a.value / mod)) * mod, a.derivative);
+	أرجع Dual<Scalar, N>(a.value - Scalar(size_t(a.value / mod)) * mod, a.derivative);
 }
 
 // max
-template <typename Scalar, size_t N>
-Dual<Scalar, N> max(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> max(ثابت Dual<Scalar, N> &a, ثابت Dual<Scalar, N> &b)
 {
-	return a.value >= b.value ? a : b;
+	أرجع a.value >= b.value ? a : b;
 }
 
 // min
-template <typename Scalar, size_t N>
-Dual<Scalar, N> min(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> min(ثابت Dual<Scalar, N> &a, ثابت Dual<Scalar, N> &b)
 {
-	return a.value < b.value ? a : b;
+	أرجع a.value < b.value ? a : b;
 }
 
 // isnan
-template <typename Scalar>
-bool IsNan(Scalar a)
+سانچو <قسم_نالو Scalar>
+منطقي IsNan(Scalar a)
 {
-	return std::isnan(a);
+	أرجع std::isnan(a);
 }
 
-template <typename Scalar, size_t N>
-bool IsNan(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+منطقي IsNan(ثابت Dual<Scalar, N> &a)
 {
-	return IsNan(a.value);
+	أرجع IsNan(a.value);
 }
 
 // isfinite
-template <typename Scalar>
-bool IsFinite(Scalar a)
+سانچو <قسم_نالو Scalar>
+منطقي IsFinite(Scalar a)
 {
-	return std::isfinite(a);
+	أرجع std::isfinite(a);
 }
 
-template <typename Scalar, size_t N>
-bool IsFinite(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+منطقي IsFinite(ثابت Dual<Scalar, N> &a)
 {
-	return IsFinite(a.value);
+	أرجع IsFinite(a.value);
 }
 
 // isinf
-template <typename Scalar>
-bool IsInf(Scalar a)
+سانچو <قسم_نالو Scalar>
+منطقي IsInf(Scalar a)
 {
-	return std::isinf(a);
+	أرجع std::isinf(a);
 }
 
-template <typename Scalar, size_t N>
-bool IsInf(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+منطقي IsInf(ثابت Dual<Scalar, N> &a)
 {
-	return IsInf(a.value);
+	أرجع IsInf(a.value);
 }
 
 // trig
 
 // sin
-template <typename Scalar, size_t N>
-Dual<Scalar, N> sin(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> جيب(ثابت Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(std::sin(a.value), std::cos(a.value) * a.derivative);
+	أرجع Dual<Scalar, N>(std::جيب(a.value), std::جيب_تمام(a.value) * a.derivative);
 }
 
 // cos
-template <typename Scalar, size_t N>
-Dual<Scalar, N> cos(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> جيب_تمام(ثابت Dual<Scalar, N> &a)
 {
-	return Dual<Scalar, N>(std::cos(a.value), -std::sin(a.value) * a.derivative);
+	أرجع Dual<Scalar, N>(std::جيب_تمام(a.value), -std::جيب(a.value) * a.derivative);
 }
 
 // tan
-template <typename Scalar, size_t N>
-Dual<Scalar, N> tan(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> tan(ثابت Dual<Scalar, N> &a)
 {
 	Scalar real = std::tan(a.value);
-	return Dual<Scalar, N>(real, (Scalar(1) + real * real) * a.derivative);
+	أرجع Dual<Scalar, N>(real, (Scalar(1) + real * real) * a.derivative);
 }
 
 // asin
-template <typename Scalar, size_t N>
-Dual<Scalar, N> asin(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> asin(ثابت Dual<Scalar, N> &a)
 {
-	Scalar asin_d = Scalar(1) / std::sqrt(Scalar(1) - a.value * a.value);
-	return Dual<Scalar, N>(std::asin(a.value), asin_d * a.derivative);
+	Scalar asin_d = Scalar(1) / std::جذر(Scalar(1) - a.value * a.value);
+	أرجع Dual<Scalar, N>(std::asin(a.value), asin_d * a.derivative);
 }
 
 // acos
-template <typename Scalar, size_t N>
-Dual<Scalar, N> acos(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> acos(ثابت Dual<Scalar, N> &a)
 {
-	Scalar acos_d = -Scalar(1) / std::sqrt(Scalar(1) - a.value * a.value);
-	return Dual<Scalar, N>(std::acos(a.value), acos_d * a.derivative);
+	Scalar acos_d = -Scalar(1) / std::جذر(Scalar(1) - a.value * a.value);
+	أرجع Dual<Scalar, N>(std::acos(a.value), acos_d * a.derivative);
 }
 
 // atan
-template <typename Scalar, size_t N>
-Dual<Scalar, N> atan(const Dual<Scalar, N> &a)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> atan(ثابت Dual<Scalar, N> &a)
 {
 	Scalar atan_d = Scalar(1) / (Scalar(1) + a.value * a.value);
-	return Dual<Scalar, N>(std::atan(a.value), atan_d * a.derivative);
+	أرجع Dual<Scalar, N>(std::atan(a.value), atan_d * a.derivative);
 }
 
 // atan2
-template <typename Scalar, size_t N>
-Dual<Scalar, N> atan2(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
+سانچو <قسم_نالو Scalar, size_t N>
+Dual<Scalar, N> atan2(ثابت Dual<Scalar, N> &a, ثابت Dual<Scalar, N> &b)
 {
 	// derivative is equal to that of atan(a/b), so substitute a/b into atan and simplify
 	Scalar atan_d = Scalar(1) / (a.value * a.value + b.value * b.value);
-	return Dual<Scalar, N>(std::atan2(a.value, b.value), (a.derivative * b.value - a.value * b.derivative) * atan_d);
+	أرجع Dual<Scalar, N>(std::atan2(a.value, b.value), (a.derivative * b.value - a.value * b.derivative) * atan_d);
 }
 
 // retrieve the derivative elements of a vector of Duals into a matrix
-template <typename Scalar, size_t M, size_t N>
-Matrix<Scalar, M, N> collectDerivatives(const Matrix<Dual<Scalar, N>, M, 1> &input)
+سانچو <قسم_نالو Scalar, size_t M, size_t N>
+ميٽرڪس_2<Scalar, M, N> collectDerivatives(ثابت ميٽرڪس_2<Dual<Scalar, N>, M, 1> &داخلا)
 {
-	Matrix<Scalar, M, N> jac;
+	ميٽرڪس_2<Scalar, M, N> jac;
 
-	for (size_t i = 0; i < M; i++) {
-		jac.row(i) = input(i, 0).derivative;
+	لكل (size_t i = 0; i < M; i++) {
+		jac.صف(i) = داخلا(i, 0).derivative;
 	}
 
-	return jac;
+	أرجع jac;
 }
 
 // retrieve the real (non-derivative) elements of a matrix of Duals into an equally sized matrix
-template <typename Scalar, size_t M, size_t N, size_t D>
-Matrix<Scalar, M, N> collectReals(const Matrix<Dual<Scalar, D>, M, N> &input)
+سانچو <قسم_نالو Scalar, size_t M, size_t N, size_t D>
+ميٽرڪس_2<Scalar, M, N> collectReals(ثابت ميٽرڪس_2<Dual<Scalar, D>, M, N> &داخلا)
 {
-	Matrix<Scalar, M, N> r;
+	ميٽرڪس_2<Scalar, M, N> r;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			r(i, j) = input(i, j).value;
+	لكل (size_t i = 0; i < M; i++) {
+		لكل (size_t j = 0; j < N; j++) {
+			r(i, j) = داخلا(i, j).value;
 		}
 	}
 
-	return r;
+	أرجع r;
 }
 
-template<typename OStream, typename Type, size_t N>
-OStream &operator<<(OStream &os, const matrix::Dual<Type, N> &dual)
+سانچو<قسم_نالو OStream, قسم_نالو Type, size_t N>
+OStream &عامل<<(OStream &os, ثابت ميٽرڪس::Dual<Type, N> &dual)
 {
 	os << "\nValue: " << dual.value << "\nDerivative:" << dual.derivative;
-	return os;
+	أرجع os;
 }
 
 }

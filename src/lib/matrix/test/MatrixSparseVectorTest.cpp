@@ -31,126 +31,126 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/math.hpp>
 
-using namespace matrix;
+استعمال نطاق ميٽرڪس;
 
-TEST(MatrixSparseVectorTest, defaultConstruction)
+TEST(ميٽرڪس_Sparse_ويڪٽر_Test, defaultConstruction)
 {
 	SparseVectorf<24, 4, 6> a;
 	EXPECT_EQ(a.non_zeros(), 2);
-	EXPECT_EQ(a.index(0), 4);
-	EXPECT_EQ(a.index(1), 6);
+	EXPECT_EQ(a.اشاريو(0), 4);
+	EXPECT_EQ(a.اشاريو(1), 6);
 	a.at<4>() = 1.f;
 	a.at<6>() = 2.f;
 }
 
-TEST(MatrixSparseVectorTest, initializationWithData)
+TEST(ميٽرڪس_Sparse_ويڪٽر_Test, initialization_With_معلومات)
 {
-	const float data[3] = {1.f, 2.f, 3.f};
-	SparseVectorf<24, 4, 6, 22> a(data);
+	ثابت عائم معلومات[3] = {1.f, 2.f, 3.f};
+	SparseVectorf<24, 4, 6, 22> a(معلومات);
 	EXPECT_EQ(a.non_zeros(), 3);
-	EXPECT_EQ(a.index(0), 4);
-	EXPECT_EQ(a.index(1), 6);
-	EXPECT_EQ(a.index(2), 22);
-	EXPECT_FLOAT_EQ(a.at<4>(), data[0]);
-	EXPECT_FLOAT_EQ(a.at<6>(), data[1]);
-	EXPECT_FLOAT_EQ(a.at<22>(), data[2]);
+	EXPECT_EQ(a.اشاريو(0), 4);
+	EXPECT_EQ(a.اشاريو(1), 6);
+	EXPECT_EQ(a.اشاريو(2), 22);
+	EXPECT_FLOAT_EQ(a.at<4>(), معلومات[0]);
+	EXPECT_FLOAT_EQ(a.at<6>(), معلومات[1]);
+	EXPECT_FLOAT_EQ(a.at<22>(), معلومات[2]);
 }
 
-TEST(MatrixSparseVectorTest, initialisationFromVector)
+TEST(ميٽرڪس_Sparse_ويڪٽر_Test, initialisation_From_ويڪٽر)
 {
-	const Vector3f vec(1.f, 2.f, 3.f);
-	const SparseVectorf<3, 0, 2> a(vec);
+	ثابت Vector3f vec(1.f, 2.f, 3.f);
+	ثابت SparseVectorf<3, 0, 2> a(vec);
 	EXPECT_FLOAT_EQ(a.at<0>(), vec(0));
 	EXPECT_FLOAT_EQ(a.at<2>(), vec(2));
 }
 
-TEST(MatrixSparseVectorTest, accessDataWithCompressedIndices)
+TEST(ميٽرڪس_Sparse_ويڪٽر_Test, access_معلومات_With_Compressed_Indices)
 {
-	const Vector3f vec(1.f, 2.f, 3.f);
+	ثابت Vector3f vec(1.f, 2.f, 3.f);
 	SparseVectorf<3, 0, 2> a(vec);
 
-	for (size_t i = 0; i < a.non_zeros(); i++) {
-		a.atCompressedIndex(i) = static_cast<float>(i);
+	لكل (size_t i = 0; i < a.non_zeros(); i++) {
+		a.at_Compressed_اشاريو(i) = static_cast<عائم>(i);
 	}
 
-	EXPECT_FLOAT_EQ(a.at<0>(), a.atCompressedIndex(0));
-	EXPECT_FLOAT_EQ(a.at<2>(), a.atCompressedIndex(1));
+	EXPECT_FLOAT_EQ(a.at<0>(), a.at_Compressed_اشاريو(0));
+	EXPECT_FLOAT_EQ(a.at<2>(), a.at_Compressed_اشاريو(1));
 }
 
-TEST(MatrixSparseVectorTest, setZero)
+TEST(ميٽرڪس_Sparse_ويڪٽر_Test, سيٽ_Zero)
 {
-	const float data[3] = {1.f, 2.f, 3.f};
-	SparseVectorf<24, 4, 6, 22> a(data);
-	a.setZero();
+	ثابت عائم معلومات[3] = {1.f, 2.f, 3.f};
+	SparseVectorf<24, 4, 6, 22> a(معلومات);
+	a.سيٽ_Zero();
 	EXPECT_FLOAT_EQ(a.at<4>(), 0.f);
 	EXPECT_FLOAT_EQ(a.at<6>(), 0.f);
 	EXPECT_FLOAT_EQ(a.at<22>(), 0.f);
 }
 
-TEST(MatrixSparseVectorTest, additionWithDenseVector)
+TEST(ميٽرڪس_Sparse_ويڪٽر_Test, addition_With_Dense_ويڪٽر)
 {
 	Vector4f dense_vec;
-	dense_vec.setAll(1.f);
-	const float data[3] = {1.f, 2.f, 3.f};
-	const SparseVectorf<4, 1, 2, 3> sparse_vec(data);
-	const Vector4f res = sparse_vec + dense_vec;
+	dense_vec.سيٽ_All(1.f);
+	ثابت عائم معلومات[3] = {1.f, 2.f, 3.f};
+	ثابت SparseVectorf<4, 1, 2, 3> sparse_vec(معلومات);
+	ثابت Vector4f res = sparse_vec + dense_vec;
 	EXPECT_FLOAT_EQ(res(0), 1.f);
 	EXPECT_FLOAT_EQ(res(1), 2.f);
 	EXPECT_FLOAT_EQ(res(2), 3.f);
 	EXPECT_FLOAT_EQ(res(3), 4.f);
 }
 
-TEST(MatrixSparseVectorTest, addScalar)
+TEST(ميٽرڪس_Sparse_ويڪٽر_Test, جوڙيو_Scalar)
 {
-	const float data[3] = {1.f, 2.f, 3.f};
-	SparseVectorf<4, 1, 2, 3> sparse_vec(data);
+	ثابت عائم معلومات[3] = {1.f, 2.f, 3.f};
+	SparseVectorf<4, 1, 2, 3> sparse_vec(معلومات);
 	sparse_vec += 2.f;
 	EXPECT_FLOAT_EQ(sparse_vec.at<1>(), 3.f);
 	EXPECT_FLOAT_EQ(sparse_vec.at<2>(), 4.f);
 	EXPECT_FLOAT_EQ(sparse_vec.at<3>(), 5.f);
 }
 
-TEST(MatrixSparseVectorTest, dotProductWithDenseVector)
+TEST(ميٽرڪس_Sparse_ويڪٽر_Test, dot_حاصل_ضرب_With_Dense_ويڪٽر)
 {
 	Vector4f dense_vec;
-	dense_vec.setAll(3.f);
-	const float data[3] = {1.f, 2.f, 3.f};
-	const SparseVectorf<4, 1, 2, 3> sparse_vec(data);
-	float res = sparse_vec.dot(dense_vec);
+	dense_vec.سيٽ_All(3.f);
+	ثابت عائم معلومات[3] = {1.f, 2.f, 3.f};
+	ثابت SparseVectorf<4, 1, 2, 3> sparse_vec(معلومات);
+	عائم res = sparse_vec.dot(dense_vec);
 	EXPECT_FLOAT_EQ(res, 18.f);
 }
 
-TEST(MatrixSparseVectorTest, multiplicationWithDenseMatrix)
+TEST(ميٽرڪس_Sparse_ويڪٽر_Test, multiplication_With_Dense_ميٽرڪس)
 {
-	Matrix<float, 2, 3> dense_matrix;
-	dense_matrix.setAll(2.f);
-	dense_matrix(1, 1) = 3.f;
-	const Vector3f dense_vec(0.f, 1.f, 5.f);
-	const SparseVectorf<3, 1, 2> sparse_vec(dense_vec);
-	const Vector<float, 2> res_sparse = dense_matrix * sparse_vec;
-	const Vector<float, 2> res_dense = dense_matrix * dense_vec;
+	ميٽرڪس_2<عائم, 2, 3> dense_ميٽرڪس;
+	dense_ميٽرڪس.سيٽ_All(2.f);
+	dense_ميٽرڪس(1, 1) = 3.f;
+	ثابت Vector3f dense_vec(0.f, 1.f, 5.f);
+	ثابت SparseVectorf<3, 1, 2> sparse_vec(dense_vec);
+	ثابت ويڪٽر<عائم, 2> res_sparse = dense_ميٽرڪس * sparse_vec;
+	ثابت ويڪٽر<عائم, 2> res_dense = dense_ميٽرڪس * dense_vec;
 	EXPECT_TRUE(isEqual(res_dense, res_sparse));
 }
 
-TEST(MatrixSparseVectorTest, quadraticForm)
+TEST(ميٽرڪس_Sparse_ويڪٽر_Test, quadraticForm)
 {
-	float matrix_data[9] = {1, 2, 3,
+	عائم ميٽرڪس_معلومات[9] = {1, 2, 3,
 				2, 4, 5,
 				3, 5, 6
 			       };
-	const SquareMatrix<float, 3> dense_matrix(matrix_data);
-	const Vector3f dense_vec(0.f, 1.f, 5.f);
-	const SparseVectorf<3, 1, 2> sparse_vec(dense_vec);
-	EXPECT_FLOAT_EQ(quadraticForm(dense_matrix, sparse_vec), 204.f);
+	ثابت چورس_ميٽرڪس<عائم, 3> dense_ميٽرڪس(ميٽرڪس_معلومات);
+	ثابت Vector3f dense_vec(0.f, 1.f, 5.f);
+	ثابت SparseVectorf<3, 1, 2> sparse_vec(dense_vec);
+	EXPECT_FLOAT_EQ(quadraticForm(dense_ميٽرڪس, sparse_vec), 204.f);
 }
 
-TEST(MatrixSparseVectorTest, norms)
+TEST(ميٽرڪس_Sparse_ويڪٽر_Test, norms)
 {
-	const float data[2] = {3.f, 4.f};
-	const SparseVectorf<4, 1, 3> sparse_vec(data);
+	ثابت عائم معلومات[2] = {3.f, 4.f};
+	ثابت SparseVectorf<4, 1, 3> sparse_vec(معلومات);
 	EXPECT_FLOAT_EQ(sparse_vec.norm_squared(), 25.f);
 	EXPECT_FLOAT_EQ(sparse_vec.norm(), 5.f);
 	EXPECT_TRUE(sparse_vec.longerThan(4.5f));

@@ -34,73 +34,73 @@
 
 
 
-#include "VariableLengthRingbuffer.hpp"
+#ضمن "VariableLengthRingbuffer.hpp"
 
-#include <assert.h>
-#include <string.h>
+#ضمن <assert.h>
+#ضمن <string.h>
 
 
-VariableLengthRingbuffer::~VariableLengthRingbuffer()
+Variable_ڊيگهائي_Ringbuffer::~Variable_ڊيگهائي_Ringbuffer()
 {
 	deallocate();
 }
 
-bool VariableLengthRingbuffer::allocate(size_t buffer_size)
+منطقي Variable_ڊيگهائي_Ringbuffer::allocate(size_t بفر_سائيز)
 {
-	return _ringbuffer.allocate(buffer_size);
+	أرجع _ringbuffer.allocate(بفر_سائيز);
 }
 
-void VariableLengthRingbuffer::deallocate()
+فراغ Variable_ڊيگهائي_Ringbuffer::deallocate()
 {
 	_ringbuffer.deallocate();
 }
 
-bool VariableLengthRingbuffer::push_back(const uint8_t *packet, size_t packet_len)
+منطقي Variable_ڊيگهائي_Ringbuffer::push_back(ثابت uint8_t *packet, size_t packet_len)
 {
-	if (packet_len == 0 || packet == nullptr) {
+	إذا (packet_len == 0 || packet == خالي_اشارو) {
 		// Nothing to add, we better don't try.
-		return false;
+		أرجع خطأ;
 	}
 
-	size_t space_required = packet_len + sizeof(Header);
+	size_t space_required = packet_len + حجم(سرو_2);
 
-	if (space_required > _ringbuffer.space_available()) {
-		return false;
+	إذا (space_required > _ringbuffer.space_موجود()) {
+		أرجع خطأ;
 	}
 
-	Header header{static_cast<uint32_t>(packet_len)};
-	bool result = _ringbuffer.push_back(reinterpret_cast<const uint8_t * >(&header), sizeof(header));
-	assert(result);
+	سرو_2 سرو{static_cast<uint32_t>(packet_len)};
+	منطقي نتيجو = _ringbuffer.push_back(reinterpret_cast<ثابت uint8_t * >(&سرو), حجم(سرو));
+	أكد(نتيجو);
 
-	result = _ringbuffer.push_back(packet, packet_len);
-	assert(result);
+	نتيجو = _ringbuffer.push_back(packet, packet_len);
+	أكد(نتيجو);
 
 	// In case asserts are commented out to prevent unused warnings.
-	(void)result;
+	(فراغ)نتيجو;
 
-	return true;
+	أرجع سچ;
 }
 
-size_t VariableLengthRingbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
+size_t Variable_ڊيگهائي_Ringbuffer::ڪڍو_front(uint8_t *buf, size_t buf_max_len)
 {
-	if (buf == nullptr) {
+	إذا (buf == خالي_اشارو) {
 		// User needs to supply a valid pointer.
-		return 0;
+		أرجع 0;
 	}
 
 	// Check next header
-	Header header;
+	سرو_2 سرو;
 
-	if (_ringbuffer.pop_front(reinterpret_cast<uint8_t *>(&header), sizeof(header)) < sizeof(header)) {
-		return 0;
+	إذا (_ringbuffer.ڪڍو_front(reinterpret_cast<uint8_t *>(&سرو), حجم(سرو)) < حجم(سرو)) {
+		أرجع 0;
 	}
 
 	// We can't fit the packet into the user supplied buffer.
 	// This should never happen as the user has to supply a big // enough buffer.
-	assert(static_cast<uint32_t>(header.len) <= buf_max_len);
+	أكد(static_cast<uint32_t>(سرو.len) <= buf_max_len);
 
-	size_t bytes_read = _ringbuffer.pop_front(buf, header.len);
-	assert(bytes_read == header.len);
+	size_t بائيٽون_read = _ringbuffer.ڪڍو_front(buf, سرو.len);
+	أكد(بائيٽون_read == سرو.len);
 
-	return bytes_read;
+	أرجع بائيٽون_read;
 }

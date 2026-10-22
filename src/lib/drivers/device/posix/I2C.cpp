@@ -40,153 +40,153 @@
  *       that is supplied.  Should we just depend on the bus knowing?
  */
 
-#include "I2C.hpp"
+#ضمن "I2C.hpp"
 
-#if defined(CONFIG_I2C)
+#إذا defined(CONFIG_I2C)
 
-#ifdef __PX4_LINUX
+#جيڪڏهن_وصف_ٿيل __PX4_LINUX
 
-#include <linux/i2c.h>
-#include <linux/i2c-dev.h>
+#ضمن <linux/i2c.h>
+#ضمن <linux/i2c-dev.h>
 
-#include <px4_platform_common/i2c_spi_buses.h>
+#ضمن <px4_platform_common/i2c_spi_buses.h>
 
-namespace device
+نطاق device
 {
 
-I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency) :
-	CDev(name, nullptr)
+I2C::I2C(uint8_t device_type, ثابت حرف *name, ثابت صحيح bus, ثابت uint16_t پتو, ثابت uint32_t frequency) :
+	CDev(name, خالي_اشارو)
 {
 	// fill in _device_id fields for a I2C device
 	_device_id.devid_s.devtype = device_type;
 	_device_id.devid_s.bus_type = DeviceBusType_I2C;
 	_device_id.devid_s.bus = bus;
-	_device_id.devid_s.address = address;
+	_device_id.devid_s.پتو = پتو;
 }
 
-I2C::I2C(const I2CSPIDriverConfig &config)
-	: I2C(config.devid_driver_index, config.module_name, config.bus, config.i2c_address, config.bus_frequency)
+I2C::I2C(ثابت I2CSPIDriverConfig &config)
+	: I2C(config.devid_driver_اشاريو, config.module_name, config.bus, config.i2c_پتو, config.bus_frequency)
 {
-	set_external(config.external);
+	سيٽ_external(config.external);
 }
 
 I2C::~I2C()
 {
-	if (_fd >= 0) {
+	إذا (_fd >= 0) {
 		::close(_fd);
 		_fd = -1;
 	}
 }
 
-int
+صحيح
 I2C::init()
 {
-	int ret = PX4_ERROR;
+	صحيح ret = PX4_ERROR;
 
-	if (_fd >= 0) {
-		return PX4_OK;
+	إذا (_fd >= 0) {
+		أرجع PX4_OK;
 	}
 
 	// Open the actual I2C device
-	char dev_path[16] {};
-	snprintf(dev_path, sizeof(dev_path), "/dev/i2c-%i", get_device_bus());
-	_fd = ::open(dev_path, O_RDWR);
+	حرف dev_رستو[16] {};
+	snprintf(dev_رستو, حجم(dev_رستو), "/dev/i2c-%i", get_device_bus());
+	_fd = ::open(dev_رستو, O_RDWR);
 
-	if (_fd < 0) {
+	إذا (_fd < 0) {
 		DEVICE_DEBUG("failed to init I2C");
 		ret = -ENOENT;
-		goto out;
+		اذهب ٻاهريون;
 	}
 
 	// call the probe function to check whether the device is present
 	ret = probe();
 
-	if (ret != OK) {
+	إذا (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		goto out;
+		اذهب ٻاهريون;
 	}
 
 	// do base class init, which will create device node, etc
 	ret = CDev::init();
 
-	if (ret != OK) {
+	إذا (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		goto out;
+		اذهب ٻاهريون;
 	}
 
 	// tell the world where we are
-	DEVICE_DEBUG("on I2C bus %d at 0x%02x", get_device_bus(), get_device_address());
+	DEVICE_DEBUG("on I2C bus %d at 0x%02x", get_device_bus(), get_device_پتو());
 
-out:
+ٻاهريون:
 
-	if ((ret != OK) && !(_fd < 0)) {
+	إذا ((ret != OK) && !(_fd < 0)) {
 		::close(_fd);
 		_fd = -1;
 	}
 
-	return ret;
+	أرجع ret;
 }
 
-int
-I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
+صحيح
+I2C::transfer(ثابت uint8_t *send, ثابت بنانشان send_len, uint8_t *recv, ثابت بنانشان recv_len)
 {
-	int ret = PX4_ERROR;
-	unsigned retry_count = 0;
+	صحيح ret = PX4_ERROR;
+	بنانشان retry_ڳڻپ = 0;
 
-	if (_fd < 0) {
+	إذا (_fd < 0) {
 		PX4_ERR("I2C device not opened");
-		return PX4_ERROR;
+		أرجع PX4_ERROR;
 	}
 
-	do {
+	افعل {
 		DEVICE_DEBUG("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
-		unsigned msgs = 0;
-		struct i2c_msg msgv[2] {};
+		بنانشان msgs = 0;
+		بنية i2c_نياپو msgv[2] {};
 
-		if (send_len > 0) {
-			msgv[msgs].addr = get_device_address();
+		إذا (send_len > 0) {
+			msgv[msgs].addr = get_device_پتو();
 			msgv[msgs].flags = 0;
 			msgv[msgs].buf = const_cast<uint8_t *>(send);
 			msgv[msgs].len = send_len;
 			msgs++;
 		}
 
-		if (recv_len > 0) {
-			msgv[msgs].addr = get_device_address();
+		إذا (recv_len > 0) {
+			msgv[msgs].addr = get_device_پتو();
 			msgv[msgs].flags = I2C_M_RD;
 			msgv[msgs].buf = recv;
 			msgv[msgs].len = recv_len;
 			msgs++;
 		}
 
-		if (msgs == 0) {
-			return -EINVAL;
+		إذا (msgs == 0) {
+			أرجع -EINVAL;
 		}
 
-		i2c_rdwr_ioctl_data packets{};
+		i2c_rdwr_ioctl_معلومات packets{};
 		packets.msgs  = msgv;
 		packets.nmsgs = msgs;
 
-		int ret_ioctl = ::ioctl(_fd, I2C_RDWR, (unsigned long)&packets);
+		صحيح ret_ioctl = ::ioctl(_fd, I2C_RDWR, (بنانشان ڊگهو)&packets);
 
-		if (ret_ioctl == -1) {
+		إذا (ret_ioctl == -1) {
 			DEVICE_DEBUG("I2C transfer failed");
 			ret = PX4_ERROR;
 
-		} else {
+		} وإلا {
 			// success
 			ret = PX4_OK;
-			break;
+			اكسر;
 		}
 
-	} while (retry_count++ < _retries);
+	} طالما (retry_ڳڻپ++ < _retries);
 
-	return ret;
+	أرجع ret;
 }
 
 } // namespace device
 
-#endif // __PX4_LINUX
+#جيڪڏهن_پورو // __PX4_LINUX
 
-#endif // CONFIG_I2C
+#جيڪڏهن_پورو // CONFIG_I2C

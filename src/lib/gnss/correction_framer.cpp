@@ -37,286 +37,286 @@
  * GNSS correction stream framing implementation.
  */
 
-#include "correction_framer.h"
+#ضمن "correction_framer.h"
 
-#include <cstring>
+#ضمن <cstring>
 
-namespace gnss
+نطاق gnss
 {
 
-bool CorrectionFramer::isPreamble(uint8_t byte)
+منطقي CorrectionFramer::isPreamble(uint8_t byte)
 {
-	if (byte == RTCM3_PREAMBLE) {
-		return true;
+	إذا (byte == RTCM3_PREAMBLE) {
+		أرجع سچ;
 	}
 
-	if (byte == UBX_SYNC1) {
-		return true;
+	إذا (byte == UBX_SYNC1) {
+		أرجع سچ;
 	}
 
-#if defined(CONFIG_GPS_SPARTN)
+#إذا defined(CONFIG_GPS_SPARTN)
 
-	if (byte == SPARTN_PREAMBLE) {
-		return true;
+	إذا (byte == SPARTN_PREAMBLE) {
+		أرجع سچ;
 	}
 
-#endif
+#جيڪڏهن_پورو
 
-	return false;
+	أرجع خطأ;
 }
 
-size_t CorrectionFramer::addData(const uint8_t *data, size_t len)
+size_t CorrectionFramer::جوڙيو_معلومات(ثابت uint8_t *معلومات, size_t len)
 {
-	const size_t space_available = BUFFER_SIZE - _buffer_len;
-	const size_t to_copy = (len < space_available) ? len : space_available;
+	ثابت size_t space_موجود = بفر_سائيز_2 - بفر_len;
+	ثابت size_t منزل_copy = (len < space_موجود) ? len : space_موجود;
 
-	if (to_copy > 0) {
-		memcpy(&_buffer[_buffer_len], data, to_copy);
-		_buffer_len += to_copy;
+	إذا (منزل_copy > 0) {
+		يادگيري_نقل(&بفر[بفر_len], معلومات, منزل_copy);
+		بفر_len += منزل_copy;
 	}
 
-	return to_copy;
+	أرجع منزل_copy;
 }
 
-CorrectionFramer::Probe CorrectionFramer::probeRtcm3(size_t *frame_len) const
+CorrectionFramer::Probe CorrectionFramer::probeRtcm3(size_t *چوکٺو_len) ثابت
 {
 	// Need at least the header to read the length
-	if (_buffer_len < RTCM3_HEADER_LEN) {
-		return Probe::NeedMoreData;
+	إذا (بفر_len < RTCM3_سرو_LEN) {
+		أرجع Probe::Need_وڌيڪ_معلومات;
 	}
 
 	// The 10-bit field cannot exceed RTCM3_MAX_PAYLOAD_LEN, so the length alone
 	// never rejects a candidate: CRC-24Q is what validates the frame.
-	const size_t payload_len = rtcm3_payload_length(_buffer);
-	const size_t len = RTCM3_HEADER_LEN + payload_len + RTCM3_CRC_LEN;
+	ثابت size_t payload_len = rtcm3_payload_ڊيگهائي(بفر);
+	ثابت size_t len = RTCM3_سرو_LEN + payload_len + RTCM3_چڪري_جاچ_LEN;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	إذا (بفر_len < len) {
+		أرجع Probe::Need_وڌيڪ_معلومات;
 	}
 
-	const uint32_t calculated_crc = rtcm3_crc24q(_buffer, RTCM3_HEADER_LEN + payload_len);
-	const uint32_t received_crc = (static_cast<uint32_t>(_buffer[len - 3]) << 16) |
-				      (static_cast<uint32_t>(_buffer[len - 2]) << 8) |
-				      _buffer[len - 1];
+	ثابت uint32_t calculated_چڪري_جاچ = rtcm3_crc24q(بفر, RTCM3_سرو_LEN + payload_len);
+	ثابت uint32_t received_چڪري_جاچ = (static_cast<uint32_t>(بفر[len - 3]) << 16) |
+				      (static_cast<uint32_t>(بفر[len - 2]) << 8) |
+				      بفر[len - 1];
 
-	if (calculated_crc != received_crc) {
-		return Probe::CrcError;
+	إذا (calculated_چڪري_جاچ != received_چڪري_جاچ) {
+		أرجع Probe::چڪري_جاچ_Error;
 	}
 
-	*frame_len = len;
-	return Probe::Complete;
+	*چوکٺو_len = len;
+	أرجع Probe::Complete;
 }
 
-CorrectionFramer::Probe CorrectionFramer::probeUbx(size_t *frame_len) const
+CorrectionFramer::Probe CorrectionFramer::probeUbx(size_t *چوکٺو_len) ثابت
 {
 	// Need sync1 + sync2 at minimum to reject a false preamble quickly
-	if (_buffer_len < 2) {
-		return Probe::NeedMoreData;
+	إذا (بفر_len < 2) {
+		أرجع Probe::Need_وڌيڪ_معلومات;
 	}
 
-	if (_buffer[1] != UBX_SYNC2) {
-		return Probe::InvalidHeader;
+	إذا (بفر[1] != UBX_SYNC2) {
+		أرجع Probe::Invalid_سرو;
 	}
 
-	if (_buffer_len < UBX_HEADER_LEN) {
-		return Probe::NeedMoreData;
+	إذا (بفر_len < UBX_سرو_LEN) {
+		أرجع Probe::Need_وڌيڪ_معلومات;
 	}
 
-	const size_t payload_len = static_cast<size_t>(_buffer[4]) |
-				   (static_cast<size_t>(_buffer[5]) << 8);
+	ثابت size_t payload_len = static_cast<size_t>(بفر[4]) |
+				   (static_cast<size_t>(بفر[5]) << 8);
 
 	// Protocol allows larger payloads; reject beyond the injection cap so a
 	// garbage length cannot pin the buffer waiting for thousands of bytes.
-	if (payload_len > UBX_MAX_PAYLOAD_LEN) {
-		return Probe::InvalidHeader;
+	إذا (payload_len > UBX_MAX_PAYLOAD_LEN) {
+		أرجع Probe::Invalid_سرو;
 	}
 
-	const size_t len = UBX_HEADER_LEN + payload_len + UBX_CK_LEN;
+	ثابت size_t len = UBX_سرو_LEN + payload_len + UBX_CK_LEN;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	إذا (بفر_len < len) {
+		أرجع Probe::Need_وڌيڪ_معلومات;
 	}
 
 	// CK_A/CK_B cover Class..end of payload (not the sync bytes)
 	uint8_t ck_a = 0;
 	uint8_t ck_b = 0;
-	ubx_checksum(&_buffer[2], UBX_HEADER_LEN - 2 + payload_len, &ck_a, &ck_b);
+	ubx_checksum(&بفر[2], UBX_سرو_LEN - 2 + payload_len, &ck_a, &ck_b);
 
-	if ((ck_a != _buffer[len - 2]) || (ck_b != _buffer[len - 1])) {
-		return Probe::CrcError;
+	إذا ((ck_a != بفر[len - 2]) || (ck_b != بفر[len - 1])) {
+		أرجع Probe::چڪري_جاچ_Error;
 	}
 
-	*frame_len = len;
-	return Probe::Complete;
+	*چوکٺو_len = len;
+	أرجع Probe::Complete;
 }
 
-#if defined(CONFIG_GPS_SPARTN)
-CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *frame_len) const
+#إذا defined(CONFIG_GPS_SPARTN)
+CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *چوکٺو_len) ثابت
 {
 	// Need TF002..TF006 to read the length and CRC type
-	if (_buffer_len < SPARTN_FRAME_START_LEN) {
-		return Probe::NeedMoreData;
+	إذا (بفر_len < SPARTN_چوکٺو_شروعات_LEN) {
+		أرجع Probe::Need_وڌيڪ_معلومات;
 	}
 
-	const uint8_t b1 = _buffer[1];
-	const uint8_t b2 = _buffer[2];
-	const uint8_t b3 = _buffer[3];
+	ثابت uint8_t b1 = بفر[1];
+	ثابت uint8_t b2 = بفر[2];
+	ثابت uint8_t b3 = بفر[3];
 
 	// TF002 is the only header field with a checkable range. The 10-bit length
 	// spans its full range and TF006 is a 4-bit CRC over a non-byte-aligned
 	// field, so this is the only cheap guard before the message CRC.
-	if (!spartn_message_type_defined(b1 >> 1)) {
-		return Probe::InvalidHeader;
+	إذا (!spartn_پيغام_type_defined(b1 >> 1)) {
+		أرجع Probe::Invalid_سرو;
 	}
 
-	const uint16_t payload_len = static_cast<uint16_t>(((b1 & 0x01) << 9) | (b2 << 1) | (b3 >> 7));
-	const bool eaf = ((b3 >> 6) & 0x01) != 0;
-	const uint8_t crc_type = (b3 >> 4) & 0x03;
-	const size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
+	ثابت uint16_t payload_len = static_cast<uint16_t>(((b1 & 0x01) << 9) | (b2 << 1) | (b3 >> 7));
+	ثابت منطقي eaf = ((b3 >> 6) & 0x01) != 0;
+	ثابت uint8_t چڪري_جاچ_type = (b3 >> 4) & 0x03;
+	ثابت size_t چڪري_جاچ_بائيٽون = static_cast<size_t>(چڪري_جاچ_type) + 1;
 
 	// TF008 (time tag type) sets the description block length
-	if (_buffer_len < SPARTN_FRAME_START_LEN + 1) {
-		return Probe::NeedMoreData;
+	إذا (بفر_len < SPARTN_چوکٺو_شروعات_LEN + 1) {
+		أرجع Probe::Need_وڌيڪ_معلومات;
 	}
 
-	const bool time_tag_32bit = ((_buffer[4] >> 3) & 0x01) != 0;
-	const size_t desc_len = spartn_desc_length_bytes(eaf, time_tag_32bit);
+	ثابت منطقي وقت_ٽيگ_32bit = ((بفر[4] >> 3) & 0x01) != 0;
+	ثابت size_t desc_len = spartn_desc_ڊيگهائي_بائيٽون(eaf, وقت_ٽيگ_32bit);
 
-	if (_buffer_len < SPARTN_FRAME_START_LEN + desc_len) {
-		return Probe::NeedMoreData;
+	إذا (بفر_len < SPARTN_چوکٺو_شروعات_LEN + desc_len) {
+		أرجع Probe::Need_وڌيڪ_معلومات;
 	}
 
-	size_t auth_bytes = 0;
+	size_t auth_بائيٽون = 0;
 
-	if (eaf) {
+	إذا (eaf) {
 		// TF014/TF015 occupy the low 6 bits of the last description byte
-		const uint8_t last = _buffer[SPARTN_FRAME_START_LEN + desc_len - 1];
-		auth_bytes = spartn_auth_length_bytes(true, (last >> 3) & 0x07, last & 0x07);
+		ثابت uint8_t آخري = بفر[SPARTN_چوکٺو_شروعات_LEN + desc_len - 1];
+		auth_بائيٽون = spartn_auth_ڊيگهائي_بائيٽون(سچ, (آخري >> 3) & 0x07, آخري & 0x07);
 	}
 
-	const size_t len = SPARTN_FRAME_START_LEN + desc_len + payload_len + auth_bytes + crc_bytes;
+	ثابت size_t len = SPARTN_چوکٺو_شروعات_LEN + desc_len + payload_len + auth_بائيٽون + چڪري_جاچ_بائيٽون;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	إذا (بفر_len < len) {
+		أرجع Probe::Need_وڌيڪ_معلومات;
 	}
 
 	// Message CRC (TF018) covers TF002..TF017
-	const size_t core_len = len - 1 - crc_bytes;
-	const uint32_t calculated_crc = spartn_message_crc(&_buffer[1], core_len, crc_type);
-	uint32_t received_crc = 0;
+	ثابت size_t core_len = len - 1 - چڪري_جاچ_بائيٽون;
+	ثابت uint32_t calculated_چڪري_جاچ = spartn_پيغام_چڪري_جاچ(&بفر[1], core_len, چڪري_جاچ_type);
+	uint32_t received_چڪري_جاچ = 0;
 
-	for (size_t i = 0; i < crc_bytes; i++) {
-		received_crc = (received_crc << 8) | _buffer[len - crc_bytes + i];
+	لكل (size_t i = 0; i < چڪري_جاچ_بائيٽون; i++) {
+		received_چڪري_جاچ = (received_چڪري_جاچ << 8) | بفر[len - چڪري_جاچ_بائيٽون + i];
 	}
 
-	if (calculated_crc != received_crc) {
-		return Probe::CrcError;
+	إذا (calculated_چڪري_جاچ != received_چڪري_جاچ) {
+		أرجع Probe::چڪري_جاچ_Error;
 	}
 
-	*frame_len = len;
-	return Probe::Complete;
+	*چوکٺو_len = len;
+	أرجع Probe::Complete;
 }
-#endif // CONFIG_GPS_SPARTN
+#جيڪڏهن_پورو // CONFIG_GPS_SPARTN
 
-const uint8_t *CorrectionFramer::getNextMessage(size_t *out_len, CorrectionProtocol *out_protocol)
+ثابت uint8_t *CorrectionFramer::get_ايندڙ_پيغام(size_t *ٻاهريون_len, CorrectionProtocol *ٻاهريون_protocol)
 {
-	while (_buffer_len > 0) {
+	طالما (بفر_len > 0) {
 		// Drop everything that cannot start a frame of any supported protocol
-		size_t to_drop = 0;
+		size_t منزل_drop = 0;
 
-		while ((to_drop < _buffer_len) && !isPreamble(_buffer[to_drop])) {
-			to_drop++;
+		طالما ((منزل_drop < بفر_len) && !isPreamble(بفر[منزل_drop])) {
+			منزل_drop++;
 		}
 
-		if (to_drop > 0) {
-			_bytes_discarded += to_drop;
-			discardBytes(to_drop);
+		إذا (منزل_drop > 0) {
+			بائيٽون_discarded += منزل_drop;
+			discard_بائيٽون(منزل_drop);
 		}
 
-		if (_buffer_len == 0) {
-			return nullptr;
+		إذا (بفر_len == 0) {
+			أرجع خالي_اشارو;
 		}
 
-		size_t frame_len = 0;
+		size_t چوکٺو_len = 0;
 		CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-		Probe result;
+		Probe نتيجو;
 
-		if (_buffer[0] == UBX_SYNC1) {
+		إذا (بفر[0] == UBX_SYNC1) {
 			protocol = CorrectionProtocol::Ubx;
-			result = probeUbx(&frame_len);
+			نتيجو = probeUbx(&چوکٺو_len);
 
-#if defined(CONFIG_GPS_SPARTN)
+#إذا defined(CONFIG_GPS_SPARTN)
 
-		} else if (_buffer[0] == SPARTN_PREAMBLE) {
+		} وإلا إذا (بفر[0] == SPARTN_PREAMBLE) {
 			protocol = CorrectionProtocol::Spartn;
-			result = probeSpartn(&frame_len);
+			نتيجو = probeSpartn(&چوکٺو_len);
 
-#endif
+#جيڪڏهن_پورو
 
-		} else {
+		} وإلا {
 			// RTCM3 preamble (isPreamble already filtered other bytes)
 			protocol = CorrectionProtocol::Rtcm3;
-			result = probeRtcm3(&frame_len);
+			نتيجو = probeRtcm3(&چوکٺو_len);
 		}
 
-		switch (result) {
-		case Probe::NeedMoreData:
-			return nullptr;
+		بدل (نتيجو) {
+		حالة Probe::Need_وڌيڪ_معلومات:
+			أرجع خالي_اشارو;
 
-		case Probe::InvalidHeader:
-			_bytes_discarded++;
-			discardBytes(1);
-			continue;
+		حالة Probe::Invalid_سرو:
+			بائيٽون_discarded++;
+			discard_بائيٽون(1);
+			استمر;
 
-		case Probe::CrcError:
-			_crc_errors++;
-			discardBytes(1);
-			continue;
+		حالة Probe::چڪري_جاچ_Error:
+			چڪري_جاچ_errors++;
+			discard_بائيٽون(1);
+			استمر;
 
-		case Probe::Complete:
+		حالة Probe::Complete:
 			_pending_protocol = protocol;
-			*out_len = frame_len;
+			*ٻاهريون_len = چوکٺو_len;
 
-			if (out_protocol != nullptr) {
-				*out_protocol = protocol;
+			إذا (ٻاهريون_protocol != خالي_اشارو) {
+				*ٻاهريون_protocol = protocol;
 			}
 
-			return _buffer;
+			أرجع بفر;
 		}
 	}
 
-	return nullptr;
+	أرجع خالي_اشارو;
 }
 
-void CorrectionFramer::consumeMessage(size_t len)
+فراغ CorrectionFramer::consume_پيغام(size_t len)
 {
-	discardBytes(len);
+	discard_بائيٽون(len);
 	_messages_parsed++;
-	_total_frame_bytes += len;
+	ڪل_چوکٺو_بائيٽون += len;
 
-	switch (_pending_protocol) {
-	case CorrectionProtocol::Rtcm3:
+	بدل (_pending_protocol) {
+	حالة CorrectionProtocol::Rtcm3:
 		_rtcm3_messages++;
-		break;
+		اكسر;
 
-	case CorrectionProtocol::Spartn:
+	حالة CorrectionProtocol::Spartn:
 		_spartn_messages++;
-		break;
+		اكسر;
 
-	case CorrectionProtocol::Ubx:
+	حالة CorrectionProtocol::Ubx:
 		_ubx_messages++;
-		break;
+		اكسر;
 	}
 }
 
-void CorrectionFramer::discardBytes(size_t count)
+فراغ CorrectionFramer::discard_بائيٽون(size_t ڳڻپ)
 {
-	if (count >= _buffer_len) {
-		_buffer_len = 0;
+	إذا (ڳڻپ >= بفر_len) {
+		بفر_len = 0;
 
-	} else {
-		memmove(_buffer, &_buffer[count], _buffer_len - count);
-		_buffer_len -= count;
+	} وإلا {
+		memmove(بفر, &بفر[ڳڻپ], بفر_len - ڳڻپ);
+		بفر_len -= ڳڻپ;
 	}
 }
 

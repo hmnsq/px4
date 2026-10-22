@@ -31,35 +31,35 @@
  *
  ****************************************************************************/
 
-#pragma once
+#هدايت once
 
-#include "FunctionProviderBase.hpp"
+#ضمن "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gimbal_controls.h>
+#ضمن <uORB/topics/gimbal_controls.h>
 
 /**
  * Functions: Gimbal_Roll .. Gimbal_Yaw
  */
-class FunctionGimbal : public FunctionProviderBase
+صنف FunctionGimbal : عام Function_Provider_بنياد
 {
-public:
-	FunctionGimbal() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGimbal(); }
+عام:
+	FunctionGimbal() = افتراضي;
+	ساكن Function_Provider_بنياد *allocate(ثابت Context &context) { أرجع جديد FunctionGimbal(); }
 
-	void update() override
+	فراغ update() override
 	{
 		gimbal_controls_s gimbal_controls;
 
-		if (_topic.update(&gimbal_controls)) {
-			_data[0] = gimbal_controls.control[gimbal_controls_s::INDEX_ROLL];
-			_data[1] = gimbal_controls.control[gimbal_controls_s::INDEX_PITCH];
-			_data[2] = gimbal_controls.control[gimbal_controls_s::INDEX_YAW];
+		إذا (_topic.update(&gimbal_controls)) {
+			معلومات_3[0] = gimbal_controls.control[gimbal_controls_s::اشاريو_ROLL];
+			معلومات_3[1] = gimbal_controls.control[gimbal_controls_s::اشاريو_PITCH];
+			معلومات_3[2] = gimbal_controls.control[gimbal_controls_s::اشاريو_YAW];
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Gimbal_Roll]; }
+	عائم value(OutputFunction func) override { أرجع معلومات_3[(صحيح)func - (صحيح)OutputFunction::Gimbal_Roll]; }
 
-private:
+خاص:
 	uORB::Subscription _topic{ORB_ID(gimbal_controls)};
-	float _data[3] { NAN, NAN, NAN };
+	عائم معلومات_3[3] { NAN, NAN, NAN };
 };

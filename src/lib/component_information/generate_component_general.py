@@ -1,80 +1,80 @@
 #!/usr/bin/env python
 
-import argparse
-import json
-import lzma #to create .xz file
-import re
+استورد argparse
+استورد json
+استورد lzma #to create .xz file
+استورد re
 
-parser = argparse.ArgumentParser(description="""Generate the COMPONENT_GENERAL json file""")
-parser.add_argument('filename', metavar='component_general.json', help='JSON output file')
-parser.add_argument('--compress', action='store_true', help='Add a compressed output file')
-parser.add_argument('--type', metavar='type', action="append", default=[],
+parser = argparse.دليل_Parser(description="""Generate the COMPONENT_GENERAL json file""")
+parser.جوڙيو_دليل('filename', metavar='component_general.json', help='JSON output file')
+parser.جوڙيو_دليل('--compress', action='store_true', help='Add a compressed output file')
+parser.جوڙيو_دليل('--type', metavar='type', action="append", افتراضي=[],
         help='Metadata type (<type>,<metadata file>,<uri>,<fallback uri>,[translation uri])')
-parser.add_argument('--version-file', metavar='build_git_version.h', help='Git version file')
+parser.جوڙيو_دليل('--version-file', metavar='build_git_version.h', help='Git version file')
 
-args = parser.parse_args()
-filename = args.filename
-compress = args.compress
-version_file = args.version_file
+دليلون = parser.parse_دليلون()
+filename = دليلون.filename
+compress = دليلون.compress
+نسخو_file = دليلون.نسخو_file
 
-version_dir = ''
-if version_file is not None:
-    for line in open(version_file, "r"):
-        version_search = re.search(r'PX4_GIT_TAG_OR_BRANCH_NAME\s+"(.+)"', line)
-        if version_search:
-            version_dir = version_search.group(1)
-            break
+نسخو_dir = ''
+إذا نسخو_file آهي ليس ڪجهه_نه:
+    لكل سٽ في open(نسخو_file, "r"):
+        نسخو_ڳولا = re.ڳولا(r'PX4_GIT_TAG_OR_BRANCH_NAME\s+"(.+)"', سٽ)
+        إذا نسخو_ڳولا:
+            نسخو_dir = نسخو_ڳولا.گروهه(1)
+            اكسر
 
 
-def save_compressed(filename):
+وصف save_compressed(filename):
     #create lzma compressed version
     xz_filename=filename+'.xz'
-    with lzma.open(xz_filename, 'wt', preset=9) as f:
-        with open(filename, 'r') as content_file:
-            f.write(content_file.read())
+    سان lzma.open(xz_filename, 'wt', preset=9) كـ f:
+        سان open(filename, 'r') كـ content_file:
+            f.اكتب(content_file.اقرأ())
 
 component_general = {}
 component_general['version'] = 1
 
-def create_table():
+وصف create_جدول():
     a = []
-    for i in range(256):
+    لكل i في سلسلو(256):
         k = i
-        for j in range(8):
-            if k & 1:
+        لكل j في سلسلو(8):
+            إذا k & 1:
                 k ^= 0x1db710640
             k >>= 1
         a.append(k)
-    return a
+    أرجع a
 
 # MAVLink's CRC32
-def crc_update(buf, crc_table, crc):
-    for k in buf:
-        crc = (crc >> 8) ^ crc_table[(crc & 0xff) ^ k]
-    return crc
+وصف چڪري_جاچ_update(buf, چڪري_جاچ_جدول, چڪري_جاچ):
+    لكل k في buf:
+        چڪري_جاچ = (چڪري_جاچ >> 8) ^ چڪري_جاچ_جدول[(چڪري_جاچ & 0xff) ^ k]
+    أرجع چڪري_جاچ
 
-crc_table = create_table()
+چڪري_جاچ_جدول = create_جدول()
 
 metadata_types = []
-for metadata_type_tuple in args.type:
-    type_id, metadata_file, uri, fallback_uri, translation_uri = metadata_type_tuple.split(',')
-    file_crc = 0
-    for line in open(metadata_file, "rb"):
-        file_crc = crc_update(line, crc_table, file_crc)
+لكل metadata_type_tuple في دليلون.type:
+    type_id, metadata_file, uri, fallback_uri, translation_uri = metadata_type_tuple.ورهايو(',')
+    file_چڪري_جاچ = 0
+    لكل سٽ في open(metadata_file, "rb"):
+        file_چڪري_جاچ = چڪري_جاچ_update(سٽ, چڪري_جاچ_جدول, file_چڪري_جاچ)
     json_type = {
-            'type': int(type_id),
-            'uri': uri.replace('{version}', version_dir),
-            'fileCrc': file_crc,
+            'type': صحيح(type_id),
+            'uri': uri.replace('{version}', نسخو_dir),
+            'fileCrc': file_چڪري_جاچ,
             }
-    if len(fallback_uri) > 0:
-        json_type['uriFallback'] = fallback_uri.replace('{version}', version_dir)
-    if len(translation_uri) > 0:
+    إذا ڊيگهه(fallback_uri) > 0:
+        json_type['uriFallback'] = fallback_uri.replace('{version}', نسخو_dir)
+    إذا ڊيگهه(translation_uri) > 0:
         json_type['translationUri'] = translation_uri
     metadata_types.append(json_type)
 component_general['metadataTypes'] = metadata_types
 
-with open(filename, 'w') as outfile:
-    json.dump(component_general, outfile, sort_keys=True)
+سان open(filename, 'w') كـ outfile:
+    json.dump(component_general, outfile, ترتيب_ڏيو_ڪنجيون=سچ)
 
-if compress:
+إذا compress:
     save_compressed(filename)

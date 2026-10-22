@@ -6,183 +6,183 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#هدايت once
 
-#include "Matrix.hpp"
+#ضمن "Matrix.hpp"
 
-namespace matrix
+نطاق ميٽرڪس
 {
 
-template<typename Type, size_t M>
-class Vector : public Matrix<Type, M, 1>
+سانچو<قسم_نالو Type, size_t M>
+صنف ويڪٽر : عام ميٽرڪس_2<Type, M, 1>
 {
-public:
-	using MatrixM1 = Matrix<Type, M, 1>;
+عام:
+	استعمال ميٽرڪس_M1 = ميٽرڪس_2<Type, M, 1>;
 
-	Vector() = default;
+	ويڪٽر() = افتراضي;
 
-	Vector(const MatrixM1 &other) :
-		MatrixM1(other)
+	ويڪٽر(ثابت ميٽرڪس_M1 &other) :
+		ميٽرڪس_M1(other)
 	{
 	}
 
-	explicit Vector(const Type data_[M]) :
-		MatrixM1(data_)
+	واضح ويڪٽر(ثابت Type معلومات_2[M]) :
+		ميٽرڪس_M1(معلومات_2)
 	{
 	}
 
-	template<size_t P, size_t Q>
-	Vector(const Slice<Type, M, 1, P, Q> &slice_in) :
-		Matrix<Type, M, 1>(slice_in)
+	سانچو<size_t P, size_t Q>
+	ويڪٽر(ثابت ٽڪرو_2<Type, M, 1, P, Q> &ٽڪرو_اندريون) :
+		ميٽرڪس_2<Type, M, 1>(ٽڪرو_اندريون)
 	{
 	}
 
-	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const Slice<Type, 1, M, P, Q> &slice_in)
+	سانچو<size_t P, size_t Q, size_t DUMMY = 1>
+	ويڪٽر(ثابت ٽڪرو_2<Type, 1, M, P, Q> &ٽڪرو_اندريون)
 	{
-		Vector &self(*this);
+		ويڪٽر &self(*هذا);
 
-		for (size_t i = 0; i < M; i++) {
-			self(i) = slice_in(0, i);
+		لكل (size_t i = 0; i < M; i++) {
+			self(i) = ٽڪرو_اندريون(0, i);
 		}
 	}
 
-	template<size_t P, size_t Q>
-	Vector(const ConstSlice<Type, M, 1, P, Q> &slice_in) :
-		Matrix<Type, M, 1>(slice_in)
+	سانچو<size_t P, size_t Q>
+	ويڪٽر(ثابت Const_ٽڪرو<Type, M, 1, P, Q> &ٽڪرو_اندريون) :
+		ميٽرڪس_2<Type, M, 1>(ٽڪرو_اندريون)
 	{
 	}
 
-	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const ConstSlice<Type, 1, M, P, Q> &slice_in)
+	سانچو<size_t P, size_t Q, size_t DUMMY = 1>
+	ويڪٽر(ثابت Const_ٽڪرو<Type, 1, M, P, Q> &ٽڪرو_اندريون)
 	{
-		Vector &self(*this);
+		ويڪٽر &self(*هذا);
 
-		for (size_t i = 0; i < M; i++) {
-			self(i) = slice_in(0, i);
+		لكل (size_t i = 0; i < M; i++) {
+			self(i) = ٽڪرو_اندريون(0, i);
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	مضمن ثابت Type &عامل()(size_t i) ثابت
 	{
-		assert(i < M);
+		أكد(i < M);
 
-		const MatrixM1 &v = *this;
-		return v(i, 0);
+		ثابت ميٽرڪس_M1 &v = *هذا;
+		أرجع v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	مضمن Type &عامل()(size_t i)
 	{
-		assert(i < M);
+		أكد(i < M);
 
-		MatrixM1 &v = *this;
-		return v(i, 0);
+		ميٽرڪس_M1 &v = *هذا;
+		أرجع v(i, 0);
 	}
 
-	Type dot(const MatrixM1 &b) const
+	Type dot(ثابت ميٽرڪس_M1 &b) ثابت
 	{
-		const Vector &a(*this);
+		ثابت ويڪٽر &a(*هذا);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		لكل (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		أرجع r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	مضمن Type عامل*(ثابت ميٽرڪس_M1 &b) ثابت
 	{
-		const Vector &a(*this);
-		return a.dot(b);
+		ثابت ويڪٽر &a(*هذا);
+		أرجع a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	مضمن ويڪٽر عامل*(Type b) ثابت
 	{
-		return Vector(MatrixM1::operator*(b));
+		أرجع ويڪٽر(ميٽرڪس_M1::عامل*(b));
 	}
 
-	Type norm() const
+	Type norm() ثابت
 	{
-		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		ثابت ويڪٽر &a(*هذا);
+		أرجع Type(std::جذر(a.dot(a)));
 	}
 
-	Type norm_squared() const
+	Type norm_squared() ثابت
 	{
-		const Vector &a(*this);
-		return a.dot(a);
+		ثابت ويڪٽر &a(*هذا);
+		أرجع a.dot(a);
 	}
 
-	inline Type length() const
+	مضمن Type ڊيگهائي() ثابت
 	{
-		return norm();
+		أرجع norm();
 	}
 
-	inline void normalize()
+	مضمن فراغ normalize()
 	{
-		(*this) /= norm();
+		(*هذا) /= norm();
 	}
 
-	Vector unit() const
+	ويڪٽر unit() ثابت
 	{
-		return (*this) / norm();
+		أرجع (*هذا) / norm();
 	}
 
-	Vector unit_or_zero(const Type eps = Type(1e-5)) const
+	ويڪٽر unit_or_zero(ثابت Type eps = Type(1e-5)) ثابت
 	{
-		const Type n = norm();
+		ثابت Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		إذا (n > eps) {
+			أرجع (*هذا) / n;
 		}
 
-		return Vector();
+		أرجع ويڪٽر();
 	}
 
-	inline Vector normalized() const
+	مضمن ويڪٽر normalized() ثابت
 	{
-		return unit();
+		أرجع unit();
 	}
 
-	bool longerThan(Type testVal) const
+	منطقي longerThan(Type testVal) ثابت
 	{
-		return norm_squared() > testVal * testVal;
+		أرجع norm_squared() > testVal * testVal;
 	}
 
-	Vector sqrt() const
+	ويڪٽر جذر() ثابت
 	{
-		const Vector &a(*this);
-		Vector r;
+		ثابت ويڪٽر &a(*هذا);
+		ويڪٽر r;
 
-		for (size_t i = 0; i < M; i++) {
-			r(i) = Type(std::sqrt(a(i)));
+		لكل (size_t i = 0; i < M; i++) {
+			r(i) = Type(std::جذر(a(i)));
 		}
 
-		return r;
+		أرجع r;
 	}
 
-	void print() const
+	فراغ print() ثابت
 	{
-		(*this).transpose().print();
+		(*هذا).transpose().print();
 	}
 
-	static size_t size()
+	ساكن size_t سائيز()
 	{
-		return M;
+		أرجع M;
 	}
 };
 
-template<typename OStream, typename Type, size_t M>
-OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
+سانچو<قسم_نالو OStream, قسم_نالو Type, size_t M>
+OStream &عامل<<(OStream &os, ثابت ميٽرڪس::ويڪٽر<Type, M> &ويڪٽر_2)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
-	vector.transpose().write_string(string, n);
+	حرف string[n];
+	ويڪٽر_2.transpose().write_string(string, n);
 	os << string;
-	return os;
+	أرجع os;
 }
 
 } // namespace matrix

@@ -39,38 +39,38 @@
  * @author Lorenz Meier <lm@inf.ethz.ch>
  */
 
-#pragma once
+#هدايت once
 
-#include <stdint.h>
+#ضمن <stdint.h>
 
 __BEGIN_DECLS
 
-#define ST24_DATA_LEN_MAX	64
-#define ST24_STX1		0x55
-#define ST24_STX2		0x55
+#وصف_ڪريو ST24_معلومات_LEN_MAX	64
+#وصف_ڪريو ST24_STX1		0x55
+#وصف_ڪريو ST24_STX2		0x55
 
-enum ST24_PACKET_TYPE {
+تعداد ST24_PACKET_TYPE {
 	ST24_PACKET_TYPE_CHANNELDATA12 = 0,
 	ST24_PACKET_TYPE_CHANNELDATA24,
 	ST24_PACKET_TYPE_TRANSMITTERGPSDATA
 };
 
-enum ST24_DECODE_STATE {
+تعداد ST24_DECODE_STATE {
 	ST24_DECODE_STATE_UNSYNCED = 0,
 	ST24_DECODE_STATE_GOT_STX1,
 	ST24_DECODE_STATE_GOT_STX2,
 	ST24_DECODE_STATE_GOT_LEN,
 	ST24_DECODE_STATE_GOT_TYPE,
-	ST24_DECODE_STATE_GOT_DATA
+	ST24_DECODE_STATE_GOT_معلومات
 };
 
-#pragma pack(push, 1)
-typedef struct {
+#هدايت pack(ڌڪو, 1)
+تعريفنوع بنية {
 	uint8_t	header1;			///< 0x55 for a valid packet
 	uint8_t	header2;			///< 0x55 for a valid packet
-	uint8_t	length;				///< length includes type, data, and crc = sizeof(type)+sizeof(data[payload_len])+sizeof(crc8)
+	uint8_t	ڊيگهائي;				///< length includes type, data, and crc = sizeof(type)+sizeof(data[payload_len])+sizeof(crc8)
 	uint8_t	type;				///< from enum ST24_PACKET_TYPE
-	uint8_t	st24_data[ST24_DATA_LEN_MAX];
+	uint8_t	st24_معلومات[ST24_معلومات_LEN_MAX];
 	uint8_t	crc8;				///< crc8 checksum, calculated by st24_common_crc8 and including fields length, type and st24_data
 } ReceiverFcPacket;
 
@@ -79,10 +79,10 @@ typedef struct {
  *
  * This is incoming from the ST24
  */
-typedef struct {
+تعريفنوع بنية {
 	uint16_t t;			///< packet counter or clock
 	uint8_t	rssi;			///< signal strength
-	uint8_t	lost_count;		///< Number of UART packets sent since reception of last RF frame (100 frame means RC timeout of 1s)
+	uint8_t	گم_ڳڻپ;		///< Number of UART packets sent since reception of last RF frame (100 frame means RC timeout of 1s)
 	uint8_t	channel[18];		///< channel data, 12 channels (12 bit numbers)
 } ChannelData12;
 
@@ -90,10 +90,10 @@ typedef struct {
  * RC Channel data (12 channels).
  *
  */
-typedef struct {
+تعريفنوع بنية {
 	uint16_t t;			///< packet counter or clock
 	uint8_t	rssi;			///< signal strength
-	uint8_t	lost_count;		///< Number of UART packets sent since reception of last RF frame (100 frame means RC timeout of 1s)
+	uint8_t	گم_ڳڻپ;		///< Number of UART packets sent since reception of last RF frame (100 frame means RC timeout of 1s)
 	uint8_t	channel[36];		///< channel data, 24 channels (12 bit numbers)
 } ChannelData24;
 
@@ -130,7 +130,7 @@ typedef struct {
  * - value 3 - 15 are reserved
  *
  */
-typedef struct {
+تعريفنوع بنية {
 	uint16_t t;			///< packet counter or clock
 	int32_t	lat;			///< lattitude (degrees)	+/- 90 deg
 	int32_t	lon;			///< longitude (degrees)	+/- 180 deg
@@ -140,12 +140,12 @@ typedef struct {
 	uint8_t	voltage; 		///< 25.4V	voltage = 5 + 255*0.1 = 30.5V, min=5V
 	uint8_t	current; 		///< 0.5A resolution
 	int16_t	roll, pitch, yaw;	///< 0.01 degree resolution
-	uint8_t	motorStatus;		///< 1 bit per motor for status 1=good, 0= fail
-	uint8_t	imuStatus;		///< inertial measurement unit status
-	uint8_t	pressCompassStatus;	///< baro / compass status
-} TelemetryData;
+	uint8_t	motor_حالت;		///< 1 bit per motor for status 1=good, 0= fail
+	uint8_t	imu_حالت;		///< inertial measurement unit status
+	uint8_t	press_Compass_حالت;	///< baro / compass status
+} Telemetry_معلومات;
 
-#pragma pack(pop)
+#هدايت pack(ڪڍو)
 
 /**
  * CRC8 implementation for ST24 protocol
@@ -166,7 +166,7 @@ uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len);
  * @param max_chan_count maximum channels to decode - if more channels are decoded, the last n are skipped and success (0) is returned
  * @return 0 for success (a decoded packet), 1 for no packet yet (accumulating), 2 for unknown packet, 3 for out of sync, 4 for checksum error
  */
-__EXPORT int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *channel_count,
-			 uint16_t *channels, uint16_t max_chan_count);
+__EXPORT صحيح st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *گم_ڳڻپ, uint16_t *channel_ڳڻپ,
+			 uint16_t *channels, uint16_t max_chan_ڳڻپ);
 
 __END_DECLS
