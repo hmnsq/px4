@@ -42,9 +42,9 @@
  * @author Anton Babushkin <anton.babushkin@me.com>
  */
 
-#include "geo.h"
+#ضمن "geo.h"
 
-#include <float.h>
+#ضمن <float.h>
 
 using matrix::wrap_pi;
 using matrix::wrap_2pi;
@@ -54,214 +54,214 @@ using matrix::wrap_2pi;
  * formulas according to: http://mathworld.wolfram.com/AzimuthalEquidistantProjection.html
  */
 
-void MapProjection::initReference(double lat_0, double lon_0, uint64_t timestamp)
+فراغ MapProjection::initReference(مزدوج lat_0, مزدوج lon_0, uint64_t timestamp)
 {
 	_ref_timestamp = timestamp;
 	_ref_lat = math::radians(lat_0);
 	_ref_lon = math::radians(lon_0);
 	_ref_sin_lat = sin(_ref_lat);
 	_ref_cos_lat = cos(_ref_lat);
-	_ref_init_done = true;
+	_ref_init_done = אמת;
 }
 
-void MapProjection::project(double lat, double lon, float &x, float &y) const
+فراغ MapProjection::project(مزدوج lat, مزدوج lon, عائم &x, عائم &y) ثابت
 {
-	const double lat_rad = math::radians(lat);
-	const double lon_rad = math::radians(lon);
+	ثابت مزدوج lat_rad = math::radians(lat);
+	ثابت مزدوج lon_rad = math::radians(lon);
 
-	const double sin_lat = sin(lat_rad);
-	const double cos_lat = cos(lat_rad);
+	ثابت مزدوج sin_lat = sin(lat_rad);
+	ثابت مزدوج cos_lat = cos(lat_rad);
 
-	const double cos_d_lon = cos(lon_rad - _ref_lon);
+	ثابت مزدوج cos_d_lon = cos(lon_rad - _ref_lon);
 
-	const double arg = math::constrain(_ref_sin_lat * sin_lat + _ref_cos_lat * cos_lat * cos_d_lon, -1.0,  1.0);
-	const double c = acos(arg);
+	ثابت مزدوج arg = math::constrain(_ref_sin_lat * sin_lat + _ref_cos_lat * cos_lat * cos_d_lon, -1.0,  1.0);
+	ثابت مزدوج c = acos(arg);
 
-	double k = 1.0;
+	مزدوج k = 1.0;
 
-	if (fabs(c) > 0) {
+	אם (fabs(c) > 0) {
 		k = (c / sin(c));
 	}
 
-	x = static_cast<float>(k * (_ref_cos_lat * sin_lat - _ref_sin_lat * cos_lat * cos_d_lon) * CONSTANTS_RADIUS_OF_EARTH);
-	y = static_cast<float>(k * cos_lat * sin(lon_rad - _ref_lon) * CONSTANTS_RADIUS_OF_EARTH);
+	x = static_cast<عائم>(k * (_ref_cos_lat * sin_lat - _ref_sin_lat * cos_lat * cos_d_lon) * CONSTANTS_RADIUS_OF_EARTH);
+	y = static_cast<عائم>(k * cos_lat * sin(lon_rad - _ref_lon) * CONSTANTS_RADIUS_OF_EARTH);
 }
 
-void MapProjection::reproject(float x, float y, double &lat, double &lon) const
+فراغ MapProjection::reproject(عائم x, عائم y, مزدوج &lat, مزدوج &lon) ثابت
 {
-	const double x_rad = (double)x / CONSTANTS_RADIUS_OF_EARTH;
-	const double y_rad = (double)y / CONSTANTS_RADIUS_OF_EARTH;
-	const double c = sqrt(x_rad * x_rad + y_rad * y_rad);
+	ثابت مزدوج x_rad = (مزدوج)x / CONSTANTS_RADIUS_OF_EARTH;
+	ثابت مزدوج y_rad = (مزدوج)y / CONSTANTS_RADIUS_OF_EARTH;
+	ثابت مزدوج c = sqrt(x_rad * x_rad + y_rad * y_rad);
 
-	if (fabs(c) > 0) {
-		const double sin_c = sin(c);
-		const double cos_c = cos(c);
+	אם (fabs(c) > 0) {
+		ثابت مزدوج sin_c = sin(c);
+		ثابت مزدوج cos_c = cos(c);
 
-		const double lat_rad = asin(cos_c * _ref_sin_lat + (x_rad * sin_c * _ref_cos_lat) / c);
-		const double lon_rad = (_ref_lon + atan2(y_rad * sin_c, c * _ref_cos_lat * cos_c - x_rad * _ref_sin_lat * sin_c));
+		ثابت مزدوج lat_rad = asin(cos_c * _ref_sin_lat + (x_rad * sin_c * _ref_cos_lat) / c);
+		ثابت مزدوج lon_rad = (_ref_lon + atan2(y_rad * sin_c, c * _ref_cos_lat * cos_c - x_rad * _ref_sin_lat * sin_c));
 
 		lat = math::degrees(lat_rad);
 		lon = math::degrees(lon_rad);
 
-	} else {
+	} אחרת {
 		lat = math::degrees(_ref_lat);
 		lon = math::degrees(_ref_lon);
 	}
 }
 
-float get_distance_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next)
+عائم get_distance_to_next_waypoint(مزدوج lat_now, مزدوج lon_now, مزدوج lat_next, مزدوج lon_next)
 {
-	const double lat_now_rad = math::radians(lat_now);
-	const double lat_next_rad = math::radians(lat_next);
+	ثابت مزدوج lat_now_rad = math::radians(lat_now);
+	ثابت مزدوج lat_next_rad = math::radians(lat_next);
 
-	const double d_lat = lat_next_rad - lat_now_rad;
-	const double d_lon = math::radians(lon_next) - math::radians(lon_now);
+	ثابت مزدوج d_lat = lat_next_rad - lat_now_rad;
+	ثابت مزدوج d_lon = math::radians(lon_next) - math::radians(lon_now);
 
-	const double a = sin(d_lat / 2.0) * sin(d_lat / 2.0) + sin(d_lon / 2.0) * sin(d_lon / 2.0) * cos(lat_now_rad) * cos(
+	ثابت مزدوج a = sin(d_lat / 2.0) * sin(d_lat / 2.0) + sin(d_lon / 2.0) * sin(d_lon / 2.0) * cos(lat_now_rad) * cos(
 				 lat_next_rad);
 
-	const double c = atan2(sqrt(a), sqrt(1.0 - a));
+	ثابت مزدوج c = atan2(sqrt(a), sqrt(1.0 - a));
 
-	return static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * 2.0 * c);
+	החזר static_cast<عائم>(CONSTANTS_RADIUS_OF_EARTH * 2.0 * c);
 }
 
-void create_waypoint_from_line_and_dist(double lat_A, double lon_A, double lat_B, double lon_B, float dist,
-					double *lat_target, double *lon_target)
+فراغ create_waypoint_from_line_and_dist(مزدوج lat_A, مزدوج lon_A, مزدوج lat_B, مزدوج lon_B, عائم dist,
+					مزدوج *lat_target, مزدوج *lon_target)
 {
-	if (fabsf(dist) < FLT_EPSILON) {
+	אם (fabsf(dist) < FLT_EPSILON) {
 		*lat_target = lat_A;
 		*lon_target = lon_A;
 
-	} else {
-		float heading = get_bearing_to_next_waypoint(lat_A, lon_A, lat_B, lon_B);
+	} אחרת {
+		عائم heading = get_bearing_to_next_waypoint(lat_A, lon_A, lat_B, lon_B);
 		waypoint_from_heading_and_distance(lat_A, lon_A, heading, dist, lat_target, lon_target);
 	}
 }
 
-void waypoint_from_heading_and_distance(double lat_start, double lon_start, float bearing, float dist,
-					double *lat_target, double *lon_target)
+فراغ waypoint_from_heading_and_distance(مزدوج lat_start, مزدوج lon_start, عائم bearing, عائم dist,
+					مزدوج *lat_target, مزدوج *lon_target)
 {
 	bearing = wrap_2pi(bearing);
 
-	double radius_ratio = static_cast<double>(dist) / CONSTANTS_RADIUS_OF_EARTH;
+	مزدوج radius_ratio = static_cast<مزدوج>(dist) / CONSTANTS_RADIUS_OF_EARTH;
 
-	double lat_start_rad = math::radians(lat_start);
-	double lon_start_rad = math::radians(lon_start);
+	مزدوج lat_start_rad = math::radians(lat_start);
+	مزدوج lon_start_rad = math::radians(lon_start);
 
 	*lat_target = asin(sin(lat_start_rad) * cos(radius_ratio) + cos(lat_start_rad) * sin(radius_ratio) * cos((
-				   double)bearing));
-	*lon_target = lon_start_rad + atan2(sin((double)bearing) * sin(radius_ratio) * cos(lat_start_rad),
+				   مزدوج)bearing));
+	*lon_target = lon_start_rad + atan2(sin((مزدوج)bearing) * sin(radius_ratio) * cos(lat_start_rad),
 					    cos(radius_ratio) - sin(lat_start_rad) * sin(*lat_target));
 
 	*lat_target = math::degrees(*lat_target);
 	*lon_target = math::degrees(*lon_target);
 }
 
-float get_bearing_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next)
+عائم get_bearing_to_next_waypoint(مزدوج lat_now, مزدوج lon_now, مزدوج lat_next, مزدوج lon_next)
 {
-	const double lat_now_rad = math::radians(lat_now);
-	const double lat_next_rad = math::radians(lat_next);
+	ثابت مزدوج lat_now_rad = math::radians(lat_now);
+	ثابت مزدوج lat_next_rad = math::radians(lat_next);
 
-	const double cos_lat_next = cos(lat_next_rad);
-	const double d_lon = math::radians(lon_next - lon_now);
+	ثابت مزدوج cos_lat_next = cos(lat_next_rad);
+	ثابت مزدوج d_lon = math::radians(lon_next - lon_now);
 
 	/* conscious mix of double and float trig function to maximize speed and efficiency */
 
-	const float y = static_cast<float>(sin(d_lon) * cos_lat_next);
-	const float x = static_cast<float>(cos(lat_now_rad) * sin(lat_next_rad) - sin(lat_now_rad) * cos_lat_next * cos(d_lon));
+	ثابت عائم y = static_cast<عائم>(sin(d_lon) * cos_lat_next);
+	ثابت عائم x = static_cast<عائم>(cos(lat_now_rad) * sin(lat_next_rad) - sin(lat_now_rad) * cos_lat_next * cos(d_lon));
 
-	return wrap_pi(atan2f(y, x));
+	החזר wrap_pi(atan2f(y, x));
 }
 
-void
-get_vector_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next, float *v_n, float *v_e)
+فراغ
+get_vector_to_next_waypoint(مزدوج lat_now, مزدوج lon_now, مزدوج lat_next, مزدوج lon_next, عائم *v_n, عائم *v_e)
 {
-	const double lat_now_rad = math::radians(lat_now);
-	const double lat_next_rad = math::radians(lat_next);
-	const double d_lon = math::radians(lon_next) - math::radians(lon_now);
+	ثابت مزدوج lat_now_rad = math::radians(lat_now);
+	ثابت مزدوج lat_next_rad = math::radians(lat_next);
+	ثابت مزدوج d_lon = math::radians(lon_next) - math::radians(lon_now);
 
 	/* conscious mix of double and float trig function to maximize speed and efficiency */
-	*v_n = static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * (cos(lat_now_rad) * sin(lat_next_rad) - sin(lat_now_rad) * cos(
+	*v_n = static_cast<عائم>(CONSTANTS_RADIUS_OF_EARTH * (cos(lat_now_rad) * sin(lat_next_rad) - sin(lat_now_rad) * cos(
 					  lat_next_rad) * cos(d_lon)));
-	*v_e = static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * sin(d_lon) * cos(lat_next_rad));
+	*v_e = static_cast<عائم>(CONSTANTS_RADIUS_OF_EARTH * sin(d_lon) * cos(lat_next_rad));
 }
 
-void
-get_vector_to_next_waypoint_fast(double lat_now, double lon_now, double lat_next, double lon_next, float *v_n,
-				 float *v_e)
+فراغ
+get_vector_to_next_waypoint_fast(مزدوج lat_now, مزدوج lon_now, مزدوج lat_next, مزدوج lon_next, عائم *v_n,
+				 عائم *v_e)
 {
-	double lat_now_rad = math::radians(lat_now);
-	double lon_now_rad = math::radians(lon_now);
-	double lat_next_rad = math::radians(lat_next);
-	double lon_next_rad = math::radians(lon_next);
+	مزدوج lat_now_rad = math::radians(lat_now);
+	مزدوج lon_now_rad = math::radians(lon_now);
+	مزدوج lat_next_rad = math::radians(lat_next);
+	مزدوج lon_next_rad = math::radians(lon_next);
 
-	double d_lat = lat_next_rad - lat_now_rad;
-	double d_lon = lon_next_rad - lon_now_rad;
+	مزدوج d_lat = lat_next_rad - lat_now_rad;
+	مزدوج d_lon = lon_next_rad - lon_now_rad;
 
 	/* conscious mix of double and float trig function to maximize speed and efficiency */
-	*v_n = static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * d_lat);
-	*v_e = static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * d_lon * cos(lat_now_rad));
+	*v_n = static_cast<عائم>(CONSTANTS_RADIUS_OF_EARTH * d_lat);
+	*v_e = static_cast<عائم>(CONSTANTS_RADIUS_OF_EARTH * d_lon * cos(lat_now_rad));
 }
 
-void add_vector_to_global_position(double lat_now, double lon_now, float v_n, float v_e, double *lat_res,
-				   double *lon_res)
+فراغ add_vector_to_global_position(مزدوج lat_now, مزدوج lon_now, عائم v_n, عائم v_e, مزدوج *lat_res,
+				   مزدوج *lon_res)
 {
-	double lat_now_rad = math::radians(lat_now);
-	double lon_now_rad = math::radians(lon_now);
+	مزدوج lat_now_rad = math::radians(lat_now);
+	مزدوج lon_now_rad = math::radians(lon_now);
 
-	*lat_res = math::degrees(lat_now_rad + (double)v_n / CONSTANTS_RADIUS_OF_EARTH);
-	*lon_res = math::degrees(lon_now_rad + (double)v_e / (CONSTANTS_RADIUS_OF_EARTH * cos(lat_now_rad)));
+	*lat_res = math::degrees(lat_now_rad + (مزدوج)v_n / CONSTANTS_RADIUS_OF_EARTH);
+	*lon_res = math::degrees(lon_now_rad + (مزدوج)v_e / (CONSTANTS_RADIUS_OF_EARTH * cos(lat_now_rad)));
 }
 
 // Additional functions - @author Doug Weibel <douglas.weibel@colorado.edu>
 
-int get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat_now, double lon_now,
-			 double lat_start, double lon_start, double lat_end, double lon_end)
+صحيح get_distance_to_line(بنية crosstrack_error_s &crosstrack_error, مزدوج lat_now, مزدوج lon_now,
+			 مزدوج lat_start, مزدوج lon_start, مزدوج lat_end, مزدوج lon_end)
 {
 	// This function returns the distance to the nearest point on the track line.  Distance is positive if current
 	// position is right of the track and negative if left of the track as seen from a point on the track line
 	// headed towards the end point.
 
-	int return_value = -1;	// Set error flag, cleared when valid result calculated.
-	crosstrack_error.past_end = false;
+	صحيح return_value = -1;	// Set error flag, cleared when valid result calculated.
+	crosstrack_error.past_end = שקר;
 	crosstrack_error.distance = 0.0f;
 	crosstrack_error.bearing = 0.0f;
 
-	float dist_to_end = get_distance_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
+	عائم dist_to_end = get_distance_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
 
 	// Return error if arguments are bad
-	if (dist_to_end < 0.1f) {
-		return -1;
+	אם (dist_to_end < 0.1f) {
+		החזר -1;
 	}
 
-	float bearing_end = get_bearing_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
-	float bearing_track = get_bearing_to_next_waypoint(lat_start, lon_start, lat_end, lon_end);
-	float bearing_diff = wrap_pi(bearing_track - bearing_end);
+	عائم bearing_end = get_bearing_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
+	عائم bearing_track = get_bearing_to_next_waypoint(lat_start, lon_start, lat_end, lon_end);
+	عائم bearing_diff = wrap_pi(bearing_track - bearing_end);
 
 	// Return past_end = true if past end point of line
-	if (bearing_diff > M_PI_2_F || bearing_diff < -M_PI_2_F) {
-		crosstrack_error.past_end = true;
+	אם (bearing_diff > M_PI_2_F || bearing_diff < -M_PI_2_F) {
+		crosstrack_error.past_end = אמת;
 		return_value = 0;
-		return return_value;
+		החזר return_value;
 	}
 
 	crosstrack_error.distance = (dist_to_end) * sinf(bearing_diff);
 
-	if (sinf(bearing_diff) >= 0) {
+	אם (sinf(bearing_diff) >= 0) {
 		crosstrack_error.bearing = wrap_pi(bearing_track - M_PI_2_F);
 
-	} else {
+	} אחרת {
 		crosstrack_error.bearing = wrap_pi(bearing_track + M_PI_2_F);
 	}
 
 	return_value = 0;
 
-	return return_value;
+	החזר return_value;
 }
 
-int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_now, double lon_now,
-			double lat_center, double lon_center,
-			float radius, float arc_start_bearing, float arc_sweep)
+صحيح get_distance_to_arc(بنية crosstrack_error_s *crosstrack_error, مزدوج lat_now, مزدوج lon_now,
+			مزدوج lat_center, مزدوج lon_center,
+			عائم radius, عائم arc_start_bearing, عائم arc_sweep)
 {
 	// This function returns the distance to the nearest point on the track arc.  Distance is positive if current
 	// position is right of the arc and negative if left of the arc as seen from the closest point on the arc and
@@ -269,68 +269,68 @@ int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_
 
 	// Determine if the current position is inside or outside the sector between the line from the center
 	// to the arc start and the line from the center to the arc end
-	const float bearing_now = get_bearing_to_next_waypoint(lat_now, lon_now, lat_center, lon_center);
+	ثابت عائم bearing_now = get_bearing_to_next_waypoint(lat_now, lon_now, lat_center, lon_center);
 
-	int return_value = -1;		// Set error flag, cleared when valid result calculated.
-	crosstrack_error->past_end = false;
+	صحيح return_value = -1;		// Set error flag, cleared when valid result calculated.
+	crosstrack_error->past_end = שקר;
 	crosstrack_error->distance = 0.0f;
 	crosstrack_error->bearing = 0.0f;
 
 	// Return error if arguments are bad
-	if (radius < 0.1f) {
-		return return_value;
+	אם (radius < 0.1f) {
+		החזר return_value;
 	}
 
 	// arc_start_bearing and arc_sweep are referenced to the center, so test membership with the
 	// center->vehicle bearing. Measuring it in the direction of the sweep handles either sign and
 	// any zero crossing without special cases.
 	// NOLINTNEXTLINE(readability-suspicious-call-argument) intentional reverse bearing: center -> vehicle
-	const float bearing_center_to_now = get_bearing_to_next_waypoint(lat_center, lon_center, lat_now, lon_now);
-	const float bearing_from_start = wrap_2pi((bearing_center_to_now - arc_start_bearing) * (arc_sweep < 0.0f ? -1.0f :
+	ثابت عائم bearing_center_to_now = get_bearing_to_next_waypoint(lat_center, lon_center, lat_now, lon_now);
+	ثابت عائم bearing_from_start = wrap_2pi((bearing_center_to_now - arc_start_bearing) * (arc_sweep < 0.0f ? -1.0f :
 					 1.0f));
-	const bool in_sector = bearing_from_start <= fabsf(arc_sweep);
+	ثابت منطقي in_sector = bearing_from_start <= fabsf(arc_sweep);
 
 	// If in the sector then calculate distance and bearing to closest point
-	if (in_sector) {
-		crosstrack_error->past_end = false;
-		float dist_to_center = get_distance_to_next_waypoint(lat_now, lon_now, lat_center, lon_center);
+	אם (in_sector) {
+		crosstrack_error->past_end = שקר;
+		عائم dist_to_center = get_distance_to_next_waypoint(lat_now, lon_now, lat_center, lon_center);
 
-		if (dist_to_center <= radius) {
+		אם (dist_to_center <= radius) {
 			crosstrack_error->distance = radius - dist_to_center;
 			crosstrack_error->bearing = bearing_now + M_PI_F;
 
-		} else {
+		} אחרת {
 			crosstrack_error->distance = dist_to_center - radius;
 			crosstrack_error->bearing = bearing_now;
 		}
 
 		// If out of the sector then calculate dist and bearing to start or end point
 
-	} else {
+	} אחרת {
 
 		// Use the approximation  that 111,111 meters in the y direction is 1 degree (of latitude)
 		// and 111,111 * cos(latitude) meters in the x direction is 1 degree (of longitude) to
 		// calculate the position of the start and end points.  We should not be doing this often
 		// as this function generally will not be called repeatedly when we are out of the sector.
 
-		double start_disp_x = (double)radius * sin((double)arc_start_bearing);
-		double start_disp_y = (double)radius * cos((double)arc_start_bearing);
-		double end_disp_x = (double)radius * sin((double)wrap_pi(arc_start_bearing + arc_sweep));
-		double end_disp_y = (double)radius * cos((double)wrap_pi(arc_start_bearing + arc_sweep));
-		const double cos_lat_center = cos(math::radians(lat_center));
-		double lon_start = lon_center + start_disp_x / (111111.0 * cos_lat_center);
-		double lat_start = lat_center + start_disp_y / 111111.0;
-		double lon_end = lon_center + end_disp_x / (111111.0 * cos_lat_center);
-		double lat_end = lat_center + end_disp_y / 111111.0;
-		float dist_to_start = get_distance_to_next_waypoint(lat_now, lon_now, lat_start, lon_start);
-		float dist_to_end = get_distance_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
+		مزدوج start_disp_x = (مزدوج)radius * sin((مزدوج)arc_start_bearing);
+		مزدوج start_disp_y = (مزدوج)radius * cos((مزدوج)arc_start_bearing);
+		مزدوج end_disp_x = (مزدوج)radius * sin((مزدوج)wrap_pi(arc_start_bearing + arc_sweep));
+		مزدوج end_disp_y = (مزدوج)radius * cos((مزدوج)wrap_pi(arc_start_bearing + arc_sweep));
+		ثابت مزدوج cos_lat_center = cos(math::radians(lat_center));
+		مزدوج lon_start = lon_center + start_disp_x / (111111.0 * cos_lat_center);
+		مزدوج lat_start = lat_center + start_disp_y / 111111.0;
+		مزدوج lon_end = lon_center + end_disp_x / (111111.0 * cos_lat_center);
+		مزدوج lat_end = lat_center + end_disp_y / 111111.0;
+		عائم dist_to_start = get_distance_to_next_waypoint(lat_now, lon_now, lat_start, lon_start);
+		عائم dist_to_end = get_distance_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
 
-		if (dist_to_start < dist_to_end) {
+		אם (dist_to_start < dist_to_end) {
 			crosstrack_error->distance = dist_to_start;
 			crosstrack_error->bearing = get_bearing_to_next_waypoint(lat_now, lon_now, lat_start, lon_start);
 
-		} else {
-			crosstrack_error->past_end = true;
+		} אחרת {
+			crosstrack_error->past_end = אמת;
 			crosstrack_error->distance = dist_to_end;
 			crosstrack_error->bearing = get_bearing_to_next_waypoint(lat_now, lon_now, lat_end, lon_end);
 		}
@@ -339,43 +339,43 @@ int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_
 	crosstrack_error->bearing = wrap_pi(crosstrack_error->bearing);
 	return_value = 0;
 
-	return return_value;
+	החזר return_value;
 }
 
-float get_distance_to_point_global_wgs84(double lat_now, double lon_now, float alt_now,
-		double lat_next, double lon_next, float alt_next,
-		float *dist_xy, float *dist_z)
+عائم get_distance_to_point_global_wgs84(مزدوج lat_now, مزدوج lon_now, عائم alt_now,
+		مزدوج lat_next, مزدوج lon_next, عائم alt_next,
+		عائم *dist_xy, عائم *dist_z)
 {
-	double current_x_rad = math::radians(lat_next);
-	double current_y_rad = math::radians(lon_next);
-	double x_rad = math::radians(lat_now);
-	double y_rad = math::radians(lon_now);
+	مزدوج current_x_rad = math::radians(lat_next);
+	مزدوج current_y_rad = math::radians(lon_next);
+	مزدوج x_rad = math::radians(lat_now);
+	مزدوج y_rad = math::radians(lon_now);
 
-	double d_lat = x_rad - current_x_rad;
-	double d_lon = y_rad - current_y_rad;
+	مزدوج d_lat = x_rad - current_x_rad;
+	مزدوج d_lon = y_rad - current_y_rad;
 
-	double a = sin(d_lat / 2.0) * sin(d_lat / 2.0) + sin(d_lon / 2.0) * sin(d_lon / 2.0) * cos(current_x_rad) * cos(x_rad);
-	double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+	مزدوج a = sin(d_lat / 2.0) * sin(d_lat / 2.0) + sin(d_lon / 2.0) * sin(d_lon / 2.0) * cos(current_x_rad) * cos(x_rad);
+	مزدوج c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
-	const float dxy = static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * c);
-	const float dz = static_cast<float>(alt_now - alt_next);
+	ثابت عائم dxy = static_cast<عائم>(CONSTANTS_RADIUS_OF_EARTH * c);
+	ثابت عائم dz = static_cast<عائم>(alt_now - alt_next);
 
 	*dist_xy = fabsf(dxy);
 	*dist_z = fabsf(dz);
 
-	return sqrtf(dxy * dxy + dz * dz);
+	החזר sqrtf(dxy * dxy + dz * dz);
 }
 
-float mavlink_wpm_distance_to_point_local(float x_now, float y_now, float z_now,
-		float x_next, float y_next, float z_next,
-		float *dist_xy, float *dist_z)
+عائم mavlink_wpm_distance_to_point_local(عائم x_now, عائم y_now, عائم z_now,
+		عائم x_next, عائم y_next, عائم z_next,
+		عائم *dist_xy, عائم *dist_z)
 {
-	float dx = x_now - x_next;
-	float dy = y_now - y_next;
-	float dz = z_now - z_next;
+	عائم dx = x_now - x_next;
+	عائم dy = y_now - y_next;
+	عائم dz = z_now - z_next;
 
 	*dist_xy = sqrtf(dx * dx + dy * dy);
 	*dist_z = fabsf(dz);
 
-	return sqrtf(dx * dx + dy * dy + dz * dz);
+	החזר sqrtf(dx * dx + dy * dy + dz * dz);
 }

@@ -31,18 +31,18 @@
  *
  ****************************************************************************/
 
-#include "version.h"
+#ضمن "version.h"
 
-#include "build_git_version.h"
+#ضمن "build_git_version.h"
 
-#include <string.h>
+#ضمن <string.h>
 
-#if !defined(CONFIG_CDCACM_PRODUCTID)
+#אם !defined(CONFIG_CDCACM_PRODUCTID)
 # define CONFIG_CDCACM_PRODUCTID 0
 #endif
 
-#if defined(__PX4_LINUX)
-#include <sys/utsname.h>
+#אם defined(__PX4_LINUX)
+#ضمن <sys/utsname.h>
 #endif
 
 // dev >= 0
@@ -50,7 +50,7 @@
 // beta >= 128
 // release candidate >= 192
 // release == 255
-enum FIRMWARE_TYPE {
+تعداد FIRMWARE_TYPE {
 	FIRMWARE_TYPE_DEV = 0,
 	FIRMWARE_TYPE_ALPHA = 64,
 	FIRMWARE_TYPE_BETA = 128,
@@ -58,12 +58,12 @@ enum FIRMWARE_TYPE {
 	FIRMWARE_TYPE_RELEASE = 255
 };
 
-const char *px4_build_uri(void)
+ثابت حرف *px4_build_uri(فراغ)
 {
-	return STRINGIFY(BUILD_URI);
+	החזר STRINGIFY(BUILD_URI);
 }
 
-uint32_t version_tag_to_number(const char *tag)
+uint32_t version_tag_to_number(ثابت حرف *tag)
 {
 	uint32_t version_number = 0;
 
@@ -71,73 +71,73 @@ uint32_t version_tag_to_number(const char *tag)
 	size_t buffer_counter = 0;
 	size_t dash_count = 0;
 	size_t point_count = 0;
-	char version[3] = {0, 0, 0};
-	int firmware_type = FIRMWARE_TYPE_RELEASE;
+	حرف version[3] = {0, 0, 0};
+	صحيح firmware_type = FIRMWARE_TYPE_RELEASE;
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		switch (tag[i]) {
-		case '-':
+	עבור (size_t i = 0; i < strlen(tag); i++) {
+		بدل (tag[i]) {
+		حالة '-':
 			dash_count++;
-			break;
+			اكسر;
 
-		case '.':
+		حالة '.':
 			point_count++;
-			break;
+			اكسر;
 
-		case 'r':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
+		حالة 'r':
+			אם (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
 				firmware_type = FIRMWARE_TYPE_RC;
 
 			}
 
-			break;
+			اكسر;
 
-		case 'p':
+		حالة 'p':
 			firmware_type = FIRMWARE_TYPE_ALPHA;
-			break;
+			اكسر;
 
-		case 't':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
+		حالة 't':
+			אם (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
-			} else {
+			} אחרת {
 				firmware_type = FIRMWARE_TYPE_BETA;
 
 			}
 
-			break;
+			اكسر;
 
-		case 'v':
-			if (i > 0) {
+		حالة 'v':
+			אם (i > 0) {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
 			}
 
-			break;
+			اكسر;
 
-		default:
-			break;
+		افتراضي:
+			اكسر;
 		}
 	}
 
-	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
+	אם ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
 	    (dash_count == 2 && point_count == 2) ||
 	    (dash_count == 3 && point_count == 4) ||
 	    (dash_count == 4 && point_count == 4)) {
 		firmware_type = FIRMWARE_TYPE_DEV;
 	}
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (buffer_counter > 2) {
-			continue;
+	עבור (size_t i = 0; i < strlen(tag); i++) {
+		אם (buffer_counter > 2) {
+			استمر;
 		}
 
-		if (tag[i] >= '0' && tag[i] <= '9') {
+		אם (tag[i] >= '0' && tag[i] <= '9') {
 			buffer = (buffer == -1) ? 0 : buffer;
 			buffer = buffer * 10 + (tag[i] - '0');
 
-		} else {
-			if (buffer >= 0) {
+		} אחרת {
+			אם (buffer >= 0) {
 				version[buffer_counter] = buffer;
 				buffer_counter++;
 			}
@@ -146,109 +146,109 @@ uint32_t version_tag_to_number(const char *tag)
 		}
 	}
 
-	if (buffer >= 0) {
+	אם (buffer >= 0) {
 		version[buffer_counter] = buffer;
 		buffer_counter++;
 	}
 
-	if (buffer_counter <= 0) {
+	אם (buffer_counter <= 0) {
 		firmware_type = 0x00;
 	}
 
-	if (buffer_counter == 3 || buffer_counter == 6) {
+	אם (buffer_counter == 3 || buffer_counter == 6) {
 		version_number = ((uint8_t)version[0] << 8 * 3) |
 				 ((uint8_t)version[1] << 8 * 2) |
 				 ((uint8_t)version[2] << 8 * 1) | firmware_type;
 
-	} else {
+	} אחרת {
 		version_number = 0;
 	}
 
-	return version_number;
+	החזר version_number;
 }
 
-uint32_t px4_firmware_version(void)
+uint32_t px4_firmware_version(فراغ)
 {
-	return version_tag_to_number(PX4_GIT_TAG_STR);
+	החזר version_tag_to_number(PX4_GIT_TAG_STR);
 }
 
-uint32_t version_tag_to_vendor_version_number(const char *tag)
+uint32_t version_tag_to_vendor_version_number(ثابت حرف *tag)
 {
 	uint32_t version_number = 0;
 
 	int16_t buffer = -1;
 	size_t buffer_counter = 0;
-	char version[6] = {0, 0, 0, 0, 0, 0};
+	حرف version[6] = {0, 0, 0, 0, 0, 0};
 	size_t dash_count = 0;
 	size_t point_count = 0;
-	int firmware_type = FIRMWARE_TYPE_RELEASE;
+	صحيح firmware_type = FIRMWARE_TYPE_RELEASE;
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		switch (tag[i]) {
-		case '-':
+	עבור (size_t i = 0; i < strlen(tag); i++) {
+		بدل (tag[i]) {
+		حالة '-':
 			dash_count++;
-			break;
+			اكسر;
 
-		case '.':
+		حالة '.':
 			point_count++;
-			break;
+			اكسر;
 
-		case 'r':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
+		حالة 'r':
+			אם (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
 				firmware_type = FIRMWARE_TYPE_RC;
 
 			}
 
-			break;
+			اكسر;
 
-		case 'p':
+		حالة 'p':
 			firmware_type = FIRMWARE_TYPE_ALPHA;
-			break;
+			اكسر;
 
-		case 't':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
+		حالة 't':
+			אם (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
-			} else {
+			} אחרת {
 				firmware_type = FIRMWARE_TYPE_BETA;
 
 			}
 
-			break;
+			اكسر;
 
-		case 'v':
-			if (i > 0) {
+		حالة 'v':
+			אם (i > 0) {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
 			}
 
-			break;
+			اكسر;
 
-		default:
-			break;
+		افتراضي:
+			اكسر;
 		}
 	}
 
-	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
+	אם ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
 	    (dash_count == 2 && point_count == 2) ||
 	    (dash_count == 3 && point_count == 4) ||
 	    (dash_count == 4 && point_count == 4)) {
 		firmware_type = FIRMWARE_TYPE_DEV;
 	}
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (buffer_counter > 5) {
-			continue;
+	עבור (size_t i = 0; i < strlen(tag); i++) {
+		אם (buffer_counter > 5) {
+			استمر;
 		}
 
-		if (tag[i] >= '0' && tag[i] <= '9') {
+		אם (tag[i] >= '0' && tag[i] <= '9') {
 			buffer = (buffer == -1) ? 0 : buffer;
 			buffer = buffer * 10 + (tag[i] - '0');
 
-		} else {
-			if (buffer >= 0) {
-				if (buffer_counter + 1 == 4 && tag[i] == '-') {
-					break;
+		} אחרת {
+			אם (buffer >= 0) {
+				אם (buffer_counter + 1 == 4 && tag[i] == '-') {
+					اكسر;
 				}
 
 				version[buffer_counter] = buffer;
@@ -259,152 +259,152 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 		}
 	}
 
-	if (buffer >= 0 && (buffer_counter + 1 == 3 || buffer_counter + 1 == 6)) {
+	אם (buffer >= 0 && (buffer_counter + 1 == 3 || buffer_counter + 1 == 6)) {
 		version[buffer_counter] = buffer;
 		buffer_counter++;
 	}
 
-	if (buffer_counter == 6) {
+	אם (buffer_counter == 6) {
 		version_number = ((uint8_t)version[3] << 8 * 3) |
 				 ((uint8_t)version[4] << 8 * 2) |
 				 ((uint8_t)version[5] << 8 * 1) | firmware_type;
 
-	} else if (buffer_counter == 3) {
+	} אחרת אם (buffer_counter == 3) {
 		version_number = firmware_type;
 
-	} else {
+	} אחרת {
 		version_number = 0;
 	}
 
-	return version_number;
+	החזר version_number;
 }
 
-uint32_t px4_firmware_vendor_version(void)
+uint32_t px4_firmware_vendor_version(فراغ)
 {
-	return version_tag_to_vendor_version_number(PX4_GIT_TAG_STR);
+	החזר version_tag_to_vendor_version_number(PX4_GIT_TAG_STR);
 }
 
-const char *px4_firmware_git_branch(void)
+ثابت حرف *px4_firmware_git_branch(فراغ)
 {
-	return PX4_GIT_BRANCH_NAME;
+	החזר PX4_GIT_BRANCH_NAME;
 }
 
-uint32_t px4_board_version(void)
+uint32_t px4_board_version(فراغ)
 {
-#if defined(__PX4_NUTTX)
-	return CONFIG_CDCACM_PRODUCTID;
-#else
-	return 1;
+#אם defined(__PX4_NUTTX)
+	החזר CONFIG_CDCACM_PRODUCTID;
+#אחרת
+	החזר 1;
 #endif
 }
 
-uint32_t px4_os_version(void)
+uint32_t px4_os_version(فراغ)
 {
-#if defined(__PX4_DARWIN) || defined(__PX4_CYGWIN) || defined(__PX4_QURT)
-	return 0; //TODO: implement version for Darwin, Cygwin, QuRT
-#elif defined(__PX4_LINUX)
-	struct utsname name;
+#אם defined(__PX4_DARWIN) || defined(__PX4_CYGWIN) || defined(__PX4_QURT)
+	החזר 0; //TODO: implement version for Darwin, Cygwin, QuRT
+#وإلاإذا defined(__PX4_LINUX)
+	بنية utsname name;
 
-	if (uname(&name) == 0) {
-		char *c = name.release;
+	אם (uname(&name) == 0) {
+		حرف *c = name.release;
 
 		// cut the part after the first '-'
-		while (*c && *c != '-') {
+		כלעוד (*c && *c != '-') {
 			++c;
 		}
 
 		*c = 0;
-		return version_tag_to_number(name.release);
+		החזר version_tag_to_number(name.release);
 
-	} else {
-		return 0;
+	} אחרת {
+		החזר 0;
 	}
 
-#elif defined(__PX4_NUTTX)
-	return version_tag_to_number(NUTTX_GIT_TAG_STR);
-#else
+#وإلاإذا defined(__PX4_NUTTX)
+	החזר version_tag_to_number(NUTTX_GIT_TAG_STR);
+#אחרת
 # error "px4_os_version not implemented for current OS"
 #endif
 }
 
-const char *px4_os_version_string(void)
+ثابت حرف *px4_os_version_string(فراغ)
 {
-#if defined(__PX4_NUTTX)
-	return NUTTX_GIT_VERSION_STR;
-#else
-	return NULL;
+#אם defined(__PX4_NUTTX)
+	החזר NUTTX_GIT_VERSION_STR;
+#אחרת
+	החזר عدم;
 #endif
 }
 
-const char *px4_os_name(void)
+ثابت حرف *px4_os_name(فراغ)
 {
-#if defined(__PX4_DARWIN)
-	return "Darwin";
-#elif defined(__PX4_LINUX)
-	return "Linux";
-#elif defined(__PX4_QURT)
-	return "QuRT";
-#elif defined(__PX4_NUTTX)
-	return "NuttX";
-#elif defined(__PX4_CYGWIN)
-	return "Cygwin";
-#else
+#אם defined(__PX4_DARWIN)
+	החזר "Darwin";
+#وإلاإذا defined(__PX4_LINUX)
+	החזר "Linux";
+#وإلاإذا defined(__PX4_QURT)
+	החזר "QuRT";
+#وإلاإذا defined(__PX4_NUTTX)
+	החזר "NuttX";
+#وإلاإذا defined(__PX4_CYGWIN)
+	החזר "Cygwin";
+#אחרת
 # error "px4_os_name not implemented for current OS"
 #endif
 }
 
-const char *px4_toolchain_name(void)
+ثابت حرف *px4_toolchain_name(فراغ)
 {
-#if defined(__clang__)
-	return "Clang/LLVM";
-#elif defined(__ICC) || defined(__INTEL_COMPILER)
-	return "Intel ICC";
-#elif defined(__GNUC__) || defined(__GNUG__)
-	return "GNU GCC";
-#elif defined(_MSC_VER)
-	return "MS Visual Studio";
-#else
-	return "Unknown";
+#אם defined(__clang__)
+	החזר "Clang/LLVM";
+#وإلاإذا defined(__ICC) || defined(__INTEL_COMPILER)
+	החזר "Intel ICC";
+#وإلاإذا defined(__GNUC__) || defined(__GNUG__)
+	החזר "GNU GCC";
+#وإلاإذا defined(_MSC_VER)
+	החזר "MS Visual Studio";
+#אחרת
+	החזר "Unknown";
 #endif
 }
 
-const char *px4_toolchain_version(void)
+ثابت حرف *px4_toolchain_version(فراغ)
 {
 #ifdef __VERSION__
-	return __VERSION__;
-#else
-	return "";
+	החזר __VERSION__;
+#אחרת
+	החזר "";
 #endif
 }
 
-const char *px4_firmware_version_string(void)
+ثابت حرف *px4_firmware_version_string(فراغ)
 {
-	return PX4_GIT_VERSION_STR;
+	החזר PX4_GIT_VERSION_STR;
 }
 
-uint64_t px4_firmware_version_binary(void)
+uint64_t px4_firmware_version_binary(فراغ)
 {
-	return PX4_GIT_VERSION_BINARY;
+	החזר PX4_GIT_VERSION_BINARY;
 }
 
 
 #ifdef MAVLINK_LIB_GIT_VERSION_BINARY
-uint64_t px4_mavlink_lib_version_binary(void)
+uint64_t px4_mavlink_lib_version_binary(فراغ)
 {
-	return MAVLINK_LIB_GIT_VERSION_BINARY;
+	החזר MAVLINK_LIB_GIT_VERSION_BINARY;
 }
 #endif /* MAVLINK_LIB_GIT_VERSION_BINARY */
 
-uint64_t px4_os_version_binary(void)
+uint64_t px4_os_version_binary(فراغ)
 {
 #ifdef NUTTX_GIT_VERSION_BINARY
-	return NUTTX_GIT_VERSION_BINARY;
-#else
-	return 0;
+	החזר NUTTX_GIT_VERSION_BINARY;
+#אחרת
+	החזר 0;
 #endif
 }
 
-const char *px4_firmware_oem_version_string(void)
+ثابت حرف *px4_firmware_oem_version_string(فراغ)
 {
-	return PX4_GIT_OEM_VERSION_STR;
+	החזר PX4_GIT_OEM_VERSION_STR;
 }

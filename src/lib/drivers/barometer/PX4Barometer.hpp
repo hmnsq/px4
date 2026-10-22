@@ -33,36 +33,36 @@
 
 #pragma once
 
-#include <math.h>
+#ضمن <math.h>
 
-#include <drivers/drv_hrt.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/sensor_baro.h>
+#ضمن <drivers/drv_hrt.h>
+#ضمن <uORB/PublicationMulti.hpp>
+#ضمن <uORB/topics/sensor_baro.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#ضمن <lib/failure_injection/FailureInjection.hpp>
 
-class PX4Barometer
+מחלקה PX4Barometer
 {
-public:
+عام:
 	PX4Barometer(uint32_t device_id);
-	PX4Barometer(uint32_t device_id, bool external);
+	PX4Barometer(uint32_t device_id, منطقي external);
 
-	void set_device_id(uint32_t device_id);
-	void set_external(bool external);
-	void set_error_count(uint32_t error_count) { _report.error_count = error_count; }
-	void set_temperature(float temperature) { _report.temperature = temperature; }
+	فراغ set_device_id(uint32_t device_id);
+	فراغ set_external(منطقي external);
+	فراغ set_error_count(uint32_t error_count) { _report.error_count = error_count; }
+	فراغ set_temperature(عائم temperature) { _report.temperature = temperature; }
 
-	void update(const hrt_abstime &timestamp_sample, float pressure);
+	فراغ update(ثابت hrt_abstime &timestamp_sample, عائم pressure);
 
-	int get_instance() { return _sensor_pub.get_instance(); };
-	uint32_t get_device_id() const { return _report.device_id; }
+	صحيح get_instance() { החזר _sensor_pub.get_instance(); };
+	uint32_t get_device_id() ثابت { החזר _report.device_id; }
 
-private:
+خاص:
 	uORB::PublicationMulti<sensor_baro_s> _sensor_pub{ORB_ID(sensor_baro)};
 
 	sensor_baro_s	_report{};
 
-	bool		_external_forced{false}; // classification set by the driver, do not re-derive from the device id
+	منطقي		_external_forced{שקר}; // classification set by the driver, do not re-derive from the device id
 
 	failure_injection::Config _failure_config;
 	failure_injection::Stuck<sensor_baro_s> _stuck;

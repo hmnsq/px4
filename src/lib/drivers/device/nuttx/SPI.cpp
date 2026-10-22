@@ -38,22 +38,22 @@
  *
  */
 
-#include "SPI.hpp"
+#ضمن "SPI.hpp"
 
-#if defined(CONFIG_SPI)
+#אם defined(CONFIG_SPI)
 
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <px4_platform_common/px4_config.h>
-#include <nuttx/arch.h>
+#ضمن <px4_platform_common/i2c_spi_buses.h>
+#ضمن <px4_platform_common/px4_config.h>
+#ضمن <nuttx/arch.h>
 
 #ifndef CONFIG_SPI_EXCHANGE
 # error This driver requires CONFIG_SPI_EXCHANGE
 #endif
 
-namespace device
+نطاق device
 {
 
-SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
+SPI::SPI(uint8_t device_type, ثابت حرف *name, صحيح bus, uint32_t device, تعداد spi_mode_e mode, uint32_t frequency) :
 	CDev(name, nullptr),
 	_device(device),
 	_mode(mode),
@@ -66,12 +66,12 @@ SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum s
 	// Use the 2. LSB byte as SPI address, which is non-zero for multiple instances of the same device on a bus
 	_device_id.devid_s.address = (uint8_t)(device >> 8);
 
-	if (!px4_spi_bus_requires_locking(bus)) {
+	אם (!px4_spi_bus_requires_locking(bus)) {
 		_locking_mode = LOCK_NONE;
 	}
 }
 
-SPI::SPI(const I2CSPIDriverConfig &config)
+SPI::SPI(ثابت I2CSPIDriverConfig &config)
 	: SPI(config.devid_driver_index, config.module_name, config.bus, config.spi_devid, config.spi_mode,
 	      config.bus_frequency)
 {
@@ -83,153 +83,153 @@ SPI::~SPI()
 	// XXX no way to let go of the bus...
 }
 
-int
+صحيح
 SPI::init()
 {
 	/* attach to the spi bus */
-	if (_dev == nullptr) {
-		int bus = get_device_bus();
+	אם (_dev == nullptr) {
+		صحيح bus = get_device_bus();
 
-		if (!board_has_bus(BOARD_SPI_BUS, bus)) {
-			return -ENOENT;
+		אם (!board_has_bus(BOARD_SPI_BUS, bus)) {
+			החזר -ENOENT;
 		}
 
 		_dev = px4_spibus_initialize(bus);
 	}
 
-	if (_dev == nullptr) {
+	אם (_dev == nullptr) {
 		DEVICE_DEBUG("failed to init SPI");
-		return -ENOENT;
+		החזר -ENOENT;
 	}
 
 	/* deselect device to ensure high to low transition of pin select */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, שקר);
 
 	/* call the probe function to check whether the device is present */
-	int ret = probe();
+	صحيح ret = probe();
 
-	if (ret != OK) {
+	אם (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		return ret;
+		החזר ret;
 	}
 
 	/* do base class init, which will create the device node, etc. */
 	ret = CDev::init();
 
-	if (ret != OK) {
+	אם (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		return ret;
+		החזר ret;
 	}
 
 	/* tell the world where we are */
 	DEVICE_DEBUG("on SPI bus %d at %"  PRId32 " (%"  PRId32 " KHz)", get_device_bus(), PX4_SPI_DEV_ID(_device),
 		     _frequency / 1000);
 
-	return PX4_OK;
+	החזר PX4_OK;
 }
 
-int
+صحيح
 SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 {
-	int result;
+	صحيح result;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	אם ((send == nullptr) && (recv == nullptr)) {
+		החזר -EINVAL;
 	}
 
 	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
 
 	/* lock the bus as required */
-	switch (mode) {
-	default:
-	case LOCK_PREEMPTION: {
+	بدل (mode) {
+	افتراضي:
+	حالة LOCK_PREEMPTION: {
 			irqstate_t state = px4_enter_critical_section();
 			result = _transfer(send, recv, len);
 			px4_leave_critical_section(state);
 		}
-		break;
+		اكسر;
 
-	case LOCK_THREADS:
-		SPI_LOCK(_dev, true);
+	حالة LOCK_THREADS:
+		SPI_LOCK(_dev, אמת);
 		result = _transfer(send, recv, len);
-		SPI_LOCK(_dev, false);
-		break;
+		SPI_LOCK(_dev, שקר);
+		اكسر;
 
-	case LOCK_NONE:
+	حالة LOCK_NONE:
 		result = _transfer(send, recv, len);
-		break;
+		اكسر;
 	}
 
-	return result;
+	החזר result;
 }
 
-int
+صحيح
 SPI::_transfer(uint8_t *send, uint8_t *recv, unsigned len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
 	SPI_SETMODE(_dev, _mode);
 	SPI_SETBITS(_dev, 8);
-	SPI_SELECT(_dev, _device, true);
+	SPI_SELECT(_dev, _device, אמת);
 
 	/* do the transfer */
 	SPI_EXCHANGE(_dev, send, recv, len);
 
 	/* and clean up */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, שקר);
 
-	return PX4_OK;
+	החזר PX4_OK;
 }
 
-int
+صحيح
 SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 {
-	int result;
+	صحيح result;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	אם ((send == nullptr) && (recv == nullptr)) {
+		החזר -EINVAL;
 	}
 
 	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
 
 	/* lock the bus as required */
-	switch (mode) {
-	default:
-	case LOCK_PREEMPTION: {
+	بدل (mode) {
+	افتراضي:
+	حالة LOCK_PREEMPTION: {
 			irqstate_t state = px4_enter_critical_section();
 			result = _transferhword(send, recv, len);
 			px4_leave_critical_section(state);
 		}
-		break;
+		اكسر;
 
-	case LOCK_THREADS:
-		SPI_LOCK(_dev, true);
+	حالة LOCK_THREADS:
+		SPI_LOCK(_dev, אמת);
 		result = _transferhword(send, recv, len);
-		SPI_LOCK(_dev, false);
-		break;
+		SPI_LOCK(_dev, שקר);
+		اكسر;
 
-	case LOCK_NONE:
+	حالة LOCK_NONE:
 		result = _transferhword(send, recv, len);
-		break;
+		اكسر;
 	}
 
-	return result;
+	החזר result;
 }
 
-int
+صحيح
 SPI::_transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
 	SPI_SETMODE(_dev, _mode);
 	SPI_SETBITS(_dev, 16);			/* 16 bit transfer */
-	SPI_SELECT(_dev, _device, true);
+	SPI_SELECT(_dev, _device, אמת);
 
 	/* do the transfer */
 	SPI_EXCHANGE(_dev, send, recv, len);
 
 	/* and clean up */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, שקר);
 
-	return PX4_OK;
+	החזר PX4_OK;
 }
 
 } // namespace device

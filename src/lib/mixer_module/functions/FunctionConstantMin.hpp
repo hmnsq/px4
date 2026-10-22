@@ -33,18 +33,18 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ضمن "FunctionProviderBase.hpp"
 
 /**
  * Functions: Constant_Min
  */
-class FunctionConstantMin : public FunctionProviderBase
+מחלקה FunctionConstantMin : عام FunctionProviderBase
 {
-public:
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionConstantMin(); }
+عام:
+	ساكن FunctionProviderBase *allocate(ثابت Context &context) { החזר جديد FunctionConstantMin(); }
 
-	float value(OutputFunction func) override { return -1.f; }
-	void update() override { }
+	عائم value(OutputFunction func) override { החזר -1.f; }
+	فراغ update() override { }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return -1.f; }
+	عائم defaultFailsafeValue(OutputFunction func) ثابت override { החזר -1.f; }
 };

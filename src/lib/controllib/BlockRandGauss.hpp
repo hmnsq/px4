@@ -39,65 +39,65 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
-class __EXPORT BlockRandGauss: public Block
+מחלקה __EXPORT BlockRandGauss: عام Block
 {
-public:
+عام:
 // methods
 	BlockRandGauss(SuperBlock *parent,
-		       const char *name) :
+		       ثابت حرف *name) :
 		Block(parent, name),
-		_mean(this, "MEAN"),
-		_stdDev(this, "DEV")
+		_mean(هذا, "MEAN"),
+		_stdDev(هذا, "DEV")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandGauss() = default;
-	float update()
+	virtual ~BlockRandGauss() = افتراضي;
+	عائم update()
 	{
-		static float V1, V2, S;
-		static int phase = 0;
-		float X;
+		ساكن عائم V1, V2, S;
+		ساكن صحيح phase = 0;
+		عائم X;
 
-		if (phase == 0) {
-			do {
-				float U1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-				float U2 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		אם (phase == 0) {
+			עשה {
+				عائم U1 = static_cast<عائم>(rand()) / static_cast<عائم>(RAND_MAX);
+				عائم U2 = static_cast<عائم>(rand()) / static_cast<عائم>(RAND_MAX);
 				V1 = 2 * U1 - 1;
 				V2 = 2 * U2 - 1;
 				S = V1 * V1 + V2 * V2;
-			} while (S >= 1 || fabsf(S) < 1e-8f);
+			} כלעוד (S >= 1 || fabsf(S) < 1e-8f);
 
-			X = V1 * float(sqrtf(-2 * float(logf(S)) / S));
+			X = V1 * عائم(sqrtf(-2 * عائم(logf(S)) / S));
 
-		} else {
-			X = V2 * float(sqrtf(-2 * float(logf(S)) / S));
+		} אחרת {
+			X = V2 * عائم(sqrtf(-2 * عائم(logf(S)) / S));
 		}
 
 		phase = 1 - phase;
-		return X * getStdDev() + getMean();
+		החזר X * getStdDev() + getMean();
 	}
 // accessors
-	float getMean() { return _mean.get(); }
-	float getStdDev() { return _stdDev.get(); }
-private:
+	عائم getMean() { החזר _mean.get(); }
+	عائم getStdDev() { החזר _stdDev.get(); }
+خاص:
 // attributes
 	control::BlockParamFloat _mean;
 	control::BlockParamFloat _stdDev;

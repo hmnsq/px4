@@ -31,26 +31,26 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <math.h>
-#include "TimestampedRingBuffer.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن <math.h>
+#ضمن "TimestampedRingBuffer.hpp"
 
-struct sample {
+بنية sample {
 	uint64_t time_us;
-	float data[3];
+	عائم data[3];
 };
 
 
-class TimestampedRingBufferDynamicTest : public ::testing::Test
+מחלקה TimestampedRingBufferDynamicTest : عام ::testing::Test
 {
-public:
+عام:
 
 	sample _x, _y, _z;
 	TimestampedRingBuffer<sample> *_buffer{nullptr};
 
-	void SetUp() override
+	فراغ SetUp() override
 	{
-		_buffer = new TimestampedRingBuffer<sample>(3);
+		_buffer = جديد TimestampedRingBuffer<sample>(3);
 		_x.time_us = 1000000;
 		_x.data[0] = _x.data[1] = _x.data[2] = 1.5f;
 
@@ -61,7 +61,7 @@ public:
 		_z.data[0] = _z.data[1] = _z.data[2] = 4.0f;
 	}
 
-	void TearDown() override
+	فراغ TearDown() override
 	{
 		delete _buffer;
 	}
@@ -96,7 +96,7 @@ TEST_F(TimestampedRingBufferDynamicTest, badInitialisation)
 
 TEST_F(TimestampedRingBufferDynamicTest, orderOfSamples)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
+	ASSERT_EQ(אמת, _buffer->allocate(3));
 	// GIVEN: allocated buffer
 	// WHEN: adding multiple samples
 	// THEN: they should be added in order
@@ -114,7 +114,7 @@ TEST_F(TimestampedRingBufferDynamicTest, orderOfSamples)
 
 TEST_F(TimestampedRingBufferDynamicTest, popSample)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
+	ASSERT_EQ(אמת, _buffer->allocate(3));
 	_buffer->push(_x);
 	_buffer->push(_y);
 	_buffer->push(_z);
@@ -139,7 +139,7 @@ TEST_F(TimestampedRingBufferDynamicTest, popSample)
 
 TEST_F(TimestampedRingBufferDynamicTest, askingForTooNewSample)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
+	ASSERT_EQ(אמת, _buffer->allocate(3));
 	_buffer->push(_x);
 	_buffer->push(_y);
 	_buffer->push(_z);
@@ -153,7 +153,7 @@ TEST_F(TimestampedRingBufferDynamicTest, askingForTooNewSample)
 
 TEST_F(TimestampedRingBufferDynamicTest, reallocateBuffer)
 {
-	ASSERT_EQ(true, _buffer->allocate(5));
+	ASSERT_EQ(אמת, _buffer->allocate(5));
 	_buffer->push(_x);
 	_buffer->push(_y);
 	_buffer->push(_y);

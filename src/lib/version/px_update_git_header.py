@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-import argparse
-import os
-import sys
-import subprocess
-import re
+استورد argparse
+استورد os
+استورد sys
+استورد subprocess
+استورد re
 
 parser = argparse.ArgumentParser(description="""Extract version info from git and
 generate a version header file. The working directory is expected to be
@@ -12,19 +12,19 @@ the root of Firmware.""")
 parser.add_argument('filename', metavar='version.h', help='Header output file')
 parser.add_argument('--git_tag', help='git tag string')
 parser.add_argument('-v', '--verbose', dest='verbose', action='store_true',
-                    help='Verbose output', default=False)
+                    help='Verbose output', افتراضي=שקר)
 parser.add_argument('--validate', dest='validate', action='store_true',
-                    help='Validate the tag format', default=False)
+                    help='Validate the tag format', افتراضي=שקר)
 
 args = parser.parse_args()
 filename = args.filename
 verbose = args.verbose
 validate = args.validate
 
-try:
+حاول:
     fp_header = open(filename, 'r')
-    old_header = fp_header.read()
-except:
+    old_header = fp_header.اقرأ()
+استثناء:
     old_header = ''
 
 
@@ -37,22 +37,22 @@ header = """
 
 
 # PX4
-if args.git_tag:
+אם args.git_tag:
     git_tag = args.git_tag
-else:
+אחרת:
     git_describe_cmd = 'git describe --exclude ext/* --always --tags --dirty'
     git_tag = subprocess.check_output(git_describe_cmd.split(),
                                   stderr=subprocess.STDOUT).decode('utf-8').strip()
 
-try:
+حاول:
     # get the tag if we're on a tagged commit
     tag_or_branch = subprocess.check_output((git_describe_cmd+' --exact-match').split(),
                                             stderr=subprocess.STDOUT).decode('utf-8').strip()
-except:
+استثناء:
     tag_or_branch = None
 
-if validate:
-    if verbose:
+אם validate:
+    אם verbose:
         print("testing git tag: "+git_tag)
     # remove optional '-dirty' at the end
     git_tag_test = re.sub(r'-dirty$', '', git_tag)
@@ -61,7 +61,7 @@ if validate:
     # now check the version format
     m = re.match(r'v([0-9]+)\.([0-9]+)\.[0-9]+(((-dev)|(-alpha[0-9]+)|(-beta[0-9]+)|(-rc[0-9]+))|'\
                  r'(-[0-9]+\.[0-9]+\.[0-9]+((-dev)|(-alpha[0-9]+)|(-beta[0-9]+)|([-]?rc[0-9]+))?))?$', git_tag_test)
-    if not m:
+    אם לא m:
         print("")
         print("Error: the git tag '{:}' does not match the expected format.".format(git_tag_test))
         print("")
@@ -79,27 +79,27 @@ if validate:
 
 git_version = subprocess.check_output('git rev-parse --verify HEAD'.split(),
                                       stderr=subprocess.STDOUT).decode('utf-8').strip()
-try:
+حاول:
     git_branch_name = subprocess.check_output('git symbolic-ref -q --short HEAD'.split(),
                                           stderr=subprocess.STDOUT).decode('utf-8').strip()
-except:
+استثناء:
     git_branch_name = ''
 git_version_short = git_version[0:16]
 
 # OEM version
-try:
+حاول:
     oem_tag = subprocess.check_output('git describe --match ext/oem-* --tags'.split(),
                                       stderr=subprocess.STDOUT).decode('utf-8').strip()
     oem_tag = oem_tag[8:]
-except:
+استثناء:
     oem_tag = ''
 
-if tag_or_branch is None:
+אם tag_or_branch is None:
     # replace / so it can be used as directory name
     tag_or_branch = git_branch_name.replace('/', '-')
     # either a release or master branch (used for metadata)
     # CI uploads to 'master/' on S3 for legacy QGC compatibility
-    if not tag_or_branch.startswith('release-'):
+    אם לא tag_or_branch.startswith('release-'):
         tag_or_branch = 'master'
 
 header += f"""
@@ -115,7 +115,7 @@ header += f"""
 
 
 # Mavlink
-if (os.path.exists('src/modules/mavlink/mavlink/.git')):
+אם (os.path.exists('src/modules/mavlink/mavlink/.git')):
     mavlink_git_version = subprocess.check_output('git rev-parse --verify HEAD'.split(),
                                       cwd='src/modules/mavlink/mavlink', stderr=subprocess.STDOUT).decode('utf-8').strip()
     mavlink_git_version_short = mavlink_git_version[0:16]
@@ -127,31 +127,31 @@ if (os.path.exists('src/modules/mavlink/mavlink/.git')):
 
 
 # NuttX
-if (os.path.exists('platforms/nuttx/NuttX/nuttx/.git')):
+אם (os.path.exists('platforms/nuttx/NuttX/nuttx/.git')):
     # The PX4/NuttX fork branch name recorded in .gitmodules is the
     # authoritative kernel version: px4_firmware_nuttx-X.Y.Z+ is updated
     # in the same commit as every kernel upgrade. Fall back to git
     # describe for checkouts that do not follow the fork convention
     # (e.g. upstream apache/nuttx directly, which carries release tags).
     nuttx_git_tag = "v0.0.0"
-    try:
+    حاول:
         nuttx_branch = subprocess.check_output(
             'git config -f .gitmodules submodule.platforms/nuttx/NuttX/nuttx.branch'.split(),
             stderr=subprocess.STDOUT).decode('utf-8').strip()
         branch_version = re.match(r'^px4_firmware_nuttx-([0-9]+\.[0-9]+\.[0-9]+)\+?$', nuttx_branch)
-    except subprocess.CalledProcessError:
+    استثناء subprocess.CalledProcessError:
         branch_version = None
-    if branch_version:
+    אם branch_version:
         nuttx_git_tag = "v" + branch_version.group(1)
-    else:
-        try:
+    אחרת:
+        حاول:
             nuttx_describe = subprocess.check_output(
                 'git describe --tags --match nuttx-*'.split(),
                 cwd='platforms/nuttx/NuttX/nuttx', stderr=subprocess.STDOUT).decode('utf-8').strip()
             describe_version = re.match(r'^nuttx-([0-9]+\.[0-9]+\.[0-9]+)', nuttx_describe)
-            if describe_version:
+            אם describe_version:
                 nuttx_git_tag = "v" + describe_version.group(1)
-        except subprocess.CalledProcessError:
+        استثناء subprocess.CalledProcessError:
             pass
     nuttx_git_version = subprocess.check_output('git rev-parse --verify HEAD'.split(),
                                       cwd='platforms/nuttx/NuttX/nuttx', stderr=subprocess.STDOUT).decode('utf-8').strip()
@@ -164,8 +164,8 @@ if (os.path.exists('platforms/nuttx/NuttX/nuttx/.git')):
 """
 
 
-if old_header != header:
-    if verbose:
+אם old_header != header:
+    אם verbose:
         print('Updating header {}'.format(filename))
     fp_header = open(filename, 'w')
-    fp_header.write(header)
+    fp_header.اكتب(header)

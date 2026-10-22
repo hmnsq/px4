@@ -37,100 +37,100 @@
  * Test library code
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#ضمن <stdio.h>
+#ضمن <math.h>
+#ضمن <stdlib.h>
 
-#include <px4_platform_common/defines.h>
+#ضمن <px4_platform_common/defines.h>
 
-#include "test.hpp"
+#ضمن "test.hpp"
 
-bool __EXPORT equal(float a, float b, float epsilon)
+منطقي __EXPORT equal(عائم a, عائم b, عائم epsilon)
 {
-	float diff = fabsf(a - b);
+	عائم diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	אם (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		החזר שקר;
 
-	} else { return true; }
+	} אחרת { החזר אמת; }
 }
 
-bool __EXPORT greater_than(float a, float b)
+منطقي __EXPORT greater_than(عائم a, عائم b)
 {
-	if (a > b) {
-		return true;
+	אם (a > b) {
+		החזר אמת;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} אחרת {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		החזר שקר;
 	}
 }
 
-bool __EXPORT less_than(float a, float b)
+منطقي __EXPORT less_than(عائم a, عائم b)
 {
-	if (a < b) {
-		return true;
+	אם (a < b) {
+		החזר אמת;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} אחרת {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		החזר שקר;
 	}
 }
 
-bool __EXPORT greater_than_or_equal(float a, float b)
+منطقي __EXPORT greater_than_or_equal(عائم a, عائم b)
 {
-	if (a >= b) {
-		return true;
+	אם (a >= b) {
+		החזר אמת;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} אחרת {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		החזר שקר;
 	}
 }
 
-bool __EXPORT less_than_or_equal(float a, float b)
+منطقي __EXPORT less_than_or_equal(عائم a, عائم b)
 {
-	if (a <= b) {
-		return true;
+	אם (a <= b) {
+		החזר אמת;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} אחרת {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		החזר שקר;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+فراغ __EXPORT float2SigExp(ثابت عائم &num, عائم &sig, صحيح &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	אם (!PX4_ISFINITE(num)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		החזר;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	אם (fabsf(num) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		החזר;
 	}
 
 	exp = log10f(fabsf(num));
 
-	if (exp > 0) {
+	אם (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} אחרת {
 		exp = floor(exp);
 	}
 
 	sig = num;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	אם (exp > 0) {
+		עבור (صحيح i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} אחרת {
+		עבור (صحيح i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

@@ -39,14 +39,14 @@
 
 #pragma once
 
-#include "BlockLimitSym.hpp"
+#ضمن "BlockLimitSym.hpp"
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
 /**
@@ -56,23 +56,23 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegral: public SuperBlock
+מחלקה __EXPORT BlockIntegral: عام SuperBlock
 {
-public:
+عام:
 // methods
-	BlockIntegral(SuperBlock *parent, const char *name) :
+	BlockIntegral(SuperBlock *parent, ثابت حرف *name) :
 		SuperBlock(parent, name),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegral() = default;
-	float update(float input);
+		_limit(هذا, "") {}
+	virtual ~BlockIntegral() = افتراضي;
+	عائم update(عائم input);
 // accessors
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setY(float y) {_y = y;}
-protected:
+	عائم getY() {החזר _y;}
+	عائم getMax() {החזר _limit.getMax();}
+	فراغ setY(عائم y) {_y = y;}
+محمي:
 // attributes
-	float _y; /**< previous output */
+	عائم _y; /**< previous output */
 	BlockLimitSym _limit; /**< limiter */
 };
 

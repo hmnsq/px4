@@ -36,12 +36,12 @@
  * Run this test only using make tests TESTFILTER=VelocitySmoothing
  */
 
-#include <gtest/gtest.h>
-#include <matrix/matrix/math.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/matrix/math.hpp>
 
-#include "VelocitySmoothing.hpp"
+#ضمن "VelocitySmoothing.hpp"
 
-using namespace matrix;
+using نطاق matrix;
 
 TEST(VelocitySmoothingBasicTest, AllZeroCase)
 {
@@ -102,44 +102,44 @@ TEST(VelocitySmoothingBasicTest, DivisionByZeroSaturateT1ForAccel)
 	EXPECT_FLOAT_EQ(trajectory.getCurrentPosition(), 0.f);
 }
 
-class VelocitySmoothingTest : public ::testing::Test
+מחלקה VelocitySmoothingTest : عام ::testing::Test
 {
-public:
-	void setConstraints(float j_max, float a_max, float v_max);
-	void setInitialConditions(Vector3f acc, Vector3f vel, Vector3f pos);
-	void updateTrajectories(float dt, Vector3f velocity_setpoints);
+عام:
+	فراغ setConstraints(عائم j_max, عائم a_max, عائم v_max);
+	فراغ setInitialConditions(Vector3f acc, Vector3f vel, Vector3f pos);
+	فراغ updateTrajectories(عائم dt, Vector3f velocity_setpoints);
 
 	VelocitySmoothing _trajectories[3];
 };
 
-void VelocitySmoothingTest::setConstraints(float j_max, float a_max, float v_max)
+فراغ VelocitySmoothingTest::setConstraints(عائم j_max, عائم a_max, عائم v_max)
 {
-	for (int i = 0; i < 3; i++) {
+	עבור (صحيح i = 0; i < 3; i++) {
 		_trajectories[i].setMaxJerk(j_max);
 		_trajectories[i].setMaxAccel(a_max);
 		_trajectories[i].setMaxVel(v_max);
 	}
 }
 
-void VelocitySmoothingTest::setInitialConditions(Vector3f a0, Vector3f v0, Vector3f x0)
+فراغ VelocitySmoothingTest::setInitialConditions(Vector3f a0, Vector3f v0, Vector3f x0)
 {
-	for (int i = 0; i < 3; i++) {
+	עבור (صحيح i = 0; i < 3; i++) {
 		_trajectories[i].setCurrentAcceleration(a0(i));
 		_trajectories[i].setCurrentVelocity(v0(i));
 		_trajectories[i].setCurrentPosition(x0(i));
 	}
 }
 
-void VelocitySmoothingTest::updateTrajectories(float dt, Vector3f velocity_setpoints)
+فراغ VelocitySmoothingTest::updateTrajectories(عائم dt, Vector3f velocity_setpoints)
 {
-	for (int i = 0; i < 3; i++) {
+	עבור (صحيح i = 0; i < 3; i++) {
 		_trajectories[i].updateTraj(dt);
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentJerk()), _trajectories[i].getMaxJerk());
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentAcceleration()), _trajectories[i].getMaxAccel());
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentVelocity()), _trajectories[i].getMaxVel());
 	}
 
-	for (int i = 0; i < 3; i++) {
+	עבור (صحيح i = 0; i < 3; i++) {
 		_trajectories[i].updateDurations(velocity_setpoints(i));
 	}
 
@@ -149,9 +149,9 @@ void VelocitySmoothingTest::updateTrajectories(float dt, Vector3f velocity_setpo
 TEST_F(VelocitySmoothingTest, testTimeSynchronization)
 {
 	// GIVEN: A set of constraints
-	const float j_max = 55.2f;
-	const float a_max = 6.f;
-	const float v_max = 6.f;
+	ثابت عائم j_max = 55.2f;
+	ثابت عائم a_max = 6.f;
+	ثابت عائم v_max = 6.f;
 
 	setConstraints(j_max, a_max, v_max);
 
@@ -181,10 +181,10 @@ TEST_F(VelocitySmoothingTest, testTimeSynchronizationSameDelta)
 	setInitialConditions(a0, v0, x0);
 
 	// WHEN: the same delta velocity is set to the XY-axes
-	const float delta_v = 0.3f;
+	ثابت عائم delta_v = 0.3f;
 	Vector3f velocity_setpoints{v0(0) + delta_v, v0(1) + delta_v, 0.f};
 
-	for (int i = 0; i < 3; i++) {
+	עבור (صحيح i = 0; i < 3; i++) {
 		_trajectories[i].updateDurations(velocity_setpoints(i));
 	}
 
@@ -206,9 +206,9 @@ TEST_F(VelocitySmoothingTest, testTimeSynchronizationSameDelta)
 TEST_F(VelocitySmoothingTest, testConstantSetpoint)
 {
 	// GIVEN: A set of constraints
-	const float j_max = 55.2f;
-	const float a_max = 6.f;
-	const float v_max = 6.f;
+	ثابت عائم j_max = 55.2f;
+	ثابت عائم a_max = 6.f;
+	ثابت عائم v_max = 6.f;
 
 	setConstraints(j_max, a_max, v_max);
 
@@ -224,18 +224,18 @@ TEST_F(VelocitySmoothingTest, testConstantSetpoint)
 
 	// Compute the number of steps required to reach desired value
 	// The updateTrajectories is first called once to compute the total time
-	const float dt = 0.01;
+	ثابت عائم dt = 0.01;
 	updateTrajectories(0.f, velocity_setpoints);
-	float t123 = _trajectories[0].getTotalTime();
-	int nb_steps = ceilf(t123 / dt);
+	عائم t123 = _trajectories[0].getTotalTime();
+	صحيح nb_steps = ceilf(t123 / dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	עבור (صحيح i = 0; i < nb_steps; i++) {
 		updateTrajectories(dt, velocity_setpoints);
 	}
 
 	// THEN: All the trajectories should have reached their
 	// final state: desired velocity target and zero acceleration
-	for (int i = 0; i < 3; i++) {
+	עבור (صحيح i = 0; i < 3; i++) {
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentVelocity() - velocity_setpoints(i)), 0.01f);
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentAcceleration()), 0.0001f);
 	}
@@ -252,15 +252,15 @@ TEST_F(VelocitySmoothingTest, testZeroSetpoint)
 
 	// AND: Zero setpoints
 	Vector3f velocity_setpoints(0.f, 0.f, 0.f);
-	const float dt = 0.01f;
+	ثابت عائم dt = 0.01f;
 
 	// WHEN: We run a few times the algorithm
-	for (int i = 0; i < 60; i++) {
+	עבור (صحيح i = 0; i < 60; i++) {
 		updateTrajectories(dt, velocity_setpoints);
 	}
 
 	// THEN: All the trajectories should still be zero
-	for (int i = 0; i < 3; i++) {
+	עבור (صحيح i = 0; i < 3; i++) {
 		EXPECT_FLOAT_EQ(_trajectories[i].getCurrentJerk(), 0.f);
 		EXPECT_FLOAT_EQ(_trajectories[i].getCurrentAcceleration(), 0.f);
 		EXPECT_FLOAT_EQ(_trajectories[i].getCurrentVelocity(), 0.f);

@@ -31,31 +31,31 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <random>
-#include <lib/matrix/matrix/math.hpp>
-#include "WelfordMean.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن <random>
+#ضمن <lib/matrix/matrix/math.hpp>
+#ضمن "WelfordMean.hpp"
 
-using namespace math;
+using نطاق math;
 using matrix::Vector3f;
 
 TEST(WelfordMeanTest, NoisySignal)
 {
-	const float std_dev = 3.f;
-	std::normal_distribution<float> standard_normal_distribution{0.f, std_dev};
+	ثابت عائم std_dev = 3.f;
+	std::normal_distribution<عائم> standard_normal_distribution{0.f, std_dev};
 	std::default_random_engine random_generator{}; // Pseudo-random generator with constant seed
 	random_generator.seed(42);
-	WelfordMean<float> welford{};
+	WelfordMean<عائم> welford{};
 
-	for (int i = 0; i < 1000; i++) {
-		const float noisy_value = standard_normal_distribution(random_generator);
+	עבור (صحيح i = 0; i < 1000; i++) {
+		ثابت عائم noisy_value = standard_normal_distribution(random_generator);
 		welford.update(noisy_value);
 	}
 
 	EXPECT_TRUE(welford.valid());
-	const float mean = welford.mean();
-	const float var = welford.variance();
-	const float var_real = std_dev * std_dev;
+	ثابت عائم mean = welford.mean();
+	ثابت عائم var = welford.variance();
+	ثابت عائم var_real = std_dev * std_dev;
 
 	EXPECT_NEAR(mean, 0.f, 0.7f);
 

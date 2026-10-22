@@ -31,25 +31,25 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <math.h>
-#include "TimestampedRingBuffer.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن <math.h>
+#ضمن "TimestampedRingBuffer.hpp"
 
-struct Sample {
+بنية Sample {
 	uint64_t time_us;
-	float data[3];
+	عائم data[3];
 };
 
 
-class TimestampedRingBufferStaticTest : public ::testing::Test
+מחלקה TimestampedRingBufferStaticTest : عام ::testing::Test
 {
-public:
+عام:
 	Sample _x, _y, _z, _w;
 	TimestampedRingBuffer<Sample, 3> *_buffer{nullptr};
 
-	void SetUp() override
+	فراغ SetUp() override
 	{
-		_buffer = new TimestampedRingBuffer<Sample, 3>();
+		_buffer = جديد TimestampedRingBuffer<Sample, 3>();
 		_x.time_us = 1000000;
 		_x.data[0] = _x.data[1] = _x.data[2] = 1.5f;
 
@@ -63,7 +63,7 @@ public:
 		_w.data[0] = _w.data[1] = _w.data[2] = 5.0f;
 	}
 
-	void TearDown() override
+	فراغ TearDown() override
 	{
 		delete _buffer;
 	}
@@ -146,12 +146,12 @@ TEST_F(TimestampedRingBufferStaticTest, ResetClearsTimestamps)
 	_buffer->reset();
 	EXPECT_TRUE(_buffer->empty());
 
-	for (uint8_t i = 0; i < _buffer->get_length(); i++) {
+	עבור (uint8_t i = 0; i < _buffer->get_length(); i++) {
 		EXPECT_EQ((*_buffer)[i].time_us, 0u);
 	}
 }
 
 TEST_F(TimestampedRingBufferStaticTest, TotalSizeReflectsInlineStorage)
 {
-	EXPECT_EQ(_buffer->get_total_size(), static_cast<int>(sizeof(TimestampedRingBuffer<Sample, 3>)));
+	EXPECT_EQ(_buffer->get_total_size(), static_cast<صحيح>(حجم(TimestampedRingBuffer<Sample, 3>)));
 }

@@ -32,49 +32,49 @@
  ****************************************************************************/
 
 
-#include "PX4Gyroscope.hpp"
+#ضمن "PX4Gyroscope.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#ضمن <lib/drivers/device/Device.hpp>
+#ضمن <lib/parameters/param.h>
 
-using namespace time_literals;
+using نطاق time_literals;
 
-static constexpr int32_t sum(const int16_t samples[], uint8_t len)
+ساكن constexpr int32_t sum(ثابت int16_t samples[], uint8_t len)
 {
 	int32_t sum = 0;
 
-	for (int n = 0; n < len; n++) {
+	עבור (صحيح n = 0; n < len; n++) {
 		sum += samples[n];
 	}
 
-	return sum;
+	החזר sum;
 }
 
-static constexpr uint8_t clipping(const int16_t samples[], uint8_t len, int16_t clip_limit)
+ساكن constexpr uint8_t clipping(ثابت int16_t samples[], uint8_t len, int16_t clip_limit)
 {
 	unsigned clip_count = 0;
 
-	for (int n = 0; n < len; n++) {
+	עבור (صحيح n = 0; n < len; n++) {
 		// symmetric about zero: rotation negates samples and |INT16_MIN| = INT16_MAX + 1
-		if ((samples[n] <= -clip_limit) || (samples[n] >= clip_limit)) {
+		אם ((samples[n] <= -clip_limit) || (samples[n] >= clip_limit)) {
 			clip_count++;
 		}
 	}
 
-	return clip_count;
+	החזר clip_count;
 }
 
-PX4Gyroscope::PX4Gyroscope(uint32_t device_id, enum Rotation rotation) :
+PX4Gyroscope::PX4Gyroscope(uint32_t device_id, تعداد Rotation rotation) :
 	PX4Gyroscope(device_id, rotation, device::device_is_external(device_id))
 {
-	_external_forced = false;
+	_external_forced = שקר;
 }
 
-PX4Gyroscope::PX4Gyroscope(uint32_t device_id, enum Rotation rotation, bool external) :
+PX4Gyroscope::PX4Gyroscope(uint32_t device_id, تعداد Rotation rotation, منطقي external) :
 	_device_id{device_id},
 	_rotation{rotation},
 	_is_external{external},
-	_external_forced{true}
+	_external_forced{אמת}
 {
 	// advertise immediately to keep instance numbering in sync
 	_sensor_pub.advertise();
@@ -82,19 +82,19 @@ PX4Gyroscope::PX4Gyroscope(uint32_t device_id, enum Rotation rotation, bool exte
 	param_get(param_find("IMU_GYRO_RATEMAX"), &_imu_gyro_rate_max);
 }
 
-void PX4Gyroscope::set_device_id(uint32_t device_id)
+فراغ PX4Gyroscope::set_device_id(uint32_t device_id)
 {
 	_device_id = device_id;
 
-	if (!_external_forced) {
+	אם (!_external_forced) {
 		_is_external = device::device_is_external(device_id);
 	}
 }
 
-void PX4Gyroscope::set_external(bool external)
+فراغ PX4Gyroscope::set_external(منطقي external)
 {
 	_is_external = external;
-	_external_forced = true;
+	_external_forced = אמת;
 }
 
 PX4Gyroscope::~PX4Gyroscope()
@@ -103,10 +103,10 @@ PX4Gyroscope::~PX4Gyroscope()
 	_sensor_fifo_pub.unadvertise();
 }
 
-void PX4Gyroscope::set_device_type(uint8_t devtype)
+فراغ PX4Gyroscope::set_device_type(uint8_t devtype)
 {
 	// current DeviceStructure
-	union device::Device::DeviceId device_id;
+	اتحاد device::Device::DeviceId device_id;
 	device_id.devid = _device_id;
 
 	// update to new device type
@@ -116,13 +116,13 @@ void PX4Gyroscope::set_device_type(uint8_t devtype)
 	_device_id = device_id.devid;
 }
 
-void PX4Gyroscope::set_scale(float scale)
+فراغ PX4Gyroscope::set_scale(عائم scale)
 {
-	if (fabsf(scale - _scale) > FLT_EPSILON) {
+	אם (fabsf(scale - _scale) > FLT_EPSILON) {
 		// rescale last sample on scale change
-		float rescale = _scale / scale;
+		عائم rescale = _scale / scale;
 
-		for (auto &s : _last_sample) {
+		עבור (auto &s : _last_sample) {
 			s = roundf(s * rescale);
 		}
 
@@ -132,7 +132,7 @@ void PX4Gyroscope::set_scale(float scale)
 	}
 }
 
-void PX4Gyroscope::update(const hrt_abstime &timestamp_sample, float x, float y, float z)
+فراغ PX4Gyroscope::update(ثابت hrt_abstime &timestamp_sample, عائم x, عائم y, عائم z)
 {
 	// Apply rotation (before scaling)
 	rotate_3f(_rotation, x, y, z);
@@ -155,18 +155,18 @@ void PX4Gyroscope::update(const hrt_abstime &timestamp_sample, float x, float y,
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
+	אם (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
 					_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		החזר;
 	}
 
 	_sensor_pub.publish(report);
 }
 
-void PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
+فراغ PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
 {
 	// rotate all raw samples and publish fifo
-	for (int n = 0; n < sample.samples; n++) {
+	עבור (صحيح n = 0; n < sample.samples; n++) {
 		rotate_3i(_rotation, sample.x[n], sample.y[n], sample.z[n]);
 	}
 
@@ -177,14 +177,14 @@ void PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
+	אם (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
 					_sensor_pub.get_instance(), sample, _stuck_fifo)) {
-		return;
+		החזר;
 	}
 
 	_sensor_fifo_pub.publish(sample);
 
-	const uint8_t N = sample.samples;
+	ثابت uint8_t N = sample.samples;
 
 	// publish
 	sensor_gyro_s report;
@@ -195,7 +195,7 @@ void PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
 	report.error_count = _error_count;
 
 	// trapezoidal integration (equally spaced)
-	const float scale = _scale / (float)N;
+	ثابت عائم scale = _scale / (عائم)N;
 	report.x = (0.5f * (_last_sample[0] + sample.x[N - 1]) + sum(sample.x, N - 1)) * scale;
 	report.y = (0.5f * (_last_sample[1] + sample.y[N - 1]) + sum(sample.y, N - 1)) * scale;
 	report.z = (0.5f * (_last_sample[2] + sample.z[N - 1]) + sum(sample.z, N - 1)) * scale;
@@ -207,22 +207,22 @@ void PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
 	// The declared range is not the int16 rail on every part (ST high-g and dps scales leave
 	// headroom in the word), so clip against range/scale like update() does. The 0.999 margin
 	// in _clip_limit also covers sensors that reuse the lowest bit for a sync flag.
-	const int16_t clip_limit = static_cast<int16_t>(math::min(_clip_limit, (float)(INT16_MAX - 1)));
+	ثابت int16_t clip_limit = static_cast<int16_t>(math::min(_clip_limit, (عائم)(INT16_MAX - 1)));
 	report.clip_counter[0] = clipping(sample.x, N, clip_limit);
 	report.clip_counter[1] = clipping(sample.y, N, clip_limit);
 	report.clip_counter[2] = clipping(sample.z, N, clip_limit);
 	report.samples = N;
 	report.timestamp = hrt_absolute_time();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
+	אם (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
 					_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		החזר;
 	}
 
 	_sensor_pub.publish(report);
 }
 
-void PX4Gyroscope::UpdateClipLimit()
+فراغ PX4Gyroscope::UpdateClipLimit()
 {
 	// 99.9% of potential max
 	_clip_limit = fabsf(_range / _scale * 0.999f);

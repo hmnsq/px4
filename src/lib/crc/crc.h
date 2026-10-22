@@ -94,7 +94,7 @@ uint16_t crc16_add(uint16_t crc, uint8_t value);
  ****************************************************************************/
 
 uint16_t crc16_signature(uint16_t initial, size_t length,
-			 const uint8_t *bytes);
+			 ثابت uint8_t *bytes);
 
 /****************************************************************************
  * Name: crc32_signature
@@ -114,7 +114,7 @@ uint16_t crc16_signature(uint16_t initial, size_t length,
  ****************************************************************************/
 
 uint32_t crc32_signature(uint32_t acc, size_t length,
-			 const uint8_t *bytes);
+			 ثابت uint8_t *bytes);
 
 
 /****************************************************************************

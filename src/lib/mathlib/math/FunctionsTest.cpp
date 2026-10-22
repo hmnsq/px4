@@ -31,10 +31,10 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "Functions.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن "Functions.hpp"
 
-using namespace math;
+using نطاق math;
 
 TEST(FunctionsTest, signNoZero)
 {
@@ -49,8 +49,8 @@ TEST(FunctionsTest, signNoZero)
 
 TEST(FunctionsTest, signFromBool)
 {
-	EXPECT_EQ(signFromBool(true), 1);
-	EXPECT_EQ(signFromBool(false), -1);
+	EXPECT_EQ(signFromBool(אמת), 1);
+	EXPECT_EQ(signFromBool(שקר), -1);
 	EXPECT_EQ(signFromBool(100), 1);
 	EXPECT_EQ(signFromBool(-100), 1);
 	EXPECT_EQ(signFromBool(0), -1);
@@ -178,8 +178,8 @@ TEST(FunctionsTest, interpolate)
 
 TEST(FunctionsTest, interpolateNXY)
 {
-	float x[3] = {0.f, .5f, 1.5f};
-	float y[3] = {1.f, 2.f, 3.f};
+	عائم x[3] = {0.f, .5f, 1.5f};
+	عائم y[3] = {1.f, 2.f, 3.f};
 
 	// factor of *2, offset +1
 	EXPECT_FLOAT_EQ(interpolateNXY(-12.f, x, y), 1.f);

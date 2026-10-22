@@ -37,12 +37,12 @@
 
 #pragma once
 
-#include <lib/mathlib/mathlib.h>
-#include <matrix/math.hpp>
-#include <uORB/topics/sensor_combined.h>
-#include <uORB/topics/sensor_gnss.h>
-#include <uORB/topics/vehicle_attitude.h>
-#include <uORB/topics/distance_sensor.h>
+#ضمن <lib/mathlib/mathlib.h>
+#ضمن <matrix/math.hpp>
+#ضمن <uORB/topics/sensor_combined.h>
+#ضمن <uORB/topics/sensor_gnss.h>
+#ضمن <uORB/topics/vehicle_attitude.h>
+#ضمن <uORB/topics/distance_sensor.h>
 
 
 /*
@@ -58,30 +58,30 @@
 
 class __EXPORT TerrainEstimator
 {
-public:
+عام:
 	TerrainEstimator();
-	~TerrainEstimator() = default;
+	~TerrainEstimator() = افتراضي;
 
-	bool is_valid() {return _terrain_valid;}
-	float get_distance_to_ground() {return -_x(0);}
-	float get_velocity() {return _x(1);}
+	bool is_valid() {החזר _terrain_valid;}
+	عائم get_distance_to_ground() {החזר -_x(0);}
+	عائم get_velocity() {החזר _x(1);}
 
-	void predict(float dt, const struct vehicle_attitude_s *attitude, const struct sensor_combined_s *sensor,
-		     const struct distance_sensor_s *distance);
-	void measurement_update(uint64_t time_ref, const struct sensor_gnss_s *gnss,
-				const struct distance_sensor_s *distance,
-				const struct vehicle_attitude_s *attitude);
+	فراغ predict(عائم dt, ثابت بنية vehicle_attitude_s *attitude, ثابت بنية sensor_combined_s *sensor,
+		     ثابت بنية distance_sensor_s *distance);
+	فراغ measurement_update(uint64_t time_ref, ثابت بنية sensor_gnss_s *gnss,
+				ثابت بنية distance_sensor_s *distance,
+				ثابت بنية vehicle_attitude_s *attitude);
 
-private:
-	enum {n_x = 3};
+خاص:
+	تعداد {n_x = 3};
 
-	float _distance_last;
+	عائم _distance_last;
 	bool _terrain_valid;
 
 	// kalman filter variables
-	matrix::Vector<float, n_x> _x;		// state: ground distance, velocity, accel bias in z direction
-	float  _u_z;			// acceleration in earth z direction
-	matrix::Matrix<float, 3, 3> _P;	// covariance matrix
+	matrix::Vector<عائم, n_x> _x;		// state: ground distance, velocity, accel bias in z direction
+	عائم  _u_z;			// acceleration in earth z direction
+	matrix::Matrix<عائم, 3, 3> _P;	// covariance matrix
 
 	// timestamps
 	uint64_t _time_last_distance;
@@ -97,6 +97,6 @@ private:
 	} _params;
 	*/
 
-	bool is_distance_valid(float distance);
+	bool is_distance_valid(عائم distance);
 
 };

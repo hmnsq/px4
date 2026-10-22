@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ضمن "FunctionProviderBase.hpp"
 
-#include <uORB/topics/actuator_servos.h>
+#ضمن <uORB/topics/actuator_servos.h>
 
 /**
  * Functions: Servo1 ... ServoMax
  */
-class FunctionServos : public FunctionProviderBase
+מחלקה FunctionServos : عام FunctionProviderBase
 {
-public:
-	static_assert(actuator_servos_s::NUM_CONTROLS == (int)OutputFunction::ServoMax - (int)OutputFunction::Servo1 + 1,
+عام:
+	static_assert(actuator_servos_s::NUM_CONTROLS == (صحيح)OutputFunction::ServoMax - (صحيح)OutputFunction::Servo1 + 1,
 		      "Unexpected num servos");
 
-	FunctionServos(const Context &context) :
+	FunctionServos(ثابت Context &context) :
 		_topic(&context.work_item, ORB_ID(actuator_servos))
 	{
-		for (int i = 0; i < actuator_servos_s::NUM_CONTROLS; ++i) {
+		עבור (صحيح i = 0; i < actuator_servos_s::NUM_CONTROLS; ++i) {
 			_data.control[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionServos(context); }
+	ساكن FunctionProviderBase *allocate(ثابت Context &context) { החזר جديد FunctionServos(context); }
 
-	void update() override { _topic.update(&_data); }
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Servo1]; }
+	فراغ update() override { _topic.update(&_data); }
+	عائم value(OutputFunction func) override { החזר _data.control[(صحيح)func - (صحيح)OutputFunction::Servo1]; }
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { החזר &_topic; }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 0.f; }
+	عائم defaultFailsafeValue(OutputFunction func) ثابت override { החזר 0.f; }
 
-private:
+خاص:
 	uORB::SubscriptionCallbackWorkItem _topic;
 	actuator_servos_s _data{};
 };

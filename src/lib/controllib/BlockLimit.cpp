@@ -37,24 +37,24 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#ضمن <math.h>
+#ضمن <float.h>
 
-#include "blocks.hpp"
+#ضمن "blocks.hpp"
 
-namespace control
+نطاق control
 {
 
-float BlockLimit::update(float input)
+عائم BlockLimit::update(عائم input)
 {
-	if (input > getMax()) {
+	אם (input > getMax()) {
 		input = _max.get();
 
-	} else if (input < getMin()) {
+	} אחרת אם (input < getMin()) {
 		input = getMin();
 	}
 
-	return input;
+	החזר input;
 }
 
 } // namespace control

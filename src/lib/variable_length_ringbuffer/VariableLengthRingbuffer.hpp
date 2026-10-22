@@ -35,8 +35,8 @@
 
 #pragma once
 
-#include <stdint.h>
-#include <lib/ringbuffer/Ringbuffer.hpp>
+#ضمن <stdint.h>
+#ضمن <lib/ringbuffer/Ringbuffer.hpp>
 
 
 // FIFO ringbuffer implementation for packets of variable length.
@@ -46,14 +46,14 @@
 //
 // The buffer is not thread-safe.
 
-class VariableLengthRingbuffer
+מחלקה VariableLengthRingbuffer
 {
-public:
+عام:
 	/* @brief Constructor
 	 *
 	 * @note Does not allocate automatically.
 	 */
-	VariableLengthRingbuffer() = default;
+	VariableLengthRingbuffer() = افتراضي;
 
 	/*
 	 * @brief Destructor
@@ -71,14 +71,14 @@ public:
 	 *
 	 * @returns false if allocation fails.
 	 */
-	bool allocate(size_t buffer_size);
+	منطقي allocate(size_t buffer_size);
 
 	/*
 	 * @brief Deallocate ringbuffer
 	 *
 	 * @note only required to deallocate and reallocate again.
 	 */
-	void deallocate();
+	فراغ deallocate();
 
 	/*
 	 * @brief Copy packet into ringbuffer
@@ -88,7 +88,7 @@ public:
 	 *
 	 * @returns true if packet could be copied into buffer.
 	 */
-	bool push_back(const uint8_t *packet, size_t packet_len);
+	منطقي push_back(ثابت uint8_t *packet, size_t packet_len);
 
 	/*
 	 * @brief Get packet from ringbuffer
@@ -102,8 +102,8 @@ public:
 	 */
 	size_t pop_front(uint8_t *buf, size_t max_buf_len);
 
-private:
-	struct Header {
+خاص:
+	بنية Header {
 		uint32_t len;
 	};
 

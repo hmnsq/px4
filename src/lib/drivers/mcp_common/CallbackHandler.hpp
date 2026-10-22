@@ -32,29 +32,29 @@
  ****************************************************************************/
 #pragma once
 
-#include <stdint.h>
-#include <uORB/topics/gpio_in.h>
-#include <uORB/SubscriptionCallback.hpp>
+#ضمن <stdint.h>
+#ضمن <uORB/topics/gpio_in.h>
+#ضمن <uORB/SubscriptionCallback.hpp>
 
-class CallbackHandler : public uORB::SubscriptionCallback
+מחלקה CallbackHandler : عام uORB::SubscriptionCallback
 {
-public:
+عام:
 	uint32_t dev_id;
 	uint16_t input{0};
 
 	CallbackHandler(orb_id_t id) : uORB::SubscriptionCallback(id) {}
 	virtual ~CallbackHandler() {}
 
-	void call(unsigned generation) override
+	فراغ call(unsigned generation) override
 	{
 		px4::msg::GpioIn new_input;
 
-		for (int i = 0; i < new_input.MAX_INSTANCES; i++) {
+		עבור (صحيح i = 0; i < new_input.MAX_INSTANCES; i++) {
 			ChangeInstance(i);
 
-			if (update(&new_input) && new_input.device_id == dev_id) {
+			אם (update(&new_input) && new_input.device_id == dev_id) {
 				input = new_input.state;
-				break;
+				اكسر;
 			}
 		}
 	}

@@ -43,35 +43,35 @@
 
 #pragma once
 
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <lib/drivers/smbus/SMBus.hpp>
-#include <uORB/topics/battery_info.h>
-#include <uORB/topics/battery_status.h>
-#include <px4_platform_common/param.h>
-#include <lib/atmosphere/atmosphere.h>
+#ضمن <px4_platform_common/i2c_spi_buses.h>
+#ضمن <lib/drivers/smbus/SMBus.hpp>
+#ضمن <uORB/topics/battery_info.h>
+#ضمن <uORB/topics/battery_status.h>
+#ضمن <px4_platform_common/param.h>
+#ضمن <lib/atmosphere/atmosphere.h>
 
-using namespace time_literals;
+using نطاق time_literals;
 
 #define SBS_MEASUREMENT_INTERVAL_US             	100_ms          ///< time in microseconds, measure at 10Hz (not part of SBS spec)
 
-template<class T>
-class SMBUS_SBS_BaseClass : public I2CSPIDriver<T>
+template<מחלקה T>
+מחלקה SMBUS_SBS_BaseClass : عام I2CSPIDriver<T>
 {
-public:
-	SMBUS_SBS_BaseClass(const I2CSPIDriverConfig &config, SMBus *interface);
+عام:
+	SMBUS_SBS_BaseClass(ثابت I2CSPIDriverConfig &config, SMBus *interface);
 	SMBUS_SBS_BaseClass();
 
 	~SMBUS_SBS_BaseClass();
 
-	static void print_usage();
+	ساكن فراغ print_usage();
 
 	friend SMBus;
 
-	int populate_smbus_data(battery_status_s &msg, battery_info_s &battery_info);
+	صحيح populate_smbus_data(battery_status_s &msg, battery_info_s &battery_info);
 
-	virtual void RunImpl(); // Can be overridden by derived implimentation
+	virtual فراغ RunImpl(); // Can be overridden by derived implimentation
 
-	virtual void custom_method(const BusCLIArguments &cli) = 0; //Has be overriden by derived implimentation
+	virtual فراغ custom_method(ثابت BusCLIArguments &cli) = 0; //Has be overriden by derived implimentation
 
 	/**
 	 * @brief Returns the SBS serial number of the battery device.
@@ -83,13 +83,13 @@ public:
 	* @brief Read info from battery on startup.
 	* @return Returns PX4_OK on success, PX4_ERROR on failure. Can be overridden by derived implimentation
 	*/
-	virtual int get_startup_info();
+	virtual صحيح get_startup_info();
 
 	/**
 	 * @brief Gets the SBS manufacture date of the battery.
 	 * @return Returns PX4_OK on success, PX4_ERROR on failure.
 	 */
-	int manufacture_date();
+	صحيح manufacture_date();
 
 	/**
 	 * @brief Gets the SBS manufacturer name of the battery device.
@@ -98,16 +98,16 @@ public:
 	 *                   including the null character that is appended to the end.
 	 * @return Returns PX4_OK on success, PX4_ERROR on failure.
 	 */
-	int manufacturer_name(uint8_t *manufacturer_name, const uint8_t length);
+	صحيح manufacturer_name(uint8_t *manufacturer_name, ثابت uint8_t length);
 
 	/**
 	 * @brief Enables or disables the cell under voltage protection emergency shut off.
 	 */
 
-	void suspend();
+	فراغ suspend();
 
-	void resume();
-	enum {
+	فراغ resume();
+	تعداد {
 		BATT_SMBUS_TEMP                         =	0x08,           ///< temperature register
 		BATT_SMBUS_VOLTAGE                      =       0x09,           ///< voltage register
 		BATT_SMBUS_CURRENT                      =       0x0A,           ///< current register
@@ -131,7 +131,7 @@ public:
 		BATT_SMBUS_MANUFACTURER_DATA            =       0x23
 	} SBS_REGISTERS;
 
-protected:
+محمي:
 
 	SMBus *_interface;
 
@@ -156,76 +156,76 @@ protected:
 	uint16_t _serial_number{0};
 
 	/** @param _manufacturer_name Name of the battery manufacturer. */
-	char _manufacturer_name[BATT_SMBUS_MANUFACTURER_NAME_SIZE + 1] {};	// Plus one for terminator
+	حرف _manufacturer_name[BATT_SMBUS_MANUFACTURER_NAME_SIZE + 1] {};	// Plus one for terminator
 
 	/** @param _manufacture_date Date of the battery manufacturing. */
 	uint16_t _manufacture_date{0};
 
 	/** @param _state_of_health state of health as read on connection  */
-	float _state_of_health{0.f}; // Not part of SBS, can be calculated from FullChargeCapacity
+	عائم _state_of_health{0.f}; // Not part of SBS, can be calculated from FullChargeCapacity
 	// and DesignCapacity
 
-	void print_man_info();
+	فراغ print_man_info();
 
 };
 
-template<class T>
-SMBUS_SBS_BaseClass<T>::SMBUS_SBS_BaseClass(const I2CSPIDriverConfig &config, SMBus *interface):
+template<מחלקה T>
+SMBUS_SBS_BaseClass<T>::SMBUS_SBS_BaseClass(ثابت I2CSPIDriverConfig &config, SMBus *interface):
 	I2CSPIDriver<T>(config),
 	_interface(interface)
 {
 	battery_info_s battery_info{};
 	battery_status_s new_report = {};
-	int SBS_instance_number = 0;
+	صحيح SBS_instance_number = 0;
 	_battery_info_topic = orb_advertise_multi(ORB_ID(battery_info), &battery_info, &SBS_instance_number);
 	_batt_topic = orb_advertise_multi(ORB_ID(battery_status), &new_report, &SBS_instance_number);
 	_interface->init();
 }
 
-template<class T>
+template<מחלקה T>
 SMBUS_SBS_BaseClass<T>::~SMBUS_SBS_BaseClass()
 {
 	orb_unadvertise(_batt_topic);
 	perf_free(_cycle); // TODO
 
-	if (_interface != nullptr) {
+	אם (_interface != nullptr) {
 		delete _interface;
 	}
 
 }
 
-template<class T>
-void SMBUS_SBS_BaseClass<T>::suspend()
+template<מחלקה T>
+فراغ SMBUS_SBS_BaseClass<T>::suspend()
 {
-	this->ScheduleClear();
+	هذا->ScheduleClear();
 }
 
-template<class T>
-void SMBUS_SBS_BaseClass<T>::resume()
+template<מחלקה T>
+فراغ SMBUS_SBS_BaseClass<T>::resume()
 {
-	this->ScheduleOnInterval(SBS_MEASUREMENT_INTERVAL_US);
+	هذا->ScheduleOnInterval(SBS_MEASUREMENT_INTERVAL_US);
 }
 
-template<class T>
+template<מחלקה T>
 uint16_t SMBUS_SBS_BaseClass<T>::get_serial_number()
 {
 	uint16_t serial_num = 0;
 
-	if (_interface->read_word(BATT_SMBUS_SERIAL_NUMBER, serial_num) == PX4_OK) {
-		return serial_num;
+	אם (_interface->read_word(BATT_SMBUS_SERIAL_NUMBER, serial_num) == PX4_OK) {
+		החזר serial_num;
 	}
 
-	return PX4_ERROR;
+	החזר PX4_ERROR;
 }
 
-template<class T>
-int SMBUS_SBS_BaseClass<T>::get_startup_info()
+template<מחלקה T>
+صحيح SMBUS_SBS_BaseClass<T>::get_startup_info()
 {
-	int ret = PX4_OK;
+	صحيح ret = PX4_OK;
 
 	ret |= _interface->block_read(BATT_SMBUS_MANUFACTURER_NAME, _manufacturer_name, BATT_SMBUS_MANUFACTURER_NAME_SIZE,
-				      true);
-	_manufacturer_name[sizeof(_manufacturer_name) - 1] = '\0';
+				      אמת);
+	_manufacturer_name[حجم(_manufacturer_name) - 1] = '\0';
 
 	uint16_t serial_num;
 	ret |= _interface->read_word(BATT_SMBUS_SERIAL_NUMBER, serial_num);
@@ -242,37 +242,37 @@ int SMBUS_SBS_BaseClass<T>::get_startup_info()
 	uint16_t manufacture_date;
 	ret |= _interface->read_word(BATT_SMBUS_MANUFACTURE_DATE, manufacture_date);
 
-	if (!ret) {
+	אם (!ret) {
 		_serial_number = serial_num;
-		_batt_startup_capacity = (uint16_t)((float)remaining_cap);
+		_batt_startup_capacity = (uint16_t)((عائم)remaining_cap);
 		_cycle_count = cycle_count;
-		_batt_capacity = (uint16_t)((float)full_cap);
+		_batt_capacity = (uint16_t)((عائم)full_cap);
 		_manufacture_date = manufacture_date;
 	}
 
-	return ret;
+	החזר ret;
 }
 
-template<class T>
-int SMBUS_SBS_BaseClass<T>::populate_smbus_data(battery_status_s &data, battery_info_s &battery_info)
+template<מחלקה T>
+صحيح SMBUS_SBS_BaseClass<T>::populate_smbus_data(battery_status_s &data, battery_info_s &battery_info)
 {
 
 	// Temporary variable for storing SMBUS reads.
 	uint16_t result;
 
-	int ret = _interface->read_word(BATT_SMBUS_VOLTAGE, result);
+	صحيح ret = _interface->read_word(BATT_SMBUS_VOLTAGE, result);
 
 	// Convert millivolts to volts.
-	data.voltage_v = ((float)result) * 0.001f;
+	data.voltage_v = ((عائم)result) * 0.001f;
 
 	// Read current.
 	ret |= _interface->read_word(BATT_SMBUS_CURRENT, result);
 
-	data.current_a = (-1.0f * ((float)(*(int16_t *)&result)) * 0.001f);
+	data.current_a = (-1.0f * ((عائم)(*(int16_t *)&result)) * 0.001f);
 
 	// Read remaining capacity.
 	ret |= _interface->read_word(BATT_SMBUS_RELATIVE_SOC, result);
-	data.remaining = (float)result * 0.01f;
+	data.remaining = (عائم)result * 0.01f;
 
 	// Read remaining capacity.
 	ret |= _interface->read_word(BATT_SMBUS_REMAINING_CAPACITY, result);
@@ -288,18 +288,18 @@ int SMBUS_SBS_BaseClass<T>::populate_smbus_data(battery_status_s &data, battery_
 
 	// Read serial number.
 	ret |= _interface->read_word(BATT_SMBUS_SERIAL_NUMBER, result);
-	snprintf(battery_info.serial_number, sizeof(battery_info.serial_number), "%" PRIu16, result);
+	snprintf(battery_info.serial_number, حجم(battery_info.serial_number), "%" PRIu16, result);
 
 	// Read battery temperature and covert to Celsius.
 	ret |= _interface->read_word(BATT_SMBUS_TEMP, result);
-	data.temperature = ((float)result * 0.1f) + atmosphere::kAbsoluteNullCelsius;
+	data.temperature = ((عائم)result * 0.1f) + atmosphere::kAbsoluteNullCelsius;
 
-	return ret;
+	החזר ret;
 
 }
 
-template<class T>
-void SMBUS_SBS_BaseClass<T>::RunImpl()
+template<מחלקה T>
+فراغ SMBUS_SBS_BaseClass<T>::RunImpl()
 {
 
 	// Get the current time.
@@ -313,18 +313,18 @@ void SMBUS_SBS_BaseClass<T>::RunImpl()
 	// Set time of reading.
 	new_report.timestamp = now;
 
-	new_report.connected = true;
+	new_report.connected = אמת;
 
 	battery_info_s battery_info{};
 	battery_info.timestamp = now;
 	battery_info.id = new_report.id;
 
-	int ret = populate_smbus_data(new_report, battery_info);
+	صحيح ret = populate_smbus_data(new_report, battery_info);
 
 	new_report.cell_count = _cell_count;
 
 	// Only publish if no errors.
-	if (!ret) {
+	אם (!ret) {
 		orb_publish(ORB_ID(battery_status), _batt_topic, &new_report);
 		orb_publish(ORB_ID(battery_info), _battery_info_topic, &battery_info);
 	}
