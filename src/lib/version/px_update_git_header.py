@@ -37,9 +37,9 @@ header = """
 
 
 # PX4
-if args.git_tag:
+གལ་ཏེ args.git_tag:
     git_tag = args.git_tag
-else:
+དེ་མིན:
     git_describe_cmd = 'git describe --exclude ext/* --always --tags --dirty'
     git_tag = subprocess.check_output(git_describe_cmd.split(),
                                   stderr=subprocess.STDOUT).decode('utf-8').strip()
@@ -51,8 +51,8 @@ try:
 except:
     tag_or_branch = None
 
-if validate:
-    if verbose:
+གལ་ཏེ validate:
+    གལ་ཏེ verbose:
         print("testing git tag: "+git_tag)
     # remove optional '-dirty' at the end
     git_tag_test = re.sub(r'-dirty$', '', git_tag)
@@ -61,7 +61,7 @@ if validate:
     # now check the version format
     m = re.match(r'v([0-9]+)\.([0-9]+)\.[0-9]+(((-dev)|(-alpha[0-9]+)|(-beta[0-9]+)|(-rc[0-9]+))|'\
                  r'(-[0-9]+\.[0-9]+\.[0-9]+((-dev)|(-alpha[0-9]+)|(-beta[0-9]+)|([-]?rc[0-9]+))?))?$', git_tag_test)
-    if not m:
+    གལ་ཏེ na m:
         print("")
         print("Error: the git tag '{:}' does not match the expected format.".format(git_tag_test))
         print("")
@@ -94,12 +94,12 @@ try:
 except:
     oem_tag = ''
 
-if tag_or_branch is None:
+གལ་ཏེ tag_or_branch is None:
     # replace / so it can be used as directory name
     tag_or_branch = git_branch_name.replace('/', '-')
     # either a release or master branch (used for metadata)
     # CI uploads to 'master/' on S3 for legacy QGC compatibility
-    if not tag_or_branch.startswith('release-'):
+    གལ་ཏེ na tag_or_branch.startswith('release-'):
         tag_or_branch = 'master'
 
 header += f"""
@@ -115,7 +115,7 @@ header += f"""
 
 
 # Mavlink
-if (os.path.exists('src/modules/mavlink/mavlink/.git')):
+གལ་ཏེ (os.path.exists('src/modules/mavlink/mavlink/.git')):
     mavlink_git_version = subprocess.check_output('git rev-parse --verify HEAD'.split(),
                                       cwd='src/modules/mavlink/mavlink', stderr=subprocess.STDOUT).decode('utf-8').strip()
     mavlink_git_version_short = mavlink_git_version[0:16]
@@ -127,7 +127,7 @@ if (os.path.exists('src/modules/mavlink/mavlink/.git')):
 
 
 # NuttX
-if (os.path.exists('platforms/nuttx/NuttX/nuttx/.git')):
+གལ་ཏེ (os.path.exists('platforms/nuttx/NuttX/nuttx/.git')):
     # The PX4/NuttX fork branch name recorded in .gitmodules is the
     # authoritative kernel version: px4_firmware_nuttx-X.Y.Z+ is updated
     # in the same commit as every kernel upgrade. Fall back to git
@@ -141,15 +141,15 @@ if (os.path.exists('platforms/nuttx/NuttX/nuttx/.git')):
         branch_version = re.match(r'^px4_firmware_nuttx-([0-9]+\.[0-9]+\.[0-9]+)\+?$', nuttx_branch)
     except subprocess.CalledProcessError:
         branch_version = None
-    if branch_version:
+    གལ་ཏེ branch_version:
         nuttx_git_tag = "v" + branch_version.group(1)
-    else:
+    དེ་མིན:
         try:
             nuttx_describe = subprocess.check_output(
                 'git describe --tags --match nuttx-*'.split(),
                 cwd='platforms/nuttx/NuttX/nuttx', stderr=subprocess.STDOUT).decode('utf-8').strip()
             describe_version = re.match(r'^nuttx-([0-9]+\.[0-9]+\.[0-9]+)', nuttx_describe)
-            if describe_version:
+            གལ་ཏེ describe_version:
                 nuttx_git_tag = "v" + describe_version.group(1)
         except subprocess.CalledProcessError:
             pass
@@ -164,8 +164,8 @@ if (os.path.exists('platforms/nuttx/NuttX/nuttx/.git')):
 """
 
 
-if old_header != header:
-    if verbose:
+གལ་ཏེ old_header != header:
+    གལ་ཏེ verbose:
         print('Updating header {}'.format(filename))
     fp_header = open(filename, 'w')
     fp_header.write(header)

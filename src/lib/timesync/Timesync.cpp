@@ -45,7 +45,7 @@
 void Timesync::update(const uint64_t now_us, const int64_t remote_timestamp_ns, const int64_t originate_timestamp_ns)
 {
 	// Message originating from this system, compute time offset from it
-	if (remote_timestamp_ns > 0) {
+	གལ་ཏེ (remote_timestamp_ns > 0) {
 		// Calculate time offset between this system and the remote system, assuming RTT for
 		// the timesync packet is roughly equal both ways.
 		int64_t offset_us = (int64_t)((originate_timestamp_ns / 1000ULL) + now_us - (remote_timestamp_ns / 1000ULL) * 2) / 2 ;
@@ -56,32 +56,32 @@ void Timesync::update(const uint64_t now_us, const int64_t remote_timestamp_ns, 
 		// Calculate the difference of this sample from the current estimate
 		uint64_t deviation = llabs((int64_t)_time_offset - offset_us);
 
-		if (rtt_us < MAX_RTT_SAMPLE) {	// Only use samples with low RTT
+		གལ་ཏེ (rtt_us < MAX_RTT_SAMPLE) {	// Only use samples with low RTT
 
-			if (sync_converged() && (deviation > MAX_DEVIATION_SAMPLE)) {
+			གལ་ཏེ (sync_converged() && (deviation > MAX_DEVIATION_SAMPLE)) {
 
 				// Increment the counter if we have a good estimate and are getting samples far from the estimate
 				_high_deviation_count++;
 
 				// We reset the filter if we received 5 consecutive samples which violate our present estimate.
 				// This is most likely due to a time jump on the offboard system.
-				if (_high_deviation_count > MAX_CONSECUTIVE_HIGH_DEVIATION) {
+				གལ་ཏེ (_high_deviation_count > MAX_CONSECUTIVE_HIGH_DEVIATION) {
 					PX4_DEBUG("time jump detected. Resetting time synchroniser.");
 					// Reset the filter
 					reset_filter();
 				}
 
-			} else {
+			} དེ་མིན {
 
 				// Filter gain scheduling
-				if (!sync_converged()) {
+				གལ་ཏེ (!sync_converged()) {
 					// Interpolate with a sigmoid function
 					const float progress = (float) _sequence / (float) CONVERGENCE_WINDOW;
-					double p = (double)(1.f - expf(0.5f * (1.f - 1.f / (1.f - progress))));
+					dviguu_na p = (dviguu_na)(1.f - expf(0.5f * (1.f - 1.f / (1.f - progress))));
 					_filter_alpha = p * ALPHA_GAIN_FINAL + (1.0 - p) * ALPHA_GAIN_INITIAL;
 					_filter_beta = p * BETA_GAIN_FINAL + (1.0 - p) * BETA_GAIN_INITIAL;
 
-				} else {
+				} དེ་མིན {
 					_filter_alpha = ALPHA_GAIN_FINAL;
 					_filter_beta = BETA_GAIN_FINAL;
 				}
@@ -99,11 +99,11 @@ void Timesync::update(const uint64_t now_us, const int64_t remote_timestamp_ns, 
 				_high_rtt_count = 0;
 			}
 
-		} else {
+		} དེ་མིན {
 			// Increment counter if round trip time is too high for accurate timesync
 			_high_rtt_count++;
 
-			if (_high_rtt_count == MAX_CONSECUTIVE_HIGH_RTT) {
+			གལ་ཏེ (_high_rtt_count == MAX_CONSECUTIVE_HIGH_RTT) {
 				PX4_DEBUG("RTT too high for timesync: %llu ms", rtt_us / 1000ULL);
 			}
 		}
@@ -124,11 +124,11 @@ void Timesync::update(const uint64_t now_us, const int64_t remote_timestamp_ns, 
 uint64_t Timesync::sync_stamp(uint64_t usec)
 {
 	// Only return synchronised stamp if we have converged to a good value
-	if (sync_converged()) {
-		return usec + (int64_t)_time_offset;
+	གལ་ཏེ (sync_converged()) {
+		ཕྱིར usec + (int64_t)_time_offset;
 
-	} else {
-		return hrt_absolute_time();
+	} དེ་མིན {
+		ཕྱིར hrt_absolute_time();
 	}
 }
 
@@ -137,13 +137,13 @@ void Timesync::add_sample(int64_t offset_us)
 	// Online exponential smoothing filter. The derivative of the estimate is also
 	// estimated in order to produce an estimate without steady state lag:
 	// https://en.wikipedia.org/wiki/Exponential_smoothing#Double_exponential_smoothing
-	double time_offset_prev = _time_offset;
+	dviguu_na time_offset_prev = _time_offset;
 
-	if (_sequence == 0) {
+	གལ་ཏེ (_sequence == 0) {
 		// First offset sample
 		_time_offset = offset_us;
 
-	} else {
+	} དེ་མིན {
 		// Update the clock offset estimate
 		_time_offset = _filter_alpha * offset_us + (1.0 - _filter_alpha) * (_time_offset + _time_skew);
 

@@ -35,7 +35,7 @@
 #include <math.h>
 #include "TimestampedRingBuffer.hpp"
 
-struct Sample {
+sa_nracanaa Sample {
 	uint64_t time_us;
 	float data[3];
 };
@@ -146,12 +146,12 @@ TEST_F(TimestampedRingBufferStaticTest, ResetClearsTimestamps)
 	_buffer->reset();
 	EXPECT_TRUE(_buffer->empty());
 
-	for (uint8_t i = 0; i < _buffer->get_length(); i++) {
+	ཆེད་དུ (uint8_t i = 0; i < _buffer->get_length(); i++) {
 		EXPECT_EQ((*_buffer)[i].time_us, 0u);
 	}
 }
 
 TEST_F(TimestampedRingBufferStaticTest, TotalSizeReflectsInlineStorage)
 {
-	EXPECT_EQ(_buffer->get_total_size(), static_cast<int>(sizeof(TimestampedRingBuffer<Sample, 3>)));
+	EXPECT_EQ(_buffer->get_total_size(), static_cast<ཧྲིལ>(parimaa_na(TimestampedRingBuffer<Sample, 3>)));
 }

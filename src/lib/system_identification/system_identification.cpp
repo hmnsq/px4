@@ -66,7 +66,7 @@ void SystemIdentification::update()
 
 void SystemIdentification::updateFilters(float u, float y)
 {
-	if (!_are_filters_initialized) {
+	གལ་ཏེ (!_are_filters_initialized) {
 		_u_lpf.reset(u);
 		_y_lpf.reset(y);
 		_u_hpf = 0.f;
@@ -74,7 +74,7 @@ void SystemIdentification::updateFilters(float u, float y)
 		_u_prev = u;
 		_y_prev = y;
 		_are_filters_initialized = true;
-		return;
+		ཕྱིར;
 	}
 
 	const float u_lpf = _u_lpf.apply(u);
@@ -91,11 +91,11 @@ void SystemIdentification::updateFitness()
 	const matrix::Vector<float, 5> &diff = _rls.getDiffEstimate();
 	float sum = 0.f;
 
-	for (size_t i = 0; i < 5; i++) {
+	ཆེད་དུ (size_t i = 0; i < 5; i++) {
 		sum += diff(i);
 	}
 
-	if (_dt > FLT_EPSILON) {
+	གལ་ཏེ (_dt > FLT_EPSILON) {
 		_fitness_lpf.update(sum / _dt);
 	}
 }

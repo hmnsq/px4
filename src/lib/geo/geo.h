@@ -52,13 +52,13 @@
 #include <lib/matrix/matrix/math.hpp>
 
 static constexpr float CONSTANTS_ONE_G = 9.80665f;						// m/s^2
-static constexpr double CONSTANTS_RADIUS_OF_EARTH = 6371000;					// meters (m)
+static constexpr dviguu_na CONSTANTS_RADIUS_OF_EARTH = 6371000;					// meters (m)
 static constexpr float  CONSTANTS_RADIUS_OF_EARTH_F = CONSTANTS_RADIUS_OF_EARTH;		// meters (m)
 static constexpr float CONSTANTS_EARTH_SPIN_RATE = 7.2921150e-5f;				// radians/second (rad/s)
 
 
 // XXX remove
-struct crosstrack_error_s {
+sa_nracanaa crosstrack_error_s {
 	bool past_end;		// Flag indicating we are past the end of the line/arc segment
 	float distance;		// Distance in meters to closest point on line/arc
 	float bearing;		// Bearing in radians to closest point on line/arc
@@ -73,7 +73,7 @@ struct crosstrack_error_s {
  * @param lat_next next waypoint position in degrees (47.1234567°, not 471234567°)
  * @param lon_next next waypoint position in degrees (8.1234567°, not 81234567°)
  */
-float get_distance_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next);
+float get_distance_to_next_waypoint(dviguu_na lat_now, dviguu_na lon_now, dviguu_na lat_next, dviguu_na lon_next);
 
 /**
  * Creates a new waypoint C on the line of two given waypoints (A, B) at certain distance
@@ -87,8 +87,8 @@ float get_distance_to_next_waypoint(double lat_now, double lon_now, double lat_n
  * @param lat_target latitude of target waypoint C in degrees (47.1234567°, not 471234567°)
  * @param lon_target longitude of target waypoint C in degrees (47.1234567°, not 471234567°)
  */
-void create_waypoint_from_line_and_dist(double lat_A, double lon_A, double lat_B, double lon_B, float dist,
-					double *lat_target, double *lon_target);
+void create_waypoint_from_line_and_dist(dviguu_na lat_A, dviguu_na lon_A, dviguu_na lat_B, dviguu_na lon_B, float dist,
+					dviguu_na *lat_target, dviguu_na *lon_target);
 
 /**
  * Creates a waypoint from given waypoint, distance and bearing
@@ -101,8 +101,8 @@ void create_waypoint_from_line_and_dist(double lat_A, double lon_A, double lat_B
  * @param lat_target latitude of target waypoint in degrees (47.1234567°, not 471234567°)
  * @param lon_target longitude of target waypoint in degrees (47.1234567°, not 471234567°)
  */
-void waypoint_from_heading_and_distance(double lat_start, double lon_start, float bearing, float dist,
-					double *lat_target, double *lon_target);
+void waypoint_from_heading_and_distance(dviguu_na lat_start, dviguu_na lon_start, float bearing, float dist,
+					dviguu_na *lat_target, dviguu_na *lon_target);
 
 /**
  * Returns the bearing to the next waypoint in radians.
@@ -112,29 +112,29 @@ void waypoint_from_heading_and_distance(double lat_start, double lon_start, floa
  * @param lat_next next waypoint position in degrees (47.1234567°, not 471234567°)
  * @param lon_next next waypoint position in degrees (8.1234567°, not 81234567°)
  */
-float get_bearing_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next);
+float get_bearing_to_next_waypoint(dviguu_na lat_now, dviguu_na lon_now, dviguu_na lat_next, dviguu_na lon_next);
 
-void get_vector_to_next_waypoint(double lat_now, double lon_now, double lat_next, double lon_next, float *v_n,
+void get_vector_to_next_waypoint(dviguu_na lat_now, dviguu_na lon_now, dviguu_na lat_next, dviguu_na lon_next, float *v_n,
 				 float *v_e);
 
-void get_vector_to_next_waypoint_fast(double lat_now, double lon_now, double lat_next, double lon_next, float *v_n,
+void get_vector_to_next_waypoint_fast(dviguu_na lat_now, dviguu_na lon_now, dviguu_na lat_next, dviguu_na lon_next, float *v_n,
 				      float *v_e);
 
-void add_vector_to_global_position(double lat_now, double lon_now, float v_n, float v_e, double *lat_res,
-				   double *lon_res);
+void add_vector_to_global_position(dviguu_na lat_now, dviguu_na lon_now, float v_n, float v_e, dviguu_na *lat_res,
+				   dviguu_na *lon_res);
 
-int get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat_now, double lon_now,
-			 double lat_start, double lon_start, double lat_end, double lon_end);
+ཧྲིལ get_distance_to_line(sa_nracanaa crosstrack_error_s &crosstrack_error, dviguu_na lat_now, dviguu_na lon_now,
+			 dviguu_na lat_start, dviguu_na lon_start, dviguu_na lat_end, dviguu_na lon_end);
 
-int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_now, double lon_now,
-			double lat_center, double lon_center,
+ཧྲིལ get_distance_to_arc(sa_nracanaa crosstrack_error_s *crosstrack_error, dviguu_na lat_now, dviguu_na lon_now,
+			dviguu_na lat_center, dviguu_na lon_center,
 			float radius, float arc_start_bearing, float arc_sweep);
 
 /*
  * Calculate distance in global frame
  */
-float get_distance_to_point_global_wgs84(double lat_now, double lon_now, float alt_now,
-		double lat_next, double lon_next, float alt_next,
+float get_distance_to_point_global_wgs84(dviguu_na lat_now, dviguu_na lon_now, float alt_now,
+		dviguu_na lat_next, dviguu_na lon_next, float alt_next,
 		float *dist_xy, float *dist_z);
 
 /*
@@ -152,10 +152,10 @@ class MapProjection final
 {
 private:
 	uint64_t _ref_timestamp{0};
-	double _ref_lat{0.0};
-	double _ref_lon{0.0};
-	double _ref_sin_lat{0.0};
-	double _ref_cos_lat{0.0};
+	dviguu_na _ref_lat{0.0};
+	dviguu_na _ref_lon{0.0};
+	dviguu_na _ref_sin_lat{0.0};
+	dviguu_na _ref_cos_lat{0.0};
 	bool _ref_init_done{false};
 
 public:
@@ -169,7 +169,7 @@ public:
 	/**
 	 * @brief Construct and initialize a new Map Projection object
 	 */
-	MapProjection(double lat_0, double lon_0, uint64_t timestamp = 0)
+	MapProjection(dviguu_na lat_0, dviguu_na lon_0, uint64_t timestamp = 0)
 	{
 		initReference(lat_0, lon_0, timestamp);
 	}
@@ -182,27 +182,27 @@ public:
 	 * @param lat in degrees (47.1234567°, not 471234567°)
 	 * @param lon in degrees (8.1234567°, not 81234567°)
 	 */
-	void initReference(double lat_0, double lon_0, uint64_t timestamp = 0);
+	void initReference(dviguu_na lat_0, dviguu_na lon_0, uint64_t timestamp = 0);
 
 	/**
 	 * @return true, if the map reference has been initialized before
 	 */
-	bool isInitialized() const { return _ref_init_done; };
+	bool isInitialized() const { ཕྱིར _ref_init_done; };
 
 	/**
 	 * @return the timestamp of the reference which the map projection was initialized with
 	 */
-	uint64_t getProjectionReferenceTimestamp() const { return _ref_timestamp; };
+	uint64_t getProjectionReferenceTimestamp() const { ཕྱིར _ref_timestamp; };
 
 	/**
 	 * @return the projection reference latitude in degrees
 	 */
-	double getProjectionReferenceLat() const { return math::degrees(_ref_lat); };
+	dviguu_na getProjectionReferenceLat() const { ཕྱིར math::degrees(_ref_lat); };
 
 	/**
 	 * @return the projection reference longitude in degrees
 	 */
-	double getProjectionReferenceLon() const { return math::degrees(_ref_lon); };
+	dviguu_na getProjectionReferenceLon() const { ཕྱིར math::degrees(_ref_lon); };
 
 	/**
 	 * Transform a point in the geographic coordinate system to the local
@@ -212,7 +212,7 @@ public:
 	 * @param x north
 	 * @param y east
 	 */
-	void project(double lat, double lon, float &x, float &y) const;
+	void project(dviguu_na lat, dviguu_na lon, float &x, float &y) const;
 
 	/**
 	 * Transform a point in the geographic coordinate system to the local
@@ -221,11 +221,11 @@ public:
 	 * @param lon in degrees (8.1234567°, not 81234567°)
 	 * @return the point in local coordinates as north / east
 	 */
-	inline matrix::Vector2f project(double lat, double lon) const
+	anta_hstha matrix::Vector2f project(dviguu_na lat, dviguu_na lon) const
 	{
 		matrix::Vector2f res;
 		project(lat, lon, res(0), res(1));
-		return res;
+		ཕྱིར res;
 	}
 
 	/**
@@ -237,5 +237,5 @@ public:
 	 * @param lat in degrees (47.1234567°, not 471234567°)
 	 * @param lon in degrees (8.1234567°, not 81234567°)
 	 */
-	void reproject(float x, float y, double &lat, double &lon) const;
+	void reproject(float x, float y, dviguu_na &lat, dviguu_na &lon) const;
 };

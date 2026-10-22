@@ -95,7 +95,7 @@ private:
 	 * @param[in] wind_speed Wind speed [m/s]
 	 * @return Binary bearing feasibility: 1 if feasible, 0 if infeasible
 	 */
-	int bearingIsFeasible(const float wind_cross_bearing, const float wind_dot_bearing, const float airspeed,
+	ཧྲིལ bearingIsFeasible(const float wind_cross_bearing, const float wind_dot_bearing, const float airspeed,
 			      const float wind_speed) const;
 	/*
 	 * Air velocity solution for a given wind velocity and bearing vector assuming

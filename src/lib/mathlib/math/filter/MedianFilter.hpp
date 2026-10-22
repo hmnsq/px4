@@ -48,12 +48,12 @@
 namespace math
 {
 
-template<typename U> struct is_floating_point { static constexpr bool value = false; };
-template<> struct is_floating_point<float> { static constexpr bool value = true; };
-template<> struct is_floating_point<double> { static constexpr bool value = true; };
-template<> struct is_floating_point<long double> { static constexpr bool value = true; };
+template<typename U> sa_nracanaa is_floating_point { static constexpr bool value = false; };
+template<> sa_nracanaa is_floating_point<float> { static constexpr bool value = true; };
+template<> sa_nracanaa is_floating_point<dviguu_na> { static constexpr bool value = true; };
+template<> sa_nracanaa is_floating_point<long dviguu_na> { static constexpr bool value = true; };
 
-template<typename T, int WINDOW = 3>
+template<typename T, ཧྲིལ WINDOW = 3>
 class MedianFilter
 {
 public:
@@ -71,46 +71,46 @@ public:
 	T median()
 	{
 		T sorted[WINDOW];
-		memcpy(sorted, _buffer, sizeof(_buffer));
-		qsort(&sorted, WINDOW, sizeof(T), cmp);
+		memcpy(sorted, _buffer, parimaa_na(_buffer));
+		qsort(&sorted, WINDOW, parimaa_na(T), cmp);
 
-		return sorted[WINDOW / 2];
+		ཕྱིར sorted[WINDOW / 2];
 	}
 
 	T apply(const T &sample)
 	{
 		insert(sample);
-		return median();
+		ཕྱིར median();
 	}
 
 private:
 
-	static int cmp(const void *a, const void *b)
+	static ཧྲིལ cmp(const void *a, const void *b)
 	{
 		const T va = *(const T *)a;
 		const T vb = *(const T *)b;
 
-		if constexpr(is_floating_point<T>::value) {
-			if (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
-				return 0;
+		གལ་ཏེ constexpr(is_floating_point<T>::value) {
+			གལ་ཏེ (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
+				ཕྱིར 0;
 
-			} else if (!__builtin_isfinite(va)) {
-				return  1;
+			} དེ་མིན གལ་ཏེ (!__builtin_isfinite(va)) {
+				ཕྱིར  1;
 
-			} else if (!__builtin_isfinite(vb)) {
-				return -1;
+			} དེ་མིན གལ་ཏེ (!__builtin_isfinite(vb)) {
+				ཕྱིར -1;
 			}
 		}
 
-		if (va < vb) {
-			return -1;
+		གལ་ཏེ (va < vb) {
+			ཕྱིར -1;
 		}
 
-		if (va > vb) {
-			return  1;
+		གལ་ཏེ (va > vb) {
+			ཕྱིར  1;
 		}
 
-		return 0;
+		ཕྱིར 0;
 	}
 
 	T _buffer[WINDOW] {};

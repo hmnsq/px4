@@ -41,12 +41,12 @@ TEST(MatrixSetIdentityTest, SetIdentity)
 	Matrix3f A;
 	A.setIdentity();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	ཆེད་དུ (size_t i = 0; i < 3; i++) {
+		ཆེད་དུ (size_t j = 0; j < 3; j++) {
+			གལ་ཏེ (i == j) {
 				EXPECT_FLOAT_EQ(A(i, j), 1);
 
-			} else {
+			} དེ་མིན {
 				EXPECT_FLOAT_EQ(A(i, j), 0);
 			}
 		}
@@ -55,12 +55,12 @@ TEST(MatrixSetIdentityTest, SetIdentity)
 	Matrix3f B;
 	B.identity();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	ཆེད་དུ (size_t i = 0; i < 3; i++) {
+		ཆེད་དུ (size_t j = 0; j < 3; j++) {
+			གལ་ཏེ (i == j) {
 				EXPECT_FLOAT_EQ(B(i, j), 1);
 
-			} else {
+			} དེ་མིན {
 				EXPECT_FLOAT_EQ(B(i, j), 0);
 			}
 		}

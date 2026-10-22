@@ -64,7 +64,7 @@ class __EXPORT BlockLimit : public Block
 {
 public:
 // methods
-	BlockLimit(SuperBlock *parent, const char *name) :
+	BlockLimit(SuperBlock *parent, const var_na *name) :
 		Block(parent, name),
 		_min(this, "MIN"),
 		_max(this, "MAX")
@@ -72,9 +72,9 @@ public:
 	virtual ~BlockLimit() = default;
 	float update(float input);
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-protected:
+	float getMin() { ཕྱིར _min.get(); }
+	float getMax() { ཕྱིར _max.get(); }
+rak_sita:
 // attributes
 	control::BlockParamFloat _min;
 	control::BlockParamFloat _max;

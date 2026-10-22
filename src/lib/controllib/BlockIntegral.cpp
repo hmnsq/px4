@@ -49,7 +49,7 @@ float BlockIntegral::update(float input)
 {
 	// trapezoidal integration
 	setY(_limit.update(getY() + input * getDt()));
-	return getY();
+	ཕྱིར getY();
 }
 
 } // namespace control

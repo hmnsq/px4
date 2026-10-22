@@ -62,9 +62,9 @@ TEST_F(HeadingSmoothingTest, convergence)
 	const float heading_target = math::radians(5.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(1.f / _dt);
+	const ཧྲིལ nb_steps = ceilf(1.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	ཆེད་དུ (ཧྲིལ i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 
@@ -80,9 +80,9 @@ TEST_F(HeadingSmoothingTest, zero_crossing)
 	const float heading_target = math::radians(5.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(4.f / _dt);
+	const ཧྲིལ nb_steps = ceilf(4.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	ཆེད་དུ (ཧྲིལ i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 
@@ -98,9 +98,9 @@ TEST_F(HeadingSmoothingTest, wrap_pi)
 	const float heading_target = math::radians(170.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	const ཧྲིལ nb_steps = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	ཆེད་དུ (ཧྲིལ i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 
@@ -118,9 +118,9 @@ TEST_F(HeadingSmoothingTest, positive_rate)
 	const float heading_target = math::radians(-20.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	const ཧྲིལ nb_steps = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	ཆེད་དུ (ཧྲིལ i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 
@@ -136,9 +136,9 @@ TEST_F(HeadingSmoothingTest, negative_rate)
 	const float heading_target = math::radians(-140.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	const ཧྲིལ nb_steps = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	ཆེད་དུ (ཧྲིལ i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 

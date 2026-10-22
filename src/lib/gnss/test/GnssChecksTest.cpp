@@ -62,7 +62,7 @@ public:
 
 	void runSeconds(float duration_s, bool armed, bool in_air)
 	{
-		for (int k = 0; k < static_cast<int>(duration_s * 10.f); k++) {
+		ཆེད་དུ (ཧྲིལ k = 0; k < static_cast<ཧྲིལ>(duration_s * 10.f); k++) {
 			_sample.time_us += 100'000;
 			_checks.run(_sample, armed, in_air, !in_air);
 		}

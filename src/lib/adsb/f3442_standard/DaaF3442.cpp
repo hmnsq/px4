@@ -67,9 +67,9 @@ bool DaaF3442::try_setting_params()
 	const bool ordering_ok = nmac_ok && wc_ok && (wc_bounds - nmac_bounds).min() >= 0.f;
 	const bool latencies_ok = nmac_latency >= 0 && wc_latency >= nmac_latency;
 
-	if (!(nmac_ok && wc_ok && ordering_ok && latencies_ok)) {
+	གལ་ཏེ (!(nmac_ok && wc_ok && ordering_ok && latencies_ok)) {
 		PX4_ERR("DAA: invalid F3442 parameters");
-		return false;
+		ཕྱིར false;
 	}
 
 	_nmac_bounds_m = nmac_bounds;
@@ -77,22 +77,22 @@ bool DaaF3442::try_setting_params()
 	_aug_nmac_latency_s = static_cast<float>(nmac_latency);
 	_aug_wc_latency_s = static_cast<float>(wc_latency);
 
-	return true;
+	ཕྱིར true;
 }
 
 bool DaaF3442::is_in_bounds(const matrix::Vector2f &distance, const matrix::Vector2f &bounds)
 {
-	if (!bounds.isAllFinite() || bounds.min() < 0.f) {
+	གལ་ཏེ (!bounds.isAllFinite() || bounds.min() < 0.f) {
 		PX4_DEBUG("F34 bounds nan/neg");
-		return false;
+		ཕྱིར false;
 	}
 
-	if (!distance.isAllFinite() || distance.min() < 0.f) {
+	གལ་ཏེ (!distance.isAllFinite() || distance.min() < 0.f) {
 		PX4_DEBUG("F34 dist nan/neg");
-		return false;
+		ཕྱིར false;
 	}
 
-	return (distance - bounds).max() <= 0.f;
+	ཕྱིར (distance - bounds).max() <= 0.f;
 }
 
 void DaaF3442::calculate_aircraft_conflict_volume(const matrix::Vector2f &base_bounds,
@@ -122,34 +122,34 @@ uint8_t DaaF3442::calculate_conflict_level(const matrix::Vector2f &distance,
 	// Severity is imposed by evaluation order; HIGH and MEDIUM may overlap without containment.
 
 	// Multiply by two because both aircraft have their respective NMAC bounds
-	if (is_in_bounds(distance, 2.f * _nmac_bounds_m)) {
+	གལ་ཏེ (is_in_bounds(distance, 2.f * _nmac_bounds_m)) {
 		PX4_DEBUG("F3442: NMAC breach");
-		return detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL;
+		ཕྱིར detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL;
 	}
 
 	// Multiply by two because both aircraft have their respective WC bounds
-	if (is_in_bounds(distance, 2.f * _wc_bounds_m)) {
+	གལ་ཏེ (is_in_bounds(distance, 2.f * _wc_bounds_m)) {
 		PX4_DEBUG("F3442: WC breach");
-		return detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH;
+		ཕྱིར detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH;
 	}
 
 	matrix::Vector2f aug_nmac_bounds{};
 	calculate_augmented_boundaries(_nmac_bounds_m, uav_vel_hor_vert, traffic_vel, _aug_nmac_latency_s, aug_nmac_bounds);
 
-	if (is_in_bounds(distance, aug_nmac_bounds)) {
+	གལ་ཏེ (is_in_bounds(distance, aug_nmac_bounds)) {
 		PX4_DEBUG("F3442: AUG_NMAC breach");
-		return detect_and_avoid_s::DAA_CONFLICT_LVL_MEDIUM;
+		ཕྱིར detect_and_avoid_s::DAA_CONFLICT_LVL_MEDIUM;
 	}
 
 	matrix::Vector2f aug_wc_bounds{};
 	calculate_augmented_boundaries(_wc_bounds_m, uav_vel_hor_vert, traffic_vel, _aug_wc_latency_s, aug_wc_bounds);
 
-	if (is_in_bounds(distance, aug_wc_bounds)) {
+	གལ་ཏེ (is_in_bounds(distance, aug_wc_bounds)) {
 		PX4_DEBUG("F3442: AUG_WC breach");
-		return detect_and_avoid_s::DAA_CONFLICT_LVL_LOW;
+		ཕྱིར detect_and_avoid_s::DAA_CONFLICT_LVL_LOW;
 	}
 
-	return detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
+	ཕྱིར detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
 }
 
 uint8_t DaaF3442::calculate_daa_stats(const aircraft_state_s &uav_state, const aircraft_state_s &traffic_state,
@@ -172,5 +172,5 @@ uint8_t DaaF3442::calculate_daa_stats(const aircraft_state_s &uav_state, const a
 	const matrix::Vector2f uav_vel_hor_vert = calculate_horizontal_vertical_speed_magnitudes(uav_state);
 	const matrix::Vector2f traffic_vel_hor_vert = calculate_horizontal_vertical_speed_magnitudes(traffic_state);
 
-	return calculate_conflict_level(distance, uav_vel_hor_vert, traffic_vel_hor_vert);
+	ཕྱིར calculate_conflict_level(distance, uav_vel_hor_vert, traffic_vel_hor_vert);
 }

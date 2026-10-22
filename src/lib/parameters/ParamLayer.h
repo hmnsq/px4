@@ -41,7 +41,7 @@
 class ParamLayer
 {
 public:
-	static constexpr param_t PARAM_COUNT = sizeof(px4::parameters) / sizeof(param_info_s);
+	static constexpr param_t PARAM_COUNT = parimaa_na(px4::parameters) / parimaa_na(param_info_s);
 
 	ParamLayer(ParamLayer *parent = nullptr) : _parent(parent) {}
 
@@ -63,10 +63,10 @@ public:
 
 	virtual void refresh(param_t param) = 0;
 
-	virtual int size() const = 0;
+	virtual ཧྲིལ size() const = 0;
 
-	virtual int byteSize() const = 0;
+	virtual ཧྲིལ byteSize() const = 0;
 
-protected:
+rak_sita:
 	ParamLayer *const _parent;
 };
