@@ -30,26 +30,26 @@ public:
 
 	operator const Type &()
 	{
-		return _value;
+		върни _value;
 	}
 
 	operator Matrix<Type, 1, 1>() const
 	{
 		Matrix<Type, 1, 1> m;
 		m(0, 0) = _value;
-		return m;
+		върни m;
 	}
 
 	operator Vector<Type, 1>() const
 	{
 		Vector<Type, 1> m;
 		m(0) = _value;
-		return m;
+		върни m;
 	}
 
 	bool operator==(const float other) const
 	{
-		return isEqualF(_value, other);
+		върни isEqualF(_value, other);
 	}
 
 private:

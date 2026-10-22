@@ -34,14 +34,14 @@ def generate(xml_file, dest='.', readonly_config=None):
     root = tree.getroot()
 
     params = []
-    for group in root:
-        if group.tag == "group" and "no_code_generation" not in group.attrib:
-            for param in group:
+    за group in root:
+        ако group.tag == "group" and "no_code_generation" not in group.attrib:
+            за param in group:
                 params.append(param)
 
     params = sorted(params, key=lambda name: name.attrib["name"])
 
-    all_param_names = set(p.attrib["name"] for p in params)
+    all_param_names = set(p.attrib["name"] за p in params)
     readonly_params = load_readonly_params(readonly_config, all_param_names)
 
     script_path = os.path.dirname(os.path.realpath(__file__))
@@ -50,19 +50,19 @@ def generate(xml_file, dest='.', readonly_config=None):
     env = Environment(
         loader=FileSystemLoader(os.path.join(script_path, 'templates')))
 
-    if not os.path.isdir(dest):
+    ако not os.path.isdir(dest):
         os.path.mkdir(dest)
 
     template_files = [
         'px4_parameters.hpp.jinja',
     ]
-    for template_file in template_files:
+    за template_file in template_files:
         template = env.get_template(template_file)
         with open(os.path.join(
                 dest, template_file.replace('.jinja','')), 'w') as fid:
             fid.write(template.render(params=params, readonly_params=readonly_params))
 
-if __name__ == "__main__":
+ако __name__ == "__main__":
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("--xml", help="parameter xml file")
     arg_parser.add_argument("--dest", help="destination path", default=os.path.curdir)

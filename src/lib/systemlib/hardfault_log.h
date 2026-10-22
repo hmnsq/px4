@@ -44,7 +44,7 @@
  * Pre-processor Definitions
  ****************************************************************************/
 
-#if defined(HAS_BBSRAM)
+#ако defined(HAS_BBSRAM)
 
 #include <stm32_bbsram.h>
 typedef struct bbsramd_s dump_s;
@@ -58,7 +58,7 @@ typedef struct bbsramd_s dump_s;
 
 #define HARDFAULT_MAX_ULOG_FILE_LEN 64 /* must be large enough to store the full path to the log file */
 
-#define BBSRAM_SIZE_FN0 (sizeof(int))
+#define BBSRAM_SIZE_FN0 (sizeof(цяло))
 #define BBSRAM_SIZE_FN1 384     /* greater then 2.5 times the size of vehicle_status_s */
 #define BBSRAM_SIZE_FN2 384     /* greater then 2.5 times the size of vehicle_status_s */
 #define BBSRAM_SIZE_FN3 HARDFAULT_MAX_ULOG_FILE_LEN
@@ -72,9 +72,9 @@ typedef struct bbsramd_s dump_s;
 #define BBSRAM_HEADER_SIZE 20 /* This is an assumption */
 #define BBSRAM_USED ((5*BBSRAM_HEADER_SIZE)+(BBSRAM_SIZE_FN0+BBSRAM_SIZE_FN1+BBSRAM_SIZE_FN2+BBSRAM_SIZE_FN3))
 #define BBSRAM_REAMINING (PX4_BBSRAM_SIZE-BBSRAM_USED)
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
+#ако CONFIG_ARCH_INTERRUPTSTACK <= 3
 #  define BBSRAM_NUMBER_STACKS 1
-#else
+#иначе
 #  define BBSRAM_NUMBER_STACKS 2
 #endif
 #define BBSRAM_FIXED_ELEMENTS_SIZE (sizeof(info_s))
@@ -98,9 +98,9 @@ typedef struct bbsramd_s dump_s;
 
 typedef struct progmem_s dump_s;
 
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
+#ако CONFIG_ARCH_INTERRUPTSTACK <= 3
 #  define PROGMEM_NUMBER_STACKS 1
-#else
+#иначе
 #  define PROGMEM_NUMBER_STACKS 2
 #endif
 #define PROGMEM_DUMP_FIXED_ELEMENTS_SIZE (sizeof(info_s))
@@ -129,9 +129,9 @@ typedef struct progmem_s dump_s;
 
 #define PROGMEM_USED ((5*PROGMEM_HEADER_SIZE)+(PROGMEM_SIZE_FN0+PROGMEM_SIZE_FN1+PROGMEM_SIZE_FN2+PROGMEM_SIZE_FN3))
 #define PROGMEM_REAMINING (PX4_PROGMEM_SIZE-PROGMEM_USED)
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
+#ако CONFIG_ARCH_INTERRUPTSTACK <= 3
 #  define PROGMEM_NUMBER_STACKS 1
-#else
+#иначе
 #  define PROGMEM_NUMBER_STACKS 2
 #endif
 #define PROGMEM_FIXED_ELEMENTS_SIZE (sizeof(info_s))
@@ -161,7 +161,7 @@ typedef struct ssarc_s dump_s;
 
 #define HARDFAULT_MAX_ULOG_FILE_LEN 64 /* must be large enough to store the full path to the log file */
 
-#define SSARC_DUMP_SIZE_FN0 ((((sizeof(int)) / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)
+#define SSARC_DUMP_SIZE_FN0 ((((sizeof(цяло)) / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)
 #define SSARC_DUMP_SIZE_FN1 (((384 / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)     /* greater then 2.5 times the size of vehicle_status_s */
 #define SSARC_DUMP_SIZE_FN2 (((384 / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)     /* greater then 2.5 times the size of vehicle_status_s */
 #define SSARC_DUMP_SIZE_FN3 (((HARDFAULT_MAX_ULOG_FILE_LEN / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)
@@ -175,9 +175,9 @@ typedef struct ssarc_s dump_s;
 #define SSARC_DUMP_HEADER_SIZE PX4_SSARC_HEADER_SIZE + 32 /* This is an assumption */
 #define SSARC_DUMP_USED ((5*SSARC_DUMP_HEADER_SIZE)+(SSARC_DUMP_SIZE_FN0+SSARC_DUMP_SIZE_FN1+SSARC_DUMP_SIZE_FN2+SSARC_DUMP_SIZE_FN3))
 #define SSARC_DUMP_REMAINING (PX4_SSARC_DUMP_SIZE-SSARC_DUMP_USED)
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
+#ако CONFIG_ARCH_INTERRUPTSTACK <= 3
 #  define SSARC_DUMP_NUMBER_STACKS 1
-#else
+#иначе
 #  define SSARC_DUMP_NUMBER_STACKS 2
 #endif
 #define SSARC_DUMP_FIXED_ELEMENTS_SIZE (sizeof(info_s))
@@ -198,7 +198,7 @@ typedef struct ssarc_s dump_s;
 		SSARC_DUMP_SIZE_FN4,   /* For the Panic Log use rest of space */  \
 		0                  /* End of table marker */                  \
 	}
-#else /* HAS_SSARC */
+#иначе /* HAS_SSARC */
 
 #define CONFIG_ISTACK_SIZE 0
 #define CONFIG_USTACK_SIZE 0
@@ -255,7 +255,7 @@ typedef struct {
 
 typedef struct {
 	_stack_s user;
-#if CONFIG_ARCH_INTERRUPTSTACK > 3
+#ако CONFIG_ARCH_INTERRUPTSTACK > 3
 	_stack_s interrupt;
 #endif
 
@@ -359,7 +359,7 @@ typedef struct {
 	uint32_t              mmfsr; /* 0x0d34 Mem manage address register */
 	uint32_t              bfsr;  /* 0x0d38 Bus fault address register */
 	uint32_t              afsr;  /* 0x0d3c Auxiliary fault status register */
-#if defined(CONFIG_ARCH_CORTEXM7)
+#ако defined(CONFIG_ARCH_CORTEXM7)
 	uint32_t              abfsr; /* 0x0fa8 Auxiliary Bus Fault Status Register */
 #endif
 
@@ -368,12 +368,12 @@ typedef struct {
 typedef struct {
 	fault_flags_t         flags;                  /* What is in the dump */
 	uintptr_t             current_regs;           /* Used to validate the dump */
-	int                   lineno;                 /* __LINE__ to up_assert */
-	int                   pid;                    /* Process ID */
+	цяло                   lineno;                 /* __LINE__ to up_assert */
+	цяло                   pid;                    /* Process ID */
 	uint32_t              regs[XCPTCONTEXT_REGS]; /* Interrupt register save area */
 	fault_regs_s          fault_regs;             /* NVIC status */
 	px4_stack_t           stacks;                 /* Stack info */
-#if CONFIG_TASK_NAME_SIZE > 0
+#ако CONFIG_TASK_NAME_SIZE > 0
 	char                  name[CONFIG_TASK_NAME_SIZE + 1]; /* Task name (with NULL
 													* terminator) */
 #endif
@@ -383,7 +383,7 @@ typedef struct {
 
 typedef struct {
 	info_s    info;                       /* The info */
-#if CONFIG_ARCH_INTERRUPTSTACK > 3      /* The amount of stack data is compile time
+#ако CONFIG_ARCH_INTERRUPTSTACK > 3      /* The amount of stack data is compile time
 									 * sized backed on what is left after the
 									 * other BBSRAM files are defined
 									 * The order is such that only the
@@ -417,7 +417,7 @@ __BEGIN_DECLS
  *   -  Any < 0 Broken - Should not happen
  *
  ****************************************************************************/
-int hardfault_check_status(char *caller) weak_function;
+цяло hardfault_check_status(char *caller) weak_function;
 
 /****************************************************************************
  * Name: hardfault_write
@@ -446,7 +446,7 @@ int hardfault_check_status(char *caller) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_write(char *caller, int fd, int format, bool rearm) weak_function;
+цяло hardfault_write(char *caller, цяло fd, цяло format, bool rearm) weak_function;
 
 /****************************************************************************
  * Name: hardfault_rearm
@@ -464,7 +464,7 @@ int hardfault_write(char *caller, int fd, int format, bool rearm) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_rearm(char *caller) weak_function;
+цяло hardfault_rearm(char *caller) weak_function;
 
 /****************************************************************************
  * Name: hardfault_increment_reboot
@@ -484,6 +484,6 @@ int hardfault_rearm(char *caller) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_increment_reboot(char *caller, bool reset) weak_function;
+цяло hardfault_increment_reboot(char *caller, bool reset) weak_function;
 
 __END_DECLS

@@ -72,13 +72,13 @@ public:
 	virtual ~BlockPD() = default;
 	float update(float input)
 	{
-		return getKP() * input +
+		върни getKP() * input +
 		       getKD() * getDerivative().update(input);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKD() { return _kD.get(); }
-	BlockDerivative &getDerivative() { return _derivative; }
+	float getKP() { върни _kP.get(); }
+	float getKD() { върни _kD.get(); }
+	BlockDerivative &getDerivative() { върни _derivative; }
 private:
 	BlockDerivative _derivative;
 	control::BlockParamFloat _kP;

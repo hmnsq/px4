@@ -72,7 +72,7 @@ void project_distance_on_horizontal_plane(float &distance, const float yaw, cons
  * @param bin_width width of a bin in degrees
  * @param angle clockwise angle from start bin in degrees
  */
-int get_bin_at_angle(float bin_width, float angle);
+цяло get_bin_at_angle(float bin_width, float angle);
 
 /**
  * Returns lower bound angle of a bin
@@ -80,7 +80,7 @@ int get_bin_at_angle(float bin_width, float angle);
  * @param bin_width width of a bin in degrees
  * @param angle_offset clockwise angle offset in degrees
  */
-float get_lower_bound_angle(int bin, float bin_width, float angle_offset);
+float get_lower_bound_angle(цяло bin, float bin_width, float angle_offset);
 
 /**
  * Returns bin index for the current bin after an angle offset
@@ -88,14 +88,14 @@ float get_lower_bound_angle(int bin, float bin_width, float angle_offset);
  * @param bin_width width of a bin in degrees
  * @param angle_offset clockwise angle offset in degrees
  */
-int get_offset_bin_index(int bin, float bin_width, float angle_offset);
+цяло get_offset_bin_index(цяло bin, float bin_width, float angle_offset);
 
 /**
  * Wraps a bin index to the range [0, bin_count)
  * @param bin bin index
  * @param bin_count number of bins
  */
-int wrap_bin(int bin, int bin_count);
+цяло wrap_bin(цяло bin, цяло bin_count);
 
 /**
  * Wraps an angle to the range [0, 360)

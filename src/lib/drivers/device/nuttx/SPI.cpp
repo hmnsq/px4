@@ -40,7 +40,7 @@
 
 #include "SPI.hpp"
 
-#if defined(CONFIG_SPI)
+#ако defined(CONFIG_SPI)
 
 #include <px4_platform_common/i2c_spi_buses.h>
 #include <px4_platform_common/px4_config.h>
@@ -53,7 +53,7 @@
 namespace device
 {
 
-SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
+SPI::SPI(uint8_t device_type, const char *name, цяло bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
 	CDev(name, nullptr),
 	_device(device),
 	_mode(mode),
@@ -66,7 +66,7 @@ SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum s
 	// Use the 2. LSB byte as SPI address, which is non-zero for multiple instances of the same device on a bus
 	_device_id.devid_s.address = (uint8_t)(device >> 8);
 
-	if (!px4_spi_bus_requires_locking(bus)) {
+	ако (!px4_spi_bus_requires_locking(bus)) {
 		_locking_mode = LOCK_NONE;
 	}
 }
@@ -83,58 +83,58 @@ SPI::~SPI()
 	// XXX no way to let go of the bus...
 }
 
-int
+цяло
 SPI::init()
 {
 	/* attach to the spi bus */
-	if (_dev == nullptr) {
-		int bus = get_device_bus();
+	ако (_dev == nullptr) {
+		цяло bus = get_device_bus();
 
-		if (!board_has_bus(BOARD_SPI_BUS, bus)) {
-			return -ENOENT;
+		ако (!board_has_bus(BOARD_SPI_BUS, bus)) {
+			върни -ENOENT;
 		}
 
 		_dev = px4_spibus_initialize(bus);
 	}
 
-	if (_dev == nullptr) {
+	ако (_dev == nullptr) {
 		DEVICE_DEBUG("failed to init SPI");
-		return -ENOENT;
+		върни -ENOENT;
 	}
 
 	/* deselect device to ensure high to low transition of pin select */
 	SPI_SELECT(_dev, _device, false);
 
 	/* call the probe function to check whether the device is present */
-	int ret = probe();
+	цяло ret = probe();
 
-	if (ret != OK) {
+	ако (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		return ret;
+		върни ret;
 	}
 
 	/* do base class init, which will create the device node, etc. */
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ако (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		return ret;
+		върни ret;
 	}
 
 	/* tell the world where we are */
 	DEVICE_DEBUG("on SPI bus %d at %"  PRId32 " (%"  PRId32 " KHz)", get_device_bus(), PX4_SPI_DEV_ID(_device),
 		     _frequency / 1000);
 
-	return PX4_OK;
+	върни PX4_OK;
 }
 
-int
+цяло
 SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 {
-	int result;
+	цяло result;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	ако ((send == nullptr) && (recv == nullptr)) {
+		върни -EINVAL;
 	}
 
 	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
@@ -160,10 +160,10 @@ SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 		break;
 	}
 
-	return result;
+	върни result;
 }
 
-int
+цяло
 SPI::_transfer(uint8_t *send, uint8_t *recv, unsigned len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
@@ -177,16 +177,16 @@ SPI::_transfer(uint8_t *send, uint8_t *recv, unsigned len)
 	/* and clean up */
 	SPI_SELECT(_dev, _device, false);
 
-	return PX4_OK;
+	върни PX4_OK;
 }
 
-int
+цяло
 SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 {
-	int result;
+	цяло result;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	ако ((send == nullptr) && (recv == nullptr)) {
+		върни -EINVAL;
 	}
 
 	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
@@ -212,10 +212,10 @@ SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 		break;
 	}
 
-	return result;
+	върни result;
 }
 
-int
+цяло
 SPI::_transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
@@ -229,7 +229,7 @@ SPI::_transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 	/* and clean up */
 	SPI_SELECT(_dev, _device, false);
 
-	return PX4_OK;
+	върни PX4_OK;
 }
 
 } // namespace device

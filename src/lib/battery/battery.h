@@ -70,23 +70,23 @@
 class Battery : public ModuleParams
 {
 public:
-	Battery(int index, ModuleParams *parent, const int sample_interval_us, const uint8_t source);
+	Battery(цяло index, ModuleParams *parent, const цяло sample_interval_us, const uint8_t source);
 	~Battery() = default;
 
 	/**
 	 * Get the battery cell count
 	 */
-	int cell_count() { return _params.n_cells; }
+	цяло cell_count() { върни _params.n_cells; }
 
 	/**
 	 * Get the empty voltage per cell
 	 */
-	float empty_cell_voltage() { return _params.v_empty; }
+	float empty_cell_voltage() { върни _params.v_empty; }
 
 	/**
 	 * Get the full voltage per cell
 	 */
-	float full_cell_voltage() { return _params.v_charged; }
+	float full_cell_voltage() { върни _params.v_charged; }
 
 	void setPriority(const uint8_t priority) { _priority = priority; }
 	void setConnected(const bool connected) { _connected = connected; }
@@ -104,7 +104,7 @@ public:
 	void updateBatteryStatus(const hrt_abstime &timestamp);
 
 	battery_status_s getBatteryStatus();
-	float getCurrentAverage() const { return PX4_ISFINITE(_current_average_filter_a.getState()) ? _current_average_filter_a.getState() : -1.f; }
+	float getCurrentAverage() const { върни PX4_ISFINITE(_current_average_filter_a.getState()) ? _current_average_filter_a.getState() : -1.f; }
 	void publishBatteryStatus(const battery_status_s &battery_status);
 
 	/**
@@ -165,7 +165,7 @@ protected:
 		float i_overwrite;
 	} _params{};
 
-	const int _index;
+	const цяло _index;
 
 	bool _first_parameter_update{true};
 	void updateParams() override;

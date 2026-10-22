@@ -75,9 +75,9 @@ public:
 	virtual ~BlockIntegralTrap() = default;
 	float update(float input);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
+	float getU() {върни _u;}
+	float getY() {върни _y;}
+	float getMax() {върни _limit.getMax();}
 	void setU(float u) {_u = u;}
 	void setY(float y) {_y = y;}
 protected:

@@ -59,43 +59,43 @@ enum class StandardMode : uint8_t {
 static inline StandardMode getStandardModeFromNavState(uint8_t nav_state, uint8_t vehicle_type, bool is_vtol)
 {
 	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: return StandardMode::SAFE_RECOVERY;
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: върни StandardMode::SAFE_RECOVERY;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION: return StandardMode::MISSION;
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION: върни StandardMode::MISSION;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_LAND: return StandardMode::LAND;
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_LAND: върни StandardMode::LAND;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF: return StandardMode::TAKEOFF;
+	case vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF: върни StandardMode::TAKEOFF;
 
 	case vehicle_status_s::NAVIGATION_STATE_ALTCTL:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+		ако (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ALTITUDE_HOLD;
+			върни StandardMode::ALTITUDE_HOLD;
 		}
 
 		break;
 
 	case vehicle_status_s::NAVIGATION_STATE_POSCTL:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return StandardMode::POSITION_HOLD;
+		ако (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			върни StandardMode::POSITION_HOLD;
 		}
 
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::CRUISE;
+		ако (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			върни StandardMode::CRUISE;
 		}
 
 		break;
 
 	case vehicle_status_s::NAVIGATION_STATE_ORBIT:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+		ако (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ORBIT;
+			върни StandardMode::ORBIT;
 		}
 
 		break;
 	}
 
-	return StandardMode::NON_STANDARD;
+	върни StandardMode::NON_STANDARD;
 }
 
 /**
@@ -104,43 +104,43 @@ static inline StandardMode getStandardModeFromNavState(uint8_t nav_state, uint8_
 static inline uint8_t getNavStateFromStandardMode(StandardMode mode, uint8_t vehicle_type, bool is_vtol)
 {
 	switch (mode) {
-	case StandardMode::SAFE_RECOVERY: return vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
+	case StandardMode::SAFE_RECOVERY: върни vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
 
-	case StandardMode::MISSION: return vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
+	case StandardMode::MISSION: върни vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
 
-	case StandardMode::LAND: return vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
+	case StandardMode::LAND: върни vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
 
-	case StandardMode::TAKEOFF: return vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
+	case StandardMode::TAKEOFF: върни vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
 
 	case StandardMode::ALTITUDE_HOLD:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+		ако (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ALTCTL;
+			върни vehicle_status_s::NAVIGATION_STATE_ALTCTL;
 		}
 
 		break;
 
 	case StandardMode::POSITION_HOLD:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+		ако (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			върни vehicle_status_s::NAVIGATION_STATE_POSCTL;
 		}
 
 		break;
 
 	case StandardMode::CRUISE:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+		ако (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			върни vehicle_status_s::NAVIGATION_STATE_POSCTL;
 		}
 
 		break;
 
 	case StandardMode::ORBIT:
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ORBIT;
+		ако (vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			върни vehicle_status_s::NAVIGATION_STATE_ORBIT;
 		}
 
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+		ако (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			върни vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
 		}
 
 		break;
@@ -148,7 +148,7 @@ static inline uint8_t getNavStateFromStandardMode(StandardMode mode, uint8_t veh
 	default: break;
 	}
 
-	return vehicle_status_s::NAVIGATION_STATE_MAX;
+	върни vehicle_status_s::NAVIGATION_STATE_MAX;
 }
 
 

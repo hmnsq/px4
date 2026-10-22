@@ -49,9 +49,9 @@ public:
 	PX4Accelerometer(uint32_t device_id, enum Rotation rotation, bool external);
 	~PX4Accelerometer();
 
-	uint32_t get_device_id() const { return _device_id; }
+	uint32_t get_device_id() const { върни _device_id; }
 
-	int32_t get_max_rate_hz() const { return math::constrain(_imu_gyro_rate_max, static_cast<int32_t>(100), static_cast<int32_t>(4000)); }
+	int32_t get_max_rate_hz() const { върни math::constrain(_imu_gyro_rate_max, static_cast<int32_t>(100), static_cast<int32_t>(4000)); }
 
 	void set_device_id(uint32_t device_id);
 	void set_device_type(uint8_t devtype);
@@ -65,7 +65,7 @@ public:
 
 	void updateFIFO(sensor_accel_fifo_s &sample);
 
-	int get_instance() { return _sensor_pub.get_instance(); };
+	цяло get_instance() { върни _sensor_pub.get_instance(); };
 
 private:
 	void UpdateClipLimit();

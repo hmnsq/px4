@@ -56,14 +56,14 @@ void RateControl::setSaturationStatus(const Vector3<bool> &saturation_positive,
 
 void RateControl::setPositiveSaturationFlag(size_t axis, bool is_saturated)
 {
-	if (axis < 3) {
+	ако (axis < 3) {
 		_control_allocator_saturation_positive(axis) = is_saturated;
 	}
 }
 
 void RateControl::setNegativeSaturationFlag(size_t axis, bool is_saturated)
 {
-	if (axis < 3) {
+	ако (axis < 3) {
 		_control_allocator_saturation_negative(axis) = is_saturated;
 	}
 }
@@ -78,23 +78,23 @@ Vector3f RateControl::update(const Vector3f &rate, const Vector3f &rate_sp, cons
 	Vector3f torque = _gain_p.emult(rate_error) + _rate_int - _gain_d.emult(angular_accel) + _gain_ff.emult(rate_sp);
 
 	// update integral only if we are not landed
-	if (!landed) {
+	ако (!landed) {
 		updateIntegral(rate_error, dt);
 	}
 
-	return torque;
+	върни torque;
 }
 
 void RateControl::updateIntegral(Vector3f &rate_error, const float dt)
 {
-	for (int i = 0; i < 3; i++) {
+	за (цяло i = 0; i < 3; i++) {
 		// prevent further positive control saturation
-		if (_control_allocator_saturation_positive(i)) {
+		ако (_control_allocator_saturation_positive(i)) {
 			rate_error(i) = math::min(rate_error(i), 0.f);
 		}
 
 		// prevent further negative control saturation
-		if (_control_allocator_saturation_negative(i)) {
+		ако (_control_allocator_saturation_negative(i)) {
 			rate_error(i) = math::max(rate_error(i), 0.f);
 		}
 
@@ -111,7 +111,7 @@ void RateControl::updateIntegral(Vector3f &rate_error, const float dt)
 		float rate_i = _rate_int(i) + i_factor * _gain_i(i) * rate_error(i) * dt;
 
 		// do not propagate the result if out of range or invalid
-		if (PX4_ISFINITE(rate_i)) {
+		ако (PX4_ISFINITE(rate_i)) {
 			_rate_int(i) = math::constrain(rate_i, -_lim_int(i), _lim_int(i));
 		}
 	}

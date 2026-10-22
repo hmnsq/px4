@@ -20,110 +20,110 @@ void configure_uart_callbacks(open_uart_func_t open_func,
 	_write_uart = write_func;
 	_read_uart  = read_func;
 
-	if (_open_uart && _write_uart && _read_uart) {
+	ако (_open_uart && _write_uart && _read_uart) {
 		_callbacks_configured = true;
 	}
 }
 
-int qurt_uart_get_port(const char *dev)
+цяло qurt_uart_get_port(const char *dev)
 {
-	if (dev != NULL) {
+	ако (dev != NULL) {
 		// Convert device string into a uart port number
 		char *endptr = NULL;
-		int port_number = strtol(dev, &endptr, 10);
+		цяло port_number = strtol(dev, &endptr, 10);
 
-		if ((port_number == 0) && (endptr == dev)) {
+		ако ((port_number == 0) && (endptr == dev)) {
 			PX4_ERR("Could not convert %s into a valid uart port number", dev);
-			return -1;
+			върни -1;
 
-		} else {
-			return port_number;
+		} иначе {
+			върни port_number;
 		}
 	}
 
-	return -1;
+	върни -1;
 }
 
-int qurt_uart_open(const char *dev, speed_t speed)
+цяло qurt_uart_open(const char *dev, speed_t speed)
 {
-	int port_number = qurt_uart_get_port(dev);
+	цяло port_number = qurt_uart_get_port(dev);
 
-	if (_callbacks_configured && (port_number >= 0)) {
+	ако (_callbacks_configured && (port_number >= 0)) {
 
-		return _open_uart((uint8_t) port_number, speed);
+		върни _open_uart((uint8_t) port_number, speed);
 
-	} else {
+	} иначе {
 		PX4_ERR("Cannot open uart until callbacks have been configured");
 	}
 
-	return -1;
+	върни -1;
 }
 
-int qurt_uart_write(int fd, const char *buf, size_t len)
+цяло qurt_uart_write(цяло fd, const char *buf, size_t len)
 {
-	if (fd < 0) {
+	ако (fd < 0) {
 		PX4_ERR("invalid fd %d for %s", fd, __FUNCTION__);
-		return -1;
+		върни -1;
 	}
 
-	if (buf == NULL) {
+	ако (buf == NULL) {
 		PX4_ERR("NULL buffer pointer in %s", fd, __FUNCTION__);
-		return -1;
+		върни -1;
 	}
 
-	if (len == 0) {
+	ако (len == 0) {
 		PX4_ERR("Zero length buffer in %s", __FUNCTION__);
-		return -1;
+		върни -1;
 	}
 
-	if (_callbacks_configured) {
-		return _write_uart(fd, buf, len);
+	ако (_callbacks_configured) {
+		върни _write_uart(fd, buf, len);
 
-	} else {
+	} иначе {
 		PX4_ERR("Cannot write to uart until callbacks have been configured");
 	}
 
-	return -1;
+	върни -1;
 }
 
-int qurt_uart_read(int fd, char *buf, size_t len, uint32_t timeout_us)
+цяло qurt_uart_read(цяло fd, char *buf, size_t len, uint32_t timeout_us)
 {
-	if (fd < 0) {
+	ако (fd < 0) {
 		PX4_ERR("invalid fd %d for %s", fd, __FUNCTION__);
-		return -1;
+		върни -1;
 	}
 
-	if (buf == NULL) {
+	ако (buf == NULL) {
 		PX4_ERR("NULL buffer pointer in %s", fd, __FUNCTION__);
-		return -1;
+		върни -1;
 	}
 
-	if (len == 0) {
+	ако (len == 0) {
 		PX4_ERR("Zero length buffer in %s", __FUNCTION__);
-		return -1;
+		върни -1;
 	}
 
-	if (_callbacks_configured) {
+	ако (_callbacks_configured) {
 		uint32_t interval_counter = (timeout_us + (UART_READ_POLL_INTERVAL_US - 1)) / UART_READ_POLL_INTERVAL_US;
 		// PX4_INFO("UART interval counter = %d", interval_counter);
-		int read_len = 0;
+		цяло read_len = 0;
 
 		do {
 			read_len = _read_uart(fd, buf, len);
 
-			if (read_len > 0) { break; }
+			ако (read_len > 0) { break; }
 
 			interval_counter--;
 			px4_usleep(UART_READ_POLL_INTERVAL_US);
-		} while (interval_counter);
+		} докато (interval_counter);
 
 		// if (read_len <= 0) PX4_INFO("Warning, UART read timed out");
 		// else PX4_INFO("UART read %d bytes, counter = %d", read_len, interval_counter);
-		return read_len;
+		върни read_len;
 
-	} else {
+	} иначе {
 		PX4_ERR("Cannot read from uart until callbacks have been configured");
 	}
 
-	return -1;
+	върни -1;
 }

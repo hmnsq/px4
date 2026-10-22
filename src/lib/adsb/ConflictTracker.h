@@ -123,18 +123,18 @@ public:
 	void refresh_most_urgent();
 
 	// Cached value; only refresh_most_urgent() and clear() update it.
-	const conflict_info_s &most_urgent() const { return _most_urgent; }
+	const conflict_info_s &most_urgent() const { върни _most_urgent; }
 
 	// Highest-priority conflict in the buffer, or id=0 when empty.
 	conflict_info_s find_most_urgent() const;
 
-	bool contains(const DaaEncodedId &encoded_id) const { return find_conflict_idx(encoded_id) >= 0; }
+	bool contains(const DaaEncodedId &encoded_id) const { върни find_conflict_idx(encoded_id) >= 0; }
 
 	// Tracked entry for encoded_id, or id=0 when not tracked.
 	conflict_info_s get_conflict(const DaaEncodedId &encoded_id) const;
 
-	size_t size() const { return _buffer.size(); }
-	bool empty() const { return _buffer.empty(); }
+	size_t size() const { върни _buffer.size(); }
+	bool empty() const { върни _buffer.empty(); }
 
 	// Priority rules: higher conflict level first, ties broken by aircraft distance.
 	// Public so the priority policy can be unit tested directly.
@@ -157,17 +157,17 @@ private:
 	 *
 	 * Emits kConflictLevelChanged when the level differs from the stored entry.
 	 */
-	bool update_conflict(const conflict_info_s &conflict, const int conflict_idx, conflict_tracker_changes_s &changes);
+	bool update_conflict(const conflict_info_s &conflict, const цяло conflict_idx, conflict_tracker_changes_s &changes);
 
 	/** @brief Return the index of the most or least urgent entry, or -1 if the buffer is empty. */
-	int find_conflict_idx_by_priority(const ConflictPriority priority) const;
+	цяло find_conflict_idx_by_priority(const ConflictPriority priority) const;
 
 	/** @brief Return the buffer index of @p encoded_id, or -1 if not tracked. */
-	int find_conflict_idx(const DaaEncodedId &encoded_id) const;
+	цяло find_conflict_idx(const DaaEncodedId &encoded_id) const;
 
 	void reset_most_urgent();
 
-	bool is_valid_idx(const int idx) const { return idx >= 0 && idx < static_cast<int>(_buffer.size()); }
+	bool is_valid_idx(const цяло idx) const { върни idx >= 0 && idx < static_cast<цяло>(_buffer.size()); }
 
 	px4::Array<conflict_info_s, kDaaMaxTraffic> _buffer{};
 	conflict_info_s _most_urgent{};

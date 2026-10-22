@@ -62,9 +62,9 @@ public:
 	TerrainEstimator();
 	~TerrainEstimator() = default;
 
-	bool is_valid() {return _terrain_valid;}
-	float get_distance_to_ground() {return -_x(0);}
-	float get_velocity() {return _x(1);}
+	bool is_valid() {върни _terrain_valid;}
+	float get_distance_to_ground() {върни -_x(0);}
+	float get_velocity() {върни _x(1);}
 
 	void predict(float dt, const struct vehicle_attitude_s *attitude, const struct sensor_combined_s *sensor,
 		     const struct distance_sensor_s *distance);

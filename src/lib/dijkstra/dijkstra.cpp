@@ -36,15 +36,15 @@
 namespace dijkstra
 {
 
-bool solveBackward(const int num_nodes, const int goal, const float *cost, const bool symmetric,
-		   float *best_cost, int *next_node, bool *visited)
+bool solveBackward(const цяло num_nodes, const цяло goal, const float *cost, const bool symmetric,
+		   float *best_cost, цяло *next_node, bool *visited)
 {
-	if (num_nodes <= 0 || goal < 0 || goal >= num_nodes
+	ако (num_nodes <= 0 || goal < 0 || goal >= num_nodes
 	    || cost == nullptr || best_cost == nullptr || next_node == nullptr || visited == nullptr) {
-		return false;
+		върни false;
 	}
 
-	for (int i = 0; i < num_nodes; ++i) {
+	за (цяло i = 0; i < num_nodes; ++i) {
 		best_cost[i] = kUnreachable;
 		next_node[i] = -1;
 		visited[i] = false;
@@ -57,15 +57,15 @@ bool solveBackward(const int num_nodes, const int goal, const float *cost, const
 	// v -> u using cost(v, u) and, in the same sweep over v, tracks the smallest
 	// best_cost among still-unvisited nodes — that argmin is the u for the next
 	// iteration. The very first u is `goal` (the only node with best_cost == 0).
-	int u = goal;
+	цяло u = goal;
 	float u_cost = 0.f;
 
-	for (int iter = 0; iter < num_nodes - 1; ++iter) {
-		int next_u = -1;
+	за (цяло iter = 0; iter < num_nodes - 1; ++iter) {
+		цяло next_u = -1;
 		float next_cost = kUnreachable;
 
-		for (int v = 0; v < num_nodes; ++v) {
-			if (visited[v]) {
+		за (цяло v = 0; v < num_nodes; ++v) {
+			ако (visited[v]) {
 				continue;
 			}
 
@@ -73,32 +73,32 @@ bool solveBackward(const int num_nodes, const int goal, const float *cost, const
 			// For symmetric packed upper-triangular: index by the unordered pair {v, u}.
 			float edge;
 
-			if (symmetric) {
+			ако (symmetric) {
 				edge = cost[symmetricPairIndex(v, u, num_nodes)];
 
-			} else {
+			} иначе {
 				edge = cost[v * num_nodes + u];
 			}
 
 			// Treat +INFINITY and NaN as missing edges. `edge < kUnreachable` is false for
 			// both because NaN is unordered and INFINITY < INFINITY is false.
-			if (edge < kUnreachable) {
+			ако (edge < kUnreachable) {
 				const float candidate = u_cost + edge;
 
-				if (candidate < best_cost[v]) {
+				ако (candidate < best_cost[v]) {
 					best_cost[v] = candidate;
 					next_node[v] = u;
 				}
 			}
 
 			// Same sweep: track argmin of best_cost over unvisited nodes for the next iter.
-			if (best_cost[v] < next_cost) {
+			ако (best_cost[v] < next_cost) {
 				next_cost = best_cost[v];
 				next_u = v;
 			}
 		}
 
-		if (next_u < 0) {
+		ако (next_u < 0) {
 			// No unvisited node is reachable; remaining nodes stay at kUnreachable.
 			break;
 		}
@@ -108,7 +108,7 @@ bool solveBackward(const int num_nodes, const int goal, const float *cost, const
 		u_cost = next_cost;
 	}
 
-	return true;
+	върни true;
 }
 
 } // namespace dijkstra

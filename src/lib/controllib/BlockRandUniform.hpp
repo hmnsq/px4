@@ -78,11 +78,11 @@ public:
 		static float rand_max = static_cast<float>(RAND_MAX);
 		float rand_val = rand();
 		float bounds = getMax() - getMin();
-		return getMin() + (rand_val * bounds) / rand_max;
+		върни getMin() + (rand_val * bounds) / rand_max;
 	}
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
+	float getMin() { върни _min.get(); }
+	float getMax() { върни _max.get(); }
 private:
 // attributes
 	control::BlockParamFloat _min;

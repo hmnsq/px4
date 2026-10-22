@@ -52,9 +52,9 @@ CDev::CDev(const char *devname) :
 {
 	PX4_DEBUG("CDev::CDev");
 
-	int ret = px4_sem_init(&_lock, 0, 1);
+	цяло ret = px4_sem_init(&_lock, 0, 1);
 
-	if (ret != 0) {
+	ако (ret != 0) {
 		PX4_DEBUG("SEM INIT FAIL: ret %d", ret);
 	}
 }
@@ -63,141 +63,141 @@ CDev::~CDev()
 {
 	PX4_DEBUG("CDev::~CDev");
 
-	if (_registered) {
+	ако (_registered) {
 		unregister_driver(_devname);
 	}
 
-	if (_pollset) {
+	ако (_pollset) {
 		delete[](_pollset);
 	}
 
 	px4_sem_destroy(&_lock);
 }
 
-int
+цяло
 CDev::register_class_devname(const char *class_devname)
 {
 	PX4_DEBUG("CDev::register_class_devname %s", class_devname);
 
-	if (class_devname == nullptr) {
-		return -EINVAL;
+	ако (class_devname == nullptr) {
+		върни -EINVAL;
 	}
 
-	int class_instance = 0;
-	int ret = -ENOSPC;
+	цяло class_instance = 0;
+	цяло ret = -ENOSPC;
 
-	while (class_instance < 4) {
+	докато (class_instance < 4) {
 		char name[32];
 		snprintf(name, sizeof(name), "%s%d", class_devname, class_instance);
 		ret = register_driver(name, &fops_ref(), 0666, (void *)this);
 
-		if (ret == OK) {
+		ако (ret == OK) {
 			break;
 		}
 
 		class_instance++;
 	}
 
-	if (class_instance == 4) {
-		return ret;
+	ако (class_instance == 4) {
+		върни ret;
 	}
 
-	return class_instance;
+	върни class_instance;
 }
 
-int
+цяло
 CDev::unregister_class_devname(const char *class_devname, unsigned class_instance)
 {
 	PX4_DEBUG("CDev::unregister_class_devname");
 
 	char name[32];
 	snprintf(name, sizeof(name), "%s%u", class_devname, class_instance);
-	return unregister_driver(name);
+	върни unregister_driver(name);
 }
 
-int
+цяло
 CDev::init()
 {
 	PX4_DEBUG("CDev::init");
 
-	int ret = PX4_OK;
+	цяло ret = PX4_OK;
 
 	// now register the driver
-	if (_devname != nullptr) {
+	ако (_devname != nullptr) {
 		ret = register_driver(_devname, &fops_ref(), 0666, (void *)this);
 
-		if (ret == PX4_OK) {
+		ако (ret == PX4_OK) {
 			_registered = true;
 		}
 
-	} else {
+	} иначе {
 		ret = -ENODEV;
 	}
 
-	return ret;
+	върни ret;
 }
 
 /*
  * Default implementations of the character device interface
  */
-int
+цяло
 CDev::open(file_t *filep)
 {
 	PX4_DEBUG("CDev::open");
-	int ret = PX4_OK;
+	цяло ret = PX4_OK;
 
 	lock();
 	/* increment the open count */
 	_open_count++;
 
-	if (_open_count == 1) {
+	ако (_open_count == 1) {
 
 		/* first-open callback may decline the open */
 		ret = open_first(filep);
 
-		if (ret != PX4_OK) {
+		ако (ret != PX4_OK) {
 			_open_count--;
 		}
 	}
 
 	unlock();
 
-	return ret;
+	върни ret;
 }
 
-int
+цяло
 CDev::close(file_t *filep)
 {
 	PX4_DEBUG("CDev::close");
-	int ret = PX4_OK;
+	цяло ret = PX4_OK;
 
 	lock();
 
-	if (_open_count > 0) {
+	ако (_open_count > 0) {
 		/* decrement the open count */
 		_open_count--;
 
 		/* callback cannot decline the close */
-		if (_open_count == 0) {
+		ако (_open_count == 0) {
 			ret = close_last(filep);
 		}
 
-	} else {
+	} иначе {
 		ret = -EBADF;
 	}
 
 	unlock();
 
-	return ret;
+	върни ret;
 }
 
-int
+цяло
 CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 {
 	PX4_DEBUG("CDev::Poll %s", setup ? "setup" : "teardown");
-	int ret = PX4_OK;
+	цяло ret = PX4_OK;
 
-	if (setup) {
+	ако (setup) {
 		/*
 		 * Save the file pointer in the pollfd for the subclass'
 		 * benefit.
@@ -213,11 +213,11 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 		/*
 		 * Try to store the fds for later use and handle array resizing.
 		 */
-		while ((ret = store_poll_waiter(fds)) == -ENFILE) {
+		докато ((ret = store_poll_waiter(fds)) == -ENFILE) {
 
 			// No free slot found. Resize the pollset. This is expensive, but it's only needed initially.
 
-			if (_max_pollwaiters >= 256 / 2) { //_max_pollwaiters is uint8_t
+			ако (_max_pollwaiters >= 256 / 2) { //_max_pollwaiters is uint8_t
 				ret = -ENOMEM;
 				break;
 			}
@@ -235,14 +235,14 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 			flags = px4_enter_critical_section();
 #endif
 
-			if (prev_pollset == _pollset) {
+			ако (prev_pollset == _pollset) {
 				// no one else updated the _pollset meanwhile, so we're good to go
-				if (!new_pollset) {
+				ако (!new_pollset) {
 					ret = -ENOMEM;
 					break;
 				}
 
-				if (_max_pollwaiters > 0) {
+				ако (_max_pollwaiters > 0) {
 					memset(new_pollset + _max_pollwaiters, 0, sizeof(px4_pollfd_struct_t *) * (new_count - _max_pollwaiters));
 					memcpy(new_pollset, _pollset, sizeof(px4_pollfd_struct_t *) * _max_pollwaiters);
 				}
@@ -256,7 +256,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 				px4_leave_critical_section(flags);
 #endif
 
-				if (prev_pollset) {
+				ако (prev_pollset) {
 					delete[](prev_pollset);
 				}
 
@@ -279,7 +279,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 #endif
 		}
 
-		if (ret == PX4_OK) {
+		ако (ret == PX4_OK) {
 
 			/*
 			 * Check to see whether we should send a poll notification
@@ -290,13 +290,13 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 			/* yes? invoke the callback */
 #ifdef __PX4_NUTTX
 
-			if (fds->revents != 0 && fds->cb != nullptr) {
+			ако (fds->revents != 0 && fds->cb != nullptr) {
 				fds->cb(fds);
 			}
 
-#else
+#иначе
 
-			if (fds->revents != 0) {
+			ако (fds->revents != 0) {
 				px4_sem_post(fds->sem);
 			}
 
@@ -306,7 +306,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 
 		ATOMIC_LEAVE;
 
-	} else {
+	} иначе {
 		ATOMIC_ENTER;
 		/*
 		 * Handle a teardown request.
@@ -315,7 +315,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 		ATOMIC_LEAVE;
 	}
 
-	return ret;
+	върни ret;
 }
 
 void
@@ -326,8 +326,8 @@ CDev::poll_notify(px4_pollevent_t events)
 	/* lock against poll() as well as other wakeups */
 	ATOMIC_ENTER;
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (nullptr != _pollset[i]) {
+	за (unsigned i = 0; i < _max_pollwaiters; i++) {
+		ако (nullptr != _pollset[i]) {
 			poll_notify_one(_pollset[i], events);
 		}
 	}
@@ -347,54 +347,54 @@ CDev::poll_notify_one(px4_pollfd_struct_t *fds, px4_pollevent_t events)
 
 #ifdef __PX4_NUTTX
 
-	if (fds->revents != 0 && fds->cb != nullptr) {
+	ако (fds->revents != 0 && fds->cb != nullptr) {
 		fds->cb(fds);
 	}
 
-#else
+#иначе
 
-	if (fds->revents != 0) {
+	ако (fds->revents != 0) {
 		px4_sem_post(fds->sem);
 	}
 
 #endif
 }
 
-int
+цяло
 CDev::store_poll_waiter(px4_pollfd_struct_t *fds)
 {
 	// Look for a free slot.
 	PX4_DEBUG("CDev::store_poll_waiter");
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (nullptr == _pollset[i]) {
+	за (unsigned i = 0; i < _max_pollwaiters; i++) {
+		ако (nullptr == _pollset[i]) {
 
 			/* save the pollfd */
 			_pollset[i] = fds;
 
-			return PX4_OK;
+			върни PX4_OK;
 		}
 	}
 
-	return -ENFILE;
+	върни -ENFILE;
 }
 
-int
+цяло
 CDev::remove_poll_waiter(px4_pollfd_struct_t *fds)
 {
 	PX4_DEBUG("CDev::remove_poll_waiter");
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (fds == _pollset[i]) {
+	за (unsigned i = 0; i < _max_pollwaiters; i++) {
+		ако (fds == _pollset[i]) {
 
 			_pollset[i] = nullptr;
-			return PX4_OK;
+			върни PX4_OK;
 
 		}
 	}
 
 	PX4_DEBUG("poll: bad fd state");
-	return -EINVAL;
+	върни -EINVAL;
 }
 
 } // namespace cdev

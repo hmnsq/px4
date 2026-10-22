@@ -30,8 +30,8 @@ public:
 
 	explicit Matrix(const Type data_[M * N])
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				_data[i][j] = data_[N * i + j];
 			}
 		}
@@ -39,8 +39,8 @@ public:
 
 	explicit Matrix(const Type data_[M][N])
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				_data[i][j] = data_[i][j];
 			}
 		}
@@ -48,8 +48,8 @@ public:
 
 	Matrix(const Matrix &other)
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				_data[i][j] = other(i, j);
 			}
 		}
@@ -58,8 +58,8 @@ public:
 	template<typename S>
 	Matrix(const Matrix<S, M, N> &aa)
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				_data[i][j] = static_cast<Type>(aa(i, j));
 			}
 		}
@@ -70,8 +70,8 @@ public:
 	{
 		Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				self(i, j) = in_slice(i, j);
 			}
 		}
@@ -82,8 +82,8 @@ public:
 	{
 		Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				self(i, j) = in_slice(i, j);
 			}
 		}
@@ -99,7 +99,7 @@ public:
 		assert(i < M);
 		assert(j < N);
 
-		return _data[i][j];
+		върни _data[i][j];
 	}
 
 	inline Type &operator()(size_t i, size_t j)
@@ -107,30 +107,30 @@ public:
 		assert(i < M);
 		assert(j < N);
 
-		return _data[i][j];
+		върни _data[i][j];
 	}
 
 	Matrix<Type, M, N> &operator=(const Matrix<Type, M, N> &other)
 	{
-		if (this != &other) {
+		ако (this != &other) {
 			Matrix<Type, M, N> &self = *this;
 
-			for (size_t i = 0; i < M; i++) {
-				for (size_t j = 0; j < N; j++) {
+			за (size_t i = 0; i < M; i++) {
+				за (size_t j = 0; j < N; j++) {
 					self(i, j) = other(i, j);
 				}
 			}
 		}
 
-		return (*this);
+		върни (*this);
 	}
 
 	void copyTo(Type dst[M * N]) const
 	{
 		const Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				dst[N * i + j] = self(i, j);
 			}
 		}
@@ -140,8 +140,8 @@ public:
 	{
 		const Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				dst[i + (j * M)] = self(i, j);
 			}
 		}
@@ -161,15 +161,15 @@ public:
 		const Matrix<Type, M, N> &self = *this;
 		Matrix<Type, M, P> res{};
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t k = 0; k < P; k++) {
-				for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t k = 0; k < P; k++) {
+				за (size_t j = 0; j < N; j++) {
 					res(i, k) += self(i, j) * other(j, k);
 				}
 			}
 		}
 
-		return res;
+		върни res;
 	}
 
 	// Using this function reduces the number of temporary variables needed to compute A * B.T
@@ -179,15 +179,15 @@ public:
 		Matrix<Type, M, P> res;
 		const Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t k = 0; k < P; k++) {
-				for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t k = 0; k < P; k++) {
+				за (size_t j = 0; j < N; j++) {
 					res(i, k) += self(i, j) * other(k, j);
 				}
 			}
 		}
 
-		return res;
+		върни res;
 	}
 
 	// Element-wise multiplication
@@ -196,13 +196,13 @@ public:
 		Matrix<Type, M, N> res;
 		const Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) * other(i, j);
 			}
 		}
 
-		return res;
+		върни res;
 	}
 
 	// Element-wise division
@@ -211,13 +211,13 @@ public:
 		Matrix<Type, M, N> res;
 		const Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) / other(i, j);
 			}
 		}
 
-		return res;
+		върни res;
 	}
 
 	Matrix<Type, M, N> operator+(const Matrix<Type, M, N> &other) const
@@ -225,13 +225,13 @@ public:
 		Matrix<Type, M, N> res;
 		const Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) + other(i, j);
 			}
 		}
 
-		return res;
+		върни res;
 	}
 
 	Matrix<Type, M, N> operator-(const Matrix<Type, M, N> &other) const
@@ -239,13 +239,13 @@ public:
 		Matrix<Type, M, N> res;
 		const Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) - other(i, j);
 			}
 		}
 
-		return res;
+		върни res;
 	}
 
 	// unary minus
@@ -254,21 +254,21 @@ public:
 		Matrix<Type, M, N> res;
 		const Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				res(i, j) = -self(i, j);
 			}
 		}
 
-		return res;
+		върни res;
 	}
 
 	void operator+=(const Matrix<Type, M, N> &other)
 	{
 		Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
@@ -278,8 +278,8 @@ public:
 	{
 		Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
@@ -301,18 +301,18 @@ public:
 		Matrix<Type, M, N> res;
 		const Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) * scalar;
 			}
 		}
 
-		return res;
+		върни res;
 	}
 
 	inline Matrix<Type, M, N> operator/(Type scalar) const
 	{
-		return (*this) * (1 / scalar);
+		върни (*this) * (1 / scalar);
 	}
 
 	Matrix<Type, M, N> operator+(Type scalar) const
@@ -320,26 +320,26 @@ public:
 		Matrix<Type, M, N> res;
 		const Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) + scalar;
 			}
 		}
 
-		return res;
+		върни res;
 	}
 
 	inline Matrix<Type, M, N> operator-(Type scalar) const
 	{
-		return (*this) + (-1 * scalar);
+		върни (*this) + (-1 * scalar);
 	}
 
 	void operator*=(Type scalar)
 	{
 		Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				self(i, j) *= scalar;
 			}
 		}
@@ -355,8 +355,8 @@ public:
 	{
 		Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				self(i, j) += scalar;
 			}
 		}
@@ -370,13 +370,13 @@ public:
 
 	bool operator==(const Matrix<Type, M, N> &other) const
 	{
-		return isEqual(*this, other);
+		върни isEqual(*this, other);
 	}
 
 	bool operator!=(const Matrix<Type, M, N> &other) const
 	{
 		const Matrix<Type, M, N> &self = *this;
-		return !(self == other);
+		върни !(self == other);
 	}
 
 	/**
@@ -388,8 +388,8 @@ public:
 		buf[0] = '\0'; // make an empty string to begin with (we need the '\0' for strlen to work)
 		const Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				snprintf(buf + strlen(buf), n - strlen(buf), "\t%8.8g", double(self(i, j))); // directly append to the string buffer
 			}
 
@@ -400,10 +400,10 @@ public:
 	void print(float eps = 1e-9) const
 	{
 		// print column numbering
-		if (N > 1) {
+		ако (N > 1) {
 			printf("  ");
 
-			for (unsigned i = 0; i < N; i++) {
+			за (unsigned i = 0; i < N; i++) {
 				printf("|%2u      ", i);
 
 			}
@@ -414,29 +414,29 @@ public:
 		const Matrix<Type, M, N> &self = *this;
 		bool is_prev_symmetric = true; // assume symmetric until one element is not
 
-		for (unsigned i = 0; i < M; i++) {
+		за (unsigned i = 0; i < M; i++) {
 			printf("%2u|", i); // print row numbering
 
-			for (unsigned j = 0; j < N; j++) {
+			за (unsigned j = 0; j < N; j++) {
 				double d = static_cast<double>(self(i, j));
 
 				// if symmetric don't print upper triangular elements
-				if (is_prev_symmetric && (M == N) && (j > i) && (i < N) && (j < M)
+				ако (is_prev_symmetric && (M == N) && (j > i) && (i < N) && (j < M)
 				    && (fabs(d - static_cast<double>(self(j, i))) < (double)eps)
 				   ) {
 					// print empty space
 					printf("         ");
 
-				} else {
+				} иначе {
 					// avoid -0.0 for display
-					if (fabs(d - 0.0) < (double)eps) {
+					ако (fabs(d - 0.0) < (double)eps) {
 						// print fixed width zero
 						printf(" 0       ");
 
-					} else if ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
+					} иначе ако ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
 						printf("% .1e ", d);
 
-					} else {
+					} иначе {
 						printf("% 6.5f ", d);
 					}
 
@@ -453,51 +453,51 @@ public:
 		Matrix<Type, N, M> res;
 		const Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				res(j, i) = self(i, j);
 			}
 		}
 
-		return res;
+		върни res;
 	}
 
 	// tranpose alias
 	inline Matrix<Type, N, M> T() const
 	{
-		return transpose();
+		върни transpose();
 	}
 
 	template<size_t P, size_t Q>
 	ConstSlice<Type, P, Q, M, N> slice(size_t x0, size_t y0) const
 	{
-		return {x0, y0, this};
+		върни {x0, y0, this};
 	}
 
 	template<size_t P, size_t Q>
 	Slice<Type, P, Q, M, N> slice(size_t x0, size_t y0)
 	{
-		return {x0, y0, this};
+		върни {x0, y0, this};
 	}
 
 	ConstSlice<Type, 1, N, M, N> row(size_t i) const
 	{
-		return slice<1, N>(i, 0);
+		върни slice<1, N>(i, 0);
 	}
 
 	Slice<Type, 1, N, M, N> row(size_t i)
 	{
-		return slice<1, N>(i, 0);
+		върни slice<1, N>(i, 0);
 	}
 
 	ConstSlice<Type, M, 1, M, N> col(size_t j) const
 	{
-		return slice<M, 1>(0, j);
+		върни slice<M, 1>(0, j);
 	}
 
 	Slice<Type, M, 1, M, N> col(size_t j)
 	{
-		return slice<M, 1>(0, j);
+		върни slice<M, 1>(0, j);
 	}
 
 	void setRow(size_t i, const Matrix<Type, N, 1> &row_in)
@@ -534,8 +534,8 @@ public:
 	{
 		Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				self(i, j) = val;
 			}
 		}
@@ -558,7 +558,7 @@ public:
 
 		const size_t min_i = M > N ? N : M;
 
-		for (size_t i = 0; i < min_i; i++) {
+		за (size_t i = 0; i < min_i; i++) {
 			self(i, i) = 1;
 		}
 	}
@@ -573,13 +573,13 @@ public:
 		assert(a < M);
 		assert(b < M);
 
-		if (a == b) {
-			return;
+		ако (a == b) {
+			върни;
 		}
 
 		Matrix<Type, M, N> &self = *this;
 
-		for (size_t j = 0; j < N; j++) {
+		за (size_t j = 0; j < N; j++) {
 			Type tmp = self(a, j);
 			self(a, j) = self(b, j);
 			self(b, j) = tmp;
@@ -591,13 +591,13 @@ public:
 		assert(a < N);
 		assert(b < N);
 
-		if (a == b) {
-			return;
+		ако (a == b) {
+			върни;
 		}
 
 		Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
+		за (size_t i = 0; i < M; i++) {
 			Type tmp = self(i, a);
 			self(i, a) = self(i, b);
 			self(i, b) = tmp;
@@ -609,9 +609,9 @@ public:
 
 		Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				if (std::isnan(self(i, j))) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
+				ако (std::isnan(self(i, j))) {
 					self(i, j) = static_cast<Type>(0.0f);
 				}
 			}
@@ -622,47 +622,47 @@ public:
 	{
 		Matrix<Type, M, N> r;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				r(i, j) = Type(std::fabs((*this)(i, j)));
 			}
 		}
 
-		return r;
+		върни r;
 	}
 
 	Type max() const
 	{
 		Type max_val = (*this)(0, 0);
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				Type val = (*this)(i, j);
 
-				if (val > max_val) {
+				ако (val > max_val) {
 					max_val = val;
 				}
 			}
 		}
 
-		return max_val;
+		върни max_val;
 	}
 
 	Type min() const
 	{
 		Type min_val = (*this)(0, 0);
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				Type val = (*this)(i, j);
 
-				if (val < min_val) {
+				ако (val < min_val) {
 					min_val = val;
 				}
 			}
 		}
 
-		return min_val;
+		върни min_val;
 	}
 
 	bool isAllNan() const
@@ -670,28 +670,28 @@ public:
 		const Matrix<Type, M, N> &self = *this;
 		bool result = true;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				result = result && std::isnan(self(i, j));
 			}
 		}
 
-		return result;
+		върни result;
 	}
 
 	bool isAllFinite() const
 	{
 		const Matrix<Type, M, N> &self = *this;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				if (!std::isfinite(self(i, j))) {
-					return false;
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
+				ако (!std::isfinite(self(i, j))) {
+					върни false;
 				}
 			}
 		}
 
-		return true;
+		върни true;
 	}
 };
 
@@ -700,7 +700,7 @@ Matrix<Type, M, N> zeros()
 {
 	Matrix<Type, M, N> m;
 	m.setZero();
-	return m;
+	върни m;
 }
 
 template<typename Type, size_t M, size_t N>
@@ -708,7 +708,7 @@ Matrix<Type, M, N> ones()
 {
 	Matrix<Type, M, N> m;
 	m.setOne();
-	return m;
+	върни m;
 }
 
 template<size_t M, size_t N>
@@ -716,28 +716,28 @@ Matrix<float, M, N> nans()
 {
 	Matrix<float, M, N> m;
 	m.setNaN();
-	return m;
+	върни m;
 }
 
 template<typename Type, size_t  M, size_t N>
 Matrix<Type, M, N> operator*(Type scalar, const Matrix<Type, M, N> &other)
 {
-	return other * scalar;
+	върни other * scalar;
 }
 
 template<typename Type, size_t  M, size_t N>
 bool isEqual(const Matrix<Type, M, N> &x,
 	     const Matrix<Type, M, N> &y, const Type eps = Type(1e-4f))
 {
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			if (!isEqualF(x(i, j), y(i, j), eps)) {
-				return false;
+	за (size_t i = 0; i < M; i++) {
+		за (size_t j = 0; j < N; j++) {
+			ако (!isEqualF(x(i, j), y(i, j), eps)) {
+				върни false;
 			}
 		}
 	}
 
-	return true;
+	върни true;
 }
 
 namespace typeFunction
@@ -749,16 +749,16 @@ Type min(const Type x, const Type y)
 	bool y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	ако (x_is_nan || y_is_nan) {
+		ако (x_is_nan && !y_is_nan) {
+			върни y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		върни x;
 	}
 
-	return (x < y) ? x : y;
+	върни (x < y) ? x : y;
 }
 
 template<typename Type>
@@ -768,29 +768,29 @@ Type max(const Type x, const Type y)
 	bool y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	ако (x_is_nan || y_is_nan) {
+		ако (x_is_nan && !y_is_nan) {
+			върни y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		върни x;
 	}
 
-	return (x > y) ? x : y;
+	върни (x > y) ? x : y;
 }
 
 template<typename Type>
 Type constrain(const Type x, const Type lower_bound, const Type upper_bound)
 {
-	if (lower_bound > upper_bound) {
-		return NAN;
+	ако (lower_bound > upper_bound) {
+		върни NAN;
 
-	} else if (std::isnan(x)) {
-		return NAN;
+	} иначе ако (std::isnan(x)) {
+		върни NAN;
 
-	} else {
-		return typeFunction::max(lower_bound, typeFunction::min(upper_bound, x));
+	} иначе {
+		върни typeFunction::max(lower_bound, typeFunction::min(upper_bound, x));
 	}
 }
 }
@@ -800,19 +800,19 @@ Matrix<Type, M, N> min(const Matrix<Type, M, N> &x, const Type scalar_upper_boun
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	за (size_t i = 0; i < M; i++) {
+		за (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::min(x(i, j), scalar_upper_bound);
 		}
 	}
 
-	return m;
+	върни m;
 }
 
 template<typename Type, size_t  M, size_t N>
 Matrix<Type, M, N> min(const Type scalar_upper_bound, const Matrix<Type, M, N> &x)
 {
-	return min(x, scalar_upper_bound);
+	върни min(x, scalar_upper_bound);
 }
 
 template<typename Type, size_t  M, size_t N>
@@ -820,13 +820,13 @@ Matrix<Type, M, N> min(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	за (size_t i = 0; i < M; i++) {
+		за (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::min(x1(i, j), x2(i, j));
 		}
 	}
 
-	return m;
+	върни m;
 }
 
 template<typename Type, size_t  M, size_t N>
@@ -834,19 +834,19 @@ Matrix<Type, M, N> max(const Matrix<Type, M, N> &x, const Type scalar_lower_boun
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	за (size_t i = 0; i < M; i++) {
+		за (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::max(x(i, j), scalar_lower_bound);
 		}
 	}
 
-	return m;
+	върни m;
 }
 
 template<typename Type, size_t  M, size_t N>
 Matrix<Type, M, N> max(const Type scalar_lower_bound, const Matrix<Type, M, N> &x)
 {
-	return max(x, scalar_lower_bound);
+	върни max(x, scalar_lower_bound);
 }
 
 template<typename Type, size_t  M, size_t N>
@@ -854,13 +854,13 @@ Matrix<Type, M, N> max(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	за (size_t i = 0; i < M; i++) {
+		за (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::max(x1(i, j), x2(i, j));
 		}
 	}
 
-	return m;
+	върни m;
 }
 
 template<typename Type, size_t  M, size_t N>
@@ -870,18 +870,18 @@ Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
 {
 	Matrix<Type, M, N> m;
 
-	if (scalar_lower_bound > scalar_upper_bound) {
+	ако (scalar_lower_bound > scalar_upper_bound) {
 		m.setNaN();
 
-	} else {
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+	} иначе {
+		за (size_t i = 0; i < M; i++) {
+			за (size_t j = 0; j < N; j++) {
 				m(i, j) = typeFunction::constrain(x(i, j), scalar_lower_bound, scalar_upper_bound);
 			}
 		}
 	}
 
-	return m;
+	върни m;
 }
 
 template<typename Type, size_t  M, size_t N>
@@ -891,13 +891,13 @@ Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	за (size_t i = 0; i < M; i++) {
+		за (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::constrain(x(i, j), x_lower_bound(i, j), x_upper_bound(i, j));
 		}
 	}
 
-	return m;
+	върни m;
 }
 
 template<typename OStream, typename Type, size_t M, size_t N>
@@ -909,7 +909,7 @@ OStream &operator<<(OStream &os, const matrix::Matrix<Type, M, N> &matrix)
 	char string[n];
 	matrix.write_string(string, n);
 	os << string;
-	return os;
+	върни os;
 }
 
 } // namespace matrix

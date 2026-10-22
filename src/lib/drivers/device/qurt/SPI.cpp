@@ -46,20 +46,20 @@
 #include <px4_platform_common/px4_config.h>
 #include <px4_platform_common/i2c_spi_buses.h>
 
-static int (*register_interrupt_callback_func)(int (*)(int, void *, void *), void *arg) = NULL;
+static цяло (*register_interrupt_callback_func)(цяло (*)(цяло, void *, void *), void *arg) = NULL;
 
-int px4_arch_gpiosetevent(spi_drdy_gpio_t pin, bool r, bool f, bool e, int (*func)(int, void *, void *), void *arg)
+цяло px4_arch_gpiosetevent(spi_drdy_gpio_t pin, bool r, bool f, bool e, цяло (*func)(цяло, void *, void *), void *arg)
 {
 
-	if ((register_interrupt_callback_func != NULL) && (func != NULL) && (arg != NULL)) {
+	ако ((register_interrupt_callback_func != NULL) && (func != NULL) && (arg != NULL)) {
 		PX4_INFO("Register interrupt %p %p %p", register_interrupt_callback_func, func, arg);
-		return register_interrupt_callback_func(func, arg);
+		върни register_interrupt_callback_func(func, arg);
 	}
 
-	return -1;
+	върни -1;
 }
 
-void register_interrupt_callback_initalizer(int (*func)(int (*)(int, void *, void *), void *arg))
+void register_interrupt_callback_initalizer(цяло (*func)(цяло (*)(цяло, void *, void *), void *arg))
 {
 	register_interrupt_callback_func = func;
 }
@@ -72,7 +72,7 @@ SPI::_spi_transfer_func_t    SPI::_spi_transfer    = NULL;
 
 pthread_mutex_t SPI::_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
+SPI::SPI(uint8_t device_type, const char *name, цяло bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
 	CDev(name, nullptr)
 	// CDev(name, nullptr),
 	// _device(device),
@@ -99,89 +99,89 @@ SPI::SPI(const I2CSPIDriverConfig &config)
 
 SPI::~SPI()
 {
-	if (_fd >= 0) {
+	ако (_fd >= 0) {
 		::close(_fd);
 		_fd = -1;
 	}
 }
 
-int
+цяло
 SPI::init()
 {
-	int ret = PX4_ERROR;
+	цяло ret = PX4_ERROR;
 
-	if (_config_spi_bus == NULL) {
+	ако (_config_spi_bus == NULL) {
 		PX4_ERR("NULL spi init function");
-		return ret;
+		върни ret;
 	}
 
 	pthread_mutex_lock(&_mutex);
 	_fd = _config_spi_bus();
 	pthread_mutex_unlock(&_mutex);
 
-	if (_fd == PX4_ERROR) {
+	ако (_fd == PX4_ERROR) {
 		PX4_ERR("spi init failed");
-		return ret;
+		върни ret;
 	}
 
 	/* call the probe function to check whether the device is present */
 	ret = probe();
 
-	if (ret != OK) {
+	ако (ret != OK) {
 		PX4_INFO("SPI probe failed");
-		return ret;
+		върни ret;
 	}
 
 	/* do base class init, which will create the device node, etc. */
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ако (ret != OK) {
 		PX4_ERR("cdev init failed");
-		return ret;
+		върни ret;
 	}
 
 	/* tell the world where we are */
 	PX4_INFO("on SPI bus %d", get_device_bus());
 
-	return PX4_OK;
+	върни PX4_OK;
 }
 
-int
+цяло
 SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 {
-	int ret = PX4_ERROR;
+	цяло ret = PX4_ERROR;
 	unsigned retry_count = 1;
 
-	if ((_fd != PX4_ERROR) && (_spi_transfer != NULL)) {
+	ако ((_fd != PX4_ERROR) && (_spi_transfer != NULL)) {
 		do {
 			// PX4_DEBUG("SPI transfer out %p in %p len %u", send, recv, len);
 
-			if (_spi_transfer != NULL) {
+			ако (_spi_transfer != NULL) {
 				pthread_mutex_lock(&_mutex);
 
-				if (recv) { ret = _spi_transfer(_fd, send, recv, len); }
+				ако (recv) { ret = _spi_transfer(_fd, send, recv, len); }
 
-				else { ret = _spi_transfer(_fd, send, send, len); }
+				иначе { ret = _spi_transfer(_fd, send, send, len); }
 
 				pthread_mutex_unlock(&_mutex);
 
-			} else {
+			} иначе {
 				PX4_ERR("SPI transfer function is NULL");
 			}
 
-			if (ret != PX4_ERROR) { break; }
+			ако (ret != PX4_ERROR) { break; }
 
-		} while (retry_count++ < _retries);
+		} докато (retry_count++ < _retries);
 	}
 
-	return ret;
+	върни ret;
 }
 
-int
+цяло
 SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 {
 	// Not supported on SLPI
-	return PX4_ERROR;
+	върни PX4_ERROR;
 }
 
 } // namespace device

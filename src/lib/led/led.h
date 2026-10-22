@@ -78,9 +78,9 @@ public:
 	/**
 	 * get maximum time between two consecutive calls to update() in us.
 	 */
-	int maximum_update_interval() const
+	цяло maximum_update_interval() const
 	{
-		return _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
+		върни _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
 	}
 
 	/**
@@ -89,16 +89,16 @@ public:
 	 * @param control_data output structure (will always be set)
 	 * @return 1 if control_data set (state changed), 0 if control_data not changed (state did not change), <0 error otherwise
 	 */
-	int update(LedControlData &control_data);
+	цяло update(LedControlData &control_data);
 
-	static constexpr int BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
-	static constexpr int BREATHE_STEPS = 64; /**< number of steps in breathe mode for a full on-off cycle */
+	static constexpr цяло BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
+	static constexpr цяло BREATHE_STEPS = 64; /**< number of steps in breathe mode for a full on-off cycle */
 
-	static constexpr int BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
+	static constexpr цяло BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
-	static constexpr int BLINK_NORMAL_DURATION = 500 * 1000; /**< duration of half a blinking cycle
+	static constexpr цяло BLINK_NORMAL_DURATION = 500 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
-	static constexpr int BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
+	static constexpr цяло BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
 
 private:
@@ -126,12 +126,12 @@ private:
 			num_blinks = led_control.num_blinks;
 			priority = led_control.priority;
 
-			if (priority > led_control_s::MAX_PRIORITY) {
+			ако (priority > led_control_s::MAX_PRIORITY) {
 				priority = led_control_s::MAX_PRIORITY;
 			}
 		}
 		void reset() { priority = led_control_s::MAX_PRIORITY + 1; }
-		bool is_valid() const { return priority != led_control_s::MAX_PRIORITY + 1; }
+		bool is_valid() const { върни priority != led_control_s::MAX_PRIORITY + 1; }
 	};
 
 	struct PerLedData {
@@ -141,19 +141,19 @@ private:
 
 		void set(const led_control_s &led_control)
 		{
-			int next_priority = (int)led_control.priority;
+			цяло next_priority = (цяло)led_control.priority;
 			priority[next_priority].color = led_control.color;
 			priority[next_priority].mode = led_control.mode;
 
 			// initialise the flash counter
-			if (led_control.mode == led_control_s::MODE_FLASH) {
+			ако (led_control.mode == led_control_s::MODE_FLASH) {
 				priority[next_priority].blink_times_left = led_control.num_blinks * 10;
 
-			} else {
+			} иначе {
 				priority[next_priority].blink_times_left = led_control.num_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			ако (priority[next_priority].blink_times_left == 0) {
 				// handle infinite case
 				priority[next_priority].blink_times_left = 246;
 			}
@@ -161,18 +161,18 @@ private:
 
 		void apply_next_state()
 		{
-			int next_priority = (int)next_state.priority;
+			цяло next_priority = (цяло)next_state.priority;
 			priority[next_priority].color = next_state.color;
 			priority[next_priority].mode = next_state.mode;
 
-			if (next_state.mode == led_control_s::MODE_FLASH) {
+			ако (next_state.mode == led_control_s::MODE_FLASH) {
 				priority[next_priority].blink_times_left = next_state.num_blinks * 10;
 
-			} else {
+			} иначе {
 				priority[next_priority].blink_times_left = next_state.num_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			ако (priority[next_priority].blink_times_left == 0) {
 				// handle infinite case
 				priority[next_priority].blink_times_left = 254;
 			}

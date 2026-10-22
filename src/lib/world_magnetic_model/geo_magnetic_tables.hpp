@@ -39,8 +39,8 @@ static constexpr float SAMPLING_MAX_LAT = 90;
 static constexpr float SAMPLING_MIN_LON = -180;
 static constexpr float SAMPLING_MAX_LON = 180;
 
-static constexpr int LAT_DIM = 19;
-static constexpr int LON_DIM = 37;
+static constexpr цяло LAT_DIM = 19;
+static constexpr цяло LON_DIM = 37;
 
 
 // *INDENT-OFF*

@@ -48,7 +48,7 @@ except ImportError:
     rosidl_generator_type_description_root = os.path.dirname(os.path.dirname(__file__))
     rosidl_generator_type_description_module = os.path.join(
         rosidl_generator_type_description_root, 'rosidl_generator_type_description', '__init__.py')
-    if not os.path.exists(rosidl_generator_type_description_module):
+    ако not os.path.exists(rosidl_generator_type_description_module):
         raise
     from importlib.machinery import SourceFileLoader
 
@@ -56,7 +56,7 @@ except ImportError:
     rosidl_generator_type_description = loader.load_module()
     generate_type_hash = rosidl_generator_type_description.generate_type_hash
 
-if __name__ == '__main__':
+ако __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description=f'Convert px4 .idl files to rihs01')
     parser.add_argument(
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     type_hash_arguments['output_dir'] = args.output_dir
     type_hash_arguments["idl_tuples"] = idl_files
 
-    for interface_file in args.interface_files:
+    за interface_file in args.interface_files:
         # So file path need to be magically encoded with a : to let the parser do its thing
 
         interface_file = str(pathlib.Path(interface_file)).replace("px4/msg", "px4:msg")

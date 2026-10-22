@@ -53,7 +53,7 @@ TEST(MagnetometerBiasEstimatorTest, constantZRotation)
 	// Initialize with the current measurement
 	field_sensor_bias_estimator.setField(virtual_mag);
 
-	for (int i = 0; i <= 1000; i++) {
+	за (цяло i = 0; i <= 1000; i++) {
 		float dt = .01f;
 
 		// turn the mag values according to the gyro

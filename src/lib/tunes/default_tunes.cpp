@@ -52,4 +52,4 @@ const bool Tunes::_default_tunes_interruptable[] = {
 #undef PX4_DEFINE_TUNE
 
 // set default_tunes array size
-const unsigned int Tunes::_default_tunes_size =  sizeof(_default_tunes) / sizeof(_default_tunes[0]);
+const unsigned цяло Tunes::_default_tunes_size =  sizeof(_default_tunes) / sizeof(_default_tunes[0]);

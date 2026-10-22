@@ -52,9 +52,9 @@
  */
 __BEGIN_DECLS
 extern void led_init();
-extern void led_on(int led);
-extern void led_off(int led);
-extern void led_toggle(int led);
+extern void led_on(цяло led);
+extern void led_off(цяло led);
+extern void led_toggle(цяло led);
 __END_DECLS
 
 class LED : cdev::CDev
@@ -63,8 +63,8 @@ public:
 	LED();
 	~LED() override = default;
 
-	int	init() override;
-	int	ioctl(cdev::file_t *filp, int cmd, unsigned long arg) override;
+	цяло	init() override;
+	цяло	ioctl(cdev::file_t *filp, цяло cmd, unsigned long arg) override;
 };
 
 LED::LED() : CDev(LED0_DEVICE_PATH)
@@ -73,7 +73,7 @@ LED::LED() : CDev(LED0_DEVICE_PATH)
 	init();
 }
 
-int
+цяло
 LED::init()
 {
 	PX4_DEBUG("LED::init");
@@ -82,13 +82,13 @@ LED::init()
 
 	led_init();
 
-	return 0;
+	върни 0;
 }
 
-int
-LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
+цяло
+LED::ioctl(cdev::file_t *filp, цяло cmd, unsigned long arg)
 {
-	int result = OK;
+	цяло result = OK;
 
 	switch (cmd) {
 	case LED_ON:
@@ -107,7 +107,7 @@ LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
 		result = CDev::ioctl(filp, cmd, arg);
 	}
 
-	return result;
+	върни result;
 }
 
 namespace
@@ -118,7 +118,7 @@ LED	*gLED;
 void
 drv_led_start(void)
 {
-	if (gLED == nullptr) {
+	ако (gLED == nullptr) {
 		gLED = new LED;
 	}
 }
