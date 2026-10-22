@@ -42,36 +42,36 @@
  * foot print device.
  */
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/shutdown.h>
-#include <parameters/px4_parameters.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <px4_platform_common/log.h>
+#ضمن <px4_platform_common/posix.h>
+#ضمن <px4_platform_common/shutdown.h>
+#ضمن <parameters/px4_parameters.hpp>
 
-#include <string.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <errno.h>
+#ضمن <string.h>
+#ضمن <stdbool.h>
+#ضمن <stdint.h>
+#ضمن <errno.h>
 
-#include <parameters/param.h>
+#ضمن <parameters/param.h>
 
-#include <lib/tinybson/tinybson.h>
-#include "flashparams.h"
-#include "flashfs.h"
-#include "../param_translation.h"
+#ضمن <lib/tinybson/tinybson.h>
+#ضمن "flashparams.h"
+#ضمن "flashfs.h"
+#ضمن "../param_translation.h"
 
-#if 0
-# define debug(fmt, args...)            do { warnx(fmt, ##args); } while(0)
-#else
-# define debug(fmt, args...)            do { } while(0)
+#ܐܢ 0
+# define debug(fmt, args...)            ܥܒܕ { warnx(fmt, ##args); } ܟܡܐ(0)
+#ܐܚܪܢܐ
+# define debug(fmt, args...)            ܥܒܕ { } ܟܡܐ(0)
 #endif
 
 
 /**
  * Storage for modified parameters.
  */
-struct param_wbuf_s {
-	union param_value_u     val;
+بنية param_wbuf_s {
+	اتحاد param_value_u     val;
 	param_t                 param;
 };
 
@@ -96,22 +96,22 @@ struct param_wbuf_s {
  * drops those on its next save; here they stay until a compaction, and a
  * translation is only kept for a few releases. A snapshot cannot hold such a
  * record, so compacting for it does not repeat. */
-static bool log_stale;
+ساكن منطقي log_stale;
 
 /* Replay failed inside a CRC-valid record. A delta appended behind it would
  * never be reached, so the next save rewrites the store. */
-static bool log_unreadable;
+ساكن منطقي log_unreadable;
 
-static bool
+ساكن منطقي
 any_unsaved(param_filter_func filter)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if ((filter == nullptr || filter(param)) && param_value_unsaved(param)) {
-			return true;
+	لكل (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
+		ܐܢ ((filter == nullptr || filter(param)) && param_value_unsaved(param)) {
+			ܦܢܐ ܫܪܪܐ;
 		}
 	}
 
-	return false;
+	ܦܢܐ ܕܓܠܐ;
 }
 
 /*
@@ -122,289 +122,289 @@ any_unsaved(param_filter_func filter)
  * default in force, is written as a BSON null so replay drops it, which is
  * what the file backend's "don't export defaults" gives after a reload.
  */
-static int
-encode_params(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
+ساكن صحيح
+encode_params(bson_encoder_s *encoder, param_filter_func filter, منطقي snapshot)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if (filter && !filter(param)) {
-			continue;
+	لكل (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
+		ܐܢ (filter && !filter(param)) {
+			استمر;
 		}
 
-		if (snapshot) {
-			if (!user_config.contains(param)) {
-				continue;
+		ܐܢ (snapshot) {
+			ܐܢ (!user_config.contains(param)) {
+				استمر;
 			}
 
-		} else {
-			if (!param_value_unsaved(param)) {
-				continue;
+		} ܐܚܪܢܐ {
+			ܐܢ (!param_value_unsaved(param)) {
+				استمر;
 			}
 
-			if (!user_config.contains(param) || param_value_is_default(param)) {
-				if (bson_encoder_append_null(encoder, param_name(param))) {
+			ܐܢ (!user_config.contains(param) || param_value_is_default(param)) {
+				ܐܢ (bson_encoder_append_null(encoder, param_name(param))) {
 					debug("BSON append failed for '%s'", param_name(param));
-					return -1;
+					ܦܢܐ -1;
 				}
 
-				continue;
+				استمر;
 			}
 		}
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			if (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
+		بدل (param_type(param)) {
+		حالة PARAM_TYPE_INT32:
+			ܐܢ (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				ܦܢܐ -1;
 			}
 
-			break;
+			اكسر;
 
-		case PARAM_TYPE_FLOAT:
-			if (bson_encoder_append_double(encoder, param_name(param), (double)user_config.get(param).f)) {
+		حالة PARAM_TYPE_FLOAT:
+			ܐܢ (bson_encoder_append_double(encoder, param_name(param), (مزدوج)user_config.get(param).f)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				ܦܢܐ -1;
 			}
 
-			break;
+			اكسر;
 
-		default:
+		افتراضي:
 			debug("unrecognized parameter type");
-			return -1;
+			ܦܢܐ -1;
 		}
 	}
 
-	return 0;
+	ܦܢܐ 0;
 }
 
 /* The caller frees bson_encoder_buf_data() whatever the result. */
-static int
-encode_document(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
+ساكن صحيح
+encode_document(bson_encoder_s *encoder, param_filter_func filter, منطقي snapshot)
 {
 	bson_encoder_init_buf(encoder, nullptr, 0);
 
-	int result = encode_params(encoder, filter, snapshot);
+	صحيح result = encode_params(encoder, filter, snapshot);
 
-	if (result == 0) {
+	ܐܢ (result == 0) {
 		result = bson_encoder_fini(encoder);
 	}
 
-	return result;
+	ܦܢܐ result;
 }
 
-static int
+ساكن صحيح
 stage_write_buffer(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
 {
-	void *enc_buff = bson_encoder_buf_data(encoder);
+	فراغ *enc_buff = bson_encoder_buf_data(encoder);
 	*enc_size = bson_encoder_buf_size(encoder);
 
-	if (enc_buff == nullptr) {
-		return -ENOMEM;
+	ܐܢ (enc_buff == nullptr) {
+		ܦܢܐ -ENOMEM;
 	}
 
 	size_t alloc_size = *enc_size;
-	int result = parameter_flashfs_alloc(parameters_token, buffer, &alloc_size);
+	صحيح result = parameter_flashfs_alloc(parameters_token, buffer, &alloc_size);
 
-	if (result != OK) {
-		return result;
+	ܐܢ (result != OK) {
+		ܦܢܐ result;
 	}
 
-	if (alloc_size < *enc_size) {
+	ܐܢ (alloc_size < *enc_size) {
 		parameter_flashfs_free();
-		return -ENOMEM;
+		ܦܢܐ -ENOMEM;
 	}
 
 	memcpy(*buffer, enc_buff, *enc_size);
-	return OK;
+	ܦܢܐ OK;
 }
 
-static int
+ساكن صحيح
 commit_append(uint8_t *buffer, size_t enc_size)
 {
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	صحيح result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	ܐܢ (result == (صحيح)enc_size) {
+		ܦܢܐ OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	ܦܢܐ result < 0 ? result : -EFBIG;
 }
 
-static int
+ساكن صحيح
 export_delta(param_filter_func filter)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, filter, false);
+	صحيح result = encode_document(&encoder, filter, ܕܓܠܐ);
 
-	if (result == 0) {
+	ܐܢ (result == 0) {
 		uint8_t *buffer;
 		size_t enc_size;
 		result = stage_write_buffer(&encoder, &buffer, &enc_size);
 
-		if (result == OK) {
+		ܐܢ (result == OK) {
 			result = commit_append(buffer, enc_size);
 		}
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	حرر(bson_encoder_buf_data(&encoder));
+	ܦܢܐ result;
 }
 
 /* Everything that can fail before the erase, so a failure here leaves the
  * log untouched and still loadable. */
-static int
+ساكن صحيح
 stage_snapshot(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
 {
-	int result = stage_write_buffer(encoder, buffer, enc_size);
+	صحيح result = stage_write_buffer(encoder, buffer, enc_size);
 
-	if (result != OK) {
-		return result;
+	ܐܢ (result != OK) {
+		ܦܢܐ result;
 	}
 
-	if (*enc_size > parameter_flashfs_max_payload()) {
+	ܐܢ (*enc_size > parameter_flashfs_max_payload()) {
 		parameter_flashfs_free();
-		return -ENOSPC;
+		ܦܢܐ -ENOSPC;
 	}
 
-	return OK;
+	ܦܢܐ OK;
 }
 
-static int
+ساكن صحيح
 commit_snapshot(uint8_t *buffer, size_t enc_size)
 {
-	if (parameter_flashfs_blank() != 1) {
-		int rv = parameter_flashfs_erase();
+	ܐܢ (parameter_flashfs_blank() != 1) {
+		صحيح rv = parameter_flashfs_erase();
 
-		if (rv < 0) {
+		ܐܢ (rv < 0) {
 			parameter_flashfs_free();
-			return rv;
+			ܦܢܐ rv;
 		}
 	}
 
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	صحيح result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 
-	if (result != (int)enc_size && parameter_flashfs_blank() == 1) {
+	ܐܢ (result != (صحيح)enc_size && parameter_flashfs_blank() == 1) {
 		result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 	}
 
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	ܐܢ (result == (صحيح)enc_size) {
+		ܦܢܐ OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	ܦܢܐ result < 0 ? result : -EFBIG;
 }
 
-static int
+ساكن صحيح
 compact_to_snapshot()
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	صحيح result = encode_document(&encoder, nullptr, ܫܪܪܐ);
 
-	if (result == 0) {
+	ܐܢ (result == 0) {
 		uint8_t *buffer;
 		size_t enc_size;
 		result = stage_snapshot(&encoder, &buffer, &enc_size);
 
-		if (result == OK) {
+		ܐܢ (result == OK) {
 			result = commit_snapshot(buffer, enc_size);
 		}
 	}
 
-	if (result == OK) {
-		log_unreadable = false;
+	ܐܢ (result == OK) {
+		log_unreadable = ܕܓܠܐ;
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	حرر(bson_encoder_buf_data(&encoder));
+	ܦܢܐ result;
 }
 
-static bool
+ساكن منطقي
 has_record(flash_file_token_t token)
 {
 	uint8_t *buffer = nullptr;
 	size_t buf_size = 0;
-	return parameter_flashfs_read(token, &buffer, &buf_size) >= 0;
+	ܦܢܐ parameter_flashfs_read(token, &buffer, &buf_size) >= 0;
 }
 
-static int
+ساكن صحيح
 param_export_internal(param_filter_func filter)
 {
 	/* A delta only means something behind a snapshot that replays. A legacy
 	 * record still present means the boot migration did not run; replay
 	 * would take it over any delta appended behind it. */
-	if (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
-		return compact_to_snapshot();
+	ܐܢ (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
+		ܦܢܐ compact_to_snapshot();
 	}
 
-	if (!any_unsaved(filter)) {
-		return 0;
+	ܐܢ (!any_unsaved(filter)) {
+		ܦܢܐ 0;
 	}
 
-	int result = export_delta(filter);
+	صحيح result = export_delta(filter);
 
-	if (result != -ENOSPC) {
-		return result;
+	ܐܢ (result != -ENOSPC) {
+		ܦܢܐ result;
 	}
 
 	/* Same-bank erase stalls the CPU for ~1 s; last resort when a single
 	 * save does not fit the tail. Compact writes the full RAM snapshot so a
 	 * filtered save cannot drop params not in the delta. */
 	PX4_WARN("flashparams: param sector full, compacting");
-	return compact_to_snapshot();
+	ܦܢܐ compact_to_snapshot();
 }
 
 
-static bool
+ساكن منطقي
 record_is_stale(bson_node_t node)
 {
-	const param_t param = param_find_no_notification(node->name);
+	ثابت param_t param = param_find_no_notification(node->name);
 
-	if (param == PARAM_INVALID) {
-		return true;
+	ܐܢ (param == PARAM_INVALID) {
+		ܦܢܐ ܫܪܪܐ;
 	}
 
-	switch (node->type) {
-	case BSON_INT32:
-		return param_type(param) != PARAM_TYPE_INT32;
+	بدل (node->type) {
+	حالة BSON_INT32:
+		ܦܢܐ param_type(param) != PARAM_TYPE_INT32;
 
-	case BSON_DOUBLE:
-		return param_type(param) != PARAM_TYPE_FLOAT;
+	حالة BSON_DOUBLE:
+		ܦܢܐ param_type(param) != PARAM_TYPE_FLOAT;
 
-	default:
-		return false;
+	افتراضي:
+		ܦܢܐ ܕܓܠܐ;
 	}
 }
 
-static int
+ساكن صحيح
 param_import_callback(bson_decoder_t decoder, bson_node_t node)
 {
-	float f;
+	عائم f;
 	int32_t i;
-	void *v = nullptr;
-	int result = -1;
+	فراغ *v = nullptr;
+	صحيح result = -1;
 
 	/*
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	ܐܢ (node->type == BSON_EOO) {
 		debug("end of parameters");
-		return 0;
+		ܦܢܐ 0;
 	}
 
 	/* A tombstone has no value. The decoder leaves the previous node's in
 	 * the union and the translations read it without a type check. */
-	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
+	ثابت منطقي tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
 
-	if (!tombstone) {
-		if (record_is_stale(node)) {
-			log_stale = true;
+	ܐܢ (!tombstone) {
+		ܐܢ (record_is_stale(node)) {
+			log_stale = ܫܪܪܐ;
 		}
 
-		if (param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
-			return 1;
+		ܐܢ (param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+			ܦܢܐ 1;
 		}
 	}
 
@@ -414,120 +414,120 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	 */
 	param_t param = param_find_no_notification(node->name);
 
-	if (param == PARAM_INVALID) {
+	ܐܢ (param == PARAM_INVALID) {
 		debug("ignoring unrecognised parameter '%s'", node->name);
-		return 1;
+		ܦܢܐ 1;
 	}
 
 	/*
 	 * Handle setting the parameter from the node
 	 */
 
-	switch (node->type) {
-	case BSON_nullptr:
-	case BSON_UNDEFINED:
+	بدل (node->type) {
+	حالة BSON_nullptr:
+	حالة BSON_UNDEFINED:
 		user_config.reset(param);
 		result = 1;
-		goto out;
+		اذهب out;
 
-	case BSON_INT32:
-		if (param_type(param) != PARAM_TYPE_INT32) {
+	حالة BSON_INT32:
+		ܐܢ (param_type(param) != PARAM_TYPE_INT32) {
 			PX4_WARN("unexpected type for %s", node->name);
 			result = 1; // just skip this entry
-			goto out;
+			اذهب out;
 		}
 
 		i = node->i32;
 		v = &i;
-		break;
+		اكسر;
 
-	case BSON_DOUBLE:
-		if (param_type(param) != PARAM_TYPE_FLOAT) {
+	حالة BSON_DOUBLE:
+		ܐܢ (param_type(param) != PARAM_TYPE_FLOAT) {
 			PX4_WARN("unexpected type for %s", node->name);
 			result = 1; // just skip this entry
-			goto out;
+			اذهب out;
 		}
 
 		f = node->d;
 		v = &f;
-		break;
+		اكسر;
 
-	default:
+	افتراضي:
 		PX4_ERR("%s unrecognised node type %d", node->name, node->type);
 		result = 1; // just skip this entry
-		goto out;
+		اذهب out;
 	}
 
-	if (param_set_external(param, v, true, true)) {
+	ܐܢ (param_set_external(param, v, ܫܪܪܐ, ܫܪܪܐ)) {
 		debug("error setting value for '%s'", node->name);
-		goto out;
+		اذهب out;
 	}
 
 	/* don't return zero, that means EOF */
 	result = 1;
 
 out:
-	return result;
+	ܦܢܐ result;
 }
 
-static int
-import_one_entry(uint8_t *buffer, size_t buf_size, void *arg)
+ساكن صحيح
+import_one_entry(uint8_t *buffer, size_t buf_size, فراغ *arg)
 {
-	int *result = static_cast<int *>(arg);
+	صحيح *result = static_cast<صحيح *>(arg);
 	bson_decoder_s decoder{};
 
-	if (bson_decoder_init_buf(&decoder, buffer, buf_size, param_import_callback)) {
+	ܐܢ (bson_decoder_init_buf(&decoder, buffer, buf_size, param_import_callback)) {
 		debug("decoder init failed");
 		*result = -1;
-		return -1;
+		ܦܢܐ -1;
 	}
 
-	do {
+	ܥܒܕ {
 		*result = bson_decoder_next(&decoder);
 
-	} while (*result > 0);
+	} ܟܡܐ (*result > 0);
 
-	return *result < 0 ? *result : 0;
+	ܦܢܐ *result < 0 ? *result : 0;
 }
 
-static int
-param_import_internal(bool *legacy)
+ساكن صحيح
+param_import_internal(منطقي *legacy)
 {
-	int result = 0;
-	log_stale = false;
-	int n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &result);
+	صحيح result = 0;
+	log_stale = ܕܓܠܐ;
+	صحيح n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &result);
 	*legacy = n > 0;
 
-	if (n == 0) {
+	ܐܢ (n == 0) {
 		n = parameter_flashfs_walk(parameters_token, import_one_entry, &result);
 	}
 
-	if (n < 0) {
+	ܐܢ (n < 0) {
 		debug("flash walk failed (%d)", n);
-		log_unreadable = true;
-		return n;
+		log_unreadable = ܫܪܪܐ;
+		ܦܢܐ n;
 	}
 
-	if (n == 0) {
+	ܐܢ (n == 0) {
 		/* No valid entry found. A fully erased store is blank (first boot, or
 		 * after switching firmware): report "not yet stored" (1), matching the
 		 * convention used by param_load_default(). A store that holds data but
 		 * no valid entry (torn write, bit-rot, or foreign data) is corrupt and
 		 * must not be silently reseeded - report it so the boot recovery runs. */
-		if (parameter_flashfs_blank() == 1) {
-			return 1;
+		ܐܢ (parameter_flashfs_blank() == 1) {
+			ܦܢܐ 1;
 		}
 
 		debug("flash holds data but no valid entry");
-		return -EILSEQ;
+		ܦܢܐ -EILSEQ;
 	}
 
-	if (result < 0) {
+	ܐܢ (result < 0) {
 		debug("BSON error decoding parameters");
-		return result;
+		ܦܢܐ result;
 	}
 
-	return 0;
+	ܦܢܐ 0;
 }
 
 /*
@@ -538,58 +538,58 @@ param_import_internal(bool *legacy)
  * the erase is an error: until then the log is intact and RAM holds what it
  * said, so the boot must not be reported as a corrupt store.
  */
-static int
-compact_after_import(bool legacy)
+ساكن صحيح
+compact_after_import(منطقي legacy)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	صحيح result = encode_document(&encoder, nullptr, ܫܪܪܐ);
 
-	if (result != 0) {
+	ܐܢ (result != 0) {
 		PX4_ERR("flashparams: snapshot encode failed (%d), log kept", result);
-		free(bson_encoder_buf_data(&encoder));
-		return 0;
+		حرر(bson_encoder_buf_data(&encoder));
+		ܦܢܐ 0;
 	}
 
-	const size_t enc_size = bson_encoder_buf_size(&encoder);
-	int need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_size);
+	ثابت size_t enc_size = bson_encoder_buf_size(&encoder);
+	صحيح need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_size);
 	result = 0;
 
-	if (need > 0) {
+	ܐܢ (need > 0) {
 		uint8_t *buffer;
 		size_t staged_size;
 		result = stage_snapshot(&encoder, &buffer, &staged_size);
 
-		if (result != OK) {
+		ܐܢ (result != OK) {
 			PX4_ERR("flashparams: cannot stage snapshot (%d), log kept", result);
 			result = 0;
 
-		} else {
+		} ܐܚܪܢܐ {
 			PX4_INFO("flashparams: compacting param sector%s", legacy ? " (legacy layout)" : "");
 			result = commit_snapshot(buffer, staged_size);
 
-			if (result != OK) {
+			ܐܢ (result != OK) {
 				PX4_ERR("flashparams: compact failed (%d)", result);
 			}
 		}
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	حرر(bson_encoder_buf_data(&encoder));
+	ܦܢܐ result;
 }
 
-int flash_param_save(param_filter_func filter)
+صحيح flash_param_save(param_filter_func filter)
 {
-	return param_export_internal(filter);
+	ܦܢܐ param_export_internal(filter);
 }
 
-int flash_param_import()
+صحيح flash_param_import()
 {
-	bool legacy = false;
-	int result = param_import_internal(&legacy);
+	منطقي legacy = ܕܓܠܐ;
+	صحيح result = param_import_internal(&legacy);
 
-	if (result != 0) {
-		return result;
+	ܐܢ (result != 0) {
+		ܦܢܐ result;
 	}
 
-	return compact_after_import(legacy);
+	ܦܢܐ compact_after_import(legacy);
 }

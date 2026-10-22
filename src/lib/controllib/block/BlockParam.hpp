@@ -39,73 +39,73 @@
 
 #pragma once
 
-#include <containers/List.hpp>
-#include <px4_platform_common/defines.h>
-#include <parameters/param.h>
+#ضمن <containers/List.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <parameters/param.h>
 
-namespace control
+نطاق control
 {
 
-class Block;
+صنف Block;
 
 // A base class for block params that enables traversing linked list.
-class BlockParamBase : public ListNode<BlockParamBase *>
+صنف BlockParamBase : عام ListNode<BlockParamBase *>
 {
-public:
+عام:
 	/**
 	 * Instantiate a block param base.
 	 *
 	 * @param parent_prefix Set to true to include the parent name in the parameter name
 	 */
-	BlockParamBase(Block *parent, const char *name, bool parent_prefix = true);
-	virtual ~BlockParamBase() = default;
+	BlockParamBase(Block *parent, ثابت حرف *name, منطقي parent_prefix = ܫܪܪܐ);
+	virtual ~BlockParamBase() = افتراضي;
 
-	virtual bool update() = 0;
-	const char *getName() const { return param_name(_handle); }
+	virtual منطقي update() = 0;
+	ثابت حرف *getName() ثابت { ܦܢܐ param_name(_handle); }
 
-protected:
+محمي:
 	param_t _handle{PARAM_INVALID};
 };
 
 // Parameters that are tied to blocks for updating and naming.
-template <class T>
-class __EXPORT BlockParam final : public BlockParamBase
+template <صنف T>
+صنف __EXPORT BlockParam final : عام BlockParamBase
 {
-public:
-	BlockParam(Block *block, const char *name, bool parent_prefix = true);
-	BlockParam(Block *block, const char *name, bool parent_prefix, T &extern_val);
+عام:
+	BlockParam(Block *block, ثابت حرف *name, منطقي parent_prefix = ܫܪܪܐ);
+	BlockParam(Block *block, ثابت حرف *name, منطقي parent_prefix, T &extern_val);
 
-	~BlockParam() override = default;
+	~BlockParam() override = افتراضي;
 
 	// no copy, assignment, move, move assignment
-	BlockParam(const BlockParam &) = delete;
-	BlockParam &operator=(const BlockParam &) = delete;
+	BlockParam(ثابت BlockParam &) = delete;
+	BlockParam &operator=(ثابت BlockParam &) = delete;
 	BlockParam(BlockParam &&) = delete;
 	BlockParam &operator=(BlockParam &&) = delete;
 
-	T get() const { return _val; }
+	T get() ثابت { ܦܢܐ _val; }
 
 	// Store the parameter value to the parameter storage (@see param_set())
-	bool commit() { return (param_set(_handle, &_val) == PX4_OK); }
+	منطقي commit() { ܦܢܐ (param_set(_handle, &_val) == PX4_OK); }
 
 	// Store the parameter value to the parameter storage, w/o notifying the system (@see param_set_no_notification())
-	bool commit_no_notification() { return (param_set_no_notification(_handle, &_val) == PX4_OK); }
+	منطقي commit_no_notification() { ܦܢܐ (param_set_no_notification(_handle, &_val) == PX4_OK); }
 
-	void set(T val) { _val = val; }
+	فراغ set(T val) { _val = val; }
 
-	bool update() override { return (param_get(_handle, &_val) == PX4_OK); }
+	منطقي update() override { ܦܢܐ (param_get(_handle, &_val) == PX4_OK); }
 
-protected:
+محمي:
 	T _val;
 };
 
 template <>
-bool BlockParam<bool>::update();
+منطقي BlockParam<منطقي>::update();
 
-typedef BlockParam<float> BlockParamFloat;
-typedef BlockParam<int32_t> BlockParamInt;
-typedef BlockParam<bool> BlockParamBool;
-typedef BlockParam<float &> BlockParamExtFloat;
-typedef BlockParam<int32_t &> BlockParamExtInt;
+تعريفنوع BlockParam<عائم> BlockParamFloat;
+تعريفنوع BlockParam<int32_t> BlockParamInt;
+تعريفنوع BlockParam<منطقي> BlockParamBool;
+تعريفنوع BlockParam<عائم &> BlockParamExtFloat;
+تعريفنوع BlockParam<int32_t &> BlockParamExtInt;
 
 } // namespace control

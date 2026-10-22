@@ -57,15 +57,15 @@
 #define CBRK_VTOLARMING_KEY	159753
 #define CBRK_UAVCAN_FW_KEY	5318008
 
-#include <stdint.h>
+#ضمن <stdint.h>
 
 __BEGIN_DECLS
 
-extern "C" __EXPORT bool circuit_breaker_enabled(const char *breaker, int32_t magic);
+خارجي "C" __EXPORT bool circuit_breaker_enabled(ثابت حرف *breaker, int32_t magic);
 
-static inline bool circuit_breaker_enabled_by_val(int32_t breaker_val, int32_t magic)
+ساكن مضمن bool circuit_breaker_enabled_by_val(int32_t breaker_val, int32_t magic)
 {
-	return breaker_val == magic;
+	ܦܢܐ breaker_val == magic;
 }
 
 __END_DECLS

@@ -32,12 +32,12 @@
 #
 ############################################################################
 
-import math
-import numpy
-import json
-import statistics
-import sys
-import urllib.request
+استورد math
+استورد numpy
+استورد json
+استورد statistics
+استورد sys
+استورد urllib.request
 
 SAMPLING_RES = 10
 SAMPLING_MIN_LAT = -90
@@ -46,7 +46,7 @@ SAMPLING_MIN_LON = -180
 SAMPLING_MAX_LON = 180
 
 def constrain(n, nmin, nmax):
-    return max(min(nmin, n), nmax)
+    ܦܢܐ max(min(nmin, n), nmax)
 
 header = """/****************************************************************************
  *
@@ -88,8 +88,8 @@ print(header)
 
 print('#include <stdint.h>\n')
 
-LAT_DIM=int((SAMPLING_MAX_LAT-SAMPLING_MIN_LAT)/SAMPLING_RES)+1
-LON_DIM=int((SAMPLING_MAX_LON-SAMPLING_MIN_LON)/SAMPLING_RES)+1
+LAT_DIM=صحيح((SAMPLING_MAX_LAT-SAMPLING_MIN_LAT)/SAMPLING_RES)+1
+LON_DIM=صحيح((SAMPLING_MAX_LON-SAMPLING_MIN_LON)/SAMPLING_RES)+1
 
 print('static constexpr float SAMPLING_RES = {}'.format(SAMPLING_RES) + ';')
 print('static constexpr float SAMPLING_MIN_LAT = {}'.format(SAMPLING_MIN_LAT) + ';')
@@ -110,17 +110,17 @@ world_magnitude_model = {} # lat/lon dictionary with grid result
 
 params = urllib.parse.urlencode({'lat1': 0, 'lon1': 0, 'resultFormat': 'json'})
 f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (key, params))
-data = json.loads(f.read())
+data = json.loads(f.اقرأ())
 
 world_magnitude_model_units = data['units']
 
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+لكل latitude في range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     world_magnitude_model[latitude] = {}
 
-    for longitude in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
+    لكل longitude في range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
         params = urllib.parse.urlencode({'lat1': latitude, 'lon1': longitude, 'lon2': SAMPLING_MAX_LON, 'resultFormat': 'json'})
         f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (key, params))
-        data = json.loads(f.read())
+        data = json.loads(f.اقرأ())
         #print(json.dumps(data, indent = 4)) # debugging
 
         world_magnitude_model[latitude][longitude] = data['result'][0]
@@ -129,24 +129,24 @@ for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
 
 def print_wmm_table(key_name):
 
-    value_min = float('inf')
+    value_min = عائم('inf')
     value_min_lat_lon = ()
 
-    value_max = float('-inf')
+    value_max = عائم('-inf')
     value_max_lat_lon = ()
 
-    for latitude, lat_row in world_magnitude_model.items():
+    لكل latitude, lat_row في world_magnitude_model.items():
         #print(latitude, lat_row)
-        for longitude, result in lat_row.items():
+        لكل longitude, result في lat_row.items():
             #print(result)
 
-            value = float(result[key_name])
+            value = عائم(result[key_name])
 
-            if (value > value_max):
+            ܐܢ (value > value_max):
                 value_max = value
                 value_max_lat_lon = (latitude, longitude)
 
-            if (value < value_min):
+            ܐܢ (value < value_min):
                 value_min = value
                 value_min_lat_lon = (latitude, longitude)
 
@@ -164,33 +164,33 @@ def print_wmm_table(key_name):
     print('// Date: {},'.format(data['result'][0]['date']))
     print('static constexpr const int16_t {}_table[{}][{}]'.format(key_name, LAT_DIM, LON_DIM) + " {")
     print('\t//    LONGITUDE: ', end='')
-    for l in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
+    لكل l في range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
         print('{0:6d},'.format(l), end='')
     print('')
 
-    for latitude, lat_row in world_magnitude_model.items():
+    لكل latitude, lat_row في world_magnitude_model.items():
         print('\t/* LAT: {0:3d} */'.format(latitude) + ' { ', end='')
-        latitude_blackout_zone = False
+        latitude_blackout_zone = ܕܓܠܐ
 
-        for longitude, result in lat_row.items():
+        لكل longitude, result في lat_row.items():
 
-            value = float(result[key_name])
+            value = عائم(result[key_name])
 
             # value scaled to fit into int16_t
-            value_int = int(round(value * value_scale))
+            value_int = صحيح(round(value * value_scale))
             print('{0:6d},'.format(value_int), end='')
 
             # blackout warning at this latitude
-            try:
-                if result['warning']:
-                    latitude_blackout_zone = True
+            حاول:
+                ܐܢ result['warning']:
+                    latitude_blackout_zone = ܫܪܪܐ
 
-            except:
+            استثناء:
                 pass
 
-        if latitude_blackout_zone:
+        ܐܢ latitude_blackout_zone:
             print(' }, // WARNING! black out zone')
-        else:
+        ܐܚܪܢܐ:
             print(' },')
 
     print("};")

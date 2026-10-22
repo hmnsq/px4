@@ -31,40 +31,40 @@
  *
  ****************************************************************************/
 
-#include "clock_offset_estimator.hpp"
+#ضمن "clock_offset_estimator.hpp"
 
 hrt_abstime ClockOffsetEstimator::toLocal(uint64_t remote_us, hrt_abstime local_us)
 {
-	if (remote_us == 0) {
-		return 0;
+	ܐܢ (remote_us == 0) {
+		ܦܢܐ 0;
 	}
 
-	const int64_t lag = static_cast<int64_t>(local_us) - static_cast<int64_t>(remote_us);
+	ثابت int64_t lag = static_cast<int64_t>(local_us) - static_cast<int64_t>(remote_us);
 
-	if (!_initialized || lag > _link_offset_us + kResetThresholdUs) {
+	ܐܢ (!_initialized || lag > _link_offset_us + kResetThresholdUs) {
 		// Bootstrap, or remote-clock discontinuity.
 		_link_offset_us = lag;
-		_initialized = true;
+		_initialized = ܫܪܪܐ;
 
-	} else {
+	} ܐܚܪܢܐ {
 		// Drift the floor up at the worst-case relative clock rate so we don't
 		// pin below the true offset when HRT runs faster than the remote.
-		const hrt_abstime dt = (local_us > _last_update_us) ? (local_us - _last_update_us) : 0;
+		ثابت hrt_abstime dt = (local_us > _last_update_us) ? (local_us - _last_update_us) : 0;
 		_link_offset_us += static_cast<int64_t>(dt) * kMaxClockDriftPpm / 1'000'000;
 
-		if (lag < _link_offset_us) {
+		ܐܢ (lag < _link_offset_us) {
 			_link_offset_us = lag;
 		}
 	}
 
 	_last_update_us = local_us;
 
-	const int64_t result = static_cast<int64_t>(remote_us) + _link_offset_us;
+	ثابت int64_t result = static_cast<int64_t>(remote_us) + _link_offset_us;
 
 	// Mapped HRT cannot lie after receipt.
-	if (result <= 0 || result > static_cast<int64_t>(local_us)) {
-		return 0;
+	ܐܢ (result <= 0 || result > static_cast<int64_t>(local_us)) {
+		ܦܢܐ 0;
 	}
 
-	return static_cast<hrt_abstime>(result);
+	ܦܢܐ static_cast<hrt_abstime>(result);
 }

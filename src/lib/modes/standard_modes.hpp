@@ -33,15 +33,15 @@
 
 #pragma once
 
-#include <uORB/topics/vehicle_status.h>
+#ضمن <uORB/topics/vehicle_status.h>
 
-#include <stdint.h>
+#ضمن <stdint.h>
 
-namespace mode_util
+نطاق mode_util
 {
 
 // This matches the definition from MAVLink MAV_STANDARD_MODE
-enum class StandardMode : uint8_t {
+تعداد صنف StandardMode : uint8_t {
 	NON_STANDARD = 0,
 	POSITION_HOLD = 1,
 	ORBIT = 2,
@@ -56,99 +56,99 @@ enum class StandardMode : uint8_t {
 /**
  * @return Get MAVLink standard mode from nav_state
  */
-static inline StandardMode getStandardModeFromNavState(uint8_t nav_state, uint8_t vehicle_type, bool is_vtol)
+ساكن مضمن StandardMode getStandardModeFromNavState(uint8_t nav_state, uint8_t vehicle_type, منطقي is_vtol)
 {
-	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: return StandardMode::SAFE_RECOVERY;
+	بدل (nav_state) {
+	حالة vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: ܦܢܐ StandardMode::SAFE_RECOVERY;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION: return StandardMode::MISSION;
+	حالة vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION: ܦܢܐ StandardMode::MISSION;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_LAND: return StandardMode::LAND;
+	حالة vehicle_status_s::NAVIGATION_STATE_AUTO_LAND: ܦܢܐ StandardMode::LAND;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF: return StandardMode::TAKEOFF;
+	حالة vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF: ܦܢܐ StandardMode::TAKEOFF;
 
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+	حالة vehicle_status_s::NAVIGATION_STATE_ALTCTL:
+		ܐܢ (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ALTITUDE_HOLD;
+			ܦܢܐ StandardMode::ALTITUDE_HOLD;
 		}
 
-		break;
+		اكسر;
 
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return StandardMode::POSITION_HOLD;
+	حالة vehicle_status_s::NAVIGATION_STATE_POSCTL:
+		ܐܢ (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			ܦܢܐ StandardMode::POSITION_HOLD;
 		}
 
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::CRUISE;
+		ܐܢ (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			ܦܢܐ StandardMode::CRUISE;
 		}
 
-		break;
+		اكسر;
 
-	case vehicle_status_s::NAVIGATION_STATE_ORBIT:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+	حالة vehicle_status_s::NAVIGATION_STATE_ORBIT:
+		ܐܢ (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ORBIT;
+			ܦܢܐ StandardMode::ORBIT;
 		}
 
-		break;
+		اكسر;
 	}
 
-	return StandardMode::NON_STANDARD;
+	ܦܢܐ StandardMode::NON_STANDARD;
 }
 
 /**
  * @return Get nav_state from a standard mode, or vehicle_status_s::NAVIGATION_STATE_MAX if not supported
  */
-static inline uint8_t getNavStateFromStandardMode(StandardMode mode, uint8_t vehicle_type, bool is_vtol)
+ساكن مضمن uint8_t getNavStateFromStandardMode(StandardMode mode, uint8_t vehicle_type, منطقي is_vtol)
 {
-	switch (mode) {
-	case StandardMode::SAFE_RECOVERY: return vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
+	بدل (mode) {
+	حالة StandardMode::SAFE_RECOVERY: ܦܢܐ vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
 
-	case StandardMode::MISSION: return vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
+	حالة StandardMode::MISSION: ܦܢܐ vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
 
-	case StandardMode::LAND: return vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
+	حالة StandardMode::LAND: ܦܢܐ vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
 
-	case StandardMode::TAKEOFF: return vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
+	حالة StandardMode::TAKEOFF: ܦܢܐ vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
 
-	case StandardMode::ALTITUDE_HOLD:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+	حالة StandardMode::ALTITUDE_HOLD:
+		ܐܢ (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ALTCTL;
+			ܦܢܐ vehicle_status_s::NAVIGATION_STATE_ALTCTL;
 		}
 
-		break;
+		اكسر;
 
-	case StandardMode::POSITION_HOLD:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+	حالة StandardMode::POSITION_HOLD:
+		ܐܢ (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			ܦܢܐ vehicle_status_s::NAVIGATION_STATE_POSCTL;
 		}
 
-		break;
+		اكسر;
 
-	case StandardMode::CRUISE:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+	حالة StandardMode::CRUISE:
+		ܐܢ (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			ܦܢܐ vehicle_status_s::NAVIGATION_STATE_POSCTL;
 		}
 
-		break;
+		اكسر;
 
-	case StandardMode::ORBIT:
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ORBIT;
+	حالة StandardMode::ORBIT:
+		ܐܢ (vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			ܦܢܐ vehicle_status_s::NAVIGATION_STATE_ORBIT;
 		}
 
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+		ܐܢ (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			ܦܢܐ vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
 		}
 
-		break;
+		اكسر;
 
-	default: break;
+	افتراضي: اكسر;
 	}
 
-	return vehicle_status_s::NAVIGATION_STATE_MAX;
+	ܦܢܐ vehicle_status_s::NAVIGATION_STATE_MAX;
 }
 
 

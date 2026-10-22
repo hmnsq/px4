@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ضمن "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gripper.h>
+#ضمن <uORB/topics/gripper.h>
 
 /**
  * @brief Function: Gripper (Used for actuating a Gripper)
  */
-class FunctionGripper : public FunctionProviderBase
+صنف FunctionGripper : عام FunctionProviderBase
 {
-public:
-	FunctionGripper() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGripper(); }
+عام:
+	FunctionGripper() = افتراضي;
+	ساكن FunctionProviderBase *allocate(ثابت Context &context) { ܦܢܐ جديد FunctionGripper(); }
 
-	void update() override
+	فراغ update() override
 	{
 		gripper_s gripper;
 
-		if (_gripper_sub.update(&gripper)) {
-			if (gripper.command == gripper_s::COMMAND_RELEASE) {
+		ܐܢ (_gripper_sub.update(&gripper)) {
+			ܐܢ (gripper.command == gripper_s::COMMAND_RELEASE) {
 				_data = -1.f; // Minimum command for release
 
-			} else if (gripper.command == gripper_s::COMMAND_GRAB) {
+			} ܐܚܪܢܐ ܐܢ (gripper.command == gripper_s::COMMAND_GRAB) {
 				_data = 1.f; // Maximum command for grab
 
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	عائم value(OutputFunction func) override { ܦܢܐ _data; }
 
-private:
+خاص:
 	uORB::Subscription _gripper_sub{ORB_ID(gripper)};
-	float _data{-1.f};
+	عائم _data{-1.f};
 };

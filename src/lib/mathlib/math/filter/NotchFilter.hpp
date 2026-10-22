@@ -42,56 +42,56 @@
 
 #pragma once
 
-#include <mathlib/math/Functions.hpp>
-#include <cmath>
-#include <float.h>
-#include <matrix/math.hpp>
+#ضمن <mathlib/math/Functions.hpp>
+#ضمن <cmath>
+#ضمن <float.h>
+#ضمن <matrix/math.hpp>
 
-namespace math
+نطاق math
 {
 
 template<typename T>
-class NotchFilter
+صنف NotchFilter
 {
-public:
-	NotchFilter() = default;
-	~NotchFilter() = default;
+عام:
+	NotchFilter() = افتراضي;
+	~NotchFilter() = افتراضي;
 
-	bool setParameters(float sample_freq, float notch_freq, float bandwidth);
+	منطقي setParameters(عائم sample_freq, عائم notch_freq, عائم bandwidth);
 
 	/**
 	 * Add a new raw value to the filter using the Direct Form I
 	 *
 	 * @return retrieve the filtered result
 	 */
-	inline T apply(const T &sample)
+	مضمن T apply(ثابت T &sample)
 	{
-		if (!_initialized) {
+		ܐܢ (!_initialized) {
 			reset(sample);
-			_initialized = true;
+			_initialized = ܫܪܪܐ;
 		}
 
-		return applyInternal(sample);
+		ܦܢܐ applyInternal(sample);
 	}
 
 	// Filter array of samples in place using the direct form I
-	inline void applyArray(T samples[], int num_samples)
+	مضمن فراغ applyArray(T samples[], صحيح num_samples)
 	{
-		if (!_initialized) {
+		ܐܢ (!_initialized) {
 			reset(samples[0]);
-			_initialized = true;
+			_initialized = ܫܪܪܐ;
 		}
 
-		for (int n = 0; n < num_samples; n++) {
+		لكل (صحيح n = 0; n < num_samples; n++) {
 			samples[n] = applyInternal(samples[n]);
 		}
 	}
 
-	float getNotchFreq() const { return _notch_freq; }
-	float getBandwidth() const { return _bandwidth; }
+	عائم getNotchFreq() ثابت { ܦܢܐ _notch_freq; }
+	عائم getBandwidth() ثابت { ܦܢܐ _bandwidth; }
 
 	// Used in unit test only
-	void getCoefficients(float a[3], float b[3]) const
+	فراغ getCoefficients(عائم a[3], عائم b[3]) ثابت
 	{
 		a[0] = 1.f;
 		a[1] = _a1;
@@ -101,16 +101,16 @@ public:
 		b[2] = _b2;
 	}
 
-	float getMagnitudeResponse(float frequency) const
+	عائم getMagnitudeResponse(عائم frequency) ثابت
 	{
-		float w = 2.f * M_PI_F * frequency / _sample_freq;
+		عائم w = 2.f * M_PI_F * frequency / _sample_freq;
 
-		float numerator = _b0 * _b0 + _b1 * _b1 + _b2 * _b2
+		عائم numerator = _b0 * _b0 + _b1 * _b1 + _b2 * _b2
 				  + 2.f * (_b0 * _b1 + _b1 * _b2) * cosf(w) + 2.f * _b0 * _b2 * cosf(2.f * w);
 
-		float denominator = 1.f + _a1 * _a1 + _a2 * _a2 + 2.f * (_a1 + _a1 * _a2) * cosf(w) + 2.f * _a2 * cosf(2.f * w);
+		عائم denominator = 1.f + _a1 * _a1 + _a2 * _a2 + 2.f * (_a1 + _a1 * _a2) * cosf(w) + 2.f * _a2 * cosf(2.f * w);
 
-		return sqrtf(numerator / denominator);
+		ܦܢܐ sqrtf(numerator / denominator);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public:
 	 * physical meaning if you use this method to change the filter's coefficients.
 	 * Used for creating clones of a specific filter.
 	 */
-	void setCoefficients(float a[2], float b[3])
+	فراغ setCoefficients(عائم a[2], عائم b[3])
 	{
 		_a1 = a[0];
 		_a2 = a[1];
@@ -128,25 +128,25 @@ public:
 		_b2 = b[2];
 	}
 
-	bool initialized() const { return _initialized; }
+	منطقي initialized() ثابت { ܦܢܐ _initialized; }
 
-	void reset() { _initialized = false; }
+	فراغ reset() { _initialized = ܕܓܠܐ; }
 
-	void reset(const T &sample)
+	فراغ reset(ثابت T &sample)
 	{
-		const T input = isFinite(sample) ? sample : T{};
+		ثابت T input = isFinite(sample) ? sample : T{};
 
 		_delay_element_1 = _delay_element_2 = input;
 		_delay_element_output_1 = _delay_element_output_2 = input * (_b0 + _b1 + _b2) / (1 + _a1 + _a2);
 
-		if (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
+		ܐܢ (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
 			_delay_element_output_1 = _delay_element_output_2 = {};
 		}
 
-		_initialized = true;
+		_initialized = ܫܪܪܐ;
 	}
 
-	void disable()
+	فراغ disable()
 	{
 		// no filtering
 		_notch_freq = 0.f;
@@ -160,17 +160,17 @@ public:
 		_a1 = 0.f;
 		_a2 = 0.f;
 
-		_initialized = false;
+		_initialized = ܕܓܠܐ;
 	}
 
-protected:
+محمي:
 
 	/**
 	 * Add a new raw value to the filter using the Direct Form I
 	 *
 	 * @return retrieve the filtered result
 	 */
-	inline T applyInternal(const T &sample)
+	مضمن T applyInternal(ثابت T &sample)
 	{
 		// Direct Form I implementation
 		T output = _b0 * sample + _b1 * _delay_element_1 + _b2 * _delay_element_2 - _a1 * _delay_element_output_1 - _a2 *
@@ -184,7 +184,7 @@ protected:
 		_delay_element_output_2 = _delay_element_output_1;
 		_delay_element_output_1 = output;
 
-		return output;
+		ܦܢܐ output;
 	}
 
 	T _delay_element_1{};
@@ -193,18 +193,18 @@ protected:
 	T _delay_element_output_2{};
 
 	// All the coefficients are normalized by a0, so a0 becomes 1 here
-	float _a1{0.f};
-	float _a2{0.f};
+	عائم _a1{0.f};
+	عائم _a2{0.f};
 
-	float _b0{1.f};
-	float _b1{0.f};
-	float _b2{0.f};
+	عائم _b0{1.f};
+	عائم _b1{0.f};
+	عائم _b2{0.f};
 
-	float _notch_freq{};
-	float _bandwidth{};
-	float _sample_freq{};
+	عائم _notch_freq{};
+	عائم _bandwidth{};
+	عائم _sample_freq{};
 
-	bool _initialized{false};
+	منطقي _initialized{ܕܓܠܐ};
 };
 
 /**
@@ -214,53 +214,53 @@ protected:
  * conserving the filter's history
  */
 template<typename T>
-bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float bandwidth)
+منطقي NotchFilter<T>::setParameters(عائم sample_freq, عائم notch_freq, عائم bandwidth)
 {
-	if ((sample_freq <= 0.f) || (notch_freq <= 0.f) || (bandwidth <= 0.f) || (notch_freq >= sample_freq / 2)
+	ܐܢ ((sample_freq <= 0.f) || (notch_freq <= 0.f) || (bandwidth <= 0.f) || (notch_freq >= sample_freq / 2)
 	    || !isFinite(sample_freq) || !isFinite(notch_freq) || !isFinite(bandwidth)) {
 
 		disable();
-		return false;
+		ܦܢܐ ܕܓܠܐ;
 	}
 
-	const float freq_min = sample_freq * 0.001f;
+	ثابت عائم freq_min = sample_freq * 0.001f;
 
-	const float notch_freq_new = math::max(notch_freq, freq_min);
-	const float bandwidth_new = math::max(bandwidth, freq_min);
+	ثابت عائم notch_freq_new = math::max(notch_freq, freq_min);
+	ثابت عائم bandwidth_new = math::max(bandwidth, freq_min);
 
-	const float sample_freq_diff = fabsf(sample_freq - _sample_freq);
-	const float bandwidth_diff = fabsf(bandwidth_new - _bandwidth);
+	ثابت عائم sample_freq_diff = fabsf(sample_freq - _sample_freq);
+	ثابت عائم bandwidth_diff = fabsf(bandwidth_new - _bandwidth);
 
-	const bool sample_freq_change = (sample_freq_diff > FLT_EPSILON);
-	const bool bandwidth_change = (bandwidth_diff > FLT_EPSILON);
+	ثابت منطقي sample_freq_change = (sample_freq_diff > FLT_EPSILON);
+	ثابت منطقي bandwidth_change = (bandwidth_diff > FLT_EPSILON);
 
-	if (!sample_freq_change && !bandwidth_change) {
-		const float notch_freq_diff = fabsf(notch_freq_new - _notch_freq);
+	ܐܢ (!sample_freq_change && !bandwidth_change) {
+		ثابت عائم notch_freq_diff = fabsf(notch_freq_new - _notch_freq);
 
-		if (notch_freq_diff > FLT_EPSILON) {
+		ܐܢ (notch_freq_diff > FLT_EPSILON) {
 			// only notch frequency has changed
 			_notch_freq = notch_freq_new;
 
-			const float beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
+			ثابت عائم beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
 
 			_b1 = 2.f * beta * _b0;
 			_a1 = _b1;
 
-			if (notch_freq_diff > _bandwidth) {
+			ܐܢ (notch_freq_diff > _bandwidth) {
 				// force reset
-				_initialized = false;
+				_initialized = ܕܓܠܐ;
 			}
 
-			if (!isFinite(_b1)) {
+			ܐܢ (!isFinite(_b1)) {
 				disable();
-				return false;
+				ܦܢܐ ܕܓܠܐ;
 			}
 
-			return true;
+			ܦܢܐ ܫܪܪܐ;
 
-		} else {
+		} ܐܚܪܢܐ {
 			// no change, do nothing
-			return true;
+			ܦܢܐ ܫܪܪܐ;
 		}
 	}
 
@@ -268,9 +268,9 @@ bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float ba
 	_notch_freq = notch_freq_new;
 	_bandwidth = bandwidth_new;
 
-	const float alpha = tanf(M_PI_F * _bandwidth / _sample_freq);
-	const float beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
-	const float a0_inv = 1.f / (alpha + 1.f);
+	ثابت عائم alpha = tanf(M_PI_F * _bandwidth / _sample_freq);
+	ثابت عائم beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
+	ثابت عائم a0_inv = 1.f / (alpha + 1.f);
 
 	_b0 = a0_inv;
 	_b1 = 2.f * beta * a0_inv;
@@ -279,20 +279,20 @@ bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float ba
 	_a1 = _b1;
 	_a2 = (1.f - alpha) * a0_inv;
 
-	if (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a2)) {
+	ܐܢ (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a2)) {
 		disable();
-		return false;
+		ܦܢܐ ܕܓܠܐ;
 	}
 
 	// force reset if bandwidth or sample frequency changed by more than 1%
-	if (bandwidth_diff > 0.01f * _bandwidth) {
-		_initialized = false;
+	ܐܢ (bandwidth_diff > 0.01f * _bandwidth) {
+		_initialized = ܕܓܠܐ;
 
-	} else if (sample_freq_diff > 0.01f * _sample_freq) {
-		_initialized = false;
+	} ܐܚܪܢܐ ܐܢ (sample_freq_diff > 0.01f * _sample_freq) {
+		_initialized = ܕܓܠܐ;
 	}
 
-	return true;
+	ܦܢܐ ܫܪܪܐ;
 }
 
 } // namespace math

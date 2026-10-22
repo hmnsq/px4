@@ -1,8 +1,8 @@
-from xml.sax.saxutils import escape
-import codecs
-import html
+من xml.sax.saxutils استورد escape
+استورد codecs
+استورد html
 
-class MarkdownTablesOutput():
+صنف MarkdownTablesOutput():
     def __init__(self, groups):
         result = (
 """# Parameter Reference
@@ -24,7 +24,7 @@ If a listed parameter is missing from the Firmware see: [Finding/Updating Parame
         BOARD_SPECIFIC_GROUPS = ['Actuator Outputs']
         PARAM_IS_OUTPUT_TIMER = ['PWM_MAIN_TIM0', 'PWM_MAIN_TIM1', 'PWM_MAIN_TIM2', 'PWM_AUX_TIM0', 'PWM_AUX_TIM1', 'PWM_AUX_TIM2', 'PWM_AUX_TIM3']
 
-        for group in groups:
+        لكل group في groups:
             result += f'## {group.GetName()}\n\n'
 
             # Wrap each group, and each parameter within it, so the docs theme can skip rendering
@@ -32,93 +32,93 @@ If a listed parameter is missing from the Firmware see: [Finding/Updating Parame
             # The group heading stays outside the wrapper so the page outline can track it.
             result += f'<div class="param-group" style="--param-count: {len(group.GetParams())}">\n\n'
 
-            group_is_board_specific = (group.GetName() in BOARD_SPECIFIC_GROUPS)
+            group_is_board_specific = (group.GetName() في BOARD_SPECIFIC_GROUPS)
 
-            for param in group.GetParams():
+            لكل param في group.GetParams():
                 name = param.GetName()
 
                 # Apply note if either the group is board specific
                 apply_note_board_specific_group = group_is_board_specific
 
                 # Apply note if name is in list of timer group parameters
-                apply_timer_param_note = (name in PARAM_IS_OUTPUT_TIMER)
+                apply_timer_param_note = (name في PARAM_IS_OUTPUT_TIMER)
 
-                short_desc = param.GetFieldValue("short_desc") or ''
+                short_desc = param.GetFieldValue("short_desc") ܐܘ ''
 
                 # Add fullstop to short_desc if not present
-                if short_desc:
-                    if not short_desc.strip().endswith('.'):
+                ܐܢ short_desc:
+                    ܐܢ ܠܐ short_desc.strip().endswith('.'):
                         short_desc += "."
 
-                long_desc = param.GetFieldValue("long_desc") or ''
+                long_desc = param.GetFieldValue("long_desc") ܐܘ ''
 
                 #Strip out short text from start of long text, if it ends in fullstop
-                if long_desc.startswith(short_desc):
+                ܐܢ long_desc.startswith(short_desc):
                     long_desc = long_desc[len(short_desc):].lstrip()
 
-                min_val = param.GetFieldValue("min") or ''
-                max_val = param.GetFieldValue("max") or ''
-                increment = param.GetFieldValue("increment") or ''
-                def_val = param.GetDefault() or ''
-                unit = param.GetFieldValue("unit") or ''
+                min_val = param.GetFieldValue("min") ܐܘ ''
+                max_val = param.GetFieldValue("max") ܐܘ ''
+                increment = param.GetFieldValue("increment") ܐܘ ''
+                def_val = param.GetDefault() ܐܘ ''
+                unit = param.GetFieldValue("unit") ܐܘ ''
                 type = param.GetType()
                 is_boolean = param.GetBoolean()
-                reboot_required = param.GetFieldValue("reboot_required") or ''
+                reboot_required = param.GetFieldValue("reboot_required") ܐܘ ''
                 #board = param.GetFieldValue("board") or '' ## Disabled as no board values are defined in any parameters!
                 #decimal = param.GetFieldValue("decimal") or '' #Disabled as is intended for GCS not people
                 #field_codes = param.GetFieldCodes() ## Disabled as not needed for display.
                 #boolean = param.GetFieldValue("boolean") # or '' # Disabled - does not appear useful.
 
                 # Format values for display.
-                enum_codes=param.GetEnumCodes() or '' # Gets numerical values for parameter.
+                enum_codes=param.GetEnumCodes() ܐܘ '' # Gets numerical values for parameter.
                 enum_output=''
                 # Format codes and their descriptions for display.
-                if enum_codes:
+                ܐܢ enum_codes:
                     enum_output+='**Values:**\n\n'
-                    enum_codes=sorted(enum_codes,key=float)
-                    for item in enum_codes:
+                    enum_codes=sorted(enum_codes,key=عائم)
+                    لكل item في enum_codes:
                         enum_output+=f"- `{item}`: {param.GetEnumValue(item)}\n"
                     enum_output+='\n\n'
 
                 bitmask_list=param.GetBitmaskList() #Gets bitmask values for parameter
                 bitmask_output=''
                 #Format bitmask values
-                if bitmask_list:
+                ܐܢ bitmask_list:
                     bitmask_output+='**Bitmask:**\n\n'
-                    for bit in bitmask_list:
+                    لكل bit في bitmask_list:
                         bit_text = param.GetBitmaskBit(bit)
                         bitmask_output+=f"- `{bit}`: {bit_text}\n"
                     bitmask_output+='\n\n'
 
-                if is_boolean:
+                ܐܢ is_boolean:
                     BOOLEAN_LABELS = {
                         '0': 'Disabled',
                         '1': 'Enabled'
                     }
                     # Give def_value an explanatory string (is def_value if no match)
-                    def_val = f"{BOOLEAN_LABELS[def_val]} ({def_val})" if def_val in BOOLEAN_LABELS else def_val
+                    def_val = f"{BOOLEAN_LABELS[def_val]} ({def_val})" ܐܢ def_val في BOOLEAN_LABELS ܐܚܪܢܐ def_val
 
                     # Format values and their descriptions for display.
                     boolean_values = '**Values:**\n\n'
-                    for key, label in BOOLEAN_LABELS.items():
+                    لكل key, label في BOOLEAN_LABELS.items():
                         boolean_values += f"- `{key}`: {label}\n"
                     boolean_values += '\n'
 
                 result += '<div class="param">\n\n'
                 result += f'### {name} (`{type}`)' + ' {#' + name + '}\n\n'
-                if apply_note_board_specific_group:
+                ܐܢ apply_note_board_specific_group:
                     result += f'<Badge type="warning" text="This parameter is only present on some boards." />\n\n'
-                if apply_timer_param_note:
+                ܐܢ apply_timer_param_note:
                     result += f'<Badge type="info" text="The exact output numbers where this timer applies are board-specific." />\n\n'
-                if short_desc:
+                ܐܢ short_desc:
                     result += f'{short_desc}\n\n'
-                if long_desc:
+                ܐܢ long_desc:
                     result += f'{long_desc}\n\n'
-                if is_boolean:
+                ܐܢ is_boolean:
                     result += boolean_values
-                if enum_codes:
+                ܐܢ enum_codes:
                     result += enum_output
-                if bitmask_list:
+                ܐܢ bitmask_list:
                     result += bitmask_output
                 # Format the ranges as a table.
                 is_readonly = param.GetReadonly()
@@ -130,5 +130,5 @@ If a listed parameter is missing from the Firmware see: [Finding/Updating Parame
         self.output = result
 
     def Save(self, filename):
-        with codecs.open(filename, 'w', 'utf-8') as f:
-            f.write(self.output)
+        with codecs.open(filename, 'w', 'utf-8') كـ f:
+            f.اكتب(self.output)

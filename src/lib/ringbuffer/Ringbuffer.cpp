@@ -34,11 +34,11 @@
 
 
 
-#include "Ringbuffer.hpp"
+#ضمن "Ringbuffer.hpp"
 
-#include <mathlib/mathlib.h>
-#include <assert.h>
-#include <string.h>
+#ضمن <mathlib/mathlib.h>
+#ضمن <assert.h>
+#ضمن <string.h>
 
 
 Ringbuffer::~Ringbuffer()
@@ -46,16 +46,16 @@ Ringbuffer::~Ringbuffer()
 	deallocate();
 }
 
-bool Ringbuffer::allocate(size_t buffer_size)
+منطقي Ringbuffer::allocate(size_t buffer_size)
 {
-	assert(_ringbuffer == nullptr);
+	أكد(_ringbuffer == nullptr);
 
 	_size = buffer_size;
-	_ringbuffer = new uint8_t[_size];
-	return _ringbuffer != nullptr;
+	_ringbuffer = جديد uint8_t[_size];
+	ܦܢܐ _ringbuffer != nullptr;
 }
 
-void Ringbuffer::deallocate()
+فراغ Ringbuffer::deallocate()
 {
 	delete[] _ringbuffer;
 	_ringbuffer = nullptr;
@@ -64,88 +64,88 @@ void Ringbuffer::deallocate()
 	_end = 0;
 }
 
-size_t Ringbuffer::space_available() const
+size_t Ringbuffer::space_available() ثابت
 {
-	if (_start > _end) {
-		return _start - _end - 1;
+	ܐܢ (_start > _end) {
+		ܦܢܐ _start - _end - 1;
 
-	} else {
-		return _start - _end - 1 + _size;
+	} ܐܚܪܢܐ {
+		ܦܢܐ _start - _end - 1 + _size;
 	}
 }
 
-size_t Ringbuffer::space_used() const
+size_t Ringbuffer::space_used() ثابت
 {
-	if (_start <= _end) {
-		return _end - _start;
+	ܐܢ (_start <= _end) {
+		ܦܢܐ _end - _start;
 
-	} else {
+	} ܐܚܪܢܐ {
 		// Potential wrap around.
-		return _end - _start + _size;
+		ܦܢܐ _end - _start + _size;
 	}
 }
 
 
-bool Ringbuffer::push_back(const uint8_t *buf, size_t buf_len)
+منطقي Ringbuffer::push_back(ثابت uint8_t *buf, size_t buf_len)
 {
-	if (buf_len == 0 || buf == nullptr) {
+	ܐܢ (buf_len == 0 || buf == nullptr) {
 		// Nothing to add, we better don't try.
-		return false;
+		ܦܢܐ ܕܓܠܐ;
 	}
 
-	if (_start > _end) {
+	ܐܢ (_start > _end) {
 		// Add after end up to start, no wrap around.
 
 		// Leave one byte free so that start don't end up the same
 		// which signals empty.
-		const size_t available = _start - _end - 1;
+		ثابت size_t available = _start - _end - 1;
 
-		if (available < buf_len) {
-			return false;
+		ܐܢ (available < buf_len) {
+			ܦܢܐ ܕܓܠܐ;
 		}
 
 		memcpy(&_ringbuffer[_end], buf, buf_len);
 		_end += buf_len;
 
-	} else {
+	} ܐܚܪܢܐ {
 		// Add after end, maybe wrap around.
-		const size_t available = _start - _end - 1 + _size;
+		ثابت size_t available = _start - _end - 1 + _size;
 
-		if (available < buf_len) {
-			return false;
+		ܐܢ (available < buf_len) {
+			ܦܢܐ ܕܓܠܐ;
 		}
 
-		const size_t remaining_packet_len = _size - _end;
+		ثابت size_t remaining_packet_len = _size - _end;
 
-		if (buf_len > remaining_packet_len) {
+		ܐܢ (buf_len > remaining_packet_len) {
 			memcpy(&_ringbuffer[_end], buf, remaining_packet_len);
 			_end = 0;
 
 			memcpy(&_ringbuffer[_end], buf + remaining_packet_len, buf_len - remaining_packet_len);
 			_end += buf_len - remaining_packet_len;
 
-		} else {
+		} ܐܚܪܢܐ {
 			memcpy(&_ringbuffer[_end], buf, buf_len);
 			_end += buf_len;
 		}
 	}
 
-	return true;
+	ܦܢܐ ܫܪܪܐ;
 }
 
 size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
 {
-	if (buf == nullptr) {
+	ܐܢ (buf == nullptr) {
 		// User needs to supply a valid pointer.
-		return 0;
+		ܦܢܐ 0;
 	}
 
-	if (_start == _end) {
+	ܐܢ (_start == _end) {
 		// Empty
-		return 0;
+		ܦܢܐ 0;
 	}
 
-	if (_start < _end) {
+	ܐܢ (_start < _end) {
 
 		// No wrap around.
 		size_t to_copy_len = math::min(_end - _start, buf_max_len);
@@ -153,30 +153,30 @@ size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
 		memcpy(buf, &_ringbuffer[_start], to_copy_len);
 		_start += to_copy_len;
 
-		return to_copy_len;
+		ܦܢܐ to_copy_len;
 
-	} else {
+	} ܐܚܪܢܐ {
 		// Potential wrap around.
 		size_t to_copy_len = _end - _start + _size;
 
-		if (to_copy_len > buf_max_len) {
+		ܐܢ (to_copy_len > buf_max_len) {
 			to_copy_len = buf_max_len;
 		}
 
-		const size_t remaining_buf_len = _size - _start;
+		ثابت size_t remaining_buf_len = _size - _start;
 
-		if (to_copy_len > remaining_buf_len) {
+		ܐܢ (to_copy_len > remaining_buf_len) {
 
 			memcpy(buf, &_ringbuffer[_start], remaining_buf_len);
 			_start = 0;
 			memcpy(buf + remaining_buf_len, &_ringbuffer[_start], to_copy_len - remaining_buf_len);
 			_start += to_copy_len - remaining_buf_len;
 
-		} else {
+		} ܐܚܪܢܐ {
 			memcpy(buf, &_ringbuffer[_start], to_copy_len);
 			_start += to_copy_len;
 		}
 
-		return to_copy_len;
+		ܦܢܐ to_copy_len;
 	}
 }

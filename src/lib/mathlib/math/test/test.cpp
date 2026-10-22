@@ -37,100 +37,100 @@
  * Test library code
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#ضمن <stdio.h>
+#ضمن <math.h>
+#ضمن <stdlib.h>
 
-#include <px4_platform_common/defines.h>
+#ضمن <px4_platform_common/defines.h>
 
-#include "test.hpp"
+#ضمن "test.hpp"
 
-bool __EXPORT equal(float a, float b, float epsilon)
+منطقي __EXPORT equal(عائم a, عائم b, عائم epsilon)
 {
-	float diff = fabsf(a - b);
+	عائم diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	ܐܢ (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		ܦܢܐ ܕܓܠܐ;
 
-	} else { return true; }
+	} ܐܚܪܢܐ { ܦܢܐ ܫܪܪܐ; }
 }
 
-bool __EXPORT greater_than(float a, float b)
+منطقي __EXPORT greater_than(عائم a, عائم b)
 {
-	if (a > b) {
-		return true;
+	ܐܢ (a > b) {
+		ܦܢܐ ܫܪܪܐ;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ܐܚܪܢܐ {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		ܦܢܐ ܕܓܠܐ;
 	}
 }
 
-bool __EXPORT less_than(float a, float b)
+منطقي __EXPORT less_than(عائم a, عائم b)
 {
-	if (a < b) {
-		return true;
+	ܐܢ (a < b) {
+		ܦܢܐ ܫܪܪܐ;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ܐܚܪܢܐ {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		ܦܢܐ ܕܓܠܐ;
 	}
 }
 
-bool __EXPORT greater_than_or_equal(float a, float b)
+منطقي __EXPORT greater_than_or_equal(عائم a, عائم b)
 {
-	if (a >= b) {
-		return true;
+	ܐܢ (a >= b) {
+		ܦܢܐ ܫܪܪܐ;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ܐܚܪܢܐ {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		ܦܢܐ ܕܓܠܐ;
 	}
 }
 
-bool __EXPORT less_than_or_equal(float a, float b)
+منطقي __EXPORT less_than_or_equal(عائم a, عائم b)
 {
-	if (a <= b) {
-		return true;
+	ܐܢ (a <= b) {
+		ܦܢܐ ܫܪܪܐ;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ܐܚܪܢܐ {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		ܦܢܐ ܕܓܠܐ;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+فراغ __EXPORT float2SigExp(ثابت عائم &num, عائم &sig, صحيح &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	ܐܢ (!PX4_ISFINITE(num)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		ܦܢܐ;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	ܐܢ (fabsf(num) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		ܦܢܐ;
 	}
 
 	exp = log10f(fabsf(num));
 
-	if (exp > 0) {
+	ܐܢ (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} ܐܚܪܢܐ {
 		exp = floor(exp);
 	}
 
 	sig = num;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	ܐܢ (exp > 0) {
+		لكل (صحيح i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} ܐܚܪܢܐ {
+		لكل (صحيح i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

@@ -33,9 +33,9 @@
 #pragma once
 
 #ifdef __PX4_NUTTX
-#include "nuttx/SPI.hpp"
-#elif defined(__PX4_QURT)
-#include "qurt/SPI.hpp"
-#else
-#include "posix/SPI.hpp"
+#ضمن "nuttx/SPI.hpp"
+#وإلاإذا defined(__PX4_QURT)
+#ضمن "qurt/SPI.hpp"
+#ܐܚܪܢܐ
+#ضمن "posix/SPI.hpp"
 #endif

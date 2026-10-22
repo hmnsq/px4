@@ -39,32 +39,32 @@
 
 #pragma once
 
-#include <cstdint>
+#ضمن <cstdint>
 
-#include <lib/mathlib/mathlib.h>
-#include <matrix/math.hpp>
+#ضمن <lib/mathlib/mathlib.h>
+#ضمن <matrix/math.hpp>
 
-struct aircraft_state_s {
+بنية aircraft_state_s {
 	matrix::Vector2d lat_lon{};
-	float altitude{0.f};
+	عائم altitude{0.f};
 	matrix::Vector3f velocity_ned{};
-	float heading{0.f};
+	عائم heading{0.f};
 };
 
-struct daa_stats_s {
-	float aircraft_dist{0.f};
-	float aircraft_dist_hor{0.f};
-	float aircraft_dist_vert{0.f};
-	float expected_min_dist_time_sec{0.f};
+بنية daa_stats_s {
+	عائم aircraft_dist{0.f};
+	عائم aircraft_dist_hor{0.f};
+	عائم aircraft_dist_vert{0.f};
+	عائم expected_min_dist_time_sec{0.f};
 };
 
-inline matrix::Vector2f calculate_horizontal_vertical_speed_magnitudes(const aircraft_state_s &aircraft_state)
+مضمن matrix::Vector2f calculate_horizontal_vertical_speed_magnitudes(ثابت aircraft_state_s &aircraft_state)
 {
-	return matrix::Vector2f(aircraft_state.velocity_ned.xy().norm(), fabsf(aircraft_state.velocity_ned(2)));
+	ܦܢܐ matrix::Vector2f(aircraft_state.velocity_ned.xy().norm(), fabsf(aircraft_state.velocity_ned(2)));
 }
 
 // Worst-case closing speed (UAV and traffic flying straight at each other).
-inline float calculate_relative_uav_traffic_speed(const aircraft_state_s &uav_state, const aircraft_state_s &traffic_state)
+مضمن عائم calculate_relative_uav_traffic_speed(ثابت aircraft_state_s &uav_state, ثابت aircraft_state_s &traffic_state)
 {
-	return traffic_state.velocity_ned.norm() + uav_state.velocity_ned.norm();
+	ܦܢܐ traffic_state.velocity_ned.norm() + uav_state.velocity_ned.norm();
 }

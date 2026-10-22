@@ -39,23 +39,23 @@
 
 #pragma once
 
-namespace math
+نطاق math
 {
 
 template <typename Type, size_t N>
-class WelfordMeanVector
+صنف WelfordMeanVector
 {
-public:
+عام:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const matrix::Vector<Type, N> &new_value)
+	منطقي update(ثابت matrix::Vector<Type, N> &new_value)
 	{
-		if (_count == 0) {
+		ܐܢ (_count == 0) {
 			reset();
 			_count = 1;
 			_mean = new_value;
-			return false;
+			ܦܢܐ ܕܓܠܐ;
 
-		} else if (_count == UINT16_MAX) {
+		} ܐܚܪܢܐ ܐܢ (_count == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
 			_M2 = _M2 / _count;
@@ -63,24 +63,24 @@ public:
 
 			_count = 1;
 
-		} else {
+		} ܐܚܪܢܐ {
 			_count++;
 		}
 
 		// mean
 		//  accumulates the mean of the entire dataset
 		//  use Kahan summation because delta can be very small compared to the mean
-		const matrix::Vector<Type, N> delta{new_value - _mean};
+		ثابت matrix::Vector<Type, N> delta{new_value - _mean};
 		{
-			const matrix::Vector<Type, N> y = (delta / _count) - _mean_accum;
-			const matrix::Vector<Type, N> t = _mean + y;
+			ثابت matrix::Vector<Type, N> y = (delta / _count) - _mean_accum;
+			ثابت matrix::Vector<Type, N> t = _mean + y;
 			_mean_accum = (t - _mean) - y;
 			_mean = t;
 		}
 
-		if (!_mean.isAllFinite()) {
+		ܐܢ (!_mean.isAllFinite()) {
 			reset();
-			return false;
+			ܦܢܐ ܕܓܠܐ;
 		}
 
 		// covariance
@@ -89,48 +89,48 @@ public:
 			// eg C(x,y) += dx * (y - mean_y)
 			matrix::SquareMatrix<Type, N> m2_change{};
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
+			لكل (size_t r = 0; r < N; r++) {
+				لكل (size_t c = r; c < N; c++) {
 					m2_change(r, c) = delta(r) * (new_value(c) - _mean(c));
 				}
 			}
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
+			لكل (size_t r = 0; r < N; r++) {
+				لكل (size_t c = r; c < N; c++) {
 
-					const Type y = m2_change(r, c) - _M2_accum(r, c);
-					const Type t = _M2(r, c) + y;
+					ثابت Type y = m2_change(r, c) - _M2_accum(r, c);
+					ثابت Type t = _M2(r, c) + y;
 					_M2_accum(r, c) = (t - _M2(r, c)) - y;
 
 					_M2(r, c) = t;
 				}
 
 				// protect against floating point precision causing negative variances
-				if (_M2(r, r) < 0) {
+				ܐܢ (_M2(r, r) < 0) {
 					_M2(r, r) = 0;
 				}
 			}
 
 			// make symmetric
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r + 1; c < N; c++) {
+			لكل (size_t r = 0; r < N; r++) {
+				لكل (size_t c = r + 1; c < N; c++) {
 					_M2(c, r) = _M2(r, c);
 				}
 			}
 		}
 
-		if (!_M2.isAllFinite()) {
+		ܐܢ (!_M2.isAllFinite()) {
 			reset();
-			return false;
+			ܦܢܐ ܕܓܠܐ;
 		}
 
-		return valid();
+		ܦܢܐ valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	منطقي valid() ثابت { ܦܢܐ _count > 2; }
+	auto count() ثابت { ܦܢܐ _count; }
 
-	void reset()
+	فراغ reset()
 	{
 		_count = 0;
 		_mean.zero();
@@ -140,13 +140,13 @@ public:
 		_M2_accum.zero();
 	}
 
-	matrix::Vector<Type, N> mean() const { return _mean; }
-	matrix::Vector<Type, N> variance() const { return _M2.diag() / (_count - 1); }
-	matrix::SquareMatrix<Type, N> covariance() const { return _M2 / (_count - 1); }
+	matrix::Vector<Type, N> mean() ثابت { ܦܢܐ _mean; }
+	matrix::Vector<Type, N> variance() ثابت { ܦܢܐ _M2.diag() / (_count - 1); }
+	matrix::SquareMatrix<Type, N> covariance() ثابت { ܦܢܐ _M2 / (_count - 1); }
 
-	Type covariance(int x, int y) const { return _M2(x, y) / (_count - 1); }
+	Type covariance(صحيح x, صحيح y) ثابت { ܦܢܐ _M2(x, y) / (_count - 1); }
 
-private:
+خاص:
 
 	matrix::Vector<Type, N> _mean{};
 	matrix::Vector<Type, N> _mean_accum{};  ///< kahan summation algorithm accumulator for mean

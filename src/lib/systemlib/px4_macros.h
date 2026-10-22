@@ -51,65 +51,65 @@
  * CCASSERT(predicate) Will generate a compile time error it the
  * predicate is false
  */
-#include <assert.h>
+#ضمن <assert.h>
 
 #ifndef _PX4_MACROS_H
 #define _PX4_MACROS_H
 
 
-#if !defined(arraySize)
-#define arraySize(a) (sizeof((a))/sizeof((a[0])))
+#ܐܢ !defined(arraySize)
+#define arraySize(a) (حجم((a))/حجم((a[0])))
 #endif
 
-#if !defined(NO_BLOAT)
-#if defined(__BASE_FILE__)
+#ܐܢ !defined(NO_BLOAT)
+#ܐܢ defined(__BASE_FILE__)
 #define _FILE_NAME_ __BASE_FILE__
-#else
+#ܐܚܪܢܐ
 #define _FILE_NAME_ __FILE__
 #endif
-#else
+#ܐܚܪܢܐ
 #define _FILE_NAME_ ""
 #endif
 
-#if !defined(INVALID_CASE)
+#ܐܢ !defined(INVALID_CASE)
 #define INVALID_CASE(c) printf("Invalid Case %d, %s:%d",(c),__BASE_FILE__,__LINE__) /* todo use PANIC */
 #endif
 
-#if !defined(UNUSED)
-#define UNUSED(var) (void)(var)
+#ܐܢ !defined(UNUSED)
+#define UNUSED(var) (فراغ)(var)
 #endif
 
-#if !defined(CAT)
-#if !defined(_CAT)
+#ܐܢ !defined(CAT)
+#ܐܢ !defined(_CAT)
 #define _CAT(a, b) a ## b
 #endif
 #define CAT(a, b) _CAT(a, b)
 #endif
 
-#if !defined(FREEZE_STR)
+#ܐܢ !defined(FREEZE_STR)
 #  define FREEZE_STR(s) #s
 #endif
 
-#if !defined(STRINGIFY)
+#ܐܢ !defined(STRINGIFY)
 #define STRINGIFY(s) FREEZE_STR(s)
 #endif
 
-#if !defined(CCASSERT)
-#if defined(static_assert)
+#ܐܢ !defined(CCASSERT)
+#ܐܢ defined(static_assert)
 #		define CCASSERT(predicate) static_assert(predicate, STRINGIFY(predicate))
-#	else
+#	ܐܚܪܢܐ
 #		define CCASSERT(predicate) _x_CCASSERT_LINE(predicate, __LINE__)
-#		if !defined(_x_CCASSERT_LINE)
-#			define _x_CCASSERT_LINE(predicate, line) typedef char CAT(constraint_violated_on_line_,line)[2*((predicate)!=0)-1] __attribute__ ((unused)) ;
+#		ܐܢ !defined(_x_CCASSERT_LINE)
+#			define _x_CCASSERT_LINE(predicate, line) تعريفنوع حرف CAT(constraint_violated_on_line_,line)[2*((predicate)!=0)-1] __attribute__ ((unused)) ;
 #		endif
 #	endif
 #endif
 
-#if !defined(DO_PRAGMA)
+#ܐܢ !defined(DO_PRAGMA)
 #  define DO_PRAGMA(x) _Pragma (#x)
 #endif
 
-#if !defined(TODO)
+#ܐܢ !defined(TODO)
 #  define TODO(x) DO_PRAGMA(message ("TODO - " #x))
 #endif
 
