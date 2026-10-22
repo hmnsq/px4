@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#അന്തര്ഭാവ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gripper.h>
+#അന്തര്ഭാവ <uORB/topics/gripper.h>
 
 /**
  * @brief Function: Gripper (Used for actuating a Gripper)
  */
-class FunctionGripper : public FunctionProviderBase
+വർഗ്ഗം FunctionGripper : പൊതു FunctionProviderBase
 {
-public:
-	FunctionGripper() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGripper(); }
+പൊതു:
+	FunctionGripper() = സ്ഥിരസ്ഥിതി;
+	സ്ഥിതം FunctionProviderBase *allocate(സ്ഥിരം Context &context) { തിരികെ പുതിയ FunctionGripper(); }
 
-	void update() override
+	ശൂന്യം update() override
 	{
 		gripper_s gripper;
 
-		if (_gripper_sub.update(&gripper)) {
-			if (gripper.command == gripper_s::COMMAND_RELEASE) {
+		എങ്കിൽ (_gripper_sub.update(&gripper)) {
+			എങ്കിൽ (gripper.command == gripper_s::COMMAND_RELEASE) {
 				_data = -1.f; // Minimum command for release
 
-			} else if (gripper.command == gripper_s::COMMAND_GRAB) {
+			} അല്ലെങ്കിൽ എങ്കിൽ (gripper.command == gripper_s::COMMAND_GRAB) {
 				_data = 1.f; // Maximum command for grab
 
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	ദശാംശം value(OutputFunction func) override { തിരികെ _data; }
 
-private:
+സ്വകാര്യ:
 	uORB::Subscription _gripper_sub{ORB_ID(gripper)};
-	float _data{-1.f};
+	ദശാംശം _data{-1.f};
 };

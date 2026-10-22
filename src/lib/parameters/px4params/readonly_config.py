@@ -1,11 +1,11 @@
 """
 Shared helper to load readonly parameter configuration from YAML.
 """
-import sys
+ഇറക്കുമതി sys
 
-try:
-    import yaml
-except ImportError as e:
+ശ്രമിക്കുക:
+    ഇറക്കുമതി yaml
+അപവാദം ImportError ഇവ e:
     print("Failed to import yaml: " + str(e))
     print("")
     print("You may need to install it using:")
@@ -22,10 +22,10 @@ def load_readonly_params(readonly_config, all_param_names):
     @param all_param_names: set of all known parameter names
     @return: set of readonly parameter names
     """
-    if readonly_config is None:
-        return set()
+    എങ്കിൽ readonly_config is None:
+        തിരികെ set()
 
-    with open(readonly_config, 'r') as f:
+    with open(readonly_config, 'r') ഇവ f:
         config = yaml.safe_load(f)
 
     mode = config.get('mode', 'block')
@@ -33,16 +33,16 @@ def load_readonly_params(readonly_config, all_param_names):
 
     # Validate that all listed parameters actually exist
     unknown = listed_params - all_param_names
-    if unknown:
+    എങ്കിൽ unknown:
         print("Error: readonly_params.yaml lists unknown parameters: %s" % ', '.join(sorted(unknown)))
         sys.exit(1)
 
-    if mode == 'block':
+    എങ്കിൽ mode == 'block':
         # Listed params are read-only
-        return listed_params
-    elif mode == 'allow':
+        തിരികെ listed_params
+    അല്ലെങ്കിലെങ്കിൽ mode == 'allow':
         # Only listed params are writable, all others are read-only
-        return all_param_names - listed_params
-    else:
+        തിരികെ all_param_names - listed_params
+    അല്ലെങ്കിൽ:
         print("Error: readonly_params.yaml has unknown mode '%s' (expected 'block' or 'allow')" % mode)
         sys.exit(1)

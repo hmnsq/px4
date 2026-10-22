@@ -57,12 +57,12 @@
 
 #pragma once
 
-#include <matrix/matrix/math.hpp>
+#അന്തര്ഭാവ <matrix/matrix/math.hpp>
 
 template<size_t N, size_t M, size_t D>
-class ArxRls final
+വർഗ്ഗം ArxRls final
 {
-public:
+പൊതു:
 	ArxRls()
 	{
 		static_assert(N >= M, "The transfer function needs to be proper");
@@ -70,26 +70,26 @@ public:
 		reset();
 	}
 
-	~ArxRls() = default;
+	~ArxRls() = സ്ഥിരസ്ഥിതി;
 
-	void setForgettingFactor(float time_constant, float dt) { _lambda = 1.f - dt / time_constant; }
-	void setForgettingFactor(float lambda) { _lambda = lambda; }
+	ശൂന്യം setForgettingFactor(ദശാംശം time_constant, ദശാംശം dt) { _lambda = 1.f - dt / time_constant; }
+	ശൂന്യം setForgettingFactor(ദശാംശം lambda) { _lambda = lambda; }
 
 	/*
 	 * return the vector of estimated parameters
 	 * [a_1 .. a_n b_0 .. b_m]'
 	 */
-	const matrix::Vector < float, N + M + 1 > &getCoefficients() const { return _theta_hat; }
-	const matrix::Vector < float, N + M + 1 > getVariances() const { return _P.diag(); }
-	float getInnovation() const { return _innovation; }
-	const matrix::Vector < float, N + M + 1 > &getDiffEstimate() const { return _diff_theta_hat; }
+	സ്ഥിരം matrix::Vector < ദശാംശം, N + M + 1 > &getCoefficients() സ്ഥിരം { തിരികെ _theta_hat; }
+	സ്ഥിരം matrix::Vector < ദശാംശം, N + M + 1 > getVariances() സ്ഥിരം { തിരികെ _P.diag(); }
+	ദശാംശം getInnovation() സ്ഥിരം { തിരികെ _innovation; }
+	സ്ഥിരം matrix::Vector < ദശാംശം, N + M + 1 > &getDiffEstimate() സ്ഥിരം { തിരികെ _diff_theta_hat; }
 
-	void reset(const matrix::Vector < float, N + M + 1 > &theta_init = {})
+	ശൂന്യം reset(സ്ഥിരം matrix::Vector < ദശാംശം, N + M + 1 > &theta_init = {})
 	{
 		/* _P.uncorrelateCovarianceSetVariance<N + M + 1>(0, 10e3f); // does not work */
 		_P.setZero();
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
+		വേണ്ടി (size_t i = 0; i < (N + M + 1); i++) {
 			_P(i, i) = 10e3f;
 		}
 
@@ -97,11 +97,11 @@ public:
 
 		_theta_hat = theta_init;
 
-		for (size_t i = 0; i < M + D + 1; i++) {
+		വേണ്ടി (size_t i = 0; i < M + D + 1; i++) {
 			_u[i] = 0.f;
 		}
 
-		for (size_t i = 0; i < N + 1; i++) {
+		വേണ്ടി (size_t i = 0; i < N + 1; i++) {
 			_y[i] = 0.f;
 		}
 
@@ -109,100 +109,100 @@ public:
 		_innovation = 0.f;
 	}
 
-	void update(float u, float y)
+	ശൂന്യം update(ദശാംശം u, ദശാംശം y)
 	{
-		const matrix::Vector < float, N + M + 1 > theta_prev = _theta_hat;
+		സ്ഥിരം matrix::Vector < ദശാംശം, N + M + 1 > theta_prev = _theta_hat;
 
-		addInputOutput(u, y);
+		add_നിവേശം_Output(u, y);
 
-		if (!isBufferFull()) {
+		എങ്കിൽ (!isBufferFull()) {
 			// Do not start to update the RLS algorithm when the
 			// buffer still contains zeros
-			return;
+			തിരികെ;
 		}
 
-		const matrix::Vector < float, N + M + 1 > phi = constructDesignVector();
-		const matrix::Matrix < float, 1, N + M + 1 > phi_t = phi.transpose();
+		സ്ഥിരം matrix::Vector < ദശാംശം, N + M + 1 > phi = constructDesignVector();
+		സ്ഥിരം matrix::Matrix < ദശാംശം, 1, N + M + 1 > phi_t = phi.transpose();
 
 		_P = (_P - _P * phi * phi_t * _P / (_lambda + (phi_t * _P * phi)(0, 0))) / _lambda;
 		_innovation = _y[N] - (phi_t * _theta_hat)(0, 0);
 		_theta_hat = _theta_hat + _P * phi * _innovation;
 
-		for (size_t i = 0; i < N + M + 1; i++) {
+		വേണ്ടി (size_t i = 0; i < N + M + 1; i++) {
 			_diff_theta_hat(i) = fabsf(_theta_hat(i) - theta_prev(i));
 		}
 
 		/* fixCovarianceErrors(); // TODO: this could help against ill-conditioned matrix but needs more testing*/
 	}
 
-private:
-	void addInputOutput(float u, float y)
+സ്വകാര്യ:
+	ശൂന്യം add_നിവേശം_Output(ദശാംശം u, ദശാംശം y)
 	{
 		shiftRegisters();
 		_u[M + D] = u;
 		_y[N] = y;
 
-		if (!isBufferFull()) {
+		എങ്കിൽ (!isBufferFull()) {
 			_nb_samples++;
 		}
 	}
 
-	void shiftRegisters()
+	ശൂന്യം shiftRegisters()
 	{
-		for (size_t i = 0; i < N; i++) {
+		വേണ്ടി (size_t i = 0; i < N; i++) {
 			_y[i] = _y[i + 1];
 		}
 
-		for (size_t i = 0; i < (M + D); i++) {
+		വേണ്ടി (size_t i = 0; i < (M + D); i++) {
 			_u[i] = _u[i + 1];
 		}
 	}
 
-	bool isBufferFull() const { return _nb_samples > (M + N + D); }
+	തർക്കം isBufferFull() സ്ഥിരം { തിരികെ _nb_samples > (M + N + D); }
 
-	matrix::Vector < float, N + M + 1 > constructDesignVector() const
+	matrix::Vector < ദശാംശം, N + M + 1 > constructDesignVector() സ്ഥിരം
 	{
-		matrix::Vector < float, N + M + 1 > phi;
+		matrix::Vector < ദശാംശം, N + M + 1 > phi;
 
-		for (size_t i = 0; i < N; i++) {
+		വേണ്ടി (size_t i = 0; i < N; i++) {
 			phi(i) = -_y[N - i - 1];
 		}
 
-		int j = 0;
+		പൂർണ്ണസംഖ്യ j = 0;
 
-		for (size_t i = N; i < (N + M + 1); i++) {
+		വേണ്ടി (size_t i = N; i < (N + M + 1); i++) {
 			phi(i) = _u[M - j];
 			j++;
 		}
 
-		return phi;
+		തിരികെ phi;
 	}
 
-	void fixCovarianceErrors()
+	ശൂന്യം fixCovarianceErrors()
 	{
-		float max_var = 0.f;
+		ദശാംശം max_var = 0.f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) > max_var) {
+		വേണ്ടി (size_t i = 0; i < (N + M + 1); i++) {
+			എങ്കിൽ (_P(i, i) > max_var) {
 				max_var = _P(i, i);
 			}
 		}
 
-		const float min_var_allowed = max_var * 0.1f;
+		സ്ഥിരം ദശാംശം min_var_allowed = max_var * 0.1f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) < min_var_allowed) {
+		വേണ്ടി (size_t i = 0; i < (N + M + 1); i++) {
+			എങ്കിൽ (_P(i, i) < min_var_allowed) {
 				_P(i, i) = min_var_allowed;
 			}
 		}
 	}
 
-	matrix::SquareMatrix < float, N + M + 1 > _P;
-	matrix::Vector < float, N + M + 1 > _theta_hat;
-	matrix::Vector < float, N + M + 1 > _diff_theta_hat;
-	float _innovation{};
-	float _u[M + D + 1] {};
-	float _y[N + 1] {};
+	matrix::SquareMatrix < ദശാംശം, N + M + 1 > _P;
+	matrix::Vector < ദശാംശം, N + M + 1 > _theta_hat;
+	matrix::Vector < ദശാംശം, N + M + 1 > _diff_theta_hat;
+	ദശാംശം _innovation{};
+	ദശാംശം _u[M + D + 1] {};
+	ദശാംശം _y[N + 1] {};
 	unsigned _nb_samples{0};
-	float _lambda{1.f};
+	ദശാംശം _lambda{1.f};
 };

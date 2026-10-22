@@ -46,19 +46,19 @@
 
 #pragma once
 
-#include <cstdint>
+#അന്തര്ഭാവ <cstdint>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/esc_status.h>
-#include <uORB/topics/failure_injection.h>
+#അന്തര്ഭാവ <uORB/Subscription.hpp>
+#അന്തര്ഭാവ <uORB/topics/esc_status.h>
+#അന്തര്ഭാവ <uORB/topics/failure_injection.h>
 
-struct battery_status_s;
-struct sensor_gnss_s;
+ഘടന battery_status_s;
+ഘടന sensor_gnss_s;
 
-namespace failure_injection
+നാമാകാശ failure_injection
 {
 
-enum class Mode : uint8_t {
+എണ്ണൽ വർഗ്ഗം Mode : uint8_t {
 	Ok           = failure_injection_s::FAILURE_TYPE_OK,
 	Off          = failure_injection_s::FAILURE_TYPE_OFF,
 	Stuck        = failure_injection_s::FAILURE_TYPE_STUCK,
@@ -70,41 +70,41 @@ enum class Mode : uint8_t {
 };
 
 /** Masks of motors failed by injection, bit i = motor instance i+1. */
-struct MotorFailureMasks {
+ഘടന MotorFailureMasks {
 	uint16_t stop_mask{0};    ///< motor wrong: outputs stopped without informing the allocator
 	uint16_t failure_mask{0}; ///< motor off: reported as failed motors, removed from the allocation
 };
 
-#if defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
+#എങ്കിൽ defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
 
-class Config
+വർഗ്ഗം Config
 {
-public:
+പൊതു:
 	/**
 	 * Poll the failure_injection subscription and, when a new failure_injection
 	 * message arrives, refresh the cached failure config that mode() / any_active()
 	 * read. Call once per loop iteration.
 	 * @return true if an updated failure config was applied, false if unchanged.
 	 */
-	bool update();
+	തർക്കം update();
 
 	/** Cache a failure_injection message directly (used by tests). */
-	void set(const failure_injection_s &cfg);
+	ശൂന്യം set(സ്ഥിരം failure_injection_s &cfg);
 
 	/**
 	 * Active failure mode for a (unit, instance), or Mode::Ok if none.
 	 * @param unit     one of failure_injection_s::FAILURE_UNIT_*
 	 * @param instance 1-based instance, or 0 to match any instance of the unit
 	 */
-	Mode mode(uint8_t unit, uint8_t instance) const;
+	Mode mode(uint8_t unit, uint8_t instance) സ്ഥിരം;
 
 	/** True if any failure is currently active (free no-failure early-out). */
-	bool any_active() const { return _count > 0; }
+	തർക്കം any_active() സ്ഥിരം { തിരികെ എണ്ണം_3 > 0; }
 
-private:
+സ്വകാര്യ:
 	uORB::Subscription _sub{ORB_ID(failure_injection)};
 
-	uint8_t  _count{0};
+	uint8_t  എണ്ണം_3{0};
 	uint8_t  _unit[failure_injection_s::MAX_FAILURES] {};
 	uint16_t _instance_mask[failure_injection_s::MAX_FAILURES] {};
 	Mode     _failure_type[failure_injection_s::MAX_FAILURES] {};
@@ -114,22 +114,22 @@ private:
  * Per-(consumer, instance) state for stateful failures. Holds the last good
  * sample so Stuck can replay it.
  */
-template<typename MsgT>
-struct Stuck {
-	bool valid{false};
-	MsgT value{};
+template<typename സന്ദേശം_T>
+ഘടന Stuck {
+	തർക്കം valid{അസത്യം};
+	സന്ദേശം_T value{};
 };
 
 template<typename...>
-using void_t = void;
+using void_t = ശൂന്യം;
 
-template<typename T, typename = void>
-struct has_timestamp_sample {
-	static constexpr bool value = false;
+template<typename T, typename = ശൂന്യം>
+ഘടന has_timestamp_sample {
+	സ്ഥിതം constexpr തർക്കം value = അസത്യം;
 };
 template<typename T>
-struct has_timestamp_sample<T, void_t<decltype(T::timestamp_sample)>> {
-	static constexpr bool value = true;
+ഘടന has_timestamp_sample<T, void_t<decltype(T::timestamp_sample)>> {
+	സ്ഥിതം constexpr തർക്കം value = സത്യം;
 };
 
 /**
@@ -139,45 +139,45 @@ struct has_timestamp_sample<T, void_t<decltype(T::timestamp_sample)>> {
  * @return false if the message must be suppressed (Off); true otherwise. For
  *         Stuck the message is overwritten with the last good sample.
  */
-template<typename MsgT>
-bool process(Mode mode, MsgT &msg, Stuck<MsgT> &stuck)
+template<typename സന്ദേശം_T>
+തർക്കം process(Mode mode, സന്ദേശം_T &സന്ദേശം, Stuck<സന്ദേശം_T> &stuck)
 {
-	switch (mode) {
-	case Mode::Off:
-		return false;
+	തിരഞ്ഞെടുപ്പ് (mode) {
+	അവസ്ഥ Mode::Off:
+		തിരികെ അസത്യം;
 
-	case Mode::Stuck:
-		if (stuck.valid) {
-			const uint64_t timestamp = msg.timestamp;
+	അവസ്ഥ Mode::Stuck:
+		എങ്കിൽ (stuck.valid) {
+			സ്ഥിരം uint64_t timestamp = സന്ദേശം.timestamp;
 
-			if constexpr(has_timestamp_sample<MsgT>::value) {
-				const uint64_t timestamp_sample = msg.timestamp_sample;
-				msg = stuck.value;
-				msg.timestamp_sample = timestamp_sample;
+			എങ്കിൽ constexpr(has_timestamp_sample<സന്ദേശം_T>::value) {
+				സ്ഥിരം uint64_t timestamp_sample = സന്ദേശം.timestamp_sample;
+				സന്ദേശം = stuck.value;
+				സന്ദേശം.timestamp_sample = timestamp_sample;
 
-			} else {
-				msg = stuck.value;
+			} അല്ലെങ്കിൽ {
+				സന്ദേശം = stuck.value;
 			}
 
-			msg.timestamp = timestamp;
+			സന്ദേശം.timestamp = timestamp;
 		}
 
-		return true;
+		തിരികെ സത്യം;
 
-	default:
-		stuck.value = msg;
-		stuck.valid = true;
-		return true;
+	സ്ഥിരസ്ഥിതി:
+		stuck.value = സന്ദേശം;
+		stuck.valid = സത്യം;
+		തിരികെ സത്യം;
 	}
 }
 
 /**
  * Convenience overload to fix the fact that the uORB instance is 0-based but the failure_injection instance is 1-based.
  */
-template<typename MsgT>
-bool process(const Config &config, uint8_t unit, uint8_t uorb_instance, MsgT &msg, Stuck<MsgT> &stuck)
+template<typename സന്ദേശം_T>
+തർക്കം process(സ്ഥിരം Config &config, uint8_t unit, uint8_t uorb_instance, സന്ദേശം_T &സന്ദേശം, Stuck<സന്ദേശം_T> &stuck)
 {
-	return process(config.mode(unit, uorb_instance + 1), msg, stuck);
+	തിരികെ process(config.mode(unit, uorb_instance + 1), സന്ദേശം, stuck);
 }
 
 /**
@@ -185,15 +185,15 @@ bool process(const Config &config, uint8_t unit, uint8_t uorb_instance, MsgT &ms
  *
  * @return false if the signal must be treated as failed/suppressed (Off), true otherwise.
  */
-inline bool process(Mode mode)
+വരിയിൽ തർക്കം process(Mode mode)
 {
-	return mode != Mode::Off;
+	തിരികെ mode != Mode::Off;
 }
 
 /** Convenience overload, same 0-based to 1-based instance mapping as the generic process(). */
-inline bool process(const Config &config, uint8_t unit, uint8_t uorb_instance)
+വരിയിൽ തർക്കം process(സ്ഥിരം Config &config, uint8_t unit, uint8_t uorb_instance)
 {
-	return process(config.mode(unit, uorb_instance + 1));
+	തിരികെ process(config.mode(unit, uorb_instance + 1));
 }
 
 /**
@@ -204,7 +204,7 @@ inline bool process(const Config &config, uint8_t unit, uint8_t uorb_instance)
  *
  * @return false if the battery_status publication must be suppressed (Off), true otherwise.
  */
-bool process_battery(const Config &config, uint8_t instance, battery_status_s &battery_status);
+തർക്കം process_battery(സ്ഥിരം Config &config, uint8_t instance, battery_status_s &battery_status);
 
 /**
  * GNSS counterpart to process(): on FAILURE_UNIT_SENSOR_GPS for the receiver publishing on the
@@ -215,7 +215,7 @@ bool process_battery(const Config &config, uint8_t instance, battery_status_s &b
  * @param uorb_instance 0-based uORB instance of the publisher (not the 1-based failure instance).
  * @return false if the sensor_gnss publication must be suppressed (Off), true otherwise.
  */
-bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
+തർക്കം process_gnss(സ്ഥിരം Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
 		  Stuck<sensor_gnss_s> &stuck);
 
 /**
@@ -226,7 +226,7 @@ bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &se
  * can't accidentally apply it in place to a persistent status, which would compound Wrong across
  * calls. Call after Config::update().
  */
-esc_status_s process_esc(const Config &config, const esc_status_s &status);
+esc_status_s process_esc(സ്ഥിരം Config &config, സ്ഥിരം esc_status_s &status);
 
 /**
  * Motor counterpart to process(): derive the masks of motors failed by
@@ -235,40 +235,40 @@ esc_status_s process_esc(const Config &config, const esc_status_s &status);
  * undetected one (stop_mask: outputs stopped without informing the allocator).
  * Call after Config::update().
  */
-MotorFailureMasks process_motor(const Config &config);
+MotorFailureMasks process_motor(സ്ഥിരം Config &config);
 
-#else // !CONFIG_MODULES_FAILURE_INJECTION_MANAGER
+#അല്ലെങ്കിൽ // !CONFIG_MODULES_FAILURE_INJECTION_MANAGER
 
-class Config
+വർഗ്ഗം Config
 {
-public:
-	bool update() { return false; }
-	void set(const failure_injection_s &) {}
-	Mode mode(uint8_t, uint8_t) const { return Mode::Ok; }
-	bool any_active() const { return false; }
+പൊതു:
+	തർക്കം update() { തിരികെ അസത്യം; }
+	ശൂന്യം set(സ്ഥിരം failure_injection_s &) {}
+	Mode mode(uint8_t, uint8_t) സ്ഥിരം { തിരികെ Mode::Ok; }
+	തർക്കം any_active() സ്ഥിരം { തിരികെ അസത്യം; }
 };
 
-template<typename MsgT>
-struct Stuck {
+template<typename സന്ദേശം_T>
+ഘടന Stuck {
 };
 
-template<typename MsgT>
-bool process(Mode, MsgT &, Stuck<MsgT> &) { return true; }
+template<typename സന്ദേശം_T>
+തർക്കം process(Mode, സന്ദേശം_T &, Stuck<സന്ദേശം_T> &) { തിരികെ സത്യം; }
 
-template<typename MsgT>
-bool process(const Config &, uint8_t, uint8_t, MsgT &, Stuck<MsgT> &) { return true; }
+template<typename സന്ദേശം_T>
+തർക്കം process(സ്ഥിരം Config &, uint8_t, uint8_t, സന്ദേശം_T &, Stuck<സന്ദേശം_T> &) { തിരികെ സത്യം; }
 
-inline bool process(Mode) { return true; }
+വരിയിൽ തർക്കം process(Mode) { തിരികെ സത്യം; }
 
-inline bool process(const Config &, uint8_t, uint8_t) { return true; }
+വരിയിൽ തർക്കം process(സ്ഥിരം Config &, uint8_t, uint8_t) { തിരികെ സത്യം; }
 
-inline bool process_battery(const Config &, uint8_t, battery_status_s &) { return true; }
+വരിയിൽ തർക്കം process_battery(സ്ഥിരം Config &, uint8_t, battery_status_s &) { തിരികെ സത്യം; }
 
-inline bool process_gnss(const Config &, uint8_t, sensor_gnss_s &, Stuck<sensor_gnss_s> &) { return true; }
+വരിയിൽ തർക്കം process_gnss(സ്ഥിരം Config &, uint8_t, sensor_gnss_s &, Stuck<sensor_gnss_s> &) { തിരികെ സത്യം; }
 
-inline esc_status_s process_esc(const Config &, const esc_status_s &status) { return status; }
+വരിയിൽ esc_status_s process_esc(സ്ഥിരം Config &, സ്ഥിരം esc_status_s &status) { തിരികെ status; }
 
-inline MotorFailureMasks process_motor(const Config &) { return {}; }
+വരിയിൽ MotorFailureMasks process_motor(സ്ഥിരം Config &) { തിരികെ {}; }
 
 #endif // CONFIG_MODULES_FAILURE_INJECTION_MANAGER
 

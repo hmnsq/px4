@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include <cmath>
+#അന്തര്ഭാവ <cmath>
 
-class PID
+വർഗ്ഗം PID
 {
-public:
-	PID() = default;
-	virtual ~PID() = default;
-	void setOutputLimit(const float limit) {setOutputLimit(-limit, limit);}
-	void setOutputLimit(const float lower_limit, const float upper_limit);
-	void setIntegralLimit(const float limit) { _limit_integral = limit; }
-	void setGains(const float P, const float I, const float D);
-	void setSetpoint(const float setpoint) { _setpoint = setpoint; }
-	void setFeedForwardGain(const float feedforward_gain) { _gain_feedforward = feedforward_gain; }
-	float update(const float feedback, const float dt, const bool update_integral = true);
-	float getIntegral() { return _integral; }
-	void resetIntegral() { _integral = 0.f; }
-	void resetDerivative() { _last_feedback = NAN; }
-private:
-	void updateIntegral(float error, const float saturation, const float dt);
-	float updateDerivative(float feedback, const float dt);
+പൊതു:
+	PID() = സ്ഥിരസ്ഥിതി;
+	മായാ ~PID() = സ്ഥിരസ്ഥിതി;
+	ശൂന്യം setOutputLimit(സ്ഥിരം ദശാംശം limit) {setOutputLimit(-limit, limit);}
+	ശൂന്യം setOutputLimit(സ്ഥിരം ദശാംശം lower_limit, സ്ഥിരം ദശാംശം upper_limit);
+	ശൂന്യം setIntegralLimit(സ്ഥിരം ദശാംശം limit) { _limit_integral = limit; }
+	ശൂന്യം setGains(സ്ഥിരം ദശാംശം P, സ്ഥിരം ദശാംശം I, സ്ഥിരം ദശാംശം D);
+	ശൂന്യം setSetpoint(സ്ഥിരം ദശാംശം setpoint) { _setpoint = setpoint; }
+	ശൂന്യം setFeedForwardGain(സ്ഥിരം ദശാംശം feedforward_gain) { _gain_feedforward = feedforward_gain; }
+	ദശാംശം update(സ്ഥിരം ദശാംശം feedback, സ്ഥിരം ദശാംശം dt, സ്ഥിരം തർക്കം update_integral = സത്യം);
+	ദശാംശം getIntegral() { തിരികെ _integral; }
+	ശൂന്യം resetIntegral() { _integral = 0.f; }
+	ശൂന്യം resetDerivative() { _last_feedback = NAN; }
+സ്വകാര്യ:
+	ശൂന്യം updateIntegral(ദശാംശം error, സ്ഥിരം ദശാംശം saturation, സ്ഥിരം ദശാംശം dt);
+	ദശാംശം updateDerivative(ദശാംശം feedback, സ്ഥിരം ദശാംശം dt);
 
-	float _setpoint{0.f}; ///< current setpoint to track
-	float _integral{0.f}; ///< integral state
-	float _last_feedback{NAN};
+	ദശാംശം _setpoint{0.f}; ///< current setpoint to track
+	ദശാംശം _integral{0.f}; ///< integral state
+	ദശാംശം _last_feedback{NAN};
 
 	// Gains, Limits
-	float _gain_feedforward{0.f};
-	float _gain_proportional{0.f};
-	float _gain_integral{0.f};
-	float _gain_derivative{0.f};
-	float _limit_integral{0.f};
-	float _lower_limit_output{0.f};
-	float _upper_limit_output{0.f};
+	ദശാംശം _gain_feedforward{0.f};
+	ദശാംശം _gain_proportional{0.f};
+	ദശാംശം _gain_integral{0.f};
+	ദശാംശം _gain_derivative{0.f};
+	ദശാംശം _limit_integral{0.f};
+	ദശാംശം _lower_limit_output{0.f};
+	ദശാംശം _upper_limit_output{0.f};
 };

@@ -42,101 +42,101 @@
  */
 
 #define PARAM_IMPLEMENTATION
-#include "param.h"
-#include "param_translation.h"
-#include <parameters/px4_parameters.hpp>
-#include <lib/tinybson/tinybson.h>
+#അന്തര്ഭാവ "param.h"
+#അന്തര്ഭാവ "param_translation.h"
+#അന്തര്ഭാവ <parameters/px4_parameters.hpp>
+#അന്തര്ഭാവ <lib/tinybson/tinybson.h>
 
-#if defined(__PX4_NUTTX)
-#include <nuttx/crc32.h>
-#else
-#include <crc32.h>
+#എങ്കിൽ defined(__PX4_NUTTX)
+#അന്തര്ഭാവ <nuttx/crc32.h>
+#അല്ലെങ്കിൽ
+#അന്തര്ഭാവ <crc32.h>
 #endif
-#include <float.h>
-#include <math.h>
-#include <sys/stat.h>
+#അന്തര്ഭാവ <float.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <sys/stat.h>
 
-#include <containers/Bitset.hpp>
-#include <drivers/drv_hrt.h>
-#include <lib/perf/perf_counter.h>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/atomic_bitset.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/sem.h>
-#include <px4_platform_common/shutdown.h>
-#include <px4_platform_common/micro_hal.h>
+#അന്തര്ഭാവ <containers/Bitset.hpp>
+#അന്തര്ഭാവ <drivers/drv_hrt.h>
+#അന്തര്ഭാവ <lib/perf/perf_counter.h>
+#അന്തര്ഭാവ <px4_platform_common/px4_config.h>
+#അന്തര്ഭാവ <px4_platform_common/atomic_bitset.h>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <px4_platform_common/posix.h>
+#അന്തര്ഭാവ <px4_platform_common/sem.h>
+#അന്തര്ഭാവ <px4_platform_common/shutdown.h>
+#അന്തര്ഭാവ <px4_platform_common/micro_hal.h>
 
-using namespace time_literals;
+using നാമാകാശ time_literals;
 
-#include "uORB/uORB.h"
-#include "uORB/topics/parameter_update.h"
-#include <uORB/Subscription.hpp>
+#അന്തര്ഭാവ "uORB/uORB.h"
+#അന്തര്ഭാവ "uORB/topics/parameter_update.h"
+#അന്തര്ഭാവ <uORB/Subscription.hpp>
 
-#include "ExhaustiveLayer.h"
-#include "ConstLayer.h"
-#include "DynamicSparseLayer.h"
-#include "StaticSparseLayer.h"
+#അന്തര്ഭാവ "ExhaustiveLayer.h"
+#അന്തര്ഭാവ "ConstLayer.h"
+#അന്തര്ഭാവ "DynamicSparseLayer.h"
+#അന്തര്ഭാവ "StaticSparseLayer.h"
 
-#include "atomic_transaction.h"
+#അന്തര്ഭാവ "atomic_transaction.h"
 
 /* Include functions common to user and kernel sides */
-#include "parameters_common.cpp"
+#അന്തര്ഭാവ "parameters_common.cpp"
 
-#if defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
-#include <px4_platform/board_ctrl.h>
-#include "parameters_ioctl.h"
+#എങ്കിൽ defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
+#അന്തര്ഭാവ <px4_platform/board_ctrl.h>
+#അന്തര്ഭാവ "parameters_ioctl.h"
 #endif
 
-#if defined(FLASH_BASED_PARAMS)
-#include "flashparams/flashparams.h"
-#else
-inline static int flash_param_save(param_filter_func filter) { return -1; }
-inline static int flash_param_import() { return -1; }
+#എങ്കിൽ defined(FLASH_BASED_PARAMS)
+#അന്തര്ഭാവ "flashparams/flashparams.h"
+#അല്ലെങ്കിൽ
+വരിയിൽ സ്ഥിതം പൂർണ്ണസംഖ്യ flash_param_save(param_filter_func filter) { തിരികെ -1; }
+വരിയിൽ സ്ഥിതം പൂർണ്ണസംഖ്യ flash_param_import() { തിരികെ -1; }
 #endif
 
-static char *param_default_file = nullptr;
-static char *param_backup_file = nullptr;
+സ്ഥിതം അക്ഷരം *param_default_file = nullptr;
+സ്ഥിതം അക്ഷരം *param_backup_file = nullptr;
 
-#include "autosave.h"
-static ParamAutosave *autosave_instance {nullptr};
+#അന്തര്ഭാവ "autosave.h"
+സ്ഥിതം ParamAutosave *autosave_instance {nullptr};
 
-static px4::AtomicBitset<param_info_count> params_active;  // params found
-static px4::AtomicBitset<param_info_count> params_unsaved;
+സ്ഥിതം px4::AtomicBitset<param_info_എണ്ണം> params_active;  // params found
+സ്ഥിതം px4::AtomicBitset<param_info_എണ്ണം> params_unsaved;
 
 // Params the save in progress is writing. They are moved out of params_unsaved
 // before their values are read, so a param_set that lands while the save runs
 // marks its param again and reaches the next save. Flash-param saves write only
 // unsaved params, so nothing else would ever write that change.
-static px4::AtomicBitset<param_info_count> params_saving;
+സ്ഥിതം px4::AtomicBitset<param_info_എണ്ണം> params_saving;
 
-static ConstLayer firmware_defaults;
-static DynamicSparseLayer runtime_defaults{&firmware_defaults};
+സ്ഥിതം ConstLayer firmware_defaults;
+സ്ഥിതം DynamicSparseLayer runtime_defaults{&firmware_defaults};
 DynamicSparseLayer user_config{&runtime_defaults};
 
 /** parameter update topic handle */
-#if not defined(CONFIG_PARAM_REMOTE)
-static orb_advert_t param_topic = nullptr;
-static unsigned int param_instance = 0;
+#എങ്കിൽ not defined(CONFIG_PARAM_REMOTE)
+സ്ഥിതം orb_advert_t param_topic = nullptr;
+സ്ഥിതം unsigned പൂർണ്ണസംഖ്യ param_instance = 0;
 #endif
 
-static perf_counter_t param_export_perf;
-static perf_counter_t param_find_perf;
-static perf_counter_t param_get_perf;
-static perf_counter_t param_set_perf;
+സ്ഥിതം perf_counter_t param_export_perf;
+സ്ഥിതം perf_counter_t param_find_perf;
+സ്ഥിതം perf_counter_t param_get_perf;
+സ്ഥിതം perf_counter_t param_set_perf;
 
-static pthread_mutex_t file_mutex  =
+സ്ഥിതം pthread_mutex_t file_mutex  =
 	PTHREAD_MUTEX_INITIALIZER; ///< this protects against concurrent param saves (file or flash access).
 
 // Support for remote parameter node
-#if defined(CONFIG_PARAM_PRIMARY)
+#എങ്കിൽ defined(CONFIG_PARAM_PRIMARY)
 # include "parameters_primary.h"
 #endif // CONFIG_PARAM_PRIMARY
-#if defined(CONFIG_PARAM_REMOTE)
+#എങ്കിൽ defined(CONFIG_PARAM_REMOTE)
 # include "parameters_remote.h"
 #endif // CONFIG_PARAM_REMOTE
 
-void
+ശൂന്യം
 param_init()
 {
 #ifdef __PX4_POSIX
@@ -145,349 +145,349 @@ param_init()
 #endif
 
 	param_export_perf = perf_alloc(PC_ELAPSED, "param: export");
-	param_find_perf = perf_alloc(PC_COUNT, "param: find");
-	param_get_perf = perf_alloc(PC_COUNT, "param: get");
+	param_find_perf = perf_alloc(PC_എണ്ണം, "param: find");
+	param_get_perf = perf_alloc(PC_എണ്ണം, "param: get");
 	param_set_perf = perf_alloc(PC_ELAPSED, "param: set");
 
-#if defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
+#എങ്കിൽ defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
 	px4_register_boardct_ioctl(_PARAMIOCBASE, param_ioctl);
 #endif
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#എങ്കിൽ defined(CONFIG_PARAM_PRIMARY)
 	param_primary_init();
 #endif // CONFIG_PARAM_PRIMARY
 
-#if defined(CONFIG_PARAM_REMOTE)
+#എങ്കിൽ defined(CONFIG_PARAM_REMOTE)
 	param_remote_init();
 #endif // CONFIG_PARAM_REMOTE
 
-#if not defined(CONFIG_PARAM_REMOTE)
-	autosave_instance = new ParamAutosave();
+#എങ്കിൽ not defined(CONFIG_PARAM_REMOTE)
+	autosave_instance = പുതിയ ParamAutosave();
 #endif
 }
 
 
-void
+ശൂന്യം
 param_notify_changes()
 {
 // Don't send if this is a remote node. Only the primary
 // sends out update notices
-#if not defined(CONFIG_PARAM_REMOTE)
+#എങ്കിൽ not defined(CONFIG_PARAM_REMOTE)
 	parameter_update_s pup {};
 	pup.instance = param_instance++;
-	pup.get_count = perf_event_count(param_get_perf);
-	pup.set_count = perf_event_count(param_set_perf);
-	pup.find_count = perf_event_count(param_find_perf);
-	pup.export_count = perf_event_count(param_export_perf);
-	pup.active = params_active.count();
+	pup.get_എണ്ണം_2 = perf_event_എണ്ണം(param_get_perf);
+	pup.set_എണ്ണം = perf_event_എണ്ണം(param_set_perf);
+	pup.find_എണ്ണം = perf_event_എണ്ണം(param_find_perf);
+	pup.export_എണ്ണം = perf_event_എണ്ണം(param_export_perf);
+	pup.active = params_active.എണ്ണം();
 	pup.changed = user_config.size();
 	pup.custom_default = runtime_defaults.size();
 	pup.timestamp = hrt_absolute_time();
 
-	if (param_topic == nullptr) {
+	എങ്കിൽ (param_topic == nullptr) {
 		param_topic = orb_advertise(ORB_ID(parameter_update), &pup);
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		orb_publish(ORB_ID(parameter_update), param_topic, &pup);
 	}
 
 #endif
 }
 
-static param_t param_find_internal(const char *name, bool notification)
+സ്ഥിതം param_t param_find_internal(സ്ഥിരം അക്ഷരം *name, തർക്കം notification)
 {
-	perf_count(param_find_perf);
+	perf_എണ്ണം(param_find_perf);
 
-	param_t middle;
+	param_t നടുവ്;
 	param_t front = 0;
-	param_t last = param_info_count;
+	param_t last = param_info_എണ്ണം;
 
 	/* perform a binary search of the known parameters */
 
-	while (front <= last) {
-		middle = front + (last - front) / 2;
-		int ret = strcmp(name, param_name(middle));
+	ആകുമ്പോൾ (front <= last) {
+		നടുവ് = front + (last - front) / 2;
+		പൂർണ്ണസംഖ്യ ret = strcmp(name, param_name(നടുവ്));
 
-		if (ret == 0) {
-			if (notification) {
-				param_set_used(middle);
+		എങ്കിൽ (ret == 0) {
+			എങ്കിൽ (notification) {
+				param_set_used(നടുവ്);
 			}
 
-			return middle;
+			തിരികെ നടുവ്;
 
-		} else if (middle == front) {
+		} അല്ലെങ്കിൽ എങ്കിൽ (നടുവ് == front) {
 			/* An end point has been hit, but there has been no match */
-			break;
+			നിർത്തുക;
 
-		} else if (ret < 0) {
-			last = middle;
+		} അല്ലെങ്കിൽ എങ്കിൽ (ret < 0) {
+			last = നടുവ്;
 
-		} else {
-			front = middle;
+		} അല്ലെങ്കിൽ {
+			front = നടുവ്;
 		}
 	}
 
 	/* not found */
-	return PARAM_INVALID;
+	തിരികെ PARAM_INVALID;
 }
 
-param_t param_find(const char *name)
+param_t param_find(സ്ഥിരം അക്ഷരം *name)
 {
-	return param_find_internal(name, true);
+	തിരികെ param_find_internal(name, സത്യം);
 }
 
-param_t param_find_no_notification(const char *name)
+param_t param_find_no_notification(സ്ഥിരം അക്ഷരം *name)
 {
-	return param_find_internal(name, false);
+	തിരികെ param_find_internal(name, അസത്യം);
 }
 
-unsigned param_count_used()
+unsigned param_എണ്ണം_used()
 {
-	return params_active.count();
+	തിരികെ params_active.എണ്ണം();
 }
 
 param_t param_for_used_index(unsigned index)
 {
 	// walk all params and count used params
-	if (index < param_info_count) {
-		unsigned used_count = 0;
+	എങ്കിൽ (index < param_info_എണ്ണം) {
+		unsigned used_എണ്ണം = 0;
 
-		for (int i = 0; i < params_active.size(); i++) {
-			if (params_active[i]) {
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < params_active.size(); i++) {
+			എങ്കിൽ (params_active[i]) {
 				// we found the right used count,
 				//  return the param value
-				if (index == used_count) {
-					return static_cast<param_t>(i);
+				എങ്കിൽ (index == used_എണ്ണം) {
+					തിരികെ static_cast<param_t>(i);
 				}
 
-				used_count++;
+				used_എണ്ണം++;
 			}
 		}
 	}
 
-	return PARAM_INVALID;
+	തിരികെ PARAM_INVALID;
 }
 
-int param_get_used_index(param_t param)
+പൂർണ്ണസംഖ്യ param_get_used_index(param_t param)
 {
 	/* this tests for out of bounds and does a constant time lookup */
-	if (!param_used(param)) {
-		return -1;
+	എങ്കിൽ (!param_used(param)) {
+		തിരികെ -1;
 	}
 
 	/* walk all params and count, now knowing that it has a valid index */
-	int used_count = 0;
+	പൂർണ്ണസംഖ്യ used_എണ്ണം = 0;
 
-	for (int i = 0; i < params_active.size(); i++) {
-		if (params_active[i]) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < params_active.size(); i++) {
+		എങ്കിൽ (params_active[i]) {
 
-			if (param == i) {
-				return used_count;
+			എങ്കിൽ (param == i) {
+				തിരികെ used_എണ്ണം;
 			}
 
-			used_count++;
+			used_എണ്ണം++;
 		}
 	}
 
-	return -1;
+	തിരികെ -1;
 }
 
-bool
-param_value_unsaved(param_t param)
+തർക്കം
+param_മൂല്യം_unsaved(param_t param)
 {
-	return handle_in_range(param) ? (params_unsaved[param] || params_saving[param]) : false;
+	തിരികെ handle_in_range(param) ? (params_unsaved[param] || params_saving[param]) : അസത്യം;
 }
 
-int
-param_get(param_t param, void *val)
+പൂർണ്ണസംഖ്യ
+param_get(param_t param, ശൂന്യം *val)
 {
-	perf_count(param_get_perf);
+	perf_എണ്ണം(param_get_perf);
 
-	if (!handle_in_range(param)) {
+	എങ്കിൽ (!handle_in_range(param)) {
 		PX4_ERR("get: param %" PRId16 " invalid", param);
-		return PX4_ERROR;
+		തിരികെ PX4_ERROR;
 	}
 
-	if (!params_active[param]) {
+	എങ്കിൽ (!params_active[param]) {
 		PX4_DEBUG("get: param %" PRId16 " (%s) not active", param, param_name(param));
 	}
 
-	int result = PX4_ERROR;
+	പൂർണ്ണസംഖ്യ result = PX4_ERROR;
 
-	if (val) {
+	എങ്കിൽ (val) {
 
-		auto retrieve_value = user_config.get(param);
+		auto retrieve_മൂല്യം = user_config.get(param);
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			memcpy(val, &retrieve_value.i, sizeof(retrieve_value.i));
-			return PX4_OK;
+		തിരഞ്ഞെടുപ്പ് (param_type(param)) {
+		അവസ്ഥ PARAM_TYPE_INT32:
+			memcpy(val, &retrieve_മൂല്യം.i, വലുപ്പം(retrieve_മൂല്യം.i));
+			തിരികെ PX4_OK;
 
-		case PARAM_TYPE_FLOAT:
-			memcpy(val, &retrieve_value.f, sizeof(retrieve_value.f));
-			return PX4_OK;
+		അവസ്ഥ PARAM_TYPE_FLOAT:
+			memcpy(val, &retrieve_മൂല്യം.f, വലുപ്പം(retrieve_മൂല്യം.f));
+			തിരികെ PX4_OK;
 		}
 	}
 
-	return result;
+	തിരികെ result;
 }
 
-int
-param_get_default_value_internal(param_t param, void *default_val)
+പൂർണ്ണസംഖ്യ
+param_get_default_മൂല്യം_internal(param_t param, ശൂന്യം *default_val)
 {
-	if (!handle_in_range(param)) {
+	എങ്കിൽ (!handle_in_range(param)) {
 		PX4_ERR("get default value: param %d invalid", param);
-		return PX4_ERROR;
+		തിരികെ PX4_ERROR;
 	}
 
-	if (default_val) {
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
+	എങ്കിൽ (default_val) {
+		തിരഞ്ഞെടുപ്പ് (param_type(param)) {
+		അവസ്ഥ PARAM_TYPE_INT32: {
 				int32_t val = runtime_defaults.get(param).i;
-				memcpy(default_val, &val, sizeof(val));
-				return PX4_OK;
+				memcpy(default_val, &val, വലുപ്പം(val));
+				തിരികെ PX4_OK;
 			}
 
-		case PARAM_TYPE_FLOAT: {
-				float val = runtime_defaults.get(param).f;
-				memcpy(default_val, &val, sizeof(val));
-				return PX4_OK;
+		അവസ്ഥ PARAM_TYPE_FLOAT: {
+				ദശാംശം val = runtime_defaults.get(param).f;
+				memcpy(default_val, &val, വലുപ്പം(val));
+				തിരികെ PX4_OK;
 			}
 		}
 	}
 
-	return PX4_ERROR;
+	തിരികെ PX4_ERROR;
 }
 
-int
-param_get_default_value(param_t param, void *default_val)
+പൂർണ്ണസംഖ്യ
+param_get_default_മൂല്യം(param_t param, ശൂന്യം *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	എങ്കിൽ (!handle_in_range(param)) {
+		തിരികെ PX4_ERROR;
 	}
 
-	int ret = param_get_default_value_internal(param, default_val);
-	return ret;
+	പൂർണ്ണസംഖ്യ ret = param_get_default_മൂല്യം_internal(param, default_val);
+	തിരികെ ret;
 }
 
-bool param_value_is_default(param_t param)
+തർക്കം param_മൂല്യം_is_default(param_t param)
 {
-	if (!handle_in_range(param)) {
-		return true;
+	എങ്കിൽ (!handle_in_range(param)) {
+		തിരികെ സത്യം;
 	}
 
-	if (!user_config.contains(param)) {
+	എങ്കിൽ (!user_config.contains(param)) {
 		// if user config does not contain it, consider it default.
-		return true;
+		തിരികെ സത്യം;
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		// compare with default value
-		const param_value_u user_config_value = user_config.get(param);
-		const param_value_u runtime_default_value = runtime_defaults.get(param);
+		സ്ഥിരം param_മൂല്യം_u user_config_മൂല്യം = user_config.get(param);
+		സ്ഥിരം param_മൂല്യം_u runtime_default_മൂല്യം = runtime_defaults.get(param);
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
-				return user_config_value.i == runtime_default_value.i;
+		തിരഞ്ഞെടുപ്പ് (param_type(param)) {
+		അവസ്ഥ PARAM_TYPE_INT32: {
+				തിരികെ user_config_മൂല്യം.i == runtime_default_മൂല്യം.i;
 			}
 
-		case PARAM_TYPE_FLOAT: {
-				return fabsf(user_config_value.f - runtime_default_value.f) < FLT_EPSILON;
+		അവസ്ഥ PARAM_TYPE_FLOAT: {
+				തിരികെ fabsf(user_config_മൂല്യം.f - runtime_default_മൂല്യം.f) < FLT_EPSILON;
 			}
 		}
 	}
 
-	return true;
+	തിരികെ സത്യം;
 }
 
-static void
+സ്ഥിതം ശൂന്യം
 param_autosave()
 {
-	if (autosave_instance) {
+	എങ്കിൽ (autosave_instance) {
 		autosave_instance->request();
 	}
 }
 
-void
-param_control_autosave(bool enable)
+ശൂന്യം
+param_control_autosave(തർക്കം enable)
 {
-	if (autosave_instance) {
+	എങ്കിൽ (autosave_instance) {
 		autosave_instance->enable(enable);
 	}
 }
 
-static int
-param_set_internal(param_t param, const void *val, bool mark_saved, bool notify_changes, bool update_remote = true,
-		   bool autosave = true)
+സ്ഥിതം പൂർണ്ണസംഖ്യ
+param_set_internal(param_t param, സ്ഥിരം ശൂന്യം *val, തർക്കം mark_saved, തർക്കം notify_changes, തർക്കം update_remote = സത്യം,
+		   തർക്കം autosave = സത്യം)
 {
-	if (!handle_in_range(param)) {
+	എങ്കിൽ (!handle_in_range(param)) {
 		PX4_ERR("set invalid param %d", param);
-		return PX4_ERROR;
+		തിരികെ PX4_ERROR;
 	}
 
-	if (val == nullptr) {
+	എങ്കിൽ (val == nullptr) {
 		PX4_ERR("set invalid value");
-		return PX4_ERROR;
+		തിരികെ PX4_ERROR;
 	}
 
-	if (param_is_readonly(param)) {
+	എങ്കിൽ (param_is_readonly(param)) {
 		PX4_WARN("param %s is read-only", param_name(param));
-		return PX4_ERROR;
+		തിരികെ PX4_ERROR;
 	}
 
-	int result = -1;
-	bool param_changed = false;
+	പൂർണ്ണസംഖ്യ result = -1;
+	തർക്കം param_changed = അസത്യം;
 	perf_begin(param_set_perf);
 
-	const param_value_u user_config_value = user_config.get(param);
-	param_value_u new_value{};
+	സ്ഥിരം param_മൂല്യം_u user_config_മൂല്യം = user_config.get(param);
+	param_മൂല്യം_u new_മൂല്യം{};
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
-		memcpy(&new_value.i, val, sizeof(new_value.i));
-		param_changed = user_config_value.i != new_value.i;
-		break;
+	തിരഞ്ഞെടുപ്പ് (param_type(param)) {
+	അവസ്ഥ PARAM_TYPE_INT32:
+		memcpy(&new_മൂല്യം.i, val, വലുപ്പം(new_മൂല്യം.i));
+		param_changed = user_config_മൂല്യം.i != new_മൂല്യം.i;
+		നിർത്തുക;
 
-	case PARAM_TYPE_FLOAT:
-		memcpy(&new_value.f, val, sizeof(new_value.f));
-		param_changed = fabsf(user_config_value.f - new_value.f) > FLT_EPSILON;
-		break;
+	അവസ്ഥ PARAM_TYPE_FLOAT:
+		memcpy(&new_മൂല്യം.f, val, വലുപ്പം(new_മൂല്യം.f));
+		param_changed = fabsf(user_config_മൂല്യം.f - new_മൂല്യം.f) > FLT_EPSILON;
+		നിർത്തുക;
 
-	default: {
+	സ്ഥിരസ്ഥിതി: {
 			PX4_ERR("param_set invalid param type for %s", param_name(param));
-			break;
+			നിർത്തുക;
 		}
 	}
 
-	if (user_config.store(param, new_value)) {
-		if (param_changed) {
+	എങ്കിൽ (user_config.store(param, new_മൂല്യം)) {
+		എങ്കിൽ (param_changed) {
 			params_unsaved.set(param, !mark_saved);
 		}
 
 		result = PX4_OK;
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		PX4_ERR("param_set failed to store param %s", param_name(param));
 		result = PX4_ERROR;
 	}
 
-	if ((result == PX4_OK) && param_changed && !mark_saved && autosave) { // this is false when importing parameters
+	എങ്കിൽ ((result == PX4_OK) && param_changed && !mark_saved && autosave) { // this is false when importing parameters
 		param_autosave();
 	}
 
 	// If this is the parameter server, make sure that the remote is updated
-#if defined(CONFIG_PARAM_PRIMARY)
+#എങ്കിൽ defined(CONFIG_PARAM_PRIMARY)
 
-	if (param_changed && update_remote) {
-		param_primary_set_value(param, val);
+	എങ്കിൽ (param_changed && update_remote) {
+		param_primary_set_മൂല്യം(param, val);
 	}
 
 #endif
 
 	// If this is the parameter remote, make sure that the primary is updated
-#if defined(CONFIG_PARAM_REMOTE)
+#എങ്കിൽ defined(CONFIG_PARAM_REMOTE)
 
-	if (param_changed && update_remote) {
-		param_remote_set_value(param, val);
+	എങ്കിൽ (param_changed && update_remote) {
+		param_remote_set_മൂല്യം(param, val);
 	}
 
 #endif
@@ -498,424 +498,424 @@ param_set_internal(param_t param, const void *val, bool mark_saved, bool notify_
 	 * If we set something, now that we have unlocked, go ahead and advertise that
 	 * a thing has been set.
 	 */
-	if ((result == PX4_OK) && param_changed && notify_changes) {
+	എങ്കിൽ ((result == PX4_OK) && param_changed && notify_changes) {
 		param_notify_changes();
 	}
 
-	return result;
+	തിരികെ result;
 }
 
-#if defined(FLASH_BASED_PARAMS)
-int param_set_external(param_t param, const void *val, bool mark_saved, bool notify_changes)
+#എങ്കിൽ defined(FLASH_BASED_PARAMS)
+പൂർണ്ണസംഖ്യ param_set_external(param_t param, സ്ഥിരം ശൂന്യം *val, തർക്കം mark_saved, തർക്കം notify_changes)
 {
-	return param_set_internal(param, val, mark_saved, notify_changes);
+	തിരികെ param_set_internal(param, val, mark_saved, notify_changes);
 }
 
-void param_get_external(param_t param, void *val)
+ശൂന്യം param_get_external(param_t param, ശൂന്യം *val)
 {
 	param_get(param, val);
 }
 #endif
 
-int param_set(param_t param, const void *val)
+പൂർണ്ണസംഖ്യ param_set(param_t param, സ്ഥിരം ശൂന്യം *val)
 {
-	return param_set_internal(param, val, false, true);
+	തിരികെ param_set_internal(param, val, അസത്യം, സത്യം);
 }
 
-int param_set_no_notification(param_t param, const void *val)
+പൂർണ്ണസംഖ്യ param_set_no_notification(param_t param, സ്ഥിരം ശൂന്യം *val)
 {
-	return param_set_internal(param, val, false, false);
+	തിരികെ param_set_internal(param, val, അസത്യം, അസത്യം);
 }
 
-int param_set_no_remote_update(param_t param, const void *val, bool notify)
+പൂർണ്ണസംഖ്യ param_set_no_remote_update(param_t param, സ്ഥിരം ശൂന്യം *val, തർക്കം notify)
 {
-	return param_set_internal(param, val, false, notify, false);
+	തിരികെ param_set_internal(param, val, അസത്യം, notify, അസത്യം);
 }
 
-bool param_used(param_t param)
+തർക്കം param_used(param_t param)
 {
-	if (handle_in_range(param)) {
-		return params_active[param];
+	എങ്കിൽ (handle_in_range(param)) {
+		തിരികെ params_active[param];
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void param_set_used(param_t param)
+ശൂന്യം param_set_used(param_t param)
 {
-	if (handle_in_range(param)) {
-#if defined(CONFIG_PARAM_REMOTE)
+	എങ്കിൽ (handle_in_range(param)) {
+#എങ്കിൽ defined(CONFIG_PARAM_REMOTE)
 
-		if (!param_used(param)) {
+		എങ്കിൽ (!param_used(param)) {
 			param_remote_set_used(param);
 		}
 
 #endif
 
-		params_active.set(param, true);
+		params_active.set(param, സത്യം);
 	}
 }
 
-int param_set_default_value(param_t param, const void *val)
+പൂർണ്ണസംഖ്യ param_set_default_മൂല്യം(param_t param, സ്ഥിരം ശൂന്യം *val)
 {
-	if (!handle_in_range(param)) {
+	എങ്കിൽ (!handle_in_range(param)) {
 		PX4_ERR("set default value invalid param %d", param);
-		return PX4_ERROR;
+		തിരികെ PX4_ERROR;
 	}
 
-	if (val == nullptr) {
+	എങ്കിൽ (val == nullptr) {
 		PX4_ERR("set default value invalid value");
-		return PX4_ERROR;
+		തിരികെ PX4_ERROR;
 	}
 
-	if (param_is_readonly(param)) {
+	എങ്കിൽ (param_is_readonly(param)) {
 		PX4_WARN("param %s is read-only", param_name(param));
-		return PX4_ERROR;
+		തിരികെ PX4_ERROR;
 	}
 
-	int result = PX4_ERROR;
+	പൂർണ്ണസംഖ്യ result = PX4_ERROR;
 
 
 	// check if param being set to default value
-	bool setting_to_static_default = false;
-	const param_value_u firmware_default_value = firmware_defaults.get(param);
+	തർക്കം setting_to_static_default = അസത്യം;
+	സ്ഥിരം param_മൂല്യം_u firmware_default_മൂല്യം = firmware_defaults.get(param);
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32: {
-			int32_t new_value;
-			memcpy(&new_value, val, sizeof(new_value));
-			setting_to_static_default = firmware_default_value.i == new_value;
-			break;
+	തിരഞ്ഞെടുപ്പ് (param_type(param)) {
+	അവസ്ഥ PARAM_TYPE_INT32: {
+			int32_t new_മൂല്യം;
+			memcpy(&new_മൂല്യം, val, വലുപ്പം(new_മൂല്യം));
+			setting_to_static_default = firmware_default_മൂല്യം.i == new_മൂല്യം;
+			നിർത്തുക;
 		}
 
-	case PARAM_TYPE_FLOAT: {
-			float new_value;
-			memcpy(&new_value, val, sizeof(new_value));
-			setting_to_static_default = fabsf(firmware_default_value.f - new_value) <= FLT_EPSILON;
-			break;
+	അവസ്ഥ PARAM_TYPE_FLOAT: {
+			ദശാംശം new_മൂല്യം;
+			memcpy(&new_മൂല്യം, val, വലുപ്പം(new_മൂല്യം));
+			setting_to_static_default = fabsf(firmware_default_മൂല്യം.f - new_മൂല്യം) <= FLT_EPSILON;
+			നിർത്തുക;
 		}
 	}
 
-	if (setting_to_static_default) {
+	എങ്കിൽ (setting_to_static_default) {
 		runtime_defaults.reset(param);
 
 		result = PX4_OK;
 
-	} else {
-		param_value_u new_value{};
+	} അല്ലെങ്കിൽ {
+		param_മൂല്യം_u new_മൂല്യം{};
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
-				memcpy(&new_value.i, val, sizeof(new_value.i));
-				break;
+		തിരഞ്ഞെടുപ്പ് (param_type(param)) {
+		അവസ്ഥ PARAM_TYPE_INT32: {
+				memcpy(&new_മൂല്യം.i, val, വലുപ്പം(new_മൂല്യം.i));
+				നിർത്തുക;
 			}
 
-		case PARAM_TYPE_FLOAT: {
-				memcpy(&new_value.f, val, sizeof(new_value.f));
-				break;
+		അവസ്ഥ PARAM_TYPE_FLOAT: {
+				memcpy(&new_മൂല്യം.f, val, വലുപ്പം(new_മൂല്യം.f));
+				നിർത്തുക;
 			}
 
-		default:
-			break;
+		സ്ഥിരസ്ഥിതി:
+			നിർത്തുക;
 		}
 
-		if (runtime_defaults.store(param, new_value)) {
+		എങ്കിൽ (runtime_defaults.store(param, new_മൂല്യം)) {
 			user_config.refresh(param);
 			result = PX4_OK;
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			result = PX4_ERROR;
 		}
 	}
 
 
-	if ((result == PX4_OK) && param_used(param)) {
+	എങ്കിൽ ((result == PX4_OK) && param_used(param)) {
 		// send notification if param is already in use
 		param_notify_changes();
 	}
 
-	return result;
+	തിരികെ result;
 }
 
-static int param_reset_internal(param_t param, bool notify = true, bool autosave = true)
+സ്ഥിതം പൂർണ്ണസംഖ്യ param_reset_internal(param_t param, തർക്കം notify = സത്യം, തർക്കം autosave = സത്യം)
 {
-#if defined(CONFIG_PARAM_REMOTE)
+#എങ്കിൽ defined(CONFIG_PARAM_REMOTE)
 	// Remote doesn't support reset
-	return false;
+	തിരികെ അസത്യം;
 #endif
 
-	if (param_is_readonly(param)) {
-		return 0;  // silently skip — param_reset_all loops over all params
+	എങ്കിൽ (param_is_readonly(param)) {
+		തിരികെ 0;  // silently skip — param_reset_all loops over all params
 	}
 
-	bool param_found = user_config.contains(param);
+	തർക്കം param_found = user_config.contains(param);
 
-	if (handle_in_range(param)) {
+	എങ്കിൽ (handle_in_range(param)) {
 		user_config.reset(param);
 	}
 
-	if (param_found) {
+	എങ്കിൽ (param_found) {
 		/* Persist the reset. Flash-param saves append only unsaved params,
 		 * so a reset has to show up as a tombstone or replay keeps the
 		 * previous override. */
-		params_unsaved.set(param, true);
+		params_unsaved.set(param, സത്യം);
 	}
 
-	if (autosave) {
+	എങ്കിൽ (autosave) {
 		param_autosave();
 	}
 
-	if (param_found && notify) {
+	എങ്കിൽ (param_found && notify) {
 		param_notify_changes();
 	}
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#എങ്കിൽ defined(CONFIG_PARAM_PRIMARY)
 	param_primary_reset(param);
 #endif
 
-	return param_found;
+	തിരികെ param_found;
 }
 
-int param_reset(param_t param) { return param_reset_internal(param, true); }
-int param_reset_no_notification(param_t param) { return param_reset_internal(param, false); }
+പൂർണ്ണസംഖ്യ param_reset(param_t param) { തിരികെ param_reset_internal(param, സത്യം); }
+പൂർണ്ണസംഖ്യ param_reset_no_notification(param_t param) { തിരികെ param_reset_internal(param, അസത്യം); }
 
-static void
-param_reset_all_internal(bool auto_save)
+സ്ഥിതം ശൂന്യം
+param_reset_all_internal(തർക്കം auto_save)
 {
-#if defined(CONFIG_PARAM_REMOTE)
+#എങ്കിൽ defined(CONFIG_PARAM_REMOTE)
 	// Remote doesn't support reset
-	return;
+	തിരികെ;
 #endif
 
-	for (param_t param = 0; handle_in_range(param); param++) {
-		param_reset_internal(param, false, false);
+	വേണ്ടി (param_t param = 0; handle_in_range(param); param++) {
+		param_reset_internal(param, അസത്യം, അസത്യം);
 	}
 
-	if (auto_save) {
+	എങ്കിൽ (auto_save) {
 		param_autosave();
 	}
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#എങ്കിൽ defined(CONFIG_PARAM_PRIMARY)
 	param_primary_reset_all();
 #endif
 
 	param_notify_changes();
 }
 
-void
+ശൂന്യം
 param_reset_all()
 {
-	param_reset_all_internal(true);
+	param_reset_all_internal(സത്യം);
 }
 
-void
-param_reset_excludes(const char *excludes[], int num_excludes)
+ശൂന്യം
+param_reset_excludes(സ്ഥിരം അക്ഷരം *excludes[], പൂർണ്ണസംഖ്യ അക്കം_excludes)
 {
-	for (param_t param = 0; handle_in_range(param); param++) {
-		const char *name = param_name(param);
-		bool exclude = false;
+	വേണ്ടി (param_t param = 0; handle_in_range(param); param++) {
+		സ്ഥിരം അക്ഷരം *name = param_name(param);
+		തർക്കം exclude = അസത്യം;
 
-		for (int index = 0; index < num_excludes; index ++) {
-			int len = strlen(excludes[index]);
+		വേണ്ടി (പൂർണ്ണസംഖ്യ index = 0; index < അക്കം_excludes; index ++) {
+			പൂർണ്ണസംഖ്യ len = strlen(excludes[index]);
 
-			if ((excludes[index][len - 1] == '*'
+			എങ്കിൽ ((excludes[index][len - 1] == '*'
 			     && strncmp(name, excludes[index], len - 1) == 0)
 			    || strcmp(name, excludes[index]) == 0) {
 
-				exclude = true;
-				break;
+				exclude = സത്യം;
+				നിർത്തുക;
 			}
 		}
 
-		if (!exclude) {
+		എങ്കിൽ (!exclude) {
 			param_reset(param);
 		}
 	}
 }
 
-void
-param_reset_specific(const char *resets[], int num_resets)
+ശൂന്യം
+param_reset_specific(സ്ഥിരം അക്ഷരം *resets[], പൂർണ്ണസംഖ്യ അക്കം_resets)
 {
-	for (param_t param = 0; handle_in_range(param); param++) {
-		const char *name = param_name(param);
-		bool reset = false;
+	വേണ്ടി (param_t param = 0; handle_in_range(param); param++) {
+		സ്ഥിരം അക്ഷരം *name = param_name(param);
+		തർക്കം reset = അസത്യം;
 
-		for (int index = 0; index < num_resets; index++) {
-			int len = strlen(resets[index]);
+		വേണ്ടി (പൂർണ്ണസംഖ്യ index = 0; index < അക്കം_resets; index++) {
+			പൂർണ്ണസംഖ്യ len = strlen(resets[index]);
 
-			if ((resets[index][len - 1] == '*'
+			എങ്കിൽ ((resets[index][len - 1] == '*'
 			     && strncmp(name, resets[index], len - 1) == 0)
 			    || strcmp(name, resets[index]) == 0) {
 
-				reset = true;
-				break;
+				reset = സത്യം;
+				നിർത്തുക;
 			}
 		}
 
-		if (reset) {
+		എങ്കിൽ (reset) {
 			param_reset(param);
 		}
 	}
 }
 
-int
-param_set_default_file(const char *filename)
+പൂർണ്ണസംഖ്യ
+param_set_default_file(സ്ഥിരം അക്ഷരം *filename)
 {
-	if (filename && param_backup_file && strcmp(filename, param_backup_file) == 0) {
+	എങ്കിൽ (filename && param_backup_file && strcmp(filename, param_backup_file) == 0) {
 		PX4_ERR("default file can't be the same as the backup file %s", filename);
-		return PX4_ERROR;
+		തിരികെ PX4_ERROR;
 	}
 
 #ifdef FLASH_BASED_PARAMS
 	// the default for flash-based params is always the FLASH
-	(void)filename;
-#else
+	(ശൂന്യം)filename;
+#അല്ലെങ്കിൽ
 
-	if (param_default_file != nullptr) {
+	എങ്കിൽ (param_default_file != nullptr) {
 		// we assume this is not in use by some other thread
-		free(param_default_file);
+		സ്വതന്ത്രം(param_default_file);
 		param_default_file = nullptr;
 	}
 
-	if (filename) {
+	എങ്കിൽ (filename) {
 		param_default_file = strdup(filename);
 	}
 
 #endif /* FLASH_BASED_PARAMS */
 
-	return 0;
+	തിരികെ 0;
 }
 
-const char *param_get_default_file()
+സ്ഥിരം അക്ഷരം *param_get_default_file()
 {
-	return param_default_file;
+	തിരികെ param_default_file;
 }
 
-int param_set_backup_file(const char *filename)
+പൂർണ്ണസംഖ്യ param_set_backup_file(സ്ഥിരം അക്ഷരം *filename)
 {
-	if (filename && param_default_file && strcmp(filename, param_default_file) == 0) {
+	എങ്കിൽ (filename && param_default_file && strcmp(filename, param_default_file) == 0) {
 		PX4_ERR("backup file can't be the same as the default file %s", filename);
-		return PX4_ERROR;
+		തിരികെ PX4_ERROR;
 	}
 
-	if (param_backup_file != nullptr) {
+	എങ്കിൽ (param_backup_file != nullptr) {
 		// we assume this is not in use by some other thread
-		free(param_backup_file);
+		സ്വതന്ത്രം(param_backup_file);
 		param_backup_file = nullptr;
 	}
 
-	if (filename) {
+	എങ്കിൽ (filename) {
 		param_backup_file = strdup(filename);
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		param_backup_file = nullptr; // backup disabled
 	}
 
-	return 0;
+	തിരികെ 0;
 }
 
-const char *param_get_backup_file()
+സ്ഥിരം അക്ഷരം *param_get_backup_file()
 {
-	return param_backup_file;
+	തിരികെ param_backup_file;
 }
 
-static int param_export_internal(int fd, param_filter_func filter);
-static int param_verify(int fd);
+സ്ഥിതം പൂർണ്ണസംഖ്യ param_export_internal(പൂർണ്ണസംഖ്യ fd, param_filter_func filter);
+സ്ഥിതം പൂർണ്ണസംഖ്യ param_verify(പൂർണ്ണസംഖ്യ fd);
 
-int param_save_default(bool blocking)
+പൂർണ്ണസംഖ്യ param_save_default(തർക്കം blocking)
 {
 	PX4_DEBUG("param_save_default");
 
 	// take the file lock
-	if (blocking) {
+	എങ്കിൽ (blocking) {
 		pthread_mutex_lock(&file_mutex);
 
-	} else {
-		if (pthread_mutex_trylock(&file_mutex) != 0) {
+	} അല്ലെങ്കിൽ {
+		എങ്കിൽ (pthread_mutex_trylock(&file_mutex) != 0) {
 			PX4_DEBUG("param_save_default: file lock failed (already locked)");
-			return -EWOULDBLOCK;
+			തിരികെ -EWOULDBLOCK;
 		}
 	}
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	പൂർണ്ണസംഖ്യ shutdown_lock_ret = px4_shutdown_lock();
 
-	if (shutdown_lock_ret != 0) {
+	എങ്കിൽ (shutdown_lock_ret != 0) {
 		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
 	}
 
-	int res = PX4_ERROR;
-	const char *filename = param_get_default_file();
+	പൂർണ്ണസംഖ്യ res = PX4_ERROR;
+	സ്ഥിരം അക്ഷരം *filename = param_get_default_file();
 
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (params_unsaved[param]) {
-			params_saving.set(param, true);
-			params_unsaved.set(param, false);
+	വേണ്ടി (param_t param = 0; handle_in_range(param); param++) {
+		എങ്കിൽ (params_unsaved[param]) {
+			params_saving.set(param, സത്യം);
+			params_unsaved.set(param, അസത്യം);
 		}
 	}
 
-	if (filename) {
-		static constexpr int MAX_ATTEMPTS = 3;
+	എങ്കിൽ (filename) {
+		സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ MAX_ATTEMPTS = 3;
 
-		for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+		വേണ്ടി (പൂർണ്ണസംഖ്യ attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 			// write parameters to file
-			int fd = ::open(filename, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
+			പൂർണ്ണസംഖ്യ fd = ::open(filename, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
 
-			if (fd > -1) {
+			എങ്കിൽ (fd > -1) {
 				perf_begin(param_export_perf);
 				res = param_export_internal(fd, nullptr);
 				perf_end(param_export_perf);
 				::close(fd);
 
-				if (res == PX4_OK) {
+				എങ്കിൽ (res == PX4_OK) {
 					// reopen file to verify
-					int fd_verify = ::open(filename, O_RDONLY, PX4_O_MODE_666);
+					പൂർണ്ണസംഖ്യ fd_verify = ::open(filename, O_RDONLY, PX4_O_MODE_666);
 					res = param_verify(fd_verify) || lseek(fd_verify, 0, SEEK_SET) || param_verify(fd_verify);
 					::close(fd_verify);
 				}
 			}
 
-			if (res == PX4_OK) {
-				break;
+			എങ്കിൽ (res == PX4_OK) {
+				നിർത്തുക;
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				PX4_ERR("parameter export to %s failed (%d) attempt %d", filename, res, attempt);
 				px4_usleep(10000); // wait at least 10 milliseconds before trying again
 			}
 		}
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		perf_begin(param_export_perf);
 		res = flash_param_save(nullptr);
 		perf_end(param_export_perf);
 	}
 
-	if (res != PX4_OK) {
+	എങ്കിൽ (res != PX4_OK) {
 		PX4_ERR("param export failed (%d)", res);
 
-		for (param_t param = 0; handle_in_range(param); param++) {
-			if (params_saving[param]) {
-				params_unsaved.set(param, true);
+		വേണ്ടി (param_t param = 0; handle_in_range(param); param++) {
+			എങ്കിൽ (params_saving[param]) {
+				params_unsaved.set(param, സത്യം);
 			}
 		}
 	}
 
 	params_saving.reset();
 
-	if (res == PX4_OK) {
+	എങ്കിൽ (res == PX4_OK) {
 		// backup file
-		if (param_backup_file) {
-			int fd_backup_file = ::open(param_backup_file, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
+		എങ്കിൽ (param_backup_file) {
+			പൂർണ്ണസംഖ്യ fd_backup_file = ::open(param_backup_file, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
 
-			if (fd_backup_file > -1) {
-				int backup_export_ret = param_export_internal(fd_backup_file, nullptr);
+			എങ്കിൽ (fd_backup_file > -1) {
+				പൂർണ്ണസംഖ്യ backup_export_ret = param_export_internal(fd_backup_file, nullptr);
 				::close(fd_backup_file);
 
-				if (backup_export_ret != 0) {
+				എങ്കിൽ (backup_export_ret != 0) {
 					PX4_ERR("backup parameter export to %s failed (%d)", param_backup_file, backup_export_ret);
 
-				} else {
+				} അല്ലെങ്കിൽ {
 					// verify export
-					int fd_verify = ::open(param_backup_file, O_RDONLY, PX4_O_MODE_666);
+					പൂർണ്ണസംഖ്യ fd_verify = ::open(param_backup_file, O_RDONLY, PX4_O_MODE_666);
 					param_verify(fd_verify);
 					::close(fd_verify);
 				}
@@ -925,184 +925,184 @@ int param_save_default(bool blocking)
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	എങ്കിൽ (shutdown_lock_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return res;
+	തിരികെ res;
 }
 
 /**
  * @return 0 on success, 1 if all params have not yet been stored, -1 if device open failed, -2 if writing parameters failed
  */
-int
+പൂർണ്ണസംഖ്യ
 param_load_default()
 {
-	int res = 0;
-	const char *filename = param_get_default_file();
+	പൂർണ്ണസംഖ്യ res = 0;
+	സ്ഥിരം അക്ഷരം *filename = param_get_default_file();
 
-	if (!filename) {
-		return param_load(-1);
+	എങ്കിൽ (!filename) {
+		തിരികെ param_load(-1);
 	}
 
-	int fd_load = ::open(filename, O_RDONLY);
+	പൂർണ്ണസംഖ്യ fd_load = ::open(filename, O_RDONLY);
 
-	if (fd_load < 0) {
+	എങ്കിൽ (fd_load < 0) {
 		/* no parameter file is OK, otherwise this is an error */
-		if (errno != ENOENT) {
+		എങ്കിൽ (errno != ENOENT) {
 			PX4_ERR("open '%s' for reading failed", filename);
-			return -1;
+			തിരികെ -1;
 		}
 
-		return 1;
+		തിരികെ 1;
 	}
 
-	int result = param_load(fd_load);
+	പൂർണ്ണസംഖ്യ result = param_load(fd_load);
 	::close(fd_load);
 
-	if (result == 1) {
+	എങ്കിൽ (result == 1) {
 		/* blank file: nothing stored yet */
-		return 1;
+		തിരികെ 1;
 	}
 
-	if (result != 0) {
+	എങ്കിൽ (result != 0) {
 		PX4_ERR("error reading parameters from '%s'", filename);
-		return -2;
+		തിരികെ -2;
 	}
 
-	return res;
+	തിരികെ res;
 }
 
-static int param_verify_callback(bson_decoder_t decoder, bson_node_t node)
+സ്ഥിതം പൂർണ്ണസംഖ്യ param_verify_callback(bson_decoder_t decoder, bson_കണ്ണി_t കണ്ണി_2)
 {
-	if (node->type == BSON_EOO) {
-		return 0;
+	എങ്കിൽ (കണ്ണി_2->type == BSON_EOO) {
+		തിരികെ 0;
 	}
 
 	// find the parameter this node represents
-	param_t param = param_find_no_notification(node->name);
+	param_t param = param_find_no_notification(കണ്ണി_2->name);
 
-	if (param == PARAM_INVALID) {
-		PX4_ERR("verify: invalid parameter '%s'", node->name);
-		return -1;
+	എങ്കിൽ (param == PARAM_INVALID) {
+		PX4_ERR("verify: invalid parameter '%s'", കണ്ണി_2->name);
+		തിരികെ -1;
 	}
 
 	// handle verifying the parameter from the node
-	switch (node->type) {
-	case BSON_INT32: {
-			if (param_type(param) != PARAM_TYPE_INT32) {
-				PX4_ERR("verify: invalid param type %d for '%s' (BSON_INT32)", param_type(param), node->name);
-				return -1;
+	തിരഞ്ഞെടുപ്പ് (കണ്ണി_2->type) {
+	അവസ്ഥ BSON_INT32: {
+			എങ്കിൽ (param_type(param) != PARAM_TYPE_INT32) {
+				PX4_ERR("verify: invalid param type %d for '%s' (BSON_INT32)", param_type(param), കണ്ണി_2->name);
+				തിരികെ -1;
 			}
 
 			int32_t value;
 
-			if (param_get(param, &value) == 0) {
-				if (value == node->i32) {
-					return 1; // valid
+			എങ്കിൽ (param_get(param, &value) == 0) {
+				എങ്കിൽ (value == കണ്ണി_2->i32) {
+					തിരികെ 1; // valid
 
-				} else {
-					PX4_ERR("verify: '%s' invalid BSON value %" PRIi32 "(expected %" PRIi32 ")", node->name, node->i32, value);
+				} അല്ലെങ്കിൽ {
+					PX4_ERR("verify: '%s' invalid BSON value %" PRIi32 "(expected %" PRIi32 ")", കണ്ണി_2->name, കണ്ണി_2->i32, value);
 				}
 			}
 		}
-		break;
+		നിർത്തുക;
 
-	case BSON_DOUBLE: {
-			if (param_type(param) != PARAM_TYPE_FLOAT) {
-				PX4_ERR("verify: invalid param type %d for '%s' (BSON_DOUBLE)", param_type(param), node->name);
-				return -1;
+	അവസ്ഥ BSON_DOUBLE: {
+			എങ്കിൽ (param_type(param) != PARAM_TYPE_FLOAT) {
+				PX4_ERR("verify: invalid param type %d for '%s' (BSON_DOUBLE)", param_type(param), കണ്ണി_2->name);
+				തിരികെ -1;
 			}
 
-			float value;
+			ദശാംശം value;
 
-			if (param_get(param, &value) == 0) {
-				if (fabsf(value - (float)node->d) <= FLT_EPSILON) {
-					return 1; // valid
+			എങ്കിൽ (param_get(param, &value) == 0) {
+				എങ്കിൽ (fabsf(value - (ദശാംശം)കണ്ണി_2->d) <= FLT_EPSILON) {
+					തിരികെ 1; // valid
 
-				} else {
-					PX4_ERR("verify: '%s' invalid BSON value %.3f (expected %.3f)", node->name, node->d, (double)value);
+				} അല്ലെങ്കിൽ {
+					PX4_ERR("verify: '%s' invalid BSON value %.3f (expected %.3f)", കണ്ണി_2->name, കണ്ണി_2->d, (ഇരട്ട)value);
 				}
 			}
 		}
-		break;
+		നിർത്തുക;
 
-	default:
-		PX4_ERR("verify: '%s' invalid node type %d", node->name, node->type);
+	സ്ഥിരസ്ഥിതി:
+		PX4_ERR("verify: '%s' invalid node type %d", കണ്ണി_2->name, കണ്ണി_2->type);
 	}
 
-	return -1;
+	തിരികെ -1;
 }
 
-static int param_verify(int fd)
+സ്ഥിതം പൂർണ്ണസംഖ്യ param_verify(പൂർണ്ണസംഖ്യ fd)
 {
 	PX4_DEBUG("param_verify");
 
-	if (fd < 0) {
-		return -1;
+	എങ്കിൽ (fd < 0) {
+		തിരികെ -1;
 	}
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	എങ്കിൽ (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("verify: seek failed");
-		return -1;
+		തിരികെ -1;
 	}
 
 	bson_decoder_s decoder{};
 
-	if (bson_decoder_init_file(&decoder, fd, param_verify_callback) == 0) {
-		int result = -1;
+	എങ്കിൽ (bson_decoder_init_file(&decoder, fd, param_verify_callback) == 0) {
+		പൂർണ്ണസംഖ്യ result = -1;
 
-		do {
+		ചെയ്യുക {
 			result = bson_decoder_next(&decoder);
 
-		} while (result > 0);
+		} ആകുമ്പോൾ (result > 0);
 
-		if (result == 0) {
-			if (decoder.total_document_size != decoder.total_decoded_size) {
+		എങ്കിൽ (result == 0) {
+			എങ്കിൽ (decoder.total_document_size != decoder.total_decoded_size) {
 				PX4_ERR("BSON document size (%" PRId32 ") doesn't match bytes decoded (%" PRId32 ")", decoder.total_document_size,
 					decoder.total_decoded_size);
 
-			} else {
-				return 0;
+			} അല്ലെങ്കിൽ {
+				തിരികെ 0;
 			}
 
-		} else if (result == -ENODATA) {
+		} അല്ലെങ്കിൽ എങ്കിൽ (result == -ENODATA) {
 			PX4_ERR("verify: no BSON data");
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			PX4_ERR("verify: failed (%d)", result);
 		}
 	}
 
-	return -1;
+	തിരികെ -1;
 }
 
-int
-param_export(const char *filename, param_filter_func filter)
+പൂർണ്ണസംഖ്യ
+param_export(സ്ഥിരം അക്ഷരം *filename, param_filter_func filter)
 {
 	PX4_DEBUG("param_export");
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	പൂർണ്ണസംഖ്യ shutdown_lock_ret = px4_shutdown_lock();
 
-	if (shutdown_lock_ret != 0) {
+	എങ്കിൽ (shutdown_lock_ret != 0) {
 		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
 	}
 
 	// take the file lock
-	if (pthread_mutex_trylock(&file_mutex) != 0) {
+	എങ്കിൽ (pthread_mutex_trylock(&file_mutex) != 0) {
 		PX4_ERR("param_export: file lock failed (already locked)");
-		return PX4_ERROR;
+		തിരികെ PX4_ERROR;
 	}
 
-	int fd = ::open(filename, O_RDWR | O_CREAT, PX4_O_MODE_666);
-	int result = PX4_ERROR;
+	പൂർണ്ണസംഖ്യ fd = ::open(filename, O_RDWR | O_CREAT, PX4_O_MODE_666);
+	പൂർണ്ണസംഖ്യ result = PX4_ERROR;
 
 	perf_begin(param_export_perf);
 
-	if (fd > -1) {
+	എങ്കിൽ (fd > -1) {
 		result = param_export_internal(fd, filter);
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		result = flash_param_save(filter);
 	}
 
@@ -1110,87 +1110,87 @@ param_export(const char *filename, param_filter_func filter)
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	എങ്കിൽ (shutdown_lock_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return result;
+	തിരികെ result;
 }
 
 // internal parameter export, caller is responsible for locking
-static int param_export_internal(int fd, param_filter_func filter)
+സ്ഥിതം പൂർണ്ണസംഖ്യ param_export_internal(പൂർണ്ണസംഖ്യ fd, param_filter_func filter)
 {
 	PX4_DEBUG("param_export_internal");
-	const auto changed_params = user_config.containedAsBitset();
+	സ്ഥിരം auto changed_params = user_config.containedAsBitset();
 
-	int result = -1;
+	പൂർണ്ണസംഖ്യ result = -1;
 	bson_encoder_s encoder{};
 	uint8_t bson_buffer[256];
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	എങ്കിൽ (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("export seek failed %d", errno);
-		return -1;
+		തിരികെ -1;
 	}
 
-	if (bson_encoder_init_buf_file(&encoder, fd, &bson_buffer, sizeof(bson_buffer)) != 0) {
-		goto out;
+	എങ്കിൽ (bson_encoder_init_buf_file(&encoder, fd, &bson_buffer, വലുപ്പം(bson_buffer)) != 0) {
+		പോകുക out;
 	}
 
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (!changed_params[param] || (filter && !filter(param))) {
-			continue;
+	വേണ്ടി (param_t param = 0; handle_in_range(param); param++) {
+		എങ്കിൽ (!changed_params[param] || (filter && !filter(param))) {
+			തുടരുക;
 		}
 
-		const param_value_u runtime_default_value = runtime_defaults.get(param);
-		const param_value_u user_config_value = user_config.get(param);
+		സ്ഥിരം param_മൂല്യം_u runtime_default_മൂല്യം = runtime_defaults.get(param);
+		സ്ഥിരം param_മൂല്യം_u user_config_മൂല്യം = user_config.get(param);
 
 		// don't export default values
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			if (user_config_value.i == runtime_default_value.i) {
-				PX4_DEBUG("skipping %s %" PRIi32 " export", param_name(param), runtime_default_value.i);
-				continue;
+		തിരഞ്ഞെടുപ്പ് (param_type(param)) {
+		അവസ്ഥ PARAM_TYPE_INT32:
+			എങ്കിൽ (user_config_മൂല്യം.i == runtime_default_മൂല്യം.i) {
+				PX4_DEBUG("skipping %s %" PRIi32 " export", param_name(param), runtime_default_മൂല്യം.i);
+				തുടരുക;
 			}
 
-			break;
+			നിർത്തുക;
 
-		case PARAM_TYPE_FLOAT:
-			if (fabsf(user_config_value.f - runtime_default_value.f) <= FLT_EPSILON) {
-				PX4_DEBUG("skipping %s %.3f export", param_name(param), (double)runtime_default_value.f);
-				continue;
+		അവസ്ഥ PARAM_TYPE_FLOAT:
+			എങ്കിൽ (fabsf(user_config_മൂല്യം.f - runtime_default_മൂല്യം.f) <= FLT_EPSILON) {
+				PX4_DEBUG("skipping %s %.3f export", param_name(param), (ഇരട്ട)runtime_default_മൂല്യം.f);
+				തുടരുക;
 			}
 
-			break;
+			നിർത്തുക;
 		}
 
-		const char *name = param_name(param);
-		const size_t size = param_size(param);
+		സ്ഥിരം അക്ഷരം *name = param_name(param);
+		സ്ഥിരം size_t size = param_size(param);
 
 		/* append the appropriate BSON type object */
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
-				const int32_t i = user_config_value.i;
-				PX4_DEBUG("exporting: %s (%d) size: %lu val: %" PRIi32, name, param, (long unsigned int)size, i);
+		തിരഞ്ഞെടുപ്പ് (param_type(param)) {
+		അവസ്ഥ PARAM_TYPE_INT32: {
+				സ്ഥിരം int32_t i = user_config_മൂല്യം.i;
+				PX4_DEBUG("exporting: %s (%d) size: %lu val: %" PRIi32, name, param, (long unsigned പൂർണ്ണസംഖ്യ)size, i);
 
-				if (bson_encoder_append_int32(&encoder, name, i) != 0) {
+				എങ്കിൽ (bson_encoder_append_int32(&encoder, name, i) != 0) {
 					PX4_ERR("BSON append failed for '%s'", name);
-					goto out;
+					പോകുക out;
 				}
 			}
-			break;
+			നിർത്തുക;
 
-		case PARAM_TYPE_FLOAT: {
-				const double f = (double)user_config_value.f;
-				PX4_DEBUG("exporting: %s (%d) size: %lu val: %.3f", name, param, (long unsigned int)size, (double)f);
+		അവസ്ഥ PARAM_TYPE_FLOAT: {
+				സ്ഥിരം ഇരട്ട f = (ഇരട്ട)user_config_മൂല്യം.f;
+				PX4_DEBUG("exporting: %s (%d) size: %lu val: %.3f", name, param, (long unsigned പൂർണ്ണസംഖ്യ)size, (ഇരട്ട)f);
 
-				if (bson_encoder_append_double(&encoder, name, f) != 0) {
+				എങ്കിൽ (bson_encoder_append_double(&encoder, name, f) != 0) {
 					PX4_ERR("BSON append failed for '%s'", name);
-					goto out;
+					പോകുക out;
 				}
 			}
-			break;
+			നിർത്തുക;
 
-		default:
+		സ്ഥിരസ്ഥിതി:
 			PX4_ERR("%s unrecognized parameter type %d, skipping export", name, param_type(param));
 		}
 	}
@@ -1199,94 +1199,94 @@ static int param_export_internal(int fd, param_filter_func filter)
 
 out:
 
-	if (result == 0) {
-		if (bson_encoder_fini(&encoder) != PX4_OK) {
+	എങ്കിൽ (result == 0) {
+		എങ്കിൽ (bson_encoder_fini(&encoder) != PX4_OK) {
 			PX4_ERR("BSON encoder finalize failed");
 			result = -1;
 		}
 	}
 
-	return result;
+	തിരികെ result;
 }
 
-#if defined(FLASH_BASED_PARAMS)
+#എങ്കിൽ defined(FLASH_BASED_PARAMS)
 // A file is never the flash backend's store, so what an import changes is unsaved until a delta carries it.
 // As on the file backend, the import itself does not save.
-static constexpr bool file_import_is_saved = false;
-#else
-static constexpr bool file_import_is_saved = true;
+സ്ഥിതം constexpr തർക്കം file_import_is_saved = അസത്യം;
+#അല്ലെങ്കിൽ
+സ്ഥിതം constexpr തർക്കം file_import_is_saved = സത്യം;
 #endif
 
-static int
-param_import_callback(bson_decoder_t decoder, bson_node_t node)
+സ്ഥിതം പൂർണ്ണസംഖ്യ
+param_import_callback(bson_decoder_t decoder, bson_കണ്ണി_t കണ്ണി_2)
 {
 	/*
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	എങ്കിൽ (കണ്ണി_2->type == BSON_EOO) {
 		PX4_DEBUG("end of parameters");
-		return 0;
+		തിരികെ 0;
 	}
 
 	// A tombstone has no value. The decoder leaves the previous node's in the union and the translations
 	// read it without a type check.
-	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
+	സ്ഥിരം തർക്കം tombstone = കണ്ണി_2->type == BSON_nullptr || കണ്ണി_2->type == BSON_UNDEFINED;
 
 	// if we do param_set() directly in the translation, set PARAM_SKIP_IMPORT as return value and return here
-	if (!tombstone && param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
-		return 1;
+	എങ്കിൽ (!tombstone && param_modify_on_import(കണ്ണി_2) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+		തിരികെ 1;
 	}
 
 	// Find the parameter this node represents.  If we don't know it, ignore the node.
-	param_t param = param_find_no_notification(node->name);
+	param_t param = param_find_no_notification(കണ്ണി_2->name);
 
-	if (param == PARAM_INVALID) {
-		PX4_WARN("ignoring unrecognised parameter '%s'", node->name);
-		return 1;
+	എങ്കിൽ (param == PARAM_INVALID) {
+		PX4_WARN("ignoring unrecognised parameter '%s'", കണ്ണി_2->name);
+		തിരികെ 1;
 	}
 
 	// Handle setting the parameter from the node
-	switch (node->type) {
-	case BSON_nullptr:
-	case BSON_UNDEFINED:
-		param_reset_internal(param, true, false);
-		return 1;
+	തിരഞ്ഞെടുപ്പ് (കണ്ണി_2->type) {
+	അവസ്ഥ BSON_nullptr:
+	അവസ്ഥ BSON_UNDEFINED:
+		param_reset_internal(param, സത്യം, അസത്യം);
+		തിരികെ 1;
 
-	case BSON_INT32: {
-			if (param_type(param) == PARAM_TYPE_INT32) {
-				int32_t i = node->i32;
-				param_set_internal(param, &i, file_import_is_saved, true, true, false);
+	അവസ്ഥ BSON_INT32: {
+			എങ്കിൽ (param_type(param) == PARAM_TYPE_INT32) {
+				int32_t i = കണ്ണി_2->i32;
+				param_set_internal(param, &i, file_import_is_saved, സത്യം, സത്യം, അസത്യം);
 				PX4_DEBUG("Imported %s with value %" PRIi32, param_name(param), i);
 
-			} else {
-				PX4_WARN("unexpected type for %s", node->name);
+			} അല്ലെങ്കിൽ {
+				PX4_WARN("unexpected type for %s", കണ്ണി_2->name);
 			}
 		}
-		break;
+		നിർത്തുക;
 
-	case BSON_DOUBLE: {
-			if (param_type(param) == PARAM_TYPE_FLOAT) {
-				float f = node->d;
-				param_set_internal(param, &f, file_import_is_saved, true, true, false);
-				PX4_DEBUG("Imported %s with value %f", param_name(param), (double)f);
+	അവസ്ഥ BSON_DOUBLE: {
+			എങ്കിൽ (param_type(param) == PARAM_TYPE_FLOAT) {
+				ദശാംശം f = കണ്ണി_2->d;
+				param_set_internal(param, &f, file_import_is_saved, സത്യം, സത്യം, അസത്യം);
+				PX4_DEBUG("Imported %s with value %f", param_name(param), (ഇരട്ട)f);
 
-			} else {
-				PX4_WARN("unexpected type for %s", node->name);
+			} അല്ലെങ്കിൽ {
+				PX4_WARN("unexpected type for %s", കണ്ണി_2->name);
 			}
 		}
-		break;
+		നിർത്തുക;
 
-	default:
-		PX4_ERR("import: unrecognised node type for '%s'", node->name);
+	സ്ഥിരസ്ഥിതി:
+		PX4_ERR("import: unrecognised node type for '%s'", കണ്ണി_2->name);
 	}
 
 	// don't return zero, that means EOF
-	return 1;
+	തിരികെ 1;
 }
 
-static int
-param_import_internal(int fd)
+സ്ഥിതം പൂർണ്ണസംഖ്യ
+param_import_internal(പൂർണ്ണസംഖ്യ fd)
 {
 	/* blank source (nothing stored yet): an empty file, or zeroed/erased
 	 * storage where the BSON document length would be. Unlike the flash
@@ -1299,67 +1299,67 @@ param_import_internal(int fd)
 	 * file (no cluster chain -> error, not EOF), so the content check below
 	 * would miss it; detect it by size. Char-device backends (e.g. FRAM)
 	 * report no meaningful size and fall through to the content check. */
-	struct stat st;
+	ഘടന stat st;
 
-	if (fstat(fd, &st) == 0 && S_ISREG(st.st_mode) && st.st_size == 0) {
-		return 1;
+	എങ്കിൽ (fstat(fd, &st) == 0 && S_ISREG(st.st_mode) && st.st_size == 0) {
+		തിരികെ 1;
 	}
 
 	int32_t doc_size = 0;
-	ssize_t len = read(fd, &doc_size, sizeof(doc_size));
+	ssize_t len = പഠ(fd, &doc_size, വലുപ്പം(doc_size));
 
-	if (len == 0 || (len == (ssize_t)sizeof(doc_size) && (doc_size == 0 || doc_size == -1))) {
-		return 1;
+	എങ്കിൽ (len == 0 || (len == (ssize_t)വലുപ്പം(doc_size) && (doc_size == 0 || doc_size == -1))) {
+		തിരികെ 1;
 	}
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	എങ്കിൽ (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("import lseek failed (%d)", errno);
-		return -1;
+		തിരികെ -1;
 	}
 
-	static constexpr int MAX_ATTEMPTS = 3;
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ MAX_ATTEMPTS = 3;
 
-	for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 		bson_decoder_s decoder{};
 
-		if (bson_decoder_init_file(&decoder, fd, param_import_callback) == 0) {
-			int result = -1;
+		എങ്കിൽ (bson_decoder_init_file(&decoder, fd, param_import_callback) == 0) {
+			പൂർണ്ണസംഖ്യ result = -1;
 
-			do {
+			ചെയ്യുക {
 				result = bson_decoder_next(&decoder);
 
-			} while (result > 0);
+			} ആകുമ്പോൾ (result > 0);
 
-			if (result == 0) {
-				if (decoder.total_document_size == decoder.total_decoded_size) {
+			എങ്കിൽ (result == 0) {
+				എങ്കിൽ (decoder.total_document_size == decoder.total_decoded_size) {
 					PX4_INFO("BSON document size %" PRId32 " bytes, decoded %" PRId32 " bytes (INT32:%" PRIu16 ", FLOAT:%" PRIu16 ")",
 						 decoder.total_document_size, decoder.total_decoded_size,
-						 decoder.count_node_int32, decoder.count_node_double);
+						 decoder.എണ്ണം_കണ്ണി_int32, decoder.എണ്ണം_കണ്ണി_double);
 
-					return 0;
+					തിരികെ 0;
 
-				} else {
+				} അല്ലെങ്കിൽ {
 					PX4_ERR("BSON document size (%" PRId32 ") doesn't match bytes decoded (%" PRId32 ")",
 						decoder.total_document_size, decoder.total_decoded_size);
 				}
 
-			} else if (result == -ENODATA) {
+			} അല്ലെങ്കിൽ എങ്കിൽ (result == -ENODATA) {
 				// silently retry as a precaution unless this is our last attempt
-				if (attempt == MAX_ATTEMPTS) {
+				എങ്കിൽ (attempt == MAX_ATTEMPTS) {
 					PX4_DEBUG("BSON: no data");
-					return 0;
+					തിരികെ 0;
 				}
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				PX4_ERR("param import failed (%d) attempt %d", result, attempt);
 			}
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			PX4_ERR("param import bson decoder init failed (attempt %d)", attempt);
 		}
 
-		if (attempt != MAX_ATTEMPTS) {
-			if (lseek(fd, 0, SEEK_SET) != 0) {
+		എങ്കിൽ (attempt != MAX_ATTEMPTS) {
+			എങ്കിൽ (lseek(fd, 0, SEEK_SET) != 0) {
 				PX4_ERR("import lseek failed (%d)", errno);
 			}
 
@@ -1367,101 +1367,101 @@ param_import_internal(int fd)
 		}
 	}
 
-	return -1;
+	തിരികെ -1;
 }
 
-#if defined(FLASH_BASED_PARAMS)
-static int flash_backend_locked(int (*op)())
+#എങ്കിൽ defined(FLASH_BASED_PARAMS)
+സ്ഥിതം പൂർണ്ണസംഖ്യ flash_backend_locked(പൂർണ്ണസംഖ്യ (*op)())
 {
 	/* Same order as param_save_default: mutex then shutdown lock. Autosave
 	 * uses a trylock, so a compact holds it off the flash programming. */
 	pthread_mutex_lock(&file_mutex);
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	പൂർണ്ണസംഖ്യ shutdown_lock_ret = px4_shutdown_lock();
 
-	if (shutdown_lock_ret != 0) {
+	എങ്കിൽ (shutdown_lock_ret != 0) {
 		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
 	}
 
-	int result = op();
+	പൂർണ്ണസംഖ്യ result = op();
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	എങ്കിൽ (shutdown_lock_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return result;
+	തിരികെ result;
 }
 
-static int flash_load_locked()
+സ്ഥിതം പൂർണ്ണസംഖ്യ flash_load_locked()
 {
 	/* Reset under the lock so a pending autosave cannot append tombstones
 	 * of the just-cleared RAM before import/compact run. */
-	param_reset_all_internal(false);
-	int result = flash_param_import();
+	param_reset_all_internal(അസത്യം);
+	പൂർണ്ണസംഖ്യ result = flash_param_import();
 
-	if (result == 0 || result == 1) {
+	എങ്കിൽ (result == 0 || result == 1) {
 		params_unsaved.reset();
 	}
 
-	return result;
+	തിരികെ result;
 }
 #endif
 
-int
-param_import(int fd)
+പൂർണ്ണസംഖ്യ
+param_import(പൂർണ്ണസംഖ്യ fd)
 {
-	if (fd < 0) {
-#if defined(FLASH_BASED_PARAMS)
-		return flash_backend_locked(flash_param_import);
-#else
-		return flash_param_import();
+	എങ്കിൽ (fd < 0) {
+#എങ്കിൽ defined(FLASH_BASED_PARAMS)
+		തിരികെ flash_backend_locked(flash_param_import);
+#അല്ലെങ്കിൽ
+		തിരികെ flash_param_import();
 #endif
 	}
 
-	return param_import_internal(fd);
+	തിരികെ param_import_internal(fd);
 }
 
-int
-param_load(int fd)
+പൂർണ്ണസംഖ്യ
+param_load(പൂർണ്ണസംഖ്യ fd)
 {
-	if (fd < 0) {
-#if defined(FLASH_BASED_PARAMS)
-		return flash_backend_locked(flash_load_locked);
-#else
-		return PX4_ERROR;
+	എങ്കിൽ (fd < 0) {
+#എങ്കിൽ defined(FLASH_BASED_PARAMS)
+		തിരികെ flash_backend_locked(flash_load_locked);
+#അല്ലെങ്കിൽ
+		തിരികെ PX4_ERROR;
 #endif
 	}
 
-	param_reset_all_internal(false);
-	int result = param_import_internal(fd);
+	param_reset_all_internal(അസത്യം);
+	പൂർണ്ണസംഖ്യ result = param_import_internal(fd);
 
-#if !defined(FLASH_BASED_PARAMS)
+#എങ്കിൽ !defined(FLASH_BASED_PARAMS)
 
-	if (result >= 0) {
+	എങ്കിൽ (result >= 0) {
 		params_unsaved.reset();
 	}
 
 #endif
 
-	return result;
+	തിരികെ result;
 }
 
-void
-param_foreach(void (*func)(void *arg, param_t param), void *arg, bool only_changed, bool only_used)
+ശൂന്യം
+param_foreach(ശൂന്യം (*func)(ശൂന്യം *arg, param_t param), ശൂന്യം *arg, തർക്കം only_changed, തർക്കം only_used)
 {
 	param_t	param;
 
-	for (param = 0; handle_in_range(param); param++) {
+	വേണ്ടി (param = 0; handle_in_range(param); param++) {
 
 		/* if requested, skip unchanged values */
-		if (only_changed && (!user_config.contains(param))) {
-			continue;
+		എങ്കിൽ (only_changed && (!user_config.contains(param))) {
+			തുടരുക;
 		}
 
-		if (only_used && !param_used(param)) {
-			continue;
+		എങ്കിൽ (only_used && !param_used(param)) {
+			തുടരുക;
 		}
 
 		func(arg, param);
@@ -1473,33 +1473,33 @@ uint32_t param_hash_check()
 	uint32_t param_hash = 0;
 
 	/* compute the CRC32 over all string param names and 4 byte values */
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (!param_used(param) || param_is_volatile(param)) {
-			continue;
+	വേണ്ടി (param_t param = 0; handle_in_range(param); param++) {
+		എങ്കിൽ (!param_used(param) || param_is_volatile(param)) {
+			തുടരുക;
 		}
 
-		const char *name = param_name(param);
+		സ്ഥിരം അക്ഷരം *name = param_name(param);
 		auto value = user_config.get(param).i;
-		const void *val = (void *)&value;
-		param_hash = crc32part((const uint8_t *)name, strlen(name), param_hash);
-		param_hash = crc32part((const uint8_t *)val, param_size(param), param_hash);
+		സ്ഥിരം ശൂന്യം *val = (ശൂന്യം *)&value;
+		param_hash = crc32part((സ്ഥിരം uint8_t *)name, strlen(name), param_hash);
+		param_hash = crc32part((സ്ഥിരം uint8_t *)val, param_size(param), param_hash);
 	}
 
-	return param_hash;
+	തിരികെ param_hash;
 }
 
-void param_print_status()
+ശൂന്യം param_print_status()
 {
-	PX4_INFO("summary: %d/%d (used/total)", param_count_used(), param_count());
+	PX4_INFO("summary: %d/%d (used/total)", param_എണ്ണം_used(), param_എണ്ണം());
 
 #ifndef FLASH_BASED_PARAMS
-	const char *filename = param_get_default_file();
+	സ്ഥിരം അക്ഷരം *filename = param_get_default_file();
 
-	if (filename != nullptr) {
+	എങ്കിൽ (filename != nullptr) {
 		PX4_INFO("file: %s", param_get_default_file());
 	}
 
-	if (param_backup_file) {
+	എങ്കിൽ (param_backup_file) {
 		PX4_INFO("backup file: %s", param_backup_file);
 	}
 
@@ -1512,12 +1512,12 @@ void param_print_status()
 	PX4_INFO("storage array (custom defaults): %d/%d elements (%zu bytes total)",
 		 runtime_defaults.size(), firmware_defaults.size(), (size_t)runtime_defaults.byteSize());
 
-	if (autosave_instance) {
+	എങ്കിൽ (autosave_instance) {
 		PX4_INFO("auto save: %s", autosave_instance->enabled() ? "on" : "off");
 
 		hrt_abstime last_autosave = autosave_instance->lastAutosave();
 
-		if (last_autosave > 0) {
+		എങ്കിൽ (last_autosave > 0) {
 			PX4_INFO("last auto save: %.3f seconds ago", hrt_elapsed_time(&last_autosave) * 1e-6);
 		}
 	}
@@ -1527,24 +1527,24 @@ void param_print_status()
 	perf_print_counter(param_get_perf);
 	perf_print_counter(param_set_perf);
 
-#if defined(CONFIG_PARAM_PRIMARY)
-	struct param_primary_counters counts;
+#എങ്കിൽ defined(CONFIG_PARAM_PRIMARY)
+	ഘടന param_primary_counters counts;
 	param_primary_get_counters(&counts);
 	PX4_INFO("set value requests received: %" PRIu32 ", set value responses sent: %" PRIu32,
-		 counts.set_value_request_received, counts.set_value_response_sent);
+		 counts.set_മൂല്യം_request_received, counts.set_മൂല്യം_response_sent);
 	PX4_INFO("set value requests sent: %" PRIu32 ", set value responses received: %" PRIu32,
-		 counts.set_value_request_sent, counts.set_value_response_received);
+		 counts.set_മൂല്യം_request_sent, counts.set_മൂല്യം_response_received);
 	PX4_INFO("resets sent: %" PRIu32 ", set used requests received: %" PRIu32,
 		 counts.reset_sent, counts.set_used_received);
 #endif
 
-#if defined(CONFIG_PARAM_REMOTE)
-	struct param_remote_counters counts;
+#എങ്കിൽ defined(CONFIG_PARAM_REMOTE)
+	ഘടന param_remote_counters counts;
 	param_remote_get_counters(&counts);
 	PX4_INFO("set value requests received: %" PRIu32 ", set value responses sent: %" PRIu32,
-		 counts.set_value_request_received, counts.set_value_response_sent);
+		 counts.set_മൂല്യം_request_received, counts.set_മൂല്യം_response_sent);
 	PX4_INFO("set value requests sent: %" PRIu32 ", set value responses received: %" PRIu32,
-		 counts.set_value_request_sent, counts.set_value_response_received);
+		 counts.set_മൂല്യം_request_sent, counts.set_മൂല്യം_response_received);
 	PX4_INFO("resets received: %" PRIu32 ", set used requests sent: %" PRIu32,
 		 counts.reset_received, counts.set_used_sent);
 #endif

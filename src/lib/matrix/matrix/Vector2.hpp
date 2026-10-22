@@ -8,34 +8,34 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#അന്തര്ഭാവ "Vector.hpp"
 
-namespace matrix
+നാമാകാശ matrix
 {
 
 template<typename Type>
-class Vector2 : public Vector<Type, 2>
+വർഗ്ഗം Vector2 : പൊതു Vector<Type, 2>
 {
-public:
+പൊതു:
 
 	using Matrix21 = Matrix<Type, 2, 1>;
 	using Vector3 = Vector<Type, 3>;
 
-	Vector2() = default;
+	Vector2() = സ്ഥിരസ്ഥിതി;
 
-	Vector2(const Matrix21 &other) :
+	Vector2(സ്ഥിരം Matrix21 &other) :
 		Vector<Type, 2>(other)
 	{
 	}
 
-	explicit Vector2(const Type data_[2]) :
+	explicit Vector2(സ്ഥിരം Type data_[2]) :
 		Vector<Type, 2>(data_)
 	{
 	}
 
 	Vector2(Type x, Type y)
 	{
-		Vector2 &v(*this);
+		Vector2 &v(*ഇത്);
 		v(0) = x;
 		v(1) = y;
 	}
@@ -43,66 +43,66 @@ public:
 	using base = Vector<Type, 2>;
 	using base::base;
 
-	explicit Vector2(const Vector3 &other)
+	explicit Vector2(സ്ഥിരം Vector3 &other)
 	{
-		Vector2 &v(*this);
+		Vector2 &v(*ഇത്);
 		v(0) = other(0);
 		v(1) = other(1);
 	}
 
-	Type cross(const Matrix21 &b) const
+	Type cross(സ്ഥിരം Matrix21 &b) സ്ഥിരം
 	{
-		const Vector2 &a(*this);
-		return a(0) * b(1, 0) - a(1) * b(0, 0);
+		സ്ഥിരം Vector2 &a(*ഇത്);
+		തിരികെ a(0) * b(1, 0) - a(1) * b(0, 0);
 	}
 
 	/**
 	 * Override matrix ops so Vector2 type is returned
 	 */
 
-	Vector2 operator+(Vector2 other) const
+	Vector2 operator+(Vector2 other) സ്ഥിരം
 	{
-		return Matrix21::operator+(other);
+		തിരികെ Matrix21::operator+(other);
 	}
 
-	Vector2 operator+(Type scalar) const
+	Vector2 operator+(Type scalar) സ്ഥിരം
 	{
-		return Matrix21::operator+(scalar);
+		തിരികെ Matrix21::operator+(scalar);
 	}
 
-	Vector2 operator-(Vector2 other) const
+	Vector2 operator-(Vector2 other) സ്ഥിരം
 	{
-		return Matrix21::operator-(other);
+		തിരികെ Matrix21::operator-(other);
 	}
 
-	Vector2 operator-(Type scalar) const
+	Vector2 operator-(Type scalar) സ്ഥിരം
 	{
-		return Matrix21::operator-(scalar);
+		തിരികെ Matrix21::operator-(scalar);
 	}
 
-	Vector2 operator-() const
+	Vector2 operator-() സ്ഥിരം
 	{
-		return Matrix21::operator-();
+		തിരികെ Matrix21::operator-();
 	}
 
-	Vector2 operator*(Type scalar) const
+	Vector2 operator*(Type scalar) സ്ഥിരം
 	{
-		return Matrix21::operator*(scalar);
+		തിരികെ Matrix21::operator*(scalar);
 	}
 
-	Type operator*(Vector2 b) const
+	Type operator*(Vector2 b) സ്ഥിരം
 	{
-		return Vector<Type, 2>::operator*(b);
+		തിരികെ Vector<Type, 2>::operator*(b);
 	}
 
-	Type operator%(const Matrix21 &b) const
+	Type operator%(സ്ഥിരം Matrix21 &b) സ്ഥിരം
 	{
-		return (*this).cross(b);
+		തിരികെ (*ഇത്).cross(b);
 	}
 
 };
 
-using Vector2f = Vector2<float>;
-using Vector2d = Vector2<double>;
+using Vector2f = Vector2<ദശാംശം>;
+using Vector2d = Vector2<ഇരട്ട>;
 
 } // namespace matrix

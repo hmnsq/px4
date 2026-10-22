@@ -33,36 +33,36 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#അന്തര്ഭാവ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear.h>
+#അന്തര്ഭാവ <uORB/topics/landing_gear.h>
 
 /**
  * Functions: Landing_Gear
  */
-class FunctionLandingGear : public FunctionProviderBase
+വർഗ്ഗം FunctionLandingGear : പൊതു FunctionProviderBase
 {
-public:
-	FunctionLandingGear() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGear(); }
+പൊതു:
+	FunctionLandingGear() = സ്ഥിരസ്ഥിതി;
+	സ്ഥിതം FunctionProviderBase *allocate(സ്ഥിരം Context &context) { തിരികെ പുതിയ FunctionLandingGear(); }
 
-	void update() override
+	ശൂന്യം update() override
 	{
 		landing_gear_s landing_gear;
 
-		if (_topic.update(&landing_gear)) {
-			if (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
+		എങ്കിൽ (_topic.update(&landing_gear)) {
+			എങ്കിൽ (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
 				_data = -1.f;
 
-			} else if (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
+			} അല്ലെങ്കിൽ എങ്കിൽ (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
 				_data = 1.f;
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	ദശാംശം value(OutputFunction func) override { തിരികെ _data; }
 
-private:
+സ്വകാര്യ:
 	uORB::Subscription _topic{ORB_ID(landing_gear)};
-	float _data{-1.f};
+	ദശാംശം _data{-1.f};
 };

@@ -33,21 +33,21 @@
 
 #pragma once
 
-#include <stdint.h>
+#അന്തര്ഭാവ <stdint.h>
 
-namespace open_drone_id
+നാമാകാശ open_drone_id
 {
 
-static constexpr uint8_t UAS_ID_SIZE = 20;
-static constexpr uint8_t UAS_ID_TYPE_SERIAL_NUMBER = 1;
-static constexpr int32_t UAS_ID_MODE_LOCK_FIRST_BASIC_ID = 1;
+സ്ഥിതം constexpr uint8_t UAS_ID_SIZE = 20;
+സ്ഥിതം constexpr uint8_t UAS_ID_TYPE_SERIAL_സംഖ്യ = 1;
+സ്ഥിതം constexpr int32_t UAS_ID_MODE_LOCK_FIRST_BASIC_ID = 1;
 
-struct UasId {
+ഘടന UasId {
 	uint8_t ua_type{0};
 	uint8_t uas_id[UAS_ID_SIZE] {};
 };
 
-enum class BidLockState {
+എണ്ണൽ വർഗ്ഗം BidLockState {
 	Empty,
 	Locked,
 	InvalidRecord,
@@ -56,14 +56,14 @@ enum class BidLockState {
 	Unsupported,
 };
 
-struct BidLockInfo {
+ഘടന BidLockInfo {
 	BidLockState state{BidLockState::Unsupported};
 	UasId id{};
 
-	bool locked() const { return state == BidLockState::Locked; }
+	തർക്കം locked() സ്ഥിരം { തിരികെ state == BidLockState::Locked; }
 };
 
-enum class BidStoreResult {
+എണ്ണൽ വർഗ്ഗം BidStoreResult {
 	Stored,
 	AlreadyLocked,
 	AlreadyLockedDifferent,
@@ -74,21 +74,21 @@ enum class BidStoreResult {
 	Unsupported,
 };
 
-class BidStorage
+വർഗ്ഗം BidStorage
 {
-public:
-	static BidLockInfo get();
-	static BidStoreResult checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE]);
+പൊതു:
+	സ്ഥിതം BidLockInfo get();
+	സ്ഥിതം BidStoreResult checkOrStore(uint8_t ua_type, സ്ഥിരം uint8_t uas_id[UAS_ID_SIZE]);
 };
 
-class BidLock
+വർഗ്ഗം BidLock
 {
-public:
-	BidStoreResult resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE], UasId &locked_id);
+പൊതു:
+	BidStoreResult resolve(uint8_t id_type, uint8_t ua_type, സ്ഥിരം uint8_t uas_id[UAS_ID_SIZE], UasId &locked_id);
 
-private:
+സ്വകാര്യ:
 	BidLockInfo _info{};
-	bool _loaded{false};
+	തർക്കം _loaded{അസത്യം};
 };
 
 } // namespace open_drone_id

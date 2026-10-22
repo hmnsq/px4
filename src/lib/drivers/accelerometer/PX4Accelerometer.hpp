@@ -33,61 +33,61 @@
 
 #pragma once
 
-#include <drivers/drv_hrt.h>
-#include <lib/conversion/rotation.h>
-#include <lib/geo/geo.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/sensor_accel.h>
-#include <uORB/topics/sensor_accel_fifo.h>
+#അന്തര്ഭാവ <drivers/drv_hrt.h>
+#അന്തര്ഭാവ <lib/conversion/rotation.h>
+#അന്തര്ഭാവ <lib/geo/geo.h>
+#അന്തര്ഭാവ <uORB/PublicationMulti.hpp>
+#അന്തര്ഭാവ <uORB/topics/sensor_accel.h>
+#അന്തര്ഭാവ <uORB/topics/sensor_accel_fifo.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#അന്തര്ഭാവ <lib/failure_injection/FailureInjection.hpp>
 
-class PX4Accelerometer
+വർഗ്ഗം PX4Accelerometer
 {
-public:
-	PX4Accelerometer(uint32_t device_id, enum Rotation rotation = ROTATION_NONE);
-	PX4Accelerometer(uint32_t device_id, enum Rotation rotation, bool external);
+പൊതു:
+	PX4Accelerometer(uint32_t device_id, എണ്ണൽ Rotation rotation = ROTATION_NONE);
+	PX4Accelerometer(uint32_t device_id, എണ്ണൽ Rotation rotation, തർക്കം external);
 	~PX4Accelerometer();
 
-	uint32_t get_device_id() const { return _device_id; }
+	uint32_t get_device_id() സ്ഥിരം { തിരികെ _device_id; }
 
-	int32_t get_max_rate_hz() const { return math::constrain(_imu_gyro_rate_max, static_cast<int32_t>(100), static_cast<int32_t>(4000)); }
+	int32_t get_max_rate_hz() സ്ഥിരം { തിരികെ math::constrain(_imu_gyro_rate_max, static_cast<int32_t>(100), static_cast<int32_t>(4000)); }
 
-	void set_device_id(uint32_t device_id);
-	void set_device_type(uint8_t devtype);
-	void set_external(bool external);
-	void set_error_count(uint32_t error_count) { _error_count = error_count; }
-	void set_range(float range) { _range = range; UpdateClipLimit(); }
-	void set_scale(float scale);
-	void set_temperature(float temperature) { _temperature = temperature; }
+	ശൂന്യം set_device_id(uint32_t device_id);
+	ശൂന്യം set_device_type(uint8_t devtype);
+	ശൂന്യം set_external(തർക്കം external);
+	ശൂന്യം set_error_എണ്ണം(uint32_t error_എണ്ണം) { error_എണ്ണം_2 = error_എണ്ണം; }
+	ശൂന്യം set_range(ദശാംശം range) { _range = range; UpdateClipLimit(); }
+	ശൂന്യം set_scale(ദശാംശം scale);
+	ശൂന്യം set_temperature(ദശാംശം temperature) { _temperature = temperature; }
 
-	void update(const hrt_abstime &timestamp_sample, float x, float y, float z);
+	ശൂന്യം update(സ്ഥിരം hrt_abstime &timestamp_sample, ദശാംശം x, ദശാംശം y, ദശാംശം z);
 
-	void updateFIFO(sensor_accel_fifo_s &sample);
+	ശൂന്യം updateFIFO(sensor_accel_fifo_s &sample);
 
-	int get_instance() { return _sensor_pub.get_instance(); };
+	പൂർണ്ണസംഖ്യ get_instance() { തിരികെ _sensor_pub.get_instance(); };
 
-private:
-	void UpdateClipLimit();
+സ്വകാര്യ:
+	ശൂന്യം UpdateClipLimit();
 
 	uORB::PublicationMulti<sensor_accel_s> _sensor_pub{ORB_ID(sensor_accel)};
 	uORB::PublicationMulti<sensor_accel_fifo_s>  _sensor_fifo_pub{ORB_ID(sensor_accel_fifo)};
 
 	uint32_t		_device_id{0};
-	const enum Rotation	_rotation;
+	സ്ഥിരം എണ്ണൽ Rotation	_rotation;
 
-	bool			_is_external{false};
-	bool			_external_forced{false}; // classification set by the driver, do not re-derive from the device id
+	തർക്കം			_is_external{അസത്യം};
+	തർക്കം			_external_forced{അസത്യം}; // classification set by the driver, do not re-derive from the device id
 
 	int32_t			_imu_gyro_rate_max{0}; // match gyro max rate
 
-	float			_range{16 * CONSTANTS_ONE_G};
-	float			_scale{1.f};
-	float			_temperature{NAN};
+	ദശാംശം			_range{16 * CONSTANTS_ONE_G};
+	ദശാംശം			_scale{1.f};
+	ദശാംശം			_temperature{NAN};
 
-	float			_clip_limit{_range / _scale};
+	ദശാംശം			_clip_limit{_range / _scale};
 
-	uint32_t		_error_count{0};
+	uint32_t		error_എണ്ണം_2{0};
 
 	int16_t			_last_sample[3] {};
 

@@ -31,25 +31,25 @@
  *
  ****************************************************************************/
 
-#include "ManualVelocitySmoothingZ.hpp"
+#അന്തര്ഭാവ "ManualVelocitySmoothingZ.hpp"
 
-#include <mathlib/mathlib.h>
-#include <float.h>
+#അന്തര്ഭാവ <mathlib/mathlib.h>
+#അന്തര്ഭാവ <float.h>
 
-void ManualVelocitySmoothingZ::reset(float accel, float vel, float pos)
+ശൂന്യം ManualVelocitySmoothingZ::reset(ദശാംശം accel, ദശാംശം vel, ദശാംശം pos)
 {
 	_trajectory.reset(accel, vel, pos);
 
 	resetPositionLock();
 }
 
-void ManualVelocitySmoothingZ::resetPositionLock()
+ശൂന്യം ManualVelocitySmoothingZ::resetPositionLock()
 {
-	_position_lock_active = false;
+	_position_lock_active = അസത്യം;
 	_position_setpoint_locked = NAN;
 }
 
-void ManualVelocitySmoothingZ::update(float dt, float velocity_target)
+ശൂന്യം ManualVelocitySmoothingZ::update(ദശാംശം dt, ദശാംശം velocity_target)
 {
 	// Update state
 	updateTrajectories(dt);
@@ -66,7 +66,7 @@ void ManualVelocitySmoothingZ::update(float dt, float velocity_target)
 	_trajectory.updateDurations(velocity_target);
 }
 
-void ManualVelocitySmoothingZ::updateTrajectories(float dt)
+ശൂന്യം ManualVelocitySmoothingZ::updateTrajectories(ദശാംശം dt)
 {
 	_trajectory.updateTraj(dt);
 
@@ -76,19 +76,19 @@ void ManualVelocitySmoothingZ::updateTrajectories(float dt)
 	_state.x = _trajectory.getCurrentPosition();
 }
 
-void ManualVelocitySmoothingZ::updateTrajConstraints(float velocity_target)
+ശൂന്യം ManualVelocitySmoothingZ::updateTrajConstraints(ദശാംശം velocity_target)
 {
-	if (velocity_target < 0.f) { // up
+	എങ്കിൽ (velocity_target < 0.f) { // up
 		_trajectory.setMaxAccel(_max_accel_up);
 		_trajectory.setMaxVel(_max_vel_up);
 
-	} else { // down
+	} അല്ലെങ്കിൽ { // down
 		_trajectory.setMaxAccel(_max_accel_down);
 		_trajectory.setMaxVel(_max_vel_down);
 	}
 }
 
-void ManualVelocitySmoothingZ::checkPositionLock(float velocity_target)
+ശൂന്യം ManualVelocitySmoothingZ::checkPositionLock(ദശാംശം velocity_target)
 {
 	/**
 	 * During a position lock -> position unlock transition, we have to make sure that the velocity setpoint
@@ -98,16 +98,16 @@ void ManualVelocitySmoothingZ::checkPositionLock(float velocity_target)
 	 * This is why the previous input of the velocity controller
 	 * is used to set current velocity of the trajectory.
 	 */
-	if (fabsf(_state.v) < 0.1f &&
+	എങ്കിൽ (fabsf(_state.v) < 0.1f &&
 	    fabsf(_state.a) < .2f &&
 	    fabsf(velocity_target) <= FLT_EPSILON) {
 		// Lock position
-		_position_lock_active = true;
+		_position_lock_active = സത്യം;
 		_position_setpoint_locked = _state.x;
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		// Unlock position
-		if (_position_lock_active) {
+		എങ്കിൽ (_position_lock_active) {
 			// Start the trajectory at the current velocity setpoint
 			_trajectory.setCurrentVelocity(_velocity_setpoint_feedback);
 			_state.v = _velocity_setpoint_feedback;

@@ -41,23 +41,23 @@
 
 #pragma once
 
-#include <drivers/drv_hrt.h>
-#include <drivers/drv_led.h>
-#include <px4_platform_common/module_params.h>
-#include <lib/parameters/param.h>
-#include <lib/perf/perf_counter.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionInterval.hpp>
-#include <uORB/topics/led_control.h>
-#include <uORB/topics/parameter_update.h>
+#അന്തര്ഭാവ <drivers/drv_hrt.h>
+#അന്തര്ഭാവ <drivers/drv_led.h>
+#അന്തര്ഭാവ <px4_platform_common/module_params.h>
+#അന്തര്ഭാവ <lib/parameters/param.h>
+#അന്തര്ഭാവ <lib/perf/perf_counter.h>
+#അന്തര്ഭാവ <uORB/Subscription.hpp>
+#അന്തര്ഭാവ <uORB/SubscriptionInterval.hpp>
+#അന്തര്ഭാവ <uORB/topics/led_control.h>
+#അന്തര്ഭാവ <uORB/topics/parameter_update.h>
 
 using namespace time_literals;
 
-struct LedControlDataSingle {
+ഘടന LedControlDataSingle {
 	uint8_t color{led_control_s::COLOR_OFF}; ///< one of led_control_s::COLOR_*
 	uint8_t brightness{0}; ///< brightness in [0, 255]
 };
-struct LedControlData {
+ഘടന LedControlData {
 	LedControlDataSingle leds[BOARD_MAX_LEDS] {};
 };
 
@@ -66,9 +66,9 @@ struct LedControlData {
  ** class LedController
  * Handles the led_control topic: blinking, priorities and state updates.
  */
-class LedController : public ModuleParams
+class LedController : പൊതു ModuleParams
 {
-public:
+പൊതു:
 	LedController() : ModuleParams(nullptr) {}
 	~LedController() override
 	{
@@ -78,9 +78,9 @@ public:
 	/**
 	 * get maximum time between two consecutive calls to update() in us.
 	 */
-	int maximum_update_interval() const
+	പൂർണ്ണസംഖ്യ maximum_update_interval() സ്ഥിരം
 	{
-		return _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
+		തിരികെ _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
 	}
 
 	/**
@@ -89,92 +89,92 @@ public:
 	 * @param control_data output structure (will always be set)
 	 * @return 1 if control_data set (state changed), 0 if control_data not changed (state did not change), <0 error otherwise
 	 */
-	int update(LedControlData &control_data);
+	പൂർണ്ണസംഖ്യ update(LedControlData &control_data);
 
-	static constexpr int BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
-	static constexpr int BREATHE_STEPS = 64; /**< number of steps in breathe mode for a full on-off cycle */
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ BREATHE_STEPS = 64; /**< number of steps in breathe mode for a full on-off cycle */
 
-	static constexpr int BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
-	static constexpr int BLINK_NORMAL_DURATION = 500 * 1000; /**< duration of half a blinking cycle
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ BLINK_NORMAL_DURATION = 500 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
-	static constexpr int BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
 
-private:
+സ്വകാര്യ:
 
 	/** set control_data based on current Led states */
-	inline void get_control_data(LedControlData &control_data);
+	വരിയിൽ ശൂന്യം get_control_data(LedControlData &control_data);
 
-	struct PerPriorityData {
+	ഘടന PerPriorityData {
 		uint8_t color = 0; ///< one of led_control_s::COLOR_*
 		uint8_t mode = led_control_s::MODE_DISABLED; ///< one of led_control_s::MODE_*
-		uint8_t blink_times_left = 0; /**< how many times left to blink (MSB bit is used for infinite case).
+		uint8_t blink_times_ഇടത് = 0; /**< how many times left to blink (MSB bit is used for infinite case).
 									This limits the number of complete blink cycles to 64 (if not infinite) */
 	};
 
-	struct NextState {
+	ഘടന NextState {
 		uint8_t color;
 		uint8_t mode;
-		uint8_t num_blinks;
+		uint8_t അക്കം_blinks;
 		uint8_t priority = led_control_s::MAX_PRIORITY + 1;
 
-		void set(const led_control_s &led_control)
+		ശൂന്യം set(സ്ഥിരം led_control_s &led_control)
 		{
 			color = led_control.color;
 			mode = led_control.mode;
-			num_blinks = led_control.num_blinks;
+			അക്കം_blinks = led_control.അക്കം_blinks;
 			priority = led_control.priority;
 
-			if (priority > led_control_s::MAX_PRIORITY) {
+			എങ്കിൽ (priority > led_control_s::MAX_PRIORITY) {
 				priority = led_control_s::MAX_PRIORITY;
 			}
 		}
-		void reset() { priority = led_control_s::MAX_PRIORITY + 1; }
-		bool is_valid() const { return priority != led_control_s::MAX_PRIORITY + 1; }
+		ശൂന്യം reset() { priority = led_control_s::MAX_PRIORITY + 1; }
+		bool is_valid() സ്ഥിരം { തിരികെ priority != led_control_s::MAX_PRIORITY + 1; }
 	};
 
-	struct PerLedData {
+	ഘടന PerLedData {
 		PerPriorityData priority[led_control_s::MAX_PRIORITY + 1];
 		uint16_t current_blinking_time = 0; ///< how long the Led was in current state (in 0.1 ms, wraps if > 6.5s)
 		NextState next_state;
 
-		void set(const led_control_s &led_control)
+		ശൂന്യം set(സ്ഥിരം led_control_s &led_control)
 		{
-			int next_priority = (int)led_control.priority;
+			പൂർണ്ണസംഖ്യ next_priority = (പൂർണ്ണസംഖ്യ)led_control.priority;
 			priority[next_priority].color = led_control.color;
 			priority[next_priority].mode = led_control.mode;
 
 			// initialise the flash counter
-			if (led_control.mode == led_control_s::MODE_FLASH) {
-				priority[next_priority].blink_times_left = led_control.num_blinks * 10;
+			എങ്കിൽ (led_control.mode == led_control_s::MODE_FLASH) {
+				priority[next_priority].blink_times_ഇടത് = led_control.അക്കം_blinks * 10;
 
-			} else {
-				priority[next_priority].blink_times_left = led_control.num_blinks * 2;
+			} അല്ലെങ്കിൽ {
+				priority[next_priority].blink_times_ഇടത് = led_control.അക്കം_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			എങ്കിൽ (priority[next_priority].blink_times_ഇടത് == 0) {
 				// handle infinite case
-				priority[next_priority].blink_times_left = 246;
+				priority[next_priority].blink_times_ഇടത് = 246;
 			}
 		}
 
-		void apply_next_state()
+		ശൂന്യം apply_next_state()
 		{
-			int next_priority = (int)next_state.priority;
+			പൂർണ്ണസംഖ്യ next_priority = (പൂർണ്ണസംഖ്യ)next_state.priority;
 			priority[next_priority].color = next_state.color;
 			priority[next_priority].mode = next_state.mode;
 
-			if (next_state.mode == led_control_s::MODE_FLASH) {
-				priority[next_priority].blink_times_left = next_state.num_blinks * 10;
+			എങ്കിൽ (next_state.mode == led_control_s::MODE_FLASH) {
+				priority[next_priority].blink_times_ഇടത് = next_state.അക്കം_blinks * 10;
 
-			} else {
-				priority[next_priority].blink_times_left = next_state.num_blinks * 2;
+			} അല്ലെങ്കിൽ {
+				priority[next_priority].blink_times_ഇടത് = next_state.അക്കം_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			എങ്കിൽ (priority[next_priority].blink_times_ഇടത് == 0) {
 				// handle infinite case
-				priority[next_priority].blink_times_left = 254;
+				priority[next_priority].blink_times_ഇടത് = 254;
 			}
 		}
 	};
@@ -186,7 +186,7 @@ private:
 
 	hrt_abstime _last_update_call{0};
 
-	perf_counter_t _led_control_sub_lost_perf{perf_alloc(PC_COUNT, MODULE_NAME": led_control message missed")};
+	perf_counter_t _led_control_sub_lost_perf{perf_alloc(PC_എണ്ണം, MODULE_NAME": led_control message missed")};
 
 	uint8_t _max_brightness{UINT8_MAX};
 

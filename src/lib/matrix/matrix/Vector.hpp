@@ -8,181 +8,181 @@
 
 #pragma once
 
-#include "Matrix.hpp"
+#അന്തര്ഭാവ "Matrix.hpp"
 
-namespace matrix
+നാമാകാശ matrix
 {
 
 template<typename Type, size_t M>
-class Vector : public Matrix<Type, M, 1>
+വർഗ്ഗം Vector : പൊതു Matrix<Type, M, 1>
 {
-public:
+പൊതു:
 	using MatrixM1 = Matrix<Type, M, 1>;
 
-	Vector() = default;
+	Vector() = സ്ഥിരസ്ഥിതി;
 
-	Vector(const MatrixM1 &other) :
+	Vector(സ്ഥിരം MatrixM1 &other) :
 		MatrixM1(other)
 	{
 	}
 
-	explicit Vector(const Type data_[M]) :
+	explicit Vector(സ്ഥിരം Type data_[M]) :
 		MatrixM1(data_)
 	{
 	}
 
 	template<size_t P, size_t Q>
-	Vector(const Slice<Type, M, 1, P, Q> &slice_in) :
+	Vector(സ്ഥിരം Slice<Type, M, 1, P, Q> &slice_in) :
 		Matrix<Type, M, 1>(slice_in)
 	{
 	}
 
 	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const Slice<Type, 1, M, P, Q> &slice_in)
+	Vector(സ്ഥിരം Slice<Type, 1, M, P, Q> &slice_in)
 	{
-		Vector &self(*this);
+		Vector &self(*ഇത്);
 
-		for (size_t i = 0; i < M; i++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
 
 	template<size_t P, size_t Q>
-	Vector(const ConstSlice<Type, M, 1, P, Q> &slice_in) :
+	Vector(സ്ഥിരം ConstSlice<Type, M, 1, P, Q> &slice_in) :
 		Matrix<Type, M, 1>(slice_in)
 	{
 	}
 
 	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const ConstSlice<Type, 1, M, P, Q> &slice_in)
+	Vector(സ്ഥിരം ConstSlice<Type, 1, M, P, Q> &slice_in)
 	{
-		Vector &self(*this);
+		Vector &self(*ഇത്);
 
-		for (size_t i = 0; i < M; i++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	വരിയിൽ സ്ഥിരം Type &operator()(size_t i) സ്ഥിരം
 	{
-		assert(i < M);
+		പ്രതിജ്ഞാ(i < M);
 
-		const MatrixM1 &v = *this;
-		return v(i, 0);
+		സ്ഥിരം MatrixM1 &v = *ഇത്;
+		തിരികെ v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	വരിയിൽ Type &operator()(size_t i)
 	{
-		assert(i < M);
+		പ്രതിജ്ഞാ(i < M);
 
-		MatrixM1 &v = *this;
-		return v(i, 0);
+		MatrixM1 &v = *ഇത്;
+		തിരികെ v(i, 0);
 	}
 
-	Type dot(const MatrixM1 &b) const
+	Type dot(സ്ഥിരം MatrixM1 &b) സ്ഥിരം
 	{
-		const Vector &a(*this);
+		സ്ഥിരം Vector &a(*ഇത്);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		തിരികെ r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	വരിയിൽ Type operator*(സ്ഥിരം MatrixM1 &b) സ്ഥിരം
 	{
-		const Vector &a(*this);
-		return a.dot(b);
+		സ്ഥിരം Vector &a(*ഇത്);
+		തിരികെ a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	വരിയിൽ Vector operator*(Type b) സ്ഥിരം
 	{
-		return Vector(MatrixM1::operator*(b));
+		തിരികെ Vector(MatrixM1::operator*(b));
 	}
 
-	Type norm() const
+	Type norm() സ്ഥിരം
 	{
-		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		സ്ഥിരം Vector &a(*ഇത്);
+		തിരികെ Type(std::sqrt(a.dot(a)));
 	}
 
-	Type norm_squared() const
+	Type norm_squared() സ്ഥിരം
 	{
-		const Vector &a(*this);
-		return a.dot(a);
+		സ്ഥിരം Vector &a(*ഇത്);
+		തിരികെ a.dot(a);
 	}
 
-	inline Type length() const
+	വരിയിൽ Type length() സ്ഥിരം
 	{
-		return norm();
+		തിരികെ norm();
 	}
 
-	inline void normalize()
+	വരിയിൽ ശൂന്യം normalize()
 	{
-		(*this) /= norm();
+		(*ഇത്) /= norm();
 	}
 
-	Vector unit() const
+	Vector unit() സ്ഥിരം
 	{
-		return (*this) / norm();
+		തിരികെ (*ഇത്) / norm();
 	}
 
-	Vector unit_or_zero(const Type eps = Type(1e-5)) const
+	Vector unit_or_zero(സ്ഥിരം Type eps = Type(1e-5)) സ്ഥിരം
 	{
-		const Type n = norm();
+		സ്ഥിരം Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		എങ്കിൽ (n > eps) {
+			തിരികെ (*ഇത്) / n;
 		}
 
-		return Vector();
+		തിരികെ Vector();
 	}
 
-	inline Vector normalized() const
+	വരിയിൽ Vector normalized() സ്ഥിരം
 	{
-		return unit();
+		തിരികെ unit();
 	}
 
-	bool longerThan(Type testVal) const
+	തർക്കം longerThan(Type testVal) സ്ഥിരം
 	{
-		return norm_squared() > testVal * testVal;
+		തിരികെ norm_squared() > testVal * testVal;
 	}
 
-	Vector sqrt() const
+	Vector sqrt() സ്ഥിരം
 	{
-		const Vector &a(*this);
+		സ്ഥിരം Vector &a(*ഇത്);
 		Vector r;
 
-		for (size_t i = 0; i < M; i++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
 			r(i) = Type(std::sqrt(a(i)));
 		}
 
-		return r;
+		തിരികെ r;
 	}
 
-	void print() const
+	ശൂന്യം print() സ്ഥിരം
 	{
-		(*this).transpose().print();
+		(*ഇത്).transpose().print();
 	}
 
-	static size_t size()
+	സ്ഥിതം size_t size()
 	{
-		return M;
+		തിരികെ M;
 	}
 };
 
 template<typename OStream, typename Type, size_t M>
-OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
+OStream &operator<<(OStream &os, സ്ഥിരം matrix::Vector<Type, M> &vector)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
+	അക്ഷരം string[n];
 	vector.transpose().write_string(string, n);
 	os << string;
-	return os;
+	തിരികെ os;
 }
 
 } // namespace matrix

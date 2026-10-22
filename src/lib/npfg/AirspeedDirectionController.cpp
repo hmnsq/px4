@@ -31,9 +31,9 @@
  *
  ****************************************************************************/
 
-#include "AirspeedDirectionController.hpp"
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
+#അന്തര്ഭാവ "AirspeedDirectionController.hpp"
+#അന്തര്ഭാവ <matrix/math.hpp>
+#അന്തര്ഭാവ <lib/mathlib/mathlib.h>
 
 using matrix::Vector2f;
 AirspeedDirectionController::AirspeedDirectionController()
@@ -41,24 +41,24 @@ AirspeedDirectionController::AirspeedDirectionController()
 	// Constructor
 }
 
-float AirspeedDirectionController::controlHeading(const float heading_sp, const float heading,
-		const float airspeed) const
+ദശാംശം AirspeedDirectionController::controlHeading(സ്ഥിരം ദശാംശം heading_sp, സ്ഥിരം ദശാംശം heading,
+		സ്ഥിരം ദശാംശം airspeed) സ്ഥിരം
 {
 
-	const Vector2f airspeed_vector = Vector2f{cosf(heading), sinf(heading)} * airspeed;
-	const Vector2f airspeed_sp_vector_unit = Vector2f{cosf(heading_sp), sinf(heading_sp)};
+	സ്ഥിരം Vector2f airspeed_vector = Vector2f{cosf(heading), sinf(heading)} * airspeed;
+	സ്ഥിരം Vector2f airspeed_sp_vector_unit = Vector2f{cosf(heading_sp), sinf(heading_sp)};
 
-	const float dot_air_vel_err = airspeed_vector.dot(airspeed_sp_vector_unit);
-	const float cross_air_vel_err = airspeed_vector.cross(airspeed_sp_vector_unit);
+	സ്ഥിരം ദശാംശം dot_air_vel_err = airspeed_vector.dot(airspeed_sp_vector_unit);
+	സ്ഥിരം ദശാംശം cross_air_vel_err = airspeed_vector.cross(airspeed_sp_vector_unit);
 
-	if (dot_air_vel_err < 0.0f) {
+	എങ്കിൽ (dot_air_vel_err < 0.0f) {
 		// hold max lateral acceleration command above 90 deg heading error
-		return p_gain_ * ((cross_air_vel_err < 0.0f) ? -airspeed : airspeed);
+		തിരികെ p_gain_ * ((cross_air_vel_err < 0.0f) ? -airspeed : airspeed);
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		// airspeed/airspeed_ref is used to scale any incremented airspeed reference back to the current airspeed
 		// for acceleration commands in a "feedback" sense (i.e. at the current vehicle airspeed)
 		// todo use airspeed_ref or adapt comment
-		return p_gain_ * cross_air_vel_err;
+		തിരികെ p_gain_ * cross_air_vel_err;
 	}
 }

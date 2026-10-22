@@ -39,52 +39,52 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <assert.h>
+#അന്തര്ഭാവ <time.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <mathlib/math/test/test.hpp>
+#അന്തര്ഭാവ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#അന്തര്ഭാവ "block/Block.hpp"
+#അന്തര്ഭാവ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#അന്തര്ഭാവ "matrix/math.hpp"
 
-namespace control
+നാമാകാശ control
 {
 /**
  * An output trim/ saturation block
  */
-class __EXPORT BlockOutput: public SuperBlock
+വർഗ്ഗം __EXPORT BlockOutput: പൊതു SuperBlock
 {
-public:
+പൊതു:
 // methods
-	BlockOutput(SuperBlock *parent, const char *name) :
+	BlockOutput(SuperBlock *parent, സ്ഥിരം അക്ഷരം *name) :
 		SuperBlock(parent, name),
-		_trim(this, "TRIM"),
-		_limit(this, ""),
+		_trim(ഇത്, "TRIM"),
+		_limit(ഇത്, ""),
 		_val(0)
 	{
 		update(0);
 	}
 
-	virtual ~BlockOutput() = default;
-	void update(float input)
+	മായാ ~BlockOutput() = സ്ഥിരസ്ഥിതി;
+	ശൂന്യം update(ദശാംശം നിവേശം)
 	{
-		_val = _limit.update(input + getTrim());
+		_val = _limit.update(നിവേശം + getTrim());
 	}
 // accessors
-	float getMin() { return _limit.getMin(); }
-	float getMax() { return _limit.getMax(); }
-	float getTrim() { return _trim.get(); }
-	float get() { return _val; }
-private:
+	ദശാംശം getMin() { തിരികെ _limit.getMin(); }
+	ദശാംശം getMax() { തിരികെ _limit.getMax(); }
+	ദശാംശം getTrim() { തിരികെ _trim.get(); }
+	ദശാംശം get() { തിരികെ _val; }
+സ്വകാര്യ:
 // attributes
 	control::BlockParamFloat _trim;
 	BlockLimit _limit;
-	float _val;
+	ദശാംശം _val;
 };
 
 } // namespace control

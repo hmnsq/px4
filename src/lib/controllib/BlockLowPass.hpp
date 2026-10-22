@@ -39,44 +39,44 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <float.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <assert.h>
+#അന്തര്ഭാവ <time.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <float.h>
+#അന്തര്ഭാവ <mathlib/math/test/test.hpp>
+#അന്തര്ഭാവ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#അന്തര്ഭാവ "block/Block.hpp"
+#അന്തര്ഭാവ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#അന്തര്ഭാവ "matrix/math.hpp"
 
-namespace control
+നാമാകാശ control
 {
 
 /**
  * A low pass filter as described here:
  * http://en.wikipedia.org/wiki/Low-pass_filter.
  */
-class __EXPORT BlockLowPass : public Block
+വർഗ്ഗം __EXPORT Block_താഴെയുള്ള_Pass : പൊതു Block
 {
-public:
+പൊതു:
 // methods
-	BlockLowPass(SuperBlock *parent, const char *name) :
+	Block_താഴെയുള്ള_Pass(SuperBlock *parent, സ്ഥിരം അക്ഷരം *name) :
 		Block(parent, name),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(ഇത്, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockLowPass() = default;
-	float update(float input);
+	മായാ ~Block_താഴെയുള്ള_Pass() = സ്ഥിരസ്ഥിതി;
+	ദശാംശം update(ദശാംശം നിവേശം);
 // accessors
-	float getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(float state) { _state = state; }
-protected:
+	ദശാംശം getState() { തിരികെ _state; }
+	ദശാംശം getFCut() { തിരികെ _fCut.get(); }
+	ശൂന്യം setState(ദശാംശം state) { _state = state; }
+സംരക്ഷിത:
 // attributes
-	float _state{NAN}; // initialize to invalid val, force into is_finite() check on first call
+	ദശാംശം _state{NAN}; // initialize to invalid val, force into is_finite() check on first call
 	control::BlockParamFloat _fCut;
 };
 

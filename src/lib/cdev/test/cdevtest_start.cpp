@@ -37,32 +37,32 @@
  * @author Thomas Gubler <thomasgubler@gmail.com>
  * @author Mark Charlebois <mcharleb@gmail.com>
  */
-#include "cdevtest_example.h"
+#അന്തര്ഭാവ "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/tasks.h>
-#include <stdio.h>
-#include <string.h>
+#അന്തര്ഭാവ <px4_platform_common/app.h>
+#അന്തര്ഭാവ <px4_platform_common/tasks.h>
+#അന്തര്ഭാവ <stdio.h>
+#അന്തര്ഭാവ <string.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+സ്ഥിതം പൂർണ്ണസംഖ്യ daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-extern "C" __EXPORT int cdev_test_main(int argc, char *argv[]);
-int cdev_test_main(int argc, char *argv[])
+ബാഹ്യ "C" __EXPORT പൂർണ്ണസംഖ്യ cdev_test_main(പൂർണ്ണസംഖ്യ argc, അക്ഷരം *argv[]);
+പൂർണ്ണസംഖ്യ cdev_test_main(പൂർണ്ണസംഖ്യ argc, അക്ഷരം *argv[])
 {
 
-	if (argc < 2) {
+	എങ്കിൽ (argc < 2) {
 		printf("usage: cdevtest {start|stop|status}\n");
-		return 1;
+		തിരികെ 1;
 	}
 
-	if (!strcmp(argv[1], "start")) {
+	എങ്കിൽ (!strcmp(argv[1], "start")) {
 
-		if (CDevExample::appState.isRunning()) {
+		എങ്കിൽ (CDevExample::appState.isRunning()) {
 			printf("already running\n");
 			/* this is not an error */
-			return 0;
+			തിരികെ 0;
 		}
 
 		daemon_task = px4_task_spawn_cmd("cdevtest",
@@ -70,27 +70,27 @@ int cdev_test_main(int argc, char *argv[])
 						 SCHED_PRIORITY_MAX - 5,
 						 2000,
 						 PX4_MAIN,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+						 (argv) ? (അക്ഷരം *സ്ഥിരം *)&argv[2] : (അക്ഷരം *സ്ഥിരം *)nullptr);
 
-		return 0;
+		തിരികെ 0;
 	}
 
-	if (!strcmp(argv[1], "stop")) {
+	എങ്കിൽ (!strcmp(argv[1], "stop")) {
 		CDevExample::appState.requestExit();
-		return 0;
+		തിരികെ 0;
 	}
 
-	if (!strcmp(argv[1], "status")) {
-		if (CDevExample::appState.isRunning()) {
+	എങ്കിൽ (!strcmp(argv[1], "status")) {
+		എങ്കിൽ (CDevExample::appState.isRunning()) {
 			printf("is running\n");
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			printf("not started\n");
 		}
 
-		return 0;
+		തിരികെ 0;
 	}
 
 	printf("usage: cdevtest_main {start|stop|status}\n");
-	return 1;
+	തിരികെ 1;
 }

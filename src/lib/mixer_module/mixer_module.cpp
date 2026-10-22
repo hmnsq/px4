@@ -31,16 +31,16 @@
  *
  ****************************************************************************/
 
-#include "mixer_module.hpp"
+#അന്തര്ഭാവ "mixer_module.hpp"
 
-#include <uORB/Publication.hpp>
-#include <px4_platform_common/log.h>
+#അന്തര്ഭാവ <uORB/Publication.hpp>
+#അന്തര്ഭാവ <px4_platform_common/log.h>
 
-using namespace time_literals;
+using നാമാകാശ time_literals;
 
 
-struct FunctionProvider {
-	using Constructor = FunctionProviderBase * (*)(const FunctionProviderBase::Context &context);
+ഘടന FunctionProvider {
+	using Constructor = FunctionProviderBase * (*)(സ്ഥിരം FunctionProviderBase::Context &context);
 	constexpr FunctionProvider(OutputFunction min_func_, OutputFunction max_func_, Constructor constructor_)
 		: min_func(min_func_), max_func(max_func_), constructor(constructor_) {}
 	constexpr FunctionProvider(OutputFunction func, Constructor constructor_)
@@ -51,7 +51,7 @@ struct FunctionProvider {
 	Constructor constructor;
 };
 
-static constexpr FunctionProvider all_function_providers[] = {
+സ്ഥിതം constexpr FunctionProvider all_function_providers[] = {
 	// Providers higher up take precedence for subscription callback in case there are multiple
 	{OutputFunction::Constant_Min, &FunctionConstantMin::allocate},
 	{OutputFunction::Constant_Max, &FunctionConstantMax::allocate},
@@ -67,31 +67,31 @@ static constexpr FunctionProvider all_function_providers[] = {
 	{OutputFunction::IC_Engine_Ignition, OutputFunction::IC_Engine_Starter, &FunctionICEControl::allocate},
 };
 
-MixingOutput::MixingOutput(const char *param_prefix, uint8_t max_num_outputs, OutputModuleInterface &interface,
-			   SchedulingPolicy scheduling_policy, bool support_esc_calibration, bool ramp_up, const uint8_t instance_start) :
+MixingOutput::MixingOutput(സ്ഥിരം അക്ഷരം *param_prefix, uint8_t max_അക്കം_outputs, OutputModuleInterface &interface,
+			   SchedulingPolicy scheduling_policy, തർക്കം support_esc_calibration, തർക്കം ramp_up, സ്ഥിരം uint8_t instance_start) :
 	ModuleParams(&interface),
 	_output_ramp_up(ramp_up),
 	_scheduling_policy(scheduling_policy),
 	_support_esc_calibration(support_esc_calibration),
-	_max_num_outputs(max_num_outputs < MAX_ACTUATORS ? max_num_outputs : MAX_ACTUATORS),
+	max_അക്കം_outputs_2(max_അക്കം_outputs < MAX_ACTUATORS ? max_അക്കം_outputs : MAX_ACTUATORS),
 	_interface(interface),
 	_control_latency_perf(perf_alloc(PC_ELAPSED, "control latency")),
 	_param_prefix(param_prefix)
 {
 	/* Safely initialize armed flags */
-	_armed.armed = false;
-	_armed.prearmed = false;
-	_armed.ready_to_arm = false;
-	_armed.lockdown = false;
-	_armed.termination = false;
-	_armed.in_esc_calibration_mode = false;
+	_armed.armed = അസത്യം;
+	_armed.prearmed = അസത്യം;
+	_armed.ready_to_arm = അസത്യം;
+	_armed.lockdown = അസത്യം;
+	_armed.termination = അസത്യം;
+	_armed.in_esc_calibration_mode = അസത്യം;
 
 	px4_sem_init(&_lock, 0, 1);
 
 	initParamHandles(instance_start);
 
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
-		_failsafe_value[i] = UINT16_MAX;
+	വേണ്ടി (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+		failsafe_മൂല്യം[i] = UINT16_MAX;
 	}
 
 	updateParams();
@@ -109,155 +109,155 @@ MixingOutput::~MixingOutput()
 	_outputs_pub.unadvertise();
 }
 
-void MixingOutput::initParamHandles(const uint8_t instance_start)
+ശൂന്യം MixingOutput::initParamHandles(സ്ഥിരം uint8_t instance_start)
 {
-	char param_name[17];
+	അക്ഷരം param_name[17];
 
-	for (unsigned i = 0; i < _max_num_outputs; ++i) {
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "FUNC", i + instance_start);
+	വേണ്ടി (unsigned i = 0; i < max_അക്കം_outputs_2; ++i) {
+		snprintf(param_name, വലുപ്പം(param_name), "%s_%s%d", _param_prefix, "FUNC", i + instance_start);
 		_param_handles[i].function = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "DIS", i + instance_start);
+		snprintf(param_name, വലുപ്പം(param_name), "%s_%s%d", _param_prefix, "DIS", i + instance_start);
 		_param_handles[i].disarmed = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "MIN", i + instance_start);
+		snprintf(param_name, വലുപ്പം(param_name), "%s_%s%d", _param_prefix, "MIN", i + instance_start);
 		_param_handles[i].min = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "CENT", i + instance_start);
+		snprintf(param_name, വലുപ്പം(param_name), "%s_%s%d", _param_prefix, "CENT", i + instance_start);
 		_param_handles[i].center = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "MAX", i + instance_start);
+		snprintf(param_name, വലുപ്പം(param_name), "%s_%s%d", _param_prefix, "MAX", i + instance_start);
 		_param_handles[i].max = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "FAIL", i + instance_start);
+		snprintf(param_name, വലുപ്പം(param_name), "%s_%s%d", _param_prefix, "FAIL", i + instance_start);
 		_param_handles[i].failsafe = param_find(param_name);
 	}
 
-	snprintf(param_name, sizeof(param_name), "%s_%s", _param_prefix, "REV");
+	snprintf(param_name, വലുപ്പം(param_name), "%s_%s", _param_prefix, "REV");
 	_param_handle_rev_range = param_find(param_name);
 }
 
-void MixingOutput::printStatus() const
+ശൂന്യം MixingOutput::printStatus() സ്ഥിരം
 {
 	PX4_INFO("Param prefix: %s", _param_prefix);
 	perf_print_counter(_control_latency_perf);
 
-	if (_wq_switched) {
+	എങ്കിൽ (_wq_switched) {
 		PX4_INFO("Switched to rate_ctrl work queue");
 	}
 
 	PX4_INFO_RAW("Channel Configuration:\n");
 
-	for (unsigned i = 0; i < _max_num_outputs; i++) {
+	വേണ്ടി (unsigned i = 0; i < max_അക്കം_outputs_2; i++) {
 		PX4_INFO_RAW("Channel %2d: func: %3d, value: %.2f, failsafe: %.2f, disarmed: %d, min: %d, max: %d, center: %d\n",
-			     i, (int)_function_assignment[i], (double)_current_output_value[i], (double)actualFailsafeValue(i),
-			     _disarmed_value[i], _min_value[i], _max_value[i], _center_value[i]);
+			     i, (പൂർണ്ണസംഖ്യ)_function_assignment[i], (ഇരട്ട)current_output_മൂല്യം[i], (ഇരട്ട)actual_Failsafe_മൂല്യം(i),
+			     disarmed_മൂല്യം[i], min_മൂല്യം[i], max_മൂല്യം[i], center_മൂല്യം[i]);
 	}
 }
 
-void MixingOutput::updateParams()
+ശൂന്യം MixingOutput::updateParams()
 {
 	ModuleParams::updateParams();
 
-	bool function_changed = false;
+	തർക്കം function_changed = അസത്യം;
 
-	for (unsigned i = 0; i < _max_num_outputs; i++) {
+	വേണ്ടി (unsigned i = 0; i < max_അക്കം_outputs_2; i++) {
 		int32_t val;
 
-		if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
-			if (val != (int32_t)_function_assignment[i]) {
-				function_changed = true;
+		എങ്കിൽ (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
+			എങ്കിൽ (val != (int32_t)_function_assignment[i]) {
+				function_changed = സത്യം;
 			}
 
 			// we set _function_assignment[i] later to ensure _functions[i] is updated at the same time
 		}
 
-		if (_param_handles[i].disarmed != PARAM_INVALID && param_get(_param_handles[i].disarmed, &val) == 0) {
-			_disarmed_value[i] = val;
+		എങ്കിൽ (_param_handles[i].disarmed != PARAM_INVALID && param_get(_param_handles[i].disarmed, &val) == 0) {
+			disarmed_മൂല്യം[i] = val;
 		}
 
-		if (_param_handles[i].min != PARAM_INVALID && param_get(_param_handles[i].min, &val) == 0) {
-			_min_value[i] = val;
+		എങ്കിൽ (_param_handles[i].min != PARAM_INVALID && param_get(_param_handles[i].min, &val) == 0) {
+			min_മൂല്യം[i] = val;
 		}
 
-		if (_param_handles[i].center != PARAM_INVALID && param_get(_param_handles[i].center, &val) == 0) {
-			_center_value[i] = val;
+		എങ്കിൽ (_param_handles[i].center != PARAM_INVALID && param_get(_param_handles[i].center, &val) == 0) {
+			center_മൂല്യം[i] = val;
 		}
 
-		if (_param_handles[i].max != PARAM_INVALID && param_get(_param_handles[i].max, &val) == 0) {
-			_max_value[i] = val;
+		എങ്കിൽ (_param_handles[i].max != PARAM_INVALID && param_get(_param_handles[i].max, &val) == 0) {
+			max_മൂല്യം[i] = val;
 		}
 
-		if (_min_value[i] > _max_value[i]) {
-			uint16_t tmp = _min_value[i];
-			_min_value[i] = _max_value[i];
-			_max_value[i] = tmp;
+		എങ്കിൽ (min_മൂല്യം[i] > max_മൂല്യം[i]) {
+			uint16_t tmp = min_മൂല്യം[i];
+			min_മൂല്യം[i] = max_മൂല്യം[i];
+			max_മൂല്യം[i] = tmp;
 		}
 
 
-		if (_param_handles[i].failsafe != PARAM_INVALID && param_get(_param_handles[i].failsafe, &val) == 0) {
-			_failsafe_value[i] = val;
+		എങ്കിൽ (_param_handles[i].failsafe != PARAM_INVALID && param_get(_param_handles[i].failsafe, &val) == 0) {
+			failsafe_മൂല്യം[i] = val;
 		}
 	}
 
 	_reverse_output_mask = 0;
 	int32_t rev_range_param;
 
-	if (_param_handle_rev_range != PARAM_INVALID && param_get(_param_handle_rev_range, &rev_range_param) == 0) {
+	എങ്കിൽ (_param_handle_rev_range != PARAM_INVALID && param_get(_param_handle_rev_range, &rev_range_param) == 0) {
 		_reverse_output_mask = rev_range_param;
 	}
 
-	if (function_changed) {
-		_need_function_update = true;
+	എങ്കിൽ (function_changed) {
+		_need_function_update = സത്യം;
 	}
 }
 
-void MixingOutput::cleanupFunctions()
+ശൂന്യം MixingOutput::cleanupFunctions()
 {
-	if (_subscription_callback) {
+	എങ്കിൽ (_subscription_callback) {
 		_subscription_callback->unregisterCallback();
 		_subscription_callback = nullptr;
 	}
 
-	for (int i = 0; i < MAX_ACTUATORS; ++i) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < MAX_ACTUATORS; ++i) {
 		delete _function_allocated[i];
 		_function_allocated[i] = nullptr;
 		_functions[i] = nullptr;
 	}
 }
 
-bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
+തർക്കം MixingOutput::updateSubscriptions(തർക്കം allow_wq_switch)
 {
-	if (!_need_function_update || _armed.armed) {
-		return false;
+	എങ്കിൽ (!_need_function_update || _armed.armed) {
+		തിരികെ അസത്യം;
 	}
 
 	// must be locked to potentially change WorkQueue
 	lock();
 
-	_has_backup_schedule = false;
+	_has_backup_schedule = അസത്യം;
 
-	if (_scheduling_policy == SchedulingPolicy::Auto) {
+	എങ്കിൽ (_scheduling_policy == SchedulingPolicy::Auto) {
 		// first clear everything
 		unregister();
 		_interface.ScheduleClear();
 
-		bool switch_requested = false;
+		തർക്കം switch_requested = അസത്യം;
 
 		// potentially switch work queue if we run motor outputs
-		for (unsigned i = 0; i < _max_num_outputs; i++) {
+		വേണ്ടി (unsigned i = 0; i < max_അക്കം_outputs_2; i++) {
 			// read function directly from param, as _function_assignment[i] is updated later
 			int32_t function;
 
-			if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &function) == 0) {
-				if (function >= (int32_t)OutputFunction::Motor1 && function <= (int32_t)OutputFunction::MotorMax) {
-					switch_requested = true;
+			എങ്കിൽ (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &function) == 0) {
+				എങ്കിൽ (function >= (int32_t)OutputFunction::Motor1 && function <= (int32_t)OutputFunction::MotorMax) {
+					switch_requested = സത്യം;
 				}
 			}
 		}
 
-		if (allow_wq_switch && !_wq_switched && switch_requested) {
-			if (_interface.ChangeWorkQueue(px4::wq_configurations::rate_ctrl)) {
+		എങ്കിൽ (allow_wq_switch && !_wq_switched && switch_requested) {
+			എങ്കിൽ (_interface.ChangeWorkQueue(px4::wq_configurations::rate_ctrl)) {
 				// let the new WQ handle the subscribe update
-				_wq_switched = true;
+				_wq_switched = സത്യം;
 				_interface.ScheduleNow();
 				unlock();
-				return false;
+				തിരികെ അസത്യം;
 			}
 		}
 	}
@@ -267,91 +267,91 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 
 	cleanupFunctions();
 
-	const FunctionProviderBase::Context context{_interface, _param_thr_mdl_fac.reference()};
-	int provider_indexes[MAX_ACTUATORS] {};
-	int next_provider = 0;
-	int subscription_callback_provider_index = INT_MAX;
-	bool all_disabled = true;
+	സ്ഥിരം FunctionProviderBase::Context context{_interface, _param_thr_mdl_fac.reference()};
+	പൂർണ്ണസംഖ്യ provider_indexes[MAX_ACTUATORS] {};
+	പൂർണ്ണസംഖ്യ next_provider = 0;
+	പൂർണ്ണസംഖ്യ subscription_callback_provider_index = INT_MAX;
+	തർക്കം all_disabled = സത്യം;
 
-	for (int i = 0; i < _max_num_outputs; ++i) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < max_അക്കം_outputs_2; ++i) {
 		int32_t val;
 
-		if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
+		എങ്കിൽ (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
 			_function_assignment[i] = (OutputFunction)val;
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			_function_assignment[i] = OutputFunction::Disabled;
 		}
 
-		for (int p = 0; p < (int)(sizeof(all_function_providers) / sizeof(all_function_providers[0])); ++p) {
-			if (_function_assignment[i] >= all_function_providers[p].min_func &&
+		വേണ്ടി (പൂർണ്ണസംഖ്യ p = 0; p < (പൂർണ്ണസംഖ്യ)(വലുപ്പം(all_function_providers) / വലുപ്പം(all_function_providers[0])); ++p) {
+			എങ്കിൽ (_function_assignment[i] >= all_function_providers[p].min_func &&
 			    _function_assignment[i] <= all_function_providers[p].max_func) {
-				all_disabled = false;
-				int found_index = -1;
+				all_disabled = അസത്യം;
+				പൂർണ്ണസംഖ്യ found_index = -1;
 
-				for (int existing = 0; existing < next_provider; ++existing) {
-					if (provider_indexes[existing] == p) {
+				വേണ്ടി (പൂർണ്ണസംഖ്യ existing = 0; existing < next_provider; ++existing) {
+					എങ്കിൽ (provider_indexes[existing] == p) {
 						found_index = existing;
-						break;
+						നിർത്തുക;
 					}
 				}
 
-				if (found_index >= 0) {
+				എങ്കിൽ (found_index >= 0) {
 					_functions[i] = _function_allocated[found_index];
 
-				} else {
+				} അല്ലെങ്കിൽ {
 					_function_allocated[next_provider] = all_function_providers[p].constructor(context);
 
-					if (_function_allocated[next_provider]) {
+					എങ്കിൽ (_function_allocated[next_provider]) {
 						_functions[i] = _function_allocated[next_provider];
 						provider_indexes[next_provider++] = p;
 
 						// lowest provider takes precedence for scheduling
-						if (p < subscription_callback_provider_index && _functions[i]->subscriptionCallback()) {
+						എങ്കിൽ (p < subscription_callback_provider_index && _functions[i]->subscriptionCallback()) {
 							subscription_callback_provider_index = p;
 							_subscription_callback = _functions[i]->subscriptionCallback();
 						}
 
-					} else {
+					} അല്ലെങ്കിൽ {
 						PX4_ERR("function alloc failed");
 					}
 				}
 
-				break;
+				നിർത്തുക;
 			}
 		}
 	}
 
 	hrt_abstime fixed_rate_scheduling_interval = 4_ms; // schedule at 250Hz
 
-	if (_max_topic_update_interval_us > fixed_rate_scheduling_interval) {
+	എങ്കിൽ (_max_topic_update_interval_us > fixed_rate_scheduling_interval) {
 		fixed_rate_scheduling_interval = _max_topic_update_interval_us;
 	}
 
-	if (_scheduling_policy == SchedulingPolicy::Auto) {
-		if (_subscription_callback) {
-			if (_subscription_callback->registerCallback()) {
+	എങ്കിൽ (_scheduling_policy == SchedulingPolicy::Auto) {
+		എങ്കിൽ (_subscription_callback) {
+			എങ്കിൽ (_subscription_callback->registerCallback()) {
 				PX4_DEBUG("Scheduling via callback");
-				_has_backup_schedule = true;
+				_has_backup_schedule = സത്യം;
 				_interface.ScheduleDelayed(50_ms);
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				PX4_ERR("registerCallback failed, scheduling at fixed rate");
 				_interface.ScheduleOnInterval(fixed_rate_scheduling_interval);
 			}
 
-		} else if (all_disabled) {
+		} അല്ലെങ്കിൽ എങ്കിൽ (all_disabled) {
 			_interface.ScheduleOnInterval(_lowrate_schedule_interval);
 			PX4_DEBUG("Scheduling at low rate");
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			_interface.ScheduleOnInterval(fixed_rate_scheduling_interval);
 			PX4_DEBUG("Scheduling at fixed rate");
 		}
 	}
 
 	setMaxTopicUpdateRate(_max_topic_update_interval_us);
-	_need_function_update = false;
+	_need_function_update = അസത്യം;
 
 	_actuator_test.reset();
 
@@ -359,73 +359,73 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 
 	_interface.mixerChanged();
 
-	return true;
+	തിരികെ സത്യം;
 }
 
-void MixingOutput::setMaxTopicUpdateRate(unsigned max_topic_update_interval_us)
+ശൂന്യം MixingOutput::setMaxTopicUpdateRate(unsigned max_topic_update_interval_us)
 {
 	_max_topic_update_interval_us = max_topic_update_interval_us;
 
-	if (_subscription_callback) {
+	എങ്കിൽ (_subscription_callback) {
 		_subscription_callback->set_interval_us(_max_topic_update_interval_us);
 	}
 }
 
-void MixingOutput::setAllMinValues(uint16_t value)
+ശൂന്യം MixingOutput::set_All_Min_മൂല്യങ്ങൾ(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	വേണ്ടി (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].min = PARAM_INVALID;
-		_min_value[i] = value;
+		min_മൂല്യം[i] = value;
 	}
 }
 
-void MixingOutput::setAllCenterValues(uint16_t value)
+ശൂന്യം MixingOutput::set_All_Center_മൂല്യങ്ങൾ(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	വേണ്ടി (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].center = PARAM_INVALID;
-		_center_value[i] = value;
+		center_മൂല്യം[i] = value;
 	}
 }
 
-void MixingOutput::setAllMaxValues(uint16_t value)
+ശൂന്യം MixingOutput::set_All_Max_മൂല്യങ്ങൾ(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	വേണ്ടി (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].max = PARAM_INVALID;
-		_max_value[i] = value;
+		max_മൂല്യം[i] = value;
 	}
 }
 
-void MixingOutput::setAllFailsafeValues(uint16_t value)
+ശൂന്യം MixingOutput::set_All_Failsafe_മൂല്യങ്ങൾ(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	വേണ്ടി (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].failsafe = PARAM_INVALID;
-		_failsafe_value[i] = value;
+		failsafe_മൂല്യം[i] = value;
 	}
 }
 
-void MixingOutput::setAllDisarmedValues(uint16_t value)
+ശൂന്യം MixingOutput::set_All_Disarmed_മൂല്യങ്ങൾ(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	വേണ്ടി (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].disarmed = PARAM_INVALID;
-		_disarmed_value[i] = value;
+		disarmed_മൂല്യം[i] = value;
 	}
 }
 
-void MixingOutput::unregister()
+ശൂന്യം MixingOutput::unregister()
 {
-	if (_subscription_callback) {
+	എങ്കിൽ (_subscription_callback) {
 		_subscription_callback->unregisterCallback();
 	}
 }
 
-bool MixingOutput::update()
+തർക്കം MixingOutput::update()
 {
 	// check arming state
-	if (_armed_sub.update(&_armed)) {
+	എങ്കിൽ (_armed_sub.update(&_armed)) {
 		_armed.in_esc_calibration_mode &= _support_esc_calibration;
 
-		if (_ignore_lockdown) {
-			_armed.lockdown = false;
+		എങ്കിൽ (_ignore_lockdown) {
+			_armed.lockdown = അസത്യം;
 		}
 
 		/* Update the armed status and check that we're not locked down.
@@ -434,52 +434,52 @@ bool MixingOutput::update()
 	}
 
 	// only used for sitl with lockstep
-	bool has_updates = _subscription_callback && _subscription_callback->updated();
+	തർക്കം has_updates = _subscription_callback && _subscription_callback->updated();
 
 	// update topics
-	for (int i = 0; i < MAX_ACTUATORS && _function_allocated[i]; ++i) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < MAX_ACTUATORS && _function_allocated[i]; ++i) {
 		_function_allocated[i]->update();
 	}
 
-	if (_has_backup_schedule) {
+	എങ്കിൽ (_has_backup_schedule) {
 		_interface.ScheduleDelayed(50_ms);
 	}
 
 	// check for actuator test
-	_actuator_test.update(_max_num_outputs, _param_thr_mdl_fac.get());
+	_actuator_test.update(max_അക്കം_outputs_2, _param_thr_mdl_fac.get());
 
 	// get output values
-	float outputs[MAX_ACTUATORS];
-	bool all_disabled = true;
-	const uint32_t reversible_mask_prev = _reversible_mask;
+	ദശാംശം outputs[MAX_ACTUATORS];
+	തർക്കം all_disabled = സത്യം;
+	സ്ഥിരം uint32_t reversible_mask_prev = _reversible_mask;
 	_reversible_mask = 0;
 
-	for (int i = 0; i < _max_num_outputs; ++i) {
-		if (_functions[i]) {
-			all_disabled = false;
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < max_അക്കം_outputs_2; ++i) {
+		എങ്കിൽ (_functions[i]) {
+			all_disabled = അസത്യം;
 
-			if (_armed.armed || (_armed.prearmed && _functions[i]->allowPrearmControl())) {
+			എങ്കിൽ (_armed.armed || (_armed.prearmed && _functions[i]->allowPrearmControl())) {
 				outputs[i] = _functions[i]->value(_function_assignment[i]);
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				outputs[i] = NAN;
 			}
 
 			_reversible_mask |= (uint32_t)_functions[i]->reversible(_function_assignment[i]) << i;
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			outputs[i] = NAN;
 		}
 	}
 
-	if (_reversible_mask != reversible_mask_prev) {
+	എങ്കിൽ (_reversible_mask != reversible_mask_prev) {
 		_interface.reversibleMaskChanged(_reversible_mask);
 	}
 
 	// Send output if any function mapped or one last disabling sample
-	if (!all_disabled || !_was_all_disabled) {
-		if (!_armed.armed && !_armed.kill) {
-			_actuator_test.overrideValues(outputs, _max_num_outputs);
+	എങ്കിൽ (!all_disabled || !_was_all_disabled) {
+		എങ്കിൽ (!_armed.armed && !_armed.kill) {
+			_actuator_test.override_മൂല്യങ്ങൾ(outputs, max_അക്കം_outputs_2);
 		}
 
 		limitAndUpdateOutputs(outputs, has_updates);
@@ -487,101 +487,101 @@ bool MixingOutput::update()
 
 	_was_all_disabled = all_disabled;
 
-	return true;
+	തിരികെ സത്യം;
 }
 
-void
-MixingOutput::limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updates)
+ശൂന്യം
+MixingOutput::limitAndUpdateOutputs(ദശാംശം outputs[MAX_ACTUATORS], തർക്കം has_updates)
 {
-	if (_armed.lockdown || _armed.kill) {
+	എങ്കിൽ (_armed.lockdown || _armed.kill) {
 		// overwrite outputs in case of lockdown with disarmed values
-		for (size_t i = 0; i < _max_num_outputs; i++) {
-			_current_output_value[i] = _disarmed_value[i];
+		വേണ്ടി (size_t i = 0; i < max_അക്കം_outputs_2; i++) {
+			current_output_മൂല്യം[i] = disarmed_മൂല്യം[i];
 		}
 
-	} else if (_armed.termination) {
+	} അല്ലെങ്കിൽ എങ്കിൽ (_armed.termination) {
 		// Overwrite outputs with _failsafe_value when terminated
-		for (size_t i = 0; i < _max_num_outputs; i++) {
-			_current_output_value[i] = actualFailsafeValue(i);
+		വേണ്ടി (size_t i = 0; i < max_അക്കം_outputs_2; i++) {
+			current_output_മൂല്യം[i] = actual_Failsafe_മൂല്യം(i);
 		}
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		// the output limit call takes care of out of band errors, NaN and constrains
-		output_limit_calc(_throttle_armed || _actuator_test.inTestMode(), _max_num_outputs, outputs);
+		output_limit_calc(_throttle_armed || _actuator_test.inTestMode(), max_അക്കം_outputs_2, outputs);
 	}
 
 	// We must calibrate the PWM and Oneshot ESCs to a consistent range of 1000-2000us (gets mapped to 125-250us for Oneshot)
 	// Doing so makes calibrations consistent among different configurations and hence PWM minimum and maximum have a consistent effect
 	// hence the defaults for these parameters also make most setups work out of the box
-	if (_armed.in_esc_calibration_mode) {
-		static constexpr float PWM_CALIBRATION_LOW = 1000.f;
-		static constexpr float PWM_CALIBRATION_HIGH = 2000.f;
+	എങ്കിൽ (_armed.in_esc_calibration_mode) {
+		സ്ഥിതം constexpr ദശാംശം PWM_CALIBRATION_താഴെയുള്ള = 1000.f;
+		സ്ഥിതം constexpr ദശാംശം PWM_CALIBRATION_മുകളിലെ = 2000.f;
 
-		for (int i = 0; i < _max_num_outputs; i++) {
-			if (fabsf(_current_output_value[i] - (float)_min_value[i]) < 0.5f) {
-				_current_output_value[i] = PWM_CALIBRATION_LOW;
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < max_അക്കം_outputs_2; i++) {
+			എങ്കിൽ (fabsf(current_output_മൂല്യം[i] - (ദശാംശം)min_മൂല്യം[i]) < 0.5f) {
+				current_output_മൂല്യം[i] = PWM_CALIBRATION_താഴെയുള്ള;
 			}
 
-			if (fabsf(_current_output_value[i] - (float)_max_value[i]) < 0.5f) {
-				_current_output_value[i] = PWM_CALIBRATION_HIGH;
+			എങ്കിൽ (fabsf(current_output_മൂല്യം[i] - (ദശാംശം)max_മൂല്യം[i]) < 0.5f) {
+				current_output_മൂല്യം[i] = PWM_CALIBRATION_മുകളിലെ;
 			}
 		}
 	}
 
 	/* now return the outputs to the driver */
-	if (_interface.updateOutputs(_current_output_value, _max_num_outputs, has_updates)) {
+	എങ്കിൽ (_interface.updateOutputs(current_output_മൂല്യം, max_അക്കം_outputs_2, has_updates)) {
 		actuator_outputs_s actuator_outputs{};
-		setAndPublishActuatorOutputs(_max_num_outputs, actuator_outputs);
+		setAndPublishActuatorOutputs(max_അക്കം_outputs_2, actuator_outputs);
 
 		updateLatencyPerfCounter(actuator_outputs);
 	}
 }
 
-float MixingOutput::output_limit_calc_single(int i, float value) const
+ദശാംശം MixingOutput::output_limit_calc_single(പൂർണ്ണസംഖ്യ i, ദശാംശം value) സ്ഥിരം
 {
 	// check for invalid / disabled channels
-	if (!PX4_ISFINITE(value)) {
-		return _disarmed_value[i];
+	എങ്കിൽ (!PX4_ISFINITE(value)) {
+		തിരികെ disarmed_മൂല്യം[i];
 	}
 
-	if (_reverse_output_mask & (1 << i)) {
+	എങ്കിൽ (_reverse_output_mask & (1 << i)) {
 		value = -1.f * value;
 	}
 
-	float output = _disarmed_value[i];
+	ദശാംശം output = disarmed_മൂല്യം[i];
 
-	if (((_function_assignment[i] >= OutputFunction::Servo1
+	എങ്കിൽ (((_function_assignment[i] >= OutputFunction::Servo1
 	      && _function_assignment[i] <= OutputFunction::ServoMax) || _function_assignment[i] == OutputFunction::Landing_Gear_Wheel
 	     || (_function_assignment[i] >= OutputFunction::Gimbal_Roll
 		 && _function_assignment[i] <= OutputFunction::Gimbal_Yaw))
 	    && _param_handles[i].center != PARAM_INVALID
-	    && _center_value[i] >= _min_value[i]
-	    && _center_value[i] <= _max_value[i]) {
-		output = math::interpolateNXY(value, {-1.f, 0.f, 1.f}, {(float)_min_value[i], (float)_center_value[i], (float)_max_value[i]});
+	    && center_മൂല്യം[i] >= min_മൂല്യം[i]
+	    && center_മൂല്യം[i] <= max_മൂല്യം[i]) {
+		output = math::interpolateNXY(value, {-1.f, 0.f, 1.f}, {(ദശാംശം)min_മൂല്യം[i], (ദശാംശം)center_മൂല്യം[i], (ദശാംശം)max_മൂല്യം[i]});
 	}
 
 	// Everything except servos, or if center is not set
-	else {
-		output = math::interpolate(value, -1.f, 1.f, static_cast<float>(_min_value[i]), static_cast<float>(_max_value[i]));
+	അല്ലെങ്കിൽ {
+		output = math::interpolate(value, -1.f, 1.f, static_cast<ദശാംശം>(min_മൂല്യം[i]), static_cast<ദശാംശം>(max_മൂല്യം[i]));
 	}
 
-	return output;
+	തിരികെ output;
 }
 
-void
-MixingOutput::output_limit_calc(const bool armed, const int num_channels, const float output[MAX_ACTUATORS])
+ശൂന്യം
+MixingOutput::output_limit_calc(സ്ഥിരം തർക്കം armed, സ്ഥിരം പൂർണ്ണസംഖ്യ അക്കം_channels, സ്ഥിരം ദശാംശം output[MAX_ACTUATORS])
 {
 	// time to slowly ramp up the ESCs
-	static constexpr hrt_abstime RAMP_TIME_US = 500_ms;
+	സ്ഥിതം constexpr hrt_abstime RAMP_TIME_US = 500_ms;
 
 	/* first evaluate state changes */
-	switch (_output_state) {
-	case OutputLimitState::OFF:
-		if (armed) {
-			if (_output_ramp_up) {
+	തിരഞ്ഞെടുപ്പ് (_output_state) {
+	അവസ്ഥ OutputLimitState::OFF:
+		എങ്കിൽ (armed) {
+			എങ്കിൽ (_output_ramp_up) {
 				_output_state = OutputLimitState::RAMP;
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				_output_state = OutputLimitState::ON;
 			}
 
@@ -589,24 +589,24 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 			_output_time_armed = hrt_absolute_time();
 		}
 
-		break;
+		നിർത്തുക;
 
-	case OutputLimitState::RAMP:
-		if (!armed) {
+	അവസ്ഥ OutputLimitState::RAMP:
+		എങ്കിൽ (!armed) {
 			_output_state = OutputLimitState::OFF;
 
-		} else if (hrt_elapsed_time(&_output_time_armed) >= RAMP_TIME_US) {
+		} അല്ലെങ്കിൽ എങ്കിൽ (hrt_elapsed_time(&_output_time_armed) >= RAMP_TIME_US) {
 			_output_state = OutputLimitState::ON;
 		}
 
-		break;
+		നിർത്തുക;
 
-	case OutputLimitState::ON:
-		if (!armed) {
+	അവസ്ഥ OutputLimitState::ON:
+		എങ്കിൽ (!armed) {
 			_output_state = OutputLimitState::OFF;
 		}
 
-		break;
+		നിർത്തുക;
 	}
 
 	/* if the system is pre-armed, the limit state is temporarily on,
@@ -617,86 +617,86 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 	 */
 	auto local_limit_state = _output_state;
 
-	if (isPrearmed()) {
+	എങ്കിൽ (isPrearmed()) {
 		local_limit_state = OutputLimitState::ON;
 	}
 
 	// then set _current_output_value based on state
-	switch (local_limit_state) {
-	case OutputLimitState::OFF:
-		for (int i = 0; i < num_channels; i++) {
-			_current_output_value[i] = _disarmed_value[i];
+	തിരഞ്ഞെടുപ്പ് (local_limit_state) {
+	അവസ്ഥ OutputLimitState::OFF:
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < അക്കം_channels; i++) {
+			current_output_മൂല്യം[i] = disarmed_മൂല്യം[i];
 		}
 
-		break;
+		നിർത്തുക;
 
-	case OutputLimitState::RAMP: {
+	അവസ്ഥ OutputLimitState::RAMP: {
 			hrt_abstime diff = hrt_elapsed_time(&_output_time_armed);
-			float progress = static_cast<float>(diff) / RAMP_TIME_US;
+			ദശാംശം progress = static_cast<ദശാംശം>(diff) / RAMP_TIME_US;
 
-			if (progress > 1.f) {
+			എങ്കിൽ (progress > 1.f) {
 				progress = 1.f;
 			}
 
-			for (int i = 0; i < num_channels; i++) {
+			വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < അക്കം_channels; i++) {
 				// Ramp from disarmed value to currently desired output that would apply without ramp
-				float desired_output = output_limit_calc_single(i, output[i]);
-				_current_output_value[i] = _disarmed_value[i] + progress * (desired_output - _disarmed_value[i]);
+				ദശാംശം desired_output = output_limit_calc_single(i, output[i]);
+				current_output_മൂല്യം[i] = disarmed_മൂല്യം[i] + progress * (desired_output - disarmed_മൂല്യം[i]);
 			}
 		}
-		break;
+		നിർത്തുക;
 
-	case OutputLimitState::ON:
-		for (int i = 0; i < num_channels; i++) {
-			_current_output_value[i] = output_limit_calc_single(i, output[i]);
+	അവസ്ഥ OutputLimitState::ON:
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < അക്കം_channels; i++) {
+			current_output_മൂല്യം[i] = output_limit_calc_single(i, output[i]);
 		}
 
-		break;
+		നിർത്തുക;
 	}
 }
 
-void
-MixingOutput::setAndPublishActuatorOutputs(unsigned num_outputs, actuator_outputs_s &actuator_outputs)
+ശൂന്യം
+MixingOutput::setAndPublishActuatorOutputs(unsigned അക്കം_outputs, actuator_outputs_s &actuator_outputs)
 {
-	actuator_outputs.noutputs = num_outputs;
+	actuator_outputs.noutputs = അക്കം_outputs;
 
-	for (size_t i = 0; i < num_outputs; ++i) {
-		actuator_outputs.output[i] = _current_output_value[i];
+	വേണ്ടി (size_t i = 0; i < അക്കം_outputs; ++i) {
+		actuator_outputs.output[i] = current_output_മൂല്യം[i];
 	}
 
 	actuator_outputs.timestamp = hrt_absolute_time();
 	_outputs_pub.publish(actuator_outputs);
 }
 
-void
-MixingOutput::updateLatencyPerfCounter(const actuator_outputs_s &actuator_outputs)
+ശൂന്യം
+MixingOutput::updateLatencyPerfCounter(സ്ഥിരം actuator_outputs_s &actuator_outputs)
 {
 	// Just check the first function. It means we only get the latency if motors are assigned first, which is the default
-	if (_function_allocated[0]) {
+	എങ്കിൽ (_function_allocated[0]) {
 		hrt_abstime timestamp_sample;
 
-		if (_function_allocated[0]->getLatestSampleTimestamp(timestamp_sample)) {
+		എങ്കിൽ (_function_allocated[0]->getLatestSampleTimestamp(timestamp_sample)) {
 			perf_set_elapsed(_control_latency_perf, actuator_outputs.timestamp - timestamp_sample);
 		}
 	}
 }
 
-float MixingOutput::actualFailsafeValue(int index) const
+ദശാംശം MixingOutput::actual_Failsafe_മൂല്യം(പൂർണ്ണസംഖ്യ index) സ്ഥിരം
 {
-	float value = 0;
+	ദശാംശം value = 0;
 
-	if (_failsafe_value[index] == UINT16_MAX) { // if set to default, use the one provided by the function
-		float default_failsafe = NAN;
+	എങ്കിൽ (failsafe_മൂല്യം[index] == UINT16_MAX) { // if set to default, use the one provided by the function
+		ദശാംശം default_failsafe = NAN;
 
-		if (_functions[index]) {
-			default_failsafe = _functions[index]->defaultFailsafeValue(_function_assignment[index]);
+		എങ്കിൽ (_functions[index]) {
+			default_failsafe = _functions[index]->default_Failsafe_മൂല്യം(_function_assignment[index]);
 		}
 
 		value = output_limit_calc_single(index, default_failsafe);
 
-	} else {
-		value = static_cast<float>(_failsafe_value[index]);
+	} അല്ലെങ്കിൽ {
+		value = static_cast<ദശാംശം>(failsafe_മൂല്യം[index]);
 	}
 
-	return value;
+	തിരികെ value;
 }

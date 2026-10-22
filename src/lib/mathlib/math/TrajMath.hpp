@@ -39,10 +39,10 @@
 
 #pragma once
 
-namespace math
+നാമാകാശ math
 {
 
-namespace trajectory
+നാമാകാശ trajectory
 {
 
 /* Compute the maximum possible speed on the track given the desired speed,
@@ -58,16 +58,16 @@ namespace trajectory
  *
  * @return maximum speed
  */
-inline float computeMaxSpeedFromDistance(const float jerk, const float accel, const float braking_distance,
-		const float final_speed)
+വരിയിൽ ദശാംശം computeMaxSpeedFromDistance(സ്ഥിരം ദശാംശം jerk, സ്ഥിരം ദശാംശം accel, സ്ഥിരം ദശാംശം braking_distance,
+		സ്ഥിരം ദശാംശം final_speed)
 {
-	auto sqr = [](float f) {return f * f;};
-	float b =  4.0f * sqr(accel) / jerk;
-	float c = - 2.0f * accel * braking_distance - sqr(final_speed);
-	float max_speed = 0.5f * (-b + sqrtf(sqr(b) - 4.0f * c));
+	auto sqr = [](ദശാംശം f) {തിരികെ f * f;};
+	ദശാംശം b =  4.0f * sqr(accel) / jerk;
+	ദശാംശം c = - 2.0f * accel * braking_distance - sqr(final_speed);
+	ദശാംശം max_speed = 0.5f * (-b + sqrtf(sqr(b) - 4.0f * c));
 
 	// don't slow down more than the end speed, even if the conservative accel ramp time requests it
-	return fmaxf(max_speed, final_speed);
+	തിരികെ fmaxf(max_speed, final_speed);
 }
 
 /* Compute the maximum tangential speed in a circle defined by two line segments of length "d"
@@ -84,12 +84,12 @@ inline float computeMaxSpeedFromDistance(const float jerk, const float accel, co
  *
  *  @return maximum tangential speed
  */
-inline float computeMaxSpeedInWaypoint(const float alpha, const float accel, const float d)
+വരിയിൽ ദശാംശം computeMaxSpeedInWaypoint(സ്ഥിരം ദശാംശം alpha, സ്ഥിരം ദശാംശം accel, സ്ഥിരം ദശാംശം d)
 {
-	float tan_alpha = tanf(alpha / 2.0f);
-	float max_speed_in_turn = sqrtf(accel * d * tan_alpha);
+	ദശാംശം tan_alpha = tanf(alpha / 2.0f);
+	ദശാംശം max_speed_in_turn = sqrtf(accel * d * tan_alpha);
 
-	return max_speed_in_turn;
+	തിരികെ max_speed_in_turn;
 }
 
 /* Compute the braking distance given a maximum acceleration, maximum jerk and a maximum delay acceleration.
@@ -104,10 +104,10 @@ inline float computeMaxSpeedInWaypoint(const float alpha, const float accel, con
  *
  * @return braking distance
  */
-inline float computeBrakingDistanceFromVelocity(const float velocity, const float jerk, const float accel,
-		const float accel_delay_max)
+വരിയിൽ ദശാംശം computeBrakingDistanceFromVelocity(സ്ഥിരം ദശാംശം velocity, സ്ഥിരം ദശാംശം jerk, സ്ഥിരം ദശാംശം accel,
+		സ്ഥിരം ദശാംശം accel_delay_max)
 {
-	return velocity * (velocity / (2.0f * accel) + accel_delay_max / jerk);
+	തിരികെ velocity * (velocity / (2.0f * accel) + accel_delay_max / jerk);
 }
 
 /* Compute the maximum distance between a point and a circle given a direction vector pointing from the point
@@ -128,25 +128,25 @@ inline float computeBrakingDistanceFromVelocity(const float velocity, const floa
  * @return longest distance between the point to the circle in the direction indicated by the vector or NAN if the
  * vector does not point towards the circle
  */
-inline float getMaxDistanceToCircle(const matrix::Vector2f &pos, const matrix::Vector2f &circle_pos, float radius,
-				    const matrix::Vector2f &direction)
+വരിയിൽ ദശാംശം getMaxDistanceToCircle(സ്ഥിരം matrix::Vector2f &pos, സ്ഥിരം matrix::Vector2f &circle_pos, ദശാംശം radius,
+				    സ്ഥിരം matrix::Vector2f &direction)
 {
 	matrix::Vector2f center_to_pos = pos - circle_pos;
-	const float b = 2.f * center_to_pos.dot(direction.unit_or_zero());
-	const float c = center_to_pos.norm_squared() - radius * radius;
-	const float delta = b * b - 4.f * c;
+	സ്ഥിരം ദശാംശം b = 2.f * center_to_pos.dot(direction.unit_or_zero());
+	സ്ഥിരം ദശാംശം c = center_to_pos.norm_squared() - radius * radius;
+	സ്ഥിരം ദശാംശം delta = b * b - 4.f * c;
 
-	float distance_to_circle;
+	ദശാംശം distance_to_circle;
 
-	if (delta >= 0.f && direction.longerThan(0.f)) {
+	എങ്കിൽ (delta >= 0.f && direction.longerThan(0.f)) {
 		distance_to_circle = fmaxf((-b + sqrtf(delta)) / 2.f, 0.f);
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		// Never intersecting the circle
 		distance_to_circle = NAN;
 	}
 
-	return distance_to_circle;
+	തിരികെ distance_to_circle;
 }
 
 } /* namespace traj */

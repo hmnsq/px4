@@ -39,47 +39,47 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <assert.h>
+#അന്തര്ഭാവ <time.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <mathlib/math/test/test.hpp>
+#അന്തര്ഭാവ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#അന്തര്ഭാവ "block/Block.hpp"
+#അന്തര്ഭാവ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#അന്തര്ഭാവ "matrix/math.hpp"
 
-namespace control
+നാമാകാശ control
 {
 
 /**
  * A proportional-integral controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPI: public SuperBlock
+വർഗ്ഗം __EXPORT BlockPI: പൊതു SuperBlock
 {
-public:
+പൊതു:
 // methods
-	BlockPI(SuperBlock *parent, const char *name) :
+	BlockPI(SuperBlock *parent, സ്ഥിരം അക്ഷരം *name) :
 		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_kP(this, "P"),
-		_kI(this, "I")
+		_integral(ഇത്, "I"),
+		_kP(ഇത്, "P"),
+		_kI(ഇത്, "I")
 	{}
-	virtual ~BlockPI() = default;
-	float update(float input)
+	മായാ ~BlockPI() = സ്ഥിരസ്ഥിതി;
+	ദശാംശം update(ദശാംശം നിവേശം)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input);
+		തിരികെ getKP() * നിവേശം +
+		       getKI() * getIntegral().update(നിവേശം);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-private:
+	ദശാംശം getKP() { തിരികെ _kP.get(); }
+	ദശാംശം getKI() { തിരികെ _kI.get(); }
+	BlockIntegral &getIntegral() { തിരികെ _integral; }
+സ്വകാര്യ:
 	BlockIntegral _integral;
 	control::BlockParamFloat _kP;
 	control::BlockParamFloat _kI;

@@ -5,26 +5,26 @@
 # Note: Can lead to slightly different results than the online estimation due to the fact that
 # the log frequency of the voltage and current are not the same as the online frequency.
 
-from pyulog import ULog
-import matplotlib.pyplot as plt
-import numpy as np
-import argparse
+തഃ pyulog ഇറക്കുമതി ULog
+ഇറക്കുമതി matplotlib.pyplot ഇവ plt
+ഇറക്കുമതി numpy ഇവ np
+ഇറക്കുമതി argparse
 
 def getData(log, topic_name, variable_name, instance=0):
-    for elem in log.data_list:
-        if elem.name == topic_name and instance == elem.multi_id:
-            return elem.data[variable_name]
-    return np.array([])
+    വേണ്ടി elem ഇൽ log.data_list:
+        എങ്കിൽ elem.name == topic_name ഒപ്പം instance == elem.multi_id:
+            തിരികെ elem.data[variable_name]
+    തിരികെ np.array([])
 
 def us2s(time_us):
-    return time_us * 1e-6
+    തിരികെ time_us * 1e-6
 
 def getParam(log, param_name):
-    if param_name in log.initial_parameters:
-        return log.initial_parameters[param_name]
-    else:
+    എങ്കിൽ param_name ഇൽ log.initial_parameters:
+        തിരികെ log.initial_parameters[param_name]
+    അല്ലെങ്കിൽ:
         print(f"Parameter {param_name} not found in log.")
-    return None
+    തിരികെ None
 
 def rls_update(theta, P, x, V, I, lam):
     gamma = P @ x / (lam + x.T @ P @ x)
@@ -32,13 +32,13 @@ def rls_update(theta, P, x, V, I, lam):
     data_cov = x.T @ P @ x
     theta_temp = theta + gamma * error
     P_temp = (P - gamma @ x.T @ P) / lam
-    if (abs(np.linalg.norm(P)) < abs(np.linalg.norm(P_temp))):
+    എങ്കിൽ (abs(np.linalg.norm(P)) < abs(np.linalg.norm(P_temp))):
         theta_corr = np.array([V + theta[1] * I, theta[1]]) # Correct OCV estimation
         P_corr = P
-        return theta_corr, P_corr, error, data_cov, 0, 0
-    return theta_temp, P_temp, error, data_cov, gamma[0], gamma[1]
+        തിരികെ theta_corr, P_corr, error, data_cov, 0, 0
+    തിരികെ theta_temp, P_temp, error, data_cov, gamma[0], gamma[1]
 
-def main(log_name, n_cells, full_cell, empty_cell, lam):
+def പ്രധാന(log_name, n_cells, full_cell, empty_cell, lam):
     log = ULog(log_name)
 
     log_n_cells = getParam(log, 'BAT1_N_CELLS')
@@ -49,17 +49,17 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
     print(f"Extracted from log - BAT1_N_CELLS: {log_n_cells}, BAT1_V_CHARGED: {log_full_cell}, BAT1_V_EMPTY: {log_empty_cell}")
 
     # Use log parameters unless overridden
-    if n_cells is None:
+    എങ്കിൽ n_cells is None:
         n_cells = log_n_cells
-    else:
+    അല്ലെങ്കിൽ:
         print(f"Using override for n_cells: {n_cells}")
-    if full_cell is None:
+    എങ്കിൽ full_cell is None:
         full_cell = log_full_cell
-    else:
+    അല്ലെങ്കിൽ:
         print(f"Using override for full_cell: {full_cell}")
-    if empty_cell is None:
+    എങ്കിൽ empty_cell is None:
         empty_cell = log_empty_cell
-    else:
+    അല്ലെങ്കിൽ:
         print(f"Using override for empty_cell: {empty_cell}")
 
     # Debug information for final parameter values
@@ -70,9 +70,9 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
     V = getData(log, 'battery_status', 'voltage_v')
     remaining = getData(log, 'battery_status', 'remaining')
 
-    if not timestamps.size or not I.size or not V.size or not remaining.size:
+    എങ്കിൽ അല്ല timestamps.size അഥവാ അല്ല I.size അഥവാ അല്ല V.size അഥവാ അല്ല remaining.size:
         print("Error: Incomplete data.")
-        return
+        തിരികെ
 
     # Initializations
     theta = np.array([[V[0] + 0.005 * n_cells * I[0]], [0.005 * n_cells]])  # Initial VOC and R
@@ -94,7 +94,7 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
     gamma_voc_hist = np.zeros_like(I)
     gamma_r_hist = np.zeros_like(I)
 
-    for index in range(len(I)):
+    വേണ്ടി index ഇൽ range(len(I)):
         # RLS algorithm
         x = np.array([[1.0], [-I[index]]]) # Input vector
         theta, P, error, data_cov, gamma_voc_hist[index], gamma_r_hist[index] = rls_update(theta, P, x, V[index], I[index], lam) # Run RLS
@@ -197,12 +197,12 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
 
     plt.show()
 
-if __name__ == "__main__":
+എങ്കിൽ __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Estimate battery parameters from ulog file.')
-    parser.add_argument('-f', type = str,   required = True,  help = 'Full path to ulog file')
-    parser.add_argument('-c', type = float, required = False, help = 'Number of cells in battery')
-    parser.add_argument('-u', type = float, required = False, default = None, help = 'Full cell voltage')
-    parser.add_argument('-e', type = float, required = False, default = None,  help = 'Empty cell voltage')
-    parser.add_argument('-l', type = float, required = False, default = 0.99, help = 'Forgetting factor')
+    parser.add_argument('-f', type = str,   required = സത്യം,  help = 'Full path to ulog file')
+    parser.add_argument('-c', type = ദശാംശം, required = അസത്യം, help = 'Number of cells in battery')
+    parser.add_argument('-u', type = ദശാംശം, required = അസത്യം, സ്ഥിരസ്ഥിതി = None, help = 'Full cell voltage')
+    parser.add_argument('-e', type = ദശാംശം, required = അസത്യം, സ്ഥിരസ്ഥിതി = None,  help = 'Empty cell voltage')
+    parser.add_argument('-l', type = ദശാംശം, required = അസത്യം, സ്ഥിരസ്ഥിതി = 0.99, help = 'Forgetting factor')
     args = parser.parse_args()
-    main(args.f, args.c, args.u, args.e, args.l)
+    പ്രധാന(args.f, args.c, args.u, args.e, args.l)

@@ -39,56 +39,56 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <assert.h>
+#അന്തര്ഭാവ <time.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <mathlib/math/test/test.hpp>
+#അന്തര്ഭാവ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#അന്തര്ഭാവ "block/Block.hpp"
+#അന്തര്ഭാവ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#അന്തര്ഭാവ "matrix/math.hpp"
 
-namespace control
+നാമാകാശ control
 {
 
-template<class Type, size_t M>
-class __EXPORT BlockLowPassVector: public Block
+template<വർഗ്ഗം Type, size_t M>
+വർഗ്ഗം __EXPORT Block_താഴെയുള്ള_Pass_Vector: പൊതു Block
 {
-public:
+പൊതു:
 // methods
-	BlockLowPassVector(SuperBlock *parent,
-			   const char *name) :
+	Block_താഴെയുള്ള_Pass_Vector(SuperBlock *parent,
+			   സ്ഥിരം അക്ഷരം *name) :
 		Block(parent, name),
 		_state(),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(ഇത്, "") // only one parameter, no need to name
 	{
-		for (size_t i = 0; i < M; i++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
 			_state(i) = 0.0f / 0.0f;
 		}
 	}
-	virtual ~BlockLowPassVector() = default;
-	matrix::Vector<Type, M> update(const matrix::Matrix<Type, M, 1> &input)
+	മായാ ~Block_താഴെയുള്ള_Pass_Vector() = സ്ഥിരസ്ഥിതി;
+	matrix::Vector<Type, M> update(സ്ഥിരം matrix::Matrix<Type, M, 1> &നിവേശം)
 	{
-		for (size_t i = 0; i < M; i++) {
-			if (!PX4_ISFINITE(getState()(i))) {
-				setState(input);
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			എങ്കിൽ (!PX4_ISFINITE(getState()(i))) {
+				setState(നിവേശം);
 			}
 		}
 
-		float b = 2 * M_PI_F * getFCut() * getDt();
-		float a = b / (1 + b);
-		setState(input * a + getState() * (1 - a));
-		return getState();
+		ദശാംശം b = 2 * M_PI_F * getFCut() * getDt();
+		ദശാംശം a = b / (1 + b);
+		setState(നിവേശം * a + getState() * (1 - a));
+		തിരികെ getState();
 	}
 // accessors
-	matrix::Vector<Type, M> getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(const matrix::Vector<Type, M> &state) { _state = state; }
-private:
+	matrix::Vector<Type, M> getState() { തിരികെ _state; }
+	ദശാംശം getFCut() { തിരികെ _fCut.get(); }
+	ശൂന്യം setState(സ്ഥിരം matrix::Vector<Type, M> &state) { _state = state; }
+സ്വകാര്യ:
 // attributes
 	matrix::Vector<Type, M> _state;
 	control::BlockParamFloat _fCut;

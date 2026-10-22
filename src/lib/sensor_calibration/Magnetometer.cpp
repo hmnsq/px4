@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "Magnetometer.hpp"
+#അന്തര്ഭാവ "Magnetometer.hpp"
 
-#include "Utilities.hpp"
+#അന്തര്ഭാവ "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#അന്തര്ഭാവ <lib/drivers/device/Device.hpp>
+#അന്തര്ഭാവ <lib/parameters/param.h>
 
-using namespace matrix;
-using namespace time_literals;
+using നാമാകാശ matrix;
+using നാമാകാശ time_literals;
 
-namespace calibration
+നാമാകാശ calibration
 {
 
 Magnetometer::Magnetometer()
@@ -54,19 +54,19 @@ Magnetometer::Magnetometer(uint32_t device_id)
 	set_device_id(device_id);
 }
 
-Magnetometer::Magnetometer(uint32_t device_id, bool external)
+Magnetometer::Magnetometer(uint32_t device_id, തർക്കം external)
 {
 	set_device_id(device_id, external);
 }
 
-void Magnetometer::set_device_id(uint32_t device_id)
+ശൂന്യം Magnetometer::set_device_id(uint32_t device_id)
 {
 	set_device_id(device_id, device::device_is_external(device_id));
 }
 
-void Magnetometer::set_device_id(uint32_t device_id, bool external)
+ശൂന്യം Magnetometer::set_device_id(uint32_t device_id, തർക്കം external)
 {
-	if (_device_id != device_id || _external != external) {
+	എങ്കിൽ (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -74,39 +74,39 @@ void Magnetometer::set_device_id(uint32_t device_id, bool external)
 		Reset();
 
 		ParametersUpdate();
-		SensorCorrectionsUpdate(true);
+		SensorCorrectionsUpdate(സത്യം);
 	}
 }
 
-void Magnetometer::SensorCorrectionsUpdate(bool force)
+ശൂന്യം Magnetometer::SensorCorrectionsUpdate(തർക്കം force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	എങ്കിൽ (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		എങ്കിൽ (_device_id == 0) {
+			തിരികെ;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		എങ്കിൽ (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.mag_device_ids[i] == _device_id) {
-					switch (i) {
-					case 0:
+			വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < MAX_SENSOR_എണ്ണം; i++) {
+				എങ്കിൽ (corrections.mag_device_ids[i] == _device_id) {
+					തിരഞ്ഞെടുപ്പ് (i) {
+					അവസ്ഥ 0:
 						_thermal_offset = Vector3f{corrections.mag_offset_0};
-						return;
-					case 1:
+						തിരികെ;
+					അവസ്ഥ 1:
 						_thermal_offset = Vector3f{corrections.mag_offset_1};
-						return;
-					case 2:
+						തിരികെ;
+					അവസ്ഥ 2:
 						_thermal_offset = Vector3f{corrections.mag_offset_2};
-						return;
-					case 3:
+						തിരികെ;
+					അവസ്ഥ 3:
 						_thermal_offset = Vector3f{corrections.mag_offset_3};
-						return;
+						തിരികെ;
 					}
 				}
 			}
@@ -117,39 +117,39 @@ void Magnetometer::SensorCorrectionsUpdate(bool force)
 	}
 }
 
-bool Magnetometer::set_offset(const Vector3f &offset)
+തർക്കം Magnetometer::set_offset(സ്ഥിരം Vector3f &offset)
 {
-	if (Vector3f(_offset - offset).longerThan(0.005f)) {
-		if (offset.isAllFinite()) {
+	എങ്കിൽ (Vector3f(_offset - offset).longerThan(0.005f)) {
+		എങ്കിൽ (offset.isAllFinite()) {
 			_offset = offset;
-			_calibration_count++;
-			return true;
+			calibration_എണ്ണം++;
+			തിരികെ സത്യം;
 		}
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-bool Magnetometer::set_scale(const Vector3f &scale)
+തർക്കം Magnetometer::set_scale(സ്ഥിരം Vector3f &scale)
 {
-	if (Vector3f(_scale.diag() - scale).longerThan(0.01f)) {
-		if (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
+	എങ്കിൽ (Vector3f(_scale.diag() - scale).longerThan(0.01f)) {
+		എങ്കിൽ (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
 			_scale(0, 0) = scale(0);
 			_scale(1, 1) = scale(1);
 			_scale(2, 2) = scale(2);
 
-			_calibration_count++;
-			return true;
+			calibration_എണ്ണം++;
+			തിരികെ സത്യം;
 		}
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-bool Magnetometer::set_offdiagonal(const Vector3f &offdiagonal)
+തർക്കം Magnetometer::set_offdiagonal(സ്ഥിരം Vector3f &offdiagonal)
 {
-	if (Vector3f(Vector3f{_scale(0, 1), _scale(0, 2), _scale(1, 2)} - offdiagonal).longerThan(0.01f)) {
-		if (offdiagonal.isAllFinite()) {
+	എങ്കിൽ (Vector3f(Vector3f{_scale(0, 1), _scale(0, 2), _scale(1, 2)} - offdiagonal).longerThan(0.01f)) {
+		എങ്കിൽ (offdiagonal.isAllFinite()) {
 
 			_scale(0, 1) = offdiagonal(0);
 			_scale(1, 0) = offdiagonal(0);
@@ -160,20 +160,20 @@ bool Magnetometer::set_offdiagonal(const Vector3f &offdiagonal)
 			_scale(1, 2) = offdiagonal(2);
 			_scale(2, 1) = offdiagonal(2);
 
-			_calibration_count++;
-			return true;
+			calibration_എണ്ണം++;
+			തിരികെ സത്യം;
 		}
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void Magnetometer::set_rotation(const Rotation rotation)
+ശൂന്യം Magnetometer::set_rotation(സ്ഥിരം Rotation rotation)
 {
-	if (rotation < ROTATION_MAX) {
+	എങ്കിൽ (rotation < ROTATION_MAX) {
 		_rotation_enum = rotation;
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		// invalid rotation, resetting
 		_rotation_enum = ROTATION_NONE;
 	}
@@ -185,7 +185,7 @@ void Magnetometer::set_rotation(const Rotation rotation)
 	_rotation_custom_euler.zero();
 }
 
-void Magnetometer::set_custom_rotation(const Eulerf &rotation)
+ശൂന്യം Magnetometer::set_custom_rotation(സ്ഥിരം Eulerf &rotation)
 {
 	_rotation_enum = ROTATION_CUSTOM;
 
@@ -203,74 +203,74 @@ void Magnetometer::set_custom_rotation(const Eulerf &rotation)
 	// values properly (i.e. finding Vehicle's true Forward-Right-Down frame in a user's perspective)
 }
 
-bool Magnetometer::set_calibration_index(int calibration_index)
+തർക്കം Magnetometer::set_calibration_index(പൂർണ്ണസംഖ്യ calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	എങ്കിൽ ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_എണ്ണം)) {
 		_calibration_index = calibration_index;
-		return true;
+		തിരികെ സത്യം;
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void Magnetometer::ParametersUpdate()
+ശൂന്യം Magnetometer::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	എങ്കിൽ (_device_id == 0) {
+		തിരികെ;
 	}
 
 	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	എങ്കിൽ (_calibration_index == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		ParametersLoad();
 	}
 }
 
-bool Magnetometer::ParametersLoad()
+തർക്കം Magnetometer::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	എങ്കിൽ (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_എണ്ണം) {
 		// CAL_MAGx_ROT
-		int32_t rotation_value = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
+		int32_t rotation_മൂല്യം = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
 
-		const float euler_roll_deg = GetCalibrationParamFloat(SensorString(), "ROLL", _calibration_index);
-		const float euler_pitch_deg = GetCalibrationParamFloat(SensorString(), "PITCH", _calibration_index);
-		const float euler_yaw_deg = GetCalibrationParamFloat(SensorString(), "YAW", _calibration_index);
+		സ്ഥിരം ദശാംശം euler_roll_deg = GetCalibrationParamFloat(SensorString(), "ROLL", _calibration_index);
+		സ്ഥിരം ദശാംശം euler_pitch_deg = GetCalibrationParamFloat(SensorString(), "PITCH", _calibration_index);
+		സ്ഥിരം ദശാംശം euler_yaw_deg = GetCalibrationParamFloat(SensorString(), "YAW", _calibration_index);
 
-		if (_external) {
-			if (((rotation_value >= ROTATION_MAX) && (rotation_value != ROTATION_CUSTOM)) || (rotation_value < 0)) {
+		എങ്കിൽ (_external) {
+			എങ്കിൽ (((rotation_മൂല്യം >= ROTATION_MAX) && (rotation_മൂല്യം != ROTATION_CUSTOM)) || (rotation_മൂല്യം < 0)) {
 				// invalid rotation, resetting
-				rotation_value = ROTATION_NONE;
+				rotation_മൂല്യം = ROTATION_NONE;
 			}
 
 			// if CAL_MAGx_{ROLL,PITCH,YAW} manually set then CAL_MAGx_ROT needs to be ROTATION_CUSTOM
-			if ((rotation_value != ROTATION_CUSTOM)
+			എങ്കിൽ ((rotation_മൂല്യം != ROTATION_CUSTOM)
 			    && ((fabsf(euler_roll_deg) > FLT_EPSILON)
 				|| (fabsf(euler_pitch_deg) > FLT_EPSILON)
 				|| (fabsf(euler_yaw_deg) > FLT_EPSILON))) {
 
-				rotation_value = ROTATION_CUSTOM;
-				SetCalibrationParam(SensorString(), "ROT", _calibration_index, rotation_value);
+				rotation_മൂല്യം = ROTATION_CUSTOM;
+				SetCalibrationParam(SensorString(), "ROT", _calibration_index, rotation_മൂല്യം);
 			}
 
 			// Handle custom specified euler angle
-			if (rotation_value == ROTATION_CUSTOM) {
+			എങ്കിൽ (rotation_മൂല്യം == ROTATION_CUSTOM) {
 
-				const matrix::Eulerf rotation_custom_euler{
+				സ്ഥിരം matrix::Eulerf rotation_custom_euler{
 					math::radians(euler_roll_deg),
 					math::radians(euler_pitch_deg),
 					math::radians(euler_yaw_deg)};
 
 				set_custom_rotation(rotation_custom_euler);
 
-			} else {
-				set_rotation(static_cast<Rotation>(rotation_value));
+			} അല്ലെങ്കിൽ {
+				set_rotation(static_cast<Rotation>(rotation_മൂല്യം));
 			}
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			// internal sensors follow board rotation
 			set_rotation(GetBoardRotation());
 		}
@@ -278,11 +278,11 @@ bool Magnetometer::ParametersLoad()
 		// CAL_MAGx_PRIO
 		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		എങ്കിൽ ((_priority < 0) || (_priority > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
-			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
+			സ്ഥിതം constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			എങ്കിൽ (_priority != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
 					_calibration_index, _priority);
 
@@ -304,18 +304,18 @@ bool Magnetometer::ParametersLoad()
 		// CAL_MAGx_COMP{X,Y,Z}
 		_power_compensation = GetCalibrationParamsVector3f(SensorString(), "COMP", _calibration_index);
 
-		return true;
+		തിരികെ സത്യം;
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void Magnetometer::Reset()
+ശൂന്യം Magnetometer::Reset()
 {
-	if (_external) {
+	എങ്കിൽ (_external) {
 		set_rotation(ROTATION_NONE);
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		// internal sensors follow board rotation
 		set_rotation(GetBoardRotation());
 	}
@@ -330,46 +330,46 @@ void Magnetometer::Reset()
 
 	_calibration_index = -1;
 
-	_calibration_count = 0;
+	calibration_എണ്ണം = 0;
 }
 
-bool Magnetometer::ParametersSave(int desired_calibration_index, bool force)
+തർക്കം Magnetometer::ParametersSave(പൂർണ്ണസംഖ്യ desired_calibration_index, തർക്കം force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	എങ്കിൽ (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_എണ്ണം) {
 		_calibration_index = desired_calibration_index;
 
-	} else if (!force || (_calibration_index < 0)
+	} അല്ലെങ്കിൽ എങ്കിൽ (!force || (_calibration_index < 0)
 		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
 		int8_t calibration_index_prev = _calibration_index;
 		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		എങ്കിൽ (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
 				 calibration_index_prev, _calibration_index);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	എങ്കിൽ (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_എണ്ണം) {
 		// save calibration
-		bool success = true;
+		തർക്കം success = സത്യം;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
 		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
 		success &= SetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index, _offset);
 
-		const Vector3f scale{_scale.diag()};
+		സ്ഥിരം Vector3f scale{_scale.diag()};
 		success &= SetCalibrationParamsVector3f(SensorString(), "SCALE", _calibration_index, scale);
 
-		const Vector3f off_diag{_scale(0, 1), _scale(0, 2), _scale(1, 2)};
+		സ്ഥിരം Vector3f off_diag{_scale(0, 1), _scale(0, 2), _scale(1, 2)};
 		success &= SetCalibrationParamsVector3f(SensorString(), "ODIAG", _calibration_index, off_diag);
 
 		success &= SetCalibrationParamsVector3f(SensorString(), "COMP", _calibration_index, _power_compensation);
 
-		if (_external) {
+		എങ്കിൽ (_external) {
 			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, (int32_t)_rotation_enum);
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, -1); // internal
 		}
 
@@ -377,31 +377,31 @@ bool Magnetometer::ParametersSave(int desired_calibration_index, bool force)
 		success &= SetCalibrationParam(SensorString(), "PITCH", _calibration_index, math::degrees(_rotation_custom_euler(1)));
 		success &= SetCalibrationParam(SensorString(), "YAW", _calibration_index, math::degrees(_rotation_custom_euler(2)));
 
-		return success;
+		തിരികെ success;
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void Magnetometer::PrintStatus()
+ശൂന്യം Magnetometer::PrintStatus()
 {
-	if (external()) {
+	എങ്കിൽ (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Ext ROT: %d\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
-			     (double)_scale(0, 0), (double)_scale(1, 1), (double)_scale(2, 2),
+			     (ഇരട്ട)_offset(0), (ഇരട്ട)_offset(1), (ഇരട്ട)_offset(2),
+			     (ഇരട്ട)_scale(0, 0), (ഇരട്ട)_scale(1, 1), (ഇരട്ട)_scale(2, 2),
 			     rotation_enum());
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
-			     (double)_scale(0, 0), (double)_scale(1, 1), (double)_scale(2, 2));
+			     (ഇരട്ട)_offset(0), (ഇരട്ട)_offset(1), (ഇരട്ട)_offset(2),
+			     (ഇരട്ട)_scale(0, 0), (ഇരട്ട)_scale(1, 1), (ഇരട്ട)_scale(2, 2));
 	}
 
-#if defined(DEBUG_BUILD)
+#എങ്കിൽ defined(DEBUG_BUILD)
 	_scale.print();
 #endif // DEBUG_BUILD
 }

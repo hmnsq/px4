@@ -39,42 +39,42 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <assert.h>
+#അന്തര്ഭാവ <time.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <mathlib/math/test/test.hpp>
+#അന്തര്ഭാവ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#അന്തര്ഭാവ "block/Block.hpp"
+#അന്തര്ഭാവ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#അന്തര്ഭാവ "matrix/math.hpp"
 
-namespace control
+നാമാകാശ control
 {
 
 /**
  * A proportional controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockP: public Block
+വർഗ്ഗം __EXPORT BlockP: പൊതു Block
 {
-public:
+പൊതു:
 // methods
-	BlockP(SuperBlock *parent, const char *name) :
+	BlockP(SuperBlock *parent, സ്ഥിരം അക്ഷരം *name) :
 		Block(parent, name),
-		_kP(this, "") // only one param, no need to name
+		_kP(ഇത്, "") // only one param, no need to name
 	{}
-	virtual ~BlockP() = default;
-	float update(float input)
+	മായാ ~BlockP() = സ്ഥിരസ്ഥിതി;
+	ദശാംശം update(ദശാംശം നിവേശം)
 	{
-		return getKP() * input;
+		തിരികെ getKP() * നിവേശം;
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-protected:
+	ദശാംശം getKP() { തിരികെ _kP.get(); }
+സംരക്ഷിത:
 	control::BlockParamFloat _kP;
 };
 

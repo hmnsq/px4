@@ -39,63 +39,63 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <assert.h>
+#അന്തര്ഭാവ <time.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <mathlib/math/test/test.hpp>
+#അന്തര്ഭാവ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#അന്തര്ഭാവ "block/Block.hpp"
+#അന്തര്ഭാവ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#അന്തര്ഭാവ "matrix/math.hpp"
 
-namespace control
+നാമാകാശ control
 {
-template<class Type, size_t M>
-class __EXPORT BlockStats: public Block
+template<വർഗ്ഗം Type, size_t M>
+വർഗ്ഗം __EXPORT BlockStats: പൊതു Block
 {
 
-public:
+പൊതു:
 // methods
 	BlockStats(SuperBlock *parent,
-		   const char *name) :
+		   സ്ഥിരം അക്ഷരം *name) :
 		Block(parent, name),
 		_sum(),
 		_sumSq(),
-		_count(0)
+		എണ്ണം_3(0)
 	{}
-	virtual ~BlockStats() = default;
-	void update(const matrix::Vector<Type, M> &u)
+	മായാ ~BlockStats() = സ്ഥിരസ്ഥിതി;
+	ശൂന്യം update(സ്ഥിരം matrix::Vector<Type, M> &u)
 	{
 		_sum += u;
 		_sumSq += u.emult(u);
-		_count += 1;
+		എണ്ണം_3 += 1;
 	}
-	void reset()
+	ശൂന്യം reset()
 	{
 		_sum.setZero();
 		_sumSq.setZero();
-		_count = 0;
+		എണ്ണം_3 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
+	size_t get_എണ്ണം() { തിരികെ എണ്ണം_3; }
+	matrix::Vector<Type, M> getMean() { തിരികെ _sum / എണ്ണം_3; }
 	matrix::Vector<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		തിരികെ (_sumSq - _sum.emult(_sum) / എണ്ണം_3) / എണ്ണം_3;
 	}
 	matrix::Vector<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		തിരികെ getVar().sqrt();
 	}
-private:
+സ്വകാര്യ:
 // attributes
 	matrix::Vector<Type, M> _sum;
 	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+	size_t എണ്ണം_3;
 };
 
 } // namespace control

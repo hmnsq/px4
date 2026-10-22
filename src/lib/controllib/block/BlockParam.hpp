@@ -39,73 +39,73 @@
 
 #pragma once
 
-#include <containers/List.hpp>
-#include <px4_platform_common/defines.h>
-#include <parameters/param.h>
+#അന്തര്ഭാവ <containers/List.hpp>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <parameters/param.h>
 
-namespace control
+നാമാകാശ control
 {
 
-class Block;
+വർഗ്ഗം Block;
 
 // A base class for block params that enables traversing linked list.
-class BlockParamBase : public ListNode<BlockParamBase *>
+വർഗ്ഗം BlockParamBase : പൊതു List_കണ്ണി<BlockParamBase *>
 {
-public:
+പൊതു:
 	/**
 	 * Instantiate a block param base.
 	 *
 	 * @param parent_prefix Set to true to include the parent name in the parameter name
 	 */
-	BlockParamBase(Block *parent, const char *name, bool parent_prefix = true);
-	virtual ~BlockParamBase() = default;
+	BlockParamBase(Block *parent, സ്ഥിരം അക്ഷരം *name, തർക്കം parent_prefix = സത്യം);
+	മായാ ~BlockParamBase() = സ്ഥിരസ്ഥിതി;
 
-	virtual bool update() = 0;
-	const char *getName() const { return param_name(_handle); }
+	മായാ തർക്കം update() = 0;
+	സ്ഥിരം അക്ഷരം *getName() സ്ഥിരം { തിരികെ param_name(_handle); }
 
-protected:
+സംരക്ഷിത:
 	param_t _handle{PARAM_INVALID};
 };
 
 // Parameters that are tied to blocks for updating and naming.
-template <class T>
-class __EXPORT BlockParam final : public BlockParamBase
+template <വർഗ്ഗം T>
+വർഗ്ഗം __EXPORT BlockParam final : പൊതു BlockParamBase
 {
-public:
-	BlockParam(Block *block, const char *name, bool parent_prefix = true);
-	BlockParam(Block *block, const char *name, bool parent_prefix, T &extern_val);
+പൊതു:
+	BlockParam(Block *block, സ്ഥിരം അക്ഷരം *name, തർക്കം parent_prefix = സത്യം);
+	BlockParam(Block *block, സ്ഥിരം അക്ഷരം *name, തർക്കം parent_prefix, T &extern_val);
 
-	~BlockParam() override = default;
+	~BlockParam() override = സ്ഥിരസ്ഥിതി;
 
 	// no copy, assignment, move, move assignment
-	BlockParam(const BlockParam &) = delete;
-	BlockParam &operator=(const BlockParam &) = delete;
+	BlockParam(സ്ഥിരം BlockParam &) = delete;
+	BlockParam &operator=(സ്ഥിരം BlockParam &) = delete;
 	BlockParam(BlockParam &&) = delete;
 	BlockParam &operator=(BlockParam &&) = delete;
 
-	T get() const { return _val; }
+	T get() സ്ഥിരം { തിരികെ _val; }
 
 	// Store the parameter value to the parameter storage (@see param_set())
-	bool commit() { return (param_set(_handle, &_val) == PX4_OK); }
+	തർക്കം commit() { തിരികെ (param_set(_handle, &_val) == PX4_OK); }
 
 	// Store the parameter value to the parameter storage, w/o notifying the system (@see param_set_no_notification())
-	bool commit_no_notification() { return (param_set_no_notification(_handle, &_val) == PX4_OK); }
+	തർക്കം commit_no_notification() { തിരികെ (param_set_no_notification(_handle, &_val) == PX4_OK); }
 
-	void set(T val) { _val = val; }
+	ശൂന്യം set(T val) { _val = val; }
 
-	bool update() override { return (param_get(_handle, &_val) == PX4_OK); }
+	തർക്കം update() override { തിരികെ (param_get(_handle, &_val) == PX4_OK); }
 
-protected:
+സംരക്ഷിത:
 	T _val;
 };
 
 template <>
-bool BlockParam<bool>::update();
+തർക്കം BlockParam<തർക്കം>::update();
 
-typedef BlockParam<float> BlockParamFloat;
-typedef BlockParam<int32_t> BlockParamInt;
-typedef BlockParam<bool> BlockParamBool;
-typedef BlockParam<float &> BlockParamExtFloat;
-typedef BlockParam<int32_t &> BlockParamExtInt;
+തരനിർവചനം BlockParam<ദശാംശം> BlockParamFloat;
+തരനിർവചനം BlockParam<int32_t> BlockParamInt;
+തരനിർവചനം BlockParam<തർക്കം> BlockParamBool;
+തരനിർവചനം BlockParam<ദശാംശം &> BlockParamExtFloat;
+തരനിർവചനം BlockParam<int32_t &> BlockParamExtInt;
 
 } // namespace control

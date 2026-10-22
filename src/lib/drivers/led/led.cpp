@@ -37,11 +37,11 @@
  * LED driver to control the onboard LED(s) via ioctl interface.
  */
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/px4_config.h>
-#include <lib/cdev/CDev.hpp>
-#include <drivers/drv_board_led.h>
-#include <stdio.h>
+#അന്തര്ഭാവ <px4_platform_common/log.h>
+#അന്തര്ഭാവ <px4_platform_common/px4_config.h>
+#അന്തര്ഭാവ <lib/cdev/CDev.hpp>
+#അന്തര്ഭാവ <drivers/drv_board_led.h>
+#അന്തര്ഭാവ <stdio.h>
 
 /*
  * Ideally we'd be able to get these from arm_internal.h,
@@ -51,20 +51,20 @@
  * CONFIG_ARCH_LEDS configuration switch.
  */
 __BEGIN_DECLS
-extern void led_init();
-extern void led_on(int led);
-extern void led_off(int led);
-extern void led_toggle(int led);
+ബാഹ്യ ശൂന്യം led_init();
+ബാഹ്യ ശൂന്യം led_on(പൂർണ്ണസംഖ്യ led);
+ബാഹ്യ ശൂന്യം led_off(പൂർണ്ണസംഖ്യ led);
+ബാഹ്യ ശൂന്യം led_toggle(പൂർണ്ണസംഖ്യ led);
 __END_DECLS
 
-class LED : cdev::CDev
+വർഗ്ഗം LED : cdev::CDev
 {
-public:
+പൊതു:
 	LED();
-	~LED() override = default;
+	~LED() override = സ്ഥിരസ്ഥിതി;
 
-	int	init() override;
-	int	ioctl(cdev::file_t *filp, int cmd, unsigned long arg) override;
+	പൂർണ്ണസംഖ്യ	init() override;
+	പൂർണ്ണസംഖ്യ	ioctl(cdev::file_t *filp, പൂർണ്ണസംഖ്യ cmd, unsigned long arg) override;
 };
 
 LED::LED() : CDev(LED0_DEVICE_PATH)
@@ -73,7 +73,7 @@ LED::LED() : CDev(LED0_DEVICE_PATH)
 	init();
 }
 
-int
+പൂർണ്ണസംഖ്യ
 LED::init()
 {
 	PX4_DEBUG("LED::init");
@@ -82,43 +82,43 @@ LED::init()
 
 	led_init();
 
-	return 0;
+	തിരികെ 0;
 }
 
-int
-LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
+പൂർണ്ണസംഖ്യ
+LED::ioctl(cdev::file_t *filp, പൂർണ്ണസംഖ്യ cmd, unsigned long arg)
 {
-	int result = OK;
+	പൂർണ്ണസംഖ്യ result = OK;
 
-	switch (cmd) {
-	case LED_ON:
+	തിരഞ്ഞെടുപ്പ് (cmd) {
+	അവസ്ഥ LED_ON:
 		led_on(arg);
-		break;
+		നിർത്തുക;
 
-	case LED_OFF:
+	അവസ്ഥ LED_OFF:
 		led_off(arg);
-		break;
+		നിർത്തുക;
 
-	case LED_TOGGLE:
+	അവസ്ഥ LED_TOGGLE:
 		led_toggle(arg);
-		break;
+		നിർത്തുക;
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 		result = CDev::ioctl(filp, cmd, arg);
 	}
 
-	return result;
+	തിരികെ result;
 }
 
-namespace
+നാമാകാശ
 {
 LED	*gLED;
 }
 
-void
-drv_led_start(void)
+ശൂന്യം
+drv_led_start(ശൂന്യം)
 {
-	if (gLED == nullptr) {
-		gLED = new LED;
+	എങ്കിൽ (gLED == nullptr) {
+		gLED = പുതിയ LED;
 	}
 }

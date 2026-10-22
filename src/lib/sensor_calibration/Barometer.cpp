@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "Barometer.hpp"
+#അന്തര്ഭാവ "Barometer.hpp"
 
-#include "Utilities.hpp"
+#അന്തര്ഭാവ "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#അന്തര്ഭാവ <lib/drivers/device/Device.hpp>
+#അന്തര്ഭാവ <lib/parameters/param.h>
 
-using namespace matrix;
-using namespace time_literals;
+using നാമാകാശ matrix;
+using നാമാകാശ time_literals;
 
-namespace calibration
+നാമാകാശ calibration
 {
 
 Barometer::Barometer()
@@ -54,19 +54,19 @@ Barometer::Barometer(uint32_t device_id)
 	set_device_id(device_id);
 }
 
-Barometer::Barometer(uint32_t device_id, bool external)
+Barometer::Barometer(uint32_t device_id, തർക്കം external)
 {
 	set_device_id(device_id, external);
 }
 
-void Barometer::set_device_id(uint32_t device_id)
+ശൂന്യം Barometer::set_device_id(uint32_t device_id)
 {
 	set_device_id(device_id, device::device_is_external(device_id));
 }
 
-void Barometer::set_device_id(uint32_t device_id, bool external)
+ശൂന്യം Barometer::set_device_id(uint32_t device_id, തർക്കം external)
 {
-	if (_device_id != device_id || _external != external) {
+	എങ്കിൽ (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -74,42 +74,42 @@ void Barometer::set_device_id(uint32_t device_id, bool external)
 		Reset();
 
 		ParametersUpdate();
-		SensorCorrectionsUpdate(true);
+		SensorCorrectionsUpdate(സത്യം);
 	}
 }
 
-void Barometer::SensorCorrectionsUpdate(bool force)
+ശൂന്യം Barometer::SensorCorrectionsUpdate(തർക്കം force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	എങ്കിൽ (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		എങ്കിൽ (_device_id == 0) {
+			തിരികെ;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		എങ്കിൽ (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.baro_device_ids[i] == _device_id) {
-					switch (i) {
-					case 0:
+			വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < MAX_SENSOR_എണ്ണം; i++) {
+				എങ്കിൽ (corrections.baro_device_ids[i] == _device_id) {
+					തിരഞ്ഞെടുപ്പ് (i) {
+					അവസ്ഥ 0:
 						_thermal_offset = corrections.baro_offset_0;
-						return;
+						തിരികെ;
 
-					case 1:
+					അവസ്ഥ 1:
 						_thermal_offset = corrections.baro_offset_1;
-						return;
+						തിരികെ;
 
-					case 2:
+					അവസ്ഥ 2:
 						_thermal_offset = corrections.baro_offset_2;
-						return;
+						തിരികെ;
 
-					case 3:
+					അവസ്ഥ 3:
 						_thermal_offset = corrections.baro_offset_3;
-						return;
+						തിരികെ;
 					}
 				}
 			}
@@ -120,57 +120,57 @@ void Barometer::SensorCorrectionsUpdate(bool force)
 	}
 }
 
-bool Barometer::set_offset(const float &offset)
+തർക്കം Barometer::set_offset(സ്ഥിരം ദശാംശം &offset)
 {
-	if (fabsf(_offset - offset) > 0.01f) {
-		if (PX4_ISFINITE(offset)) {
+	എങ്കിൽ (fabsf(_offset - offset) > 0.01f) {
+		എങ്കിൽ (PX4_ISFINITE(offset)) {
 			_offset = offset;
-			_calibration_count++;
-			return true;
+			calibration_എണ്ണം++;
+			തിരികെ സത്യം;
 		}
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-bool Barometer::set_calibration_index(int calibration_index)
+തർക്കം Barometer::set_calibration_index(പൂർണ്ണസംഖ്യ calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	എങ്കിൽ ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_എണ്ണം)) {
 		_calibration_index = calibration_index;
-		return true;
+		തിരികെ സത്യം;
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void Barometer::ParametersUpdate()
+ശൂന്യം Barometer::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	എങ്കിൽ (_device_id == 0) {
+		തിരികെ;
 	}
 
 	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	എങ്കിൽ (_calibration_index == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		ParametersLoad();
 	}
 }
 
-bool Barometer::ParametersLoad()
+തർക്കം Barometer::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	എങ്കിൽ (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_എണ്ണം) {
 		// CAL_BAROx_PRIO
 		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		എങ്കിൽ ((_priority < 0) || (_priority > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
-			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
+			സ്ഥിതം constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			എങ്കിൽ (_priority != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
 					_calibration_index, _priority);
 
@@ -183,13 +183,13 @@ bool Barometer::ParametersLoad()
 		// CAL_BAROx_OFF
 		set_offset(GetCalibrationParamFloat(SensorString(), "OFF", _calibration_index));
 
-		return true;
+		തിരികെ സത്യം;
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void Barometer::Reset()
+ശൂന്യം Barometer::Reset()
 {
 	_offset = 0;
 
@@ -199,56 +199,56 @@ void Barometer::Reset()
 
 	_calibration_index = -1;
 
-	_calibration_count = 0;
+	calibration_എണ്ണം = 0;
 }
 
-bool Barometer::ParametersSave(int desired_calibration_index, bool force)
+തർക്കം Barometer::ParametersSave(പൂർണ്ണസംഖ്യ desired_calibration_index, തർക്കം force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	എങ്കിൽ (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_എണ്ണം) {
 		_calibration_index = desired_calibration_index;
 
-	} else if (!force || (_calibration_index < 0)
+	} അല്ലെങ്കിൽ എങ്കിൽ (!force || (_calibration_index < 0)
 		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
 		int8_t calibration_index_prev = _calibration_index;
 		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		എങ്കിൽ (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
 				 calibration_index_prev, _calibration_index);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	എങ്കിൽ (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_എണ്ണം) {
 		// save calibration
-		bool success = true;
+		തർക്കം success = സത്യം;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
 		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
 		success &= SetCalibrationParam(SensorString(), "OFF", _calibration_index, _offset);
 
-		return success;
+		തിരികെ success;
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void Barometer::PrintStatus()
+ശൂന്യം Barometer::PrintStatus()
 {
-	if (external()) {
+	എങ്കിൽ (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: %05.3f, Ext\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset);
+			     (ഇരട്ട)_offset);
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		PX4_INFO_RAW("%s %" PRIu32 " EN: %d, offset: %05.3f, Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset);
+			     (ഇരട്ട)_offset);
 	}
 
-	if (fabsf(_thermal_offset) > 0.f) {
-		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: %.4f\n", SensorString(), _device_id, (double)_thermal_offset);
+	എങ്കിൽ (fabsf(_thermal_offset) > 0.f) {
+		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: %.4f\n", SensorString(), _device_id, (ഇരട്ട)_thermal_offset);
 	}
 }
 

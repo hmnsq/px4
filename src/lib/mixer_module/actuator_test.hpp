@@ -33,45 +33,45 @@
 
 #pragma once
 
-#include <mixer_module/output_functions.hpp>
+#അന്തര്ഭാവ <mixer_module/output_functions.hpp>
 
-#include <drivers/drv_pwm_output.h>
-#include <uORB/topics/actuator_test.h>
-#include <uORB/topics/actuator_motors.h>
-#include <uORB/topics/actuator_servos_trim.h>
-#include <uORB/Subscription.hpp>
+#അന്തര്ഭാവ <drivers/drv_pwm_output.h>
+#അന്തര്ഭാവ <uORB/topics/actuator_test.h>
+#അന്തര്ഭാവ <uORB/topics/actuator_motors.h>
+#അന്തര്ഭാവ <uORB/topics/actuator_servos_trim.h>
+#അന്തര്ഭാവ <uORB/Subscription.hpp>
 
-static_assert(actuator_test_s::FUNCTION_MOTOR1 == (int)OutputFunction::Motor1, "define mismatch");
-static_assert(actuator_test_s::MAX_NUM_MOTORS == (int)OutputFunction::MotorMax - (int)OutputFunction::Motor1 + 1,
+static_assert(actuator_test_s::FUNCTION_MOTOR1 == (പൂർണ്ണസംഖ്യ)OutputFunction::Motor1, "define mismatch");
+static_assert(actuator_test_s::MAX_അക്കം_MOTORS == (പൂർണ്ണസംഖ്യ)OutputFunction::MotorMax - (പൂർണ്ണസംഖ്യ)OutputFunction::Motor1 + 1,
 	      "count mismatch");
-static_assert(actuator_test_s::FUNCTION_SERVO1 == (int)OutputFunction::Servo1, "define mismatch");
-static_assert(actuator_test_s::MAX_NUM_SERVOS == (int)OutputFunction::ServoMax - (int)OutputFunction::Servo1 + 1,
+static_assert(actuator_test_s::FUNCTION_SERVO1 == (പൂർണ്ണസംഖ്യ)OutputFunction::Servo1, "define mismatch");
+static_assert(actuator_test_s::MAX_അക്കം_SERVOS == (പൂർണ്ണസംഖ്യ)OutputFunction::ServoMax - (പൂർണ്ണസംഖ്യ)OutputFunction::Servo1 + 1,
 	      "count mismatch");
 
-class ActuatorTest
+വർഗ്ഗം ActuatorTest
 {
-public:
-	static constexpr int MAX_ACTUATORS = PWM_OUTPUT_MAX_CHANNELS;
+പൊതു:
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ MAX_ACTUATORS = PWM_OUTPUT_MAX_CHANNELS;
 
-	ActuatorTest(const OutputFunction function_assignments[MAX_ACTUATORS]);
+	ActuatorTest(സ്ഥിരം OutputFunction function_assignments[MAX_ACTUATORS]);
 
-	void reset();
+	ശൂന്യം reset();
 
-	void update(int num_outputs, float thrust_curve);
+	ശൂന്യം update(പൂർണ്ണസംഖ്യ അക്കം_outputs, ദശാംശം thrust_curve);
 
-	void overrideValues(float outputs[MAX_ACTUATORS], int num_outputs);
+	ശൂന്യം override_മൂല്യങ്ങൾ(ദശാംശം outputs[MAX_ACTUATORS], പൂർണ്ണസംഖ്യ അക്കം_outputs);
 
-	bool inTestMode() const { return _in_test_mode; }
+	തർക്കം inTestMode() സ്ഥിരം { തിരികെ _in_test_mode; }
 
-private:
+സ്വകാര്യ:
 
 	uORB::Subscription _actuator_test_sub{ORB_ID(actuator_test)};
 	uORB::Subscription _actuator_motors_sub{ORB_ID(actuator_motors)};
 	uORB::Subscription _actuator_servos_trim_sub{ORB_ID(actuator_servos_trim)};
-	bool _in_test_mode{false};
+	തർക്കം _in_test_mode{അസത്യം};
 	hrt_abstime _next_timeout{0};
 
-	float _current_outputs[MAX_ACTUATORS];
-	bool _output_overridden[MAX_ACTUATORS];
-	const OutputFunction *_function_assignments;
+	ദശാംശം _current_outputs[MAX_ACTUATORS];
+	തർക്കം _output_overridden[MAX_ACTUATORS];
+	സ്ഥിരം OutputFunction *_function_assignments;
 };

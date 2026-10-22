@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#include "RtcmTestCommon.hpp"
+#അന്തര്ഭാവ "RtcmTestCommon.hpp"
 
 TEST_F(RtcmTest, BustedSender_AllZeros)
 {
@@ -64,16 +64,16 @@ TEST_F(RtcmTest, BustedSender_RandomNoise)
 	std::mt19937 rng(12345);
 	uint8_t noise[500];
 
-	for (size_t i = 0; i < sizeof(noise); i++) {
+	വേണ്ടി (size_t i = 0; i < വലുപ്പം(noise); i++) {
 		noise[i] = rng() & 0xFF;
 	}
 
-	parser.addData(noise, sizeof(noise));
+	parser.addData(noise, വലുപ്പം(noise));
 
 	size_t len;
 
 	// Consume any messages that might accidentally form (unlikely but possible)
-	while (parser.getNextMessage(&len) != nullptr) {
+	ആകുമ്പോൾ (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
 	}
 
@@ -100,7 +100,7 @@ TEST_F(RtcmTest, BustedSender_ValidHeaderBadCrc)
 
 TEST_F(RtcmTest, BustedSender_RepeatedBadCrcFrames)
 {
-	for (int i = 0; i < 100; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < 100; i++) {
 		auto bad = buildBadCrcFrame({static_cast<uint8_t>(i), 0x00});
 		parser.addData(bad.data(), bad.size());
 	}
@@ -109,12 +109,12 @@ TEST_F(RtcmTest, BustedSender_RepeatedBadCrcFrames)
 	// than what is buffered, which parks the framer until the rest arrives (see
 	// BustedSender_AllPreambles). Feed a frame's worth of non-preamble filler so
 	// every pending candidate can be resolved, as a live stream would.
-	const std::vector<uint8_t> filler(CorrectionFramer::MAX_FRAME_LEN, 0x00);
+	സ്ഥിരം std::vector<uint8_t> filler(CorrectionFramer::MAX_FRAME_LEN, 0x00);
 	parser.addData(filler.data(), filler.size());
 
 	size_t len;
 
-	while (parser.getNextMessage(&len) != nullptr) {
+	ആകുമ്പോൾ (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
 	}
 

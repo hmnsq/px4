@@ -36,20 +36,20 @@
  * Run this test only using make tests TESTFILTER=system_identification
  */
 
-#include <gtest/gtest.h>
-#include <matrix/matrix/math.hpp>
+#അന്തര്ഭാവ <gtest/gtest.h>
+#അന്തര്ഭാവ <matrix/matrix/math.hpp>
 
-#include "system_identification.hpp"
-#include "test_data.h"
+#അന്തര്ഭാവ "system_identification.hpp"
+#അന്തര്ഭാവ "test_data.h"
 
-using namespace matrix;
+using നാമാകാശ matrix;
 
-class SystemIdentificationTest : public ::testing::Test
+വർഗ്ഗം SystemIdentificationTest : പൊതു ::testing::Test
 {
-public:
+പൊതു:
 	SystemIdentificationTest() {};
-	float apply(float sample);
-	void setCoefficients(float a1, float a2, float b0, float b1, float b2)
+	ദശാംശം apply(ദശാംശം sample);
+	ശൂന്യം setCoefficients(ദശാംശം a1, ദശാംശം a2, ദശാംശം b0, ദശാംശം b1, ദശാംശം b2)
 	{
 		_a1 = a1;
 		_a2 = a2;
@@ -58,50 +58,50 @@ public:
 		_b2 = b2;
 	}
 
-private:
-	float _a1{};
-	float _a2{};
-	float _b0{};
-	float _b1{};
-	float _b2{};
-	float _delay_element_1{};
-	float _delay_element_2{};
+സ്വകാര്യ:
+	ദശാംശം _a1{};
+	ദശാംശം _a2{};
+	ദശാംശം _b0{};
+	ദശാംശം _b1{};
+	ദശാംശം _b2{};
+	ദശാംശം _delay_element_1{};
+	ദശാംശം _delay_element_2{};
 };
 
-float SystemIdentificationTest::apply(float sample)
+ദശാംശം SystemIdentificationTest::apply(ദശാംശം sample)
 {
 	// Direct Form II implementation
-	const float delay_element_0{sample - _delay_element_1 *_a1 - _delay_element_2 * _a2};
-	const float output{delay_element_0 *_b0 + _delay_element_1 *_b1 + _delay_element_2 * _b2};
+	സ്ഥിരം ദശാംശം delay_element_0{sample - _delay_element_1 *_a1 - _delay_element_2 * _a2};
+	സ്ഥിരം ദശാംശം output{delay_element_0 *_b0 + _delay_element_1 *_b1 + _delay_element_2 * _b2};
 
 	_delay_element_2 = _delay_element_1;
 	_delay_element_1 = delay_element_0;
 
-	return output;
+	തിരികെ output;
 }
 
 TEST_F(SystemIdentificationTest, basicTest)
 {
-	constexpr float fs = 800.f;
+	constexpr ദശാംശം fs = 800.f;
 
 	SystemIdentification _sys_id;
 	_sys_id.setHpfCutoffFrequency(fs, 0.05f);
 	_sys_id.setLpfCutoffFrequency(fs, 30.f);
 	_sys_id.setForgettingFactor(80.f, 1.f / fs);
 
-	for (int i = 0; i < 5; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < 5; i++) {
 		// Fill the buffers with zeros
 		_sys_id.update(0.f, 0.f);
 	}
 
-	for (int i = 0; i < 10; i += 2) {
-		_sys_id.update(float(i), float(i + 1));
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < 10; i += 2) {
+		_sys_id.update(ദശാംശം(i), ദശാംശം(i + 1));
 	}
 
-	const Vector<float, 5> coefficients = _sys_id.getCoefficients();
-	float data_check[] = {-3.96f, 1.30f, -2.28f, -0.33f, 0.369f};
-	const Vector<float, 5> coefficients_check(data_check);
-	float eps = 1e-2;
+	സ്ഥിരം Vector<ദശാംശം, 5> coefficients = _sys_id.getCoefficients();
+	ദശാംശം data_check[] = {-3.96f, 1.30f, -2.28f, -0.33f, 0.369f};
+	സ്ഥിരം Vector<ദശാംശം, 5> coefficients_check(data_check);
+	ദശാംശം eps = 1e-2;
 	EXPECT_TRUE((coefficients - coefficients_check).abs().max() < eps);
 	coefficients.print();
 	_sys_id.getVariances().print();
@@ -109,18 +109,18 @@ TEST_F(SystemIdentificationTest, basicTest)
 
 TEST_F(SystemIdentificationTest, resetTest)
 {
-	constexpr float fs = 800.f;
+	constexpr ദശാംശം fs = 800.f;
 
 	SystemIdentification _sys_id;
 	_sys_id.setHpfCutoffFrequency(fs, 0.05f);
 	_sys_id.setLpfCutoffFrequency(fs, 30.f);
 	_sys_id.setForgettingFactor(80.f, 1.f / fs);
 
-	for (int i = 0; i < 10; i += 2) {
-		_sys_id.update(float(i), float(i + 1));
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < 10; i += 2) {
+		_sys_id.update(ദശാംശം(i), ദശാംശം(i + 1));
 	}
 
-	const Vector<float, 5> coefficients = _sys_id.getCoefficients();
+	സ്ഥിരം Vector<ദശാംശം, 5> coefficients = _sys_id.getCoefficients();
 
 	// WHEN: resetting
 	_sys_id.reset();
@@ -131,8 +131,8 @@ TEST_F(SystemIdentificationTest, resetTest)
 
 	// AND WHEN: running the same sequence of inputs-outputs
 
-	for (int i = 0; i < 10; i += 2) {
-		_sys_id.update(float(i), float(i + 1));
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < 10; i += 2) {
+		_sys_id.update(ദശാംശം(i), ദശാംശം(i + 1));
 	}
 
 	// THEN: the result should be exactly the same
@@ -143,8 +143,8 @@ TEST_F(SystemIdentificationTest, resetTest)
 
 TEST_F(SystemIdentificationTest, simulatedModelTest)
 {
-	constexpr float fs = 200.f;
-	const float gyro_lpf_cutoff = 30.f;
+	constexpr ദശാംശം fs = 200.f;
+	സ്ഥിരം ദശാംശം gyro_lpf_cutoff = 30.f;
 
 	SystemIdentification _sys_id;
 	_sys_id.setHpfCutoffFrequency(fs, 0.05f);
@@ -152,29 +152,29 @@ TEST_F(SystemIdentificationTest, simulatedModelTest)
 	_sys_id.setForgettingFactor(60.f, 1.f / fs);
 
 	// Simulated model with integrator
-	const float a1 = -1.77f;
-	const float a2 = 0.77f;
-	const float b0 = 0.3812f;
-	const float b1 = -0.25f;
-	const float b2 = 0.2f;
+	സ്ഥിരം ദശാംശം a1 = -1.77f;
+	സ്ഥിരം ദശാംശം a2 = 0.77f;
+	സ്ഥിരം ദശാംശം b0 = 0.3812f;
+	സ്ഥിരം ദശാംശം b1 = -0.25f;
+	സ്ഥിരം ദശാംശം b2 = 0.2f;
 	setCoefficients(a1, a2, b0, b1, b2);
-	const float u_bias = -0.1f; // constant control offset
-	const float y_bias = 0.2f; // measurement bias
+	സ്ഥിരം ദശാംശം u_bias = -0.1f; // constant control offset
+	സ്ഥിരം ദശാംശം y_bias = 0.2f; // measurement bias
 
-	const float dt = 1.f / fs;
-	const float duration = 2.f;
-	float u = 0.f;
-	float y = 0.f;
+	സ്ഥിരം ദശാംശം dt = 1.f / fs;
+	സ്ഥിരം ദശാംശം duration = 2.f;
+	ദശാംശം u = 0.f;
+	ദശാംശം y = 0.f;
 
-	for (int i = 0; i < static_cast<int>(duration / dt); i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < static_cast<പൂർണ്ണസംഖ്യ>(duration / dt); i++) {
 
 		// Generate square input signal
-		if (_sys_id.areFiltersInitialized()
+		എങ്കിൽ (_sys_id.areFiltersInitialized()
 		    && (i % 30 == 0)) {
-			if (u > 0.f) {
+			എങ്കിൽ (u > 0.f) {
 				u = -1.f;
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				u = 1.f;
 			}
 		}
@@ -182,16 +182,16 @@ TEST_F(SystemIdentificationTest, simulatedModelTest)
 		_sys_id.update(u + u_bias, y + y_bias); // apply new input and previous output
 
 		y = apply(u);
-#if 0
-		const float t = i * dt;
-		printf("%.6f, %.6f, %.6f\n", (double)t, (double)u, (double)y);
+#എങ്കിൽ 0
+		സ്ഥിരം ദശാംശം t = i * dt;
+		printf("%.6f, %.6f, %.6f\n", (ഇരട്ട)t, (ഇരട്ട)u, (ഇരട്ട)y);
 #endif
 	}
 
-	const Vector<float, 5> coefficients = _sys_id.getCoefficients();
-	float data_check[] = {a1, a2, b0, b1, b2};
-	const Vector<float, 5> coefficients_check(data_check);
-	float eps = 1e-3;
+	സ്ഥിരം Vector<ദശാംശം, 5> coefficients = _sys_id.getCoefficients();
+	ദശാംശം data_check[] = {a1, a2, b0, b1, b2};
+	സ്ഥിരം Vector<ദശാംശം, 5> coefficients_check(data_check);
+	ദശാംശം eps = 1e-3;
 	EXPECT_TRUE((coefficients - coefficients_check).abs().max() < eps);
 	coefficients.print();
 	_sys_id.getVariances().print();
@@ -199,44 +199,44 @@ TEST_F(SystemIdentificationTest, simulatedModelTest)
 
 TEST_F(SystemIdentificationTest, realDataTest)
 {
-	static constexpr int n_samples_dt_avg = 100;
-	static constexpr int n_samples_test_data = sizeof(u_data) / sizeof(u_data[0]);
-	float dt_sum = 0.f;
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ n_samples_dt_avg = 100;
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ n_samples_test_data = വലുപ്പം(u_data) / വലുപ്പം(u_data[0]);
+	ദശാംശം dt_sum = 0.f;
 
-	for (int i = 1; i <= n_samples_dt_avg; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 1; i <= n_samples_dt_avg; i++) {
 		dt_sum += t_data[i] - t_data[i - 1];
 	}
 
-	const float dt = dt_sum / n_samples_dt_avg;
-	const float fs = 1.f / dt;
+	സ്ഥിരം ദശാംശം dt = dt_sum / n_samples_dt_avg;
+	സ്ഥിരം ദശാംശം fs = 1.f / dt;
 
-	printf("dt = %.6f fs = %.3f\n", (double)dt, (double)(1.f / dt));
+	printf("dt = %.6f fs = %.3f\n", (ഇരട്ട)dt, (ഇരട്ട)(1.f / dt));
 
-	const float gyro_lpf_cutoff = 30.f;
+	സ്ഥിരം ദശാംശം gyro_lpf_cutoff = 30.f;
 
 	SystemIdentification _sys_id;
 	_sys_id.setHpfCutoffFrequency(fs, 0.05f);
 	_sys_id.setLpfCutoffFrequency(fs, gyro_lpf_cutoff);
 	_sys_id.setForgettingFactor(60.f, dt);
 
-	float u = 0.f;
-	float y_prev = 0.f;
+	ദശാംശം u = 0.f;
+	ദശാംശം y_prev = 0.f;
 
-	for (int i = 0; i < n_samples_test_data; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < n_samples_test_data; i++) {
 		u = u_data[i];
 		_sys_id.update(u, y_prev); // apply new input and previous output
 
 		y_prev = y_data[i];
 
-#if 0
-		printf("%.6f, %.6f, %.6f\n", (double)t_data[i], (double)u, (double)y);
+#എങ്കിൽ 0
+		printf("%.6f, %.6f, %.6f\n", (ഇരട്ട)t_data[i], (ഇരട്ട)u, (ഇരട്ട)y);
 #endif
 	}
 
-	const Vector<float, 5> coefficients = _sys_id.getCoefficients();
-	float data_check[] = {-1.916f, 0.916, -0.017f, -0.001f, 0.036f};
-	const Vector<float, 5> coefficients_check(data_check);
-	float eps = 1e-3;
+	സ്ഥിരം Vector<ദശാംശം, 5> coefficients = _sys_id.getCoefficients();
+	ദശാംശം data_check[] = {-1.916f, 0.916, -0.017f, -0.001f, 0.036f};
+	സ്ഥിരം Vector<ദശാംശം, 5> coefficients_check(data_check);
+	ദശാംശം eps = 1e-3;
 	EXPECT_TRUE((coefficients - coefficients_check).abs().max() < eps);
 	coefficients.print();
 	_sys_id.getVariances().print();

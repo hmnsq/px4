@@ -10,51 +10,51 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#അന്തര്ഭാവ "Vector.hpp"
 
-namespace matrix
+നാമാകാശ matrix
 {
 // Vector that only store nonzero elements,
 // which indices are specified as parameter pack
 template<typename Type, size_t M, size_t... Idxs>
-class SparseVector
+വർഗ്ഗം SparseVector
 {
-private:
-	enum : size_t { N = sizeof...(Idxs) };
+സ്വകാര്യ:
+	എണ്ണൽ : size_t { N = വലുപ്പം...(Idxs) };
 
-	static constexpr bool duplicateIndices()
+	സ്ഥിതം constexpr തർക്കം duplicateIndices()
 	{
 		constexpr size_t indicies[] {Idxs...};
 
-		for (size_t i = 0; i < N; i++) {
-			for (size_t j = 0; j < i; j++) {
-				if (indicies[i] == indicies[j]) {
-					return true;
+		വേണ്ടി (size_t i = 0; i < N; i++) {
+			വേണ്ടി (size_t j = 0; j < i; j++) {
+				എങ്കിൽ (indicies[i] == indicies[j]) {
+					തിരികെ സത്യം;
 				}
 			}
 		}
 
-		return false;
+		തിരികെ അസത്യം;
 	}
 
-	static constexpr size_t findMaxIndex()
+	സ്ഥിതം constexpr size_t findMaxIndex()
 	{
 		constexpr size_t indicies[] {Idxs...};
 		size_t maxIndex = 0;
 
-		for (size_t i = 0; i < N; i++) {
-			if (maxIndex < indicies[i]) {
+		വേണ്ടി (size_t i = 0; i < N; i++) {
+			എങ്കിൽ (maxIndex < indicies[i]) {
 				maxIndex = indicies[i];
 			}
 		}
 
-		return maxIndex;
+		തിരികെ maxIndex;
 	}
 
-	static constexpr size_t indexAt(size_t i)
+	സ്ഥിതം constexpr size_t indexAt(size_t i)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		return indicies[i];
+		തിരികെ indicies[i];
 	}
 
 	static_assert(!duplicateIndices(), "Duplicate indices");
@@ -64,167 +64,167 @@ private:
 
 	Type _data[N] {};
 
-	static constexpr int findCompressedIndex(size_t index)
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ findCompressedIndex(size_t index)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		int compressedIndex = -1;
+		പൂർണ്ണസംഖ്യ compressedIndex = -1;
 
-		for (size_t i = 0; i < N; i++) {
-			if (index == indicies[i]) {
-				compressedIndex = static_cast<int>(i);
+		വേണ്ടി (size_t i = 0; i < N; i++) {
+			എങ്കിൽ (index == indicies[i]) {
+				compressedIndex = static_cast<പൂർണ്ണസംഖ്യ>(i);
 			}
 		}
 
-		return compressedIndex;
+		തിരികെ compressedIndex;
 	}
 
-public:
-	constexpr size_t non_zeros() const
+പൊതു:
+	constexpr size_t non_zeros() സ്ഥിരം
 	{
-		return N;
+		തിരികെ N;
 	}
 
-	constexpr size_t index(size_t i) const
+	constexpr size_t index(size_t i) സ്ഥിരം
 	{
-		return indexAt(i);
+		തിരികെ indexAt(i);
 	}
 
-	SparseVector() = default;
+	SparseVector() = സ്ഥിരസ്ഥിതി;
 
-	SparseVector(const matrix::Vector<Type, M> &data)
+	SparseVector(സ്ഥിരം matrix::Vector<Type, M> &data)
 	{
-		for (size_t i = 0; i < N; i++) {
+		വേണ്ടി (size_t i = 0; i < N; i++) {
 			_data[i] = data(indexAt(i));
 		}
 	}
 
-	explicit SparseVector(const Type data[N])
+	explicit SparseVector(സ്ഥിരം Type data[N])
 	{
-		memcpy(_data, data, sizeof(_data));
+		memcpy(_data, data, വലുപ്പം(_data));
 	}
 
 	template <size_t i>
-	inline Type at() const
+	വരിയിൽ Type at() സ്ഥിരം
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
+		constexpr പൂർണ്ണസംഖ്യ compressed_index = findCompressedIndex(i);
 		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		തിരികെ _data[compressed_index];
 	}
 
 	template <size_t i>
-	inline Type &at()
+	വരിയിൽ Type &at()
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
+		constexpr പൂർണ്ണസംഖ്യ compressed_index = findCompressedIndex(i);
 		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		തിരികെ _data[compressed_index];
 	}
 
-	inline Type atCompressedIndex(size_t i) const
+	വരിയിൽ Type atCompressedIndex(size_t i) സ്ഥിരം
 	{
-		assert(i < N);
-		return _data[i];
+		പ്രതിജ്ഞാ(i < N);
+		തിരികെ _data[i];
 	}
 
-	inline Type &atCompressedIndex(size_t i)
+	വരിയിൽ Type &atCompressedIndex(size_t i)
 	{
-		assert(i < N);
-		return _data[i];
+		പ്രതിജ്ഞാ(i < N);
+		തിരികെ _data[i];
 	}
 
-	void setZero()
+	ശൂന്യം setZero()
 	{
-		for (size_t i = 0; i < N; i++) {
+		വേണ്ടി (size_t i = 0; i < N; i++) {
 			_data[i] = Type(0);
 		}
 	}
 
-	Type dot(const matrix::Vector<Type, M> &other) const
+	Type dot(സ്ഥിരം matrix::Vector<Type, M> &other) സ്ഥിരം
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
+		വേണ്ടി (size_t i = 0; i < N; i++) {
 			accum += _data[i] * other(indexAt(i));
 		}
 
-		return accum;
+		തിരികെ accum;
 	}
 
-	matrix::Vector<Type, M> operator+(const matrix::Vector<Type, M> &other) const
+	matrix::Vector<Type, M> operator+(സ്ഥിരം matrix::Vector<Type, M> &other) സ്ഥിരം
 	{
 		matrix::Vector<Type, M> vec = other;
 
-		for (size_t i = 0; i < N; i++) {
+		വേണ്ടി (size_t i = 0; i < N; i++) {
 			vec(indexAt(i)) +=  _data[i];
 		}
 
-		return vec;
+		തിരികെ vec;
 	}
 
 	SparseVector &operator+=(Type t)
 	{
-		for (size_t i = 0; i < N; i++) {
+		വേണ്ടി (size_t i = 0; i < N; i++) {
 			_data[i] += t;
 		}
 
-		return *this;
+		തിരികെ *ഇത്;
 	}
 
-	Type norm_squared() const
+	Type norm_squared() സ്ഥിരം
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
+		വേണ്ടി (size_t i = 0; i < N; i++) {
 			accum += _data[i] * _data[i];
 		}
 
-		return accum;
+		തിരികെ accum;
 	}
 
-	Type norm() const
+	Type norm() സ്ഥിരം
 	{
-		return std::sqrt(norm_squared());
+		തിരികെ std::sqrt(norm_squared());
 	}
 
-	bool longerThan(Type testVal) const
+	തർക്കം longerThan(Type testVal) സ്ഥിരം
 	{
-		return norm_squared() > testVal * testVal;
+		തിരികെ norm_squared() > testVal * testVal;
 	}
 };
 
 template<typename Type, size_t Q, size_t M, size_t ... Idxs>
-matrix::Vector<Type, Q> operator*(const matrix::Matrix<Type, Q, M> &mat,
-				  const matrix::SparseVector<Type, M, Idxs...> &vec)
+matrix::Vector<Type, Q> operator*(സ്ഥിരം matrix::Matrix<Type, Q, M> &mat,
+				  സ്ഥിരം matrix::SparseVector<Type, M, Idxs...> &vec)
 {
 	matrix::Vector<Type, Q> res;
 
-	for (size_t i = 0; i < Q; i++) {
-		const Vector<Type, M> row = mat.row(i);
+	വേണ്ടി (size_t i = 0; i < Q; i++) {
+		സ്ഥിരം Vector<Type, M> row = mat.row(i);
 		res(i) = vec.dot(row);
 	}
 
-	return res;
+	തിരികെ res;
 }
 
 // returns x.T * A * x
 template<typename Type, size_t M, size_t ... Idxs>
-Type quadraticForm(const matrix::SquareMatrix<Type, M> &A, const matrix::SparseVector<Type, M, Idxs...> &x)
+Type quadraticForm(സ്ഥിരം matrix::SquareMatrix<Type, M> &A, സ്ഥിരം matrix::SparseVector<Type, M, Idxs...> &x)
 {
 	Type res = Type(0);
 
-	for (size_t i = 0; i < x.non_zeros(); i++) {
+	വേണ്ടി (size_t i = 0; i < x.non_zeros(); i++) {
 		Type tmp = Type(0);
 
-		for (size_t j = 0; j < x.non_zeros(); j++) {
+		വേണ്ടി (size_t j = 0; j < x.non_zeros(); j++) {
 			tmp += A(x.index(i), x.index(j)) * x.atCompressedIndex(j);
 		}
 
 		res += x.atCompressedIndex(i) * tmp;
 	}
 
-	return res;
+	തിരികെ res;
 }
 
 template<size_t M, size_t ... Idxs>
-using SparseVectorf = SparseVector<float, M, Idxs...>;
+using SparseVectorf = SparseVector<ദശാംശം, M, Idxs...>;
 
 }

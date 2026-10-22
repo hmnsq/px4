@@ -33,36 +33,36 @@
 
 #pragma once
 
-#include <math.h>
+#അന്തര്ഭാവ <math.h>
 
-#include <drivers/drv_hrt.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/sensor_baro.h>
+#അന്തര്ഭാവ <drivers/drv_hrt.h>
+#അന്തര്ഭാവ <uORB/PublicationMulti.hpp>
+#അന്തര്ഭാവ <uORB/topics/sensor_baro.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#അന്തര്ഭാവ <lib/failure_injection/FailureInjection.hpp>
 
-class PX4Barometer
+വർഗ്ഗം PX4Barometer
 {
-public:
+പൊതു:
 	PX4Barometer(uint32_t device_id);
-	PX4Barometer(uint32_t device_id, bool external);
+	PX4Barometer(uint32_t device_id, തർക്കം external);
 
-	void set_device_id(uint32_t device_id);
-	void set_external(bool external);
-	void set_error_count(uint32_t error_count) { _report.error_count = error_count; }
-	void set_temperature(float temperature) { _report.temperature = temperature; }
+	ശൂന്യം set_device_id(uint32_t device_id);
+	ശൂന്യം set_external(തർക്കം external);
+	ശൂന്യം set_error_എണ്ണം(uint32_t error_എണ്ണം) { _report.error_എണ്ണം = error_എണ്ണം; }
+	ശൂന്യം set_temperature(ദശാംശം temperature) { _report.temperature = temperature; }
 
-	void update(const hrt_abstime &timestamp_sample, float pressure);
+	ശൂന്യം update(സ്ഥിരം hrt_abstime &timestamp_sample, ദശാംശം pressure);
 
-	int get_instance() { return _sensor_pub.get_instance(); };
-	uint32_t get_device_id() const { return _report.device_id; }
+	പൂർണ്ണസംഖ്യ get_instance() { തിരികെ _sensor_pub.get_instance(); };
+	uint32_t get_device_id() സ്ഥിരം { തിരികെ _report.device_id; }
 
-private:
+സ്വകാര്യ:
 	uORB::PublicationMulti<sensor_baro_s> _sensor_pub{ORB_ID(sensor_baro)};
 
 	sensor_baro_s	_report{};
 
-	bool		_external_forced{false}; // classification set by the driver, do not re-derive from the device id
+	തർക്കം		_external_forced{അസത്യം}; // classification set by the driver, do not re-derive from the device id
 
 	failure_injection::Config _failure_config;
 	failure_injection::Stuck<sensor_baro_s> _stuck;

@@ -36,31 +36,31 @@
  *
  * NuttX Character device functions
  */
-#include <errno.h>
+#അന്തര്ഭാവ <errno.h>
 
-#include "cdev_platform.hpp"
-#include "../CDev.hpp"
+#അന്തര്ഭാവ "cdev_platform.hpp"
+#അന്തര്ഭാവ "../CDev.hpp"
 
-#include <sys/ioctl.h>
+#അന്തര്ഭാവ <sys/ioctl.h>
 
 #ifdef CONFIG_DISABLE_POLL
 # error This driver is not compatible with CONFIG_DISABLE_POLL
 #endif
 
-namespace cdev
+നാമാകാശ cdev
 {
 
 /*
  * The standard NuttX operation dispatch table can't call C++ member functions
  * directly, so we have to bounce them through this dispatch table.
  */
-static int	cdev_open(file_t *filp);
-static int	cdev_close(file_t *filp);
-static ssize_t	cdev_read(file_t *filp, char *buffer, size_t buflen);
-static ssize_t	cdev_write(file_t *filp, const char *buffer, size_t buflen);
-static off_t	cdev_seek(file_t *filp, off_t offset, int whence);
-static int	cdev_ioctl(file_t *filp, int cmd, unsigned long arg);
-static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
+സ്ഥിതം പൂർണ്ണസംഖ്യ	cdev_open(file_t *filp);
+സ്ഥിതം പൂർണ്ണസംഖ്യ	cdev_close(file_t *filp);
+സ്ഥിതം ssize_t	cdev_read(file_t *filp, അക്ഷരം *buffer, size_t buflen);
+സ്ഥിതം ssize_t	cdev_write(file_t *filp, സ്ഥിരം അക്ഷരം *buffer, size_t buflen);
+സ്ഥിതം off_t	cdev_seek(file_t *filp, off_t offset, പൂർണ്ണസംഖ്യ whence);
+സ്ഥിതം പൂർണ്ണസംഖ്യ	cdev_ioctl(file_t *filp, പൂർണ്ണസംഖ്യ cmd, unsigned long arg);
+സ്ഥിതം പൂർണ്ണസംഖ്യ	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, തർക്കം setup);
 
 /**
  * Character device indirection table.
@@ -71,11 +71,11 @@ static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
  * Note that we use the GNU extension syntax here because we don't get designated
  * initialisers in gcc 4.6.
  */
-static const struct file_operations g_fops = {
+സ്ഥിതം സ്ഥിരം ഘടന file_operations g_fops = {
 open	: cdev_open,
 close	: cdev_close,
-read	: cdev_read,
-write	: cdev_write,
+പഠ	: cdev_read,
+ലിഖ	: cdev_write,
 seek	: cdev_seek,
 ioctl	: cdev_ioctl,
 poll	: cdev_poll,
@@ -84,86 +84,86 @@ unlink	: nullptr
 #endif
 };
 
-const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { return g_fops; }
+സ്ഥിരം cdev::px4_file_operations_t &cdev::CDev::fops_ref() { തിരികെ g_fops; }
 
-static int
+സ്ഥിതം പൂർണ്ണസംഖ്യ
 cdev_open(file_t *filp)
 {
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->open(filp);
+	തിരികെ cdev->open(filp);
 }
 
-static int
+സ്ഥിതം പൂർണ്ണസംഖ്യ
 cdev_close(file_t *filp)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	എങ്കിൽ ((filp->f_inode->i_crefs) == 0) {
+		തിരികെ -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->close(filp);
+	തിരികെ cdev->close(filp);
 }
 
-static ssize_t
-cdev_read(file_t *filp, char *buffer, size_t buflen)
+സ്ഥിതം ssize_t
+cdev_read(file_t *filp, അക്ഷരം *buffer, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	എങ്കിൽ ((filp->f_inode->i_crefs) == 0) {
+		തിരികെ -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->read(filp, buffer, buflen);
+	തിരികെ cdev->പഠ(filp, buffer, buflen);
 }
 
-static ssize_t
-cdev_write(file_t *filp, const char *buffer, size_t buflen)
+സ്ഥിതം ssize_t
+cdev_write(file_t *filp, സ്ഥിരം അക്ഷരം *buffer, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	എങ്കിൽ ((filp->f_inode->i_crefs) == 0) {
+		തിരികെ -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->write(filp, buffer, buflen);
+	തിരികെ cdev->ലിഖ(filp, buffer, buflen);
 }
 
-static off_t
-cdev_seek(file_t *filp, off_t offset, int whence)
+സ്ഥിതം off_t
+cdev_seek(file_t *filp, off_t offset, പൂർണ്ണസംഖ്യ whence)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	എങ്കിൽ ((filp->f_inode->i_crefs) == 0) {
+		തിരികെ -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->seek(filp, offset, whence);
+	തിരികെ cdev->seek(filp, offset, whence);
 }
 
-static int
-cdev_ioctl(file_t *filp, int cmd, unsigned long arg)
+സ്ഥിതം പൂർണ്ണസംഖ്യ
+cdev_ioctl(file_t *filp, പൂർണ്ണസംഖ്യ cmd, unsigned long arg)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	എങ്കിൽ ((filp->f_inode->i_crefs) == 0) {
+		തിരികെ -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->ioctl(filp, cmd, arg);
+	തിരികെ cdev->ioctl(filp, cmd, arg);
 }
 
-static int
-cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup)
+സ്ഥിതം പൂർണ്ണസംഖ്യ
+cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, തർക്കം setup)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	എങ്കിൽ ((filp->f_inode->i_crefs) == 0) {
+		തിരികെ -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->poll(filp, fds, setup);
+	തിരികെ cdev->poll(filp, fds, setup);
 }
 
 } // namespace cdev

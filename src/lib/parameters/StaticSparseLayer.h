@@ -33,136 +33,136 @@
 
 #pragma once
 
-#include <stdlib.h>
-#include "ParamLayer.h"
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ "ParamLayer.h"
 
-template <int N_SLOTS>
-class StaticSparseLayer : public ParamLayer
+template <പൂർണ്ണസംഖ്യ N_SLOTS>
+class StaticSparseLayer : പൊതു ParamLayer
 {
-public:
+പൊതു:
 	StaticSparseLayer(ParamLayer *parent) : ParamLayer(parent)
 	{
-		for (int i = 0; i < N_SLOTS; i++) {
-			_slots[i] = {UINT16_MAX, param_value_u{}};
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < N_SLOTS; i++) {
+			_slots[i] = {UINT16_MAX, param_മൂല്യം_u{}};
 		}
 	}
 
-	virtual ~StaticSparseLayer() = default;
+	മായാ ~StaticSparseLayer() = സ്ഥിരസ്ഥിതി;
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_മൂല്യം_u മൂല്യം) override
 	{
-		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		സ്ഥിരം AtomicTransaction transaction;
+		സ്ഥിരം പൂർണ്ണസംഖ്യ index = _getIndex(param);
 
-		if (index < _next_slot) { // already exists
-			_slots[index].value = value;
+		എങ്കിൽ (index < _next_slot) { // already exists
+			_slots[index].മൂല്യം = മൂല്യം;
 
-		} else if (_next_slot < N_SLOTS) {
-			_slots[_next_slot++] = {param, value};
+		} അല്ലെങ്കിൽ എങ്കിൽ (_next_slot < N_SLOTS) {
+			_slots[_next_slot++] = {param, മൂല്യം};
 			_sort();
 
-		} else {
-			return false;
+		} അല്ലെങ്കിൽ {
+			തിരികെ false;
 		}
 
-		return true;
+		തിരികെ true;
 	}
 
-	bool contains(param_t param) const override
+	bool contains(param_t param) സ്ഥിരം override
 	{
-		const AtomicTransaction transaction;
-		return _getIndex(param) < _next_slot;
+		സ്ഥിരം AtomicTransaction transaction;
+		തിരികെ _getIndex(param) < _next_slot;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_എണ്ണം> containedAsBitset() സ്ഥിരം override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
-		const AtomicTransaction transaction;
+		px4::AtomicBitset<PARAM_എണ്ണം> set;
+		സ്ഥിരം AtomicTransaction transaction;
 
-		for (int i = 0; i < _next_slot; i++) {
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < _next_slot; i++) {
 			set.set(_slots[i].param);
 		}
 
-		return set;
+		തിരികെ set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_മൂല്യം_u get(param_t param) സ്ഥിരം override
 	{
-		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		സ്ഥിരം AtomicTransaction transaction;
+		സ്ഥിരം പൂർണ്ണസംഖ്യ index = _getIndex(param);
 
-		if (index < _next_slot) { // exists in this layer
-			return _slots[index].value;
+		എങ്കിൽ (index < _next_slot) { // exists in this layer
+			തിരികെ _slots[index].മൂല്യം;
 		}
 
-		return _parent->get(param);
+		തിരികെ _parent->get(param);
 	}
 
-	void reset(param_t param) override
+	ശൂന്യം reset(param_t param) override
 	{
-		const AtomicTransaction transaction;
-		int index = _getIndex(param);
+		സ്ഥിരം AtomicTransaction transaction;
+		പൂർണ്ണസംഖ്യ index = _getIndex(param);
 
-		if (index < _next_slot) {
-			_slots[index] = {UINT16_MAX, param_value_u{}};
+		എങ്കിൽ (index < _next_slot) {
+			_slots[index] = {UINT16_MAX, param_മൂല്യം_u{}};
 			_sort();
 			_next_slot--;
 		}
 	}
 
-	void refresh(param_t param) override
+	ശൂന്യം refresh(param_t param) override
 	{
 		_parent->refresh(param);
 	}
 
-	int size() const override
+	പൂർണ്ണസംഖ്യ size() സ്ഥിരം override
 	{
-		return _next_slot;
+		തിരികെ _next_slot;
 	}
 
-	int byteSize() const override
+	പൂർണ്ണസംഖ്യ byteSize() സ്ഥിരം override
 	{
-		return N_SLOTS * sizeof(Slot);
+		തിരികെ N_SLOTS * വലുപ്പം(Slot);
 	}
 
-private:
-	struct Slot {
+സ്വകാര്യ:
+	ഘടന Slot {
 		param_t param;
-		param_value_u value;
+		param_മൂല്യം_u മൂല്യം;
 	};
 
-	static int _slotCompare(const void *a, const void *b)
+	സ്ഥിതം പൂർണ്ണസംഖ്യ _slotCompare(സ്ഥിരം ശൂന്യം *a, സ്ഥിരം ശൂന്യം *b)
 	{
-		return ((int)((Slot *)a)->param) - ((int)((Slot *)b)->param);
+		തിരികെ ((പൂർണ്ണസംഖ്യ)((Slot *)a)->param) - ((പൂർണ്ണസംഖ്യ)((Slot *)b)->param);
 	}
 
-	void _sort()
+	ശൂന്യം _sort()
 	{
-		qsort(_slots, N_SLOTS, sizeof(Slot), &_slotCompare);
+		qsort(_slots, N_SLOTS, വലുപ്പം(Slot), &_slotCompare);
 	}
 
-	int _getIndex(param_t param) const
+	പൂർണ്ണസംഖ്യ _getIndex(param_t param) സ്ഥിരം
 	{
-		int left = 0;
-		int right = _next_slot - 1;
+		പൂർണ്ണസംഖ്യ ഇടത് = 0;
+		പൂർണ്ണസംഖ്യ വലത് = _next_slot - 1;
 
-		while (left <= right) {
-			int mid = (left + right) / 2;
+		ആകുമ്പോൾ (ഇടത് <= വലത്) {
+			പൂർണ്ണസംഖ്യ mid = (ഇടത് + വലത്) / 2;
 
-			if (_slots[mid].param == param) {
-				return mid;
+			എങ്കിൽ (_slots[mid].param == param) {
+				തിരികെ mid;
 
-			} else if (_slots[mid].param < param) {
-				left = mid + 1;
+			} അല്ലെങ്കിൽ എങ്കിൽ (_slots[mid].param < param) {
+				ഇടത് = mid + 1;
 
-			} else {
-				right = mid - 1;
+			} അല്ലെങ്കിൽ {
+				വലത് = mid - 1;
 			}
 		}
 
-		return _next_slot;
+		തിരികെ _next_slot;
 	}
 
 	Slot _slots[N_SLOTS];
-	int _next_slot = 0;
+	പൂർണ്ണസംഖ്യ _next_slot = 0;
 };

@@ -37,55 +37,55 @@
  * @author Julian Oes <julian@oes.ch>
  */
 
-#include "hysteresis.h"
+#അന്തര്ഭാവ "hysteresis.h"
 
-namespace systemlib
+നാമാകാശ systemlib
 {
 
-Hysteresis::Hysteresis(bool initial_state)
+Hysteresis::Hysteresis(തർക്കം initial_state)
 {
 	_state = _requested_state = initial_state;
 }
 
-void Hysteresis::set_hysteresis_time_from(const bool from_state, const hrt_abstime new_hysteresis_time_us)
+ശൂന്യം Hysteresis::set_hysteresis_time_from(സ്ഥിരം തർക്കം from_state, സ്ഥിരം hrt_abstime new_hysteresis_time_us)
 {
-	if (from_state) {
+	എങ്കിൽ (from_state) {
 		_time_from_true_us = new_hysteresis_time_us;
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		_time_from_false_us = new_hysteresis_time_us;
 	}
 }
 
-void Hysteresis::set_state_and_update(const bool new_state, const hrt_abstime &now_us)
+ശൂന്യം Hysteresis::set_state_and_update(സ്ഥിരം തർക്കം new_state, സ്ഥിരം hrt_abstime &now_us)
 {
-	if (new_state != _state) {
-		if (new_state != _requested_state) {
+	എങ്കിൽ (new_state != _state) {
+		എങ്കിൽ (new_state != _requested_state) {
 			_requested_state = new_state;
 			_last_time_to_change_state = now_us;
 		}
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		_requested_state = _state;
 	}
 
 	update(now_us);
 }
 
-void Hysteresis::update(const hrt_abstime &now_us)
+ശൂന്യം Hysteresis::update(സ്ഥിരം hrt_abstime &now_us)
 {
-	if (_requested_state != _state) {
+	എങ്കിൽ (_requested_state != _state) {
 
-		if (_state && !_requested_state) {
+		എങ്കിൽ (_state && !_requested_state) {
 			// true -> false
-			if (now_us >= _last_time_to_change_state + _time_from_true_us) {
-				_state = false;
+			എങ്കിൽ (now_us >= _last_time_to_change_state + _time_from_true_us) {
+				_state = അസത്യം;
 			}
 
-		} else if (!_state && _requested_state) {
+		} അല്ലെങ്കിൽ എങ്കിൽ (!_state && _requested_state) {
 			// false -> true
-			if (now_us >= _last_time_to_change_state + _time_from_false_us) {
-				_state = true;
+			എങ്കിൽ (now_us >= _last_time_to_change_state + _time_from_false_us) {
+				_state = സത്യം;
 			}
 		}
 	}

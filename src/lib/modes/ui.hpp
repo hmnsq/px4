@@ -33,19 +33,19 @@
 
 #pragma once
 
-#include <uORB/topics/vehicle_status.h>
+#അന്തര്ഭാവ <uORB/topics/vehicle_status.h>
 
-#include <stdint.h>
+#അന്തര്ഭാവ <stdint.h>
 
-namespace mode_util
+നാമാകാശ mode_util
 {
 
 /**
  * @return Bitmask with all valid modes
  */
-static inline uint32_t getValidNavStates(uint32_t mode_not_supported = 0)
+സ്ഥിതം വരിയിൽ uint32_t getValidNavStates(uint32_t mode_not_supported = 0)
 {
-	return ((1u << vehicle_status_s::NAVIGATION_STATE_MANUAL) |
+	തിരികെ ((1u << vehicle_status_s::NAVIGATION_STATE_MANUAL) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_ALTCTL) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_ALTITUDE_CRUISE) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_MANUAL_PARKING) |
@@ -70,7 +70,7 @@ static inline uint32_t getValidNavStates(uint32_t mode_not_supported = 0)
 	static_assert(vehicle_status_s::NAVIGATION_STATE_MAX  == 31, "update valid nav states");
 }
 
-inline const char *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX] = {
+വരിയിൽ സ്ഥിരം അക്ഷരം *സ്ഥിരം nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX] = {
 	"Manual",
 	"Altitude",
 	"Position",
@@ -110,49 +110,49 @@ inline const char *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX]
  * The position control mode is shown as "Cruise" for fixed-wing vehicles (including VTOLs in
  * forward flight, which report VEHICLE_TYPE_FIXED_WING) and as "Position" for all other types.
  */
-static inline const char *nav_state_name(uint8_t nav_state, uint8_t vehicle_type)
+സ്ഥിതം വരിയിൽ സ്ഥിരം അക്ഷരം *nav_state_name(uint8_t nav_state, uint8_t vehicle_type)
 {
-	if (nav_state >= vehicle_status_s::NAVIGATION_STATE_MAX) {
-		return "(unknown)";
+	എങ്കിൽ (nav_state >= vehicle_status_s::NAVIGATION_STATE_MAX) {
+		തിരികെ "(unknown)";
 	}
 
-	if (nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL
+	എങ്കിൽ (nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL
 	    && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		return "Cruise";
+		തിരികെ "Cruise";
 	}
 
-	return nav_state_names[nav_state];
+	തിരികെ nav_state_names[nav_state];
 }
 
 /**
  * @return returns true for advanced modes
  */
-static inline bool isAdvanced(uint8_t nav_state)
+സ്ഥിതം വരിയിൽ തർക്കം isAdvanced(uint8_t nav_state)
 {
-	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL: return false;
+	തിരഞ്ഞെടുപ്പ് (nav_state) {
+	അവസ്ഥ vehicle_status_s::NAVIGATION_STATE_ALTCTL: തിരികെ അസത്യം;
 
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL: return false;
+	അവസ്ഥ vehicle_status_s::NAVIGATION_STATE_POSCTL: തിരികെ അസത്യം;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL1: return false;
+	അവസ്ഥ vehicle_status_s::NAVIGATION_STATE_EXTERNAL1: തിരികെ അസത്യം;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL2: return false;
+	അവസ്ഥ vehicle_status_s::NAVIGATION_STATE_EXTERNAL2: തിരികെ അസത്യം;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL3: return false;
+	അവസ്ഥ vehicle_status_s::NAVIGATION_STATE_EXTERNAL3: തിരികെ അസത്യം;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL4: return false;
+	അവസ്ഥ vehicle_status_s::NAVIGATION_STATE_EXTERNAL4: തിരികെ അസത്യം;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL5: return false;
+	അവസ്ഥ vehicle_status_s::NAVIGATION_STATE_EXTERNAL5: തിരികെ അസത്യം;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL6: return false;
+	അവസ്ഥ vehicle_status_s::NAVIGATION_STATE_EXTERNAL6: തിരികെ അസത്യം;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL7: return false;
+	അവസ്ഥ vehicle_status_s::NAVIGATION_STATE_EXTERNAL7: തിരികെ അസത്യം;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL8: return false;
+	അവസ്ഥ vehicle_status_s::NAVIGATION_STATE_EXTERNAL8: തിരികെ അസത്യം;
 
 	}
 
-	return true;
+	തിരികെ സത്യം;
 }
 
 } // namespace mode_util

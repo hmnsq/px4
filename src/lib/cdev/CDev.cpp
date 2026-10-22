@@ -37,24 +37,24 @@
  * Character device base class.
  */
 
-#include "CDev.hpp"
+#അന്തര്ഭാവ "CDev.hpp"
 
-#include <cstring>
+#അന്തര്ഭാവ <cstring>
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
+#അന്തര്ഭാവ <px4_platform_common/log.h>
+#അന്തര്ഭാവ <px4_platform_common/posix.h>
 
-namespace cdev
+നാമാകാശ cdev
 {
 
-CDev::CDev(const char *devname) :
+CDev::CDev(സ്ഥിരം അക്ഷരം *devname) :
 	_devname(devname)
 {
 	PX4_DEBUG("CDev::CDev");
 
-	int ret = px4_sem_init(&_lock, 0, 1);
+	പൂർണ്ണസംഖ്യ ret = px4_sem_init(&_lock, 0, 1);
 
-	if (ret != 0) {
+	എങ്കിൽ (ret != 0) {
 		PX4_DEBUG("SEM INIT FAIL: ret %d", ret);
 	}
 }
@@ -63,146 +63,146 @@ CDev::~CDev()
 {
 	PX4_DEBUG("CDev::~CDev");
 
-	if (_registered) {
+	എങ്കിൽ (_registered) {
 		unregister_driver(_devname);
 	}
 
-	if (_pollset) {
+	എങ്കിൽ (_pollset) {
 		delete[](_pollset);
 	}
 
 	px4_sem_destroy(&_lock);
 }
 
-int
-CDev::register_class_devname(const char *class_devname)
+പൂർണ്ണസംഖ്യ
+CDev::register_class_devname(സ്ഥിരം അക്ഷരം *class_devname)
 {
 	PX4_DEBUG("CDev::register_class_devname %s", class_devname);
 
-	if (class_devname == nullptr) {
-		return -EINVAL;
+	എങ്കിൽ (class_devname == nullptr) {
+		തിരികെ -EINVAL;
 	}
 
-	int class_instance = 0;
-	int ret = -ENOSPC;
+	പൂർണ്ണസംഖ്യ class_instance = 0;
+	പൂർണ്ണസംഖ്യ ret = -ENOSPC;
 
-	while (class_instance < 4) {
-		char name[32];
-		snprintf(name, sizeof(name), "%s%d", class_devname, class_instance);
-		ret = register_driver(name, &fops_ref(), 0666, (void *)this);
+	ആകുമ്പോൾ (class_instance < 4) {
+		അക്ഷരം name[32];
+		snprintf(name, വലുപ്പം(name), "%s%d", class_devname, class_instance);
+		ret = register_driver(name, &fops_ref(), 0666, (ശൂന്യം *)ഇത്);
 
-		if (ret == OK) {
-			break;
+		എങ്കിൽ (ret == OK) {
+			നിർത്തുക;
 		}
 
 		class_instance++;
 	}
 
-	if (class_instance == 4) {
-		return ret;
+	എങ്കിൽ (class_instance == 4) {
+		തിരികെ ret;
 	}
 
-	return class_instance;
+	തിരികെ class_instance;
 }
 
-int
-CDev::unregister_class_devname(const char *class_devname, unsigned class_instance)
+പൂർണ്ണസംഖ്യ
+CDev::unregister_class_devname(സ്ഥിരം അക്ഷരം *class_devname, unsigned class_instance)
 {
 	PX4_DEBUG("CDev::unregister_class_devname");
 
-	char name[32];
-	snprintf(name, sizeof(name), "%s%u", class_devname, class_instance);
-	return unregister_driver(name);
+	അക്ഷരം name[32];
+	snprintf(name, വലുപ്പം(name), "%s%u", class_devname, class_instance);
+	തിരികെ unregister_driver(name);
 }
 
-int
+പൂർണ്ണസംഖ്യ
 CDev::init()
 {
 	PX4_DEBUG("CDev::init");
 
-	int ret = PX4_OK;
+	പൂർണ്ണസംഖ്യ ret = PX4_OK;
 
 	// now register the driver
-	if (_devname != nullptr) {
-		ret = register_driver(_devname, &fops_ref(), 0666, (void *)this);
+	എങ്കിൽ (_devname != nullptr) {
+		ret = register_driver(_devname, &fops_ref(), 0666, (ശൂന്യം *)ഇത്);
 
-		if (ret == PX4_OK) {
-			_registered = true;
+		എങ്കിൽ (ret == PX4_OK) {
+			_registered = സത്യം;
 		}
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		ret = -ENODEV;
 	}
 
-	return ret;
+	തിരികെ ret;
 }
 
 /*
  * Default implementations of the character device interface
  */
-int
+പൂർണ്ണസംഖ്യ
 CDev::open(file_t *filep)
 {
 	PX4_DEBUG("CDev::open");
-	int ret = PX4_OK;
+	പൂർണ്ണസംഖ്യ ret = PX4_OK;
 
 	lock();
 	/* increment the open count */
-	_open_count++;
+	open_എണ്ണം++;
 
-	if (_open_count == 1) {
+	എങ്കിൽ (open_എണ്ണം == 1) {
 
 		/* first-open callback may decline the open */
 		ret = open_first(filep);
 
-		if (ret != PX4_OK) {
-			_open_count--;
+		എങ്കിൽ (ret != PX4_OK) {
+			open_എണ്ണം--;
 		}
 	}
 
 	unlock();
 
-	return ret;
+	തിരികെ ret;
 }
 
-int
+പൂർണ്ണസംഖ്യ
 CDev::close(file_t *filep)
 {
 	PX4_DEBUG("CDev::close");
-	int ret = PX4_OK;
+	പൂർണ്ണസംഖ്യ ret = PX4_OK;
 
 	lock();
 
-	if (_open_count > 0) {
+	എങ്കിൽ (open_എണ്ണം > 0) {
 		/* decrement the open count */
-		_open_count--;
+		open_എണ്ണം--;
 
 		/* callback cannot decline the close */
-		if (_open_count == 0) {
+		എങ്കിൽ (open_എണ്ണം == 0) {
 			ret = close_last(filep);
 		}
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		ret = -EBADF;
 	}
 
 	unlock();
 
-	return ret;
+	തിരികെ ret;
 }
 
-int
-CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
+പൂർണ്ണസംഖ്യ
+CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, തർക്കം setup)
 {
 	PX4_DEBUG("CDev::Poll %s", setup ? "setup" : "teardown");
-	int ret = PX4_OK;
+	പൂർണ്ണസംഖ്യ ret = PX4_OK;
 
-	if (setup) {
+	എങ്കിൽ (setup) {
 		/*
 		 * Save the file pointer in the pollfd for the subclass'
 		 * benefit.
 		 */
-		fds->priv = (void *)filep;
+		fds->priv = (ശൂന്യം *)filep;
 		PX4_DEBUG("CDev::poll: fds->priv = %p", filep);
 
 		/*
@@ -213,50 +213,50 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 		/*
 		 * Try to store the fds for later use and handle array resizing.
 		 */
-		while ((ret = store_poll_waiter(fds)) == -ENFILE) {
+		ആകുമ്പോൾ ((ret = store_poll_waiter(fds)) == -ENFILE) {
 
 			// No free slot found. Resize the pollset. This is expensive, but it's only needed initially.
 
-			if (_max_pollwaiters >= 256 / 2) { //_max_pollwaiters is uint8_t
+			എങ്കിൽ (_max_pollwaiters >= 256 / 2) { //_max_pollwaiters is uint8_t
 				ret = -ENOMEM;
-				break;
+				നിർത്തുക;
 			}
 
-			const uint8_t new_count = _max_pollwaiters > 0 ? _max_pollwaiters * 2 : 1;
+			സ്ഥിരം uint8_t new_എണ്ണം = _max_pollwaiters > 0 ? _max_pollwaiters * 2 : 1;
 			px4_pollfd_struct_t **prev_pollset = _pollset;
 
 #ifdef __PX4_NUTTX
 			// malloc uses a semaphore, we need to call it enabled IRQ's
 			px4_leave_critical_section(flags);
 #endif
-			px4_pollfd_struct_t **new_pollset = new px4_pollfd_struct_t *[new_count];
+			px4_pollfd_struct_t **new_pollset = പുതിയ px4_pollfd_struct_t *[new_എണ്ണം];
 
 #ifdef __PX4_NUTTX
 			flags = px4_enter_critical_section();
 #endif
 
-			if (prev_pollset == _pollset) {
+			എങ്കിൽ (prev_pollset == _pollset) {
 				// no one else updated the _pollset meanwhile, so we're good to go
-				if (!new_pollset) {
+				എങ്കിൽ (!new_pollset) {
 					ret = -ENOMEM;
-					break;
+					നിർത്തുക;
 				}
 
-				if (_max_pollwaiters > 0) {
-					memset(new_pollset + _max_pollwaiters, 0, sizeof(px4_pollfd_struct_t *) * (new_count - _max_pollwaiters));
-					memcpy(new_pollset, _pollset, sizeof(px4_pollfd_struct_t *) * _max_pollwaiters);
+				എങ്കിൽ (_max_pollwaiters > 0) {
+					memset(new_pollset + _max_pollwaiters, 0, വലുപ്പം(px4_pollfd_struct_t *) * (new_എണ്ണം - _max_pollwaiters));
+					memcpy(new_pollset, _pollset, വലുപ്പം(px4_pollfd_struct_t *) * _max_pollwaiters);
 				}
 
 				_pollset = new_pollset;
 				_pollset[_max_pollwaiters] = fds;
-				_max_pollwaiters = new_count;
+				_max_pollwaiters = new_എണ്ണം;
 
 				// free the previous _pollset (we need to unlock here which is fine because we don't access _pollset anymore)
 #ifdef __PX4_NUTTX
 				px4_leave_critical_section(flags);
 #endif
 
-				if (prev_pollset) {
+				എങ്കിൽ (prev_pollset) {
 					delete[](prev_pollset);
 				}
 
@@ -266,7 +266,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 
 				// Success
 				ret = PX4_OK;
-				break;
+				നിർത്തുക;
 			}
 
 #ifdef __PX4_NUTTX
@@ -279,7 +279,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 #endif
 		}
 
-		if (ret == PX4_OK) {
+		എങ്കിൽ (ret == PX4_OK) {
 
 			/*
 			 * Check to see whether we should send a poll notification
@@ -290,13 +290,13 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 			/* yes? invoke the callback */
 #ifdef __PX4_NUTTX
 
-			if (fds->revents != 0 && fds->cb != nullptr) {
+			എങ്കിൽ (fds->revents != 0 && fds->cb != nullptr) {
 				fds->cb(fds);
 			}
 
-#else
+#അല്ലെങ്കിൽ
 
-			if (fds->revents != 0) {
+			എങ്കിൽ (fds->revents != 0) {
 				px4_sem_post(fds->sem);
 			}
 
@@ -306,7 +306,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 
 		ATOMIC_LEAVE;
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		ATOMIC_ENTER;
 		/*
 		 * Handle a teardown request.
@@ -315,10 +315,10 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 		ATOMIC_LEAVE;
 	}
 
-	return ret;
+	തിരികെ ret;
 }
 
-void
+ശൂന്യം
 CDev::poll_notify(px4_pollevent_t events)
 {
 	PX4_DEBUG("CDev::poll_notify events = %0x", events);
@@ -326,8 +326,8 @@ CDev::poll_notify(px4_pollevent_t events)
 	/* lock against poll() as well as other wakeups */
 	ATOMIC_ENTER;
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (nullptr != _pollset[i]) {
+	വേണ്ടി (unsigned i = 0; i < _max_pollwaiters; i++) {
+		എങ്കിൽ (nullptr != _pollset[i]) {
 			poll_notify_one(_pollset[i], events);
 		}
 	}
@@ -335,7 +335,7 @@ CDev::poll_notify(px4_pollevent_t events)
 	ATOMIC_LEAVE;
 }
 
-void
+ശൂന്യം
 CDev::poll_notify_one(px4_pollfd_struct_t *fds, px4_pollevent_t events)
 {
 	PX4_DEBUG("CDev::poll_notify_one");
@@ -347,54 +347,54 @@ CDev::poll_notify_one(px4_pollfd_struct_t *fds, px4_pollevent_t events)
 
 #ifdef __PX4_NUTTX
 
-	if (fds->revents != 0 && fds->cb != nullptr) {
+	എങ്കിൽ (fds->revents != 0 && fds->cb != nullptr) {
 		fds->cb(fds);
 	}
 
-#else
+#അല്ലെങ്കിൽ
 
-	if (fds->revents != 0) {
+	എങ്കിൽ (fds->revents != 0) {
 		px4_sem_post(fds->sem);
 	}
 
 #endif
 }
 
-int
+പൂർണ്ണസംഖ്യ
 CDev::store_poll_waiter(px4_pollfd_struct_t *fds)
 {
 	// Look for a free slot.
 	PX4_DEBUG("CDev::store_poll_waiter");
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (nullptr == _pollset[i]) {
+	വേണ്ടി (unsigned i = 0; i < _max_pollwaiters; i++) {
+		എങ്കിൽ (nullptr == _pollset[i]) {
 
 			/* save the pollfd */
 			_pollset[i] = fds;
 
-			return PX4_OK;
+			തിരികെ PX4_OK;
 		}
 	}
 
-	return -ENFILE;
+	തിരികെ -ENFILE;
 }
 
-int
+പൂർണ്ണസംഖ്യ
 CDev::remove_poll_waiter(px4_pollfd_struct_t *fds)
 {
 	PX4_DEBUG("CDev::remove_poll_waiter");
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (fds == _pollset[i]) {
+	വേണ്ടി (unsigned i = 0; i < _max_pollwaiters; i++) {
+		എങ്കിൽ (fds == _pollset[i]) {
 
 			_pollset[i] = nullptr;
-			return PX4_OK;
+			തിരികെ PX4_OK;
 
 		}
 	}
 
 	PX4_DEBUG("poll: bad fd state");
-	return -EINVAL;
+	തിരികെ -EINVAL;
 }
 
 } // namespace cdev

@@ -39,48 +39,48 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <assert.h>
+#അന്തര്ഭാവ <time.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <mathlib/math/test/test.hpp>
+#അന്തര്ഭാവ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#അന്തര്ഭാവ "block/Block.hpp"
+#അന്തര്ഭാവ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#അന്തര്ഭാവ "matrix/math.hpp"
 
-namespace control
+നാമാകാശ control
 {
 
 /**
  * A high pass filter as described here:
  * http://en.wikipedia.org/wiki/High-pass_filter.
  */
-class __EXPORT BlockHighPass : public Block
+വർഗ്ഗം __EXPORT Block_മുകളിലെ_Pass : പൊതു Block
 {
-public:
+പൊതു:
 // methods
-	BlockHighPass(SuperBlock *parent, const char *name) :
+	Block_മുകളിലെ_Pass(SuperBlock *parent, സ്ഥിരം അക്ഷരം *name) :
 		Block(parent, name),
 		_u(0),
 		_y(0),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(ഇത്, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockHighPass() = default;
-	float update(float input);
+	മായാ ~Block_മുകളിലെ_Pass() = സ്ഥിരസ്ഥിതി;
+	ദശാംശം update(ദശാംശം നിവേശം);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getFCut() {return _fCut.get();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
+	ദശാംശം getU() {തിരികെ _u;}
+	ദശാംശം getY() {തിരികെ _y;}
+	ദശാംശം getFCut() {തിരികെ _fCut.get();}
+	ശൂന്യം setU(ദശാംശം u) {_u = u;}
+	ശൂന്യം setY(ദശാംശം y) {_y = y;}
+സംരക്ഷിത:
 // attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
+	ദശാംശം _u; /**< previous input */
+	ദശാംശം _y; /**< previous output */
 	control::BlockParamFloat _fCut; /**< cut-off frequency, Hz */
 };
 

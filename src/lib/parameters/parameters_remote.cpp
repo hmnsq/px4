@@ -31,38 +31,38 @@
  *
  ****************************************************************************/
 
-#include "parameters_remote.h"
+#അന്തര്ഭാവ "parameters_remote.h"
 
-#include "uORB/uORBManager.hpp"
+#അന്തര്ഭാവ "uORB/uORBManager.hpp"
 
-#include <inttypes.h>
+#അന്തര്ഭാവ <inttypes.h>
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/tasks.h>
+#അന്തര്ഭാവ <px4_platform_common/log.h>
+#അന്തര്ഭാവ <px4_platform_common/tasks.h>
 
 // uORB topics needed to keep parameter server and client in sync
-#include <uORB/topics/parameter_reset_request.h>
-#include <uORB/topics/parameter_set_used_request.h>
-#include <uORB/topics/parameter_set_value_request.h>
-#include <uORB/topics/parameter_set_value_response.h>
+#അന്തര്ഭാവ <uORB/topics/parameter_reset_request.h>
+#അന്തര്ഭാവ <uORB/topics/parameter_set_used_request.h>
+#അന്തര്ഭാവ <uORB/topics/parameter_set_value_request.h>
+#അന്തര്ഭാവ <uORB/topics/parameter_set_value_response.h>
 
 // Debug flag
-static bool debug = false;
+സ്ഥിതം തർക്കം debug = അസത്യം;
 
-static struct param_remote_counters param_remote_counters;
+സ്ഥിതം ഘടന param_remote_counters param_remote_counters;
 
 #define TIMEOUT_WAIT 1000
-#define TIMEOUT_COUNT 50
+#define TIMEOUT_എണ്ണം 50
 
-static orb_advert_t parameter_set_used_h = nullptr;
-static orb_advert_t param_set_value_req_h = nullptr;
+സ്ഥിതം orb_advert_t parameter_set_used_h = nullptr;
+സ്ഥിതം orb_advert_t param_set_മൂല്യം_req_h = nullptr;
 
-static orb_sub_t param_set_rsp_fd = ORB_SUB_INVALID;
+സ്ഥിതം orb_sub_t param_set_rsp_fd = ORB_SUB_INVALID;
 
-static px4_task_t sync_thread_tid;
-static const char *sync_thread_name = "param_remote_sync";
+സ്ഥിതം px4_task_t sync_thread_tid;
+സ്ഥിതം സ്ഥിരം അക്ഷരം *sync_thread_name = "param_remote_sync";
 
-static int remote_sync_thread(int argc, char *argv[])
+സ്ഥിതം പൂർണ്ണസംഖ്യ remote_sync_thread(പൂർണ്ണസംഖ്യ argc, അക്ഷരം *argv[])
 {
 	// This thread gets started by the remote side during PX4 initialization.
 	// We cannot send out the subscribe request immediately because the other
@@ -72,104 +72,104 @@ static int remote_sync_thread(int argc, char *argv[])
 	// side could be missed.
 	usleep(200000);
 
-	orb_advert_t _set_value_rsp_h = nullptr;
+	orb_advert_t set_മൂല്യം_rsp_h = nullptr;
 
 	orb_sub_t _reset_req_fd  = orb_subscribe(ORB_ID(parameter_reset_request));
-	orb_sub_t _set_value_req_fd = orb_subscribe(ORB_ID(parameter_remote_set_value_request));
+	orb_sub_t set_മൂല്യം_req_fd = orb_subscribe(ORB_ID(parameter_remote_set_മൂല്യം_request));
 
-	struct parameter_reset_request_s      _reset_request;
-	struct parameter_set_value_request_s  _set_value_request;
-	struct parameter_set_value_response_s _set_value_response;
+	ഘടന parameter_reset_request_s      _reset_request;
+	ഘടന parameter_set_മൂല്യം_request_s  set_മൂല്യം_request;
+	ഘടന parameter_set_മൂല്യം_response_s set_മൂല്യം_response;
 
 	px4_pollfd_struct_t fds[2] = { { .fd = _reset_req_fd,  .events = POLLIN },
-		{ .fd = _set_value_req_fd, .events = POLLIN }
+		{ .fd = set_മൂല്യം_req_fd, .events = POLLIN }
 	};
 
 	PX4_INFO("Starting parameter remote sync thread");
 
-	while (true) {
+	ആകുമ്പോൾ (സത്യം) {
 		px4_poll(fds, 2, 1000);
 
-		if (fds[0].revents & POLLIN) {
-			bool updated = true;
+		എങ്കിൽ (fds[0].revents & POLLIN) {
+			തർക്കം updated = സത്യം;
 
-			while (updated) {
+			ആകുമ്പോൾ (updated) {
 				orb_copy(ORB_ID(parameter_reset_request), _reset_req_fd, &_reset_request);
 
-				if (debug) {
+				എങ്കിൽ (debug) {
 					PX4_INFO("Got parameter_reset_request for %s", param_name(_reset_request.parameter_index));
 				}
 
 				param_remote_counters.reset_received++;
 
-				if (_reset_request.reset_all) {
+				എങ്കിൽ (_reset_request.reset_all) {
 					param_reset_all();
 
-				} else {
+				} അല്ലെങ്കിൽ {
 					param_reset_no_notification(_reset_request.parameter_index);
 
 				}
 
-				(void) orb_check(_reset_req_fd, &updated);
+				(ശൂന്യം) orb_check(_reset_req_fd, &updated);
 			}
 		}
 
-		if (fds[1].revents & POLLIN) {
-			bool updated = true;
+		എങ്കിൽ (fds[1].revents & POLLIN) {
+			തർക്കം updated = സത്യം;
 
-			while (updated) {
-				orb_copy(ORB_ID(parameter_primary_set_value_request), _set_value_req_fd, &_set_value_request);
+			ആകുമ്പോൾ (updated) {
+				orb_copy(ORB_ID(parameter_primary_set_മൂല്യം_request), set_മൂല്യം_req_fd, &set_മൂല്യം_request);
 
-				if (debug) {
-					PX4_INFO("Got parameter_remote_set_value_request for %s", param_name(_set_value_request.parameter_index));
+				എങ്കിൽ (debug) {
+					PX4_INFO("Got parameter_remote_set_value_request for %s", param_name(set_മൂല്യം_request.parameter_index));
 				}
 
-				param_remote_counters.set_value_request_received++;
+				param_remote_counters.set_മൂല്യം_request_received++;
 
-				switch (param_type(_set_value_request.parameter_index)) {
-				case PARAM_TYPE_INT32:
-					param_set_no_remote_update(_set_value_request.parameter_index,
-								   (const void *) &_set_value_request.int_value,
-								   false);
-					break;
+				തിരഞ്ഞെടുപ്പ് (param_type(set_മൂല്യം_request.parameter_index)) {
+				അവസ്ഥ PARAM_TYPE_INT32:
+					param_set_no_remote_update(set_മൂല്യം_request.parameter_index,
+								   (സ്ഥിരം ശൂന്യം *) &set_മൂല്യം_request.int_മൂല്യം,
+								   അസത്യം);
+					നിർത്തുക;
 
-				case PARAM_TYPE_FLOAT:
-					param_set_no_remote_update(_set_value_request.parameter_index,
-								   (const void *) &_set_value_request.float_value,
-								   false);
-					break;
+				അവസ്ഥ PARAM_TYPE_FLOAT:
+					param_set_no_remote_update(set_മൂല്യം_request.parameter_index,
+								   (സ്ഥിരം ശൂന്യം *) &set_മൂല്യം_request.float_മൂല്യം,
+								   അസത്യം);
+					നിർത്തുക;
 
-				default:
+				സ്ഥിരസ്ഥിതി:
 					PX4_ERR("Parameter must be either int or float");
-					break;
+					നിർത്തുക;
 				}
 
-				_set_value_response.timestamp = hrt_absolute_time();
-				_set_value_response.request_timestamp = _set_value_request.timestamp;
-				_set_value_response.parameter_index = _set_value_request.parameter_index;
+				set_മൂല്യം_response.timestamp = hrt_absolute_time();
+				set_മൂല്യം_response.request_timestamp = set_മൂല്യം_request.timestamp;
+				set_മൂല്യം_response.parameter_index = set_മൂല്യം_request.parameter_index;
 
-				if (_set_value_rsp_h == nullptr) {
-					_set_value_rsp_h = orb_advertise(ORB_ID(parameter_remote_set_value_response), &_set_value_response);
+				എങ്കിൽ (set_മൂല്യം_rsp_h == nullptr) {
+					set_മൂല്യം_rsp_h = orb_advertise(ORB_ID(parameter_remote_set_മൂല്യം_response), &set_മൂല്യം_response);
 
-				} else {
-					if (debug) {
-						PX4_INFO("Sending set value response for %s", param_name(_set_value_request.parameter_index));
+				} അല്ലെങ്കിൽ {
+					എങ്കിൽ (debug) {
+						PX4_INFO("Sending set value response for %s", param_name(set_മൂല്യം_request.parameter_index));
 					}
 
-					orb_publish(ORB_ID(parameter_remote_set_value_response), _set_value_rsp_h, &_set_value_response);
+					orb_publish(ORB_ID(parameter_remote_set_മൂല്യം_response), set_മൂല്യം_rsp_h, &set_മൂല്യം_response);
 				}
 
-				param_remote_counters.set_value_response_sent++;
+				param_remote_counters.set_മൂല്യം_response_sent++;
 
-				(void) orb_check(_set_value_req_fd, &updated);
+				(ശൂന്യം) orb_check(set_മൂല്യം_req_fd, &updated);
 			}
 		}
 	}
 
-	return 0;
+	തിരികെ 0;
 }
 
-void param_remote_init()
+ശൂന്യം param_remote_init()
 {
 
 	sync_thread_tid = px4_task_spawn_cmd(sync_thread_name,
@@ -177,124 +177,124 @@ void param_remote_init()
 					     SCHED_PRIORITY_PARAMS,
 					     (1024 * 4),
 					     remote_sync_thread,
-					     NULL);
+					     ശൂന്യ);
 
 }
 
-void param_remote_set_used(param_t param)
+ശൂന്യം param_remote_set_used(param_t param)
 {
 	// Notify the parameter server that this parameter has been marked as used
-	if (debug) {
+	എങ്കിൽ (debug) {
 		PX4_INFO("Requesting server to mark %s as used", param_name(param));
 	}
 
-	struct parameter_set_used_request_s req;
+	ഘടന parameter_set_used_request_s req;
 
 	req.timestamp = hrt_absolute_time();
 
 	req.parameter_index = param;
 
-	if (parameter_set_used_h == nullptr) {
+	എങ്കിൽ (parameter_set_used_h == nullptr) {
 		parameter_set_used_h = orb_advertise(ORB_ID(parameter_set_used_request), &req);
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		orb_publish(ORB_ID(parameter_set_used_request), parameter_set_used_h, &req);
 	}
 
 	param_remote_counters.set_used_sent++;
 }
 
-void param_remote_set_value(param_t param, const void *val)
+ശൂന്യം param_remote_set_മൂല്യം(param_t param, സ്ഥിരം ശൂന്യം *val)
 {
-	bool send_request = true;
-	struct parameter_set_value_request_s req;
+	തർക്കം send_request = സത്യം;
+	ഘടന parameter_set_മൂല്യം_request_s req;
 	req.timestamp = hrt_absolute_time();
 	req.parameter_index = param;
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
-		req.int_value = *(int32_t *)val;
+	തിരഞ്ഞെടുപ്പ് (param_type(param)) {
+	അവസ്ഥ PARAM_TYPE_INT32:
+		req.int_മൂല്യം = *(int32_t *)val;
 
-		if (debug) {
-			PX4_INFO("*** Setting %s to %" PRIi32 " ***", param_name(req.parameter_index), req.int_value);
+		എങ്കിൽ (debug) {
+			PX4_INFO("*** Setting %s to %" PRIi32 " ***", param_name(req.parameter_index), req.int_മൂല്യം);
 		}
 
-		break;
+		നിർത്തുക;
 
-	case PARAM_TYPE_FLOAT:
-		req.float_value = *(float *)val;
+	അവസ്ഥ PARAM_TYPE_FLOAT:
+		req.float_മൂല്യം = *(ദശാംശം *)val;
 
-		if (debug) {
-			PX4_INFO("*** Setting %s to %f ***", param_name(req.parameter_index), (double) req.float_value);
+		എങ്കിൽ (debug) {
+			PX4_INFO("*** Setting %s to %f ***", param_name(req.parameter_index), (ഇരട്ട) req.float_മൂല്യം);
 		}
 
-		break;
+		നിർത്തുക;
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 		PX4_ERR("Parameter must be either int or float");
-		send_request = false;
-		break;
+		send_request = അസത്യം;
+		നിർത്തുക;
 	}
 
-	if (!orb_sub_valid(param_set_rsp_fd)) {
-		if (debug) {
+	എങ്കിൽ (!orb_sub_valid(param_set_rsp_fd)) {
+		എങ്കിൽ (debug) {
 			PX4_INFO("Subscribing to parameter_primary_set_value_response");
 		}
 
-		param_set_rsp_fd = orb_subscribe(ORB_ID(parameter_primary_set_value_response));
+		param_set_rsp_fd = orb_subscribe(ORB_ID(parameter_primary_set_മൂല്യം_response));
 
-		if (!orb_sub_valid(param_set_rsp_fd)) {
+		എങ്കിൽ (!orb_sub_valid(param_set_rsp_fd)) {
 			PX4_ERR("Subscription to parameter_primary_set_value_response failed");
 
-		} else {
-			if (debug) {
+		} അല്ലെങ്കിൽ {
+			എങ്കിൽ (debug) {
 				PX4_INFO("Subscription to parameter_primary_set_value_response succeeded");
 			}
 		}
 	}
 
-	if (send_request) {
-		if (debug) {
+	എങ്കിൽ (send_request) {
+		എങ്കിൽ (debug) {
 			PX4_INFO("Sending param set value request to primary for %s", param_name(req.parameter_index));
 		}
 
-		if (param_set_value_req_h == nullptr) {
-			param_set_value_req_h = orb_advertise(ORB_ID(parameter_primary_set_value_request), nullptr);
+		എങ്കിൽ (param_set_മൂല്യം_req_h == nullptr) {
+			param_set_മൂല്യം_req_h = orb_advertise(ORB_ID(parameter_primary_set_മൂല്യം_request), nullptr);
 		}
 
-		orb_publish(ORB_ID(parameter_primary_set_value_request), param_set_value_req_h, &req);
+		orb_publish(ORB_ID(parameter_primary_set_മൂല്യം_request), param_set_മൂല്യം_req_h, &req);
 
-		param_remote_counters.set_value_request_sent++;
+		param_remote_counters.set_മൂല്യം_request_sent++;
 
 		// Wait for response
-		bool updated = false;
+		തർക്കം updated = അസത്യം;
 
-		if (debug) {
+		എങ്കിൽ (debug) {
 			PX4_INFO("Waiting for parameter_client_set_value_response for %s", param_name(req.parameter_index));
 		}
 
 		px4_usleep(TIMEOUT_WAIT);
-		int count = TIMEOUT_COUNT;
+		പൂർണ്ണസംഖ്യ എണ്ണം = TIMEOUT_എണ്ണം;
 
-		while (--count) {
-			(void) orb_check(param_set_rsp_fd, &updated);
+		ആകുമ്പോൾ (--എണ്ണം) {
+			(ശൂന്യം) orb_check(param_set_rsp_fd, &updated);
 
-			struct parameter_set_value_response_s rsp;
+			ഘടന parameter_set_മൂല്യം_response_s rsp;
 
-			while (updated) {
+			ആകുമ്പോൾ (updated) {
 
-				orb_copy(ORB_ID(parameter_primary_set_value_response), param_set_rsp_fd, &rsp);
+				orb_copy(ORB_ID(parameter_primary_set_മൂല്യം_response), param_set_rsp_fd, &rsp);
 
-				if ((rsp.request_timestamp == req.timestamp) && (rsp.parameter_index == req.parameter_index)) {
-					if (debug) {
+				എങ്കിൽ ((rsp.request_timestamp == req.timestamp) && (rsp.parameter_index == req.parameter_index)) {
+					എങ്കിൽ (debug) {
 						PX4_INFO("Got parameter_primary_set_value_response for %s", param_name(req.parameter_index));
 					}
 
-					param_remote_counters.set_value_response_received++;
-					return;
+					param_remote_counters.set_മൂല്യം_response_received++;
+					തിരികെ;
 				}
 
-				(void) orb_check(param_set_rsp_fd, &updated);
+				(ശൂന്യം) orb_check(param_set_rsp_fd, &updated);
 			}
 
 			px4_usleep(TIMEOUT_WAIT);
@@ -304,7 +304,7 @@ void param_remote_set_value(param_t param, const void *val)
 	}
 }
 
-void param_remote_get_counters(struct param_remote_counters *cnt)
+ശൂന്യം param_remote_get_counters(ഘടന param_remote_counters *cnt)
 {
 	*cnt = param_remote_counters;
 }

@@ -37,33 +37,33 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include <gtest/gtest.h>
+#അന്തര്ഭാവ <gtest/gtest.h>
 
-#include <lib/adsb/DaaActionPolicy.h>
-#include <uORB/topics/detect_and_avoid.h>
-#include <uORB/topics/vehicle_status.h>
+#അന്തര്ഭാവ <lib/adsb/DaaActionPolicy.h>
+#അന്തര്ഭാവ <uORB/topics/detect_and_avoid.h>
+#അന്തര്ഭാവ <uORB/topics/vehicle_status.h>
 
-namespace
+നാമാകാശ
 {
 
 // Same action parameter value for every conflict level, so the decide() tests
 // behave identically in F3442 and Crosstrack builds.
-daa_action_params_s params_for_all_levels(const int32_t action_param)
+daa_action_params_s params_for_all_levels(സ്ഥിരം int32_t action_param)
 {
 	daa_action_params_s params{};
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
-	params.lvl_low_act = action_param;
+#എങ്കിൽ defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+	params.lvl_താഴെയുള്ള_act = action_param;
 	params.lvl_med_act = action_param;
-	params.lvl_high_act = action_param;
+	params.lvl_മുകളിലെ_act = action_param;
 	params.lvl_crit_act = action_param;
-#else
+#അല്ലെങ്കിൽ
 	params.traff_avoid = action_param;
 #endif // CONFIG_NAVIGATOR_ADSB_F3442
-	return params;
+	തിരികെ params;
 }
 
 // Navigation state groups by the weakest DAA action allowed to escalate above them.
-const uint8_t kStatesEnableHold[] {
+സ്ഥിരം uint8_t kStatesEnableHold[] {
 	vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION,
 	vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF,
 	vehicle_status_s::NAVIGATION_STATE_AUTO_FOLLOW_TARGET,
@@ -71,16 +71,16 @@ const uint8_t kStatesEnableHold[] {
 	vehicle_status_s::NAVIGATION_STATE_GUIDED_COURSE,
 };
 
-const uint8_t kStatesEnableRtl[] {
+സ്ഥിരം uint8_t kStatesEnableRtl[] {
 	vehicle_status_s::NAVIGATION_STATE_ORBIT,
 	vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER,
 };
 
-const uint8_t kStatesEnableLand[] {
+സ്ഥിരം uint8_t kStatesEnableLand[] {
 	vehicle_status_s::NAVIGATION_STATE_AUTO_RTL,
 };
 
-const uint8_t kStatesEnableTermination[] {
+സ്ഥിരം uint8_t kStatesEnableTermination[] {
 	vehicle_status_s::NAVIGATION_STATE_AUTO_LAND,
 	vehicle_status_s::NAVIGATION_STATE_DESCEND,
 	vehicle_status_s::NAVIGATION_STATE_AUTO_PRECLAND,
@@ -94,7 +94,7 @@ const uint8_t kStatesEnableTermination[] {
 	vehicle_status_s::NAVIGATION_STATE_STAB,
 };
 
-const uint8_t kStatesNeverEnable[] {
+സ്ഥിരം uint8_t kStatesNeverEnable[] {
 	vehicle_status_s::NAVIGATION_STATE_TERMINATION,
 	vehicle_status_s::NAVIGATION_STATE_OFFBOARD,
 	vehicle_status_s::NAVIGATION_STATE_EXTERNAL1,
@@ -107,50 +107,50 @@ const uint8_t kStatesNeverEnable[] {
 	vehicle_status_s::NAVIGATION_STATE_EXTERNAL8,
 };
 
-struct escalation_case_s {
+ഘടന escalation_case_s {
 	DaaAction action{DaaAction::kDisabled};
-	bool hold_allowed{false};
-	bool rtl_allowed{false};
-	bool land_allowed{false};
-	bool terminate_allowed{false};
+	തർക്കം hold_allowed{അസത്യം};
+	തർക്കം rtl_allowed{അസത്യം};
+	തർക്കം land_allowed{അസത്യം};
+	തർക്കം terminate_allowed{അസത്യം};
 };
 
-void check_escalation_matrix(const escalation_case_s &test_case)
+ശൂന്യം check_escalation_matrix(സ്ഥിരം escalation_case_s &test_case)
 {
-	for (const uint8_t nav_state : kStatesEnableHold) {
+	വേണ്ടി (സ്ഥിരം uint8_t nav_state : kStatesEnableHold) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.hold_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.hold_allowed) << "action " << (പൂർണ്ണസംഖ്യ)test_case.action << " nav_state " << (പൂർണ്ണസംഖ്യ)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesEnableRtl) {
+	വേണ്ടി (സ്ഥിരം uint8_t nav_state : kStatesEnableRtl) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.rtl_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.rtl_allowed) << "action " << (പൂർണ്ണസംഖ്യ)test_case.action << " nav_state " << (പൂർണ്ണസംഖ്യ)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesEnableLand) {
+	വേണ്ടി (സ്ഥിരം uint8_t nav_state : kStatesEnableLand) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.land_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.land_allowed) << "action " << (പൂർണ്ണസംഖ്യ)test_case.action << " nav_state " << (പൂർണ്ണസംഖ്യ)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesEnableTermination) {
+	വേണ്ടി (സ്ഥിരം uint8_t nav_state : kStatesEnableTermination) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.terminate_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.terminate_allowed) << "action " << (പൂർണ്ണസംഖ്യ)test_case.action << " nav_state " << (പൂർണ്ണസംഖ്യ)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesNeverEnable) {
+	വേണ്ടി (സ്ഥിരം uint8_t nav_state : kStatesNeverEnable) {
 		EXPECT_FALSE(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state))
-				<< "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+				<< "action " << (പൂർണ്ണസംഖ്യ)test_case.action << " nav_state " << (പൂർണ്ണസംഖ്യ)nav_state;
 	}
 }
 
-void expect_no_response(const daa_action_decision_s &decision)
+ശൂന്യം expect_no_response(സ്ഥിരം daa_action_decision_s &decision)
 {
 	EXPECT_EQ(decision.action_command, DaaAction::kDisabled);
 	EXPECT_FALSE(decision.announce_action);
 	EXPECT_FALSE(decision.warn_on_ground);
 }
 
-void expect_ground_warning(const daa_action_decision_s &decision, const NotifyLandedActCause expected_cause)
+ശൂന്യം expect_ground_warning(സ്ഥിരം daa_action_decision_s &decision, സ്ഥിരം NotifyLandedActCause expected_cause)
 {
 	EXPECT_EQ(decision.action_command, DaaAction::kDisabled);
 	EXPECT_FALSE(decision.announce_action);
@@ -158,8 +158,8 @@ void expect_ground_warning(const daa_action_decision_s &decision, const NotifyLa
 	EXPECT_EQ(decision.ground_warning_cause, expected_cause);
 }
 
-void expect_command(const daa_action_decision_s &decision, const DaaAction expected_action,
-		    const bool expected_announcement)
+ശൂന്യം expect_command(സ്ഥിരം daa_action_decision_s &decision, സ്ഥിരം DaaAction expected_action,
+		    സ്ഥിരം തർക്കം expected_announcement)
 {
 	EXPECT_EQ(decision.action_command, expected_action);
 	EXPECT_EQ(decision.announce_action, expected_announcement);
@@ -171,12 +171,12 @@ void expect_command(const daa_action_decision_s &decision, const DaaAction expec
 // Param numbering and the internal action ladder map both ways; out-of-range maps to Disabled.
 TEST(DaaActionPolicyTest, ActionParamMappingUsesParameterNumbering)
 {
-	struct action_param_case_s {
+	ഘടന action_param_case_s {
 		int32_t param;
 		DaaAction action;
 	};
 
-	const action_param_case_s cases[] {
+	സ്ഥിരം action_param_case_s cases[] {
 		{0, DaaAction::kDisabled},
 		{1, DaaAction::kWarnOnly},
 		{2, DaaAction::kReturnMode},
@@ -185,34 +185,34 @@ TEST(DaaActionPolicyTest, ActionParamMappingUsesParameterNumbering)
 		{5, DaaAction::kTerminate},
 	};
 
-	for (const action_param_case_s &test_case : cases) {
+	വേണ്ടി (സ്ഥിരം action_param_case_s &test_case : cases) {
 		EXPECT_EQ(DaaActionPolicy::action_param_to_daa_action(test_case.param), test_case.action)
 				<< "param " << test_case.param;
 		EXPECT_EQ(DaaActionPolicy::daa_action_to_action_param(test_case.action), test_case.param)
-				<< "action " << static_cast<int>(test_case.action);
+				<< "action " << static_cast<പൂർണ്ണസംഖ്യ>(test_case.action);
 	}
 
 	// out-of-range -> Disabled
 	EXPECT_EQ(DaaActionPolicy::action_param_to_daa_action(-1), DaaAction::kDisabled);
 	EXPECT_EQ(DaaActionPolicy::action_param_to_daa_action(6), DaaAction::kDisabled);
-	EXPECT_EQ(DaaActionPolicy::daa_action_to_action_param(DaaAction::kMaxActionValue), 0);
+	EXPECT_EQ(DaaActionPolicy::daa_action_to_action_param(DaaAction::k_Max_Action_മൂല്യം), 0);
 }
 
 // An action escalates only when stronger than the current navigator state (protects manual/offboard).
 TEST(DaaActionPolicyTest, ActionEscalatesOnlyAboveNavState)
 {
-	check_escalation_matrix({DaaAction::kDisabled, false, false, false, false});
-	check_escalation_matrix({DaaAction::kWarnOnly, false, false, false, false});
-	check_escalation_matrix({DaaAction::kPositionHoldMode, true, false, false, false});
-	check_escalation_matrix({DaaAction::kReturnMode, true, true, false, false});
-	check_escalation_matrix({DaaAction::kLandMode, true, true, true, false});
-	check_escalation_matrix({DaaAction::kTerminate, true, true, true, true});
+	check_escalation_matrix({DaaAction::kDisabled, അസത്യം, അസത്യം, അസത്യം, അസത്യം});
+	check_escalation_matrix({DaaAction::kWarnOnly, അസത്യം, അസത്യം, അസത്യം, അസത്യം});
+	check_escalation_matrix({DaaAction::kPositionHoldMode, സത്യം, അസത്യം, അസത്യം, അസത്യം});
+	check_escalation_matrix({DaaAction::kReturnMode, സത്യം, സത്യം, അസത്യം, അസത്യം});
+	check_escalation_matrix({DaaAction::kLandMode, സത്യം, സത്യം, സത്യം, അസത്യം});
+	check_escalation_matrix({DaaAction::kTerminate, സത്യം, സത്യം, സത്യം, സത്യം});
 }
 
 // NONE and out-of-range levels never request an action, even with actions configured everywhere.
 TEST(DaaActionPolicyTest, NoActionForInvalidLevels)
 {
-	const daa_action_params_s params = params_for_all_levels(5); // Terminate everywhere
+	സ്ഥിരം daa_action_params_s params = params_for_all_levels(5); // Terminate everywhere
 
 	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_NONE, params),
 		  DaaAction::kDisabled);
@@ -220,20 +220,20 @@ TEST(DaaActionPolicyTest, NoActionForInvalidLevels)
 		  DaaAction::kDisabled);
 }
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#എങ്കിൽ defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 TEST(DaaActionPolicyTest, F3442FallbackUsesGuaranteedBreachedZones)
 {
 	daa_action_params_s params{};
-	params.lvl_low_act = 1;		// Warn only
+	params.lvl_താഴെയുള്ള_act = 1;		// Warn only
 	params.lvl_med_act = 4;		// Hold
-	params.lvl_high_act = 0;	// Disabled
+	params.lvl_മുകളിലെ_act = 0;	// Disabled
 	params.lvl_crit_act = 5;	// Terminate
 
-	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_LOW, params),
+	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_താഴെയുള്ള, params),
 		  DaaAction::kWarnOnly);
 	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_MEDIUM, params),
 		  DaaAction::kPositionHoldMode);
-	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH, params),
+	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_മുകളിലെ, params),
 		  DaaAction::kWarnOnly);
 	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL, params),
 		  DaaAction::kTerminate);
@@ -247,13 +247,13 @@ TEST(DaaActionPolicyTest, F3442FallbackUsesGuaranteedBreachedZones)
 	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL,
 			params_for_all_levels(0)), DaaAction::kDisabled);
 }
-#else
+#അല്ലെങ്കിൽ
 // Crosstrack maps every level through the single NAV_TRAFF_AVOID action.
 TEST(DaaActionPolicyTest, CrosstrackSingleActionMapping)
 {
-	const daa_action_params_s params = params_for_all_levels(3); // Land
+	സ്ഥിരം daa_action_params_s params = params_for_all_levels(3); // Land
 
-	for (uint8_t level = detect_and_avoid_s::DAA_CONFLICT_LVL_LOW;
+	വേണ്ടി (uint8_t level = detect_and_avoid_s::DAA_CONFLICT_LVL_താഴെയുള്ള;
 	     level <= detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL; ++level) {
 		EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(level, params), DaaAction::kLandMode);
 	}
@@ -263,9 +263,9 @@ TEST(DaaActionPolicyTest, CrosstrackSingleActionMapping)
 // Unchanged level: no command or warning.
 TEST(DaaActionPolicyTest, DecideNoResponseWithoutLevelChange)
 {
-	const daa_action_decision_s decision = DaaActionPolicy::decide(
+	സ്ഥിരം daa_action_decision_s decision = DaaActionPolicy::decide(
 			detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL, detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL,
-			vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, false, true,
+			vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, അസത്യം, സത്യം,
 			DaaAction::kDisabled, params_for_all_levels(5));
 
 	expect_no_response(decision);
@@ -273,61 +273,61 @@ TEST(DaaActionPolicyTest, DecideNoResponseWithoutLevelChange)
 
 TEST(DaaActionPolicyTest, DecideWarnsOnGroundInsteadOfActing)
 {
-	const uint8_t critical = detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL;
-	const uint8_t none = detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
-	const uint8_t nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
+	സ്ഥിരം uint8_t critical = detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL;
+	സ്ഥിരം uint8_t none = detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
+	സ്ഥിരം uint8_t nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
 
 	// armed -> takeoff warning
-	daa_action_decision_s decision = DaaActionPolicy::decide(critical, none, nav_state, true, true,
+	daa_action_decision_s decision = DaaActionPolicy::decide(critical, none, nav_state, സത്യം, സത്യം,
 					 DaaAction::kDisabled, params_for_all_levels(5));
 	expect_ground_warning(decision, NotifyLandedActCause::kConflictAndArmed);
 
 	// disarmed -> arming warning
-	decision = DaaActionPolicy::decide(critical, none, nav_state, true, false,
+	decision = DaaActionPolicy::decide(critical, none, nav_state, സത്യം, അസത്യം,
 					   DaaAction::kDisabled, params_for_all_levels(5));
 	expect_ground_warning(decision, NotifyLandedActCause::kConflictAndDisarmed);
 
 	// Repeated requests allow the caller to emit rate-limited ground warnings.
-	decision = DaaActionPolicy::decide(critical, critical, nav_state, true, false,
+	decision = DaaActionPolicy::decide(critical, critical, nav_state, സത്യം, അസത്യം,
 					   DaaAction::kDisabled, params_for_all_levels(5));
 	expect_ground_warning(decision, NotifyLandedActCause::kConflictAndDisarmed);
 
 	// warn-only config -> nothing
-	decision = DaaActionPolicy::decide(critical, none, nav_state, true, true,
+	decision = DaaActionPolicy::decide(critical, none, nav_state, സത്യം, സത്യം,
 					   DaaAction::kDisabled, params_for_all_levels(1));
 	expect_no_response(decision);
 }
 
 TEST(DaaActionPolicyTest, DecideRequestsCommandOnAirborneEscalationOnly)
 {
-	const uint8_t critical = detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL;
-	const uint8_t low = detect_and_avoid_s::DAA_CONFLICT_LVL_LOW;
-	const daa_action_params_s land_params = params_for_all_levels(3); // Land
+	സ്ഥിരം uint8_t critical = detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL;
+	സ്ഥിരം uint8_t താഴെയുള്ള = detect_and_avoid_s::DAA_CONFLICT_LVL_താഴെയുള്ള;
+	സ്ഥിരം daa_action_params_s land_params = params_for_all_levels(3); // Land
 
 	// escalation -> Land command, announced
-	daa_action_decision_s decision = DaaActionPolicy::decide(critical, low,
-					 vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, false, true,
+	daa_action_decision_s decision = DaaActionPolicy::decide(critical, താഴെയുള്ള,
+					 vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, അസത്യം, സത്യം,
 					 DaaAction::kDisabled, land_params);
-	expect_command(decision, DaaAction::kLandMode, true);
+	expect_command(decision, DaaAction::kLandMode, സത്യം);
 
 	// A later level escalation that maps to the same action is not re-announced.
-	decision = DaaActionPolicy::decide(critical, low, vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION,
-					   false, true, DaaAction::kLandMode, land_params);
-	expect_command(decision, DaaAction::kLandMode, false);
+	decision = DaaActionPolicy::decide(critical, താഴെയുള്ള, vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION,
+					   അസത്യം, സത്യം, DaaAction::kLandMode, land_params);
+	expect_command(decision, DaaAction::kLandMode, അസത്യം);
 
 	// The first escalation after all conflicts cleared starts a new action episode.
 	decision = DaaActionPolicy::decide(critical, detect_and_avoid_s::DAA_CONFLICT_LVL_NONE,
 					   vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION,
-					   false, true, DaaAction::kLandMode, land_params);
-	expect_command(decision, DaaAction::kLandMode, true);
+					   അസത്യം, സത്യം, DaaAction::kLandMode, land_params);
+	expect_command(decision, DaaAction::kLandMode, സത്യം);
 
 	// already in a stronger mode -> nothing
-	decision = DaaActionPolicy::decide(critical, low, vehicle_status_s::NAVIGATION_STATE_TERMINATION,
-					   false, true, DaaAction::kDisabled, land_params);
+	decision = DaaActionPolicy::decide(critical, താഴെയുള്ള, vehicle_status_s::NAVIGATION_STATE_TERMINATION,
+					   അസത്യം, സത്യം, DaaAction::kDisabled, land_params);
 	expect_no_response(decision);
 
 	// de-escalation -> nothing
-	decision = DaaActionPolicy::decide(low, critical, vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION,
-					   false, true, DaaAction::kLandMode, land_params);
+	decision = DaaActionPolicy::decide(താഴെയുള്ള, critical, vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION,
+					   അസത്യം, സത്യം, DaaAction::kLandMode, land_params);
 	expect_no_response(decision);
 }

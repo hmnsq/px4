@@ -39,19 +39,19 @@
 
 #pragma once
 
-#include "Limits.hpp"
+#അന്തര്ഭാവ "Limits.hpp"
 
-#include <px4_platform_common/defines.h>
-#include <matrix/matrix/math.hpp>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <matrix/matrix/math.hpp>
 
-namespace math
+നാമാകാശ math
 {
 
 // Type-safe signum function with zero treated as positive
 template<typename T>
-int signNoZero(T val)
+പൂർണ്ണസംഖ്യ signNoZero(T val)
 {
-	return (T(0) <= val) - (val < T(0));
+	തിരികെ (T(0) <= val) - (val < T(0));
 }
 
 /**
@@ -60,15 +60,15 @@ int signNoZero(T val)
  * @param[in] positive Truth value to take the sign from
  * @return 1 if positive is true, -1 if positive is false
  */
-inline int signFromBool(bool positive)
+വരിയിൽ പൂർണ്ണസംഖ്യ signFromBool(തർക്കം positive)
 {
-	return positive ? 1 : -1;
+	തിരികെ positive ? 1 : -1;
 }
 
 template<typename T>
 T sq(T val)
 {
-	return val * val;
+	തിരികെ val * val;
 }
 
 /*
@@ -81,11 +81,11 @@ T sq(T val)
  * @return result of function output
  */
 template<typename T>
-const T expo(const T &value, const T &e)
+സ്ഥിരം T expo(സ്ഥിരം T &value, സ്ഥിരം T &e)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T ec = constrain(e, (T) 0, (T) 1);
-	return (1 - ec) * x + ec * x * x * x;
+	തിരികെ (1 - ec) * x + ec * x * x * x;
 }
 
 /*
@@ -100,11 +100,11 @@ const T expo(const T &value, const T &e)
  * @return result of function output
  */
 template<typename T>
-const T superexpo(const T &value, const T &e, const T &g)
+സ്ഥിരം T superexpo(സ്ഥിരം T &value, സ്ഥിരം T &e, സ്ഥിരം T &g)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T gc = constrain(g, (T) 0, (T) 0.99);
-	return expo(x, e) * (1 - gc) / (1 - fabsf(x) * gc);
+	തിരികെ expo(x, e) * (1 - gc) / (1 - fabsf(x) * gc);
 }
 
 /*
@@ -122,20 +122,20 @@ const T superexpo(const T &value, const T &e, const T &g)
  * 		0.99 - almost entire span is deadzone
  */
 template<typename T>
-const T deadzone(const T &value, const T &dz)
+സ്ഥിരം T deadzone(സ്ഥിരം T &value, സ്ഥിരം T &dz)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T dzc = constrain(dz, (T) 0, (T) 0.99);
 	// Rescale the input such that we get a piecewise linear function that will be continuous with applied deadzone
 	T out = (x - matrix::sign(x) * dzc) / (1 - dzc);
 	// apply the deadzone (values zero around the middle)
-	return out * (fabsf(x) > dzc);
+	തിരികെ out * (fabsf(x) > dzc);
 }
 
 template<typename T>
-const T expo_deadzone(const T &value, const T &e, const T &dz)
+സ്ഥിരം T expo_deadzone(സ്ഥിരം T &value, സ്ഥിരം T &e, സ്ഥിരം T &dz)
 {
-	return expo(deadzone(value, dz), e);
+	തിരികെ expo(deadzone(value, dz), e);
 }
 
 
@@ -149,19 +149,19 @@ const T expo_deadzone(const T &value, const T &e, const T &dz)
  *         x_low   x_high
  */
 template<typename T>
-const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_low, const T &y_high)
+സ്ഥിരം T interpolate(സ്ഥിരം T &value, സ്ഥിരം T &x_താഴെയുള്ള, സ്ഥിരം T &x_മുകളിലെ, സ്ഥിരം T &y_താഴെയുള്ള, സ്ഥിരം T &y_മുകളിലെ)
 {
-	if (value <= x_low) {
-		return y_low;
+	എങ്കിൽ (value <= x_താഴെയുള്ള) {
+		തിരികെ y_താഴെയുള്ള;
 
-	} else if (value > x_high) {
-		return y_high;
+	} അല്ലെങ്കിൽ എങ്കിൽ (value > x_മുകളിലെ) {
+		തിരികെ y_മുകളിലെ;
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		/* linear function between the two points */
-		T a = (y_high - y_low) / (x_high - x_low);
-		T b = y_low - (a * x_low);
-		return (a * value) + b;
+		T a = (y_മുകളിലെ - y_താഴെയുള്ള) / (x_മുകളിലെ - x_താഴെയുള്ള);
+		T b = y_താഴെയുള്ള - (a * x_താഴെയുള്ള);
+		തിരികെ (a * value) + b;
 	}
 }
 
@@ -178,10 +178,10 @@ const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_
  *        0 1/(N-1) 2/(N-1) ... 1
  */
 template<typename T, size_t N>
-const T interpolateN(const T &value, const T(&y)[N])
+സ്ഥിരം T interpolateN(സ്ഥിരം T &value, സ്ഥിരം T(&y)[N])
 {
-	size_t index = constrain((int)(value * (N - 1)), 0, (int)(N - 2));
-	return interpolate(value, (T)index / (T)(N - 1), (T)(index + 1) / (T)(N - 1), y[index], y[index + 1]);
+	size_t index = constrain((പൂർണ്ണസംഖ്യ)(value * (N - 1)), 0, (പൂർണ്ണസംഖ്യ)(N - 2));
+	തിരികെ interpolate(value, (T)index / (T)(N - 1), (T)(index + 1) / (T)(N - 1), y[index], y[index + 1]);
 }
 
 /*
@@ -198,15 +198,15 @@ const T interpolateN(const T &value, const T(&y)[N])
  * Note: x[N] corner coordinates have to be sorted in ascending order
  */
 template<typename T, size_t N>
-const T interpolateNXY(const T &value, const T(&x)[N], const T(&y)[N])
+സ്ഥിരം T interpolateNXY(സ്ഥിരം T &value, സ്ഥിരം T(&x)[N], സ്ഥിരം T(&y)[N])
 {
 	size_t index = 0;
 
-	while ((value > x[index + 1]) && (index < (N - 2))) {
+	ആകുമ്പോൾ ((value > x[index + 1]) && (index < (N - 2))) {
 		index++;
 	}
 
-	return interpolate(value, x[index], x[index + 1], y[index], y[index + 1]);
+	തിരികെ interpolate(value, x[index], x[index + 1], y[index], y[index + 1]);
 }
 
 /*
@@ -222,16 +222,16 @@ const T interpolateNXY(const T &value, const T(&x)[N], const T(&y)[N])
  *             0    1
  */
 template<typename T>
-const T sqrt_linear(const T &value)
+സ്ഥിരം T sqrt_linear(സ്ഥിരം T &value)
 {
-	if (value < static_cast<T>(0)) {
-		return static_cast<T>(0);
+	എങ്കിൽ (value < static_cast<T>(0)) {
+		തിരികെ static_cast<T>(0);
 
-	} else if (value < static_cast<T>(1)) {
-		return sqrtf(value);
+	} അല്ലെങ്കിൽ എങ്കിൽ (value < static_cast<T>(1)) {
+		തിരികെ sqrtf(value);
 
-	} else {
-		return value;
+	} അല്ലെങ്കിൽ {
+		തിരികെ value;
 	}
 }
 
@@ -242,29 +242,29 @@ const T sqrt_linear(const T &value)
  * Any value for s is valid.
  */
 template<typename T>
-const T lerp(const T &a, const T &b, const T &s)
+സ്ഥിരം T lerp(സ്ഥിരം T &a, സ്ഥിരം T &b, സ്ഥിരം T &s)
 {
-	return (static_cast<T>(1) - s) * a + s * b;
+	തിരികെ (static_cast<T>(1) - s) * a + s * b;
 }
 
 template<typename T>
 constexpr T negate(T value)
 {
-	static_assert(sizeof(T) > 2, "implement for T");
-	return -value;
+	static_assert(വലുപ്പം(T) > 2, "implement for T");
+	തിരികെ -value;
 }
 
 template<>
 constexpr int16_t negate<int16_t>(int16_t value)
 {
-	if (value == INT16_MAX) {
-		return INT16_MIN;
+	എങ്കിൽ (value == INT16_MAX) {
+		തിരികെ INT16_MIN;
 
-	} else if (value == INT16_MIN) {
-		return INT16_MAX;
+	} അല്ലെങ്കിൽ എങ്കിൽ (value == INT16_MIN) {
+		തിരികെ INT16_MAX;
 	}
 
-	return -value;
+	തിരികെ -value;
 }
 
 /*
@@ -273,30 +273,30 @@ constexpr int16_t negate<int16_t>(int16_t value)
  */
 
 template<typename T>
-int countSetBits(T n)
+പൂർണ്ണസംഖ്യ എണ്ണം_Set_Bits(T n)
 {
-	return __builtin_popcount(n);
+	തിരികെ __builtin_popcount(n);
 }
 
 template<typename T>
-int countTrailingZeros(T n)
+പൂർണ്ണസംഖ്യ എണ്ണം_Trailing_Zeros(T n)
 {
-	return n == 0 ? (int)(sizeof(T) * 8) : __builtin_ctz(n);
+	തിരികെ n == 0 ? (പൂർണ്ണസംഖ്യ)(വലുപ്പം(T) * 8) : __builtin_ctz(n);
 }
 
-inline bool isFinite(const float &value)
+വരിയിൽ തർക്കം isFinite(സ്ഥിരം ദശാംശം &value)
 {
-	return PX4_ISFINITE(value);
+	തിരികെ PX4_ISFINITE(value);
 }
 
-inline bool isFinite(const matrix::Vector2f &value)
+വരിയിൽ തർക്കം isFinite(സ്ഥിരം matrix::Vector2f &value)
 {
-	return value.isAllFinite();
+	തിരികെ value.isAllFinite();
 }
 
-inline bool isFinite(const matrix::Vector3f &value)
+വരിയിൽ തർക്കം isFinite(സ്ഥിരം matrix::Vector3f &value)
 {
-	return value.isAllFinite();
+	തിരികെ value.isAllFinite();
 }
 
 } /* namespace math */

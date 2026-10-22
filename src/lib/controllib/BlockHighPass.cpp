@@ -37,21 +37,21 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <float.h>
 
-#include "blocks.hpp"
+#അന്തര്ഭാവ "blocks.hpp"
 
-namespace control
+നാമാകാശ control
 {
 
-float BlockHighPass::update(float input)
+ദശാംശം Block_മുകളിലെ_Pass::update(ദശാംശം നിവേശം)
 {
-	float b = 2 * M_PI_F * getFCut() * getDt();
-	float a = 1 / (1 + b);
-	setY(a * (getY() + input - getU()));
-	setU(input);
-	return getY();
+	ദശാംശം b = 2 * M_PI_F * getFCut() * getDt();
+	ദശാംശം a = 1 / (1 + b);
+	setY(a * (getY() + നിവേശം - getU()));
+	setU(നിവേശം);
+	തിരികെ getY();
 }
 
 } // namespace control

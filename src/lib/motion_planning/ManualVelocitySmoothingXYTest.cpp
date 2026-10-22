@@ -36,16 +36,16 @@
  * Run this test only using make tests TESTFILTER=ManualVelocitySmoothing
  */
 
-#include <gtest/gtest.h>
-#include <matrix/matrix/math.hpp>
+#അന്തര്ഭാവ <gtest/gtest.h>
+#അന്തര്ഭാവ <matrix/matrix/math.hpp>
 
-#include <motion_planning/ManualVelocitySmoothingXY.hpp>
+#അന്തര്ഭാവ <motion_planning/ManualVelocitySmoothingXY.hpp>
 
-using namespace matrix;
+using നാമാകാശ matrix;
 
-class ManualVelocitySmoothingXYTest : public ::testing::Test
+വർഗ്ഗം ManualVelocitySmoothingXYTest : പൊതു ::testing::Test
 {
-public:
+പൊതു:
 	ManualVelocitySmoothingXY _smoothing;
 };
 

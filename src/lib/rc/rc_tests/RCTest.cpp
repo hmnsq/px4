@@ -1,49 +1,49 @@
-#include <unit_test.h>
+#അന്തര്ഭാവ <unit_test.h>
 
-#include <systemlib/err.h>
+#അന്തര്ഭാവ <systemlib/err.h>
 
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
+#അന്തര്ഭാവ <stdio.h>
+#അന്തര്ഭാവ <string.h>
+#അന്തര്ഭാവ <unistd.h>
 
-#include <drivers/drv_hrt.h>
+#അന്തര്ഭാവ <drivers/drv_hrt.h>
 
 #define DSM_DEBUG
-#include <lib/rc/sbus.h>
-#include <lib/rc/dsm.h>
-#include <lib/rc/st24.h>
-#include <lib/rc/sumd.h>
-#include <lib/rc/crsf.h>
-#include <lib/rc/ghst.hpp>
+#അന്തര്ഭാവ <lib/rc/sbus.h>
+#അന്തര്ഭാവ <lib/rc/dsm.h>
+#അന്തര്ഭാവ <lib/rc/st24.h>
+#അന്തര്ഭാവ <lib/rc/sumd.h>
+#അന്തര്ഭാവ <lib/rc/crsf.h>
+#അന്തര്ഭാവ <lib/rc/ghst.hpp>
 
-#if defined(CONFIG_ARCH_BOARD_PX4_SITL)
+#എങ്കിൽ defined(CONFIG_ARCH_BOARD_PX4_SITL)
 #define TEST_DATA_PATH "./test_data/"
-#else
-#define TEST_DATA_PATH CONFIG_BOARD_ROOT_PATH
+#അല്ലെങ്കിൽ
+#define TEST_DATA_PATH CONFIG_BOARD_വേര്_PATH
 #endif
 
-extern "C" __EXPORT int rc_tests_main(int argc, char *argv[]);
+ബാഹ്യ "C" __EXPORT പൂർണ്ണസംഖ്യ rc_tests_main(പൂർണ്ണസംഖ്യ argc, അക്ഷരം *argv[]);
 
-class RCTest : public UnitTest
+വർഗ്ഗം RCTest : പൊതു UnitTest
 {
-public:
-	bool run_tests() override;
+പൊതു:
+	തർക്കം run_tests() override;
 
-private:
-	bool crsfTest();
-	bool ghstTest();
-	bool dsmTest(const char *filepath, unsigned expected_chancount, unsigned expected_dropcount, unsigned chan0);
-	bool dsmTest10Ch();
-	bool dsmTest16Ch();
-	bool dsmTest22msDSMX16Ch();
-	bool dsmTestOrangeDsmx();
-	bool sbus2Test();
-	bool st24MalformedLengthTest();
-	bool st24Test();
-	bool sumdTest();
+സ്വകാര്യ:
+	തർക്കം crsfTest();
+	തർക്കം ghstTest();
+	തർക്കം dsmTest(സ്ഥിരം അക്ഷരം *filepath, unsigned expected_chancount, unsigned expected_dropcount, unsigned chan0);
+	തർക്കം dsmTest10Ch();
+	തർക്കം dsmTest16Ch();
+	തർക്കം dsmTest22msDSMX16Ch();
+	തർക്കം dsmTestOrangeDsmx();
+	തർക്കം sbus2Test();
+	തർക്കം st24MalformedLengthTest();
+	തർക്കം st24Test();
+	തർക്കം sumdTest();
 };
 
-bool RCTest::run_tests()
+തർക്കം RCTest::run_tests()
 {
 	ut_run_test(crsfTest);
 	ut_run_test(ghstTest);
@@ -56,204 +56,204 @@ bool RCTest::run_tests()
 	ut_run_test(st24Test);
 	ut_run_test(sumdTest);
 
-	return (_tests_failed == 0);
+	തിരികെ (_tests_failed == 0);
 }
 
-bool RCTest::crsfTest()
+തർക്കം RCTest::crsfTest()
 {
-	const char *filepath = TEST_DATA_PATH "crsf_rc_channels.txt";
+	സ്ഥിരം അക്ഷരം *filepath = TEST_DATA_PATH "crsf_rc_channels.txt";
 
 	FILE *fp = fopen(filepath, "rt");
 
 	ut_test(fp);
 	//PX4_INFO("loading data from: %s", filepath);
 
-	const int line_size = 500;
-	char line[line_size];
-	bool has_decoded_values = false;
-	const int max_channels = 16;
-	uint16_t rc_values[max_channels];
-	uint16_t num_values = 0;
-	int line_counter = 1;
+	സ്ഥിരം പൂർണ്ണസംഖ്യ വരി_size = 500;
+	അക്ഷരം വരി[വരി_size];
+	തർക്കം has_decoded_മൂല്യങ്ങൾ = അസത്യം;
+	സ്ഥിരം പൂർണ്ണസംഖ്യ max_channels = 16;
+	uint16_t rc_മൂല്യങ്ങൾ[max_channels];
+	uint16_t അക്കം_മൂല്യങ്ങൾ = 0;
+	പൂർണ്ണസംഖ്യ വരി_counter = 1;
 
-	while (fgets(line, line_size, fp) != nullptr)  {
+	ആകുമ്പോൾ (fgets(വരി, വരി_size, fp) != nullptr)  {
 
-		if (strncmp(line, "INPUT ", 6) == 0) {
+		എങ്കിൽ (strncmp(വരി, "INPUT ", 6) == 0) {
 
-			if (has_decoded_values) {
-				PX4_ERR("Parser decoded values that are not in the test file (line=%i)", line_counter);
-				return false;
+			എങ്കിൽ (has_decoded_മൂല്യങ്ങൾ) {
+				PX4_ERR("Parser decoded values that are not in the test file (line=%i)", വരി_counter);
+				തിരികെ അസത്യം;
 			}
 
 			// read the values
-			const char *file_buffer = line + 6;
-			int frame_len = 0;
+			സ്ഥിരം അക്ഷരം *file_buffer = വരി + 6;
+			പൂർണ്ണസംഖ്യ frame_len = 0;
 			uint8_t frame[300];
-			int offset;
-			int number;
+			പൂർണ്ണസംഖ്യ offset;
+			പൂർണ്ണസംഖ്യ സംഖ്യ;
 
-			while (sscanf(file_buffer, "%x, %n", &number, &offset) > 0) {
-				frame[frame_len++] = number;
+			ആകുമ്പോൾ (sscanf(file_buffer, "%x, %n", &സംഖ്യ, &offset) > 0) {
+				frame[frame_len++] = സംഖ്യ;
 				file_buffer += offset;
 			}
 
 			// Pipe the data into the parser
 			hrt_abstime now = hrt_absolute_time();
 
-			bool result = crsf_parse(now, frame, frame_len, rc_values, &num_values, max_channels);
+			തർക്കം result = crsf_parse(now, frame, frame_len, rc_മൂല്യങ്ങൾ, &അക്കം_മൂല്യങ്ങൾ, max_channels);
 
-			if (result) {
-				has_decoded_values = true;
+			എങ്കിൽ (result) {
+				has_decoded_മൂല്യങ്ങൾ = സത്യം;
 			}
 
-		} else if (strncmp(line, "DECODED ", 8) == 0) {
+		} അല്ലെങ്കിൽ എങ്കിൽ (strncmp(വരി, "DECODED ", 8) == 0) {
 
-			if (!has_decoded_values) {
-				PX4_ERR("Test file contains decoded values but the parser did not decode anything (line=%i)", line_counter);
-				return false;
+			എങ്കിൽ (!has_decoded_മൂല്യങ്ങൾ) {
+				PX4_ERR("Test file contains decoded values but the parser did not decode anything (line=%i)", വരി_counter);
+				തിരികെ അസത്യം;
 			}
 
 			// read the values
-			const char *file_buffer = line + 8;
-			int offset;
-			int expected_rc_value;
-			int expected_num_channels = 0;
+			സ്ഥിരം അക്ഷരം *file_buffer = വരി + 8;
+			പൂർണ്ണസംഖ്യ offset;
+			പൂർണ്ണസംഖ്യ expected_rc_മൂല്യം;
+			പൂർണ്ണസംഖ്യ expected_അക്കം_channels = 0;
 
-			while (sscanf(file_buffer, "%x, %n", &expected_rc_value, &offset) > 0) {
+			ആകുമ്പോൾ (sscanf(file_buffer, "%x, %n", &expected_rc_മൂല്യം, &offset) > 0) {
 
 				// allow a small difference
-				if (abs(expected_rc_value - (int)rc_values[expected_num_channels]) > 10) {
-					PX4_ERR("File line: %i, channel: %i", line_counter, expected_num_channels);
-					ut_compare("Wrong decoded channel", expected_rc_value, rc_values[expected_num_channels]);
+				എങ്കിൽ (abs(expected_rc_മൂല്യം - (പൂർണ്ണസംഖ്യ)rc_മൂല്യങ്ങൾ[expected_അക്കം_channels]) > 10) {
+					PX4_ERR("File line: %i, channel: %i", വരി_counter, expected_അക്കം_channels);
+					ut_compare("Wrong decoded channel", expected_rc_മൂല്യം, rc_മൂല്യങ്ങൾ[expected_അക്കം_channels]);
 				}
 
 				file_buffer += offset;
-				++expected_num_channels;
+				++expected_അക്കം_channels;
 			}
 
-			if (expected_num_channels != num_values) {
-				PX4_ERR("File line: %d", line_counter);
-				ut_compare("Unexpected number of decoded channels", expected_num_channels, num_values);
+			എങ്കിൽ (expected_അക്കം_channels != അക്കം_മൂല്യങ്ങൾ) {
+				PX4_ERR("File line: %d", വരി_counter);
+				ut_compare("Unexpected number of decoded channels", expected_അക്കം_channels, അക്കം_മൂല്യങ്ങൾ);
 			}
 
-			has_decoded_values = false;
+			has_decoded_മൂല്യങ്ങൾ = അസത്യം;
 		}
 
-		++line_counter;
+		++വരി_counter;
 	}
 
-	return true;
+	തിരികെ സത്യം;
 }
 
-bool RCTest::ghstTest()
+തർക്കം RCTest::ghstTest()
 {
-	const char *filepath = TEST_DATA_PATH "ghst_rc_channels.txt";
+	സ്ഥിരം അക്ഷരം *filepath = TEST_DATA_PATH "ghst_rc_channels.txt";
 
 	FILE *fp = fopen(filepath, "rt");
 
 	ut_test(fp);
 
-	int uart_fd = -1;
-	const int line_size = 500;
-	char line[line_size];
-	bool has_decoded_values = false;
-	const int max_channels = 16;
-	uint16_t rc_values[max_channels];
-	uint16_t num_values = 0;
-	int line_counter = 1;
+	പൂർണ്ണസംഖ്യ uart_fd = -1;
+	സ്ഥിരം പൂർണ്ണസംഖ്യ വരി_size = 500;
+	അക്ഷരം വരി[വരി_size];
+	തർക്കം has_decoded_മൂല്യങ്ങൾ = അസത്യം;
+	സ്ഥിരം പൂർണ്ണസംഖ്യ max_channels = 16;
+	uint16_t rc_മൂല്യങ്ങൾ[max_channels];
+	uint16_t അക്കം_മൂല്യങ്ങൾ = 0;
+	പൂർണ്ണസംഖ്യ വരി_counter = 1;
 	ghstLinkStatistics_t link_stats;
 	ghst_config(uart_fd);
 
-	while (fgets(line, line_size, fp) != nullptr)  {
+	ആകുമ്പോൾ (fgets(വരി, വരി_size, fp) != nullptr)  {
 
-		if (strncmp(line, "INPUT ", 6) == 0) {
+		എങ്കിൽ (strncmp(വരി, "INPUT ", 6) == 0) {
 
-			if (has_decoded_values) {
-				PX4_ERR("Parser decoded values that are not in the test file (line=%i)", line_counter);
-				return false;
+			എങ്കിൽ (has_decoded_മൂല്യങ്ങൾ) {
+				PX4_ERR("Parser decoded values that are not in the test file (line=%i)", വരി_counter);
+				തിരികെ അസത്യം;
 			}
 
 			// read the values
-			const char *file_buffer = line + 6;
-			int frame_len = 0;
+			സ്ഥിരം അക്ഷരം *file_buffer = വരി + 6;
+			പൂർണ്ണസംഖ്യ frame_len = 0;
 			uint8_t frame[300];
-			int offset;
-			int number;
+			പൂർണ്ണസംഖ്യ offset;
+			പൂർണ്ണസംഖ്യ സംഖ്യ;
 
-			while (sscanf(file_buffer, "%x, %n", &number, &offset) > 0) {
-				frame[frame_len++] = number;
+			ആകുമ്പോൾ (sscanf(file_buffer, "%x, %n", &സംഖ്യ, &offset) > 0) {
+				frame[frame_len++] = സംഖ്യ;
 				file_buffer += offset;
 			}
 
 			// Pipe the data into the parser
 			hrt_abstime now = hrt_absolute_time();
 
-			bool result = ghst_parse(now, frame, frame_len, rc_values, &link_stats, &num_values, max_channels);
+			തർക്കം result = ghst_parse(now, frame, frame_len, rc_മൂല്യങ്ങൾ, &link_stats, &അക്കം_മൂല്യങ്ങൾ, max_channels);
 
-			if (result) {
-				has_decoded_values = true;
+			എങ്കിൽ (result) {
+				has_decoded_മൂല്യങ്ങൾ = സത്യം;
 			}
 
-		} else if (strncmp(line, "DECODED ", 8) == 0) {
+		} അല്ലെങ്കിൽ എങ്കിൽ (strncmp(വരി, "DECODED ", 8) == 0) {
 
-			if (!has_decoded_values) {
-				PX4_ERR("Test file contains decoded values but the parser did not decode anything (line=%i)", line_counter);
-				return false;
+			എങ്കിൽ (!has_decoded_മൂല്യങ്ങൾ) {
+				PX4_ERR("Test file contains decoded values but the parser did not decode anything (line=%i)", വരി_counter);
+				തിരികെ അസത്യം;
 			}
 
 			// read the values
-			const char *file_buffer = line + 8;
-			int offset;
-			int expected_rc_value;
-			int expected_num_channels = 0;
+			സ്ഥിരം അക്ഷരം *file_buffer = വരി + 8;
+			പൂർണ്ണസംഖ്യ offset;
+			പൂർണ്ണസംഖ്യ expected_rc_മൂല്യം;
+			പൂർണ്ണസംഖ്യ expected_അക്കം_channels = 0;
 
-			while (sscanf(file_buffer, "%x, %n", &expected_rc_value, &offset) > 0) {
+			ആകുമ്പോൾ (sscanf(file_buffer, "%x, %n", &expected_rc_മൂല്യം, &offset) > 0) {
 
 				// allow a small difference
-				if (abs(expected_rc_value - (int)rc_values[expected_num_channels]) > 10) {
-					PX4_ERR("File line: %i, channel: %i", line_counter, expected_num_channels);
-					ut_compare("Wrong decoded channel", expected_rc_value, rc_values[expected_num_channels]);
+				എങ്കിൽ (abs(expected_rc_മൂല്യം - (പൂർണ്ണസംഖ്യ)rc_മൂല്യങ്ങൾ[expected_അക്കം_channels]) > 10) {
+					PX4_ERR("File line: %i, channel: %i", വരി_counter, expected_അക്കം_channels);
+					ut_compare("Wrong decoded channel", expected_rc_മൂല്യം, rc_മൂല്യങ്ങൾ[expected_അക്കം_channels]);
 				}
 
 				file_buffer += offset;
-				++expected_num_channels;
+				++expected_അക്കം_channels;
 			}
 
-			if (expected_num_channels != num_values) {
-				PX4_ERR("File line: %d", line_counter);
-				ut_compare("Unexpected number of decoded channels", expected_num_channels, num_values);
+			എങ്കിൽ (expected_അക്കം_channels != അക്കം_മൂല്യങ്ങൾ) {
+				PX4_ERR("File line: %d", വരി_counter);
+				ut_compare("Unexpected number of decoded channels", expected_അക്കം_channels, അക്കം_മൂല്യങ്ങൾ);
 			}
 
-			has_decoded_values = false;
+			has_decoded_മൂല്യങ്ങൾ = അസത്യം;
 		}
 
-		++line_counter;
+		++വരി_counter;
 	}
 
-	return true;
+	തിരികെ സത്യം;
 }
 
-bool RCTest::dsmTest10Ch()
+തർക്കം RCTest::dsmTest10Ch()
 {
-	return dsmTest(TEST_DATA_PATH "dsm_x_data.txt", 10, 2, 1500);
+	തിരികെ dsmTest(TEST_DATA_PATH "dsm_x_data.txt", 10, 2, 1500);
 }
 
-bool RCTest::dsmTest16Ch()
+തർക്കം RCTest::dsmTest16Ch()
 {
-	return dsmTest(TEST_DATA_PATH "dsm_x_dx9_data.txt", 16, 1, 1500);
+	തിരികെ dsmTest(TEST_DATA_PATH "dsm_x_dx9_data.txt", 16, 1, 1500);
 }
 
-bool RCTest::dsmTest22msDSMX16Ch()
+തർക്കം RCTest::dsmTest22msDSMX16Ch()
 {
-	return dsmTest(TEST_DATA_PATH "dsm_x_dx9_px4_binding_data.txt", 16, 1, 1499);
+	തിരികെ dsmTest(TEST_DATA_PATH "dsm_x_dx9_px4_binding_data.txt", 16, 1, 1499);
 }
 
-bool RCTest::dsmTestOrangeDsmx()
+തർക്കം RCTest::dsmTestOrangeDsmx()
 {
-	return dsmTest(TEST_DATA_PATH "orangerx_dsmx_12.txt", 12, 1, 1499);
+	തിരികെ dsmTest(TEST_DATA_PATH "orangerx_dsmx_12.txt", 12, 1, 1499);
 }
 
-bool RCTest::dsmTest(const char *filepath, unsigned expected_chancount, unsigned expected_dropcount, unsigned chan0)
+തർക്കം RCTest::dsmTest(സ്ഥിരം അക്ഷരം *filepath, unsigned expected_chancount, unsigned expected_dropcount, unsigned chan0)
 {
 	FILE *fp;
 	fp = fopen(filepath, "rt");
@@ -261,32 +261,32 @@ bool RCTest::dsmTest(const char *filepath, unsigned expected_chancount, unsigned
 	ut_test(fp);
 	//PX4_INFO("loading data from: %s", filepath);
 
-	float f;
+	ദശാംശം f;
 	unsigned x;
-	int ret;
+	പൂർണ്ണസംഖ്യ ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
-		char buf[200];
-		(void)fgets(buf, sizeof(buf), fp);
+	വേണ്ടി (unsigned i = 0; i < 20; i++) {
+		അക്ഷരം buf[200];
+		(ശൂന്യം)fgets(buf, വലുപ്പം(buf), fp);
 	}
 
 	// Init the parser
 	uint8_t frame[30];
-	uint16_t rc_values[18];
-	uint16_t num_values;
-	bool dsm_11_bit;
+	uint16_t rc_മൂല്യങ്ങൾ[18];
+	uint16_t അക്കം_മൂല്യങ്ങൾ;
+	തർക്കം dsm_11_bit;
 	unsigned dsm_frame_drops = 0;
-	uint16_t max_channels = sizeof(rc_values) / sizeof(rc_values[0]);
+	uint16_t max_channels = വലുപ്പം(rc_മൂല്യങ്ങൾ) / വലുപ്പം(rc_മൂല്യങ്ങൾ[0]);
 
-	int count = 0;
+	പൂർണ്ണസംഖ്യ എണ്ണം = 0;
 	unsigned last_drop = 0;
 
 	dsm_proto_init();
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	ആകുമ്പോൾ (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		എങ്കിൽ (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
@@ -295,45 +295,45 @@ bool RCTest::dsmTest(const char *filepath, unsigned expected_chancount, unsigned
 		unsigned len = 1;
 
 		// Pipe the data into the parser
-		bool result = dsm_parse(f * 1e6f, &frame[0], len, rc_values, &num_values,
+		തർക്കം result = dsm_parse(f * 1e6f, &frame[0], len, rc_മൂല്യങ്ങൾ, &അക്കം_മൂല്യങ്ങൾ,
 					&dsm_11_bit, &dsm_frame_drops, nullptr, max_channels);
 
-		if (result) {
-			if (count > (16 * 20)) { // need to process enough data to have full channel count
-				ut_compare("num_values == expected_chancount", num_values, expected_chancount);
+		എങ്കിൽ (result) {
+			എങ്കിൽ (എണ്ണം > (16 * 20)) { // need to process enough data to have full channel count
+				ut_compare("num_values == expected_chancount", അക്കം_മൂല്യങ്ങൾ, expected_chancount);
 			}
 
-			ut_test(abs((int)chan0 - (int)rc_values[0]) < 30);
+			ut_test(abs((പൂർണ്ണസംഖ്യ)chan0 - (പൂർണ്ണസംഖ്യ)rc_മൂല്യങ്ങൾ[0]) < 30);
 
 			//PX4_INFO("decoded packet with %d channels and %s encoding:", num_values, (dsm_11_bit) ? "11 bit" : "10 bit");
 
-			for (unsigned i = 0; i < num_values; i++) {
+			വേണ്ടി (unsigned i = 0; i < അക്കം_മൂല്യങ്ങൾ; i++) {
 				//PX4_INFO("chan #%u:\t%d", i, (int)rc_values[i]);
 			}
 		}
 
-		if (last_drop != (dsm_frame_drops)) {
+		എങ്കിൽ (last_drop != (dsm_frame_drops)) {
 			//PX4_INFO("frame dropped, now #%d", (dsm_frame_drops));
 			last_drop = dsm_frame_drops;
 		}
 
-		count++;
+		എണ്ണം++;
 	}
 
 	fclose(fp);
 
-	ut_compare("num_values == expected_chancount", num_values, expected_chancount);
+	ut_compare("num_values == expected_chancount", അക്കം_മൂല്യങ്ങൾ, expected_chancount);
 
 	ut_test(ret == EOF);
 	//PX4_INFO("drop: %d", (int)last_drop);
 	ut_compare("last_drop == expected_dropcount", last_drop, expected_dropcount);
 
-	return true;
+	തിരികെ സത്യം;
 }
 
-bool RCTest::sbus2Test()
+തർക്കം RCTest::sbus2Test()
 {
-	const char *filepath = TEST_DATA_PATH "sbus2_r7008SB.txt";
+	സ്ഥിരം അക്ഷരം *filepath = TEST_DATA_PATH "sbus2_r7008SB.txt";
 
 	FILE *fp;
 	fp = fopen(filepath, "rt");
@@ -341,31 +341,31 @@ bool RCTest::sbus2Test()
 	ut_test(fp);
 	//PX4_INFO("loading data from: %s", filepath);
 
-	float f;
+	ദശാംശം f;
 	unsigned x;
-	int ret;
+	പൂർണ്ണസംഖ്യ ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
-		char buf[200];
-		(void)fgets(buf, sizeof(buf), fp);
+	വേണ്ടി (unsigned i = 0; i < 20; i++) {
+		അക്ഷരം buf[200];
+		(ശൂന്യം)fgets(buf, വലുപ്പം(buf), fp);
 	}
 
 	// Init the parser
 	uint8_t frame[SBUS_BUFFER_SIZE];
-	uint16_t rc_values[18];
-	uint16_t num_values;
+	uint16_t rc_മൂല്യങ്ങൾ[18];
+	uint16_t അക്കം_മൂല്യങ്ങൾ;
 	unsigned sbus_frame_drops = 0;
 	unsigned sbus_frame_resets = 0;
-	bool sbus_failsafe;
-	bool sbus_frame_drop;
-	uint16_t max_channels = sizeof(rc_values) / sizeof(rc_values[0]);
+	തർക്കം sbus_failsafe;
+	തർക്കം sbus_frame_drop;
+	uint16_t max_channels = വലുപ്പം(rc_മൂല്യങ്ങൾ) / വലുപ്പം(rc_മൂല്യങ്ങൾ[0]);
 
 	unsigned last_drop = 0;
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	ആകുമ്പോൾ (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		എങ്കിൽ (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
@@ -377,16 +377,16 @@ bool RCTest::sbus2Test()
 		hrt_abstime now = hrt_absolute_time();
 
 		// if (rate_limiter % byte_offset == 0) {
-		bool result = sbus_parse(now, &frame[0], len, rc_values, &num_values,
+		തർക്കം result = sbus_parse(now, &frame[0], len, rc_മൂല്യങ്ങൾ, &അക്കം_മൂല്യങ്ങൾ,
 					 &sbus_failsafe, &sbus_frame_drop, &sbus_frame_drops, max_channels);
 
-		if (result) {
+		എങ്കിൽ (result) {
 			//PX4_INFO("decoded packet");
 		}
 
 		// }
 
-		if (last_drop != (sbus_frame_drops + sbus_frame_resets)) {
+		എങ്കിൽ (last_drop != (sbus_frame_drops + sbus_frame_resets)) {
 			PX4_WARN("frame dropped, now #%d", (sbus_frame_drops + sbus_frame_resets));
 			last_drop = sbus_frame_drops + sbus_frame_resets;
 		}
@@ -395,44 +395,44 @@ bool RCTest::sbus2Test()
 
 	ut_test(ret == EOF);
 
-	return true;
+	തിരികെ സത്യം;
 }
 
-bool RCTest::st24MalformedLengthTest()
+തർക്കം RCTest::st24MalformedLengthTest()
 {
 	uint8_t rssi{};
-	uint8_t lost_count{};
-	uint16_t channel_count{};
+	uint8_t lost_എണ്ണം{};
+	uint16_t channel_എണ്ണം{};
 	uint16_t channels[24] {};
-	const uint8_t invalid_lengths[] {0, 1};
+	സ്ഥിരം uint8_t invalid_lengths[] {0, 1};
 
-	for (const uint8_t invalid_length : invalid_lengths) {
-		const uint8_t prefix[] {ST24_STX1, ST24_STX2, invalid_length, 0};
+	വേണ്ടി (സ്ഥിരം uint8_t invalid_length : invalid_lengths) {
+		സ്ഥിരം uint8_t prefix[] {ST24_STX1, ST24_STX2, invalid_length, 0};
 
-		for (const uint8_t byte : prefix) {
-			(void)st24_decode(byte, &rssi, &lost_count, &channel_count, channels, 24);
+		വേണ്ടി (സ്ഥിരം uint8_t byte : prefix) {
+			(ശൂന്യം)st24_decode(byte, &rssi, &lost_എണ്ണം, &channel_എണ്ണം, channels, 24);
 		}
 
-		for (unsigned i = 0; i <= ST24_DATA_LEN_MAX; ++i) {
-			(void)st24_decode(0xaa, &rssi, &lost_count, &channel_count, channels, 24);
+		വേണ്ടി (unsigned i = 0; i <= ST24_DATA_LEN_MAX; ++i) {
+			(ശൂന്യം)st24_decode(0xaa, &rssi, &lost_എണ്ണം, &channel_എണ്ണം, channels, 24);
 		}
 	}
 
 	uint8_t minimal_packet[] {ST24_STX1, ST24_STX2, 2, 0xff, 0};
 	minimal_packet[4] = st24_common_crc8(&minimal_packet[2], 2);
-	int result = 1;
+	പൂർണ്ണസംഖ്യ result = 1;
 
-	for (const uint8_t byte : minimal_packet) {
-		result = st24_decode(byte, &rssi, &lost_count, &channel_count, channels, 24);
+	വേണ്ടി (സ്ഥിരം uint8_t byte : minimal_packet) {
+		result = st24_decode(byte, &rssi, &lost_എണ്ണം, &channel_എണ്ണം, channels, 24);
 	}
 
 	ut_test(result == 2);
-	return true;
+	തിരികെ സത്യം;
 }
 
-bool RCTest::st24Test()
+തർക്കം RCTest::st24Test()
 {
-	const char *filepath = TEST_DATA_PATH "st24_data.txt";
+	സ്ഥിരം അക്ഷരം *filepath = TEST_DATA_PATH "st24_data.txt";
 
 	//PX4_INFO("loading data from: %s", filepath);
 
@@ -441,26 +441,26 @@ bool RCTest::st24Test()
 	fp = fopen(filepath, "rt");
 	ut_test(fp);
 
-	float f;
+	ദശാംശം f;
 	unsigned x;
-	int ret;
+	പൂർണ്ണസംഖ്യ ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
-		char buf[200];
-		(void)fgets(buf, sizeof(buf), fp);
+	വേണ്ടി (unsigned i = 0; i < 20; i++) {
+		അക്ഷരം buf[200];
+		(ശൂന്യം)fgets(buf, വലുപ്പം(buf), fp);
 	}
 
-	float last_time = 0;
+	ദശാംശം last_time = 0;
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	ആകുമ്പോൾ (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		എങ്കിൽ (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
 
-		if (((f - last_time) * 1000 * 1000) > 3000) {
+		എങ്കിൽ (((f - last_time) * 1000 * 1000) > 3000) {
 			// PX4_INFO("FRAME RESET\n\n");
 		}
 
@@ -472,14 +472,14 @@ bool RCTest::st24Test()
 		//hrt_abstime now = hrt_absolute_time();
 
 		uint8_t rssi;
-		uint8_t rx_count;
-		uint16_t channel_count;
+		uint8_t rx_എണ്ണം;
+		uint16_t channel_എണ്ണം;
 		uint16_t channels[20];
 
-		if (!st24_decode(b, &rssi, &rx_count, &channel_count, channels, sizeof(channels) / sizeof(channels[0]))) {
+		എങ്കിൽ (!st24_decode(b, &rssi, &rx_എണ്ണം, &channel_എണ്ണം, channels, വലുപ്പം(channels) / വലുപ്പം(channels[0]))) {
 			//PX4_INFO("decoded: %u channels (converted to PPM range)", (unsigned)channel_count);
 
-			for (unsigned i = 0; i < channel_count; i++) {
+			വേണ്ടി (unsigned i = 0; i < channel_എണ്ണം; i++) {
 				//int16_t val = channels[i];
 				//PX4_INFO("channel %u: %d 0x%03X", i, static_cast<int>(val), static_cast<int>(val));
 			}
@@ -488,12 +488,12 @@ bool RCTest::st24Test()
 
 	ut_test(ret == EOF);
 
-	return true;
+	തിരികെ സത്യം;
 }
 
-bool RCTest::sumdTest()
+തർക്കം RCTest::sumdTest()
 {
-	const char *filepath = TEST_DATA_PATH "sumd_data.txt";
+	സ്ഥിരം അക്ഷരം *filepath = TEST_DATA_PATH "sumd_data.txt";
 
 	//PX4_INFO("loading data from: %s", filepath);
 
@@ -502,26 +502,26 @@ bool RCTest::sumdTest()
 	fp = fopen(filepath, "rt");
 	ut_test(fp);
 
-	float f;
+	ദശാംശം f;
 	unsigned x;
-	int ret;
+	പൂർണ്ണസംഖ്യ ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
-		char buf[200];
-		(void)fgets(buf, sizeof(buf), fp);
+	വേണ്ടി (unsigned i = 0; i < 20; i++) {
+		അക്ഷരം buf[200];
+		(ശൂന്യം)fgets(buf, വലുപ്പം(buf), fp);
 	}
 
-	float last_time = 0;
+	ദശാംശം last_time = 0;
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	ആകുമ്പോൾ (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		എങ്കിൽ (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
 
-		if (((f - last_time) * 1000 * 1000) > 3000) {
+		എങ്കിൽ (((f - last_time) * 1000 * 1000) > 3000) {
 			// PX4_INFO("FRAME RESET\n\n");
 		}
 
@@ -533,16 +533,16 @@ bool RCTest::sumdTest()
 		//hrt_abstime now = hrt_absolute_time();
 
 		uint8_t rssi;
-		uint8_t rx_count;
-		uint16_t channel_count;
+		uint8_t rx_എണ്ണം;
+		uint16_t channel_എണ്ണം;
 		uint16_t channels[32];
-		bool sumd_failsafe;
+		തർക്കം sumd_failsafe;
 
 
-		if (!sumd_decode(b, &rssi, &rx_count, &channel_count, channels, 32, &sumd_failsafe)) {
+		എങ്കിൽ (!sumd_decode(b, &rssi, &rx_എണ്ണം, &channel_എണ്ണം, channels, 32, &sumd_failsafe)) {
 			//PX4_INFO("decoded: %u channels (converted to PPM range)", (unsigned)channel_count);
 
-			for (unsigned i = 0; i < channel_count; i++) {
+			വേണ്ടി (unsigned i = 0; i < channel_എണ്ണം; i++) {
 				//int16_t val = channels[i];
 				//PX4_INFO("channel %u: %d 0x%03X", i, static_cast<int>(val), static_cast<int>(val));
 			}
@@ -551,7 +551,7 @@ bool RCTest::sumdTest()
 
 	ut_test(ret == EOF);
 
-	return true;
+	തിരികെ സത്യം;
 }
 
 ut_declare_test_c(rc_tests_main, RCTest)

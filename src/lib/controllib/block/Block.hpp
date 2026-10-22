@@ -39,85 +39,85 @@
 
 #pragma once
 
-#include <containers/List.hpp>
-#include <controllib/block/BlockParam.hpp>
-#include <cstdint>
+#അന്തര്ഭാവ <containers/List.hpp>
+#അന്തര്ഭാവ <controllib/block/BlockParam.hpp>
+#അന്തര്ഭാവ <cstdint>
 
-namespace control
+നാമാകാശ control
 {
 
-static constexpr uint8_t maxChildrenPerBlock = 100;
-static constexpr uint8_t maxParamsPerBlock = 110;
-static constexpr uint8_t blockNameLengthMax = 40;
+സ്ഥിതം constexpr uint8_t maxChildrenPerBlock = 100;
+സ്ഥിതം constexpr uint8_t maxParamsPerBlock = 110;
+സ്ഥിതം constexpr uint8_t blockNameLengthMax = 40;
 
 // forward declaration
-class BlockParamBase;
-class SuperBlock;
+വർഗ്ഗം BlockParamBase;
+വർഗ്ഗം SuperBlock;
 
 /**
  */
-class __EXPORT Block : public ListNode<Block *>
+വർഗ്ഗം __EXPORT Block : പൊതു List_കണ്ണി<Block *>
 {
-public:
-	friend class BlockParamBase;
+പൊതു:
+	friend വർഗ്ഗം BlockParamBase;
 
-	Block(SuperBlock *parent, const char *name);
-	virtual ~Block() = default;
+	Block(SuperBlock *parent, സ്ഥിരം അക്ഷരം *name);
+	മായാ ~Block() = സ്ഥിരസ്ഥിതി;
 
 	// no copy, assignment, move, move assignment
-	Block(const Block &) = delete;
-	Block &operator=(const Block &) = delete;
+	Block(സ്ഥിരം Block &) = delete;
+	Block &operator=(സ്ഥിരം Block &) = delete;
 	Block(Block &&) = delete;
 	Block &operator=(Block &&) = delete;
 
-	void getName(char *name, size_t n);
+	ശൂന്യം getName(അക്ഷരം *name, size_t n);
 
-	virtual void updateParams();
+	മായാ ശൂന്യം updateParams();
 
-	virtual void setDt(float dt) { _dt = dt; }
-	float getDt() { return _dt; }
+	മായാ ശൂന്യം setDt(ദശാംശം dt) { _dt = dt; }
+	ദശാംശം getDt() { തിരികെ _dt; }
 
-protected:
+സംരക്ഷിത:
 
-	virtual void updateParamsSubclass() {}
+	മായാ ശൂന്യം updateParamsSubclass() {}
 
-	SuperBlock *getParent() { return _parent; }
-	List<BlockParamBase *> &getParams() { return _params; }
+	SuperBlock *getParent() { തിരികെ _parent; }
+	List<BlockParamBase *> &getParams() { തിരികെ _params; }
 
-	const char *_name;
+	സ്ഥിരം അക്ഷരം *_name;
 	SuperBlock *_parent;
-	float _dt{0.0f};
+	ദശാംശം _dt{0.0f};
 
 	List<BlockParamBase *> _params;
 };
 
-class __EXPORT SuperBlock :
-	public Block
+വർഗ്ഗം __EXPORT SuperBlock :
+	പൊതു Block
 {
-public:
-	friend class Block;
+പൊതു:
+	friend വർഗ്ഗം Block;
 
-	SuperBlock(SuperBlock *parent, const char *name) : Block(parent, name) {}
-	~SuperBlock() = default;
+	SuperBlock(SuperBlock *parent, സ്ഥിരം അക്ഷരം *name) : Block(parent, name) {}
+	~SuperBlock() = സ്ഥിരസ്ഥിതി;
 
 	// no copy, assignment, move, move assignment
-	SuperBlock(const SuperBlock &) = delete;
-	SuperBlock &operator=(const SuperBlock &) = delete;
+	SuperBlock(സ്ഥിരം SuperBlock &) = delete;
+	SuperBlock &operator=(സ്ഥിരം SuperBlock &) = delete;
 	SuperBlock(SuperBlock &&) = delete;
 	SuperBlock &operator=(SuperBlock &&) = delete;
 
-	void setDt(float dt) override;
+	ശൂന്യം setDt(ദശാംശം dt) override;
 
-	void updateParams() override
+	ശൂന്യം updateParams() override
 	{
 		Block::updateParams();
 
-		if (getChildren().getHead() != nullptr) { updateChildParams(); }
+		എങ്കിൽ (getChildren().getHead() != nullptr) { updateChildParams(); }
 	}
 
-protected:
-	List<Block *> &getChildren() { return _children; }
-	void updateChildParams();
+സംരക്ഷിത:
+	List<Block *> &getChildren() { തിരികെ _children; }
+	ശൂന്യം updateChildParams();
 
 	List<Block *> _children;
 };

@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "Accelerometer.hpp"
+#അന്തര്ഭാവ "Accelerometer.hpp"
 
-#include "Utilities.hpp"
+#അന്തര്ഭാവ "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#അന്തര്ഭാവ <lib/drivers/device/Device.hpp>
+#അന്തര്ഭാവ <lib/parameters/param.h>
 
-using namespace matrix;
-using namespace time_literals;
+using നാമാകാശ matrix;
+using നാമാകാശ time_literals;
 
-namespace calibration
+നാമാകാശ calibration
 {
 
 Accelerometer::Accelerometer()
@@ -54,19 +54,19 @@ Accelerometer::Accelerometer(uint32_t device_id)
 	set_device_id(device_id);
 }
 
-Accelerometer::Accelerometer(uint32_t device_id, bool external)
+Accelerometer::Accelerometer(uint32_t device_id, തർക്കം external)
 {
 	set_device_id(device_id, external);
 }
 
-void Accelerometer::set_device_id(uint32_t device_id)
+ശൂന്യം Accelerometer::set_device_id(uint32_t device_id)
 {
 	set_device_id(device_id, device::device_is_external(device_id));
 }
 
-void Accelerometer::set_device_id(uint32_t device_id, bool external)
+ശൂന്യം Accelerometer::set_device_id(uint32_t device_id, തർക്കം external)
 {
-	if (_device_id != device_id || _external != external) {
+	എങ്കിൽ (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -74,39 +74,39 @@ void Accelerometer::set_device_id(uint32_t device_id, bool external)
 		Reset();
 
 		ParametersUpdate();
-		SensorCorrectionsUpdate(true);
+		SensorCorrectionsUpdate(സത്യം);
 	}
 }
 
-void Accelerometer::SensorCorrectionsUpdate(bool force)
+ശൂന്യം Accelerometer::SensorCorrectionsUpdate(തർക്കം force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	എങ്കിൽ (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		എങ്കിൽ (_device_id == 0) {
+			തിരികെ;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		എങ്കിൽ (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.accel_device_ids[i] == _device_id) {
-					switch (i) {
-					case 0:
+			വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < MAX_SENSOR_എണ്ണം; i++) {
+				എങ്കിൽ (corrections.accel_device_ids[i] == _device_id) {
+					തിരഞ്ഞെടുപ്പ് (i) {
+					അവസ്ഥ 0:
 						_thermal_offset = Vector3f{corrections.accel_offset_0};
-						return;
-					case 1:
+						തിരികെ;
+					അവസ്ഥ 1:
 						_thermal_offset = Vector3f{corrections.accel_offset_1};
-						return;
-					case 2:
+						തിരികെ;
+					അവസ്ഥ 2:
 						_thermal_offset = Vector3f{corrections.accel_offset_2};
-						return;
-					case 3:
+						തിരികെ;
+					അവസ്ഥ 3:
 						_thermal_offset = Vector3f{corrections.accel_offset_3};
-						return;
+						തിരികെ;
 					}
 				}
 			}
@@ -117,33 +117,33 @@ void Accelerometer::SensorCorrectionsUpdate(bool force)
 	}
 }
 
-bool Accelerometer::set_offset(const Vector3f &offset)
+തർക്കം Accelerometer::set_offset(സ്ഥിരം Vector3f &offset)
 {
-	if (Vector3f(_offset - offset).longerThan(0.01f)) {
-		if (offset.isAllFinite()) {
+	എങ്കിൽ (Vector3f(_offset - offset).longerThan(0.01f)) {
+		എങ്കിൽ (offset.isAllFinite()) {
 			_offset = offset;
-			_calibration_count++;
-			return true;
+			calibration_എണ്ണം++;
+			തിരികെ സത്യം;
 		}
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-bool Accelerometer::set_scale(const Vector3f &scale)
+തർക്കം Accelerometer::set_scale(സ്ഥിരം Vector3f &scale)
 {
-	if (Vector3f(_scale - scale).longerThan(0.01f)) {
-		if (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
+	എങ്കിൽ (Vector3f(_scale - scale).longerThan(0.01f)) {
+		എങ്കിൽ (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
 			_scale = scale;
-			_calibration_count++;
-			return true;
+			calibration_എണ്ണം++;
+			തിരികെ സത്യം;
 		}
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void Accelerometer::set_rotation(Rotation rotation)
+ശൂന്യം Accelerometer::set_rotation(Rotation rotation)
 {
 	_rotation_enum = rotation;
 
@@ -151,48 +151,48 @@ void Accelerometer::set_rotation(Rotation rotation)
 	_rotation = Dcmf(GetSensorLevelAdjustment()) * get_rot_matrix(rotation);
 }
 
-bool Accelerometer::set_calibration_index(int calibration_index)
+തർക്കം Accelerometer::set_calibration_index(പൂർണ്ണസംഖ്യ calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	എങ്കിൽ ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_എണ്ണം)) {
 		_calibration_index = calibration_index;
-		return true;
+		തിരികെ സത്യം;
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void Accelerometer::ParametersUpdate()
+ശൂന്യം Accelerometer::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	എങ്കിൽ (_device_id == 0) {
+		തിരികെ;
 	}
 
 	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	എങ്കിൽ (_calibration_index == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		ParametersLoad();
 	}
 }
 
-bool Accelerometer::ParametersLoad()
+തർക്കം Accelerometer::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	എങ്കിൽ (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_എണ്ണം) {
 		// CAL_ACCx_ROT
-		int32_t rotation_value = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
+		int32_t rotation_മൂല്യം = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
 
-		if (_external) {
-			if ((rotation_value >= ROTATION_MAX) || (rotation_value < 0)) {
+		എങ്കിൽ (_external) {
+			എങ്കിൽ ((rotation_മൂല്യം >= ROTATION_MAX) || (rotation_മൂല്യം < 0)) {
 				// invalid rotation, resetting
-				rotation_value = ROTATION_NONE;
+				rotation_മൂല്യം = ROTATION_NONE;
 			}
 
-			set_rotation(static_cast<Rotation>(rotation_value));
+			set_rotation(static_cast<Rotation>(rotation_മൂല്യം));
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			// internal sensors follow board rotation
 			set_rotation(GetBoardRotation());
 		}
@@ -200,11 +200,11 @@ bool Accelerometer::ParametersLoad()
 		// CAL_ACCx_PRIO
 		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		എങ്കിൽ ((_priority < 0) || (_priority > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
-			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
+			സ്ഥിതം constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			എങ്കിൽ (_priority != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
 					_calibration_index, _priority);
 
@@ -220,18 +220,18 @@ bool Accelerometer::ParametersLoad()
 		// CAL_ACCx_SCALE{X,Y,Z}
 		set_scale(GetCalibrationParamsVector3f(SensorString(), "SCALE", _calibration_index));
 
-		return true;
+		തിരികെ സത്യം;
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void Accelerometer::Reset()
+ശൂന്യം Accelerometer::Reset()
 {
-	if (_external) {
+	എങ്കിൽ (_external) {
 		set_rotation(ROTATION_NONE);
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		// internal sensors follow board rotation
 		set_rotation(GetBoardRotation());
 	}
@@ -245,69 +245,69 @@ void Accelerometer::Reset()
 
 	_calibration_index = -1;
 
-	_calibration_count = 0;
+	calibration_എണ്ണം = 0;
 }
 
-bool Accelerometer::ParametersSave(int desired_calibration_index, bool force)
+തർക്കം Accelerometer::ParametersSave(പൂർണ്ണസംഖ്യ desired_calibration_index, തർക്കം force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	എങ്കിൽ (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_എണ്ണം) {
 		_calibration_index = desired_calibration_index;
 
-	} else if (!force || (_calibration_index < 0)
+	} അല്ലെങ്കിൽ എങ്കിൽ (!force || (_calibration_index < 0)
 		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
 		int8_t calibration_index_prev = _calibration_index;
 		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		എങ്കിൽ (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
 				 calibration_index_prev, _calibration_index);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	എങ്കിൽ (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_എണ്ണം) {
 		// save calibration
-		bool success = true;
+		തർക്കം success = സത്യം;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
 		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
 		success &= SetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index, _offset);
 		success &= SetCalibrationParamsVector3f(SensorString(), "SCALE", _calibration_index, _scale);
 
-		if (_external) {
+		എങ്കിൽ (_external) {
 			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, (int32_t)_rotation_enum);
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, -1); // internal
 		}
 
-		return success;
+		തിരികെ success;
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void Accelerometer::PrintStatus()
+ശൂന്യം Accelerometer::PrintStatus()
 {
-	if (external()) {
+	എങ്കിൽ (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Ext ROT: %d\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
-			     (double)_scale(0), (double)_scale(1), (double)_scale(2),
+			     (ഇരട്ട)_offset(0), (ഇരട്ട)_offset(1), (ഇരട്ട)_offset(2),
+			     (ഇരട്ട)_scale(0), (ഇരട്ട)_scale(1), (ഇരട്ട)_scale(2),
 			     rotation_enum());
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
-			     (double)_scale(0), (double)_scale(1), (double)_scale(2));
+			     (ഇരട്ട)_offset(0), (ഇരട്ട)_offset(1), (ഇരട്ട)_offset(2),
+			     (ഇരട്ട)_scale(0), (ഇരട്ട)_scale(1), (ഇരട്ട)_scale(2));
 	}
 
-	if (_thermal_offset.norm() > 0.f) {
+	എങ്കിൽ (_thermal_offset.norm() > 0.f) {
 		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: [%.4f %.4f %.4f]\n", SensorString(), _device_id,
-			     (double)_thermal_offset(0), (double)_thermal_offset(1), (double)_thermal_offset(2));
+			     (ഇരട്ട)_thermal_offset(0), (ഇരട്ട)_thermal_offset(1), (ഇരട്ട)_thermal_offset(2));
 	}
 }
 

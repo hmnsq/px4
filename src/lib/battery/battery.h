@@ -42,24 +42,24 @@
 
 #pragma once
 
-#include <math.h>
-#include <float.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <float.h>
 
-#include <board_config.h>
-#include <px4_platform_common/board_common.h>
-#include <px4_platform_common/module_params.h>
-#include <matrix/math.hpp>
+#അന്തര്ഭാവ <board_config.h>
+#അന്തര്ഭാവ <px4_platform_common/board_common.h>
+#അന്തര്ഭാവ <px4_platform_common/module_params.h>
+#അന്തര്ഭാവ <matrix/math.hpp>
 
-#include <drivers/drv_hrt.h>
-#include <lib/parameters/param.h>
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/battery_status.h>
-#include <uORB/topics/flight_phase_estimation.h>
-#include <uORB/topics/vehicle_status.h>
+#അന്തര്ഭാവ <drivers/drv_hrt.h>
+#അന്തര്ഭാവ <lib/parameters/param.h>
+#അന്തര്ഭാവ <lib/mathlib/math/filter/AlphaFilter.hpp>
+#അന്തര്ഭാവ <uORB/PublicationMulti.hpp>
+#അന്തര്ഭാവ <uORB/Subscription.hpp>
+#അന്തര്ഭാവ <uORB/topics/battery_status.h>
+#അന്തര്ഭാവ <uORB/topics/flight_phase_estimation.h>
+#അന്തര്ഭാവ <uORB/topics/vehicle_status.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#അന്തര്ഭാവ <lib/failure_injection/FailureInjection.hpp>
 
 /**
  * BatteryBase is a base class for any type of battery.
@@ -67,52 +67,52 @@
  * You can use this class on its own. Or, if you need to implement a custom battery type,
  * you can inherit from this class. See, for example, src/modules/battery_status/AnalogBattery.h
  */
-class Battery : public ModuleParams
+class Battery : പൊതു ModuleParams
 {
-public:
-	Battery(int index, ModuleParams *parent, const int sample_interval_us, const uint8_t source);
-	~Battery() = default;
+പൊതു:
+	Battery(പൂർണ്ണസംഖ്യ index, ModuleParams *parent, സ്ഥിരം പൂർണ്ണസംഖ്യ sample_interval_us, സ്ഥിരം uint8_t source);
+	~Battery() = സ്ഥിരസ്ഥിതി;
 
 	/**
 	 * Get the battery cell count
 	 */
-	int cell_count() { return _params.n_cells; }
+	പൂർണ്ണസംഖ്യ cell_എണ്ണം() { തിരികെ _params.n_cells; }
 
 	/**
 	 * Get the empty voltage per cell
 	 */
-	float empty_cell_voltage() { return _params.v_empty; }
+	ദശാംശം empty_cell_voltage() { തിരികെ _params.v_empty; }
 
 	/**
 	 * Get the full voltage per cell
 	 */
-	float full_cell_voltage() { return _params.v_charged; }
+	ദശാംശം full_cell_voltage() { തിരികെ _params.v_charged; }
 
-	void setPriority(const uint8_t priority) { _priority = priority; }
-	void setConnected(const bool connected) { _connected = connected; }
-	void setStateOfCharge(const float soc) { _state_of_charge = math::constrain(soc, 0.f, 1.f); _external_state_of_charge = true; }
-	void setCapacityMah(const float capacity) { _capacity_mah = math::max(capacity, 0.f); }
-	void updateVoltage(const float voltage_v);
-	void updateCurrent(const float current_a);
-	void updateTemperature(const float temperature_c);
+	ശൂന്യം setPriority(സ്ഥിരം uint8_t priority) { _priority = priority; }
+	ശൂന്യം setConnected(സ്ഥിരം bool connected) { _connected = connected; }
+	ശൂന്യം setStateOfCharge(സ്ഥിരം ദശാംശം soc) { _state_of_charge = math::constrain(soc, 0.f, 1.f); _external_state_of_charge = true; }
+	ശൂന്യം setCapacityMah(സ്ഥിരം ദശാംശം capacity) { _capacity_mah = math::max(capacity, 0.f); }
+	ശൂന്യം updateVoltage(സ്ഥിരം ദശാംശം voltage_v);
+	ശൂന്യം updateCurrent(സ്ഥിരം ദശാംശം current_a);
+	ശൂന്യം updateTemperature(സ്ഥിരം ദശാംശം temperature_c);
 
 	/**
 	 * Update state of charge calculations
 	 *
 	 * @param timestamp Time at which the battery data sample was measured
 	 */
-	void updateBatteryStatus(const hrt_abstime &timestamp);
+	ശൂന്യം updateBatteryStatus(സ്ഥിരം hrt_abstime &timestamp);
 
 	battery_status_s getBatteryStatus();
-	float getCurrentAverage() const { return PX4_ISFINITE(_current_average_filter_a.getState()) ? _current_average_filter_a.getState() : -1.f; }
-	void publishBatteryStatus(const battery_status_s &battery_status);
+	ദശാംശം getCurrentAverage() സ്ഥിരം { തിരികെ PX4_ISFINITE(_current_average_filter_a.getState()) ? _current_average_filter_a.getState() : -1.f; }
+	ശൂന്യം publishBatteryStatus(സ്ഥിരം battery_status_s &battery_status);
 
 	/**
 	 * Convenience function for combined update and publication
 	 * @see updateBatteryStatus()
 	 * @see publishBatteryStatus()
 	 */
-	void updateAndPublishBatteryStatus(const hrt_abstime &timestamp);
+	ശൂന്യം updateAndPublishBatteryStatus(സ്ഥിരം hrt_abstime &timestamp);
 
 	/**
 	 * Calculates how much time is left before the battery is depleted,
@@ -122,7 +122,7 @@ public:
 	 * @param current_a The current draw from the battery in amperes.
 	 * @return Estimated remaining time in seconds.
 	 */
-	float computeRemainingTime(float current_a);
+	ദശാംശം computeRemainingTime(ദശാംശം current_a);
 
 	/**
 	 * Updates coulomb counting
@@ -131,20 +131,20 @@ public:
 	 * @param current_a Positive current draw in A
 	 * @return Accumulated used capacity in mAh
 	 */
-	float sumDischarged(float current_a);
-	uint8_t determineWarning(float state_of_charge);
-	void updateDt(const hrt_abstime &timestamp);
+	ദശാംശം sumDischarged(ദശാംശം current_a);
+	uint8_t determineWarning(ദശാംശം state_of_charge);
+	ശൂന്യം updateDt(സ്ഥിരം hrt_abstime &timestamp);
 
-protected:
-	static constexpr float LITHIUM_BATTERY_RECOGNITION_VOLTAGE = 2.1f;
+സംരക്ഷിത:
+	സ്ഥിതം constexpr ദശാംശം LITHIUM_BATTERY_RECOGNITION_VOLTAGE = 2.1f;
 
-	struct {
+	ഘടന {
 		param_t v_empty;
 		param_t v_charged;
 		param_t n_cells;
 		param_t capacity;
 		param_t r_internal;
-		param_t low_thr;
+		param_t താഴെയുള്ള_thr;
 		param_t crit_thr;
 		param_t emergen_thr;
 		param_t source;
@@ -152,29 +152,29 @@ protected:
 		param_t i_overwrite;
 	} _param_handles{};
 
-	struct {
-		float v_empty;
-		float v_charged;
+	ഘടന {
+		ദശാംശം v_empty;
+		ദശാംശം v_charged;
 		int32_t  n_cells;
-		float r_internal;
-		float low_thr;
-		float crit_thr;
-		float emergen_thr;
+		ദശാംശം r_internal;
+		ദശാംശം താഴെയുള്ള_thr;
+		ദശാംശം crit_thr;
+		ദശാംശം emergen_thr;
 		int32_t source;
-		float bat_avrg_current;
-		float i_overwrite;
+		ദശാംശം bat_avrg_current;
+		ദശാംശം i_overwrite;
 	} _params{};
 
-	const int _index;
+	സ്ഥിരം പൂർണ്ണസംഖ്യ _index;
 
 	bool _first_parameter_update{true};
-	void updateParams() override;
+	ശൂന്യം updateParams() override;
 
-private:
-	float calculateStateOfChargeVoltageBased(const float voltage_v, const float current_a);
-	void estimateStateOfCharge();
+സ്വകാര്യ:
+	ദശാംശം calculateStateOfChargeVoltageBased(സ്ഥിരം ദശാംശം voltage_v, സ്ഥിരം ദശാംശം current_a);
+	ശൂന്യം estimateStateOfCharge();
 	uint16_t determineFaults();
-	void computeScale();
+	ശൂന്യം computeScale();
 
 	uORB::Subscription _vehicle_status_sub{ORB_ID(vehicle_status)};
 	uORB::SubscriptionData<flight_phase_estimation_s> _flight_phase_estimation_sub{ORB_ID(flight_phase_estimation)};
@@ -185,25 +185,25 @@ private:
 	bool _external_state_of_charge{false}; ///< inticates that the soc is injected and not updated by this library
 
 	bool _connected{false};
-	const uint8_t _source;
+	സ്ഥിരം uint8_t _source;
 	uint8_t _priority{0};
 	bool _battery_initialized{false};
-	float _voltage_v{0.f};
-	AlphaFilter<float> _ocv_filter_v;
-	AlphaFilter<float> _cell_voltage_filter_v;
-	float _current_a{-1};
-	AlphaFilter<float>
+	ദശാംശം _voltage_v{0.f};
+	AlphaFilter<ദശാംശം> _ocv_filter_v;
+	AlphaFilter<ദശാംശം> _cell_voltage_filter_v;
+	ദശാംശം _current_a{-1};
+	AlphaFilter<ദശാംശം>
 	_current_average_filter_a; ///< averaging filter for current. For FW, it is the current in level flight.
-	float _temperature_c{NAN};
-	float _discharged_mah{0.f};
-	float _discharged_mah_loop{0.f};
-	float _state_of_charge_volt_based{-1.f}; // [0,1]
-	float _state_of_charge{-1.f}; // [0,1]
-	float _scale{1.f};
+	ദശാംശം _temperature_c{NAN};
+	ദശാംശം _discharged_mah{0.f};
+	ദശാംശം _discharged_mah_loop{0.f};
+	ദശാംശം _state_of_charge_volt_based{-1.f}; // [0,1]
+	ദശാംശം _state_of_charge{-1.f}; // [0,1]
+	ദശാംശം _scale{1.f};
 	uint8_t _warning{battery_status_s::WARNING_NONE};
-	float _dt{0.f};
-	float _dt_discharge{0.f}; // unclamped dt, used for the discharged_mah coulomb count
-	float _capacity_mah{0.f};
+	ദശാംശം _dt{0.f};
+	ദശാംശം _dt_discharge{0.f}; // unclamped dt, used for the discharged_mah coulomb count
+	ദശാംശം _capacity_mah{0.f};
 	hrt_abstime _last_timestamp{0};
 	bool _armed{false};
 	bool _vehicle_status_is_fw{false};
@@ -211,24 +211,24 @@ private:
 	hrt_abstime _last_unconnected_timestamp{0};
 
 	// Internal Resistance estimation
-	void updateInternalResistanceEstimation(const float voltage_v, const float current_a);
-	void resetInternalResistanceEstimation(const float voltage_v, const float current_a);
+	ശൂന്യം updateInternalResistanceEstimation(സ്ഥിരം ദശാംശം voltage_v, സ്ഥിരം ദശാംശം current_a);
+	ശൂന്യം resetInternalResistanceEstimation(സ്ഥിരം ദശാംശം voltage_v, സ്ഥിരം ദശാംശം current_a);
 	matrix::Vector2f _RLS_est; // [Open circuit voltage estimate [V], Total internal resistance estimate [Ohm]]^T
 	matrix::Matrix2f _estimation_covariance;
 	bool _internal_resistance_initialized{false};
-	float _estimation_covariance_norm{0.f};
-	float _internal_resistance_estimate{0.005f}; // [Ohm] Per cell estimate of the internal resistance
-	float _voltage_prediction{0.f}; // [V] Predicted voltage of the estimator
-	float _prediction_error{0.f}; // [V] Error between the predicted and measured voltage
-	static constexpr float LAMBDA = 0.95f; 	// [0, 1] Forgetting factor (Tuning parameter for the RLS algorithm)
-	static constexpr float R_DEFAULT = 0.005f; // [Ohm] Initial per cell estimate of the internal resistance
-	static constexpr float OCV_DEFAULT = 4.2f; // [V] Initial per cell estimate of the open circuit voltage
-	static constexpr float R_COVARIANCE = 0.1f; // Initial per cell covariance of the internal resistance
-	static constexpr float OCV_COVARIANCE = 1.5f; // Initial per cell covariance of the open circuit voltage
+	ദശാംശം _estimation_covariance_norm{0.f};
+	ദശാംശം _internal_resistance_estimate{0.005f}; // [Ohm] Per cell estimate of the internal resistance
+	ദശാംശം _voltage_prediction{0.f}; // [V] Predicted voltage of the estimator
+	ദശാംശം _prediction_error{0.f}; // [V] Error between the predicted and measured voltage
+	സ്ഥിതം constexpr ദശാംശം LAMBDA = 0.95f; 	// [0, 1] Forgetting factor (Tuning parameter for the RLS algorithm)
+	സ്ഥിതം constexpr ദശാംശം R_DEFAULT = 0.005f; // [Ohm] Initial per cell estimate of the internal resistance
+	സ്ഥിതം constexpr ദശാംശം OCV_DEFAULT = 4.2f; // [V] Initial per cell estimate of the open circuit voltage
+	സ്ഥിതം constexpr ദശാംശം R_COVARIANCE = 0.1f; // Initial per cell covariance of the internal resistance
+	സ്ഥിതം constexpr ദശാംശം OCV_COVARIANCE = 1.5f; // Initial per cell covariance of the open circuit voltage
 
 	// Temperature [degC] above which an overtemperature fault is declared,
 	// leading to a failsafe warning recommending immediate landing. Note
 	// that depending on the setup this may be measured in/close to the
 	// battery (smart battery) or from a separate power monitor module.
-	static constexpr float BAT_TEMP_MAX = 100.0f;
+	സ്ഥിതം constexpr ദശാംശം BAT_TEMP_MAX = 100.0f;
 };

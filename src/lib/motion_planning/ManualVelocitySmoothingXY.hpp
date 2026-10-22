@@ -38,86 +38,86 @@
 
 #pragma once
 
-#include <motion_planning/VelocitySmoothing.hpp>
+#അന്തര്ഭാവ <motion_planning/VelocitySmoothing.hpp>
 
-#include <matrix/matrix/math.hpp>
+#അന്തര്ഭാവ <matrix/matrix/math.hpp>
 
 using matrix::Vector2f;
 
-class ManualVelocitySmoothingXY final
+വർഗ്ഗം ManualVelocitySmoothingXY final
 {
-public:
-	ManualVelocitySmoothingXY() = default;
-	~ManualVelocitySmoothingXY() = default;
+പൊതു:
+	ManualVelocitySmoothingXY() = സ്ഥിരസ്ഥിതി;
+	~ManualVelocitySmoothingXY() = സ്ഥിരസ്ഥിതി;
 
-	void reset(const Vector2f &accel, const Vector2f &vel, const Vector2f &pos);
-	void update(float dt, const Vector2f &velocity_target);
+	ശൂന്യം reset(സ്ഥിരം Vector2f &accel, സ്ഥിരം Vector2f &vel, സ്ഥിരം Vector2f &pos);
+	ശൂന്യം update(ദശാംശം dt, സ്ഥിരം Vector2f &velocity_target);
 
-	void setVelSpFeedback(const Vector2f &fb) { _velocity_setpoint_feedback = fb; }
+	ശൂന്യം setVelSpFeedback(സ്ഥിരം Vector2f &fb) { _velocity_setpoint_feedback = fb; }
 
-	void setMaxJerk(const float max_jerk)
+	ശൂന്യം setMaxJerk(സ്ഥിരം ദശാംശം max_jerk)
 	{
 		_trajectory[0].setMaxJerk(max_jerk);
 		_trajectory[1].setMaxJerk(max_jerk);
 	}
-	float getMaxJerk() const { return _trajectory[0].getMaxJerk(); }
+	ദശാംശം getMaxJerk() സ്ഥിരം { തിരികെ _trajectory[0].getMaxJerk(); }
 
-	void setMaxAccel(const float max_accel)
+	ശൂന്യം setMaxAccel(സ്ഥിരം ദശാംശം max_accel)
 	{
 		_trajectory[0].setMaxAccel(max_accel);
 		_trajectory[1].setMaxAccel(max_accel);
 	}
-	float getMaxAccel() const { return _trajectory[0].getMaxAccel(); }
+	ദശാംശം getMaxAccel() സ്ഥിരം { തിരികെ _trajectory[0].getMaxAccel(); }
 
-	void setMaxVel(const float max_vel)
+	ശൂന്യം setMaxVel(സ്ഥിരം ദശാംശം max_vel)
 	{
 		_trajectory[0].setMaxVel(max_vel);
 		_trajectory[1].setMaxVel(max_vel);
 	}
-	float getMaxVel() const { return _trajectory[0].getMaxVel(); }
+	ദശാംശം getMaxVel() സ്ഥിരം { തിരികെ _trajectory[0].getMaxVel(); }
 
-	Vector2f getCurrentJerk() const { return _state.j; }
-	Vector2f getCurrentAcceleration() const { return _state.a; }
+	Vector2f getCurrentJerk() സ്ഥിരം { തിരികെ _state.j; }
+	Vector2f getCurrentAcceleration() സ്ഥിരം { തിരികെ _state.a; }
 
-	void setCurrentVelocity(const Vector2f &vel)
+	ശൂന്യം setCurrentVelocity(സ്ഥിരം Vector2f &vel)
 	{
 		_state.v = vel;
 		_trajectory[0].setCurrentVelocity(vel(0));
 		_trajectory[1].setCurrentVelocity(vel(1));
 	}
-	Vector2f getCurrentVelocity() const { return _state.v; }
+	Vector2f getCurrentVelocity() സ്ഥിരം { തിരികെ _state.v; }
 
-	void setCurrentPosition(const Vector2f &pos)
+	ശൂന്യം setCurrentPosition(സ്ഥിരം Vector2f &pos)
 	{
 		_state.x = pos;
 		_trajectory[0].setCurrentPosition(pos(0));
 		_trajectory[1].setCurrentPosition(pos(1));
 		_position_estimate = pos;
 
-		if (_position_lock_active) {
+		എങ്കിൽ (_position_lock_active) {
 			_position_setpoint_locked = pos;
 		}
 	}
-	Vector2f getCurrentPosition() const { return _position_setpoint_locked; }
+	Vector2f getCurrentPosition() സ്ഥിരം { തിരികെ _position_setpoint_locked; }
 
-	void setCurrentPositionEstimate(const Vector2f &pos) { _position_estimate = pos; }
+	ശൂന്യം setCurrentPositionEstimate(സ്ഥിരം Vector2f &pos) { _position_estimate = pos; }
 
-private:
-	void resetPositionLock();
-	void updateTrajectories(float dt);
-	void checkPositionLock(const Vector2f &velocity_target);
-	void updateTrajDurations(const Vector2f &velocity_target);
+സ്വകാര്യ:
+	ശൂന്യം resetPositionLock();
+	ശൂന്യം updateTrajectories(ദശാംശം dt);
+	ശൂന്യം checkPositionLock(സ്ഥിരം Vector2f &velocity_target);
+	ശൂന്യം updateTrajDurations(സ്ഥിരം Vector2f &velocity_target);
 
 	VelocitySmoothing _trajectory[2]; ///< Trajectory in x and y directions
 
-	bool _position_lock_active{false};
+	തർക്കം _position_lock_active{അസത്യം};
 
 	Vector2f _position_setpoint_locked{};
 
 	Vector2f _velocity_setpoint_feedback{};
 	Vector2f _position_estimate{};
 
-	struct {
+	ഘടന {
 		Vector2f j;
 		Vector2f a;
 		Vector2f v;

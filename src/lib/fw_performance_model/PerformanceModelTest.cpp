@@ -31,21 +31,21 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "PerformanceModel.hpp"
+#അന്തര്ഭാവ <gtest/gtest.h>
+#അന്തര്ഭാവ "PerformanceModel.hpp"
 
 // to run: make tests TESTFILTER=PerformanceModel
 
-class PerformanceModelTest : public ::testing::Test
+വർഗ്ഗം PerformanceModelTest : പൊതു ::testing::Test
 {
-public:
-	void SetUp() override
+പൊതു:
+	ശൂന്യം SetUp() override
 	{
-		param_control_autosave(false);
+		param_control_autosave(അസത്യം);
 		param_reset_all();
 	}
 
-	void setWeightParams(float base, float gross, float fuel)
+	ശൂന്യം setWeightParams(ദശാംശം base, ദശാംശം gross, ദശാംശം fuel)
 	{
 		param_set(param_handle(px4::params::WEIGHT_BASE), &base);
 		param_set(param_handle(px4::params::WEIGHT_GROSS), &gross);
@@ -94,7 +94,7 @@ TEST_F(PerformanceModelTest, weightRatioScalesWithFuelFraction)
 	EXPECT_FLOAT_EQ(_model.getWeightRatio(), 0.8f);
 }
 
-TEST_F(PerformanceModelTest, fuelFractionKeptOnNonFiniteInput)
+TEST_F(PerformanceModelTest, fuel_Fraction_Kept_On_Non_Finite_നിവേശം)
 {
 	// GIVEN: base and gross weight set, 4kg full fuel load, and a known fuel fraction
 	setWeightParams(10.0f, 12.0f, 4.0f);

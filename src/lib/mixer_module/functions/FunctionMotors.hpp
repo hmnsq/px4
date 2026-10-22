@@ -33,96 +33,96 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#അന്തര്ഭാവ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/actuator_motors.h>
+#അന്തര്ഭാവ <uORB/topics/actuator_motors.h>
 
 /**
  * Functions: Motor1 ... MotorMax
  */
-class FunctionMotors : public FunctionProviderBase
+വർഗ്ഗം FunctionMotors : പൊതു FunctionProviderBase
 {
-public:
-	static_assert(actuator_motors_s::NUM_CONTROLS == (int)OutputFunction::MotorMax - (int)OutputFunction::Motor1 + 1,
+പൊതു:
+	static_assert(actuator_motors_s::അക്കം_CONTROLS == (പൂർണ്ണസംഖ്യ)OutputFunction::MotorMax - (പൂർണ്ണസംഖ്യ)OutputFunction::Motor1 + 1,
 		      "Unexpected num motors");
 
-	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (int)OutputFunction::Motor1, "Unexpected motor idx");
+	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (പൂർണ്ണസംഖ്യ)OutputFunction::Motor1, "Unexpected motor idx");
 
-	FunctionMotors(const Context &context) :
+	FunctionMotors(സ്ഥിരം Context &context) :
 		_topic(&context.work_item, ORB_ID(actuator_motors)),
 		_thrust_factor(context.thrust_factor)
 	{
-		for (int i = 0; i < actuator_motors_s::NUM_CONTROLS; ++i) {
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < actuator_motors_s::അക്കം_CONTROLS; ++i) {
 			_data.control[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionMotors(context); }
+	സ്ഥിതം FunctionProviderBase *allocate(സ്ഥിരം Context &context) { തിരികെ പുതിയ FunctionMotors(context); }
 
-	void update() override
+	ശൂന്യം update() override
 	{
-		if (_topic.update(&_data)) {
-			updateValues(_data.reversible_flags, _thrust_factor, _data.control, actuator_motors_s::NUM_CONTROLS);
+		എങ്കിൽ (_topic.update(&_data)) {
+			update_മൂല്യങ്ങൾ(_data.reversible_flags, _thrust_factor, _data.control, actuator_motors_s::അക്കം_CONTROLS);
 		}
 	}
 
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Motor1]; }
+	ദശാംശം value(OutputFunction func) override { തിരികെ _data.control[(പൂർണ്ണസംഖ്യ)func - (പൂർണ്ണസംഖ്യ)OutputFunction::Motor1]; }
 
-#if defined(CONFIG_DRIVERS_UAVCANNODE)
-	bool allowPrearmControl() const override { return true; }
-#else
-	bool allowPrearmControl() const override { return false; }
+#എങ്കിൽ defined(CONFIG_DRIVERS_UAVCANNODE)
+	തർക്കം allowPrearmControl() സ്ഥിരം override { തിരികെ സത്യം; }
+#അല്ലെങ്കിൽ
+	തർക്കം allowPrearmControl() സ്ഥിരം override { തിരികെ അസത്യം; }
 #endif
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { തിരികെ &_topic; }
 
-	bool getLatestSampleTimestamp(hrt_abstime &t) const override { t = _data.timestamp_sample; return t != 0; }
+	തർക്കം getLatestSampleTimestamp(hrt_abstime &t) സ്ഥിരം override { t = _data.timestamp_sample; തിരികെ t != 0; }
 
-	static inline void updateValues(uint32_t reversible, float thrust_factor, float *values, int num_values)
+	സ്ഥിതം വരിയിൽ ശൂന്യം update_മൂല്യങ്ങൾ(uint32_t reversible, ദശാംശം thrust_factor, ദശാംശം *മൂല്യങ്ങൾ_2, പൂർണ്ണസംഖ്യ അക്കം_മൂല്യങ്ങൾ)
 	{
-		if (thrust_factor > FLT_EPSILON && thrust_factor <= 1.f) {
+		എങ്കിൽ (thrust_factor > FLT_EPSILON && thrust_factor <= 1.f) {
 			// thrust factor
 			//  rel_thrust = factor * x^2 + (1-factor) * x,
-			const float a = thrust_factor;
-			const float b = (1.f - thrust_factor);
+			സ്ഥിരം ദശാംശം a = thrust_factor;
+			സ്ഥിരം ദശാംശം b = (1.f - thrust_factor);
 
 			// don't recompute for all values (ax^2+bx+c=0)
-			const float tmp1 = b / (2.f * a);
-			const float tmp2 = b * b / (4.f * a * a);
+			സ്ഥിരം ദശാംശം tmp1 = b / (2.f * a);
+			സ്ഥിരം ദശാംശം tmp2 = b * b / (4.f * a * a);
 
-			for (int i = 0; i < num_values; ++i) {
+			വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < അക്കം_മൂല്യങ്ങൾ; ++i) {
 
-				const float control = values[i];
+				സ്ഥിരം ദശാംശം control = മൂല്യങ്ങൾ_2[i];
 
-				if (PX4_ISFINITE(control)) {
-					if (control > FLT_EPSILON) {
-						values[i] = -tmp1 + sqrtf(tmp2 + (control / a));
+				എങ്കിൽ (PX4_ISFINITE(control)) {
+					എങ്കിൽ (control > FLT_EPSILON) {
+						മൂല്യങ്ങൾ_2[i] = -tmp1 + sqrtf(tmp2 + (control / a));
 
-					} else if (control < -FLT_EPSILON) {
-						values[i] =  tmp1 - sqrtf(tmp2 - (control / a));
+					} അല്ലെങ്കിൽ എങ്കിൽ (control < -FLT_EPSILON) {
+						മൂല്യങ്ങൾ_2[i] =  tmp1 - sqrtf(tmp2 - (control / a));
 
 					}
 				}
 			}
 		}
 
-		for (int i = 0; i < num_values; ++i) {
-			if ((reversible & (1u << i)) == 0) {
-				if (values[i] < -FLT_EPSILON) {
-					values[i] = NAN;
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < അക്കം_മൂല്യങ്ങൾ; ++i) {
+			എങ്കിൽ ((reversible & (1u << i)) == 0) {
+				എങ്കിൽ (മൂല്യങ്ങൾ_2[i] < -FLT_EPSILON) {
+					മൂല്യങ്ങൾ_2[i] = NAN;
 
-				} else {
+				} അല്ലെങ്കിൽ {
 					// remap from [0, 1] to [-1, 1]
-					values[i] = values[i] * 2.f - 1.f;
+					മൂല്യങ്ങൾ_2[i] = മൂല്യങ്ങൾ_2[i] * 2.f - 1.f;
 				}
 			}
 		}
 	}
 
-	bool reversible(OutputFunction func) const override { return _data.reversible_flags & (1u << ((int)func - (int)OutputFunction::Motor1)); }
+	തർക്കം reversible(OutputFunction func) സ്ഥിരം override { തിരികെ _data.reversible_flags & (1u << ((പൂർണ്ണസംഖ്യ)func - (പൂർണ്ണസംഖ്യ)OutputFunction::Motor1)); }
 
-private:
+സ്വകാര്യ:
 	uORB::SubscriptionCallbackWorkItem _topic;
 	actuator_motors_s _data{};
-	const float &_thrust_factor;
+	സ്ഥിരം ദശാംശം &_thrust_factor;
 };

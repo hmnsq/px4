@@ -45,9 +45,9 @@
 #ifndef _SYSTEMLIB_PARAM_PARAM_H
 #define _SYSTEMLIB_PARAM_PARAM_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <sys/types.h>
+#അന്തര്ഭാവ <stdint.h>
+#അന്തര്ഭാവ <stdbool.h>
+#അന്തര്ഭാവ <sys/types.h>
 
 /** Maximum size of the parameter backing file */
 #define PARAM_FILE_MAXSIZE		4096
@@ -61,7 +61,7 @@ __BEGIN_DECLS
 #define PARAM_TYPE_INT32		1
 #define PARAM_TYPE_FLOAT		2
 
-typedef uint8_t param_type_t;
+തരനിർവചനം uint8_t param_type_t;
 
 /**
  * Parameter handle.
@@ -70,7 +70,7 @@ typedef uint8_t param_type_t;
  * be obtained by looking up parameters. They are an offset into a global
  * constant parameter array.
  */
-typedef uint16_t	param_t;
+തരനിർവചനം uint16_t	param_t;
 
 /**
  * Handle returned when a parameter cannot be found.
@@ -86,7 +86,7 @@ typedef uint16_t	param_t;
 /**
  * Initialize the param backend. Call this on startup before calling any other methods.
  */
-__EXPORT void		param_init(void);
+__EXPORT ശൂന്യം		param_init(ശൂന്യം);
 
 /**
  * Look up a parameter by name.
@@ -96,7 +96,7 @@ __EXPORT void		param_init(void);
  *			This call will also set the parameter as "used" in the system, which is used
  *			to e.g. show the parameter via the RC interface
  */
-__EXPORT param_t	param_find(const char *name);
+__EXPORT param_t	param_find(സ്ഥിരം അക്ഷരം *name);
 
 /**
  * Look up a parameter by name.
@@ -104,21 +104,21 @@ __EXPORT param_t	param_find(const char *name);
  * @param name		The canonical name of the parameter being looked up.
  * @return		A handle to the parameter, or PARAM_INVALID if the parameter does not exist.
  */
-__EXPORT param_t	param_find_no_notification(const char *name);
+__EXPORT param_t	param_find_no_notification(സ്ഥിരം അക്ഷരം *name);
 
 /**
  * Return the total number of parameters.
  *
  * @return		The number of parameters.
  */
-__EXPORT unsigned	param_count(void);
+__EXPORT unsigned	param_എണ്ണം(ശൂന്യം);
 
 /**
  * Return the actually used number of parameters.
  *
  * @return		The number of parameters.
  */
-__EXPORT unsigned	param_count_used(void);
+__EXPORT unsigned	param_എണ്ണം_used(ശൂന്യം);
 
 /**
  * Wether a parameter is in use in the system.
@@ -149,7 +149,7 @@ __EXPORT param_t	param_for_used_index(unsigned index);
  * @param param		The parameter to obtain the index for.
  * @return		The index, or -1 if the parameter does not exist.
  */
-__EXPORT int		param_get_index(param_t param);
+__EXPORT പൂർണ്ണസംഖ്യ		param_get_index(param_t param);
 
 /**
  * Look up the index of an used parameter.
@@ -157,7 +157,7 @@ __EXPORT int		param_get_index(param_t param);
  * @param param		The parameter to obtain the index for.
  * @return		The index of the parameter in use, or -1 if the parameter does not exist.
  */
-__EXPORT int		param_get_used_index(param_t param);
+__EXPORT പൂർണ്ണസംഖ്യ		param_get_used_index(param_t param);
 
 /**
  * Obtain the name of a parameter.
@@ -165,7 +165,7 @@ __EXPORT int		param_get_used_index(param_t param);
  * @param param		A handle returned by param_find or passed by param_foreach.
  * @return		The name assigned to the parameter, or NULL if the handle is invalid.
  */
-__EXPORT const char	*param_name(param_t param);
+__EXPORT സ്ഥിരം അക്ഷരം	*param_name(param_t param);
 
 /**
  * Obtain the volatile state of a parameter.
@@ -190,21 +190,21 @@ __EXPORT bool		param_is_readonly(param_t param);
  * startup scripts).  After this call, any attempt to set, set-default, or
  * reset a read-only parameter will be rejected.
  */
-__EXPORT void		param_lock_readonly(void);
+__EXPORT ശൂന്യം		param_lock_readonly(ശൂന്യം);
 
 /**
  * Test whether a parameter's value has changed from the default.
  *
  * @return		If true, the parameter's value has not been changed from the default.
  */
-__EXPORT bool		param_value_is_default(param_t param);
+__EXPORT bool		param_മൂല്യം_is_default(param_t param);
 
 /**
  * Test whether a parameter's value has been changed but not saved.
  *
  * @return		If true, the parameter's value has not been saved.
  */
-__EXPORT bool		param_value_unsaved(param_t param);
+__EXPORT bool		param_മൂല്യം_unsaved(param_t param);
 
 /**
  * Obtain the type of a parameter.
@@ -229,7 +229,7 @@ __EXPORT size_t		param_size(param_t param);
  * @param val		Where to return the value, assumed to point to suitable storage for the parameter type.
  * @return		Zero if the parameter's value could be returned, nonzero otherwise.
  */
-__EXPORT int		param_get(param_t param, void *val);
+__EXPORT പൂർണ്ണസംഖ്യ		param_get(param_t param, ശൂന്യം *val);
 
 /**
  * Mark a parameter as used and copy its value.
@@ -241,7 +241,7 @@ __EXPORT int		param_get(param_t param, void *val);
  * @param val		Where to return the value, assumed to point to suitable storage for the parameter type.
  * @return		Zero if the parameter's value could be returned, nonzero otherwise.
  */
-__EXPORT int		param_get_mark_used(param_t param, void *val);
+__EXPORT പൂർണ്ണസംഖ്യ		param_get_mark_used(param_t param, ശൂന്യം *val);
 
 /**
  * Copy the (airframe-specific) default value of a parameter.
@@ -250,7 +250,7 @@ __EXPORT int		param_get_mark_used(param_t param, void *val);
  * @param default_val		Where to return the value, assumed to point to suitable storage for the parameter type.
  * @return		Zero if the parameter's deafult value could be returned, nonzero otherwise.
  */
-__EXPORT int		param_get_default_value(param_t param, void *default_val);
+__EXPORT പൂർണ്ണസംഖ്യ		param_get_default_മൂല്യം(param_t param, ശൂന്യം *default_val);
 
 /**
  * Copy the system-wide default value of a parameter.
@@ -259,7 +259,7 @@ __EXPORT int		param_get_default_value(param_t param, void *default_val);
  * @param default_val		Where to return the value, assumed to point to suitable storage for the parameter type.
  * @return		Zero if the parameter's deafult value could be returned, nonzero otherwise.
  */
-__EXPORT int		param_get_system_default_value(param_t param, void *default_val);
+__EXPORT പൂർണ്ണസംഖ്യ		param_get_system_default_മൂല്യം(param_t param, ശൂന്യം *default_val);
 
 /**
  * Set the value of a parameter.
@@ -268,7 +268,7 @@ __EXPORT int		param_get_system_default_value(param_t param, void *default_val);
  * @param val		The value to set; assumed to point to a variable of the parameter type.
  * @return		Zero if the parameter's value could be set from a scalar, nonzero otherwise.
  */
-__EXPORT int		param_set(param_t param, const void *val);
+__EXPORT പൂർണ്ണസംഖ്യ		param_set(param_t param, സ്ഥിരം ശൂന്യം *val);
 
 /**
  * Set the default value of a parameter.
@@ -277,7 +277,7 @@ __EXPORT int		param_set(param_t param, const void *val);
  * @param val		The default value to set; assumed to point to a variable of the parameter type.
  * @return		Zero if the parameter's default value could be set from a scalar, nonzero otherwise.
  */
-__EXPORT int		param_set_default_value(param_t param, const void *val);
+__EXPORT പൂർണ്ണസംഖ്യ		param_set_default_മൂല്യം(param_t param, സ്ഥിരം ശൂന്യം *val);
 
 /**
  * Mark a parameter as used. Only marked parameters will be sent to a GCS.
@@ -285,7 +285,7 @@ __EXPORT int		param_set_default_value(param_t param, const void *val);
  *
  * @param param		A handle returned by param_find or passed by param_foreach.
  */
-__EXPORT void		param_set_used(param_t param);
+__EXPORT ശൂന്യം		param_set_used(param_t param);
 
 /**
  * Set the value of a parameter, but do not notify the system about the change.
@@ -294,7 +294,7 @@ __EXPORT void		param_set_used(param_t param);
  * @param val		The value to set; assumed to point to a variable of the parameter type.
  * @return		Zero if the parameter's value could be set from a scalar, nonzero otherwise.
  */
-__EXPORT int		param_set_no_notification(param_t param, const void *val);
+__EXPORT പൂർണ്ണസംഖ്യ		param_set_no_notification(param_t param, സ്ഥിരം ശൂന്യം *val);
 
 /**
  * Set the value of a parameter, but do not update the remote system. This avoids
@@ -306,13 +306,13 @@ __EXPORT int		param_set_no_notification(param_t param, const void *val);
  * @param notify	Set this to true for the primary (to send out a param update) and false on client
  * @return		Zero if the parameter's value could be set from a scalar, nonzero otherwise.
  */
-__EXPORT int		param_set_no_remote_update(param_t param, const void *val, bool notify);
+__EXPORT പൂർണ്ണസംഖ്യ		param_set_no_remote_update(param_t param, സ്ഥിരം ശൂന്യം *val, bool notify);
 
 /**
  * Notify the system about parameter changes. Can be used for example after several calls to
  * param_set_no_notification() to avoid unnecessary system notifications.
  */
-__EXPORT void		param_notify_changes(void);
+__EXPORT ശൂന്യം		param_notify_changes(ശൂന്യം);
 
 /**
  * Reset a parameter to its default value.
@@ -320,7 +320,7 @@ __EXPORT void		param_notify_changes(void);
  * @param param		A handle returned by param_find or passed by param_foreach.
  * @return		Zero on success, nonzero on failure
  */
-__EXPORT int		param_reset(param_t param);
+__EXPORT പൂർണ്ണസംഖ്യ		param_reset(param_t param);
 
 /**
  * Reset a parameter to its default value, but do not notify the system about the change.
@@ -328,12 +328,12 @@ __EXPORT int		param_reset(param_t param);
  * @param param		A handle returned by param_find or passed by param_foreach.
  * @return		Zero on success, nonzero on failure
  */
-__EXPORT int		param_reset_no_notification(param_t param);
+__EXPORT പൂർണ്ണസംഖ്യ		param_reset_no_notification(param_t param);
 
 /**
  * Reset all parameters to their default values.
  */
-__EXPORT void		param_reset_all(void);
+__EXPORT ശൂന്യം		param_reset_all(ശൂന്യം);
 
 /**
  * Reset all parameters to their default values except for excluded parameters.
@@ -342,9 +342,9 @@ __EXPORT void		param_reset_all(void);
  *							at the end to exclude parameters with a certain prefix.
  * @param num_excludes		The number of excludes provided.
  */
-__EXPORT void		param_reset_excludes(const char *excludes[], int num_excludes);
+__EXPORT ശൂന്യം		param_reset_excludes(സ്ഥിരം അക്ഷരം *excludes[], പൂർണ്ണസംഖ്യ അക്കം_excludes);
 
-typedef bool(*param_filter_func)(param_t handle);
+തരനിർവചനം bool(*param_filter_func)(param_t handle);
 
 /**
  * Reset only specific parameters to their default values.
@@ -352,7 +352,7 @@ typedef bool(*param_filter_func)(param_t handle);
  * @param resets Array of param names to reset. Use a wildcard at the end to reset parameters with a certain prefix.
  * @param num_resets The number of passed reset conditions in the resets array.
  */
-__EXPORT void		param_reset_specific(const char *resets[], int num_resets);
+__EXPORT ശൂന്യം		param_reset_specific(സ്ഥിരം അക്ഷരം *resets[], പൂർണ്ണസംഖ്യ അക്കം_resets);
 
 /**
  * Export changed parameters to a file.
@@ -363,7 +363,7 @@ __EXPORT void		param_reset_specific(const char *resets[], int num_resets);
  * 			the parameter should be exported. No filtering if nullptr is passed.
  * @return		Zero on success, nonzero on failure.
  */
-__EXPORT int		param_export(const char *filename, param_filter_func filter);
+__EXPORT പൂർണ്ണസംഖ്യ		param_export(സ്ഥിരം അക്ഷരം *filename, param_filter_func filter);
 
 /**
  * Import parameters from a file, discarding any unrecognized parameters.
@@ -375,7 +375,7 @@ __EXPORT int		param_export(const char *filename, param_filter_func filter);
  *			yet), negative if an error occurred during import. Note that
  *			in the error case, parameters may be inconsistent.
  */
-__EXPORT int		param_import(int fd);
+__EXPORT പൂർണ്ണസംഖ്യ		param_import(പൂർണ്ണസംഖ്യ fd);
 
 /**
  * Load parameters from a file.
@@ -389,7 +389,7 @@ __EXPORT int		param_import(int fd);
  *			import. Note that in the error case, parameters may be
  *			inconsistent.
  */
-__EXPORT int		param_load(int fd);
+__EXPORT പൂർണ്ണസംഖ്യ		param_load(പൂർണ്ണസംഖ്യ fd);
 
 /**
  * Apply a function to each parameter.
@@ -405,7 +405,7 @@ __EXPORT int		param_load(int fd);
  * @param only_used	If true, the function is only called for parameters which have been
  *			used in one of the running applications.
  */
-__EXPORT void		param_foreach(void (*func)(void *arg, param_t param), void *arg, bool only_changed, bool only_used);
+__EXPORT ശൂന്യം		param_foreach(ശൂന്യം (*func)(ശൂന്യം *arg, param_t param), ശൂന്യം *arg, bool only_changed, bool only_used);
 
 /**
  * Set the default parameter file name.
@@ -415,7 +415,7 @@ __EXPORT void		param_foreach(void (*func)(void *arg, param_t param), void *arg, 
  *			exist.
  * @return		Zero on success.
  */
-__EXPORT int 		param_set_default_file(const char *filename);
+__EXPORT പൂർണ്ണസംഖ്യ 		param_set_default_file(സ്ഥിരം അക്ഷരം *filename);
 
 /**
  * Get the default parameter file name.
@@ -424,7 +424,7 @@ __EXPORT int 		param_set_default_file(const char *filename);
  *			a result of a call to param_set_default_file, or the
  *			built-in default.
  */
-__EXPORT const char	*param_get_default_file(void);
+__EXPORT സ്ഥിരം അക്ഷരം	*param_get_default_file(ശൂന്യം);
 
 /**
  * Set the backup parameter file name.
@@ -433,14 +433,14 @@ __EXPORT const char	*param_get_default_file(void);
  *			exist.
  * @return		Zero on success.
  */
-__EXPORT int 		param_set_backup_file(const char *filename);
+__EXPORT പൂർണ്ണസംഖ്യ 		param_set_backup_file(സ്ഥിരം അക്ഷരം *filename);
 
 /**
  * Get the backup parameter file name.
  *
  * @return		The path to the backup parameter file
  */
-__EXPORT const char	*param_get_backup_file(void);
+__EXPORT സ്ഥിരം അക്ഷരം	*param_get_backup_file(ശൂന്യം);
 
 /**
  * Save parameters to the default file.
@@ -454,41 +454,41 @@ __EXPORT const char	*param_get_backup_file(void);
  *
  * @return		Zero on success, -EWOULDBLOCK if the file is busy and blocking is false.
  */
-__EXPORT int 		param_save_default(bool blocking);
+__EXPORT പൂർണ്ണസംഖ്യ 		param_save_default(bool blocking);
 
 /**
  * Load parameters from the default parameter file.
  *
  * @return		Zero on success.
  */
-__EXPORT int 		param_load_default(void);
+__EXPORT പൂർണ്ണസംഖ്യ 		param_load_default(ശൂന്യം);
 
 /**
  * Generate the hash of all parameters and their values
  *
  * @return		CRC32 hash of all param_ids and values
  */
-__EXPORT uint32_t	param_hash_check(void);
+__EXPORT uint32_t	param_hash_check(ശൂന്യം);
 
 /**
  * Print the status of the param system
  *
  */
-__EXPORT void	param_print_status(void);
+__EXPORT ശൂന്യം	param_print_status(ശൂന്യം);
 
 /**
  * Enable/disable the param autosaving.
  * Re-enabling with changed params will not cause an autosave.
  * @param enable true: enable autosaving, false: disable autosaving
  */
-__EXPORT void	param_control_autosave(bool enable);
+__EXPORT ശൂന്യം	param_control_autosave(bool enable);
 
 /**
  * Parameter value union.
  */
-union param_value_u {
+സംഘം param_മൂല്യം_u {
 	int32_t		i;
-	float		f;
+	ദശാംശം		f;
 };
 
 /**
@@ -497,45 +497,45 @@ union param_value_u {
  * This is normally not used by user code; see the PARAM_DEFINE macros
  * instead.
  */
-struct param_info_s {
-	const char *name;
-	union param_value_u val;
+ഘടന param_info_s {
+	സ്ഥിരം അക്ഷരം *name;
+	സംഘം param_മൂല്യം_u val;
 };
 
 __END_DECLS
 
 
 
-#if defined(__cplusplus) && !defined(PARAM_IMPLEMENTATION)
-#if defined(CONFIG_ARCH_BOARD_PX4_SITL) || 0 // set to 1 to debug param type mismatches
-#include <cstdio>
-#include <px4_platform_common/log.h>
+#എങ്കിൽ defined(__cplusplus) && !defined(PARAM_IMPLEMENTATION)
+#എങ്കിൽ defined(CONFIG_ARCH_BOARD_PX4_SITL) || 0 // set to 1 to debug param type mismatches
+#അന്തര്ഭാവ <cstdio>
+#അന്തര്ഭാവ <px4_platform_common/log.h>
 
 #ifndef MODULE_NAME
 #define MODULE_NAME "px4"
 #endif
 
 #define CHECK_PARAM_TYPE(param, type) \
-	if (param_type(param) != type) { \
+	എങ്കിൽ (param_type(param) != type) { \
 		/* use printf() to avoid having to use more includes */ \
 		PX4_ERR("wrong type passed to param_get() for param %s", param_name(param)); \
 	}
-#else
+#അല്ലെങ്കിൽ
 #define CHECK_PARAM_TYPE(param, type)
 #endif
 
 // param is a C-interface. This means there is no overloading, and thus no type-safety for param_get().
 // So for C++ code we redefine param_get() to inlined overloaded versions, which gives us type-safety
 // w/o having to use a different interface
-static inline int param_get_cplusplus(param_t param, float *val)
+സ്ഥിതം വരിയിൽ പൂർണ്ണസംഖ്യ param_get_cplusplus(param_t param, ദശാംശം *val)
 {
 	CHECK_PARAM_TYPE(param, PARAM_TYPE_FLOAT);
-	return param_get(param, (void *)val);
+	തിരികെ param_get(param, (ശൂന്യം *)val);
 }
-static inline int param_get_cplusplus(param_t param, int32_t *val)
+സ്ഥിതം വരിയിൽ പൂർണ്ണസംഖ്യ param_get_cplusplus(param_t param, int32_t *val)
 {
 	CHECK_PARAM_TYPE(param, PARAM_TYPE_INT32);
-	return param_get(param, (void *)val);
+	തിരികെ param_get(param, (ശൂന്യം *)val);
 }
 #undef CHECK_PARAM_TYPE
 

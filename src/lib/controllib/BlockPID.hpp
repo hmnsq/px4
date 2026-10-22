@@ -39,52 +39,52 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <assert.h>
+#അന്തര്ഭാവ <time.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <mathlib/math/test/test.hpp>
+#അന്തര്ഭാവ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#അന്തര്ഭാവ "block/Block.hpp"
+#അന്തര്ഭാവ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#അന്തര്ഭാവ "matrix/math.hpp"
 
-namespace control
+നാമാകാശ control
 {
 
 /**
  * A proportional-integral-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPID: public SuperBlock
+വർഗ്ഗം __EXPORT BlockPID: പൊതു SuperBlock
 {
-public:
+പൊതു:
 // methods
-	BlockPID(SuperBlock *parent, const char *name) :
+	BlockPID(SuperBlock *parent, സ്ഥിരം അക്ഷരം *name) :
 		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kI(this, "I"),
-		_kD(this, "D")
+		_integral(ഇത്, "I"),
+		_derivative(ഇത്, "D"),
+		_kP(ഇത്, "P"),
+		_kI(ഇത്, "I"),
+		_kD(ഇത്, "D")
 	{}
-	virtual ~BlockPID() = default;
-	float update(float input)
+	മായാ ~BlockPID() = സ്ഥിരസ്ഥിതി;
+	ദശാംശം update(ദശാംശം നിവേശം)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input) +
-		       getKD() * getDerivative().update(input);
+		തിരികെ getKP() * നിവേശം +
+		       getKI() * getIntegral().update(നിവേശം) +
+		       getKD() * getDerivative().update(നിവേശം);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	float getKD() { return _kD.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
+	ദശാംശം getKP() { തിരികെ _kP.get(); }
+	ദശാംശം getKI() { തിരികെ _kI.get(); }
+	ദശാംശം getKD() { തിരികെ _kD.get(); }
+	BlockIntegral &getIntegral() { തിരികെ _integral; }
+	BlockDerivative &getDerivative() { തിരികെ _derivative; }
+സ്വകാര്യ:
 // attributes
 	BlockIntegral _integral;
 	BlockDerivative _derivative;

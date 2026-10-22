@@ -33,61 +33,61 @@
 
 #pragma once
 
-#include "ParamLayer.h"
+#അന്തര്ഭാവ "ParamLayer.h"
 
-class ConstLayer : public ParamLayer
+class ConstLayer : പൊതു ParamLayer
 {
-public:
+പൊതു:
 
-	ConstLayer() = default;
+	ConstLayer() = സ്ഥിരസ്ഥിതി;
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_മൂല്യം_u മൂല്യം) override
 	{
-		return false;
+		തിരികെ false;
 	}
 
-	bool contains(param_t param) const override
+	bool contains(param_t param) സ്ഥിരം override
 	{
-		return param < PARAM_COUNT;
+		തിരികെ param < PARAM_എണ്ണം;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_എണ്ണം> containedAsBitset() സ്ഥിരം override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
+		px4::AtomicBitset<PARAM_എണ്ണം> set;
 
-		for (int i = 0; i < PARAM_COUNT; i++) {
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < PARAM_എണ്ണം; i++) {
 			set.set(i);
 		}
 
-		return set;
+		തിരികെ set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_മൂല്യം_u get(param_t param) സ്ഥിരം override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		എങ്കിൽ (param >= PARAM_എണ്ണം) {
+			തിരികെ {0};
 		}
 
-		return px4::parameters[param].val;
+		തിരികെ px4::parameters[param].val;
 	}
 
-	void reset(param_t param) override
+	ശൂന്യം reset(param_t param) override
 	{
 		// Do nothing
 	}
 
-	void refresh(param_t param) override
+	ശൂന്യം refresh(param_t param) override
 	{
 		// Do nothing
 	}
 
-	int size() const override
+	പൂർണ്ണസംഖ്യ size() സ്ഥിരം override
 	{
-		return PARAM_COUNT;
+		തിരികെ PARAM_എണ്ണം;
 	}
 
-	int byteSize() const override
+	പൂർണ്ണസംഖ്യ byteSize() സ്ഥിരം override
 	{
-		return PARAM_COUNT * sizeof(param_info_s);
+		തിരികെ PARAM_എണ്ണം * വലുപ്പം(param_info_s);
 	}
 };

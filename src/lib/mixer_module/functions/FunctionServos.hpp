@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#അന്തര്ഭാവ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/actuator_servos.h>
+#അന്തര്ഭാവ <uORB/topics/actuator_servos.h>
 
 /**
  * Functions: Servo1 ... ServoMax
  */
-class FunctionServos : public FunctionProviderBase
+വർഗ്ഗം FunctionServos : പൊതു FunctionProviderBase
 {
-public:
-	static_assert(actuator_servos_s::NUM_CONTROLS == (int)OutputFunction::ServoMax - (int)OutputFunction::Servo1 + 1,
+പൊതു:
+	static_assert(actuator_servos_s::അക്കം_CONTROLS == (പൂർണ്ണസംഖ്യ)OutputFunction::ServoMax - (പൂർണ്ണസംഖ്യ)OutputFunction::Servo1 + 1,
 		      "Unexpected num servos");
 
-	FunctionServos(const Context &context) :
+	FunctionServos(സ്ഥിരം Context &context) :
 		_topic(&context.work_item, ORB_ID(actuator_servos))
 	{
-		for (int i = 0; i < actuator_servos_s::NUM_CONTROLS; ++i) {
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < actuator_servos_s::അക്കം_CONTROLS; ++i) {
 			_data.control[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionServos(context); }
+	സ്ഥിതം FunctionProviderBase *allocate(സ്ഥിരം Context &context) { തിരികെ പുതിയ FunctionServos(context); }
 
-	void update() override { _topic.update(&_data); }
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Servo1]; }
+	ശൂന്യം update() override { _topic.update(&_data); }
+	ദശാംശം value(OutputFunction func) override { തിരികെ _data.control[(പൂർണ്ണസംഖ്യ)func - (പൂർണ്ണസംഖ്യ)OutputFunction::Servo1]; }
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { തിരികെ &_topic; }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 0.f; }
+	ദശാംശം default_Failsafe_മൂല്യം(OutputFunction func) സ്ഥിരം override { തിരികെ 0.f; }
 
-private:
+സ്വകാര്യ:
 	uORB::SubscriptionCallbackWorkItem _topic;
 	actuator_servos_s _data{};
 };

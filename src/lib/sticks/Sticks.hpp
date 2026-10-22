@@ -41,46 +41,46 @@
 
 #pragma once
 
-#include <px4_platform_common/module_params.h>
-#include <matrix/matrix/math.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/manual_control_setpoint.h>
-#include <uORB/topics/failsafe_flags.h>
+#അന്തര്ഭാവ <px4_platform_common/module_params.h>
+#അന്തര്ഭാവ <matrix/matrix/math.hpp>
+#അന്തര്ഭാവ <uORB/Subscription.hpp>
+#അന്തര്ഭാവ <uORB/topics/manual_control_setpoint.h>
+#അന്തര്ഭാവ <uORB/topics/failsafe_flags.h>
 
-class Sticks : public ModuleParams
+വർഗ്ഗം Sticks : പൊതു ModuleParams
 {
-public:
+പൊതു:
 	Sticks(ModuleParams *parent);
-	~Sticks() = default;
+	~Sticks() = സ്ഥിരസ്ഥിതി;
 
 	// Checks for updated manual control input & updates internal values
-	bool checkAndUpdateStickInputs();
+	തർക്കം checkAndUpdateStickInputs();
 
-	bool isAvailable() { return _input_available; };
+	തർക്കം isAvailable() { തിരികെ നിവേശം_available; };
 
 	// Helper functions to get stick values more intuitively
-	float getRoll() const { return _positions(0); }
-	float getPitch() const { return _positions(1); }
-	float getYaw() const { return _positions(2); }
-	float getThrottleZeroCentered() const { return _positions(3); }
+	ദശാംശം getRoll() സ്ഥിരം { തിരികെ _positions(0); }
+	ദശാംശം getPitch() സ്ഥിരം { തിരികെ _positions(1); }
+	ദശാംശം getYaw() സ്ഥിരം { തിരികെ _positions(2); }
+	ദശാംശം getThrottleZeroCentered() സ്ഥിരം { തിരികെ _positions(3); }
 
-	float getRollExpo(float expo = .6f) const { return expoDeadzone(getRoll(), expo, _param_man_deadzone.get()); }
-	float getPitchExpo(float expo = .6f) const { return expoDeadzone(getPitch(), expo, _param_man_deadzone.get()); }
-	float getYawExpo(float expo = .6f) const { return expoDeadzone(getYaw(), expo, _param_man_deadzone.get()); }
-	float getThrottleZeroCenteredExpo(float expo = .6f) const { return expoDeadzone(getThrottleZeroCentered(), expo, _param_man_deadzone.get()); }
+	ദശാംശം getRollExpo(ദശാംശം expo = .6f) സ്ഥിരം { തിരികെ expoDeadzone(getRoll(), expo, _param_man_deadzone.get()); }
+	ദശാംശം getPitchExpo(ദശാംശം expo = .6f) സ്ഥിരം { തിരികെ expoDeadzone(getPitch(), expo, _param_man_deadzone.get()); }
+	ദശാംശം getYawExpo(ദശാംശം expo = .6f) സ്ഥിരം { തിരികെ expoDeadzone(getYaw(), expo, _param_man_deadzone.get()); }
+	ദശാംശം getThrottleZeroCenteredExpo(ദശാംശം expo = .6f) സ്ഥിരം { തിരികെ expoDeadzone(getThrottleZeroCentered(), expo, _param_man_deadzone.get()); }
 
-	static float expoDeadzone(float value, float expo, float deadzone);
+	സ്ഥിതം ദശാംശം expoDeadzone(ദശാംശം value, ദശാംശം expo, ദശാംശം deadzone);
 
-	const matrix::Vector2f getPitchRoll() { return {getPitch(), getRoll()}; }
-	const matrix::Vector2f getPitchRollExpo() { return {getPitchExpo(), getRollExpo()}; }
+	സ്ഥിരം matrix::Vector2f getPitchRoll() { തിരികെ {getPitch(), getRoll()}; }
+	സ്ഥിരം matrix::Vector2f getPitchRollExpo() { തിരികെ {getPitchExpo(), getRollExpo()}; }
 
-	const matrix::Vector<float, 6> &getAux() const { return _aux_positions; }
+	സ്ഥിരം matrix::Vector<ദശാംശം, 6> &getAux() സ്ഥിരം { തിരികെ _aux_positions; }
 
 	/**
 	 * Limit the the horizontal input from a square shaped joystick gimbal to a unit circle
 	 * @param v Vector containing x, y, z axis of the joystick gimbal. x, y get adjusted
 	 */
-	static void limitStickUnitLengthXY(matrix::Vector2f &v);
+	സ്ഥിതം ശൂന്യം limitStickUnitLengthXY(matrix::Vector2f &v);
 
 	/**
 	 * Rotate horizontal component of joystick input into the vehicle body orientation
@@ -88,13 +88,13 @@ public:
 	 * @param yaw Current vehicle yaw heading
 	 * @param yaw_setpoint Current yaw setpoint if it's locked else NAN
 	 */
-	static void rotateIntoHeadingFrameXY(matrix::Vector2f &v, const float yaw, const float yaw_setpoint);
+	സ്ഥിതം ശൂന്യം rotateIntoHeadingFrameXY(matrix::Vector2f &v, സ്ഥിരം ദശാംശം yaw, സ്ഥിരം ദശാംശം yaw_setpoint);
 
-private:
-	bool _input_available{false};
+സ്വകാര്യ:
+	തർക്കം നിവേശം_available{അസത്യം};
 	matrix::Vector4f _positions; ///< unmodified manual stick inputs roll, pitch, yaw ,throttle
 
-	matrix::Vector<float, 6> _aux_positions;
+	matrix::Vector<ദശാംശം, 6> _aux_positions;
 
 	uORB::Subscription _manual_control_setpoint_sub{ORB_ID(manual_control_setpoint)};
 	uORB::Subscription _failsafe_flags_sub{ORB_ID(failsafe_flags)};

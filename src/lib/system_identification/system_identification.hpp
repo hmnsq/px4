@@ -39,64 +39,64 @@
 
 #pragma once
 
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <matrix/matrix/math.hpp>
-#include <mathlib/mathlib.h>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
-#include <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <lib/mathlib/math/filter/AlphaFilter.hpp>
+#അന്തര്ഭാവ <matrix/matrix/math.hpp>
+#അന്തര്ഭാവ <mathlib/mathlib.h>
+#അന്തര്ഭാവ <mathlib/math/filter/LowPassFilter2p.hpp>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
 
-#include "arx_rls.hpp"
+#അന്തര്ഭാവ "arx_rls.hpp"
 
-class SystemIdentification final
+വർഗ്ഗം SystemIdentification final
 {
-public:
-	SystemIdentification() = default;
-	~SystemIdentification() = default;
+പൊതു:
+	SystemIdentification() = സ്ഥിരസ്ഥിതി;
+	~SystemIdentification() = സ്ഥിരസ്ഥിതി;
 
-	void reset(const matrix::Vector<float, 5> &id_state_init = {});
-	void update(float u, float y); // update filters and model
-	void update(); // update model only (to be called after updateFilters)
-	void updateFilters(float u, float y);
-	bool areFiltersInitialized() const { return _are_filters_initialized; }
-	void updateFitness();
-	const matrix::Vector<float, 5> &getCoefficients() const { return _rls.getCoefficients(); }
-	const matrix::Vector<float, 5> getVariances() const { return _rls.getVariances(); }
-	const matrix::Vector<float, 5> &getDiffEstimate() const { return _rls.getDiffEstimate(); }
-	float getFitness() const { return _fitness_lpf.getState(); }
-	float getInnovation() const { return _rls.getInnovation(); }
+	ശൂന്യം reset(സ്ഥിരം matrix::Vector<ദശാംശം, 5> &id_state_init = {});
+	ശൂന്യം update(ദശാംശം u, ദശാംശം y); // update filters and model
+	ശൂന്യം update(); // update model only (to be called after updateFilters)
+	ശൂന്യം updateFilters(ദശാംശം u, ദശാംശം y);
+	തർക്കം areFiltersInitialized() സ്ഥിരം { തിരികെ _are_filters_initialized; }
+	ശൂന്യം updateFitness();
+	സ്ഥിരം matrix::Vector<ദശാംശം, 5> &getCoefficients() സ്ഥിരം { തിരികെ _rls.getCoefficients(); }
+	സ്ഥിരം matrix::Vector<ദശാംശം, 5> getVariances() സ്ഥിരം { തിരികെ _rls.getVariances(); }
+	സ്ഥിരം matrix::Vector<ദശാംശം, 5> &getDiffEstimate() സ്ഥിരം { തിരികെ _rls.getDiffEstimate(); }
+	ദശാംശം getFitness() സ്ഥിരം { തിരികെ _fitness_lpf.getState(); }
+	ദശാംശം getInnovation() സ്ഥിരം { തിരികെ _rls.getInnovation(); }
 
-	void setLpfCutoffFrequency(float sample_freq, float cutoff)
+	ശൂന്യം setLpfCutoffFrequency(ദശാംശം sample_freq, ദശാംശം cutoff)
 	{
 		_u_lpf.set_cutoff_frequency(sample_freq, cutoff);
 		_y_lpf.set_cutoff_frequency(sample_freq, cutoff);
 	}
-	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
+	ശൂന്യം setHpfCutoffFrequency(ദശാംശം sample_freq, ദശാംശം cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	void setForgettingFactor(float time_constant, float dt) { _rls.setForgettingFactor(time_constant, dt); }
-	void setFitnessLpfTimeConstant(float time_constant, float dt)
+	ശൂന്യം setForgettingFactor(ദശാംശം time_constant, ദശാംശം dt) { _rls.setForgettingFactor(time_constant, dt); }
+	ശൂന്യം setFitnessLpfTimeConstant(ദശാംശം time_constant, ദശാംശം dt)
 	{
 		_fitness_lpf.setParameters(dt, time_constant);
 		_dt = dt;
 	}
 
-	float getFilteredInputData() const { return _u_hpf; }
-	float getFilteredOutputData() const { return _y_hpf; }
+	ദശാംശം get_Filtered_നിവേശം_Data() സ്ഥിരം { തിരികെ _u_hpf; }
+	ദശാംശം getFilteredOutputData() സ്ഥിരം { തിരികെ _y_hpf; }
 
-private:
+സ്വകാര്യ:
 	ArxRls<2, 2, 1> _rls;
-	math::LowPassFilter2p<float> _u_lpf{400.f, 30.f};
-	math::LowPassFilter2p<float> _y_lpf{400.f, 30.f};
+	math::താഴെയുള്ള_Pass_Filter2p<ദശാംശം> _u_lpf{400.f, 30.f};
+	math::താഴെയുള്ള_Pass_Filter2p<ദശാംശം> _y_lpf{400.f, 30.f};
 
 	//TODO: replace by HighPassFilter class
-	float _alpha_hpf{0.f};
-	float _u_hpf{0.f};
-	float _y_hpf{0.f};
+	ദശാംശം _alpha_hpf{0.f};
+	ദശാംശം _u_hpf{0.f};
+	ദശാംശം _y_hpf{0.f};
 
-	float _u_prev{0.f};
-	float _y_prev{0.f};
+	ദശാംശം _u_prev{0.f};
+	ദശാംശം _y_prev{0.f};
 
-	bool _are_filters_initialized{false};
+	തർക്കം _are_filters_initialized{അസത്യം};
 
-	AlphaFilter<float> _fitness_lpf;
-	float _dt{0.1f};
+	AlphaFilter<ദശാംശം> _fitness_lpf;
+	ദശാംശം _dt{0.1f};
 };

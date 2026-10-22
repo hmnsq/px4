@@ -39,64 +39,64 @@
 
 #pragma once
 
-#include <lib/mathlib/mathlib.h>
+#അന്തര്ഭാവ <lib/mathlib/mathlib.h>
 
-namespace math
+നാമാകാശ math
 {
 
-template <typename Type = float>
-class WelfordMean
+template <typename Type = ദശാംശം>
+വർഗ്ഗം WelfordMean
 {
-public:
+പൊതു:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const Type &new_value)
+	തർക്കം update(സ്ഥിരം Type &new_മൂല്യം)
 	{
-		if (_count == 0) {
+		എങ്കിൽ (എണ്ണം_3 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
-			return false;
+			എണ്ണം_3 = 1;
+			_mean = new_മൂല്യം;
+			തിരികെ അസത്യം;
 
-		} else if (_count == UINT16_MAX) {
+		} അല്ലെങ്കിൽ എങ്കിൽ (എണ്ണം_3 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / എണ്ണം_3;
 			_M2_accum = 0;
 
-			_count = 1;
+			എണ്ണം_3 = 1;
 
-		} else {
-			_count++;
+		} അല്ലെങ്കിൽ {
+			എണ്ണം_3++;
 		}
 
 		// mean accumulates the mean of the entire dataset
 		// delta can be very small compared to the mean, use algorithm to minimise numerical error
-		const Type delta{new_value - _mean};
-		const Type mean_change = delta / _count;
+		സ്ഥിരം Type delta{new_മൂല്യം - _mean};
+		സ്ഥിരം Type mean_change = delta / എണ്ണം_3;
 		_mean = kahanSummation(_mean, mean_change, _mean_accum);
 
 		// M2 aggregates the squared distance from the mean
 		// count aggregates the number of samples seen so far
-		const Type M2_change = delta * (new_value - _mean);
+		സ്ഥിരം Type M2_change = delta * (new_മൂല്യം - _mean);
 		_M2 = kahanSummation(_M2, M2_change, _M2_accum);
 
 		// protect against floating point precision causing negative variances
 		_M2 = math::max(_M2, 0.f);
 
-		if (!PX4_ISFINITE(_mean) || !PX4_ISFINITE(_M2)) {
+		എങ്കിൽ (!PX4_ISFINITE(_mean) || !PX4_ISFINITE(_M2)) {
 			reset();
-			return false;
+			തിരികെ അസത്യം;
 		}
 
-		return valid();
+		തിരികെ valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	തർക്കം valid() സ്ഥിരം { തിരികെ എണ്ണം_3 > 2; }
+	auto എണ്ണം() സ്ഥിരം { തിരികെ എണ്ണം_3; }
 
-	void reset()
+	ശൂന്യം reset()
 	{
-		_count = 0;
+		എണ്ണം_3 = 0;
 		_mean = 0;
 		_M2 = 0;
 
@@ -104,22 +104,22 @@ public:
 		_M2_accum = 0;
 	}
 
-	Type mean() const { return _mean; }
-	Type variance() const { return _M2 / (_count - 1); }
-	Type standard_deviation() const { return std::sqrt(variance()); }
+	Type mean() സ്ഥിരം { തിരികെ _mean; }
+	Type variance() സ്ഥിരം { തിരികെ _M2 / (എണ്ണം_3 - 1); }
+	Type standard_deviation() സ്ഥിരം { തിരികെ std::sqrt(variance()); }
 
-private:
+സ്വകാര്യ:
 
 	// Use Kahan summation algorithm to get the sum of "sum_previous" and "input".
 	// This function relies on the caller to be responsible for keeping a copy of
 	// "accumulator" and passing this value at the next iteration.
 	// Ref: https://en.wikipedia.org/wiki/Kahan_summation_algorithm
-	inline Type kahanSummation(Type sum_previous, Type input, Type &accumulator)
+	വരിയിൽ Type kahanSummation(Type sum_previous, Type നിവേശം, Type &accumulator)
 	{
-		const Type y = input - accumulator;
-		const Type t = sum_previous + y;
+		സ്ഥിരം Type y = നിവേശം - accumulator;
+		സ്ഥിരം Type t = sum_previous + y;
 		accumulator = (t - sum_previous) - y;
-		return t;
+		തിരികെ t;
 	}
 
 	Type _mean{};
@@ -128,7 +128,7 @@ private:
 	Type _mean_accum{};  ///< kahan summation algorithm accumulator for mean
 	Type _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t എണ്ണം_3{0};
 };
 
 } // namespace math

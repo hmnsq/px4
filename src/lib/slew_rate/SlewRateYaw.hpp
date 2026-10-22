@@ -41,14 +41,14 @@
 
 #pragma once
 
-#include "SlewRate.hpp"
+#അന്തര്ഭാവ "SlewRate.hpp"
 
 template<typename Type>
-class SlewRateYaw : public SlewRate<Type>
+വർഗ്ഗം SlewRateYaw : പൊതു SlewRate<Type>
 {
-public:
-	SlewRateYaw() = default;
-	~SlewRateYaw() = default;
+പൊതു:
+	SlewRateYaw() = സ്ഥിരസ്ഥിതി;
+	~SlewRateYaw() = സ്ഥിരസ്ഥിതി;
 
 	/**
 	 * Update slewrate with yaw wrapping [-pi,pi]
@@ -56,9 +56,9 @@ public:
 	 * @param deltatime time in seconds since last update
 	 * @return actual value that complies with the slew rate
 	 */
-	Type update(const Type new_value, const float deltatime)
+	Type update(സ്ഥിരം Type new_മൂല്യം, സ്ഥിരം ദശാംശം deltatime)
 	{
-		const Type d_wrapped = matrix::wrap_pi(new_value - this->_value);
-		return matrix::wrap_pi(SlewRate<Type>::update(this->_value + d_wrapped, deltatime));
+		സ്ഥിരം Type d_wrapped = matrix::wrap_pi(new_മൂല്യം - ഇത്->മൂല്യം_2);
+		തിരികെ matrix::wrap_pi(SlewRate<Type>::update(ഇത്->മൂല്യം_2 + d_wrapped, deltatime));
 	}
 };

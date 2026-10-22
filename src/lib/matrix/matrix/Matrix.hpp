@@ -8,82 +8,82 @@
 
 #pragma once
 
-#include <cmath>
-#include <cstdio>
-#include <cstring>
+#അന്തര്ഭാവ <cmath>
+#അന്തര്ഭാവ <cstdio>
+#അന്തര്ഭാവ <cstring>
 
-#include "helper_functions.hpp"
-#include "Slice.hpp"
+#അന്തര്ഭാവ "helper_functions.hpp"
+#അന്തര്ഭാവ "Slice.hpp"
 
-namespace matrix
+നാമാകാശ matrix
 {
 
 template<typename Type, size_t M, size_t N>
-class Matrix
+വർഗ്ഗം Matrix
 {
 	Type _data[M][N] {};
 
-public:
+പൊതു:
 
 	// Constructors
-	Matrix() = default;
+	Matrix() = സ്ഥിരസ്ഥിതി;
 
-	explicit Matrix(const Type data_[M * N])
+	explicit Matrix(സ്ഥിരം Type data_[M * N])
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				_data[i][j] = data_[N * i + j];
 			}
 		}
 	}
 
-	explicit Matrix(const Type data_[M][N])
+	explicit Matrix(സ്ഥിരം Type data_[M][N])
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				_data[i][j] = data_[i][j];
 			}
 		}
 	}
 
-	Matrix(const Matrix &other)
+	Matrix(സ്ഥിരം Matrix &other)
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				_data[i][j] = other(i, j);
 			}
 		}
 	}
 
 	template<typename S>
-	Matrix(const Matrix<S, M, N> &aa)
+	Matrix(സ്ഥിരം Matrix<S, M, N> &aa)
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				_data[i][j] = static_cast<Type>(aa(i, j));
 			}
 		}
 	}
 
 	template<size_t P, size_t Q>
-	Matrix(const Slice<Type, M, N, P, Q> &in_slice)
+	Matrix(സ്ഥിരം Slice<Type, M, N, P, Q> &in_slice)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				self(i, j) = in_slice(i, j);
 			}
 		}
 	}
 
 	template<size_t P, size_t Q>
-	Matrix(const ConstSlice<Type, M, N, P, Q> &in_slice)
+	Matrix(സ്ഥിരം ConstSlice<Type, M, N, P, Q> &in_slice)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				self(i, j) = in_slice(i, j);
 			}
 		}
@@ -94,54 +94,54 @@ public:
 	 */
 
 
-	inline const Type &operator()(size_t i, size_t j) const
+	വരിയിൽ സ്ഥിരം Type &operator()(size_t i, size_t j) സ്ഥിരം
 	{
-		assert(i < M);
-		assert(j < N);
+		പ്രതിജ്ഞാ(i < M);
+		പ്രതിജ്ഞാ(j < N);
 
-		return _data[i][j];
+		തിരികെ _data[i][j];
 	}
 
-	inline Type &operator()(size_t i, size_t j)
+	വരിയിൽ Type &operator()(size_t i, size_t j)
 	{
-		assert(i < M);
-		assert(j < N);
+		പ്രതിജ്ഞാ(i < M);
+		പ്രതിജ്ഞാ(j < N);
 
-		return _data[i][j];
+		തിരികെ _data[i][j];
 	}
 
-	Matrix<Type, M, N> &operator=(const Matrix<Type, M, N> &other)
+	Matrix<Type, M, N> &operator=(സ്ഥിരം Matrix<Type, M, N> &other)
 	{
-		if (this != &other) {
-			Matrix<Type, M, N> &self = *this;
+		എങ്കിൽ (ഇത് != &other) {
+			Matrix<Type, M, N> &self = *ഇത്;
 
-			for (size_t i = 0; i < M; i++) {
-				for (size_t j = 0; j < N; j++) {
+			വേണ്ടി (size_t i = 0; i < M; i++) {
+				വേണ്ടി (size_t j = 0; j < N; j++) {
 					self(i, j) = other(i, j);
 				}
 			}
 		}
 
-		return (*this);
+		തിരികെ (*ഇത്);
 	}
 
-	void copyTo(Type dst[M * N]) const
+	ശൂന്യം copyTo(Type dst[M * N]) സ്ഥിരം
 	{
-		const Matrix<Type, M, N> &self = *this;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				dst[N * i + j] = self(i, j);
 			}
 		}
 	}
 
-	void copyToColumnMajor(Type dst[M * N]) const
+	ശൂന്യം copyToColumnMajor(Type dst[M * N]) സ്ഥിരം
 	{
-		const Matrix<Type, M, N> &self = *this;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				dst[i + (j * M)] = self(i, j);
 			}
 		}
@@ -156,139 +156,139 @@ public:
 	// required mult pair, but it provides
 	// compile time size_t checking
 	template<size_t P>
-	Matrix<Type, M, P> operator*(const Matrix<Type, N, P> &other) const
+	Matrix<Type, M, P> operator*(സ്ഥിരം Matrix<Type, N, P> &other) സ്ഥിരം
 	{
-		const Matrix<Type, M, N> &self = *this;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
 		Matrix<Type, M, P> res{};
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t k = 0; k < P; k++) {
-				for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t k = 0; k < P; k++) {
+				വേണ്ടി (size_t j = 0; j < N; j++) {
 					res(i, k) += self(i, j) * other(j, k);
 				}
 			}
 		}
 
-		return res;
+		തിരികെ res;
 	}
 
 	// Using this function reduces the number of temporary variables needed to compute A * B.T
 	template<size_t P>
-	Matrix<Type, M, M> multiplyByTranspose(const Matrix<Type, P, N> &other) const
+	Matrix<Type, M, M> multiplyByTranspose(സ്ഥിരം Matrix<Type, P, N> &other) സ്ഥിരം
 	{
 		Matrix<Type, M, P> res;
-		const Matrix<Type, M, N> &self = *this;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t k = 0; k < P; k++) {
-				for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t k = 0; k < P; k++) {
+				വേണ്ടി (size_t j = 0; j < N; j++) {
 					res(i, k) += self(i, j) * other(k, j);
 				}
 			}
 		}
 
-		return res;
+		തിരികെ res;
 	}
 
 	// Element-wise multiplication
-	Matrix<Type, M, N> emult(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> emult(സ്ഥിരം Matrix<Type, M, N> &other) സ്ഥിരം
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) * other(i, j);
 			}
 		}
 
-		return res;
+		തിരികെ res;
 	}
 
 	// Element-wise division
-	Matrix<Type, M, N> edivide(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> edivide(സ്ഥിരം Matrix<Type, M, N> &other) സ്ഥിരം
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) / other(i, j);
 			}
 		}
 
-		return res;
+		തിരികെ res;
 	}
 
-	Matrix<Type, M, N> operator+(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> operator+(സ്ഥിരം Matrix<Type, M, N> &other) സ്ഥിരം
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) + other(i, j);
 			}
 		}
 
-		return res;
+		തിരികെ res;
 	}
 
-	Matrix<Type, M, N> operator-(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> operator-(സ്ഥിരം Matrix<Type, M, N> &other) സ്ഥിരം
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) - other(i, j);
 			}
 		}
 
-		return res;
+		തിരികെ res;
 	}
 
 	// unary minus
-	Matrix<Type, M, N> operator-() const
+	Matrix<Type, M, N> operator-() സ്ഥിരം
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				res(i, j) = -self(i, j);
 			}
 		}
 
-		return res;
+		തിരികെ res;
 	}
 
-	void operator+=(const Matrix<Type, M, N> &other)
+	ശൂന്യം operator+=(സ്ഥിരം Matrix<Type, M, N> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
 	}
 
-	void operator-=(const Matrix<Type, M, N> &other)
+	ശൂന്യം operator-=(സ്ഥിരം Matrix<Type, M, N> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
 	}
 
 	template<size_t P>
-	void operator*=(const Matrix<Type, N, P> &other)
+	ശൂന്യം operator*=(സ്ഥിരം Matrix<Type, N, P> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ഇത്;
 		self = self * other;
 	}
 
@@ -296,114 +296,114 @@ public:
 	 * Scalar Operations
 	 */
 
-	Matrix<Type, M, N> operator*(Type scalar) const
+	Matrix<Type, M, N> operator*(Type scalar) സ്ഥിരം
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) * scalar;
 			}
 		}
 
-		return res;
+		തിരികെ res;
 	}
 
-	inline Matrix<Type, M, N> operator/(Type scalar) const
+	വരിയിൽ Matrix<Type, M, N> operator/(Type scalar) സ്ഥിരം
 	{
-		return (*this) * (1 / scalar);
+		തിരികെ (*ഇത്) * (1 / scalar);
 	}
 
-	Matrix<Type, M, N> operator+(Type scalar) const
+	Matrix<Type, M, N> operator+(Type scalar) സ്ഥിരം
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) + scalar;
 			}
 		}
 
-		return res;
+		തിരികെ res;
 	}
 
-	inline Matrix<Type, M, N> operator-(Type scalar) const
+	വരിയിൽ Matrix<Type, M, N> operator-(Type scalar) സ്ഥിരം
 	{
-		return (*this) + (-1 * scalar);
+		തിരികെ (*ഇത്) + (-1 * scalar);
 	}
 
-	void operator*=(Type scalar)
+	ശൂന്യം operator*=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				self(i, j) *= scalar;
 			}
 		}
 	}
 
-	void operator/=(Type scalar)
+	ശൂന്യം operator/=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ഇത്;
 		self *= (Type(1) / scalar);
 	}
 
-	inline void operator+=(Type scalar)
+	വരിയിൽ ശൂന്യം operator+=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				self(i, j) += scalar;
 			}
 		}
 	}
 
-	inline void operator-=(Type scalar)
+	വരിയിൽ ശൂന്യം operator-=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ഇത്;
 		self += (-scalar);
 	}
 
-	bool operator==(const Matrix<Type, M, N> &other) const
+	തർക്കം operator==(സ്ഥിരം Matrix<Type, M, N> &other) സ്ഥിരം
 	{
-		return isEqual(*this, other);
+		തിരികെ isEqual(*ഇത്, other);
 	}
 
-	bool operator!=(const Matrix<Type, M, N> &other) const
+	തർക്കം operator!=(സ്ഥിരം Matrix<Type, M, N> &other) സ്ഥിരം
 	{
-		const Matrix<Type, M, N> &self = *this;
-		return !(self == other);
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
+		തിരികെ !(self == other);
 	}
 
 	/**
 	 * Misc. Functions
 	 */
 
-	void write_string(char *buf, size_t n) const
+	ശൂന്യം write_string(അക്ഷരം *buf, size_t n) സ്ഥിരം
 	{
 		buf[0] = '\0'; // make an empty string to begin with (we need the '\0' for strlen to work)
-		const Matrix<Type, M, N> &self = *this;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				snprintf(buf + strlen(buf), n - strlen(buf), "\t%8.8g", double(self(i, j))); // directly append to the string buffer
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
+				snprintf(buf + strlen(buf), n - strlen(buf), "\t%8.8g", ഇരട്ട(self(i, j))); // directly append to the string buffer
 			}
 
 			snprintf(buf + strlen(buf), n - strlen(buf), "\n");
 		}
 	}
 
-	void print(float eps = 1e-9) const
+	ശൂന്യം print(ദശാംശം eps = 1e-9) സ്ഥിരം
 	{
 		// print column numbering
-		if (N > 1) {
+		എങ്കിൽ (N > 1) {
 			printf("  ");
 
-			for (unsigned i = 0; i < N; i++) {
+			വേണ്ടി (unsigned i = 0; i < N; i++) {
 				printf("|%2u      ", i);
 
 			}
@@ -411,36 +411,36 @@ public:
 			printf("\n");
 		}
 
-		const Matrix<Type, M, N> &self = *this;
-		bool is_prev_symmetric = true; // assume symmetric until one element is not
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
+		തർക്കം is_prev_symmetric = സത്യം; // assume symmetric until one element is not
 
-		for (unsigned i = 0; i < M; i++) {
+		വേണ്ടി (unsigned i = 0; i < M; i++) {
 			printf("%2u|", i); // print row numbering
 
-			for (unsigned j = 0; j < N; j++) {
-				double d = static_cast<double>(self(i, j));
+			വേണ്ടി (unsigned j = 0; j < N; j++) {
+				ഇരട്ട d = static_cast<ഇരട്ട>(self(i, j));
 
 				// if symmetric don't print upper triangular elements
-				if (is_prev_symmetric && (M == N) && (j > i) && (i < N) && (j < M)
-				    && (fabs(d - static_cast<double>(self(j, i))) < (double)eps)
+				എങ്കിൽ (is_prev_symmetric && (M == N) && (j > i) && (i < N) && (j < M)
+				    && (fabs(d - static_cast<ഇരട്ട>(self(j, i))) < (ഇരട്ട)eps)
 				   ) {
 					// print empty space
 					printf("         ");
 
-				} else {
+				} അല്ലെങ്കിൽ {
 					// avoid -0.0 for display
-					if (fabs(d - 0.0) < (double)eps) {
+					എങ്കിൽ (fabs(d - 0.0) < (ഇരട്ട)eps) {
 						// print fixed width zero
 						printf(" 0       ");
 
-					} else if ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
+					} അല്ലെങ്കിൽ എങ്കിൽ ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
 						printf("% .1e ", d);
 
-					} else {
+					} അല്ലെങ്കിൽ {
 						printf("% 6.5f ", d);
 					}
 
-					is_prev_symmetric = false; // not symmetric if once inside here
+					is_prev_symmetric = അസത്യം; // not symmetric if once inside here
 				}
 			}
 
@@ -448,250 +448,250 @@ public:
 		}
 	}
 
-	Matrix<Type, N, M> transpose() const
+	Matrix<Type, N, M> transpose() സ്ഥിരം
 	{
 		Matrix<Type, N, M> res;
-		const Matrix<Type, M, N> &self = *this;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				res(j, i) = self(i, j);
 			}
 		}
 
-		return res;
+		തിരികെ res;
 	}
 
 	// tranpose alias
-	inline Matrix<Type, N, M> T() const
+	വരിയിൽ Matrix<Type, N, M> T() സ്ഥിരം
 	{
-		return transpose();
+		തിരികെ transpose();
 	}
 
 	template<size_t P, size_t Q>
-	ConstSlice<Type, P, Q, M, N> slice(size_t x0, size_t y0) const
+	ConstSlice<Type, P, Q, M, N> slice(size_t x0, size_t y0) സ്ഥിരം
 	{
-		return {x0, y0, this};
+		തിരികെ {x0, y0, ഇത്};
 	}
 
 	template<size_t P, size_t Q>
 	Slice<Type, P, Q, M, N> slice(size_t x0, size_t y0)
 	{
-		return {x0, y0, this};
+		തിരികെ {x0, y0, ഇത്};
 	}
 
-	ConstSlice<Type, 1, N, M, N> row(size_t i) const
+	ConstSlice<Type, 1, N, M, N> row(size_t i) സ്ഥിരം
 	{
-		return slice<1, N>(i, 0);
+		തിരികെ slice<1, N>(i, 0);
 	}
 
 	Slice<Type, 1, N, M, N> row(size_t i)
 	{
-		return slice<1, N>(i, 0);
+		തിരികെ slice<1, N>(i, 0);
 	}
 
-	ConstSlice<Type, M, 1, M, N> col(size_t j) const
+	ConstSlice<Type, M, 1, M, N> col(size_t j) സ്ഥിരം
 	{
-		return slice<M, 1>(0, j);
+		തിരികെ slice<M, 1>(0, j);
 	}
 
 	Slice<Type, M, 1, M, N> col(size_t j)
 	{
-		return slice<M, 1>(0, j);
+		തിരികെ slice<M, 1>(0, j);
 	}
 
-	void setRow(size_t i, const Matrix<Type, N, 1> &row_in)
+	ശൂന്യം setRow(size_t i, സ്ഥിരം Matrix<Type, N, 1> &row_in)
 	{
 		slice<1, N>(i, 0) = row_in.transpose();
 	}
 
-	void setRow(size_t i, Type val)
+	ശൂന്യം setRow(size_t i, Type val)
 	{
 		slice<1, N>(i, 0) = val;
 	}
 
-	void setCol(size_t j, const Matrix<Type, M, 1> &column)
+	ശൂന്യം setCol(size_t j, സ്ഥിരം Matrix<Type, M, 1> &column)
 	{
 		slice<M, 1>(0, j) = column;
 	}
 
-	void setCol(size_t j, Type val)
+	ശൂന്യം setCol(size_t j, Type val)
 	{
 		slice<M, 1>(0, j) = val;
 	}
 
-	void setZero()
+	ശൂന്യം setZero()
 	{
-		memset(_data, 0, sizeof(_data));
+		memset(_data, 0, വലുപ്പം(_data));
 	}
 
-	inline void zero()
+	വരിയിൽ ശൂന്യം zero()
 	{
 		setZero();
 	}
 
-	void setAll(Type val)
+	ശൂന്യം setAll(Type val)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				self(i, j) = val;
 			}
 		}
 	}
 
-	inline void setOne()
+	വരിയിൽ ശൂന്യം setOne()
 	{
 		setAll(1);
 	}
 
-	inline void setNaN()
+	വരിയിൽ ശൂന്യം setNaN()
 	{
 		setAll(NAN);
 	}
 
-	void setIdentity()
+	ശൂന്യം setIdentity()
 	{
 		setZero();
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ഇത്;
 
-		const size_t min_i = M > N ? N : M;
+		സ്ഥിരം size_t min_i = M > N ? N : M;
 
-		for (size_t i = 0; i < min_i; i++) {
+		വേണ്ടി (size_t i = 0; i < min_i; i++) {
 			self(i, i) = 1;
 		}
 	}
 
-	inline void identity()
+	വരിയിൽ ശൂന്യം identity()
 	{
 		setIdentity();
 	}
 
-	inline void swapRows(size_t a, size_t b)
+	വരിയിൽ ശൂന്യം swapRows(size_t a, size_t b)
 	{
-		assert(a < M);
-		assert(b < M);
+		പ്രതിജ്ഞാ(a < M);
+		പ്രതിജ്ഞാ(b < M);
 
-		if (a == b) {
-			return;
+		എങ്കിൽ (a == b) {
+			തിരികെ;
 		}
 
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t j = 0; j < N; j++) {
 			Type tmp = self(a, j);
 			self(a, j) = self(b, j);
 			self(b, j) = tmp;
 		}
 	}
 
-	inline void swapCols(size_t a, size_t b)
+	വരിയിൽ ശൂന്യം swapCols(size_t a, size_t b)
 	{
-		assert(a < N);
-		assert(b < N);
+		പ്രതിജ്ഞാ(a < N);
+		പ്രതിജ്ഞാ(b < N);
 
-		if (a == b) {
-			return;
+		എങ്കിൽ (a == b) {
+			തിരികെ;
 		}
 
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
 			Type tmp = self(i, a);
 			self(i, a) = self(i, b);
 			self(i, b) = tmp;
 		}
 	}
 
-	inline void nanToZero()
+	വരിയിൽ ശൂന്യം nanToZero()
 	{
 
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				if (std::isnan(self(i, j))) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
+				എങ്കിൽ (std::isnan(self(i, j))) {
 					self(i, j) = static_cast<Type>(0.0f);
 				}
 			}
 		}
 	}
 
-	Matrix<Type, M, N> abs() const
+	Matrix<Type, M, N> abs() സ്ഥിരം
 	{
 		Matrix<Type, M, N> r;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				r(i, j) = Type(std::fabs((*this)(i, j)));
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
+				r(i, j) = Type(std::fabs((*ഇത്)(i, j)));
 			}
 		}
 
-		return r;
+		തിരികെ r;
 	}
 
-	Type max() const
+	Type max() സ്ഥിരം
 	{
-		Type max_val = (*this)(0, 0);
+		Type max_val = (*ഇത്)(0, 0);
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				Type val = (*this)(i, j);
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
+				Type val = (*ഇത്)(i, j);
 
-				if (val > max_val) {
+				എങ്കിൽ (val > max_val) {
 					max_val = val;
 				}
 			}
 		}
 
-		return max_val;
+		തിരികെ max_val;
 	}
 
-	Type min() const
+	Type min() സ്ഥിരം
 	{
-		Type min_val = (*this)(0, 0);
+		Type min_val = (*ഇത്)(0, 0);
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				Type val = (*this)(i, j);
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
+				Type val = (*ഇത്)(i, j);
 
-				if (val < min_val) {
+				എങ്കിൽ (val < min_val) {
 					min_val = val;
 				}
 			}
 		}
 
-		return min_val;
+		തിരികെ min_val;
 	}
 
-	bool isAllNan() const
+	തർക്കം isAllNan() സ്ഥിരം
 	{
-		const Matrix<Type, M, N> &self = *this;
-		bool result = true;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
+		തർക്കം result = സത്യം;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				result = result && std::isnan(self(i, j));
 			}
 		}
 
-		return result;
+		തിരികെ result;
 	}
 
-	bool isAllFinite() const
+	തർക്കം isAllFinite() സ്ഥിരം
 	{
-		const Matrix<Type, M, N> &self = *this;
+		സ്ഥിരം Matrix<Type, M, N> &self = *ഇത്;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				if (!std::isfinite(self(i, j))) {
-					return false;
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
+				എങ്കിൽ (!std::isfinite(self(i, j))) {
+					തിരികെ അസത്യം;
 				}
 			}
 		}
 
-		return true;
+		തിരികെ സത്യം;
 	}
 };
 
@@ -700,7 +700,7 @@ Matrix<Type, M, N> zeros()
 {
 	Matrix<Type, M, N> m;
 	m.setZero();
-	return m;
+	തിരികെ m;
 }
 
 template<typename Type, size_t M, size_t N>
@@ -708,208 +708,208 @@ Matrix<Type, M, N> ones()
 {
 	Matrix<Type, M, N> m;
 	m.setOne();
-	return m;
+	തിരികെ m;
 }
 
 template<size_t M, size_t N>
-Matrix<float, M, N> nans()
+Matrix<ദശാംശം, M, N> nans()
 {
-	Matrix<float, M, N> m;
+	Matrix<ദശാംശം, M, N> m;
 	m.setNaN();
-	return m;
+	തിരികെ m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> operator*(Type scalar, const Matrix<Type, M, N> &other)
+Matrix<Type, M, N> operator*(Type scalar, സ്ഥിരം Matrix<Type, M, N> &other)
 {
-	return other * scalar;
+	തിരികെ other * scalar;
 }
 
 template<typename Type, size_t  M, size_t N>
-bool isEqual(const Matrix<Type, M, N> &x,
-	     const Matrix<Type, M, N> &y, const Type eps = Type(1e-4f))
+തർക്കം isEqual(സ്ഥിരം Matrix<Type, M, N> &x,
+	     സ്ഥിരം Matrix<Type, M, N> &y, സ്ഥിരം Type eps = Type(1e-4f))
 {
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			if (!isEqualF(x(i, j), y(i, j), eps)) {
-				return false;
+	വേണ്ടി (size_t i = 0; i < M; i++) {
+		വേണ്ടി (size_t j = 0; j < N; j++) {
+			എങ്കിൽ (!isEqualF(x(i, j), y(i, j), eps)) {
+				തിരികെ അസത്യം;
 			}
 		}
 	}
 
-	return true;
+	തിരികെ സത്യം;
 }
 
-namespace typeFunction
+നാമാകാശ typeFunction
 {
 template<typename Type>
-Type min(const Type x, const Type y)
+Type min(സ്ഥിരം Type x, സ്ഥിരം Type y)
 {
-	bool x_is_nan = std::isnan(x);
-	bool y_is_nan = std::isnan(y);
+	തർക്കം x_is_nan = std::isnan(x);
+	തർക്കം y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	എങ്കിൽ (x_is_nan || y_is_nan) {
+		എങ്കിൽ (x_is_nan && !y_is_nan) {
+			തിരികെ y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		തിരികെ x;
 	}
 
-	return (x < y) ? x : y;
+	തിരികെ (x < y) ? x : y;
 }
 
 template<typename Type>
-Type max(const Type x, const Type y)
+Type max(സ്ഥിരം Type x, സ്ഥിരം Type y)
 {
-	bool x_is_nan = std::isnan(x);
-	bool y_is_nan = std::isnan(y);
+	തർക്കം x_is_nan = std::isnan(x);
+	തർക്കം y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	എങ്കിൽ (x_is_nan || y_is_nan) {
+		എങ്കിൽ (x_is_nan && !y_is_nan) {
+			തിരികെ y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		തിരികെ x;
 	}
 
-	return (x > y) ? x : y;
+	തിരികെ (x > y) ? x : y;
 }
 
 template<typename Type>
-Type constrain(const Type x, const Type lower_bound, const Type upper_bound)
+Type constrain(സ്ഥിരം Type x, സ്ഥിരം Type lower_bound, സ്ഥിരം Type upper_bound)
 {
-	if (lower_bound > upper_bound) {
-		return NAN;
+	എങ്കിൽ (lower_bound > upper_bound) {
+		തിരികെ NAN;
 
-	} else if (std::isnan(x)) {
-		return NAN;
+	} അല്ലെങ്കിൽ എങ്കിൽ (std::isnan(x)) {
+		തിരികെ NAN;
 
-	} else {
-		return typeFunction::max(lower_bound, typeFunction::min(upper_bound, x));
+	} അല്ലെങ്കിൽ {
+		തിരികെ typeFunction::max(lower_bound, typeFunction::min(upper_bound, x));
 	}
 }
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Matrix<Type, M, N> &x, const Type scalar_upper_bound)
+Matrix<Type, M, N> min(സ്ഥിരം Matrix<Type, M, N> &x, സ്ഥിരം Type scalar_upper_bound)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	വേണ്ടി (size_t i = 0; i < M; i++) {
+		വേണ്ടി (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::min(x(i, j), scalar_upper_bound);
 		}
 	}
 
-	return m;
+	തിരികെ m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Type scalar_upper_bound, const Matrix<Type, M, N> &x)
+Matrix<Type, M, N> min(സ്ഥിരം Type scalar_upper_bound, സ്ഥിരം Matrix<Type, M, N> &x)
 {
-	return min(x, scalar_upper_bound);
+	തിരികെ min(x, scalar_upper_bound);
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x2)
+Matrix<Type, M, N> min(സ്ഥിരം Matrix<Type, M, N> &x1, സ്ഥിരം Matrix<Type, M, N> &x2)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	വേണ്ടി (size_t i = 0; i < M; i++) {
+		വേണ്ടി (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::min(x1(i, j), x2(i, j));
 		}
 	}
 
-	return m;
+	തിരികെ m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Matrix<Type, M, N> &x, const Type scalar_lower_bound)
+Matrix<Type, M, N> max(സ്ഥിരം Matrix<Type, M, N> &x, സ്ഥിരം Type scalar_lower_bound)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	വേണ്ടി (size_t i = 0; i < M; i++) {
+		വേണ്ടി (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::max(x(i, j), scalar_lower_bound);
 		}
 	}
 
-	return m;
+	തിരികെ m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Type scalar_lower_bound, const Matrix<Type, M, N> &x)
+Matrix<Type, M, N> max(സ്ഥിരം Type scalar_lower_bound, സ്ഥിരം Matrix<Type, M, N> &x)
 {
-	return max(x, scalar_lower_bound);
+	തിരികെ max(x, scalar_lower_bound);
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x2)
+Matrix<Type, M, N> max(സ്ഥിരം Matrix<Type, M, N> &x1, സ്ഥിരം Matrix<Type, M, N> &x2)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	വേണ്ടി (size_t i = 0; i < M; i++) {
+		വേണ്ടി (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::max(x1(i, j), x2(i, j));
 		}
 	}
 
-	return m;
+	തിരികെ m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
-			     const Type scalar_lower_bound,
-			     const Type scalar_upper_bound)
+Matrix<Type, M, N> constrain(സ്ഥിരം Matrix<Type, M, N> &x,
+			     സ്ഥിരം Type scalar_lower_bound,
+			     സ്ഥിരം Type scalar_upper_bound)
 {
 	Matrix<Type, M, N> m;
 
-	if (scalar_lower_bound > scalar_upper_bound) {
+	എങ്കിൽ (scalar_lower_bound > scalar_upper_bound) {
 		m.setNaN();
 
-	} else {
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+	} അല്ലെങ്കിൽ {
+		വേണ്ടി (size_t i = 0; i < M; i++) {
+			വേണ്ടി (size_t j = 0; j < N; j++) {
 				m(i, j) = typeFunction::constrain(x(i, j), scalar_lower_bound, scalar_upper_bound);
 			}
 		}
 	}
 
-	return m;
+	തിരികെ m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
-			     const Matrix<Type, M, N> &x_lower_bound,
-			     const Matrix<Type, M, N> &x_upper_bound)
+Matrix<Type, M, N> constrain(സ്ഥിരം Matrix<Type, M, N> &x,
+			     സ്ഥിരം Matrix<Type, M, N> &x_lower_bound,
+			     സ്ഥിരം Matrix<Type, M, N> &x_upper_bound)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	വേണ്ടി (size_t i = 0; i < M; i++) {
+		വേണ്ടി (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::constrain(x(i, j), x_lower_bound(i, j), x_upper_bound(i, j));
 		}
 	}
 
-	return m;
+	തിരികെ m;
 }
 
 template<typename OStream, typename Type, size_t M, size_t N>
-OStream &operator<<(OStream &os, const matrix::Matrix<Type, M, N> &matrix)
+OStream &operator<<(OStream &os, സ്ഥിരം matrix::Matrix<Type, M, N> &matrix)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * N * M + M + 1;
-	char string[n];
+	അക്ഷരം string[n];
 	matrix.write_string(string, n);
 	os << string;
-	return os;
+	തിരികെ os;
 }
 
 } // namespace matrix

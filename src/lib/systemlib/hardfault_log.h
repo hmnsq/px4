@@ -35,19 +35,19 @@
 /****************************************************************************
  * Included Files
  ****************************************************************************/
-#include <px4_platform_common/px4_config.h>
-#include <px4_arch/micro_hal.h>
-#include <systemlib/px4_macros.h>
-#include <nuttx/irq.h>
+#അന്തര്ഭാവ <px4_platform_common/px4_config.h>
+#അന്തര്ഭാവ <px4_arch/micro_hal.h>
+#അന്തര്ഭാവ <systemlib/px4_macros.h>
+#അന്തര്ഭാവ <nuttx/irq.h>
 
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
 
-#if defined(HAS_BBSRAM)
+#എങ്കിൽ defined(HAS_BBSRAM)
 
-#include <stm32_bbsram.h>
-typedef struct bbsramd_s dump_s;
+#അന്തര്ഭാവ <stm32_bbsram.h>
+തരനിർവചനം ഘടന bbsramd_s dump_s;
 
 #define HARDFAULT_REBOOT_FILENO 0
 #define HARDFAULT_REBOOT_PATH BBSRAM_PATH "" STRINGIFY(HARDFAULT_REBOOT_FILENO)
@@ -58,7 +58,7 @@ typedef struct bbsramd_s dump_s;
 
 #define HARDFAULT_MAX_ULOG_FILE_LEN 64 /* must be large enough to store the full path to the log file */
 
-#define BBSRAM_SIZE_FN0 (sizeof(int))
+#define BBSRAM_SIZE_FN0 (വലുപ്പം(പൂർണ്ണസംഖ്യ))
 #define BBSRAM_SIZE_FN1 384     /* greater then 2.5 times the size of vehicle_status_s */
 #define BBSRAM_SIZE_FN2 384     /* greater then 2.5 times the size of vehicle_status_s */
 #define BBSRAM_SIZE_FN3 HARDFAULT_MAX_ULOG_FILE_LEN
@@ -72,16 +72,16 @@ typedef struct bbsramd_s dump_s;
 #define BBSRAM_HEADER_SIZE 20 /* This is an assumption */
 #define BBSRAM_USED ((5*BBSRAM_HEADER_SIZE)+(BBSRAM_SIZE_FN0+BBSRAM_SIZE_FN1+BBSRAM_SIZE_FN2+BBSRAM_SIZE_FN3))
 #define BBSRAM_REAMINING (PX4_BBSRAM_SIZE-BBSRAM_USED)
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
-#  define BBSRAM_NUMBER_STACKS 1
-#else
-#  define BBSRAM_NUMBER_STACKS 2
+#എങ്കിൽ CONFIG_ARCH_INTERRUPTSTACK <= 3
+#  define BBSRAM_സംഖ്യ_STACKS 1
+#അല്ലെങ്കിൽ
+#  define BBSRAM_സംഖ്യ_STACKS 2
 #endif
-#define BBSRAM_FIXED_ELEMENTS_SIZE (sizeof(info_s))
+#define BBSRAM_FIXED_ELEMENTS_SIZE (വലുപ്പം(info_s))
 #define BBSRAM_LEFTOVER (BBSRAM_REAMINING-BBSRAM_FIXED_ELEMENTS_SIZE)
 
-#define CONFIG_ISTACK_SIZE (BBSRAM_LEFTOVER/BBSRAM_NUMBER_STACKS/sizeof(stack_word_t))
-#define CONFIG_USTACK_SIZE (BBSRAM_LEFTOVER/BBSRAM_NUMBER_STACKS/sizeof(stack_word_t))
+#define CONFIG_ISTACK_SIZE (BBSRAM_LEFTOVER/BBSRAM_സംഖ്യ_STACKS/വലുപ്പം(അട്ടി_word_t))
+#define CONFIG_USTACK_SIZE (BBSRAM_LEFTOVER/BBSRAM_സംഖ്യ_STACKS/വലുപ്പം(അട്ടി_word_t))
 
 /* The path to the Battery Backed up SRAM */
 #define BBSRAM_PATH "/fs/bbr"
@@ -94,20 +94,20 @@ typedef struct bbsramd_s dump_s;
 		BBSRAM_SIZE_FN4,   /* For the Panic Log use rest of space */  \
 		0                  /* End of table marker */                  \
 	}
-#elif defined(HAS_PROGMEM)
+#അല്ലെങ്കിലെങ്കിൽ defined(HAS_PROGMEM)
 
-typedef struct progmem_s dump_s;
+തരനിർവചനം ഘടന progmem_s dump_s;
 
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
-#  define PROGMEM_NUMBER_STACKS 1
-#else
-#  define PROGMEM_NUMBER_STACKS 2
+#എങ്കിൽ CONFIG_ARCH_INTERRUPTSTACK <= 3
+#  define PROGMEM_സംഖ്യ_STACKS 1
+#അല്ലെങ്കിൽ
+#  define PROGMEM_സംഖ്യ_STACKS 2
 #endif
-#define PROGMEM_DUMP_FIXED_ELEMENTS_SIZE (sizeof(info_s))
-#define PROGMEM_DUMP_LEFTOVER (PROGMEM_DUMP_STACK_SIZE-PROGMEM_DUMP_FIXED_ELEMENTS_SIZE)
+#define PROGMEM_DUMP_FIXED_ELEMENTS_SIZE (വലുപ്പം(info_s))
+#define PROGMEM_DUMP_LEFTOVER (PROGMEM_DUMP_അട്ടി_SIZE-PROGMEM_DUMP_FIXED_ELEMENTS_SIZE)
 
-#define CONFIG_ISTACK_SIZE (PROGMEM_DUMP_LEFTOVER/PROGMEM_NUMBER_STACKS/sizeof(stack_word_t))
-#define CONFIG_USTACK_SIZE (PROGMEM_DUMP_LEFTOVER/PROGMEM_NUMBER_STACKS/sizeof(stack_word_t))
+#define CONFIG_ISTACK_SIZE (PROGMEM_DUMP_LEFTOVER/PROGMEM_സംഖ്യ_STACKS/വലുപ്പം(അട്ടി_word_t))
+#define CONFIG_USTACK_SIZE (PROGMEM_DUMP_LEFTOVER/PROGMEM_സംഖ്യ_STACKS/വലുപ്പം(അട്ടി_word_t))
 
 #define HARDFAULT_ULOG_FILENO 2
 #define HARDFAULT_ULOG_PATH PROGMEM_PATH "" STRINGIFY(HARDFAULT_ULOG_FILENO)
@@ -129,15 +129,15 @@ typedef struct progmem_s dump_s;
 
 #define PROGMEM_USED ((5*PROGMEM_HEADER_SIZE)+(PROGMEM_SIZE_FN0+PROGMEM_SIZE_FN1+PROGMEM_SIZE_FN2+PROGMEM_SIZE_FN3))
 #define PROGMEM_REAMINING (PX4_PROGMEM_SIZE-PROGMEM_USED)
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
-#  define PROGMEM_NUMBER_STACKS 1
-#else
-#  define PROGMEM_NUMBER_STACKS 2
+#എങ്കിൽ CONFIG_ARCH_INTERRUPTSTACK <= 3
+#  define PROGMEM_സംഖ്യ_STACKS 1
+#അല്ലെങ്കിൽ
+#  define PROGMEM_സംഖ്യ_STACKS 2
 #endif
-#define PROGMEM_FIXED_ELEMENTS_SIZE (sizeof(info_s))
+#define PROGMEM_FIXED_ELEMENTS_SIZE (വലുപ്പം(info_s))
 #define PROGMEM_LEFTOVER (PROGMEM_REAMINING-PROGMEM_FIXED_ELEMENTS_SIZE)
 
-#define PROGMEM_FILE_COUNT 4
+#define PROGMEM_FILE_എണ്ണം 4
 /* The path to the Battery Backed up SRAM */
 #define PROGMEM_PATH "/mnt/hardfault"
 /* The sizes of the files to create (-1) use rest of BBSRAM memory */
@@ -148,9 +148,9 @@ typedef struct progmem_s dump_s;
 		PROGMEM_SIZE_FN3,   /* For the Panic Log use rest of space */  \
 		0                  /* End of table marker */                  \
 	}
-#elif defined(HAS_SSARC)
+#അല്ലെങ്കിലെങ്കിൽ defined(HAS_SSARC)
 
-typedef struct ssarc_s dump_s;
+തരനിർവചനം ഘടന ssarc_s dump_s;
 
 #define HARDFAULT_REBOOT_FILENO 0
 #define HARDFAULT_REBOOT_PATH SSARC_DUMP_PATH "" STRINGIFY(HARDFAULT_REBOOT_FILENO)
@@ -161,7 +161,7 @@ typedef struct ssarc_s dump_s;
 
 #define HARDFAULT_MAX_ULOG_FILE_LEN 64 /* must be large enough to store the full path to the log file */
 
-#define SSARC_DUMP_SIZE_FN0 ((((sizeof(int)) / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)
+#define SSARC_DUMP_SIZE_FN0 ((((വലുപ്പം(പൂർണ്ണസംഖ്യ)) / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)
 #define SSARC_DUMP_SIZE_FN1 (((384 / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)     /* greater then 2.5 times the size of vehicle_status_s */
 #define SSARC_DUMP_SIZE_FN2 (((384 / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)     /* greater then 2.5 times the size of vehicle_status_s */
 #define SSARC_DUMP_SIZE_FN3 (((HARDFAULT_MAX_ULOG_FILE_LEN / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)
@@ -175,18 +175,18 @@ typedef struct ssarc_s dump_s;
 #define SSARC_DUMP_HEADER_SIZE PX4_SSARC_HEADER_SIZE + 32 /* This is an assumption */
 #define SSARC_DUMP_USED ((5*SSARC_DUMP_HEADER_SIZE)+(SSARC_DUMP_SIZE_FN0+SSARC_DUMP_SIZE_FN1+SSARC_DUMP_SIZE_FN2+SSARC_DUMP_SIZE_FN3))
 #define SSARC_DUMP_REMAINING (PX4_SSARC_DUMP_SIZE-SSARC_DUMP_USED)
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
-#  define SSARC_DUMP_NUMBER_STACKS 1
-#else
-#  define SSARC_DUMP_NUMBER_STACKS 2
+#എങ്കിൽ CONFIG_ARCH_INTERRUPTSTACK <= 3
+#  define SSARC_DUMP_സംഖ്യ_STACKS 1
+#അല്ലെങ്കിൽ
+#  define SSARC_DUMP_സംഖ്യ_STACKS 2
 #endif
-#define SSARC_DUMP_FIXED_ELEMENTS_SIZE (sizeof(info_s))
+#define SSARC_DUMP_FIXED_ELEMENTS_SIZE (വലുപ്പം(info_s))
 #define SSARC_DUMP_LEFTOVER (SSARC_DUMP_REMAINING-SSARC_DUMP_FIXED_ELEMENTS_SIZE)
 
-#define CONFIG_ISTACK_SIZE (SSARC_DUMP_LEFTOVER/SSARC_DUMP_NUMBER_STACKS/sizeof(stack_word_t))
-#define CONFIG_USTACK_SIZE (SSARC_DUMP_LEFTOVER/SSARC_DUMP_NUMBER_STACKS/sizeof(stack_word_t))
+#define CONFIG_ISTACK_SIZE (SSARC_DUMP_LEFTOVER/SSARC_DUMP_സംഖ്യ_STACKS/വലുപ്പം(അട്ടി_word_t))
+#define CONFIG_USTACK_SIZE (SSARC_DUMP_LEFTOVER/SSARC_DUMP_സംഖ്യ_STACKS/വലുപ്പം(അട്ടി_word_t))
 
-#define SSARC_DUMP_FILE_COUNT 5
+#define SSARC_DUMP_FILE_എണ്ണം 5
 /* The path to the Battery Backed up SRAM */
 #define SSARC_DUMP_PATH "/fs/ssarc"
 /* The sizes of the files to create (-1) use rest of BBSRAM memory */
@@ -198,7 +198,7 @@ typedef struct ssarc_s dump_s;
 		SSARC_DUMP_SIZE_FN4,   /* For the Panic Log use rest of space */  \
 		0                  /* End of table marker */                  \
 	}
-#else /* HAS_SSARC */
+#അല്ലെങ്കിൽ /* HAS_SSARC */
 
 #define CONFIG_ISTACK_SIZE 0
 #define CONFIG_USTACK_SIZE 0
@@ -214,22 +214,22 @@ typedef struct ssarc_s dump_s;
  * Specifier to the xxxx_NUM definei.e %Y is YYYY so add 2 and %s is -2
  * Also xxxxTIME_FMT need to match in size. See CCASERT in hardfault_log.c
  */
-#define LOG_PATH_BASE       CONFIG_BOARD_ROOT_PATH "/"
+#define LOG_PATH_BASE       CONFIG_BOARD_വേര്_PATH "/"
 #define LOG_PATH_BASE_LEN    ((arraySize(LOG_PATH_BASE))-1)
 
 #define LOG_NAME_FMT        "fault_%s.log"
-#define LOG_NAME_NUM         (     -2    )
-#define LOG_NAME_LEN         ((arraySize(LOG_NAME_FMT)-1) + LOG_NAME_NUM)
+#define LOG_NAME_അക്കം         (     -2    )
+#define LOG_NAME_LEN         ((arraySize(LOG_NAME_FMT)-1) + LOG_NAME_അക്കം)
 
 #define TIME_FMT             "%Y_%m_%d_%H_%M_%S"
-#define TIME_FMT_NUM         (2+ 0+ 0+ 0+ 0+ 0)
-#define TIME_FMT_LEN         (((arraySize(TIME_FMT)-1) + TIME_FMT_NUM))
+#define TIME_FMT_അക്കം         (2+ 0+ 0+ 0+ 0+ 0)
+#define TIME_FMT_LEN         (((arraySize(TIME_FMT)-1) + TIME_FMT_അക്കം))
 
 #define LOG_PATH_LEN         ((LOG_PATH_BASE_LEN + LOG_NAME_LEN + TIME_FMT_LEN))
 
 #define HEADER_TIME_FMT      "%Y-%m-%d-%H:%M:%S"
-#define HEADER_TIME_FMT_NUM  (2+ 0+ 0+ 0+ 0+ 0)
-#define HEADER_TIME_FMT_LEN  (((arraySize(HEADER_TIME_FMT)-1) + HEADER_TIME_FMT_NUM))
+#define HEADER_TIME_FMT_അക്കം  (2+ 0+ 0+ 0+ 0+ 0)
+#define HEADER_TIME_FMT_LEN  (((arraySize(HEADER_TIME_FMT)-1) + HEADER_TIME_FMT_അക്കം))
 
 /* Select which format to use. On a terminal the details are at the bottom
  * and in a file they are at the top
@@ -242,28 +242,28 @@ typedef struct ssarc_s dump_s;
  ****************************************************************************/
 
 /* Used for stack frame storage */
-typedef uint32_t stack_word_t;
+തരനിർവചനം uint32_t അട്ടി_word_t;
 
 /* Stack related data */
 
-typedef struct {
+തരനിർവചനം ഘടന {
 	uint32_t sp;
-	uint32_t top;
+	uint32_t മുകൾ;
 	uint32_t size;
 
-} _stack_s;
+} അട്ടി_s;
 
-typedef struct {
-	_stack_s user;
-#if CONFIG_ARCH_INTERRUPTSTACK > 3
-	_stack_s interrupt;
+തരനിർവചനം ഘടന {
+	അട്ടി_s user;
+#എങ്കിൽ CONFIG_ARCH_INTERRUPTSTACK > 3
+	അട്ടി_s interrupt;
 #endif
 
-} px4_stack_t;
+} px4_അട്ടി_t;
 
 /* Not Used for reference only */
 
-typedef struct {
+തരനിർവചനം ഘടന {
 	uint32_t r0;
 	uint32_t r1;
 	uint32_t r2;
@@ -343,55 +343,55 @@ typedef struct {
 
 
 /* Flags to identify what is in the dump */
-typedef enum {
+തരനിർവചനം എണ്ണൽ {
 	eRegsPresent          = 0x01,
-	eUserStackPresent     = 0x02,
-	eIntStackPresent      = 0x04,
+	e_User_അട്ടി_Present     = 0x02,
+	e_Int_അട്ടി_Present      = 0x04,
 	eFaultRegPresent      = 0x08,
-	eInvalidUserStackPtr  = 0x20,
-	eInvalidIntStackPrt   = 0x40,
+	e_Invalid_User_അട്ടി_Ptr  = 0x20,
+	e_Invalid_Int_അട്ടി_Prt   = 0x40,
 } fault_flags_t;
 
-typedef struct {
+തരനിർവചനം ഘടന {
 	uint32_t              cfsr;  /* 0x0d28 Configurable fault status register */
 	uint32_t              hfsr;  /* 0x0d2c Hard fault status register */
 	uint32_t              dfsr;  /* 0x0d30 Debug fault status register */
 	uint32_t              mmfsr; /* 0x0d34 Mem manage address register */
 	uint32_t              bfsr;  /* 0x0d38 Bus fault address register */
 	uint32_t              afsr;  /* 0x0d3c Auxiliary fault status register */
-#if defined(CONFIG_ARCH_CORTEXM7)
+#എങ്കിൽ defined(CONFIG_ARCH_CORTEXM7)
 	uint32_t              abfsr; /* 0x0fa8 Auxiliary Bus Fault Status Register */
 #endif
 
 } fault_regs_s;
 
-typedef struct {
+തരനിർവചനം ഘടന {
 	fault_flags_t         flags;                  /* What is in the dump */
 	uintptr_t             current_regs;           /* Used to validate the dump */
-	int                   lineno;                 /* __LINE__ to up_assert */
-	int                   pid;                    /* Process ID */
+	പൂർണ്ണസംഖ്യ                   lineno;                 /* __LINE__ to up_assert */
+	പൂർണ്ണസംഖ്യ                   pid;                    /* Process ID */
 	uint32_t              regs[XCPTCONTEXT_REGS]; /* Interrupt register save area */
 	fault_regs_s          fault_regs;             /* NVIC status */
-	px4_stack_t           stacks;                 /* Stack info */
-#if CONFIG_TASK_NAME_SIZE > 0
-	char                  name[CONFIG_TASK_NAME_SIZE + 1]; /* Task name (with NULL
+	px4_അട്ടി_t           stacks;                 /* Stack info */
+#എങ്കിൽ CONFIG_TASK_NAME_SIZE > 0
+	അക്ഷരം                  name[CONFIG_TASK_NAME_SIZE + 1]; /* Task name (with NULL
 													* terminator) */
 #endif
-	char                  filename[MAX_FILE_PATH_LENGTH]; /* the Last of chars in
+	അക്ഷരം                  filename[MAX_FILE_PATH_LENGTH]; /* the Last of chars in
 												  * __FILE__ to up_assert */
 } info_s;
 
-typedef struct {
+തരനിർവചനം ഘടന {
 	info_s    info;                       /* The info */
-#if CONFIG_ARCH_INTERRUPTSTACK > 3      /* The amount of stack data is compile time
+#എങ്കിൽ CONFIG_ARCH_INTERRUPTSTACK > 3      /* The amount of stack data is compile time
 									 * sized backed on what is left after the
 									 * other BBSRAM files are defined
 									 * The order is such that only the
 									 * ustack should be truncated
 									 */
-	stack_word_t istack[CONFIG_USTACK_SIZE];
+	അട്ടി_word_t istack[CONFIG_USTACK_SIZE];
 #endif
-	stack_word_t ustack[CONFIG_ISTACK_SIZE];
+	അട്ടി_word_t ustack[CONFIG_ISTACK_SIZE];
 } fullcontext_s;
 
 __BEGIN_DECLS
@@ -417,7 +417,7 @@ __BEGIN_DECLS
  *   -  Any < 0 Broken - Should not happen
  *
  ****************************************************************************/
-int hardfault_check_status(char *caller) weak_function;
+പൂർണ്ണസംഖ്യ hardfault_check_status(അക്ഷരം *caller) weak_function;
 
 /****************************************************************************
  * Name: hardfault_write
@@ -446,7 +446,7 @@ int hardfault_check_status(char *caller) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_write(char *caller, int fd, int format, bool rearm) weak_function;
+പൂർണ്ണസംഖ്യ hardfault_write(അക്ഷരം *caller, പൂർണ്ണസംഖ്യ fd, പൂർണ്ണസംഖ്യ format, bool rearm) weak_function;
 
 /****************************************************************************
  * Name: hardfault_rearm
@@ -464,7 +464,7 @@ int hardfault_write(char *caller, int fd, int format, bool rearm) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_rearm(char *caller) weak_function;
+പൂർണ്ണസംഖ്യ hardfault_rearm(അക്ഷരം *caller) weak_function;
 
 /****************************************************************************
  * Name: hardfault_increment_reboot
@@ -484,6 +484,6 @@ int hardfault_rearm(char *caller) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_increment_reboot(char *caller, bool reset) weak_function;
+പൂർണ്ണസംഖ്യ hardfault_increment_reboot(അക്ഷരം *caller, bool reset) weak_function;
 
 __END_DECLS

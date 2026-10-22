@@ -36,16 +36,16 @@
  * Run exclusively this test with the command "make tests TESTFILTER=HeadingSmoothing"
  */
 
-#include "mathlib/math/Limits.hpp"
-#include <gtest/gtest.h>
+#അന്തര്ഭാവ "mathlib/math/Limits.hpp"
+#അന്തര്ഭാവ <gtest/gtest.h>
 
-#include <motion_planning/HeadingSmoothing.hpp>
+#അന്തര്ഭാവ <motion_planning/HeadingSmoothing.hpp>
 
-using namespace matrix;
+using നാമാകാശ matrix;
 
-class HeadingSmoothingTest : public ::testing::Test
+വർഗ്ഗം HeadingSmoothingTest : പൊതു ::testing::Test
 {
-public:
+പൊതു:
 	HeadingSmoothingTest()
 	{
 		_smoothing.setMaxHeadingRate(15.f);
@@ -53,95 +53,95 @@ public:
 	}
 
 	HeadingSmoothing _smoothing;
-	float _dt{.1f};
+	ദശാംശം _dt{.1f};
 };
 
 TEST_F(HeadingSmoothingTest, convergence)
 {
-	const float heading_current = math::radians(0.f);
-	const float heading_target = math::radians(5.f);
+	സ്ഥിരം ദശാംശം heading_current = math::radians(0.f);
+	സ്ഥിരം ദശാംശം heading_target = math::radians(5.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(1.f / _dt);
+	സ്ഥിരം പൂർണ്ണസംഖ്യ nb_steps = ceilf(1.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
+	സ്ഥിരം ദശാംശം heading = _smoothing.getSmoothedHeading();
+	സ്ഥിരം ദശാംശം heading_rate = _smoothing.getSmoothedHeadingRate();
 	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
 	EXPECT_EQ(heading_rate, 0.f);
 }
 
 TEST_F(HeadingSmoothingTest, zero_crossing)
 {
-	const float heading_current = math::radians(-95.f);
-	const float heading_target = math::radians(5.f);
+	സ്ഥിരം ദശാംശം heading_current = math::radians(-95.f);
+	സ്ഥിരം ദശാംശം heading_target = math::radians(5.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(4.f / _dt);
+	സ്ഥിരം പൂർണ്ണസംഖ്യ nb_steps = ceilf(4.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
+	സ്ഥിരം ദശാംശം heading = _smoothing.getSmoothedHeading();
+	സ്ഥിരം ദശാംശം heading_rate = _smoothing.getSmoothedHeadingRate();
 	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
 	EXPECT_EQ(heading_rate, 0.f);
 }
 
 TEST_F(HeadingSmoothingTest, wrap_pi)
 {
-	const float heading_current = math::radians(-170.f);
-	const float heading_target = math::radians(170.f);
+	സ്ഥിരം ദശാംശം heading_current = math::radians(-170.f);
+	സ്ഥിരം ദശാംശം heading_target = math::radians(170.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	സ്ഥിരം പൂർണ്ണസംഖ്യ nb_steps = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
+	സ്ഥിരം ദശാംശം heading = _smoothing.getSmoothedHeading();
+	സ്ഥിരം ദശാംശം heading_rate = _smoothing.getSmoothedHeadingRate();
 	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
 	EXPECT_EQ(heading_rate, 0.f);
 }
 
 TEST_F(HeadingSmoothingTest, positive_rate)
 {
-	const float max_heading_rate = .15f;
+	സ്ഥിരം ദശാംശം max_heading_rate = .15f;
 	_smoothing.setMaxHeadingRate(max_heading_rate);
-	const float heading_current = math::radians(-170.f);
-	const float heading_target = math::radians(-20.f);
+	സ്ഥിരം ദശാംശം heading_current = math::radians(-170.f);
+	സ്ഥിരം ദശാംശം heading_target = math::radians(-20.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	സ്ഥിരം പൂർണ്ണസംഖ്യ nb_steps = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
+	സ്ഥിരം ദശാംശം heading_rate = _smoothing.getSmoothedHeadingRate();
 	EXPECT_EQ(heading_rate, max_heading_rate);
 }
 
 TEST_F(HeadingSmoothingTest, negative_rate)
 {
-	const float max_heading_rate = 0.15;
+	സ്ഥിരം ദശാംശം max_heading_rate = 0.15;
 	_smoothing.setMaxHeadingRate(max_heading_rate);
-	const float heading_current = math::radians(-20.f);
-	const float heading_target = math::radians(-140.f);
+	സ്ഥിരം ദശാംശം heading_current = math::radians(-20.f);
+	സ്ഥിരം ദശാംശം heading_target = math::radians(-140.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	സ്ഥിരം പൂർണ്ണസംഖ്യ nb_steps = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
+	സ്ഥിരം ദശാംശം heading_rate = _smoothing.getSmoothedHeadingRate();
 	EXPECT_EQ(heading_rate, -max_heading_rate);
 }

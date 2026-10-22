@@ -38,86 +38,86 @@
 
 #pragma once
 
-#include <motion_planning/VelocitySmoothing.hpp>
+#അന്തര്ഭാവ <motion_planning/VelocitySmoothing.hpp>
 
-class ManualVelocitySmoothingZ final
+വർഗ്ഗം ManualVelocitySmoothingZ final
 {
-public:
-	ManualVelocitySmoothingZ() = default;
-	~ManualVelocitySmoothingZ() = default;
+പൊതു:
+	ManualVelocitySmoothingZ() = സ്ഥിരസ്ഥിതി;
+	~ManualVelocitySmoothingZ() = സ്ഥിരസ്ഥിതി;
 
-	void reset(float accel, float vel, float pos);
-	void update(float dt, float velocity_target);
+	ശൂന്യം reset(ദശാംശം accel, ദശാംശം vel, ദശാംശം pos);
+	ശൂന്യം update(ദശാംശം dt, ദശാംശം velocity_target);
 
-	void setVelSpFeedback(const float fb) { _velocity_setpoint_feedback = fb; }
+	ശൂന്യം setVelSpFeedback(സ്ഥിരം ദശാംശം fb) { _velocity_setpoint_feedback = fb; }
 
-	void setMaxJerk(const float max_jerk)
+	ശൂന്യം setMaxJerk(സ്ഥിരം ദശാംശം max_jerk)
 	{
 		_trajectory.setMaxJerk(max_jerk);
 	}
-	void setMaxAccelUp(const float max_accel_up)
+	ശൂന്യം setMaxAccelUp(സ്ഥിരം ദശാംശം max_accel_up)
 	{
 		_max_accel_up = max_accel_up;
 	}
-	void setMaxAccelDown(const float max_accel_down)
+	ശൂന്യം setMaxAccelDown(സ്ഥിരം ദശാംശം max_accel_down)
 	{
 		_max_accel_down = max_accel_down;
 	}
-	void setMaxVelUp(const float max_vel_up)
+	ശൂന്യം setMaxVelUp(സ്ഥിരം ദശാംശം max_vel_up)
 	{
 		_max_vel_up = max_vel_up;
 	}
-	void setMaxVelDown(const float max_vel_down)
+	ശൂന്യം setMaxVelDown(സ്ഥിരം ദശാംശം max_vel_down)
 	{
 		_max_vel_down = max_vel_down;
 	}
 
-	float getCurrentJerk() const { return _state.j; }
-	float getCurrentAcceleration() const { return _state.a; }
-	void setCurrentVelocity(const float vel)
+	ദശാംശം getCurrentJerk() സ്ഥിരം { തിരികെ _state.j; }
+	ദശാംശം getCurrentAcceleration() സ്ഥിരം { തിരികെ _state.a; }
+	ശൂന്യം setCurrentVelocity(സ്ഥിരം ദശാംശം vel)
 	{
 		_state.v = vel;
 		_trajectory.setCurrentVelocity(vel);
 	}
-	float getCurrentVelocity() const { return _state.v; }
-	void setCurrentPosition(const float pos)
+	ദശാംശം getCurrentVelocity() സ്ഥിരം { തിരികെ _state.v; }
+	ശൂന്യം setCurrentPosition(സ്ഥിരം ദശാംശം pos)
 	{
 		_state.x = pos;
 		_trajectory.setCurrentPosition(pos);
 		_position_estimate = pos;
 
-		if (_position_lock_active) {
+		എങ്കിൽ (_position_lock_active) {
 			_position_setpoint_locked = pos;
 		}
 	}
-	float getCurrentPosition() const { return _position_setpoint_locked; }
-	void setCurrentPositionEstimate(float pos) { _position_estimate = pos; }
+	ദശാംശം getCurrentPosition() സ്ഥിരം { തിരികെ _position_setpoint_locked; }
+	ശൂന്യം setCurrentPositionEstimate(ദശാംശം pos) { _position_estimate = pos; }
 
-private:
-	void resetPositionLock();
-	void updateTrajectories(float dt);
-	void updateTrajConstraints(float vel_target);
-	void checkPositionLock(float velocity_target);
-	void updateTrajDurations(float velocity_target);
+സ്വകാര്യ:
+	ശൂന്യം resetPositionLock();
+	ശൂന്യം updateTrajectories(ദശാംശം dt);
+	ശൂന്യം updateTrajConstraints(ദശാംശം vel_target);
+	ശൂന്യം checkPositionLock(ദശാംശം velocity_target);
+	ശൂന്യം updateTrajDurations(ദശാംശം velocity_target);
 
 	VelocitySmoothing _trajectory; ///< Trajectory in z direction
 
-	bool _position_lock_active{false};
+	തർക്കം _position_lock_active{അസത്യം};
 
-	float _position_setpoint_locked{};
+	ദശാംശം _position_setpoint_locked{};
 
-	float _velocity_setpoint_feedback{};
-	float _position_estimate{};
+	ദശാംശം _velocity_setpoint_feedback{};
+	ദശാംശം _position_estimate{};
 
-	struct {
-		float j;
-		float a;
-		float v;
-		float x;
+	ഘടന {
+		ദശാംശം j;
+		ദശാംശം a;
+		ദശാംശം v;
+		ദശാംശം x;
 	} _state{};
 
-	float _max_accel_up{0.f};
-	float _max_accel_down{0.f};
-	float _max_vel_up{0.f};
-	float _max_vel_down{0.f};
+	ദശാംശം _max_accel_up{0.f};
+	ദശാംശം _max_accel_down{0.f};
+	ദശാംശം _max_vel_up{0.f};
+	ദശാംശം _max_vel_down{0.f};
 };

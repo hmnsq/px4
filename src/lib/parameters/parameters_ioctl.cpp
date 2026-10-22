@@ -39,161 +39,161 @@
 
 #define PARAM_IMPLEMENTATION
 
-#include <errno.h>
+#അന്തര്ഭാവ <errno.h>
 
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <px4_platform_common/defines.h>
+#അന്തര്ഭാവ "param.h"
+#അന്തര്ഭാവ "parameters_ioctl.h"
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
 
-int	param_ioctl(unsigned int cmd, unsigned long arg)
+പൂർണ്ണസംഖ്യ	param_ioctl(unsigned പൂർണ്ണസംഖ്യ cmd, unsigned long arg)
 {
-	int ret = OK;
+	പൂർണ്ണസംഖ്യ ret = OK;
 
-	switch (cmd) {
-	case PARAMIOCNOTIFY: {
+	തിരഞ്ഞെടുപ്പ് (cmd) {
+	അവസ്ഥ PARAMIOCNOTIFY: {
 			param_notify_changes();
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCFIND: {
+	അവസ്ഥ PARAMIOCFIND: {
 			paramiocfind_t *data = (paramiocfind_t *)arg;
 
-			if (data->notification) {
+			എങ്കിൽ (data->notification) {
 				data->ret = param_find(data->name);
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				data->ret = param_find_no_notification(data->name);
 			}
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCCOUNTUSED: {
+	അവസ്ഥ PARAMIOCCOUNTUSED: {
 			paramioccountused_t *data = (paramioccountused_t *)arg;
-			data->ret = param_count_used();
+			data->ret = param_എണ്ണം_used();
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCFORUSEDINDEX: {
+	അവസ്ഥ PARAMIOCFORUSEDINDEX: {
 			paramiocforusedindex_t *data = (paramiocforusedindex_t *)arg;
 			data->ret =  param_for_used_index(data->index);
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCGETUSEDINDEX: {
+	അവസ്ഥ PARAMIOCGETUSEDINDEX: {
 			paramiocgetusedindex_t *data = (paramiocgetusedindex_t *)arg;
 			data->ret = param_get_used_index(data->param);
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCUNSAVED: {
+	അവസ്ഥ PARAMIOCUNSAVED: {
 			paramiocunsaved_t *data = (paramiocunsaved_t *)arg;
-			data->ret = param_value_unsaved(data->param);
+			data->ret = param_മൂല്യം_unsaved(data->param);
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCGET: {
+	അവസ്ഥ PARAMIOCGET: {
 			paramiocget_t *data = (paramiocget_t *)arg;
 
-			if (data->deflt) {
-				data->ret = param_get_default_value(data->param, data->val);
+			എങ്കിൽ (data->deflt) {
+				data->ret = param_get_default_മൂല്യം(data->param, data->val);
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				data->ret = param_get(data->param, data->val);
 			}
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCAUTOSAVE: {
+	അവസ്ഥ PARAMIOCAUTOSAVE: {
 			paramiocautosave_t *data = (paramiocautosave_t *)arg;
 			param_control_autosave(data->enable);
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCSET: {
+	അവസ്ഥ PARAMIOCSET: {
 			paramiocset_t *data = (paramiocset_t *)arg;
 
-			if (data->notification) {
+			എങ്കിൽ (data->notification) {
 				data->ret = param_set(data->param, data->val);
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				data->ret = param_set_no_notification(data->param, data->val);
 			}
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCUSED: {
+	അവസ്ഥ PARAMIOCUSED: {
 			paramiocused_t *data = (paramiocused_t *)arg;
 			data->ret = param_used(data->param);
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCSETUSED: {
+	അവസ്ഥ PARAMIOCSETUSED: {
 			paramiocsetused_t *data = (paramiocsetused_t *)arg;
 			param_set_used(data->param);
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCSETDEFAULT: {
+	അവസ്ഥ PARAMIOCSETDEFAULT: {
 			paramiocsetdefault_t *data = (paramiocsetdefault_t *)arg;
-			data->ret = param_set_default_value(data->param, data->val);
+			data->ret = param_set_default_മൂല്യം(data->param, data->val);
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCRESET: {
+	അവസ്ഥ PARAMIOCRESET: {
 			paramiocreset_t *data = (paramiocreset_t *)arg;
 
-			if (data->notification) {
+			എങ്കിൽ (data->notification) {
 				data->ret = param_reset(data->param);
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				data->ret = param_reset_no_notification(data->param);
 			}
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCRESETGROUP: {
+	അവസ്ഥ PARAMIOCRESETGROUP: {
 			paramiocresetgroup_t *data = (paramiocresetgroup_t *)arg;
 
-			if (data->type == PARAM_RESET_EXCLUDES) {
-				param_reset_excludes(data->group, data->num_in_group);
+			എങ്കിൽ (data->type == PARAM_RESET_EXCLUDES) {
+				param_reset_excludes(data->group, data->അക്കം_in_group);
 
-			} else if (data->type == PARAM_RESET_SPECIFIC) {
-				param_reset_specific(data->group, data->num_in_group);
+			} അല്ലെങ്കിൽ എങ്കിൽ (data->type == PARAM_RESET_SPECIFIC) {
+				param_reset_specific(data->group, data->അക്കം_in_group);
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				param_reset_all();
 			}
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCSAVEDEFAULT: {
+	അവസ്ഥ PARAMIOCSAVEDEFAULT: {
 			paramiocsavedefault_t *data = (paramiocsavedefault_t *)arg;
 			data->ret = param_save_default(data->blocking);
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCLOADDEFAULT: {
+	അവസ്ഥ PARAMIOCLOADDEFAULT: {
 			paramiocloaddefault_t *data = (paramiocloaddefault_t *)arg;
 			data->ret = param_load_default();
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCEXPORT: {
+	അവസ്ഥ PARAMIOCEXPORT: {
 			paramiocexport_t *data = (paramiocexport_t *)arg;
 			data->ret = param_export(data->filename, nullptr);
 		}
-		break;
+		നിർത്തുക;
 
-	case PARAMIOCHASH: {
+	അവസ്ഥ PARAMIOCHASH: {
 			paramiochash_t *data = (paramiochash_t *)arg;
 			data->ret = param_hash_check();
 		}
-		break;
+		നിർത്തുക;
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 		ret = -ENOTTY;
-		break;
+		നിർത്തുക;
 	}
 
-	return ret;
+	തിരികെ ret;
 }

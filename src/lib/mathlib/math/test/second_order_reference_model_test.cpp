@@ -37,16 +37,16 @@
  * @brief Unit tests for the second order reference model implementation
  */
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
-#include <lib/mathlib/math/filter/second_order_reference_model.hpp>
+#അന്തര്ഭാവ <gtest/gtest.h>
+#അന്തര്ഭാവ <matrix/math.hpp>
+#അന്തര്ഭാവ <lib/mathlib/math/filter/second_order_reference_model.hpp>
 
 using math::SecondOrderReferenceModel;
 using matrix::Vector3f;
 
 TEST(SecondOrderReferenceModel, FloatDefaultConstructorInitializesStatesToZero)
 {
-	SecondOrderReferenceModel<float> sys_float;
+	SecondOrderReferenceModel<ദശാംശം> sys_float;
 
 	// default constructor leaves states initialized to zero
 	EXPECT_FLOAT_EQ(sys_float.getState(), 0.0f);
@@ -56,11 +56,11 @@ TEST(SecondOrderReferenceModel, FloatDefaultConstructorInitializesStatesToZero)
 
 TEST(SecondOrderReferenceModel, FloatReset)
 {
-	SecondOrderReferenceModel<float> sys_float;
+	SecondOrderReferenceModel<ദശാംശം> sys_float;
 
 	// reset the system states
-	float init_state = 3.0f;
-	float init_rate = 1.1f;
+	ദശാംശം init_state = 3.0f;
+	ദശാംശം init_rate = 1.1f;
 	sys_float.reset(init_state, init_rate);
 	EXPECT_FLOAT_EQ(sys_float.getState(), init_state);
 	EXPECT_FLOAT_EQ(sys_float.getRate(), init_rate);

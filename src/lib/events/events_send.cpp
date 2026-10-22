@@ -32,14 +32,14 @@
  ****************************************************************************/
 
 
-#include <px4_platform_common/events.h>
+#അന്തര്ഭാവ <px4_platform_common/events.h>
 
-namespace events
+നാമാകാശ events
 {
-namespace util
+നാമാകാശ util
 {
 
-void sendWithoutMessage(uint32_t id, Log external, LogInternal internal)
+ശൂന്യം sendWithoutMessage(uint32_t id, Log external, LogInternal internal)
 {
 	event_s e{};
 	e.log_levels = ((uint8_t)internal << 4) | (uint8_t)external;

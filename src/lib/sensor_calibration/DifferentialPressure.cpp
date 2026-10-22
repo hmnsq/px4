@@ -31,16 +31,16 @@
  *
  ****************************************************************************/
 
-#include "DifferentialPressure.hpp"
+#അന്തര്ഭാവ "DifferentialPressure.hpp"
 
-#include "Utilities.hpp"
+#അന്തര്ഭാവ "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#അന്തര്ഭാവ <lib/drivers/device/Device.hpp>
+#അന്തര്ഭാവ <lib/parameters/param.h>
 
-#include <float.h>
+#അന്തര്ഭാവ <float.h>
 
-namespace calibration
+നാമാകാശ calibration
 {
 
 DifferentialPressure::DifferentialPressure()
@@ -53,11 +53,11 @@ DifferentialPressure::DifferentialPressure(uint32_t device_id)
 	set_device_id(device_id);
 }
 
-void DifferentialPressure::set_device_id(uint32_t device_id)
+ശൂന്യം DifferentialPressure::set_device_id(uint32_t device_id)
 {
-	const bool external = device::device_is_external(device_id);
+	സ്ഥിരം തർക്കം external = device::device_is_external(device_id);
 
-	if (_device_id != device_id || _external != external) {
+	എങ്കിൽ (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -68,153 +68,153 @@ void DifferentialPressure::set_device_id(uint32_t device_id)
 	}
 }
 
-bool DifferentialPressure::set_offset(const float &offset)
+തർക്കം DifferentialPressure::set_offset(സ്ഥിരം ദശാംശം &offset)
 {
-	if (fabsf(_offset - offset) > 0.01f) {
-		if (PX4_ISFINITE(offset)) {
+	എങ്കിൽ (fabsf(_offset - offset) > 0.01f) {
+		എങ്കിൽ (PX4_ISFINITE(offset)) {
 			_offset = offset;
-			_calibration_count++;
-			return true;
+			calibration_എണ്ണം++;
+			തിരികെ സത്യം;
 		}
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-bool DifferentialPressure::set_calibration_index(int calibration_index)
+തർക്കം DifferentialPressure::set_calibration_index(പൂർണ്ണസംഖ്യ calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	എങ്കിൽ ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_എണ്ണം)) {
 		_calibration_index = calibration_index;
-		return true;
+		തിരികെ സത്യം;
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void DifferentialPressure::ParametersUpdate()
+ശൂന്യം DifferentialPressure::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	എങ്കിൽ (_device_id == 0) {
+		തിരികെ;
 	}
 
 	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	എങ്കിൽ (_calibration_index == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		ParametersLoad();
 	}
 }
 
-bool DifferentialPressure::ParametersLoad()
+തർക്കം DifferentialPressure::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	എങ്കിൽ (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_എണ്ണം) {
 		// CAL_DPRESx_OFF
 		set_offset(GetCalibrationParamFloat(SensorString(), "OFF", _calibration_index));
 
-		return true;
+		തിരികെ സത്യം;
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-bool DifferentialPressure::AdoptLegacyOffset()
+തർക്കം DifferentialPressure::AdoptLegacyOffset()
 {
-	if ((_device_id == 0) || calibrated()) {
-		return false;
+	എങ്കിൽ ((_device_id == 0) || calibrated()) {
+		തിരികെ അസത്യം;
 	}
 
 	// slot 0 must still be free, otherwise another sensor already owns the legacy offset
-	if (GetCalibrationParamInt32(SensorString(), "ID", kLegacyIndex) != 0) {
-		return false;
+	എങ്കിൽ (GetCalibrationParamInt32(SensorString(), "ID", kLegacyIndex) != 0) {
+		തിരികെ അസത്യം;
 	}
 
-	float legacy_offset = 0.f;
+	ദശാംശം legacy_offset = 0.f;
 
-	if (param_get(param_find(kLegacyOffsetParam), &legacy_offset) != PX4_OK) {
-		return false;
+	എങ്കിൽ (param_get(param_find(kLegacyOffsetParam), &legacy_offset) != PX4_OK) {
+		തിരികെ അസത്യം;
 	}
 
-	if (!PX4_ISFINITE(legacy_offset) || (fabsf(legacy_offset) < FLT_EPSILON)) {
-		return false;
+	എങ്കിൽ (!PX4_ISFINITE(legacy_offset) || (fabsf(legacy_offset) < FLT_EPSILON)) {
+		തിരികെ അസത്യം;
 	}
 
 	_offset = legacy_offset;
 	_calibration_index = kLegacyIndex;
 
-	PX4_INFO("%s %" PRIu32 " adopted %s %.3f Pa", SensorString(), _device_id, kLegacyOffsetParam, (double)_offset);
+	PX4_INFO("%s %" PRIu32 " adopted %s %.3f Pa", SensorString(), _device_id, kLegacyOffsetParam, (ഇരട്ട)_offset);
 
-	return true;
+	തിരികെ സത്യം;
 }
 
-void DifferentialPressure::UpdateLegacyOffset() const
+ശൂന്യം DifferentialPressure::UpdateLegacyOffset() സ്ഥിരം
 {
 	// keep SENS_DPRES_OFF in step with slot 0 so that ground stations reading it can still tell
 	// whether airspeed has been calibrated
-	if (_calibration_index != kLegacyIndex) {
-		return;
+	എങ്കിൽ (_calibration_index != kLegacyIndex) {
+		തിരികെ;
 	}
 
-	const param_t handle = param_find(kLegacyOffsetParam);
+	സ്ഥിരം param_t handle = param_find(kLegacyOffsetParam);
 
-	if (handle == PARAM_INVALID) {
-		return;
+	എങ്കിൽ (handle == PARAM_INVALID) {
+		തിരികെ;
 	}
 
-	float offset = _offset;
+	ദശാംശം offset = _offset;
 	param_set_no_notification(handle, &offset);
 }
 
-void DifferentialPressure::Reset()
+ശൂന്യം DifferentialPressure::Reset()
 {
 	_offset = 0;
 
 	_calibration_index = -1;
 
-	_calibration_count = 0;
+	calibration_എണ്ണം = 0;
 }
 
-bool DifferentialPressure::ParametersSave(int desired_calibration_index, bool force)
+തർക്കം DifferentialPressure::ParametersSave(പൂർണ്ണസംഖ്യ desired_calibration_index, തർക്കം force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	എങ്കിൽ (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_എണ്ണം) {
 		_calibration_index = desired_calibration_index;
 
-	} else if (!force || (_calibration_index < 0)
+	} അല്ലെങ്കിൽ എങ്കിൽ (!force || (_calibration_index < 0)
 		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
 		int8_t calibration_index_prev = _calibration_index;
 		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		എങ്കിൽ (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
 				 calibration_index_prev, _calibration_index);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	എങ്കിൽ (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_എണ്ണം) {
 		// save calibration
-		bool success = true;
+		തർക്കം success = സത്യം;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
 		success &= SetCalibrationParam(SensorString(), "OFF", _calibration_index, _offset);
 
 		UpdateLegacyOffset();
 
-		return success;
+		തിരികെ success;
 	}
 
 	// index 3 is possible: FindAvailableCalibrationIndex() searches four slots, we define three
 	PX4_ERR("%s %" PRIu32 " no free calibration slot (got %" PRIi8 ")", SensorString(), _device_id, _calibration_index);
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void DifferentialPressure::PrintStatus()
+ശൂന്യം DifferentialPressure::PrintStatus()
 {
 	PX4_INFO_RAW("%s %" PRIu32 " offset: %05.3f Pa, %s\n",
-		     SensorString(), device_id(), (double)_offset,
+		     SensorString(), device_id(), (ഇരട്ട)_offset,
 		     external() ? "Ext" : "Internal");
 }
 

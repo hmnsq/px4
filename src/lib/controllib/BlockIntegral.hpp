@@ -39,14 +39,14 @@
 
 #pragma once
 
-#include "BlockLimitSym.hpp"
+#അന്തര്ഭാവ "BlockLimitSym.hpp"
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#അന്തര്ഭാവ "block/Block.hpp"
+#അന്തര്ഭാവ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#അന്തര്ഭാവ "matrix/math.hpp"
 
-namespace control
+നാമാകാശ control
 {
 
 /**
@@ -56,23 +56,23 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegral: public SuperBlock
+വർഗ്ഗം __EXPORT BlockIntegral: പൊതു SuperBlock
 {
-public:
+പൊതു:
 // methods
-	BlockIntegral(SuperBlock *parent, const char *name) :
+	BlockIntegral(SuperBlock *parent, സ്ഥിരം അക്ഷരം *name) :
 		SuperBlock(parent, name),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegral() = default;
-	float update(float input);
+		_limit(ഇത്, "") {}
+	മായാ ~BlockIntegral() = സ്ഥിരസ്ഥിതി;
+	ദശാംശം update(ദശാംശം നിവേശം);
 // accessors
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setY(float y) {_y = y;}
-protected:
+	ദശാംശം getY() {തിരികെ _y;}
+	ദശാംശം getMax() {തിരികെ _limit.getMax();}
+	ശൂന്യം setY(ദശാംശം y) {_y = y;}
+സംരക്ഷിത:
 // attributes
-	float _y; /**< previous output */
+	ദശാംശം _y; /**< previous output */
 	BlockLimitSym _limit; /**< limiter */
 };
 

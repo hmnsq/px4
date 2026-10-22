@@ -31,31 +31,31 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <random>
-#include <lib/matrix/matrix/math.hpp>
-#include "WelfordMean.hpp"
+#അന്തര്ഭാവ <gtest/gtest.h>
+#അന്തര്ഭാവ <random>
+#അന്തര്ഭാവ <lib/matrix/matrix/math.hpp>
+#അന്തര്ഭാവ "WelfordMean.hpp"
 
-using namespace math;
+using നാമാകാശ math;
 using matrix::Vector3f;
 
 TEST(WelfordMeanTest, NoisySignal)
 {
-	const float std_dev = 3.f;
-	std::normal_distribution<float> standard_normal_distribution{0.f, std_dev};
+	സ്ഥിരം ദശാംശം std_dev = 3.f;
+	std::normal_distribution<ദശാംശം> standard_normal_distribution{0.f, std_dev};
 	std::default_random_engine random_generator{}; // Pseudo-random generator with constant seed
 	random_generator.seed(42);
-	WelfordMean<float> welford{};
+	WelfordMean<ദശാംശം> welford{};
 
-	for (int i = 0; i < 1000; i++) {
-		const float noisy_value = standard_normal_distribution(random_generator);
-		welford.update(noisy_value);
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < 1000; i++) {
+		സ്ഥിരം ദശാംശം noisy_മൂല്യം = standard_normal_distribution(random_generator);
+		welford.update(noisy_മൂല്യം);
 	}
 
 	EXPECT_TRUE(welford.valid());
-	const float mean = welford.mean();
-	const float var = welford.variance();
-	const float var_real = std_dev * std_dev;
+	സ്ഥിരം ദശാംശം mean = welford.mean();
+	സ്ഥിരം ദശാംശം var = welford.variance();
+	സ്ഥിരം ദശാംശം var_real = std_dev * std_dev;
 
 	EXPECT_NEAR(mean, 0.f, 0.7f);
 

@@ -32,45 +32,45 @@
  ****************************************************************************/
 
 
-#include "correction_injector.h"
+#അന്തര്ഭാവ "correction_injector.h"
 
-#include <errno.h>
-#include <fcntl.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
+#അന്തര്ഭാവ <errno.h>
+#അന്തര്ഭാവ <fcntl.h>
+#അന്തര്ഭാവ <string.h>
+#അന്തര്ഭാവ <sys/ioctl.h>
+#അന്തര്ഭാവ <unistd.h>
 
-#include <mathlib/mathlib.h>
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/time.h>
+#അന്തര്ഭാവ <mathlib/mathlib.h>
+#അന്തര്ഭാവ <px4_platform_common/log.h>
+#അന്തര്ഭാവ <px4_platform_common/posix.h>
+#അന്തര്ഭാവ <px4_platform_common/time.h>
 
-using namespace time_literals;
+using നാമാകാശ time_literals;
 
-namespace gnss
+നാമാകാശ gnss
 {
 
 // Without a chunk from the selected source for this long, another source may be taken
-static constexpr hrt_abstime kSourceTimeout = 5_s;
+സ്ഥിതം constexpr hrt_abstime kSourceTimeout = 5_s;
 // The injection rate is frames per second over windows this long
-static constexpr hrt_abstime kRateWindow = 5_s;
+സ്ഥിതം constexpr hrt_abstime kRateWindow = 5_s;
 // Start bit, eight data bits, stop bit
-static constexpr uint32_t kBitsPerByteOnTheWire = 10;
+സ്ഥിതം constexpr uint32_t kBitsPerByteOnTheWire = 10;
 // A full TX buffer is retried no sooner than this, and this late when the baudrate is unknown
-static constexpr uint32_t kMinRetryDelayUs = 1_ms;
-static constexpr uint32_t kFallbackRetryDelayUs = 10_ms;
+സ്ഥിതം constexpr uint32_t kMinRetryDelayUs = 1_ms;
+സ്ഥിതം constexpr uint32_t kFallbackRetryDelayUs = 10_ms;
 
-CorrectionInjector::CorrectionInjector(const char *name, const char *port) :
+CorrectionInjector::CorrectionInjector(സ്ഥിരം അക്ഷരം *name, സ്ഥിരം അക്ഷരം *port) :
 	ScheduledWorkItem(name, px4::serial_port_to_wq(port))
 {
-	strncpy(_port, port, sizeof(_port) - 1);
+	strncpy(_port, port, വലുപ്പം(_port) - 1);
 }
 
 CorrectionInjector::~CorrectionInjector()
 {
 	_moving_baseline_sub.unregisterCallback();
 
-	for (auto &sub : _corrections_sub) {
+	വേണ്ടി (auto &sub : _corrections_sub) {
 		sub.unregisterCallback();
 	}
 
@@ -85,101 +85,101 @@ CorrectionInjector::~CorrectionInjector()
 	perf_free(_short_write);
 }
 
-void CorrectionInjector::start(const Config &config)
+ശൂന്യം CorrectionInjector::start(സ്ഥിരം Config &config)
 {
 	_rate_window_start = hrt_absolute_time();
-	_rate_window_count = perf_event_count(_injected);
+	rate_window_എണ്ണം = perf_event_എണ്ണം(_injected);
 	_injection_rate_hz = 0.f;
 
 	// Only the stream in use schedules runs: a base would otherwise wake for each moving-baseline chunk it publishes
-	if (config.stream == Stream::MovingBaseline) {
+	എങ്കിൽ (config.stream == Stream::MovingBaseline) {
 		_moving_baseline_sub.registerCallback();
 
-	} else {
-		for (auto &sub : _corrections_sub) {
+	} അല്ലെങ്കിൽ {
+		വേണ്ടി (auto &sub : _corrections_sub) {
 			sub.registerCallback();
 		}
 	}
 
 	pthread_mutex_lock(&_mutex);
 	_config = config;
-	_active = true;
-	_write_error_reported = false;
+	_active = സത്യം;
+	_write_error_reported = അസത്യം;
 	pthread_mutex_unlock(&_mutex);
 
 	// What queued up during configuration still goes out: a base sends its position (1005/1006) only every few seconds
 	ScheduleNow();
 }
 
-void CorrectionInjector::stop()
+ശൂന്യം CorrectionInjector::stop()
 {
 	// Returns only after a write in progress, so the owner's next command can't land inside an RTCM frame
 	pthread_mutex_lock(&_mutex);
-	_active = false;
+	_active = അസത്യം;
 	pthread_mutex_unlock(&_mutex);
 
 	// Chunks still queue up until start(), which drains them
 	_moving_baseline_sub.unregisterCallback();
 
-	for (auto &sub : _corrections_sub) {
+	വേണ്ടി (auto &sub : _corrections_sub) {
 		sub.unregisterCallback();
 	}
 
 	// The descriptor is closed where it was opened. Bounded: a starved work queue leaks it rather than blocking the owner.
 	ScheduleNow();
 
-	for (int i = 0; i < 20; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < 20; i++) {
 		pthread_mutex_lock(&_mutex);
-		const bool closed = (_fd < 0);
+		സ്ഥിരം തർക്കം closed = (_fd < 0);
 		pthread_mutex_unlock(&_mutex);
 
-		if (closed) {
-			break;
+		എങ്കിൽ (closed) {
+			നിർത്തുക;
 		}
 
 		px4_usleep(5_ms);
 	}
 }
 
-float CorrectionInjector::injection_rate_hz()
+ദശാംശം CorrectionInjector::injection_rate_hz()
 {
-	const hrt_abstime now = hrt_absolute_time();
+	സ്ഥിരം hrt_abstime now = hrt_absolute_time();
 
-	if (now - _rate_window_start >= kRateWindow) {
-		const uint64_t count = perf_event_count(_injected);
-		_injection_rate_hz = (float)(count - _rate_window_count) * 1e6f / (float)(now - _rate_window_start);
-		_rate_window_count = count;
+	എങ്കിൽ (now - _rate_window_start >= kRateWindow) {
+		സ്ഥിരം uint64_t എണ്ണം = perf_event_എണ്ണം(_injected);
+		_injection_rate_hz = (ദശാംശം)(എണ്ണം - rate_window_എണ്ണം) * 1e6f / (ദശാംശം)(now - _rate_window_start);
+		rate_window_എണ്ണം = എണ്ണം;
 		_rate_window_start = now;
 	}
 
-	return _injection_rate_hz;
+	തിരികെ _injection_rate_hz;
 }
 
-void CorrectionInjector::Run()
+ശൂന്യം CorrectionInjector::Run()
 {
 	pthread_mutex_lock(&_mutex);
 
-	if (!_active) {
-		if (_fd >= 0) {
+	എങ്കിൽ (!_active) {
+		എങ്കിൽ (_fd >= 0) {
 			::close(_fd);
 			_fd = -1;
 		}
 
-	} else {
-		if (_fd < 0) {
+	} അല്ലെങ്കിൽ {
+		എങ്കിൽ (_fd < 0) {
 			_fd = ::open(_port, O_WRONLY | O_NONBLOCK | O_NOCTTY);
 
-			if (_fd < 0 && !_write_error_reported) {
+			എങ്കിൽ (_fd < 0 && !_write_error_reported) {
 				PX4_ERR("%s open for injection failed: %d", _port, errno);
-				_write_error_reported = true;
+				_write_error_reported = സത്യം;
 			}
 		}
 
-		if (_fd >= 0) {
-			if (_config.stream == Stream::MovingBaseline) {
+		എങ്കിൽ (_fd >= 0) {
+			എങ്കിൽ (_config.stream == Stream::MovingBaseline) {
 				drain_moving_baseline();
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				drain_corrections();
 			}
 
@@ -190,33 +190,33 @@ void CorrectionInjector::Run()
 	pthread_mutex_unlock(&_mutex);
 }
 
-void CorrectionInjector::drain_corrections()
+ശൂന്യം CorrectionInjector::drain_corrections()
 {
 	rtcm_data_s chunk;
 
-	if (select_corrections_instance(chunk)) {
+	എങ്കിൽ (select_corrections_instance(chunk)) {
 		add_chunk(chunk);
 	}
 
-	const int8_t selected = _selected_instance.load();
+	സ്ഥിരം int8_t selected = _selected_instance.load();
 
-	if (selected < 0) {
-		return;
+	എങ്കിൽ (selected < 0) {
+		തിരികെ;
 	}
 
-	for (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _corrections_sub[selected].update(&chunk); n++) {
-		if (chunk.device_id != _config.own_device_id) {
+	വേണ്ടി (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _corrections_sub[selected].update(&chunk); n++) {
+		എങ്കിൽ (chunk.device_id != _config.own_device_id) {
 			add_chunk(chunk);
 		}
 	}
 }
 
-void CorrectionInjector::drain_moving_baseline()
+ശൂന്യം CorrectionInjector::drain_moving_baseline()
 {
 	rtcm_data_s chunk;
 
-	for (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _moving_baseline_sub.update(&chunk); n++) {
-		if (chunk.device_id != _config.own_device_id) {
+	വേണ്ടി (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _moving_baseline_sub.update(&chunk); n++) {
+		എങ്കിൽ (chunk.device_id != _config.own_device_id) {
 			add_chunk(chunk);
 		}
 	}
@@ -225,120 +225,120 @@ void CorrectionInjector::drain_moving_baseline()
 // Once the selected source has gone quiet, takes the first instance with a fresh chunk from another device. update()
 // hands out the oldest queued chunk, so a backlog from before start() is walked through here in one go rather than
 // one chunk per publication. Returns true with the chunk that selected the source, which goes out like any other.
-bool CorrectionInjector::select_corrections_instance(rtcm_data_s &chunk)
+തർക്കം CorrectionInjector::select_corrections_instance(rtcm_data_s &chunk)
 {
-	if (_selected_instance.load() >= 0 && hrt_elapsed_time(&_last_chunk_time) < kSourceTimeout) {
-		return false;
+	എങ്കിൽ (_selected_instance.load() >= 0 && hrt_elapsed_time(&_last_chunk_time) < kSourceTimeout) {
+		തിരികെ അസത്യം;
 	}
 
 	_selected_instance.store(-1);
 
-	for (int8_t instance = 0; instance < rtcm_data_s::MAX_INSTANCES; instance++) {
-		for (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _corrections_sub[instance].update(&chunk); n++) {
-			if (chunk.device_id != _config.own_device_id && hrt_elapsed_time(&chunk.timestamp) < kSourceTimeout) {
+	വേണ്ടി (int8_t instance = 0; instance < rtcm_data_s::MAX_INSTANCES; instance++) {
+		വേണ്ടി (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _corrections_sub[instance].update(&chunk); n++) {
+			എങ്കിൽ (chunk.device_id != _config.own_device_id && hrt_elapsed_time(&chunk.timestamp) < kSourceTimeout) {
 				_selected_instance.store(instance);
-				return true;
+				തിരികെ സത്യം;
 			}
 		}
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void CorrectionInjector::add_chunk(const rtcm_data_s &chunk)
+ശൂന്യം CorrectionInjector::add_chunk(സ്ഥിരം rtcm_data_s &chunk)
 {
-	const size_t len = math::min<size_t>(chunk.len, sizeof(chunk.data));
+	സ്ഥിരം size_t len = math::min<size_t>(chunk.len, വലുപ്പം(chunk.data));
 
-	if (_framer.addData(chunk.data, len) < len) {
-		perf_count(_framer_full);
+	എങ്കിൽ (_framer.addData(chunk.data, len) < len) {
+		perf_എണ്ണം(_framer_full);
 	}
 
 	_last_chunk_time = hrt_absolute_time();
 }
 
-void CorrectionInjector::inject_frames()
+ശൂന്യം CorrectionInjector::inject_frames()
 {
 	size_t frame_len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-	const uint8_t *frame = nullptr;
+	സ്ഥിരം uint8_t *frame = nullptr;
 
-	while ((frame = _framer.getNextMessage(&frame_len, &protocol)) != nullptr) {
-		if ((_config.protocols & protocol_bit(protocol)) == 0) {
+	ആകുമ്പോൾ ((frame = _framer.getNextMessage(&frame_len, &protocol)) != nullptr) {
+		എങ്കിൽ ((_config.protocols & protocol_bit(protocol)) == 0) {
 			_framer.consumeMessage(frame_len);
-			perf_count(_unsupported);
-			continue;
+			perf_എണ്ണം(_unsupported);
+			തുടരുക;
 		}
 
-		const ssize_t tx_space = tx_space_available();
+		സ്ഥിരം ssize_t tx_space = tx_space_available();
 
 		// Unknown on POSIX, where the write itself is the check
-		if (tx_space >= 0 && tx_space < (ssize_t)frame_len) {
-			perf_count(_tx_buffer_full);
+		എങ്കിൽ (tx_space >= 0 && tx_space < (ssize_t)frame_len) {
+			perf_എണ്ണം(_tx_buffer_full);
 			ScheduleDelayed(drain_time_us(frame_len - tx_space));
-			break;
+			നിർത്തുക;
 		}
 
-		const ssize_t written = ::write(_fd, frame, frame_len);
+		സ്ഥിരം ssize_t written = ::ലിഖ(_fd, frame, frame_len);
 
-		if (written < 0 && errno == EAGAIN) {
+		എങ്കിൽ (written < 0 && errno == EAGAIN) {
 			// The buffer filled between the check and the write: the frame stays for the retry
-			perf_count(_tx_buffer_full);
+			perf_എണ്ണം(_tx_buffer_full);
 			ScheduleDelayed(drain_time_us(frame_len));
-			break;
+			നിർത്തുക;
 		}
 
-		if (written != (ssize_t)frame_len) {
-			perf_count(_short_write);
+		എങ്കിൽ (written != (ssize_t)frame_len) {
+			perf_എണ്ണം(_short_write);
 
-			if (written < 0 && !_write_error_reported) {
+			എങ്കിൽ (written < 0 && !_write_error_reported) {
 				PX4_ERR("%s injection write failed: %d", _port, errno);
-				_write_error_reported = true;
+				_write_error_reported = സത്യം;
 			}
 		}
 
 		_framer.consumeMessage(frame_len);
-		perf_count(_injected);
+		perf_എണ്ണം(_injected);
 	}
 }
 
-ssize_t CorrectionInjector::tx_space_available() const
+ssize_t CorrectionInjector::tx_space_available() സ്ഥിരം
 {
-#if defined(FIONSPACE)
-	int space = 0;
+#എങ്കിൽ defined(FIONSPACE)
+	പൂർണ്ണസംഖ്യ space = 0;
 
-	if (::ioctl(_fd, FIONSPACE, &space) == 0) {
-		return space;
+	എങ്കിൽ (::ioctl(_fd, FIONSPACE, &space) == 0) {
+		തിരികെ space;
 	}
 
 #endif
-	return -1;
+	തിരികെ -1;
 }
 
-uint32_t CorrectionInjector::drain_time_us(size_t bytes) const
+uint32_t CorrectionInjector::drain_time_us(size_t bytes) സ്ഥിരം
 {
-	const uint32_t baudrate = _config.baudrate;
+	സ്ഥിരം uint32_t baudrate = _config.baudrate;
 
-	if (baudrate == 0) {
-		return kFallbackRetryDelayUs;
+	എങ്കിൽ (baudrate == 0) {
+		തിരികെ kFallbackRetryDelayUs;
 	}
 
-	return math::max<uint32_t>(kMinRetryDelayUs, (uint64_t)bytes * kBitsPerByteOnTheWire * 1_s / baudrate);
+	തിരികെ math::max<uint32_t>(kMinRetryDelayUs, (uint64_t)bytes * kBitsPerByteOnTheWire * 1_s / baudrate);
 }
 
-void CorrectionInjector::print_status() const
+ശൂന്യം CorrectionInjector::print_status() സ്ഥിരം
 {
 	PX4_INFO("injecting %s: %6.2f Hz, source instance %d",
-		 _config.stream == Stream::MovingBaseline ? "moving baseline" : "corrections", (double)_injection_rate_hz,
-		 (int)_selected_instance.load());
+		 _config.stream == Stream::MovingBaseline ? "moving baseline" : "corrections", (ഇരട്ട)_injection_rate_hz,
+		 (പൂർണ്ണസംഖ്യ)_selected_instance.load());
 	perf_print_counter(_injected);
 	perf_print_counter(_tx_buffer_full);
 	perf_print_counter(_framer_full);
 	perf_print_counter(_unsupported);
 	perf_print_counter(_short_write);
 
-	const CorrectionFramerStats stats = _framer.getStats();
+	സ്ഥിരം CorrectionFramerStats stats = _framer.getStats();
 
-	if (stats.messages_parsed > 0 || stats.crc_errors > 0 || stats.bytes_discarded > 0) {
+	എങ്കിൽ (stats.messages_parsed > 0 || stats.crc_errors > 0 || stats.bytes_discarded > 0) {
 		PX4_INFO("framed: %u RTCM3, %u SPARTN, %u UBX, %u CRC errors, %u bytes discarded",
 			 (unsigned)stats.rtcm3_messages, (unsigned)stats.spartn_messages, (unsigned)stats.ubx_messages,
 			 (unsigned)stats.crc_errors, (unsigned)stats.bytes_discarded);

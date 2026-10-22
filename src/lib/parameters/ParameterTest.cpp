@@ -31,22 +31,22 @@
  *
  ****************************************************************************/
 
-#include <lib/tinybson/tinybson.h>
-#include <px4_platform_common/module_params.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/obstacle_distance.h>
-#include <uORB/uORBManager.hpp>
+#അന്തര്ഭാവ <lib/tinybson/tinybson.h>
+#അന്തര്ഭാവ <px4_platform_common/module_params.h>
+#അന്തര്ഭാവ <uORB/Subscription.hpp>
+#അന്തര്ഭാവ <uORB/topics/obstacle_distance.h>
+#അന്തര്ഭാവ <uORB/uORBManager.hpp>
 
-#include <gtest/gtest.h>
-#include <fcntl.h>
-#include <unistd.h>
+#അന്തര്ഭാവ <gtest/gtest.h>
+#അന്തര്ഭാവ <fcntl.h>
+#അന്തര്ഭാവ <unistd.h>
 
-class ParameterTest : public ::testing::Test
+വർഗ്ഗം ParameterTest : പൊതു ::testing::Test
 {
-public:
-	void SetUp() override
+പൊതു:
+	ശൂന്യം SetUp() override
 	{
-		param_control_autosave(false);
+		param_control_autosave(അസത്യം);
 		param_reset_all();
 	}
 };
@@ -58,8 +58,8 @@ TEST_F(ParameterTest, testParamReadWrite)
 	param_t param = param_handle(px4::params::CP_DIST);
 
 	// WHEN: we get the parameter
-	float value = -999.f;
-	int status = param_get(param, &value);
+	ദശാംശം value = -999.f;
+	പൂർണ്ണസംഖ്യ status = param_get(param, &value);
 
 	// THEN it should be successful and have the default value
 	EXPECT_EQ(0, status);
@@ -73,7 +73,7 @@ TEST_F(ParameterTest, testParamReadWrite)
 	EXPECT_EQ(0, status);
 
 	// WHEN: we get the parameter again
-	float value2 = -1999.f;
+	ദശാംശം value2 = -1999.f;
 	status = param_get(param, &value2);
 
 	// THEN: it should be exactly the value we set
@@ -86,7 +86,7 @@ TEST_F(ParameterTest, testUorbSendReceive)
 {
 	// GIVEN: a uOrb message
 	obstacle_distance_s message;
-	memset(&message, 0xDEAD, sizeof(message));
+	memset(&message, 0xDEAD, വലുപ്പം(message));
 	message.min_distance = 1.f;
 	message.max_distance = 10.f;
 
@@ -99,7 +99,7 @@ TEST_F(ParameterTest, testUorbSendReceive)
 
 	// THEN: the subscriber should receive the message
 	sub_obstacle_distance.update();
-	const obstacle_distance_s &obstacle_distance = sub_obstacle_distance.get();
+	സ്ഥിരം obstacle_distance_s &obstacle_distance = sub_obstacle_distance.get();
 
 	// AND: the values we got should be the same
 	EXPECT_EQ(message.timestamp, obstacle_distance.timestamp);
@@ -107,17 +107,17 @@ TEST_F(ParameterTest, testUorbSendReceive)
 	EXPECT_FLOAT_EQ(message.max_distance, obstacle_distance.max_distance);
 
 	// AND: all the bytes should be equal
-	EXPECT_EQ(0, memcmp(&message, &obstacle_distance, sizeof(message)));
+	EXPECT_EQ(0, memcmp(&message, &obstacle_distance, വലുപ്പം(message)));
 }
 
 // A BSON null in an import resets the param (a delta tombstone on flash boards).
 TEST_F(ParameterTest, testImportTombstoneResets)
 {
-	const param_t cp_dist = param_handle(px4::params::CP_DIST);
+	സ്ഥിരം param_t cp_dist = param_handle(px4::params::CP_DIST);
 
-	float cp = 5.f;
+	ദശാംശം cp = 5.f;
 	ASSERT_EQ(0, param_set(cp_dist, &cp));
-	ASSERT_FALSE(param_value_is_default(cp_dist));
+	ASSERT_FALSE(param_മൂല്യം_is_default(cp_dist));
 
 	bson_encoder_s encoder{};
 	ASSERT_EQ(0, bson_encoder_init_buf(&encoder, nullptr, 0));
@@ -125,19 +125,19 @@ TEST_F(ParameterTest, testImportTombstoneResets)
 	ASSERT_EQ(0, bson_encoder_append_null(&encoder, "CP_DIST"));
 	ASSERT_EQ(0, bson_encoder_fini(&encoder));
 
-	char path[] = "/tmp/param_tombstone_XXXXXX";
-	int fd = mkstemp(path);
+	അക്ഷരം path[] = "/tmp/param_tombstone_XXXXXX";
+	പൂർണ്ണസംഖ്യ fd = mkstemp(path);
 	ASSERT_GE(fd, 0);
-	ASSERT_EQ((ssize_t)bson_encoder_buf_size(&encoder), write(fd, bson_encoder_buf_data(&encoder),
+	ASSERT_EQ((ssize_t)bson_encoder_buf_size(&encoder), ലിഖ(fd, bson_encoder_buf_data(&encoder),
 			bson_encoder_buf_size(&encoder)));
-	free(bson_encoder_buf_data(&encoder));
+	സ്വതന്ത്രം(bson_encoder_buf_data(&encoder));
 	ASSERT_EQ(0, lseek(fd, 0, SEEK_SET));
 
 	EXPECT_EQ(0, param_import(fd));
 	close(fd);
 	unlink(path);
 
-	EXPECT_TRUE(param_value_is_default(cp_dist));
+	EXPECT_TRUE(param_മൂല്യം_is_default(cp_dist));
 
 	int32_t rev = 0;
 	ASSERT_EQ(0, param_get(param_handle(px4::params::RC1_REV), &rev));

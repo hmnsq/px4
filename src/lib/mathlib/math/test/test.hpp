@@ -43,17 +43,17 @@
 //#include <time.h>
 //#include <stdlib.h>
 
-bool equal(float a, float b, float eps = 1e-5);
+തർക്കം equal(ദശാംശം a, ദശാംശം b, ദശാംശം eps = 1e-5);
 
-bool greater_than(float a, float b);
+തർക്കം greater_than(ദശാംശം a, ദശാംശം b);
 
-bool less_than(float a, float b);
+തർക്കം less_than(ദശാംശം a, ദശാംശം b);
 
-bool greater_than_or_equal(float a, float b);
+തർക്കം greater_than_or_equal(ദശാംശം a, ദശാംശം b);
 
-bool less_than_or_equal(float a, float b);
+തർക്കം less_than_or_equal(ദശാംശം a, ദശാംശം b);
 
-void float2SigExp(
-	const float &num,
-	float &sig,
-	int &exp);
+ശൂന്യം float2SigExp(
+	സ്ഥിരം ദശാംശം &അക്കം,
+	ദശാംശം &sig,
+	പൂർണ്ണസംഖ്യ &exp);

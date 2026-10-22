@@ -33,48 +33,48 @@
 
 #pragma once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#അന്തര്ഭാവ <px4_platform_common/px4_config.h>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <px4_platform_common/log.h>
 
-#include <inttypes.h>
-#include <math.h>
+#അന്തര്ഭാവ <inttypes.h>
+#അന്തര്ഭാവ <math.h>
 
-namespace calibration
+നാമാകാശ calibration
 {
-class DifferentialPressure
+വർഗ്ഗം DifferentialPressure
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 3; ///< also the airspeed selector's sensor limit
+പൊതു:
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ MAX_SENSOR_എണ്ണം = 3; ///< also the airspeed selector's sensor limit
 
-	static constexpr const char *SensorString() { return "DPRES"; }
+	സ്ഥിതം constexpr സ്ഥിരം അക്ഷരം *SensorString() { തിരികെ "DPRES"; }
 
 	DifferentialPressure();
 	explicit DifferentialPressure(uint32_t device_id);
 
-	~DifferentialPressure() = default;
+	~DifferentialPressure() = സ്ഥിരസ്ഥിതി;
 
-	void PrintStatus();
+	ശൂന്യം PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id);
-	bool set_offset(const float &offset);
+	തർക്കം set_calibration_index(പൂർണ്ണസംഖ്യ calibration_index);
+	ശൂന്യം set_device_id(uint32_t device_id);
+	തർക്കം set_offset(സ്ഥിരം ദശാംശം &offset);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
+	തർക്കം calibrated() സ്ഥിരം { തിരികെ (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_എണ്ണം_2() സ്ഥിരം { തിരികെ calibration_എണ്ണം; }
+	int8_t calibration_index() സ്ഥിരം { തിരികെ _calibration_index; }
+	uint32_t device_id() സ്ഥിരം { തിരികെ _device_id; }
+	തർക്കം external() സ്ഥിരം { തിരികെ _external; }
+	സ്ഥിരം ദശാംശം &offset() സ്ഥിരം { തിരികെ _offset; }
 
 	/// remove the zero offset from a raw differential pressure reading [Pa]
-	inline float Correct(const float &data) const { return data - _offset; }
+	വരിയിൽ ദശാംശം Correct(സ്ഥിരം ദശാംശം &data) സ്ഥിരം { തിരികെ data - _offset; }
 
-	inline float Uncorrect(const float &corrected_data) const { return corrected_data + _offset; }
+	വരിയിൽ ദശാംശം Uncorrect(സ്ഥിരം ദശാംശം &corrected_data) സ്ഥിരം { തിരികെ corrected_data + _offset; }
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	തർക്കം ParametersLoad();
+	തർക്കം ParametersSave(പൂർണ്ണസംഖ്യ desired_calibration_index = -1, തർക്കം force = അസത്യം);
+	ശൂന്യം ParametersUpdate();
 
 	/**
 	 * Take over the offset left in SENS_DPRES_OFF, using slot 0.
@@ -82,23 +82,23 @@ public:
 	 *
 	 * @return true if the offset was adopted (the caller should save)
 	 */
-	bool AdoptLegacyOffset();
+	തർക്കം AdoptLegacyOffset();
 
 	/** mirror slot 0's offset into SENS_DPRES_OFF for ground stations that still read it */
-	void UpdateLegacyOffset() const;
+	ശൂന്യം UpdateLegacyOffset() സ്ഥിരം;
 
-	void Reset();
+	ശൂന്യം Reset();
 
-private:
-	static constexpr int kLegacyIndex{0};
-	static constexpr const char *kLegacyOffsetParam{"SENS_DPRES_OFF"};
+സ്വകാര്യ:
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ kLegacyIndex{0};
+	സ്ഥിതം constexpr സ്ഥിരം അക്ഷരം *kLegacyOffsetParam{"SENS_DPRES_OFF"};
 
-	float _offset{0};
+	ദശാംശം _offset{0};
 
 	int8_t _calibration_index{-1};
 	uint32_t _device_id{0};
-	uint8_t _calibration_count{0};
+	uint8_t calibration_എണ്ണം{0};
 
-	bool _external{false};
+	തർക്കം _external{അസത്യം};
 };
 } // namespace calibration

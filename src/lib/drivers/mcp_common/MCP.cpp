@@ -30,16 +30,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#include "MCP.hpp"
-#include <drivers/gpio/mcp23009/MCP23009.hpp>
-#include <drivers/gpio/mcp23017/MCP23017.hpp>
+#അന്തര്ഭാവ "MCP.hpp"
+#അന്തര്ഭാവ <drivers/gpio/mcp23009/MCP23009.hpp>
+#അന്തര്ഭാവ <drivers/gpio/mcp23017/MCP23017.hpp>
 
-MCP230XX::MCP230XX(const I2CSPIDriverConfig &config) :
+MCP230XX::MCP230XX(സ്ഥിരം I2CSPIDriverConfig &config) :
 	I2C(config),
 	I2CSPIDriver(config),
 	_cycle_perf(perf_alloc(PC_ELAPSED, MODULE_NAME": single-sample")),
-	_comms_errors(perf_alloc(PC_COUNT, MODULE_NAME": comms errors")),
-	_register_check(perf_alloc(PC_COUNT, MODULE_NAME": register check"))
+	_comms_errors(perf_alloc(PC_എണ്ണം, MODULE_NAME": comms errors")),
+	_register_check(perf_alloc(PC_എണ്ണം, MODULE_NAME": register check"))
 {
 }
 
@@ -51,30 +51,30 @@ MCP230XX::~MCP230XX()
 	perf_free(_register_check);
 }
 
-int MCP230XX::init_uorb()
+പൂർണ്ണസംഖ്യ MCP230XX::init_uorb()
 {
-	if (!_gpio_config_sub.registerCallback() ||
+	എങ്കിൽ (!_gpio_config_sub.registerCallback() ||
 	    !_gpio_out_sub.registerCallback()) {
 		PX4_ERR("callback registration failed");
-		return PX4_ERROR;
+		തിരികെ PX4_ERROR;
 	}
 
-	return PX4_OK;
+	തിരികെ PX4_OK;
 }
 
-void MCP230XX::cleanup_uorb()
+ശൂന്യം MCP230XX::cleanup_uorb()
 {
 	_gpio_config_sub.unregisterCallback();
 	_gpio_out_sub.unregisterCallback();
-	mcp230XX_unregister_gpios(mcp_config.first_minor, mcp_config.num_pins, mcp_config._gpio_handle);
+	mcp230XX_unregister_gpios(mcp_config.first_minor, mcp_config.അക്കം_pins, mcp_config._gpio_handle);
 }
 
-int MCP230XX::read(uint16_t *mask)
+പൂർണ്ണസംഖ്യ MCP230XX::പഠ(uint16_t *mask)
 {
 	*mask = 0;
-	int ret = PX4_OK;
+	പൂർണ്ണസംഖ്യ ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < mcp_config.അക്കം_banks; i++) {
 		uint8_t gpio_addr;
 		uint8_t data;
 
@@ -84,83 +84,83 @@ int MCP230XX::read(uint16_t *mask)
 		*mask |= (((uint16_t) data) << (8 * i));
 	}
 
-	return ret;
+	തിരികെ ret;
 }
 
-int MCP230XX::write(const uint16_t mask_set, const uint16_t mask_clear)
+പൂർണ്ണസംഖ്യ MCP230XX::ലിഖ(സ്ഥിരം uint16_t mask_set, സ്ഥിരം uint16_t mask_clear)
 {
-	int ret = PX4_OK;
+	പൂർണ്ണസംഖ്യ ret = PX4_OK;
 	_olat = (_olat & ~mask_clear) | mask_set;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < mcp_config.അക്കം_banks; i++) {
 		uint8_t reg_addr;
 		uint8_t data;
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 
 		ret = get_olat(i, &reg_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		എങ്കിൽ (ret != PX4_OK) {
+			തിരികെ ret;
 		}
 
 		ret |= write_reg(reg_addr, curr_olat);
 		ret |= read_reg(reg_addr, data);
 
-		if (ret != PX4_OK || data != curr_olat) {
-			return PX4_ERROR;
+		എങ്കിൽ (ret != PX4_OK || data != curr_olat) {
+			തിരികെ PX4_ERROR;
 		}
 	}
 
-	return ret;
+	തിരികെ ret;
 }
 
-int MCP230XX::read_reg(const uint8_t address, uint8_t &data)
+പൂർണ്ണസംഖ്യ MCP230XX::read_reg(സ്ഥിരം uint8_t address, uint8_t &data)
 {
-	int ret = transfer(&address, 1, &data, 1);
+	പൂർണ്ണസംഖ്യ ret = transfer(&address, 1, &data, 1);
 
-	if (ret != PX4_OK) {
-		perf_count(_comms_errors);
+	എങ്കിൽ (ret != PX4_OK) {
+		perf_എണ്ണം(_comms_errors);
 	}
 
-	return ret;
+	തിരികെ ret;
 }
 
-int MCP230XX::write_reg(const uint8_t address, const uint8_t value)
+പൂർണ്ണസംഖ്യ MCP230XX::write_reg(സ്ഥിരം uint8_t address, സ്ഥിരം uint8_t value)
 {
 	uint8_t data[2] = {address, value};
-	int ret = transfer(data, 2, nullptr, 0);
+	പൂർണ്ണസംഖ്യ ret = transfer(data, 2, nullptr, 0);
 
-	if (ret != PX4_OK) {
-		perf_count(_comms_errors);
+	എങ്കിൽ (ret != PX4_OK) {
+		perf_എണ്ണം(_comms_errors);
 	}
 
-	return ret;
+	തിരികെ ret;
 }
 
-int MCP230XX::configure(const uint16_t mask, PinType type)
+പൂർണ്ണസംഖ്യ MCP230XX::configure(സ്ഥിരം uint16_t mask, PinType type)
 {
-	switch (type) {
-	case PinType::Input:
+	തിരഞ്ഞെടുപ്പ് (type) {
+	അവസ്ഥ PinType::നിവേശം_2:
 		_iodir |= mask;
 		_gppu &= ~mask;
-		break;
+		നിർത്തുക;
 
-	case PinType::InputPullUp:
+	അവസ്ഥ PinType::നിവേശം_Pull_Up:
 		_iodir |= mask;
 		_gppu |= mask;
-		break;
+		നിർത്തുക;
 
-	case PinType::Output:
+	അവസ്ഥ PinType::Output:
 		_iodir &= ~mask;
-		break;
+		നിർത്തുക;
 
-	default:
-		return -EINVAL;
+	സ്ഥിരസ്ഥിതി:
+		തിരികെ -EINVAL;
 	}
 
-	int ret = PX4_OK;
+	പൂർണ്ണസംഖ്യ ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < mcp_config.അക്കം_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
 		uint8_t iodir_addr;
@@ -169,51 +169,51 @@ int MCP230XX::configure(const uint16_t mask, PinType type)
 		ret = get_iodir(i, &iodir_addr);
 		ret |= get_gppu(i, &gppu_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		എങ്കിൽ (ret != PX4_OK) {
+			തിരികെ ret;
 		}
 
 		ret = write_reg(iodir_addr, curr_iodir);
 		ret |= write_reg(gppu_addr, curr_gppu);
 
-		if (ret != PX4_OK) {
+		എങ്കിൽ (ret != PX4_OK) {
 			PX4_ERR("MCP configure failed");
-			return ret;
+			തിരികെ ret;
 		}
 	}
 
-	return PX4_OK;
+	തിരികെ PX4_OK;
 }
 
-int MCP230XX::init()
+പൂർണ്ണസംഖ്യ MCP230XX::init()
 {
-	int ret = I2C::init();
+	പൂർണ്ണസംഖ്യ ret = I2C::init();
 
-	if (ret != PX4_OK) {
+	എങ്കിൽ (ret != PX4_OK) {
 		PX4_ERR("I2C init failed");
-		return ret;
+		തിരികെ ret;
 	}
 
 	ScheduleNow();
-	return PX4_OK;
+	തിരികെ PX4_OK;
 }
 
-int MCP230XX::init_communication()
+പൂർണ്ണസംഖ്യ MCP230XX::init_communication()
 {
-	int ret = mcp230XX_register_gpios(mcp_config.i2c_bus, mcp_config.i2c_addr, mcp_config.first_minor, _iodir, mcp_config.num_pins,
+	പൂർണ്ണസംഖ്യ ret = mcp230XX_register_gpios(mcp_config.i2c_bus, mcp_config.i2c_addr, mcp_config.first_minor, _iodir, mcp_config.അക്കം_pins,
 					  mcp_config.device_type, mcp_config._gpio_handle);
 	ret |= init_uorb();
-	return ret;
+	തിരികെ ret;
 }
 
-int MCP230XX::set_up()
+പൂർണ്ണസംഖ്യ MCP230XX::set_up()
 {
-	int ret = PX4_OK;
+	പൂർണ്ണസംഖ്യ ret = PX4_OK;
 	uint8_t iodir_addr;
 	uint8_t olat_addr;
 	uint8_t gppu_addr;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < mcp_config.അക്കം_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
@@ -222,27 +222,27 @@ int MCP230XX::set_up()
 		ret |= get_iodir(i, &iodir_addr);
 		ret |= get_gppu(i, &gppu_addr);
 
-		if (ret != PX4_OK) {
-			return ret;
+		എങ്കിൽ (ret != PX4_OK) {
+			തിരികെ ret;
 		}
 
 		ret |= write_reg(iodir_addr, curr_iodir);
 		ret |= write_reg(olat_addr, curr_olat);
 		ret |= write_reg(gppu_addr, curr_gppu);
 
-		if (ret != PX4_OK) {
-			return ret;
+		എങ്കിൽ (ret != PX4_OK) {
+			തിരികെ ret;
 		}
 	}
 
-	return ret;
+	തിരികെ ret;
 }
 
-int MCP230XX::sanity_check()
+പൂർണ്ണസംഖ്യ MCP230XX::sanity_check()
 {
-	int ret = PX4_OK;
+	പൂർണ്ണസംഖ്യ ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < mcp_config.അക്കം_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
@@ -263,130 +263,130 @@ int MCP230XX::sanity_check()
 		ret |= read_reg(olat_addr, read_olat);
 		ret |= read_reg(gppu_addr, read_gppu);
 
-		if (read_iodir != curr_iodir || read_olat != curr_olat || read_gppu != curr_gppu) {
-			perf_count(_register_check);
-			return PX4_ERROR;
+		എങ്കിൽ (read_iodir != curr_iodir || read_olat != curr_olat || read_gppu != curr_gppu) {
+			perf_എണ്ണം(_register_check);
+			തിരികെ PX4_ERROR;
 		}
 	}
 
-	return ret;
+	തിരികെ ret;
 }
 
-int MCP230XX::probe()
+പൂർണ്ണസംഖ്യ MCP230XX::probe()
 {
 	// no whoami, try to read IOCONA
 	uint8_t data;
 	uint8_t addr;
-	int ret = PX4_OK;
+	പൂർണ്ണസംഖ്യ ret = PX4_OK;
 
-	for (int i = 0; i < 10; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < 10; i++) {
 		ret = get_probe_reg(&addr);
 
-		if (ret == PX4_OK) {
+		എങ്കിൽ (ret == PX4_OK) {
 			ret = read_reg(addr, data);
 
-			if (ret == PX4_OK) {
-				return PX4_OK;
+			എങ്കിൽ (ret == PX4_OK) {
+				തിരികെ PX4_OK;
 			}
 		}
 
 		px4_usleep(10'000);
 	}
 
-	return PX4_ERROR;
+	തിരികെ PX4_ERROR;
 }
 
-void MCP230XX::RunImpl()
+ശൂന്യം MCP230XX::RunImpl()
 {
-	if (should_exit()) {
+	എങ്കിൽ (should_exit()) {
 		cleanup_uorb();
 		exit_and_cleanup();
-		return;
+		തിരികെ;
 	}
 
-	int ret = PX4_OK;
+	പൂർണ്ണസംഖ്യ ret = PX4_OK;
 
-	switch (_curr_state) {
-	case STATE::INIT_COMMUNICATION:
+	തിരഞ്ഞെടുപ്പ് (_curr_state) {
+	അവസ്ഥ STATE::INIT_COMMUNICATION:
 		ret = init_communication();
 
-		if (ret == PX4_OK) {
+		എങ്കിൽ (ret == PX4_OK) {
 			_curr_state = STATE::CONFIGURE;
 			ScheduleNow();
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			ScheduleDelayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		നിർത്തുക;
 
-	case STATE::CONFIGURE:
+	അവസ്ഥ STATE::CONFIGURE:
 		ret = set_up();
 
-		if (ret == PX4_OK) {
+		എങ്കിൽ (ret == PX4_OK) {
 			_curr_state = STATE::CHECK;
 			ScheduleNow();
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			ScheduleDelayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		നിർത്തുക;
 
-	case STATE::CHECK:
+	അവസ്ഥ STATE::CHECK:
 		ret = sanity_check();
 
-		if (ret == PX4_OK) {
+		എങ്കിൽ (ret == PX4_OK) {
 			_curr_state = STATE::RUNNING;
 			ScheduleOnInterval(mcp_config.interval * 1000);
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			_curr_state = STATE::CONFIGURE;
 			ScheduleDelayed(mcp_config.interval * 1000);
 		}
 
-		break;
+		നിർത്തുക;
 
-	case STATE::RUNNING:
+	അവസ്ഥ STATE::RUNNING:
 		perf_begin(_cycle_perf);
 		gpio_config_s config;
 
-		if (_gpio_config_sub.update(&config) && config.device_id == get_device_id()) {
-			PinType type = PinType::Input;
+		എങ്കിൽ (_gpio_config_sub.update(&config) && config.device_id == get_device_id()) {
+			PinType type = PinType::നിവേശം_2;
 
-			switch (config.config) {
-			case config.INPUT_PULLUP:	type = PinType::InputPullUp; break;
+			തിരഞ്ഞെടുപ്പ് (config.config) {
+			അവസ്ഥ config.നിവേശം_PULLUP:	type = PinType::നിവേശം_Pull_Up; നിർത്തുക;
 
-			case config.OUTPUT:		type = PinType::Output; break;
+			അവസ്ഥ config.OUTPUT:		type = PinType::Output; നിർത്തുക;
 			}
 
-			ret |= write(config.state, config.mask);
+			ret |= ലിഖ(config.state, config.mask);
 			ret |= configure(config.mask, type);
 		}
 
 		gpio_out_s output;
 
-		if (_gpio_out_sub.update(&output) && output.device_id == get_device_id()) {
-			ret |= write(output.state, output.mask);
+		എങ്കിൽ (_gpio_out_sub.update(&output) && output.device_id == get_device_id()) {
+			ret |= ലിഖ(output.state, output.mask);
 		}
 
 		{
 			gpio_in_s _gpio_in;
 			_gpio_in.timestamp = hrt_absolute_time();
 			_gpio_in.device_id = get_device_id();
-			uint16_t input = 0;
+			uint16_t നിവേശം = 0;
 
-			if (read(&input) == PX4_OK) {
-				_gpio_in.state = input;
+			എങ്കിൽ (പഠ(&നിവേശം) == PX4_OK) {
+				_gpio_in.state = നിവേശം;
 				_to_gpio_in.publish(_gpio_in);
 			}
 		}
 
-		_count++;
+		എണ്ണം_3++;
 
-		if (_count >= _checking_freq || ret != PX4_OK) {
+		എങ്കിൽ (എണ്ണം_3 >= _checking_freq || ret != PX4_OK) {
 			_curr_state = STATE::CHECK;
-			_count = 0;
+			എണ്ണം_3 = 0;
 			ScheduleClear();
 			ScheduleNow();
 		}
@@ -395,7 +395,7 @@ void MCP230XX::RunImpl()
 	}
 }
 
-void MCP230XX::print_status()
+ശൂന്യം MCP230XX::print_status()
 {
 	I2CSPIDriverBase::print_status();
 	perf_print_counter(_cycle_perf);
@@ -403,74 +403,74 @@ void MCP230XX::print_status()
 	perf_print_counter(_register_check);
 }
 
-void MCP230XX::custom_method(const BusCLIArguments &cli)
+ശൂന്യം MCP230XX::custom_method(സ്ഥിരം BusCLIArguments &cli)
 {
-	switch (cli.custom1) {
-	case 0: {
+	തിരഞ്ഞെടുപ്പ് (cli.custom1) {
+	അവസ്ഥ 0: {
 			// write: only pins configured as outputs are affected
-			const uint16_t outputs = (uint16_t)~_iodir;
-			const uint16_t state = (uint16_t)cli.custom2;
+			സ്ഥിരം uint16_t outputs = (uint16_t)~_iodir;
+			സ്ഥിരം uint16_t state = (uint16_t)cli.custom2;
 
-			if (write(state & outputs, (uint16_t)~state & outputs) != PX4_OK) {
+			എങ്കിൽ (ലിഖ(state & outputs, (uint16_t)~state & outputs) != PX4_OK) {
 				PX4_ERR("write failed");
 			}
 
-			break;
+			നിർത്തുക;
 		}
 	}
 }
 
-void MCP230XX::print_usage()
+ശൂന്യം MCP230XX::print_usage()
 {
 	PRINT_MODULE_USAGE_NAME("mcp230xx", "driver");
 	PRINT_MODULE_USAGE_COMMAND("start");
-	PRINT_MODULE_USAGE_PARAMS_I2C_SPI_DRIVER(true, false);
+	PRINT_MODULE_USAGE_PARAMS_I2C_SPI_DRIVER(സത്യം, അസത്യം);
 	PRINT_MODULE_USAGE_PARAMS_I2C_ADDRESS(0x27);
-	PRINT_MODULE_USAGE_PARAM_INT('D', 0, 0, 65535, "Direction (1=Input, 0=Output)", true);
-	PRINT_MODULE_USAGE_PARAM_INT('O', 0, 0, 65535, "Output", true);
-	PRINT_MODULE_USAGE_PARAM_INT('P', 0, 0, 65535, "Pullups", true);
-	PRINT_MODULE_USAGE_PARAM_INT('U', 0, 0, 1000, "Update Interval [ms]", true);
-	PRINT_MODULE_USAGE_PARAM_INT('M', 0, 0, 255, "First minor number", true);
+	PRINT_MODULE_USAGE_PARAM_INT('D', 0, 0, 65535, "Direction (1=Input, 0=Output)", സത്യം);
+	PRINT_MODULE_USAGE_PARAM_INT('O', 0, 0, 65535, "Output", സത്യം);
+	PRINT_MODULE_USAGE_PARAM_INT('P', 0, 0, 65535, "Pullups", സത്യം);
+	PRINT_MODULE_USAGE_PARAM_INT('U', 0, 0, 1000, "Update Interval [ms]", സത്യം);
+	PRINT_MODULE_USAGE_PARAM_INT('M', 0, 0, 255, "First minor number", സത്യം);
 	PRINT_MODULE_USAGE_COMMAND_DESCR("write", "Set the output pins to the state given with -O");
 	PRINT_MODULE_USAGE_DEFAULT_COMMANDS();
 }
 
-I2CSPIDriverBase *MCP230XX::instantiate(const I2CSPIDriverConfig &config, int runtime_instance)
+I2CSPIDriverBase *MCP230XX::instantiate(സ്ഥിരം I2CSPIDriverConfig &config, പൂർണ്ണസംഖ്യ runtime_instance)
 {
 	MCP230XX *instance = nullptr;
 
-	switch (config.devid_driver_index) {
-	case DRV_GPIO_DEVTYPE_MCP23009:
-		instance = new MCP23009(config);
-		break;
+	തിരഞ്ഞെടുപ്പ് (config.devid_driver_index) {
+	അവസ്ഥ DRV_GPIO_DEVTYPE_MCP23009:
+		instance = പുതിയ MCP23009(config);
+		നിർത്തുക;
 
-	case DRV_GPIO_DEVTYPE_MCP23017:
-		instance = new MCP23017(config);
-		break;
+	അവസ്ഥ DRV_GPIO_DEVTYPE_MCP23017:
+		instance = പുതിയ MCP23017(config);
+		നിർത്തുക;
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 		instance = nullptr;
-		break;
+		നിർത്തുക;
 	}
 
-	if (!instance) {
+	എങ്കിൽ (!instance) {
 		PX4_ERR("alloc failed");
-		return nullptr;
+		തിരികെ nullptr;
 	}
 
-	MCP230XX_config_t tmp_config = *static_cast<const MCP230XX_config_t *>(config.custom_data);
+	MCP230XX_config_t tmp_config = *static_cast<സ്ഥിരം MCP230XX_config_t *>(config.custom_data);
 	instance->mcp_config = tmp_config;
 	instance->mcp_config.i2c_bus = config.bus;
 	instance->mcp_config.i2c_addr = config.i2c_address;
 
-	if (OK != instance->init()) {
+	എങ്കിൽ (OK != instance->init()) {
 		delete instance;
-		return nullptr;
+		തിരികെ nullptr;
 	}
 
 	instance->_iodir = instance->mcp_config.direction;
 	instance->_olat = instance->mcp_config.state;
 	instance->_gppu = instance->mcp_config.pullup;
 
-	return instance;
+	തിരികെ instance;
 }

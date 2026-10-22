@@ -39,18 +39,18 @@
  * @author Bazooka Joe <BazookaJoe1900@gmail.com>
  */
 
-#include <drivers/device/i2c.h>
-#include <perf/perf_counter.h>
-#include <string.h>
+#അന്തര്ഭാവ <drivers/device/i2c.h>
+#അന്തര്ഭാവ <perf/perf_counter.h>
+#അന്തര്ഭാവ <string.h>
 
 #define SMBUS_PEC_POLYNOMIAL	0x07	///< Polynomial for calculating PEC
 
-class SMBus : public device::I2C
+വർഗ്ഗം SMBus : പൊതു device::I2C
 {
-public:
-	static constexpr uint8_t MAX_BLOCK_LEN = 34;
+പൊതു:
+	സ്ഥിതം constexpr uint8_t MAX_BLOCK_LEN = 34;
 
-	SMBus(uint8_t device_id, int bus_num, uint16_t address);
+	SMBus(uint8_t device_id, പൂർണ്ണസംഖ്യ bus_അക്കം, uint16_t address);
 	~SMBus() override;
 
 	/**
@@ -60,7 +60,7 @@ public:
 	 * @param length The number of bytes being written. Maximum is SMBus::MAX_BLOCK_LEN.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	int block_write(const uint8_t cmd_code, const void *data, uint8_t byte_count, const bool use_pec);
+	പൂർണ്ണസംഖ്യ block_write(സ്ഥിരം uint8_t cmd_code, സ്ഥിരം ശൂന്യം *data, uint8_t byte_എണ്ണം, സ്ഥിരം തർക്കം use_pec);
 
 	/**
 	 * @brief Sends a block read command.
@@ -69,7 +69,7 @@ public:
 	 * @param length The number of bytes being read. Maximum is SMBus::MAX_BLOCK_LEN.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	int block_read(const uint8_t cmd_code, void *data, const uint8_t length, const bool use_pec);
+	പൂർണ്ണസംഖ്യ block_read(സ്ഥിരം uint8_t cmd_code, ശൂന്യം *data, സ്ഥിരം uint8_t length, സ്ഥിരം തർക്കം use_pec);
 
 	/**
 	 * @brief Sends a read word command.
@@ -77,7 +77,7 @@ public:
 	 * @param data The 2 bytes of returned data plus a 1 byte CRC if used.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	int read_word(const uint8_t cmd_code, uint16_t &data);
+	പൂർണ്ണസംഖ്യ read_word(സ്ഥിരം uint8_t cmd_code, uint16_t &data);
 
 	/**
 	 * @brief Sends a write word command.
@@ -85,7 +85,7 @@ public:
 	 * @param data The 2 bytes of data to be transfered.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	int write_word(const uint8_t cmd_code, uint16_t data);
+	പൂർണ്ണസംഖ്യ write_word(സ്ഥിരം uint8_t cmd_code, uint16_t data);
 
 	/**
 	 * @brief Calculates the PEC from the data.
@@ -95,6 +95,6 @@ public:
 	 */
 	uint8_t get_pec(uint8_t *buffer, uint8_t length);
 
-	perf_counter_t _interface_errors{perf_alloc(PC_COUNT, MODULE_NAME": errors")};
+	perf_counter_t _interface_errors{perf_alloc(PC_എണ്ണം, MODULE_NAME": errors")};
 
 };

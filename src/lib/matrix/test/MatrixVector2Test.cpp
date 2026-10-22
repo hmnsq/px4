@@ -32,10 +32,10 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#അന്തര്ഭാവ <gtest/gtest.h>
+#അന്തര്ഭാവ <matrix/math.hpp>
 
-using namespace matrix;
+using നാമാകാശ matrix;
 
 TEST(MatrixVector2Test, Vector2)
 {
@@ -47,7 +47,7 @@ TEST(MatrixVector2Test, Vector2)
 	EXPECT_FLOAT_EQ(c(0), 0.f);
 	EXPECT_FLOAT_EQ(c(1), 0.f);
 
-	Matrix<float, 2, 1> d(a);
+	Matrix<ദശാംശം, 2, 1> d(a);
 	EXPECT_FLOAT_EQ(d(0, 0), 1.f);
 	EXPECT_FLOAT_EQ(d(1, 0), 0.f);
 
@@ -55,7 +55,7 @@ TEST(MatrixVector2Test, Vector2)
 	EXPECT_FLOAT_EQ(e(0), 1.f);
 	EXPECT_FLOAT_EQ(e(1), 0.f);
 
-	float data[] = {4, 5};
+	ദശാംശം data[] = {4, 5};
 	Vector2f f(data);
 	EXPECT_FLOAT_EQ(f(0), 4.f);
 	EXPECT_FLOAT_EQ(f(1), 5.f);

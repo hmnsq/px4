@@ -33,29 +33,29 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#അന്തര്ഭാവ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/manual_control_setpoint.h>
+#അന്തര്ഭാവ <uORB/topics/manual_control_setpoint.h>
 
 /**
  * Functions: RC_Roll .. RCAUX_Max
  */
-class FunctionManualRC : public FunctionProviderBase
+വർഗ്ഗം FunctionManualRC : പൊതു FunctionProviderBase
 {
-public:
+പൊതു:
 	FunctionManualRC()
 	{
-		resetAllToDisarmedValue();
+		reset_All_To_Disarmed_മൂല്യം();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionManualRC(); }
+	സ്ഥിതം FunctionProviderBase *allocate(സ്ഥിരം Context &context) { തിരികെ പുതിയ FunctionManualRC(); }
 
-	void update() override
+	ശൂന്യം update() override
 	{
 		manual_control_setpoint_s manual_control_setpoint;
 
-		if (_topic.update(&manual_control_setpoint)) {
-			if (manual_control_setpoint.valid) {
+		എങ്കിൽ (_topic.update(&manual_control_setpoint)) {
+			എങ്കിൽ (manual_control_setpoint.valid) {
 				_data[0] = manual_control_setpoint.roll;
 				_data[1] = manual_control_setpoint.pitch;
 				_data[2] = manual_control_setpoint.throttle;
@@ -68,27 +68,27 @@ public:
 				_data[9] = manual_control_setpoint.aux5;
 				_data[10] = manual_control_setpoint.aux6;
 
-			} else {
-				resetAllToDisarmedValue();
+			} അല്ലെങ്കിൽ {
+				reset_All_To_Disarmed_മൂല്യം();
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::RC_Roll]; }
+	ദശാംശം value(OutputFunction func) override { തിരികെ _data[(പൂർണ്ണസംഖ്യ)func - (പൂർണ്ണസംഖ്യ)OutputFunction::RC_Roll]; }
 
-private:
-	static constexpr int num_data_points = 11;
+സ്വകാര്യ:
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ അക്കം_data_points = 11;
 
-	void resetAllToDisarmedValue()
+	ശൂന്യം reset_All_To_Disarmed_മൂല്യം()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < അക്കം_data_points; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
+	static_assert(അക്കം_data_points == (പൂർണ്ണസംഖ്യ)OutputFunction::RC_AUXMax - (പൂർണ്ണസംഖ്യ)OutputFunction::RC_Roll + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _topic{ORB_ID(manual_control_setpoint)};
-	float _data[num_data_points] {};
+	ദശാംശം _data[അക്കം_data_points] {};
 };

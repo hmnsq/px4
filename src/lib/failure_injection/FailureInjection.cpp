@@ -31,95 +31,95 @@
  *
  ****************************************************************************/
 
-#include "FailureInjection.hpp"
+#അന്തര്ഭാവ "FailureInjection.hpp"
 
-#if defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
+#എങ്കിൽ defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
 
-#include <parameters/param.h>
-#include <uORB/topics/battery_status.h>
-#include <uORB/topics/sensor_gnss.h>
+#അന്തര്ഭാവ <parameters/param.h>
+#അന്തര്ഭാവ <uORB/topics/battery_status.h>
+#അന്തര്ഭാവ <uORB/topics/sensor_gnss.h>
 
-namespace failure_injection
+നാമാകാശ failure_injection
 {
 
-bool Config::update()
+തർക്കം Config::update()
 {
 	failure_injection_s cfg;
 
-	if (_sub.update(&cfg)) {
+	എങ്കിൽ (_sub.update(&cfg)) {
 		set(cfg);
-		return true;
+		തിരികെ സത്യം;
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void Config::set(const failure_injection_s &cfg)
+ശൂന്യം Config::set(സ്ഥിരം failure_injection_s &cfg)
 {
-	_count = (cfg.count <= failure_injection_s::MAX_FAILURES) ? cfg.count : failure_injection_s::MAX_FAILURES;
+	എണ്ണം_3 = (cfg.എണ്ണം <= failure_injection_s::MAX_FAILURES) ? cfg.എണ്ണം : failure_injection_s::MAX_FAILURES;
 
-	for (uint8_t i = 0; i < _count; i++) {
+	വേണ്ടി (uint8_t i = 0; i < എണ്ണം_3; i++) {
 		_unit[i] = cfg.unit[i];
 		_instance_mask[i] = cfg.instance_mask[i];
 		_failure_type[i] = static_cast<Mode>(cfg.failure_type[i]);
 	}
 }
 
-Mode Config::mode(uint8_t unit, uint8_t instance) const
+Mode Config::mode(uint8_t unit, uint8_t instance) സ്ഥിരം
 {
-	for (uint8_t i = 0; i < _count; i++) {
-		if (_unit[i] != unit) {
-			continue;
+	വേണ്ടി (uint8_t i = 0; i < എണ്ണം_3; i++) {
+		എങ്കിൽ (_unit[i] != unit) {
+			തുടരുക;
 		}
 
 		// instance == 0 matches any instance of the unit; otherwise match the
 		// 1-based instance against the bitmask (0xFFFF covers all instances).
-		if (instance == 0 || (instance <= 16 && (_instance_mask[i] & (1u << (instance - 1))))) {
-			return _failure_type[i];
+		എങ്കിൽ (instance == 0 || (instance <= 16 && (_instance_mask[i] & (1u << (instance - 1))))) {
+			തിരികെ _failure_type[i];
 		}
 	}
 
-	return Mode::Ok;
+	തിരികെ Mode::Ok;
 }
 
-bool process_battery(const Config &config, uint8_t instance, battery_status_s &battery_status)
+തർക്കം process_battery(സ്ഥിരം Config &config, uint8_t instance, battery_status_s &battery_status)
 {
-	const Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_BATTERY, instance);
-	static constexpr float trigger_margin = 0.01f; // report remaining charge just below the threshold
+	സ്ഥിരം Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_BATTERY, instance);
+	സ്ഥിതം constexpr ദശാംശം trigger_margin = 0.01f; // report remaining charge just below the threshold
 
-	if (mode == Mode::Off) {
+	എങ്കിൽ (mode == Mode::Off) {
 		// Suppress the publication so the pack reads disconnected.
-		return false;
+		തിരികെ അസത്യം;
 	}
 
-	if (mode != Mode::Wrong) {
-		return true;
+	എങ്കിൽ (mode != Mode::Wrong) {
+		തിരികെ സത്യം;
 	}
 
-	static const param_t level_handle = param_find("SYS_FAIL_BAT_LVL");
-	static const param_t low_thr_handle = param_find("BAT_LOW_THR");
-	static const param_t crit_thr_handle = param_find("BAT_CRIT_THR");
-	static const param_t emergen_thr_handle = param_find("BAT_EMERGEN_THR");
+	സ്ഥിതം സ്ഥിരം param_t level_handle = param_find("SYS_FAIL_BAT_LVL");
+	സ്ഥിതം സ്ഥിരം param_t താഴെയുള്ള_thr_handle = param_find("BAT_LOW_THR");
+	സ്ഥിതം സ്ഥിരം param_t crit_thr_handle = param_find("BAT_CRIT_THR");
+	സ്ഥിതം സ്ഥിരം param_t emergen_thr_handle = param_find("BAT_EMERGEN_THR");
 
 	int32_t level = battery_status_s::WARNING_CRITICAL;
 	param_get(level_handle, &level);
 
 	param_t threshold_handle = crit_thr_handle;
 
-	switch (level) {
-	case battery_status_s::WARNING_LOW:
-		threshold_handle = low_thr_handle;
-		break;
+	തിരഞ്ഞെടുപ്പ് (level) {
+	അവസ്ഥ battery_status_s::WARNING_താഴെയുള്ള:
+		threshold_handle = താഴെയുള്ള_thr_handle;
+		നിർത്തുക;
 
-	case battery_status_s::WARNING_EMERGENCY:
+	അവസ്ഥ battery_status_s::WARNING_EMERGENCY:
 		threshold_handle = emergen_thr_handle;
-		break;
+		നിർത്തുക;
 
-	case battery_status_s::WARNING_CRITICAL:
-	default:
+	അവസ്ഥ battery_status_s::WARNING_CRITICAL:
+	സ്ഥിരസ്ഥിതി:
 		level = battery_status_s::WARNING_CRITICAL;
 		threshold_handle = crit_thr_handle;
-		break;
+		നിർത്തുക;
 	}
 
 	battery_status.warning = level;
@@ -127,101 +127,101 @@ bool process_battery(const Config &config, uint8_t instance, battery_status_s &b
 
 	// Report the remaining charge just below the selected threshold so the
 	// matching stage of the low-battery failsafe triggers.
-	float threshold = 0.f;
+	ദശാംശം threshold = 0.f;
 	param_get(threshold_handle, &threshold);
 	battery_status.remaining = (threshold > trigger_margin) ? (threshold - trigger_margin) : 0.f;
 
-	return true;
+	തിരികെ സത്യം;
 }
 
-bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
+തർക്കം process_gnss(സ്ഥിരം Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
 		  Stuck<sensor_gnss_s> &stuck)
 {
-	const Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SENSOR_GPS, uorb_instance + 1);
+	സ്ഥിരം Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SENSOR_GPS, uorb_instance + 1);
 
 	// Off and Stuck are message-agnostic; run them first so the Stuck cache keeps the
 	// uncorrupted sample and a later Stuck replays a healthy fix.
-	if (!process(mode, sensor_gnss, stuck)) {
-		return false;
+	എങ്കിൽ (!process(mode, sensor_gnss, stuck)) {
+		തിരികെ അസത്യം;
 	}
 
-	if (mode == Mode::Wrong) {
-		static const param_t fix_type_handle = param_find("SYS_FAIL_GPS_WRG");
+	എങ്കിൽ (mode == Mode::Wrong) {
+		സ്ഥിതം സ്ഥിരം param_t fix_type_handle = param_find("SYS_FAIL_GPS_WRG");
 
 		int32_t fix_type = sensor_gnss_s::FIX_TYPE_2D;
 		param_get(fix_type_handle, &fix_type);
 		sensor_gnss.fix_type = (uint8_t)fix_type;
 
-		static const param_t jamming_state_handle = param_find("SYS_FAIL_GPS_JAM");
+		സ്ഥിതം സ്ഥിരം param_t jamming_state_handle = param_find("SYS_FAIL_GPS_JAM");
 
 		int32_t jamming_state = sensor_gnss_s::JAMMING_STATE_UNKNOWN;
 		param_get(jamming_state_handle, &jamming_state);
 
-		if (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
+		എങ്കിൽ (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
 			sensor_gnss.jamming_state = (uint8_t)jamming_state;
 		}
 	}
 
-	return true;
+	തിരികെ സത്യം;
 }
 
-esc_status_s process_esc(const Config &config, const esc_status_s &status)
+esc_status_s process_esc(സ്ഥിരം Config &config, സ്ഥിരം esc_status_s &status)
 {
 	esc_status_s result = status;
 
-	for (int i = 0; i < result.esc_count && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
-		const uint8_t function = result.esc[i].actuator_function;
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < result.esc_എണ്ണം && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
+		സ്ഥിരം uint8_t function = result.esc[i].actuator_function;
 
-		if (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
-			continue; // not a motor output
+		എങ്കിൽ (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
+			തുടരുക; // not a motor output
 		}
 
-		const uint8_t instance = function - esc_report_s::ACTUATOR_FUNCTION_MOTOR1 + 1; // 1-based ESC instance
+		സ്ഥിരം uint8_t instance = function - esc_report_s::ACTUATOR_FUNCTION_MOTOR1 + 1; // 1-based ESC instance
 
-		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_ESC, instance)) {
-		case Mode::Off:
+		തിരഞ്ഞെടുപ്പ് (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_ESC, instance)) {
+		അവസ്ഥ Mode::Off:
 			result.esc_online_flags &= ~(1u << i);
 			result.esc_armed_flags &= ~(1u << i);
 			result.esc[i] = esc_report_s{};
 			result.esc[i].actuator_function = function;
-			break;
+			നിർത്തുക;
 
-		case Mode::Wrong:
+		അവസ്ഥ Mode::Wrong:
 			result.esc[i].esc_voltage *= 0.1f;
 			result.esc[i].esc_current *= 0.1f;
 			result.esc[i].esc_rpm *= 10;
-			break;
+			നിർത്തുക;
 
-		default:
-			break;
+		സ്ഥിരസ്ഥിതി:
+			നിർത്തുക;
 		}
 	}
 
-	return result;
+	തിരികെ result;
 }
 
-MotorFailureMasks process_motor(const Config &config)
+MotorFailureMasks process_motor(സ്ഥിരം Config &config)
 {
 	MotorFailureMasks masks{};
 
-	for (int i = 0; i < esc_status_s::CONNECTED_ESC_MAX; i++) {
-		const uint16_t bit = 1u << i;
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < esc_status_s::CONNECTED_ESC_MAX; i++) {
+		സ്ഥിരം uint16_t bit = 1u << i;
 
-		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_MOTOR, i + 1)) {
-		case Mode::Off:
+		തിരഞ്ഞെടുപ്പ് (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_MOTOR, i + 1)) {
+		അവസ്ഥ Mode::Off:
 			masks.failure_mask |= bit;
-			break;
+			നിർത്തുക;
 
-		case Mode::Wrong:
+		അവസ്ഥ Mode::Wrong:
 			masks.stop_mask |= bit;
-			break;
+			നിർത്തുക;
 
-		default:
-			break;
+		സ്ഥിരസ്ഥിതി:
+			നിർത്തുക;
 		}
 	}
 
-	return masks;
+	തിരികെ masks;
 }
 
 } // namespace failure_injection

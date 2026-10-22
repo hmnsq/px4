@@ -31,18 +31,18 @@
  *
  ****************************************************************************/
 
-#include "version.h"
+#അന്തര്ഭാവ "version.h"
 
-#include "build_git_version.h"
+#അന്തര്ഭാവ "build_git_version.h"
 
-#include <string.h>
+#അന്തര്ഭാവ <string.h>
 
-#if !defined(CONFIG_CDCACM_PRODUCTID)
+#എങ്കിൽ !defined(CONFIG_CDCACM_PRODUCTID)
 # define CONFIG_CDCACM_PRODUCTID 0
 #endif
 
-#if defined(__PX4_LINUX)
-#include <sys/utsname.h>
+#എങ്കിൽ defined(__PX4_LINUX)
+#അന്തര്ഭാവ <sys/utsname.h>
 #endif
 
 // dev >= 0
@@ -50,7 +50,7 @@
 // beta >= 128
 // release candidate >= 192
 // release == 255
-enum FIRMWARE_TYPE {
+എണ്ണൽ FIRMWARE_TYPE {
 	FIRMWARE_TYPE_DEV = 0,
 	FIRMWARE_TYPE_ALPHA = 64,
 	FIRMWARE_TYPE_BETA = 128,
@@ -58,86 +58,86 @@ enum FIRMWARE_TYPE {
 	FIRMWARE_TYPE_RELEASE = 255
 };
 
-const char *px4_build_uri(void)
+സ്ഥിരം അക്ഷരം *px4_build_uri(ശൂന്യം)
 {
-	return STRINGIFY(BUILD_URI);
+	തിരികെ STRINGIFY(BUILD_URI);
 }
 
-uint32_t version_tag_to_number(const char *tag)
+uint32_t version_tag_to_സംഖ്യ(സ്ഥിരം അക്ഷരം *tag)
 {
-	uint32_t version_number = 0;
+	uint32_t version_സംഖ്യ = 0;
 
 	int16_t buffer = -1;
 	size_t buffer_counter = 0;
-	size_t dash_count = 0;
-	size_t point_count = 0;
-	char version[3] = {0, 0, 0};
-	int firmware_type = FIRMWARE_TYPE_RELEASE;
+	size_t dash_എണ്ണം = 0;
+	size_t point_എണ്ണം = 0;
+	അക്ഷരം version[3] = {0, 0, 0};
+	പൂർണ്ണസംഖ്യ firmware_type = FIRMWARE_TYPE_RELEASE;
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		switch (tag[i]) {
-		case '-':
-			dash_count++;
-			break;
+	വേണ്ടി (size_t i = 0; i < strlen(tag); i++) {
+		തിരഞ്ഞെടുപ്പ് (tag[i]) {
+		അവസ്ഥ '-':
+			dash_എണ്ണം++;
+			നിർത്തുക;
 
-		case '.':
-			point_count++;
-			break;
+		അവസ്ഥ '.':
+			point_എണ്ണം++;
+			നിർത്തുക;
 
-		case 'r':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
+		അവസ്ഥ 'r':
+			എങ്കിൽ (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
 				firmware_type = FIRMWARE_TYPE_RC;
 
 			}
 
-			break;
+			നിർത്തുക;
 
-		case 'p':
+		അവസ്ഥ 'p':
 			firmware_type = FIRMWARE_TYPE_ALPHA;
-			break;
+			നിർത്തുക;
 
-		case 't':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
+		അവസ്ഥ 't':
+			എങ്കിൽ (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				firmware_type = FIRMWARE_TYPE_BETA;
 
 			}
 
-			break;
+			നിർത്തുക;
 
-		case 'v':
-			if (i > 0) {
+		അവസ്ഥ 'v':
+			എങ്കിൽ (i > 0) {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
 			}
 
-			break;
+			നിർത്തുക;
 
-		default:
-			break;
+		സ്ഥിരസ്ഥിതി:
+			നിർത്തുക;
 		}
 	}
 
-	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
-	    (dash_count == 2 && point_count == 2) ||
-	    (dash_count == 3 && point_count == 4) ||
-	    (dash_count == 4 && point_count == 4)) {
+	എങ്കിൽ ((dash_എണ്ണം == 1 && point_എണ്ണം == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
+	    (dash_എണ്ണം == 2 && point_എണ്ണം == 2) ||
+	    (dash_എണ്ണം == 3 && point_എണ്ണം == 4) ||
+	    (dash_എണ്ണം == 4 && point_എണ്ണം == 4)) {
 		firmware_type = FIRMWARE_TYPE_DEV;
 	}
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (buffer_counter > 2) {
-			continue;
+	വേണ്ടി (size_t i = 0; i < strlen(tag); i++) {
+		എങ്കിൽ (buffer_counter > 2) {
+			തുടരുക;
 		}
 
-		if (tag[i] >= '0' && tag[i] <= '9') {
+		എങ്കിൽ (tag[i] >= '0' && tag[i] <= '9') {
 			buffer = (buffer == -1) ? 0 : buffer;
 			buffer = buffer * 10 + (tag[i] - '0');
 
-		} else {
-			if (buffer >= 0) {
+		} അല്ലെങ്കിൽ {
+			എങ്കിൽ (buffer >= 0) {
 				version[buffer_counter] = buffer;
 				buffer_counter++;
 			}
@@ -146,109 +146,109 @@ uint32_t version_tag_to_number(const char *tag)
 		}
 	}
 
-	if (buffer >= 0) {
+	എങ്കിൽ (buffer >= 0) {
 		version[buffer_counter] = buffer;
 		buffer_counter++;
 	}
 
-	if (buffer_counter <= 0) {
+	എങ്കിൽ (buffer_counter <= 0) {
 		firmware_type = 0x00;
 	}
 
-	if (buffer_counter == 3 || buffer_counter == 6) {
-		version_number = ((uint8_t)version[0] << 8 * 3) |
+	എങ്കിൽ (buffer_counter == 3 || buffer_counter == 6) {
+		version_സംഖ്യ = ((uint8_t)version[0] << 8 * 3) |
 				 ((uint8_t)version[1] << 8 * 2) |
 				 ((uint8_t)version[2] << 8 * 1) | firmware_type;
 
-	} else {
-		version_number = 0;
+	} അല്ലെങ്കിൽ {
+		version_സംഖ്യ = 0;
 	}
 
-	return version_number;
+	തിരികെ version_സംഖ്യ;
 }
 
-uint32_t px4_firmware_version(void)
+uint32_t px4_firmware_version(ശൂന്യം)
 {
-	return version_tag_to_number(PX4_GIT_TAG_STR);
+	തിരികെ version_tag_to_സംഖ്യ(PX4_GIT_TAG_STR);
 }
 
-uint32_t version_tag_to_vendor_version_number(const char *tag)
+uint32_t version_tag_to_vendor_version_സംഖ്യ(സ്ഥിരം അക്ഷരം *tag)
 {
-	uint32_t version_number = 0;
+	uint32_t version_സംഖ്യ = 0;
 
 	int16_t buffer = -1;
 	size_t buffer_counter = 0;
-	char version[6] = {0, 0, 0, 0, 0, 0};
-	size_t dash_count = 0;
-	size_t point_count = 0;
-	int firmware_type = FIRMWARE_TYPE_RELEASE;
+	അക്ഷരം version[6] = {0, 0, 0, 0, 0, 0};
+	size_t dash_എണ്ണം = 0;
+	size_t point_എണ്ണം = 0;
+	പൂർണ്ണസംഖ്യ firmware_type = FIRMWARE_TYPE_RELEASE;
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		switch (tag[i]) {
-		case '-':
-			dash_count++;
-			break;
+	വേണ്ടി (size_t i = 0; i < strlen(tag); i++) {
+		തിരഞ്ഞെടുപ്പ് (tag[i]) {
+		അവസ്ഥ '-':
+			dash_എണ്ണം++;
+			നിർത്തുക;
 
-		case '.':
-			point_count++;
-			break;
+		അവസ്ഥ '.':
+			point_എണ്ണം++;
+			നിർത്തുക;
 
-		case 'r':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
+		അവസ്ഥ 'r':
+			എങ്കിൽ (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
 				firmware_type = FIRMWARE_TYPE_RC;
 
 			}
 
-			break;
+			നിർത്തുക;
 
-		case 'p':
+		അവസ്ഥ 'p':
 			firmware_type = FIRMWARE_TYPE_ALPHA;
-			break;
+			നിർത്തുക;
 
-		case 't':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
+		അവസ്ഥ 't':
+			എങ്കിൽ (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				firmware_type = FIRMWARE_TYPE_BETA;
 
 			}
 
-			break;
+			നിർത്തുക;
 
-		case 'v':
-			if (i > 0) {
+		അവസ്ഥ 'v':
+			എങ്കിൽ (i > 0) {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
 			}
 
-			break;
+			നിർത്തുക;
 
-		default:
-			break;
+		സ്ഥിരസ്ഥിതി:
+			നിർത്തുക;
 		}
 	}
 
-	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
-	    (dash_count == 2 && point_count == 2) ||
-	    (dash_count == 3 && point_count == 4) ||
-	    (dash_count == 4 && point_count == 4)) {
+	എങ്കിൽ ((dash_എണ്ണം == 1 && point_എണ്ണം == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
+	    (dash_എണ്ണം == 2 && point_എണ്ണം == 2) ||
+	    (dash_എണ്ണം == 3 && point_എണ്ണം == 4) ||
+	    (dash_എണ്ണം == 4 && point_എണ്ണം == 4)) {
 		firmware_type = FIRMWARE_TYPE_DEV;
 	}
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (buffer_counter > 5) {
-			continue;
+	വേണ്ടി (size_t i = 0; i < strlen(tag); i++) {
+		എങ്കിൽ (buffer_counter > 5) {
+			തുടരുക;
 		}
 
-		if (tag[i] >= '0' && tag[i] <= '9') {
+		എങ്കിൽ (tag[i] >= '0' && tag[i] <= '9') {
 			buffer = (buffer == -1) ? 0 : buffer;
 			buffer = buffer * 10 + (tag[i] - '0');
 
-		} else {
-			if (buffer >= 0) {
-				if (buffer_counter + 1 == 4 && tag[i] == '-') {
-					break;
+		} അല്ലെങ്കിൽ {
+			എങ്കിൽ (buffer >= 0) {
+				എങ്കിൽ (buffer_counter + 1 == 4 && tag[i] == '-') {
+					നിർത്തുക;
 				}
 
 				version[buffer_counter] = buffer;
@@ -259,152 +259,152 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 		}
 	}
 
-	if (buffer >= 0 && (buffer_counter + 1 == 3 || buffer_counter + 1 == 6)) {
+	എങ്കിൽ (buffer >= 0 && (buffer_counter + 1 == 3 || buffer_counter + 1 == 6)) {
 		version[buffer_counter] = buffer;
 		buffer_counter++;
 	}
 
-	if (buffer_counter == 6) {
-		version_number = ((uint8_t)version[3] << 8 * 3) |
+	എങ്കിൽ (buffer_counter == 6) {
+		version_സംഖ്യ = ((uint8_t)version[3] << 8 * 3) |
 				 ((uint8_t)version[4] << 8 * 2) |
 				 ((uint8_t)version[5] << 8 * 1) | firmware_type;
 
-	} else if (buffer_counter == 3) {
-		version_number = firmware_type;
+	} അല്ലെങ്കിൽ എങ്കിൽ (buffer_counter == 3) {
+		version_സംഖ്യ = firmware_type;
 
-	} else {
-		version_number = 0;
+	} അല്ലെങ്കിൽ {
+		version_സംഖ്യ = 0;
 	}
 
-	return version_number;
+	തിരികെ version_സംഖ്യ;
 }
 
-uint32_t px4_firmware_vendor_version(void)
+uint32_t px4_firmware_vendor_version(ശൂന്യം)
 {
-	return version_tag_to_vendor_version_number(PX4_GIT_TAG_STR);
+	തിരികെ version_tag_to_vendor_version_സംഖ്യ(PX4_GIT_TAG_STR);
 }
 
-const char *px4_firmware_git_branch(void)
+സ്ഥിരം അക്ഷരം *px4_firmware_git_branch(ശൂന്യം)
 {
-	return PX4_GIT_BRANCH_NAME;
+	തിരികെ PX4_GIT_BRANCH_NAME;
 }
 
-uint32_t px4_board_version(void)
+uint32_t px4_board_version(ശൂന്യം)
 {
-#if defined(__PX4_NUTTX)
-	return CONFIG_CDCACM_PRODUCTID;
-#else
-	return 1;
+#എങ്കിൽ defined(__PX4_NUTTX)
+	തിരികെ CONFIG_CDCACM_PRODUCTID;
+#അല്ലെങ്കിൽ
+	തിരികെ 1;
 #endif
 }
 
-uint32_t px4_os_version(void)
+uint32_t px4_os_version(ശൂന്യം)
 {
-#if defined(__PX4_DARWIN) || defined(__PX4_CYGWIN) || defined(__PX4_QURT)
-	return 0; //TODO: implement version for Darwin, Cygwin, QuRT
-#elif defined(__PX4_LINUX)
-	struct utsname name;
+#എങ്കിൽ defined(__PX4_DARWIN) || defined(__PX4_CYGWIN) || defined(__PX4_QURT)
+	തിരികെ 0; //TODO: implement version for Darwin, Cygwin, QuRT
+#അല്ലെങ്കിലെങ്കിൽ defined(__PX4_LINUX)
+	ഘടന utsname name;
 
-	if (uname(&name) == 0) {
-		char *c = name.release;
+	എങ്കിൽ (uname(&name) == 0) {
+		അക്ഷരം *c = name.release;
 
 		// cut the part after the first '-'
-		while (*c && *c != '-') {
+		ആകുമ്പോൾ (*c && *c != '-') {
 			++c;
 		}
 
 		*c = 0;
-		return version_tag_to_number(name.release);
+		തിരികെ version_tag_to_സംഖ്യ(name.release);
 
-	} else {
-		return 0;
+	} അല്ലെങ്കിൽ {
+		തിരികെ 0;
 	}
 
-#elif defined(__PX4_NUTTX)
-	return version_tag_to_number(NUTTX_GIT_TAG_STR);
-#else
+#അല്ലെങ്കിലെങ്കിൽ defined(__PX4_NUTTX)
+	തിരികെ version_tag_to_സംഖ്യ(NUTTX_GIT_TAG_STR);
+#അല്ലെങ്കിൽ
 # error "px4_os_version not implemented for current OS"
 #endif
 }
 
-const char *px4_os_version_string(void)
+സ്ഥിരം അക്ഷരം *px4_os_version_string(ശൂന്യം)
 {
-#if defined(__PX4_NUTTX)
-	return NUTTX_GIT_VERSION_STR;
-#else
-	return NULL;
+#എങ്കിൽ defined(__PX4_NUTTX)
+	തിരികെ NUTTX_GIT_VERSION_STR;
+#അല്ലെങ്കിൽ
+	തിരികെ ശൂന്യ;
 #endif
 }
 
-const char *px4_os_name(void)
+സ്ഥിരം അക്ഷരം *px4_os_name(ശൂന്യം)
 {
-#if defined(__PX4_DARWIN)
-	return "Darwin";
-#elif defined(__PX4_LINUX)
-	return "Linux";
-#elif defined(__PX4_QURT)
-	return "QuRT";
-#elif defined(__PX4_NUTTX)
-	return "NuttX";
-#elif defined(__PX4_CYGWIN)
-	return "Cygwin";
-#else
+#എങ്കിൽ defined(__PX4_DARWIN)
+	തിരികെ "Darwin";
+#അല്ലെങ്കിലെങ്കിൽ defined(__PX4_LINUX)
+	തിരികെ "Linux";
+#അല്ലെങ്കിലെങ്കിൽ defined(__PX4_QURT)
+	തിരികെ "QuRT";
+#അല്ലെങ്കിലെങ്കിൽ defined(__PX4_NUTTX)
+	തിരികെ "NuttX";
+#അല്ലെങ്കിലെങ്കിൽ defined(__PX4_CYGWIN)
+	തിരികെ "Cygwin";
+#അല്ലെങ്കിൽ
 # error "px4_os_name not implemented for current OS"
 #endif
 }
 
-const char *px4_toolchain_name(void)
+സ്ഥിരം അക്ഷരം *px4_toolchain_name(ശൂന്യം)
 {
-#if defined(__clang__)
-	return "Clang/LLVM";
-#elif defined(__ICC) || defined(__INTEL_COMPILER)
-	return "Intel ICC";
-#elif defined(__GNUC__) || defined(__GNUG__)
-	return "GNU GCC";
-#elif defined(_MSC_VER)
-	return "MS Visual Studio";
-#else
-	return "Unknown";
+#എങ്കിൽ defined(__clang__)
+	തിരികെ "Clang/LLVM";
+#അല്ലെങ്കിലെങ്കിൽ defined(__ICC) || defined(__INTEL_COMPILER)
+	തിരികെ "Intel ICC";
+#അല്ലെങ്കിലെങ്കിൽ defined(__GNUC__) || defined(__GNUG__)
+	തിരികെ "GNU GCC";
+#അല്ലെങ്കിലെങ്കിൽ defined(_MSC_VER)
+	തിരികെ "MS Visual Studio";
+#അല്ലെങ്കിൽ
+	തിരികെ "Unknown";
 #endif
 }
 
-const char *px4_toolchain_version(void)
+സ്ഥിരം അക്ഷരം *px4_toolchain_version(ശൂന്യം)
 {
 #ifdef __VERSION__
-	return __VERSION__;
-#else
-	return "";
+	തിരികെ __VERSION__;
+#അല്ലെങ്കിൽ
+	തിരികെ "";
 #endif
 }
 
-const char *px4_firmware_version_string(void)
+സ്ഥിരം അക്ഷരം *px4_firmware_version_string(ശൂന്യം)
 {
-	return PX4_GIT_VERSION_STR;
+	തിരികെ PX4_GIT_VERSION_STR;
 }
 
-uint64_t px4_firmware_version_binary(void)
+uint64_t px4_firmware_version_ദ്വിമാന(ശൂന്യം)
 {
-	return PX4_GIT_VERSION_BINARY;
+	തിരികെ PX4_GIT_VERSION_ദ്വിമാന;
 }
 
 
-#ifdef MAVLINK_LIB_GIT_VERSION_BINARY
-uint64_t px4_mavlink_lib_version_binary(void)
+#ifdef MAVLINK_LIB_GIT_VERSION_ദ്വിമാന
+uint64_t px4_mavlink_lib_version_ദ്വിമാന(ശൂന്യം)
 {
-	return MAVLINK_LIB_GIT_VERSION_BINARY;
+	തിരികെ MAVLINK_LIB_GIT_VERSION_ദ്വിമാന;
 }
 #endif /* MAVLINK_LIB_GIT_VERSION_BINARY */
 
-uint64_t px4_os_version_binary(void)
+uint64_t px4_os_version_ദ്വിമാന(ശൂന്യം)
 {
-#ifdef NUTTX_GIT_VERSION_BINARY
-	return NUTTX_GIT_VERSION_BINARY;
-#else
-	return 0;
+#ifdef NUTTX_GIT_VERSION_ദ്വിമാന
+	തിരികെ NUTTX_GIT_VERSION_ദ്വിമാന;
+#അല്ലെങ്കിൽ
+	തിരികെ 0;
 #endif
 }
 
-const char *px4_firmware_oem_version_string(void)
+സ്ഥിരം അക്ഷരം *px4_firmware_oem_version_string(ശൂന്യം)
 {
-	return PX4_GIT_OEM_VERSION_STR;
+	തിരികെ PX4_GIT_OEM_VERSION_STR;
 }

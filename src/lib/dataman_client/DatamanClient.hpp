@@ -32,28 +32,28 @@
  ****************************************************************************/
 #pragma once
 
-#include <uORB/uORB.h>
-#include <uORB/Publication.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/dataman_request.h>
-#include <uORB/topics/dataman_response.h>
-#include <dataman/dataman.h>
-#include <lib/perf/perf_counter.h>
-#include <px4_platform_common/posix.h>
+#അന്തര്ഭാവ <uORB/uORB.h>
+#അന്തര്ഭാവ <uORB/Publication.hpp>
+#അന്തര്ഭാവ <uORB/Subscription.hpp>
+#അന്തര്ഭാവ <uORB/topics/dataman_request.h>
+#അന്തര്ഭാവ <uORB/topics/dataman_response.h>
+#അന്തര്ഭാവ <dataman/dataman.h>
+#അന്തര്ഭാവ <lib/perf/perf_counter.h>
+#അന്തര്ഭാവ <px4_platform_common/posix.h>
 
-using namespace time_literals;
+using നാമാകാശ time_literals;
 
-class DatamanClientTestPeer;
-class DatamanCacheTestPeer;
+വർഗ്ഗം DatamanClientTestPeer;
+വർഗ്ഗം DatamanCacheTestPeer;
 
-class DatamanClient
+വർഗ്ഗം DatamanClient
 {
-public:
+പൊതു:
 	DatamanClient();
 	~DatamanClient();
 
-	DatamanClient(const DatamanClient &) = delete;
-	DatamanClient &operator=(const DatamanClient &) = delete;
+	DatamanClient(സ്ഥിരം DatamanClient &) = delete;
+	DatamanClient &operator=(സ്ഥിരം DatamanClient &) = delete;
 
 	/**
 	 * @brief Reads data synchronously from the dataman for the specified item and index.
@@ -66,7 +66,7 @@ public:
 	 *
 	 * @return true if data was read successfully within the timeout, false otherwise.
 	 */
-	bool readSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
+	തർക്കം readSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Write data to the dataman synchronously.
@@ -79,7 +79,7 @@ public:
 	 *
 	 * @return True if the write operation succeeded, false otherwise.
 	 */
-	bool writeSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
+	തർക്കം writeSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Clears the data in the specified dataman item.
@@ -89,7 +89,7 @@ public:
 	 *
 	 * @return True if the operation was successful, false otherwise.
 	 */
-	bool clearSync(dm_item_t item, hrt_abstime timeout = 5000_ms);
+	തർക്കം clearSync(dm_item_t item, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Initiates an asynchronous request to read the data from dataman for a specific item and index.
@@ -105,7 +105,7 @@ public:
 	 *       The completion status of the request can be obtained with the
 	 *       lastOperationCompleted() function.
 	 */
-	bool readAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length);
+	തർക്കം readAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length);
 
 	/**
 	 * @brief Initiates an asynchronous request to write the data to dataman for a specific item and index.
@@ -121,7 +121,7 @@ public:
 	 *       The completion status of the request can be obtained with the
 	 *       lastOperationCompleted() function.
 	 */
-	bool writeAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length);
+	തർക്കം writeAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length);
 
 	/**
 	 * @brief Initiates an asynchronous request to clear an item in dataman.
@@ -131,7 +131,7 @@ public:
 	 * @param[in] item The item to clear.
 	 * @return True if the request was successfully initiated, false otherwise.
 	 */
-	bool clearAsync(dm_item_t item);
+	തർക്കം clearAsync(dm_item_t item);
 
 	/**
 	 * @brief Updates the state of the dataman client for asynchronous functions.
@@ -142,7 +142,7 @@ public:
 	 *
 	 * @see readAsync(), writeAsync(), clearAsync(), lastOperationCompleted()
 	 */
-	void update();
+	ശൂന്യം update();
 
 	/**
 	 * @brief Check if the last dataman operation has completed and whether it was successful.
@@ -150,12 +150,12 @@ public:
 	 * @param[out] success Output parameter indicating whether the last operation was successful.
 	 * @return true if the last operation has completed, false otherwise.
 	 */
-	bool lastOperationCompleted(bool &success);
+	തർക്കം lastOperationCompleted(തർക്കം &success);
 
 	/**
 	 * Abort any async operation currently in progress
 	 */
-	void abortCurrentOperation();
+	ശൂന്യം abortCurrentOperation();
 
 	/**
 	 * @brief Get the subscription fd used for Dataman responses.
@@ -164,18 +164,18 @@ public:
 	 * to a poll set must only do so while they have an outstanding operation whose
 	 * update() path will consume the notification.
 	 */
-	orb_sub_t responseSubscription() const { return _dataman_response_sub; }
+	orb_sub_t responseSubscription() സ്ഥിരം { തിരികെ _dataman_response_sub; }
 
-private:
-	friend class DatamanClientTestPeer;
+സ്വകാര്യ:
+	friend വർഗ്ഗം DatamanClientTestPeer;
 
-	enum class State {
+	എണ്ണൽ വർഗ്ഗം State {
 		Idle,
 		RequestSent,
 		ResponseReceived
 	};
 
-	struct Request {
+	ഘടന Request {
 		hrt_abstime timestamp;
 		dm_function_t request_type;
 		dm_item_t item;
@@ -185,10 +185,10 @@ private:
 	};
 
 	/* Synchronous response/request handler */
-	bool syncHandler(const dataman_request_s &request, dataman_response_s &response,
-			 const hrt_abstime &start_time, hrt_abstime timeout);
+	തർക്കം syncHandler(സ്ഥിരം dataman_request_s &request, dataman_response_s &response,
+			 സ്ഥിരം hrt_abstime &start_time, hrt_abstime timeout);
 	/* Drain any queued stale replies before a new request starts. */
-	void clearPendingResponse();
+	ശൂന്യം clearPendingResponse();
 
 	State _state{State::Idle};
 	Request _active_request{};
@@ -199,7 +199,7 @@ private:
 
 	px4_pollfd_struct_t _fds;
 
-	static constexpr uint16_t CLIENT_ID_NOT_SET{0};
+	സ്ഥിതം constexpr uint16_t CLIENT_ID_NOT_SET{0};
 
 	uint16_t _client_id{CLIENT_ID_NOT_SET};
 
@@ -207,10 +207,10 @@ private:
 };
 
 
-class DatamanCache
+വർഗ്ഗം DatamanCache
 {
-public:
-	DatamanCache(const char *cache_miss_perf_counter_name, uint32_t num_items);
+പൊതു:
+	DatamanCache(സ്ഥിരം അക്ഷരം *cache_miss_perf_counter_name, uint32_t അക്കം_ഇനങ്ങൾ);
 	~DatamanCache();
 
 	/**
@@ -218,12 +218,12 @@ public:
 	 *
 	 * @param[in] num_items The number of items the cache should hold.
 	 */
-	void resize(uint32_t num_items);
+	ശൂന്യം resize(uint32_t അക്കം_ഇനങ്ങൾ);
 
 	/**
 	 * @brief Invalidates all cached items in the cache by resetting their cache_state to Idle.
 	 */
-	void invalidate();
+	ശൂന്യം invalidate();
 
 	/**
 	 * @brief Adds an index for items to be cached.
@@ -236,7 +236,7 @@ public:
 	 *
 	 * @return true if the item was added to be cached, false otherwise if the size of the cache is reached.
 	 */
-	bool load(dm_item_t item, uint32_t index);
+	തർക്കം load(dm_item_t item, uint32_t index);
 
 	/**
 	 * @brief Loads for a specific item from the cache or acquires and wait for it if not found in the cache.
@@ -251,7 +251,7 @@ public:
 	 *
 	 * @note This function will block if timeout is set differently than 0 and data doesn't exist in cache.
 	 */
-	bool loadWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 0);
+	തർക്കം loadWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 0);
 
 	/**
 	 * @brief Write data back and update it in the cache if stored.
@@ -264,7 +264,7 @@ public:
 	 *
 	 * @return True if the write operation succeeded, false otherwise.
 	 */
-	bool writeWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
+	തർക്കം writeWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Update a cached item in-place without issuing a new dataman request.
@@ -274,7 +274,7 @@ public:
 	 *
 	 * @return true if the item was fully cached and has been updated.
 	 */
-	bool updateCachedItem(dm_item_t item, uint32_t index, const uint8_t *buffer, uint32_t length);
+	തർക്കം updateCachedItem(dm_item_t item, uint32_t index, സ്ഥിരം uint8_t *buffer, uint32_t length);
 
 	/**
 	 * @brief Updates the dataman cache by checking for responses from the DatamanClient and processing them.
@@ -285,28 +285,28 @@ public:
 	 * to the next item in the cache. This function does not block and returns immediately.
 	 * The data can be acquired with the 'loadWait()' function after it has been cached.
 	 */
-	void update();
+	ശൂന്യം update();
 
 	/**
 	 * @brief Function providing info if there items to be loaded to dataman cache.
 	 *
 	 * @return true if there are items to be processed.
 	 */
-	bool isLoading() const { return (_item_counter > 0); }
+	തർക്കം isLoading() സ്ഥിരം { തിരികെ (_item_counter > 0); }
 
 	/**
 	 * @brief Returns a reference to the DatamanClient instance used by the DatamanCache.
 	 *
 	 * @return A reference to the DatamanClient instance used by the DatamanCache.
 	 */
-	DatamanClient &client() { return _client; }
+	DatamanClient &client() { തിരികെ _client; }
 
-	int size() const { return _num_items; }
+	പൂർണ്ണസംഖ്യ size() സ്ഥിരം { തിരികെ അക്കം_ഇനങ്ങൾ_2; }
 
-private:
-	friend class DatamanCacheTestPeer;
+സ്വകാര്യ:
+	friend വർഗ്ഗം DatamanCacheTestPeer;
 
-	enum class State {
+	എണ്ണൽ വർഗ്ഗം State {
 		Idle,
 		RequestPrepared,
 		RequestSent,
@@ -314,19 +314,19 @@ private:
 		Error
 	};
 
-	struct Item {
+	ഘടന Item {
 		dataman_response_s response;
 		State cache_state;
 	};
 
-	void resetCacheState();
-	inline void changeUpdateIndex();
+	ശൂന്യം resetCacheState();
+	വരിയിൽ ശൂന്യം changeUpdateIndex();
 
-	Item *_items{nullptr};
+	Item *ഇനങ്ങൾ{nullptr};
 	uint32_t _load_index{0};	///< index for tracking last index used by load function
 	uint32_t _update_index{0};	///< index for tracking last index used by update function
 	uint32_t _item_counter{0};	///< number of items to process with update function
-	uint32_t _num_items{0};		///< number of items that cache can store
+	uint32_t അക്കം_ഇനങ്ങൾ_2{0};		///< number of items that cache can store
 
 	DatamanClient _client{};
 

@@ -59,19 +59,19 @@
 #ifndef PX4_AIRSPEEDDIRECTIONONTROLLER_HPP
 #define PX4_AIRSPEEDDIRECTIONONTROLLER_HPP
 
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
+#അന്തര്ഭാവ <matrix/math.hpp>
+#അന്തര്ഭാവ <lib/mathlib/mathlib.h>
 
-class AirspeedDirectionController
+വർഗ്ഗം AirspeedDirectionController
 {
-public:
+പൊതു:
 	AirspeedDirectionController();
 
-	void setPGainFromPeriodAndDamping(float damping, float period) {p_gain_ = 4.f * M_PI_F * damping / math::max(period, FLT_EPSILON);}
-	float controlHeading(const float heading_sp, const float heading, const float airspeed) const;
+	ശൂന്യം setPGainFromPeriodAndDamping(ദശാംശം damping, ദശാംശം period) {p_gain_ = 4.f * M_PI_F * damping / math::max(period, FLT_EPSILON);}
+	ദശാംശം controlHeading(സ്ഥിരം ദശാംശം heading_sp, സ്ഥിരം ദശാംശം heading, സ്ഥിരം ദശാംശം airspeed) സ്ഥിരം;
 
-private:
-	float p_gain_{0.8885f}; // proportional gain (computed from period_ and damping_) [rad/s]
+സ്വകാര്യ:
+	ദശാംശം p_gain_{0.8885f}; // proportional gain (computed from period_ and damping_) [rad/s]
 };
 
 #endif //PX4_AIRSPEEDDIRECTIONONTROLLER_HPP

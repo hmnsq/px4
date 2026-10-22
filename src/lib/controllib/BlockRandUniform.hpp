@@ -39,51 +39,51 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <assert.h>
+#അന്തര്ഭാവ <time.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <mathlib/math/test/test.hpp>
+#അന്തര്ഭാവ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#അന്തര്ഭാവ "block/Block.hpp"
+#അന്തര്ഭാവ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#അന്തര്ഭാവ "matrix/math.hpp"
 
-namespace control
+നാമാകാശ control
 {
 
 /**
  * A uniform random number generator
  */
-class __EXPORT BlockRandUniform: public Block
+വർഗ്ഗം __EXPORT BlockRandUniform: പൊതു Block
 {
-public:
+പൊതു:
 // methods
 	BlockRandUniform(SuperBlock *parent,
-			 const char *name) :
+			 സ്ഥിരം അക്ഷരം *name) :
 		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+		_min(ഇത്, "MIN"),
+		_max(ഇത്, "MAX")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandUniform() = default;
-	float update()
+	മായാ ~BlockRandUniform() = സ്ഥിരസ്ഥിതി;
+	ദശാംശം update()
 	{
-		static float rand_max = static_cast<float>(RAND_MAX);
-		float rand_val = rand();
-		float bounds = getMax() - getMin();
-		return getMin() + (rand_val * bounds) / rand_max;
+		സ്ഥിതം ദശാംശം rand_max = static_cast<ദശാംശം>(RAND_MAX);
+		ദശാംശം rand_val = rand();
+		ദശാംശം bounds = getMax() - getMin();
+		തിരികെ getMin() + (rand_val * bounds) / rand_max;
 	}
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-private:
+	ദശാംശം getMin() { തിരികെ _min.get(); }
+	ദശാംശം getMax() { തിരികെ _max.get(); }
+സ്വകാര്യ:
 // attributes
 	control::BlockParamFloat _min;
 	control::BlockParamFloat _max;

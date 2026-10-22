@@ -34,11 +34,11 @@
 
 
 
-#include "Ringbuffer.hpp"
+#അന്തര്ഭാവ "Ringbuffer.hpp"
 
-#include <mathlib/mathlib.h>
-#include <assert.h>
-#include <string.h>
+#അന്തര്ഭാവ <mathlib/mathlib.h>
+#അന്തര്ഭാവ <assert.h>
+#അന്തര്ഭാവ <string.h>
 
 
 Ringbuffer::~Ringbuffer()
@@ -46,16 +46,16 @@ Ringbuffer::~Ringbuffer()
 	deallocate();
 }
 
-bool Ringbuffer::allocate(size_t buffer_size)
+തർക്കം Ringbuffer::allocate(size_t buffer_size)
 {
-	assert(_ringbuffer == nullptr);
+	പ്രതിജ്ഞാ(_ringbuffer == nullptr);
 
 	_size = buffer_size;
-	_ringbuffer = new uint8_t[_size];
-	return _ringbuffer != nullptr;
+	_ringbuffer = പുതിയ uint8_t[_size];
+	തിരികെ _ringbuffer != nullptr;
 }
 
-void Ringbuffer::deallocate()
+ശൂന്യം Ringbuffer::deallocate()
 {
 	delete[] _ringbuffer;
 	_ringbuffer = nullptr;
@@ -64,88 +64,88 @@ void Ringbuffer::deallocate()
 	_end = 0;
 }
 
-size_t Ringbuffer::space_available() const
+size_t Ringbuffer::space_available() സ്ഥിരം
 {
-	if (_start > _end) {
-		return _start - _end - 1;
+	എങ്കിൽ (_start > _end) {
+		തിരികെ _start - _end - 1;
 
-	} else {
-		return _start - _end - 1 + _size;
+	} അല്ലെങ്കിൽ {
+		തിരികെ _start - _end - 1 + _size;
 	}
 }
 
-size_t Ringbuffer::space_used() const
+size_t Ringbuffer::space_used() സ്ഥിരം
 {
-	if (_start <= _end) {
-		return _end - _start;
+	എങ്കിൽ (_start <= _end) {
+		തിരികെ _end - _start;
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		// Potential wrap around.
-		return _end - _start + _size;
+		തിരികെ _end - _start + _size;
 	}
 }
 
 
-bool Ringbuffer::push_back(const uint8_t *buf, size_t buf_len)
+തർക്കം Ringbuffer::push_back(സ്ഥിരം uint8_t *buf, size_t buf_len)
 {
-	if (buf_len == 0 || buf == nullptr) {
+	എങ്കിൽ (buf_len == 0 || buf == nullptr) {
 		// Nothing to add, we better don't try.
-		return false;
+		തിരികെ അസത്യം;
 	}
 
-	if (_start > _end) {
+	എങ്കിൽ (_start > _end) {
 		// Add after end up to start, no wrap around.
 
 		// Leave one byte free so that start don't end up the same
 		// which signals empty.
-		const size_t available = _start - _end - 1;
+		സ്ഥിരം size_t available = _start - _end - 1;
 
-		if (available < buf_len) {
-			return false;
+		എങ്കിൽ (available < buf_len) {
+			തിരികെ അസത്യം;
 		}
 
 		memcpy(&_ringbuffer[_end], buf, buf_len);
 		_end += buf_len;
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		// Add after end, maybe wrap around.
-		const size_t available = _start - _end - 1 + _size;
+		സ്ഥിരം size_t available = _start - _end - 1 + _size;
 
-		if (available < buf_len) {
-			return false;
+		എങ്കിൽ (available < buf_len) {
+			തിരികെ അസത്യം;
 		}
 
-		const size_t remaining_packet_len = _size - _end;
+		സ്ഥിരം size_t remaining_packet_len = _size - _end;
 
-		if (buf_len > remaining_packet_len) {
+		എങ്കിൽ (buf_len > remaining_packet_len) {
 			memcpy(&_ringbuffer[_end], buf, remaining_packet_len);
 			_end = 0;
 
 			memcpy(&_ringbuffer[_end], buf + remaining_packet_len, buf_len - remaining_packet_len);
 			_end += buf_len - remaining_packet_len;
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			memcpy(&_ringbuffer[_end], buf, buf_len);
 			_end += buf_len;
 		}
 	}
 
-	return true;
+	തിരികെ സത്യം;
 }
 
-size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
+size_t Ringbuffer::എടുക്കുക_front(uint8_t *buf, size_t buf_max_len)
 {
-	if (buf == nullptr) {
+	എങ്കിൽ (buf == nullptr) {
 		// User needs to supply a valid pointer.
-		return 0;
+		തിരികെ 0;
 	}
 
-	if (_start == _end) {
+	എങ്കിൽ (_start == _end) {
 		// Empty
-		return 0;
+		തിരികെ 0;
 	}
 
-	if (_start < _end) {
+	എങ്കിൽ (_start < _end) {
 
 		// No wrap around.
 		size_t to_copy_len = math::min(_end - _start, buf_max_len);
@@ -153,30 +153,30 @@ size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
 		memcpy(buf, &_ringbuffer[_start], to_copy_len);
 		_start += to_copy_len;
 
-		return to_copy_len;
+		തിരികെ to_copy_len;
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		// Potential wrap around.
 		size_t to_copy_len = _end - _start + _size;
 
-		if (to_copy_len > buf_max_len) {
+		എങ്കിൽ (to_copy_len > buf_max_len) {
 			to_copy_len = buf_max_len;
 		}
 
-		const size_t remaining_buf_len = _size - _start;
+		സ്ഥിരം size_t remaining_buf_len = _size - _start;
 
-		if (to_copy_len > remaining_buf_len) {
+		എങ്കിൽ (to_copy_len > remaining_buf_len) {
 
 			memcpy(buf, &_ringbuffer[_start], remaining_buf_len);
 			_start = 0;
 			memcpy(buf + remaining_buf_len, &_ringbuffer[_start], to_copy_len - remaining_buf_len);
 			_start += to_copy_len - remaining_buf_len;
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			memcpy(buf, &_ringbuffer[_start], to_copy_len);
 			_start += to_copy_len;
 		}
 
-		return to_copy_len;
+		തിരികെ to_copy_len;
 	}
 }

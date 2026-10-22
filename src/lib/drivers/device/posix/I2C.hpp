@@ -39,33 +39,33 @@
  * Base class for devices connected via I2C.
  */
 
-#include "../CDev.hpp"
-#include <px4_platform_common/i2c.h>
+#അന്തര്ഭാവ "../CDev.hpp"
+#അന്തര്ഭാവ <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#എങ്കിൽ defined(CONFIG_I2C)
 
-struct I2CSPIDriverConfig;
+ഘടന I2CSPIDriverConfig;
 
-namespace device __EXPORT
+നാമാകാശ device __EXPORT
 {
 
 /**
  * Abstract class for character device on I2C
  */
-class __EXPORT I2C : public CDev
+വർഗ്ഗം __EXPORT I2C : പൊതു CDev
 {
 
-public:
+പൊതു:
 
 	// no copy, assignment, move, move assignment
-	I2C(const I2C &) = delete;
-	I2C &operator=(const I2C &) = delete;
+	I2C(സ്ഥിരം I2C &) = delete;
+	I2C &operator=(സ്ഥിരം I2C &) = delete;
 	I2C(I2C &&) = delete;
 	I2C &operator=(I2C &&) = delete;
 
-	virtual int	init() override;
+	മായാ പൂർണ്ണസംഖ്യ	init() override;
 
-protected:
+സംരക്ഷിത:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -81,14 +81,14 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
-	I2C(const I2CSPIDriverConfig &config);
-	virtual ~I2C();
+	I2C(uint8_t device_type, സ്ഥിരം അക്ഷരം *name, സ്ഥിരം പൂർണ്ണസംഖ്യ bus, സ്ഥിരം uint16_t address, സ്ഥിരം uint32_t frequency);
+	I2C(സ്ഥിരം I2CSPIDriverConfig &config);
+	മായാ ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	മായാ പൂർണ്ണസംഖ്യ	probe() { തിരികെ PX4_OK; }
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -102,10 +102,10 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	പൂർണ്ണസംഖ്യ		transfer(സ്ഥിരം uint8_t *send, സ്ഥിരം unsigned send_len, uint8_t *recv, സ്ഥിരം unsigned recv_len);
 
-private:
-	int			_fd{-1};
+സ്വകാര്യ:
+	പൂർണ്ണസംഖ്യ			_fd{-1};
 
 };
 

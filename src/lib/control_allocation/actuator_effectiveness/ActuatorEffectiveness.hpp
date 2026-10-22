@@ -41,41 +41,41 @@
 
 #pragma once
 
-#include <cstdint>
+#അന്തര്ഭാവ <cstdint>
 
-#include <matrix/matrix/math.hpp>
-#include <uORB/topics/control_allocator_status.h>
+#അന്തര്ഭാവ <matrix/matrix/math.hpp>
+#അന്തര്ഭാവ <uORB/topics/control_allocator_status.h>
 
-enum class AllocationMethod {
+എണ്ണൽ വർഗ്ഗം AllocationMethod {
 	NONE = -1,
 	PSEUDO_INVERSE = 0,
 	SEQUENTIAL_DESATURATION = 1,
 	AUTO = 2,
 };
 
-enum class ActuatorType {
+എണ്ണൽ വർഗ്ഗം ActuatorType {
 	MOTORS = 0,
 	SERVOS,
 
-	COUNT
+	എണ്ണം_2
 };
 
-enum class EffectivenessUpdateReason {
+എണ്ണൽ വർഗ്ഗം EffectivenessUpdateReason {
 	NO_EXTERNAL_UPDATE = 0,
 	CONFIGURATION_UPDATE = 1, ///< config changes (parameter)
 	MOTOR_ACTIVATION_UPDATE = 2, ///< motor failure detected or certain redundant motors are switched off to save energy
 };
 
-class ActuatorEffectiveness
+വർഗ്ഗം ActuatorEffectiveness
 {
-public:
-	ActuatorEffectiveness() = default;
-	virtual ~ActuatorEffectiveness() = default;
+പൊതു:
+	ActuatorEffectiveness() = സ്ഥിരസ്ഥിതി;
+	മായാ ~ActuatorEffectiveness() = സ്ഥിരസ്ഥിതി;
 
-	static constexpr int NUM_ACTUATORS = 16;
-	static constexpr int NUM_AXES = 6;
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ അക്കം_ACTUATORS = 16;
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ അക്കം_AXES = 6;
 
-	enum ControlAxis {
+	എണ്ണൽ ControlAxis {
 		ROLL = 0,
 		PITCH,
 		YAW,
@@ -84,47 +84,47 @@ public:
 		THRUST_Z
 	};
 
-	static constexpr int MAX_NUM_MATRICES = 2;
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ MAX_അക്കം_MATRICES = 2;
 
-	using EffectivenessMatrix = matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS>;
-	using ActuatorVector = matrix::Vector<float, NUM_ACTUATORS>;
+	using EffectivenessMatrix = matrix::Matrix<ദശാംശം, അക്കം_AXES, അക്കം_ACTUATORS>;
+	using ActuatorVector = matrix::Vector<ദശാംശം, അക്കം_ACTUATORS>;
 	using ActuatorBitmask = uint32_t;
 
-	static_assert(NUM_ACTUATORS <= 8 * sizeof(ActuatorBitmask),
+	static_assert(അക്കം_ACTUATORS <= 8 * വലുപ്പം(ActuatorBitmask),
 		      "NUM_ACTUATORS exceeds the number of bits available in the mask type.");
 
-	enum class FlightPhase {
+	എണ്ണൽ വർഗ്ഗം FlightPhase {
 		HOVER_FLIGHT = 0,
 		FORWARD_FLIGHT = 1,
 		TRANSITION_HF_TO_FF = 2,
 		TRANSITION_FF_TO_HF = 3
 	};
 
-	struct Configuration {
+	ഘടന Configuration {
 		/**
 		 * Add an actuator to the selected matrix, returning the index, or -1 on error
 		 */
-		int addActuator(ActuatorType type, const matrix::Vector3f &torque, const matrix::Vector3f &thrust);
+		പൂർണ്ണസംഖ്യ addActuator(ActuatorType type, സ്ഥിരം matrix::Vector3f &torque, സ്ഥിരം matrix::Vector3f &thrust);
 
 		/**
 		 * Call this after manually adding N actuators to the selected matrix
 		 */
-		void actuatorsAdded(ActuatorType type, int count);
+		ശൂന്യം actuatorsAdded(ActuatorType type, പൂർണ്ണസംഖ്യ എണ്ണം);
 
-		int totalNumActuators() const;
+		പൂർണ്ണസംഖ്യ total_അക്കം_Actuators() സ്ഥിരം;
 
 		/// Configured effectiveness matrix. Actuators are expected to be filled in order, motors first, then servos
-		EffectivenessMatrix effectiveness_matrices[MAX_NUM_MATRICES];
+		EffectivenessMatrix effectiveness_matrices[MAX_അക്കം_MATRICES];
 
-		int num_actuators_matrix[MAX_NUM_MATRICES]; ///< current amount, and next actuator index to fill in to effectiveness_matrices
-		ActuatorVector trim[MAX_NUM_MATRICES];
+		പൂർണ്ണസംഖ്യ അക്കം_actuators_matrix[MAX_അക്കം_MATRICES]; ///< current amount, and next actuator index to fill in to effectiveness_matrices
+		ActuatorVector trim[MAX_അക്കം_MATRICES];
 
-		ActuatorVector linearization_point[MAX_NUM_MATRICES];
+		ActuatorVector linearization_point[MAX_അക്കം_MATRICES];
 
-		int selected_matrix;
+		പൂർണ്ണസംഖ്യ selected_matrix;
 
-		uint8_t matrix_selection_indexes[NUM_ACTUATORS * MAX_NUM_MATRICES];
-		int num_actuators[(int)ActuatorType::COUNT];
+		uint8_t matrix_selection_indexes[അക്കം_ACTUATORS * MAX_അക്കം_MATRICES];
+		പൂർണ്ണസംഖ്യ അക്കം_actuators[(പൂർണ്ണസംഖ്യ)ActuatorType::എണ്ണം_2];
 	};
 
 	/**
@@ -132,7 +132,7 @@ public:
 	 *
 	 * @param Flight phase
 	 */
-	virtual void setFlightPhase(const FlightPhase &flight_phase)
+	മായാ ശൂന്യം setFlightPhase(സ്ഥിരം FlightPhase &flight_phase)
 	{
 		_flight_phase = flight_phase;
 	}
@@ -141,14 +141,14 @@ public:
 	 * Get the number of effectiveness matrices. Must be <= MAX_NUM_MATRICES.
 	 * This is expected to stay constant.
 	 */
-	virtual int numMatrices() const { return 1; }
+	മായാ പൂർണ്ണസംഖ്യ അക്കം_Matrices() സ്ഥിരം { തിരികെ 1; }
 
 	/**
 	 * Get the desired allocation method(s) for each matrix, if configured as AUTO
 	 */
-	virtual void getDesiredAllocationMethod(AllocationMethod allocation_method_out[MAX_NUM_MATRICES]) const
+	മായാ ശൂന്യം getDesiredAllocationMethod(AllocationMethod allocation_method_out[MAX_അക്കം_MATRICES]) സ്ഥിരം
 	{
-		for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < MAX_അക്കം_MATRICES; ++i) {
 			allocation_method_out[i] = AllocationMethod::PSEUDO_INVERSE;
 		}
 	}
@@ -156,10 +156,10 @@ public:
 	/**
 	 * Query if the roll, pitch and yaw columns of the mixing matrix should be normalized
 	 */
-	virtual void getNormalizeRPY(bool normalize[MAX_NUM_MATRICES]) const
+	മായാ ശൂന്യം getNormalizeRPY(തർക്കം normalize[MAX_അക്കം_MATRICES]) സ്ഥിരം
 	{
-		for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
-			normalize[i] = false;
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < MAX_അക്കം_MATRICES; ++i) {
+			normalize[i] = അസത്യം;
 		}
 	}
 
@@ -168,22 +168,22 @@ public:
 	 *
 	 * @return true if updated and matrix is set
 	 */
-	virtual bool getEffectivenessMatrix(Configuration &configuration, EffectivenessUpdateReason external_update) { return false;}
+	മായാ തർക്കം getEffectivenessMatrix(Configuration &configuration, EffectivenessUpdateReason external_update) { തിരികെ അസത്യം;}
 
 	/**
 	 * Get the current flight phase
 	 *
 	 * @return Flight phase
 	 */
-	const FlightPhase &getFlightPhase() const
+	സ്ഥിരം FlightPhase &getFlightPhase() സ്ഥിരം
 	{
-		return _flight_phase;
+		തിരികെ _flight_phase;
 	}
 
 	/**
 	 * Display name
 	 */
-	virtual const char *name() const = 0;
+	മായാ സ്ഥിരം അക്ഷരം *name() സ്ഥിരം = 0;
 
 	/**
 	 * Callback from the control allocation, allowing to manipulate the setpoint.
@@ -191,7 +191,7 @@ public:
 	 *
 	 * @param actuator_sp input & output setpoint
 	 */
-	virtual void allocateAuxilaryControls(const float dt, int matrix_index, ActuatorVector &actuator_sp) {}
+	മായാ ശൂന്യം allocateAuxilaryControls(സ്ഥിരം ദശാംശം dt, പൂർണ്ണസംഖ്യ matrix_index, ActuatorVector &actuator_sp) {}
 
 	/**
 	 * Callback from the control allocation, allowing to manipulate the setpoint.
@@ -199,19 +199,19 @@ public:
 	 * It is called after the matrix multiplication and before final clipping.
 	 * @param actuator_sp input & output setpoint
 	 */
-	virtual void updateSetpoint(const matrix::Vector<float, NUM_AXES> &control_sp, int matrix_index,
-				    ActuatorVector &actuator_sp, const ActuatorVector &actuator_min, const ActuatorVector &actuator_max) {}
+	മായാ ശൂന്യം updateSetpoint(സ്ഥിരം matrix::Vector<ദശാംശം, അക്കം_AXES> &control_sp, പൂർണ്ണസംഖ്യ matrix_index,
+				    ActuatorVector &actuator_sp, സ്ഥിരം ActuatorVector &actuator_min, സ്ഥിരം ActuatorVector &actuator_max) {}
 
 	/**
 	 * Get a bitmask of motors to be stopped
 	 */
-	ActuatorBitmask getStoppedMotors() const;
+	ActuatorBitmask getStoppedMotors() സ്ഥിരം;
 
 	/**
 	 * Fill in the unallocated torque and thrust, customized by effectiveness type.
 	 * Can be implemented for every type separately. If not implemented then the effectivenes matrix is used instead.
 	 */
-	virtual void getUnallocatedControl(int matrix_index, control_allocator_status_s &status) {}
+	മായാ ശൂന്യം getUnallocatedControl(പൂർണ്ണസംഖ്യ matrix_index, control_allocator_status_s &status) {}
 
 	/**
 	 * Override the collective tilt setpoint that would normally come from
@@ -220,23 +220,23 @@ public:
 	 * @param do_override When true, use @p collective_tilt instead of the uORB value.
 	 * @param collective_tilt Normalised setpoint in [0, 1]. 0: vertical, 1: horizontal.
 	 */
-	virtual void overrideCollectiveTilt(bool /*do_override*/, float /*collective_tilt*/) {}
+	മായാ ശൂന്യം overrideCollectiveTilt(തർക്കം /*do_override*/, ദശാംശം /*collective_tilt*/) {}
 
 	/**
 	 * Record which components of the thrust setpoint are NaN, so that motors in that direction are stopped.
 	 *
 	 * @param thrust_sp The thrust setpoint as received by the allocator (instance zero - multicopter only)
 	 */
-	void stopMotorsBasedOnThrustSetpoint(const matrix::Vector3f &thrust_sp)
+	ശൂന്യം stopMotorsBasedOnThrustSetpoint(സ്ഥിരം matrix::Vector3f &thrust_sp)
 	{
 		_longitudinal_motors_stopped_by_thrust = !PX4_ISFINITE(thrust_sp(0));
 		_lateral_motors_stopped_by_thrust = !PX4_ISFINITE(thrust_sp(1));
 		_vertical_motors_stopped_by_thrust = !PX4_ISFINITE(thrust_sp(2));
 	}
 
-protected:
+സംരക്ഷിത:
 
-	struct MotorDirectionBitmasks {
+	ഘടന MotorDirectionBitmasks {
 		ActuatorBitmask longitudinal{};
 		ActuatorBitmask lateral{};
 		ActuatorBitmask vertical{};
@@ -245,8 +245,8 @@ protected:
 	FlightPhase _flight_phase{FlightPhase::HOVER_FLIGHT};
 	ActuatorBitmask _stopped_motors_mask_due_to_flight_phase{};
 
-	bool _longitudinal_motors_stopped_by_thrust{false};
-	bool _vertical_motors_stopped_by_thrust{false};
-	bool _lateral_motors_stopped_by_thrust{false};
+	തർക്കം _longitudinal_motors_stopped_by_thrust{അസത്യം};
+	തർക്കം _vertical_motors_stopped_by_thrust{അസത്യം};
+	തർക്കം _lateral_motors_stopped_by_thrust{അസത്യം};
 
 };

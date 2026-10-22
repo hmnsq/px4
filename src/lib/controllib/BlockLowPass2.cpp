@@ -37,26 +37,26 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <float.h>
 
-#include "blocks.hpp"
+#അന്തര്ഭാവ "blocks.hpp"
 
-namespace control
+നാമാകാശ control
 {
 
-float BlockLowPass2::update(float input)
+ദശാംശം Block_താഴെയുള്ള_Pass2::update(ദശാംശം നിവേശം)
 {
-	if (!PX4_ISFINITE(getState())) {
-		setState(input);
+	എങ്കിൽ (!PX4_ISFINITE(getState())) {
+		setState(നിവേശം);
 	}
 
-	if (fabsf(_lp.get_cutoff_freq() - getFCutParam()) > FLT_EPSILON) {
+	എങ്കിൽ (fabsf(_lp.get_cutoff_freq() - getFCutParam()) > FLT_EPSILON) {
 		_lp.set_cutoff_frequency(_fs, getFCutParam());
 	}
 
-	_state = _lp.apply(input);
-	return _state;
+	_state = _lp.apply(നിവേശം);
+	തിരികെ _state;
 }
 
 } // namespace control

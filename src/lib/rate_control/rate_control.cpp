@@ -35,41 +35,41 @@
  * @file rate_control.cpp
  */
 
-#include "rate_control.hpp"
-#include <px4_platform_common/defines.h>
+#അന്തര്ഭാവ "rate_control.hpp"
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
 
-using namespace matrix;
+using നാമാകാശ matrix;
 
-void RateControl::setPidGains(const Vector3f &P, const Vector3f &I, const Vector3f &D)
+ശൂന്യം RateControl::setPidGains(സ്ഥിരം Vector3f &P, സ്ഥിരം Vector3f &I, സ്ഥിരം Vector3f &D)
 {
 	_gain_p = P;
 	_gain_i = I;
 	_gain_d = D;
 }
 
-void RateControl::setSaturationStatus(const Vector3<bool> &saturation_positive,
-				      const Vector3<bool> &saturation_negative)
+ശൂന്യം RateControl::setSaturationStatus(സ്ഥിരം Vector3<തർക്കം> &saturation_positive,
+				      സ്ഥിരം Vector3<തർക്കം> &saturation_negative)
 {
 	_control_allocator_saturation_positive = saturation_positive;
 	_control_allocator_saturation_negative = saturation_negative;
 }
 
-void RateControl::setPositiveSaturationFlag(size_t axis, bool is_saturated)
+ശൂന്യം RateControl::setPositiveSaturationFlag(size_t axis, തർക്കം is_saturated)
 {
-	if (axis < 3) {
+	എങ്കിൽ (axis < 3) {
 		_control_allocator_saturation_positive(axis) = is_saturated;
 	}
 }
 
-void RateControl::setNegativeSaturationFlag(size_t axis, bool is_saturated)
+ശൂന്യം RateControl::setNegativeSaturationFlag(size_t axis, തർക്കം is_saturated)
 {
-	if (axis < 3) {
+	എങ്കിൽ (axis < 3) {
 		_control_allocator_saturation_negative(axis) = is_saturated;
 	}
 }
 
-Vector3f RateControl::update(const Vector3f &rate, const Vector3f &rate_sp, const Vector3f &angular_accel,
-			     const float dt, const bool landed)
+Vector3f RateControl::update(സ്ഥിരം Vector3f &rate, സ്ഥിരം Vector3f &rate_sp, സ്ഥിരം Vector3f &angular_accel,
+			     സ്ഥിരം ദശാംശം dt, സ്ഥിരം തർക്കം landed)
 {
 	// angular rates error
 	Vector3f rate_error = rate_sp - rate;
@@ -78,23 +78,23 @@ Vector3f RateControl::update(const Vector3f &rate, const Vector3f &rate_sp, cons
 	Vector3f torque = _gain_p.emult(rate_error) + _rate_int - _gain_d.emult(angular_accel) + _gain_ff.emult(rate_sp);
 
 	// update integral only if we are not landed
-	if (!landed) {
+	എങ്കിൽ (!landed) {
 		updateIntegral(rate_error, dt);
 	}
 
-	return torque;
+	തിരികെ torque;
 }
 
-void RateControl::updateIntegral(Vector3f &rate_error, const float dt)
+ശൂന്യം RateControl::updateIntegral(Vector3f &rate_error, സ്ഥിരം ദശാംശം dt)
 {
-	for (int i = 0; i < 3; i++) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < 3; i++) {
 		// prevent further positive control saturation
-		if (_control_allocator_saturation_positive(i)) {
+		എങ്കിൽ (_control_allocator_saturation_positive(i)) {
 			rate_error(i) = math::min(rate_error(i), 0.f);
 		}
 
 		// prevent further negative control saturation
-		if (_control_allocator_saturation_negative(i)) {
+		എങ്കിൽ (_control_allocator_saturation_negative(i)) {
 			rate_error(i) = math::max(rate_error(i), 0.f);
 		}
 
@@ -104,20 +104,20 @@ void RateControl::updateIntegral(Vector3f &rate_error, const float dt)
 		// The formula leads to a gradual decrease w/o steps, while only affecting the cases where it should:
 		// with the parameter set to 400 degrees, up to 100 deg rate error, i_factor is almost 1 (having no effect),
 		// and up to 200 deg error leads to <25% reduction of I.
-		float i_factor = rate_error(i) / math::radians(400.f);
+		ദശാംശം i_factor = rate_error(i) / math::radians(400.f);
 		i_factor = math::max(0.0f, 1.f - i_factor * i_factor);
 
 		// Perform the integration using a first order method
-		float rate_i = _rate_int(i) + i_factor * _gain_i(i) * rate_error(i) * dt;
+		ദശാംശം rate_i = _rate_int(i) + i_factor * _gain_i(i) * rate_error(i) * dt;
 
 		// do not propagate the result if out of range or invalid
-		if (PX4_ISFINITE(rate_i)) {
+		എങ്കിൽ (PX4_ISFINITE(rate_i)) {
 			_rate_int(i) = math::constrain(rate_i, -_lim_int(i), _lim_int(i));
 		}
 	}
 }
 
-void RateControl::getRateControlStatus(rate_ctrl_status_s &rate_ctrl_status)
+ശൂന്യം RateControl::getRateControlStatus(rate_ctrl_status_s &rate_ctrl_status)
 {
 	rate_ctrl_status.rollspeed_integ = _rate_int(0);
 	rate_ctrl_status.pitchspeed_integ = _rate_int(1);

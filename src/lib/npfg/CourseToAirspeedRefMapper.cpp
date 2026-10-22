@@ -31,84 +31,84 @@
  *
  ****************************************************************************/
 
-#include "CourseToAirspeedRefMapper.hpp"
+#അന്തര്ഭാവ "CourseToAirspeedRefMapper.hpp"
 using matrix::Vector2f;
 
-float
-CourseToAirspeedRefMapper::mapCourseSetpointToHeadingSetpoint(const float bearing_setpoint, const Vector2f &wind_vel,
-		float airspeed_sp) const
+ദശാംശം
+CourseToAirspeedRefMapper::mapCourseSetpointToHeadingSetpoint(സ്ഥിരം ദശാംശം bearing_setpoint, സ്ഥിരം Vector2f &wind_vel,
+		ദശാംശം airspeed_sp) സ്ഥിരം
 {
-	const Vector2f bearing_vector = Vector2f{cosf(bearing_setpoint), sinf(bearing_setpoint)};
-	const float wind_cross_bearing = wind_vel.cross(bearing_vector);
-	const float wind_dot_bearing = wind_vel.dot(bearing_vector);
+	സ്ഥിരം Vector2f bearing_vector = Vector2f{cosf(bearing_setpoint), sinf(bearing_setpoint)};
+	സ്ഥിരം ദശാംശം wind_cross_bearing = wind_vel.cross(bearing_vector);
+	സ്ഥിരം ദശാംശം wind_dot_bearing = wind_vel.dot(bearing_vector);
 
 	Vector2f air_vel_ref;
 
-	if (bearingIsFeasible(wind_cross_bearing, wind_dot_bearing, airspeed_sp, wind_vel.norm())) {
+	എങ്കിൽ (bearingIsFeasible(wind_cross_bearing, wind_dot_bearing, airspeed_sp, wind_vel.norm())) {
 
-		const float airsp_dot_bearing = projectAirspOnBearing(airspeed_sp, wind_cross_bearing);
+		സ്ഥിരം ദശാംശം airsp_dot_bearing = projectAirspOnBearing(airspeed_sp, wind_cross_bearing);
 		air_vel_ref = solveWindTriangle(wind_cross_bearing, airsp_dot_bearing, bearing_vector);
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		air_vel_ref = infeasibleAirVelRef(wind_vel, bearing_vector, wind_vel.norm(), airspeed_sp);
 	}
 
-	return atan2f(air_vel_ref(1), air_vel_ref(0));
+	തിരികെ atan2f(air_vel_ref(1), air_vel_ref(0));
 }
 
-float
-CourseToAirspeedRefMapper::getMinAirspeedForCurrentBearing(const float bearing_setpoint, const Vector2f &wind_vel,
-		float airspeed_max, float min_ground_speed) const
+ദശാംശം
+CourseToAirspeedRefMapper::getMinAirspeedForCurrentBearing(സ്ഥിരം ദശാംശം bearing_setpoint, സ്ഥിരം Vector2f &wind_vel,
+		ദശാംശം airspeed_max, ദശാംശം min_ground_speed) സ്ഥിരം
 {
-	const Vector2f bearing_vector = Vector2f{cosf(bearing_setpoint), sinf(bearing_setpoint)};
-	const float wind_cross_bearing = wind_vel.cross(bearing_vector);
-	const float wind_dot_bearing = wind_vel.dot(bearing_vector);
+	സ്ഥിരം Vector2f bearing_vector = Vector2f{cosf(bearing_setpoint), sinf(bearing_setpoint)};
+	സ്ഥിരം ദശാംശം wind_cross_bearing = wind_vel.cross(bearing_vector);
+	സ്ഥിരം ദശാംശം wind_dot_bearing = wind_vel.dot(bearing_vector);
 
-	const bool wind_along_bearing_is_below_min_ground_speed = min_ground_speed > wind_dot_bearing;
+	സ്ഥിരം തർക്കം wind_along_bearing_is_below_min_ground_speed = min_ground_speed > wind_dot_bearing;
 
-	float airspeed_min = 0.f; // return 0 if no min airspeed is necessary
+	ദശാംശം airspeed_min = 0.f; // return 0 if no min airspeed is necessary
 
-	if (wind_along_bearing_is_below_min_ground_speed) {
+	എങ്കിൽ (wind_along_bearing_is_below_min_ground_speed) {
 		// airspeed required to achieve minimum ground speed along bearing vector (5.18)
 		airspeed_min = sqrtf((min_ground_speed - wind_dot_bearing) * (min_ground_speed - wind_dot_bearing) +
 				     wind_cross_bearing * wind_cross_bearing);
 
 	}
 
-	return math::min(airspeed_min, airspeed_max);
+	തിരികെ math::min(airspeed_min, airspeed_max);
 }
 
-float CourseToAirspeedRefMapper::projectAirspOnBearing(const float airspeed_true, const float wind_cross_bearing) const
+ദശാംശം CourseToAirspeedRefMapper::projectAirspOnBearing(സ്ഥിരം ദശാംശം airspeed_true, സ്ഥിരം ദശാംശം wind_cross_bearing) സ്ഥിരം
 {
 	// NOTE: wind_cross_bearing must be less than airspeed to use this function
 	// it is assumed that bearing feasibility is checked and found feasible (e.g. bearingIsFeasible() = true) prior to entering this method
 	// otherwise the return will be erroneous
 
 	// 3.5.8
-	return sqrtf(math::max(airspeed_true * airspeed_true - wind_cross_bearing * wind_cross_bearing, 0.0f));
+	തിരികെ sqrtf(math::max(airspeed_true * airspeed_true - wind_cross_bearing * wind_cross_bearing, 0.0f));
 }
 
-int CourseToAirspeedRefMapper::bearingIsFeasible(const float wind_cross_bearing, const float wind_dot_bearing,
-		const float airspeed, const float wind_speed) const
+പൂർണ്ണസംഖ്യ CourseToAirspeedRefMapper::bearingIsFeasible(സ്ഥിരം ദശാംശം wind_cross_bearing, സ്ഥിരം ദശാംശം wind_dot_bearing,
+		സ്ഥിരം ദശാംശം airspeed, സ്ഥിരം ദശാംശം wind_speed) സ്ഥിരം
 {
-	return (fabsf(wind_cross_bearing) < airspeed) && ((wind_dot_bearing > 0.0f) || (wind_speed < airspeed));
+	തിരികെ (fabsf(wind_cross_bearing) < airspeed) && ((wind_dot_bearing > 0.0f) || (wind_speed < airspeed));
 }
 
 matrix::Vector2f
-CourseToAirspeedRefMapper::solveWindTriangle(const float wind_cross_bearing, const float airsp_dot_bearing,
-		const Vector2f &bearing_vec) const
+CourseToAirspeedRefMapper::solveWindTriangle(സ്ഥിരം ദശാംശം wind_cross_bearing, സ്ഥിരം ദശാംശം airsp_dot_bearing,
+		സ്ഥിരം Vector2f &bearing_vec) സ്ഥിരം
 {
 	// essentially a 2D rotation with the speeds (magnitudes) baked in
-	return Vector2f{airsp_dot_bearing * bearing_vec(0) - wind_cross_bearing * bearing_vec(1),
+	തിരികെ Vector2f{airsp_dot_bearing * bearing_vec(0) - wind_cross_bearing * bearing_vec(1),
 			wind_cross_bearing * bearing_vec(0) + airsp_dot_bearing * bearing_vec(1)};
 }
 
-matrix::Vector2f CourseToAirspeedRefMapper::infeasibleAirVelRef(const Vector2f &wind_vel, const Vector2f &bearing_vec,
-		const float wind_speed, const float airspeed) const
+matrix::Vector2f CourseToAirspeedRefMapper::infeasibleAirVelRef(സ്ഥിരം Vector2f &wind_vel, സ്ഥിരം Vector2f &bearing_vec,
+		സ്ഥിരം ദശാംശം wind_speed, സ്ഥിരം ദശാംശം airspeed) സ്ഥിരം
 {
 	// NOTE: wind speed must be greater than airspeed, and airspeed must be greater than zero to use this function
 	// it is assumed that bearing feasibility is checked and found infeasible (e.g. bearingIsFeasible() = false) prior to entering this method
 	// otherwise the normalization of the air velocity vector could have a division by zero
 	Vector2f air_vel_ref = sqrtf(math::max(wind_speed * wind_speed - airspeed * airspeed, 0.0f)) * bearing_vec - wind_vel;
-	return air_vel_ref.normalized() * airspeed;
+	തിരികെ air_vel_ref.normalized() * airspeed;
 }

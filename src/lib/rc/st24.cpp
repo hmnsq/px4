@@ -39,13 +39,13 @@
  * @author Lorenz Meier <lm@inf.ethz.ch>
  */
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <cmath>
-#include "st24.h"
-#include "common_rc.h"
+#അന്തര്ഭാവ <stdbool.h>
+#അന്തര്ഭാവ <stdio.h>
+#അന്തര്ഭാവ <cmath>
+#അന്തര്ഭാവ "st24.h"
+#അന്തര്ഭാവ "common_rc.h"
 
-const char *decode_states[] = {"UNSYNCED",
+സ്ഥിരം അക്ഷരം *decode_states[] = {"UNSYNCED",
 			       "GOT_STX1",
 			       "GOT_STX2",
 			       "GOT_LEN",
@@ -62,29 +62,29 @@ const char *decode_states[] = {"UNSYNCED",
 
 /* pre-calculate the floating point stuff as far as possible at compile time */
 #define ST24_SCALE_FACTOR ((ST24_TARGET_MAX - ST24_TARGET_MIN) / (ST24_RANGE_MAX - ST24_RANGE_MIN))
-#define ST24_SCALE_OFFSET (int)(ST24_TARGET_MIN - (ST24_SCALE_FACTOR * ST24_RANGE_MIN + 0.5f))
+#define ST24_SCALE_OFFSET (പൂർണ്ണസംഖ്യ)(ST24_TARGET_MIN - (ST24_SCALE_FACTOR * ST24_RANGE_MIN + 0.5f))
 
-static enum ST24_DECODE_STATE _decode_state = ST24_DECODE_STATE_UNSYNCED;
-static uint8_t _rxlen;
+സ്ഥിതം എണ്ണൽ ST24_DECODE_STATE _decode_state = ST24_DECODE_STATE_UNSYNCED;
+സ്ഥിതം uint8_t _rxlen;
 
-static ReceiverFcPacket &_rxpacket = rc_decode_buf._strxpacket;
+സ്ഥിതം ReceiverFcPacket &_rxpacket = rc_decode_buf._strxpacket;
 
 uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len)
 {
 	uint8_t i, crc ;
 	crc = 0;
 
-	while (len--) {
-		for (i = 0x80; i != 0; i >>= 1) {
-			if ((crc & 0x80) != 0) {
+	ആകുമ്പോൾ (len--) {
+		വേണ്ടി (i = 0x80; i != 0; i >>= 1) {
+			എങ്കിൽ ((crc & 0x80) != 0) {
 				crc <<= 1;
 				crc ^= 0x07;
 
-			} else {
+			} അല്ലെങ്കിൽ {
 				crc <<= 1;
 			}
 
-			if ((*ptr & i) != 0) {
+			എങ്കിൽ ((*ptr & i) != 0) {
 				crc ^= 0x07;
 			}
 		}
@@ -92,93 +92,93 @@ uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len)
 		ptr++;
 	}
 
-	return (crc);
+	തിരികെ (crc);
 }
 
 
-int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *channel_count, uint16_t *channels,
-		uint16_t max_chan_count)
+പൂർണ്ണസംഖ്യ st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_എണ്ണം, uint16_t *channel_എണ്ണം, uint16_t *channels,
+		uint16_t max_chan_എണ്ണം)
 {
-	int ret = 1;
+	പൂർണ്ണസംഖ്യ ret = 1;
 
-	switch (_decode_state) {
-	case ST24_DECODE_STATE_UNSYNCED:
-		if (byte == ST24_STX1) {
+	തിരഞ്ഞെടുപ്പ് (_decode_state) {
+	അവസ്ഥ ST24_DECODE_STATE_UNSYNCED:
+		എങ്കിൽ (byte == ST24_STX1) {
 			_decode_state = ST24_DECODE_STATE_GOT_STX1;
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			ret = 3;
 		}
 
-		break;
+		നിർത്തുക;
 
-	case ST24_DECODE_STATE_GOT_STX1:
-		if (byte == ST24_STX2) {
+	അവസ്ഥ ST24_DECODE_STATE_GOT_STX1:
+		എങ്കിൽ (byte == ST24_STX2) {
 			_decode_state = ST24_DECODE_STATE_GOT_STX2;
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			_decode_state = ST24_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		നിർത്തുക;
 
-	case ST24_DECODE_STATE_GOT_STX2:
+	അവസ്ഥ ST24_DECODE_STATE_GOT_STX2:
 
 		/* ensure no data overflow failure or hack is possible */
-		if ((unsigned)byte >= sizeof(_rxpacket.type) + sizeof(_rxpacket.crc8)
-		    && (unsigned)byte <= sizeof(_rxpacket.type) + sizeof(_rxpacket.st24_data) + sizeof(_rxpacket.crc8)) {
+		എങ്കിൽ ((unsigned)byte >= വലുപ്പം(_rxpacket.type) + വലുപ്പം(_rxpacket.crc8)
+		    && (unsigned)byte <= വലുപ്പം(_rxpacket.type) + വലുപ്പം(_rxpacket.st24_data) + വലുപ്പം(_rxpacket.crc8)) {
 			_rxpacket.length = byte;
 			_rxlen = 0;
 			_decode_state = ST24_DECODE_STATE_GOT_LEN;
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			_decode_state = ST24_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		നിർത്തുക;
 
-	case ST24_DECODE_STATE_GOT_LEN:
+	അവസ്ഥ ST24_DECODE_STATE_GOT_LEN:
 		_rxpacket.type = byte;
 		_rxlen++;
 		_decode_state = (_rxlen == (_rxpacket.length - 1)) ? ST24_DECODE_STATE_GOT_DATA : ST24_DECODE_STATE_GOT_TYPE;
-		break;
+		നിർത്തുക;
 
-	case ST24_DECODE_STATE_GOT_TYPE:
+	അവസ്ഥ ST24_DECODE_STATE_GOT_TYPE:
 		_rxpacket.st24_data[_rxlen - 1] = byte;
 		_rxlen++;
 
-		if (_rxlen == (_rxpacket.length - 1)) {
+		എങ്കിൽ (_rxlen == (_rxpacket.length - 1)) {
 			_decode_state = ST24_DECODE_STATE_GOT_DATA;
 		}
 
-		break;
+		നിർത്തുക;
 
-	case ST24_DECODE_STATE_GOT_DATA:
+	അവസ്ഥ ST24_DECODE_STATE_GOT_DATA:
 		_rxpacket.crc8 = byte;
 		_rxlen++;
 
-		if (st24_common_crc8((uint8_t *) & (_rxpacket.length), _rxlen) == _rxpacket.crc8) {
+		എങ്കിൽ (st24_common_crc8((uint8_t *) & (_rxpacket.length), _rxlen) == _rxpacket.crc8) {
 
 			ret = 0;
 
 			/* decode the actual packet */
 
-			switch (_rxpacket.type) {
+			തിരഞ്ഞെടുപ്പ് (_rxpacket.type) {
 
-			case ST24_PACKET_TYPE_CHANNELDATA12: {
+			അവസ്ഥ ST24_PACKET_TYPE_CHANNELDATA12: {
 					ChannelData12 *d = (ChannelData12 *)_rxpacket.st24_data;
 
 					// Scale from 0..255 to 100%.
 					*rssi = d->rssi * (100.0f / 255.0f);
-					*lost_count = d->lost_count;
+					*lost_എണ്ണം = d->lost_എണ്ണം;
 
 					/* this can lead to rounding of the strides */
-					*channel_count = (max_chan_count < 12) ? max_chan_count : 12;
+					*channel_എണ്ണം = (max_chan_എണ്ണം < 12) ? max_chan_എണ്ണം : 12;
 
-					unsigned stride_count = (*channel_count * 3) / 2;
+					unsigned stride_എണ്ണം = (*channel_എണ്ണം * 3) / 2;
 					unsigned chan_index = 0;
 
-					for (unsigned i = 0; i < stride_count; i += 3) {
+					വേണ്ടി (unsigned i = 0; i < stride_എണ്ണം; i += 3) {
 						channels[chan_index] = ((uint16_t)d->channel[i] << 4);
 						channels[chan_index] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
 						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
@@ -192,22 +192,22 @@ int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *chan
 						chan_index++;
 					}
 				}
-				break;
+				നിർത്തുക;
 
-			case ST24_PACKET_TYPE_CHANNELDATA24: {
+			അവസ്ഥ ST24_PACKET_TYPE_CHANNELDATA24: {
 					ChannelData24 *d = (ChannelData24 *)&_rxpacket.st24_data;
 
 					// Scale from 0..255 to 100%.
 					*rssi = d->rssi * (100.0f / 255.0f);
-					*lost_count = d->lost_count;
+					*lost_എണ്ണം = d->lost_എണ്ണം;
 
 					/* this can lead to rounding of the strides */
-					*channel_count = (max_chan_count < 24) ? max_chan_count : 24;
+					*channel_എണ്ണം = (max_chan_എണ്ണം < 24) ? max_chan_എണ്ണം : 24;
 
-					unsigned stride_count = (*channel_count * 3) / 2;
+					unsigned stride_എണ്ണം = (*channel_എണ്ണം * 3) / 2;
 					unsigned chan_index = 0;
 
-					for (unsigned i = 0; i < stride_count; i += 3) {
+					വേണ്ടി (unsigned i = 0; i < stride_എണ്ണം; i += 3) {
 						channels[chan_index] = ((uint16_t)d->channel[i] << 4);
 						channels[chan_index] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
 						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
@@ -221,29 +221,29 @@ int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *chan
 						chan_index++;
 					}
 				}
-				break;
+				നിർത്തുക;
 
-			case ST24_PACKET_TYPE_TRANSMITTERGPSDATA: {
+			അവസ്ഥ ST24_PACKET_TYPE_TRANSMITTERGPSDATA: {
 
 					// ReceiverFcPacket* d = (ReceiverFcPacket*)&_rxpacket.st24_data;
 					/* we silently ignore this data for now, as it is unused */
 					ret = 5;
 				}
-				break;
+				നിർത്തുക;
 
-			default:
+			സ്ഥിരസ്ഥിതി:
 				ret = 2;
-				break;
+				നിർത്തുക;
 			}
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			/* decoding failed */
 			ret = 4;
 		}
 
 		_decode_state = ST24_DECODE_STATE_UNSYNCED;
-		break;
+		നിർത്തുക;
 	}
 
-	return ret;
+	തിരികെ ret;
 }

@@ -40,125 +40,125 @@
 #pragma once
 
 #define PARAM_IMPLEMENTATION
-#include "param.h"
-#include <px4_platform/board_ctrl.h>
-#include <px4_platform_common/defines.h>
+#അന്തര്ഭാവ "param.h"
+#അന്തര്ഭാവ <px4_platform/board_ctrl.h>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
 
 #define _PARAMIOC(_n) (_PX4_IOC(_PARAMIOCBASE, _n))
 
 #define PARAMIOCNOTIFY	_PARAMIOC(1)
 
 #define PARAMIOCFIND	_PARAMIOC(2)
-typedef struct paramiocfind {
-	const char *name;
-	const bool notification;
+തരനിർവചനം ഘടന paramiocfind {
+	സ്ഥിരം അക്ഷരം *name;
+	സ്ഥിരം bool notification;
 	param_t ret;
 } paramiocfind_t;
 
 
 #define PARAMIOCCOUNTUSED	_PARAMIOC(3)
-typedef struct paramioccountused {
+തരനിർവചനം ഘടന paramioccountused {
 	unsigned ret;
 } paramioccountused_t;
 
 #define PARAMIOCFORUSEDINDEX	_PARAMIOC(4)
-typedef struct paramiocforusedindex {
-	const unsigned index;
+തരനിർവചനം ഘടന paramiocforusedindex {
+	സ്ഥിരം unsigned index;
 	param_t ret;
 } paramiocforusedindex_t;
 
 #define PARAMIOCGETUSEDINDEX	_PARAMIOC(5)
-typedef struct paramiocgetusedindex {
-	const param_t param;
+തരനിർവചനം ഘടന paramiocgetusedindex {
+	സ്ഥിരം param_t param;
 	unsigned ret;
 } paramiocgetusedindex_t;
 
 #define PARAMIOCUNSAVED	_PARAMIOC(6)
-typedef struct paramiocunsaved {
-	const param_t param;
+തരനിർവചനം ഘടന paramiocunsaved {
+	സ്ഥിരം param_t param;
 	bool ret;
 } paramiocunsaved_t;
 
 #define PARAMIOCGET	_PARAMIOC(7)
-typedef struct paramiocget {
-	const param_t param;
-	const bool deflt;
-	void *const val;
-	int ret;
+തരനിർവചനം ഘടന paramiocget {
+	സ്ഥിരം param_t param;
+	സ്ഥിരം bool deflt;
+	ശൂന്യം *സ്ഥിരം val;
+	പൂർണ്ണസംഖ്യ ret;
 } paramiocget_t;
 
 #define PARAMIOCAUTOSAVE	_PARAMIOC(8)
-typedef struct paramiocautosave {
-	const bool enable;
+തരനിർവചനം ഘടന paramiocautosave {
+	സ്ഥിരം bool enable;
 } paramiocautosave_t;
 
 #define PARAMIOCSET	_PARAMIOC(9)
-typedef struct paramiocset {
-	const param_t param;
-	const bool notification;
-	const void *val;
-	int ret;
+തരനിർവചനം ഘടന paramiocset {
+	സ്ഥിരം param_t param;
+	സ്ഥിരം bool notification;
+	സ്ഥിരം ശൂന്യം *val;
+	പൂർണ്ണസംഖ്യ ret;
 } paramiocset_t;
 
 #define PARAMIOCUSED	_PARAMIOC(10)
-typedef struct paramiocused {
-	const param_t param;
+തരനിർവചനം ഘടന paramiocused {
+	സ്ഥിരം param_t param;
 	bool ret;
 } paramiocused_t;
 
 #define PARAMIOCSETUSED	_PARAMIOC(11)
-typedef struct paramiocsetused {
-	const param_t param;
+തരനിർവചനം ഘടന paramiocsetused {
+	സ്ഥിരം param_t param;
 } paramiocsetused_t;
 
 #define PARAMIOCSETDEFAULT	_PARAMIOC(12)
-typedef struct paramiocsetdefault {
-	const param_t param;
-	const void *val;
-	int ret;
+തരനിർവചനം ഘടന paramiocsetdefault {
+	സ്ഥിരം param_t param;
+	സ്ഥിരം ശൂന്യം *val;
+	പൂർണ്ണസംഖ്യ ret;
 } paramiocsetdefault_t;
 
 #define PARAMIOCRESET	_PARAMIOC(13)
-typedef struct paramiocreset {
-	const param_t param;
-	const bool notification;
-	int ret;
+തരനിർവചനം ഘടന paramiocreset {
+	സ്ഥിരം param_t param;
+	സ്ഥിരം bool notification;
+	പൂർണ്ണസംഖ്യ ret;
 } paramiocreset_t;
 
 #define PARAMIOCRESETGROUP	_PARAMIOC(14)
-typedef enum {
+തരനിർവചനം എണ്ണൽ {
 	PARAM_RESET_ALL,
 	PARAM_RESET_EXCLUDES,
 	PARAM_RESET_SPECIFIC
 } param_reset_type_t;
 
-typedef struct paramiocresetgroup {
+തരനിർവചനം ഘടന paramiocresetgroup {
 	param_reset_type_t type;
-	const char **group;
-	const int num_in_group;
+	സ്ഥിരം അക്ഷരം **group;
+	സ്ഥിരം പൂർണ്ണസംഖ്യ അക്കം_in_group;
 } paramiocresetgroup_t;
 
 #define PARAMIOCSAVEDEFAULT	_PARAMIOC(15)
-typedef struct paramiocsavedefault {
+തരനിർവചനം ഘടന paramiocsavedefault {
 	bool blocking;
-	int ret;
+	പൂർണ്ണസംഖ്യ ret;
 } paramiocsavedefault_t;
 
 #define PARAMIOCLOADDEFAULT	_PARAMIOC(16)
-typedef struct paramiocloaddefault {
-	int ret;
+തരനിർവചനം ഘടന paramiocloaddefault {
+	പൂർണ്ണസംഖ്യ ret;
 } paramiocloaddefault_t;
 
 
 #define PARAMIOCEXPORT	_PARAMIOC(17)
-typedef struct paramiocexport {
-	const char *filename;
-	int ret;
+തരനിർവചനം ഘടന paramiocexport {
+	സ്ഥിരം അക്ഷരം *filename;
+	പൂർണ്ണസംഖ്യ ret;
 } paramiocexport_t;
 
 #define PARAMIOCHASH	_PARAMIOC(18)
-typedef struct paramiochash {
+തരനിർവചനം ഘടന paramiochash {
 	uint32_t ret;
 } paramiochash_t;
 
-int param_ioctl(unsigned int cmd, unsigned long arg);
+പൂർണ്ണസംഖ്യ param_ioctl(unsigned പൂർണ്ണസംഖ്യ cmd, unsigned long arg);

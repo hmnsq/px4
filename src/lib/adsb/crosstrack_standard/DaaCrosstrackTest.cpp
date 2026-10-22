@@ -31,44 +31,44 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
+#അന്തര്ഭാവ <gtest/gtest.h>
 
-#include "DaaCrosstrackTestData.h"
-#include "DaaCrosstrack.h"
+#അന്തര്ഭാവ "DaaCrosstrackTestData.h"
+#അന്തര്ഭാവ "DaaCrosstrack.h"
 
-#include <parameters/param.h>
+#അന്തര്ഭാവ <parameters/param.h>
 
-#include <lib/geo/geo.h>
-#include <lib/mathlib/mathlib.h>
-#include <limits>
-#include <uORB/topics/detect_and_avoid.h>
+#അന്തര്ഭാവ <lib/geo/geo.h>
+#അന്തര്ഭാവ <lib/mathlib/mathlib.h>
+#അന്തര്ഭാവ <limits>
+#അന്തര്ഭാവ <uORB/topics/detect_and_avoid.h>
 
-namespace
+നാമാകാശ
 {
-const matrix::Vector2d kUavLatLon{32.617013, -96.490564};
-constexpr float kUavAlt{1000.f};
+സ്ഥിരം matrix::Vector2d kUavLatLon{32.617013, -96.490564};
+constexpr ദശാംശം kUavAlt{1000.f};
 
-void set_crosstrack_params(float horizontal_separation_m, float vertical_separation_m, int collision_time_s)
+ശൂന്യം set_crosstrack_params(ദശാംശം horizontal_separation_m, ദശാംശം vertical_separation_m, പൂർണ്ണസംഖ്യ collision_time_s)
 {
 	param_set(param_handle(px4::params::NAV_TRAFF_A_HOR), &horizontal_separation_m);
 	param_set(param_handle(px4::params::NAV_TRAFF_A_VER), &vertical_separation_m);
 	param_set(param_handle(px4::params::NAV_TRAFF_COLL_T), &collision_time_s);
 }
 
-matrix::Vector3f velocity_ned_from_track(float heading_rad, float horizontal_speed_m_s, float vertical_speed_up_m_s)
+matrix::Vector3f velocity_ned_from_track(ദശാംശം heading_rad, ദശാംശം horizontal_speed_m_s, ദശാംശം vertical_speed_up_m_s)
 {
-	return matrix::Vector3f(cosf(heading_rad) * horizontal_speed_m_s, sinf(heading_rad) * horizontal_speed_m_s, -vertical_speed_up_m_s);
+	തിരികെ matrix::Vector3f(cosf(heading_rad) * horizontal_speed_m_s, sinf(heading_rad) * horizontal_speed_m_s, -vertical_speed_up_m_s);
 }
 
-aircraft_state_s create_aircraft_state(const matrix::Vector2d &reference_lat_lon, float reference_altitude,
-				       float distance_m, float bearing_rad, float altitude_offset_m, float heading_rad,
-				       const matrix::Vector3f &velocity_ned)
+aircraft_state_s create_aircraft_state(സ്ഥിരം matrix::Vector2d &reference_lat_lon, ദശാംശം reference_altitude,
+				       ദശാംശം distance_m, ദശാംശം bearing_rad, ദശാംശം altitude_offset_m, ദശാംശം heading_rad,
+				       സ്ഥിരം matrix::Vector3f &velocity_ned)
 {
-	double lat{0.0};
-	double lon{0.0};
+	ഇരട്ട lat{0.0};
+	ഇരട്ട lon{0.0};
 	waypoint_from_heading_and_distance(reference_lat_lon(0), reference_lat_lon(1), bearing_rad, distance_m, &lat, &lon);
 
-	return aircraft_state_s{
+	തിരികെ aircraft_state_s{
 		matrix::Vector2d(lat, lon),
 		reference_altitude + altitude_offset_m,
 		velocity_ned,
@@ -76,9 +76,9 @@ aircraft_state_s create_aircraft_state(const matrix::Vector2d &reference_lat_lon
 	};
 }
 
-aircraft_state_s create_aircraft_state(const traffic_data_s &traffic)
+aircraft_state_s create_aircraft_state(സ്ഥിരം traffic_data_s &traffic)
 {
-	return aircraft_state_s{
+	തിരികെ aircraft_state_s{
 		matrix::Vector2d(traffic.lat_traffic, traffic.lon_traffic),
 		traffic.alt_traffic,
 		velocity_ned_from_track(traffic.heading_traffic, traffic.vxy_traffic, traffic.vz_traffic),
@@ -87,14 +87,14 @@ aircraft_state_s create_aircraft_state(const traffic_data_s &traffic)
 }
 } // namespace
 
-class DaaCrosstrackTest : public ::testing::Test
+വർഗ്ഗം DaaCrosstrackTest : പൊതു ::testing::Test
 {
-protected:
+സംരക്ഷിത:
 	DaaCrosstrack daa;
 
-	void SetUp() override
+	ശൂന്യം SetUp() override
 	{
-		param_control_autosave(false);
+		param_control_autosave(അസത്യം);
 		param_reset_all();
 		set_crosstrack_params(500.f, 500.f, 60);
 	}
@@ -104,20 +104,20 @@ TEST_F(DaaCrosstrackTest, RejectsInvalidParams)
 {
 	ASSERT_TRUE(daa.try_setting_params());
 
-	const float nan = std::numeric_limits<float>::quiet_NaN();
-	const float inf = std::numeric_limits<float>::infinity();
+	സ്ഥിരം ദശാംശം nan = std::numeric_limits<ദശാംശം>::quiet_NaN();
+	സ്ഥിരം ദശാംശം inf = std::numeric_limits<ദശാംശം>::infinity();
 
-	for (const float bad : {nan, inf, 0.f}) {
+	വേണ്ടി (സ്ഥിരം ദശാംശം bad : {nan, inf, 0.f}) {
 		set_crosstrack_params(bad, 500.f, 60);
 		EXPECT_FALSE(daa.try_setting_params()) << "horizontal separation = " << bad;
 	}
 
-	for (const float bad : {nan, inf, 0.f}) {
+	വേണ്ടി (സ്ഥിരം ദശാംശം bad : {nan, inf, 0.f}) {
 		set_crosstrack_params(500.f, bad, 60);
 		EXPECT_FALSE(daa.try_setting_params()) << "vertical separation = " << bad;
 	}
 
-	for (const int bad : {0, -1}) {
+	വേണ്ടി (സ്ഥിരം പൂർണ്ണസംഖ്യ bad : {0, -1}) {
 		set_crosstrack_params(500.f, 500.f, bad);
 		EXPECT_FALSE(daa.try_setting_params()) << "collision time = " << bad;
 	}
@@ -132,14 +132,14 @@ TEST_F(DaaCrosstrackTest, InvalidTrafficHeadingReturnsNoConflict)
 {
 	ASSERT_TRUE(daa.try_setting_params());
 
-	const aircraft_state_s uav_state{
+	സ്ഥിരം aircraft_state_s uav_state{
 		kUavLatLon,
 		kUavAlt,
 		matrix::Vector3f(0.f, 0.f, 0.f),
 		0.f
 	};
 	aircraft_state_s traffic_state = create_aircraft_state(kUavLatLon, kUavAlt, 200.f, math::radians(90.f), 0.f,
-					 std::numeric_limits<float>::quiet_NaN(), matrix::Vector3f(0.f, -30.f, 0.f));
+					 std::numeric_limits<ദശാംശം>::quiet_NaN(), matrix::Vector3f(0.f, -30.f, 0.f));
 
 	daa_stats_s daa_stats{};
 	EXPECT_EQ(daa.calculate_daa_stats(uav_state, traffic_state, daa_stats), detect_and_avoid_s::DAA_CONFLICT_LVL_NONE);
@@ -155,17 +155,17 @@ TEST_F(DaaCrosstrackTest, DetectsApproachingConflictAndReportsExpectedStats)
 {
 	ASSERT_TRUE(daa.try_setting_params());
 
-	const aircraft_state_s uav_state{
+	സ്ഥിരം aircraft_state_s uav_state{
 		kUavLatLon,
 		kUavAlt,
 		matrix::Vector3f(0.f, 0.f, 0.f),
 		0.f
 	};
-	const aircraft_state_s traffic_state = create_aircraft_state(kUavLatLon, kUavAlt, 200.f, math::radians(90.f), 0.f,
+	സ്ഥിരം aircraft_state_s traffic_state = create_aircraft_state(kUavLatLon, kUavAlt, 200.f, math::radians(90.f), 0.f,
 					       math::radians(270.f), matrix::Vector3f(0.f, -30.f, 0.f));
 
 	daa_stats_s daa_stats{};
-	EXPECT_EQ(daa.calculate_daa_stats(uav_state, traffic_state, daa_stats), detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH);
+	EXPECT_EQ(daa.calculate_daa_stats(uav_state, traffic_state, daa_stats), detect_and_avoid_s::DAA_CONFLICT_LVL_മുകളിലെ);
 
 	EXPECT_NEAR(daa_stats.aircraft_dist, 200.f, 0.1f);
 	EXPECT_LT(fabsf(daa_stats.aircraft_dist_hor), 500.f);
@@ -179,20 +179,20 @@ TEST_F(DaaCrosstrackTest, MatchesLegacyNotebookDataset)
 {
 	ASSERT_TRUE(daa.try_setting_params());
 
-	const aircraft_state_s uav_state{
+	സ്ഥിരം aircraft_state_s uav_state{
 		kUavLatLon,
 		kUavAlt,
 		matrix::Vector3f(0.f, 0.f, 0.f),
 		0.f
 	};
 
-	for (uint32_t i = 0; i < sizeof(kTrafficDataset) / sizeof(kTrafficDataset[0]); ++i) {
-		const traffic_data_s &traffic = kTrafficDataset[i];
+	വേണ്ടി (uint32_t i = 0; i < വലുപ്പം(kTrafficDataset) / വലുപ്പം(kTrafficDataset[0]); ++i) {
+		സ്ഥിരം traffic_data_s &traffic = kTrafficDataset[i];
 		SCOPED_TRACE(testing::Message() << "kTrafficDataset[" << i << "]");
 
 		daa_stats_s daa_stats{};
-		const uint8_t conflict_level = daa.calculate_daa_stats(uav_state, create_aircraft_state(traffic), daa_stats);
-		const uint8_t expected_conflict_level = traffic.in_conflict ? detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH :
+		സ്ഥിരം uint8_t conflict_level = daa.calculate_daa_stats(uav_state, create_aircraft_state(traffic), daa_stats);
+		സ്ഥിരം uint8_t expected_conflict_level = traffic.in_conflict ? detect_and_avoid_s::DAA_CONFLICT_LVL_മുകളിലെ :
 							detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
 
 		EXPECT_EQ(conflict_level, expected_conflict_level);

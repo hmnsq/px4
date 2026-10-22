@@ -39,65 +39,65 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <assert.h>
+#അന്തര്ഭാവ <time.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <mathlib/math/test/test.hpp>
+#അന്തര്ഭാവ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#അന്തര്ഭാവ "block/Block.hpp"
+#അന്തര്ഭാവ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#അന്തര്ഭാവ "matrix/math.hpp"
 
-namespace control
+നാമാകാശ control
 {
 
-class __EXPORT BlockRandGauss: public Block
+വർഗ്ഗം __EXPORT BlockRandGauss: പൊതു Block
 {
-public:
+പൊതു:
 // methods
 	BlockRandGauss(SuperBlock *parent,
-		       const char *name) :
+		       സ്ഥിരം അക്ഷരം *name) :
 		Block(parent, name),
-		_mean(this, "MEAN"),
-		_stdDev(this, "DEV")
+		_mean(ഇത്, "MEAN"),
+		_stdDev(ഇത്, "DEV")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandGauss() = default;
-	float update()
+	മായാ ~BlockRandGauss() = സ്ഥിരസ്ഥിതി;
+	ദശാംശം update()
 	{
-		static float V1, V2, S;
-		static int phase = 0;
-		float X;
+		സ്ഥിതം ദശാംശം V1, V2, S;
+		സ്ഥിതം പൂർണ്ണസംഖ്യ phase = 0;
+		ദശാംശം X;
 
-		if (phase == 0) {
-			do {
-				float U1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-				float U2 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		എങ്കിൽ (phase == 0) {
+			ചെയ്യുക {
+				ദശാംശം U1 = static_cast<ദശാംശം>(rand()) / static_cast<ദശാംശം>(RAND_MAX);
+				ദശാംശം U2 = static_cast<ദശാംശം>(rand()) / static_cast<ദശാംശം>(RAND_MAX);
 				V1 = 2 * U1 - 1;
 				V2 = 2 * U2 - 1;
 				S = V1 * V1 + V2 * V2;
-			} while (S >= 1 || fabsf(S) < 1e-8f);
+			} ആകുമ്പോൾ (S >= 1 || fabsf(S) < 1e-8f);
 
-			X = V1 * float(sqrtf(-2 * float(logf(S)) / S));
+			X = V1 * ദശാംശം(sqrtf(-2 * ദശാംശം(logf(S)) / S));
 
-		} else {
-			X = V2 * float(sqrtf(-2 * float(logf(S)) / S));
+		} അല്ലെങ്കിൽ {
+			X = V2 * ദശാംശം(sqrtf(-2 * ദശാംശം(logf(S)) / S));
 		}
 
 		phase = 1 - phase;
-		return X * getStdDev() + getMean();
+		തിരികെ X * getStdDev() + getMean();
 	}
 // accessors
-	float getMean() { return _mean.get(); }
-	float getStdDev() { return _stdDev.get(); }
-private:
+	ദശാംശം getMean() { തിരികെ _mean.get(); }
+	ദശാംശം getStdDev() { തിരികെ _stdDev.get(); }
+സ്വകാര്യ:
 // attributes
 	control::BlockParamFloat _mean;
 	control::BlockParamFloat _stdDev;

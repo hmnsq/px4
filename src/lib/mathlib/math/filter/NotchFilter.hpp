@@ -42,56 +42,56 @@
 
 #pragma once
 
-#include <mathlib/math/Functions.hpp>
-#include <cmath>
-#include <float.h>
-#include <matrix/math.hpp>
+#അന്തര്ഭാവ <mathlib/math/Functions.hpp>
+#അന്തര്ഭാവ <cmath>
+#അന്തര്ഭാവ <float.h>
+#അന്തര്ഭാവ <matrix/math.hpp>
 
-namespace math
+നാമാകാശ math
 {
 
 template<typename T>
-class NotchFilter
+വർഗ്ഗം NotchFilter
 {
-public:
-	NotchFilter() = default;
-	~NotchFilter() = default;
+പൊതു:
+	NotchFilter() = സ്ഥിരസ്ഥിതി;
+	~NotchFilter() = സ്ഥിരസ്ഥിതി;
 
-	bool setParameters(float sample_freq, float notch_freq, float bandwidth);
+	തർക്കം setParameters(ദശാംശം sample_freq, ദശാംശം notch_freq, ദശാംശം bandwidth);
 
 	/**
 	 * Add a new raw value to the filter using the Direct Form I
 	 *
 	 * @return retrieve the filtered result
 	 */
-	inline T apply(const T &sample)
+	വരിയിൽ T apply(സ്ഥിരം T &sample)
 	{
-		if (!_initialized) {
+		എങ്കിൽ (!_initialized) {
 			reset(sample);
-			_initialized = true;
+			_initialized = സത്യം;
 		}
 
-		return applyInternal(sample);
+		തിരികെ applyInternal(sample);
 	}
 
 	// Filter array of samples in place using the direct form I
-	inline void applyArray(T samples[], int num_samples)
+	വരിയിൽ ശൂന്യം applyArray(T samples[], പൂർണ്ണസംഖ്യ അക്കം_samples)
 	{
-		if (!_initialized) {
+		എങ്കിൽ (!_initialized) {
 			reset(samples[0]);
-			_initialized = true;
+			_initialized = സത്യം;
 		}
 
-		for (int n = 0; n < num_samples; n++) {
+		വേണ്ടി (പൂർണ്ണസംഖ്യ n = 0; n < അക്കം_samples; n++) {
 			samples[n] = applyInternal(samples[n]);
 		}
 	}
 
-	float getNotchFreq() const { return _notch_freq; }
-	float getBandwidth() const { return _bandwidth; }
+	ദശാംശം getNotchFreq() സ്ഥിരം { തിരികെ _notch_freq; }
+	ദശാംശം getBandwidth() സ്ഥിരം { തിരികെ _bandwidth; }
 
 	// Used in unit test only
-	void getCoefficients(float a[3], float b[3]) const
+	ശൂന്യം getCoefficients(ദശാംശം a[3], ദശാംശം b[3]) സ്ഥിരം
 	{
 		a[0] = 1.f;
 		a[1] = _a1;
@@ -101,16 +101,16 @@ public:
 		b[2] = _b2;
 	}
 
-	float getMagnitudeResponse(float frequency) const
+	ദശാംശം getMagnitudeResponse(ദശാംശം frequency) സ്ഥിരം
 	{
-		float w = 2.f * M_PI_F * frequency / _sample_freq;
+		ദശാംശം w = 2.f * M_PI_F * frequency / _sample_freq;
 
-		float numerator = _b0 * _b0 + _b1 * _b1 + _b2 * _b2
+		ദശാംശം numerator = _b0 * _b0 + _b1 * _b1 + _b2 * _b2
 				  + 2.f * (_b0 * _b1 + _b1 * _b2) * cosf(w) + 2.f * _b0 * _b2 * cosf(2.f * w);
 
-		float denominator = 1.f + _a1 * _a1 + _a2 * _a2 + 2.f * (_a1 + _a1 * _a2) * cosf(w) + 2.f * _a2 * cosf(2.f * w);
+		ദശാംശം denominator = 1.f + _a1 * _a1 + _a2 * _a2 + 2.f * (_a1 + _a1 * _a2) * cosf(w) + 2.f * _a2 * cosf(2.f * w);
 
-		return sqrtf(numerator / denominator);
+		തിരികെ sqrtf(numerator / denominator);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public:
 	 * physical meaning if you use this method to change the filter's coefficients.
 	 * Used for creating clones of a specific filter.
 	 */
-	void setCoefficients(float a[2], float b[3])
+	ശൂന്യം setCoefficients(ദശാംശം a[2], ദശാംശം b[3])
 	{
 		_a1 = a[0];
 		_a2 = a[1];
@@ -128,25 +128,25 @@ public:
 		_b2 = b[2];
 	}
 
-	bool initialized() const { return _initialized; }
+	തർക്കം initialized() സ്ഥിരം { തിരികെ _initialized; }
 
-	void reset() { _initialized = false; }
+	ശൂന്യം reset() { _initialized = അസത്യം; }
 
-	void reset(const T &sample)
+	ശൂന്യം reset(സ്ഥിരം T &sample)
 	{
-		const T input = isFinite(sample) ? sample : T{};
+		സ്ഥിരം T നിവേശം = isFinite(sample) ? sample : T{};
 
-		_delay_element_1 = _delay_element_2 = input;
-		_delay_element_output_1 = _delay_element_output_2 = input * (_b0 + _b1 + _b2) / (1 + _a1 + _a2);
+		_delay_element_1 = _delay_element_2 = നിവേശം;
+		_delay_element_output_1 = _delay_element_output_2 = നിവേശം * (_b0 + _b1 + _b2) / (1 + _a1 + _a2);
 
-		if (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
+		എങ്കിൽ (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
 			_delay_element_output_1 = _delay_element_output_2 = {};
 		}
 
-		_initialized = true;
+		_initialized = സത്യം;
 	}
 
-	void disable()
+	ശൂന്യം disable()
 	{
 		// no filtering
 		_notch_freq = 0.f;
@@ -160,17 +160,17 @@ public:
 		_a1 = 0.f;
 		_a2 = 0.f;
 
-		_initialized = false;
+		_initialized = അസത്യം;
 	}
 
-protected:
+സംരക്ഷിത:
 
 	/**
 	 * Add a new raw value to the filter using the Direct Form I
 	 *
 	 * @return retrieve the filtered result
 	 */
-	inline T applyInternal(const T &sample)
+	വരിയിൽ T applyInternal(സ്ഥിരം T &sample)
 	{
 		// Direct Form I implementation
 		T output = _b0 * sample + _b1 * _delay_element_1 + _b2 * _delay_element_2 - _a1 * _delay_element_output_1 - _a2 *
@@ -184,7 +184,7 @@ protected:
 		_delay_element_output_2 = _delay_element_output_1;
 		_delay_element_output_1 = output;
 
-		return output;
+		തിരികെ output;
 	}
 
 	T _delay_element_1{};
@@ -193,18 +193,18 @@ protected:
 	T _delay_element_output_2{};
 
 	// All the coefficients are normalized by a0, so a0 becomes 1 here
-	float _a1{0.f};
-	float _a2{0.f};
+	ദശാംശം _a1{0.f};
+	ദശാംശം _a2{0.f};
 
-	float _b0{1.f};
-	float _b1{0.f};
-	float _b2{0.f};
+	ദശാംശം _b0{1.f};
+	ദശാംശം _b1{0.f};
+	ദശാംശം _b2{0.f};
 
-	float _notch_freq{};
-	float _bandwidth{};
-	float _sample_freq{};
+	ദശാംശം _notch_freq{};
+	ദശാംശം _bandwidth{};
+	ദശാംശം _sample_freq{};
 
-	bool _initialized{false};
+	തർക്കം _initialized{അസത്യം};
 };
 
 /**
@@ -214,53 +214,53 @@ protected:
  * conserving the filter's history
  */
 template<typename T>
-bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float bandwidth)
+തർക്കം NotchFilter<T>::setParameters(ദശാംശം sample_freq, ദശാംശം notch_freq, ദശാംശം bandwidth)
 {
-	if ((sample_freq <= 0.f) || (notch_freq <= 0.f) || (bandwidth <= 0.f) || (notch_freq >= sample_freq / 2)
+	എങ്കിൽ ((sample_freq <= 0.f) || (notch_freq <= 0.f) || (bandwidth <= 0.f) || (notch_freq >= sample_freq / 2)
 	    || !isFinite(sample_freq) || !isFinite(notch_freq) || !isFinite(bandwidth)) {
 
 		disable();
-		return false;
+		തിരികെ അസത്യം;
 	}
 
-	const float freq_min = sample_freq * 0.001f;
+	സ്ഥിരം ദശാംശം freq_min = sample_freq * 0.001f;
 
-	const float notch_freq_new = math::max(notch_freq, freq_min);
-	const float bandwidth_new = math::max(bandwidth, freq_min);
+	സ്ഥിരം ദശാംശം notch_freq_new = math::max(notch_freq, freq_min);
+	സ്ഥിരം ദശാംശം bandwidth_new = math::max(bandwidth, freq_min);
 
-	const float sample_freq_diff = fabsf(sample_freq - _sample_freq);
-	const float bandwidth_diff = fabsf(bandwidth_new - _bandwidth);
+	സ്ഥിരം ദശാംശം sample_freq_diff = fabsf(sample_freq - _sample_freq);
+	സ്ഥിരം ദശാംശം bandwidth_diff = fabsf(bandwidth_new - _bandwidth);
 
-	const bool sample_freq_change = (sample_freq_diff > FLT_EPSILON);
-	const bool bandwidth_change = (bandwidth_diff > FLT_EPSILON);
+	സ്ഥിരം തർക്കം sample_freq_change = (sample_freq_diff > FLT_EPSILON);
+	സ്ഥിരം തർക്കം bandwidth_change = (bandwidth_diff > FLT_EPSILON);
 
-	if (!sample_freq_change && !bandwidth_change) {
-		const float notch_freq_diff = fabsf(notch_freq_new - _notch_freq);
+	എങ്കിൽ (!sample_freq_change && !bandwidth_change) {
+		സ്ഥിരം ദശാംശം notch_freq_diff = fabsf(notch_freq_new - _notch_freq);
 
-		if (notch_freq_diff > FLT_EPSILON) {
+		എങ്കിൽ (notch_freq_diff > FLT_EPSILON) {
 			// only notch frequency has changed
 			_notch_freq = notch_freq_new;
 
-			const float beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
+			സ്ഥിരം ദശാംശം beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
 
 			_b1 = 2.f * beta * _b0;
 			_a1 = _b1;
 
-			if (notch_freq_diff > _bandwidth) {
+			എങ്കിൽ (notch_freq_diff > _bandwidth) {
 				// force reset
-				_initialized = false;
+				_initialized = അസത്യം;
 			}
 
-			if (!isFinite(_b1)) {
+			എങ്കിൽ (!isFinite(_b1)) {
 				disable();
-				return false;
+				തിരികെ അസത്യം;
 			}
 
-			return true;
+			തിരികെ സത്യം;
 
-		} else {
+		} അല്ലെങ്കിൽ {
 			// no change, do nothing
-			return true;
+			തിരികെ സത്യം;
 		}
 	}
 
@@ -268,9 +268,9 @@ bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float ba
 	_notch_freq = notch_freq_new;
 	_bandwidth = bandwidth_new;
 
-	const float alpha = tanf(M_PI_F * _bandwidth / _sample_freq);
-	const float beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
-	const float a0_inv = 1.f / (alpha + 1.f);
+	സ്ഥിരം ദശാംശം alpha = tanf(M_PI_F * _bandwidth / _sample_freq);
+	സ്ഥിരം ദശാംശം beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
+	സ്ഥിരം ദശാംശം a0_inv = 1.f / (alpha + 1.f);
 
 	_b0 = a0_inv;
 	_b1 = 2.f * beta * a0_inv;
@@ -279,20 +279,20 @@ bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float ba
 	_a1 = _b1;
 	_a2 = (1.f - alpha) * a0_inv;
 
-	if (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a2)) {
+	എങ്കിൽ (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a2)) {
 		disable();
-		return false;
+		തിരികെ അസത്യം;
 	}
 
 	// force reset if bandwidth or sample frequency changed by more than 1%
-	if (bandwidth_diff > 0.01f * _bandwidth) {
-		_initialized = false;
+	എങ്കിൽ (bandwidth_diff > 0.01f * _bandwidth) {
+		_initialized = അസത്യം;
 
-	} else if (sample_freq_diff > 0.01f * _sample_freq) {
-		_initialized = false;
+	} അല്ലെങ്കിൽ എങ്കിൽ (sample_freq_diff > 0.01f * _sample_freq) {
+		_initialized = അസത്യം;
 	}
 
-	return true;
+	തിരികെ സത്യം;
 }
 
 } // namespace math

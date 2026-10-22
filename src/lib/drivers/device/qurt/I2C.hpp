@@ -39,37 +39,37 @@
 
 #pragma once
 
-#include "../CDev.hpp"
-#include <px4_platform_common/i2c.h>
+#അന്തര്ഭാവ "../CDev.hpp"
+#അന്തര്ഭാവ <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#എങ്കിൽ defined(CONFIG_I2C)
 
-struct I2CSPIDriverConfig;
+ഘടന I2CSPIDriverConfig;
 
-namespace device __EXPORT
+നാമാകാശ device __EXPORT
 {
 
 /**
  * Abstract class for character device on I2C
  */
-class __EXPORT I2C : public CDev
+വർഗ്ഗം __EXPORT I2C : പൊതു CDev
 {
 
-public:
+പൊതു:
 
 	// no copy, assignment, move, move assignment
-	I2C(const I2C &) = delete;
-	I2C &operator=(const I2C &) = delete;
+	I2C(സ്ഥിരം I2C &) = delete;
+	I2C &operator=(സ്ഥിരം I2C &) = delete;
 	I2C(I2C &&) = delete;
 	I2C &operator=(I2C &&) = delete;
 
-	virtual int	init() override;
+	മായാ പൂർണ്ണസംഖ്യ	init() override;
 
-	typedef int (*_config_i2c_bus_func_t)(uint8_t, uint8_t, uint32_t);
-	typedef int (*_set_i2c_address_func_t)(int, uint8_t);
-	typedef int (*_i2c_transfer_func_t)(int, const uint8_t *, const unsigned, uint8_t *, const unsigned);
+	തരനിർവചനം പൂർണ്ണസംഖ്യ (*_config_i2c_bus_func_t)(uint8_t, uint8_t, uint32_t);
+	തരനിർവചനം പൂർണ്ണസംഖ്യ (*_set_i2c_address_func_t)(പൂർണ്ണസംഖ്യ, uint8_t);
+	തരനിർവചനം പൂർണ്ണസംഖ്യ (*_i2c_transfer_func_t)(പൂർണ്ണസംഖ്യ, സ്ഥിരം uint8_t *, സ്ഥിരം unsigned, uint8_t *, സ്ഥിരം unsigned);
 
-	static void configure_callbacks(_config_i2c_bus_func_t config_func,
+	സ്ഥിതം ശൂന്യം configure_callbacks(_config_i2c_bus_func_t config_func,
 					_set_i2c_address_func_t addr_func,
 					_i2c_transfer_func_t transfer_func)
 	{
@@ -78,7 +78,7 @@ public:
 		_i2c_transfer = transfer_func;
 	}
 
-protected:
+സംരക്ഷിത:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -94,16 +94,16 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
-	I2C(const I2CSPIDriverConfig &config);
-	virtual ~I2C();
+	I2C(uint8_t device_type, സ്ഥിരം അക്ഷരം *name, സ്ഥിരം പൂർണ്ണസംഖ്യ bus, സ്ഥിരം uint16_t address, സ്ഥിരം uint32_t frequency);
+	I2C(സ്ഥിരം I2CSPIDriverConfig &config);
+	മായാ ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	മായാ പൂർണ്ണസംഖ്യ	probe() { തിരികെ PX4_OK; }
 
-	virtual void set_device_address(int address, bool log = true);
+	മായാ ശൂന്യം set_device_address(പൂർണ്ണസംഖ്യ address, തർക്കം log = സത്യം);
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -117,21 +117,21 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	പൂർണ്ണസംഖ്യ		transfer(സ്ഥിരം uint8_t *send, സ്ഥിരം unsigned send_len, uint8_t *recv, സ്ഥിരം unsigned recv_len);
 
-private:
+സ്വകാര്യ:
 	uint32_t		               _frequency{0};
-	int                            _i2c_fd{-1};
+	പൂർണ്ണസംഖ്യ                            _i2c_fd{-1};
 	pthread_mutex_t               *_mutex{nullptr};
 
-	static const int MAX_I2C_BUS{4};
+	സ്ഥിതം സ്ഥിരം പൂർണ്ണസംഖ്യ MAX_I2C_BUS{4};
 
-	static _config_i2c_bus_func_t  _config_i2c_bus;
-	static _set_i2c_address_func_t _set_i2c_address;
-	static _i2c_transfer_func_t    _i2c_transfer;
+	സ്ഥിതം _config_i2c_bus_func_t  _config_i2c_bus;
+	സ്ഥിതം _set_i2c_address_func_t _set_i2c_address;
+	സ്ഥിതം _i2c_transfer_func_t    _i2c_transfer;
 
-	static struct _bus_mutex_t {
-		int _bus;
+	സ്ഥിതം ഘടന _bus_mutex_t {
+		പൂർണ്ണസംഖ്യ _bus;
 		pthread_mutex_t _mutex{PTHREAD_MUTEX_INITIALIZER};
 	} _bus_mutex[MAX_I2C_BUS];
 };

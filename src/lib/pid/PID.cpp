@@ -31,60 +31,60 @@
  *
  ****************************************************************************/
 
-#include "PID.hpp"
-#include "lib/mathlib/math/Functions.hpp"
+#അന്തര്ഭാവ "PID.hpp"
+#അന്തര്ഭാവ "lib/mathlib/math/Functions.hpp"
 
-void PID::setOutputLimit(const float lower_limit, const float upper_limit)
+ശൂന്യം PID::setOutputLimit(സ്ഥിരം ദശാംശം lower_limit, സ്ഥിരം ദശാംശം upper_limit)
 {
 	_lower_limit_output = lower_limit;
 	_upper_limit_output = upper_limit;
 }
 
-void PID::setGains(const float P, const float I, const float D)
+ശൂന്യം PID::setGains(സ്ഥിരം ദശാംശം P, സ്ഥിരം ദശാംശം I, സ്ഥിരം ദശാംശം D)
 {
 	_gain_proportional = P;
 	_gain_integral = I;
 	_gain_derivative = D;
 }
 
-float PID::update(const float feedback, const float dt, const bool update_integral)
+ദശാംശം PID::update(സ്ഥിരം ദശാംശം feedback, സ്ഥിരം ദശാംശം dt, സ്ഥിരം തർക്കം update_integral)
 {
-	const float error = _setpoint - feedback;
-	const float derivative = updateDerivative(feedback, dt);
-	const float output = (_gain_feedforward * _setpoint) + (_gain_proportional * error) + _integral -
+	സ്ഥിരം ദശാംശം error = _setpoint - feedback;
+	സ്ഥിരം ദശാംശം derivative = updateDerivative(feedback, dt);
+	സ്ഥിരം ദശാംശം output = (_gain_feedforward * _setpoint) + (_gain_proportional * error) + _integral -
 			     (_gain_derivative * derivative);
-	const float output_constrained = math::constrain(output, _lower_limit_output, _upper_limit_output);
+	സ്ഥിരം ദശാംശം output_constrained = math::constrain(output, _lower_limit_output, _upper_limit_output);
 
-	if (update_integral) {
+	എങ്കിൽ (update_integral) {
 		updateIntegral(error, output - output_constrained, dt);
 	}
 
 	_last_feedback = feedback;
-	return output_constrained;
+	തിരികെ output_constrained;
 }
 
-void PID::updateIntegral(float error, const float saturation, const float dt)
+ശൂന്യം PID::updateIntegral(ദശാംശം error, സ്ഥിരം ദശാംശം saturation, സ്ഥിരം ദശാംശം dt)
 {
 	// Anti-windup: stop integrating in the direction that drives the output
 	// further into saturation (conditional integration)
-	if ((saturation > FLT_EPSILON && error > 0.f) || (saturation < -FLT_EPSILON && error < 0.f)) {
+	എങ്കിൽ ((saturation > FLT_EPSILON && error > 0.f) || (saturation < -FLT_EPSILON && error < 0.f)) {
 		error = 0.f;
 	}
 
-	const float integral_new = _integral + _gain_integral * error * dt;
+	സ്ഥിരം ദശാംശം integral_new = _integral + _gain_integral * error * dt;
 
-	if (std::isfinite(integral_new)) {
+	എങ്കിൽ (std::isfinite(integral_new)) {
 		_integral = math::constrain(integral_new, -_limit_integral, _limit_integral);
 	}
 }
 
-float PID::updateDerivative(float feedback, const float dt)
+ദശാംശം PID::updateDerivative(ദശാംശം feedback, സ്ഥിരം ദശാംശം dt)
 {
-	float feedback_change = 0.f;
+	ദശാംശം feedback_change = 0.f;
 
-	if ((dt > FLT_EPSILON) && std::isfinite(_last_feedback)) {
+	എങ്കിൽ ((dt > FLT_EPSILON) && std::isfinite(_last_feedback)) {
 		feedback_change = (feedback - _last_feedback) / dt;
 	}
 
-	return feedback_change;
+	തിരികെ feedback_change;
 }

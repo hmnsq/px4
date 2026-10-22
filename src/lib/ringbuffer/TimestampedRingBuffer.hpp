@@ -41,110 +41,110 @@
 
 #pragma once
 
-#include <climits>
-#include <cstddef>
-#include <inttypes.h>
+#അന്തര്ഭാവ <climits>
+#അന്തര്ഭാവ <cstddef>
+#അന്തര്ഭാവ <inttypes.h>
 
 template <typename data_type, size_t SIZE = 0>
-class TimestampedRingBuffer;
+വർഗ്ഗം TimestampedRingBuffer;
 
 /**
  * Static-size ring buffer specialization (SIZE > 0).
  */
 template <typename data_type, size_t SIZE>
-class TimestampedRingBuffer
+വർഗ്ഗം TimestampedRingBuffer
 {
-public:
+പൊതു:
 	static_assert(SIZE > 0, "SIZE must be > 0");
 	static_assert(SIZE <= UINT8_MAX, "SIZE must fit in uint8_t");
-	static constexpr uint8_t kSize = static_cast<uint8_t>(SIZE);
+	സ്ഥിതം constexpr uint8_t kSize = static_cast<uint8_t>(SIZE);
 
-	TimestampedRingBuffer() = default;
-	~TimestampedRingBuffer() = default;
+	TimestampedRingBuffer() = സ്ഥിരസ്ഥിതി;
+	~TimestampedRingBuffer() = സ്ഥിരസ്ഥിതി;
 
 	// no copy, assignment, move, move assignment
-	TimestampedRingBuffer(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer &operator=(const TimestampedRingBuffer &) = delete;
+	TimestampedRingBuffer(സ്ഥിരം TimestampedRingBuffer &) = delete;
+	TimestampedRingBuffer &operator=(സ്ഥിരം TimestampedRingBuffer &) = delete;
 	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
 	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
 
-	bool allocate(size_t size) { return size == SIZE; }
+	തർക്കം allocate(size_t size) { തിരികെ size == SIZE; }
 
-	bool valid() const { return SIZE > 0; }
+	തർക്കം valid() സ്ഥിരം { തിരികെ SIZE > 0; }
 
-	void push(const data_type &sample)
+	ശൂന്യം തള്ളുക(സ്ഥിരം data_type &sample)
 	{
 		_buffer[_head] = sample;
 		_head = next(_head);
 
-		if (_entries < kSize) {
+		എങ്കിൽ (_entries < kSize) {
 			_entries++;
 		}
 	}
 
-	uint8_t get_length() const { return kSize; }
+	uint8_t get_length() സ്ഥിരം { തിരികെ kSize; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	data_type &operator[](സ്ഥിരം uint8_t index) { തിരികെ _buffer[index]; }
 
-	const data_type &get_newest() const { return _buffer[get_newest_index()]; }
-	const data_type &get_oldest() const { return _buffer[get_oldest_index()]; }
+	സ്ഥിരം data_type &get_newest() സ്ഥിരം { തിരികെ _buffer[get_newest_index()]; }
+	സ്ഥിരം data_type &get_oldest() സ്ഥിരം { തിരികെ _buffer[get_oldest_index()]; }
 
-	uint8_t get_newest_index() const { return (_entries > 0) ? prev(_head) : 0; }
-	uint8_t get_oldest_index() const
+	uint8_t get_newest_index() സ്ഥിരം { തിരികെ (_entries > 0) ? prev(_head) : 0; }
+	uint8_t get_oldest_index() സ്ഥിരം
 	{
-		if (_entries == 0) {
-			return 0;
+		എങ്കിൽ (_entries == 0) {
+			തിരികെ 0;
 		}
 
-		const uint16_t idx = static_cast<uint16_t>(_head) + static_cast<uint16_t>(kSize) - static_cast<uint16_t>(_entries);
-		return (idx >= kSize) ? static_cast<uint8_t>(idx - kSize) : static_cast<uint8_t>(idx);
+		സ്ഥിരം uint16_t idx = static_cast<uint16_t>(_head) + static_cast<uint16_t>(kSize) - static_cast<uint16_t>(_entries);
+		തിരികെ (idx >= kSize) ? static_cast<uint8_t>(idx - kSize) : static_cast<uint8_t>(idx);
 	}
 
-	uint8_t next(uint8_t i) const { return (i + 1 >= kSize) ? 0 : i + 1; }
-	uint8_t prev(uint8_t i) const { return (i == 0) ? kSize - 1 : i - 1; }
+	uint8_t next(uint8_t i) സ്ഥിരം { തിരികെ (i + 1 >= kSize) ? 0 : i + 1; }
+	uint8_t prev(uint8_t i) സ്ഥിരം { തിരികെ (i == 0) ? kSize - 1 : i - 1; }
 
-	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
+	തർക്കം എടുക്കുക_first_older_than(സ്ഥിരം uint64_t &timestamp, data_type *sample)
 	{
 		// start looking from newest observation data
-		const uint8_t newest_idx = get_newest_index();
-		const uint8_t oldest_idx = get_oldest_index();
+		സ്ഥിരം uint8_t newest_idx = get_newest_index();
+		സ്ഥിരം uint8_t oldest_idx = get_oldest_index();
 
-		for (uint8_t i = 0; i < _entries; i++) {
-			int index = (newest_idx - i);
+		വേണ്ടി (uint8_t i = 0; i < _entries; i++) {
+			പൂർണ്ണസംഖ്യ index = (newest_idx - i);
 			index = index < 0 ? kSize + index : index;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
+			എങ്കിൽ (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
 				*sample = _buffer[index];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				const uint8_t index_u = static_cast<uint8_t>(index);
-				const uint8_t distance = (index_u >= oldest_idx) ? (index_u - oldest_idx) : (index_u + kSize - oldest_idx);
-				const uint8_t discard_count = distance + 1;
-				_entries = (_entries > discard_count) ? (_entries - discard_count) : 0;
+				സ്ഥിരം uint8_t index_u = static_cast<uint8_t>(index);
+				സ്ഥിരം uint8_t distance = (index_u >= oldest_idx) ? (index_u - oldest_idx) : (index_u + kSize - oldest_idx);
+				സ്ഥിരം uint8_t discard_എണ്ണം = distance + 1;
+				_entries = (_entries > discard_എണ്ണം) ? (_entries - discard_എണ്ണം) : 0;
 				_buffer[index].time_us = 0;
 
-				return true;
+				തിരികെ സത്യം;
 			}
 		}
 
-		return false;
+		തിരികെ അസത്യം;
 	}
 
-	int get_total_size() const
+	പൂർണ്ണസംഖ്യ get_total_size() സ്ഥിരം
 	{
-		static_assert(sizeof(TimestampedRingBuffer<data_type, SIZE>) <= static_cast<size_t>(INT_MAX),
+		static_assert(വലുപ്പം(TimestampedRingBuffer<data_type, SIZE>) <= static_cast<size_t>(INT_MAX),
 			      "static ring buffer size must fit in int");
-		return static_cast<int>(sizeof(TimestampedRingBuffer<data_type, SIZE>));
+		തിരികെ static_cast<പൂർണ്ണസംഖ്യ>(വലുപ്പം(TimestampedRingBuffer<data_type, SIZE>));
 	}
 
-	int entries() const { return _entries; }
-	bool empty() const { return _entries == 0; }
+	പൂർണ്ണസംഖ്യ entries() സ്ഥിരം { തിരികെ _entries; }
+	തർക്കം empty() സ്ഥിരം { തിരികെ _entries == 0; }
 
-	void reset()
+	ശൂന്യം reset()
 	{
-		for (uint8_t i = 0; i < kSize; i++) {
+		വേണ്ടി (uint8_t i = 0; i < kSize; i++) {
 			_buffer[i].time_us = 0;
 		}
 
@@ -152,7 +152,7 @@ public:
 		_entries = 0;
 	}
 
-private:
+സ്വകാര്യ:
 	data_type _buffer[SIZE] {};
 
 	uint8_t _head{0};
@@ -163,36 +163,36 @@ private:
  * Dynamic-size ring buffer specialization (SIZE == 0).
  */
 template <typename data_type>
-class TimestampedRingBuffer<data_type, 0>
+വർഗ്ഗം TimestampedRingBuffer<data_type, 0>
 {
-public:
+പൊതു:
 	explicit TimestampedRingBuffer(size_t size) { allocate(size); }
 	TimestampedRingBuffer() = delete;
 	~TimestampedRingBuffer() { delete[] _buffer; }
 
 	// no copy, assignment, move, move assignment
-	TimestampedRingBuffer(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer &operator=(const TimestampedRingBuffer &) = delete;
+	TimestampedRingBuffer(സ്ഥിരം TimestampedRingBuffer &) = delete;
+	TimestampedRingBuffer &operator=(സ്ഥിരം TimestampedRingBuffer &) = delete;
 	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
 	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
 
-	bool allocate(size_t size)
+	തർക്കം allocate(size_t size)
 	{
-		if (valid() && (size == _size)) {
+		എങ്കിൽ (valid() && (size == _size)) {
 			// no change
-			return true;
+			തിരികെ സത്യം;
 		}
 
-		if (size == 0 || size > UINT8_MAX) {
-			return false;
+		എങ്കിൽ (size == 0 || size > UINT8_MAX) {
+			തിരികെ അസത്യം;
 		}
 
 		delete[] _buffer;
 
-		_buffer = new data_type[size] {};
+		_buffer = പുതിയ data_type[size] {};
 
-		if (_buffer == nullptr) {
-			return false;
+		എങ്കിൽ (_buffer == nullptr) {
+			തിരികെ അസത്യം;
 		}
 
 		_size = static_cast<uint8_t>(size);
@@ -200,18 +200,18 @@ public:
 		// new[]{} already zeroed time_us, only reset the indices
 		_head = 0;
 		_tail = 0;
-		_first_write = true;
+		_first_write = സത്യം;
 
-		return true;
+		തിരികെ സത്യം;
 	}
 
-	bool valid() const { return (_buffer != nullptr) && (_size > 0); }
+	തർക്കം valid() സ്ഥിരം { തിരികെ (_buffer != nullptr) && (_size > 0); }
 
-	void push(const data_type &sample)
+	ശൂന്യം തള്ളുക(സ്ഥിരം data_type &sample)
 	{
 		uint8_t head_new = _head;
 
-		if (!_first_write) {
+		എങ്കിൽ (!_first_write) {
 			head_new = next(_head);
 		}
 
@@ -219,100 +219,100 @@ public:
 		_head = head_new;
 
 		// move tail if we overwrite it
-		if (_head == _tail && !_first_write) {
+		എങ്കിൽ (_head == _tail && !_first_write) {
 			_tail = next(_tail);
 
-		} else {
-			_first_write = false;
+		} അല്ലെങ്കിൽ {
+			_first_write = അസത്യം;
 		}
 	}
 
-	uint8_t get_length() const { return _size; }
+	uint8_t get_length() സ്ഥിരം { തിരികെ _size; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	data_type &operator[](സ്ഥിരം uint8_t index) { തിരികെ _buffer[index]; }
 
-	const data_type &get_newest() const { return _buffer[_head]; }
-	const data_type &get_oldest() const { return _buffer[_tail]; }
+	സ്ഥിരം data_type &get_newest() സ്ഥിരം { തിരികെ _buffer[_head]; }
+	സ്ഥിരം data_type &get_oldest() സ്ഥിരം { തിരികെ _buffer[_tail]; }
 
-	uint8_t get_newest_index() const { return _head; }
-	uint8_t get_oldest_index() const { return _tail; }
+	uint8_t get_newest_index() സ്ഥിരം { തിരികെ _head; }
+	uint8_t get_oldest_index() സ്ഥിരം { തിരികെ _tail; }
 
-	uint8_t next(uint8_t i) const { return (_size > 0) ? ((i + 1 >= _size) ? 0 : i + 1) : 0; }
-	uint8_t prev(uint8_t i) const { return (_size > 0) ? ((i == 0) ? (_size - 1) : (i - 1)) : 0; }
+	uint8_t next(uint8_t i) സ്ഥിരം { തിരികെ (_size > 0) ? ((i + 1 >= _size) ? 0 : i + 1) : 0; }
+	uint8_t prev(uint8_t i) സ്ഥിരം { തിരികെ (_size > 0) ? ((i == 0) ? (_size - 1) : (i - 1)) : 0; }
 
-	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
+	തർക്കം എടുക്കുക_first_older_than(സ്ഥിരം uint64_t &timestamp, data_type *sample)
 	{
 		// start looking from newest observation data
-		for (uint8_t i = 0; i < _size; i++) {
-			int index = (_head - i);
+		വേണ്ടി (uint8_t i = 0; i < _size; i++) {
+			പൂർണ്ണസംഖ്യ index = (_head - i);
 			index = index < 0 ? _size + index : index;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
+			എങ്കിൽ (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
 				*sample = _buffer[index];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				if (index == _head) {
+				എങ്കിൽ (index == _head) {
 					_tail = _head;
-					_first_write = true;
+					_first_write = സത്യം;
 
-				} else {
+				} അല്ലെങ്കിൽ {
 					_tail = next(static_cast<uint8_t>(index));
 				}
 
 				_buffer[index].time_us = 0;
 
-				return true;
+				തിരികെ സത്യം;
 			}
 
-			if (index == _tail) {
+			എങ്കിൽ (index == _tail) {
 				// we have reached the tail and haven't got a
 				// match
-				return false;
+				തിരികെ അസത്യം;
 			}
 		}
 
-		return false;
+		തിരികെ അസത്യം;
 	}
 
-	int get_used_size() const { return sizeof(*this) + sizeof(data_type) * entries(); }
-	int get_total_size() const { return sizeof(*this) + sizeof(data_type) * _size; }
+	പൂർണ്ണസംഖ്യ get_used_size() സ്ഥിരം { തിരികെ വലുപ്പം(*ഇത്) + വലുപ്പം(data_type) * entries(); }
+	പൂർണ്ണസംഖ്യ get_total_size() സ്ഥിരം { തിരികെ വലുപ്പം(*ഇത്) + വലുപ്പം(data_type) * _size; }
 
-	int entries() const
+	പൂർണ്ണസംഖ്യ entries() സ്ഥിരം
 	{
-		int count = 0;
+		പൂർണ്ണസംഖ്യ എണ്ണം = 0;
 
-		for (uint8_t i = 0; i < _size; i++) {
-			if (_buffer[i].time_us != 0) {
-				count++;
+		വേണ്ടി (uint8_t i = 0; i < _size; i++) {
+			എങ്കിൽ (_buffer[i].time_us != 0) {
+				എണ്ണം++;
 			}
 		}
 
-		return count;
+		തിരികെ എണ്ണം;
 	}
 
-	bool empty() const { return entries() == 0; }
+	തർക്കം empty() സ്ഥിരം { തിരികെ entries() == 0; }
 
-	void reset()
+	ശൂന്യം reset()
 	{
-		if (_buffer) {
-			for (uint8_t i = 0; i < _size; i++) {
+		എങ്കിൽ (_buffer) {
+			വേണ്ടി (uint8_t i = 0; i < _size; i++) {
 				_buffer[i].time_us = 0;
 			}
 
 			_head = 0;
 			_tail = 0;
-			_first_write = true;
+			_first_write = സത്യം;
 		}
 	}
 
-private:
+സ്വകാര്യ:
 	data_type *_buffer{nullptr};
 
 	uint8_t _head{0};
 	uint8_t _tail{0};
 	uint8_t _size{0};
 
-	bool _first_write{true};
+	തർക്കം _first_write{സത്യം};
 };

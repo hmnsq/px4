@@ -1,18 +1,18 @@
 
 #pragma once
 
-#include <stdint.h>
+#അന്തര്ഭാവ <stdint.h>
 
-#include "crsf.h"
-#include "dsm.h"
-#include "ghst.hpp"
-#include "sbus.h"
-#include "st24.h"
-#include "sumd.h"
+#അന്തര്ഭാവ "crsf.h"
+#അന്തര്ഭാവ "dsm.h"
+#അന്തര്ഭാവ "ghst.hpp"
+#അന്തര്ഭാവ "sbus.h"
+#അന്തര്ഭാവ "st24.h"
+#അന്തര്ഭാവ "sumd.h"
 
-#pragma pack(push, 1)
-typedef  struct rc_decode_buf_ {
-	union {
+#pragma pack(തള്ളുക, 1)
+തരനിർവചനം  ഘടന rc_decode_buf_ {
+	സംഘം {
 		crsf_frame_t crsf_frame;
 		ghst_frame_t ghst_frame;
 		dsm_decode_t dsm;
@@ -21,9 +21,9 @@ typedef  struct rc_decode_buf_ {
 		ReceiverFcPacketHoTT _hottrxpacket;
 	};
 } rc_decode_buf_t;
-#pragma pack(pop)
+#pragma pack(എടുക്കുക)
 
-extern rc_decode_buf_t rc_decode_buf;
+ബാഹ്യ rc_decode_buf_t rc_decode_buf;
 
 uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a);
-uint8_t crc8_dvb_s2_buf(uint8_t *buf, int len);
+uint8_t crc8_dvb_s2_buf(uint8_t *buf, പൂർണ്ണസംഖ്യ len);

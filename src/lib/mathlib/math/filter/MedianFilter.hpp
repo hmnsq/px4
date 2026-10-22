@@ -40,29 +40,29 @@
 
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#അന്തര്ഭാവ <stdio.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <stdint.h>
+#അന്തര്ഭാവ <string.h>
 
-namespace math
+നാമാകാശ math
 {
 
-template<typename U> struct is_floating_point { static constexpr bool value = false; };
-template<> struct is_floating_point<float> { static constexpr bool value = true; };
-template<> struct is_floating_point<double> { static constexpr bool value = true; };
-template<> struct is_floating_point<long double> { static constexpr bool value = true; };
+template<typename U> ഘടന is_floating_point { സ്ഥിതം constexpr തർക്കം value = അസത്യം; };
+template<> ഘടന is_floating_point<ദശാംശം> { സ്ഥിതം constexpr തർക്കം value = സത്യം; };
+template<> ഘടന is_floating_point<ഇരട്ട> { സ്ഥിതം constexpr തർക്കം value = സത്യം; };
+template<> ഘടന is_floating_point<long ഇരട്ട> { സ്ഥിതം constexpr തർക്കം value = സത്യം; };
 
-template<typename T, int WINDOW = 3>
-class MedianFilter
+template<typename T, പൂർണ്ണസംഖ്യ WINDOW = 3>
+വർഗ്ഗം MedianFilter
 {
-public:
+പൊതു:
 	static_assert(WINDOW >= 3, "MedianFilter window size must be >= 3");
 	static_assert(WINDOW % 2, "MedianFilter window size must be odd"); // odd
 
-	MedianFilter() = default;
+	MedianFilter() = സ്ഥിരസ്ഥിതി;
 
-	void insert(const T &sample)
+	ശൂന്യം തിരുകുക(സ്ഥിരം T &sample)
 	{
 		_head = (_head + 1) % WINDOW;
 		_buffer[_head] = sample;
@@ -71,46 +71,46 @@ public:
 	T median()
 	{
 		T sorted[WINDOW];
-		memcpy(sorted, _buffer, sizeof(_buffer));
-		qsort(&sorted, WINDOW, sizeof(T), cmp);
+		memcpy(sorted, _buffer, വലുപ്പം(_buffer));
+		qsort(&sorted, WINDOW, വലുപ്പം(T), cmp);
 
-		return sorted[WINDOW / 2];
+		തിരികെ sorted[WINDOW / 2];
 	}
 
-	T apply(const T &sample)
+	T apply(സ്ഥിരം T &sample)
 	{
-		insert(sample);
-		return median();
+		തിരുകുക(sample);
+		തിരികെ median();
 	}
 
-private:
+സ്വകാര്യ:
 
-	static int cmp(const void *a, const void *b)
+	സ്ഥിതം പൂർണ്ണസംഖ്യ cmp(സ്ഥിരം ശൂന്യം *a, സ്ഥിരം ശൂന്യം *b)
 	{
-		const T va = *(const T *)a;
-		const T vb = *(const T *)b;
+		സ്ഥിരം T va = *(സ്ഥിരം T *)a;
+		സ്ഥിരം T vb = *(സ്ഥിരം T *)b;
 
-		if constexpr(is_floating_point<T>::value) {
-			if (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
-				return 0;
+		എങ്കിൽ constexpr(is_floating_point<T>::value) {
+			എങ്കിൽ (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
+				തിരികെ 0;
 
-			} else if (!__builtin_isfinite(va)) {
-				return  1;
+			} അല്ലെങ്കിൽ എങ്കിൽ (!__builtin_isfinite(va)) {
+				തിരികെ  1;
 
-			} else if (!__builtin_isfinite(vb)) {
-				return -1;
+			} അല്ലെങ്കിൽ എങ്കിൽ (!__builtin_isfinite(vb)) {
+				തിരികെ -1;
 			}
 		}
 
-		if (va < vb) {
-			return -1;
+		എങ്കിൽ (va < vb) {
+			തിരികെ -1;
 		}
 
-		if (va > vb) {
-			return  1;
+		എങ്കിൽ (va > vb) {
+			തിരികെ  1;
 		}
 
-		return 0;
+		തിരികെ 0;
 	}
 
 	T _buffer[WINDOW] {};

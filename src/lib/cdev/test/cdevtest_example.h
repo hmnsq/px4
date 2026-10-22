@@ -39,23 +39,23 @@
  */
 #pragma once
 
-#include <px4_platform_common/app.h>
+#അന്തര്ഭാവ <px4_platform_common/app.h>
 
-class CDevNode;
+class CDev_കണ്ണി;
 
 class CDevExample
 {
-public:
-	CDevExample() : _node(0) {}
+പൊതു:
+	CDevExample() : കണ്ണി(0) {}
 
 	~CDevExample();
 
-	int main();
+	പൂർണ്ണസംഖ്യ പ്രധാന();
 
-	static px4::AppState appState; /* track requests to terminate app */
+	സ്ഥിതം px4::AppState appState; /* track requests to terminate app */
 
-private:
-	int do_poll(int fd, int timeout, int iterations, int delayms_after_poll);
+സ്വകാര്യ:
+	പൂർണ്ണസംഖ്യ do_poll(പൂർണ്ണസംഖ്യ fd, പൂർണ്ണസംഖ്യ timeout, പൂർണ്ണസംഖ്യ iterations, പൂർണ്ണസംഖ്യ delayms_after_poll);
 
-	CDevNode *_node;
+	CDev_കണ്ണി *കണ്ണി;
 };

@@ -37,34 +37,34 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include "DaaEncodedId.h"
+#അന്തര്ഭാവ "DaaEncodedId.h"
 
-#include <cinttypes>
-#include <cstdio>
-#include <cstring>
+#അന്തര്ഭാവ <cinttypes>
+#അന്തര്ഭാവ <cstdio>
+#അന്തര്ഭാവ <cstring>
 
-#include <px4_platform_common/log.h>
+#അന്തര്ഭാവ <px4_platform_common/log.h>
 
-DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
+DaaEncodedId DaaEncodedId::from_report(സ്ഥിരം transponder_report_s &report)
 {
-	if (report.icao_address > 0 && report.icao_address <= kMaxIcaoAddress) {
+	എങ്കിൽ (report.icao_address > 0 && report.icao_address <= kMaxIcaoAddress) {
 		PX4_DEBUG("DAA: Unique ID encoding: ICAO.");
-		return {
+		തിരികെ {
 			static_cast<uint64_t>(report.icao_address),
 			detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO
 		};
 	}
 
-	if (report.icao_address > kMaxIcaoAddress) {
+	എങ്കിൽ (report.icao_address > kMaxIcaoAddress) {
 		PX4_DEBUG("DAA: invalid ICAO address");
 	}
 
-	if (report.flags & transponder_report_s::PX4_ADSB_FLAGS_VALID_CALLSIGN) {
+	എങ്കിൽ (report.flags & transponder_report_s::PX4_ADSB_FLAGS_VALID_CALLSIGN) {
 		PX4_DEBUG("DAA: Unique ID encoding: Callsign.");
-		const uint64_t callsign_id = callsign_to_uint64(report.callsign);
+		സ്ഥിരം uint64_t callsign_id = callsign_to_uint64(report.callsign);
 
-		if (callsign_id != 0) {
-			return {
+		എങ്കിൽ (callsign_id != 0) {
+			തിരികെ {
 				callsign_id,
 				detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN
 			};
@@ -74,21 +74,21 @@ DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
 		PX4_DEBUG("DAA: Failed to convert callsign to uint64.");
 	}
 
-	bool uas_id_valid = false;
+	തർക്കം uas_id_valid = അസത്യം;
 
-	for (int i = 0; i < kUasIdByteLength; ++i) {
-		if (report.uas_id[i] != 0) {
-			uas_id_valid = true;
-			break;
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < kUasIdByteLength; ++i) {
+		എങ്കിൽ (report.uas_id[i] != 0) {
+			uas_id_valid = സത്യം;
+			നിർത്തുക;
 		}
 	}
 
-	if (uas_id_valid) {
+	എങ്കിൽ (uas_id_valid) {
 		PX4_DEBUG("DAA: Unique ID encoding: UAS id.");
-		const uint64_t uas_id = last_uas_id_bytes_to_uint64(report.uas_id);
+		സ്ഥിരം uint64_t uas_id = last_uas_id_bytes_to_uint64(report.uas_id);
 
-		if (uas_id != 0) {
-			return {
+		എങ്കിൽ (uas_id != 0) {
+			തിരികെ {
 				uas_id,
 				detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID
 			};
@@ -97,185 +97,185 @@ DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
 		PX4_DEBUG("DAA: Failed to convert uas_id to uint64.");
 	}
 
-	return {};
+	തിരികെ {};
 }
 
-DaaEncodedId DaaEncodedId::identify_traffic_report(const transponder_report_s &report,
-		const daa_ownship_ids_s &ownship_ids)
+DaaEncodedId DaaEncodedId::identify_traffic_report(സ്ഥിരം transponder_report_s &report,
+		സ്ഥിരം daa_ownship_ids_s &ownship_ids)
 {
-	const DaaEncodedId encoded_id = from_report(report);
+	സ്ഥിരം DaaEncodedId encoded_id = from_report(report);
 
-	if (encoded_id.id == 0) {
+	എങ്കിൽ (encoded_id.id == 0) {
 		PX4_DEBUG("DAA: No valid unique ID, skipping report");
-		return {};
+		തിരികെ {};
 	}
 
-	if (is_self_detection(encoded_id, ownship_ids)) {
+	എങ്കിൽ (is_self_detection(encoded_id, ownship_ids)) {
 		PX4_DEBUG("DAA: Self detection, skipping report.");
-		return {};
+		തിരികെ {};
 	}
 
-	return encoded_id;
+	തിരികെ encoded_id;
 }
 
-bool DaaEncodedId::is_self_detection(const DaaEncodedId &encoded_id, const daa_ownship_ids_s &ownship_ids)
+തർക്കം DaaEncodedId::is_self_detection(സ്ഥിരം DaaEncodedId &encoded_id, സ്ഥിരം daa_ownship_ids_s &ownship_ids)
 {
-	switch (encoded_id.encoding) {
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
-			if (ownship_ids.icao >= 0
+	തിരഞ്ഞെടുപ്പ് (encoded_id.encoding) {
+	അവസ്ഥ detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
+			എങ്കിൽ (ownship_ids.icao >= 0
 			    && static_cast<uint32_t>(encoded_id.id) == static_cast<uint32_t>(ownship_ids.icao)) {
 				PX4_DEBUG("DAA: Received own main ICAO.");
-				return true;
+				തിരികെ സത്യം;
 			}
 
-			if (ownship_ids.icao_2 >= 0
+			എങ്കിൽ (ownship_ids.icao_2 >= 0
 			    && static_cast<uint32_t>(encoded_id.id) == static_cast<uint32_t>(ownship_ids.icao_2)) {
 				PX4_DEBUG("DAA: Received own secondary ICAO.");
-				return true;
+				തിരികെ സത്യം;
 			}
 
-			break;
+			നിർത്തുക;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
-			if (encoded_id.id == ownship_ids.callsign) {
+	അവസ്ഥ detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
+			എങ്കിൽ (encoded_id.id == ownship_ids.callsign) {
 				PX4_DEBUG("DAA: Received own Callsign.");
-				return true;
+				തിരികെ സത്യം;
 			}
 
-			break;
+			നിർത്തുക;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
-			if (ownship_ids.uas_id_valid && encoded_id.id == ownship_ids.uas_id) {
+	അവസ്ഥ detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
+			എങ്കിൽ (ownship_ids.uas_id_valid && encoded_id.id == ownship_ids.uas_id) {
 				PX4_DEBUG("DAA: Received own UAS ID.");
-				return true;
+				തിരികെ സത്യം;
 			}
 
-			break;
+			നിർത്തുക;
 		}
 
-	default:
-		break;
+	സ്ഥിരസ്ഥിതി:
+		നിർത്തുക;
 	}
 
-	return false;
+	തിരികെ അസത്യം;
 }
 
-void DaaEncodedId::to_string(char *buffer, size_t buffer_size) const
+ശൂന്യം DaaEncodedId::to_string(അക്ഷരം *buffer, size_t buffer_size) സ്ഥിരം
 {
-	if (buffer == nullptr || buffer_size == 0) { return; }
+	എങ്കിൽ (buffer == nullptr || buffer_size == 0) { തിരികെ; }
 
 	memset(buffer, 0, buffer_size);
 
-	switch (encoding) {
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
+	തിരഞ്ഞെടുപ്പ് (encoding) {
+	അവസ്ഥ detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
 			convert_icao_uint32_to_hex_str(id, buffer, buffer_size);
-			break;
+			നിർത്തുക;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
-			char callsign[kCallsignLength] {};
+	അവസ്ഥ detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
+			അക്ഷരം callsign[kCallsignLength] {};
 			convert_uint64_callsign_to_str(id, callsign);
 
 			// Keep malformed/custom publishers from injecting control
 			// characters into MAVLink status text.
-			for (char &character : callsign) {
-				const uint8_t byte = static_cast<uint8_t>(character);
+			വേണ്ടി (അക്ഷരം &character : callsign) {
+				സ്ഥിരം uint8_t byte = static_cast<uint8_t>(character);
 
-				if (byte == 0) {
-					break;
+				എങ്കിൽ (byte == 0) {
+					നിർത്തുക;
 				}
 
-				if (byte < 0x20 || byte > 0x7e) {
+				എങ്കിൽ (byte < 0x20 || byte > 0x7e) {
 					character = '?';
 				}
 			}
 
 			snprintf(buffer, buffer_size, "%s", callsign);
-			break;
+			നിർത്തുക;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
-			char uas_id[kUtmGuidMsgLength] {};
+	അവസ്ഥ detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
+			അക്ഷരം uas_id[k_Utm_Guid_സന്ദേശം_Length] {};
 			convert_uas_id_uint64_to_str(id, uas_id);
 			snprintf(buffer, buffer_size, "%s", uas_id);
-			break;
+			നിർത്തുക;
 		}
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 		snprintf(buffer, buffer_size, "Unknown ID.");
-		break;
+		നിർത്തുക;
 	}
 }
 
-uint64_t DaaEncodedId::callsign_to_uint64(const char callsign[kCallsignLength])
+uint64_t DaaEncodedId::callsign_to_uint64(സ്ഥിരം അക്ഷരം callsign[kCallsignLength])
 {
-	if (callsign == nullptr) {
-		return 0;
+	എങ്കിൽ (callsign == nullptr) {
+		തിരികെ 0;
 	}
 
-	bool null_terminated = false;
+	തർക്കം null_terminated = അസത്യം;
 
-	for (size_t i = 0; i < kCallsignLength; ++i) {
-		if (callsign[i] == '\0') {
-			null_terminated = true;
-			break;
+	വേണ്ടി (size_t i = 0; i < kCallsignLength; ++i) {
+		എങ്കിൽ (callsign[i] == '\0') {
+			null_terminated = സത്യം;
+			നിർത്തുക;
 		}
 	}
 
-	if (!null_terminated) {
-		return 0;
+	എങ്കിൽ (!null_terminated) {
+		തിരികെ 0;
 	}
 
 	uint64_t result = 0;
 
-	for (int i = 0; i < kIdEncodingNbBytes && callsign[i] != '\0'; ++i) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < kIdEncodingNbBytes && callsign[i] != '\0'; ++i) {
 		result |= (static_cast<uint64_t>(static_cast<uint8_t>(callsign[i])) << (i * 8));
 	}
 
-	return result;
+	തിരികെ result;
 }
 
-uint64_t DaaEncodedId::callsign_params_to_uint64(const int32_t callsign_part1, const int32_t callsign_part2)
+uint64_t DaaEncodedId::callsign_params_to_uint64(സ്ഥിരം int32_t callsign_part1, സ്ഥിരം int32_t callsign_part2)
 {
-	const uint32_t parts[] {
+	സ്ഥിരം uint32_t parts[] {
 		static_cast<uint32_t>(callsign_part1),
 		static_cast<uint32_t>(callsign_part2)
 	};
-	char callsign[kCallsignLength] {};
+	അക്ഷരം callsign[kCallsignLength] {};
 
-	for (size_t part_idx = 0; part_idx < 2; ++part_idx) {
-		for (size_t char_idx = 0; char_idx < sizeof(uint32_t); ++char_idx) {
-			const unsigned shift = static_cast<unsigned>((sizeof(uint32_t) - char_idx - 1) * 8);
-			callsign[part_idx * sizeof(uint32_t) + char_idx] = static_cast<char>((parts[part_idx] >> shift) & 0xffu);
+	വേണ്ടി (size_t part_idx = 0; part_idx < 2; ++part_idx) {
+		വേണ്ടി (size_t char_idx = 0; char_idx < വലുപ്പം(uint32_t); ++char_idx) {
+			സ്ഥിരം unsigned shift = static_cast<unsigned>((വലുപ്പം(uint32_t) - char_idx - 1) * 8);
+			callsign[part_idx * വലുപ്പം(uint32_t) + char_idx] = static_cast<അക്ഷരം>((parts[part_idx] >> shift) & 0xffu);
 		}
 	}
 
-	return callsign_to_uint64(callsign);
+	തിരികെ callsign_to_uint64(callsign);
 }
 
-void DaaEncodedId::convert_uint64_callsign_to_str(uint64_t value, char callsign[kCallsignLength])
+ശൂന്യം DaaEncodedId::convert_uint64_callsign_to_str(uint64_t value, അക്ഷരം callsign[kCallsignLength])
 {
-	if (callsign == nullptr) {
-		return;
+	എങ്കിൽ (callsign == nullptr) {
+		തിരികെ;
 	}
 
 	memset(callsign, 0, kCallsignLength);
 
-	const int max_chars = kCallsignLength - 1;
+	സ്ഥിരം പൂർണ്ണസംഖ്യ max_chars = kCallsignLength - 1;
 
-	if (value == 0) {
+	എങ്കിൽ (value == 0) {
 		memset(callsign, '0', max_chars);
 
-	} else {
+	} അല്ലെങ്കിൽ {
 
-		for (int i = 0; i < max_chars; ++i) {
-			char c = (value >> (i * 8)) & 0xFF;
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < max_chars; ++i) {
+			അക്ഷരം c = (value >> (i * 8)) & 0xFF;
 			callsign[i] = c;
 
-			if (c == 0) {
-				break;
+			എങ്കിൽ (c == 0) {
+				നിർത്തുക;
 			}
 		}
 	}
@@ -283,54 +283,54 @@ void DaaEncodedId::convert_uint64_callsign_to_str(uint64_t value, char callsign[
 	callsign[max_chars] = '\0';
 }
 
-uint64_t DaaEncodedId::last_uas_id_bytes_to_uint64(const uint8_t uas_id[kUasIdByteLength])
+uint64_t DaaEncodedId::last_uas_id_bytes_to_uint64(സ്ഥിരം uint8_t uas_id[kUasIdByteLength])
 {
-	if (uas_id == nullptr) {
-		return 0;
+	എങ്കിൽ (uas_id == nullptr) {
+		തിരികെ 0;
 	}
 
 	uint64_t uas_id_int = 0;
 
 	// Pack the last kIdEncodingNbBytes bytes into the key.
-	for (int i = 0; i < kIdEncodingNbBytes; ++i) {
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < kIdEncodingNbBytes; ++i) {
 		uas_id_int |= static_cast<uint64_t>(uas_id[kUasIdByteLength - kIdEncodingNbBytes + i]) << (i * 8);
 	}
 
-	return uas_id_int;
+	തിരികെ uas_id_int;
 }
 
-void DaaEncodedId::convert_uas_id_uint64_to_str(const uint64_t uas_id_int, char uas_id_char_arr[kUtmGuidMsgLength])
+ശൂന്യം DaaEncodedId::convert_uas_id_uint64_to_str(സ്ഥിരം uint64_t uas_id_int, അക്ഷരം uas_id_char_arr[k_Utm_Guid_സന്ദേശം_Length])
 {
-	if (uas_id_char_arr == nullptr) {
-		return;
+	എങ്കിൽ (uas_id_char_arr == nullptr) {
+		തിരികെ;
 	}
 
-	static constexpr char kHexDigits[] = "0123456789abcdef";
+	സ്ഥിതം constexpr അക്ഷരം kHexDigits[] = "0123456789abcdef";
 
-	if (uas_id_int == 0) {
-		memset(uas_id_char_arr, '0', kUtmGuidMsgLength - 1);
+	എങ്കിൽ (uas_id_int == 0) {
+		memset(uas_id_char_arr, '0', k_Utm_Guid_സന്ദേശം_Length - 1);
 
-	} else {
+	} അല്ലെങ്കിൽ {
 
 		// Render the low reduced_uas_id_length bytes as hex.
-		const int reduced_uas_id_length = (kUtmGuidMsgLength - 1) / 2;
+		സ്ഥിരം പൂർണ്ണസംഖ്യ reduced_uas_id_length = (k_Utm_Guid_സന്ദേശം_Length - 1) / 2;
 
-		for (int i = 0; i < reduced_uas_id_length; ++i) {
-			const uint8_t byte = static_cast<uint8_t>((uas_id_int >>(i * 8)) & 0xFF);
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < reduced_uas_id_length; ++i) {
+			സ്ഥിരം uint8_t byte = static_cast<uint8_t>((uas_id_int >>(i * 8)) & 0xFF);
 			uas_id_char_arr[i * 2] = kHexDigits[byte >> 4];
 			uas_id_char_arr[i * 2 + 1] = kHexDigits[byte & 0x0F];
 		}
 	}
 
-	uas_id_char_arr[kUtmGuidMsgLength - 1] = '\0';
+	uas_id_char_arr[k_Utm_Guid_സന്ദേശം_Length - 1] = '\0';
 }
 
-void DaaEncodedId::convert_icao_uint32_to_hex_str(uint64_t value, char *buffer, size_t buffer_size)
+ശൂന്യം DaaEncodedId::convert_icao_uint32_to_hex_str(uint64_t value, അക്ഷരം *buffer, size_t buffer_size)
 {
-	if (buffer == nullptr || buffer_size < kIcaoLength) {
-		return;
+	എങ്കിൽ (buffer == nullptr || buffer_size < kIcaoLength) {
+		തിരികെ;
 	}
 
-	const uint32_t icao_address = static_cast<uint32_t>(value & 0xFFFFFFu);
+	സ്ഥിരം uint32_t icao_address = static_cast<uint32_t>(value & 0xFFFFFFu);
 	snprintf(buffer, buffer_size, "%06" PRIX32, icao_address);
 }

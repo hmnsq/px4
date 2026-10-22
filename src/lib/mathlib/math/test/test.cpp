@@ -37,100 +37,100 @@
  * Test library code
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#അന്തര്ഭാവ <stdio.h>
+#അന്തര്ഭാവ <math.h>
+#അന്തര്ഭാവ <stdlib.h>
 
-#include <px4_platform_common/defines.h>
+#അന്തര്ഭാവ <px4_platform_common/defines.h>
 
-#include "test.hpp"
+#അന്തര്ഭാവ "test.hpp"
 
-bool __EXPORT equal(float a, float b, float epsilon)
+തർക്കം __EXPORT equal(ദശാംശം a, ദശാംശം b, ദശാംശം epsilon)
 {
-	float diff = fabsf(a - b);
+	ദശാംശം diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	എങ്കിൽ (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", ഇരട്ട(a), ഇരട്ട(b));
+		തിരികെ അസത്യം;
 
-	} else { return true; }
+	} അല്ലെങ്കിൽ { തിരികെ സത്യം; }
 }
 
-bool __EXPORT greater_than(float a, float b)
+തർക്കം __EXPORT greater_than(ദശാംശം a, ദശാംശം b)
 {
-	if (a > b) {
-		return true;
+	എങ്കിൽ (a > b) {
+		തിരികെ സത്യം;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} അല്ലെങ്കിൽ {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", ഇരട്ട(a), ഇരട്ട(b));
+		തിരികെ അസത്യം;
 	}
 }
 
-bool __EXPORT less_than(float a, float b)
+തർക്കം __EXPORT less_than(ദശാംശം a, ദശാംശം b)
 {
-	if (a < b) {
-		return true;
+	എങ്കിൽ (a < b) {
+		തിരികെ സത്യം;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} അല്ലെങ്കിൽ {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", ഇരട്ട(a), ഇരട്ട(b));
+		തിരികെ അസത്യം;
 	}
 }
 
-bool __EXPORT greater_than_or_equal(float a, float b)
+തർക്കം __EXPORT greater_than_or_equal(ദശാംശം a, ദശാംശം b)
 {
-	if (a >= b) {
-		return true;
+	എങ്കിൽ (a >= b) {
+		തിരികെ സത്യം;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} അല്ലെങ്കിൽ {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", ഇരട്ട(a), ഇരട്ട(b));
+		തിരികെ അസത്യം;
 	}
 }
 
-bool __EXPORT less_than_or_equal(float a, float b)
+തർക്കം __EXPORT less_than_or_equal(ദശാംശം a, ദശാംശം b)
 {
-	if (a <= b) {
-		return true;
+	എങ്കിൽ (a <= b) {
+		തിരികെ സത്യം;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} അല്ലെങ്കിൽ {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", ഇരട്ട(a), ഇരട്ട(b));
+		തിരികെ അസത്യം;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+ശൂന്യം __EXPORT float2SigExp(സ്ഥിരം ദശാംശം &അക്കം, ദശാംശം &sig, പൂർണ്ണസംഖ്യ &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	എങ്കിൽ (!PX4_ISFINITE(അക്കം)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		തിരികെ;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	എങ്കിൽ (fabsf(അക്കം) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		തിരികെ;
 	}
 
-	exp = log10f(fabsf(num));
+	exp = log10f(fabsf(അക്കം));
 
-	if (exp > 0) {
+	എങ്കിൽ (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} അല്ലെങ്കിൽ {
 		exp = floor(exp);
 	}
 
-	sig = num;
+	sig = അക്കം;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	എങ്കിൽ (exp > 0) {
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} അല്ലെങ്കിൽ {
+		വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

@@ -33,93 +33,93 @@
 
 #pragma once
 
-#include <lib/conversion/rotation.h>
-#include <lib/matrix/matrix/math.hpp>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/battery_status.h>
-#include <uORB/topics/sensor_correction.h>
+#അന്തര്ഭാവ <lib/conversion/rotation.h>
+#അന്തര്ഭാവ <lib/matrix/matrix/math.hpp>
+#അന്തര്ഭാവ <px4_platform_common/px4_config.h>
+#അന്തര്ഭാവ <px4_platform_common/log.h>
+#അന്തര്ഭാവ <uORB/Subscription.hpp>
+#അന്തര്ഭാവ <uORB/topics/battery_status.h>
+#അന്തര്ഭാവ <uORB/topics/sensor_correction.h>
 
-namespace calibration
+നാമാകാശ calibration
 {
-class Magnetometer
+വർഗ്ഗം Magnetometer
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+പൊതു:
+	സ്ഥിതം constexpr പൂർണ്ണസംഖ്യ MAX_SENSOR_എണ്ണം = 4;
 
-	static constexpr uint8_t DEFAULT_PRIORITY = 50;
-	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
+	സ്ഥിതം constexpr uint8_t DEFAULT_PRIORITY = 50;
+	സ്ഥിതം constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
 
-	static constexpr const char *SensorString() { return "MAG"; }
+	സ്ഥിതം constexpr സ്ഥിരം അക്ഷരം *SensorString() { തിരികെ "MAG"; }
 
 	Magnetometer();
 	explicit Magnetometer(uint32_t device_id);
-	Magnetometer(uint32_t device_id, bool external);
+	Magnetometer(uint32_t device_id, തർക്കം external);
 
-	~Magnetometer() = default;
+	~Magnetometer() = സ്ഥിരസ്ഥിതി;
 
-	void PrintStatus();
+	ശൂന്യം PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
-	void set_device_id(uint32_t device_id, bool external);
-	bool set_offset(const matrix::Vector3f &offset);
-	bool set_scale(const matrix::Vector3f &scale);
-	bool set_offdiagonal(const matrix::Vector3f &offdiagonal);
+	തർക്കം set_calibration_index(പൂർണ്ണസംഖ്യ calibration_index);
+	ശൂന്യം set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
+	ശൂന്യം set_device_id(uint32_t device_id, തർക്കം external);
+	തർക്കം set_offset(സ്ഥിരം matrix::Vector3f &offset);
+	തർക്കം set_scale(സ്ഥിരം matrix::Vector3f &scale);
+	തർക്കം set_offdiagonal(സ്ഥിരം matrix::Vector3f &offdiagonal);
 
 	/**
 	 * @brief Set the rotation enum & corresponding rotation matrix for Magnetometer
 	 *
 	 * @param rotation Rotation enum
 	 */
-	void set_rotation(Rotation rotation);
+	ശൂന്യം set_rotation(Rotation rotation);
 
 	/**
 	 * @brief Set the custom rotation & rotation enum to ROTATION_CUSTOM for Magnetometer
 	 *
 	 * @param rotation Rotation euler angles
 	 */
-	void set_custom_rotation(const matrix::Eulerf &rotation);
+	ശൂന്യം set_custom_rotation(സ്ഥിരം matrix::Eulerf &rotation);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	void disable() { _priority = 0; }
-	bool external() const { return _external; }
-	const matrix::Vector3f &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const matrix::Dcmf &rotation() const { return _rotation; }
-	const Rotation &rotation_enum() const { return _rotation_enum; }
-	const matrix::Matrix3f &scale() const { return _scale; }
+	തർക്കം calibrated() സ്ഥിരം { തിരികെ (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_എണ്ണം_2() സ്ഥിരം { തിരികെ calibration_എണ്ണം; }
+	int8_t calibration_index() സ്ഥിരം { തിരികെ _calibration_index; }
+	uint32_t device_id() സ്ഥിരം { തിരികെ _device_id; }
+	തർക്കം enabled() സ്ഥിരം { തിരികെ (_priority > 0); }
+	ശൂന്യം disable() { _priority = 0; }
+	തർക്കം external() സ്ഥിരം { തിരികെ _external; }
+	സ്ഥിരം matrix::Vector3f &offset() സ്ഥിരം { തിരികെ _offset; }
+	സ്ഥിരം int32_t &priority() സ്ഥിരം { തിരികെ _priority; }
+	സ്ഥിരം matrix::Dcmf &rotation() സ്ഥിരം { തിരികെ _rotation; }
+	സ്ഥിരം Rotation &rotation_enum() സ്ഥിരം { തിരികെ _rotation_enum; }
+	സ്ഥിരം matrix::Matrix3f &scale() സ്ഥിരം { തിരികെ _scale; }
 
 	// apply offsets and scale
 	// rotate corrected measurements from sensor to body frame
-	inline matrix::Vector3f Correct(const matrix::Vector3f &data) const
+	വരിയിൽ matrix::Vector3f Correct(സ്ഥിരം matrix::Vector3f &data) സ്ഥിരം
 	{
-		return _rotation * (_scale * ((data + _power * _power_compensation) - _offset));
+		തിരികെ _rotation * (_scale * ((data + _power * _power_compensation) - _offset));
 	}
 
 	// Compute sensor offset from bias (board frame)
-	matrix::Vector3f BiasCorrectedSensorOffset(const matrix::Vector3f &bias) const
+	matrix::Vector3f BiasCorrectedSensorOffset(സ്ഥിരം matrix::Vector3f &bias) സ്ഥിരം
 	{
 		// updated calibration offset = existing offset + bias rotated to sensor frame and unscaled
-		return _offset + (_scale.I() * _rotation.T() * bias);
+		തിരികെ _offset + (_scale.I() * _rotation.T() * bias);
 	}
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	തർക്കം ParametersLoad();
+	തർക്കം ParametersSave(പൂർണ്ണസംഖ്യ desired_calibration_index = -1, തർക്കം force = അസത്യം);
+	ശൂന്യം ParametersUpdate();
 
-	void Reset();
+	ശൂന്യം Reset();
 
-	void SensorCorrectionsUpdate(bool force = false);
+	ശൂന്യം SensorCorrectionsUpdate(തർക്കം force = അസത്യം);
 
-	void UpdatePower(float power) { _power = power; }
+	ശൂന്യം UpdatePower(ദശാംശം power) { _power = power; }
 
-private:
+സ്വകാര്യ:
 	uORB::Subscription _sensor_correction_sub{ORB_ID(sensor_correction)};
 
 	Rotation _rotation_enum{ROTATION_NONE};
@@ -136,14 +136,14 @@ private:
 	matrix::Vector3f _thermal_offset;
 	matrix::Vector3f _power_compensation;
 
-	float _power{0.f};
+	ദശാംശം _power{0.f};
 
 	int8_t _calibration_index{-1};
 	uint32_t _device_id{0};
 	int32_t _priority{-1};
 
-	bool _external{false};
+	തർക്കം _external{അസത്യം};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_എണ്ണം{0};
 };
 } // namespace calibration

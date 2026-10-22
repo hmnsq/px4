@@ -1,9 +1,9 @@
-import os
-import re
-import codecs
-import sys
+ഇറക്കുമതി os
+ഇറക്കുമതി re
+ഇറക്കുമതി codecs
+ഇറക്കുമതി sys
 
-class SourceScanner(object):
+വർഗ്ഗം SourceScanner(object):
     """
     Traverses directory tree, reads all source files, and passes their contents
     to the Parser.
@@ -16,18 +16,18 @@ class SourceScanner(object):
         """
         extensions1 = tuple([".h"])
         extensions2 = tuple([".c"])
-        for srcdir in srcdirs:
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions1):
+        വേണ്ടി srcdir ഇൽ srcdirs:
+            വേണ്ടി filename ഇൽ os.listdir(srcdir):
+                എങ്കിൽ filename.endswith(extensions1):
                     path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions2):
+                    എങ്കിൽ അല്ല self.ScanFile(path, parser):
+                        തിരികെ അസത്യം
+            വേണ്ടി filename ഇൽ os.listdir(srcdir):
+                എങ്കിൽ filename.endswith(extensions2):
                     path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-        return True
+                    എങ്കിൽ അല്ല self.ScanFile(path, parser):
+                        തിരികെ അസത്യം
+        തിരികെ സത്യം
 
     def ScanFile(self, path, parser):
         """
@@ -35,11 +35,11 @@ class SourceScanner(object):
         parser.Parse method.
         """
 
-        with codecs.open(path, 'r', 'utf-8') as f:
-            try:
-                contents = f.read()
-            except:
+        with codecs.open(path, 'r', 'utf-8') ഇവ f:
+            ശ്രമിക്കുക:
+                contents = f.പഠ()
+            അപവാദം:
                 contents = ''
                 print('Failed reading file: %s, skipping content.' % path)
                 pass
-        return parser.Parse(contents)
+        തിരികെ parser.Parse(contents)

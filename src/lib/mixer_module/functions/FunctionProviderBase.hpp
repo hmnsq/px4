@@ -33,43 +33,43 @@
 
 #pragma once
 
-#include <limits.h>
+#അന്തര്ഭാവ <limits.h>
 
-#include <mixer_module/output_functions.hpp>
+#അന്തര്ഭാവ <mixer_module/output_functions.hpp>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionCallback.hpp>
+#അന്തര്ഭാവ <uORB/Subscription.hpp>
+#അന്തര്ഭാവ <uORB/SubscriptionCallback.hpp>
 
-#include <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
+#അന്തര്ഭാവ <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
 
-class FunctionProviderBase
+വർഗ്ഗം FunctionProviderBase
 {
-public:
-	struct Context {
+പൊതു:
+	ഘടന Context {
 		px4::WorkItem &work_item;
-		const float &thrust_factor;
+		സ്ഥിരം ദശാംശം &thrust_factor;
 	};
 
-	FunctionProviderBase() = default;
-	virtual ~FunctionProviderBase() = default;
+	FunctionProviderBase() = സ്ഥിരസ്ഥിതി;
+	മായാ ~FunctionProviderBase() = സ്ഥിരസ്ഥിതി;
 
-	virtual void update() = 0;
+	മായാ ശൂന്യം update() = 0;
 
 	/**
 	 * Get the current output value for a given function
 	 * @return NAN (=disarmed) or value in range [-1, 1]
 	 */
-	virtual float value(OutputFunction func) = 0;
+	മായാ ദശാംശം value(OutputFunction func) = 0;
 
-	virtual float defaultFailsafeValue(OutputFunction func) const { return NAN; }
-	virtual bool allowPrearmControl() const { return true; }
+	മായാ ദശാംശം default_Failsafe_മൂല്യം(OutputFunction func) സ്ഥിരം { തിരികെ NAN; }
+	മായാ തർക്കം allowPrearmControl() സ്ഥിരം { തിരികെ സത്യം; }
 
-	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { return nullptr; }
+	മായാ uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { തിരികെ nullptr; }
 
-	virtual bool getLatestSampleTimestamp(hrt_abstime &t) const { return false; }
+	മായാ തർക്കം getLatestSampleTimestamp(hrt_abstime &t) സ്ഥിരം { തിരികെ അസത്യം; }
 
 	/**
 	 * Check whether the output (motor) is configured to be reversible
 	 */
-	virtual bool reversible(OutputFunction func) const { return false; }
+	മായാ തർക്കം reversible(OutputFunction func) സ്ഥിരം { തിരികെ അസത്യം; }
 };

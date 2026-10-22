@@ -40,41 +40,41 @@
 #ifndef _CDEV_HPP
 #define _CDEV_HPP
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/posix.h>
+#അന്തര്ഭാവ <px4_platform_common/px4_config.h>
+#അന്തര്ഭാവ <px4_platform_common/posix.h>
 
 #ifdef __PX4_NUTTX
-#include "nuttx/cdev_platform.hpp"
-#else
-#include "posix/cdev_platform.hpp"
+#അന്തര്ഭാവ "nuttx/cdev_platform.hpp"
+#അല്ലെങ്കിൽ
+#അന്തര്ഭാവ "posix/cdev_platform.hpp"
 #endif
 
-namespace cdev
+നാമാകാശ cdev
 {
 
 /**
  * Abstract class for any character device
  */
-class __EXPORT CDev
+വർഗ്ഗം __EXPORT CDev
 {
-public:
+പൊതു:
 	/**
 	 * Constructor
 	 *
 	 * @param name		Driver name
 	 * @param devname	Device node name
 	 */
-	explicit CDev(const char *devname);
+	explicit CDev(സ്ഥിരം അക്ഷരം *devname);
 
 	// no copy, assignment, move, move assignment
-	CDev(const CDev &) = delete;
-	CDev &operator=(const CDev &) = delete;
+	CDev(സ്ഥിരം CDev &) = delete;
+	CDev &operator=(സ്ഥിരം CDev &) = delete;
 	CDev(CDev &&) = delete;
 	CDev &operator=(CDev &&) = delete;
 
-	virtual ~CDev();
+	മായാ ~CDev();
 
-	virtual int	init();
+	മായാ പൂർണ്ണസംഖ്യ	init();
 
 	/**
 	 * Handle an open of the device.
@@ -85,7 +85,7 @@ public:
 	 * @param filep		Pointer to the NuttX file structure.
 	 * @return		OK if the open is allowed, -errno otherwise.
 	 */
-	virtual int	open(file_t *filep);
+	മായാ പൂർണ്ണസംഖ്യ	open(file_t *filep);
 
 	/**
 	 * Handle a close of the device.
@@ -96,7 +96,7 @@ public:
 	 * @param filep		Pointer to the NuttX file structure.
 	 * @return		OK if the close was successful, -errno otherwise.
 	 */
-	virtual int	close(file_t *filep);
+	മായാ പൂർണ്ണസംഖ്യ	close(file_t *filep);
 
 	/**
 	 * Perform a read from the device.
@@ -108,7 +108,7 @@ public:
 	 * @param buflen	The number of bytes to be read.
 	 * @return		The number of bytes read or -errno otherwise.
 	 */
-	virtual ssize_t	read(file_t *filep, char *buffer, size_t buflen) { return -ENOSYS; }
+	മായാ ssize_t	പഠ(file_t *filep, അക്ഷരം *buffer, size_t buflen) { തിരികെ -ENOSYS; }
 
 	/**
 	 * Perform a write to the device.
@@ -120,7 +120,7 @@ public:
 	 * @param buflen	The number of bytes to be written.
 	 * @return		The number of bytes written or -errno otherwise.
 	 */
-	virtual ssize_t	write(file_t *filep, const char *buffer, size_t buflen) { return -ENOSYS; }
+	മായാ ssize_t	ലിഖ(file_t *filep, സ്ഥിരം അക്ഷരം *buffer, size_t buflen) { തിരികെ -ENOSYS; }
 
 	/**
 	 * Perform a logical seek operation on the device.
@@ -132,7 +132,7 @@ public:
 	 * @param whence	SEEK_OFS, SEEK_CUR or SEEK_END.
 	 * @return		The previous offset, or -errno otherwise.
 	 */
-	virtual off_t	seek(file_t *filep, off_t offset, int whence) { return -ENOSYS; }
+	മായാ off_t	seek(file_t *filep, off_t offset, പൂർണ്ണസംഖ്യ whence) { തിരികെ -ENOSYS; }
 
 	/**
 	 * Perform an ioctl operation on the device.
@@ -146,7 +146,7 @@ public:
 	 * @param arg		The ioctl argument value.
 	 * @return		OK on success, or -errno otherwise.
 	 */
-	virtual int	ioctl(file_t *filep, int cmd, unsigned long arg) { return -ENOTTY; };
+	മായാ പൂർണ്ണസംഖ്യ	ioctl(file_t *filep, പൂർണ്ണസംഖ്യ cmd, unsigned long arg) { തിരികെ -ENOTTY; };
 
 	/**
 	 * Perform a poll setup/teardown operation.
@@ -159,22 +159,22 @@ public:
 	 *			it is being torn down.
 	 * @return		OK on success, or -errno otherwise.
 	 */
-	int	poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup);
+	പൂർണ്ണസംഖ്യ	poll(file_t *filep, px4_pollfd_struct_t *fds, തർക്കം setup);
 
 	/**
 	 * Get the device name.
 	 *
 	 * @return the file system string of the device handle
 	 */
-	const char	*get_devname() const { return _devname; }
+	സ്ഥിരം അക്ഷരം	*get_devname() സ്ഥിരം { തിരികെ _devname; }
 
-protected:
+സംരക്ഷിത:
 	/**
 	 * Accessor for the default cdev file operations table; useful for
 	 * registering clone devices etc. Defined in the platform-specific
 	 * cdev_platform.cpp.
 	 */
-	static const px4_file_operations_t	&fops_ref();
+	സ്ഥിതം സ്ഥിരം px4_file_operations_t	&fops_ref();
 
 	/**
 	 * Check the current state of the device for poll events from the
@@ -188,7 +188,7 @@ protected:
 	 * @param filep		The file that's interested.
 	 * @return		The current set of poll events.
 	 */
-	virtual px4_pollevent_t poll_state(file_t *filep) { return 0; }
+	മായാ px4_pollevent_t poll_state(file_t *filep) { തിരികെ 0; }
 
 	/**
 	 * Report new poll events.
@@ -198,7 +198,7 @@ protected:
 	 *
 	 * @param events	The new event(s) being announced.
 	 */
-	void	poll_notify(px4_pollevent_t events);
+	ശൂന്യം	poll_notify(px4_pollevent_t events);
 
 	/**
 	 * Internal implementation of poll_notify.
@@ -206,7 +206,7 @@ protected:
 	 * @param fds		A poll waiter to notify.
 	 * @param events	The event(s) to send to the waiter.
 	 */
-	virtual void	poll_notify_one(px4_pollfd_struct_t *fds, px4_pollevent_t events);
+	മായാ ശൂന്യം	poll_notify_one(px4_pollfd_struct_t *fds, px4_pollevent_t events);
 
 	/**
 	 * Notification of the first open.
@@ -219,7 +219,7 @@ protected:
 	 * @param filep		Pointer to the NuttX file structure.
 	 * @return		OK if the open should proceed, -errno otherwise.
 	 */
-	virtual int	open_first(file_t *filep) { return PX4_OK; }
+	മായാ പൂർണ്ണസംഖ്യ	open_first(file_t *filep) { തിരികെ PX4_OK; }
 
 	/**
 	 * Notification of the last close.
@@ -232,7 +232,7 @@ protected:
 	 * @param filep		Pointer to the NuttX file structure.
 	 * @return		OK if the open should return OK, -errno otherwise.
 	 */
-	virtual int	close_last(file_t *filep) { return PX4_OK; }
+	മായാ പൂർണ്ണസംഖ്യ	close_last(file_t *filep) { തിരികെ PX4_OK; }
 
 	/**
 	 * Register a class device name, automatically adding device
@@ -241,7 +241,7 @@ protected:
 	 * @param class_devname   Device class name
 	 * @return class_instamce Class instance created, or -errno on failure
 	 */
-	int register_class_devname(const char *class_devname);
+	പൂർണ്ണസംഖ്യ register_class_devname(സ്ഥിരം അക്ഷരം *class_devname);
 
 	/**
 	 * Register a class device name, automatically adding device
@@ -251,7 +251,7 @@ protected:
 	 * @param class_instance  Device class instance from register_class_devname()
 	 * @return		  OK on success, -errno otherwise
 	 */
-	int unregister_class_devname(const char *class_devname, unsigned class_instance);
+	പൂർണ്ണസംഖ്യ unregister_class_devname(സ്ഥിരം അക്ഷരം *class_devname, unsigned class_instance);
 
 	/**
 	 * Take the driver lock.
@@ -262,12 +262,12 @@ protected:
 	 *
 	 * Careful: lock() calls cannot be nested!
 	 */
-	void		lock() { do {} while (px4_sem_wait(&_lock) != 0); }
+	ശൂന്യം		lock() { ചെയ്യുക {} ആകുമ്പോൾ (px4_sem_wait(&_lock) != 0); }
 
 	/**
 	 * Release the driver lock.
 	 */
-	void		unlock() { px4_sem_post(&_lock); }
+	ശൂന്യം		unlock() { px4_sem_post(&_lock); }
 
 	/**
 	 * True once any poll waiter has been registered. Read it under
@@ -275,19 +275,19 @@ protected:
 	 * poll_state() under the same section, so a waiter that registers
 	 * after a false reading sees the state change itself.
 	 */
-	bool		has_poll_waiters() const { return _max_pollwaiters > 0; }
+	തർക്കം		has_poll_waiters() സ്ഥിരം { തിരികെ _max_pollwaiters > 0; }
 
 	px4_sem_t	_lock; /**< lock to protect access to all class members (also for derived classes) */
 
-private:
-	const char	*_devname{nullptr};		/**< device node name */
+സ്വകാര്യ:
+	സ്ഥിരം അക്ഷരം	*_devname{nullptr};		/**< device node name */
 
 	px4_pollfd_struct_t	**_pollset{nullptr};
 
-	bool		_registered{false};		/**< true if device name was registered */
+	തർക്കം		_registered{അസത്യം};		/**< true if device name was registered */
 
 	uint8_t		_max_pollwaiters{0};		/**< size of the _pollset array */
-	uint16_t	_open_count{0};			/**< number of successful opens */
+	uint16_t	open_എണ്ണം{0};			/**< number of successful opens */
 
 	/**
 	 * Store a pollwaiter in a slot where we can find it later.
@@ -296,14 +296,14 @@ private:
 	 *
 	 * @return		OK, or -errno on error.
 	 */
-	inline int	store_poll_waiter(px4_pollfd_struct_t *fds);
+	വരിയിൽ പൂർണ്ണസംഖ്യ	store_poll_waiter(px4_pollfd_struct_t *fds);
 
 	/**
 	 * Remove a poll waiter.
 	 *
 	 * @return		OK, or -errno on error.
 	 */
-	inline int	remove_poll_waiter(px4_pollfd_struct_t *fds);
+	വരിയിൽ പൂർണ്ണസംഖ്യ	remove_poll_waiter(px4_pollfd_struct_t *fds);
 
 };
 

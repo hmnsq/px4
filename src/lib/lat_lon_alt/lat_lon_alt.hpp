@@ -33,21 +33,21 @@
 
 #pragma once
 
-#include "mathlib/math/Limits.hpp"
-#include <matrix/math.hpp>
+#അന്തര്ഭാവ "mathlib/math/Limits.hpp"
+#അന്തര്ഭാവ <matrix/math.hpp>
 
-class LatLonAlt
+വർഗ്ഗം LatLonAlt
 {
-public:
-	LatLonAlt() = default;
-	LatLonAlt(const LatLonAlt &lla)
+പൊതു:
+	LatLonAlt() = സ്ഥിരസ്ഥിതി;
+	LatLonAlt(സ്ഥിരം LatLonAlt &lla)
 	{
 		_latitude_rad = lla.latitude_rad();
 		_longitude_rad = lla.longitude_rad();
 		_altitude = lla.altitude();
 	}
 
-	LatLonAlt(const double latitude_deg, const double longitude_deg, const float altitude_m)
+	LatLonAlt(സ്ഥിരം ഇരട്ട latitude_deg, സ്ഥിരം ഇരട്ട longitude_deg, സ്ഥിരം ദശാംശം altitude_m)
 	{
 		_latitude_rad = math::radians(latitude_deg);
 		_longitude_rad = math::radians(longitude_deg);
@@ -55,41 +55,41 @@ public:
 	}
 
 
-	static LatLonAlt fromEcef(const matrix::Vector3d &p_ecef);
-	matrix::Vector3d toEcef() const;
+	സ്ഥിതം LatLonAlt fromEcef(സ്ഥിരം matrix::Vector3d &p_ecef);
+	matrix::Vector3d toEcef() സ്ഥിരം;
 
-	void setZero() { _latitude_rad = 0.0; _longitude_rad = 0.0; _altitude = 0.f; }
+	ശൂന്യം setZero() { _latitude_rad = 0.0; _longitude_rad = 0.0; _altitude = 0.f; }
 
-	double latitude_deg() const { return math::degrees(latitude_rad()); }
-	double longitude_deg() const { return math::degrees(longitude_rad()); }
+	ഇരട്ട latitude_deg() സ്ഥിരം { തിരികെ math::degrees(latitude_rad()); }
+	ഇരട്ട longitude_deg() സ്ഥിരം { തിരികെ math::degrees(longitude_rad()); }
 
-	const double &latitude_rad() const { return _latitude_rad; }
-	const double &longitude_rad() const { return _longitude_rad; }
-	float altitude() const { return _altitude; }
+	സ്ഥിരം ഇരട്ട &latitude_rad() സ്ഥിരം { തിരികെ _latitude_rad; }
+	സ്ഥിരം ഇരട്ട &longitude_rad() സ്ഥിരം { തിരികെ _longitude_rad; }
+	ദശാംശം altitude() സ്ഥിരം { തിരികെ _altitude; }
 
-	void setLatitudeDeg(const double &latitude_deg) { _latitude_rad = math::radians(latitude_deg); }
-	void setLongitudeDeg(const double &longitude_deg) { _longitude_rad = math::radians(longitude_deg); }
-	void setAltitude(const float altitude) { _altitude = altitude; }
+	ശൂന്യം setLatitudeDeg(സ്ഥിരം ഇരട്ട &latitude_deg) { _latitude_rad = math::radians(latitude_deg); }
+	ശൂന്യം setLongitudeDeg(സ്ഥിരം ഇരട്ട &longitude_deg) { _longitude_rad = math::radians(longitude_deg); }
+	ശൂന്യം setAltitude(സ്ഥിരം ദശാംശം altitude) { _altitude = altitude; }
 
-	void setLatLon(const LatLonAlt &lla) { _latitude_rad = lla.latitude_rad(); _longitude_rad = lla.longitude_rad(); }
-	void setLatLonDeg(const double latitude, const double longitude) { _latitude_rad = math::radians(latitude); _longitude_rad = math::radians(longitude); }
-	void setLatLonRad(const double latitude, const double longitude) { _latitude_rad = latitude; _longitude_rad = longitude; }
+	ശൂന്യം setLatLon(സ്ഥിരം LatLonAlt &lla) { _latitude_rad = lla.latitude_rad(); _longitude_rad = lla.longitude_rad(); }
+	ശൂന്യം setLatLonDeg(സ്ഥിരം ഇരട്ട latitude, സ്ഥിരം ഇരട്ട longitude) { _latitude_rad = math::radians(latitude); _longitude_rad = math::radians(longitude); }
+	ശൂന്യം setLatLonRad(സ്ഥിരം ഇരട്ട latitude, സ്ഥിരം ഇരട്ട longitude) { _latitude_rad = latitude; _longitude_rad = longitude; }
 
-	void print() const { printf("latitude = %f (deg), longitude = %f (deg), altitude = %f (m)\n", _latitude_rad, _longitude_rad, (double)_altitude); }
+	ശൂന്യം print() സ്ഥിരം { printf("latitude = %f (deg), longitude = %f (deg), altitude = %f (m)\n", _latitude_rad, _longitude_rad, (ഇരട്ട)_altitude); }
 
 	/*
 	 * The plus and minus operators below use approximations and should only be used when the Cartesian component is small
 	 */
-	LatLonAlt operator+(const matrix::Vector3f &delta_pos) const;
-	void operator+=(const matrix::Vector3f &delta_pos);
-	void operator+=(const matrix::Vector2f &delta_pos);
-	matrix::Vector3f operator-(const LatLonAlt &lla) const;
+	LatLonAlt operator+(സ്ഥിരം matrix::Vector3f &delta_pos) സ്ഥിരം;
+	ശൂന്യം operator+=(സ്ഥിരം matrix::Vector3f &delta_pos);
+	ശൂന്യം operator+=(സ്ഥിരം matrix::Vector2f &delta_pos);
+	matrix::Vector3f operator-(സ്ഥിരം LatLonAlt &lla) സ്ഥിരം;
 
-	void operator=(const LatLonAlt &lla)
+	ശൂന്യം operator=(സ്ഥിരം LatLonAlt &lla)
 	{
 		// Protect against self-assignment
-		if (this == &lla) {
-			return;
+		എങ്കിൽ (ഇത് == &lla) {
+			തിരികെ;
 		}
 
 		_latitude_rad = lla.latitude_rad();
@@ -101,39 +101,39 @@ public:
 	 * Compute the angular rate of the local navigation frame at the current latitude and height
 	 * with respect to an inertial frame and resolved in the navigation frame
 	 */
-	matrix::Vector3f computeAngularRateNavFrame(const matrix::Vector3f &v_ned) const;
+	matrix::Vector3f computeAngularRateNavFrame(സ്ഥിരം matrix::Vector3f &v_ned) സ്ഥിരം;
 
 	// Compute the ECEF to NED coordinate transformation matrix at the current position
-	matrix::Dcmf computeRotEcefToNed() const;
+	matrix::Dcmf computeRotEcefToNed() സ്ഥിരം;
 
-	struct Wgs84 {
-		static constexpr double equatorial_radius = 6378137.0;
-		static constexpr double eccentricity = 0.0818191908425;
-		static constexpr double eccentricity2 = eccentricity * eccentricity;
-		static constexpr double meridian_radius_of_curvature_numerator = equatorial_radius * (1.0 - eccentricity2);
-		static constexpr double gravity_equator = 9.7803253359;
-		static constexpr double somigliana_coefficient = 0.001931851353;
+	ഘടന Wgs84 {
+		സ്ഥിതം constexpr ഇരട്ട equatorial_radius = 6378137.0;
+		സ്ഥിതം constexpr ഇരട്ട eccentricity = 0.0818191908425;
+		സ്ഥിതം constexpr ഇരട്ട eccentricity2 = eccentricity * eccentricity;
+		സ്ഥിതം constexpr ഇരട്ട meridian_radius_of_curvature_numerator = equatorial_radius * (1.0 - eccentricity2);
+		സ്ഥിതം constexpr ഇരട്ട gravity_equator = 9.7803253359;
+		സ്ഥിതം constexpr ഇരട്ട somigliana_coefficient = 0.001931851353;
 
 		// Normal gravity at the ellipsoid surface as a function of latitude (Somigliana formula).
 		// Captures the ~9.780 (equator) to ~9.832 m/s^2 (pole) variation. Input in radians.
-		static float gravity(const double latitude_rad)
+		സ്ഥിതം ദശാംശം gravity(സ്ഥിരം ഇരട്ട latitude_rad)
 		{
-			const double sin_lat = sin(latitude_rad);
-			const double sin_lat2 = sin_lat * sin_lat;
-			const double g = gravity_equator * (1.0 + somigliana_coefficient * sin_lat2)
+			സ്ഥിരം ഇരട്ട sin_lat = sin(latitude_rad);
+			സ്ഥിരം ഇരട്ട sin_lat2 = sin_lat * sin_lat;
+			സ്ഥിരം ഇരട്ട g = gravity_equator * (1.0 + somigliana_coefficient * sin_lat2)
 					 / std::sqrt(1.0 - eccentricity2 * sin_lat2);
-			return static_cast<float>(g);
+			തിരികെ static_cast<ദശാംശം>(g);
 		}
 	};
 
-private:
+സ്വകാര്യ:
 	// Convert between curvilinear and cartesian errors
-	static matrix::Vector2d deltaLatLonToDeltaXY(const double latitude, const float altitude);
+	സ്ഥിതം matrix::Vector2d deltaLatLonToDeltaXY(സ്ഥിരം ഇരട്ട latitude, സ്ഥിരം ദശാംശം altitude);
 
-	static void computeRadiiOfCurvature(const double latitude, double &meridian_radius_of_curvature,
-					    double &transverse_radius_of_curvature);
+	സ്ഥിതം ശൂന്യം computeRadiiOfCurvature(സ്ഥിരം ഇരട്ട latitude, ഇരട്ട &meridian_radius_of_curvature,
+					    ഇരട്ട &transverse_radius_of_curvature);
 
-	double _latitude_rad{0.0};
-	double _longitude_rad{0.0};
-	float _altitude{0.0};
+	ഇരട്ട _latitude_rad{0.0};
+	ഇരട്ട _longitude_rad{0.0};
+	ദശാംശം _altitude{0.0};
 };

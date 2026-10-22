@@ -39,32 +39,32 @@
  * Base class for devices connected via SPI.
  */
 
-#include "../CDev.hpp"
-#include <px4_platform_common/spi.h>
+#അന്തര്ഭാവ "../CDev.hpp"
+#അന്തര്ഭാവ <px4_platform_common/spi.h>
 
-#if defined(CONFIG_SPI)
+#എങ്കിൽ defined(CONFIG_SPI)
 
-#include <nuttx/spi/spi.h>
-#include <px4_platform_common/spi.h>
+#അന്തര്ഭാവ <nuttx/spi/spi.h>
+#അന്തര്ഭാവ <px4_platform_common/spi.h>
 
-struct I2CSPIDriverConfig;
+ഘടന I2CSPIDriverConfig;
 
-namespace device __EXPORT
+നാമാകാശ device __EXPORT
 {
 
 /**
  * Abstract class for character device on SPI
  */
-class __EXPORT SPI : public CDev
+വർഗ്ഗം __EXPORT SPI : പൊതു CDev
 {
-public:
+പൊതു:
 	// no copy, assignment, move, move assignment
-	SPI(const SPI &) = delete;
-	SPI &operator=(const SPI &) = delete;
+	SPI(സ്ഥിരം SPI &) = delete;
+	SPI &operator=(സ്ഥിരം SPI &) = delete;
 	SPI(SPI &&) = delete;
 	SPI &operator=(SPI &&) = delete;
 
-protected:
+സംരക്ഷിത:
 	/**
 	 * Constructor
 	 *
@@ -75,27 +75,27 @@ protected:
 	 * @param mode		SPI clock/data mode
 	 * @param frequency	SPI clock frequency
 	 */
-	SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency);
+	SPI(uint8_t device_type, സ്ഥിരം അക്ഷരം *name, പൂർണ്ണസംഖ്യ bus, uint32_t device, എണ്ണൽ spi_mode_e mode, uint32_t frequency);
 
-	SPI(const I2CSPIDriverConfig &config);
+	SPI(സ്ഥിരം I2CSPIDriverConfig &config);
 
-	virtual ~SPI();
+	മായാ ~SPI();
 
 	/**
 	 * Locking modes supported by the driver.
 	 */
-	enum LockMode {
+	എണ്ണൽ LockMode {
 		LOCK_PREEMPTION,	/**< the default; lock against all forms of preemption. */
 		LOCK_THREADS,		/**< lock only against other threads, using SPI_LOCK */
 		LOCK_NONE		/**< perform no locking, only safe if the bus is entirely private */
 	};
 
-	virtual int	init() override;
+	മായാ പൂർണ്ണസംഖ്യ	init() override;
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	മായാ പൂർണ്ണസംഖ്യ	probe() { തിരികെ PX4_OK; }
 
 	/**
 	 * Perform a SPI transfer.
@@ -116,7 +116,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(uint8_t *send, uint8_t *recv, unsigned len);
+	പൂർണ്ണസംഖ്യ		transfer(uint8_t *send, uint8_t *recv, unsigned len);
 
 	/**
 	 * Perform a SPI 16 bit transfer.
@@ -137,7 +137,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	പൂർണ്ണസംഖ്യ		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
 
 	/**
 	 * Set the SPI bus frequency
@@ -148,8 +148,8 @@ protected:
 	 *
 	 * @param frequency	Frequency to set (Hz)
 	 */
-	void		set_frequency(uint32_t frequency) { _frequency = frequency; }
-	uint32_t	get_frequency() { return _frequency; }
+	ശൂന്യം		set_frequency(uint32_t frequency) { _frequency = frequency; }
+	uint32_t	get_frequency() { തിരികെ _frequency; }
 
 	/**
 	 * Set the SPI bus locking mode
@@ -159,20 +159,20 @@ protected:
 	 *
 	 * @param mode	Locking mode
 	 */
-	void		set_lockmode(enum LockMode mode) { _locking_mode = mode; }
+	ശൂന്യം		set_lockmode(എണ്ണൽ LockMode mode) { _locking_mode = mode; }
 
-private:
+സ്വകാര്യ:
 	uint32_t		_device;
-	enum spi_mode_e		_mode;
+	എണ്ണൽ spi_mode_e		_mode;
 	uint32_t		_frequency;
-	struct spi_dev_s	*_dev {nullptr};
+	ഘടന spi_dev_s	*_dev {nullptr};
 
 	LockMode		_locking_mode{LOCK_THREADS};	/**< selected locking mode */
 
-protected:
-	int	_transfer(uint8_t *send, uint8_t *recv, unsigned len);
+സംരക്ഷിത:
+	പൂർണ്ണസംഖ്യ	_transfer(uint8_t *send, uint8_t *recv, unsigned len);
 
-	int	_transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	പൂർണ്ണസംഖ്യ	_transferhword(uint16_t *send, uint16_t *recv, unsigned len);
 
 };
 

@@ -42,41 +42,41 @@
 
 #pragma once
 
-#include <px4_platform_common/module_params.h>
-#include <matrix/matrix/math.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/vehicle_attitude_setpoint.h>
-#include <uORB/topics/vehicle_local_position.h>
-#include <uORB/topics/vehicle_control_mode.h>
-#include <uORB/topics/vehicle_status.h>
+#അന്തര്ഭാവ <px4_platform_common/module_params.h>
+#അന്തര്ഭാവ <matrix/matrix/math.hpp>
+#അന്തര്ഭാവ <uORB/Subscription.hpp>
+#അന്തര്ഭാവ <uORB/topics/vehicle_attitude_setpoint.h>
+#അന്തര്ഭാവ <uORB/topics/vehicle_local_position.h>
+#അന്തര്ഭാവ <uORB/topics/vehicle_control_mode.h>
+#അന്തര്ഭാവ <uORB/topics/vehicle_status.h>
 
-class WeatherVane : public ModuleParams
+വർഗ്ഗം WeatherVane : പൊതു ModuleParams
 {
-public:
+പൊതു:
 	WeatherVane(ModuleParams *parent);
 
-	~WeatherVane() = default;
+	~WeatherVane() = സ്ഥിരസ്ഥിതി;
 
-	void setNavigatorForceDisabled(bool navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
+	ശൂന്യം setNavigatorForceDisabled(തർക്കം navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
 
-	bool isActive() {return _is_active;}
+	തർക്കം isActive() {തിരികെ _is_active;}
 
-	void update();
+	ശൂന്യം update();
 
-	float getWeathervaneYawrate();
+	ദശാംശം getWeathervaneYawrate();
 
-private:
+സ്വകാര്യ:
 	uORB::Subscription _vehicle_attitude_setpoint_sub{ORB_ID(vehicle_attitude_setpoint)};
 	uORB::Subscription _vehicle_local_position_sub{ORB_ID(vehicle_local_position)};
 	uORB::Subscription _vehicle_control_mode_sub{ORB_ID(vehicle_control_mode)};
 	uORB::Subscription _vehicle_status_sub{ORB_ID(vehicle_status)};
 
-	bool _is_active{false};
+	തർക്കം _is_active{അസത്യം};
 
 	// local copies of status such that we don't need to copy uORB messages all the time
-	bool _flag_control_manual_enabled{false};
-	bool _flag_control_position_enabled{false};
-	bool _navigator_force_disabled{false};
+	തർക്കം _flag_control_manual_enabled{അസത്യം};
+	തർക്കം _flag_control_position_enabled{അസത്യം};
+	തർക്കം _navigator_force_disabled{അസത്യം};
 
 	DEFINE_PARAMETERS(
 		(ParamBool<px4::params::WV_EN>) _param_wv_en,

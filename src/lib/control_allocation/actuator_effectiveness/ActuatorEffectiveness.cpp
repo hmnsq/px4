@@ -31,28 +31,28 @@
  *
  ****************************************************************************/
 
-#include "ActuatorEffectiveness.hpp"
+#അന്തര്ഭാവ "ActuatorEffectiveness.hpp"
 
-#include <px4_platform_common/log.h>
+#അന്തര്ഭാവ <px4_platform_common/log.h>
 
-int ActuatorEffectiveness::Configuration::addActuator(ActuatorType type, const matrix::Vector3f &torque,
-		const matrix::Vector3f &thrust)
+പൂർണ്ണസംഖ്യ ActuatorEffectiveness::Configuration::addActuator(ActuatorType type, സ്ഥിരം matrix::Vector3f &torque,
+		സ്ഥിരം matrix::Vector3f &thrust)
 {
-	int actuator_idx = num_actuators_matrix[selected_matrix];
+	പൂർണ്ണസംഖ്യ actuator_idx = അക്കം_actuators_matrix[selected_matrix];
 
-	if (actuator_idx >= NUM_ACTUATORS) {
+	എങ്കിൽ (actuator_idx >= അക്കം_ACTUATORS) {
 		PX4_ERR("Too many actuators");
-		return -1;
+		തിരികെ -1;
 	}
 
-	if ((int)type < (int)ActuatorType::COUNT - 1 && num_actuators[(int)type + 1] > 0) {
+	എങ്കിൽ ((പൂർണ്ണസംഖ്യ)type < (പൂർണ്ണസംഖ്യ)ActuatorType::എണ്ണം_2 - 1 && അക്കം_actuators[(പൂർണ്ണസംഖ്യ)type + 1] > 0) {
 		PX4_ERR("Trying to add actuators in the wrong order (add motors first, then servos)");
-		return -1;
+		തിരികെ -1;
 	}
 
-	if (type == ActuatorType::MOTORS && selected_matrix != 0) {
+	എങ്കിൽ (type == ActuatorType::MOTORS && selected_matrix != 0) {
 		PX4_ERR("Trying to add motors to matrix %d (add to matrix 0)", selected_matrix);
-		return -1;
+		തിരികെ -1;
 	}
 
 	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::ROLL, actuator_idx) = torque(0);
@@ -61,35 +61,35 @@ int ActuatorEffectiveness::Configuration::addActuator(ActuatorType type, const m
 	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::THRUST_X, actuator_idx) = thrust(0);
 	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::THRUST_Y, actuator_idx) = thrust(1);
 	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::THRUST_Z, actuator_idx) = thrust(2);
-	matrix_selection_indexes[totalNumActuators()] = selected_matrix;
-	++num_actuators[(int)type];
-	return num_actuators_matrix[selected_matrix]++;
+	matrix_selection_indexes[total_അക്കം_Actuators()] = selected_matrix;
+	++അക്കം_actuators[(പൂർണ്ണസംഖ്യ)type];
+	തിരികെ അക്കം_actuators_matrix[selected_matrix]++;
 }
 
-void ActuatorEffectiveness::Configuration::actuatorsAdded(ActuatorType type, int count)
+ശൂന്യം ActuatorEffectiveness::Configuration::actuatorsAdded(ActuatorType type, പൂർണ്ണസംഖ്യ എണ്ണം)
 {
-	int total_count = totalNumActuators();
+	പൂർണ്ണസംഖ്യ total_എണ്ണം = total_അക്കം_Actuators();
 
-	for (int i = 0; i < count; ++i) {
-		matrix_selection_indexes[i + total_count] = selected_matrix;
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < എണ്ണം; ++i) {
+		matrix_selection_indexes[i + total_എണ്ണം] = selected_matrix;
 	}
 
-	num_actuators[(int)type] += count;
-	num_actuators_matrix[selected_matrix] += count;
+	അക്കം_actuators[(പൂർണ്ണസംഖ്യ)type] += എണ്ണം;
+	അക്കം_actuators_matrix[selected_matrix] += എണ്ണം;
 }
 
-int ActuatorEffectiveness::Configuration::totalNumActuators() const
+പൂർണ്ണസംഖ്യ ActuatorEffectiveness::Configuration::total_അക്കം_Actuators() സ്ഥിരം
 {
-	int total_count = 0;
+	പൂർണ്ണസംഖ്യ total_എണ്ണം = 0;
 
-	for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
-		total_count += num_actuators_matrix[i];
+	വേണ്ടി (പൂർണ്ണസംഖ്യ i = 0; i < MAX_അക്കം_MATRICES; ++i) {
+		total_എണ്ണം += അക്കം_actuators_matrix[i];
 	}
 
-	return total_count;
+	തിരികെ total_എണ്ണം;
 }
 
-ActuatorEffectiveness::ActuatorBitmask ActuatorEffectiveness::getStoppedMotors() const
+ActuatorEffectiveness::ActuatorBitmask ActuatorEffectiveness::getStoppedMotors() സ്ഥിരം
 {
 	// Motors can be stopped (here) for two reasons. They can
 	// additionally be stopped in the ControlAllocator, due to motor
@@ -99,11 +99,11 @@ ActuatorEffectiveness::ActuatorBitmask ActuatorEffectiveness::getStoppedMotors()
 	ActuatorEffectiveness::ActuatorBitmask stopped_motors_mask = _stopped_motors_mask_due_to_flight_phase;
 
 	//  b) because the thrust setpoint in a given direction is NaN
-	if (_longitudinal_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.longitudinal; }
+	എങ്കിൽ (_longitudinal_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.longitudinal; }
 
-	if (_lateral_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.lateral; }
+	എങ്കിൽ (_lateral_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.lateral; }
 
-	if (_vertical_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.vertical; }
+	എങ്കിൽ (_vertical_motors_stopped_by_thrust) { stopped_motors_mask |= _motor_direction_bitmasks.vertical; }
 
-	return stopped_motors_mask;
+	തിരികെ stopped_motors_mask;
 }

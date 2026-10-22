@@ -38,33 +38,33 @@
 
 #pragma once
 
-#include <mathlib/math/Functions.hpp>
-#include <float.h>
-#include <matrix/math.hpp>
+#അന്തര്ഭാവ <mathlib/math/Functions.hpp>
+#അന്തര്ഭാവ <float.h>
+#അന്തര്ഭാവ <matrix/math.hpp>
 
-namespace math
+നാമാകാശ math
 {
 
 template<typename T>
-class LowPassFilter2p
+വർഗ്ഗം താഴെയുള്ള_Pass_Filter2p
 {
-public:
-	LowPassFilter2p() = default;
+പൊതു:
+	താഴെയുള്ള_Pass_Filter2p() = സ്ഥിരസ്ഥിതി;
 
-	LowPassFilter2p(float sample_freq, float cutoff_freq)
+	താഴെയുള്ള_Pass_Filter2p(ദശാംശം sample_freq, ദശാംശം cutoff_freq)
 	{
 		// set initial parameters
 		set_cutoff_frequency(sample_freq, cutoff_freq);
 	}
 
 	// Change filter parameters
-	void set_cutoff_frequency(float sample_freq, float cutoff_freq)
+	ശൂന്യം set_cutoff_frequency(ദശാംശം sample_freq, ദശാംശം cutoff_freq)
 	{
-		if ((sample_freq <= 0.f) || (cutoff_freq <= 0.f) || (cutoff_freq >= sample_freq / 2)
+		എങ്കിൽ ((sample_freq <= 0.f) || (cutoff_freq <= 0.f) || (cutoff_freq >= sample_freq / 2)
 		    || !isFinite(sample_freq) || !isFinite(cutoff_freq)) {
 
 			disable();
-			return;
+			തിരികെ;
 		}
 
 		// reset delay elements on filter change
@@ -74,9 +74,9 @@ public:
 		_cutoff_freq = math::max(cutoff_freq, sample_freq * 0.001f);
 		_sample_freq = sample_freq;
 
-		const float fr = _sample_freq / _cutoff_freq;
-		const float ohm = tanf(M_PI_F / fr);
-		const float c = 1.f + 2.f * cosf(M_PI_F / 4.f) * ohm + ohm * ohm;
+		സ്ഥിരം ദശാംശം fr = _sample_freq / _cutoff_freq;
+		സ്ഥിരം ദശാംശം ohm = tanf(M_PI_F / fr);
+		സ്ഥിരം ദശാംശം c = 1.f + 2.f * cosf(M_PI_F / 4.f) * ohm + ohm * ohm;
 
 		_b0 = ohm * ohm / c;
 		_b1 = 2.f * _b0;
@@ -85,7 +85,7 @@ public:
 		_a1 = 2.f * (ohm * ohm - 1.f) / c;
 		_a2 = (1.f - 2.f * cosf(M_PI_F / 4.f) * ohm + ohm * ohm) / c;
 
-		if (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a1) || !isFinite(_a2)) {
+		എങ്കിൽ (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a1) || !isFinite(_a2)) {
 			disable();
 		}
 	}
@@ -95,7 +95,7 @@ public:
 	 *
 	 * @return retrieve the filtered result
 	 */
-	inline T apply(const T &sample)
+	വരിയിൽ T apply(സ്ഥിരം T &sample)
 	{
 		// Direct Form II implementation
 		T delay_element_0{sample - _delay_element_1 *_a1 - _delay_element_2 * _a2};
@@ -105,45 +105,45 @@ public:
 		_delay_element_2 = _delay_element_1;
 		_delay_element_1 = delay_element_0;
 
-		return output;
+		തിരികെ output;
 	}
 
 	// Filter array of samples in place using the Direct form II.
-	inline void applyArray(T samples[], int num_samples)
+	വരിയിൽ ശൂന്യം applyArray(T samples[], പൂർണ്ണസംഖ്യ അക്കം_samples)
 	{
-		for (int n = 0; n < num_samples; n++) {
+		വേണ്ടി (പൂർണ്ണസംഖ്യ n = 0; n < അക്കം_samples; n++) {
 			samples[n] = apply(samples[n]);
 		}
 	}
 
 	// Return the cutoff frequency
-	float get_cutoff_freq() const { return _cutoff_freq; }
+	ദശാംശം get_cutoff_freq() സ്ഥിരം { തിരികെ _cutoff_freq; }
 
 	// Return the sample frequency
-	float get_sample_freq() const { return _sample_freq; }
+	ദശാംശം get_sample_freq() സ്ഥിരം { തിരികെ _sample_freq; }
 
-	float getMagnitudeResponse(float frequency) const;
+	ദശാംശം getMagnitudeResponse(ദശാംശം frequency) സ്ഥിരം;
 
 	// Reset the filter state to this value
-	T reset(const T &sample)
+	T reset(സ്ഥിരം T &sample)
 	{
-		const T input = isFinite(sample) ? sample : T{};
+		സ്ഥിരം T നിവേശം = isFinite(sample) ? sample : T{};
 
-		if (fabsf(1 + _a1 + _a2) > FLT_EPSILON) {
-			_delay_element_1 = _delay_element_2 = input / (1 + _a1 + _a2);
+		എങ്കിൽ (fabsf(1 + _a1 + _a2) > FLT_EPSILON) {
+			_delay_element_1 = _delay_element_2 = നിവേശം / (1 + _a1 + _a2);
 
-			if (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
-				_delay_element_1 = _delay_element_2 = input;
+			എങ്കിൽ (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
+				_delay_element_1 = _delay_element_2 = നിവേശം;
 			}
 
-		} else {
-			_delay_element_1 = _delay_element_2 = input;
+		} അല്ലെങ്കിൽ {
+			_delay_element_1 = _delay_element_2 = നിവേശം;
 		}
 
-		return apply(input);
+		തിരികെ apply(നിവേശം);
 	}
 
-	void disable()
+	ശൂന്യം disable()
 	{
 		// no filtering
 		_sample_freq = 0.f;
@@ -160,20 +160,20 @@ public:
 		_a2 = 0.f;
 	}
 
-protected:
+സംരക്ഷിത:
 	T _delay_element_1{}; // buffered sample -1
 	T _delay_element_2{}; // buffered sample -2
 
 	// All the coefficients are normalized by a0, so a0 becomes 1 here
-	float _a1{0.f};
-	float _a2{0.f};
+	ദശാംശം _a1{0.f};
+	ദശാംശം _a2{0.f};
 
-	float _b0{1.f};
-	float _b1{0.f};
-	float _b2{0.f};
+	ദശാംശം _b0{1.f};
+	ദശാംശം _b1{0.f};
+	ദശാംശം _b2{0.f};
 
-	float _cutoff_freq{0.f};
-	float _sample_freq{0.f};
+	ദശാംശം _cutoff_freq{0.f};
+	ദശാംശം _sample_freq{0.f};
 };
 
 } // namespace math
