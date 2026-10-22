@@ -69,23 +69,23 @@
 
 #pragma once
 
-#include <matrix/matrix/math.hpp>
+#அந்தர்பாவ <matrix/matrix/math.hpp>
 
-#include "control_allocation/actuator_effectiveness/ActuatorEffectiveness.hpp"
+#அந்தர்பாவ "control_allocation/actuator_effectiveness/ActuatorEffectiveness.hpp"
 
-class ControlAllocation
+வகுப்பு ControlAllocation
 {
-public:
+பொது:
 	ControlAllocation();
-	virtual ~ControlAllocation() = default;
+	மெய்நிகர் ~ControlAllocation() = இயல்பு;
 
-	static constexpr uint8_t NUM_ACTUATORS = ActuatorEffectiveness::NUM_ACTUATORS;
-	static constexpr uint8_t NUM_AXES = ActuatorEffectiveness::NUM_AXES;
+	நிலையான constexpr uint8_t இலக்கம்_ACTUATORS = ActuatorEffectiveness::இலக்கம்_ACTUATORS;
+	நிலையான constexpr uint8_t இலக்கம்_AXES = ActuatorEffectiveness::இலக்கம்_AXES;
 
-	using ActuatorVector = matrix::Vector<float, NUM_ACTUATORS>;
+	using ActuatorVector = matrix::Vector<தசம, இலக்கம்_ACTUATORS>;
 	using ActuatorBitmask = ActuatorEffectiveness::ActuatorBitmask;
 
-	enum ControlAxis {
+	எண்ணிக்கை ControlAxis {
 		ROLL = 0,
 		PITCH,
 		YAW,
@@ -97,7 +97,7 @@ public:
 	/**
 	 * Allocate control setpoint to actuators
 	 */
-	virtual void allocate() = 0;
+	மெய்நிகர் வெறுமை allocate() = 0;
 
 	/**
 	 * Set actuator failure flag
@@ -106,50 +106,50 @@ public:
 	 *
 	 * @param failure  Motor failure flag
 	 */
-	void setHadActuatorFailure(bool failure) { _had_actuator_failure = failure; }
+	வெறுமை setHadActuatorFailure(தருக்க failure) { _had_actuator_failure = failure; }
 
 	/**
 	 * Set the control effectiveness matrix
 	 *
 	 * @param B Effectiveness matrix
 	 */
-	virtual void setEffectivenessMatrix(const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness,
-					    const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
-					    bool update_normalization_scale);
+	மெய்நிகர் வெறுமை setEffectivenessMatrix(மாறிலி matrix::Matrix<தசம, இலக்கம்_AXES, இலக்கம்_ACTUATORS> &effectiveness,
+					    மாறிலி ActuatorVector &actuator_trim, மாறிலி ActuatorVector &linearization_point, முழு இலக்கம்_actuators,
+					    தருக்க update_normalization_scale);
 
 	/**
 	 * Get the allocated actuator vector
 	 *
 	 * @return Actuator vector
 	 */
-	const ActuatorVector &getActuatorSetpoint() const { return _actuator_sp; }
+	மாறிலி ActuatorVector &getActuatorSetpoint() மாறிலி { திரும்பு _actuator_sp; }
 
 	/**
 	 * Set the desired control vector
 	 *
 	 * @param Control vector
 	 */
-	void setControlSetpoint(const matrix::Vector<float, NUM_AXES> &control) { _control_sp = control; }
+	வெறுமை setControlSetpoint(மாறிலி matrix::Vector<தசம, இலக்கம்_AXES> &control) { _control_sp = control; }
 
 	/**
 	 * Get the desired control vector
 	 *
 	 * @return Control vector
 	 */
-	const matrix::Vector<float, NUM_AXES> &getControlSetpoint() const { return _control_sp; }
+	மாறிலி matrix::Vector<தசம, இலக்கம்_AXES> &getControlSetpoint() மாறிலி { திரும்பு _control_sp; }
 
 	/**
 	 * Get the allocated control vector
 	 *
 	 * @return Control vector
 	 */
-	matrix::Vector<float, NUM_AXES> getAllocatedControl() const
+	matrix::Vector<தசம, இலக்கம்_AXES> getAllocatedControl() மாறிலி
 	{
 		// _actuator_sp contains NaN to indicate stopped motors.
 		// Covert back to zero to represent physical thrust.
 		ActuatorVector actuator_sp{_actuator_sp};
 		actuator_sp.nanToZero();
-		return (_effectiveness * (actuator_sp - _actuator_trim)).emult(_control_allocation_scale);
+		திரும்பு (_effectiveness * (actuator_sp - _actuator_trim)).emult(_control_allocation_scale);
 	}
 
 	/**
@@ -157,35 +157,35 @@ public:
 	 *
 	 * @return Effectiveness matrix
 	 */
-	const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &getEffectivenessMatrix() const { return _effectiveness; }
+	மாறிலி matrix::Matrix<தசம, இலக்கம்_AXES, இலக்கம்_ACTUATORS> &getEffectivenessMatrix() மாறிலி { திரும்பு _effectiveness; }
 
 	/**
 	 * Set the minimum actuator values
 	 *
 	 * @param actuator_min Minimum actuator values
 	 */
-	void setActuatorMin(const ActuatorVector &actuator_min) { _actuator_min = actuator_min; }
+	வெறுமை setActuatorMin(மாறிலி ActuatorVector &actuator_min) { _actuator_min = actuator_min; }
 
 	/**
 	 * Get the minimum actuator values
 	 *
 	 * @return Minimum actuator values
 	 */
-	const ActuatorVector &getActuatorMin() const { return _actuator_min; }
+	மாறிலி ActuatorVector &getActuatorMin() மாறிலி { திரும்பு _actuator_min; }
 
 	/**
 	 * Set the maximum actuator values
 	 *
 	 * @param actuator_max Maximum actuator values
 	 */
-	void setActuatorMax(const ActuatorVector &actuator_max) { _actuator_max = actuator_max; }
+	வெறுமை setActuatorMax(மாறிலி ActuatorVector &actuator_max) { _actuator_max = actuator_max; }
 
 	/**
 	 * Get the maximum actuator values
 	 *
 	 * @return Maximum actuator values
 	 */
-	const ActuatorVector &getActuatorMax() const { return _actuator_max; }
+	மாறிலி ActuatorVector &getActuatorMax() மாறிலி { திரும்பு _actuator_max; }
 
 	/**
 	 * Set the current actuator setpoint.
@@ -196,15 +196,15 @@ public:
 	 *
 	 * @param actuator_sp Actuator setpoint
 	 */
-	void setActuatorSetpoint(const ActuatorVector &actuator_sp);
+	வெறுமை setActuatorSetpoint(மாறிலி ActuatorVector &actuator_sp);
 
-	void setSlewRateLimit(const ActuatorVector &slew_rate_limit)
+	வெறுமை setSlewRateLimit(மாறிலி ActuatorVector &slew_rate_limit)
 	{ _actuator_slew_rate_limit = slew_rate_limit; }
 
 	/**
 	 * Apply slew rate to current actuator setpoint
 	 */
-	void applySlewRateLimit(float dt);
+	வெறுமை applySlewRateLimit(தசம dt);
 
 	/**
 	 * Clip the actuator setpoint between minimum and maximum values.
@@ -213,9 +213,9 @@ public:
 	 *
 	 * @param actuator Actuator vector to clip
 	 */
-	void clipActuatorSetpoint(ActuatorVector &actuator) const;
+	வெறுமை clipActuatorSetpoint(ActuatorVector &actuator) மாறிலி;
 
-	void clipActuatorSetpoint() { clipActuatorSetpoint(_actuator_sp); }
+	வெறுமை clipActuatorSetpoint() { clipActuatorSetpoint(_actuator_sp); }
 
 	/**
 	 * Normalize the actuator setpoint between minimum and maximum values.
@@ -226,8 +226,8 @@ public:
 	 *
 	 * @return Clipped actuator setpoint
 	 */
-	ActuatorVector normalizeActuatorSetpoint(const ActuatorVector &actuator)
-	const;
+	ActuatorVector normalizeActuatorSetpoint(மாறிலி ActuatorVector &actuator)
+	மாறிலி;
 
 	/**
 	 * Apply a mask of actuators to be set to NaN.
@@ -238,40 +238,40 @@ public:
 	 * @param nan_actuators_mask Bitmask indicating which actuators to set to NaN.
 	 *                           If (nan_actuators_mask & (1 << i)), _actuator_sp(i) becomes NaN.
 	 */
-	void applyNanToActuators(ActuatorBitmask nan_actuators_mask)
+	வெறுமை applyNanToActuators(ActuatorBitmask nan_actuators_mask)
 	{
-		for (int i = 0; i < _num_actuators; i++) {
-			if (nan_actuators_mask & (1u << i)) {
+		க்கு (முழு i = 0; i < இலக்கம்_actuators_2; i++) {
+			எனில் (nan_actuators_mask & (1u << i)) {
 				_actuator_sp(i) = NAN;
 			}
 		}
 	}
 
-	virtual void updateParameters() {}
+	மெய்நிகர் வெறுமை updateParameters() {}
 
-	int numConfiguredActuators() const { return _num_actuators; }
+	முழு இலக்கம்_Configured_Actuators() மாறிலி { திரும்பு இலக்கம்_actuators_2; }
 
-	void setNormalizeRPY(bool normalize_rpy) { _normalize_rpy = normalize_rpy; }
+	வெறுமை setNormalizeRPY(தருக்க normalize_rpy) { _normalize_rpy = normalize_rpy; }
 
 	/// Axes (bitmask over ControlAxis) dropped from the effectiveness matrix as not independently
 	/// achievable, e.g. yaw when collinear with roll after a motor failure
-	uint8_t getDroppedAxes() const { return _dropped_axes; }
+	uint8_t getDroppedAxes() மாறிலி { திரும்பு _dropped_axes; }
 
-protected:
-	friend class ControlAllocator; // for _actuator_sp
+பாதுகாக்கப்பட்ட:
+	friend வகுப்பு ControlAllocator; // for _actuator_sp
 
-	matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> _effectiveness;  ///< Effectiveness matrix
-	matrix::Vector<float, NUM_AXES> _control_allocation_scale;  	///< Scaling applied during allocation
+	matrix::Matrix<தசம, இலக்கம்_AXES, இலக்கம்_ACTUATORS> _effectiveness;  ///< Effectiveness matrix
+	matrix::Vector<தசம, இலக்கம்_AXES> _control_allocation_scale;  	///< Scaling applied during allocation
 	ActuatorVector _actuator_trim; 	///< Neutral actuator values
 	ActuatorVector _actuator_min; 	///< Minimum actuator values
 	ActuatorVector _actuator_max; 	///< Maximum actuator values
 	ActuatorVector _actuator_slew_rate_limit; 	///< Slew rate limit
 	ActuatorVector _prev_actuator_sp;  	///< Previous actuator setpoint
 	ActuatorVector _actuator_sp;  	///< Actuator setpoint
-	matrix::Vector<float, NUM_AXES> _control_sp;   		///< Control setpoint
-	matrix::Vector<float, NUM_AXES> _control_trim; 		///< Control at trim actuator values
-	int _num_actuators{0};
-	bool _normalize_rpy{false};				///< if true, normalize roll, pitch and yaw columns
-	bool _had_actuator_failure{false};
+	matrix::Vector<தசம, இலக்கம்_AXES> _control_sp;   		///< Control setpoint
+	matrix::Vector<தசம, இலக்கம்_AXES> _control_trim; 		///< Control at trim actuator values
+	முழு இலக்கம்_actuators_2{0};
+	தருக்க _normalize_rpy{பொய்};				///< if true, normalize roll, pitch and yaw columns
+	தருக்க _had_actuator_failure{பொய்};
 	uint8_t _dropped_axes{0};				///< bitmask over ControlAxis
 };

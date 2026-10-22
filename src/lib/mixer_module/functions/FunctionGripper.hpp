@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#அந்தர்பாவ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gripper.h>
+#அந்தர்பாவ <uORB/topics/gripper.h>
 
 /**
  * @brief Function: Gripper (Used for actuating a Gripper)
  */
-class FunctionGripper : public FunctionProviderBase
+வகுப்பு FunctionGripper : பொது FunctionProviderBase
 {
-public:
-	FunctionGripper() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGripper(); }
+பொது:
+	FunctionGripper() = இயல்பு;
+	நிலையான FunctionProviderBase *allocate(மாறிலி Context &context) { திரும்பு புதிய FunctionGripper(); }
 
-	void update() override
+	வெறுமை update() override
 	{
 		gripper_s gripper;
 
-		if (_gripper_sub.update(&gripper)) {
-			if (gripper.command == gripper_s::COMMAND_RELEASE) {
+		எனில் (_gripper_sub.update(&gripper)) {
+			எனில் (gripper.command == gripper_s::COMMAND_RELEASE) {
 				_data = -1.f; // Minimum command for release
 
-			} else if (gripper.command == gripper_s::COMMAND_GRAB) {
+			} இல்லையெனில் எனில் (gripper.command == gripper_s::COMMAND_GRAB) {
 				_data = 1.f; // Maximum command for grab
 
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	தசம value(OutputFunction func) override { திரும்பு _data; }
 
-private:
+தனிப்பட்ட:
 	uORB::Subscription _gripper_sub{ORB_ID(gripper)};
-	float _data{-1.f};
+	தசம _data{-1.f};
 };

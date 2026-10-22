@@ -31,238 +31,238 @@
  *
  ****************************************************************************/
 
-#include "RoverControl.hpp"
-using namespace matrix;
-namespace RoverControl
+#அந்தர்பாவ "RoverControl.hpp"
+using நாமாகாஶ matrix;
+நாமாகாஶ RoverControl
 {
-float throttleControl(SlewRate<float> &motor_setpoint, const float throttle_setpoint,
-		      const float current_motor_setpoint, const float max_accel, const float max_decel, const float max_thr_spd,
-		      const float dt)
+தசம throttleControl(SlewRate<தசம> &motor_setpoint, மாறிலி தசம throttle_setpoint,
+		      மாறிலி தசம current_motor_setpoint, மாறிலி தசம max_accel, மாறிலி தசம max_decel, மாறிலி தசம max_thr_spd,
+		      மாறிலி தசம dt)
 {
 	// Sanitize inputs
-	if (!PX4_ISFINITE(throttle_setpoint) || !PX4_ISFINITE(current_motor_setpoint) || !PX4_ISFINITE(dt)) {
-		return NAN;
+	எனில் (!PX4_ISFINITE(throttle_setpoint) || !PX4_ISFINITE(current_motor_setpoint) || !PX4_ISFINITE(dt)) {
+		திரும்பு NAN;
 	}
 
-	const bool accelerating = fabsf(throttle_setpoint) > fabsf(current_motor_setpoint);
+	மாறிலி தருக்க accelerating = fabsf(throttle_setpoint) > fabsf(current_motor_setpoint);
 
-	if (accelerating && max_accel > FLT_EPSILON && max_thr_spd > FLT_EPSILON) { // Acceleration slew rate
+	எனில் (accelerating && max_accel > FLT_EPSILON && max_thr_spd > FLT_EPSILON) { // Acceleration slew rate
 		motor_setpoint.setSlewRate(max_accel / max_thr_spd);
 		motor_setpoint.update(throttle_setpoint, dt);
 
 		// Reinitialize slew rate if current value is closer to setpoint than post slew rate value
-		if (fabsf(motor_setpoint.getState() - current_motor_setpoint) > fabsf(throttle_setpoint -
+		எனில் (fabsf(motor_setpoint.getState() - current_motor_setpoint) > fabsf(throttle_setpoint -
 				current_motor_setpoint)) {
-			motor_setpoint.setForcedValue(throttle_setpoint);
+			motor_setpoint.set_Forced_மதிப்பு(throttle_setpoint);
 		}
 
-	} else if (!accelerating && max_decel > FLT_EPSILON && max_thr_spd > FLT_EPSILON) { // Deceleration slew rate
+	} இல்லையெனில் எனில் (!accelerating && max_decel > FLT_EPSILON && max_thr_spd > FLT_EPSILON) { // Deceleration slew rate
 		motor_setpoint.setSlewRate(max_decel / max_thr_spd);
 		motor_setpoint.update(throttle_setpoint, dt);
 
 		// Reinitialize slew rate if current value is closer to setpoint than post slew rate value
-		if (fabsf(motor_setpoint.getState() - current_motor_setpoint) > fabsf(throttle_setpoint -
+		எனில் (fabsf(motor_setpoint.getState() - current_motor_setpoint) > fabsf(throttle_setpoint -
 				current_motor_setpoint)) {
-			motor_setpoint.setForcedValue(throttle_setpoint);
+			motor_setpoint.set_Forced_மதிப்பு(throttle_setpoint);
 		}
 
-	} else { // Fallthrough if slew rate parameters are not configured
-		motor_setpoint.setForcedValue(throttle_setpoint);
+	} இல்லையெனில் { // Fallthrough if slew rate parameters are not configured
+		motor_setpoint.set_Forced_மதிப்பு(throttle_setpoint);
 	}
 
-	return motor_setpoint.getState();
+	திரும்பு motor_setpoint.getState();
 }
 
-float attitudeControl(SlewRateYaw<float> &adjusted_yaw_setpoint, PID &pid_yaw,
-		      const float yaw_slew_rate, float vehicle_yaw, float yaw_setpoint, const float dt)
+தசம attitudeControl(SlewRateYaw<தசம> &adjusted_yaw_setpoint, PID &pid_yaw,
+		      மாறிலி தசம yaw_slew_rate, தசம vehicle_yaw, தசம yaw_setpoint, மாறிலி தசம dt)
 {
 	// Sanitize inputs
-	if (!PX4_ISFINITE(yaw_setpoint) || !PX4_ISFINITE(vehicle_yaw) || !PX4_ISFINITE(dt)) {
-		return NAN;
+	எனில் (!PX4_ISFINITE(yaw_setpoint) || !PX4_ISFINITE(vehicle_yaw) || !PX4_ISFINITE(dt)) {
+		திரும்பு NAN;
 	}
 
 	yaw_setpoint = wrap_pi(yaw_setpoint);
 	vehicle_yaw = wrap_pi(vehicle_yaw);
 
-	if (yaw_slew_rate > FLT_EPSILON) { // Apply slew rate if configured
+	எனில் (yaw_slew_rate > FLT_EPSILON) { // Apply slew rate if configured
 		adjusted_yaw_setpoint.setSlewRate(yaw_slew_rate);
 		adjusted_yaw_setpoint.update(yaw_setpoint, dt);
 
 		// Reinitialize slew rate if current value is closer to setpoint than post slew rate value
-		if (fabsf(wrap_pi(adjusted_yaw_setpoint.getState() - vehicle_yaw)) > fabsf(wrap_pi(yaw_setpoint - vehicle_yaw))) {
-			adjusted_yaw_setpoint.setForcedValue(yaw_setpoint);
+		எனில் (fabsf(wrap_pi(adjusted_yaw_setpoint.getState() - vehicle_yaw)) > fabsf(wrap_pi(yaw_setpoint - vehicle_yaw))) {
+			adjusted_yaw_setpoint.set_Forced_மதிப்பு(yaw_setpoint);
 		}
 
-	} else {
-		adjusted_yaw_setpoint.setForcedValue(yaw_setpoint);
+	} இல்லையெனில் {
+		adjusted_yaw_setpoint.set_Forced_மதிப்பு(yaw_setpoint);
 	}
 
 	// Feedback control
 	pid_yaw.setSetpoint(
 		wrap_pi(adjusted_yaw_setpoint.getState() - vehicle_yaw));  // Error as setpoint to take care of wrapping
-	return pid_yaw.update(0.f, dt);
+	திரும்பு pid_yaw.update(0.f, dt);
 
 }
 
-float speedControl(SlewRate<float> &speed_with_rate_limit, PID &pid_speed, const float speed_setpoint,
-		   const float vehicle_speed, const float max_accel, const float max_decel, const float max_thr_speed, const float dt)
+தசம speedControl(SlewRate<தசம> &speed_with_rate_limit, PID &pid_speed, மாறிலி தசம speed_setpoint,
+		   மாறிலி தசம vehicle_speed, மாறிலி தசம max_accel, மாறிலி தசம max_decel, மாறிலி தசம max_thr_speed, மாறிலி தசம dt)
 {
 	// Sanitize inputs
-	if (!PX4_ISFINITE(speed_setpoint) || !PX4_ISFINITE(vehicle_speed) || !PX4_ISFINITE(dt)) {
-		return NAN;
+	எனில் (!PX4_ISFINITE(speed_setpoint) || !PX4_ISFINITE(vehicle_speed) || !PX4_ISFINITE(dt)) {
+		திரும்பு NAN;
 	}
 
 	// Apply acceleration and deceleration limit
-	if (fabsf(speed_setpoint) >= fabsf(vehicle_speed) && max_accel > FLT_EPSILON) {
+	எனில் (fabsf(speed_setpoint) >= fabsf(vehicle_speed) && max_accel > FLT_EPSILON) {
 		speed_with_rate_limit.setSlewRate(max_accel);
 		speed_with_rate_limit.update(speed_setpoint, dt);
 
 		// Reinitialize slew rate if current value is closer to setpoint than post slew rate value
-		if (fabsf(speed_with_rate_limit.getState() - vehicle_speed) > fabsf(
+		எனில் (fabsf(speed_with_rate_limit.getState() - vehicle_speed) > fabsf(
 			    speed_setpoint - vehicle_speed)) {
-			speed_with_rate_limit.setForcedValue(speed_setpoint);
+			speed_with_rate_limit.set_Forced_மதிப்பு(speed_setpoint);
 		}
 
-	} else if (fabsf(speed_setpoint) < fabsf(vehicle_speed) && max_decel > FLT_EPSILON) {
+	} இல்லையெனில் எனில் (fabsf(speed_setpoint) < fabsf(vehicle_speed) && max_decel > FLT_EPSILON) {
 		speed_with_rate_limit.setSlewRate(max_decel);
 		speed_with_rate_limit.update(speed_setpoint, dt);
 
 		// Reinitialize slew rate if current value is closer to setpoint than post slew rate value
-		if (fabsf(speed_with_rate_limit.getState() - vehicle_speed) > fabsf(
+		எனில் (fabsf(speed_with_rate_limit.getState() - vehicle_speed) > fabsf(
 			    speed_setpoint - vehicle_speed)) {
-			speed_with_rate_limit.setForcedValue(speed_setpoint);
+			speed_with_rate_limit.set_Forced_மதிப்பு(speed_setpoint);
 		}
 
-	} else { // Fallthrough if slew rate is not configured
-		speed_with_rate_limit.setForcedValue(speed_setpoint);
+	} இல்லையெனில் { // Fallthrough if slew rate is not configured
+		speed_with_rate_limit.set_Forced_மதிப்பு(speed_setpoint);
 	}
 
 	// Calculate normalized forward speed setpoint
-	float forward_speed_normalized{0.f};
+	தசம forward_speed_normalized{0.f};
 
 	// Feedforward
-	if (max_thr_speed > FLT_EPSILON) {
-		forward_speed_normalized = math::interpolate<float>(speed_with_rate_limit.getState(),
+	எனில் (max_thr_speed > FLT_EPSILON) {
+		forward_speed_normalized = math::interpolate<தசம>(speed_with_rate_limit.getState(),
 					   -max_thr_speed, max_thr_speed,
 					   -1.f, 1.f);
 	}
 
 	// Feedback control
-	if (fabsf(speed_with_rate_limit.getState()) > FLT_EPSILON) {
+	எனில் (fabsf(speed_with_rate_limit.getState()) > FLT_EPSILON) {
 		pid_speed.setSetpoint(speed_with_rate_limit.getState());
 		forward_speed_normalized += pid_speed.update(vehicle_speed, dt);
 
-	} else {
+	} இல்லையெனில் {
 		pid_speed.resetIntegral();
 	}
 
 
-	return math::constrain(forward_speed_normalized, -1.f, 1.f);
+	திரும்பு math::constrain(forward_speed_normalized, -1.f, 1.f);
 }
 
-float rateControl(SlewRate<float> &adjusted_yaw_rate_setpoint, PID &pid_yaw_rate, const float yaw_rate_setpoint,
-		  const float vehicle_yaw_rate, const float max_thr_speed, const float yaw_rate_corr, const float max_yaw_accel,
-		  const float max_yaw_decel,
-		  const float wheel_track, const float dt)
+தசம rateControl(SlewRate<தசம> &adjusted_yaw_rate_setpoint, PID &pid_yaw_rate, மாறிலி தசம yaw_rate_setpoint,
+		  மாறிலி தசம vehicle_yaw_rate, மாறிலி தசம max_thr_speed, மாறிலி தசம yaw_rate_corr, மாறிலி தசம max_yaw_accel,
+		  மாறிலி தசம max_yaw_decel,
+		  மாறிலி தசம wheel_track, மாறிலி தசம dt)
 {
 	// Apply acceleration and deceleration limit
-	if (fabsf(yaw_rate_setpoint) >= fabsf(vehicle_yaw_rate) && max_yaw_accel > FLT_EPSILON) {
+	எனில் (fabsf(yaw_rate_setpoint) >= fabsf(vehicle_yaw_rate) && max_yaw_accel > FLT_EPSILON) {
 		adjusted_yaw_rate_setpoint.setSlewRate(max_yaw_accel);
 		adjusted_yaw_rate_setpoint.update(yaw_rate_setpoint, dt);
 
 		// Reinitialize slew rate if current value is closer to setpoint than post slew rate value
-		if (fabsf(adjusted_yaw_rate_setpoint.getState() - vehicle_yaw_rate) > fabsf(
+		எனில் (fabsf(adjusted_yaw_rate_setpoint.getState() - vehicle_yaw_rate) > fabsf(
 			    yaw_rate_setpoint - vehicle_yaw_rate)) {
-			adjusted_yaw_rate_setpoint.setForcedValue(yaw_rate_setpoint);
+			adjusted_yaw_rate_setpoint.set_Forced_மதிப்பு(yaw_rate_setpoint);
 		}
 
 
-	} else if (fabsf(yaw_rate_setpoint) < fabsf(vehicle_yaw_rate) && max_yaw_decel > FLT_EPSILON) {
+	} இல்லையெனில் எனில் (fabsf(yaw_rate_setpoint) < fabsf(vehicle_yaw_rate) && max_yaw_decel > FLT_EPSILON) {
 		adjusted_yaw_rate_setpoint.setSlewRate(max_yaw_decel);
 		adjusted_yaw_rate_setpoint.update(yaw_rate_setpoint, dt);
 
 		// Reinitialize slew rate if current value is closer to setpoint than post slew rate value
-		if (fabsf(adjusted_yaw_rate_setpoint.getState() - vehicle_yaw_rate) > fabsf(
+		எனில் (fabsf(adjusted_yaw_rate_setpoint.getState() - vehicle_yaw_rate) > fabsf(
 			    yaw_rate_setpoint - vehicle_yaw_rate)) {
-			adjusted_yaw_rate_setpoint.setForcedValue(yaw_rate_setpoint);
+			adjusted_yaw_rate_setpoint.set_Forced_மதிப்பு(yaw_rate_setpoint);
 		}
 
 
-	} else { // Fallthrough if slew rate is not configured
-		adjusted_yaw_rate_setpoint.setForcedValue(yaw_rate_setpoint);
+	} இல்லையெனில் { // Fallthrough if slew rate is not configured
+		adjusted_yaw_rate_setpoint.set_Forced_மதிப்பு(yaw_rate_setpoint);
 	}
 
 	// Transform yaw rate into speed difference
-	float speed_diff_normalized{0.f};
+	தசம speed_diff_normalized{0.f};
 
-	if (wheel_track > FLT_EPSILON && max_thr_speed > FLT_EPSILON) { // Feedforward
-		const float speed_diff = (adjusted_yaw_rate_setpoint.getState() * wheel_track /
+	எனில் (wheel_track > FLT_EPSILON && max_thr_speed > FLT_EPSILON) { // Feedforward
+		மாறிலி தசம speed_diff = (adjusted_yaw_rate_setpoint.getState() * wheel_track /
 					  2.f) * yaw_rate_corr;
-		speed_diff_normalized = math::interpolate<float>(speed_diff, -max_thr_speed,
+		speed_diff_normalized = math::interpolate<தசம>(speed_diff, -max_thr_speed,
 					max_thr_speed, -1.f, 1.f);
 	}
 
 	// Feedback control
-	if (fabsf(adjusted_yaw_rate_setpoint.getState()) > FLT_EPSILON) {
+	எனில் (fabsf(adjusted_yaw_rate_setpoint.getState()) > FLT_EPSILON) {
 		pid_yaw_rate.setSetpoint(adjusted_yaw_rate_setpoint.getState());
 		speed_diff_normalized += pid_yaw_rate.update(vehicle_yaw_rate, dt);
 
-	} else {
+	} இல்லையெனில் {
 		pid_yaw_rate.resetIntegral();
 	}
 
 
-	return math::constrain(speed_diff_normalized, -1.f, 1.f);
+	திரும்பு math::constrain(speed_diff_normalized, -1.f, 1.f);
 }
 
-void globalToLocalSetpointTriplet(Vector2f &curr_wp_ned, Vector2f &prev_wp_ned, Vector2f &next_wp_ned,
+வெறுமை globalToLocalSetpointTriplet(Vector2f &curr_wp_ned, Vector2f &prev_wp_ned, Vector2f &next_wp_ned,
 				  position_setpoint_triplet_s position_setpoint_triplet, Vector2f &curr_pos_ned, MapProjection &global_ned_proj_ref)
 {
-	if (position_setpoint_triplet.current.valid && PX4_ISFINITE(position_setpoint_triplet.current.lat)
+	எனில் (position_setpoint_triplet.current.valid && PX4_ISFINITE(position_setpoint_triplet.current.lat)
 	    && PX4_ISFINITE(position_setpoint_triplet.current.lon)) {
 		curr_wp_ned = global_ned_proj_ref.project(position_setpoint_triplet.current.lat, position_setpoint_triplet.current.lon);
 
-	} else {
+	} இல்லையெனில் {
 		curr_wp_ned = curr_pos_ned.isAllFinite() ? curr_pos_ned : Vector2f(NAN, NAN); // Fallback if current waypoint is invalid
 	}
 
-	if (position_setpoint_triplet.previous.valid && PX4_ISFINITE(position_setpoint_triplet.previous.lat)
+	எனில் (position_setpoint_triplet.previous.valid && PX4_ISFINITE(position_setpoint_triplet.previous.lat)
 	    && PX4_ISFINITE(position_setpoint_triplet.previous.lon)) {
 		prev_wp_ned = global_ned_proj_ref.project(position_setpoint_triplet.previous.lat,
 				position_setpoint_triplet.previous.lon);
 
-	} else {
+	} இல்லையெனில் {
 		prev_wp_ned = curr_pos_ned.isAllFinite() ? curr_pos_ned : Vector2f(NAN,
 				NAN); // Fallback if previous waypoint is invalid
 	}
 
-	if (position_setpoint_triplet.next.valid && PX4_ISFINITE(position_setpoint_triplet.next.lat)
+	எனில் (position_setpoint_triplet.next.valid && PX4_ISFINITE(position_setpoint_triplet.next.lat)
 	    && PX4_ISFINITE(position_setpoint_triplet.next.lon)) {
 		next_wp_ned = global_ned_proj_ref.project(position_setpoint_triplet.next.lat, position_setpoint_triplet.next.lon);
 
-	} else {
+	} இல்லையெனில் {
 		next_wp_ned = Vector2f(NAN, NAN);
 	}
 }
 
-float calcWaypointTransitionAngle(Vector2f &prev_wp_ned, Vector2f &curr_wp_ned, Vector2f &next_wp_ned)
+தசம calcWaypointTransitionAngle(Vector2f &prev_wp_ned, Vector2f &curr_wp_ned, Vector2f &next_wp_ned)
 {
 	// Sanitize inputs
-	if (!prev_wp_ned.isAllFinite() || !curr_wp_ned.isAllFinite() || !next_wp_ned.isAllFinite()) {
-		return NAN;
+	எனில் (!prev_wp_ned.isAllFinite() || !curr_wp_ned.isAllFinite() || !next_wp_ned.isAllFinite()) {
+		திரும்பு NAN;
 	}
 
-	const Vector2f curr_to_next_wp_ned = next_wp_ned - curr_wp_ned;
-	const Vector2f curr_to_prev_wp_ned = prev_wp_ned - curr_wp_ned;
+	மாறிலி Vector2f curr_to_next_wp_ned = next_wp_ned - curr_wp_ned;
+	மாறிலி Vector2f curr_to_prev_wp_ned = prev_wp_ned - curr_wp_ned;
 
 	// Waypoint overlap
-	if (curr_to_next_wp_ned.norm() < FLT_EPSILON || curr_to_prev_wp_ned.norm() < FLT_EPSILON) {
-		return NAN;
+	எனில் (curr_to_next_wp_ned.norm() < FLT_EPSILON || curr_to_prev_wp_ned.norm() < FLT_EPSILON) {
+		திரும்பு NAN;
 	}
 
-	float cosin = curr_to_prev_wp_ned.unit_or_zero() * curr_to_next_wp_ned.unit_or_zero();
-	cosin = math::constrain<float>(cosin, -1.f, 1.f); // Protect against float precision problem
-	return acosf(cosin);
+	தசம cosin = curr_to_prev_wp_ned.unit_or_zero() * curr_to_next_wp_ned.unit_or_zero();
+	cosin = math::constrain<தசம>(cosin, -1.f, 1.f); // Protect against float precision problem
+	திரும்பு acosf(cosin);
 }
 
 } // RoverControl

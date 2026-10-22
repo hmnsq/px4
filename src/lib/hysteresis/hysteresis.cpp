@@ -37,55 +37,55 @@
  * @author Julian Oes <julian@oes.ch>
  */
 
-#include "hysteresis.h"
+#அந்தர்பாவ "hysteresis.h"
 
-namespace systemlib
+நாமாகாஶ systemlib
 {
 
-Hysteresis::Hysteresis(bool initial_state)
+Hysteresis::Hysteresis(தருக்க initial_state)
 {
 	_state = _requested_state = initial_state;
 }
 
-void Hysteresis::set_hysteresis_time_from(const bool from_state, const hrt_abstime new_hysteresis_time_us)
+வெறுமை Hysteresis::set_hysteresis_time_from(மாறிலி தருக்க from_state, மாறிலி hrt_abstime new_hysteresis_time_us)
 {
-	if (from_state) {
+	எனில் (from_state) {
 		_time_from_true_us = new_hysteresis_time_us;
 
-	} else {
+	} இல்லையெனில் {
 		_time_from_false_us = new_hysteresis_time_us;
 	}
 }
 
-void Hysteresis::set_state_and_update(const bool new_state, const hrt_abstime &now_us)
+வெறுமை Hysteresis::set_state_and_update(மாறிலி தருக்க new_state, மாறிலி hrt_abstime &now_us)
 {
-	if (new_state != _state) {
-		if (new_state != _requested_state) {
+	எனில் (new_state != _state) {
+		எனில் (new_state != _requested_state) {
 			_requested_state = new_state;
 			_last_time_to_change_state = now_us;
 		}
 
-	} else {
+	} இல்லையெனில் {
 		_requested_state = _state;
 	}
 
 	update(now_us);
 }
 
-void Hysteresis::update(const hrt_abstime &now_us)
+வெறுமை Hysteresis::update(மாறிலி hrt_abstime &now_us)
 {
-	if (_requested_state != _state) {
+	எனில் (_requested_state != _state) {
 
-		if (_state && !_requested_state) {
+		எனில் (_state && !_requested_state) {
 			// true -> false
-			if (now_us >= _last_time_to_change_state + _time_from_true_us) {
-				_state = false;
+			எனில் (now_us >= _last_time_to_change_state + _time_from_true_us) {
+				_state = பொய்;
 			}
 
-		} else if (!_state && _requested_state) {
+		} இல்லையெனில் எனில் (!_state && _requested_state) {
 			// false -> true
-			if (now_us >= _last_time_to_change_state + _time_from_false_us) {
-				_state = true;
+			எனில் (now_us >= _last_time_to_change_state + _time_from_false_us) {
+				_state = உண்மை;
 			}
 		}
 	}

@@ -37,24 +37,24 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#அந்தர்பாவ <math.h>
+#அந்தர்பாவ <float.h>
 
-#include "blocks.hpp"
+#அந்தர்பாவ "blocks.hpp"
 
-namespace control
+நாமாகாஶ control
 {
 
-float BlockLimitSym::update(float input)
+தசம BlockLimitSym::update(தசம உள்ளீடு)
 {
-	if (input > getMax()) {
-		input = _max.get();
+	எனில் (உள்ளீடு > getMax()) {
+		உள்ளீடு = _max.get();
 
-	} else if (input < -getMax()) {
-		input = -getMax();
+	} இல்லையெனில் எனில் (உள்ளீடு < -getMax()) {
+		உள்ளீடு = -getMax();
 	}
 
-	return input;
+	திரும்பு உள்ளீடு;
 }
 
 } // namespace control

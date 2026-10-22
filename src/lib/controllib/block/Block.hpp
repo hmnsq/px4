@@ -39,85 +39,85 @@
 
 #pragma once
 
-#include <containers/List.hpp>
-#include <controllib/block/BlockParam.hpp>
-#include <cstdint>
+#அந்தர்பாவ <containers/List.hpp>
+#அந்தர்பாவ <controllib/block/BlockParam.hpp>
+#அந்தர்பாவ <cstdint>
 
-namespace control
+நாமாகாஶ control
 {
 
-static constexpr uint8_t maxChildrenPerBlock = 100;
-static constexpr uint8_t maxParamsPerBlock = 110;
-static constexpr uint8_t blockNameLengthMax = 40;
+நிலையான constexpr uint8_t maxChildrenPerBlock = 100;
+நிலையான constexpr uint8_t maxParamsPerBlock = 110;
+நிலையான constexpr uint8_t blockNameLengthMax = 40;
 
 // forward declaration
-class BlockParamBase;
-class SuperBlock;
+வகுப்பு BlockParamBase;
+வகுப்பு SuperBlock;
 
 /**
  */
-class __EXPORT Block : public ListNode<Block *>
+வகுப்பு __EXPORT Block : பொது List_முனை<Block *>
 {
-public:
-	friend class BlockParamBase;
+பொது:
+	friend வகுப்பு BlockParamBase;
 
-	Block(SuperBlock *parent, const char *name);
-	virtual ~Block() = default;
+	Block(SuperBlock *parent, மாறிலி எழுத்து *name);
+	மெய்நிகர் ~Block() = இயல்பு;
 
 	// no copy, assignment, move, move assignment
-	Block(const Block &) = delete;
-	Block &operator=(const Block &) = delete;
+	Block(மாறிலி Block &) = delete;
+	Block &operator=(மாறிலி Block &) = delete;
 	Block(Block &&) = delete;
 	Block &operator=(Block &&) = delete;
 
-	void getName(char *name, size_t n);
+	வெறுமை getName(எழுத்து *name, size_t n);
 
-	virtual void updateParams();
+	மெய்நிகர் வெறுமை updateParams();
 
-	virtual void setDt(float dt) { _dt = dt; }
-	float getDt() { return _dt; }
+	மெய்நிகர் வெறுமை setDt(தசம dt) { _dt = dt; }
+	தசம getDt() { திரும்பு _dt; }
 
-protected:
+பாதுகாக்கப்பட்ட:
 
-	virtual void updateParamsSubclass() {}
+	மெய்நிகர் வெறுமை updateParamsSubclass() {}
 
-	SuperBlock *getParent() { return _parent; }
-	List<BlockParamBase *> &getParams() { return _params; }
+	SuperBlock *getParent() { திரும்பு _parent; }
+	List<BlockParamBase *> &getParams() { திரும்பு _params; }
 
-	const char *_name;
+	மாறிலி எழுத்து *_name;
 	SuperBlock *_parent;
-	float _dt{0.0f};
+	தசம _dt{0.0f};
 
 	List<BlockParamBase *> _params;
 };
 
-class __EXPORT SuperBlock :
-	public Block
+வகுப்பு __EXPORT SuperBlock :
+	பொது Block
 {
-public:
-	friend class Block;
+பொது:
+	friend வகுப்பு Block;
 
-	SuperBlock(SuperBlock *parent, const char *name) : Block(parent, name) {}
-	~SuperBlock() = default;
+	SuperBlock(SuperBlock *parent, மாறிலி எழுத்து *name) : Block(parent, name) {}
+	~SuperBlock() = இயல்பு;
 
 	// no copy, assignment, move, move assignment
-	SuperBlock(const SuperBlock &) = delete;
-	SuperBlock &operator=(const SuperBlock &) = delete;
+	SuperBlock(மாறிலி SuperBlock &) = delete;
+	SuperBlock &operator=(மாறிலி SuperBlock &) = delete;
 	SuperBlock(SuperBlock &&) = delete;
 	SuperBlock &operator=(SuperBlock &&) = delete;
 
-	void setDt(float dt) override;
+	வெறுமை setDt(தசம dt) override;
 
-	void updateParams() override
+	வெறுமை updateParams() override
 	{
 		Block::updateParams();
 
-		if (getChildren().getHead() != nullptr) { updateChildParams(); }
+		எனில் (getChildren().getHead() != nullptr) { updateChildParams(); }
 	}
 
-protected:
-	List<Block *> &getChildren() { return _children; }
-	void updateChildParams();
+பாதுகாக்கப்பட்ட:
+	List<Block *> &getChildren() { திரும்பு _children; }
+	வெறுமை updateChildParams();
 
 	List<Block *> _children;
 };

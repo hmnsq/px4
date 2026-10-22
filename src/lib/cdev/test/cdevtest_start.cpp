@@ -37,32 +37,32 @@
  * @author Thomas Gubler <thomasgubler@gmail.com>
  * @author Mark Charlebois <mcharleb@gmail.com>
  */
-#include "cdevtest_example.h"
+#அந்தர்பாவ "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/tasks.h>
-#include <stdio.h>
-#include <string.h>
+#அந்தர்பாவ <px4_platform_common/app.h>
+#அந்தர்பாவ <px4_platform_common/tasks.h>
+#அந்தர்பாவ <stdio.h>
+#அந்தர்பாவ <string.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+நிலையான முழு daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-extern "C" __EXPORT int cdev_test_main(int argc, char *argv[]);
-int cdev_test_main(int argc, char *argv[])
+வெளி "C" __EXPORT முழு cdev_test_main(முழு argc, எழுத்து *argv[]);
+முழு cdev_test_main(முழு argc, எழுத்து *argv[])
 {
 
-	if (argc < 2) {
+	எனில் (argc < 2) {
 		printf("usage: cdevtest {start|stop|status}\n");
-		return 1;
+		திரும்பு 1;
 	}
 
-	if (!strcmp(argv[1], "start")) {
+	எனில் (!strcmp(argv[1], "start")) {
 
-		if (CDevExample::appState.isRunning()) {
+		எனில் (CDevExample::appState.isRunning()) {
 			printf("already running\n");
 			/* this is not an error */
-			return 0;
+			திரும்பு 0;
 		}
 
 		daemon_task = px4_task_spawn_cmd("cdevtest",
@@ -70,27 +70,27 @@ int cdev_test_main(int argc, char *argv[])
 						 SCHED_PRIORITY_MAX - 5,
 						 2000,
 						 PX4_MAIN,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+						 (argv) ? (எழுத்து *மாறிலி *)&argv[2] : (எழுத்து *மாறிலி *)nullptr);
 
-		return 0;
+		திரும்பு 0;
 	}
 
-	if (!strcmp(argv[1], "stop")) {
+	எனில் (!strcmp(argv[1], "stop")) {
 		CDevExample::appState.requestExit();
-		return 0;
+		திரும்பு 0;
 	}
 
-	if (!strcmp(argv[1], "status")) {
-		if (CDevExample::appState.isRunning()) {
+	எனில் (!strcmp(argv[1], "status")) {
+		எனில் (CDevExample::appState.isRunning()) {
 			printf("is running\n");
 
-		} else {
+		} இல்லையெனில் {
 			printf("not started\n");
 		}
 
-		return 0;
+		திரும்பு 0;
 	}
 
 	printf("usage: cdevtest_main {start|stop|status}\n");
-	return 1;
+	திரும்பு 1;
 }

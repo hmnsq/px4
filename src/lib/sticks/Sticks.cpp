@@ -35,21 +35,21 @@
  * @file Sticks.cpp
  */
 
-#include "Sticks.hpp"
+#அந்தர்பாவ "Sticks.hpp"
 
-using namespace time_literals;
-using namespace matrix;
+using நாமாகாஶ time_literals;
+using நாமாகாஶ matrix;
 
 Sticks::Sticks(ModuleParams *parent) :
 	ModuleParams(parent)
 {}
 
-bool Sticks::checkAndUpdateStickInputs()
+தருக்க Sticks::checkAndUpdateStickInputs()
 {
 	// Sticks are rescaled linearly and exponentially to [-1,1]
 	manual_control_setpoint_s manual_control_setpoint;
 
-	if (_manual_control_setpoint_sub.update(&manual_control_setpoint)) {
+	எனில் (_manual_control_setpoint_sub.update(&manual_control_setpoint)) {
 		_positions(0) = manual_control_setpoint.roll;
 		_positions(1) = manual_control_setpoint.pitch;
 		_positions(2) = manual_control_setpoint.yaw;
@@ -63,42 +63,42 @@ bool Sticks::checkAndUpdateStickInputs()
 		_aux_positions(5) = manual_control_setpoint.aux6;
 
 		// valid stick inputs are required
-		_input_available = manual_control_setpoint.valid && _positions.isAllFinite();
+		உள்ளீடு_available = manual_control_setpoint.valid && _positions.isAllFinite();
 
-	} else {
+	} இல்லையெனில் {
 		failsafe_flags_s failsafe_flags;
 
-		if (_failsafe_flags_sub.update(&failsafe_flags)) {
-			if (failsafe_flags.manual_control_signal_lost) {
-				_input_available = false;
+		எனில் (_failsafe_flags_sub.update(&failsafe_flags)) {
+			எனில் (failsafe_flags.manual_control_signal_lost) {
+				உள்ளீடு_available = பொய்;
 			}
 		}
 	}
 
-	if (!_input_available) {
+	எனில் (!உள்ளீடு_available) {
 		// Timeout: set all sticks to zero
 		_positions.zero();
 	}
 
-	return _input_available;
+	திரும்பு உள்ளீடு_available;
 }
 
-float Sticks::expoDeadzone(float value, float expo, float deadzone)
+தசம Sticks::expoDeadzone(தசம value, தசம expo, தசம deadzone)
 {
-	return math::expo(math::deadzone(value, deadzone), expo);
+	திரும்பு math::expo(math::deadzone(value, deadzone), expo);
 }
 
-void Sticks::limitStickUnitLengthXY(Vector2f &v)
+வெறுமை Sticks::limitStickUnitLengthXY(Vector2f &v)
 {
-	const float vl = v.length();
+	மாறிலி தசம vl = v.length();
 
-	if (vl > 1.0f) {
+	எனில் (vl > 1.0f) {
 		v /= vl;
 	}
 }
 
-void Sticks::rotateIntoHeadingFrameXY(Vector2f &v, const float yaw, const float yaw_setpoint)
+வெறுமை Sticks::rotateIntoHeadingFrameXY(Vector2f &v, மாறிலி தசம yaw, மாறிலி தசம yaw_setpoint)
 {
-	const float yaw_rotate = PX4_ISFINITE(yaw_setpoint) ? yaw_setpoint : yaw;
+	மாறிலி தசம yaw_rotate = PX4_ISFINITE(yaw_setpoint) ? yaw_setpoint : yaw;
 	v = Dcm2f(yaw_rotate) * v;
 }

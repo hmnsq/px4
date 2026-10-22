@@ -42,101 +42,101 @@
  */
 
 #define PARAM_IMPLEMENTATION
-#include "param.h"
-#include "param_translation.h"
-#include <parameters/px4_parameters.hpp>
-#include <lib/tinybson/tinybson.h>
+#அந்தர்பாவ "param.h"
+#அந்தர்பாவ "param_translation.h"
+#அந்தர்பாவ <parameters/px4_parameters.hpp>
+#அந்தர்பாவ <lib/tinybson/tinybson.h>
 
-#if defined(__PX4_NUTTX)
-#include <nuttx/crc32.h>
-#else
-#include <crc32.h>
+#எனில் defined(__PX4_NUTTX)
+#அந்தர்பாவ <nuttx/crc32.h>
+#இல்லையெனில்
+#அந்தர்பாவ <crc32.h>
 #endif
-#include <float.h>
-#include <math.h>
-#include <sys/stat.h>
+#அந்தர்பாவ <float.h>
+#அந்தர்பாவ <math.h>
+#அந்தர்பாவ <sys/stat.h>
 
-#include <containers/Bitset.hpp>
-#include <drivers/drv_hrt.h>
-#include <lib/perf/perf_counter.h>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/atomic_bitset.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/sem.h>
-#include <px4_platform_common/shutdown.h>
-#include <px4_platform_common/micro_hal.h>
+#அந்தர்பாவ <containers/Bitset.hpp>
+#அந்தர்பாவ <drivers/drv_hrt.h>
+#அந்தர்பாவ <lib/perf/perf_counter.h>
+#அந்தர்பாவ <px4_platform_common/px4_config.h>
+#அந்தர்பாவ <px4_platform_common/atomic_bitset.h>
+#அந்தர்பாவ <px4_platform_common/defines.h>
+#அந்தர்பாவ <px4_platform_common/posix.h>
+#அந்தர்பாவ <px4_platform_common/sem.h>
+#அந்தர்பாவ <px4_platform_common/shutdown.h>
+#அந்தர்பாவ <px4_platform_common/micro_hal.h>
 
-using namespace time_literals;
+using நாமாகாஶ time_literals;
 
-#include "uORB/uORB.h"
-#include "uORB/topics/parameter_update.h"
-#include <uORB/Subscription.hpp>
+#அந்தர்பாவ "uORB/uORB.h"
+#அந்தர்பாவ "uORB/topics/parameter_update.h"
+#அந்தர்பாவ <uORB/Subscription.hpp>
 
-#include "ExhaustiveLayer.h"
-#include "ConstLayer.h"
-#include "DynamicSparseLayer.h"
-#include "StaticSparseLayer.h"
+#அந்தர்பாவ "ExhaustiveLayer.h"
+#அந்தர்பாவ "ConstLayer.h"
+#அந்தர்பாவ "DynamicSparseLayer.h"
+#அந்தர்பாவ "StaticSparseLayer.h"
 
-#include "atomic_transaction.h"
+#அந்தர்பாவ "atomic_transaction.h"
 
 /* Include functions common to user and kernel sides */
-#include "parameters_common.cpp"
+#அந்தர்பாவ "parameters_common.cpp"
 
-#if defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
-#include <px4_platform/board_ctrl.h>
-#include "parameters_ioctl.h"
+#எனில் defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
+#அந்தர்பாவ <px4_platform/board_ctrl.h>
+#அந்தர்பாவ "parameters_ioctl.h"
 #endif
 
-#if defined(FLASH_BASED_PARAMS)
-#include "flashparams/flashparams.h"
-#else
-inline static int flash_param_save(param_filter_func filter) { return -1; }
-inline static int flash_param_import() { return -1; }
+#எனில் defined(FLASH_BASED_PARAMS)
+#அந்தர்பாவ "flashparams/flashparams.h"
+#இல்லையெனில்
+உள்வரி நிலையான முழு flash_param_save(param_filter_func filter) { திரும்பு -1; }
+உள்வரி நிலையான முழு flash_param_import() { திரும்பு -1; }
 #endif
 
-static char *param_default_file = nullptr;
-static char *param_backup_file = nullptr;
+நிலையான எழுத்து *param_default_file = nullptr;
+நிலையான எழுத்து *param_backup_file = nullptr;
 
-#include "autosave.h"
-static ParamAutosave *autosave_instance {nullptr};
+#அந்தர்பாவ "autosave.h"
+நிலையான ParamAutosave *autosave_instance {nullptr};
 
-static px4::AtomicBitset<param_info_count> params_active;  // params found
-static px4::AtomicBitset<param_info_count> params_unsaved;
+நிலையான px4::AtomicBitset<param_info_மொத்தம்> params_active;  // params found
+நிலையான px4::AtomicBitset<param_info_மொத்தம்> params_unsaved;
 
 // Params the save in progress is writing. They are moved out of params_unsaved
 // before their values are read, so a param_set that lands while the save runs
 // marks its param again and reaches the next save. Flash-param saves write only
 // unsaved params, so nothing else would ever write that change.
-static px4::AtomicBitset<param_info_count> params_saving;
+நிலையான px4::AtomicBitset<param_info_மொத்தம்> params_saving;
 
-static ConstLayer firmware_defaults;
-static DynamicSparseLayer runtime_defaults{&firmware_defaults};
+நிலையான ConstLayer firmware_defaults;
+நிலையான DynamicSparseLayer runtime_defaults{&firmware_defaults};
 DynamicSparseLayer user_config{&runtime_defaults};
 
 /** parameter update topic handle */
-#if not defined(CONFIG_PARAM_REMOTE)
-static orb_advert_t param_topic = nullptr;
-static unsigned int param_instance = 0;
+#எனில் not defined(CONFIG_PARAM_REMOTE)
+நிலையான orb_advert_t param_topic = nullptr;
+நிலையான unsigned முழு param_instance = 0;
 #endif
 
-static perf_counter_t param_export_perf;
-static perf_counter_t param_find_perf;
-static perf_counter_t param_get_perf;
-static perf_counter_t param_set_perf;
+நிலையான perf_counter_t param_export_perf;
+நிலையான perf_counter_t param_find_perf;
+நிலையான perf_counter_t param_get_perf;
+நிலையான perf_counter_t param_set_perf;
 
-static pthread_mutex_t file_mutex  =
+நிலையான pthread_mutex_t file_mutex  =
 	PTHREAD_MUTEX_INITIALIZER; ///< this protects against concurrent param saves (file or flash access).
 
 // Support for remote parameter node
-#if defined(CONFIG_PARAM_PRIMARY)
+#எனில் defined(CONFIG_PARAM_PRIMARY)
 # include "parameters_primary.h"
 #endif // CONFIG_PARAM_PRIMARY
-#if defined(CONFIG_PARAM_REMOTE)
+#எனில் defined(CONFIG_PARAM_REMOTE)
 # include "parameters_remote.h"
 #endif // CONFIG_PARAM_REMOTE
 
-void
+வெறுமை
 param_init()
 {
 #ifdef __PX4_POSIX
@@ -145,349 +145,349 @@ param_init()
 #endif
 
 	param_export_perf = perf_alloc(PC_ELAPSED, "param: export");
-	param_find_perf = perf_alloc(PC_COUNT, "param: find");
-	param_get_perf = perf_alloc(PC_COUNT, "param: get");
+	param_find_perf = perf_alloc(PC_மொத்தம், "param: find");
+	param_get_perf = perf_alloc(PC_மொத்தம், "param: get");
 	param_set_perf = perf_alloc(PC_ELAPSED, "param: set");
 
-#if defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
+#எனில் defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
 	px4_register_boardct_ioctl(_PARAMIOCBASE, param_ioctl);
 #endif
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#எனில் defined(CONFIG_PARAM_PRIMARY)
 	param_primary_init();
 #endif // CONFIG_PARAM_PRIMARY
 
-#if defined(CONFIG_PARAM_REMOTE)
+#எனில் defined(CONFIG_PARAM_REMOTE)
 	param_remote_init();
 #endif // CONFIG_PARAM_REMOTE
 
-#if not defined(CONFIG_PARAM_REMOTE)
-	autosave_instance = new ParamAutosave();
+#எனில் not defined(CONFIG_PARAM_REMOTE)
+	autosave_instance = புதிய ParamAutosave();
 #endif
 }
 
 
-void
+வெறுமை
 param_notify_changes()
 {
 // Don't send if this is a remote node. Only the primary
 // sends out update notices
-#if not defined(CONFIG_PARAM_REMOTE)
+#எனில் not defined(CONFIG_PARAM_REMOTE)
 	parameter_update_s pup {};
 	pup.instance = param_instance++;
-	pup.get_count = perf_event_count(param_get_perf);
-	pup.set_count = perf_event_count(param_set_perf);
-	pup.find_count = perf_event_count(param_find_perf);
-	pup.export_count = perf_event_count(param_export_perf);
-	pup.active = params_active.count();
+	pup.get_மொத்தம்_2 = perf_event_மொத்தம்(param_get_perf);
+	pup.set_மொத்தம் = perf_event_மொத்தம்(param_set_perf);
+	pup.find_மொத்தம் = perf_event_மொத்தம்(param_find_perf);
+	pup.export_மொத்தம் = perf_event_மொத்தம்(param_export_perf);
+	pup.active = params_active.மொத்தம்();
 	pup.changed = user_config.size();
 	pup.custom_default = runtime_defaults.size();
 	pup.timestamp = hrt_absolute_time();
 
-	if (param_topic == nullptr) {
+	எனில் (param_topic == nullptr) {
 		param_topic = orb_advertise(ORB_ID(parameter_update), &pup);
 
-	} else {
+	} இல்லையெனில் {
 		orb_publish(ORB_ID(parameter_update), param_topic, &pup);
 	}
 
 #endif
 }
 
-static param_t param_find_internal(const char *name, bool notification)
+நிலையான param_t param_find_internal(மாறிலி எழுத்து *name, தருக்க notification)
 {
-	perf_count(param_find_perf);
+	perf_மொத்தம்(param_find_perf);
 
-	param_t middle;
+	param_t நடு;
 	param_t front = 0;
-	param_t last = param_info_count;
+	param_t last = param_info_மொத்தம்;
 
 	/* perform a binary search of the known parameters */
 
-	while (front <= last) {
-		middle = front + (last - front) / 2;
-		int ret = strcmp(name, param_name(middle));
+	போது (front <= last) {
+		நடு = front + (last - front) / 2;
+		முழு ret = strcmp(name, param_name(நடு));
 
-		if (ret == 0) {
-			if (notification) {
-				param_set_used(middle);
+		எனில் (ret == 0) {
+			எனில் (notification) {
+				param_set_used(நடு);
 			}
 
-			return middle;
+			திரும்பு நடு;
 
-		} else if (middle == front) {
+		} இல்லையெனில் எனில் (நடு == front) {
 			/* An end point has been hit, but there has been no match */
-			break;
+			நிறுத்து;
 
-		} else if (ret < 0) {
-			last = middle;
+		} இல்லையெனில் எனில் (ret < 0) {
+			last = நடு;
 
-		} else {
-			front = middle;
+		} இல்லையெனில் {
+			front = நடு;
 		}
 	}
 
 	/* not found */
-	return PARAM_INVALID;
+	திரும்பு PARAM_INVALID;
 }
 
-param_t param_find(const char *name)
+param_t param_find(மாறிலி எழுத்து *name)
 {
-	return param_find_internal(name, true);
+	திரும்பு param_find_internal(name, உண்மை);
 }
 
-param_t param_find_no_notification(const char *name)
+param_t param_find_no_notification(மாறிலி எழுத்து *name)
 {
-	return param_find_internal(name, false);
+	திரும்பு param_find_internal(name, பொய்);
 }
 
-unsigned param_count_used()
+unsigned param_மொத்தம்_used()
 {
-	return params_active.count();
+	திரும்பு params_active.மொத்தம்();
 }
 
 param_t param_for_used_index(unsigned index)
 {
 	// walk all params and count used params
-	if (index < param_info_count) {
-		unsigned used_count = 0;
+	எனில் (index < param_info_மொத்தம்) {
+		unsigned used_மொத்தம் = 0;
 
-		for (int i = 0; i < params_active.size(); i++) {
-			if (params_active[i]) {
+		க்கு (முழு i = 0; i < params_active.size(); i++) {
+			எனில் (params_active[i]) {
 				// we found the right used count,
 				//  return the param value
-				if (index == used_count) {
-					return static_cast<param_t>(i);
+				எனில் (index == used_மொத்தம்) {
+					திரும்பு static_cast<param_t>(i);
 				}
 
-				used_count++;
+				used_மொத்தம்++;
 			}
 		}
 	}
 
-	return PARAM_INVALID;
+	திரும்பு PARAM_INVALID;
 }
 
-int param_get_used_index(param_t param)
+முழு param_get_used_index(param_t param)
 {
 	/* this tests for out of bounds and does a constant time lookup */
-	if (!param_used(param)) {
-		return -1;
+	எனில் (!param_used(param)) {
+		திரும்பு -1;
 	}
 
 	/* walk all params and count, now knowing that it has a valid index */
-	int used_count = 0;
+	முழு used_மொத்தம் = 0;
 
-	for (int i = 0; i < params_active.size(); i++) {
-		if (params_active[i]) {
+	க்கு (முழு i = 0; i < params_active.size(); i++) {
+		எனில் (params_active[i]) {
 
-			if (param == i) {
-				return used_count;
+			எனில் (param == i) {
+				திரும்பு used_மொத்தம்;
 			}
 
-			used_count++;
+			used_மொத்தம்++;
 		}
 	}
 
-	return -1;
+	திரும்பு -1;
 }
 
-bool
-param_value_unsaved(param_t param)
+தருக்க
+param_மதிப்பு_unsaved(param_t param)
 {
-	return handle_in_range(param) ? (params_unsaved[param] || params_saving[param]) : false;
+	திரும்பு handle_in_range(param) ? (params_unsaved[param] || params_saving[param]) : பொய்;
 }
 
-int
-param_get(param_t param, void *val)
+முழு
+param_get(param_t param, வெறுமை *val)
 {
-	perf_count(param_get_perf);
+	perf_மொத்தம்(param_get_perf);
 
-	if (!handle_in_range(param)) {
+	எனில் (!handle_in_range(param)) {
 		PX4_ERR("get: param %" PRId16 " invalid", param);
-		return PX4_ERROR;
+		திரும்பு PX4_ERROR;
 	}
 
-	if (!params_active[param]) {
+	எனில் (!params_active[param]) {
 		PX4_DEBUG("get: param %" PRId16 " (%s) not active", param, param_name(param));
 	}
 
-	int result = PX4_ERROR;
+	முழு result = PX4_ERROR;
 
-	if (val) {
+	எனில் (val) {
 
-		auto retrieve_value = user_config.get(param);
+		auto retrieve_மதிப்பு = user_config.get(param);
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			memcpy(val, &retrieve_value.i, sizeof(retrieve_value.i));
-			return PX4_OK;
+		தேர்வு (param_type(param)) {
+		நிலை PARAM_TYPE_INT32:
+			memcpy(val, &retrieve_மதிப்பு.i, அளவு(retrieve_மதிப்பு.i));
+			திரும்பு PX4_OK;
 
-		case PARAM_TYPE_FLOAT:
-			memcpy(val, &retrieve_value.f, sizeof(retrieve_value.f));
-			return PX4_OK;
+		நிலை PARAM_TYPE_FLOAT:
+			memcpy(val, &retrieve_மதிப்பு.f, அளவு(retrieve_மதிப்பு.f));
+			திரும்பு PX4_OK;
 		}
 	}
 
-	return result;
+	திரும்பு result;
 }
 
-int
-param_get_default_value_internal(param_t param, void *default_val)
+முழு
+param_get_default_மதிப்பு_internal(param_t param, வெறுமை *default_val)
 {
-	if (!handle_in_range(param)) {
+	எனில் (!handle_in_range(param)) {
 		PX4_ERR("get default value: param %d invalid", param);
-		return PX4_ERROR;
+		திரும்பு PX4_ERROR;
 	}
 
-	if (default_val) {
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
+	எனில் (default_val) {
+		தேர்வு (param_type(param)) {
+		நிலை PARAM_TYPE_INT32: {
 				int32_t val = runtime_defaults.get(param).i;
-				memcpy(default_val, &val, sizeof(val));
-				return PX4_OK;
+				memcpy(default_val, &val, அளவு(val));
+				திரும்பு PX4_OK;
 			}
 
-		case PARAM_TYPE_FLOAT: {
-				float val = runtime_defaults.get(param).f;
-				memcpy(default_val, &val, sizeof(val));
-				return PX4_OK;
+		நிலை PARAM_TYPE_FLOAT: {
+				தசம val = runtime_defaults.get(param).f;
+				memcpy(default_val, &val, அளவு(val));
+				திரும்பு PX4_OK;
 			}
 		}
 	}
 
-	return PX4_ERROR;
+	திரும்பு PX4_ERROR;
 }
 
-int
-param_get_default_value(param_t param, void *default_val)
+முழு
+param_get_default_மதிப்பு(param_t param, வெறுமை *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	எனில் (!handle_in_range(param)) {
+		திரும்பு PX4_ERROR;
 	}
 
-	int ret = param_get_default_value_internal(param, default_val);
-	return ret;
+	முழு ret = param_get_default_மதிப்பு_internal(param, default_val);
+	திரும்பு ret;
 }
 
-bool param_value_is_default(param_t param)
+தருக்க param_மதிப்பு_is_default(param_t param)
 {
-	if (!handle_in_range(param)) {
-		return true;
+	எனில் (!handle_in_range(param)) {
+		திரும்பு உண்மை;
 	}
 
-	if (!user_config.contains(param)) {
+	எனில் (!user_config.contains(param)) {
 		// if user config does not contain it, consider it default.
-		return true;
+		திரும்பு உண்மை;
 
-	} else {
+	} இல்லையெனில் {
 		// compare with default value
-		const param_value_u user_config_value = user_config.get(param);
-		const param_value_u runtime_default_value = runtime_defaults.get(param);
+		மாறிலி param_மதிப்பு_u user_config_மதிப்பு = user_config.get(param);
+		மாறிலி param_மதிப்பு_u runtime_default_மதிப்பு = runtime_defaults.get(param);
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
-				return user_config_value.i == runtime_default_value.i;
+		தேர்வு (param_type(param)) {
+		நிலை PARAM_TYPE_INT32: {
+				திரும்பு user_config_மதிப்பு.i == runtime_default_மதிப்பு.i;
 			}
 
-		case PARAM_TYPE_FLOAT: {
-				return fabsf(user_config_value.f - runtime_default_value.f) < FLT_EPSILON;
+		நிலை PARAM_TYPE_FLOAT: {
+				திரும்பு fabsf(user_config_மதிப்பு.f - runtime_default_மதிப்பு.f) < FLT_EPSILON;
 			}
 		}
 	}
 
-	return true;
+	திரும்பு உண்மை;
 }
 
-static void
+நிலையான வெறுமை
 param_autosave()
 {
-	if (autosave_instance) {
+	எனில் (autosave_instance) {
 		autosave_instance->request();
 	}
 }
 
-void
-param_control_autosave(bool enable)
+வெறுமை
+param_control_autosave(தருக்க enable)
 {
-	if (autosave_instance) {
+	எனில் (autosave_instance) {
 		autosave_instance->enable(enable);
 	}
 }
 
-static int
-param_set_internal(param_t param, const void *val, bool mark_saved, bool notify_changes, bool update_remote = true,
-		   bool autosave = true)
+நிலையான முழு
+param_set_internal(param_t param, மாறிலி வெறுமை *val, தருக்க mark_saved, தருக்க notify_changes, தருக்க update_remote = உண்மை,
+		   தருக்க autosave = உண்மை)
 {
-	if (!handle_in_range(param)) {
+	எனில் (!handle_in_range(param)) {
 		PX4_ERR("set invalid param %d", param);
-		return PX4_ERROR;
+		திரும்பு PX4_ERROR;
 	}
 
-	if (val == nullptr) {
+	எனில் (val == nullptr) {
 		PX4_ERR("set invalid value");
-		return PX4_ERROR;
+		திரும்பு PX4_ERROR;
 	}
 
-	if (param_is_readonly(param)) {
+	எனில் (param_is_readonly(param)) {
 		PX4_WARN("param %s is read-only", param_name(param));
-		return PX4_ERROR;
+		திரும்பு PX4_ERROR;
 	}
 
-	int result = -1;
-	bool param_changed = false;
+	முழு result = -1;
+	தருக்க param_changed = பொய்;
 	perf_begin(param_set_perf);
 
-	const param_value_u user_config_value = user_config.get(param);
-	param_value_u new_value{};
+	மாறிலி param_மதிப்பு_u user_config_மதிப்பு = user_config.get(param);
+	param_மதிப்பு_u new_மதிப்பு{};
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
-		memcpy(&new_value.i, val, sizeof(new_value.i));
-		param_changed = user_config_value.i != new_value.i;
-		break;
+	தேர்வு (param_type(param)) {
+	நிலை PARAM_TYPE_INT32:
+		memcpy(&new_மதிப்பு.i, val, அளவு(new_மதிப்பு.i));
+		param_changed = user_config_மதிப்பு.i != new_மதிப்பு.i;
+		நிறுத்து;
 
-	case PARAM_TYPE_FLOAT:
-		memcpy(&new_value.f, val, sizeof(new_value.f));
-		param_changed = fabsf(user_config_value.f - new_value.f) > FLT_EPSILON;
-		break;
+	நிலை PARAM_TYPE_FLOAT:
+		memcpy(&new_மதிப்பு.f, val, அளவு(new_மதிப்பு.f));
+		param_changed = fabsf(user_config_மதிப்பு.f - new_மதிப்பு.f) > FLT_EPSILON;
+		நிறுத்து;
 
-	default: {
+	இயல்பு: {
 			PX4_ERR("param_set invalid param type for %s", param_name(param));
-			break;
+			நிறுத்து;
 		}
 	}
 
-	if (user_config.store(param, new_value)) {
-		if (param_changed) {
+	எனில் (user_config.store(param, new_மதிப்பு)) {
+		எனில் (param_changed) {
 			params_unsaved.set(param, !mark_saved);
 		}
 
 		result = PX4_OK;
 
-	} else {
+	} இல்லையெனில் {
 		PX4_ERR("param_set failed to store param %s", param_name(param));
 		result = PX4_ERROR;
 	}
 
-	if ((result == PX4_OK) && param_changed && !mark_saved && autosave) { // this is false when importing parameters
+	எனில் ((result == PX4_OK) && param_changed && !mark_saved && autosave) { // this is false when importing parameters
 		param_autosave();
 	}
 
 	// If this is the parameter server, make sure that the remote is updated
-#if defined(CONFIG_PARAM_PRIMARY)
+#எனில் defined(CONFIG_PARAM_PRIMARY)
 
-	if (param_changed && update_remote) {
-		param_primary_set_value(param, val);
+	எனில் (param_changed && update_remote) {
+		param_primary_set_மதிப்பு(param, val);
 	}
 
 #endif
 
 	// If this is the parameter remote, make sure that the primary is updated
-#if defined(CONFIG_PARAM_REMOTE)
+#எனில் defined(CONFIG_PARAM_REMOTE)
 
-	if (param_changed && update_remote) {
-		param_remote_set_value(param, val);
+	எனில் (param_changed && update_remote) {
+		param_remote_set_மதிப்பு(param, val);
 	}
 
 #endif
@@ -498,424 +498,424 @@ param_set_internal(param_t param, const void *val, bool mark_saved, bool notify_
 	 * If we set something, now that we have unlocked, go ahead and advertise that
 	 * a thing has been set.
 	 */
-	if ((result == PX4_OK) && param_changed && notify_changes) {
+	எனில் ((result == PX4_OK) && param_changed && notify_changes) {
 		param_notify_changes();
 	}
 
-	return result;
+	திரும்பு result;
 }
 
-#if defined(FLASH_BASED_PARAMS)
-int param_set_external(param_t param, const void *val, bool mark_saved, bool notify_changes)
+#எனில் defined(FLASH_BASED_PARAMS)
+முழு param_set_external(param_t param, மாறிலி வெறுமை *val, தருக்க mark_saved, தருக்க notify_changes)
 {
-	return param_set_internal(param, val, mark_saved, notify_changes);
+	திரும்பு param_set_internal(param, val, mark_saved, notify_changes);
 }
 
-void param_get_external(param_t param, void *val)
+வெறுமை param_get_external(param_t param, வெறுமை *val)
 {
 	param_get(param, val);
 }
 #endif
 
-int param_set(param_t param, const void *val)
+முழு param_set(param_t param, மாறிலி வெறுமை *val)
 {
-	return param_set_internal(param, val, false, true);
+	திரும்பு param_set_internal(param, val, பொய், உண்மை);
 }
 
-int param_set_no_notification(param_t param, const void *val)
+முழு param_set_no_notification(param_t param, மாறிலி வெறுமை *val)
 {
-	return param_set_internal(param, val, false, false);
+	திரும்பு param_set_internal(param, val, பொய், பொய்);
 }
 
-int param_set_no_remote_update(param_t param, const void *val, bool notify)
+முழு param_set_no_remote_update(param_t param, மாறிலி வெறுமை *val, தருக்க notify)
 {
-	return param_set_internal(param, val, false, notify, false);
+	திரும்பு param_set_internal(param, val, பொய், notify, பொய்);
 }
 
-bool param_used(param_t param)
+தருக்க param_used(param_t param)
 {
-	if (handle_in_range(param)) {
-		return params_active[param];
+	எனில் (handle_in_range(param)) {
+		திரும்பு params_active[param];
 	}
 
-	return false;
+	திரும்பு பொய்;
 }
 
-void param_set_used(param_t param)
+வெறுமை param_set_used(param_t param)
 {
-	if (handle_in_range(param)) {
-#if defined(CONFIG_PARAM_REMOTE)
+	எனில் (handle_in_range(param)) {
+#எனில் defined(CONFIG_PARAM_REMOTE)
 
-		if (!param_used(param)) {
+		எனில் (!param_used(param)) {
 			param_remote_set_used(param);
 		}
 
 #endif
 
-		params_active.set(param, true);
+		params_active.set(param, உண்மை);
 	}
 }
 
-int param_set_default_value(param_t param, const void *val)
+முழு param_set_default_மதிப்பு(param_t param, மாறிலி வெறுமை *val)
 {
-	if (!handle_in_range(param)) {
+	எனில் (!handle_in_range(param)) {
 		PX4_ERR("set default value invalid param %d", param);
-		return PX4_ERROR;
+		திரும்பு PX4_ERROR;
 	}
 
-	if (val == nullptr) {
+	எனில் (val == nullptr) {
 		PX4_ERR("set default value invalid value");
-		return PX4_ERROR;
+		திரும்பு PX4_ERROR;
 	}
 
-	if (param_is_readonly(param)) {
+	எனில் (param_is_readonly(param)) {
 		PX4_WARN("param %s is read-only", param_name(param));
-		return PX4_ERROR;
+		திரும்பு PX4_ERROR;
 	}
 
-	int result = PX4_ERROR;
+	முழு result = PX4_ERROR;
 
 
 	// check if param being set to default value
-	bool setting_to_static_default = false;
-	const param_value_u firmware_default_value = firmware_defaults.get(param);
+	தருக்க setting_to_static_default = பொய்;
+	மாறிலி param_மதிப்பு_u firmware_default_மதிப்பு = firmware_defaults.get(param);
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32: {
-			int32_t new_value;
-			memcpy(&new_value, val, sizeof(new_value));
-			setting_to_static_default = firmware_default_value.i == new_value;
-			break;
+	தேர்வு (param_type(param)) {
+	நிலை PARAM_TYPE_INT32: {
+			int32_t new_மதிப்பு;
+			memcpy(&new_மதிப்பு, val, அளவு(new_மதிப்பு));
+			setting_to_static_default = firmware_default_மதிப்பு.i == new_மதிப்பு;
+			நிறுத்து;
 		}
 
-	case PARAM_TYPE_FLOAT: {
-			float new_value;
-			memcpy(&new_value, val, sizeof(new_value));
-			setting_to_static_default = fabsf(firmware_default_value.f - new_value) <= FLT_EPSILON;
-			break;
+	நிலை PARAM_TYPE_FLOAT: {
+			தசம new_மதிப்பு;
+			memcpy(&new_மதிப்பு, val, அளவு(new_மதிப்பு));
+			setting_to_static_default = fabsf(firmware_default_மதிப்பு.f - new_மதிப்பு) <= FLT_EPSILON;
+			நிறுத்து;
 		}
 	}
 
-	if (setting_to_static_default) {
+	எனில் (setting_to_static_default) {
 		runtime_defaults.reset(param);
 
 		result = PX4_OK;
 
-	} else {
-		param_value_u new_value{};
+	} இல்லையெனில் {
+		param_மதிப்பு_u new_மதிப்பு{};
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
-				memcpy(&new_value.i, val, sizeof(new_value.i));
-				break;
+		தேர்வு (param_type(param)) {
+		நிலை PARAM_TYPE_INT32: {
+				memcpy(&new_மதிப்பு.i, val, அளவு(new_மதிப்பு.i));
+				நிறுத்து;
 			}
 
-		case PARAM_TYPE_FLOAT: {
-				memcpy(&new_value.f, val, sizeof(new_value.f));
-				break;
+		நிலை PARAM_TYPE_FLOAT: {
+				memcpy(&new_மதிப்பு.f, val, அளவு(new_மதிப்பு.f));
+				நிறுத்து;
 			}
 
-		default:
-			break;
+		இயல்பு:
+			நிறுத்து;
 		}
 
-		if (runtime_defaults.store(param, new_value)) {
+		எனில் (runtime_defaults.store(param, new_மதிப்பு)) {
 			user_config.refresh(param);
 			result = PX4_OK;
 
-		} else {
+		} இல்லையெனில் {
 			result = PX4_ERROR;
 		}
 	}
 
 
-	if ((result == PX4_OK) && param_used(param)) {
+	எனில் ((result == PX4_OK) && param_used(param)) {
 		// send notification if param is already in use
 		param_notify_changes();
 	}
 
-	return result;
+	திரும்பு result;
 }
 
-static int param_reset_internal(param_t param, bool notify = true, bool autosave = true)
+நிலையான முழு param_reset_internal(param_t param, தருக்க notify = உண்மை, தருக்க autosave = உண்மை)
 {
-#if defined(CONFIG_PARAM_REMOTE)
+#எனில் defined(CONFIG_PARAM_REMOTE)
 	// Remote doesn't support reset
-	return false;
+	திரும்பு பொய்;
 #endif
 
-	if (param_is_readonly(param)) {
-		return 0;  // silently skip — param_reset_all loops over all params
+	எனில் (param_is_readonly(param)) {
+		திரும்பு 0;  // silently skip — param_reset_all loops over all params
 	}
 
-	bool param_found = user_config.contains(param);
+	தருக்க param_found = user_config.contains(param);
 
-	if (handle_in_range(param)) {
+	எனில் (handle_in_range(param)) {
 		user_config.reset(param);
 	}
 
-	if (param_found) {
+	எனில் (param_found) {
 		/* Persist the reset. Flash-param saves append only unsaved params,
 		 * so a reset has to show up as a tombstone or replay keeps the
 		 * previous override. */
-		params_unsaved.set(param, true);
+		params_unsaved.set(param, உண்மை);
 	}
 
-	if (autosave) {
+	எனில் (autosave) {
 		param_autosave();
 	}
 
-	if (param_found && notify) {
+	எனில் (param_found && notify) {
 		param_notify_changes();
 	}
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#எனில் defined(CONFIG_PARAM_PRIMARY)
 	param_primary_reset(param);
 #endif
 
-	return param_found;
+	திரும்பு param_found;
 }
 
-int param_reset(param_t param) { return param_reset_internal(param, true); }
-int param_reset_no_notification(param_t param) { return param_reset_internal(param, false); }
+முழு param_reset(param_t param) { திரும்பு param_reset_internal(param, உண்மை); }
+முழு param_reset_no_notification(param_t param) { திரும்பு param_reset_internal(param, பொய்); }
 
-static void
-param_reset_all_internal(bool auto_save)
+நிலையான வெறுமை
+param_reset_all_internal(தருக்க auto_save)
 {
-#if defined(CONFIG_PARAM_REMOTE)
+#எனில் defined(CONFIG_PARAM_REMOTE)
 	// Remote doesn't support reset
-	return;
+	திரும்பு;
 #endif
 
-	for (param_t param = 0; handle_in_range(param); param++) {
-		param_reset_internal(param, false, false);
+	க்கு (param_t param = 0; handle_in_range(param); param++) {
+		param_reset_internal(param, பொய், பொய்);
 	}
 
-	if (auto_save) {
+	எனில் (auto_save) {
 		param_autosave();
 	}
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#எனில் defined(CONFIG_PARAM_PRIMARY)
 	param_primary_reset_all();
 #endif
 
 	param_notify_changes();
 }
 
-void
+வெறுமை
 param_reset_all()
 {
-	param_reset_all_internal(true);
+	param_reset_all_internal(உண்மை);
 }
 
-void
-param_reset_excludes(const char *excludes[], int num_excludes)
+வெறுமை
+param_reset_excludes(மாறிலி எழுத்து *excludes[], முழு இலக்கம்_excludes)
 {
-	for (param_t param = 0; handle_in_range(param); param++) {
-		const char *name = param_name(param);
-		bool exclude = false;
+	க்கு (param_t param = 0; handle_in_range(param); param++) {
+		மாறிலி எழுத்து *name = param_name(param);
+		தருக்க exclude = பொய்;
 
-		for (int index = 0; index < num_excludes; index ++) {
-			int len = strlen(excludes[index]);
+		க்கு (முழு index = 0; index < இலக்கம்_excludes; index ++) {
+			முழு len = strlen(excludes[index]);
 
-			if ((excludes[index][len - 1] == '*'
+			எனில் ((excludes[index][len - 1] == '*'
 			     && strncmp(name, excludes[index], len - 1) == 0)
 			    || strcmp(name, excludes[index]) == 0) {
 
-				exclude = true;
-				break;
+				exclude = உண்மை;
+				நிறுத்து;
 			}
 		}
 
-		if (!exclude) {
+		எனில் (!exclude) {
 			param_reset(param);
 		}
 	}
 }
 
-void
-param_reset_specific(const char *resets[], int num_resets)
+வெறுமை
+param_reset_specific(மாறிலி எழுத்து *resets[], முழு இலக்கம்_resets)
 {
-	for (param_t param = 0; handle_in_range(param); param++) {
-		const char *name = param_name(param);
-		bool reset = false;
+	க்கு (param_t param = 0; handle_in_range(param); param++) {
+		மாறிலி எழுத்து *name = param_name(param);
+		தருக்க reset = பொய்;
 
-		for (int index = 0; index < num_resets; index++) {
-			int len = strlen(resets[index]);
+		க்கு (முழு index = 0; index < இலக்கம்_resets; index++) {
+			முழு len = strlen(resets[index]);
 
-			if ((resets[index][len - 1] == '*'
+			எனில் ((resets[index][len - 1] == '*'
 			     && strncmp(name, resets[index], len - 1) == 0)
 			    || strcmp(name, resets[index]) == 0) {
 
-				reset = true;
-				break;
+				reset = உண்மை;
+				நிறுத்து;
 			}
 		}
 
-		if (reset) {
+		எனில் (reset) {
 			param_reset(param);
 		}
 	}
 }
 
-int
-param_set_default_file(const char *filename)
+முழு
+param_set_default_file(மாறிலி எழுத்து *filename)
 {
-	if (filename && param_backup_file && strcmp(filename, param_backup_file) == 0) {
+	எனில் (filename && param_backup_file && strcmp(filename, param_backup_file) == 0) {
 		PX4_ERR("default file can't be the same as the backup file %s", filename);
-		return PX4_ERROR;
+		திரும்பு PX4_ERROR;
 	}
 
 #ifdef FLASH_BASED_PARAMS
 	// the default for flash-based params is always the FLASH
-	(void)filename;
-#else
+	(வெறுமை)filename;
+#இல்லையெனில்
 
-	if (param_default_file != nullptr) {
+	எனில் (param_default_file != nullptr) {
 		// we assume this is not in use by some other thread
-		free(param_default_file);
+		விடுவி(param_default_file);
 		param_default_file = nullptr;
 	}
 
-	if (filename) {
+	எனில் (filename) {
 		param_default_file = strdup(filename);
 	}
 
 #endif /* FLASH_BASED_PARAMS */
 
-	return 0;
+	திரும்பு 0;
 }
 
-const char *param_get_default_file()
+மாறிலி எழுத்து *param_get_default_file()
 {
-	return param_default_file;
+	திரும்பு param_default_file;
 }
 
-int param_set_backup_file(const char *filename)
+முழு param_set_backup_file(மாறிலி எழுத்து *filename)
 {
-	if (filename && param_default_file && strcmp(filename, param_default_file) == 0) {
+	எனில் (filename && param_default_file && strcmp(filename, param_default_file) == 0) {
 		PX4_ERR("backup file can't be the same as the default file %s", filename);
-		return PX4_ERROR;
+		திரும்பு PX4_ERROR;
 	}
 
-	if (param_backup_file != nullptr) {
+	எனில் (param_backup_file != nullptr) {
 		// we assume this is not in use by some other thread
-		free(param_backup_file);
+		விடுவி(param_backup_file);
 		param_backup_file = nullptr;
 	}
 
-	if (filename) {
+	எனில் (filename) {
 		param_backup_file = strdup(filename);
 
-	} else {
+	} இல்லையெனில் {
 		param_backup_file = nullptr; // backup disabled
 	}
 
-	return 0;
+	திரும்பு 0;
 }
 
-const char *param_get_backup_file()
+மாறிலி எழுத்து *param_get_backup_file()
 {
-	return param_backup_file;
+	திரும்பு param_backup_file;
 }
 
-static int param_export_internal(int fd, param_filter_func filter);
-static int param_verify(int fd);
+நிலையான முழு param_export_internal(முழு fd, param_filter_func filter);
+நிலையான முழு param_verify(முழு fd);
 
-int param_save_default(bool blocking)
+முழு param_save_default(தருக்க blocking)
 {
 	PX4_DEBUG("param_save_default");
 
 	// take the file lock
-	if (blocking) {
+	எனில் (blocking) {
 		pthread_mutex_lock(&file_mutex);
 
-	} else {
-		if (pthread_mutex_trylock(&file_mutex) != 0) {
+	} இல்லையெனில் {
+		எனில் (pthread_mutex_trylock(&file_mutex) != 0) {
 			PX4_DEBUG("param_save_default: file lock failed (already locked)");
-			return -EWOULDBLOCK;
+			திரும்பு -EWOULDBLOCK;
 		}
 	}
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	முழு shutdown_lock_ret = px4_shutdown_lock();
 
-	if (shutdown_lock_ret != 0) {
+	எனில் (shutdown_lock_ret != 0) {
 		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
 	}
 
-	int res = PX4_ERROR;
-	const char *filename = param_get_default_file();
+	முழு res = PX4_ERROR;
+	மாறிலி எழுத்து *filename = param_get_default_file();
 
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (params_unsaved[param]) {
-			params_saving.set(param, true);
-			params_unsaved.set(param, false);
+	க்கு (param_t param = 0; handle_in_range(param); param++) {
+		எனில் (params_unsaved[param]) {
+			params_saving.set(param, உண்மை);
+			params_unsaved.set(param, பொய்);
 		}
 	}
 
-	if (filename) {
-		static constexpr int MAX_ATTEMPTS = 3;
+	எனில் (filename) {
+		நிலையான constexpr முழு MAX_ATTEMPTS = 3;
 
-		for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+		க்கு (முழு attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 			// write parameters to file
-			int fd = ::open(filename, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
+			முழு fd = ::open(filename, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
 
-			if (fd > -1) {
+			எனில் (fd > -1) {
 				perf_begin(param_export_perf);
 				res = param_export_internal(fd, nullptr);
 				perf_end(param_export_perf);
 				::close(fd);
 
-				if (res == PX4_OK) {
+				எனில் (res == PX4_OK) {
 					// reopen file to verify
-					int fd_verify = ::open(filename, O_RDONLY, PX4_O_MODE_666);
+					முழு fd_verify = ::open(filename, O_RDONLY, PX4_O_MODE_666);
 					res = param_verify(fd_verify) || lseek(fd_verify, 0, SEEK_SET) || param_verify(fd_verify);
 					::close(fd_verify);
 				}
 			}
 
-			if (res == PX4_OK) {
-				break;
+			எனில் (res == PX4_OK) {
+				நிறுத்து;
 
-			} else {
+			} இல்லையெனில் {
 				PX4_ERR("parameter export to %s failed (%d) attempt %d", filename, res, attempt);
 				px4_usleep(10000); // wait at least 10 milliseconds before trying again
 			}
 		}
 
-	} else {
+	} இல்லையெனில் {
 		perf_begin(param_export_perf);
 		res = flash_param_save(nullptr);
 		perf_end(param_export_perf);
 	}
 
-	if (res != PX4_OK) {
+	எனில் (res != PX4_OK) {
 		PX4_ERR("param export failed (%d)", res);
 
-		for (param_t param = 0; handle_in_range(param); param++) {
-			if (params_saving[param]) {
-				params_unsaved.set(param, true);
+		க்கு (param_t param = 0; handle_in_range(param); param++) {
+			எனில் (params_saving[param]) {
+				params_unsaved.set(param, உண்மை);
 			}
 		}
 	}
 
 	params_saving.reset();
 
-	if (res == PX4_OK) {
+	எனில் (res == PX4_OK) {
 		// backup file
-		if (param_backup_file) {
-			int fd_backup_file = ::open(param_backup_file, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
+		எனில் (param_backup_file) {
+			முழு fd_backup_file = ::open(param_backup_file, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
 
-			if (fd_backup_file > -1) {
-				int backup_export_ret = param_export_internal(fd_backup_file, nullptr);
+			எனில் (fd_backup_file > -1) {
+				முழு backup_export_ret = param_export_internal(fd_backup_file, nullptr);
 				::close(fd_backup_file);
 
-				if (backup_export_ret != 0) {
+				எனில் (backup_export_ret != 0) {
 					PX4_ERR("backup parameter export to %s failed (%d)", param_backup_file, backup_export_ret);
 
-				} else {
+				} இல்லையெனில் {
 					// verify export
-					int fd_verify = ::open(param_backup_file, O_RDONLY, PX4_O_MODE_666);
+					முழு fd_verify = ::open(param_backup_file, O_RDONLY, PX4_O_MODE_666);
 					param_verify(fd_verify);
 					::close(fd_verify);
 				}
@@ -925,184 +925,184 @@ int param_save_default(bool blocking)
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	எனில் (shutdown_lock_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return res;
+	திரும்பு res;
 }
 
 /**
  * @return 0 on success, 1 if all params have not yet been stored, -1 if device open failed, -2 if writing parameters failed
  */
-int
+முழு
 param_load_default()
 {
-	int res = 0;
-	const char *filename = param_get_default_file();
+	முழு res = 0;
+	மாறிலி எழுத்து *filename = param_get_default_file();
 
-	if (!filename) {
-		return param_load(-1);
+	எனில் (!filename) {
+		திரும்பு param_load(-1);
 	}
 
-	int fd_load = ::open(filename, O_RDONLY);
+	முழு fd_load = ::open(filename, O_RDONLY);
 
-	if (fd_load < 0) {
+	எனில் (fd_load < 0) {
 		/* no parameter file is OK, otherwise this is an error */
-		if (errno != ENOENT) {
+		எனில் (errno != ENOENT) {
 			PX4_ERR("open '%s' for reading failed", filename);
-			return -1;
+			திரும்பு -1;
 		}
 
-		return 1;
+		திரும்பு 1;
 	}
 
-	int result = param_load(fd_load);
+	முழு result = param_load(fd_load);
 	::close(fd_load);
 
-	if (result == 1) {
+	எனில் (result == 1) {
 		/* blank file: nothing stored yet */
-		return 1;
+		திரும்பு 1;
 	}
 
-	if (result != 0) {
+	எனில் (result != 0) {
 		PX4_ERR("error reading parameters from '%s'", filename);
-		return -2;
+		திரும்பு -2;
 	}
 
-	return res;
+	திரும்பு res;
 }
 
-static int param_verify_callback(bson_decoder_t decoder, bson_node_t node)
+நிலையான முழு param_verify_callback(bson_decoder_t decoder, bson_முனை_t முனை_2)
 {
-	if (node->type == BSON_EOO) {
-		return 0;
+	எனில் (முனை_2->type == BSON_EOO) {
+		திரும்பு 0;
 	}
 
 	// find the parameter this node represents
-	param_t param = param_find_no_notification(node->name);
+	param_t param = param_find_no_notification(முனை_2->name);
 
-	if (param == PARAM_INVALID) {
-		PX4_ERR("verify: invalid parameter '%s'", node->name);
-		return -1;
+	எனில் (param == PARAM_INVALID) {
+		PX4_ERR("verify: invalid parameter '%s'", முனை_2->name);
+		திரும்பு -1;
 	}
 
 	// handle verifying the parameter from the node
-	switch (node->type) {
-	case BSON_INT32: {
-			if (param_type(param) != PARAM_TYPE_INT32) {
-				PX4_ERR("verify: invalid param type %d for '%s' (BSON_INT32)", param_type(param), node->name);
-				return -1;
+	தேர்வு (முனை_2->type) {
+	நிலை BSON_INT32: {
+			எனில் (param_type(param) != PARAM_TYPE_INT32) {
+				PX4_ERR("verify: invalid param type %d for '%s' (BSON_INT32)", param_type(param), முனை_2->name);
+				திரும்பு -1;
 			}
 
 			int32_t value;
 
-			if (param_get(param, &value) == 0) {
-				if (value == node->i32) {
-					return 1; // valid
+			எனில் (param_get(param, &value) == 0) {
+				எனில் (value == முனை_2->i32) {
+					திரும்பு 1; // valid
 
-				} else {
-					PX4_ERR("verify: '%s' invalid BSON value %" PRIi32 "(expected %" PRIi32 ")", node->name, node->i32, value);
+				} இல்லையெனில் {
+					PX4_ERR("verify: '%s' invalid BSON value %" PRIi32 "(expected %" PRIi32 ")", முனை_2->name, முனை_2->i32, value);
 				}
 			}
 		}
-		break;
+		நிறுத்து;
 
-	case BSON_DOUBLE: {
-			if (param_type(param) != PARAM_TYPE_FLOAT) {
-				PX4_ERR("verify: invalid param type %d for '%s' (BSON_DOUBLE)", param_type(param), node->name);
-				return -1;
+	நிலை BSON_DOUBLE: {
+			எனில் (param_type(param) != PARAM_TYPE_FLOAT) {
+				PX4_ERR("verify: invalid param type %d for '%s' (BSON_DOUBLE)", param_type(param), முனை_2->name);
+				திரும்பு -1;
 			}
 
-			float value;
+			தசம value;
 
-			if (param_get(param, &value) == 0) {
-				if (fabsf(value - (float)node->d) <= FLT_EPSILON) {
-					return 1; // valid
+			எனில் (param_get(param, &value) == 0) {
+				எனில் (fabsf(value - (தசம)முனை_2->d) <= FLT_EPSILON) {
+					திரும்பு 1; // valid
 
-				} else {
-					PX4_ERR("verify: '%s' invalid BSON value %.3f (expected %.3f)", node->name, node->d, (double)value);
+				} இல்லையெனில் {
+					PX4_ERR("verify: '%s' invalid BSON value %.3f (expected %.3f)", முனை_2->name, முனை_2->d, (இரட்டை)value);
 				}
 			}
 		}
-		break;
+		நிறுத்து;
 
-	default:
-		PX4_ERR("verify: '%s' invalid node type %d", node->name, node->type);
+	இயல்பு:
+		PX4_ERR("verify: '%s' invalid node type %d", முனை_2->name, முனை_2->type);
 	}
 
-	return -1;
+	திரும்பு -1;
 }
 
-static int param_verify(int fd)
+நிலையான முழு param_verify(முழு fd)
 {
 	PX4_DEBUG("param_verify");
 
-	if (fd < 0) {
-		return -1;
+	எனில் (fd < 0) {
+		திரும்பு -1;
 	}
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	எனில் (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("verify: seek failed");
-		return -1;
+		திரும்பு -1;
 	}
 
 	bson_decoder_s decoder{};
 
-	if (bson_decoder_init_file(&decoder, fd, param_verify_callback) == 0) {
-		int result = -1;
+	எனில் (bson_decoder_init_file(&decoder, fd, param_verify_callback) == 0) {
+		முழு result = -1;
 
-		do {
+		செய் {
 			result = bson_decoder_next(&decoder);
 
-		} while (result > 0);
+		} போது (result > 0);
 
-		if (result == 0) {
-			if (decoder.total_document_size != decoder.total_decoded_size) {
+		எனில் (result == 0) {
+			எனில் (decoder.total_document_size != decoder.total_decoded_size) {
 				PX4_ERR("BSON document size (%" PRId32 ") doesn't match bytes decoded (%" PRId32 ")", decoder.total_document_size,
 					decoder.total_decoded_size);
 
-			} else {
-				return 0;
+			} இல்லையெனில் {
+				திரும்பு 0;
 			}
 
-		} else if (result == -ENODATA) {
+		} இல்லையெனில் எனில் (result == -ENODATA) {
 			PX4_ERR("verify: no BSON data");
 
-		} else {
+		} இல்லையெனில் {
 			PX4_ERR("verify: failed (%d)", result);
 		}
 	}
 
-	return -1;
+	திரும்பு -1;
 }
 
-int
-param_export(const char *filename, param_filter_func filter)
+முழு
+param_export(மாறிலி எழுத்து *filename, param_filter_func filter)
 {
 	PX4_DEBUG("param_export");
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	முழு shutdown_lock_ret = px4_shutdown_lock();
 
-	if (shutdown_lock_ret != 0) {
+	எனில் (shutdown_lock_ret != 0) {
 		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
 	}
 
 	// take the file lock
-	if (pthread_mutex_trylock(&file_mutex) != 0) {
+	எனில் (pthread_mutex_trylock(&file_mutex) != 0) {
 		PX4_ERR("param_export: file lock failed (already locked)");
-		return PX4_ERROR;
+		திரும்பு PX4_ERROR;
 	}
 
-	int fd = ::open(filename, O_RDWR | O_CREAT, PX4_O_MODE_666);
-	int result = PX4_ERROR;
+	முழு fd = ::open(filename, O_RDWR | O_CREAT, PX4_O_MODE_666);
+	முழு result = PX4_ERROR;
 
 	perf_begin(param_export_perf);
 
-	if (fd > -1) {
+	எனில் (fd > -1) {
 		result = param_export_internal(fd, filter);
 
-	} else {
+	} இல்லையெனில் {
 		result = flash_param_save(filter);
 	}
 
@@ -1110,87 +1110,87 @@ param_export(const char *filename, param_filter_func filter)
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	எனில் (shutdown_lock_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return result;
+	திரும்பு result;
 }
 
 // internal parameter export, caller is responsible for locking
-static int param_export_internal(int fd, param_filter_func filter)
+நிலையான முழு param_export_internal(முழு fd, param_filter_func filter)
 {
 	PX4_DEBUG("param_export_internal");
-	const auto changed_params = user_config.containedAsBitset();
+	மாறிலி auto changed_params = user_config.containedAsBitset();
 
-	int result = -1;
+	முழு result = -1;
 	bson_encoder_s encoder{};
 	uint8_t bson_buffer[256];
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	எனில் (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("export seek failed %d", errno);
-		return -1;
+		திரும்பு -1;
 	}
 
-	if (bson_encoder_init_buf_file(&encoder, fd, &bson_buffer, sizeof(bson_buffer)) != 0) {
-		goto out;
+	எனில் (bson_encoder_init_buf_file(&encoder, fd, &bson_buffer, அளவு(bson_buffer)) != 0) {
+		செல் out;
 	}
 
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (!changed_params[param] || (filter && !filter(param))) {
-			continue;
+	க்கு (param_t param = 0; handle_in_range(param); param++) {
+		எனில் (!changed_params[param] || (filter && !filter(param))) {
+			தொடர்;
 		}
 
-		const param_value_u runtime_default_value = runtime_defaults.get(param);
-		const param_value_u user_config_value = user_config.get(param);
+		மாறிலி param_மதிப்பு_u runtime_default_மதிப்பு = runtime_defaults.get(param);
+		மாறிலி param_மதிப்பு_u user_config_மதிப்பு = user_config.get(param);
 
 		// don't export default values
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			if (user_config_value.i == runtime_default_value.i) {
-				PX4_DEBUG("skipping %s %" PRIi32 " export", param_name(param), runtime_default_value.i);
-				continue;
+		தேர்வு (param_type(param)) {
+		நிலை PARAM_TYPE_INT32:
+			எனில் (user_config_மதிப்பு.i == runtime_default_மதிப்பு.i) {
+				PX4_DEBUG("skipping %s %" PRIi32 " export", param_name(param), runtime_default_மதிப்பு.i);
+				தொடர்;
 			}
 
-			break;
+			நிறுத்து;
 
-		case PARAM_TYPE_FLOAT:
-			if (fabsf(user_config_value.f - runtime_default_value.f) <= FLT_EPSILON) {
-				PX4_DEBUG("skipping %s %.3f export", param_name(param), (double)runtime_default_value.f);
-				continue;
+		நிலை PARAM_TYPE_FLOAT:
+			எனில் (fabsf(user_config_மதிப்பு.f - runtime_default_மதிப்பு.f) <= FLT_EPSILON) {
+				PX4_DEBUG("skipping %s %.3f export", param_name(param), (இரட்டை)runtime_default_மதிப்பு.f);
+				தொடர்;
 			}
 
-			break;
+			நிறுத்து;
 		}
 
-		const char *name = param_name(param);
-		const size_t size = param_size(param);
+		மாறிலி எழுத்து *name = param_name(param);
+		மாறிலி size_t size = param_size(param);
 
 		/* append the appropriate BSON type object */
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
-				const int32_t i = user_config_value.i;
-				PX4_DEBUG("exporting: %s (%d) size: %lu val: %" PRIi32, name, param, (long unsigned int)size, i);
+		தேர்வு (param_type(param)) {
+		நிலை PARAM_TYPE_INT32: {
+				மாறிலி int32_t i = user_config_மதிப்பு.i;
+				PX4_DEBUG("exporting: %s (%d) size: %lu val: %" PRIi32, name, param, (long unsigned முழு)size, i);
 
-				if (bson_encoder_append_int32(&encoder, name, i) != 0) {
+				எனில் (bson_encoder_append_int32(&encoder, name, i) != 0) {
 					PX4_ERR("BSON append failed for '%s'", name);
-					goto out;
+					செல் out;
 				}
 			}
-			break;
+			நிறுத்து;
 
-		case PARAM_TYPE_FLOAT: {
-				const double f = (double)user_config_value.f;
-				PX4_DEBUG("exporting: %s (%d) size: %lu val: %.3f", name, param, (long unsigned int)size, (double)f);
+		நிலை PARAM_TYPE_FLOAT: {
+				மாறிலி இரட்டை f = (இரட்டை)user_config_மதிப்பு.f;
+				PX4_DEBUG("exporting: %s (%d) size: %lu val: %.3f", name, param, (long unsigned முழு)size, (இரட்டை)f);
 
-				if (bson_encoder_append_double(&encoder, name, f) != 0) {
+				எனில் (bson_encoder_append_double(&encoder, name, f) != 0) {
 					PX4_ERR("BSON append failed for '%s'", name);
-					goto out;
+					செல் out;
 				}
 			}
-			break;
+			நிறுத்து;
 
-		default:
+		இயல்பு:
 			PX4_ERR("%s unrecognized parameter type %d, skipping export", name, param_type(param));
 		}
 	}
@@ -1199,94 +1199,94 @@ static int param_export_internal(int fd, param_filter_func filter)
 
 out:
 
-	if (result == 0) {
-		if (bson_encoder_fini(&encoder) != PX4_OK) {
+	எனில் (result == 0) {
+		எனில் (bson_encoder_fini(&encoder) != PX4_OK) {
 			PX4_ERR("BSON encoder finalize failed");
 			result = -1;
 		}
 	}
 
-	return result;
+	திரும்பு result;
 }
 
-#if defined(FLASH_BASED_PARAMS)
+#எனில் defined(FLASH_BASED_PARAMS)
 // A file is never the flash backend's store, so what an import changes is unsaved until a delta carries it.
 // As on the file backend, the import itself does not save.
-static constexpr bool file_import_is_saved = false;
-#else
-static constexpr bool file_import_is_saved = true;
+நிலையான constexpr தருக்க file_import_is_saved = பொய்;
+#இல்லையெனில்
+நிலையான constexpr தருக்க file_import_is_saved = உண்மை;
 #endif
 
-static int
-param_import_callback(bson_decoder_t decoder, bson_node_t node)
+நிலையான முழு
+param_import_callback(bson_decoder_t decoder, bson_முனை_t முனை_2)
 {
 	/*
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	எனில் (முனை_2->type == BSON_EOO) {
 		PX4_DEBUG("end of parameters");
-		return 0;
+		திரும்பு 0;
 	}
 
 	// A tombstone has no value. The decoder leaves the previous node's in the union and the translations
 	// read it without a type check.
-	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
+	மாறிலி தருக்க tombstone = முனை_2->type == BSON_nullptr || முனை_2->type == BSON_UNDEFINED;
 
 	// if we do param_set() directly in the translation, set PARAM_SKIP_IMPORT as return value and return here
-	if (!tombstone && param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
-		return 1;
+	எனில் (!tombstone && param_modify_on_import(முனை_2) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+		திரும்பு 1;
 	}
 
 	// Find the parameter this node represents.  If we don't know it, ignore the node.
-	param_t param = param_find_no_notification(node->name);
+	param_t param = param_find_no_notification(முனை_2->name);
 
-	if (param == PARAM_INVALID) {
-		PX4_WARN("ignoring unrecognised parameter '%s'", node->name);
-		return 1;
+	எனில் (param == PARAM_INVALID) {
+		PX4_WARN("ignoring unrecognised parameter '%s'", முனை_2->name);
+		திரும்பு 1;
 	}
 
 	// Handle setting the parameter from the node
-	switch (node->type) {
-	case BSON_nullptr:
-	case BSON_UNDEFINED:
-		param_reset_internal(param, true, false);
-		return 1;
+	தேர்வு (முனை_2->type) {
+	நிலை BSON_nullptr:
+	நிலை BSON_UNDEFINED:
+		param_reset_internal(param, உண்மை, பொய்);
+		திரும்பு 1;
 
-	case BSON_INT32: {
-			if (param_type(param) == PARAM_TYPE_INT32) {
-				int32_t i = node->i32;
-				param_set_internal(param, &i, file_import_is_saved, true, true, false);
+	நிலை BSON_INT32: {
+			எனில் (param_type(param) == PARAM_TYPE_INT32) {
+				int32_t i = முனை_2->i32;
+				param_set_internal(param, &i, file_import_is_saved, உண்மை, உண்மை, பொய்);
 				PX4_DEBUG("Imported %s with value %" PRIi32, param_name(param), i);
 
-			} else {
-				PX4_WARN("unexpected type for %s", node->name);
+			} இல்லையெனில் {
+				PX4_WARN("unexpected type for %s", முனை_2->name);
 			}
 		}
-		break;
+		நிறுத்து;
 
-	case BSON_DOUBLE: {
-			if (param_type(param) == PARAM_TYPE_FLOAT) {
-				float f = node->d;
-				param_set_internal(param, &f, file_import_is_saved, true, true, false);
-				PX4_DEBUG("Imported %s with value %f", param_name(param), (double)f);
+	நிலை BSON_DOUBLE: {
+			எனில் (param_type(param) == PARAM_TYPE_FLOAT) {
+				தசம f = முனை_2->d;
+				param_set_internal(param, &f, file_import_is_saved, உண்மை, உண்மை, பொய்);
+				PX4_DEBUG("Imported %s with value %f", param_name(param), (இரட்டை)f);
 
-			} else {
-				PX4_WARN("unexpected type for %s", node->name);
+			} இல்லையெனில் {
+				PX4_WARN("unexpected type for %s", முனை_2->name);
 			}
 		}
-		break;
+		நிறுத்து;
 
-	default:
-		PX4_ERR("import: unrecognised node type for '%s'", node->name);
+	இயல்பு:
+		PX4_ERR("import: unrecognised node type for '%s'", முனை_2->name);
 	}
 
 	// don't return zero, that means EOF
-	return 1;
+	திரும்பு 1;
 }
 
-static int
-param_import_internal(int fd)
+நிலையான முழு
+param_import_internal(முழு fd)
 {
 	/* blank source (nothing stored yet): an empty file, or zeroed/erased
 	 * storage where the BSON document length would be. Unlike the flash
@@ -1299,67 +1299,67 @@ param_import_internal(int fd)
 	 * file (no cluster chain -> error, not EOF), so the content check below
 	 * would miss it; detect it by size. Char-device backends (e.g. FRAM)
 	 * report no meaningful size and fall through to the content check. */
-	struct stat st;
+	கட்டமைப்பு stat st;
 
-	if (fstat(fd, &st) == 0 && S_ISREG(st.st_mode) && st.st_size == 0) {
-		return 1;
+	எனில் (fstat(fd, &st) == 0 && S_ISREG(st.st_mode) && st.st_size == 0) {
+		திரும்பு 1;
 	}
 
 	int32_t doc_size = 0;
-	ssize_t len = read(fd, &doc_size, sizeof(doc_size));
+	ssize_t len = பட(fd, &doc_size, அளவு(doc_size));
 
-	if (len == 0 || (len == (ssize_t)sizeof(doc_size) && (doc_size == 0 || doc_size == -1))) {
-		return 1;
+	எனில் (len == 0 || (len == (ssize_t)அளவு(doc_size) && (doc_size == 0 || doc_size == -1))) {
+		திரும்பு 1;
 	}
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	எனில் (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("import lseek failed (%d)", errno);
-		return -1;
+		திரும்பு -1;
 	}
 
-	static constexpr int MAX_ATTEMPTS = 3;
+	நிலையான constexpr முழு MAX_ATTEMPTS = 3;
 
-	for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+	க்கு (முழு attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 		bson_decoder_s decoder{};
 
-		if (bson_decoder_init_file(&decoder, fd, param_import_callback) == 0) {
-			int result = -1;
+		எனில் (bson_decoder_init_file(&decoder, fd, param_import_callback) == 0) {
+			முழு result = -1;
 
-			do {
+			செய் {
 				result = bson_decoder_next(&decoder);
 
-			} while (result > 0);
+			} போது (result > 0);
 
-			if (result == 0) {
-				if (decoder.total_document_size == decoder.total_decoded_size) {
+			எனில் (result == 0) {
+				எனில் (decoder.total_document_size == decoder.total_decoded_size) {
 					PX4_INFO("BSON document size %" PRId32 " bytes, decoded %" PRId32 " bytes (INT32:%" PRIu16 ", FLOAT:%" PRIu16 ")",
 						 decoder.total_document_size, decoder.total_decoded_size,
-						 decoder.count_node_int32, decoder.count_node_double);
+						 decoder.மொத்தம்_முனை_int32, decoder.மொத்தம்_முனை_double);
 
-					return 0;
+					திரும்பு 0;
 
-				} else {
+				} இல்லையெனில் {
 					PX4_ERR("BSON document size (%" PRId32 ") doesn't match bytes decoded (%" PRId32 ")",
 						decoder.total_document_size, decoder.total_decoded_size);
 				}
 
-			} else if (result == -ENODATA) {
+			} இல்லையெனில் எனில் (result == -ENODATA) {
 				// silently retry as a precaution unless this is our last attempt
-				if (attempt == MAX_ATTEMPTS) {
+				எனில் (attempt == MAX_ATTEMPTS) {
 					PX4_DEBUG("BSON: no data");
-					return 0;
+					திரும்பு 0;
 				}
 
-			} else {
+			} இல்லையெனில் {
 				PX4_ERR("param import failed (%d) attempt %d", result, attempt);
 			}
 
-		} else {
+		} இல்லையெனில் {
 			PX4_ERR("param import bson decoder init failed (attempt %d)", attempt);
 		}
 
-		if (attempt != MAX_ATTEMPTS) {
-			if (lseek(fd, 0, SEEK_SET) != 0) {
+		எனில் (attempt != MAX_ATTEMPTS) {
+			எனில் (lseek(fd, 0, SEEK_SET) != 0) {
 				PX4_ERR("import lseek failed (%d)", errno);
 			}
 
@@ -1367,101 +1367,101 @@ param_import_internal(int fd)
 		}
 	}
 
-	return -1;
+	திரும்பு -1;
 }
 
-#if defined(FLASH_BASED_PARAMS)
-static int flash_backend_locked(int (*op)())
+#எனில் defined(FLASH_BASED_PARAMS)
+நிலையான முழு flash_backend_locked(முழு (*op)())
 {
 	/* Same order as param_save_default: mutex then shutdown lock. Autosave
 	 * uses a trylock, so a compact holds it off the flash programming. */
 	pthread_mutex_lock(&file_mutex);
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	முழு shutdown_lock_ret = px4_shutdown_lock();
 
-	if (shutdown_lock_ret != 0) {
+	எனில் (shutdown_lock_ret != 0) {
 		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
 	}
 
-	int result = op();
+	முழு result = op();
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	எனில் (shutdown_lock_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return result;
+	திரும்பு result;
 }
 
-static int flash_load_locked()
+நிலையான முழு flash_load_locked()
 {
 	/* Reset under the lock so a pending autosave cannot append tombstones
 	 * of the just-cleared RAM before import/compact run. */
-	param_reset_all_internal(false);
-	int result = flash_param_import();
+	param_reset_all_internal(பொய்);
+	முழு result = flash_param_import();
 
-	if (result == 0 || result == 1) {
+	எனில் (result == 0 || result == 1) {
 		params_unsaved.reset();
 	}
 
-	return result;
+	திரும்பு result;
 }
 #endif
 
-int
-param_import(int fd)
+முழு
+param_import(முழு fd)
 {
-	if (fd < 0) {
-#if defined(FLASH_BASED_PARAMS)
-		return flash_backend_locked(flash_param_import);
-#else
-		return flash_param_import();
+	எனில் (fd < 0) {
+#எனில் defined(FLASH_BASED_PARAMS)
+		திரும்பு flash_backend_locked(flash_param_import);
+#இல்லையெனில்
+		திரும்பு flash_param_import();
 #endif
 	}
 
-	return param_import_internal(fd);
+	திரும்பு param_import_internal(fd);
 }
 
-int
-param_load(int fd)
+முழு
+param_load(முழு fd)
 {
-	if (fd < 0) {
-#if defined(FLASH_BASED_PARAMS)
-		return flash_backend_locked(flash_load_locked);
-#else
-		return PX4_ERROR;
+	எனில் (fd < 0) {
+#எனில் defined(FLASH_BASED_PARAMS)
+		திரும்பு flash_backend_locked(flash_load_locked);
+#இல்லையெனில்
+		திரும்பு PX4_ERROR;
 #endif
 	}
 
-	param_reset_all_internal(false);
-	int result = param_import_internal(fd);
+	param_reset_all_internal(பொய்);
+	முழு result = param_import_internal(fd);
 
-#if !defined(FLASH_BASED_PARAMS)
+#எனில் !defined(FLASH_BASED_PARAMS)
 
-	if (result >= 0) {
+	எனில் (result >= 0) {
 		params_unsaved.reset();
 	}
 
 #endif
 
-	return result;
+	திரும்பு result;
 }
 
-void
-param_foreach(void (*func)(void *arg, param_t param), void *arg, bool only_changed, bool only_used)
+வெறுமை
+param_foreach(வெறுமை (*func)(வெறுமை *arg, param_t param), வெறுமை *arg, தருக்க only_changed, தருக்க only_used)
 {
 	param_t	param;
 
-	for (param = 0; handle_in_range(param); param++) {
+	க்கு (param = 0; handle_in_range(param); param++) {
 
 		/* if requested, skip unchanged values */
-		if (only_changed && (!user_config.contains(param))) {
-			continue;
+		எனில் (only_changed && (!user_config.contains(param))) {
+			தொடர்;
 		}
 
-		if (only_used && !param_used(param)) {
-			continue;
+		எனில் (only_used && !param_used(param)) {
+			தொடர்;
 		}
 
 		func(arg, param);
@@ -1473,33 +1473,33 @@ uint32_t param_hash_check()
 	uint32_t param_hash = 0;
 
 	/* compute the CRC32 over all string param names and 4 byte values */
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (!param_used(param) || param_is_volatile(param)) {
-			continue;
+	க்கு (param_t param = 0; handle_in_range(param); param++) {
+		எனில் (!param_used(param) || param_is_volatile(param)) {
+			தொடர்;
 		}
 
-		const char *name = param_name(param);
+		மாறிலி எழுத்து *name = param_name(param);
 		auto value = user_config.get(param).i;
-		const void *val = (void *)&value;
-		param_hash = crc32part((const uint8_t *)name, strlen(name), param_hash);
-		param_hash = crc32part((const uint8_t *)val, param_size(param), param_hash);
+		மாறிலி வெறுமை *val = (வெறுமை *)&value;
+		param_hash = crc32part((மாறிலி uint8_t *)name, strlen(name), param_hash);
+		param_hash = crc32part((மாறிலி uint8_t *)val, param_size(param), param_hash);
 	}
 
-	return param_hash;
+	திரும்பு param_hash;
 }
 
-void param_print_status()
+வெறுமை param_print_status()
 {
-	PX4_INFO("summary: %d/%d (used/total)", param_count_used(), param_count());
+	PX4_INFO("summary: %d/%d (used/total)", param_மொத்தம்_used(), param_மொத்தம்());
 
 #ifndef FLASH_BASED_PARAMS
-	const char *filename = param_get_default_file();
+	மாறிலி எழுத்து *filename = param_get_default_file();
 
-	if (filename != nullptr) {
+	எனில் (filename != nullptr) {
 		PX4_INFO("file: %s", param_get_default_file());
 	}
 
-	if (param_backup_file) {
+	எனில் (param_backup_file) {
 		PX4_INFO("backup file: %s", param_backup_file);
 	}
 
@@ -1512,12 +1512,12 @@ void param_print_status()
 	PX4_INFO("storage array (custom defaults): %d/%d elements (%zu bytes total)",
 		 runtime_defaults.size(), firmware_defaults.size(), (size_t)runtime_defaults.byteSize());
 
-	if (autosave_instance) {
+	எனில் (autosave_instance) {
 		PX4_INFO("auto save: %s", autosave_instance->enabled() ? "on" : "off");
 
 		hrt_abstime last_autosave = autosave_instance->lastAutosave();
 
-		if (last_autosave > 0) {
+		எனில் (last_autosave > 0) {
 			PX4_INFO("last auto save: %.3f seconds ago", hrt_elapsed_time(&last_autosave) * 1e-6);
 		}
 	}
@@ -1527,24 +1527,24 @@ void param_print_status()
 	perf_print_counter(param_get_perf);
 	perf_print_counter(param_set_perf);
 
-#if defined(CONFIG_PARAM_PRIMARY)
-	struct param_primary_counters counts;
+#எனில் defined(CONFIG_PARAM_PRIMARY)
+	கட்டமைப்பு param_primary_counters counts;
 	param_primary_get_counters(&counts);
 	PX4_INFO("set value requests received: %" PRIu32 ", set value responses sent: %" PRIu32,
-		 counts.set_value_request_received, counts.set_value_response_sent);
+		 counts.set_மதிப்பு_request_received, counts.set_மதிப்பு_response_sent);
 	PX4_INFO("set value requests sent: %" PRIu32 ", set value responses received: %" PRIu32,
-		 counts.set_value_request_sent, counts.set_value_response_received);
+		 counts.set_மதிப்பு_request_sent, counts.set_மதிப்பு_response_received);
 	PX4_INFO("resets sent: %" PRIu32 ", set used requests received: %" PRIu32,
 		 counts.reset_sent, counts.set_used_received);
 #endif
 
-#if defined(CONFIG_PARAM_REMOTE)
-	struct param_remote_counters counts;
+#எனில் defined(CONFIG_PARAM_REMOTE)
+	கட்டமைப்பு param_remote_counters counts;
 	param_remote_get_counters(&counts);
 	PX4_INFO("set value requests received: %" PRIu32 ", set value responses sent: %" PRIu32,
-		 counts.set_value_request_received, counts.set_value_response_sent);
+		 counts.set_மதிப்பு_request_received, counts.set_மதிப்பு_response_sent);
 	PX4_INFO("set value requests sent: %" PRIu32 ", set value responses received: %" PRIu32,
-		 counts.set_value_request_sent, counts.set_value_response_received);
+		 counts.set_மதிப்பு_request_sent, counts.set_மதிப்பு_response_received);
 	PX4_INFO("resets received: %" PRIu32 ", set used requests sent: %" PRIu32,
 		 counts.reset_received, counts.set_used_sent);
 #endif

@@ -33,40 +33,40 @@
 
 #pragma once
 
-#include <px4_platform_common/atomic_bitset.h>
-#include "atomic_transaction.h"
-#include "param.h"
-#include <stdlib.h>
+#அந்தர்பாவ <px4_platform_common/atomic_bitset.h>
+#அந்தர்பாவ "atomic_transaction.h"
+#அந்தர்பாவ "param.h"
+#அந்தர்பாவ <stdlib.h>
 
 class ParamLayer
 {
-public:
-	static constexpr param_t PARAM_COUNT = sizeof(px4::parameters) / sizeof(param_info_s);
+பொது:
+	நிலையான constexpr param_t PARAM_மொத்தம் = அளவு(px4::parameters) / அளவு(param_info_s);
 
 	ParamLayer(ParamLayer *parent = nullptr) : _parent(parent) {}
 
-	ParamLayer(const ParamLayer &) = delete;
-	ParamLayer &operator=(const ParamLayer &) = delete;
+	ParamLayer(மாறிலி ParamLayer &) = delete;
+	ParamLayer &operator=(மாறிலி ParamLayer &) = delete;
 	ParamLayer(ParamLayer &&) = delete;
 	ParamLayer &operator=(ParamLayer &&) = delete;
 
 
-	virtual bool store(param_t param, param_value_u value) = 0;
+	மெய்நிகர் bool store(param_t param, param_மதிப்பு_u மதிப்பு) = 0;
 
-	virtual bool contains(param_t param) const = 0;
+	மெய்நிகர் bool contains(param_t param) மாறிலி = 0;
 
-	virtual px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const = 0;
+	மெய்நிகர் px4::AtomicBitset<PARAM_மொத்தம்> containedAsBitset() மாறிலி = 0;
 
-	virtual param_value_u get(param_t param) const = 0;
+	மெய்நிகர் param_மதிப்பு_u get(param_t param) மாறிலி = 0;
 
-	virtual void reset(param_t param) = 0;
+	மெய்நிகர் வெறுமை reset(param_t param) = 0;
 
-	virtual void refresh(param_t param) = 0;
+	மெய்நிகர் வெறுமை refresh(param_t param) = 0;
 
-	virtual int size() const = 0;
+	மெய்நிகர் முழு size() மாறிலி = 0;
 
-	virtual int byteSize() const = 0;
+	மெய்நிகர் முழு byteSize() மாறிலி = 0;
 
-protected:
-	ParamLayer *const _parent;
+பாதுகாக்கப்பட்ட:
+	ParamLayer *மாறிலி _parent;
 };

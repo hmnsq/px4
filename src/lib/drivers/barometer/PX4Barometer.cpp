@@ -32,9 +32,9 @@
  ****************************************************************************/
 
 
-#include "PX4Barometer.hpp"
+#அந்தர்பாவ "PX4Barometer.hpp"
 
-#include <lib/drivers/device/Device.hpp>
+#அந்தர்பாவ <lib/drivers/device/Device.hpp>
 
 PX4Barometer::PX4Barometer(uint32_t device_id)
 {
@@ -42,32 +42,32 @@ PX4Barometer::PX4Barometer(uint32_t device_id)
 	_report.temperature = 15; // if no temperature is set, report the sea level standard temperature of 15°C. As used in VehicleAirData
 }
 
-PX4Barometer::PX4Barometer(uint32_t device_id, bool external)
+PX4Barometer::PX4Barometer(uint32_t device_id, தருக்க external)
 {
 	set_device_id(device_id);
 	set_external(external);
 	_report.temperature = 15; // if no temperature is set, report the sea level standard temperature of 15°C. As used in VehicleAirData
 }
 
-void PX4Barometer::set_device_id(uint32_t device_id)
+வெறுமை PX4Barometer::set_device_id(uint32_t device_id)
 {
 	_report.device_id = device_id;
 
-	if (!_external_forced) {
+	எனில் (!_external_forced) {
 		_report.is_external = device::device_is_external(device_id);
 	}
 }
 
-void PX4Barometer::set_external(bool external)
+வெறுமை PX4Barometer::set_external(தருக்க external)
 {
 	_report.is_external = external;
-	_external_forced = true;
+	_external_forced = உண்மை;
 }
 
-void PX4Barometer::update(const hrt_abstime &timestamp_sample, float pressure)
+வெறுமை PX4Barometer::update(மாறிலி hrt_abstime &timestamp_sample, தசம pressure)
 {
-	if (!PX4_ISFINITE(pressure)) {
-		return;
+	எனில் (!PX4_ISFINITE(pressure)) {
+		திரும்பு;
 	}
 
 	_report.timestamp_sample = timestamp_sample;
@@ -76,9 +76,9 @@ void PX4Barometer::update(const hrt_abstime &timestamp_sample, float pressure)
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_BARO,
+	எனில் (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_BARO,
 					_sensor_pub.get_instance(), _report, _stuck)) {
-		return;
+		திரும்பு;
 	}
 
 	_sensor_pub.publish(_report);

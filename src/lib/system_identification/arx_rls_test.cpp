@@ -36,16 +36,16 @@
  * Run this test only using make tests TESTFILTER=arx_rls
  */
 
-#include <gtest/gtest.h>
-#include <matrix/matrix/math.hpp>
+#அந்தர்பாவ <gtest/gtest.h>
+#அந்தர்பாவ <matrix/matrix/math.hpp>
 
-#include "arx_rls.hpp"
+#அந்தர்பாவ "arx_rls.hpp"
 
-using namespace matrix;
+using நாமாகாஶ matrix;
 
-class ArxRlsTest : public ::testing::Test
+வகுப்பு ArxRlsTest : பொது ::testing::Test
 {
-public:
+பொது:
 	ArxRlsTest() {};
 };
 
@@ -53,7 +53,7 @@ TEST_F(ArxRlsTest, test211)
 {
 	ArxRls<2, 1, 1> _rls;
 
-	for (int i = 0; i < (2 + 1 + 1); i++) {
+	க்கு (முழு i = 0; i < (2 + 1 + 1); i++) {
 		// Fill the buffers with zeros
 		_rls.update(0.f, 0.f);
 	}
@@ -61,9 +61,9 @@ TEST_F(ArxRlsTest, test211)
 	_rls.update(1, 2);
 	_rls.update(3, 4);
 	_rls.update(5, 6);
-	const Vector4f coefficients = _rls.getCoefficients();
-	const Vector4f coefficients_check(-1.79f, 0.97f, 0.42f, -0.48f); // generated from Python script
-	float eps = 1e-2;
+	மாறிலி Vector4f coefficients = _rls.getCoefficients();
+	மாறிலி Vector4f coefficients_check(-1.79f, 0.97f, 0.42f, -0.48f); // generated from Python script
+	தசம eps = 1e-2;
 	EXPECT_TRUE((coefficients - coefficients_check).abs().max() < eps);
 }
 
@@ -71,7 +71,7 @@ TEST_F(ArxRlsTest, test221)
 {
 	ArxRls<2, 2, 1> _rls;
 
-	for (int i = 0; i < (2 + 2 + 1); i++) {
+	க்கு (முழு i = 0; i < (2 + 2 + 1); i++) {
 		// Fill the buffers with zeros
 		_rls.update(0.f, 0.f);
 	}
@@ -80,10 +80,10 @@ TEST_F(ArxRlsTest, test221)
 	_rls.update(3, 4);
 	_rls.update(5, 6);
 	_rls.update(7, 8);
-	const Vector<float, 5> coefficients = _rls.getCoefficients();
-	float data_check[] = {-1.81, 1.06f, 0.38f, -0.27f, 0.26f};
-	const Vector<float, 5> coefficients_check(data_check);
-	float eps = 1e-2;
+	மாறிலி Vector<தசம, 5> coefficients = _rls.getCoefficients();
+	தசம data_check[] = {-1.81, 1.06f, 0.38f, -0.27f, 0.26f};
+	மாறிலி Vector<தசம, 5> coefficients_check(data_check);
+	தசம eps = 1e-2;
 	EXPECT_TRUE((coefficients - coefficients_check).abs().max() < eps);
 	coefficients.print();
 	coefficients_check.print();
@@ -96,7 +96,7 @@ TEST_F(ArxRlsTest, resetTest)
 	_rls.update(3, 4);
 	_rls.update(5, 6);
 	_rls.update(7, 8);
-	const Vector<float, 5> coefficients = _rls.getCoefficients();
+	மாறிலி Vector<தசம, 5> coefficients = _rls.getCoefficients();
 
 	// WHEN: resetting
 	_rls.reset();

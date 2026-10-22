@@ -39,63 +39,63 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#அந்தர்பாவ <px4_platform_common/defines.h>
+#அந்தர்பாவ <assert.h>
+#அந்தர்பாவ <time.h>
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <math.h>
+#அந்தர்பாவ <mathlib/math/test/test.hpp>
+#அந்தர்பாவ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#அந்தர்பாவ "block/Block.hpp"
+#அந்தர்பாவ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#அந்தர்பாவ "matrix/math.hpp"
 
-namespace control
+நாமாகாஶ control
 {
-template<class Type, size_t M>
-class __EXPORT BlockStats: public Block
+template<வகுப்பு Type, size_t M>
+வகுப்பு __EXPORT BlockStats: பொது Block
 {
 
-public:
+பொது:
 // methods
 	BlockStats(SuperBlock *parent,
-		   const char *name) :
+		   மாறிலி எழுத்து *name) :
 		Block(parent, name),
 		_sum(),
 		_sumSq(),
-		_count(0)
+		மொத்தம்_3(0)
 	{}
-	virtual ~BlockStats() = default;
-	void update(const matrix::Vector<Type, M> &u)
+	மெய்நிகர் ~BlockStats() = இயல்பு;
+	வெறுமை update(மாறிலி matrix::Vector<Type, M> &u)
 	{
 		_sum += u;
 		_sumSq += u.emult(u);
-		_count += 1;
+		மொத்தம்_3 += 1;
 	}
-	void reset()
+	வெறுமை reset()
 	{
 		_sum.setZero();
 		_sumSq.setZero();
-		_count = 0;
+		மொத்தம்_3 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
+	size_t get_மொத்தம்() { திரும்பு மொத்தம்_3; }
+	matrix::Vector<Type, M> getMean() { திரும்பு _sum / மொத்தம்_3; }
 	matrix::Vector<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		திரும்பு (_sumSq - _sum.emult(_sum) / மொத்தம்_3) / மொத்தம்_3;
 	}
 	matrix::Vector<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		திரும்பு getVar().sqrt();
 	}
-private:
+தனிப்பட்ட:
 // attributes
 	matrix::Vector<Type, M> _sum;
 	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+	size_t மொத்தம்_3;
 };
 
 } // namespace control

@@ -33,19 +33,19 @@
 
 #pragma once
 
-#include "param.h"
+#அந்தர்பாவ "param.h"
 
-struct param_primary_counters {
-	uint32_t set_value_request_received;
-	uint32_t set_value_response_sent;
+கட்டமைப்பு param_primary_counters {
+	uint32_t set_மதிப்பு_request_received;
+	uint32_t set_மதிப்பு_response_sent;
 	uint32_t reset_sent;
-	uint32_t set_value_request_sent;
-	uint32_t set_value_response_received;
+	uint32_t set_மதிப்பு_request_sent;
+	uint32_t set_மதிப்பு_response_received;
 	uint32_t set_used_received;
 };
 
-void param_primary_init();
-void param_primary_set_value(param_t param, const void *val);
-void param_primary_reset(param_t param);
-void param_primary_reset_all();
-void param_primary_get_counters(struct param_primary_counters *cnt);
+வெறுமை param_primary_init();
+வெறுமை param_primary_set_மதிப்பு(param_t param, மாறிலி வெறுமை *val);
+வெறுமை param_primary_reset(param_t param);
+வெறுமை param_primary_reset_all();
+வெறுமை param_primary_get_counters(கட்டமைப்பு param_primary_counters *cnt);

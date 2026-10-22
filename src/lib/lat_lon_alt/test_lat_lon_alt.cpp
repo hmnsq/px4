@@ -31,13 +31,13 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
-#include <lib/geo/geo.h>
+#அந்தர்பாவ <gtest/gtest.h>
+#அந்தர்பாவ <matrix/math.hpp>
+#அந்தர்பாவ <lib/geo/geo.h>
 
-#include "lat_lon_alt.hpp"
+#அந்தர்பாவ "lat_lon_alt.hpp"
 
-using namespace matrix;
+using நாமாகாஶ matrix;
 using math::radians;
 using math::degrees;
 
@@ -81,7 +81,7 @@ TEST(TestLatLonAlt, addDeltaPos)
 	Vector3f delta_pos(5.f, -2.f, 3.f);
 	lla += delta_pos;
 
-	double lat_new, lon_new;
+	இரட்டை lat_new, lon_new;
 	pos_ref.reproject(delta_pos(0), delta_pos(1), lat_new, lon_new);
 
 	EXPECT_NEAR(lla.latitude_deg(), lat_new, 1e-6);
@@ -94,9 +94,9 @@ TEST(TestLatLonAlt, subLatLonAlt)
 	MapProjection pos_ref(60.0, 5.0);
 	LatLonAlt lla(pos_ref.getProjectionReferenceLat(), pos_ref.getProjectionReferenceLon(), 0.f);
 
-	const Vector3f delta_pos_true(1.f, -2.f, 3.f);
+	மாறிலி Vector3f delta_pos_true(1.f, -2.f, 3.f);
 
-	double lat_new, lon_new;
+	இரட்டை lat_new, lon_new;
 	pos_ref.reproject(delta_pos_true(0), delta_pos_true(1), lat_new, lon_new);
 	LatLonAlt lla_new(lat_new, lon_new, -3.f);
 	Vector3f delta_pos = lla_new - lla;
@@ -108,9 +108,9 @@ TEST(TestLatLonAlt, subLatLonAlt)
 
 TEST(TestLatLonAlt, fromAndToECEF)
 {
-	for (double lat_deg = -90.0; lat_deg <= 90.0; lat_deg += 15.0) {
-		for (double lon_deg = -180.0; lon_deg < 180.0; lon_deg += 45.0) {
-			for (float alt = -500.f; alt < 8000.f; alt += 500.f) {
+	க்கு (இரட்டை lat_deg = -90.0; lat_deg <= 90.0; lat_deg += 15.0) {
+		க்கு (இரட்டை lon_deg = -180.0; lon_deg < 180.0; lon_deg += 45.0) {
+			க்கு (தசம alt = -500.f; alt < 8000.f; alt += 500.f) {
 				LatLonAlt lla(lat_deg, lon_deg, alt);
 
 				LatLonAlt res = LatLonAlt::fromEcef(lla.toEcef());
@@ -138,12 +138,12 @@ TEST(TestLatLonAlt, somiglianaGravity)
 TEST(TestLatLonAlt, addDeltaPosMatchesEcefDistance)
 {
 	// Short steps make the curvilinear approximation exact enough to check the radii of curvature
-	const float step = 10.f;
+	மாறிலி தசம step = 10.f;
 
-	for (const double latitude_deg : {0.0, 30.0, 47.0, 60.0, 80.0}) {
-		const LatLonAlt start(latitude_deg, 8.0, 400.f);
-		const LatLonAlt north = start + Vector3f(step, 0.f, 0.f);
-		const LatLonAlt east = start + Vector3f(0.f, step, 0.f);
+	க்கு (மாறிலி இரட்டை latitude_deg : {0.0, 30.0, 47.0, 60.0, 80.0}) {
+		மாறிலி LatLonAlt start(latitude_deg, 8.0, 400.f);
+		மாறிலி LatLonAlt north = start + Vector3f(step, 0.f, 0.f);
+		மாறிலி LatLonAlt east = start + Vector3f(0.f, step, 0.f);
 
 		EXPECT_NEAR(Vector3d(north.toEcef() - start.toEcef()).norm(), step, 1e-4) << "latitude " << latitude_deg;
 		EXPECT_NEAR(Vector3d(east.toEcef() - start.toEcef()).norm(), step, 1e-4) << "latitude " << latitude_deg;

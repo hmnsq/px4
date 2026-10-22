@@ -1,35 +1,35 @@
 
 #pragma once
 
-#include <inttypes.h>
-#include <string.h>
+#அந்தர்பாவ <inttypes.h>
+#அந்தர்பாவ <string.h>
 
 #define ATOMIC_ENTER lock()
 #define ATOMIC_LEAVE unlock()
 
-namespace cdev
+நாமாகாஶ cdev
 {
 
-struct file_operations {
-	void *op;
+கட்டமைப்பு file_operations {
+	வெறுமை *op;
 };
 
-using px4_file_operations_t = struct file_operations;
+using px4_file_operations_t = கட்டமைப்பு file_operations;
 using mode_t = uint32_t;
 
-class CDev;
+வகுப்பு CDev;
 
-struct file_t {
-	int f_oflags{0};
-	void *f_priv{nullptr};
+கட்டமைப்பு file_t {
+	முழு f_oflags{0};
+	வெறுமை *f_priv{nullptr};
 	CDev *cdev{nullptr};
 
-	file_t() = default;
-	file_t(int f, CDev *c) : f_oflags(f), cdev(c) {}
+	file_t() = இயல்பு;
+	file_t(முழு f, CDev *c) : f_oflags(f), cdev(c) {}
 };
 
 } // namespace cdev
 
-extern "C" __EXPORT int register_driver(const char *name, const cdev::px4_file_operations_t *fops,
-					cdev::mode_t mode, void *data);
-extern "C" __EXPORT int unregister_driver(const char *path);
+வெளி "C" __EXPORT முழு register_driver(மாறிலி எழுத்து *name, மாறிலி cdev::px4_file_operations_t *fops,
+					cdev::mode_t mode, வெறுமை *data);
+வெளி "C" __EXPORT முழு unregister_driver(மாறிலி எழுத்து *path);

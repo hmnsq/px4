@@ -38,22 +38,22 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include "ConflictTracker.h"
+#அந்தர்பாவ "ConflictTracker.h"
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#அந்தர்பாவ <px4_platform_common/defines.h>
+#அந்தர்பாவ <px4_platform_common/log.h>
 
-namespace
+நாமாகாஶ
 {
 
-void append_change(conflict_tracker_changes_s &changes, const conflict_tracker_change_s &change)
+வெறுமை append_change(conflict_tracker_changes_s &changes, மாறிலி conflict_tracker_change_s &change)
 {
-	if (!changes.push_back(change)) {
+	எனில் (!changes.push_back(change)) {
 		PX4_ERR("DAA: conflict changes overflow");
 	}
 }
 
-void record_ignored(conflict_tracker_changes_s &changes, const conflict_info_s &conflict, const IgnoreTrafficCause cause)
+வெறுமை record_ignored(conflict_tracker_changes_s &changes, மாறிலி conflict_info_s &conflict, மாறிலி IgnoreTrafficCause cause)
 {
 	conflict_tracker_change_s change{};
 	change.type = ConflictTrackerChangeType::kReportIgnored;
@@ -62,7 +62,7 @@ void record_ignored(conflict_tracker_changes_s &changes, const conflict_info_s &
 	append_change(changes, change);
 }
 
-void record_removed(conflict_tracker_changes_s &changes, const conflict_info_s &conflict, const RemoveBufferCause cause)
+வெறுமை record_removed(conflict_tracker_changes_s &changes, மாறிலி conflict_info_s &conflict, மாறிலி RemoveBufferCause cause)
 {
 	conflict_tracker_change_s change{};
 	change.type = ConflictTrackerChangeType::kConflictRemoved;
@@ -73,50 +73,50 @@ void record_removed(conflict_tracker_changes_s &changes, const conflict_info_s &
 
 } // namespace
 
-bool ConflictTracker::apply_conflict(const conflict_info_s &conflict, conflict_tracker_changes_s &changes)
+தருக்க ConflictTracker::apply_conflict(மாறிலி conflict_info_s &conflict, conflict_tracker_changes_s &changes)
 {
-	if (conflict.encoded_id.id == 0
+	எனில் (conflict.encoded_id.id == 0
 	    || conflict.conflict_level > detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL
 	    || !PX4_ISFINITE(conflict.aircraft_dist)
 	    || conflict.aircraft_dist < 0.f) {
 		PX4_ERR("DAA: invalid conflict");
-		return false;
+		திரும்பு பொய்;
 	}
 
-	const int conflict_idx = find_conflict_idx(conflict.encoded_id);
+	மாறிலி முழு conflict_idx = find_conflict_idx(conflict.encoded_id);
 
-	if (conflict_idx < 0) {
-		if (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
-			return false;
+	எனில் (conflict_idx < 0) {
+		எனில் (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
+			திரும்பு பொய்;
 		}
 
-		return add_conflict(conflict, changes);
+		திரும்பு add_conflict(conflict, changes);
 	}
 
-	return update_conflict(conflict, conflict_idx, changes);
+	திரும்பு update_conflict(conflict, conflict_idx, changes);
 }
 
-bool ConflictTracker::add_conflict(const conflict_info_s &conflict, conflict_tracker_changes_s &changes)
+தருக்க ConflictTracker::add_conflict(மாறிலி conflict_info_s &conflict, conflict_tracker_changes_s &changes)
 {
-	if (_buffer.size() < _buffer.max_size()) {
+	எனில் (_buffer.size() < _buffer.max_size()) {
 		_buffer.push_back(conflict);
 
 		conflict_tracker_change_s change{};
 		change.type = ConflictTrackerChangeType::kConflictAdded;
 		change.conflict = conflict;
 		append_change(changes, change);
-		return true;
+		திரும்பு உண்மை;
 	}
 
-	const int least_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kLeastUrgent);
+	மாறிலி முழு least_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kLeastUrgent);
 
-	if (!is_conflict_more_important(conflict, _buffer[least_urgent_conflict_idx])) {
+	எனில் (!is_conflict_more_important(conflict, _buffer[least_urgent_conflict_idx])) {
 		PX4_DEBUG("DAA: new conflict does not outrank tracked conflicts, ignoring.");
 		record_ignored(changes, conflict, IgnoreTrafficCause::kBufferFull);
-		return false;
+		திரும்பு பொய்;
 	}
 
-	const conflict_info_s removed_conflict = _buffer[least_urgent_conflict_idx];
+	மாறிலி conflict_info_s removed_conflict = _buffer[least_urgent_conflict_idx];
 	_buffer[least_urgent_conflict_idx] = conflict;
 	record_removed(changes, removed_conflict, RemoveBufferCause::kBufferFull);
 
@@ -124,29 +124,29 @@ bool ConflictTracker::add_conflict(const conflict_info_s &conflict, conflict_tra
 	change.type = ConflictTrackerChangeType::kConflictAdded;
 	change.conflict = conflict;
 	append_change(changes, change);
-	return true;
+	திரும்பு உண்மை;
 }
 
-bool ConflictTracker::update_conflict(const conflict_info_s &conflict, const int conflict_idx,
+தருக்க ConflictTracker::update_conflict(மாறிலி conflict_info_s &conflict, மாறிலி முழு conflict_idx,
 				      conflict_tracker_changes_s &changes)
 {
-	const uint8_t previous_conflict_level = _buffer[conflict_idx].conflict_level;
+	மாறிலி uint8_t previous_conflict_level = _buffer[conflict_idx].conflict_level;
 
-	if (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
+	எனில் (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
 		PX4_DEBUG("DAA: Conflict avoided");
 		_buffer.remove(conflict_idx);
 
-	} else {
+	} இல்லையெனில் {
 		_buffer[conflict_idx] = conflict;
 	}
 
-	if (conflict.conflict_level != previous_conflict_level) {
+	எனில் (conflict.conflict_level != previous_conflict_level) {
 		conflict_tracker_change_s change{};
 		change.type = ConflictTrackerChangeType::kConflictLevelChanged;
 		change.conflict = conflict;
 		change.previous_level = previous_conflict_level;
 
-		const int most_urgent_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
+		மாறிலி முழு most_urgent_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
 		change.conflict_is_most_urgent = (_most_urgent.encoded_id == conflict.encoded_id)
 						 || (is_valid_idx(most_urgent_idx)
 						     && _buffer[most_urgent_idx].encoded_id == conflict.encoded_id);
@@ -154,130 +154,130 @@ bool ConflictTracker::update_conflict(const conflict_info_s &conflict, const int
 		append_change(changes, change);
 	}
 
-	return true;
+	திரும்பு உண்மை;
 }
 
-bool ConflictTracker::remove_stale_conflicts(const hrt_abstime now, const hrt_abstime timeout_us,
+தருக்க ConflictTracker::remove_stale_conflicts(மாறிலி hrt_abstime now, மாறிலி hrt_abstime timeout_us,
 		conflict_tracker_changes_s &changes)
 {
-	int nb_conflicts_removed = 0;
+	முழு nb_conflicts_removed = 0;
 
 	// Iterate backwards because Array::remove() shifts later entries left.
-	for (int idx = (static_cast<int>(_buffer.size()) - 1); idx >= 0; --idx) {
-		const hrt_abstime latest_update = _buffer[idx].latest_update_timestamp;
+	க்கு (முழு idx = (static_cast<முழு>(_buffer.size()) - 1); idx >= 0; --idx) {
+		மாறிலி hrt_abstime latest_update = _buffer[idx].latest_update_timestamp;
 
-		if (latest_update == 0 || latest_update > now || (now - latest_update) > timeout_us) {
-			const conflict_info_s removed_conflict = _buffer[idx];
+		எனில் (latest_update == 0 || latest_update > now || (now - latest_update) > timeout_us) {
+			மாறிலி conflict_info_s removed_conflict = _buffer[idx];
 			_buffer.remove(idx);
 			record_removed(changes, removed_conflict, RemoveBufferCause::kStaleConflict);
 			nb_conflicts_removed++;
 		}
 	}
 
-	if (nb_conflicts_removed > 0) {
+	எனில் (nb_conflicts_removed > 0) {
 		PX4_DEBUG("DAA: removed %d stale conflicts from buffer", nb_conflicts_removed);
 	}
 
-	return nb_conflicts_removed > 0;
+	திரும்பு nb_conflicts_removed > 0;
 }
 
-void ConflictTracker::clear()
+வெறுமை ConflictTracker::clear()
 {
 	_buffer.clear();
 	reset_most_urgent();
 }
 
-void ConflictTracker::reset_most_urgent()
+வெறுமை ConflictTracker::reset_most_urgent()
 {
-	static constexpr float kNoConflictDistance{9999.f};
+	நிலையான constexpr தசம kNoConflictDistance{9999.f};
 	PX4_DEBUG("DAA: reset most urgent buffer to null.");
 	_most_urgent = {};
 	_most_urgent.aircraft_dist = kNoConflictDistance;
 }
 
-void ConflictTracker::refresh_most_urgent()
+வெறுமை ConflictTracker::refresh_most_urgent()
 {
-	if (_buffer.empty()) {
+	எனில் (_buffer.empty()) {
 		PX4_DEBUG("DAA: refresh_most_urgent empty buffer.");
 		reset_most_urgent();
-		return;
+		திரும்பு;
 	}
 
 	_most_urgent = find_most_urgent();
 }
 
-conflict_info_s ConflictTracker::find_most_urgent() const
+conflict_info_s ConflictTracker::find_most_urgent() மாறிலி
 {
-	const int most_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
+	மாறிலி முழு most_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
 
-	if (!is_valid_idx(most_urgent_conflict_idx)) {
-		return {};
+	எனில் (!is_valid_idx(most_urgent_conflict_idx)) {
+		திரும்பு {};
 	}
 
-	return _buffer[most_urgent_conflict_idx];
+	திரும்பு _buffer[most_urgent_conflict_idx];
 }
 
-conflict_info_s ConflictTracker::get_conflict(const DaaEncodedId &encoded_id) const
+conflict_info_s ConflictTracker::get_conflict(மாறிலி DaaEncodedId &encoded_id) மாறிலி
 {
-	const int conflict_idx = find_conflict_idx(encoded_id);
+	மாறிலி முழு conflict_idx = find_conflict_idx(encoded_id);
 
-	if (!is_valid_idx(conflict_idx)) {
-		return {};
+	எனில் (!is_valid_idx(conflict_idx)) {
+		திரும்பு {};
 	}
 
-	return _buffer[conflict_idx];
+	திரும்பு _buffer[conflict_idx];
 }
 
-int ConflictTracker::find_conflict_idx_by_priority(const ConflictPriority priority) const
+முழு ConflictTracker::find_conflict_idx_by_priority(மாறிலி ConflictPriority priority) மாறிலி
 {
-	const int buff_size = static_cast<int>(_buffer.size());
+	மாறிலி முழு buff_size = static_cast<முழு>(_buffer.size());
 
-	if (buff_size < 1) {
-		return -1;
+	எனில் (buff_size < 1) {
+		திரும்பு -1;
 	}
 
-	int best_idx = 0;
+	முழு best_idx = 0;
 
-	for (int i = 1; i < buff_size; ++i) {
-		const bool is_better = (priority == ConflictPriority::kMostUrgent)
+	க்கு (முழு i = 1; i < buff_size; ++i) {
+		மாறிலி தருக்க is_better = (priority == ConflictPriority::kMostUrgent)
 				       ? is_conflict_more_important(_buffer[i], _buffer[best_idx])
 				       : is_conflict_less_important(_buffer[i], _buffer[best_idx]);
 
-		if (is_better) {
+		எனில் (is_better) {
 			best_idx = i;
 		}
 	}
 
-	return best_idx;
+	திரும்பு best_idx;
 }
 
-int ConflictTracker::find_conflict_idx(const DaaEncodedId &encoded_id) const
+முழு ConflictTracker::find_conflict_idx(மாறிலி DaaEncodedId &encoded_id) மாறிலி
 {
-	for (size_t i = 0; i < _buffer.size(); i++) {
-		if (_buffer[i].encoded_id == encoded_id) {
-			return static_cast<int>(i);
+	க்கு (size_t i = 0; i < _buffer.size(); i++) {
+		எனில் (_buffer[i].encoded_id == encoded_id) {
+			திரும்பு static_cast<முழு>(i);
 		}
 	}
 
-	return -1;
+	திரும்பு -1;
 }
 
-bool ConflictTracker::is_conflict_less_important(const conflict_info_s &new_conflict,
-		const conflict_info_s &base_conflict)
+தருக்க ConflictTracker::is_conflict_less_important(மாறிலி conflict_info_s &new_conflict,
+		மாறிலி conflict_info_s &base_conflict)
 {
-	if (new_conflict.conflict_level != base_conflict.conflict_level) {
-		return new_conflict.conflict_level < base_conflict.conflict_level;
+	எனில் (new_conflict.conflict_level != base_conflict.conflict_level) {
+		திரும்பு new_conflict.conflict_level < base_conflict.conflict_level;
 	}
 
-	return new_conflict.aircraft_dist > base_conflict.aircraft_dist;
+	திரும்பு new_conflict.aircraft_dist > base_conflict.aircraft_dist;
 }
 
-bool ConflictTracker::is_conflict_more_important(const conflict_info_s &new_conflict,
-		const conflict_info_s &base_conflict)
+தருக்க ConflictTracker::is_conflict_more_important(மாறிலி conflict_info_s &new_conflict,
+		மாறிலி conflict_info_s &base_conflict)
 {
-	if (new_conflict.conflict_level != base_conflict.conflict_level) {
-		return new_conflict.conflict_level > base_conflict.conflict_level;
+	எனில் (new_conflict.conflict_level != base_conflict.conflict_level) {
+		திரும்பு new_conflict.conflict_level > base_conflict.conflict_level;
 	}
 
-	return new_conflict.aircraft_dist < base_conflict.aircraft_dist;
+	திரும்பு new_conflict.aircraft_dist < base_conflict.aircraft_dist;
 }

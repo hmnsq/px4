@@ -50,22 +50,22 @@
  * AND MAY DISABLE CHECKS THAT ARE VITAL FOR SAFE FLIGHT.
  */
 
-#define CBRK_BUZZER_KEY         782097
-#define CBRK_SUPPLY_CHK_KEY	894281
-#define CBRK_FLIGHTTERM_KEY	121212
-#define CBRK_USB_CHK_KEY	197848
-#define CBRK_VTOLARMING_KEY	159753
-#define CBRK_UAVCAN_FW_KEY	5318008
+#define CBRK_BUZZER_சாவி         782097
+#define CBRK_SUPPLY_CHK_சாவி	894281
+#define CBRK_FLIGHTTERM_சாவி	121212
+#define CBRK_USB_CHK_சாவி	197848
+#define CBRK_VTOLARMING_சாவி	159753
+#define CBRK_UAVCAN_FW_சாவி	5318008
 
-#include <stdint.h>
+#அந்தர்பாவ <stdint.h>
 
 __BEGIN_DECLS
 
-extern "C" __EXPORT bool circuit_breaker_enabled(const char *breaker, int32_t magic);
+வெளி "C" __EXPORT bool circuit_breaker_enabled(மாறிலி எழுத்து *breaker, int32_t magic);
 
-static inline bool circuit_breaker_enabled_by_val(int32_t breaker_val, int32_t magic)
+நிலையான உள்வரி bool circuit_breaker_enabled_by_val(int32_t breaker_val, int32_t magic)
 {
-	return breaker_val == magic;
+	திரும்பு breaker_val == magic;
 }
 
 __END_DECLS

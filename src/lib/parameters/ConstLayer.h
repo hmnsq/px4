@@ -33,61 +33,61 @@
 
 #pragma once
 
-#include "ParamLayer.h"
+#அந்தர்பாவ "ParamLayer.h"
 
-class ConstLayer : public ParamLayer
+class ConstLayer : பொது ParamLayer
 {
-public:
+பொது:
 
-	ConstLayer() = default;
+	ConstLayer() = இயல்பு;
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_மதிப்பு_u மதிப்பு) override
 	{
-		return false;
+		திரும்பு false;
 	}
 
-	bool contains(param_t param) const override
+	bool contains(param_t param) மாறிலி override
 	{
-		return param < PARAM_COUNT;
+		திரும்பு param < PARAM_மொத்தம்;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_மொத்தம்> containedAsBitset() மாறிலி override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
+		px4::AtomicBitset<PARAM_மொத்தம்> set;
 
-		for (int i = 0; i < PARAM_COUNT; i++) {
+		க்கு (முழு i = 0; i < PARAM_மொத்தம்; i++) {
 			set.set(i);
 		}
 
-		return set;
+		திரும்பு set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_மதிப்பு_u get(param_t param) மாறிலி override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		எனில் (param >= PARAM_மொத்தம்) {
+			திரும்பு {0};
 		}
 
-		return px4::parameters[param].val;
+		திரும்பு px4::parameters[param].val;
 	}
 
-	void reset(param_t param) override
+	வெறுமை reset(param_t param) override
 	{
 		// Do nothing
 	}
 
-	void refresh(param_t param) override
+	வெறுமை refresh(param_t param) override
 	{
 		// Do nothing
 	}
 
-	int size() const override
+	முழு size() மாறிலி override
 	{
-		return PARAM_COUNT;
+		திரும்பு PARAM_மொத்தம்;
 	}
 
-	int byteSize() const override
+	முழு byteSize() மாறிலி override
 	{
-		return PARAM_COUNT * sizeof(param_info_s);
+		திரும்பு PARAM_மொத்தம் * அளவு(param_info_s);
 	}
 };

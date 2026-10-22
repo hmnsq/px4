@@ -41,10 +41,10 @@
 
 #ifdef __cplusplus
 
-#include "math/Limits.hpp"
-#include "math/Functions.hpp"
-#include "math/SearchMin.hpp"
-#include "math/TrajMath.hpp"
-#include "math/Utilities.hpp"
+#அந்தர்பாவ "math/Limits.hpp"
+#அந்தர்பாவ "math/Functions.hpp"
+#அந்தர்பாவ "math/SearchMin.hpp"
+#அந்தர்பாவ "math/TrajMath.hpp"
+#அந்தர்பாவ "math/Utilities.hpp"
 
 #endif

@@ -39,23 +39,23 @@
  */
 #pragma once
 
-#include <px4_platform_common/app.h>
+#அந்தர்பாவ <px4_platform_common/app.h>
 
-class CDevNode;
+class CDev_முனை;
 
 class CDevExample
 {
-public:
-	CDevExample() : _node(0) {}
+பொது:
+	CDevExample() : முனை(0) {}
 
 	~CDevExample();
 
-	int main();
+	முழு முதன்மை();
 
-	static px4::AppState appState; /* track requests to terminate app */
+	நிலையான px4::AppState appState; /* track requests to terminate app */
 
-private:
-	int do_poll(int fd, int timeout, int iterations, int delayms_after_poll);
+தனிப்பட்ட:
+	முழு do_poll(முழு fd, முழு timeout, முழு iterations, முழு delayms_after_poll);
 
-	CDevNode *_node;
+	CDev_முனை *முனை;
 };

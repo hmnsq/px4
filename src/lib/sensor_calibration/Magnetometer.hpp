@@ -33,93 +33,93 @@
 
 #pragma once
 
-#include <lib/conversion/rotation.h>
-#include <lib/matrix/matrix/math.hpp>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/battery_status.h>
-#include <uORB/topics/sensor_correction.h>
+#அந்தர்பாவ <lib/conversion/rotation.h>
+#அந்தர்பாவ <lib/matrix/matrix/math.hpp>
+#அந்தர்பாவ <px4_platform_common/px4_config.h>
+#அந்தர்பாவ <px4_platform_common/log.h>
+#அந்தர்பாவ <uORB/Subscription.hpp>
+#அந்தர்பாவ <uORB/topics/battery_status.h>
+#அந்தர்பாவ <uORB/topics/sensor_correction.h>
 
-namespace calibration
+நாமாகாஶ calibration
 {
-class Magnetometer
+வகுப்பு Magnetometer
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+பொது:
+	நிலையான constexpr முழு MAX_SENSOR_மொத்தம் = 4;
 
-	static constexpr uint8_t DEFAULT_PRIORITY = 50;
-	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
+	நிலையான constexpr uint8_t DEFAULT_PRIORITY = 50;
+	நிலையான constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
 
-	static constexpr const char *SensorString() { return "MAG"; }
+	நிலையான constexpr மாறிலி எழுத்து *SensorString() { திரும்பு "MAG"; }
 
 	Magnetometer();
 	explicit Magnetometer(uint32_t device_id);
-	Magnetometer(uint32_t device_id, bool external);
+	Magnetometer(uint32_t device_id, தருக்க external);
 
-	~Magnetometer() = default;
+	~Magnetometer() = இயல்பு;
 
-	void PrintStatus();
+	வெறுமை PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
-	void set_device_id(uint32_t device_id, bool external);
-	bool set_offset(const matrix::Vector3f &offset);
-	bool set_scale(const matrix::Vector3f &scale);
-	bool set_offdiagonal(const matrix::Vector3f &offdiagonal);
+	தருக்க set_calibration_index(முழு calibration_index);
+	வெறுமை set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
+	வெறுமை set_device_id(uint32_t device_id, தருக்க external);
+	தருக்க set_offset(மாறிலி matrix::Vector3f &offset);
+	தருக்க set_scale(மாறிலி matrix::Vector3f &scale);
+	தருக்க set_offdiagonal(மாறிலி matrix::Vector3f &offdiagonal);
 
 	/**
 	 * @brief Set the rotation enum & corresponding rotation matrix for Magnetometer
 	 *
 	 * @param rotation Rotation enum
 	 */
-	void set_rotation(Rotation rotation);
+	வெறுமை set_rotation(Rotation rotation);
 
 	/**
 	 * @brief Set the custom rotation & rotation enum to ROTATION_CUSTOM for Magnetometer
 	 *
 	 * @param rotation Rotation euler angles
 	 */
-	void set_custom_rotation(const matrix::Eulerf &rotation);
+	வெறுமை set_custom_rotation(மாறிலி matrix::Eulerf &rotation);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	void disable() { _priority = 0; }
-	bool external() const { return _external; }
-	const matrix::Vector3f &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const matrix::Dcmf &rotation() const { return _rotation; }
-	const Rotation &rotation_enum() const { return _rotation_enum; }
-	const matrix::Matrix3f &scale() const { return _scale; }
+	தருக்க calibrated() மாறிலி { திரும்பு (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_மொத்தம்_2() மாறிலி { திரும்பு calibration_மொத்தம்; }
+	int8_t calibration_index() மாறிலி { திரும்பு _calibration_index; }
+	uint32_t device_id() மாறிலி { திரும்பு _device_id; }
+	தருக்க enabled() மாறிலி { திரும்பு (_priority > 0); }
+	வெறுமை disable() { _priority = 0; }
+	தருக்க external() மாறிலி { திரும்பு _external; }
+	மாறிலி matrix::Vector3f &offset() மாறிலி { திரும்பு _offset; }
+	மாறிலி int32_t &priority() மாறிலி { திரும்பு _priority; }
+	மாறிலி matrix::Dcmf &rotation() மாறிலி { திரும்பு _rotation; }
+	மாறிலி Rotation &rotation_enum() மாறிலி { திரும்பு _rotation_enum; }
+	மாறிலி matrix::Matrix3f &scale() மாறிலி { திரும்பு _scale; }
 
 	// apply offsets and scale
 	// rotate corrected measurements from sensor to body frame
-	inline matrix::Vector3f Correct(const matrix::Vector3f &data) const
+	உள்வரி matrix::Vector3f Correct(மாறிலி matrix::Vector3f &data) மாறிலி
 	{
-		return _rotation * (_scale * ((data + _power * _power_compensation) - _offset));
+		திரும்பு _rotation * (_scale * ((data + _power * _power_compensation) - _offset));
 	}
 
 	// Compute sensor offset from bias (board frame)
-	matrix::Vector3f BiasCorrectedSensorOffset(const matrix::Vector3f &bias) const
+	matrix::Vector3f BiasCorrectedSensorOffset(மாறிலி matrix::Vector3f &bias) மாறிலி
 	{
 		// updated calibration offset = existing offset + bias rotated to sensor frame and unscaled
-		return _offset + (_scale.I() * _rotation.T() * bias);
+		திரும்பு _offset + (_scale.I() * _rotation.T() * bias);
 	}
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	தருக்க ParametersLoad();
+	தருக்க ParametersSave(முழு desired_calibration_index = -1, தருக்க force = பொய்);
+	வெறுமை ParametersUpdate();
 
-	void Reset();
+	வெறுமை Reset();
 
-	void SensorCorrectionsUpdate(bool force = false);
+	வெறுமை SensorCorrectionsUpdate(தருக்க force = பொய்);
 
-	void UpdatePower(float power) { _power = power; }
+	வெறுமை UpdatePower(தசம power) { _power = power; }
 
-private:
+தனிப்பட்ட:
 	uORB::Subscription _sensor_correction_sub{ORB_ID(sensor_correction)};
 
 	Rotation _rotation_enum{ROTATION_NONE};
@@ -136,14 +136,14 @@ private:
 	matrix::Vector3f _thermal_offset;
 	matrix::Vector3f _power_compensation;
 
-	float _power{0.f};
+	தசம _power{0.f};
 
 	int8_t _calibration_index{-1};
 	uint32_t _device_id{0};
 	int32_t _priority{-1};
 
-	bool _external{false};
+	தருக்க _external{பொய்};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_மொத்தம்{0};
 };
 } // namespace calibration

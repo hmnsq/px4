@@ -46,19 +46,19 @@
 
 #pragma once
 
-#include <cstdint>
+#அந்தர்பாவ <cstdint>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/esc_status.h>
-#include <uORB/topics/failure_injection.h>
+#அந்தர்பாவ <uORB/Subscription.hpp>
+#அந்தர்பாவ <uORB/topics/esc_status.h>
+#அந்தர்பாவ <uORB/topics/failure_injection.h>
 
-struct battery_status_s;
-struct sensor_gnss_s;
+கட்டமைப்பு battery_status_s;
+கட்டமைப்பு sensor_gnss_s;
 
-namespace failure_injection
+நாமாகாஶ failure_injection
 {
 
-enum class Mode : uint8_t {
+எண்ணிக்கை வகுப்பு Mode : uint8_t {
 	Ok           = failure_injection_s::FAILURE_TYPE_OK,
 	Off          = failure_injection_s::FAILURE_TYPE_OFF,
 	Stuck        = failure_injection_s::FAILURE_TYPE_STUCK,
@@ -70,41 +70,41 @@ enum class Mode : uint8_t {
 };
 
 /** Masks of motors failed by injection, bit i = motor instance i+1. */
-struct MotorFailureMasks {
+கட்டமைப்பு MotorFailureMasks {
 	uint16_t stop_mask{0};    ///< motor wrong: outputs stopped without informing the allocator
 	uint16_t failure_mask{0}; ///< motor off: reported as failed motors, removed from the allocation
 };
 
-#if defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
+#எனில் defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
 
-class Config
+வகுப்பு Config
 {
-public:
+பொது:
 	/**
 	 * Poll the failure_injection subscription and, when a new failure_injection
 	 * message arrives, refresh the cached failure config that mode() / any_active()
 	 * read. Call once per loop iteration.
 	 * @return true if an updated failure config was applied, false if unchanged.
 	 */
-	bool update();
+	தருக்க update();
 
 	/** Cache a failure_injection message directly (used by tests). */
-	void set(const failure_injection_s &cfg);
+	வெறுமை set(மாறிலி failure_injection_s &cfg);
 
 	/**
 	 * Active failure mode for a (unit, instance), or Mode::Ok if none.
 	 * @param unit     one of failure_injection_s::FAILURE_UNIT_*
 	 * @param instance 1-based instance, or 0 to match any instance of the unit
 	 */
-	Mode mode(uint8_t unit, uint8_t instance) const;
+	Mode mode(uint8_t unit, uint8_t instance) மாறிலி;
 
 	/** True if any failure is currently active (free no-failure early-out). */
-	bool any_active() const { return _count > 0; }
+	தருக்க any_active() மாறிலி { திரும்பு மொத்தம்_3 > 0; }
 
-private:
+தனிப்பட்ட:
 	uORB::Subscription _sub{ORB_ID(failure_injection)};
 
-	uint8_t  _count{0};
+	uint8_t  மொத்தம்_3{0};
 	uint8_t  _unit[failure_injection_s::MAX_FAILURES] {};
 	uint16_t _instance_mask[failure_injection_s::MAX_FAILURES] {};
 	Mode     _failure_type[failure_injection_s::MAX_FAILURES] {};
@@ -114,22 +114,22 @@ private:
  * Per-(consumer, instance) state for stateful failures. Holds the last good
  * sample so Stuck can replay it.
  */
-template<typename MsgT>
-struct Stuck {
-	bool valid{false};
-	MsgT value{};
+template<typename செய்தி_T>
+கட்டமைப்பு Stuck {
+	தருக்க valid{பொய்};
+	செய்தி_T value{};
 };
 
 template<typename...>
-using void_t = void;
+using void_t = வெறுமை;
 
-template<typename T, typename = void>
-struct has_timestamp_sample {
-	static constexpr bool value = false;
+template<typename T, typename = வெறுமை>
+கட்டமைப்பு has_timestamp_sample {
+	நிலையான constexpr தருக்க value = பொய்;
 };
 template<typename T>
-struct has_timestamp_sample<T, void_t<decltype(T::timestamp_sample)>> {
-	static constexpr bool value = true;
+கட்டமைப்பு has_timestamp_sample<T, void_t<decltype(T::timestamp_sample)>> {
+	நிலையான constexpr தருக்க value = உண்மை;
 };
 
 /**
@@ -139,45 +139,45 @@ struct has_timestamp_sample<T, void_t<decltype(T::timestamp_sample)>> {
  * @return false if the message must be suppressed (Off); true otherwise. For
  *         Stuck the message is overwritten with the last good sample.
  */
-template<typename MsgT>
-bool process(Mode mode, MsgT &msg, Stuck<MsgT> &stuck)
+template<typename செய்தி_T>
+தருக்க process(Mode mode, செய்தி_T &செய்தி, Stuck<செய்தி_T> &stuck)
 {
-	switch (mode) {
-	case Mode::Off:
-		return false;
+	தேர்வு (mode) {
+	நிலை Mode::Off:
+		திரும்பு பொய்;
 
-	case Mode::Stuck:
-		if (stuck.valid) {
-			const uint64_t timestamp = msg.timestamp;
+	நிலை Mode::Stuck:
+		எனில் (stuck.valid) {
+			மாறிலி uint64_t timestamp = செய்தி.timestamp;
 
-			if constexpr(has_timestamp_sample<MsgT>::value) {
-				const uint64_t timestamp_sample = msg.timestamp_sample;
-				msg = stuck.value;
-				msg.timestamp_sample = timestamp_sample;
+			எனில் constexpr(has_timestamp_sample<செய்தி_T>::value) {
+				மாறிலி uint64_t timestamp_sample = செய்தி.timestamp_sample;
+				செய்தி = stuck.value;
+				செய்தி.timestamp_sample = timestamp_sample;
 
-			} else {
-				msg = stuck.value;
+			} இல்லையெனில் {
+				செய்தி = stuck.value;
 			}
 
-			msg.timestamp = timestamp;
+			செய்தி.timestamp = timestamp;
 		}
 
-		return true;
+		திரும்பு உண்மை;
 
-	default:
-		stuck.value = msg;
-		stuck.valid = true;
-		return true;
+	இயல்பு:
+		stuck.value = செய்தி;
+		stuck.valid = உண்மை;
+		திரும்பு உண்மை;
 	}
 }
 
 /**
  * Convenience overload to fix the fact that the uORB instance is 0-based but the failure_injection instance is 1-based.
  */
-template<typename MsgT>
-bool process(const Config &config, uint8_t unit, uint8_t uorb_instance, MsgT &msg, Stuck<MsgT> &stuck)
+template<typename செய்தி_T>
+தருக்க process(மாறிலி Config &config, uint8_t unit, uint8_t uorb_instance, செய்தி_T &செய்தி, Stuck<செய்தி_T> &stuck)
 {
-	return process(config.mode(unit, uorb_instance + 1), msg, stuck);
+	திரும்பு process(config.mode(unit, uorb_instance + 1), செய்தி, stuck);
 }
 
 /**
@@ -185,15 +185,15 @@ bool process(const Config &config, uint8_t unit, uint8_t uorb_instance, MsgT &ms
  *
  * @return false if the signal must be treated as failed/suppressed (Off), true otherwise.
  */
-inline bool process(Mode mode)
+உள்வரி தருக்க process(Mode mode)
 {
-	return mode != Mode::Off;
+	திரும்பு mode != Mode::Off;
 }
 
 /** Convenience overload, same 0-based to 1-based instance mapping as the generic process(). */
-inline bool process(const Config &config, uint8_t unit, uint8_t uorb_instance)
+உள்வரி தருக்க process(மாறிலி Config &config, uint8_t unit, uint8_t uorb_instance)
 {
-	return process(config.mode(unit, uorb_instance + 1));
+	திரும்பு process(config.mode(unit, uorb_instance + 1));
 }
 
 /**
@@ -204,7 +204,7 @@ inline bool process(const Config &config, uint8_t unit, uint8_t uorb_instance)
  *
  * @return false if the battery_status publication must be suppressed (Off), true otherwise.
  */
-bool process_battery(const Config &config, uint8_t instance, battery_status_s &battery_status);
+தருக்க process_battery(மாறிலி Config &config, uint8_t instance, battery_status_s &battery_status);
 
 /**
  * GNSS counterpart to process(): on FAILURE_UNIT_SENSOR_GPS for the receiver publishing on the
@@ -215,7 +215,7 @@ bool process_battery(const Config &config, uint8_t instance, battery_status_s &b
  * @param uorb_instance 0-based uORB instance of the publisher (not the 1-based failure instance).
  * @return false if the sensor_gnss publication must be suppressed (Off), true otherwise.
  */
-bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
+தருக்க process_gnss(மாறிலி Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
 		  Stuck<sensor_gnss_s> &stuck);
 
 /**
@@ -226,7 +226,7 @@ bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &se
  * can't accidentally apply it in place to a persistent status, which would compound Wrong across
  * calls. Call after Config::update().
  */
-esc_status_s process_esc(const Config &config, const esc_status_s &status);
+esc_status_s process_esc(மாறிலி Config &config, மாறிலி esc_status_s &status);
 
 /**
  * Motor counterpart to process(): derive the masks of motors failed by
@@ -235,40 +235,40 @@ esc_status_s process_esc(const Config &config, const esc_status_s &status);
  * undetected one (stop_mask: outputs stopped without informing the allocator).
  * Call after Config::update().
  */
-MotorFailureMasks process_motor(const Config &config);
+MotorFailureMasks process_motor(மாறிலி Config &config);
 
-#else // !CONFIG_MODULES_FAILURE_INJECTION_MANAGER
+#இல்லையெனில் // !CONFIG_MODULES_FAILURE_INJECTION_MANAGER
 
-class Config
+வகுப்பு Config
 {
-public:
-	bool update() { return false; }
-	void set(const failure_injection_s &) {}
-	Mode mode(uint8_t, uint8_t) const { return Mode::Ok; }
-	bool any_active() const { return false; }
+பொது:
+	தருக்க update() { திரும்பு பொய்; }
+	வெறுமை set(மாறிலி failure_injection_s &) {}
+	Mode mode(uint8_t, uint8_t) மாறிலி { திரும்பு Mode::Ok; }
+	தருக்க any_active() மாறிலி { திரும்பு பொய்; }
 };
 
-template<typename MsgT>
-struct Stuck {
+template<typename செய்தி_T>
+கட்டமைப்பு Stuck {
 };
 
-template<typename MsgT>
-bool process(Mode, MsgT &, Stuck<MsgT> &) { return true; }
+template<typename செய்தி_T>
+தருக்க process(Mode, செய்தி_T &, Stuck<செய்தி_T> &) { திரும்பு உண்மை; }
 
-template<typename MsgT>
-bool process(const Config &, uint8_t, uint8_t, MsgT &, Stuck<MsgT> &) { return true; }
+template<typename செய்தி_T>
+தருக்க process(மாறிலி Config &, uint8_t, uint8_t, செய்தி_T &, Stuck<செய்தி_T> &) { திரும்பு உண்மை; }
 
-inline bool process(Mode) { return true; }
+உள்வரி தருக்க process(Mode) { திரும்பு உண்மை; }
 
-inline bool process(const Config &, uint8_t, uint8_t) { return true; }
+உள்வரி தருக்க process(மாறிலி Config &, uint8_t, uint8_t) { திரும்பு உண்மை; }
 
-inline bool process_battery(const Config &, uint8_t, battery_status_s &) { return true; }
+உள்வரி தருக்க process_battery(மாறிலி Config &, uint8_t, battery_status_s &) { திரும்பு உண்மை; }
 
-inline bool process_gnss(const Config &, uint8_t, sensor_gnss_s &, Stuck<sensor_gnss_s> &) { return true; }
+உள்வரி தருக்க process_gnss(மாறிலி Config &, uint8_t, sensor_gnss_s &, Stuck<sensor_gnss_s> &) { திரும்பு உண்மை; }
 
-inline esc_status_s process_esc(const Config &, const esc_status_s &status) { return status; }
+உள்வரி esc_status_s process_esc(மாறிலி Config &, மாறிலி esc_status_s &status) { திரும்பு status; }
 
-inline MotorFailureMasks process_motor(const Config &) { return {}; }
+உள்வரி MotorFailureMasks process_motor(மாறிலி Config &) { திரும்பு {}; }
 
 #endif // CONFIG_MODULES_FAILURE_INJECTION_MANAGER
 

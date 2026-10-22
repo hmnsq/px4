@@ -39,35 +39,35 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#அந்தர்பாவ <px4_platform_common/defines.h>
+#அந்தர்பாவ <assert.h>
+#அந்தர்பாவ <time.h>
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <math.h>
+#அந்தர்பாவ <mathlib/math/test/test.hpp>
+#அந்தர்பாவ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#அந்தர்பாவ "block/Block.hpp"
+#அந்தர்பாவ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#அந்தர்பாவ "matrix/math.hpp"
 
-namespace control
+நாமாகாஶ control
 {
 
-template<class Type, size_t M, size_t N, size_t LEN>
-class __EXPORT BlockDelay: public Block
+template<வகுப்பு Type, size_t M, size_t N, size_t LEN>
+வகுப்பு __EXPORT BlockDelay: பொது Block
 {
-public:
+பொது:
 // methods
-	BlockDelay(SuperBlock *parent, const char *name) :
+	BlockDelay(SuperBlock *parent, மாறிலி எழுத்து *name) :
 		Block(parent, name),
 		_h(),
 		_index(0),
 		_delay(-1)
 	{}
-	virtual ~BlockDelay() = default;
-	matrix::Matrix<Type, M, N> update(const matrix::Matrix<Type, M, N> &u)
+	மெய்நிகர் ~BlockDelay() = இயல்பு;
+	matrix::Matrix<Type, M, N> update(மாறிலி matrix::Matrix<Type, M, N> &u)
 	{
 		// store current value
 		_h[_index] = u;
@@ -75,40 +75,40 @@ public:
 		// delay starts at zero, then increases to LEN
 		_delay += 1;
 
-		if (_delay > (int)(LEN - 1)) {
+		எனில் (_delay > (முழு)(LEN - 1)) {
 			_delay = LEN - 1;
 		}
 
 		// compute position of delayed value
-		int j = _index - _delay;
+		முழு j = _index - _delay;
 
-		if (j < 0) {
+		எனில் (j < 0) {
 			j += LEN;
 		}
 
 		// increment storage position
 		_index += 1;
 
-		if (_index > (LEN - 1)) {
+		எனில் (_index > (LEN - 1)) {
 			_index  = 0;
 		}
 
 		// get delayed value
-		return _h[j];
+		திரும்பு _h[j];
 	}
 	matrix::Matrix<Type, M, N> get(size_t delay)
 	{
-		int j = _index - delay;
+		முழு j = _index - delay;
 
-		if (j < 0) { j += LEN; }
+		எனில் (j < 0) { j += LEN; }
 
-		return _h[j];
+		திரும்பு _h[j];
 	}
-private:
+தனிப்பட்ட:
 // attributes
 	matrix::Matrix<Type, M, N> _h[LEN];
 	size_t _index;
-	int _delay;
+	முழு _delay;
 };
 
 } // namespace control

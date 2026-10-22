@@ -57,12 +57,12 @@
 
 #pragma once
 
-#include <matrix/matrix/math.hpp>
+#அந்தர்பாவ <matrix/matrix/math.hpp>
 
 template<size_t N, size_t M, size_t D>
-class ArxRls final
+வகுப்பு ArxRls final
 {
-public:
+பொது:
 	ArxRls()
 	{
 		static_assert(N >= M, "The transfer function needs to be proper");
@@ -70,26 +70,26 @@ public:
 		reset();
 	}
 
-	~ArxRls() = default;
+	~ArxRls() = இயல்பு;
 
-	void setForgettingFactor(float time_constant, float dt) { _lambda = 1.f - dt / time_constant; }
-	void setForgettingFactor(float lambda) { _lambda = lambda; }
+	வெறுமை setForgettingFactor(தசம time_constant, தசம dt) { _lambda = 1.f - dt / time_constant; }
+	வெறுமை setForgettingFactor(தசம lambda) { _lambda = lambda; }
 
 	/*
 	 * return the vector of estimated parameters
 	 * [a_1 .. a_n b_0 .. b_m]'
 	 */
-	const matrix::Vector < float, N + M + 1 > &getCoefficients() const { return _theta_hat; }
-	const matrix::Vector < float, N + M + 1 > getVariances() const { return _P.diag(); }
-	float getInnovation() const { return _innovation; }
-	const matrix::Vector < float, N + M + 1 > &getDiffEstimate() const { return _diff_theta_hat; }
+	மாறிலி matrix::Vector < தசம, N + M + 1 > &getCoefficients() மாறிலி { திரும்பு _theta_hat; }
+	மாறிலி matrix::Vector < தசம, N + M + 1 > getVariances() மாறிலி { திரும்பு _P.diag(); }
+	தசம getInnovation() மாறிலி { திரும்பு _innovation; }
+	மாறிலி matrix::Vector < தசம, N + M + 1 > &getDiffEstimate() மாறிலி { திரும்பு _diff_theta_hat; }
 
-	void reset(const matrix::Vector < float, N + M + 1 > &theta_init = {})
+	வெறுமை reset(மாறிலி matrix::Vector < தசம, N + M + 1 > &theta_init = {})
 	{
 		/* _P.uncorrelateCovarianceSetVariance<N + M + 1>(0, 10e3f); // does not work */
 		_P.setZero();
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
+		க்கு (size_t i = 0; i < (N + M + 1); i++) {
 			_P(i, i) = 10e3f;
 		}
 
@@ -97,11 +97,11 @@ public:
 
 		_theta_hat = theta_init;
 
-		for (size_t i = 0; i < M + D + 1; i++) {
+		க்கு (size_t i = 0; i < M + D + 1; i++) {
 			_u[i] = 0.f;
 		}
 
-		for (size_t i = 0; i < N + 1; i++) {
+		க்கு (size_t i = 0; i < N + 1; i++) {
 			_y[i] = 0.f;
 		}
 
@@ -109,100 +109,100 @@ public:
 		_innovation = 0.f;
 	}
 
-	void update(float u, float y)
+	வெறுமை update(தசம u, தசம y)
 	{
-		const matrix::Vector < float, N + M + 1 > theta_prev = _theta_hat;
+		மாறிலி matrix::Vector < தசம, N + M + 1 > theta_prev = _theta_hat;
 
-		addInputOutput(u, y);
+		add_உள்ளீடு_Output(u, y);
 
-		if (!isBufferFull()) {
+		எனில் (!isBufferFull()) {
 			// Do not start to update the RLS algorithm when the
 			// buffer still contains zeros
-			return;
+			திரும்பு;
 		}
 
-		const matrix::Vector < float, N + M + 1 > phi = constructDesignVector();
-		const matrix::Matrix < float, 1, N + M + 1 > phi_t = phi.transpose();
+		மாறிலி matrix::Vector < தசம, N + M + 1 > phi = constructDesignVector();
+		மாறிலி matrix::Matrix < தசம, 1, N + M + 1 > phi_t = phi.transpose();
 
 		_P = (_P - _P * phi * phi_t * _P / (_lambda + (phi_t * _P * phi)(0, 0))) / _lambda;
 		_innovation = _y[N] - (phi_t * _theta_hat)(0, 0);
 		_theta_hat = _theta_hat + _P * phi * _innovation;
 
-		for (size_t i = 0; i < N + M + 1; i++) {
+		க்கு (size_t i = 0; i < N + M + 1; i++) {
 			_diff_theta_hat(i) = fabsf(_theta_hat(i) - theta_prev(i));
 		}
 
 		/* fixCovarianceErrors(); // TODO: this could help against ill-conditioned matrix but needs more testing*/
 	}
 
-private:
-	void addInputOutput(float u, float y)
+தனிப்பட்ட:
+	வெறுமை add_உள்ளீடு_Output(தசம u, தசம y)
 	{
 		shiftRegisters();
 		_u[M + D] = u;
 		_y[N] = y;
 
-		if (!isBufferFull()) {
+		எனில் (!isBufferFull()) {
 			_nb_samples++;
 		}
 	}
 
-	void shiftRegisters()
+	வெறுமை shiftRegisters()
 	{
-		for (size_t i = 0; i < N; i++) {
+		க்கு (size_t i = 0; i < N; i++) {
 			_y[i] = _y[i + 1];
 		}
 
-		for (size_t i = 0; i < (M + D); i++) {
+		க்கு (size_t i = 0; i < (M + D); i++) {
 			_u[i] = _u[i + 1];
 		}
 	}
 
-	bool isBufferFull() const { return _nb_samples > (M + N + D); }
+	தருக்க isBufferFull() மாறிலி { திரும்பு _nb_samples > (M + N + D); }
 
-	matrix::Vector < float, N + M + 1 > constructDesignVector() const
+	matrix::Vector < தசம, N + M + 1 > constructDesignVector() மாறிலி
 	{
-		matrix::Vector < float, N + M + 1 > phi;
+		matrix::Vector < தசம, N + M + 1 > phi;
 
-		for (size_t i = 0; i < N; i++) {
+		க்கு (size_t i = 0; i < N; i++) {
 			phi(i) = -_y[N - i - 1];
 		}
 
-		int j = 0;
+		முழு j = 0;
 
-		for (size_t i = N; i < (N + M + 1); i++) {
+		க்கு (size_t i = N; i < (N + M + 1); i++) {
 			phi(i) = _u[M - j];
 			j++;
 		}
 
-		return phi;
+		திரும்பு phi;
 	}
 
-	void fixCovarianceErrors()
+	வெறுமை fixCovarianceErrors()
 	{
-		float max_var = 0.f;
+		தசம max_var = 0.f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) > max_var) {
+		க்கு (size_t i = 0; i < (N + M + 1); i++) {
+			எனில் (_P(i, i) > max_var) {
 				max_var = _P(i, i);
 			}
 		}
 
-		const float min_var_allowed = max_var * 0.1f;
+		மாறிலி தசம min_var_allowed = max_var * 0.1f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) < min_var_allowed) {
+		க்கு (size_t i = 0; i < (N + M + 1); i++) {
+			எனில் (_P(i, i) < min_var_allowed) {
 				_P(i, i) = min_var_allowed;
 			}
 		}
 	}
 
-	matrix::SquareMatrix < float, N + M + 1 > _P;
-	matrix::Vector < float, N + M + 1 > _theta_hat;
-	matrix::Vector < float, N + M + 1 > _diff_theta_hat;
-	float _innovation{};
-	float _u[M + D + 1] {};
-	float _y[N + 1] {};
+	matrix::SquareMatrix < தசம, N + M + 1 > _P;
+	matrix::Vector < தசம, N + M + 1 > _theta_hat;
+	matrix::Vector < தசம, N + M + 1 > _diff_theta_hat;
+	தசம _innovation{};
+	தசம _u[M + D + 1] {};
+	தசம _y[N + 1] {};
 	unsigned _nb_samples{0};
-	float _lambda{1.f};
+	தசம _lambda{1.f};
 };

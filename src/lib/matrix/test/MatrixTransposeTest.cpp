@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#அந்தர்பாவ <gtest/gtest.h>
+#அந்தர்பாவ <matrix/math.hpp>
 
-using namespace matrix;
+using நாமாகாஶ matrix;
 
 TEST(MatrixTransposeTest, Transpose)
 {
-	float data[6] = {1, 2, 3, 4, 5, 6};
-	Matrix<float, 2, 3> A(data);
-	Matrix<float, 3, 2> A_T = A.transpose();
-	float data_check[6] = {1, 4, 2, 5, 3, 6};
-	Matrix<float, 3, 2> A_T_check(data_check);
+	தசம data[6] = {1, 2, 3, 4, 5, 6};
+	Matrix<தசம, 2, 3> A(data);
+	Matrix<தசம, 3, 2> A_T = A.transpose();
+	தசம data_check[6] = {1, 4, 2, 5, 3, 6};
+	Matrix<தசம, 3, 2> A_T_check(data_check);
 	EXPECT_EQ(A_T, A_T_check);
 }

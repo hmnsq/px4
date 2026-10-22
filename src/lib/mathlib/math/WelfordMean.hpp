@@ -39,64 +39,64 @@
 
 #pragma once
 
-#include <lib/mathlib/mathlib.h>
+#அந்தர்பாவ <lib/mathlib/mathlib.h>
 
-namespace math
+நாமாகாஶ math
 {
 
-template <typename Type = float>
-class WelfordMean
+template <typename Type = தசம>
+வகுப்பு WelfordMean
 {
-public:
+பொது:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const Type &new_value)
+	தருக்க update(மாறிலி Type &new_மதிப்பு)
 	{
-		if (_count == 0) {
+		எனில் (மொத்தம்_3 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
-			return false;
+			மொத்தம்_3 = 1;
+			_mean = new_மதிப்பு;
+			திரும்பு பொய்;
 
-		} else if (_count == UINT16_MAX) {
+		} இல்லையெனில் எனில் (மொத்தம்_3 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / மொத்தம்_3;
 			_M2_accum = 0;
 
-			_count = 1;
+			மொத்தம்_3 = 1;
 
-		} else {
-			_count++;
+		} இல்லையெனில் {
+			மொத்தம்_3++;
 		}
 
 		// mean accumulates the mean of the entire dataset
 		// delta can be very small compared to the mean, use algorithm to minimise numerical error
-		const Type delta{new_value - _mean};
-		const Type mean_change = delta / _count;
+		மாறிலி Type delta{new_மதிப்பு - _mean};
+		மாறிலி Type mean_change = delta / மொத்தம்_3;
 		_mean = kahanSummation(_mean, mean_change, _mean_accum);
 
 		// M2 aggregates the squared distance from the mean
 		// count aggregates the number of samples seen so far
-		const Type M2_change = delta * (new_value - _mean);
+		மாறிலி Type M2_change = delta * (new_மதிப்பு - _mean);
 		_M2 = kahanSummation(_M2, M2_change, _M2_accum);
 
 		// protect against floating point precision causing negative variances
 		_M2 = math::max(_M2, 0.f);
 
-		if (!PX4_ISFINITE(_mean) || !PX4_ISFINITE(_M2)) {
+		எனில் (!PX4_ISFINITE(_mean) || !PX4_ISFINITE(_M2)) {
 			reset();
-			return false;
+			திரும்பு பொய்;
 		}
 
-		return valid();
+		திரும்பு valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	தருக்க valid() மாறிலி { திரும்பு மொத்தம்_3 > 2; }
+	auto மொத்தம்() மாறிலி { திரும்பு மொத்தம்_3; }
 
-	void reset()
+	வெறுமை reset()
 	{
-		_count = 0;
+		மொத்தம்_3 = 0;
 		_mean = 0;
 		_M2 = 0;
 
@@ -104,22 +104,22 @@ public:
 		_M2_accum = 0;
 	}
 
-	Type mean() const { return _mean; }
-	Type variance() const { return _M2 / (_count - 1); }
-	Type standard_deviation() const { return std::sqrt(variance()); }
+	Type mean() மாறிலி { திரும்பு _mean; }
+	Type variance() மாறிலி { திரும்பு _M2 / (மொத்தம்_3 - 1); }
+	Type standard_deviation() மாறிலி { திரும்பு std::sqrt(variance()); }
 
-private:
+தனிப்பட்ட:
 
 	// Use Kahan summation algorithm to get the sum of "sum_previous" and "input".
 	// This function relies on the caller to be responsible for keeping a copy of
 	// "accumulator" and passing this value at the next iteration.
 	// Ref: https://en.wikipedia.org/wiki/Kahan_summation_algorithm
-	inline Type kahanSummation(Type sum_previous, Type input, Type &accumulator)
+	உள்வரி Type kahanSummation(Type sum_previous, Type உள்ளீடு, Type &accumulator)
 	{
-		const Type y = input - accumulator;
-		const Type t = sum_previous + y;
+		மாறிலி Type y = உள்ளீடு - accumulator;
+		மாறிலி Type t = sum_previous + y;
 		accumulator = (t - sum_previous) - y;
-		return t;
+		திரும்பு t;
 	}
 
 	Type _mean{};
@@ -128,7 +128,7 @@ private:
 	Type _mean_accum{};  ///< kahan summation algorithm accumulator for mean
 	Type _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t மொத்தம்_3{0};
 };
 
 } // namespace math

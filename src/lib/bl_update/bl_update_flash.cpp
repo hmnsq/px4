@@ -31,52 +31,52 @@
  *
  ****************************************************************************/
 
-#include "bl_update_flash.h"
+#அந்தர்பாவ "bl_update_flash.h"
 
-#include <px4_platform_common/px4_config.h>
+#அந்தர்பாவ <px4_platform_common/px4_config.h>
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sched.h>
-#include <sys/stat.h>
+#அந்தர்பாவ <stdint.h>
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <string.h>
+#அந்தர்பாவ <unistd.h>
+#அந்தர்பாவ <fcntl.h>
+#அந்தர்பாவ <sched.h>
+#அந்தர்பாவ <sys/stat.h>
 
-#include <arch/board/board.h>
+#அந்தர்பாவ <arch/board/board.h>
 
-#include <nuttx/progmem.h>
+#அந்தர்பாவ <nuttx/progmem.h>
 
-#if defined(BL_UPDATE_WATCHDOG)
+#எனில் defined(BL_UPDATE_WATCHDOG)
 #  include <drivers/drv_watchdog.h>
-#else
+#இல்லையெனில்
 #  define watchdog_pet()
 #endif
 
-#if defined(CONFIG_ARCH_CHIP_STM32H7)
+#எனில் defined(CONFIG_ARCH_CHIP_STM32H7)
 #  define BL_FILE_SIZE_LIMIT	128*1024
 #  define STM_RAM_BASE        STM32_AXISRAM_BASE
 #  define PAGE_SIZE_MATTERS   1
-#elif defined(CONFIG_ARCH_CHIP_STM32F7)
+#அல்லதெனில் defined(CONFIG_ARCH_CHIP_STM32F7)
 #  define BL_FILE_SIZE_LIMIT	32*1024
 #  define STM_RAM_BASE        STM32_SRAM_BASE
-#else
+#இல்லையெனில்
 #  define BL_FILE_SIZE_LIMIT  16384
 #  define STM_RAM_BASE        STM32_SRAM_BASE
 #endif
 
-namespace bl_update
+நாமாகாஶ bl_update
 {
 
-#if defined (CONFIG_STM32_STM32F4XXX) || defined (CONFIG_ARCH_CHIP_STM32F7) || \
+#எனில் defined (CONFIG_STM32_STM32F4XXX) || defined (CONFIG_ARCH_CHIP_STM32F7) || \
     defined (CONFIG_ARCH_CHIP_STM32H7)
 
-static Result write_flash(const uint8_t *buf, size_t image_size)
+நிலையான Result write_flash(மாறிலி uint8_t *buf, size_t image_size)
 {
 	uint8_t *base = (uint8_t *) PX4_FLASH_BASE;
 
-	if (memcmp(base, buf, image_size) == 0) {
-		return Result::Unchanged;
+	எனில் (memcmp(base, buf, image_size) == 0) {
+		திரும்பு Result::Unchanged;
 	}
 
 	/* prevent other tasks from running while we do this */
@@ -85,12 +85,12 @@ static Result write_flash(const uint8_t *buf, size_t image_size)
 	/* The IWDG may already be running (CAN nodes start it in the bootloader)
 	 * and nothing else gets to pet it while the scheduler is locked. */
 	watchdog_pet();
-	const bool erased = up_progmem_eraseblock(0) >= 0;
+	மாறிலி தருக்க erased = up_progmem_eraseblock(0) >= 0;
 	watchdog_pet();
 
 	/* Program even if the erase reported an error: the old bootloader is
 	 * already damaged, and a failed program reports it below. */
-	const ssize_t size = up_progmem_write((size_t) base, buf, image_size);
+	மாறிலி ssize_t size = up_progmem_write((size_t) base, buf, image_size);
 	watchdog_pet();
 
 	/* re-lock the flash control register */
@@ -98,127 +98,127 @@ static Result write_flash(const uint8_t *buf, size_t image_size)
 
 	sched_unlock();
 
-	if (size != (ssize_t) image_size) {
-		return erased ? Result::ProgramFailed : Result::EraseFailed;
+	எனில் (size != (ssize_t) image_size) {
+		திரும்பு erased ? Result::ProgramFailed : Result::EraseFailed;
 	}
 
-	if (memcmp(base, buf, image_size) != 0) {
-		return Result::VerifyFailed;
+	எனில் (memcmp(base, buf, image_size) != 0) {
+		திரும்பு Result::VerifyFailed;
 	}
 
-	return Result::Updated;
+	திரும்பு Result::Updated;
 }
 
-Result flash(const char *path)
+Result flash(மாறிலி எழுத்து *path)
 {
-	int fd = open(path, O_RDONLY);
+	முழு fd = open(path, O_RDONLY);
 
-	if (fd < 0) {
-		return Result::OpenFailed;
+	எனில் (fd < 0) {
+		திரும்பு Result::OpenFailed;
 	}
 
-	struct stat s;
+	கட்டமைப்பு stat s;
 
-	if (fstat(fd, &s) != 0) {
+	எனில் (fstat(fd, &s) != 0) {
 		close(fd);
-		return Result::OpenFailed;
+		திரும்பு Result::OpenFailed;
 	}
 
-	if (s.st_size > BL_FILE_SIZE_LIMIT) {
+	எனில் (s.st_size > BL_FILE_SIZE_LIMIT) {
 		close(fd);
-		return Result::TooLarge;
+		திரும்பு Result::TooLarge;
 	}
 
-	const size_t file_size = s.st_size;
+	மாறிலி size_t file_size = s.st_size;
 
 	/* up_progmem_write() rejects a size that is not a multiple of its
 	 * program unit, and by then the old bootloader is erased. */
-#if defined(PAGE_SIZE_MATTERS)
-	const size_t align_mask = up_progmem_pagesize(0) - 1;
-#else
-	const size_t align_mask = sizeof(uint32_t) - 1;
+#எனில் defined(PAGE_SIZE_MATTERS)
+	மாறிலி size_t align_mask = up_progmem_pagesize(0) - 1;
+#இல்லையெனில்
+	மாறிலி size_t align_mask = அளவு(uint32_t) - 1;
 #endif
-	const size_t image_size = (file_size + align_mask) & ~align_mask;
+	மாறிலி size_t image_size = (file_size + align_mask) & ~align_mask;
 
 	uint8_t *buf = (uint8_t *)malloc(image_size);
 
-	if (buf == nullptr) {
+	எனில் (buf == nullptr) {
 		close(fd);
-		return Result::NoMemory;
+		திரும்பு Result::NoMemory;
 	}
 
 	memset(buf, 0xff, image_size);
 
-	const ssize_t bytes_read = read(fd, buf, file_size);
+	மாறிலி ssize_t bytes_read = பட(fd, buf, file_size);
 	close(fd);
 
-	if (bytes_read != (ssize_t) file_size) {
-		free(buf);
-		return Result::ReadFailed;
+	எனில் (bytes_read != (ssize_t) file_size) {
+		விடுவி(buf);
+		திரும்பு Result::ReadFailed;
 	}
 
-	const uint32_t *hdr = (const uint32_t *)buf;
+	மாறிலி uint32_t *hdr = (மாறிலி uint32_t *)buf;
 
-	if ((hdr[0] < STM_RAM_BASE) ||			/* stack not below RAM */
+	எனில் ((hdr[0] < STM_RAM_BASE) ||			/* stack not below RAM */
 	    (hdr[0] > (STM_RAM_BASE + (128 * 1024))) ||	/* stack not above RAM */
 	    (hdr[1] < PX4_FLASH_BASE) ||			/* entrypoint not below flash */
 	    ((hdr[1] - PX4_FLASH_BASE) > BL_FILE_SIZE_LIMIT)) {	/* entrypoint not outside bootloader */
-		free(buf);
-		return Result::InvalidImage;
+		விடுவி(buf);
+		திரும்பு Result::InvalidImage;
 	}
 
-	const Result result = write_flash(buf, image_size);
-	free(buf);
-	return result;
+	மாறிலி Result result = write_flash(buf, image_size);
+	விடுவி(buf);
+	திரும்பு result;
 }
 
-#else
+#இல்லையெனில்
 
-Result flash(const char *path)
+Result flash(மாறிலி எழுத்து *path)
 {
-	return Result::NotSupported;
+	திரும்பு Result::NotSupported;
 }
 
 #endif
 
-const char *result_str(Result result)
+மாறிலி எழுத்து *result_str(Result result)
 {
-	switch (result) {
-	case Result::Updated:
-		return "bootloader updated";
+	தேர்வு (result) {
+	நிலை Result::Updated:
+		திரும்பு "bootloader updated";
 
-	case Result::Unchanged:
-		return "bootloader unchanged";
+	நிலை Result::Unchanged:
+		திரும்பு "bootloader unchanged";
 
-	case Result::NotSupported:
-		return "not supported on this hardware";
+	நிலை Result::NotSupported:
+		திரும்பு "not supported on this hardware";
 
-	case Result::OpenFailed:
-		return "cannot open bootloader file";
+	நிலை Result::OpenFailed:
+		திரும்பு "cannot open bootloader file";
 
-	case Result::TooLarge:
-		return "bootloader file too large";
+	நிலை Result::TooLarge:
+		திரும்பு "bootloader file too large";
 
-	case Result::NoMemory:
-		return "out of memory";
+	நிலை Result::NoMemory:
+		திரும்பு "out of memory";
 
-	case Result::ReadFailed:
-		return "bootloader file read error";
+	நிலை Result::ReadFailed:
+		திரும்பு "bootloader file read error";
 
-	case Result::InvalidImage:
-		return "not a bootloader image";
+	நிலை Result::InvalidImage:
+		திரும்பு "not a bootloader image";
 
-	case Result::EraseFailed:
-		return "flash erase failed, retry before rebooting";
+	நிலை Result::EraseFailed:
+		திரும்பு "flash erase failed, retry before rebooting";
 
-	case Result::ProgramFailed:
-		return "flash program failed, retry before rebooting";
+	நிலை Result::ProgramFailed:
+		திரும்பு "flash program failed, retry before rebooting";
 
-	case Result::VerifyFailed:
-		return "verify failed, retry before rebooting";
+	நிலை Result::VerifyFailed:
+		திரும்பு "verify failed, retry before rebooting";
 	}
 
-	return "unknown error";
+	திரும்பு "unknown error";
 }
 
 } // namespace bl_update

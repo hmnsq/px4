@@ -33,33 +33,33 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#அந்தர்பாவ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gimbal_controls.h>
+#அந்தர்பாவ <uORB/topics/gimbal_controls.h>
 
 /**
  * Functions: Gimbal_Roll .. Gimbal_Yaw
  */
-class FunctionGimbal : public FunctionProviderBase
+வகுப்பு FunctionGimbal : பொது FunctionProviderBase
 {
-public:
-	FunctionGimbal() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGimbal(); }
+பொது:
+	FunctionGimbal() = இயல்பு;
+	நிலையான FunctionProviderBase *allocate(மாறிலி Context &context) { திரும்பு புதிய FunctionGimbal(); }
 
-	void update() override
+	வெறுமை update() override
 	{
 		gimbal_controls_s gimbal_controls;
 
-		if (_topic.update(&gimbal_controls)) {
+		எனில் (_topic.update(&gimbal_controls)) {
 			_data[0] = gimbal_controls.control[gimbal_controls_s::INDEX_ROLL];
 			_data[1] = gimbal_controls.control[gimbal_controls_s::INDEX_PITCH];
 			_data[2] = gimbal_controls.control[gimbal_controls_s::INDEX_YAW];
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Gimbal_Roll]; }
+	தசம value(OutputFunction func) override { திரும்பு _data[(முழு)func - (முழு)OutputFunction::Gimbal_Roll]; }
 
-private:
+தனிப்பட்ட:
 	uORB::Subscription _topic{ORB_ID(gimbal_controls)};
-	float _data[3] { NAN, NAN, NAN };
+	தசம _data[3] { NAN, NAN, NAN };
 };

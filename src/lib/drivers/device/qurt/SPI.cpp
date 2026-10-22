@@ -38,41 +38,41 @@
  *
  */
 
-#include "SPI.hpp"
+#அந்தர்பாவ "SPI.hpp"
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/i2c_spi_buses.h>
+#அந்தர்பாவ <fcntl.h>
+#அந்தர்பாவ <unistd.h>
+#அந்தர்பாவ <sys/ioctl.h>
+#அந்தர்பாவ <px4_platform_common/px4_config.h>
+#அந்தர்பாவ <px4_platform_common/i2c_spi_buses.h>
 
-static int (*register_interrupt_callback_func)(int (*)(int, void *, void *), void *arg) = NULL;
+நிலையான முழு (*register_interrupt_callback_func)(முழு (*)(முழு, வெறுமை *, வெறுமை *), வெறுமை *arg) = வெற்று;
 
-int px4_arch_gpiosetevent(spi_drdy_gpio_t pin, bool r, bool f, bool e, int (*func)(int, void *, void *), void *arg)
+முழு px4_arch_gpiosetevent(spi_drdy_gpio_t pin, தருக்க r, தருக்க f, தருக்க e, முழு (*func)(முழு, வெறுமை *, வெறுமை *), வெறுமை *arg)
 {
 
-	if ((register_interrupt_callback_func != NULL) && (func != NULL) && (arg != NULL)) {
+	எனில் ((register_interrupt_callback_func != வெற்று) && (func != வெற்று) && (arg != வெற்று)) {
 		PX4_INFO("Register interrupt %p %p %p", register_interrupt_callback_func, func, arg);
-		return register_interrupt_callback_func(func, arg);
+		திரும்பு register_interrupt_callback_func(func, arg);
 	}
 
-	return -1;
+	திரும்பு -1;
 }
 
-void register_interrupt_callback_initalizer(int (*func)(int (*)(int, void *, void *), void *arg))
+வெறுமை register_interrupt_callback_initalizer(முழு (*func)(முழு (*)(முழு, வெறுமை *, வெறுமை *), வெறுமை *arg))
 {
 	register_interrupt_callback_func = func;
 }
 
-namespace device
+நாமாகாஶ device
 {
 
-SPI::_config_spi_bus_func_t  SPI::_config_spi_bus  = NULL;
-SPI::_spi_transfer_func_t    SPI::_spi_transfer    = NULL;
+SPI::_config_spi_bus_func_t  SPI::_config_spi_bus  = வெற்று;
+SPI::_spi_transfer_func_t    SPI::_spi_transfer    = வெற்று;
 
 pthread_mutex_t SPI::_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
+SPI::SPI(uint8_t device_type, மாறிலி எழுத்து *name, முழு bus, uint32_t device, எண்ணிக்கை spi_mode_e mode, uint32_t frequency) :
 	CDev(name, nullptr)
 	// CDev(name, nullptr),
 	// _device(device),
@@ -90,7 +90,7 @@ SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum s
 	PX4_INFO("*** SPI Device ID 0x%x %d", _device_id.devid, _device_id.devid);
 }
 
-SPI::SPI(const I2CSPIDriverConfig &config)
+SPI::SPI(மாறிலி I2CSPIDriverConfig &config)
 	: SPI(config.devid_driver_index, config.module_name, config.bus, config.spi_devid, config.spi_mode,
 	      config.bus_frequency)
 {
@@ -99,89 +99,89 @@ SPI::SPI(const I2CSPIDriverConfig &config)
 
 SPI::~SPI()
 {
-	if (_fd >= 0) {
+	எனில் (_fd >= 0) {
 		::close(_fd);
 		_fd = -1;
 	}
 }
 
-int
+முழு
 SPI::init()
 {
-	int ret = PX4_ERROR;
+	முழு ret = PX4_ERROR;
 
-	if (_config_spi_bus == NULL) {
+	எனில் (_config_spi_bus == வெற்று) {
 		PX4_ERR("NULL spi init function");
-		return ret;
+		திரும்பு ret;
 	}
 
 	pthread_mutex_lock(&_mutex);
 	_fd = _config_spi_bus();
 	pthread_mutex_unlock(&_mutex);
 
-	if (_fd == PX4_ERROR) {
+	எனில் (_fd == PX4_ERROR) {
 		PX4_ERR("spi init failed");
-		return ret;
+		திரும்பு ret;
 	}
 
 	/* call the probe function to check whether the device is present */
 	ret = probe();
 
-	if (ret != OK) {
+	எனில் (ret != OK) {
 		PX4_INFO("SPI probe failed");
-		return ret;
+		திரும்பு ret;
 	}
 
 	/* do base class init, which will create the device node, etc. */
 	ret = CDev::init();
 
-	if (ret != OK) {
+	எனில் (ret != OK) {
 		PX4_ERR("cdev init failed");
-		return ret;
+		திரும்பு ret;
 	}
 
 	/* tell the world where we are */
 	PX4_INFO("on SPI bus %d", get_device_bus());
 
-	return PX4_OK;
+	திரும்பு PX4_OK;
 }
 
-int
+முழு
 SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 {
-	int ret = PX4_ERROR;
-	unsigned retry_count = 1;
+	முழு ret = PX4_ERROR;
+	unsigned retry_மொத்தம் = 1;
 
-	if ((_fd != PX4_ERROR) && (_spi_transfer != NULL)) {
-		do {
+	எனில் ((_fd != PX4_ERROR) && (_spi_transfer != வெற்று)) {
+		செய் {
 			// PX4_DEBUG("SPI transfer out %p in %p len %u", send, recv, len);
 
-			if (_spi_transfer != NULL) {
+			எனில் (_spi_transfer != வெற்று) {
 				pthread_mutex_lock(&_mutex);
 
-				if (recv) { ret = _spi_transfer(_fd, send, recv, len); }
+				எனில் (recv) { ret = _spi_transfer(_fd, send, recv, len); }
 
-				else { ret = _spi_transfer(_fd, send, send, len); }
+				இல்லையெனில் { ret = _spi_transfer(_fd, send, send, len); }
 
 				pthread_mutex_unlock(&_mutex);
 
-			} else {
+			} இல்லையெனில் {
 				PX4_ERR("SPI transfer function is NULL");
 			}
 
-			if (ret != PX4_ERROR) { break; }
+			எனில் (ret != PX4_ERROR) { நிறுத்து; }
 
-		} while (retry_count++ < _retries);
+		} போது (retry_மொத்தம்++ < _retries);
 	}
 
-	return ret;
+	திரும்பு ret;
 }
 
-int
+முழு
 SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 {
 	// Not supported on SLPI
-	return PX4_ERROR;
+	திரும்பு PX4_ERROR;
 }
 
 } // namespace device

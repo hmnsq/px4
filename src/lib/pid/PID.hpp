@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include <cmath>
+#அந்தர்பாவ <cmath>
 
-class PID
+வகுப்பு PID
 {
-public:
-	PID() = default;
-	virtual ~PID() = default;
-	void setOutputLimit(const float limit) {setOutputLimit(-limit, limit);}
-	void setOutputLimit(const float lower_limit, const float upper_limit);
-	void setIntegralLimit(const float limit) { _limit_integral = limit; }
-	void setGains(const float P, const float I, const float D);
-	void setSetpoint(const float setpoint) { _setpoint = setpoint; }
-	void setFeedForwardGain(const float feedforward_gain) { _gain_feedforward = feedforward_gain; }
-	float update(const float feedback, const float dt, const bool update_integral = true);
-	float getIntegral() { return _integral; }
-	void resetIntegral() { _integral = 0.f; }
-	void resetDerivative() { _last_feedback = NAN; }
-private:
-	void updateIntegral(float error, const float saturation, const float dt);
-	float updateDerivative(float feedback, const float dt);
+பொது:
+	PID() = இயல்பு;
+	மெய்நிகர் ~PID() = இயல்பு;
+	வெறுமை setOutputLimit(மாறிலி தசம limit) {setOutputLimit(-limit, limit);}
+	வெறுமை setOutputLimit(மாறிலி தசம lower_limit, மாறிலி தசம upper_limit);
+	வெறுமை setIntegralLimit(மாறிலி தசம limit) { _limit_integral = limit; }
+	வெறுமை setGains(மாறிலி தசம P, மாறிலி தசம I, மாறிலி தசம D);
+	வெறுமை setSetpoint(மாறிலி தசம setpoint) { _setpoint = setpoint; }
+	வெறுமை setFeedForwardGain(மாறிலி தசம feedforward_gain) { _gain_feedforward = feedforward_gain; }
+	தசம update(மாறிலி தசம feedback, மாறிலி தசம dt, மாறிலி தருக்க update_integral = உண்மை);
+	தசம getIntegral() { திரும்பு _integral; }
+	வெறுமை resetIntegral() { _integral = 0.f; }
+	வெறுமை resetDerivative() { _last_feedback = NAN; }
+தனிப்பட்ட:
+	வெறுமை updateIntegral(தசம error, மாறிலி தசம saturation, மாறிலி தசம dt);
+	தசம updateDerivative(தசம feedback, மாறிலி தசம dt);
 
-	float _setpoint{0.f}; ///< current setpoint to track
-	float _integral{0.f}; ///< integral state
-	float _last_feedback{NAN};
+	தசம _setpoint{0.f}; ///< current setpoint to track
+	தசம _integral{0.f}; ///< integral state
+	தசம _last_feedback{NAN};
 
 	// Gains, Limits
-	float _gain_feedforward{0.f};
-	float _gain_proportional{0.f};
-	float _gain_integral{0.f};
-	float _gain_derivative{0.f};
-	float _limit_integral{0.f};
-	float _lower_limit_output{0.f};
-	float _upper_limit_output{0.f};
+	தசம _gain_feedforward{0.f};
+	தசம _gain_proportional{0.f};
+	தசம _gain_integral{0.f};
+	தசம _gain_derivative{0.f};
+	தசம _limit_integral{0.f};
+	தசம _lower_limit_output{0.f};
+	தசம _upper_limit_output{0.f};
 };

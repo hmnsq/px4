@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#include <string.h>
+#அந்தர்பாவ <string.h>
 
 /**
  * @file parameters_common.cpp
@@ -40,7 +40,7 @@
  *
  */
 
-static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(param_info_s);
+நிலையான constexpr uint16_t param_info_மொத்தம் = அளவு(px4::parameters) / அளவு(param_info_s);
 
 /**
  * Test whether a param_t is value.
@@ -48,119 +48,119 @@ static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(pa
  * @param param			The parameter handle to test.
  * @return			True if the handle is valid.
  */
-static constexpr bool handle_in_range(param_t param) { return (param < param_info_count); }
+நிலையான constexpr தருக்க handle_in_range(param_t param) { திரும்பு (param < param_info_மொத்தம்); }
 
-unsigned param_count()
+unsigned param_மொத்தம்()
 {
-	return param_info_count;
+	திரும்பு param_info_மொத்தம்;
 }
 
-int param_get_index(param_t param)
+முழு param_get_index(param_t param)
 {
-	if (handle_in_range(param)) {
-		return (unsigned)param;
+	எனில் (handle_in_range(param)) {
+		திரும்பு (unsigned)param;
 	}
 
-	return -1;
+	திரும்பு -1;
 }
 
 param_t param_for_index(unsigned index)
 {
-	if (index < param_info_count) {
-		return (param_t)index;
+	எனில் (index < param_info_மொத்தம்) {
+		திரும்பு (param_t)index;
 	}
 
-	return PARAM_INVALID;
+	திரும்பு PARAM_INVALID;
 }
 
-const char *param_name(param_t param)
+மாறிலி எழுத்து *param_name(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters[param].name : nullptr;
+	திரும்பு handle_in_range(param) ? px4::parameters[param].name : nullptr;
 }
 
 param_type_t param_type(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
+	திரும்பு handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
 }
 
-bool param_is_volatile(param_t param)
+தருக்க param_is_volatile(param_t param)
 {
-	if (handle_in_range(param)) {
-		for (const auto &p : px4::parameters_volatile) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	எனில் (handle_in_range(param)) {
+		க்கு (மாறிலி auto &p : px4::parameters_volatile) {
+			எனில் (static_cast<px4::params>(param) == p) {
+				திரும்பு உண்மை;
 			}
 		}
 	}
 
-	return false;
+	திரும்பு பொய்;
 }
 
-static bool params_locked = false;
+நிலையான தருக்க params_locked = பொய்;
 
-bool param_is_readonly(param_t param)
+தருக்க param_is_readonly(param_t param)
 {
-	if (params_locked && handle_in_range(param)) {
-		for (const auto &p : px4::parameters_readonly) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	எனில் (params_locked && handle_in_range(param)) {
+		க்கு (மாறிலி auto &p : px4::parameters_readonly) {
+			எனில் (static_cast<px4::params>(param) == p) {
+				திரும்பு உண்மை;
 			}
 		}
 	}
 
-	return false;
+	திரும்பு பொய்;
 }
 
-void param_lock_readonly()
+வெறுமை param_lock_readonly()
 {
-	params_locked = true;
+	params_locked = உண்மை;
 }
 
 size_t param_size(param_t param)
 {
-	if (handle_in_range(param)) {
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-		case PARAM_TYPE_FLOAT:
-			return 4;
+	எனில் (handle_in_range(param)) {
+		தேர்வு (param_type(param)) {
+		நிலை PARAM_TYPE_INT32:
+		நிலை PARAM_TYPE_FLOAT:
+			திரும்பு 4;
 
-		default:
-			return 0;
+		இயல்பு:
+			திரும்பு 0;
 		}
 	}
 
-	return 0;
+	திரும்பு 0;
 }
 
-int
-param_get_system_default_value(param_t param, void *default_val)
+முழு
+param_get_system_default_மதிப்பு(param_t param, வெறுமை *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	எனில் (!handle_in_range(param)) {
+		திரும்பு PX4_ERROR;
 	}
 
-	int ret = PX4_OK;
+	முழு ret = PX4_OK;
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
+	தேர்வு (param_type(param)) {
+	நிலை PARAM_TYPE_INT32:
 		memcpy(default_val, &px4::parameters[param].val.i, param_size(param));
-		break;
+		நிறுத்து;
 
-	case PARAM_TYPE_FLOAT:
+	நிலை PARAM_TYPE_FLOAT:
 		memcpy(default_val, &px4::parameters[param].val.f, param_size(param));
-		break;
+		நிறுத்து;
 
-	default:
+	இயல்பு:
 		ret = PX4_ERROR;
-		break;
+		நிறுத்து;
 	}
 
-	return ret;
+	திரும்பு ret;
 }
 
-int
-param_get_mark_used(param_t param, void *val)
+முழு
+param_get_mark_used(param_t param, வெறுமை *val)
 {
 	param_set_used(param);
-	return param_get(param, val);
+	திரும்பு param_get(param, val);
 }

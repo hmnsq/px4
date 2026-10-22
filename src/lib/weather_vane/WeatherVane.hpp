@@ -42,41 +42,41 @@
 
 #pragma once
 
-#include <px4_platform_common/module_params.h>
-#include <matrix/matrix/math.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/vehicle_attitude_setpoint.h>
-#include <uORB/topics/vehicle_local_position.h>
-#include <uORB/topics/vehicle_control_mode.h>
-#include <uORB/topics/vehicle_status.h>
+#அந்தர்பாவ <px4_platform_common/module_params.h>
+#அந்தர்பாவ <matrix/matrix/math.hpp>
+#அந்தர்பாவ <uORB/Subscription.hpp>
+#அந்தர்பாவ <uORB/topics/vehicle_attitude_setpoint.h>
+#அந்தர்பாவ <uORB/topics/vehicle_local_position.h>
+#அந்தர்பாவ <uORB/topics/vehicle_control_mode.h>
+#அந்தர்பாவ <uORB/topics/vehicle_status.h>
 
-class WeatherVane : public ModuleParams
+வகுப்பு WeatherVane : பொது ModuleParams
 {
-public:
+பொது:
 	WeatherVane(ModuleParams *parent);
 
-	~WeatherVane() = default;
+	~WeatherVane() = இயல்பு;
 
-	void setNavigatorForceDisabled(bool navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
+	வெறுமை setNavigatorForceDisabled(தருக்க navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
 
-	bool isActive() {return _is_active;}
+	தருக்க isActive() {திரும்பு _is_active;}
 
-	void update();
+	வெறுமை update();
 
-	float getWeathervaneYawrate();
+	தசம getWeathervaneYawrate();
 
-private:
+தனிப்பட்ட:
 	uORB::Subscription _vehicle_attitude_setpoint_sub{ORB_ID(vehicle_attitude_setpoint)};
 	uORB::Subscription _vehicle_local_position_sub{ORB_ID(vehicle_local_position)};
 	uORB::Subscription _vehicle_control_mode_sub{ORB_ID(vehicle_control_mode)};
 	uORB::Subscription _vehicle_status_sub{ORB_ID(vehicle_status)};
 
-	bool _is_active{false};
+	தருக்க _is_active{பொய்};
 
 	// local copies of status such that we don't need to copy uORB messages all the time
-	bool _flag_control_manual_enabled{false};
-	bool _flag_control_position_enabled{false};
-	bool _navigator_force_disabled{false};
+	தருக்க _flag_control_manual_enabled{பொய்};
+	தருக்க _flag_control_position_enabled{பொய்};
+	தருக்க _navigator_force_disabled{பொய்};
 
 	DEFINE_PARAMETERS(
 		(ParamBool<px4::params::WV_EN>) _param_wv_en,

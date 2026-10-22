@@ -31,25 +31,25 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <math.h>
-#include "TimestampedRingBuffer.hpp"
+#அந்தர்பாவ <gtest/gtest.h>
+#அந்தர்பாவ <math.h>
+#அந்தர்பாவ "TimestampedRingBuffer.hpp"
 
-struct Sample {
+கட்டமைப்பு Sample {
 	uint64_t time_us;
-	float data[3];
+	தசம data[3];
 };
 
 
-class TimestampedRingBufferStaticTest : public ::testing::Test
+வகுப்பு TimestampedRingBufferStaticTest : பொது ::testing::Test
 {
-public:
+பொது:
 	Sample _x, _y, _z, _w;
 	TimestampedRingBuffer<Sample, 3> *_buffer{nullptr};
 
-	void SetUp() override
+	வெறுமை SetUp() override
 	{
-		_buffer = new TimestampedRingBuffer<Sample, 3>();
+		_buffer = புதிய TimestampedRingBuffer<Sample, 3>();
 		_x.time_us = 1000000;
 		_x.data[0] = _x.data[1] = _x.data[2] = 1.5f;
 
@@ -63,7 +63,7 @@ public:
 		_w.data[0] = _w.data[1] = _w.data[2] = 5.0f;
 	}
 
-	void TearDown() override
+	வெறுமை TearDown() override
 	{
 		delete _buffer;
 	}
@@ -89,69 +89,69 @@ TEST_F(TimestampedRingBufferStaticTest, NextPrevHelpers)
 	EXPECT_EQ(_buffer->prev(2), 1);
 }
 
-TEST_F(TimestampedRingBufferStaticTest, PushWrapAndIndices)
+TEST_F(TimestampedRingBufferStaticTest, தள்ளு_Wrap_And_Indices)
 {
 	_buffer->reset();
 	ASSERT_TRUE(_buffer->empty());
 
-	_buffer->push(_x);
-	_buffer->push(_y);
+	_buffer->தள்ளு(_x);
+	_buffer->தள்ளு(_y);
 	EXPECT_EQ(_buffer->entries(), 2);
-	_buffer->push(_z);
+	_buffer->தள்ளு(_z);
 
 	EXPECT_EQ(_buffer->entries(), 3);
 	EXPECT_EQ(_buffer->get_oldest().time_us, _x.time_us);
 	EXPECT_EQ(_buffer->get_newest().time_us, _z.time_us);
 
 	// Overwrite once (ring wrap-around).
-	_buffer->push(_w);
+	_buffer->தள்ளு(_w);
 
 	EXPECT_EQ(_buffer->entries(), 3);
 	EXPECT_EQ(_buffer->get_oldest().time_us, _y.time_us);
 	EXPECT_EQ(_buffer->get_newest().time_us, _w.time_us);
 }
 
-TEST_F(TimestampedRingBufferStaticTest, PopFirstOlderThanDiscardsOlderHistory)
+TEST_F(TimestampedRingBufferStaticTest, எடு_First_Older_Than_Discards_Older_History)
 {
 	_buffer->reset();
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	_buffer->தள்ளு(_x);
+	_buffer->தள்ளு(_y);
+	_buffer->தள்ளு(_z);
 
-	Sample pop = {};
+	Sample எடு = {};
 
 	// Query timestamp older than any in the buffer: no match.
-	EXPECT_FALSE(_buffer->pop_first_older_than(0, &pop));
+	EXPECT_FALSE(_buffer->எடு_first_older_than(0, &எடு));
 
 	// Pop y (also discards x), leaving z as the only remaining Sample.
-	EXPECT_TRUE(_buffer->pop_first_older_than(_y.time_us + 10, &pop));
-	EXPECT_EQ(pop.time_us, _y.time_us);
+	EXPECT_TRUE(_buffer->எடு_first_older_than(_y.time_us + 10, &எடு));
+	EXPECT_EQ(எடு.time_us, _y.time_us);
 
 	EXPECT_EQ(_buffer->entries(), 1);
 	EXPECT_EQ(_buffer->get_oldest().time_us, _z.time_us);
 	EXPECT_EQ(_buffer->get_newest().time_us, _z.time_us);
 
 	// Pop z (buffer becomes empty).
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 1, &pop));
-	EXPECT_EQ(pop.time_us, _z.time_us);
+	EXPECT_TRUE(_buffer->எடு_first_older_than(_z.time_us + 1, &எடு));
+	EXPECT_EQ(எடு.time_us, _z.time_us);
 	EXPECT_TRUE(_buffer->empty());
 }
 
 TEST_F(TimestampedRingBufferStaticTest, ResetClearsTimestamps)
 {
-	_buffer->push(_x);
-	_buffer->push(_y);
+	_buffer->தள்ளு(_x);
+	_buffer->தள்ளு(_y);
 	EXPECT_FALSE(_buffer->empty());
 
 	_buffer->reset();
 	EXPECT_TRUE(_buffer->empty());
 
-	for (uint8_t i = 0; i < _buffer->get_length(); i++) {
+	க்கு (uint8_t i = 0; i < _buffer->get_length(); i++) {
 		EXPECT_EQ((*_buffer)[i].time_us, 0u);
 	}
 }
 
 TEST_F(TimestampedRingBufferStaticTest, TotalSizeReflectsInlineStorage)
 {
-	EXPECT_EQ(_buffer->get_total_size(), static_cast<int>(sizeof(TimestampedRingBuffer<Sample, 3>)));
+	EXPECT_EQ(_buffer->get_total_size(), static_cast<முழு>(அளவு(TimestampedRingBuffer<Sample, 3>)));
 }

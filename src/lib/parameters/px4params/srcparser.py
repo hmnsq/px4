@@ -1,17 +1,17 @@
-import sys
-import re
-import math
+இறக்குமதி sys
+இறக்குமதி re
+இறக்குமதி math
 
-global default_var
+வைஶ்விக default_var
 default_var = {}
 
-class ParameterGroup(object):
+வகுப்பு ParameterGroup(object):
     """
     Single parameter group
     """
     def __init__(self, name):
         self.name = name
-        self.no_code_generation = False #for injected parameters
+        self.no_code_generation = பொய் #for injected parameters
         self.params = []
 
     def AddParameter(self, param):
@@ -24,7 +24,7 @@ class ParameterGroup(object):
         """
         Get parameter group name
         """
-        return self.name
+        திரும்பு self.name
 
     def GetParams(self):
         """
@@ -32,9 +32,9 @@ class ParameterGroup(object):
         object. Note that returned object is not a copy. Modifications affect
         state of the parser.
         """
-        return sorted(self.params, key=lambda param: param.name)
+        திரும்பு sorted(self.params, சாவி=பெயரிலி param: param.name)
 
-class Parameter(object):
+வகுப்பு Parameter(object):
     """
     Single parameter
     """
@@ -51,50 +51,50 @@ class Parameter(object):
         # all others == 0 (sorted alphabetically)
     }
 
-    def __init__(self, name, type, default = ""):
+    def __init__(self, name, type, இயல்பு = ""):
         self.fields = {}
-        self.values = {}
+        self.மதிப்புகள்_2 = {}
         self.bitmask = {}
         self.name = name
         self.type = type
-        self.default = default
+        self.இயல்பு = இயல்பு
         self.category = ""
-        self.volatile = False
-        self.boolean = False
-        self.readonly = False
+        self.நிலையற்ற = பொய்
+        self.boolean = பொய்
+        self.readonly = பொய்
 
     def GetName(self):
-        return self.name
+        திரும்பு self.name
 
     def GetType(self):
-        return self.type
+        திரும்பு self.type
 
     def GetDefault(self):
-        return self.default
+        திரும்பு self.இயல்பு
 
     def GetCategory(self):
-        return self.category.title()
+        திரும்பு self.category.title()
 
     def GetVolatile(self):
-        return self.volatile
+        திரும்பு self.நிலையற்ற
 
     def GetBoolean(self):
-        return self.boolean
+        திரும்பு self.boolean
 
     def GetReadonly(self):
-        return self.readonly
+        திரும்பு self.readonly
 
-    def SetField(self, code, value):
+    def SetField(self, code, மதிப்பு):
         """
         Set named field value
         """
-        self.fields[code] = value
+        self.fields[code] = மதிப்பு
 
-    def SetEnumValue(self, code, value):
+    def Set_Enum_மதிப்பு(self, code, மதிப்பு):
         """
         Set named enum value
         """
-        self.values[code] = value
+        self.மதிப்புகள்_2[code] = மதிப்பு
 
     def SetBitmaskBit(self, index, bit):
         """
@@ -106,19 +106,19 @@ class Parameter(object):
         """
         Set volatile flag
         """
-        self.volatile = True
+        self.நிலையற்ற = உண்மை
 
     def SetBoolean(self):
         """
         Set boolean flag
         """
-        self.boolean = True
+        self.boolean = உண்மை
 
     def SetReadonly(self):
         """
         Set readonly flag
         """
-        self.readonly = True
+        self.readonly = உண்மை
 
     def SetCategory(self, category):
         """
@@ -130,60 +130,60 @@ class Parameter(object):
         """
         Return list of existing field codes in convenient order
         """
-        keys = self.fields.keys()
-        keys = sorted(keys)
-        keys = sorted(keys, key=lambda x: self.priority.get(x, 0), reverse=True)
-        return keys
+        சாவிகள் = self.fields.சாவிகள்()
+        சாவிகள் = sorted(சாவிகள்)
+        சாவிகள் = sorted(சாவிகள், சாவி=பெயரிலி x: self.priority.get(x, 0), reverse=உண்மை)
+        திரும்பு சாவிகள்
 
-    def GetFieldValue(self, code):
+    def Get_Field_மதிப்பு(self, code):
         """
         Return value of the given field code or None if not found.
         """
         fv =  self.fields.get(code)
-        if not fv:
+        எனில் இல்லை fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv
+                திரும்பு ""
+        திரும்பு fv
 
     def GetEnumCodes(self):
         """
         Return list of existing value codes in convenient order
         """
-        return sorted(self.values.keys(), key=float)
+        திரும்பு sorted(self.மதிப்புகள்_2.சாவிகள்(), சாவி=தசம)
 
-    def GetEnumValue(self, code):
+    def Get_Enum_மதிப்பு(self, code):
         """
         Return value of the given enum code or None if not found.
         """
-        fv =  self.values.get(code)
-        if not fv:
+        fv =  self.மதிப்புகள்_2.get(code)
+        எனில் இல்லை fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv
+                திரும்பு ""
+        திரும்பு fv
 
     def GetBitmaskList(self):
         """
         Return list of existing bitmask codes in convenient order
         """
-        keys = self.bitmask.keys()
-        return sorted(keys, key=float)
+        சாவிகள் = self.bitmask.சாவிகள்()
+        திரும்பு sorted(சாவிகள், சாவி=தசம)
 
     def GetBitmaskBit(self, index):
         """
         Return value of the given bitmask code or None if not found.
         """
         fv = self.bitmask.get(index)
-        if not fv:
+        எனில் இல்லை fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv.strip()
+                திரும்பு ""
+        திரும்பு fv.strip()
 
-class SourceParser(object):
+வகுப்பு SourceParser(object):
     """
     Parses provided data and stores all found parameters internally.
     """
 
-    re_split_lines = re.compile(r'[\r\n]+')
+    re_split_வரிகள் = re.compile(r'[\r\n]+')
     re_comment_start = re.compile(r'^\/\*\*')
     re_comment_content = re.compile(r'^\*\s*(.*)')
     re_comment_tag = re.compile(r'@([a-zA-Z][a-zA-Z0-9_]*)\s*(.*)')
@@ -192,7 +192,7 @@ class SourceParser(object):
     re_px4_parameter_definition = re.compile(r'PX4_PARAM_DEFINE_([A-Z_][A-Z0-9_]*)\s*\(([A-Z_][A-Z0-9_]*)\s*\)\s*;')
     re_px4_param_default_definition = re.compile(r'#define\s*PARAM_([A-Z_][A-Z0-9_]*)\s*([^ ,\)]+)\s*')
     re_cut_type_specifier = re.compile(r'[a-z]+$')
-    re_is_a_number = re.compile(r'^-?[0-9\.]')
+    re_is_a_எண் = re.compile(r'^-?[0-9\.]')
     re_remove_dots = re.compile(r'\.+$')
 
     valid_tags = set(["group", "board", "min", "max", "unit", "decimal", "increment", "reboot_required", "value", "boolean", "bit", "category", "volatile"])
@@ -215,146 +215,146 @@ class SourceParser(object):
         # represents parser state. It contains human-readable state
         # names.
         state = None
-        for line in self.re_split_lines.split(contents):
-            line = line.strip()
+        க்கு வரி உள் self.re_split_வரிகள்.split(contents):
+            வரி = வரி.strip()
             # Ignore empty lines
-            if line == "":
-                continue
-            if self.re_comment_start.match(line):
+            எனில் வரி == "":
+                தொடர்
+            எனில் self.re_comment_start.match(வரி):
                 state = "wait-short"
                 short_desc = None
                 long_desc = None
                 tags = {}
-                def_values = {}
+                def_மதிப்புகள் = {}
                 def_bitmask = {}
-            elif state is not None and state != "comment-processed":
-                m = self.re_comment_end.search(line)
-                if m:
-                    line = m.group(1)
-                    last_comment_line = True
-                else:
-                    last_comment_line = False
-                m = self.re_comment_content.match(line)
-                if m:
+            அல்லதெனில் state is இல்லை None மற்றும் state != "comment-processed":
+                m = self.re_comment_end.தேடல்(வரி)
+                எனில் m:
+                    வரி = m.group(1)
+                    last_comment_வரி = உண்மை
+                இல்லையெனில்:
+                    last_comment_வரி = பொய்
+                m = self.re_comment_content.match(வரி)
+                எனில் m:
                     comment_content = m.group(1)
-                    if comment_content == "":
+                    எனில் comment_content == "":
                         # When short comment ends with empty comment line,
                         # start waiting for the next part - long comment.
-                        if state == "wait-short-end":
+                        எனில் state == "wait-short-end":
                             state = "wait-long"
-                        if state == "wait-long-end":
+                        எனில் state == "wait-long-end":
                             # Long description includes empty lines
                             long_desc += "\n"
-                    else:
+                    இல்லையெனில்:
                         m = self.re_comment_tag.match(comment_content)
-                        if m:
+                        எனில் m:
                             tag, desc = m.group(1, 2)
-                            if (tag == "value"):
+                            எனில் (tag == "value"):
                                 # Take the meta info string and split the code and description
                                 metainfo = desc.split(" ",  1)
-                                def_values[metainfo[0]] = metainfo[1]
-                            elif (tag == "bit"):
+                                def_மதிப்புகள்[metainfo[0]] = metainfo[1]
+                            அல்லதெனில் (tag == "bit"):
                                 # Take the meta info string and split the code and description
                                 metainfo = desc.split(" ",  1)
                                 def_bitmask[metainfo[0]] = metainfo[1]
-                            else:
+                            இல்லையெனில்:
                                 tags[tag] = desc
                             current_tag = tag
                             state = "wait-tag-end"
-                        elif state == "wait-short":
+                        அல்லதெனில் state == "wait-short":
                             # Store first line of the short description
                             short_desc = comment_content
                             state = "wait-short-end"
-                        elif state == "wait-short-end":
+                        அல்லதெனில் state == "wait-short-end":
                             # Append comment line to the short description
                             short_desc += "\n" + comment_content
-                        elif state == "wait-long":
+                        அல்லதெனில் state == "wait-long":
                             # Store first line of the long description
                             long_desc = comment_content
                             state = "wait-long-end"
-                        elif state == "wait-long-end":
+                        அல்லதெனில் state == "wait-long-end":
                             # Append comment line to the long description
                             long_desc += "\n" + comment_content
-                        elif state == "wait-tag-end":
+                        அல்லதெனில் state == "wait-tag-end":
                             # Append comment line to the tag text
                             tags[current_tag] += "\n" + comment_content
-                        else:
-                            raise AssertionError(
+                        இல்லையெனில்:
+                            எழுப்பு AssertionError(
                                     "Invalid parser state: %s" % state)
-                elif not last_comment_line:
+                அல்லதெனில் இல்லை last_comment_வரி:
                     # Invalid comment line (inside comment, but not starting with
                     # "*" or "*/". Reset parsed content.
                     state = None
-                if last_comment_line:
+                எனில் last_comment_வரி:
                     state = "comment-processed"
-            else:
+            இல்லையெனில்:
                 tp = None
                 name = None
                 defval = ""
                 # Non-empty line outside the comment
-                m = self.re_px4_param_default_definition.match(line)
+                m = self.re_px4_param_default_definition.match(வரி)
                 # Default value handling
-                if m:
+                எனில் m:
                     name_m, defval_m = m.group(1,2)
                     default_var[name_m] = defval_m
-                m = self.re_parameter_definition.match(line)
-                if m:
+                m = self.re_parameter_definition.match(வரி)
+                எனில் m:
                     tp, name, defval = m.group(1, 2, 3)
-                else:
-                    m = self.re_px4_parameter_definition.match(line)
-                    if m:
+                இல்லையெனில்:
+                    m = self.re_px4_parameter_definition.match(வரி)
+                    எனில் m:
                         tp, name = m.group(1, 2)
-                        if (name+'_DEFAULT') in default_var:
+                        எனில் (name+'_DEFAULT') உள் default_var:
                             defval = default_var[name+'_DEFAULT']
-                if tp is not None:
+                எனில் tp is இல்லை None:
                     # Remove trailing type specifier from numbers: 0.1f => 0.1
-                    if defval != "" and self.re_is_a_number.match(defval):
+                    எனில் defval != "" மற்றும் self.re_is_a_எண்.match(defval):
                         defval = self.re_cut_type_specifier.sub('', defval)
                     param = Parameter(name, tp, defval)
                     param.SetField("short_desc", name)
                     # If comment was found before the parameter declaration,
                     # inject its data into the newly created parameter.
                     group = "Miscellaneous"
-                    if state == "comment-processed":
-                        if short_desc is not None:
-                            if '\n' in short_desc:
-                                raise Exception('short description must be a single line (parameter: {:})'.format(name))
-                            if len(short_desc) > 150:
-                                raise Exception('short description too long (150 max, is {:}, parameter: {:})'.format(len(short_desc), name))
+                    எனில் state == "comment-processed":
+                        எனில் short_desc is இல்லை None:
+                            எனில் '\n' உள் short_desc:
+                                எழுப்பு Exception('short description must be a single line (parameter: {:})'.format(name))
+                            எனில் len(short_desc) > 150:
+                                எழுப்பு Exception('short description too long (150 max, is {:}, parameter: {:})'.format(len(short_desc), name))
                             param.SetField("short_desc", self.re_remove_dots.sub('', short_desc))
-                        if long_desc is not None:
+                        எனில் long_desc is இல்லை None:
                             param.SetField("long_desc", long_desc)
-                        for tag in tags:
-                            if tag == "group":
+                        க்கு tag உள் tags:
+                            எனில் tag == "group":
                                 group = tags[tag]
-                            elif tag == "volatile":
+                            அல்லதெனில் tag == "volatile":
                                 param.SetVolatile()
-                            elif tag == "category":
+                            அல்லதெனில் tag == "category":
                                 param.SetCategory(tags[tag])
-                            elif tag == "boolean":
+                            அல்லதெனில் tag == "boolean":
                                 param.SetBoolean()
-                            elif tag not in self.valid_tags:
-                                sys.stderr.write("Skipping invalid documentation tag: '%s'\n" % tag)
-                                return False
-                            else:
+                            அல்லதெனில் tag இல்லை உள் self.valid_tags:
+                                sys.stderr.லிக("Skipping invalid documentation tag: '%s'\n" % tag)
+                                திரும்பு பொய்
+                            இல்லையெனில்:
                                 param.SetField(tag, tags[tag])
-                        for def_value in def_values:
-                            param.SetEnumValue(def_value, def_values[def_value])
-                        for def_bit in def_bitmask:
+                        க்கு def_மதிப்பு உள் def_மதிப்புகள்:
+                            param.Set_Enum_மதிப்பு(def_மதிப்பு, def_மதிப்புகள்[def_மதிப்பு])
+                        க்கு def_bit உள் def_bitmask:
                             param.SetBitmaskBit(def_bit, def_bitmask[def_bit])
                     # Store the parameter
-                    if group not in self.param_groups:
+                    எனில் group இல்லை உள் self.param_groups:
                         self.param_groups[group] = ParameterGroup(group)
                     self.param_groups[group].AddParameter(param)
                 state = None
-        return True
+        திரும்பு உண்மை
 
-    def IsNumber(self, numberString):
-        try:
-            float(numberString)
-            return True
-        except ValueError:
-            return False
+    def Is_எண்(self, எண்_String):
+        முயல்:
+            தசம(எண்_String)
+            திரும்பு உண்மை
+        விதிவிலக்கு மதிப்பு_Error:
+            திரும்பு பொய்
 
     def Validate(self):
         """
@@ -377,67 +377,67 @@ class SourceParser(object):
                                 'N/(m/s)', 'Nm/rad', 'Nm/(rad/s)', 'Nm', 'N',
                                 'rpm',
                                 'normalized_thrust/s', 'normalized_thrust', 'norm', 'SD', 'dBHz', ''])
-        for group in self.GetParamGroups():
-            for param in group.GetParams():
+        க்கு group உள் self.GetParamGroups():
+            க்கு param உள் group.GetParams():
                 name  = param.GetName()
-                if len(name) > 16:
-                    sys.stderr.write("Parameter Name {0} is too long (Limit is 16)\n".format(name))
-                    return False
-                board = param.GetFieldValue("board")
+                எனில் len(name) > 16:
+                    sys.stderr.லிக("Parameter Name {0} is too long (Limit is 16)\n".format(name))
+                    திரும்பு பொய்
+                board = param.Get_Field_மதிப்பு("board")
                 # Check for duplicates
                 name_plus_board = name + "+" + board
-                for seenParamName in seenParamNames:
-                    if seenParamName == name_plus_board:
-                        sys.stderr.write("Duplicate parameter definition: {0}\n".format(name_plus_board))
-                        return False
+                க்கு seenParamName உள் seenParamNames:
+                    எனில் seenParamName == name_plus_board:
+                        sys.stderr.லிக("Duplicate parameter definition: {0}\n".format(name_plus_board))
+                        திரும்பு பொய்
                 seenParamNames.append(name_plus_board)
                 # Validate values
-                default = param.GetDefault()
-                min = param.GetFieldValue("min")
-                max = param.GetFieldValue("max")
-                units = param.GetFieldValue("unit")
-                if units not in allowedUnits:
-                    sys.stderr.write("Invalid unit in {0}: {1}\n".format(name, units))
-                    return False
+                இயல்பு = param.GetDefault()
+                min = param.Get_Field_மதிப்பு("min")
+                max = param.Get_Field_மதிப்பு("max")
+                units = param.Get_Field_மதிப்பு("unit")
+                எனில் units இல்லை உள் allowedUnits:
+                    sys.stderr.லிக("Invalid unit in {0}: {1}\n".format(name, units))
+                    திரும்பு பொய்
                 #sys.stderr.write("{0} default:{1} min:{2} max:{3}\n".format(name, default, min, max))
-                if default != "" and not self.IsNumber(default):
-                    sys.stderr.write("Default value not number: {0} {1}\n".format(name, default))
-                    return False
+                எனில் இயல்பு != "" மற்றும் இல்லை self.Is_எண்(இயல்பு):
+                    sys.stderr.லிக("Default value not number: {0} {1}\n".format(name, இயல்பு))
+                    திரும்பு பொய்
                 # if default != "" and "." not in default:
                 #     sys.stderr.write("Default value does not contain dot (e.g. 10 needs to be written as 10.0): {0} {1}\n".format(name, default))
                 #     return False
-                if min != "":
-                    if not self.IsNumber(min):
-                        sys.stderr.write("Min value not number: {0} {1}\n".format(name, min))
-                        return False
-                    if default != "" and float(default) < float(min):
-                        sys.stderr.write("Default value is smaller than min: {0} default:{1} min:{2}\n".format(name, default, min))
-                        return False
-                if max != "":
-                    if not self.IsNumber(max):
-                        sys.stderr.write("Max value not number: {0} {1}\n".format(name, max))
-                        return False
-                    if default != "" and float(default) > float(max):
-                        sys.stderr.write("Default value is larger than max: {0} default:{1} max:{2}\n".format(name, default, max))
-                        return False
-                for code in param.GetEnumCodes():
-                        if not self.IsNumber(code):
-                            sys.stderr.write("Min value not number: {0} {1}\n".format(name, code))
-                            return False
-                        if param.GetEnumValue(code) == "":
-                            sys.stderr.write("Description for enum value is empty: {0} {1}\n".format(name, code))
-                            return False
-                for index in param.GetBitmaskList():
-                        if not self.IsNumber(index):
-                            sys.stderr.write("bit value not number: {0} {1}\n".format(name, index))
-                            return False
-                        if not int(min) <= math.pow(2, int(index)) <= int(max):
-                            sys.stderr.write("Bitmask bit must be between {0} and {1}: {2} {3}\n".format(min, max, name, math.pow(2, int(index))))
-                            return False
-                        if param.GetBitmaskBit(index) == "":
-                            sys.stderr.write("Description for bitmask bit is empty: {0} {1}\n".format(name, index))
-                            return False
-        return True
+                எனில் min != "":
+                    எனில் இல்லை self.Is_எண்(min):
+                        sys.stderr.லிக("Min value not number: {0} {1}\n".format(name, min))
+                        திரும்பு பொய்
+                    எனில் இயல்பு != "" மற்றும் தசம(இயல்பு) < தசம(min):
+                        sys.stderr.லிக("Default value is smaller than min: {0} default:{1} min:{2}\n".format(name, இயல்பு, min))
+                        திரும்பு பொய்
+                எனில் max != "":
+                    எனில் இல்லை self.Is_எண்(max):
+                        sys.stderr.லிக("Max value not number: {0} {1}\n".format(name, max))
+                        திரும்பு பொய்
+                    எனில் இயல்பு != "" மற்றும் தசம(இயல்பு) > தசம(max):
+                        sys.stderr.லிக("Default value is larger than max: {0} default:{1} max:{2}\n".format(name, இயல்பு, max))
+                        திரும்பு பொய்
+                க்கு code உள் param.GetEnumCodes():
+                        எனில் இல்லை self.Is_எண்(code):
+                            sys.stderr.லிக("Min value not number: {0} {1}\n".format(name, code))
+                            திரும்பு பொய்
+                        எனில் param.Get_Enum_மதிப்பு(code) == "":
+                            sys.stderr.லிக("Description for enum value is empty: {0} {1}\n".format(name, code))
+                            திரும்பு பொய்
+                க்கு index உள் param.GetBitmaskList():
+                        எனில் இல்லை self.Is_எண்(index):
+                            sys.stderr.லிக("bit value not number: {0} {1}\n".format(name, index))
+                            திரும்பு பொய்
+                        எனில் இல்லை முழு(min) <= math.pow(2, முழு(index)) <= முழு(max):
+                            sys.stderr.லிக("Bitmask bit must be between {0} and {1}: {2} {3}\n".format(min, max, name, math.pow(2, முழு(index))))
+                            திரும்பு பொய்
+                        எனில் param.GetBitmaskBit(index) == "":
+                            sys.stderr.லிக("Description for bitmask bit is empty: {0} {1}\n".format(name, index))
+                            திரும்பு பொய்
+        திரும்பு உண்மை
 
     def GetParamGroups(self):
         """
@@ -445,7 +445,7 @@ class SourceParser(object):
         object. Note that returned object is not a copy. Modifications affect
         state of the parser.
         """
-        groups = self.param_groups.values()
-        groups = sorted(groups, key=lambda x: x.GetName())
-        groups = sorted(groups, key=lambda x: self.priority.get(x.GetName(), 0), reverse=True)
-        return groups
+        groups = self.param_groups.மதிப்புகள்_2()
+        groups = sorted(groups, சாவி=பெயரிலி x: x.GetName())
+        groups = sorted(groups, சாவி=பெயரிலி x: self.priority.get(x.GetName(), 0), reverse=உண்மை)
+        திரும்பு groups

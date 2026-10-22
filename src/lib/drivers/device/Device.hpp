@@ -40,18 +40,18 @@
 #ifndef _DEVICE_DEVICE_HPP
 #define _DEVICE_DEVICE_HPP
 
-#include <cstdio>
+#அந்தர்பாவ <cstdio>
 
 /*
  * Includes here should only cover the needs of the framework definitions.
  */
-#include <px4_platform_common/i2c.h>
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/spi.h>
+#அந்தர்பாவ <px4_platform_common/i2c.h>
+#அந்தர்பாவ <px4_platform_common/log.h>
+#அந்தர்பாவ <px4_platform_common/px4_config.h>
+#அந்தர்பாவ <px4_platform_common/posix.h>
+#அந்தர்பாவ <px4_platform_common/spi.h>
 
-#include <drivers/drv_sensor.h>
+#அந்தர்பாவ <drivers/drv_sensor.h>
 
 #define DEVICE_LOG(FMT, ...) PX4_LOG_NAMED(_name, FMT, ##__VA_ARGS__)
 #define DEVICE_DEBUG(FMT, ...) PX4_LOG_NAMED_COND(_name, _debug_enabled, FMT, ##__VA_ARGS__)
@@ -59,7 +59,7 @@
 /**
  * Namespace encapsulating all device framework classes, functions and data.
  */
-namespace device
+நாமாகாஶ device
 {
 
 /**
@@ -69,20 +69,20 @@ namespace device
  * inferred; onboard chips on a Shared bus must call set_external(false) via -I/-s).
  * UAVCAN, serial, MAVLink → external. Simulation → internal.
  */
-inline bool device_is_external(uint32_t device_id);
+உள்வரி தருக்க device_is_external(uint32_t device_id);
 
 /**
  * Fundamental base class for all physical drivers (I2C, SPI).
  *
  * This class provides the basic driver template for I2C and SPI devices
  */
-class __EXPORT Device
+வகுப்பு __EXPORT Device
 {
-public:
+பொது:
 
 	// no copy, assignment, move, move assignment
-	Device(const Device &) = delete;
-	Device &operator=(const Device &) = delete;
+	Device(மாறிலி Device &) = delete;
+	Device &operator=(மாறிலி Device &) = delete;
 	Device(Device &&) = delete;
 	Device &operator=(Device &&) = delete;
 
@@ -91,7 +91,7 @@ public:
 	 *
 	 * Public so that anonymous devices can be destroyed.
 	 */
-	virtual ~Device() = default;
+	மெய்நிகர் ~Device() = இயல்பு;
 
 	/*
 	 * Direct access methods.
@@ -102,7 +102,7 @@ public:
 	 *
 	 * @return	OK if the driver initialized OK, negative errno otherwise;
 	 */
-	virtual int	init() { return PX4_OK; }
+	மெய்நிகர் முழு	init() { திரும்பு PX4_OK; }
 
 	/**
 	 * Read directly from the device.
@@ -114,7 +114,7 @@ public:
 	 * @param count		The number of items to read.
 	 * @return		The number of items read on success, negative errno otherwise.
 	 */
-	virtual int	read(unsigned address, void *data, unsigned count) { return -ENODEV; }
+	மெய்நிகர் முழு	பட(unsigned address, வெறுமை *data, unsigned மொத்தம்) { திரும்பு -ENODEV; }
 
 	/**
 	 * Write directly to the device.
@@ -126,7 +126,7 @@ public:
 	 * @param count		The number of items to write.
 	 * @return		The number of items written on success, negative errno otherwise.
 	 */
-	virtual int	write(unsigned address, void *data, unsigned count) { return -ENODEV; }
+	மெய்நிகர் முழு	லிக(unsigned address, வெறுமை *data, unsigned மொத்தம்) { திரும்பு -ENODEV; }
 
 	/**
 	 * Read a register from the device.
@@ -134,7 +134,7 @@ public:
 	 * @param		The register to read.
 	 * @return		The value that was read.
 	 */
-	virtual uint8_t read_reg(unsigned reg) { return -ENODEV; }
+	மெய்நிகர் uint8_t read_reg(unsigned reg) { திரும்பு -ENODEV; }
 
 	/**
 	 * Write a register in the device.
@@ -143,7 +143,7 @@ public:
 	 * @param value		The new value to write.
 	 * @return		OK on success, negative errno otherwise.
 	 */
-	virtual int write_reg(unsigned reg, uint8_t value) { return -ENODEV; }
+	மெய்நிகர் முழு write_reg(unsigned reg, uint8_t value) { திரும்பு -ENODEV; }
 
 	/**
 	 * Perform a device-specific operation.
@@ -152,10 +152,10 @@ public:
 	 * @param arg		An argument to the operation.
 	 * @return		Negative errno on error, OK or positive value on success.
 	 */
-	virtual int	ioctl(unsigned operation, unsigned &arg) { return -ENODEV; }
+	மெய்நிகர் முழு	ioctl(unsigned operation, unsigned &arg) { திரும்பு -ENODEV; }
 
 	/** Device bus types for DEVID */
-	enum DeviceBusType {
+	எண்ணிக்கை DeviceBusType {
 		DeviceBusType_UNKNOWN = 0,
 		DeviceBusType_I2C     = 1,
 		DeviceBusType_SPI     = 2,
@@ -171,52 +171,52 @@ public:
 	  which makes it possible to transport over the MAVLink
 	  parameter protocol without loss of information.
 	 */
-	struct DeviceStructure {
+	கட்டமைப்பு DeviceStructure {
 		DeviceBusType bus_type : 3;
 		uint8_t bus: 5;    // which instance of the bus type
 		uint8_t address;   // address on the bus (eg. I2C address)
 		uint8_t devtype;   // device class specific device type
 	};
 
-	union DeviceId {
-		struct DeviceStructure devid_s;
+	ஒன்றிப்பு DeviceId {
+		கட்டமைப்பு DeviceStructure devid_s;
 		uint32_t devid{0};
 	};
 
-	uint32_t get_device_id() const { return _device_id.devid; }
+	uint32_t get_device_id() மாறிலி { திரும்பு _device_id.devid; }
 
 	/**
 	 * Return the bus type the device is connected to.
 	 *
 	 * @return The bus type
 	 */
-	DeviceBusType get_device_bus_type() const { return _device_id.devid_s.bus_type; }
-	void          set_device_bus_type(DeviceBusType bus_type) { _device_id.devid_s.bus_type = bus_type; }
+	DeviceBusType get_device_bus_type() மாறிலி { திரும்பு _device_id.devid_s.bus_type; }
+	வெறுமை          set_device_bus_type(DeviceBusType bus_type) { _device_id.devid_s.bus_type = bus_type; }
 
-	static const char *get_device_bus_string(DeviceBusType bus)
+	நிலையான மாறிலி எழுத்து *get_device_bus_string(DeviceBusType bus)
 	{
-		switch (bus) {
-		case DeviceBusType_I2C:
-			return "I2C";
+		தேர்வு (bus) {
+		நிலை DeviceBusType_I2C:
+			திரும்பு "I2C";
 
-		case DeviceBusType_SPI:
-			return "SPI";
+		நிலை DeviceBusType_SPI:
+			திரும்பு "SPI";
 
-		case DeviceBusType_UAVCAN:
-			return "UAVCAN";
+		நிலை DeviceBusType_UAVCAN:
+			திரும்பு "UAVCAN";
 
-		case DeviceBusType_SIMULATION:
-			return "SIMULATION";
+		நிலை DeviceBusType_SIMULATION:
+			திரும்பு "SIMULATION";
 
-		case DeviceBusType_SERIAL:
-			return "SERIAL";
+		நிலை DeviceBusType_SERIAL:
+			திரும்பு "SERIAL";
 
-		case DeviceBusType_MAVLINK:
-			return "MAVLINK";
+		நிலை DeviceBusType_MAVLINK:
+			திரும்பு "MAVLINK";
 
-		case DeviceBusType_UNKNOWN:
-		default:
-			return "UNKNOWN";
+		நிலை DeviceBusType_UNKNOWN:
+		இயல்பு:
+			திரும்பு "UNKNOWN";
 		}
 	}
 
@@ -225,24 +225,24 @@ public:
 	 *
 	 * @return The bus ID
 	 */
-	uint8_t get_device_bus() const { return _device_id.devid_s.bus; }
-	void    set_device_bus(uint8_t bus) { _device_id.devid_s.bus = bus; }
+	uint8_t get_device_bus() மாறிலி { திரும்பு _device_id.devid_s.bus; }
+	வெறுமை    set_device_bus(uint8_t bus) { _device_id.devid_s.bus = bus; }
 
 	/**
 	 * Return the bus address of the device.
 	 *
 	 * @return The bus address
 	 */
-	uint8_t	get_device_address() const { return _device_id.devid_s.address; }
-	void	set_device_address(int address) { _device_id.devid_s.address = address; }
+	uint8_t	get_device_address() மாறிலி { திரும்பு _device_id.devid_s.address; }
+	வெறுமை	set_device_address(முழு address) { _device_id.devid_s.address = address; }
 
 	/**
 	 * Return the device type
 	 *
 	 * @return The device type
 	 */
-	uint8_t	get_device_type() const { return _device_id.devid_s.devtype; }
-	void	set_device_type(uint8_t devtype) { _device_id.devid_s.devtype = devtype; }
+	uint8_t	get_device_type() மாறிலி { திரும்பு _device_id.devid_s.devtype; }
+	வெறுமை	set_device_type(uint8_t devtype) { _device_id.devid_s.devtype = devtype; }
 
 	/**
 	 * Print decoded device id string to a buffer.
@@ -252,17 +252,17 @@ public:
 	 * @param id	                        The device id.
 	 * @param return                        number of bytes written
 	 */
-	static int device_id_print_buffer(char *buffer, int length, uint32_t id)
+	நிலையான முழு device_id_print_buffer(எழுத்து *buffer, முழு length, uint32_t id)
 	{
 		DeviceId dev_id{};
 		dev_id.devid = id;
 
-		int num_written = snprintf(buffer, length, "Type: 0x%02X, %s:%d (0x%02X)", dev_id.devid_s.devtype,
+		முழு இலக்கம்_written = snprintf(buffer, length, "Type: 0x%02X, %s:%d (0x%02X)", dev_id.devid_s.devtype,
 					   get_device_bus_string(dev_id.devid_s.bus_type), dev_id.devid_s.bus, dev_id.devid_s.address);
 
 		buffer[length - 1] = 0; // ensure 0-termination
 
-		return num_written;
+		திரும்பு இலக்கம்_written;
 	}
 
 	/**
@@ -270,23 +270,23 @@ public:
 	 *
 	 * I2C/SPI drivers set this from -I/-s vs -X/-S. Otherwise falls back to device_is_external().
 	 */
-	bool external() const { return _external_declared ? _external : device_is_external(_device_id.devid); }
+	தருக்க external() மாறிலி { திரும்பு _external_declared ? _external : device_is_external(_device_id.devid); }
 
-	void set_external(bool external) { _external = external; _external_declared = true; }
+	வெறுமை set_external(தருக்க external) { _external = external; _external_declared = உண்மை; }
 
-protected:
-	union DeviceId	_device_id {};            	/**< device identifier information */
+பாதுகாக்கப்பட்ட:
+	ஒன்றிப்பு DeviceId	_device_id {};            	/**< device identifier information */
 
-	bool		_external{false};
-	bool		_external_declared{false};
+	தருக்க		_external{பொய்};
+	தருக்க		_external_declared{பொய்};
 
-	const char	*_name{nullptr};		/**< driver name */
-	bool		_debug_enabled{false};		/**< if true, debug messages are printed */
+	மாறிலி எழுத்து	*_name{nullptr};		/**< driver name */
+	தருக்க		_debug_enabled{பொய்};		/**< if true, debug messages are printed */
 
 	Device() = delete;
-	explicit Device(const char *name) : _name(name) {}
+	explicit Device(மாறிலி எழுத்து *name) : _name(name) {}
 
-	Device(uint8_t devtype, const char *name, DeviceBusType bus_type, uint8_t bus, uint8_t address) : _name(name)
+	Device(uint8_t devtype, மாறிலி எழுத்து *name, DeviceBusType bus_type, uint8_t bus, uint8_t address) : _name(name)
 	{
 		set_device_type(devtype);
 		set_device_bus_type(bus_type);
@@ -300,37 +300,37 @@ protected:
  * Inline so that no caller has to link the kernel-only drivers__device library: in a
  * protected build that would pull the kernel into the userspace image.
  */
-inline bool device_is_external(uint32_t device_id)
+உள்வரி தருக்க device_is_external(uint32_t device_id)
 {
 	Device::DeviceId id{};
 	id.devid = device_id;
 
-	switch (id.devid_s.bus_type) {
-	case Device::DeviceBusType_I2C:
-#if defined(CONFIG_I2C)
-		return px4_i2c_bus_topology(id.devid_s.bus) != BusTopology::Internal;
-#else
-		return true;
+	தேர்வு (id.devid_s.bus_type) {
+	நிலை Device::DeviceBusType_I2C:
+#எனில் defined(CONFIG_I2C)
+		திரும்பு px4_i2c_bus_topology(id.devid_s.bus) != BusTopology::Internal;
+#இல்லையெனில்
+		திரும்பு உண்மை;
 #endif // CONFIG_I2C
 
-	case Device::DeviceBusType_SPI:
-#if defined(CONFIG_SPI)
-		return px4_spi_bus_topology(id.devid_s.bus) != BusTopology::Internal;
-#else
-		return true;
+	நிலை Device::DeviceBusType_SPI:
+#எனில் defined(CONFIG_SPI)
+		திரும்பு px4_spi_bus_topology(id.devid_s.bus) != BusTopology::Internal;
+#இல்லையெனில்
+		திரும்பு உண்மை;
 #endif // CONFIG_SPI
 
-	case Device::DeviceBusType_SIMULATION:
-		return false;
+	நிலை Device::DeviceBusType_SIMULATION:
+		திரும்பு பொய்;
 
-	case Device::DeviceBusType_UAVCAN:
-	case Device::DeviceBusType_SERIAL:
-	case Device::DeviceBusType_MAVLINK:
-	case Device::DeviceBusType_UNKNOWN:
-		return true;
+	நிலை Device::DeviceBusType_UAVCAN:
+	நிலை Device::DeviceBusType_SERIAL:
+	நிலை Device::DeviceBusType_MAVLINK:
+	நிலை Device::DeviceBusType_UNKNOWN:
+		திரும்பு உண்மை;
 	}
 
-	return true;
+	திரும்பு உண்மை;
 }
 
 } // namespace device

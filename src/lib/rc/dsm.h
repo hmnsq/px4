@@ -41,45 +41,45 @@
 
 #pragma once
 
-#include <stdint.h>
+#அந்தர்பாவ <stdint.h>
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/defines.h>
+#அந்தர்பாவ <px4_platform_common/px4_config.h>
+#அந்தர்பாவ <px4_platform_common/defines.h>
 
 __BEGIN_DECLS
 
 #define DSM_FRAME_SIZE		16		/**< DSM frame size in bytes */
 #define DSM_FRAME_CHANNELS	7		/**< Max supported DSM channels per frame */
-#define DSM_MAX_CHANNEL_COUNT   20  /**< Max channel count of any DSM RC */
+#define DSM_MAX_CHANNEL_மொத்தம்   20  /**< Max channel count of any DSM RC */
 #define DSM_BUFFER_SIZE		(DSM_FRAME_SIZE + DSM_FRAME_SIZE / 2)
 
 
-#pragma pack(push, 1)
-typedef   uint8_t dsm_frame_t[DSM_BUFFER_SIZE]; /**< DSM dsm frame receive buffer */
-typedef   uint8_t dsm_buf_t[DSM_FRAME_SIZE * 2]; // Define working buffer
+#pragma pack(தள்ளு, 1)
+வகைவரை   uint8_t dsm_frame_t[DSM_BUFFER_SIZE]; /**< DSM dsm frame receive buffer */
+வகைவரை   uint8_t dsm_buf_t[DSM_FRAME_SIZE * 2]; // Define working buffer
 
-typedef  struct dsm_decode_t {
+வகைவரை  கட்டமைப்பு dsm_decode_t {
 	dsm_frame_t frame;
 	dsm_buf_t buf;
 } dsm_decode_t;
 
-#pragma pack(pop)
+#pragma pack(எடு)
 
-__EXPORT int	dsm_init(const char *device);
-__EXPORT void	dsm_deinit(void);
-__EXPORT void	dsm_proto_init(void);
-__EXPORT int	dsm_config(int dsm_fd);
-__EXPORT bool	dsm_input(int dsm_fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit, uint8_t *n_bytes,
-			  uint8_t **bytes, int8_t *rssi, unsigned *frame_drops, unsigned max_values);
+__EXPORT முழு	dsm_init(மாறிலி எழுத்து *device);
+__EXPORT வெறுமை	dsm_deinit(வெறுமை);
+__EXPORT வெறுமை	dsm_proto_init(வெறுமை);
+__EXPORT முழு	dsm_config(முழு dsm_fd);
+__EXPORT bool	dsm_உள்ளீடு(முழு dsm_fd, uint16_t *மதிப்புகள்_2, uint16_t *இலக்கம்_மதிப்புகள், bool *dsm_11_bit, uint8_t *n_bytes,
+			  uint8_t **bytes, int8_t *rssi, unsigned *frame_drops, unsigned max_மதிப்புகள்);
 
-__EXPORT bool	dsm_parse(const uint64_t now, const uint8_t *frame, const unsigned len, uint16_t *values,
-			  uint16_t *num_values, bool *dsm_11_bit, unsigned *frame_drops, int8_t *rssi_percent, uint16_t max_channels);
+__EXPORT bool	dsm_parse(மாறிலி uint64_t now, மாறிலி uint8_t *frame, மாறிலி unsigned len, uint16_t *மதிப்புகள்_2,
+			  uint16_t *இலக்கம்_மதிப்புகள், bool *dsm_11_bit, unsigned *frame_drops, int8_t *rssi_percent, uint16_t max_channels);
 
 #ifdef SPEKTRUM_POWER
-__EXPORT void	dsm_bind(uint16_t cmd, int pulses);
+__EXPORT வெறுமை	dsm_bind(uint16_t cmd, முழு pulses);
 #endif
 
-enum DSM_CMD {							/* DSM bind states */
+எண்ணிக்கை DSM_CMD {							/* DSM bind states */
 	DSM_CMD_BIND_POWER_DOWN = 0,
 	DSM_CMD_BIND_POWER_UP,
 	DSM_CMD_BIND_SET_RX_OUT,

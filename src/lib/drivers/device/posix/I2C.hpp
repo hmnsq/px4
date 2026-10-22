@@ -39,33 +39,33 @@
  * Base class for devices connected via I2C.
  */
 
-#include "../CDev.hpp"
-#include <px4_platform_common/i2c.h>
+#அந்தர்பாவ "../CDev.hpp"
+#அந்தர்பாவ <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#எனில் defined(CONFIG_I2C)
 
-struct I2CSPIDriverConfig;
+கட்டமைப்பு I2CSPIDriverConfig;
 
-namespace device __EXPORT
+நாமாகாஶ device __EXPORT
 {
 
 /**
  * Abstract class for character device on I2C
  */
-class __EXPORT I2C : public CDev
+வகுப்பு __EXPORT I2C : பொது CDev
 {
 
-public:
+பொது:
 
 	// no copy, assignment, move, move assignment
-	I2C(const I2C &) = delete;
-	I2C &operator=(const I2C &) = delete;
+	I2C(மாறிலி I2C &) = delete;
+	I2C &operator=(மாறிலி I2C &) = delete;
 	I2C(I2C &&) = delete;
 	I2C &operator=(I2C &&) = delete;
 
-	virtual int	init() override;
+	மெய்நிகர் முழு	init() override;
 
-protected:
+பாதுகாக்கப்பட்ட:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -81,14 +81,14 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
-	I2C(const I2CSPIDriverConfig &config);
-	virtual ~I2C();
+	I2C(uint8_t device_type, மாறிலி எழுத்து *name, மாறிலி முழு bus, மாறிலி uint16_t address, மாறிலி uint32_t frequency);
+	I2C(மாறிலி I2CSPIDriverConfig &config);
+	மெய்நிகர் ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	மெய்நிகர் முழு	probe() { திரும்பு PX4_OK; }
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -102,10 +102,10 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	முழு		transfer(மாறிலி uint8_t *send, மாறிலி unsigned send_len, uint8_t *recv, மாறிலி unsigned recv_len);
 
-private:
-	int			_fd{-1};
+தனிப்பட்ட:
+	முழு			_fd{-1};
 
 };
 

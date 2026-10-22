@@ -39,35 +39,35 @@
 
 #pragma once
 
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <px4_platform_common/module_params.h>
+#அந்தர்பாவ <lib/mathlib/math/filter/AlphaFilter.hpp>
+#அந்தர்பாவ <px4_platform_common/module_params.h>
 
-class StickYaw : public ModuleParams
+வகுப்பு StickYaw : பொது ModuleParams
 {
-public:
+பொது:
 	StickYaw(ModuleParams *parent);
-	~StickYaw() = default;
+	~StickYaw() = இயல்பு;
 
-	void reset(float yaw, float unaided_yaw = NAN);
+	வெறுமை reset(தசம yaw, தசம unaided_yaw = NAN);
 
-	void resetYawspeed() { _yawspeed_filter.reset(0.f); }
-	void ekfResetHandler(float delta_yaw);
-	void generateYawSetpoint(float &yawspeed_setpoint, float &yaw_setpoint, float stick_yaw, float yaw, float deltatime,
-				 float unaided_yaw = NAN);
-	void setYawspeedConstraint(float yawspeed) { _yawspeed_constraint = yawspeed; };
+	வெறுமை resetYawspeed() { _yawspeed_filter.reset(0.f); }
+	வெறுமை ekfResetHandler(தசம delta_yaw);
+	வெறுமை generateYawSetpoint(தசம &yawspeed_setpoint, தசம &yaw_setpoint, தசம stick_yaw, தசம yaw, தசம deltatime,
+				 தசம unaided_yaw = NAN);
+	வெறுமை setYawspeedConstraint(தசம yawspeed) { _yawspeed_constraint = yawspeed; };
 
-private:
-	AlphaFilter<float> _yawspeed_filter;
+தனிப்பட்ட:
+	AlphaFilter<தசம> _yawspeed_filter;
 
-	float _yaw_error_ref{0.f};
-	float _yaw_correction{0.f};
-	bool _yaw_estimate_converging{false};
-	bool _unaided_yaw_was_invalid{false};
-	AlphaFilter<float> _yaw_error_lpf{_kYawErrorTimeConstant}; ///< used to create a high-pass filter
-	static constexpr float _kYawErrorTimeConstant{1.f}; ///< time constant of the high-pass filter used to detect yaw convergence
-	static constexpr float _kYawErrorChangeThreshold{radians(1.f)}; ///< we consider the yaw estimate as "converging" when above this threshold
+	தசம _yaw_error_ref{0.f};
+	தசம _yaw_correction{0.f};
+	தருக்க _yaw_estimate_converging{பொய்};
+	தருக்க _unaided_yaw_was_invalid{பொய்};
+	AlphaFilter<தசம> _yaw_error_lpf{_kYawErrorTimeConstant}; ///< used to create a high-pass filter
+	நிலையான constexpr தசம _kYawErrorTimeConstant{1.f}; ///< time constant of the high-pass filter used to detect yaw convergence
+	நிலையான constexpr தசம _kYawErrorChangeThreshold{radians(1.f)}; ///< we consider the yaw estimate as "converging" when above this threshold
 
-	bool updateYawCorrection(float yaw, float unaided_yaw, float deltatime);
+	தருக்க updateYawCorrection(தசம yaw, தசம unaided_yaw, தசம deltatime);
 
 	/**
 	 * Lock yaw when not currently turning
@@ -80,9 +80,9 @@ private:
 	 * @param yaw current yaw setpoint which then will be overwritten by the return value
 	 * @return yaw setpoint to execute to have a yaw lock at the correct moment in time
 	 */
-	float updateYawLock(float yaw, float yawspeed_setpoint, float yaw_setpoint, float yaw_correction_prev) const;
+	தசம updateYawLock(தசம yaw, தசம yawspeed_setpoint, தசம yaw_setpoint, தசம yaw_correction_prev) மாறிலி;
 
-	float _yawspeed_constraint{INFINITY};
+	தசம _yawspeed_constraint{INFINITY};
 
 	DEFINE_PARAMETERS(
 		(ParamFloat<px4::params::MPC_MAN_Y_MAX>) _param_mpc_man_y_max, ///< Maximum yaw speed with full stick deflection

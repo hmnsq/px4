@@ -31,21 +31,21 @@
  *
  ****************************************************************************/
 
-#include <pthread.h>
+#அந்தர்பாவ <pthread.h>
 
-#include <drivers/drv_hrt.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/events.h>
-#include <uORB/uORB.h>
+#அந்தர்பாவ <drivers/drv_hrt.h>
+#அந்தர்பாவ <px4_platform_common/posix.h>
+#அந்தர்பாவ <px4_platform_common/events.h>
+#அந்தர்பாவ <uORB/uORB.h>
 
-static orb_advert_t orb_event_pub = nullptr;
-static pthread_mutex_t publish_event_mutex = PTHREAD_MUTEX_INITIALIZER;
-static uint16_t event_sequence{events::initial_event_sequence};
+நிலையான orb_advert_t orb_event_pub = nullptr;
+நிலையான pthread_mutex_t publish_event_mutex = PTHREAD_MUTEX_INITIALIZER;
+நிலையான uint16_t event_sequence{events::initial_event_sequence};
 
-namespace events
+நாமாகாஶ events
 {
 
-void send(event_s &event)
+வெறுமை send(event_s &event)
 {
 	event.timestamp = hrt_absolute_time();
 
@@ -57,10 +57,10 @@ void send(event_s &event)
 	pthread_mutex_lock(&publish_event_mutex);
 	event.event_sequence = ++event_sequence; // Set the sequence here so we're able to detect uORB queue overflows
 
-	if (orb_event_pub != nullptr) {
+	எனில் (orb_event_pub != nullptr) {
 		orb_publish(ORB_ID(event), orb_event_pub, &event);
 
-	} else {
+	} இல்லையெனில் {
 		orb_event_pub = orb_advertise(ORB_ID(event), &event);
 	}
 

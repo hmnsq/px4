@@ -31,16 +31,16 @@
  *
  ****************************************************************************/
 
-#include "mixer_module.hpp"
+#அந்தர்பாவ "mixer_module.hpp"
 
-#include <uORB/Publication.hpp>
-#include <px4_platform_common/log.h>
+#அந்தர்பாவ <uORB/Publication.hpp>
+#அந்தர்பாவ <px4_platform_common/log.h>
 
-using namespace time_literals;
+using நாமாகாஶ time_literals;
 
 
-struct FunctionProvider {
-	using Constructor = FunctionProviderBase * (*)(const FunctionProviderBase::Context &context);
+கட்டமைப்பு FunctionProvider {
+	using Constructor = FunctionProviderBase * (*)(மாறிலி FunctionProviderBase::Context &context);
 	constexpr FunctionProvider(OutputFunction min_func_, OutputFunction max_func_, Constructor constructor_)
 		: min_func(min_func_), max_func(max_func_), constructor(constructor_) {}
 	constexpr FunctionProvider(OutputFunction func, Constructor constructor_)
@@ -51,7 +51,7 @@ struct FunctionProvider {
 	Constructor constructor;
 };
 
-static constexpr FunctionProvider all_function_providers[] = {
+நிலையான constexpr FunctionProvider all_function_providers[] = {
 	// Providers higher up take precedence for subscription callback in case there are multiple
 	{OutputFunction::Constant_Min, &FunctionConstantMin::allocate},
 	{OutputFunction::Constant_Max, &FunctionConstantMax::allocate},
@@ -67,31 +67,31 @@ static constexpr FunctionProvider all_function_providers[] = {
 	{OutputFunction::IC_Engine_Ignition, OutputFunction::IC_Engine_Starter, &FunctionICEControl::allocate},
 };
 
-MixingOutput::MixingOutput(const char *param_prefix, uint8_t max_num_outputs, OutputModuleInterface &interface,
-			   SchedulingPolicy scheduling_policy, bool support_esc_calibration, bool ramp_up, const uint8_t instance_start) :
+MixingOutput::MixingOutput(மாறிலி எழுத்து *param_prefix, uint8_t max_இலக்கம்_outputs, OutputModuleInterface &interface,
+			   SchedulingPolicy scheduling_policy, தருக்க support_esc_calibration, தருக்க ramp_up, மாறிலி uint8_t instance_start) :
 	ModuleParams(&interface),
 	_output_ramp_up(ramp_up),
 	_scheduling_policy(scheduling_policy),
 	_support_esc_calibration(support_esc_calibration),
-	_max_num_outputs(max_num_outputs < MAX_ACTUATORS ? max_num_outputs : MAX_ACTUATORS),
+	max_இலக்கம்_outputs_2(max_இலக்கம்_outputs < MAX_ACTUATORS ? max_இலக்கம்_outputs : MAX_ACTUATORS),
 	_interface(interface),
 	_control_latency_perf(perf_alloc(PC_ELAPSED, "control latency")),
 	_param_prefix(param_prefix)
 {
 	/* Safely initialize armed flags */
-	_armed.armed = false;
-	_armed.prearmed = false;
-	_armed.ready_to_arm = false;
-	_armed.lockdown = false;
-	_armed.termination = false;
-	_armed.in_esc_calibration_mode = false;
+	_armed.armed = பொய்;
+	_armed.prearmed = பொய்;
+	_armed.ready_to_arm = பொய்;
+	_armed.lockdown = பொய்;
+	_armed.termination = பொய்;
+	_armed.in_esc_calibration_mode = பொய்;
 
 	px4_sem_init(&_lock, 0, 1);
 
 	initParamHandles(instance_start);
 
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
-		_failsafe_value[i] = UINT16_MAX;
+	க்கு (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+		failsafe_மதிப்பு[i] = UINT16_MAX;
 	}
 
 	updateParams();
@@ -109,155 +109,155 @@ MixingOutput::~MixingOutput()
 	_outputs_pub.unadvertise();
 }
 
-void MixingOutput::initParamHandles(const uint8_t instance_start)
+வெறுமை MixingOutput::initParamHandles(மாறிலி uint8_t instance_start)
 {
-	char param_name[17];
+	எழுத்து param_name[17];
 
-	for (unsigned i = 0; i < _max_num_outputs; ++i) {
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "FUNC", i + instance_start);
+	க்கு (unsigned i = 0; i < max_இலக்கம்_outputs_2; ++i) {
+		snprintf(param_name, அளவு(param_name), "%s_%s%d", _param_prefix, "FUNC", i + instance_start);
 		_param_handles[i].function = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "DIS", i + instance_start);
+		snprintf(param_name, அளவு(param_name), "%s_%s%d", _param_prefix, "DIS", i + instance_start);
 		_param_handles[i].disarmed = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "MIN", i + instance_start);
+		snprintf(param_name, அளவு(param_name), "%s_%s%d", _param_prefix, "MIN", i + instance_start);
 		_param_handles[i].min = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "CENT", i + instance_start);
+		snprintf(param_name, அளவு(param_name), "%s_%s%d", _param_prefix, "CENT", i + instance_start);
 		_param_handles[i].center = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "MAX", i + instance_start);
+		snprintf(param_name, அளவு(param_name), "%s_%s%d", _param_prefix, "MAX", i + instance_start);
 		_param_handles[i].max = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "FAIL", i + instance_start);
+		snprintf(param_name, அளவு(param_name), "%s_%s%d", _param_prefix, "FAIL", i + instance_start);
 		_param_handles[i].failsafe = param_find(param_name);
 	}
 
-	snprintf(param_name, sizeof(param_name), "%s_%s", _param_prefix, "REV");
+	snprintf(param_name, அளவு(param_name), "%s_%s", _param_prefix, "REV");
 	_param_handle_rev_range = param_find(param_name);
 }
 
-void MixingOutput::printStatus() const
+வெறுமை MixingOutput::printStatus() மாறிலி
 {
 	PX4_INFO("Param prefix: %s", _param_prefix);
 	perf_print_counter(_control_latency_perf);
 
-	if (_wq_switched) {
+	எனில் (_wq_switched) {
 		PX4_INFO("Switched to rate_ctrl work queue");
 	}
 
 	PX4_INFO_RAW("Channel Configuration:\n");
 
-	for (unsigned i = 0; i < _max_num_outputs; i++) {
+	க்கு (unsigned i = 0; i < max_இலக்கம்_outputs_2; i++) {
 		PX4_INFO_RAW("Channel %2d: func: %3d, value: %.2f, failsafe: %.2f, disarmed: %d, min: %d, max: %d, center: %d\n",
-			     i, (int)_function_assignment[i], (double)_current_output_value[i], (double)actualFailsafeValue(i),
-			     _disarmed_value[i], _min_value[i], _max_value[i], _center_value[i]);
+			     i, (முழு)_function_assignment[i], (இரட்டை)current_output_மதிப்பு[i], (இரட்டை)actual_Failsafe_மதிப்பு(i),
+			     disarmed_மதிப்பு[i], min_மதிப்பு[i], max_மதிப்பு[i], center_மதிப்பு[i]);
 	}
 }
 
-void MixingOutput::updateParams()
+வெறுமை MixingOutput::updateParams()
 {
 	ModuleParams::updateParams();
 
-	bool function_changed = false;
+	தருக்க function_changed = பொய்;
 
-	for (unsigned i = 0; i < _max_num_outputs; i++) {
+	க்கு (unsigned i = 0; i < max_இலக்கம்_outputs_2; i++) {
 		int32_t val;
 
-		if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
-			if (val != (int32_t)_function_assignment[i]) {
-				function_changed = true;
+		எனில் (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
+			எனில் (val != (int32_t)_function_assignment[i]) {
+				function_changed = உண்மை;
 			}
 
 			// we set _function_assignment[i] later to ensure _functions[i] is updated at the same time
 		}
 
-		if (_param_handles[i].disarmed != PARAM_INVALID && param_get(_param_handles[i].disarmed, &val) == 0) {
-			_disarmed_value[i] = val;
+		எனில் (_param_handles[i].disarmed != PARAM_INVALID && param_get(_param_handles[i].disarmed, &val) == 0) {
+			disarmed_மதிப்பு[i] = val;
 		}
 
-		if (_param_handles[i].min != PARAM_INVALID && param_get(_param_handles[i].min, &val) == 0) {
-			_min_value[i] = val;
+		எனில் (_param_handles[i].min != PARAM_INVALID && param_get(_param_handles[i].min, &val) == 0) {
+			min_மதிப்பு[i] = val;
 		}
 
-		if (_param_handles[i].center != PARAM_INVALID && param_get(_param_handles[i].center, &val) == 0) {
-			_center_value[i] = val;
+		எனில் (_param_handles[i].center != PARAM_INVALID && param_get(_param_handles[i].center, &val) == 0) {
+			center_மதிப்பு[i] = val;
 		}
 
-		if (_param_handles[i].max != PARAM_INVALID && param_get(_param_handles[i].max, &val) == 0) {
-			_max_value[i] = val;
+		எனில் (_param_handles[i].max != PARAM_INVALID && param_get(_param_handles[i].max, &val) == 0) {
+			max_மதிப்பு[i] = val;
 		}
 
-		if (_min_value[i] > _max_value[i]) {
-			uint16_t tmp = _min_value[i];
-			_min_value[i] = _max_value[i];
-			_max_value[i] = tmp;
+		எனில் (min_மதிப்பு[i] > max_மதிப்பு[i]) {
+			uint16_t tmp = min_மதிப்பு[i];
+			min_மதிப்பு[i] = max_மதிப்பு[i];
+			max_மதிப்பு[i] = tmp;
 		}
 
 
-		if (_param_handles[i].failsafe != PARAM_INVALID && param_get(_param_handles[i].failsafe, &val) == 0) {
-			_failsafe_value[i] = val;
+		எனில் (_param_handles[i].failsafe != PARAM_INVALID && param_get(_param_handles[i].failsafe, &val) == 0) {
+			failsafe_மதிப்பு[i] = val;
 		}
 	}
 
 	_reverse_output_mask = 0;
 	int32_t rev_range_param;
 
-	if (_param_handle_rev_range != PARAM_INVALID && param_get(_param_handle_rev_range, &rev_range_param) == 0) {
+	எனில் (_param_handle_rev_range != PARAM_INVALID && param_get(_param_handle_rev_range, &rev_range_param) == 0) {
 		_reverse_output_mask = rev_range_param;
 	}
 
-	if (function_changed) {
-		_need_function_update = true;
+	எனில் (function_changed) {
+		_need_function_update = உண்மை;
 	}
 }
 
-void MixingOutput::cleanupFunctions()
+வெறுமை MixingOutput::cleanupFunctions()
 {
-	if (_subscription_callback) {
+	எனில் (_subscription_callback) {
 		_subscription_callback->unregisterCallback();
 		_subscription_callback = nullptr;
 	}
 
-	for (int i = 0; i < MAX_ACTUATORS; ++i) {
+	க்கு (முழு i = 0; i < MAX_ACTUATORS; ++i) {
 		delete _function_allocated[i];
 		_function_allocated[i] = nullptr;
 		_functions[i] = nullptr;
 	}
 }
 
-bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
+தருக்க MixingOutput::updateSubscriptions(தருக்க allow_wq_switch)
 {
-	if (!_need_function_update || _armed.armed) {
-		return false;
+	எனில் (!_need_function_update || _armed.armed) {
+		திரும்பு பொய்;
 	}
 
 	// must be locked to potentially change WorkQueue
 	lock();
 
-	_has_backup_schedule = false;
+	_has_backup_schedule = பொய்;
 
-	if (_scheduling_policy == SchedulingPolicy::Auto) {
+	எனில் (_scheduling_policy == SchedulingPolicy::Auto) {
 		// first clear everything
 		unregister();
 		_interface.ScheduleClear();
 
-		bool switch_requested = false;
+		தருக்க switch_requested = பொய்;
 
 		// potentially switch work queue if we run motor outputs
-		for (unsigned i = 0; i < _max_num_outputs; i++) {
+		க்கு (unsigned i = 0; i < max_இலக்கம்_outputs_2; i++) {
 			// read function directly from param, as _function_assignment[i] is updated later
 			int32_t function;
 
-			if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &function) == 0) {
-				if (function >= (int32_t)OutputFunction::Motor1 && function <= (int32_t)OutputFunction::MotorMax) {
-					switch_requested = true;
+			எனில் (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &function) == 0) {
+				எனில் (function >= (int32_t)OutputFunction::Motor1 && function <= (int32_t)OutputFunction::MotorMax) {
+					switch_requested = உண்மை;
 				}
 			}
 		}
 
-		if (allow_wq_switch && !_wq_switched && switch_requested) {
-			if (_interface.ChangeWorkQueue(px4::wq_configurations::rate_ctrl)) {
+		எனில் (allow_wq_switch && !_wq_switched && switch_requested) {
+			எனில் (_interface.ChangeWorkQueue(px4::wq_configurations::rate_ctrl)) {
 				// let the new WQ handle the subscribe update
-				_wq_switched = true;
+				_wq_switched = உண்மை;
 				_interface.ScheduleNow();
 				unlock();
-				return false;
+				திரும்பு பொய்;
 			}
 		}
 	}
@@ -267,91 +267,91 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 
 	cleanupFunctions();
 
-	const FunctionProviderBase::Context context{_interface, _param_thr_mdl_fac.reference()};
-	int provider_indexes[MAX_ACTUATORS] {};
-	int next_provider = 0;
-	int subscription_callback_provider_index = INT_MAX;
-	bool all_disabled = true;
+	மாறிலி FunctionProviderBase::Context context{_interface, _param_thr_mdl_fac.reference()};
+	முழு provider_indexes[MAX_ACTUATORS] {};
+	முழு next_provider = 0;
+	முழு subscription_callback_provider_index = INT_MAX;
+	தருக்க all_disabled = உண்மை;
 
-	for (int i = 0; i < _max_num_outputs; ++i) {
+	க்கு (முழு i = 0; i < max_இலக்கம்_outputs_2; ++i) {
 		int32_t val;
 
-		if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
+		எனில் (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
 			_function_assignment[i] = (OutputFunction)val;
 
-		} else {
+		} இல்லையெனில் {
 			_function_assignment[i] = OutputFunction::Disabled;
 		}
 
-		for (int p = 0; p < (int)(sizeof(all_function_providers) / sizeof(all_function_providers[0])); ++p) {
-			if (_function_assignment[i] >= all_function_providers[p].min_func &&
+		க்கு (முழு p = 0; p < (முழு)(அளவு(all_function_providers) / அளவு(all_function_providers[0])); ++p) {
+			எனில் (_function_assignment[i] >= all_function_providers[p].min_func &&
 			    _function_assignment[i] <= all_function_providers[p].max_func) {
-				all_disabled = false;
-				int found_index = -1;
+				all_disabled = பொய்;
+				முழு found_index = -1;
 
-				for (int existing = 0; existing < next_provider; ++existing) {
-					if (provider_indexes[existing] == p) {
+				க்கு (முழு existing = 0; existing < next_provider; ++existing) {
+					எனில் (provider_indexes[existing] == p) {
 						found_index = existing;
-						break;
+						நிறுத்து;
 					}
 				}
 
-				if (found_index >= 0) {
+				எனில் (found_index >= 0) {
 					_functions[i] = _function_allocated[found_index];
 
-				} else {
+				} இல்லையெனில் {
 					_function_allocated[next_provider] = all_function_providers[p].constructor(context);
 
-					if (_function_allocated[next_provider]) {
+					எனில் (_function_allocated[next_provider]) {
 						_functions[i] = _function_allocated[next_provider];
 						provider_indexes[next_provider++] = p;
 
 						// lowest provider takes precedence for scheduling
-						if (p < subscription_callback_provider_index && _functions[i]->subscriptionCallback()) {
+						எனில் (p < subscription_callback_provider_index && _functions[i]->subscriptionCallback()) {
 							subscription_callback_provider_index = p;
 							_subscription_callback = _functions[i]->subscriptionCallback();
 						}
 
-					} else {
+					} இல்லையெனில் {
 						PX4_ERR("function alloc failed");
 					}
 				}
 
-				break;
+				நிறுத்து;
 			}
 		}
 	}
 
 	hrt_abstime fixed_rate_scheduling_interval = 4_ms; // schedule at 250Hz
 
-	if (_max_topic_update_interval_us > fixed_rate_scheduling_interval) {
+	எனில் (_max_topic_update_interval_us > fixed_rate_scheduling_interval) {
 		fixed_rate_scheduling_interval = _max_topic_update_interval_us;
 	}
 
-	if (_scheduling_policy == SchedulingPolicy::Auto) {
-		if (_subscription_callback) {
-			if (_subscription_callback->registerCallback()) {
+	எனில் (_scheduling_policy == SchedulingPolicy::Auto) {
+		எனில் (_subscription_callback) {
+			எனில் (_subscription_callback->registerCallback()) {
 				PX4_DEBUG("Scheduling via callback");
-				_has_backup_schedule = true;
+				_has_backup_schedule = உண்மை;
 				_interface.ScheduleDelayed(50_ms);
 
-			} else {
+			} இல்லையெனில் {
 				PX4_ERR("registerCallback failed, scheduling at fixed rate");
 				_interface.ScheduleOnInterval(fixed_rate_scheduling_interval);
 			}
 
-		} else if (all_disabled) {
+		} இல்லையெனில் எனில் (all_disabled) {
 			_interface.ScheduleOnInterval(_lowrate_schedule_interval);
 			PX4_DEBUG("Scheduling at low rate");
 
-		} else {
+		} இல்லையெனில் {
 			_interface.ScheduleOnInterval(fixed_rate_scheduling_interval);
 			PX4_DEBUG("Scheduling at fixed rate");
 		}
 	}
 
 	setMaxTopicUpdateRate(_max_topic_update_interval_us);
-	_need_function_update = false;
+	_need_function_update = பொய்;
 
 	_actuator_test.reset();
 
@@ -359,73 +359,73 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 
 	_interface.mixerChanged();
 
-	return true;
+	திரும்பு உண்மை;
 }
 
-void MixingOutput::setMaxTopicUpdateRate(unsigned max_topic_update_interval_us)
+வெறுமை MixingOutput::setMaxTopicUpdateRate(unsigned max_topic_update_interval_us)
 {
 	_max_topic_update_interval_us = max_topic_update_interval_us;
 
-	if (_subscription_callback) {
+	எனில் (_subscription_callback) {
 		_subscription_callback->set_interval_us(_max_topic_update_interval_us);
 	}
 }
 
-void MixingOutput::setAllMinValues(uint16_t value)
+வெறுமை MixingOutput::set_All_Min_மதிப்புகள்(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	க்கு (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].min = PARAM_INVALID;
-		_min_value[i] = value;
+		min_மதிப்பு[i] = value;
 	}
 }
 
-void MixingOutput::setAllCenterValues(uint16_t value)
+வெறுமை MixingOutput::set_All_Center_மதிப்புகள்(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	க்கு (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].center = PARAM_INVALID;
-		_center_value[i] = value;
+		center_மதிப்பு[i] = value;
 	}
 }
 
-void MixingOutput::setAllMaxValues(uint16_t value)
+வெறுமை MixingOutput::set_All_Max_மதிப்புகள்(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	க்கு (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].max = PARAM_INVALID;
-		_max_value[i] = value;
+		max_மதிப்பு[i] = value;
 	}
 }
 
-void MixingOutput::setAllFailsafeValues(uint16_t value)
+வெறுமை MixingOutput::set_All_Failsafe_மதிப்புகள்(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	க்கு (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].failsafe = PARAM_INVALID;
-		_failsafe_value[i] = value;
+		failsafe_மதிப்பு[i] = value;
 	}
 }
 
-void MixingOutput::setAllDisarmedValues(uint16_t value)
+வெறுமை MixingOutput::set_All_Disarmed_மதிப்புகள்(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	க்கு (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].disarmed = PARAM_INVALID;
-		_disarmed_value[i] = value;
+		disarmed_மதிப்பு[i] = value;
 	}
 }
 
-void MixingOutput::unregister()
+வெறுமை MixingOutput::unregister()
 {
-	if (_subscription_callback) {
+	எனில் (_subscription_callback) {
 		_subscription_callback->unregisterCallback();
 	}
 }
 
-bool MixingOutput::update()
+தருக்க MixingOutput::update()
 {
 	// check arming state
-	if (_armed_sub.update(&_armed)) {
+	எனில் (_armed_sub.update(&_armed)) {
 		_armed.in_esc_calibration_mode &= _support_esc_calibration;
 
-		if (_ignore_lockdown) {
-			_armed.lockdown = false;
+		எனில் (_ignore_lockdown) {
+			_armed.lockdown = பொய்;
 		}
 
 		/* Update the armed status and check that we're not locked down.
@@ -434,52 +434,52 @@ bool MixingOutput::update()
 	}
 
 	// only used for sitl with lockstep
-	bool has_updates = _subscription_callback && _subscription_callback->updated();
+	தருக்க has_updates = _subscription_callback && _subscription_callback->updated();
 
 	// update topics
-	for (int i = 0; i < MAX_ACTUATORS && _function_allocated[i]; ++i) {
+	க்கு (முழு i = 0; i < MAX_ACTUATORS && _function_allocated[i]; ++i) {
 		_function_allocated[i]->update();
 	}
 
-	if (_has_backup_schedule) {
+	எனில் (_has_backup_schedule) {
 		_interface.ScheduleDelayed(50_ms);
 	}
 
 	// check for actuator test
-	_actuator_test.update(_max_num_outputs, _param_thr_mdl_fac.get());
+	_actuator_test.update(max_இலக்கம்_outputs_2, _param_thr_mdl_fac.get());
 
 	// get output values
-	float outputs[MAX_ACTUATORS];
-	bool all_disabled = true;
-	const uint32_t reversible_mask_prev = _reversible_mask;
+	தசம outputs[MAX_ACTUATORS];
+	தருக்க all_disabled = உண்மை;
+	மாறிலி uint32_t reversible_mask_prev = _reversible_mask;
 	_reversible_mask = 0;
 
-	for (int i = 0; i < _max_num_outputs; ++i) {
-		if (_functions[i]) {
-			all_disabled = false;
+	க்கு (முழு i = 0; i < max_இலக்கம்_outputs_2; ++i) {
+		எனில் (_functions[i]) {
+			all_disabled = பொய்;
 
-			if (_armed.armed || (_armed.prearmed && _functions[i]->allowPrearmControl())) {
+			எனில் (_armed.armed || (_armed.prearmed && _functions[i]->allowPrearmControl())) {
 				outputs[i] = _functions[i]->value(_function_assignment[i]);
 
-			} else {
+			} இல்லையெனில் {
 				outputs[i] = NAN;
 			}
 
 			_reversible_mask |= (uint32_t)_functions[i]->reversible(_function_assignment[i]) << i;
 
-		} else {
+		} இல்லையெனில் {
 			outputs[i] = NAN;
 		}
 	}
 
-	if (_reversible_mask != reversible_mask_prev) {
+	எனில் (_reversible_mask != reversible_mask_prev) {
 		_interface.reversibleMaskChanged(_reversible_mask);
 	}
 
 	// Send output if any function mapped or one last disabling sample
-	if (!all_disabled || !_was_all_disabled) {
-		if (!_armed.armed && !_armed.kill) {
-			_actuator_test.overrideValues(outputs, _max_num_outputs);
+	எனில் (!all_disabled || !_was_all_disabled) {
+		எனில் (!_armed.armed && !_armed.kill) {
+			_actuator_test.override_மதிப்புகள்(outputs, max_இலக்கம்_outputs_2);
 		}
 
 		limitAndUpdateOutputs(outputs, has_updates);
@@ -487,101 +487,101 @@ bool MixingOutput::update()
 
 	_was_all_disabled = all_disabled;
 
-	return true;
+	திரும்பு உண்மை;
 }
 
-void
-MixingOutput::limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updates)
+வெறுமை
+MixingOutput::limitAndUpdateOutputs(தசம outputs[MAX_ACTUATORS], தருக்க has_updates)
 {
-	if (_armed.lockdown || _armed.kill) {
+	எனில் (_armed.lockdown || _armed.kill) {
 		// overwrite outputs in case of lockdown with disarmed values
-		for (size_t i = 0; i < _max_num_outputs; i++) {
-			_current_output_value[i] = _disarmed_value[i];
+		க்கு (size_t i = 0; i < max_இலக்கம்_outputs_2; i++) {
+			current_output_மதிப்பு[i] = disarmed_மதிப்பு[i];
 		}
 
-	} else if (_armed.termination) {
+	} இல்லையெனில் எனில் (_armed.termination) {
 		// Overwrite outputs with _failsafe_value when terminated
-		for (size_t i = 0; i < _max_num_outputs; i++) {
-			_current_output_value[i] = actualFailsafeValue(i);
+		க்கு (size_t i = 0; i < max_இலக்கம்_outputs_2; i++) {
+			current_output_மதிப்பு[i] = actual_Failsafe_மதிப்பு(i);
 		}
 
-	} else {
+	} இல்லையெனில் {
 		// the output limit call takes care of out of band errors, NaN and constrains
-		output_limit_calc(_throttle_armed || _actuator_test.inTestMode(), _max_num_outputs, outputs);
+		output_limit_calc(_throttle_armed || _actuator_test.inTestMode(), max_இலக்கம்_outputs_2, outputs);
 	}
 
 	// We must calibrate the PWM and Oneshot ESCs to a consistent range of 1000-2000us (gets mapped to 125-250us for Oneshot)
 	// Doing so makes calibrations consistent among different configurations and hence PWM minimum and maximum have a consistent effect
 	// hence the defaults for these parameters also make most setups work out of the box
-	if (_armed.in_esc_calibration_mode) {
-		static constexpr float PWM_CALIBRATION_LOW = 1000.f;
-		static constexpr float PWM_CALIBRATION_HIGH = 2000.f;
+	எனில் (_armed.in_esc_calibration_mode) {
+		நிலையான constexpr தசம PWM_CALIBRATION_கீழ் = 1000.f;
+		நிலையான constexpr தசம PWM_CALIBRATION_உயர்வு = 2000.f;
 
-		for (int i = 0; i < _max_num_outputs; i++) {
-			if (fabsf(_current_output_value[i] - (float)_min_value[i]) < 0.5f) {
-				_current_output_value[i] = PWM_CALIBRATION_LOW;
+		க்கு (முழு i = 0; i < max_இலக்கம்_outputs_2; i++) {
+			எனில் (fabsf(current_output_மதிப்பு[i] - (தசம)min_மதிப்பு[i]) < 0.5f) {
+				current_output_மதிப்பு[i] = PWM_CALIBRATION_கீழ்;
 			}
 
-			if (fabsf(_current_output_value[i] - (float)_max_value[i]) < 0.5f) {
-				_current_output_value[i] = PWM_CALIBRATION_HIGH;
+			எனில் (fabsf(current_output_மதிப்பு[i] - (தசம)max_மதிப்பு[i]) < 0.5f) {
+				current_output_மதிப்பு[i] = PWM_CALIBRATION_உயர்வு;
 			}
 		}
 	}
 
 	/* now return the outputs to the driver */
-	if (_interface.updateOutputs(_current_output_value, _max_num_outputs, has_updates)) {
+	எனில் (_interface.updateOutputs(current_output_மதிப்பு, max_இலக்கம்_outputs_2, has_updates)) {
 		actuator_outputs_s actuator_outputs{};
-		setAndPublishActuatorOutputs(_max_num_outputs, actuator_outputs);
+		setAndPublishActuatorOutputs(max_இலக்கம்_outputs_2, actuator_outputs);
 
 		updateLatencyPerfCounter(actuator_outputs);
 	}
 }
 
-float MixingOutput::output_limit_calc_single(int i, float value) const
+தசம MixingOutput::output_limit_calc_single(முழு i, தசம value) மாறிலி
 {
 	// check for invalid / disabled channels
-	if (!PX4_ISFINITE(value)) {
-		return _disarmed_value[i];
+	எனில் (!PX4_ISFINITE(value)) {
+		திரும்பு disarmed_மதிப்பு[i];
 	}
 
-	if (_reverse_output_mask & (1 << i)) {
+	எனில் (_reverse_output_mask & (1 << i)) {
 		value = -1.f * value;
 	}
 
-	float output = _disarmed_value[i];
+	தசம output = disarmed_மதிப்பு[i];
 
-	if (((_function_assignment[i] >= OutputFunction::Servo1
+	எனில் (((_function_assignment[i] >= OutputFunction::Servo1
 	      && _function_assignment[i] <= OutputFunction::ServoMax) || _function_assignment[i] == OutputFunction::Landing_Gear_Wheel
 	     || (_function_assignment[i] >= OutputFunction::Gimbal_Roll
 		 && _function_assignment[i] <= OutputFunction::Gimbal_Yaw))
 	    && _param_handles[i].center != PARAM_INVALID
-	    && _center_value[i] >= _min_value[i]
-	    && _center_value[i] <= _max_value[i]) {
-		output = math::interpolateNXY(value, {-1.f, 0.f, 1.f}, {(float)_min_value[i], (float)_center_value[i], (float)_max_value[i]});
+	    && center_மதிப்பு[i] >= min_மதிப்பு[i]
+	    && center_மதிப்பு[i] <= max_மதிப்பு[i]) {
+		output = math::interpolateNXY(value, {-1.f, 0.f, 1.f}, {(தசம)min_மதிப்பு[i], (தசம)center_மதிப்பு[i], (தசம)max_மதிப்பு[i]});
 	}
 
 	// Everything except servos, or if center is not set
-	else {
-		output = math::interpolate(value, -1.f, 1.f, static_cast<float>(_min_value[i]), static_cast<float>(_max_value[i]));
+	இல்லையெனில் {
+		output = math::interpolate(value, -1.f, 1.f, static_cast<தசம>(min_மதிப்பு[i]), static_cast<தசம>(max_மதிப்பு[i]));
 	}
 
-	return output;
+	திரும்பு output;
 }
 
-void
-MixingOutput::output_limit_calc(const bool armed, const int num_channels, const float output[MAX_ACTUATORS])
+வெறுமை
+MixingOutput::output_limit_calc(மாறிலி தருக்க armed, மாறிலி முழு இலக்கம்_channels, மாறிலி தசம output[MAX_ACTUATORS])
 {
 	// time to slowly ramp up the ESCs
-	static constexpr hrt_abstime RAMP_TIME_US = 500_ms;
+	நிலையான constexpr hrt_abstime RAMP_TIME_US = 500_ms;
 
 	/* first evaluate state changes */
-	switch (_output_state) {
-	case OutputLimitState::OFF:
-		if (armed) {
-			if (_output_ramp_up) {
+	தேர்வு (_output_state) {
+	நிலை OutputLimitState::OFF:
+		எனில் (armed) {
+			எனில் (_output_ramp_up) {
 				_output_state = OutputLimitState::RAMP;
 
-			} else {
+			} இல்லையெனில் {
 				_output_state = OutputLimitState::ON;
 			}
 
@@ -589,24 +589,24 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 			_output_time_armed = hrt_absolute_time();
 		}
 
-		break;
+		நிறுத்து;
 
-	case OutputLimitState::RAMP:
-		if (!armed) {
+	நிலை OutputLimitState::RAMP:
+		எனில் (!armed) {
 			_output_state = OutputLimitState::OFF;
 
-		} else if (hrt_elapsed_time(&_output_time_armed) >= RAMP_TIME_US) {
+		} இல்லையெனில் எனில் (hrt_elapsed_time(&_output_time_armed) >= RAMP_TIME_US) {
 			_output_state = OutputLimitState::ON;
 		}
 
-		break;
+		நிறுத்து;
 
-	case OutputLimitState::ON:
-		if (!armed) {
+	நிலை OutputLimitState::ON:
+		எனில் (!armed) {
 			_output_state = OutputLimitState::OFF;
 		}
 
-		break;
+		நிறுத்து;
 	}
 
 	/* if the system is pre-armed, the limit state is temporarily on,
@@ -617,86 +617,86 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 	 */
 	auto local_limit_state = _output_state;
 
-	if (isPrearmed()) {
+	எனில் (isPrearmed()) {
 		local_limit_state = OutputLimitState::ON;
 	}
 
 	// then set _current_output_value based on state
-	switch (local_limit_state) {
-	case OutputLimitState::OFF:
-		for (int i = 0; i < num_channels; i++) {
-			_current_output_value[i] = _disarmed_value[i];
+	தேர்வு (local_limit_state) {
+	நிலை OutputLimitState::OFF:
+		க்கு (முழு i = 0; i < இலக்கம்_channels; i++) {
+			current_output_மதிப்பு[i] = disarmed_மதிப்பு[i];
 		}
 
-		break;
+		நிறுத்து;
 
-	case OutputLimitState::RAMP: {
+	நிலை OutputLimitState::RAMP: {
 			hrt_abstime diff = hrt_elapsed_time(&_output_time_armed);
-			float progress = static_cast<float>(diff) / RAMP_TIME_US;
+			தசம progress = static_cast<தசம>(diff) / RAMP_TIME_US;
 
-			if (progress > 1.f) {
+			எனில் (progress > 1.f) {
 				progress = 1.f;
 			}
 
-			for (int i = 0; i < num_channels; i++) {
+			க்கு (முழு i = 0; i < இலக்கம்_channels; i++) {
 				// Ramp from disarmed value to currently desired output that would apply without ramp
-				float desired_output = output_limit_calc_single(i, output[i]);
-				_current_output_value[i] = _disarmed_value[i] + progress * (desired_output - _disarmed_value[i]);
+				தசம desired_output = output_limit_calc_single(i, output[i]);
+				current_output_மதிப்பு[i] = disarmed_மதிப்பு[i] + progress * (desired_output - disarmed_மதிப்பு[i]);
 			}
 		}
-		break;
+		நிறுத்து;
 
-	case OutputLimitState::ON:
-		for (int i = 0; i < num_channels; i++) {
-			_current_output_value[i] = output_limit_calc_single(i, output[i]);
+	நிலை OutputLimitState::ON:
+		க்கு (முழு i = 0; i < இலக்கம்_channels; i++) {
+			current_output_மதிப்பு[i] = output_limit_calc_single(i, output[i]);
 		}
 
-		break;
+		நிறுத்து;
 	}
 }
 
-void
-MixingOutput::setAndPublishActuatorOutputs(unsigned num_outputs, actuator_outputs_s &actuator_outputs)
+வெறுமை
+MixingOutput::setAndPublishActuatorOutputs(unsigned இலக்கம்_outputs, actuator_outputs_s &actuator_outputs)
 {
-	actuator_outputs.noutputs = num_outputs;
+	actuator_outputs.noutputs = இலக்கம்_outputs;
 
-	for (size_t i = 0; i < num_outputs; ++i) {
-		actuator_outputs.output[i] = _current_output_value[i];
+	க்கு (size_t i = 0; i < இலக்கம்_outputs; ++i) {
+		actuator_outputs.output[i] = current_output_மதிப்பு[i];
 	}
 
 	actuator_outputs.timestamp = hrt_absolute_time();
 	_outputs_pub.publish(actuator_outputs);
 }
 
-void
-MixingOutput::updateLatencyPerfCounter(const actuator_outputs_s &actuator_outputs)
+வெறுமை
+MixingOutput::updateLatencyPerfCounter(மாறிலி actuator_outputs_s &actuator_outputs)
 {
 	// Just check the first function. It means we only get the latency if motors are assigned first, which is the default
-	if (_function_allocated[0]) {
+	எனில் (_function_allocated[0]) {
 		hrt_abstime timestamp_sample;
 
-		if (_function_allocated[0]->getLatestSampleTimestamp(timestamp_sample)) {
+		எனில் (_function_allocated[0]->getLatestSampleTimestamp(timestamp_sample)) {
 			perf_set_elapsed(_control_latency_perf, actuator_outputs.timestamp - timestamp_sample);
 		}
 	}
 }
 
-float MixingOutput::actualFailsafeValue(int index) const
+தசம MixingOutput::actual_Failsafe_மதிப்பு(முழு index) மாறிலி
 {
-	float value = 0;
+	தசம value = 0;
 
-	if (_failsafe_value[index] == UINT16_MAX) { // if set to default, use the one provided by the function
-		float default_failsafe = NAN;
+	எனில் (failsafe_மதிப்பு[index] == UINT16_MAX) { // if set to default, use the one provided by the function
+		தசம default_failsafe = NAN;
 
-		if (_functions[index]) {
-			default_failsafe = _functions[index]->defaultFailsafeValue(_function_assignment[index]);
+		எனில் (_functions[index]) {
+			default_failsafe = _functions[index]->default_Failsafe_மதிப்பு(_function_assignment[index]);
 		}
 
 		value = output_limit_calc_single(index, default_failsafe);
 
-	} else {
-		value = static_cast<float>(_failsafe_value[index]);
+	} இல்லையெனில் {
+		value = static_cast<தசம>(failsafe_மதிப்பு[index]);
 	}
 
-	return value;
+	திரும்பு value;
 }

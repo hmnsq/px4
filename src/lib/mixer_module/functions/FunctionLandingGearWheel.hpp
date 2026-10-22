@@ -33,31 +33,31 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#அந்தர்பாவ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear_wheel.h>
+#அந்தர்பாவ <uORB/topics/landing_gear_wheel.h>
 
 /**
  * Functions: Landing_Gear_Wheel
  */
-class FunctionLandingGearWheel : public FunctionProviderBase
+வகுப்பு FunctionLandingGearWheel : பொது FunctionProviderBase
 {
-public:
-	FunctionLandingGearWheel() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGearWheel(); }
+பொது:
+	FunctionLandingGearWheel() = இயல்பு;
+	நிலையான FunctionProviderBase *allocate(மாறிலி Context &context) { திரும்பு புதிய FunctionLandingGearWheel(); }
 
-	void update() override
+	வெறுமை update() override
 	{
 		landing_gear_wheel_s landing_gear_wheel;
 
-		if (_topic.update(&landing_gear_wheel)) {
+		எனில் (_topic.update(&landing_gear_wheel)) {
 			_data = landing_gear_wheel.normalized_wheel_setpoint;
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	தசம value(OutputFunction func) override { திரும்பு _data; }
 
-private:
+தனிப்பட்ட:
 	uORB::Subscription _topic{ORB_ID(landing_gear_wheel)};
-	float _data{0.f};
+	தசம _data{0.f};
 };

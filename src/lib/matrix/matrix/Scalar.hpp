@@ -8,56 +8,56 @@
 
 #pragma once
 
-#include "Matrix.hpp"
+#அந்தர்பாவ "Matrix.hpp"
 
-namespace matrix
+நாமாகாஶ matrix
 {
 
 template<typename Type>
-class Scalar
+வகுப்பு Scalar
 {
-public:
+பொது:
 	Scalar() = delete;
 
-	Scalar(const Matrix<Type, 1, 1> &other) :
-		_value{other(0, 0)}
+	Scalar(மாறிலி Matrix<Type, 1, 1> &other) :
+		மதிப்பு_2{other(0, 0)}
 	{
 	}
 
-	Scalar(Type other) : _value(other)
+	Scalar(Type other) : மதிப்பு_2(other)
 	{
 	}
 
-	operator const Type &()
+	operator மாறிலி Type &()
 	{
-		return _value;
+		திரும்பு மதிப்பு_2;
 	}
 
-	operator Matrix<Type, 1, 1>() const
+	operator Matrix<Type, 1, 1>() மாறிலி
 	{
 		Matrix<Type, 1, 1> m;
-		m(0, 0) = _value;
-		return m;
+		m(0, 0) = மதிப்பு_2;
+		திரும்பு m;
 	}
 
-	operator Vector<Type, 1>() const
+	operator Vector<Type, 1>() மாறிலி
 	{
 		Vector<Type, 1> m;
-		m(0) = _value;
-		return m;
+		m(0) = மதிப்பு_2;
+		திரும்பு m;
 	}
 
-	bool operator==(const float other) const
+	தருக்க operator==(மாறிலி தசம other) மாறிலி
 	{
-		return isEqualF(_value, other);
+		திரும்பு isEqualF(மதிப்பு_2, other);
 	}
 
-private:
-	const Type _value;
+தனிப்பட்ட:
+	மாறிலி Type மதிப்பு_2;
 
 };
 
-using Scalarf = Scalar<float>;
-using Scalard = Scalar<double>;
+using Scalarf = Scalar<தசம>;
+using Scalard = Scalar<இரட்டை>;
 
 } // namespace matrix

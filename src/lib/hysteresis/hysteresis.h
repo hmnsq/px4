@@ -41,27 +41,27 @@
 
 #pragma once
 
-#include <drivers/drv_hrt.h>
+#அந்தர்பாவ <drivers/drv_hrt.h>
 
 namespace systemlib
 {
 
 class Hysteresis
 {
-public:
-	Hysteresis() = default;
+பொது:
+	Hysteresis() = இயல்பு;
 	explicit Hysteresis(bool initial_state);
-	~Hysteresis() = default;
+	~Hysteresis() = இயல்பு;
 
-	bool get_state() const { return _state; }
+	bool get_state() மாறிலி { திரும்பு _state; }
 
-	void set_hysteresis_time_from(const bool from_state, const hrt_abstime new_hysteresis_time_us);
+	வெறுமை set_hysteresis_time_from(மாறிலி bool from_state, மாறிலி hrt_abstime new_hysteresis_time_us);
 
-	void set_state_and_update(const bool new_state, const hrt_abstime &now_us);
+	வெறுமை set_state_and_update(மாறிலி bool new_state, மாறிலி hrt_abstime &now_us);
 
-	void update(const hrt_abstime &now_us);
+	வெறுமை update(மாறிலி hrt_abstime &now_us);
 
-private:
+தனிப்பட்ட:
 
 	hrt_abstime _last_time_to_change_state = 0;
 

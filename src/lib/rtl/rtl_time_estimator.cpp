@@ -38,14 +38,14 @@
  *
  */
 
-#include "rtl_time_estimator.h"
+#அந்தர்பாவ "rtl_time_estimator.h"
 
-#include <float.h>
-#include <math.h>
+#அந்தர்பாவ <float.h>
+#அந்தர்பாவ <math.h>
 
-#include <px4_platform_common/defines.h>
-#include <drivers/drv_hrt.h>
-#include <uORB/topics/vehicle_status.h>
+#அந்தர்பாவ <px4_platform_common/defines.h>
+#அந்தர்பாவ <drivers/drv_hrt.h>
+#அந்தர்பாவ <uORB/topics/vehicle_status.h>
 
 RtlTimeEstimator::RtlTimeEstimator() : ModuleParams(nullptr)
 {
@@ -59,29 +59,29 @@ RtlTimeEstimator::RtlTimeEstimator() : ModuleParams(nullptr)
 	_param_rover_cruise_speed = param_find("RO_SPEED_LIM");
 };
 
-rtl_time_estimate_s RtlTimeEstimator::getEstimate() const
+rtl_time_estimate_s RtlTimeEstimator::getEstimate() மாறிலி
 {
 	rtl_time_estimate_s time_estimate{};
 
-	if (_is_valid && PX4_ISFINITE(_time_estimate)) {
-		time_estimate.valid = true;
+	எனில் (_is_valid && PX4_ISFINITE(_time_estimate)) {
+		time_estimate.valid = உண்மை;
 		time_estimate.time_estimate = _time_estimate;
 		// Use actual time estimate to compute the safer time estimate with additional scale factor and a margin
 		time_estimate.safe_time_estimate = _param_rtl_time_factor.get() * _time_estimate + _param_rtl_time_margin.get();
 
-	} else {
-		time_estimate.valid = false;
+	} இல்லையெனில் {
+		time_estimate.valid = பொய்;
 	}
 
 	time_estimate.timestamp = hrt_absolute_time();
-	return time_estimate;
+	திரும்பு time_estimate;
 }
 
-void RtlTimeEstimator::update()
+வெறுமை RtlTimeEstimator::update()
 {
 	_wind_sub.update();
 
-	if (_parameter_update_sub.updated()) {
+	எனில் (_parameter_update_sub.updated()) {
 		parameter_update_s param_update;
 		_parameter_update_sub.copy(&param_update);
 
@@ -91,56 +91,56 @@ void RtlTimeEstimator::update()
 	}
 }
 
-void RtlTimeEstimator::addVertDistance(float alt)
+வெறுமை RtlTimeEstimator::addVertDistance(தசம alt)
 {
-	if (PX4_ISFINITE(alt)) {
-		_is_valid = true;
+	எனில் (PX4_ISFINITE(alt)) {
+		_is_valid = உண்மை;
 
 		_time_estimate += calcVertTimeEstimate(alt);
 	}
 }
 
-void RtlTimeEstimator::addDistance(float hor_dist, const matrix::Vector2f &direction, float vert_dist)
+வெறுமை RtlTimeEstimator::addDistance(தசம hor_dist, மாறிலி matrix::Vector2f &direction, தசம vert_dist)
 {
-	if (PX4_ISFINITE(hor_dist) && PX4_ISFINITE(vert_dist)) {
-		_is_valid = true;
+	எனில் (PX4_ISFINITE(hor_dist) && PX4_ISFINITE(vert_dist)) {
+		_is_valid = உண்மை;
 
-		float hor_time_estimate{0.f};
+		தசம hor_time_estimate{0.f};
 
-		if (hor_dist > FLT_EPSILON && PX4_ISFINITE(hor_dist)) {
+		எனில் (hor_dist > FLT_EPSILON && PX4_ISFINITE(hor_dist)) {
 			hor_time_estimate = hor_dist / getCruiseGroundSpeed(direction.normalized());
 		}
 
-		float ver_time_estimate{calcVertTimeEstimate(vert_dist)};
+		தசம ver_time_estimate{calcVertTimeEstimate(vert_dist)};
 
 		_time_estimate += math::max(hor_time_estimate, ver_time_estimate);
 
 	}
 }
 
-void RtlTimeEstimator::addWait(float time_s)
+வெறுமை RtlTimeEstimator::addWait(தசம time_s)
 {
-	if (PX4_ISFINITE(time_s)) {
-		_is_valid = true;
+	எனில் (PX4_ISFINITE(time_s)) {
+		_is_valid = உண்மை;
 
-		if (time_s > FLT_EPSILON) {
+		எனில் (time_s > FLT_EPSILON) {
 			_time_estimate += time_s;
 		}
 	}
 }
 
-float RtlTimeEstimator::getCruiseGroundSpeed(const matrix::Vector2f &direction_norm)
+தசம RtlTimeEstimator::getCruiseGroundSpeed(மாறிலி matrix::Vector2f &direction_norm)
 {
-	float cruise_speed = getCruiseSpeed();
+	தசம cruise_speed = getCruiseSpeed();
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+	எனில் (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
 		matrix::Vector2f wind = get_wind();
 
-		const float wind_along_dir = wind.dot(direction_norm);
-		const float wind_across_dir = matrix::Vector2f(wind - direction_norm * wind_along_dir).norm();
+		மாறிலி தசம wind_along_dir = wind.dot(direction_norm);
+		மாறிலி தசம wind_across_dir = matrix::Vector2f(wind - direction_norm * wind_along_dir).norm();
 
 		// Note: use fminf so that we don't _rely_ on tailwind towards direction to make Return more efficient
-		const float ground_speed = sqrtf(cruise_speed * cruise_speed - wind_across_dir * wind_across_dir) + fminf(
+		மாறிலி தசம ground_speed = sqrtf(cruise_speed * cruise_speed - wind_across_dir * wind_across_dir) + fminf(
 						   0.f, wind_along_dir);
 
 		// Assume that minimum ground speed is always satisfied. If
@@ -148,60 +148,60 @@ float RtlTimeEstimator::getCruiseGroundSpeed(const matrix::Vector2f &direction_n
 		// the assumption always holds. Otherwise it breaks down when
 		// flying upwind, and the return time estimate is optimistic.
 
-		float fw_gnd_spd_min = 5.0f;
+		தசம fw_gnd_spd_min = 5.0f;
 
-		if (_param_fw_gnd_spd_min != PARAM_INVALID) {
+		எனில் (_param_fw_gnd_spd_min != PARAM_INVALID) {
 			param_get(_param_fw_gnd_spd_min, &fw_gnd_spd_min);
 		}
 
 		cruise_speed = fmaxf(ground_speed, fw_gnd_spd_min);
 	}
 
-	return cruise_speed;
+	திரும்பு cruise_speed;
 }
 
-float RtlTimeEstimator::calcVertTimeEstimate(float alt)
+தசம RtlTimeEstimator::calcVertTimeEstimate(தசம alt)
 {
-	float vertical_rate{0.1f};
-	float time_estimate{0.f};
+	தசம vertical_rate{0.1f};
+	தசம time_estimate{0.f};
 
-	if (alt > FLT_EPSILON) {
+	எனில் (alt > FLT_EPSILON) {
 		vertical_rate = getClimbRate();
 
-	} else {
+	} இல்லையெனில் {
 		vertical_rate = getDescendRate();
 	}
 
-	float abs_alt = fabsf(alt);
+	தசம abs_alt = fabsf(alt);
 
-	if (abs_alt > FLT_EPSILON) {
+	எனில் (abs_alt > FLT_EPSILON) {
 		time_estimate = abs_alt / vertical_rate;
 	}
 
-	return time_estimate;
+	திரும்பு time_estimate;
 }
 
-float RtlTimeEstimator::getCruiseSpeed()
+தசம RtlTimeEstimator::getCruiseSpeed()
 {
-	float ret = 1e6f;
+	தசம ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_xy_cruise == PARAM_INVALID || param_get(_param_mpc_xy_cruise, &ret) != PX4_OK) {
+	எனில் (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+		எனில் (_param_mpc_xy_cruise == PARAM_INVALID || param_get(_param_mpc_xy_cruise, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		if (_param_fw_airspeed_trim == PARAM_INVALID || param_get(_param_fw_airspeed_trim, &ret) != PX4_OK) {
+	} இல்லையெனில் எனில் (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+		எனில் (_param_fw_airspeed_trim == PARAM_INVALID || param_get(_param_fw_airspeed_trim, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROVER) {
-		if (_param_rover_cruise_speed == PARAM_INVALID || param_get(_param_rover_cruise_speed, &ret) != PX4_OK) {
+	} இல்லையெனில் எனில் (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROVER) {
+		எனில் (_param_rover_cruise_speed == PARAM_INVALID || param_get(_param_rover_cruise_speed, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	திரும்பு ret;
 }
 
 matrix::Vector2f RtlTimeEstimator::get_wind()
@@ -209,47 +209,47 @@ matrix::Vector2f RtlTimeEstimator::get_wind()
 	_wind_sub.update();
 	matrix::Vector2f wind{};
 
-	if (hrt_absolute_time() - _wind_sub.get().timestamp < 1_s) {
+	எனில் (hrt_absolute_time() - _wind_sub.get().timestamp < 1_s) {
 		wind(0) = _wind_sub.get().windspeed_north;
 		wind(1) = _wind_sub.get().windspeed_east;
 	}
 
-	return wind;
+	திரும்பு wind;
 }
 
-float RtlTimeEstimator::getClimbRate()
+தசம RtlTimeEstimator::getClimbRate()
 {
-	float ret = 1e6f;
+	தசம ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_z_v_auto_up == PARAM_INVALID || param_get(_param_mpc_z_v_auto_up, &ret) != PX4_OK) {
+	எனில் (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+		எனில் (_param_mpc_z_v_auto_up == PARAM_INVALID || param_get(_param_mpc_z_v_auto_up, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+	} இல்லையெனில் எனில் (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
 
-		if (_param_fw_climb_rate == PARAM_INVALID || param_get(_param_fw_climb_rate, &ret) != PX4_OK) {
+		எனில் (_param_fw_climb_rate == PARAM_INVALID || param_get(_param_fw_climb_rate, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	திரும்பு ret;
 }
 
-float RtlTimeEstimator::getDescendRate()
+தசம RtlTimeEstimator::getDescendRate()
 {
-	float ret = 1e6f;
+	தசம ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_z_v_auto_dn == PARAM_INVALID || param_get(_param_mpc_z_v_auto_dn, &ret) != PX4_OK) {
+	எனில் (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+		எனில் (_param_mpc_z_v_auto_dn == PARAM_INVALID || param_get(_param_mpc_z_v_auto_dn, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		if (_param_fw_sink_rate == PARAM_INVALID || param_get(_param_fw_sink_rate, &ret) != PX4_OK) {
+	} இல்லையெனில் எனில் (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+		எனில் (_param_fw_sink_rate == PARAM_INVALID || param_get(_param_fw_sink_rate, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	திரும்பு ret;
 }

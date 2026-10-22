@@ -39,48 +39,48 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#அந்தர்பாவ <px4_platform_common/defines.h>
+#அந்தர்பாவ <assert.h>
+#அந்தர்பாவ <time.h>
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <math.h>
+#அந்தர்பாவ <mathlib/math/test/test.hpp>
+#அந்தர்பாவ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#அந்தர்பாவ "block/Block.hpp"
+#அந்தர்பாவ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#அந்தர்பாவ "matrix/math.hpp"
 
-namespace control
+நாமாகாஶ control
 {
 
 /**
  * A 2nd order low pass filter block which uses the default px4 2nd order low pass filter
  */
-class __EXPORT BlockLowPass2 : public Block
+வகுப்பு __EXPORT Block_கீழ்_Pass2 : பொது Block
 {
-public:
+பொது:
 // methods
-	BlockLowPass2(SuperBlock *parent, const char *name, float sample_freq) :
+	Block_கீழ்_Pass2(SuperBlock *parent, மாறிலி எழுத்து *name, தசம sample_freq) :
 		Block(parent, name),
 		_state(0.0 / 0.0 /* initialize to invalid val, force into is_finite() check on first call */),
-		_fCut(this, ""), // only one parameter, no need to name
+		_fCut(இது, ""), // only one parameter, no need to name
 		_fs(sample_freq),
 		_lp(_fs, _fCut.get())
 	{}
-	virtual ~BlockLowPass2() = default;
-	float update(float input);
+	மெய்நிகர் ~Block_கீழ்_Pass2() = இயல்பு;
+	தசம update(தசம உள்ளீடு);
 // accessors
-	float getState() { return _state; }
-	float getFCutParam() { return _fCut.get(); }
-	void setState(float state) { _state = _lp.reset(state); }
-protected:
+	தசம getState() { திரும்பு _state; }
+	தசம getFCutParam() { திரும்பு _fCut.get(); }
+	வெறுமை setState(தசம state) { _state = _lp.reset(state); }
+பாதுகாக்கப்பட்ட:
 // attributes
-	float _state;
+	தசம _state;
 	control::BlockParamFloat _fCut;
-	float _fs;
-	math::LowPassFilter2p<float> _lp;
+	தசம _fs;
+	math::கீழ்_Pass_Filter2p<தசம> _lp;
 };
 
 } // namespace control

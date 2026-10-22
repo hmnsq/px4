@@ -39,20 +39,20 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#அந்தர்பாவ <px4_platform_common/defines.h>
+#அந்தர்பாவ <assert.h>
+#அந்தர்பாவ <time.h>
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <math.h>
+#அந்தர்பாவ <mathlib/math/test/test.hpp>
+#அந்தர்பாவ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#அந்தர்பாவ "block/Block.hpp"
+#அந்தர்பாவ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#அந்தர்பாவ "matrix/math.hpp"
 
-namespace control
+நாமாகாஶ control
 {
 
 /**
@@ -63,27 +63,27 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegralTrap : public SuperBlock
+வகுப்பு __EXPORT BlockIntegralTrap : பொது SuperBlock
 {
-public:
+பொது:
 // methods
-	BlockIntegralTrap(SuperBlock *parent, const char *name) :
+	BlockIntegralTrap(SuperBlock *parent, மாறிலி எழுத்து *name) :
 		SuperBlock(parent, name),
 		_u(0),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegralTrap() = default;
-	float update(float input);
+		_limit(இது, "") {}
+	மெய்நிகர் ~BlockIntegralTrap() = இயல்பு;
+	தசம update(தசம உள்ளீடு);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
+	தசம getU() {திரும்பு _u;}
+	தசம getY() {திரும்பு _y;}
+	தசம getMax() {திரும்பு _limit.getMax();}
+	வெறுமை setU(தசம u) {_u = u;}
+	வெறுமை setY(தசம y) {_y = y;}
+பாதுகாக்கப்பட்ட:
 // attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
+	தசம _u; /**< previous input */
+	தசம _y; /**< previous output */
 	BlockLimitSym _limit; /**< limiter */
 };
 

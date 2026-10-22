@@ -33,36 +33,36 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#அந்தர்பாவ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear.h>
+#அந்தர்பாவ <uORB/topics/landing_gear.h>
 
 /**
  * Functions: Landing_Gear
  */
-class FunctionLandingGear : public FunctionProviderBase
+வகுப்பு FunctionLandingGear : பொது FunctionProviderBase
 {
-public:
-	FunctionLandingGear() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGear(); }
+பொது:
+	FunctionLandingGear() = இயல்பு;
+	நிலையான FunctionProviderBase *allocate(மாறிலி Context &context) { திரும்பு புதிய FunctionLandingGear(); }
 
-	void update() override
+	வெறுமை update() override
 	{
 		landing_gear_s landing_gear;
 
-		if (_topic.update(&landing_gear)) {
-			if (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
+		எனில் (_topic.update(&landing_gear)) {
+			எனில் (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
 				_data = -1.f;
 
-			} else if (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
+			} இல்லையெனில் எனில் (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
 				_data = 1.f;
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	தசம value(OutputFunction func) override { திரும்பு _data; }
 
-private:
+தனிப்பட்ட:
 	uORB::Subscription _topic{ORB_ID(landing_gear)};
-	float _data{-1.f};
+	தசம _data{-1.f};
 };

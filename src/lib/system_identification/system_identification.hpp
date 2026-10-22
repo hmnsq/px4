@@ -39,64 +39,64 @@
 
 #pragma once
 
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <matrix/matrix/math.hpp>
-#include <mathlib/mathlib.h>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
-#include <px4_platform_common/defines.h>
+#அந்தர்பாவ <lib/mathlib/math/filter/AlphaFilter.hpp>
+#அந்தர்பாவ <matrix/matrix/math.hpp>
+#அந்தர்பாவ <mathlib/mathlib.h>
+#அந்தர்பாவ <mathlib/math/filter/LowPassFilter2p.hpp>
+#அந்தர்பாவ <px4_platform_common/defines.h>
 
-#include "arx_rls.hpp"
+#அந்தர்பாவ "arx_rls.hpp"
 
-class SystemIdentification final
+வகுப்பு SystemIdentification final
 {
-public:
-	SystemIdentification() = default;
-	~SystemIdentification() = default;
+பொது:
+	SystemIdentification() = இயல்பு;
+	~SystemIdentification() = இயல்பு;
 
-	void reset(const matrix::Vector<float, 5> &id_state_init = {});
-	void update(float u, float y); // update filters and model
-	void update(); // update model only (to be called after updateFilters)
-	void updateFilters(float u, float y);
-	bool areFiltersInitialized() const { return _are_filters_initialized; }
-	void updateFitness();
-	const matrix::Vector<float, 5> &getCoefficients() const { return _rls.getCoefficients(); }
-	const matrix::Vector<float, 5> getVariances() const { return _rls.getVariances(); }
-	const matrix::Vector<float, 5> &getDiffEstimate() const { return _rls.getDiffEstimate(); }
-	float getFitness() const { return _fitness_lpf.getState(); }
-	float getInnovation() const { return _rls.getInnovation(); }
+	வெறுமை reset(மாறிலி matrix::Vector<தசம, 5> &id_state_init = {});
+	வெறுமை update(தசம u, தசம y); // update filters and model
+	வெறுமை update(); // update model only (to be called after updateFilters)
+	வெறுமை updateFilters(தசம u, தசம y);
+	தருக்க areFiltersInitialized() மாறிலி { திரும்பு _are_filters_initialized; }
+	வெறுமை updateFitness();
+	மாறிலி matrix::Vector<தசம, 5> &getCoefficients() மாறிலி { திரும்பு _rls.getCoefficients(); }
+	மாறிலி matrix::Vector<தசம, 5> getVariances() மாறிலி { திரும்பு _rls.getVariances(); }
+	மாறிலி matrix::Vector<தசம, 5> &getDiffEstimate() மாறிலி { திரும்பு _rls.getDiffEstimate(); }
+	தசம getFitness() மாறிலி { திரும்பு _fitness_lpf.getState(); }
+	தசம getInnovation() மாறிலி { திரும்பு _rls.getInnovation(); }
 
-	void setLpfCutoffFrequency(float sample_freq, float cutoff)
+	வெறுமை setLpfCutoffFrequency(தசம sample_freq, தசம cutoff)
 	{
 		_u_lpf.set_cutoff_frequency(sample_freq, cutoff);
 		_y_lpf.set_cutoff_frequency(sample_freq, cutoff);
 	}
-	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
+	வெறுமை setHpfCutoffFrequency(தசம sample_freq, தசம cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	void setForgettingFactor(float time_constant, float dt) { _rls.setForgettingFactor(time_constant, dt); }
-	void setFitnessLpfTimeConstant(float time_constant, float dt)
+	வெறுமை setForgettingFactor(தசம time_constant, தசம dt) { _rls.setForgettingFactor(time_constant, dt); }
+	வெறுமை setFitnessLpfTimeConstant(தசம time_constant, தசம dt)
 	{
 		_fitness_lpf.setParameters(dt, time_constant);
 		_dt = dt;
 	}
 
-	float getFilteredInputData() const { return _u_hpf; }
-	float getFilteredOutputData() const { return _y_hpf; }
+	தசம get_Filtered_உள்ளீடு_Data() மாறிலி { திரும்பு _u_hpf; }
+	தசம getFilteredOutputData() மாறிலி { திரும்பு _y_hpf; }
 
-private:
+தனிப்பட்ட:
 	ArxRls<2, 2, 1> _rls;
-	math::LowPassFilter2p<float> _u_lpf{400.f, 30.f};
-	math::LowPassFilter2p<float> _y_lpf{400.f, 30.f};
+	math::கீழ்_Pass_Filter2p<தசம> _u_lpf{400.f, 30.f};
+	math::கீழ்_Pass_Filter2p<தசம> _y_lpf{400.f, 30.f};
 
 	//TODO: replace by HighPassFilter class
-	float _alpha_hpf{0.f};
-	float _u_hpf{0.f};
-	float _y_hpf{0.f};
+	தசம _alpha_hpf{0.f};
+	தசம _u_hpf{0.f};
+	தசம _y_hpf{0.f};
 
-	float _u_prev{0.f};
-	float _y_prev{0.f};
+	தசம _u_prev{0.f};
+	தசம _y_prev{0.f};
 
-	bool _are_filters_initialized{false};
+	தருக்க _are_filters_initialized{பொய்};
 
-	AlphaFilter<float> _fitness_lpf;
-	float _dt{0.1f};
+	AlphaFilter<தசம> _fitness_lpf;
+	தசம _dt{0.1f};
 };

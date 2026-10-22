@@ -48,18 +48,18 @@
 
 #pragma once
 
-#include <matrix/matrix/math.hpp>
+#அந்தர்பாவ <matrix/matrix/math.hpp>
 
-class FieldSensorBiasEstimator
+வகுப்பு FieldSensorBiasEstimator
 {
-public:
-	FieldSensorBiasEstimator() = default;
-	~FieldSensorBiasEstimator() = default;
+பொது:
+	FieldSensorBiasEstimator() = இயல்பு;
+	~FieldSensorBiasEstimator() = இயல்பு;
 
 	// Set initial states
-	void setField(const matrix::Vector3f &field) { _field_prev = field; }
-	void setBias(const matrix::Vector3f &bias) { _state_bias = bias; }
-	void setLearningGain(float learning_gain) { _learning_gain = learning_gain; }
+	வெறுமை setField(மாறிலி matrix::Vector3f &field) { _field_prev = field; }
+	வெறுமை setBias(மாறிலி matrix::Vector3f &bias) { _state_bias = bias; }
+	வெறுமை setLearningGain(தசம learning_gain) { _learning_gain = learning_gain; }
 
 	/**
 	 * Update the estimator and extract updated biases.
@@ -67,20 +67,20 @@ public:
 	 * @param field biased field sensor data
 	 * @param dt time in seconds since the last update
 	 */
-	void updateEstimate(const matrix::Vector3f &gyro, const matrix::Vector3f &field, const float dt)
+	வெறுமை updateEstimate(மாறிலி matrix::Vector3f &gyro, மாறிலி matrix::Vector3f &field, மாறிலி தசம dt)
 	{
-		const matrix::Vector3f field_pred = _field_prev + (-gyro % (_field_prev - _state_bias)) * dt;
-		const matrix::Vector3f field_innov = field - field_pred;
+		மாறிலி matrix::Vector3f field_pred = _field_prev + (-gyro % (_field_prev - _state_bias)) * dt;
+		மாறிலி matrix::Vector3f field_innov = field - field_pred;
 		_state_bias += _learning_gain * (-gyro % field_innov) * dt;
 		_field_prev = field;
 	}
 
-	const matrix::Vector3f &getField() { return _field_prev; }
-	const matrix::Vector3f &getBias() { return _state_bias; }
+	மாறிலி matrix::Vector3f &getField() { திரும்பு _field_prev; }
+	மாறிலி matrix::Vector3f &getBias() { திரும்பு _state_bias; }
 
-private:
+தனிப்பட்ட:
 	// states
 	matrix::Vector3f _field_prev{};
 	matrix::Vector3f _state_bias{};
-	float _learning_gain{20.f};
+	தசம _learning_gain{20.f};
 };

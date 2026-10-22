@@ -31,201 +31,201 @@
  *
  ****************************************************************************/
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <lib/conversion/rotation.h>
-#include <lib/mathlib/mathlib.h>
-#include <lib/parameters/param.h>
+#அந்தர்பாவ <px4_platform_common/px4_config.h>
+#அந்தர்பாவ <px4_platform_common/log.h>
+#அந்தர்பாவ <lib/conversion/rotation.h>
+#அந்தர்பாவ <lib/mathlib/mathlib.h>
+#அந்தர்பாவ <lib/parameters/param.h>
 
 using math::radians;
 using matrix::Eulerf;
 using matrix::Dcmf;
 using matrix::Vector3f;
 
-namespace calibration
+நாமாகாஶ calibration
 {
 
-static constexpr int MAX_SENSOR_COUNT = 4; // TODO: per sensor?
+நிலையான constexpr முழு MAX_SENSOR_மொத்தம் = 4; // TODO: per sensor?
 
-int8_t FindCurrentCalibrationIndex(const char *sensor_type, uint32_t device_id)
+int8_t FindCurrentCalibrationIndex(மாறிலி எழுத்து *sensor_type, uint32_t device_id)
 {
-	if (device_id == 0) {
-		return -1;
+	எனில் (device_id == 0) {
+		திரும்பு -1;
 	}
 
-	for (unsigned i = 0; i < MAX_SENSOR_COUNT; ++i) {
-		char str[20] {};
-		snprintf(str, sizeof(str), "CAL_%s%u_ID", sensor_type, i);
+	க்கு (unsigned i = 0; i < MAX_SENSOR_மொத்தம்; ++i) {
+		எழுத்து str[20] {};
+		snprintf(str, அளவு(str), "CAL_%s%u_ID", sensor_type, i);
 
 		int32_t device_id_val = 0;
 
 		param_t param_handle = param_find_no_notification(str);
 
-		if (param_handle == PARAM_INVALID) {
-			continue;
+		எனில் (param_handle == PARAM_INVALID) {
+			தொடர்;
 		}
 
 		// find again and get value, but this time mark it active
-		if (param_get(param_find(str), &device_id_val) != OK) {
-			continue;
+		எனில் (param_get(param_find(str), &device_id_val) != OK) {
+			தொடர்;
 		}
 
-		if ((uint32_t)device_id_val == device_id) {
-			return i;
+		எனில் ((uint32_t)device_id_val == device_id) {
+			திரும்பு i;
 		}
 	}
 
-	return -1;
+	திரும்பு -1;
 }
 
-int8_t FindAvailableCalibrationIndex(const char *sensor_type, uint32_t device_id, int8_t preferred_index)
+int8_t FindAvailableCalibrationIndex(மாறிலி எழுத்து *sensor_type, uint32_t device_id, int8_t preferred_index)
 {
 	// if this device is already using a calibration slot then keep it
-	int calibration_index = FindCurrentCalibrationIndex(sensor_type, device_id);
+	முழு calibration_index = FindCurrentCalibrationIndex(sensor_type, device_id);
 
-	if (calibration_index >= 0) {
-		return calibration_index;
+	எனில் (calibration_index >= 0) {
+		திரும்பு calibration_index;
 	}
 
 
 	// device isn't currently using a calibration slot, select user preference (preferred_index)
 	//  if available, otherwise use the first available slot
-	uint32_t cal_device_ids[MAX_SENSOR_COUNT] {};
+	uint32_t cal_device_ids[MAX_SENSOR_மொத்தம்] {};
 
-	for (unsigned i = 0; i < MAX_SENSOR_COUNT; ++i) {
-		char str[20] {};
-		snprintf(str, sizeof(str), "CAL_%s%u_ID", sensor_type, i);
+	க்கு (unsigned i = 0; i < MAX_SENSOR_மொத்தம்; ++i) {
+		எழுத்து str[20] {};
+		snprintf(str, அளவு(str), "CAL_%s%u_ID", sensor_type, i);
 		int32_t device_id_val = 0;
 
-		if (param_get(param_find_no_notification(str), &device_id_val) == PX4_OK) {
+		எனில் (param_get(param_find_no_notification(str), &device_id_val) == PX4_OK) {
 			cal_device_ids[i] = device_id_val;
 		}
 	}
 
 	// use preferred_index if it's available
-	if ((preferred_index >= 0) && (preferred_index < MAX_SENSOR_COUNT)
+	எனில் ((preferred_index >= 0) && (preferred_index < MAX_SENSOR_மொத்தம்)
 	    && (cal_device_ids[preferred_index] == 0)) {
 
 		calibration_index = preferred_index;
 
-	} else {
+	} இல்லையெனில் {
 		// otherwise select first available slot
-		for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-			if (cal_device_ids[i] == 0) {
+		க்கு (முழு i = 0; i < MAX_SENSOR_மொத்தம்; i++) {
+			எனில் (cal_device_ids[i] == 0) {
 				calibration_index = i;
-				break;
+				நிறுத்து;
 			}
 		}
 	}
 
-	if (calibration_index == -1) {
+	எனில் (calibration_index == -1) {
 		PX4_ERR("no %s calibration slots available", sensor_type);
 	}
 
-	return calibration_index;
+	திரும்பு calibration_index;
 }
 
-int32_t GetCalibrationParamInt32(const char *sensor_type, const char *cal_type, uint8_t instance)
+int32_t GetCalibrationParamInt32(மாறிலி எழுத்து *sensor_type, மாறிலி எழுத்து *cal_type, uint8_t instance)
 {
 	// eg CAL_MAGn_ID/CAL_MAGn_ROT
-	char str[20] {};
-	snprintf(str, sizeof(str), "CAL_%s%" PRIu8 "_%s", sensor_type, instance, cal_type);
+	எழுத்து str[20] {};
+	snprintf(str, அளவு(str), "CAL_%s%" PRIu8 "_%s", sensor_type, instance, cal_type);
 
 	int32_t value = 0;
 
-	if (param_get(param_find(str), &value) != 0) {
+	எனில் (param_get(param_find(str), &value) != 0) {
 		PX4_ERR("failed to get %s", str);
 	}
 
-	return value;
+	திரும்பு value;
 }
 
-float GetCalibrationParamFloat(const char *sensor_type, const char *cal_type, uint8_t instance)
+தசம GetCalibrationParamFloat(மாறிலி எழுத்து *sensor_type, மாறிலி எழுத்து *cal_type, uint8_t instance)
 {
 	// eg CAL_BAROn_OFF
-	char str[20] {};
-	snprintf(str, sizeof(str), "CAL_%s%" PRIu8 "_%s", sensor_type, instance, cal_type);
+	எழுத்து str[20] {};
+	snprintf(str, அளவு(str), "CAL_%s%" PRIu8 "_%s", sensor_type, instance, cal_type);
 
-	float value = NAN;
+	தசம value = NAN;
 
-	if (param_get(param_find(str), &value) != 0) {
+	எனில் (param_get(param_find(str), &value) != 0) {
 		PX4_ERR("failed to get %s", str);
 	}
 
-	return value;
+	திரும்பு value;
 }
 
-Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance)
+Vector3f GetCalibrationParamsVector3f(மாறிலி எழுத்து *sensor_type, மாறிலி எழுத்து *cal_type, uint8_t instance)
 {
-	Vector3f values{0.f, 0.f, 0.f};
+	Vector3f மதிப்புகள்_2{0.f, 0.f, 0.f};
 
-	char str[20] {};
+	எழுத்து str[20] {};
 
-	for (int axis = 0; axis < 3; axis++) {
-		char axis_char = 'X' + axis;
+	க்கு (முழு axis = 0; axis < 3; axis++) {
+		எழுத்து axis_char = 'X' + axis;
 
 		// eg CAL_MAGn_{X,Y,Z}OFF
-		snprintf(str, sizeof(str), "CAL_%s%" PRIu8 "_%c%s", sensor_type, instance, axis_char, cal_type);
+		snprintf(str, அளவு(str), "CAL_%s%" PRIu8 "_%c%s", sensor_type, instance, axis_char, cal_type);
 
-		if (param_get(param_find(str), &values(axis)) != 0) {
+		எனில் (param_get(param_find(str), &மதிப்புகள்_2(axis)) != 0) {
 			PX4_ERR("failed to get %s", str);
 		}
 	}
 
-	return values;
+	திரும்பு மதிப்புகள்_2;
 }
 
-bool SetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance, Vector3f values)
+தருக்க SetCalibrationParamsVector3f(மாறிலி எழுத்து *sensor_type, மாறிலி எழுத்து *cal_type, uint8_t instance, Vector3f மதிப்புகள்_2)
 {
-	int ret = PX4_OK;
-	char str[20] {};
+	முழு ret = PX4_OK;
+	எழுத்து str[20] {};
 
-	for (int axis = 0; axis < 3; axis++) {
-		char axis_char = 'X' + axis;
+	க்கு (முழு axis = 0; axis < 3; axis++) {
+		எழுத்து axis_char = 'X' + axis;
 
 		// eg CAL_MAGn_{X,Y,Z}OFF
-		snprintf(str, sizeof(str), "CAL_%s%" PRIu8 "_%c%s", sensor_type, instance, axis_char, cal_type);
+		snprintf(str, அளவு(str), "CAL_%s%" PRIu8 "_%c%s", sensor_type, instance, axis_char, cal_type);
 
-		if (param_set_no_notification(param_find(str), &values(axis)) != 0) {
-			PX4_ERR("failed to set %s = %.4f", str, (double)values(axis));
+		எனில் (param_set_no_notification(param_find(str), &மதிப்புகள்_2(axis)) != 0) {
+			PX4_ERR("failed to set %s = %.4f", str, (இரட்டை)மதிப்புகள்_2(axis));
 			ret = PX4_ERROR;
 		}
 	}
 
-	return ret == PX4_OK;
+	திரும்பு ret == PX4_OK;
 }
 
 Eulerf GetSensorLevelAdjustment()
 {
-	float x_offset = 0.f;
-	float y_offset = 0.f;
-	float z_offset = 0.f;
+	தசம x_offset = 0.f;
+	தசம y_offset = 0.f;
+	தசம z_offset = 0.f;
 	param_get(param_find("SENS_BOARD_X_OFF"), &x_offset);
 	param_get(param_find("SENS_BOARD_Y_OFF"), &y_offset);
 	param_get(param_find("SENS_BOARD_Z_OFF"), &z_offset);
 
-	return Eulerf{radians(x_offset), radians(y_offset), radians(z_offset)};
+	திரும்பு Eulerf{radians(x_offset), radians(y_offset), radians(z_offset)};
 }
 
-enum Rotation GetBoardRotation()
+எண்ணிக்கை Rotation GetBoardRotation()
 {
 	// get transformation matrix from sensor/board to body frame
 	int32_t board_rot = -1;
 	param_get(param_find("SENS_BOARD_ROT"), &board_rot);
 
-	if (board_rot >= 0 && board_rot < Rotation::ROTATION_MAX) {
-		return static_cast<enum Rotation>(board_rot);
+	எனில் (board_rot >= 0 && board_rot < Rotation::ROTATION_MAX) {
+		திரும்பு static_cast<எண்ணிக்கை Rotation>(board_rot);
 
-	} else {
+	} இல்லையெனில் {
 		PX4_ERR("invalid SENS_BOARD_ROT: %" PRId32, board_rot);
 	}
 
-	return Rotation::ROTATION_NONE;
+	திரும்பு Rotation::ROTATION_NONE;
 }
 
 Dcmf GetBoardRotationMatrix()
 {
-	return get_rot_matrix(GetBoardRotation());
+	திரும்பு get_rot_matrix(GetBoardRotation());
 }
 
 } // namespace calibration

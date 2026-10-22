@@ -10,51 +10,51 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#அந்தர்பாவ "Vector.hpp"
 
-namespace matrix
+நாமாகாஶ matrix
 {
 // Vector that only store nonzero elements,
 // which indices are specified as parameter pack
 template<typename Type, size_t M, size_t... Idxs>
-class SparseVector
+வகுப்பு SparseVector
 {
-private:
-	enum : size_t { N = sizeof...(Idxs) };
+தனிப்பட்ட:
+	எண்ணிக்கை : size_t { N = அளவு...(Idxs) };
 
-	static constexpr bool duplicateIndices()
+	நிலையான constexpr தருக்க duplicateIndices()
 	{
 		constexpr size_t indicies[] {Idxs...};
 
-		for (size_t i = 0; i < N; i++) {
-			for (size_t j = 0; j < i; j++) {
-				if (indicies[i] == indicies[j]) {
-					return true;
+		க்கு (size_t i = 0; i < N; i++) {
+			க்கு (size_t j = 0; j < i; j++) {
+				எனில் (indicies[i] == indicies[j]) {
+					திரும்பு உண்மை;
 				}
 			}
 		}
 
-		return false;
+		திரும்பு பொய்;
 	}
 
-	static constexpr size_t findMaxIndex()
+	நிலையான constexpr size_t findMaxIndex()
 	{
 		constexpr size_t indicies[] {Idxs...};
 		size_t maxIndex = 0;
 
-		for (size_t i = 0; i < N; i++) {
-			if (maxIndex < indicies[i]) {
+		க்கு (size_t i = 0; i < N; i++) {
+			எனில் (maxIndex < indicies[i]) {
 				maxIndex = indicies[i];
 			}
 		}
 
-		return maxIndex;
+		திரும்பு maxIndex;
 	}
 
-	static constexpr size_t indexAt(size_t i)
+	நிலையான constexpr size_t indexAt(size_t i)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		return indicies[i];
+		திரும்பு indicies[i];
 	}
 
 	static_assert(!duplicateIndices(), "Duplicate indices");
@@ -64,167 +64,167 @@ private:
 
 	Type _data[N] {};
 
-	static constexpr int findCompressedIndex(size_t index)
+	நிலையான constexpr முழு findCompressedIndex(size_t index)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		int compressedIndex = -1;
+		முழு compressedIndex = -1;
 
-		for (size_t i = 0; i < N; i++) {
-			if (index == indicies[i]) {
-				compressedIndex = static_cast<int>(i);
+		க்கு (size_t i = 0; i < N; i++) {
+			எனில் (index == indicies[i]) {
+				compressedIndex = static_cast<முழு>(i);
 			}
 		}
 
-		return compressedIndex;
+		திரும்பு compressedIndex;
 	}
 
-public:
-	constexpr size_t non_zeros() const
+பொது:
+	constexpr size_t non_zeros() மாறிலி
 	{
-		return N;
+		திரும்பு N;
 	}
 
-	constexpr size_t index(size_t i) const
+	constexpr size_t index(size_t i) மாறிலி
 	{
-		return indexAt(i);
+		திரும்பு indexAt(i);
 	}
 
-	SparseVector() = default;
+	SparseVector() = இயல்பு;
 
-	SparseVector(const matrix::Vector<Type, M> &data)
+	SparseVector(மாறிலி matrix::Vector<Type, M> &data)
 	{
-		for (size_t i = 0; i < N; i++) {
+		க்கு (size_t i = 0; i < N; i++) {
 			_data[i] = data(indexAt(i));
 		}
 	}
 
-	explicit SparseVector(const Type data[N])
+	explicit SparseVector(மாறிலி Type data[N])
 	{
-		memcpy(_data, data, sizeof(_data));
+		memcpy(_data, data, அளவு(_data));
 	}
 
 	template <size_t i>
-	inline Type at() const
+	உள்வரி Type at() மாறிலி
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
+		constexpr முழு compressed_index = findCompressedIndex(i);
 		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		திரும்பு _data[compressed_index];
 	}
 
 	template <size_t i>
-	inline Type &at()
+	உள்வரி Type &at()
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
+		constexpr முழு compressed_index = findCompressedIndex(i);
 		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		திரும்பு _data[compressed_index];
 	}
 
-	inline Type atCompressedIndex(size_t i) const
+	உள்வரி Type atCompressedIndex(size_t i) மாறிலி
 	{
-		assert(i < N);
-		return _data[i];
+		ப்ரதிஜ்ஞா(i < N);
+		திரும்பு _data[i];
 	}
 
-	inline Type &atCompressedIndex(size_t i)
+	உள்வரி Type &atCompressedIndex(size_t i)
 	{
-		assert(i < N);
-		return _data[i];
+		ப்ரதிஜ்ஞா(i < N);
+		திரும்பு _data[i];
 	}
 
-	void setZero()
+	வெறுமை setZero()
 	{
-		for (size_t i = 0; i < N; i++) {
+		க்கு (size_t i = 0; i < N; i++) {
 			_data[i] = Type(0);
 		}
 	}
 
-	Type dot(const matrix::Vector<Type, M> &other) const
+	Type dot(மாறிலி matrix::Vector<Type, M> &other) மாறிலி
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
+		க்கு (size_t i = 0; i < N; i++) {
 			accum += _data[i] * other(indexAt(i));
 		}
 
-		return accum;
+		திரும்பு accum;
 	}
 
-	matrix::Vector<Type, M> operator+(const matrix::Vector<Type, M> &other) const
+	matrix::Vector<Type, M> operator+(மாறிலி matrix::Vector<Type, M> &other) மாறிலி
 	{
 		matrix::Vector<Type, M> vec = other;
 
-		for (size_t i = 0; i < N; i++) {
+		க்கு (size_t i = 0; i < N; i++) {
 			vec(indexAt(i)) +=  _data[i];
 		}
 
-		return vec;
+		திரும்பு vec;
 	}
 
 	SparseVector &operator+=(Type t)
 	{
-		for (size_t i = 0; i < N; i++) {
+		க்கு (size_t i = 0; i < N; i++) {
 			_data[i] += t;
 		}
 
-		return *this;
+		திரும்பு *இது;
 	}
 
-	Type norm_squared() const
+	Type norm_squared() மாறிலி
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
+		க்கு (size_t i = 0; i < N; i++) {
 			accum += _data[i] * _data[i];
 		}
 
-		return accum;
+		திரும்பு accum;
 	}
 
-	Type norm() const
+	Type norm() மாறிலி
 	{
-		return std::sqrt(norm_squared());
+		திரும்பு std::sqrt(norm_squared());
 	}
 
-	bool longerThan(Type testVal) const
+	தருக்க longerThan(Type testVal) மாறிலி
 	{
-		return norm_squared() > testVal * testVal;
+		திரும்பு norm_squared() > testVal * testVal;
 	}
 };
 
 template<typename Type, size_t Q, size_t M, size_t ... Idxs>
-matrix::Vector<Type, Q> operator*(const matrix::Matrix<Type, Q, M> &mat,
-				  const matrix::SparseVector<Type, M, Idxs...> &vec)
+matrix::Vector<Type, Q> operator*(மாறிலி matrix::Matrix<Type, Q, M> &mat,
+				  மாறிலி matrix::SparseVector<Type, M, Idxs...> &vec)
 {
 	matrix::Vector<Type, Q> res;
 
-	for (size_t i = 0; i < Q; i++) {
-		const Vector<Type, M> row = mat.row(i);
+	க்கு (size_t i = 0; i < Q; i++) {
+		மாறிலி Vector<Type, M> row = mat.row(i);
 		res(i) = vec.dot(row);
 	}
 
-	return res;
+	திரும்பு res;
 }
 
 // returns x.T * A * x
 template<typename Type, size_t M, size_t ... Idxs>
-Type quadraticForm(const matrix::SquareMatrix<Type, M> &A, const matrix::SparseVector<Type, M, Idxs...> &x)
+Type quadraticForm(மாறிலி matrix::SquareMatrix<Type, M> &A, மாறிலி matrix::SparseVector<Type, M, Idxs...> &x)
 {
 	Type res = Type(0);
 
-	for (size_t i = 0; i < x.non_zeros(); i++) {
+	க்கு (size_t i = 0; i < x.non_zeros(); i++) {
 		Type tmp = Type(0);
 
-		for (size_t j = 0; j < x.non_zeros(); j++) {
+		க்கு (size_t j = 0; j < x.non_zeros(); j++) {
 			tmp += A(x.index(i), x.index(j)) * x.atCompressedIndex(j);
 		}
 
 		res += x.atCompressedIndex(i) * tmp;
 	}
 
-	return res;
+	திரும்பு res;
 }
 
 template<size_t M, size_t ... Idxs>
-using SparseVectorf = SparseVector<float, M, Idxs...>;
+using SparseVectorf = SparseVector<தசம, M, Idxs...>;
 
 }

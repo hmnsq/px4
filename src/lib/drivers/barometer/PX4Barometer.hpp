@@ -33,36 +33,36 @@
 
 #pragma once
 
-#include <math.h>
+#அந்தர்பாவ <math.h>
 
-#include <drivers/drv_hrt.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/sensor_baro.h>
+#அந்தர்பாவ <drivers/drv_hrt.h>
+#அந்தர்பாவ <uORB/PublicationMulti.hpp>
+#அந்தர்பாவ <uORB/topics/sensor_baro.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#அந்தர்பாவ <lib/failure_injection/FailureInjection.hpp>
 
-class PX4Barometer
+வகுப்பு PX4Barometer
 {
-public:
+பொது:
 	PX4Barometer(uint32_t device_id);
-	PX4Barometer(uint32_t device_id, bool external);
+	PX4Barometer(uint32_t device_id, தருக்க external);
 
-	void set_device_id(uint32_t device_id);
-	void set_external(bool external);
-	void set_error_count(uint32_t error_count) { _report.error_count = error_count; }
-	void set_temperature(float temperature) { _report.temperature = temperature; }
+	வெறுமை set_device_id(uint32_t device_id);
+	வெறுமை set_external(தருக்க external);
+	வெறுமை set_error_மொத்தம்(uint32_t error_மொத்தம்) { _report.error_மொத்தம் = error_மொத்தம்; }
+	வெறுமை set_temperature(தசம temperature) { _report.temperature = temperature; }
 
-	void update(const hrt_abstime &timestamp_sample, float pressure);
+	வெறுமை update(மாறிலி hrt_abstime &timestamp_sample, தசம pressure);
 
-	int get_instance() { return _sensor_pub.get_instance(); };
-	uint32_t get_device_id() const { return _report.device_id; }
+	முழு get_instance() { திரும்பு _sensor_pub.get_instance(); };
+	uint32_t get_device_id() மாறிலி { திரும்பு _report.device_id; }
 
-private:
+தனிப்பட்ட:
 	uORB::PublicationMulti<sensor_baro_s> _sensor_pub{ORB_ID(sensor_baro)};
 
 	sensor_baro_s	_report{};
 
-	bool		_external_forced{false}; // classification set by the driver, do not re-derive from the device id
+	தருக்க		_external_forced{பொய்}; // classification set by the driver, do not re-derive from the device id
 
 	failure_injection::Config _failure_config;
 	failure_injection::Stuck<sensor_baro_s> _stuck;

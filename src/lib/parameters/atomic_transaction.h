@@ -34,30 +34,30 @@
 #pragma once
 
 #ifdef __PX4_NUTTX
-#include "px4_platform_common/micro_hal.h"
+#அந்தர்பாவ "px4_platform_common/micro_hal.h"
 #endif
 
 #ifdef __PX4_POSIX
-#include <pthread.h>
+#அந்தர்பாவ <pthread.h>
 #endif
 
 
 class AtomicTransaction
 {
-private:
+தனிப்பட்ட:
 #ifdef __PX4_NUTTX
 	irqstate_t _irq_state;
 #endif
 
 #ifdef __PX4_POSIX
-	static pthread_mutex_t *_get_mutex();
+	நிலையான pthread_mutex_t *_get_mutex();
 #endif
 
-public:
+பொது:
 #ifdef __PX4_POSIX
 	// Initialize the recursive param mutex. Must be called once before any thread
 	// accesses parameters (done from param_init()).
-	static void initialize();
+	நிலையான வெறுமை initialize();
 #endif
 
 	AtomicTransaction()
@@ -70,7 +70,7 @@ public:
 		unlock();
 	}
 
-	void lock()
+	வெறுமை lock()
 	{
 #ifdef __PX4_NUTTX
 		_irq_state = px4_enter_critical_section();
@@ -80,7 +80,7 @@ public:
 #endif
 	}
 
-	void unlock()
+	வெறுமை unlock()
 	{
 #ifdef __PX4_NUTTX
 		px4_leave_critical_section(_irq_state);

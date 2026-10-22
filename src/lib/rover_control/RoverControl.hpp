@@ -39,15 +39,15 @@
  */
 
 #pragma once
-#include <lib/slew_rate/SlewRate.hpp>
-#include <lib/slew_rate/SlewRateYaw.hpp>
-#include <lib/pid/PID.hpp>
-#include <matrix/matrix/math.hpp>
-#include <uORB/topics/position_setpoint_triplet.h>
-#include <lib/geo/geo.h>
+#அந்தர்பாவ <lib/slew_rate/SlewRate.hpp>
+#அந்தர்பாவ <lib/slew_rate/SlewRateYaw.hpp>
+#அந்தர்பாவ <lib/pid/PID.hpp>
+#அந்தர்பாவ <matrix/matrix/math.hpp>
+#அந்தர்பாவ <uORB/topics/position_setpoint_triplet.h>
+#அந்தர்பாவ <lib/geo/geo.h>
 
-using namespace matrix;
-namespace RoverControl
+using நாமாகாஶ matrix;
+நாமாகாஶ RoverControl
 {
 /**
  * Applies acceleration/deceleration slew rate to a throttle setpoint.
@@ -60,8 +60,8 @@ namespace RoverControl
  * @param dt Time since last update [s]
  * @return Motor Setpoint [-1, 1]
  */
-float throttleControl(SlewRate<float> &motor_setpoint, float throttle_setpoint, float current_motor_setpoint,
-		      float max_accel, float max_decel, float max_thr_spd, float dt);
+தசம throttleControl(SlewRate<தசம> &motor_setpoint, தசம throttle_setpoint, தசம current_motor_setpoint,
+		      தசம max_accel, தசம max_decel, தசம max_thr_spd, தசம dt);
 
 /**
  * Applies yaw rate slew rate to a yaw setpoint and calculates the necessary yaw rate setpoint
@@ -74,8 +74,8 @@ float throttleControl(SlewRate<float> &motor_setpoint, float throttle_setpoint, 
  * @param dt Time since last update [s]
  * @return Yaw rate setpoint [rad/s]
  */
-float attitudeControl(SlewRateYaw<float> &adjusted_yaw_setpoint, PID &pid_yaw, float yaw_slew_rate,
-		      float vehicle_yaw, float yaw_setpoint, float dt);
+தசம attitudeControl(SlewRateYaw<தசம> &adjusted_yaw_setpoint, PID &pid_yaw, தசம yaw_slew_rate,
+		      தசம vehicle_yaw, தசம yaw_setpoint, தசம dt);
 /**
  * Applies acceleration/deceleration slew rate to a speed setpoint and calculates the necessary throttle setpoint
  * using a feed forward term and PID controller.
@@ -89,8 +89,8 @@ float attitudeControl(SlewRateYaw<float> &adjusted_yaw_setpoint, PID &pid_yaw, f
  * @param dt Time since last update [s]
  * @return Throttle setpoint [-1, 1]
  */
-float speedControl(SlewRate<float> &speed_with_rate_limit, PID &pid_speed, float speed_setpoint,
-		   float vehicle_speed, float max_accel, float max_decel, float max_thr_speed, float dt);
+தசம speedControl(SlewRate<தசம> &speed_with_rate_limit, PID &pid_speed, தசம speed_setpoint,
+		   தசம vehicle_speed, தசம max_accel, தசம max_decel, தசம max_thr_speed, தசம dt);
 
 /**
  * Applies yaw acceleration slew rate to a yaw rate setpoint and calculates the necessary speed diff setpoint
@@ -108,10 +108,10 @@ float speedControl(SlewRate<float> &speed_with_rate_limit, PID &pid_speed, float
  * @param dt Time since last update [s].
  * @return Normalized speed difference setpoint [-1, 1].
  */
-float rateControl(SlewRate<float> &adjusted_yaw_rate_setpoint, PID &pid_yaw_rate,
-		  float yaw_rate_setpoint, float vehicle_yaw_rate, float max_thr_speed, float yaw_rate_corr, float max_yaw_accel,
-		  float max_yaw_decel,
-		  float wheel_track, float dt);
+தசம rateControl(SlewRate<தசம> &adjusted_yaw_rate_setpoint, PID &pid_yaw_rate,
+		  தசம yaw_rate_setpoint, தசம vehicle_yaw_rate, தசம max_thr_speed, தசம yaw_rate_corr, தசம max_yaw_accel,
+		  தசம max_yaw_decel,
+		  தசம wheel_track, தசம dt);
 
 /**
  * Projects positionSetpointTriplet waypoints from global to ned frame.
@@ -122,7 +122,7 @@ float rateControl(SlewRate<float> &adjusted_yaw_rate_setpoint, PID &pid_yaw_rate
  * @param curr_pos Current position of the rover in global frame
  * @param global_ned_proj_ref Global to ned projection
  */
-void globalToLocalSetpointTriplet(Vector2f &curr_wp_ned, Vector2f &prev_wp_ned, Vector2f &next_wp_ned,
+வெறுமை globalToLocalSetpointTriplet(Vector2f &curr_wp_ned, Vector2f &prev_wp_ned, Vector2f &next_wp_ned,
 				  position_setpoint_triplet_s position_setpoint_triplet, Vector2f &curr_pos_ned,
 				  MapProjection &global_ned_proj_ref);
 
@@ -133,6 +133,6 @@ void globalToLocalSetpointTriplet(Vector2f &curr_wp_ned, Vector2f &prev_wp_ned, 
  * @param next_wp_ned Next waypoint in NED frame
  * @return Waypoint transition angle [rad]
  */
-float calcWaypointTransitionAngle(Vector2f &prev_wp_ned, Vector2f &curr_wp_ned, Vector2f &next_wp_ned);
+தசம calcWaypointTransitionAngle(Vector2f &prev_wp_ned, Vector2f &curr_wp_ned, Vector2f &next_wp_ned);
 
 }

@@ -37,100 +37,100 @@
  * Test library code
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#அந்தர்பாவ <stdio.h>
+#அந்தர்பாவ <math.h>
+#அந்தர்பாவ <stdlib.h>
 
-#include <px4_platform_common/defines.h>
+#அந்தர்பாவ <px4_platform_common/defines.h>
 
-#include "test.hpp"
+#அந்தர்பாவ "test.hpp"
 
-bool __EXPORT equal(float a, float b, float epsilon)
+தருக்க __EXPORT equal(தசம a, தசம b, தசம epsilon)
 {
-	float diff = fabsf(a - b);
+	தசம diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	எனில் (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", இரட்டை(a), இரட்டை(b));
+		திரும்பு பொய்;
 
-	} else { return true; }
+	} இல்லையெனில் { திரும்பு உண்மை; }
 }
 
-bool __EXPORT greater_than(float a, float b)
+தருக்க __EXPORT greater_than(தசம a, தசம b)
 {
-	if (a > b) {
-		return true;
+	எனில் (a > b) {
+		திரும்பு உண்மை;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} இல்லையெனில் {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", இரட்டை(a), இரட்டை(b));
+		திரும்பு பொய்;
 	}
 }
 
-bool __EXPORT less_than(float a, float b)
+தருக்க __EXPORT less_than(தசம a, தசம b)
 {
-	if (a < b) {
-		return true;
+	எனில் (a < b) {
+		திரும்பு உண்மை;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} இல்லையெனில் {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", இரட்டை(a), இரட்டை(b));
+		திரும்பு பொய்;
 	}
 }
 
-bool __EXPORT greater_than_or_equal(float a, float b)
+தருக்க __EXPORT greater_than_or_equal(தசம a, தசம b)
 {
-	if (a >= b) {
-		return true;
+	எனில் (a >= b) {
+		திரும்பு உண்மை;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} இல்லையெனில் {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", இரட்டை(a), இரட்டை(b));
+		திரும்பு பொய்;
 	}
 }
 
-bool __EXPORT less_than_or_equal(float a, float b)
+தருக்க __EXPORT less_than_or_equal(தசம a, தசம b)
 {
-	if (a <= b) {
-		return true;
+	எனில் (a <= b) {
+		திரும்பு உண்மை;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} இல்லையெனில் {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", இரட்டை(a), இரட்டை(b));
+		திரும்பு பொய்;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+வெறுமை __EXPORT float2SigExp(மாறிலி தசம &இலக்கம், தசம &sig, முழு &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	எனில் (!PX4_ISFINITE(இலக்கம்)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		திரும்பு;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	எனில் (fabsf(இலக்கம்) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		திரும்பு;
 	}
 
-	exp = log10f(fabsf(num));
+	exp = log10f(fabsf(இலக்கம்));
 
-	if (exp > 0) {
+	எனில் (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} இல்லையெனில் {
 		exp = floor(exp);
 	}
 
-	sig = num;
+	sig = இலக்கம்;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	எனில் (exp > 0) {
+		க்கு (முழு i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} இல்லையெனில் {
+		க்கு (முழு i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

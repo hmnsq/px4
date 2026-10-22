@@ -31,23 +31,23 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#அந்தர்பாவ <gtest/gtest.h>
+#அந்தர்பாவ <matrix/math.hpp>
 
-using namespace matrix;
+using நாமாகாஶ matrix;
 
 TEST(NanToZeroTest, NanToZero)
 {
-	const float data[9]     = {-1.f, 0.f, +INFINITY, NAN, 0.f, -INFINITY, 1.f, 0.f, -NAN};
-	const float expected[9] = {-1.f, 0.f, +INFINITY, 0.f, 0.f, -INFINITY, 1.f, 0.f, 0.f};
+	மாறிலி தசம data[9]     = {-1.f, 0.f, +INFINITY, NAN, 0.f, -INFINITY, 1.f, 0.f, -NAN};
+	மாறிலி தசம expected[9] = {-1.f, 0.f, +INFINITY, 0.f, 0.f, -INFINITY, 1.f, 0.f, 0.f};
 
-	Matrix<float, 3, 3> mat(data);
+	Matrix<தசம, 3, 3> mat(data);
 	mat.nanToZero();
 
-	const Matrix<float, 3, 3> mat_expected(expected);
+	மாறிலி Matrix<தசம, 3, 3> mat_expected(expected);
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
+	க்கு (size_t i = 0; i < 3; i++) {
+		க்கு (size_t j = 0; j < 3; j++) {
 			EXPECT_FLOAT_EQ(mat(i, j), mat_expected(i, j));
 		}
 	}
@@ -55,15 +55,15 @@ TEST(NanToZeroTest, NanToZero)
 
 TEST(NanToZeroTest, NoNanUnchanged)
 {
-	const float data[4] = {-2.5f, 0.f, 3.14f, +INFINITY};
+	மாறிலி தசம data[4] = {-2.5f, 0.f, 3.14f, +INFINITY};
 
-	Matrix<float, 2, 2> mat(data);
+	Matrix<தசம, 2, 2> mat(data);
 	mat.nanToZero();
 
-	const Matrix<float, 2, 2> mat_orig(data);
+	மாறிலி Matrix<தசம, 2, 2> mat_orig(data);
 
-	for (size_t i = 0; i < 2; i++) {
-		for (size_t j = 0; j < 2; j++) {
+	க்கு (size_t i = 0; i < 2; i++) {
+		க்கு (size_t j = 0; j < 2; j++) {
 			EXPECT_FLOAT_EQ(mat(i, j), mat_orig(i, j));
 		}
 	}

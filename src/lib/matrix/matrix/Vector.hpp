@@ -8,181 +8,181 @@
 
 #pragma once
 
-#include "Matrix.hpp"
+#அந்தர்பாவ "Matrix.hpp"
 
-namespace matrix
+நாமாகாஶ matrix
 {
 
 template<typename Type, size_t M>
-class Vector : public Matrix<Type, M, 1>
+வகுப்பு Vector : பொது Matrix<Type, M, 1>
 {
-public:
+பொது:
 	using MatrixM1 = Matrix<Type, M, 1>;
 
-	Vector() = default;
+	Vector() = இயல்பு;
 
-	Vector(const MatrixM1 &other) :
+	Vector(மாறிலி MatrixM1 &other) :
 		MatrixM1(other)
 	{
 	}
 
-	explicit Vector(const Type data_[M]) :
+	explicit Vector(மாறிலி Type data_[M]) :
 		MatrixM1(data_)
 	{
 	}
 
 	template<size_t P, size_t Q>
-	Vector(const Slice<Type, M, 1, P, Q> &slice_in) :
+	Vector(மாறிலி Slice<Type, M, 1, P, Q> &slice_in) :
 		Matrix<Type, M, 1>(slice_in)
 	{
 	}
 
 	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const Slice<Type, 1, M, P, Q> &slice_in)
+	Vector(மாறிலி Slice<Type, 1, M, P, Q> &slice_in)
 	{
-		Vector &self(*this);
+		Vector &self(*இது);
 
-		for (size_t i = 0; i < M; i++) {
+		க்கு (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
 
 	template<size_t P, size_t Q>
-	Vector(const ConstSlice<Type, M, 1, P, Q> &slice_in) :
+	Vector(மாறிலி ConstSlice<Type, M, 1, P, Q> &slice_in) :
 		Matrix<Type, M, 1>(slice_in)
 	{
 	}
 
 	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const ConstSlice<Type, 1, M, P, Q> &slice_in)
+	Vector(மாறிலி ConstSlice<Type, 1, M, P, Q> &slice_in)
 	{
-		Vector &self(*this);
+		Vector &self(*இது);
 
-		for (size_t i = 0; i < M; i++) {
+		க்கு (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	உள்வரி மாறிலி Type &operator()(size_t i) மாறிலி
 	{
-		assert(i < M);
+		ப்ரதிஜ்ஞா(i < M);
 
-		const MatrixM1 &v = *this;
-		return v(i, 0);
+		மாறிலி MatrixM1 &v = *இது;
+		திரும்பு v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	உள்வரி Type &operator()(size_t i)
 	{
-		assert(i < M);
+		ப்ரதிஜ்ஞா(i < M);
 
-		MatrixM1 &v = *this;
-		return v(i, 0);
+		MatrixM1 &v = *இது;
+		திரும்பு v(i, 0);
 	}
 
-	Type dot(const MatrixM1 &b) const
+	Type dot(மாறிலி MatrixM1 &b) மாறிலி
 	{
-		const Vector &a(*this);
+		மாறிலி Vector &a(*இது);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		க்கு (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		திரும்பு r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	உள்வரி Type operator*(மாறிலி MatrixM1 &b) மாறிலி
 	{
-		const Vector &a(*this);
-		return a.dot(b);
+		மாறிலி Vector &a(*இது);
+		திரும்பு a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	உள்வரி Vector operator*(Type b) மாறிலி
 	{
-		return Vector(MatrixM1::operator*(b));
+		திரும்பு Vector(MatrixM1::operator*(b));
 	}
 
-	Type norm() const
+	Type norm() மாறிலி
 	{
-		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		மாறிலி Vector &a(*இது);
+		திரும்பு Type(std::sqrt(a.dot(a)));
 	}
 
-	Type norm_squared() const
+	Type norm_squared() மாறிலி
 	{
-		const Vector &a(*this);
-		return a.dot(a);
+		மாறிலி Vector &a(*இது);
+		திரும்பு a.dot(a);
 	}
 
-	inline Type length() const
+	உள்வரி Type length() மாறிலி
 	{
-		return norm();
+		திரும்பு norm();
 	}
 
-	inline void normalize()
+	உள்வரி வெறுமை normalize()
 	{
-		(*this) /= norm();
+		(*இது) /= norm();
 	}
 
-	Vector unit() const
+	Vector unit() மாறிலி
 	{
-		return (*this) / norm();
+		திரும்பு (*இது) / norm();
 	}
 
-	Vector unit_or_zero(const Type eps = Type(1e-5)) const
+	Vector unit_or_zero(மாறிலி Type eps = Type(1e-5)) மாறிலி
 	{
-		const Type n = norm();
+		மாறிலி Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		எனில் (n > eps) {
+			திரும்பு (*இது) / n;
 		}
 
-		return Vector();
+		திரும்பு Vector();
 	}
 
-	inline Vector normalized() const
+	உள்வரி Vector normalized() மாறிலி
 	{
-		return unit();
+		திரும்பு unit();
 	}
 
-	bool longerThan(Type testVal) const
+	தருக்க longerThan(Type testVal) மாறிலி
 	{
-		return norm_squared() > testVal * testVal;
+		திரும்பு norm_squared() > testVal * testVal;
 	}
 
-	Vector sqrt() const
+	Vector sqrt() மாறிலி
 	{
-		const Vector &a(*this);
+		மாறிலி Vector &a(*இது);
 		Vector r;
 
-		for (size_t i = 0; i < M; i++) {
+		க்கு (size_t i = 0; i < M; i++) {
 			r(i) = Type(std::sqrt(a(i)));
 		}
 
-		return r;
+		திரும்பு r;
 	}
 
-	void print() const
+	வெறுமை print() மாறிலி
 	{
-		(*this).transpose().print();
+		(*இது).transpose().print();
 	}
 
-	static size_t size()
+	நிலையான size_t size()
 	{
-		return M;
+		திரும்பு M;
 	}
 };
 
 template<typename OStream, typename Type, size_t M>
-OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
+OStream &operator<<(OStream &os, மாறிலி matrix::Vector<Type, M> &vector)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
+	எழுத்து string[n];
 	vector.transpose().write_string(string, n);
 	os << string;
-	return os;
+	திரும்பு os;
 }
 
 } // namespace matrix

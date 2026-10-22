@@ -51,65 +51,65 @@
  * CCASSERT(predicate) Will generate a compile time error it the
  * predicate is false
  */
-#include <assert.h>
+#அந்தர்பாவ <assert.h>
 
 #ifndef _PX4_MACROS_H
 #define _PX4_MACROS_H
 
 
-#if !defined(arraySize)
-#define arraySize(a) (sizeof((a))/sizeof((a[0])))
+#எனில் !defined(arraySize)
+#define arraySize(a) (அளவு((a))/அளவு((a[0])))
 #endif
 
-#if !defined(NO_BLOAT)
-#if defined(__BASE_FILE__)
+#எனில் !defined(NO_BLOAT)
+#எனில் defined(__BASE_FILE__)
 #define _FILE_NAME_ __BASE_FILE__
-#else
+#இல்லையெனில்
 #define _FILE_NAME_ __FILE__
 #endif
-#else
+#இல்லையெனில்
 #define _FILE_NAME_ ""
 #endif
 
-#if !defined(INVALID_CASE)
+#எனில் !defined(INVALID_CASE)
 #define INVALID_CASE(c) printf("Invalid Case %d, %s:%d",(c),__BASE_FILE__,__LINE__) /* todo use PANIC */
 #endif
 
-#if !defined(UNUSED)
-#define UNUSED(var) (void)(var)
+#எனில் !defined(UNUSED)
+#define UNUSED(var) (வெறுமை)(var)
 #endif
 
-#if !defined(CAT)
-#if !defined(_CAT)
+#எனில் !defined(CAT)
+#எனில் !defined(_CAT)
 #define _CAT(a, b) a ## b
 #endif
 #define CAT(a, b) _CAT(a, b)
 #endif
 
-#if !defined(FREEZE_STR)
+#எனில் !defined(FREEZE_STR)
 #  define FREEZE_STR(s) #s
 #endif
 
-#if !defined(STRINGIFY)
+#எனில் !defined(STRINGIFY)
 #define STRINGIFY(s) FREEZE_STR(s)
 #endif
 
-#if !defined(CCASSERT)
-#if defined(static_assert)
+#எனில் !defined(CCASSERT)
+#எனில் defined(static_assert)
 #		define CCASSERT(predicate) static_assert(predicate, STRINGIFY(predicate))
-#	else
-#		define CCASSERT(predicate) _x_CCASSERT_LINE(predicate, __LINE__)
-#		if !defined(_x_CCASSERT_LINE)
-#			define _x_CCASSERT_LINE(predicate, line) typedef char CAT(constraint_violated_on_line_,line)[2*((predicate)!=0)-1] __attribute__ ((unused)) ;
+#	இல்லையெனில்
+#		define CCASSERT(predicate) x_CCASSERT_வரி(predicate, __LINE__)
+#		எனில் !defined(x_CCASSERT_வரி)
+#			define x_CCASSERT_வரி(predicate, வரி) வகைவரை எழுத்து CAT(constraint_violated_on_வரி,வரி)[2*((predicate)!=0)-1] __attribute__ ((unused)) ;
 #		endif
 #	endif
 #endif
 
-#if !defined(DO_PRAGMA)
+#எனில் !defined(DO_PRAGMA)
 #  define DO_PRAGMA(x) _Pragma (#x)
 #endif
 
-#if !defined(TODO)
+#எனில் !defined(TODO)
 #  define TODO(x) DO_PRAGMA(message ("TODO - " #x))
 #endif
 

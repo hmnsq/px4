@@ -31,42 +31,42 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "SlewRate.hpp"
+#அந்தர்பாவ <gtest/gtest.h>
+#அந்தர்பாவ "SlewRate.hpp"
 
 TEST(SlewRateTest, SlewUpLimited)
 {
-	SlewRate<float> _slew_rate;
+	SlewRate<தசம> _slew_rate;
 	_slew_rate.setSlewRate(.1f);
-	_slew_rate.setForcedValue(-5.5f);
+	_slew_rate.set_Forced_மதிப்பு(-5.5f);
 
-	for (int i = 1; i <= 10; i++) {
+	க்கு (முழு i = 1; i <= 10; i++) {
 		EXPECT_FLOAT_EQ(_slew_rate.update(20.f, .2f), -5.5f + i * .02f);
 	}
 }
 
 TEST(SlewRateTest, SlewDownLimited)
 {
-	SlewRate<float> _slew_rate;
+	SlewRate<தசம> _slew_rate;
 	_slew_rate.setSlewRate(1.1f);
-	_slew_rate.setForcedValue(17.3f);
+	_slew_rate.set_Forced_மதிப்பு(17.3f);
 
-	for (int i = 1; i <= 10; i++) {
+	க்கு (முழு i = 1; i <= 10; i++) {
 		EXPECT_FLOAT_EQ(_slew_rate.update(-50.f, .3f), 17.3f - i * .33f);
 	}
 }
 
-TEST(SlewRateTest, ReachValueSlewed)
+TEST(SlewRateTest, Reach_மதிப்பு_Slewed)
 {
-	SlewRate<float> _slew_rate;
+	SlewRate<தசம> _slew_rate;
 	_slew_rate.setSlewRate(.2f);
-	_slew_rate.setForcedValue(8.f);
+	_slew_rate.set_Forced_மதிப்பு(8.f);
 
-	for (int i = 1; i <= 10; i++) {
+	க்கு (முழு i = 1; i <= 10; i++) {
 		EXPECT_FLOAT_EQ(_slew_rate.update(10.f, 1.f), 8.f + i * .2f);
 	}
 
-	for (int i = 1; i <= 10; i++) {
+	க்கு (முழு i = 1; i <= 10; i++) {
 		EXPECT_FLOAT_EQ(_slew_rate.update(10.f, 1.f), 10.f);
 	}
 }

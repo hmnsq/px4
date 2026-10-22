@@ -43,17 +43,17 @@
 //#include <time.h>
 //#include <stdlib.h>
 
-bool equal(float a, float b, float eps = 1e-5);
+தருக்க equal(தசம a, தசம b, தசம eps = 1e-5);
 
-bool greater_than(float a, float b);
+தருக்க greater_than(தசம a, தசம b);
 
-bool less_than(float a, float b);
+தருக்க less_than(தசம a, தசம b);
 
-bool greater_than_or_equal(float a, float b);
+தருக்க greater_than_or_equal(தசம a, தசம b);
 
-bool less_than_or_equal(float a, float b);
+தருக்க less_than_or_equal(தசம a, தசம b);
 
-void float2SigExp(
-	const float &num,
-	float &sig,
-	int &exp);
+வெறுமை float2SigExp(
+	மாறிலி தசம &இலக்கம்,
+	தசம &sig,
+	முழு &exp);

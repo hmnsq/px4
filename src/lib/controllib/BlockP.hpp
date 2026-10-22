@@ -39,42 +39,42 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#அந்தர்பாவ <px4_platform_common/defines.h>
+#அந்தர்பாவ <assert.h>
+#அந்தர்பாவ <time.h>
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <math.h>
+#அந்தர்பாவ <mathlib/math/test/test.hpp>
+#அந்தர்பாவ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#அந்தர்பாவ "block/Block.hpp"
+#அந்தர்பாவ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#அந்தர்பாவ "matrix/math.hpp"
 
-namespace control
+நாமாகாஶ control
 {
 
 /**
  * A proportional controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockP: public Block
+வகுப்பு __EXPORT BlockP: பொது Block
 {
-public:
+பொது:
 // methods
-	BlockP(SuperBlock *parent, const char *name) :
+	BlockP(SuperBlock *parent, மாறிலி எழுத்து *name) :
 		Block(parent, name),
-		_kP(this, "") // only one param, no need to name
+		_kP(இது, "") // only one param, no need to name
 	{}
-	virtual ~BlockP() = default;
-	float update(float input)
+	மெய்நிகர் ~BlockP() = இயல்பு;
+	தசம update(தசம உள்ளீடு)
 	{
-		return getKP() * input;
+		திரும்பு getKP() * உள்ளீடு;
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-protected:
+	தசம getKP() { திரும்பு _kP.get(); }
+பாதுகாக்கப்பட்ட:
 	control::BlockParamFloat _kP;
 };
 

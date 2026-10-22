@@ -40,29 +40,29 @@
 
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#அந்தர்பாவ <stdio.h>
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <stdint.h>
+#அந்தர்பாவ <string.h>
 
-namespace math
+நாமாகாஶ math
 {
 
-template<typename U> struct is_floating_point { static constexpr bool value = false; };
-template<> struct is_floating_point<float> { static constexpr bool value = true; };
-template<> struct is_floating_point<double> { static constexpr bool value = true; };
-template<> struct is_floating_point<long double> { static constexpr bool value = true; };
+template<typename U> கட்டமைப்பு is_floating_point { நிலையான constexpr தருக்க value = பொய்; };
+template<> கட்டமைப்பு is_floating_point<தசம> { நிலையான constexpr தருக்க value = உண்மை; };
+template<> கட்டமைப்பு is_floating_point<இரட்டை> { நிலையான constexpr தருக்க value = உண்மை; };
+template<> கட்டமைப்பு is_floating_point<long இரட்டை> { நிலையான constexpr தருக்க value = உண்மை; };
 
-template<typename T, int WINDOW = 3>
-class MedianFilter
+template<typename T, முழு WINDOW = 3>
+வகுப்பு MedianFilter
 {
-public:
+பொது:
 	static_assert(WINDOW >= 3, "MedianFilter window size must be >= 3");
 	static_assert(WINDOW % 2, "MedianFilter window size must be odd"); // odd
 
-	MedianFilter() = default;
+	MedianFilter() = இயல்பு;
 
-	void insert(const T &sample)
+	வெறுமை செருகு(மாறிலி T &sample)
 	{
 		_head = (_head + 1) % WINDOW;
 		_buffer[_head] = sample;
@@ -71,46 +71,46 @@ public:
 	T median()
 	{
 		T sorted[WINDOW];
-		memcpy(sorted, _buffer, sizeof(_buffer));
-		qsort(&sorted, WINDOW, sizeof(T), cmp);
+		memcpy(sorted, _buffer, அளவு(_buffer));
+		qsort(&sorted, WINDOW, அளவு(T), cmp);
 
-		return sorted[WINDOW / 2];
+		திரும்பு sorted[WINDOW / 2];
 	}
 
-	T apply(const T &sample)
+	T apply(மாறிலி T &sample)
 	{
-		insert(sample);
-		return median();
+		செருகு(sample);
+		திரும்பு median();
 	}
 
-private:
+தனிப்பட்ட:
 
-	static int cmp(const void *a, const void *b)
+	நிலையான முழு cmp(மாறிலி வெறுமை *a, மாறிலி வெறுமை *b)
 	{
-		const T va = *(const T *)a;
-		const T vb = *(const T *)b;
+		மாறிலி T va = *(மாறிலி T *)a;
+		மாறிலி T vb = *(மாறிலி T *)b;
 
-		if constexpr(is_floating_point<T>::value) {
-			if (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
-				return 0;
+		எனில் constexpr(is_floating_point<T>::value) {
+			எனில் (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
+				திரும்பு 0;
 
-			} else if (!__builtin_isfinite(va)) {
-				return  1;
+			} இல்லையெனில் எனில் (!__builtin_isfinite(va)) {
+				திரும்பு  1;
 
-			} else if (!__builtin_isfinite(vb)) {
-				return -1;
+			} இல்லையெனில் எனில் (!__builtin_isfinite(vb)) {
+				திரும்பு -1;
 			}
 		}
 
-		if (va < vb) {
-			return -1;
+		எனில் (va < vb) {
+			திரும்பு -1;
 		}
 
-		if (va > vb) {
-			return  1;
+		எனில் (va > vb) {
+			திரும்பு  1;
 		}
 
-		return 0;
+		திரும்பு 0;
 	}
 
 	T _buffer[WINDOW] {};

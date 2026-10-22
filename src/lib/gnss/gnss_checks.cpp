@@ -36,9 +36,9 @@
  * GNSS quality checks: strict ones to qualify a receiver, relaxed ones once armed
  */
 
-#include "gnss_checks.hpp"
+#அந்தர்பாவ "gnss_checks.hpp"
 
-namespace
+நாமாகாஶ
 {
 constexpr uint16_t kDriftChecks = vehicle_gnss_s::CHECK_HDRIFT | vehicle_gnss_s::CHECK_VDRIFT
 				  | vehicle_gnss_s::CHECK_HSPEED | vehicle_gnss_s::CHECK_VSPEED;
@@ -48,69 +48,69 @@ constexpr uint16_t kRelaxedChecks = vehicle_gnss_s::CHECK_FIX | vehicle_gnss_s::
 				    | vehicle_gnss_s::CHECK_SACC | vehicle_gnss_s::CHECK_SPOOFED | vehicle_gnss_s::CHECK_JAMMED;
 }
 
-bool GnssChecks::run(const gnssChecksSample &gnss, bool armed, bool in_air, bool vehicle_at_rest)
+தருக்க GnssChecks::run(மாறிலி gnssChecksSample &gnss, தருக்க armed, தருக்க in_air, தருக்க vehicle_at_rest)
 {
-	if (_time_last_pass_us != 0 && isTimedOut(_time_last_pass_us, gnss.time_us, kPassTimeoutUs)) {
+	எனில் (_time_last_pass_us != 0 && isTimedOut(_time_last_pass_us, gnss.time_us, kPassTimeoutUs)) {
 		reset();
 	}
 
 	// assume failed first time through
-	if (_time_last_fail_us == 0) {
+	எனில் (_time_last_fail_us == 0) {
 		_time_last_fail_us = gnss.time_us;
 	}
 
-	if (!armed && !in_air) {
-		_initial_strict_checks_passed = false;
+	எனில் (!armed && !in_air) {
+		_initial_strict_checks_passed = பொய்;
 	}
 
 	// Both sets run on every sample: both are reported, and the selection ranks receivers on the strict one in flight
-	const bool strict_checks_pass = runStrictChecks(gnss, in_air, vehicle_at_rest);
-	const bool relaxed_checks_pass = runRelaxedChecks(gnss);
+	மாறிலி தருக்க strict_checks_pass = runStrictChecks(gnss, in_air, vehicle_at_rest);
+	மாறிலி தருக்க relaxed_checks_pass = runRelaxedChecks(gnss);
 
 	_passed_strict = strict_checks_pass
-			 && isTimedOut(_time_last_fail_us, gnss.time_us, getRequiredPassDurationUs(false));
-	_passed = false;
-	_strict = true;
+			 && isTimedOut(_time_last_fail_us, gnss.time_us, getRequiredPassDurationUs(பொய்));
+	_passed = பொய்;
+	_strict = உண்மை;
 
-	if (_passed_strict) {
-		_initial_strict_checks_passed = true;
-		_passed = true;
+	எனில் (_passed_strict) {
+		_initial_strict_checks_passed = உண்மை;
+		_passed = உண்மை;
 
-	} else if (_initial_strict_checks_passed) {
-		_strict = false;
+	} இல்லையெனில் எனில் (_initial_strict_checks_passed) {
+		_strict = பொய்;
 
-		if (relaxed_checks_pass) {
-			_passed = isTimedOut(_time_last_fail_us, gnss.time_us, getRequiredPassDurationUs(true));
+		எனில் (relaxed_checks_pass) {
+			_passed = isTimedOut(_time_last_fail_us, gnss.time_us, getRequiredPassDurationUs(உண்மை));
 
-		} else {
+		} இல்லையெனில் {
 			_time_last_fail_us = gnss.time_us;
 		}
 
-	} else if (!strict_checks_pass) {
+	} இல்லையெனில் எனில் (!strict_checks_pass) {
 		_time_last_fail_us = gnss.time_us;
 	}
 
 	lat_lon_prev.initReference(gnss.lat, gnss.lon, gnss.time_us);
 	_alt_prev = gnss.alt;
 
-	if (_passed) {
+	எனில் (_passed) {
 		_time_last_pass_us = gnss.time_us;
 	}
 
-	return _passed;
+	திரும்பு _passed;
 }
 
-void GnssChecks::setFail(uint16_t &fail_flags, uint16_t check, bool failed)
+வெறுமை GnssChecks::setFail(uint16_t &fail_flags, uint16_t check, தருக்க failed)
 {
-	if (failed) {
+	எனில் (failed) {
 		fail_flags |= check;
 
-	} else {
+	} இல்லையெனில் {
 		fail_flags &= ~check;
 	}
 }
 
-bool GnssChecks::runRelaxedChecks(const gnssChecksSample &gnss)
+தருக்க GnssChecks::runRelaxedChecks(மாறிலி gnssChecksSample &gnss)
 {
 	setFail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_FIX, gnss.fix_type < 3);
 
@@ -124,10 +124,10 @@ bool GnssChecks::runRelaxedChecks(const gnssChecksSample &gnss)
 	setFail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_SPOOFED, gnss.spoofed);
 	setFail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_JAMMED, gnss.jammed);
 
-	return enabledChecksPass(_relaxed_fail_flags, kRelaxedChecks);
+	திரும்பு enabledChecksPass(_relaxed_fail_flags, kRelaxedChecks);
 }
 
-bool GnssChecks::runStrictChecks(const gnssChecksSample &gnss, bool in_air, bool vehicle_at_rest)
+தருக்க GnssChecks::runStrictChecks(மாறிலி gnssChecksSample &gnss, தருக்க in_air, தருக்க vehicle_at_rest)
 {
 	// Check the fix type
 	setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_FIX, gnss.fix_type < _params.req_fix);
@@ -150,42 +150,42 @@ bool GnssChecks::runStrictChecks(const gnssChecksSample &gnss, bool in_air, bool
 
 	runOnGroundGnssChecks(gnss, in_air, vehicle_at_rest);
 
-	return enabledChecksPass(_strict_fail_flags, UINT16_MAX);
+	திரும்பு enabledChecksPass(_strict_fail_flags, UINT16_MAX);
 }
 
-void GnssChecks::runOnGroundGnssChecks(const gnssChecksSample &gnss, bool in_air, bool vehicle_at_rest)
+வெறுமை GnssChecks::runOnGroundGnssChecks(மாறிலி gnssChecksSample &gnss, தருக்க in_air, தருக்க vehicle_at_rest)
 {
-	if (in_air) {
+	எனில் (in_air) {
 		// These checks are always declared as passed when flying
 		// If on ground and moving, the last result before movement commenced is kept
 		clearDriftChecks();
-		return;
+		திரும்பு;
 	}
 
-	if (vehicle_at_rest) {
+	எனில் (vehicle_at_rest) {
 		// Calculate time lapsed since last update, limit to prevent numerical errors and calculate a lowpass filter coefficient
-		constexpr float filt_time_const = 10.0f;
-		const float dt = math::constrain(float(int64_t(gnss.time_us) - int64_t(
+		constexpr தசம filt_time_const = 10.0f;
+		மாறிலி தசம dt = math::constrain(தசம(int64_t(gnss.time_us) - int64_t(
 				lat_lon_prev.getProjectionReferenceTimestamp()))
 						 * 1e-6f, 0.001f, filt_time_const);
-		const float filter_coef = dt / filt_time_const;
+		மாறிலி தசம filter_coef = dt / filt_time_const;
 
 		// Calculate position movement since last measurement
-		float delta_pos_n = 0.0f;
-		float delta_pos_e = 0.0f;
+		தசம delta_pos_n = 0.0f;
+		தசம delta_pos_e = 0.0f;
 
 		// calculate position movement since last fix
-		if (lat_lon_prev.getProjectionReferenceTimestamp() > 0) {
+		எனில் (lat_lon_prev.getProjectionReferenceTimestamp() > 0) {
 			lat_lon_prev.project(gnss.lat, gnss.lon, delta_pos_n, delta_pos_e);
 
-		} else {
+		} இல்லையெனில் {
 			// no previous position has been set
 			lat_lon_prev.initReference(gnss.lat, gnss.lon, gnss.time_us);
 			_alt_prev = gnss.alt;
 		}
 
 		// Calculate the horizontal and vertical drift velocity components and limit to 10x the threshold
-		const matrix::Vector3f vel_limit(_params.req_hdrift, _params.req_hdrift, _params.req_vdrift);
+		மாறிலி matrix::Vector3f vel_limit(_params.req_hdrift, _params.req_hdrift, _params.req_vdrift);
 		matrix::Vector3f delta_pos(delta_pos_n, delta_pos_e, (_alt_prev - gnss.alt));
 
 		// Apply a low pass filter
@@ -203,7 +203,7 @@ void GnssChecks::runOnGroundGnssChecks(const gnssChecksSample &gnss, bool in_air
 		setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_VDRIFT, _vertical_position_drift_rate_m_s > _params.req_vdrift);
 
 		// hspeed: check the magnitude of the filtered horizontal GNSS velocity
-		const matrix::Vector2f vel_ne = matrix::constrain(matrix::Vector2f(gnss.vel.xy()),
+		மாறிலி matrix::Vector2f vel_ne = matrix::constrain(matrix::Vector2f(gnss.vel.xy()),
 						-10.0f * _params.req_hdrift,
 						10.0f * _params.req_hdrift);
 		_vel_ne_filt = vel_ne * filter_coef + _vel_ne_filt * (1.0f - filter_coef);
@@ -211,26 +211,26 @@ void GnssChecks::runOnGroundGnssChecks(const gnssChecksSample &gnss, bool in_air
 		setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_HSPEED, _filtered_horizontal_velocity_m_s > _params.req_hdrift);
 
 		// vspeed: check the magnitude of the filtered vertical GNSS velocity
-		const float gnss_vz_limit = 10.f * _params.req_vdrift;
-		const float gnss_vz = math::constrain(gnss.vel(2), -gnss_vz_limit, gnss_vz_limit);
+		மாறிலி தசம gnss_vz_limit = 10.f * _params.req_vdrift;
+		மாறிலி தசம gnss_vz = math::constrain(gnss.vel(2), -gnss_vz_limit, gnss_vz_limit);
 		_vel_d_filt = gnss_vz * filter_coef + _vel_d_filt * (1.f - filter_coef);
 
 		setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_VSPEED, fabsf(_vel_d_filt) > _params.req_vdrift);
 
-	} else {
+	} இல்லையெனில் {
 		// This is the case where the vehicle is on ground and IMU movement is blocking the drift calculation
 		resetDriftFilters();
 	}
 }
 
-void GnssChecks::clearDriftChecks()
+வெறுமை GnssChecks::clearDriftChecks()
 {
 	_strict_fail_flags &= ~kDriftChecks;
 
 	resetDriftFilters();
 }
 
-void GnssChecks::resetDriftFilters()
+வெறுமை GnssChecks::resetDriftFilters()
 {
 	_vel_ne_filt.setZero();
 	_vel_d_filt = 0.f;

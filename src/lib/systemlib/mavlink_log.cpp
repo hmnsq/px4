@@ -38,41 +38,41 @@
  * @author Lorenz Meier <lorenz@px4.io>
  */
 
-#include <drivers/drv_hrt.h>
-#include <px4_platform_common/posix.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
+#அந்தர்பாவ <drivers/drv_hrt.h>
+#அந்தர்பாவ <px4_platform_common/posix.h>
+#அந்தர்பாவ <string.h>
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <stdio.h>
+#அந்தர்பாவ <stdarg.h>
 
-#include <uORB/topics/mavlink_log.h>
-#include "mavlink_log.h"
+#அந்தர்பாவ <uORB/topics/mavlink_log.h>
+#அந்தர்பாவ "mavlink_log.h"
 
-__EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, const char *fmt, ...)
+__EXPORT வெறுமை mavlink_vasprintf(முழு severity, orb_advert_t *mavlink_log_pub, மாறிலி எழுத்து *fmt, ...)
 {
 	// TODO: add compile check for maxlen
 
-	if (!fmt) {
-		return;
+	எனில் (!fmt) {
+		திரும்பு;
 	}
 
-	if (mavlink_log_pub == nullptr) {
-		return;
+	எனில் (mavlink_log_pub == nullptr) {
+		திரும்பு;
 	}
 
-	mavlink_log_s log_msg;
-	log_msg.severity = severity;
-	log_msg.timestamp = hrt_absolute_time();
+	mavlink_log_s log_செய்தி;
+	log_செய்தி.severity = severity;
+	log_செய்தி.timestamp = hrt_absolute_time();
 
 	va_list ap;
 	va_start(ap, fmt);
-	vsnprintf((char *)log_msg.text, sizeof(log_msg.text), fmt, ap);
+	vsnprintf((எழுத்து *)log_செய்தி.text, அளவு(log_செய்தி.text), fmt, ap);
 	va_end(ap);
 
-	if (*mavlink_log_pub != nullptr) {
-		orb_publish(ORB_ID(mavlink_log), *mavlink_log_pub, &log_msg);
+	எனில் (*mavlink_log_pub != nullptr) {
+		orb_publish(ORB_ID(mavlink_log), *mavlink_log_pub, &log_செய்தி);
 
-	} else {
-		*mavlink_log_pub = orb_advertise(ORB_ID(mavlink_log), &log_msg);
+	} இல்லையெனில் {
+		*mavlink_log_pub = orb_advertise(ORB_ID(mavlink_log), &log_செய்தி);
 	}
 }

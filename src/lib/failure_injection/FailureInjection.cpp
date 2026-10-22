@@ -31,95 +31,95 @@
  *
  ****************************************************************************/
 
-#include "FailureInjection.hpp"
+#அந்தர்பாவ "FailureInjection.hpp"
 
-#if defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
+#எனில் defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
 
-#include <parameters/param.h>
-#include <uORB/topics/battery_status.h>
-#include <uORB/topics/sensor_gnss.h>
+#அந்தர்பாவ <parameters/param.h>
+#அந்தர்பாவ <uORB/topics/battery_status.h>
+#அந்தர்பாவ <uORB/topics/sensor_gnss.h>
 
-namespace failure_injection
+நாமாகாஶ failure_injection
 {
 
-bool Config::update()
+தருக்க Config::update()
 {
 	failure_injection_s cfg;
 
-	if (_sub.update(&cfg)) {
+	எனில் (_sub.update(&cfg)) {
 		set(cfg);
-		return true;
+		திரும்பு உண்மை;
 	}
 
-	return false;
+	திரும்பு பொய்;
 }
 
-void Config::set(const failure_injection_s &cfg)
+வெறுமை Config::set(மாறிலி failure_injection_s &cfg)
 {
-	_count = (cfg.count <= failure_injection_s::MAX_FAILURES) ? cfg.count : failure_injection_s::MAX_FAILURES;
+	மொத்தம்_3 = (cfg.மொத்தம் <= failure_injection_s::MAX_FAILURES) ? cfg.மொத்தம் : failure_injection_s::MAX_FAILURES;
 
-	for (uint8_t i = 0; i < _count; i++) {
+	க்கு (uint8_t i = 0; i < மொத்தம்_3; i++) {
 		_unit[i] = cfg.unit[i];
 		_instance_mask[i] = cfg.instance_mask[i];
 		_failure_type[i] = static_cast<Mode>(cfg.failure_type[i]);
 	}
 }
 
-Mode Config::mode(uint8_t unit, uint8_t instance) const
+Mode Config::mode(uint8_t unit, uint8_t instance) மாறிலி
 {
-	for (uint8_t i = 0; i < _count; i++) {
-		if (_unit[i] != unit) {
-			continue;
+	க்கு (uint8_t i = 0; i < மொத்தம்_3; i++) {
+		எனில் (_unit[i] != unit) {
+			தொடர்;
 		}
 
 		// instance == 0 matches any instance of the unit; otherwise match the
 		// 1-based instance against the bitmask (0xFFFF covers all instances).
-		if (instance == 0 || (instance <= 16 && (_instance_mask[i] & (1u << (instance - 1))))) {
-			return _failure_type[i];
+		எனில் (instance == 0 || (instance <= 16 && (_instance_mask[i] & (1u << (instance - 1))))) {
+			திரும்பு _failure_type[i];
 		}
 	}
 
-	return Mode::Ok;
+	திரும்பு Mode::Ok;
 }
 
-bool process_battery(const Config &config, uint8_t instance, battery_status_s &battery_status)
+தருக்க process_battery(மாறிலி Config &config, uint8_t instance, battery_status_s &battery_status)
 {
-	const Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_BATTERY, instance);
-	static constexpr float trigger_margin = 0.01f; // report remaining charge just below the threshold
+	மாறிலி Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_BATTERY, instance);
+	நிலையான constexpr தசம trigger_margin = 0.01f; // report remaining charge just below the threshold
 
-	if (mode == Mode::Off) {
+	எனில் (mode == Mode::Off) {
 		// Suppress the publication so the pack reads disconnected.
-		return false;
+		திரும்பு பொய்;
 	}
 
-	if (mode != Mode::Wrong) {
-		return true;
+	எனில் (mode != Mode::Wrong) {
+		திரும்பு உண்மை;
 	}
 
-	static const param_t level_handle = param_find("SYS_FAIL_BAT_LVL");
-	static const param_t low_thr_handle = param_find("BAT_LOW_THR");
-	static const param_t crit_thr_handle = param_find("BAT_CRIT_THR");
-	static const param_t emergen_thr_handle = param_find("BAT_EMERGEN_THR");
+	நிலையான மாறிலி param_t level_handle = param_find("SYS_FAIL_BAT_LVL");
+	நிலையான மாறிலி param_t கீழ்_thr_handle = param_find("BAT_LOW_THR");
+	நிலையான மாறிலி param_t crit_thr_handle = param_find("BAT_CRIT_THR");
+	நிலையான மாறிலி param_t emergen_thr_handle = param_find("BAT_EMERGEN_THR");
 
 	int32_t level = battery_status_s::WARNING_CRITICAL;
 	param_get(level_handle, &level);
 
 	param_t threshold_handle = crit_thr_handle;
 
-	switch (level) {
-	case battery_status_s::WARNING_LOW:
-		threshold_handle = low_thr_handle;
-		break;
+	தேர்வு (level) {
+	நிலை battery_status_s::WARNING_கீழ்:
+		threshold_handle = கீழ்_thr_handle;
+		நிறுத்து;
 
-	case battery_status_s::WARNING_EMERGENCY:
+	நிலை battery_status_s::WARNING_EMERGENCY:
 		threshold_handle = emergen_thr_handle;
-		break;
+		நிறுத்து;
 
-	case battery_status_s::WARNING_CRITICAL:
-	default:
+	நிலை battery_status_s::WARNING_CRITICAL:
+	இயல்பு:
 		level = battery_status_s::WARNING_CRITICAL;
 		threshold_handle = crit_thr_handle;
-		break;
+		நிறுத்து;
 	}
 
 	battery_status.warning = level;
@@ -127,101 +127,101 @@ bool process_battery(const Config &config, uint8_t instance, battery_status_s &b
 
 	// Report the remaining charge just below the selected threshold so the
 	// matching stage of the low-battery failsafe triggers.
-	float threshold = 0.f;
+	தசம threshold = 0.f;
 	param_get(threshold_handle, &threshold);
 	battery_status.remaining = (threshold > trigger_margin) ? (threshold - trigger_margin) : 0.f;
 
-	return true;
+	திரும்பு உண்மை;
 }
 
-bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
+தருக்க process_gnss(மாறிலி Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
 		  Stuck<sensor_gnss_s> &stuck)
 {
-	const Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SENSOR_GPS, uorb_instance + 1);
+	மாறிலி Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SENSOR_GPS, uorb_instance + 1);
 
 	// Off and Stuck are message-agnostic; run them first so the Stuck cache keeps the
 	// uncorrupted sample and a later Stuck replays a healthy fix.
-	if (!process(mode, sensor_gnss, stuck)) {
-		return false;
+	எனில் (!process(mode, sensor_gnss, stuck)) {
+		திரும்பு பொய்;
 	}
 
-	if (mode == Mode::Wrong) {
-		static const param_t fix_type_handle = param_find("SYS_FAIL_GPS_WRG");
+	எனில் (mode == Mode::Wrong) {
+		நிலையான மாறிலி param_t fix_type_handle = param_find("SYS_FAIL_GPS_WRG");
 
 		int32_t fix_type = sensor_gnss_s::FIX_TYPE_2D;
 		param_get(fix_type_handle, &fix_type);
 		sensor_gnss.fix_type = (uint8_t)fix_type;
 
-		static const param_t jamming_state_handle = param_find("SYS_FAIL_GPS_JAM");
+		நிலையான மாறிலி param_t jamming_state_handle = param_find("SYS_FAIL_GPS_JAM");
 
 		int32_t jamming_state = sensor_gnss_s::JAMMING_STATE_UNKNOWN;
 		param_get(jamming_state_handle, &jamming_state);
 
-		if (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
+		எனில் (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
 			sensor_gnss.jamming_state = (uint8_t)jamming_state;
 		}
 	}
 
-	return true;
+	திரும்பு உண்மை;
 }
 
-esc_status_s process_esc(const Config &config, const esc_status_s &status)
+esc_status_s process_esc(மாறிலி Config &config, மாறிலி esc_status_s &status)
 {
 	esc_status_s result = status;
 
-	for (int i = 0; i < result.esc_count && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
-		const uint8_t function = result.esc[i].actuator_function;
+	க்கு (முழு i = 0; i < result.esc_மொத்தம் && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
+		மாறிலி uint8_t function = result.esc[i].actuator_function;
 
-		if (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
-			continue; // not a motor output
+		எனில் (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
+			தொடர்; // not a motor output
 		}
 
-		const uint8_t instance = function - esc_report_s::ACTUATOR_FUNCTION_MOTOR1 + 1; // 1-based ESC instance
+		மாறிலி uint8_t instance = function - esc_report_s::ACTUATOR_FUNCTION_MOTOR1 + 1; // 1-based ESC instance
 
-		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_ESC, instance)) {
-		case Mode::Off:
+		தேர்வு (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_ESC, instance)) {
+		நிலை Mode::Off:
 			result.esc_online_flags &= ~(1u << i);
 			result.esc_armed_flags &= ~(1u << i);
 			result.esc[i] = esc_report_s{};
 			result.esc[i].actuator_function = function;
-			break;
+			நிறுத்து;
 
-		case Mode::Wrong:
+		நிலை Mode::Wrong:
 			result.esc[i].esc_voltage *= 0.1f;
 			result.esc[i].esc_current *= 0.1f;
 			result.esc[i].esc_rpm *= 10;
-			break;
+			நிறுத்து;
 
-		default:
-			break;
+		இயல்பு:
+			நிறுத்து;
 		}
 	}
 
-	return result;
+	திரும்பு result;
 }
 
-MotorFailureMasks process_motor(const Config &config)
+MotorFailureMasks process_motor(மாறிலி Config &config)
 {
 	MotorFailureMasks masks{};
 
-	for (int i = 0; i < esc_status_s::CONNECTED_ESC_MAX; i++) {
-		const uint16_t bit = 1u << i;
+	க்கு (முழு i = 0; i < esc_status_s::CONNECTED_ESC_MAX; i++) {
+		மாறிலி uint16_t bit = 1u << i;
 
-		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_MOTOR, i + 1)) {
-		case Mode::Off:
+		தேர்வு (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_MOTOR, i + 1)) {
+		நிலை Mode::Off:
 			masks.failure_mask |= bit;
-			break;
+			நிறுத்து;
 
-		case Mode::Wrong:
+		நிலை Mode::Wrong:
 			masks.stop_mask |= bit;
-			break;
+			நிறுத்து;
 
-		default:
-			break;
+		இயல்பு:
+			நிறுத்து;
 		}
 	}
 
-	return masks;
+	திரும்பு masks;
 }
 
 } // namespace failure_injection

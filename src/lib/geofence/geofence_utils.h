@@ -38,23 +38,23 @@
 
 #pragma once
 
-#include <cmath>
-#include <cstdint>
-#include <cstdlib>
+#அந்தர்பாவ <cmath>
+#அந்தர்பாவ <cstdint>
+#அந்தர்பாவ <cstdlib>
 
-#include <matrix/math.hpp>
+#அந்தர்பாவ <matrix/math.hpp>
 
-#include <dataman/dataman.h>
+#அந்தர்பாவ <dataman/dataman.h>
 
 namespace geofence_utils
 {
 
-static constexpr float CM_PER_M  = 100.f;
+நிலையான constexpr தசம CM_PER_M  = 100.f;
 
 // True iff `m_value` (metres) fits into the planner's fixed-point
 // representation. intersectsInsideOf doubles cm coordinates internally, so the
 // usable range is 2^30 cm = 10,737 km from the planner's reference.
-inline bool inFixedPointRange(float m_value) { return fabsf(m_value) < (1u << 30) / CM_PER_M; }
+உள்வரி bool inFixedPointRange(தசம m_மதிப்பு) { திரும்பு fabsf(m_மதிப்பு) < (1u << 30) / CM_PER_M; }
 
 /**
  * Sign of the signed area of triangle abc -- the fundamental 2D orientation
@@ -74,30 +74,30 @@ inline bool inFixedPointRange(float m_value) { return fabsf(m_value) < (1u << 30
  * https://www.science.smith.edu/~jorourke/books/compgeom.html
  *
  */
-inline int orient2d(int32_t ax, int32_t ay,
+உள்வரி முழு orient2d(int32_t ax, int32_t ay,
 		    int32_t bx, int32_t by,
 		    int32_t cx, int32_t cy)
 {
-	const int64_t det = (static_cast<int64_t>(bx) - ax) * (static_cast<int64_t>(cy) - ay)
+	மாறிலி int64_t det = (static_cast<int64_t>(bx) - ax) * (static_cast<int64_t>(cy) - ay)
 			    - (static_cast<int64_t>(by) - ay) * (static_cast<int64_t>(cx) - ax);
 
-	if (det > 0) { return  1; }
+	எனில் (det > 0) { திரும்பு  1; }
 
-	if (det < 0) { return -1; }
+	எனில் (det < 0) { திரும்பு -1; }
 
-	return 0;
+	திரும்பு 0;
 }
 
 /**
  * For a, b, c collinear (orient2d == 0), is c on the open segment ab?
  */
-inline bool collinearBetween(int32_t ax, int32_t ay, int32_t bx, int32_t by, int32_t cx, int32_t cy)
+உள்வரி bool collinearBetween(int32_t ax, int32_t ay, int32_t bx, int32_t by, int32_t cx, int32_t cy)
 {
-	if (std::abs(ax - bx) >= std::abs(ay - by)) {
-		return (ax < cx && cx < bx) || (bx < cx && cx < ax);
+	எனில் (std::abs(ax - bx) >= std::abs(ay - by)) {
+		திரும்பு (ax < cx && cx < bx) || (bx < cx && cx < ax);
 
-	} else {
-		return (ay < cy && cy < by) || (by < cy && cy < ay);
+	} இல்லையெனில் {
+		திரும்பு (ay < cy && cy < by) || (by < cy && cy < ay);
 	}
 }
 
@@ -117,7 +117,7 @@ inline bool collinearBetween(int32_t ax, int32_t ay, int32_t bx, int32_t by, int
  * Computational Geometry in C, Joseph O'Rourke
  * https://www.science.smith.edu/~jorourke/books/compgeom.html
  */
-enum class SegSegResult {
+எண்ணிக்கை class SegSegResult {
 	Disjoint,
 	Cross,
 	AInsideCD, BInsideCD,
@@ -125,7 +125,7 @@ enum class SegSegResult {
 	Collinear,
 };
 
-inline SegSegResult segmentsIntersect(int32_t ax, int32_t ay, int32_t bx, int32_t by,
+உள்வரி SegSegResult segmentsIntersect(int32_t ax, int32_t ay, int32_t bx, int32_t by,
 				      int32_t cx, int32_t cy, int32_t dx, int32_t dy)
 {
 	// These two early returns are logically not necessary (would catch the
@@ -135,32 +135,32 @@ inline SegSegResult segmentsIntersect(int32_t ax, int32_t ay, int32_t bx, int32_
 	// conclude the segments are disjoint. This does not detect _all_
 	// disjoint cases so the final return stays.
 
-	const int o1 = orient2d(ax, ay, bx, by, cx, cy);
-	const int o2 = orient2d(ax, ay, bx, by, dx, dy);
+	மாறிலி முழு o1 = orient2d(ax, ay, bx, by, cx, cy);
+	மாறிலி முழு o2 = orient2d(ax, ay, bx, by, dx, dy);
 
-	if (o1 != 0 && o1 == o2) { return SegSegResult::Disjoint; }
+	எனில் (o1 != 0 && o1 == o2) { திரும்பு SegSegResult::Disjoint; }
 
-	const int o3 = orient2d(cx, cy, dx, dy, ax, ay);
-	const int o4 = orient2d(cx, cy, dx, dy, bx, by);
+	மாறிலி முழு o3 = orient2d(cx, cy, dx, dy, ax, ay);
+	மாறிலி முழு o4 = orient2d(cx, cy, dx, dy, bx, by);
 
-	if (o3 != 0 && o3 == o4) { return SegSegResult::Disjoint; }
+	எனில் (o3 != 0 && o3 == o4) { திரும்பு SegSegResult::Disjoint; }
 
-	if (o1 && o2 && o3 && o4 && o1 != o2 && o3 != o4) { return SegSegResult::Cross; }
+	எனில் (o1 && o2 && o3 && o4 && o1 != o2 && o3 != o4) { திரும்பு SegSegResult::Cross; }
 
-	if (!o1 && !o2 && !o3 && !o4) { return SegSegResult::Collinear; }
+	எனில் (!o1 && !o2 && !o3 && !o4) { திரும்பு SegSegResult::Collinear; }
 
 	// Endpoint strictly on the open interior of the other segment iff:
 	//  - orient2d is zero (point on the supporting line)
 	//  - the point lies strictly between the other two via collinearBetween
-	if (o3 == 0 && collinearBetween(cx, cy, dx, dy, ax, ay)) { return SegSegResult::AInsideCD; }
+	எனில் (o3 == 0 && collinearBetween(cx, cy, dx, dy, ax, ay)) { திரும்பு SegSegResult::AInsideCD; }
 
-	if (o4 == 0 && collinearBetween(cx, cy, dx, dy, bx, by)) { return SegSegResult::BInsideCD; }
+	எனில் (o4 == 0 && collinearBetween(cx, cy, dx, dy, bx, by)) { திரும்பு SegSegResult::BInsideCD; }
 
-	if (o1 == 0 && collinearBetween(ax, ay, bx, by, cx, cy)) { return SegSegResult::CInsideAB; }
+	எனில் (o1 == 0 && collinearBetween(ax, ay, bx, by, cx, cy)) { திரும்பு SegSegResult::CInsideAB; }
 
-	if (o2 == 0 && collinearBetween(ax, ay, bx, by, dx, dy)) { return SegSegResult::DInsideAB; }
+	எனில் (o2 == 0 && collinearBetween(ax, ay, bx, by, dx, dy)) { திரும்பு SegSegResult::DInsideAB; }
 
-	return SegSegResult::Disjoint;
+	திரும்பு SegSegResult::Disjoint;
 }
 
 /**
@@ -168,15 +168,15 @@ inline SegSegResult segmentsIntersect(int32_t ax, int32_t ay, int32_t bx, int32_
  * Zero-length segments are treated as points. Coordinates must be finite and in the same plane.
  * For latitude/longitude coordinates, longitudes must use one continuous interval.
  */
-bool segmentsIntersectInclusive(const matrix::Vector2d &a, const matrix::Vector2d &b,
-				const matrix::Vector2d &c, const matrix::Vector2d &d);
+bool segmentsIntersectInclusive(மாறிலி matrix::Vector2d &a, மாறிலி matrix::Vector2d &b,
+				மாறிலி matrix::Vector2d &c, மாறிலி matrix::Vector2d &d);
 
 /**
  * Squared distance from a point to the closest point on segment ab, including its endpoints.
  * Use finite Cartesian coordinates in the same units. A zero-length segment is treated as a point.
  */
-double pointToSegmentDistanceSquared(const matrix::Vector2d &point,
-				     const matrix::Vector2d &a, const matrix::Vector2d &b);
+இரட்டை pointToSegmentDistanceSquared(மாறிலி matrix::Vector2d &point,
+				     மாறிலி matrix::Vector2d &a, மாறிலி matrix::Vector2d &b);
 
 /**
  * Check if a polygon's vertices are ordered counter-clockwise using the shoelace formula.
@@ -186,7 +186,7 @@ double pointToSegmentDistanceSquared(const matrix::Vector2d &point,
  * @param num_vertices  number of vertices
  * @return true if the polygon is counter-clockwise
  */
-bool isPolygonCCW(const matrix::Vector2f *vertices, int num_vertices);
+bool isPolygonCCW(மாறிலி matrix::Vector2f *vertices, முழு இலக்கம்_vertices);
 
 /**
  * Upper bound on the number of vertices addPolygon() emits for a simple polygon:
@@ -200,9 +200,9 @@ bool isPolygonCCW(const matrix::Vector2f *vertices, int num_vertices);
  * Degenerate input (n < 3) is rejected by addPolygon and emits nothing, so
  * the bound is 0.
  */
-constexpr int maxVerticesAfterSplitting(int num_vertices)
+constexpr முழு maxVerticesAfterSplitting(முழு இலக்கம்_vertices)
 {
-	return num_vertices < 3 ? 0 : num_vertices + (180 * num_vertices + 360 - 1) / 300;
+	திரும்பு இலக்கம்_vertices < 3 ? 0 : இலக்கம்_vertices + (180 * இலக்கம்_vertices + 360 - 1) / 300;
 }
 
 
@@ -221,13 +221,13 @@ constexpr int maxVerticesAfterSplitting(int num_vertices)
  */
 class PlannerPolygons
 {
-public:
+பொது:
 
 	// Default node capacity. 100 nodes was found to limit the full update
 	// on geofence / margin change to about 20 ms.
-	static constexpr int kDefaultMaxNodes = 100;
-	static constexpr int kMaxPolygons = 16;
-	static constexpr int kCircleApproxVertices = 8;
+	நிலையான constexpr முழு kDefaultMaxNodes = 100;
+	நிலையான constexpr முழு kMaxPolygons = 16;
+	நிலையான constexpr முழு kCircleApproxVertices = 8;
 
 	// Number of nodes needed to hold the largest geofence storable in dataman.
 	// Worst case:
@@ -236,102 +236,102 @@ public:
 	//  - 1 destination slot
 	// If the allocated node capacity >= kMaxNodesForAnyStorableFence, we always have enough space.
 	// Otherwise we may fail with AddResult::BudgetExceeded.
-	static constexpr int kMaxNodesForAnyStorableFence =
+	நிலையான constexpr முழு kMaxNodesForAnyStorableFence =
 		(kMaxPolygons - 1) * kCircleApproxVertices
-		+ maxVerticesAfterSplitting(DM_KEY_FENCE_POINTS_MAX - (kMaxPolygons - 1))
+		+ maxVerticesAfterSplitting(DM_சாவி_FENCE_POINTS_MAX - (kMaxPolygons - 1))
 		+ 1;
 
 	// Return code specifying why a polygon was not added.
-	enum class AddResult {
+	எண்ணிக்கை class AddResult {
 		Success,
 		BudgetExceeded,  // node or polygon buffer full (allocated node capacity / kMaxPolygons)
 		OutOfRange,      // vertex or circle extent outside usable fixed-point range
 		Degenerate,      // <3 vertices, zero-length/antiparallel edge, self-intersecting, empty circle, negative margin
 	};
 
-	explicit PlannerPolygons(int max_nodes = kDefaultMaxNodes) { allocate(max_nodes); }
+	explicit PlannerPolygons(முழு max_nodes = kDefaultMaxNodes) { allocate(max_nodes); }
 	~PlannerPolygons() { freeBuffers(); }
 
-	PlannerPolygons(const PlannerPolygons &) = delete;
-	PlannerPolygons &operator=(const PlannerPolygons &) = delete;
+	PlannerPolygons(மாறிலி PlannerPolygons &) = delete;
+	PlannerPolygons &operator=(மாறிலி PlannerPolygons &) = delete;
 
 	// (Re-)allocate the node buffers for max_nodes nodes (including the destination slot) and reset.
 	// Returns false if the allocation failed, in which case the capacity is 0 and every add fails.
-	bool allocate(int max_nodes);
+	bool allocate(முழு max_nodes);
 
 	// Slot 0 is always reserved for the destination; polygon vertices start at index 1.
-	void reset()
+	வெறுமை reset()
 	{
-		_num_polygons = 0;
+		இலக்கம்_polygons = 0;
 
-		if (_max_nodes < 1) {
-			_num_nodes = 0;
-			return;
+		எனில் (_max_nodes < 1) {
+			இலக்கம்_nodes_2 = 0;
+			திரும்பு;
 		}
 
-		_num_nodes = 1;
+		இலக்கம்_nodes_2 = 1;
 		_x_cm[0] = 0;
 		_y_cm[0] = 0;
-		_node_not_on_optimal_path[0] = false;
+		முனை_not_on_optimal_path[0] = false;
 	}
 
 	// Append a polygon:
 	//  - canonicalize orientation,
 	//  - offset each vertex outward (exclusion) or inward (inclusion) by `margin` meters,
 	//  - quantize to cm, append as nodes.
-	AddResult addPolygon(const matrix::Vector2f *vertices_in, int num_vertices,
-			     bool is_inclusion_zone, float margin = 0.f);
+	AddResult addPolygon(மாறிலி matrix::Vector2f *vertices_in, முழு இலக்கம்_vertices,
+			     bool is_inclusion_zone, தசம margin = 0.f);
 
 	// Append an approximate circle (k-gon over/underapproximation).
 	//  - shrink/expand according to margin and is_inclusion_zone
 	//  - quantize to cm, append as nodes.
-	AddResult addApproxCircle(const matrix::Vector2f &center, const float radius, float margin, const bool is_inclusion_zone);
+	AddResult addApproxCircle(மாறிலி matrix::Vector2f &center, மாறிலி தசம radius, தசம margin, மாறிலி bool is_inclusion_zone);
 
-	int numNodes() const { return _num_nodes; }
+	முழு இலக்கம்_Nodes() மாறிலி { திரும்பு இலக்கம்_nodes_2; }
 
 	// Number of polygon nodes (excludes the destination at index 0).
-	int numVertices() const { return _num_nodes - 1; }
+	முழு இலக்கம்_Vertices() மாறிலி { திரும்பு இலக்கம்_nodes_2 - 1; }
 
-	matrix::Vector2f node(int idx) const
+	matrix::Vector2f முனை_2(முழு idx) மாறிலி
 	{
-		return matrix::Vector2f{_x_cm[idx] / CM_PER_M, _y_cm[idx] / CM_PER_M};
+		திரும்பு matrix::Vector2f{_x_cm[idx] / CM_PER_M, _y_cm[idx] / CM_PER_M};
 	}
 
 	// Update the destination position. Always safe to call after reset().
 	// Returns false if the destination violates the geofence, but still updates destionation.
-	bool setDestination(const matrix::Vector2f &p);
+	bool setDestination(மாறிலி matrix::Vector2f &p);
 
 	// Get the current destination position.
-	matrix::Vector2f getDestination() const;
+	matrix::Vector2f getDestination() மாறிலி;
 
 	// Destination is always at index 0; polygon vertices start at index 1.
-	static constexpr int destIndex() { return 0; }
+	நிலையான constexpr முழு destIndex() { திரும்பு 0; }
 
 	// True if the segment (a, b) crosses no geofence interior.
-	bool edgeVisible(int a, int b) const;
-	bool edgeVisible(const matrix::Vector2f &a, int b) const;          // One float endpoint (e.g. vehicle position).
-	bool edgeVisible(const matrix::Vector2f &a, const matrix::Vector2f &b) const; // Both float endpoints.
+	bool edgeVisible(முழு a, முழு b) மாறிலி;
+	bool edgeVisible(மாறிலி matrix::Vector2f &a, முழு b) மாறிலி;          // One float endpoint (e.g. vehicle position).
+	bool edgeVisible(மாறிலி matrix::Vector2f &a, மாறிலி matrix::Vector2f &b) மாறிலி; // Both float endpoints.
 
 	// Traversal cost for edge (a, b): INFINITY if the edge crosses any fence,
 	// Euclidean distance (metres) otherwise.
-	float edgeCost(int a, int b) const;
+	தசம edgeCost(முழு a, முழு b) மாறிலி;
 
-private:
-	void freeBuffers();
+தனிப்பட்ட:
+	வெறுமை freeBuffers();
 
-	int _max_nodes{0};
+	முழு _max_nodes{0};
 	int32_t *_x_cm{nullptr};
 	int32_t *_y_cm{nullptr};
 
-	struct PolygonInfo {
-		int start_index;
-		int num_vertices;
+	கட்டமைப்பு PolygonInfo {
+		முழு start_index;
+		முழு இலக்கம்_vertices;
 		bool is_inclusion;
 		int32_t min_x, max_x, min_y, max_y; // Bouding box
 	};
 
 	PolygonInfo _polygons[kMaxPolygons];
-	int _num_polygons{0};
+	முழு இலக்கம்_polygons{0};
 
 	/**
 	 * Reduced visibility graph: we can exclude some vertices a priori
@@ -342,8 +342,8 @@ private:
 	 *   (A -> just before B -> just after B -> C)
 	 * and so it cannot be globally optimal.
 	 */
-	bool *_node_not_on_optimal_path{nullptr};
-	int _num_nodes{0};
+	bool *முனை_not_on_optimal_path{nullptr};
+	முழு இலக்கம்_nodes_2{0};
 
 	/**
 	 * Line-segment vs polygon intersection check.
@@ -353,12 +353,12 @@ private:
 	 * only the boundary is allowed (necessary for shortest path to be well
 	 * defined)
 	 */
-	bool intersectsInsideOf(const PolygonInfo &poly, int32_t s_x, int32_t s_y, int32_t e_x, int32_t e_y) const;
+	bool intersectsInsideOf(மாறிலி PolygonInfo &poly, int32_t s_x, int32_t s_y, int32_t e_x, int32_t e_y) மாறிலி;
 
 	/**
 	 * Return true iff the line segment s-e intersects the inside of _any_ stored polygon.
 	 */
-	bool intersectsAnyInside(int32_t s_x, int32_t s_y, int32_t e_x, int32_t e_y) const;
+	bool intersectsAnyInside(int32_t s_x, int32_t s_y, int32_t e_x, int32_t e_y) மாறிலி;
 
 	/**
 	 * Consider extending the triangle poly[v-1] -> poly[v] -> poly[v+1]
@@ -370,7 +370,7 @@ private:
 	 * the case iff the line segment poly[v] -> p pierces the interior at
 	 * vertex curr.
 	 */
-	bool pointInsideInteriorCone(const PolygonInfo &poly, int32_t px, int32_t py, int v) const;
+	bool pointInsideInteriorCone(மாறிலி PolygonInfo &poly, int32_t px, int32_t py, முழு v) மாறிலி;
 
 	/**
 	 * Return true if the edge ab is bitangent at a: neither the edge nor
@@ -382,35 +382,35 @@ private:
 	 *
 	 * * Stephen LaValle, 2006: Planning Algorithms, 6.2.4 - Shortest-Path Roadmaps
 	 */
-	bool edgeBitangent(int a, int32_t bx, int32_t by) const;
-	bool edgeBitangent(int a, int b) const;                        // Other endpoint is node index b.
-	bool edgeBitangent(int a, const matrix::Vector2f &b) const;    // Other endpoint is an arbitrary position.
+	bool edgeBitangent(முழு a, int32_t bx, int32_t by) மாறிலி;
+	bool edgeBitangent(முழு a, முழு b) மாறிலி;                        // Other endpoint is node index b.
+	bool edgeBitangent(முழு a, மாறிலி matrix::Vector2f &b) மாறிலி;    // Other endpoint is an arbitrary position.
 
 	/**
 	 * Update {min,max}_{x,y} with the min/max coordinates of the polygon with vertices
 	 * [start_index, start_index + num_vertices).
 	 */
-	void computeBoundingBox(const int start_index, const int num_vertices,
+	வெறுமை computeBoundingBox(மாறிலி முழு start_index, மாறிலி முழு இலக்கம்_vertices,
 				int32_t &min_x, int32_t &max_x, int32_t &min_y, int32_t &max_y);
 
 	// Write float-metre coordinates into an existing node slot (used internally by
 	// addPolygon, addApproxCircle, and setDestination).
-	void setNode(int idx, const matrix::Vector2f &p);
+	வெறுமை set_முனை(முழு idx, மாறிலி matrix::Vector2f &p);
 
 };
 
 // Convenience for unit tests and one-shot callers: build a transient
 // PlannerPolygons with the given polygon and query the segment.
-inline bool lineSegmentIntersectsPolygon(const matrix::Vector2f &start, const matrix::Vector2f &end,
-		const matrix::Vector2f *vertices, int num_vertices, bool is_inclusion_zone)
+உள்வரி bool வரி_Segment_Intersects_Polygon(மாறிலி matrix::Vector2f &start, மாறிலி matrix::Vector2f &end,
+		மாறிலி matrix::Vector2f *vertices, முழு இலக்கம்_vertices, bool is_inclusion_zone)
 {
-	PlannerPolygons polys{maxVerticesAfterSplitting(num_vertices) + 1};
+	PlannerPolygons polys{maxVerticesAfterSplitting(இலக்கம்_vertices) + 1};
 
-	if (polys.addPolygon(vertices, num_vertices, is_inclusion_zone) != PlannerPolygons::AddResult::Success) {
-		return false;
+	எனில் (polys.addPolygon(vertices, இலக்கம்_vertices, is_inclusion_zone) != PlannerPolygons::AddResult::Success) {
+		திரும்பு false;
 	}
 
-	return !polys.edgeVisible(start, end);
+	திரும்பு !polys.edgeVisible(start, end);
 }
 
 } // namespace geofence_utils

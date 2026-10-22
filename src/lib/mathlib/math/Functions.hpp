@@ -39,19 +39,19 @@
 
 #pragma once
 
-#include "Limits.hpp"
+#அந்தர்பாவ "Limits.hpp"
 
-#include <px4_platform_common/defines.h>
-#include <matrix/matrix/math.hpp>
+#அந்தர்பாவ <px4_platform_common/defines.h>
+#அந்தர்பாவ <matrix/matrix/math.hpp>
 
-namespace math
+நாமாகாஶ math
 {
 
 // Type-safe signum function with zero treated as positive
 template<typename T>
-int signNoZero(T val)
+முழு signNoZero(T val)
 {
-	return (T(0) <= val) - (val < T(0));
+	திரும்பு (T(0) <= val) - (val < T(0));
 }
 
 /**
@@ -60,15 +60,15 @@ int signNoZero(T val)
  * @param[in] positive Truth value to take the sign from
  * @return 1 if positive is true, -1 if positive is false
  */
-inline int signFromBool(bool positive)
+உள்வரி முழு signFromBool(தருக்க positive)
 {
-	return positive ? 1 : -1;
+	திரும்பு positive ? 1 : -1;
 }
 
 template<typename T>
 T sq(T val)
 {
-	return val * val;
+	திரும்பு val * val;
 }
 
 /*
@@ -81,11 +81,11 @@ T sq(T val)
  * @return result of function output
  */
 template<typename T>
-const T expo(const T &value, const T &e)
+மாறிலி T expo(மாறிலி T &value, மாறிலி T &e)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T ec = constrain(e, (T) 0, (T) 1);
-	return (1 - ec) * x + ec * x * x * x;
+	திரும்பு (1 - ec) * x + ec * x * x * x;
 }
 
 /*
@@ -100,11 +100,11 @@ const T expo(const T &value, const T &e)
  * @return result of function output
  */
 template<typename T>
-const T superexpo(const T &value, const T &e, const T &g)
+மாறிலி T superexpo(மாறிலி T &value, மாறிலி T &e, மாறிலி T &g)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T gc = constrain(g, (T) 0, (T) 0.99);
-	return expo(x, e) * (1 - gc) / (1 - fabsf(x) * gc);
+	திரும்பு expo(x, e) * (1 - gc) / (1 - fabsf(x) * gc);
 }
 
 /*
@@ -122,20 +122,20 @@ const T superexpo(const T &value, const T &e, const T &g)
  * 		0.99 - almost entire span is deadzone
  */
 template<typename T>
-const T deadzone(const T &value, const T &dz)
+மாறிலி T deadzone(மாறிலி T &value, மாறிலி T &dz)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T dzc = constrain(dz, (T) 0, (T) 0.99);
 	// Rescale the input such that we get a piecewise linear function that will be continuous with applied deadzone
 	T out = (x - matrix::sign(x) * dzc) / (1 - dzc);
 	// apply the deadzone (values zero around the middle)
-	return out * (fabsf(x) > dzc);
+	திரும்பு out * (fabsf(x) > dzc);
 }
 
 template<typename T>
-const T expo_deadzone(const T &value, const T &e, const T &dz)
+மாறிலி T expo_deadzone(மாறிலி T &value, மாறிலி T &e, மாறிலி T &dz)
 {
-	return expo(deadzone(value, dz), e);
+	திரும்பு expo(deadzone(value, dz), e);
 }
 
 
@@ -149,19 +149,19 @@ const T expo_deadzone(const T &value, const T &e, const T &dz)
  *         x_low   x_high
  */
 template<typename T>
-const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_low, const T &y_high)
+மாறிலி T interpolate(மாறிலி T &value, மாறிலி T &x_கீழ், மாறிலி T &x_உயர்வு, மாறிலி T &y_கீழ், மாறிலி T &y_உயர்வு)
 {
-	if (value <= x_low) {
-		return y_low;
+	எனில் (value <= x_கீழ்) {
+		திரும்பு y_கீழ்;
 
-	} else if (value > x_high) {
-		return y_high;
+	} இல்லையெனில் எனில் (value > x_உயர்வு) {
+		திரும்பு y_உயர்வு;
 
-	} else {
+	} இல்லையெனில் {
 		/* linear function between the two points */
-		T a = (y_high - y_low) / (x_high - x_low);
-		T b = y_low - (a * x_low);
-		return (a * value) + b;
+		T a = (y_உயர்வு - y_கீழ்) / (x_உயர்வு - x_கீழ்);
+		T b = y_கீழ் - (a * x_கீழ்);
+		திரும்பு (a * value) + b;
 	}
 }
 
@@ -178,10 +178,10 @@ const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_
  *        0 1/(N-1) 2/(N-1) ... 1
  */
 template<typename T, size_t N>
-const T interpolateN(const T &value, const T(&y)[N])
+மாறிலி T interpolateN(மாறிலி T &value, மாறிலி T(&y)[N])
 {
-	size_t index = constrain((int)(value * (N - 1)), 0, (int)(N - 2));
-	return interpolate(value, (T)index / (T)(N - 1), (T)(index + 1) / (T)(N - 1), y[index], y[index + 1]);
+	size_t index = constrain((முழு)(value * (N - 1)), 0, (முழு)(N - 2));
+	திரும்பு interpolate(value, (T)index / (T)(N - 1), (T)(index + 1) / (T)(N - 1), y[index], y[index + 1]);
 }
 
 /*
@@ -198,15 +198,15 @@ const T interpolateN(const T &value, const T(&y)[N])
  * Note: x[N] corner coordinates have to be sorted in ascending order
  */
 template<typename T, size_t N>
-const T interpolateNXY(const T &value, const T(&x)[N], const T(&y)[N])
+மாறிலி T interpolateNXY(மாறிலி T &value, மாறிலி T(&x)[N], மாறிலி T(&y)[N])
 {
 	size_t index = 0;
 
-	while ((value > x[index + 1]) && (index < (N - 2))) {
+	போது ((value > x[index + 1]) && (index < (N - 2))) {
 		index++;
 	}
 
-	return interpolate(value, x[index], x[index + 1], y[index], y[index + 1]);
+	திரும்பு interpolate(value, x[index], x[index + 1], y[index], y[index + 1]);
 }
 
 /*
@@ -222,16 +222,16 @@ const T interpolateNXY(const T &value, const T(&x)[N], const T(&y)[N])
  *             0    1
  */
 template<typename T>
-const T sqrt_linear(const T &value)
+மாறிலி T sqrt_linear(மாறிலி T &value)
 {
-	if (value < static_cast<T>(0)) {
-		return static_cast<T>(0);
+	எனில் (value < static_cast<T>(0)) {
+		திரும்பு static_cast<T>(0);
 
-	} else if (value < static_cast<T>(1)) {
-		return sqrtf(value);
+	} இல்லையெனில் எனில் (value < static_cast<T>(1)) {
+		திரும்பு sqrtf(value);
 
-	} else {
-		return value;
+	} இல்லையெனில் {
+		திரும்பு value;
 	}
 }
 
@@ -242,29 +242,29 @@ const T sqrt_linear(const T &value)
  * Any value for s is valid.
  */
 template<typename T>
-const T lerp(const T &a, const T &b, const T &s)
+மாறிலி T lerp(மாறிலி T &a, மாறிலி T &b, மாறிலி T &s)
 {
-	return (static_cast<T>(1) - s) * a + s * b;
+	திரும்பு (static_cast<T>(1) - s) * a + s * b;
 }
 
 template<typename T>
 constexpr T negate(T value)
 {
-	static_assert(sizeof(T) > 2, "implement for T");
-	return -value;
+	static_assert(அளவு(T) > 2, "implement for T");
+	திரும்பு -value;
 }
 
 template<>
 constexpr int16_t negate<int16_t>(int16_t value)
 {
-	if (value == INT16_MAX) {
-		return INT16_MIN;
+	எனில் (value == INT16_MAX) {
+		திரும்பு INT16_MIN;
 
-	} else if (value == INT16_MIN) {
-		return INT16_MAX;
+	} இல்லையெனில் எனில் (value == INT16_MIN) {
+		திரும்பு INT16_MAX;
 	}
 
-	return -value;
+	திரும்பு -value;
 }
 
 /*
@@ -273,30 +273,30 @@ constexpr int16_t negate<int16_t>(int16_t value)
  */
 
 template<typename T>
-int countSetBits(T n)
+முழு மொத்தம்_Set_Bits(T n)
 {
-	return __builtin_popcount(n);
+	திரும்பு __builtin_popcount(n);
 }
 
 template<typename T>
-int countTrailingZeros(T n)
+முழு மொத்தம்_Trailing_Zeros(T n)
 {
-	return n == 0 ? (int)(sizeof(T) * 8) : __builtin_ctz(n);
+	திரும்பு n == 0 ? (முழு)(அளவு(T) * 8) : __builtin_ctz(n);
 }
 
-inline bool isFinite(const float &value)
+உள்வரி தருக்க isFinite(மாறிலி தசம &value)
 {
-	return PX4_ISFINITE(value);
+	திரும்பு PX4_ISFINITE(value);
 }
 
-inline bool isFinite(const matrix::Vector2f &value)
+உள்வரி தருக்க isFinite(மாறிலி matrix::Vector2f &value)
 {
-	return value.isAllFinite();
+	திரும்பு value.isAllFinite();
 }
 
-inline bool isFinite(const matrix::Vector3f &value)
+உள்வரி தருக்க isFinite(மாறிலி matrix::Vector3f &value)
 {
-	return value.isAllFinite();
+	திரும்பு value.isAllFinite();
 }
 
 } /* namespace math */

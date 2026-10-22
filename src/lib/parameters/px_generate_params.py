@@ -2,14 +2,14 @@
 """
 Param source code generation script.
 """
-from __future__ import print_function
-import xml.etree.ElementTree as ET
-import argparse
-import sys
+தஃ __future__ இறக்குமதி print_function
+இறக்குமதி xml.etree.Element_மரம் இவ ET
+இறக்குமதி argparse
+இறக்குமதி sys
 
-try:
-    from jinja2 import Environment, FileSystemLoader
-except ImportError as e:
+முயல்:
+    தஃ jinja2 இறக்குமதி Environment, FileSystemLoader
+விதிவிலக்கு ImportError இவ e:
     print("Failed to import jinja2: " + str(e))
     print("")
     print("You may need to install it using:")
@@ -17,8 +17,8 @@ except ImportError as e:
     print("")
     sys.exit(1)
 
-import os
-from px4params.readonly_config import load_readonly_params
+இறக்குமதி os
+தஃ px4params.readonly_config இறக்குமதி load_readonly_params
 
 def generate(xml_file, dest='.', readonly_config=None):
     """
@@ -30,18 +30,18 @@ def generate(xml_file, dest='.', readonly_config=None):
         None means to scan everything.
     """
     # pylint: disable=broad-except
-    tree = ET.parse(xml_file)
-    root = tree.getroot()
+    மரம் = ET.parse(xml_file)
+    வேர் = மரம்.getroot()
 
     params = []
-    for group in root:
-        if group.tag == "group" and "no_code_generation" not in group.attrib:
-            for param in group:
+    க்கு group உள் வேர்:
+        எனில் group.tag == "group" மற்றும் "no_code_generation" இல்லை உள் group.attrib:
+            க்கு param உள் group:
                 params.append(param)
 
-    params = sorted(params, key=lambda name: name.attrib["name"])
+    params = sorted(params, சாவி=பெயரிலி name: name.attrib["name"])
 
-    all_param_names = set(p.attrib["name"] for p in params)
+    all_param_names = set(p.attrib["name"] க்கு p உள் params)
     readonly_params = load_readonly_params(readonly_config, all_param_names)
 
     script_path = os.path.dirname(os.path.realpath(__file__))
@@ -50,23 +50,23 @@ def generate(xml_file, dest='.', readonly_config=None):
     env = Environment(
         loader=FileSystemLoader(os.path.join(script_path, 'templates')))
 
-    if not os.path.isdir(dest):
+    எனில் இல்லை os.path.isdir(dest):
         os.path.mkdir(dest)
 
     template_files = [
         'px4_parameters.hpp.jinja',
     ]
-    for template_file in template_files:
+    க்கு template_file உள் template_files:
         template = env.get_template(template_file)
         with open(os.path.join(
-                dest, template_file.replace('.jinja','')), 'w') as fid:
-            fid.write(template.render(params=params, readonly_params=readonly_params))
+                dest, template_file.replace('.jinja','')), 'w') இவ fid:
+            fid.லிக(template.render(params=params, readonly_params=readonly_params))
 
-if __name__ == "__main__":
+எனில் __name__ == "__main__":
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("--xml", help="parameter xml file")
-    arg_parser.add_argument("--dest", help="destination path", default=os.path.curdir)
-    arg_parser.add_argument("--readonly-config", help="path to readonly_params.yaml", default=None)
+    arg_parser.add_argument("--dest", help="destination path", இயல்பு=os.path.curdir)
+    arg_parser.add_argument("--readonly-config", help="path to readonly_params.yaml", இயல்பு=None)
     args = arg_parser.parse_args()
     generate(xml_file=args.xml, dest=args.dest, readonly_config=args.readonly_config)
 

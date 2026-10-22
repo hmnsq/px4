@@ -33,18 +33,18 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#அந்தர்பாவ "FunctionProviderBase.hpp"
 
 /**
  * Functions: Constant_Max
  */
-class FunctionConstantMax : public FunctionProviderBase
+வகுப்பு FunctionConstantMax : பொது FunctionProviderBase
 {
-public:
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionConstantMax(); }
+பொது:
+	நிலையான FunctionProviderBase *allocate(மாறிலி Context &context) { திரும்பு புதிய FunctionConstantMax(); }
 
-	float value(OutputFunction func) override { return 1.f; }
-	void update() override { }
+	தசம value(OutputFunction func) override { திரும்பு 1.f; }
+	வெறுமை update() override { }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 1.f; }
+	தசம default_Failsafe_மதிப்பு(OutputFunction func) மாறிலி override { திரும்பு 1.f; }
 };

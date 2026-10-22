@@ -33,43 +33,43 @@
 
 #pragma once
 
-#include <limits.h>
+#அந்தர்பாவ <limits.h>
 
-#include <mixer_module/output_functions.hpp>
+#அந்தர்பாவ <mixer_module/output_functions.hpp>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionCallback.hpp>
+#அந்தர்பாவ <uORB/Subscription.hpp>
+#அந்தர்பாவ <uORB/SubscriptionCallback.hpp>
 
-#include <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
+#அந்தர்பாவ <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
 
-class FunctionProviderBase
+வகுப்பு FunctionProviderBase
 {
-public:
-	struct Context {
+பொது:
+	கட்டமைப்பு Context {
 		px4::WorkItem &work_item;
-		const float &thrust_factor;
+		மாறிலி தசம &thrust_factor;
 	};
 
-	FunctionProviderBase() = default;
-	virtual ~FunctionProviderBase() = default;
+	FunctionProviderBase() = இயல்பு;
+	மெய்நிகர் ~FunctionProviderBase() = இயல்பு;
 
-	virtual void update() = 0;
+	மெய்நிகர் வெறுமை update() = 0;
 
 	/**
 	 * Get the current output value for a given function
 	 * @return NAN (=disarmed) or value in range [-1, 1]
 	 */
-	virtual float value(OutputFunction func) = 0;
+	மெய்நிகர் தசம value(OutputFunction func) = 0;
 
-	virtual float defaultFailsafeValue(OutputFunction func) const { return NAN; }
-	virtual bool allowPrearmControl() const { return true; }
+	மெய்நிகர் தசம default_Failsafe_மதிப்பு(OutputFunction func) மாறிலி { திரும்பு NAN; }
+	மெய்நிகர் தருக்க allowPrearmControl() மாறிலி { திரும்பு உண்மை; }
 
-	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { return nullptr; }
+	மெய்நிகர் uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { திரும்பு nullptr; }
 
-	virtual bool getLatestSampleTimestamp(hrt_abstime &t) const { return false; }
+	மெய்நிகர் தருக்க getLatestSampleTimestamp(hrt_abstime &t) மாறிலி { திரும்பு பொய்; }
 
 	/**
 	 * Check whether the output (motor) is configured to be reversible
 	 */
-	virtual bool reversible(OutputFunction func) const { return false; }
+	மெய்நிகர் தருக்க reversible(OutputFunction func) மாறிலி { திரும்பு பொய்; }
 };

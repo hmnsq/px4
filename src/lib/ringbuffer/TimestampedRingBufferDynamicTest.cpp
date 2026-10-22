@@ -31,26 +31,26 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <math.h>
-#include "TimestampedRingBuffer.hpp"
+#அந்தர்பாவ <gtest/gtest.h>
+#அந்தர்பாவ <math.h>
+#அந்தர்பாவ "TimestampedRingBuffer.hpp"
 
-struct sample {
+கட்டமைப்பு sample {
 	uint64_t time_us;
-	float data[3];
+	தசம data[3];
 };
 
 
-class TimestampedRingBufferDynamicTest : public ::testing::Test
+வகுப்பு TimestampedRingBufferDynamicTest : பொது ::testing::Test
 {
-public:
+பொது:
 
 	sample _x, _y, _z;
 	TimestampedRingBuffer<sample> *_buffer{nullptr};
 
-	void SetUp() override
+	வெறுமை SetUp() override
 	{
-		_buffer = new TimestampedRingBuffer<sample>(3);
+		_buffer = புதிய TimestampedRingBuffer<sample>(3);
 		_x.time_us = 1000000;
 		_x.data[0] = _x.data[1] = _x.data[2] = 1.5f;
 
@@ -61,7 +61,7 @@ public:
 		_z.data[0] = _z.data[1] = _z.data[2] = 4.0f;
 	}
 
-	void TearDown() override
+	வெறுமை TearDown() override
 	{
 		delete _buffer;
 	}
@@ -96,69 +96,69 @@ TEST_F(TimestampedRingBufferDynamicTest, badInitialisation)
 
 TEST_F(TimestampedRingBufferDynamicTest, orderOfSamples)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
+	ASSERT_EQ(உண்மை, _buffer->allocate(3));
 	// GIVEN: allocated buffer
 	// WHEN: adding multiple samples
 	// THEN: they should be added in order
-	_buffer->push(_x);
+	_buffer->தள்ளு(_x);
 
 	EXPECT_EQ(_x.time_us, _buffer->get_newest().time_us);
 	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
 
-	_buffer->push(_z);
-	_buffer->push(_y);
+	_buffer->தள்ளு(_z);
+	_buffer->தள்ளு(_y);
 
 	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
 	EXPECT_EQ(_y.time_us, _buffer->get_newest().time_us);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, popSample)
+TEST_F(TimestampedRingBufferDynamicTest, எடு_Sample)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(உண்மை, _buffer->allocate(3));
+	_buffer->தள்ளு(_x);
+	_buffer->தள்ளு(_y);
+	_buffer->தள்ளு(_z);
 
 	// GIVEN: allocated and filled buffer
 
-	sample pop = {};
+	sample எடு = {};
 	// WHEN: we want to retrieve a sample that is older than any in the buffer
 	// THEN: we should not get any sample
-	EXPECT_FALSE(_buffer->pop_first_older_than(0, &pop));
+	EXPECT_FALSE(_buffer->எடு_first_older_than(0, &எடு));
 
 	// WHEN: when calling "pop_first_older_than"
 	// THEN: we should get the first sample from the head that is older
-	EXPECT_TRUE(_buffer->pop_first_older_than(_x.time_us + 1, &pop));
-	EXPECT_EQ(_x.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_y.time_us + 10, &pop));
-	EXPECT_EQ(_y.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 100, &pop));
-	EXPECT_EQ(_z.time_us, pop.time_us);
+	EXPECT_TRUE(_buffer->எடு_first_older_than(_x.time_us + 1, &எடு));
+	EXPECT_EQ(_x.time_us, எடு.time_us);
+	EXPECT_TRUE(_buffer->எடு_first_older_than(_y.time_us + 10, &எடு));
+	EXPECT_EQ(_y.time_us, எடு.time_us);
+	EXPECT_TRUE(_buffer->எடு_first_older_than(_z.time_us + 100, &எடு));
+	EXPECT_EQ(_z.time_us, எடு.time_us);
 	// TODO: When changing the order of popping sample it does not behave as expected, fix this
 }
 
 TEST_F(TimestampedRingBufferDynamicTest, askingForTooNewSample)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(உண்மை, _buffer->allocate(3));
+	_buffer->தள்ளு(_x);
+	_buffer->தள்ளு(_y);
+	_buffer->தள்ளு(_z);
 
-	sample pop = {};
+	sample எடு = {};
 	// WHEN: all buffered samples are older by 0.1s than your query timestamp
 	// THEN: should get no sample returned
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 99000, &pop));
-	EXPECT_FALSE(_buffer->pop_first_older_than(_y.time_us + 100000, &pop));
+	EXPECT_TRUE(_buffer->எடு_first_older_than(_z.time_us + 99000, &எடு));
+	EXPECT_FALSE(_buffer->எடு_first_older_than(_y.time_us + 100000, &எடு));
 }
 
 TEST_F(TimestampedRingBufferDynamicTest, reallocateBuffer)
 {
-	ASSERT_EQ(true, _buffer->allocate(5));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(உண்மை, _buffer->allocate(5));
+	_buffer->தள்ளு(_x);
+	_buffer->தள்ளு(_y);
+	_buffer->தள்ளு(_y);
+	_buffer->தள்ளு(_y);
+	_buffer->தள்ளு(_z);
 
 	// GIVEN: allocated and filled buffer
 	// WHEN: do another allocate call

@@ -33,83 +33,83 @@
 
 #pragma once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/sensor_correction.h>
+#அந்தர்பாவ <px4_platform_common/px4_config.h>
+#அந்தர்பாவ <px4_platform_common/log.h>
+#அந்தர்பாவ <uORB/Subscription.hpp>
+#அந்தர்பாவ <uORB/topics/sensor_correction.h>
 
-namespace calibration
+நாமாகாஶ calibration
 {
-class Barometer
+வகுப்பு Barometer
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+பொது:
+	நிலையான constexpr முழு MAX_SENSOR_மொத்தம் = 4;
 
-	static constexpr uint8_t DEFAULT_PRIORITY = 50;
-	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
+	நிலையான constexpr uint8_t DEFAULT_PRIORITY = 50;
+	நிலையான constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
 
-	static constexpr const char *SensorString() { return "BARO"; }
+	நிலையான constexpr மாறிலி எழுத்து *SensorString() { திரும்பு "BARO"; }
 
 	Barometer();
 	explicit Barometer(uint32_t device_id);
-	Barometer(uint32_t device_id, bool external);
+	Barometer(uint32_t device_id, தருக்க external);
 
-	~Barometer() = default;
+	~Barometer() = இயல்பு;
 
-	void PrintStatus();
+	வெறுமை PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
-	void set_device_id(uint32_t device_id, bool external);
-	bool set_offset(const float &offset);
+	தருக்க set_calibration_index(முழு calibration_index);
+	வெறுமை set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
+	வெறுமை set_device_id(uint32_t device_id, தருக்க external);
+	தருக்க set_offset(மாறிலி தசம &offset);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const float &thermal_offset() const { return _thermal_offset; }
+	தருக்க calibrated() மாறிலி { திரும்பு (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_மொத்தம்_2() மாறிலி { திரும்பு calibration_மொத்தம்; }
+	int8_t calibration_index() மாறிலி { திரும்பு _calibration_index; }
+	uint32_t device_id() மாறிலி { திரும்பு _device_id; }
+	தருக்க enabled() மாறிலி { திரும்பு (_priority > 0); }
+	தருக்க external() மாறிலி { திரும்பு _external; }
+	மாறிலி தசம &offset() மாறிலி { திரும்பு _offset; }
+	மாறிலி int32_t &priority() மாறிலி { திரும்பு _priority; }
+	மாறிலி தசம &thermal_offset() மாறிலி { திரும்பு _thermal_offset; }
 
 	// apply offsets
-	inline float Correct(const float &data) const
+	உள்வரி தசம Correct(மாறிலி தசம &data) மாறிலி
 	{
-		return data - _thermal_offset - _offset;
+		திரும்பு data - _thermal_offset - _offset;
 	}
 
-	inline float Uncorrect(const float &corrected_data) const
+	உள்வரி தசம Uncorrect(மாறிலி தசம &corrected_data) மாறிலி
 	{
-		return corrected_data + _thermal_offset + _offset;
+		திரும்பு corrected_data + _thermal_offset + _offset;
 	}
 
 	// Compute sensor offset from bias (board frame)
-	float BiasCorrectedSensorOffset(const float &bias) const
+	தசம BiasCorrectedSensorOffset(மாறிலி தசம &bias) மாறிலி
 	{
-		return bias + _thermal_offset + _offset;
+		திரும்பு bias + _thermal_offset + _offset;
 	}
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	தருக்க ParametersLoad();
+	தருக்க ParametersSave(முழு desired_calibration_index = -1, தருக்க force = பொய்);
+	வெறுமை ParametersUpdate();
 
-	void Reset();
+	வெறுமை Reset();
 
-	void SensorCorrectionsUpdate(bool force = false);
+	வெறுமை SensorCorrectionsUpdate(தருக்க force = பொய்);
 
-private:
+தனிப்பட்ட:
 	uORB::Subscription _sensor_correction_sub{ORB_ID(sensor_correction)};
 
-	float _offset{0};
-	float _thermal_offset{0};
+	தசம _offset{0};
+	தசம _thermal_offset{0};
 
 	int8_t _calibration_index{-1};
 	uint32_t _device_id{0};
 	int32_t _priority{-1};
 
-	bool _external{false};
+	தருக்க _external{பொய்};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_மொத்தம்{0};
 };
 } // namespace calibration

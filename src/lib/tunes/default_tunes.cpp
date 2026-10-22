@@ -35,21 +35,21 @@
  * @file default_tunes.cpp
  */
 
-#include "tunes.h"
+#அந்தர்பாவ "tunes.h"
 
 #define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) tune,
 // Initialize default tunes
-const char *const Tunes::_default_tunes[] = {
-#include "tune_definition.desc"
+மாறிலி எழுத்து *மாறிலி Tunes::_default_tunes[] = {
+#அந்தர்பாவ "tune_definition.desc"
 };
 #undef PX4_DEFINE_TUNE
 
 #define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) interruptable,
 // Initialize default tunes
-const bool Tunes::_default_tunes_interruptable[] = {
-#include "tune_definition.desc"
+மாறிலி தருக்க Tunes::_default_tunes_interruptable[] = {
+#அந்தர்பாவ "tune_definition.desc"
 };
 #undef PX4_DEFINE_TUNE
 
 // set default_tunes array size
-const unsigned int Tunes::_default_tunes_size =  sizeof(_default_tunes) / sizeof(_default_tunes[0]);
+மாறிலி unsigned முழு Tunes::_default_tunes_size =  அளவு(_default_tunes) / அளவு(_default_tunes[0]);

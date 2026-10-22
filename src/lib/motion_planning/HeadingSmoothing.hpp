@@ -33,9 +33,9 @@
 
 #pragma once
 
-#include <float.h>
-#include <matrix/matrix/helper_functions.hpp>
-#include "VelocitySmoothing.hpp"
+#அந்தர்பாவ <float.h>
+#அந்தர்பாவ <matrix/matrix/helper_functions.hpp>
+#அந்தர்பாவ "VelocitySmoothing.hpp"
 
 /**
  * @brief Wrapper class for smoothing heading via maximum angular acceleration limited trajectories.
@@ -51,17 +51,17 @@
  *
  * Use the getters to retrieve the current smoothed setpoints.
  */
-class HeadingSmoothing
+வகுப்பு HeadingSmoothing
 {
-public:
+பொது:
 	HeadingSmoothing();
-	~HeadingSmoothing() = default;
+	~HeadingSmoothing() = இயல்பு;
 
 	/** @param max_heading_rate [rad/s] */
-	void setMaxHeadingRate(const float max_heading_rate) { _velocity_smoothing.setMaxAccel(max_heading_rate); }
+	வெறுமை setMaxHeadingRate(மாறிலி தசம max_heading_rate) { _velocity_smoothing.setMaxAccel(max_heading_rate); }
 
 	/** @param max_heading_accel [rad/s^2] */
-	void setMaxHeadingAccel(const float max_heading_accel) { _velocity_smoothing.setMaxJerk(max_heading_accel); }
+	வெறுமை setMaxHeadingAccel(மாறிலி தசம max_heading_accel) { _velocity_smoothing.setMaxJerk(max_heading_accel); }
 
 	/**
 	 * @brief resets internal trajectory states, handles heading wrap
@@ -69,7 +69,7 @@ public:
 	 * @param heading [rad] [-pi,pi]
 	 * @param heading_rate [rad/s]
 	 */
-	void reset(const float heading, const float heading_rate = NAN);
+	வெறுமை reset(மாறிலி தசம heading, மாறிலி தசம heading_rate = NAN);
 
 	/**
 	 * @brief updates the heading setpoint, re-calculates trajectory, and takes an integration step
@@ -77,14 +77,14 @@ public:
 	 * @param heading_setpoint [rad]
 	 * @param time_elapsed [s]
 	 */
-	void update(const float heading_setpoint, const float time_elapsed);
+	வெறுமை update(மாறிலி தசம heading_setpoint, மாறிலி தசம time_elapsed);
 
 	/** @return [rad] [-pi,pi] smoothed heading setpoint to retreive after update */
-	float getSmoothedHeading() const { return _velocity_smoothing.getCurrentVelocity(); }
+	தசம getSmoothedHeading() மாறிலி { திரும்பு _velocity_smoothing.getCurrentVelocity(); }
 
 	/** @return [rad/s] smoothed heading rate setpoint to retreive after update */
-	float getSmoothedHeadingRate() const { return _velocity_smoothing.getCurrentAcceleration(); }
+	தசம getSmoothedHeadingRate() மாறிலி { திரும்பு _velocity_smoothing.getCurrentAcceleration(); }
 
-private:
+தனிப்பட்ட:
 	VelocitySmoothing _velocity_smoothing;
 };

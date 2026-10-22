@@ -8,82 +8,82 @@
 
 #pragma once
 
-#include <cmath>
-#include <cstdio>
-#include <cstring>
+#அந்தர்பாவ <cmath>
+#அந்தர்பாவ <cstdio>
+#அந்தர்பாவ <cstring>
 
-#include "helper_functions.hpp"
-#include "Slice.hpp"
+#அந்தர்பாவ "helper_functions.hpp"
+#அந்தர்பாவ "Slice.hpp"
 
-namespace matrix
+நாமாகாஶ matrix
 {
 
 template<typename Type, size_t M, size_t N>
-class Matrix
+வகுப்பு Matrix
 {
 	Type _data[M][N] {};
 
-public:
+பொது:
 
 	// Constructors
-	Matrix() = default;
+	Matrix() = இயல்பு;
 
-	explicit Matrix(const Type data_[M * N])
+	explicit Matrix(மாறிலி Type data_[M * N])
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				_data[i][j] = data_[N * i + j];
 			}
 		}
 	}
 
-	explicit Matrix(const Type data_[M][N])
+	explicit Matrix(மாறிலி Type data_[M][N])
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				_data[i][j] = data_[i][j];
 			}
 		}
 	}
 
-	Matrix(const Matrix &other)
+	Matrix(மாறிலி Matrix &other)
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				_data[i][j] = other(i, j);
 			}
 		}
 	}
 
 	template<typename S>
-	Matrix(const Matrix<S, M, N> &aa)
+	Matrix(மாறிலி Matrix<S, M, N> &aa)
 	{
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				_data[i][j] = static_cast<Type>(aa(i, j));
 			}
 		}
 	}
 
 	template<size_t P, size_t Q>
-	Matrix(const Slice<Type, M, N, P, Q> &in_slice)
+	Matrix(மாறிலி Slice<Type, M, N, P, Q> &in_slice)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				self(i, j) = in_slice(i, j);
 			}
 		}
 	}
 
 	template<size_t P, size_t Q>
-	Matrix(const ConstSlice<Type, M, N, P, Q> &in_slice)
+	Matrix(மாறிலி ConstSlice<Type, M, N, P, Q> &in_slice)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				self(i, j) = in_slice(i, j);
 			}
 		}
@@ -94,54 +94,54 @@ public:
 	 */
 
 
-	inline const Type &operator()(size_t i, size_t j) const
+	உள்வரி மாறிலி Type &operator()(size_t i, size_t j) மாறிலி
 	{
-		assert(i < M);
-		assert(j < N);
+		ப்ரதிஜ்ஞா(i < M);
+		ப்ரதிஜ்ஞா(j < N);
 
-		return _data[i][j];
+		திரும்பு _data[i][j];
 	}
 
-	inline Type &operator()(size_t i, size_t j)
+	உள்வரி Type &operator()(size_t i, size_t j)
 	{
-		assert(i < M);
-		assert(j < N);
+		ப்ரதிஜ்ஞா(i < M);
+		ப்ரதிஜ்ஞா(j < N);
 
-		return _data[i][j];
+		திரும்பு _data[i][j];
 	}
 
-	Matrix<Type, M, N> &operator=(const Matrix<Type, M, N> &other)
+	Matrix<Type, M, N> &operator=(மாறிலி Matrix<Type, M, N> &other)
 	{
-		if (this != &other) {
-			Matrix<Type, M, N> &self = *this;
+		எனில் (இது != &other) {
+			Matrix<Type, M, N> &self = *இது;
 
-			for (size_t i = 0; i < M; i++) {
-				for (size_t j = 0; j < N; j++) {
+			க்கு (size_t i = 0; i < M; i++) {
+				க்கு (size_t j = 0; j < N; j++) {
 					self(i, j) = other(i, j);
 				}
 			}
 		}
 
-		return (*this);
+		திரும்பு (*இது);
 	}
 
-	void copyTo(Type dst[M * N]) const
+	வெறுமை copyTo(Type dst[M * N]) மாறிலி
 	{
-		const Matrix<Type, M, N> &self = *this;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				dst[N * i + j] = self(i, j);
 			}
 		}
 	}
 
-	void copyToColumnMajor(Type dst[M * N]) const
+	வெறுமை copyToColumnMajor(Type dst[M * N]) மாறிலி
 	{
-		const Matrix<Type, M, N> &self = *this;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				dst[i + (j * M)] = self(i, j);
 			}
 		}
@@ -156,139 +156,139 @@ public:
 	// required mult pair, but it provides
 	// compile time size_t checking
 	template<size_t P>
-	Matrix<Type, M, P> operator*(const Matrix<Type, N, P> &other) const
+	Matrix<Type, M, P> operator*(மாறிலி Matrix<Type, N, P> &other) மாறிலி
 	{
-		const Matrix<Type, M, N> &self = *this;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
 		Matrix<Type, M, P> res{};
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t k = 0; k < P; k++) {
-				for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t k = 0; k < P; k++) {
+				க்கு (size_t j = 0; j < N; j++) {
 					res(i, k) += self(i, j) * other(j, k);
 				}
 			}
 		}
 
-		return res;
+		திரும்பு res;
 	}
 
 	// Using this function reduces the number of temporary variables needed to compute A * B.T
 	template<size_t P>
-	Matrix<Type, M, M> multiplyByTranspose(const Matrix<Type, P, N> &other) const
+	Matrix<Type, M, M> multiplyByTranspose(மாறிலி Matrix<Type, P, N> &other) மாறிலி
 	{
 		Matrix<Type, M, P> res;
-		const Matrix<Type, M, N> &self = *this;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t k = 0; k < P; k++) {
-				for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t k = 0; k < P; k++) {
+				க்கு (size_t j = 0; j < N; j++) {
 					res(i, k) += self(i, j) * other(k, j);
 				}
 			}
 		}
 
-		return res;
+		திரும்பு res;
 	}
 
 	// Element-wise multiplication
-	Matrix<Type, M, N> emult(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> emult(மாறிலி Matrix<Type, M, N> &other) மாறிலி
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) * other(i, j);
 			}
 		}
 
-		return res;
+		திரும்பு res;
 	}
 
 	// Element-wise division
-	Matrix<Type, M, N> edivide(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> edivide(மாறிலி Matrix<Type, M, N> &other) மாறிலி
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) / other(i, j);
 			}
 		}
 
-		return res;
+		திரும்பு res;
 	}
 
-	Matrix<Type, M, N> operator+(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> operator+(மாறிலி Matrix<Type, M, N> &other) மாறிலி
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) + other(i, j);
 			}
 		}
 
-		return res;
+		திரும்பு res;
 	}
 
-	Matrix<Type, M, N> operator-(const Matrix<Type, M, N> &other) const
+	Matrix<Type, M, N> operator-(மாறிலி Matrix<Type, M, N> &other) மாறிலி
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) - other(i, j);
 			}
 		}
 
-		return res;
+		திரும்பு res;
 	}
 
 	// unary minus
-	Matrix<Type, M, N> operator-() const
+	Matrix<Type, M, N> operator-() மாறிலி
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				res(i, j) = -self(i, j);
 			}
 		}
 
-		return res;
+		திரும்பு res;
 	}
 
-	void operator+=(const Matrix<Type, M, N> &other)
+	வெறுமை operator+=(மாறிலி Matrix<Type, M, N> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
 	}
 
-	void operator-=(const Matrix<Type, M, N> &other)
+	வெறுமை operator-=(மாறிலி Matrix<Type, M, N> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
 	}
 
 	template<size_t P>
-	void operator*=(const Matrix<Type, N, P> &other)
+	வெறுமை operator*=(மாறிலி Matrix<Type, N, P> &other)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *இது;
 		self = self * other;
 	}
 
@@ -296,114 +296,114 @@ public:
 	 * Scalar Operations
 	 */
 
-	Matrix<Type, M, N> operator*(Type scalar) const
+	Matrix<Type, M, N> operator*(Type scalar) மாறிலி
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) * scalar;
 			}
 		}
 
-		return res;
+		திரும்பு res;
 	}
 
-	inline Matrix<Type, M, N> operator/(Type scalar) const
+	உள்வரி Matrix<Type, M, N> operator/(Type scalar) மாறிலி
 	{
-		return (*this) * (1 / scalar);
+		திரும்பு (*இது) * (1 / scalar);
 	}
 
-	Matrix<Type, M, N> operator+(Type scalar) const
+	Matrix<Type, M, N> operator+(Type scalar) மாறிலி
 	{
 		Matrix<Type, M, N> res;
-		const Matrix<Type, M, N> &self = *this;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				res(i, j) = self(i, j) + scalar;
 			}
 		}
 
-		return res;
+		திரும்பு res;
 	}
 
-	inline Matrix<Type, M, N> operator-(Type scalar) const
+	உள்வரி Matrix<Type, M, N> operator-(Type scalar) மாறிலி
 	{
-		return (*this) + (-1 * scalar);
+		திரும்பு (*இது) + (-1 * scalar);
 	}
 
-	void operator*=(Type scalar)
+	வெறுமை operator*=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				self(i, j) *= scalar;
 			}
 		}
 	}
 
-	void operator/=(Type scalar)
+	வெறுமை operator/=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *இது;
 		self *= (Type(1) / scalar);
 	}
 
-	inline void operator+=(Type scalar)
+	உள்வரி வெறுமை operator+=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				self(i, j) += scalar;
 			}
 		}
 	}
 
-	inline void operator-=(Type scalar)
+	உள்வரி வெறுமை operator-=(Type scalar)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *இது;
 		self += (-scalar);
 	}
 
-	bool operator==(const Matrix<Type, M, N> &other) const
+	தருக்க operator==(மாறிலி Matrix<Type, M, N> &other) மாறிலி
 	{
-		return isEqual(*this, other);
+		திரும்பு isEqual(*இது, other);
 	}
 
-	bool operator!=(const Matrix<Type, M, N> &other) const
+	தருக்க operator!=(மாறிலி Matrix<Type, M, N> &other) மாறிலி
 	{
-		const Matrix<Type, M, N> &self = *this;
-		return !(self == other);
+		மாறிலி Matrix<Type, M, N> &self = *இது;
+		திரும்பு !(self == other);
 	}
 
 	/**
 	 * Misc. Functions
 	 */
 
-	void write_string(char *buf, size_t n) const
+	வெறுமை write_string(எழுத்து *buf, size_t n) மாறிலி
 	{
 		buf[0] = '\0'; // make an empty string to begin with (we need the '\0' for strlen to work)
-		const Matrix<Type, M, N> &self = *this;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				snprintf(buf + strlen(buf), n - strlen(buf), "\t%8.8g", double(self(i, j))); // directly append to the string buffer
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
+				snprintf(buf + strlen(buf), n - strlen(buf), "\t%8.8g", இரட்டை(self(i, j))); // directly append to the string buffer
 			}
 
 			snprintf(buf + strlen(buf), n - strlen(buf), "\n");
 		}
 	}
 
-	void print(float eps = 1e-9) const
+	வெறுமை print(தசம eps = 1e-9) மாறிலி
 	{
 		// print column numbering
-		if (N > 1) {
+		எனில் (N > 1) {
 			printf("  ");
 
-			for (unsigned i = 0; i < N; i++) {
+			க்கு (unsigned i = 0; i < N; i++) {
 				printf("|%2u      ", i);
 
 			}
@@ -411,36 +411,36 @@ public:
 			printf("\n");
 		}
 
-		const Matrix<Type, M, N> &self = *this;
-		bool is_prev_symmetric = true; // assume symmetric until one element is not
+		மாறிலி Matrix<Type, M, N> &self = *இது;
+		தருக்க is_prev_symmetric = உண்மை; // assume symmetric until one element is not
 
-		for (unsigned i = 0; i < M; i++) {
+		க்கு (unsigned i = 0; i < M; i++) {
 			printf("%2u|", i); // print row numbering
 
-			for (unsigned j = 0; j < N; j++) {
-				double d = static_cast<double>(self(i, j));
+			க்கு (unsigned j = 0; j < N; j++) {
+				இரட்டை d = static_cast<இரட்டை>(self(i, j));
 
 				// if symmetric don't print upper triangular elements
-				if (is_prev_symmetric && (M == N) && (j > i) && (i < N) && (j < M)
-				    && (fabs(d - static_cast<double>(self(j, i))) < (double)eps)
+				எனில் (is_prev_symmetric && (M == N) && (j > i) && (i < N) && (j < M)
+				    && (fabs(d - static_cast<இரட்டை>(self(j, i))) < (இரட்டை)eps)
 				   ) {
 					// print empty space
 					printf("         ");
 
-				} else {
+				} இல்லையெனில் {
 					// avoid -0.0 for display
-					if (fabs(d - 0.0) < (double)eps) {
+					எனில் (fabs(d - 0.0) < (இரட்டை)eps) {
 						// print fixed width zero
 						printf(" 0       ");
 
-					} else if ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
+					} இல்லையெனில் எனில் ((fabs(d) < 1e-4) || (fabs(d) >= 10.0)) {
 						printf("% .1e ", d);
 
-					} else {
+					} இல்லையெனில் {
 						printf("% 6.5f ", d);
 					}
 
-					is_prev_symmetric = false; // not symmetric if once inside here
+					is_prev_symmetric = பொய்; // not symmetric if once inside here
 				}
 			}
 
@@ -448,250 +448,250 @@ public:
 		}
 	}
 
-	Matrix<Type, N, M> transpose() const
+	Matrix<Type, N, M> transpose() மாறிலி
 	{
 		Matrix<Type, N, M> res;
-		const Matrix<Type, M, N> &self = *this;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				res(j, i) = self(i, j);
 			}
 		}
 
-		return res;
+		திரும்பு res;
 	}
 
 	// tranpose alias
-	inline Matrix<Type, N, M> T() const
+	உள்வரி Matrix<Type, N, M> T() மாறிலி
 	{
-		return transpose();
+		திரும்பு transpose();
 	}
 
 	template<size_t P, size_t Q>
-	ConstSlice<Type, P, Q, M, N> slice(size_t x0, size_t y0) const
+	ConstSlice<Type, P, Q, M, N> slice(size_t x0, size_t y0) மாறிலி
 	{
-		return {x0, y0, this};
+		திரும்பு {x0, y0, இது};
 	}
 
 	template<size_t P, size_t Q>
 	Slice<Type, P, Q, M, N> slice(size_t x0, size_t y0)
 	{
-		return {x0, y0, this};
+		திரும்பு {x0, y0, இது};
 	}
 
-	ConstSlice<Type, 1, N, M, N> row(size_t i) const
+	ConstSlice<Type, 1, N, M, N> row(size_t i) மாறிலி
 	{
-		return slice<1, N>(i, 0);
+		திரும்பு slice<1, N>(i, 0);
 	}
 
 	Slice<Type, 1, N, M, N> row(size_t i)
 	{
-		return slice<1, N>(i, 0);
+		திரும்பு slice<1, N>(i, 0);
 	}
 
-	ConstSlice<Type, M, 1, M, N> col(size_t j) const
+	ConstSlice<Type, M, 1, M, N> col(size_t j) மாறிலி
 	{
-		return slice<M, 1>(0, j);
+		திரும்பு slice<M, 1>(0, j);
 	}
 
 	Slice<Type, M, 1, M, N> col(size_t j)
 	{
-		return slice<M, 1>(0, j);
+		திரும்பு slice<M, 1>(0, j);
 	}
 
-	void setRow(size_t i, const Matrix<Type, N, 1> &row_in)
+	வெறுமை setRow(size_t i, மாறிலி Matrix<Type, N, 1> &row_in)
 	{
 		slice<1, N>(i, 0) = row_in.transpose();
 	}
 
-	void setRow(size_t i, Type val)
+	வெறுமை setRow(size_t i, Type val)
 	{
 		slice<1, N>(i, 0) = val;
 	}
 
-	void setCol(size_t j, const Matrix<Type, M, 1> &column)
+	வெறுமை setCol(size_t j, மாறிலி Matrix<Type, M, 1> &column)
 	{
 		slice<M, 1>(0, j) = column;
 	}
 
-	void setCol(size_t j, Type val)
+	வெறுமை setCol(size_t j, Type val)
 	{
 		slice<M, 1>(0, j) = val;
 	}
 
-	void setZero()
+	வெறுமை setZero()
 	{
-		memset(_data, 0, sizeof(_data));
+		memset(_data, 0, அளவு(_data));
 	}
 
-	inline void zero()
+	உள்வரி வெறுமை zero()
 	{
 		setZero();
 	}
 
-	void setAll(Type val)
+	வெறுமை setAll(Type val)
 	{
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				self(i, j) = val;
 			}
 		}
 	}
 
-	inline void setOne()
+	உள்வரி வெறுமை setOne()
 	{
 		setAll(1);
 	}
 
-	inline void setNaN()
+	உள்வரி வெறுமை setNaN()
 	{
 		setAll(NAN);
 	}
 
-	void setIdentity()
+	வெறுமை setIdentity()
 	{
 		setZero();
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *இது;
 
-		const size_t min_i = M > N ? N : M;
+		மாறிலி size_t min_i = M > N ? N : M;
 
-		for (size_t i = 0; i < min_i; i++) {
+		க்கு (size_t i = 0; i < min_i; i++) {
 			self(i, i) = 1;
 		}
 	}
 
-	inline void identity()
+	உள்வரி வெறுமை identity()
 	{
 		setIdentity();
 	}
 
-	inline void swapRows(size_t a, size_t b)
+	உள்வரி வெறுமை swapRows(size_t a, size_t b)
 	{
-		assert(a < M);
-		assert(b < M);
+		ப்ரதிஜ்ஞா(a < M);
+		ப்ரதிஜ்ஞா(b < M);
 
-		if (a == b) {
-			return;
+		எனில் (a == b) {
+			திரும்பு;
 		}
 
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *இது;
 
-		for (size_t j = 0; j < N; j++) {
+		க்கு (size_t j = 0; j < N; j++) {
 			Type tmp = self(a, j);
 			self(a, j) = self(b, j);
 			self(b, j) = tmp;
 		}
 	}
 
-	inline void swapCols(size_t a, size_t b)
+	உள்வரி வெறுமை swapCols(size_t a, size_t b)
 	{
-		assert(a < N);
-		assert(b < N);
+		ப்ரதிஜ்ஞா(a < N);
+		ப்ரதிஜ்ஞா(b < N);
 
-		if (a == b) {
-			return;
+		எனில் (a == b) {
+			திரும்பு;
 		}
 
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
+		க்கு (size_t i = 0; i < M; i++) {
 			Type tmp = self(i, a);
 			self(i, a) = self(i, b);
 			self(i, b) = tmp;
 		}
 	}
 
-	inline void nanToZero()
+	உள்வரி வெறுமை nanToZero()
 	{
 
-		Matrix<Type, M, N> &self = *this;
+		Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				if (std::isnan(self(i, j))) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
+				எனில் (std::isnan(self(i, j))) {
 					self(i, j) = static_cast<Type>(0.0f);
 				}
 			}
 		}
 	}
 
-	Matrix<Type, M, N> abs() const
+	Matrix<Type, M, N> abs() மாறிலி
 	{
 		Matrix<Type, M, N> r;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				r(i, j) = Type(std::fabs((*this)(i, j)));
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
+				r(i, j) = Type(std::fabs((*இது)(i, j)));
 			}
 		}
 
-		return r;
+		திரும்பு r;
 	}
 
-	Type max() const
+	Type max() மாறிலி
 	{
-		Type max_val = (*this)(0, 0);
+		Type max_val = (*இது)(0, 0);
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				Type val = (*this)(i, j);
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
+				Type val = (*இது)(i, j);
 
-				if (val > max_val) {
+				எனில் (val > max_val) {
 					max_val = val;
 				}
 			}
 		}
 
-		return max_val;
+		திரும்பு max_val;
 	}
 
-	Type min() const
+	Type min() மாறிலி
 	{
-		Type min_val = (*this)(0, 0);
+		Type min_val = (*இது)(0, 0);
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				Type val = (*this)(i, j);
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
+				Type val = (*இது)(i, j);
 
-				if (val < min_val) {
+				எனில் (val < min_val) {
 					min_val = val;
 				}
 			}
 		}
 
-		return min_val;
+		திரும்பு min_val;
 	}
 
-	bool isAllNan() const
+	தருக்க isAllNan() மாறிலி
 	{
-		const Matrix<Type, M, N> &self = *this;
-		bool result = true;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
+		தருக்க result = உண்மை;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				result = result && std::isnan(self(i, j));
 			}
 		}
 
-		return result;
+		திரும்பு result;
 	}
 
-	bool isAllFinite() const
+	தருக்க isAllFinite() மாறிலி
 	{
-		const Matrix<Type, M, N> &self = *this;
+		மாறிலி Matrix<Type, M, N> &self = *இது;
 
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
-				if (!std::isfinite(self(i, j))) {
-					return false;
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
+				எனில் (!std::isfinite(self(i, j))) {
+					திரும்பு பொய்;
 				}
 			}
 		}
 
-		return true;
+		திரும்பு உண்மை;
 	}
 };
 
@@ -700,7 +700,7 @@ Matrix<Type, M, N> zeros()
 {
 	Matrix<Type, M, N> m;
 	m.setZero();
-	return m;
+	திரும்பு m;
 }
 
 template<typename Type, size_t M, size_t N>
@@ -708,208 +708,208 @@ Matrix<Type, M, N> ones()
 {
 	Matrix<Type, M, N> m;
 	m.setOne();
-	return m;
+	திரும்பு m;
 }
 
 template<size_t M, size_t N>
-Matrix<float, M, N> nans()
+Matrix<தசம, M, N> nans()
 {
-	Matrix<float, M, N> m;
+	Matrix<தசம, M, N> m;
 	m.setNaN();
-	return m;
+	திரும்பு m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> operator*(Type scalar, const Matrix<Type, M, N> &other)
+Matrix<Type, M, N> operator*(Type scalar, மாறிலி Matrix<Type, M, N> &other)
 {
-	return other * scalar;
+	திரும்பு other * scalar;
 }
 
 template<typename Type, size_t  M, size_t N>
-bool isEqual(const Matrix<Type, M, N> &x,
-	     const Matrix<Type, M, N> &y, const Type eps = Type(1e-4f))
+தருக்க isEqual(மாறிலி Matrix<Type, M, N> &x,
+	     மாறிலி Matrix<Type, M, N> &y, மாறிலி Type eps = Type(1e-4f))
 {
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
-			if (!isEqualF(x(i, j), y(i, j), eps)) {
-				return false;
+	க்கு (size_t i = 0; i < M; i++) {
+		க்கு (size_t j = 0; j < N; j++) {
+			எனில் (!isEqualF(x(i, j), y(i, j), eps)) {
+				திரும்பு பொய்;
 			}
 		}
 	}
 
-	return true;
+	திரும்பு உண்மை;
 }
 
-namespace typeFunction
+நாமாகாஶ typeFunction
 {
 template<typename Type>
-Type min(const Type x, const Type y)
+Type min(மாறிலி Type x, மாறிலி Type y)
 {
-	bool x_is_nan = std::isnan(x);
-	bool y_is_nan = std::isnan(y);
+	தருக்க x_is_nan = std::isnan(x);
+	தருக்க y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	எனில் (x_is_nan || y_is_nan) {
+		எனில் (x_is_nan && !y_is_nan) {
+			திரும்பு y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		திரும்பு x;
 	}
 
-	return (x < y) ? x : y;
+	திரும்பு (x < y) ? x : y;
 }
 
 template<typename Type>
-Type max(const Type x, const Type y)
+Type max(மாறிலி Type x, மாறிலி Type y)
 {
-	bool x_is_nan = std::isnan(x);
-	bool y_is_nan = std::isnan(y);
+	தருக்க x_is_nan = std::isnan(x);
+	தருக்க y_is_nan = std::isnan(y);
 
 	// take the non-nan value if there is one
-	if (x_is_nan || y_is_nan) {
-		if (x_is_nan && !y_is_nan) {
-			return y;
+	எனில் (x_is_nan || y_is_nan) {
+		எனில் (x_is_nan && !y_is_nan) {
+			திரும்பு y;
 		}
 
 		// either !x_is_nan && y_is_nan or both are NAN anyways
-		return x;
+		திரும்பு x;
 	}
 
-	return (x > y) ? x : y;
+	திரும்பு (x > y) ? x : y;
 }
 
 template<typename Type>
-Type constrain(const Type x, const Type lower_bound, const Type upper_bound)
+Type constrain(மாறிலி Type x, மாறிலி Type lower_bound, மாறிலி Type upper_bound)
 {
-	if (lower_bound > upper_bound) {
-		return NAN;
+	எனில் (lower_bound > upper_bound) {
+		திரும்பு NAN;
 
-	} else if (std::isnan(x)) {
-		return NAN;
+	} இல்லையெனில் எனில் (std::isnan(x)) {
+		திரும்பு NAN;
 
-	} else {
-		return typeFunction::max(lower_bound, typeFunction::min(upper_bound, x));
+	} இல்லையெனில் {
+		திரும்பு typeFunction::max(lower_bound, typeFunction::min(upper_bound, x));
 	}
 }
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Matrix<Type, M, N> &x, const Type scalar_upper_bound)
+Matrix<Type, M, N> min(மாறிலி Matrix<Type, M, N> &x, மாறிலி Type scalar_upper_bound)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	க்கு (size_t i = 0; i < M; i++) {
+		க்கு (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::min(x(i, j), scalar_upper_bound);
 		}
 	}
 
-	return m;
+	திரும்பு m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Type scalar_upper_bound, const Matrix<Type, M, N> &x)
+Matrix<Type, M, N> min(மாறிலி Type scalar_upper_bound, மாறிலி Matrix<Type, M, N> &x)
 {
-	return min(x, scalar_upper_bound);
+	திரும்பு min(x, scalar_upper_bound);
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> min(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x2)
+Matrix<Type, M, N> min(மாறிலி Matrix<Type, M, N> &x1, மாறிலி Matrix<Type, M, N> &x2)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	க்கு (size_t i = 0; i < M; i++) {
+		க்கு (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::min(x1(i, j), x2(i, j));
 		}
 	}
 
-	return m;
+	திரும்பு m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Matrix<Type, M, N> &x, const Type scalar_lower_bound)
+Matrix<Type, M, N> max(மாறிலி Matrix<Type, M, N> &x, மாறிலி Type scalar_lower_bound)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	க்கு (size_t i = 0; i < M; i++) {
+		க்கு (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::max(x(i, j), scalar_lower_bound);
 		}
 	}
 
-	return m;
+	திரும்பு m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Type scalar_lower_bound, const Matrix<Type, M, N> &x)
+Matrix<Type, M, N> max(மாறிலி Type scalar_lower_bound, மாறிலி Matrix<Type, M, N> &x)
 {
-	return max(x, scalar_lower_bound);
+	திரும்பு max(x, scalar_lower_bound);
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> max(const Matrix<Type, M, N> &x1, const Matrix<Type, M, N> &x2)
+Matrix<Type, M, N> max(மாறிலி Matrix<Type, M, N> &x1, மாறிலி Matrix<Type, M, N> &x2)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	க்கு (size_t i = 0; i < M; i++) {
+		க்கு (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::max(x1(i, j), x2(i, j));
 		}
 	}
 
-	return m;
+	திரும்பு m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
-			     const Type scalar_lower_bound,
-			     const Type scalar_upper_bound)
+Matrix<Type, M, N> constrain(மாறிலி Matrix<Type, M, N> &x,
+			     மாறிலி Type scalar_lower_bound,
+			     மாறிலி Type scalar_upper_bound)
 {
 	Matrix<Type, M, N> m;
 
-	if (scalar_lower_bound > scalar_upper_bound) {
+	எனில் (scalar_lower_bound > scalar_upper_bound) {
 		m.setNaN();
 
-	} else {
-		for (size_t i = 0; i < M; i++) {
-			for (size_t j = 0; j < N; j++) {
+	} இல்லையெனில் {
+		க்கு (size_t i = 0; i < M; i++) {
+			க்கு (size_t j = 0; j < N; j++) {
 				m(i, j) = typeFunction::constrain(x(i, j), scalar_lower_bound, scalar_upper_bound);
 			}
 		}
 	}
 
-	return m;
+	திரும்பு m;
 }
 
 template<typename Type, size_t  M, size_t N>
-Matrix<Type, M, N> constrain(const Matrix<Type, M, N> &x,
-			     const Matrix<Type, M, N> &x_lower_bound,
-			     const Matrix<Type, M, N> &x_upper_bound)
+Matrix<Type, M, N> constrain(மாறிலி Matrix<Type, M, N> &x,
+			     மாறிலி Matrix<Type, M, N> &x_lower_bound,
+			     மாறிலி Matrix<Type, M, N> &x_upper_bound)
 {
 	Matrix<Type, M, N> m;
 
-	for (size_t i = 0; i < M; i++) {
-		for (size_t j = 0; j < N; j++) {
+	க்கு (size_t i = 0; i < M; i++) {
+		க்கு (size_t j = 0; j < N; j++) {
 			m(i, j) = typeFunction::constrain(x(i, j), x_lower_bound(i, j), x_upper_bound(i, j));
 		}
 	}
 
-	return m;
+	திரும்பு m;
 }
 
 template<typename OStream, typename Type, size_t M, size_t N>
-OStream &operator<<(OStream &os, const matrix::Matrix<Type, M, N> &matrix)
+OStream &operator<<(OStream &os, மாறிலி matrix::Matrix<Type, M, N> &matrix)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * N * M + M + 1;
-	char string[n];
+	எழுத்து string[n];
 	matrix.write_string(string, n);
 	os << string;
-	return os;
+	திரும்பு os;
 }
 
 } // namespace matrix

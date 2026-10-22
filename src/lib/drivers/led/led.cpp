@@ -37,11 +37,11 @@
  * LED driver to control the onboard LED(s) via ioctl interface.
  */
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/px4_config.h>
-#include <lib/cdev/CDev.hpp>
-#include <drivers/drv_board_led.h>
-#include <stdio.h>
+#அந்தர்பாவ <px4_platform_common/log.h>
+#அந்தர்பாவ <px4_platform_common/px4_config.h>
+#அந்தர்பாவ <lib/cdev/CDev.hpp>
+#அந்தர்பாவ <drivers/drv_board_led.h>
+#அந்தர்பாவ <stdio.h>
 
 /*
  * Ideally we'd be able to get these from arm_internal.h,
@@ -51,20 +51,20 @@
  * CONFIG_ARCH_LEDS configuration switch.
  */
 __BEGIN_DECLS
-extern void led_init();
-extern void led_on(int led);
-extern void led_off(int led);
-extern void led_toggle(int led);
+வெளி வெறுமை led_init();
+வெளி வெறுமை led_on(முழு led);
+வெளி வெறுமை led_off(முழு led);
+வெளி வெறுமை led_toggle(முழு led);
 __END_DECLS
 
-class LED : cdev::CDev
+வகுப்பு LED : cdev::CDev
 {
-public:
+பொது:
 	LED();
-	~LED() override = default;
+	~LED() override = இயல்பு;
 
-	int	init() override;
-	int	ioctl(cdev::file_t *filp, int cmd, unsigned long arg) override;
+	முழு	init() override;
+	முழு	ioctl(cdev::file_t *filp, முழு cmd, unsigned long arg) override;
 };
 
 LED::LED() : CDev(LED0_DEVICE_PATH)
@@ -73,7 +73,7 @@ LED::LED() : CDev(LED0_DEVICE_PATH)
 	init();
 }
 
-int
+முழு
 LED::init()
 {
 	PX4_DEBUG("LED::init");
@@ -82,43 +82,43 @@ LED::init()
 
 	led_init();
 
-	return 0;
+	திரும்பு 0;
 }
 
-int
-LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
+முழு
+LED::ioctl(cdev::file_t *filp, முழு cmd, unsigned long arg)
 {
-	int result = OK;
+	முழு result = OK;
 
-	switch (cmd) {
-	case LED_ON:
+	தேர்வு (cmd) {
+	நிலை LED_ON:
 		led_on(arg);
-		break;
+		நிறுத்து;
 
-	case LED_OFF:
+	நிலை LED_OFF:
 		led_off(arg);
-		break;
+		நிறுத்து;
 
-	case LED_TOGGLE:
+	நிலை LED_TOGGLE:
 		led_toggle(arg);
-		break;
+		நிறுத்து;
 
-	default:
+	இயல்பு:
 		result = CDev::ioctl(filp, cmd, arg);
 	}
 
-	return result;
+	திரும்பு result;
 }
 
-namespace
+நாமாகாஶ
 {
 LED	*gLED;
 }
 
-void
-drv_led_start(void)
+வெறுமை
+drv_led_start(வெறுமை)
 {
-	if (gLED == nullptr) {
-		gLED = new LED;
+	எனில் (gLED == nullptr) {
+		gLED = புதிய LED;
 	}
 }

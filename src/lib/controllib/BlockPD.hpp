@@ -39,47 +39,47 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#அந்தர்பாவ <px4_platform_common/defines.h>
+#அந்தர்பாவ <assert.h>
+#அந்தர்பாவ <time.h>
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <math.h>
+#அந்தர்பாவ <mathlib/math/test/test.hpp>
+#அந்தர்பாவ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#அந்தர்பாவ "block/Block.hpp"
+#அந்தர்பாவ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#அந்தர்பாவ "matrix/math.hpp"
 
-namespace control
+நாமாகாஶ control
 {
 
 /**
  * A proportional-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPD: public SuperBlock
+வகுப்பு __EXPORT BlockPD: பொது SuperBlock
 {
-public:
+பொது:
 // methods
-	BlockPD(SuperBlock *parent, const char *name) :
+	BlockPD(SuperBlock *parent, மாறிலி எழுத்து *name) :
 		SuperBlock(parent, name),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kD(this, "D")
+		_derivative(இது, "D"),
+		_kP(இது, "P"),
+		_kD(இது, "D")
 	{}
-	virtual ~BlockPD() = default;
-	float update(float input)
+	மெய்நிகர் ~BlockPD() = இயல்பு;
+	தசம update(தசம உள்ளீடு)
 	{
-		return getKP() * input +
-		       getKD() * getDerivative().update(input);
+		திரும்பு getKP() * உள்ளீடு +
+		       getKD() * getDerivative().update(உள்ளீடு);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKD() { return _kD.get(); }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
+	தசம getKP() { திரும்பு _kP.get(); }
+	தசம getKD() { திரும்பு _kD.get(); }
+	BlockDerivative &getDerivative() { திரும்பு _derivative; }
+தனிப்பட்ட:
 	BlockDerivative _derivative;
 	control::BlockParamFloat _kP;
 	control::BlockParamFloat _kD;

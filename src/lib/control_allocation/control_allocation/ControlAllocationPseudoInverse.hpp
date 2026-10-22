@@ -45,19 +45,19 @@
 
 #pragma once
 
-#include "ControlAllocation.hpp"
+#அந்தர்பாவ "ControlAllocation.hpp"
 
-class ControlAllocationPseudoInverse: public ControlAllocation
+வகுப்பு ControlAllocationPseudoInverse: பொது ControlAllocation
 {
-public:
-	ControlAllocationPseudoInverse() = default;
-	virtual ~ControlAllocationPseudoInverse() = default;
+பொது:
+	ControlAllocationPseudoInverse() = இயல்பு;
+	மெய்நிகர் ~ControlAllocationPseudoInverse() = இயல்பு;
 
-	void allocate() override;
-	void setEffectivenessMatrix(const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness,
-				    const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
-				    bool update_normalization_scale) override;
-	void setMetricAllocation(bool metric_allocation) { _metric_allocation = metric_allocation; }
+	வெறுமை allocate() override;
+	வெறுமை setEffectivenessMatrix(மாறிலி matrix::Matrix<தசம, இலக்கம்_AXES, இலக்கம்_ACTUATORS> &effectiveness,
+				    மாறிலி ActuatorVector &actuator_trim, மாறிலி ActuatorVector &linearization_point, முழு இலக்கம்_actuators,
+				    தருக்க update_normalization_scale) override;
+	வெறுமை setMetricAllocation(தருக்க metric_allocation) { _metric_allocation = metric_allocation; }
 
 	/**
 	 * Zero the rows of axes that are (nearly) dependent on higher-priority axes
@@ -66,29 +66,29 @@ public:
 	 *
 	 * @return bitmask over ControlAxis of the dropped axes
 	 */
-	static uint8_t dropDependentAxes(matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness);
+	நிலையான uint8_t dropDependentAxes(matrix::Matrix<தசம, இலக்கம்_AXES, இலக்கம்_ACTUATORS> &effectiveness);
 
-protected:
-	matrix::Matrix<float, NUM_ACTUATORS, NUM_AXES> _mix;
+பாதுகாக்கப்பட்ட:
+	matrix::Matrix<தசம, இலக்கம்_ACTUATORS, இலக்கம்_AXES> _mix;
 
-	bool _mix_update_needed{false};
-	bool _metric_allocation{false};
+	தருக்க _mix_update_needed{பொய்};
+	தருக்க _metric_allocation{பொய்};
 
 	/**
 	 * Recalculate pseudo inverse if required.
 	 *
 	 */
-	void updatePseudoInverse();
+	வெறுமை updatePseudoInverse();
 
-private:
+தனிப்பட்ட:
 	/**
 	 * Minimum independence for a control axis to be kept: squared norm of the unit axis row
 	 * after removing its projection onto the higher-priority axes (sin^2 of the angle to their
 	 * span, unit-free). 1e-2 (~5.7 deg) bounds the pseudo-inverse gain along the axis to ~10x.
 	 */
-	static constexpr float kMinAxisIndependence = 1e-2f;
+	நிலையான constexpr தசம kMinAxisIndependence = 1e-2f;
 
-	void normalizeControlAllocationMatrix();
-	void updateControlAllocationMatrixScale();
-	bool _normalization_needs_update{false};
+	வெறுமை normalizeControlAllocationMatrix();
+	வெறுமை updateControlAllocationMatrixScale();
+	தருக்க _normalization_needs_update{பொய்};
 };

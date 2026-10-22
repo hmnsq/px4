@@ -39,20 +39,20 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#அந்தர்பாவ <px4_platform_common/defines.h>
+#அந்தர்பாவ <assert.h>
+#அந்தர்பாவ <time.h>
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <math.h>
+#அந்தர்பாவ <mathlib/math/test/test.hpp>
+#அந்தர்பாவ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#அந்தர்பாவ "block/Block.hpp"
+#அந்தர்பாவ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#அந்தர்பாவ "matrix/math.hpp"
 
-namespace control
+நாமாகாஶ control
 {
 
 /**
@@ -60,19 +60,19 @@ namespace control
  * Same as limiter but with only a max, is used for
  * upper limit of +max, and lower limit of -max
  */
-class __EXPORT BlockLimitSym : public Block
+வகுப்பு __EXPORT BlockLimitSym : பொது Block
 {
-public:
+பொது:
 // methods
-	BlockLimitSym(SuperBlock *parent, const char *name) :
+	BlockLimitSym(SuperBlock *parent, மாறிலி எழுத்து *name) :
 		Block(parent, name),
-		_max(this, "MAX")
+		_max(இது, "MAX")
 	{}
-	virtual ~BlockLimitSym() = default;
-	float update(float input);
+	மெய்நிகர் ~BlockLimitSym() = இயல்பு;
+	தசம update(தசம உள்ளீடு);
 // accessors
-	float getMax() { return _max.get(); }
-protected:
+	தசம getMax() { திரும்பு _max.get(); }
+பாதுகாக்கப்பட்ட:
 // attributes
 	control::BlockParamFloat _max;
 };

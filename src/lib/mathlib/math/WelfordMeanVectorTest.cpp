@@ -31,32 +31,32 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <random>
-#include <lib/matrix/matrix/math.hpp>
-#include "WelfordMeanVector.hpp"
+#அந்தர்பாவ <gtest/gtest.h>
+#அந்தர்பாவ <random>
+#அந்தர்பாவ <lib/matrix/matrix/math.hpp>
+#அந்தர்பாவ "WelfordMeanVector.hpp"
 
-using namespace math;
+using நாமாகாஶ math;
 using matrix::Vector3f;
 
 TEST(WelfordMeanVectorTest, NoisySignal)
 {
-	const float std_dev = 3.f;
-	std::normal_distribution<float> standard_normal_distribution{0.f, std_dev};
+	மாறிலி தசம std_dev = 3.f;
+	std::normal_distribution<தசம> standard_normal_distribution{0.f, std_dev};
 	std::default_random_engine random_generator{}; // Pseudo-random generator with constant seed
 	random_generator.seed(42);
-	WelfordMeanVector<float, 3> welford{};
+	WelfordMeanVector<தசம, 3> welford{};
 
-	for (int i = 0; i < 1000; i++) {
-		const float noisy_value = standard_normal_distribution(random_generator);
-		welford.update(Vector3f(noisy_value, noisy_value - 1.f, noisy_value + 1.f));
+	க்கு (முழு i = 0; i < 1000; i++) {
+		மாறிலி தசம noisy_மதிப்பு = standard_normal_distribution(random_generator);
+		welford.update(Vector3f(noisy_மதிப்பு, noisy_மதிப்பு - 1.f, noisy_மதிப்பு + 1.f));
 	}
 
 	EXPECT_TRUE(welford.valid());
-	const Vector3f mean = welford.mean();
-	const Vector3f var = welford.variance();
+	மாறிலி Vector3f mean = welford.mean();
+	மாறிலி Vector3f var = welford.variance();
 
-	const float var_real = std_dev * std_dev;
+	மாறிலி தசம var_real = std_dev * std_dev;
 
 	EXPECT_NEAR(mean(0), 0.f, 0.7f);
 	EXPECT_NEAR(mean(1), -1.f, 0.7f);

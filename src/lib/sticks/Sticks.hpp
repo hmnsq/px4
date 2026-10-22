@@ -41,46 +41,46 @@
 
 #pragma once
 
-#include <px4_platform_common/module_params.h>
-#include <matrix/matrix/math.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/manual_control_setpoint.h>
-#include <uORB/topics/failsafe_flags.h>
+#அந்தர்பாவ <px4_platform_common/module_params.h>
+#அந்தர்பாவ <matrix/matrix/math.hpp>
+#அந்தர்பாவ <uORB/Subscription.hpp>
+#அந்தர்பாவ <uORB/topics/manual_control_setpoint.h>
+#அந்தர்பாவ <uORB/topics/failsafe_flags.h>
 
-class Sticks : public ModuleParams
+வகுப்பு Sticks : பொது ModuleParams
 {
-public:
+பொது:
 	Sticks(ModuleParams *parent);
-	~Sticks() = default;
+	~Sticks() = இயல்பு;
 
 	// Checks for updated manual control input & updates internal values
-	bool checkAndUpdateStickInputs();
+	தருக்க checkAndUpdateStickInputs();
 
-	bool isAvailable() { return _input_available; };
+	தருக்க isAvailable() { திரும்பு உள்ளீடு_available; };
 
 	// Helper functions to get stick values more intuitively
-	float getRoll() const { return _positions(0); }
-	float getPitch() const { return _positions(1); }
-	float getYaw() const { return _positions(2); }
-	float getThrottleZeroCentered() const { return _positions(3); }
+	தசம getRoll() மாறிலி { திரும்பு _positions(0); }
+	தசம getPitch() மாறிலி { திரும்பு _positions(1); }
+	தசம getYaw() மாறிலி { திரும்பு _positions(2); }
+	தசம getThrottleZeroCentered() மாறிலி { திரும்பு _positions(3); }
 
-	float getRollExpo(float expo = .6f) const { return expoDeadzone(getRoll(), expo, _param_man_deadzone.get()); }
-	float getPitchExpo(float expo = .6f) const { return expoDeadzone(getPitch(), expo, _param_man_deadzone.get()); }
-	float getYawExpo(float expo = .6f) const { return expoDeadzone(getYaw(), expo, _param_man_deadzone.get()); }
-	float getThrottleZeroCenteredExpo(float expo = .6f) const { return expoDeadzone(getThrottleZeroCentered(), expo, _param_man_deadzone.get()); }
+	தசம getRollExpo(தசம expo = .6f) மாறிலி { திரும்பு expoDeadzone(getRoll(), expo, _param_man_deadzone.get()); }
+	தசம getPitchExpo(தசம expo = .6f) மாறிலி { திரும்பு expoDeadzone(getPitch(), expo, _param_man_deadzone.get()); }
+	தசம getYawExpo(தசம expo = .6f) மாறிலி { திரும்பு expoDeadzone(getYaw(), expo, _param_man_deadzone.get()); }
+	தசம getThrottleZeroCenteredExpo(தசம expo = .6f) மாறிலி { திரும்பு expoDeadzone(getThrottleZeroCentered(), expo, _param_man_deadzone.get()); }
 
-	static float expoDeadzone(float value, float expo, float deadzone);
+	நிலையான தசம expoDeadzone(தசம value, தசம expo, தசம deadzone);
 
-	const matrix::Vector2f getPitchRoll() { return {getPitch(), getRoll()}; }
-	const matrix::Vector2f getPitchRollExpo() { return {getPitchExpo(), getRollExpo()}; }
+	மாறிலி matrix::Vector2f getPitchRoll() { திரும்பு {getPitch(), getRoll()}; }
+	மாறிலி matrix::Vector2f getPitchRollExpo() { திரும்பு {getPitchExpo(), getRollExpo()}; }
 
-	const matrix::Vector<float, 6> &getAux() const { return _aux_positions; }
+	மாறிலி matrix::Vector<தசம, 6> &getAux() மாறிலி { திரும்பு _aux_positions; }
 
 	/**
 	 * Limit the the horizontal input from a square shaped joystick gimbal to a unit circle
 	 * @param v Vector containing x, y, z axis of the joystick gimbal. x, y get adjusted
 	 */
-	static void limitStickUnitLengthXY(matrix::Vector2f &v);
+	நிலையான வெறுமை limitStickUnitLengthXY(matrix::Vector2f &v);
 
 	/**
 	 * Rotate horizontal component of joystick input into the vehicle body orientation
@@ -88,13 +88,13 @@ public:
 	 * @param yaw Current vehicle yaw heading
 	 * @param yaw_setpoint Current yaw setpoint if it's locked else NAN
 	 */
-	static void rotateIntoHeadingFrameXY(matrix::Vector2f &v, const float yaw, const float yaw_setpoint);
+	நிலையான வெறுமை rotateIntoHeadingFrameXY(matrix::Vector2f &v, மாறிலி தசம yaw, மாறிலி தசம yaw_setpoint);
 
-private:
-	bool _input_available{false};
+தனிப்பட்ட:
+	தருக்க உள்ளீடு_available{பொய்};
 	matrix::Vector4f _positions; ///< unmodified manual stick inputs roll, pitch, yaw ,throttle
 
-	matrix::Vector<float, 6> _aux_positions;
+	matrix::Vector<தசம, 6> _aux_positions;
 
 	uORB::Subscription _manual_control_setpoint_sub{ORB_ID(manual_control_setpoint)};
 	uORB::Subscription _failsafe_flags_sub{ORB_ID(failsafe_flags)};

@@ -32,12 +32,12 @@
 #
 ############################################################################
 
-import math
-import numpy
-import json
-import statistics
-import sys
-import urllib.request
+இறக்குமதி math
+இறக்குமதி numpy
+இறக்குமதி json
+இறக்குமதி statistics
+இறக்குமதி sys
+இறக்குமதி urllib.request
 
 SAMPLING_RES = 10
 SAMPLING_MIN_LAT = -90
@@ -46,7 +46,7 @@ SAMPLING_MIN_LON = -180
 SAMPLING_MAX_LON = 180
 
 def constrain(n, nmin, nmax):
-    return max(min(nmin, n), nmax)
+    திரும்பு max(min(nmin, n), nmax)
 
 header = """/****************************************************************************
  *
@@ -82,14 +82,14 @@ header = """/*******************************************************************
  ****************************************************************************/
 """
 
-key=sys.argv[1] # NOAA key (https://www.ngdc.noaa.gov/geomag/CalcSurvey.shtml)
+சாவி=sys.argv[1] # NOAA key (https://www.ngdc.noaa.gov/geomag/CalcSurvey.shtml)
 
 print(header)
 
 print('#include <stdint.h>\n')
 
-LAT_DIM=int((SAMPLING_MAX_LAT-SAMPLING_MIN_LAT)/SAMPLING_RES)+1
-LON_DIM=int((SAMPLING_MAX_LON-SAMPLING_MIN_LON)/SAMPLING_RES)+1
+LAT_DIM=முழு((SAMPLING_MAX_LAT-SAMPLING_MIN_LAT)/SAMPLING_RES)+1
+LON_DIM=முழு((SAMPLING_MAX_LON-SAMPLING_MIN_LON)/SAMPLING_RES)+1
 
 print('static constexpr float SAMPLING_RES = {}'.format(SAMPLING_RES) + ';')
 print('static constexpr float SAMPLING_MIN_LAT = {}'.format(SAMPLING_MIN_LAT) + ';')
@@ -109,95 +109,95 @@ print('// *INDENT-OFF*\n\n\n')
 world_magnitude_model = {} # lat/lon dictionary with grid result
 
 params = urllib.parse.urlencode({'lat1': 0, 'lon1': 0, 'resultFormat': 'json'})
-f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (key, params))
-data = json.loads(f.read())
+f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (சாவி, params))
+data = json.loads(f.பட())
 
 world_magnitude_model_units = data['units']
 
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+க்கு latitude உள் range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     world_magnitude_model[latitude] = {}
 
-    for longitude in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
+    க்கு longitude உள் range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
         params = urllib.parse.urlencode({'lat1': latitude, 'lon1': longitude, 'lon2': SAMPLING_MAX_LON, 'resultFormat': 'json'})
-        f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (key, params))
-        data = json.loads(f.read())
+        f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (சாவி, params))
+        data = json.loads(f.பட())
         #print(json.dumps(data, indent = 4)) # debugging
 
         world_magnitude_model[latitude][longitude] = data['result'][0]
         #print(world_magnitude_model[latitude][longitude])
 
 
-def print_wmm_table(key_name):
+def print_wmm_table(சாவி_name):
 
-    value_min = float('inf')
-    value_min_lat_lon = ()
+    மதிப்பு_min = தசம('inf')
+    மதிப்பு_min_lat_lon = ()
 
-    value_max = float('-inf')
-    value_max_lat_lon = ()
+    மதிப்பு_max = தசம('-inf')
+    மதிப்பு_max_lat_lon = ()
 
-    for latitude, lat_row in world_magnitude_model.items():
+    க்கு latitude, lat_row உள் world_magnitude_model.பொருட்கள்_2():
         #print(latitude, lat_row)
-        for longitude, result in lat_row.items():
+        க்கு longitude, result உள் lat_row.பொருட்கள்_2():
             #print(result)
 
-            value = float(result[key_name])
+            மதிப்பு = தசம(result[சாவி_name])
 
-            if (value > value_max):
-                value_max = value
-                value_max_lat_lon = (latitude, longitude)
+            எனில் (மதிப்பு > மதிப்பு_max):
+                மதிப்பு_max = மதிப்பு
+                மதிப்பு_max_lat_lon = (latitude, longitude)
 
-            if (value < value_min):
-                value_min = value
-                value_min_lat_lon = (latitude, longitude)
+            எனில் (மதிப்பு < மதிப்பு_min):
+                மதிப்பு_min = மதிப்பு
+                மதிப்பு_min_lat_lon = (latitude, longitude)
 
     # scale the values to fit into int16_t
-    value_scale_max = abs(numpy.iinfo(numpy.int16).max) / abs(value_max)
-    value_scale_min = abs(numpy.iinfo(numpy.int16).min) / abs(value_min)
-    value_scale = min(value_scale_max, value_scale_min)
+    மதிப்பு_scale_max = abs(numpy.iinfo(numpy.int16).max) / abs(மதிப்பு_max)
+    மதிப்பு_scale_min = abs(numpy.iinfo(numpy.int16).min) / abs(மதிப்பு_min)
+    மதிப்பு_scale = min(மதிப்பு_scale_max, மதிப்பு_scale_min)
 
-    units_str = world_magnitude_model_units[key_name].split(' ')[0]
+    units_str = world_magnitude_model_units[சாவி_name].split(' ')[0]
 
     # print the table
-    print('// Magnetic {} data in {:.4g} {}'.format(key_name, 1.0 / value_scale, units_str))
+    print('// Magnetic {} data in {:.4g} {}'.format(சாவி_name, 1.0 / மதிப்பு_scale, units_str))
     print('// Model: {},'.format(data['model']))
     print('// Version: {},'.format(data['version']))
     print('// Date: {},'.format(data['result'][0]['date']))
-    print('static constexpr const int16_t {}_table[{}][{}]'.format(key_name, LAT_DIM, LON_DIM) + " {")
+    print('static constexpr const int16_t {}_table[{}][{}]'.format(சாவி_name, LAT_DIM, LON_DIM) + " {")
     print('\t//    LONGITUDE: ', end='')
-    for l in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
+    க்கு l உள் range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
         print('{0:6d},'.format(l), end='')
     print('')
 
-    for latitude, lat_row in world_magnitude_model.items():
+    க்கு latitude, lat_row உள் world_magnitude_model.பொருட்கள்_2():
         print('\t/* LAT: {0:3d} */'.format(latitude) + ' { ', end='')
-        latitude_blackout_zone = False
+        latitude_blackout_zone = பொய்
 
-        for longitude, result in lat_row.items():
+        க்கு longitude, result உள் lat_row.பொருட்கள்_2():
 
-            value = float(result[key_name])
+            மதிப்பு = தசம(result[சாவி_name])
 
             # value scaled to fit into int16_t
-            value_int = int(round(value * value_scale))
-            print('{0:6d},'.format(value_int), end='')
+            மதிப்பு_int = முழு(round(மதிப்பு * மதிப்பு_scale))
+            print('{0:6d},'.format(மதிப்பு_int), end='')
 
             # blackout warning at this latitude
-            try:
-                if result['warning']:
-                    latitude_blackout_zone = True
+            முயல்:
+                எனில் result['warning']:
+                    latitude_blackout_zone = உண்மை
 
-            except:
+            விதிவிலக்கு:
                 pass
 
-        if latitude_blackout_zone:
+        எனில் latitude_blackout_zone:
             print(' }, // WARNING! black out zone')
-        else:
+        இல்லையெனில்:
             print(' },')
 
     print("};")
 
-    print('static constexpr float WMM_{}_SCALE_TO_{} = {:.9g}f;'.format(key_name.upper(), units_str.upper(), 1.0 / value_scale))
-    print('static constexpr float WMM_{}_MIN_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(key_name.upper(), units_str.upper(), value_min, value_min_lat_lon[0], value_min_lat_lon[1]))
-    print('static constexpr float WMM_{}_MAX_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(key_name.upper(), units_str.upper(), value_max, value_max_lat_lon[0], value_max_lat_lon[1]))
+    print('static constexpr float WMM_{}_SCALE_TO_{} = {:.9g}f;'.format(சாவி_name.upper(), units_str.upper(), 1.0 / மதிப்பு_scale))
+    print('static constexpr float WMM_{}_MIN_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(சாவி_name.upper(), units_str.upper(), மதிப்பு_min, மதிப்பு_min_lat_lon[0], மதிப்பு_min_lat_lon[1]))
+    print('static constexpr float WMM_{}_MAX_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(சாவி_name.upper(), units_str.upper(), மதிப்பு_max, மதிப்பு_max_lat_lon[0], மதிப்பு_max_lat_lon[1]))
     print("\n")
 
 

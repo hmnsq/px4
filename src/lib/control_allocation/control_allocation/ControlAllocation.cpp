@@ -39,7 +39,7 @@
  * @author Julien Lecoeur <julien.lecoeur@gmail.com>
  */
 
-#include "ControlAllocation.hpp"
+#அந்தர்பாவ "ControlAllocation.hpp"
 
 ControlAllocation::ControlAllocation()
 {
@@ -48,24 +48,24 @@ ControlAllocation::ControlAllocation()
 	_actuator_max.setAll(1.f);
 }
 
-void
+வெறுமை
 ControlAllocation::setEffectivenessMatrix(
-	const matrix::Matrix<float, ControlAllocation::NUM_AXES, ControlAllocation::NUM_ACTUATORS> &effectiveness,
-	const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
-	bool update_normalization_scale)
+	மாறிலி matrix::Matrix<தசம, ControlAllocation::இலக்கம்_AXES, ControlAllocation::இலக்கம்_ACTUATORS> &effectiveness,
+	மாறிலி ActuatorVector &actuator_trim, மாறிலி ActuatorVector &linearization_point, முழு இலக்கம்_actuators,
+	தருக்க update_normalization_scale)
 {
 	_effectiveness = effectiveness;
 	ActuatorVector linearization_point_clipped = linearization_point;
 	clipActuatorSetpoint(linearization_point_clipped);
 	_actuator_trim = actuator_trim + linearization_point_clipped;
 	clipActuatorSetpoint(_actuator_trim);
-	_num_actuators = num_actuators;
+	இலக்கம்_actuators_2 = இலக்கம்_actuators;
 	_control_trim = _effectiveness * linearization_point_clipped;
 }
 
-void
+வெறுமை
 ControlAllocation::setActuatorSetpoint(
-	const matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator_sp)
+	மாறிலி matrix::Vector<தசம, ControlAllocation::இலக்கம்_ACTUATORS> &actuator_sp)
 {
 	// Set actuator setpoint
 	_actuator_sp = actuator_sp;
@@ -74,41 +74,41 @@ ControlAllocation::setActuatorSetpoint(
 	clipActuatorSetpoint(_actuator_sp);
 }
 
-void
-ControlAllocation::clipActuatorSetpoint(matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator) const
+வெறுமை
+ControlAllocation::clipActuatorSetpoint(matrix::Vector<தசம, ControlAllocation::இலக்கம்_ACTUATORS> &actuator) மாறிலி
 {
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_max(i) < _actuator_min(i)) {
+	க்கு (முழு i = 0; i < இலக்கம்_actuators_2; i++) {
+		எனில் (_actuator_max(i) < _actuator_min(i)) {
 			actuator(i) = _actuator_trim(i);
 
-		} else if (actuator(i) < _actuator_min(i)) {
+		} இல்லையெனில் எனில் (actuator(i) < _actuator_min(i)) {
 			actuator(i) = _actuator_min(i);
 
-		} else if (actuator(i) > _actuator_max(i)) {
+		} இல்லையெனில் எனில் (actuator(i) > _actuator_max(i)) {
 			actuator(i) = _actuator_max(i);
 		}
 	}
 }
 
-matrix::Vector<float, ControlAllocation::NUM_ACTUATORS>
-ControlAllocation::normalizeActuatorSetpoint(const matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator)
-const
+matrix::Vector<தசம, ControlAllocation::இலக்கம்_ACTUATORS>
+ControlAllocation::normalizeActuatorSetpoint(மாறிலி matrix::Vector<தசம, ControlAllocation::இலக்கம்_ACTUATORS> &actuator)
+மாறிலி
 {
-	matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> actuator_normalized;
+	matrix::Vector<தசம, ControlAllocation::இலக்கம்_ACTUATORS> actuator_normalized;
 
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_min(i) < _actuator_max(i)) {
+	க்கு (முழு i = 0; i < இலக்கம்_actuators_2; i++) {
+		எனில் (_actuator_min(i) < _actuator_max(i)) {
 			actuator_normalized(i) = (actuator(i) - _actuator_min(i)) / (_actuator_max(i) - _actuator_min(i));
 
-		} else {
+		} இல்லையெனில் {
 			actuator_normalized(i) = (_actuator_trim(i) - _actuator_min(i)) / (_actuator_max(i) - _actuator_min(i));
 		}
 	}
 
-	return actuator_normalized;
+	திரும்பு actuator_normalized;
 }
 
-void ControlAllocation::applySlewRateLimit(float dt)
+வெறுமை ControlAllocation::applySlewRateLimit(தசம dt)
 {
 	// For motors, an actuator setpoint of NaN represents switching off the
 	// motor (giving it disarmed PWM). Physically it results in zero thrust,
@@ -122,38 +122,38 @@ void ControlAllocation::applySlewRateLimit(float dt)
 	//  - NaN to nonzero: replace NaN by zero, then rise with slew rate to input
 	//  - between nonzero and 0: slew limit, then match input
 
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_slew_rate_limit(i) > FLT_EPSILON) {
+	க்கு (முழு i = 0; i < இலக்கம்_actuators_2; i++) {
+		எனில் (_actuator_slew_rate_limit(i) > FLT_EPSILON) {
 
-			float input = _actuator_sp(i);
-			float previous = _prev_actuator_sp(i);
+			தசம உள்ளீடு = _actuator_sp(i);
+			தசம previous = _prev_actuator_sp(i);
 
 			// Before slew limiting, transform NaN to 0, but remember if the input was NaN
-			const bool input_is_nan = !PX4_ISFINITE(input);
+			மாறிலி தருக்க உள்ளீடு_is_nan = !PX4_ISFINITE(உள்ளீடு);
 
-			if (input_is_nan) {
-				input = 0.f;
+			எனில் (உள்ளீடு_is_nan) {
+				உள்ளீடு = 0.f;
 			}
 
-			if (!PX4_ISFINITE(previous)) {
+			எனில் (!PX4_ISFINITE(previous)) {
 				previous = 0.f;
 			}
 
 			// Slew limit without any NaN involved
-			const float delta_sp_max = dt * (_actuator_max(i) - _actuator_min(i)) / _actuator_slew_rate_limit(i);
-			const float delta_sp = input - previous;
+			மாறிலி தசம delta_sp_max = dt * (_actuator_max(i) - _actuator_min(i)) / _actuator_slew_rate_limit(i);
+			மாறிலி தசம delta_sp = உள்ளீடு - previous;
 
-			float output = input;
+			தசம output = உள்ளீடு;
 
-			if (delta_sp > delta_sp_max) {
+			எனில் (delta_sp > delta_sp_max) {
 				output = previous + delta_sp_max;
 
-			} else if (delta_sp < -delta_sp_max) {
+			} இல்லையெனில் எனில் (delta_sp < -delta_sp_max) {
 				output = previous - delta_sp_max;
 			}
 
 			// Transform back to NaN if appropriate
-			if (input_is_nan && fabsf(output) < FLT_EPSILON) {
+			எனில் (உள்ளீடு_is_nan && fabsf(output) < FLT_EPSILON) {
 				output = NAN;
 			}
 

@@ -39,73 +39,73 @@
 
 #pragma once
 
-#include <containers/List.hpp>
-#include <px4_platform_common/defines.h>
-#include <parameters/param.h>
+#அந்தர்பாவ <containers/List.hpp>
+#அந்தர்பாவ <px4_platform_common/defines.h>
+#அந்தர்பாவ <parameters/param.h>
 
-namespace control
+நாமாகாஶ control
 {
 
-class Block;
+வகுப்பு Block;
 
 // A base class for block params that enables traversing linked list.
-class BlockParamBase : public ListNode<BlockParamBase *>
+வகுப்பு BlockParamBase : பொது List_முனை<BlockParamBase *>
 {
-public:
+பொது:
 	/**
 	 * Instantiate a block param base.
 	 *
 	 * @param parent_prefix Set to true to include the parent name in the parameter name
 	 */
-	BlockParamBase(Block *parent, const char *name, bool parent_prefix = true);
-	virtual ~BlockParamBase() = default;
+	BlockParamBase(Block *parent, மாறிலி எழுத்து *name, தருக்க parent_prefix = உண்மை);
+	மெய்நிகர் ~BlockParamBase() = இயல்பு;
 
-	virtual bool update() = 0;
-	const char *getName() const { return param_name(_handle); }
+	மெய்நிகர் தருக்க update() = 0;
+	மாறிலி எழுத்து *getName() மாறிலி { திரும்பு param_name(_handle); }
 
-protected:
+பாதுகாக்கப்பட்ட:
 	param_t _handle{PARAM_INVALID};
 };
 
 // Parameters that are tied to blocks for updating and naming.
-template <class T>
-class __EXPORT BlockParam final : public BlockParamBase
+template <வகுப்பு T>
+வகுப்பு __EXPORT BlockParam final : பொது BlockParamBase
 {
-public:
-	BlockParam(Block *block, const char *name, bool parent_prefix = true);
-	BlockParam(Block *block, const char *name, bool parent_prefix, T &extern_val);
+பொது:
+	BlockParam(Block *block, மாறிலி எழுத்து *name, தருக்க parent_prefix = உண்மை);
+	BlockParam(Block *block, மாறிலி எழுத்து *name, தருக்க parent_prefix, T &extern_val);
 
-	~BlockParam() override = default;
+	~BlockParam() override = இயல்பு;
 
 	// no copy, assignment, move, move assignment
-	BlockParam(const BlockParam &) = delete;
-	BlockParam &operator=(const BlockParam &) = delete;
+	BlockParam(மாறிலி BlockParam &) = delete;
+	BlockParam &operator=(மாறிலி BlockParam &) = delete;
 	BlockParam(BlockParam &&) = delete;
 	BlockParam &operator=(BlockParam &&) = delete;
 
-	T get() const { return _val; }
+	T get() மாறிலி { திரும்பு _val; }
 
 	// Store the parameter value to the parameter storage (@see param_set())
-	bool commit() { return (param_set(_handle, &_val) == PX4_OK); }
+	தருக்க commit() { திரும்பு (param_set(_handle, &_val) == PX4_OK); }
 
 	// Store the parameter value to the parameter storage, w/o notifying the system (@see param_set_no_notification())
-	bool commit_no_notification() { return (param_set_no_notification(_handle, &_val) == PX4_OK); }
+	தருக்க commit_no_notification() { திரும்பு (param_set_no_notification(_handle, &_val) == PX4_OK); }
 
-	void set(T val) { _val = val; }
+	வெறுமை set(T val) { _val = val; }
 
-	bool update() override { return (param_get(_handle, &_val) == PX4_OK); }
+	தருக்க update() override { திரும்பு (param_get(_handle, &_val) == PX4_OK); }
 
-protected:
+பாதுகாக்கப்பட்ட:
 	T _val;
 };
 
 template <>
-bool BlockParam<bool>::update();
+தருக்க BlockParam<தருக்க>::update();
 
-typedef BlockParam<float> BlockParamFloat;
-typedef BlockParam<int32_t> BlockParamInt;
-typedef BlockParam<bool> BlockParamBool;
-typedef BlockParam<float &> BlockParamExtFloat;
-typedef BlockParam<int32_t &> BlockParamExtInt;
+வகைவரை BlockParam<தசம> BlockParamFloat;
+வகைவரை BlockParam<int32_t> BlockParamInt;
+வகைவரை BlockParam<தருக்க> BlockParamBool;
+வகைவரை BlockParam<தசம &> BlockParamExtFloat;
+வகைவரை BlockParam<int32_t &> BlockParamExtInt;
 
 } // namespace control

@@ -39,47 +39,47 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#அந்தர்பாவ <px4_platform_common/defines.h>
+#அந்தர்பாவ <assert.h>
+#அந்தர்பாவ <time.h>
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <math.h>
+#அந்தர்பாவ <mathlib/math/test/test.hpp>
+#அந்தர்பாவ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#அந்தர்பாவ "block/Block.hpp"
+#அந்தர்பாவ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#அந்தர்பாவ "matrix/math.hpp"
 
-namespace control
+நாமாகாஶ control
 {
 
 /**
  * A proportional-integral controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPI: public SuperBlock
+வகுப்பு __EXPORT BlockPI: பொது SuperBlock
 {
-public:
+பொது:
 // methods
-	BlockPI(SuperBlock *parent, const char *name) :
+	BlockPI(SuperBlock *parent, மாறிலி எழுத்து *name) :
 		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_kP(this, "P"),
-		_kI(this, "I")
+		_integral(இது, "I"),
+		_kP(இது, "P"),
+		_kI(இது, "I")
 	{}
-	virtual ~BlockPI() = default;
-	float update(float input)
+	மெய்நிகர் ~BlockPI() = இயல்பு;
+	தசம update(தசம உள்ளீடு)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input);
+		திரும்பு getKP() * உள்ளீடு +
+		       getKI() * getIntegral().update(உள்ளீடு);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-private:
+	தசம getKP() { திரும்பு _kP.get(); }
+	தசம getKI() { திரும்பு _kI.get(); }
+	BlockIntegral &getIntegral() { திரும்பு _integral; }
+தனிப்பட்ட:
 	BlockIntegral _integral;
 	control::BlockParamFloat _kP;
 	control::BlockParamFloat _kI;

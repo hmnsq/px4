@@ -31,55 +31,55 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <array>
+#அந்தர்பாவ <gtest/gtest.h>
+#அந்தர்பாவ <array>
 
-#include <parameters/param.h>
-#include <uORB/topics/actuator_motors.h>
-#include <uORB/topics/actuator_servos.h>
-#include <uORB/topics/actuator_armed.h>
-#include <uORB/topics/actuator_test.h>
-#include <uORB/Publication.hpp>
-#include <uORB/Subscription.hpp>
+#அந்தர்பாவ <parameters/param.h>
+#அந்தர்பாவ <uORB/topics/actuator_motors.h>
+#அந்தர்பாவ <uORB/topics/actuator_servos.h>
+#அந்தர்பாவ <uORB/topics/actuator_armed.h>
+#அந்தர்பாவ <uORB/topics/actuator_test.h>
+#அந்தர்பாவ <uORB/Publication.hpp>
+#அந்தர்பாவ <uORB/Subscription.hpp>
 
-#include "mixer_module.hpp"
+#அந்தர்பாவ "mixer_module.hpp"
 
-#if defined(CONFIG_ARCH_BOARD_PX4_SITL)
+#எனில் defined(CONFIG_ARCH_BOARD_PX4_SITL)
 #define PARAM_PREFIX "PWM_MAIN"
-#else
+#இல்லையெனில்
 #define PARAM_PREFIX "HIL_ACT"
 #endif
 
-static constexpr int MAX_NUM_OUTPUTS = 8;
-static constexpr int DISARMED_VALUE = 900;
-static constexpr int FAILSAFE_VALUE = 800;
-static constexpr int MIN_VALUE = 1000;
-static constexpr int CENTER_VALUE = 1500;
-static constexpr int MAX_VALUE = 2000;
+நிலையான constexpr முழு MAX_இலக்கம்_OUTPUTS = 8;
+நிலையான constexpr முழு DISARMED_மதிப்பு = 900;
+நிலையான constexpr முழு FAILSAFE_மதிப்பு = 800;
+நிலையான constexpr முழு MIN_மதிப்பு = 1000;
+நிலையான constexpr முழு CENTER_மதிப்பு = 1500;
+நிலையான constexpr முழு MAX_மதிப்பு = 2000;
 
-class MixerModuleTest : public ::testing::Test
+வகுப்பு MixerModuleTest : பொது ::testing::Test
 {
-public:
-	void SetUp() override
+பொது:
+	வெறுமை SetUp() override
 	{
-		param_control_autosave(false);
+		param_control_autosave(பொய்);
 	}
 
-	int update(MixingOutput &mixing_output)
+	முழு update(MixingOutput &mixing_output)
 	{
 		mixing_output.update();
 		// make sure output_limit switches to ON (if outputs enabled)
 		px4_usleep(50000 * 2);
 		mixing_output.update();
 		mixing_output.update();
-		return 3; // expected number of output updates
+		திரும்பு 3; // expected number of output updates
 	}
 
 };
 
-class OutputModuleTest : public OutputModuleInterface
+வகுப்பு OutputModuleTest : பொது OutputModuleInterface
 {
-public:
+பொது:
 	OutputModuleTest() : OutputModuleInterface(MODULE_NAME, px4::wq_configurations::hp_default) {};
 
 	~OutputModuleTest() override
@@ -90,62 +90,62 @@ public:
 		_actuator_armed_pub.unadvertise();
 	}
 
-	void Run() override
+	வெறுமை Run() override
 	{
-		was_scheduled = true;
+		was_scheduled = உண்மை;
 	}
 
-	bool updateOutputs(float outputs_[MAX_ACTUATORS], unsigned num_outputs_, unsigned num_control_groups_updated) override
+	தருக்க updateOutputs(தசம outputs_[MAX_ACTUATORS], unsigned இலக்கம்_outputs_2, unsigned இலக்கம்_control_groups_updated) override
 	{
-		memcpy(outputs, outputs_, sizeof(outputs));
-		num_outputs = num_outputs_;
-		++num_updates;
-		return true;
+		memcpy(outputs, outputs_, அளவு(outputs));
+		இலக்கம்_outputs = இலக்கம்_outputs_2;
+		++இலக்கம்_updates;
+		திரும்பு உண்மை;
 	}
 
-	void mixerChanged() override
+	வெறுமை mixerChanged() override
 	{
-		mixer_changed = true;
+		mixer_changed = உண்மை;
 	}
 
-	void configureFunctions(const std::array<int32_t, MAX_NUM_OUTPUTS> &functions)
+	வெறுமை configureFunctions(மாறிலி std::array<int32_t, MAX_இலக்கம்_OUTPUTS> &functions)
 	{
-		for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-			char buffer[17];
+		க்கு (முழு i = 0; i < MAX_இலக்கம்_OUTPUTS; ++i) {
+			எழுத்து buffer[17];
 
-			snprintf(buffer, sizeof(buffer), "%s_FUNC%u", PARAM_PREFIX, i + 1);
+			snprintf(buffer, அளவு(buffer), "%s_FUNC%u", PARAM_PREFIX, i + 1);
 			param_set(param_find(buffer), &functions[i]);
 		}
 
 		updateParams();
 	}
 
-	void sendMotors(const std::array<float, actuator_motors_s::NUM_CONTROLS> &motors, uint16_t reversible = 0)
+	வெறுமை sendMotors(மாறிலி std::array<தசம, actuator_motors_s::இலக்கம்_CONTROLS> &motors, uint16_t reversible = 0)
 	{
 		actuator_motors_s actuator_motors{};
 		actuator_motors.timestamp = hrt_absolute_time();
 		actuator_motors.reversible_flags = reversible;
 
-		for (unsigned i = 0; i < motors.size(); ++i) {
+		க்கு (unsigned i = 0; i < motors.size(); ++i) {
 			actuator_motors.control[i] = motors[i];
 		}
 
 		_actuator_motors_pub.publish(actuator_motors);
 	}
 
-	void sendServos(const std::array<float, actuator_servos_s::NUM_CONTROLS> &servos)
+	வெறுமை sendServos(மாறிலி std::array<தசம, actuator_servos_s::இலக்கம்_CONTROLS> &servos)
 	{
 		actuator_servos_s actuator_servos{};
 		actuator_servos.timestamp = hrt_absolute_time();
 
-		for (unsigned i = 0; i < servos.size(); ++i) {
+		க்கு (unsigned i = 0; i < servos.size(); ++i) {
 			actuator_servos.control[i] = servos[i];
 		}
 
 		_actuator_servos_pub.publish(actuator_servos);
 	}
 
-	void sendActuatorMotorTest(int function, float value, bool release_control)
+	வெறுமை sendActuatorMotorTest(முழு function, தசம value, தருக்க release_control)
 	{
 		actuator_test_s actuator_test{};
 		actuator_test.timestamp = hrt_absolute_time();
@@ -156,7 +156,7 @@ public:
 		_actuator_test_pub.publish(actuator_test);
 	}
 
-	void sendActuatorArmed(bool armed, bool termination = false, bool kill = false, bool prearm = false)
+	வெறுமை sendActuatorArmed(தருக்க armed, தருக்க termination = பொய், தருக்க kill = பொய், தருக்க prearm = பொய்)
 	{
 		actuator_armed_s actuator_armed{};
 		actuator_armed.timestamp = hrt_absolute_time();
@@ -167,21 +167,21 @@ public:
 		_actuator_armed_pub.publish(actuator_armed);
 	}
 
-	void reset()
+	வெறுமை reset()
 	{
-		memset(outputs, 0, sizeof(outputs));
-		num_outputs = 0;
-		num_updates = 0;
-		mixer_changed = false;
+		memset(outputs, 0, அளவு(outputs));
+		இலக்கம்_outputs = 0;
+		இலக்கம்_updates = 0;
+		mixer_changed = பொய்;
 	}
 
-	float outputs[MAX_ACTUATORS] {};
-	int num_outputs{0};
-	int num_updates{0};
-	bool was_scheduled{false};
-	bool mixer_changed{false};
+	தசம outputs[MAX_ACTUATORS] {};
+	முழு இலக்கம்_outputs{0};
+	முழு இலக்கம்_updates{0};
+	தருக்க was_scheduled{பொய்};
+	தருக்க mixer_changed{பொய்};
 
-private:
+தனிப்பட்ட:
 	uORB::Publication<actuator_test_s> _actuator_test_pub{ORB_ID(actuator_test)};
 	uORB::Publication<actuator_motors_s> _actuator_motors_pub{ORB_ID(actuator_motors)};
 	uORB::Publication<actuator_servos_s> _actuator_servos_pub{ORB_ID(actuator_servos)};
@@ -192,34 +192,34 @@ TEST_F(MixerModuleTest, basic)
 {
 	OutputModuleTest test_module;
 	test_module.configureFunctions({});
-	MixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
-	mixing_output.setAllDisarmedValues(DISARMED_VALUE);
-	mixing_output.setAllFailsafeValues(FAILSAFE_VALUE);
-	mixing_output.setAllMinValues(MIN_VALUE);
-	mixing_output.setAllCenterValues(CENTER_VALUE);
-	mixing_output.setAllMaxValues(MAX_VALUE);
-	EXPECT_EQ(test_module.num_updates, 0);
+	MixingOutput mixing_output{PARAM_PREFIX, MAX_இலக்கம்_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, பொய், பொய்};
+	mixing_output.set_All_Disarmed_மதிப்புகள்(DISARMED_மதிப்பு);
+	mixing_output.set_All_Failsafe_மதிப்புகள்(FAILSAFE_மதிப்பு);
+	mixing_output.set_All_Min_மதிப்புகள்(MIN_மதிப்பு);
+	mixing_output.set_All_Center_மதிப்புகள்(CENTER_மதிப்பு);
+	mixing_output.set_All_Max_மதிப்புகள்(MAX_மதிப்பு);
+	EXPECT_EQ(test_module.இலக்கம்_updates, 0);
 
 	// all functions disabled: expect to get one single update to process disabling the output signal
 	mixing_output.update();
-	mixing_output.updateSubscriptions(false);
+	mixing_output.updateSubscriptions(பொய்);
 	mixing_output.update();
-	EXPECT_EQ(test_module.num_updates, 1);
+	EXPECT_EQ(test_module.இலக்கம்_updates, 1);
 	mixing_output.update();
-	mixing_output.updateSubscriptions(false);
+	mixing_output.updateSubscriptions(பொய்);
 	mixing_output.update();
-	EXPECT_EQ(test_module.num_updates, 1);
+	EXPECT_EQ(test_module.இலக்கம்_updates, 1);
 	test_module.reset();
 
 	// configure motor, ensure all still disarmed
-	test_module.configureFunctions({(int)OutputFunction::Motor1});
-	mixing_output.updateSubscriptions(false);
+	test_module.configureFunctions({(முழு)OutputFunction::Motor1});
+	mixing_output.updateSubscriptions(பொய்);
 	EXPECT_TRUE(test_module.mixer_changed);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	EXPECT_EQ(test_module.இலக்கம்_updates, update(mixing_output));
+	EXPECT_EQ(test_module.இலக்கம்_outputs, MAX_இலக்கம்_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	க்கு (முழு i = 0; i < test_module.இலக்கம்_outputs; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_மதிப்பு);
 	}
 
 	test_module.reset();
@@ -228,48 +228,48 @@ TEST_F(MixerModuleTest, basic)
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
 	test_module.configureFunctions({
 		0,
-		(int)OutputFunction::Motor3,
-		(int)OutputFunction::Motor1,
-		(int)OutputFunction::Motor5});
+		(முழு)OutputFunction::Motor3,
+		(முழு)OutputFunction::Motor1,
+		(முழு)OutputFunction::Motor5});
 
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(பொய்);
+	EXPECT_EQ(test_module.இலக்கம்_updates, update(mixing_output));
+	EXPECT_EQ(test_module.இலக்கம்_outputs, MAX_இலக்கம்_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	க்கு (முழு i = 0; i < test_module.இலக்கம்_outputs; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_மதிப்பு);
 	}
 
 	test_module.reset();
 
 
 	// actuator test
-	test_module.sendActuatorMotorTest((int)OutputFunction::Motor5, 1.f, false);
+	test_module.sendActuatorMotorTest((முழு)OutputFunction::Motor5, 1.f, பொய்);
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(பொய்);
+	EXPECT_EQ(test_module.இலக்கம்_updates, update(mixing_output));
+	EXPECT_EQ(test_module.இலக்கம்_outputs, MAX_இலக்கம்_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
-		if (i == 3) {
-			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
+	க்கு (முழு i = 0; i < test_module.இலக்கம்_outputs; ++i) {
+		எனில் (i == 3) {
+			EXPECT_EQ(test_module.outputs[i], MAX_மதிப்பு);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} இல்லையெனில் {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_மதிப்பு);
 		}
 	}
 
 	test_module.reset();
 
 	// stop
-	test_module.sendActuatorMotorTest((int)OutputFunction::Motor5, 0.f, true);
+	test_module.sendActuatorMotorTest((முழு)OutputFunction::Motor5, 0.f, உண்மை);
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(பொய்);
+	EXPECT_EQ(test_module.இலக்கம்_updates, update(mixing_output));
+	EXPECT_EQ(test_module.இலக்கம்_outputs, MAX_இலக்கம்_OUTPUTS);
 
-	for (int i = 0; i < test_module.num_outputs; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	க்கு (முழு i = 0; i < test_module.இலக்கம்_outputs; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_மதிப்பு);
 	}
 
 	test_module.reset();
@@ -282,50 +282,50 @@ TEST_F(MixerModuleTest, arming)
 	OutputModuleTest test_module;
 	test_module.configureFunctions({
 		0,
-		(int)OutputFunction::Motor3,
-		(int)OutputFunction::Motor1,
-		(int)OutputFunction::Motor5,
-		(int)OutputFunction::Servo3});
-	MixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
-	mixing_output.setAllDisarmedValues(DISARMED_VALUE);
-	mixing_output.setAllFailsafeValues(FAILSAFE_VALUE);
-	mixing_output.setAllMinValues(MIN_VALUE);
-	mixing_output.setAllCenterValues(CENTER_VALUE);
-	mixing_output.setAllMaxValues(MAX_VALUE);
+		(முழு)OutputFunction::Motor3,
+		(முழு)OutputFunction::Motor1,
+		(முழு)OutputFunction::Motor5,
+		(முழு)OutputFunction::Servo3});
+	MixingOutput mixing_output{PARAM_PREFIX, MAX_இலக்கம்_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, பொய், பொய்};
+	mixing_output.set_All_Disarmed_மதிப்புகள்(DISARMED_மதிப்பு);
+	mixing_output.set_All_Failsafe_மதிப்புகள்(FAILSAFE_மதிப்பு);
+	mixing_output.set_All_Min_மதிப்புகள்(MIN_மதிப்பு);
+	mixing_output.set_All_Center_மதிப்புகள்(CENTER_மதிப்பு);
+	mixing_output.set_All_Max_மதிப்புகள்(MAX_மதிப்பு);
 
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
-	test_module.sendActuatorArmed(false);
+	test_module.sendActuatorArmed(பொய்);
 
 	// ensure all disarmed
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(பொய்);
+	EXPECT_EQ(test_module.இலக்கம்_updates, update(mixing_output));
+	EXPECT_EQ(test_module.இலக்கம்_outputs, MAX_இலக்கம்_OUTPUTS);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	க்கு (முழு i = 0; i < MAX_இலக்கம்_OUTPUTS; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_மதிப்பு);
 	}
 
 	test_module.reset();
 
 	// arming
 	test_module.sendMotors({0.5f, 1.f, 0.1f, 0.2f, 1.f, 1.f, 1.f, 1.f});
-	test_module.sendActuatorArmed(true);
+	test_module.sendActuatorArmed(உண்மை);
 
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	EXPECT_EQ(test_module.இலக்கம்_updates, update(mixing_output));
+	EXPECT_EQ(test_module.இலக்கம்_outputs, MAX_இலக்கம்_OUTPUTS);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.1f + MIN_VALUE);
+	க்கு (முழு i = 0; i < MAX_இலக்கம்_OUTPUTS; ++i) {
+		எனில் (i == 1) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_மதிப்பு - MIN_மதிப்பு) * 0.1f + MIN_மதிப்பு);
 
-		} else if (i == 2) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.5f + MIN_VALUE);
+		} இல்லையெனில் எனில் (i == 2) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_மதிப்பு - MIN_மதிப்பு) * 0.5f + MIN_மதிப்பு);
 
-		} else if (i == 3) {
-			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
+		} இல்லையெனில் எனில் (i == 3) {
+			EXPECT_EQ(test_module.outputs[i], MAX_மதிப்பு);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} இல்லையெனில் {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_மதிப்பு);
 		}
 	}
 
@@ -333,110 +333,110 @@ TEST_F(MixerModuleTest, arming)
 
 	// update motors
 	test_module.sendMotors({0.9f, 1.f, 0.24f, 0.2f, 0.f, 1.f, 1.f, 1.f});
-	mixing_output.updateSubscriptions(false);
+	mixing_output.updateSubscriptions(பொய்);
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.24f + MIN_VALUE);
+	க்கு (முழு i = 0; i < MAX_இலக்கம்_OUTPUTS; ++i) {
+		எனில் (i == 1) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_மதிப்பு - MIN_மதிப்பு) * 0.24f + MIN_மதிப்பு);
 
-		} else if (i == 2) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.9f + MIN_VALUE);
+		} இல்லையெனில் எனில் (i == 2) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_மதிப்பு - MIN_மதிப்பு) * 0.9f + MIN_மதிப்பு);
 
-		} else if (i == 3) {
-			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
+		} இல்லையெனில் எனில் (i == 3) {
+			EXPECT_EQ(test_module.outputs[i], MIN_மதிப்பு);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} இல்லையெனில் {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_மதிப்பு);
 		}
 	}
 
 	test_module.reset();
 
 	// failsafe
-	test_module.sendActuatorArmed(true, true);
+	test_module.sendActuatorArmed(உண்மை, உண்மை);
 	test_module.sendMotors({0.5f, 1.f, 0.1f, 0.2f, 1.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		EXPECT_EQ(test_module.outputs[i], FAILSAFE_VALUE);
+	க்கு (முழு i = 0; i < MAX_இலக்கம்_OUTPUTS; ++i) {
+		EXPECT_EQ(test_module.outputs[i], FAILSAFE_மதிப்பு);
 	}
 
 	test_module.reset();
 
 	// restore
-	test_module.sendActuatorArmed(true, false);
+	test_module.sendActuatorArmed(உண்மை, பொய்);
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i >= 1 && i <= 3) {
-			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
+	க்கு (முழு i = 0; i < MAX_இலக்கம்_OUTPUTS; ++i) {
+		எனில் (i >= 1 && i <= 3) {
+			EXPECT_EQ(test_module.outputs[i], MAX_மதிப்பு);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} இல்லையெனில் {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_மதிப்பு);
 		}
 	}
 
 	test_module.reset();
 
 	// manual lockdown
-	test_module.sendActuatorArmed(true, false, true);
+	test_module.sendActuatorArmed(உண்மை, பொய், உண்மை);
 	test_module.sendMotors({0.5f, 1.f, 0.1f, 0.2f, 1.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	க்கு (முழு i = 0; i < MAX_இலக்கம்_OUTPUTS; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_மதிப்பு);
 	}
 
 	test_module.reset();
 
 	// restore
-	test_module.sendActuatorArmed(true, false);
+	test_module.sendActuatorArmed(உண்மை, பொய்);
 	test_module.sendMotors({0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 1.f});
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i >= 1 && i <= 3) {
-			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
+	க்கு (முழு i = 0; i < MAX_இலக்கம்_OUTPUTS; ++i) {
+		எனில் (i >= 1 && i <= 3) {
+			EXPECT_EQ(test_module.outputs[i], MIN_மதிப்பு);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} இல்லையெனில் {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_மதிப்பு);
 		}
 	}
 
 	test_module.reset();
 
 	// set motor 5 reversible: expect output to be in center when commanding to 0
-	test_module.sendActuatorArmed(true, false);
+	test_module.sendActuatorArmed(உண்மை, பொய்);
 	test_module.sendMotors({0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 1.f}, 1u << 4);
 	mixing_output.update();
 	EXPECT_EQ(mixing_output.reversibleOutputs(), 1u << 3);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
-			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
+	க்கு (முழு i = 0; i < MAX_இலக்கம்_OUTPUTS; ++i) {
+		எனில் (i == 1) {
+			EXPECT_EQ(test_module.outputs[i], MIN_மதிப்பு);
 
-		} else if (i == 2) {
-			EXPECT_EQ(test_module.outputs[i], MIN_VALUE);
+		} இல்லையெனில் எனில் (i == 2) {
+			EXPECT_EQ(test_module.outputs[i], MIN_மதிப்பு);
 
-		} else if (i == 3) {
-			EXPECT_EQ(test_module.outputs[i], (MAX_VALUE - MIN_VALUE) * 0.5f + MIN_VALUE);
+		} இல்லையெனில் எனில் (i == 3) {
+			EXPECT_EQ(test_module.outputs[i], (MAX_மதிப்பு - MIN_மதிப்பு) * 0.5f + MIN_மதிப்பு);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} இல்லையெனில் {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_மதிப்பு);
 		}
 	}
 
 	test_module.reset();
 
 	// disarm
-	test_module.sendActuatorArmed(false);
+	test_module.sendActuatorArmed(பொய்);
 	test_module.sendMotors({0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 1.f}, 1u << 4);
 	mixing_output.update();
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+	க்கு (முழு i = 0; i < MAX_இலக்கம்_OUTPUTS; ++i) {
+		EXPECT_EQ(test_module.outputs[i], DISARMED_மதிப்பு);
 	}
 
 	test_module.reset();
@@ -448,29 +448,29 @@ TEST_F(MixerModuleTest, prearm)
 {
 	OutputModuleTest test_module;
 	test_module.configureFunctions({
-		(int)OutputFunction::Motor1,
-		(int)OutputFunction::Servo1});
-	MixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
-	mixing_output.setAllDisarmedValues(DISARMED_VALUE);
-	mixing_output.setAllFailsafeValues(FAILSAFE_VALUE);
-	mixing_output.setAllMinValues(MIN_VALUE);
-	mixing_output.setAllMaxValues(MAX_VALUE);
+		(முழு)OutputFunction::Motor1,
+		(முழு)OutputFunction::Servo1});
+	MixingOutput mixing_output{PARAM_PREFIX, MAX_இலக்கம்_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, பொய், பொய்};
+	mixing_output.set_All_Disarmed_மதிப்புகள்(DISARMED_மதிப்பு);
+	mixing_output.set_All_Failsafe_மதிப்புகள்(FAILSAFE_மதிப்பு);
+	mixing_output.set_All_Min_மதிப்புகள்(MIN_மதிப்பு);
+	mixing_output.set_All_Max_மதிப்புகள்(MAX_மதிப்பு);
 
 	test_module.sendMotors({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
 	test_module.sendServos({1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f});
-	test_module.sendActuatorArmed(false, false, false, true);
+	test_module.sendActuatorArmed(பொய், பொய், பொய், உண்மை);
 
 	// ensure all disarmed, except the servo
-	mixing_output.updateSubscriptions(false);
-	EXPECT_EQ(test_module.num_updates, update(mixing_output));
-	EXPECT_EQ(test_module.num_outputs, MAX_NUM_OUTPUTS);
+	mixing_output.updateSubscriptions(பொய்);
+	EXPECT_EQ(test_module.இலக்கம்_updates, update(mixing_output));
+	EXPECT_EQ(test_module.இலக்கம்_outputs, MAX_இலக்கம்_OUTPUTS);
 
-	for (int i = 0; i < MAX_NUM_OUTPUTS; ++i) {
-		if (i == 1) {
-			EXPECT_EQ(test_module.outputs[i], MAX_VALUE);
+	க்கு (முழு i = 0; i < MAX_இலக்கம்_OUTPUTS; ++i) {
+		எனில் (i == 1) {
+			EXPECT_EQ(test_module.outputs[i], MAX_மதிப்பு);
 
-		} else {
-			EXPECT_EQ(test_module.outputs[i], DISARMED_VALUE);
+		} இல்லையெனில் {
+			EXPECT_EQ(test_module.outputs[i], DISARMED_மதிப்பு);
 		}
 	}
 
@@ -479,26 +479,26 @@ TEST_F(MixerModuleTest, prearm)
 	EXPECT_FALSE(test_module.was_scheduled);
 }
 
-class TestMixingOutput : public MixingOutput
+வகுப்பு TestMixingOutput : பொது MixingOutput
 {
-public:
-	TestMixingOutput(const char *param_prefix, uint8_t max_num_outputs, OutputModuleInterface &interface,
+பொது:
+	TestMixingOutput(மாறிலி எழுத்து *param_prefix, uint8_t max_இலக்கம்_outputs, OutputModuleInterface &interface,
 			 SchedulingPolicy scheduling_policy,
-			 bool support_esc_calibration, bool ramp_up = true)
-		: MixingOutput(param_prefix, max_num_outputs, interface, scheduling_policy, support_esc_calibration, ramp_up)
+			 தருக்க support_esc_calibration, தருக்க ramp_up = உண்மை)
+		: MixingOutput(param_prefix, max_இலக்கம்_outputs, interface, scheduling_policy, support_esc_calibration, ramp_up)
 	{};
-	float output_limit_calc_single(int i, float value) const { return MixingOutput::output_limit_calc_single(i, value); }
+	தசம output_limit_calc_single(முழு i, தசம value) மாறிலி { திரும்பு MixingOutput::output_limit_calc_single(i, value); }
 };
 
 TEST_F(MixerModuleTest, OutputLimitCalcSingle)
 {
 	OutputModuleTest test_module;
-	test_module.configureFunctions({(int)OutputFunction::Motor1});
-	TestMixingOutput mixing_output{PARAM_PREFIX, MAX_NUM_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, false, false};
+	test_module.configureFunctions({(முழு)OutputFunction::Motor1});
+	TestMixingOutput mixing_output{PARAM_PREFIX, MAX_இலக்கம்_OUTPUTS, test_module, MixingOutput::SchedulingPolicy::Disabled, பொய், பொய்};
 
-	mixing_output.setAllMinValues(MIN_VALUE); // default range [1000,2000]
-	mixing_output.setAllMaxValues(MAX_VALUE);
-	mixing_output.setAllCenterValues(CENTER_VALUE); // Set center to middle value
+	mixing_output.set_All_Min_மதிப்புகள்(MIN_மதிப்பு); // default range [1000,2000]
+	mixing_output.set_All_Max_மதிப்புகள்(MAX_மதிப்பு);
+	mixing_output.set_All_Center_மதிப்புகள்(CENTER_மதிப்பு); // Set center to middle value
 	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.f), 1000); // In range
 	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -.5f), 1250);
 	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.f), 1500);
@@ -514,9 +514,9 @@ TEST_F(MixerModuleTest, OutputLimitCalcSingle)
 	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_limit_calc_single(0, 0.0015))), 1501); // Rounding up
 	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.002), 1501); // Exact value
 
-	mixing_output.setAllMinValues(0); // lower range [0,20]
-	mixing_output.setAllMaxValues(20);
-	mixing_output.setAllCenterValues(10); // Set center to middle value
+	mixing_output.set_All_Min_மதிப்புகள்(0); // lower range [0,20]
+	mixing_output.set_All_Max_மதிப்புகள்(20);
+	mixing_output.set_All_Center_மதிப்புகள்(10); // Set center to middle value
 	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.f), 0); // In range
 	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -.5f), 5);
 	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.f), 10);
@@ -532,9 +532,9 @@ TEST_F(MixerModuleTest, OutputLimitCalcSingle)
 	EXPECT_EQ(static_cast<uint16_t>(lroundf(mixing_output.output_limit_calc_single(0, 0.075))), 11); // Rounding up
 	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.1), 11); // Exact value
 
-	mixing_output.setAllMinValues(20); // inverted range [20,0]
-	mixing_output.setAllMaxValues(0);
-	mixing_output.setAllCenterValues(10); // Set center to middle value
+	mixing_output.set_All_Min_மதிப்புகள்(20); // inverted range [20,0]
+	mixing_output.set_All_Max_மதிப்புகள்(0);
+	mixing_output.set_All_Center_மதிப்புகள்(10); // Set center to middle value
 	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -1.f), 20); // In range
 	EXPECT_EQ(mixing_output.output_limit_calc_single(0, -.5f), 15);
 	EXPECT_EQ(mixing_output.output_limit_calc_single(0, 0.f), 10);
