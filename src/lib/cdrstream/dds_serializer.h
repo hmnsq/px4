@@ -34,11 +34,11 @@
 #ifndef DDS_CDRSTREAM_SERDER_H
 #define DDS_CDRSTREAM_SERDER_H
 
-#include <stdlib.h>
-#include <dds/cdr/dds_cdrstream.h>
+#অন্তর্ভাৱ <stdlib.h>
+#অন্তর্ভাৱ <dds/cdr/dds_cdrstream.h>
 
-extern const struct dds_cdrstream_allocator dds_allocator;
-extern const uint8_t ros2_header[4];
+বাহ্য ধ্রুৱ সংরচনা dds_cdrstream_allocator dds_allocator;
+বাহ্য ধ্রুৱ uint8_t ros2_header[4];
 
 // Max bytes the XCDR1 wire size can exceed the in-memory uORB struct (o_size):
 // CDR pads in declaration order while the struct is packed sorted-by-size.

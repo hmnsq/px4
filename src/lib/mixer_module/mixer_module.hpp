@@ -33,46 +33,46 @@
 
 #pragma once
 
-#include "actuator_test.hpp"
+#অন্তর্ভাৱ "actuator_test.hpp"
 
-#include "functions/FunctionActuatorSet.hpp"
-#include "functions/FunctionConstantMax.hpp"
-#include "functions/FunctionConstantMin.hpp"
-#include "functions/FunctionGimbal.hpp"
-#include "functions/FunctionGripper.hpp"
-#include "functions/FunctionICEngineControl.hpp"
-#include "functions/FunctionLandingGear.hpp"
-#include "functions/FunctionLandingGearWheel.hpp"
-#include "functions/FunctionManualRC.hpp"
-#include "functions/FunctionMotors.hpp"
-#include "functions/FunctionParachute.hpp"
-#include "functions/FunctionServos.hpp"
+#অন্তর্ভাৱ "functions/FunctionActuatorSet.hpp"
+#অন্তর্ভাৱ "functions/FunctionConstantMax.hpp"
+#অন্তর্ভাৱ "functions/FunctionConstantMin.hpp"
+#অন্তর্ভাৱ "functions/FunctionGimbal.hpp"
+#অন্তর্ভাৱ "functions/FunctionGripper.hpp"
+#অন্তর্ভাৱ "functions/FunctionICEngineControl.hpp"
+#অন্তর্ভাৱ "functions/FunctionLandingGear.hpp"
+#অন্তর্ভাৱ "functions/FunctionLandingGearWheel.hpp"
+#অন্তর্ভাৱ "functions/FunctionManualRC.hpp"
+#অন্তর্ভাৱ "functions/FunctionMotors.hpp"
+#অন্তর্ভাৱ "functions/FunctionParachute.hpp"
+#অন্তর্ভাৱ "functions/FunctionServos.hpp"
 
-#include <board_config.h>
-#include <drivers/drv_pwm_output.h>
-#include <lib/perf/perf_counter.h>
-#include <px4_platform_common/module_params.h>
-#include <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
-#include <uORB/Publication.hpp>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionCallback.hpp>
-#include <uORB/topics/actuator_armed.h>
-#include <uORB/topics/actuator_outputs.h>
-#include <uORB/topics/parameter_update.h>
+#অন্তর্ভাৱ <board_config.h>
+#অন্তর্ভাৱ <drivers/drv_pwm_output.h>
+#অন্তর্ভাৱ <lib/perf/perf_counter.h>
+#অন্তর্ভাৱ <px4_platform_common/module_params.h>
+#অন্তর্ভাৱ <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
+#অন্তর্ভাৱ <uORB/Publication.hpp>
+#অন্তর্ভাৱ <uORB/PublicationMulti.hpp>
+#অন্তর্ভাৱ <uORB/Subscription.hpp>
+#অন্তর্ভাৱ <uORB/SubscriptionCallback.hpp>
+#অন্তর্ভাৱ <uORB/topics/actuator_armed.h>
+#অন্তর্ভাৱ <uORB/topics/actuator_outputs.h>
+#অন্তর্ভাৱ <uORB/topics/parameter_update.h>
 
-using namespace time_literals;
+using নামাকাশ time_literals;
 
 /**
  * @class OutputModuleInterface
  * Base class for an output module.
  */
-class OutputModuleInterface : public px4::ScheduledWorkItem, public ModuleParams
+শ্ৰেণী OutputModuleInterface : সার্ৱজনিক px4::ScheduledWorkItem, সার্ৱজনিক ModuleParams
 {
-public:
-	static constexpr int MAX_ACTUATORS = PWM_OUTPUT_MAX_CHANNELS;
+সার্ৱজনিক:
+	স্থির constexpr পূর্ণাঙ্ক MAX_ACTUATORS = PWM_OUTPUT_MAX_CHANNELS;
 
-	OutputModuleInterface(const char *name, const px4::wq_config_t &config) :
+	OutputModuleInterface(ধ্রুৱ ৱর্ণ *name, ধ্রুৱ px4::wq_config_t &config) :
 		px4::ScheduledWorkItem(name, config),
 		ModuleParams(nullptr)
 	{}
@@ -84,16 +84,16 @@ public:
 	 * @param num_control_groups_updated number of actuator_control groups updated
 	 * @return if true, the update got handled, and actuator_outputs can be published
 	 */
-	virtual bool updateOutputs(float outputs[MAX_ACTUATORS], unsigned num_outputs, unsigned num_control_groups_updated) = 0;
+	আভাস তার্কিক updateOutputs(ভিন্ন outputs[MAX_ACTUATORS], unsigned অঙ্ক_outputs, unsigned অঙ্ক_control_groups_updated) = 0;
 
 	/** called whenever the mixer gets updated/reset */
-	virtual void mixerChanged() {}
+	আভাস শূন্য mixerChanged() {}
 
 	/**
 	 * Called when the reversible output mask changes, before the new mask is used to compute outputs.
 	 * Drivers whose output range depends on reversibility must update it here, not from their Run().
 	 */
-	virtual void reversibleMaskChanged(uint32_t reversible_mask) {}
+	আভাস শূন্য reversibleMaskChanged(uint32_t reversible_mask) {}
 };
 
 /**
@@ -103,12 +103,12 @@ public:
  * It can also drive the scheduling of the OutputModuleInterface (via uORB callbacks
  * to reduce output latency).
  */
-class MixingOutput : public ModuleParams
+শ্ৰেণী MixingOutput : সার্ৱজনিক ModuleParams
 {
-public:
-	static constexpr int MAX_ACTUATORS = OutputModuleInterface::MAX_ACTUATORS;
+সার্ৱজনিক:
+	স্থির constexpr পূর্ণাঙ্ক MAX_ACTUATORS = OutputModuleInterface::MAX_ACTUATORS;
 
-	enum class SchedulingPolicy {
+	গণনা শ্ৰেণী SchedulingPolicy {
 		Disabled, ///< Do not drive scheduling (the module needs to call ScheduleOnInterval() for example)
 		Auto ///< Drive scheduling based on subscribed actuator controls topics (via uORB callbacks)
 	};
@@ -122,37 +122,37 @@ public:
 	 * @param support_esc_calibration true if the output module supports ESC calibration via max, then min setting
 	 * @param ramp_up true if motor ramp up from disarmed to min upon arming is wanted
 	 */
-	MixingOutput(const char *param_prefix, uint8_t max_num_outputs, OutputModuleInterface &interface,
+	MixingOutput(ধ্রুৱ ৱর্ণ *param_prefix, uint8_t max_অঙ্ক_outputs, OutputModuleInterface &interface,
 		     SchedulingPolicy scheduling_policy,
-		     bool support_esc_calibration, bool ramp_up = true, const uint8_t instance_start = 1);
+		     তার্কিক support_esc_calibration, তার্কিক ramp_up = সঁচা, ধ্রুৱ uint8_t instance_start = 1);
 
 	~MixingOutput();
 
-	void printStatus() const;
+	শূন্য printStatus() ধ্রুৱ;
 
 	/**
 	 * Permanently disable an output function
 	 */
-	void disableFunction(int index)
+	শূন্য disableFunction(পূর্ণাঙ্ক index)
 	{
 		_param_handles[index].function = PARAM_INVALID;
-		_need_function_update = true;
+		_need_function_update = সঁচা;
 	}
 
 	/**
 	 * Check if a function is configured, i.e. not set to Disabled and initialized
 	 */
-	bool isFunctionSet(int index) const { return _functions[index] != nullptr; }
+	তার্কিক isFunctionSet(পূর্ণাঙ্ক index) ধ্রুৱ { ঘূৰাই _functions[index] != nullptr; }
 
-	OutputFunction outputFunction(int index) const { return _function_assignment[index]; }
+	OutputFunction outputFunction(পূর্ণাঙ্ক index) ধ্রুৱ { ঘূৰাই _function_assignment[index]; }
 
-	bool isMotor(int index) const { return isFunctionSet(index) && (_function_assignment[index] >= OutputFunction::Motor1) && (_function_assignment[index] <= OutputFunction::Motor12); }
+	তার্কিক isMotor(পূর্ণাঙ্ক index) ধ্রুৱ { ঘূৰাই isFunctionSet(index) && (_function_assignment[index] >= OutputFunction::Motor1) && (_function_assignment[index] <= OutputFunction::Motor12); }
 
 	/**
 	 * Call this regularly from Run(). It will call interface.updateOutputs().
 	 * @return true if outputs were updated
 	 */
-	bool update();
+	তার্কিক update();
 
 	/**
 	 * Check for subscription updates.
@@ -160,83 +160,83 @@ public:
 	 * @param allow_wq_switch if true
 	 * @return true if subscriptions got changed
 	 */
-	bool updateSubscriptions(bool allow_wq_switch = false);
+	তার্কিক updateSubscriptions(তার্কিক allow_wq_switch = মিছা);
 
 	/**
 	 * unregister uORB subscription callbacks
 	 */
-	void unregister();
+	শূন্য unregister();
 
-	void setMaxTopicUpdateRate(unsigned max_topic_update_interval_us);
+	শূন্য setMaxTopicUpdateRate(unsigned max_topic_update_interval_us);
 
-	const actuator_armed_s &armed() const { return _armed; }
-	bool isActuatorTestRunning() const { return _actuator_test.inTestMode(); }
+	ধ্রুৱ actuator_armed_s &armed() ধ্রুৱ { ঘূৰাই _armed; }
+	তার্কিক isActuatorTestRunning() ধ্রুৱ { ঘূৰাই _actuator_test.inTestMode(); }
 
-	void setAllFailsafeValues(uint16_t value);
-	void setAllDisarmedValues(uint16_t value);
-	void setAllMinValues(uint16_t value);
-	void setAllCenterValues(uint16_t value);
-	void setAllMaxValues(uint16_t value);
+	শূন্য set_All_Failsafe_মানসমূহ(uint16_t value);
+	শূন্য set_All_Disarmed_মানসমূহ(uint16_t value);
+	শূন্য set_All_Min_মানসমূহ(uint16_t value);
+	শূন্য set_All_Center_মানসমূহ(uint16_t value);
+	শূন্য set_All_Max_মানসমূহ(uint16_t value);
 
 	/** Disarmed values: disarmedValue < minValue needs to hold */
-	uint16_t &disarmedValue(int index) { return _disarmed_value[index]; }
-	uint16_t &minValue(int index) { return _min_value[index]; }
-	uint16_t &centerValue(int index) { return _center_value[index]; }
-	uint16_t &maxValue(int index) { return _max_value[index]; }
+	uint16_t &disarmed_মান_2(পূর্ণাঙ্ক index) { ঘূৰাই disarmed_মান[index]; }
+	uint16_t &min_মান_2(পূর্ণাঙ্ক index) { ঘূৰাই min_মান[index]; }
+	uint16_t &center_মান_2(পূর্ণাঙ্ক index) { ঘূৰাই center_মান[index]; }
+	uint16_t &max_মান_2(পূর্ণাঙ্ক index) { ঘূৰাই max_মান[index]; }
 
-	param_t functionParamHandle(int index) const { return _param_handles[index].function; }
-	param_t disarmedParamHandle(int index) const { return _param_handles[index].disarmed; }
-	param_t minParamHandle(int index) const { return _param_handles[index].min; }
-	param_t centerParamHandle(int index) const { return _param_handles[index].center; }
-	param_t maxParamHandle(int index) const { return _param_handles[index].max; }
+	param_t functionParamHandle(পূর্ণাঙ্ক index) ধ্রুৱ { ঘূৰাই _param_handles[index].function; }
+	param_t disarmedParamHandle(পূর্ণাঙ্ক index) ধ্রুৱ { ঘূৰাই _param_handles[index].disarmed; }
+	param_t minParamHandle(পূর্ণাঙ্ক index) ধ্রুৱ { ঘূৰাই _param_handles[index].min; }
+	param_t centerParamHandle(পূর্ণাঙ্ক index) ধ্রুৱ { ঘূৰাই _param_handles[index].center; }
+	param_t maxParamHandle(পূর্ণাঙ্ক index) ধ্রুৱ { ঘূৰাই _param_handles[index].max; }
 
 	/**
 	 * Returns the actual failsafe value taking into account the assigned function
 	 */
-	float actualFailsafeValue(int index) const;
+	ভিন্ন actual_Failsafe_মান(পূর্ণাঙ্ক index) ধ্রুৱ;
 
-	void setIgnoreLockdown(bool ignore_lockdown) { _ignore_lockdown = ignore_lockdown; }
+	শূন্য setIgnoreLockdown(তার্কিক ignore_lockdown) { _ignore_lockdown = ignore_lockdown; }
 
 	/**
 	 * Set the maximum number of outputs. This can only be used to reduce the maximum.
 	 */
-	void setMaxNumOutputs(uint8_t max_num_outputs) { if (max_num_outputs < _max_num_outputs) { _max_num_outputs = max_num_outputs; } }
+	শূন্য set_Max_অঙ্ক_Outputs(uint8_t max_অঙ্ক_outputs) { যদি (max_অঙ্ক_outputs < max_অঙ্ক_outputs_2) { max_অঙ্ক_outputs_2 = max_অঙ্ক_outputs; } }
 
-	const char *paramPrefix() const { return _param_prefix; }
+	ধ্রুৱ ৱর্ণ *paramPrefix() ধ্রুৱ { ঘূৰাই _param_prefix; }
 
-	void setLowrateSchedulingInterval(hrt_abstime interval) { _lowrate_schedule_interval = interval; }
+	শূন্য setLowrateSchedulingInterval(hrt_abstime interval) { _lowrate_schedule_interval = interval; }
 
 	/**
 	 * Get the bitmask of reversible outputs (motors only).
 	 * This might change at any time, including while armed (motor failure recovery reverses a motor in
 	 * flight). Drivers that must react to a change should override reversibleMaskChanged().
 	 */
-	uint32_t reversibleOutputs() const { return _reversible_mask; }
+	uint32_t reversibleOutputs() ধ্রুৱ { ঘূৰাই _reversible_mask; }
 
-protected:
-	void updateParams() override;
-	float output_limit_calc_single(int i, float value) const;
+রক্ষিত:
+	শূন্য updateParams() override;
+	ভিন্ন output_limit_calc_single(পূর্ণাঙ্ক i, ভিন্ন value) ধ্রুৱ;
 
-private:
+গুপ্ত:
 
-	bool isPrearmed() const
+	তার্কিক isPrearmed() ধ্রুৱ
 	{
-		return (_armed.prearmed && !_armed.armed) || _armed.in_esc_calibration_mode;
+		ঘূৰাই (_armed.prearmed && !_armed.armed) || _armed.in_esc_calibration_mode;
 	}
 
-	void setAndPublishActuatorOutputs(unsigned num_outputs, actuator_outputs_s &actuator_outputs);
-	void publishMixerStatus(const actuator_outputs_s &actuator_outputs);
-	void updateLatencyPerfCounter(const actuator_outputs_s &actuator_outputs);
+	শূন্য setAndPublishActuatorOutputs(unsigned অঙ্ক_outputs, actuator_outputs_s &actuator_outputs);
+	শূন্য publishMixerStatus(ধ্রুৱ actuator_outputs_s &actuator_outputs);
+	শূন্য updateLatencyPerfCounter(ধ্রুৱ actuator_outputs_s &actuator_outputs);
 
-	void cleanupFunctions();
+	শূন্য cleanupFunctions();
 
-	void initParamHandles(const uint8_t instance_start);
+	শূন্য initParamHandles(ধ্রুৱ uint8_t instance_start);
 
-	void limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updates);
+	শূন্য limitAndUpdateOutputs(ভিন্ন outputs[MAX_ACTUATORS], তার্কিক has_updates);
 
-	void output_limit_calc(const bool armed, const int num_channels, const float outputs[MAX_ACTUATORS]);
+	শূন্য output_limit_calc(ধ্রুৱ তার্কিক armed, ধ্রুৱ পূর্ণাঙ্ক অঙ্ক_channels, ধ্রুৱ ভিন্ন outputs[MAX_ACTUATORS]);
 
-	struct ParamHandles {
+	সংরচনা ParamHandles {
 		param_t function{PARAM_INVALID};
 		param_t disarmed{PARAM_INVALID};
 		param_t min{PARAM_INVALID};
@@ -245,27 +245,27 @@ private:
 		param_t failsafe{PARAM_INVALID};
 	};
 
-	void lock() { do {} while (px4_sem_wait(&_lock) != 0); }
-	void unlock() { px4_sem_post(&_lock); }
+	শূন্য lock() { কৰা {} যেতিয়ালৈ (px4_sem_wait(&_lock) != 0); }
+	শূন্য unlock() { px4_sem_post(&_lock); }
 
 	px4_sem_t _lock; /**< lock to protect access to work queue changes (includes ScheduleNow calls from another thread) */
 
-	uint16_t _failsafe_value[MAX_ACTUATORS] {};
-	uint16_t _disarmed_value[MAX_ACTUATORS] {};
-	uint16_t _min_value[MAX_ACTUATORS] {};
-	uint16_t _center_value[MAX_ACTUATORS] {};
-	uint16_t _max_value[MAX_ACTUATORS] {};
-	float _current_output_value[MAX_ACTUATORS] {}; ///< current output values (reordered)
+	uint16_t failsafe_মান[MAX_ACTUATORS] {};
+	uint16_t disarmed_মান[MAX_ACTUATORS] {};
+	uint16_t min_মান[MAX_ACTUATORS] {};
+	uint16_t center_মান[MAX_ACTUATORS] {};
+	uint16_t max_মান[MAX_ACTUATORS] {};
+	ভিন্ন current_output_মান[MAX_ACTUATORS] {}; ///< current output values (reordered)
 	uint16_t _reverse_output_mask{0}; ///< reverses the interval [min, max] -> [max, min], NOT motor direction
 
-	enum class OutputLimitState {
+	গণনা শ্ৰেণী OutputLimitState {
 		OFF = 0,
 		RAMP,
 		ON
 	} _output_state{OutputLimitState::OFF};
 
 	hrt_abstime _output_time_armed{0};
-	const bool _output_ramp_up; ///< if true, motors will ramp up from disarmed to min_output after arming
+	ধ্রুৱ তার্কিক _output_ramp_up; ///< if true, motors will ramp up from disarmed to min_output after arming
 
 	uORB::Subscription _armed_sub{ORB_ID(actuator_armed)};
 
@@ -275,14 +275,14 @@ private:
 
 	unsigned _max_topic_update_interval_us{0}; ///< max topic update interval (0=unlimited)
 
-	bool _throttle_armed{false};
-	bool _ignore_lockdown{false}; ///< if true, ignore the _armed.lockdown flag (for HIL outputs)
+	তার্কিক _throttle_armed{মিছা};
+	তার্কিক _ignore_lockdown{মিছা}; ///< if true, ignore the _armed.lockdown flag (for HIL outputs)
 
-	const SchedulingPolicy _scheduling_policy;
-	const bool _support_esc_calibration;
+	ধ্রুৱ SchedulingPolicy _scheduling_policy;
+	ধ্রুৱ তার্কিক _support_esc_calibration;
 
-	bool _wq_switched{false};
-	uint8_t _max_num_outputs;
+	তার্কিক _wq_switched{মিছা};
+	uint8_t max_অঙ্ক_outputs_2;
 
 	OutputModuleInterface &_interface;
 
@@ -291,15 +291,15 @@ private:
 	FunctionProviderBase *_function_allocated[MAX_ACTUATORS] {}; ///< unique allocated functions
 	FunctionProviderBase *_functions[MAX_ACTUATORS] {}; ///< currently assigned functions
 	OutputFunction _function_assignment[MAX_ACTUATORS] {};
-	bool _need_function_update{true};
-	bool _has_backup_schedule{false};
-	const char *const _param_prefix;
+	তার্কিক _need_function_update{সঁচা};
+	তার্কিক _has_backup_schedule{মিছা};
+	ধ্রুৱ ৱর্ণ *ধ্রুৱ _param_prefix;
 	ParamHandles _param_handles[MAX_ACTUATORS];
 	param_t _param_handle_rev_range{PARAM_INVALID};
 	hrt_abstime _lowrate_schedule_interval{300_ms};
 	ActuatorTest _actuator_test{_function_assignment};
 	uint32_t _reversible_mask{0}; ///< per-output bits. If set, the output is configured to be reversible (motors only)
-	bool _was_all_disabled{false};
+	তার্কিক _was_all_disabled{মিছা};
 
 	uORB::SubscriptionCallbackWorkItem *_subscription_callback{nullptr}; ///< current scheduling callback
 

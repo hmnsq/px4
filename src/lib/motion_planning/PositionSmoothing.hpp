@@ -33,11 +33,11 @@
 
 #pragma once
 
-#include <cmath>
-#include <motion_planning/VelocitySmoothing.hpp>
+#অন্তর্ভাৱ <cmath>
+#অন্তর্ভাৱ <motion_planning/VelocitySmoothing.hpp>
 
-#include <matrix/matrix/math.hpp>
-#include <px4_defines.h>
+#অন্তর্ভাৱ <matrix/matrix/math.hpp>
+#অন্তর্ভাৱ <px4_defines.h>
 
 using matrix::Vector2f;
 using matrix::Vector3f;
@@ -49,16 +49,16 @@ using matrix::Vector3f;
  * This is achieved by first generating an unsmoothed velocity setpoint
  * which then gets smoothed using the VelocitySmoothing library.
  */
-class PositionSmoothing
+শ্ৰেণী PositionSmoothing
 {
 
-public:
+সার্ৱজনিক:
 	/**
 	 * @brief Result type of the position smoothing algorithm.
 	 * The included values shall then be used as setpoints for
 	 * the controllers.
 	 */
-	struct PositionSmoothingSetpoints {
+	সংরচনা PositionSmoothingSetpoints {
 		Vector3f jerk;
 		Vector3f acceleration;
 		Vector3f velocity;
@@ -77,16 +77,16 @@ public:
 	 * @param force_zero_velocity_setpoint Force vehicle to stop. Generate trajectory that ends with still vehicle.
 	 * @param out_setpoints Output of the generated setpoints
 	 */
-	inline void generateSetpoints(
-		const Vector3f &position,
-		const Vector3f(&waypoints)[3],
-		const Vector3f &feedforward_velocity,
-		float delta_time,
-		bool force_zero_velocity_setpoint,
+	অন্তঃস্থ শূন্য generateSetpoints(
+		ধ্রুৱ Vector3f &position,
+		ধ্রুৱ Vector3f(&waypoints)[3],
+		ধ্রুৱ Vector3f &feedforward_velocity,
+		ভিন্ন delta_time,
+		তার্কিক force_zero_velocity_setpoint,
 		PositionSmoothingSetpoints &out_setpoints
 	)
 	{
-		_generateSetpoints(position, waypoints, false, feedforward_velocity, delta_time, force_zero_velocity_setpoint,
+		_generateSetpoints(position, waypoints, মিছা, feedforward_velocity, delta_time, force_zero_velocity_setpoint,
 				   out_setpoints);
 	}
 
@@ -101,17 +101,17 @@ public:
 	 * @param force_zero_velocity_setpoint Force vehicle to stop. Generate trajectory that ends with still vehicle.
 	 * @param out_setpoints Output of the generated setpoints
 	 */
-	inline void generateSetpoints(
-		const Vector3f &position,
-		const Vector3f &waypoint,
-		const Vector3f &feedforward_velocity,
-		float delta_time,
-		bool force_zero_velocity_setpoint,
+	অন্তঃস্থ শূন্য generateSetpoints(
+		ধ্রুৱ Vector3f &position,
+		ধ্রুৱ Vector3f &waypoint,
+		ধ্রুৱ Vector3f &feedforward_velocity,
+		ভিন্ন delta_time,
+		তার্কিক force_zero_velocity_setpoint,
 		PositionSmoothingSetpoints &out_setpoints
 	)
 	{
 		Vector3f waypoints[3] = {waypoint, waypoint, waypoint};
-		_generateSetpoints(position, waypoints, true, feedforward_velocity, delta_time, force_zero_velocity_setpoint,
+		_generateSetpoints(position, waypoints, সঁচা, feedforward_velocity, delta_time, force_zero_velocity_setpoint,
 				   out_setpoints);
 	}
 
@@ -123,9 +123,9 @@ public:
 	 * @param velocity current velocity
 	 * @param position current position
 	 */
-	void reset(const Vector3f &acceleration, const Vector3f &velocity, const Vector3f &position)
+	শূন্য reset(ধ্রুৱ Vector3f &acceleration, ধ্রুৱ Vector3f &velocity, ধ্রুৱ Vector3f &position)
 	{
-		for (size_t i = 0; i < 3; i++) {
+		বাবে (size_t i = 0; i < 3; i++) {
 			_trajectory[i].reset(acceleration(i), velocity(i), position(i));
 		}
 	}
@@ -133,119 +133,119 @@ public:
 	/**
 	 * @return float Current trajectory acceleration in X
 	 */
-	inline float getCurrentAccelerationX() const
+	অন্তঃস্থ ভিন্ন getCurrentAccelerationX() ধ্রুৱ
 	{
-		return _trajectory[0].getCurrentAcceleration();
+		ঘূৰাই _trajectory[0].getCurrentAcceleration();
 	}
 
 	/**
 	 * @return float Current trajectory acceleration in Y
 	 */
-	inline float getCurrentAccelerationY() const
+	অন্তঃস্থ ভিন্ন getCurrentAccelerationY() ধ্রুৱ
 	{
-		return _trajectory[1].getCurrentAcceleration();
+		ঘূৰাই _trajectory[1].getCurrentAcceleration();
 	}
 
 	/**
 	 * @return float Current trajectory acceleration in Z
 	 */
-	inline float getCurrentAccelerationZ() const
+	অন্তঃস্থ ভিন্ন getCurrentAccelerationZ() ধ্রুৱ
 	{
-		return _trajectory[2].getCurrentAcceleration();
+		ঘূৰাই _trajectory[2].getCurrentAcceleration();
 	}
 
 	/**
 	 * @return float Current trajectory acceleration
 	 */
-	inline Vector3f getCurrentAcceleration() const
+	অন্তঃস্থ Vector3f getCurrentAcceleration() ধ্রুৱ
 	{
-		return {getCurrentAccelerationX(), getCurrentAccelerationY(), getCurrentAccelerationZ()};
+		ঘূৰাই {getCurrentAccelerationX(), getCurrentAccelerationY(), getCurrentAccelerationZ()};
 	}
 
 	/**
 	 * @return float Current trajectory acceleration in X and Y
 	 */
-	inline Vector2f getCurrentAccelerationXY() const
+	অন্তঃস্থ Vector2f getCurrentAccelerationXY() ধ্রুৱ
 	{
-		return {getCurrentAccelerationX(), getCurrentAccelerationY()};
+		ঘূৰাই {getCurrentAccelerationX(), getCurrentAccelerationY()};
 	}
 
 	/**
 	 * @return float Current trajectory velocity in X
 	 */
-	inline float getCurrentVelocityX() const
+	অন্তঃস্থ ভিন্ন getCurrentVelocityX() ধ্রুৱ
 	{
-		return _trajectory[0].getCurrentVelocity();
+		ঘূৰাই _trajectory[0].getCurrentVelocity();
 	}
 
 	/**
 	 * @return float Current trajectory velocity in Y
 	 */
-	inline float getCurrentVelocityY() const
+	অন্তঃস্থ ভিন্ন getCurrentVelocityY() ধ্রুৱ
 	{
-		return _trajectory[1].getCurrentVelocity();
+		ঘূৰাই _trajectory[1].getCurrentVelocity();
 	}
 
 	/**
 	 * @return float Current trajectory velocity in Z
 	 */
-	inline float getCurrentVelocityZ() const
+	অন্তঃস্থ ভিন্ন getCurrentVelocityZ() ধ্রুৱ
 	{
-		return _trajectory[2].getCurrentVelocity();
+		ঘূৰাই _trajectory[2].getCurrentVelocity();
 	}
 
 	/**
 	 * @return float Current trajectory velocity
 	 */
-	inline Vector3f getCurrentVelocity() const
+	অন্তঃস্থ Vector3f getCurrentVelocity() ধ্রুৱ
 	{
-		return {getCurrentVelocityX(), getCurrentVelocityY(), getCurrentVelocityZ()};
+		ঘূৰাই {getCurrentVelocityX(), getCurrentVelocityY(), getCurrentVelocityZ()};
 	}
 
 	/**
 	 * @return float Current trajectory velocity in X and Y
 	 */
-	inline Vector2f getCurrentVelocityXY() const
+	অন্তঃস্থ Vector2f getCurrentVelocityXY() ধ্রুৱ
 	{
-		return {getCurrentVelocityX(), getCurrentVelocityY()};
+		ঘূৰাই {getCurrentVelocityX(), getCurrentVelocityY()};
 	}
 
 	/**
 	 * @return float Current trajectory position in X
 	 */
-	inline float getCurrentPositionX() const
+	অন্তঃস্থ ভিন্ন getCurrentPositionX() ধ্রুৱ
 	{
-		return _trajectory[0].getCurrentPosition();
+		ঘূৰাই _trajectory[0].getCurrentPosition();
 	}
 
 	/**
 	 * @return float Current trajectory position in Y
 	 */
-	inline float getCurrentPositionY() const
+	অন্তঃস্থ ভিন্ন getCurrentPositionY() ধ্রুৱ
 	{
-		return _trajectory[1].getCurrentPosition();
+		ঘূৰাই _trajectory[1].getCurrentPosition();
 	}
 
 	/**
 	 * @return float Current trajectory position in Z
 	 */
-	inline float getCurrentPositionZ() const
+	অন্তঃস্থ ভিন্ন getCurrentPositionZ() ধ্রুৱ
 	{
-		return _trajectory[2].getCurrentPosition();
+		ঘূৰাই _trajectory[2].getCurrentPosition();
 	}
 
 	/**
 	 * @return float Current trajectory position
 	 */
-	inline Vector3f getCurrentPosition() const
+	অন্তঃস্থ Vector3f getCurrentPosition() ধ্রুৱ
 	{
-		return {getCurrentPositionX(), getCurrentPositionY(), getCurrentPositionZ()};
+		ঘূৰাই {getCurrentPositionX(), getCurrentPositionY(), getCurrentPositionZ()};
 	}
 
 	/**
 	 * @param jerk maximum jerk for generated trajectory
 	 */
-	inline void setMaxJerkXY(float jerk)
+	অন্তঃস্থ শূন্য setMaxJerkXY(ভিন্ন jerk)
 	{
 		_trajectory[0].setMaxJerk(jerk);
 		_trajectory[1].setMaxJerk(jerk);
@@ -254,7 +254,7 @@ public:
 	/**
 	 * @param jerk maximum jerk for generated trajectory
 	 */
-	inline void setMaxJerkZ(float jerk)
+	অন্তঃস্থ শূন্য setMaxJerkZ(ভিন্ন jerk)
 	{
 		_trajectory[2].setMaxJerk(jerk);
 	}
@@ -262,7 +262,7 @@ public:
 	/**
 	 * @param jerk maximum jerk for generated trajectory
 	 */
-	inline void setMaxJerk(const float jerk)
+	অন্তঃস্থ শূন্য setMaxJerk(ধ্রুৱ ভিন্ন jerk)
 	{
 		_trajectory[0].setMaxJerk(jerk);
 		_trajectory[1].setMaxJerk(jerk);
@@ -272,7 +272,7 @@ public:
 	/**
 	 * @param accel maximum acceleration for generated trajectory
 	 */
-	inline void setMaxAccelerationXY(float accel)
+	অন্তঃস্থ শূন্য setMaxAccelerationXY(ভিন্ন accel)
 	{
 		_trajectory[0].setMaxAccel(accel);
 		_trajectory[1].setMaxAccel(accel);
@@ -281,7 +281,7 @@ public:
 	/**
 	 * @param accel maximum acceleration for generated trajectory
 	 */
-	inline void setMaxAccelerationZ(float accel)
+	অন্তঃস্থ শূন্য setMaxAccelerationZ(ভিন্ন accel)
 	{
 		_trajectory[2].setMaxAccel(accel);
 	}
@@ -289,7 +289,7 @@ public:
 	/**
 	 * @param accel maximum acceleration for generated trajectory
 	 */
-	inline void setMaxAcceleration(const Vector3f &accel)
+	অন্তঃস্থ শূন্য setMaxAcceleration(ধ্রুৱ Vector3f &accel)
 	{
 		_trajectory[0].setMaxAccel(accel(0));
 		_trajectory[1].setMaxAccel(accel(1));
@@ -299,7 +299,7 @@ public:
 	/**
 	 * @param vel maximum velocity for generated trajectory
 	 */
-	inline void setMaxVelocityXY(float vel)
+	অন্তঃস্থ শূন্য setMaxVelocityXY(ভিন্ন vel)
 	{
 		_trajectory[0].setMaxVel(vel);
 		_trajectory[1].setMaxVel(vel);
@@ -308,7 +308,7 @@ public:
 	/**
 	 * @param vel maximum velocity for generated trajectory
 	 */
-	inline void setMaxVelocityZ(float vel)
+	অন্তঃস্থ শূন্য setMaxVelocityZ(ভিন্ন vel)
 	{
 		_trajectory[2].setMaxVel(vel);
 	}
@@ -316,7 +316,7 @@ public:
 	/**
 	 * @param vel maximum velocity for generated trajectory
 	 */
-	inline void setMaxVelocity(const Vector3f &vel)
+	অন্তঃস্থ শূন্য setMaxVelocity(ধ্রুৱ Vector3f &vel)
 	{
 		_trajectory[0].setMaxVel(vel(0));
 		_trajectory[1].setMaxVel(vel(1));
@@ -326,7 +326,7 @@ public:
 	/**
 	 * @param error Maximum horizontal error allowed by the trajectory generator. Often set to param MPC_XY_ERR_MAX
 	 */
-	inline void setMaxAllowedHorizontalError(float error)
+	অন্তঃস্থ শূন্য setMaxAllowedHorizontalError(ভিন্ন error)
 	{
 		_max_allowed_horizontal_error = error;
 	}
@@ -337,7 +337,7 @@ public:
 	 * A finite value (param default is 1 m) makes the smoother slow down when the virtual trajectory leads
 	 * the drone in Z, preventing a noisy altitude reference from walking the commanded z away from the drone.
 	 */
-	inline void setMaxAllowedVerticalError(float error)
+	অন্তঃস্থ শূন্য setMaxAllowedVerticalError(ভিন্ন error)
 	{
 		_max_allowed_vertical_error = error;
 	}
@@ -345,7 +345,7 @@ public:
 	/**
 	 * @param radius  Altitude Acceptance Radius. Often set to NAV_MC_ALT_RAD
 	 */
-	inline void setVerticalAcceptanceRadius(float radius)
+	অন্তঃস্থ শূন্য setVerticalAcceptanceRadius(ভিন্ন radius)
 	{
 		_vertical_acceptance_radius = radius;
 	}
@@ -353,7 +353,7 @@ public:
 	/**
 	 * @param speed vehicle cruise speed
 	 */
-	inline void setCruiseSpeed(float speed)
+	অন্তঃস্থ শূন্য setCruiseSpeed(ভিন্ন speed)
 	{
 		_cruise_speed = speed;
 	}
@@ -361,7 +361,7 @@ public:
 	/**
 	 * @param gain Proportional gain for horizontal trajectory position error. Set to MPC_XY_TRAJ_P
 	 */
-	inline void setHorizontalTrajectoryGain(float gain)
+	অন্তঃস্থ শূন্য setHorizontalTrajectoryGain(ভিন্ন gain)
 	{
 		_horizontal_trajectory_gain = gain;
 	}
@@ -369,7 +369,7 @@ public:
 	/**
 	 * @param radius target acceptance radius
 	 */
-	inline void setTargetAcceptanceRadius(float radius)
+	অন্তঃস্থ শূন্য setTargetAcceptanceRadius(ভিন্ন radius)
 	{
 		_target_acceptance_radius = radius;
 	}
@@ -380,10 +380,10 @@ public:
 	 *
 	 * @param position
 	 */
-	void forceSetPosition(const Vector3f &position)
+	শূন্য forceSetPosition(ধ্রুৱ Vector3f &position)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(position(i))) {
+		বাবে (size_t i = 0; i < 3; i++) {
+			যদি (PX4_ISFINITE(position(i))) {
 				_trajectory[i].setCurrentPosition(position(i));
 			}
 		}
@@ -395,10 +395,10 @@ public:
 	 *
 	 * @param velocity
 	 */
-	void forceSetVelocity(const Vector3f &velocity)
+	শূন্য forceSetVelocity(ধ্রুৱ Vector3f &velocity)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(velocity(i))) {
+		বাবে (size_t i = 0; i < 3; i++) {
+			যদি (PX4_ISFINITE(velocity(i))) {
 				_trajectory[i].setCurrentVelocity(velocity(i));
 			}
 		}
@@ -410,54 +410,54 @@ public:
 	 *
 	 * @param acceleration
 	 */
-	void forceSetAcceleration(const Vector3f &acceleration)
+	শূন্য forceSetAcceleration(ধ্রুৱ Vector3f &acceleration)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(acceleration(i))) {
+		বাবে (size_t i = 0; i < 3; i++) {
+			যদি (PX4_ISFINITE(acceleration(i))) {
 				_trajectory[i].setCurrentAcceleration(acceleration(i));
 			}
 		}
 	}
 
 
-private:
+গুপ্ত:
 	/* params, only modified from external */
-	float _max_allowed_horizontal_error{0.f};
-	float _max_allowed_vertical_error{0.f};
-	float _vertical_acceptance_radius{0.f};
-	float _cruise_speed{0.f};
-	float _horizontal_trajectory_gain{0.f};
-	float _target_acceptance_radius{0.f};
+	ভিন্ন _max_allowed_horizontal_error{0.f};
+	ভিন্ন _max_allowed_vertical_error{0.f};
+	ভিন্ন _vertical_acceptance_radius{0.f};
+	ভিন্ন _cruise_speed{0.f};
+	ভিন্ন _horizontal_trajectory_gain{0.f};
+	ভিন্ন _target_acceptance_radius{0.f};
 
 
 	/* Internal state */
 	VelocitySmoothing _trajectory[3]; ///< Trajectories in x, y and z directions
-	float _max_speed_previous{0.f};
+	ভিন্ন _max_speed_previous{0.f};
 
 	/* Internal functions */
-	bool _isTurning(const Vector3f &target) const;
+	তার্কিক _isTurning(ধ্রুৱ Vector3f &target) ধ্রুৱ;
 
-	void _generateSetpoints(
-		const Vector3f &position,
-		const Vector3f(&waypoints)[3],
-		bool is_single_waypoint,
-		const Vector3f &feedforward_velocity,
-		float delta_time,
-		bool force_zero_velocity_setpoint,
+	শূন্য _generateSetpoints(
+		ধ্রুৱ Vector3f &position,
+		ধ্রুৱ Vector3f(&waypoints)[3],
+		তার্কিক is_single_waypoint,
+		ধ্রুৱ Vector3f &feedforward_velocity,
+		ভিন্ন delta_time,
+		তার্কিক force_zero_velocity_setpoint,
 		PositionSmoothingSetpoints &out_setpoints
 	);
 
-	const Vector3f _generateVelocitySetpoint(const Vector3f &position, const Vector3f(&waypoints)[3],
-			bool is_single_waypoint,
-			const Vector3f &feedforward_velocity_setpoint);
-	const Vector3f _getL1Point(const Vector3f &position, const Vector3f(&waypoints)[3]) const;
-	const Vector3f _getCrossingPoint(const Vector3f &position, const Vector3f(&waypoints)[3]) const;
-	float _getMaxXYSpeed(const Vector3f(&waypoints)[3]) const;
-	float _getMaxZSpeed(const Vector3f(&waypoints)[3]) const;
+	ধ্রুৱ Vector3f _generateVelocitySetpoint(ধ্রুৱ Vector3f &position, ধ্রুৱ Vector3f(&waypoints)[3],
+			তার্কিক is_single_waypoint,
+			ধ্রুৱ Vector3f &feedforward_velocity_setpoint);
+	ধ্রুৱ Vector3f _getL1Point(ধ্রুৱ Vector3f &position, ধ্রুৱ Vector3f(&waypoints)[3]) ধ্রুৱ;
+	ধ্রুৱ Vector3f _getCrossingPoint(ধ্রুৱ Vector3f &position, ধ্রুৱ Vector3f(&waypoints)[3]) ধ্রুৱ;
+	ভিন্ন _getMaxXYSpeed(ধ্রুৱ Vector3f(&waypoints)[3]) ধ্রুৱ;
+	ভিন্ন _getMaxZSpeed(ধ্রুৱ Vector3f(&waypoints)[3]) ধ্রুৱ;
 
-	void _generateTrajectory(
-		const Vector3f &position,
-		const Vector3f &velocity_setpoint,
-		float delta_time,
+	শূন্য _generateTrajectory(
+		ধ্রুৱ Vector3f &position,
+		ধ্রুৱ Vector3f &velocity_setpoint,
+		ভিন্ন delta_time,
 		PositionSmoothingSetpoints &out_setpoints);
 };

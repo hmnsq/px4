@@ -39,161 +39,161 @@
 
 #define PARAM_IMPLEMENTATION
 
-#include <errno.h>
+#অন্তর্ভাৱ <errno.h>
 
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <px4_platform_common/defines.h>
+#অন্তর্ভাৱ "param.h"
+#অন্তর্ভাৱ "parameters_ioctl.h"
+#অন্তর্ভাৱ <px4_platform_common/defines.h>
 
-int	param_ioctl(unsigned int cmd, unsigned long arg)
+পূর্ণাঙ্ক	param_ioctl(unsigned পূর্ণাঙ্ক cmd, unsigned long arg)
 {
-	int ret = OK;
+	পূর্ণাঙ্ক ret = OK;
 
-	switch (cmd) {
-	case PARAMIOCNOTIFY: {
+	ৱিকল্প (cmd) {
+	পক্ষ PARAMIOCNOTIFY: {
 			param_notify_changes();
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCFIND: {
+	পক্ষ PARAMIOCFIND: {
 			paramiocfind_t *data = (paramiocfind_t *)arg;
 
-			if (data->notification) {
+			যদি (data->notification) {
 				data->ret = param_find(data->name);
 
-			} else {
+			} অন্যথা {
 				data->ret = param_find_no_notification(data->name);
 			}
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCCOUNTUSED: {
+	পক্ষ PARAMIOCCOUNTUSED: {
 			paramioccountused_t *data = (paramioccountused_t *)arg;
-			data->ret = param_count_used();
+			data->ret = param_গুনতি_used();
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCFORUSEDINDEX: {
+	পক্ষ PARAMIOCFORUSEDINDEX: {
 			paramiocforusedindex_t *data = (paramiocforusedindex_t *)arg;
 			data->ret =  param_for_used_index(data->index);
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCGETUSEDINDEX: {
+	পক্ষ PARAMIOCGETUSEDINDEX: {
 			paramiocgetusedindex_t *data = (paramiocgetusedindex_t *)arg;
 			data->ret = param_get_used_index(data->param);
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCUNSAVED: {
+	পক্ষ PARAMIOCUNSAVED: {
 			paramiocunsaved_t *data = (paramiocunsaved_t *)arg;
-			data->ret = param_value_unsaved(data->param);
+			data->ret = param_মান_unsaved(data->param);
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCGET: {
+	পক্ষ PARAMIOCGET: {
 			paramiocget_t *data = (paramiocget_t *)arg;
 
-			if (data->deflt) {
-				data->ret = param_get_default_value(data->param, data->val);
+			যদি (data->deflt) {
+				data->ret = param_get_default_মান(data->param, data->val);
 
-			} else {
+			} অন্যথা {
 				data->ret = param_get(data->param, data->val);
 			}
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCAUTOSAVE: {
+	পক্ষ PARAMIOCAUTOSAVE: {
 			paramiocautosave_t *data = (paramiocautosave_t *)arg;
 			param_control_autosave(data->enable);
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCSET: {
+	পক্ষ PARAMIOCSET: {
 			paramiocset_t *data = (paramiocset_t *)arg;
 
-			if (data->notification) {
+			যদি (data->notification) {
 				data->ret = param_set(data->param, data->val);
 
-			} else {
+			} অন্যথা {
 				data->ret = param_set_no_notification(data->param, data->val);
 			}
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCUSED: {
+	পক্ষ PARAMIOCUSED: {
 			paramiocused_t *data = (paramiocused_t *)arg;
 			data->ret = param_used(data->param);
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCSETUSED: {
+	পক্ষ PARAMIOCSETUSED: {
 			paramiocsetused_t *data = (paramiocsetused_t *)arg;
 			param_set_used(data->param);
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCSETDEFAULT: {
+	পক্ষ PARAMIOCSETDEFAULT: {
 			paramiocsetdefault_t *data = (paramiocsetdefault_t *)arg;
-			data->ret = param_set_default_value(data->param, data->val);
+			data->ret = param_set_default_মান(data->param, data->val);
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCRESET: {
+	পক্ষ PARAMIOCRESET: {
 			paramiocreset_t *data = (paramiocreset_t *)arg;
 
-			if (data->notification) {
+			যদি (data->notification) {
 				data->ret = param_reset(data->param);
 
-			} else {
+			} অন্যথা {
 				data->ret = param_reset_no_notification(data->param);
 			}
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCRESETGROUP: {
+	পক্ষ PARAMIOCRESETGROUP: {
 			paramiocresetgroup_t *data = (paramiocresetgroup_t *)arg;
 
-			if (data->type == PARAM_RESET_EXCLUDES) {
-				param_reset_excludes(data->group, data->num_in_group);
+			যদি (data->type == PARAM_RESET_EXCLUDES) {
+				param_reset_excludes(data->group, data->অঙ্ক_in_group);
 
-			} else if (data->type == PARAM_RESET_SPECIFIC) {
-				param_reset_specific(data->group, data->num_in_group);
+			} অন্যথা যদি (data->type == PARAM_RESET_SPECIFIC) {
+				param_reset_specific(data->group, data->অঙ্ক_in_group);
 
-			} else {
+			} অন্যথা {
 				param_reset_all();
 			}
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCSAVEDEFAULT: {
+	পক্ষ PARAMIOCSAVEDEFAULT: {
 			paramiocsavedefault_t *data = (paramiocsavedefault_t *)arg;
 			data->ret = param_save_default(data->blocking);
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCLOADDEFAULT: {
+	পক্ষ PARAMIOCLOADDEFAULT: {
 			paramiocloaddefault_t *data = (paramiocloaddefault_t *)arg;
 			data->ret = param_load_default();
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCEXPORT: {
+	পক্ষ PARAMIOCEXPORT: {
 			paramiocexport_t *data = (paramiocexport_t *)arg;
 			data->ret = param_export(data->filename, nullptr);
 		}
-		break;
+		ভঙ্গ;
 
-	case PARAMIOCHASH: {
+	পক্ষ PARAMIOCHASH: {
 			paramiochash_t *data = (paramiochash_t *)arg;
 			data->ret = param_hash_check();
 		}
-		break;
+		ভঙ্গ;
 
-	default:
+	স্ৱভাৱ:
 		ret = -ENOTTY;
-		break;
+		ভঙ্গ;
 	}
 
-	return ret;
+	ঘূৰাই ret;
 }

@@ -33,29 +33,29 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#অন্তর্ভাৱ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/manual_control_setpoint.h>
+#অন্তর্ভাৱ <uORB/topics/manual_control_setpoint.h>
 
 /**
  * Functions: RC_Roll .. RCAUX_Max
  */
-class FunctionManualRC : public FunctionProviderBase
+শ্ৰেণী FunctionManualRC : সার্ৱজনিক FunctionProviderBase
 {
-public:
+সার্ৱজনিক:
 	FunctionManualRC()
 	{
-		resetAllToDisarmedValue();
+		reset_All_To_Disarmed_মান();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionManualRC(); }
+	স্থির FunctionProviderBase *allocate(ধ্রুৱ Context &context) { ঘূৰাই নূতন FunctionManualRC(); }
 
-	void update() override
+	শূন্য update() override
 	{
 		manual_control_setpoint_s manual_control_setpoint;
 
-		if (_topic.update(&manual_control_setpoint)) {
-			if (manual_control_setpoint.valid) {
+		যদি (_topic.update(&manual_control_setpoint)) {
+			যদি (manual_control_setpoint.valid) {
 				_data[0] = manual_control_setpoint.roll;
 				_data[1] = manual_control_setpoint.pitch;
 				_data[2] = manual_control_setpoint.throttle;
@@ -68,27 +68,27 @@ public:
 				_data[9] = manual_control_setpoint.aux5;
 				_data[10] = manual_control_setpoint.aux6;
 
-			} else {
-				resetAllToDisarmedValue();
+			} অন্যথা {
+				reset_All_To_Disarmed_মান();
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::RC_Roll]; }
+	ভিন্ন value(OutputFunction func) override { ঘূৰাই _data[(পূর্ণাঙ্ক)func - (পূর্ণাঙ্ক)OutputFunction::RC_Roll]; }
 
-private:
-	static constexpr int num_data_points = 11;
+গুপ্ত:
+	স্থির constexpr পূর্ণাঙ্ক অঙ্ক_data_points = 11;
 
-	void resetAllToDisarmedValue()
+	শূন্য reset_All_To_Disarmed_মান()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
+		বাবে (পূর্ণাঙ্ক i = 0; i < অঙ্ক_data_points; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
+	static_assert(অঙ্ক_data_points == (পূর্ণাঙ্ক)OutputFunction::RC_AUXMax - (পূর্ণাঙ্ক)OutputFunction::RC_Roll + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _topic{ORB_ID(manual_control_setpoint)};
-	float _data[num_data_points] {};
+	ভিন্ন _data[অঙ্ক_data_points] {};
 };

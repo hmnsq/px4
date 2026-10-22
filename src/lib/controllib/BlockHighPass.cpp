@@ -37,21 +37,21 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#অন্তর্ভাৱ <math.h>
+#অন্তর্ভাৱ <float.h>
 
-#include "blocks.hpp"
+#অন্তর্ভাৱ "blocks.hpp"
 
-namespace control
+নামাকাশ control
 {
 
-float BlockHighPass::update(float input)
+ভিন্ন Block_উপৰেৰ_Pass::update(ভিন্ন প্ৰবেশ)
 {
-	float b = 2 * M_PI_F * getFCut() * getDt();
-	float a = 1 / (1 + b);
-	setY(a * (getY() + input - getU()));
-	setU(input);
-	return getY();
+	ভিন্ন b = 2 * M_PI_F * getFCut() * getDt();
+	ভিন্ন a = 1 / (1 + b);
+	setY(a * (getY() + প্ৰবেশ - getU()));
+	setU(প্ৰবেশ);
+	ঘূৰাই getY();
 }
 
 } // namespace control

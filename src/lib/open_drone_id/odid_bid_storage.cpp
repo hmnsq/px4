@@ -31,29 +31,29 @@
  *
  ****************************************************************************/
 
-#include "odid_bid_storage.hpp"
+#অন্তর্ভাৱ "odid_bid_storage.hpp"
 
-#include <fcntl.h>
-#include <stddef.h>
-#include <string.h>
-#include <unistd.h>
+#অন্তর্ভাৱ <fcntl.h>
+#অন্তর্ভাৱ <stddef.h>
+#অন্তর্ভাৱ <string.h>
+#অন্তর্ভাৱ <unistd.h>
 
 #ifdef __PX4_NUTTX
-#include <nuttx/crc32.h>
-#include <px4_platform_common/px4_manifest.h>
-#else
-#include <crc32.h>
+#অন্তর্ভাৱ <nuttx/crc32.h>
+#অন্তর্ভাৱ <px4_platform_common/px4_manifest.h>
+#অন্যথা
+#অন্তর্ভাৱ <crc32.h>
 #endif
 
-namespace open_drone_id
+নামাকাশ open_drone_id
 {
-namespace
+নামাকাশ
 {
 
-static constexpr uint32_t ODID_UASID_MAGIC = 0x4449444f; // "ODID"
-static constexpr uint8_t ODID_UASID_RECORD_VERSION = 1;
+স্থির constexpr uint32_t ODID_UASID_MAGIC = 0x4449444f; // "ODID"
+স্থির constexpr uint8_t ODID_UASID_RECORD_VERSION = 1;
 
-struct __attribute__((packed)) UasIdRecord {
+সংরচনা __attribute__((packed)) UasIdRecord {
 	uint32_t magic;
 	uint8_t version;
 	uint8_t id_type;
@@ -63,190 +63,190 @@ struct __attribute__((packed)) UasIdRecord {
 	uint32_t crc;
 };
 
-class BidStorageBackend
+শ্ৰেণী BidStorageBackend
 {
-public:
+সার্ৱজনিক:
 	BidLockInfo get();
-	BidStoreResult checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE]);
+	BidStoreResult checkOrStore(uint8_t ua_type, ধ্রুৱ uint8_t uas_id[UAS_ID_SIZE]);
 
-private:
-	static bool uasIdIsEmpty(const uint8_t uas_id[UAS_ID_SIZE])
+গুপ্ত:
+	স্থির তার্কিক uasIdIsEmpty(ধ্রুৱ uint8_t uas_id[UAS_ID_SIZE])
 	{
-		for (unsigned i = 0; i < UAS_ID_SIZE; ++i) {
-			if (uas_id[i] != 0) {
-				return false;
+		বাবে (unsigned i = 0; i < UAS_ID_SIZE; ++i) {
+			যদি (uas_id[i] != 0) {
+				ঘূৰাই মিছা;
 			}
 		}
 
-		return true;
+		ঘূৰাই সঁচা;
 	}
 
-	static uint32_t recordCrc(const UasIdRecord &record)
+	স্থির uint32_t recordCrc(ধ্রুৱ UasIdRecord &record)
 	{
-		return crc32(reinterpret_cast<const uint8_t *>(&record.version),
+		ঘূৰাই crc32(reinterpret_cast<ধ্রুৱ uint8_t *>(&record.version),
 			     offsetof(UasIdRecord, crc) - offsetof(UasIdRecord, version));
 	}
 
-	static bool recordValid(const UasIdRecord &record)
+	স্থির তার্কিক recordValid(ধ্রুৱ UasIdRecord &record)
 	{
-		return record.magic == ODID_UASID_MAGIC
+		ঘূৰাই record.magic == ODID_UASID_MAGIC
 		       && record.version == ODID_UASID_RECORD_VERSION
-		       && record.id_type == UAS_ID_TYPE_SERIAL_NUMBER
+		       && record.id_type == UAS_ID_TYPE_SERIAL_সংখ্যা
 		       && !uasIdIsEmpty(record.uas_id)
 		       && record.crc == recordCrc(record);
 	}
 
 	// Check if the record is all 0xff, which is the erased state of flash.
 	// This is needed to distinguish between an unwritten record and a record that was written with all bytes set to 0 (which would be invalid but not unwritten).
-	static bool recordBlank(const UasIdRecord &record)
+	স্থির তার্কিক recordBlank(ধ্রুৱ UasIdRecord &record)
 	{
-		const uint8_t *bytes = reinterpret_cast<const uint8_t *>(&record);
+		ধ্রুৱ uint8_t *bytes = reinterpret_cast<ধ্রুৱ uint8_t *>(&record);
 
-		for (unsigned i = 0; i < sizeof(record); ++i) {
-			if (bytes[i] != 0xff) {
-				return false;
+		বাবে (unsigned i = 0; i < পরিমাণ(record); ++i) {
+			যদি (bytes[i] != 0xff) {
+				ঘূৰাই মিছা;
 			}
 		}
 
-		return true;
+		ঘূৰাই সঁচা;
 	}
 
-	static bool recordMatches(const UasIdRecord &record, const uint8_t uas_id[UAS_ID_SIZE])
+	স্থির তার্কিক recordMatches(ধ্রুৱ UasIdRecord &record, ধ্রুৱ uint8_t uas_id[UAS_ID_SIZE])
 	{
-		return memcmp(record.uas_id, uas_id, UAS_ID_SIZE) == 0;
+		ঘূৰাই memcmp(record.uas_id, uas_id, UAS_ID_SIZE) == 0;
 	}
 
 	// Write the entire buffer to the file descriptor, handling short writes.
-	static bool writeAll(int fd, const void *buffer, size_t size)
+	স্থির তার্কিক writeAll(পূর্ণাঙ্ক fd, ধ্রুৱ শূন্য *buffer, size_t size)
 	{
-		const uint8_t *bytes = static_cast<const uint8_t *>(buffer);
+		ধ্রুৱ uint8_t *bytes = static_cast<ধ্রুৱ uint8_t *>(buffer);
 
-		while (size > 0) {
-			const ssize_t written = write(fd, bytes, size);
+		যেতিয়ালৈ (size > 0) {
+			ধ্রুৱ ssize_t written = লিখ(fd, bytes, size);
 
-			if (written <= 0) {
-				return false;
+			যদি (written <= 0) {
+				ঘূৰাই মিছা;
 			}
 
 			bytes += written;
 			size -= written;
 		}
 
-		return true;
+		ঘূৰাই সঁচা;
 	}
 
 };
 
-static_assert(sizeof(UasIdRecord) <= 256, "OpenDroneID UAS ID record must fit in /fs/mtd_id");
+static_assert(পরিমাণ(UasIdRecord) <= 256, "OpenDroneID UAS ID record must fit in /fs/mtd_id");
 
 // The UAS ID storage is only supported on PX4 targets with NuttX and an MTD partition named "ID".
 // On other platforms, the get() method will return StorageUnavailable and the checkOrStore() method will return Unsupported.
 BidLockInfo BidStorageBackend::get()
 {
-#if defined(__PX4_NUTTX)
-	const char *path = nullptr;
+#যদি defined(__PX4_NUTTX)
+	ধ্রুৱ ৱর্ণ *path = nullptr;
 
-	if (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
-		return {BidLockState::StorageUnavailable, {}};
+	যদি (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
+		ঘূৰাই {BidLockState::StorageUnavailable, {}};
 	}
 
-	int fd = open(path, O_RDONLY);
+	পূর্ণাঙ্ক fd = open(path, O_RDONLY);
 
-	if (fd < 0) {
-		return {BidLockState::StorageUnavailable, {}};
+	যদি (fd < 0) {
+		ঘূৰাই {BidLockState::StorageUnavailable, {}};
 	}
 
 	UasIdRecord record{};
 
-	if (read(fd, &record, sizeof(record)) != sizeof(record)) {
+	যদি (পঠ(fd, &record, পরিমাণ(record)) != পরিমাণ(record)) {
 		close(fd);
-		return {BidLockState::StorageUnavailable, {}};
+		ঘূৰাই {BidLockState::StorageUnavailable, {}};
 	}
 
 	close(fd);
 
-	if (recordValid(record)) {
+	যদি (recordValid(record)) {
 		BidLockInfo info{BidLockState::Locked, {}};
 		info.id.ua_type = record.ua_type;
 		memcpy(info.id.uas_id, record.uas_id, UAS_ID_SIZE);
-		return info;
+		ঘূৰাই info;
 	}
 
-	if (recordBlank(record)) {
-		return {BidLockState::Empty, {}};
+	যদি (recordBlank(record)) {
+		ঘূৰাই {BidLockState::Empty, {}};
 	}
 
-	return {BidLockState::InvalidRecord, {}};
-#else
-	return {BidLockState::Unsupported, {}};
+	ঘূৰাই {BidLockState::InvalidRecord, {}};
+#অন্যথা
+	ঘূৰাই {BidLockState::Unsupported, {}};
 #endif
 }
 
 // Check if the given UAS ID matches the stored one, or store it if the storage is empty.
 // The storage is write-once, so once a UAS ID is stored it cannot be changed (except by erasing the flash).
-BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE])
+BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, ধ্রুৱ uint8_t uas_id[UAS_ID_SIZE])
 {
-	if (uasIdIsEmpty(uas_id)) {
-		return BidStoreResult::InvalidBasicId;
+	যদি (uasIdIsEmpty(uas_id)) {
+		ঘূৰাই BidStoreResult::InvalidBasicId;
 	}
 
-#if defined(__PX4_NUTTX)
-	const char *path = nullptr;
+#যদি defined(__PX4_NUTTX)
+	ধ্রুৱ ৱর্ণ *path = nullptr;
 
-	if (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
-		return BidStoreResult::StorageUnavailable;
+	যদি (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
+		ঘূৰাই BidStoreResult::StorageUnavailable;
 	}
 
-	int fd = open(path, O_RDWR);
+	পূর্ণাঙ্ক fd = open(path, O_RDWR);
 
-	if (fd < 0) {
-		return BidStoreResult::StorageUnavailable;
+	যদি (fd < 0) {
+		ঘূৰাই BidStoreResult::StorageUnavailable;
 	}
 
 	UasIdRecord existing{};
 
-	if (read(fd, &existing, sizeof(existing)) != sizeof(existing)) {
+	যদি (পঠ(fd, &existing, পরিমাণ(existing)) != পরিমাণ(existing)) {
 		close(fd);
-		return BidStoreResult::StorageUnavailable;
+		ঘূৰাই BidStoreResult::StorageUnavailable;
 	}
 
-	if (recordValid(existing)) {
-		const BidStoreResult result = recordMatches(existing, uas_id)
+	যদি (recordValid(existing)) {
+		ধ্রুৱ BidStoreResult result = recordMatches(existing, uas_id)
 					      ? BidStoreResult::AlreadyLocked
 					      : BidStoreResult::AlreadyLockedDifferent;
 		close(fd);
-		return result;
+		ঘূৰাই result;
 	}
 
-	if (!recordBlank(existing)) {
+	যদি (!recordBlank(existing)) {
 		close(fd);
-		return BidStoreResult::InvalidRecord;
+		ঘূৰাই BidStoreResult::InvalidRecord;
 	}
 
 	UasIdRecord record{};
 	record.magic = ODID_UASID_MAGIC;
 	record.version = ODID_UASID_RECORD_VERSION;
-	record.id_type = UAS_ID_TYPE_SERIAL_NUMBER;
+	record.id_type = UAS_ID_TYPE_SERIAL_সংখ্যা;
 	record.ua_type = ua_type;
 	memcpy(record.uas_id, uas_id, UAS_ID_SIZE);
 	record.crc = recordCrc(record);
 
-	const uint32_t magic = record.magic;
+	ধ্রুৱ uint32_t magic = record.magic;
 	record.magic = 0xffffffff;
 
-	const bool written = lseek(fd, sizeof(record.magic), SEEK_SET) == static_cast<off_t>(sizeof(record.magic))
-			     && writeAll(fd, reinterpret_cast<const uint8_t *>(&record) + sizeof(record.magic),
-					 sizeof(record) - sizeof(record.magic))
+	ধ্রুৱ তার্কিক written = lseek(fd, পরিমাণ(record.magic), SEEK_SET) == static_cast<off_t>(পরিমাণ(record.magic))
+			     && writeAll(fd, reinterpret_cast<ধ্রুৱ uint8_t *>(&record) + পরিমাণ(record.magic),
+					 পরিমাণ(record) - পরিমাণ(record.magic))
 			     && fsync(fd) == 0
 			     && lseek(fd, 0, SEEK_SET) == 0
-			     && writeAll(fd, &magic, sizeof(magic))
+			     && writeAll(fd, &magic, পরিমাণ(magic))
 			     && fsync(fd) == 0;
 
 	close(fd);
 
-	return written ? BidStoreResult::Stored : BidStoreResult::WriteError;
-#else
-	return BidStoreResult::Unsupported;
+	ঘূৰাই written ? BidStoreResult::Stored : BidStoreResult::WriteError;
+#অন্যথা
+	ঘূৰাই BidStoreResult::Unsupported;
 #endif
 }
 
@@ -256,84 +256,84 @@ BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t ua
 BidLockInfo BidStorage::get()
 {
 	BidStorageBackend storage;
-	return storage.get();
+	ঘূৰাই storage.get();
 }
 
-BidStoreResult BidStorage::checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE])
+BidStoreResult BidStorage::checkOrStore(uint8_t ua_type, ধ্রুৱ uint8_t uas_id[UAS_ID_SIZE])
 {
 	BidStorageBackend storage;
-	return storage.checkOrStore(ua_type, uas_id);
+	ঘূৰাই storage.checkOrStore(ua_type, uas_id);
 }
 
 //
-BidStoreResult BidLock::resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE],
+BidStoreResult BidLock::resolve(uint8_t id_type, uint8_t ua_type, ধ্রুৱ uint8_t uas_id[UAS_ID_SIZE],
 				UasId &locked_id)
 {
-	if (id_type != UAS_ID_TYPE_SERIAL_NUMBER) {
-		return BidStoreResult::InvalidBasicId;
+	যদি (id_type != UAS_ID_TYPE_SERIAL_সংখ্যা) {
+		ঘূৰাই BidStoreResult::InvalidBasicId;
 	}
 
-	if (!_loaded) {
+	যদি (!_loaded) {
 		_info = BidStorage::get();
-		_loaded = true;
+		_loaded = সঁচা;
 	}
 
-	if (_info.locked()) {
+	যদি (_info.locked()) {
 		locked_id = _info.id;
-		return BidStoreResult::AlreadyLocked;
+		ঘূৰাই BidStoreResult::AlreadyLocked;
 	}
 
-	if (_info.state != BidLockState::Empty) {
-		switch (_info.state) {
-		case BidLockState::InvalidRecord:
-			return BidStoreResult::InvalidRecord;
+	যদি (_info.state != BidLockState::Empty) {
+		ৱিকল্প (_info.state) {
+		পক্ষ BidLockState::InvalidRecord:
+			ঘূৰাই BidStoreResult::InvalidRecord;
 
-		case BidLockState::StorageUnavailable:
-			return BidStoreResult::StorageUnavailable;
+		পক্ষ BidLockState::StorageUnavailable:
+			ঘূৰাই BidStoreResult::StorageUnavailable;
 
-		case BidLockState::WriteError:
-			return BidStoreResult::WriteError;
+		পক্ষ BidLockState::WriteError:
+			ঘূৰাই BidStoreResult::WriteError;
 
-		case BidLockState::Unsupported:
-			return BidStoreResult::Unsupported;
+		পক্ষ BidLockState::Unsupported:
+			ঘূৰাই BidStoreResult::Unsupported;
 
-		case BidLockState::Empty:
-		case BidLockState::Locked:
-			break;
+		পক্ষ BidLockState::Empty:
+		পক্ষ BidLockState::Locked:
+			ভঙ্গ;
 		}
 	}
 
-	const BidStoreResult result = BidStorage::checkOrStore(ua_type, uas_id);
+	ধ্রুৱ BidStoreResult result = BidStorage::checkOrStore(ua_type, uas_id);
 
-	switch (result) {
-	case BidStoreResult::Stored:
+	ৱিকল্প (result) {
+	পক্ষ BidStoreResult::Stored:
 		_info.state = BidLockState::Locked;
 		_info.id.ua_type = ua_type;
 		memcpy(_info.id.uas_id, uas_id, UAS_ID_SIZE);
 		locked_id = _info.id;
-		return result;
+		ঘূৰাই result;
 
-	case BidStoreResult::AlreadyLocked:
-	case BidStoreResult::AlreadyLockedDifferent: {
+	পক্ষ BidStoreResult::AlreadyLocked:
+	পক্ষ BidStoreResult::AlreadyLockedDifferent: {
 			_info = BidStorage::get();
 
-			if (_info.locked()) {
+			যদি (_info.locked()) {
 				locked_id = _info.id;
-				return BidStoreResult::AlreadyLocked;
+				ঘূৰাই BidStoreResult::AlreadyLocked;
 			}
 
-			return BidStoreResult::InvalidRecord;
+			ঘূৰাই BidStoreResult::InvalidRecord;
 		}
 
-	case BidStoreResult::InvalidBasicId:
-	case BidStoreResult::StorageUnavailable:
-	case BidStoreResult::InvalidRecord:
-	case BidStoreResult::WriteError:
-	case BidStoreResult::Unsupported:
-		return result;
+	পক্ষ BidStoreResult::InvalidBasicId:
+	পক্ষ BidStoreResult::StorageUnavailable:
+	পক্ষ BidStoreResult::InvalidRecord:
+	পক্ষ BidStoreResult::WriteError:
+	পক্ষ BidStoreResult::Unsupported:
+		ঘূৰাই result;
 	}
 
-	return BidStoreResult::InvalidRecord;
+	ঘূৰাই BidStoreResult::InvalidRecord;
 }
 
 } // namespace open_drone_id

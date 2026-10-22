@@ -36,56 +36,56 @@
  * @author Paul Riseborough
  */
 
-#include "TECS.hpp"
+#অন্তর্ভাৱ "TECS.hpp"
 
-#include <lib/geo/geo.h>
+#অন্তর্ভাৱ <lib/geo/geo.h>
 
-#include <px4_platform_common/defines.h>
+#অন্তর্ভাৱ <px4_platform_common/defines.h>
 
 using math::constrain;
 using math::max;
 using math::min;
 
-static constexpr bool isValidTimeStep(float dt) { return (PX4_ISFINITE(dt) && dt > FLT_EPSILON);}
-static constexpr bool fastDescendFullyEngaged(float fast_descend) { return 1.f - fast_descend < FLT_EPSILON; }
+স্থির constexpr তার্কিক isValidTimeStep(ভিন্ন dt) { ঘূৰাই (PX4_ISFINITE(dt) && dt > FLT_EPSILON);}
+স্থির constexpr তার্কিক fastDescendFullyEngaged(ভিন্ন fast_descend) { ঘূৰাই 1.f - fast_descend < FLT_EPSILON; }
 
-void TECSAirspeedFilter::initialize(const float equivalent_airspeed, const float equivalent_airspeed_trim,
-				    const bool airspeed_sensor_available)
+শূন্য TECSAirspeedFilter::initialize(ধ্রুৱ ভিন্ন equivalent_airspeed, ধ্রুৱ ভিন্ন equivalent_airspeed_trim,
+				    ধ্রুৱ তার্কিক airspeed_sensor_available)
 {
-	if (airspeed_sensor_available && PX4_ISFINITE(equivalent_airspeed)) {
+	যদি (airspeed_sensor_available && PX4_ISFINITE(equivalent_airspeed)) {
 		_airspeed_state.speed = equivalent_airspeed;
 
-	} else {
+	} অন্যথা {
 		_airspeed_state.speed = equivalent_airspeed_trim;
 	}
 
 	_airspeed_state.speed_rate = 0.f;
 }
 
-void TECSAirspeedFilter::update(const float dt, const Input &input, const Param &param,
-				const bool airspeed_sensor_available)
+শূন্য TECSAirspeedFilter::update(ধ্রুৱ ভিন্ন dt, ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ, ধ্রুৱ Param &param,
+				ধ্রুৱ তার্কিক airspeed_sensor_available)
 {
 	// Input checking
-	if (!isValidTimeStep(dt)) {
+	যদি (!isValidTimeStep(dt)) {
 		// Do not update the states.
-		return;
+		ঘূৰাই;
 	}
 
-	float airspeed;
+	ভিন্ন airspeed;
 
-	if (PX4_ISFINITE(input.equivalent_airspeed) && airspeed_sensor_available) {
-		airspeed = input.equivalent_airspeed;
+	যদি (PX4_ISFINITE(প্ৰবেশ.equivalent_airspeed) && airspeed_sensor_available) {
+		airspeed = প্ৰবেশ.equivalent_airspeed;
 
-	} else {
+	} অন্যথা {
 		airspeed = param.equivalent_airspeed_trim;
 	}
 
-	float airspeed_derivative;
+	ভিন্ন airspeed_derivative;
 
-	if (PX4_ISFINITE(input.equivalent_airspeed_rate) && airspeed_sensor_available) {
-		airspeed_derivative = input.equivalent_airspeed_rate;
+	যদি (PX4_ISFINITE(প্ৰবেশ.equivalent_airspeed_rate) && airspeed_sensor_available) {
+		airspeed_derivative = প্ৰবেশ.equivalent_airspeed_rate;
 
-	} else {
+	} অন্যথা {
 		airspeed_derivative = 0.0f;
 	}
 
@@ -99,17 +99,17 @@ void TECSAirspeedFilter::update(const float dt, const Input &input, const Param 
 	new_state_predicted(0) = _airspeed_state.speed + dt * _airspeed_state.speed_rate;
 	new_state_predicted(1) = _airspeed_state.speed_rate;
 
-	const matrix::Vector2f innovation{(airspeed - new_state_predicted(0)), (airspeed_derivative - new_state_predicted(1))};
+	ধ্রুৱ matrix::Vector2f innovation{(airspeed - new_state_predicted(0)), (airspeed_derivative - new_state_predicted(1))};
 
 	matrix::Vector2f new_state;
 	new_state(0) = new_state_predicted(0) + dt * (kKg00 * innovation(0) + kKg01 * innovation(1));
 	new_state(1) = new_state_predicted(1) + dt * (kKg10 * innovation(0) + kKg11 * innovation(1));
 
 	// Clip airspeed at zero
-	if (new_state(0) < FLT_EPSILON) {
+	যদি (new_state(0) < FLT_EPSILON) {
 		new_state(0) = 0.0f;
 		// calculate input that would result in zero speed.
-		const float desired_airspeed_innovation = (-new_state_predicted(0) / dt - kKg01 * innovation(1)) / kKg00;
+		ধ্রুৱ ভিন্ন desired_airspeed_innovation = (-new_state_predicted(0) / dt - kKg01 * innovation(1)) / kKg00;
 		new_state(1) = new_state_predicted(1) + dt * (kKg10 * desired_airspeed_innovation + kKg11 * innovation(1));
 	}
 
@@ -118,21 +118,21 @@ void TECSAirspeedFilter::update(const float dt, const Input &input, const Param 
 	_airspeed_state.speed_rate = new_state(1);
 }
 
-TECSAirspeedFilter::AirspeedFilterState TECSAirspeedFilter::getState() const
+TECSAirspeedFilter::AirspeedFilterState TECSAirspeedFilter::getState() ধ্রুৱ
 {
-	return _airspeed_state;
+	ঘূৰাই _airspeed_state;
 }
 
-void TECSAltitudeReferenceModel::update(const float dt, const AltitudeReferenceState &setpoint, float altitude,
-					float height_rate, const Param &param)
+শূন্য TECSAltitudeReferenceModel::update(ধ্রুৱ ভিন্ন dt, ধ্রুৱ AltitudeReferenceState &setpoint, ভিন্ন altitude,
+					ভিন্ন height_rate, ধ্রুৱ Param &param)
 {
 	// Input checks
-	if (!isValidTimeStep(dt)) {
+	যদি (!isValidTimeStep(dt)) {
 		// Do not update the states.
-		return;
+		ঘূৰাই;
 	}
 
-	const float current_alt = PX4_ISFINITE(altitude) ? altitude : 0.f;
+	ধ্রুৱ ভিন্ন current_alt = PX4_ISFINITE(altitude) ? altitude : 0.f;
 
 	_velocity_control_traj_generator.setMaxJerk(JERK_MAX);
 	_velocity_control_traj_generator.setMaxAccelUp(param.vert_accel_limit);
@@ -151,33 +151,33 @@ void TECSAltitudeReferenceModel::update(const float dt, const AltitudeReferenceS
 	// and height rate control loops.
 	_velocity_control_traj_generator.setVelSpFeedback(setpoint.alt_rate);
 
-	bool control_altitude = true;
-	float altitude_setpoint = setpoint.alt;
+	তার্কিক control_altitude = সঁচা;
+	ভিন্ন altitude_setpoint = setpoint.alt;
 
-	if (!PX4_ISFINITE(setpoint.alt) && !PX4_ISFINITE(setpoint.alt_rate)) {
+	যদি (!PX4_ISFINITE(setpoint.alt) && !PX4_ISFINITE(setpoint.alt_rate)) {
 		// neither altitude nor altitude rate is set - reset to current altitude
 		_velocity_control_traj_generator.reset(0.f, 0, current_alt);
 		altitude_setpoint = current_alt;
 
-	} else if (PX4_ISFINITE(setpoint.alt_rate)) {
+	} অন্যথা যদি (PX4_ISFINITE(setpoint.alt_rate)) {
 		// input is height rate (not altitude)
 		_velocity_control_traj_generator.setCurrentPositionEstimate(current_alt);
 		_velocity_control_traj_generator.update(dt, setpoint.alt_rate);
 		altitude_setpoint = _velocity_control_traj_generator.getCurrentPosition();
 		control_altitude = PX4_ISFINITE(altitude_setpoint); // returns true if altitude is locked
 
-	} else {
+	} অন্যথা {
 		// input is altitude
 		_velocity_control_traj_generator.reset(0, height_rate, altitude_setpoint);
 	}
 
-	if (control_altitude) {
-		const float target_climbrate_m_s = math::min(param.target_climbrate, param.max_climb_rate);
-		const float target_sinkrate_m_s = math::min(param.target_sinkrate, param.max_sink_rate);
+	যদি (control_altitude) {
+		ধ্রুৱ ভিন্ন target_climbrate_m_s = math::min(param.target_climbrate, param.max_climb_rate);
+		ধ্রুৱ ভিন্ন target_sinkrate_m_s = math::min(param.target_sinkrate, param.max_sink_rate);
 
-		const float delta_trajectory_to_target_m = altitude_setpoint - _alt_control_traj_generator.getCurrentPosition();
+		ধ্রুৱ ভিন্ন delta_trajectory_to_target_m = altitude_setpoint - _alt_control_traj_generator.getCurrentPosition();
 
-		float height_rate_target = math::signNoZero<float>(delta_trajectory_to_target_m) *
+		ভিন্ন height_rate_target = math::signNoZero<ভিন্ন>(delta_trajectory_to_target_m) *
 					   math::trajectory::computeMaxSpeedFromDistance(
 						   JERK_MAX, param.vert_accel_limit, fabsf(delta_trajectory_to_target_m), 0.f);
 
@@ -187,33 +187,33 @@ void TECSAltitudeReferenceModel::update(const float dt, const AltitudeReferenceS
 		_alt_control_traj_generator.updateTraj(dt);
 		_height_rate_setpoint_direct = NAN;
 
-	} else {
+	} অন্যথা {
 		_alt_control_traj_generator.setCurrentVelocity(_velocity_control_traj_generator.getCurrentVelocity());
 		_alt_control_traj_generator.setCurrentPosition(current_alt);
 		_height_rate_setpoint_direct = _velocity_control_traj_generator.getCurrentVelocity();
 	}
 }
 
-TECSAltitudeReferenceModel::AltitudeReferenceState TECSAltitudeReferenceModel::getAltitudeReference() const
+TECSAltitudeReferenceModel::AltitudeReferenceState TECSAltitudeReferenceModel::getAltitudeReference() ধ্রুৱ
 {
 	TECSAltitudeReferenceModel::AltitudeReferenceState ref{
 		.alt = _alt_control_traj_generator.getCurrentPosition(),
 		.alt_rate = _alt_control_traj_generator.getCurrentVelocity(),
 	};
 
-	return ref;
+	ঘূৰাই ref;
 }
 
-void TECSAltitudeReferenceModel::initialize(const AltitudeReferenceState &state)
+শূন্য TECSAltitudeReferenceModel::initialize(ধ্রুৱ AltitudeReferenceState &state)
 {
-	const float init_state_alt = PX4_ISFINITE(state.alt) ? state.alt : 0.f;
-	const float init_state_alt_rate = PX4_ISFINITE(state.alt_rate) ? state.alt_rate : 0.f;
+	ধ্রুৱ ভিন্ন init_state_alt = PX4_ISFINITE(state.alt) ? state.alt : 0.f;
+	ধ্রুৱ ভিন্ন init_state_alt_rate = PX4_ISFINITE(state.alt_rate) ? state.alt_rate : 0.f;
 
 	_alt_control_traj_generator.reset(0.0f, init_state_alt_rate, init_state_alt);
 	_velocity_control_traj_generator.reset(0.f, init_state_alt_rate, init_state_alt);
 }
 
-void TECSControl::initialize(const Setpoint &setpoint, const Input &input, const Param &param, const Flag &flag)
+শূন্য TECSControl::initialize(ধ্রুৱ Setpoint &setpoint, ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ, ধ্রুৱ Param &param, ধ্রুৱ Flag &flag)
 {
 	resetIntegrals();
 
@@ -221,19 +221,19 @@ void TECSControl::initialize(const Setpoint &setpoint, const Input &input, const
 	Setpoint altitude_loop_setpoint{setpoint};
 	altitude_loop_setpoint.altitude_rate_setpoint_direct = NAN;
 
-	const STERateLimit limit{_calculateTotalEnergyRateLimit(param)};
-	const SpecificEnergyRates specific_energy_rate{_updateOuterLoops(altitude_loop_setpoint, input, limit, param, flag)};
+	ধ্রুৱ STERateLimit limit{_calculateTotalEnergyRateLimit(param)};
+	ধ্রুৱ SpecificEnergyRates specific_energy_rate{_updateOuterLoops(altitude_loop_setpoint, প্ৰবেশ, limit, param, flag)};
 
-	const SpecificEnergyWeighting weight{_updateSpeedAltitudeWeights(param, flag)};
-	const SpecificEnergyRates pitch_specific_energy_rate{_calcPitchControlEnergyRates(setpoint, input, limit,
+	ধ্রুৱ SpecificEnergyWeighting weight{_updateSpeedAltitudeWeights(param, flag)};
+	ধ্রুৱ SpecificEnergyRates pitch_specific_energy_rate{_calcPitchControlEnergyRates(setpoint, প্ৰবেশ, limit,
 			specific_energy_rate, param, flag, weight)};
-	ControlValues seb_rate{_calcPitchControlSebRate(weight, pitch_specific_energy_rate)};
+	Control_মানসমূহ seb_rate{_calcPitchControlSebRate(weight, pitch_specific_energy_rate)};
 
-	_pitch_setpoint = _calcPitchControlOutput(input, seb_rate, param);
+	_pitch_setpoint = _calcPitchControlOutput(প্ৰবেশ, seb_rate, param);
 
 	_ste_rate_estimate_filter.reset(specific_energy_rate.spe_rate.estimate + specific_energy_rate.ske_rate.estimate);
 
-	ControlValues ste_rate{_calcThrottleControlSteRate(limit, specific_energy_rate, param)};
+	Control_মানসমূহ ste_rate{_calcThrottleControlSteRate(limit, specific_energy_rate, param)};
 
 	_throttle_setpoint = _calcThrottleControlOutput(limit, ste_rate, param, flag);
 
@@ -246,93 +246,93 @@ void TECSControl::initialize(const Setpoint &setpoint, const Input &input, const
 	_debug_output.pitch_integrator = _pitch_integ_state;
 }
 
-void TECSControl::update(const float dt, const Setpoint &setpoint, const Input &input, const Param &param,
-			 const Flag &flag)
+শূন্য TECSControl::update(ধ্রুৱ ভিন্ন dt, ধ্রুৱ Setpoint &setpoint, ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ, ধ্রুৱ Param &param,
+			 ধ্রুৱ Flag &flag)
 {
 	// Input checking
-	if (!isValidTimeStep(dt)) {
+	যদি (!isValidTimeStep(dt)) {
 		// Do not update the states and output.
-		return;
+		ঘূৰাই;
 	}
 
-	const STERateLimit limit{_calculateTotalEnergyRateLimit(param)};
-	const SpecificEnergyRates specific_energy_rate{_updateOuterLoops(setpoint, input, limit, param, flag)};
+	ধ্রুৱ STERateLimit limit{_calculateTotalEnergyRateLimit(param)};
+	ধ্রুৱ SpecificEnergyRates specific_energy_rate{_updateOuterLoops(setpoint, প্ৰবেশ, limit, param, flag)};
 
-	_calcPitchControl(dt, setpoint, input, limit, specific_energy_rate, param, flag);
+	_calcPitchControl(dt, setpoint, প্ৰবেশ, limit, specific_energy_rate, param, flag);
 
 	_calcThrottleControl(dt, limit, specific_energy_rate, param, flag);
 }
 
-TECSControl::SpecificEnergyRates TECSControl::_updateOuterLoops(const Setpoint &setpoint, const Input &input,
-		const STERateLimit &limit, const Param &param, const Flag &flag)
+TECSControl::SpecificEnergyRates TECSControl::_updateOuterLoops(ধ্রুৱ Setpoint &setpoint, ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ,
+		ধ্রুৱ STERateLimit &limit, ধ্রুৱ Param &param, ধ্রুৱ Flag &flag)
 {
 	OuterLoopSetpoints control_setpoint;
 
-	control_setpoint.tas_rate_setpoint = _calcAirspeedControlOutput(setpoint, input, limit, param, flag);
+	control_setpoint.tas_rate_setpoint = _calcAirspeedControlOutput(setpoint, প্ৰবেশ, limit, param, flag);
 
-	if (PX4_ISFINITE(setpoint.altitude_rate_setpoint_direct)) {
+	যদি (PX4_ISFINITE(setpoint.altitude_rate_setpoint_direct)) {
 		// direct height rate control
 		control_setpoint.altitude_rate_setpoint = setpoint.altitude_rate_setpoint_direct;
 
-	} else {
+	} অন্যথা {
 		// altitude is locked, go through altitude outer loop
-		control_setpoint.altitude_rate_setpoint = _calcAltitudeControlOutput(setpoint, input, param);
+		control_setpoint.altitude_rate_setpoint = _calcAltitudeControlOutput(setpoint, প্ৰবেশ, param);
 	}
 
-	const SpecificEnergyRates specific_energy_rate{_calcSpecificEnergyRates(control_setpoint, input)};
+	ধ্রুৱ SpecificEnergyRates specific_energy_rate{_calcSpecificEnergyRates(control_setpoint, প্ৰবেশ)};
 
-	_detectUnderspeed(input, param, flag);
+	_detectUnderspeed(প্ৰবেশ, param, flag);
 
 	_debug_output.altitude_rate_control = control_setpoint.altitude_rate_setpoint;
 	_debug_output.true_airspeed_derivative_control = control_setpoint.tas_rate_setpoint;
 
-	return specific_energy_rate;
+	ঘূৰাই specific_energy_rate;
 }
 
-TECSControl::STERateLimit TECSControl::_calculateTotalEnergyRateLimit(const Param &param) const
+TECSControl::STERateLimit TECSControl::_calculateTotalEnergyRateLimit(ধ্রুৱ Param &param) ধ্রুৱ
 {
 	TECSControl::STERateLimit limit;
 	// Calculate the specific total energy rate limits from the max throttle limits
 	limit.STE_rate_max = math::max(param.max_climb_rate, FLT_EPSILON) * CONSTANTS_ONE_G;
 	limit.STE_rate_min = - math::max(param.min_sink_rate, FLT_EPSILON) * CONSTANTS_ONE_G;
 
-	return limit;
+	ঘূৰাই limit;
 }
 
-float TECSControl::_calcAirspeedControlOutput(const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
-		const Param &param, const Flag &flag) const
+ভিন্ন TECSControl::_calcAirspeedControlOutput(ধ্রুৱ Setpoint &setpoint, ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ, ধ্রুৱ STERateLimit &limit,
+		ধ্রুৱ Param &param, ধ্রুৱ Flag &flag) ধ্রুৱ
 {
-	float airspeed_rate_output{0.0f};
+	ভিন্ন airspeed_rate_output{0.0f};
 
 	// calculate the demanded true airspeed rate of change based on first order response of true airspeed error
 	// if airspeed measurement is not enabled then always set the rate setpoint to zero in order to avoid constant rate setpoints
-	if (flag.airspeed_enabled) {
+	যদি (flag.airspeed_enabled) {
 		// Calculate limits for the demanded rate of change of speed based on physical performance limits
 		// with a 50% margin to allow the total energy controller to correct for errors. Increase it in case of fast descend
-		const float max_tas_rate_sp = (param.fast_descend * 0.5f + 0.5f) * limit.STE_rate_max / math::max(input.tas,
+		ধ্রুৱ ভিন্ন max_tas_rate_sp = (param.fast_descend * 0.5f + 0.5f) * limit.STE_rate_max / math::max(প্ৰবেশ.tas,
 					      FLT_EPSILON);
-		const float min_tas_rate_sp = (param.fast_descend * 0.5f + 0.5f) * limit.STE_rate_min / math::max(input.tas,
+		ধ্রুৱ ভিন্ন min_tas_rate_sp = (param.fast_descend * 0.5f + 0.5f) * limit.STE_rate_min / math::max(প্ৰবেশ.tas,
 					      FLT_EPSILON);
-		airspeed_rate_output = constrain((setpoint.tas_setpoint - input.tas) * param.airspeed_error_gain, min_tas_rate_sp,
+		airspeed_rate_output = constrain((setpoint.tas_setpoint - প্ৰবেশ.tas) * param.airspeed_error_gain, min_tas_rate_sp,
 						 max_tas_rate_sp);
 	}
 
-	return airspeed_rate_output;
+	ঘূৰাই airspeed_rate_output;
 }
 
-float TECSControl::_calcAltitudeControlOutput(const Setpoint &setpoint, const Input &input, const Param &param) const
+ভিন্ন TECSControl::_calcAltitudeControlOutput(ধ্রুৱ Setpoint &setpoint, ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ, ধ্রুৱ Param &param) ধ্রুৱ
 {
-	float altitude_rate_output;
-	altitude_rate_output = (setpoint.altitude_reference.alt - input.altitude) * param.altitude_error_gain
+	ভিন্ন altitude_rate_output;
+	altitude_rate_output = (setpoint.altitude_reference.alt - প্ৰবেশ.altitude) * param.altitude_error_gain
 			       + param.altitude_setpoint_gain_ff * setpoint.altitude_reference.alt_rate;
 
 	altitude_rate_output = math::constrain(altitude_rate_output, -param.max_sink_rate, param.max_climb_rate);
 
-	return altitude_rate_output;
+	ঘূৰাই altitude_rate_output;
 }
 
-TECSControl::SpecificEnergyRates TECSControl::_calcSpecificEnergyRates(const OuterLoopSetpoints &control_setpoint,
-		const Input &input) const
+TECSControl::SpecificEnergyRates TECSControl::_calcSpecificEnergyRates(ধ্রুৱ OuterLoopSetpoints &control_setpoint,
+		ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ) ধ্রুৱ
 {
 	SpecificEnergyRates specific_energy_rates;
 	// Calculate specific energy rate demands in units of (m**2/sec**3)
@@ -340,57 +340,57 @@ TECSControl::SpecificEnergyRates TECSControl::_calcSpecificEnergyRates(const Out
 			CONSTANTS_ONE_G; // potential energy rate of change
 
 	// d/dt(0.5 V^2) = V * dV/dt: use measured TAS, not the TAS setpoint, to keep the airspeed loop linear
-	specific_energy_rates.ske_rate.setpoint = input.tas *
+	specific_energy_rates.ske_rate.setpoint = প্ৰবেশ.tas *
 			control_setpoint.tas_rate_setpoint; // kinetic energy rate of change
 
 	// Calculate specific energy rates in units of (m**2/sec**3)
-	specific_energy_rates.spe_rate.estimate = input.altitude_rate * CONSTANTS_ONE_G; // potential energy rate of change
-	specific_energy_rates.ske_rate.estimate = input.tas * input.tas_rate;// kinetic energy rate of change
+	specific_energy_rates.spe_rate.estimate = প্ৰবেশ.altitude_rate * CONSTANTS_ONE_G; // potential energy rate of change
+	specific_energy_rates.ske_rate.estimate = প্ৰবেশ.tas * প্ৰবেশ.tas_rate;// kinetic energy rate of change
 
-	return specific_energy_rates;
+	ঘূৰাই specific_energy_rates;
 }
 
-void TECSControl::_detectUnderspeed(const Input &input, const Param &param, const Flag &flag)
+শূন্য TECSControl::_detectUnderspeed(ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ, ধ্রুৱ Param &param, ধ্রুৱ Flag &flag)
 {
-	if (!flag.detect_underspeed_enabled || !flag.airspeed_enabled) {
+	যদি (!flag.detect_underspeed_enabled || !flag.airspeed_enabled) {
 		_ratio_undersped = 0.0f;
-		return;
+		ঘূৰাই;
 	}
 
 	// Ramp underspeed ratio from 0 at tas_min to 1 at 90% of tas_min, or halfway to tas_stall if that is higher
-	const float tas_fully_undersped = math::min(param.tas_min,
+	ধ্রুৱ ভিন্ন tas_fully_undersped = math::min(param.tas_min,
 					  math::max(0.9f * param.tas_min, 0.5f * (param.tas_min + param.tas_stall)));
-	const float underspeed_ramp_width = param.tas_min - tas_fully_undersped;
+	ধ্রুৱ ভিন্ন underspeed_ramp_width = param.tas_min - tas_fully_undersped;
 
-	_ratio_undersped = math::constrain((param.tas_min - input.tas) / math::max(underspeed_ramp_width, FLT_EPSILON),
+	_ratio_undersped = math::constrain((param.tas_min - প্ৰবেশ.tas) / math::max(underspeed_ramp_width, FLT_EPSILON),
 					   0.0f, 1.0f);
 }
 
-TECSControl::SpecificEnergyWeighting TECSControl::_updateSpeedAltitudeWeights(const Param &param, const Flag &flag)
+TECSControl::SpecificEnergyWeighting TECSControl::_updateSpeedAltitudeWeights(ধ্রুৱ Param &param, ধ্রুৱ Flag &flag)
 {
 
 	SpecificEnergyWeighting weight;
 	// Calculate the weight applied to control of specific kinetic energy error
-	float pitch_speed_weight = constrain(param.pitch_speed_weight, 0.0f, 2.0f);
+	ভিন্ন pitch_speed_weight = constrain(param.pitch_speed_weight, 0.0f, 2.0f);
 
 	// Underspeed or fast descend: interpolate speed weight from nominal
 	// towards max. We take the maximum of the two - this keeps the speed
 	// weight continuous, even when underspeed and fast descend are combined
-	const float max_ratio = fmaxf(_ratio_undersped, param.fast_descend);
+	ধ্রুৱ ভিন্ন max_ratio = fmaxf(_ratio_undersped, param.fast_descend);
 	pitch_speed_weight = max_ratio * 2.0f + (1.0f - max_ratio) * pitch_speed_weight;
 
-	if (!flag.airspeed_enabled) {
+	যদি (!flag.airspeed_enabled) {
 		pitch_speed_weight = 0.0f;
 	}
 
 	weight.spe_weighting = constrain(2.0f - pitch_speed_weight, 0.f, 2.f);
 	weight.ske_weighting = constrain(pitch_speed_weight, 0.f, 2.f);
 
-	return weight;
+	ঘূৰাই weight;
 }
 
-float TECSControl::_calcPitchControlSkeRateSetpoint(const Setpoint &setpoint, const Input &input,
-		const STERateLimit &limit, const Param &param, const Flag &flag, const SpecificEnergyWeighting &weight) const
+ভিন্ন TECSControl::_calcPitchControlSkeRateSetpoint(ধ্রুৱ Setpoint &setpoint, ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ,
+		ধ্রুৱ STERateLimit &limit, ধ্রুৱ Param &param, ধ্রুৱ Flag &flag, ধ্রুৱ SpecificEnergyWeighting &weight) ধ্রুৱ
 {
 	// Trading altitude for speed with pitch is only wanted up to trim airspeed. Above trim, accelerating is left to
 	// the throttle loop: if it saturates, the vehicle settles at a lower airspeed instead of below the altitude setpoint.
@@ -398,22 +398,22 @@ float TECSControl::_calcPitchControlSkeRateSetpoint(const Setpoint &setpoint, co
 	// and the setpoint the pitch loop holds altitude, while an overspeed above the setpoint is still corrected.
 	// With a speed weight of 2 (speed priority, e.g. gliders, fast descend or underspeed) pitch is the only way to
 	// track the setpoint, so the cap is faded out as the weight goes from 1 to 2.
-	const float tas_setpoint_capped = min(setpoint.tas_setpoint, max(param.tas_trim, input.tas));
+	ধ্রুৱ ভিন্ন tas_setpoint_capped = min(setpoint.tas_setpoint, max(param.tas_trim, প্ৰবেশ.tas));
 
 	Setpoint pitch_control_setpoint{setpoint};
 	pitch_control_setpoint.tas_setpoint = lerp(tas_setpoint_capped, setpoint.tas_setpoint,
 					      constrain(weight.ske_weighting - 1.f, 0.f, 1.f));
 
 	// d/dt(0.5 V^2) = V * dV/dt: the measured airspeed, not the setpoint, keeps the airspeed loop linear
-	return input.tas * _calcAirspeedControlOutput(pitch_control_setpoint, input, limit, param, flag);
+	ঘূৰাই প্ৰবেশ.tas * _calcAirspeedControlOutput(pitch_control_setpoint, প্ৰবেশ, limit, param, flag);
 }
 
-TECSControl::SpecificEnergyRates TECSControl::_calcPitchControlEnergyRates(const Setpoint &setpoint,
-		const Input &input, const STERateLimit &limit, const SpecificEnergyRates &specific_energy_rates,
-		const Param &param, const Flag &flag, const SpecificEnergyWeighting &weight) const
+TECSControl::SpecificEnergyRates TECSControl::_calcPitchControlEnergyRates(ধ্রুৱ Setpoint &setpoint,
+		ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ, ধ্রুৱ STERateLimit &limit, ধ্রুৱ SpecificEnergyRates &specific_energy_rates,
+		ধ্রুৱ Param &param, ধ্রুৱ Flag &flag, ধ্রুৱ SpecificEnergyWeighting &weight) ধ্রুৱ
 {
 	SpecificEnergyRates pitch_specific_energy_rates{specific_energy_rates};
-	pitch_specific_energy_rates.ske_rate.setpoint = _calcPitchControlSkeRateSetpoint(setpoint, input, limit, param, flag,
+	pitch_specific_energy_rates.ske_rate.setpoint = _calcPitchControlSkeRateSetpoint(setpoint, প্ৰবেশ, limit, param, flag,
 			weight);
 
 	// Between trim airspeed and the airspeed setpoint the throttle alone accelerates the vehicle. The capped setpoint
@@ -421,29 +421,29 @@ TECSControl::SpecificEnergyRates TECSControl::_calcPitchControlEnergyRates(const
 	// throttle's acceleration would still show up in the kinetic energy rate estimate, and the pitch loop would pitch
 	// up to turn it into height. Remove the estimate from the pitch loop in this band as well, with the same fade, so
 	// that pitch controls height only. The setpoint must not be scaled again, or it would be faded twice.
-	const bool throttle_accelerates = input.tas > param.tas_trim && input.tas < setpoint.tas_setpoint;
-	const float kinetic_estimate_gain = throttle_accelerates ? constrain(weight.ske_weighting - 1.f, 0.f, 1.f) : 1.f;
+	ধ্রুৱ তার্কিক throttle_accelerates = প্ৰবেশ.tas > param.tas_trim && প্ৰবেশ.tas < setpoint.tas_setpoint;
+	ধ্রুৱ ভিন্ন kinetic_estimate_gain = throttle_accelerates ? constrain(weight.ske_weighting - 1.f, 0.f, 1.f) : 1.f;
 	pitch_specific_energy_rates.ske_rate.estimate *= kinetic_estimate_gain;
 
-	return pitch_specific_energy_rates;
+	ঘূৰাই pitch_specific_energy_rates;
 }
 
-void TECSControl::_calcPitchControl(float dt, const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
-				    const SpecificEnergyRates &specific_energy_rates, const Param &param, const Flag &flag)
+শূন্য TECSControl::_calcPitchControl(ভিন্ন dt, ধ্রুৱ Setpoint &setpoint, ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ, ধ্রুৱ STERateLimit &limit,
+				    ধ্রুৱ SpecificEnergyRates &specific_energy_rates, ধ্রুৱ Param &param, ধ্রুৱ Flag &flag)
 {
-	const SpecificEnergyWeighting weight{_updateSpeedAltitudeWeights(param, flag)};
+	ধ্রুৱ SpecificEnergyWeighting weight{_updateSpeedAltitudeWeights(param, flag)};
 
-	const SpecificEnergyRates pitch_specific_energy_rates{_calcPitchControlEnergyRates(setpoint, input, limit,
+	ধ্রুৱ SpecificEnergyRates pitch_specific_energy_rates{_calcPitchControlEnergyRates(setpoint, প্ৰবেশ, limit,
 			specific_energy_rates, param, flag, weight)};
 
-	ControlValues seb_rate{_calcPitchControlSebRate(weight, pitch_specific_energy_rates)};
+	Control_মানসমূহ seb_rate{_calcPitchControlSebRate(weight, pitch_specific_energy_rates)};
 
-	_calcPitchControlUpdate(dt, input, seb_rate, param);
-	const float pitch_setpoint{_calcPitchControlOutput(input, seb_rate, param)};
+	_calcPitchControlUpdate(dt, প্ৰবেশ, seb_rate, param);
+	ধ্রুৱ ভিন্ন pitch_setpoint{_calcPitchControlOutput(প্ৰবেশ, seb_rate, param)};
 
 	// Comply with the specified vertical acceleration limit by applying a pitch rate limit
 	// NOTE: at zero airspeed, the pitch increment is unbounded
-	const float pitch_increment = dt * param.vert_accel_limit / math::max(input.tas, FLT_EPSILON);
+	ধ্রুৱ ভিন্ন pitch_increment = dt * param.vert_accel_limit / math::max(প্ৰবেশ.tas, FLT_EPSILON);
 	_pitch_setpoint = constrain(pitch_setpoint, _pitch_setpoint - pitch_increment,
 				    _pitch_setpoint + pitch_increment);
 	_pitch_setpoint = constrain(_pitch_setpoint, param.pitch_min, param.pitch_max);
@@ -454,10 +454,10 @@ void TECSControl::_calcPitchControl(float dt, const Setpoint &setpoint, const In
 	_debug_output.pitch_integrator = _pitch_integ_state;
 }
 
-TECSControl::ControlValues TECSControl::_calcPitchControlSebRate(const SpecificEnergyWeighting &weight,
-		const SpecificEnergyRates &specific_energy_rates) const
+TECSControl::Control_মানসমূহ TECSControl::_calcPitchControlSebRate(ধ্রুৱ SpecificEnergyWeighting &weight,
+		ধ্রুৱ SpecificEnergyRates &specific_energy_rates) ধ্রুৱ
 {
-	ControlValues seb_rate;
+	Control_মানসমূহ seb_rate;
 	/*
 	 * The SKE_weighting variable controls how speed and altitude control are prioritized by the pitch demand calculation.
 	 * A weighting of 1 gives equal speed and altitude priority
@@ -475,65 +475,65 @@ TECSControl::ControlValues TECSControl::_calcPitchControlSebRate(const SpecificE
 	seb_rate.estimate = (specific_energy_rates.spe_rate.estimate * weight.spe_weighting) -
 			    (specific_energy_rates.ske_rate.estimate * weight.ske_weighting);
 
-	return seb_rate;
+	ঘূৰাই seb_rate;
 }
 
-void TECSControl::_calcPitchControlUpdate(float dt, const Input &input, const ControlValues &seb_rate,
-		const Param &param)
+শূন্য TECSControl::_calcPitchControlUpdate(ভিন্ন dt, ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ, ধ্রুৱ Control_মানসমূহ &seb_rate,
+		ধ্রুৱ Param &param)
 {
 
 	// In fast descend, the pitch integrator converges to the (substantially
 	// negative) pitch. Ramp it down with decreasing fast descend ratio,
 	// such that it is zero when the ratio becomes 0 again.
-	if (param.fast_descend < _fast_descend_prev && _fast_descend_prev > FLT_EPSILON) {
+	যদি (param.fast_descend < _fast_descend_prev && _fast_descend_prev > FLT_EPSILON) {
 		_pitch_integ_state *= param.fast_descend / _fast_descend_prev;
 	}
 
 	_fast_descend_prev = param.fast_descend;
 
-	if (param.integrator_gain_pitch > FLT_EPSILON) {
+	যদি (param.integrator_gain_pitch > FLT_EPSILON) {
 
-		const float climb_angle_to_SEB_rate = _climbAngleToSebRate(input, param);
+		ধ্রুৱ ভিন্ন climb_angle_to_SEB_rate = _climbAngleToSebRate(প্ৰবেশ, param);
 
 		// Calculate pitch integrator input term
-		float pitch_integ_input = _getControlError(seb_rate) * param.integrator_gain_pitch / climb_angle_to_SEB_rate;
+		ভিন্ন pitch_integ_প্ৰবেশ = _getControlError(seb_rate) * param.integrator_gain_pitch / climb_angle_to_SEB_rate;
 
 		// Guard against NaN integrator input - discard bad input sample (e.g., exiting offboard velocity mode)
-		if (!PX4_ISFINITE(pitch_integ_input)) {
-			pitch_integ_input = 0.f;
+		যদি (!PX4_ISFINITE(pitch_integ_প্ৰবেশ)) {
+			pitch_integ_প্ৰবেশ = 0.f;
 		}
 
 		// Prevent the integrator changing in a direction that will increase pitch demand saturation
-		if (_pitch_setpoint >= param.pitch_max) {
-			pitch_integ_input = min(pitch_integ_input, 0.f);
+		যদি (_pitch_setpoint >= param.pitch_max) {
+			pitch_integ_প্ৰবেশ = min(pitch_integ_প্ৰবেশ, 0.f);
 
-		} else if (_pitch_setpoint <= param.pitch_min) {
-			pitch_integ_input = max(pitch_integ_input, 0.f);
+		} অন্যথা যদি (_pitch_setpoint <= param.pitch_min) {
+			pitch_integ_প্ৰবেশ = max(pitch_integ_প্ৰবেশ, 0.f);
 		}
 
 		// Update the pitch integrator state
-		_pitch_integ_state = _pitch_integ_state + pitch_integ_input * dt;
+		_pitch_integ_state = _pitch_integ_state + pitch_integ_প্ৰবেশ * dt;
 
 		// Safety check: reset integrator if state became corrupted
-		if (!PX4_ISFINITE(_pitch_integ_state)) {
+		যদি (!PX4_ISFINITE(_pitch_integ_state)) {
 			_pitch_integ_state = 0.f;
 		}
 
-	} else {
+	} অন্যথা {
 		_pitch_integ_state = 0.0f;
 	}
 }
 
-float TECSControl::_climbAngleToSebRate(const Input &input, const Param &param)
+ভিন্ন TECSControl::_climbAngleToSebRate(ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ, ধ্রুৱ Param &param)
 {
 	// max() returns its second argument for a NaN first one, so a NaN airspeed falls back to the minimum airspeed
-	return max(input.tas, param.tas_min, FLT_EPSILON) * CONSTANTS_ONE_G;
+	ঘূৰাই max(প্ৰবেশ.tas, param.tas_min, FLT_EPSILON) * CONSTANTS_ONE_G;
 }
 
-float TECSControl::_calcPitchControlOutput(const Input &input, const ControlValues &seb_rate, const Param &param) const
+ভিন্ন TECSControl::_calcPitchControlOutput(ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ, ধ্রুৱ Control_মানসমূহ &seb_rate, ধ্রুৱ Param &param) ধ্রুৱ
 {
 	// Calculate a specific energy correction that doesn't include the integrator contribution
-	float SEB_rate_correction = _getControlError(seb_rate) * param.pitch_damping_gain +
+	ভিন্ন SEB_rate_correction = _getControlError(seb_rate) * param.pitch_damping_gain +
 				    param.seb_rate_ff *
 				    seb_rate.setpoint;
 
@@ -542,39 +542,39 @@ float TECSControl::_calcPitchControlOutput(const Input &input, const ControlValu
 	// a) The climb angle follows pitch angle with a lag that is small enough not to destabilise the control loop.
 	// b) The offset between climb angle and pitch angle (angle of attack) is constant and equal to the level-flight
 	// pitch, excluding the effect of pitch transients due to control action or turbulence.
-	float pitch_setpoint_unc = SEB_rate_correction / _climbAngleToSebRate(input, param) + _pitch_integ_state
+	ভিন্ন pitch_setpoint_unc = SEB_rate_correction / _climbAngleToSebRate(প্ৰবেশ, param) + _pitch_integ_state
 				   + param.level_flight_pitch;
 
 	// Guard against a non-finite feedforward/damping contribution (e.g. seb_rate going NaN on the energy/speed
 	// side when exiting offboard velocity mode). constrain() does not reject NaN, so fall back to the integrator
 	// state, which is kept finite by _calcPitchControlUpdate, to avoid latching a NaN pitch demand.
-	if (!PX4_ISFINITE(pitch_setpoint_unc)) {
+	যদি (!PX4_ISFINITE(pitch_setpoint_unc)) {
 		pitch_setpoint_unc = _pitch_integ_state + param.level_flight_pitch;
 	}
 
-	return constrain(pitch_setpoint_unc, param.pitch_min, param.pitch_max);
+	ঘূৰাই constrain(pitch_setpoint_unc, param.pitch_min, param.pitch_max);
 }
 
-void TECSControl::_calcThrottleControl(float dt, const STERateLimit &limit,
-				       const SpecificEnergyRates &specific_energy_rates, const Param &param, const Flag &flag)
+শূন্য TECSControl::_calcThrottleControl(ভিন্ন dt, ধ্রুৱ STERateLimit &limit,
+				       ধ্রুৱ SpecificEnergyRates &specific_energy_rates, ধ্রুৱ Param &param, ধ্রুৱ Flag &flag)
 {
 	// Update STE rate estimate LP filter
-	const float STE_rate_estimate_raw = specific_energy_rates.spe_rate.estimate + specific_energy_rates.ske_rate.estimate;
+	ধ্রুৱ ভিন্ন STE_rate_estimate_raw = specific_energy_rates.spe_rate.estimate + specific_energy_rates.ske_rate.estimate;
 	_ste_rate_estimate_filter.setParameters(dt, param.ste_rate_time_const);
 	_ste_rate_estimate_filter.update(STE_rate_estimate_raw);
-	ControlValues ste_rate{_calcThrottleControlSteRate(limit, specific_energy_rates, param)};
+	Control_মানসমূহ ste_rate{_calcThrottleControlSteRate(limit, specific_energy_rates, param)};
 	// During fast descend, we control airspeed over the pitch control loop. Give minimal thrust as soon as we are descending
-	float throttle_setpoint{param.throttle_min};
+	ভিন্ন throttle_setpoint{param.throttle_min};
 
-	if (!fastDescendFullyEngaged(param.fast_descend)) {
+	যদি (!fastDescendFullyEngaged(param.fast_descend)) {
 		_calcThrottleControlUpdate(dt, limit, ste_rate, param, flag);
 		throttle_setpoint = (1.f - param.fast_descend) * _calcThrottleControlOutput(limit, ste_rate, param,
 				    flag) + param.fast_descend * param.throttle_min;
 	}
 
 	// Rate limit the throttle demand
-	if (fabsf(param.throttle_slewrate) > FLT_EPSILON) {
-		const float throttle_increment_limit = dt * (param.throttle_max - param.throttle_min) * param.throttle_slewrate;
+	যদি (fabsf(param.throttle_slewrate) > FLT_EPSILON) {
+		ধ্রুৱ ভিন্ন throttle_increment_limit = dt * (param.throttle_max - param.throttle_min) * param.throttle_slewrate;
 		throttle_setpoint = constrain(throttle_setpoint, _throttle_setpoint - throttle_increment_limit,
 					      _throttle_setpoint + throttle_increment_limit);
 	}
@@ -587,12 +587,12 @@ void TECSControl::_calcThrottleControl(float dt, const STERateLimit &limit,
 	_debug_output.throttle_integrator = _throttle_integ_state;
 }
 
-TECSControl::ControlValues TECSControl::_calcThrottleControlSteRate(const STERateLimit &limit,
-		const SpecificEnergyRates &specific_energy_rates,
-		const Param &param) const
+TECSControl::Control_মানসমূহ TECSControl::_calcThrottleControlSteRate(ধ্রুৱ STERateLimit &limit,
+		ধ্রুৱ SpecificEnergyRates &specific_energy_rates,
+		ধ্রুৱ Param &param) ধ্রুৱ
 {
 	// Output ste rate values
-	ControlValues ste_rate;
+	Control_মানসমূহ ste_rate;
 	ste_rate.setpoint = specific_energy_rates.spe_rate.setpoint + specific_energy_rates.ske_rate.setpoint;
 
 	// Adjust the demanded total energy rate to compensate for induced drag rise in turns.
@@ -603,47 +603,47 @@ TECSControl::ControlValues TECSControl::_calcThrottleControlSteRate(const STERat
 	ste_rate.setpoint = constrain(ste_rate.setpoint, limit.STE_rate_min, limit.STE_rate_max);
 	ste_rate.estimate = _ste_rate_estimate_filter.getState();
 
-	return ste_rate;
+	ঘূৰাই ste_rate;
 }
 
-void TECSControl::_calcThrottleControlUpdate(float dt, const STERateLimit &limit, const ControlValues &ste_rate,
-		const Param &param, const Flag &flag)
+শূন্য TECSControl::_calcThrottleControlUpdate(ভিন্ন dt, ধ্রুৱ STERateLimit &limit, ধ্রুৱ Control_মানসমূহ &ste_rate,
+		ধ্রুৱ Param &param, ধ্রুৱ Flag &flag)
 {
-	const float STE_rate_to_throttle = _steRateToThrottle(limit);
+	ধ্রুৱ ভিন্ন STE_rate_to_throttle = _steRateToThrottle(limit);
 
 	// Integral handling
-	if (flag.airspeed_enabled) {
-		if (param.integrator_gain_throttle > FLT_EPSILON) {
+	যদি (flag.airspeed_enabled) {
+		যদি (param.integrator_gain_throttle > FLT_EPSILON) {
 			// underspeed conditions zero out integration
-			float throttle_integ_input = (_getControlError(ste_rate) * param.integrator_gain_throttle) * dt *
+			ভিন্ন throttle_integ_প্ৰবেশ = (_getControlError(ste_rate) * param.integrator_gain_throttle) * dt *
 						     STE_rate_to_throttle * (1.0f - _ratio_undersped);
 
 			// only allow integrator propagation into direction which unsaturates throttle
-			if (_throttle_setpoint >= param.throttle_max) {
-				throttle_integ_input = math::min(0.f, throttle_integ_input);
+			যদি (_throttle_setpoint >= param.throttle_max) {
+				throttle_integ_প্ৰবেশ = math::min(0.f, throttle_integ_প্ৰবেশ);
 
 			}
 
-			if (_throttle_setpoint <= param.throttle_min) {
-				throttle_integ_input = math::max(0.f, throttle_integ_input);
+			যদি (_throttle_setpoint <= param.throttle_min) {
+				throttle_integ_প্ৰবেশ = math::max(0.f, throttle_integ_প্ৰবেশ);
 			}
 
 			// Calculate a throttle demand from the integrated total energy rate error
 			// This will be added to the total throttle demand to compensate for steady state errors
-			_throttle_integ_state = PX4_ISFINITE(throttle_integ_input) ? _throttle_integ_state + throttle_integ_input : 0.f;
+			_throttle_integ_state = PX4_ISFINITE(throttle_integ_প্ৰবেশ) ? _throttle_integ_state + throttle_integ_প্ৰবেশ : 0.f;
 
-		} else {
+		} অন্যথা {
 			_throttle_integ_state = 0.0f;
 		}
 
 	}
 }
 
-float TECSControl::_calcThrottleControlOutput(const STERateLimit &limit, const ControlValues &ste_rate,
-		const Param &param,
-		const Flag &flag) const
+ভিন্ন TECSControl::_calcThrottleControlOutput(ধ্রুৱ STERateLimit &limit, ধ্রুৱ Control_মানসমূহ &ste_rate,
+		ধ্রুৱ Param &param,
+		ধ্রুৱ Flag &flag) ধ্রুৱ
 {
-	const float STE_rate_to_throttle = _steRateToThrottle(limit);
+	ধ্রুৱ ভিন্ন STE_rate_to_throttle = _steRateToThrottle(limit);
 
 	// Calculate a predicted throttle from the demanded rate of change of energy, using the cruise throttle
 	// as the starting point. Assume:
@@ -653,30 +653,30 @@ float TECSControl::_calcThrottleControlOutput(const STERateLimit &limit, const C
 
 	// assume airspeed and density-independent delta_throttle to sink/climb rate mapping
 	// TODO: include air density for thrust mappings
-	const float throttle_above_trim_per_ste_rate = (param.throttle_max - param.throttle_trim) / limit.STE_rate_max;
-	const float throttle_below_trim_per_ste_rate = (param.throttle_trim - param.throttle_min) / limit.STE_rate_min;
+	ধ্রুৱ ভিন্ন throttle_above_trim_per_ste_rate = (param.throttle_max - param.throttle_trim) / limit.STE_rate_max;
+	ধ্রুৱ ভিন্ন throttle_below_trim_per_ste_rate = (param.throttle_trim - param.throttle_min) / limit.STE_rate_min;
 
-	float throttle_predicted = 0.0f;
+	ভিন্ন throttle_predicted = 0.0f;
 
-	if (ste_rate.setpoint >= FLT_EPSILON) {
+	যদি (ste_rate.setpoint >= FLT_EPSILON) {
 		// throttle is between trim and maximum
 		throttle_predicted = param.throttle_trim + ste_rate.setpoint * throttle_above_trim_per_ste_rate;
 
-	} else {
+	} অন্যথা {
 		// throttle is between trim and minimum
 		throttle_predicted = param.throttle_trim - ste_rate.setpoint * throttle_below_trim_per_ste_rate;
 
 	}
 
 	// Add proportional and derivative control feedback to the predicted throttle and constrain to throttle limits
-	float throttle_setpoint = (_getControlError(ste_rate) * param.throttle_damping_gain) * STE_rate_to_throttle +
+	ভিন্ন throttle_setpoint = (_getControlError(ste_rate) * param.throttle_damping_gain) * STE_rate_to_throttle +
 				  throttle_predicted;
 
-	if (flag.airspeed_enabled) {
+	যদি (flag.airspeed_enabled) {
 		// Add the integrator feedback during closed loop operation with an airspeed sensor
 		throttle_setpoint += _throttle_integ_state;
 
-	} else {
+	} অন্যথা {
 		/* We want to avoid reducing the throttle output when switching from airspeed enabled mode into airspeedless mode.
 		  Thus, if the throttle integrator has a positive value, add it still to the throttle setpoint. */
 		throttle_setpoint += math::max(0.0f, _throttle_integ_state);
@@ -686,143 +686,143 @@ float TECSControl::_calcThrottleControlOutput(const STERateLimit &limit, const C
 	// ramp in max throttle setting with underspeediness value
 	throttle_setpoint = _ratio_undersped * param.throttle_max + (1.0f - _ratio_undersped) * throttle_setpoint;
 
-	return constrain(throttle_setpoint, param.throttle_min, param.throttle_max);
+	ঘূৰাই constrain(throttle_setpoint, param.throttle_min, param.throttle_max);
 }
 
-void TECSControl::resetIntegrals()
+শূন্য TECSControl::resetIntegrals()
 {
 	_pitch_integ_state = 0.0f;
 	_throttle_integ_state = 0.0f;
 }
 
-void TECS::initControlParams(const Input &input)
+শূন্য TECS::initControlParams(ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ)
 {
 	// Update parameters from input
 	// Reference model
-	_reference_param.target_climbrate = input.target_climbrate;
-	_reference_param.target_sinkrate = input.target_sinkrate;
+	_reference_param.target_climbrate = প্ৰবেশ.target_climbrate;
+	_reference_param.target_sinkrate = প্ৰবেশ.target_sinkrate;
 	// Control
-	_control_param.tas_min = input.eas_to_tas * _equivalent_airspeed_min;
-	_control_param.tas_stall = input.eas_to_tas * _equivalent_airspeed_stall;
-	_control_param.tas_max = input.eas_to_tas * _equivalent_airspeed_max;
-	_control_param.tas_trim = input.eas_to_tas * _control_param.equivalent_airspeed_trim;
-	_control_param.pitch_max = input.pitch_max;
-	_control_param.pitch_min = input.pitch_min;
-	_control_param.throttle_trim = input.throttle_trim;
-	_control_param.throttle_max = input.throttle_max;
-	_control_param.throttle_min = input.throttle_min;
+	_control_param.tas_min = প্ৰবেশ.eas_to_tas * _equivalent_airspeed_min;
+	_control_param.tas_stall = প্ৰবেশ.eas_to_tas * _equivalent_airspeed_stall;
+	_control_param.tas_max = প্ৰবেশ.eas_to_tas * _equivalent_airspeed_max;
+	_control_param.tas_trim = প্ৰবেশ.eas_to_tas * _control_param.equivalent_airspeed_trim;
+	_control_param.pitch_max = প্ৰবেশ.pitch_max;
+	_control_param.pitch_min = প্ৰবেশ.pitch_min;
+	_control_param.throttle_trim = প্ৰবেশ.throttle_trim;
+	_control_param.throttle_max = প্ৰবেশ.throttle_max;
+	_control_param.throttle_min = প্ৰবেশ.throttle_min;
 }
 
-float TECS::calcTrueAirspeedSetpoint(float eas_to_tas, float eas_setpoint)
+ভিন্ন TECS::calcTrueAirspeedSetpoint(ভিন্ন eas_to_tas, ভিন্ন eas_setpoint)
 {
-	return lerp(eas_to_tas * eas_setpoint, _control_param.tas_max, _fast_descend);
+	ঘূৰাই lerp(eas_to_tas * eas_setpoint, _control_param.tas_max, _fast_descend);
 }
 
-void TECS::initialize(const Input &input)
+শূন্য TECS::initialize(ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ)
 {
 	// Init subclasses
-	TECSAltitudeReferenceModel::AltitudeReferenceState current_state{.alt = input.altitude,
-			.alt_rate = input.altitude_rate};
+	TECSAltitudeReferenceModel::AltitudeReferenceState current_state{.alt = প্ৰবেশ.altitude,
+			.alt_rate = প্ৰবেশ.altitude_rate};
 	_altitude_reference_model.initialize(current_state);
-	_airspeed_filter.initialize(input.equivalent_airspeed, _airspeed_filter_param.equivalent_airspeed_trim,
+	_airspeed_filter.initialize(প্ৰবেশ.equivalent_airspeed, _airspeed_filter_param.equivalent_airspeed_trim,
 				    _control_flag.airspeed_enabled);
 
 	// Seed the controller from the filter, which falls back to trim airspeed without a valid measurement,
 	// so the controller sees the same airspeed on reset as on every following update
-	const float true_airspeed = input.eas_to_tas * _airspeed_filter.getState().speed;
+	ধ্রুৱ ভিন্ন true_airspeed = প্ৰবেশ.eas_to_tas * _airspeed_filter.getState().speed;
 
 	TECSControl::Setpoint control_setpoint;
 	control_setpoint.altitude_reference = _altitude_reference_model.getAltitudeReference();
 	control_setpoint.altitude_rate_setpoint_direct = NAN; // initialization always goes through the altitude loop
 	control_setpoint.tas_setpoint = true_airspeed;
 
-	const TECSControl::Input control_input{ .altitude = input.altitude,
-						.altitude_rate = input.altitude_rate,
+	ধ্রুৱ TECSControl::প্ৰবেশ_2 control_প্ৰবেশ{ .altitude = প্ৰবেশ.altitude,
+						.altitude_rate = প্ৰবেশ.altitude_rate,
 						.tas = true_airspeed,
 						.tas_rate = 0.0f};
 
-	_control.initialize(control_setpoint, control_input, _control_param, _control_flag);
+	_control.initialize(control_setpoint, control_প্ৰবেশ, _control_param, _control_flag);
 
 	_fast_descend = 0.f;
 	_enabled_fast_descend_timestamp = 0U;
 }
 
-void TECS::update(const Input &input)
+শূন্য TECS::update(ধ্রুৱ প্ৰবেশ_2 &প্ৰবেশ)
 {
 	// Calculate the time since last update (seconds)
-	const hrt_abstime now = hrt_absolute_time();
-	const float dt = static_cast<float>(now - _update_timestamp) * 1e-6f;
+	ধ্রুৱ hrt_abstime now = hrt_absolute_time();
+	ধ্রুৱ ভিন্ন dt = static_cast<ভিন্ন>(now - _update_timestamp) * 1e-6f;
 
-	initControlParams(input);
+	initControlParams(প্ৰবেশ);
 
-	if (dt < DT_MIN) {
+	যদি (dt < DT_MIN) {
 		// Update interval too small, do not update. Assume constant states/output in this case.
-		return;
+		ঘূৰাই;
 	}
 
-	float true_airspeed_setpoint;
+	ভিন্ন true_airspeed_setpoint;
 
-	if (dt > DT_MAX || _update_timestamp == 0UL) {
+	যদি (dt > DT_MAX || _update_timestamp == 0UL) {
 		// Update time interval too large, can't guarantee sanity of state updates anymore. reset the control loop.
-		initialize(input);
-		true_airspeed_setpoint = calcTrueAirspeedSetpoint(input.eas_to_tas, input.equivalent_airspeed_setpoint);
+		initialize(প্ৰবেশ);
+		true_airspeed_setpoint = calcTrueAirspeedSetpoint(প্ৰবেশ.eas_to_tas, প্ৰবেশ.equivalent_airspeed_setpoint);
 
-	} else {
+	} অন্যথা {
 		/* Check if we want to fast descend. On fast descend, we set the throttle to min, and use the altitude control
 		loop to control the speed to the maximum airspeed. */
-		_setFastDescend(input.altitude_setpoint, input.altitude);
+		_setFastDescend(প্ৰবেশ.altitude_setpoint, প্ৰবেশ.altitude);
 		_control_param.fast_descend = _fast_descend;
 
 		// Update airspeedfilter submodule
-		const TECSAirspeedFilter::Input airspeed_input{ .equivalent_airspeed = input.equivalent_airspeed,
-				.equivalent_airspeed_rate = input.speed_deriv_forward / input.eas_to_tas};
+		ধ্রুৱ TECSAirspeedFilter::প্ৰবেশ_2 airspeed_প্ৰবেশ{ .equivalent_airspeed = প্ৰবেশ.equivalent_airspeed,
+				.equivalent_airspeed_rate = প্ৰবেশ.speed_deriv_forward / প্ৰবেশ.eas_to_tas};
 
-		_airspeed_filter.update(dt, airspeed_input, _airspeed_filter_param, _control_flag.airspeed_enabled);
+		_airspeed_filter.update(dt, airspeed_প্ৰবেশ, _airspeed_filter_param, _control_flag.airspeed_enabled);
 
 		// Update Reference model submodule
-		if (fastDescendFullyEngaged(_fast_descend)) {
+		যদি (fastDescendFullyEngaged(_fast_descend)) {
 			// Reset the altitude reference model, while we are in fast descend.
-			const TECSAltitudeReferenceModel::AltitudeReferenceState init_state{
-				.alt = input.altitude,
-				.alt_rate = input.altitude_rate};
+			ধ্রুৱ TECSAltitudeReferenceModel::AltitudeReferenceState init_state{
+				.alt = প্ৰবেশ.altitude,
+				.alt_rate = প্ৰবেশ.altitude_rate};
 			_altitude_reference_model.initialize(init_state);
 
-		} else if (_control.getUnderspeedRatio() > 0.5f) {
+		} অন্যথা যদি (_control.getUnderspeedRatio() > 0.5f) {
 			// Reset altitude reference during underspeed to prevent altitude error accumulation
 			// that would cause aggressive pitch-up (and potential secondary stall) on recovery.
-			const TECSAltitudeReferenceModel::AltitudeReferenceState init_state{
-				.alt = input.altitude,
-				.alt_rate = input.altitude_rate};
+			ধ্রুৱ TECSAltitudeReferenceModel::AltitudeReferenceState init_state{
+				.alt = প্ৰবেশ.altitude,
+				.alt_rate = প্ৰবেশ.altitude_rate};
 			_altitude_reference_model.initialize(init_state);
 
-		} else {
-			const TECSAltitudeReferenceModel::AltitudeReferenceState setpoint{ .alt = input.altitude_setpoint,
-					.alt_rate = input.altitude_rate_setpoint};
+		} অন্যথা {
+			ধ্রুৱ TECSAltitudeReferenceModel::AltitudeReferenceState setpoint{ .alt = প্ৰবেশ.altitude_setpoint,
+					.alt_rate = প্ৰবেশ.altitude_rate_setpoint};
 
-			_altitude_reference_model.update(dt, setpoint, input.altitude, input.altitude_rate, _reference_param);
+			_altitude_reference_model.update(dt, setpoint, প্ৰবেশ.altitude, প্ৰবেশ.altitude_rate, _reference_param);
 		}
 
 		TECSControl::Setpoint control_setpoint;
 		control_setpoint.altitude_reference = _altitude_reference_model.getAltitudeReference();
 		control_setpoint.altitude_rate_setpoint_direct = _altitude_reference_model.getHeightRateSetpointDirect();
-		true_airspeed_setpoint = calcTrueAirspeedSetpoint(input.eas_to_tas, input.equivalent_airspeed_setpoint);
+		true_airspeed_setpoint = calcTrueAirspeedSetpoint(প্ৰবেশ.eas_to_tas, প্ৰবেশ.equivalent_airspeed_setpoint);
 		control_setpoint.tas_setpoint = true_airspeed_setpoint;
 
-		const TECSAirspeedFilter::AirspeedFilterState airspeed_state{_airspeed_filter.getState()};
-		const TECSControl::Input control_input{ .altitude = input.altitude,
-							.altitude_rate = input.altitude_rate,
-							.tas = input.eas_to_tas * airspeed_state.speed,
-							.tas_rate = input.eas_to_tas * airspeed_state.speed_rate};
+		ধ্রুৱ TECSAirspeedFilter::AirspeedFilterState airspeed_state{_airspeed_filter.getState()};
+		ধ্রুৱ TECSControl::প্ৰবেশ_2 control_প্ৰবেশ{ .altitude = প্ৰবেশ.altitude,
+							.altitude_rate = প্ৰবেশ.altitude_rate,
+							.tas = প্ৰবেশ.eas_to_tas * airspeed_state.speed,
+							.tas_rate = প্ৰবেশ.eas_to_tas * airspeed_state.speed_rate};
 
-		_control.update(dt, control_setpoint, control_input, _control_param, _control_flag);
+		_control.update(dt, control_setpoint, control_প্ৰবেশ, _control_param, _control_flag);
 	}
 
 	_debug_status.control = _control.getDebugOutput();
 	_debug_status.true_airspeed_sp = true_airspeed_setpoint;
-	const TECSAirspeedFilter::AirspeedFilterState airspeed_state{_airspeed_filter.getState()};
-	const TECSAltitudeReferenceModel::AltitudeReferenceState altitude_reference{_altitude_reference_model.getAltitudeReference()};
-	_debug_status.true_airspeed_filtered = input.eas_to_tas * airspeed_state.speed;
-	_debug_status.true_airspeed_derivative = input.eas_to_tas * airspeed_state.speed_rate;
+	ধ্রুৱ TECSAirspeedFilter::AirspeedFilterState airspeed_state{_airspeed_filter.getState()};
+	ধ্রুৱ TECSAltitudeReferenceModel::AltitudeReferenceState altitude_reference{_altitude_reference_model.getAltitudeReference()};
+	_debug_status.true_airspeed_filtered = প্ৰবেশ.eas_to_tas * airspeed_state.speed;
+	_debug_status.true_airspeed_derivative = প্ৰবেশ.eas_to_tas * airspeed_state.speed_rate;
 	_debug_status.altitude_reference = altitude_reference.alt;
 	_debug_status.height_rate_reference = altitude_reference.alt_rate;
 	_debug_status.height_rate_direct = _altitude_reference_model.getHeightRateSetpointDirect();
@@ -831,27 +831,27 @@ void TECS::update(const Input &input)
 	_update_timestamp = now;
 }
 
-void TECS::_setFastDescend(const float alt_setpoint, const float alt)
+শূন্য TECS::_setFastDescend(ধ্রুৱ ভিন্ন alt_setpoint, ধ্রুৱ ভিন্ন alt)
 {
 	// disable fast descend if we are close to the target altitude or the altitude setpoint is not finite
 
-	if (PX4_ISFINITE(alt_setpoint) && _control_flag.airspeed_enabled && (_fast_descend_alt_err > FLT_EPSILON)
+	যদি (PX4_ISFINITE(alt_setpoint) && _control_flag.airspeed_enabled && (_fast_descend_alt_err > FLT_EPSILON)
 	    && ((alt_setpoint + _fast_descend_alt_err) < alt)) {
 		auto now = hrt_absolute_time();
 
-		if (_enabled_fast_descend_timestamp == 0U) {
+		যদি (_enabled_fast_descend_timestamp == 0U) {
 			_enabled_fast_descend_timestamp = now;
 		}
 
-		_fast_descend = constrain(max(_fast_descend, static_cast<float>(now - _enabled_fast_descend_timestamp) /
-					      static_cast<float>(FAST_DESCEND_RAMP_UP_TIME)), 0.f, 1.f);
+		_fast_descend = constrain(max(_fast_descend, static_cast<ভিন্ন>(now - _enabled_fast_descend_timestamp) /
+					      static_cast<ভিন্ন>(FAST_DESCEND_RAMP_UP_TIME)), 0.f, 1.f);
 
-	} else if (PX4_ISFINITE(alt_setpoint) && (_fast_descend > FLT_EPSILON) && (_fast_descend_alt_err > FLT_EPSILON)) {
+	} অন্যথা যদি (PX4_ISFINITE(alt_setpoint) && (_fast_descend > FLT_EPSILON) && (_fast_descend_alt_err > FLT_EPSILON)) {
 		// We're in fast descend, scale it down until FAST_DESCEND_HEIGHT_MARGIN above target altitude
 		_fast_descend = constrain((alt - alt_setpoint - FAST_DESCEND_HEIGHT_MARGIN) / _fast_descend_alt_err, 0.f, 1.f);
 		_enabled_fast_descend_timestamp = 0U;
 
-	} else {
+	} অন্যথা {
 		_fast_descend = 0.f;
 		_enabled_fast_descend_timestamp = 0U;
 	}

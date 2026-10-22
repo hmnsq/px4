@@ -31,113 +31,113 @@
  *
  ****************************************************************************/
 
-#include "actuator_test.hpp"
+#অন্তর্ভাৱ "actuator_test.hpp"
 
-#include "functions/FunctionMotors.hpp"
+#অন্তর্ভাৱ "functions/FunctionMotors.hpp"
 
-using namespace time_literals;
+using নামাকাশ time_literals;
 
-ActuatorTest::ActuatorTest(const OutputFunction function_assignments[MAX_ACTUATORS])
+ActuatorTest::ActuatorTest(ধ্রুৱ OutputFunction function_assignments[MAX_ACTUATORS])
 	: _function_assignments(function_assignments)
 {
 	reset();
 }
 
-void ActuatorTest::update(int num_outputs, float thrust_curve)
+শূন্য ActuatorTest::update(পূর্ণাঙ্ক অঙ্ক_outputs, ভিন্ন thrust_curve)
 {
-	const hrt_abstime now = hrt_absolute_time();
+	ধ্রুৱ hrt_abstime now = hrt_absolute_time();
 
 	actuator_test_s actuator_test;
 
-	while (_actuator_test_sub.update(&actuator_test)) {
-		if (actuator_test.timestamp == 0 ||
+	যেতিয়ালৈ (_actuator_test_sub.update(&actuator_test)) {
+		যদি (actuator_test.timestamp == 0 ||
 		    hrt_elapsed_time(&actuator_test.timestamp) > 100_ms) {
-			continue;
+			অনুৱর্ত;
 		}
 
-		for (int i = 0; i < num_outputs; ++i) {
-			if ((int)_function_assignments[i] == actuator_test.function) {
-				bool in_test_mode = actuator_test.action == actuator_test_s::ACTION_DO_CONTROL;
+		বাবে (পূর্ণাঙ্ক i = 0; i < অঙ্ক_outputs; ++i) {
+			যদি ((পূর্ণাঙ্ক)_function_assignments[i] == actuator_test.function) {
+				তার্কিক in_test_mode = actuator_test.action == actuator_test_s::ACTION_DO_CONTROL;
 
 				// entering test mode?
-				if (!_in_test_mode && in_test_mode) {
+				যদি (!_in_test_mode && in_test_mode) {
 					reset();
-					_in_test_mode = true;
+					_in_test_mode = সঁচা;
 				}
 
 				_output_overridden[i] = in_test_mode;
 
-				if (in_test_mode) {
-					if (actuator_test.timeout_ms > 0) {
+				যদি (in_test_mode) {
+					যদি (actuator_test.timeout_ms > 0) {
 						_next_timeout = now + actuator_test.timeout_ms * 1000;
 					}
 
-					float value = actuator_test.value;
+					ভিন্ন value = actuator_test.value;
 
 					// handle motors
-					if ((int)OutputFunction::Motor1 <= actuator_test.function && actuator_test.function <= (int)OutputFunction::MotorMax) {
+					যদি ((পূর্ণাঙ্ক)OutputFunction::Motor1 <= actuator_test.function && actuator_test.function <= (পূর্ণাঙ্ক)OutputFunction::MotorMax) {
 						actuator_motors_s motors;
 						motors.reversible_flags = 0;
 						_actuator_motors_sub.copy(&motors);
-						int motor_idx = actuator_test.function - (int)OutputFunction::Motor1;
-						FunctionMotors::updateValues(motors.reversible_flags >> motor_idx, thrust_curve, &value, 1);
+						পূর্ণাঙ্ক motor_idx = actuator_test.function - (পূর্ণাঙ্ক)OutputFunction::Motor1;
+						FunctionMotors::update_মানসমূহ(motors.reversible_flags >> motor_idx, thrust_curve, &value, 1);
 					}
 
 					// handle servos: add trim
-					if ((int)OutputFunction::Servo1 <= actuator_test.function && actuator_test.function <= (int)OutputFunction::ServoMax) {
+					যদি ((পূর্ণাঙ্ক)OutputFunction::Servo1 <= actuator_test.function && actuator_test.function <= (পূর্ণাঙ্ক)OutputFunction::ServoMax) {
 						actuator_servos_trim_s trim{};
 						_actuator_servos_trim_sub.copy(&trim);
-						int idx = actuator_test.function - (int)OutputFunction::Servo1;
+						পূর্ণাঙ্ক idx = actuator_test.function - (পূর্ণাঙ্ক)OutputFunction::Servo1;
 
-						if (idx < actuator_servos_trim_s::NUM_CONTROLS) {
+						যদি (idx < actuator_servos_trim_s::অঙ্ক_CONTROLS) {
 							value += trim.trim[idx];
 						}
 					}
 
 					_current_outputs[i] = value;
 
-				} else {
+				} অন্যথা {
 					_current_outputs[i] = NAN;
 				}
 			}
 		}
 	}
 
-	if (_in_test_mode) {
+	যদি (_in_test_mode) {
 		// check if all disabled
-		bool any_overridden = false;
+		তার্কিক any_overridden = মিছা;
 
-		for (int i = 0; i < num_outputs; ++i) {
+		বাবে (পূর্ণাঙ্ক i = 0; i < অঙ্ক_outputs; ++i) {
 			any_overridden |= _output_overridden[i];
 		}
 
-		if (!any_overridden) {
-			_in_test_mode = false;
+		যদি (!any_overridden) {
+			_in_test_mode = মিছা;
 		}
 	}
 
 	// check for timeout
-	if (_in_test_mode && _next_timeout != 0 && now > _next_timeout) {
-		_in_test_mode = false;
+	যদি (_in_test_mode && _next_timeout != 0 && now > _next_timeout) {
+		_in_test_mode = মিছা;
 	}
 }
 
-void ActuatorTest::overrideValues(float outputs[MAX_ACTUATORS], int num_outputs)
+শূন্য ActuatorTest::override_মানসমূহ(ভিন্ন outputs[MAX_ACTUATORS], পূর্ণাঙ্ক অঙ্ক_outputs)
 {
-	if (_in_test_mode) {
-		for (int i = 0; i < num_outputs; ++i) {
+	যদি (_in_test_mode) {
+		বাবে (পূর্ণাঙ্ক i = 0; i < অঙ্ক_outputs; ++i) {
 			outputs[i] = _current_outputs[i];
 		}
 	}
 }
 
-void ActuatorTest::reset()
+শূন্য ActuatorTest::reset()
 {
-	_in_test_mode = false;
+	_in_test_mode = মিছা;
 	_next_timeout = 0;
 
-	for (int i = 0; i < MAX_ACTUATORS; ++i) {
+	বাবে (পূর্ণাঙ্ক i = 0; i < MAX_ACTUATORS; ++i) {
 		_current_outputs[i] = NAN;
-		_output_overridden[i] = false;
+		_output_overridden[i] = মিছা;
 	}
 }

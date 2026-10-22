@@ -41,8 +41,8 @@
 
 #pragma once
 
-#include <px4_log.h>
-#include <uORB/uORB.h>
+#অন্তর্ভাৱ <px4_log.h>
+#অন্তর্ভাৱ <uORB/uORB.h>
 
 /**
  * The maximum string length supported.
@@ -50,21 +50,21 @@
 #define MAVLINK_LOG_MAXLEN			50
 
 #ifdef __cplusplus
-extern "C" {
+বাহ্য "C" {
 #endif
-__EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, const char *fmt, ...);
+__EXPORT শূন্য mavlink_vasprintf(পূর্ণাঙ্ক severity, orb_advert_t *mavlink_log_pub, ধ্রুৱ ৱর্ণ *fmt, ...);
 #ifdef __cplusplus
 }
 #endif
 
-#define _MSG_PRIO_DEBUG		7
-#define _MSG_PRIO_INFO		6
-#define _MSG_PRIO_NOTICE	5
-#define _MSG_PRIO_WARNING	4
-#define _MSG_PRIO_ERROR		3
-#define _MSG_PRIO_CRITICAL	2
-#define _MSG_PRIO_ALERT		1
-#define _MSG_PRIO_EMERGENCY	0
+#define বাৰ্তা_PRIO_DEBUG		7
+#define বাৰ্তা_PRIO_INFO		6
+#define বাৰ্তা_PRIO_NOTICE	5
+#define বাৰ্তা_PRIO_WARNING	4
+#define বাৰ্তা_PRIO_ERROR		3
+#define বাৰ্তা_PRIO_CRITICAL	2
+#define বাৰ্তা_PRIO_ALERT		1
+#define বাৰ্তা_PRIO_EMERGENCY	0
 
 /*
  * The va_args implementation here is not beautiful, but obviously we run into the same issues
@@ -80,10 +80,10 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _text		The text to log;
  */
 #define mavlink_log_info(_pub, _text, ...)			\
-	do { \
-		mavlink_vasprintf(_MSG_PRIO_INFO, _pub, _text, ##__VA_ARGS__); \
+	কৰা { \
+		mavlink_vasprintf(বাৰ্তা_PRIO_INFO, _pub, _text, ##__VA_ARGS__); \
 		PX4_INFO(_text, ##__VA_ARGS__); \
-	} while(0);
+	} যেতিয়ালৈ(0);
 
 /**
  * Send a mavlink warning message and print to console.
@@ -92,10 +92,10 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _text		The text to log;
  */
 #define mavlink_log_warning(_pub, _text, ...) \
-	do { \
-		mavlink_vasprintf(_MSG_PRIO_WARNING, _pub, _text, ##__VA_ARGS__); \
+	কৰা { \
+		mavlink_vasprintf(বাৰ্তা_PRIO_WARNING, _pub, _text, ##__VA_ARGS__); \
 		PX4_WARN(_text, ##__VA_ARGS__); \
-	} while(0);
+	} যেতিয়ালৈ(0);
 
 /**
  * Send a mavlink emergency message and print to console.
@@ -104,10 +104,10 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _text		The text to log;
  */
 #define mavlink_log_emergency(_pub, _text, ...) \
-	do { \
-		mavlink_vasprintf(_MSG_PRIO_EMERGENCY, _pub, _text, ##__VA_ARGS__); \
+	কৰা { \
+		mavlink_vasprintf(বাৰ্তা_PRIO_EMERGENCY, _pub, _text, ##__VA_ARGS__); \
 		PX4_ERR(_text, ##__VA_ARGS__); \
-	} while(0);
+	} যেতিয়ালৈ(0);
 
 /**
  * Send a mavlink critical message and print to console.
@@ -116,7 +116,7 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _text		The text to log;
  */
 #define mavlink_log_critical(_pub, _text, ...) \
-	do { \
-		mavlink_vasprintf(_MSG_PRIO_CRITICAL, _pub, _text, ##__VA_ARGS__); \
+	কৰা { \
+		mavlink_vasprintf(বাৰ্তা_PRIO_CRITICAL, _pub, _text, ##__VA_ARGS__); \
 		PX4_WARN(_text, ##__VA_ARGS__); \
-	} while(0);
+	} যেতিয়ালৈ(0);

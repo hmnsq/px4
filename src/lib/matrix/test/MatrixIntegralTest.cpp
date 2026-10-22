@@ -31,25 +31,25 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/integration.hpp>
+#অন্তর্ভাৱ <gtest/gtest.h>
+#অন্তর্ভাৱ <matrix/integration.hpp>
 
-using namespace matrix;
+using নামাকাশ matrix;
 
-Vector<float, 6> f(float t, const Matrix<float, 6, 1> &  /*y*/, const Matrix<float, 3, 1> &  /*u*/)
+Vector<ভিন্ন, 6> f(ভিন্ন t, ধ্রুৱ Matrix<ভিন্ন, 6, 1> &  /*y*/, ধ্রুৱ Matrix<ভিন্ন, 3, 1> &  /*u*/)
 {
-	float v = -sin(t);
-	return v * ones<float, 6, 1>();
+	ভিন্ন v = -sin(t);
+	ঘূৰাই v * ones<ভিন্ন, 6, 1>();
 }
 
 TEST(MatrixIntegralTest, Integral)
 {
-	Vector<float, 6> y = ones<float, 6, 1>();
-	Vector<float, 3> u = ones<float, 3, 1>();
-	float t0 = 0;
-	float tf = 2;
-	float h = 0.001f;
+	Vector<ভিন্ন, 6> y = ones<ভিন্ন, 6, 1>();
+	Vector<ভিন্ন, 3> u = ones<ভিন্ন, 3, 1>();
+	ভিন্ন t0 = 0;
+	ভিন্ন tf = 2;
+	ভিন্ন h = 0.001f;
 	integrate_rk4(f, y, u, t0, tf, h, y);
-	float v = 1 + std::cos(tf) - std::cos(t0);
-	EXPECT_EQ(y, (ones<float, 6, 1>()*v));
+	ভিন্ন v = 1 + std::cos(tf) - std::cos(t0);
+	EXPECT_EQ(y, (ones<ভিন্ন, 6, 1>()*v));
 }

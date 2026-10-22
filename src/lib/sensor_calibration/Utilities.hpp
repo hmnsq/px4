@@ -33,14 +33,14 @@
 
 #pragma once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <lib/conversion/rotation.h>
-#include <lib/mathlib/mathlib.h>
-#include <lib/parameters/param.h>
-#include <matrix/math.hpp>
+#অন্তর্ভাৱ <px4_platform_common/px4_config.h>
+#অন্তর্ভাৱ <px4_platform_common/log.h>
+#অন্তর্ভাৱ <lib/conversion/rotation.h>
+#অন্তর্ভাৱ <lib/mathlib/mathlib.h>
+#অন্তর্ভাৱ <lib/parameters/param.h>
+#অন্তর্ভাৱ <matrix/math.hpp>
 
-namespace calibration
+নামাকাশ calibration
 {
 
 /**
@@ -50,7 +50,7 @@ namespace calibration
  * @param device_id
  * @return int8_t Valid calibration index on success, -1 otherwise
  */
-int8_t FindCurrentCalibrationIndex(const char *sensor_type, uint32_t device_id);
+int8_t FindCurrentCalibrationIndex(ধ্রুৱ ৱর্ণ *sensor_type, uint32_t device_id);
 
 /**
  * @brief Find sensor's calibration index if it exists, otherwise select an available slot.
@@ -60,7 +60,7 @@ int8_t FindCurrentCalibrationIndex(const char *sensor_type, uint32_t device_id);
  * @param preferred_index preferred index (optional)
  * @return int8_t Valid calibration index on success, -1 otherwise
  */
-int8_t FindAvailableCalibrationIndex(const char *sensor_type, uint32_t device_id, int8_t preferred_index = -1);
+int8_t FindAvailableCalibrationIndex(ধ্রুৱ ৱর্ণ *sensor_type, uint32_t device_id, int8_t preferred_index = -1);
 
 /**
  * @brief Get sensor calibration parameter value.
@@ -70,8 +70,8 @@ int8_t FindAvailableCalibrationIndex(const char *sensor_type, uint32_t device_id
  * @param instance
  * @return int32_t The calibration value.
  */
-int32_t GetCalibrationParamInt32(const char *sensor_type, const char *cal_type, uint8_t instance);
-float GetCalibrationParamFloat(const char *sensor_type, const char *cal_type, uint8_t instance);
+int32_t GetCalibrationParamInt32(ধ্রুৱ ৱর্ণ *sensor_type, ধ্রুৱ ৱর্ণ *cal_type, uint8_t instance);
+ভিন্ন GetCalibrationParamFloat(ধ্রুৱ ৱর্ণ *sensor_type, ধ্রুৱ ৱর্ণ *cal_type, uint8_t instance);
 
 /**
  * @brief Set a single calibration parameter.
@@ -83,20 +83,20 @@ float GetCalibrationParamFloat(const char *sensor_type, const char *cal_type, ui
  * @return true if the parameter name was valid and value saved successfully, false otherwise.
  */
 template<typename T>
-bool SetCalibrationParam(const char *sensor_type, const char *cal_type, uint8_t instance, T value)
+তার্কিক SetCalibrationParam(ধ্রুৱ ৱর্ণ *sensor_type, ধ্রুৱ ৱর্ণ *cal_type, uint8_t instance, T value)
 {
-	char str[20] {};
+	ৱর্ণ str[20] {};
 
 	// eg CAL_MAGn_ID/CAL_MAGn_ROT
-	snprintf(str, sizeof(str), "CAL_%s%u_%s", sensor_type, instance, cal_type);
+	snprintf(str, পরিমাণ(str), "CAL_%s%u_%s", sensor_type, instance, cal_type);
 
-	int ret = param_set_no_notification(param_find(str), &value);
+	পূর্ণাঙ্ক ret = param_set_no_notification(param_find(str), &value);
 
-	if (ret != PX4_OK) {
+	যদি (ret != PX4_OK) {
 		PX4_ERR("failed to set %s", str);
 	}
 
-	return ret == PX4_OK;
+	ঘূৰাই ret == PX4_OK;
 }
 
 /**
@@ -107,7 +107,7 @@ bool SetCalibrationParam(const char *sensor_type, const char *cal_type, uint8_t 
  * @param instance Calibration index (0 - 3)
  * @return matrix::Vector3f Vector of calibration values.
  */
-matrix::Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance);
+matrix::Vector3f GetCalibrationParamsVector3f(ধ্রুৱ ৱর্ণ *sensor_type, ধ্রুৱ ৱর্ণ *cal_type, uint8_t instance);
 
 /**
  * @brief Set the Calibration Params Vector 3f object
@@ -118,8 +118,8 @@ matrix::Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const cha
  * @param values Vector of calibration values x, y, z.
  * @return true if the parameter name was valid and all values saved successfully, false otherwise.
  */
-bool SetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance,
-				  matrix::Vector3f values);
+তার্কিক SetCalibrationParamsVector3f(ধ্রুৱ ৱর্ণ *sensor_type, ধ্রুৱ ৱর্ণ *cal_type, uint8_t instance,
+				  matrix::Vector3f মানসমূহ_2);
 
 /**
  * @brief Get the board sensor level adjustment (SENS_BOARD_X_OFF, SENS_BOARD_Y_OFF, SENS_BOARD_Z_OFF).

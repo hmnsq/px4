@@ -57,12 +57,12 @@
 
 #pragma once
 
-#include <matrix/matrix/math.hpp>
+#অন্তর্ভাৱ <matrix/matrix/math.hpp>
 
 template<size_t N, size_t M, size_t D>
-class ArxRls final
+শ্ৰেণী ArxRls final
 {
-public:
+সার্ৱজনিক:
 	ArxRls()
 	{
 		static_assert(N >= M, "The transfer function needs to be proper");
@@ -70,26 +70,26 @@ public:
 		reset();
 	}
 
-	~ArxRls() = default;
+	~ArxRls() = স্ৱভাৱ;
 
-	void setForgettingFactor(float time_constant, float dt) { _lambda = 1.f - dt / time_constant; }
-	void setForgettingFactor(float lambda) { _lambda = lambda; }
+	শূন্য setForgettingFactor(ভিন্ন time_constant, ভিন্ন dt) { _lambda = 1.f - dt / time_constant; }
+	শূন্য setForgettingFactor(ভিন্ন lambda) { _lambda = lambda; }
 
 	/*
 	 * return the vector of estimated parameters
 	 * [a_1 .. a_n b_0 .. b_m]'
 	 */
-	const matrix::Vector < float, N + M + 1 > &getCoefficients() const { return _theta_hat; }
-	const matrix::Vector < float, N + M + 1 > getVariances() const { return _P.diag(); }
-	float getInnovation() const { return _innovation; }
-	const matrix::Vector < float, N + M + 1 > &getDiffEstimate() const { return _diff_theta_hat; }
+	ধ্রুৱ matrix::Vector < ভিন্ন, N + M + 1 > &getCoefficients() ধ্রুৱ { ঘূৰাই _theta_hat; }
+	ধ্রুৱ matrix::Vector < ভিন্ন, N + M + 1 > getVariances() ধ্রুৱ { ঘূৰাই _P.diag(); }
+	ভিন্ন getInnovation() ধ্রুৱ { ঘূৰাই _innovation; }
+	ধ্রুৱ matrix::Vector < ভিন্ন, N + M + 1 > &getDiffEstimate() ধ্রুৱ { ঘূৰাই _diff_theta_hat; }
 
-	void reset(const matrix::Vector < float, N + M + 1 > &theta_init = {})
+	শূন্য reset(ধ্রুৱ matrix::Vector < ভিন্ন, N + M + 1 > &theta_init = {})
 	{
 		/* _P.uncorrelateCovarianceSetVariance<N + M + 1>(0, 10e3f); // does not work */
 		_P.setZero();
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
+		বাবে (size_t i = 0; i < (N + M + 1); i++) {
 			_P(i, i) = 10e3f;
 		}
 
@@ -97,11 +97,11 @@ public:
 
 		_theta_hat = theta_init;
 
-		for (size_t i = 0; i < M + D + 1; i++) {
+		বাবে (size_t i = 0; i < M + D + 1; i++) {
 			_u[i] = 0.f;
 		}
 
-		for (size_t i = 0; i < N + 1; i++) {
+		বাবে (size_t i = 0; i < N + 1; i++) {
 			_y[i] = 0.f;
 		}
 
@@ -109,100 +109,100 @@ public:
 		_innovation = 0.f;
 	}
 
-	void update(float u, float y)
+	শূন্য update(ভিন্ন u, ভিন্ন y)
 	{
-		const matrix::Vector < float, N + M + 1 > theta_prev = _theta_hat;
+		ধ্রুৱ matrix::Vector < ভিন্ন, N + M + 1 > theta_prev = _theta_hat;
 
-		addInputOutput(u, y);
+		add_প্ৰবেশ_Output(u, y);
 
-		if (!isBufferFull()) {
+		যদি (!isBufferFull()) {
 			// Do not start to update the RLS algorithm when the
 			// buffer still contains zeros
-			return;
+			ঘূৰাই;
 		}
 
-		const matrix::Vector < float, N + M + 1 > phi = constructDesignVector();
-		const matrix::Matrix < float, 1, N + M + 1 > phi_t = phi.transpose();
+		ধ্রুৱ matrix::Vector < ভিন্ন, N + M + 1 > phi = constructDesignVector();
+		ধ্রুৱ matrix::Matrix < ভিন্ন, 1, N + M + 1 > phi_t = phi.transpose();
 
 		_P = (_P - _P * phi * phi_t * _P / (_lambda + (phi_t * _P * phi)(0, 0))) / _lambda;
 		_innovation = _y[N] - (phi_t * _theta_hat)(0, 0);
 		_theta_hat = _theta_hat + _P * phi * _innovation;
 
-		for (size_t i = 0; i < N + M + 1; i++) {
+		বাবে (size_t i = 0; i < N + M + 1; i++) {
 			_diff_theta_hat(i) = fabsf(_theta_hat(i) - theta_prev(i));
 		}
 
 		/* fixCovarianceErrors(); // TODO: this could help against ill-conditioned matrix but needs more testing*/
 	}
 
-private:
-	void addInputOutput(float u, float y)
+গুপ্ত:
+	শূন্য add_প্ৰবেশ_Output(ভিন্ন u, ভিন্ন y)
 	{
 		shiftRegisters();
 		_u[M + D] = u;
 		_y[N] = y;
 
-		if (!isBufferFull()) {
+		যদি (!isBufferFull()) {
 			_nb_samples++;
 		}
 	}
 
-	void shiftRegisters()
+	শূন্য shiftRegisters()
 	{
-		for (size_t i = 0; i < N; i++) {
+		বাবে (size_t i = 0; i < N; i++) {
 			_y[i] = _y[i + 1];
 		}
 
-		for (size_t i = 0; i < (M + D); i++) {
+		বাবে (size_t i = 0; i < (M + D); i++) {
 			_u[i] = _u[i + 1];
 		}
 	}
 
-	bool isBufferFull() const { return _nb_samples > (M + N + D); }
+	তার্কিক isBufferFull() ধ্রুৱ { ঘূৰাই _nb_samples > (M + N + D); }
 
-	matrix::Vector < float, N + M + 1 > constructDesignVector() const
+	matrix::Vector < ভিন্ন, N + M + 1 > constructDesignVector() ধ্রুৱ
 	{
-		matrix::Vector < float, N + M + 1 > phi;
+		matrix::Vector < ভিন্ন, N + M + 1 > phi;
 
-		for (size_t i = 0; i < N; i++) {
+		বাবে (size_t i = 0; i < N; i++) {
 			phi(i) = -_y[N - i - 1];
 		}
 
-		int j = 0;
+		পূর্ণাঙ্ক j = 0;
 
-		for (size_t i = N; i < (N + M + 1); i++) {
+		বাবে (size_t i = N; i < (N + M + 1); i++) {
 			phi(i) = _u[M - j];
 			j++;
 		}
 
-		return phi;
+		ঘূৰাই phi;
 	}
 
-	void fixCovarianceErrors()
+	শূন্য fixCovarianceErrors()
 	{
-		float max_var = 0.f;
+		ভিন্ন max_var = 0.f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) > max_var) {
+		বাবে (size_t i = 0; i < (N + M + 1); i++) {
+			যদি (_P(i, i) > max_var) {
 				max_var = _P(i, i);
 			}
 		}
 
-		const float min_var_allowed = max_var * 0.1f;
+		ধ্রুৱ ভিন্ন min_var_allowed = max_var * 0.1f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) < min_var_allowed) {
+		বাবে (size_t i = 0; i < (N + M + 1); i++) {
+			যদি (_P(i, i) < min_var_allowed) {
 				_P(i, i) = min_var_allowed;
 			}
 		}
 	}
 
-	matrix::SquareMatrix < float, N + M + 1 > _P;
-	matrix::Vector < float, N + M + 1 > _theta_hat;
-	matrix::Vector < float, N + M + 1 > _diff_theta_hat;
-	float _innovation{};
-	float _u[M + D + 1] {};
-	float _y[N + 1] {};
+	matrix::SquareMatrix < ভিন্ন, N + M + 1 > _P;
+	matrix::Vector < ভিন্ন, N + M + 1 > _theta_hat;
+	matrix::Vector < ভিন্ন, N + M + 1 > _diff_theta_hat;
+	ভিন্ন _innovation{};
+	ভিন্ন _u[M + D + 1] {};
+	ভিন্ন _y[N + 1] {};
 	unsigned _nb_samples{0};
-	float _lambda{1.f};
+	ভিন্ন _lambda{1.f};
 };

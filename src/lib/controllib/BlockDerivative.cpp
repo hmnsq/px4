@@ -37,34 +37,34 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#অন্তর্ভাৱ <math.h>
+#অন্তর্ভাৱ <float.h>
 
-#include "blocks.hpp"
+#অন্তর্ভাৱ "blocks.hpp"
 
-namespace control
+নামাকাশ control
 {
 
-float BlockDerivative::update(float input)
+ভিন্ন BlockDerivative::update(ভিন্ন প্ৰবেশ)
 {
-	float output;
+	ভিন্ন output;
 
-	if (_initialized) {
-		output = _lowPass.update((input - getU()) / getDt());
+	যদি (_initialized) {
+		output = নিচেৰ_Pass.update((প্ৰবেশ - getU()) / getDt());
 
-	} else {
+	} অন্যথা {
 		// if this is the first call to update
 		// we have no valid derivative
 		// and so we use the assumption the
 		// input value is not changing much,
 		// which is the best we can do here.
-		_lowPass.update(0.0f);
+		নিচেৰ_Pass.update(0.0f);
 		output = 0.0f;
-		_initialized = true;
+		_initialized = সঁচা;
 	}
 
-	setU(input);
-	return output;
+	setU(প্ৰবেশ);
+	ঘূৰাই output;
 }
 
 } // namespace control

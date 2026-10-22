@@ -41,42 +41,42 @@
 
 #pragma once
 
-#include <stdint.h>
+#অন্তর্ভাৱ <stdint.h>
 
-#include <px4_platform_common/defines.h> // Provides CONFIG_NAVIGATOR_ADSB_F3442
+#অন্তর্ভাৱ <px4_platform_common/defines.h> // Provides CONFIG_NAVIGATOR_ADSB_F3442
 
 // Internal action priority order used for escalation comparisons.
 // User-facing parameter values are translated separately so DAA_LVL_*_ACT can
 // share the NAV_TRAFF_AVOID convention without changing the priority ladder.
-enum class DaaAction : uint8_t {
+গণনা class DaaAction : uint8_t {
 	kDisabled = 0,
 	kWarnOnly = 1,
 	kPositionHoldMode = 2,
 	kReturnMode = 3,
 	kLandMode = 4,
 	kTerminate = 5,
-	kMaxActionValue = 6
+	k_Max_Action_মান = 6
 };
 
-enum class NotifyLandedActCause : uint8_t {
+গণনা class NotifyLandedActCause : uint8_t {
 	kConflictAndArmed = 0,
 	kConflictAndDisarmed = 1
 };
 
 // Action parameter values (NAV_TRAFF_AVOID / DAA_LVL_*_ACT convention), read by the caller.
-struct daa_action_params_s {
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
-	int32_t lvl_low_act {0};
+সংরচনা daa_action_params_s {
+#যদি defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+	int32_t lvl_নিচেৰ_act {0};
 	int32_t lvl_med_act{0};
-	int32_t lvl_high_act{0};
+	int32_t lvl_উপৰেৰ_act{0};
 	int32_t lvl_crit_act{0};
-#else
+#অন্যথা
 	int32_t traff_avoid {0};
 #endif // CONFIG_NAVIGATOR_ADSB_F3442
 };
 
 // A command is only requested in the air; a ground warning is only requested when landed.
-struct daa_action_decision_s {
+সংরচনা daa_action_decision_s {
 	DaaAction action_command{DaaAction::kDisabled};
 	bool announce_action{false};
 	bool warn_on_ground{false};
@@ -85,7 +85,7 @@ struct daa_action_decision_s {
 
 class DaaActionPolicy
 {
-public:
+সার্ৱজনিক:
 	/**
 	 * @brief Decide the automated response to a most urgent conflict level escalation.
 	 *
@@ -95,9 +95,9 @@ public:
 	 * In the air, commands are requested only on level escalation and only when stronger
 	 * than the current navigator state. Unchanged levels and de-escalations do not act.
 	 */
-	static daa_action_decision_s decide(const uint8_t conflict_level, const uint8_t prev_conflict_level,
-					    const uint8_t nav_state, const bool landed, const bool armed,
-					    const DaaAction previous_action, const daa_action_params_s &params);
+	স্থির daa_action_decision_s decide(ধ্রুৱ uint8_t conflict_level, ধ্রুৱ uint8_t prev_conflict_level,
+					    ধ্রুৱ uint8_t nav_state, ধ্রুৱ bool landed, ধ্রুৱ bool armed,
+					    ধ্রুৱ DaaAction previous_action, ধ্রুৱ daa_action_params_s &params);
 
 	/**
 	 * @brief Map a conflict level to a DAA action.
@@ -105,17 +105,17 @@ public:
 	 * For F3442, a disabled level falls back only to zones guaranteed to contain
 	 * the reported zone.
 	 */
-	static DaaAction action_from_conflict_level(const uint8_t conflict_level, const daa_action_params_s &params);
+	স্থির DaaAction action_from_conflict_level(ধ্রুৱ uint8_t conflict_level, ধ্রুৱ daa_action_params_s &params);
 
 	// True if requested_action is more urgent than the mode equivalent of nav_state.
-	static bool action_escalates_above_nav_state(const DaaAction requested_action, const uint8_t nav_state);
+	স্থির bool action_escalates_above_nav_state(ধ্রুৱ DaaAction requested_action, ধ্রুৱ uint8_t nav_state);
 
 	// DAA action equivalent to a navigation state (used to gate escalation).
-	static DaaAction nav_state_to_equivalent_daa_action(const uint8_t nav_state);
+	স্থির DaaAction nav_state_to_equivalent_daa_action(ধ্রুৱ uint8_t nav_state);
 
 	// Convert a user-facing action param value into the internal DaaAction enum.
-	static DaaAction action_param_to_daa_action(const int32_t action_param);
+	স্থির DaaAction action_param_to_daa_action(ধ্রুৱ int32_t action_param);
 
 	// Inverse of action_param_to_daa_action.
-	static uint8_t daa_action_to_action_param(const DaaAction action);
+	স্থির uint8_t daa_action_to_action_param(ধ্রুৱ DaaAction action);
 };

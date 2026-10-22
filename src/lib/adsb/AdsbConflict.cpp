@@ -31,74 +31,74 @@
  *
  ****************************************************************************/
 
-#include "AdsbConflict.h"
+#অন্তর্ভাৱ "AdsbConflict.h"
 
-#include <cmath>
+#অন্তর্ভাৱ <cmath>
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#অন্তর্ভাৱ <px4_platform_common/defines.h>
+#অন্তর্ভাৱ <px4_platform_common/log.h>
 
-bool AdsbConflict::valid_wgs84_coordinates(const double latitude, const double longitude)
+তার্কিক AdsbConflict::valid_wgs84_coordinates(ধ্রুৱ দ্ৱিগুণ latitude, ধ্রুৱ দ্ৱিগুণ longitude)
 {
-	return PX4_ISFINITE(latitude) && PX4_ISFINITE(longitude)
+	ঘূৰাই PX4_ISFINITE(latitude) && PX4_ISFINITE(longitude)
 	       && fabs(latitude) <= 90.0
 	       && fabs(longitude) <= 180.0;
 }
 
-bool AdsbConflict::calculate_daa_output(const daa_input_s &daa_input, detect_and_avoid_s &daa_output)
+তার্কিক AdsbConflict::calculate_daa_output(ধ্রুৱ daa_প্ৰবেশ_s &daa_প্ৰবেশ, detect_and_avoid_s &daa_output)
 {
-	const transponder_report_s &transponder_report = daa_input.transponder_report;
+	ধ্রুৱ transponder_report_s &transponder_report = daa_প্ৰবেশ.transponder_report;
 
-	const matrix::Vector2d traffic_lat_lon{transponder_report.lat, transponder_report.lon};
+	ধ্রুৱ matrix::Vector2d traffic_lat_lon{transponder_report.lat, transponder_report.lon};
 
-	if (!valid_wgs84_coordinates(daa_input.uav_lat_lon(0), daa_input.uav_lat_lon(1))
+	যদি (!valid_wgs84_coordinates(daa_প্ৰবেশ.uav_lat_lon(0), daa_প্ৰবেশ.uav_lat_lon(1))
 	    || !valid_wgs84_coordinates(traffic_lat_lon(0), traffic_lat_lon(1))) {
 		PX4_DEBUG("DAA lib: invalid coordinates");
-		return false;
+		ঘূৰাই মিছা;
 	}
 
-	if (!PX4_ISFINITE(daa_input.uav_alt) || !PX4_ISFINITE(transponder_report.altitude)) {
+	যদি (!PX4_ISFINITE(daa_প্ৰবেশ.uav_alt) || !PX4_ISFINITE(transponder_report.altitude)) {
 		PX4_DEBUG("DAA lib: invalid altitude");
-		return false;
+		ঘূৰাই মিছা;
 	}
 
-	if (!(PX4_ISFINITE(transponder_report.hor_velocity) && transponder_report.hor_velocity >= 0.f
+	যদি (!(PX4_ISFINITE(transponder_report.hor_velocity) && transponder_report.hor_velocity >= 0.f
 	      && PX4_ISFINITE(transponder_report.ver_velocity))) {
 		PX4_DEBUG("DAA lib: invalid traffic velocity");
-		return false;
+		ঘূৰাই মিছা;
 	}
 
-	if (!daa_input.uav_vel_ned.isAllFinite()) {
+	যদি (!daa_প্ৰবেশ.uav_vel_ned.isAllFinite()) {
 		PX4_DEBUG("DAA lib: invalid ownship velocity");
-		return false;
+		ঘূৰাই মিছা;
 	}
 
-#if !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
+#যদি !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
 
-	if (!PX4_ISFINITE(transponder_report.heading)) {
+	যদি (!PX4_ISFINITE(transponder_report.heading)) {
 		PX4_DEBUG("DAA lib: invalid traffic heading");
-		return false;
+		ঘূৰাই মিছা;
 	}
 
 #endif // !CONFIG_NAVIGATOR_ADSB_F3442
 
 	aircraft_state_s uav_state{};
-	uav_state.lat_lon = daa_input.uav_lat_lon;
-	uav_state.altitude = daa_input.uav_alt;
-	uav_state.velocity_ned = daa_input.uav_vel_ned;
+	uav_state.lat_lon = daa_প্ৰবেশ.uav_lat_lon;
+	uav_state.altitude = daa_প্ৰবেশ.uav_alt;
+	uav_state.velocity_ned = daa_প্ৰবেশ.uav_vel_ned;
 
 	aircraft_state_s traffic_state{};
 	traffic_state.lat_lon = traffic_lat_lon;
 	traffic_state.altitude = transponder_report.altitude;
 	traffic_state.heading = transponder_report.heading;
 
-	if (PX4_ISFINITE(transponder_report.heading)) {
+	যদি (PX4_ISFINITE(transponder_report.heading)) {
 		traffic_state.velocity_ned = matrix::Vector3f(
 						     cosf(transponder_report.heading) * transponder_report.hor_velocity,
 						     sinf(transponder_report.heading) * transponder_report.hor_velocity,
 						     -transponder_report.ver_velocity);
 
-	} else {
+	} অন্যথা {
 		traffic_state.velocity_ned = matrix::Vector3f(transponder_report.hor_velocity, 0.f, -transponder_report.ver_velocity);
 	}
 
@@ -109,10 +109,10 @@ bool AdsbConflict::calculate_daa_output(const daa_input_s &daa_input, detect_and
 	daa_output.aircraft_dist_vert = daa_stats.aircraft_dist_vert;
 	daa_output.expected_min_dist_time = daa_stats.expected_min_dist_time_sec;
 
-	return true;
+	ঘূৰাই সঁচা;
 }
 
-bool AdsbConflict::try_updating_params()
+তার্কিক AdsbConflict::try_updating_params()
 {
-	return _daa.try_setting_params();
+	ঘূৰাই _daa.try_setting_params();
 }

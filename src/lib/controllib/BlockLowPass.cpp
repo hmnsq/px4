@@ -37,24 +37,24 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#অন্তর্ভাৱ <math.h>
+#অন্তর্ভাৱ <float.h>
 
-#include "blocks.hpp"
+#অন্তর্ভাৱ "blocks.hpp"
 
-namespace control
+নামাকাশ control
 {
 
-float BlockLowPass::update(float input)
+ভিন্ন Block_নিচেৰ_Pass::update(ভিন্ন প্ৰবেশ)
 {
-	if (!PX4_ISFINITE(getState())) {
-		setState(input);
+	যদি (!PX4_ISFINITE(getState())) {
+		setState(প্ৰবেশ);
 	}
 
-	float b = 2 * M_PI_F * getFCut() * getDt();
-	float a = b / (1 + b);
-	setState(a * input + (1 - a)*getState());
-	return getState();
+	ভিন্ন b = 2 * M_PI_F * getFCut() * getDt();
+	ভিন্ন a = b / (1 + b);
+	setState(a * প্ৰবেশ + (1 - a)*getState());
+	ঘূৰাই getState();
 }
 
 } // namespace control

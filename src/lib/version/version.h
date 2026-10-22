@@ -42,66 +42,66 @@
 
 #pragma once
 
-#include <px4_platform_common/px4_config.h>
-#include <systemlib/px4_macros.h>
-#include <stdint.h>
+#অন্তর্ভাৱ <px4_platform_common/px4_config.h>
+#অন্তর্ভাৱ <systemlib/px4_macros.h>
+#অন্তর্ভাৱ <stdint.h>
 
 __BEGIN_DECLS
 
 /**
  * get the board name as string (including the version if there are multiple)
  */
-static inline const char *px4_board_name(void)
+স্থির অন্তঃস্থ ধ্রুৱ ৱর্ণ *px4_board_name(শূন্য)
 {
-	return PX4_BOARD_NAME;
+	ঘূৰাই PX4_BOARD_NAME;
 }
 
 /**
  * get the board build target variant
  */
-static inline const char *px4_board_target_label(void)
+স্থির অন্তঃস্থ ধ্রুৱ ৱর্ণ *px4_board_target_label(শূন্য)
 {
-	return PX4_BOARD_LABEL;
+	ঘূৰাই PX4_BOARD_LABEL;
 }
 
 /**
  * get the board sub type
  */
-static inline const char *px4_board_sub_type(void)
+স্থির অন্তঃস্থ ধ্রুৱ ৱর্ণ *px4_board_sub_type(শূন্য)
 {
-	return board_get_hw_type_name();
+	ঘূৰাই board_get_hw_type_name();
 }
 
 /**
  * get the board HW version
  */
-static inline int px4_board_hw_version(void)
+স্থির অন্তঃস্থ পূর্ণাঙ্ক px4_board_hw_version(শূন্য)
 {
-	return board_get_hw_version();
+	ঘূৰাই board_get_hw_version();
 }
 
 /**
  * get the board HW revision
  */
-static inline int px4_board_hw_revision(void)
+স্থির অন্তঃস্থ পূর্ণাঙ্ক px4_board_hw_revision(শূন্য)
 {
-	return board_get_hw_revision();
+	ঘূৰাই board_get_hw_revision();
 }
 
-#if defined(BOARD_HAS_HW_SPLIT_VERSIONING)
+#যদি defined(BOARD_HAS_HW_SPLIT_VERSIONING)
 /**
  * get the base board type
  */
-static inline const char *px4_board_base_type(void)
+স্থির অন্তঃস্থ ধ্রুৱ ৱর্ণ *px4_board_base_type(শূন্য)
 {
-	return board_get_hw_base_type_name();
+	ঘূৰাই board_get_hw_base_type_name();
 }
 #endif
 
 /**
  * get the build URI (used for crash logging)
  */
-const char *px4_build_uri(void);
+ধ্রুৱ ৱর্ণ *px4_build_uri(শূন্য);
 
 /**
  * Convert a version tag string to a number
@@ -114,13 +114,13 @@ const char *px4_build_uri(void);
  *            - linux: 7.9.3
  * @return version in the form 0xAABBCCTT (AA: Major, BB: Minor, CC: Patch, TT Type @see FIRMWARE_TYPE)
  */
-__EXPORT uint32_t version_tag_to_number(const char *tag);
+__EXPORT uint32_t version_tag_to_সংখ্যা(ধ্রুৱ ৱর্ণ *tag);
 
 /**
  * get the PX4 Firmware version
  * @return version in the form 0xAABBCCTT (AA: Major, BB: Minor, CC: Patch, TT Type @see FIRMWARE_TYPE)
  */
-__EXPORT uint32_t px4_firmware_version(void);
+__EXPORT uint32_t px4_firmware_version(শূন্য);
 
 /**
  * Convert a version tag string to a vendor version number
@@ -133,76 +133,76 @@ __EXPORT uint32_t px4_firmware_version(void);
  *            - linux: 7.9.3
  * @return version in the form 0xAABBCCTT (AA: Major, BB: Minor, CC: Patch, TT Type @see FIRMWARE_TYPE)
  */
-__EXPORT uint32_t version_tag_to_vendor_version_number(const char *tag);
+__EXPORT uint32_t version_tag_to_vendor_version_সংখ্যা(ধ্রুৱ ৱর্ণ *tag);
 
 /**
  * get the PX4 Firmware vendor version
  * @return version in the form 0xAABBCCTT (AA: Major, BB: Minor, CC: Patch, TT Type @see FIRMWARE_TYPE)
  */
-__EXPORT uint32_t px4_firmware_vendor_version(void);
+__EXPORT uint32_t px4_firmware_vendor_version(শূন্য);
 
 /**
  * get the board version (last 8 bytes should be silicon ID, if any)
  */
-__EXPORT uint32_t px4_board_version(void);
+__EXPORT uint32_t px4_board_version(শূন্য);
 
 /**
  * operating system version
  * @return version in the form 0xAABBCCTT (AA: Major, BB: Minor, CC: Patch, TT Type @see FIRMWARE_TYPE)
  */
-__EXPORT uint32_t px4_os_version(void);
+__EXPORT uint32_t px4_os_version(শূন্য);
 
 /**
  * Operating system version as human readable string (git tag)
  * @return string or NULL if not defined
  */
-__EXPORT const char *px4_os_version_string(void);
+__EXPORT ধ্রুৱ ৱর্ণ *px4_os_version_string(শূন্য);
 
 /**
  * name of the operating system
  * @return human readable string
  */
-__EXPORT const char *px4_os_name(void);
+__EXPORT ধ্রুৱ ৱর্ণ *px4_os_name(শূন্য);
 
 /**
  * Toolchain name used to compile PX4
  */
-__EXPORT const char *px4_toolchain_name(void);
+__EXPORT ধ্রুৱ ৱর্ণ *px4_toolchain_name(শূন্য);
 
 /**
  * Toolchain version used to compile PX4 (no particular format)
  */
-__EXPORT const char *px4_toolchain_version(void);
+__EXPORT ধ্রুৱ ৱর্ণ *px4_toolchain_version(শূন্য);
 
 /**
  * Firmware version as human readable string (git tag)
  */
-__EXPORT const char *px4_firmware_version_string(void);
+__EXPORT ধ্রুৱ ৱর্ণ *px4_firmware_version_string(শূন্য);
 
 /**
  * get the git branch name (can be empty, for example if HEAD points to a tag)
  */
-__EXPORT const char *px4_firmware_git_branch(void);
+__EXPORT ধ্রুৱ ৱর্ণ *px4_firmware_git_branch(শূন্য);
 
 /**
  * Firmware version in binary form (first part of the git tag)
  */
-__EXPORT uint64_t px4_firmware_version_binary(void);
+__EXPORT uint64_t px4_firmware_version_দ্বিমিক(শূন্য);
 
 /**
  * MAVLink lib version in binary form (first part of the git tag)
  */
-__EXPORT uint64_t px4_mavlink_lib_version_binary(void);
+__EXPORT uint64_t px4_mavlink_lib_version_দ্বিমিক(শূন্য);
 
 /**
  * Operating system version in binary form (first part of the git tag)
  * @return this is not available on all OSes and can return 0
  */
-__EXPORT uint64_t px4_os_version_binary(void);
+__EXPORT uint64_t px4_os_version_দ্বিমিক(শূন্য);
 
 /**
  * get the git oem version tag (can be empty, no particular format)
  */
-__EXPORT const char *px4_firmware_oem_version_string(void);
+__EXPORT ধ্রুৱ ৱর্ণ *px4_firmware_oem_version_string(শূন্য);
 
 __END_DECLS

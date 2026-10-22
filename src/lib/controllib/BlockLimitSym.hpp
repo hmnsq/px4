@@ -39,20 +39,20 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#অন্তর্ভাৱ <px4_platform_common/defines.h>
+#অন্তর্ভাৱ <assert.h>
+#অন্তর্ভাৱ <time.h>
+#অন্তর্ভাৱ <stdlib.h>
+#অন্তর্ভাৱ <math.h>
+#অন্তর্ভাৱ <mathlib/math/test/test.hpp>
+#অন্তর্ভাৱ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#অন্তর্ভাৱ "block/Block.hpp"
+#অন্তর্ভাৱ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#অন্তর্ভাৱ "matrix/math.hpp"
 
-namespace control
+নামাকাশ control
 {
 
 /**
@@ -60,19 +60,19 @@ namespace control
  * Same as limiter but with only a max, is used for
  * upper limit of +max, and lower limit of -max
  */
-class __EXPORT BlockLimitSym : public Block
+শ্ৰেণী __EXPORT BlockLimitSym : সার্ৱজনিক Block
 {
-public:
+সার্ৱজনিক:
 // methods
-	BlockLimitSym(SuperBlock *parent, const char *name) :
+	BlockLimitSym(SuperBlock *parent, ধ্রুৱ ৱর্ণ *name) :
 		Block(parent, name),
-		_max(this, "MAX")
+		_max(এতত্, "MAX")
 	{}
-	virtual ~BlockLimitSym() = default;
-	float update(float input);
+	আভাস ~BlockLimitSym() = স্ৱভাৱ;
+	ভিন্ন update(ভিন্ন প্ৰবেশ);
 // accessors
-	float getMax() { return _max.get(); }
-protected:
+	ভিন্ন getMax() { ঘূৰাই _max.get(); }
+রক্ষিত:
 // attributes
 	control::BlockParamFloat _max;
 };

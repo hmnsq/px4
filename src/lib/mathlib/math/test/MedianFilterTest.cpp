@@ -36,28 +36,28 @@
  * Run this test only using make tests TESTFILTER=MedianFilter
  */
 
-#include <gtest/gtest.h>
-#include <matrix/matrix/math.hpp>
-#include <mathlib/mathlib.h>
+#অন্তর্ভাৱ <gtest/gtest.h>
+#অন্তর্ভাৱ <matrix/matrix/math.hpp>
+#অন্তর্ভাৱ <mathlib/mathlib.h>
 
-#include <lib/mathlib/math/filter/MedianFilter.hpp>
+#অন্তর্ভাৱ <lib/mathlib/math/filter/MedianFilter.hpp>
 
-using namespace math;
+using নামাকাশ math;
 using matrix::Vector3f;
 
-class MedianFilterTest : public ::testing::Test
+শ্ৰেণী MedianFilterTest : সার্ৱজনিক ::testing::Test
 {
-public:
+সার্ৱজনিক:
 
 
 };
 
 TEST_F(MedianFilterTest, test3f_simple)
 {
-	MedianFilter<float, 3> median_filter3;
+	MedianFilter<ভিন্ন, 3> median_filter3;
 
-	for (int i = 0; i < 3; i++) {
-		median_filter3.insert(i);
+	বাবে (পূর্ণাঙ্ক i = 0; i < 3; i++) {
+		median_filter3.ঢোকাও(i);
 	}
 
 	EXPECT_EQ(median_filter3.median(), 1); // 0, 1, 2
@@ -65,9 +65,9 @@ TEST_F(MedianFilterTest, test3f_simple)
 
 TEST_F(MedianFilterTest, test3f_100)
 {
-	MedianFilter<float, 3> median_filter3;
+	MedianFilter<ভিন্ন, 3> median_filter3;
 
-	for (int i = 0; i < 100; i++) {
+	বাবে (পূর্ণাঙ্ক i = 0; i < 100; i++) {
 		EXPECT_EQ(median_filter3.apply(i), max(0, i - 1));
 	}
 }
@@ -76,8 +76,8 @@ TEST_F(MedianFilterTest, test5u_simple)
 {
 	MedianFilter<uint16_t, 5> median_filter5;
 
-	for (int i = 0; i < 5; i++) {
-		median_filter5.insert(i);
+	বাবে (পূর্ণাঙ্ক i = 0; i < 5; i++) {
+		median_filter5.ঢোকাও(i);
 	}
 
 	EXPECT_EQ(median_filter5.median(), 2); // 0, 1, 2, 4, 5
@@ -87,46 +87,46 @@ TEST_F(MedianFilterTest, test5i_100)
 {
 	MedianFilter<uint16_t, 5> median_filter5;
 
-	for (int i = 0; i < 100; i++) {
+	বাবে (পূর্ণাঙ্ক i = 0; i < 100; i++) {
 		EXPECT_EQ(median_filter5.apply(i), max(0, i - 2));
 	}
 }
 
 TEST_F(MedianFilterTest, test5f_nan_majority_finite)
 {
-	MedianFilter<float, 5> median_filter5;
-	median_filter5.insert(1.0f);
-	median_filter5.insert(2.0f);
-	median_filter5.insert(NAN);
-	median_filter5.insert(3.0f);
-	median_filter5.insert(NAN);
+	MedianFilter<ভিন্ন, 5> median_filter5;
+	median_filter5.ঢোকাও(1.0f);
+	median_filter5.ঢোকাও(2.0f);
+	median_filter5.ঢোকাও(NAN);
+	median_filter5.ঢোকাও(3.0f);
+	median_filter5.ঢোকাও(NAN);
 	EXPECT_TRUE(PX4_ISFINITE(median_filter5.median()));
 	EXPECT_EQ(median_filter5.median(), 3.0f);
 }
 
 TEST_F(MedianFilterTest, test5f_nan_majority_nan)
 {
-	MedianFilter<float, 5> median_filter5;
-	median_filter5.insert(NAN);
-	median_filter5.insert(NAN);
-	median_filter5.insert(1.0f);
-	median_filter5.insert(NAN);
-	median_filter5.insert(2.0f);
+	MedianFilter<ভিন্ন, 5> median_filter5;
+	median_filter5.ঢোকাও(NAN);
+	median_filter5.ঢোকাও(NAN);
+	median_filter5.ঢোকাও(1.0f);
+	median_filter5.ঢোকাও(NAN);
+	median_filter5.ঢোকাও(2.0f);
 	EXPECT_FALSE(PX4_ISFINITE(median_filter5.median()));
 }
 
-TEST_F(MedianFilterTest, test3f_equal_values)
+TEST_F(MedianFilterTest, test3f_equal_মানসমূহ)
 {
-	MedianFilter<float, 3> median_filter3;
-	median_filter3.insert(5.0f);
-	median_filter3.insert(5.0f);
-	median_filter3.insert(5.0f);
+	MedianFilter<ভিন্ন, 3> median_filter3;
+	median_filter3.ঢোকাও(5.0f);
+	median_filter3.ঢোকাও(5.0f);
+	median_filter3.ঢোকাও(5.0f);
 	EXPECT_EQ(median_filter3.median(), 5.0f);
 }
 
 TEST_F(MedianFilterTest, test3f_nan_spike_recovery)
 {
-	MedianFilter<float, 3> median_filter3;
+	MedianFilter<ভিন্ন, 3> median_filter3;
 
 	// Fill with finite values
 	median_filter3.apply(1.0f);

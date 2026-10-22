@@ -34,46 +34,46 @@
 #pragma once
 
 // Provides CONFIG_NAVIGATOR_ADSB_F3442 for the standard selection.
-#include <px4_boardconfig.h>
+#অন্তর্ভাৱ <px4_boardconfig.h>
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
-#include "f3442_standard/DaaF3442.h"
-#else
-#include "crosstrack_standard/DaaCrosstrack.h"
+#যদি defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#অন্তর্ভাৱ "f3442_standard/DaaF3442.h"
+#অন্যথা
+#অন্তর্ভাৱ "crosstrack_standard/DaaCrosstrack.h"
 #endif
 
-#include <matrix/math.hpp>
+#অন্তর্ভাৱ <matrix/math.hpp>
 
-#include <uORB/topics/detect_and_avoid.h>
-#include <uORB/topics/transponder_report.h>
+#অন্তর্ভাৱ <uORB/topics/detect_and_avoid.h>
+#অন্তর্ভাৱ <uORB/topics/transponder_report.h>
 
-struct daa_input_s {
+সংরচনা daa_প্ৰবেশ_s {
 	matrix::Vector2d uav_lat_lon{};
-	float uav_alt{0.f};
+	ভিন্ন uav_alt{0.f};
 	matrix::Vector3f uav_vel_ned{};
 	transponder_report_s transponder_report{};
 };
 
 class AdsbConflict
 {
-public:
-	AdsbConflict() = default;
-	~AdsbConflict() = default;
+সার্ৱজনিক:
+	AdsbConflict() = স্ৱভাৱ;
+	~AdsbConflict() = স্ৱভাৱ;
 
 	/**
 	 * @brief Validate ownship + transponder inputs and compute the DAA output.
 	 * Returns false on non-finite inputs or when the built standard needs a heading the report does not provide.
 	*/
-	bool calculate_daa_output(const daa_input_s &daa_input, detect_and_avoid_s &daa_output);
+	bool calculate_daa_output(ধ্রুৱ daa_প্ৰবেশ_s &daa_প্ৰবেশ, detect_and_avoid_s &daa_output);
 
 	bool try_updating_params();
 
-	static bool valid_wgs84_coordinates(const double latitude, const double longitude);
+	স্থির bool valid_wgs84_coordinates(ধ্রুৱ দ্ৱিগুণ latitude, ধ্রুৱ দ্ৱিগুণ longitude);
 
-private:
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+গুপ্ত:
+#যদি defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	DaaF3442 _daa;
-#else
+#অন্যথা
 	DaaCrosstrack _daa;
 #endif
 };

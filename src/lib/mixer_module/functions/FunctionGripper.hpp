@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#অন্তর্ভাৱ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gripper.h>
+#অন্তর্ভাৱ <uORB/topics/gripper.h>
 
 /**
  * @brief Function: Gripper (Used for actuating a Gripper)
  */
-class FunctionGripper : public FunctionProviderBase
+শ্ৰেণী FunctionGripper : সার্ৱজনিক FunctionProviderBase
 {
-public:
-	FunctionGripper() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGripper(); }
+সার্ৱজনিক:
+	FunctionGripper() = স্ৱভাৱ;
+	স্থির FunctionProviderBase *allocate(ধ্রুৱ Context &context) { ঘূৰাই নূতন FunctionGripper(); }
 
-	void update() override
+	শূন্য update() override
 	{
 		gripper_s gripper;
 
-		if (_gripper_sub.update(&gripper)) {
-			if (gripper.command == gripper_s::COMMAND_RELEASE) {
+		যদি (_gripper_sub.update(&gripper)) {
+			যদি (gripper.command == gripper_s::COMMAND_RELEASE) {
 				_data = -1.f; // Minimum command for release
 
-			} else if (gripper.command == gripper_s::COMMAND_GRAB) {
+			} অন্যথা যদি (gripper.command == gripper_s::COMMAND_GRAB) {
 				_data = 1.f; // Maximum command for grab
 
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	ভিন্ন value(OutputFunction func) override { ঘূৰাই _data; }
 
-private:
+গুপ্ত:
 	uORB::Subscription _gripper_sub{ORB_ID(gripper)};
-	float _data{-1.f};
+	ভিন্ন _data{-1.f};
 };

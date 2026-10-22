@@ -33,56 +33,56 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#অন্তর্ভাৱ "FunctionProviderBase.hpp"
 
-#include <math.h>
-#include <uORB/topics/vehicle_command.h>
+#অন্তর্ভাৱ <math.h>
+#অন্তর্ভাৱ <uORB/topics/vehicle_command.h>
 
 /**
  * Functions: Peripheral_via_Actuator_Set1 ... Peripheral_via_Actuator_Set6
  */
-class FunctionActuatorSet : public FunctionProviderBase
+শ্ৰেণী FunctionActuatorSet : সার্ৱজনিক FunctionProviderBase
 {
-public:
+সার্ৱজনিক:
 	FunctionActuatorSet()
 	{
-		for (int i = 0; i < max_num_actuators; ++i) {
+		বাবে (পূর্ণাঙ্ক i = 0; i < max_অঙ্ক_actuators; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionActuatorSet(); }
+	স্থির FunctionProviderBase *allocate(ধ্রুৱ Context &context) { ঘূৰাই নূতন FunctionActuatorSet(); }
 
-	void update() override
+	শূন্য update() override
 	{
 		vehicle_command_s vehicle_command;
 
-		while (_topic.update(&vehicle_command)) {
-			if (vehicle_command.command == vehicle_command_s::VEHICLE_CMD_DO_SET_ACTUATOR) {
-				int index = static_cast<int>(lroundf(vehicle_command.param7));
+		যেতিয়ালৈ (_topic.update(&vehicle_command)) {
+			যদি (vehicle_command.command == vehicle_command_s::VEHICLE_CMD_DO_SET_ACTUATOR) {
+				পূর্ণাঙ্ক index = static_cast<পূর্ণাঙ্ক>(lroundf(vehicle_command.param7));
 
-				if (index == 0) {
-					if (PX4_ISFINITE(vehicle_command.param1)) { _data[0] = vehicle_command.param1; }
+				যদি (index == 0) {
+					যদি (PX4_ISFINITE(vehicle_command.param1)) { _data[0] = vehicle_command.param1; }
 
-					if (PX4_ISFINITE(vehicle_command.param2)) {_data[1] = vehicle_command.param2; }
+					যদি (PX4_ISFINITE(vehicle_command.param2)) {_data[1] = vehicle_command.param2; }
 
-					if (PX4_ISFINITE(vehicle_command.param3)) {_data[2] = vehicle_command.param3; }
+					যদি (PX4_ISFINITE(vehicle_command.param3)) {_data[2] = vehicle_command.param3; }
 
-					if (PX4_ISFINITE(vehicle_command.param4)) {_data[3] = vehicle_command.param4; }
+					যদি (PX4_ISFINITE(vehicle_command.param4)) {_data[3] = vehicle_command.param4; }
 
-					if (PX4_ISFINITE(vehicle_command.param5)) {_data[4] = vehicle_command.param5; }
+					যদি (PX4_ISFINITE(vehicle_command.param5)) {_data[4] = vehicle_command.param5; }
 
-					if (PX4_ISFINITE(vehicle_command.param6)) {_data[5] = vehicle_command.param6; }
+					যদি (PX4_ISFINITE(vehicle_command.param6)) {_data[5] = vehicle_command.param6; }
 				}
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Peripheral_via_Actuator_Set1]; }
+	ভিন্ন value(OutputFunction func) override { ঘূৰাই _data[(পূর্ণাঙ্ক)func - (পূর্ণাঙ্ক)OutputFunction::Peripheral_via_Actuator_Set1]; }
 
-private:
-	static constexpr int max_num_actuators = 6;
+গুপ্ত:
+	স্থির constexpr পূর্ণাঙ্ক max_অঙ্ক_actuators = 6;
 
 	uORB::Subscription _topic{ORB_ID(vehicle_command)};
-	float _data[max_num_actuators] {};
+	ভিন্ন _data[max_অঙ্ক_actuators] {};
 };

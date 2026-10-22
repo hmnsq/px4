@@ -39,25 +39,25 @@
  * @author Julien Lecoeur <julien.lecoeur@gmail.com>
  */
 
-#include <gtest/gtest.h>
-#include <ControlAllocationPseudoInverse.hpp>
+#অন্তর্ভাৱ <gtest/gtest.h>
+#অন্তর্ভাৱ <ControlAllocationPseudoInverse.hpp>
 
-using namespace matrix;
+using নামাকাশ matrix;
 
 TEST(ControlAllocationTest, AllZeroCase)
 {
 	ControlAllocationPseudoInverse method;
 
-	matrix::Vector<float, 6> control_sp;
-	matrix::Vector<float, 6> control_allocated;
-	matrix::Vector<float, 6> control_allocated_expected;
-	matrix::Matrix<float, 6, 16> effectiveness;
-	matrix::Vector<float, 16> actuator_sp;
-	matrix::Vector<float, 16> actuator_trim;
-	matrix::Vector<float, 16> linearization_point;
-	matrix::Vector<float, 16> actuator_sp_expected;
+	matrix::Vector<ভিন্ন, 6> control_sp;
+	matrix::Vector<ভিন্ন, 6> control_allocated;
+	matrix::Vector<ভিন্ন, 6> control_allocated_expected;
+	matrix::Matrix<ভিন্ন, 6, 16> effectiveness;
+	matrix::Vector<ভিন্ন, 16> actuator_sp;
+	matrix::Vector<ভিন্ন, 16> actuator_trim;
+	matrix::Vector<ভিন্ন, 16> linearization_point;
+	matrix::Vector<ভিন্ন, 16> actuator_sp_expected;
 
-	method.setEffectivenessMatrix(effectiveness, actuator_trim, linearization_point, 16, false);
+	method.setEffectivenessMatrix(effectiveness, actuator_trim, linearization_point, 16, মিছা);
 	method.setControlSetpoint(control_sp);
 	method.allocate();
 	method.clipActuatorSetpoint();
@@ -72,17 +72,17 @@ TEST(ControlAllocationMetricTest, AllZeroCase)
 {
 	ControlAllocationPseudoInverse method;
 
-	matrix::Vector<float, 6> control_sp;
-	matrix::Vector<float, 6> control_allocated;
-	matrix::Vector<float, 6> control_allocated_expected;
-	matrix::Matrix<float, 6, 16> effectiveness;
-	matrix::Vector<float, 16> actuator_sp;
-	matrix::Vector<float, 16> actuator_trim;
-	matrix::Vector<float, 16> linearization_point;
-	matrix::Vector<float, 16> actuator_sp_expected;
+	matrix::Vector<ভিন্ন, 6> control_sp;
+	matrix::Vector<ভিন্ন, 6> control_allocated;
+	matrix::Vector<ভিন্ন, 6> control_allocated_expected;
+	matrix::Matrix<ভিন্ন, 6, 16> effectiveness;
+	matrix::Vector<ভিন্ন, 16> actuator_sp;
+	matrix::Vector<ভিন্ন, 16> actuator_trim;
+	matrix::Vector<ভিন্ন, 16> linearization_point;
+	matrix::Vector<ভিন্ন, 16> actuator_sp_expected;
 
-	method.setMetricAllocation(true);
-	method.setEffectivenessMatrix(effectiveness, actuator_trim, linearization_point, 16, false);
+	method.setMetricAllocation(সঁচা);
+	method.setEffectivenessMatrix(effectiveness, actuator_trim, linearization_point, 16, মিছা);
 	method.setControlSetpoint(control_sp);
 	method.allocate();
 	actuator_sp = method.getActuatorSetpoint();
@@ -92,11 +92,11 @@ TEST(ControlAllocationMetricTest, AllZeroCase)
 	EXPECT_EQ(control_allocated, control_allocated_expected);
 }
 
-namespace
+নামাকাশ
 {
 
 // Surveyed hexarotor; rows roll/pitch/yaw/thrust xyz, one column per rotor
-constexpr float kSurveyedHexarotor[6][6] = {
+constexpr ভিন্ন kSurveyedHexarotor[6][6] = {
 	{-5.947500f,  5.934500f,  2.964000f, -2.853500f, -2.990000f,  2.840500f},
 	{ 0.071500f,  0.071500f,  5.063500f, -4.972500f,  5.063500f, -4.972500f},
 	{-0.325000f,  0.325000f, -0.325000f,  0.325000f,  0.325000f, -0.325000f},
@@ -105,40 +105,40 @@ constexpr float kSurveyedHexarotor[6][6] = {
 	{-6.500000f, -6.500000f, -6.500000f, -6.500000f, -6.500000f, -6.500000f}
 };
 
-Matrix<float, 6, 16> surveyedHexarotor(uint16_t stopped_mask)
+Matrix<ভিন্ন, 6, 16> surveyedHexarotor(uint16_t stopped_mask)
 {
-	Matrix<float, 6, 16> effectiveness;
+	Matrix<ভিন্ন, 6, 16> effectiveness;
 	effectiveness.setZero();
 
-	for (int i = 0; i < 6; i++) {
-		if (stopped_mask & (1u << i)) {
-			continue;
+	বাবে (পূর্ণাঙ্ক i = 0; i < 6; i++) {
+		যদি (stopped_mask & (1u << i)) {
+			অনুৱর্ত;
 		}
 
-		for (int axis = 0; axis < 6; axis++) {
+		বাবে (পূর্ণাঙ্ক axis = 0; axis < 6; axis++) {
 			effectiveness(axis, i) = kSurveyedHexarotor[axis][i];
 		}
 	}
 
-	return effectiveness;
+	ঘূৰাই effectiveness;
 }
 
-struct Rotor {
-	float px;
-	float py;
-	float km;
+সংরচনা Rotor {
+	ভিন্ন px;
+	ভিন্ন py;
+	ভিন্ন km;
 };
 
 // upward rotors as in ActuatorEffectivenessRotors
-Matrix<float, 6, 16> planarRotors(const Rotor *rotors, int count, uint16_t stopped_mask = 0)
+Matrix<ভিন্ন, 6, 16> planarRotors(ধ্রুৱ Rotor *rotors, পূর্ণাঙ্ক গুনতি, uint16_t stopped_mask = 0)
 {
-	constexpr float ct = 6.5f;
-	Matrix<float, 6, 16> effectiveness;
+	constexpr ভিন্ন ct = 6.5f;
+	Matrix<ভিন্ন, 6, 16> effectiveness;
 	effectiveness.setZero();
 
-	for (int i = 0; i < count; i++) {
-		if (stopped_mask & (1u << i)) {
-			continue;
+	বাবে (পূর্ণাঙ্ক i = 0; i < গুনতি; i++) {
+		যদি (stopped_mask & (1u << i)) {
+			অনুৱর্ত;
 		}
 
 		effectiveness(0, i) = -ct * rotors[i].py;
@@ -147,7 +147,7 @@ Matrix<float, 6, 16> planarRotors(const Rotor *rotors, int count, uint16_t stopp
 		effectiveness(5, i) = -ct;
 	}
 
-	return effectiveness;
+	ঘূৰাই effectiveness;
 }
 
 // In-tree geometries 4001_quad_x, 6001_hexa_x, 8001_octo_x
@@ -164,7 +164,7 @@ constexpr Rotor kOctoX[] = {{0.46f, 0.19f, -0.05f}, {-0.46f, -0.19f, -0.05f}, {0
 
 TEST(ControlAllocationPseudoInverseTest, DropDependentAxesKeepsIndependentGeometries)
 {
-	const Matrix<float, 6, 16> independent[] = {
+	ধ্রুৱ Matrix<ভিন্ন, 6, 16> independent[] = {
 		planarRotors(kQuadX, 4),
 		planarRotors(kHexaX, 6),
 		planarRotors(kOctoX, 8),
@@ -174,8 +174,8 @@ TEST(ControlAllocationPseudoInverseTest, DropDependentAxesKeepsIndependentGeomet
 		planarRotors(kOctoX, 8, (1u << 0) | (1u << 1)),
 	};
 
-	for (const auto &original : independent) {
-		Matrix<float, 6, 16> effectiveness = original;
+	বাবে (ধ্রুৱ auto &original : independent) {
+		Matrix<ভিন্ন, 6, 16> effectiveness = original;
 		EXPECT_EQ(ControlAllocationPseudoInverse::dropDependentAxes(effectiveness), 0);
 		EXPECT_EQ(effectiveness, original);
 	}
@@ -184,7 +184,7 @@ TEST(ControlAllocationPseudoInverseTest, DropDependentAxesKeepsIndependentGeomet
 TEST(ControlAllocationPseudoInverseTest, DropDependentAxesDropsYawCollinearWithRoll)
 {
 	// motor and its opposite stopped: roll and yaw collinear, yaw must go, never roll
-	const Matrix<float, 6, 16> reduced[] = {
+	ধ্রুৱ Matrix<ভিন্ন, 6, 16> reduced[] = {
 		surveyedHexarotor((1u << 0) | (1u << 1)),
 		surveyedHexarotor((1u << 2) | (1u << 3)),
 		surveyedHexarotor((1u << 4) | (1u << 5)),
@@ -192,14 +192,14 @@ TEST(ControlAllocationPseudoInverseTest, DropDependentAxesDropsYawCollinearWithR
 		planarRotors(kHexaX, 6, (1u << 2) | (1u << 3)),
 	};
 
-	for (const auto &original : reduced) {
-		Matrix<float, 6, 16> effectiveness = original;
-		const uint8_t dropped = ControlAllocationPseudoInverse::dropDependentAxes(effectiveness);
+	বাবে (ধ্রুৱ auto &original : reduced) {
+		Matrix<ভিন্ন, 6, 16> effectiveness = original;
+		ধ্রুৱ uint8_t dropped = ControlAllocationPseudoInverse::dropDependentAxes(effectiveness);
 		EXPECT_EQ(dropped, 1u << ControlAllocation::YAW);
 
-		for (int axis = 0; axis < 6; axis++) {
-			for (int i = 0; i < 16; i++) {
-				const float expected = (axis == ControlAllocation::YAW) ? 0.f : original(axis, i);
+		বাবে (পূর্ণাঙ্ক axis = 0; axis < 6; axis++) {
+			বাবে (পূর্ণাঙ্ক i = 0; i < 16; i++) {
+				ধ্রুৱ ভিন্ন expected = (axis == ControlAllocation::YAW) ? 0.f : original(axis, i);
 				EXPECT_FLOAT_EQ(effectiveness(axis, i), expected);
 			}
 		}
@@ -209,19 +209,19 @@ TEST(ControlAllocationPseudoInverseTest, DropDependentAxesDropsYawCollinearWithR
 TEST(ControlAllocationPseudoInverseTest, DroppedAxisIsUnallocatedOthersExact)
 {
 	ControlAllocationPseudoInverse method;
-	Vector<float, 16> actuator_trim;
-	Vector<float, 16> linearization_point;
+	Vector<ভিন্ন, 16> actuator_trim;
+	Vector<ভিন্ন, 16> linearization_point;
 
 	method.setEffectivenessMatrix(surveyedHexarotor((1u << 0) | (1u << 1)), actuator_trim, linearization_point,
-				      16, false);
+				      16, মিছা);
 	EXPECT_EQ(method.getDroppedAxes(), 1u << ControlAllocation::YAW);
 
 	// yaw demand has nothing to act on
-	Vector<float, 6> control_sp;
+	Vector<ভিন্ন, 6> control_sp;
 	control_sp(ControlAllocation::YAW) = 1.f;
 	method.setControlSetpoint(control_sp);
 	method.allocate();
-	const Vector<float, 16> no_actuation;
+	ধ্রুৱ Vector<ভিন্ন, 16> no_actuation;
 	EXPECT_EQ(method.getActuatorSetpoint(), no_actuation);
 	EXPECT_FLOAT_EQ(method.getAllocatedControl()(ControlAllocation::YAW), 0.f);
 
@@ -233,13 +233,13 @@ TEST(ControlAllocationPseudoInverseTest, DroppedAxisIsUnallocatedOthersExact)
 	method.setControlSetpoint(control_sp);
 	method.allocate();
 
-	const Vector<float, 6> allocated = method.getAllocatedControl();
+	ধ্রুৱ Vector<ভিন্ন, 6> allocated = method.getAllocatedControl();
 	EXPECT_NEAR(allocated(ControlAllocation::ROLL), 0.01f, 1e-4f);
 	EXPECT_NEAR(allocated(ControlAllocation::PITCH), 0.024f, 1e-4f);
 	EXPECT_NEAR(allocated(ControlAllocation::THRUST_Z), -0.001f, 1e-4f);
 	EXPECT_FLOAT_EQ(allocated(ControlAllocation::YAW), 0.f);
 
-	for (int i = 0; i < 16; i++) {
+	বাবে (পূর্ণাঙ্ক i = 0; i < 16; i++) {
 		EXPECT_LT(fabsf(method.getActuatorSetpoint()(i)), 0.01f) << "actuator " << i;
 	}
 }

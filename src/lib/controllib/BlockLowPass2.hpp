@@ -39,48 +39,48 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#অন্তর্ভাৱ <px4_platform_common/defines.h>
+#অন্তর্ভাৱ <assert.h>
+#অন্তর্ভাৱ <time.h>
+#অন্তর্ভাৱ <stdlib.h>
+#অন্তর্ভাৱ <math.h>
+#অন্তর্ভাৱ <mathlib/math/test/test.hpp>
+#অন্তর্ভাৱ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#অন্তর্ভাৱ "block/Block.hpp"
+#অন্তর্ভাৱ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#অন্তর্ভাৱ "matrix/math.hpp"
 
-namespace control
+নামাকাশ control
 {
 
 /**
  * A 2nd order low pass filter block which uses the default px4 2nd order low pass filter
  */
-class __EXPORT BlockLowPass2 : public Block
+শ্ৰেণী __EXPORT Block_নিচেৰ_Pass2 : সার্ৱজনিক Block
 {
-public:
+সার্ৱজনিক:
 // methods
-	BlockLowPass2(SuperBlock *parent, const char *name, float sample_freq) :
+	Block_নিচেৰ_Pass2(SuperBlock *parent, ধ্রুৱ ৱর্ণ *name, ভিন্ন sample_freq) :
 		Block(parent, name),
 		_state(0.0 / 0.0 /* initialize to invalid val, force into is_finite() check on first call */),
-		_fCut(this, ""), // only one parameter, no need to name
+		_fCut(এতত্, ""), // only one parameter, no need to name
 		_fs(sample_freq),
 		_lp(_fs, _fCut.get())
 	{}
-	virtual ~BlockLowPass2() = default;
-	float update(float input);
+	আভাস ~Block_নিচেৰ_Pass2() = স্ৱভাৱ;
+	ভিন্ন update(ভিন্ন প্ৰবেশ);
 // accessors
-	float getState() { return _state; }
-	float getFCutParam() { return _fCut.get(); }
-	void setState(float state) { _state = _lp.reset(state); }
-protected:
+	ভিন্ন getState() { ঘূৰাই _state; }
+	ভিন্ন getFCutParam() { ঘূৰাই _fCut.get(); }
+	শূন্য setState(ভিন্ন state) { _state = _lp.reset(state); }
+রক্ষিত:
 // attributes
-	float _state;
+	ভিন্ন _state;
 	control::BlockParamFloat _fCut;
-	float _fs;
-	math::LowPassFilter2p<float> _lp;
+	ভিন্ন _fs;
+	math::নিচেৰ_Pass_Filter2p<ভিন্ন> _lp;
 };
 
 } // namespace control

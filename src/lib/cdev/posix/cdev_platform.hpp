@@ -1,35 +1,35 @@
 
 #pragma once
 
-#include <inttypes.h>
-#include <string.h>
+#অন্তর্ভাৱ <inttypes.h>
+#অন্তর্ভাৱ <string.h>
 
 #define ATOMIC_ENTER lock()
 #define ATOMIC_LEAVE unlock()
 
-namespace cdev
+নামাকাশ cdev
 {
 
-struct file_operations {
-	void *op;
+সংরচনা file_operations {
+	শূন্য *op;
 };
 
-using px4_file_operations_t = struct file_operations;
+using px4_file_operations_t = সংরচনা file_operations;
 using mode_t = uint32_t;
 
-class CDev;
+শ্ৰেণী CDev;
 
-struct file_t {
-	int f_oflags{0};
-	void *f_priv{nullptr};
+সংরচনা file_t {
+	পূর্ণাঙ্ক f_oflags{0};
+	শূন্য *f_priv{nullptr};
 	CDev *cdev{nullptr};
 
-	file_t() = default;
-	file_t(int f, CDev *c) : f_oflags(f), cdev(c) {}
+	file_t() = স্ৱভাৱ;
+	file_t(পূর্ণাঙ্ক f, CDev *c) : f_oflags(f), cdev(c) {}
 };
 
 } // namespace cdev
 
-extern "C" __EXPORT int register_driver(const char *name, const cdev::px4_file_operations_t *fops,
-					cdev::mode_t mode, void *data);
-extern "C" __EXPORT int unregister_driver(const char *path);
+বাহ্য "C" __EXPORT পূর্ণাঙ্ক register_driver(ধ্রুৱ ৱর্ণ *name, ধ্রুৱ cdev::px4_file_operations_t *fops,
+					cdev::mode_t mode, শূন্য *data);
+বাহ্য "C" __EXPORT পূর্ণাঙ্ক unregister_driver(ধ্রুৱ ৱর্ণ *path);

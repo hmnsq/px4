@@ -39,48 +39,48 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#অন্তর্ভাৱ <px4_platform_common/defines.h>
+#অন্তর্ভাৱ <assert.h>
+#অন্তর্ভাৱ <time.h>
+#অন্তর্ভাৱ <stdlib.h>
+#অন্তর্ভাৱ <math.h>
+#অন্তর্ভাৱ <mathlib/math/test/test.hpp>
+#অন্তর্ভাৱ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#অন্তর্ভাৱ "block/Block.hpp"
+#অন্তর্ভাৱ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#অন্তর্ভাৱ "matrix/math.hpp"
 
-namespace control
+নামাকাশ control
 {
 
 /**
  * A high pass filter as described here:
  * http://en.wikipedia.org/wiki/High-pass_filter.
  */
-class __EXPORT BlockHighPass : public Block
+শ্ৰেণী __EXPORT Block_উপৰেৰ_Pass : সার্ৱজনিক Block
 {
-public:
+সার্ৱজনিক:
 // methods
-	BlockHighPass(SuperBlock *parent, const char *name) :
+	Block_উপৰেৰ_Pass(SuperBlock *parent, ধ্রুৱ ৱর্ণ *name) :
 		Block(parent, name),
 		_u(0),
 		_y(0),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(এতত্, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockHighPass() = default;
-	float update(float input);
+	আভাস ~Block_উপৰেৰ_Pass() = স্ৱভাৱ;
+	ভিন্ন update(ভিন্ন প্ৰবেশ);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getFCut() {return _fCut.get();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
+	ভিন্ন getU() {ঘূৰাই _u;}
+	ভিন্ন getY() {ঘূৰাই _y;}
+	ভিন্ন getFCut() {ঘূৰাই _fCut.get();}
+	শূন্য setU(ভিন্ন u) {_u = u;}
+	শূন্য setY(ভিন্ন y) {_y = y;}
+রক্ষিত:
 // attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
+	ভিন্ন _u; /**< previous input */
+	ভিন্ন _y; /**< previous output */
 	control::BlockParamFloat _fCut; /**< cut-off frequency, Hz */
 };
 

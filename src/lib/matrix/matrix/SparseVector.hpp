@@ -10,51 +10,51 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#অন্তর্ভাৱ "Vector.hpp"
 
-namespace matrix
+নামাকাশ matrix
 {
 // Vector that only store nonzero elements,
 // which indices are specified as parameter pack
 template<typename Type, size_t M, size_t... Idxs>
-class SparseVector
+শ্ৰেণী SparseVector
 {
-private:
-	enum : size_t { N = sizeof...(Idxs) };
+গুপ্ত:
+	গণনা : size_t { N = পরিমাণ...(Idxs) };
 
-	static constexpr bool duplicateIndices()
+	স্থির constexpr তার্কিক duplicateIndices()
 	{
 		constexpr size_t indicies[] {Idxs...};
 
-		for (size_t i = 0; i < N; i++) {
-			for (size_t j = 0; j < i; j++) {
-				if (indicies[i] == indicies[j]) {
-					return true;
+		বাবে (size_t i = 0; i < N; i++) {
+			বাবে (size_t j = 0; j < i; j++) {
+				যদি (indicies[i] == indicies[j]) {
+					ঘূৰাই সঁচা;
 				}
 			}
 		}
 
-		return false;
+		ঘূৰাই মিছা;
 	}
 
-	static constexpr size_t findMaxIndex()
+	স্থির constexpr size_t findMaxIndex()
 	{
 		constexpr size_t indicies[] {Idxs...};
 		size_t maxIndex = 0;
 
-		for (size_t i = 0; i < N; i++) {
-			if (maxIndex < indicies[i]) {
+		বাবে (size_t i = 0; i < N; i++) {
+			যদি (maxIndex < indicies[i]) {
 				maxIndex = indicies[i];
 			}
 		}
 
-		return maxIndex;
+		ঘূৰাই maxIndex;
 	}
 
-	static constexpr size_t indexAt(size_t i)
+	স্থির constexpr size_t indexAt(size_t i)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		return indicies[i];
+		ঘূৰাই indicies[i];
 	}
 
 	static_assert(!duplicateIndices(), "Duplicate indices");
@@ -64,167 +64,167 @@ private:
 
 	Type _data[N] {};
 
-	static constexpr int findCompressedIndex(size_t index)
+	স্থির constexpr পূর্ণাঙ্ক findCompressedIndex(size_t index)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		int compressedIndex = -1;
+		পূর্ণাঙ্ক compressedIndex = -1;
 
-		for (size_t i = 0; i < N; i++) {
-			if (index == indicies[i]) {
-				compressedIndex = static_cast<int>(i);
+		বাবে (size_t i = 0; i < N; i++) {
+			যদি (index == indicies[i]) {
+				compressedIndex = static_cast<পূর্ণাঙ্ক>(i);
 			}
 		}
 
-		return compressedIndex;
+		ঘূৰাই compressedIndex;
 	}
 
-public:
-	constexpr size_t non_zeros() const
+সার্ৱজনিক:
+	constexpr size_t non_zeros() ধ্রুৱ
 	{
-		return N;
+		ঘূৰাই N;
 	}
 
-	constexpr size_t index(size_t i) const
+	constexpr size_t index(size_t i) ধ্রুৱ
 	{
-		return indexAt(i);
+		ঘূৰাই indexAt(i);
 	}
 
-	SparseVector() = default;
+	SparseVector() = স্ৱভাৱ;
 
-	SparseVector(const matrix::Vector<Type, M> &data)
+	SparseVector(ধ্রুৱ matrix::Vector<Type, M> &data)
 	{
-		for (size_t i = 0; i < N; i++) {
+		বাবে (size_t i = 0; i < N; i++) {
 			_data[i] = data(indexAt(i));
 		}
 	}
 
-	explicit SparseVector(const Type data[N])
+	explicit SparseVector(ধ্রুৱ Type data[N])
 	{
-		memcpy(_data, data, sizeof(_data));
+		memcpy(_data, data, পরিমাণ(_data));
 	}
 
 	template <size_t i>
-	inline Type at() const
+	অন্তঃস্থ Type at() ধ্রুৱ
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
+		constexpr পূর্ণাঙ্ক compressed_index = findCompressedIndex(i);
 		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		ঘূৰাই _data[compressed_index];
 	}
 
 	template <size_t i>
-	inline Type &at()
+	অন্তঃস্থ Type &at()
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
+		constexpr পূর্ণাঙ্ক compressed_index = findCompressedIndex(i);
 		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		ঘূৰাই _data[compressed_index];
 	}
 
-	inline Type atCompressedIndex(size_t i) const
+	অন্তঃস্থ Type atCompressedIndex(size_t i) ধ্রুৱ
 	{
-		assert(i < N);
-		return _data[i];
+		প্রতিজ্ঞা(i < N);
+		ঘূৰাই _data[i];
 	}
 
-	inline Type &atCompressedIndex(size_t i)
+	অন্তঃস্থ Type &atCompressedIndex(size_t i)
 	{
-		assert(i < N);
-		return _data[i];
+		প্রতিজ্ঞা(i < N);
+		ঘূৰাই _data[i];
 	}
 
-	void setZero()
+	শূন্য setZero()
 	{
-		for (size_t i = 0; i < N; i++) {
+		বাবে (size_t i = 0; i < N; i++) {
 			_data[i] = Type(0);
 		}
 	}
 
-	Type dot(const matrix::Vector<Type, M> &other) const
+	Type dot(ধ্রুৱ matrix::Vector<Type, M> &other) ধ্রুৱ
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
+		বাবে (size_t i = 0; i < N; i++) {
 			accum += _data[i] * other(indexAt(i));
 		}
 
-		return accum;
+		ঘূৰাই accum;
 	}
 
-	matrix::Vector<Type, M> operator+(const matrix::Vector<Type, M> &other) const
+	matrix::Vector<Type, M> operator+(ধ্রুৱ matrix::Vector<Type, M> &other) ধ্রুৱ
 	{
 		matrix::Vector<Type, M> vec = other;
 
-		for (size_t i = 0; i < N; i++) {
+		বাবে (size_t i = 0; i < N; i++) {
 			vec(indexAt(i)) +=  _data[i];
 		}
 
-		return vec;
+		ঘূৰাই vec;
 	}
 
 	SparseVector &operator+=(Type t)
 	{
-		for (size_t i = 0; i < N; i++) {
+		বাবে (size_t i = 0; i < N; i++) {
 			_data[i] += t;
 		}
 
-		return *this;
+		ঘূৰাই *এতত্;
 	}
 
-	Type norm_squared() const
+	Type norm_squared() ধ্রুৱ
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
+		বাবে (size_t i = 0; i < N; i++) {
 			accum += _data[i] * _data[i];
 		}
 
-		return accum;
+		ঘূৰাই accum;
 	}
 
-	Type norm() const
+	Type norm() ধ্রুৱ
 	{
-		return std::sqrt(norm_squared());
+		ঘূৰাই std::sqrt(norm_squared());
 	}
 
-	bool longerThan(Type testVal) const
+	তার্কিক longerThan(Type testVal) ধ্রুৱ
 	{
-		return norm_squared() > testVal * testVal;
+		ঘূৰাই norm_squared() > testVal * testVal;
 	}
 };
 
 template<typename Type, size_t Q, size_t M, size_t ... Idxs>
-matrix::Vector<Type, Q> operator*(const matrix::Matrix<Type, Q, M> &mat,
-				  const matrix::SparseVector<Type, M, Idxs...> &vec)
+matrix::Vector<Type, Q> operator*(ধ্রুৱ matrix::Matrix<Type, Q, M> &mat,
+				  ধ্রুৱ matrix::SparseVector<Type, M, Idxs...> &vec)
 {
 	matrix::Vector<Type, Q> res;
 
-	for (size_t i = 0; i < Q; i++) {
-		const Vector<Type, M> row = mat.row(i);
+	বাবে (size_t i = 0; i < Q; i++) {
+		ধ্রুৱ Vector<Type, M> row = mat.row(i);
 		res(i) = vec.dot(row);
 	}
 
-	return res;
+	ঘূৰাই res;
 }
 
 // returns x.T * A * x
 template<typename Type, size_t M, size_t ... Idxs>
-Type quadraticForm(const matrix::SquareMatrix<Type, M> &A, const matrix::SparseVector<Type, M, Idxs...> &x)
+Type quadraticForm(ধ্রুৱ matrix::SquareMatrix<Type, M> &A, ধ্রুৱ matrix::SparseVector<Type, M, Idxs...> &x)
 {
 	Type res = Type(0);
 
-	for (size_t i = 0; i < x.non_zeros(); i++) {
+	বাবে (size_t i = 0; i < x.non_zeros(); i++) {
 		Type tmp = Type(0);
 
-		for (size_t j = 0; j < x.non_zeros(); j++) {
+		বাবে (size_t j = 0; j < x.non_zeros(); j++) {
 			tmp += A(x.index(i), x.index(j)) * x.atCompressedIndex(j);
 		}
 
 		res += x.atCompressedIndex(i) * tmp;
 	}
 
-	return res;
+	ঘূৰাই res;
 }
 
 template<size_t M, size_t ... Idxs>
-using SparseVectorf = SparseVector<float, M, Idxs...>;
+using SparseVectorf = SparseVector<ভিন্ন, M, Idxs...>;
 
 }

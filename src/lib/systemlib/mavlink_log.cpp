@@ -38,41 +38,41 @@
  * @author Lorenz Meier <lorenz@px4.io>
  */
 
-#include <drivers/drv_hrt.h>
-#include <px4_platform_common/posix.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
+#অন্তর্ভাৱ <drivers/drv_hrt.h>
+#অন্তর্ভাৱ <px4_platform_common/posix.h>
+#অন্তর্ভাৱ <string.h>
+#অন্তর্ভাৱ <stdlib.h>
+#অন্তর্ভাৱ <stdio.h>
+#অন্তর্ভাৱ <stdarg.h>
 
-#include <uORB/topics/mavlink_log.h>
-#include "mavlink_log.h"
+#অন্তর্ভাৱ <uORB/topics/mavlink_log.h>
+#অন্তর্ভাৱ "mavlink_log.h"
 
-__EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, const char *fmt, ...)
+__EXPORT শূন্য mavlink_vasprintf(পূর্ণাঙ্ক severity, orb_advert_t *mavlink_log_pub, ধ্রুৱ ৱর্ণ *fmt, ...)
 {
 	// TODO: add compile check for maxlen
 
-	if (!fmt) {
-		return;
+	যদি (!fmt) {
+		ঘূৰাই;
 	}
 
-	if (mavlink_log_pub == nullptr) {
-		return;
+	যদি (mavlink_log_pub == nullptr) {
+		ঘূৰাই;
 	}
 
-	mavlink_log_s log_msg;
-	log_msg.severity = severity;
-	log_msg.timestamp = hrt_absolute_time();
+	mavlink_log_s log_বাৰ্তা;
+	log_বাৰ্তা.severity = severity;
+	log_বাৰ্তা.timestamp = hrt_absolute_time();
 
 	va_list ap;
 	va_start(ap, fmt);
-	vsnprintf((char *)log_msg.text, sizeof(log_msg.text), fmt, ap);
+	vsnprintf((ৱর্ণ *)log_বাৰ্তা.text, পরিমাণ(log_বাৰ্তা.text), fmt, ap);
 	va_end(ap);
 
-	if (*mavlink_log_pub != nullptr) {
-		orb_publish(ORB_ID(mavlink_log), *mavlink_log_pub, &log_msg);
+	যদি (*mavlink_log_pub != nullptr) {
+		orb_publish(ORB_ID(mavlink_log), *mavlink_log_pub, &log_বাৰ্তা);
 
-	} else {
-		*mavlink_log_pub = orb_advertise(ORB_ID(mavlink_log), &log_msg);
+	} অন্যথা {
+		*mavlink_log_pub = orb_advertise(ORB_ID(mavlink_log), &log_বাৰ্তা);
 	}
 }

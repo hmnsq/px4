@@ -31,26 +31,26 @@
  *
  ****************************************************************************/
 
-#include "autosave.h"
+#অন্তর্ভাৱ "autosave.h"
 
-#include <px4_platform_common/log.h>
-#include <uORB/topics/actuator_armed.h>
-#include <uORB/Subscription.hpp>
+#অন্তর্ভাৱ <px4_platform_common/log.h>
+#অন্তর্ভাৱ <uORB/topics/actuator_armed.h>
+#অন্তর্ভাৱ <uORB/Subscription.hpp>
 
-#include "param.h"
-#include "atomic_transaction.h"
+#অন্তর্ভাৱ "param.h"
+#অন্তর্ভাৱ "atomic_transaction.h"
 
-using namespace time_literals;
+using নামাকাশ time_literals;
 
 ParamAutosave::ParamAutosave()
 	: ScheduledWorkItem(MODULE_NAME, px4::wq_configurations::lp_default)
 {
 }
 
-void ParamAutosave::request()
+শূন্য ParamAutosave::request()
 {
-	if (_scheduled.load() || _disabled) {
-		return;
+	যদি (_scheduled.load() || _disabled) {
+		ঘূৰাই;
 	}
 
 	// wait at least 300ms before saving, because:
@@ -59,72 +59,72 @@ void ParamAutosave::request()
 	//   looks at all unsaved params.
 	hrt_abstime delay = 300_ms;
 
-	static constexpr const hrt_abstime rate_limit = 2_s; // rate-limit saving to 2 seconds
-	const hrt_abstime last_save_elapsed = hrt_elapsed_time(&_last_timestamp);
+	স্থির constexpr ধ্রুৱ hrt_abstime rate_limit = 2_s; // rate-limit saving to 2 seconds
+	ধ্রুৱ hrt_abstime last_save_elapsed = hrt_elapsed_time(&_last_timestamp);
 
-	if (last_save_elapsed < rate_limit && rate_limit > last_save_elapsed + delay) {
+	যদি (last_save_elapsed < rate_limit && rate_limit > last_save_elapsed + delay) {
 		delay = rate_limit - last_save_elapsed;
 	}
 
-	_scheduled.store(true);
+	_scheduled.store(সঁচা);
 	ScheduleDelayed(delay);
 }
 
-void ParamAutosave::enable(bool enable)
+শূন্য ParamAutosave::enable(তার্কিক enable)
 {
 	AtomicTransaction transaction;
 	_disabled = !enable;
 
-	if (!enable && _scheduled.load()) {
-		_scheduled.store(false);
+	যদি (!enable && _scheduled.load()) {
+		_scheduled.store(মিছা);
 		px4::ScheduledWorkItem::ScheduleClear();
 	}
 }
 
-void ParamAutosave::Run()
+শূন্য ParamAutosave::Run()
 {
-	bool disabled = false;
+	তার্কিক disabled = মিছা;
 
-	if (!param_get_default_file()) {
+	যদি (!param_get_default_file()) {
 		// In case we save to FLASH, defer param writes until disarmed,
 		// as writing to FLASH can stall the entire CPU (in rare cases around 300ms on STM32F7)
 		uORB::SubscriptionData<actuator_armed_s> armed_sub{ORB_ID(actuator_armed)};
 
-		if (armed_sub.get().armed) {
+		যদি (armed_sub.get().armed) {
 			ScheduleDelayed(1_s);
-			return;
+			ঘূৰাই;
 		}
 	}
 
 	{
-		const AtomicTransaction transaction;
+		ধ্রুৱ AtomicTransaction transaction;
 		_last_timestamp = hrt_absolute_time();
 		// Note that the order is important here: we first clear _scheduled, then save the parameters, as during export,
 		// more parameter changes could happen.
-		_scheduled.store(false);
+		_scheduled.store(মিছা);
 		disabled = _disabled;
 	}
 
-	if (disabled) {
-		return;
+	যদি (disabled) {
+		ঘূৰাই;
 	}
 
 	PX4_DEBUG("Autosaving params");
-	int ret = param_save_default(false);
+	পূর্ণাঙ্ক ret = param_save_default(মিছা);
 
-	if (ret != PX4_OK) {
+	যদি (ret != PX4_OK) {
 		// re-request to be saved in the future, try 3 times at most
-		if (_retry_count < 3) {
-			_retry_count++;
+		যদি (retry_গুনতি_2 < 3) {
+			retry_গুনতি_2++;
 			PX4_INFO("param auto save unavailable (%i), retrying..", ret);
 			request();
 
-		} else {
+		} অন্যথা {
 			PX4_ERR("param auto save failed (%i)", ret);
-			_retry_count = 0;
+			retry_গুনতি_2 = 0;
 		}
 
-	} else {
-		_retry_count = 0;
+	} অন্যথা {
+		retry_গুনতি_2 = 0;
 	}
 }

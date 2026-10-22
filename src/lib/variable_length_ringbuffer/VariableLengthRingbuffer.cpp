@@ -34,10 +34,10 @@
 
 
 
-#include "VariableLengthRingbuffer.hpp"
+#অন্তর্ভাৱ "VariableLengthRingbuffer.hpp"
 
-#include <assert.h>
-#include <string.h>
+#অন্তর্ভাৱ <assert.h>
+#অন্তর্ভাৱ <string.h>
 
 
 VariableLengthRingbuffer::~VariableLengthRingbuffer()
@@ -45,62 +45,62 @@ VariableLengthRingbuffer::~VariableLengthRingbuffer()
 	deallocate();
 }
 
-bool VariableLengthRingbuffer::allocate(size_t buffer_size)
+তার্কিক VariableLengthRingbuffer::allocate(size_t buffer_size)
 {
-	return _ringbuffer.allocate(buffer_size);
+	ঘূৰাই _ringbuffer.allocate(buffer_size);
 }
 
-void VariableLengthRingbuffer::deallocate()
+শূন্য VariableLengthRingbuffer::deallocate()
 {
 	_ringbuffer.deallocate();
 }
 
-bool VariableLengthRingbuffer::push_back(const uint8_t *packet, size_t packet_len)
+তার্কিক VariableLengthRingbuffer::push_back(ধ্রুৱ uint8_t *packet, size_t packet_len)
 {
-	if (packet_len == 0 || packet == nullptr) {
+	যদি (packet_len == 0 || packet == nullptr) {
 		// Nothing to add, we better don't try.
-		return false;
+		ঘূৰাই মিছা;
 	}
 
-	size_t space_required = packet_len + sizeof(Header);
+	size_t space_required = packet_len + পরিমাণ(Header);
 
-	if (space_required > _ringbuffer.space_available()) {
-		return false;
+	যদি (space_required > _ringbuffer.space_available()) {
+		ঘূৰাই মিছা;
 	}
 
 	Header header{static_cast<uint32_t>(packet_len)};
-	bool result = _ringbuffer.push_back(reinterpret_cast<const uint8_t * >(&header), sizeof(header));
-	assert(result);
+	তার্কিক result = _ringbuffer.push_back(reinterpret_cast<ধ্রুৱ uint8_t * >(&header), পরিমাণ(header));
+	প্রতিজ্ঞা(result);
 
 	result = _ringbuffer.push_back(packet, packet_len);
-	assert(result);
+	প্রতিজ্ঞা(result);
 
 	// In case asserts are commented out to prevent unused warnings.
-	(void)result;
+	(শূন্য)result;
 
-	return true;
+	ঘূৰাই সঁচা;
 }
 
-size_t VariableLengthRingbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
+size_t VariableLengthRingbuffer::বেৰ_কৰো_front(uint8_t *buf, size_t buf_max_len)
 {
-	if (buf == nullptr) {
+	যদি (buf == nullptr) {
 		// User needs to supply a valid pointer.
-		return 0;
+		ঘূৰাই 0;
 	}
 
 	// Check next header
 	Header header;
 
-	if (_ringbuffer.pop_front(reinterpret_cast<uint8_t *>(&header), sizeof(header)) < sizeof(header)) {
-		return 0;
+	যদি (_ringbuffer.বেৰ_কৰো_front(reinterpret_cast<uint8_t *>(&header), পরিমাণ(header)) < পরিমাণ(header)) {
+		ঘূৰাই 0;
 	}
 
 	// We can't fit the packet into the user supplied buffer.
 	// This should never happen as the user has to supply a big // enough buffer.
-	assert(static_cast<uint32_t>(header.len) <= buf_max_len);
+	প্রতিজ্ঞা(static_cast<uint32_t>(header.len) <= buf_max_len);
 
-	size_t bytes_read = _ringbuffer.pop_front(buf, header.len);
-	assert(bytes_read == header.len);
+	size_t bytes_read = _ringbuffer.বেৰ_কৰো_front(buf, header.len);
+	প্রতিজ্ঞা(bytes_read == header.len);
 
-	return bytes_read;
+	ঘূৰাই bytes_read;
 }

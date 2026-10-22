@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#include <string.h>
+#অন্তর্ভাৱ <string.h>
 
 /**
  * @file parameters_common.cpp
@@ -40,7 +40,7 @@
  *
  */
 
-static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(param_info_s);
+স্থির constexpr uint16_t param_info_গুনতি = পরিমাণ(px4::parameters) / পরিমাণ(param_info_s);
 
 /**
  * Test whether a param_t is value.
@@ -48,119 +48,119 @@ static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(pa
  * @param param			The parameter handle to test.
  * @return			True if the handle is valid.
  */
-static constexpr bool handle_in_range(param_t param) { return (param < param_info_count); }
+স্থির constexpr তার্কিক handle_in_range(param_t param) { ঘূৰাই (param < param_info_গুনতি); }
 
-unsigned param_count()
+unsigned param_গুনতি()
 {
-	return param_info_count;
+	ঘূৰাই param_info_গুনতি;
 }
 
-int param_get_index(param_t param)
+পূর্ণাঙ্ক param_get_index(param_t param)
 {
-	if (handle_in_range(param)) {
-		return (unsigned)param;
+	যদি (handle_in_range(param)) {
+		ঘূৰাই (unsigned)param;
 	}
 
-	return -1;
+	ঘূৰাই -1;
 }
 
 param_t param_for_index(unsigned index)
 {
-	if (index < param_info_count) {
-		return (param_t)index;
+	যদি (index < param_info_গুনতি) {
+		ঘূৰাই (param_t)index;
 	}
 
-	return PARAM_INVALID;
+	ঘূৰাই PARAM_INVALID;
 }
 
-const char *param_name(param_t param)
+ধ্রুৱ ৱর্ণ *param_name(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters[param].name : nullptr;
+	ঘূৰাই handle_in_range(param) ? px4::parameters[param].name : nullptr;
 }
 
 param_type_t param_type(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
+	ঘূৰাই handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
 }
 
-bool param_is_volatile(param_t param)
+তার্কিক param_is_volatile(param_t param)
 {
-	if (handle_in_range(param)) {
-		for (const auto &p : px4::parameters_volatile) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	যদি (handle_in_range(param)) {
+		বাবে (ধ্রুৱ auto &p : px4::parameters_volatile) {
+			যদি (static_cast<px4::params>(param) == p) {
+				ঘূৰাই সঁচা;
 			}
 		}
 	}
 
-	return false;
+	ঘূৰাই মিছা;
 }
 
-static bool params_locked = false;
+স্থির তার্কিক params_locked = মিছা;
 
-bool param_is_readonly(param_t param)
+তার্কিক param_is_readonly(param_t param)
 {
-	if (params_locked && handle_in_range(param)) {
-		for (const auto &p : px4::parameters_readonly) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	যদি (params_locked && handle_in_range(param)) {
+		বাবে (ধ্রুৱ auto &p : px4::parameters_readonly) {
+			যদি (static_cast<px4::params>(param) == p) {
+				ঘূৰাই সঁচা;
 			}
 		}
 	}
 
-	return false;
+	ঘূৰাই মিছা;
 }
 
-void param_lock_readonly()
+শূন্য param_lock_readonly()
 {
-	params_locked = true;
+	params_locked = সঁচা;
 }
 
 size_t param_size(param_t param)
 {
-	if (handle_in_range(param)) {
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-		case PARAM_TYPE_FLOAT:
-			return 4;
+	যদি (handle_in_range(param)) {
+		ৱিকল্প (param_type(param)) {
+		পক্ষ PARAM_TYPE_INT32:
+		পক্ষ PARAM_TYPE_FLOAT:
+			ঘূৰাই 4;
 
-		default:
-			return 0;
+		স্ৱভাৱ:
+			ঘূৰাই 0;
 		}
 	}
 
-	return 0;
+	ঘূৰাই 0;
 }
 
-int
-param_get_system_default_value(param_t param, void *default_val)
+পূর্ণাঙ্ক
+param_get_system_default_মান(param_t param, শূন্য *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	যদি (!handle_in_range(param)) {
+		ঘূৰাই PX4_ERROR;
 	}
 
-	int ret = PX4_OK;
+	পূর্ণাঙ্ক ret = PX4_OK;
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
+	ৱিকল্প (param_type(param)) {
+	পক্ষ PARAM_TYPE_INT32:
 		memcpy(default_val, &px4::parameters[param].val.i, param_size(param));
-		break;
+		ভঙ্গ;
 
-	case PARAM_TYPE_FLOAT:
+	পক্ষ PARAM_TYPE_FLOAT:
 		memcpy(default_val, &px4::parameters[param].val.f, param_size(param));
-		break;
+		ভঙ্গ;
 
-	default:
+	স্ৱভাৱ:
 		ret = PX4_ERROR;
-		break;
+		ভঙ্গ;
 	}
 
-	return ret;
+	ঘূৰাই ret;
 }
 
-int
-param_get_mark_used(param_t param, void *val)
+পূর্ণাঙ্ক
+param_get_mark_used(param_t param, শূন্য *val)
 {
 	param_set_used(param);
-	return param_get(param, val);
+	ঘূৰাই param_get(param, val);
 }

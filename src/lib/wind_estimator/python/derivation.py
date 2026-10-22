@@ -34,11 +34,11 @@ Description:
     Derivation of a wind and airspeed scale (EKF) estimator using SymForce
 """
 
-import symforce
-symforce.set_epsilon_to_symbol()
+আনযন symforce
+symforce.set_epsilon_to_প্ৰতীক()
 
-import symforce.symbolic as sf
-from derivation_utils import *
+আনযন symforce.symbolic ইৱ sf
+তঃ derivation_utils আনযন *
 
 def fuse_airspeed(
         v_local: sf.V3,
@@ -59,7 +59,7 @@ def fuse_airspeed(
 
     K = P * H.T / sm.Max(innov_var, epsilon)
 
-    return (H, K, innov_var, innov)
+    ঘূৰাই (H, K, innov_var, innov)
 
 def fuse_beta(
         v_local: sf.V3,
@@ -84,7 +84,7 @@ def fuse_beta(
 
     K = P * H.T / sm.Max(innov_var, epsilon)
 
-    return (H, K, innov_var, innov)
+    ঘূৰাই (H, K, innov_var, innov)
 
 def init_wind_using_airspeed(
         v_local: sf.V3,
@@ -97,7 +97,7 @@ def init_wind_using_airspeed(
 ) -> (sf.V2, sf.M22):
 
     # Initialise wind states assuming horizontal flight
-    sideslip = sm.Symbol("beta")
+    sideslip = sm.প্ৰতীক("beta")
     wind = sf.V2(v_local[0] - airspeed * sm.cos(heading + sideslip), v_local[1] - airspeed * sm.sin(heading + sideslip))
     J = wind.jacobian([v_local[0], v_local[1], heading, sideslip, airspeed])
 
@@ -114,7 +114,7 @@ def init_wind_using_airspeed(
     P = P.subs({sideslip: 0.0})
     wind = wind.subs({sideslip: 0.0})
 
-    return (wind, P)
+    ঘূৰাই (wind, P)
 
 generate_px4_function(fuse_airspeed, output_names=["H", "K", "innov_var", "innov"])
 generate_px4_function(fuse_beta, output_names=["H", "K", "innov_var", "innov"])

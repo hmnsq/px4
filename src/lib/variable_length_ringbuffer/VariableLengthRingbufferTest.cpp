@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <stdint.h>
-#include <string.h>
+#অন্তর্ভাৱ <gtest/gtest.h>
+#অন্তর্ভাৱ <stdint.h>
+#অন্তর্ভাৱ <string.h>
 
 
-#include "VariableLengthRingbuffer.hpp"
+#অন্তর্ভাৱ "VariableLengthRingbuffer.hpp"
 
-class TempData
+শ্ৰেণী TempData
 {
-public:
+সার্ৱজনিক:
 	TempData(size_t len)
 	{
 		_size = len;
-		_buf = new uint8_t[_size];
+		_buf = নূতন uint8_t[_size];
 	}
 
 	~TempData()
@@ -53,36 +53,36 @@ public:
 		_buf = nullptr;
 	}
 
-	uint8_t *buf() const
+	uint8_t *buf() ধ্রুৱ
 	{
-		return _buf;
+		ঘূৰাই _buf;
 	}
 
-	size_t size() const
+	size_t size() ধ্রুৱ
 	{
-		return _size;
+		ঘূৰাই _size;
 	}
 
-	void paint(unsigned offset = 0)
+	শূন্য paint(unsigned offset = 0)
 	{
-		for (size_t i = 0; i < _size; ++i) {
+		বাবে (size_t i = 0; i < _size; ++i) {
 			_buf[i] = (uint8_t)((i + offset) % UINT8_MAX);
 		}
 	}
 
-private:
+গুপ্ত:
 	uint8_t *_buf {nullptr};
 	size_t _size{0};
 
 };
 
-bool operator==(const TempData &lhs, const TempData &rhs)
+তার্কিক operator==(ধ্রুৱ TempData &lhs, ধ্রুৱ TempData &rhs)
 {
-	if (lhs.size() != rhs.size()) {
-		return false;
+	যদি (lhs.size() != rhs.size()) {
+		ঘূৰাই মিছা;
 	}
 
-	return memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
+	ঘূৰাই memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
 }
 
 
@@ -96,7 +96,7 @@ TEST(VariableLengthRingbuffer, AllocateAndDeallocate)
 	// The second time we forget to clean up, but we expect no leak.
 }
 
-TEST(VariableLengthRingbuffer, PushATooBigMessage)
+TEST(VariableLengthRingbuffer, ঠেলো_AToo_Big_Message)
 {
 	VariableLengthRingbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
@@ -107,7 +107,7 @@ TEST(VariableLengthRingbuffer, PushATooBigMessage)
 	EXPECT_FALSE(buf.push_back(data.buf(), data.size()));
 }
 
-TEST(VariableLengthRingbuffer, PushAndPopOne)
+TEST(VariableLengthRingbuffer, ঠেলো_And_বেৰ_কৰো_One)
 {
 	VariableLengthRingbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
@@ -120,13 +120,13 @@ TEST(VariableLengthRingbuffer, PushAndPopOne)
 
 	// Out buffer is the same size
 	TempData out{20};
-	EXPECT_EQ(buf.pop_front(out.buf(), out.size()), 20);
+	EXPECT_EQ(buf.বেৰ_কৰো_front(out.buf(), out.size()), 20);
 	EXPECT_EQ(data, out);
 
 	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
 	// Out buffer is supposedly bigger
 	TempData out2{20};
-	EXPECT_EQ(buf.pop_front(out2.buf(), 21), 20);
+	EXPECT_EQ(buf.বেৰ_কৰো_front(out2.buf(), 21), 20);
 	EXPECT_EQ(data, out2);
 
 	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
@@ -141,7 +141,7 @@ TEST(VariableLengthRingbuffer, PushAndPopOne)
 	//EXPECT_DEATH(buf.pop_front(out3.buf(), out3.size()), ".*");
 }
 
-TEST(VariableLengthRingbuffer, PushAndPopSeveral)
+TEST(VariableLengthRingbuffer, ঠেলো_And_বেৰ_কৰো_Several)
 {
 	VariableLengthRingbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
@@ -150,7 +150,7 @@ TEST(VariableLengthRingbuffer, PushAndPopSeveral)
 	data.paint();
 
 	// 4 should fit
-	for (unsigned i = 0; i < 4; ++i) {
+	বাবে (unsigned i = 0; i < 4; ++i) {
 		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
 	}
 
@@ -158,17 +158,17 @@ TEST(VariableLengthRingbuffer, PushAndPopSeveral)
 	EXPECT_FALSE(buf.push_back(data.buf(), data.size()));
 
 	// Take 4 back out
-	for (unsigned i = 0; i < 4; ++i) {
+	বাবে (unsigned i = 0; i < 4; ++i) {
 		TempData out{20};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), data.size());
+		EXPECT_EQ(buf.বেৰ_কৰো_front(out.buf(), out.size()), data.size());
 		EXPECT_EQ(data, out);
 	}
 
 	TempData out{20};
-	EXPECT_EQ(buf.pop_front(out.buf(), out.size()), 0);
+	EXPECT_EQ(buf.বেৰ_কৰো_front(out.buf(), out.size()), 0);
 }
 
-TEST(VariableLengthRingbuffer, PushAndPopSeveralVariableSize)
+TEST(VariableLengthRingbuffer, ঠেলো_And_বেৰ_কৰো_Several_Variable_Size)
 {
 	VariableLengthRingbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
@@ -183,7 +183,7 @@ TEST(VariableLengthRingbuffer, PushAndPopSeveralVariableSize)
 
 	// Supposedly more space
 	TempData out1{50};
-	EXPECT_EQ(buf.pop_front(out1.buf(), 100), data1.size());
+	EXPECT_EQ(buf.বেৰ_কৰো_front(out1.buf(), 100), data1.size());
 	EXPECT_EQ(data1, out1);
 
 	TempData data3{50};
@@ -192,19 +192,19 @@ TEST(VariableLengthRingbuffer, PushAndPopSeveralVariableSize)
 
 	// Supposedly more space
 	TempData out2{30};
-	EXPECT_EQ(buf.pop_front(out2.buf(), 100), data2.size());
+	EXPECT_EQ(buf.বেৰ_কৰো_front(out2.buf(), 100), data2.size());
 	EXPECT_EQ(data2, out2);
 
 	// Supposedly more space
 	TempData out3{50};
-	EXPECT_EQ(buf.pop_front(out3.buf(), 100), data3.size());
+	EXPECT_EQ(buf.বেৰ_কৰো_front(out3.buf(), 100), data3.size());
 	EXPECT_EQ(data3, out3);
 
 	TempData out4{100};
-	EXPECT_EQ(buf.pop_front(out4.buf(), out4.size()), 0);
+	EXPECT_EQ(buf.বেৰ_কৰো_front(out4.buf(), out4.size()), 0);
 }
 
-TEST(VariableLengthRingbuffer, PushEmpty)
+TEST(VariableLengthRingbuffer, ঠেলো_Empty)
 {
 	VariableLengthRingbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
@@ -212,7 +212,7 @@ TEST(VariableLengthRingbuffer, PushEmpty)
 	EXPECT_FALSE(buf.push_back(nullptr, 0));
 }
 
-TEST(VariableLengthRingbuffer, PopWithoutBuffer)
+TEST(VariableLengthRingbuffer, বেৰ_কৰো_Without_Buffer)
 {
 	VariableLengthRingbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
@@ -225,7 +225,7 @@ TEST(VariableLengthRingbuffer, PopWithoutBuffer)
 	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
 
 
-	EXPECT_EQ(buf.pop_front(nullptr, 50), 0);
+	EXPECT_EQ(buf.বেৰ_কৰো_front(nullptr, 50), 0);
 }
 
 TEST(VariableLengthRingbuffer, EmptyAndNoSpaceForHeader)
@@ -242,7 +242,7 @@ TEST(VariableLengthRingbuffer, EmptyAndNoSpaceForHeader)
 		data.paint();
 		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
 		TempData out{20};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
+		EXPECT_EQ(buf.বেৰ_কৰো_front(out.buf(), out.size()), out.size());
 		EXPECT_EQ(data, out);
 	}
 
@@ -251,7 +251,7 @@ TEST(VariableLengthRingbuffer, EmptyAndNoSpaceForHeader)
 		data.paint();
 		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
 		TempData out{10};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
+		EXPECT_EQ(buf.বেৰ_কৰো_front(out.buf(), out.size()), out.size());
 		EXPECT_EQ(data, out);
 	}
 }

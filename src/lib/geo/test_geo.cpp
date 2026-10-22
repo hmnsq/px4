@@ -31,21 +31,21 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <math.h>
-#include <mathlib/mathlib.h>
-#include <memory>
-#include <lib/geo/geo.h>
+#অন্তর্ভাৱ <gtest/gtest.h>
+#অন্তর্ভাৱ <math.h>
+#অন্তর্ভাৱ <mathlib/mathlib.h>
+#অন্তর্ভাৱ <memory>
+#অন্তর্ভাৱ <lib/geo/geo.h>
 
-class GeoTest : public ::testing::Test
+শ্ৰেণী GeoTest : সার্ৱজনিক ::testing::Test
 {
-public:
-	void SetUp() override
+সার্ৱজনিক:
+	শূন্য SetUp() override
 	{
 		proj.initReference(473566094 / 1e7, 85190237 / 1e7, 0);
 	}
 
-protected:
+রক্ষিত:
 	MapProjection proj;
 
 };
@@ -54,16 +54,16 @@ protected:
 TEST_F(GeoTest, reprojectProject)
 {
 	// GIVEN: x and y coordinates in the local cartesian frame
-	float x = 0.5;
-	float y = 1;
-	double lat;
-	double lon;
+	ভিন্ন x = 0.5;
+	ভিন্ন y = 1;
+	দ্ৱিগুণ lat;
+	দ্ৱিগুণ lon;
 	proj.reproject(x, y, lat, lon);
-	float x_new;
-	float y_new;
+	ভিন্ন x_new;
+	ভিন্ন y_new;
 	proj.project(lat, lon, x_new, y_new);
-	double lat_new;
-	double lon_new;
+	দ্ৱিগুণ lat_new;
+	দ্ৱিগুণ lon_new;
 	proj.reproject(x_new, y_new, lat_new, lon_new);
 	EXPECT_FLOAT_EQ(x, x_new);
 	EXPECT_FLOAT_EQ(y, y_new);
@@ -74,16 +74,16 @@ TEST_F(GeoTest, reprojectProject)
 TEST_F(GeoTest, projectReproject)
 {
 	// GIVEN: lat and lon coordinates in the geographic coordinate system
-	double lat = 47.356616973876953;
-	double lon = 8.5190505981445313;
-	float x;
-	float y;
+	দ্ৱিগুণ lat = 47.356616973876953;
+	দ্ৱিগুণ lon = 8.5190505981445313;
+	ভিন্ন x;
+	ভিন্ন y;
 	proj.project(lat, lon, x, y);
-	double lat_new;
-	double lon_new;
+	দ্ৱিগুণ lat_new;
+	দ্ৱিগুণ lon_new;
 	proj.reproject(x, y, lat_new, lon_new);
-	float x_new;
-	float y_new;
+	ভিন্ন x_new;
+	ভিন্ন y_new;
 	proj.project(lat_new, lon_new, x_new, y_new);
 	// WHEN: apply the mapping and its inverse the output should stay the same
 	EXPECT_FLOAT_EQ(x, x_new);
@@ -95,13 +95,13 @@ TEST_F(GeoTest, projectReproject)
 TEST_F(GeoTest, waypoint_from_heading_and_zero_distance)
 {
 	// GIVEN: a starting waypoint, a heading and a distance of 0
-	double lat_start = -33;
-	double lon_start = 18;
-	float bearing = 0;
-	float dist = 0;
+	দ্ৱিগুণ lat_start = -33;
+	দ্ৱিগুণ lon_start = 18;
+	ভিন্ন bearing = 0;
+	ভিন্ন dist = 0;
 
-	double lat_target = 0;
-	double lon_target = 0;
+	দ্ৱিগুণ lat_target = 0;
+	দ্ৱিগুণ lon_target = 0;
 
 	// WHEN: we get the next waypoint
 	waypoint_from_heading_and_distance(lat_start, lon_start, bearing, dist, &lat_target, &lon_target);
@@ -115,78 +115,78 @@ TEST_F(GeoTest, waypoint_from_heading_and_zero_distance)
 TEST_F(GeoTest, waypoint_from_heading_and_negative_distance)
 {
 	// GIVEN: a starting waypoint, a heading and negative distance
-	double lat_start = -33;
-	double lon_start = 18;
-	float bearing = 0;
-	float lat_offset = -0.01f;
-	float dist = CONSTANTS_RADIUS_OF_EARTH_F * M_PI_F / 180.f * lat_offset;
+	দ্ৱিগুণ lat_start = -33;
+	দ্ৱিগুণ lon_start = 18;
+	ভিন্ন bearing = 0;
+	ভিন্ন lat_offset = -0.01f;
+	ভিন্ন dist = CONSTANTS_RADIUS_OF_EARTH_F * M_PI_F / 180.f * lat_offset;
 
-	double lat_target = 0;
-	double lon_target = 0;
+	দ্ৱিগুণ lat_target = 0;
+	দ্ৱিগুণ lon_target = 0;
 
 	// WHEN: we get the next waypoint
 	waypoint_from_heading_and_distance(lat_start, lon_start, bearing, dist, &lat_target, &lon_target);
 
 	// THEN: it should be the same
-	EXPECT_FLOAT_EQ(static_cast<float>(lat_start) + lat_offset, lat_target);
+	EXPECT_FLOAT_EQ(static_cast<ভিন্ন>(lat_start) + lat_offset, lat_target);
 	EXPECT_DOUBLE_EQ(lon_start, lon_target);
 }
 
 TEST_F(GeoTest, waypoint_from_heading_and_positive_distance)
 {
 	// GIVEN: a starting waypoint, a heading and positive distance
-	double lat_start = -33;
-	double lon_start = 18;
-	float bearing = 0;
-	float lat_offset = 0.01f;
-	float dist = CONSTANTS_RADIUS_OF_EARTH_F * M_PI_F / 180.f * lat_offset;
+	দ্ৱিগুণ lat_start = -33;
+	দ্ৱিগুণ lon_start = 18;
+	ভিন্ন bearing = 0;
+	ভিন্ন lat_offset = 0.01f;
+	ভিন্ন dist = CONSTANTS_RADIUS_OF_EARTH_F * M_PI_F / 180.f * lat_offset;
 
-	double lat_target = 0;
-	double lon_target = 0;
+	দ্ৱিগুণ lat_target = 0;
+	দ্ৱিগুণ lon_target = 0;
 
 	// WHEN: we get the next waypoint
 	waypoint_from_heading_and_distance(lat_start, lon_start, bearing, dist, &lat_target, &lon_target);
 
 	// THEN: it should be the same
-	EXPECT_FLOAT_EQ(static_cast<float>(lat_start) + lat_offset, lat_target);
+	EXPECT_FLOAT_EQ(static_cast<ভিন্ন>(lat_start) + lat_offset, lat_target);
 	EXPECT_DOUBLE_EQ(lon_start, lon_target);
 }
 
-TEST_F(GeoTest, waypoint_from_line_and_zero_distance)
+TEST_F(GeoTest, waypoint_from_সাৰি_and_zero_distance)
 {
 	// GIVEN: a starting waypoint, a heading and a distance of 0
-	double lat_start = -33;
-	double lon_start = 18;
-	double lat_end = -32;
-	double lon_end = 18;
-	float dist = 0;
+	দ্ৱিগুণ lat_start = -33;
+	দ্ৱিগুণ lon_start = 18;
+	দ্ৱিগুণ lat_end = -32;
+	দ্ৱিগুণ lon_end = 18;
+	ভিন্ন dist = 0;
 
-	double lat_target = 0;
-	double lon_target = 0;
+	দ্ৱিগুণ lat_target = 0;
+	দ্ৱিগুণ lon_target = 0;
 
 	// WHEN: we get the next waypoint
-	create_waypoint_from_line_and_dist(lat_start, lon_start, lat_end, lon_end, dist, &lat_target, &lon_target);
+	create_waypoint_from_সাৰি_and_dist(lat_start, lon_start, lat_end, lon_end, dist, &lat_target, &lon_target);
 
 	// THEN: it should be the same
 	EXPECT_DOUBLE_EQ(lat_start, lat_target);
 	EXPECT_DOUBLE_EQ(lon_start, lon_target);
 }
 
-TEST_F(GeoTest, waypoint_from_line_and_positive_distance)
+TEST_F(GeoTest, waypoint_from_সাৰি_and_positive_distance)
 {
 	// GIVEN: a starting waypoint, a heading and a positive distance
-	double lat_start = -33;
-	double lon_start = 18;
-	double lat_offset = 0.01;
-	double lat_end = lat_start + lat_offset;
-	double lon_end = 18;
-	float dist = CONSTANTS_RADIUS_OF_EARTH_F * M_PI_F / 180.f * static_cast<float>(lat_offset);
+	দ্ৱিগুণ lat_start = -33;
+	দ্ৱিগুণ lon_start = 18;
+	দ্ৱিগুণ lat_offset = 0.01;
+	দ্ৱিগুণ lat_end = lat_start + lat_offset;
+	দ্ৱিগুণ lon_end = 18;
+	ভিন্ন dist = CONSTANTS_RADIUS_OF_EARTH_F * M_PI_F / 180.f * static_cast<ভিন্ন>(lat_offset);
 
-	double lat_target = 0;
-	double lon_target = 0;
+	দ্ৱিগুণ lat_target = 0;
+	দ্ৱিগুণ lon_target = 0;
 
 	// WHEN: we get the next waypoint
-	create_waypoint_from_line_and_dist(lat_start, lon_start, lat_end, lon_end, dist, &lat_target, &lon_target);
+	create_waypoint_from_সাৰি_and_dist(lat_start, lon_start, lat_end, lon_end, dist, &lat_target, &lon_target);
 
 	// THEN: it should be the same
 	EXPECT_FLOAT_EQ(lat_start + lat_offset, lat_target);
@@ -194,21 +194,21 @@ TEST_F(GeoTest, waypoint_from_line_and_positive_distance)
 }
 
 
-TEST_F(GeoTest, waypoint_from_line_and_negative_distance)
+TEST_F(GeoTest, waypoint_from_সাৰি_and_negative_distance)
 {
 	// GIVEN: a starting waypoint, a heading and a negative distance
-	double lat_start = -33;
-	double lon_start = 18;
-	double lat_offset = 0.01;
-	double lat_end = lat_start + lat_offset;
-	double lon_end = 18;
-	float dist = -CONSTANTS_RADIUS_OF_EARTH_F * M_PI_F / 180.f * static_cast<float>(lat_offset);
+	দ্ৱিগুণ lat_start = -33;
+	দ্ৱিগুণ lon_start = 18;
+	দ্ৱিগুণ lat_offset = 0.01;
+	দ্ৱিগুণ lat_end = lat_start + lat_offset;
+	দ্ৱিগুণ lon_end = 18;
+	ভিন্ন dist = -CONSTANTS_RADIUS_OF_EARTH_F * M_PI_F / 180.f * static_cast<ভিন্ন>(lat_offset);
 
-	double lat_target = 0;
-	double lon_target = 0;
+	দ্ৱিগুণ lat_target = 0;
+	দ্ৱিগুণ lon_target = 0;
 
 	// WHEN: we get the next waypoint
-	create_waypoint_from_line_and_dist(lat_start, lon_start, lat_end, lon_end, dist, &lat_target, &lon_target);
+	create_waypoint_from_সাৰি_and_dist(lat_start, lon_start, lat_end, lon_end, dist, &lat_target, &lon_target);
 
 	// THEN: it should be the same
 	EXPECT_FLOAT_EQ(lat_start - lat_offset, lat_target);
@@ -219,26 +219,26 @@ TEST_F(GeoTest, getDistanceToArcOutsideSector)
 {
 	// GIVEN: an arc at a mid-latitude (so the longitude cosine scaling matters), sweeping from
 	// due-North of the center (start) to due-East (end).
-	const double lat_center = 47.0;
-	const double lon_center = 8.0;
-	const float radius = 10000.f;            // [m]
-	const float arc_start_bearing = 0.f;     // start point due North of the center
-	const float arc_sweep = M_PI_F / 2.f;    // end point due East of the center
-	const double mpd = 111111.0;
-	const double cos_lat = cos(math::radians(lat_center));
+	ধ্রুৱ দ্ৱিগুণ lat_center = 47.0;
+	ধ্রুৱ দ্ৱিগুণ lon_center = 8.0;
+	ধ্রুৱ ভিন্ন radius = 10000.f;            // [m]
+	ধ্রুৱ ভিন্ন arc_start_bearing = 0.f;     // start point due North of the center
+	ধ্রুৱ ভিন্ন arc_sweep = M_PI_F / 2.f;    // end point due East of the center
+	ধ্রুৱ দ্ৱিগুণ mpd = 111111.0;
+	ধ্রুৱ দ্ৱিগুণ cos_lat = cos(math::radians(lat_center));
 
 	// The implementation locates the endpoints with an equirectangular approximation; mirror it so we
 	// can predict which endpoint is nearer and at what distance.
-	auto endpoint = [&](double bearing, double & lat, double & lon) {
-		lat = lat_center + static_cast<double>(radius) * cos(bearing) / mpd;
-		lon = lon_center + static_cast<double>(radius) * sin(bearing) / (mpd * cos_lat);
+	auto endpoint = [&](দ্ৱিগুণ bearing, দ্ৱিগুণ & lat, দ্ৱিগুণ & lon) {
+		lat = lat_center + static_cast<দ্ৱিগুণ>(radius) * cos(bearing) / mpd;
+		lon = lon_center + static_cast<দ্ৱিগুণ>(radius) * sin(bearing) / (mpd * cos_lat);
 	};
-	double lat_start, lon_start, lat_end, lon_end;
-	endpoint(static_cast<double>(arc_start_bearing), lat_start, lon_start);
-	endpoint(static_cast<double>(arc_start_bearing + arc_sweep), lat_end, lon_end);
+	দ্ৱিগুণ lat_start, lon_start, lat_end, lon_end;
+	endpoint(static_cast<দ্ৱিগুণ>(arc_start_bearing), lat_start, lon_start);
+	endpoint(static_cast<দ্ৱিগুণ>(arc_start_bearing + arc_sweep), lat_end, lon_end);
 
 	crosstrack_error_s err{};
-	double lat_v, lon_v;
+	দ্ৱিগুণ lat_v, lon_v;
 
 	// WHEN: the vehicle is outside the wedge on the start side (0.5 rad before the start bearing)
 	waypoint_from_heading_and_distance(lat_center, lon_center, arc_start_bearing - 0.5f, radius, &lat_v, &lon_v);
@@ -262,15 +262,15 @@ TEST_F(GeoTest, getDistanceToArcOutsideSector)
 TEST_F(GeoTest, getDistanceToArcInsideSector)
 {
 	// GIVEN: an arc sweeping from due-North (start) to due-East (end) of the center
-	const double lat_center = 47.0;
-	const double lon_center = 8.0;
-	const float radius = 10000.f;
-	const float arc_start_bearing = 0.f;
-	const float arc_sweep = M_PI_F / 2.f;
-	const float mid_bearing = arc_start_bearing + arc_sweep / 2.f;   // pi/4, inside the wedge
+	ধ্রুৱ দ্ৱিগুণ lat_center = 47.0;
+	ধ্রুৱ দ্ৱিগুণ lon_center = 8.0;
+	ধ্রুৱ ভিন্ন radius = 10000.f;
+	ধ্রুৱ ভিন্ন arc_start_bearing = 0.f;
+	ধ্রুৱ ভিন্ন arc_sweep = M_PI_F / 2.f;
+	ধ্রুৱ ভিন্ন mid_bearing = arc_start_bearing + arc_sweep / 2.f;   // pi/4, inside the wedge
 
 	crosstrack_error_s err{};
-	double lat_v, lon_v;
+	দ্ৱিগুণ lat_v, lon_v;
 
 	// WHEN: the vehicle is exactly on the arc (on the circle, inside the wedge). This is the case the
 	// previous in-sector logic mis-classified and reported kilometers off.
@@ -298,14 +298,14 @@ TEST_F(GeoTest, getDistanceToArcInsideSector)
 TEST_F(GeoTest, getDistanceToArcNegativeSweep)
 {
 	// GIVEN: the same NE-quadrant arc, but defined from due-East (start) sweeping negatively to North (end)
-	const double lat_center = 47.0;
-	const double lon_center = 8.0;
-	const float radius = 10000.f;
-	const float arc_start_bearing = M_PI_F / 2.f;
-	const float arc_sweep = -M_PI_F / 2.f;
+	ধ্রুৱ দ্ৱিগুণ lat_center = 47.0;
+	ধ্রুৱ দ্ৱিগুণ lon_center = 8.0;
+	ধ্রুৱ ভিন্ন radius = 10000.f;
+	ধ্রুৱ ভিন্ন arc_start_bearing = M_PI_F / 2.f;
+	ধ্রুৱ ভিন্ন arc_sweep = -M_PI_F / 2.f;
 
 	crosstrack_error_s err{};
-	double lat_v, lon_v;
+	দ্ৱিগুণ lat_v, lon_v;
 
 	// WHEN: the vehicle is on the arc midpoint (bearing pi/4 from the center) -> in sector
 	waypoint_from_heading_and_distance(lat_center, lon_center, M_PI_F / 4.f, radius, &lat_v, &lon_v);

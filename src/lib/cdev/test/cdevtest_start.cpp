@@ -37,32 +37,32 @@
  * @author Thomas Gubler <thomasgubler@gmail.com>
  * @author Mark Charlebois <mcharleb@gmail.com>
  */
-#include "cdevtest_example.h"
+#অন্তর্ভাৱ "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/tasks.h>
-#include <stdio.h>
-#include <string.h>
+#অন্তর্ভাৱ <px4_platform_common/app.h>
+#অন্তর্ভাৱ <px4_platform_common/tasks.h>
+#অন্তর্ভাৱ <stdio.h>
+#অন্তর্ভাৱ <string.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+স্থির পূর্ণাঙ্ক daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-extern "C" __EXPORT int cdev_test_main(int argc, char *argv[]);
-int cdev_test_main(int argc, char *argv[])
+বাহ্য "C" __EXPORT পূর্ণাঙ্ক cdev_test_main(পূর্ণাঙ্ক argc, ৱর্ণ *argv[]);
+পূর্ণাঙ্ক cdev_test_main(পূর্ণাঙ্ক argc, ৱর্ণ *argv[])
 {
 
-	if (argc < 2) {
+	যদি (argc < 2) {
 		printf("usage: cdevtest {start|stop|status}\n");
-		return 1;
+		ঘূৰাই 1;
 	}
 
-	if (!strcmp(argv[1], "start")) {
+	যদি (!strcmp(argv[1], "start")) {
 
-		if (CDevExample::appState.isRunning()) {
+		যদি (CDevExample::appState.isRunning()) {
 			printf("already running\n");
 			/* this is not an error */
-			return 0;
+			ঘূৰাই 0;
 		}
 
 		daemon_task = px4_task_spawn_cmd("cdevtest",
@@ -70,27 +70,27 @@ int cdev_test_main(int argc, char *argv[])
 						 SCHED_PRIORITY_MAX - 5,
 						 2000,
 						 PX4_MAIN,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+						 (argv) ? (ৱর্ণ *ধ্রুৱ *)&argv[2] : (ৱর্ণ *ধ্রুৱ *)nullptr);
 
-		return 0;
+		ঘূৰাই 0;
 	}
 
-	if (!strcmp(argv[1], "stop")) {
+	যদি (!strcmp(argv[1], "stop")) {
 		CDevExample::appState.requestExit();
-		return 0;
+		ঘূৰাই 0;
 	}
 
-	if (!strcmp(argv[1], "status")) {
-		if (CDevExample::appState.isRunning()) {
+	যদি (!strcmp(argv[1], "status")) {
+		যদি (CDevExample::appState.isRunning()) {
 			printf("is running\n");
 
-		} else {
+		} অন্যথা {
 			printf("not started\n");
 		}
 
-		return 0;
+		ঘূৰাই 0;
 	}
 
 	printf("usage: cdevtest_main {start|stop|status}\n");
-	return 1;
+	ঘূৰাই 1;
 }

@@ -37,30 +37,30 @@
 
 #pragma once
 
-namespace signal_generator
+নামাকাশ signal_generator
 {
 
-inline float getLinearSineSweep(float f_start, float f_end, float duration, float t)
+অন্তঃস্থ ভিন্ন getLinearSineSweep(ভিন্ন f_start, ভিন্ন f_end, ভিন্ন duration, ভিন্ন t)
 {
-	if (t > duration) {
-		return 0.f;
+	যদি (t > duration) {
+		ঘূৰাই 0.f;
 	}
 
-	const float w_start = f_start * M_TWOPI_F;
-	const float w_end = f_end * M_TWOPI_F;
+	ধ্রুৱ ভিন্ন w_start = f_start * M_TWOPI_F;
+	ধ্রুৱ ভিন্ন w_end = f_end * M_TWOPI_F;
 
-	return sinf(w_start * t + 0.5f * (w_end - w_start) * t * t / duration);
+	ঘূৰাই sinf(w_start * t + 0.5f * (w_end - w_start) * t * t / duration);
 }
 
-inline float getLogSineSweep(float f_start, float f_end, float duration, float t)
+অন্তঃস্থ ভিন্ন getLogSineSweep(ভিন্ন f_start, ভিন্ন f_end, ভিন্ন duration, ভিন্ন t)
 {
-	if (t > duration) {
-		return 0.f;
+	যদি (t > duration) {
+		ঘূৰাই 0.f;
 	}
 
-	const float f_ratio = f_end / fmaxf(f_start, 0.1f);
+	ধ্রুৱ ভিন্ন f_ratio = f_end / fmaxf(f_start, 0.1f);
 
-	return sinf(M_TWOPI_F * f_start * duration * (powf(f_ratio, t / duration) - 1.f) / logf(f_ratio));
+	ঘূৰাই sinf(M_TWOPI_F * f_start * duration * (powf(f_ratio, t / duration) - 1.f) / logf(f_ratio));
 }
 
 } /* namespace signal_generator */

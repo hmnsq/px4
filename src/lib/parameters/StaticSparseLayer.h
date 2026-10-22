@@ -33,136 +33,136 @@
 
 #pragma once
 
-#include <stdlib.h>
-#include "ParamLayer.h"
+#অন্তর্ভাৱ <stdlib.h>
+#অন্তর্ভাৱ "ParamLayer.h"
 
-template <int N_SLOTS>
-class StaticSparseLayer : public ParamLayer
+template <পূর্ণাঙ্ক N_SLOTS>
+class StaticSparseLayer : সার্ৱজনিক ParamLayer
 {
-public:
+সার্ৱজনিক:
 	StaticSparseLayer(ParamLayer *parent) : ParamLayer(parent)
 	{
-		for (int i = 0; i < N_SLOTS; i++) {
-			_slots[i] = {UINT16_MAX, param_value_u{}};
+		বাবে (পূর্ণাঙ্ক i = 0; i < N_SLOTS; i++) {
+			_slots[i] = {UINT16_MAX, param_মান_u{}};
 		}
 	}
 
-	virtual ~StaticSparseLayer() = default;
+	আভাস ~StaticSparseLayer() = স্ৱভাৱ;
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_মান_u মান) override
 	{
-		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		ধ্রুৱ AtomicTransaction transaction;
+		ধ্রুৱ পূর্ণাঙ্ক index = _getIndex(param);
 
-		if (index < _next_slot) { // already exists
-			_slots[index].value = value;
+		যদি (index < _next_slot) { // already exists
+			_slots[index].মান = মান;
 
-		} else if (_next_slot < N_SLOTS) {
-			_slots[_next_slot++] = {param, value};
+		} অন্যথা যদি (_next_slot < N_SLOTS) {
+			_slots[_next_slot++] = {param, মান};
 			_sort();
 
-		} else {
-			return false;
+		} অন্যথা {
+			ঘূৰাই false;
 		}
 
-		return true;
+		ঘূৰাই true;
 	}
 
-	bool contains(param_t param) const override
+	bool contains(param_t param) ধ্রুৱ override
 	{
-		const AtomicTransaction transaction;
-		return _getIndex(param) < _next_slot;
+		ধ্রুৱ AtomicTransaction transaction;
+		ঘূৰাই _getIndex(param) < _next_slot;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_গুনতি> containedAsBitset() ধ্রুৱ override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
-		const AtomicTransaction transaction;
+		px4::AtomicBitset<PARAM_গুনতি> set;
+		ধ্রুৱ AtomicTransaction transaction;
 
-		for (int i = 0; i < _next_slot; i++) {
+		বাবে (পূর্ণাঙ্ক i = 0; i < _next_slot; i++) {
 			set.set(_slots[i].param);
 		}
 
-		return set;
+		ঘূৰাই set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_মান_u get(param_t param) ধ্রুৱ override
 	{
-		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		ধ্রুৱ AtomicTransaction transaction;
+		ধ্রুৱ পূর্ণাঙ্ক index = _getIndex(param);
 
-		if (index < _next_slot) { // exists in this layer
-			return _slots[index].value;
+		যদি (index < _next_slot) { // exists in this layer
+			ঘূৰাই _slots[index].মান;
 		}
 
-		return _parent->get(param);
+		ঘূৰাই _parent->get(param);
 	}
 
-	void reset(param_t param) override
+	শূন্য reset(param_t param) override
 	{
-		const AtomicTransaction transaction;
-		int index = _getIndex(param);
+		ধ্রুৱ AtomicTransaction transaction;
+		পূর্ণাঙ্ক index = _getIndex(param);
 
-		if (index < _next_slot) {
-			_slots[index] = {UINT16_MAX, param_value_u{}};
+		যদি (index < _next_slot) {
+			_slots[index] = {UINT16_MAX, param_মান_u{}};
 			_sort();
 			_next_slot--;
 		}
 	}
 
-	void refresh(param_t param) override
+	শূন্য refresh(param_t param) override
 	{
 		_parent->refresh(param);
 	}
 
-	int size() const override
+	পূর্ণাঙ্ক size() ধ্রুৱ override
 	{
-		return _next_slot;
+		ঘূৰাই _next_slot;
 	}
 
-	int byteSize() const override
+	পূর্ণাঙ্ক byteSize() ধ্রুৱ override
 	{
-		return N_SLOTS * sizeof(Slot);
+		ঘূৰাই N_SLOTS * পরিমাণ(Slot);
 	}
 
-private:
-	struct Slot {
+গুপ্ত:
+	সংরচনা Slot {
 		param_t param;
-		param_value_u value;
+		param_মান_u মান;
 	};
 
-	static int _slotCompare(const void *a, const void *b)
+	স্থির পূর্ণাঙ্ক _slotCompare(ধ্রুৱ শূন্য *a, ধ্রুৱ শূন্য *b)
 	{
-		return ((int)((Slot *)a)->param) - ((int)((Slot *)b)->param);
+		ঘূৰাই ((পূর্ণাঙ্ক)((Slot *)a)->param) - ((পূর্ণাঙ্ক)((Slot *)b)->param);
 	}
 
-	void _sort()
+	শূন্য _sort()
 	{
-		qsort(_slots, N_SLOTS, sizeof(Slot), &_slotCompare);
+		qsort(_slots, N_SLOTS, পরিমাণ(Slot), &_slotCompare);
 	}
 
-	int _getIndex(param_t param) const
+	পূর্ণাঙ্ক _getIndex(param_t param) ধ্রুৱ
 	{
-		int left = 0;
-		int right = _next_slot - 1;
+		পূর্ণাঙ্ক বাম = 0;
+		পূর্ণাঙ্ক ডান = _next_slot - 1;
 
-		while (left <= right) {
-			int mid = (left + right) / 2;
+		যেতিয়ালৈ (বাম <= ডান) {
+			পূর্ণাঙ্ক mid = (বাম + ডান) / 2;
 
-			if (_slots[mid].param == param) {
-				return mid;
+			যদি (_slots[mid].param == param) {
+				ঘূৰাই mid;
 
-			} else if (_slots[mid].param < param) {
-				left = mid + 1;
+			} অন্যথা যদি (_slots[mid].param < param) {
+				বাম = mid + 1;
 
-			} else {
-				right = mid - 1;
+			} অন্যথা {
+				ডান = mid - 1;
 			}
 		}
 
-		return _next_slot;
+		ঘূৰাই _next_slot;
 	}
 
 	Slot _slots[N_SLOTS];
-	int _next_slot = 0;
+	পূর্ণাঙ্ক _next_slot = 0;
 };

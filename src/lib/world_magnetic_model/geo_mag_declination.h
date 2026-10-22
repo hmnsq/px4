@@ -42,11 +42,11 @@
 #pragma once
 
 // Return magnetic declination in degrees
-float get_mag_declination_degrees(float latitude_deg, float longitude_deg);
+ভিন্ন get_mag_declination_degrees(ভিন্ন latitude_deg, ভিন্ন longitude_deg);
 
 // Return magnetic field inclination in degrees
-float get_mag_inclination_degrees(float latitude_deg, float longitude_deg);
+ভিন্ন get_mag_inclination_degrees(ভিন্ন latitude_deg, ভিন্ন longitude_deg);
 
 // return magnetic field strength in Gauss or Tesla
-float get_mag_strength_gauss(float latitude_deg, float longitude_deg);
-float get_mag_strength_tesla(float latitude_deg, float longitude_deg);
+ভিন্ন get_mag_strength_gauss(ভিন্ন latitude_deg, ভিন্ন longitude_deg);
+ভিন্ন get_mag_strength_tesla(ভিন্ন latitude_deg, ভিন্ন longitude_deg);

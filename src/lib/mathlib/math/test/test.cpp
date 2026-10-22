@@ -37,100 +37,100 @@
  * Test library code
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#অন্তর্ভাৱ <stdio.h>
+#অন্তর্ভাৱ <math.h>
+#অন্তর্ভাৱ <stdlib.h>
 
-#include <px4_platform_common/defines.h>
+#অন্তর্ভাৱ <px4_platform_common/defines.h>
 
-#include "test.hpp"
+#অন্তর্ভাৱ "test.hpp"
 
-bool __EXPORT equal(float a, float b, float epsilon)
+তার্কিক __EXPORT equal(ভিন্ন a, ভিন্ন b, ভিন্ন epsilon)
 {
-	float diff = fabsf(a - b);
+	ভিন্ন diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	যদি (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", দ্ৱিগুণ(a), দ্ৱিগুণ(b));
+		ঘূৰাই মিছা;
 
-	} else { return true; }
+	} অন্যথা { ঘূৰাই সঁচা; }
 }
 
-bool __EXPORT greater_than(float a, float b)
+তার্কিক __EXPORT greater_than(ভিন্ন a, ভিন্ন b)
 {
-	if (a > b) {
-		return true;
+	যদি (a > b) {
+		ঘূৰাই সঁচা;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} অন্যথা {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", দ্ৱিগুণ(a), দ্ৱিগুণ(b));
+		ঘূৰাই মিছা;
 	}
 }
 
-bool __EXPORT less_than(float a, float b)
+তার্কিক __EXPORT less_than(ভিন্ন a, ভিন্ন b)
 {
-	if (a < b) {
-		return true;
+	যদি (a < b) {
+		ঘূৰাই সঁচা;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} অন্যথা {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", দ্ৱিগুণ(a), দ্ৱিগুণ(b));
+		ঘূৰাই মিছা;
 	}
 }
 
-bool __EXPORT greater_than_or_equal(float a, float b)
+তার্কিক __EXPORT greater_than_or_equal(ভিন্ন a, ভিন্ন b)
 {
-	if (a >= b) {
-		return true;
+	যদি (a >= b) {
+		ঘূৰাই সঁচা;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} অন্যথা {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", দ্ৱিগুণ(a), দ্ৱিগুণ(b));
+		ঘূৰাই মিছা;
 	}
 }
 
-bool __EXPORT less_than_or_equal(float a, float b)
+তার্কিক __EXPORT less_than_or_equal(ভিন্ন a, ভিন্ন b)
 {
-	if (a <= b) {
-		return true;
+	যদি (a <= b) {
+		ঘূৰাই সঁচা;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} অন্যথা {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", দ্ৱিগুণ(a), দ্ৱিগুণ(b));
+		ঘূৰাই মিছা;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+শূন্য __EXPORT float2SigExp(ধ্রুৱ ভিন্ন &অঙ্ক, ভিন্ন &sig, পূর্ণাঙ্ক &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	যদি (!PX4_ISFINITE(অঙ্ক)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		ঘূৰাই;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	যদি (fabsf(অঙ্ক) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		ঘূৰাই;
 	}
 
-	exp = log10f(fabsf(num));
+	exp = log10f(fabsf(অঙ্ক));
 
-	if (exp > 0) {
+	যদি (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} অন্যথা {
 		exp = floor(exp);
 	}
 
-	sig = num;
+	sig = অঙ্ক;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	যদি (exp > 0) {
+		বাবে (পূর্ণাঙ্ক i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} অন্যথা {
+		বাবে (পূর্ণাঙ্ক i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

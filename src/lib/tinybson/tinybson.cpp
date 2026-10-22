@@ -37,124 +37,124 @@
  * A simple subset SAX-style BSON parser and generator.
  */
 
-#include <px4_platform_common/posix.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdlib.h>
-#include <systemlib/err.h>
+#অন্তর্ভাৱ <px4_platform_common/posix.h>
+#অন্তর্ভাৱ <unistd.h>
+#অন্তর্ভাৱ <string.h>
+#অন্তর্ভাৱ <stdlib.h>
+#অন্তর্ভাৱ <systemlib/err.h>
 
-#include "tinybson.h"
+#অন্তর্ভাৱ "tinybson.h"
 
-#if 0
-# define debug(fmt, args...)		do { PX4_INFO("BSON: " fmt, ##args); } while(0)
-#else
-# define debug(fmt, args...)		do { } while(0)
+#যদি 0
+# define debug(fmt, args...)		কৰা { PX4_INFO("BSON: " fmt, ##args); } যেতিয়ালৈ(0)
+#অন্যথা
+# define debug(fmt, args...)		কৰা { } যেতিয়ালৈ(0)
 #endif
 
-#define CODER_CHECK(_c)		do { if ((_c)->dead) { PX4_ERR("coder dead"); return -1; }} while(0)
-#define CODER_KILL(_c, _reason)	do { PX4_ERR("killed: %s", _reason); (_c)->dead = true; return -1; } while(0)
+#define CODER_CHECK(_c)		কৰা { যদি ((_c)->dead) { PX4_ERR("coder dead"); ঘূৰাই -1; }} যেতিয়ালৈ(0)
+#define CODER_KILL(_c, _reason)	কৰা { PX4_ERR("killed: %s", _reason); (_c)->dead = সঁচা; ঘূৰাই -1; } যেতিয়ালৈ(0)
 
-static int
-read_x(bson_decoder_t decoder, void *p, size_t s)
+স্থির পূর্ণাঙ্ক
+read_x(bson_decoder_t decoder, শূন্য *p, size_t s)
 {
 	CODER_CHECK(decoder);
 
-	if (decoder->fd > -1) {
-		int ret = ::read(decoder->fd, p, s);
+	যদি (decoder->fd > -1) {
+		পূর্ণাঙ্ক ret = ::পঠ(decoder->fd, p, s);
 
-		if (ret == s) {
+		যদি (ret == s) {
 			decoder->total_decoded_size += ret;
-			return 0;
+			ঘূৰাই 0;
 		}
 
-		return -1;
+		ঘূৰাই -1;
 	}
 
-	if (decoder->buf != nullptr) {
+	যদি (decoder->buf != nullptr) {
 		/* staged operations to avoid integer overflow for corrupt data */
-		if (s >= decoder->bufsize) {
+		যদি (s >= decoder->bufsize) {
 			CODER_KILL(decoder, "buffer too small for read");
 		}
 
-		if ((decoder->bufsize - s) < decoder->bufpos) {
+		যদি ((decoder->bufsize - s) < decoder->bufpos) {
 			CODER_KILL(decoder, "not enough data for read");
 		}
 
 		memcpy(p, (decoder->buf + decoder->bufpos), s);
 		decoder->bufpos += s;
 		decoder->total_decoded_size += s;
-		return 0;
+		ঘূৰাই 0;
 	}
 
 	debug("no source");
-	return -1;
+	ঘূৰাই -1;
 }
 
-static int
+স্থির পূর্ণাঙ্ক
 read_int8(bson_decoder_t decoder, int8_t *b)
 {
-	return read_x(decoder, b, sizeof(*b));
+	ঘূৰাই read_x(decoder, b, পরিমাণ(*b));
 }
 
-static int
+স্থির পূর্ণাঙ্ক
 read_int32(bson_decoder_t decoder, int32_t *i)
 {
-	return read_x(decoder, i, sizeof(*i));
+	ঘূৰাই read_x(decoder, i, পরিমাণ(*i));
 }
 
-static int
+স্থির পূর্ণাঙ্ক
 read_int64(bson_decoder_t decoder, int64_t *i)
 {
-	return read_x(decoder, i, sizeof(*i));
+	ঘূৰাই read_x(decoder, i, পরিমাণ(*i));
 }
 
-static int
-read_double(bson_decoder_t decoder, double *d)
+স্থির পূর্ণাঙ্ক
+read_double(bson_decoder_t decoder, দ্ৱিগুণ *d)
 {
-	return read_x(decoder, d, sizeof(*d));
+	ঘূৰাই read_x(decoder, d, পরিমাণ(*d));
 }
 
-int
-bson_decoder_init_file(bson_decoder_t decoder, int fd, bson_decoder_callback callback)
+পূর্ণাঙ্ক
+bson_decoder_init_file(bson_decoder_t decoder, পূর্ণাঙ্ক fd, bson_decoder_callback callback)
 {
 	decoder->fd = fd;
 	decoder->callback = callback;
 	decoder->nesting = 1;
-	decoder->node.type = BSON_UNDEFINED;
+	decoder->গ্ৰন্থি_2.type = BSON_UNDEFINED;
 
 	// read document size
-	if (read_int32(decoder, &decoder->total_document_size)) {
+	যদি (read_int32(decoder, &decoder->total_document_size)) {
 		CODER_KILL(decoder, "failed reading length");
 	}
 
 	debug("total document size = %" PRIi32, decoder->total_document_size);
 
 	// The length is signed and comes from the document itself
-	if (decoder->total_document_size < 0) {
+	যদি (decoder->total_document_size < 0) {
 		CODER_KILL(decoder, "negative document length");
 	}
 
 	/* ready for decoding */
-	return 0;
+	ঘূৰাই 0;
 }
 
-int
-bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_decoder_callback callback)
+পূর্ণাঙ্ক
+bson_decoder_init_buf(bson_decoder_t decoder, শূন্য *buf, unsigned bufsize, bson_decoder_callback callback)
 {
 	/* argument sanity */
-	if ((buf == nullptr) || (callback == nullptr)) {
-		return -1;
+	যদি ((buf == nullptr) || (callback == nullptr)) {
+		ঘূৰাই -1;
 	}
 
 	decoder->fd = -1;
 	decoder->buf = (uint8_t *)buf;
-	decoder->dead = false;
+	decoder->dead = মিছা;
 
-	if (bufsize == 0) {
+	যদি (bufsize == 0) {
 		decoder->bufsize = *(uint32_t *)buf;
 		debug("auto-detected %zu byte object", decoder->bufsize);
 
-	} else {
+	} অন্যথা {
 		decoder->bufsize = bufsize;
 	}
 
@@ -162,13 +162,13 @@ bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_
 	decoder->callback = callback;
 	decoder->nesting = 1;
 	decoder->pending = 0;
-	decoder->node.type = BSON_UNDEFINED;
+	decoder->গ্ৰন্থি_2.type = BSON_UNDEFINED;
 	decoder->total_decoded_size = 0;
 
 	// read document size
 	decoder->total_document_size = 0;
 
-	if (read_int32(decoder, &decoder->total_document_size)) {
+	যদি (read_int32(decoder, &decoder->total_document_size)) {
 		CODER_KILL(decoder, "failed reading length");
 	}
 
@@ -176,19 +176,19 @@ bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_
 
 	// A negative length would skip the size check below, which only rejects lengths above
 	// the buffer
-	if (decoder->total_document_size < 0) {
+	যদি (decoder->total_document_size < 0) {
 		CODER_KILL(decoder, "negative document length");
 	}
 
-	if ((decoder->total_document_size > 0) && (decoder->total_document_size > (int)decoder->bufsize)) {
+	যদি ((decoder->total_document_size > 0) && (decoder->total_document_size > (পূর্ণাঙ্ক)decoder->bufsize)) {
 		CODER_KILL(decoder, "document length larger than buffer");
 	}
 
 	/* ready for decoding */
-	return 0;
+	ঘূৰাই 0;
 }
 
-int
+পূর্ণাঙ্ক
 bson_decoder_next(bson_decoder_t decoder)
 {
 	int8_t	tbyte;
@@ -197,25 +197,25 @@ bson_decoder_next(bson_decoder_t decoder)
 	CODER_CHECK(decoder);
 
 	/* if the previous node was EOO, pop a nesting level */
-	if (decoder->node.type == BSON_EOO) {
-		if (decoder->nesting > 0) {
+	যদি (decoder->গ্ৰন্থি_2.type == BSON_EOO) {
+		যদি (decoder->nesting > 0) {
 			decoder->nesting--;
 		}
 
 		/* if the nesting level is now zero, the top-level document is done */
-		if (decoder->nesting == 0) {
+		যদি (decoder->nesting == 0) {
 			/* like kill but not an error */
 			debug("nesting is zero, document is done");
 			decoder->fd = -1;
 
 			/* return end-of-file to the caller */
-			return 0;
+			ঘূৰাই 0;
 		}
 	}
 
 	/* if there are unread bytes pending in the stream, discard them */
-	while (decoder->pending > 0) {
-		if (read_int8(decoder, &tbyte)) {
+	যেতিয়ালৈ (decoder->pending > 0) {
+		যদি (read_int8(decoder, &tbyte)) {
 			CODER_KILL(decoder, "read error discarding pending bytes");
 		}
 
@@ -223,191 +223,191 @@ bson_decoder_next(bson_decoder_t decoder)
 	}
 
 	/* get the type byte */
-	if (read_int8(decoder, &tbyte)) {
+	যদি (read_int8(decoder, &tbyte)) {
 		CODER_KILL(decoder, "read error on type byte");
 	}
 
-	decoder->node.type = (bson_type_t)tbyte;
+	decoder->গ্ৰন্থি_2.type = (bson_type_t)tbyte;
 	decoder->pending = 0;
 
-	debug("got type byte 0x%02x", decoder->node.type);
+	debug("got type byte 0x%02x", decoder->গ্ৰন্থি_2.type);
 
 	/* EOO is special; it has no name/data following */
-	if (decoder->node.type == BSON_EOO) {
-		decoder->node.name[0] = '\0';
+	যদি (decoder->গ্ৰন্থি_2.type == BSON_EOO) {
+		decoder->গ্ৰন্থি_2.name[0] = '\0';
 
-	} else if ((int)decoder->node.type == 0xff) { // indicates erased FLASH
-		decoder->dead = true;
-		return -ENODATA;
+	} অন্যথা যদি ((পূর্ণাঙ্ক)decoder->গ্ৰন্থি_2.type == 0xff) { // indicates erased FLASH
+		decoder->dead = সঁচা;
+		ঘূৰাই -ENODATA;
 
-	} else {
+	} অন্যথা {
 
 		/* get the node name */
 		nlen = 0;
 
-		for (;;) {
-			if (nlen >= BSON_MAXNAME) {
-				PX4_ERR("node name overflow, type:0x%02x, name:%.32s", decoder->node.type, decoder->node.name);
+		বাবে (;;) {
+			যদি (nlen >= BSON_MAXNAME) {
+				PX4_ERR("node name overflow, type:0x%02x, name:%.32s", decoder->গ্ৰন্থি_2.type, decoder->গ্ৰন্থি_2.name);
 				CODER_KILL(decoder, "node name overflow");
 			}
 
-			if (read_int8(decoder, (int8_t *)&decoder->node.name[nlen])) {
+			যদি (read_int8(decoder, (int8_t *)&decoder->গ্ৰন্থি_2.name[nlen])) {
 				CODER_KILL(decoder, "read error on node name");
 			}
 
-			if (decoder->node.name[nlen] == '\0') {
-				break;
+			যদি (decoder->গ্ৰন্থি_2.name[nlen] == '\0') {
+				ভঙ্গ;
 			}
 
 			nlen++;
 		}
 
-		debug("got name '%s'", decoder->node.name);
+		debug("got name '%s'", decoder->গ্ৰন্থি_2.name);
 
-		switch (decoder->node.type) {
-		case BSON_DOUBLE:
-			if (read_double(decoder, &decoder->node.d)) {
+		ৱিকল্প (decoder->গ্ৰন্থি_2.type) {
+		পক্ষ BSON_DOUBLE:
+			যদি (read_double(decoder, &decoder->গ্ৰন্থি_2.d)) {
 				CODER_KILL(decoder, "read error on BSON_DOUBLE");
 			}
 
-			decoder->count_node_double++;
-			break;
+			decoder->গুনতি_গ্ৰন্থি_double++;
+			ভঙ্গ;
 
-		case BSON_STRING:
-			if (read_int32(decoder, &decoder->pending)) {
+		পক্ষ BSON_STRING:
+			যদি (read_int32(decoder, &decoder->pending)) {
 				CODER_KILL(decoder, "read error on BSON_STRING length");
 			}
 
-			decoder->count_node_string++;
-			break;
+			decoder->গুনতি_গ্ৰন্থি_string++;
+			ভঙ্গ;
 
-		case BSON_BINDATA:
-			if (read_int32(decoder, &decoder->pending)) {
+		পক্ষ BSON_BINDATA:
+			যদি (read_int32(decoder, &decoder->pending)) {
 				CODER_KILL(decoder, "read error on BSON_BINDATA size");
 			}
 
-			if (read_int8(decoder, &tbyte)) {
+			যদি (read_int8(decoder, &tbyte)) {
 				CODER_KILL(decoder, "read error on BSON_BINDATA subtype");
 			}
 
-			decoder->node.subtype = (bson_binary_subtype_t)tbyte;
-			decoder->count_node_bindata++;
-			break;
+			decoder->গ্ৰন্থি_2.subtype = (bson_দ্বিমিক_subtype_t)tbyte;
+			decoder->গুনতি_গ্ৰন্থি_bindata++;
+			ভঙ্গ;
 
-		case BSON_BOOL:
-			if (read_int8(decoder, &tbyte)) {
+		পক্ষ BSON_BOOL:
+			যদি (read_int8(decoder, &tbyte)) {
 				CODER_KILL(decoder, "read error on BSON_BOOL");
 			}
 
-			decoder->node.b = (tbyte != 0);
-			decoder->count_node_bool++;
-			break;
+			decoder->গ্ৰন্থি_2.b = (tbyte != 0);
+			decoder->গুনতি_গ্ৰন্থি_bool++;
+			ভঙ্গ;
 
-		case BSON_INT32:
-			if (read_int32(decoder, &decoder->node.i32)) {
+		পক্ষ BSON_INT32:
+			যদি (read_int32(decoder, &decoder->গ্ৰন্থি_2.i32)) {
 				CODER_KILL(decoder, "read error on BSON_INT");
 			}
 
-			decoder->count_node_int32++;
-			break;
+			decoder->গুনতি_গ্ৰন্থি_int32++;
+			ভঙ্গ;
 
-		case BSON_INT64:
-			if (read_int64(decoder, &decoder->node.i64)) {
+		পক্ষ BSON_INT64:
+			যদি (read_int64(decoder, &decoder->গ্ৰন্থি_2.i64)) {
 				CODER_KILL(decoder, "read error on BSON_INT");
 			}
 
-			decoder->count_node_int64++;
-			break;
+			decoder->গুনতি_গ্ৰন্থি_int64++;
+			ভঙ্গ;
 
-		case BSON_nullptr:
-		case BSON_UNDEFINED:
-			break;
+		পক্ষ BSON_nullptr:
+		পক্ষ BSON_UNDEFINED:
+			ভঙ্গ;
 
 		/* XXX currently not supporting other types */
-		default:
+		স্ৱভাৱ:
 			CODER_KILL(decoder, "unsupported node type");
 		}
 	}
 
 	/* call the callback and pass its results back */
-	return decoder->callback(decoder, &decoder->node);
+	ঘূৰাই decoder->callback(decoder, &decoder->গ্ৰন্থি_2);
 }
 
-int
-bson_decoder_copy_data(bson_decoder_t decoder, void *buf)
+পূর্ণাঙ্ক
+bson_decoder_copy_data(bson_decoder_t decoder, শূন্য *buf)
 {
-	int result;
+	পূর্ণাঙ্ক result;
 
 	CODER_CHECK(decoder);
 
 	/* copy data */
 	result = read_x(decoder, buf, decoder->pending);
 
-	if (result != 0) {
+	যদি (result != 0) {
 		CODER_KILL(decoder, "read error on copy_data");
 	}
 
 	/* pending count is discharged */
 	decoder->pending = 0;
-	return 0;
+	ঘূৰাই 0;
 }
 
 size_t
 bson_decoder_data_pending(bson_decoder_t decoder)
 {
-	return decoder->pending;
+	ঘূৰাই decoder->pending;
 }
 
-static int
-write_x(bson_encoder_t encoder, const void *p, size_t s)
+স্থির পূর্ণাঙ্ক
+write_x(bson_encoder_t encoder, ধ্রুৱ শূন্য *p, size_t s)
 {
 	CODER_CHECK(encoder);
 
 	/* bson file encoder (non-buffered) */
-	if (encoder->fd > -1 && encoder->buf == nullptr) {
-		int ret = ::write(encoder->fd, p, s);
+	যদি (encoder->fd > -1 && encoder->buf == nullptr) {
+		পূর্ণাঙ্ক ret = ::লিখ(encoder->fd, p, s);
 
-		if (ret == s) {
+		যদি (ret == s) {
 			encoder->total_document_size += ret;
-			return 0;
+			ঘূৰাই 0;
 		}
 
-		return -1;
+		ঘূৰাই -1;
 	}
 
 	/* do we need to extend the buffer? */
-	while ((encoder->bufpos + s) > encoder->bufsize) {
+	যেতিয়ালৈ ((encoder->bufpos + s) > encoder->bufsize) {
 
 		/* bson buffered file encoder */
-		if (encoder->fd > -1) {
+		যদি (encoder->fd > -1) {
 			// write to disk
 			debug("writing buffer (%d) to disk", encoder->bufpos);
-			int ret = ::write(encoder->fd, encoder->buf, encoder->bufpos);
+			পূর্ণাঙ্ক ret = ::লিখ(encoder->fd, encoder->buf, encoder->bufpos);
 
-			if (ret == (int)encoder->bufpos) {
+			যদি (ret == (পূর্ণাঙ্ক)encoder->bufpos) {
 				// reset buffer to beginning and continue
 				encoder->bufpos = 0;
 				encoder->total_document_size += ret;
 
-				if ((encoder->bufpos + s) > encoder->bufsize) {
+				যদি ((encoder->bufpos + s) > encoder->bufsize) {
 					CODER_KILL(encoder, "fixed-size buffer overflow");
 				}
 
-				break;
+				ভঙ্গ;
 
-			} else {
+			} অন্যথা {
 				PX4_ERR("file write error %d, errno:%d (%s)", ret, errno, strerror(errno));
 				CODER_KILL(encoder, "file write error");
 			}
 		}
 
-		if (!encoder->realloc_ok) {
+		যদি (!encoder->realloc_ok) {
 			CODER_KILL(encoder, "fixed-size buffer overflow");
 		}
 
 		uint8_t *newbuf = (uint8_t *)realloc(encoder->buf, encoder->bufsize + BSON_BUF_INCREMENT);
 
-		if (newbuf == nullptr) {
+		যদি (newbuf == nullptr) {
 			CODER_KILL(encoder, "could not grow buffer");
 		}
 
@@ -420,220 +420,220 @@ write_x(bson_encoder_t encoder, const void *p, size_t s)
 	encoder->bufpos += s;
 	debug("appended %zu bytes", s);
 
-	return 0;
+	ঘূৰাই 0;
 }
 
-static int
+স্থির পূর্ণাঙ্ক
 write_int8(bson_encoder_t encoder, int8_t b)
 {
-	return write_x(encoder, &b, sizeof(b));
+	ঘূৰাই write_x(encoder, &b, পরিমাণ(b));
 }
 
-static int
+স্থির পূর্ণাঙ্ক
 write_int32(bson_encoder_t encoder, int32_t i)
 {
-	return write_x(encoder, &i, sizeof(i));
+	ঘূৰাই write_x(encoder, &i, পরিমাণ(i));
 }
 
-static int
+স্থির পূর্ণাঙ্ক
 write_int64(bson_encoder_t encoder, int64_t i)
 {
-	return write_x(encoder, &i, sizeof(i));
+	ঘূৰাই write_x(encoder, &i, পরিমাণ(i));
 }
 
-static int
-write_double(bson_encoder_t encoder, double d)
+স্থির পূর্ণাঙ্ক
+write_double(bson_encoder_t encoder, দ্ৱিগুণ d)
 {
-	return write_x(encoder, &d, sizeof(d));
+	ঘূৰাই write_x(encoder, &d, পরিমাণ(d));
 }
 
-static int
-write_name(bson_encoder_t encoder, const char *name)
+স্থির পূর্ণাঙ্ক
+write_name(bson_encoder_t encoder, ধ্রুৱ ৱর্ণ *name)
 {
 	size_t len = strlen(name);
 
-	if (len > BSON_MAXNAME) {
+	যদি (len > BSON_MAXNAME) {
 		CODER_KILL(encoder, "node name too long");
 	}
 
-	return write_x(encoder, name, len + 1);
+	ঘূৰাই write_x(encoder, name, len + 1);
 }
 
-int
-bson_encoder_init_file(bson_encoder_t encoder, int fd)
+পূর্ণাঙ্ক
+bson_encoder_init_file(bson_encoder_t encoder, পূর্ণাঙ্ক fd)
 {
 	encoder->fd = fd;
 	encoder->buf = nullptr;
-	encoder->dead = false;
+	encoder->dead = মিছা;
 	encoder->total_document_size = 0;
 
-	if (write_int32(encoder, 0)) {
+	যদি (write_int32(encoder, 0)) {
 		CODER_KILL(encoder, "write error on document length");
 	}
 
-	return 0;
+	ঘূৰাই 0;
 }
 
-int
-bson_encoder_init_buf_file(bson_encoder_t encoder, int fd, void *buf, unsigned bufsize)
+পূর্ণাঙ্ক
+bson_encoder_init_buf_file(bson_encoder_t encoder, পূর্ণাঙ্ক fd, শূন্য *buf, unsigned bufsize)
 {
 	encoder->fd = fd;
 	encoder->buf = (uint8_t *)buf;
 	encoder->bufpos = 0;
 	encoder->bufsize = bufsize;
-	encoder->dead = false;
-	encoder->realloc_ok = false;
+	encoder->dead = মিছা;
+	encoder->realloc_ok = মিছা;
 	encoder->total_document_size = 0;
 
-	if (write_int32(encoder, 0)) {
+	যদি (write_int32(encoder, 0)) {
 		CODER_KILL(encoder, "write error on document length");
 	}
 
-	return 0;
+	ঘূৰাই 0;
 }
 
-int
-bson_encoder_init_buf(bson_encoder_t encoder, void *buf, unsigned bufsize)
+পূর্ণাঙ্ক
+bson_encoder_init_buf(bson_encoder_t encoder, শূন্য *buf, unsigned bufsize)
 {
 	encoder->buf = (uint8_t *)buf;
 
-	if (encoder->buf == nullptr) {
-		encoder->realloc_ok = true;
+	যদি (encoder->buf == nullptr) {
+		encoder->realloc_ok = সঁচা;
 
-	} else {
+	} অন্যথা {
 		encoder->bufsize = bufsize;
 	}
 
-	if (write_int32(encoder, 0)) {
+	যদি (write_int32(encoder, 0)) {
 		CODER_KILL(encoder, "write error on document length");
 	}
 
-	return 0;
+	ঘূৰাই 0;
 }
 
-int
+পূর্ণাঙ্ক
 bson_encoder_fini(bson_encoder_t encoder)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_EOO)) {
+	যদি (write_int8(encoder, BSON_EOO)) {
 		CODER_KILL(encoder, "write error on document terminator");
 	}
 
-	if (encoder->fd > -1 && encoder->buf != nullptr && encoder->bufpos > 0) {
+	যদি (encoder->fd > -1 && encoder->buf != nullptr && encoder->bufpos > 0) {
 		/* write final buffer to disk */
-		int ret = ::write(encoder->fd, encoder->buf, encoder->bufpos);
+		পূর্ণাঙ্ক ret = ::লিখ(encoder->fd, encoder->buf, encoder->bufpos);
 
-		if (ret == (int)encoder->bufpos) {
+		যদি (ret == (পূর্ণাঙ্ক)encoder->bufpos) {
 			encoder->total_document_size += ret;
 
-		} else {
+		} অন্যথা {
 			CODER_KILL(encoder, "write error");
 		}
 	}
 
 	// record document size; total_document_size only counts what went to a file
-	const int32_t bson_doc_bytes = (encoder->fd > -1) ? encoder->total_document_size : (int32_t)encoder->bufpos;
+	ধ্রুৱ int32_t bson_doc_bytes = (encoder->fd > -1) ? encoder->total_document_size : (int32_t)encoder->bufpos;
 	debug("writing document size %" PRIi32, bson_doc_bytes);
 
-	if (encoder->fd > -1) {
-		if ((lseek(encoder->fd, 0, SEEK_SET) != 0)
-		    || (::write(encoder->fd, &bson_doc_bytes, sizeof(bson_doc_bytes)) != sizeof(bson_doc_bytes))) {
+	যদি (encoder->fd > -1) {
+		যদি ((lseek(encoder->fd, 0, SEEK_SET) != 0)
+		    || (::লিখ(encoder->fd, &bson_doc_bytes, পরিমাণ(bson_doc_bytes)) != পরিমাণ(bson_doc_bytes))) {
 
 			CODER_KILL(encoder, "write error on document length");
 		}
 
 		::fsync(encoder->fd);
 
-	} else if (encoder->buf != nullptr) {
+	} অন্যথা যদি (encoder->buf != nullptr) {
 		/* update buffer length */
-		memcpy(encoder->buf, &bson_doc_bytes, sizeof(bson_doc_bytes));
+		memcpy(encoder->buf, &bson_doc_bytes, পরিমাণ(bson_doc_bytes));
 	}
 
-	return 0;
+	ঘূৰাই 0;
 }
 
-int
+পূর্ণাঙ্ক
 bson_encoder_buf_size(bson_encoder_t encoder)
 {
 	CODER_CHECK(encoder);
 
-	if (encoder->fd > -1) {
-		return -1;
+	যদি (encoder->fd > -1) {
+		ঘূৰাই -1;
 	}
 
-	return encoder->bufpos;
+	ঘূৰাই encoder->bufpos;
 }
 
-void *
+শূন্য *
 bson_encoder_buf_data(bson_encoder_t encoder)
 {
 	/* note, no CODER_CHECK here as the caller has to clean up dead buffers */
 
-	if (encoder->fd > -1) {
-		return nullptr;
+	যদি (encoder->fd > -1) {
+		ঘূৰাই nullptr;
 	}
 
-	return encoder->buf;
+	ঘূৰাই encoder->buf;
 }
 
-int bson_encoder_append_bool(bson_encoder_t encoder, const char *name, bool value)
+পূর্ণাঙ্ক bson_encoder_append_bool(bson_encoder_t encoder, ধ্রুৱ ৱর্ণ *name, তার্কিক value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_BOOL) ||
+	যদি (write_int8(encoder, BSON_BOOL) ||
 	    write_name(encoder, name) ||
 	    write_int8(encoder, value ? 1 : 0)) {
 		CODER_KILL(encoder, "write error on BSON_BOOL");
 	}
 
-	return 0;
+	ঘূৰাই 0;
 }
 
-int
-bson_encoder_append_int32(bson_encoder_t encoder, const char *name, int32_t value)
+পূর্ণাঙ্ক
+bson_encoder_append_int32(bson_encoder_t encoder, ধ্রুৱ ৱর্ণ *name, int32_t value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_INT32) ||
+	যদি (write_int8(encoder, BSON_INT32) ||
 	    write_name(encoder, name) ||
 	    write_int32(encoder, value)) {
 		CODER_KILL(encoder, "write error on BSON_INT32");
 	}
 
-	return 0;
+	ঘূৰাই 0;
 }
 
-int
-bson_encoder_append_int64(bson_encoder_t encoder, const char *name, int64_t value)
+পূর্ণাঙ্ক
+bson_encoder_append_int64(bson_encoder_t encoder, ধ্রুৱ ৱর্ণ *name, int64_t value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_INT64) ||
+	যদি (write_int8(encoder, BSON_INT64) ||
 	    write_name(encoder, name) ||
 	    write_int64(encoder, value)) {
 		CODER_KILL(encoder, "write error on BSON_INT64");
 	}
 
-	return 0;
+	ঘূৰাই 0;
 }
 
-int
-bson_encoder_append_double(bson_encoder_t encoder, const char *name, double value)
+পূর্ণাঙ্ক
+bson_encoder_append_double(bson_encoder_t encoder, ধ্রুৱ ৱর্ণ *name, দ্ৱিগুণ value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_DOUBLE) ||
+	যদি (write_int8(encoder, BSON_DOUBLE) ||
 	    write_name(encoder, name) ||
 	    write_double(encoder, value)) {
 		CODER_KILL(encoder, "write error on BSON_DOUBLE");
 	}
 
-	return 0;
+	ঘূৰাই 0;
 }
 
-int
-bson_encoder_append_string(bson_encoder_t encoder, const char *name, const char *string)
+পূর্ণাঙ্ক
+bson_encoder_append_string(bson_encoder_t encoder, ধ্রুৱ ৱর্ণ *name, ধ্রুৱ ৱর্ণ *string)
 {
 	size_t len;
 
@@ -641,23 +641,23 @@ bson_encoder_append_string(bson_encoder_t encoder, const char *name, const char 
 
 	len = strlen(string) + 1;	/* include trailing nul */
 
-	if (write_int8(encoder, BSON_STRING) ||
+	যদি (write_int8(encoder, BSON_STRING) ||
 	    write_name(encoder, name) ||
 	    write_int32(encoder, len) ||
 	    write_x(encoder, string, len)) {
 		CODER_KILL(encoder, "write error on BSON_STRING");
 	}
 
-	return 0;
+	ঘূৰাই 0;
 }
 
-int
-bson_encoder_append_binary(bson_encoder_t encoder, const char *name, bson_binary_subtype_t subtype, size_t size,
-			   const void *data)
+পূর্ণাঙ্ক
+bson_encoder_append_দ্বিমিক(bson_encoder_t encoder, ধ্রুৱ ৱর্ণ *name, bson_দ্বিমিক_subtype_t subtype, size_t size,
+			   ধ্রুৱ শূন্য *data)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_BINDATA) ||
+	যদি (write_int8(encoder, BSON_BINDATA) ||
 	    write_name(encoder, name) ||
 	    write_int32(encoder, size) ||
 	    write_int8(encoder, subtype) ||
@@ -665,18 +665,18 @@ bson_encoder_append_binary(bson_encoder_t encoder, const char *name, bson_binary
 		CODER_KILL(encoder, "write error on BSON_BINDATA");
 	}
 
-	return 0;
+	ঘূৰাই 0;
 }
 
-int
-bson_encoder_append_null(bson_encoder_t encoder, const char *name)
+পূর্ণাঙ্ক
+bson_encoder_append_null(bson_encoder_t encoder, ধ্রুৱ ৱর্ণ *name)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_nullptr) ||
+	যদি (write_int8(encoder, BSON_nullptr) ||
 	    write_name(encoder, name)) {
 		CODER_KILL(encoder, "write error on BSON_nullptr");
 	}
 
-	return 0;
+	ঘূৰাই 0;
 }

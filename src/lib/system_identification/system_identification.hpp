@@ -39,64 +39,64 @@
 
 #pragma once
 
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <matrix/matrix/math.hpp>
-#include <mathlib/mathlib.h>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
-#include <px4_platform_common/defines.h>
+#অন্তর্ভাৱ <lib/mathlib/math/filter/AlphaFilter.hpp>
+#অন্তর্ভাৱ <matrix/matrix/math.hpp>
+#অন্তর্ভাৱ <mathlib/mathlib.h>
+#অন্তর্ভাৱ <mathlib/math/filter/LowPassFilter2p.hpp>
+#অন্তর্ভাৱ <px4_platform_common/defines.h>
 
-#include "arx_rls.hpp"
+#অন্তর্ভাৱ "arx_rls.hpp"
 
-class SystemIdentification final
+শ্ৰেণী SystemIdentification final
 {
-public:
-	SystemIdentification() = default;
-	~SystemIdentification() = default;
+সার্ৱজনিক:
+	SystemIdentification() = স্ৱভাৱ;
+	~SystemIdentification() = স্ৱভাৱ;
 
-	void reset(const matrix::Vector<float, 5> &id_state_init = {});
-	void update(float u, float y); // update filters and model
-	void update(); // update model only (to be called after updateFilters)
-	void updateFilters(float u, float y);
-	bool areFiltersInitialized() const { return _are_filters_initialized; }
-	void updateFitness();
-	const matrix::Vector<float, 5> &getCoefficients() const { return _rls.getCoefficients(); }
-	const matrix::Vector<float, 5> getVariances() const { return _rls.getVariances(); }
-	const matrix::Vector<float, 5> &getDiffEstimate() const { return _rls.getDiffEstimate(); }
-	float getFitness() const { return _fitness_lpf.getState(); }
-	float getInnovation() const { return _rls.getInnovation(); }
+	শূন্য reset(ধ্রুৱ matrix::Vector<ভিন্ন, 5> &id_state_init = {});
+	শূন্য update(ভিন্ন u, ভিন্ন y); // update filters and model
+	শূন্য update(); // update model only (to be called after updateFilters)
+	শূন্য updateFilters(ভিন্ন u, ভিন্ন y);
+	তার্কিক areFiltersInitialized() ধ্রুৱ { ঘূৰাই _are_filters_initialized; }
+	শূন্য updateFitness();
+	ধ্রুৱ matrix::Vector<ভিন্ন, 5> &getCoefficients() ধ্রুৱ { ঘূৰাই _rls.getCoefficients(); }
+	ধ্রুৱ matrix::Vector<ভিন্ন, 5> getVariances() ধ্রুৱ { ঘূৰাই _rls.getVariances(); }
+	ধ্রুৱ matrix::Vector<ভিন্ন, 5> &getDiffEstimate() ধ্রুৱ { ঘূৰাই _rls.getDiffEstimate(); }
+	ভিন্ন getFitness() ধ্রুৱ { ঘূৰাই _fitness_lpf.getState(); }
+	ভিন্ন getInnovation() ধ্রুৱ { ঘূৰাই _rls.getInnovation(); }
 
-	void setLpfCutoffFrequency(float sample_freq, float cutoff)
+	শূন্য setLpfCutoffFrequency(ভিন্ন sample_freq, ভিন্ন cutoff)
 	{
 		_u_lpf.set_cutoff_frequency(sample_freq, cutoff);
 		_y_lpf.set_cutoff_frequency(sample_freq, cutoff);
 	}
-	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
+	শূন্য setHpfCutoffFrequency(ভিন্ন sample_freq, ভিন্ন cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	void setForgettingFactor(float time_constant, float dt) { _rls.setForgettingFactor(time_constant, dt); }
-	void setFitnessLpfTimeConstant(float time_constant, float dt)
+	শূন্য setForgettingFactor(ভিন্ন time_constant, ভিন্ন dt) { _rls.setForgettingFactor(time_constant, dt); }
+	শূন্য setFitnessLpfTimeConstant(ভিন্ন time_constant, ভিন্ন dt)
 	{
 		_fitness_lpf.setParameters(dt, time_constant);
 		_dt = dt;
 	}
 
-	float getFilteredInputData() const { return _u_hpf; }
-	float getFilteredOutputData() const { return _y_hpf; }
+	ভিন্ন get_Filtered_প্ৰবেশ_Data() ধ্রুৱ { ঘূৰাই _u_hpf; }
+	ভিন্ন getFilteredOutputData() ধ্রুৱ { ঘূৰাই _y_hpf; }
 
-private:
+গুপ্ত:
 	ArxRls<2, 2, 1> _rls;
-	math::LowPassFilter2p<float> _u_lpf{400.f, 30.f};
-	math::LowPassFilter2p<float> _y_lpf{400.f, 30.f};
+	math::নিচেৰ_Pass_Filter2p<ভিন্ন> _u_lpf{400.f, 30.f};
+	math::নিচেৰ_Pass_Filter2p<ভিন্ন> _y_lpf{400.f, 30.f};
 
 	//TODO: replace by HighPassFilter class
-	float _alpha_hpf{0.f};
-	float _u_hpf{0.f};
-	float _y_hpf{0.f};
+	ভিন্ন _alpha_hpf{0.f};
+	ভিন্ন _u_hpf{0.f};
+	ভিন্ন _y_hpf{0.f};
 
-	float _u_prev{0.f};
-	float _y_prev{0.f};
+	ভিন্ন _u_prev{0.f};
+	ভিন্ন _y_prev{0.f};
 
-	bool _are_filters_initialized{false};
+	তার্কিক _are_filters_initialized{মিছা};
 
-	AlphaFilter<float> _fitness_lpf;
-	float _dt{0.1f};
+	AlphaFilter<ভিন্ন> _fitness_lpf;
+	ভিন্ন _dt{0.1f};
 };
