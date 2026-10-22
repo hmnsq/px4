@@ -43,17 +43,17 @@
 //#include <time.h>
 //#include <stdlib.h>
 
-bool equal(float a, float b, float eps = 1e-5);
+ତାର୍କିକ equal(ଦଶମିକ a, ଦଶମିକ b, ଦଶମିକ eps = 1e-5);
 
-bool greater_than(float a, float b);
+ତାର୍କିକ greater_than(ଦଶମିକ a, ଦଶମିକ b);
 
-bool less_than(float a, float b);
+ତାର୍କିକ less_than(ଦଶମିକ a, ଦଶମିକ b);
 
-bool greater_than_or_equal(float a, float b);
+ତାର୍କିକ greater_than_or_equal(ଦଶମିକ a, ଦଶମିକ b);
 
-bool less_than_or_equal(float a, float b);
+ତାର୍କିକ less_than_or_equal(ଦଶମିକ a, ଦଶମିକ b);
 
-void float2SigExp(
-	const float &num,
-	float &sig,
-	int &exp);
+ଶୂନ୍ୟ float2SigExp(
+	ଅଚଳ ଦଶମିକ &ଅଙ୍କ,
+	ଦଶମିକ &sig,
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା &exp);

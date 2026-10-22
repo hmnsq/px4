@@ -39,63 +39,63 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <assert.h>
+#ଅନ୍ତର୍ଭାଵ <time.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/test/test.hpp>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/Block.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ଅନ୍ତର୍ଭାଵ "matrix/math.hpp"
 
-namespace control
+ନାମାକାଶ control
 {
-template<class Type, size_t M>
-class __EXPORT BlockStats: public Block
+template<ଶ୍ରେଣୀ Type, size_t M>
+ଶ୍ରେଣୀ __EXPORT BlockStats: ସର୍ବସାଧାରଣ Block
 {
 
-public:
+ସର୍ବସାଧାରଣ:
 // methods
 	BlockStats(SuperBlock *parent,
-		   const char *name) :
+		   ଅଚଳ ଅକ୍ଷର *name) :
 		Block(parent, name),
 		_sum(),
 		_sumSq(),
-		_count(0)
+		ଗଣନା_4(0)
 	{}
-	virtual ~BlockStats() = default;
-	void update(const matrix::Vector<Type, M> &u)
+	ଆଭାସୀ ~BlockStats() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	ଶୂନ୍ୟ update(ଅଚଳ matrix::Vector<Type, M> &u)
 	{
 		_sum += u;
 		_sumSq += u.emult(u);
-		_count += 1;
+		ଗଣନା_4 += 1;
 	}
-	void reset()
+	ଶୂନ୍ୟ reset()
 	{
 		_sum.setZero();
 		_sumSq.setZero();
-		_count = 0;
+		ଗଣନା_4 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
+	size_t get_ଗଣନା() { ଫେରନ୍ତୁ ଗଣନା_4; }
+	matrix::Vector<Type, M> getMean() { ଫେରନ୍ତୁ _sum / ଗଣନା_4; }
 	matrix::Vector<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		ଫେରନ୍ତୁ (_sumSq - _sum.emult(_sum) / ଗଣନା_4) / ଗଣନା_4;
 	}
 	matrix::Vector<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		ଫେରନ୍ତୁ getVar().sqrt();
 	}
-private:
+ବ୍ୟକ୍ତିଗତ:
 // attributes
 	matrix::Vector<Type, M> _sum;
 	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+	size_t ଗଣନା_4;
 };
 
 } // namespace control

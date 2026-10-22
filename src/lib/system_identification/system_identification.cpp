@@ -37,9 +37,9 @@
  * @author Mathieu Bresciani <mathieu@auterion.com>
  */
 
-#include "system_identification.hpp"
+#ଅନ୍ତର୍ଭାଵ "system_identification.hpp"
 
-void SystemIdentification::reset(const matrix::Vector<float, 5> &id_state_init)
+ଶୂନ୍ୟ SystemIdentification::reset(ଅଚଳ matrix::Vector<ଦଶମିକ, 5> &id_state_init)
 {
 	_rls.reset(id_state_init);
 	_u_lpf.reset(0.f);
@@ -49,36 +49,36 @@ void SystemIdentification::reset(const matrix::Vector<float, 5> &id_state_init)
 	_u_prev = 0.f;
 	_y_prev = 0.f;
 	_fitness_lpf.reset(10.f);
-	_are_filters_initialized = false;
+	_are_filters_initialized = ମିଥ୍ୟା;
 }
 
-void SystemIdentification::update(float u, float y)
+ଶୂନ୍ୟ SystemIdentification::update(ଦଶମିକ u, ଦଶମିକ y)
 {
 	updateFilters(u, y);
 	update();
 }
 
-void SystemIdentification::update()
+ଶୂନ୍ୟ SystemIdentification::update()
 {
 	_rls.update(_u_hpf, _y_hpf);
 	updateFitness();
 }
 
-void SystemIdentification::updateFilters(float u, float y)
+ଶୂନ୍ୟ SystemIdentification::updateFilters(ଦଶମିକ u, ଦଶମିକ y)
 {
-	if (!_are_filters_initialized) {
+	ଯଦି (!_are_filters_initialized) {
 		_u_lpf.reset(u);
 		_y_lpf.reset(y);
 		_u_hpf = 0.f;
 		_y_hpf = 0.f;
 		_u_prev = u;
 		_y_prev = y;
-		_are_filters_initialized = true;
-		return;
+		_are_filters_initialized = ସତ୍ୟ;
+		ଫେରନ୍ତୁ;
 	}
 
-	const float u_lpf = _u_lpf.apply(u);
-	const float y_lpf = _y_lpf.apply(y);
+	ଅଚଳ ଦଶମିକ u_lpf = _u_lpf.apply(u);
+	ଅଚଳ ଦଶମିକ y_lpf = _y_lpf.apply(y);
 	_u_hpf = _alpha_hpf * _u_hpf + _alpha_hpf * (u_lpf - _u_prev);
 	_y_hpf = _alpha_hpf * _y_hpf + _alpha_hpf * (y_lpf - _y_prev);
 
@@ -86,16 +86,16 @@ void SystemIdentification::updateFilters(float u, float y)
 	_y_prev = y_lpf;
 }
 
-void SystemIdentification::updateFitness()
+ଶୂନ୍ୟ SystemIdentification::updateFitness()
 {
-	const matrix::Vector<float, 5> &diff = _rls.getDiffEstimate();
-	float sum = 0.f;
+	ଅଚଳ matrix::Vector<ଦଶମିକ, 5> &diff = _rls.getDiffEstimate();
+	ଦଶମିକ sum = 0.f;
 
-	for (size_t i = 0; i < 5; i++) {
+	ପାଇଁ (size_t i = 0; i < 5; i++) {
 		sum += diff(i);
 	}
 
-	if (_dt > FLT_EPSILON) {
+	ଯଦି (_dt > FLT_EPSILON) {
 		_fitness_lpf.update(sum / _dt);
 	}
 }

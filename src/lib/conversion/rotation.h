@@ -39,17 +39,17 @@
 
 #pragma once
 
-#include <stdint.h>
+#ଅନ୍ତର୍ଭାଵ <stdint.h>
 
-#include <mathlib/mathlib.h>
-#include <matrix/math.hpp>
-#include <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <mathlib/mathlib.h>
+#ଅନ୍ତର୍ଭାଵ <matrix/math.hpp>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
 
 /**
  * Enum for board and external compass rotations.
  * This enum maps from board attitude to airframe attitude.
  */
-enum Rotation : uint8_t {
+ଗଣନା Rotation : uint8_t {
 	ROTATION_NONE                = 0,
 	ROTATION_YAW_45              = 1,
 	ROTATION_YAW_90              = 2,
@@ -97,13 +97,13 @@ enum Rotation : uint8_t {
 	ROTATION_CUSTOM                  = 100
 };
 
-struct rot_lookup_t {
+ସଂରଚନା rot_lookup_t {
 	uint16_t roll;
 	uint16_t pitch;
 	uint16_t yaw;
 };
 
-static constexpr rot_lookup_t rot_lookup[ROTATION_MAX] = {
+ସ୍ଥିର constexpr rot_lookup_t rot_lookup[ROTATION_MAX] = {
 	{  0,   0,   0 },
 	{  0,   0,  45 },
 	{  0,   0,  90 },
@@ -150,234 +150,234 @@ static constexpr rot_lookup_t rot_lookup[ROTATION_MAX] = {
 /**
  * Get the rotation matrix
  */
-__EXPORT matrix::Dcmf get_rot_matrix(enum Rotation rot);
+__EXPORT matrix::Dcmf get_rot_matrix(ଗଣନା Rotation rot);
 
 /**
  * Get the rotation quaternion
  */
-__EXPORT matrix::Quatf get_rot_quaternion(enum Rotation rot);
+__EXPORT matrix::Quatf get_rot_quaternion(ଗଣନା Rotation rot);
 
 /**
  * rotate a 3 element int16_t vector in-place
  */
-__EXPORT void rotate_3i(enum Rotation rot, int16_t &x, int16_t &y, int16_t &z);
+__EXPORT ଶୂନ୍ୟ rotate_3i(ଗଣନା Rotation rot, int16_t &x, int16_t &y, int16_t &z);
 
 /**
  * rotate a 3 element float vector in-place
  */
-__EXPORT void rotate_3f(enum Rotation rot, float &x, float &y, float &z);
+__EXPORT ଶୂନ୍ୟ rotate_3f(ଗଣନା Rotation rot, ଦଶମିକ &x, ଦଶମିକ &y, ଦଶମିକ &z);
 
 template<typename T>
-static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
+ସ୍ଥିର bool rotate_3(ଗଣନା Rotation rot, T &x, T &y, T &z)
 {
-	switch (rot) {
-	case ROTATION_NONE:
-		return true;
+	ବାଛ (rot) {
+	ସ୍ଥିତି ROTATION_NONE:
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_YAW_90: {
+	ସ୍ଥିତି ROTATION_YAW_90: {
 			T tmp = x;
 			x = math::negate(y);
 			y = tmp;
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_YAW_180: {
+	ସ୍ଥିତି ROTATION_YAW_180: {
 			x = math::negate(x);
 			y = math::negate(y);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_YAW_270: {
+	ସ୍ଥିତି ROTATION_YAW_270: {
 			T tmp = x;
 			x = y;
 			y = math::negate(tmp);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_180: {
+	ସ୍ଥିତି ROTATION_ROLL_180: {
 			y = math::negate(y);
 			z = math::negate(z);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_180_YAW_90:
+	ସ୍ଥିତି ROTATION_ROLL_180_YAW_90:
 
 	// FALLTHROUGH
-	case ROTATION_PITCH_180_YAW_270: {
+	ସ୍ଥିତି ROTATION_PITCH_180_YAW_270: {
 			T tmp = x;
 			x = y;
 			y = tmp;
 			z = math::negate(z);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_PITCH_180: {
+	ସ୍ଥିତି ROTATION_PITCH_180: {
 			x = math::negate(x);
 			z = math::negate(z);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_180_YAW_270:
+	ସ୍ଥିତି ROTATION_ROLL_180_YAW_270:
 
 	// FALLTHROUGH
-	case ROTATION_PITCH_180_YAW_90: {
+	ସ୍ଥିତି ROTATION_PITCH_180_YAW_90: {
 			T tmp = x;
 			x = math::negate(y);
 			y = math::negate(tmp);
 			z = math::negate(z);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_90: {
+	ସ୍ଥିତି ROTATION_ROLL_90: {
 			T tmp = z;
 			z = y;
 			y = math::negate(tmp);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_90_YAW_90: {
+	ସ୍ଥିତି ROTATION_ROLL_90_YAW_90: {
 			T tmp = x;
 			x = z;
 			z = y;
 			y = tmp;
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_270: {
+	ସ୍ଥିତି ROTATION_ROLL_270: {
 			T tmp = z;
 			z = math::negate(y);
 			y = tmp;
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_270_YAW_90: {
+	ସ୍ଥିତି ROTATION_ROLL_270_YAW_90: {
 			T tmp = x;
 			x = math::negate(z);
 			z = math::negate(y);
 			y = tmp;
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_PITCH_90: {
+	ସ୍ଥିତି ROTATION_PITCH_90: {
 			T tmp = z;
 			z = math::negate(x);
 			x = tmp;
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_PITCH_270: {
+	ସ୍ଥିତି ROTATION_PITCH_270: {
 			T tmp = z;
 			z = x;
 			x = math::negate(tmp);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_180_PITCH_270: {
+	ସ୍ଥିତି ROTATION_ROLL_180_PITCH_270: {
 			T tmp = z;
 			z = x;
 			x = tmp;
 			y = math::negate(y);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_90_YAW_270: {
+	ସ୍ଥିତି ROTATION_ROLL_90_YAW_270: {
 			T tmp = x;
 			x = math::negate(z);
 			z = y;
 			y = math::negate(tmp);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_90_PITCH_90: {
+	ସ୍ଥିତି ROTATION_ROLL_90_PITCH_90: {
 			T tmp = x;
 			x = y;
 			y = math::negate(z);
 			z = math::negate(tmp);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_180_PITCH_90: {
+	ସ୍ଥିତି ROTATION_ROLL_180_PITCH_90: {
 			T tmp = x;
 			x = math::negate(z);
 			y = math::negate(y);
 			z = math::negate(tmp);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_270_PITCH_90: {
+	ସ୍ଥିତି ROTATION_ROLL_270_PITCH_90: {
 			T tmp = x;
 			x = math::negate(y);
 			y = z;
 			z = math::negate(tmp);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_90_PITCH_180: {
+	ସ୍ଥିତି ROTATION_ROLL_90_PITCH_180: {
 			T tmp = y;
 			x = math::negate(x);
 			y = math::negate(z);
 			z = math::negate(tmp);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_270_PITCH_180: {
+	ସ୍ଥିତି ROTATION_ROLL_270_PITCH_180: {
 			T tmp = y;
 			x = math::negate(x);
 			y = z;
 			z = tmp;
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_90_PITCH_270: {
+	ସ୍ଥିତି ROTATION_ROLL_90_PITCH_270: {
 			T tmp = x;
 			x = math::negate(y);
 			y = math::negate(z);
 			z = tmp;
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_270_PITCH_270: {
+	ସ୍ଥିତି ROTATION_ROLL_270_PITCH_270: {
 			T tmp = x;
 			x = y;
 			y = z;
 			z = tmp;
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	case ROTATION_ROLL_90_PITCH_180_YAW_90: {
+	ସ୍ଥିତି ROTATION_ROLL_90_PITCH_180_YAW_90: {
 			T tmp = x;
 			x = z;
 			z = math::negate(y);
 			y = math::negate(tmp);
 		}
 
-		return true;
+		ଫେରନ୍ତୁ true;
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 
-	return false;
+	ଫେରନ୍ତୁ false;
 }

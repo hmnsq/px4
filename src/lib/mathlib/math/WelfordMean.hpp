@@ -39,64 +39,64 @@
 
 #pragma once
 
-#include <lib/mathlib/mathlib.h>
+#ଅନ୍ତର୍ଭାଵ <lib/mathlib/mathlib.h>
 
-namespace math
+ନାମାକାଶ math
 {
 
-template <typename Type = float>
-class WelfordMean
+template <typename Type = ଦଶମିକ>
+ଶ୍ରେଣୀ WelfordMean
 {
-public:
+ସର୍ବସାଧାରଣ:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const Type &new_value)
+	ତାର୍କିକ update(ଅଚଳ Type &new_ମୂଲ୍ୟ)
 	{
-		if (_count == 0) {
+		ଯଦି (ଗଣନା_4 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
-			return false;
+			ଗଣନା_4 = 1;
+			_mean = new_ମୂଲ୍ୟ;
+			ଫେରନ୍ତୁ ମିଥ୍ୟା;
 
-		} else if (_count == UINT16_MAX) {
+		} ଅନ୍ୟଥା ଯଦି (ଗଣନା_4 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / ଗଣନା_4;
 			_M2_accum = 0;
 
-			_count = 1;
+			ଗଣନା_4 = 1;
 
-		} else {
-			_count++;
+		} ଅନ୍ୟଥା {
+			ଗଣନା_4++;
 		}
 
 		// mean accumulates the mean of the entire dataset
 		// delta can be very small compared to the mean, use algorithm to minimise numerical error
-		const Type delta{new_value - _mean};
-		const Type mean_change = delta / _count;
+		ଅଚଳ Type delta{new_ମୂଲ୍ୟ - _mean};
+		ଅଚଳ Type mean_change = delta / ଗଣନା_4;
 		_mean = kahanSummation(_mean, mean_change, _mean_accum);
 
 		// M2 aggregates the squared distance from the mean
 		// count aggregates the number of samples seen so far
-		const Type M2_change = delta * (new_value - _mean);
+		ଅଚଳ Type M2_change = delta * (new_ମୂଲ୍ୟ - _mean);
 		_M2 = kahanSummation(_M2, M2_change, _M2_accum);
 
 		// protect against floating point precision causing negative variances
 		_M2 = math::max(_M2, 0.f);
 
-		if (!PX4_ISFINITE(_mean) || !PX4_ISFINITE(_M2)) {
+		ଯଦି (!PX4_ISFINITE(_mean) || !PX4_ISFINITE(_M2)) {
 			reset();
-			return false;
+			ଫେରନ୍ତୁ ମିଥ୍ୟା;
 		}
 
-		return valid();
+		ଫେରନ୍ତୁ valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	ତାର୍କିକ valid() ଅଚଳ { ଫେରନ୍ତୁ ଗଣନା_4 > 2; }
+	auto ଗଣନା_2() ଅଚଳ { ଫେରନ୍ତୁ ଗଣନା_4; }
 
-	void reset()
+	ଶୂନ୍ୟ reset()
 	{
-		_count = 0;
+		ଗଣନା_4 = 0;
 		_mean = 0;
 		_M2 = 0;
 
@@ -104,22 +104,22 @@ public:
 		_M2_accum = 0;
 	}
 
-	Type mean() const { return _mean; }
-	Type variance() const { return _M2 / (_count - 1); }
-	Type standard_deviation() const { return std::sqrt(variance()); }
+	Type mean() ଅଚଳ { ଫେରନ୍ତୁ _mean; }
+	Type variance() ଅଚଳ { ଫେରନ୍ତୁ _M2 / (ଗଣନା_4 - 1); }
+	Type standard_deviation() ଅଚଳ { ଫେରନ୍ତୁ std::sqrt(variance()); }
 
-private:
+ବ୍ୟକ୍ତିଗତ:
 
 	// Use Kahan summation algorithm to get the sum of "sum_previous" and "input".
 	// This function relies on the caller to be responsible for keeping a copy of
 	// "accumulator" and passing this value at the next iteration.
 	// Ref: https://en.wikipedia.org/wiki/Kahan_summation_algorithm
-	inline Type kahanSummation(Type sum_previous, Type input, Type &accumulator)
+	ଧାଡ଼ିଭିତରେ Type kahanSummation(Type sum_previous, Type ନିବେଶ, Type &accumulator)
 	{
-		const Type y = input - accumulator;
-		const Type t = sum_previous + y;
+		ଅଚଳ Type y = ନିବେଶ - accumulator;
+		ଅଚଳ Type t = sum_previous + y;
 		accumulator = (t - sum_previous) - y;
-		return t;
+		ଫେରନ୍ତୁ t;
 	}
 
 	Type _mean{};
@@ -128,7 +128,7 @@ private:
 	Type _mean_accum{};  ///< kahan summation algorithm accumulator for mean
 	Type _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t ଗଣନା_4{0};
 };
 
 } // namespace math

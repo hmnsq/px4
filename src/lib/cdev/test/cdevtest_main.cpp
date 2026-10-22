@@ -37,20 +37,20 @@
  *
  * @author Mark Charlebois <charlebm@gmail.com>
  */
-#include "cdevtest_example.h"
+#ଅନ୍ତର୍ଭାଵ "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/init.h>
-#include <stdio.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/app.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/init.h>
+#ଅନ୍ତର୍ଭାଵ <stdio.h>
 
-int PX4_MAIN(int argc, char **argv)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା PX4_MAIN(ପୂର୍ଣ୍ଣସଂଖ୍ୟା argc, ଅକ୍ଷର **argv)
 {
 	px4::init(argc, argv, "cdevtest");
 
 	printf("cdevtest\n");
 	CDevExample cdevtest;
-	cdevtest.main();
+	cdevtest.ମୁଖ୍ୟ();
 
 	printf("goodbye\n");
-	return 0;
+	ଫେରନ୍ତୁ 0;
 }

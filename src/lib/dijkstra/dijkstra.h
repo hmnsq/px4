@@ -61,14 +61,14 @@
 
 #pragma once
 
-#include <math.h>
-#include <stddef.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <stddef.h>
 
 namespace dijkstra
 {
 
 /** Sentinel cost for unreachable nodes / missing edges. */
-static constexpr float kUnreachable = INFINITY;
+ସ୍ଥିର constexpr ଦଶମିକ kUnreachable = INFINITY;
 
 /**
  * Map the strict upper triangle (without the diagonal) of an N x N symmetric
@@ -84,15 +84,15 @@ static constexpr float kUnreachable = INFINITY;
  * @param num_nodes  total number of nodes
  * @return flat array index in [0, num_nodes * (num_nodes - 1) / 2)
  */
-inline size_t symmetricPairIndex(size_t i, size_t j, const size_t num_nodes)
+ଧାଡ଼ିଭିତରେ size_t symmetricPairIndex(size_t i, size_t j, ଅଚଳ size_t ଅଙ୍କ_nodes)
 {
-	if (i > j) {
-		const size_t tmp = i;
+	ଯଦି (i > j) {
+		ଅଚଳ size_t tmp = i;
 		i = j;
 		j = tmp;
 	}
 
-	return i * (2 * num_nodes - i - 1) / 2 + (j - i - 1);
+	ଫେରନ୍ତୁ i * (2 * ଅଙ୍କ_nodes - i - 1) / 2 + (j - i - 1);
 }
 
 /**
@@ -117,7 +117,7 @@ inline size_t symmetricPairIndex(size_t i, size_t j, const size_t num_nodes)
  *         false otherwise. A `true` return does not imply that goal is
  *         reachable from any particular node — check best_cost[i] for that.
  */
-bool solveBackward(const int num_nodes, const int goal, const float *cost, const bool symmetric,
-		   float *best_cost, int *next_node, bool *visited);
+bool solveBackward(ଅଚଳ ପୂର୍ଣ୍ଣସଂଖ୍ୟା ଅଙ୍କ_nodes, ଅଚଳ ପୂର୍ଣ୍ଣସଂଖ୍ୟା goal, ଅଚଳ ଦଶମିକ *cost, ଅଚଳ bool symmetric,
+		   ଦଶମିକ *best_cost, ପୂର୍ଣ୍ଣସଂଖ୍ୟା *next_ଗଣ୍ଠି, bool *visited);
 
 } // namespace dijkstra

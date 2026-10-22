@@ -39,42 +39,42 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <assert.h>
+#ଅନ୍ତର୍ଭାଵ <time.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/test/test.hpp>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/Block.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ଅନ୍ତର୍ଭାଵ "matrix/math.hpp"
 
-namespace control
+ନାମାକାଶ control
 {
 
 /**
  * A proportional controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockP: public Block
+ଶ୍ରେଣୀ __EXPORT BlockP: ସର୍ବସାଧାରଣ Block
 {
-public:
+ସର୍ବସାଧାରଣ:
 // methods
-	BlockP(SuperBlock *parent, const char *name) :
+	BlockP(SuperBlock *parent, ଅଚଳ ଅକ୍ଷର *name) :
 		Block(parent, name),
-		_kP(this, "") // only one param, no need to name
+		_kP(ଏହି, "") // only one param, no need to name
 	{}
-	virtual ~BlockP() = default;
-	float update(float input)
+	ଆଭାସୀ ~BlockP() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	ଦଶମିକ update(ଦଶମିକ ନିବେଶ)
 	{
-		return getKP() * input;
+		ଫେରନ୍ତୁ getKP() * ନିବେଶ;
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-protected:
+	ଦଶମିକ getKP() { ଫେରନ୍ତୁ _kP.get(); }
+ସୁରକ୍ଷିତ:
 	control::BlockParamFloat _kP;
 };
 

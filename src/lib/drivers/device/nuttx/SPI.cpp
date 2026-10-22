@@ -38,22 +38,22 @@
  *
  */
 
-#include "SPI.hpp"
+#ଅନ୍ତର୍ଭାଵ "SPI.hpp"
 
-#if defined(CONFIG_SPI)
+#ଯଦି defined(CONFIG_SPI)
 
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <px4_platform_common/px4_config.h>
-#include <nuttx/arch.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/i2c_spi_buses.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/px4_config.h>
+#ଅନ୍ତର୍ଭାଵ <nuttx/arch.h>
 
 #ifndef CONFIG_SPI_EXCHANGE
 # error This driver requires CONFIG_SPI_EXCHANGE
 #endif
 
-namespace device
+ନାମାକାଶ device
 {
 
-SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
+SPI::SPI(uint8_t device_type, ଅଚଳ ଅକ୍ଷର *name, ପୂର୍ଣ୍ଣସଂଖ୍ୟା bus, uint32_t device, ଗଣନା spi_mode_e mode, uint32_t frequency) :
 	CDev(name, nullptr),
 	_device(device),
 	_mode(mode),
@@ -66,12 +66,12 @@ SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum s
 	// Use the 2. LSB byte as SPI address, which is non-zero for multiple instances of the same device on a bus
 	_device_id.devid_s.address = (uint8_t)(device >> 8);
 
-	if (!px4_spi_bus_requires_locking(bus)) {
+	ଯଦି (!px4_spi_bus_requires_locking(bus)) {
 		_locking_mode = LOCK_NONE;
 	}
 }
 
-SPI::SPI(const I2CSPIDriverConfig &config)
+SPI::SPI(ଅଚଳ I2CSPIDriverConfig &config)
 	: SPI(config.devid_driver_index, config.module_name, config.bus, config.spi_devid, config.spi_mode,
 	      config.bus_frequency)
 {
@@ -83,153 +83,153 @@ SPI::~SPI()
 	// XXX no way to let go of the bus...
 }
 
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 SPI::init()
 {
 	/* attach to the spi bus */
-	if (_dev == nullptr) {
-		int bus = get_device_bus();
+	ଯଦି (_dev == nullptr) {
+		ପୂର୍ଣ୍ଣସଂଖ୍ୟା bus = get_device_bus();
 
-		if (!board_has_bus(BOARD_SPI_BUS, bus)) {
-			return -ENOENT;
+		ଯଦି (!board_has_bus(BOARD_SPI_BUS, bus)) {
+			ଫେରନ୍ତୁ -ENOENT;
 		}
 
 		_dev = px4_spibus_initialize(bus);
 	}
 
-	if (_dev == nullptr) {
+	ଯଦି (_dev == nullptr) {
 		DEVICE_DEBUG("failed to init SPI");
-		return -ENOENT;
+		ଫେରନ୍ତୁ -ENOENT;
 	}
 
 	/* deselect device to ensure high to low transition of pin select */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, ମିଥ୍ୟା);
 
 	/* call the probe function to check whether the device is present */
-	int ret = probe();
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ret = probe();
 
-	if (ret != OK) {
+	ଯଦି (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		return ret;
+		ଫେରନ୍ତୁ ret;
 	}
 
 	/* do base class init, which will create the device node, etc. */
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ଯଦି (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		return ret;
+		ଫେରନ୍ତୁ ret;
 	}
 
 	/* tell the world where we are */
 	DEVICE_DEBUG("on SPI bus %d at %"  PRId32 " (%"  PRId32 " KHz)", get_device_bus(), PX4_SPI_DEV_ID(_device),
 		     _frequency / 1000);
 
-	return PX4_OK;
+	ଫେରନ୍ତୁ PX4_OK;
 }
 
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 {
-	int result;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା result;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	ଯଦି ((send == nullptr) && (recv == nullptr)) {
+		ଫେରନ୍ତୁ -EINVAL;
 	}
 
 	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
 
 	/* lock the bus as required */
-	switch (mode) {
-	default:
-	case LOCK_PREEMPTION: {
+	ବାଛ (mode) {
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+	ସ୍ଥିତି LOCK_PREEMPTION: {
 			irqstate_t state = px4_enter_critical_section();
 			result = _transfer(send, recv, len);
 			px4_leave_critical_section(state);
 		}
-		break;
+		ଭାଙ୍ଗ;
 
-	case LOCK_THREADS:
-		SPI_LOCK(_dev, true);
+	ସ୍ଥିତି LOCK_THREADS:
+		SPI_LOCK(_dev, ସତ୍ୟ);
 		result = _transfer(send, recv, len);
-		SPI_LOCK(_dev, false);
-		break;
+		SPI_LOCK(_dev, ମିଥ୍ୟା);
+		ଭାଙ୍ଗ;
 
-	case LOCK_NONE:
+	ସ୍ଥିତି LOCK_NONE:
 		result = _transfer(send, recv, len);
-		break;
+		ଭାଙ୍ଗ;
 	}
 
-	return result;
+	ଫେରନ୍ତୁ result;
 }
 
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 SPI::_transfer(uint8_t *send, uint8_t *recv, unsigned len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
 	SPI_SETMODE(_dev, _mode);
 	SPI_SETBITS(_dev, 8);
-	SPI_SELECT(_dev, _device, true);
+	SPI_SELECT(_dev, _device, ସତ୍ୟ);
 
 	/* do the transfer */
 	SPI_EXCHANGE(_dev, send, recv, len);
 
 	/* and clean up */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, ମିଥ୍ୟା);
 
-	return PX4_OK;
+	ଫେରନ୍ତୁ PX4_OK;
 }
 
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 {
-	int result;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା result;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	ଯଦି ((send == nullptr) && (recv == nullptr)) {
+		ଫେରନ୍ତୁ -EINVAL;
 	}
 
 	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
 
 	/* lock the bus as required */
-	switch (mode) {
-	default:
-	case LOCK_PREEMPTION: {
+	ବାଛ (mode) {
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+	ସ୍ଥିତି LOCK_PREEMPTION: {
 			irqstate_t state = px4_enter_critical_section();
 			result = _transferhword(send, recv, len);
 			px4_leave_critical_section(state);
 		}
-		break;
+		ଭାଙ୍ଗ;
 
-	case LOCK_THREADS:
-		SPI_LOCK(_dev, true);
+	ସ୍ଥିତି LOCK_THREADS:
+		SPI_LOCK(_dev, ସତ୍ୟ);
 		result = _transferhword(send, recv, len);
-		SPI_LOCK(_dev, false);
-		break;
+		SPI_LOCK(_dev, ମିଥ୍ୟା);
+		ଭାଙ୍ଗ;
 
-	case LOCK_NONE:
+	ସ୍ଥିତି LOCK_NONE:
 		result = _transferhword(send, recv, len);
-		break;
+		ଭାଙ୍ଗ;
 	}
 
-	return result;
+	ଫେରନ୍ତୁ result;
 }
 
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 SPI::_transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
 	SPI_SETMODE(_dev, _mode);
 	SPI_SETBITS(_dev, 16);			/* 16 bit transfer */
-	SPI_SELECT(_dev, _device, true);
+	SPI_SELECT(_dev, _device, ସତ୍ୟ);
 
 	/* do the transfer */
 	SPI_EXCHANGE(_dev, send, recv, len);
 
 	/* and clean up */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, ମିଥ୍ୟା);
 
-	return PX4_OK;
+	ଫେରନ୍ତୁ PX4_OK;
 }
 
 } // namespace device

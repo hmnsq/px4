@@ -33,29 +33,29 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ଅନ୍ତର୍ଭାଵ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/manual_control_setpoint.h>
+#ଅନ୍ତର୍ଭାଵ <uORB/topics/manual_control_setpoint.h>
 
 /**
  * Functions: RC_Roll .. RCAUX_Max
  */
-class FunctionManualRC : public FunctionProviderBase
+ଶ୍ରେଣୀ FunctionManualRC : ସର୍ବସାଧାରଣ FunctionProviderBase
 {
-public:
+ସର୍ବସାଧାରଣ:
 	FunctionManualRC()
 	{
-		resetAllToDisarmedValue();
+		reset_All_To_Disarmed_ମୂଲ୍ୟ();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionManualRC(); }
+	ସ୍ଥିର FunctionProviderBase *allocate(ଅଚଳ Context &context) { ଫେରନ୍ତୁ ନୂତନ FunctionManualRC(); }
 
-	void update() override
+	ଶୂନ୍ୟ update() override
 	{
 		manual_control_setpoint_s manual_control_setpoint;
 
-		if (_topic.update(&manual_control_setpoint)) {
-			if (manual_control_setpoint.valid) {
+		ଯଦି (_topic.update(&manual_control_setpoint)) {
+			ଯଦି (manual_control_setpoint.valid) {
 				_data[0] = manual_control_setpoint.roll;
 				_data[1] = manual_control_setpoint.pitch;
 				_data[2] = manual_control_setpoint.throttle;
@@ -68,27 +68,27 @@ public:
 				_data[9] = manual_control_setpoint.aux5;
 				_data[10] = manual_control_setpoint.aux6;
 
-			} else {
-				resetAllToDisarmedValue();
+			} ଅନ୍ୟଥା {
+				reset_All_To_Disarmed_ମୂଲ୍ୟ();
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::RC_Roll]; }
+	ଦଶମିକ value(OutputFunction func) override { ଫେରନ୍ତୁ _data[(ପୂର୍ଣ୍ଣସଂଖ୍ୟା)func - (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)OutputFunction::RC_Roll]; }
 
-private:
-	static constexpr int num_data_points = 11;
+ବ୍ୟକ୍ତିଗତ:
+	ସ୍ଥିର constexpr ପୂର୍ଣ୍ଣସଂଖ୍ୟା ଅଙ୍କ_data_points = 11;
 
-	void resetAllToDisarmedValue()
+	ଶୂନ୍ୟ reset_All_To_Disarmed_ମୂଲ୍ୟ()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
+		ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < ଅଙ୍କ_data_points; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
+	static_assert(ଅଙ୍କ_data_points == (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)OutputFunction::RC_AUXMax - (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)OutputFunction::RC_Roll + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _topic{ORB_ID(manual_control_setpoint)};
-	float _data[num_data_points] {};
+	ଦଶମିକ _data[ଅଙ୍କ_data_points] {};
 };

@@ -42,16 +42,16 @@
 #ifndef AIRSPEED_H_
 #define AIRSPEED_H_
 
-#include "math.h"
+#ଅନ୍ତର୍ଭାଵ "math.h"
 
 __BEGIN_DECLS
 
-enum AIRSPEED_SENSOR_MODEL {
+ଗଣନା AIRSPEED_SENSOR_MODEL {
 	AIRSPEED_SENSOR_MODEL_MEMBRANE = 0,
 	AIRSPEED_SENSOR_MODEL_SDP3X,
 };
 
-enum AIRSPEED_COMPENSATION_MODEL {
+ଗଣନା AIRSPEED_COMPENSATION_MODEL {
 	AIRSPEED_COMPENSATION_MODEL_PITOT = 0,
 	AIRSPEED_COMPENSATION_MODEL_NO_PITOT = 1,
 	AIRSPEED_COMPENSATION_TUBE_PRESSURE_LOSS = 2
@@ -68,9 +68,9 @@ enum AIRSPEED_COMPENSATION_MODEL {
  * @param static_pressure pressure at the side of the tube/airplane
  * @return indicated airspeed in m/s
  */
-__EXPORT float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel,
-				  enum AIRSPEED_SENSOR_MODEL smodel,
-				  float tube_len, float tube_dia_mm, float differential_pressure, float pressure_ambient, float temperature_celsius);
+__EXPORT ଦଶମିକ calc_IAS_corrected(ଗଣନା AIRSPEED_COMPENSATION_MODEL pmodel,
+				  ଗଣନା AIRSPEED_SENSOR_MODEL smodel,
+				  ଦଶମିକ tube_len, ଦଶମିକ tube_dia_mm, ଦଶମିକ differential_pressure, ଦଶମିକ pressure_ambient, ଦଶମିକ temperature_celsius);
 
 /**
  * Calculate indicated airspeed (IAS).
@@ -83,7 +83,7 @@ __EXPORT float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel,
  * @param static_pressure pressure at the side of the tube/airplane
  * @return indicated airspeed in m/s
  */
-__EXPORT float calc_IAS(float differential_pressure);
+__EXPORT ଦଶମିକ calc_IAS(ଦଶମିକ differential_pressure);
 
 /**
  * Calculate true airspeed (TAS) from calibrated airspeed (CAS).
@@ -95,8 +95,8 @@ __EXPORT float calc_IAS(float differential_pressure);
  * @param temperature_celsius air temperature in degrees Celsius
  * @return TAS in m/s
  */
-__EXPORT float calc_TAS_from_CAS(float speed_indicated, float pressure_ambient,
-				 float temperature_celsius);
+__EXPORT ଦଶମିକ calc_TAS_from_CAS(ଦଶମିକ speed_indicated, ଦଶମିକ pressure_ambient,
+				 ଦଶମିକ temperature_celsius);
 
 /**
  * Calculate calibrated airspeed (CAS) from indicated airspeed (IAS).
@@ -105,7 +105,7 @@ __EXPORT float calc_TAS_from_CAS(float speed_indicated, float pressure_ambient,
  * @param scale scale from IAS to CAS (accounting for instrument and pitot position erros)
  * @return CAS in m/s
  */
-__EXPORT float calc_CAS_from_IAS(float speed_indicated, float scale);
+__EXPORT ଦଶମିକ calc_CAS_from_IAS(ଦଶମିକ speed_indicated, ଦଶମିକ scale);
 
 
 /**
@@ -119,7 +119,7 @@ __EXPORT float calc_CAS_from_IAS(float speed_indicated, float scale);
  * @param temperature_celsius air temperature in degrees Celsius
  * @return true airspeed in m/s
  */
-__EXPORT float calc_TAS(float total_pressure, float static_pressure, float temperature_celsius);
+__EXPORT ଦଶମିକ calc_TAS(ଦଶମିକ total_pressure, ଦଶମିକ static_pressure, ଦଶମିକ temperature_celsius);
 
 /**
 * Calculates air density.
@@ -135,9 +135,9 @@ __EXPORT float calc_TAS(float total_pressure, float static_pressure, float tempe
  * @param air_density air density [kg/m3]
  * @return calibrated airspeed [m/s]
  */
-__EXPORT float calc_calibrated_from_true_airspeed(float speed_true, float air_density);
+__EXPORT ଦଶମିକ calc_calibrated_from_true_airspeed(ଦଶମିକ speed_true, ଦଶମିକ air_density);
 
-__EXPORT float calc_true_from_calibrated_airspeed(float speed_calibrated, float air_density);
+__EXPORT ଦଶମିକ calc_true_from_calibrated_airspeed(ଦଶମିକ speed_calibrated, ଦଶମିକ air_density);
 
 __END_DECLS
 

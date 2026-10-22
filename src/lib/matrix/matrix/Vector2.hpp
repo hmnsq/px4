@@ -8,34 +8,34 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#ଅନ୍ତର୍ଭାଵ "Vector.hpp"
 
-namespace matrix
+ନାମାକାଶ matrix
 {
 
 template<typename Type>
-class Vector2 : public Vector<Type, 2>
+ଶ୍ରେଣୀ Vector2 : ସର୍ବସାଧାରଣ Vector<Type, 2>
 {
-public:
+ସର୍ବସାଧାରଣ:
 
 	using Matrix21 = Matrix<Type, 2, 1>;
 	using Vector3 = Vector<Type, 3>;
 
-	Vector2() = default;
+	Vector2() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
 
-	Vector2(const Matrix21 &other) :
+	Vector2(ଅଚଳ Matrix21 &other) :
 		Vector<Type, 2>(other)
 	{
 	}
 
-	explicit Vector2(const Type data_[2]) :
+	explicit Vector2(ଅଚଳ Type data_[2]) :
 		Vector<Type, 2>(data_)
 	{
 	}
 
 	Vector2(Type x, Type y)
 	{
-		Vector2 &v(*this);
+		Vector2 &v(*ଏହି);
 		v(0) = x;
 		v(1) = y;
 	}
@@ -43,66 +43,66 @@ public:
 	using base = Vector<Type, 2>;
 	using base::base;
 
-	explicit Vector2(const Vector3 &other)
+	explicit Vector2(ଅଚଳ Vector3 &other)
 	{
-		Vector2 &v(*this);
+		Vector2 &v(*ଏହି);
 		v(0) = other(0);
 		v(1) = other(1);
 	}
 
-	Type cross(const Matrix21 &b) const
+	Type cross(ଅଚଳ Matrix21 &b) ଅଚଳ
 	{
-		const Vector2 &a(*this);
-		return a(0) * b(1, 0) - a(1) * b(0, 0);
+		ଅଚଳ Vector2 &a(*ଏହି);
+		ଫେରନ୍ତୁ a(0) * b(1, 0) - a(1) * b(0, 0);
 	}
 
 	/**
 	 * Override matrix ops so Vector2 type is returned
 	 */
 
-	Vector2 operator+(Vector2 other) const
+	Vector2 operator+(Vector2 other) ଅଚଳ
 	{
-		return Matrix21::operator+(other);
+		ଫେରନ୍ତୁ Matrix21::operator+(other);
 	}
 
-	Vector2 operator+(Type scalar) const
+	Vector2 operator+(Type scalar) ଅଚଳ
 	{
-		return Matrix21::operator+(scalar);
+		ଫେରନ୍ତୁ Matrix21::operator+(scalar);
 	}
 
-	Vector2 operator-(Vector2 other) const
+	Vector2 operator-(Vector2 other) ଅଚଳ
 	{
-		return Matrix21::operator-(other);
+		ଫେରନ୍ତୁ Matrix21::operator-(other);
 	}
 
-	Vector2 operator-(Type scalar) const
+	Vector2 operator-(Type scalar) ଅଚଳ
 	{
-		return Matrix21::operator-(scalar);
+		ଫେରନ୍ତୁ Matrix21::operator-(scalar);
 	}
 
-	Vector2 operator-() const
+	Vector2 operator-() ଅଚଳ
 	{
-		return Matrix21::operator-();
+		ଫେରନ୍ତୁ Matrix21::operator-();
 	}
 
-	Vector2 operator*(Type scalar) const
+	Vector2 operator*(Type scalar) ଅଚଳ
 	{
-		return Matrix21::operator*(scalar);
+		ଫେରନ୍ତୁ Matrix21::operator*(scalar);
 	}
 
-	Type operator*(Vector2 b) const
+	Type operator*(Vector2 b) ଅଚଳ
 	{
-		return Vector<Type, 2>::operator*(b);
+		ଫେରନ୍ତୁ Vector<Type, 2>::operator*(b);
 	}
 
-	Type operator%(const Matrix21 &b) const
+	Type operator%(ଅଚଳ Matrix21 &b) ଅଚଳ
 	{
-		return (*this).cross(b);
+		ଫେରନ୍ତୁ (*ଏହି).cross(b);
 	}
 
 };
 
-using Vector2f = Vector2<float>;
-using Vector2d = Vector2<double>;
+using Vector2f = Vector2<ଦଶମିକ>;
+using Vector2d = Vector2<ଦ୍ୱିଗୁଣ>;
 
 } // namespace matrix

@@ -31,10 +31,10 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ଅନ୍ତର୍ଭାଵ <gtest/gtest.h>
+#ଅନ୍ତର୍ଭାଵ <matrix/math.hpp>
 
-using namespace matrix;
+using ନାମାକାଶ matrix;
 
 TEST(MatrixVector3Test, Vector3)
 {
@@ -44,10 +44,10 @@ TEST(MatrixVector3Test, Vector3)
 	EXPECT_EQ(c, Vector3f(0, 0, 1));
 	c = a % b;
 	EXPECT_EQ(c, Vector3f(0, 0, 1));
-	Matrix<float, 3, 1> d(c);
+	Matrix<ଦଶମିକ, 3, 1> d(c);
 	Vector3f e(d);
 	EXPECT_EQ(e, d);
-	float data[] = {4, 5, 6};
+	ଦଶମିକ data[] = {4, 5, 6};
 	Vector3f f(data);
 	EXPECT_EQ(f, Vector3f(4, 5, 6));
 
@@ -64,7 +64,7 @@ TEST(MatrixVector3Test, Vector3)
 	g3.xy() = g2;
 	EXPECT_EQ(g3, Vector3f(1, 3, 17));
 
-	const Vector3f g4(g3);
+	ଅଚଳ Vector3f g4(g3);
 	Vector2f g5 = g4.xy();
 	EXPECT_EQ(g5, g2);
 	EXPECT_EQ(g2, Vector2f(g4.xy()));

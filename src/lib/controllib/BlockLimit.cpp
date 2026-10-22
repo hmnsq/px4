@@ -37,24 +37,24 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <float.h>
 
-#include "blocks.hpp"
+#ଅନ୍ତର୍ଭାଵ "blocks.hpp"
 
-namespace control
+ନାମାକାଶ control
 {
 
-float BlockLimit::update(float input)
+ଦଶମିକ BlockLimit::update(ଦଶମିକ ନିବେଶ)
 {
-	if (input > getMax()) {
-		input = _max.get();
+	ଯଦି (ନିବେଶ > getMax()) {
+		ନିବେଶ = _max.get();
 
-	} else if (input < getMin()) {
-		input = getMin();
+	} ଅନ୍ୟଥା ଯଦି (ନିବେଶ < getMin()) {
+		ନିବେଶ = getMin();
 	}
 
-	return input;
+	ଫେରନ୍ତୁ ନିବେଶ;
 }
 
 } // namespace control

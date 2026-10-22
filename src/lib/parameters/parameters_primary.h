@@ -33,19 +33,19 @@
 
 #pragma once
 
-#include "param.h"
+#ଅନ୍ତର୍ଭାଵ "param.h"
 
-struct param_primary_counters {
-	uint32_t set_value_request_received;
-	uint32_t set_value_response_sent;
+ସଂରଚନା param_primary_counters {
+	uint32_t set_ମୂଲ୍ୟ_request_received;
+	uint32_t set_ମୂଲ୍ୟ_response_sent;
 	uint32_t reset_sent;
-	uint32_t set_value_request_sent;
-	uint32_t set_value_response_received;
+	uint32_t set_ମୂଲ୍ୟ_request_sent;
+	uint32_t set_ମୂଲ୍ୟ_response_received;
 	uint32_t set_used_received;
 };
 
-void param_primary_init();
-void param_primary_set_value(param_t param, const void *val);
-void param_primary_reset(param_t param);
-void param_primary_reset_all();
-void param_primary_get_counters(struct param_primary_counters *cnt);
+ଶୂନ୍ୟ param_primary_init();
+ଶୂନ୍ୟ param_primary_set_ମୂଲ୍ୟ(param_t param, ଅଚଳ ଶୂନ୍ୟ *val);
+ଶୂନ୍ୟ param_primary_reset(param_t param);
+ଶୂନ୍ୟ param_primary_reset_all();
+ଶୂନ୍ୟ param_primary_get_counters(ସଂରଚନା param_primary_counters *cnt);

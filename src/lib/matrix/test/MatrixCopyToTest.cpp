@@ -31,68 +31,68 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ଅନ୍ତର୍ଭାଵ <gtest/gtest.h>
+#ଅନ୍ତର୍ଭାଵ <matrix/math.hpp>
 
-using namespace matrix;
+using ନାମାକାଶ matrix;
 
 TEST(MatrixCopyToTest, CopyTo)
 {
 	// Vector3 copyTo
-	const Vector3f v(1, 2, 3);
-	float dst3[3] = {};
+	ଅଚଳ Vector3f v(1, 2, 3);
+	ଦଶମିକ dst3[3] = {};
 	v.copyTo(dst3);
 
-	for (size_t i = 0; i < 3; i++) {
+	ପାଇଁ (size_t i = 0; i < 3; i++) {
 		EXPECT_FLOAT_EQ(v(i), dst3[i]);
 	}
 
 	// Quaternion copyTo
 	Quatf q(1, 2, 3, 4);
-	float dst4[4] = {};
+	ଦଶମିକ dst4[4] = {};
 	q.copyTo(dst4);
 
-	for (size_t i = 0; i < 4; i++) {
+	ପାଇଁ (size_t i = 0; i < 4; i++) {
 		EXPECT_FLOAT_EQ(q(i), dst4[i]);
 	}
 
 	// Matrix copyTo
-	Matrix<float, 2, 3> A;
+	Matrix<ଦଶମିକ, 2, 3> A;
 	A(0, 0) = 1;
 	A(0, 1) = 2;
 	A(0, 2) = 3;
 	A(1, 0) = 4;
 	A(1, 1) = 5;
 	A(1, 2) = 6;
-	float array_A[6] = {};
+	ଦଶମିକ array_A[6] = {};
 	A.copyTo(array_A);
-	float array_row[6] = {1, 2, 3, 4, 5, 6};
+	ଦଶମିକ array_row[6] = {1, 2, 3, 4, 5, 6};
 
-	for (size_t i = 0; i < 6; i++) {
+	ପାଇଁ (size_t i = 0; i < 6; i++) {
 		EXPECT_FLOAT_EQ(array_A[i], array_row[i]);
 	}
 
 	// Matrix copyToColumnMajor
 	A.copyToColumnMajor(array_A);
-	float array_column[6] = {1, 4, 2, 5, 3, 6};
+	ଦଶମିକ array_column[6] = {1, 4, 2, 5, 3, 6};
 
-	for (size_t i = 0; i < 6; i++) {
+	ପାଇଁ (size_t i = 0; i < 6; i++) {
 		EXPECT_FLOAT_EQ(array_A[i], array_column[i]);
 	}
 
 	// Slice copyTo
-	float dst5[2] = {};
+	ଦଶମିକ dst5[2] = {};
 	v.slice<2, 1>(0, 0).copyTo(dst5);
 
-	for (size_t i = 0; i < 2; i++) {
+	ପାଇଁ (size_t i = 0; i < 2; i++) {
 		EXPECT_FLOAT_EQ(v(i), dst5[i]);
 	}
 
-	float subarray_A[4] = {};
+	ଦଶମିକ subarray_A[4] = {};
 	A.slice<2, 2>(0, 0).copyToColumnMajor(subarray_A);
-	float subarray_column[4] = {1, 4, 2, 5};
+	ଦଶମିକ subarray_column[4] = {1, 4, 2, 5};
 
-	for (size_t i = 0; i < 4; i++) {
+	ପାଇଁ (size_t i = 0; i < 4; i++) {
 		EXPECT_FLOAT_EQ(subarray_A[i], subarray_column[i]);
 	}
 }

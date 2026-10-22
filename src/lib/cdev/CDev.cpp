@@ -37,24 +37,24 @@
  * Character device base class.
  */
 
-#include "CDev.hpp"
+#ଅନ୍ତର୍ଭାଵ "CDev.hpp"
 
-#include <cstring>
+#ଅନ୍ତର୍ଭାଵ <cstring>
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/log.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/posix.h>
 
-namespace cdev
+ନାମାକାଶ cdev
 {
 
-CDev::CDev(const char *devname) :
+CDev::CDev(ଅଚଳ ଅକ୍ଷର *devname) :
 	_devname(devname)
 {
 	PX4_DEBUG("CDev::CDev");
 
-	int ret = px4_sem_init(&_lock, 0, 1);
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ret = px4_sem_init(&_lock, 0, 1);
 
-	if (ret != 0) {
+	ଯଦି (ret != 0) {
 		PX4_DEBUG("SEM INIT FAIL: ret %d", ret);
 	}
 }
@@ -63,146 +63,146 @@ CDev::~CDev()
 {
 	PX4_DEBUG("CDev::~CDev");
 
-	if (_registered) {
+	ଯଦି (_registered) {
 		unregister_driver(_devname);
 	}
 
-	if (_pollset) {
+	ଯଦି (_pollset) {
 		delete[](_pollset);
 	}
 
 	px4_sem_destroy(&_lock);
 }
 
-int
-CDev::register_class_devname(const char *class_devname)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+CDev::register_class_devname(ଅଚଳ ଅକ୍ଷର *class_devname)
 {
 	PX4_DEBUG("CDev::register_class_devname %s", class_devname);
 
-	if (class_devname == nullptr) {
-		return -EINVAL;
+	ଯଦି (class_devname == nullptr) {
+		ଫେରନ୍ତୁ -EINVAL;
 	}
 
-	int class_instance = 0;
-	int ret = -ENOSPC;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା class_instance = 0;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ret = -ENOSPC;
 
-	while (class_instance < 4) {
-		char name[32];
-		snprintf(name, sizeof(name), "%s%d", class_devname, class_instance);
-		ret = register_driver(name, &fops_ref(), 0666, (void *)this);
+	ଯେତେବେଳେ (class_instance < 4) {
+		ଅକ୍ଷର name[32];
+		snprintf(name, ଆକାର(name), "%s%d", class_devname, class_instance);
+		ret = register_driver(name, &fops_ref(), 0666, (ଶୂନ୍ୟ *)ଏହି);
 
-		if (ret == OK) {
-			break;
+		ଯଦି (ret == OK) {
+			ଭାଙ୍ଗ;
 		}
 
 		class_instance++;
 	}
 
-	if (class_instance == 4) {
-		return ret;
+	ଯଦି (class_instance == 4) {
+		ଫେରନ୍ତୁ ret;
 	}
 
-	return class_instance;
+	ଫେରନ୍ତୁ class_instance;
 }
 
-int
-CDev::unregister_class_devname(const char *class_devname, unsigned class_instance)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+CDev::unregister_class_devname(ଅଚଳ ଅକ୍ଷର *class_devname, unsigned class_instance)
 {
 	PX4_DEBUG("CDev::unregister_class_devname");
 
-	char name[32];
-	snprintf(name, sizeof(name), "%s%u", class_devname, class_instance);
-	return unregister_driver(name);
+	ଅକ୍ଷର name[32];
+	snprintf(name, ଆକାର(name), "%s%u", class_devname, class_instance);
+	ଫେରନ୍ତୁ unregister_driver(name);
 }
 
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 CDev::init()
 {
 	PX4_DEBUG("CDev::init");
 
-	int ret = PX4_OK;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ret = PX4_OK;
 
 	// now register the driver
-	if (_devname != nullptr) {
-		ret = register_driver(_devname, &fops_ref(), 0666, (void *)this);
+	ଯଦି (_devname != nullptr) {
+		ret = register_driver(_devname, &fops_ref(), 0666, (ଶୂନ୍ୟ *)ଏହି);
 
-		if (ret == PX4_OK) {
-			_registered = true;
+		ଯଦି (ret == PX4_OK) {
+			_registered = ସତ୍ୟ;
 		}
 
-	} else {
+	} ଅନ୍ୟଥା {
 		ret = -ENODEV;
 	}
 
-	return ret;
+	ଫେରନ୍ତୁ ret;
 }
 
 /*
  * Default implementations of the character device interface
  */
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 CDev::open(file_t *filep)
 {
 	PX4_DEBUG("CDev::open");
-	int ret = PX4_OK;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ret = PX4_OK;
 
 	lock();
 	/* increment the open count */
-	_open_count++;
+	open_ଗଣନା++;
 
-	if (_open_count == 1) {
+	ଯଦି (open_ଗଣନା == 1) {
 
 		/* first-open callback may decline the open */
 		ret = open_first(filep);
 
-		if (ret != PX4_OK) {
-			_open_count--;
+		ଯଦି (ret != PX4_OK) {
+			open_ଗଣନା--;
 		}
 	}
 
 	unlock();
 
-	return ret;
+	ଫେରନ୍ତୁ ret;
 }
 
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 CDev::close(file_t *filep)
 {
 	PX4_DEBUG("CDev::close");
-	int ret = PX4_OK;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ret = PX4_OK;
 
 	lock();
 
-	if (_open_count > 0) {
+	ଯଦି (open_ଗଣନା > 0) {
 		/* decrement the open count */
-		_open_count--;
+		open_ଗଣନା--;
 
 		/* callback cannot decline the close */
-		if (_open_count == 0) {
+		ଯଦି (open_ଗଣନା == 0) {
 			ret = close_last(filep);
 		}
 
-	} else {
+	} ଅନ୍ୟଥା {
 		ret = -EBADF;
 	}
 
 	unlock();
 
-	return ret;
+	ଫେରନ୍ତୁ ret;
 }
 
-int
-CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, ତାର୍କିକ setup)
 {
 	PX4_DEBUG("CDev::Poll %s", setup ? "setup" : "teardown");
-	int ret = PX4_OK;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ret = PX4_OK;
 
-	if (setup) {
+	ଯଦି (setup) {
 		/*
 		 * Save the file pointer in the pollfd for the subclass'
 		 * benefit.
 		 */
-		fds->priv = (void *)filep;
+		fds->priv = (ଶୂନ୍ୟ *)filep;
 		PX4_DEBUG("CDev::poll: fds->priv = %p", filep);
 
 		/*
@@ -213,50 +213,50 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 		/*
 		 * Try to store the fds for later use and handle array resizing.
 		 */
-		while ((ret = store_poll_waiter(fds)) == -ENFILE) {
+		ଯେତେବେଳେ ((ret = store_poll_waiter(fds)) == -ENFILE) {
 
 			// No free slot found. Resize the pollset. This is expensive, but it's only needed initially.
 
-			if (_max_pollwaiters >= 256 / 2) { //_max_pollwaiters is uint8_t
+			ଯଦି (_max_pollwaiters >= 256 / 2) { //_max_pollwaiters is uint8_t
 				ret = -ENOMEM;
-				break;
+				ଭାଙ୍ଗ;
 			}
 
-			const uint8_t new_count = _max_pollwaiters > 0 ? _max_pollwaiters * 2 : 1;
+			ଅଚଳ uint8_t new_ଗଣନା = _max_pollwaiters > 0 ? _max_pollwaiters * 2 : 1;
 			px4_pollfd_struct_t **prev_pollset = _pollset;
 
 #ifdef __PX4_NUTTX
 			// malloc uses a semaphore, we need to call it enabled IRQ's
 			px4_leave_critical_section(flags);
 #endif
-			px4_pollfd_struct_t **new_pollset = new px4_pollfd_struct_t *[new_count];
+			px4_pollfd_struct_t **new_pollset = ନୂତନ px4_pollfd_struct_t *[new_ଗଣନା];
 
 #ifdef __PX4_NUTTX
 			flags = px4_enter_critical_section();
 #endif
 
-			if (prev_pollset == _pollset) {
+			ଯଦି (prev_pollset == _pollset) {
 				// no one else updated the _pollset meanwhile, so we're good to go
-				if (!new_pollset) {
+				ଯଦି (!new_pollset) {
 					ret = -ENOMEM;
-					break;
+					ଭାଙ୍ଗ;
 				}
 
-				if (_max_pollwaiters > 0) {
-					memset(new_pollset + _max_pollwaiters, 0, sizeof(px4_pollfd_struct_t *) * (new_count - _max_pollwaiters));
-					memcpy(new_pollset, _pollset, sizeof(px4_pollfd_struct_t *) * _max_pollwaiters);
+				ଯଦି (_max_pollwaiters > 0) {
+					memset(new_pollset + _max_pollwaiters, 0, ଆକାର(px4_pollfd_struct_t *) * (new_ଗଣନା - _max_pollwaiters));
+					memcpy(new_pollset, _pollset, ଆକାର(px4_pollfd_struct_t *) * _max_pollwaiters);
 				}
 
 				_pollset = new_pollset;
 				_pollset[_max_pollwaiters] = fds;
-				_max_pollwaiters = new_count;
+				_max_pollwaiters = new_ଗଣନା;
 
 				// free the previous _pollset (we need to unlock here which is fine because we don't access _pollset anymore)
 #ifdef __PX4_NUTTX
 				px4_leave_critical_section(flags);
 #endif
 
-				if (prev_pollset) {
+				ଯଦି (prev_pollset) {
 					delete[](prev_pollset);
 				}
 
@@ -266,7 +266,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 
 				// Success
 				ret = PX4_OK;
-				break;
+				ଭାଙ୍ଗ;
 			}
 
 #ifdef __PX4_NUTTX
@@ -279,7 +279,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 #endif
 		}
 
-		if (ret == PX4_OK) {
+		ଯଦି (ret == PX4_OK) {
 
 			/*
 			 * Check to see whether we should send a poll notification
@@ -290,13 +290,13 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 			/* yes? invoke the callback */
 #ifdef __PX4_NUTTX
 
-			if (fds->revents != 0 && fds->cb != nullptr) {
+			ଯଦି (fds->revents != 0 && fds->cb != nullptr) {
 				fds->cb(fds);
 			}
 
-#else
+#ଅନ୍ୟଥା
 
-			if (fds->revents != 0) {
+			ଯଦି (fds->revents != 0) {
 				px4_sem_post(fds->sem);
 			}
 
@@ -306,7 +306,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 
 		ATOMIC_LEAVE;
 
-	} else {
+	} ଅନ୍ୟଥା {
 		ATOMIC_ENTER;
 		/*
 		 * Handle a teardown request.
@@ -315,10 +315,10 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 		ATOMIC_LEAVE;
 	}
 
-	return ret;
+	ଫେରନ୍ତୁ ret;
 }
 
-void
+ଶୂନ୍ୟ
 CDev::poll_notify(px4_pollevent_t events)
 {
 	PX4_DEBUG("CDev::poll_notify events = %0x", events);
@@ -326,8 +326,8 @@ CDev::poll_notify(px4_pollevent_t events)
 	/* lock against poll() as well as other wakeups */
 	ATOMIC_ENTER;
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (nullptr != _pollset[i]) {
+	ପାଇଁ (unsigned i = 0; i < _max_pollwaiters; i++) {
+		ଯଦି (nullptr != _pollset[i]) {
 			poll_notify_one(_pollset[i], events);
 		}
 	}
@@ -335,7 +335,7 @@ CDev::poll_notify(px4_pollevent_t events)
 	ATOMIC_LEAVE;
 }
 
-void
+ଶୂନ୍ୟ
 CDev::poll_notify_one(px4_pollfd_struct_t *fds, px4_pollevent_t events)
 {
 	PX4_DEBUG("CDev::poll_notify_one");
@@ -347,54 +347,54 @@ CDev::poll_notify_one(px4_pollfd_struct_t *fds, px4_pollevent_t events)
 
 #ifdef __PX4_NUTTX
 
-	if (fds->revents != 0 && fds->cb != nullptr) {
+	ଯଦି (fds->revents != 0 && fds->cb != nullptr) {
 		fds->cb(fds);
 	}
 
-#else
+#ଅନ୍ୟଥା
 
-	if (fds->revents != 0) {
+	ଯଦି (fds->revents != 0) {
 		px4_sem_post(fds->sem);
 	}
 
 #endif
 }
 
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 CDev::store_poll_waiter(px4_pollfd_struct_t *fds)
 {
 	// Look for a free slot.
 	PX4_DEBUG("CDev::store_poll_waiter");
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (nullptr == _pollset[i]) {
+	ପାଇଁ (unsigned i = 0; i < _max_pollwaiters; i++) {
+		ଯଦି (nullptr == _pollset[i]) {
 
 			/* save the pollfd */
 			_pollset[i] = fds;
 
-			return PX4_OK;
+			ଫେରନ୍ତୁ PX4_OK;
 		}
 	}
 
-	return -ENFILE;
+	ଫେରନ୍ତୁ -ENFILE;
 }
 
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 CDev::remove_poll_waiter(px4_pollfd_struct_t *fds)
 {
 	PX4_DEBUG("CDev::remove_poll_waiter");
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (fds == _pollset[i]) {
+	ପାଇଁ (unsigned i = 0; i < _max_pollwaiters; i++) {
+		ଯଦି (fds == _pollset[i]) {
 
 			_pollset[i] = nullptr;
-			return PX4_OK;
+			ଫେରନ୍ତୁ PX4_OK;
 
 		}
 	}
 
 	PX4_DEBUG("poll: bad fd state");
-	return -EINVAL;
+	ଫେରନ୍ତୁ -EINVAL;
 }
 
 } // namespace cdev

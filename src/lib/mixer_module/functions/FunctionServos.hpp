@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ଅନ୍ତର୍ଭାଵ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/actuator_servos.h>
+#ଅନ୍ତର୍ଭାଵ <uORB/topics/actuator_servos.h>
 
 /**
  * Functions: Servo1 ... ServoMax
  */
-class FunctionServos : public FunctionProviderBase
+ଶ୍ରେଣୀ FunctionServos : ସର୍ବସାଧାରଣ FunctionProviderBase
 {
-public:
-	static_assert(actuator_servos_s::NUM_CONTROLS == (int)OutputFunction::ServoMax - (int)OutputFunction::Servo1 + 1,
+ସର୍ବସାଧାରଣ:
+	static_assert(actuator_servos_s::ଅଙ୍କ_CONTROLS == (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)OutputFunction::ServoMax - (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)OutputFunction::Servo1 + 1,
 		      "Unexpected num servos");
 
-	FunctionServos(const Context &context) :
+	FunctionServos(ଅଚଳ Context &context) :
 		_topic(&context.work_item, ORB_ID(actuator_servos))
 	{
-		for (int i = 0; i < actuator_servos_s::NUM_CONTROLS; ++i) {
+		ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < actuator_servos_s::ଅଙ୍କ_CONTROLS; ++i) {
 			_data.control[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionServos(context); }
+	ସ୍ଥିର FunctionProviderBase *allocate(ଅଚଳ Context &context) { ଫେରନ୍ତୁ ନୂତନ FunctionServos(context); }
 
-	void update() override { _topic.update(&_data); }
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Servo1]; }
+	ଶୂନ୍ୟ update() override { _topic.update(&_data); }
+	ଦଶମିକ value(OutputFunction func) override { ଫେରନ୍ତୁ _data.control[(ପୂର୍ଣ୍ଣସଂଖ୍ୟା)func - (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)OutputFunction::Servo1]; }
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { ଫେରନ୍ତୁ &_topic; }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 0.f; }
+	ଦଶମିକ default_Failsafe_ମୂଲ୍ୟ(OutputFunction func) ଅଚଳ override { ଫେରନ୍ତୁ 0.f; }
 
-private:
+ବ୍ୟକ୍ତିଗତ:
 	uORB::SubscriptionCallbackWorkItem _topic;
 	actuator_servos_s _data{};
 };

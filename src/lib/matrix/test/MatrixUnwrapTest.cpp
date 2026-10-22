@@ -1,24 +1,24 @@
-#include <matrix/math.hpp>
-#include <gtest/gtest.h>
+#ଅନ୍ତର୍ଭାଵ <matrix/math.hpp>
+#ଅନ୍ତର୍ଭାଵ <gtest/gtest.h>
 
-using namespace matrix;
+using ନାମାକାଶ matrix;
 
 TEST(MatrixUnwrapTest, UnwrapFloats)
 {
-	const float M_TWO_PI_F = float(M_PI_F * 2);
+	ଅଚଳ ଦଶମିକ M_TWO_PI_F = ଦଶମିକ(M_PI_F * 2);
 
-	float unwrapped_angles[6] = {0.0, 0.25, 0.5, 0.75, 1.0, 1.25};
-	float wrapped_angles[6] = {0.0, 0.25, 0.5, -0.25, 0.0, 0.25};
+	ଦଶମିକ unwrapped_angles[6] = {0.0, 0.25, 0.5, 0.75, 1.0, 1.25};
+	ଦଶମିକ wrapped_angles[6] = {0.0, 0.25, 0.5, -0.25, 0.0, 0.25};
 
-	for (int i = 0; i < 6; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < 6; i++) {
 		unwrapped_angles[i] *= M_TWO_PI_F;
 		wrapped_angles[i] *= M_TWO_PI_F;
 	}
 
 	// positive unwrapping
-	float last_angle = wrapped_angles[0];
+	ଦଶମିକ last_angle = wrapped_angles[0];
 
-	for (int i = 1; i < 6; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 1; i < 6; i++) {
 		last_angle = unwrap_pi(last_angle, wrapped_angles[i]);
 		EXPECT_FLOAT_EQ(last_angle, unwrapped_angles[i]);
 	}
@@ -26,7 +26,7 @@ TEST(MatrixUnwrapTest, UnwrapFloats)
 	// negative unwrapping
 	last_angle = -wrapped_angles[0];
 
-	for (int i = 1; i < 6; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 1; i < 6; i++) {
 		last_angle = unwrap_pi(last_angle, -wrapped_angles[i]);
 		EXPECT_FLOAT_EQ(last_angle, -unwrapped_angles[i]);
 	}
@@ -34,20 +34,20 @@ TEST(MatrixUnwrapTest, UnwrapFloats)
 
 TEST(MatrixUnwrapTest, UnwrapDoubles)
 {
-	const double M_TWO_PI = M_PI * 2;
+	ଅଚଳ ଦ୍ୱିଗୁଣ M_TWO_PI = M_PI * 2;
 
-	double unwrapped_angles[6] = {0.0, 0.25, 0.5, 0.75, 1.0, 1.25};
-	double wrapped_angles[6] = {0.0, 0.25, 0.5, -0.25, 0.0, 0.25};
+	ଦ୍ୱିଗୁଣ unwrapped_angles[6] = {0.0, 0.25, 0.5, 0.75, 1.0, 1.25};
+	ଦ୍ୱିଗୁଣ wrapped_angles[6] = {0.0, 0.25, 0.5, -0.25, 0.0, 0.25};
 
-	for (int i = 0; i < 6; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < 6; i++) {
 		unwrapped_angles[i] *= M_TWO_PI;
 		wrapped_angles[i] *= M_TWO_PI;
 	}
 
 	// positive unwrapping
-	double last_angle = wrapped_angles[0];
+	ଦ୍ୱିଗୁଣ last_angle = wrapped_angles[0];
 
-	for (int i = 1; i < 6; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 1; i < 6; i++) {
 		last_angle = unwrap_pi(last_angle, wrapped_angles[i]);
 		EXPECT_DOUBLE_EQ(last_angle, unwrapped_angles[i]);
 	}
@@ -55,7 +55,7 @@ TEST(MatrixUnwrapTest, UnwrapDoubles)
 	// negative unwrapping
 	last_angle = -wrapped_angles[0];
 
-	for (int i = 1; i < 6; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 1; i < 6; i++) {
 		last_angle = unwrap_pi(last_angle, -wrapped_angles[i]);
 		EXPECT_DOUBLE_EQ(last_angle, -unwrapped_angles[i]);
 	}

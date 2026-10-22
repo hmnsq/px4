@@ -38,41 +38,41 @@
  *
  */
 
-#include "SPI.hpp"
+#ଅନ୍ତର୍ଭାଵ "SPI.hpp"
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/i2c_spi_buses.h>
+#ଅନ୍ତର୍ଭାଵ <fcntl.h>
+#ଅନ୍ତର୍ଭାଵ <unistd.h>
+#ଅନ୍ତର୍ଭାଵ <sys/ioctl.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/px4_config.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/i2c_spi_buses.h>
 
-static int (*register_interrupt_callback_func)(int (*)(int, void *, void *), void *arg) = NULL;
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା (*register_interrupt_callback_func)(ପୂର୍ଣ୍ଣସଂଖ୍ୟା (*)(ପୂର୍ଣ୍ଣସଂଖ୍ୟା, ଶୂନ୍ୟ *, ଶୂନ୍ୟ *), ଶୂନ୍ୟ *arg) = ଖାଲି;
 
-int px4_arch_gpiosetevent(spi_drdy_gpio_t pin, bool r, bool f, bool e, int (*func)(int, void *, void *), void *arg)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା px4_arch_gpiosetevent(spi_drdy_gpio_t pin, ତାର୍କିକ r, ତାର୍କିକ f, ତାର୍କିକ e, ପୂର୍ଣ୍ଣସଂଖ୍ୟା (*func)(ପୂର୍ଣ୍ଣସଂଖ୍ୟା, ଶୂନ୍ୟ *, ଶୂନ୍ୟ *), ଶୂନ୍ୟ *arg)
 {
 
-	if ((register_interrupt_callback_func != NULL) && (func != NULL) && (arg != NULL)) {
+	ଯଦି ((register_interrupt_callback_func != ଖାଲି) && (func != ଖାଲି) && (arg != ଖାଲି)) {
 		PX4_INFO("Register interrupt %p %p %p", register_interrupt_callback_func, func, arg);
-		return register_interrupt_callback_func(func, arg);
+		ଫେରନ୍ତୁ register_interrupt_callback_func(func, arg);
 	}
 
-	return -1;
+	ଫେରନ୍ତୁ -1;
 }
 
-void register_interrupt_callback_initalizer(int (*func)(int (*)(int, void *, void *), void *arg))
+ଶୂନ୍ୟ register_interrupt_callback_initalizer(ପୂର୍ଣ୍ଣସଂଖ୍ୟା (*func)(ପୂର୍ଣ୍ଣସଂଖ୍ୟା (*)(ପୂର୍ଣ୍ଣସଂଖ୍ୟା, ଶୂନ୍ୟ *, ଶୂନ୍ୟ *), ଶୂନ୍ୟ *arg))
 {
 	register_interrupt_callback_func = func;
 }
 
-namespace device
+ନାମାକାଶ device
 {
 
-SPI::_config_spi_bus_func_t  SPI::_config_spi_bus  = NULL;
-SPI::_spi_transfer_func_t    SPI::_spi_transfer    = NULL;
+SPI::_config_spi_bus_func_t  SPI::_config_spi_bus  = ଖାଲି;
+SPI::_spi_transfer_func_t    SPI::_spi_transfer    = ଖାଲି;
 
 pthread_mutex_t SPI::_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
+SPI::SPI(uint8_t device_type, ଅଚଳ ଅକ୍ଷର *name, ପୂର୍ଣ୍ଣସଂଖ୍ୟା bus, uint32_t device, ଗଣନା spi_mode_e mode, uint32_t frequency) :
 	CDev(name, nullptr)
 	// CDev(name, nullptr),
 	// _device(device),
@@ -90,7 +90,7 @@ SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum s
 	PX4_INFO("*** SPI Device ID 0x%x %d", _device_id.devid, _device_id.devid);
 }
 
-SPI::SPI(const I2CSPIDriverConfig &config)
+SPI::SPI(ଅଚଳ I2CSPIDriverConfig &config)
 	: SPI(config.devid_driver_index, config.module_name, config.bus, config.spi_devid, config.spi_mode,
 	      config.bus_frequency)
 {
@@ -99,89 +99,89 @@ SPI::SPI(const I2CSPIDriverConfig &config)
 
 SPI::~SPI()
 {
-	if (_fd >= 0) {
+	ଯଦି (_fd >= 0) {
 		::close(_fd);
 		_fd = -1;
 	}
 }
 
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 SPI::init()
 {
-	int ret = PX4_ERROR;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ret = PX4_ERROR;
 
-	if (_config_spi_bus == NULL) {
+	ଯଦି (_config_spi_bus == ଖାଲି) {
 		PX4_ERR("NULL spi init function");
-		return ret;
+		ଫେରନ୍ତୁ ret;
 	}
 
 	pthread_mutex_lock(&_mutex);
 	_fd = _config_spi_bus();
 	pthread_mutex_unlock(&_mutex);
 
-	if (_fd == PX4_ERROR) {
+	ଯଦି (_fd == PX4_ERROR) {
 		PX4_ERR("spi init failed");
-		return ret;
+		ଫେରନ୍ତୁ ret;
 	}
 
 	/* call the probe function to check whether the device is present */
 	ret = probe();
 
-	if (ret != OK) {
+	ଯଦି (ret != OK) {
 		PX4_INFO("SPI probe failed");
-		return ret;
+		ଫେରନ୍ତୁ ret;
 	}
 
 	/* do base class init, which will create the device node, etc. */
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ଯଦି (ret != OK) {
 		PX4_ERR("cdev init failed");
-		return ret;
+		ଫେରନ୍ତୁ ret;
 	}
 
 	/* tell the world where we are */
 	PX4_INFO("on SPI bus %d", get_device_bus());
 
-	return PX4_OK;
+	ଫେରନ୍ତୁ PX4_OK;
 }
 
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 {
-	int ret = PX4_ERROR;
-	unsigned retry_count = 1;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ret = PX4_ERROR;
+	unsigned retry_ଗଣନା = 1;
 
-	if ((_fd != PX4_ERROR) && (_spi_transfer != NULL)) {
-		do {
+	ଯଦି ((_fd != PX4_ERROR) && (_spi_transfer != ଖାଲି)) {
+		କର {
 			// PX4_DEBUG("SPI transfer out %p in %p len %u", send, recv, len);
 
-			if (_spi_transfer != NULL) {
+			ଯଦି (_spi_transfer != ଖାଲି) {
 				pthread_mutex_lock(&_mutex);
 
-				if (recv) { ret = _spi_transfer(_fd, send, recv, len); }
+				ଯଦି (recv) { ret = _spi_transfer(_fd, send, recv, len); }
 
-				else { ret = _spi_transfer(_fd, send, send, len); }
+				ଅନ୍ୟଥା { ret = _spi_transfer(_fd, send, send, len); }
 
 				pthread_mutex_unlock(&_mutex);
 
-			} else {
+			} ଅନ୍ୟଥା {
 				PX4_ERR("SPI transfer function is NULL");
 			}
 
-			if (ret != PX4_ERROR) { break; }
+			ଯଦି (ret != PX4_ERROR) { ଭାଙ୍ଗ; }
 
-		} while (retry_count++ < _retries);
+		} ଯେତେବେଳେ (retry_ଗଣନା++ < _retries);
 	}
 
-	return ret;
+	ଫେରନ୍ତୁ ret;
 }
 
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 {
 	// Not supported on SLPI
-	return PX4_ERROR;
+	ଫେରନ୍ତୁ PX4_ERROR;
 }
 
 } // namespace device

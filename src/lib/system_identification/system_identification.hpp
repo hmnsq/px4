@@ -39,64 +39,64 @@
 
 #pragma once
 
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <matrix/matrix/math.hpp>
-#include <mathlib/mathlib.h>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
-#include <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <lib/mathlib/math/filter/AlphaFilter.hpp>
+#ଅନ୍ତର୍ଭାଵ <matrix/matrix/math.hpp>
+#ଅନ୍ତର୍ଭାଵ <mathlib/mathlib.h>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/filter/LowPassFilter2p.hpp>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
 
-#include "arx_rls.hpp"
+#ଅନ୍ତର୍ଭାଵ "arx_rls.hpp"
 
-class SystemIdentification final
+ଶ୍ରେଣୀ SystemIdentification final
 {
-public:
-	SystemIdentification() = default;
-	~SystemIdentification() = default;
+ସର୍ବସାଧାରଣ:
+	SystemIdentification() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	~SystemIdentification() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
 
-	void reset(const matrix::Vector<float, 5> &id_state_init = {});
-	void update(float u, float y); // update filters and model
-	void update(); // update model only (to be called after updateFilters)
-	void updateFilters(float u, float y);
-	bool areFiltersInitialized() const { return _are_filters_initialized; }
-	void updateFitness();
-	const matrix::Vector<float, 5> &getCoefficients() const { return _rls.getCoefficients(); }
-	const matrix::Vector<float, 5> getVariances() const { return _rls.getVariances(); }
-	const matrix::Vector<float, 5> &getDiffEstimate() const { return _rls.getDiffEstimate(); }
-	float getFitness() const { return _fitness_lpf.getState(); }
-	float getInnovation() const { return _rls.getInnovation(); }
+	ଶୂନ୍ୟ reset(ଅଚଳ matrix::Vector<ଦଶମିକ, 5> &id_state_init = {});
+	ଶୂନ୍ୟ update(ଦଶମିକ u, ଦଶମିକ y); // update filters and model
+	ଶୂନ୍ୟ update(); // update model only (to be called after updateFilters)
+	ଶୂନ୍ୟ updateFilters(ଦଶମିକ u, ଦଶମିକ y);
+	ତାର୍କିକ areFiltersInitialized() ଅଚଳ { ଫେରନ୍ତୁ _are_filters_initialized; }
+	ଶୂନ୍ୟ updateFitness();
+	ଅଚଳ matrix::Vector<ଦଶମିକ, 5> &getCoefficients() ଅଚଳ { ଫେରନ୍ତୁ _rls.getCoefficients(); }
+	ଅଚଳ matrix::Vector<ଦଶମିକ, 5> getVariances() ଅଚଳ { ଫେରନ୍ତୁ _rls.getVariances(); }
+	ଅଚଳ matrix::Vector<ଦଶମିକ, 5> &getDiffEstimate() ଅଚଳ { ଫେରନ୍ତୁ _rls.getDiffEstimate(); }
+	ଦଶମିକ getFitness() ଅଚଳ { ଫେରନ୍ତୁ _fitness_lpf.getState(); }
+	ଦଶମିକ getInnovation() ଅଚଳ { ଫେରନ୍ତୁ _rls.getInnovation(); }
 
-	void setLpfCutoffFrequency(float sample_freq, float cutoff)
+	ଶୂନ୍ୟ setLpfCutoffFrequency(ଦଶମିକ sample_freq, ଦଶମିକ cutoff)
 	{
 		_u_lpf.set_cutoff_frequency(sample_freq, cutoff);
 		_y_lpf.set_cutoff_frequency(sample_freq, cutoff);
 	}
-	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
+	ଶୂନ୍ୟ setHpfCutoffFrequency(ଦଶମିକ sample_freq, ଦଶମିକ cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	void setForgettingFactor(float time_constant, float dt) { _rls.setForgettingFactor(time_constant, dt); }
-	void setFitnessLpfTimeConstant(float time_constant, float dt)
+	ଶୂନ୍ୟ setForgettingFactor(ଦଶମିକ time_constant, ଦଶମିକ dt) { _rls.setForgettingFactor(time_constant, dt); }
+	ଶୂନ୍ୟ setFitnessLpfTimeConstant(ଦଶମିକ time_constant, ଦଶମିକ dt)
 	{
 		_fitness_lpf.setParameters(dt, time_constant);
 		_dt = dt;
 	}
 
-	float getFilteredInputData() const { return _u_hpf; }
-	float getFilteredOutputData() const { return _y_hpf; }
+	ଦଶମିକ get_Filtered_ନିବେଶ_Data() ଅଚଳ { ଫେରନ୍ତୁ _u_hpf; }
+	ଦଶମିକ getFilteredOutputData() ଅଚଳ { ଫେରନ୍ତୁ _y_hpf; }
 
-private:
+ବ୍ୟକ୍ତିଗତ:
 	ArxRls<2, 2, 1> _rls;
-	math::LowPassFilter2p<float> _u_lpf{400.f, 30.f};
-	math::LowPassFilter2p<float> _y_lpf{400.f, 30.f};
+	math::ତଳ_Pass_Filter2p<ଦଶମିକ> _u_lpf{400.f, 30.f};
+	math::ତଳ_Pass_Filter2p<ଦଶମିକ> _y_lpf{400.f, 30.f};
 
 	//TODO: replace by HighPassFilter class
-	float _alpha_hpf{0.f};
-	float _u_hpf{0.f};
-	float _y_hpf{0.f};
+	ଦଶମିକ _alpha_hpf{0.f};
+	ଦଶମିକ _u_hpf{0.f};
+	ଦଶମିକ _y_hpf{0.f};
 
-	float _u_prev{0.f};
-	float _y_prev{0.f};
+	ଦଶମିକ _u_prev{0.f};
+	ଦଶମିକ _y_prev{0.f};
 
-	bool _are_filters_initialized{false};
+	ତାର୍କିକ _are_filters_initialized{ମିଥ୍ୟା};
 
-	AlphaFilter<float> _fitness_lpf;
-	float _dt{0.1f};
+	AlphaFilter<ଦଶମିକ> _fitness_lpf;
+	ଦଶମିକ _dt{0.1f};
 };

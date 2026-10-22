@@ -41,14 +41,14 @@
 
 #pragma once
 
-#include "SlewRate.hpp"
+#ଅନ୍ତର୍ଭାଵ "SlewRate.hpp"
 
 template<typename Type>
-class SlewRateYaw : public SlewRate<Type>
+ଶ୍ରେଣୀ SlewRateYaw : ସର୍ବସାଧାରଣ SlewRate<Type>
 {
-public:
-	SlewRateYaw() = default;
-	~SlewRateYaw() = default;
+ସର୍ବସାଧାରଣ:
+	SlewRateYaw() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	~SlewRateYaw() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
 
 	/**
 	 * Update slewrate with yaw wrapping [-pi,pi]
@@ -56,9 +56,9 @@ public:
 	 * @param deltatime time in seconds since last update
 	 * @return actual value that complies with the slew rate
 	 */
-	Type update(const Type new_value, const float deltatime)
+	Type update(ଅଚଳ Type new_ମୂଲ୍ୟ, ଅଚଳ ଦଶମିକ deltatime)
 	{
-		const Type d_wrapped = matrix::wrap_pi(new_value - this->_value);
-		return matrix::wrap_pi(SlewRate<Type>::update(this->_value + d_wrapped, deltatime));
+		ଅଚଳ Type d_wrapped = matrix::wrap_pi(new_ମୂଲ୍ୟ - ଏହି->ମୂଲ୍ୟ_2);
+		ଫେରନ୍ତୁ matrix::wrap_pi(SlewRate<Type>::update(ଏହି->ମୂଲ୍ୟ_2 + d_wrapped, deltatime));
 	}
 };

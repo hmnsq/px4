@@ -40,18 +40,18 @@
 #ifndef _DEVICE_DEVICE_HPP
 #define _DEVICE_DEVICE_HPP
 
-#include <cstdio>
+#ଅନ୍ତର୍ଭାଵ <cstdio>
 
 /*
  * Includes here should only cover the needs of the framework definitions.
  */
-#include <px4_platform_common/i2c.h>
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/spi.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/i2c.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/log.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/px4_config.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/posix.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/spi.h>
 
-#include <drivers/drv_sensor.h>
+#ଅନ୍ତର୍ଭାଵ <drivers/drv_sensor.h>
 
 #define DEVICE_LOG(FMT, ...) PX4_LOG_NAMED(_name, FMT, ##__VA_ARGS__)
 #define DEVICE_DEBUG(FMT, ...) PX4_LOG_NAMED_COND(_name, _debug_enabled, FMT, ##__VA_ARGS__)
@@ -59,7 +59,7 @@
 /**
  * Namespace encapsulating all device framework classes, functions and data.
  */
-namespace device
+ନାମାକାଶ device
 {
 
 /**
@@ -69,20 +69,20 @@ namespace device
  * inferred; onboard chips on a Shared bus must call set_external(false) via -I/-s).
  * UAVCAN, serial, MAVLink → external. Simulation → internal.
  */
-inline bool device_is_external(uint32_t device_id);
+ଧାଡ଼ିଭିତରେ ତାର୍କିକ device_is_external(uint32_t device_id);
 
 /**
  * Fundamental base class for all physical drivers (I2C, SPI).
  *
  * This class provides the basic driver template for I2C and SPI devices
  */
-class __EXPORT Device
+ଶ୍ରେଣୀ __EXPORT Device
 {
-public:
+ସର୍ବସାଧାରଣ:
 
 	// no copy, assignment, move, move assignment
-	Device(const Device &) = delete;
-	Device &operator=(const Device &) = delete;
+	Device(ଅଚଳ Device &) = delete;
+	Device &operator=(ଅଚଳ Device &) = delete;
 	Device(Device &&) = delete;
 	Device &operator=(Device &&) = delete;
 
@@ -91,7 +91,7 @@ public:
 	 *
 	 * Public so that anonymous devices can be destroyed.
 	 */
-	virtual ~Device() = default;
+	ଆଭାସୀ ~Device() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
 
 	/*
 	 * Direct access methods.
@@ -102,7 +102,7 @@ public:
 	 *
 	 * @return	OK if the driver initialized OK, negative errno otherwise;
 	 */
-	virtual int	init() { return PX4_OK; }
+	ଆଭାସୀ ପୂର୍ଣ୍ଣସଂଖ୍ୟା	init() { ଫେରନ୍ତୁ PX4_OK; }
 
 	/**
 	 * Read directly from the device.
@@ -114,7 +114,7 @@ public:
 	 * @param count		The number of items to read.
 	 * @return		The number of items read on success, negative errno otherwise.
 	 */
-	virtual int	read(unsigned address, void *data, unsigned count) { return -ENODEV; }
+	ଆଭାସୀ ପୂର୍ଣ୍ଣସଂଖ୍ୟା	ପଠ(unsigned address, ଶୂନ୍ୟ *data, unsigned ଗଣନା_2) { ଫେରନ୍ତୁ -ENODEV; }
 
 	/**
 	 * Write directly to the device.
@@ -126,7 +126,7 @@ public:
 	 * @param count		The number of items to write.
 	 * @return		The number of items written on success, negative errno otherwise.
 	 */
-	virtual int	write(unsigned address, void *data, unsigned count) { return -ENODEV; }
+	ଆଭାସୀ ପୂର୍ଣ୍ଣସଂଖ୍ୟା	ଲିଖ(unsigned address, ଶୂନ୍ୟ *data, unsigned ଗଣନା_2) { ଫେରନ୍ତୁ -ENODEV; }
 
 	/**
 	 * Read a register from the device.
@@ -134,7 +134,7 @@ public:
 	 * @param		The register to read.
 	 * @return		The value that was read.
 	 */
-	virtual uint8_t read_reg(unsigned reg) { return -ENODEV; }
+	ଆଭାସୀ uint8_t read_reg(unsigned reg) { ଫେରନ୍ତୁ -ENODEV; }
 
 	/**
 	 * Write a register in the device.
@@ -143,7 +143,7 @@ public:
 	 * @param value		The new value to write.
 	 * @return		OK on success, negative errno otherwise.
 	 */
-	virtual int write_reg(unsigned reg, uint8_t value) { return -ENODEV; }
+	ଆଭାସୀ ପୂର୍ଣ୍ଣସଂଖ୍ୟା write_reg(unsigned reg, uint8_t value) { ଫେରନ୍ତୁ -ENODEV; }
 
 	/**
 	 * Perform a device-specific operation.
@@ -152,10 +152,10 @@ public:
 	 * @param arg		An argument to the operation.
 	 * @return		Negative errno on error, OK or positive value on success.
 	 */
-	virtual int	ioctl(unsigned operation, unsigned &arg) { return -ENODEV; }
+	ଆଭାସୀ ପୂର୍ଣ୍ଣସଂଖ୍ୟା	ioctl(unsigned operation, unsigned &arg) { ଫେରନ୍ତୁ -ENODEV; }
 
 	/** Device bus types for DEVID */
-	enum DeviceBusType {
+	ଗଣନା DeviceBusType {
 		DeviceBusType_UNKNOWN = 0,
 		DeviceBusType_I2C     = 1,
 		DeviceBusType_SPI     = 2,
@@ -171,52 +171,52 @@ public:
 	  which makes it possible to transport over the MAVLink
 	  parameter protocol without loss of information.
 	 */
-	struct DeviceStructure {
+	ସଂରଚନା DeviceStructure {
 		DeviceBusType bus_type : 3;
 		uint8_t bus: 5;    // which instance of the bus type
 		uint8_t address;   // address on the bus (eg. I2C address)
 		uint8_t devtype;   // device class specific device type
 	};
 
-	union DeviceId {
-		struct DeviceStructure devid_s;
+	ସଂଘ DeviceId {
+		ସଂରଚନା DeviceStructure devid_s;
 		uint32_t devid{0};
 	};
 
-	uint32_t get_device_id() const { return _device_id.devid; }
+	uint32_t get_device_id() ଅଚଳ { ଫେରନ୍ତୁ _device_id.devid; }
 
 	/**
 	 * Return the bus type the device is connected to.
 	 *
 	 * @return The bus type
 	 */
-	DeviceBusType get_device_bus_type() const { return _device_id.devid_s.bus_type; }
-	void          set_device_bus_type(DeviceBusType bus_type) { _device_id.devid_s.bus_type = bus_type; }
+	DeviceBusType get_device_bus_type() ଅଚଳ { ଫେରନ୍ତୁ _device_id.devid_s.bus_type; }
+	ଶୂନ୍ୟ          set_device_bus_type(DeviceBusType bus_type) { _device_id.devid_s.bus_type = bus_type; }
 
-	static const char *get_device_bus_string(DeviceBusType bus)
+	ସ୍ଥିର ଅଚଳ ଅକ୍ଷର *get_device_bus_string(DeviceBusType bus)
 	{
-		switch (bus) {
-		case DeviceBusType_I2C:
-			return "I2C";
+		ବାଛ (bus) {
+		ସ୍ଥିତି DeviceBusType_I2C:
+			ଫେରନ୍ତୁ "I2C";
 
-		case DeviceBusType_SPI:
-			return "SPI";
+		ସ୍ଥିତି DeviceBusType_SPI:
+			ଫେରନ୍ତୁ "SPI";
 
-		case DeviceBusType_UAVCAN:
-			return "UAVCAN";
+		ସ୍ଥିତି DeviceBusType_UAVCAN:
+			ଫେରନ୍ତୁ "UAVCAN";
 
-		case DeviceBusType_SIMULATION:
-			return "SIMULATION";
+		ସ୍ଥିତି DeviceBusType_SIMULATION:
+			ଫେରନ୍ତୁ "SIMULATION";
 
-		case DeviceBusType_SERIAL:
-			return "SERIAL";
+		ସ୍ଥିତି DeviceBusType_SERIAL:
+			ଫେରନ୍ତୁ "SERIAL";
 
-		case DeviceBusType_MAVLINK:
-			return "MAVLINK";
+		ସ୍ଥିତି DeviceBusType_MAVLINK:
+			ଫେରନ୍ତୁ "MAVLINK";
 
-		case DeviceBusType_UNKNOWN:
-		default:
-			return "UNKNOWN";
+		ସ୍ଥିତି DeviceBusType_UNKNOWN:
+		ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+			ଫେରନ୍ତୁ "UNKNOWN";
 		}
 	}
 
@@ -225,24 +225,24 @@ public:
 	 *
 	 * @return The bus ID
 	 */
-	uint8_t get_device_bus() const { return _device_id.devid_s.bus; }
-	void    set_device_bus(uint8_t bus) { _device_id.devid_s.bus = bus; }
+	uint8_t get_device_bus() ଅଚଳ { ଫେରନ୍ତୁ _device_id.devid_s.bus; }
+	ଶୂନ୍ୟ    set_device_bus(uint8_t bus) { _device_id.devid_s.bus = bus; }
 
 	/**
 	 * Return the bus address of the device.
 	 *
 	 * @return The bus address
 	 */
-	uint8_t	get_device_address() const { return _device_id.devid_s.address; }
-	void	set_device_address(int address) { _device_id.devid_s.address = address; }
+	uint8_t	get_device_address() ଅଚଳ { ଫେରନ୍ତୁ _device_id.devid_s.address; }
+	ଶୂନ୍ୟ	set_device_address(ପୂର୍ଣ୍ଣସଂଖ୍ୟା address) { _device_id.devid_s.address = address; }
 
 	/**
 	 * Return the device type
 	 *
 	 * @return The device type
 	 */
-	uint8_t	get_device_type() const { return _device_id.devid_s.devtype; }
-	void	set_device_type(uint8_t devtype) { _device_id.devid_s.devtype = devtype; }
+	uint8_t	get_device_type() ଅଚଳ { ଫେରନ୍ତୁ _device_id.devid_s.devtype; }
+	ଶୂନ୍ୟ	set_device_type(uint8_t devtype) { _device_id.devid_s.devtype = devtype; }
 
 	/**
 	 * Print decoded device id string to a buffer.
@@ -252,17 +252,17 @@ public:
 	 * @param id	                        The device id.
 	 * @param return                        number of bytes written
 	 */
-	static int device_id_print_buffer(char *buffer, int length, uint32_t id)
+	ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା device_id_print_buffer(ଅକ୍ଷର *buffer, ପୂର୍ଣ୍ଣସଂଖ୍ୟା length, uint32_t id)
 	{
 		DeviceId dev_id{};
 		dev_id.devid = id;
 
-		int num_written = snprintf(buffer, length, "Type: 0x%02X, %s:%d (0x%02X)", dev_id.devid_s.devtype,
+		ପୂର୍ଣ୍ଣସଂଖ୍ୟା ଅଙ୍କ_written = snprintf(buffer, length, "Type: 0x%02X, %s:%d (0x%02X)", dev_id.devid_s.devtype,
 					   get_device_bus_string(dev_id.devid_s.bus_type), dev_id.devid_s.bus, dev_id.devid_s.address);
 
 		buffer[length - 1] = 0; // ensure 0-termination
 
-		return num_written;
+		ଫେରନ୍ତୁ ଅଙ୍କ_written;
 	}
 
 	/**
@@ -270,23 +270,23 @@ public:
 	 *
 	 * I2C/SPI drivers set this from -I/-s vs -X/-S. Otherwise falls back to device_is_external().
 	 */
-	bool external() const { return _external_declared ? _external : device_is_external(_device_id.devid); }
+	ତାର୍କିକ external() ଅଚଳ { ଫେରନ୍ତୁ _external_declared ? _external : device_is_external(_device_id.devid); }
 
-	void set_external(bool external) { _external = external; _external_declared = true; }
+	ଶୂନ୍ୟ set_external(ତାର୍କିକ external) { _external = external; _external_declared = ସତ୍ୟ; }
 
-protected:
-	union DeviceId	_device_id {};            	/**< device identifier information */
+ସୁରକ୍ଷିତ:
+	ସଂଘ DeviceId	_device_id {};            	/**< device identifier information */
 
-	bool		_external{false};
-	bool		_external_declared{false};
+	ତାର୍କିକ		_external{ମିଥ୍ୟା};
+	ତାର୍କିକ		_external_declared{ମିଥ୍ୟା};
 
-	const char	*_name{nullptr};		/**< driver name */
-	bool		_debug_enabled{false};		/**< if true, debug messages are printed */
+	ଅଚଳ ଅକ୍ଷର	*_name{nullptr};		/**< driver name */
+	ତାର୍କିକ		_debug_enabled{ମିଥ୍ୟା};		/**< if true, debug messages are printed */
 
 	Device() = delete;
-	explicit Device(const char *name) : _name(name) {}
+	explicit Device(ଅଚଳ ଅକ୍ଷର *name) : _name(name) {}
 
-	Device(uint8_t devtype, const char *name, DeviceBusType bus_type, uint8_t bus, uint8_t address) : _name(name)
+	Device(uint8_t devtype, ଅଚଳ ଅକ୍ଷର *name, DeviceBusType bus_type, uint8_t bus, uint8_t address) : _name(name)
 	{
 		set_device_type(devtype);
 		set_device_bus_type(bus_type);
@@ -300,37 +300,37 @@ protected:
  * Inline so that no caller has to link the kernel-only drivers__device library: in a
  * protected build that would pull the kernel into the userspace image.
  */
-inline bool device_is_external(uint32_t device_id)
+ଧାଡ଼ିଭିତରେ ତାର୍କିକ device_is_external(uint32_t device_id)
 {
 	Device::DeviceId id{};
 	id.devid = device_id;
 
-	switch (id.devid_s.bus_type) {
-	case Device::DeviceBusType_I2C:
-#if defined(CONFIG_I2C)
-		return px4_i2c_bus_topology(id.devid_s.bus) != BusTopology::Internal;
-#else
-		return true;
+	ବାଛ (id.devid_s.bus_type) {
+	ସ୍ଥିତି Device::DeviceBusType_I2C:
+#ଯଦି defined(CONFIG_I2C)
+		ଫେରନ୍ତୁ px4_i2c_bus_topology(id.devid_s.bus) != BusTopology::Internal;
+#ଅନ୍ୟଥା
+		ଫେରନ୍ତୁ ସତ୍ୟ;
 #endif // CONFIG_I2C
 
-	case Device::DeviceBusType_SPI:
-#if defined(CONFIG_SPI)
-		return px4_spi_bus_topology(id.devid_s.bus) != BusTopology::Internal;
-#else
-		return true;
+	ସ୍ଥିତି Device::DeviceBusType_SPI:
+#ଯଦି defined(CONFIG_SPI)
+		ଫେରନ୍ତୁ px4_spi_bus_topology(id.devid_s.bus) != BusTopology::Internal;
+#ଅନ୍ୟଥା
+		ଫେରନ୍ତୁ ସତ୍ୟ;
 #endif // CONFIG_SPI
 
-	case Device::DeviceBusType_SIMULATION:
-		return false;
+	ସ୍ଥିତି Device::DeviceBusType_SIMULATION:
+		ଫେରନ୍ତୁ ମିଥ୍ୟା;
 
-	case Device::DeviceBusType_UAVCAN:
-	case Device::DeviceBusType_SERIAL:
-	case Device::DeviceBusType_MAVLINK:
-	case Device::DeviceBusType_UNKNOWN:
-		return true;
+	ସ୍ଥିତି Device::DeviceBusType_UAVCAN:
+	ସ୍ଥିତି Device::DeviceBusType_SERIAL:
+	ସ୍ଥିତି Device::DeviceBusType_MAVLINK:
+	ସ୍ଥିତି Device::DeviceBusType_UNKNOWN:
+		ଫେରନ୍ତୁ ସତ୍ୟ;
 	}
 
-	return true;
+	ଫେରନ୍ତୁ ସତ୍ୟ;
 }
 
 } // namespace device

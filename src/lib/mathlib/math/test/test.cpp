@@ -37,100 +37,100 @@
  * Test library code
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <stdio.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
 
-#include <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
 
-#include "test.hpp"
+#ଅନ୍ତର୍ଭାଵ "test.hpp"
 
-bool __EXPORT equal(float a, float b, float epsilon)
+ତାର୍କିକ __EXPORT equal(ଦଶମିକ a, ଦଶମିକ b, ଦଶମିକ epsilon)
 {
-	float diff = fabsf(a - b);
+	ଦଶମିକ diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	ଯଦି (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", ଦ୍ୱିଗୁଣ(a), ଦ୍ୱିଗୁଣ(b));
+		ଫେରନ୍ତୁ ମିଥ୍ୟା;
 
-	} else { return true; }
+	} ଅନ୍ୟଥା { ଫେରନ୍ତୁ ସତ୍ୟ; }
 }
 
-bool __EXPORT greater_than(float a, float b)
+ତାର୍କିକ __EXPORT greater_than(ଦଶମିକ a, ଦଶମିକ b)
 {
-	if (a > b) {
-		return true;
+	ଯଦି (a > b) {
+		ଫେରନ୍ତୁ ସତ୍ୟ;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ଅନ୍ୟଥା {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", ଦ୍ୱିଗୁଣ(a), ଦ୍ୱିଗୁଣ(b));
+		ଫେରନ୍ତୁ ମିଥ୍ୟା;
 	}
 }
 
-bool __EXPORT less_than(float a, float b)
+ତାର୍କିକ __EXPORT less_than(ଦଶମିକ a, ଦଶମିକ b)
 {
-	if (a < b) {
-		return true;
+	ଯଦି (a < b) {
+		ଫେରନ୍ତୁ ସତ୍ୟ;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ଅନ୍ୟଥା {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", ଦ୍ୱିଗୁଣ(a), ଦ୍ୱିଗୁଣ(b));
+		ଫେରନ୍ତୁ ମିଥ୍ୟା;
 	}
 }
 
-bool __EXPORT greater_than_or_equal(float a, float b)
+ତାର୍କିକ __EXPORT greater_than_or_equal(ଦଶମିକ a, ଦଶମିକ b)
 {
-	if (a >= b) {
-		return true;
+	ଯଦି (a >= b) {
+		ଫେରନ୍ତୁ ସତ୍ୟ;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ଅନ୍ୟଥା {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", ଦ୍ୱିଗୁଣ(a), ଦ୍ୱିଗୁଣ(b));
+		ଫେରନ୍ତୁ ମିଥ୍ୟା;
 	}
 }
 
-bool __EXPORT less_than_or_equal(float a, float b)
+ତାର୍କିକ __EXPORT less_than_or_equal(ଦଶମିକ a, ଦଶମିକ b)
 {
-	if (a <= b) {
-		return true;
+	ଯଦି (a <= b) {
+		ଫେରନ୍ତୁ ସତ୍ୟ;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} ଅନ୍ୟଥା {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", ଦ୍ୱିଗୁଣ(a), ଦ୍ୱିଗୁଣ(b));
+		ଫେରନ୍ତୁ ମିଥ୍ୟା;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+ଶୂନ୍ୟ __EXPORT float2SigExp(ଅଚଳ ଦଶମିକ &ଅଙ୍କ, ଦଶମିକ &sig, ପୂର୍ଣ୍ଣସଂଖ୍ୟା &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	ଯଦି (!PX4_ISFINITE(ଅଙ୍କ)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		ଫେରନ୍ତୁ;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	ଯଦି (fabsf(ଅଙ୍କ) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		ଫେରନ୍ତୁ;
 	}
 
-	exp = log10f(fabsf(num));
+	exp = log10f(fabsf(ଅଙ୍କ));
 
-	if (exp > 0) {
+	ଯଦି (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} ଅନ୍ୟଥା {
 		exp = floor(exp);
 	}
 
-	sig = num;
+	sig = ଅଙ୍କ;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	ଯଦି (exp > 0) {
+		ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} ଅନ୍ୟଥା {
+		ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

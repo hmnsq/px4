@@ -31,10 +31,10 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ଅନ୍ତର୍ଭାଵ <gtest/gtest.h>
+#ଅନ୍ତର୍ଭାଵ <matrix/math.hpp>
 
-using namespace matrix;
+using ନାମାକାଶ matrix;
 
 TEST(MatrixHelperTest, SignFloat)
 {

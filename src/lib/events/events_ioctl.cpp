@@ -37,32 +37,32 @@
  * Interface to send events from user space.
  */
 
-#include <px4_platform/board_ctrl.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform/board_ctrl.h>
 
-#include <errno.h>
+#ଅନ୍ତର୍ଭାଵ <errno.h>
 
-#include "events_ioctl.h"
+#ଅନ୍ତର୍ଭାଵ "events_ioctl.h"
 
-static int events_ioctl(unsigned int cmd, unsigned long arg)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା events_ioctl(unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା cmd, unsigned long arg)
 {
-	int ret = OK;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ret = OK;
 
-	switch (cmd) {
-	case EVENTSIOCSEND: {
+	ବାଛ (cmd) {
+	ସ୍ଥିତି EVENTSIOCSEND: {
 			eventiocsend_t *data = (eventiocsend_t *)arg;
 			events::send(data->event);
 		}
-		break;
+		ଭାଙ୍ଗ;
 
-	default:
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
 		ret = -ENOTTY;
-		break;
+		ଭାଙ୍ଗ;
 	}
 
-	return ret;
+	ଫେରନ୍ତୁ ret;
 }
 
-void events_ioctl_init(void)
+ଶୂନ୍ୟ events_ioctl_init(ଶୂନ୍ୟ)
 {
 	px4_register_boardct_ioctl(_EVENTSIOCBASE, events_ioctl);
 }

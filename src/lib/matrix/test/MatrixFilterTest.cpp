@@ -31,29 +31,29 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/filter.hpp>
-#include <matrix/Vector.hpp>
+#ଅନ୍ତର୍ଭାଵ <gtest/gtest.h>
+#ଅନ୍ତର୍ଭାଵ <matrix/filter.hpp>
+#ଅନ୍ତର୍ଭାଵ <matrix/Vector.hpp>
 
-using namespace matrix;
+using ନାମାକାଶ matrix;
 
 TEST(MatrixFilterTest, Filter)
 {
-	const size_t n_x = 6;
-	const size_t n_y = 5;
-	SquareMatrix<float, n_x> P = eye<float, n_x>();
-	SquareMatrix<float, n_y> R = eye<float, n_y>();
-	Matrix<float, n_y, n_x> C;
+	ଅଚଳ size_t n_x = 6;
+	ଅଚଳ size_t n_y = 5;
+	SquareMatrix<ଦଶମିକ, n_x> P = eye<ଦଶମିକ, n_x>();
+	SquareMatrix<ଦଶମିକ, n_y> R = eye<ଦଶମିକ, n_y>();
+	Matrix<ଦଶମିକ, n_y, n_x> C;
 	C.setIdentity();
-	float data[] = {1, 2, 3, 4, 5};
-	Vector<float, n_y> r(data);
+	ଦଶମିକ data[] = {1, 2, 3, 4, 5};
+	Vector<ଦଶମିକ, n_y> r(data);
 
-	Vector<float, n_x> dx;
-	SquareMatrix<float, n_x> dP;
-	float beta = 0;
-	kalman_correct<float, 6, 5>(P, C, R, r, dx, dP, beta);
+	Vector<ଦଶମିକ, n_x> dx;
+	SquareMatrix<ଦଶମିକ, n_x> dP;
+	ଦଶମିକ beta = 0;
+	kalman_correct<ଦଶମିକ, 6, 5>(P, C, R, r, dx, dP, beta);
 
-	float data_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
-	Vector<float, n_x> dx_check(data_check);
+	ଦଶମିକ data_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
+	Vector<ଦଶମିକ, n_x> dx_check(data_check);
 	EXPECT_EQ(dx, dx_check);
 }

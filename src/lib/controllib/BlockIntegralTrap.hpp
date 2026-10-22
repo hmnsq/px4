@@ -39,20 +39,20 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <assert.h>
+#ଅନ୍ତର୍ଭାଵ <time.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/test/test.hpp>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/Block.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ଅନ୍ତର୍ଭାଵ "matrix/math.hpp"
 
-namespace control
+ନାମାକାଶ control
 {
 
 /**
@@ -63,27 +63,27 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegralTrap : public SuperBlock
+ଶ୍ରେଣୀ __EXPORT BlockIntegralTrap : ସର୍ବସାଧାରଣ SuperBlock
 {
-public:
+ସର୍ବସାଧାରଣ:
 // methods
-	BlockIntegralTrap(SuperBlock *parent, const char *name) :
+	BlockIntegralTrap(SuperBlock *parent, ଅଚଳ ଅକ୍ଷର *name) :
 		SuperBlock(parent, name),
 		_u(0),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegralTrap() = default;
-	float update(float input);
+		_limit(ଏହି, "") {}
+	ଆଭାସୀ ~BlockIntegralTrap() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	ଦଶମିକ update(ଦଶମିକ ନିବେଶ);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
+	ଦଶମିକ getU() {ଫେରନ୍ତୁ _u;}
+	ଦଶମିକ getY() {ଫେରନ୍ତୁ _y;}
+	ଦଶମିକ getMax() {ଫେରନ୍ତୁ _limit.getMax();}
+	ଶୂନ୍ୟ setU(ଦଶମିକ u) {_u = u;}
+	ଶୂନ୍ୟ setY(ଦଶମିକ y) {_y = y;}
+ସୁରକ୍ଷିତ:
 // attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
+	ଦଶମିକ _u; /**< previous input */
+	ଦଶମିକ _y; /**< previous output */
 	BlockLimitSym _limit; /**< limiter */
 };
 

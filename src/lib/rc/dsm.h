@@ -41,45 +41,45 @@
 
 #pragma once
 
-#include <stdint.h>
+#ଅନ୍ତର୍ଭାଵ <stdint.h>
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/px4_config.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
 
 __BEGIN_DECLS
 
 #define DSM_FRAME_SIZE		16		/**< DSM frame size in bytes */
 #define DSM_FRAME_CHANNELS	7		/**< Max supported DSM channels per frame */
-#define DSM_MAX_CHANNEL_COUNT   20  /**< Max channel count of any DSM RC */
+#define DSM_MAX_CHANNEL_ଗଣନା   20  /**< Max channel count of any DSM RC */
 #define DSM_BUFFER_SIZE		(DSM_FRAME_SIZE + DSM_FRAME_SIZE / 2)
 
 
-#pragma pack(push, 1)
-typedef   uint8_t dsm_frame_t[DSM_BUFFER_SIZE]; /**< DSM dsm frame receive buffer */
-typedef   uint8_t dsm_buf_t[DSM_FRAME_SIZE * 2]; // Define working buffer
+#pragma pack(ଠେଲ, 1)
+ପ୍ରକାରବ୍ୟାଖ୍ୟା   uint8_t dsm_frame_t[DSM_BUFFER_SIZE]; /**< DSM dsm frame receive buffer */
+ପ୍ରକାରବ୍ୟାଖ୍ୟା   uint8_t dsm_buf_t[DSM_FRAME_SIZE * 2]; // Define working buffer
 
-typedef  struct dsm_decode_t {
+ପ୍ରକାରବ୍ୟାଖ୍ୟା  ସଂରଚନା dsm_decode_t {
 	dsm_frame_t frame;
 	dsm_buf_t buf;
 } dsm_decode_t;
 
-#pragma pack(pop)
+#pragma pack(କାଢ଼)
 
-__EXPORT int	dsm_init(const char *device);
-__EXPORT void	dsm_deinit(void);
-__EXPORT void	dsm_proto_init(void);
-__EXPORT int	dsm_config(int dsm_fd);
-__EXPORT bool	dsm_input(int dsm_fd, uint16_t *values, uint16_t *num_values, bool *dsm_11_bit, uint8_t *n_bytes,
-			  uint8_t **bytes, int8_t *rssi, unsigned *frame_drops, unsigned max_values);
+__EXPORT ପୂର୍ଣ୍ଣସଂଖ୍ୟା	dsm_init(ଅଚଳ ଅକ୍ଷର *device);
+__EXPORT ଶୂନ୍ୟ	dsm_deinit(ଶୂନ୍ୟ);
+__EXPORT ଶୂନ୍ୟ	dsm_proto_init(ଶୂନ୍ୟ);
+__EXPORT ପୂର୍ଣ୍ଣସଂଖ୍ୟା	dsm_config(ପୂର୍ଣ୍ଣସଂଖ୍ୟା dsm_fd);
+__EXPORT bool	dsm_ନିବେଶ(ପୂର୍ଣ୍ଣସଂଖ୍ୟା dsm_fd, uint16_t *ମୂଲ୍ୟଗୁଡ଼ିକ_2, uint16_t *ଅଙ୍କ_ମୂଲ୍ୟଗୁଡ଼ିକ, bool *dsm_11_bit, uint8_t *n_bytes,
+			  uint8_t **bytes, int8_t *rssi, unsigned *frame_drops, unsigned max_ମୂଲ୍ୟଗୁଡ଼ିକ);
 
-__EXPORT bool	dsm_parse(const uint64_t now, const uint8_t *frame, const unsigned len, uint16_t *values,
-			  uint16_t *num_values, bool *dsm_11_bit, unsigned *frame_drops, int8_t *rssi_percent, uint16_t max_channels);
+__EXPORT bool	dsm_parse(ଅଚଳ uint64_t now, ଅଚଳ uint8_t *frame, ଅଚଳ unsigned len, uint16_t *ମୂଲ୍ୟଗୁଡ଼ିକ_2,
+			  uint16_t *ଅଙ୍କ_ମୂଲ୍ୟଗୁଡ଼ିକ, bool *dsm_11_bit, unsigned *frame_drops, int8_t *rssi_percent, uint16_t max_channels);
 
 #ifdef SPEKTRUM_POWER
-__EXPORT void	dsm_bind(uint16_t cmd, int pulses);
+__EXPORT ଶୂନ୍ୟ	dsm_bind(uint16_t cmd, ପୂର୍ଣ୍ଣସଂଖ୍ୟା pulses);
 #endif
 
-enum DSM_CMD {							/* DSM bind states */
+ଗଣନା DSM_CMD {							/* DSM bind states */
 	DSM_CMD_BIND_POWER_DOWN = 0,
 	DSM_CMD_BIND_POWER_UP,
 	DSM_CMD_BIND_SET_RX_OUT,

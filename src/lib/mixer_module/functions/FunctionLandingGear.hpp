@@ -33,36 +33,36 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ଅନ୍ତର୍ଭାଵ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear.h>
+#ଅନ୍ତର୍ଭାଵ <uORB/topics/landing_gear.h>
 
 /**
  * Functions: Landing_Gear
  */
-class FunctionLandingGear : public FunctionProviderBase
+ଶ୍ରେଣୀ FunctionLandingGear : ସର୍ବସାଧାରଣ FunctionProviderBase
 {
-public:
-	FunctionLandingGear() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGear(); }
+ସର୍ବସାଧାରଣ:
+	FunctionLandingGear() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	ସ୍ଥିର FunctionProviderBase *allocate(ଅଚଳ Context &context) { ଫେରନ୍ତୁ ନୂତନ FunctionLandingGear(); }
 
-	void update() override
+	ଶୂନ୍ୟ update() override
 	{
 		landing_gear_s landing_gear;
 
-		if (_topic.update(&landing_gear)) {
-			if (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
+		ଯଦି (_topic.update(&landing_gear)) {
+			ଯଦି (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
 				_data = -1.f;
 
-			} else if (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
+			} ଅନ୍ୟଥା ଯଦି (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
 				_data = 1.f;
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	ଦଶମିକ value(OutputFunction func) override { ଫେରନ୍ତୁ _data; }
 
-private:
+ବ୍ୟକ୍ତିଗତ:
 	uORB::Subscription _topic{ORB_ID(landing_gear)};
-	float _data{-1.f};
+	ଦଶମିକ _data{-1.f};
 };

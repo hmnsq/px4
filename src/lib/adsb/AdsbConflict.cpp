@@ -31,74 +31,74 @@
  *
  ****************************************************************************/
 
-#include "AdsbConflict.h"
+#ଅନ୍ତର୍ଭାଵ "AdsbConflict.h"
 
-#include <cmath>
+#ଅନ୍ତର୍ଭାଵ <cmath>
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/log.h>
 
-bool AdsbConflict::valid_wgs84_coordinates(const double latitude, const double longitude)
+ତାର୍କିକ AdsbConflict::valid_wgs84_coordinates(ଅଚଳ ଦ୍ୱିଗୁଣ latitude, ଅଚଳ ଦ୍ୱିଗୁଣ longitude)
 {
-	return PX4_ISFINITE(latitude) && PX4_ISFINITE(longitude)
+	ଫେରନ୍ତୁ PX4_ISFINITE(latitude) && PX4_ISFINITE(longitude)
 	       && fabs(latitude) <= 90.0
 	       && fabs(longitude) <= 180.0;
 }
 
-bool AdsbConflict::calculate_daa_output(const daa_input_s &daa_input, detect_and_avoid_s &daa_output)
+ତାର୍କିକ AdsbConflict::calculate_daa_output(ଅଚଳ daa_ନିବେଶ_s &daa_ନିବେଶ, detect_and_avoid_s &daa_output)
 {
-	const transponder_report_s &transponder_report = daa_input.transponder_report;
+	ଅଚଳ transponder_report_s &transponder_report = daa_ନିବେଶ.transponder_report;
 
-	const matrix::Vector2d traffic_lat_lon{transponder_report.lat, transponder_report.lon};
+	ଅଚଳ matrix::Vector2d traffic_lat_lon{transponder_report.lat, transponder_report.lon};
 
-	if (!valid_wgs84_coordinates(daa_input.uav_lat_lon(0), daa_input.uav_lat_lon(1))
+	ଯଦି (!valid_wgs84_coordinates(daa_ନିବେଶ.uav_lat_lon(0), daa_ନିବେଶ.uav_lat_lon(1))
 	    || !valid_wgs84_coordinates(traffic_lat_lon(0), traffic_lat_lon(1))) {
 		PX4_DEBUG("DAA lib: invalid coordinates");
-		return false;
+		ଫେରନ୍ତୁ ମିଥ୍ୟା;
 	}
 
-	if (!PX4_ISFINITE(daa_input.uav_alt) || !PX4_ISFINITE(transponder_report.altitude)) {
+	ଯଦି (!PX4_ISFINITE(daa_ନିବେଶ.uav_alt) || !PX4_ISFINITE(transponder_report.altitude)) {
 		PX4_DEBUG("DAA lib: invalid altitude");
-		return false;
+		ଫେରନ୍ତୁ ମିଥ୍ୟା;
 	}
 
-	if (!(PX4_ISFINITE(transponder_report.hor_velocity) && transponder_report.hor_velocity >= 0.f
+	ଯଦି (!(PX4_ISFINITE(transponder_report.hor_velocity) && transponder_report.hor_velocity >= 0.f
 	      && PX4_ISFINITE(transponder_report.ver_velocity))) {
 		PX4_DEBUG("DAA lib: invalid traffic velocity");
-		return false;
+		ଫେରନ୍ତୁ ମିଥ୍ୟା;
 	}
 
-	if (!daa_input.uav_vel_ned.isAllFinite()) {
+	ଯଦି (!daa_ନିବେଶ.uav_vel_ned.isAllFinite()) {
 		PX4_DEBUG("DAA lib: invalid ownship velocity");
-		return false;
+		ଫେରନ୍ତୁ ମିଥ୍ୟା;
 	}
 
-#if !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
+#ଯଦି !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
 
-	if (!PX4_ISFINITE(transponder_report.heading)) {
+	ଯଦି (!PX4_ISFINITE(transponder_report.heading)) {
 		PX4_DEBUG("DAA lib: invalid traffic heading");
-		return false;
+		ଫେରନ୍ତୁ ମିଥ୍ୟା;
 	}
 
 #endif // !CONFIG_NAVIGATOR_ADSB_F3442
 
 	aircraft_state_s uav_state{};
-	uav_state.lat_lon = daa_input.uav_lat_lon;
-	uav_state.altitude = daa_input.uav_alt;
-	uav_state.velocity_ned = daa_input.uav_vel_ned;
+	uav_state.lat_lon = daa_ନିବେଶ.uav_lat_lon;
+	uav_state.altitude = daa_ନିବେଶ.uav_alt;
+	uav_state.velocity_ned = daa_ନିବେଶ.uav_vel_ned;
 
 	aircraft_state_s traffic_state{};
 	traffic_state.lat_lon = traffic_lat_lon;
 	traffic_state.altitude = transponder_report.altitude;
 	traffic_state.heading = transponder_report.heading;
 
-	if (PX4_ISFINITE(transponder_report.heading)) {
+	ଯଦି (PX4_ISFINITE(transponder_report.heading)) {
 		traffic_state.velocity_ned = matrix::Vector3f(
 						     cosf(transponder_report.heading) * transponder_report.hor_velocity,
 						     sinf(transponder_report.heading) * transponder_report.hor_velocity,
 						     -transponder_report.ver_velocity);
 
-	} else {
+	} ଅନ୍ୟଥା {
 		traffic_state.velocity_ned = matrix::Vector3f(transponder_report.hor_velocity, 0.f, -transponder_report.ver_velocity);
 	}
 
@@ -109,10 +109,10 @@ bool AdsbConflict::calculate_daa_output(const daa_input_s &daa_input, detect_and
 	daa_output.aircraft_dist_vert = daa_stats.aircraft_dist_vert;
 	daa_output.expected_min_dist_time = daa_stats.expected_min_dist_time_sec;
 
-	return true;
+	ଫେରନ୍ତୁ ସତ୍ୟ;
 }
 
-bool AdsbConflict::try_updating_params()
+ତାର୍କିକ AdsbConflict::try_updating_params()
 {
-	return _daa.try_setting_params();
+	ଫେରନ୍ତୁ _daa.try_setting_params();
 }

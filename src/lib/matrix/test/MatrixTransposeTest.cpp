@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ଅନ୍ତର୍ଭାଵ <gtest/gtest.h>
+#ଅନ୍ତର୍ଭାଵ <matrix/math.hpp>
 
-using namespace matrix;
+using ନାମାକାଶ matrix;
 
 TEST(MatrixTransposeTest, Transpose)
 {
-	float data[6] = {1, 2, 3, 4, 5, 6};
-	Matrix<float, 2, 3> A(data);
-	Matrix<float, 3, 2> A_T = A.transpose();
-	float data_check[6] = {1, 4, 2, 5, 3, 6};
-	Matrix<float, 3, 2> A_T_check(data_check);
+	ଦଶମିକ data[6] = {1, 2, 3, 4, 5, 6};
+	Matrix<ଦଶମିକ, 2, 3> A(data);
+	Matrix<ଦଶମିକ, 3, 2> A_T = A.transpose();
+	ଦଶମିକ data_check[6] = {1, 4, 2, 5, 3, 6};
+	Matrix<ଦଶମିକ, 3, 2> A_T_check(data_check);
 	EXPECT_EQ(A_T, A_T_check);
 }

@@ -33,30 +33,30 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ଅନ୍ତର୍ଭାଵ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/internal_combustion_engine_control.h>
+#ଅନ୍ତର୍ଭାଵ <uORB/topics/internal_combustion_engine_control.h>
 
 /**
  * Functions: ICE...
  */
-class FunctionICEControl : public FunctionProviderBase
+ଶ୍ରେଣୀ FunctionICEControl : ସର୍ବସାଧାରଣ FunctionProviderBase
 {
-public:
+ସର୍ବସାଧାରଣ:
 	FunctionICEControl()
 	{
-		resetAllToDisarmedValue();
+		reset_All_To_Disarmed_ମୂଲ୍ୟ();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionICEControl(); }
+	ସ୍ଥିର FunctionProviderBase *allocate(ଅଚଳ Context &context) { ଫେରନ୍ତୁ ନୂତନ FunctionICEControl(); }
 
-	void update() override
+	ଶୂନ୍ୟ update() override
 	{
 		internal_combustion_engine_control_s internal_combustion_engine_control;
 
 		// map [0, 1] to [-1, 1] which is the interface for non-motor PWM channels
 		// NAN is mapped to disarmed
-		if (_internal_combustion_engine_control_sub.update(&internal_combustion_engine_control)) {
+		ଯଦି (_internal_combustion_engine_control_sub.update(&internal_combustion_engine_control)) {
 			_data[0] = internal_combustion_engine_control.ignition_on * 2.f - 1.f;
 			_data[1] = internal_combustion_engine_control.throttle_control * 2.f - 1.f;
 			_data[2] = internal_combustion_engine_control.choke_control * 2.f - 1.f;
@@ -64,21 +64,21 @@ public:
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::IC_Engine_Ignition]; }
+	ଦଶମିକ value(OutputFunction func) override { ଫେରନ୍ତୁ _data[(ପୂର୍ଣ୍ଣସଂଖ୍ୟା)func - (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)OutputFunction::IC_Engine_Ignition]; }
 
-private:
-	static constexpr int num_data_points = 4;
+ବ୍ୟକ୍ତିଗତ:
+	ସ୍ଥିର constexpr ପୂର୍ଣ୍ଣସଂଖ୍ୟା ଅଙ୍କ_data_points = 4;
 
-	void resetAllToDisarmedValue()
+	ଶୂନ୍ୟ reset_All_To_Disarmed_ମୂଲ୍ୟ()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
+		ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < ଅଙ୍କ_data_points; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::IC_Engine_Starter - (int)OutputFunction::IC_Engine_Ignition + 1,
+	static_assert(ଅଙ୍କ_data_points == (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)OutputFunction::IC_Engine_Starter - (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)OutputFunction::IC_Engine_Ignition + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _internal_combustion_engine_control_sub{ORB_ID(internal_combustion_engine_control)};
-	float _data[num_data_points] {};
+	ଦଶମିକ _data[ଅଙ୍କ_data_points] {};
 };

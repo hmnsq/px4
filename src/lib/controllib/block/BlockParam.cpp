@@ -37,59 +37,59 @@
  * Controller library code
  */
 
-#include "Block.hpp"
-#include "BlockParam.hpp"
+#ଅନ୍ତର୍ଭାଵ "Block.hpp"
+#ଅନ୍ତର୍ଭାଵ "BlockParam.hpp"
 
-#include <cstdio>
-#include <cstring>
+#ଅନ୍ତର୍ଭାଵ <cstdio>
+#ଅନ୍ତର୍ଭାଵ <cstring>
 
-#include <containers/List.hpp>
+#ଅନ୍ତର୍ଭାଵ <containers/List.hpp>
 
-#include <px4_platform_common/log.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/log.h>
 
-namespace control
+ନାମାକାଶ control
 {
 
-BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_prefix)
+BlockParamBase::BlockParamBase(Block *parent, ଅଚଳ ଅକ୍ଷର *name, ତାର୍କିକ parent_prefix)
 {
-	char fullname[blockNameLengthMax];
+	ଅକ୍ଷର fullname[blockNameLengthMax];
 
-	if (parent == nullptr) {
+	ଯଦି (parent == nullptr) {
 		strncpy(fullname, name, blockNameLengthMax - 1);
-		fullname[sizeof(fullname) - 1] = '\0';
+		fullname[ଆକାର(fullname) - 1] = '\0';
 
-	} else {
-		char parentName[blockNameLengthMax];
+	} ଅନ୍ୟଥା {
+		ଅକ୍ଷର parentName[blockNameLengthMax];
 		parent->getName(parentName, blockNameLengthMax);
 
-		if (strcmp(name, "") == 0) {
+		ଯଦି (strcmp(name, "") == 0) {
 			strncpy(fullname, parentName, blockNameLengthMax);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[ଆକାର(fullname) - 1] = '\0';
 
-		} else if (parent_prefix) {
-			if (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
+		} ଅନ୍ୟଥା ଯଦି (parent_prefix) {
+			ଯଦି (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
 				PX4_ERR("param too long: %s", name);
 			}
 
-		} else {
+		} ଅନ୍ୟଥା {
 			strncpy(fullname, name, blockNameLengthMax);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[ଆକାର(fullname) - 1] = '\0';
 		}
 
-		parent->getParams().add(this);
+		parent->getParams().add(ଏହି);
 	}
 
 	_handle = param_find(fullname);
 
-	if (_handle == PARAM_INVALID) {
+	ଯଦି (_handle == PARAM_INVALID) {
 		PX4_ERR("error finding param: %s", fullname);
 	}
 };
 
 template <>
-BlockParam<bool>::BlockParam(Block *block, const char *name, bool parent_prefix) :
+BlockParam<ତାର୍କିକ>::BlockParam(Block *block, ଅଚଳ ଅକ୍ଷର *name, ତାର୍କିକ parent_prefix) :
 	BlockParamBase(block, name, parent_prefix),
 	_val()
 {
@@ -97,23 +97,23 @@ BlockParam<bool>::BlockParam(Block *block, const char *name, bool parent_prefix)
 }
 
 template <>
-bool BlockParam<bool>::update()
+ତାର୍କିକ BlockParam<ତାର୍କିକ>::update()
 {
 	int32_t tmp = 0;
-	int ret = param_get(_handle, &tmp);
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ret = param_get(_handle, &tmp);
 
-	if (tmp == 1) {
-		_val = true;
+	ଯଦି (tmp == 1) {
+		_val = ସତ୍ୟ;
 
-	} else {
-		_val = false;
+	} ଅନ୍ୟଥା {
+		_val = ମିଥ୍ୟା;
 	}
 
-	return (ret == PX4_OK);
+	ଫେରନ୍ତୁ (ret == PX4_OK);
 }
 
 template <>
-BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_prefix) :
+BlockParam<int32_t>::BlockParam(Block *block, ଅଚଳ ଅକ୍ଷର *name, ତାର୍କିକ parent_prefix) :
 	BlockParamBase(block, name, parent_prefix),
 	_val()
 {
@@ -121,7 +121,7 @@ BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_pref
 }
 
 template <>
-BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix) :
+BlockParam<ଦଶମିକ>::BlockParam(Block *block, ଅଚଳ ଅକ୍ଷର *name, ତାର୍କିକ parent_prefix) :
 	BlockParamBase(block, name, parent_prefix),
 	_val()
 {
@@ -129,7 +129,7 @@ BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix
 }
 
 template <>
-BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_prefix, int32_t &extern_val) :
+BlockParam<int32_t &>::BlockParam(Block *block, ଅଚଳ ଅକ୍ଷର *name, ତାର୍କିକ parent_prefix, int32_t &extern_val) :
 	BlockParamBase(block, name, parent_prefix),
 	_val(extern_val)
 {
@@ -137,7 +137,7 @@ BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_pr
 }
 
 template <>
-BlockParam<float &>::BlockParam(Block *block, const char *name, bool parent_prefix, float &extern_val) :
+BlockParam<ଦଶମିକ &>::BlockParam(Block *block, ଅଚଳ ଅକ୍ଷର *name, ତାର୍କିକ parent_prefix, ଦଶମିକ &extern_val) :
 	BlockParamBase(block, name, parent_prefix),
 	_val(extern_val)
 {

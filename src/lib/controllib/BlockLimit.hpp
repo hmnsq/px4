@@ -39,20 +39,20 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <assert.h>
+#ଅନ୍ତର୍ଭାଵ <time.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/test/test.hpp>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/Block.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ଅନ୍ତର୍ଭାଵ "matrix/math.hpp"
 
-namespace control
+ନାମାକାଶ control
 {
 
 /**
@@ -60,21 +60,21 @@ namespace control
  * The output of update is the input, bounded
  * by min/max.
  */
-class __EXPORT BlockLimit : public Block
+ଶ୍ରେଣୀ __EXPORT BlockLimit : ସର୍ବସାଧାରଣ Block
 {
-public:
+ସର୍ବସାଧାରଣ:
 // methods
-	BlockLimit(SuperBlock *parent, const char *name) :
+	BlockLimit(SuperBlock *parent, ଅଚଳ ଅକ୍ଷର *name) :
 		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+		_min(ଏହି, "MIN"),
+		_max(ଏହି, "MAX")
 	{}
-	virtual ~BlockLimit() = default;
-	float update(float input);
+	ଆଭାସୀ ~BlockLimit() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	ଦଶମିକ update(ଦଶମିକ ନିବେଶ);
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-protected:
+	ଦଶମିକ getMin() { ଫେରନ୍ତୁ _min.get(); }
+	ଦଶମିକ getMax() { ଫେରନ୍ତୁ _max.get(); }
+ସୁରକ୍ଷିତ:
 // attributes
 	control::BlockParamFloat _min;
 	control::BlockParamFloat _max;

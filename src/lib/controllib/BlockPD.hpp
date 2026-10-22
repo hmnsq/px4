@@ -39,47 +39,47 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <assert.h>
+#ଅନ୍ତର୍ଭାଵ <time.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/test/test.hpp>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/Block.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ଅନ୍ତର୍ଭାଵ "matrix/math.hpp"
 
-namespace control
+ନାମାକାଶ control
 {
 
 /**
  * A proportional-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPD: public SuperBlock
+ଶ୍ରେଣୀ __EXPORT BlockPD: ସର୍ବସାଧାରଣ SuperBlock
 {
-public:
+ସର୍ବସାଧାରଣ:
 // methods
-	BlockPD(SuperBlock *parent, const char *name) :
+	BlockPD(SuperBlock *parent, ଅଚଳ ଅକ୍ଷର *name) :
 		SuperBlock(parent, name),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kD(this, "D")
+		_derivative(ଏହି, "D"),
+		_kP(ଏହି, "P"),
+		_kD(ଏହି, "D")
 	{}
-	virtual ~BlockPD() = default;
-	float update(float input)
+	ଆଭାସୀ ~BlockPD() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	ଦଶମିକ update(ଦଶମିକ ନିବେଶ)
 	{
-		return getKP() * input +
-		       getKD() * getDerivative().update(input);
+		ଫେରନ୍ତୁ getKP() * ନିବେଶ +
+		       getKD() * getDerivative().update(ନିବେଶ);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKD() { return _kD.get(); }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
+	ଦଶମିକ getKP() { ଫେରନ୍ତୁ _kP.get(); }
+	ଦଶମିକ getKD() { ଫେରନ୍ତୁ _kD.get(); }
+	BlockDerivative &getDerivative() { ଫେରନ୍ତୁ _derivative; }
+ବ୍ୟକ୍ତିଗତ:
 	BlockDerivative _derivative;
 	control::BlockParamFloat _kP;
 	control::BlockParamFloat _kD;

@@ -15,20 +15,20 @@
 
 #pragma once
 
-#include "SquareMatrix.hpp"
-#include "Vector3.hpp"
+#ଅନ୍ତର୍ଭାଵ "SquareMatrix.hpp"
+#ଅନ୍ତର୍ଭାଵ "Vector3.hpp"
 
-namespace matrix
+ନାମାକାଶ matrix
 {
 
 template<typename Type>
-class AxisAngle;
+ଶ୍ରେଣୀ AxisAngle;
 
 template<typename Type>
-class Euler;
+ଶ୍ରେଣୀ Euler;
 
 template<typename Type>
-class Quaternion;
+ଶ୍ରେଣୀ Quaternion;
 
 /**
  * Direction cosine matrix class
@@ -37,9 +37,9 @@ class Quaternion;
  * described by this class.
  */
 template<typename Type>
-class Dcm : public SquareMatrix<Type, 3>
+ଶ୍ରେଣୀ Dcm : ସର୍ବସାଧାରଣ SquareMatrix<Type, 3>
 {
-public:
+ସର୍ବସାଧାରଣ:
 	/**
 	 * Standard constructor
 	 *
@@ -52,7 +52,7 @@ public:
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm(const Type data_[3][3]) : SquareMatrix<Type, 3>(data_)
+	explicit Dcm(ଅଚଳ Type data_[3][3]) : SquareMatrix<Type, 3>(data_)
 	{
 	}
 
@@ -61,7 +61,7 @@ public:
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm(const Type data_[9]) : SquareMatrix<Type, 3>(data_)
+	explicit Dcm(ଅଚଳ Type data_[9]) : SquareMatrix<Type, 3>(data_)
 	{
 	}
 
@@ -70,7 +70,7 @@ public:
 	 *
 	 * @param other Matrix33 to set dcm to
 	 */
-	Dcm(const Matrix<Type, 3, 3> &other) : SquareMatrix<Type, 3>(other)
+	Dcm(ଅଚଳ Matrix<Type, 3, 3> &other) : SquareMatrix<Type, 3>(other)
 	{
 	}
 
@@ -82,22 +82,22 @@ public:
 	 *
 	 * @param q quaternion to set dcm to
 	 */
-	Dcm(const Quaternion<Type> &q)
+	Dcm(ଅଚଳ Quaternion<Type> &q)
 	{
-		Dcm &dcm = *this;
-		const Type a = q(0);
-		const Type b = q(1);
-		const Type c = q(2);
-		const Type d = q(3);
-		const Type ab = a * b;
-		const Type ac = a * c;
-		const Type ad = a * d;
-		const Type bb = b * b;
-		const Type bc = b * c;
-		const Type bd = b * d;
-		const Type cc = c * c;
-		const Type cd = c * d;
-		const Type dd = d * d;
+		Dcm &dcm = *ଏହି;
+		ଅଚଳ Type a = q(0);
+		ଅଚଳ Type b = q(1);
+		ଅଚଳ Type c = q(2);
+		ଅଚଳ Type d = q(3);
+		ଅଚଳ Type ab = a * b;
+		ଅଚଳ Type ac = a * c;
+		ଅଚଳ Type ad = a * d;
+		ଅଚଳ Type bb = b * b;
+		ଅଚଳ Type bc = b * c;
+		ଅଚଳ Type bd = b * d;
+		ଅଚଳ Type cc = c * c;
+		ଅଚଳ Type cd = c * d;
+		ଅଚଳ Type dd = d * d;
 		dcm(0, 0) = Type(1) - Type(2) * (cc + dd);
 		dcm(0, 1) = Type(2) * (bc - ad);
 		dcm(0, 2) = Type(2) * (ac + bd);
@@ -118,9 +118,9 @@ public:
 	 *
 	 * @param euler euler angle instance
 	 */
-	Dcm(const Euler<Type> &euler)
+	Dcm(ଅଚଳ Euler<Type> &euler)
 	{
-		Dcm &dcm = *this;
+		Dcm &dcm = *ଏହି;
 		Type cosPhi = Type(std::cos(euler.phi()));
 		Type sinPhi = Type(std::sin(euler.phi()));
 		Type cosThe = Type(std::cos(euler.theta()));
@@ -151,29 +151,29 @@ public:
 	 *
 	 * @param euler euler angle instance
 	 */
-	Dcm(const AxisAngle<Type> &aa)
+	Dcm(ଅଚଳ AxisAngle<Type> &aa)
 	{
-		Dcm &dcm = *this;
+		Dcm &dcm = *ଏହି;
 		dcm = Quaternion<Type>(aa);
 	}
 
-	Vector3<Type> vee() const // inverse to Vector.hat() operation
+	Vector3<Type> vee() ଅଚଳ // inverse to Vector.hat() operation
 	{
-		const Dcm &A(*this);
-		return {-A(1, 2), A(0, 2), -A(0, 1)};
+		ଅଚଳ Dcm &A(*ଏହି);
+		ଫେରନ୍ତୁ {-A(1, 2), A(0, 2), -A(0, 1)};
 	}
 
-	void renormalize()
+	ଶୂନ୍ୟ renormalize()
 	{
 		/* renormalize rows */
-		for (size_t r = 0; r < 3; r++) {
-			matrix::Vector3<Type> rvec(Matrix<Type, 1, 3>(this->Matrix<Type, 3, 3>::row(r)).transpose());
-			this->Matrix<Type, 3, 3>::row(r) = rvec.normalized();
+		ପାଇଁ (size_t r = 0; r < 3; r++) {
+			matrix::Vector3<Type> rvec(Matrix<Type, 1, 3>(ଏହି->Matrix<Type, 3, 3>::row(r)).transpose());
+			ଏହି->Matrix<Type, 3, 3>::row(r) = rvec.normalized();
 		}
 	}
 };
 
-using Dcmf = Dcm<float>;
-using Dcmd = Dcm<double>;
+using Dcmf = Dcm<ଦଶମିକ>;
+using Dcmd = Dcm<ଦ୍ୱିଗୁଣ>;
 
 } // namespace matrix

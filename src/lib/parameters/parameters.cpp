@@ -42,101 +42,101 @@
  */
 
 #define PARAM_IMPLEMENTATION
-#include "param.h"
-#include "param_translation.h"
-#include <parameters/px4_parameters.hpp>
-#include <lib/tinybson/tinybson.h>
+#ଅନ୍ତର୍ଭାଵ "param.h"
+#ଅନ୍ତର୍ଭାଵ "param_translation.h"
+#ଅନ୍ତର୍ଭାଵ <parameters/px4_parameters.hpp>
+#ଅନ୍ତର୍ଭାଵ <lib/tinybson/tinybson.h>
 
-#if defined(__PX4_NUTTX)
-#include <nuttx/crc32.h>
-#else
-#include <crc32.h>
+#ଯଦି defined(__PX4_NUTTX)
+#ଅନ୍ତର୍ଭାଵ <nuttx/crc32.h>
+#ଅନ୍ୟଥା
+#ଅନ୍ତର୍ଭାଵ <crc32.h>
 #endif
-#include <float.h>
-#include <math.h>
-#include <sys/stat.h>
+#ଅନ୍ତର୍ଭାଵ <float.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <sys/stat.h>
 
-#include <containers/Bitset.hpp>
-#include <drivers/drv_hrt.h>
-#include <lib/perf/perf_counter.h>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/atomic_bitset.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/sem.h>
-#include <px4_platform_common/shutdown.h>
-#include <px4_platform_common/micro_hal.h>
+#ଅନ୍ତର୍ଭାଵ <containers/Bitset.hpp>
+#ଅନ୍ତର୍ଭାଵ <drivers/drv_hrt.h>
+#ଅନ୍ତର୍ଭାଵ <lib/perf/perf_counter.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/px4_config.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/atomic_bitset.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/posix.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/sem.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/shutdown.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/micro_hal.h>
 
-using namespace time_literals;
+using ନାମାକାଶ time_literals;
 
-#include "uORB/uORB.h"
-#include "uORB/topics/parameter_update.h"
-#include <uORB/Subscription.hpp>
+#ଅନ୍ତର୍ଭାଵ "uORB/uORB.h"
+#ଅନ୍ତର୍ଭାଵ "uORB/topics/parameter_update.h"
+#ଅନ୍ତର୍ଭାଵ <uORB/Subscription.hpp>
 
-#include "ExhaustiveLayer.h"
-#include "ConstLayer.h"
-#include "DynamicSparseLayer.h"
-#include "StaticSparseLayer.h"
+#ଅନ୍ତର୍ଭାଵ "ExhaustiveLayer.h"
+#ଅନ୍ତର୍ଭାଵ "ConstLayer.h"
+#ଅନ୍ତର୍ଭାଵ "DynamicSparseLayer.h"
+#ଅନ୍ତର୍ଭାଵ "StaticSparseLayer.h"
 
-#include "atomic_transaction.h"
+#ଅନ୍ତର୍ଭାଵ "atomic_transaction.h"
 
 /* Include functions common to user and kernel sides */
-#include "parameters_common.cpp"
+#ଅନ୍ତର୍ଭାଵ "parameters_common.cpp"
 
-#if defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
-#include <px4_platform/board_ctrl.h>
-#include "parameters_ioctl.h"
+#ଯଦି defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
+#ଅନ୍ତର୍ଭାଵ <px4_platform/board_ctrl.h>
+#ଅନ୍ତର୍ଭାଵ "parameters_ioctl.h"
 #endif
 
-#if defined(FLASH_BASED_PARAMS)
-#include "flashparams/flashparams.h"
-#else
-inline static int flash_param_save(param_filter_func filter) { return -1; }
-inline static int flash_param_import() { return -1; }
+#ଯଦି defined(FLASH_BASED_PARAMS)
+#ଅନ୍ତର୍ଭାଵ "flashparams/flashparams.h"
+#ଅନ୍ୟଥା
+ଧାଡ଼ିଭିତରେ ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା flash_param_save(param_filter_func filter) { ଫେରନ୍ତୁ -1; }
+ଧାଡ଼ିଭିତରେ ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା flash_param_import() { ଫେରନ୍ତୁ -1; }
 #endif
 
-static char *param_default_file = nullptr;
-static char *param_backup_file = nullptr;
+ସ୍ଥିର ଅକ୍ଷର *param_default_file = nullptr;
+ସ୍ଥିର ଅକ୍ଷର *param_backup_file = nullptr;
 
-#include "autosave.h"
-static ParamAutosave *autosave_instance {nullptr};
+#ଅନ୍ତର୍ଭାଵ "autosave.h"
+ସ୍ଥିର ParamAutosave *autosave_instance {nullptr};
 
-static px4::AtomicBitset<param_info_count> params_active;  // params found
-static px4::AtomicBitset<param_info_count> params_unsaved;
+ସ୍ଥିର px4::AtomicBitset<param_info_ଗଣନା> params_active;  // params found
+ସ୍ଥିର px4::AtomicBitset<param_info_ଗଣନା> params_unsaved;
 
 // Params the save in progress is writing. They are moved out of params_unsaved
 // before their values are read, so a param_set that lands while the save runs
 // marks its param again and reaches the next save. Flash-param saves write only
 // unsaved params, so nothing else would ever write that change.
-static px4::AtomicBitset<param_info_count> params_saving;
+ସ୍ଥିର px4::AtomicBitset<param_info_ଗଣନା> params_saving;
 
-static ConstLayer firmware_defaults;
-static DynamicSparseLayer runtime_defaults{&firmware_defaults};
+ସ୍ଥିର ConstLayer firmware_defaults;
+ସ୍ଥିର DynamicSparseLayer runtime_defaults{&firmware_defaults};
 DynamicSparseLayer user_config{&runtime_defaults};
 
 /** parameter update topic handle */
-#if not defined(CONFIG_PARAM_REMOTE)
-static orb_advert_t param_topic = nullptr;
-static unsigned int param_instance = 0;
+#ଯଦି not defined(CONFIG_PARAM_REMOTE)
+ସ୍ଥିର orb_advert_t param_topic = nullptr;
+ସ୍ଥିର unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_instance = 0;
 #endif
 
-static perf_counter_t param_export_perf;
-static perf_counter_t param_find_perf;
-static perf_counter_t param_get_perf;
-static perf_counter_t param_set_perf;
+ସ୍ଥିର perf_counter_t param_export_perf;
+ସ୍ଥିର perf_counter_t param_find_perf;
+ସ୍ଥିର perf_counter_t param_get_perf;
+ସ୍ଥିର perf_counter_t param_set_perf;
 
-static pthread_mutex_t file_mutex  =
+ସ୍ଥିର pthread_mutex_t file_mutex  =
 	PTHREAD_MUTEX_INITIALIZER; ///< this protects against concurrent param saves (file or flash access).
 
 // Support for remote parameter node
-#if defined(CONFIG_PARAM_PRIMARY)
+#ଯଦି defined(CONFIG_PARAM_PRIMARY)
 # include "parameters_primary.h"
 #endif // CONFIG_PARAM_PRIMARY
-#if defined(CONFIG_PARAM_REMOTE)
+#ଯଦି defined(CONFIG_PARAM_REMOTE)
 # include "parameters_remote.h"
 #endif // CONFIG_PARAM_REMOTE
 
-void
+ଶୂନ୍ୟ
 param_init()
 {
 #ifdef __PX4_POSIX
@@ -145,349 +145,349 @@ param_init()
 #endif
 
 	param_export_perf = perf_alloc(PC_ELAPSED, "param: export");
-	param_find_perf = perf_alloc(PC_COUNT, "param: find");
-	param_get_perf = perf_alloc(PC_COUNT, "param: get");
+	param_find_perf = perf_alloc(PC_ଗଣନା, "param: find");
+	param_get_perf = perf_alloc(PC_ଗଣନା, "param: get");
 	param_set_perf = perf_alloc(PC_ELAPSED, "param: set");
 
-#if defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
+#ଯଦି defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
 	px4_register_boardct_ioctl(_PARAMIOCBASE, param_ioctl);
 #endif
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#ଯଦି defined(CONFIG_PARAM_PRIMARY)
 	param_primary_init();
 #endif // CONFIG_PARAM_PRIMARY
 
-#if defined(CONFIG_PARAM_REMOTE)
+#ଯଦି defined(CONFIG_PARAM_REMOTE)
 	param_remote_init();
 #endif // CONFIG_PARAM_REMOTE
 
-#if not defined(CONFIG_PARAM_REMOTE)
-	autosave_instance = new ParamAutosave();
+#ଯଦି not defined(CONFIG_PARAM_REMOTE)
+	autosave_instance = ନୂତନ ParamAutosave();
 #endif
 }
 
 
-void
+ଶୂନ୍ୟ
 param_notify_changes()
 {
 // Don't send if this is a remote node. Only the primary
 // sends out update notices
-#if not defined(CONFIG_PARAM_REMOTE)
+#ଯଦି not defined(CONFIG_PARAM_REMOTE)
 	parameter_update_s pup {};
 	pup.instance = param_instance++;
-	pup.get_count = perf_event_count(param_get_perf);
-	pup.set_count = perf_event_count(param_set_perf);
-	pup.find_count = perf_event_count(param_find_perf);
-	pup.export_count = perf_event_count(param_export_perf);
-	pup.active = params_active.count();
+	pup.get_ଗଣନା_2 = perf_event_ଗଣନା(param_get_perf);
+	pup.set_ଗଣନା = perf_event_ଗଣନା(param_set_perf);
+	pup.find_ଗଣନା = perf_event_ଗଣନା(param_find_perf);
+	pup.export_ଗଣନା = perf_event_ଗଣନା(param_export_perf);
+	pup.active = params_active.ଗଣନା_2();
 	pup.changed = user_config.size();
 	pup.custom_default = runtime_defaults.size();
 	pup.timestamp = hrt_absolute_time();
 
-	if (param_topic == nullptr) {
+	ଯଦି (param_topic == nullptr) {
 		param_topic = orb_advertise(ORB_ID(parameter_update), &pup);
 
-	} else {
+	} ଅନ୍ୟଥା {
 		orb_publish(ORB_ID(parameter_update), param_topic, &pup);
 	}
 
 #endif
 }
 
-static param_t param_find_internal(const char *name, bool notification)
+ସ୍ଥିର param_t param_find_internal(ଅଚଳ ଅକ୍ଷର *name, ତାର୍କିକ notification)
 {
-	perf_count(param_find_perf);
+	perf_ଗଣନା(param_find_perf);
 
-	param_t middle;
+	param_t ମଧ୍ୟ;
 	param_t front = 0;
-	param_t last = param_info_count;
+	param_t last = param_info_ଗଣନା;
 
 	/* perform a binary search of the known parameters */
 
-	while (front <= last) {
-		middle = front + (last - front) / 2;
-		int ret = strcmp(name, param_name(middle));
+	ଯେତେବେଳେ (front <= last) {
+		ମଧ୍ୟ = front + (last - front) / 2;
+		ପୂର୍ଣ୍ଣସଂଖ୍ୟା ret = strcmp(name, param_name(ମଧ୍ୟ));
 
-		if (ret == 0) {
-			if (notification) {
-				param_set_used(middle);
+		ଯଦି (ret == 0) {
+			ଯଦି (notification) {
+				param_set_used(ମଧ୍ୟ);
 			}
 
-			return middle;
+			ଫେରନ୍ତୁ ମଧ୍ୟ;
 
-		} else if (middle == front) {
+		} ଅନ୍ୟଥା ଯଦି (ମଧ୍ୟ == front) {
 			/* An end point has been hit, but there has been no match */
-			break;
+			ଭାଙ୍ଗ;
 
-		} else if (ret < 0) {
-			last = middle;
+		} ଅନ୍ୟଥା ଯଦି (ret < 0) {
+			last = ମଧ୍ୟ;
 
-		} else {
-			front = middle;
+		} ଅନ୍ୟଥା {
+			front = ମଧ୍ୟ;
 		}
 	}
 
 	/* not found */
-	return PARAM_INVALID;
+	ଫେରନ୍ତୁ PARAM_INVALID;
 }
 
-param_t param_find(const char *name)
+param_t param_find(ଅଚଳ ଅକ୍ଷର *name)
 {
-	return param_find_internal(name, true);
+	ଫେରନ୍ତୁ param_find_internal(name, ସତ୍ୟ);
 }
 
-param_t param_find_no_notification(const char *name)
+param_t param_find_no_notification(ଅଚଳ ଅକ୍ଷର *name)
 {
-	return param_find_internal(name, false);
+	ଫେରନ୍ତୁ param_find_internal(name, ମିଥ୍ୟା);
 }
 
-unsigned param_count_used()
+unsigned param_ଗଣନା_used()
 {
-	return params_active.count();
+	ଫେରନ୍ତୁ params_active.ଗଣନା_2();
 }
 
 param_t param_for_used_index(unsigned index)
 {
 	// walk all params and count used params
-	if (index < param_info_count) {
-		unsigned used_count = 0;
+	ଯଦି (index < param_info_ଗଣନା) {
+		unsigned used_ଗଣନା = 0;
 
-		for (int i = 0; i < params_active.size(); i++) {
-			if (params_active[i]) {
+		ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < params_active.size(); i++) {
+			ଯଦି (params_active[i]) {
 				// we found the right used count,
 				//  return the param value
-				if (index == used_count) {
-					return static_cast<param_t>(i);
+				ଯଦି (index == used_ଗଣନା) {
+					ଫେରନ୍ତୁ static_cast<param_t>(i);
 				}
 
-				used_count++;
+				used_ଗଣନା++;
 			}
 		}
 	}
 
-	return PARAM_INVALID;
+	ଫେରନ୍ତୁ PARAM_INVALID;
 }
 
-int param_get_used_index(param_t param)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_get_used_index(param_t param)
 {
 	/* this tests for out of bounds and does a constant time lookup */
-	if (!param_used(param)) {
-		return -1;
+	ଯଦି (!param_used(param)) {
+		ଫେରନ୍ତୁ -1;
 	}
 
 	/* walk all params and count, now knowing that it has a valid index */
-	int used_count = 0;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା used_ଗଣନା = 0;
 
-	for (int i = 0; i < params_active.size(); i++) {
-		if (params_active[i]) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < params_active.size(); i++) {
+		ଯଦି (params_active[i]) {
 
-			if (param == i) {
-				return used_count;
+			ଯଦି (param == i) {
+				ଫେରନ୍ତୁ used_ଗଣନା;
 			}
 
-			used_count++;
+			used_ଗଣନା++;
 		}
 	}
 
-	return -1;
+	ଫେରନ୍ତୁ -1;
 }
 
-bool
-param_value_unsaved(param_t param)
+ତାର୍କିକ
+param_ମୂଲ୍ୟ_unsaved(param_t param)
 {
-	return handle_in_range(param) ? (params_unsaved[param] || params_saving[param]) : false;
+	ଫେରନ୍ତୁ handle_in_range(param) ? (params_unsaved[param] || params_saving[param]) : ମିଥ୍ୟା;
 }
 
-int
-param_get(param_t param, void *val)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+param_get(param_t param, ଶୂନ୍ୟ *val)
 {
-	perf_count(param_get_perf);
+	perf_ଗଣନା(param_get_perf);
 
-	if (!handle_in_range(param)) {
+	ଯଦି (!handle_in_range(param)) {
 		PX4_ERR("get: param %" PRId16 " invalid", param);
-		return PX4_ERROR;
+		ଫେରନ୍ତୁ PX4_ERROR;
 	}
 
-	if (!params_active[param]) {
+	ଯଦି (!params_active[param]) {
 		PX4_DEBUG("get: param %" PRId16 " (%s) not active", param, param_name(param));
 	}
 
-	int result = PX4_ERROR;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା result = PX4_ERROR;
 
-	if (val) {
+	ଯଦି (val) {
 
-		auto retrieve_value = user_config.get(param);
+		auto retrieve_ମୂଲ୍ୟ = user_config.get(param);
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			memcpy(val, &retrieve_value.i, sizeof(retrieve_value.i));
-			return PX4_OK;
+		ବାଛ (param_type(param)) {
+		ସ୍ଥିତି PARAM_TYPE_INT32:
+			memcpy(val, &retrieve_ମୂଲ୍ୟ.i, ଆକାର(retrieve_ମୂଲ୍ୟ.i));
+			ଫେରନ୍ତୁ PX4_OK;
 
-		case PARAM_TYPE_FLOAT:
-			memcpy(val, &retrieve_value.f, sizeof(retrieve_value.f));
-			return PX4_OK;
+		ସ୍ଥିତି PARAM_TYPE_FLOAT:
+			memcpy(val, &retrieve_ମୂଲ୍ୟ.f, ଆକାର(retrieve_ମୂଲ୍ୟ.f));
+			ଫେରନ୍ତୁ PX4_OK;
 		}
 	}
 
-	return result;
+	ଫେରନ୍ତୁ result;
 }
 
-int
-param_get_default_value_internal(param_t param, void *default_val)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+param_get_default_ମୂଲ୍ୟ_internal(param_t param, ଶୂନ୍ୟ *default_val)
 {
-	if (!handle_in_range(param)) {
+	ଯଦି (!handle_in_range(param)) {
 		PX4_ERR("get default value: param %d invalid", param);
-		return PX4_ERROR;
+		ଫେରନ୍ତୁ PX4_ERROR;
 	}
 
-	if (default_val) {
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
+	ଯଦି (default_val) {
+		ବାଛ (param_type(param)) {
+		ସ୍ଥିତି PARAM_TYPE_INT32: {
 				int32_t val = runtime_defaults.get(param).i;
-				memcpy(default_val, &val, sizeof(val));
-				return PX4_OK;
+				memcpy(default_val, &val, ଆକାର(val));
+				ଫେରନ୍ତୁ PX4_OK;
 			}
 
-		case PARAM_TYPE_FLOAT: {
-				float val = runtime_defaults.get(param).f;
-				memcpy(default_val, &val, sizeof(val));
-				return PX4_OK;
+		ସ୍ଥିତି PARAM_TYPE_FLOAT: {
+				ଦଶମିକ val = runtime_defaults.get(param).f;
+				memcpy(default_val, &val, ଆକାର(val));
+				ଫେରନ୍ତୁ PX4_OK;
 			}
 		}
 	}
 
-	return PX4_ERROR;
+	ଫେରନ୍ତୁ PX4_ERROR;
 }
 
-int
-param_get_default_value(param_t param, void *default_val)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+param_get_default_ମୂଲ୍ୟ(param_t param, ଶୂନ୍ୟ *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	ଯଦି (!handle_in_range(param)) {
+		ଫେରନ୍ତୁ PX4_ERROR;
 	}
 
-	int ret = param_get_default_value_internal(param, default_val);
-	return ret;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ret = param_get_default_ମୂଲ୍ୟ_internal(param, default_val);
+	ଫେରନ୍ତୁ ret;
 }
 
-bool param_value_is_default(param_t param)
+ତାର୍କିକ param_ମୂଲ୍ୟ_is_default(param_t param)
 {
-	if (!handle_in_range(param)) {
-		return true;
+	ଯଦି (!handle_in_range(param)) {
+		ଫେରନ୍ତୁ ସତ୍ୟ;
 	}
 
-	if (!user_config.contains(param)) {
+	ଯଦି (!user_config.contains(param)) {
 		// if user config does not contain it, consider it default.
-		return true;
+		ଫେରନ୍ତୁ ସତ୍ୟ;
 
-	} else {
+	} ଅନ୍ୟଥା {
 		// compare with default value
-		const param_value_u user_config_value = user_config.get(param);
-		const param_value_u runtime_default_value = runtime_defaults.get(param);
+		ଅଚଳ param_ମୂଲ୍ୟ_u user_config_ମୂଲ୍ୟ = user_config.get(param);
+		ଅଚଳ param_ମୂଲ୍ୟ_u runtime_default_ମୂଲ୍ୟ = runtime_defaults.get(param);
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
-				return user_config_value.i == runtime_default_value.i;
+		ବାଛ (param_type(param)) {
+		ସ୍ଥିତି PARAM_TYPE_INT32: {
+				ଫେରନ୍ତୁ user_config_ମୂଲ୍ୟ.i == runtime_default_ମୂଲ୍ୟ.i;
 			}
 
-		case PARAM_TYPE_FLOAT: {
-				return fabsf(user_config_value.f - runtime_default_value.f) < FLT_EPSILON;
+		ସ୍ଥିତି PARAM_TYPE_FLOAT: {
+				ଫେରନ୍ତୁ fabsf(user_config_ମୂଲ୍ୟ.f - runtime_default_ମୂଲ୍ୟ.f) < FLT_EPSILON;
 			}
 		}
 	}
 
-	return true;
+	ଫେରନ୍ତୁ ସତ୍ୟ;
 }
 
-static void
+ସ୍ଥିର ଶୂନ୍ୟ
 param_autosave()
 {
-	if (autosave_instance) {
+	ଯଦି (autosave_instance) {
 		autosave_instance->request();
 	}
 }
 
-void
-param_control_autosave(bool enable)
+ଶୂନ୍ୟ
+param_control_autosave(ତାର୍କିକ enable)
 {
-	if (autosave_instance) {
+	ଯଦି (autosave_instance) {
 		autosave_instance->enable(enable);
 	}
 }
 
-static int
-param_set_internal(param_t param, const void *val, bool mark_saved, bool notify_changes, bool update_remote = true,
-		   bool autosave = true)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+param_set_internal(param_t param, ଅଚଳ ଶୂନ୍ୟ *val, ତାର୍କିକ mark_saved, ତାର୍କିକ notify_changes, ତାର୍କିକ update_remote = ସତ୍ୟ,
+		   ତାର୍କିକ autosave = ସତ୍ୟ)
 {
-	if (!handle_in_range(param)) {
+	ଯଦି (!handle_in_range(param)) {
 		PX4_ERR("set invalid param %d", param);
-		return PX4_ERROR;
+		ଫେରନ୍ତୁ PX4_ERROR;
 	}
 
-	if (val == nullptr) {
+	ଯଦି (val == nullptr) {
 		PX4_ERR("set invalid value");
-		return PX4_ERROR;
+		ଫେରନ୍ତୁ PX4_ERROR;
 	}
 
-	if (param_is_readonly(param)) {
+	ଯଦି (param_is_readonly(param)) {
 		PX4_WARN("param %s is read-only", param_name(param));
-		return PX4_ERROR;
+		ଫେରନ୍ତୁ PX4_ERROR;
 	}
 
-	int result = -1;
-	bool param_changed = false;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା result = -1;
+	ତାର୍କିକ param_changed = ମିଥ୍ୟା;
 	perf_begin(param_set_perf);
 
-	const param_value_u user_config_value = user_config.get(param);
-	param_value_u new_value{};
+	ଅଚଳ param_ମୂଲ୍ୟ_u user_config_ମୂଲ୍ୟ = user_config.get(param);
+	param_ମୂଲ୍ୟ_u new_ମୂଲ୍ୟ{};
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
-		memcpy(&new_value.i, val, sizeof(new_value.i));
-		param_changed = user_config_value.i != new_value.i;
-		break;
+	ବାଛ (param_type(param)) {
+	ସ୍ଥିତି PARAM_TYPE_INT32:
+		memcpy(&new_ମୂଲ୍ୟ.i, val, ଆକାର(new_ମୂଲ୍ୟ.i));
+		param_changed = user_config_ମୂଲ୍ୟ.i != new_ମୂଲ୍ୟ.i;
+		ଭାଙ୍ଗ;
 
-	case PARAM_TYPE_FLOAT:
-		memcpy(&new_value.f, val, sizeof(new_value.f));
-		param_changed = fabsf(user_config_value.f - new_value.f) > FLT_EPSILON;
-		break;
+	ସ୍ଥିତି PARAM_TYPE_FLOAT:
+		memcpy(&new_ମୂଲ୍ୟ.f, val, ଆକାର(new_ମୂଲ୍ୟ.f));
+		param_changed = fabsf(user_config_ମୂଲ୍ୟ.f - new_ମୂଲ୍ୟ.f) > FLT_EPSILON;
+		ଭାଙ୍ଗ;
 
-	default: {
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ: {
 			PX4_ERR("param_set invalid param type for %s", param_name(param));
-			break;
+			ଭାଙ୍ଗ;
 		}
 	}
 
-	if (user_config.store(param, new_value)) {
-		if (param_changed) {
+	ଯଦି (user_config.store(param, new_ମୂଲ୍ୟ)) {
+		ଯଦି (param_changed) {
 			params_unsaved.set(param, !mark_saved);
 		}
 
 		result = PX4_OK;
 
-	} else {
+	} ଅନ୍ୟଥା {
 		PX4_ERR("param_set failed to store param %s", param_name(param));
 		result = PX4_ERROR;
 	}
 
-	if ((result == PX4_OK) && param_changed && !mark_saved && autosave) { // this is false when importing parameters
+	ଯଦି ((result == PX4_OK) && param_changed && !mark_saved && autosave) { // this is false when importing parameters
 		param_autosave();
 	}
 
 	// If this is the parameter server, make sure that the remote is updated
-#if defined(CONFIG_PARAM_PRIMARY)
+#ଯଦି defined(CONFIG_PARAM_PRIMARY)
 
-	if (param_changed && update_remote) {
-		param_primary_set_value(param, val);
+	ଯଦି (param_changed && update_remote) {
+		param_primary_set_ମୂଲ୍ୟ(param, val);
 	}
 
 #endif
 
 	// If this is the parameter remote, make sure that the primary is updated
-#if defined(CONFIG_PARAM_REMOTE)
+#ଯଦି defined(CONFIG_PARAM_REMOTE)
 
-	if (param_changed && update_remote) {
-		param_remote_set_value(param, val);
+	ଯଦି (param_changed && update_remote) {
+		param_remote_set_ମୂଲ୍ୟ(param, val);
 	}
 
 #endif
@@ -498,424 +498,424 @@ param_set_internal(param_t param, const void *val, bool mark_saved, bool notify_
 	 * If we set something, now that we have unlocked, go ahead and advertise that
 	 * a thing has been set.
 	 */
-	if ((result == PX4_OK) && param_changed && notify_changes) {
+	ଯଦି ((result == PX4_OK) && param_changed && notify_changes) {
 		param_notify_changes();
 	}
 
-	return result;
+	ଫେରନ୍ତୁ result;
 }
 
-#if defined(FLASH_BASED_PARAMS)
-int param_set_external(param_t param, const void *val, bool mark_saved, bool notify_changes)
+#ଯଦି defined(FLASH_BASED_PARAMS)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_set_external(param_t param, ଅଚଳ ଶୂନ୍ୟ *val, ତାର୍କିକ mark_saved, ତାର୍କିକ notify_changes)
 {
-	return param_set_internal(param, val, mark_saved, notify_changes);
+	ଫେରନ୍ତୁ param_set_internal(param, val, mark_saved, notify_changes);
 }
 
-void param_get_external(param_t param, void *val)
+ଶୂନ୍ୟ param_get_external(param_t param, ଶୂନ୍ୟ *val)
 {
 	param_get(param, val);
 }
 #endif
 
-int param_set(param_t param, const void *val)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_set(param_t param, ଅଚଳ ଶୂନ୍ୟ *val)
 {
-	return param_set_internal(param, val, false, true);
+	ଫେରନ୍ତୁ param_set_internal(param, val, ମିଥ୍ୟା, ସତ୍ୟ);
 }
 
-int param_set_no_notification(param_t param, const void *val)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_set_no_notification(param_t param, ଅଚଳ ଶୂନ୍ୟ *val)
 {
-	return param_set_internal(param, val, false, false);
+	ଫେରନ୍ତୁ param_set_internal(param, val, ମିଥ୍ୟା, ମିଥ୍ୟା);
 }
 
-int param_set_no_remote_update(param_t param, const void *val, bool notify)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_set_no_remote_update(param_t param, ଅଚଳ ଶୂନ୍ୟ *val, ତାର୍କିକ notify)
 {
-	return param_set_internal(param, val, false, notify, false);
+	ଫେରନ୍ତୁ param_set_internal(param, val, ମିଥ୍ୟା, notify, ମିଥ୍ୟା);
 }
 
-bool param_used(param_t param)
+ତାର୍କିକ param_used(param_t param)
 {
-	if (handle_in_range(param)) {
-		return params_active[param];
+	ଯଦି (handle_in_range(param)) {
+		ଫେରନ୍ତୁ params_active[param];
 	}
 
-	return false;
+	ଫେରନ୍ତୁ ମିଥ୍ୟା;
 }
 
-void param_set_used(param_t param)
+ଶୂନ୍ୟ param_set_used(param_t param)
 {
-	if (handle_in_range(param)) {
-#if defined(CONFIG_PARAM_REMOTE)
+	ଯଦି (handle_in_range(param)) {
+#ଯଦି defined(CONFIG_PARAM_REMOTE)
 
-		if (!param_used(param)) {
+		ଯଦି (!param_used(param)) {
 			param_remote_set_used(param);
 		}
 
 #endif
 
-		params_active.set(param, true);
+		params_active.set(param, ସତ୍ୟ);
 	}
 }
 
-int param_set_default_value(param_t param, const void *val)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_set_default_ମୂଲ୍ୟ(param_t param, ଅଚଳ ଶୂନ୍ୟ *val)
 {
-	if (!handle_in_range(param)) {
+	ଯଦି (!handle_in_range(param)) {
 		PX4_ERR("set default value invalid param %d", param);
-		return PX4_ERROR;
+		ଫେରନ୍ତୁ PX4_ERROR;
 	}
 
-	if (val == nullptr) {
+	ଯଦି (val == nullptr) {
 		PX4_ERR("set default value invalid value");
-		return PX4_ERROR;
+		ଫେରନ୍ତୁ PX4_ERROR;
 	}
 
-	if (param_is_readonly(param)) {
+	ଯଦି (param_is_readonly(param)) {
 		PX4_WARN("param %s is read-only", param_name(param));
-		return PX4_ERROR;
+		ଫେରନ୍ତୁ PX4_ERROR;
 	}
 
-	int result = PX4_ERROR;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା result = PX4_ERROR;
 
 
 	// check if param being set to default value
-	bool setting_to_static_default = false;
-	const param_value_u firmware_default_value = firmware_defaults.get(param);
+	ତାର୍କିକ setting_to_static_default = ମିଥ୍ୟା;
+	ଅଚଳ param_ମୂଲ୍ୟ_u firmware_default_ମୂଲ୍ୟ = firmware_defaults.get(param);
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32: {
-			int32_t new_value;
-			memcpy(&new_value, val, sizeof(new_value));
-			setting_to_static_default = firmware_default_value.i == new_value;
-			break;
+	ବାଛ (param_type(param)) {
+	ସ୍ଥିତି PARAM_TYPE_INT32: {
+			int32_t new_ମୂଲ୍ୟ;
+			memcpy(&new_ମୂଲ୍ୟ, val, ଆକାର(new_ମୂଲ୍ୟ));
+			setting_to_static_default = firmware_default_ମୂଲ୍ୟ.i == new_ମୂଲ୍ୟ;
+			ଭାଙ୍ଗ;
 		}
 
-	case PARAM_TYPE_FLOAT: {
-			float new_value;
-			memcpy(&new_value, val, sizeof(new_value));
-			setting_to_static_default = fabsf(firmware_default_value.f - new_value) <= FLT_EPSILON;
-			break;
+	ସ୍ଥିତି PARAM_TYPE_FLOAT: {
+			ଦଶମିକ new_ମୂଲ୍ୟ;
+			memcpy(&new_ମୂଲ୍ୟ, val, ଆକାର(new_ମୂଲ୍ୟ));
+			setting_to_static_default = fabsf(firmware_default_ମୂଲ୍ୟ.f - new_ମୂଲ୍ୟ) <= FLT_EPSILON;
+			ଭାଙ୍ଗ;
 		}
 	}
 
-	if (setting_to_static_default) {
+	ଯଦି (setting_to_static_default) {
 		runtime_defaults.reset(param);
 
 		result = PX4_OK;
 
-	} else {
-		param_value_u new_value{};
+	} ଅନ୍ୟଥା {
+		param_ମୂଲ୍ୟ_u new_ମୂଲ୍ୟ{};
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
-				memcpy(&new_value.i, val, sizeof(new_value.i));
-				break;
+		ବାଛ (param_type(param)) {
+		ସ୍ଥିତି PARAM_TYPE_INT32: {
+				memcpy(&new_ମୂଲ୍ୟ.i, val, ଆକାର(new_ମୂଲ୍ୟ.i));
+				ଭାଙ୍ଗ;
 			}
 
-		case PARAM_TYPE_FLOAT: {
-				memcpy(&new_value.f, val, sizeof(new_value.f));
-				break;
+		ସ୍ଥିତି PARAM_TYPE_FLOAT: {
+				memcpy(&new_ମୂଲ୍ୟ.f, val, ଆକାର(new_ମୂଲ୍ୟ.f));
+				ଭାଙ୍ଗ;
 			}
 
-		default:
-			break;
+		ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+			ଭାଙ୍ଗ;
 		}
 
-		if (runtime_defaults.store(param, new_value)) {
+		ଯଦି (runtime_defaults.store(param, new_ମୂଲ୍ୟ)) {
 			user_config.refresh(param);
 			result = PX4_OK;
 
-		} else {
+		} ଅନ୍ୟଥା {
 			result = PX4_ERROR;
 		}
 	}
 
 
-	if ((result == PX4_OK) && param_used(param)) {
+	ଯଦି ((result == PX4_OK) && param_used(param)) {
 		// send notification if param is already in use
 		param_notify_changes();
 	}
 
-	return result;
+	ଫେରନ୍ତୁ result;
 }
 
-static int param_reset_internal(param_t param, bool notify = true, bool autosave = true)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_reset_internal(param_t param, ତାର୍କିକ notify = ସତ୍ୟ, ତାର୍କିକ autosave = ସତ୍ୟ)
 {
-#if defined(CONFIG_PARAM_REMOTE)
+#ଯଦି defined(CONFIG_PARAM_REMOTE)
 	// Remote doesn't support reset
-	return false;
+	ଫେରନ୍ତୁ ମିଥ୍ୟା;
 #endif
 
-	if (param_is_readonly(param)) {
-		return 0;  // silently skip — param_reset_all loops over all params
+	ଯଦି (param_is_readonly(param)) {
+		ଫେରନ୍ତୁ 0;  // silently skip — param_reset_all loops over all params
 	}
 
-	bool param_found = user_config.contains(param);
+	ତାର୍କିକ param_found = user_config.contains(param);
 
-	if (handle_in_range(param)) {
+	ଯଦି (handle_in_range(param)) {
 		user_config.reset(param);
 	}
 
-	if (param_found) {
+	ଯଦି (param_found) {
 		/* Persist the reset. Flash-param saves append only unsaved params,
 		 * so a reset has to show up as a tombstone or replay keeps the
 		 * previous override. */
-		params_unsaved.set(param, true);
+		params_unsaved.set(param, ସତ୍ୟ);
 	}
 
-	if (autosave) {
+	ଯଦି (autosave) {
 		param_autosave();
 	}
 
-	if (param_found && notify) {
+	ଯଦି (param_found && notify) {
 		param_notify_changes();
 	}
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#ଯଦି defined(CONFIG_PARAM_PRIMARY)
 	param_primary_reset(param);
 #endif
 
-	return param_found;
+	ଫେରନ୍ତୁ param_found;
 }
 
-int param_reset(param_t param) { return param_reset_internal(param, true); }
-int param_reset_no_notification(param_t param) { return param_reset_internal(param, false); }
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_reset(param_t param) { ଫେରନ୍ତୁ param_reset_internal(param, ସତ୍ୟ); }
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_reset_no_notification(param_t param) { ଫେରନ୍ତୁ param_reset_internal(param, ମିଥ୍ୟା); }
 
-static void
-param_reset_all_internal(bool auto_save)
+ସ୍ଥିର ଶୂନ୍ୟ
+param_reset_all_internal(ତାର୍କିକ auto_save)
 {
-#if defined(CONFIG_PARAM_REMOTE)
+#ଯଦି defined(CONFIG_PARAM_REMOTE)
 	// Remote doesn't support reset
-	return;
+	ଫେରନ୍ତୁ;
 #endif
 
-	for (param_t param = 0; handle_in_range(param); param++) {
-		param_reset_internal(param, false, false);
+	ପାଇଁ (param_t param = 0; handle_in_range(param); param++) {
+		param_reset_internal(param, ମିଥ୍ୟା, ମିଥ୍ୟା);
 	}
 
-	if (auto_save) {
+	ଯଦି (auto_save) {
 		param_autosave();
 	}
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#ଯଦି defined(CONFIG_PARAM_PRIMARY)
 	param_primary_reset_all();
 #endif
 
 	param_notify_changes();
 }
 
-void
+ଶୂନ୍ୟ
 param_reset_all()
 {
-	param_reset_all_internal(true);
+	param_reset_all_internal(ସତ୍ୟ);
 }
 
-void
-param_reset_excludes(const char *excludes[], int num_excludes)
+ଶୂନ୍ୟ
+param_reset_excludes(ଅଚଳ ଅକ୍ଷର *excludes[], ପୂର୍ଣ୍ଣସଂଖ୍ୟା ଅଙ୍କ_excludes)
 {
-	for (param_t param = 0; handle_in_range(param); param++) {
-		const char *name = param_name(param);
-		bool exclude = false;
+	ପାଇଁ (param_t param = 0; handle_in_range(param); param++) {
+		ଅଚଳ ଅକ୍ଷର *name = param_name(param);
+		ତାର୍କିକ exclude = ମିଥ୍ୟା;
 
-		for (int index = 0; index < num_excludes; index ++) {
-			int len = strlen(excludes[index]);
+		ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା index = 0; index < ଅଙ୍କ_excludes; index ++) {
+			ପୂର୍ଣ୍ଣସଂଖ୍ୟା len = strlen(excludes[index]);
 
-			if ((excludes[index][len - 1] == '*'
+			ଯଦି ((excludes[index][len - 1] == '*'
 			     && strncmp(name, excludes[index], len - 1) == 0)
 			    || strcmp(name, excludes[index]) == 0) {
 
-				exclude = true;
-				break;
+				exclude = ସତ୍ୟ;
+				ଭାଙ୍ଗ;
 			}
 		}
 
-		if (!exclude) {
+		ଯଦି (!exclude) {
 			param_reset(param);
 		}
 	}
 }
 
-void
-param_reset_specific(const char *resets[], int num_resets)
+ଶୂନ୍ୟ
+param_reset_specific(ଅଚଳ ଅକ୍ଷର *resets[], ପୂର୍ଣ୍ଣସଂଖ୍ୟା ଅଙ୍କ_resets)
 {
-	for (param_t param = 0; handle_in_range(param); param++) {
-		const char *name = param_name(param);
-		bool reset = false;
+	ପାଇଁ (param_t param = 0; handle_in_range(param); param++) {
+		ଅଚଳ ଅକ୍ଷର *name = param_name(param);
+		ତାର୍କିକ reset = ମିଥ୍ୟା;
 
-		for (int index = 0; index < num_resets; index++) {
-			int len = strlen(resets[index]);
+		ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା index = 0; index < ଅଙ୍କ_resets; index++) {
+			ପୂର୍ଣ୍ଣସଂଖ୍ୟା len = strlen(resets[index]);
 
-			if ((resets[index][len - 1] == '*'
+			ଯଦି ((resets[index][len - 1] == '*'
 			     && strncmp(name, resets[index], len - 1) == 0)
 			    || strcmp(name, resets[index]) == 0) {
 
-				reset = true;
-				break;
+				reset = ସତ୍ୟ;
+				ଭାଙ୍ଗ;
 			}
 		}
 
-		if (reset) {
+		ଯଦି (reset) {
 			param_reset(param);
 		}
 	}
 }
 
-int
-param_set_default_file(const char *filename)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+param_set_default_file(ଅଚଳ ଅକ୍ଷର *filename)
 {
-	if (filename && param_backup_file && strcmp(filename, param_backup_file) == 0) {
+	ଯଦି (filename && param_backup_file && strcmp(filename, param_backup_file) == 0) {
 		PX4_ERR("default file can't be the same as the backup file %s", filename);
-		return PX4_ERROR;
+		ଫେରନ୍ତୁ PX4_ERROR;
 	}
 
 #ifdef FLASH_BASED_PARAMS
 	// the default for flash-based params is always the FLASH
-	(void)filename;
-#else
+	(ଶୂନ୍ୟ)filename;
+#ଅନ୍ୟଥା
 
-	if (param_default_file != nullptr) {
+	ଯଦି (param_default_file != nullptr) {
 		// we assume this is not in use by some other thread
-		free(param_default_file);
+		ମୁକ୍ତ(param_default_file);
 		param_default_file = nullptr;
 	}
 
-	if (filename) {
+	ଯଦି (filename) {
 		param_default_file = strdup(filename);
 	}
 
 #endif /* FLASH_BASED_PARAMS */
 
-	return 0;
+	ଫେରନ୍ତୁ 0;
 }
 
-const char *param_get_default_file()
+ଅଚଳ ଅକ୍ଷର *param_get_default_file()
 {
-	return param_default_file;
+	ଫେରନ୍ତୁ param_default_file;
 }
 
-int param_set_backup_file(const char *filename)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_set_backup_file(ଅଚଳ ଅକ୍ଷର *filename)
 {
-	if (filename && param_default_file && strcmp(filename, param_default_file) == 0) {
+	ଯଦି (filename && param_default_file && strcmp(filename, param_default_file) == 0) {
 		PX4_ERR("backup file can't be the same as the default file %s", filename);
-		return PX4_ERROR;
+		ଫେରନ୍ତୁ PX4_ERROR;
 	}
 
-	if (param_backup_file != nullptr) {
+	ଯଦି (param_backup_file != nullptr) {
 		// we assume this is not in use by some other thread
-		free(param_backup_file);
+		ମୁକ୍ତ(param_backup_file);
 		param_backup_file = nullptr;
 	}
 
-	if (filename) {
+	ଯଦି (filename) {
 		param_backup_file = strdup(filename);
 
-	} else {
+	} ଅନ୍ୟଥା {
 		param_backup_file = nullptr; // backup disabled
 	}
 
-	return 0;
+	ଫେରନ୍ତୁ 0;
 }
 
-const char *param_get_backup_file()
+ଅଚଳ ଅକ୍ଷର *param_get_backup_file()
 {
-	return param_backup_file;
+	ଫେରନ୍ତୁ param_backup_file;
 }
 
-static int param_export_internal(int fd, param_filter_func filter);
-static int param_verify(int fd);
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_export_internal(ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd, param_filter_func filter);
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_verify(ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd);
 
-int param_save_default(bool blocking)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_save_default(ତାର୍କିକ blocking)
 {
 	PX4_DEBUG("param_save_default");
 
 	// take the file lock
-	if (blocking) {
+	ଯଦି (blocking) {
 		pthread_mutex_lock(&file_mutex);
 
-	} else {
-		if (pthread_mutex_trylock(&file_mutex) != 0) {
+	} ଅନ୍ୟଥା {
+		ଯଦି (pthread_mutex_trylock(&file_mutex) != 0) {
 			PX4_DEBUG("param_save_default: file lock failed (already locked)");
-			return -EWOULDBLOCK;
+			ଫେରନ୍ତୁ -EWOULDBLOCK;
 		}
 	}
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା shutdown_lock_ret = px4_shutdown_lock();
 
-	if (shutdown_lock_ret != 0) {
+	ଯଦି (shutdown_lock_ret != 0) {
 		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
 	}
 
-	int res = PX4_ERROR;
-	const char *filename = param_get_default_file();
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା res = PX4_ERROR;
+	ଅଚଳ ଅକ୍ଷର *filename = param_get_default_file();
 
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (params_unsaved[param]) {
-			params_saving.set(param, true);
-			params_unsaved.set(param, false);
+	ପାଇଁ (param_t param = 0; handle_in_range(param); param++) {
+		ଯଦି (params_unsaved[param]) {
+			params_saving.set(param, ସତ୍ୟ);
+			params_unsaved.set(param, ମିଥ୍ୟା);
 		}
 	}
 
-	if (filename) {
-		static constexpr int MAX_ATTEMPTS = 3;
+	ଯଦି (filename) {
+		ସ୍ଥିର constexpr ପୂର୍ଣ୍ଣସଂଖ୍ୟା MAX_ATTEMPTS = 3;
 
-		for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+		ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 			// write parameters to file
-			int fd = ::open(filename, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
+			ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd = ::open(filename, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
 
-			if (fd > -1) {
+			ଯଦି (fd > -1) {
 				perf_begin(param_export_perf);
 				res = param_export_internal(fd, nullptr);
 				perf_end(param_export_perf);
 				::close(fd);
 
-				if (res == PX4_OK) {
+				ଯଦି (res == PX4_OK) {
 					// reopen file to verify
-					int fd_verify = ::open(filename, O_RDONLY, PX4_O_MODE_666);
+					ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd_verify = ::open(filename, O_RDONLY, PX4_O_MODE_666);
 					res = param_verify(fd_verify) || lseek(fd_verify, 0, SEEK_SET) || param_verify(fd_verify);
 					::close(fd_verify);
 				}
 			}
 
-			if (res == PX4_OK) {
-				break;
+			ଯଦି (res == PX4_OK) {
+				ଭାଙ୍ଗ;
 
-			} else {
+			} ଅନ୍ୟଥା {
 				PX4_ERR("parameter export to %s failed (%d) attempt %d", filename, res, attempt);
 				px4_usleep(10000); // wait at least 10 milliseconds before trying again
 			}
 		}
 
-	} else {
+	} ଅନ୍ୟଥା {
 		perf_begin(param_export_perf);
 		res = flash_param_save(nullptr);
 		perf_end(param_export_perf);
 	}
 
-	if (res != PX4_OK) {
+	ଯଦି (res != PX4_OK) {
 		PX4_ERR("param export failed (%d)", res);
 
-		for (param_t param = 0; handle_in_range(param); param++) {
-			if (params_saving[param]) {
-				params_unsaved.set(param, true);
+		ପାଇଁ (param_t param = 0; handle_in_range(param); param++) {
+			ଯଦି (params_saving[param]) {
+				params_unsaved.set(param, ସତ୍ୟ);
 			}
 		}
 	}
 
 	params_saving.reset();
 
-	if (res == PX4_OK) {
+	ଯଦି (res == PX4_OK) {
 		// backup file
-		if (param_backup_file) {
-			int fd_backup_file = ::open(param_backup_file, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
+		ଯଦି (param_backup_file) {
+			ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd_backup_file = ::open(param_backup_file, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
 
-			if (fd_backup_file > -1) {
-				int backup_export_ret = param_export_internal(fd_backup_file, nullptr);
+			ଯଦି (fd_backup_file > -1) {
+				ପୂର୍ଣ୍ଣସଂଖ୍ୟା backup_export_ret = param_export_internal(fd_backup_file, nullptr);
 				::close(fd_backup_file);
 
-				if (backup_export_ret != 0) {
+				ଯଦି (backup_export_ret != 0) {
 					PX4_ERR("backup parameter export to %s failed (%d)", param_backup_file, backup_export_ret);
 
-				} else {
+				} ଅନ୍ୟଥା {
 					// verify export
-					int fd_verify = ::open(param_backup_file, O_RDONLY, PX4_O_MODE_666);
+					ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd_verify = ::open(param_backup_file, O_RDONLY, PX4_O_MODE_666);
 					param_verify(fd_verify);
 					::close(fd_verify);
 				}
@@ -925,184 +925,184 @@ int param_save_default(bool blocking)
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	ଯଦି (shutdown_lock_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return res;
+	ଫେରନ୍ତୁ res;
 }
 
 /**
  * @return 0 on success, 1 if all params have not yet been stored, -1 if device open failed, -2 if writing parameters failed
  */
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 param_load_default()
 {
-	int res = 0;
-	const char *filename = param_get_default_file();
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା res = 0;
+	ଅଚଳ ଅକ୍ଷର *filename = param_get_default_file();
 
-	if (!filename) {
-		return param_load(-1);
+	ଯଦି (!filename) {
+		ଫେରନ୍ତୁ param_load(-1);
 	}
 
-	int fd_load = ::open(filename, O_RDONLY);
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd_load = ::open(filename, O_RDONLY);
 
-	if (fd_load < 0) {
+	ଯଦି (fd_load < 0) {
 		/* no parameter file is OK, otherwise this is an error */
-		if (errno != ENOENT) {
+		ଯଦି (errno != ENOENT) {
 			PX4_ERR("open '%s' for reading failed", filename);
-			return -1;
+			ଫେରନ୍ତୁ -1;
 		}
 
-		return 1;
+		ଫେରନ୍ତୁ 1;
 	}
 
-	int result = param_load(fd_load);
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା result = param_load(fd_load);
 	::close(fd_load);
 
-	if (result == 1) {
+	ଯଦି (result == 1) {
 		/* blank file: nothing stored yet */
-		return 1;
+		ଫେରନ୍ତୁ 1;
 	}
 
-	if (result != 0) {
+	ଯଦି (result != 0) {
 		PX4_ERR("error reading parameters from '%s'", filename);
-		return -2;
+		ଫେରନ୍ତୁ -2;
 	}
 
-	return res;
+	ଫେରନ୍ତୁ res;
 }
 
-static int param_verify_callback(bson_decoder_t decoder, bson_node_t node)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_verify_callback(bson_decoder_t decoder, bson_ଗଣ୍ଠି_t ଗଣ୍ଠି_2)
 {
-	if (node->type == BSON_EOO) {
-		return 0;
+	ଯଦି (ଗଣ୍ଠି_2->type == BSON_EOO) {
+		ଫେରନ୍ତୁ 0;
 	}
 
 	// find the parameter this node represents
-	param_t param = param_find_no_notification(node->name);
+	param_t param = param_find_no_notification(ଗଣ୍ଠି_2->name);
 
-	if (param == PARAM_INVALID) {
-		PX4_ERR("verify: invalid parameter '%s'", node->name);
-		return -1;
+	ଯଦି (param == PARAM_INVALID) {
+		PX4_ERR("verify: invalid parameter '%s'", ଗଣ୍ଠି_2->name);
+		ଫେରନ୍ତୁ -1;
 	}
 
 	// handle verifying the parameter from the node
-	switch (node->type) {
-	case BSON_INT32: {
-			if (param_type(param) != PARAM_TYPE_INT32) {
-				PX4_ERR("verify: invalid param type %d for '%s' (BSON_INT32)", param_type(param), node->name);
-				return -1;
+	ବାଛ (ଗଣ୍ଠି_2->type) {
+	ସ୍ଥିତି BSON_INT32: {
+			ଯଦି (param_type(param) != PARAM_TYPE_INT32) {
+				PX4_ERR("verify: invalid param type %d for '%s' (BSON_INT32)", param_type(param), ଗଣ୍ଠି_2->name);
+				ଫେରନ୍ତୁ -1;
 			}
 
 			int32_t value;
 
-			if (param_get(param, &value) == 0) {
-				if (value == node->i32) {
-					return 1; // valid
+			ଯଦି (param_get(param, &value) == 0) {
+				ଯଦି (value == ଗଣ୍ଠି_2->i32) {
+					ଫେରନ୍ତୁ 1; // valid
 
-				} else {
-					PX4_ERR("verify: '%s' invalid BSON value %" PRIi32 "(expected %" PRIi32 ")", node->name, node->i32, value);
+				} ଅନ୍ୟଥା {
+					PX4_ERR("verify: '%s' invalid BSON value %" PRIi32 "(expected %" PRIi32 ")", ଗଣ୍ଠି_2->name, ଗଣ୍ଠି_2->i32, value);
 				}
 			}
 		}
-		break;
+		ଭାଙ୍ଗ;
 
-	case BSON_DOUBLE: {
-			if (param_type(param) != PARAM_TYPE_FLOAT) {
-				PX4_ERR("verify: invalid param type %d for '%s' (BSON_DOUBLE)", param_type(param), node->name);
-				return -1;
+	ସ୍ଥିତି BSON_DOUBLE: {
+			ଯଦି (param_type(param) != PARAM_TYPE_FLOAT) {
+				PX4_ERR("verify: invalid param type %d for '%s' (BSON_DOUBLE)", param_type(param), ଗଣ୍ଠି_2->name);
+				ଫେରନ୍ତୁ -1;
 			}
 
-			float value;
+			ଦଶମିକ value;
 
-			if (param_get(param, &value) == 0) {
-				if (fabsf(value - (float)node->d) <= FLT_EPSILON) {
-					return 1; // valid
+			ଯଦି (param_get(param, &value) == 0) {
+				ଯଦି (fabsf(value - (ଦଶମିକ)ଗଣ୍ଠି_2->d) <= FLT_EPSILON) {
+					ଫେରନ୍ତୁ 1; // valid
 
-				} else {
-					PX4_ERR("verify: '%s' invalid BSON value %.3f (expected %.3f)", node->name, node->d, (double)value);
+				} ଅନ୍ୟଥା {
+					PX4_ERR("verify: '%s' invalid BSON value %.3f (expected %.3f)", ଗଣ୍ଠି_2->name, ଗଣ୍ଠି_2->d, (ଦ୍ୱିଗୁଣ)value);
 				}
 			}
 		}
-		break;
+		ଭାଙ୍ଗ;
 
-	default:
-		PX4_ERR("verify: '%s' invalid node type %d", node->name, node->type);
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		PX4_ERR("verify: '%s' invalid node type %d", ଗଣ୍ଠି_2->name, ଗଣ୍ଠି_2->type);
 	}
 
-	return -1;
+	ଫେରନ୍ତୁ -1;
 }
 
-static int param_verify(int fd)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_verify(ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd)
 {
 	PX4_DEBUG("param_verify");
 
-	if (fd < 0) {
-		return -1;
+	ଯଦି (fd < 0) {
+		ଫେରନ୍ତୁ -1;
 	}
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	ଯଦି (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("verify: seek failed");
-		return -1;
+		ଫେରନ୍ତୁ -1;
 	}
 
 	bson_decoder_s decoder{};
 
-	if (bson_decoder_init_file(&decoder, fd, param_verify_callback) == 0) {
-		int result = -1;
+	ଯଦି (bson_decoder_init_file(&decoder, fd, param_verify_callback) == 0) {
+		ପୂର୍ଣ୍ଣସଂଖ୍ୟା result = -1;
 
-		do {
+		କର {
 			result = bson_decoder_next(&decoder);
 
-		} while (result > 0);
+		} ଯେତେବେଳେ (result > 0);
 
-		if (result == 0) {
-			if (decoder.total_document_size != decoder.total_decoded_size) {
+		ଯଦି (result == 0) {
+			ଯଦି (decoder.total_document_size != decoder.total_decoded_size) {
 				PX4_ERR("BSON document size (%" PRId32 ") doesn't match bytes decoded (%" PRId32 ")", decoder.total_document_size,
 					decoder.total_decoded_size);
 
-			} else {
-				return 0;
+			} ଅନ୍ୟଥା {
+				ଫେରନ୍ତୁ 0;
 			}
 
-		} else if (result == -ENODATA) {
+		} ଅନ୍ୟଥା ଯଦି (result == -ENODATA) {
 			PX4_ERR("verify: no BSON data");
 
-		} else {
+		} ଅନ୍ୟଥା {
 			PX4_ERR("verify: failed (%d)", result);
 		}
 	}
 
-	return -1;
+	ଫେରନ୍ତୁ -1;
 }
 
-int
-param_export(const char *filename, param_filter_func filter)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+param_export(ଅଚଳ ଅକ୍ଷର *filename, param_filter_func filter)
 {
 	PX4_DEBUG("param_export");
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା shutdown_lock_ret = px4_shutdown_lock();
 
-	if (shutdown_lock_ret != 0) {
+	ଯଦି (shutdown_lock_ret != 0) {
 		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
 	}
 
 	// take the file lock
-	if (pthread_mutex_trylock(&file_mutex) != 0) {
+	ଯଦି (pthread_mutex_trylock(&file_mutex) != 0) {
 		PX4_ERR("param_export: file lock failed (already locked)");
-		return PX4_ERROR;
+		ଫେରନ୍ତୁ PX4_ERROR;
 	}
 
-	int fd = ::open(filename, O_RDWR | O_CREAT, PX4_O_MODE_666);
-	int result = PX4_ERROR;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd = ::open(filename, O_RDWR | O_CREAT, PX4_O_MODE_666);
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା result = PX4_ERROR;
 
 	perf_begin(param_export_perf);
 
-	if (fd > -1) {
+	ଯଦି (fd > -1) {
 		result = param_export_internal(fd, filter);
 
-	} else {
+	} ଅନ୍ୟଥା {
 		result = flash_param_save(filter);
 	}
 
@@ -1110,87 +1110,87 @@ param_export(const char *filename, param_filter_func filter)
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	ଯଦି (shutdown_lock_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return result;
+	ଫେରନ୍ତୁ result;
 }
 
 // internal parameter export, caller is responsible for locking
-static int param_export_internal(int fd, param_filter_func filter)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା param_export_internal(ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd, param_filter_func filter)
 {
 	PX4_DEBUG("param_export_internal");
-	const auto changed_params = user_config.containedAsBitset();
+	ଅଚଳ auto changed_params = user_config.containedAsBitset();
 
-	int result = -1;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା result = -1;
 	bson_encoder_s encoder{};
 	uint8_t bson_buffer[256];
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	ଯଦି (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("export seek failed %d", errno);
-		return -1;
+		ଫେରନ୍ତୁ -1;
 	}
 
-	if (bson_encoder_init_buf_file(&encoder, fd, &bson_buffer, sizeof(bson_buffer)) != 0) {
-		goto out;
+	ଯଦି (bson_encoder_init_buf_file(&encoder, fd, &bson_buffer, ଆକାର(bson_buffer)) != 0) {
+		ଯାଅ out;
 	}
 
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (!changed_params[param] || (filter && !filter(param))) {
-			continue;
+	ପାଇଁ (param_t param = 0; handle_in_range(param); param++) {
+		ଯଦି (!changed_params[param] || (filter && !filter(param))) {
+			ଜାରି;
 		}
 
-		const param_value_u runtime_default_value = runtime_defaults.get(param);
-		const param_value_u user_config_value = user_config.get(param);
+		ଅଚଳ param_ମୂଲ୍ୟ_u runtime_default_ମୂଲ୍ୟ = runtime_defaults.get(param);
+		ଅଚଳ param_ମୂଲ୍ୟ_u user_config_ମୂଲ୍ୟ = user_config.get(param);
 
 		// don't export default values
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			if (user_config_value.i == runtime_default_value.i) {
-				PX4_DEBUG("skipping %s %" PRIi32 " export", param_name(param), runtime_default_value.i);
-				continue;
+		ବାଛ (param_type(param)) {
+		ସ୍ଥିତି PARAM_TYPE_INT32:
+			ଯଦି (user_config_ମୂଲ୍ୟ.i == runtime_default_ମୂଲ୍ୟ.i) {
+				PX4_DEBUG("skipping %s %" PRIi32 " export", param_name(param), runtime_default_ମୂଲ୍ୟ.i);
+				ଜାରି;
 			}
 
-			break;
+			ଭାଙ୍ଗ;
 
-		case PARAM_TYPE_FLOAT:
-			if (fabsf(user_config_value.f - runtime_default_value.f) <= FLT_EPSILON) {
-				PX4_DEBUG("skipping %s %.3f export", param_name(param), (double)runtime_default_value.f);
-				continue;
+		ସ୍ଥିତି PARAM_TYPE_FLOAT:
+			ଯଦି (fabsf(user_config_ମୂଲ୍ୟ.f - runtime_default_ମୂଲ୍ୟ.f) <= FLT_EPSILON) {
+				PX4_DEBUG("skipping %s %.3f export", param_name(param), (ଦ୍ୱିଗୁଣ)runtime_default_ମୂଲ୍ୟ.f);
+				ଜାରି;
 			}
 
-			break;
+			ଭାଙ୍ଗ;
 		}
 
-		const char *name = param_name(param);
-		const size_t size = param_size(param);
+		ଅଚଳ ଅକ୍ଷର *name = param_name(param);
+		ଅଚଳ size_t size = param_size(param);
 
 		/* append the appropriate BSON type object */
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32: {
-				const int32_t i = user_config_value.i;
-				PX4_DEBUG("exporting: %s (%d) size: %lu val: %" PRIi32, name, param, (long unsigned int)size, i);
+		ବାଛ (param_type(param)) {
+		ସ୍ଥିତି PARAM_TYPE_INT32: {
+				ଅଚଳ int32_t i = user_config_ମୂଲ୍ୟ.i;
+				PX4_DEBUG("exporting: %s (%d) size: %lu val: %" PRIi32, name, param, (long unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା)size, i);
 
-				if (bson_encoder_append_int32(&encoder, name, i) != 0) {
+				ଯଦି (bson_encoder_append_int32(&encoder, name, i) != 0) {
 					PX4_ERR("BSON append failed for '%s'", name);
-					goto out;
+					ଯାଅ out;
 				}
 			}
-			break;
+			ଭାଙ୍ଗ;
 
-		case PARAM_TYPE_FLOAT: {
-				const double f = (double)user_config_value.f;
-				PX4_DEBUG("exporting: %s (%d) size: %lu val: %.3f", name, param, (long unsigned int)size, (double)f);
+		ସ୍ଥିତି PARAM_TYPE_FLOAT: {
+				ଅଚଳ ଦ୍ୱିଗୁଣ f = (ଦ୍ୱିଗୁଣ)user_config_ମୂଲ୍ୟ.f;
+				PX4_DEBUG("exporting: %s (%d) size: %lu val: %.3f", name, param, (long unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା)size, (ଦ୍ୱିଗୁଣ)f);
 
-				if (bson_encoder_append_double(&encoder, name, f) != 0) {
+				ଯଦି (bson_encoder_append_double(&encoder, name, f) != 0) {
 					PX4_ERR("BSON append failed for '%s'", name);
-					goto out;
+					ଯାଅ out;
 				}
 			}
-			break;
+			ଭାଙ୍ଗ;
 
-		default:
+		ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
 			PX4_ERR("%s unrecognized parameter type %d, skipping export", name, param_type(param));
 		}
 	}
@@ -1199,94 +1199,94 @@ static int param_export_internal(int fd, param_filter_func filter)
 
 out:
 
-	if (result == 0) {
-		if (bson_encoder_fini(&encoder) != PX4_OK) {
+	ଯଦି (result == 0) {
+		ଯଦି (bson_encoder_fini(&encoder) != PX4_OK) {
 			PX4_ERR("BSON encoder finalize failed");
 			result = -1;
 		}
 	}
 
-	return result;
+	ଫେରନ୍ତୁ result;
 }
 
-#if defined(FLASH_BASED_PARAMS)
+#ଯଦି defined(FLASH_BASED_PARAMS)
 // A file is never the flash backend's store, so what an import changes is unsaved until a delta carries it.
 // As on the file backend, the import itself does not save.
-static constexpr bool file_import_is_saved = false;
-#else
-static constexpr bool file_import_is_saved = true;
+ସ୍ଥିର constexpr ତାର୍କିକ file_import_is_saved = ମିଥ୍ୟା;
+#ଅନ୍ୟଥା
+ସ୍ଥିର constexpr ତାର୍କିକ file_import_is_saved = ସତ୍ୟ;
 #endif
 
-static int
-param_import_callback(bson_decoder_t decoder, bson_node_t node)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+param_import_callback(bson_decoder_t decoder, bson_ଗଣ୍ଠି_t ଗଣ୍ଠି_2)
 {
 	/*
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	ଯଦି (ଗଣ୍ଠି_2->type == BSON_EOO) {
 		PX4_DEBUG("end of parameters");
-		return 0;
+		ଫେରନ୍ତୁ 0;
 	}
 
 	// A tombstone has no value. The decoder leaves the previous node's in the union and the translations
 	// read it without a type check.
-	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
+	ଅଚଳ ତାର୍କିକ tombstone = ଗଣ୍ଠି_2->type == BSON_nullptr || ଗଣ୍ଠି_2->type == BSON_UNDEFINED;
 
 	// if we do param_set() directly in the translation, set PARAM_SKIP_IMPORT as return value and return here
-	if (!tombstone && param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
-		return 1;
+	ଯଦି (!tombstone && param_modify_on_import(ଗଣ୍ଠି_2) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+		ଫେରନ୍ତୁ 1;
 	}
 
 	// Find the parameter this node represents.  If we don't know it, ignore the node.
-	param_t param = param_find_no_notification(node->name);
+	param_t param = param_find_no_notification(ଗଣ୍ଠି_2->name);
 
-	if (param == PARAM_INVALID) {
-		PX4_WARN("ignoring unrecognised parameter '%s'", node->name);
-		return 1;
+	ଯଦି (param == PARAM_INVALID) {
+		PX4_WARN("ignoring unrecognised parameter '%s'", ଗଣ୍ଠି_2->name);
+		ଫେରନ୍ତୁ 1;
 	}
 
 	// Handle setting the parameter from the node
-	switch (node->type) {
-	case BSON_nullptr:
-	case BSON_UNDEFINED:
-		param_reset_internal(param, true, false);
-		return 1;
+	ବାଛ (ଗଣ୍ଠି_2->type) {
+	ସ୍ଥିତି BSON_nullptr:
+	ସ୍ଥିତି BSON_UNDEFINED:
+		param_reset_internal(param, ସତ୍ୟ, ମିଥ୍ୟା);
+		ଫେରନ୍ତୁ 1;
 
-	case BSON_INT32: {
-			if (param_type(param) == PARAM_TYPE_INT32) {
-				int32_t i = node->i32;
-				param_set_internal(param, &i, file_import_is_saved, true, true, false);
+	ସ୍ଥିତି BSON_INT32: {
+			ଯଦି (param_type(param) == PARAM_TYPE_INT32) {
+				int32_t i = ଗଣ୍ଠି_2->i32;
+				param_set_internal(param, &i, file_import_is_saved, ସତ୍ୟ, ସତ୍ୟ, ମିଥ୍ୟା);
 				PX4_DEBUG("Imported %s with value %" PRIi32, param_name(param), i);
 
-			} else {
-				PX4_WARN("unexpected type for %s", node->name);
+			} ଅନ୍ୟଥା {
+				PX4_WARN("unexpected type for %s", ଗଣ୍ଠି_2->name);
 			}
 		}
-		break;
+		ଭାଙ୍ଗ;
 
-	case BSON_DOUBLE: {
-			if (param_type(param) == PARAM_TYPE_FLOAT) {
-				float f = node->d;
-				param_set_internal(param, &f, file_import_is_saved, true, true, false);
-				PX4_DEBUG("Imported %s with value %f", param_name(param), (double)f);
+	ସ୍ଥିତି BSON_DOUBLE: {
+			ଯଦି (param_type(param) == PARAM_TYPE_FLOAT) {
+				ଦଶମିକ f = ଗଣ୍ଠି_2->d;
+				param_set_internal(param, &f, file_import_is_saved, ସତ୍ୟ, ସତ୍ୟ, ମିଥ୍ୟା);
+				PX4_DEBUG("Imported %s with value %f", param_name(param), (ଦ୍ୱିଗୁଣ)f);
 
-			} else {
-				PX4_WARN("unexpected type for %s", node->name);
+			} ଅନ୍ୟଥା {
+				PX4_WARN("unexpected type for %s", ଗଣ୍ଠି_2->name);
 			}
 		}
-		break;
+		ଭାଙ୍ଗ;
 
-	default:
-		PX4_ERR("import: unrecognised node type for '%s'", node->name);
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		PX4_ERR("import: unrecognised node type for '%s'", ଗଣ୍ଠି_2->name);
 	}
 
 	// don't return zero, that means EOF
-	return 1;
+	ଫେରନ୍ତୁ 1;
 }
 
-static int
-param_import_internal(int fd)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+param_import_internal(ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd)
 {
 	/* blank source (nothing stored yet): an empty file, or zeroed/erased
 	 * storage where the BSON document length would be. Unlike the flash
@@ -1299,67 +1299,67 @@ param_import_internal(int fd)
 	 * file (no cluster chain -> error, not EOF), so the content check below
 	 * would miss it; detect it by size. Char-device backends (e.g. FRAM)
 	 * report no meaningful size and fall through to the content check. */
-	struct stat st;
+	ସଂରଚନା stat st;
 
-	if (fstat(fd, &st) == 0 && S_ISREG(st.st_mode) && st.st_size == 0) {
-		return 1;
+	ଯଦି (fstat(fd, &st) == 0 && S_ISREG(st.st_mode) && st.st_size == 0) {
+		ଫେରନ୍ତୁ 1;
 	}
 
 	int32_t doc_size = 0;
-	ssize_t len = read(fd, &doc_size, sizeof(doc_size));
+	ssize_t len = ପଠ(fd, &doc_size, ଆକାର(doc_size));
 
-	if (len == 0 || (len == (ssize_t)sizeof(doc_size) && (doc_size == 0 || doc_size == -1))) {
-		return 1;
+	ଯଦି (len == 0 || (len == (ssize_t)ଆକାର(doc_size) && (doc_size == 0 || doc_size == -1))) {
+		ଫେରନ୍ତୁ 1;
 	}
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	ଯଦି (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("import lseek failed (%d)", errno);
-		return -1;
+		ଫେରନ୍ତୁ -1;
 	}
 
-	static constexpr int MAX_ATTEMPTS = 3;
+	ସ୍ଥିର constexpr ପୂର୍ଣ୍ଣସଂଖ୍ୟା MAX_ATTEMPTS = 3;
 
-	for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 		bson_decoder_s decoder{};
 
-		if (bson_decoder_init_file(&decoder, fd, param_import_callback) == 0) {
-			int result = -1;
+		ଯଦି (bson_decoder_init_file(&decoder, fd, param_import_callback) == 0) {
+			ପୂର୍ଣ୍ଣସଂଖ୍ୟା result = -1;
 
-			do {
+			କର {
 				result = bson_decoder_next(&decoder);
 
-			} while (result > 0);
+			} ଯେତେବେଳେ (result > 0);
 
-			if (result == 0) {
-				if (decoder.total_document_size == decoder.total_decoded_size) {
+			ଯଦି (result == 0) {
+				ଯଦି (decoder.total_document_size == decoder.total_decoded_size) {
 					PX4_INFO("BSON document size %" PRId32 " bytes, decoded %" PRId32 " bytes (INT32:%" PRIu16 ", FLOAT:%" PRIu16 ")",
 						 decoder.total_document_size, decoder.total_decoded_size,
-						 decoder.count_node_int32, decoder.count_node_double);
+						 decoder.ଗଣନା_ଗଣ୍ଠି_int32, decoder.ଗଣନା_ଗଣ୍ଠି_double);
 
-					return 0;
+					ଫେରନ୍ତୁ 0;
 
-				} else {
+				} ଅନ୍ୟଥା {
 					PX4_ERR("BSON document size (%" PRId32 ") doesn't match bytes decoded (%" PRId32 ")",
 						decoder.total_document_size, decoder.total_decoded_size);
 				}
 
-			} else if (result == -ENODATA) {
+			} ଅନ୍ୟଥା ଯଦି (result == -ENODATA) {
 				// silently retry as a precaution unless this is our last attempt
-				if (attempt == MAX_ATTEMPTS) {
+				ଯଦି (attempt == MAX_ATTEMPTS) {
 					PX4_DEBUG("BSON: no data");
-					return 0;
+					ଫେରନ୍ତୁ 0;
 				}
 
-			} else {
+			} ଅନ୍ୟଥା {
 				PX4_ERR("param import failed (%d) attempt %d", result, attempt);
 			}
 
-		} else {
+		} ଅନ୍ୟଥା {
 			PX4_ERR("param import bson decoder init failed (attempt %d)", attempt);
 		}
 
-		if (attempt != MAX_ATTEMPTS) {
-			if (lseek(fd, 0, SEEK_SET) != 0) {
+		ଯଦି (attempt != MAX_ATTEMPTS) {
+			ଯଦି (lseek(fd, 0, SEEK_SET) != 0) {
 				PX4_ERR("import lseek failed (%d)", errno);
 			}
 
@@ -1367,101 +1367,101 @@ param_import_internal(int fd)
 		}
 	}
 
-	return -1;
+	ଫେରନ୍ତୁ -1;
 }
 
-#if defined(FLASH_BASED_PARAMS)
-static int flash_backend_locked(int (*op)())
+#ଯଦି defined(FLASH_BASED_PARAMS)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା flash_backend_locked(ପୂର୍ଣ୍ଣସଂଖ୍ୟା (*op)())
 {
 	/* Same order as param_save_default: mutex then shutdown lock. Autosave
 	 * uses a trylock, so a compact holds it off the flash programming. */
 	pthread_mutex_lock(&file_mutex);
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା shutdown_lock_ret = px4_shutdown_lock();
 
-	if (shutdown_lock_ret != 0) {
+	ଯଦି (shutdown_lock_ret != 0) {
 		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
 	}
 
-	int result = op();
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା result = op();
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	ଯଦି (shutdown_lock_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return result;
+	ଫେରନ୍ତୁ result;
 }
 
-static int flash_load_locked()
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା flash_load_locked()
 {
 	/* Reset under the lock so a pending autosave cannot append tombstones
 	 * of the just-cleared RAM before import/compact run. */
-	param_reset_all_internal(false);
-	int result = flash_param_import();
+	param_reset_all_internal(ମିଥ୍ୟା);
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା result = flash_param_import();
 
-	if (result == 0 || result == 1) {
+	ଯଦି (result == 0 || result == 1) {
 		params_unsaved.reset();
 	}
 
-	return result;
+	ଫେରନ୍ତୁ result;
 }
 #endif
 
-int
-param_import(int fd)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+param_import(ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd)
 {
-	if (fd < 0) {
-#if defined(FLASH_BASED_PARAMS)
-		return flash_backend_locked(flash_param_import);
-#else
-		return flash_param_import();
+	ଯଦି (fd < 0) {
+#ଯଦି defined(FLASH_BASED_PARAMS)
+		ଫେରନ୍ତୁ flash_backend_locked(flash_param_import);
+#ଅନ୍ୟଥା
+		ଫେରନ୍ତୁ flash_param_import();
 #endif
 	}
 
-	return param_import_internal(fd);
+	ଫେରନ୍ତୁ param_import_internal(fd);
 }
 
-int
-param_load(int fd)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+param_load(ପୂର୍ଣ୍ଣସଂଖ୍ୟା fd)
 {
-	if (fd < 0) {
-#if defined(FLASH_BASED_PARAMS)
-		return flash_backend_locked(flash_load_locked);
-#else
-		return PX4_ERROR;
+	ଯଦି (fd < 0) {
+#ଯଦି defined(FLASH_BASED_PARAMS)
+		ଫେରନ୍ତୁ flash_backend_locked(flash_load_locked);
+#ଅନ୍ୟଥା
+		ଫେରନ୍ତୁ PX4_ERROR;
 #endif
 	}
 
-	param_reset_all_internal(false);
-	int result = param_import_internal(fd);
+	param_reset_all_internal(ମିଥ୍ୟା);
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା result = param_import_internal(fd);
 
-#if !defined(FLASH_BASED_PARAMS)
+#ଯଦି !defined(FLASH_BASED_PARAMS)
 
-	if (result >= 0) {
+	ଯଦି (result >= 0) {
 		params_unsaved.reset();
 	}
 
 #endif
 
-	return result;
+	ଫେରନ୍ତୁ result;
 }
 
-void
-param_foreach(void (*func)(void *arg, param_t param), void *arg, bool only_changed, bool only_used)
+ଶୂନ୍ୟ
+param_foreach(ଶୂନ୍ୟ (*func)(ଶୂନ୍ୟ *arg, param_t param), ଶୂନ୍ୟ *arg, ତାର୍କିକ only_changed, ତାର୍କିକ only_used)
 {
 	param_t	param;
 
-	for (param = 0; handle_in_range(param); param++) {
+	ପାଇଁ (param = 0; handle_in_range(param); param++) {
 
 		/* if requested, skip unchanged values */
-		if (only_changed && (!user_config.contains(param))) {
-			continue;
+		ଯଦି (only_changed && (!user_config.contains(param))) {
+			ଜାରି;
 		}
 
-		if (only_used && !param_used(param)) {
-			continue;
+		ଯଦି (only_used && !param_used(param)) {
+			ଜାରି;
 		}
 
 		func(arg, param);
@@ -1473,33 +1473,33 @@ uint32_t param_hash_check()
 	uint32_t param_hash = 0;
 
 	/* compute the CRC32 over all string param names and 4 byte values */
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (!param_used(param) || param_is_volatile(param)) {
-			continue;
+	ପାଇଁ (param_t param = 0; handle_in_range(param); param++) {
+		ଯଦି (!param_used(param) || param_is_volatile(param)) {
+			ଜାରି;
 		}
 
-		const char *name = param_name(param);
+		ଅଚଳ ଅକ୍ଷର *name = param_name(param);
 		auto value = user_config.get(param).i;
-		const void *val = (void *)&value;
-		param_hash = crc32part((const uint8_t *)name, strlen(name), param_hash);
-		param_hash = crc32part((const uint8_t *)val, param_size(param), param_hash);
+		ଅଚଳ ଶୂନ୍ୟ *val = (ଶୂନ୍ୟ *)&value;
+		param_hash = crc32part((ଅଚଳ uint8_t *)name, strlen(name), param_hash);
+		param_hash = crc32part((ଅଚଳ uint8_t *)val, param_size(param), param_hash);
 	}
 
-	return param_hash;
+	ଫେରନ୍ତୁ param_hash;
 }
 
-void param_print_status()
+ଶୂନ୍ୟ param_print_status()
 {
-	PX4_INFO("summary: %d/%d (used/total)", param_count_used(), param_count());
+	PX4_INFO("summary: %d/%d (used/total)", param_ଗଣନା_used(), param_ଗଣନା());
 
 #ifndef FLASH_BASED_PARAMS
-	const char *filename = param_get_default_file();
+	ଅଚଳ ଅକ୍ଷର *filename = param_get_default_file();
 
-	if (filename != nullptr) {
+	ଯଦି (filename != nullptr) {
 		PX4_INFO("file: %s", param_get_default_file());
 	}
 
-	if (param_backup_file) {
+	ଯଦି (param_backup_file) {
 		PX4_INFO("backup file: %s", param_backup_file);
 	}
 
@@ -1512,12 +1512,12 @@ void param_print_status()
 	PX4_INFO("storage array (custom defaults): %d/%d elements (%zu bytes total)",
 		 runtime_defaults.size(), firmware_defaults.size(), (size_t)runtime_defaults.byteSize());
 
-	if (autosave_instance) {
+	ଯଦି (autosave_instance) {
 		PX4_INFO("auto save: %s", autosave_instance->enabled() ? "on" : "off");
 
 		hrt_abstime last_autosave = autosave_instance->lastAutosave();
 
-		if (last_autosave > 0) {
+		ଯଦି (last_autosave > 0) {
 			PX4_INFO("last auto save: %.3f seconds ago", hrt_elapsed_time(&last_autosave) * 1e-6);
 		}
 	}
@@ -1527,24 +1527,24 @@ void param_print_status()
 	perf_print_counter(param_get_perf);
 	perf_print_counter(param_set_perf);
 
-#if defined(CONFIG_PARAM_PRIMARY)
-	struct param_primary_counters counts;
+#ଯଦି defined(CONFIG_PARAM_PRIMARY)
+	ସଂରଚନା param_primary_counters counts;
 	param_primary_get_counters(&counts);
 	PX4_INFO("set value requests received: %" PRIu32 ", set value responses sent: %" PRIu32,
-		 counts.set_value_request_received, counts.set_value_response_sent);
+		 counts.set_ମୂଲ୍ୟ_request_received, counts.set_ମୂଲ୍ୟ_response_sent);
 	PX4_INFO("set value requests sent: %" PRIu32 ", set value responses received: %" PRIu32,
-		 counts.set_value_request_sent, counts.set_value_response_received);
+		 counts.set_ମୂଲ୍ୟ_request_sent, counts.set_ମୂଲ୍ୟ_response_received);
 	PX4_INFO("resets sent: %" PRIu32 ", set used requests received: %" PRIu32,
 		 counts.reset_sent, counts.set_used_received);
 #endif
 
-#if defined(CONFIG_PARAM_REMOTE)
-	struct param_remote_counters counts;
+#ଯଦି defined(CONFIG_PARAM_REMOTE)
+	ସଂରଚନା param_remote_counters counts;
 	param_remote_get_counters(&counts);
 	PX4_INFO("set value requests received: %" PRIu32 ", set value responses sent: %" PRIu32,
-		 counts.set_value_request_received, counts.set_value_response_sent);
+		 counts.set_ମୂଲ୍ୟ_request_received, counts.set_ମୂଲ୍ୟ_response_sent);
 	PX4_INFO("set value requests sent: %" PRIu32 ", set value responses received: %" PRIu32,
-		 counts.set_value_request_sent, counts.set_value_response_received);
+		 counts.set_ମୂଲ୍ୟ_request_sent, counts.set_ମୂଲ୍ୟ_response_received);
 	PX4_INFO("resets received: %" PRIu32 ", set used requests sent: %" PRIu32,
 		 counts.reset_received, counts.set_used_sent);
 #endif

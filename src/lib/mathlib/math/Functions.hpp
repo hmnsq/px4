@@ -39,19 +39,19 @@
 
 #pragma once
 
-#include "Limits.hpp"
+#ଅନ୍ତର୍ଭାଵ "Limits.hpp"
 
-#include <px4_platform_common/defines.h>
-#include <matrix/matrix/math.hpp>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <matrix/matrix/math.hpp>
 
-namespace math
+ନାମାକାଶ math
 {
 
 // Type-safe signum function with zero treated as positive
 template<typename T>
-int signNoZero(T val)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା signNoZero(T val)
 {
-	return (T(0) <= val) - (val < T(0));
+	ଫେରନ୍ତୁ (T(0) <= val) - (val < T(0));
 }
 
 /**
@@ -60,15 +60,15 @@ int signNoZero(T val)
  * @param[in] positive Truth value to take the sign from
  * @return 1 if positive is true, -1 if positive is false
  */
-inline int signFromBool(bool positive)
+ଧାଡ଼ିଭିତରେ ପୂର୍ଣ୍ଣସଂଖ୍ୟା signFromBool(ତାର୍କିକ positive)
 {
-	return positive ? 1 : -1;
+	ଫେରନ୍ତୁ positive ? 1 : -1;
 }
 
 template<typename T>
 T sq(T val)
 {
-	return val * val;
+	ଫେରନ୍ତୁ val * val;
 }
 
 /*
@@ -81,11 +81,11 @@ T sq(T val)
  * @return result of function output
  */
 template<typename T>
-const T expo(const T &value, const T &e)
+ଅଚଳ T expo(ଅଚଳ T &value, ଅଚଳ T &e)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T ec = constrain(e, (T) 0, (T) 1);
-	return (1 - ec) * x + ec * x * x * x;
+	ଫେରନ୍ତୁ (1 - ec) * x + ec * x * x * x;
 }
 
 /*
@@ -100,11 +100,11 @@ const T expo(const T &value, const T &e)
  * @return result of function output
  */
 template<typename T>
-const T superexpo(const T &value, const T &e, const T &g)
+ଅଚଳ T superexpo(ଅଚଳ T &value, ଅଚଳ T &e, ଅଚଳ T &g)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T gc = constrain(g, (T) 0, (T) 0.99);
-	return expo(x, e) * (1 - gc) / (1 - fabsf(x) * gc);
+	ଫେରନ୍ତୁ expo(x, e) * (1 - gc) / (1 - fabsf(x) * gc);
 }
 
 /*
@@ -122,20 +122,20 @@ const T superexpo(const T &value, const T &e, const T &g)
  * 		0.99 - almost entire span is deadzone
  */
 template<typename T>
-const T deadzone(const T &value, const T &dz)
+ଅଚଳ T deadzone(ଅଚଳ T &value, ଅଚଳ T &dz)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T dzc = constrain(dz, (T) 0, (T) 0.99);
 	// Rescale the input such that we get a piecewise linear function that will be continuous with applied deadzone
 	T out = (x - matrix::sign(x) * dzc) / (1 - dzc);
 	// apply the deadzone (values zero around the middle)
-	return out * (fabsf(x) > dzc);
+	ଫେରନ୍ତୁ out * (fabsf(x) > dzc);
 }
 
 template<typename T>
-const T expo_deadzone(const T &value, const T &e, const T &dz)
+ଅଚଳ T expo_deadzone(ଅଚଳ T &value, ଅଚଳ T &e, ଅଚଳ T &dz)
 {
-	return expo(deadzone(value, dz), e);
+	ଫେରନ୍ତୁ expo(deadzone(value, dz), e);
 }
 
 
@@ -149,19 +149,19 @@ const T expo_deadzone(const T &value, const T &e, const T &dz)
  *         x_low   x_high
  */
 template<typename T>
-const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_low, const T &y_high)
+ଅଚଳ T interpolate(ଅଚଳ T &value, ଅଚଳ T &x_ତଳ, ଅଚଳ T &x_ଉପର, ଅଚଳ T &y_ତଳ, ଅଚଳ T &y_ଉପର)
 {
-	if (value <= x_low) {
-		return y_low;
+	ଯଦି (value <= x_ତଳ) {
+		ଫେରନ୍ତୁ y_ତଳ;
 
-	} else if (value > x_high) {
-		return y_high;
+	} ଅନ୍ୟଥା ଯଦି (value > x_ଉପର) {
+		ଫେରନ୍ତୁ y_ଉପର;
 
-	} else {
+	} ଅନ୍ୟଥା {
 		/* linear function between the two points */
-		T a = (y_high - y_low) / (x_high - x_low);
-		T b = y_low - (a * x_low);
-		return (a * value) + b;
+		T a = (y_ଉପର - y_ତଳ) / (x_ଉପର - x_ତଳ);
+		T b = y_ତଳ - (a * x_ତଳ);
+		ଫେରନ୍ତୁ (a * value) + b;
 	}
 }
 
@@ -178,10 +178,10 @@ const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_
  *        0 1/(N-1) 2/(N-1) ... 1
  */
 template<typename T, size_t N>
-const T interpolateN(const T &value, const T(&y)[N])
+ଅଚଳ T interpolateN(ଅଚଳ T &value, ଅଚଳ T(&y)[N])
 {
-	size_t index = constrain((int)(value * (N - 1)), 0, (int)(N - 2));
-	return interpolate(value, (T)index / (T)(N - 1), (T)(index + 1) / (T)(N - 1), y[index], y[index + 1]);
+	size_t index = constrain((ପୂର୍ଣ୍ଣସଂଖ୍ୟା)(value * (N - 1)), 0, (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)(N - 2));
+	ଫେରନ୍ତୁ interpolate(value, (T)index / (T)(N - 1), (T)(index + 1) / (T)(N - 1), y[index], y[index + 1]);
 }
 
 /*
@@ -198,15 +198,15 @@ const T interpolateN(const T &value, const T(&y)[N])
  * Note: x[N] corner coordinates have to be sorted in ascending order
  */
 template<typename T, size_t N>
-const T interpolateNXY(const T &value, const T(&x)[N], const T(&y)[N])
+ଅଚଳ T interpolateNXY(ଅଚଳ T &value, ଅଚଳ T(&x)[N], ଅଚଳ T(&y)[N])
 {
 	size_t index = 0;
 
-	while ((value > x[index + 1]) && (index < (N - 2))) {
+	ଯେତେବେଳେ ((value > x[index + 1]) && (index < (N - 2))) {
 		index++;
 	}
 
-	return interpolate(value, x[index], x[index + 1], y[index], y[index + 1]);
+	ଫେରନ୍ତୁ interpolate(value, x[index], x[index + 1], y[index], y[index + 1]);
 }
 
 /*
@@ -222,16 +222,16 @@ const T interpolateNXY(const T &value, const T(&x)[N], const T(&y)[N])
  *             0    1
  */
 template<typename T>
-const T sqrt_linear(const T &value)
+ଅଚଳ T sqrt_linear(ଅଚଳ T &value)
 {
-	if (value < static_cast<T>(0)) {
-		return static_cast<T>(0);
+	ଯଦି (value < static_cast<T>(0)) {
+		ଫେରନ୍ତୁ static_cast<T>(0);
 
-	} else if (value < static_cast<T>(1)) {
-		return sqrtf(value);
+	} ଅନ୍ୟଥା ଯଦି (value < static_cast<T>(1)) {
+		ଫେରନ୍ତୁ sqrtf(value);
 
-	} else {
-		return value;
+	} ଅନ୍ୟଥା {
+		ଫେରନ୍ତୁ value;
 	}
 }
 
@@ -242,29 +242,29 @@ const T sqrt_linear(const T &value)
  * Any value for s is valid.
  */
 template<typename T>
-const T lerp(const T &a, const T &b, const T &s)
+ଅଚଳ T lerp(ଅଚଳ T &a, ଅଚଳ T &b, ଅଚଳ T &s)
 {
-	return (static_cast<T>(1) - s) * a + s * b;
+	ଫେରନ୍ତୁ (static_cast<T>(1) - s) * a + s * b;
 }
 
 template<typename T>
 constexpr T negate(T value)
 {
-	static_assert(sizeof(T) > 2, "implement for T");
-	return -value;
+	static_assert(ଆକାର(T) > 2, "implement for T");
+	ଫେରନ୍ତୁ -value;
 }
 
 template<>
 constexpr int16_t negate<int16_t>(int16_t value)
 {
-	if (value == INT16_MAX) {
-		return INT16_MIN;
+	ଯଦି (value == INT16_MAX) {
+		ଫେରନ୍ତୁ INT16_MIN;
 
-	} else if (value == INT16_MIN) {
-		return INT16_MAX;
+	} ଅନ୍ୟଥା ଯଦି (value == INT16_MIN) {
+		ଫେରନ୍ତୁ INT16_MAX;
 	}
 
-	return -value;
+	ଫେରନ୍ତୁ -value;
 }
 
 /*
@@ -273,30 +273,30 @@ constexpr int16_t negate<int16_t>(int16_t value)
  */
 
 template<typename T>
-int countSetBits(T n)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା ଗଣନା_Set_Bits(T n)
 {
-	return __builtin_popcount(n);
+	ଫେରନ୍ତୁ __builtin_popcount(n);
 }
 
 template<typename T>
-int countTrailingZeros(T n)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା ଗଣନା_Trailing_Zeros(T n)
 {
-	return n == 0 ? (int)(sizeof(T) * 8) : __builtin_ctz(n);
+	ଫେରନ୍ତୁ n == 0 ? (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)(ଆକାର(T) * 8) : __builtin_ctz(n);
 }
 
-inline bool isFinite(const float &value)
+ଧାଡ଼ିଭିତରେ ତାର୍କିକ isFinite(ଅଚଳ ଦଶମିକ &value)
 {
-	return PX4_ISFINITE(value);
+	ଫେରନ୍ତୁ PX4_ISFINITE(value);
 }
 
-inline bool isFinite(const matrix::Vector2f &value)
+ଧାଡ଼ିଭିତରେ ତାର୍କିକ isFinite(ଅଚଳ matrix::Vector2f &value)
 {
-	return value.isAllFinite();
+	ଫେରନ୍ତୁ value.isAllFinite();
 }
 
-inline bool isFinite(const matrix::Vector3f &value)
+ଧାଡ଼ିଭିତରେ ତାର୍କିକ isFinite(ଅଚଳ matrix::Vector3f &value)
 {
-	return value.isAllFinite();
+	ଫେରନ୍ତୁ value.isAllFinite();
 }
 
 } /* namespace math */

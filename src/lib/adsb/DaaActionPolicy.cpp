@@ -38,225 +38,225 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include "DaaActionPolicy.h"
+#ଅନ୍ତର୍ଭାଵ "DaaActionPolicy.h"
 
-#include <px4_platform_common/log.h>
-#include <uORB/topics/detect_and_avoid.h>
-#include <uORB/topics/vehicle_status.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/log.h>
+#ଅନ୍ତର୍ଭାଵ <uORB/topics/detect_and_avoid.h>
+#ଅନ୍ତର୍ଭାଵ <uORB/topics/vehicle_status.h>
 
-daa_action_decision_s DaaActionPolicy::decide(const uint8_t conflict_level, const uint8_t prev_conflict_level,
-		const uint8_t nav_state, const bool landed, const bool armed,
-		const DaaAction previous_action, const daa_action_params_s &params)
+daa_action_decision_s DaaActionPolicy::decide(ଅଚଳ uint8_t conflict_level, ଅଚଳ uint8_t prev_conflict_level,
+		ଅଚଳ uint8_t nav_state, ଅଚଳ ତାର୍କିକ landed, ଅଚଳ ତାର୍କିକ armed,
+		ଅଚଳ DaaAction previous_action, ଅଚଳ daa_action_params_s &params)
 {
 	daa_action_decision_s decision{};
-	const DaaAction requested_action = action_from_conflict_level(conflict_level, params);
+	ଅଚଳ DaaAction requested_action = action_from_conflict_level(conflict_level, params);
 
-	if (landed) {
-		if (requested_action <= DaaAction::kWarnOnly) {
-			return decision;
+	ଯଦି (landed) {
+		ଯଦି (requested_action <= DaaAction::kWarnOnly) {
+			ଫେରନ୍ତୁ decision;
 		}
 
-		decision.warn_on_ground = true;
+		decision.warn_on_ground = ସତ୍ୟ;
 		decision.ground_warning_cause = armed ? NotifyLandedActCause::kConflictAndArmed
 						: NotifyLandedActCause::kConflictAndDisarmed;
-		return decision;
+		ଫେରନ୍ତୁ decision;
 	}
 
-	if (conflict_level == prev_conflict_level) {
-		return decision;
+	ଯଦି (conflict_level == prev_conflict_level) {
+		ଫେରନ୍ତୁ decision;
 	}
 
-	const bool conflict_escalated = conflict_level > prev_conflict_level;
+	ଅଚଳ ତାର୍କିକ conflict_escalated = conflict_level > prev_conflict_level;
 
-	if (conflict_escalated && action_escalates_above_nav_state(requested_action, nav_state)) {
+	ଯଦି (conflict_escalated && action_escalates_above_nav_state(requested_action, nav_state)) {
 		decision.action_command = requested_action;
 		decision.announce_action = previous_action != requested_action
 					   || prev_conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
-		return decision;
+		ଫେରନ୍ତୁ decision;
 	}
 
-	if (!conflict_escalated) {
-		PX4_DEBUG("DAA: De-escalation, prev act %d, nav state %d, ", static_cast<int>(previous_action), nav_state);
+	ଯଦି (!conflict_escalated) {
+		PX4_DEBUG("DAA: De-escalation, prev act %d, nav state %d, ", static_cast<ପୂର୍ଣ୍ଣସଂଖ୍ୟା>(previous_action), nav_state);
 	}
 
-	return decision;
+	ଫେରନ୍ତୁ decision;
 }
 
-DaaAction DaaActionPolicy::action_from_conflict_level(const uint8_t conflict_level,
-		const daa_action_params_s &params)
+DaaAction DaaActionPolicy::action_from_conflict_level(ଅଚଳ uint8_t conflict_level,
+		ଅଚଳ daa_action_params_s &params)
 {
-	if (conflict_level < detect_and_avoid_s::DAA_CONFLICT_LVL_LOW
+	ଯଦି (conflict_level < detect_and_avoid_s::DAA_CONFLICT_LVL_ତଳ
 	    || conflict_level > detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL) {
-		return DaaAction::kDisabled;
+		ଫେରନ୍ତୁ DaaAction::kDisabled;
 	}
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#ଯଦି defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 
-	switch (conflict_level) {
-	case detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL: {
+	ବାଛ (conflict_level) {
+	ସ୍ଥିତି detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL: {
 			DaaAction action = action_param_to_daa_action(params.lvl_crit_act);
 
-			if (action != DaaAction::kDisabled) {
-				return action;
+			ଯଦି (action != DaaAction::kDisabled) {
+				ଫେରନ୍ତୁ action;
 			}
 
-			action = action_param_to_daa_action(params.lvl_high_act);
+			action = action_param_to_daa_action(params.lvl_ଉପର_act);
 
-			if (action != DaaAction::kDisabled) {
-				return action;
+			ଯଦି (action != DaaAction::kDisabled) {
+				ଫେରନ୍ତୁ action;
 			}
 
 			action = action_param_to_daa_action(params.lvl_med_act);
 
-			if (action != DaaAction::kDisabled) {
-				return action;
+			ଯଦି (action != DaaAction::kDisabled) {
+				ଫେରନ୍ତୁ action;
 			}
 
-			return action_param_to_daa_action(params.lvl_low_act);
+			ଫେରନ୍ତୁ action_param_to_daa_action(params.lvl_ତଳ_act);
 		}
 
-	case detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH: {
-			const DaaAction action = action_param_to_daa_action(params.lvl_high_act);
-			return action != DaaAction::kDisabled ? action : action_param_to_daa_action(params.lvl_low_act);
+	ସ୍ଥିତି detect_and_avoid_s::DAA_CONFLICT_LVL_ଉପର: {
+			ଅଚଳ DaaAction action = action_param_to_daa_action(params.lvl_ଉପର_act);
+			ଫେରନ୍ତୁ action != DaaAction::kDisabled ? action : action_param_to_daa_action(params.lvl_ତଳ_act);
 		}
 
-	case detect_and_avoid_s::DAA_CONFLICT_LVL_MEDIUM: {
-			const DaaAction action = action_param_to_daa_action(params.lvl_med_act);
-			return action != DaaAction::kDisabled ? action : action_param_to_daa_action(params.lvl_low_act);
+	ସ୍ଥିତି detect_and_avoid_s::DAA_CONFLICT_LVL_MEDIUM: {
+			ଅଚଳ DaaAction action = action_param_to_daa_action(params.lvl_med_act);
+			ଫେରନ୍ତୁ action != DaaAction::kDisabled ? action : action_param_to_daa_action(params.lvl_ତଳ_act);
 		}
 
-	case detect_and_avoid_s::DAA_CONFLICT_LVL_LOW: {
-			return action_param_to_daa_action(params.lvl_low_act);
+	ସ୍ଥିତି detect_and_avoid_s::DAA_CONFLICT_LVL_ତଳ: {
+			ଫେରନ୍ତୁ action_param_to_daa_action(params.lvl_ତଳ_act);
 		}
 	}
 
-	return DaaAction::kDisabled;
-#else
-	return action_param_to_daa_action(params.traff_avoid);
+	ଫେରନ୍ତୁ DaaAction::kDisabled;
+#ଅନ୍ୟଥା
+	ଫେରନ୍ତୁ action_param_to_daa_action(params.traff_avoid);
 #endif // CONFIG_NAVIGATOR_ADSB_F3442
 }
 
-bool DaaActionPolicy::action_escalates_above_nav_state(const DaaAction requested_action, const uint8_t nav_state)
+ତାର୍କିକ DaaActionPolicy::action_escalates_above_nav_state(ଅଚଳ DaaAction requested_action, ଅଚଳ uint8_t nav_state)
 {
-	if (requested_action <= DaaAction::kWarnOnly) {
+	ଯଦି (requested_action <= DaaAction::kWarnOnly) {
 		PX4_DEBUG("DAA: Escalation to Warn, no action published");
-		return false;
+		ଫେରନ୍ତୁ ମିଥ୍ୟା;
 	}
 
-	const DaaAction current_nav_state_action = nav_state_to_equivalent_daa_action(nav_state);
+	ଅଚଳ DaaAction current_nav_state_action = nav_state_to_equivalent_daa_action(nav_state);
 
 	// Only publish command if requested command is more critical than current navigator state.
-	if (requested_action <= current_nav_state_action) {
+	ଯଦି (requested_action <= current_nav_state_action) {
 		PX4_DEBUG("DAA: Requested action: %d less critical than current nav state: %d, no action published",
-			  (int)requested_action,
-			  (int)nav_state);
-		return false;
+			  (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)requested_action,
+			  (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)nav_state);
+		ଫେରନ୍ତୁ ମିଥ୍ୟା;
 	}
 
-	return true;
+	ଫେରନ୍ତୁ ସତ୍ୟ;
 }
 
-DaaAction DaaActionPolicy::nav_state_to_equivalent_daa_action(const uint8_t nav_state)
+DaaAction DaaActionPolicy::nav_state_to_equivalent_daa_action(ଅଚଳ uint8_t nav_state)
 {
-	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION:
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF:
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_FOLLOW_TARGET:
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF:
-	case vehicle_status_s::NAVIGATION_STATE_GUIDED_COURSE: {
-			return DaaAction::kDisabled;
+	ବାଛ (nav_state) {
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_AUTO_FOLLOW_TARGET:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_GUIDED_COURSE: {
+			ଫେରନ୍ତୁ DaaAction::kDisabled;
 		}
 
-	case vehicle_status_s::NAVIGATION_STATE_ORBIT:
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER: {
-			return DaaAction::kPositionHoldMode;
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_ORBIT:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER: {
+			ଫେରନ୍ତୁ DaaAction::kPositionHoldMode;
 		}
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: {
-			return DaaAction::kReturnMode;
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: {
+			ଫେରନ୍ତୁ DaaAction::kReturnMode;
 		}
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_LAND:
-	case vehicle_status_s::NAVIGATION_STATE_DESCEND:
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_PRECLAND:
-	case vehicle_status_s::NAVIGATION_STATE_MANUAL:
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL:
-	case vehicle_status_s::NAVIGATION_STATE_ALTITUDE_CRUISE:
-	case vehicle_status_s::NAVIGATION_STATE_MANUAL_PARKING:
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL:
-	case vehicle_status_s::NAVIGATION_STATE_POSITION_SLOW:
-	case vehicle_status_s::NAVIGATION_STATE_ACRO:
-	case vehicle_status_s::NAVIGATION_STATE_STAB: {
-			return DaaAction::kLandMode;
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_AUTO_LAND:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_DESCEND:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_AUTO_PRECLAND:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_MANUAL:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_ALTCTL:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_ALTITUDE_CRUISE:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_MANUAL_PARKING:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_POSCTL:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_POSITION_SLOW:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_ACRO:
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_STAB: {
+			ଫେରନ୍ତୁ DaaAction::kLandMode;
 		}
 
-	case vehicle_status_s::NAVIGATION_STATE_TERMINATION: {
-			return DaaAction::kTerminate;
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_TERMINATION: {
+			ଫେରନ୍ତୁ DaaAction::kTerminate;
 		}
 
 	// OFFBOARD special handling, responsibility is given to offboard
-	case vehicle_status_s::NAVIGATION_STATE_OFFBOARD: {
-			return DaaAction::kMaxActionValue;
+	ସ୍ଥିତି vehicle_status_s::NAVIGATION_STATE_OFFBOARD: {
+			ଫେରନ୍ତୁ DaaAction::k_Max_Action_ମୂଲ୍ୟ;
 		}
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 
 	// Unknown states are treated as highest priority so DAA will not override them.
-	return DaaAction::kMaxActionValue;
+	ଫେରନ୍ତୁ DaaAction::k_Max_Action_ମୂଲ୍ୟ;
 }
 
-DaaAction DaaActionPolicy::action_param_to_daa_action(const int32_t action_param)
+DaaAction DaaActionPolicy::action_param_to_daa_action(ଅଚଳ int32_t action_param)
 {
-	switch (action_param) {
-	case 0:
-		return DaaAction::kDisabled;
+	ବାଛ (action_param) {
+	ସ୍ଥିତି 0:
+		ଫେରନ୍ତୁ DaaAction::kDisabled;
 
-	case 1:
-		return DaaAction::kWarnOnly;
+	ସ୍ଥିତି 1:
+		ଫେରନ୍ତୁ DaaAction::kWarnOnly;
 
-	case 2:
-		return DaaAction::kReturnMode;
+	ସ୍ଥିତି 2:
+		ଫେରନ୍ତୁ DaaAction::kReturnMode;
 
-	case 3:
-		return DaaAction::kLandMode;
+	ସ୍ଥିତି 3:
+		ଫେରନ୍ତୁ DaaAction::kLandMode;
 
-	case 4:
-		return DaaAction::kPositionHoldMode;
+	ସ୍ଥିତି 4:
+		ଫେରନ୍ତୁ DaaAction::kPositionHoldMode;
 
-	case 5:
-		return DaaAction::kTerminate;
+	ସ୍ଥିତି 5:
+		ଫେରନ୍ତୁ DaaAction::kTerminate;
 
-	default:
-		return DaaAction::kDisabled;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଫେରନ୍ତୁ DaaAction::kDisabled;
 	}
 }
 
-uint8_t DaaActionPolicy::daa_action_to_action_param(const DaaAction action)
+uint8_t DaaActionPolicy::daa_action_to_action_param(ଅଚଳ DaaAction action)
 {
 	// Inverse of action_param_to_daa_action. Operator messages report actions with the same
 	// numbering as the NAV_TRAFF_AVOID / DAA_LVL_*_ACT parameters, not the internal severity ladder.
-	switch (action) {
-	case DaaAction::kDisabled:
-		return 0;
+	ବାଛ (action) {
+	ସ୍ଥିତି DaaAction::kDisabled:
+		ଫେରନ୍ତୁ 0;
 
-	case DaaAction::kWarnOnly:
-		return 1;
+	ସ୍ଥିତି DaaAction::kWarnOnly:
+		ଫେରନ୍ତୁ 1;
 
-	case DaaAction::kReturnMode:
-		return 2;
+	ସ୍ଥିତି DaaAction::kReturnMode:
+		ଫେରନ୍ତୁ 2;
 
-	case DaaAction::kLandMode:
-		return 3;
+	ସ୍ଥିତି DaaAction::kLandMode:
+		ଫେରନ୍ତୁ 3;
 
-	case DaaAction::kPositionHoldMode:
-		return 4;
+	ସ୍ଥିତି DaaAction::kPositionHoldMode:
+		ଫେରନ୍ତୁ 4;
 
-	case DaaAction::kTerminate:
-		return 5;
+	ସ୍ଥିତି DaaAction::kTerminate:
+		ଫେରନ୍ତୁ 5;
 
-	default:
-		return 0;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଫେରନ୍ତୁ 0;
 	}
 }

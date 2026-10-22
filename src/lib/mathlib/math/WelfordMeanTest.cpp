@@ -31,31 +31,31 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <random>
-#include <lib/matrix/matrix/math.hpp>
-#include "WelfordMean.hpp"
+#ଅନ୍ତର୍ଭାଵ <gtest/gtest.h>
+#ଅନ୍ତର୍ଭାଵ <random>
+#ଅନ୍ତର୍ଭାଵ <lib/matrix/matrix/math.hpp>
+#ଅନ୍ତର୍ଭାଵ "WelfordMean.hpp"
 
-using namespace math;
+using ନାମାକାଶ math;
 using matrix::Vector3f;
 
 TEST(WelfordMeanTest, NoisySignal)
 {
-	const float std_dev = 3.f;
-	std::normal_distribution<float> standard_normal_distribution{0.f, std_dev};
+	ଅଚଳ ଦଶମିକ std_dev = 3.f;
+	std::normal_distribution<ଦଶମିକ> standard_normal_distribution{0.f, std_dev};
 	std::default_random_engine random_generator{}; // Pseudo-random generator with constant seed
 	random_generator.seed(42);
-	WelfordMean<float> welford{};
+	WelfordMean<ଦଶମିକ> welford{};
 
-	for (int i = 0; i < 1000; i++) {
-		const float noisy_value = standard_normal_distribution(random_generator);
-		welford.update(noisy_value);
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < 1000; i++) {
+		ଅଚଳ ଦଶମିକ noisy_ମୂଲ୍ୟ = standard_normal_distribution(random_generator);
+		welford.update(noisy_ମୂଲ୍ୟ);
 	}
 
 	EXPECT_TRUE(welford.valid());
-	const float mean = welford.mean();
-	const float var = welford.variance();
-	const float var_real = std_dev * std_dev;
+	ଅଚଳ ଦଶମିକ mean = welford.mean();
+	ଅଚଳ ଦଶମିକ var = welford.variance();
+	ଅଚଳ ଦଶମିକ var_real = std_dev * std_dev;
 
 	EXPECT_NEAR(mean, 0.f, 0.7f);
 

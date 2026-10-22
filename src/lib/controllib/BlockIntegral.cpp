@@ -37,19 +37,19 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <float.h>
 
-#include "blocks.hpp"
+#ଅନ୍ତର୍ଭାଵ "blocks.hpp"
 
-namespace control
+ନାମାକାଶ control
 {
 
-float BlockIntegral::update(float input)
+ଦଶମିକ BlockIntegral::update(ଦଶମିକ ନିବେଶ)
 {
 	// trapezoidal integration
-	setY(_limit.update(getY() + input * getDt()));
-	return getY();
+	setY(_limit.update(getY() + ନିବେଶ * getDt()));
+	ଫେରନ୍ତୁ getY();
 }
 
 } // namespace control

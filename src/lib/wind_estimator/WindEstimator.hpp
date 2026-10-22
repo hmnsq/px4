@@ -38,60 +38,60 @@
 
 #pragma once
 
-#include <drivers/drv_hrt.h>
+#ଅନ୍ତର୍ଭାଵ <drivers/drv_hrt.h>
 
-#include <mathlib/mathlib.h>
-#include <matrix/math.hpp>
+#ଅନ୍ତର୍ଭାଵ <mathlib/mathlib.h>
+#ଅନ୍ତର୍ଭାଵ <matrix/math.hpp>
 
-#include "python/generated/fuse_airspeed.h"
-#include "python/generated/fuse_beta.h"
-#include "python/generated/init_wind_using_airspeed.h"
+#ଅନ୍ତର୍ଭାଵ "python/generated/fuse_airspeed.h"
+#ଅନ୍ତର୍ଭାଵ "python/generated/fuse_beta.h"
+#ଅନ୍ତର୍ଭାଵ "python/generated/init_wind_using_airspeed.h"
 
-using namespace time_literals;
+using ନାମାକାଶ time_literals;
 
-class WindEstimator
+ଶ୍ରେଣୀ WindEstimator
 {
-public:
-	WindEstimator() = default;
-	~WindEstimator() = default;
+ସର୍ବସାଧାରଣ:
+	WindEstimator() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	~WindEstimator() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
 
 	// no copy, assignment, move, move assignment
-	WindEstimator(const WindEstimator &) = delete;
-	WindEstimator &operator=(const WindEstimator &) = delete;
+	WindEstimator(ଅଚଳ WindEstimator &) = delete;
+	WindEstimator &operator=(ଅଚଳ WindEstimator &) = delete;
 	WindEstimator(WindEstimator &&) = delete;
 	WindEstimator &operator=(WindEstimator &&) = delete;
 
-	void update(uint64_t time_now);
+	ଶୂନ୍ୟ update(uint64_t time_now);
 
-	void fuse_airspeed(uint64_t time_now, float true_airspeed, const matrix::Vector3f &velI,
-			   const float hor_vel_variance, const matrix::Quatf &q_att);
-	void fuse_beta(uint64_t time_now, const matrix::Vector3f &velI, const float hor_vel_variance,
-		       const matrix::Quatf &q_att);
+	ଶୂନ୍ୟ fuse_airspeed(uint64_t time_now, ଦଶମିକ true_airspeed, ଅଚଳ matrix::Vector3f &velI,
+			   ଅଚଳ ଦଶମିକ hor_vel_variance, ଅଚଳ matrix::Quatf &q_att);
+	ଶୂନ୍ୟ fuse_beta(uint64_t time_now, ଅଚଳ matrix::Vector3f &velI, ଅଚଳ ଦଶମିକ hor_vel_variance,
+		       ଅଚଳ matrix::Quatf &q_att);
 
-	bool is_estimate_valid() { return _initialised; }
+	ତାର୍କିକ is_estimate_valid() { ଫେରନ୍ତୁ _initialised; }
 
-	bool check_if_meas_is_rejected(float innov, float innov_var, uint8_t gate_size);
+	ତାର୍କିକ check_if_meas_is_rejected(ଦଶମିକ innov, ଦଶମିକ innov_var, uint8_t gate_size);
 
-	matrix::Vector2f get_wind() { return matrix::Vector2f{_state(INDEX_W_N), _state(INDEX_W_E)}; }
+	matrix::Vector2f get_wind() { ଫେରନ୍ତୁ matrix::Vector2f{_state(INDEX_W_N), _state(INDEX_W_E)}; }
 
 	// invert scale (CAS = IAS * scale), protect agains division by 0, constrain to [0.1, 10]
-	float get_tas_scale() { return 1.f / math::constrain(_state(INDEX_TAS_SCALE), 0.1f, 10.0f); }
-	float get_tas_scale_var() { return _P(INDEX_TAS_SCALE, INDEX_TAS_SCALE); }
-	float get_tas_innov() { return _tas_innov; }
-	float get_tas_innov_var() { return _tas_innov_var; }
-	float get_beta_innov() { return _beta_innov; }
-	float get_beta_innov_var() { return _beta_innov_var; }
-	matrix::Vector2f  get_wind_var() { return matrix::Vector2f{_P(INDEX_W_N, INDEX_W_N), _P(INDEX_W_E, INDEX_W_E)}; }
-	bool get_wind_estimator_reset() { return _wind_estimator_reset; }
+	ଦଶମିକ get_tas_scale() { ଫେରନ୍ତୁ 1.f / math::constrain(_state(INDEX_TAS_SCALE), 0.1f, 10.0f); }
+	ଦଶମିକ get_tas_scale_var() { ଫେରନ୍ତୁ _P(INDEX_TAS_SCALE, INDEX_TAS_SCALE); }
+	ଦଶମିକ get_tas_innov() { ଫେରନ୍ତୁ _tas_innov; }
+	ଦଶମିକ get_tas_innov_var() { ଫେରନ୍ତୁ _tas_innov_var; }
+	ଦଶମିକ get_beta_innov() { ଫେରନ୍ତୁ _beta_innov; }
+	ଦଶମିକ get_beta_innov_var() { ଫେରନ୍ତୁ _beta_innov_var; }
+	matrix::Vector2f  get_wind_var() { ଫେରନ୍ତୁ matrix::Vector2f{_P(INDEX_W_N, INDEX_W_N), _P(INDEX_W_E, INDEX_W_E)}; }
+	ତାର୍କିକ get_wind_estimator_reset() { ଫେରନ୍ତୁ _wind_estimator_reset; }
 
 	// unaided, the state uncertainty (diagonal of sqrt(P)) grows by the process noise spectral density every second
-	void set_wind_process_noise_spectral_density(float wind_nsd) { _wind_psd = wind_nsd * wind_nsd; }
+	ଶୂନ୍ୟ set_wind_process_noise_spectral_density(ଦଶମିକ wind_nsd) { _wind_psd = wind_nsd * wind_nsd; }
 
-	void set_tas_noise(float tas_sigma) { _tas_var = tas_sigma * tas_sigma; }
+	ଶୂନ୍ୟ set_tas_noise(ଦଶମିକ tas_sigma) { _tas_var = tas_sigma * tas_sigma; }
 
-	void set_scale_init(float scale_init) {_scale_init = 1.f / math::constrain(scale_init, 0.1f, 10.f); }
+	ଶୂନ୍ୟ set_scale_init(ଦଶମିକ scale_init) {_scale_init = 1.f / math::constrain(scale_init, 0.1f, 10.f); }
 
-	void reset_scale_to_init()
+	ଶୂନ୍ୟ reset_scale_to_init()
 	{
 		_state(INDEX_TAS_SCALE) = _scale_init;
 		auto P_wind = _P.slice<2, 2>(0, 0);
@@ -99,56 +99,56 @@ public:
 		_P.slice<2, 2>(0, 0) = P_wind;
 	}
 
-private:
-	enum {
+ବ୍ୟକ୍ତିଗତ:
+	ଗଣନା {
 		INDEX_W_N = 0,
 		INDEX_W_E,
 		INDEX_TAS_SCALE
 	};	///< enum which can be used to access state.
 
-	static constexpr float kInitialWindError =
+	ସ୍ଥିର constexpr ଦଶମିକ kInitialWindError =
 		2.5f; // initial uncertainty of each wind state when filter is initialised without airspeed [m/s]
-	static constexpr float kInitialBetaErrorDeg =
+	ସ୍ଥିର constexpr ଦଶମିକ kInitialBetaErrorDeg =
 		15.0f;	// sidelip uncertainty used to initialise the filter with a true airspeed measurement [deg]
-	static constexpr float kInitialHeadingErrorDeg =
+	ସ୍ଥିର constexpr ଦଶମିକ kInitialHeadingErrorDeg =
 		10.0f; // heading uncertainty used to initialise the filter with a true airspeed measurement [deg]
 
 	matrix::Vector3f _state{0.f, 0.f, 1.f};
 	matrix::Matrix3f _P;		///< state covariance matrix
 
-	float _tas_innov{0.0f};	///< true airspeed innovation
-	float _tas_innov_var{0.0f};	///< true airspeed innovation variance
+	ଦଶମିକ _tas_innov{0.0f};	///< true airspeed innovation
+	ଦଶମିକ _tas_innov_var{0.0f};	///< true airspeed innovation variance
 
-	float _beta_innov{0.0f};	///< sideslip innovation
-	float _beta_innov_var{0.0f};	///< sideslip innovation variance
+	ଦଶମିକ _beta_innov{0.0f};	///< sideslip innovation
+	ଦଶମିକ _beta_innov_var{0.0f};	///< sideslip innovation variance
 
-	bool _initialised{false};	///< True: filter has been initialised
+	ତାର୍କିକ _initialised{ମିଥ୍ୟା};	///< True: filter has been initialised
 
-	float _wind_psd{0.01f};	///< wind process noise power spectral density (m^2/s^4/Hz), (0.1 m/s^2/sqrt(Hz))^2
-	static constexpr float kTasScalePsd{1e-8f};	///< true airspeed scale process noise power spectral density (1/s^2/Hz), (0.0001 1/s/sqrt(Hz))^2
-	float _tas_var{1.96f};		///< true airspeed measurement noise variance (m/s)^2, (1.4 m/s)^2
-	static constexpr float kBetaVar{0.0225f};	///< sideslip measurement noise variance (rad)^2, (0.15 rad)^2
-	static constexpr uint8_t kTasGate{4};	///< airspeed fusion gate size (SD)
-	static constexpr uint8_t kBetaGate{1};	///< sideslip fusion gate size (SD)
+	ଦଶମିକ _wind_psd{0.01f};	///< wind process noise power spectral density (m^2/s^4/Hz), (0.1 m/s^2/sqrt(Hz))^2
+	ସ୍ଥିର constexpr ଦଶମିକ kTasScalePsd{1e-8f};	///< true airspeed scale process noise power spectral density (1/s^2/Hz), (0.0001 1/s/sqrt(Hz))^2
+	ଦଶମିକ _tas_var{1.96f};		///< true airspeed measurement noise variance (m/s)^2, (1.4 m/s)^2
+	ସ୍ଥିର constexpr ଦଶମିକ kBetaVar{0.0225f};	///< sideslip measurement noise variance (rad)^2, (0.15 rad)^2
+	ସ୍ଥିର constexpr uint8_t kTasGate{4};	///< airspeed fusion gate size (SD)
+	ସ୍ଥିର constexpr uint8_t kBetaGate{1};	///< sideslip fusion gate size (SD)
 
-	float _scale_init{1.f};
+	ଦଶମିକ _scale_init{1.f};
 
 	uint64_t _time_last_airspeed_fuse = 0;	///< timestamp of last airspeed fusion
 	uint64_t _time_last_beta_fuse = 0;	///< timestamp of last sideslip fusion
 	uint64_t _time_last_update = 0;		///< timestamp of last covariance prediction
 	uint64_t _time_initialised = 0;         ///< timestamp when estimator is initialised
 
-	static constexpr float kTASScalePSDMultiplier = 100;
-	static constexpr hrt_abstime kTASScaleFastLearnTime = 300_s;
+	ସ୍ଥିର constexpr ଦଶମିକ kTASScalePSDMultiplier = 100;
+	ସ୍ଥିର constexpr hrt_abstime kTASScaleFastLearnTime = 300_s;
 
-	bool _wind_estimator_reset = false; ///< wind estimator was reset in this cycle
+	ତାର୍କିକ _wind_estimator_reset = ମିଥ୍ୟା; ///< wind estimator was reset in this cycle
 
 	// initialise state and state covariance matrix
-	bool initialise(const matrix::Vector3f &velI, const float hor_vel_variance, const float heading_rad,
-			const float tas_meas = NAN, const float tas_variance = NAN);
+	ତାର୍କିକ initialise(ଅଚଳ matrix::Vector3f &velI, ଅଚଳ ଦଶମିକ hor_vel_variance, ଅଚଳ ଦଶମିକ heading_rad,
+			ଅଚଳ ଦଶମିକ tas_meas = NAN, ଅଚଳ ଦଶମିକ tas_variance = NAN);
 
-	void run_sanity_checks();
+	ଶୂନ୍ୟ run_sanity_checks();
 
 	// return the square of two floating point numbers
-	static constexpr float sq(float var) { return var * var; }
+	ସ୍ଥିର constexpr ଦଶମିକ sq(ଦଶମିକ var) { ଫେରନ୍ତୁ var * var; }
 };

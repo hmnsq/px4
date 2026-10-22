@@ -36,16 +36,16 @@
  * Run exclusively this test with the command "make tests TESTFILTER=HeadingSmoothing"
  */
 
-#include "mathlib/math/Limits.hpp"
-#include <gtest/gtest.h>
+#ଅନ୍ତର୍ଭାଵ "mathlib/math/Limits.hpp"
+#ଅନ୍ତର୍ଭାଵ <gtest/gtest.h>
 
-#include <motion_planning/HeadingSmoothing.hpp>
+#ଅନ୍ତର୍ଭାଵ <motion_planning/HeadingSmoothing.hpp>
 
-using namespace matrix;
+using ନାମାକାଶ matrix;
 
-class HeadingSmoothingTest : public ::testing::Test
+ଶ୍ରେଣୀ HeadingSmoothingTest : ସର୍ବସାଧାରଣ ::testing::Test
 {
-public:
+ସର୍ବସାଧାରଣ:
 	HeadingSmoothingTest()
 	{
 		_smoothing.setMaxHeadingRate(15.f);
@@ -53,95 +53,95 @@ public:
 	}
 
 	HeadingSmoothing _smoothing;
-	float _dt{.1f};
+	ଦଶମିକ _dt{.1f};
 };
 
 TEST_F(HeadingSmoothingTest, convergence)
 {
-	const float heading_current = math::radians(0.f);
-	const float heading_target = math::radians(5.f);
+	ଅଚଳ ଦଶମିକ heading_current = math::radians(0.f);
+	ଅଚଳ ଦଶମିକ heading_target = math::radians(5.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(1.f / _dt);
+	ଅଚଳ ପୂର୍ଣ୍ଣସଂଖ୍ୟା nb_steps = ceilf(1.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
+	ଅଚଳ ଦଶମିକ heading = _smoothing.getSmoothedHeading();
+	ଅଚଳ ଦଶମିକ heading_rate = _smoothing.getSmoothedHeadingRate();
 	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
 	EXPECT_EQ(heading_rate, 0.f);
 }
 
 TEST_F(HeadingSmoothingTest, zero_crossing)
 {
-	const float heading_current = math::radians(-95.f);
-	const float heading_target = math::radians(5.f);
+	ଅଚଳ ଦଶମିକ heading_current = math::radians(-95.f);
+	ଅଚଳ ଦଶମିକ heading_target = math::radians(5.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(4.f / _dt);
+	ଅଚଳ ପୂର୍ଣ୍ଣସଂଖ୍ୟା nb_steps = ceilf(4.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
+	ଅଚଳ ଦଶମିକ heading = _smoothing.getSmoothedHeading();
+	ଅଚଳ ଦଶମିକ heading_rate = _smoothing.getSmoothedHeadingRate();
 	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
 	EXPECT_EQ(heading_rate, 0.f);
 }
 
 TEST_F(HeadingSmoothingTest, wrap_pi)
 {
-	const float heading_current = math::radians(-170.f);
-	const float heading_target = math::radians(170.f);
+	ଅଚଳ ଦଶମିକ heading_current = math::radians(-170.f);
+	ଅଚଳ ଦଶମିକ heading_target = math::radians(170.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	ଅଚଳ ପୂର୍ଣ୍ଣସଂଖ୍ୟା nb_steps = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 
-	const float heading = _smoothing.getSmoothedHeading();
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
+	ଅଚଳ ଦଶମିକ heading = _smoothing.getSmoothedHeading();
+	ଅଚଳ ଦଶମିକ heading_rate = _smoothing.getSmoothedHeadingRate();
 	EXPECT_EQ(heading, heading_target) << "heading (deg): " << math::degrees(heading);
 	EXPECT_EQ(heading_rate, 0.f);
 }
 
 TEST_F(HeadingSmoothingTest, positive_rate)
 {
-	const float max_heading_rate = .15f;
+	ଅଚଳ ଦଶମିକ max_heading_rate = .15f;
 	_smoothing.setMaxHeadingRate(max_heading_rate);
-	const float heading_current = math::radians(-170.f);
-	const float heading_target = math::radians(-20.f);
+	ଅଚଳ ଦଶମିକ heading_current = math::radians(-170.f);
+	ଅଚଳ ଦଶମିକ heading_target = math::radians(-20.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	ଅଚଳ ପୂର୍ଣ୍ଣସଂଖ୍ୟା nb_steps = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
+	ଅଚଳ ଦଶମିକ heading_rate = _smoothing.getSmoothedHeadingRate();
 	EXPECT_EQ(heading_rate, max_heading_rate);
 }
 
 TEST_F(HeadingSmoothingTest, negative_rate)
 {
-	const float max_heading_rate = 0.15;
+	ଅଚଳ ଦଶମିକ max_heading_rate = 0.15;
 	_smoothing.setMaxHeadingRate(max_heading_rate);
-	const float heading_current = math::radians(-20.f);
-	const float heading_target = math::radians(-140.f);
+	ଅଚଳ ଦଶମିକ heading_current = math::radians(-20.f);
+	ଅଚଳ ଦଶମିକ heading_target = math::radians(-140.f);
 	_smoothing.reset(heading_current, 0.f);
 
-	const int nb_steps = ceilf(2.f / _dt);
+	ଅଚଳ ପୂର୍ଣ୍ଣସଂଖ୍ୟା nb_steps = ceilf(2.f / _dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < nb_steps; i++) {
 		_smoothing.update(heading_target, _dt);
 	}
 
-	const float heading_rate = _smoothing.getSmoothedHeadingRate();
+	ଅଚଳ ଦଶମିକ heading_rate = _smoothing.getSmoothedHeadingRate();
 	EXPECT_EQ(heading_rate, -max_heading_rate);
 }

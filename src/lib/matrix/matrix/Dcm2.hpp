@@ -48,16 +48,16 @@
 
 #pragma once
 
-#include "SquareMatrix.hpp"
-#include "Vector2.hpp"
+#ଅନ୍ତର୍ଭାଵ "SquareMatrix.hpp"
+#ଅନ୍ତର୍ଭାଵ "Vector2.hpp"
 
-namespace matrix
+ନାମାକାଶ matrix
 {
 
 template<typename Type>
-class Dcm2 : public SquareMatrix<Type, 2>
+ଶ୍ରେଣୀ Dcm2 : ସର୍ବସାଧାରଣ SquareMatrix<Type, 2>
 {
-public:
+ସର୍ବସାଧାରଣ:
 	/**
 	 * Standard constructor
 	 *
@@ -70,7 +70,7 @@ public:
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm2(const Type data_[2][2]) : SquareMatrix<Type, 2>(data_)
+	explicit Dcm2(ଅଚଳ Type data_[2][2]) : SquareMatrix<Type, 2>(data_)
 	{
 	}
 
@@ -79,7 +79,7 @@ public:
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm2(const Type data_[4]) : SquareMatrix<Type, 2>(data_)
+	explicit Dcm2(ଅଚଳ Type data_[4]) : SquareMatrix<Type, 2>(data_)
 	{
 	}
 
@@ -88,7 +88,7 @@ public:
 	 *
 	 * @param other Matrix22 to set dcm to
 	 */
-	Dcm2(const Matrix<Type, 2, 2> &other) : SquareMatrix<Type, 2>(other)
+	Dcm2(ଅଚଳ Matrix<Type, 2, 2> &other) : SquareMatrix<Type, 2>(other)
 	{
 	}
 
@@ -100,9 +100,9 @@ public:
 	 *
 	 * @param angle from frame 1 to frame 2 in radians
 	 */
-	Dcm2(const Type angle)
+	Dcm2(ଅଚଳ Type angle)
 	{
-		Dcm2 &dcm = *this;
+		Dcm2 &dcm = *ଏହି;
 		Type sin_angle = std::sin(angle);
 		Type cos_angle = std::cos(angle);
 
@@ -112,17 +112,17 @@ public:
 		dcm(1, 1) = cos_angle;
 	}
 
-	void renormalize()
+	ଶୂନ୍ୟ renormalize()
 	{
 		// renormalize rows
-		for (size_t r = 0; r < 2; r++) {
-			Vector2<Type> rvec(Matrix<Type, 1, 2>(this->row(r)).transpose());
-			this->row(r) = rvec.normalized();
+		ପାଇଁ (size_t r = 0; r < 2; r++) {
+			Vector2<Type> rvec(Matrix<Type, 1, 2>(ଏହି->row(r)).transpose());
+			ଏହି->row(r) = rvec.normalized();
 		}
 	}
 };
 
-using Dcm2f = Dcm2<float>;
-using Dcm2d = Dcm2<double>;
+using Dcm2f = Dcm2<ଦଶମିକ>;
+using Dcm2d = Dcm2<ଦ୍ୱିଗୁଣ>;
 
 } // namespace matrix

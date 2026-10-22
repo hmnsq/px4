@@ -37,18 +37,18 @@
  * @brief Performance measuring tools.
  */
 
-#include <inttypes.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <drivers/drv_hrt.h>
-#include <math.h>
-#include <pthread.h>
-#include <systemlib/err.h>
+#ଅନ୍ତର୍ଭାଵ <inttypes.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <stdio.h>
+#ଅନ୍ତର୍ଭାଵ <string.h>
+#ଅନ୍ତର୍ଭାଵ <drivers/drv_hrt.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <pthread.h>
+#ଅନ୍ତର୍ଭାଵ <systemlib/err.h>
 
-#include "perf_counter.h"
+#ଅନ୍ତର୍ଭାଵ "perf_counter.h"
 
-#include <px4_platform_common/atomic.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/atomic.h>
 
 // perf counters are written on the hot path (perf_begin/perf_end/perf_count)
 // and read concurrently by the 'perf' command and the logger.
@@ -64,70 +64,70 @@
 // PerfVar mirrors the subset of the px4::atomic API used below so the call
 // sites are identical in both configurations; on embedded the accessors are
 // trivial and inline to bare loads/stores.
-#if defined(__PX4_POSIX) || defined(__SANITIZE_THREAD__)
+#ଯଦି defined(__PX4_POSIX) || defined(__SANITIZE_THREAD__)
 template <typename T> using PerfVar = px4::atomic<T>;
-#else
+#ଅନ୍ୟଥା
 template <typename T>
-class PerfVar
+ଶ୍ରେଣୀ PerfVar
 {
-public:
-	PerfVar() = default;
-	T load() const { return _value; }
-	void store(T value) { _value = value; }
-	T fetch_add(T value) { const T previous = _value; _value += value; return previous; }
-private:
-	T _value {};
+ସର୍ବସାଧାରଣ:
+	PerfVar() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	T load() ଅଚଳ { ଫେରନ୍ତୁ ମୂଲ୍ୟ_2; }
+	ଶୂନ୍ୟ store(T value) { ମୂଲ୍ୟ_2 = value; }
+	T fetch_add(T value) { ଅଚଳ T previous = ମୂଲ୍ୟ_2; ମୂଲ୍ୟ_2 += value; ଫେରନ୍ତୁ previous; }
+ବ୍ୟକ୍ତିଗତ:
+	T ମୂଲ୍ୟ_2 {};
 };
 #endif
 
 /**
  * Header common to all counters.
  */
-struct perf_ctr_header {
+ସଂରଚନା perf_ctr_header {
 	sq_entry_t		link;	/**< list linkage */
-	enum perf_counter_type	type;	/**< counter type */
-	bool			pending_free;	/**< freed during iteration, deleted after the last iteration ends */
-	const char		*name;	/**< counter name */
+	ଗଣନା perf_counter_type	type;	/**< counter type */
+	ତାର୍କିକ			pending_free;	/**< freed during iteration, deleted after the last iteration ends */
+	ଅଚଳ ଅକ୍ଷର		*name;	/**< counter name */
 };
 
 /**
  * PC_EVENT counter.
  */
-struct perf_ctr_count : public perf_ctr_header {
-	PerfVar<uint64_t>	event_count;
+ସଂରଚନା perf_ctr_ଗଣନା : ସର୍ବସାଧାରଣ perf_ctr_header {
+	PerfVar<uint64_t>	event_ଗଣନା;
 };
 
 /**
  * PC_ELAPSED counter.
  */
-struct perf_ctr_elapsed : public perf_ctr_header {
-	PerfVar<uint64_t>	event_count;
+ସଂରଚନା perf_ctr_elapsed : ସର୍ବସାଧାରଣ perf_ctr_header {
+	PerfVar<uint64_t>	event_ଗଣନା;
 	PerfVar<uint64_t>	time_start;
 	PerfVar<uint64_t>	time_total;
 	PerfVar<uint32_t>	time_least;
 	PerfVar<uint32_t>	time_most;
-	PerfVar<float>	mean;
-	PerfVar<float>	M2;
+	PerfVar<ଦଶମିକ>	mean;
+	PerfVar<ଦଶମିକ>	M2;
 };
 
 /**
  * PC_INTERVAL counter.
  */
-struct perf_ctr_interval : public perf_ctr_header {
-	PerfVar<uint64_t>	event_count;
+ସଂରଚନା perf_ctr_interval : ସର୍ବସାଧାରଣ perf_ctr_header {
+	PerfVar<uint64_t>	event_ଗଣନା;
 	PerfVar<uint64_t>	time_event;
 	PerfVar<uint64_t>	time_first;
 	PerfVar<uint64_t>	time_last;
 	PerfVar<uint32_t>	time_least;
 	PerfVar<uint32_t>	time_most;
-	PerfVar<float>	mean;
-	PerfVar<float>	M2;
+	PerfVar<ଦଶମିକ>	mean;
+	PerfVar<ଦଶମିକ>	M2;
 };
 
 /**
  * List of all known counters.
  */
-static sq_queue_t	perf_counters = { nullptr, nullptr };
+ସ୍ଥିର sq_queue_t	perf_counters = { nullptr, nullptr };
 
 /**
  * mutex protecting access to the perf_counters linked list (which is read from & written to by different threads)
@@ -141,26 +141,26 @@ pthread_mutex_t perf_counters_mutex = PTHREAD_MUTEX_INITIALIZER;
  * While non-zero, perf_free() only marks entries as pending_free; the last
  * iteration to finish deletes them.
  */
-static int perf_iterate_active = 0;
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା perf_iterate_active = 0;
 
-static void
+ସ୍ଥିର ଶୂନ୍ୟ
 perf_delete(perf_counter_t handle)
 {
-	switch (handle->type) {
-	case PC_COUNT:
-		delete (struct perf_ctr_count *)handle;
-		break;
+	ବାଛ (handle->type) {
+	ସ୍ଥିତି PC_ଗଣନା:
+		delete (ସଂରଚନା perf_ctr_ଗଣନା *)handle;
+		ଭାଙ୍ଗ;
 
-	case PC_ELAPSED:
-		delete (struct perf_ctr_elapsed *)handle;
-		break;
+	ସ୍ଥିତି PC_ELAPSED:
+		delete (ସଂରଚନା perf_ctr_elapsed *)handle;
+		ଭାଙ୍ଗ;
 
-	case PC_INTERVAL:
-		delete (struct perf_ctr_interval *)handle;
-		break;
+	ସ୍ଥିତି PC_INTERVAL:
+		delete (ସଂରଚନା perf_ctr_interval *)handle;
+		ଭାଙ୍ଗ;
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 }
 
@@ -168,15 +168,15 @@ perf_delete(perf_counter_t handle)
  * Delete all entries marked pending_free. Call with perf_counters_mutex held
  * and no iteration active.
  */
-static void
+ସ୍ଥିର ଶୂନ୍ୟ
 perf_free_pending_locked()
 {
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
+	ଯେତେବେଳେ (handle != nullptr) {
 		perf_counter_t next = (perf_counter_t)sq_next(&handle->link);
 
-		if (handle->pending_free) {
+		ଯଦି (handle->pending_free) {
 			sq_rem(&handle->link, &perf_counters);
 			perf_delete(handle);
 		}
@@ -186,56 +186,56 @@ perf_free_pending_locked()
 }
 
 perf_counter_t
-perf_alloc(enum perf_counter_type type, const char *name)
+perf_alloc(ଗଣନା perf_counter_type type, ଅଚଳ ଅକ୍ଷର *name)
 {
 	perf_counter_t ctr = nullptr;
 
-	switch (type) {
-	case PC_COUNT:
-		ctr = new perf_ctr_count();
-		break;
+	ବାଛ (type) {
+	ସ୍ଥିତି PC_ଗଣନା:
+		ctr = ନୂତନ perf_ctr_ଗଣନା();
+		ଭାଙ୍ଗ;
 
-	case PC_ELAPSED:
-		ctr = new perf_ctr_elapsed();
-		break;
+	ସ୍ଥିତି PC_ELAPSED:
+		ctr = ନୂତନ perf_ctr_elapsed();
+		ଭାଙ୍ଗ;
 
-	case PC_INTERVAL:
-		ctr = new perf_ctr_interval();
-		break;
+	ସ୍ଥିତି PC_INTERVAL:
+		ctr = ନୂତନ perf_ctr_interval();
+		ଭାଙ୍ଗ;
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 
-	if (ctr != nullptr) {
+	ଯଦି (ctr != nullptr) {
 		ctr->type = type;
 		ctr->name = name;
-		ctr->pending_free = false;
+		ctr->pending_free = ମିଥ୍ୟା;
 		pthread_mutex_lock(&perf_counters_mutex);
 		sq_addfirst(&ctr->link, &perf_counters);
 		pthread_mutex_unlock(&perf_counters_mutex);
 	}
 
-	return ctr;
+	ଫେରନ୍ତୁ ctr;
 }
 
 perf_counter_t
-perf_alloc_once(enum perf_counter_type type, const char *name)
+perf_alloc_once(ଗଣନା perf_counter_type type, ଅଚଳ ଅକ୍ଷର *name)
 {
 	pthread_mutex_lock(&perf_counters_mutex);
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
-		if (!handle->pending_free && !strcmp(handle->name, name)) {
-			if (type == handle->type) {
+	ଯେତେବେଳେ (handle != nullptr) {
+		ଯଦି (!handle->pending_free && !strcmp(handle->name, name)) {
+			ଯଦି (type == handle->type) {
 				/* they are the same counter */
 				pthread_mutex_unlock(&perf_counters_mutex);
-				return handle;
+				ଫେରନ୍ତୁ handle;
 
-			} else {
+			} ଅନ୍ୟଥା {
 				/* same name but different type, assuming this is an error and not intended */
 				pthread_mutex_unlock(&perf_counters_mutex);
-				return nullptr;
+				ଫେରନ୍ତୁ nullptr;
 			}
 		}
 
@@ -245,24 +245,24 @@ perf_alloc_once(enum perf_counter_type type, const char *name)
 	pthread_mutex_unlock(&perf_counters_mutex);
 
 	/* if the execution reaches here, no existing counter of that name was found */
-	return perf_alloc(type, name);
+	ଫେରନ୍ତୁ perf_alloc(type, name);
 }
 
-void
+ଶୂନ୍ୟ
 perf_free(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	ଯଦି (handle == nullptr) {
+		ଫେରନ୍ତୁ;
 	}
 
 	pthread_mutex_lock(&perf_counters_mutex);
 
-	if (perf_iterate_active > 0) {
+	ଯଦି (perf_iterate_active > 0) {
 		// an iteration may be positioned on this entry: keep it linked
 		// and let the last active iteration delete it
-		handle->pending_free = true;
+		handle->pending_free = ସତ୍ୟ;
 		pthread_mutex_unlock(&perf_counters_mutex);
-		return;
+		ଫେରନ୍ତୁ;
 	}
 
 	sq_rem(&handle->link, &perf_counters);
@@ -271,247 +271,247 @@ perf_free(perf_counter_t handle)
 	perf_delete(handle);
 }
 
-void
-perf_count(perf_counter_t handle)
+ଶୂନ୍ୟ
+perf_ଗଣନା(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	ଯଦି (handle == nullptr) {
+		ଫେରନ୍ତୁ;
 	}
 
-	switch (handle->type) {
-	case PC_COUNT:
-		((struct perf_ctr_count *)handle)->event_count.fetch_add(1);
-		break;
+	ବାଛ (handle->type) {
+	ସ୍ଥିତି PC_ଗଣନା:
+		((ସଂରଚନା perf_ctr_ଗଣନା *)handle)->event_ଗଣନା.fetch_add(1);
+		ଭାଙ୍ଗ;
 
-	case PC_INTERVAL:
-		perf_count_interval(handle, hrt_absolute_time());
-		break;
+	ସ୍ଥିତି PC_INTERVAL:
+		perf_ଗଣନା_interval(handle, hrt_absolute_time());
+		ଭାଙ୍ଗ;
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 }
 
-void
+ଶୂନ୍ୟ
 perf_begin(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	ଯଦି (handle == nullptr) {
+		ଫେରନ୍ତୁ;
 	}
 
-	switch (handle->type) {
-	case PC_ELAPSED:
-		((struct perf_ctr_elapsed *)handle)->time_start.store(hrt_absolute_time());
-		break;
+	ବାଛ (handle->type) {
+	ସ୍ଥିତି PC_ELAPSED:
+		((ସଂରଚନା perf_ctr_elapsed *)handle)->time_start.store(hrt_absolute_time());
+		ଭାଙ୍ଗ;
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 }
 
-void
+ଶୂନ୍ୟ
 perf_end(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	ଯଦି (handle == nullptr) {
+		ଫେରନ୍ତୁ;
 	}
 
-	switch (handle->type) {
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
+	ବାଛ (handle->type) {
+	ସ୍ଥିତି PC_ELAPSED: {
+			ସଂରଚନା perf_ctr_elapsed *pce = (ସଂରଚନା perf_ctr_elapsed *)handle;
 			hrt_abstime ts = pce->time_start.load();
 
-			if (ts != 0) {
+			ଯଦି (ts != 0) {
 				perf_set_elapsed(handle, hrt_absolute_time() - ts);
 			}
 		}
-		break;
+		ଭାଙ୍ଗ;
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 }
 
-void
+ଶୂନ୍ୟ
 perf_set_elapsed(perf_counter_t handle, int64_t elapsed)
 {
-	if (handle == nullptr) {
-		return;
+	ଯଦି (handle == nullptr) {
+		ଫେରନ୍ତୁ;
 	}
 
-	switch (handle->type) {
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
+	ବାଛ (handle->type) {
+	ସ୍ଥିତି PC_ELAPSED: {
+			ସଂରଚନା perf_ctr_elapsed *pce = (ସଂରଚନା perf_ctr_elapsed *)handle;
 
-			if (elapsed >= 0) {
-				uint64_t ec = pce->event_count.fetch_add(1) + 1;
+			ଯଦି (elapsed >= 0) {
+				uint64_t ec = pce->event_ଗଣନା.fetch_add(1) + 1;
 				pce->time_total.fetch_add((uint64_t)elapsed);
 
 				uint32_t tl = pce->time_least.load();
 
-				if ((tl > (uint32_t)elapsed) || (tl == 0)) {
+				ଯଦି ((tl > (uint32_t)elapsed) || (tl == 0)) {
 					pce->time_least.store((uint32_t)elapsed);
 				}
 
 				uint32_t tm = pce->time_most.load();
 
-				if (tm < (uint32_t)elapsed) {
+				ଯଦି (tm < (uint32_t)elapsed) {
 					pce->time_most.store((uint32_t)elapsed);
 				}
 
 				// maintain mean and variance of the elapsed time in seconds
 				// Knuth/Welford recursive mean and variance of update intervals (via Wikipedia)
-				float dt = elapsed / 1e6f;
-				float mean_val = pce->mean.load();
-				float delta_intvl = dt - mean_val;
+				ଦଶମିକ dt = elapsed / 1e6f;
+				ଦଶମିକ mean_val = pce->mean.load();
+				ଦଶମିକ delta_intvl = dt - mean_val;
 				mean_val += delta_intvl / ec;
 				pce->mean.store(mean_val);
-				float m2_val = pce->M2.load();
+				ଦଶମିକ m2_val = pce->M2.load();
 				m2_val += delta_intvl * (dt - mean_val);
 				pce->M2.store(m2_val);
 
 				pce->time_start.store((uint64_t)0);
 			}
 		}
-		break;
+		ଭାଙ୍ଗ;
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 }
 
-void
-perf_count_interval(perf_counter_t handle, hrt_abstime now)
+ଶୂନ୍ୟ
+perf_ଗଣନା_interval(perf_counter_t handle, hrt_abstime now)
 {
-	if (handle == nullptr) {
-		return;
+	ଯଦି (handle == nullptr) {
+		ଫେରନ୍ତୁ;
 	}
 
-	switch (handle->type) {
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			uint64_t ec = pci->event_count.load();
+	ବାଛ (handle->type) {
+	ସ୍ଥିତି PC_INTERVAL: {
+			ସଂରଚନା perf_ctr_interval *pci = (ସଂରଚନା perf_ctr_interval *)handle;
+			uint64_t ec = pci->event_ଗଣନା.load();
 
-			switch (ec) {
-			case 0:
+			ବାଛ (ec) {
+			ସ୍ଥିତି 0:
 				pci->time_first.store(now);
-				break;
+				ଭାଙ୍ଗ;
 
-			case 1: {
+			ସ୍ଥିତି 1: {
 					uint64_t tl = pci->time_last.load();
 					uint32_t interval = (uint32_t)(now - tl);
 					pci->time_least.store(interval);
 					pci->time_most.store(interval);
 					pci->mean.store(interval / 1e6f);
 					pci->M2.store(0.0f);
-					break;
+					ଭାଙ୍ଗ;
 				}
 
-			default: {
+			ପୂର୍ବନିର୍ଦ୍ଧାରିତ: {
 					uint64_t tl = pci->time_last.load();
 					hrt_abstime interval = now - tl;
 
 					uint32_t least = pci->time_least.load();
 
-					if ((uint32_t)interval < least) {
+					ଯଦି ((uint32_t)interval < least) {
 						pci->time_least.store((uint32_t)interval);
 					}
 
 					uint32_t most = pci->time_most.load();
 
-					if ((uint32_t)interval > most) {
+					ଯଦି ((uint32_t)interval > most) {
 						pci->time_most.store((uint32_t)interval);
 					}
 
 					// maintain mean and variance of interval in seconds
 					// Knuth/Welford recursive mean and variance of update intervals (via Wikipedia)
-					float dt = interval / 1e6f;
-					float mean_val = pci->mean.load();
-					float delta_intvl = dt - mean_val;
+					ଦଶମିକ dt = interval / 1e6f;
+					ଦଶମିକ mean_val = pci->mean.load();
+					ଦଶମିକ delta_intvl = dt - mean_val;
 					mean_val += delta_intvl / ec;
 					pci->mean.store(mean_val);
-					float m2_val = pci->M2.load();
+					ଦଶମିକ m2_val = pci->M2.load();
 					m2_val += delta_intvl * (dt - mean_val);
 					pci->M2.store(m2_val);
-					break;
+					ଭାଙ୍ଗ;
 				}
 			}
 
 			pci->time_last.store(now);
-			pci->event_count.fetch_add(1);
-			break;
+			pci->event_ଗଣନା.fetch_add(1);
+			ଭାଙ୍ଗ;
 		}
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 }
 
-void
-perf_set_count(perf_counter_t handle, uint64_t count)
+ଶୂନ୍ୟ
+perf_set_ଗଣନା(perf_counter_t handle, uint64_t ଗଣନା_2)
 {
-	if (handle == nullptr) {
-		return;
+	ଯଦି (handle == nullptr) {
+		ଫେରନ୍ତୁ;
 	}
 
-	switch (handle->type) {
-	case PC_COUNT: {
-			((struct perf_ctr_count *)handle)->event_count.store(count);
+	ବାଛ (handle->type) {
+	ସ୍ଥିତି PC_ଗଣନା: {
+			((ସଂରଚନା perf_ctr_ଗଣନା *)handle)->event_ଗଣନା.store(ଗଣନା_2);
 		}
-		break;
+		ଭାଙ୍ଗ;
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 
 }
 
-void
+ଶୂନ୍ୟ
 perf_cancel(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	ଯଦି (handle == nullptr) {
+		ଫେରନ୍ତୁ;
 	}
 
-	switch (handle->type) {
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
+	ବାଛ (handle->type) {
+	ସ୍ଥିତି PC_ELAPSED: {
+			ସଂରଚନା perf_ctr_elapsed *pce = (ସଂରଚନା perf_ctr_elapsed *)handle;
 			pce->time_start.store((uint64_t)0);
 		}
-		break;
+		ଭାଙ୍ଗ;
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 }
 
-void
+ଶୂନ୍ୟ
 perf_reset(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	ଯଦି (handle == nullptr) {
+		ଫେରନ୍ତୁ;
 	}
 
-	switch (handle->type) {
-	case PC_COUNT:
-		((struct perf_ctr_count *)handle)->event_count.store((uint64_t)0);
-		break;
+	ବାଛ (handle->type) {
+	ସ୍ଥିତି PC_ଗଣନା:
+		((ସଂରଚନା perf_ctr_ଗଣନା *)handle)->event_ଗଣନା.store((uint64_t)0);
+		ଭାଙ୍ଗ;
 
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			pce->event_count.store((uint64_t)0);
+	ସ୍ଥିତି PC_ELAPSED: {
+			ସଂରଚନା perf_ctr_elapsed *pce = (ସଂରଚନା perf_ctr_elapsed *)handle;
+			pce->event_ଗଣନା.store((uint64_t)0);
 			pce->time_start.store((uint64_t)0);
 			pce->time_total.store((uint64_t)0);
 			pce->time_least.store((uint32_t)0);
 			pce->time_most.store((uint32_t)0);
 			pce->mean.store(0.0f);
 			pce->M2.store(0.0f);
-			break;
+			ଭାଙ୍ଗ;
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			pci->event_count.store((uint64_t)0);
+	ସ୍ଥିତି PC_INTERVAL: {
+			ସଂରଚନା perf_ctr_interval *pci = (ସଂରଚନା perf_ctr_interval *)handle;
+			pci->event_ଗଣନା.store((uint64_t)0);
 			pci->time_event.store((uint64_t)0);
 			pci->time_first.store((uint64_t)0);
 			pci->time_last.store((uint64_t)0);
@@ -519,198 +519,198 @@ perf_reset(perf_counter_t handle)
 			pci->time_most.store((uint32_t)0);
 			pci->mean.store(0.0f);
 			pci->M2.store(0.0f);
-			break;
+			ଭାଙ୍ଗ;
 		}
 	}
 }
 
-void
+ଶୂନ୍ୟ
 perf_print_counter(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	ଯଦି (handle == nullptr) {
+		ଫେରନ୍ତୁ;
 	}
 
-	switch (handle->type) {
-	case PC_COUNT: {
-			uint64_t ec = ((struct perf_ctr_count *)handle)->event_count.load();
+	ବାଛ (handle->type) {
+	ସ୍ଥିତି PC_ଗଣନା: {
+			uint64_t ec = ((ସଂରଚନା perf_ctr_ଗଣନା *)handle)->event_ଗଣନା.load();
 			PX4_INFO_RAW("%s: %" PRIu64 " events\n",
 				     handle->name, ec);
-			break;
+			ଭାଙ୍ଗ;
 		}
 
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			uint64_t ec = pce->event_count.load();
+	ସ୍ଥିତି PC_ELAPSED: {
+			ସଂରଚନା perf_ctr_elapsed *pce = (ସଂରଚନା perf_ctr_elapsed *)handle;
+			uint64_t ec = pce->event_ଗଣନା.load();
 			uint64_t tt = pce->time_total.load();
 			uint32_t tl = pce->time_least.load();
 			uint32_t tm = pce->time_most.load();
-			float m2 = pce->M2.load();
-			float rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
+			ଦଶମିକ m2 = pce->M2.load();
+			ଦଶମିକ rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
 			PX4_INFO_RAW("%s: %" PRIu64 " events, %" PRIu64 "us elapsed, %.2fus avg, min %" PRIu32 "us max %" PRIu32
 				     "us %5.3fus rms\n",
 				     handle->name, ec, tt,
-				     (ec == 0) ? 0 : (double)tt / (double)ec,
-				     tl, tm, (double)(1e6f * rms));
-			break;
+				     (ec == 0) ? 0 : (ଦ୍ୱିଗୁଣ)tt / (ଦ୍ୱିଗୁଣ)ec,
+				     tl, tm, (ଦ୍ୱିଗୁଣ)(1e6f * rms));
+			ଭାଙ୍ଗ;
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			uint64_t ec = pci->event_count.load();
+	ସ୍ଥିତି PC_INTERVAL: {
+			ସଂରଚନା perf_ctr_interval *pci = (ସଂରଚନା perf_ctr_interval *)handle;
+			uint64_t ec = pci->event_ଗଣନା.load();
 			uint64_t tf = pci->time_first.load();
 			uint64_t tla = pci->time_last.load();
 			uint32_t tl = pci->time_least.load();
 			uint32_t tm = pci->time_most.load();
-			float m2 = pci->M2.load();
-			float rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
+			ଦଶମିକ m2 = pci->M2.load();
+			ଦଶମିକ rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
 
 			PX4_INFO_RAW("%s: %" PRIu64 " events, %.2fus avg, min %" PRIu32 "us max %" PRIu32 "us %5.3fus rms\n",
 				     handle->name, ec,
-				     (ec == 0) ? 0 : (double)(tla - tf) / (double)ec,
-				     tl, tm, (double)(1e6f * rms));
-			break;
+				     (ec == 0) ? 0 : (ଦ୍ୱିଗୁଣ)(tla - tf) / (ଦ୍ୱିଗୁଣ)ec,
+				     tl, tm, (ଦ୍ୱିଗୁଣ)(1e6f * rms));
+			ଭାଙ୍ଗ;
 		}
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 }
 
 
-int
-perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+perf_print_counter_buffer(ଅକ୍ଷର *buffer, ପୂର୍ଣ୍ଣସଂଖ୍ୟା length, perf_counter_t handle)
 {
-	int num_written = 0;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ଅଙ୍କ_written = 0;
 
-	if (handle == nullptr) {
-		return 0;
+	ଯଦି (handle == nullptr) {
+		ଫେରନ୍ତୁ 0;
 	}
 
-	switch (handle->type) {
-	case PC_COUNT:
-		num_written = snprintf(buffer, length, "%s: %" PRIu64 " events",
+	ବାଛ (handle->type) {
+	ସ୍ଥିତି PC_ଗଣନା:
+		ଅଙ୍କ_written = snprintf(buffer, length, "%s: %" PRIu64 " events",
 				       handle->name,
-				       ((struct perf_ctr_count *)handle)->event_count.load());
-		break;
+				       ((ସଂରଚନା perf_ctr_ଗଣନା *)handle)->event_ଗଣନା.load());
+		ଭାଙ୍ଗ;
 
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			uint64_t ec = pce->event_count.load();
+	ସ୍ଥିତି PC_ELAPSED: {
+			ସଂରଚନା perf_ctr_elapsed *pce = (ସଂରଚନା perf_ctr_elapsed *)handle;
+			uint64_t ec = pce->event_ଗଣନା.load();
 			uint64_t tt = pce->time_total.load();
 			uint32_t tl = pce->time_least.load();
 			uint32_t tm = pce->time_most.load();
-			float m2 = pce->M2.load();
-			float rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
-			num_written = snprintf(buffer, length,
+			ଦଶମିକ m2 = pce->M2.load();
+			ଦଶମିକ rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
+			ଅଙ୍କ_written = snprintf(buffer, length,
 					       "%s: %" PRIu64 " events, %" PRIu64 "us elapsed, %.2fus avg, min %" PRIu32 "us max %" PRIu32 "us %5.3fus rms",
 					       handle->name,
 					       ec,
 					       tt,
-					       (ec == 0) ? 0 : (double)tt / (double)ec,
+					       (ec == 0) ? 0 : (ଦ୍ୱିଗୁଣ)tt / (ଦ୍ୱିଗୁଣ)ec,
 					       tl,
 					       tm,
-					       (double)(1e6f * rms));
-			break;
+					       (ଦ୍ୱିଗୁଣ)(1e6f * rms));
+			ଭାଙ୍ଗ;
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			uint64_t ec = pci->event_count.load();
+	ସ୍ଥିତି PC_INTERVAL: {
+			ସଂରଚନା perf_ctr_interval *pci = (ସଂରଚନା perf_ctr_interval *)handle;
+			uint64_t ec = pci->event_ଗଣନା.load();
 			uint32_t tl = pci->time_least.load();
 			uint32_t tm = pci->time_most.load();
-			float m2 = pci->M2.load();
-			float rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
+			ଦଶମିକ m2 = pci->M2.load();
+			ଦଶମିକ rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
 
-			num_written = snprintf(buffer, length,
+			ଅଙ୍କ_written = snprintf(buffer, length,
 					       "%s: %" PRIu64 " events, %.2f avg, min %" PRIu32 "us max %" PRIu32 "us %5.3fus rms",
 					       handle->name,
 					       ec,
-					       (ec == 0) ? 0 : (double)(pci->time_last.load() - pci->time_first.load()) / (double)ec,
+					       (ec == 0) ? 0 : (ଦ୍ୱିଗୁଣ)(pci->time_last.load() - pci->time_first.load()) / (ଦ୍ୱିଗୁଣ)ec,
 					       tl,
 					       tm,
-					       (double)(1e6f * rms));
-			break;
+					       (ଦ୍ୱିଗୁଣ)(1e6f * rms));
+			ଭାଙ୍ଗ;
 		}
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 
 	buffer[length - 1] = 0; // ensure 0-termination
-	return num_written;
+	ଫେରନ୍ତୁ ଅଙ୍କ_written;
 }
 
 uint64_t
-perf_event_count(perf_counter_t handle)
+perf_event_ଗଣନା(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return 0;
+	ଯଦି (handle == nullptr) {
+		ଫେରନ୍ତୁ 0;
 	}
 
-	switch (handle->type) {
-	case PC_COUNT:
-		return ((struct perf_ctr_count *)handle)->event_count.load();
+	ବାଛ (handle->type) {
+	ସ୍ଥିତି PC_ଗଣନା:
+		ଫେରନ୍ତୁ ((ସଂରଚନା perf_ctr_ଗଣନା *)handle)->event_ଗଣନା.load();
 
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			return pce->event_count.load();
+	ସ୍ଥିତି PC_ELAPSED: {
+			ସଂରଚନା perf_ctr_elapsed *pce = (ସଂରଚନା perf_ctr_elapsed *)handle;
+			ଫେରନ୍ତୁ pce->event_ଗଣନା.load();
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			return pci->event_count.load();
+	ସ୍ଥିତି PC_INTERVAL: {
+			ସଂରଚନା perf_ctr_interval *pci = (ସଂରଚନା perf_ctr_interval *)handle;
+			ଫେରନ୍ତୁ pci->event_ଗଣନା.load();
 		}
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 
-	return 0;
+	ଫେରନ୍ତୁ 0;
 }
 
-float
+ଦଶମିକ
 perf_mean(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return 0;
+	ଯଦି (handle == nullptr) {
+		ଫେରନ୍ତୁ 0;
 	}
 
-	switch (handle->type) {
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			return pce->mean.load();
+	ବାଛ (handle->type) {
+	ସ୍ଥିତି PC_ELAPSED: {
+			ସଂରଚନା perf_ctr_elapsed *pce = (ସଂରଚନା perf_ctr_elapsed *)handle;
+			ଫେରନ୍ତୁ pce->mean.load();
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			return pci->mean.load();
+	ସ୍ଥିତି PC_INTERVAL: {
+			ସଂରଚନା perf_ctr_interval *pci = (ସଂରଚନା perf_ctr_interval *)handle;
+			ଫେରନ୍ତୁ pci->mean.load();
 		}
 
-	default:
-		break;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+		ଭାଙ୍ଗ;
 	}
 
-	return 0.0f;
+	ଫେରନ୍ତୁ 0.0f;
 }
 
-void
-perf_iterate_all(perf_callback cb, void *user)
+ଶୂନ୍ୟ
+perf_iterate_all(perf_callback cb, ଶୂନ୍ୟ *user)
 {
-	static constexpr size_t PERF_COUNTER_LINE_BUFFER_SIZE = 220;
-	char buffer[PERF_COUNTER_LINE_BUFFER_SIZE];
+	ସ୍ଥିର constexpr size_t PERF_COUNTER_ଧାଡ଼ି_BUFFER_SIZE = 220;
+	ଅକ୍ଷର buffer[PERF_COUNTER_ଧାଡ଼ି_BUFFER_SIZE];
 
 	pthread_mutex_lock(&perf_counters_mutex);
 	++perf_iterate_active;
 
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
+	ଯେତେବେଳେ (handle != nullptr) {
 		// advance while locked; entries stay linked until all active iterations end
 		perf_counter_t next = (perf_counter_t)sq_next(&handle->link);
 
-		if (!handle->pending_free) {
-			perf_print_counter_buffer(buffer, sizeof(buffer), handle);
+		ଯଦି (!handle->pending_free) {
+			perf_print_counter_buffer(buffer, ଆକାର(buffer), handle);
 
 			// the callback may block (the logger waits for MAVLink acks here), so run
 			// it without the global mutex: perf_alloc()/perf_free() on other threads
@@ -724,21 +724,21 @@ perf_iterate_all(perf_callback cb, void *user)
 		handle = next;
 	}
 
-	if (--perf_iterate_active == 0) {
+	ଯଦି (--perf_iterate_active == 0) {
 		perf_free_pending_locked();
 	}
 
 	pthread_mutex_unlock(&perf_counters_mutex);
 }
 
-void
-perf_print_all(void)
+ଶୂନ୍ୟ
+perf_print_all(ଶୂନ୍ୟ)
 {
 	pthread_mutex_lock(&perf_counters_mutex);
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
-		if (!handle->pending_free) {
+	ଯେତେବେଳେ (handle != nullptr) {
+		ଯଦି (!handle->pending_free) {
 			perf_print_counter(handle);
 		}
 
@@ -748,30 +748,30 @@ perf_print_all(void)
 	pthread_mutex_unlock(&perf_counters_mutex);
 }
 
-void
-perf_print_latency(void)
+ଶୂନ୍ୟ
+perf_print_latency(ଶୂନ୍ୟ)
 {
 	latency_info_t latency;
 	PX4_INFO_RAW("bucket [us] : events\n");
 
-	for (int i = 0; i < get_latency_bucket_count(); i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < get_latency_bucket_ଗଣନା(); i++) {
 		latency = get_latency(i, i);
-		PX4_INFO_RAW("       %4i : %li\n", latency.bucket, (long int)latency.counter);
+		PX4_INFO_RAW("       %4i : %li\n", latency.bucket, (long ପୂର୍ଣ୍ଣସଂଖ୍ୟା)latency.counter);
 	}
 
 	// print the overflow bucket value
-	latency = get_latency(get_latency_bucket_count() - 1, get_latency_bucket_count());
+	latency = get_latency(get_latency_bucket_ଗଣନା() - 1, get_latency_bucket_ଗଣନା());
 	PX4_INFO_RAW(" >%4" PRIu16 " : %" PRIu32 "\n", latency.bucket, latency.counter);
 }
 
-void
-perf_reset_all(void)
+ଶୂନ୍ୟ
+perf_reset_all(ଶୂନ୍ୟ)
 {
 	pthread_mutex_lock(&perf_counters_mutex);
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
-		if (!handle->pending_free) {
+	ଯେତେବେଳେ (handle != nullptr) {
+		ଯଦି (!handle->pending_free) {
 			perf_reset(handle);
 		}
 

@@ -46,21 +46,21 @@
  * on-board CRC functionality.
  */
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/posix.h>
-#include <nuttx/crc32.h>
-#include <stddef.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <errno.h>
-#include "flashfs.h"
-#include <nuttx/compiler.h>
-#include <nuttx/progmem.h>
-#include <board_config.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/posix.h>
+#ଅନ୍ତର୍ଭାଵ <nuttx/crc32.h>
+#ଅନ୍ତର୍ଭାଵ <stddef.h>
+#ଅନ୍ତର୍ଭାଵ <string.h>
+#ଅନ୍ତର୍ଭାଵ <stdbool.h>
+#ଅନ୍ତର୍ଭାଵ <stdint.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <errno.h>
+#ଅନ୍ତର୍ଭାଵ "flashfs.h"
+#ଅନ୍ତର୍ଭାଵ <nuttx/compiler.h>
+#ଅନ୍ତର୍ଭାଵ <nuttx/progmem.h>
+#ଅନ୍ତର୍ଭାଵ <board_config.h>
 
-#if defined(CONFIG_ARCH_HAVE_PROGMEM)
+#ଯଦି defined(CONFIG_ARCH_HAVE_PROGMEM)
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -70,19 +70,19 @@
  * Private Types
  ****************************************************************************/
 
-typedef uint32_t h_magic_t;
-typedef uint16_t h_size_t;
-typedef uint16_t h_flag_t;
-typedef uint16_t data_size_t;
+ପ୍ରକାରବ୍ୟାଖ୍ୟା uint32_t h_magic_t;
+ପ୍ରକାରବ୍ୟାଖ୍ୟା uint16_t h_size_t;
+ପ୍ରକାରବ୍ୟାଖ୍ୟା uint16_t h_flag_t;
+ପ୍ରକାରବ୍ୟାଖ୍ୟା uint16_t data_size_t;
 
-typedef enum  flash_config_t {
+ପ୍ରକାରବ୍ୟାଖ୍ୟା ଗଣନା  flash_config_t {
 	LargestBlock = 2 * 1024, // This represents the size need for backing store
 	MagicSig     = 0xaa553cc3,
 	BlankSig     = 0xffffffff
 } flash_config_t;
 
 /* Aligns are done up to 32 bytes, so storing the size padding within 0x001f mask */
-typedef enum  flash_flags_t {
+ପ୍ରକାରବ୍ୟାଖ୍ୟା ଗଣନା  flash_flags_t {
 	SizeMask      = 0x001f,
 	MaskEntry     = ~SizeMask,
 	BlankEntry    = (h_flag_t)BlankSig,
@@ -95,21 +95,21 @@ typedef enum  flash_flags_t {
  * and any padding needed to have the size be an even multiple of
  * the 32-byte flash line
  */
-#pragma GCC diagnostic push
+#pragma GCC diagnostic ଠେଲ
 #pragma GCC diagnostic ignored "-Wattributes"
-typedef begin_packed_struct struct flash_entry_header_t {
+ପ୍ରକାରବ୍ୟାଖ୍ୟା begin_packed_struct ସଂରଚନା flash_entry_header_t {
 	h_magic_t            magic;           /* Used to ID files*/
 	h_flag_t             flag;            /* Used to mark this entry as valid */
-	uint8_t              unused_buffer[32 - sizeof(h_magic_t) - sizeof(h_flag_t)]; /* padding */
+	uint8_t              unused_buffer[32 - ଆକାର(h_magic_t) - ଆକାର(h_flag_t)]; /* padding */
 	h_flag_t             flag_erased;     /* Used to erase this entry */
-	uint8_t              unused_buffer2[32 - sizeof(h_flag_t)]; /* padding */
+	uint8_t              unused_buffer2[32 - ଆକାର(h_flag_t)]; /* padding */
 	uint32_t             crc;             /* Calculated over the size - end of data */
 	h_size_t             size;            /* When added to a byte pointer to flash_entry_header_t
                                                * Will result the offset of the next active file or
                                                * free space. */
 	flash_file_token_t   file_token;      /* file token type - essentially the name/type */
-} end_packed_struct flash_entry_header_t __attribute__((aligned(sizeof(uint32_t))));
-#pragma GCC diagnostic pop
+} end_packed_struct flash_entry_header_t __attribute__((aligned(ଆକାର(uint32_t))));
+#pragma GCC diagnostic କାଢ଼
 
 /****************************************************************************
  * Private Function Prototypes
@@ -118,20 +118,20 @@ typedef begin_packed_struct struct flash_entry_header_t {
 /****************************************************************************
  * Private Data
  ****************************************************************************/
-static uint8_t *working_buffer;
-static size_t working_buffer_size;
-static bool working_buffer_static;
-static sector_descriptor_t *sector_map;
+ସ୍ଥିର uint8_t *working_buffer;
+ସ୍ଥିର size_t working_buffer_size;
+ସ୍ଥିର bool working_buffer_static;
+ସ୍ଥିର sector_descriptor_t *sector_map;
 
 /****************************************************************************
  * Public Data
  ****************************************************************************/
 
-const flash_file_token_t parameters_token = {
+ଅଚଳ flash_file_token_t parameters_token = {
 	.n = {'p', 'l', 'o', 'g'},
 };
 
-const flash_file_token_t parameters_legacy_token = {
+ଅଚଳ flash_file_token_t parameters_legacy_token = {
 	.n = {'p', 'a', 'r', 'm'},
 };
 
@@ -148,11 +148,11 @@ const flash_file_token_t parameters_legacy_token = {
  *
  ****************************************************************************/
 
-void parameter_flashfs_free(void)
+ଶୂନ୍ୟ parameter_flashfs_free(ଶୂନ୍ୟ)
 {
-	if (!working_buffer_static && working_buffer != NULL) {
-		free(working_buffer);
-		working_buffer = NULL;
+	ଯଦି (!working_buffer_static && working_buffer != ଖାଲି) {
+		ମୁକ୍ତ(working_buffer);
+		working_buffer = ଖାଲି;
 		working_buffer_size = 0;
 	}
 }
@@ -173,9 +173,9 @@ void parameter_flashfs_free(void)
  *
  ****************************************************************************/
 
-static inline int blank_flash(uint32_t *pf)
+ସ୍ଥିର ଧାଡ଼ିଭିତରେ ପୂର୍ଣ୍ଣସଂଖ୍ୟା blank_flash(uint32_t *pf)
 {
-	return *pf == BlankSig;
+	ଫେରନ୍ତୁ *pf == BlankSig;
 }
 
 /****************************************************************************
@@ -193,20 +193,20 @@ static inline int blank_flash(uint32_t *pf)
  *
  ****************************************************************************/
 
-static bool blank_check(flash_entry_header_t *pf,
+ସ୍ଥିର bool blank_check(flash_entry_header_t *pf,
 			size_t new_size)
 {
 	bool rv = true;
 	uint32_t *pm = (uint32_t *) pf;
-	new_size /= sizeof(uint32_t);
+	new_size /= ଆକାର(uint32_t);
 
-	while (new_size-- && rv) {
-		if (!blank_flash(pm++)) {
+	ଯେତେବେଳେ (new_size-- && rv) {
+		ଯଦି (!blank_flash(pm++)) {
 			rv = false;
 		}
 	}
 
-	return rv;
+	ଫେରନ୍ତୁ rv;
 }
 
 /****************************************************************************
@@ -225,9 +225,9 @@ static bool blank_check(flash_entry_header_t *pf,
  *
  ****************************************************************************/
 
-static inline int valid_magic(h_magic_t *pm)
+ସ୍ଥିର ଧାଡ଼ିଭିତରେ ପୂର୍ଣ୍ଣସଂଖ୍ୟା valid_magic(h_magic_t *pm)
 {
-	return *pm == MagicSig;
+	ଫେରନ୍ତୁ *pm == MagicSig;
 }
 
 /****************************************************************************
@@ -245,9 +245,9 @@ static inline int valid_magic(h_magic_t *pm)
  *
  ****************************************************************************/
 
-static inline int blank_entry(flash_entry_header_t *fi)
+ସ୍ଥିର ଧାଡ଼ିଭିତରେ ପୂର୍ଣ୍ଣସଂଖ୍ୟା blank_entry(flash_entry_header_t *fi)
 {
-	return fi->magic == BlankSig && fi->flag == BlankEntry && fi->flag_erased == BlankEntry;
+	ଫେରନ୍ତୁ fi->magic == BlankSig && fi->flag == BlankEntry && fi->flag_erased == BlankEntry;
 }
 
 /****************************************************************************
@@ -265,9 +265,9 @@ static inline int blank_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline int valid_entry(flash_entry_header_t *fi)
+ସ୍ଥିର ଧାଡ଼ିଭିତରେ ପୂର୍ଣ୍ଣସଂଖ୍ୟା valid_entry(flash_entry_header_t *fi)
 {
-	return (fi->flag & MaskEntry) == ValidEntry && (fi->flag_erased) == BlankEntry;
+	ଫେରନ୍ତୁ (fi->flag & MaskEntry) == ValidEntry && (fi->flag_erased) == BlankEntry;
 }
 
 /****************************************************************************
@@ -285,9 +285,9 @@ static inline int valid_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline int entry_size_adjust(flash_entry_header_t *fi)
+ସ୍ଥିର ଧାଡ଼ିଭିତରେ ପୂର୍ଣ୍ଣସଂଖ୍ୟା entry_size_adjust(flash_entry_header_t *fi)
 {
-	return fi->flag & SizeMask;
+	ଫେରନ୍ତୁ fi->flag & SizeMask;
 }
 
 /****************************************************************************
@@ -306,10 +306,10 @@ static inline int entry_size_adjust(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline flash_entry_header_t *next_entry(flash_entry_header_t *fi)
+ସ୍ଥିର ଧାଡ଼ିଭିତରେ flash_entry_header_t *next_entry(flash_entry_header_t *fi)
 {
 	uint8_t *pb = (uint8_t *)fi;
-	return (flash_entry_header_t *)(pb + fi->size);
+	ଫେରନ୍ତୁ (flash_entry_header_t *)(pb + fi->size);
 }
 
 /****************************************************************************
@@ -327,9 +327,9 @@ static inline flash_entry_header_t *next_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline uint8_t *entry_data(flash_entry_header_t *fi)
+ସ୍ଥିର ଧାଡ଼ିଭିତରେ uint8_t *entry_data(flash_entry_header_t *fi)
 {
-	return ((uint8_t *)fi) + sizeof(flash_entry_header_t);
+	ଫେରନ୍ତୁ ((uint8_t *)fi) + ଆକାର(flash_entry_header_t);
 }
 
 /****************************************************************************
@@ -347,9 +347,9 @@ static inline uint8_t *entry_data(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline data_size_t entry_data_length(flash_entry_header_t *fi)
+ସ୍ଥିର ଧାଡ଼ିଭିତରେ data_size_t entry_data_length(flash_entry_header_t *fi)
 {
-	return fi->size - (sizeof(flash_entry_header_t) + entry_size_adjust(fi));
+	ଫେରନ୍ତୁ fi->size - (ଆକାର(flash_entry_header_t) + entry_size_adjust(fi));
 }
 
 /****************************************************************************
@@ -368,9 +368,9 @@ static inline data_size_t entry_data_length(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline const uint8_t *entry_crc_start(flash_entry_header_t *fi)
+ସ୍ଥିର ଧାଡ଼ିଭିତରେ ଅଚଳ uint8_t *entry_crc_start(flash_entry_header_t *fi)
 {
-	return (const uint8_t *)&fi->size;
+	ଫେରନ୍ତୁ (ଅଚଳ uint8_t *)&fi->size;
 }
 
 /****************************************************************************
@@ -389,80 +389,80 @@ static inline const uint8_t *entry_crc_start(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline data_size_t entry_crc_length(flash_entry_header_t *fi)
+ସ୍ଥିର ଧାଡ଼ିଭିତରେ data_size_t entry_crc_length(flash_entry_header_t *fi)
 {
-	return fi->size - offsetof(flash_entry_header_t, size);
+	ଫେରନ୍ତୁ fi->size - offsetof(flash_entry_header_t, size);
 }
 
 /* The parameter sector can be the last one on the chip, so no header
  * field may be read until the whole header is known to lie inside it. */
-static inline bool header_fits(flash_entry_header_t *pf, h_magic_t *pe)
+ସ୍ଥିର ଧାଡ଼ିଭିତରେ bool header_fits(flash_entry_header_t *pf, h_magic_t *pe)
 {
-	return pf + 1 <= (flash_entry_header_t *)pe;
+	ଫେରନ୍ତୁ pf + 1 <= (flash_entry_header_t *)pe;
 }
 
-static bool crc_header_ok(flash_entry_header_t *pf, h_magic_t *pe)
+ସ୍ଥିର bool crc_header_ok(flash_entry_header_t *pf, h_magic_t *pe)
 {
-	if (!header_fits(pf, pe)) {
-		return false;
+	ଯଦି (!header_fits(pf, pe)) {
+		ଫେରନ୍ତୁ false;
 	}
 
-	if (pf->size < sizeof(flash_entry_header_t)) {
-		return false;
+	ଯଦି (pf->size < ଆକାର(flash_entry_header_t)) {
+		ଫେରନ୍ତୁ false;
 	}
 
-	const uint8_t *crc_start = entry_crc_start(pf);
+	ଅଚଳ uint8_t *crc_start = entry_crc_start(pf);
 	data_size_t crc_length = entry_crc_length(pf);
 
-	if (crc_start + crc_length > (uint8_t *)pe) {
-		return false;
+	ଯଦି (crc_start + crc_length > (uint8_t *)pe) {
+		ଫେରନ୍ତୁ false;
 	}
 
-	return pf->crc == crc32(crc_start, crc_length);
+	ଫେରନ୍ତୁ pf->crc == crc32(crc_start, crc_length);
 }
 
 /* The walkers stop at the last word of a sector and reject a record that
  * ends beyond it, so nothing may be written into that word. */
-static inline size_t sector_usable(int s)
+ସ୍ଥିର ଧାଡ଼ିଭିତରେ size_t sector_usable(ପୂର୍ଣ୍ଣସଂଖ୍ୟା s)
 {
-	return sector_map[s].size - sizeof(h_magic_t);
+	ଫେରନ୍ତୁ sector_map[s].size - ଆକାର(h_magic_t);
 }
 
-static bool slot_is_free(flash_entry_header_t *pf, int s, size_t required)
+ସ୍ଥିର bool slot_is_free(flash_entry_header_t *pf, ପୂର୍ଣ୍ଣସଂଖ୍ୟା s, size_t required)
 {
 	uint8_t *begin = (uint8_t *)sector_map[s].address;
 	uint8_t *end = begin + sector_usable(s);
 
-	if ((uint8_t *)pf < begin || required == 0 || (uint8_t *)pf + required > end) {
-		return false;
+	ଯଦି ((uint8_t *)pf < begin || required == 0 || (uint8_t *)pf + required > end) {
+		ଫେରନ୍ତୁ false;
 	}
 
 	/* Entries start on a flash row. up_progmem_write only asserts that in
 	 * debug builds, so a slot found by the word-wise scan behind a torn
 	 * record would otherwise be programmed misaligned. */
-	if (((uintptr_t)pf & SizeMask) != 0) {
-		return false;
+	ଯଦି (((uintptr_t)pf & SizeMask) != 0) {
+		ଫେରନ୍ତୁ false;
 	}
 
-	return blank_entry(pf) && blank_check(pf, required);
+	ଫେରନ୍ତୁ blank_entry(pf) && blank_check(pf, required);
 }
 
-static int for_each_valid_entry(flash_file_token_t token,
-				int (*cb)(flash_entry_header_t *pf, void *arg),
-				void *arg);
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା for_each_valid_entry(flash_file_token_t token,
+				ପୂର୍ଣ୍ଣସଂଖ୍ୟା (*cb)(flash_entry_header_t *pf, ଶୂନ୍ୟ *arg),
+				ଶୂନ୍ୟ *arg);
 
-static int stop_at_first(flash_entry_header_t *pf, void *arg)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା stop_at_first(flash_entry_header_t *pf, ଶୂନ୍ୟ *arg)
 {
 	*(flash_entry_header_t **)arg = pf;
-	return -ECANCELED;
+	ଫେରନ୍ତୁ -ECANCELED;
 }
 
 /* Oldest valid entry for token, or NULL. */
-static flash_entry_header_t *find_entry(flash_file_token_t token)
+ସ୍ଥିର flash_entry_header_t *find_entry(flash_file_token_t token)
 {
-	flash_entry_header_t *pf = NULL;
+	flash_entry_header_t *pf = ଖାଲି;
 	for_each_valid_entry(token, stop_at_first, &pf);
-	return pf;
+	ଫେରନ୍ତୁ pf;
 }
 
 /****************************************************************************
@@ -475,28 +475,28 @@ static flash_entry_header_t *find_entry(flash_file_token_t token)
  *
  ****************************************************************************/
 
-static flash_entry_header_t *find_append(size_t required)
+ସ୍ଥିର flash_entry_header_t *find_append(size_t required)
 {
-	if (sector_map == NULL || required == 0) {
-		return NULL;
+	ଯଦି (sector_map == ଖାଲି || required == 0) {
+		ଫେରନ୍ତୁ ଖାଲି;
 	}
 
-	flash_entry_header_t *last = NULL;
-	int last_s = -1;
+	flash_entry_header_t *last = ଖାଲି;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା last_s = -1;
 
-	for (int s = 0; sector_map[s].address; s++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା s = 0; sector_map[s].address; s++) {
 		h_magic_t *pmagic = (h_magic_t *) sector_map[s].address;
-		h_magic_t *pe = pmagic + (sector_map[s].size / sizeof(h_magic_t)) - 1;
+		h_magic_t *pe = pmagic + (sector_map[s].size / ଆକାର(h_magic_t)) - 1;
 
-		while (pmagic < pe) {
-			if (!valid_magic(pmagic)) {
+		ଯେତେବେଳେ (pmagic < pe) {
+			ଯଦି (!valid_magic(pmagic)) {
 				pmagic++;
-				continue;
+				ଜାରି;
 			}
 
 			flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-			if (crc_header_ok(pf, pe)) {
+			ଯଦି (crc_header_ok(pf, pe)) {
 				last = pf;
 				last_s = s;
 				pmagic = (h_magic_t *) next_entry(pf);
@@ -505,55 +505,55 @@ static flash_entry_header_t *find_append(size_t required)
 				/* Same stop rule as for_each_valid_entry: a record behind a
 				 * blank header is invisible to replay, so it must not anchor
 				 * the append point either. */
-				if (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
-					break;
+				ଯଦି (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
+					ଭାଙ୍ଗ;
 				}
 
-			} else {
+			} ଅନ୍ୟଥା {
 				pmagic++;
 			}
 		}
 	}
 
-	const int start_s = (last == NULL) ? 0 : last_s;
-	h_magic_t *pmagic = (last == NULL)
+	ଅଚଳ ପୂର୍ଣ୍ଣସଂଖ୍ୟା start_s = (last == ଖାଲି) ? 0 : last_s;
+	h_magic_t *pmagic = (last == ଖାଲି)
 			    ? (h_magic_t *) sector_map[0].address
 			    : (h_magic_t *) next_entry(last);
 
-	for (int s = start_s; sector_map[s].address; s++) {
-		if (s != start_s) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା s = start_s; sector_map[s].address; s++) {
+		ଯଦି (s != start_s) {
 			pmagic = (h_magic_t *) sector_map[s].address;
 		}
 
 		h_magic_t *pe = (h_magic_t *) sector_map[s].address
-				+ (sector_map[s].size / sizeof(h_magic_t)) - 1;
+				+ (sector_map[s].size / ଆକାର(h_magic_t)) - 1;
 
-		if ((uint8_t *)pmagic < (uint8_t *)sector_map[s].address
+		ଯଦି ((uint8_t *)pmagic < (uint8_t *)sector_map[s].address
 		    || (uint8_t *)pmagic >= (uint8_t *)sector_map[s].address + sector_map[s].size) {
-			if (s == start_s) {
-				continue;
+			ଯଦି (s == start_s) {
+				ଜାରି;
 			}
 
 			pmagic = (h_magic_t *) sector_map[s].address;
 		}
 
-		while (pmagic < pe) {
+		ଯେତେବେଳେ (pmagic < pe) {
 			flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-			if (valid_magic(pmagic) && crc_header_ok(pf, pe)) {
+			ଯଦି (valid_magic(pmagic) && crc_header_ok(pf, pe)) {
 				pmagic = (h_magic_t *) next_entry(pf);
-				continue;
+				ଜାରି;
 			}
 
-			if (slot_is_free(pf, s, required)) {
-				return pf;
+			ଯଦି (slot_is_free(pf, s, required)) {
+				ଫେରନ୍ତୁ pf;
 			}
 
 			pmagic++;
 		}
 	}
 
-	return NULL;
+	ଫେରନ୍ତୁ ଖାଲି;
 }
 
 /****************************************************************************
@@ -567,39 +567,39 @@ static flash_entry_header_t *find_append(size_t required)
  *
  ****************************************************************************/
 
-static int for_each_valid_entry(flash_file_token_t token,
-				int (*cb)(flash_entry_header_t *pf, void *arg),
-				void *arg)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା for_each_valid_entry(flash_file_token_t token,
+				ପୂର୍ଣ୍ଣସଂଖ୍ୟା (*cb)(flash_entry_header_t *pf, ଶୂନ୍ୟ *arg),
+				ଶୂନ୍ୟ *arg)
 {
-	int n = 0;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା n = 0;
 
-	if (sector_map == NULL) {
-		return -ENXIO;
+	ଯଦି (sector_map == ଖାଲି) {
+		ଫେରନ୍ତୁ -ENXIO;
 	}
 
-	for (int s = 0; sector_map[s].address; s++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା s = 0; sector_map[s].address; s++) {
 
 		h_magic_t *pmagic = (h_magic_t *) sector_map[s].address;
-		h_magic_t *pe = pmagic + (sector_map[s].size / sizeof(h_magic_t)) - 1;
+		h_magic_t *pe = pmagic + (sector_map[s].size / ଆକାର(h_magic_t)) - 1;
 
 cont:
 
-		while (pmagic < pe && !valid_magic(pmagic)) {
+		ଯେତେବେଳେ (pmagic < pe && !valid_magic(pmagic)) {
 			pmagic++;
 		}
 
-		if (pmagic >= pe) { continue; }
+		ଯଦି (pmagic >= pe) { ଜାରି; }
 
 		flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-		if (crc_header_ok(pf, pe)) {
+		ଯଦି (crc_header_ok(pf, pe)) {
 
-			if (valid_entry(pf) && pf->file_token.t == token.t) {
-				if (cb != NULL) {
-					int rv = cb(pf, arg);
+			ଯଦି (valid_entry(pf) && pf->file_token.t == token.t) {
+				ଯଦି (cb != ଖାଲି) {
+					ପୂର୍ଣ୍ଣସଂଖ୍ୟା rv = cb(pf, arg);
 
-					if (rv < 0) {
-						return rv;
+					ଯଦି (rv < 0) {
+						ଫେରନ୍ତୁ rv;
 					}
 				}
 
@@ -609,18 +609,18 @@ cont:
 			pf = next_entry(pf);
 			pmagic = (h_magic_t *) pf;
 
-			if (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
-				continue;
+			ଯଦି (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
+				ଜାରି;
 			}
 
-		} else {
+		} ଅନ୍ୟଥା {
 			pmagic++;
 		}
 
-		goto cont;
+		ଯାଅ cont;
 	}
 
-	return n;
+	ଫେରନ୍ତୁ n;
 }
 
 /****************************************************************************
@@ -641,9 +641,9 @@ cont:
  *
  ****************************************************************************/
 
-static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
 {
-	int rv = 0;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା rv = 0;
 
 	/*
 	* Because up_progmem interface doesn't allow one-to-one check of
@@ -653,35 +653,35 @@ static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
 	*
 	* This is an optional sanity check against the sector configuration
 	*/
-	if (up_progmem_isuniform()) {
+	ଯଦି (up_progmem_isuniform()) {
 		ssize_t page = up_progmem_getpage((size_t)pf);
 
-		if (page < 0) {
+		ଯଦି (page < 0) {
 			rv = page;
 		}
 
-		if (rv == 0) {
+		ଯଦି (rv == 0) {
 			size_t page_size  = up_progmem_pagesize(page);
 			size_t block_size = up_progmem_erasesize(sm->page);
-			size_t block_num  = ((page * page_size) / block_size);
+			size_t block_ଅଙ୍କ  = ((page * page_size) / block_size);
 
-			if (block_num != sm->page) {
+			ଯଦି (block_ଅଙ୍କ != sm->page) {
 				rv = -EINVAL;
 			}
 		}
 	}
 
-	if (rv == 0) {
+	ଯଦି (rv == 0) {
 
 		ssize_t size_erased = up_progmem_eraseblock(sm->page);
 
-		if (size_erased < 0 || size_erased != (ssize_t)sm->size) {
+		ଯଦି (size_erased < 0 || size_erased != (ssize_t)sm->size) {
 			rv = size_erased;
 		}
 
 	}
 
-	return rv;
+	ଫେରନ୍ତୁ rv;
 }
 
 /****************************************************************************
@@ -703,31 +703,31 @@ static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
  *
  ****************************************************************************/
 
-static int write_flash_entry(size_t pf, const flash_entry_header_t *pn)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା write_flash_entry(size_t pf, ଅଚଳ flash_entry_header_t *pn)
 {
 	ssize_t rv;
-	size_t line_size = up_progmem_pagesize(up_progmem_getpage(pf));
-	uint8_t *first_flag_line  = (uint8_t *)pn;
+	size_t ଧାଡ଼ି_size = up_progmem_pagesize(up_progmem_getpage(pf));
+	uint8_t *first_flag_ଧାଡ଼ି  = (uint8_t *)pn;
 	uint8_t *content_buffer   = (uint8_t *)(&pn->crc);
 
 	/* write first line (magic, flag) */
-	rv = up_progmem_write(pf, first_flag_line, line_size);
+	rv = up_progmem_write(pf, first_flag_ଧାଡ଼ି, ଧାଡ଼ି_size);
 
-	if (rv < 0) {
-		return rv;
+	ଯଦି (rv < 0) {
+		ଫେରନ୍ତୁ rv;
 	}
 
 	/* pretend to write the second line (flag_erased) */
-	rv += line_size;
+	rv += ଧାଡ଼ି_size;
 
 	/* write the remaining contents */
-	ssize_t rv2 = up_progmem_write(pf + 2 * line_size, content_buffer, pn->size - 2 * line_size);
+	ssize_t rv2 = up_progmem_write(pf + 2 * ଧାଡ଼ି_size, content_buffer, pn->size - 2 * ଧାଡ଼ି_size);
 
-	if (rv2 < 0) {
-		return rv2;
+	ଯଦି (rv2 < 0) {
+		ଫେରନ୍ତୁ rv2;
 	}
 
-	return rv + rv2;
+	ଫେରନ୍ତୁ rv + rv2;
 }//write_flash_entry
 
 /****************************************************************************
@@ -753,24 +753,24 @@ static int write_flash_entry(size_t pf, const flash_entry_header_t *pn)
  *
  ****************************************************************************/
 
-int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
 			   *buf_size)
 {
-	int rv = -ENXIO;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା rv = -ENXIO;
 
-	if (sector_map) {
+	ଯଦି (sector_map) {
 
 		rv = -ENOENT;
 		flash_entry_header_t *pf = find_entry(token);
 
-		if (pf) {
+		ଯଦି (pf) {
 			(*buffer) = entry_data(pf);
 			rv = entry_data_length(pf);
 			*buf_size = rv;
 		}
 	}
 
-	return rv;
+	ଫେରନ୍ତୁ rv;
 }
 
 /****************************************************************************
@@ -782,24 +782,24 @@ int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
  *
  ****************************************************************************/
 
-int parameter_flashfs_blank(void)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା parameter_flashfs_blank(ଶୂନ୍ୟ)
 {
-	if (sector_map == NULL) {
-		return -ENXIO;
+	ଯଦି (sector_map == ଖାଲି) {
+		ଫେରନ୍ତୁ -ENXIO;
 	}
 
-	for (int s = 0; sector_map[s].address; s++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା s = 0; sector_map[s].address; s++) {
 		uint32_t *pm = (uint32_t *) sector_map[s].address;
-		uint32_t *pe = pm + (sector_map[s].size / sizeof(uint32_t));
+		uint32_t *pe = pm + (sector_map[s].size / ଆକାର(uint32_t));
 
-		while (pm < pe) {
-			if (!blank_flash(pm++)) {
-				return 0;
+		ଯେତେବେଳେ (pm < pe) {
+			ଯଦି (!blank_flash(pm++)) {
+				ଫେରନ୍ତୁ 0;
 			}
 		}
 	}
 
-	return 1;
+	ଫେରନ୍ତୁ 1;
 }
 
 /****************************************************************************
@@ -820,52 +820,52 @@ int parameter_flashfs_blank(void)
  *
  ****************************************************************************/
 
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_size)
 {
-	int rv = -ENXIO;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା rv = -ENXIO;
 
-	if (sector_map) {
+	ଯଦି (sector_map) {
 
 		rv = 0;
 
 		/* Calculate the total space needed */
-		size_t total_size = buf_size + sizeof(flash_entry_header_t);
+		size_t total_size = buf_size + ଆକାର(flash_entry_header_t);
 		size_t alignment = SizeMask;///< 32-byte flash row
 		size_t  size_adjust = ((total_size + alignment) & ~alignment) - total_size;
 		total_size += size_adjust;
 
-		if (total_size > UINT16_MAX) {
-			return -EFBIG;
+		ଯଦି (total_size > UINT16_MAX) {
+			ଫେରନ୍ତୁ -EFBIG;
 		}
 
 		/* Append after the last CRC-valid record. Compaction is the caller's job. */
 		flash_entry_header_t *pf = find_append(total_size);
 
-		if (pf == 0) {
-			return -ENOSPC;
+		ଯଦି (pf == 0) {
+			ଫେରନ୍ତୁ -ENOSPC;
 		}
 
-		flash_entry_header_t *pn = (flash_entry_header_t *)(buffer - sizeof(flash_entry_header_t));
+		flash_entry_header_t *pn = (flash_entry_header_t *)(buffer - ଆକାର(flash_entry_header_t));
 		pn->magic = MagicSig;
 		pn->file_token.t = token.t;
 		pn->flag = ValidEntry + size_adjust;
 		pn->size = total_size;
 
-		for (size_t a = 0; a < size_adjust; a++) {
+		ପାଇଁ (size_t a = 0; a < size_adjust; a++) {
 			buffer[buf_size + a] = (uint8_t)BlankSig;
 		}
 
 		pn->crc = crc32(entry_crc_start(pn), entry_crc_length(pn));
 		rv = write_flash_entry((size_t)pf, pn);
-		int system_bytes = (sizeof(flash_entry_header_t) + size_adjust);
+		ପୂର୍ଣ୍ଣସଂଖ୍ୟା system_bytes = (ଆକାର(flash_entry_header_t) + size_adjust);
 
-		if (rv >= system_bytes) {
+		ଯଦି (rv >= system_bytes) {
 			rv -= system_bytes;
 		}
 	}
 
-	return rv;
+	ଫେରନ୍ତୁ rv;
 }
 
 /****************************************************************************
@@ -890,39 +890,39 @@ parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_si
  *
  ****************************************************************************/
 
-int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *buf_size)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *buf_size)
 {
-	int rv = -ENXIO;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା rv = -ENXIO;
 
-	if (sector_map) {
+	ଯଦି (sector_map) {
 
 		rv = -ENOMEM;
 
-		if (!working_buffer_static) {
+		ଯଦି (!working_buffer_static) {
 
-			working_buffer_size = *buf_size + sizeof(flash_entry_header_t) + SizeMask;
+			working_buffer_size = *buf_size + ଆକାର(flash_entry_header_t) + SizeMask;
 			working_buffer = malloc(working_buffer_size);
 
 		}
 
 		/* Allocation failed or not provided */
 
-		if (working_buffer == NULL) {
+		ଯଦି (working_buffer == ଖାଲି) {
 
 			working_buffer_size = 0;
 
-		} else {
+		} ଅନ୍ୟଥା {
 
 			/* We have a buffer reserve space and init it */
-			*buffer = &working_buffer[sizeof(flash_entry_header_t)];
-			*buf_size = working_buffer_size - sizeof(flash_entry_header_t) - SizeMask;
+			*buffer = &working_buffer[ଆକାର(flash_entry_header_t)];
+			*buf_size = working_buffer_size - ଆକାର(flash_entry_header_t) - SizeMask;
 			memset(working_buffer, 0xff, working_buffer_size);
 			rv = 0;
 
 		}
 	}
 
-	return rv;
+	ଫେରନ୍ତୁ rv;
 }
 
 /****************************************************************************
@@ -939,25 +939,25 @@ int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *
  *
  ****************************************************************************/
 
-int parameter_flashfs_erase(void)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା parameter_flashfs_erase(ଶୂନ୍ୟ)
 {
-	int rv = -ENXIO;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା rv = -ENXIO;
 
-	if (sector_map) {
+	ଯଦି (sector_map) {
 		rv = 0;
 
-		for (int s = 0; sector_map[s].address; s++) {
-			int sz = erase_sector(&sector_map[s], (flash_entry_header_t *)sector_map[s].address);
+		ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା s = 0; sector_map[s].address; s++) {
+			ପୂର୍ଣ୍ଣସଂଖ୍ୟା sz = erase_sector(&sector_map[s], (flash_entry_header_t *)sector_map[s].address);
 
-			if (sz != 0) {
-				return sz;
+			ଯଦି (sz != 0) {
+				ଫେରନ୍ତୁ sz;
 			}
 
 			rv += sector_map[s].size;
 		}
 	}
 
-	return rv;
+	ଫେରନ୍ତୁ rv;
 }
 
 
@@ -965,98 +965,98 @@ int parameter_flashfs_erase(void)
  * Name: parameter_flashfs_walk
  ****************************************************************************/
 
-struct walk_pack {
+ସଂରଚନା walk_pack {
 	parameter_flashfs_walk_cb cb;
-	void *arg;
+	ଶୂନ୍ୟ *arg;
 };
 
-static int walk_one(flash_entry_header_t *pf, void *arg)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା walk_one(flash_entry_header_t *pf, ଶୂନ୍ୟ *arg)
 {
-	struct walk_pack *w = (struct walk_pack *)arg;
-	return w->cb(entry_data(pf), entry_data_length(pf), w->arg);
+	ସଂରଚନା walk_pack *w = (ସଂରଚନା walk_pack *)arg;
+	ଫେରନ୍ତୁ w->cb(entry_data(pf), entry_data_length(pf), w->arg);
 }
 
-int parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb cb, void *arg)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb cb, ଶୂନ୍ୟ *arg)
 {
-	struct walk_pack w = { cb, arg };
-	return for_each_valid_entry(token, walk_one, &w);
+	ସଂରଚନା walk_pack w = { cb, arg };
+	ଫେରନ୍ତୁ for_each_valid_entry(token, walk_one, &w);
 }
 
 /****************************************************************************
  * Name: parameter_flashfs_needs_compact
  ****************************************************************************/
 
-size_t parameter_flashfs_max_payload(void)
+size_t parameter_flashfs_max_payload(ଶୂନ୍ୟ)
 {
-	if (sector_map == NULL) {
-		return 0;
+	ଯଦି (sector_map == ଖାଲି) {
+		ଫେରନ୍ତୁ 0;
 	}
 
 	size_t max_total = 0;
 
-	for (int s = 0; sector_map[s].address; s++) {
-		if (sector_usable(s) > max_total) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା s = 0; sector_map[s].address; s++) {
+		ଯଦି (sector_usable(s) > max_total) {
 			max_total = sector_usable(s);
 		}
 	}
 
 	/* h_size_t holds the record size */
-	if (max_total > UINT16_MAX) {
+	ଯଦି (max_total > UINT16_MAX) {
 		max_total = UINT16_MAX;
 	}
 
 	max_total &= ~(size_t)SizeMask;
 
-	if (max_total <= sizeof(flash_entry_header_t)) {
-		return 0;
+	ଯଦି (max_total <= ଆକାର(flash_entry_header_t)) {
+		ଫେରନ୍ତୁ 0;
 	}
 
-	return max_total - sizeof(flash_entry_header_t);
+	ଫେରନ୍ତୁ max_total - ଆକାର(flash_entry_header_t);
 }
 
-int parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_size)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_size)
 {
-	if (sector_map == NULL) {
-		return -ENXIO;
+	ଯଦି (sector_map == ଖାଲି) {
+		ଫେରନ୍ତୁ -ENXIO;
 	}
 
 	flash_entry_header_t *first = find_entry(token);
 
-	if (first == NULL) {
-		return 0;
+	ଯଦି (first == ଖାଲି) {
+		ଫେରନ୍ତୁ 0;
 	}
 
 	/* Dead records ahead of the live data (a torn write, or the erased
 	 * prefix the single-snapshot writer left) only go away with an erase. */
-	if ((uintptr_t)first != (uintptr_t)sector_map[0].address) {
-		return 1;
+	ଯଦି ((uintptr_t)first != (uintptr_t)sector_map[0].address) {
+		ଫେରନ୍ତୁ 1;
 	}
 
 	/* Keep room after the log for a burst the size of the snapshot
 	 * (reset-all tombstones, airframe PARAM_SET), floored so a UUID append
 	 * does not force a boot erase. */
-	const size_t align = SizeMask;
-	const size_t snapshot_total = (snapshot_size + sizeof(flash_entry_header_t) + align) & ~align;
-	const size_t headroom = snapshot_total > 8192 ? snapshot_total : 8192;
+	ଅଚଳ size_t align = SizeMask;
+	ଅଚଳ size_t snapshot_total = (snapshot_size + ଆକାର(flash_entry_header_t) + align) & ~align;
+	ଅଚଳ size_t headroom = snapshot_total > 8192 ? snapshot_total : 8192;
 
-	if (find_append(headroom) != NULL) {
-		return 0;
+	ଯଦି (find_append(headroom) != ଖାଲି) {
+		ଫେରନ୍ତୁ 0;
 	}
 
 	/* Compaction leaves the snapshot at the start of sector 0 and every
 	 * other sector blank. Erase only if that layout has the room this one
 	 * lacks, or every boot would pay the erase for nothing. */
-	if (sector_usable(0) >= snapshot_total + headroom) {
-		return 1;
+	ଯଦି (sector_usable(0) >= snapshot_total + headroom) {
+		ଫେରନ୍ତୁ 1;
 	}
 
-	for (int s = 1; sector_map[s].address; s++) {
-		if (sector_usable(s) >= headroom) {
-			return 1;
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା s = 1; sector_map[s].address; s++) {
+		ଯଦି (sector_usable(s) >= headroom) {
+			ଫେରନ୍ତୁ 1;
 		}
 	}
 
-	return 0;
+	ଫେରନ୍ତୁ 0;
 }
 
 /****************************************************************************
@@ -1087,13 +1087,13 @@ int parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_si
  *
  ****************************************************************************/
 
-int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16_t size)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16_t size)
 {
-	int rv = 0;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା rv = 0;
 	sector_map = fconfig;
-	working_buffer_static = buffer != NULL;
+	working_buffer_static = buffer != ଖାଲି;
 
-	if (!working_buffer_static) {
+	ଯଦି (!working_buffer_static) {
 		size = 0;
 	}
 
@@ -1106,67 +1106,67 @@ int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16
 	 * reports -EILSEQ. Erasing here would hide a successful retry after
 	 * a torn compact write. */
 
-	return rv;
+	ଫେରନ୍ତୁ rv;
 }
 
-#if defined(FLASH_UNIT_TEST)
+#ଯଦି defined(FLASH_UNIT_TEST)
 
-static sector_descriptor_t  test_sector_map[] = {
+ସ୍ଥିର sector_descriptor_t  test_sector_map[] = {
 	{14, 128 * 1024, 0x081c0000},
 	{15, 128 * 1024, 0x081e0000},
 	{0, 0, 0},
 };
 
-__EXPORT void test(void);
+__EXPORT ଶୂନ୍ୟ test(ଶୂନ୍ୟ);
 
 uint8_t test_buf[32 * 1024];
 
-__EXPORT void test(void)
+__EXPORT ଶୂନ୍ୟ test(ଶୂନ୍ୟ)
 {
 	uint16_t largest_block = (32 * 1024) + 96;
 	uint8_t *buffer = malloc(largest_block);
 
 	parameter_flashfs_init(test_sector_map, buffer, largest_block);
 
-	for (int t = 0; t < sizeof(test_buf); t++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା t = 0; t < ଆକାର(test_buf); t++) {
 		test_buf[t] = (uint8_t) t;
 	}
 
-	int er = parameter_flashfs_erase();
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା er = parameter_flashfs_erase();
 	uint8_t *fbuffer;
 	size_t buf_size;
-	int written = 0;
-	int read = 0;
-	int rv = 0;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା written = 0;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ପଠ = 0;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା rv = 0;
 
-	for (int a = 0; a <= 4; a++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା a = 0; a <= 4; a++) {
 		parameter_flashfs_erase();
 		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
 		memcpy(fbuffer, test_buf, a);
 		buf_size = a;
 		written = parameter_flashfs_write(parameters_token, fbuffer, buf_size);
-		read = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
+		ପଠ = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
 		parameter_flashfs_free();
 
-		if (read != written) {
-			static volatile int j;
+		ଯଦି (ପଠ != written) {
+			ସ୍ଥିର ଅସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା j;
 			j++;
 		}
 	}
 
-	int block = 2048;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା block = 2048;
 
-	for (int a = 0; a <= 8; a++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା a = 0; a <= 8; a++) {
 		parameter_flashfs_erase();
 		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
 		memcpy(fbuffer, test_buf, block);
 		buf_size = block;
 		written = parameter_flashfs_write(parameters_token, fbuffer, buf_size);
-		read = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
+		ପଠ = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
 		parameter_flashfs_free();
 
-		if (read != written) {
-			static volatile int j;
+		ଯଦି (ପଠ != written) {
+			ସ୍ଥିର ଅସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା j;
 			j++;
 		}
 
@@ -1175,7 +1175,7 @@ __EXPORT void test(void)
 
 	rv++;
 	er++;
-	free(buffer);
+	ମୁକ୍ତ(buffer);
 }
 #endif /* FLASH_UNIT_TEST */
 #endif /* CONFIG_ARCH_HAVE_PROGMEM */

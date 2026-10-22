@@ -37,101 +37,101 @@
  *
  */
 
-#include "DaaCrosstrack.h"
+#ଅନ୍ତର୍ଭାଵ "DaaCrosstrack.h"
 
-#include <float.h>
+#ଅନ୍ତର୍ଭାଵ <float.h>
 
-#include <lib/geo/geo.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
-#include <uORB/topics/detect_and_avoid.h>
+#ଅନ୍ତର୍ଭାଵ <lib/geo/geo.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/log.h>
+#ଅନ୍ତର୍ଭାଵ <uORB/topics/detect_and_avoid.h>
 
 DaaCrosstrack::DaaCrosstrack() :
 	ModuleParams(nullptr)
 {
 }
 
-bool DaaCrosstrack::try_setting_params()
+ତାର୍କିକ DaaCrosstrack::try_setting_params()
 {
 	updateParams();
 
-	const float crosstrack_sep = _param_nav_traff_a_hor.get();
-	const float vertical_sep = _param_nav_traff_a_ver.get();
-	const int32_t collision_time = _param_nav_traff_coll_t.get();
+	ଅଚଳ ଦଶମିକ crosstrack_sep = _param_nav_traff_a_hor.get();
+	ଅଚଳ ଦଶମିକ vertical_sep = _param_nav_traff_a_ver.get();
+	ଅଚଳ int32_t collision_time = _param_nav_traff_coll_t.get();
 
-	const bool crosstrack_ok = PX4_ISFINITE(crosstrack_sep) && crosstrack_sep > 0.f;
-	const bool vertical_ok = PX4_ISFINITE(vertical_sep) && vertical_sep > 0.f;
-	const bool collision_time_ok = collision_time > 0;
+	ଅଚଳ ତାର୍କିକ crosstrack_ok = PX4_ISFINITE(crosstrack_sep) && crosstrack_sep > 0.f;
+	ଅଚଳ ତାର୍କିକ vertical_ok = PX4_ISFINITE(vertical_sep) && vertical_sep > 0.f;
+	ଅଚଳ ତାର୍କିକ collision_time_ok = collision_time > 0;
 
-	if (!(crosstrack_ok && vertical_ok && collision_time_ok)) {
+	ଯଦି (!(crosstrack_ok && vertical_ok && collision_time_ok)) {
 		PX4_ERR("DAA: invalid crosstrack parameters");
-		return false;
+		ଫେରନ୍ତୁ ମିଥ୍ୟା;
 	}
 
 	_crosstrack_separation_m = crosstrack_sep;
 	_vertical_separation_m = vertical_sep;
 	_collision_time_threshold_s = collision_time;
-	return true;
+	ଫେରନ୍ତୁ ସତ୍ୟ;
 }
 
-uint8_t DaaCrosstrack::calculate_daa_stats(const aircraft_state_s &uav_state, const aircraft_state_s &traffic_state,
-		daa_stats_s &daa_stats) const
+uint8_t DaaCrosstrack::calculate_daa_stats(ଅଚଳ aircraft_state_s &uav_state, ଅଚଳ aircraft_state_s &traffic_state,
+		daa_stats_s &daa_stats) ଅଚଳ
 {
-	if (!PX4_ISFINITE(traffic_state.heading)) {
+	ଯଦି (!PX4_ISFINITE(traffic_state.heading)) {
 		PX4_DEBUG("CRT lib: invalid traffic heading");
 		daa_stats = {};
-		return detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
+		ଫେରନ୍ତୁ detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
 	}
 
-	float d_hor{0.f};
-	float d_vert{0.f};
+	ଦଶମିକ d_hor{0.f};
+	ଦଶମିକ d_vert{0.f};
 	get_distance_to_point_global_wgs84(uav_state.lat_lon(0), uav_state.lat_lon(1), uav_state.altitude,
 					   traffic_state.lat_lon(0), traffic_state.lat_lon(1), traffic_state.altitude, &d_hor, &d_vert);
 
-	const float relative_uav_traffic_speed = calculate_relative_uav_traffic_speed(uav_state, traffic_state);
+	ଅଚଳ ଦଶମିକ relative_uav_traffic_speed = calculate_relative_uav_traffic_speed(uav_state, traffic_state);
 
 	// Predict until the vehicle would have passed this system at its current speed
-	const float prediction_distance = d_hor + kTrafficToUavDistanceExtension;
+	ଅଚଳ ଦଶମିକ prediction_distance = d_hor + kTrafficToUavDistanceExtension;
 
-	double end_lat{0.0};
-	double end_lon{0.0};
+	ଦ୍ୱିଗୁଣ end_lat{0.0};
+	ଦ୍ୱିଗୁଣ end_lon{0.0};
 	waypoint_from_heading_and_distance(traffic_state.lat_lon(0), traffic_state.lat_lon(1),
 					   traffic_state.heading, prediction_distance, &end_lat, &end_lon);
 
 	crosstrack_error_s crosstrack_error{};
-	const bool line_distance_valid = !get_distance_to_line(crosstrack_error, uav_state.lat_lon(0),
+	ଅଚଳ ତାର୍କିକ ଧାଡ଼ି_distance_valid = !get_distance_to_ଧାଡ଼ି(crosstrack_error, uav_state.lat_lon(0),
 					 uav_state.lat_lon(1), traffic_state.lat_lon(0),
 					 traffic_state.lat_lon(1), end_lat,
 					 end_lon);
 
-	const bool cs_distance_conflict_threshold = line_distance_valid
+	ଅଚଳ ତାର୍କିକ cs_distance_conflict_threshold = ଧାଡ଼ି_distance_valid
 			&& (!crosstrack_error.past_end)
 			&& (fabsf(crosstrack_error.distance) < _crosstrack_separation_m);
 
-	const float vertical_separation = fabsf(uav_state.altitude - traffic_state.altitude);
-	const bool vertical_separation_conflict = vertical_separation < _vertical_separation_m;
+	ଅଚଳ ଦଶମିକ vertical_separation = fabsf(uav_state.altitude - traffic_state.altitude);
+	ଅଚଳ ତାର୍କିକ vertical_separation_conflict = vertical_separation < _vertical_separation_m;
 
-	bool collision_time_check = false;
+	ତାର୍କିକ collision_time_check = ମିଥ୍ୟା;
 
-	const float d_xyz = hypotf(d_hor, d_vert);
-	float time_to_collision = 0.f;
+	ଅଚଳ ଦଶମିକ d_xyz = hypotf(d_hor, d_vert);
+	ଦଶମିକ time_to_collision = 0.f;
 
-	if (relative_uav_traffic_speed > FLT_EPSILON) {
+	ଯଦି (relative_uav_traffic_speed > FLT_EPSILON) {
 		time_to_collision = d_xyz / relative_uav_traffic_speed;
 		collision_time_check = time_to_collision < _collision_time_threshold_s;
 	}
 
 	daa_stats.aircraft_dist = d_xyz;
-	daa_stats.aircraft_dist_hor = line_distance_valid ? crosstrack_error.distance : d_hor;
+	daa_stats.aircraft_dist_hor = ଧାଡ଼ି_distance_valid ? crosstrack_error.distance : d_hor;
 	daa_stats.aircraft_dist_vert = vertical_separation;
 	daa_stats.expected_min_dist_time_sec = time_to_collision;
 
-	const bool conflict_detected = cs_distance_conflict_threshold && vertical_separation_conflict && collision_time_check;
+	ଅଚଳ ତାର୍କିକ conflict_detected = cs_distance_conflict_threshold && vertical_separation_conflict && collision_time_check;
 
-	if (!conflict_detected) {
-		return detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
+	ଯଦି (!conflict_detected) {
+		ଫେରନ୍ତୁ detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
 	}
 
 	// Crosstrack mode has one conflict level, mapped to HIGH for compatibility.
-	return detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH;
+	ଫେରନ୍ତୁ detect_and_avoid_s::DAA_CONFLICT_LVL_ଉପର;
 }

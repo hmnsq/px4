@@ -1,10 +1,10 @@
 #pragma once
 
-#include <cmath>
+#ଅନ୍ତର୍ଭାଵ <cmath>
 
-#include <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
 
-namespace matrix
+ନାମାକାଶ matrix
 {
 
 /**
@@ -19,28 +19,28 @@ namespace matrix
  * @return true if the two values are considered equal, false otherwise
  */
 template<typename Type>
-bool isEqualF(const Type x, const Type y, const Type eps = Type(1e-4f))
+ତାର୍କିକ isEqualF(ଅଚଳ Type x, ଅଚଳ Type y, ଅଚଳ Type eps = Type(1e-4f))
 {
-	return (std::fabs(x - y) <= eps)
+	ଫେରନ୍ତୁ (std::fabs(x - y) <= eps)
 	       || (std::isnan(x) && std::isnan(y))
 	       || (std::isinf(x) && std::isinf(y) && std::isnan(x - y));
 }
 
-namespace detail
+ନାମାକାଶ detail
 {
 
 template<typename Floating>
-Floating wrap_floating(Floating x, Floating low, Floating high)
+Floating wrap_floating(Floating x, Floating ତଳ, Floating ଉପର)
 {
 	// already in range
-	if (low <= x && x < high) {
-		return x;
+	ଯଦି (ତଳ <= x && x < ଉପର) {
+		ଫେରନ୍ତୁ x;
 	}
 
-	const auto range = high - low;
-	const auto inv_range = Floating(1) / range; // should evaluate at compile time, multiplies below at runtime
-	const auto num_wraps = std::floor((x - low) * inv_range);
-	return x - range * num_wraps;
+	ଅଚଳ auto range = ଉପର - ତଳ;
+	ଅଚଳ auto inv_range = Floating(1) / range; // should evaluate at compile time, multiplies below at runtime
+	ଅଚଳ auto ଅଙ୍କ_wraps = std::floor((x - ତଳ) * inv_range);
+	ଫେରନ୍ତୁ x - range * ଅଙ୍କ_wraps;
 }
 
 } // namespace detail
@@ -53,9 +53,9 @@ Floating wrap_floating(Floating x, Floating low, Floating high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline float wrap(float x, float low, float high)
+ଧାଡ଼ିଭିତରେ ଦଶମିକ wrap(ଦଶମିକ x, ଦଶମିକ ତଳ, ଦଶମିକ ଉପର)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	ଫେରନ୍ତୁ matrix::detail::wrap_floating(x, ତଳ, ଉପର);
 }
 
 /**
@@ -66,9 +66,9 @@ inline float wrap(float x, float low, float high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline double wrap(double x, double low, double high)
+ଧାଡ଼ିଭିତରେ ଦ୍ୱିଗୁଣ wrap(ଦ୍ୱିଗୁଣ x, ଦ୍ୱିଗୁଣ ତଳ, ଦ୍ୱିଗୁଣ ଉପର)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	ଫେରନ୍ତୁ matrix::detail::wrap_floating(x, ତଳ, ଉପର);
 }
 
 /**
@@ -80,15 +80,15 @@ inline double wrap(double x, double low, double high)
  * @return wrapped value inside the range
  */
 template<typename Integer>
-Integer wrap(Integer x, Integer low, Integer high)
+Integer wrap(Integer x, Integer ତଳ, Integer ଉପର)
 {
-	const auto range = high - low;
+	ଅଚଳ auto range = ଉପର - ତଳ;
 
-	if (x < low) {
-		x += range * ((low - x) / range + 1);
+	ଯଦି (x < ତଳ) {
+		x += range * ((ତଳ - x) / range + 1);
 	}
 
-	return low + (x - low) % range;
+	ଫେରନ୍ତୁ ତଳ + (x - ତଳ) % range;
 }
 
 /**
@@ -97,7 +97,7 @@ Integer wrap(Integer x, Integer low, Integer high)
 template<typename Type>
 Type wrap_pi(Type x)
 {
-	return wrap(x, Type(-M_PI), Type(M_PI));
+	ଫେରନ୍ତୁ wrap(x, Type(-M_PI), Type(M_PI));
 }
 
 /**
@@ -106,7 +106,7 @@ Type wrap_pi(Type x)
 template<typename Type>
 Type wrap_2pi(Type x)
 {
-	return wrap(x, Type(0), Type((2 * M_PI)));
+	ଫେରନ୍ତୁ wrap(x, Type(0), Type((2 * M_PI)));
 }
 
 /**
@@ -119,9 +119,9 @@ Type wrap_2pi(Type x)
  * @return New unwrapped value
  */
 template<typename Type>
-Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high)
+Type unwrap(ଅଚଳ Type last_x, ଅଚଳ Type new_x, ଅଚଳ Type ତଳ, ଅଚଳ Type ଉପର)
 {
-	return last_x + wrap(new_x - last_x, low, high);
+	ଫେରନ୍ତୁ last_x + wrap(new_x - last_x, ତଳ, ଉପର);
 }
 
 /**
@@ -132,9 +132,9 @@ Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high
  * @return New unwrapped angle [rad]
  */
 template<typename Type>
-Type unwrap_pi(const Type last_angle, const Type new_angle)
+Type unwrap_pi(ଅଚଳ Type last_angle, ଅଚଳ Type new_angle)
 {
-	return unwrap(last_angle, new_angle, Type(-M_PI), Type(M_PI));
+	ଫେରନ୍ତୁ unwrap(last_angle, new_angle, Type(-M_PI), Type(M_PI));
 }
 
 /**
@@ -144,9 +144,9 @@ Type unwrap_pi(const Type last_angle, const Type new_angle)
  * @return -1 if val < 0, 0 if val == 0, 1 if val > 0
  */
 template<typename T>
-int sign(T val)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା sign(T val)
 {
-	return (T(0) < val) - (val < T(0));
+	ଫେରନ୍ତୁ (T(0) < val) - (val < T(0));
 }
 
 } // namespace matrix

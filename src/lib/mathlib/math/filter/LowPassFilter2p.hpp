@@ -38,33 +38,33 @@
 
 #pragma once
 
-#include <mathlib/math/Functions.hpp>
-#include <float.h>
-#include <matrix/math.hpp>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/Functions.hpp>
+#ଅନ୍ତର୍ଭାଵ <float.h>
+#ଅନ୍ତର୍ଭାଵ <matrix/math.hpp>
 
-namespace math
+ନାମାକାଶ math
 {
 
 template<typename T>
-class LowPassFilter2p
+ଶ୍ରେଣୀ ତଳ_Pass_Filter2p
 {
-public:
-	LowPassFilter2p() = default;
+ସର୍ବସାଧାରଣ:
+	ତଳ_Pass_Filter2p() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
 
-	LowPassFilter2p(float sample_freq, float cutoff_freq)
+	ତଳ_Pass_Filter2p(ଦଶମିକ sample_freq, ଦଶମିକ cutoff_freq)
 	{
 		// set initial parameters
 		set_cutoff_frequency(sample_freq, cutoff_freq);
 	}
 
 	// Change filter parameters
-	void set_cutoff_frequency(float sample_freq, float cutoff_freq)
+	ଶୂନ୍ୟ set_cutoff_frequency(ଦଶମିକ sample_freq, ଦଶମିକ cutoff_freq)
 	{
-		if ((sample_freq <= 0.f) || (cutoff_freq <= 0.f) || (cutoff_freq >= sample_freq / 2)
+		ଯଦି ((sample_freq <= 0.f) || (cutoff_freq <= 0.f) || (cutoff_freq >= sample_freq / 2)
 		    || !isFinite(sample_freq) || !isFinite(cutoff_freq)) {
 
 			disable();
-			return;
+			ଫେରନ୍ତୁ;
 		}
 
 		// reset delay elements on filter change
@@ -74,9 +74,9 @@ public:
 		_cutoff_freq = math::max(cutoff_freq, sample_freq * 0.001f);
 		_sample_freq = sample_freq;
 
-		const float fr = _sample_freq / _cutoff_freq;
-		const float ohm = tanf(M_PI_F / fr);
-		const float c = 1.f + 2.f * cosf(M_PI_F / 4.f) * ohm + ohm * ohm;
+		ଅଚଳ ଦଶମିକ fr = _sample_freq / _cutoff_freq;
+		ଅଚଳ ଦଶମିକ ohm = tanf(M_PI_F / fr);
+		ଅଚଳ ଦଶମିକ c = 1.f + 2.f * cosf(M_PI_F / 4.f) * ohm + ohm * ohm;
 
 		_b0 = ohm * ohm / c;
 		_b1 = 2.f * _b0;
@@ -85,7 +85,7 @@ public:
 		_a1 = 2.f * (ohm * ohm - 1.f) / c;
 		_a2 = (1.f - 2.f * cosf(M_PI_F / 4.f) * ohm + ohm * ohm) / c;
 
-		if (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a1) || !isFinite(_a2)) {
+		ଯଦି (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a1) || !isFinite(_a2)) {
 			disable();
 		}
 	}
@@ -95,7 +95,7 @@ public:
 	 *
 	 * @return retrieve the filtered result
 	 */
-	inline T apply(const T &sample)
+	ଧାଡ଼ିଭିତରେ T apply(ଅଚଳ T &sample)
 	{
 		// Direct Form II implementation
 		T delay_element_0{sample - _delay_element_1 *_a1 - _delay_element_2 * _a2};
@@ -105,45 +105,45 @@ public:
 		_delay_element_2 = _delay_element_1;
 		_delay_element_1 = delay_element_0;
 
-		return output;
+		ଫେରନ୍ତୁ output;
 	}
 
 	// Filter array of samples in place using the Direct form II.
-	inline void applyArray(T samples[], int num_samples)
+	ଧାଡ଼ିଭିତରେ ଶୂନ୍ୟ applyArray(T samples[], ପୂର୍ଣ୍ଣସଂଖ୍ୟା ଅଙ୍କ_samples)
 	{
-		for (int n = 0; n < num_samples; n++) {
+		ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା n = 0; n < ଅଙ୍କ_samples; n++) {
 			samples[n] = apply(samples[n]);
 		}
 	}
 
 	// Return the cutoff frequency
-	float get_cutoff_freq() const { return _cutoff_freq; }
+	ଦଶମିକ get_cutoff_freq() ଅଚଳ { ଫେରନ୍ତୁ _cutoff_freq; }
 
 	// Return the sample frequency
-	float get_sample_freq() const { return _sample_freq; }
+	ଦଶମିକ get_sample_freq() ଅଚଳ { ଫେରନ୍ତୁ _sample_freq; }
 
-	float getMagnitudeResponse(float frequency) const;
+	ଦଶମିକ getMagnitudeResponse(ଦଶମିକ frequency) ଅଚଳ;
 
 	// Reset the filter state to this value
-	T reset(const T &sample)
+	T reset(ଅଚଳ T &sample)
 	{
-		const T input = isFinite(sample) ? sample : T{};
+		ଅଚଳ T ନିବେଶ = isFinite(sample) ? sample : T{};
 
-		if (fabsf(1 + _a1 + _a2) > FLT_EPSILON) {
-			_delay_element_1 = _delay_element_2 = input / (1 + _a1 + _a2);
+		ଯଦି (fabsf(1 + _a1 + _a2) > FLT_EPSILON) {
+			_delay_element_1 = _delay_element_2 = ନିବେଶ / (1 + _a1 + _a2);
 
-			if (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
-				_delay_element_1 = _delay_element_2 = input;
+			ଯଦି (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
+				_delay_element_1 = _delay_element_2 = ନିବେଶ;
 			}
 
-		} else {
-			_delay_element_1 = _delay_element_2 = input;
+		} ଅନ୍ୟଥା {
+			_delay_element_1 = _delay_element_2 = ନିବେଶ;
 		}
 
-		return apply(input);
+		ଫେରନ୍ତୁ apply(ନିବେଶ);
 	}
 
-	void disable()
+	ଶୂନ୍ୟ disable()
 	{
 		// no filtering
 		_sample_freq = 0.f;
@@ -160,20 +160,20 @@ public:
 		_a2 = 0.f;
 	}
 
-protected:
+ସୁରକ୍ଷିତ:
 	T _delay_element_1{}; // buffered sample -1
 	T _delay_element_2{}; // buffered sample -2
 
 	// All the coefficients are normalized by a0, so a0 becomes 1 here
-	float _a1{0.f};
-	float _a2{0.f};
+	ଦଶମିକ _a1{0.f};
+	ଦଶମିକ _a2{0.f};
 
-	float _b0{1.f};
-	float _b1{0.f};
-	float _b2{0.f};
+	ଦଶମିକ _b0{1.f};
+	ଦଶମିକ _b1{0.f};
+	ଦଶମିକ _b2{0.f};
 
-	float _cutoff_freq{0.f};
-	float _sample_freq{0.f};
+	ଦଶମିକ _cutoff_freq{0.f};
+	ଦଶମିକ _sample_freq{0.f};
 };
 
 } // namespace math

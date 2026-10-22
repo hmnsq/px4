@@ -37,55 +37,55 @@
  * @author Julian Oes <julian@oes.ch>
  */
 
-#include "hysteresis.h"
+#ଅନ୍ତର୍ଭାଵ "hysteresis.h"
 
-namespace systemlib
+ନାମାକାଶ systemlib
 {
 
-Hysteresis::Hysteresis(bool initial_state)
+Hysteresis::Hysteresis(ତାର୍କିକ initial_state)
 {
 	_state = _requested_state = initial_state;
 }
 
-void Hysteresis::set_hysteresis_time_from(const bool from_state, const hrt_abstime new_hysteresis_time_us)
+ଶୂନ୍ୟ Hysteresis::set_hysteresis_time_from(ଅଚଳ ତାର୍କିକ from_state, ଅଚଳ hrt_abstime new_hysteresis_time_us)
 {
-	if (from_state) {
+	ଯଦି (from_state) {
 		_time_from_true_us = new_hysteresis_time_us;
 
-	} else {
+	} ଅନ୍ୟଥା {
 		_time_from_false_us = new_hysteresis_time_us;
 	}
 }
 
-void Hysteresis::set_state_and_update(const bool new_state, const hrt_abstime &now_us)
+ଶୂନ୍ୟ Hysteresis::set_state_and_update(ଅଚଳ ତାର୍କିକ new_state, ଅଚଳ hrt_abstime &now_us)
 {
-	if (new_state != _state) {
-		if (new_state != _requested_state) {
+	ଯଦି (new_state != _state) {
+		ଯଦି (new_state != _requested_state) {
 			_requested_state = new_state;
 			_last_time_to_change_state = now_us;
 		}
 
-	} else {
+	} ଅନ୍ୟଥା {
 		_requested_state = _state;
 	}
 
 	update(now_us);
 }
 
-void Hysteresis::update(const hrt_abstime &now_us)
+ଶୂନ୍ୟ Hysteresis::update(ଅଚଳ hrt_abstime &now_us)
 {
-	if (_requested_state != _state) {
+	ଯଦି (_requested_state != _state) {
 
-		if (_state && !_requested_state) {
+		ଯଦି (_state && !_requested_state) {
 			// true -> false
-			if (now_us >= _last_time_to_change_state + _time_from_true_us) {
-				_state = false;
+			ଯଦି (now_us >= _last_time_to_change_state + _time_from_true_us) {
+				_state = ମିଥ୍ୟା;
 			}
 
-		} else if (!_state && _requested_state) {
+		} ଅନ୍ୟଥା ଯଦି (!_state && _requested_state) {
 			// false -> true
-			if (now_us >= _last_time_to_change_state + _time_from_false_us) {
-				_state = true;
+			ଯଦି (now_us >= _last_time_to_change_state + _time_from_false_us) {
+				_state = ସତ୍ୟ;
 			}
 		}
 	}

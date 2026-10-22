@@ -41,70 +41,70 @@
 #ifndef RTL_TIME_ESTIMATOR_H_
 #define RTL_TIME_ESTIMATOR_H_
 
-#include <px4_platform_common/module_params.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/module_params.h>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionInterval.hpp>
-#include <uORB/topics/parameter_update.h>
-#include <uORB/topics/rtl_time_estimate.h>
-#include <uORB/topics/vehicle_status.h>
-#include <uORB/topics/wind.h>
+#ଅନ୍ତର୍ଭାଵ <uORB/Subscription.hpp>
+#ଅନ୍ତର୍ଭାଵ <uORB/SubscriptionInterval.hpp>
+#ଅନ୍ତର୍ଭାଵ <uORB/topics/parameter_update.h>
+#ଅନ୍ତର୍ଭାଵ <uORB/topics/rtl_time_estimate.h>
+#ଅନ୍ତର୍ଭାଵ <uORB/topics/vehicle_status.h>
+#ଅନ୍ତର୍ଭାଵ <uORB/topics/wind.h>
 
-#include <matrix/Vector2.hpp>
+#ଅନ୍ତର୍ଭାଵ <matrix/Vector2.hpp>
 
 using namespace time_literals;
 
 class Navigator;
 
-class RtlTimeEstimator : public ModuleParams
+class RtlTimeEstimator : ସର୍ବସାଧାରଣ ModuleParams
 {
-public:
+ସର୍ବସାଧାରଣ:
 	RtlTimeEstimator();
-	~RtlTimeEstimator() = default;
+	~RtlTimeEstimator() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
 
-	void update();
-	void reset() { _time_estimate = 0.f; _is_valid = false; };
-	rtl_time_estimate_s getEstimate() const;
-	void addDistance(float hor_dist, const matrix::Vector2f &hor_direction, float vert_dist);
-	void addVertDistance(float alt);
-	void addWait(float time_s);
-	void setVehicleType(uint8_t vehicle_type) { _vehicle_type = vehicle_type; };
+	ଶୂନ୍ୟ update();
+	ଶୂନ୍ୟ reset() { _time_estimate = 0.f; _is_valid = false; };
+	rtl_time_estimate_s getEstimate() ଅଚଳ;
+	ଶୂନ୍ୟ addDistance(ଦଶମିକ hor_dist, ଅଚଳ matrix::Vector2f &hor_direction, ଦଶମିକ vert_dist);
+	ଶୂନ୍ୟ addVertDistance(ଦଶମିକ alt);
+	ଶୂନ୍ୟ addWait(ଦଶମିକ time_s);
+	ଶୂନ୍ୟ setVehicleType(uint8_t vehicle_type) { _vehicle_type = vehicle_type; };
 
-private:
+ବ୍ୟକ୍ତିଗତ:
 	/**
 	 * @brief Get the Cruise Ground Speed
 	 *
 	 * @param direction_norm normalized direction in which to fly
 	 * @return Ground speed in cruise mode [m/s].
 	 */
-	float getCruiseGroundSpeed(const matrix::Vector2f &direction_norm);
+	ଦଶମିକ getCruiseGroundSpeed(ଅଚଳ matrix::Vector2f &direction_norm);
 
 	/**
 	 * @brief Get time estimate of vertical distance
 	 *
 	 */
-	float calcVertTimeEstimate(float alt);
+	ଦଶମିକ calcVertTimeEstimate(ଦଶମିକ alt);
 
 	/**
 	 * @brief Get the climb rate
 	 *
 	 * @return Climb rate [m/s]
 	 */
-	float getClimbRate();
+	ଦଶମିକ getClimbRate();
 
 	/**
 	 * @brief Get the descend rate
 	 *
 	 * @return descend rate [m/s]
 	 */
-	float getDescendRate();
+	ଦଶମିକ getDescendRate();
 
 	/**
 	 * @brief Get the cruise speed
 	 *
 	 * @return cruise speed [m/s]
 	 */
-	float getCruiseSpeed();
+	ଦଶମିକ getCruiseSpeed();
 
 	/**
 	 * @brief Get the horizontal wind velocity
@@ -113,7 +113,7 @@ private:
 	 */
 	matrix::Vector2f get_wind();
 
-	float _time_estimate{0.f}; 		/**< Accumulated time estimate [s] */
+	ଦଶମିକ _time_estimate{0.f}; 		/**< Accumulated time estimate [s] */
 	bool _is_valid{false};		/**< Checks if time estimate is valid */
 
 	uint8_t _vehicle_type{vehicle_status_s::VEHICLE_TYPE_ROTARY_WING}; /**< the defined vehicle type to use for the calculation*/

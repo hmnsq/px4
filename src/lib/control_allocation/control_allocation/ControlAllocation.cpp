@@ -39,7 +39,7 @@
  * @author Julien Lecoeur <julien.lecoeur@gmail.com>
  */
 
-#include "ControlAllocation.hpp"
+#ଅନ୍ତର୍ଭାଵ "ControlAllocation.hpp"
 
 ControlAllocation::ControlAllocation()
 {
@@ -48,24 +48,24 @@ ControlAllocation::ControlAllocation()
 	_actuator_max.setAll(1.f);
 }
 
-void
+ଶୂନ୍ୟ
 ControlAllocation::setEffectivenessMatrix(
-	const matrix::Matrix<float, ControlAllocation::NUM_AXES, ControlAllocation::NUM_ACTUATORS> &effectiveness,
-	const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
-	bool update_normalization_scale)
+	ଅଚଳ matrix::Matrix<ଦଶମିକ, ControlAllocation::ଅଙ୍କ_AXES, ControlAllocation::ଅଙ୍କ_ACTUATORS> &effectiveness,
+	ଅଚଳ ActuatorVector &actuator_trim, ଅଚଳ ActuatorVector &linearization_point, ପୂର୍ଣ୍ଣସଂଖ୍ୟା ଅଙ୍କ_actuators,
+	ତାର୍କିକ update_normalization_scale)
 {
 	_effectiveness = effectiveness;
 	ActuatorVector linearization_point_clipped = linearization_point;
 	clipActuatorSetpoint(linearization_point_clipped);
 	_actuator_trim = actuator_trim + linearization_point_clipped;
 	clipActuatorSetpoint(_actuator_trim);
-	_num_actuators = num_actuators;
+	ଅଙ୍କ_actuators_2 = ଅଙ୍କ_actuators;
 	_control_trim = _effectiveness * linearization_point_clipped;
 }
 
-void
+ଶୂନ୍ୟ
 ControlAllocation::setActuatorSetpoint(
-	const matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator_sp)
+	ଅଚଳ matrix::Vector<ଦଶମିକ, ControlAllocation::ଅଙ୍କ_ACTUATORS> &actuator_sp)
 {
 	// Set actuator setpoint
 	_actuator_sp = actuator_sp;
@@ -74,41 +74,41 @@ ControlAllocation::setActuatorSetpoint(
 	clipActuatorSetpoint(_actuator_sp);
 }
 
-void
-ControlAllocation::clipActuatorSetpoint(matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator) const
+ଶୂନ୍ୟ
+ControlAllocation::clipActuatorSetpoint(matrix::Vector<ଦଶମିକ, ControlAllocation::ଅଙ୍କ_ACTUATORS> &actuator) ଅଚଳ
 {
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_max(i) < _actuator_min(i)) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < ଅଙ୍କ_actuators_2; i++) {
+		ଯଦି (_actuator_max(i) < _actuator_min(i)) {
 			actuator(i) = _actuator_trim(i);
 
-		} else if (actuator(i) < _actuator_min(i)) {
+		} ଅନ୍ୟଥା ଯଦି (actuator(i) < _actuator_min(i)) {
 			actuator(i) = _actuator_min(i);
 
-		} else if (actuator(i) > _actuator_max(i)) {
+		} ଅନ୍ୟଥା ଯଦି (actuator(i) > _actuator_max(i)) {
 			actuator(i) = _actuator_max(i);
 		}
 	}
 }
 
-matrix::Vector<float, ControlAllocation::NUM_ACTUATORS>
-ControlAllocation::normalizeActuatorSetpoint(const matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator)
-const
+matrix::Vector<ଦଶମିକ, ControlAllocation::ଅଙ୍କ_ACTUATORS>
+ControlAllocation::normalizeActuatorSetpoint(ଅଚଳ matrix::Vector<ଦଶମିକ, ControlAllocation::ଅଙ୍କ_ACTUATORS> &actuator)
+ଅଚଳ
 {
-	matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> actuator_normalized;
+	matrix::Vector<ଦଶମିକ, ControlAllocation::ଅଙ୍କ_ACTUATORS> actuator_normalized;
 
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_min(i) < _actuator_max(i)) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < ଅଙ୍କ_actuators_2; i++) {
+		ଯଦି (_actuator_min(i) < _actuator_max(i)) {
 			actuator_normalized(i) = (actuator(i) - _actuator_min(i)) / (_actuator_max(i) - _actuator_min(i));
 
-		} else {
+		} ଅନ୍ୟଥା {
 			actuator_normalized(i) = (_actuator_trim(i) - _actuator_min(i)) / (_actuator_max(i) - _actuator_min(i));
 		}
 	}
 
-	return actuator_normalized;
+	ଫେରନ୍ତୁ actuator_normalized;
 }
 
-void ControlAllocation::applySlewRateLimit(float dt)
+ଶୂନ୍ୟ ControlAllocation::applySlewRateLimit(ଦଶମିକ dt)
 {
 	// For motors, an actuator setpoint of NaN represents switching off the
 	// motor (giving it disarmed PWM). Physically it results in zero thrust,
@@ -122,38 +122,38 @@ void ControlAllocation::applySlewRateLimit(float dt)
 	//  - NaN to nonzero: replace NaN by zero, then rise with slew rate to input
 	//  - between nonzero and 0: slew limit, then match input
 
-	for (int i = 0; i < _num_actuators; i++) {
-		if (_actuator_slew_rate_limit(i) > FLT_EPSILON) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < ଅଙ୍କ_actuators_2; i++) {
+		ଯଦି (_actuator_slew_rate_limit(i) > FLT_EPSILON) {
 
-			float input = _actuator_sp(i);
-			float previous = _prev_actuator_sp(i);
+			ଦଶମିକ ନିବେଶ = _actuator_sp(i);
+			ଦଶମିକ previous = _prev_actuator_sp(i);
 
 			// Before slew limiting, transform NaN to 0, but remember if the input was NaN
-			const bool input_is_nan = !PX4_ISFINITE(input);
+			ଅଚଳ ତାର୍କିକ ନିବେଶ_is_nan = !PX4_ISFINITE(ନିବେଶ);
 
-			if (input_is_nan) {
-				input = 0.f;
+			ଯଦି (ନିବେଶ_is_nan) {
+				ନିବେଶ = 0.f;
 			}
 
-			if (!PX4_ISFINITE(previous)) {
+			ଯଦି (!PX4_ISFINITE(previous)) {
 				previous = 0.f;
 			}
 
 			// Slew limit without any NaN involved
-			const float delta_sp_max = dt * (_actuator_max(i) - _actuator_min(i)) / _actuator_slew_rate_limit(i);
-			const float delta_sp = input - previous;
+			ଅଚଳ ଦଶମିକ delta_sp_max = dt * (_actuator_max(i) - _actuator_min(i)) / _actuator_slew_rate_limit(i);
+			ଅଚଳ ଦଶମିକ delta_sp = ନିବେଶ - previous;
 
-			float output = input;
+			ଦଶମିକ output = ନିବେଶ;
 
-			if (delta_sp > delta_sp_max) {
+			ଯଦି (delta_sp > delta_sp_max) {
 				output = previous + delta_sp_max;
 
-			} else if (delta_sp < -delta_sp_max) {
+			} ଅନ୍ୟଥା ଯଦି (delta_sp < -delta_sp_max) {
 				output = previous - delta_sp_max;
 			}
 
 			// Transform back to NaN if appropriate
-			if (input_is_nan && fabsf(output) < FLT_EPSILON) {
+			ଯଦି (ନିବେଶ_is_nan && fabsf(output) < FLT_EPSILON) {
 				output = NAN;
 			}
 

@@ -39,13 +39,13 @@
 
 #pragma once
 
-#include <px4_platform/board_ctrl.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/events.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform/board_ctrl.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/events.h>
 
 #define _EVENTSIOC(_n) (_PX4_IOC(_EVENTSIOCBASE, _n))
 
 #define EVENTSIOCSEND _EVENTSIOC(1)
-typedef struct eventiocsend {
+ପ୍ରକାରବ୍ୟାଖ୍ୟା ସଂରଚନା eventiocsend {
 	event_s &event;
 } eventiocsend_t;

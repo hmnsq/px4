@@ -38,10 +38,10 @@
  * @author Beat Küng <beat-kueng@gmx.net>
  */
 
-#include "ControlAllocationSequentialDesaturation.hpp"
+#ଅନ୍ତର୍ଭାଵ "ControlAllocationSequentialDesaturation.hpp"
 
 
-void
+ଶୂନ୍ୟ
 ControlAllocationSequentialDesaturation::allocate()
 {
 	//Compute new gains if needed
@@ -49,76 +49,76 @@ ControlAllocationSequentialDesaturation::allocate()
 
 	_prev_actuator_sp = _actuator_sp;
 
-	switch (_param_mc_airmode.get()) {
-	case 1:
+	ବାଛ (_param_mc_airmode.get()) {
+	ସ୍ଥିତି 1:
 		mixAirmodeRP();
-		break;
+		ଭାଙ୍ଗ;
 
-	case 2:
+	ସ୍ଥିତି 2:
 		mixAirmodeRPY();
-		break;
+		ଭାଙ୍ଗ;
 
-	default:
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
 		mixAirmodeDisabled();
-		break;
+		ଭାଙ୍ଗ;
 	}
 }
 
-void ControlAllocationSequentialDesaturation::desaturateActuators(
+ଶୂନ୍ୟ ControlAllocationSequentialDesaturation::desaturateActuators(
 	ActuatorVector &actuator_sp,
-	const ActuatorVector &desaturation_vector, bool increase_only)
+	ଅଚଳ ActuatorVector &desaturation_vector, ତାର୍କିକ increase_only)
 {
-	float gain = computeDesaturationGain(desaturation_vector, actuator_sp);
+	ଦଶମିକ gain = computeDesaturationGain(desaturation_vector, actuator_sp);
 
-	if (increase_only && gain < 0.f) {
-		return;
+	ଯଦି (increase_only && gain < 0.f) {
+		ଫେରନ୍ତୁ;
 	}
 
-	for (int i = 0; i < _num_actuators; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < ଅଙ୍କ_actuators_2; i++) {
 		actuator_sp(i) += gain * desaturation_vector(i);
 	}
 
 	gain = 0.5f * computeDesaturationGain(desaturation_vector, actuator_sp);
 
-	for (int i = 0; i < _num_actuators; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < ଅଙ୍କ_actuators_2; i++) {
 		actuator_sp(i) += gain * desaturation_vector(i);
 	}
 }
 
-float ControlAllocationSequentialDesaturation::computeDesaturationGain(const ActuatorVector &desaturation_vector,
-		const ActuatorVector &actuator_sp)
+ଦଶମିକ ControlAllocationSequentialDesaturation::computeDesaturationGain(ଅଚଳ ActuatorVector &desaturation_vector,
+		ଅଚଳ ActuatorVector &actuator_sp)
 {
-	float k_min = 0.f;
-	float k_max = 0.f;
+	ଦଶମିକ k_min = 0.f;
+	ଦଶମିକ k_max = 0.f;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < ଅଙ୍କ_actuators_2; i++) {
 		// Do not use try to desaturate using an actuator with weak effectiveness to avoid large desaturation gains
-		if (fabsf(desaturation_vector(i)) < 0.2f) {
-			continue;
+		ଯଦି (fabsf(desaturation_vector(i)) < 0.2f) {
+			ଜାରି;
 		}
 
-		if (actuator_sp(i) < _actuator_min(i)) {
-			float k = (_actuator_min(i) - actuator_sp(i)) / desaturation_vector(i);
+		ଯଦି (actuator_sp(i) < _actuator_min(i)) {
+			ଦଶମିକ k = (_actuator_min(i) - actuator_sp(i)) / desaturation_vector(i);
 
-			if (k < k_min) { k_min = k; }
+			ଯଦି (k < k_min) { k_min = k; }
 
-			if (k > k_max) { k_max = k; }
+			ଯଦି (k > k_max) { k_max = k; }
 		}
 
-		if (actuator_sp(i) > _actuator_max(i)) {
-			float k = (_actuator_max(i) - actuator_sp(i)) / desaturation_vector(i);
+		ଯଦି (actuator_sp(i) > _actuator_max(i)) {
+			ଦଶମିକ k = (_actuator_max(i) - actuator_sp(i)) / desaturation_vector(i);
 
-			if (k < k_min) { k_min = k; }
+			ଯଦି (k < k_min) { k_min = k; }
 
-			if (k > k_max) { k_max = k; }
+			ଯଦି (k > k_max) { k_max = k; }
 		}
 	}
 
 	// Reduce the saturation as much as possible
-	return k_min + k_max;
+	ଫେରନ୍ତୁ k_min + k_max;
 }
 
-void
+ଶୂନ୍ୟ
 ControlAllocationSequentialDesaturation::mixAirmodeRP()
 {
 	// Airmode for roll and pitch, but not yaw
@@ -126,7 +126,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeRP()
 	// Mix without yaw
 	ActuatorVector thrust_z;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < ଅଙ୍କ_actuators_2; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -142,7 +142,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeRP()
 	mixYaw();
 }
 
-void
+ଶୂନ୍ୟ
 ControlAllocationSequentialDesaturation::mixAirmodeRPY()
 {
 	// Airmode for roll, pitch and yaw
@@ -151,7 +151,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeRPY()
 	ActuatorVector thrust_z;
 	ActuatorVector yaw;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < ଅଙ୍କ_actuators_2; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -170,7 +170,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeRPY()
 	desaturateActuators(_actuator_sp, yaw);
 }
 
-void
+ଶୂନ୍ୟ
 ControlAllocationSequentialDesaturation::mixAirmodeDisabled()
 {
 	// Airmode disabled: never allow to increase the thrust to unsaturate a motor
@@ -180,7 +180,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeDisabled()
 	ActuatorVector roll;
 	ActuatorVector pitch;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < ଅଙ୍କ_actuators_2; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -193,7 +193,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeDisabled()
 	}
 
 	// only reduce thrust
-	desaturateActuators(_actuator_sp, thrust_z, true);
+	desaturateActuators(_actuator_sp, thrust_z, ସତ୍ୟ);
 
 	// Reduce roll/pitch acceleration if needed to unsaturate
 	desaturateActuators(_actuator_sp, roll);
@@ -203,14 +203,14 @@ ControlAllocationSequentialDesaturation::mixAirmodeDisabled()
 	mixYaw();
 }
 
-void
+ଶୂନ୍ୟ
 ControlAllocationSequentialDesaturation::mixYaw()
 {
 	// Add yaw to outputs
 	ActuatorVector yaw;
 	ActuatorVector thrust_z;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < ଅଙ୍କ_actuators_2; i++) {
 		_actuator_sp(i) += _mix(i, ControlAxis::YAW) * (_control_sp(ControlAxis::YAW) - _control_trim(ControlAxis::YAW));
 		yaw(i) = _mix(i, ControlAxis::YAW);
 		thrust_z(i) = _mix(i, ControlAxis::THRUST_Z);
@@ -224,10 +224,10 @@ ControlAllocationSequentialDesaturation::mixYaw()
 	_actuator_max = max_prev;
 
 	// reduce thrust only
-	desaturateActuators(_actuator_sp, thrust_z, true);
+	desaturateActuators(_actuator_sp, thrust_z, ସତ୍ୟ);
 }
 
-void
+ଶୂନ୍ୟ
 ControlAllocationSequentialDesaturation::updateParameters()
 {
 	updateParams();

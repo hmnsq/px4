@@ -15,7 +15,7 @@
 
 #pragma once
 
-namespace matrix
+ନାମାକାଶ matrix
 {
 
 /**
@@ -25,20 +25,20 @@ namespace matrix
  * to frame 2 via 3-2-1 intrinsic Tait-Bryan rotation sequence.
  */
 template<typename Type>
-class Euler : public Vector<Type, 3>
+ଶ୍ରେଣୀ Euler : ସର୍ବସାଧାରଣ Vector<Type, 3>
 {
-public:
+ସର୍ବସାଧାରଣ:
 	/**
 	 * Standard constructor
 	 */
-	Euler() = default;
+	Euler() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
 
 	/**
 	 * Copy constructor
 	 *
 	 * @param other vector to copy
 	 */
-	Euler(const Vector<Type, 3> &other) :
+	Euler(ଅଚଳ Vector<Type, 3> &other) :
 		Vector<Type, 3>(other)
 	{
 	}
@@ -48,7 +48,7 @@ public:
 	 *
 	 * @param other Matrix31 to copy
 	 */
-	Euler(const Matrix<Type, 3, 1> &other) :
+	Euler(ଅଚଳ Matrix<Type, 3, 1> &other) :
 		Vector<Type, 3>(other)
 	{
 	}
@@ -81,19 +81,19 @@ public:
 	 *
 	 * @param dcm Direction cosine matrix
 	*/
-	Euler(const Dcm<Type> &dcm)
+	Euler(ଅଚଳ Dcm<Type> &dcm)
 	{
 		theta() = std::asin(-dcm(2, 0));
 
-		if ((std::fabs(theta() - Type(M_PI / 2))) < Type(1.0e-3)) {
+		ଯଦି ((std::fabs(theta() - Type(M_PI / 2))) < Type(1.0e-3)) {
 			phi() = 0;
 			psi() = std::atan2(dcm(1, 2), dcm(0, 2));
 
-		} else if ((std::fabs(theta() + Type(M_PI / 2))) < Type(1.0e-3)) {
+		} ଅନ୍ୟଥା ଯଦି ((std::fabs(theta() + Type(M_PI / 2))) < Type(1.0e-3)) {
 			phi() = 0;
 			psi() = std::atan2(-dcm(1, 2), -dcm(0, 2));
 
-		} else {
+		} ଅନ୍ୟଥା {
 			phi() = std::atan2(dcm(2, 1), dcm(2, 2));
 			psi() = std::atan2(dcm(1, 0), dcm(0, 0));
 		}
@@ -109,39 +109,39 @@ public:
 	 *
 	 * @param q quaternion
 	*/
-	Euler(const Quaternion<Type> &q) : Vector<Type, 3>(Euler(Dcm<Type>(q)))
+	Euler(ଅଚଳ Quaternion<Type> &q) : Vector<Type, 3>(Euler(Dcm<Type>(q)))
 	{
 	}
 
-	inline Type phi() const
+	ଧାଡ଼ିଭିତରେ Type phi() ଅଚଳ
 	{
-		return (*this)(0);
+		ଫେରନ୍ତୁ (*ଏହି)(0);
 	}
-	inline Type theta() const
+	ଧାଡ଼ିଭିତରେ Type theta() ଅଚଳ
 	{
-		return (*this)(1);
+		ଫେରନ୍ତୁ (*ଏହି)(1);
 	}
-	inline Type psi() const
+	ଧାଡ଼ିଭିତରେ Type psi() ଅଚଳ
 	{
-		return (*this)(2);
+		ଫେରନ୍ତୁ (*ଏହି)(2);
 	}
 
-	inline Type &phi()
+	ଧାଡ଼ିଭିତରେ Type &phi()
 	{
-		return (*this)(0);
+		ଫେରନ୍ତୁ (*ଏହି)(0);
 	}
-	inline Type &theta()
+	ଧାଡ଼ିଭିତରେ Type &theta()
 	{
-		return (*this)(1);
+		ଫେରନ୍ତୁ (*ଏହି)(1);
 	}
-	inline Type &psi()
+	ଧାଡ଼ିଭିତରେ Type &psi()
 	{
-		return (*this)(2);
+		ଫେରନ୍ତୁ (*ଏହି)(2);
 	}
 
 };
 
-using Eulerf = Euler<float>;
-using Eulerd = Euler<double>;
+using Eulerf = Euler<ଦଶମିକ>;
+using Eulerd = Euler<ଦ୍ୱିଗୁଣ>;
 
 } // namespace matrix

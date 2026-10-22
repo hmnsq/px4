@@ -40,29 +40,29 @@
 
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#ଅନ୍ତର୍ଭାଵ <stdio.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <stdint.h>
+#ଅନ୍ତର୍ଭାଵ <string.h>
 
-namespace math
+ନାମାକାଶ math
 {
 
-template<typename U> struct is_floating_point { static constexpr bool value = false; };
-template<> struct is_floating_point<float> { static constexpr bool value = true; };
-template<> struct is_floating_point<double> { static constexpr bool value = true; };
-template<> struct is_floating_point<long double> { static constexpr bool value = true; };
+template<typename U> ସଂରଚନା is_floating_point { ସ୍ଥିର constexpr ତାର୍କିକ value = ମିଥ୍ୟା; };
+template<> ସଂରଚନା is_floating_point<ଦଶମିକ> { ସ୍ଥିର constexpr ତାର୍କିକ value = ସତ୍ୟ; };
+template<> ସଂରଚନା is_floating_point<ଦ୍ୱିଗୁଣ> { ସ୍ଥିର constexpr ତାର୍କିକ value = ସତ୍ୟ; };
+template<> ସଂରଚନା is_floating_point<long ଦ୍ୱିଗୁଣ> { ସ୍ଥିର constexpr ତାର୍କିକ value = ସତ୍ୟ; };
 
-template<typename T, int WINDOW = 3>
-class MedianFilter
+template<typename T, ପୂର୍ଣ୍ଣସଂଖ୍ୟା WINDOW = 3>
+ଶ୍ରେଣୀ MedianFilter
 {
-public:
+ସର୍ବସାଧାରଣ:
 	static_assert(WINDOW >= 3, "MedianFilter window size must be >= 3");
 	static_assert(WINDOW % 2, "MedianFilter window size must be odd"); // odd
 
-	MedianFilter() = default;
+	MedianFilter() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
 
-	void insert(const T &sample)
+	ଶୂନ୍ୟ ଭର୍ତ୍ତି(ଅଚଳ T &sample)
 	{
 		_head = (_head + 1) % WINDOW;
 		_buffer[_head] = sample;
@@ -71,46 +71,46 @@ public:
 	T median()
 	{
 		T sorted[WINDOW];
-		memcpy(sorted, _buffer, sizeof(_buffer));
-		qsort(&sorted, WINDOW, sizeof(T), cmp);
+		memcpy(sorted, _buffer, ଆକାର(_buffer));
+		qsort(&sorted, WINDOW, ଆକାର(T), cmp);
 
-		return sorted[WINDOW / 2];
+		ଫେରନ୍ତୁ sorted[WINDOW / 2];
 	}
 
-	T apply(const T &sample)
+	T apply(ଅଚଳ T &sample)
 	{
-		insert(sample);
-		return median();
+		ଭର୍ତ୍ତି(sample);
+		ଫେରନ୍ତୁ median();
 	}
 
-private:
+ବ୍ୟକ୍ତିଗତ:
 
-	static int cmp(const void *a, const void *b)
+	ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା cmp(ଅଚଳ ଶୂନ୍ୟ *a, ଅଚଳ ଶୂନ୍ୟ *b)
 	{
-		const T va = *(const T *)a;
-		const T vb = *(const T *)b;
+		ଅଚଳ T va = *(ଅଚଳ T *)a;
+		ଅଚଳ T vb = *(ଅଚଳ T *)b;
 
-		if constexpr(is_floating_point<T>::value) {
-			if (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
-				return 0;
+		ଯଦି constexpr(is_floating_point<T>::value) {
+			ଯଦି (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
+				ଫେରନ୍ତୁ 0;
 
-			} else if (!__builtin_isfinite(va)) {
-				return  1;
+			} ଅନ୍ୟଥା ଯଦି (!__builtin_isfinite(va)) {
+				ଫେରନ୍ତୁ  1;
 
-			} else if (!__builtin_isfinite(vb)) {
-				return -1;
+			} ଅନ୍ୟଥା ଯଦି (!__builtin_isfinite(vb)) {
+				ଫେରନ୍ତୁ -1;
 			}
 		}
 
-		if (va < vb) {
-			return -1;
+		ଯଦି (va < vb) {
+			ଫେରନ୍ତୁ -1;
 		}
 
-		if (va > vb) {
-			return  1;
+		ଯଦି (va > vb) {
+			ଫେରନ୍ତୁ  1;
 		}
 
-		return 0;
+		ଫେରନ୍ତୁ 0;
 	}
 
 	T _buffer[WINDOW] {};

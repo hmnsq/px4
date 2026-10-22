@@ -8,36 +8,36 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#ଅନ୍ତର୍ଭାଵ "Vector.hpp"
 
-namespace matrix
+ନାମାକାଶ matrix
 {
 
 template <typename Type>
-class Dcm;
+ଶ୍ରେଣୀ Dcm;
 
 template<typename Type>
-class Vector3 : public Vector<Type, 3>
+ଶ୍ରେଣୀ Vector3 : ସର୍ବସାଧାରଣ Vector<Type, 3>
 {
-public:
+ସର୍ବସାଧାରଣ:
 
 	using Matrix31 = Matrix<Type, 3, 1>;
 
-	Vector3() = default;
+	Vector3() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
 
-	Vector3(const Matrix31 &other) :
+	Vector3(ଅଚଳ Matrix31 &other) :
 		Vector<Type, 3>(other)
 	{
 	}
 
-	explicit Vector3(const Type data_[3]) :
+	explicit Vector3(ଅଚଳ Type data_[3]) :
 		Vector<Type, 3>(data_)
 	{
 	}
 
 	Vector3(Type x, Type y, Type z)
 	{
-		Vector3 &v(*this);
+		Vector3 &v(*ଏହି);
 		v(0) = x;
 		v(1) = y;
 		v(2) = z;
@@ -46,69 +46,69 @@ public:
 	using base = Vector<Type, 3>;
 	using base::base;
 
-	Vector3 cross(const Matrix31 &b) const
+	Vector3 cross(ଅଚଳ Matrix31 &b) ଅଚଳ
 	{
-		const Vector3 &a(*this);
-		return {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
+		ଅଚଳ Vector3 &a(*ଏହି);
+		ଫେରନ୍ତୁ {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
 	}
 
 	/**
 	 * Override matrix ops so Vector3 type is returned
 	 */
 
-	inline Vector3 operator+(Vector3 other) const
+	ଧାଡ଼ିଭିତରେ Vector3 operator+(Vector3 other) ଅଚଳ
 	{
-		return Matrix31::operator+(other);
+		ଫେରନ୍ତୁ Matrix31::operator+(other);
 	}
 
-	inline Vector3 operator+(Type scalar) const
+	ଧାଡ଼ିଭିତରେ Vector3 operator+(Type scalar) ଅଚଳ
 	{
-		return Matrix31::operator+(scalar);
+		ଫେରନ୍ତୁ Matrix31::operator+(scalar);
 	}
 
-	inline Vector3 operator-(Vector3 other) const
+	ଧାଡ଼ିଭିତରେ Vector3 operator-(Vector3 other) ଅଚଳ
 	{
-		return Matrix31::operator-(other);
+		ଫେରନ୍ତୁ Matrix31::operator-(other);
 	}
 
-	inline Vector3 operator-(Type scalar) const
+	ଧାଡ଼ିଭିତରେ Vector3 operator-(Type scalar) ଅଚଳ
 	{
-		return Matrix31::operator-(scalar);
+		ଫେରନ୍ତୁ Matrix31::operator-(scalar);
 	}
 
-	inline Vector3 operator-() const
+	ଧାଡ଼ିଭିତରେ Vector3 operator-() ଅଚଳ
 	{
-		return Matrix31::operator-();
+		ଫେରନ୍ତୁ Matrix31::operator-();
 	}
 
-	inline Vector3 operator*(Type scalar) const
+	ଧାଡ଼ିଭିତରେ Vector3 operator*(Type scalar) ଅଚଳ
 	{
-		return Matrix31::operator*(scalar);
+		ଫେରନ୍ତୁ Matrix31::operator*(scalar);
 	}
 
-	inline Type operator*(Vector3 b) const
+	ଧାଡ଼ିଭିତରେ Type operator*(Vector3 b) ଅଚଳ
 	{
-		return Vector<Type, 3>::operator*(b);
+		ଫେରନ୍ତୁ Vector<Type, 3>::operator*(b);
 	}
 
-	inline Vector3 operator%(const Matrix31 &b) const
+	ଧାଡ଼ିଭିତରେ Vector3 operator%(ଅଚଳ Matrix31 &b) ଅଚଳ
 	{
-		return (*this).cross(b);
+		ଫେରନ୍ତୁ (*ଏହି).cross(b);
 	}
 
-	ConstSlice<Type, 2, 1, 3, 1> xy() const
+	ConstSlice<Type, 2, 1, 3, 1> xy() ଅଚଳ
 	{
-		return {0, 0, this};
+		ଫେରନ୍ତୁ {0, 0, ଏହି};
 	}
 
 	Slice<Type, 2, 1, 3, 1> xy()
 	{
-		return {0, 0, this};
+		ଫେରନ୍ତୁ {0, 0, ଏହି};
 	}
 
-	Dcm<Type> hat() const      // inverse to Dcm.vee() operation
+	Dcm<Type> hat() ଅଚଳ      // inverse to Dcm.vee() operation
 	{
-		const Vector3 &v(*this);
+		ଅଚଳ Vector3 &v(*ଏହି);
 		Dcm<Type> A;
 		A(0, 0) = 0;
 		A(0, 1) = -v(2);
@@ -119,12 +119,12 @@ public:
 		A(2, 0) = -v(1);
 		A(2, 1) = v(0);
 		A(2, 2) = 0;
-		return A;
+		ଫେରନ୍ତୁ A;
 	}
 
 };
 
-using Vector3f = Vector3<float>;
-using Vector3d = Vector3<double>;
+using Vector3f = Vector3<ଦଶମିକ>;
+using Vector3d = Vector3<ଦ୍ୱିଗୁଣ>;
 
 } // namespace matrix

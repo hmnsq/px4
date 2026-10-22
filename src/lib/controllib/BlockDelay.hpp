@@ -39,35 +39,35 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <assert.h>
+#ଅନ୍ତର୍ଭାଵ <time.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/test/test.hpp>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/Block.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ଅନ୍ତର୍ଭାଵ "matrix/math.hpp"
 
-namespace control
+ନାମାକାଶ control
 {
 
-template<class Type, size_t M, size_t N, size_t LEN>
-class __EXPORT BlockDelay: public Block
+template<ଶ୍ରେଣୀ Type, size_t M, size_t N, size_t LEN>
+ଶ୍ରେଣୀ __EXPORT BlockDelay: ସର୍ବସାଧାରଣ Block
 {
-public:
+ସର୍ବସାଧାରଣ:
 // methods
-	BlockDelay(SuperBlock *parent, const char *name) :
+	BlockDelay(SuperBlock *parent, ଅଚଳ ଅକ୍ଷର *name) :
 		Block(parent, name),
 		_h(),
 		_index(0),
 		_delay(-1)
 	{}
-	virtual ~BlockDelay() = default;
-	matrix::Matrix<Type, M, N> update(const matrix::Matrix<Type, M, N> &u)
+	ଆଭାସୀ ~BlockDelay() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	matrix::Matrix<Type, M, N> update(ଅଚଳ matrix::Matrix<Type, M, N> &u)
 	{
 		// store current value
 		_h[_index] = u;
@@ -75,40 +75,40 @@ public:
 		// delay starts at zero, then increases to LEN
 		_delay += 1;
 
-		if (_delay > (int)(LEN - 1)) {
+		ଯଦି (_delay > (ପୂର୍ଣ୍ଣସଂଖ୍ୟା)(LEN - 1)) {
 			_delay = LEN - 1;
 		}
 
 		// compute position of delayed value
-		int j = _index - _delay;
+		ପୂର୍ଣ୍ଣସଂଖ୍ୟା j = _index - _delay;
 
-		if (j < 0) {
+		ଯଦି (j < 0) {
 			j += LEN;
 		}
 
 		// increment storage position
 		_index += 1;
 
-		if (_index > (LEN - 1)) {
+		ଯଦି (_index > (LEN - 1)) {
 			_index  = 0;
 		}
 
 		// get delayed value
-		return _h[j];
+		ଫେରନ୍ତୁ _h[j];
 	}
 	matrix::Matrix<Type, M, N> get(size_t delay)
 	{
-		int j = _index - delay;
+		ପୂର୍ଣ୍ଣସଂଖ୍ୟା j = _index - delay;
 
-		if (j < 0) { j += LEN; }
+		ଯଦି (j < 0) { j += LEN; }
 
-		return _h[j];
+		ଫେରନ୍ତୁ _h[j];
 	}
-private:
+ବ୍ୟକ୍ତିଗତ:
 // attributes
 	matrix::Matrix<Type, M, N> _h[LEN];
 	size_t _index;
-	int _delay;
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା _delay;
 };
 
 } // namespace control

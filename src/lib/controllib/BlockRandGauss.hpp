@@ -39,65 +39,65 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <assert.h>
+#ଅନ୍ତର୍ଭାଵ <time.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/test/test.hpp>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/Block.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ଅନ୍ତର୍ଭାଵ "matrix/math.hpp"
 
-namespace control
+ନାମାକାଶ control
 {
 
-class __EXPORT BlockRandGauss: public Block
+ଶ୍ରେଣୀ __EXPORT BlockRandGauss: ସର୍ବସାଧାରଣ Block
 {
-public:
+ସର୍ବସାଧାରଣ:
 // methods
 	BlockRandGauss(SuperBlock *parent,
-		       const char *name) :
+		       ଅଚଳ ଅକ୍ଷର *name) :
 		Block(parent, name),
-		_mean(this, "MEAN"),
-		_stdDev(this, "DEV")
+		_mean(ଏହି, "MEAN"),
+		_stdDev(ଏହି, "DEV")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandGauss() = default;
-	float update()
+	ଆଭାସୀ ~BlockRandGauss() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	ଦଶମିକ update()
 	{
-		static float V1, V2, S;
-		static int phase = 0;
-		float X;
+		ସ୍ଥିର ଦଶମିକ V1, V2, S;
+		ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା phase = 0;
+		ଦଶମିକ X;
 
-		if (phase == 0) {
-			do {
-				float U1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-				float U2 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		ଯଦି (phase == 0) {
+			କର {
+				ଦଶମିକ U1 = static_cast<ଦଶମିକ>(rand()) / static_cast<ଦଶମିକ>(RAND_MAX);
+				ଦଶମିକ U2 = static_cast<ଦଶମିକ>(rand()) / static_cast<ଦଶମିକ>(RAND_MAX);
 				V1 = 2 * U1 - 1;
 				V2 = 2 * U2 - 1;
 				S = V1 * V1 + V2 * V2;
-			} while (S >= 1 || fabsf(S) < 1e-8f);
+			} ଯେତେବେଳେ (S >= 1 || fabsf(S) < 1e-8f);
 
-			X = V1 * float(sqrtf(-2 * float(logf(S)) / S));
+			X = V1 * ଦଶମିକ(sqrtf(-2 * ଦଶମିକ(logf(S)) / S));
 
-		} else {
-			X = V2 * float(sqrtf(-2 * float(logf(S)) / S));
+		} ଅନ୍ୟଥା {
+			X = V2 * ଦଶମିକ(sqrtf(-2 * ଦଶମିକ(logf(S)) / S));
 		}
 
 		phase = 1 - phase;
-		return X * getStdDev() + getMean();
+		ଫେରନ୍ତୁ X * getStdDev() + getMean();
 	}
 // accessors
-	float getMean() { return _mean.get(); }
-	float getStdDev() { return _stdDev.get(); }
-private:
+	ଦଶମିକ getMean() { ଫେରନ୍ତୁ _mean.get(); }
+	ଦଶମିକ getStdDev() { ଫେରନ୍ତୁ _stdDev.get(); }
+ବ୍ୟକ୍ତିଗତ:
 // attributes
 	control::BlockParamFloat _mean;
 	control::BlockParamFloat _stdDev;

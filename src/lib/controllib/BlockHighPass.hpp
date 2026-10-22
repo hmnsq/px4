@@ -39,48 +39,48 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <assert.h>
+#ଅନ୍ତର୍ଭାଵ <time.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/test/test.hpp>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/Block.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ଅନ୍ତର୍ଭାଵ "matrix/math.hpp"
 
-namespace control
+ନାମାକାଶ control
 {
 
 /**
  * A high pass filter as described here:
  * http://en.wikipedia.org/wiki/High-pass_filter.
  */
-class __EXPORT BlockHighPass : public Block
+ଶ୍ରେଣୀ __EXPORT Block_ଉପର_Pass : ସର୍ବସାଧାରଣ Block
 {
-public:
+ସର୍ବସାଧାରଣ:
 // methods
-	BlockHighPass(SuperBlock *parent, const char *name) :
+	Block_ଉପର_Pass(SuperBlock *parent, ଅଚଳ ଅକ୍ଷର *name) :
 		Block(parent, name),
 		_u(0),
 		_y(0),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(ଏହି, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockHighPass() = default;
-	float update(float input);
+	ଆଭାସୀ ~Block_ଉପର_Pass() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	ଦଶମିକ update(ଦଶମିକ ନିବେଶ);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getFCut() {return _fCut.get();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
+	ଦଶମିକ getU() {ଫେରନ୍ତୁ _u;}
+	ଦଶମିକ getY() {ଫେରନ୍ତୁ _y;}
+	ଦଶମିକ getFCut() {ଫେରନ୍ତୁ _fCut.get();}
+	ଶୂନ୍ୟ setU(ଦଶମିକ u) {_u = u;}
+	ଶୂନ୍ୟ setY(ଦଶମିକ y) {_y = y;}
+ସୁରକ୍ଷିତ:
 // attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
+	ଦଶମିକ _u; /**< previous input */
+	ଦଶମିକ _y; /**< previous output */
 	control::BlockParamFloat _fCut; /**< cut-off frequency, Hz */
 };
 

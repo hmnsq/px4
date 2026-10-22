@@ -39,52 +39,52 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/defines.h>
+#ଅନ୍ତର୍ଭାଵ <assert.h>
+#ଅନ୍ତର୍ଭାଵ <time.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <math.h>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/test/test.hpp>
+#ଅନ୍ତର୍ଭାଵ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/Block.hpp"
+#ଅନ୍ତର୍ଭାଵ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ଅନ୍ତର୍ଭାଵ "matrix/math.hpp"
 
-namespace control
+ନାମାକାଶ control
 {
 /**
  * An output trim/ saturation block
  */
-class __EXPORT BlockOutput: public SuperBlock
+ଶ୍ରେଣୀ __EXPORT BlockOutput: ସର୍ବସାଧାରଣ SuperBlock
 {
-public:
+ସର୍ବସାଧାରଣ:
 // methods
-	BlockOutput(SuperBlock *parent, const char *name) :
+	BlockOutput(SuperBlock *parent, ଅଚଳ ଅକ୍ଷର *name) :
 		SuperBlock(parent, name),
-		_trim(this, "TRIM"),
-		_limit(this, ""),
+		_trim(ଏହି, "TRIM"),
+		_limit(ଏହି, ""),
 		_val(0)
 	{
 		update(0);
 	}
 
-	virtual ~BlockOutput() = default;
-	void update(float input)
+	ଆଭାସୀ ~BlockOutput() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	ଶୂନ୍ୟ update(ଦଶମିକ ନିବେଶ)
 	{
-		_val = _limit.update(input + getTrim());
+		_val = _limit.update(ନିବେଶ + getTrim());
 	}
 // accessors
-	float getMin() { return _limit.getMin(); }
-	float getMax() { return _limit.getMax(); }
-	float getTrim() { return _trim.get(); }
-	float get() { return _val; }
-private:
+	ଦଶମିକ getMin() { ଫେରନ୍ତୁ _limit.getMin(); }
+	ଦଶମିକ getMax() { ଫେରନ୍ତୁ _limit.getMax(); }
+	ଦଶମିକ getTrim() { ଫେରନ୍ତୁ _trim.get(); }
+	ଦଶମିକ get() { ଫେରନ୍ତୁ _val; }
+ବ୍ୟକ୍ତିଗତ:
 // attributes
 	control::BlockParamFloat _trim;
 	BlockLimit _limit;
-	float _val;
+	ଦଶମିକ _val;
 };
 
 } // namespace control

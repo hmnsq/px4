@@ -33,43 +33,43 @@
 
 #pragma once
 
-#include <limits.h>
+#ଅନ୍ତର୍ଭାଵ <limits.h>
 
-#include <mixer_module/output_functions.hpp>
+#ଅନ୍ତର୍ଭାଵ <mixer_module/output_functions.hpp>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionCallback.hpp>
+#ଅନ୍ତର୍ଭାଵ <uORB/Subscription.hpp>
+#ଅନ୍ତର୍ଭାଵ <uORB/SubscriptionCallback.hpp>
 
-#include <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
 
-class FunctionProviderBase
+ଶ୍ରେଣୀ FunctionProviderBase
 {
-public:
-	struct Context {
+ସର୍ବସାଧାରଣ:
+	ସଂରଚନା Context {
 		px4::WorkItem &work_item;
-		const float &thrust_factor;
+		ଅଚଳ ଦଶମିକ &thrust_factor;
 	};
 
-	FunctionProviderBase() = default;
-	virtual ~FunctionProviderBase() = default;
+	FunctionProviderBase() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
+	ଆଭାସୀ ~FunctionProviderBase() = ପୂର୍ବନିର୍ଦ୍ଧାରିତ;
 
-	virtual void update() = 0;
+	ଆଭାସୀ ଶୂନ୍ୟ update() = 0;
 
 	/**
 	 * Get the current output value for a given function
 	 * @return NAN (=disarmed) or value in range [-1, 1]
 	 */
-	virtual float value(OutputFunction func) = 0;
+	ଆଭାସୀ ଦଶମିକ value(OutputFunction func) = 0;
 
-	virtual float defaultFailsafeValue(OutputFunction func) const { return NAN; }
-	virtual bool allowPrearmControl() const { return true; }
+	ଆଭାସୀ ଦଶମିକ default_Failsafe_ମୂଲ୍ୟ(OutputFunction func) ଅଚଳ { ଫେରନ୍ତୁ NAN; }
+	ଆଭାସୀ ତାର୍କିକ allowPrearmControl() ଅଚଳ { ଫେରନ୍ତୁ ସତ୍ୟ; }
 
-	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { return nullptr; }
+	ଆଭାସୀ uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { ଫେରନ୍ତୁ nullptr; }
 
-	virtual bool getLatestSampleTimestamp(hrt_abstime &t) const { return false; }
+	ଆଭାସୀ ତାର୍କିକ getLatestSampleTimestamp(hrt_abstime &t) ଅଚଳ { ଫେରନ୍ତୁ ମିଥ୍ୟା; }
 
 	/**
 	 * Check whether the output (motor) is configured to be reversible
 	 */
-	virtual bool reversible(OutputFunction func) const { return false; }
+	ଆଭାସୀ ତାର୍କିକ reversible(OutputFunction func) ଅଚଳ { ଫେରନ୍ତୁ ମିଥ୍ୟା; }
 };

@@ -37,44 +37,44 @@
  * Character device base class.
  */
 
-#include "CDev.hpp"
+#ଅନ୍ତର୍ଭାଵ "CDev.hpp"
 
-#include <cstring>
+#ଅନ୍ତର୍ଭାଵ <cstring>
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/log.h>
+#ଅନ୍ତର୍ଭାଵ <px4_platform_common/posix.h>
 
-namespace device
+ନାମାକାଶ device
 {
 
-CDev::CDev(const char *name, const char *devname) :
+CDev::CDev(ଅଚଳ ଅକ୍ଷର *name, ଅଚଳ ଅକ୍ଷର *devname) :
 	Device(name),
 	cdev::CDev(devname)
 {
 }
 
-int CDev::init()
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା CDev::init()
 {
 	PX4_DEBUG("CDev::init");
 
 	// base class init first
-	int ret = Device::init();
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା ret = Device::init();
 
-	if (ret != PX4_OK) {
-		goto out;
+	ଯଦି (ret != PX4_OK) {
+		ଯାଅ out;
 	}
 
 	// now register the driver
-	if (get_devname() != nullptr) {
+	ଯଦି (get_devname() != nullptr) {
 		ret = cdev::CDev::init();
 
-		if (ret != PX4_OK) {
-			goto out;
+		ଯଦି (ret != PX4_OK) {
+			ଯାଅ out;
 		}
 	}
 
 out:
-	return ret;
+	ଫେରନ୍ତୁ ret;
 }
 
 } // namespace device

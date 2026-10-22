@@ -36,12 +36,12 @@
  * Run this test only using make tests TESTFILTER=VelocitySmoothing
  */
 
-#include <gtest/gtest.h>
-#include <matrix/matrix/math.hpp>
+#ଅନ୍ତର୍ଭାଵ <gtest/gtest.h>
+#ଅନ୍ତର୍ଭାଵ <matrix/matrix/math.hpp>
 
-#include "VelocitySmoothing.hpp"
+#ଅନ୍ତର୍ଭାଵ "VelocitySmoothing.hpp"
 
-using namespace matrix;
+using ନାମାକାଶ matrix;
 
 TEST(VelocitySmoothingBasicTest, AllZeroCase)
 {
@@ -102,44 +102,44 @@ TEST(VelocitySmoothingBasicTest, DivisionByZeroSaturateT1ForAccel)
 	EXPECT_FLOAT_EQ(trajectory.getCurrentPosition(), 0.f);
 }
 
-class VelocitySmoothingTest : public ::testing::Test
+ଶ୍ରେଣୀ VelocitySmoothingTest : ସର୍ବସାଧାରଣ ::testing::Test
 {
-public:
-	void setConstraints(float j_max, float a_max, float v_max);
-	void setInitialConditions(Vector3f acc, Vector3f vel, Vector3f pos);
-	void updateTrajectories(float dt, Vector3f velocity_setpoints);
+ସର୍ବସାଧାରଣ:
+	ଶୂନ୍ୟ setConstraints(ଦଶମିକ j_max, ଦଶମିକ a_max, ଦଶମିକ v_max);
+	ଶୂନ୍ୟ setInitialConditions(Vector3f acc, Vector3f vel, Vector3f pos);
+	ଶୂନ୍ୟ updateTrajectories(ଦଶମିକ dt, Vector3f velocity_setpoints);
 
 	VelocitySmoothing _trajectories[3];
 };
 
-void VelocitySmoothingTest::setConstraints(float j_max, float a_max, float v_max)
+ଶୂନ୍ୟ VelocitySmoothingTest::setConstraints(ଦଶମିକ j_max, ଦଶମିକ a_max, ଦଶମିକ v_max)
 {
-	for (int i = 0; i < 3; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < 3; i++) {
 		_trajectories[i].setMaxJerk(j_max);
 		_trajectories[i].setMaxAccel(a_max);
 		_trajectories[i].setMaxVel(v_max);
 	}
 }
 
-void VelocitySmoothingTest::setInitialConditions(Vector3f a0, Vector3f v0, Vector3f x0)
+ଶୂନ୍ୟ VelocitySmoothingTest::setInitialConditions(Vector3f a0, Vector3f v0, Vector3f x0)
 {
-	for (int i = 0; i < 3; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < 3; i++) {
 		_trajectories[i].setCurrentAcceleration(a0(i));
 		_trajectories[i].setCurrentVelocity(v0(i));
 		_trajectories[i].setCurrentPosition(x0(i));
 	}
 }
 
-void VelocitySmoothingTest::updateTrajectories(float dt, Vector3f velocity_setpoints)
+ଶୂନ୍ୟ VelocitySmoothingTest::updateTrajectories(ଦଶମିକ dt, Vector3f velocity_setpoints)
 {
-	for (int i = 0; i < 3; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < 3; i++) {
 		_trajectories[i].updateTraj(dt);
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentJerk()), _trajectories[i].getMaxJerk());
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentAcceleration()), _trajectories[i].getMaxAccel());
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentVelocity()), _trajectories[i].getMaxVel());
 	}
 
-	for (int i = 0; i < 3; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < 3; i++) {
 		_trajectories[i].updateDurations(velocity_setpoints(i));
 	}
 
@@ -149,9 +149,9 @@ void VelocitySmoothingTest::updateTrajectories(float dt, Vector3f velocity_setpo
 TEST_F(VelocitySmoothingTest, testTimeSynchronization)
 {
 	// GIVEN: A set of constraints
-	const float j_max = 55.2f;
-	const float a_max = 6.f;
-	const float v_max = 6.f;
+	ଅଚଳ ଦଶମିକ j_max = 55.2f;
+	ଅଚଳ ଦଶମିକ a_max = 6.f;
+	ଅଚଳ ଦଶମିକ v_max = 6.f;
 
 	setConstraints(j_max, a_max, v_max);
 
@@ -181,10 +181,10 @@ TEST_F(VelocitySmoothingTest, testTimeSynchronizationSameDelta)
 	setInitialConditions(a0, v0, x0);
 
 	// WHEN: the same delta velocity is set to the XY-axes
-	const float delta_v = 0.3f;
+	ଅଚଳ ଦଶମିକ delta_v = 0.3f;
 	Vector3f velocity_setpoints{v0(0) + delta_v, v0(1) + delta_v, 0.f};
 
-	for (int i = 0; i < 3; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < 3; i++) {
 		_trajectories[i].updateDurations(velocity_setpoints(i));
 	}
 
@@ -206,9 +206,9 @@ TEST_F(VelocitySmoothingTest, testTimeSynchronizationSameDelta)
 TEST_F(VelocitySmoothingTest, testConstantSetpoint)
 {
 	// GIVEN: A set of constraints
-	const float j_max = 55.2f;
-	const float a_max = 6.f;
-	const float v_max = 6.f;
+	ଅଚଳ ଦଶମିକ j_max = 55.2f;
+	ଅଚଳ ଦଶମିକ a_max = 6.f;
+	ଅଚଳ ଦଶମିକ v_max = 6.f;
 
 	setConstraints(j_max, a_max, v_max);
 
@@ -224,18 +224,18 @@ TEST_F(VelocitySmoothingTest, testConstantSetpoint)
 
 	// Compute the number of steps required to reach desired value
 	// The updateTrajectories is first called once to compute the total time
-	const float dt = 0.01;
+	ଅଚଳ ଦଶମିକ dt = 0.01;
 	updateTrajectories(0.f, velocity_setpoints);
-	float t123 = _trajectories[0].getTotalTime();
-	int nb_steps = ceilf(t123 / dt);
+	ଦଶମିକ t123 = _trajectories[0].getTotalTime();
+	ପୂର୍ଣ୍ଣସଂଖ୍ୟା nb_steps = ceilf(t123 / dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < nb_steps; i++) {
 		updateTrajectories(dt, velocity_setpoints);
 	}
 
 	// THEN: All the trajectories should have reached their
 	// final state: desired velocity target and zero acceleration
-	for (int i = 0; i < 3; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < 3; i++) {
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentVelocity() - velocity_setpoints(i)), 0.01f);
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentAcceleration()), 0.0001f);
 	}
@@ -252,15 +252,15 @@ TEST_F(VelocitySmoothingTest, testZeroSetpoint)
 
 	// AND: Zero setpoints
 	Vector3f velocity_setpoints(0.f, 0.f, 0.f);
-	const float dt = 0.01f;
+	ଅଚଳ ଦଶମିକ dt = 0.01f;
 
 	// WHEN: We run a few times the algorithm
-	for (int i = 0; i < 60; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < 60; i++) {
 		updateTrajectories(dt, velocity_setpoints);
 	}
 
 	// THEN: All the trajectories should still be zero
-	for (int i = 0; i < 3; i++) {
+	ପାଇଁ (ପୂର୍ଣ୍ଣସଂଖ୍ୟା i = 0; i < 3; i++) {
 		EXPECT_FLOAT_EQ(_trajectories[i].getCurrentJerk(), 0.f);
 		EXPECT_FLOAT_EQ(_trajectories[i].getCurrentAcceleration(), 0.f);
 		EXPECT_FLOAT_EQ(_trajectories[i].getCurrentVelocity(), 0.f);
