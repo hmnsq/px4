@@ -40,43 +40,43 @@
  *
  */
 
-#pragma once
+#لارښوونه once
 
-#include <px4_platform_common/module_params.h>
-#include <matrix/matrix/math.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/vehicle_attitude_setpoint.h>
-#include <uORB/topics/vehicle_local_position.h>
-#include <uORB/topics/vehicle_control_mode.h>
-#include <uORB/topics/vehicle_status.h>
+#ضمن <px4_platform_common/module_params.h>
+#ضمن <matrix/matrix/math.hpp>
+#ضمن <uORB/Subscription.hpp>
+#ضمن <uORB/topics/vehicle_attitude_setpoint.h>
+#ضمن <uORB/topics/vehicle_local_position.h>
+#ضمن <uORB/topics/vehicle_control_mode.h>
+#ضمن <uORB/topics/vehicle_status.h>
 
-class WeatherVane : public ModuleParams
+صنف WeatherVane : عام ModuleParams
 {
-public:
-	WeatherVane(ModuleParams *parent);
+عام:
+	WeatherVane(ModuleParams *پلار);
 
-	~WeatherVane() = default;
+	~WeatherVane() = افتراضي;
 
-	void setNavigatorForceDisabled(bool navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
+	فراغ سېټ_Navigator_Force_Disabled(منطقي navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
 
-	bool isActive() {return _is_active;}
+	منطقي is_فعال_3() {أرجع is_فعال_2;}
 
-	void update();
+	فراغ update();
 
-	float getWeathervaneYawrate();
+	عائم getWeathervaneYawrate();
 
-private:
+خاص:
 	uORB::Subscription _vehicle_attitude_setpoint_sub{ORB_ID(vehicle_attitude_setpoint)};
 	uORB::Subscription _vehicle_local_position_sub{ORB_ID(vehicle_local_position)};
-	uORB::Subscription _vehicle_control_mode_sub{ORB_ID(vehicle_control_mode)};
-	uORB::Subscription _vehicle_status_sub{ORB_ID(vehicle_status)};
+	uORB::Subscription vehicle_control_ډېرپېښ_sub{ORB_ID(vehicle_control_ډېرپېښ)};
+	uORB::Subscription vehicle_حالت_sub{ORB_ID(vehicle_حالت)};
 
-	bool _is_active{false};
+	منطقي is_فعال_2{خطأ};
 
 	// local copies of status such that we don't need to copy uORB messages all the time
-	bool _flag_control_manual_enabled{false};
-	bool _flag_control_position_enabled{false};
-	bool _navigator_force_disabled{false};
+	منطقي _flag_control_manual_enabled{خطأ};
+	منطقي _flag_control_position_enabled{خطأ};
+	منطقي _navigator_force_disabled{خطأ};
 
 	DEFINE_PARAMETERS(
 		(ParamBool<px4::params::WV_EN>) _param_wv_en,

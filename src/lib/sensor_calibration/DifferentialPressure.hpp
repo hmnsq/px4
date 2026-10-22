@@ -31,50 +31,50 @@
  *
  ****************************************************************************/
 
-#pragma once
+#لارښوونه once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#ضمن <px4_platform_common/px4_config.h>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <px4_platform_common/log.h>
 
-#include <inttypes.h>
-#include <math.h>
+#ضمن <inttypes.h>
+#ضمن <math.h>
 
-namespace calibration
+نطاق calibration
 {
-class DifferentialPressure
+صنف DifferentialPressure
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 3; ///< also the airspeed selector's sensor limit
+عام:
+	ساكن constexpr صحيح MAX_SENSOR_شمېر = 3; ///< also the airspeed selector's sensor limit
 
-	static constexpr const char *SensorString() { return "DPRES"; }
+	ساكن constexpr ثابت حرف *SensorString() { أرجع "DPRES"; }
 
 	DifferentialPressure();
-	explicit DifferentialPressure(uint32_t device_id);
+	څرګند DifferentialPressure(uint32_t device_id);
 
-	~DifferentialPressure() = default;
+	~DifferentialPressure() = افتراضي;
 
-	void PrintStatus();
+	فراغ Print_حالت();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id);
-	bool set_offset(const float &offset);
+	منطقي سېټ_calibration_شاخص(صحيح calibration_شاخص);
+	فراغ سېټ_device_id(uint32_t device_id);
+	منطقي سېټ_دننه_واټن(ثابت عائم &دننه_واټن);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
+	منطقي calibrated() ثابت { أرجع (_device_id != 0) && (calibration_شاخص_2 >= 0); }
+	uint8_t calibration_شمېر_2() ثابت { أرجع calibration_شمېر; }
+	int8_t calibration_شاخص() ثابت { أرجع calibration_شاخص_2; }
+	uint32_t device_id() ثابت { أرجع _device_id; }
+	منطقي external() ثابت { أرجع _external; }
+	ثابت عائم &دننه_واټن() ثابت { أرجع دننه_واټن_2; }
 
 	/// remove the zero offset from a raw differential pressure reading [Pa]
-	inline float Correct(const float &data) const { return data - _offset; }
+	مضمن عائم Correct(ثابت عائم &معلومات) ثابت { أرجع معلومات - دننه_واټن_2; }
 
-	inline float Uncorrect(const float &corrected_data) const { return corrected_data + _offset; }
+	مضمن عائم Uncorrect(ثابت عائم &corrected_معلومات) ثابت { أرجع corrected_معلومات + دننه_واټن_2; }
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	منطقي Parameters_بارول();
+	منطقي ParametersSave(صحيح desired_calibration_شاخص = -1, منطقي force = خطأ);
+	فراغ ParametersUpdate();
 
 	/**
 	 * Take over the offset left in SENS_DPRES_OFF, using slot 0.
@@ -82,23 +82,23 @@ public:
 	 *
 	 * @return true if the offset was adopted (the caller should save)
 	 */
-	bool AdoptLegacyOffset();
+	منطقي Adopt_Legacy_دننه_واټن();
 
 	/** mirror slot 0's offset into SENS_DPRES_OFF for ground stations that still read it */
-	void UpdateLegacyOffset() const;
+	فراغ Update_Legacy_دننه_واټن() ثابت;
 
-	void Reset();
+	فراغ Reset();
 
-private:
-	static constexpr int kLegacyIndex{0};
-	static constexpr const char *kLegacyOffsetParam{"SENS_DPRES_OFF"};
+خاص:
+	ساكن constexpr صحيح k_Legacy_شاخص{0};
+	ساكن constexpr ثابت حرف *k_Legacy_دننه_واټن_Param{"SENS_DPRES_OFF"};
 
-	float _offset{0};
+	عائم دننه_واټن_2{0};
 
-	int8_t _calibration_index{-1};
+	int8_t calibration_شاخص_2{-1};
 	uint32_t _device_id{0};
-	uint8_t _calibration_count{0};
+	uint8_t calibration_شمېر{0};
 
-	bool _external{false};
+	منطقي _external{خطأ};
 };
 } // namespace calibration

@@ -37,269 +37,269 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <float.h>
+#ضمن <math.h>
+#ضمن <stdio.h>
+#ضمن <float.h>
 
-#include <controllib/blocks.hpp>
+#ضمن <controllib/blocks.hpp>
 
-#define ASSERT_CL(T) if (!(T)) { printf("FAIL\n"); return -1; }
+#تعریف_کړه ASSERT_CL(T) إذا (!(T)) { چاپ_کړه("FAIL\n"); أرجع -1; }
 
-namespace control
+نطاق control
 {
 
-int basicBlocksTest();
-int blockLimitTest();
-int blockLimitSymTest();
-int blockLowPassTest();
-int blockHighPassTest();
-int blockLowPass2Test();
-int blockIntegralTest();
-int blockIntegralTrapTest();
-int blockDerivativeTest();
-int blockPTest();
-int blockPITest();
-int blockPDTest();
-int blockPIDTest();
-int blockOutputTest();
-int blockRandUniformTest();
-int blockRandGaussTest();
-int blockStatsTest();
-int blockDelayTest();
+صحيح basic_بلاکونه_Test();
+صحيح بلاک_حد_Test();
+صحيح بلاک_حد_Sym_Test();
+صحيح بلاک_ټیټ_Pass_Test();
+صحيح بلاک_لوړ_Pass_Test();
+صحيح بلاک_ټیټ_Pass2_Test();
+صحيح بلاک_Integral_Test();
+صحيح بلاک_Integral_Trap_Test();
+صحيح بلاک_Derivative_Test();
+صحيح بلاک_PTest();
+صحيح بلاک_PITest();
+صحيح بلاک_PDTest();
+صحيح بلاک_PIDTest();
+صحيح بلاک_Output_Test();
+صحيح بلاک_Rand_یوشان_Test();
+صحيح بلاک_Rand_Gauss_Test();
+صحيح بلاک_Stats_Test();
+صحيح بلاک_Delay_Test();
 
-int basicBlocksTest()
+صحيح basic_بلاکونه_Test()
 {
-	blockLimitTest();
-	blockLimitSymTest();
-	blockLowPassTest();
-	blockHighPassTest();
-	blockLowPass2Test();
-	blockIntegralTest();
-	blockIntegralTrapTest();
-	blockDerivativeTest();
-	blockPTest();
-	blockPITest();
-	blockPDTest();
-	blockPIDTest();
-	blockOutputTest();
+	بلاک_حد_Test();
+	بلاک_حد_Sym_Test();
+	بلاک_ټیټ_Pass_Test();
+	بلاک_لوړ_Pass_Test();
+	بلاک_ټیټ_Pass2_Test();
+	بلاک_Integral_Test();
+	بلاک_Integral_Trap_Test();
+	بلاک_Derivative_Test();
+	بلاک_PTest();
+	بلاک_PITest();
+	بلاک_PDTest();
+	بلاک_PIDTest();
+	بلاک_Output_Test();
 	//blockRandUniformTest();
 	// known failures
 	// blockRandGaussTest();
-	blockStatsTest();
-	blockDelayTest();
-	return 0;
+	بلاک_Stats_Test();
+	بلاک_Delay_Test();
+	أرجع 0;
 }
 
-int blockLimitTest()
+صحيح بلاک_حد_Test()
 {
-	printf("Test BlockLimit\t\t\t: ");
-	BlockLimit limit(NULL, "TEST");
+	چاپ_کړه("Test BlockLimit\t\t\t: ");
+	بلاک_حد حد_2(عدم, "TEST");
 	// initial state
-	ASSERT_CL(equal(1.0f, limit.getMax()));
-	ASSERT_CL(equal(-1.0f, limit.getMin()));
-	ASSERT_CL(equal(0.0f, limit.getDt()));
+	ASSERT_CL(equal(1.0f, حد_2.getMax()));
+	ASSERT_CL(equal(-1.0f, حد_2.getMin()));
+	ASSERT_CL(equal(0.0f, حد_2.getDt()));
 	// update
-	ASSERT_CL(equal(-1.0f, limit.update(-2.0f)));
-	ASSERT_CL(equal(1.0f, limit.update(2.0f)));
-	ASSERT_CL(equal(0.0f, limit.update(0.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(-1.0f, حد_2.update(-2.0f)));
+	ASSERT_CL(equal(1.0f, حد_2.update(2.0f)));
+	ASSERT_CL(equal(0.0f, حد_2.update(0.0f)));
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
-int blockLimitSymTest()
+صحيح بلاک_حد_Sym_Test()
 {
-	printf("Test BlockLimitSym\t\t: ");
-	BlockLimitSym limit(NULL, "TEST");
+	چاپ_کړه("Test BlockLimitSym\t\t: ");
+	بلاک_حد_Sym حد_2(عدم, "TEST");
 	// initial state
-	ASSERT_CL(equal(1.0f, limit.getMax()));
-	ASSERT_CL(equal(0.0f, limit.getDt()));
+	ASSERT_CL(equal(1.0f, حد_2.getMax()));
+	ASSERT_CL(equal(0.0f, حد_2.getDt()));
 	// update
-	ASSERT_CL(equal(-1.0f, limit.update(-2.0f)));
-	ASSERT_CL(equal(1.0f, limit.update(2.0f)));
-	ASSERT_CL(equal(0.0f, limit.update(0.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(-1.0f, حد_2.update(-2.0f)));
+	ASSERT_CL(equal(1.0f, حد_2.update(2.0f)));
+	ASSERT_CL(equal(0.0f, حد_2.update(0.0f)));
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
-int blockLowPassTest()
+صحيح بلاک_ټیټ_Pass_Test()
 {
-	printf("Test BlockLowPass\t\t: ");
-	BlockLowPass lowPass(NULL, "TEST_LP");
+	چاپ_کړه("Test BlockLowPass\t\t: ");
+	بلاک_ټیټ_Pass ټیټ_Pass_2(عدم, "TEST_LP");
 	// test initial state
-	ASSERT_CL(equal(10.0f, lowPass.getFCut()));
-	ASSERT_CL(equal(0.0f, lowPass.getState()));
-	ASSERT_CL(equal(0.0f, lowPass.getDt()));
+	ASSERT_CL(equal(10.0f, ټیټ_Pass_2.getFCut()));
+	ASSERT_CL(equal(0.0f, ټیټ_Pass_2.getState()));
+	ASSERT_CL(equal(0.0f, ټیټ_Pass_2.getDt()));
 	// set dt
-	lowPass.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, lowPass.getDt()));
+	ټیټ_Pass_2.سېټ_Dt(0.1f);
+	ASSERT_CL(equal(0.1f, ټیټ_Pass_2.getDt()));
 	// set state
-	lowPass.setState(1.0f);
-	ASSERT_CL(equal(1.0f, lowPass.getState()));
+	ټیټ_Pass_2.سېټ_State(1.0f);
+	ASSERT_CL(equal(1.0f, ټیټ_Pass_2.getState()));
 	// test update
-	ASSERT_CL(equal(1.8626974f, lowPass.update(2.0f)));
+	ASSERT_CL(equal(1.8626974f, ټیټ_Pass_2.update(2.0f)));
 
 	// test end condition
-	for (int i = 0; i < 100; i++) {
-		lowPass.update(2.0f);
+	لكل (صحيح i = 0; i < 100; i++) {
+		ټیټ_Pass_2.update(2.0f);
 	}
 
-	ASSERT_CL(equal(2.0f, lowPass.getState()));
-	ASSERT_CL(equal(2.0f, lowPass.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(2.0f, ټیټ_Pass_2.getState()));
+	ASSERT_CL(equal(2.0f, ټیټ_Pass_2.update(2.0f)));
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 };
 
-int blockHighPassTest()
+صحيح بلاک_لوړ_Pass_Test()
 {
-	printf("Test BlockHighPass\t\t: ");
-	BlockHighPass highPass(NULL, "TEST_HP");
+	چاپ_کړه("Test BlockHighPass\t\t: ");
+	بلاک_لوړ_Pass لوړ_Pass(عدم, "TEST_HP");
 	// test initial state
-	ASSERT_CL(equal(10.0f, highPass.getFCut()));
-	ASSERT_CL(equal(0.0f, highPass.getU()));
-	ASSERT_CL(equal(0.0f, highPass.getY()));
-	ASSERT_CL(equal(0.0f, highPass.getDt()));
+	ASSERT_CL(equal(10.0f, لوړ_Pass.getFCut()));
+	ASSERT_CL(equal(0.0f, لوړ_Pass.getU()));
+	ASSERT_CL(equal(0.0f, لوړ_Pass.getY()));
+	ASSERT_CL(equal(0.0f, لوړ_Pass.getDt()));
 	// set dt
-	highPass.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, highPass.getDt()));
+	لوړ_Pass.سېټ_Dt(0.1f);
+	ASSERT_CL(equal(0.1f, لوړ_Pass.getDt()));
 	// set state
-	highPass.setU(1.0f);
-	ASSERT_CL(equal(1.0f, highPass.getU()));
-	highPass.setY(1.0f);
-	ASSERT_CL(equal(1.0f, highPass.getY()));
+	لوړ_Pass.سېټ_U(1.0f);
+	ASSERT_CL(equal(1.0f, لوړ_Pass.getU()));
+	لوړ_Pass.سېټ_Y(1.0f);
+	ASSERT_CL(equal(1.0f, لوړ_Pass.getY()));
 	// test update
-	ASSERT_CL(equal(0.2746051f, highPass.update(2.0f)));
+	ASSERT_CL(equal(0.2746051f, لوړ_Pass.update(2.0f)));
 
 	// test end condition
-	for (int i = 0; i < 100; i++) {
-		highPass.update(2.0f);
+	لكل (صحيح i = 0; i < 100; i++) {
+		لوړ_Pass.update(2.0f);
 	}
 
-	ASSERT_CL(equal(0.0f, highPass.getY()));
-	ASSERT_CL(equal(0.0f, highPass.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(0.0f, لوړ_Pass.getY()));
+	ASSERT_CL(equal(0.0f, لوړ_Pass.update(2.0f)));
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
-int blockLowPass2Test()
+صحيح بلاک_ټیټ_Pass2_Test()
 {
-	printf("Test BlockLowPass2\t\t: ");
-	BlockLowPass2 lowPass(NULL, "TEST_LP", 100);
+	چاپ_کړه("Test BlockLowPass2\t\t: ");
+	بلاک_ټیټ_Pass2 ټیټ_Pass_2(عدم, "TEST_LP", 100);
 	// test initial state
-	ASSERT_CL(equal(10.0f, lowPass.getFCutParam()));
-	ASSERT_CL(equal(0.0f, lowPass.getState()));
-	ASSERT_CL(equal(0.0f, lowPass.getDt()));
+	ASSERT_CL(equal(10.0f, ټیټ_Pass_2.getFCutParam()));
+	ASSERT_CL(equal(0.0f, ټیټ_Pass_2.getState()));
+	ASSERT_CL(equal(0.0f, ټیټ_Pass_2.getDt()));
 	// set dt
-	lowPass.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, lowPass.getDt()));
+	ټیټ_Pass_2.سېټ_Dt(0.1f);
+	ASSERT_CL(equal(0.1f, ټیټ_Pass_2.getDt()));
 	// set state
-	lowPass.setState(1.0f);
-	ASSERT_CL(equal(1.0f, lowPass.getState()));
+	ټیټ_Pass_2.سېټ_State(1.0f);
+	ASSERT_CL(equal(1.0f, ټیټ_Pass_2.getState()));
 	// test update
-	ASSERT_CL(equal(1.06745527f, lowPass.update(2.0f)));
+	ASSERT_CL(equal(1.06745527f, ټیټ_Pass_2.update(2.0f)));
 
 	// test end condition
-	for (int i = 0; i < 100; i++) {
-		lowPass.update(2.0f);
+	لكل (صحيح i = 0; i < 100; i++) {
+		ټیټ_Pass_2.update(2.0f);
 	}
 
-	ASSERT_CL(equal(2.0f, lowPass.getState()));
-	ASSERT_CL(equal(2.0f, lowPass.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(2.0f, ټیټ_Pass_2.getState()));
+	ASSERT_CL(equal(2.0f, ټیټ_Pass_2.update(2.0f)));
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 };
 
-int blockIntegralTest()
+صحيح بلاک_Integral_Test()
 {
-	printf("Test BlockIntegral\t\t: ");
-	BlockIntegral integral(NULL, "TEST_I");
+	چاپ_کړه("Test BlockIntegral\t\t: ");
+	بلاک_Integral integral(عدم, "TEST_I");
 	// test initial state
 	ASSERT_CL(equal(1.0f, integral.getMax()));
 	ASSERT_CL(equal(0.0f, integral.getDt()));
 	// set dt
-	integral.setDt(0.1f);
+	integral.سېټ_Dt(0.1f);
 	ASSERT_CL(equal(0.1f, integral.getDt()));
 	// set Y
-	integral.setY(0.9f);
+	integral.سېټ_Y(0.9f);
 	ASSERT_CL(equal(0.9f, integral.getY()));
 
 	// test exceed max
-	for (int i = 0; i < 100; i++) {
+	لكل (صحيح i = 0; i < 100; i++) {
 		integral.update(1.0f);
 	}
 
 	ASSERT_CL(equal(1.0f, integral.update(1.0f)));
 	// test exceed min
-	integral.setY(-0.9f);
+	integral.سېټ_Y(-0.9f);
 	ASSERT_CL(equal(-0.9f, integral.getY()));
 
-	for (int i = 0; i < 100; i++) {
+	لكل (صحيح i = 0; i < 100; i++) {
 		integral.update(-1.0f);
 	}
 
 	ASSERT_CL(equal(-1.0f, integral.update(-1.0f)));
 	// test update
-	integral.setY(0.1f);
+	integral.سېټ_Y(0.1f);
 	ASSERT_CL(equal(0.2f, integral.update(1.0)));
 	ASSERT_CL(equal(0.2f, integral.getY()));
-	printf("PASS\n");
-	return 0;
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
-int blockIntegralTrapTest()
+صحيح بلاک_Integral_Trap_Test()
 {
-	printf("Test BlockIntegralTrap\t\t: ");
-	BlockIntegralTrap integral(NULL, "TEST_I");
+	چاپ_کړه("Test BlockIntegralTrap\t\t: ");
+	بلاک_Integral_Trap integral(عدم, "TEST_I");
 	// test initial state
 	ASSERT_CL(equal(1.0f, integral.getMax()));
 	ASSERT_CL(equal(0.0f, integral.getDt()));
 	// set dt
-	integral.setDt(0.1f);
+	integral.سېټ_Dt(0.1f);
 	ASSERT_CL(equal(0.1f, integral.getDt()));
 	// set U
-	integral.setU(1.0f);
+	integral.سېټ_U(1.0f);
 	ASSERT_CL(equal(1.0f, integral.getU()));
 	// set Y
-	integral.setY(0.9f);
+	integral.سېټ_Y(0.9f);
 	ASSERT_CL(equal(0.9f, integral.getY()));
 
 	// test exceed max
-	for (int i = 0; i < 100; i++) {
+	لكل (صحيح i = 0; i < 100; i++) {
 		integral.update(1.0f);
 	}
 
 	ASSERT_CL(equal(1.0f, integral.update(1.0f)));
 	// test exceed min
-	integral.setU(-1.0f);
-	integral.setY(-0.9f);
+	integral.سېټ_U(-1.0f);
+	integral.سېټ_Y(-0.9f);
 	ASSERT_CL(equal(-0.9f, integral.getY()));
 
-	for (int i = 0; i < 100; i++) {
+	لكل (صحيح i = 0; i < 100; i++) {
 		integral.update(-1.0f);
 	}
 
 	ASSERT_CL(equal(-1.0f, integral.update(-1.0f)));
 	// test update
-	integral.setU(2.0f);
-	integral.setY(0.1f);
+	integral.سېټ_U(2.0f);
+	integral.سېټ_Y(0.1f);
 	ASSERT_CL(equal(0.25f, integral.update(1.0)));
 	ASSERT_CL(equal(0.25f, integral.getY()));
 	ASSERT_CL(equal(1.0f, integral.getU()));
-	printf("PASS\n");
-	return 0;
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
-int blockDerivativeTest()
+صحيح بلاک_Derivative_Test()
 {
-	printf("Test BlockDerivative\t\t: ");
-	BlockDerivative derivative(NULL, "TEST_D");
+	چاپ_کړه("Test BlockDerivative\t\t: ");
+	بلاک_Derivative derivative(عدم, "TEST_D");
 	// test initial state
 	ASSERT_CL(equal(0.0f, derivative.getU()));
 	ASSERT_CL(equal(10.0f, derivative.getLP()));
 	// set dt
-	derivative.setDt(0.1f);
+	derivative.سېټ_Dt(0.1f);
 	ASSERT_CL(equal(0.1f, derivative.getDt()));
 	// set U
-	derivative.setU(1.0f);
+	derivative.سېټ_U(1.0f);
 	ASSERT_CL(equal(1.0f, derivative.getU()));
 	// perform one update so initialized is set
 	derivative.update(1.0);
@@ -307,203 +307,203 @@ int blockDerivativeTest()
 	// test  update
 	ASSERT_CL(equal(8.6269744f, derivative.update(2.0f)));
 	ASSERT_CL(equal(2.0f, derivative.getU()));
-	printf("PASS\n");
-	return 0;
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
-int blockPTest()
+صحيح بلاک_PTest()
 {
-	printf("Test BlockP\t\t\t: ");
-	BlockP blockP(NULL, "TEST_P");
+	چاپ_کړه("Test BlockP\t\t\t: ");
+	بلاک_P بلاک_P_2(عدم, "TEST_P");
 	// test initial state
-	ASSERT_CL(equal(0.2f, blockP.getKP()));
-	ASSERT_CL(equal(0.0f, blockP.getDt()));
+	ASSERT_CL(equal(0.2f, بلاک_P_2.getKP()));
+	ASSERT_CL(equal(0.0f, بلاک_P_2.getDt()));
 	// set dt
-	blockP.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, blockP.getDt()));
+	بلاک_P_2.سېټ_Dt(0.1f);
+	ASSERT_CL(equal(0.1f, بلاک_P_2.getDt()));
 	// test  update
-	ASSERT_CL(equal(0.4f, blockP.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(0.4f, بلاک_P_2.update(2.0f)));
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
-int blockPITest()
+صحيح بلاک_PITest()
 {
-	printf("Test BlockPI\t\t\t: ");
-	BlockPI blockPI(NULL, "TEST");
+	چاپ_کړه("Test BlockPI\t\t\t: ");
+	بلاک_PI بلاک_PI_2(عدم, "TEST");
 	// test initial state
-	ASSERT_CL(equal(0.2f, blockPI.getKP()));
-	ASSERT_CL(equal(0.1f, blockPI.getKI()));
-	ASSERT_CL(equal(0.0f, blockPI.getDt()));
-	ASSERT_CL(equal(1.0f, blockPI.getIntegral().getMax()));
+	ASSERT_CL(equal(0.2f, بلاک_PI_2.getKP()));
+	ASSERT_CL(equal(0.1f, بلاک_PI_2.getKI()));
+	ASSERT_CL(equal(0.0f, بلاک_PI_2.getDt()));
+	ASSERT_CL(equal(1.0f, بلاک_PI_2.getIntegral().getMax()));
 	// set dt
-	blockPI.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, blockPI.getDt()));
+	بلاک_PI_2.سېټ_Dt(0.1f);
+	ASSERT_CL(equal(0.1f, بلاک_PI_2.getDt()));
 	// set integral state
-	blockPI.getIntegral().setY(0.1f);
-	ASSERT_CL(equal(0.1f, blockPI.getIntegral().getY()));
+	بلاک_PI_2.getIntegral().سېټ_Y(0.1f);
+	ASSERT_CL(equal(0.1f, بلاک_PI_2.getIntegral().getY()));
 	// test  update
 	// 0.2*2 + 0.1*(2*0.1 + 0.1) = 0.43
-	ASSERT_CL(equal(0.43f, blockPI.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(0.43f, بلاک_PI_2.update(2.0f)));
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
-int blockPDTest()
+صحيح بلاک_PDTest()
 {
-	printf("Test BlockPD\t\t\t: ");
-	BlockPD blockPD(NULL, "TEST");
+	چاپ_کړه("Test BlockPD\t\t\t: ");
+	بلاک_PD بلاک_PD_2(عدم, "TEST");
 	// test initial state
-	ASSERT_CL(equal(0.2f, blockPD.getKP()));
-	ASSERT_CL(equal(0.01f, blockPD.getKD()));
-	ASSERT_CL(equal(0.0f, blockPD.getDt()));
-	ASSERT_CL(equal(10.0f, blockPD.getDerivative().getLP()));
+	ASSERT_CL(equal(0.2f, بلاک_PD_2.getKP()));
+	ASSERT_CL(equal(0.01f, بلاک_PD_2.getKD()));
+	ASSERT_CL(equal(0.0f, بلاک_PD_2.getDt()));
+	ASSERT_CL(equal(10.0f, بلاک_PD_2.getDerivative().getLP()));
 	// set dt
-	blockPD.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, blockPD.getDt()));
+	بلاک_PD_2.سېټ_Dt(0.1f);
+	ASSERT_CL(equal(0.1f, بلاک_PD_2.getDt()));
 	// set derivative state
-	blockPD.getDerivative().setU(1.0f);
-	ASSERT_CL(equal(1.0f, blockPD.getDerivative().getU()));
+	بلاک_PD_2.getDerivative().سېټ_U(1.0f);
+	ASSERT_CL(equal(1.0f, بلاک_PD_2.getDerivative().getU()));
 	// perform one update so initialized is set
-	blockPD.getDerivative().update(1.0);
-	ASSERT_CL(equal(1.0f, blockPD.getDerivative().getU()));
+	بلاک_PD_2.getDerivative().update(1.0);
+	ASSERT_CL(equal(1.0f, بلاک_PD_2.getDerivative().getU()));
 	// test  update
 	// 0.2*2 + 0.1*(0.1*8.626...) = 0.486269744
-	ASSERT_CL(equal(0.486269744f, blockPD.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(0.486269744f, بلاک_PD_2.update(2.0f)));
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
-int blockPIDTest()
+صحيح بلاک_PIDTest()
 {
-	printf("Test BlockPID\t\t\t: ");
-	BlockPID blockPID(NULL, "TEST");
+	چاپ_کړه("Test BlockPID\t\t\t: ");
+	بلاک_PID بلاک_PID_2(عدم, "TEST");
 	// test initial state
-	ASSERT_CL(equal(0.2f, blockPID.getKP()));
-	ASSERT_CL(equal(0.1f, blockPID.getKI()));
-	ASSERT_CL(equal(0.01f, blockPID.getKD()));
-	ASSERT_CL(equal(0.0f, blockPID.getDt()));
-	ASSERT_CL(equal(10.0f, blockPID.getDerivative().getLP()));
-	ASSERT_CL(equal(1.0f, blockPID.getIntegral().getMax()));
+	ASSERT_CL(equal(0.2f, بلاک_PID_2.getKP()));
+	ASSERT_CL(equal(0.1f, بلاک_PID_2.getKI()));
+	ASSERT_CL(equal(0.01f, بلاک_PID_2.getKD()));
+	ASSERT_CL(equal(0.0f, بلاک_PID_2.getDt()));
+	ASSERT_CL(equal(10.0f, بلاک_PID_2.getDerivative().getLP()));
+	ASSERT_CL(equal(1.0f, بلاک_PID_2.getIntegral().getMax()));
 	// set dt
-	blockPID.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, blockPID.getDt()));
+	بلاک_PID_2.سېټ_Dt(0.1f);
+	ASSERT_CL(equal(0.1f, بلاک_PID_2.getDt()));
 	// set derivative state
-	blockPID.getDerivative().setU(1.0f);
-	ASSERT_CL(equal(1.0f, blockPID.getDerivative().getU()));
+	بلاک_PID_2.getDerivative().سېټ_U(1.0f);
+	ASSERT_CL(equal(1.0f, بلاک_PID_2.getDerivative().getU()));
 	// perform one update so initialized is set
-	blockPID.getDerivative().update(1.0);
-	ASSERT_CL(equal(1.0f, blockPID.getDerivative().getU()));
+	بلاک_PID_2.getDerivative().update(1.0);
+	ASSERT_CL(equal(1.0f, بلاک_PID_2.getDerivative().getU()));
 	// set integral state
-	blockPID.getIntegral().setY(0.1f);
-	ASSERT_CL(equal(0.1f, blockPID.getIntegral().getY()));
+	بلاک_PID_2.getIntegral().سېټ_Y(0.1f);
+	ASSERT_CL(equal(0.1f, بلاک_PID_2.getIntegral().getY()));
 	// test  update
 	// 0.2*2 + 0.1*(2*0.1 + 0.1) + 0.1*(0.1*8.626...) = 0.5162697
-	ASSERT_CL(equal(0.5162697f, blockPID.update(2.0f)));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(0.5162697f, بلاک_PID_2.update(2.0f)));
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
-int blockOutputTest()
+صحيح بلاک_Output_Test()
 {
-	printf("Test BlockOutput\t\t: ");
-	BlockOutput blockOutput(NULL, "TEST");
+	چاپ_کړه("Test BlockOutput\t\t: ");
+	بلاک_Output بلاک_Output_2(عدم, "TEST");
 	// test initial state
-	ASSERT_CL(equal(0.0f, blockOutput.getDt()));
-	ASSERT_CL(equal(0.5f, blockOutput.get()));
-	ASSERT_CL(equal(-1.0f, blockOutput.getMin()));
-	ASSERT_CL(equal(1.0f, blockOutput.getMax()));
+	ASSERT_CL(equal(0.0f, بلاک_Output_2.getDt()));
+	ASSERT_CL(equal(0.5f, بلاک_Output_2.get()));
+	ASSERT_CL(equal(-1.0f, بلاک_Output_2.getMin()));
+	ASSERT_CL(equal(1.0f, بلاک_Output_2.getMax()));
 	// test update below min
-	blockOutput.update(-2.0f);
-	ASSERT_CL(equal(-1.0f, blockOutput.get()));
+	بلاک_Output_2.update(-2.0f);
+	ASSERT_CL(equal(-1.0f, بلاک_Output_2.get()));
 	// test update above max
-	blockOutput.update(2.0f);
-	ASSERT_CL(equal(1.0f, blockOutput.get()));
+	بلاک_Output_2.update(2.0f);
+	ASSERT_CL(equal(1.0f, بلاک_Output_2.get()));
 	// test trim
-	blockOutput.update(0.0f);
-	ASSERT_CL(equal(0.5f, blockOutput.get()));
-	printf("PASS\n");
-	return 0;
+	بلاک_Output_2.update(0.0f);
+	ASSERT_CL(equal(0.5f, بلاک_Output_2.get()));
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
-int blockRandUniformTest()
+صحيح بلاک_Rand_یوشان_Test()
 {
 	srand(1234);
-	printf("Test BlockRandUniform\t\t: ");
-	BlockRandUniform blockRandUniform(NULL, "TEST");
+	چاپ_کړه("Test BlockRandUniform\t\t: ");
+	بلاک_Rand_یوشان بلاک_Rand_یوشان_2(عدم, "TEST");
 	// test initial state
-	ASSERT_CL(equal(0.0f, blockRandUniform.getDt()));
-	ASSERT_CL(equal(-1.0f, blockRandUniform.getMin()));
-	ASSERT_CL(equal(1.0f, blockRandUniform.getMax()));
+	ASSERT_CL(equal(0.0f, بلاک_Rand_یوشان_2.getDt()));
+	ASSERT_CL(equal(-1.0f, بلاک_Rand_یوشان_2.getMin()));
+	ASSERT_CL(equal(1.0f, بلاک_Rand_یوشان_2.getMax()));
 	// test update
-	int n = 10000;
-	float mean = blockRandUniform.update();
+	صحيح n = 10000;
+	عائم منځنۍ = بلاک_Rand_یوشان_2.update();
 
-	for (int i = 2; i < n + 1; i++) {
-		float val = blockRandUniform.update();
-		mean += (val - mean) / i;
-		ASSERT_CL(less_than_or_equal(val, blockRandUniform.getMax()));
-		ASSERT_CL(greater_than_or_equal(val, blockRandUniform.getMin()));
+	لكل (صحيح i = 2; i < n + 1; i++) {
+		عائم val = بلاک_Rand_یوشان_2.update();
+		منځنۍ += (val - منځنۍ) / i;
+		ASSERT_CL(less_than_or_equal(val, بلاک_Rand_یوشان_2.getMax()));
+		ASSERT_CL(greater_than_or_equal(val, بلاک_Rand_یوشان_2.getMin()));
 	}
 
-	ASSERT_CL(equal(mean, (blockRandUniform.getMin() +
-			       blockRandUniform.getMax()) / 2, 1e-1));
-	printf("PASS\n");
-	return 0;
+	ASSERT_CL(equal(منځنۍ, (بلاک_Rand_یوشان_2.getMin() +
+			       بلاک_Rand_یوشان_2.getMax()) / 2, 1e-1));
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
-int blockRandGaussTest()
+صحيح بلاک_Rand_Gauss_Test()
 {
 	srand(1234);
-	printf("Test BlockRandGauss\t\t: ");
-	BlockRandGauss blockRandGauss(NULL, "TEST");
+	چاپ_کړه("Test BlockRandGauss\t\t: ");
+	بلاک_Rand_Gauss بلاک_Rand_Gauss_2(عدم, "TEST");
 	// test initial state
-	ASSERT_CL(equal(0.0f, blockRandGauss.getDt()));
-	ASSERT_CL(equal(1.0f, blockRandGauss.getMean()));
-	ASSERT_CL(equal(2.0f, blockRandGauss.getStdDev()));
+	ASSERT_CL(equal(0.0f, بلاک_Rand_Gauss_2.getDt()));
+	ASSERT_CL(equal(1.0f, بلاک_Rand_Gauss_2.get_منځنۍ()));
+	ASSERT_CL(equal(2.0f, بلاک_Rand_Gauss_2.getStdDev()));
 	// test update
-	int n = 10000;
-	float mean = blockRandGauss.update();
-	float sum = 0;
+	صحيح n = 10000;
+	عائم منځنۍ = بلاک_Rand_Gauss_2.update();
+	عائم مجموعه = 0;
 
 	// recursive mean, stdev algorithm from Knuth
-	for (int i = 2; i < n + 1; i++) {
-		float val = blockRandGauss.update();
-		float newMean = mean + (val - mean) / i;
-		sum += (val - mean) * (val - newMean);
-		mean = newMean;
+	لكل (صحيح i = 2; i < n + 1; i++) {
+		عائم val = بلاک_Rand_Gauss_2.update();
+		عائم new_منځنۍ = منځنۍ + (val - منځنۍ) / i;
+		مجموعه += (val - منځنۍ) * (val - new_منځنۍ);
+		منځنۍ = new_منځنۍ;
 	}
 
-	float stdDev = sqrt(sum / (n - 1));
-	(void)(stdDev);
-	ASSERT_CL(equal(mean, blockRandGauss.getMean(), 1e-1));
-	ASSERT_CL(equal(stdDev, blockRandGauss.getStdDev(), 1e-1));
-	printf("PASS\n");
-	return 0;
+	عائم stdDev = جذر(مجموعه / (n - 1));
+	(فراغ)(stdDev);
+	ASSERT_CL(equal(منځنۍ, بلاک_Rand_Gauss_2.get_منځنۍ(), 1e-1));
+	ASSERT_CL(equal(stdDev, بلاک_Rand_Gauss_2.getStdDev(), 1e-1));
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
-int blockStatsTest()
+صحيح بلاک_Stats_Test()
 {
-	printf("Test BlockStats\t\t\t: ");
-	BlockStats<float, 1> stats(NULL, "TEST");
-	ASSERT_CL(equal(0.0f, stats.getMean()(0)));
+	چاپ_کړه("Test BlockStats\t\t\t: ");
+	بلاک_Stats<عائم, 1> stats(عدم, "TEST");
+	ASSERT_CL(equal(0.0f, stats.get_منځنۍ()(0)));
 	ASSERT_CL(equal(0.0f, stats.getStdDev()(0)));
-	stats.update(matrix::Scalar<float>(1.0f));
-	stats.update(matrix::Scalar<float>(2));
-	ASSERT_CL(equal(1.5f, stats.getMean()(0)));
+	stats.update(ماتریکس::Scalar<عائم>(1.0f));
+	stats.update(ماتریکس::Scalar<عائم>(2));
+	ASSERT_CL(equal(1.5f, stats.get_منځنۍ()(0)));
 	ASSERT_CL(equal(0.5f, stats.getStdDev()(0)));
 	stats.reset();
-	ASSERT_CL(equal(0.0f, stats.getMean()(0)));
+	ASSERT_CL(equal(0.0f, stats.get_منځنۍ()(0)));
 	ASSERT_CL(equal(0.0f, stats.getStdDev()(0)));
-	printf("PASS\n");
-	return 0;
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
-int blockDelayTest()
+صحيح بلاک_Delay_Test()
 {
-	printf("Test BlockDelay\t\t\t: ");
-	using namespace matrix;
-	BlockDelay<float, 2, 1, 3> delay(NULL, "TEST");
+	چاپ_کړه("Test BlockDelay\t\t\t: ");
+	کارول نطاق ماتریکس;
+	بلاک_Delay<عائم, 2, 1, 3> delay(عدم, "TEST");
 	Vector2f u1(1, 2);
 	Vector2f y1 = delay.update(u1);
 	ASSERT_CL(equal(y1(0), u1(0)));
@@ -523,8 +523,8 @@ int blockDelayTest()
 	Vector2f y4 = delay.update(u4);
 	ASSERT_CL(equal(y4(0), u2(0)));
 	ASSERT_CL(equal(y4(1), u2(1)));
-	printf("PASS\n");
-	return 0;
+	چاپ_کړه("PASS\n");
+	أرجع 0;
 }
 
 } // namespace control

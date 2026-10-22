@@ -37,61 +37,61 @@
  * Controller library code
  */
 
-#pragma once
+#لارښوونه once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
-template<class Type, size_t M>
-class __EXPORT BlockLowPassVector: public Block
+کينډۍ<صنف Type, size_t M>
+صنف __EXPORT بلاک_ټیټ_Pass_ویکټور: عام بلاک
 {
-public:
+عام:
 // methods
-	BlockLowPassVector(SuperBlock *parent,
-			   const char *name) :
-		Block(parent, name),
+	بلاک_ټیټ_Pass_ویکټور(Super_بلاک *پلار,
+			   ثابت حرف *name) :
+		بلاک(پلار, name),
 		_state(),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(هذا, "") // only one parameter, no need to name
 	{
-		for (size_t i = 0; i < M; i++) {
+		لكل (size_t i = 0; i < M; i++) {
 			_state(i) = 0.0f / 0.0f;
 		}
 	}
-	virtual ~BlockLowPassVector() = default;
-	matrix::Vector<Type, M> update(const matrix::Matrix<Type, M, 1> &input)
+	مجازي ~بلاک_ټیټ_Pass_ویکټور() = افتراضي;
+	ماتریکس::ویکټور<Type, M> update(ثابت ماتریکس::ماتریکس_2<Type, M, 1> &ننوت)
 	{
-		for (size_t i = 0; i < M; i++) {
-			if (!PX4_ISFINITE(getState()(i))) {
-				setState(input);
+		لكل (size_t i = 0; i < M; i++) {
+			إذا (!PX4_ISFINITE(getState()(i))) {
+				سېټ_State(ننوت);
 			}
 		}
 
-		float b = 2 * M_PI_F * getFCut() * getDt();
-		float a = b / (1 + b);
-		setState(input * a + getState() * (1 - a));
-		return getState();
+		عائم b = 2 * M_PI_F * getFCut() * getDt();
+		عائم a = b / (1 + b);
+		سېټ_State(ننوت * a + getState() * (1 - a));
+		أرجع getState();
 	}
 // accessors
-	matrix::Vector<Type, M> getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(const matrix::Vector<Type, M> &state) { _state = state; }
-private:
-// attributes
-	matrix::Vector<Type, M> _state;
-	control::BlockParamFloat _fCut;
+	ماتریکس::ویکټور<Type, M> getState() { أرجع _state; }
+	عائم getFCut() { أرجع _fCut.get(); }
+	فراغ سېټ_State(ثابت ماتریکس::ویکټور<Type, M> &state) { _state = state; }
+خاص:
+//ځانګړتیاوې
+	ماتریکس::ویکټور<Type, M> _state;
+	control::بلاک_Param_Float _fCut;
 };
 
 } // namespace control

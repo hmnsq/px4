@@ -31,284 +31,284 @@
  *
  ****************************************************************************/
 
-#include "parameters_primary.h"
+#ضمن "parameters_primary.h"
 
-#include "uORB/uORBManager.hpp"
+#ضمن "uORB/uORBManager.hpp"
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/tasks.h>
+#ضمن <px4_platform_common/log.h>
+#ضمن <px4_platform_common/tasks.h>
 
 // uORB topics needed to keep parameter server and client in sync
-#include <uORB/topics/parameter_reset_request.h>
-#include <uORB/topics/parameter_set_used_request.h>
-#include <uORB/topics/parameter_set_value_request.h>
-#include <uORB/topics/parameter_set_value_response.h>
+#ضمن <uORB/topics/parameter_reset_request.h>
+#ضمن <uORB/topics/parameter_set_used_request.h>
+#ضمن <uORB/topics/parameter_set_value_request.h>
+#ضمن <uORB/topics/parameter_set_value_response.h>
 
 // Debug flag
-static bool debug = false;
+ساكن منطقي debug = خطأ;
 
-static struct param_primary_counters param_primary_counters;
+ساكن بنية param_primary_counters param_primary_counters;
 
-#define TIMEOUT_WAIT 1000
-#define TIMEOUT_COUNT 50
+#تعریف_کړه TIMEOUT_WAIT 1000
+#تعریف_کړه TIMEOUT_شمېر 50
 
-static px4_task_t sync_thread_tid;
-static const char *sync_thread_name = "param_primary_sync";
+ساكن px4_task_t sync_thread_tid;
+ساكن ثابت حرف *sync_thread_name = "param_primary_sync";
 
-static orb_advert_t param_set_value_req_h = nullptr;
-static orb_advert_t param_reset_req_h     = nullptr;
+ساكن orb_advert_t param_سېټ_ارزښت_req_h = تش_اشاره;
+ساكن orb_advert_t param_reset_req_h     = تش_اشاره;
 
-static orb_sub_t param_set_rsp_fd = ORB_SUB_INVALID;
+ساكن orb_sub_t param_سېټ_rsp_fd = ORB_SUB_INVALID;
 
-static int primary_sync_thread(int argc, char *argv[])
+ساكن صحيح primary_sync_thread(صحيح argc, حرف *argv[])
 {
 	// Need to wait until the uORB and muORB are ready
 	// Check for uORB initialization with get_instance
-	while (uORB::Manager::get_instance() == nullptr) { px4_usleep(100); }
+	طالما (uORB::Manager::get_instance() == تش_اشاره) { px4_usleep(100); }
 
 	// Check for muORB initialization with get_uorb_communicator
-	while (uORB::Manager::get_instance()->get_uorb_communicator() == nullptr) { px4_usleep(100); }
+	طالما (uORB::Manager::get_instance()->get_uorb_communicator() == تش_اشاره) { px4_usleep(100); }
 
-	orb_advert_t _set_value_rsp_h = nullptr;
+	orb_advert_t سېټ_ارزښت_rsp_h = تش_اشاره;
 
-	orb_sub_t _set_used_req_fd  = orb_subscribe(ORB_ID(parameter_set_used_request));
-	orb_sub_t _set_value_req_fd = orb_subscribe(ORB_ID(parameter_primary_set_value_request));
+	orb_sub_t سېټ_کارول_شوی_req_fd  = orb_subscribe(ORB_ID(parameter_سېټ_کارول_شوی_request));
+	orb_sub_t سېټ_ارزښت_req_fd = orb_subscribe(ORB_ID(parameter_primary_سېټ_ارزښت_request));
 
-	struct parameter_set_used_request_s   _set_used_request;
-	struct parameter_set_value_request_s  _set_value_request;
-	struct parameter_set_value_response_s _set_value_response;
+	بنية parameter_سېټ_کارول_شوی_request_s   سېټ_کارول_شوی_request;
+	بنية parameter_سېټ_ارزښت_request_s  سېټ_ارزښت_request;
+	بنية parameter_سېټ_ارزښت_response_s سېټ_ارزښت_response;
 
-	px4_pollfd_struct_t fds[2] = { { .fd = _set_used_req_fd,  .events = POLLIN },
-		{ .fd = _set_value_req_fd, .events = POLLIN }
+	px4_pollfd_struct_t fds[2] = { { .fd = سېټ_کارول_شوی_req_fd,  .events = POLLIN },
+		{ .fd = سېټ_ارزښت_req_fd, .events = POLLIN }
 	};
 
 	PX4_INFO("Starting parameter primary sync thread");
 
-	while (true) {
+	طالما (ریښتیا) {
 		px4_poll(fds, 2, 1000);
 
-		if (fds[0].revents & POLLIN) {
-			bool updated = true;
+		إذا (fds[0].revents & POLLIN) {
+			منطقي updated = ریښتیا;
 
-			while (updated) {
-				orb_copy(ORB_ID(parameter_set_used_request), _set_used_req_fd, &_set_used_request);
+			طالما (updated) {
+				orb_copy(ORB_ID(parameter_سېټ_کارول_شوی_request), سېټ_کارول_شوی_req_fd, &سېټ_کارول_شوی_request);
 
-				if (debug) {
-					PX4_INFO("Got parameter_set_used_request for %s", param_name(_set_used_request.parameter_index));
+				إذا (debug) {
+					PX4_INFO("Got parameter_set_used_request for %s", param_name(سېټ_کارول_شوی_request.parameter_شاخص));
 				}
 
-				param_primary_counters.set_used_received++;
+				param_primary_counters.سېټ_کارول_شوی_received++;
 
-				param_find(param_name(_set_used_request.parameter_index));
+				param_پیدا_کړه(param_name(سېټ_کارول_شوی_request.parameter_شاخص));
 
-				(void) orb_check(_set_used_req_fd, &updated);
+				(فراغ) orb_check(سېټ_کارول_شوی_req_fd, &updated);
 			}
 
 		}
 
-		if (fds[1].revents & POLLIN) {
-			bool updated = true;
+		إذا (fds[1].revents & POLLIN) {
+			منطقي updated = ریښتیا;
 
-			while (updated) {
-				orb_copy(ORB_ID(parameter_primary_set_value_request), _set_value_req_fd, &_set_value_request);
+			طالما (updated) {
+				orb_copy(ORB_ID(parameter_primary_سېټ_ارزښت_request), سېټ_ارزښت_req_fd, &سېټ_ارزښت_request);
 
-				if (debug) {
-					PX4_INFO("Got parameter_primary_set_value_request for %s", param_name(_set_value_request.parameter_index));
+				إذا (debug) {
+					PX4_INFO("Got parameter_primary_set_value_request for %s", param_name(سېټ_ارزښت_request.parameter_شاخص));
 				}
 
-				param_primary_counters.set_value_request_received++;
+				param_primary_counters.سېټ_ارزښت_request_received++;
 
-				param_t param = _set_value_request.parameter_index;
+				param_t param = سېټ_ارزښت_request.parameter_شاخص;
 
-				switch (param_type(param)) {
-				case PARAM_TYPE_INT32:
-					param_set_no_remote_update(param, (const void *) &_set_value_request.int_value, true);
-					break;
+				بدل (param_type(param)) {
+				حالة PARAM_TYPE_INT32:
+					param_سېټ_no_remote_update(param, (ثابت فراغ *) &سېټ_ارزښت_request.int_ارزښت, ریښتیا);
+					اكسر;
 
-				case PARAM_TYPE_FLOAT:
-					param_set_no_remote_update(param, (const void *) &_set_value_request.float_value, true);
-					break;
+				حالة PARAM_TYPE_FLOAT:
+					param_سېټ_no_remote_update(param, (ثابت فراغ *) &سېټ_ارزښت_request.float_ارزښت, ریښتیا);
+					اكسر;
 
-				default:
+				افتراضي:
 					PX4_ERR("Parameter must be either int or float");
-					break;
+					اكسر;
 				}
 
-				_set_value_response.timestamp = hrt_absolute_time();
-				_set_value_response.request_timestamp = _set_value_request.timestamp;
-				_set_value_response.parameter_index = _set_value_request.parameter_index;
+				سېټ_ارزښت_response.timestamp = hrt_absolute_وخت();
+				سېټ_ارزښت_response.request_timestamp = سېټ_ارزښت_request.timestamp;
+				سېټ_ارزښت_response.parameter_شاخص = سېټ_ارزښت_request.parameter_شاخص;
 
-				if (_set_value_rsp_h == nullptr) {
-					_set_value_rsp_h = orb_advertise(ORB_ID(parameter_primary_set_value_response), &_set_value_response);
+				إذا (سېټ_ارزښت_rsp_h == تش_اشاره) {
+					سېټ_ارزښت_rsp_h = orb_advertise(ORB_ID(parameter_primary_سېټ_ارزښت_response), &سېټ_ارزښت_response);
 
-				} else {
-					orb_publish(ORB_ID(parameter_primary_set_value_response), _set_value_rsp_h, &_set_value_response);
+				} وإلا {
+					orb_publish(ORB_ID(parameter_primary_سېټ_ارزښت_response), سېټ_ارزښت_rsp_h, &سېټ_ارزښت_response);
 				}
 
-				param_primary_counters.set_value_response_sent++;
+				param_primary_counters.سېټ_ارزښت_response_لېږل_شوی++;
 
-				(void) orb_check(_set_value_req_fd, &updated);
+				(فراغ) orb_check(سېټ_ارزښت_req_fd, &updated);
 			}
 		}
 	}
 
-	return 0;
+	أرجع 0;
 }
 
-void param_primary_init()
+فراغ param_primary_init()
 {
 
 	sync_thread_tid = px4_task_spawn_cmd(sync_thread_name,
 					     SCHED_DEFAULT,
-					     SCHED_PRIORITY_PARAMS,
+					     SCHED_لومړیتوب_PARAMS,
 					     (1024 * 4),
 					     primary_sync_thread,
-					     NULL);
+					     عدم);
 
 }
 
 // void param_primary_set_value(param_t param, const void *val, bool from_file)
-void param_primary_set_value(param_t param, const void *val)
+فراغ param_primary_سېټ_ارزښت(param_t param, ثابت فراغ *val)
 {
-	bool send_request = true;
-	struct parameter_set_value_request_s req;
-	req.timestamp = hrt_absolute_time();
-	req.parameter_index = param;
+	منطقي send_request = ریښتیا;
+	بنية parameter_سېټ_ارزښت_request_s req;
+	req.timestamp = hrt_absolute_وخت();
+	req.parameter_شاخص = param;
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
-		req.int_value = *(int32_t *)val;
+	بدل (param_type(param)) {
+	حالة PARAM_TYPE_INT32:
+		req.int_ارزښت = *(int32_t *)val;
 
-		if (debug) {
-			PX4_INFO("*** Setting %s to %d ***", param_name(req.parameter_index), req.int_value);
+		إذا (debug) {
+			PX4_INFO("*** Setting %s to %d ***", param_name(req.parameter_شاخص), req.int_ارزښت);
 		}
 
-		break;
+		اكسر;
 
-	case PARAM_TYPE_FLOAT:
-		req.float_value = *(float *)val;
+	حالة PARAM_TYPE_FLOAT:
+		req.float_ارزښت = *(عائم *)val;
 
-		if (debug) {
-			PX4_INFO("*** Setting %s to %f ***", param_name(req.parameter_index), (double) req.float_value);
+		إذا (debug) {
+			PX4_INFO("*** Setting %s to %f ***", param_name(req.parameter_شاخص), (مزدوج) req.float_ارزښت);
 		}
 
-		break;
+		اكسر;
 
-	default:
+	افتراضي:
 		PX4_ERR("Parameter must be either int or float");
-		send_request = false;
-		break;
+		send_request = خطأ;
+		اكسر;
 	}
 
-	if (!orb_sub_valid(param_set_rsp_fd)) {
-		if (debug) {
+	إذا (!orb_sub_valid(param_سېټ_rsp_fd)) {
+		إذا (debug) {
 			PX4_INFO("Subscribing to parameter_client_set_value_response");
 		}
 
-		param_set_rsp_fd = orb_subscribe(ORB_ID(parameter_remote_set_value_response));
+		param_سېټ_rsp_fd = orb_subscribe(ORB_ID(parameter_remote_سېټ_ارزښت_response));
 
-		if (!orb_sub_valid(param_set_rsp_fd)) {
+		إذا (!orb_sub_valid(param_سېټ_rsp_fd)) {
 			PX4_ERR("Subscription to parameter_remote_set_value_response failed");
 
-		} else {
-			if (debug) {
+		} وإلا {
+			إذا (debug) {
 				PX4_INFO("Subscription to parameter_client_set_value_response succeeded");
 			}
 		}
 	}
 
-	if (send_request) {
-		if (debug) {
-			PX4_INFO("Sending param set request to remote for %s", param_name(req.parameter_index));
+	إذا (send_request) {
+		إذا (debug) {
+			PX4_INFO("Sending param set request to remote for %s", param_name(req.parameter_شاخص));
 		}
 
-		if (param_set_value_req_h == nullptr) {
-			param_set_value_req_h = orb_advertise(ORB_ID(parameter_remote_set_value_request), nullptr);
+		إذا (param_سېټ_ارزښت_req_h == تش_اشاره) {
+			param_سېټ_ارزښت_req_h = orb_advertise(ORB_ID(parameter_remote_سېټ_ارزښت_request), تش_اشاره);
 		}
 
-		orb_publish(ORB_ID(parameter_remote_set_value_request), param_set_value_req_h, &req);
+		orb_publish(ORB_ID(parameter_remote_سېټ_ارزښت_request), param_سېټ_ارزښت_req_h, &req);
 
-		param_primary_counters.set_value_request_sent++;
+		param_primary_counters.سېټ_ارزښت_request_لېږل_شوی++;
 
 		// Wait for response
-		bool updated = false;
+		منطقي updated = خطأ;
 
-		if (debug) {
-			PX4_INFO("Waiting for parameter_client_set_value_response for %s", param_name(req.parameter_index));
+		إذا (debug) {
+			PX4_INFO("Waiting for parameter_client_set_value_response for %s", param_name(req.parameter_شاخص));
 		}
 
 		px4_usleep(TIMEOUT_WAIT);
-		int count = TIMEOUT_COUNT;
+		صحيح شمېر = TIMEOUT_شمېر;
 
-		while (--count) {
-			(void) orb_check(param_set_rsp_fd, &updated);
+		طالما (--شمېر) {
+			(فراغ) orb_check(param_سېټ_rsp_fd, &updated);
 
-			struct parameter_set_value_response_s rsp;
+			بنية parameter_سېټ_ارزښت_response_s rsp;
 
-			while (updated) {
+			طالما (updated) {
 
-				orb_copy(ORB_ID(parameter_remote_set_value_response), param_set_rsp_fd, &rsp);
+				orb_copy(ORB_ID(parameter_remote_سېټ_ارزښت_response), param_سېټ_rsp_fd, &rsp);
 
-				if ((rsp.request_timestamp == req.timestamp) && (rsp.parameter_index == req.parameter_index)) {
-					if (debug) {
-						PX4_INFO("Got parameter_remote_set_value_response for %s", param_name(req.parameter_index));
+				إذا ((rsp.request_timestamp == req.timestamp) && (rsp.parameter_شاخص == req.parameter_شاخص)) {
+					إذا (debug) {
+						PX4_INFO("Got parameter_remote_set_value_response for %s", param_name(req.parameter_شاخص));
 					}
 
-					param_primary_counters.set_value_response_received++;
-					return;
+					param_primary_counters.سېټ_ارزښت_response_received++;
+					أرجع;
 				}
 
-				(void) orb_check(param_set_rsp_fd, &updated);
+				(فراغ) orb_check(param_سېټ_rsp_fd, &updated);
 			}
 
 			px4_usleep(TIMEOUT_WAIT);
 		}
 
-		PX4_ERR("Timeout waiting for parameter_client_set_value_response for %s", param_name(req.parameter_index));
+		PX4_ERR("Timeout waiting for parameter_client_set_value_response for %s", param_name(req.parameter_شاخص));
 	}
 }
 
-static void param_primary_reset_internal(param_t param, bool reset_all)
+ساكن فراغ param_primary_reset_دننی(param_t param, منطقي reset_all)
 {
-	if (debug) {
+	إذا (debug) {
 		PX4_INFO("Param reset at primary");
 	}
 
-	struct parameter_reset_request_s req;
+	بنية parameter_reset_request_s req;
 
-	req.timestamp = hrt_absolute_time();
+	req.timestamp = hrt_absolute_وخت();
 
 	req.reset_all = reset_all;
 
-	if (reset_all == false) {
-		req.parameter_index = param;
+	إذا (reset_all == خطأ) {
+		req.parameter_شاخص = param;
 	}
 
-	if (debug) {
+	إذا (debug) {
 		PX4_INFO("Sending param reset request to remote");
 	}
 
-	if (param_reset_req_h == nullptr) {
+	إذا (param_reset_req_h == تش_اشاره) {
 		param_reset_req_h = orb_advertise(ORB_ID(parameter_reset_request), &req);
 
-	} else {
+	} وإلا {
 		orb_publish(ORB_ID(parameter_reset_request), param_reset_req_h, &req);
 	}
 
-	param_primary_counters.reset_sent++;
+	param_primary_counters.reset_لېږل_شوی++;
 }
 
-void param_primary_reset(param_t param)
+فراغ param_primary_reset(param_t param)
 {
-	param_primary_reset_internal(param, false);
+	param_primary_reset_دننی(param, خطأ);
 }
 
-void param_primary_reset_all()
+فراغ param_primary_reset_all()
 {
-	param_primary_reset_internal(0, true);
+	param_primary_reset_دننی(0, ریښتیا);
 }
 
-void param_primary_get_counters(struct param_primary_counters *cnt)
+فراغ param_primary_get_counters(بنية param_primary_counters *cnt)
 {
 	*cnt = param_primary_counters;
 }

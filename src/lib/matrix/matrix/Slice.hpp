@@ -6,394 +6,394 @@
  * @author Julian Kent < julian@auterion.com >
  */
 
-#pragma once
+#لارښوونه once
 
-#include <cassert>
-#include <cstdio>
-#include <cmath>
+#ضمن <cassert>
+#ضمن <cstdio>
+#ضمن <cmath>
 
-namespace matrix
+نطاق ماتریکس
 {
 
-template<typename Type, size_t M, size_t N>
-class Matrix;
+کينډۍ<ډول_نوم Type, size_t M, size_t N>
+صنف ماتریکس_2;
 
-template<typename Type, size_t M>
-class Vector;
+کينډۍ<ډول_نوم Type, size_t M>
+صنف ویکټور;
 
-template <typename MatrixT, typename Type, size_t P, size_t Q, size_t M, size_t N>
-class SliceT
+کينډۍ <ډول_نوم ماتریکس_T, ډول_نوم Type, size_t P, size_t Q, size_t M, size_t N>
+صنف ټوټه_T
 {
-public:
-	using Self = SliceT<MatrixT, Type, P, Q, M, N>;
+عام:
+	کارول Self = ټوټه_T<ماتریکس_T, Type, P, Q, M, N>;
 
-	SliceT(size_t x0, size_t y0, MatrixT *data) :
+	ټوټه_T(size_t x0, size_t y0, ماتریکس_T *معلومات) :
 		_x0(x0),
 		_y0(y0),
-		_data(data)
+		معلومات_3(معلومات)
 	{
 		static_assert(P <= M, "Slice rows bigger than backing matrix");
 		static_assert(Q <= N, "Slice cols bigger than backing matrix");
-		assert(x0 + P <= M);
-		assert(y0 + Q <= N);
+		أكد(x0 + P <= M);
+		أكد(y0 + Q <= N);
 	}
 
-	SliceT(const Self &other) = default;
+	ټوټه_T(ثابت Self &other) = افتراضي;
 
-	const Type &operator()(size_t i, size_t j) const
+	ثابت Type &چلوونکی()(size_t i, size_t j) ثابت
 	{
-		assert(i < P);
-		assert(j < Q);
+		أكد(i < P);
+		أكد(j < Q);
 
-		return (*_data)(_x0 + i, _y0 + j);
+		أرجع (*معلومات_3)(_x0 + i, _y0 + j);
 	}
 
-	Type &operator()(size_t i, size_t j)
+	Type &چلوونکی()(size_t i, size_t j)
 	{
-		assert(i < P);
-		assert(j < Q);
+		أكد(i < P);
+		أكد(j < Q);
 
-		return (*_data)(_x0 + i, _y0 + j);
+		أرجع (*معلومات_3)(_x0 + i, _y0 + j);
 	}
 
 	// Separate function needed otherwise the default copy constructor matches before the deep copy implementation
-	Self &operator=(const Self &other)
+	Self &چلوونکی=(ثابت Self &other)
 	{
 		// Protect against self-assignment
-		if (this == &other) {
-			return *this;
+		إذا (هذا == &other) {
+			أرجع *هذا;
 		}
 
-		return this->operator=<M, N>(other);
+		أرجع هذا->چلوونکی=<M, N>(other);
 	}
 
-	template<size_t MM, size_t NN>
-	Self &operator=(const SliceT<Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
+	کينډۍ<size_t MM, size_t NN>
+	Self &چلوونکی=(ثابت ټوټه_T<ماتریکس_2<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		Self &self = *this;
+		Self &self = *هذا;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
 				self(i, j) = other(i, j);
 			}
 		}
 
-		return self;
+		أرجع self;
 	}
 
-	template<size_t MM, size_t NN>
-	SliceT<MatrixT, Type, P, Q, M, N> &operator=(const SliceT<const Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
+	کينډۍ<size_t MM, size_t NN>
+	ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &چلوونکی=(ثابت ټوټه_T<ثابت ماتریکس_2<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &self = *هذا;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
 				self(i, j) = other(i, j);
 			}
 		}
 
-		return self;
+		أرجع self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator=(const Matrix<Type, P, Q> &other)
+	ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &چلوونکی=(ثابت ماتریکس_2<Type, P, Q> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &self = *هذا;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
 				self(i, j) = other(i, j);
 			}
 		}
 
-		return self;
+		أرجع self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator=(const Type &other)
+	ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &چلوونکی=(ثابت Type &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &self = *هذا;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
 				self(i, j) = other;
 			}
 		}
 
-		return self;
+		أرجع self;
 	}
 
-	template<size_t MM, size_t NN>
-	Matrix<Type, P, Q> operator-(const SliceT<const Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
+	کينډۍ<size_t MM, size_t NN>
+	ماتریکس_2<Type, P, Q> چلوونکی-(ثابت ټوټه_T<ثابت ماتریکس_2<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		أرجع ماتریکس_2<Type, P, Q> {*هذا} - other;
 	}
 
 
-	Matrix<Type, P, Q> operator-(const Matrix<Type, P, Q> &other)
+	ماتریکس_2<Type, P, Q> چلوونکی-(ثابت ماتریکس_2<Type, P, Q> &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		أرجع ماتریکس_2<Type, P, Q> {*هذا} - other;
 	}
 
-	Matrix<Type, P, Q> operator-(const Type &other)
+	ماتریکس_2<Type, P, Q> چلوونکی-(ثابت Type &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		أرجع ماتریکس_2<Type, P, Q> {*هذا} - other;
 	}
 
-	template<size_t MM, size_t NN>
-	Matrix<Type, P, Q> operator+(const SliceT<const Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
+	کينډۍ<size_t MM, size_t NN>
+	ماتریکس_2<Type, P, Q> چلوونکی+(ثابت ټوټه_T<ثابت ماتریکس_2<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		أرجع ماتریکس_2<Type, P, Q> {*هذا} + other;
 	}
 
-	Matrix<Type, P, Q> operator+(const Matrix<Type, P, Q> &other)
+	ماتریکس_2<Type, P, Q> چلوونکی+(ثابت ماتریکس_2<Type, P, Q> &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		أرجع ماتریکس_2<Type, P, Q> {*هذا} + other;
 	}
 
-	Matrix<Type, P, Q> operator+(const Type &other)
+	ماتریکس_2<Type, P, Q> چلوونکی+(ثابت Type &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		أرجع ماتریکس_2<Type, P, Q> {*هذا} + other;
 	}
 
 	// allow assigning vectors to a slice that are in the axis
-	template <size_t DUMMY = 1> // make this a template function since it only exists for some instantiations
-	SliceT<MatrixT, Type, 1, Q, M, N> &operator=(const Vector<Type, Q> &other)
+	کينډۍ <size_t DUMMY = 1> // make this a template function since it only exists for some instantiations
+	ټوټه_T<ماتریکس_T, Type, 1, Q, M, N> &چلوونکی=(ثابت ویکټور<Type, Q> &other)
 	{
-		SliceT<MatrixT, Type, 1, Q, M, N> &self = *this;
+		ټوټه_T<ماتریکس_T, Type, 1, Q, M, N> &self = *هذا;
 
-		for (size_t j = 0; j < Q; j++) {
+		لكل (size_t j = 0; j < Q; j++) {
 			self(0, j) = other(j);
 		}
 
-		return self;
+		أرجع self;
 	}
 
-	template<size_t MM, size_t NN>
-	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(const SliceT<MatrixT, Type, P, Q, MM, NN> &other)
+	کينډۍ<size_t MM, size_t NN>
+	ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &چلوونکی+=(ثابت ټوټه_T<ماتریکس_T, Type, P, Q, MM, NN> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &self = *هذا;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
 
-		return self;
+		أرجع self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(const Matrix<Type, P, Q> &other)
+	ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &چلوونکی+=(ثابت ماتریکس_2<Type, P, Q> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &self = *هذا;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
 
-		return self;
+		أرجع self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(const Type &other)
+	ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &چلوونکی+=(ثابت Type &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &self = *هذا;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
 				self(i, j) += other;
 			}
 		}
 
-		return self;
+		أرجع self;
 	}
 
-	template<size_t MM, size_t NN>
-	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(const SliceT<MatrixT, Type, P, Q, MM, NN> &other)
+	کينډۍ<size_t MM, size_t NN>
+	ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &چلوونکی-=(ثابت ټوټه_T<ماتریکس_T, Type, P, Q, MM, NN> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &self = *هذا;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
 
-		return self;
+		أرجع self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(const Matrix<Type, P, Q> &other)
+	ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &چلوونکی-=(ثابت ماتریکس_2<Type, P, Q> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &self = *هذا;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
 
-		return self;
+		أرجع self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(const Type &other)
+	ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &چلوونکی-=(ثابت Type &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &self = *هذا;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
 				self(i, j) -= other;
 			}
 		}
 
-		return self;
+		أرجع self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator*=(const Type &other)
+	ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &چلوونکی*=(ثابت Type &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &self = *هذا;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
 				self(i, j) *= other;
 			}
 		}
 
-		return self;
+		أرجع self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator/=(const Type &scalar)
+	ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &چلوونکی/=(ثابت Type &scalar)
 	{
-		return operator*=(Type(1) / scalar);
+		أرجع چلوونکی*=(Type(1) / scalar);
 	}
 
-	Matrix<Type, P, Q> operator*(const Type &scalar) const
+	ماتریکس_2<Type, P, Q> چلوونکی*(ثابت Type &scalar) ثابت
 	{
-		return Matrix<Type, P, Q> {*this} * scalar;
+		أرجع ماتریکس_2<Type, P, Q> {*هذا} * scalar;
 	}
 
-	Matrix<Type, P, Q> operator/(const Type &scalar) const
+	ماتریکس_2<Type, P, Q> چلوونکی/(ثابت Type &scalar) ثابت
 	{
-		return (*this) * (1 / scalar);
+		أرجع (*هذا) * (1 / scalar);
 	}
 
-	template<size_t R, size_t S>
-	const SliceT<MatrixT, Type, R, S, M, N> slice(size_t x0, size_t y0) const
+	کينډۍ<size_t R, size_t S>
+	ثابت ټوټه_T<ماتریکس_T, Type, R, S, M, N> ټوټه(size_t x0, size_t y0) ثابت
 	{
-		return SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
+		أرجع ټوټه_T<ماتریکس_T, Type, R, S, M, N>(x0 + _x0, y0 + _y0, معلومات_3);
 	}
 
-	template<size_t R, size_t S>
-	SliceT<MatrixT, Type, R, S, M, N> slice(size_t x0, size_t y0)
+	کينډۍ<size_t R, size_t S>
+	ټوټه_T<ماتریکس_T, Type, R, S, M, N> ټوټه(size_t x0, size_t y0)
 	{
-		return SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
+		أرجع ټوټه_T<ماتریکس_T, Type, R, S, M, N>(x0 + _x0, y0 + _y0, معلومات_3);
 	}
 
-	void copyTo(Type dst[P * Q]) const
+	فراغ copy_منزل(Type dst[P * Q]) ثابت
 	{
-		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		ثابت ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &self = *هذا;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
 				dst[i * N + j] = self(i, j);
 			}
 		}
 	}
 
-	void copyToColumnMajor(Type dst[P * Q]) const
+	فراغ copy_منزل_ستنه_Major(Type dst[P * Q]) ثابت
 	{
-		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		ثابت ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &self = *هذا;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
 				dst[i + (j * M)] = self(i, j);
 			}
 		}
 	}
 
-	Vector < Type, P < Q ? P : Q > diag() const
+	ویکټور < Type, P < Q ? P : Q > diag() ثابت
 	{
-		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
-		Vector < Type, P < Q ? P : Q > res;
+		ثابت ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &self = *هذا;
+		ویکټور < Type, P < Q ? P : Q > res;
 
-		for (size_t j = 0; j < (P < Q ? P : Q); j++) {
+		لكل (size_t j = 0; j < (P < Q ? P : Q); j++) {
 			res(j) = self(j, j);
 		}
 
-		return res;
+		أرجع res;
 	}
 
-	template<size_t MM, size_t NN>
-	Type dot(const SliceT<MatrixT, Type, P, Q, MM, NN> &other) const
+	کينډۍ<size_t MM, size_t NN>
+	Type dot(ثابت ټوټه_T<ماتریکس_T, Type, P, Q, MM, NN> &other) ثابت
 	{
-		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		ثابت ټوټه_T<ماتریکس_T, Type, P, Q, M, N> &self = *هذا;
 		Type accum(0);
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
 				accum += self(i, j) * other(i, j);
 			}
 		}
 
-		return accum;
+		أرجع accum;
 	}
 
-	Type norm_squared() const
+	Type norm_squared() ثابت
 	{
-		return dot(*this);
+		أرجع dot(*هذا);
 	}
 
-	Type norm() const
+	Type norm() ثابت
 	{
-		return std::sqrt(norm_squared());
+		أرجع std::جذر(norm_squared());
 	}
 
-	bool longerThan(Type testVal) const
+	منطقي longerThan(Type testVal) ثابت
 	{
-		return norm_squared() > testVal * testVal;
+		أرجع norm_squared() > testVal * testVal;
 	}
 
-	Type max() const
+	Type max() ثابت
 	{
-		Type max_val = (*this)(0, 0);
+		Type max_val = (*هذا)(0, 0);
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
-				Type val = (*this)(i, j);
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
+				Type val = (*هذا)(i, j);
 
-				if (val > max_val) {
+				إذا (val > max_val) {
 					max_val = val;
 				}
 			}
 		}
 
-		return max_val;
+		أرجع max_val;
 	}
 
-	Type min() const
+	Type min() ثابت
 	{
-		Type min_val = (*this)(0, 0);
+		Type min_val = (*هذا)(0, 0);
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
-				Type val = (*this)(i, j);
+		لكل (size_t i = 0; i < P; i++) {
+			لكل (size_t j = 0; j < Q; j++) {
+				Type val = (*هذا)(i, j);
 
-				if (val < min_val) {
+				إذا (val < min_val) {
 					min_val = val;
 				}
 			}
 		}
 
-		return min_val;
+		أرجع min_val;
 	}
 
-private:
+خاص:
 	size_t _x0, _y0;
-	MatrixT *_data;
+	ماتریکس_T *معلومات_3;
 };
 
-template <typename Type, size_t P, size_t Q, size_t M, size_t N>
-using Slice = SliceT<Matrix<Type, M, N>, Type, P, Q, M, N>;
+کينډۍ <ډول_نوم Type, size_t P, size_t Q, size_t M, size_t N>
+کارول ټوټه_2 = ټوټه_T<ماتریکس_2<Type, M, N>, Type, P, Q, M, N>;
 
-template <typename Type, size_t P, size_t Q, size_t M, size_t N>
-using ConstSlice = SliceT<const Matrix<Type, M, N>, Type, P, Q, M, N>;
+کينډۍ <ډول_نوم Type, size_t P, size_t Q, size_t M, size_t N>
+کارول Const_ټوټه = ټوټه_T<ثابت ماتریکس_2<Type, M, N>, Type, P, Q, M, N>;
 
 }

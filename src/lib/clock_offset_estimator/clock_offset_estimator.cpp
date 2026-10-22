@@ -31,40 +31,40 @@
  *
  ****************************************************************************/
 
-#include "clock_offset_estimator.hpp"
+#ضمن "clock_offset_estimator.hpp"
 
-hrt_abstime ClockOffsetEstimator::toLocal(uint64_t remote_us, hrt_abstime local_us)
+hrt_abstime Clock_دننه_واټن_Estimator::منزل_Local(uint64_t remote_us, hrt_abstime local_us)
 {
-	if (remote_us == 0) {
-		return 0;
+	إذا (remote_us == 0) {
+		أرجع 0;
 	}
 
-	const int64_t lag = static_cast<int64_t>(local_us) - static_cast<int64_t>(remote_us);
+	ثابت int64_t lag = static_cast<int64_t>(local_us) - static_cast<int64_t>(remote_us);
 
-	if (!_initialized || lag > _link_offset_us + kResetThresholdUs) {
+	إذا (!_initialized || lag > link_دننه_واټن_us + k_Reset_پوله_Us) {
 		// Bootstrap, or remote-clock discontinuity.
-		_link_offset_us = lag;
-		_initialized = true;
+		link_دننه_واټن_us = lag;
+		_initialized = ریښتیا;
 
-	} else {
+	} وإلا {
 		// Drift the floor up at the worst-case relative clock rate so we don't
 		// pin below the true offset when HRT runs faster than the remote.
-		const hrt_abstime dt = (local_us > _last_update_us) ? (local_us - _last_update_us) : 0;
-		_link_offset_us += static_cast<int64_t>(dt) * kMaxClockDriftPpm / 1'000'000;
+		ثابت hrt_abstime dt = (local_us > وروستی_update_us) ? (local_us - وروستی_update_us) : 0;
+		link_دننه_واټن_us += static_cast<int64_t>(dt) * kMaxClockDriftPpm / 1'000'000;
 
-		if (lag < _link_offset_us) {
-			_link_offset_us = lag;
+		إذا (lag < link_دننه_واټن_us) {
+			link_دننه_واټن_us = lag;
 		}
 	}
 
-	_last_update_us = local_us;
+	وروستی_update_us = local_us;
 
-	const int64_t result = static_cast<int64_t>(remote_us) + _link_offset_us;
+	ثابت int64_t پایله = static_cast<int64_t>(remote_us) + link_دننه_واټن_us;
 
 	// Mapped HRT cannot lie after receipt.
-	if (result <= 0 || result > static_cast<int64_t>(local_us)) {
-		return 0;
+	إذا (پایله <= 0 || پایله > static_cast<int64_t>(local_us)) {
+		أرجع 0;
 	}
 
-	return static_cast<hrt_abstime>(result);
+	أرجع static_cast<hrt_abstime>(پایله);
 }

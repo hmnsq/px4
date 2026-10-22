@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#pragma once
+#لارښوونه once
 
-#include <cmath>
+#ضمن <cmath>
 
-class PID
+صنف PID
 {
-public:
-	PID() = default;
-	virtual ~PID() = default;
-	void setOutputLimit(const float limit) {setOutputLimit(-limit, limit);}
-	void setOutputLimit(const float lower_limit, const float upper_limit);
-	void setIntegralLimit(const float limit) { _limit_integral = limit; }
-	void setGains(const float P, const float I, const float D);
-	void setSetpoint(const float setpoint) { _setpoint = setpoint; }
-	void setFeedForwardGain(const float feedforward_gain) { _gain_feedforward = feedforward_gain; }
-	float update(const float feedback, const float dt, const bool update_integral = true);
-	float getIntegral() { return _integral; }
-	void resetIntegral() { _integral = 0.f; }
-	void resetDerivative() { _last_feedback = NAN; }
-private:
-	void updateIntegral(float error, const float saturation, const float dt);
-	float updateDerivative(float feedback, const float dt);
+عام:
+	PID() = افتراضي;
+	مجازي ~PID() = افتراضي;
+	فراغ سېټ_Output_حد(ثابت عائم حد_2) {سېټ_Output_حد(-حد_2, حد_2);}
+	فراغ سېټ_Output_حد(ثابت عائم ښکتنی_حد, ثابت عائم پاسنی_حد);
+	فراغ سېټ_Integral_حد(ثابت عائم حد_2) { حد_integral = حد_2; }
+	فراغ سېټ_Gains(ثابت عائم P, ثابت عائم I, ثابت عائم D);
+	فراغ سېټ_Setpoint(ثابت عائم setpoint) { _setpoint = setpoint; }
+	فراغ سېټ_Feed_Forward_Gain(ثابت عائم feedforward_gain) { _gain_feedforward = feedforward_gain; }
+	عائم update(ثابت عائم feedback, ثابت عائم dt, ثابت منطقي update_integral = ریښتیا);
+	عائم getIntegral() { أرجع _integral; }
+	فراغ resetIntegral() { _integral = 0.f; }
+	فراغ resetDerivative() { وروستی_feedback = NAN; }
+خاص:
+	فراغ updateIntegral(عائم error, ثابت عائم saturation, ثابت عائم dt);
+	عائم updateDerivative(عائم feedback, ثابت عائم dt);
 
-	float _setpoint{0.f}; ///< current setpoint to track
-	float _integral{0.f}; ///< integral state
-	float _last_feedback{NAN};
+	عائم _setpoint{0.f}; ///< current setpoint to track
+	عائم _integral{0.f}; ///< integral state
+	عائم وروستی_feedback{NAN};
 
 	// Gains, Limits
-	float _gain_feedforward{0.f};
-	float _gain_proportional{0.f};
-	float _gain_integral{0.f};
-	float _gain_derivative{0.f};
-	float _limit_integral{0.f};
-	float _lower_limit_output{0.f};
-	float _upper_limit_output{0.f};
+	عائم _gain_feedforward{0.f};
+	عائم _gain_proportional{0.f};
+	عائم _gain_integral{0.f};
+	عائم _gain_derivative{0.f};
+	عائم حد_integral{0.f};
+	عائم ښکتنی_حد_output{0.f};
+	عائم پاسنی_حد_output{0.f};
 };

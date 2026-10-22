@@ -35,7 +35,7 @@
  * @file DatamanClient.cpp
  */
 
-#include <dataman_client/DatamanClient.hpp>
+#ضمن <dataman_client/DatamanClient.hpp>
 
 DatamanClient::DatamanClient()
 {
@@ -44,10 +44,10 @@ DatamanClient::DatamanClient()
 	_dataman_request_pub.advertise();
 	_dataman_response_sub = orb_subscribe(ORB_ID(dataman_response));
 
-	if (!orb_sub_valid(_dataman_response_sub)) {
+	إذا (!orb_sub_valid(_dataman_response_sub)) {
 		PX4_ERR("Failed to subscribe (%i)", errno);
 
-	} else {
+	} وإلا {
 		// make sure we don't get any stale response by doing an orb_copy
 		dataman_response_s response{};
 		orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
@@ -55,20 +55,20 @@ DatamanClient::DatamanClient()
 		_fds.fd = _dataman_response_sub;
 		_fds.events = POLLIN;
 
-		hrt_abstime timestamp = hrt_absolute_time();
+		hrt_abstime timestamp = hrt_absolute_وخت();
 
 		dataman_request_s request;
 		request.timestamp = timestamp;
 		request.request_type = DM_GET_ID;
-		request.client_id = CLIENT_ID_NOT_SET;
+		request.client_id = CLIENT_ID_NOT_سېټ;
 
-		bool success = syncHandler(request, response, timestamp, 1000_ms);
+		منطقي success = syncHandler(request, response, timestamp, 1000_ms);
 
-		if (success && (response.client_id > CLIENT_ID_NOT_SET)) {
+		إذا (success && (response.client_id > CLIENT_ID_NOT_سېټ)) {
 
 			_client_id = response.client_id;
 
-		} else {
+		} وإلا {
 			PX4_ERR("Failed to get client ID!");
 		}
 	}
@@ -78,428 +78,428 @@ DatamanClient::~DatamanClient()
 {
 	perf_free(_sync_perf);
 
-	if (orb_sub_valid(_dataman_response_sub)) {
+	إذا (orb_sub_valid(_dataman_response_sub)) {
 		orb_unsubscribe(_dataman_response_sub);
 	}
 }
 
-bool DatamanClient::syncHandler(const dataman_request_s &request, dataman_response_s &response,
-				const hrt_abstime &start_time, hrt_abstime timeout)
+منطقي DatamanClient::syncHandler(ثابت dataman_request_s &request, dataman_response_s &response,
+				ثابت hrt_abstime &پیل_وخت, hrt_abstime timeout)
 {
-	bool response_received = false;
+	منطقي response_received = خطأ;
 	int32_t ret = 0;
-	hrt_abstime time_elapsed = hrt_elapsed_time(&start_time);
+	hrt_abstime وخت_elapsed = hrt_elapsed_وخت(&پیل_وخت);
 	perf_begin(_sync_perf);
 	clearPendingResponse();
 
 	_dataman_request_pub.publish(request);
 
-	while (!response_received && (time_elapsed < timeout)) {
+	طالما (!response_received && (وخت_elapsed < timeout)) {
 
 		uint32_t timeout_ms = 100;
 		ret = px4_poll(&_fds, 1, timeout_ms);
 
-		if (ret < 0) {
+		إذا (ret < 0) {
 			PX4_ERR("px4_poll returned error: %" PRIu32, ret);
-			break;
+			اكسر;
 
-		} else if (ret == 0) {
+		} وإلا إذا (ret == 0) {
 
 			// No response received, send new request
 			_dataman_request_pub.publish(request);
 
-		} else {
+		} وإلا {
 
-			bool updated = false;
+			منطقي updated = خطأ;
 			orb_check(_dataman_response_sub, &updated);
 
-			if (updated) {
+			إذا (updated) {
 				orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
 
-				if (response.client_id == request.client_id) {
+				إذا (response.client_id == request.client_id) {
 
-					if ((response.request_type == request.request_type) &&
-					    (response.item == request.item) &&
-					    (response.index == request.index)) {
-						response_received = true;
-						break;
+					إذا ((response.request_type == request.request_type) &&
+					    (response.توکی == request.توکی) &&
+					    (response.شاخص == request.شاخص)) {
+						response_received = ریښتیا;
+						اكسر;
 					}
 
-				} else if (request.client_id == CLIENT_ID_NOT_SET) {
+				} وإلا إذا (request.client_id == CLIENT_ID_NOT_سېټ) {
 
 					// validate timestamp from response.data
-					if (0 == memcmp(&(request.timestamp), &(response.data), sizeof(hrt_abstime))) {
-						response_received = true;
-						break;
+					إذا (0 == memcmp(&(request.timestamp), &(response.معلومات), حجم(hrt_abstime))) {
+						response_received = ریښتیا;
+						اكسر;
 					}
 				}
 			}
 		}
 
-		time_elapsed = hrt_elapsed_time(&start_time);
+		وخت_elapsed = hrt_elapsed_وخت(&پیل_وخت);
 	}
 
-	perf_end(_sync_perf);
+	perf_پای_ټکی(_sync_perf);
 
-	if (!response_received && ret >= 0) {
+	إذا (!response_received && ret >= 0) {
 		PX4_ERR("timeout after %" PRIu32 " ms!", static_cast<uint32_t>(timeout / 1000));
 	}
 
-	return response_received;
+	أرجع response_received;
 }
 
-bool DatamanClient::readSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
+منطقي DatamanClient::readSync(dm_توکی_t توکی, uint32_t شاخص, uint8_t *بفر_2, uint32_t اوږدتیا, hrt_abstime timeout)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	إذا (_client_id == CLIENT_ID_NOT_سېټ) {
+		أرجع خطأ;
 	}
 
-	if (length > g_per_item_size[item]) {
-		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+	إذا (اوږدتیا > g_فی_توکی_اندازه[توکی]) {
+		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, اوږدتیا, static_cast<uint8_t>(توکی));
+		أرجع خطأ;
 	}
 
-	hrt_abstime timestamp = hrt_absolute_time();
+	hrt_abstime timestamp = hrt_absolute_وخت();
 
 	dataman_request_s request;
 	request.timestamp = timestamp;
-	request.index = index;
-	request.data_length = length;
+	request.شاخص = شاخص;
+	request.معلومات_اوږدتیا = اوږدتیا;
 	request.client_id = _client_id;
 	request.request_type = DM_READ;
-	request.item = static_cast<uint8_t>(item);
+	request.توکی = static_cast<uint8_t>(توکی);
 
 	dataman_response_s response{};
-	bool success = syncHandler(request, response, timestamp, timeout);
+	منطقي success = syncHandler(request, response, timestamp, timeout);
 
-	if (success) {
+	إذا (success) {
 
-		if (response.status != dataman_response_s::STATUS_SUCCESS) {
+		إذا (response.حالت != dataman_response_s::حالت_SUCCESS) {
 
-			success = false;
+			success = خطأ;
 			PX4_ERR("readSync failed! status=%" PRIu8 ", item=%" PRIu8 ", index=%" PRIu32 ", length=%" PRIu32,
-				response.status, static_cast<uint8_t>(item), index, length);
+				response.حالت, static_cast<uint8_t>(توکی), شاخص, اوږدتیا);
 
-		} else {
-			memcpy(buffer, response.data, length);
+		} وإلا {
+			حافظه_نقل(بفر_2, response.معلومات, اوږدتیا);
 		}
 	}
 
-	return success;
+	أرجع success;
 }
 
-bool DatamanClient::writeSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
+منطقي DatamanClient::writeSync(dm_توکی_t توکی, uint32_t شاخص, uint8_t *بفر_2, uint32_t اوږدتیا, hrt_abstime timeout)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	إذا (_client_id == CLIENT_ID_NOT_سېټ) {
+		أرجع خطأ;
 	}
 
-	if (length > g_per_item_size[item]) {
-		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+	إذا (اوږدتیا > g_فی_توکی_اندازه[توکی]) {
+		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, اوږدتیا, static_cast<uint8_t>(توکی));
+		أرجع خطأ;
 	}
 
-	hrt_abstime timestamp = hrt_absolute_time();
+	hrt_abstime timestamp = hrt_absolute_وخت();
 
 	dataman_request_s request;
 	request.timestamp = timestamp;
-	request.index = index;
-	request.data_length = length;
+	request.شاخص = شاخص;
+	request.معلومات_اوږدتیا = اوږدتیا;
 	request.client_id = _client_id;
 	request.request_type = DM_WRITE;
-	request.item = static_cast<uint8_t>(item);
+	request.توکی = static_cast<uint8_t>(توکی);
 
-	memcpy(request.data, buffer, length);
+	حافظه_نقل(request.معلومات, بفر_2, اوږدتیا);
 
 	dataman_response_s response{};
-	bool success = syncHandler(request, response, timestamp, timeout);
+	منطقي success = syncHandler(request, response, timestamp, timeout);
 
-	if (success) {
+	إذا (success) {
 
-		if (response.status != dataman_response_s::STATUS_SUCCESS) {
+		إذا (response.حالت != dataman_response_s::حالت_SUCCESS) {
 
-			success = false;
+			success = خطأ;
 			PX4_ERR("writeSync failed! status=%" PRIu8 ", item=%" PRIu8 ", index=%" PRIu32 ", length=%" PRIu32,
-				response.status, static_cast<uint8_t>(item), index, length);
+				response.حالت, static_cast<uint8_t>(توکی), شاخص, اوږدتیا);
 		}
 	}
 
-	return success;
+	أرجع success;
 }
 
-bool DatamanClient::clearSync(dm_item_t item, hrt_abstime timeout)
+منطقي DatamanClient::clearSync(dm_توکی_t توکی, hrt_abstime timeout)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	إذا (_client_id == CLIENT_ID_NOT_سېټ) {
+		أرجع خطأ;
 	}
 
-	hrt_abstime timestamp = hrt_absolute_time();
+	hrt_abstime timestamp = hrt_absolute_وخت();
 
 	dataman_request_s request;
 	request.timestamp = timestamp;
 	request.client_id = _client_id;
 	request.request_type = DM_CLEAR;
-	request.item = static_cast<uint8_t>(item);
+	request.توکی = static_cast<uint8_t>(توکی);
 
 	dataman_response_s response{};
-	bool success = syncHandler(request, response, timestamp, timeout);
+	منطقي success = syncHandler(request, response, timestamp, timeout);
 
-	if (success) {
+	إذا (success) {
 
-		if (response.status != dataman_response_s::STATUS_SUCCESS) {
+		إذا (response.حالت != dataman_response_s::حالت_SUCCESS) {
 
-			success = false;
+			success = خطأ;
 			PX4_ERR("clearSync failed! status=%" PRIu8 ", item=%" PRIu8,
-				response.status, static_cast<uint8_t>(item));
+				response.حالت, static_cast<uint8_t>(توکی));
 		}
 	}
 
-	return success;
+	أرجع success;
 }
 
-void DatamanClient::clearPendingResponse()
+فراغ DatamanClient::clearPendingResponse()
 {
-	if (_dataman_response_sub < 0) {
-		return;
+	إذا (_dataman_response_sub < 0) {
+		أرجع;
 	}
 
 	// Drain queued replies first so a response from an aborted or timed-out
 	// operation cannot be matched to the next request.
-	bool updated = false;
+	منطقي updated = خطأ;
 	orb_check(_dataman_response_sub, &updated);
 
-	while (updated) {
+	طالما (updated) {
 		dataman_response_s response{};
 		orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
 		orb_check(_dataman_response_sub, &updated);
 	}
 }
 
-bool DatamanClient::readAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length)
+منطقي DatamanClient::readAsync(dm_توکی_t توکی, uint32_t شاخص, uint8_t *بفر_2, uint32_t اوږدتیا)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	إذا (_client_id == CLIENT_ID_NOT_سېټ) {
+		أرجع خطأ;
 	}
 
-	if (length > g_per_item_size[item]) {
-		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+	إذا (اوږدتیا > g_فی_توکی_اندازه[توکی]) {
+		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, اوږدتیا, static_cast<uint8_t>(توکی));
+		أرجع خطأ;
 	}
 
-	bool success = false;
+	منطقي success = خطأ;
 
-	if (_state == State::Idle) {
+	إذا (_state == State::Idle) {
 		// Drop any queued stale replies before publishing a fresh async request.
 		clearPendingResponse();
 
-		hrt_abstime timestamp = hrt_absolute_time();
+		hrt_abstime timestamp = hrt_absolute_وخت();
 
 		dataman_request_s request;
 		request.timestamp = timestamp;
-		request.index = index;
-		request.data_length = length;
+		request.شاخص = شاخص;
+		request.معلومات_اوږدتیا = اوږدتیا;
 		request.client_id = _client_id;
 		request.request_type = DM_READ;
-		request.item = static_cast<uint8_t>(item);
+		request.توکی = static_cast<uint8_t>(توکی);
 
-		_active_request.timestamp = timestamp;
-		_active_request.request_type = DM_READ;
-		_active_request.item = item;
-		_active_request.index = index;
-		_active_request.buffer = buffer;
-		_active_request.length = length;
+		فعال_request.timestamp = timestamp;
+		فعال_request.request_type = DM_READ;
+		فعال_request.توکی = توکی;
+		فعال_request.شاخص = شاخص;
+		فعال_request.بفر_2 = بفر_2;
+		فعال_request.اوږدتیا = اوږدتیا;
 
-		_state = State::RequestSent;
+		_state = State::Request_لېږل_شوی;
 
 		_dataman_request_pub.publish(request);
 
-		success = true;
+		success = ریښتیا;
 	}
 
-	return success;
+	أرجع success;
 }
 
-bool DatamanClient::writeAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length)
+منطقي DatamanClient::writeAsync(dm_توکی_t توکی, uint32_t شاخص, uint8_t *بفر_2, uint32_t اوږدتیا)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	إذا (_client_id == CLIENT_ID_NOT_سېټ) {
+		أرجع خطأ;
 	}
 
-	if (length > g_per_item_size[item]) {
-		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+	إذا (اوږدتیا > g_فی_توکی_اندازه[توکی]) {
+		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, اوږدتیا, static_cast<uint8_t>(توکی));
+		أرجع خطأ;
 	}
 
-	bool success = false;
+	منطقي success = خطأ;
 
-	if (_state == State::Idle) {
+	إذا (_state == State::Idle) {
 		// Drop any queued stale replies before publishing a fresh async request.
 		clearPendingResponse();
 
-		hrt_abstime timestamp = hrt_absolute_time();
+		hrt_abstime timestamp = hrt_absolute_وخت();
 
 		dataman_request_s request;
 		request.timestamp = timestamp;
-		request.index = index;
-		request.data_length = length;
+		request.شاخص = شاخص;
+		request.معلومات_اوږدتیا = اوږدتیا;
 		request.client_id = _client_id;
 		request.request_type = DM_WRITE;
-		request.item = static_cast<uint8_t>(item);
+		request.توکی = static_cast<uint8_t>(توکی);
 
-		memcpy(request.data, buffer, length);
+		حافظه_نقل(request.معلومات, بفر_2, اوږدتیا);
 
-		_active_request.timestamp = timestamp;
-		_active_request.request_type = DM_WRITE;
-		_active_request.item = item;
-		_active_request.index = index;
-		_active_request.buffer = buffer;
-		_active_request.length = length;
+		فعال_request.timestamp = timestamp;
+		فعال_request.request_type = DM_WRITE;
+		فعال_request.توکی = توکی;
+		فعال_request.شاخص = شاخص;
+		فعال_request.بفر_2 = بفر_2;
+		فعال_request.اوږدتیا = اوږدتیا;
 
-		_state = State::RequestSent;
+		_state = State::Request_لېږل_شوی;
 
 		_dataman_request_pub.publish(request);
 
-		success = true;
+		success = ریښتیا;
 	}
 
-	return success;
+	أرجع success;
 }
 
-bool DatamanClient::clearAsync(dm_item_t item)
+منطقي DatamanClient::clearAsync(dm_توکی_t توکی)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	إذا (_client_id == CLIENT_ID_NOT_سېټ) {
+		أرجع خطأ;
 	}
 
-	bool success = false;
+	منطقي success = خطأ;
 
-	if (_state == State::Idle) {
+	إذا (_state == State::Idle) {
 		// Drop any queued stale replies before publishing a fresh async request.
 		clearPendingResponse();
 
-		hrt_abstime timestamp = hrt_absolute_time();
+		hrt_abstime timestamp = hrt_absolute_وخت();
 
 		dataman_request_s request;
 		request.timestamp = timestamp;
 		request.client_id = _client_id;
 		request.request_type = DM_CLEAR;
-		request.item = static_cast<uint8_t>(item);
-		request.index = 0;
+		request.توکی = static_cast<uint8_t>(توکی);
+		request.شاخص = 0;
 
-		_active_request.timestamp = timestamp;
-		_active_request.request_type = DM_CLEAR;
-		_active_request.item = item;
-		_active_request.index = request.index;
-		_state = State::RequestSent;
+		فعال_request.timestamp = timestamp;
+		فعال_request.request_type = DM_CLEAR;
+		فعال_request.توکی = توکی;
+		فعال_request.شاخص = request.شاخص;
+		_state = State::Request_لېږل_شوی;
 
 		_dataman_request_pub.publish(request);
 
-		success = true;
+		success = ریښتیا;
 	}
 
-	return success;
+	أرجع success;
 }
 
-void DatamanClient::update()
+فراغ DatamanClient::update()
 {
-	if (_state == State::RequestSent) {
+	إذا (_state == State::Request_لېږل_شوی) {
 
-		bool updated = false;
+		منطقي updated = خطأ;
 		orb_check(_dataman_response_sub, &updated);
 
 		dataman_response_s response;
 
-		if (updated) {
+		إذا (updated) {
 			orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
 
-			if ((response.client_id == _client_id) &&
-			    (response.request_type == _active_request.request_type) &&
-			    (response.item == _active_request.item) &&
-			    (response.index == _active_request.index)) {
+			إذا ((response.client_id == _client_id) &&
+			    (response.request_type == فعال_request.request_type) &&
+			    (response.توکی == فعال_request.توکی) &&
+			    (response.شاخص == فعال_request.شاخص)) {
 
-				if (response.request_type == DM_READ) {
-					memcpy(_active_request.buffer, response.data, _active_request.length);
+				إذا (response.request_type == DM_READ) {
+					حافظه_نقل(فعال_request.بفر_2, response.معلومات, فعال_request.اوږدتیا);
 				}
 
-				_response_status = response.status;
+				response_حالت = response.حالت;
 
-				if (_response_status != dataman_response_s::STATUS_SUCCESS) {
+				إذا (response_حالت != dataman_response_s::حالت_SUCCESS) {
 
 					PX4_ERR("Async request type %" PRIu8 " failed! status=%" PRIu8 " item=%" PRIu8 " index=%" PRIu32,
-						response.request_type, response.status, static_cast<uint8_t>(_active_request.item), _active_request.index);
+						response.request_type, response.حالت, static_cast<uint8_t>(فعال_request.توکی), فعال_request.شاخص);
 				}
 
 				_state = State::ResponseReceived;
 			}
 		}
 
-		if (_state == State::RequestSent) {
+		إذا (_state == State::Request_لېږل_شوی) {
 
 			/* Retry the request if there is no answer */
-			if (((_active_request.request_type != DM_CLEAR) && (hrt_elapsed_time(&_active_request.timestamp) > 100_ms)) ||
-			    (hrt_elapsed_time(&_active_request.timestamp) > 1000_ms)
+			إذا (((فعال_request.request_type != DM_CLEAR) && (hrt_elapsed_وخت(&فعال_request.timestamp) > 100_ms)) ||
+			    (hrt_elapsed_وخت(&فعال_request.timestamp) > 1000_ms)
 			   ) {
 
-				hrt_abstime timestamp = hrt_absolute_time();
+				hrt_abstime timestamp = hrt_absolute_وخت();
 
-				_active_request.timestamp = timestamp;
+				فعال_request.timestamp = timestamp;
 
 				dataman_request_s request;
 				request.timestamp = timestamp;
-				request.index = _active_request.index;
-				request.data_length = _active_request.length;
+				request.شاخص = فعال_request.شاخص;
+				request.معلومات_اوږدتیا = فعال_request.اوږدتیا;
 				request.client_id = _client_id;
-				request.request_type = static_cast<uint8_t>(_active_request.request_type);
-				request.item = static_cast<uint8_t>(_active_request.item);
+				request.request_type = static_cast<uint8_t>(فعال_request.request_type);
+				request.توکی = static_cast<uint8_t>(فعال_request.توکی);
 
-				if (_active_request.request_type == DM_WRITE) {
-					memcpy(request.data, _active_request.buffer, _active_request.length);
+				إذا (فعال_request.request_type == DM_WRITE) {
+					حافظه_نقل(request.معلومات, فعال_request.بفر_2, فعال_request.اوږدتیا);
 				}
 
 				_dataman_request_pub.publish(request);
 
-				_state = State::RequestSent;
+				_state = State::Request_لېږل_شوی;
 			}
 		}
 	}
 }
 
-bool DatamanClient::lastOperationCompleted(bool &success)
+منطقي DatamanClient::وروستی_Operation_Completed(منطقي &success)
 {
-	bool completed = false;
-	success = false;
+	منطقي completed = خطأ;
+	success = خطأ;
 
-	if (_state == State::ResponseReceived) {
+	إذا (_state == State::ResponseReceived) {
 
-		if (_response_status == dataman_response_s::STATUS_SUCCESS) {
-			success = true;
+		إذا (response_حالت == dataman_response_s::حالت_SUCCESS) {
+			success = ریښتیا;
 		}
 
 		_state = State::Idle;
-		completed = true;
+		completed = ریښتیا;
 	}
 
-	return completed;
+	أرجع completed;
 }
 
-void DatamanClient::abortCurrentOperation()
+فراغ DatamanClient::abortCurrentOperation()
 {
 	_state = State::Idle;
 }
 
-DatamanCache::DatamanCache(const char *cache_miss_perf_counter_name, uint32_t num_items)
-	: _cache_miss_perf(perf_alloc(PC_COUNT, cache_miss_perf_counter_name))
+DatamanCache::DatamanCache(ثابت حرف *cache_نه_موندنه_perf_counter_name, uint32_t عدد_توکي)
+	: cache_نه_موندنه_perf(perf_alloc(PC_شمېر, cache_نه_موندنه_perf_counter_name))
 {
-	if (num_items == 0) {
-		return;
+	إذا (عدد_توکي == 0) {
+		أرجع;
 	}
 
-	_items = new Item[num_items] {};
+	توکي = جديد توکی_2[عدد_توکي] {};
 
-	if (_items != nullptr) {
-		_num_items = num_items;
+	إذا (توکي != تش_اشاره) {
+		عدد_توکي_2 = عدد_توکي;
 
-	} else {
+	} وإلا {
 		PX4_ERR("alloc failed");
 	}
 }
@@ -507,281 +507,281 @@ DatamanCache::DatamanCache(const char *cache_miss_perf_counter_name, uint32_t nu
 DatamanCache::~DatamanCache()
 {
 	_client.abortCurrentOperation();
-	delete[] _items;
-	perf_free(_cache_miss_perf);
+	ړنګول[] توکي;
+	perf_free(cache_نه_موندنه_perf);
 }
 
-void DatamanCache::resize(uint32_t num_items)
+فراغ DatamanCache::resize(uint32_t عدد_توکي)
 {
-	if (num_items == 0) {
+	إذا (عدد_توکي == 0) {
 		// Allow callers to explicitly disable caching while leaving the DatamanClient usable.
 		_client.abortCurrentOperation();
-		delete[] _items;
-		_items = nullptr;
+		ړنګول[] توکي;
+		توکي = تش_اشاره;
 		resetCacheState();
-		_num_items = 0;
-		return;
+		عدد_توکي_2 = 0;
+		أرجع;
 	}
 
-	Item *new_items = new Item[num_items] {};
+	توکی_2 *new_توکي = جديد توکی_2[عدد_توکي] {};
 
-	if (new_items != nullptr) {
+	إذا (new_توکي != تش_اشاره) {
 		_client.abortCurrentOperation();
 
-		uint32_t num_min = num_items < _num_items ? num_items : _num_items;
+		uint32_t عدد_min = عدد_توکي < عدد_توکي_2 ? عدد_توکي : عدد_توکي_2;
 
-		for (uint32_t i = 0; i < num_min; ++i) {
-			new_items[i] = _items[i];
+		لكل (uint32_t i = 0; i < عدد_min; ++i) {
+			new_توکي[i] = توکي[i];
 
-			if (new_items[i].cache_state == State::RequestSent) {
-				new_items[i].cache_state = State::RequestPrepared;
+			إذا (new_توکي[i].cache_state == State::Request_لېږل_شوی) {
+				new_توکي[i].cache_state = State::RequestPrepared;
 			}
 		}
 
-		delete[] _items;
-		_items = new_items;
-		_num_items = num_items;
+		ړنګول[] توکي;
+		توکي = new_توکي;
+		عدد_توکي_2 = عدد_توکي;
 
 		// ensure new bounds are respected after resize
-		_load_index = (_load_index < _num_items) ? _load_index : 0;
-		_update_index = (_update_index < _num_items) ? _update_index : 0;
-		_item_counter = (_item_counter < _num_items) ? _item_counter : _num_items;
+		بارول_شاخص = (بارول_شاخص < عدد_توکي_2) ? بارول_شاخص : 0;
+		update_شاخص = (update_شاخص < عدد_توکي_2) ? update_شاخص : 0;
+		توکی_counter = (توکی_counter < عدد_توکي_2) ? توکی_counter : عدد_توکي_2;
 
-	} else {
+	} وإلا {
 		PX4_ERR("alloc failed");
 	}
 }
 
-bool DatamanCache::load(dm_item_t item, uint32_t index)
+منطقي DatamanCache::بارول(dm_توکی_t توکی, uint32_t شاخص)
 {
-	if (!_items) {
-		return false;
+	إذا (!توکي) {
+		أرجع خطأ;
 	}
 
-	bool success = false;
-	bool duplicate = false;
+	منطقي success = خطأ;
+	منطقي duplicate = خطأ;
 
 	//Prevent duplicates
-	for (uint32_t i = 0; i < _num_items; ++i) {
+	لكل (uint32_t i = 0; i < عدد_توکي_2; ++i) {
 
-		if (_items[i].cache_state != State::Idle &&
-		    _items[i].cache_state != State::Error &&
-		    _items[i].response.item == item &&
-		    _items[i].response.index == index) {
-			duplicate = true;
-			break;
+		إذا (توکي[i].cache_state != State::Idle &&
+		    توکي[i].cache_state != State::Error &&
+		    توکي[i].response.توکی == توکی &&
+		    توکي[i].response.شاخص == شاخص) {
+			duplicate = ریښتیا;
+			اكسر;
 		}
 	}
 
-	if (!duplicate && (_item_counter < _num_items)) {
+	إذا (!duplicate && (توکی_counter < عدد_توکي_2)) {
 
-		_items[_load_index].cache_state = State::RequestPrepared;
-		_items[_load_index].response.item = item;
-		_items[_load_index].response.index = index;
+		توکي[بارول_شاخص].cache_state = State::RequestPrepared;
+		توکي[بارول_شاخص].response.توکی = توکی;
+		توکي[بارول_شاخص].response.شاخص = شاخص;
 
-		_load_index = (_load_index + 1) % _num_items;
+		بارول_شاخص = (بارول_شاخص + 1) % عدد_توکي_2;
 
-		++_item_counter;
+		++توکی_counter;
 
-		success = true;
+		success = ریښتیا;
 	}
 
-	return success;
+	أرجع success;
 }
 
-bool DatamanCache::loadWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
+منطقي DatamanCache::بارول_Wait(dm_توکی_t توکی, uint32_t شاخص, uint8_t *بفر_2, uint32_t اوږدتیا, hrt_abstime timeout)
 {
-	if (length > g_per_item_size[item]) {
-		PX4_ERR("Length %" PRIu32 " can't fit in data size for item %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+	إذا (اوږدتیا > g_فی_توکی_اندازه[توکی]) {
+		PX4_ERR("Length %" PRIu32 " can't fit in data size for item %" PRIi8, اوږدتیا, static_cast<uint8_t>(توکی));
+		أرجع خطأ;
 	}
 
-	bool success = false;
-	bool item_found = false;
+	منطقي success = خطأ;
+	منطقي توکی_وموندل = خطأ;
 
-	if (_items) {
-		for (uint32_t i = 0; i < _num_items; ++i) {
-			if ((_items[i].response.item == item) &&
-			    (_items[i].response.index == index)) {
-				item_found = true;
+	إذا (توکي) {
+		لكل (uint32_t i = 0; i < عدد_توکي_2; ++i) {
+			إذا ((توکي[i].response.توکی == توکی) &&
+			    (توکي[i].response.شاخص == شاخص)) {
+				توکی_وموندل = ریښتیا;
 
-				if (_items[i].cache_state == State::ResponseReceived) {
-					memcpy(buffer, _items[i].response.data, length);
-					success = true;
-					break;
+				إذا (توکي[i].cache_state == State::ResponseReceived) {
+					حافظه_نقل(بفر_2, توکي[i].response.معلومات, اوږدتیا);
+					success = ریښتیا;
+					اكسر;
 				}
 			}
 		}
 	}
 
-	if (!success) {
-		perf_count(_cache_miss_perf);
+	إذا (!success) {
+		perf_شمېر(cache_نه_موندنه_perf);
 	}
 
-	if (!success && (timeout > 0)) {
-		success = _client.readSync(item, index, buffer, length, timeout);
+	إذا (!success && (timeout > 0)) {
+		success = _client.readSync(توکی, شاخص, بفر_2, اوږدتیا, timeout);
 
 		// Cache the item if not found already (it could be in the process of being loaded)
-		if (success && !item_found && _items && (_item_counter < _num_items)) {
-			_items[_load_index].cache_state = State::ResponseReceived;
-			_items[_load_index].response.item = item;
-			_items[_load_index].response.index = index;
-			memcpy(_items[_load_index].response.data, buffer, length);
+		إذا (success && !توکی_وموندل && توکي && (توکی_counter < عدد_توکي_2)) {
+			توکي[بارول_شاخص].cache_state = State::ResponseReceived;
+			توکي[بارول_شاخص].response.توکی = توکی;
+			توکي[بارول_شاخص].response.شاخص = شاخص;
+			حافظه_نقل(توکي[بارول_شاخص].response.معلومات, بفر_2, اوږدتیا);
 
-			_load_index = (_load_index + 1) % _num_items;
+			بارول_شاخص = (بارول_شاخص + 1) % عدد_توکي_2;
 
-			++_item_counter; // Still increase the counter here
+			++توکی_counter; // Still increase the counter here
 		}
 	}
 
-	return success;
+	أرجع success;
 }
 
-bool DatamanCache::writeWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
+منطقي DatamanCache::writeWait(dm_توکی_t توکی, uint32_t شاخص, uint8_t *بفر_2, uint32_t اوږدتیا, hrt_abstime timeout)
 {
-	if (length > g_per_item_size[item]) {
-		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+	إذا (اوږدتیا > g_فی_توکی_اندازه[توکی]) {
+		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, اوږدتیا, static_cast<uint8_t>(توکی));
+		أرجع خطأ;
 	}
 
-	bool success = _client.writeSync(item, index, buffer, length, timeout);
+	منطقي success = _client.writeSync(توکی, شاخص, بفر_2, اوږدتیا, timeout);
 
-	if (success && _items) {
-		for (uint32_t i = 0; i < _num_items; ++i) {
-			if ((_items[i].response.item == item) &&
-			    (_items[i].response.index == index) &&
-			    ((_items[i].cache_state == State::ResponseReceived) ||
-			     (_items[i].cache_state == State::RequestPrepared))) {
+	إذا (success && توکي) {
+		لكل (uint32_t i = 0; i < عدد_توکي_2; ++i) {
+			إذا ((توکي[i].response.توکی == توکی) &&
+			    (توکي[i].response.شاخص == شاخص) &&
+			    ((توکي[i].cache_state == State::ResponseReceived) ||
+			     (توکي[i].cache_state == State::RequestPrepared))) {
 
-				memcpy(_items[i].response.data, buffer, length);
-				_items[i].cache_state = State::ResponseReceived;
-				break;
+				حافظه_نقل(توکي[i].response.معلومات, بفر_2, اوږدتیا);
+				توکي[i].cache_state = State::ResponseReceived;
+				اكسر;
 			}
 		}
 	}
 
-	return success;
+	أرجع success;
 }
 
-bool DatamanCache::updateCachedItem(dm_item_t item, uint32_t index, const uint8_t *buffer, uint32_t length)
+منطقي DatamanCache::update_Cached_توکی(dm_توکی_t توکی, uint32_t شاخص, ثابت uint8_t *بفر_2, uint32_t اوږدتیا)
 {
-	if (!_items || buffer == nullptr || _num_items == 0) {
-		return false;
+	إذا (!توکي || بفر_2 == تش_اشاره || عدد_توکي_2 == 0) {
+		أرجع خطأ;
 	}
 
-	if (length > g_per_item_size[item]) {
-		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+	إذا (اوږدتیا > g_فی_توکی_اندازه[توکی]) {
+		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, اوږدتیا, static_cast<uint8_t>(توکی));
+		أرجع خطأ;
 	}
 
 	// Only patch data that is fully received and stable. Slots in other states are skipped:
 	// an in-flight async read will fetch the new SD card data shortly anyway, and invalidated
 	// slots can still carry a stale key match for the same item/index.
-	for (uint32_t i = 0; i < _num_items; ++i) {
-		if ((_items[i].response.item == item) && (_items[i].response.index == index)
-		    && (_items[i].cache_state == State::ResponseReceived)) {
-			memcpy(_items[i].response.data, buffer, length);
-			return true;
+	لكل (uint32_t i = 0; i < عدد_توکي_2; ++i) {
+		إذا ((توکي[i].response.توکی == توکی) && (توکي[i].response.شاخص == شاخص)
+		    && (توکي[i].cache_state == State::ResponseReceived)) {
+			حافظه_نقل(توکي[i].response.معلومات, بفر_2, اوږدتیا);
+			أرجع ریښتیا;
 		}
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void DatamanCache::update()
+فراغ DatamanCache::update()
 {
-	if (_item_counter > 0) {
+	إذا (توکی_counter > 0) {
 
 		_client.update();
 
-		bool success = false;
-		bool response_success = false;
+		منطقي success = خطأ;
+		منطقي response_success = خطأ;
 
-		switch (_items[_update_index].cache_state) {
-		case State::Idle:
-			break;
+		بدل (توکي[update_شاخص].cache_state) {
+		حالة State::Idle:
+			اكسر;
 
-		case State::ResponseReceived:
+		حالة State::ResponseReceived:
 			// Skip it
-			changeUpdateIndex();
-			break;
+			change_Update_شاخص();
+			اكسر;
 
-		case State::RequestPrepared:
+		حالة State::RequestPrepared:
 
-			success = _client.readAsync(static_cast<dm_item_t>(_items[_update_index].response.item),
-						    _items[_update_index].response.index,
-						    _items[_update_index].response.data,
-						    g_per_item_size[_items[_update_index].response.item]);
+			success = _client.readAsync(static_cast<dm_توکی_t>(توکي[update_شاخص].response.توکی),
+						    توکي[update_شاخص].response.شاخص,
+						    توکي[update_شاخص].response.معلومات,
+						    g_فی_توکی_اندازه[توکي[update_شاخص].response.توکی]);
 
-			if (success) {
-				_items[_update_index].cache_state = State::RequestSent;
+			إذا (success) {
+				توکي[update_شاخص].cache_state = State::Request_لېږل_شوی;
 
-			} else {
-				_items[_update_index].cache_state = State::Error;
+			} وإلا {
+				توکي[update_شاخص].cache_state = State::Error;
 			}
 
-			break;
+			اكسر;
 
-		case State::RequestSent:
+		حالة State::Request_لېږل_شوی:
 
-			if (_client.lastOperationCompleted(response_success)) {
+			إذا (_client.وروستی_Operation_Completed(response_success)) {
 
-				if (response_success) {
+				إذا (response_success) {
 
-					_items[_update_index].cache_state = State::ResponseReceived;
-					changeUpdateIndex();
+					توکي[update_شاخص].cache_state = State::ResponseReceived;
+					change_Update_شاخص();
 
-				} else {
-					_items[_update_index].cache_state = State::Error;
+				} وإلا {
+					توکي[update_شاخص].cache_state = State::Error;
 				}
 			}
 
-			break;
+			اكسر;
 
-		case State::Error:
+		حالة State::Error:
 			// Handled below
-			break;
+			اكسر;
 		}
 
-		if (_items[_update_index].cache_state == State::Error) {
+		إذا (توکي[update_شاخص].cache_state == State::Error) {
 			PX4_ERR("Caching: item %" PRIu8 ", index %" PRIu32", status %" PRIu8,
-				_items[_update_index].response.item, _items[_update_index].response.index,
-				_items[_update_index].response.status);
+				توکي[update_شاخص].response.توکی, توکي[update_شاخص].response.شاخص,
+				توکي[update_شاخص].response.حالت);
 
-			changeUpdateIndex();
+			change_Update_شاخص();
 		}
 
 	}
 }
 
-void DatamanCache::resetCacheState()
+فراغ DatamanCache::resetCacheState()
 {
-	_update_index = 0;
-	_item_counter = 0;
-	_load_index = 0;
+	update_شاخص = 0;
+	توکی_counter = 0;
+	بارول_شاخص = 0;
 }
 
-void DatamanCache::invalidate()
+فراغ DatamanCache::invalidate()
 {
-	for (uint32_t i = 0; i < _num_items; ++i) {
-		_items[i].cache_state = State::Idle;
+	لكل (uint32_t i = 0; i < عدد_توکي_2; ++i) {
+		توکي[i].cache_state = State::Idle;
 	}
 
 	resetCacheState();
 	_client.abortCurrentOperation();
 }
 
-inline void DatamanCache::changeUpdateIndex()
+مضمن فراغ DatamanCache::change_Update_شاخص()
 {
-	if (_num_items == 0) {
-		_update_index = 0;
-		_item_counter = 0;
-		return;
+	إذا (عدد_توکي_2 == 0) {
+		update_شاخص = 0;
+		توکی_counter = 0;
+		أرجع;
 	}
 
-	_update_index = (_update_index + 1) % _num_items;
+	update_شاخص = (update_شاخص + 1) % عدد_توکي_2;
 
-	if (_item_counter > 0) {
-		--_item_counter;
+	إذا (توکی_counter > 0) {
+		--توکی_counter;
 	}
 }

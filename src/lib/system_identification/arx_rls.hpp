@@ -55,14 +55,14 @@
  * @author Mathieu Bresciani <mathieu@auterion.com>
  */
 
-#pragma once
+#لارښوونه once
 
-#include <matrix/matrix/math.hpp>
+#ضمن <matrix/matrix/math.hpp>
 
-template<size_t N, size_t M, size_t D>
-class ArxRls final
+کينډۍ<size_t N, size_t M, size_t D>
+صنف ArxRls final
 {
-public:
+عام:
 	ArxRls()
 	{
 		static_assert(N >= M, "The transfer function needs to be proper");
@@ -70,38 +70,38 @@ public:
 		reset();
 	}
 
-	~ArxRls() = default;
+	~ArxRls() = افتراضي;
 
-	void setForgettingFactor(float time_constant, float dt) { _lambda = 1.f - dt / time_constant; }
-	void setForgettingFactor(float lambda) { _lambda = lambda; }
+	فراغ سېټ_Forgetting_ضریب(عائم وخت_constant_2, عائم dt) { _lambda = 1.f - dt / وخت_constant_2; }
+	فراغ سېټ_Forgetting_ضریب(عائم lambda) { _lambda = lambda; }
 
 	/*
 	 * return the vector of estimated parameters
 	 * [a_1 .. a_n b_0 .. b_m]'
 	 */
-	const matrix::Vector < float, N + M + 1 > &getCoefficients() const { return _theta_hat; }
-	const matrix::Vector < float, N + M + 1 > getVariances() const { return _P.diag(); }
-	float getInnovation() const { return _innovation; }
-	const matrix::Vector < float, N + M + 1 > &getDiffEstimate() const { return _diff_theta_hat; }
+	ثابت ماتریکس::ویکټور < عائم, N + M + 1 > &getCoefficients() ثابت { أرجع _theta_hat; }
+	ثابت ماتریکس::ویکټور < عائم, N + M + 1 > getVariances() ثابت { أرجع _P.diag(); }
+	عائم getInnovation() ثابت { أرجع _innovation; }
+	ثابت ماتریکس::ویکټور < عائم, N + M + 1 > &getDiffEstimate() ثابت { أرجع _diff_theta_hat; }
 
-	void reset(const matrix::Vector < float, N + M + 1 > &theta_init = {})
+	فراغ reset(ثابت ماتریکس::ویکټور < عائم, N + M + 1 > &theta_init = {})
 	{
 		/* _P.uncorrelateCovarianceSetVariance<N + M + 1>(0, 10e3f); // does not work */
-		_P.setZero();
+		_P.سېټ_Zero();
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
+		لكل (size_t i = 0; i < (N + M + 1); i++) {
 			_P(i, i) = 10e3f;
 		}
 
-		_diff_theta_hat.setZero();
+		_diff_theta_hat.سېټ_Zero();
 
 		_theta_hat = theta_init;
 
-		for (size_t i = 0; i < M + D + 1; i++) {
+		لكل (size_t i = 0; i < M + D + 1; i++) {
 			_u[i] = 0.f;
 		}
 
-		for (size_t i = 0; i < N + 1; i++) {
+		لكل (size_t i = 0; i < N + 1; i++) {
 			_y[i] = 0.f;
 		}
 
@@ -109,100 +109,100 @@ public:
 		_innovation = 0.f;
 	}
 
-	void update(float u, float y)
+	فراغ update(عائم u, عائم y)
 	{
-		const matrix::Vector < float, N + M + 1 > theta_prev = _theta_hat;
+		ثابت ماتریکس::ویکټور < عائم, N + M + 1 > theta_prev = _theta_hat;
 
-		addInputOutput(u, y);
+		جمع_کړه_ننوت_Output(u, y);
 
-		if (!isBufferFull()) {
+		إذا (!is_بفر_ډک()) {
 			// Do not start to update the RLS algorithm when the
 			// buffer still contains zeros
-			return;
+			أرجع;
 		}
 
-		const matrix::Vector < float, N + M + 1 > phi = constructDesignVector();
-		const matrix::Matrix < float, 1, N + M + 1 > phi_t = phi.transpose();
+		ثابت ماتریکس::ویکټور < عائم, N + M + 1 > phi = construct_Design_ویکټور();
+		ثابت ماتریکس::ماتریکس_2 < عائم, 1, N + M + 1 > phi_t = phi.transpose();
 
 		_P = (_P - _P * phi * phi_t * _P / (_lambda + (phi_t * _P * phi)(0, 0))) / _lambda;
 		_innovation = _y[N] - (phi_t * _theta_hat)(0, 0);
 		_theta_hat = _theta_hat + _P * phi * _innovation;
 
-		for (size_t i = 0; i < N + M + 1; i++) {
+		لكل (size_t i = 0; i < N + M + 1; i++) {
 			_diff_theta_hat(i) = fabsf(_theta_hat(i) - theta_prev(i));
 		}
 
 		/* fixCovarianceErrors(); // TODO: this could help against ill-conditioned matrix but needs more testing*/
 	}
 
-private:
-	void addInputOutput(float u, float y)
+خاص:
+	فراغ جمع_کړه_ننوت_Output(عائم u, عائم y)
 	{
-		shiftRegisters();
+		ښويدنه_Registers();
 		_u[M + D] = u;
 		_y[N] = y;
 
-		if (!isBufferFull()) {
+		إذا (!is_بفر_ډک()) {
 			_nb_samples++;
 		}
 	}
 
-	void shiftRegisters()
+	فراغ ښويدنه_Registers()
 	{
-		for (size_t i = 0; i < N; i++) {
+		لكل (size_t i = 0; i < N; i++) {
 			_y[i] = _y[i + 1];
 		}
 
-		for (size_t i = 0; i < (M + D); i++) {
+		لكل (size_t i = 0; i < (M + D); i++) {
 			_u[i] = _u[i + 1];
 		}
 	}
 
-	bool isBufferFull() const { return _nb_samples > (M + N + D); }
+	منطقي is_بفر_ډک() ثابت { أرجع _nb_samples > (M + N + D); }
 
-	matrix::Vector < float, N + M + 1 > constructDesignVector() const
+	ماتریکس::ویکټور < عائم, N + M + 1 > construct_Design_ویکټور() ثابت
 	{
-		matrix::Vector < float, N + M + 1 > phi;
+		ماتریکس::ویکټور < عائم, N + M + 1 > phi;
 
-		for (size_t i = 0; i < N; i++) {
+		لكل (size_t i = 0; i < N; i++) {
 			phi(i) = -_y[N - i - 1];
 		}
 
-		int j = 0;
+		صحيح j = 0;
 
-		for (size_t i = N; i < (N + M + 1); i++) {
+		لكل (size_t i = N; i < (N + M + 1); i++) {
 			phi(i) = _u[M - j];
 			j++;
 		}
 
-		return phi;
+		أرجع phi;
 	}
 
-	void fixCovarianceErrors()
+	فراغ fixCovarianceErrors()
 	{
-		float max_var = 0.f;
+		عائم max_var = 0.f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) > max_var) {
+		لكل (size_t i = 0; i < (N + M + 1); i++) {
+			إذا (_P(i, i) > max_var) {
 				max_var = _P(i, i);
 			}
 		}
 
-		const float min_var_allowed = max_var * 0.1f;
+		ثابت عائم min_var_allowed = max_var * 0.1f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) < min_var_allowed) {
+		لكل (size_t i = 0; i < (N + M + 1); i++) {
+			إذا (_P(i, i) < min_var_allowed) {
 				_P(i, i) = min_var_allowed;
 			}
 		}
 	}
 
-	matrix::SquareMatrix < float, N + M + 1 > _P;
-	matrix::Vector < float, N + M + 1 > _theta_hat;
-	matrix::Vector < float, N + M + 1 > _diff_theta_hat;
-	float _innovation{};
-	float _u[M + D + 1] {};
-	float _y[N + 1] {};
-	unsigned _nb_samples{0};
-	float _lambda{1.f};
+	ماتریکس::مربع_ماتریکس < عائم, N + M + 1 > _P;
+	ماتریکس::ویکټور < عائم, N + M + 1 > _theta_hat;
+	ماتریکس::ویکټور < عائم, N + M + 1 > _diff_theta_hat;
+	عائم _innovation{};
+	عائم _u[M + D + 1] {};
+	عائم _y[N + 1] {};
+	بینښه _nb_samples{0};
+	عائم _lambda{1.f};
 };

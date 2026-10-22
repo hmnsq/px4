@@ -31,122 +31,122 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <ActuatorEffectivenessRotors.hpp>
-#include "ControlAllocationSequentialDesaturation.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن <ActuatorEffectivenessRotors.hpp>
+#ضمن "ControlAllocationSequentialDesaturation.hpp"
 
-using namespace matrix;
-using ActuatorVector = ControlAllocation::ActuatorVector;
+کارول نطاق ماتریکس;
+کارول Actuator_ویکټور = Control_ویش::Actuator_ویکټور;
 
-TEST(ControlAllocationSequentialDesaturationTest, AllZeroCase)
+TEST(Control_ویش_Sequential_Desaturation_Test, AllZeroCase)
 {
-	ControlAllocationSequentialDesaturation control_allocation;
-	EXPECT_EQ(control_allocation.getActuatorSetpoint(), ActuatorVector());
-	control_allocation.allocate();
-	EXPECT_EQ(control_allocation.getActuatorSetpoint(), ActuatorVector());
+	Control_ویش_Sequential_Desaturation control_ویش;
+	EXPECT_EQ(control_ویش.getActuatorSetpoint(), Actuator_ویکټور());
+	control_ویش.allocate();
+	EXPECT_EQ(control_ویش.getActuatorSetpoint(), Actuator_ویکټور());
 }
 
-TEST(ControlAllocationSequentialDesaturationTest, SetGetActuatorSetpoint)
+TEST(Control_ویش_Sequential_Desaturation_Test, سېټ_Get_Actuator_Setpoint)
 {
-	ControlAllocationSequentialDesaturation control_allocation;
-	float actuator_setpoint_array[ControlAllocation::NUM_ACTUATORS] = {1.f, 2.f, 3.f, 4.f, 5.f, 6.f};
-	ActuatorVector actuator_setpoint(actuator_setpoint_array);
-	control_allocation.setActuatorSetpoint(actuator_setpoint);
-	EXPECT_EQ(control_allocation.getActuatorSetpoint(), actuator_setpoint);
+	Control_ویش_Sequential_Desaturation control_ویش;
+	عائم actuator_setpoint_array[Control_ویش::عدد_ACTUATORS] = {1.f, 2.f, 3.f, 4.f, 5.f, 6.f};
+	Actuator_ویکټور actuator_setpoint(actuator_setpoint_array);
+	control_ویش.سېټ_Actuator_Setpoint(actuator_setpoint);
+	EXPECT_EQ(control_ویش.getActuatorSetpoint(), actuator_setpoint);
 }
 
-class ControlAllocationSequentialDesaturationTestQuadX : public ::testing::Test
+صنف Control_ویش_Sequential_Desaturation_Test_Quad_X : عام ::testing::Test
 {
-public:
-	static constexpr uint8_t NUM_ACTUATORS = 4;
-	ControlAllocationSequentialDesaturation _control_allocation;
+عام:
+	ساكن constexpr uint8_t عدد_ACTUATORS = 4;
+	Control_ویش_Sequential_Desaturation control_ویش_2;
 
-	void SetUp() override
+	فراغ سېټ_پورته() override
 	{
-		param_control_autosave(false); // Disable autosaving parameters to avoid busy loop in param_set()
-		setAirmode(0); // No airmode by default
+		param_control_autosave(خطأ); // Disable autosaving parameters to avoid busy loop in param_set()
+		سېټ_Airmode(0); // No airmode by default
 
 		// Quadrotor x geometry
 		ActuatorEffectivenessRotors::Geometry quadx_geometry{};
-		quadx_geometry.num_rotors = 4;
+		quadx_geometry.عدد_rotors = 4;
 		quadx_geometry.rotors[0].position = {1.f, 1.f, 0.f}; // clockwise motor numbering
 		quadx_geometry.rotors[1].position = {-1.f, 1.f, 0.f};
 		quadx_geometry.rotors[2].position = {-1.f, -1.f, 0.f};
 		quadx_geometry.rotors[3].position = {1.f, -1.f, 0.f};
-		quadx_geometry.rotors[0].moment_ratio = 1.f;
-		quadx_geometry.rotors[1].moment_ratio = -1.f;
-		quadx_geometry.rotors[2].moment_ratio = 1.f;
-		quadx_geometry.rotors[3].moment_ratio = -1.f;
+		quadx_geometry.rotors[0].moment_نسبت = 1.f;
+		quadx_geometry.rotors[1].moment_نسبت = -1.f;
+		quadx_geometry.rotors[2].moment_نسبت = 1.f;
+		quadx_geometry.rotors[3].moment_نسبت = -1.f;
 
-		for (int i = 0; i < 4; ++i) {
+		لكل (صحيح i = 0; i < 4; ++i) {
 			quadx_geometry.rotors[i].axis = Vector3f(0.f, 0.f, -1.f); // thrust downwards
 			quadx_geometry.rotors[i].thrust_coef = 1.f;
-			quadx_geometry.rotors[i].tilt_index = -1;
+			quadx_geometry.rotors[i].tilt_شاخص = -1;
 		}
 
 		// Compute actuator effectiveness
 		ActuatorEffectiveness::Configuration actuator_configuration{};
-		int num_actuators = ActuatorEffectivenessRotors::computeEffectivenessMatrix(quadx_geometry,
+		صحيح عدد_actuators = ActuatorEffectivenessRotors::compute_Effectiveness_ماتریکس(quadx_geometry,
 				    actuator_configuration.effectiveness_matrices[0],
-				    actuator_configuration.num_actuators_matrix[0]);
-		EXPECT_EQ(num_actuators, NUM_ACTUATORS);
-		actuator_configuration.actuatorsAdded(ActuatorType::MOTORS, num_actuators);
+				    actuator_configuration.عدد_actuators_ماتریکس[0]);
+		EXPECT_EQ(عدد_actuators, عدد_ACTUATORS);
+		actuator_configuration.actuatorsAdded(ActuatorType::MOTORS, عدد_actuators);
 
 		// Load effectiveness into allocation
-		_control_allocation.setEffectivenessMatrix(actuator_configuration.effectiveness_matrices[0],
-				actuator_configuration.trim[0], actuator_configuration.linearization_point[0],
-				actuator_configuration.num_actuators_matrix[0], true /*update_normalization_scale*/);
+		control_ویش_2.سېټ_Effectiveness_ماتریکس(actuator_configuration.effectiveness_matrices[0],
+				actuator_configuration.trim[0], actuator_configuration.linearization_ټکی[0],
+				actuator_configuration.عدد_actuators_ماتریکس[0], ریښتیا /*update_normalization_scale*/);
 	}
 
-	void setAirmode(const int32_t mode)
+	فراغ سېټ_Airmode(ثابت int32_t ډېرپېښ)
 	{
-		param_t param = param_find("MC_AIRMODE");
-		param_set(param, &mode);
-		_control_allocation.updateParameters();
+		param_t param = param_پیدا_کړه("MC_AIRMODE");
+		param_سېټ(param, &ډېرپېښ);
+		control_ویش_2.updateParameters();
 	}
 
-	Vector4f allocate(float roll, float pitch, float yaw, float thrust)
+	Vector4f allocate(عائم roll, عائم pitch, عائم yaw, عائم thrust)
 	{
-		Vector<float, ControlAllocation::NUM_AXES> control_setpoint{};
-		control_setpoint(ControlAllocation::ControlAxis::ROLL) = roll;
-		control_setpoint(ControlAllocation::ControlAxis::PITCH) = pitch;
-		control_setpoint(ControlAllocation::ControlAxis::YAW) = yaw;
-		control_setpoint(ControlAllocation::ControlAxis::THRUST_Z) = thrust;
-		_control_allocation.setControlSetpoint(control_setpoint);
-		_control_allocation.allocate();
-		return getQuadOutputs();
+		ویکټور<عائم, Control_ویش::عدد_AXES> control_setpoint{};
+		control_setpoint(Control_ویش::ControlAxis::ROLL) = roll;
+		control_setpoint(Control_ویش::ControlAxis::PITCH) = pitch;
+		control_setpoint(Control_ویش::ControlAxis::YAW) = yaw;
+		control_setpoint(Control_ویش::ControlAxis::THRUST_Z) = thrust;
+		control_ویش_2.سېټ_Control_Setpoint(control_setpoint);
+		control_ویش_2.allocate();
+		أرجع getQuadOutputs();
 	}
 
 	Vector4f getQuadOutputs()
 	{
-		const ActuatorVector &actuator_setpoint = _control_allocation.getActuatorSetpoint();
+		ثابت Actuator_ویکټور &actuator_setpoint = control_ویش_2.getActuatorSetpoint();
 		// All unused actuators shall stay zero
-		static constexpr uint8_t NUM_UNUSED_ACTUATORS = ControlAllocation::NUM_ACTUATORS - 4;
+		ساكن constexpr uint8_t عدد_ناکارول_شوی_ACTUATORS = Control_ویش::عدد_ACTUATORS - 4;
 		EXPECT_EQ(
-			(Vector<float, NUM_UNUSED_ACTUATORS>(actuator_setpoint.slice<NUM_UNUSED_ACTUATORS, 1>(4, 0))),
-			(Vector<float, NUM_UNUSED_ACTUATORS>())
+			(ویکټور<عائم, عدد_ناکارول_شوی_ACTUATORS>(actuator_setpoint.ټوټه<عدد_ناکارول_شوی_ACTUATORS, 1>(4, 0))),
+			(ویکټور<عائم, عدد_ناکارول_شوی_ACTUATORS>())
 		);
-		return Vector4f(actuator_setpoint.slice<4, 1>(0, 0));
+		أرجع Vector4f(actuator_setpoint.ټوټه<4, 1>(0, 0));
 	}
 };
 
 // Make constant available, see https://stackoverflow.com/questions/42756443/undefined-reference-with-gtest
-constexpr uint8_t ControlAllocationSequentialDesaturationTestQuadX::NUM_ACTUATORS;
+constexpr uint8_t Control_ویش_Sequential_Desaturation_Test_Quad_X::عدد_ACTUATORS;
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, Zero)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, Zero)
 {
 	EXPECT_EQ(allocate(0.f, 0.f, 0.f, 0.f), Vector4f());
 }
 
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, CollectiveThrust)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, CollectiveThrust)
 {
-	for (float thrust = 0.f; thrust <= (1.f + FLT_EPSILON); thrust += .1f) {
+	لكل (عائم thrust = 0.f; thrust <= (1.f + FLT_EPSILON); thrust += .1f) {
 		EXPECT_EQ(allocate(0.f, 0.f, 0.f, -thrust), Vector4f(thrust, thrust, thrust, thrust));
 	}
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYaw)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, RollPitchYaw)
 {
 	EXPECT_EQ(allocate(1.f, 0.f, 0.f, -.5f), Vector4f(.25f, .25f, .75f, .75f));
 	EXPECT_EQ(allocate(-1.f, 0.f, 0.f, -.5f), Vector4f(.75f, .75f, .25f, .25f));
@@ -156,7 +156,7 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYaw)
 	EXPECT_EQ(allocate(0.f, 0.f, -1.f, -.5f), Vector4f(.25f, .75f, .25f, .75f));
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawFullThrust)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, Roll_Pitch_Yaw_ډک_Thrust)
 {
 	EXPECT_EQ(allocate(1.f, 0.f, 0.f, -1.f), Vector4f(.5f, .5f, 1.f, 1.f));
 	EXPECT_EQ(allocate(-1.f, 0.f, 0.f, -1.f), Vector4f(1.f, 1.f, .5f, .5f));
@@ -167,7 +167,7 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawFullThrust)
 	EXPECT_EQ(allocate(0.f, 0.f, -1.f, -1.f), Vector4f(.7f, 1.f, .7f, 1.f));
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawZeroThrust)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, RollPitchYawZeroThrust)
 {
 	// No axis is allocated
 	EXPECT_EQ(allocate(1.f, 0.f, 0.f, 0.f), Vector4f());
@@ -178,9 +178,9 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawZeroThrust)
 	EXPECT_EQ(allocate(0.f, 0.f, -1.f, 0.f), Vector4f());
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawZeroThrustAirmodeRP)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, RollPitchYawZeroThrustAirmodeRP)
 {
-	setAirmode(1); // Roll and pitch airmode
+	سېټ_Airmode(1); // Roll and pitch airmode
 	// Roll and pitch get fully allocated
 	EXPECT_EQ(allocate(1.f, 0.f, 0.f, 0.f), Vector4f(0.f, 0.f, 0.5f, 0.5f));
 	EXPECT_EQ(allocate(-1.f, 0.f, 0.f, 0.f), Vector4f(0.5f, 0.5f, 0.f, 0.f));
@@ -191,9 +191,9 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawZeroThrustA
 	EXPECT_EQ(allocate(0.f, 0.f, -1.f, 0.f), Vector4f());
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawZeroThrustAirmodeRPY)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, RollPitchYawZeroThrustAirmodeRPY)
 {
-	setAirmode(2); // Roll, pitch and yaw airmode
+	سېټ_Airmode(2); // Roll, pitch and yaw airmode
 	// All axis are fully allocated
 	EXPECT_EQ(allocate(1.f, 0.f, 0.f, 0.f), Vector4f(0.f, 0.f, 0.5f, 0.5f));
 	EXPECT_EQ(allocate(-1.f, 0.f, 0.f, 0.f), Vector4f(0.5f, 0.5f, 0.f, 0.f));
@@ -205,7 +205,7 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, RollPitchYawZeroThrustA
 
 // This tests that yaw-only control setpoint at zero actuator setpoint results in zero actuator
 // allocation.
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledOnlyYaw)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, AirmodeDisabledOnlyYaw)
 {
 	EXPECT_EQ(allocate(0.f, 0.f, 1.f, 0.f), Vector4f(0.f, 0.f, 0.f, 0.f));
 }
@@ -213,61 +213,61 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledOnlyYaw)
 // This tests that a control setpoint for z-thrust returns the desired actuator setpoint.
 // Each motor should have an actuator setpoint that when summed together should be equal to
 // control setpoint.
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledThrustZ)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, AirmodeDisabledThrustZ)
 {
-	constexpr float THRUST = 0.75f;
+	constexpr عائم THRUST = 0.75f;
 	EXPECT_EQ(allocate(0.f, 0.f, 0.f, -THRUST), Vector4f(THRUST, THRUST, THRUST, THRUST));
 }
 
 // This tests that a control setpoint for z-thrust + yaw returns the desired actuator setpoint.
 // This test does not saturate the yaw response.
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledThrustAndYaw)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, AirmodeDisabledThrustAndYaw)
 {
-	constexpr float THRUST = 0.75f;
-	constexpr float YAW_TORQUE = 0.02f;
-	constexpr float YAW = YAW_TORQUE / NUM_ACTUATORS;
+	constexpr عائم THRUST = 0.75f;
+	constexpr عائم YAW_TORQUE = 0.02f;
+	constexpr عائم YAW = YAW_TORQUE / عدد_ACTUATORS;
 	EXPECT_EQ(allocate(0.f, 0.f, YAW_TORQUE, -THRUST), Vector4f(THRUST + YAW, THRUST - YAW, THRUST + YAW, THRUST - YAW));
 }
 
 // This tests that a control setpoint for z-thrust + yaw returns the desired actuator setpoint.
 // This test saturates the yaw response, but does not reduce total thrust.
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledThrustAndSaturatedYaw)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, AirmodeDisabledThrustAndSaturatedYaw)
 {
-	constexpr float THRUST = 0.75f;
-	constexpr float YAW_TORQUE = 1.f;
-	constexpr float YAW = YAW_TORQUE / NUM_ACTUATORS;
+	constexpr عائم THRUST = 0.75f;
+	constexpr عائم YAW_TORQUE = 1.f;
+	constexpr عائم YAW = YAW_TORQUE / عدد_ACTUATORS;
 	EXPECT_EQ(allocate(0.f, 0.f, YAW_TORQUE, -THRUST), Vector4f(THRUST + YAW, THRUST - YAW, THRUST + YAW, THRUST - YAW));
 }
 
 // This tests that a control setpoint for z-thrust + pitch returns the desired actuator setpoint.
 // This test does not saturate the pitch response.
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledThrustAndPitch)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, AirmodeDisabledThrustAndPitch)
 {
-	constexpr float THRUST = 0.75f;
-	constexpr float PITCH_TORQUE = 0.1f;
-	constexpr float PITCH = PITCH_TORQUE / NUM_ACTUATORS;
+	constexpr عائم THRUST = 0.75f;
+	constexpr عائم PITCH_TORQUE = 0.1f;
+	constexpr عائم PITCH = PITCH_TORQUE / عدد_ACTUATORS;
 	EXPECT_EQ(allocate(0.f, PITCH_TORQUE, 0.f, -THRUST),
 		  Vector4f(THRUST + PITCH, THRUST - PITCH, THRUST - PITCH, THRUST + PITCH));
 }
 
 // This tests that a control setpoint for z-thrust + yaw returns the desired actuator setpoint.
 // This test saturates yaw and demonstrates reduction of thrust for yaw.
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledReducedThrustAndYaw)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, AirmodeDisabledReducedThrustAndYaw)
 {
-	constexpr float YAW_MARGIN = ControlAllocationSequentialDesaturation::MINIMUM_YAW_MARGIN;
+	constexpr عائم YAW_MARGIN = Control_ویش_Sequential_Desaturation::MINIMUM_YAW_MARGIN;
 	EXPECT_EQ(allocate(0.f, 0.f, 1.f, -3.2f), Vector4f(1.f, 1.f - (2.f * YAW_MARGIN), 1.f, 1.f - (2.f * YAW_MARGIN)));
 }
 
 // This tests that a control setpoint for z-thrust + pitch returns the desired actuator setpoint.
 // This test saturates the pitch response such that thrust is reduced to (partially) compensate.
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledReducedThrustAndPitch)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, AirmodeDisabledReducedThrustAndPitch)
 {
 	EXPECT_EQ(allocate(0.f, 2.f, 0.f, -3.f), Vector4f(1.f, 0.f, 0.f, 1.f));
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, PreviousMixingTestsNoAirmode)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, پخوانی_Mixing_Tests_No_Airmode)
 {
-	setAirmode(0); // No airmode
+	سېټ_Airmode(0); // No airmode
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.000f), Vector4f(0.000000f, 0.000000f, 0.000000f, 0.000000f)); // 1
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.100f), Vector4f(0.100000f, 0.100000f, 0.100000f, 0.100000f)); // 2
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.450f), Vector4f(0.450000f, 0.450000f, 0.450000f, 0.450000f)); // 3
@@ -335,9 +335,9 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, PreviousMixingTestsNoAi
 	EXPECT_EQ(allocate(-1.000f, 0.900f, 0.000f, -1.000f), Vector4f(1.000000f, 0.550000f, 0.050000f, 0.500000f)); // 65
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, PreviousMixingTestsAirmodeRP)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, پخوانی_Mixing_Tests_Airmode_RP)
 {
-	setAirmode(1); // Roll and pitch airmode
+	سېټ_Airmode(1); // Roll and pitch airmode
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.000f), Vector4f(0.000000f, 0.000000f, 0.000000f, 0.000000f)); // 1
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.100f), Vector4f(0.100000f, 0.100000f, 0.100000f, 0.100000f)); // 2
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.450f), Vector4f(0.450000f, 0.450000f, 0.450000f, 0.450000f)); // 3
@@ -405,9 +405,9 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, PreviousMixingTestsAirm
 	EXPECT_EQ(allocate(-1.000f, 0.900f, 0.000f, -1.000f), Vector4f(1.000000f, 0.550000f, 0.050000f, 0.500000f)); // 65
 }
 
-TEST_F(ControlAllocationSequentialDesaturationTestQuadX, PreviousMixingTestsAirmodeRPY)
+TEST_F(Control_ویش_Sequential_Desaturation_Test_Quad_X, پخوانی_Mixing_Tests_Airmode_RPY)
 {
-	setAirmode(2); // Roll, pitch and yaw airmode
+	سېټ_Airmode(2); // Roll, pitch and yaw airmode
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.000f), Vector4f(0.000000f, 0.000000f, 0.000000f, 0.000000f)); // 1
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.100f), Vector4f(0.100000f, 0.100000f, 0.100000f, 0.100000f)); // 2
 	EXPECT_EQ(allocate(0.000f, 0.000f, 0.000f, -0.450f), Vector4f(0.450000f, 0.450000f, 0.450000f, 0.450000f)); // 3
@@ -477,10 +477,10 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, PreviousMixingTestsAirm
 
 // Hexarotor with a motor and its opposite stopped: roll and yaw collinear. The float pseudo-inverse
 // of that matrix used to be garbage and drove the remaining motors to full at zero thrust demand.
-TEST(ControlAllocationSequentialDesaturationTest, AirmodeDisabledNeverAddsThrustAfterMotorFailure)
+TEST(Control_ویش_Sequential_Desaturation_Test, AirmodeDisabledNeverAddsThrustAfterMotorFailure)
 {
 	// rows roll/pitch/yaw/thrust xyz, one column per rotor
-	const float intact[6][6] = {
+	ثابت عائم intact[6][6] = {
 		{-5.947500f,  5.934500f,  2.964000f, -2.853500f, -2.990000f,  2.840500f},
 		{ 0.071500f,  0.071500f,  5.063500f, -4.972500f,  5.063500f, -4.972500f},
 		{-0.325000f,  0.325000f, -0.325000f,  0.325000f,  0.325000f, -0.325000f},
@@ -489,54 +489,54 @@ TEST(ControlAllocationSequentialDesaturationTest, AirmodeDisabledNeverAddsThrust
 		{-6.500000f, -6.500000f, -6.500000f, -6.500000f, -6.500000f, -6.500000f}
 	};
 
-	auto make_effectiveness = [&intact](uint16_t stopped_mask) {
-		ActuatorEffectiveness::EffectivenessMatrix effectiveness;
-		effectiveness.setZero();
+	خپلکاری make_effectiveness = [&intact](uint16_t stopped_ماسک) {
+		ActuatorEffectiveness::Effectiveness_ماتریکس effectiveness;
+		effectiveness.سېټ_Zero();
 
-		for (int i = 0; i < 6; i++) {
-			if (stopped_mask & (1u << i)) {
-				continue;
+		لكل (صحيح i = 0; i < 6; i++) {
+			إذا (stopped_ماسک & (1u << i)) {
+				استمر;
 			}
 
-			for (int axis = 0; axis < 6; axis++) {
+			لكل (صحيح axis = 0; axis < 6; axis++) {
 				effectiveness(axis, i) = intact[axis][i];
 			}
 		}
 
-		return effectiveness;
+		أرجع effectiveness;
 	};
 
-	ControlAllocationSequentialDesaturation allocator;
-	allocator.setNormalizeRPY(true);
-	matrix::Vector<float, ActuatorEffectiveness::NUM_ACTUATORS> actuator_trim;
-	matrix::Vector<float, ActuatorEffectiveness::NUM_ACTUATORS> linearization_point;
+	Control_ویش_Sequential_Desaturation allocator;
+	allocator.سېټ_Normalize_RPY(ریښتیا);
+	ماتریکس::ویکټور<عائم, ActuatorEffectiveness::عدد_ACTUATORS> actuator_trim;
+	ماتریکس::ویکټور<عائم, ActuatorEffectiveness::عدد_ACTUATORS> linearization_ټکی;
 
 	// intact geometry first to capture the normalization scale, as ControlAllocator does
-	allocator.setEffectivenessMatrix(make_effectiveness(0), actuator_trim, linearization_point,
-					 ActuatorEffectiveness::NUM_ACTUATORS, true);
+	allocator.سېټ_Effectiveness_ماتریکس(make_effectiveness(0), actuator_trim, linearization_ټکی,
+					 ActuatorEffectiveness::عدد_ACTUATORS, ریښتیا);
 	allocator.allocate();
 
 	// rotors 0 and 1 stop, scale not recomputed
-	allocator.setHadActuatorFailure(true);
-	allocator.setEffectivenessMatrix(make_effectiveness((1u << 0) | (1u << 1)), actuator_trim,
-					 linearization_point, ActuatorEffectiveness::NUM_ACTUATORS, false);
+	allocator.سېټ_Had_Actuator_Failure(ریښتیا);
+	allocator.سېټ_Effectiveness_ماتریکس(make_effectiveness((1u << 0) | (1u << 1)), actuator_trim,
+					 linearization_ټکی, ActuatorEffectiveness::عدد_ACTUATORS, خطأ);
 
 	// attitude hold at zero thrust demand
-	matrix::Vector<float, ActuatorEffectiveness::NUM_AXES> control_sp;
-	control_sp(ControlAllocation::ControlAxis::ROLL) = 0.010f;
-	control_sp(ControlAllocation::ControlAxis::PITCH) = 0.024f;
-	control_sp(ControlAllocation::ControlAxis::YAW) = 0.f;
-	control_sp(ControlAllocation::ControlAxis::THRUST_X) = 0.f;
-	control_sp(ControlAllocation::ControlAxis::THRUST_Y) = 0.f;
-	control_sp(ControlAllocation::ControlAxis::THRUST_Z) = -0.001f;
-	allocator.setControlSetpoint(control_sp);
+	ماتریکس::ویکټور<عائم, ActuatorEffectiveness::عدد_AXES> control_sp;
+	control_sp(Control_ویش::ControlAxis::ROLL) = 0.010f;
+	control_sp(Control_ویش::ControlAxis::PITCH) = 0.024f;
+	control_sp(Control_ویش::ControlAxis::YAW) = 0.f;
+	control_sp(Control_ویش::ControlAxis::THRUST_X) = 0.f;
+	control_sp(Control_ویش::ControlAxis::THRUST_Y) = 0.f;
+	control_sp(Control_ویش::ControlAxis::THRUST_Z) = -0.001f;
+	allocator.سېټ_Control_Setpoint(control_sp);
 
 	// Since MC_AIRMODE was not set explicitly, assume airmode is disabled.
 	allocator.allocate();
 
-	const auto &actuator_sp = allocator.getActuatorSetpoint();
+	ثابت خپلکاری &actuator_sp = allocator.getActuatorSetpoint();
 
-	for (int i = 0; i < ActuatorEffectiveness::NUM_ACTUATORS; ++i) {
+	لكل (صحيح i = 0; i < ActuatorEffectiveness::عدد_ACTUATORS; ++i) {
 		EXPECT_LT(actuator_sp(i), 0.1f) << "motor " << i;
 	}
 }

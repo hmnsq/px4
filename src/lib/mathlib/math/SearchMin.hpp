@@ -38,42 +38,42 @@
  * - Golden Section Search
  */
 
-#pragma once
+#لارښوونه once
 
-namespace math
+نطاق math
 {
-static constexpr double GOLDEN_RATIO = 1.6180339887; //(sqrt(5)+1)/2
+ساكن constexpr مزدوج GOLDEN_نسبت = 1.6180339887; //(sqrt(5)+1)/2
 
 // Type-safe abs
-template<typename _Tp>
+کينډۍ<ډول_نوم _Tp>
 _Tp abs_t(_Tp val)
 {
-	return ((val > (_Tp)0) ? val : -val);
+	أرجع ((val > (_Tp)0) ? val : -val);
 }
 
 // golden section search to find extremeum for function with minimum
-template<typename _Tp>
-inline const _Tp goldensection(const _Tp &arg1, const _Tp &arg2, _Tp(*fun)(_Tp), const _Tp &tol)
+کينډۍ<ډول_نوم _Tp>
+مضمن ثابت _Tp goldensection(ثابت _Tp &arg1, ثابت _Tp &arg2, _Tp(*fun)(_Tp), ثابت _Tp &tol)
 {
 	_Tp a = arg1;
 	_Tp b = arg2;
-	_Tp c = b - (b - a) / GOLDEN_RATIO;
-	_Tp d = a + (b - a) / GOLDEN_RATIO;
+	_Tp c = b - (b - a) / GOLDEN_نسبت;
+	_Tp d = a + (b - a) / GOLDEN_نسبت;
 
-	while (abs_t(c - d) > tol) {
+	طالما (abs_t(c - d) > tol) {
 
-		if (fun(c) < fun(d)) {
+		إذا (fun(c) < fun(d)) {
 			b = d;
 
-		} else {
+		} وإلا {
 			a = c;
 		}
 
-		c = b - (b - a) / GOLDEN_RATIO;
-		d = a + (b - a) / GOLDEN_RATIO;
+		c = b - (b - a) / GOLDEN_نسبت;
+		d = a + (b - a) / GOLDEN_نسبت;
 
 	}
 
-	return ((b + a) / (_Tp)2);
+	أرجع ((b + a) / (_Tp)2);
 }
 }

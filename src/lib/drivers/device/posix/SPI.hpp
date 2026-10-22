@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#pragma once
+#لارښوونه once
 
 /**
  * @file SPI.hpp
@@ -39,44 +39,44 @@
  * Base class for devices connected via SPI.
  */
 
-#include "../CDev.hpp"
-#include <px4_platform_common/spi.h>
+#ضمن "../CDev.hpp"
+#ضمن <px4_platform_common/spi.h>
 
-#if defined(CONFIG_SPI)
+#إذا defined(CONFIG_SPI)
 
-#ifdef __PX4_LINUX
+#که_تعریف_شوی __PX4_LINUX
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <linux/types.h>
-#include <linux/spi/spidev.h>
+#ضمن <fcntl.h>
+#ضمن <unistd.h>
+#ضمن <sys/ioctl.h>
+#ضمن <linux/types.h>
+#ضمن <linux/spi/spidev.h>
 
-enum spi_mode_e {
-	SPIDEV_MODE0 = SPI_MODE_0, /* CPOL=0 CHPHA=0 */
-	SPIDEV_MODE1 = SPI_MODE_1, /* CPOL=0 CHPHA=1 */
-	SPIDEV_MODE2 = SPI_MODE_2, /* CPOL=1 CHPHA=0 */
-	SPIDEV_MODE3 = SPI_MODE_3  /* CPOL=1 CHPHA=1 */
+تعداد spi_ډېرپېښ_e {
+	SPIDEV_MODE0 = SPI_ډېرپېښ_0, /* CPOL=0 CHPHA=0 */
+	SPIDEV_MODE1 = SPI_ډېرپېښ_1, /* CPOL=0 CHPHA=1 */
+	SPIDEV_MODE2 = SPI_ډېرپېښ_2, /* CPOL=1 CHPHA=0 */
+	SPIDEV_MODE3 = SPI_ډېرپېښ_3  /* CPOL=1 CHPHA=1 */
 };
 
-struct I2CSPIDriverConfig;
+بنية I2CSPIDriverConfig;
 
-namespace device __EXPORT
+نطاق device __EXPORT
 {
 
 /**
  * Abstract class for character device on SPI
  */
-class __EXPORT SPI : public CDev
+صنف __EXPORT SPI : عام CDev
 {
-public:
+عام:
 	// no copy, assignment, move, move assignment
-	SPI(const SPI &) = delete;
-	SPI &operator=(const SPI &) = delete;
-	SPI(SPI &&) = delete;
-	SPI &operator=(SPI &&) = delete;
+	SPI(ثابت SPI &) = ړنګول;
+	SPI &چلوونکی=(ثابت SPI &) = ړنګول;
+	SPI(SPI &&) = ړنګول;
+	SPI &چلوونکی=(SPI &&) = ړنګول;
 
-protected:
+محمي:
 	/**
 	 * Constructor
 	 *
@@ -87,27 +87,27 @@ protected:
 	 * @param mode		SPI clock/data mode
 	 * @param frequency	SPI clock frequency
 	 */
-	SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency);
+	SPI(uint8_t device_type, ثابت حرف *name, صحيح bus, uint32_t device, تعداد spi_ډېرپېښ_e ډېرپېښ, uint32_t frequency);
 
-	SPI(const I2CSPIDriverConfig &config);
+	SPI(ثابت I2CSPIDriverConfig &config);
 
-	virtual ~SPI();
+	مجازي ~SPI();
 
 	/**
 	 * Locking modes supported by the driver.
 	 */
-	enum LockMode {
-		LOCK_PREEMPTION,	/**< the default; lock against all forms of preemption. */
-		LOCK_THREADS,		/**< lock only against other threads, using SPI_LOCK */
-		LOCK_NONE		/**< perform no locking, only safe if the bus is entirely private */
+	تعداد قلف_ډېرپېښ {
+		قلف_PREEMPTION,	/**< the default; lock against all forms of preemption. */
+		قلف_تارونه,		/**< lock only against other threads, using SPI_LOCK */
+		قلف_NONE		/**< perform no locking, only safe if the bus is entirely private */
 	};
 
-	virtual int	init() override;
+	مجازي صحيح	init() override;
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	مجازي صحيح	probe() { أرجع PX4_OK; }
 
 	/**
 	 * Perform a SPI transfer.
@@ -128,7 +128,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(uint8_t *send, uint8_t *recv, unsigned len);
+	صحيح		transfer(uint8_t *send, uint8_t *recv, بینښه len);
 
 	/**
 	 * Perform a SPI 16 bit transfer.
@@ -149,7 +149,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	صحيح		transferhword(uint16_t *send, uint16_t *recv, بینښه len);
 
 	/**
 	 * Set the SPI bus frequency
@@ -160,8 +160,8 @@ protected:
 	 *
 	 * @param frequency	Frequency to set (Hz)
 	 */
-	void		set_frequency(uint32_t frequency) { _frequency = frequency; }
-	uint32_t	get_frequency() { return _frequency; }
+	فراغ		سېټ_frequency(uint32_t frequency) { _frequency = frequency; }
+	uint32_t	get_frequency() { أرجع _frequency; }
 
 	/**
 	 * Set the SPI bus locking mode
@@ -171,33 +171,33 @@ protected:
 	 *
 	 * @param mode	Locking mode
 	 */
-	void		set_lockmode(enum LockMode mode) { _locking_mode = mode; }
+	فراغ		سېټ_lockmode(تعداد قلف_ډېرپېښ ډېرپېښ) { locking_ډېرپېښ = ډېرپېښ; }
 
-private:
+خاص:
 	uint32_t		_device;
-	enum spi_mode_e		_mode;
+	تعداد spi_ډېرپېښ_e		_mode;
 	uint32_t		_frequency;
-	int 			_fd{-1};
+	صحيح 			_fd{-1};
 
-	LockMode		_locking_mode{LOCK_THREADS};	/**< selected locking mode */
+	قلف_ډېرپېښ		locking_ډېرپېښ{قلف_تارونه};	/**< selected locking mode */
 
-protected:
-	int	_transfer(uint8_t *send, uint8_t *recv, unsigned len);
+محمي:
+	صحيح	_transfer(uint8_t *send, uint8_t *recv, بینښه len);
 
-	int	_transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	صحيح	_transferhword(uint16_t *send, uint16_t *recv, بینښه len);
 
 };
 
 } // namespace device
 
-#else
+#وإلا
 
-enum spi_mode_e {
+تعداد spi_ډېرپېښ_e {
 	SPIDEV_MODE0 = 0, /* CPOL=0 CHPHA=0 */
 	SPIDEV_MODE1 = 1, /* CPOL=0 CHPHA=1 */
 	SPIDEV_MODE2 = 2, /* CPOL=1 CHPHA=0 */
 	SPIDEV_MODE3 = 3  /* CPOL=1 CHPHA=1 */
 };
-#endif // __PX4_LINUX
+#د_که_پای // __PX4_LINUX
 
-#endif // CONFIG_SPI
+#د_که_پای // CONFIG_SPI

@@ -30,12 +30,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#pragma once
+#لارښوونه once
 
-#ifdef __PX4_NUTTX
-#include "nuttx/SPI.hpp"
-#elif defined(__PX4_QURT)
-#include "qurt/SPI.hpp"
-#else
-#include "posix/SPI.hpp"
-#endif
+#که_تعریف_شوی __PX4_NUTTX
+#ضمن "nuttx/SPI.hpp"
+#وإلاإذا defined(__PX4_QURT)
+#ضمن "qurt/SPI.hpp"
+#وإلا
+#ضمن "posix/SPI.hpp"
+#د_که_پای

@@ -37,124 +37,124 @@
  * Welford's online algorithm for computing mean and covariance of a vector.
  */
 
-#pragma once
+#لارښوونه once
 
-namespace math
+نطاق math
 {
 
-template <typename Type, size_t N>
-class WelfordMeanVector
+کينډۍ <ډول_نوم Type, size_t N>
+صنف Welford_منځنۍ_ویکټور
 {
-public:
+عام:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const matrix::Vector<Type, N> &new_value)
+	منطقي update(ثابت ماتریکس::ویکټور<Type, N> &new_ارزښت)
 	{
-		if (_count == 0) {
+		إذا (شمېر_3 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
-			return false;
+			شمېر_3 = 1;
+			منځنۍ_2 = new_ارزښت;
+			أرجع خطأ;
 
-		} else if (_count == UINT16_MAX) {
+		} وإلا إذا (شمېر_3 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / شمېر_3;
 			_M2_accum.zero();
 
-			_count = 1;
+			شمېر_3 = 1;
 
-		} else {
-			_count++;
+		} وإلا {
+			شمېر_3++;
 		}
 
-		// mean
+		//منځنۍ
 		//  accumulates the mean of the entire dataset
 		//  use Kahan summation because delta can be very small compared to the mean
-		const matrix::Vector<Type, N> delta{new_value - _mean};
+		ثابت ماتریکس::ویکټور<Type, N> delta{new_ارزښت - منځنۍ_2};
 		{
-			const matrix::Vector<Type, N> y = (delta / _count) - _mean_accum;
-			const matrix::Vector<Type, N> t = _mean + y;
-			_mean_accum = (t - _mean) - y;
-			_mean = t;
+			ثابت ماتریکس::ویکټور<Type, N> y = (delta / شمېر_3) - منځنۍ_accum;
+			ثابت ماتریکس::ویکټور<Type, N> t = منځنۍ_2 + y;
+			منځنۍ_accum = (t - منځنۍ_2) - y;
+			منځنۍ_2 = t;
 		}
 
-		if (!_mean.isAllFinite()) {
+		إذا (!منځنۍ_2.isAllFinite()) {
 			reset();
-			return false;
+			أرجع خطأ;
 		}
 
 		// covariance
 		//  Kahan summation (upper triangle only)
 		{
 			// eg C(x,y) += dx * (y - mean_y)
-			matrix::SquareMatrix<Type, N> m2_change{};
+			ماتریکس::مربع_ماتریکس<Type, N> m2_change{};
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
-					m2_change(r, c) = delta(r) * (new_value(c) - _mean(c));
+			لكل (size_t r = 0; r < N; r++) {
+				لكل (size_t c = r; c < N; c++) {
+					m2_change(r, c) = delta(r) * (new_ارزښت(c) - منځنۍ_2(c));
 				}
 			}
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
+			لكل (size_t r = 0; r < N; r++) {
+				لكل (size_t c = r; c < N; c++) {
 
-					const Type y = m2_change(r, c) - _M2_accum(r, c);
-					const Type t = _M2(r, c) + y;
+					ثابت Type y = m2_change(r, c) - _M2_accum(r, c);
+					ثابت Type t = _M2(r, c) + y;
 					_M2_accum(r, c) = (t - _M2(r, c)) - y;
 
 					_M2(r, c) = t;
 				}
 
 				// protect against floating point precision causing negative variances
-				if (_M2(r, r) < 0) {
+				إذا (_M2(r, r) < 0) {
 					_M2(r, r) = 0;
 				}
 			}
 
 			// make symmetric
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r + 1; c < N; c++) {
+			لكل (size_t r = 0; r < N; r++) {
+				لكل (size_t c = r + 1; c < N; c++) {
 					_M2(c, r) = _M2(r, c);
 				}
 			}
 		}
 
-		if (!_M2.isAllFinite()) {
+		إذا (!_M2.isAllFinite()) {
 			reset();
-			return false;
+			أرجع خطأ;
 		}
 
-		return valid();
+		أرجع valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	منطقي valid() ثابت { أرجع شمېر_3 > 2; }
+	خپلکاری شمېر() ثابت { أرجع شمېر_3; }
 
-	void reset()
+	فراغ reset()
 	{
-		_count = 0;
-		_mean.zero();
+		شمېر_3 = 0;
+		منځنۍ_2.zero();
 		_M2.zero();
 
-		_mean_accum.zero();
+		منځنۍ_accum.zero();
 		_M2_accum.zero();
 	}
 
-	matrix::Vector<Type, N> mean() const { return _mean; }
-	matrix::Vector<Type, N> variance() const { return _M2.diag() / (_count - 1); }
-	matrix::SquareMatrix<Type, N> covariance() const { return _M2 / (_count - 1); }
+	ماتریکس::ویکټور<Type, N> منځنۍ() ثابت { أرجع منځنۍ_2; }
+	ماتریکس::ویکټور<Type, N> variance() ثابت { أرجع _M2.diag() / (شمېر_3 - 1); }
+	ماتریکس::مربع_ماتریکس<Type, N> covariance() ثابت { أرجع _M2 / (شمېر_3 - 1); }
 
-	Type covariance(int x, int y) const { return _M2(x, y) / (_count - 1); }
+	Type covariance(صحيح x, صحيح y) ثابت { أرجع _M2(x, y) / (شمېر_3 - 1); }
 
-private:
+خاص:
 
-	matrix::Vector<Type, N> _mean{};
-	matrix::Vector<Type, N> _mean_accum{};  ///< kahan summation algorithm accumulator for mean
+	ماتریکس::ویکټور<Type, N> منځنۍ_2{};
+	ماتریکس::ویکټور<Type, N> منځنۍ_accum{};  ///< kahan summation algorithm accumulator for mean
 
-	matrix::SquareMatrix<Type, N> _M2{};
-	matrix::SquareMatrix<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
+	ماتریکس::مربع_ماتریکس<Type, N> _M2{};
+	ماتریکس::مربع_ماتریکس<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t شمېر_3{0};
 };
 
 } // namespace math

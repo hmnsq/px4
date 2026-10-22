@@ -37,34 +37,34 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include "DaaEncodedId.h"
+#ضمن "DaaEncodedId.h"
 
-#include <cinttypes>
-#include <cstdio>
-#include <cstring>
+#ضمن <cinttypes>
+#ضمن <cstdio>
+#ضمن <cstring>
 
-#include <px4_platform_common/log.h>
+#ضمن <px4_platform_common/log.h>
 
-DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
+DaaEncodedId DaaEncodedId::from_report(ثابت transponder_report_s &report)
 {
-	if (report.icao_address > 0 && report.icao_address <= kMaxIcaoAddress) {
+	إذا (report.icao_پته > 0 && report.icao_پته <= k_Max_Icao_پته) {
 		PX4_DEBUG("DAA: Unique ID encoding: ICAO.");
-		return {
-			static_cast<uint64_t>(report.icao_address),
+		أرجع {
+			static_cast<uint64_t>(report.icao_پته),
 			detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO
 		};
 	}
 
-	if (report.icao_address > kMaxIcaoAddress) {
+	إذا (report.icao_پته > k_Max_Icao_پته) {
 		PX4_DEBUG("DAA: invalid ICAO address");
 	}
 
-	if (report.flags & transponder_report_s::PX4_ADSB_FLAGS_VALID_CALLSIGN) {
+	إذا (report.flags & transponder_report_s::PX4_ADSB_FLAGS_VALID_CALLSIGN) {
 		PX4_DEBUG("DAA: Unique ID encoding: Callsign.");
-		const uint64_t callsign_id = callsign_to_uint64(report.callsign);
+		ثابت uint64_t callsign_id = callsign_منزل_uint64(report.callsign);
 
-		if (callsign_id != 0) {
-			return {
+		إذا (callsign_id != 0) {
+			أرجع {
 				callsign_id,
 				detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN
 			};
@@ -74,21 +74,21 @@ DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
 		PX4_DEBUG("DAA: Failed to convert callsign to uint64.");
 	}
 
-	bool uas_id_valid = false;
+	منطقي uas_id_valid = خطأ;
 
-	for (int i = 0; i < kUasIdByteLength; ++i) {
-		if (report.uas_id[i] != 0) {
-			uas_id_valid = true;
-			break;
+	لكل (صحيح i = 0; i < k_Uas_Id_Byte_اوږدتیا; ++i) {
+		إذا (report.uas_id[i] != 0) {
+			uas_id_valid = ریښتیا;
+			اكسر;
 		}
 	}
 
-	if (uas_id_valid) {
+	إذا (uas_id_valid) {
 		PX4_DEBUG("DAA: Unique ID encoding: UAS id.");
-		const uint64_t uas_id = last_uas_id_bytes_to_uint64(report.uas_id);
+		ثابت uint64_t uas_id = وروستی_uas_id_بایټونه_منزل_uint64(report.uas_id);
 
-		if (uas_id != 0) {
-			return {
+		إذا (uas_id != 0) {
+			أرجع {
 				uas_id,
 				detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID
 			};
@@ -97,185 +97,185 @@ DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
 		PX4_DEBUG("DAA: Failed to convert uas_id to uint64.");
 	}
 
-	return {};
+	أرجع {};
 }
 
-DaaEncodedId DaaEncodedId::identify_traffic_report(const transponder_report_s &report,
-		const daa_ownship_ids_s &ownship_ids)
+DaaEncodedId DaaEncodedId::identify_traffic_report(ثابت transponder_report_s &report,
+		ثابت daa_ownship_ids_s &ownship_ids)
 {
-	const DaaEncodedId encoded_id = from_report(report);
+	ثابت DaaEncodedId encoded_id = from_report(report);
 
-	if (encoded_id.id == 0) {
+	إذا (encoded_id.id == 0) {
 		PX4_DEBUG("DAA: No valid unique ID, skipping report");
-		return {};
+		أرجع {};
 	}
 
-	if (is_self_detection(encoded_id, ownship_ids)) {
+	إذا (is_self_detection(encoded_id, ownship_ids)) {
 		PX4_DEBUG("DAA: Self detection, skipping report.");
-		return {};
+		أرجع {};
 	}
 
-	return encoded_id;
+	أرجع encoded_id;
 }
 
-bool DaaEncodedId::is_self_detection(const DaaEncodedId &encoded_id, const daa_ownship_ids_s &ownship_ids)
+منطقي DaaEncodedId::is_self_detection(ثابت DaaEncodedId &encoded_id, ثابت daa_ownship_ids_s &ownship_ids)
 {
-	switch (encoded_id.encoding) {
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
-			if (ownship_ids.icao >= 0
+	بدل (encoded_id.encoding) {
+	حالة detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
+			إذا (ownship_ids.icao >= 0
 			    && static_cast<uint32_t>(encoded_id.id) == static_cast<uint32_t>(ownship_ids.icao)) {
 				PX4_DEBUG("DAA: Received own main ICAO.");
-				return true;
+				أرجع ریښتیا;
 			}
 
-			if (ownship_ids.icao_2 >= 0
+			إذا (ownship_ids.icao_2 >= 0
 			    && static_cast<uint32_t>(encoded_id.id) == static_cast<uint32_t>(ownship_ids.icao_2)) {
 				PX4_DEBUG("DAA: Received own secondary ICAO.");
-				return true;
+				أرجع ریښتیا;
 			}
 
-			break;
+			اكسر;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
-			if (encoded_id.id == ownship_ids.callsign) {
+	حالة detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
+			إذا (encoded_id.id == ownship_ids.callsign) {
 				PX4_DEBUG("DAA: Received own Callsign.");
-				return true;
+				أرجع ریښتیا;
 			}
 
-			break;
+			اكسر;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
-			if (ownship_ids.uas_id_valid && encoded_id.id == ownship_ids.uas_id) {
+	حالة detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
+			إذا (ownship_ids.uas_id_valid && encoded_id.id == ownship_ids.uas_id) {
 				PX4_DEBUG("DAA: Received own UAS ID.");
-				return true;
+				أرجع ریښتیا;
 			}
 
-			break;
+			اكسر;
 		}
 
-	default:
-		break;
+	افتراضي:
+		اكسر;
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void DaaEncodedId::to_string(char *buffer, size_t buffer_size) const
+فراغ DaaEncodedId::منزل_string(حرف *بفر_2, size_t بفر_اندازه) ثابت
 {
-	if (buffer == nullptr || buffer_size == 0) { return; }
+	إذا (بفر_2 == تش_اشاره || بفر_اندازه == 0) { أرجع; }
 
-	memset(buffer, 0, buffer_size);
+	memset(بفر_2, 0, بفر_اندازه);
 
-	switch (encoding) {
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
-			convert_icao_uint32_to_hex_str(id, buffer, buffer_size);
-			break;
+	بدل (encoding) {
+	حالة detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
+			convert_icao_uint32_منزل_hex_str(id, بفر_2, بفر_اندازه);
+			اكسر;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
-			char callsign[kCallsignLength] {};
-			convert_uint64_callsign_to_str(id, callsign);
+	حالة detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
+			حرف callsign[k_Callsign_اوږدتیا] {};
+			convert_uint64_callsign_منزل_str(id, callsign);
 
 			// Keep malformed/custom publishers from injecting control
 			// characters into MAVLink status text.
-			for (char &character : callsign) {
-				const uint8_t byte = static_cast<uint8_t>(character);
+			لكل (حرف &character : callsign) {
+				ثابت uint8_t byte = static_cast<uint8_t>(character);
 
-				if (byte == 0) {
-					break;
+				إذا (byte == 0) {
+					اكسر;
 				}
 
-				if (byte < 0x20 || byte > 0x7e) {
+				إذا (byte < 0x20 || byte > 0x7e) {
 					character = '?';
 				}
 			}
 
-			snprintf(buffer, buffer_size, "%s", callsign);
-			break;
+			snprintf(بفر_2, بفر_اندازه, "%s", callsign);
+			اكسر;
 		}
 
-	case detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
-			char uas_id[kUtmGuidMsgLength] {};
-			convert_uas_id_uint64_to_str(id, uas_id);
-			snprintf(buffer, buffer_size, "%s", uas_id);
-			break;
+	حالة detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
+			حرف uas_id[k_Utm_Guid_پیغام_اوږدتیا] {};
+			convert_uas_id_uint64_منزل_str(id, uas_id);
+			snprintf(بفر_2, بفر_اندازه, "%s", uas_id);
+			اكسر;
 		}
 
-	default:
-		snprintf(buffer, buffer_size, "Unknown ID.");
-		break;
+	افتراضي:
+		snprintf(بفر_2, بفر_اندازه, "Unknown ID.");
+		اكسر;
 	}
 }
 
-uint64_t DaaEncodedId::callsign_to_uint64(const char callsign[kCallsignLength])
+uint64_t DaaEncodedId::callsign_منزل_uint64(ثابت حرف callsign[k_Callsign_اوږدتیا])
 {
-	if (callsign == nullptr) {
-		return 0;
+	إذا (callsign == تش_اشاره) {
+		أرجع 0;
 	}
 
-	bool null_terminated = false;
+	منطقي null_terminated = خطأ;
 
-	for (size_t i = 0; i < kCallsignLength; ++i) {
-		if (callsign[i] == '\0') {
-			null_terminated = true;
-			break;
+	لكل (size_t i = 0; i < k_Callsign_اوږدتیا; ++i) {
+		إذا (callsign[i] == '\0') {
+			null_terminated = ریښتیا;
+			اكسر;
 		}
 	}
 
-	if (!null_terminated) {
-		return 0;
+	إذا (!null_terminated) {
+		أرجع 0;
 	}
 
-	uint64_t result = 0;
+	uint64_t پایله = 0;
 
-	for (int i = 0; i < kIdEncodingNbBytes && callsign[i] != '\0'; ++i) {
-		result |= (static_cast<uint64_t>(static_cast<uint8_t>(callsign[i])) << (i * 8));
+	لكل (صحيح i = 0; i < k_Id_Encoding_Nb_بایټونه && callsign[i] != '\0'; ++i) {
+		پایله |= (static_cast<uint64_t>(static_cast<uint8_t>(callsign[i])) << (i * 8));
 	}
 
-	return result;
+	أرجع پایله;
 }
 
-uint64_t DaaEncodedId::callsign_params_to_uint64(const int32_t callsign_part1, const int32_t callsign_part2)
+uint64_t DaaEncodedId::callsign_params_منزل_uint64(ثابت int32_t callsign_part1, ثابت int32_t callsign_part2)
 {
-	const uint32_t parts[] {
+	ثابت uint32_t parts[] {
 		static_cast<uint32_t>(callsign_part1),
 		static_cast<uint32_t>(callsign_part2)
 	};
-	char callsign[kCallsignLength] {};
+	حرف callsign[k_Callsign_اوږدتیا] {};
 
-	for (size_t part_idx = 0; part_idx < 2; ++part_idx) {
-		for (size_t char_idx = 0; char_idx < sizeof(uint32_t); ++char_idx) {
-			const unsigned shift = static_cast<unsigned>((sizeof(uint32_t) - char_idx - 1) * 8);
-			callsign[part_idx * sizeof(uint32_t) + char_idx] = static_cast<char>((parts[part_idx] >> shift) & 0xffu);
+	لكل (size_t part_idx = 0; part_idx < 2; ++part_idx) {
+		لكل (size_t char_idx = 0; char_idx < حجم(uint32_t); ++char_idx) {
+			ثابت بینښه ښويدنه = static_cast<بینښه>((حجم(uint32_t) - char_idx - 1) * 8);
+			callsign[part_idx * حجم(uint32_t) + char_idx] = static_cast<حرف>((parts[part_idx] >> ښويدنه) & 0xffu);
 		}
 	}
 
-	return callsign_to_uint64(callsign);
+	أرجع callsign_منزل_uint64(callsign);
 }
 
-void DaaEncodedId::convert_uint64_callsign_to_str(uint64_t value, char callsign[kCallsignLength])
+فراغ DaaEncodedId::convert_uint64_callsign_منزل_str(uint64_t value, حرف callsign[k_Callsign_اوږدتیا])
 {
-	if (callsign == nullptr) {
-		return;
+	إذا (callsign == تش_اشاره) {
+		أرجع;
 	}
 
-	memset(callsign, 0, kCallsignLength);
+	memset(callsign, 0, k_Callsign_اوږدتیا);
 
-	const int max_chars = kCallsignLength - 1;
+	ثابت صحيح max_chars = k_Callsign_اوږدتیا - 1;
 
-	if (value == 0) {
+	إذا (value == 0) {
 		memset(callsign, '0', max_chars);
 
-	} else {
+	} وإلا {
 
-		for (int i = 0; i < max_chars; ++i) {
-			char c = (value >> (i * 8)) & 0xFF;
+		لكل (صحيح i = 0; i < max_chars; ++i) {
+			حرف c = (value >> (i * 8)) & 0xFF;
 			callsign[i] = c;
 
-			if (c == 0) {
-				break;
+			إذا (c == 0) {
+				اكسر;
 			}
 		}
 	}
@@ -283,54 +283,54 @@ void DaaEncodedId::convert_uint64_callsign_to_str(uint64_t value, char callsign[
 	callsign[max_chars] = '\0';
 }
 
-uint64_t DaaEncodedId::last_uas_id_bytes_to_uint64(const uint8_t uas_id[kUasIdByteLength])
+uint64_t DaaEncodedId::وروستی_uas_id_بایټونه_منزل_uint64(ثابت uint8_t uas_id[k_Uas_Id_Byte_اوږدتیا])
 {
-	if (uas_id == nullptr) {
-		return 0;
+	إذا (uas_id == تش_اشاره) {
+		أرجع 0;
 	}
 
 	uint64_t uas_id_int = 0;
 
 	// Pack the last kIdEncodingNbBytes bytes into the key.
-	for (int i = 0; i < kIdEncodingNbBytes; ++i) {
-		uas_id_int |= static_cast<uint64_t>(uas_id[kUasIdByteLength - kIdEncodingNbBytes + i]) << (i * 8);
+	لكل (صحيح i = 0; i < k_Id_Encoding_Nb_بایټونه; ++i) {
+		uas_id_int |= static_cast<uint64_t>(uas_id[k_Uas_Id_Byte_اوږدتیا - k_Id_Encoding_Nb_بایټونه + i]) << (i * 8);
 	}
 
-	return uas_id_int;
+	أرجع uas_id_int;
 }
 
-void DaaEncodedId::convert_uas_id_uint64_to_str(const uint64_t uas_id_int, char uas_id_char_arr[kUtmGuidMsgLength])
+فراغ DaaEncodedId::convert_uas_id_uint64_منزل_str(ثابت uint64_t uas_id_int, حرف uas_id_char_arr[k_Utm_Guid_پیغام_اوږدتیا])
 {
-	if (uas_id_char_arr == nullptr) {
-		return;
+	إذا (uas_id_char_arr == تش_اشاره) {
+		أرجع;
 	}
 
-	static constexpr char kHexDigits[] = "0123456789abcdef";
+	ساكن constexpr حرف kHexDigits[] = "0123456789abcdef";
 
-	if (uas_id_int == 0) {
-		memset(uas_id_char_arr, '0', kUtmGuidMsgLength - 1);
+	إذا (uas_id_int == 0) {
+		memset(uas_id_char_arr, '0', k_Utm_Guid_پیغام_اوږدتیا - 1);
 
-	} else {
+	} وإلا {
 
 		// Render the low reduced_uas_id_length bytes as hex.
-		const int reduced_uas_id_length = (kUtmGuidMsgLength - 1) / 2;
+		ثابت صحيح reduced_uas_id_اوږدتیا = (k_Utm_Guid_پیغام_اوږدتیا - 1) / 2;
 
-		for (int i = 0; i < reduced_uas_id_length; ++i) {
-			const uint8_t byte = static_cast<uint8_t>((uas_id_int >>(i * 8)) & 0xFF);
+		لكل (صحيح i = 0; i < reduced_uas_id_اوږدتیا; ++i) {
+			ثابت uint8_t byte = static_cast<uint8_t>((uas_id_int >>(i * 8)) & 0xFF);
 			uas_id_char_arr[i * 2] = kHexDigits[byte >> 4];
 			uas_id_char_arr[i * 2 + 1] = kHexDigits[byte & 0x0F];
 		}
 	}
 
-	uas_id_char_arr[kUtmGuidMsgLength - 1] = '\0';
+	uas_id_char_arr[k_Utm_Guid_پیغام_اوږدتیا - 1] = '\0';
 }
 
-void DaaEncodedId::convert_icao_uint32_to_hex_str(uint64_t value, char *buffer, size_t buffer_size)
+فراغ DaaEncodedId::convert_icao_uint32_منزل_hex_str(uint64_t value, حرف *بفر_2, size_t بفر_اندازه)
 {
-	if (buffer == nullptr || buffer_size < kIcaoLength) {
-		return;
+	إذا (بفر_2 == تش_اشاره || بفر_اندازه < k_Icao_اوږدتیا) {
+		أرجع;
 	}
 
-	const uint32_t icao_address = static_cast<uint32_t>(value & 0xFFFFFFu);
-	snprintf(buffer, buffer_size, "%06" PRIX32, icao_address);
+	ثابت uint32_t icao_پته = static_cast<uint32_t>(value & 0xFFFFFFu);
+	snprintf(بفر_2, بفر_اندازه, "%06" PRIX32, icao_پته);
 }

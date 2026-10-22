@@ -31,42 +31,42 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "SlewRate.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن "SlewRate.hpp"
 
-TEST(SlewRateTest, SlewUpLimited)
+TEST(Slew_شرح_Test, Slew_پورته_Limited)
 {
-	SlewRate<float> _slew_rate;
-	_slew_rate.setSlewRate(.1f);
-	_slew_rate.setForcedValue(-5.5f);
+	Slew_شرح<عائم> slew_شرح_2;
+	slew_شرح_2.سېټ_Slew_شرح(.1f);
+	slew_شرح_2.سېټ_Forced_ارزښت(-5.5f);
 
-	for (int i = 1; i <= 10; i++) {
-		EXPECT_FLOAT_EQ(_slew_rate.update(20.f, .2f), -5.5f + i * .02f);
+	لكل (صحيح i = 1; i <= 10; i++) {
+		EXPECT_FLOAT_EQ(slew_شرح_2.update(20.f, .2f), -5.5f + i * .02f);
 	}
 }
 
-TEST(SlewRateTest, SlewDownLimited)
+TEST(Slew_شرح_Test, Slew_ښکته_Limited)
 {
-	SlewRate<float> _slew_rate;
-	_slew_rate.setSlewRate(1.1f);
-	_slew_rate.setForcedValue(17.3f);
+	Slew_شرح<عائم> slew_شرح_2;
+	slew_شرح_2.سېټ_Slew_شرح(1.1f);
+	slew_شرح_2.سېټ_Forced_ارزښت(17.3f);
 
-	for (int i = 1; i <= 10; i++) {
-		EXPECT_FLOAT_EQ(_slew_rate.update(-50.f, .3f), 17.3f - i * .33f);
+	لكل (صحيح i = 1; i <= 10; i++) {
+		EXPECT_FLOAT_EQ(slew_شرح_2.update(-50.f, .3f), 17.3f - i * .33f);
 	}
 }
 
-TEST(SlewRateTest, ReachValueSlewed)
+TEST(Slew_شرح_Test, رسېدنه_ارزښت_Slewed)
 {
-	SlewRate<float> _slew_rate;
-	_slew_rate.setSlewRate(.2f);
-	_slew_rate.setForcedValue(8.f);
+	Slew_شرح<عائم> slew_شرح_2;
+	slew_شرح_2.سېټ_Slew_شرح(.2f);
+	slew_شرح_2.سېټ_Forced_ارزښت(8.f);
 
-	for (int i = 1; i <= 10; i++) {
-		EXPECT_FLOAT_EQ(_slew_rate.update(10.f, 1.f), 8.f + i * .2f);
+	لكل (صحيح i = 1; i <= 10; i++) {
+		EXPECT_FLOAT_EQ(slew_شرح_2.update(10.f, 1.f), 8.f + i * .2f);
 	}
 
-	for (int i = 1; i <= 10; i++) {
-		EXPECT_FLOAT_EQ(_slew_rate.update(10.f, 1.f), 10.f);
+	لكل (صحيح i = 1; i <= 10; i++) {
+		EXPECT_FLOAT_EQ(slew_شرح_2.update(10.f, 1.f), 10.f);
 	}
 }

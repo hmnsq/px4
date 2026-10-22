@@ -31,33 +31,33 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <random>
-#include <lib/matrix/matrix/math.hpp>
-#include "WelfordMean.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن <random>
+#ضمن <lib/matrix/matrix/math.hpp>
+#ضمن "WelfordMean.hpp"
 
-using namespace math;
-using matrix::Vector3f;
+کارول نطاق math;
+کارول ماتریکس::Vector3f;
 
-TEST(WelfordMeanTest, NoisySignal)
+TEST(Welford_منځنۍ_Test, NoisySignal)
 {
-	const float std_dev = 3.f;
-	std::normal_distribution<float> standard_normal_distribution{0.f, std_dev};
+	ثابت عائم std_dev = 3.f;
+	std::نورمال_distribution<عائم> standard_نورمال_distribution{0.f, std_dev};
 	std::default_random_engine random_generator{}; // Pseudo-random generator with constant seed
-	random_generator.seed(42);
-	WelfordMean<float> welford{};
+	random_generator.تخم(42);
+	Welford_منځنۍ<عائم> welford{};
 
-	for (int i = 0; i < 1000; i++) {
-		const float noisy_value = standard_normal_distribution(random_generator);
-		welford.update(noisy_value);
+	لكل (صحيح i = 0; i < 1000; i++) {
+		ثابت عائم noisy_ارزښت = standard_نورمال_distribution(random_generator);
+		welford.update(noisy_ارزښت);
 	}
 
 	EXPECT_TRUE(welford.valid());
-	const float mean = welford.mean();
-	const float var = welford.variance();
-	const float var_real = std_dev * std_dev;
+	ثابت عائم منځنۍ = welford.منځنۍ();
+	ثابت عائم var = welford.variance();
+	ثابت عائم var_real = std_dev * std_dev;
 
-	EXPECT_NEAR(mean, 0.f, 0.7f);
+	EXPECT_NEAR(منځنۍ, 0.f, 0.7f);
 
 	EXPECT_NEAR(var, var_real, 0.1f);
 

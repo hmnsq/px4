@@ -35,32 +35,32 @@
  * @file signal_generator.hpp
  */
 
-#pragma once
+#لارښوونه once
 
-namespace signal_generator
+نطاق signal_generator
 {
 
-inline float getLinearSineSweep(float f_start, float f_end, float duration, float t)
+مضمن عائم get_خطي_Sine_Sweep(عائم f_پیل, عائم f_پای_ټکی, عائم duration, عائم t)
 {
-	if (t > duration) {
-		return 0.f;
+	إذا (t > duration) {
+		أرجع 0.f;
 	}
 
-	const float w_start = f_start * M_TWOPI_F;
-	const float w_end = f_end * M_TWOPI_F;
+	ثابت عائم w_پیل = f_پیل * M_TWOPI_F;
+	ثابت عائم w_پای_ټکی = f_پای_ټکی * M_TWOPI_F;
 
-	return sinf(w_start * t + 0.5f * (w_end - w_start) * t * t / duration);
+	أرجع sinf(w_پیل * t + 0.5f * (w_پای_ټکی - w_پیل) * t * t / duration);
 }
 
-inline float getLogSineSweep(float f_start, float f_end, float duration, float t)
+مضمن عائم getLogSineSweep(عائم f_پیل, عائم f_پای_ټکی, عائم duration, عائم t)
 {
-	if (t > duration) {
-		return 0.f;
+	إذا (t > duration) {
+		أرجع 0.f;
 	}
 
-	const float f_ratio = f_end / fmaxf(f_start, 0.1f);
+	ثابت عائم f_نسبت = f_پای_ټکی / fmaxf(f_پیل, 0.1f);
 
-	return sinf(M_TWOPI_F * f_start * duration * (powf(f_ratio, t / duration) - 1.f) / logf(f_ratio));
+	أرجع sinf(M_TWOPI_F * f_پیل * duration * (powf(f_نسبت, t / duration) - 1.f) / logf(f_نسبت));
 }
 
 } /* namespace signal_generator */

@@ -31,92 +31,92 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/matrix/math.hpp>
-#include "Functions.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/matrix/math.hpp>
+#ضمن "Functions.hpp"
 
-#include "TrajMath.hpp"
+#ضمن "TrajMath.hpp"
 
-using namespace math;
-using matrix::Vector2f;
+کارول نطاق math;
+کارول ماتریکس::Vector2f;
 
-TEST(MaxDistanceToCircle, noDirection)
+TEST(Max_واټن_منزل_Circle, noDirection)
 {
 	Vector2f pos;
 	Vector2f circle_center;
-	float radius = 3.f;
+	عائم radius = 3.f;
 	Vector2f direction;
-	float distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
-	EXPECT_TRUE(isnan(distance));
+	عائم واټن = trajectory::get_Max_واټن_منزل_Circle(pos, circle_center, radius, direction);
+	EXPECT_TRUE(isnan(واټن));
 }
 
-TEST(MaxDistanceToCircle, insideCircle)
+TEST(Max_واټن_منزل_Circle, insideCircle)
 {
 	// North position, South direction
 	Vector2f pos(1.f, 0.f);
 	Vector2f circle_center;
-	float radius = 3.f;
+	عائم radius = 3.f;
 	Vector2f direction(-1.f, 0.f);
-	float distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
-	EXPECT_FLOAT_EQ(distance, 4.f);
+	عائم واټن = trajectory::get_Max_واټن_منزل_Circle(pos, circle_center, radius, direction);
+	EXPECT_FLOAT_EQ(واټن, 4.f);
 
 	// North position, West direction (direction doesn't need to be unit length)
 	direction = Vector2f(0.f, -3.42f);
-	distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
-	EXPECT_FLOAT_EQ(distance, sqrtf(radius * radius - 1.f));
+	واټن = trajectory::get_Max_واټن_منزل_Circle(pos, circle_center, radius, direction);
+	EXPECT_FLOAT_EQ(واټن, sqrtf(radius * radius - 1.f));
 
 	// SE position, directed towards the center
 	pos = Vector2f(-2.f, 1.f);
 	direction = Vector2f(2.f, -1.f);
-	distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
-	EXPECT_FLOAT_EQ(distance, pos.norm() + radius);
+	واټن = trajectory::get_Max_واټن_منزل_Circle(pos, circle_center, radius, direction);
+	EXPECT_FLOAT_EQ(واټن, pos.norm() + radius);
 }
 
-TEST(MaxDistanceToCircle, outsideCircle)
+TEST(Max_واټن_منزل_Circle, outsideCircle)
 {
 	// North position, South direction
 	Vector2f pos(4.f, 0.f);
 	Vector2f circle_center;
-	float radius = 3.f;
+	عائم radius = 3.f;
 	Vector2f direction(-1.f, 0.f);
-	float distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
-	EXPECT_FLOAT_EQ(distance, pos(0) + radius);
+	عائم واټن = trajectory::get_Max_واټن_منزل_Circle(pos, circle_center, radius, direction);
+	EXPECT_FLOAT_EQ(واټن, pos(0) + radius);
 
 	// looking away from the circle
 	direction = Vector2f(0.f, -3.42f);
-	distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
-	EXPECT_TRUE(isnan(distance));
+	واټن = trajectory::get_Max_واټن_منزل_Circle(pos, circle_center, radius, direction);
+	EXPECT_TRUE(isnan(واټن));
 
 	// SE position, directed towards the center
 	pos = Vector2f(-4.f, 2.f);
 	direction = Vector2f(2.f, -1.f);
-	distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
-	EXPECT_FLOAT_EQ(distance, pos.norm() + radius);
+	واټن = trajectory::get_Max_واټن_منزل_Circle(pos, circle_center, radius, direction);
+	EXPECT_FLOAT_EQ(واټن, pos.norm() + radius);
 }
 
-TEST(MaxDistanceToCircle, onCircle)
+TEST(Max_واټن_منزل_Circle, onCircle)
 {
 	// South, looking North
 	Vector2f pos(-4.f, 1.f);
 	Vector2f circle_center(-1.f, 1.f);
-	float radius = 3.f;
+	عائم radius = 3.f;
 	Vector2f direction(1.f, 0.f);
-	float distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
-	EXPECT_FLOAT_EQ(distance, 2.f * radius);
+	عائم واټن = trajectory::get_Max_واټن_منزل_Circle(pos, circle_center, radius, direction);
+	EXPECT_FLOAT_EQ(واټن, 2.f * radius);
 
 	// looking tangent to the circle
 	direction = Vector2f(0.f, -3.42f);
-	distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
-	EXPECT_FLOAT_EQ(distance, 0.f);
+	واټن = trajectory::get_Max_واټن_منزل_Circle(pos, circle_center, radius, direction);
+	EXPECT_FLOAT_EQ(واټن, 0.f);
 
 	// looking away from the circle
 	direction = Vector2f(-10.f, -3.42f);
-	distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
-	EXPECT_FLOAT_EQ(distance, 0.f);
+	واټن = trajectory::get_Max_واټن_منزل_Circle(pos, circle_center, radius, direction);
+	EXPECT_FLOAT_EQ(واټن, 0.f);
 
 	// SE position, directed towards the center
 	pos = Vector2f(-sqrtf(2.f) / 2.f, sqrtf(2.f) / 2.f) * radius + circle_center;
 	direction = -pos;
-	distance = trajectory::getMaxDistanceToCircle(pos, circle_center, radius, direction);
-	EXPECT_FLOAT_EQ(distance, 2.f * radius);
+	واټن = trajectory::get_Max_واټن_منزل_Circle(pos, circle_center, radius, direction);
+	EXPECT_FLOAT_EQ(واټن, 2.f * radius);
 }

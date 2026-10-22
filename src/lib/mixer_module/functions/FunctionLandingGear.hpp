@@ -31,38 +31,38 @@
  *
  ****************************************************************************/
 
-#pragma once
+#لارښوونه once
 
-#include "FunctionProviderBase.hpp"
+#ضمن "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear.h>
+#ضمن <uORB/topics/landing_gear.h>
 
 /**
  * Functions: Landing_Gear
  */
-class FunctionLandingGear : public FunctionProviderBase
+صنف FunctionLandingGear : عام Function_Provider_بنسټ
 {
-public:
-	FunctionLandingGear() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGear(); }
+عام:
+	FunctionLandingGear() = افتراضي;
+	ساكن Function_Provider_بنسټ *allocate(ثابت Context &context) { أرجع جديد FunctionLandingGear(); }
 
-	void update() override
+	فراغ update() override
 	{
 		landing_gear_s landing_gear;
 
-		if (_topic.update(&landing_gear)) {
-			if (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
-				_data = -1.f;
+		إذا (_topic.update(&landing_gear)) {
+			إذا (landing_gear.landing_gear == landing_gear_s::GEAR_ښکته) {
+				معلومات_3 = -1.f;
 
-			} else if (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
-				_data = 1.f;
+			} وإلا إذا (landing_gear.landing_gear == landing_gear_s::GEAR_پورته) {
+				معلومات_3 = 1.f;
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	عائم value(OutputFunction func) override { أرجع معلومات_3; }
 
-private:
+خاص:
 	uORB::Subscription _topic{ORB_ID(landing_gear)};
-	float _data{-1.f};
+	عائم معلومات_3{-1.f};
 };

@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#pragma once
+#لارښوونه once
 
-struct traffic_data_s {
-	double lat_traffic;
-	double lon_traffic;
-	float alt_traffic;
-	float heading_traffic;
-	float vxy_traffic;
-	float vz_traffic;
-	bool in_conflict;
+بنية traffic_معلومات_s {
+	مزدوج lat_traffic;
+	مزدوج lon_traffic;
+	عائم alt_traffic;
+	عائم heading_traffic;
+	عائم vxy_traffic;
+	عائم vz_traffic;
+	bool دننه_conflict;
 };
 
 // traffic dataset generated using notebook in adsb/test_adsb_helper.ipynb
-static constexpr traffic_data_s kTrafficDataset[] = {
+ساكن constexpr traffic_معلومات_s kTrafficDataset[] = {
 
 	{3.270694516059187151e+01, -9.638379328402535862e+01, 4.470000000000000000e+02, -3.141592653589793116e+00, 2.042375980563040798e+02, 2.042375980563040798e+02, 0},
 	{3.270694516059187151e+01, -9.638379328402535862e+01, 7.900000000000000000e+02, -3.109129529502698386e+00, 2.500275609807847104e+03, 2.500275609807847104e+03, 0},

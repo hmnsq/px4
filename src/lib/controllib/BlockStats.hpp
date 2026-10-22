@@ -37,65 +37,65 @@
  * Controller library code
  */
 
-#pragma once
+#لارښوونه once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
-template<class Type, size_t M>
-class __EXPORT BlockStats: public Block
+کينډۍ<صنف Type, size_t M>
+صنف __EXPORT بلاک_Stats: عام بلاک
 {
 
-public:
+عام:
 // methods
-	BlockStats(SuperBlock *parent,
-		   const char *name) :
-		Block(parent, name),
-		_sum(),
-		_sumSq(),
-		_count(0)
+	بلاک_Stats(Super_بلاک *پلار,
+		   ثابت حرف *name) :
+		بلاک(پلار, name),
+		مجموعه_2(),
+		مجموعه_Sq(),
+		شمېر_3(0)
 	{}
-	virtual ~BlockStats() = default;
-	void update(const matrix::Vector<Type, M> &u)
+	مجازي ~بلاک_Stats() = افتراضي;
+	فراغ update(ثابت ماتریکس::ویکټور<Type, M> &u)
 	{
-		_sum += u;
-		_sumSq += u.emult(u);
-		_count += 1;
+		مجموعه_2 += u;
+		مجموعه_Sq += u.emult(u);
+		شمېر_3 += 1;
 	}
-	void reset()
+	فراغ reset()
 	{
-		_sum.setZero();
-		_sumSq.setZero();
-		_count = 0;
+		مجموعه_2.سېټ_Zero();
+		مجموعه_Sq.سېټ_Zero();
+		شمېر_3 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
-	matrix::Vector<Type, M> getVar()
+	size_t get_شمېر() { أرجع شمېر_3; }
+	ماتریکس::ویکټور<Type, M> get_منځنۍ() { أرجع مجموعه_2 / شمېر_3; }
+	ماتریکس::ویکټور<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		أرجع (مجموعه_Sq - مجموعه_2.emult(مجموعه_2) / شمېر_3) / شمېر_3;
 	}
-	matrix::Vector<Type, M> getStdDev()
+	ماتریکس::ویکټور<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		أرجع getVar().جذر();
 	}
-private:
-// attributes
-	matrix::Vector<Type, M> _sum;
-	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+خاص:
+//ځانګړتیاوې
+	ماتریکس::ویکټور<Type, M> مجموعه_2;
+	ماتریکس::ویکټور<Type, M> مجموعه_Sq;
+	size_t شمېر_3;
 };
 
 } // namespace control

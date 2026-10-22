@@ -1,46 +1,46 @@
-import sys
-import re
-import math
+استورد sys
+استورد re
+استورد math
 
-global default_var
+عام default_var
 default_var = {}
 
-class ParameterGroup(object):
+صنف Parameter_ډله(object):
     """
     Single parameter group
     """
-    def __init__(self, name):
+    تعریف __init__(self, name):
         self.name = name
-        self.no_code_generation = False #for injected parameters
+        self.no_کوډ_generation = خطأ #for injected parameters
         self.params = []
 
-    def AddParameter(self, param):
+    تعریف جمع_کړه_Parameter(self, param):
         """
         Add parameter to the group
         """
         self.params.append(param)
 
-    def GetName(self):
+    تعریف GetName(self):
         """
         Get parameter group name
         """
-        return self.name
+        أرجع self.name
 
-    def GetParams(self):
+    تعریف GetParams(self):
         """
         Returns the parsed list of parameters. Every parameter is a Parameter
         object. Note that returned object is not a copy. Modifications affect
         state of the parser.
         """
-        return sorted(self.params, key=lambda param: param.name)
+        أرجع sorted(self.params, کلی=مجهول param: param.name)
 
-class Parameter(object):
+صنف Parameter(object):
     """
     Single parameter
     """
 
     # Define sorting order of the fields
-    priority = {
+    لومړیتوب = {
         "board": 9,
         "short_desc": 8,
         "long_desc": 7,
@@ -51,162 +51,162 @@ class Parameter(object):
         # all others == 0 (sorted alphabetically)
     }
 
-    def __init__(self, name, type, default = ""):
+    تعریف __init__(self, name, type, افتراضي = ""):
         self.fields = {}
-        self.values = {}
+        self.ارزښتونه_2 = {}
         self.bitmask = {}
         self.name = name
         self.type = type
-        self.default = default
+        self.افتراضي = افتراضي
         self.category = ""
-        self.volatile = False
-        self.boolean = False
-        self.readonly = False
+        self.متطاير = خطأ
+        self.منطقي = خطأ
+        self.readonly = خطأ
 
-    def GetName(self):
-        return self.name
+    تعریف GetName(self):
+        أرجع self.name
 
-    def GetType(self):
-        return self.type
+    تعریف GetType(self):
+        أرجع self.type
 
-    def GetDefault(self):
-        return self.default
+    تعریف GetDefault(self):
+        أرجع self.افتراضي
 
-    def GetCategory(self):
-        return self.category.title()
+    تعریف GetCategory(self):
+        أرجع self.category.title()
 
-    def GetVolatile(self):
-        return self.volatile
+    تعریف GetVolatile(self):
+        أرجع self.متطاير
 
-    def GetBoolean(self):
-        return self.boolean
+    تعریف GetBoolean(self):
+        أرجع self.منطقي
 
-    def GetReadonly(self):
-        return self.readonly
+    تعریف GetReadonly(self):
+        أرجع self.readonly
 
-    def SetField(self, code, value):
+    تعریف سېټ_ډګر_2(self, کوډ, ارزښت):
         """
         Set named field value
         """
-        self.fields[code] = value
+        self.fields[کوډ] = ارزښت
 
-    def SetEnumValue(self, code, value):
+    تعریف سېټ_Enum_ارزښت(self, کوډ, ارزښت):
         """
         Set named enum value
         """
-        self.values[code] = value
+        self.ارزښتونه_2[کوډ] = ارزښت
 
-    def SetBitmaskBit(self, index, bit):
+    تعریف سېټ_Bitmask_بټ(self, شاخص, بټ):
         """
         Set named enum value
         """
-        self.bitmask[index] = bit
+        self.bitmask[شاخص] = بټ
 
-    def SetVolatile(self):
+    تعریف سېټ_Volatile(self):
         """
         Set volatile flag
         """
-        self.volatile = True
+        self.متطاير = ریښتیا
 
-    def SetBoolean(self):
+    تعریف سېټ_Boolean(self):
         """
         Set boolean flag
         """
-        self.boolean = True
+        self.منطقي = ریښتیا
 
-    def SetReadonly(self):
+    تعریف سېټ_Readonly(self):
         """
         Set readonly flag
         """
-        self.readonly = True
+        self.readonly = ریښتیا
 
-    def SetCategory(self, category):
+    تعریف سېټ_Category(self, category):
         """
         Set param category
         """
         self.category = category
 
-    def GetFieldCodes(self):
+    تعریف Get_ډګر_Codes(self):
         """
         Return list of existing field codes in convenient order
         """
-        keys = self.fields.keys()
-        keys = sorted(keys)
-        keys = sorted(keys, key=lambda x: self.priority.get(x, 0), reverse=True)
-        return keys
+        کلیګانې = self.fields.کلیګانې()
+        کلیګانې = sorted(کلیګانې)
+        کلیګانې = sorted(کلیګانې, کلی=مجهول x: self.لومړیتوب.get(x, 0), سرچپه=ریښتیا)
+        أرجع کلیګانې
 
-    def GetFieldValue(self, code):
+    تعریف Get_ډګر_ارزښت(self, کوډ):
         """
         Return value of the given field code or None if not found.
         """
-        fv =  self.fields.get(code)
-        if not fv:
+        fv =  self.fields.get(کوډ)
+        إذا ليس fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv
+                أرجع ""
+        أرجع fv
 
-    def GetEnumCodes(self):
+    تعریف GetEnumCodes(self):
         """
         Return list of existing value codes in convenient order
         """
-        return sorted(self.values.keys(), key=float)
+        أرجع sorted(self.ارزښتونه_2.کلیګانې(), کلی=عائم)
 
-    def GetEnumValue(self, code):
+    تعریف Get_Enum_ارزښت(self, کوډ):
         """
         Return value of the given enum code or None if not found.
         """
-        fv =  self.values.get(code)
-        if not fv:
+        fv =  self.ارزښتونه_2.get(کوډ)
+        إذا ليس fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv
+                أرجع ""
+        أرجع fv
 
-    def GetBitmaskList(self):
+    تعریف GetBitmaskList(self):
         """
         Return list of existing bitmask codes in convenient order
         """
-        keys = self.bitmask.keys()
-        return sorted(keys, key=float)
+        کلیګانې = self.bitmask.کلیګانې()
+        أرجع sorted(کلیګانې, کلی=عائم)
 
-    def GetBitmaskBit(self, index):
+    تعریف Get_Bitmask_بټ(self, شاخص):
         """
         Return value of the given bitmask code or None if not found.
         """
-        fv = self.bitmask.get(index)
-        if not fv:
+        fv = self.bitmask.get(شاخص)
+        إذا ليس fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv.strip()
+                أرجع ""
+        أرجع fv.strip()
 
-class SourceParser(object):
+صنف سرچینه_Parser(object):
     """
     Parses provided data and stores all found parameters internally.
     """
 
-    re_split_lines = re.compile(r'[\r\n]+')
-    re_comment_start = re.compile(r'^\/\*\*')
+    re_وېشل_کرښې = re.compile(r'[\r\n]+')
+    re_comment_پیل = re.compile(r'^\/\*\*')
     re_comment_content = re.compile(r'^\*\s*(.*)')
-    re_comment_tag = re.compile(r'@([a-zA-Z][a-zA-Z0-9_]*)\s*(.*)')
-    re_comment_end = re.compile(r'(.*?)\s*\*\/')
+    re_comment_نښان = re.compile(r'@([a-zA-Z][a-zA-Z0-9_]*)\s*(.*)')
+    re_comment_پای_ټکی = re.compile(r'(.*?)\s*\*\/')
     re_parameter_definition = re.compile(r'PARAM_DEFINE_([A-Z_][A-Z0-9_]*)\s*\(([A-Z_][A-Z0-9_]*)\s*,\s*([^ ,\)]+)\s*\)\s*;')
     re_px4_parameter_definition = re.compile(r'PX4_PARAM_DEFINE_([A-Z_][A-Z0-9_]*)\s*\(([A-Z_][A-Z0-9_]*)\s*\)\s*;')
     re_px4_param_default_definition = re.compile(r'#define\s*PARAM_([A-Z_][A-Z0-9_]*)\s*([^ ,\)]+)\s*')
     re_cut_type_specifier = re.compile(r'[a-z]+$')
-    re_is_a_number = re.compile(r'^-?[0-9\.]')
+    re_is_a_شمېره = re.compile(r'^-?[0-9\.]')
     re_remove_dots = re.compile(r'\.+$')
 
-    valid_tags = set(["group", "board", "min", "max", "unit", "decimal", "increment", "reboot_required", "value", "boolean", "bit", "category", "volatile"])
+    valid_نښانونه = سېټ(["group", "board", "min", "max", "unit", "decimal", "increment", "reboot_required", "value", "boolean", "bit", "category", "volatile"])
 
     # Order of parameter groups
-    priority = {
+    لومړیتوب = {
         # All other groups = 0 (sort alphabetically)
         "Miscellaneous": -10
     }
 
-    def __init__(self):
+    تعریف __init__(self):
         self.param_groups = {}
 
-    def Parse(self, contents):
+    تعریف Parse(self, contents):
         """
         Incrementally parse program contents and append all found parameters
         to the list.
@@ -214,155 +214,155 @@ class SourceParser(object):
         # This code is essentially a comment-parsing grammar. "state"
         # represents parser state. It contains human-readable state
         # names.
-        state = None
-        for line in self.re_split_lines.split(contents):
-            line = line.strip()
+        state = هیڅ
+        لكل کرښه في self.re_وېشل_کرښې.وېشل(contents):
+            کرښه = کرښه.strip()
             # Ignore empty lines
-            if line == "":
-                continue
-            if self.re_comment_start.match(line):
+            إذا کرښه == "":
+                استمر
+            إذا self.re_comment_پیل.سمون(کرښه):
                 state = "wait-short"
-                short_desc = None
-                long_desc = None
-                tags = {}
-                def_values = {}
+                short_desc = هیڅ
+                long_desc = هیڅ
+                نښانونه = {}
+                def_ارزښتونه = {}
                 def_bitmask = {}
-            elif state is not None and state != "comment-processed":
-                m = self.re_comment_end.search(line)
-                if m:
-                    line = m.group(1)
-                    last_comment_line = True
-                else:
-                    last_comment_line = False
-                m = self.re_comment_content.match(line)
-                if m:
-                    comment_content = m.group(1)
-                    if comment_content == "":
+            وإلاإذا state دی ليس هیڅ و state != "comment-processed":
+                m = self.re_comment_پای_ټکی.پلټنه(کرښه)
+                إذا m:
+                    کرښه = m.ډله(1)
+                    وروستی_comment_کرښه = ریښتیا
+                وإلا:
+                    وروستی_comment_کرښه = خطأ
+                m = self.re_comment_content.سمون(کرښه)
+                إذا m:
+                    comment_content = m.ډله(1)
+                    إذا comment_content == "":
                         # When short comment ends with empty comment line,
                         # start waiting for the next part - long comment.
-                        if state == "wait-short-end":
+                        إذا state == "wait-short-end":
                             state = "wait-long"
-                        if state == "wait-long-end":
+                        إذا state == "wait-long-end":
                             # Long description includes empty lines
                             long_desc += "\n"
-                    else:
-                        m = self.re_comment_tag.match(comment_content)
-                        if m:
-                            tag, desc = m.group(1, 2)
-                            if (tag == "value"):
+                    وإلا:
+                        m = self.re_comment_نښان.سمون(comment_content)
+                        إذا m:
+                            نښان, desc = m.ډله(1, 2)
+                            إذا (نښان == "value"):
                                 # Take the meta info string and split the code and description
-                                metainfo = desc.split(" ",  1)
-                                def_values[metainfo[0]] = metainfo[1]
-                            elif (tag == "bit"):
+                                metainfo = desc.وېشل(" ",  1)
+                                def_ارزښتونه[metainfo[0]] = metainfo[1]
+                            وإلاإذا (نښان == "bit"):
                                 # Take the meta info string and split the code and description
-                                metainfo = desc.split(" ",  1)
+                                metainfo = desc.وېشل(" ",  1)
                                 def_bitmask[metainfo[0]] = metainfo[1]
-                            else:
-                                tags[tag] = desc
-                            current_tag = tag
+                            وإلا:
+                                نښانونه[نښان] = desc
+                            current_نښان = نښان
                             state = "wait-tag-end"
-                        elif state == "wait-short":
+                        وإلاإذا state == "wait-short":
                             # Store first line of the short description
                             short_desc = comment_content
                             state = "wait-short-end"
-                        elif state == "wait-short-end":
+                        وإلاإذا state == "wait-short-end":
                             # Append comment line to the short description
                             short_desc += "\n" + comment_content
-                        elif state == "wait-long":
+                        وإلاإذا state == "wait-long":
                             # Store first line of the long description
                             long_desc = comment_content
                             state = "wait-long-end"
-                        elif state == "wait-long-end":
+                        وإلاإذا state == "wait-long-end":
                             # Append comment line to the long description
                             long_desc += "\n" + comment_content
-                        elif state == "wait-tag-end":
+                        وإلاإذا state == "wait-tag-end":
                             # Append comment line to the tag text
-                            tags[current_tag] += "\n" + comment_content
-                        else:
-                            raise AssertionError(
+                            نښانونه[current_نښان] += "\n" + comment_content
+                        وإلا:
+                            ارفع AssertionError(
                                     "Invalid parser state: %s" % state)
-                elif not last_comment_line:
+                وإلاإذا ليس وروستی_comment_کرښه:
                     # Invalid comment line (inside comment, but not starting with
                     # "*" or "*/". Reset parsed content.
-                    state = None
-                if last_comment_line:
+                    state = هیڅ
+                إذا وروستی_comment_کرښه:
                     state = "comment-processed"
-            else:
-                tp = None
-                name = None
+            وإلا:
+                tp = هیڅ
+                name = هیڅ
                 defval = ""
                 # Non-empty line outside the comment
-                m = self.re_px4_param_default_definition.match(line)
+                m = self.re_px4_param_default_definition.سمون(کرښه)
                 # Default value handling
-                if m:
-                    name_m, defval_m = m.group(1,2)
+                إذا m:
+                    name_m, defval_m = m.ډله(1,2)
                     default_var[name_m] = defval_m
-                m = self.re_parameter_definition.match(line)
-                if m:
-                    tp, name, defval = m.group(1, 2, 3)
-                else:
-                    m = self.re_px4_parameter_definition.match(line)
-                    if m:
-                        tp, name = m.group(1, 2)
-                        if (name+'_DEFAULT') in default_var:
+                m = self.re_parameter_definition.سمون(کرښه)
+                إذا m:
+                    tp, name, defval = m.ډله(1, 2, 3)
+                وإلا:
+                    m = self.re_px4_parameter_definition.سمون(کرښه)
+                    إذا m:
+                        tp, name = m.ډله(1, 2)
+                        إذا (name+'_DEFAULT') في default_var:
                             defval = default_var[name+'_DEFAULT']
-                if tp is not None:
+                إذا tp دی ليس هیڅ:
                     # Remove trailing type specifier from numbers: 0.1f => 0.1
-                    if defval != "" and self.re_is_a_number.match(defval):
+                    إذا defval != "" و self.re_is_a_شمېره.سمون(defval):
                         defval = self.re_cut_type_specifier.sub('', defval)
                     param = Parameter(name, tp, defval)
-                    param.SetField("short_desc", name)
+                    param.سېټ_ډګر_2("short_desc", name)
                     # If comment was found before the parameter declaration,
                     # inject its data into the newly created parameter.
-                    group = "Miscellaneous"
-                    if state == "comment-processed":
-                        if short_desc is not None:
-                            if '\n' in short_desc:
-                                raise Exception('short description must be a single line (parameter: {:})'.format(name))
-                            if len(short_desc) > 150:
-                                raise Exception('short description too long (150 max, is {:}, parameter: {:})'.format(len(short_desc), name))
-                            param.SetField("short_desc", self.re_remove_dots.sub('', short_desc))
-                        if long_desc is not None:
-                            param.SetField("long_desc", long_desc)
-                        for tag in tags:
-                            if tag == "group":
-                                group = tags[tag]
-                            elif tag == "volatile":
-                                param.SetVolatile()
-                            elif tag == "category":
-                                param.SetCategory(tags[tag])
-                            elif tag == "boolean":
-                                param.SetBoolean()
-                            elif tag not in self.valid_tags:
-                                sys.stderr.write("Skipping invalid documentation tag: '%s'\n" % tag)
-                                return False
-                            else:
-                                param.SetField(tag, tags[tag])
-                        for def_value in def_values:
-                            param.SetEnumValue(def_value, def_values[def_value])
-                        for def_bit in def_bitmask:
-                            param.SetBitmaskBit(def_bit, def_bitmask[def_bit])
+                    ډله = "Miscellaneous"
+                    إذا state == "comment-processed":
+                        إذا short_desc دی ليس هیڅ:
+                            إذا '\n' في short_desc:
+                                ارفع Exception('short description must be a single line (parameter: {:})'.format(name))
+                            إذا اوږدوالی(short_desc) > 150:
+                                ارفع Exception('short description too long (150 max, is {:}, parameter: {:})'.format(اوږدوالی(short_desc), name))
+                            param.سېټ_ډګر_2("short_desc", self.re_remove_dots.sub('', short_desc))
+                        إذا long_desc دی ليس هیڅ:
+                            param.سېټ_ډګر_2("long_desc", long_desc)
+                        لكل نښان في نښانونه:
+                            إذا نښان == "group":
+                                ډله = نښانونه[نښان]
+                            وإلاإذا نښان == "volatile":
+                                param.سېټ_Volatile()
+                            وإلاإذا نښان == "category":
+                                param.سېټ_Category(نښانونه[نښان])
+                            وإلاإذا نښان == "boolean":
+                                param.سېټ_Boolean()
+                            وإلاإذا نښان ليس في self.valid_نښانونه:
+                                sys.stderr.اكتب("Skipping invalid documentation tag: '%s'\n" % نښان)
+                                أرجع خطأ
+                            وإلا:
+                                param.سېټ_ډګر_2(نښان, نښانونه[نښان])
+                        لكل def_ارزښت في def_ارزښتونه:
+                            param.سېټ_Enum_ارزښت(def_ارزښت, def_ارزښتونه[def_ارزښت])
+                        لكل def_بټ في def_bitmask:
+                            param.سېټ_Bitmask_بټ(def_بټ, def_bitmask[def_بټ])
                     # Store the parameter
-                    if group not in self.param_groups:
-                        self.param_groups[group] = ParameterGroup(group)
-                    self.param_groups[group].AddParameter(param)
-                state = None
-        return True
+                    إذا ډله ليس في self.param_groups:
+                        self.param_groups[ډله] = Parameter_ډله(ډله)
+                    self.param_groups[ډله].جمع_کړه_Parameter(param)
+                state = هیڅ
+        أرجع ریښتیا
 
-    def IsNumber(self, numberString):
-        try:
-            float(numberString)
-            return True
-        except ValueError:
-            return False
+    تعریف Is_شمېره(self, شمېره_String):
+        حاول:
+            عائم(شمېره_String)
+            أرجع ریښتیا
+        استثناء ارزښت_Error:
+            أرجع خطأ
 
-    def Validate(self):
+    تعریف Validate(self):
         """
         Validates the parameter meta data.
         """
-        seenParamNames = []
+        کتل_شوی_Param_نومونه = []
         #allowedUnits should match set defined in /Firmware/validation/module_schema.yaml
-        allowedUnits = set ([
+        allowedUnits = سېټ ([
                                 '%', 'Hz', '1/s', 'mAh',
                                 'rad', '%/rad', 'rad/s', 'rad/s^2', '%/rad/s', 'rad s^2/m', 'rad s/m',
                                 'bit/s', 'B/s', 'MiB',
@@ -377,75 +377,75 @@ class SourceParser(object):
                                 'N/(m/s)', 'Nm/rad', 'Nm/(rad/s)', 'Nm', 'N',
                                 'rpm',
                                 'normalized_thrust/s', 'normalized_thrust', 'norm', 'SD', 'dBHz', ''])
-        for group in self.GetParamGroups():
-            for param in group.GetParams():
+        لكل ډله في self.GetParamGroups():
+            لكل param في ډله.GetParams():
                 name  = param.GetName()
-                if len(name) > 16:
-                    sys.stderr.write("Parameter Name {0} is too long (Limit is 16)\n".format(name))
-                    return False
-                board = param.GetFieldValue("board")
+                إذا اوږدوالی(name) > 16:
+                    sys.stderr.اكتب("Parameter Name {0} is too long (Limit is 16)\n".format(name))
+                    أرجع خطأ
+                board = param.Get_ډګر_ارزښت("board")
                 # Check for duplicates
                 name_plus_board = name + "+" + board
-                for seenParamName in seenParamNames:
-                    if seenParamName == name_plus_board:
-                        sys.stderr.write("Duplicate parameter definition: {0}\n".format(name_plus_board))
-                        return False
-                seenParamNames.append(name_plus_board)
+                لكل کتل_شوی_Param_Name في کتل_شوی_Param_نومونه:
+                    إذا کتل_شوی_Param_Name == name_plus_board:
+                        sys.stderr.اكتب("Duplicate parameter definition: {0}\n".format(name_plus_board))
+                        أرجع خطأ
+                کتل_شوی_Param_نومونه.append(name_plus_board)
                 # Validate values
-                default = param.GetDefault()
-                min = param.GetFieldValue("min")
-                max = param.GetFieldValue("max")
-                units = param.GetFieldValue("unit")
-                if units not in allowedUnits:
-                    sys.stderr.write("Invalid unit in {0}: {1}\n".format(name, units))
-                    return False
+                افتراضي = param.GetDefault()
+                min = param.Get_ډګر_ارزښت("min")
+                max = param.Get_ډګر_ارزښت("max")
+                units = param.Get_ډګر_ارزښت("unit")
+                إذا units ليس في allowedUnits:
+                    sys.stderr.اكتب("Invalid unit in {0}: {1}\n".format(name, units))
+                    أرجع خطأ
                 #sys.stderr.write("{0} default:{1} min:{2} max:{3}\n".format(name, default, min, max))
-                if default != "" and not self.IsNumber(default):
-                    sys.stderr.write("Default value not number: {0} {1}\n".format(name, default))
-                    return False
+                إذا افتراضي != "" و ليس self.Is_شمېره(افتراضي):
+                    sys.stderr.اكتب("Default value not number: {0} {1}\n".format(name, افتراضي))
+                    أرجع خطأ
                 # if default != "" and "." not in default:
                 #     sys.stderr.write("Default value does not contain dot (e.g. 10 needs to be written as 10.0): {0} {1}\n".format(name, default))
                 #     return False
-                if min != "":
-                    if not self.IsNumber(min):
-                        sys.stderr.write("Min value not number: {0} {1}\n".format(name, min))
-                        return False
-                    if default != "" and float(default) < float(min):
-                        sys.stderr.write("Default value is smaller than min: {0} default:{1} min:{2}\n".format(name, default, min))
-                        return False
-                if max != "":
-                    if not self.IsNumber(max):
-                        sys.stderr.write("Max value not number: {0} {1}\n".format(name, max))
-                        return False
-                    if default != "" and float(default) > float(max):
-                        sys.stderr.write("Default value is larger than max: {0} default:{1} max:{2}\n".format(name, default, max))
-                        return False
-                for code in param.GetEnumCodes():
-                        if not self.IsNumber(code):
-                            sys.stderr.write("Min value not number: {0} {1}\n".format(name, code))
-                            return False
-                        if param.GetEnumValue(code) == "":
-                            sys.stderr.write("Description for enum value is empty: {0} {1}\n".format(name, code))
-                            return False
-                for index in param.GetBitmaskList():
-                        if not self.IsNumber(index):
-                            sys.stderr.write("bit value not number: {0} {1}\n".format(name, index))
-                            return False
-                        if not int(min) <= math.pow(2, int(index)) <= int(max):
-                            sys.stderr.write("Bitmask bit must be between {0} and {1}: {2} {3}\n".format(min, max, name, math.pow(2, int(index))))
-                            return False
-                        if param.GetBitmaskBit(index) == "":
-                            sys.stderr.write("Description for bitmask bit is empty: {0} {1}\n".format(name, index))
-                            return False
-        return True
+                إذا min != "":
+                    إذا ليس self.Is_شمېره(min):
+                        sys.stderr.اكتب("Min value not number: {0} {1}\n".format(name, min))
+                        أرجع خطأ
+                    إذا افتراضي != "" و عائم(افتراضي) < عائم(min):
+                        sys.stderr.اكتب("Default value is smaller than min: {0} default:{1} min:{2}\n".format(name, افتراضي, min))
+                        أرجع خطأ
+                إذا max != "":
+                    إذا ليس self.Is_شمېره(max):
+                        sys.stderr.اكتب("Max value not number: {0} {1}\n".format(name, max))
+                        أرجع خطأ
+                    إذا افتراضي != "" و عائم(افتراضي) > عائم(max):
+                        sys.stderr.اكتب("Default value is larger than max: {0} default:{1} max:{2}\n".format(name, افتراضي, max))
+                        أرجع خطأ
+                لكل کوډ في param.GetEnumCodes():
+                        إذا ليس self.Is_شمېره(کوډ):
+                            sys.stderr.اكتب("Min value not number: {0} {1}\n".format(name, کوډ))
+                            أرجع خطأ
+                        إذا param.Get_Enum_ارزښت(کوډ) == "":
+                            sys.stderr.اكتب("Description for enum value is empty: {0} {1}\n".format(name, کوډ))
+                            أرجع خطأ
+                لكل شاخص في param.GetBitmaskList():
+                        إذا ليس self.Is_شمېره(شاخص):
+                            sys.stderr.اكتب("bit value not number: {0} {1}\n".format(name, شاخص))
+                            أرجع خطأ
+                        إذا ليس صحيح(min) <= math.pow(2, صحيح(شاخص)) <= صحيح(max):
+                            sys.stderr.اكتب("Bitmask bit must be between {0} and {1}: {2} {3}\n".format(min, max, name, math.pow(2, صحيح(شاخص))))
+                            أرجع خطأ
+                        إذا param.Get_Bitmask_بټ(شاخص) == "":
+                            sys.stderr.اكتب("Description for bitmask bit is empty: {0} {1}\n".format(name, شاخص))
+                            أرجع خطأ
+        أرجع ریښتیا
 
-    def GetParamGroups(self):
+    تعریف GetParamGroups(self):
         """
         Returns the parsed list of parameters. Every parameter is a Parameter
         object. Note that returned object is not a copy. Modifications affect
         state of the parser.
         """
-        groups = self.param_groups.values()
-        groups = sorted(groups, key=lambda x: x.GetName())
-        groups = sorted(groups, key=lambda x: self.priority.get(x.GetName(), 0), reverse=True)
-        return groups
+        groups = self.param_groups.ارزښتونه_2()
+        groups = sorted(groups, کلی=مجهول x: x.GetName())
+        groups = sorted(groups, کلی=مجهول x: self.لومړیتوب.get(x.GetName(), 0), سرچپه=ریښتیا)
+        أرجع groups

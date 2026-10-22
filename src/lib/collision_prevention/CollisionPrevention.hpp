@@ -40,72 +40,72 @@
  *
  */
 
-#pragma once
+#لارښوونه once
 
-#include <float.h>
+#ضمن <float.h>
 
-#include <commander/px4_custom_mode.h>
-#include <drivers/drv_hrt.h>
-#include <mathlib/mathlib.h>
-#include <matrix/matrix/math.hpp>
-#include <px4_platform_common/module_params.h>
-#include <systemlib/mavlink_log.h>
-#include <uORB/Publication.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionMultiArray.hpp>
-#include <uORB/topics/collision_constraints.h>
-#include <uORB/topics/distance_sensor.h>
-#include <uORB/topics/mavlink_log.h>
-#include <uORB/topics/obstacle_distance.h>
-#include <uORB/topics/vehicle_attitude.h>
-#include <uORB/topics/vehicle_command.h>
+#ضمن <commander/px4_custom_mode.h>
+#ضمن <drivers/drv_hrt.h>
+#ضمن <mathlib/mathlib.h>
+#ضمن <matrix/matrix/math.hpp>
+#ضمن <px4_platform_common/module_params.h>
+#ضمن <systemlib/mavlink_log.h>
+#ضمن <uORB/Publication.hpp>
+#ضمن <uORB/Subscription.hpp>
+#ضمن <uORB/SubscriptionMultiArray.hpp>
+#ضمن <uORB/topics/collision_constraints.h>
+#ضمن <uORB/topics/distance_sensor.h>
+#ضمن <uORB/topics/mavlink_log.h>
+#ضمن <uORB/topics/obstacle_distance.h>
+#ضمن <uORB/topics/vehicle_attitude.h>
+#ضمن <uORB/topics/vehicle_command.h>
 
-using namespace time_literals;
+کارول نطاق وخت_literals;
 
-class CollisionPrevention : public ModuleParams
+صنف CollisionPrevention : عام ModuleParams
 {
-public:
-	CollisionPrevention(ModuleParams *parent);
-	~CollisionPrevention() override = default;
+عام:
+	CollisionPrevention(ModuleParams *پلار);
+	~CollisionPrevention() override = افتراضي;
 
 	/**
 	 * Returns true if Collision Prevention is running
 	 */
-	bool is_active();
+	منطقي is_فعال();
 
 	/**
 	 * Computes collision free setpoints
 	 * @param setpoint_accel setpoint purely based on sticks, to be modified
 	 * @param setpoint_vel current velocity setpoint as information to be able to stop in time, does not get changed
 	 */
-	void modifySetpoint(matrix::Vector2f &setpoint_accel, const matrix::Vector2f &setpoint_vel);
+	فراغ modifySetpoint(ماتریکس::Vector2f &setpoint_accel, ثابت ماتریکس::Vector2f &setpoint_vel);
 
-	static constexpr int BIN_COUNT =
-		sizeof(obstacle_distance_s::distances) / sizeof(obstacle_distance_s::distances[0]); // 72
-	static constexpr int BIN_SIZE = 360 / BIN_COUNT; // cannot be lower than 5 degrees, should divide 360 evenly
+	ساكن constexpr صحيح BIN_شمېر =
+		حجم(obstacle_واټن_s::distances) / حجم(obstacle_واټن_s::distances[0]); // 72
+	ساكن constexpr صحيح BIN_اندازه = 360 / BIN_شمېر; // cannot be lower than 5 degrees, should divide 360 evenly
 
-protected:
+محمي:
 	/** Aggregates the sensor data into an internal obstacle map in body frame */
-	void _updateObstacleMap();
+	فراغ _updateObstacleMap();
 
 	/** Updates the obstacle data based on stale data and calculates values from the map */
-	void _updateObstacleData();
+	فراغ update_Obstacle_معلومات();
 
 	/** Calculate the constrained setpoint considering the current obstacle distances, acceleration setpoint and velocity setpoint */
-	void _calculateConstrainedSetpoint(matrix::Vector2f &setpoint_accel, const matrix::Vector2f &setpoint_vel);
+	فراغ _calculateConstrainedSetpoint(ماتریکس::Vector2f &setpoint_accel, ثابت ماتریکس::Vector2f &setpoint_vel);
 
-	obstacle_distance_s _obstacle_map_body_frame{};
-	bool _data_fov[BIN_COUNT] {};
-	uint64_t _data_timestamps[BIN_COUNT] {};
-	uint16_t _data_maxranges[BIN_COUNT] {}; /**< in cm */
+	obstacle_واټن_s obstacle_map_body_چوکاټ{};
+	منطقي معلومات_fov[BIN_شمېر] {};
+	uint64_t معلومات_timestamps[BIN_شمېر] {};
+	uint16_t معلومات_maxranges[BIN_شمېر] {}; /**< in cm */
 
-	void _addDistanceSensorData(distance_sensor_s &distance_sensor, const matrix::Quatf &vehicle_attitude);
+	فراغ جمع_کړه_واټن_Sensor_معلومات(واټن_sensor_s &واټن_sensor, ثابت ماتریکس::Quatf &vehicle_attitude);
 
 	/**
 	 * Updates obstacle distance message with measurement from offboard
 	 * @param obstacle, obstacle_distance message to be updated
 	 */
-	void _addObstacleSensorData(const obstacle_distance_s &obstacle, const float vehicle_yaw);
+	فراغ جمع_کړه_Obstacle_Sensor_معلومات(ثابت obstacle_واټن_s &obstacle, ثابت عائم vehicle_yaw);
 
 	/**
 	 * Computes an adaption to the setpoint direction to guide towards free space
@@ -113,7 +113,7 @@ protected:
 	 * @param setpoint_index, index of the setpoint in the internal obstacle map
 	 * @param vehicle_yaw_angle_rad, vehicle orientation
 	 */
-	void _adaptSetpointDirection(matrix::Vector2f &setpoint_dir, int &setpoint_index, float vehicle_yaw_angle_rad);
+	فراغ _adaptSetpointDirection(ماتریکس::Vector2f &setpoint_dir, صحيح &setpoint_شاخص_2, عائم vehicle_yaw_angle_rad);
 
 	/**
 	 * Constrain the acceleration setpoint based on the distance to the obstacle
@@ -134,14 +134,14 @@ protected:
 	 * └─┘/     │
 	 *           -1
 	 */
-	matrix::Vector2f _constrainAccelerationSetpoint(const float &setpoint_length);
+	ماتریکس::Vector2f _constrainAccelerationSetpoint(ثابت عائم &setpoint_اوږدتیا);
 
-	void _getVelocityCompensationAcceleration(const float vehicle_yaw_angle_rad, const matrix::Vector2f &setpoint_vel,
-			const hrt_abstime now, float &vel_comp_accel, matrix::Vector2f &vel_comp_accel_dir);
+	فراغ _getVelocityCompensationAcceleration(ثابت عائم vehicle_yaw_angle_rad, ثابت ماتریکس::Vector2f &setpoint_vel,
+			ثابت hrt_abstime now, عائم &vel_comp_accel, ماتریکس::Vector2f &vel_comp_accel_dir);
 
-	float _getObstacleDistance(const matrix::Vector2f &direction);
+	عائم get_Obstacle_واټن(ثابت ماتریکس::Vector2f &direction);
 
-	float _getScale(const float &reference_distance);
+	عائم _getScale(ثابت عائم &reference_واټن);
 
 	/**
 	 * Determines whether a new sensor measurement is used
@@ -149,54 +149,54 @@ protected:
 	 * @param sensor_range, max range of the sensor in meters
 	 * @param sensor_reading, distance measurement in meters
 	 */
-	bool _enterData(int map_index, float sensor_range, float sensor_reading);
+	منطقي enter_معلومات(صحيح map_شاخص, عائم sensor_range, عائم sensor_reading);
 
-	bool _checkSetpointDirectionFeasability();
+	منطقي _checkSetpointDirectionFeasability();
 
-	void _transformSetpoint(const matrix::Vector2f &setpoint);
+	فراغ _transformSetpoint(ثابت ماتریکس::Vector2f &setpoint);
 
 
 	//Timing functions. Necessary to mock time in the tests
-	virtual hrt_abstime getTime();
-	virtual hrt_abstime getElapsedTime(const hrt_abstime *ptr);
+	مجازي hrt_abstime get_وخت();
+	مجازي hrt_abstime get_Elapsed_وخت(ثابت hrt_abstime *ptr);
 
-private:
-	bool _data_stale{true}; 		/**< states if the data is stale */
-	bool _was_active{false};		/**< states if the collision prevention interferes with the user input */
-	bool _obstacle_data_present{false};	/**< states if obstacle data is present */
+خاص:
+	منطقي معلومات_stale{ریښتیا}; 		/**< states if the data is stale */
+	منطقي was_فعال{خطأ};		/**< states if the collision prevention interferes with the user input */
+	منطقي obstacle_معلومات_present{خطأ};	/**< states if obstacle data is present */
 
-	int _setpoint_index{};			/**< index of the setpoint*/
-	matrix::Vector2f _setpoint_dir{};		/**< direction of the setpoint*/
+	صحيح setpoint_شاخص{};			/**< index of the setpoint*/
+	ماتریکس::Vector2f _setpoint_dir{};		/**< direction of the setpoint*/
 
-	float _closest_dist{};			/**< closest distance to an obstacle  */
-	matrix::Vector2f _closest_dist_dir{NAN, NAN};	/**< direction of the closest obstacle  */
+	عائم _closest_dist{};			/**< closest distance to an obstacle  */
+	ماتریکس::Vector2f _closest_dist_dir{NAN, NAN};	/**< direction of the closest obstacle  */
 
-	float _min_dist_to_keep{};
+	عائم min_dist_منزل_keep{};
 
-	orb_advert_t _mavlink_log_pub{nullptr};	 	/**< Mavlink log uORB handle */
+	orb_advert_t _mavlink_log_pub{تش_اشاره};	 	/**< Mavlink log uORB handle */
 
 	uORB::Subscription _vehicle_attitude_sub{ORB_ID(vehicle_attitude)};
-	matrix::Quatf _vehicle_attitude{};
-	float _vehicle_yaw{0.f};
+	ماتریکس::Quatf _vehicle_attitude{};
+	عائم _vehicle_yaw{0.f};
 
 	uORB::Publication<collision_constraints_s>	_constraints_pub{ORB_ID(collision_constraints)};		/**< constraints publication */
-	uORB::Publication<obstacle_distance_s>		_obstacle_distance_fused_pub{ORB_ID(obstacle_distance_fused)};	/**< obstacle_distance publication */
+	uORB::Publication<obstacle_واټن_s>		obstacle_واټن_fused_pub{ORB_ID(obstacle_واټن_fused)};	/**< obstacle_distance publication */
 	uORB::Publication<vehicle_command_s>	_vehicle_command_pub{ORB_ID(vehicle_command)};			/**< vehicle command do publication */
 
-	uORB::SubscriptionData<obstacle_distance_s> _sub_obstacle_distance{ORB_ID(obstacle_distance)}; /**< obstacle distances received form a range sensor */
-	uORB::SubscriptionMultiArray<distance_sensor_s> _distance_sensor_subs{ORB_ID::distance_sensor};
+	uORB::Subscription_معلومات<obstacle_واټن_s> sub_obstacle_واټن{ORB_ID(obstacle_واټن)}; /**< obstacle distances received form a range sensor */
+	uORB::SubscriptionMultiArray<واټن_sensor_s> واټن_sensor_subs{ORB_ID::واټن_sensor};
 
-	static constexpr uint64_t RANGE_STREAM_TIMEOUT_US{500_ms};
-	static constexpr uint64_t TIMEOUT_HOLD_US{5_s};
+	ساكن constexpr uint64_t RANGE_بهیر_TIMEOUT_US{500_ms};
+	ساكن constexpr uint64_t TIMEOUT_HOLD_US{5_s};
 
-	hrt_abstime	_last_timeout_warning{0};
-	hrt_abstime	_time_activated{0};
+	hrt_abstime	وروستی_timeout_warning{0};
+	hrt_abstime	وخت_activated{0};
 
 	DEFINE_PARAMETERS(
 		(ParamFloat<px4::params::CP_DIST>) _param_cp_dist, 		/**< collision prevention keep minimum distance */
 		(ParamFloat<px4::params::CP_DELAY>) _param_cp_delay, 		/**< delay of the range measurement data*/
 		(ParamFloat<px4::params::CP_GUIDE_ANG>) _param_cp_guide_ang, 	/**< collision prevention change setpoint angle */
-		(ParamBool<px4::params::CP_GO_NO_DATA>) _param_cp_go_no_data, 	/**< movement allowed where no data*/
+		(ParamBool<px4::params::CP_GO_NO_معلومات>) param_cp_go_no_معلومات, 	/**< movement allowed where no data*/
 		(ParamFloat<px4::params::MPC_XY_P>) _param_mpc_xy_p, 		/**< p gain from position controller*/
 		(ParamFloat<px4::params::MPC_JERK_MAX>) _param_mpc_jerk_max, 	/**< vehicle maximum jerk*/
 		(ParamFloat<px4::params::MPC_ACC_HOR>) _param_mpc_acc_hor, 	/**< vehicle maximum horizontal acceleration*/
@@ -210,25 +210,25 @@ private:
 	 * @param curr_pos, current vehicle position
 	 * @param curr_vel, current vehicle velocity
 	 */
-	void _calculateConstrainedSetpoint(matrix::Vector2f &setpoint, const matrix::Vector2f &curr_pos,
-					   const matrix::Vector2f &curr_vel);
+	فراغ _calculateConstrainedSetpoint(ماتریکس::Vector2f &setpoint, ثابت ماتریکس::Vector2f &curr_pos,
+					   ثابت ماتریکس::Vector2f &curr_vel);
 
 	/**
 	 * Publishes collision_constraints message
 	 * @param original_setpoint, setpoint before collision prevention intervention
 	 * @param adapted_setpoint, collision prevention adaped setpoint
 	 */
-	void _publishConstrainedSetpoint(const matrix::Vector2f &original_setpoint, const matrix::Vector2f &adapted_setpoint);
+	فراغ _publishConstrainedSetpoint(ثابت ماتریکس::Vector2f &original_setpoint, ثابت ماتریکس::Vector2f &adapted_setpoint);
 
 	/**
 	 * Publishes obstacle_distance message with fused data from offboard and from distance sensors
 	 * @param obstacle, obstacle_distance message to be publsihed
 	 */
-	void _publishObstacleDistance(obstacle_distance_s &obstacle);
+	فراغ publish_Obstacle_واټن(obstacle_واټن_s &obstacle);
 
 	/**
 	 * Publishes vehicle command.
 	 */
-	void _publishVehicleCmdDoLoiter();
+	فراغ _publishVehicleCmdDoLoiter();
 
 };

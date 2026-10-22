@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "RtcmTestCommon.hpp"
+#ضمن "RtcmTestCommon.hpp"
 
 TEST_F(RtcmTest, BustedSender_AllZeros)
 {
-	std::vector<uint8_t> garbage(1000, 0x00);
-	parser.addData(garbage.data(), garbage.size());
+	std::ویکټور_2<uint8_t> garbage(1000, 0x00);
+	parser.جمع_کړه_معلومات(garbage.معلومات(), garbage.اندازه());
 
 	size_t len;
-	EXPECT_EQ(parser.getNextMessage(&len), nullptr);
-	EXPECT_EQ(parser.getStats().bytes_discarded, 1000u);
-	EXPECT_EQ(parser.bufferedBytes(), 0u);
+	EXPECT_EQ(parser.get_بل_پیغام(&len), تش_اشاره);
+	EXPECT_EQ(parser.getStats().بایټونه_discarded_2, 1000u);
+	EXPECT_EQ(parser.buffered_بایټونه(), 0u);
 }
 
 TEST_F(RtcmTest, BustedSender_AllPreambles)
@@ -49,14 +49,14 @@ TEST_F(RtcmTest, BustedSender_AllPreambles)
 	// All preamble bytes (0xD3). The parser sees each 0xD3 as a potential frame start.
 	// Length extracted from 0xD3,0xD3 is ((0x03)<<8)|0xD3 = 979 bytes.
 	// Parser waits for full frame which never comes.
-	std::vector<uint8_t> preambles(500, RTCM3_PREAMBLE);
-	parser.addData(preambles.data(), preambles.size());
+	std::ویکټور_2<uint8_t> preambles(500, RTCM3_PREAMBLE);
+	parser.جمع_کړه_معلومات(preambles.معلومات(), preambles.اندازه());
 
 	size_t len;
 	// Parser should be stuck waiting for more data (incomplete frame)
-	EXPECT_EQ(parser.getNextMessage(&len), nullptr);
+	EXPECT_EQ(parser.get_بل_پیغام(&len), تش_اشاره);
 	// Buffer retains data waiting for frame completion
-	EXPECT_GT(parser.bufferedBytes(), 0u);
+	EXPECT_GT(parser.buffered_بایټونه(), 0u);
 }
 
 TEST_F(RtcmTest, BustedSender_RandomNoise)
@@ -64,62 +64,62 @@ TEST_F(RtcmTest, BustedSender_RandomNoise)
 	std::mt19937 rng(12345);
 	uint8_t noise[500];
 
-	for (size_t i = 0; i < sizeof(noise); i++) {
+	لكل (size_t i = 0; i < حجم(noise); i++) {
 		noise[i] = rng() & 0xFF;
 	}
 
-	parser.addData(noise, sizeof(noise));
+	parser.جمع_کړه_معلومات(noise, حجم(noise));
 
 	size_t len;
 
 	// Consume any messages that might accidentally form (unlikely but possible)
-	while (parser.getNextMessage(&len) != nullptr) {
-		parser.consumeMessage(len);
+	طالما (parser.get_بل_پیغام(&len) != تش_اشاره) {
+		parser.consume_پیغام(len);
 	}
 
 	// Most data should be discarded
-	auto stats = parser.getStats();
-	EXPECT_GT(stats.bytes_discarded + stats.crc_errors, 0u);
+	خپلکاری stats = parser.getStats();
+	EXPECT_GT(stats.بایټونه_discarded_2 + stats.دوراني_ازموینه_errors_2, 0u);
 }
 
-TEST_F(RtcmTest, BustedSender_ValidHeaderBadCrc)
+TEST_F(RtcmTest, Busted_Sender_Valid_سرلیک_Bad_دوراني_ازموینه)
 {
 	// Frame with valid header but bad CRC
-	std::vector<uint8_t> frame = {
+	std::ویکټور_2<uint8_t> چوکاټ = {
 		RTCM3_PREAMBLE, 0x00, 0x04,  // Header: 4 byte payload
 		0x01, 0x02, 0x03, 0x04,      // Payload
 		0xDE, 0xAD, 0xBE             // Bad CRC
 	};
 
-	parser.addData(frame.data(), frame.size());
+	parser.جمع_کړه_معلومات(چوکاټ.معلومات(), چوکاټ.اندازه());
 
 	size_t len;
-	EXPECT_EQ(parser.getNextMessage(&len), nullptr);
-	EXPECT_EQ(parser.getStats().crc_errors, 1u);
+	EXPECT_EQ(parser.get_بل_پیغام(&len), تش_اشاره);
+	EXPECT_EQ(parser.getStats().دوراني_ازموینه_errors_2, 1u);
 }
 
-TEST_F(RtcmTest, BustedSender_RepeatedBadCrcFrames)
+TEST_F(RtcmTest, Busted_Sender_Repeated_Bad_دوراني_ازموینه_چوکاټونه)
 {
-	for (int i = 0; i < 100; i++) {
-		auto bad = buildBadCrcFrame({static_cast<uint8_t>(i), 0x00});
-		parser.addData(bad.data(), bad.size());
+	لكل (صحيح i = 0; i < 100; i++) {
+		خپلکاری bad = build_Bad_دوراني_ازموینه_چوکاټ({static_cast<uint8_t>(i), 0x00});
+		parser.جمع_کړه_معلومات(bad.معلومات(), bad.اندازه());
 	}
 
 	// Re-scanning after a failure can land on a byte that claims a frame longer
 	// than what is buffered, which parks the framer until the rest arrives (see
 	// BustedSender_AllPreambles). Feed a frame's worth of non-preamble filler so
 	// every pending candidate can be resolved, as a live stream would.
-	const std::vector<uint8_t> filler(CorrectionFramer::MAX_FRAME_LEN, 0x00);
-	parser.addData(filler.data(), filler.size());
+	ثابت std::ویکټور_2<uint8_t> filler(CorrectionFramer::MAX_چوکاټ_LEN, 0x00);
+	parser.جمع_کړه_معلومات(filler.معلومات(), filler.اندازه());
 
 	size_t len;
 
-	while (parser.getNextMessage(&len) != nullptr) {
-		parser.consumeMessage(len);
+	طالما (parser.get_بل_پیغام(&len) != تش_اشاره) {
+		parser.consume_پیغام(len);
 	}
 
-	auto stats = parser.getStats();
+	خپلکاری stats = parser.getStats();
 	EXPECT_EQ(stats.messages_parsed, 0u);
 	// At least 100 CRC errors (may be more due to re-scanning after failures)
-	EXPECT_GE(stats.crc_errors, 100u);
+	EXPECT_GE(stats.دوراني_ازموینه_errors_2, 100u);
 }

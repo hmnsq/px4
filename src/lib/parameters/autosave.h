@@ -31,34 +31,34 @@
  *
  ****************************************************************************/
 
-#pragma once
+#لارښوونه once
 
-#include <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
-#include <px4_platform_common/atomic.h>
-#include <drivers/drv_hrt.h>
+#ضمن <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
+#ضمن <px4_platform_common/atomic.h>
+#ضمن <drivers/drv_hrt.h>
 
-class ParamAutosave : public px4::ScheduledWorkItem
+class ParamAutosave : عام px4::Scheduled_Work_توکی
 {
-public:
+عام:
 
 	ParamAutosave();
 
 	/**
 	 * Automatically save the parameters after a timeout and at limited rate.
 	 */
-	void request();
+	فراغ request();
 
-	void enable(bool enable);
+	فراغ enable(bool enable);
 
-	bool enabled() const { return !_disabled; }
+	bool enabled() ثابت { أرجع !_disabled; }
 
-	hrt_abstime lastAutosave() const { return _last_timestamp; }
+	hrt_abstime وروستی_Autosave() ثابت { أرجع وروستی_timestamp; }
 
-	void Run() override;
+	فراغ پرلپسې() override;
 
-private:
-	hrt_abstime _last_timestamp{0};
+خاص:
+	hrt_abstime وروستی_timestamp{0};
 	px4::atomic_bool _scheduled{false};
-	int _retry_count{0};
+	صحيح retry_شمېر_2{0};
 	bool _disabled{false};
 };

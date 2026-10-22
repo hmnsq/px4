@@ -1,23 +1,23 @@
-#pragma once
+#لارښوونه once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#که_تعریف_شوی __cplusplus
+خارجي "C" {
+#د_که_پای
 
-#include <stdbool.h>
-#include <termios.h>
+#ضمن <stdbool.h>
+#ضمن <termios.h>
 
-int qurt_uart_get_port(const char *dev);
-int qurt_uart_open(const char *dev, speed_t speed);
-int qurt_uart_write(int fd, const char *buf, size_t len);
-int qurt_uart_read(int fd, char *buf, size_t len, uint32_t timeout_us);
+صحيح qurt_uart_get_پورټ(ثابت حرف *dev);
+صحيح qurt_uart_open(ثابت حرف *dev, speed_t چټکتیا);
+صحيح qurt_uart_write(صحيح fd, ثابت حرف *buf, size_t len);
+صحيح qurt_uart_read(صحيح fd, حرف *buf, size_t len, uint32_t timeout_us);
 
-typedef int (*open_uart_func_t)(uint8_t, speed_t);
-typedef int (*write_uart_func_t)(int, const void *, size_t);
-typedef int (*read_uart_func_t)(int,  void *, size_t);
+تعريفنوع صحيح (*open_uart_func_t)(uint8_t, speed_t);
+تعريفنوع صحيح (*write_uart_func_t)(صحيح, ثابت فراغ *, size_t);
+تعريفنوع صحيح (*read_uart_func_t)(صحيح,  فراغ *, size_t);
 
-void configure_uart_callbacks(open_uart_func_t, write_uart_func_t, read_uart_func_t);
+فراغ configure_uart_callbacks(open_uart_func_t, write_uart_func_t, read_uart_func_t);
 
-#ifdef __cplusplus
+#که_تعریف_شوی __cplusplus
 }
-#endif // __cplusplus
+#د_که_پای // __cplusplus

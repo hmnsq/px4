@@ -31,44 +31,44 @@
  *
  ****************************************************************************/
 
-#include "RtcmTestCommon.hpp"
+#ضمن "RtcmTestCommon.hpp"
 
-TEST_F(RtcmTest, Stress_ManySmallValidFrames)
+TEST_F(RtcmTest, Stress_Many_Small_Valid_چوکاټونه)
 {
 	// Simulate a good sender sending many small messages
 	// Process as we go to avoid buffer overflow
-	const int num_frames = 1000;
-	int count = 0;
+	ثابت صحيح عدد_چوکاټونه = 1000;
+	صحيح شمېر = 0;
 
-	for (int i = 0; i < num_frames; i++) {
-		auto frame = buildValidFrame(1005 + (i % 100), {static_cast<uint8_t>(i & 0xFF)});
-		parser.addData(frame.data(), frame.size());
+	لكل (صحيح i = 0; i < عدد_چوکاټونه; i++) {
+		خپلکاری چوکاټ = build_Valid_چوکاټ(1005 + (i % 100), {static_cast<uint8_t>(i & 0xFF)});
+		parser.جمع_کړه_معلومات(چوکاټ.معلومات(), چوکاټ.اندازه());
 
 		// Consume available messages after each add
 		size_t len;
 
-		while (parser.getNextMessage(&len) != nullptr) {
-			parser.consumeMessage(len);
-			count++;
+		طالما (parser.get_بل_پیغام(&len) != تش_اشاره) {
+			parser.consume_پیغام(len);
+			شمېر++;
 		}
 	}
 
-	EXPECT_EQ(count, num_frames);
-	auto stats = parser.getStats();
-	EXPECT_EQ(stats.messages_parsed, static_cast<uint32_t>(num_frames));
-	EXPECT_EQ(stats.bytes_discarded, 0u);
-	EXPECT_EQ(stats.crc_errors, 0u);
+	EXPECT_EQ(شمېر, عدد_چوکاټونه);
+	خپلکاری stats = parser.getStats();
+	EXPECT_EQ(stats.messages_parsed, static_cast<uint32_t>(عدد_چوکاټونه));
+	EXPECT_EQ(stats.بایټونه_discarded_2, 0u);
+	EXPECT_EQ(stats.دوراني_ازموینه_errors_2, 0u);
 }
 
-TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
+TEST_F(RtcmTest, Stress_Long_Garbage_بهیر_Then_Valid)
 {
 	// This tests the pathological case Alex mentioned: lots of invalid data
 	// causing many memmove operations during preamble search
-	const size_t garbage_size = 10000;
-	std::vector<uint8_t> garbage(garbage_size);
+	ثابت size_t garbage_اندازه = 10000;
+	std::ویکټور_2<uint8_t> garbage(garbage_اندازه);
 	std::mt19937 rng(99);
 
-	for (auto &byte : garbage) {
+	لكل (خپلکاری &byte : garbage) {
 		// Avoid every protocol preamble to ensure maximum discards: 0xD3 (RTCM3)
 		// and 0x73 (SPARTN), which the framer also treats as a frame start when
 		// CONFIG_GPS_SPARTN is enabled.
@@ -76,55 +76,55 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 	}
 
 	// Add in chunks to simulate streaming
-	size_t offset = 0;
+	size_t دننه_واټن = 0;
 
-	while (offset < garbage.size()) {
-		size_t chunk = std::min<size_t>(256, garbage.size() - offset);
-		parser.addData(&garbage[offset], chunk);
+	طالما (دننه_واټن < garbage.اندازه()) {
+		size_t chunk = std::min<size_t>(256, garbage.اندازه() - دننه_واټن);
+		parser.جمع_کړه_معلومات(&garbage[دننه_واټن], chunk);
 
 		// Try to parse (forces discarding)
 		size_t len;
-		parser.getNextMessage(&len);
-		offset += chunk;
+		parser.get_بل_پیغام(&len);
+		دننه_واټن += chunk;
 	}
 
 	// Now add a valid frame
-	auto valid = buildValidFrame(1005, {0x01, 0x02, 0x03});
-	parser.addData(valid.data(), valid.size());
+	خپلکاری valid = build_Valid_چوکاټ(1005, {0x01, 0x02, 0x03});
+	parser.جمع_کړه_معلومات(valid.معلومات(), valid.اندازه());
 
 	size_t len;
-	const uint8_t *msg = parser.getNextMessage(&len);
-	ASSERT_NE(msg, nullptr);
+	ثابت uint8_t *پیغام_2 = parser.get_بل_پیغام(&len);
+	ASSERT_NE(پیغام_2, تش_اشاره);
 
-	parser.consumeMessage(len);
-	auto stats = parser.getStats();
+	parser.consume_پیغام(len);
+	خپلکاری stats = parser.getStats();
 	EXPECT_EQ(stats.messages_parsed, 1u);
-	EXPECT_EQ(stats.bytes_discarded, garbage_size);
+	EXPECT_EQ(stats.بایټونه_discarded_2, garbage_اندازه);
 }
 
 TEST_F(RtcmTest, Stress_InterleavedGarbageAndValid)
 {
 	// Simulate a flaky sender that mixes garbage with valid frames
-	const int num_valid = 100;
-	int parsed = 0;
+	ثابت صحيح عدد_valid = 100;
+	صحيح parsed = 0;
 
-	for (int i = 0; i < num_valid; i++) {
+	لكل (صحيح i = 0; i < عدد_valid; i++) {
 		// Add some garbage (variable amount)
-		std::vector<uint8_t> garbage(10 + (i % 50), 0xAA);
-		parser.addData(garbage.data(), garbage.size());
+		std::ویکټور_2<uint8_t> garbage(10 + (i % 50), 0xAA);
+		parser.جمع_کړه_معلومات(garbage.معلومات(), garbage.اندازه());
 
 		// Add valid frame
-		auto frame = buildValidFrame(1005, {static_cast<uint8_t>(i)});
-		parser.addData(frame.data(), frame.size());
+		خپلکاری چوکاټ = build_Valid_چوکاټ(1005, {static_cast<uint8_t>(i)});
+		parser.جمع_کړه_معلومات(چوکاټ.معلومات(), چوکاټ.اندازه());
 
 		// Parse what we can
 		size_t len;
 
-		while (parser.getNextMessage(&len) != nullptr) {
-			parser.consumeMessage(len);
+		طالما (parser.get_بل_پیغام(&len) != تش_اشاره) {
+			parser.consume_پیغام(len);
 			parsed++;
 		}
 	}
 
-	EXPECT_EQ(parsed, num_valid);
+	EXPECT_EQ(parsed, عدد_valid);
 }

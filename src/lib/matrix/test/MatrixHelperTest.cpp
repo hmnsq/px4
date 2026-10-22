@@ -31,12 +31,12 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/math.hpp>
 
-using namespace matrix;
+کارول نطاق ماتریکس;
 
-TEST(MatrixHelperTest, SignFloat)
+TEST(ماتریکس_Helper_Test, SignFloat)
 {
 	EXPECT_FLOAT_EQ(sign(-100.f), -1.f);
 	EXPECT_FLOAT_EQ(sign(-FLT_EPSILON), -1.f);
@@ -45,7 +45,7 @@ TEST(MatrixHelperTest, SignFloat)
 	EXPECT_FLOAT_EQ(sign(100.f), 1.f);
 }
 
-TEST(MatrixHelperTest, SignInt)
+TEST(ماتریکس_Helper_Test, SignInt)
 {
 	EXPECT_FLOAT_EQ(sign(-100), -1);
 	EXPECT_FLOAT_EQ(sign(-1), -1);
@@ -54,7 +54,7 @@ TEST(MatrixHelperTest, SignInt)
 	EXPECT_FLOAT_EQ(sign(100), 1);
 }
 
-TEST(MatrixHelperTest, Helper)
+TEST(ماتریکس_Helper_Test, Helper)
 {
 	// general wraps
 	EXPECT_FLOAT_EQ(wrap(4., 0., 10.), 4.);

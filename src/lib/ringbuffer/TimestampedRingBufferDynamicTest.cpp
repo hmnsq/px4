@@ -31,60 +31,60 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <math.h>
-#include "TimestampedRingBuffer.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن <math.h>
+#ضمن "TimestampedRingBuffer.hpp"
 
-struct sample {
-	uint64_t time_us;
-	float data[3];
+بنية sample {
+	uint64_t وخت_us;
+	عائم معلومات[3];
 };
 
 
-class TimestampedRingBufferDynamicTest : public ::testing::Test
+صنف Timestamped_Ring_بفر_Dynamic_Test : عام ::testing::Test
 {
-public:
+عام:
 
 	sample _x, _y, _z;
-	TimestampedRingBuffer<sample> *_buffer{nullptr};
+	Timestamped_Ring_بفر<sample> *بفر{تش_اشاره};
 
-	void SetUp() override
+	فراغ سېټ_پورته() override
 	{
-		_buffer = new TimestampedRingBuffer<sample>(3);
-		_x.time_us = 1000000;
-		_x.data[0] = _x.data[1] = _x.data[2] = 1.5f;
+		بفر = جديد Timestamped_Ring_بفر<sample>(3);
+		_x.وخت_us = 1000000;
+		_x.معلومات[0] = _x.معلومات[1] = _x.معلومات[2] = 1.5f;
 
-		_y.time_us = 2000000;
-		_y.data[0] = _y.data[1] = _y.data[2] = 3.0f;
+		_y.وخت_us = 2000000;
+		_y.معلومات[0] = _y.معلومات[1] = _y.معلومات[2] = 3.0f;
 
-		_z.time_us = 3000000;
-		_z.data[0] = _z.data[1] = _z.data[2] = 4.0f;
+		_z.وخت_us = 3000000;
+		_z.معلومات[0] = _z.معلومات[1] = _z.معلومات[2] = 4.0f;
 	}
 
-	void TearDown() override
+	فراغ Tear_ښکته() override
 	{
-		delete _buffer;
+		ړنګول بفر;
 	}
 };
 
-TEST_F(TimestampedRingBufferDynamicTest, goodInitialisation)
+TEST_F(Timestamped_Ring_بفر_Dynamic_Test, goodInitialisation)
 {
 	// WHEN: buffer was allocated
 	// THEN: allocation should have succeed
-	EXPECT_TRUE(_buffer->allocate(3));
-	EXPECT_TRUE(_buffer->valid());
-	EXPECT_EQ(_buffer->get_length(), 3);
+	EXPECT_TRUE(بفر->allocate(3));
+	EXPECT_TRUE(بفر->valid());
+	EXPECT_EQ(بفر->get_اوږدتیا(), 3);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, RejectsInvalidSize)
+TEST_F(Timestamped_Ring_بفر_Dynamic_Test, Rejects_Invalid_اندازه)
 {
-	EXPECT_FALSE(_buffer->allocate(0));
-	EXPECT_FALSE(_buffer->allocate(UINT8_MAX + 1u));
-	EXPECT_TRUE(_buffer->valid());
-	EXPECT_EQ(_buffer->get_length(), 3);
+	EXPECT_FALSE(بفر->allocate(0));
+	EXPECT_FALSE(بفر->allocate(UINT8_MAX + 1u));
+	EXPECT_TRUE(بفر->valid());
+	EXPECT_EQ(بفر->get_اوږدتیا(), 3);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, badInitialisation)
+TEST_F(Timestamped_Ring_بفر_Dynamic_Test, badInitialisation)
 {
 	// WHEN: buffer allocation input is bad
 	// THEN: allocation should fail
@@ -94,75 +94,75 @@ TEST_F(TimestampedRingBufferDynamicTest, badInitialisation)
 	// ASSERT_EQ(false, _buffer->allocate(0));
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, orderOfSamples)
+TEST_F(Timestamped_Ring_بفر_Dynamic_Test, ترتیب_د_Samples)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
+	ASSERT_EQ(ریښتیا, بفر->allocate(3));
 	// GIVEN: allocated buffer
 	// WHEN: adding multiple samples
 	// THEN: they should be added in order
-	_buffer->push(_x);
+	بفر->ټېل(_x);
 
-	EXPECT_EQ(_x.time_us, _buffer->get_newest().time_us);
-	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
+	EXPECT_EQ(_x.وخت_us, بفر->get_newest().وخت_us);
+	EXPECT_EQ(_x.وخت_us, بفر->get_oldest().وخت_us);
 
-	_buffer->push(_z);
-	_buffer->push(_y);
+	بفر->ټېل(_z);
+	بفر->ټېل(_y);
 
-	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
-	EXPECT_EQ(_y.time_us, _buffer->get_newest().time_us);
+	EXPECT_EQ(_x.وخت_us, بفر->get_oldest().وخت_us);
+	EXPECT_EQ(_y.وخت_us, بفر->get_newest().وخت_us);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, popSample)
+TEST_F(Timestamped_Ring_بفر_Dynamic_Test, راوباسه_Sample)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(ریښتیا, بفر->allocate(3));
+	بفر->ټېل(_x);
+	بفر->ټېل(_y);
+	بفر->ټېل(_z);
 
 	// GIVEN: allocated and filled buffer
 
-	sample pop = {};
+	sample راوباسه = {};
 	// WHEN: we want to retrieve a sample that is older than any in the buffer
 	// THEN: we should not get any sample
-	EXPECT_FALSE(_buffer->pop_first_older_than(0, &pop));
+	EXPECT_FALSE(بفر->راوباسه_لومړی_older_than(0, &راوباسه));
 
 	// WHEN: when calling "pop_first_older_than"
 	// THEN: we should get the first sample from the head that is older
-	EXPECT_TRUE(_buffer->pop_first_older_than(_x.time_us + 1, &pop));
-	EXPECT_EQ(_x.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_y.time_us + 10, &pop));
-	EXPECT_EQ(_y.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 100, &pop));
-	EXPECT_EQ(_z.time_us, pop.time_us);
+	EXPECT_TRUE(بفر->راوباسه_لومړی_older_than(_x.وخت_us + 1, &راوباسه));
+	EXPECT_EQ(_x.وخت_us, راوباسه.وخت_us);
+	EXPECT_TRUE(بفر->راوباسه_لومړی_older_than(_y.وخت_us + 10, &راوباسه));
+	EXPECT_EQ(_y.وخت_us, راوباسه.وخت_us);
+	EXPECT_TRUE(بفر->راوباسه_لومړی_older_than(_z.وخت_us + 100, &راوباسه));
+	EXPECT_EQ(_z.وخت_us, راوباسه.وخت_us);
 	// TODO: When changing the order of popping sample it does not behave as expected, fix this
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, askingForTooNewSample)
+TEST_F(Timestamped_Ring_بفر_Dynamic_Test, askingForTooNewSample)
 {
-	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(ریښتیا, بفر->allocate(3));
+	بفر->ټېل(_x);
+	بفر->ټېل(_y);
+	بفر->ټېل(_z);
 
-	sample pop = {};
+	sample راوباسه = {};
 	// WHEN: all buffered samples are older by 0.1s than your query timestamp
 	// THEN: should get no sample returned
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 99000, &pop));
-	EXPECT_FALSE(_buffer->pop_first_older_than(_y.time_us + 100000, &pop));
+	EXPECT_TRUE(بفر->راوباسه_لومړی_older_than(_z.وخت_us + 99000, &راوباسه));
+	EXPECT_FALSE(بفر->راوباسه_لومړی_older_than(_y.وخت_us + 100000, &راوباسه));
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, reallocateBuffer)
+TEST_F(Timestamped_Ring_بفر_Dynamic_Test, reallocate_بفر)
 {
-	ASSERT_EQ(true, _buffer->allocate(5));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	ASSERT_EQ(ریښتیا, بفر->allocate(5));
+	بفر->ټېل(_x);
+	بفر->ټېل(_y);
+	بفر->ټېل(_y);
+	بفر->ټېل(_y);
+	بفر->ټېل(_z);
 
 	// GIVEN: allocated and filled buffer
 	// WHEN: do another allocate call
-	EXPECT_TRUE(_buffer->allocate(3));
+	EXPECT_TRUE(بفر->allocate(3));
 	// THEN: its length should update
-	EXPECT_EQ(3, _buffer->get_length());
+	EXPECT_EQ(3, بفر->get_اوږدتیا());
 }

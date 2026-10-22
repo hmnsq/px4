@@ -39,47 +39,47 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#لارښوونه once
 
-#include "Vector.hpp"
+#ضمن "Vector.hpp"
 
-namespace matrix
+نطاق ماتریکس
 {
 
-template<typename Type>
-class Vector4 : public Vector<Type, 4>
+کينډۍ<ډول_نوم Type>
+صنف Vector4 : عام ویکټور<Type, 4>
 {
-public:
-	using Matrix41 = Matrix<Type, 4, 1>;
+عام:
+	کارول Matrix41 = ماتریکس_2<Type, 4, 1>;
 
-	Vector4() = default;
+	Vector4() = افتراضي;
 
-	Vector4(const Matrix41 &other) :
-		Vector<Type, 4>(other)
+	Vector4(ثابت Matrix41 &other) :
+		ویکټور<Type, 4>(other)
 	{
 	}
 
-	explicit Vector4(const Type data_[3]) :
-		Vector<Type, 4>(data_)
+	څرګند Vector4(ثابت Type معلومات_2[3]) :
+		ویکټور<Type, 4>(معلومات_2)
 	{
 	}
 
 	Vector4(Type x1, Type x2, Type x3, Type x4)
 	{
-		Vector4 &v(*this);
+		Vector4 &v(*هذا);
 		v(0) = x1;
 		v(1) = x2;
 		v(2) = x3;
 		v(3) = x4;
 	}
 
-	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 4, 1, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	کينډۍ<size_t P, size_t Q>
+	Vector4(ثابت ټوټه_2<Type, 4, 1, P, Q> &ټوټه_دننه) : ویکټور<Type, 4>(ټوټه_دننه)
 	{
 	}
 
-	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 1, 4, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	کينډۍ<size_t P, size_t Q>
+	Vector4(ثابت ټوټه_2<Type, 1, 4, P, Q> &ټوټه_دننه) : ویکټور<Type, 4>(ټوټه_دننه)
 	{
 	}
 
@@ -87,43 +87,43 @@ public:
 	 * Override matrix ops so Vector4 type is returned
 	 */
 
-	Vector4 operator+(Vector4 other) const
+	Vector4 چلوونکی+(Vector4 other) ثابت
 	{
-		return Matrix41::operator+(other);
+		أرجع Matrix41::چلوونکی+(other);
 	}
 
-	Vector4 operator+(Type scalar) const
+	Vector4 چلوونکی+(Type scalar) ثابت
 	{
-		return Matrix41::operator+(scalar);
+		أرجع Matrix41::چلوونکی+(scalar);
 	}
 
-	Vector4 operator-(Vector4 other) const
+	Vector4 چلوونکی-(Vector4 other) ثابت
 	{
-		return Matrix41::operator-(other);
+		أرجع Matrix41::چلوونکی-(other);
 	}
 
-	Vector4 operator-(Type scalar) const
+	Vector4 چلوونکی-(Type scalar) ثابت
 	{
-		return Matrix41::operator-(scalar);
+		أرجع Matrix41::چلوونکی-(scalar);
 	}
 
-	Vector4 operator-() const
+	Vector4 چلوونکی-() ثابت
 	{
-		return Matrix41::operator-();
+		أرجع Matrix41::چلوونکی-();
 	}
 
-	Vector4 operator*(Type scalar) const
+	Vector4 چلوونکی*(Type scalar) ثابت
 	{
-		return Matrix41::operator*(scalar);
+		أرجع Matrix41::چلوونکی*(scalar);
 	}
 
-	Type operator*(Vector4 b) const
+	Type چلوونکی*(Vector4 b) ثابت
 	{
-		return Vector<Type, 4>::operator*(b);
+		أرجع ویکټور<Type, 4>::چلوونکی*(b);
 	}
 
 };
 
-using Vector4f = Vector4<float>;
+کارول Vector4f = Vector4<عائم>;
 
 } // namespace matrix

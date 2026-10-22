@@ -31,45 +31,45 @@
  *
  ****************************************************************************/
 
-#pragma once
+#لارښوونه once
 
-#include <limits.h>
+#ضمن <limits.h>
 
-#include <mixer_module/output_functions.hpp>
+#ضمن <mixer_module/output_functions.hpp>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionCallback.hpp>
+#ضمن <uORB/Subscription.hpp>
+#ضمن <uORB/SubscriptionCallback.hpp>
 
-#include <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
+#ضمن <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
 
-class FunctionProviderBase
+صنف Function_Provider_بنسټ
 {
-public:
-	struct Context {
-		px4::WorkItem &work_item;
-		const float &thrust_factor;
+عام:
+	بنية Context {
+		px4::Work_توکی &work_توکی;
+		ثابت عائم &thrust_ضریب_2;
 	};
 
-	FunctionProviderBase() = default;
-	virtual ~FunctionProviderBase() = default;
+	Function_Provider_بنسټ() = افتراضي;
+	مجازي ~Function_Provider_بنسټ() = افتراضي;
 
-	virtual void update() = 0;
+	مجازي فراغ update() = 0;
 
 	/**
 	 * Get the current output value for a given function
 	 * @return NAN (=disarmed) or value in range [-1, 1]
 	 */
-	virtual float value(OutputFunction func) = 0;
+	مجازي عائم value(OutputFunction func) = 0;
 
-	virtual float defaultFailsafeValue(OutputFunction func) const { return NAN; }
-	virtual bool allowPrearmControl() const { return true; }
+	مجازي عائم default_Failsafe_ارزښت(OutputFunction func) ثابت { أرجع NAN; }
+	مجازي منطقي allowPrearmControl() ثابت { أرجع ریښتیا; }
 
-	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { return nullptr; }
+	مجازي uORB::Subscription_Callback_Work_توکی *subscriptionCallback() { أرجع تش_اشاره; }
 
-	virtual bool getLatestSampleTimestamp(hrt_abstime &t) const { return false; }
+	مجازي منطقي getLatestSampleTimestamp(hrt_abstime &t) ثابت { أرجع خطأ; }
 
 	/**
 	 * Check whether the output (motor) is configured to be reversible
 	 */
-	virtual bool reversible(OutputFunction func) const { return false; }
+	مجازي منطقي reversible(OutputFunction func) ثابت { أرجع خطأ; }
 };

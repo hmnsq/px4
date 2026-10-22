@@ -40,97 +40,97 @@
  *       that is supplied.  Should we just depend on the bus knowing?
  */
 
-#include "I2C.hpp"
+#ضمن "I2C.hpp"
 
-#if defined(CONFIG_I2C)
+#إذا defined(CONFIG_I2C)
 
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <nuttx/i2c/i2c_master.h>
+#ضمن <px4_platform_common/i2c_spi_buses.h>
+#ضمن <nuttx/i2c/i2c_master.h>
 
-namespace device
+نطاق device
 {
 /*
  *  N.B. By defaulting the value of _bus_clocks to non Zero
  *  All calls to init() will NOT set the buss frequency
  */
 
-unsigned int I2C::_bus_clocks[PX4_NUMBER_I2C_BUSES] = PX4_I2C_BUS_CLOCK_INIT;
+بینښه صحيح I2C::_bus_clocks[PX4_شمېره_I2_C_BUSES] = PX4_I2C_BUS_CLOCK_INIT;
 
-I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency) :
-	CDev(name, nullptr),
+I2C::I2C(uint8_t device_type, ثابت حرف *name, ثابت صحيح bus, ثابت uint16_t پته, ثابت uint32_t frequency) :
+	CDev(name, تش_اشاره),
 	_frequency(frequency)
 {
 	// fill in _device_id fields for a I2C device
 	_device_id.devid_s.devtype = device_type;
 	_device_id.devid_s.bus_type = DeviceBusType_I2C;
 	_device_id.devid_s.bus = bus;
-	_device_id.devid_s.address = address;
+	_device_id.devid_s.پته = پته;
 }
 
-I2C::I2C(const I2CSPIDriverConfig &config)
-	: I2C(config.devid_driver_index, config.module_name, config.bus, config.i2c_address, config.bus_frequency)
+I2C::I2C(ثابت I2CSPIDriverConfig &config)
+	: I2C(config.devid_driver_شاخص, config.module_name, config.bus, config.i2c_پته, config.bus_frequency)
 {
-	set_external(config.external);
+	سېټ_external(config.external);
 }
 
 I2C::~I2C()
 {
-	if (_dev) {
+	إذا (_dev) {
 		px4_i2cbus_uninitialize(_dev);
-		_dev = nullptr;
+		_dev = تش_اشاره;
 	}
 }
 
-int
-I2C::set_bus_clock(unsigned bus, unsigned clock_hz)
+صحيح
+I2C::سېټ_bus_clock(بینښه bus, بینښه clock_hz)
 {
-	int index = bus - 1;
+	صحيح شاخص = bus - 1;
 
-	if (index < 0 || index >= static_cast<int>(sizeof(_bus_clocks) / sizeof(_bus_clocks[0]))) {
-		return -EINVAL;
+	إذا (شاخص < 0 || شاخص >= static_cast<صحيح>(حجم(_bus_clocks) / حجم(_bus_clocks[0]))) {
+		أرجع -EINVAL;
 	}
 
-	if (_bus_clocks[index] > 0) {
+	إذا (_bus_clocks[شاخص] > 0) {
 		// DEVICE_DEBUG("overriding clock of %u with %u Hz\n", _bus_clocks[index], clock_hz);
 	}
 
-	_bus_clocks[index] = clock_hz;
+	_bus_clocks[شاخص] = clock_hz;
 
-	return OK;
+	أرجع OK;
 }
 
-int
+صحيح
 I2C::init()
 {
-	int ret = PX4_ERROR;
-	unsigned bus_index;
+	صحيح ret = PX4_ERROR;
+	بینښه bus_شاخص;
 
-	if (_dev != nullptr) {
-		return PX4_OK;
+	إذا (_dev != تش_اشاره) {
+		أرجع PX4_OK;
 	}
 
 	// attach to the i2c bus
 	_dev = px4_i2cbus_initialize(get_device_bus());
 
-	if (_dev == nullptr) {
+	إذا (_dev == تش_اشاره) {
 		DEVICE_DEBUG("failed to init I2C");
 		ret = -ENOENT;
-		goto out;
+		اذهب بهر;
 	}
 
 	// the above call fails for a non-existing bus index,
 	// so the index math here is safe.
-	bus_index = get_device_bus() - 1;
+	bus_شاخص = get_device_bus() - 1;
 
 	// abort if the max frequency we allow (the frequency we ask)
 	// is smaller than the bus frequency
-	if (_bus_clocks[bus_index] > _frequency) {
-		(void)px4_i2cbus_uninitialize(_dev);
-		_dev = nullptr;
+	إذا (_bus_clocks[bus_شاخص] > _frequency) {
+		(فراغ)px4_i2cbus_uninitialize(_dev);
+		_dev = تش_اشاره;
 		DEVICE_LOG("FAIL: too slow for bus #%u: %u KHz, device max: %" PRIu32 " KHz)",
-			   get_device_bus(), _bus_clocks[bus_index] / 1000, _frequency / 1000);
+			   get_device_bus(), _bus_clocks[bus_شاخص] / 1000, _frequency / 1000);
 		ret = -EINVAL;
-		goto out;
+		اذهب بهر;
 	}
 
 	// set frequency for this instance once to the bus speed
@@ -145,105 +145,105 @@ I2C::init()
 
 	// set the bus frequency on the first access if it has
 	// not been set yet
-	if (_bus_clocks[bus_index] == 0) {
-		_bus_clocks[bus_index] = _frequency;
+	إذا (_bus_clocks[bus_شاخص] == 0) {
+		_bus_clocks[bus_شاخص] = _frequency;
 	}
 
 	// call the probe function to check whether the device is present
 	ret = probe();
 
-	if (ret != OK) {
+	إذا (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		goto out;
+		اذهب بهر;
 	}
 
 	// do base class init, which will create device node, etc
 	ret = CDev::init();
 
-	if (ret != OK) {
+	إذا (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		goto out;
+		اذهب بهر;
 	}
 
 	// tell the world where we are
 	DEVICE_DEBUG("on I2C bus %d at 0x%02x (bus: %u KHz, max: %" PRIu32 " KHz)",
-		     get_device_bus(), get_device_address(), _bus_clocks[bus_index] / 1000, _frequency / 1000);
+		     get_device_bus(), get_device_پته(), _bus_clocks[bus_شاخص] / 1000, _frequency / 1000);
 
-out:
+بهر:
 
-	if ((ret != OK) && (_dev != nullptr)) {
+	إذا ((ret != OK) && (_dev != تش_اشاره)) {
 		px4_i2cbus_uninitialize(_dev);
-		_dev = nullptr;
+		_dev = تش_اشاره;
 	}
 
-	return ret;
+	أرجع ret;
 }
 
-int
-I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
+صحيح
+I2C::transfer(ثابت uint8_t *send, ثابت بینښه send_len, uint8_t *recv, ثابت بینښه recv_len)
 {
-	int ret = PX4_ERROR;
-	unsigned retry_count = 0;
+	صحيح ret = PX4_ERROR;
+	بینښه retry_شمېر = 0;
 
-	if (_dev == nullptr) {
+	إذا (_dev == تش_اشاره) {
 		PX4_ERR("I2C device not opened");
-		return PX4_ERROR;
+		أرجع PX4_ERROR;
 	}
 
-	do {
+	افعل {
 		DEVICE_DEBUG("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
-		i2c_msg_s msgv[2] {};
-		unsigned msgs = 0;
+		i2c_پیغام_s msgv[2] {};
+		بینښه msgs = 0;
 
-		if (send_len > 0) {
+		إذا (send_len > 0) {
 			msgv[msgs].frequency = _bus_clocks[get_device_bus() - 1];
-			msgv[msgs].addr = get_device_address();
+			msgv[msgs].addr = get_device_پته();
 			msgv[msgs].flags = 0;
-			msgv[msgs].buffer = const_cast<uint8_t *>(send);
-			msgv[msgs].length = send_len;
+			msgv[msgs].بفر_2 = const_cast<uint8_t *>(send);
+			msgv[msgs].اوږدتیا = send_len;
 			msgs++;
 		}
 
-		if (recv_len > 0) {
+		إذا (recv_len > 0) {
 			msgv[msgs].frequency = _bus_clocks[get_device_bus() - 1];
-			msgv[msgs].addr = get_device_address();
+			msgv[msgs].addr = get_device_پته();
 			msgv[msgs].flags = I2C_M_READ;
-			msgv[msgs].buffer = recv;
-			msgv[msgs].length = recv_len;
+			msgv[msgs].بفر_2 = recv;
+			msgv[msgs].اوږدتیا = recv_len;
 			msgs++;
 		}
 
-		if (msgs == 0) {
-			return -EINVAL;
+		إذا (msgs == 0) {
+			أرجع -EINVAL;
 		}
 
-		int ret_transfer = I2C_TRANSFER(_dev, &msgv[0], msgs);
+		صحيح ret_transfer = I2C_TRANSFER(_dev, &msgv[0], msgs);
 
-		if (ret_transfer != 0) {
+		إذا (ret_transfer != 0) {
 			DEVICE_DEBUG("I2C transfer failed, result %d", ret_transfer);
 			ret = PX4_ERROR;
 
-		} else {
+		} وإلا {
 			// success
 			ret = PX4_OK;
-			break;
+			اكسر;
 		}
 
 		// if we have already retried once, and we aren't going to give up, then reset the bus
-		if ((_retries > 0) && (retry_count < _retries)) {
-#if defined(CONFIG_I2C_RESET)
+		إذا ((_retries > 0) && (retry_شمېر < _retries)) {
+#إذا defined(CONFIG_I2C_RESET)
 			DEVICE_DEBUG("I2C bus: %d, Addr: %X, I2C_RESET %d/%d",
-				     get_device_bus(), get_device_address(), retry_count + 1, _retries);
+				     get_device_bus(), get_device_پته(), retry_شمېر + 1, _retries);
 			I2C_RESET(_dev);
-#endif // CONFIG_I2C_RESET
+#د_که_پای // CONFIG_I2C_RESET
 		}
 
-	} while (retry_count++ < _retries);
+	} طالما (retry_شمېر++ < _retries);
 
-	return ret;
+	أرجع ret;
 }
 
 } // namespace device
 
-#endif // CONFIG_I2C
+#د_که_پای // CONFIG_I2C

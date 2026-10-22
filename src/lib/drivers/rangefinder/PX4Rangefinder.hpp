@@ -31,51 +31,51 @@
  *
  ****************************************************************************/
 
-#pragma once
+#لارښوونه once
 
-#include <drivers/drv_hrt.h>
-#include <lib/conversion/rotation.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/distance_sensor.h>
+#ضمن <drivers/drv_hrt.h>
+#ضمن <lib/conversion/rotation.h>
+#ضمن <uORB/PublicationMulti.hpp>
+#ضمن <uORB/topics/distance_sensor.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#ضمن <lib/failure_injection/FailureInjection.hpp>
 
-class PX4Rangefinder
+صنف PX4Rangefinder
 {
-public:
-	PX4Rangefinder(const uint32_t device_id,
-		       const uint8_t device_orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING);
+عام:
+	PX4Rangefinder(ثابت uint32_t device_id,
+		       ثابت uint8_t device_orientation = واټن_sensor_s::ROTATION_DOWNWARD_FACING);
 	~PX4Rangefinder();
 
 	// Set the MAV_DISTANCE_SENSOR type (LASER, ULTRASOUND, INFRARED, RADAR)
-	void set_rangefinder_type(uint8_t rangefinder_type) { _distance_sensor_pub.get().type = rangefinder_type; };
+	فراغ سېټ_rangefinder_type(uint8_t rangefinder_type) { واټن_sensor_pub_2.get().type = rangefinder_type; };
 
-	void set_device_id(const uint32_t device_id) { _distance_sensor_pub.get().device_id = device_id; };
-	void set_device_type(const uint8_t device_type);
+	فراغ سېټ_device_id(ثابت uint32_t device_id) { واټن_sensor_pub_2.get().device_id = device_id; };
+	فراغ سېټ_device_type(ثابت uint8_t device_type);
 
-	void set_fov(const float fov) { set_hfov(fov); set_vfov(fov); }
-	void set_hfov(const float fov) { _distance_sensor_pub.get().h_fov = fov; }
-	void set_vfov(const float fov) { _distance_sensor_pub.get().v_fov = fov; }
+	فراغ سېټ_fov(ثابت عائم fov) { سېټ_hfov(fov); سېټ_vfov(fov); }
+	فراغ سېټ_hfov(ثابت عائم fov) { واټن_sensor_pub_2.get().h_fov = fov; }
+	فراغ سېټ_vfov(ثابت عائم fov) { واټن_sensor_pub_2.get().v_fov = fov; }
 
-	void set_max_distance(const float distance) { _distance_sensor_pub.get().max_distance = distance; }
-	void set_min_distance(const float distance) { _distance_sensor_pub.get().min_distance = distance; }
+	فراغ سېټ_max_واټن(ثابت عائم واټن) { واټن_sensor_pub_2.get().max_واټن = واټن; }
+	فراغ سېټ_min_واټن(ثابت عائم واټن) { واټن_sensor_pub_2.get().min_واټن = واټن; }
 
-	void set_variance(const float variance) { _distance_sensor_pub.get().variance = variance; }
+	فراغ سېټ_variance(ثابت عائم variance) { واټن_sensor_pub_2.get().variance = variance; }
 
-	void set_orientation(const uint8_t device_orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING);
+	فراغ سېټ_orientation(ثابت uint8_t device_orientation = واټن_sensor_s::ROTATION_DOWNWARD_FACING);
 
-	void set_mode(const uint8_t mode) { _distance_sensor_pub.get().mode = mode; }
+	فراغ سېټ_ډېرپېښ(ثابت uint8_t ډېرپېښ) { واټن_sensor_pub_2.get().ډېرپېښ = ډېرپېښ; }
 
 	// update with quaterion sensor orientation with respect to the vehicle body frame
-	void update(const hrt_abstime &timestamp_sample, const float distance, const int8_t quality = -1, const float *q = nullptr,
+	فراغ update(ثابت hrt_abstime &timestamp_sample, ثابت عائم واټن, ثابت int8_t quality = -1, ثابت عائم *q = تش_اشاره,
 		    uint8_t q_len = 4);
 
-	int get_instance() { return _distance_sensor_pub.get_instance(); };
-	uint32_t get_device_id() { return _distance_sensor_pub.get().device_id; };
+	صحيح get_instance() { أرجع واټن_sensor_pub_2.get_instance(); };
+	uint32_t get_device_id() { أرجع واټن_sensor_pub_2.get().device_id; };
 
-private:
-	uORB::PublicationMultiData<distance_sensor_s> _distance_sensor_pub{ORB_ID(distance_sensor)};
+خاص:
+	uORB::Publication_Multi_معلومات<واټن_sensor_s> واټن_sensor_pub_2{ORB_ID(واټن_sensor)};
 
 	failure_injection::Config _failure_config;
-	failure_injection::Stuck<distance_sensor_s> _stuck;
+	failure_injection::Stuck<واټن_sensor_s> _stuck;
 };

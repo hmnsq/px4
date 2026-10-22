@@ -1,31 +1,31 @@
 
-#include "common_rc.h"
+#ضمن "common_rc.h"
 
 __EXPORT rc_decode_buf_t rc_decode_buf;
 
-uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a)
+uint8_t crc8_dvb_s2(uint8_t دوراني_ازموینه, uint8_t a)
 {
-	crc ^= a;
+	دوراني_ازموینه ^= a;
 
-	for (int i = 0; i < 8; ++i) {
-		if (crc & 0x80) {
-			crc = (crc << 1) ^ 0xD5;
+	لكل (صحيح i = 0; i < 8; ++i) {
+		إذا (دوراني_ازموینه & 0x80) {
+			دوراني_ازموینه = (دوراني_ازموینه << 1) ^ 0xD5;
 
-		} else {
-			crc = crc << 1;
+		} وإلا {
+			دوراني_ازموینه = دوراني_ازموینه << 1;
 		}
 	}
 
-	return crc;
+	أرجع دوراني_ازموینه;
 }
 
-uint8_t crc8_dvb_s2_buf(uint8_t *buf, int len)
+uint8_t crc8_dvb_s2_buf(uint8_t *buf, صحيح len)
 {
-	uint8_t crc = 0;
+	uint8_t دوراني_ازموینه = 0;
 
-	for (int i = 0; i < len; ++i) {
-		crc = crc8_dvb_s2(crc, buf[i]);
+	لكل (صحيح i = 0; i < len; ++i) {
+		دوراني_ازموینه = crc8_dvb_s2(دوراني_ازموینه, buf[i]);
 	}
 
-	return crc;
+	أرجع دوراني_ازموینه;
 }

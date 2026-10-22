@@ -37,56 +37,56 @@
  * Controller library code
  */
 
-#pragma once
+#لارښوونه once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
 /**
  * A uniform random number generator
  */
-class __EXPORT BlockRandUniform: public Block
+صنف __EXPORT بلاک_Rand_یوشان: عام بلاک
 {
-public:
+عام:
 // methods
-	BlockRandUniform(SuperBlock *parent,
-			 const char *name) :
-		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+	بلاک_Rand_یوشان(Super_بلاک *پلار,
+			 ثابت حرف *name) :
+		بلاک(پلار, name),
+		_min(هذا, "MIN"),
+		_max(هذا, "MAX")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandUniform() = default;
-	float update()
+	مجازي ~بلاک_Rand_یوشان() = افتراضي;
+	عائم update()
 	{
-		static float rand_max = static_cast<float>(RAND_MAX);
-		float rand_val = rand();
-		float bounds = getMax() - getMin();
-		return getMin() + (rand_val * bounds) / rand_max;
+		ساكن عائم rand_max = static_cast<عائم>(RAND_MAX);
+		عائم rand_val = rand();
+		عائم bounds = getMax() - getMin();
+		أرجع getMin() + (rand_val * bounds) / rand_max;
 	}
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-private:
-// attributes
-	control::BlockParamFloat _min;
-	control::BlockParamFloat _max;
+	عائم getMin() { أرجع _min.get(); }
+	عائم getMax() { أرجع _max.get(); }
+خاص:
+//ځانګړتیاوې
+	control::بلاک_Param_Float _min;
+	control::بلاک_Param_Float _max;
 };
 
 } // namespace control

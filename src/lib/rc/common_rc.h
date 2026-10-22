@@ -1,29 +1,29 @@
 
-#pragma once
+#لارښوونه once
 
-#include <stdint.h>
+#ضمن <stdint.h>
 
-#include "crsf.h"
-#include "dsm.h"
-#include "ghst.hpp"
-#include "sbus.h"
-#include "st24.h"
-#include "sumd.h"
+#ضمن "crsf.h"
+#ضمن "dsm.h"
+#ضمن "ghst.hpp"
+#ضمن "sbus.h"
+#ضمن "st24.h"
+#ضمن "sumd.h"
 
-#pragma pack(push, 1)
-typedef  struct rc_decode_buf_ {
-	union {
-		crsf_frame_t crsf_frame;
-		ghst_frame_t ghst_frame;
+#لارښوونه pack(ټېل, 1)
+تعريفنوع  بنية rc_decode_buf_ {
+	اتحاد {
+		crsf_چوکاټ_t crsf_چوکاټ;
+		ghst_چوکاټ_t ghst_چوکاټ;
 		dsm_decode_t dsm;
-		sbus_frame_t sbus_frame;
+		sbus_چوکاټ_t sbus_چوکاټ;
 		ReceiverFcPacket _strxpacket;
 		ReceiverFcPacketHoTT _hottrxpacket;
 	};
 } rc_decode_buf_t;
-#pragma pack(pop)
+#لارښوونه pack(راوباسه)
 
-extern rc_decode_buf_t rc_decode_buf;
+خارجي rc_decode_buf_t rc_decode_buf;
 
-uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a);
-uint8_t crc8_dvb_s2_buf(uint8_t *buf, int len);
+uint8_t crc8_dvb_s2(uint8_t دوراني_ازموینه, uint8_t a);
+uint8_t crc8_dvb_s2_buf(uint8_t *buf, صحيح len);

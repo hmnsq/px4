@@ -36,186 +36,186 @@
  *
  * Protected build user space interface to global parameter store.
  */
-#define PARAM_IMPLEMENTATION
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <parameters/px4_parameters.hpp>
-#include <sys/boardctl.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#تعریف_کړه PARAM_IMPLEMENTATION
+#ضمن "param.h"
+#ضمن "parameters_ioctl.h"
+#ضمن <parameters/px4_parameters.hpp>
+#ضمن <sys/boardctl.h>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <px4_platform_common/log.h>
 
-#include "parameters_common.cpp"
+#ضمن "parameters_common.cpp"
 
-void
+فراغ
 param_notify_changes()
 {
-	boardctl(PARAMIOCNOTIFY, NULL);
+	boardctl(PARAMIOCNOTIFY, عدم);
 }
 
-param_t param_find(const char *name)
+param_t param_پیدا_کړه(ثابت حرف *name)
 {
-	paramiocfind_t data = {name, true, PARAM_INVALID};
-	boardctl(PARAMIOCFIND, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocfind_t معلومات = {name, ریښتیا, PARAM_INVALID};
+	boardctl(PARAMIOCFIND, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-param_t param_find_no_notification(const char *name)
+param_t param_پیدا_کړه_no_notification(ثابت حرف *name)
 {
-	paramiocfind_t data = {name, false, PARAM_INVALID};
-	boardctl(PARAMIOCFIND, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocfind_t معلومات = {name, خطأ, PARAM_INVALID};
+	boardctl(PARAMIOCFIND, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-unsigned param_count_used()
+بینښه param_شمېر_کارول_شوی()
 {
-	paramioccountused_t data = {0};
-	boardctl(PARAMIOCCOUNTUSED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramioccountused_t معلومات = {0};
+	boardctl(PARAMIOCCOUNTUSED, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-param_t param_for_used_index(unsigned index)
+param_t param_for_کارول_شوی_شاخص(بینښه شاخص)
 {
-	paramiocforusedindex_t data = {index, 0};
-	boardctl(PARAMIOCFORUSEDINDEX, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocforusedindex_t معلومات = {شاخص, 0};
+	boardctl(PARAMIOCFORUSEDINDEX, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-int param_get_used_index(param_t param)
+صحيح param_get_کارول_شوی_شاخص(param_t param)
 {
-	paramiocgetusedindex_t data = {param, 0};
-	boardctl(PARAMIOCGETUSEDINDEX, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocgetusedindex_t معلومات = {param, 0};
+	boardctl(PARAMIOCGETUSEDINDEX, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-bool
-param_value_unsaved(param_t param)
+منطقي
+param_ارزښت_unsaved(param_t param)
 {
-	paramiocunsaved_t data = {param, false};
-	boardctl(PARAMIOCUNSAVED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocunsaved_t معلومات = {param, خطأ};
+	boardctl(PARAMIOCUNSAVED, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-int
-param_get(param_t param, void *val)
+صحيح
+param_get(param_t param, فراغ *val)
 {
-	paramiocget_t data = {param, false, val, PX4_ERROR};
-	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocget_t معلومات = {param, خطأ, val, PX4_ERROR};
+	boardctl(PARAMIOCGET, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-int
-param_get_default_value(param_t param, void *default_val)
+صحيح
+param_get_default_ارزښت(param_t param, فراغ *default_val)
 {
-	paramiocget_t data = {param, true, default_val, PX4_ERROR};
-	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocget_t معلومات = {param, ریښتیا, default_val, PX4_ERROR};
+	boardctl(PARAMIOCGET, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-void
-param_control_autosave(bool enable)
+فراغ
+param_control_autosave(منطقي enable)
 {
-	paramiocautosave_t data = {enable};
-	boardctl(PARAMIOCAUTOSAVE, reinterpret_cast<unsigned long>(&data));
+	paramiocautosave_t معلومات = {enable};
+	boardctl(PARAMIOCAUTOSAVE, reinterpret_cast<بینښه اوږد>(&معلومات));
 }
 
-int param_set(param_t param, const void *val)
+صحيح param_سېټ(param_t param, ثابت فراغ *val)
 {
-	paramiocset_t data = {param, true, val, PX4_ERROR};
-	boardctl(PARAMIOCSET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocset_t معلومات = {param, ریښتیا, val, PX4_ERROR};
+	boardctl(PARAMIOCSET, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-int param_set_no_notification(param_t param, const void *val)
+صحيح param_سېټ_no_notification(param_t param, ثابت فراغ *val)
 {
-	paramiocset_t data = {param, false, val, PX4_ERROR};
-	boardctl(PARAMIOCSET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocset_t معلومات = {param, خطأ, val, PX4_ERROR};
+	boardctl(PARAMIOCSET, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-bool param_used(param_t param)
+منطقي param_کارول_شوی(param_t param)
 {
-	paramiocused_t data = {param, false};
-	boardctl(PARAMIOCUSED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocused_t معلومات = {param, خطأ};
+	boardctl(PARAMIOCUSED, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-void param_set_used(param_t param)
+فراغ param_سېټ_کارول_شوی(param_t param)
 {
-	paramiocsetused_t data = {param};
-	boardctl(PARAMIOCSETUSED, reinterpret_cast<unsigned long>(&data));
+	paramiocsetused_t معلومات = {param};
+	boardctl(PARAMIOCSETUSED, reinterpret_cast<بینښه اوږد>(&معلومات));
 }
 
-int param_set_default_value(param_t param, const void *val)
+صحيح param_سېټ_default_ارزښت(param_t param, ثابت فراغ *val)
 {
-	paramiocsetdefault_t data = {param, val, PX4_ERROR};
-	boardctl(PARAMIOCSETDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocsetdefault_t معلومات = {param, val, PX4_ERROR};
+	boardctl(PARAMIOCSETDEFAULT, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-int param_reset(param_t param)
+صحيح param_reset(param_t param)
 {
-	paramiocreset_t data = {param, true, PX4_ERROR};
-	boardctl(PARAMIOCRESET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocreset_t معلومات = {param, ریښتیا, PX4_ERROR};
+	boardctl(PARAMIOCRESET, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-int param_reset_no_notification(param_t param)
+صحيح param_reset_no_notification(param_t param)
 {
-	paramiocreset_t data = {param, false, PX4_ERROR};
-	boardctl(PARAMIOCRESET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocreset_t معلومات = {param, خطأ, PX4_ERROR};
+	boardctl(PARAMIOCRESET, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-void
+فراغ
 param_reset_all()
 {
-	paramiocresetgroup_t data = {PARAM_RESET_ALL, nullptr, 0};
-	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
+	paramiocresetgroup_t معلومات = {PARAM_RESET_ALL, تش_اشاره, 0};
+	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<بینښه اوږد>(&معلومات));
 }
 
-void
-param_reset_excludes(const char *excludes[], int num_excludes)
+فراغ
+param_reset_excludes(ثابت حرف *excludes[], صحيح عدد_excludes)
 {
-	paramiocresetgroup_t data = {PARAM_RESET_EXCLUDES, excludes, num_excludes};
-	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
+	paramiocresetgroup_t معلومات = {PARAM_RESET_EXCLUDES, excludes, عدد_excludes};
+	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<بینښه اوږد>(&معلومات));
 }
 
-void
-param_reset_specific(const char *resets[], int num_resets)
+فراغ
+param_reset_specific(ثابت حرف *resets[], صحيح عدد_resets)
 {
-	paramiocresetgroup_t data = {PARAM_RESET_SPECIFIC, resets, num_resets};
-	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
+	paramiocresetgroup_t معلومات = {PARAM_RESET_SPECIFIC, resets, عدد_resets};
+	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<بینښه اوږد>(&معلومات));
 }
 
-int param_save_default(bool blocking)
+صحيح param_save_default(منطقي blocking)
 {
-	paramiocsavedefault_t data = {blocking, PX4_ERROR};
-	boardctl(PARAMIOCSAVEDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocsavedefault_t معلومات = {blocking, PX4_ERROR};
+	boardctl(PARAMIOCSAVEDEFAULT, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-int
-param_load_default()
+صحيح
+param_بارول_default()
 {
-	paramiocloaddefault_t data = {PX4_ERROR};
-	boardctl(PARAMIOCLOADDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiocloaddefault_t معلومات = {PX4_ERROR};
+	boardctl(PARAMIOCLOADDEFAULT, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
-int
-param_export(const char *filename, param_filter_func filter)
+صحيح
+param_export(ثابت حرف *filename, param_filter_func filter)
 {
-	paramiocexport_t data = {filename, PX4_ERROR};
+	paramiocexport_t معلومات = {filename, PX4_ERROR};
 
-	if (filter) { PX4_ERR("ERROR: filter not supported in userside blob"); }
+	إذا (filter) { PX4_ERR("ERROR: filter not supported in userside blob"); }
 
-	boardctl(PARAMIOCEXPORT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	boardctl(PARAMIOCEXPORT, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }
 
 uint32_t param_hash_check()
 {
-	paramiochash_t data = {0};
-	boardctl(PARAMIOCHASH, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	paramiochash_t معلومات = {0};
+	boardctl(PARAMIOCHASH, reinterpret_cast<بینښه اوږد>(&معلومات));
+	أرجع معلومات.ret;
 }

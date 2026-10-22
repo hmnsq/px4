@@ -1,35 +1,35 @@
 
-#pragma once
+#لارښوونه once
 
-#include <inttypes.h>
-#include <string.h>
+#ضمن <inttypes.h>
+#ضمن <string.h>
 
-#define ATOMIC_ENTER lock()
-#define ATOMIC_LEAVE unlock()
+#تعریف_کړه ATOMIC_ENTER قلف()
+#تعریف_کړه ATOMIC_LEAVE unlock()
 
-namespace cdev
+نطاق cdev
 {
 
-struct file_operations {
-	void *op;
+بنية file_operations {
+	فراغ *op;
 };
 
-using px4_file_operations_t = struct file_operations;
-using mode_t = uint32_t;
+کارول px4_file_operations_t = بنية file_operations;
+کارول mode_t = uint32_t;
 
-class CDev;
+صنف CDev;
 
-struct file_t {
-	int f_oflags{0};
-	void *f_priv{nullptr};
-	CDev *cdev{nullptr};
+بنية file_t {
+	صحيح f_oflags{0};
+	فراغ *f_priv{تش_اشاره};
+	CDev *cdev{تش_اشاره};
 
-	file_t() = default;
-	file_t(int f, CDev *c) : f_oflags(f), cdev(c) {}
+	file_t() = افتراضي;
+	file_t(صحيح f, CDev *c) : f_oflags(f), cdev(c) {}
 };
 
 } // namespace cdev
 
-extern "C" __EXPORT int register_driver(const char *name, const cdev::px4_file_operations_t *fops,
-					cdev::mode_t mode, void *data);
-extern "C" __EXPORT int unregister_driver(const char *path);
+خارجي "C" __EXPORT صحيح ثبتوونکی_driver(ثابت حرف *name, ثابت cdev::px4_file_operations_t *fops,
+					cdev::mode_t ډېرپېښ, فراغ *معلومات);
+خارجي "C" __EXPORT صحيح unregister_driver(ثابت حرف *لار);

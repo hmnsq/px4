@@ -31,194 +31,194 @@
  *
  ****************************************************************************/
 
-#include "bl_update_flash.h"
+#ضمن "bl_update_flash.h"
 
-#include <px4_platform_common/px4_config.h>
+#ضمن <px4_platform_common/px4_config.h>
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sched.h>
-#include <sys/stat.h>
+#ضمن <stdint.h>
+#ضمن <stdlib.h>
+#ضمن <string.h>
+#ضمن <unistd.h>
+#ضمن <fcntl.h>
+#ضمن <sched.h>
+#ضمن <sys/stat.h>
 
-#include <arch/board/board.h>
+#ضمن <arch/board/board.h>
 
-#include <nuttx/progmem.h>
+#ضمن <nuttx/progmem.h>
 
-#if defined(BL_UPDATE_WATCHDOG)
+#إذا defined(BL_UPDATE_WATCHDOG)
 #  include <drivers/drv_watchdog.h>
-#else
+#وإلا
 #  define watchdog_pet()
-#endif
+#د_که_پای
 
-#if defined(CONFIG_ARCH_CHIP_STM32H7)
-#  define BL_FILE_SIZE_LIMIT	128*1024
-#  define STM_RAM_BASE        STM32_AXISRAM_BASE
-#  define PAGE_SIZE_MATTERS   1
-#elif defined(CONFIG_ARCH_CHIP_STM32F7)
-#  define BL_FILE_SIZE_LIMIT	32*1024
-#  define STM_RAM_BASE        STM32_SRAM_BASE
-#else
-#  define BL_FILE_SIZE_LIMIT  16384
-#  define STM_RAM_BASE        STM32_SRAM_BASE
-#endif
+#إذا defined(CONFIG_ARCH_CHIP_STM32H7)
+#  define BL_FILE_اندازه_حد	128*1024
+#  define STM_RAM_بنسټ        STM32_AXISRAM_بنسټ
+#  define پاڼه_اندازه_MATTERS   1
+#وإلاإذا defined(CONFIG_ARCH_CHIP_STM32F7)
+#  define BL_FILE_اندازه_حد	32*1024
+#  define STM_RAM_بنسټ        STM32_SRAM_بنسټ
+#وإلا
+#  define BL_FILE_اندازه_حد  16384
+#  define STM_RAM_بنسټ        STM32_SRAM_بنسټ
+#د_که_پای
 
-namespace bl_update
+نطاق bl_update
 {
 
-#if defined (CONFIG_STM32_STM32F4XXX) || defined (CONFIG_ARCH_CHIP_STM32F7) || \
+#إذا defined (CONFIG_STM32_STM32F4XXX) || defined (CONFIG_ARCH_CHIP_STM32F7) || \
     defined (CONFIG_ARCH_CHIP_STM32H7)
 
-static Result write_flash(const uint8_t *buf, size_t image_size)
+ساكن پایله_2 write_flash(ثابت uint8_t *buf, size_t image_اندازه)
 {
-	uint8_t *base = (uint8_t *) PX4_FLASH_BASE;
+	uint8_t *base = (uint8_t *) PX4_FLASH_بنسټ;
 
-	if (memcmp(base, buf, image_size) == 0) {
-		return Result::Unchanged;
+	إذا (memcmp(base, buf, image_اندازه) == 0) {
+		أرجع پایله_2::Unchanged;
 	}
 
 	/* prevent other tasks from running while we do this */
-	sched_lock();
+	sched_قلف();
 
 	/* The IWDG may already be running (CAN nodes start it in the bootloader)
 	 * and nothing else gets to pet it while the scheduler is locked. */
 	watchdog_pet();
-	const bool erased = up_progmem_eraseblock(0) >= 0;
+	ثابت منطقي erased = پورته_progmem_eraseblock(0) >= 0;
 	watchdog_pet();
 
 	/* Program even if the erase reported an error: the old bootloader is
 	 * already damaged, and a failed program reports it below. */
-	const ssize_t size = up_progmem_write((size_t) base, buf, image_size);
+	ثابت ssize_t اندازه = پورته_progmem_write((size_t) base, buf, image_اندازه);
 	watchdog_pet();
 
 	/* re-lock the flash control register */
-	stm32_flash_lock();
+	stm32_flash_قلف();
 
 	sched_unlock();
 
-	if (size != (ssize_t) image_size) {
-		return erased ? Result::ProgramFailed : Result::EraseFailed;
+	إذا (اندازه != (ssize_t) image_اندازه) {
+		أرجع erased ? پایله_2::پروګرام_Failed : پایله_2::EraseFailed;
 	}
 
-	if (memcmp(base, buf, image_size) != 0) {
-		return Result::VerifyFailed;
+	إذا (memcmp(base, buf, image_اندازه) != 0) {
+		أرجع پایله_2::VerifyFailed;
 	}
 
-	return Result::Updated;
+	أرجع پایله_2::Updated;
 }
 
-Result flash(const char *path)
+پایله_2 flash(ثابت حرف *لار)
 {
-	int fd = open(path, O_RDONLY);
+	صحيح fd = open(لار, O_RDONLY);
 
-	if (fd < 0) {
-		return Result::OpenFailed;
+	إذا (fd < 0) {
+		أرجع پایله_2::OpenFailed;
 	}
 
-	struct stat s;
+	بنية stat s;
 
-	if (fstat(fd, &s) != 0) {
+	إذا (fstat(fd, &s) != 0) {
 		close(fd);
-		return Result::OpenFailed;
+		أرجع پایله_2::OpenFailed;
 	}
 
-	if (s.st_size > BL_FILE_SIZE_LIMIT) {
+	إذا (s.st_size > BL_FILE_اندازه_حد) {
 		close(fd);
-		return Result::TooLarge;
+		أرجع پایله_2::TooLarge;
 	}
 
-	const size_t file_size = s.st_size;
+	ثابت size_t file_اندازه = s.st_size;
 
 	/* up_progmem_write() rejects a size that is not a multiple of its
 	 * program unit, and by then the old bootloader is erased. */
-#if defined(PAGE_SIZE_MATTERS)
-	const size_t align_mask = up_progmem_pagesize(0) - 1;
-#else
-	const size_t align_mask = sizeof(uint32_t) - 1;
-#endif
-	const size_t image_size = (file_size + align_mask) & ~align_mask;
+#إذا defined(پاڼه_اندازه_MATTERS)
+	ثابت size_t align_ماسک = پورته_progmem_pagesize(0) - 1;
+#وإلا
+	ثابت size_t align_ماسک = حجم(uint32_t) - 1;
+#د_که_پای
+	ثابت size_t image_اندازه = (file_اندازه + align_ماسک) & ~align_ماسک;
 
-	uint8_t *buf = (uint8_t *)malloc(image_size);
+	uint8_t *buf = (uint8_t *)حافظه_ورکړه(image_اندازه);
 
-	if (buf == nullptr) {
+	إذا (buf == تش_اشاره) {
 		close(fd);
-		return Result::NoMemory;
+		أرجع پایله_2::No_حافظه;
 	}
 
-	memset(buf, 0xff, image_size);
+	memset(buf, 0xff, image_اندازه);
 
-	const ssize_t bytes_read = read(fd, buf, file_size);
+	ثابت ssize_t بایټونه_read = اقرأ(fd, buf, file_اندازه);
 	close(fd);
 
-	if (bytes_read != (ssize_t) file_size) {
-		free(buf);
-		return Result::ReadFailed;
+	إذا (بایټونه_read != (ssize_t) file_اندازه) {
+		حرر(buf);
+		أرجع پایله_2::ReadFailed;
 	}
 
-	const uint32_t *hdr = (const uint32_t *)buf;
+	ثابت uint32_t *hdr = (ثابت uint32_t *)buf;
 
-	if ((hdr[0] < STM_RAM_BASE) ||			/* stack not below RAM */
-	    (hdr[0] > (STM_RAM_BASE + (128 * 1024))) ||	/* stack not above RAM */
-	    (hdr[1] < PX4_FLASH_BASE) ||			/* entrypoint not below flash */
-	    ((hdr[1] - PX4_FLASH_BASE) > BL_FILE_SIZE_LIMIT)) {	/* entrypoint not outside bootloader */
-		free(buf);
-		return Result::InvalidImage;
+	إذا ((hdr[0] < STM_RAM_بنسټ) ||			/* stack not below RAM */
+	    (hdr[0] > (STM_RAM_بنسټ + (128 * 1024))) ||	/* stack not above RAM */
+	    (hdr[1] < PX4_FLASH_بنسټ) ||			/* entrypoint not below flash */
+	    ((hdr[1] - PX4_FLASH_بنسټ) > BL_FILE_اندازه_حد)) {	/* entrypoint not outside bootloader */
+		حرر(buf);
+		أرجع پایله_2::InvalidImage;
 	}
 
-	const Result result = write_flash(buf, image_size);
-	free(buf);
-	return result;
+	ثابت پایله_2 پایله = write_flash(buf, image_اندازه);
+	حرر(buf);
+	أرجع پایله;
 }
 
-#else
+#وإلا
 
-Result flash(const char *path)
+پایله_2 flash(ثابت حرف *لار)
 {
-	return Result::NotSupported;
+	أرجع پایله_2::NotSupported;
 }
 
-#endif
+#د_که_پای
 
-const char *result_str(Result result)
+ثابت حرف *پایله_str(پایله_2 پایله)
 {
-	switch (result) {
-	case Result::Updated:
-		return "bootloader updated";
+	بدل (پایله) {
+	حالة پایله_2::Updated:
+		أرجع "bootloader updated";
 
-	case Result::Unchanged:
-		return "bootloader unchanged";
+	حالة پایله_2::Unchanged:
+		أرجع "bootloader unchanged";
 
-	case Result::NotSupported:
-		return "not supported on this hardware";
+	حالة پایله_2::NotSupported:
+		أرجع "not supported on this hardware";
 
-	case Result::OpenFailed:
-		return "cannot open bootloader file";
+	حالة پایله_2::OpenFailed:
+		أرجع "cannot open bootloader file";
 
-	case Result::TooLarge:
-		return "bootloader file too large";
+	حالة پایله_2::TooLarge:
+		أرجع "bootloader file too large";
 
-	case Result::NoMemory:
-		return "out of memory";
+	حالة پایله_2::No_حافظه:
+		أرجع "out of memory";
 
-	case Result::ReadFailed:
-		return "bootloader file read error";
+	حالة پایله_2::ReadFailed:
+		أرجع "bootloader file read error";
 
-	case Result::InvalidImage:
-		return "not a bootloader image";
+	حالة پایله_2::InvalidImage:
+		أرجع "not a bootloader image";
 
-	case Result::EraseFailed:
-		return "flash erase failed, retry before rebooting";
+	حالة پایله_2::EraseFailed:
+		أرجع "flash erase failed, retry before rebooting";
 
-	case Result::ProgramFailed:
-		return "flash program failed, retry before rebooting";
+	حالة پایله_2::پروګرام_Failed:
+		أرجع "flash program failed, retry before rebooting";
 
-	case Result::VerifyFailed:
-		return "verify failed, retry before rebooting";
+	حالة پایله_2::VerifyFailed:
+		أرجع "verify failed, retry before rebooting";
 	}
 
-	return "unknown error";
+	أرجع "unknown error";
 }
 
 } // namespace bl_update

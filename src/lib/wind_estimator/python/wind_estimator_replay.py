@@ -35,54 +35,54 @@ License: BSD 3-Clause
 Description:
 """
 
-import matplotlib.pylab as plt
-from pyulog import ULog
-import numpy as np
+استورد matplotlib.pylab كـ plt
+من pyulog استورد ULog
+استورد numpy كـ np
 
-from generated.fuse_airspeed import fuse_airspeed
+من generated.fuse_airspeed استورد fuse_airspeed
 
-def getData(log, topic_name, variable_name, instance=0):
-    variable_data = np.array([])
-    for elem in log.data_list:
-        if elem.name == topic_name:
-            if instance == elem.multi_id:
-                variable_data = elem.data[variable_name]
-                break
+تعریف get_معلومات(log, topic_name, variable_name, instance=0):
+    variable_معلومات = np.array([])
+    لكل elem في log.معلومات_list:
+        إذا elem.name == topic_name:
+            إذا instance == elem.multi_id:
+                variable_معلومات = elem.معلومات[variable_name]
+                اكسر
 
-    return variable_data
+    أرجع variable_معلومات
 
-def us2s(time_ms):
-    return time_ms * 1e-6
+تعریف us2s(وخت_ms):
+    أرجع وخت_ms * 1e-6
 
-def run(logfile, use_gnss, scale_init):
+تعریف پرلپسې_2(logfile, use_gnss, scale_init):
     log = ULog(logfile)
 
-    if use_gnss and any(elem.name == 'vehicle_gnss' for elem in log.data_list):
-        v_local = np.array([getData(log, 'vehicle_gnss', 'receiver.vel_north'),
-                  getData(log, 'vehicle_gnss', 'receiver.vel_east'),
-                  getData(log, 'vehicle_gnss', 'receiver.vel_down')])
-        t_v_local = us2s(getData(log, 'vehicle_gnss', 'timestamp'))
+    إذا use_gnss و any(elem.name == 'vehicle_gnss' لكل elem في log.معلومات_list):
+        v_local = np.array([get_معلومات(log, 'vehicle_gnss', 'receiver.vel_north'),
+                  get_معلومات(log, 'vehicle_gnss', 'receiver.vel_east'),
+                  get_معلومات(log, 'vehicle_gnss', 'receiver.vel_down')])
+        t_v_local = us2s(get_معلومات(log, 'vehicle_gnss', 'timestamp'))
 
-    elif use_gnss:
+    وإلاإذا use_gnss:
         # logs recorded before the rename to vehicle_gnss
-        v_local = np.array([getData(log, 'vehicle_gps_position', 'vel_n_m_s'),
-                  getData(log, 'vehicle_gps_position', 'vel_e_m_s'),
-                  getData(log, 'vehicle_gps_position', 'vel_d_m_s')])
-        t_v_local = us2s(getData(log, 'vehicle_gps_position', 'timestamp'))
+        v_local = np.array([get_معلومات(log, 'vehicle_gps_position', 'vel_n_m_s'),
+                  get_معلومات(log, 'vehicle_gps_position', 'vel_e_m_s'),
+                  get_معلومات(log, 'vehicle_gps_position', 'vel_d_m_s')])
+        t_v_local = us2s(get_معلومات(log, 'vehicle_gps_position', 'timestamp'))
 
-    else:
-        v_local = np.array([getData(log, 'vehicle_local_position', 'vx'),
-                  getData(log, 'vehicle_local_position', 'vy'),
-                  getData(log, 'vehicle_local_position', 'vz')])
-        t_v_local = us2s(getData(log, 'vehicle_local_position', 'timestamp'))
+    وإلا:
+        v_local = np.array([get_معلومات(log, 'vehicle_local_position', 'vx'),
+                  get_معلومات(log, 'vehicle_local_position', 'vy'),
+                  get_معلومات(log, 'vehicle_local_position', 'vz')])
+        t_v_local = us2s(get_معلومات(log, 'vehicle_local_position', 'timestamp'))
 
-    true_airspeed = getData(log, 'airspeed', 'true_airspeed_m_s')
-    t_true_airspeed = us2s(getData(log, 'airspeed', 'timestamp'))
+    true_airspeed = get_معلومات(log, 'airspeed', 'true_airspeed_m_s')
+    t_true_airspeed = us2s(get_معلومات(log, 'airspeed', 'timestamp'))
 
-    dist_bottom = getData(log, 'vehicle_local_position', 'dist_bottom')
-    t_dist_bottom = us2s(getData(log, 'vehicle_local_position', 'timestamp'))
+    dist_bottom = get_معلومات(log, 'vehicle_local_position', 'dist_bottom')
+    t_dist_bottom = us2s(get_معلومات(log, 'vehicle_local_position', 'timestamp'))
 
-    if scale_init is None:
+    إذا scale_init دی هیڅ:
         scale_init = 1.0
 
     # The estimator estimates the inverse scale factor to have a simpler measurement jacobian
@@ -96,27 +96,27 @@ def run(logfile, use_gnss, scale_init):
     epsilon = 1e-8
     t_now = t_v_local[0]
 
-    n = len(t_v_local)
+    n = اوږدوالی(t_v_local)
     wind_est_n = np.zeros(n)
     wind_est_e = np.zeros(n)
     scale_est = np.zeros(n)
     i_airspeed = 0
     i_dist_bottom = 0
 
-    for i in range(n):
+    لكل i في لړ(n):
         dt = t_v_local[i] - t_now
         t_now = t_v_local[i] # run on local position updates
 
-        while i_dist_bottom < len(t_dist_bottom) and t_dist_bottom[i_dist_bottom] <= t_now:
+        طالما i_dist_bottom < اوږدوالی(t_dist_bottom) و t_dist_bottom[i_dist_bottom] <= t_now:
             i_dist_bottom += 1
         i_dist_bottom -= 1
 
-        if dist_bottom[i_dist_bottom] > 20.0: # Don't start too low
+        إذا dist_bottom[i_dist_bottom] > 20.0: # Don't start too low
 
             P += Q * dt
 
-            if i_airspeed < len(t_true_airspeed) and t_true_airspeed[i_airspeed] < t_now:
-                while i_airspeed < len(t_true_airspeed) and t_true_airspeed[i_airspeed] < t_now:
+            إذا i_airspeed < اوږدوالی(t_true_airspeed) و t_true_airspeed[i_airspeed] < t_now:
+                طالما i_airspeed < اوږدوالی(t_true_airspeed) و t_true_airspeed[i_airspeed] < t_now:
                     i_airspeed += 1
                 i_airspeed -= 1
 
@@ -133,33 +133,33 @@ def run(logfile, use_gnss, scale_init):
     ax1 = plt.subplot(2, 1, 1)
     ax1.plot(t_v_local, wind_est_n)
     ax1.plot(t_v_local, wind_est_e)
-    ax1.set_ylabel("wind speed (m/s)")
+    ax1.سېټ_ylabel("wind speed (m/s)")
     ax1.legend(["north", "east"])
 
     ax2 = plt.subplot(2, 1, 2)
     ax2.plot(t_v_local, scale_est)
-    ax2.set_xlabel("time (s)")
-    ax2.set_ylabel("airspeed scale (-)")
+    ax2.سېټ_xlabel("time (s)")
+    ax2.سېټ_ylabel("airspeed scale (-)")
     plt.show()
 
-if __name__ == '__main__':
-    import os
-    import argparse
+إذا __name__ == '__main__':
+    استورد os
+    استورد argparse
 
     # Get the path of this script (without file name)
-    script_path = os.path.split(os.path.realpath(__file__))[0]
+    script_لار = os.لار.وېشل(os.لار.realpath(__file__))[0]
 
     # Parse arguments
-    parser = argparse.ArgumentParser(
+    parser = argparse.دلیل_Parser(
         description='Wind estimator with airspeed scale factor')
 
     # Provide parameter file path and name
-    parser.add_argument('logfile', help='Full ulog file path, name and extension', type=str)
-    parser.add_argument('--gnss', help='Use GNSS velocity instead of local velocity estimate',
+    parser.جمع_کړه_دلیل('logfile', help='Full ulog file path, name and extension', type=str)
+    parser.جمع_کړه_دلیل('--gnss', help='Use GNSS velocity instead of local velocity estimate',
                         action='store_true')
-    parser.add_argument('--scale_init', help='Initial airsped scale factor (1.0 if not specified)', type=float)
-    args = parser.parse_args()
+    parser.جمع_کړه_دلیل('--scale_init', help='Initial airsped scale factor (1.0 if not specified)', type=عائم)
+    دلیلونه = parser.parse_دلیلونه()
 
-    logfile = os.path.abspath(args.logfile) # Convert to absolute path
+    logfile = os.لار.abspath(دلیلونه.logfile) # Convert to absolute path
 
-    run(logfile, args.gnss, args.scale_init)
+    پرلپسې_2(logfile, دلیلونه.gnss, دلیلونه.scale_init)

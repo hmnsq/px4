@@ -2,25 +2,25 @@
 """
 Param source code generation script.
 """
-from __future__ import print_function
-import xml.etree.ElementTree as ET
-import argparse
-import sys
+من __future__ استورد print_function
+استورد xml.etree.Element_ونه كـ ET
+استورد argparse
+استورد sys
 
-try:
-    from jinja2 import Environment, FileSystemLoader
-except ImportError as e:
-    print("Failed to import jinja2: " + str(e))
-    print("")
-    print("You may need to install it using:")
-    print("    pip3 install --user jinja2")
-    print("")
+حاول:
+    من jinja2 استورد Environment, FileSystemLoader
+استثناء ImportError كـ e:
+    چاپ("Failed to import jinja2: " + str(e))
+    چاپ("")
+    چاپ("You may need to install it using:")
+    چاپ("    pip3 install --user jinja2")
+    چاپ("")
     sys.exit(1)
 
-import os
-from px4params.readonly_config import load_readonly_params
+استورد os
+من px4params.readonly_config استورد بارول_readonly_params
 
-def generate(xml_file, dest='.', readonly_config=None):
+تعریف generate(xml_file, dest='.', readonly_config=هیڅ):
     """
     Generate px4 param source from xml.
 
@@ -30,44 +30,44 @@ def generate(xml_file, dest='.', readonly_config=None):
         None means to scan everything.
     """
     # pylint: disable=broad-except
-    tree = ET.parse(xml_file)
-    root = tree.getroot()
+    ونه = ET.parse(xml_file)
+    ریښه = ونه.getroot()
 
     params = []
-    for group in root:
-        if group.tag == "group" and "no_code_generation" not in group.attrib:
-            for param in group:
+    لكل ډله في ریښه:
+        إذا ډله.نښان == "group" و "no_code_generation" ليس في ډله.attrib:
+            لكل param في ډله:
                 params.append(param)
 
-    params = sorted(params, key=lambda name: name.attrib["name"])
+    params = sorted(params, کلی=مجهول name: name.attrib["name"])
 
-    all_param_names = set(p.attrib["name"] for p in params)
-    readonly_params = load_readonly_params(readonly_config, all_param_names)
+    all_param_نومونه = سېټ(p.attrib["name"] لكل p في params)
+    readonly_params = بارول_readonly_params(readonly_config, all_param_نومونه)
 
-    script_path = os.path.dirname(os.path.realpath(__file__))
+    script_لار = os.لار.dirname(os.لار.realpath(__file__))
 
     # for jinja docs see: http://jinja.pocoo.org/docs/2.9/api/
     env = Environment(
-        loader=FileSystemLoader(os.path.join(script_path, 'templates')))
+        loader=FileSystemLoader(os.لار.join(script_لار, 'templates')))
 
-    if not os.path.isdir(dest):
-        os.path.mkdir(dest)
+    إذا ليس os.لار.isdir(dest):
+        os.لار.mkdir(dest)
 
     template_files = [
         'px4_parameters.hpp.jinja',
     ]
-    for template_file in template_files:
+    لكل template_file في template_files:
         template = env.get_template(template_file)
-        with open(os.path.join(
-                dest, template_file.replace('.jinja','')), 'w') as fid:
-            fid.write(template.render(params=params, readonly_params=readonly_params))
+        سره open(os.لار.join(
+                dest, template_file.replace('.jinja','')), 'w') كـ fid:
+            fid.اكتب(template.render(params=params, readonly_params=readonly_params))
 
-if __name__ == "__main__":
-    arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument("--xml", help="parameter xml file")
-    arg_parser.add_argument("--dest", help="destination path", default=os.path.curdir)
-    arg_parser.add_argument("--readonly-config", help="path to readonly_params.yaml", default=None)
-    args = arg_parser.parse_args()
-    generate(xml_file=args.xml, dest=args.dest, readonly_config=args.readonly_config)
+إذا __name__ == "__main__":
+    arg_parser = argparse.دلیل_Parser()
+    arg_parser.جمع_کړه_دلیل("--xml", help="parameter xml file")
+    arg_parser.جمع_کړه_دلیل("--dest", help="destination path", افتراضي=os.لار.curdir)
+    arg_parser.جمع_کړه_دلیل("--readonly-config", help="path to readonly_params.yaml", افتراضي=هیڅ)
+    دلیلونه = arg_parser.parse_دلیلونه()
+    generate(xml_file=دلیلونه.xml, dest=دلیلونه.dest, readonly_config=دلیلونه.readonly_config)
 
 #  vim: set et fenc=utf-8 ff=unix sts=4 sw=4 ts=4 :

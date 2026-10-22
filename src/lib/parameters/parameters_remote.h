@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#pragma once
+#لارښوونه once
 
-#include "param.h"
+#ضمن "param.h"
 
-struct param_remote_counters {
-	uint32_t set_value_request_received;
-	uint32_t set_value_response_sent;
+بنية param_remote_counters {
+	uint32_t سېټ_ارزښت_request_received;
+	uint32_t سېټ_ارزښت_response_لېږل_شوی;
 	uint32_t reset_received;
-	uint32_t set_value_request_sent;
-	uint32_t set_value_response_received;
-	uint32_t set_used_sent;
+	uint32_t سېټ_ارزښت_request_لېږل_شوی;
+	uint32_t سېټ_ارزښت_response_received;
+	uint32_t سېټ_کارول_شوی_لېږل_شوی;
 };
 
-void param_remote_init();
-void param_remote_set_used(param_t param);
-void param_remote_set_value(param_t param, const void *val);
-void param_remote_get_counters(struct param_remote_counters *cnt);
+فراغ param_remote_init();
+فراغ param_remote_سېټ_کارول_شوی(param_t param);
+فراغ param_remote_سېټ_ارزښت(param_t param, ثابت فراغ *val);
+فراغ param_remote_get_counters(بنية param_remote_counters *cnt);

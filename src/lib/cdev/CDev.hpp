@@ -37,44 +37,44 @@
  * Definitions for the generic base classes in the device framework.
  */
 
-#ifndef _CDEV_HPP
-#define _CDEV_HPP
+#که_نه_تعریف_شوی _CDEV_HPP
+#تعریف_کړه _CDEV_HPP
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/posix.h>
+#ضمن <px4_platform_common/px4_config.h>
+#ضمن <px4_platform_common/posix.h>
 
-#ifdef __PX4_NUTTX
-#include "nuttx/cdev_platform.hpp"
-#else
-#include "posix/cdev_platform.hpp"
-#endif
+#که_تعریف_شوی __PX4_NUTTX
+#ضمن "nuttx/cdev_platform.hpp"
+#وإلا
+#ضمن "posix/cdev_platform.hpp"
+#د_که_پای
 
-namespace cdev
+نطاق cdev
 {
 
 /**
  * Abstract class for any character device
  */
-class __EXPORT CDev
+صنف __EXPORT CDev
 {
-public:
+عام:
 	/**
 	 * Constructor
 	 *
 	 * @param name		Driver name
 	 * @param devname	Device node name
 	 */
-	explicit CDev(const char *devname);
+	څرګند CDev(ثابت حرف *devname);
 
 	// no copy, assignment, move, move assignment
-	CDev(const CDev &) = delete;
-	CDev &operator=(const CDev &) = delete;
-	CDev(CDev &&) = delete;
-	CDev &operator=(CDev &&) = delete;
+	CDev(ثابت CDev &) = ړنګول;
+	CDev &چلوونکی=(ثابت CDev &) = ړنګول;
+	CDev(CDev &&) = ړنګول;
+	CDev &چلوونکی=(CDev &&) = ړنګول;
 
-	virtual ~CDev();
+	مجازي ~CDev();
 
-	virtual int	init();
+	مجازي صحيح	init();
 
 	/**
 	 * Handle an open of the device.
@@ -85,7 +85,7 @@ public:
 	 * @param filep		Pointer to the NuttX file structure.
 	 * @return		OK if the open is allowed, -errno otherwise.
 	 */
-	virtual int	open(file_t *filep);
+	مجازي صحيح	open(file_t *filep);
 
 	/**
 	 * Handle a close of the device.
@@ -96,7 +96,7 @@ public:
 	 * @param filep		Pointer to the NuttX file structure.
 	 * @return		OK if the close was successful, -errno otherwise.
 	 */
-	virtual int	close(file_t *filep);
+	مجازي صحيح	close(file_t *filep);
 
 	/**
 	 * Perform a read from the device.
@@ -108,7 +108,7 @@ public:
 	 * @param buflen	The number of bytes to be read.
 	 * @return		The number of bytes read or -errno otherwise.
 	 */
-	virtual ssize_t	read(file_t *filep, char *buffer, size_t buflen) { return -ENOSYS; }
+	مجازي ssize_t	اقرأ(file_t *filep, حرف *بفر_2, size_t buflen) { أرجع -ENOSYS; }
 
 	/**
 	 * Perform a write to the device.
@@ -120,7 +120,7 @@ public:
 	 * @param buflen	The number of bytes to be written.
 	 * @return		The number of bytes written or -errno otherwise.
 	 */
-	virtual ssize_t	write(file_t *filep, const char *buffer, size_t buflen) { return -ENOSYS; }
+	مجازي ssize_t	اكتب(file_t *filep, ثابت حرف *بفر_2, size_t buflen) { أرجع -ENOSYS; }
 
 	/**
 	 * Perform a logical seek operation on the device.
@@ -132,7 +132,7 @@ public:
 	 * @param whence	SEEK_OFS, SEEK_CUR or SEEK_END.
 	 * @return		The previous offset, or -errno otherwise.
 	 */
-	virtual off_t	seek(file_t *filep, off_t offset, int whence) { return -ENOSYS; }
+	مجازي off_t	seek(file_t *filep, off_t دننه_واټن, صحيح whence) { أرجع -ENOSYS; }
 
 	/**
 	 * Perform an ioctl operation on the device.
@@ -146,7 +146,7 @@ public:
 	 * @param arg		The ioctl argument value.
 	 * @return		OK on success, or -errno otherwise.
 	 */
-	virtual int	ioctl(file_t *filep, int cmd, unsigned long arg) { return -ENOTTY; };
+	مجازي صحيح	ioctl(file_t *filep, صحيح cmd, بینښه اوږد arg) { أرجع -ENOTTY; };
 
 	/**
 	 * Perform a poll setup/teardown operation.
@@ -159,22 +159,22 @@ public:
 	 *			it is being torn down.
 	 * @return		OK on success, or -errno otherwise.
 	 */
-	int	poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup);
+	صحيح	poll(file_t *filep, px4_pollfd_struct_t *fds, منطقي تیاری);
 
 	/**
 	 * Get the device name.
 	 *
 	 * @return the file system string of the device handle
 	 */
-	const char	*get_devname() const { return _devname; }
+	ثابت حرف	*get_devname() ثابت { أرجع _devname; }
 
-protected:
+محمي:
 	/**
 	 * Accessor for the default cdev file operations table; useful for
 	 * registering clone devices etc. Defined in the platform-specific
 	 * cdev_platform.cpp.
 	 */
-	static const px4_file_operations_t	&fops_ref();
+	ساكن ثابت px4_file_operations_t	&fops_ref();
 
 	/**
 	 * Check the current state of the device for poll events from the
@@ -188,7 +188,7 @@ protected:
 	 * @param filep		The file that's interested.
 	 * @return		The current set of poll events.
 	 */
-	virtual px4_pollevent_t poll_state(file_t *filep) { return 0; }
+	مجازي px4_pollevent_t poll_state(file_t *filep) { أرجع 0; }
 
 	/**
 	 * Report new poll events.
@@ -198,7 +198,7 @@ protected:
 	 *
 	 * @param events	The new event(s) being announced.
 	 */
-	void	poll_notify(px4_pollevent_t events);
+	فراغ	poll_notify(px4_pollevent_t events);
 
 	/**
 	 * Internal implementation of poll_notify.
@@ -206,7 +206,7 @@ protected:
 	 * @param fds		A poll waiter to notify.
 	 * @param events	The event(s) to send to the waiter.
 	 */
-	virtual void	poll_notify_one(px4_pollfd_struct_t *fds, px4_pollevent_t events);
+	مجازي فراغ	poll_notify_one(px4_pollfd_struct_t *fds, px4_pollevent_t events);
 
 	/**
 	 * Notification of the first open.
@@ -219,7 +219,7 @@ protected:
 	 * @param filep		Pointer to the NuttX file structure.
 	 * @return		OK if the open should proceed, -errno otherwise.
 	 */
-	virtual int	open_first(file_t *filep) { return PX4_OK; }
+	مجازي صحيح	open_لومړی(file_t *filep) { أرجع PX4_OK; }
 
 	/**
 	 * Notification of the last close.
@@ -232,7 +232,7 @@ protected:
 	 * @param filep		Pointer to the NuttX file structure.
 	 * @return		OK if the open should return OK, -errno otherwise.
 	 */
-	virtual int	close_last(file_t *filep) { return PX4_OK; }
+	مجازي صحيح	close_وروستی(file_t *filep) { أرجع PX4_OK; }
 
 	/**
 	 * Register a class device name, automatically adding device
@@ -241,7 +241,7 @@ protected:
 	 * @param class_devname   Device class name
 	 * @return class_instamce Class instance created, or -errno on failure
 	 */
-	int register_class_devname(const char *class_devname);
+	صحيح ثبتوونکی_class_devname(ثابت حرف *class_devname);
 
 	/**
 	 * Register a class device name, automatically adding device
@@ -251,7 +251,7 @@ protected:
 	 * @param class_instance  Device class instance from register_class_devname()
 	 * @return		  OK on success, -errno otherwise
 	 */
-	int unregister_class_devname(const char *class_devname, unsigned class_instance);
+	صحيح unregister_class_devname(ثابت حرف *class_devname, بینښه class_instance);
 
 	/**
 	 * Take the driver lock.
@@ -262,12 +262,12 @@ protected:
 	 *
 	 * Careful: lock() calls cannot be nested!
 	 */
-	void		lock() { do {} while (px4_sem_wait(&_lock) != 0); }
+	فراغ		قلف() { افعل {} طالما (px4_sem_wait(&_lock) != 0); }
 
 	/**
 	 * Release the driver lock.
 	 */
-	void		unlock() { px4_sem_post(&_lock); }
+	فراغ		unlock() { px4_sem_post(&_lock); }
 
 	/**
 	 * True once any poll waiter has been registered. Read it under
@@ -275,19 +275,19 @@ protected:
 	 * poll_state() under the same section, so a waiter that registers
 	 * after a false reading sees the state change itself.
 	 */
-	bool		has_poll_waiters() const { return _max_pollwaiters > 0; }
+	منطقي		has_poll_waiters() ثابت { أرجع _max_pollwaiters > 0; }
 
 	px4_sem_t	_lock; /**< lock to protect access to all class members (also for derived classes) */
 
-private:
-	const char	*_devname{nullptr};		/**< device node name */
+خاص:
+	ثابت حرف	*_devname{تش_اشاره};		/**< device node name */
 
-	px4_pollfd_struct_t	**_pollset{nullptr};
+	px4_pollfd_struct_t	**_pollset{تش_اشاره};
 
-	bool		_registered{false};		/**< true if device name was registered */
+	منطقي		_registered{خطأ};		/**< true if device name was registered */
 
 	uint8_t		_max_pollwaiters{0};		/**< size of the _pollset array */
-	uint16_t	_open_count{0};			/**< number of successful opens */
+	uint16_t	open_شمېر{0};			/**< number of successful opens */
 
 	/**
 	 * Store a pollwaiter in a slot where we can find it later.
@@ -296,17 +296,17 @@ private:
 	 *
 	 * @return		OK, or -errno on error.
 	 */
-	inline int	store_poll_waiter(px4_pollfd_struct_t *fds);
+	مضمن صحيح	store_poll_waiter(px4_pollfd_struct_t *fds);
 
 	/**
 	 * Remove a poll waiter.
 	 *
 	 * @return		OK, or -errno on error.
 	 */
-	inline int	remove_poll_waiter(px4_pollfd_struct_t *fds);
+	مضمن صحيح	remove_poll_waiter(px4_pollfd_struct_t *fds);
 
 };
 
 } // namespace cdev
 
-#endif /* _CDEV_HPP */
+#د_که_پای /* _CDEV_HPP */

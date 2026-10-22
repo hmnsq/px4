@@ -37,60 +37,60 @@
  * @author Thomas Gubler <thomasgubler@gmail.com>
  * @author Mark Charlebois <mcharleb@gmail.com>
  */
-#include "cdevtest_example.h"
+#ضمن "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/tasks.h>
-#include <stdio.h>
-#include <string.h>
+#ضمن <px4_platform_common/app.h>
+#ضمن <px4_platform_common/tasks.h>
+#ضمن <stdio.h>
+#ضمن <string.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+ساكن صحيح daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-extern "C" __EXPORT int cdev_test_main(int argc, char *argv[]);
-int cdev_test_main(int argc, char *argv[])
+خارجي "C" __EXPORT صحيح cdev_test_main(صحيح argc, حرف *argv[]);
+صحيح cdev_test_main(صحيح argc, حرف *argv[])
 {
 
-	if (argc < 2) {
-		printf("usage: cdevtest {start|stop|status}\n");
-		return 1;
+	إذا (argc < 2) {
+		چاپ_کړه("usage: cdevtest {start|stop|status}\n");
+		أرجع 1;
 	}
 
-	if (!strcmp(argv[1], "start")) {
+	إذا (!strcmp(argv[1], "start")) {
 
-		if (CDevExample::appState.isRunning()) {
-			printf("already running\n");
+		إذا (CDevExample::appState.isRunning()) {
+			چاپ_کړه("already running\n");
 			/* this is not an error */
-			return 0;
+			أرجع 0;
 		}
 
 		daemon_task = px4_task_spawn_cmd("cdevtest",
 						 SCHED_DEFAULT,
-						 SCHED_PRIORITY_MAX - 5,
+						 SCHED_لومړیتوب_MAX - 5,
 						 2000,
 						 PX4_MAIN,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+						 (argv) ? (حرف *ثابت *)&argv[2] : (حرف *ثابت *)تش_اشاره);
 
-		return 0;
+		أرجع 0;
 	}
 
-	if (!strcmp(argv[1], "stop")) {
+	إذا (!strcmp(argv[1], "stop")) {
 		CDevExample::appState.requestExit();
-		return 0;
+		أرجع 0;
 	}
 
-	if (!strcmp(argv[1], "status")) {
-		if (CDevExample::appState.isRunning()) {
-			printf("is running\n");
+	إذا (!strcmp(argv[1], "status")) {
+		إذا (CDevExample::appState.isRunning()) {
+			چاپ_کړه("is running\n");
 
-		} else {
-			printf("not started\n");
+		} وإلا {
+			چاپ_کړه("not started\n");
 		}
 
-		return 0;
+		أرجع 0;
 	}
 
-	printf("usage: cdevtest_main {start|stop|status}\n");
-	return 1;
+	چاپ_کړه("usage: cdevtest_main {start|stop|status}\n");
+	أرجع 1;
 }

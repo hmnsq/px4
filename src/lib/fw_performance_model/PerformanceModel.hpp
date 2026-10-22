@@ -37,41 +37,41 @@
  * Performance model.
  */
 
-#include <float.h>
-#include <math.h>
-#include <px4_platform_common/module_params.h>
-#include <uORB/topics/fuel_tank_status.h>
+#ضمن <float.h>
+#ضمن <math.h>
+#ضمن <px4_platform_common/module_params.h>
+#ضمن <uORB/topics/fuel_tank_status.h>
 
-#ifndef PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
-#define PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
+#که_نه_تعریف_شوی PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
+#تعریف_کړه PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
 
-class PerformanceModel : public ModuleParams
+صنف PerformanceModel : عام ModuleParams
 {
-public:
+عام:
 	PerformanceModel();
-	~PerformanceModel() = default;
+	~PerformanceModel() = افتراضي;
 
-	void updateParameters();
+	فراغ updateParameters();
 
 	/**
 	 * Get the maximum climb rate (true airspeed) expected for current air density and weight.
 	 * @param air_density in kg/m^3
 	 * @return maximum climb rate in m/s
 	 */
-	float getMaximumClimbRate(float air_density) const;
+	عائم get_اعظمي_Climb_شرح(عائم air_density) ثابت;
 
 	/**
 	 * Get the minimum sink rate (true airspeed) expected for current air density and weight.
 	 * @param air_density in kg/m^3
 	 * @return minimum sink rate in m/s
 	 */
-	float getMinimumSinkRate(float air_density) const;
+	عائم get_Minimum_Sink_شرح(عائم air_density) ثابت;
 
 	/**
 	 * Get the ration of actual weight to base weight
 	 * @return weight ratio
 	 */
-	float getWeightRatio() const;
+	عائم get_وزن_نسبت() ثابت;
 
 	/**
 	 * Set the fraction of fuel remaining, used to reduce the vehicle weight by the burned fuel mass
@@ -79,13 +79,13 @@ public:
 	 * Non-finite input is ignored and the last known fuel fraction is kept.
 	 * @param fuel_fraction_remaining fraction of fuel remaining in range [0,1]
 	 */
-	void setFuelFractionRemaining(float fuel_fraction_remaining);
+	فراغ سېټ_Fuel_Fraction_پاتې_شوی(عائم fuel_fraction_پاتې_شوی);
 
 	/**
 	 * Check if fuel-based weight compensation is enabled.
 	 * @return true if WEIGHT_FUEL is set to a valid fuel weight
 	 */
-	bool isFuelCompensationEnabled() const { return _param_weight_fuel.get() > FLT_EPSILON; }
+	منطقي isFuelCompensationEnabled() ثابت { أرجع param_وزن_fuel.get() > FLT_EPSILON; }
 
 	/**
 	 * Extract the fraction of fuel remaining from a fuel tank status message, preferring the
@@ -94,7 +94,7 @@ public:
 	 * @param fuel_tank_status fuel tank status message
 	 * @return fraction of fuel remaining in range [0,1], NAN if not available
 	 */
-	static float getFuelFractionRemaining(const fuel_tank_status_s &fuel_tank_status);
+	ساكن عائم get_Fuel_Fraction_پاتې_شوی(ثابت fuel_tank_حالت_s &fuel_tank_حالت);
 
 	/**
 	 * Get the trim throttle for the current airspeed setpoint as well as air density and weight.
@@ -104,20 +104,20 @@ public:
 	 * @param air_density air density in kg/m^3
 	 * @return trim throttle in range [0,1]
 	 */
-	float getTrimThrottle(float throttle_min, float throttle_max, float airspeed_sp, float air_density) const;
+	عائم getTrimThrottle(عائم throttle_min, عائم throttle_max, عائم airspeed_sp, عائم air_density) ثابت;
 
 	/**
 	 * Get the throttle scale factor for the current air density.
 	 * @param air_density in kg/m^3
 	 * @return throttle scale factor for air density
 	 */
-	float getAirDensityThrottleScale(float air_density) const;
+	عائم getAirDensityThrottleScale(عائم air_density) ثابت;
 
 	/**
 	 * Get the trim airspeed compensated for weight.
 	 * @return calibrated trim airspeed in m/s
 	 */
-	float getCalibratedTrimAirspeed() const;
+	عائم getCalibratedTrimAirspeed() ثابت;
 
 	/**
 	 * Get the minimum airspeed compensated for weight, load factor due to bank angle and flaps.
@@ -125,13 +125,13 @@ public:
 	 * @param flaps_setpoint Flaps setpoint, normalized in range [0,1]
 	 * @return calibrated minimum airspeed in m/s
 	 */
-	float getMinimumCalibratedAirspeed(float load_factor, float flaps_setpoint) const;
+	عائم getMinimumCalibratedAirspeed(عائم بارول_ضریب, عائم flaps_setpoint) ثابت;
 
 	/**
 	 * Get the maximum airspeed.
 	 * @return calibrated maximum airspeed in m/s
 	 */
-	float getMaximumCalibratedAirspeed() const;
+	عائم get_اعظمي_Calibrated_Airspeed() ثابت;
 
 	/**
 	 * get the stall airspeed compensated for load factor due to bank angle.
@@ -139,15 +139,15 @@ public:
 	 * @param flaps_setpoint Flaps setpoint, normalized in range [0,1]
 	 * @return calibrated stall airspeed in m/s
 	 */
-	float getCalibratedStallAirspeed(float load_factor, float flaps_setpoint) const;
+	عائم getCalibratedStallAirspeed(عائم بارول_ضریب, عائم flaps_setpoint) ثابت;
 
 	/**
 	 * Run some checks on parameters and detect unfeasible combinations.
 	 * @return true if all checks pass
 	 */
-	bool runSanityChecks() const;
+	منطقي پرلپسې_Sanity_Checks() ثابت;
 
-private:
+خاص:
 	DEFINE_PARAMETERS(
 		(ParamFloat<px4::params::FW_AIRSPD_MAX>) _param_fw_airspd_max,
 		(ParamFloat<px4::params::FW_AIRSPD_MIN>) _param_fw_airspd_min,
@@ -155,9 +155,9 @@ private:
 		(ParamFloat<px4::params::FW_AIRSPD_STALL>) _param_fw_airspd_stall,
 		(ParamFloat<px4::params::FW_T_CLMB_MAX>) _param_fw_t_clmb_max,
 		(ParamFloat<px4::params::FW_T_SINK_MIN>) _param_fw_t_sink_min,
-		(ParamFloat<px4::params::WEIGHT_BASE>) _param_weight_base,
-		(ParamFloat<px4::params::WEIGHT_GROSS>) _param_weight_gross,
-		(ParamFloat<px4::params::WEIGHT_FUEL>) _param_weight_fuel,
+		(ParamFloat<px4::params::وزن_بنسټ>) param_وزن_بنسټ,
+		(ParamFloat<px4::params::وزن_GROSS>) param_وزن_gross,
+		(ParamFloat<px4::params::وزن_FUEL>) param_وزن_fuel,
 		(ParamFloat<px4::params::FW_SERVICE_CEIL>) _param_service_ceiling,
 		(ParamFloat<px4::params::FW_THR_TRIM>) _param_fw_thr_trim,
 		(ParamFloat<px4::params::FW_THR_MAX>) _param_fw_thr_max,
@@ -173,12 +173,12 @@ private:
 	 * @param calibrated_airspeed_sp [m/s] calibrated
 	 * @return trim throttle [0, 1] at sea level
 	 */
-	float getTrimThrottleForCalibratedAirspeed(float calibrated_airspeed_sp) const;
+	عائم getTrimThrottleForCalibratedAirspeed(عائم calibrated_airspeed_sp) ثابت;
 
 
-	static float sanitiseAirDensity(float air_density);
+	ساكن عائم sanitiseAirDensity(عائم air_density);
 
-	float _fuel_fraction_remaining{NAN}; ///< fraction of fuel remaining in range [0,1], NAN if unknown
+	عائم fuel_fraction_پاتې_شوی_2{NAN}; ///< fraction of fuel remaining in range [0,1], NAN if unknown
 };
 
-#endif //PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_
+#د_که_پای //PX4_SRC_MODULES_FW_POS_CONTROL_PERFORMANCEMODEL_H_

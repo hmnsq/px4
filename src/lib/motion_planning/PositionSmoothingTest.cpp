@@ -1,61 +1,61 @@
-#include <gtest/gtest.h>
+#ضمن <gtest/gtest.h>
 
-#include <motion_planning/PositionSmoothing.hpp>
+#ضمن <motion_planning/PositionSmoothing.hpp>
 
 TEST(PositionSmoothingBasicTest, AllZeroCase)
 {
 	PositionSmoothing position_smoothing;
-	PositionSmoothing::PositionSmoothingSetpoints out;
+	PositionSmoothing::PositionSmoothingSetpoints بهر;
 
 	position_smoothing.generateSetpoints(
 		Vector3f(),
 	{Vector3f(), Vector3f(), Vector3f()},
 	Vector3f(),
 	0.f,
-	false,
-	out
+	خطأ,
+	بهر
 	);
 
-	EXPECT_EQ(out.jerk, Vector3f());
-	EXPECT_EQ(out.acceleration, Vector3f());
-	EXPECT_EQ(out.velocity, Vector3f());
-	EXPECT_EQ(out.position, Vector3f());
-	EXPECT_EQ(out.unsmoothed_velocity, Vector3f());
+	EXPECT_EQ(بهر.jerk, Vector3f());
+	EXPECT_EQ(بهر.acceleration, Vector3f());
+	EXPECT_EQ(بهر.velocity, Vector3f());
+	EXPECT_EQ(بهر.position, Vector3f());
+	EXPECT_EQ(بهر.unsmoothed_velocity, Vector3f());
 }
 
-static constexpr float MAX_JERK = 4.f;
-static constexpr float MAX_ACCELERATION = 3.f;
+ساكن constexpr عائم MAX_JERK = 4.f;
+ساكن constexpr عائم MAX_ACCELERATION = 3.f;
 
-static constexpr float MAX_ALLOWED_HOR_ERR = 2.f;
-static constexpr float VERTICAL_ACCEPTANCE_RADIUS = 0.8f;
-static constexpr float CRUISE_SPEED = 5.f;
-static constexpr float MAX_VELOCITY = CRUISE_SPEED;
+ساكن constexpr عائم MAX_ALLOWED_HOR_ERR = 2.f;
+ساكن constexpr عائم VERTICAL_ACCEPTANCE_RADIUS = 0.8f;
+ساكن constexpr عائم CRUISE_چټکتیا = 5.f;
+ساكن constexpr عائم MAX_VELOCITY = CRUISE_چټکتیا;
 
-static constexpr float HORIZONTAL_TRAJECTORY_GAIN = 0.5f;
-static constexpr float TARGET_ACCEPTANCE_RADIUS = 0.5f;
+ساكن constexpr عائم HORIZONTAL_TRAJECTORY_GAIN = 0.5f;
+ساكن constexpr عائم موخه_ACCEPTANCE_RADIUS = 0.5f;
 
 
-class PositionSmoothingTest : public ::testing::Test
+صنف PositionSmoothingTest : عام ::testing::Test
 {
 
-public:
+عام:
 	PositionSmoothing _position_smoothing;
 
 	PositionSmoothingTest()
 	{
-		_position_smoothing.setMaxJerk(MAX_JERK);
-		_position_smoothing.setMaxAcceleration({MAX_ACCELERATION, MAX_ACCELERATION, MAX_ACCELERATION});
-		_position_smoothing.setMaxVelocity({MAX_VELOCITY, MAX_VELOCITY, MAX_VELOCITY});
-		_position_smoothing.setMaxAllowedHorizontalError(MAX_ALLOWED_HOR_ERR);
-		_position_smoothing.setVerticalAcceptanceRadius(VERTICAL_ACCEPTANCE_RADIUS);
-		_position_smoothing.setCruiseSpeed(CRUISE_SPEED);
-		_position_smoothing.setHorizontalTrajectoryGain(HORIZONTAL_TRAJECTORY_GAIN);
-		_position_smoothing.setTargetAcceptanceRadius(TARGET_ACCEPTANCE_RADIUS);
+		_position_smoothing.سېټ_Max_Jerk(MAX_JERK);
+		_position_smoothing.سېټ_Max_Acceleration({MAX_ACCELERATION, MAX_ACCELERATION, MAX_ACCELERATION});
+		_position_smoothing.سېټ_Max_Velocity({MAX_VELOCITY, MAX_VELOCITY, MAX_VELOCITY});
+		_position_smoothing.سېټ_Max_Allowed_Horizontal_Error(MAX_ALLOWED_HOR_ERR);
+		_position_smoothing.سېټ_Vertical_Acceptance_Radius(VERTICAL_ACCEPTANCE_RADIUS);
+		_position_smoothing.سېټ_Cruise_چټکتیا(CRUISE_چټکتیا);
+		_position_smoothing.سېټ_Horizontal_Trajectory_Gain(HORIZONTAL_TRAJECTORY_GAIN);
+		_position_smoothing.سېټ_موخه_Acceptance_Radius(موخه_ACCEPTANCE_RADIUS);
 
 		_position_smoothing.reset({0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {0.f, 0.f, 0.f});
 	}
 
-	static void expectDynamicsLimitsRespected(const PositionSmoothing::PositionSmoothingSetpoints &setpoints)
+	ساكن فراغ expectDynamicsLimitsRespected(ثابت PositionSmoothing::PositionSmoothingSetpoints &setpoints)
 	{
 		EXPECT_LE(fabsf(setpoints.velocity(0)), MAX_VELOCITY) << "Velocity in x too high\n";
 		EXPECT_LE(fabsf(setpoints.velocity(1)), MAX_VELOCITY) << "Velocity in y too high\n";
@@ -70,127 +70,127 @@ public:
 };
 
 
-TEST_F(PositionSmoothingTest, reachesTargetPositionSetpoint)
+TEST_F(PositionSmoothingTest, reaches_موخه_Position_Setpoint)
 {
-	const int N_ITER = 2000;
-	const float DELTA_T = 0.02f;
-	const Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
-	const Vector3f FF_VELOCITY{0.f, 0.f, 0.f};
-	const Vector3f TARGET{12.f, 17.f, 8.f};
+	ثابت صحيح N_ITER = 2000;
+	ثابت عائم DELTA_T = 0.02f;
+	ثابت Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
+	ثابت Vector3f FF_VELOCITY{0.f, 0.f, 0.f};
+	ثابت Vector3f موخه_2{12.f, 17.f, 8.f};
 
-	Vector3f waypoints[3] = {INITIAL_POSITION, TARGET, TARGET};
+	Vector3f waypoints[3] = {INITIAL_POSITION, موخه_2, موخه_2};
 
 	Vector3f position{0.f, 0.f, 0.f};
 
-	PositionSmoothing::PositionSmoothingSetpoints out;
+	PositionSmoothing::PositionSmoothingSetpoints بهر;
 
-	int iteration = 0;
+	صحيح iteration = 0;
 
-	for (; iteration < N_ITER; iteration++) {
+	لكل (; iteration < N_ITER; iteration++) {
 		_position_smoothing.generateSetpoints(
 			position,
 			waypoints,
 			FF_VELOCITY,
 			DELTA_T,
-			false,
-			out
+			خطأ,
+			بهر
 		);
-		position = out.position;
-		expectDynamicsLimitsRespected(out);
+		position = بهر.position;
+		expectDynamicsLimitsRespected(بهر);
 
-		if (position == TARGET) {
-			printf("Converged in %d iterations\n", iteration);
-			break;
+		إذا (position == موخه_2) {
+			چاپ_کړه("Converged in %d iterations\n", iteration);
+			اكسر;
 		}
 	}
 
-	EXPECT_EQ(TARGET, position);
+	EXPECT_EQ(موخه_2, position);
 	EXPECT_LT(iteration, N_ITER) << "Took too long to converge\n";
 }
 
 
-TEST_F(PositionSmoothingTest, reachesTargetVelocityIntegration)
+TEST_F(PositionSmoothingTest, reaches_موخه_Velocity_Integration)
 {
-	const int N_ITER = 2000;
-	const float DELTA_T = 0.02f;
-	const Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
-	const Vector3f FF_VELOCITY{0.f, 0.f, 0.f};
-	const Vector3f TARGET{12.f, 17.f, 8.f};
+	ثابت صحيح N_ITER = 2000;
+	ثابت عائم DELTA_T = 0.02f;
+	ثابت Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
+	ثابت Vector3f FF_VELOCITY{0.f, 0.f, 0.f};
+	ثابت Vector3f موخه_2{12.f, 17.f, 8.f};
 
-	Vector3f waypoints[3] = {INITIAL_POSITION, TARGET, TARGET};
+	Vector3f waypoints[3] = {INITIAL_POSITION, موخه_2, موخه_2};
 
 	Vector3f position{0.f, 0.f, 0.f};
 
-	PositionSmoothing::PositionSmoothingSetpoints out;
+	PositionSmoothing::PositionSmoothingSetpoints بهر;
 
-	int iteration = 0;
+	صحيح iteration = 0;
 
-	for (; iteration < N_ITER; iteration++) {
+	لكل (; iteration < N_ITER; iteration++) {
 		_position_smoothing.generateSetpoints(
 			position,
 			waypoints,
 			FF_VELOCITY,
 			DELTA_T,
-			false,
-			out
+			خطأ,
+			بهر
 		);
-		position += out.velocity * DELTA_T;
-		expectDynamicsLimitsRespected(out);
+		position += بهر.velocity * DELTA_T;
+		expectDynamicsLimitsRespected(بهر);
 
 
-		if (position == TARGET) {
-			printf("Converged in %d iterations\n", iteration);
-			break;
+		إذا (position == موخه_2) {
+			چاپ_کړه("Converged in %d iterations\n", iteration);
+			اكسر;
 		}
 	}
 
-	EXPECT_EQ(TARGET, position);
+	EXPECT_EQ(موخه_2, position);
 	EXPECT_LT(iteration, N_ITER) << "Took too long to converge\n";
 }
 
 
-TEST_F(PositionSmoothingTest, reachesTargetInitialVelocity)
+TEST_F(PositionSmoothingTest, reaches_موخه_Initial_Velocity)
 {
-	const int N_ITER = 20000;
-	const float DELTA_T = 0.02f;
-	const Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
-	const Vector3f TARGET{12.f, 17.f, 8.f};
-	const Vector3f NEXT_TARGET{8.f, 12.f, 80.f};
+	ثابت صحيح N_ITER = 20000;
+	ثابت عائم DELTA_T = 0.02f;
+	ثابت Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
+	ثابت Vector3f موخه_2{12.f, 17.f, 8.f};
+	ثابت Vector3f بل_موخه_2{8.f, 12.f, 80.f};
 
-	const float XY_ACC_RAD = 10.f;
-	const float Z_ACC_RAD = 0.8f;
+	ثابت عائم XY_ACC_RAD = 10.f;
+	ثابت عائم Z_ACC_RAD = 0.8f;
 
 
-	Vector3f waypoints[3] = {INITIAL_POSITION, TARGET, TARGET};
+	Vector3f waypoints[3] = {INITIAL_POSITION, موخه_2, موخه_2};
 	Vector3f ff_velocity{1.f, 0.1f, 0.3f};
 
 	Vector3f position{0.f, 0.f, 0.f};
 
-	PositionSmoothing::PositionSmoothingSetpoints out;
+	PositionSmoothing::PositionSmoothingSetpoints بهر;
 
-	int iteration = 0;
+	صحيح iteration = 0;
 
-	for (; iteration < N_ITER; iteration++) {
+	لكل (; iteration < N_ITER; iteration++) {
 		_position_smoothing.generateSetpoints(
 			position,
 			waypoints,
 			ff_velocity,
 			DELTA_T,
-			false,
-			out
+			خطأ,
+			بهر
 		);
-		position = out.position;
+		position = بهر.position;
 		ff_velocity = {0.f, 0.f, 0.f};
-		expectDynamicsLimitsRespected(out);
+		expectDynamicsLimitsRespected(بهر);
 
-		if (Vector2f(position.xy() - TARGET.xy()).norm() < XY_ACC_RAD && fabsf(position(2) - TARGET(2)) < Z_ACC_RAD) {
-			printf("Converged in %d iterations\n", iteration);
-			break;
+		إذا (Vector2f(position.xy() - موخه_2.xy()).norm() < XY_ACC_RAD && fabsf(position(2) - موخه_2(2)) < Z_ACC_RAD) {
+			چاپ_کړه("Converged in %d iterations\n", iteration);
+			اكسر;
 		}
 	}
 
-	EXPECT_LT(Vector2f(position.xy() - TARGET.xy()).norm(), XY_ACC_RAD);
-	EXPECT_LT(fabsf(position(2) - TARGET(2)), Z_ACC_RAD);
+	EXPECT_LT(Vector2f(position.xy() - موخه_2.xy()).norm(), XY_ACC_RAD);
+	EXPECT_LT(fabsf(position(2) - موخه_2(2)), Z_ACC_RAD);
 	EXPECT_LT(iteration, N_ITER) << "Took too long to converge\n";
 }
 
@@ -200,115 +200,115 @@ TEST_F(PositionSmoothingTest, reachesTargetInitialVelocity)
 // vehicle has to brake and come back to the target instead of drifting away forever.
 TEST_F(PositionSmoothingTest, doesNotDriftPastUnreachedWaypoint)
 {
-	const int N_ITER = 3000; // 60 s at 50 Hz
-	const float DELTA_T = 0.02f;
+	ثابت صحيح N_ITER = 3000; // 60 s at 50 Hz
+	ثابت عائم DELTA_T = 0.02f;
 
-	const Vector3f PREV{0.f, 0.f, 0.f};
-	const Vector3f TARGET{20.f, 0.f, 0.f};
-	const Vector3f NEXT{40.f, 2.f, 0.f}; // near-collinear next leg -> high corner speed -> clear fly-through
+	ثابت Vector3f PREV{0.f, 0.f, 0.f};
+	ثابت Vector3f موخه_2{20.f, 0.f, 0.f};
+	ثابت Vector3f بل_2{40.f, 2.f, 0.f}; // near-collinear next leg -> high corner speed -> clear fly-through
 
 	// Triplet stays fixed for the whole run: the navigator never advances past TARGET.
-	Vector3f waypoints[3] = {PREV, TARGET, NEXT};
+	Vector3f waypoints[3] = {PREV, موخه_2, بل_2};
 
-	const Vector3f u_leg = (TARGET - PREV).unit_or_zero();
-	const float leg_length = (TARGET - PREV).length();
+	ثابت Vector3f u_leg = (موخه_2 - PREV).unit_or_zero();
+	ثابت عائم leg_اوږدتیا = (موخه_2 - PREV).اوږدتیا();
 
 	Vector3f position{0.f, 0.f, 0.f};
-	PositionSmoothing::PositionSmoothingSetpoints out;
+	PositionSmoothing::PositionSmoothingSetpoints بهر;
 
-	bool reached_target = false;
-	bool came_back = false;
-	float max_distance_past_target = 0.f;
+	منطقي reached_موخه = خطأ;
+	منطقي came_شا = خطأ;
+	عائم max_واټن_past_موخه = 0.f;
 
-	for (int i = 0; i < N_ITER; i++) {
-		_position_smoothing.generateSetpoints(position, waypoints, Vector3f{}, DELTA_T, false, out);
-		position = out.position;
-		expectDynamicsLimitsRespected(out);
+	لكل (صحيح i = 0; i < N_ITER; i++) {
+		_position_smoothing.generateSetpoints(position, waypoints, Vector3f{}, DELTA_T, خطأ, بهر);
+		position = بهر.position;
+		expectDynamicsLimitsRespected(بهر);
 
-		const float along_track = Vector3f(position - PREV) * u_leg;
+		ثابت عائم along_track = Vector3f(position - PREV) * u_leg;
 
-		if (Vector3f(position - TARGET).length() < 1.f) {
-			reached_target = true;
+		إذا (Vector3f(position - موخه_2).اوږدتیا() < 1.f) {
+			reached_موخه = ریښتیا;
 		}
 
-		if (reached_target) {
-			max_distance_past_target = fmaxf(max_distance_past_target, along_track - leg_length);
+		إذا (reached_موخه) {
+			max_واټن_past_موخه = fmaxf(max_واټن_past_موخه, along_track - leg_اوږدتیا);
 
 			// Once the vehicle has gone past the target, the fix must turn it around.
-			if (along_track > leg_length + 1.f && out.velocity * u_leg < -0.1f) {
-				came_back = true;
+			إذا (along_track > leg_اوږدتیا + 1.f && بهر.velocity * u_leg < -0.1f) {
+				came_شا = ریښتیا;
 			}
 		}
 	}
 
-	EXPECT_TRUE(reached_target) << "Vehicle never reached the target waypoint\n";
-	EXPECT_TRUE(came_back) << "Vehicle never turned back toward the unreached waypoint (it drifted away)\n";
+	EXPECT_TRUE(reached_موخه) << "Vehicle never reached the target waypoint\n";
+	EXPECT_TRUE(came_شا) << "Vehicle never turned back toward the unreached waypoint (it drifted away)\n";
 	// Without the fix the look-ahead marches down the extended leg and this grows unbounded.
-	EXPECT_LT(max_distance_past_target, 10.f) << "Vehicle drifted too far past the unreached waypoint\n";
+	EXPECT_LT(max_واټن_past_موخه, 10.f) << "Vehicle drifted too far past the unreached waypoint\n";
 }
 
-class PositionSmoothingStraightLegTest : public ::testing::Test
+صنف PositionSmoothingStraightLegTest : عام ::testing::Test
 {
-public:
+عام:
 	// A descending leg: 100 m horizontal, 50 m down (NED), 6 m/s XY, 1.5 m/s Z
-	static constexpr float XY_SPEED = 6.f;
-	static constexpr float Z_SPEED = 1.5f;
-	const Vector3f START{0.f, 0.f, 0.f};
-	const Vector3f TARGET{100.f, 0.f, 50.f};
+	ساكن constexpr عائم XY_چټکتیا = 6.f;
+	ساكن constexpr عائم Z_چټکتیا = 1.5f;
+	ثابت Vector3f پیل_2{0.f, 0.f, 0.f};
+	ثابت Vector3f موخه_2{100.f, 0.f, 50.f};
 
 	PositionSmoothing _position_smoothing;
 
 	PositionSmoothingStraightLegTest()
 	{
-		_position_smoothing.setMaxJerk(MAX_JERK);
-		_position_smoothing.setMaxAcceleration({MAX_ACCELERATION, MAX_ACCELERATION, MAX_ACCELERATION});
-		_position_smoothing.setMaxVelocity({XY_SPEED, XY_SPEED, Z_SPEED});
-		_position_smoothing.setMaxAllowedHorizontalError(MAX_ALLOWED_HOR_ERR);
-		_position_smoothing.setVerticalAcceptanceRadius(VERTICAL_ACCEPTANCE_RADIUS);
-		_position_smoothing.setCruiseSpeed(XY_SPEED);
-		_position_smoothing.setHorizontalTrajectoryGain(HORIZONTAL_TRAJECTORY_GAIN);
-		_position_smoothing.setTargetAcceptanceRadius(TARGET_ACCEPTANCE_RADIUS);
+		_position_smoothing.سېټ_Max_Jerk(MAX_JERK);
+		_position_smoothing.سېټ_Max_Acceleration({MAX_ACCELERATION, MAX_ACCELERATION, MAX_ACCELERATION});
+		_position_smoothing.سېټ_Max_Velocity({XY_چټکتیا, XY_چټکتیا, Z_چټکتیا});
+		_position_smoothing.سېټ_Max_Allowed_Horizontal_Error(MAX_ALLOWED_HOR_ERR);
+		_position_smoothing.سېټ_Vertical_Acceptance_Radius(VERTICAL_ACCEPTANCE_RADIUS);
+		_position_smoothing.سېټ_Cruise_چټکتیا(XY_چټکتیا);
+		_position_smoothing.سېټ_Horizontal_Trajectory_Gain(HORIZONTAL_TRAJECTORY_GAIN);
+		_position_smoothing.سېټ_موخه_Acceptance_Radius(موخه_ACCEPTANCE_RADIUS);
 
-		_position_smoothing.reset({0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, START);
+		_position_smoothing.reset({0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, پیل_2);
 	}
 
-	PositionSmoothing::PositionSmoothingSetpoints firstSetpoint()
+	PositionSmoothing::PositionSmoothingSetpoints لومړی_Setpoint()
 	{
-		Vector3f waypoints[3] = {START, TARGET, TARGET};
-		PositionSmoothing::PositionSmoothingSetpoints out;
-		_position_smoothing.generateSetpoints(START, waypoints, Vector3f{0.f, 0.f, 0.f}, 0.02f, false, out);
-		return out;
+		Vector3f waypoints[3] = {پیل_2, موخه_2, موخه_2};
+		PositionSmoothing::PositionSmoothingSetpoints بهر;
+		_position_smoothing.generateSetpoints(پیل_2, waypoints, Vector3f{0.f, 0.f, 0.f}, 0.02f, خطأ, بهر);
+		أرجع بهر;
 	}
 
 	// Fly the leg and return the largest vertical distance from the straight line
-	float flyLegMaxAltitudeError()
+	عائم flyLegMaxAltitudeError()
 	{
-		Vector3f waypoints[3] = {START, TARGET, TARGET};
-		Vector3f position = START;
-		PositionSmoothing::PositionSmoothingSetpoints out;
-		const float slope = (TARGET(2) - START(2)) / (TARGET - START).xy().norm();
-		float max_error = 0.f;
+		Vector3f waypoints[3] = {پیل_2, موخه_2, موخه_2};
+		Vector3f position = پیل_2;
+		PositionSmoothing::PositionSmoothingSetpoints بهر;
+		ثابت عائم میلان = (موخه_2(2) - پیل_2(2)) / (موخه_2 - پیل_2).xy().norm();
+		عائم max_error = 0.f;
 
-		for (int i = 0; i < 5000 && (TARGET - position).norm() > 0.1f; i++) {
-			_position_smoothing.generateSetpoints(position, waypoints, Vector3f{0.f, 0.f, 0.f}, 0.02f, false, out);
-			position = out.position;
-			const float z_on_line = START(2) + slope * (position - START).xy().norm();
-			max_error = fmaxf(max_error, fabsf(position(2) - z_on_line));
+		لكل (صحيح i = 0; i < 5000 && (موخه_2 - position).norm() > 0.1f; i++) {
+			_position_smoothing.generateSetpoints(position, waypoints, Vector3f{0.f, 0.f, 0.f}, 0.02f, خطأ, بهر);
+			position = بهر.position;
+			ثابت عائم z_on_کرښه = پیل_2(2) + میلان * (position - پیل_2).xy().norm();
+			max_error = fmaxf(max_error, fabsf(position(2) - z_on_کرښه));
 		}
 
-		EXPECT_LT((TARGET - position).norm(), 0.1f) << "Did not reach the target\n";
-		return max_error;
+		EXPECT_LT((موخه_2 - position).norm(), 0.1f) << "Did not reach the target\n";
+		أرجع max_error;
 	}
 };
 
 TEST_F(PositionSmoothingStraightLegTest, velocityPointsAlongTheLeg)
 {
-	const Vector3f vel = firstSetpoint().unsmoothed_velocity;
+	ثابت Vector3f vel = لومړی_Setpoint().unsmoothed_velocity;
 
 	// Parallel to the leg: vz / |vxy| equals the leg slope, the slower Z axis limits XY
 	EXPECT_NEAR(vel(2) / vel.xy().norm(), 0.5f, 1e-3f);
-	EXPECT_NEAR(vel(2), Z_SPEED, 1e-3f);
-	EXPECT_NEAR(vel.xy().norm(), 2.f * Z_SPEED, 1e-3f);
+	EXPECT_NEAR(vel(2), Z_چټکتیا, 1e-3f);
+	EXPECT_NEAR(vel.xy().norm(), 2.f * Z_چټکتیا, 1e-3f);
 }
 
 TEST_F(PositionSmoothingStraightLegTest, fliesAStraightLeg)

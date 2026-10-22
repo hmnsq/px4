@@ -31,100 +31,100 @@
  *
  ****************************************************************************/
 
-#include "ObstacleMath.hpp"
-#include <mathlib/math/Limits.hpp>
+#ضمن "ObstacleMath.hpp"
+#ضمن <mathlib/math/Limits.hpp>
 
-using namespace matrix;
+کارول نطاق ماتریکس;
 
-namespace ObstacleMath
+نطاق ObstacleMath
 {
 
-void project_distance_on_horizontal_plane(float &distance, const float yaw, const matrix::Quatf &q_world_vehicle)
+فراغ project_واټن_on_horizontal_plane(عائم &واټن, ثابت عائم yaw, ثابت ماتریکس::Quatf &q_world_vehicle)
 {
-	const Quatf q_vehicle_sensor(Quatf(cosf(yaw / 2.f), 0.f, 0.f, sinf(yaw / 2.f)));
-	const Quatf q_world_sensor = q_world_vehicle * q_vehicle_sensor;
-	const Vector3f forward(1.f, 0.f, 0.f);
-	const Vector3f sensor_direction_in_world = q_world_sensor.rotateVector(forward);
+	ثابت Quatf q_vehicle_sensor(Quatf(cosf(yaw / 2.f), 0.f, 0.f, sinf(yaw / 2.f)));
+	ثابت Quatf q_world_sensor = q_world_vehicle * q_vehicle_sensor;
+	ثابت Vector3f forward(1.f, 0.f, 0.f);
+	ثابت Vector3f sensor_direction_دننه_world = q_world_sensor.rotate_ویکټور(forward);
 
-	float horizontal_projection_scale = sensor_direction_in_world.xy().norm();
+	عائم horizontal_projection_scale = sensor_direction_دننه_world.xy().norm();
 	horizontal_projection_scale = math::constrain(horizontal_projection_scale, FLT_EPSILON, 1.0f);
-	distance *= horizontal_projection_scale;
+	واټن *= horizontal_projection_scale;
 }
 
-int get_bin_at_angle(float bin_width, float angle)
+صحيح get_bin_at_angle(عائم bin_پلنوالی, عائم angle)
 {
-	int bin_at_angle = (int)round(matrix::wrap(angle, 0.f, 360.f) / bin_width);
-	return wrap_bin(bin_at_angle, 360 / bin_width);
+	صحيح bin_at_angle = (صحيح)round(ماتریکس::wrap(angle, 0.f, 360.f) / bin_پلنوالی);
+	أرجع wrap_bin(bin_at_angle, 360 / bin_پلنوالی);
 }
 
-float get_lower_bound_angle(int bin, float bin_width, float angle_offset)
+عائم get_ښکتنی_bound_angle(صحيح bin, عائم bin_پلنوالی, عائم angle_دننه_واټن)
 {
-	bin = wrap_bin(bin, 360 / bin_width);
-	return wrap_360(bin * bin_width + angle_offset - bin_width / 2.f);
+	bin = wrap_bin(bin, 360 / bin_پلنوالی);
+	أرجع wrap_360(bin * bin_پلنوالی + angle_دننه_واټن - bin_پلنوالی / 2.f);
 }
 
-int get_offset_bin_index(int bin, float bin_width, float angle_offset)
+صحيح get_دننه_واټن_bin_شاخص(صحيح bin, عائم bin_پلنوالی, عائم angle_دننه_واټن)
 {
-	int offset = get_bin_at_angle(bin_width, angle_offset);
-	return wrap_bin(bin - offset, 360 / bin_width);
+	صحيح دننه_واټن = get_bin_at_angle(bin_پلنوالی, angle_دننه_واټن);
+	أرجع wrap_bin(bin - دننه_واټن, 360 / bin_پلنوالی);
 }
 
-float sensor_orientation_to_yaw_offset(const SensorOrientation orientation, const float q[4])
+عائم sensor_orientation_منزل_yaw_دننه_واټن(ثابت SensorOrientation orientation, ثابت عائم q[4])
 {
-	float offset = 0.0f;
+	عائم دننه_واټن = 0.0f;
 
-	switch (orientation) {
-	case SensorOrientation::ROTATION_YAW_0:
-		offset = 0.0f;
-		break;
+	بدل (orientation) {
+	حالة SensorOrientation::ROTATION_YAW_0:
+		دننه_واټن = 0.0f;
+		اكسر;
 
-	case SensorOrientation::ROTATION_YAW_45:
-		offset = M_PI_F / 4.0f;
-		break;
+	حالة SensorOrientation::ROTATION_YAW_45:
+		دننه_واټن = M_PI_F / 4.0f;
+		اكسر;
 
-	case SensorOrientation::ROTATION_YAW_90:
-		offset = M_PI_F / 2.0f;
-		break;
+	حالة SensorOrientation::ROTATION_YAW_90:
+		دننه_واټن = M_PI_F / 2.0f;
+		اكسر;
 
-	case SensorOrientation::ROTATION_YAW_135:
-		offset = 3.0f * M_PI_F / 4.0f;
-		break;
+	حالة SensorOrientation::ROTATION_YAW_135:
+		دننه_واټن = 3.0f * M_PI_F / 4.0f;
+		اكسر;
 
-	case SensorOrientation::ROTATION_YAW_180:
-		offset = M_PI_F;
-		break;
+	حالة SensorOrientation::ROTATION_YAW_180:
+		دننه_واټن = M_PI_F;
+		اكسر;
 
-	case SensorOrientation::ROTATION_YAW_225:
-		offset = -3.0f * M_PI_F / 4.0f;
-		break;
+	حالة SensorOrientation::ROTATION_YAW_225:
+		دننه_واټن = -3.0f * M_PI_F / 4.0f;
+		اكسر;
 
-	case SensorOrientation::ROTATION_YAW_270:
-		offset = -M_PI_F / 2.0f;
-		break;
+	حالة SensorOrientation::ROTATION_YAW_270:
+		دننه_واټن = -M_PI_F / 2.0f;
+		اكسر;
 
-	case SensorOrientation::ROTATION_YAW_315:
-		offset = -M_PI_F / 4.0f;
-		break;
+	حالة SensorOrientation::ROTATION_YAW_315:
+		دننه_واټن = -M_PI_F / 4.0f;
+		اكسر;
 
-	case SensorOrientation::ROTATION_CUSTOM:
-		if (q != nullptr) {
-			offset = Eulerf(Quatf(q)).psi();
+	حالة SensorOrientation::ROTATION_CUSTOM:
+		إذا (q != تش_اشاره) {
+			دننه_واټن = Eulerf(Quatf(q)).psi();
 		}
 
-		break;
+		اكسر;
 	}
 
-	return offset;
+	أرجع دننه_واټن;
 }
 
-int wrap_bin(int bin, int bin_count)
+صحيح wrap_bin(صحيح bin, صحيح bin_شمېر)
 {
-	return (bin + bin_count) % bin_count;
+	أرجع (bin + bin_شمېر) % bin_شمېر;
 }
 
-float wrap_360(const float angle)
+عائم wrap_360(ثابت عائم angle)
 {
-	return matrix::wrap(angle, 0.0f, 360.0f);
+	أرجع ماتریکس::wrap(angle, 0.0f, 360.0f);
 }
 
 } // ObstacleMath

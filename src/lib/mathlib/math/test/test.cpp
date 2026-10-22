@@ -37,100 +37,100 @@
  * Test library code
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#ضمن <stdio.h>
+#ضمن <math.h>
+#ضمن <stdlib.h>
 
-#include <px4_platform_common/defines.h>
+#ضمن <px4_platform_common/defines.h>
 
-#include "test.hpp"
+#ضمن "test.hpp"
 
-bool __EXPORT equal(float a, float b, float epsilon)
+منطقي __EXPORT equal(عائم a, عائم b, عائم epsilon)
 {
-	float diff = fabsf(a - b);
+	عائم diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	إذا (diff > epsilon) {
+		چاپ_کړه("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		أرجع خطأ;
 
-	} else { return true; }
+	} وإلا { أرجع ریښتیا; }
 }
 
-bool __EXPORT greater_than(float a, float b)
+منطقي __EXPORT greater_than(عائم a, عائم b)
 {
-	if (a > b) {
-		return true;
+	إذا (a > b) {
+		أرجع ریښتیا;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} وإلا {
+		چاپ_کړه("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		أرجع خطأ;
 	}
 }
 
-bool __EXPORT less_than(float a, float b)
+منطقي __EXPORT less_than(عائم a, عائم b)
 {
-	if (a < b) {
-		return true;
+	إذا (a < b) {
+		أرجع ریښتیا;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} وإلا {
+		چاپ_کړه("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		أرجع خطأ;
 	}
 }
 
-bool __EXPORT greater_than_or_equal(float a, float b)
+منطقي __EXPORT greater_than_or_equal(عائم a, عائم b)
 {
-	if (a >= b) {
-		return true;
+	إذا (a >= b) {
+		أرجع ریښتیا;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} وإلا {
+		چاپ_کړه("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		أرجع خطأ;
 	}
 }
 
-bool __EXPORT less_than_or_equal(float a, float b)
+منطقي __EXPORT less_than_or_equal(عائم a, عائم b)
 {
-	if (a <= b) {
-		return true;
+	إذا (a <= b) {
+		أرجع ریښتیا;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} وإلا {
+		چاپ_کړه("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", مزدوج(a), مزدوج(b));
+		أرجع خطأ;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+فراغ __EXPORT float2SigExp(ثابت عائم &عدد, عائم &sig, صحيح &توانیز_تابع)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	إذا (!PX4_ISFINITE(عدد)) {
 		sig = 0.0f;
-		exp = -99;
-		return;
+		توانیز_تابع = -99;
+		أرجع;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	إذا (fabsf(عدد) < 1.0e-38f) {
 		sig = 0;
-		exp = 0;
-		return;
+		توانیز_تابع = 0;
+		أرجع;
 	}
 
-	exp = log10f(fabsf(num));
+	توانیز_تابع = log10f(fabsf(عدد));
 
-	if (exp > 0) {
-		exp = ceil(exp);
+	إذا (توانیز_تابع > 0) {
+		توانیز_تابع = ceil(توانیز_تابع);
 
-	} else {
-		exp = floor(exp);
+	} وإلا {
+		توانیز_تابع = floor(توانیز_تابع);
 	}
 
-	sig = num;
+	sig = عدد;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	إذا (توانیز_تابع > 0) {
+		لكل (صحيح i = 0; i < مطلق_قیمت(توانیز_تابع); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} وإلا {
+		لكل (صحيح i = 0; i < مطلق_قیمت(توانیز_تابع); i++) { sig *= 10; }
 	}
 }

@@ -31,64 +31,64 @@
  *
  ****************************************************************************/
 
-#pragma once
+#لارښوونه once
 
-#include "FunctionProviderBase.hpp"
+#ضمن "FunctionProviderBase.hpp"
 
-#include <uORB/topics/manual_control_setpoint.h>
+#ضمن <uORB/topics/manual_control_setpoint.h>
 
 /**
  * Functions: RC_Roll .. RCAUX_Max
  */
-class FunctionManualRC : public FunctionProviderBase
+صنف FunctionManualRC : عام Function_Provider_بنسټ
 {
-public:
+عام:
 	FunctionManualRC()
 	{
-		resetAllToDisarmedValue();
+		reset_All_منزل_Disarmed_ارزښت();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionManualRC(); }
+	ساكن Function_Provider_بنسټ *allocate(ثابت Context &context) { أرجع جديد FunctionManualRC(); }
 
-	void update() override
+	فراغ update() override
 	{
 		manual_control_setpoint_s manual_control_setpoint;
 
-		if (_topic.update(&manual_control_setpoint)) {
-			if (manual_control_setpoint.valid) {
-				_data[0] = manual_control_setpoint.roll;
-				_data[1] = manual_control_setpoint.pitch;
-				_data[2] = manual_control_setpoint.throttle;
-				_data[3] = manual_control_setpoint.yaw;
-				_data[4] = manual_control_setpoint.flaps;
-				_data[5] = manual_control_setpoint.aux1;
-				_data[6] = manual_control_setpoint.aux2;
-				_data[7] = manual_control_setpoint.aux3;
-				_data[8] = manual_control_setpoint.aux4;
-				_data[9] = manual_control_setpoint.aux5;
-				_data[10] = manual_control_setpoint.aux6;
+		إذا (_topic.update(&manual_control_setpoint)) {
+			إذا (manual_control_setpoint.valid) {
+				معلومات_3[0] = manual_control_setpoint.roll;
+				معلومات_3[1] = manual_control_setpoint.pitch;
+				معلومات_3[2] = manual_control_setpoint.throttle;
+				معلومات_3[3] = manual_control_setpoint.yaw;
+				معلومات_3[4] = manual_control_setpoint.flaps;
+				معلومات_3[5] = manual_control_setpoint.aux1;
+				معلومات_3[6] = manual_control_setpoint.aux2;
+				معلومات_3[7] = manual_control_setpoint.aux3;
+				معلومات_3[8] = manual_control_setpoint.aux4;
+				معلومات_3[9] = manual_control_setpoint.aux5;
+				معلومات_3[10] = manual_control_setpoint.aux6;
 
-			} else {
-				resetAllToDisarmedValue();
+			} وإلا {
+				reset_All_منزل_Disarmed_ارزښت();
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::RC_Roll]; }
+	عائم value(OutputFunction func) override { أرجع معلومات_3[(صحيح)func - (صحيح)OutputFunction::RC_Roll]; }
 
-private:
-	static constexpr int num_data_points = 11;
+خاص:
+	ساكن constexpr صحيح عدد_معلومات_points = 11;
 
-	void resetAllToDisarmedValue()
+	فراغ reset_All_منزل_Disarmed_ارزښت()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
-			_data[i] = NAN;
+		لكل (صحيح i = 0; i < عدد_معلومات_points; ++i) {
+			معلومات_3[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
+	static_assert(عدد_معلومات_points == (صحيح)OutputFunction::RC_AUXMax - (صحيح)OutputFunction::RC_Roll + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _topic{ORB_ID(manual_control_setpoint)};
-	float _data[num_data_points] {};
+	عائم معلومات_3[عدد_معلومات_points] {};
 };

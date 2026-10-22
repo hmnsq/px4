@@ -1,10 +1,10 @@
-#pragma once
+#لارښوونه once
 
-#include <cmath>
+#ضمن <cmath>
 
-#include <px4_platform_common/defines.h>
+#ضمن <px4_platform_common/defines.h>
 
-namespace matrix
+نطاق ماتریکس
 {
 
 /**
@@ -18,29 +18,29 @@ namespace matrix
  * @param eps numerical tolerance of the check
  * @return true if the two values are considered equal, false otherwise
  */
-template<typename Type>
-bool isEqualF(const Type x, const Type y, const Type eps = Type(1e-4f))
+کينډۍ<ډول_نوم Type>
+منطقي isEqualF(ثابت Type x, ثابت Type y, ثابت Type eps = Type(1e-4f))
 {
-	return (std::fabs(x - y) <= eps)
+	أرجع (std::fabs(x - y) <= eps)
 	       || (std::isnan(x) && std::isnan(y))
 	       || (std::isinf(x) && std::isinf(y) && std::isnan(x - y));
 }
 
-namespace detail
+نطاق detail
 {
 
-template<typename Floating>
-Floating wrap_floating(Floating x, Floating low, Floating high)
+کينډۍ<ډول_نوم Floating>
+Floating wrap_floating(Floating x, Floating ټیټ, Floating لوړ)
 {
 	// already in range
-	if (low <= x && x < high) {
-		return x;
+	إذا (ټیټ <= x && x < لوړ) {
+		أرجع x;
 	}
 
-	const auto range = high - low;
-	const auto inv_range = Floating(1) / range; // should evaluate at compile time, multiplies below at runtime
-	const auto num_wraps = std::floor((x - low) * inv_range);
-	return x - range * num_wraps;
+	ثابت خپلکاری range = لوړ - ټیټ;
+	ثابت خپلکاری inv_range = Floating(1) / range; // should evaluate at compile time, multiplies below at runtime
+	ثابت خپلکاری عدد_wraps = std::floor((x - ټیټ) * inv_range);
+	أرجع x - range * عدد_wraps;
 }
 
 } // namespace detail
@@ -53,9 +53,9 @@ Floating wrap_floating(Floating x, Floating low, Floating high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline float wrap(float x, float low, float high)
+مضمن عائم wrap(عائم x, عائم ټیټ, عائم لوړ)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	أرجع ماتریکس::detail::wrap_floating(x, ټیټ, لوړ);
 }
 
 /**
@@ -66,9 +66,9 @@ inline float wrap(float x, float low, float high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline double wrap(double x, double low, double high)
+مضمن مزدوج wrap(مزدوج x, مزدوج ټیټ, مزدوج لوړ)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	أرجع ماتریکس::detail::wrap_floating(x, ټیټ, لوړ);
 }
 
 /**
@@ -79,34 +79,34 @@ inline double wrap(double x, double low, double high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-template<typename Integer>
-Integer wrap(Integer x, Integer low, Integer high)
+کينډۍ<ډول_نوم Integer>
+Integer wrap(Integer x, Integer ټیټ, Integer لوړ)
 {
-	const auto range = high - low;
+	ثابت خپلکاری range = لوړ - ټیټ;
 
-	if (x < low) {
-		x += range * ((low - x) / range + 1);
+	إذا (x < ټیټ) {
+		x += range * ((ټیټ - x) / range + 1);
 	}
 
-	return low + (x - low) % range;
+	أرجع ټیټ + (x - ټیټ) % range;
 }
 
 /**
  * Wrap value in range [-π, π)
  */
-template<typename Type>
+کينډۍ<ډول_نوم Type>
 Type wrap_pi(Type x)
 {
-	return wrap(x, Type(-M_PI), Type(M_PI));
+	أرجع wrap(x, Type(-M_PI), Type(M_PI));
 }
 
 /**
  * Wrap value in range [0, 2π)
  */
-template<typename Type>
+کينډۍ<ډول_نوم Type>
 Type wrap_2pi(Type x)
 {
-	return wrap(x, Type(0), Type((2 * M_PI)));
+	أرجع wrap(x, Type(0), Type((2 * M_PI)));
 }
 
 /**
@@ -118,10 +118,10 @@ Type wrap_2pi(Type x)
  * @param high upper limit of the wrapping range
  * @return New unwrapped value
  */
-template<typename Type>
-Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high)
+کينډۍ<ډول_نوم Type>
+Type unwrap(ثابت Type وروستی_x, ثابت Type new_x, ثابت Type ټیټ, ثابت Type لوړ)
 {
-	return last_x + wrap(new_x - last_x, low, high);
+	أرجع وروستی_x + wrap(new_x - وروستی_x, ټیټ, لوړ);
 }
 
 /**
@@ -131,10 +131,10 @@ Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high
  * @param[in] new_angle New angle in [-pi, pi] [rad]
  * @return New unwrapped angle [rad]
  */
-template<typename Type>
-Type unwrap_pi(const Type last_angle, const Type new_angle)
+کينډۍ<ډول_نوم Type>
+Type unwrap_pi(ثابت Type وروستی_angle, ثابت Type new_angle)
 {
-	return unwrap(last_angle, new_angle, Type(-M_PI), Type(M_PI));
+	أرجع unwrap(وروستی_angle, new_angle, Type(-M_PI), Type(M_PI));
 }
 
 /**
@@ -143,10 +143,10 @@ Type unwrap_pi(const Type last_angle, const Type new_angle)
  * @param[in] val Number to take the sign from
  * @return -1 if val < 0, 0 if val == 0, 1 if val > 0
  */
-template<typename T>
-int sign(T val)
+کينډۍ<ډول_نوم T>
+صحيح sign(T val)
 {
-	return (T(0) < val) - (val < T(0));
+	أرجع (T(0) < val) - (val < T(0));
 }
 
 } // namespace matrix
