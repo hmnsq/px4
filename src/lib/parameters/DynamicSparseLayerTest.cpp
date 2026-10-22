@@ -41,48 +41,48 @@
  * to catch use-after-free or data races.
  */
 
-#include <gtest/gtest.h>
+#અન્તર્ભાવ <gtest/gtest.h>
 
-#include <parameters/px4_parameters.hpp>
-#include "DynamicSparseLayer.h"
+#અન્તર્ભાવ <parameters/px4_parameters.hpp>
+#અન્તર્ભાવ "DynamicSparseLayer.h"
 
-#include <atomic>
-#include <thread>
-#include <vector>
+#અન્તર્ભાવ <atomic>
+#અન્તર્ભાવ <thread>
+#અન્તર્ભાવ <vector>
 
 /**
  * Minimal ParamLayer parent that returns a default zero value for all params.
  */
-class StubParamLayer : public ParamLayer
+વર્ગ StubParamLayer : જાહેર ParamLayer
 {
-public:
+જાહેર:
 	StubParamLayer() : ParamLayer(nullptr) {}
-	virtual ~StubParamLayer() = default;
+	આભાસી ~StubParamLayer() = મૂળભૂત;
 
-	bool store(param_t, param_value_u) override { return false; }
-	bool contains(param_t) const override { return false; }
+	તાર્કિક store(param_t, param_કિંમત_u) override { પાછા ખોટું; }
+	તાર્કિક contains(param_t) અચલ override { પાછા ખોટું; }
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_ગણતરી> containedAsBitset() અચલ override
 	{
-		return px4::AtomicBitset<PARAM_COUNT>();
+		પાછા px4::AtomicBitset<PARAM_ગણતરી>();
 	}
 
-	param_value_u get(param_t) const override
+	param_કિંમત_u get(param_t) અચલ override
 	{
-		param_value_u v{};
+		param_કિંમત_u v{};
 		v.i = 0;
-		return v;
+		પાછા v;
 	}
 
-	void reset(param_t) override {}
-	void refresh(param_t) override {}
-	int size() const override { return 0; }
-	int byteSize() const override { return 0; }
+	શૂન્ય reset(param_t) override {}
+	શૂન્ય refresh(param_t) override {}
+	પૂર્ણાંક size() અચલ override { પાછા 0; }
+	પૂર્ણાંક byteSize() અચલ override { પાછા 0; }
 };
 
-class DynamicSparseLayerConcurrentTest : public ::testing::Test
+વર્ગ DynamicSparseLayerConcurrentTest : જાહેર ::testing::Test
 {
-protected:
+સુરક્ષિત:
 	StubParamLayer stub;
 };
 
@@ -91,30 +91,30 @@ protected:
 // this safely stresses the read-side during buffer reallocation.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 {
-	for (int rep = 0; rep < 50; rep++) {
+	માટે (પૂર્ણાંક rep = 0; rep < 50; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/2, /*n_grow=*/1);
 
-		constexpr int NUM_PARAMS = 100;
-		std::atomic<bool> stop{false};
+		constexpr પૂર્ણાંક અંક_PARAMS = 100;
+		std::atomic<તાર્કિક> stop{ખોટું};
 
 		std::thread writer([&]() {
-			for (int i = 0; i < NUM_PARAMS; i++) {
-				param_value_u v{};
+			માટે (પૂર્ણાંક i = 0; i < અંક_PARAMS; i++) {
+				param_કિંમત_u v{};
 				v.i = i * 10;
 				layer.store(static_cast<param_t>(i), v);
 			}
 
-			stop.store(true, std::memory_order_release);
+			stop.store(સાચું, std::memory_order_release);
 		});
 
 		std::vector<std::thread> readers;
 
-		for (int r = 0; r < 4; r++) {
+		માટે (પૂર્ણાંક r = 0; r < 4; r++) {
 			readers.emplace_back([&]() {
-				while (!stop.load(std::memory_order_acquire)) {
-					int current_size = layer.size();
+				જ્યારે (!stop.load(std::memory_order_acquire)) {
+					પૂર્ણાંક current_size = layer.size();
 
-					for (int i = 0; i < current_size && i < NUM_PARAMS; i++) {
+					માટે (પૂર્ણાંક i = 0; i < current_size && i < અંક_PARAMS; i++) {
 						layer.contains(static_cast<param_t>(i));
 						layer.get(static_cast<param_t>(i));
 					}
@@ -124,19 +124,19 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 
 		writer.join();
 
-		for (auto &t : readers) {
+		માટે (auto &t : readers) {
 			t.join();
 		}
 
-		for (int i = 0; i < NUM_PARAMS; i++) {
+		માટે (પૂર્ણાંક i = 0; i < અંક_PARAMS; i++) {
 			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_કિંમત_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}
 
-		ASSERT_EQ(layer.size(), NUM_PARAMS);
+		ASSERT_EQ(layer.size(), અંક_PARAMS);
 	}
 }
 
@@ -146,37 +146,37 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 // This test validates concurrent store correctness.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
 {
-	constexpr int PARAMS_PER_WRITER = 50;
-	constexpr int NUM_WRITERS = 4;
-	constexpr int TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
+	constexpr પૂર્ણાંક PARAMS_PER_WRITER = 50;
+	constexpr પૂર્ણાંક અંક_WRITERS = 4;
+	constexpr પૂર્ણાંક TOTAL = અંક_WRITERS * PARAMS_PER_WRITER;
 
-	for (int rep = 0; rep < 20; rep++) {
+	માટે (પૂર્ણાંક rep = 0; rep < 20; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/TOTAL, /*n_grow=*/1);
 
 		std::vector<std::thread> writers;
 
-		for (int w = 0; w < NUM_WRITERS; w++) {
+		માટે (પૂર્ણાંક w = 0; w < અંક_WRITERS; w++) {
 			writers.emplace_back([&layer, w]() {
-				int base = w * PARAMS_PER_WRITER;
+				પૂર્ણાંક base = w * PARAMS_PER_WRITER;
 
-				for (int i = 0; i < PARAMS_PER_WRITER; i++) {
-					param_value_u v{};
+				માટે (પૂર્ણાંક i = 0; i < PARAMS_PER_WRITER; i++) {
+					param_કિંમત_u v{};
 					v.i = (base + i) * 10;
 					layer.store(static_cast<param_t>(base + i), v);
 				}
 			});
 		}
 
-		for (auto &t : writers) {
+		માટે (auto &t : writers) {
 			t.join();
 		}
 
 		ASSERT_EQ(layer.size(), TOTAL) << "rep=" << rep;
 
-		for (int i = 0; i < TOTAL; i++) {
+		માટે (પૂર્ણાંક i = 0; i < TOTAL; i++) {
 			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_કિંમત_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}
@@ -186,22 +186,22 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
 // Combined stress: writers store while readers access concurrently.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 {
-	constexpr int PARAMS_PER_WRITER = 50;
-	constexpr int NUM_WRITERS = 2;
-	constexpr int TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
+	constexpr પૂર્ણાંક PARAMS_PER_WRITER = 50;
+	constexpr પૂર્ણાંક અંક_WRITERS = 2;
+	constexpr પૂર્ણાંક TOTAL = અંક_WRITERS * PARAMS_PER_WRITER;
 
-	for (int rep = 0; rep < 20; rep++) {
+	માટે (પૂર્ણાંક rep = 0; rep < 20; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/2, /*n_grow=*/1);
-		std::atomic<bool> stop{false};
+		std::atomic<તાર્કિક> stop{ખોટું};
 
 		std::vector<std::thread> writers;
 
-		for (int w = 0; w < NUM_WRITERS; w++) {
+		માટે (પૂર્ણાંક w = 0; w < અંક_WRITERS; w++) {
 			writers.emplace_back([&layer, w]() {
-				int base = w * PARAMS_PER_WRITER;
+				પૂર્ણાંક base = w * PARAMS_PER_WRITER;
 
-				for (int i = 0; i < PARAMS_PER_WRITER; i++) {
-					param_value_u v{};
+				માટે (પૂર્ણાંક i = 0; i < PARAMS_PER_WRITER; i++) {
+					param_કિંમત_u v{};
 					v.i = (base + i) * 10;
 					layer.store(static_cast<param_t>(base + i), v);
 				}
@@ -210,12 +210,12 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 
 		std::vector<std::thread> readers;
 
-		for (int r = 0; r < 4; r++) {
+		માટે (પૂર્ણાંક r = 0; r < 4; r++) {
 			readers.emplace_back([&]() {
-				while (!stop.load(std::memory_order_acquire)) {
-					int current_size = layer.size();
+				જ્યારે (!stop.load(std::memory_order_acquire)) {
+					પૂર્ણાંક current_size = layer.size();
 
-					for (int i = 0; i < current_size && i < TOTAL; i++) {
+					માટે (પૂર્ણાંક i = 0; i < current_size && i < TOTAL; i++) {
 						layer.contains(static_cast<param_t>(i));
 						layer.get(static_cast<param_t>(i));
 					}
@@ -223,22 +223,22 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 			});
 		}
 
-		for (auto &t : writers) {
+		માટે (auto &t : writers) {
 			t.join();
 		}
 
-		stop.store(true, std::memory_order_release);
+		stop.store(સાચું, std::memory_order_release);
 
-		for (auto &t : readers) {
+		માટે (auto &t : readers) {
 			t.join();
 		}
 
 		ASSERT_EQ(layer.size(), TOTAL) << "rep=" << rep;
 
-		for (int i = 0; i < TOTAL; i++) {
+		માટે (પૂર્ણાંક i = 0; i < TOTAL; i++) {
 			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_કિંમત_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}

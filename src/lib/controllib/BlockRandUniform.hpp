@@ -39,51 +39,51 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#અન્તર્ભાવ <px4_platform_common/defines.h>
+#અન્તર્ભાવ <assert.h>
+#અન્તર્ભાવ <time.h>
+#અન્તર્ભાવ <stdlib.h>
+#અન્તર્ભાવ <math.h>
+#અન્તર્ભાવ <mathlib/math/test/test.hpp>
+#અન્તર્ભાવ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#અન્તર્ભાવ "block/Block.hpp"
+#અન્તર્ભાવ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#અન્તર્ભાવ "matrix/math.hpp"
 
-namespace control
+નામાકાશ control
 {
 
 /**
  * A uniform random number generator
  */
-class __EXPORT BlockRandUniform: public Block
+વર્ગ __EXPORT BlockRandUniform: જાહેર Block
 {
-public:
+જાહેર:
 // methods
 	BlockRandUniform(SuperBlock *parent,
-			 const char *name) :
+			 અચલ અક્ષર *name) :
 		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+		_min(આ, "MIN"),
+		_max(આ, "MAX")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandUniform() = default;
-	float update()
+	આભાસી ~BlockRandUniform() = મૂળભૂત;
+	દશાંશ update()
 	{
-		static float rand_max = static_cast<float>(RAND_MAX);
-		float rand_val = rand();
-		float bounds = getMax() - getMin();
-		return getMin() + (rand_val * bounds) / rand_max;
+		સ્થિર દશાંશ rand_max = static_cast<દશાંશ>(RAND_MAX);
+		દશાંશ rand_val = rand();
+		દશાંશ bounds = getMax() - getMin();
+		પાછા getMin() + (rand_val * bounds) / rand_max;
 	}
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-private:
+	દશાંશ getMin() { પાછા _min.get(); }
+	દશાંશ getMax() { પાછા _max.get(); }
+ખાનગી:
 // attributes
 	control::BlockParamFloat _min;
 	control::BlockParamFloat _max;

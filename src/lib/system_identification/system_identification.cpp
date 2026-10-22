@@ -37,9 +37,9 @@
  * @author Mathieu Bresciani <mathieu@auterion.com>
  */
 
-#include "system_identification.hpp"
+#અન્તર્ભાવ "system_identification.hpp"
 
-void SystemIdentification::reset(const matrix::Vector<float, 5> &id_state_init)
+શૂન્ય SystemIdentification::reset(અચલ matrix::Vector<દશાંશ, 5> &id_state_init)
 {
 	_rls.reset(id_state_init);
 	_u_lpf.reset(0.f);
@@ -49,36 +49,36 @@ void SystemIdentification::reset(const matrix::Vector<float, 5> &id_state_init)
 	_u_prev = 0.f;
 	_y_prev = 0.f;
 	_fitness_lpf.reset(10.f);
-	_are_filters_initialized = false;
+	_are_filters_initialized = ખોટું;
 }
 
-void SystemIdentification::update(float u, float y)
+શૂન્ય SystemIdentification::update(દશાંશ u, દશાંશ y)
 {
 	updateFilters(u, y);
 	update();
 }
 
-void SystemIdentification::update()
+શૂન્ય SystemIdentification::update()
 {
 	_rls.update(_u_hpf, _y_hpf);
 	updateFitness();
 }
 
-void SystemIdentification::updateFilters(float u, float y)
+શૂન્ય SystemIdentification::updateFilters(દશાંશ u, દશાંશ y)
 {
-	if (!_are_filters_initialized) {
+	જો (!_are_filters_initialized) {
 		_u_lpf.reset(u);
 		_y_lpf.reset(y);
 		_u_hpf = 0.f;
 		_y_hpf = 0.f;
 		_u_prev = u;
 		_y_prev = y;
-		_are_filters_initialized = true;
-		return;
+		_are_filters_initialized = સાચું;
+		પાછા;
 	}
 
-	const float u_lpf = _u_lpf.apply(u);
-	const float y_lpf = _y_lpf.apply(y);
+	અચલ દશાંશ u_lpf = _u_lpf.apply(u);
+	અચલ દશાંશ y_lpf = _y_lpf.apply(y);
 	_u_hpf = _alpha_hpf * _u_hpf + _alpha_hpf * (u_lpf - _u_prev);
 	_y_hpf = _alpha_hpf * _y_hpf + _alpha_hpf * (y_lpf - _y_prev);
 
@@ -86,16 +86,16 @@ void SystemIdentification::updateFilters(float u, float y)
 	_y_prev = y_lpf;
 }
 
-void SystemIdentification::updateFitness()
+શૂન્ય SystemIdentification::updateFitness()
 {
-	const matrix::Vector<float, 5> &diff = _rls.getDiffEstimate();
-	float sum = 0.f;
+	અચલ matrix::Vector<દશાંશ, 5> &diff = _rls.getDiffEstimate();
+	દશાંશ sum = 0.f;
 
-	for (size_t i = 0; i < 5; i++) {
+	માટે (size_t i = 0; i < 5; i++) {
 		sum += diff(i);
 	}
 
-	if (_dt > FLT_EPSILON) {
+	જો (_dt > FLT_EPSILON) {
 		_fitness_lpf.update(sum / _dt);
 	}
 }

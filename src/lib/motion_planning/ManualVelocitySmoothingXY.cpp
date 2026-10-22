@@ -31,30 +31,30 @@
  *
  ****************************************************************************/
 
-#include "ManualVelocitySmoothingXY.hpp"
+#અન્તર્ભાવ "ManualVelocitySmoothingXY.hpp"
 
-#include <mathlib/mathlib.h>
-#include <float.h>
+#અન્તર્ભાવ <mathlib/mathlib.h>
+#અન્તર્ભાવ <float.h>
 
-using namespace matrix;
+using નામાકાશ matrix;
 
-void ManualVelocitySmoothingXY::reset(const Vector2f &accel, const Vector2f &vel, const Vector2f &pos)
+શૂન્ય ManualVelocitySmoothingXY::reset(અચલ Vector2f &accel, અચલ Vector2f &vel, અચલ Vector2f &pos)
 {
-	for (int i = 0; i < 2; i++) {
+	માટે (પૂર્ણાંક i = 0; i < 2; i++) {
 		_trajectory[i].reset(accel(i), vel(i), pos(i));
 	}
 
 	resetPositionLock();
 }
 
-void ManualVelocitySmoothingXY::resetPositionLock()
+શૂન્ય ManualVelocitySmoothingXY::resetPositionLock()
 {
-	_position_lock_active = false;
+	_position_lock_active = ખોટું;
 	_position_setpoint_locked(0) = NAN;
 	_position_setpoint_locked(1) = NAN;
 }
 
-void ManualVelocitySmoothingXY::update(float dt, const Vector2f &velocity_target)
+શૂન્ય ManualVelocitySmoothingXY::update(દશાંશ dt, અચલ Vector2f &velocity_target)
 {
 	// Update state
 	updateTrajectories(dt);
@@ -67,9 +67,9 @@ void ManualVelocitySmoothingXY::update(float dt, const Vector2f &velocity_target
 	updateTrajDurations(velocity_target);
 }
 
-void ManualVelocitySmoothingXY::updateTrajectories(float dt)
+શૂન્ય ManualVelocitySmoothingXY::updateTrajectories(દશાંશ dt)
 {
-	for (int i = 0; i < 2; ++i) {
+	માટે (પૂર્ણાંક i = 0; i < 2; ++i) {
 		_trajectory[i].updateTraj(dt);
 
 		_state.j(i) = _trajectory[i].getCurrentJerk();
@@ -79,16 +79,16 @@ void ManualVelocitySmoothingXY::updateTrajectories(float dt)
 	}
 }
 
-void ManualVelocitySmoothingXY::updateTrajDurations(const Vector2f &velocity_target)
+શૂન્ય ManualVelocitySmoothingXY::updateTrajDurations(અચલ Vector2f &velocity_target)
 {
-	for (int i = 0; i < 2; ++i) {
+	માટે (પૂર્ણાંક i = 0; i < 2; ++i) {
 		_trajectory[i].updateDurations(velocity_target(i));
 	}
 
 	VelocitySmoothing::timeSynchronization(_trajectory, 2);
 }
 
-void ManualVelocitySmoothingXY::checkPositionLock(const Vector2f &velocity_target)
+શૂન્ય ManualVelocitySmoothingXY::checkPositionLock(અચલ Vector2f &velocity_target)
 {
 	/**
 	 * During a position lock -> position unlock transition, we have to make sure that the velocity setpoint
@@ -98,16 +98,16 @@ void ManualVelocitySmoothingXY::checkPositionLock(const Vector2f &velocity_targe
 	 * This is why the previous input of the velocity controller
 	 * is used to set current velocity of the trajectory.
 	 */
-	if (_state.v.length() < 0.1f &&
+	જો (_state.v.length() < 0.1f &&
 	    _state.a.length() < .2f &&
 	    velocity_target.length() <= FLT_EPSILON) {
 		// Lock position
-		_position_lock_active = true;
+		_position_lock_active = સાચું;
 		_position_setpoint_locked = _state.x;
 
-	} else {
+	} નહીંતર {
 		// Unlock position
-		if (_position_lock_active) {
+		જો (_position_lock_active) {
 			// Start the trajectory at the current velocity setpoint
 			_trajectory[0].setCurrentVelocity(_velocity_setpoint_feedback(0));
 			_trajectory[1].setCurrentVelocity(_velocity_setpoint_feedback(1));

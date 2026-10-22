@@ -33,15 +33,15 @@
 
 #pragma once
 
-#include <uORB/topics/vehicle_status.h>
+#અન્તર્ભાવ <uORB/topics/vehicle_status.h>
 
-#include <stdint.h>
+#અન્તર્ભાવ <stdint.h>
 
-namespace mode_util
+નામાકાશ mode_util
 {
 
 // This matches the definition from MAVLink MAV_STANDARD_MODE
-enum class StandardMode : uint8_t {
+ગણના વર્ગ StandardMode : uint8_t {
 	NON_STANDARD = 0,
 	POSITION_HOLD = 1,
 	ORBIT = 2,
@@ -56,99 +56,99 @@ enum class StandardMode : uint8_t {
 /**
  * @return Get MAVLink standard mode from nav_state
  */
-static inline StandardMode getStandardModeFromNavState(uint8_t nav_state, uint8_t vehicle_type, bool is_vtol)
+સ્થિર અંતઃરેખ StandardMode getStandardModeFromNavState(uint8_t nav_state, uint8_t vehicle_type, તાર્કિક is_vtol)
 {
-	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: return StandardMode::SAFE_RECOVERY;
+	પસંદગી (nav_state) {
+	સ્થિતિ vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: પાછા StandardMode::SAFE_RECOVERY;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION: return StandardMode::MISSION;
+	સ્થિતિ vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION: પાછા StandardMode::MISSION;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_LAND: return StandardMode::LAND;
+	સ્થિતિ vehicle_status_s::NAVIGATION_STATE_AUTO_LAND: પાછા StandardMode::LAND;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF: return StandardMode::TAKEOFF;
+	સ્થિતિ vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF: પાછા StandardMode::TAKEOFF;
 
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+	સ્થિતિ vehicle_status_s::NAVIGATION_STATE_ALTCTL:
+		જો (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ALTITUDE_HOLD;
+			પાછા StandardMode::ALTITUDE_HOLD;
 		}
 
-		break;
+		તોડો;
 
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return StandardMode::POSITION_HOLD;
+	સ્થિતિ vehicle_status_s::NAVIGATION_STATE_POSCTL:
+		જો (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			પાછા StandardMode::POSITION_HOLD;
 		}
 
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::CRUISE;
+		જો (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			પાછા StandardMode::CRUISE;
 		}
 
-		break;
+		તોડો;
 
-	case vehicle_status_s::NAVIGATION_STATE_ORBIT:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+	સ્થિતિ vehicle_status_s::NAVIGATION_STATE_ORBIT:
+		જો (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ORBIT;
+			પાછા StandardMode::ORBIT;
 		}
 
-		break;
+		તોડો;
 	}
 
-	return StandardMode::NON_STANDARD;
+	પાછા StandardMode::NON_STANDARD;
 }
 
 /**
  * @return Get nav_state from a standard mode, or vehicle_status_s::NAVIGATION_STATE_MAX if not supported
  */
-static inline uint8_t getNavStateFromStandardMode(StandardMode mode, uint8_t vehicle_type, bool is_vtol)
+સ્થિર અંતઃરેખ uint8_t getNavStateFromStandardMode(StandardMode mode, uint8_t vehicle_type, તાર્કિક is_vtol)
 {
-	switch (mode) {
-	case StandardMode::SAFE_RECOVERY: return vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
+	પસંદગી (mode) {
+	સ્થિતિ StandardMode::SAFE_RECOVERY: પાછા vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
 
-	case StandardMode::MISSION: return vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
+	સ્થિતિ StandardMode::MISSION: પાછા vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
 
-	case StandardMode::LAND: return vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
+	સ્થિતિ StandardMode::LAND: પાછા vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
 
-	case StandardMode::TAKEOFF: return vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
+	સ્થિતિ StandardMode::TAKEOFF: પાછા vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
 
-	case StandardMode::ALTITUDE_HOLD:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+	સ્થિતિ StandardMode::ALTITUDE_HOLD:
+		જો (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ALTCTL;
+			પાછા vehicle_status_s::NAVIGATION_STATE_ALTCTL;
 		}
 
-		break;
+		તોડો;
 
-	case StandardMode::POSITION_HOLD:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+	સ્થિતિ StandardMode::POSITION_HOLD:
+		જો (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			પાછા vehicle_status_s::NAVIGATION_STATE_POSCTL;
 		}
 
-		break;
+		તોડો;
 
-	case StandardMode::CRUISE:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+	સ્થિતિ StandardMode::CRUISE:
+		જો (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			પાછા vehicle_status_s::NAVIGATION_STATE_POSCTL;
 		}
 
-		break;
+		તોડો;
 
-	case StandardMode::ORBIT:
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ORBIT;
+	સ્થિતિ StandardMode::ORBIT:
+		જો (vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			પાછા vehicle_status_s::NAVIGATION_STATE_ORBIT;
 		}
 
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+		જો (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			પાછા vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
 		}
 
-		break;
+		તોડો;
 
-	default: break;
+	મૂળભૂત: તોડો;
 	}
 
-	return vehicle_status_s::NAVIGATION_STATE_MAX;
+	પાછા vehicle_status_s::NAVIGATION_STATE_MAX;
 }
 
 

@@ -39,52 +39,52 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#અન્તર્ભાવ <px4_platform_common/defines.h>
+#અન્તર્ભાવ <assert.h>
+#અન્તર્ભાવ <time.h>
+#અન્તર્ભાવ <stdlib.h>
+#અન્તર્ભાવ <math.h>
+#અન્તર્ભાવ <mathlib/math/test/test.hpp>
+#અન્તર્ભાવ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#અન્તર્ભાવ "block/Block.hpp"
+#અન્તર્ભાવ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#અન્તર્ભાવ "matrix/math.hpp"
 
-namespace control
+નામાકાશ control
 {
 
 /**
  * A proportional-integral-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPID: public SuperBlock
+વર્ગ __EXPORT BlockPID: જાહેર SuperBlock
 {
-public:
+જાહેર:
 // methods
-	BlockPID(SuperBlock *parent, const char *name) :
+	BlockPID(SuperBlock *parent, અચલ અક્ષર *name) :
 		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kI(this, "I"),
-		_kD(this, "D")
+		_integral(આ, "I"),
+		_derivative(આ, "D"),
+		_kP(આ, "P"),
+		_kI(આ, "I"),
+		_kD(આ, "D")
 	{}
-	virtual ~BlockPID() = default;
-	float update(float input)
+	આભાસી ~BlockPID() = મૂળભૂત;
+	દશાંશ update(દશાંશ આગત)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input) +
-		       getKD() * getDerivative().update(input);
+		પાછા getKP() * આગત +
+		       getKI() * getIntegral().update(આગત) +
+		       getKD() * getDerivative().update(આગત);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	float getKD() { return _kD.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
+	દશાંશ getKP() { પાછા _kP.get(); }
+	દશાંશ getKI() { પાછા _kI.get(); }
+	દશાંશ getKD() { પાછા _kD.get(); }
+	BlockIntegral &getIntegral() { પાછા _integral; }
+	BlockDerivative &getDerivative() { પાછા _derivative; }
+ખાનગી:
 // attributes
 	BlockIntegral _integral;
 	BlockDerivative _derivative;

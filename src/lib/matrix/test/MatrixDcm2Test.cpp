@@ -31,12 +31,12 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/Dcm.hpp>
-#include <matrix/Dcm2.hpp>
-#include <matrix/Euler.hpp>
+#અન્તર્ભાવ <gtest/gtest.h>
+#અન્તર્ભાવ <matrix/Dcm.hpp>
+#અન્તર્ભાવ <matrix/Dcm2.hpp>
+#અન્તર્ભાવ <matrix/Euler.hpp>
 
-using namespace matrix;
+using નામાકાશ matrix;
 
 TEST(MatrixDcm2Test, CompareToDcm)
 {

@@ -43,80 +43,80 @@
  *
  */
 
-#include <px4_platform_common/px4_config.h>
-#include <board_config.h>
-#include <stdio.h>
-#include <math.h>
-#include <unistd.h>
-#include <string.h>  // memset
-#include "otp.h"
-#include "err.h"   // warnx
-#include <assert.h>
+#અન્તર્ભાવ <px4_platform_common/px4_config.h>
+#અન્તર્ભાવ <board_config.h>
+#અન્તર્ભાવ <stdio.h>
+#અન્તર્ભાવ <math.h>
+#અન્તર્ભાવ <unistd.h>
+#અન્તર્ભાવ <string.h>  // memset
+#અન્તર્ભાવ "otp.h"
+#અન્તર્ભાવ "err.h"   // warnx
+#અન્તર્ભાવ <assert.h>
 
-int val_read(void *dest, volatile const void *src, int bytes)
+પૂર્ણાંક val_read(શૂન્ય *dest, અસ્થિર અચલ શૂન્ય *src, પૂર્ણાંક bytes)
 {
 
-	int i;
+	પૂર્ણાંક i;
 
-	for (i = 0; i < bytes / 4; i++) {
-		*(((volatile unsigned *)dest) + i) = *(((volatile unsigned *)src) + i);
+	માટે (i = 0; i < bytes / 4; i++) {
+		*(((અસ્થિર unsigned *)dest) + i) = *(((અસ્થિર unsigned *)src) + i);
 	}
 
-	return i * 4;
+	પાછા i * 4;
 }
 
 
-int write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, char *signature)
+પૂર્ણાંક write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, અક્ષર *signature)
 {
 
 	warnx("write_otp: PX4 / %02X / %02lX / %02lX  / ... etc  \n", id_type, (unsigned long)vid, (unsigned long)pid);
 
-	int errors = 0;
+	પૂર્ણાંક errors = 0;
 
 	// descriptor
-	if (F_write_byte(ADDR_OTP_START, 'P')) {
+	જો (F_write_byte(ADDR_OTP_START, 'P')) {
 		errors++;
 	}
 
 	//  write the 'P' from PX4. to first byte in OTP
-	if (F_write_byte(ADDR_OTP_START + 1, 'X')) {
+	જો (F_write_byte(ADDR_OTP_START + 1, 'X')) {
 		errors++;        //  write the 'P' from PX4. to first byte in OTP
 	}
 
-	if (F_write_byte(ADDR_OTP_START + 2, '4')) {
+	જો (F_write_byte(ADDR_OTP_START + 2, '4')) {
 		errors++;
 	}
 
-	if (F_write_byte(ADDR_OTP_START + 3, '\0')) {
+	જો (F_write_byte(ADDR_OTP_START + 3, '\0')) {
 		errors++;
 	}
 
 	//id_type
-	if (F_write_byte(ADDR_OTP_START + 4, id_type)) {
+	જો (F_write_byte(ADDR_OTP_START + 4, id_type)) {
 		errors++;
 	}
 
 	// vid and pid are 4 bytes each
-	if (F_write_word(ADDR_OTP_START + 5, vid)) {
+	જો (F_write_word(ADDR_OTP_START + 5, vid)) {
 		errors++;
 	}
 
-	if (F_write_word(ADDR_OTP_START + 9, pid)) {
+	જો (F_write_word(ADDR_OTP_START + 9, pid)) {
 		errors++;
 	}
 
 	// leave some 19 bytes of space, and go to the next block...
 	// then the auth sig starts
-	for (int i = 0 ; i < 128 ; i++) {
-		if (F_write_byte(ADDR_OTP_START + 32 + i, signature[i])) {
+	માટે (પૂર્ણાંક i = 0 ; i < 128 ; i++) {
+		જો (F_write_byte(ADDR_OTP_START + 32 + i, signature[i])) {
 			errors++;
 		}
 	}
 
-	return errors;
+	પાછા errors;
 }
 
-int lock_otp(void)
+પૂર્ણાંક lock_otp(શૂન્ય)
 {
 	//determine the required locking size - can only write full lock bytes */
 //	int size = sizeof(struct otp) / 32;
@@ -129,104 +129,104 @@ int lock_otp(void)
 	//XXX add the actual call here to write the OTP_LOCK bytes only at final stage
 	// val_copy(lock_ptr, &otp_lock_mem, sizeof(otp_lock_mem));
 
-	int locksize = 5;
+	પૂર્ણાંક locksize = 5;
 
-	int errors = 0;
+	પૂર્ણાંક errors = 0;
 
 	// or just realise it's exctly 5x 32byte blocks we need to lock.  1 block for ID,type,vid,pid, and 4 blocks for certificate, which is 128 bytes.
-	for (int i = 0 ; i < locksize ; i++) {
-		if (F_write_byte(ADDR_OTP_LOCK_START + i, OTP_LOCK_LOCKED)) {
+	માટે (પૂર્ણાંક i = 0 ; i < locksize ; i++) {
+		જો (F_write_byte(ADDR_OTP_LOCK_START + i, OTP_LOCK_LOCKED)) {
 			errors++;
 		}
 	}
 
-	return errors;
+	પાછા errors;
 }
 
 // COMPLETE, BUSY, or other flash error?
-static int F_GetStatus(void)
+સ્થિર પૂર્ણાંક F_GetStatus(શૂન્ય)
 {
-	int fs = F_COMPLETE;
+	પૂર્ણાંક fs = F_COMPLETE;
 
-	if ((FLASH->status & F_BSY) == F_BSY) { fs = F_BUSY; } else {
+	જો ((FLASH->status & F_BSY) == F_BSY) { fs = F_BUSY; } નહીંતર {
 
-		if ((FLASH->status & F_WRPERR) != (uint32_t)0x00) { fs = F_ERROR_WRP; } else {
+		જો ((FLASH->status & F_WRPERR) != (uint32_t)0x00) { fs = F_ERROR_WRP; } નહીંતર {
 
-			if ((FLASH->status & (uint32_t)0xEF) != (uint32_t)0x00) { fs = F_ERROR_PROGRAM; } else {
+			જો ((FLASH->status & (uint32_t)0xEF) != (uint32_t)0x00) { fs = F_ERROR_PROGRAM; } નહીંતર {
 
-				if ((FLASH->status & F_OPERR) != (uint32_t)0x00) { fs = F_ERROR_OPERATION; } else {
+				જો ((FLASH->status & F_OPERR) != (uint32_t)0x00) { fs = F_ERROR_OPERATION; } નહીંતર {
 					fs = F_COMPLETE;
 				}
 			}
 		}
 	}
 
-	return fs;
+	પાછા fs;
 }
 
 
 // enable FLASH Registers
-void F_unlock(void)
+શૂન્ય F_unlock(શૂન્ય)
 {
-	if ((FLASH->control & F_CR_LOCK) != 0) {
-		FLASH->key = F_KEY1;
-		FLASH->key = F_KEY2;
+	જો ((FLASH->control & F_CR_LOCK) != 0) {
+		FLASH->ચાવી = F_KEY1;
+		FLASH->ચાવી = F_KEY2;
 	}
 }
 
 // lock the FLASH Registers
-void F_lock(void)
+શૂન્ય F_lock(શૂન્ય)
 {
 	FLASH->control |= F_CR_LOCK;
 }
 
 // flash write word.
-int F_write_word(unsigned long Address, uint32_t Data)
+પૂર્ણાંક F_write_word(unsigned long Address, uint32_t Data)
 {
-	unsigned char octet[4] = {0, 0, 0, 0};
+	unsigned અક્ષર octet[4] = {0, 0, 0, 0};
 
-	int ret = 0;
+	પૂર્ણાંક ret = 0;
 
-	for (int i = 0; i < 4; i++) {
+	માટે (પૂર્ણાંક i = 0; i < 4; i++) {
 		octet[i] = (Data >> (i * 8)) & 0xFF;
 		ret = F_write_byte(Address + i, octet[i]);
 	}
 
-	return ret;
+	પાછા ret;
 }
 
 // flash write byte
-int F_write_byte(unsigned long Address, uint8_t Data)
+પૂર્ણાંક F_write_byte(unsigned long Address, uint8_t Data)
 {
-	volatile int status = F_COMPLETE;
+	અસ્થિર પૂર્ણાંક status = F_COMPLETE;
 
 	//warnx("F_write_byte: %08X %02d", Address , Data ) ;
 
 	//Check the parameters
-	assert(IS_F_ADDRESS(Address));
+	પ્રતિજ્ઞા(IS_F_ADDRESS(Address));
 
 	//Wait for FLASH operation to complete by polling on BUSY flag.
 	status = F_GetStatus();
 
-	while (status == F_BUSY) { status = F_GetStatus();}
+	જ્યારે (status == F_BUSY) { status = F_GetStatus();}
 
-	if (status == F_COMPLETE) {
+	જો (status == F_COMPLETE) {
 		//if the previous operation is completed, proceed to program the new data
 		FLASH->control &= CR_PSIZE_MASK;
 		FLASH->control |= F_PSIZE_BYTE;
 		FLASH->control |= F_CR_PG;
 
-		*(volatile uint8_t *)Address = Data;
+		*(અસ્થિર uint8_t *)Address = Data;
 
 		//Wait for FLASH operation to complete by polling on BUSY flag.
 		status = F_GetStatus();
 
-		while (status == F_BUSY) { status = F_GetStatus();}
+		જ્યારે (status == F_BUSY) { status = F_GetStatus();}
 
 		//if the program operation is completed, disable the PG Bit
 		FLASH->control &= (~F_CR_PG);
 	}
 
 	//Return the Program Status
-	return !(status == F_COMPLETE);
+	પાછા !(status == F_COMPLETE);
 }

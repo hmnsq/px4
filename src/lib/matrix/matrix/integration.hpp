@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Vector.hpp"
+#અન્તર્ભાવ "Vector.hpp"
 
-namespace matrix
+નામાકાશ matrix
 {
 
 template<typename Type, size_t M, size_t N>
-int integrate_rk4(
-	Vector<Type, M> (*f)(Type, const Matrix<Type, M, 1> &x, const Matrix<Type, N, 1> &u),
-	const Matrix<Type, M, 1> &y0,
-	const Matrix<Type, N, 1> &u,
+પૂર્ણાંક integrate_rk4(
+	Vector<Type, M> (*f)(Type, અચલ Matrix<Type, M, 1> &x, અચલ Matrix<Type, N, 1> &u),
+	અચલ Matrix<Type, M, 1> &y0,
+	અચલ Matrix<Type, N, 1> &u,
 	Type t0,
 	Type tf,
 	Type h0,
@@ -22,13 +22,13 @@ int integrate_rk4(
 	Type h = h0;
 	Vector<Type, M> k1, k2, k3, k4;
 
-	if (tf < t0) { return -1; } // make sure t1 > t0
+	જો (tf < t0) { પાછા -1; } // make sure t1 > t0
 
-	while (t1 < tf) {
-		if (t1 + h0 < tf) {
+	જ્યારે (t1 < tf) {
+		જો (t1 + h0 < tf) {
 			h = h0;
 
-		} else {
+		} નહીંતર {
 			h = tf - t1;
 		}
 
@@ -40,7 +40,7 @@ int integrate_rk4(
 		t1 += h;
 	}
 
-	return 0;
+	પાછા 0;
 }
 
 } // namespace matrix

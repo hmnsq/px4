@@ -41,46 +41,46 @@
 
 #pragma once
 
-#include <px4_platform_common/module_params.h>
-#include <matrix/matrix/math.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/manual_control_setpoint.h>
-#include <uORB/topics/failsafe_flags.h>
+#અન્તર્ભાવ <px4_platform_common/module_params.h>
+#અન્તર્ભાવ <matrix/matrix/math.hpp>
+#અન્તર્ભાવ <uORB/Subscription.hpp>
+#અન્તર્ભાવ <uORB/topics/manual_control_setpoint.h>
+#અન્તર્ભાવ <uORB/topics/failsafe_flags.h>
 
-class Sticks : public ModuleParams
+વર્ગ Sticks : જાહેર ModuleParams
 {
-public:
+જાહેર:
 	Sticks(ModuleParams *parent);
-	~Sticks() = default;
+	~Sticks() = મૂળભૂત;
 
 	// Checks for updated manual control input & updates internal values
-	bool checkAndUpdateStickInputs();
+	તાર્કિક checkAndUpdateStickInputs();
 
-	bool isAvailable() { return _input_available; };
+	તાર્કિક isAvailable() { પાછા આગત_available; };
 
 	// Helper functions to get stick values more intuitively
-	float getRoll() const { return _positions(0); }
-	float getPitch() const { return _positions(1); }
-	float getYaw() const { return _positions(2); }
-	float getThrottleZeroCentered() const { return _positions(3); }
+	દશાંશ getRoll() અચલ { પાછા _positions(0); }
+	દશાંશ getPitch() અચલ { પાછા _positions(1); }
+	દશાંશ getYaw() અચલ { પાછા _positions(2); }
+	દશાંશ getThrottleZeroCentered() અચલ { પાછા _positions(3); }
 
-	float getRollExpo(float expo = .6f) const { return expoDeadzone(getRoll(), expo, _param_man_deadzone.get()); }
-	float getPitchExpo(float expo = .6f) const { return expoDeadzone(getPitch(), expo, _param_man_deadzone.get()); }
-	float getYawExpo(float expo = .6f) const { return expoDeadzone(getYaw(), expo, _param_man_deadzone.get()); }
-	float getThrottleZeroCenteredExpo(float expo = .6f) const { return expoDeadzone(getThrottleZeroCentered(), expo, _param_man_deadzone.get()); }
+	દશાંશ getRollExpo(દશાંશ expo = .6f) અચલ { પાછા expoDeadzone(getRoll(), expo, _param_man_deadzone.get()); }
+	દશાંશ getPitchExpo(દશાંશ expo = .6f) અચલ { પાછા expoDeadzone(getPitch(), expo, _param_man_deadzone.get()); }
+	દશાંશ getYawExpo(દશાંશ expo = .6f) અચલ { પાછા expoDeadzone(getYaw(), expo, _param_man_deadzone.get()); }
+	દશાંશ getThrottleZeroCenteredExpo(દશાંશ expo = .6f) અચલ { પાછા expoDeadzone(getThrottleZeroCentered(), expo, _param_man_deadzone.get()); }
 
-	static float expoDeadzone(float value, float expo, float deadzone);
+	સ્થિર દશાંશ expoDeadzone(દશાંશ value, દશાંશ expo, દશાંશ deadzone);
 
-	const matrix::Vector2f getPitchRoll() { return {getPitch(), getRoll()}; }
-	const matrix::Vector2f getPitchRollExpo() { return {getPitchExpo(), getRollExpo()}; }
+	અચલ matrix::Vector2f getPitchRoll() { પાછા {getPitch(), getRoll()}; }
+	અચલ matrix::Vector2f getPitchRollExpo() { પાછા {getPitchExpo(), getRollExpo()}; }
 
-	const matrix::Vector<float, 6> &getAux() const { return _aux_positions; }
+	અચલ matrix::Vector<દશાંશ, 6> &getAux() અચલ { પાછા _aux_positions; }
 
 	/**
 	 * Limit the the horizontal input from a square shaped joystick gimbal to a unit circle
 	 * @param v Vector containing x, y, z axis of the joystick gimbal. x, y get adjusted
 	 */
-	static void limitStickUnitLengthXY(matrix::Vector2f &v);
+	સ્થિર શૂન્ય limitStickUnitLengthXY(matrix::Vector2f &v);
 
 	/**
 	 * Rotate horizontal component of joystick input into the vehicle body orientation
@@ -88,13 +88,13 @@ public:
 	 * @param yaw Current vehicle yaw heading
 	 * @param yaw_setpoint Current yaw setpoint if it's locked else NAN
 	 */
-	static void rotateIntoHeadingFrameXY(matrix::Vector2f &v, const float yaw, const float yaw_setpoint);
+	સ્થિર શૂન્ય rotateIntoHeadingFrameXY(matrix::Vector2f &v, અચલ દશાંશ yaw, અચલ દશાંશ yaw_setpoint);
 
-private:
-	bool _input_available{false};
+ખાનગી:
+	તાર્કિક આગત_available{ખોટું};
 	matrix::Vector4f _positions; ///< unmodified manual stick inputs roll, pitch, yaw ,throttle
 
-	matrix::Vector<float, 6> _aux_positions;
+	matrix::Vector<દશાંશ, 6> _aux_positions;
 
 	uORB::Subscription _manual_control_setpoint_sub{ORB_ID(manual_control_setpoint)};
 	uORB::Subscription _failsafe_flags_sub{ORB_ID(failsafe_flags)};

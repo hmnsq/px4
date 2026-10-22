@@ -31,11 +31,11 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <math.h>
-#include <mathlib/mathlib.h>
+#અન્તર્ભાવ <gtest/gtest.h>
+#અન્તર્ભાવ <math.h>
+#અન્તર્ભાવ <mathlib/mathlib.h>
 
-#include "geo_mag_declination.h"
+#અન્તર્ભાવ "geo_mag_declination.h"
 
 
 TEST(GeoLookupTest, declination)

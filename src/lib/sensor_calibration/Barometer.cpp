@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "Barometer.hpp"
+#અન્તર્ભાવ "Barometer.hpp"
 
-#include "Utilities.hpp"
+#અન્તર્ભાવ "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#અન્તર્ભાવ <lib/drivers/device/Device.hpp>
+#અન્તર્ભાવ <lib/parameters/param.h>
 
-using namespace matrix;
-using namespace time_literals;
+using નામાકાશ matrix;
+using નામાકાશ time_literals;
 
-namespace calibration
+નામાકાશ calibration
 {
 
 Barometer::Barometer()
@@ -54,19 +54,19 @@ Barometer::Barometer(uint32_t device_id)
 	set_device_id(device_id);
 }
 
-Barometer::Barometer(uint32_t device_id, bool external)
+Barometer::Barometer(uint32_t device_id, તાર્કિક external)
 {
 	set_device_id(device_id, external);
 }
 
-void Barometer::set_device_id(uint32_t device_id)
+શૂન્ય Barometer::set_device_id(uint32_t device_id)
 {
 	set_device_id(device_id, device::device_is_external(device_id));
 }
 
-void Barometer::set_device_id(uint32_t device_id, bool external)
+શૂન્ય Barometer::set_device_id(uint32_t device_id, તાર્કિક external)
 {
-	if (_device_id != device_id || _external != external) {
+	જો (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -74,42 +74,42 @@ void Barometer::set_device_id(uint32_t device_id, bool external)
 		Reset();
 
 		ParametersUpdate();
-		SensorCorrectionsUpdate(true);
+		SensorCorrectionsUpdate(સાચું);
 	}
 }
 
-void Barometer::SensorCorrectionsUpdate(bool force)
+શૂન્ય Barometer::SensorCorrectionsUpdate(તાર્કિક force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	જો (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		જો (_device_id == 0) {
+			પાછા;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		જો (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.baro_device_ids[i] == _device_id) {
-					switch (i) {
-					case 0:
+			માટે (પૂર્ણાંક i = 0; i < MAX_SENSOR_ગણતરી; i++) {
+				જો (corrections.baro_device_ids[i] == _device_id) {
+					પસંદગી (i) {
+					સ્થિતિ 0:
 						_thermal_offset = corrections.baro_offset_0;
-						return;
+						પાછા;
 
-					case 1:
+					સ્થિતિ 1:
 						_thermal_offset = corrections.baro_offset_1;
-						return;
+						પાછા;
 
-					case 2:
+					સ્થિતિ 2:
 						_thermal_offset = corrections.baro_offset_2;
-						return;
+						પાછા;
 
-					case 3:
+					સ્થિતિ 3:
 						_thermal_offset = corrections.baro_offset_3;
-						return;
+						પાછા;
 					}
 				}
 			}
@@ -120,57 +120,57 @@ void Barometer::SensorCorrectionsUpdate(bool force)
 	}
 }
 
-bool Barometer::set_offset(const float &offset)
+તાર્કિક Barometer::set_offset(અચલ દશાંશ &offset)
 {
-	if (fabsf(_offset - offset) > 0.01f) {
-		if (PX4_ISFINITE(offset)) {
+	જો (fabsf(_offset - offset) > 0.01f) {
+		જો (PX4_ISFINITE(offset)) {
 			_offset = offset;
-			_calibration_count++;
-			return true;
+			calibration_ગણતરી++;
+			પાછા સાચું;
 		}
 	}
 
-	return false;
+	પાછા ખોટું;
 }
 
-bool Barometer::set_calibration_index(int calibration_index)
+તાર્કિક Barometer::set_calibration_index(પૂર્ણાંક calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	જો ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_ગણતરી)) {
 		_calibration_index = calibration_index;
-		return true;
+		પાછા સાચું;
 	}
 
-	return false;
+	પાછા ખોટું;
 }
 
-void Barometer::ParametersUpdate()
+શૂન્ય Barometer::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	જો (_device_id == 0) {
+		પાછા;
 	}
 
 	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	જો (_calibration_index == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
+	} નહીંતર {
 		ParametersLoad();
 	}
 }
 
-bool Barometer::ParametersLoad()
+તાર્કિક Barometer::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	જો (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_ગણતરી) {
 		// CAL_BAROx_PRIO
 		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		જો ((_priority < 0) || (_priority > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
-			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
+			સ્થિર constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			જો (_priority != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
 					_calibration_index, _priority);
 
@@ -183,13 +183,13 @@ bool Barometer::ParametersLoad()
 		// CAL_BAROx_OFF
 		set_offset(GetCalibrationParamFloat(SensorString(), "OFF", _calibration_index));
 
-		return true;
+		પાછા સાચું;
 	}
 
-	return false;
+	પાછા ખોટું;
 }
 
-void Barometer::Reset()
+શૂન્ય Barometer::Reset()
 {
 	_offset = 0;
 
@@ -199,56 +199,56 @@ void Barometer::Reset()
 
 	_calibration_index = -1;
 
-	_calibration_count = 0;
+	calibration_ગણતરી = 0;
 }
 
-bool Barometer::ParametersSave(int desired_calibration_index, bool force)
+તાર્કિક Barometer::ParametersSave(પૂર્ણાંક desired_calibration_index, તાર્કિક force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	જો (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_ગણતરી) {
 		_calibration_index = desired_calibration_index;
 
-	} else if (!force || (_calibration_index < 0)
+	} નહીંતર જો (!force || (_calibration_index < 0)
 		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
 		int8_t calibration_index_prev = _calibration_index;
 		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		જો (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
 				 calibration_index_prev, _calibration_index);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	જો (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_ગણતરી) {
 		// save calibration
-		bool success = true;
+		તાર્કિક success = સાચું;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
 		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
 		success &= SetCalibrationParam(SensorString(), "OFF", _calibration_index, _offset);
 
-		return success;
+		પાછા success;
 	}
 
-	return false;
+	પાછા ખોટું;
 }
 
-void Barometer::PrintStatus()
+શૂન્ય Barometer::PrintStatus()
 {
-	if (external()) {
+	જો (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: %05.3f, Ext\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset);
+			     (દ્વિગુણ)_offset);
 
-	} else {
+	} નહીંતર {
 		PX4_INFO_RAW("%s %" PRIu32 " EN: %d, offset: %05.3f, Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset);
+			     (દ્વિગુણ)_offset);
 	}
 
-	if (fabsf(_thermal_offset) > 0.f) {
-		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: %.4f\n", SensorString(), _device_id, (double)_thermal_offset);
+	જો (fabsf(_thermal_offset) > 0.f) {
+		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: %.4f\n", SensorString(), _device_id, (દ્વિગુણ)_thermal_offset);
 	}
 }
 

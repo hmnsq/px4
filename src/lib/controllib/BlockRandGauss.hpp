@@ -39,65 +39,65 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#અન્તર્ભાવ <px4_platform_common/defines.h>
+#અન્તર્ભાવ <assert.h>
+#અન્તર્ભાવ <time.h>
+#અન્તર્ભાવ <stdlib.h>
+#અન્તર્ભાવ <math.h>
+#અન્તર્ભાવ <mathlib/math/test/test.hpp>
+#અન્તર્ભાવ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#અન્તર્ભાવ "block/Block.hpp"
+#અન્તર્ભાવ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#અન્તર્ભાવ "matrix/math.hpp"
 
-namespace control
+નામાકાશ control
 {
 
-class __EXPORT BlockRandGauss: public Block
+વર્ગ __EXPORT BlockRandGauss: જાહેર Block
 {
-public:
+જાહેર:
 // methods
 	BlockRandGauss(SuperBlock *parent,
-		       const char *name) :
+		       અચલ અક્ષર *name) :
 		Block(parent, name),
-		_mean(this, "MEAN"),
-		_stdDev(this, "DEV")
+		_mean(આ, "MEAN"),
+		_stdDev(આ, "DEV")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandGauss() = default;
-	float update()
+	આભાસી ~BlockRandGauss() = મૂળભૂત;
+	દશાંશ update()
 	{
-		static float V1, V2, S;
-		static int phase = 0;
-		float X;
+		સ્થિર દશાંશ V1, V2, S;
+		સ્થિર પૂર્ણાંક phase = 0;
+		દશાંશ X;
 
-		if (phase == 0) {
-			do {
-				float U1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-				float U2 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		જો (phase == 0) {
+			કરો {
+				દશાંશ U1 = static_cast<દશાંશ>(rand()) / static_cast<દશાંશ>(RAND_MAX);
+				દશાંશ U2 = static_cast<દશાંશ>(rand()) / static_cast<દશાંશ>(RAND_MAX);
 				V1 = 2 * U1 - 1;
 				V2 = 2 * U2 - 1;
 				S = V1 * V1 + V2 * V2;
-			} while (S >= 1 || fabsf(S) < 1e-8f);
+			} જ્યારે (S >= 1 || fabsf(S) < 1e-8f);
 
-			X = V1 * float(sqrtf(-2 * float(logf(S)) / S));
+			X = V1 * દશાંશ(sqrtf(-2 * દશાંશ(logf(S)) / S));
 
-		} else {
-			X = V2 * float(sqrtf(-2 * float(logf(S)) / S));
+		} નહીંતર {
+			X = V2 * દશાંશ(sqrtf(-2 * દશાંશ(logf(S)) / S));
 		}
 
 		phase = 1 - phase;
-		return X * getStdDev() + getMean();
+		પાછા X * getStdDev() + getMean();
 	}
 // accessors
-	float getMean() { return _mean.get(); }
-	float getStdDev() { return _stdDev.get(); }
-private:
+	દશાંશ getMean() { પાછા _mean.get(); }
+	દશાંશ getStdDev() { પાછા _stdDev.get(); }
+ખાનગી:
 // attributes
 	control::BlockParamFloat _mean;
 	control::BlockParamFloat _stdDev;

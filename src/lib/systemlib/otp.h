@@ -51,9 +51,9 @@
 
 
 
-#include <unistd.h>
-#include <stdint.h>
-#include <stdio.h>
+#અન્તર્ભાવ <unistd.h>
+#અન્તર્ભાવ <stdint.h>
+#અન્તર્ભાવ <stdio.h>
 
 // possible flash statuses
 #define F_BUSY 1
@@ -62,13 +62,13 @@
 #define F_ERROR_OPERATION 4
 #define F_COMPLETE 5
 
-typedef struct {
-	volatile unsigned long accesscontrol;      // 0x00
-	volatile unsigned long key;     //  0x04
-	volatile unsigned long optionkey;  //  0x08
-	volatile unsigned long status;       // 0x0C
-	volatile unsigned long control;       // 0x10
-	volatile unsigned long optioncontrol;    //0x14
+પ્રકારવ્યાખ્યા સંરચના {
+	અસ્થિર unsigned long accesscontrol;      // 0x00
+	અસ્થિર unsigned long ચાવી;     //  0x04
+	અસ્થિર unsigned long optionkey;  //  0x08
+	અસ્થિર unsigned long status;       // 0x0C
+	અસ્થિર unsigned long control;       // 0x10
+	અસ્થિર unsigned long optioncontrol;    //0x14
 } flash_registers;
 
 #define PERIPH_BASE           ((unsigned long)0x40000000) //Peripheral base address
@@ -91,7 +91,7 @@ typedef struct {
 
 
 
-#pragma pack(push, 1)
+#pragma pack(ધકેલો, 1)
 
 /*
  * The OTP area is divided into 16 OTP data blocks of 32 bytes and one lock OTP block of 16 bytes.
@@ -101,45 +101,45 @@ typedef struct {
  * contain 0x00 and 0xFF values, otherwise the OTP bytes might not be taken into account correctly.
  */
 
-struct otp {
+સંરચના otp {
 	// first 32 bytes =  the '0' Block
-	char		id[4];		///4 bytes < 'P' 'X' '4' '\n'
+	અક્ષર		id[4];		///4 bytes < 'P' 'X' '4' '\n'
 	uint8_t		id_type;	///1 byte < 0 for USB VID, 1 for generic VID
 	uint32_t	vid;        ///4 bytes
 	uint32_t	pid;        ///4 bytes
-	char        unused[19];  ///19 bytes
+	અક્ષર        unused[19];  ///19 bytes
 	// Cert-of-Auth is next 4 blocks ie 1-4  ( where zero is first block )
-	char        signature[128];
+	અક્ષર        signature[128];
 	// insert extras here
 	uint32_t	lock_bytes[4];
 };
 
-struct otp_lock {
+સંરચના otp_lock {
 	uint8_t		lock_bytes[16];
 };
-#pragma pack(pop)
+#pragma pack(કાઢો)
 
 #define ADDR_F_SIZE		0x1FFF7A22
 
-#pragma pack(push, 1)
-union udid {
+#pragma pack(ધકેલો, 1)
+સંઘ udid {
 	uint32_t	serial[3];
 	uint8_t  data[12];
 };
-#pragma pack(pop)
+#pragma pack(કાઢો)
 
 __BEGIN_DECLS
 
-__EXPORT void F_unlock(void);
-__EXPORT void F_lock(void);
-__EXPORT int val_read(void *dest, volatile const void *src, int bytes);
-__EXPORT int val_write(volatile void *dest, const void *src, int bytes);
-__EXPORT int write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, char *signature);
-__EXPORT int lock_otp(void);
+__EXPORT શૂન્ય F_unlock(શૂન્ય);
+__EXPORT શૂન્ય F_lock(શૂન્ય);
+__EXPORT પૂર્ણાંક val_read(શૂન્ય *dest, અસ્થિર અચલ શૂન્ય *src, પૂર્ણાંક bytes);
+__EXPORT પૂર્ણાંક val_write(અસ્થિર શૂન્ય *dest, અચલ શૂન્ય *src, પૂર્ણાંક bytes);
+__EXPORT પૂર્ણાંક write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, અક્ષર *signature);
+__EXPORT પૂર્ણાંક lock_otp(શૂન્ય);
 
 
-__EXPORT int F_write_byte(unsigned long Address, uint8_t Data);
-__EXPORT int F_write_word(unsigned long Address, uint32_t Data);
+__EXPORT પૂર્ણાંક F_write_byte(unsigned long Address, uint8_t Data);
+__EXPORT પૂર્ણાંક F_write_word(unsigned long Address, uint32_t Data);
 
 __END_DECLS
 

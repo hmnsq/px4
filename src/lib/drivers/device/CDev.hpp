@@ -40,16 +40,16 @@
 #ifndef _DEVICE_CDEV_HPP
 #define _DEVICE_CDEV_HPP
 
-#include "Device.hpp"
-#include <lib/cdev/CDev.hpp>
+#અન્તર્ભાવ "Device.hpp"
+#અન્તર્ભાવ <lib/cdev/CDev.hpp>
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/posix.h>
+#અન્તર્ભાવ <px4_platform_common/px4_config.h>
+#અન્તર્ભાવ <px4_platform_common/posix.h>
 
 /**
  * Namespace encapsulating all device framework classes, functions and data.
  */
-namespace device
+નામાકાશ device
 {
 
 using file_t = cdev::file_t;
@@ -57,20 +57,20 @@ using file_t = cdev::file_t;
 /**
  * Abstract class for any character device
  */
-class __EXPORT CDev : public Device, public cdev::CDev
+વર્ગ __EXPORT CDev : જાહેર Device, જાહેર cdev::CDev
 {
-public:
+જાહેર:
 	/**
 	 * Constructor
 	 *
 	 * @param name		Driver name
 	 * @param devname	Device node name
 	 */
-	CDev(const char *name, const char *devname); // TODO: dagar remove name and Device inheritance
+	CDev(અચલ અક્ષર *name, અચલ અક્ષર *devname); // TODO: dagar remove name and Device inheritance
 
-	virtual ~CDev() = default;
+	આભાસી ~CDev() = મૂળભૂત;
 
-	virtual int	init();
+	આભાસી પૂર્ણાંક	init();
 
 	/**
 	 * Perform an ioctl operation on the device.
@@ -80,14 +80,14 @@ public:
 	 * @param arg		The ioctl argument value.
 	 * @return		OK on success, or -errno otherwise.
 	 */
-	virtual int	ioctl(file_t *filep, int cmd, unsigned long arg) { return -ENOTTY; }
+	આભાસી પૂર્ણાંક	ioctl(file_t *filep, પૂર્ણાંક cmd, unsigned long arg) { પાછા -ENOTTY; }
 
 };
 
 } // namespace device
 
 // class instance for primary driver of each class
-enum CLASS_DEVICE {
+ગણના CLASS_DEVICE {
 	CLASS_DEVICE_PRIMARY = 0,
 	CLASS_DEVICE_SECONDARY = 1,
 	CLASS_DEVICE_TERTIARY = 2

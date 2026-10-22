@@ -39,44 +39,44 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <float.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#અન્તર્ભાવ <px4_platform_common/defines.h>
+#અન્તર્ભાવ <assert.h>
+#અન્તર્ભાવ <time.h>
+#અન્તર્ભાવ <stdlib.h>
+#અન્તર્ભાવ <math.h>
+#અન્તર્ભાવ <float.h>
+#અન્તર્ભાવ <mathlib/math/test/test.hpp>
+#અન્તર્ભાવ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#અન્તર્ભાવ "block/Block.hpp"
+#અન્તર્ભાવ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#અન્તર્ભાવ "matrix/math.hpp"
 
-namespace control
+નામાકાશ control
 {
 
 /**
  * A low pass filter as described here:
  * http://en.wikipedia.org/wiki/Low-pass_filter.
  */
-class __EXPORT BlockLowPass : public Block
+વર્ગ __EXPORT Block_નીચલું_Pass : જાહેર Block
 {
-public:
+જાહેર:
 // methods
-	BlockLowPass(SuperBlock *parent, const char *name) :
+	Block_નીચલું_Pass(SuperBlock *parent, અચલ અક્ષર *name) :
 		Block(parent, name),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(આ, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockLowPass() = default;
-	float update(float input);
+	આભાસી ~Block_નીચલું_Pass() = મૂળભૂત;
+	દશાંશ update(દશાંશ આગત);
 // accessors
-	float getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(float state) { _state = state; }
-protected:
+	દશાંશ getState() { પાછા _state; }
+	દશાંશ getFCut() { પાછા _fCut.get(); }
+	શૂન્ય setState(દશાંશ state) { _state = state; }
+સુરક્ષિત:
 // attributes
-	float _state{NAN}; // initialize to invalid val, force into is_finite() check on first call
+	દશાંશ _state{NAN}; // initialize to invalid val, force into is_finite() check on first call
 	control::BlockParamFloat _fCut;
 };
 

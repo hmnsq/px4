@@ -39,64 +39,64 @@
 
 #pragma once
 
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <matrix/matrix/math.hpp>
-#include <mathlib/mathlib.h>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
-#include <px4_platform_common/defines.h>
+#અન્તર્ભાવ <lib/mathlib/math/filter/AlphaFilter.hpp>
+#અન્તર્ભાવ <matrix/matrix/math.hpp>
+#અન્તર્ભાવ <mathlib/mathlib.h>
+#અન્તર્ભાવ <mathlib/math/filter/LowPassFilter2p.hpp>
+#અન્તર્ભાવ <px4_platform_common/defines.h>
 
-#include "arx_rls.hpp"
+#અન્તર્ભાવ "arx_rls.hpp"
 
-class SystemIdentification final
+વર્ગ SystemIdentification final
 {
-public:
-	SystemIdentification() = default;
-	~SystemIdentification() = default;
+જાહેર:
+	SystemIdentification() = મૂળભૂત;
+	~SystemIdentification() = મૂળભૂત;
 
-	void reset(const matrix::Vector<float, 5> &id_state_init = {});
-	void update(float u, float y); // update filters and model
-	void update(); // update model only (to be called after updateFilters)
-	void updateFilters(float u, float y);
-	bool areFiltersInitialized() const { return _are_filters_initialized; }
-	void updateFitness();
-	const matrix::Vector<float, 5> &getCoefficients() const { return _rls.getCoefficients(); }
-	const matrix::Vector<float, 5> getVariances() const { return _rls.getVariances(); }
-	const matrix::Vector<float, 5> &getDiffEstimate() const { return _rls.getDiffEstimate(); }
-	float getFitness() const { return _fitness_lpf.getState(); }
-	float getInnovation() const { return _rls.getInnovation(); }
+	શૂન્ય reset(અચલ matrix::Vector<દશાંશ, 5> &id_state_init = {});
+	શૂન્ય update(દશાંશ u, દશાંશ y); // update filters and model
+	શૂન્ય update(); // update model only (to be called after updateFilters)
+	શૂન્ય updateFilters(દશાંશ u, દશાંશ y);
+	તાર્કિક areFiltersInitialized() અચલ { પાછા _are_filters_initialized; }
+	શૂન્ય updateFitness();
+	અચલ matrix::Vector<દશાંશ, 5> &getCoefficients() અચલ { પાછા _rls.getCoefficients(); }
+	અચલ matrix::Vector<દશાંશ, 5> getVariances() અચલ { પાછા _rls.getVariances(); }
+	અચલ matrix::Vector<દશાંશ, 5> &getDiffEstimate() અચલ { પાછા _rls.getDiffEstimate(); }
+	દશાંશ getFitness() અચલ { પાછા _fitness_lpf.getState(); }
+	દશાંશ getInnovation() અચલ { પાછા _rls.getInnovation(); }
 
-	void setLpfCutoffFrequency(float sample_freq, float cutoff)
+	શૂન્ય setLpfCutoffFrequency(દશાંશ sample_freq, દશાંશ cutoff)
 	{
 		_u_lpf.set_cutoff_frequency(sample_freq, cutoff);
 		_y_lpf.set_cutoff_frequency(sample_freq, cutoff);
 	}
-	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
+	શૂન્ય setHpfCutoffFrequency(દશાંશ sample_freq, દશાંશ cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	void setForgettingFactor(float time_constant, float dt) { _rls.setForgettingFactor(time_constant, dt); }
-	void setFitnessLpfTimeConstant(float time_constant, float dt)
+	શૂન્ય setForgettingFactor(દશાંશ time_constant, દશાંશ dt) { _rls.setForgettingFactor(time_constant, dt); }
+	શૂન્ય setFitnessLpfTimeConstant(દશાંશ time_constant, દશાંશ dt)
 	{
 		_fitness_lpf.setParameters(dt, time_constant);
 		_dt = dt;
 	}
 
-	float getFilteredInputData() const { return _u_hpf; }
-	float getFilteredOutputData() const { return _y_hpf; }
+	દશાંશ get_Filtered_આગત_Data() અચલ { પાછા _u_hpf; }
+	દશાંશ getFilteredOutputData() અચલ { પાછા _y_hpf; }
 
-private:
+ખાનગી:
 	ArxRls<2, 2, 1> _rls;
-	math::LowPassFilter2p<float> _u_lpf{400.f, 30.f};
-	math::LowPassFilter2p<float> _y_lpf{400.f, 30.f};
+	math::નીચલું_Pass_Filter2p<દશાંશ> _u_lpf{400.f, 30.f};
+	math::નીચલું_Pass_Filter2p<દશાંશ> _y_lpf{400.f, 30.f};
 
 	//TODO: replace by HighPassFilter class
-	float _alpha_hpf{0.f};
-	float _u_hpf{0.f};
-	float _y_hpf{0.f};
+	દશાંશ _alpha_hpf{0.f};
+	દશાંશ _u_hpf{0.f};
+	દશાંશ _y_hpf{0.f};
 
-	float _u_prev{0.f};
-	float _y_prev{0.f};
+	દશાંશ _u_prev{0.f};
+	દશાંશ _y_prev{0.f};
 
-	bool _are_filters_initialized{false};
+	તાર્કિક _are_filters_initialized{ખોટું};
 
-	AlphaFilter<float> _fitness_lpf;
-	float _dt{0.1f};
+	AlphaFilter<દશાંશ> _fitness_lpf;
+	દશાંશ _dt{0.1f};
 };

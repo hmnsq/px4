@@ -40,17 +40,17 @@
 
 #pragma once
 
-#include <drivers/drv_hrt.h>
+#અન્તર્ભાવ <drivers/drv_hrt.h>
 
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/timesync_status.h>
+#અન્તર્ભાવ <uORB/PublicationMulti.hpp>
+#અન્તર્ભાવ <uORB/topics/timesync_status.h>
 
-#include <math.h>
-#include <float.h>
+#અન્તર્ભાવ <math.h>
+#અન્તર્ભાવ <float.h>
 
-using namespace time_literals;
+using નામાકાશ time_literals;
 
-static constexpr time_t PX4_EPOCH_SECS = 1234567890ULL;
+સ્થિર constexpr time_t PX4_EPOCH_SECS = 1234567890ULL;
 
 // Filter gains
 //
@@ -62,10 +62,10 @@ static constexpr time_t PX4_EPOCH_SECS = 1234567890ULL;
 // tighter estimation of the skew (derivative), but will negatively affect how fast the
 // filter reacts to clock skewing (e.g cause by temperature changes to the oscillator).
 // Larger values will cause large-amplitude oscillations.
-static constexpr double ALPHA_GAIN_INITIAL = 0.05;
-static constexpr double BETA_GAIN_INITIAL = 0.05;
-static constexpr double ALPHA_GAIN_FINAL = 0.003;
-static constexpr double BETA_GAIN_FINAL = 0.003;
+સ્થિર constexpr દ્વિગુણ ALPHA_GAIN_INITIAL = 0.05;
+સ્થિર constexpr દ્વિગુણ BETA_GAIN_INITIAL = 0.05;
+સ્થિર constexpr દ્વિગુણ ALPHA_GAIN_FINAL = 0.003;
+સ્થિર constexpr દ્વિગુણ BETA_GAIN_FINAL = 0.003;
 
 // Filter gain scheduling
 //
@@ -73,7 +73,7 @@ static constexpr double BETA_GAIN_FINAL = 0.003;
 // exhanged timesync packets is less than CONVERGENCE_WINDOW. A lower value will
 // allow the timesync to converge faster, but with potentially less accurate initial
 // offset and skew estimates.
-static constexpr uint32_t CONVERGENCE_WINDOW = 500;
+સ્થિર constexpr uint32_t CONVERGENCE_WINDOW = 500;
 
 // Outlier rejection and filter reset
 //
@@ -85,18 +85,18 @@ static constexpr uint32_t CONVERGENCE_WINDOW = 500;
 // of such events in a row will reset the filter. This usually happens only due to a time jump
 // on the remote system.
 // TODO : automatically determine these using ping statistics?
-static constexpr uint64_t MAX_RTT_SAMPLE = 10_ms;
-static constexpr uint64_t MAX_DEVIATION_SAMPLE = 100_ms;
-static constexpr uint32_t MAX_CONSECUTIVE_HIGH_RTT = 10;
-static constexpr uint32_t MAX_CONSECUTIVE_HIGH_DEVIATION = 10;
+સ્થિર constexpr uint64_t MAX_RTT_SAMPLE = 10_ms;
+સ્થિર constexpr uint64_t MAX_DEVIATION_SAMPLE = 100_ms;
+સ્થિર constexpr uint32_t MAX_CONSECUTIVE_ઉપલું_RTT = 10;
+સ્થિર constexpr uint32_t MAX_CONSECUTIVE_ઉપલું_DEVIATION = 10;
 
-class Timesync
+વર્ગ Timesync
 {
-public:
+જાહેર:
 	Timesync(uint8_t source = timesync_status_s::SOURCE_PROTOCOL_UNKNOWN) : _source(source) {};
-	~Timesync() = default;
+	~Timesync() = મૂળભૂત;
 
-	void update(const uint64_t now_us, const int64_t remote_timestamp_ns, int64_t originate_timestamp_ns);
+	શૂન્ય update(અચલ uint64_t now_us, અચલ int64_t remote_timestamp_ns, int64_t originate_timestamp_ns);
 
 	/**
 	 * Convert remote timestamp to local hrt time (usec)
@@ -104,41 +104,41 @@ public:
 	 */
 	uint64_t sync_stamp(uint64_t usec);
 
-	int64_t offset() const { return (int64_t)_time_offset; }
+	int64_t offset() અચલ { પાછા (int64_t)_time_offset; }
 
 	/**
 	 * Return true if the timesync algorithm converged to a good estimate,
 	 * return false otherwise
 	 */
-	bool sync_converged() const { return _sequence >= CONVERGENCE_WINDOW; }
+	તાર્કિક sync_converged() અચલ { પાછા _sequence >= CONVERGENCE_WINDOW; }
 
 	/**
 	 * Reset the exponential filter and its states
 	 */
-	void reset_filter();
+	શૂન્ય reset_filter();
 
 
-private:
+ખાનગી:
 
 	/**
 	 * Online exponential filter to smooth time offset
 	 */
-	void add_sample(int64_t offset_us);
+	શૂન્ય add_sample(int64_t offset_us);
 	uORB::PublicationMulti<timesync_status_s>  _timesync_status_pub{ORB_ID(timesync_status)};
 
 	uint32_t _sequence{0};
 
 	// Timesync statistics
-	double _time_offset{0};
-	double _time_skew{0};
+	દ્વિગુણ _time_offset{0};
+	દ્વિગુણ _time_skew{0};
 
 	// Filter parameters
-	double _filter_alpha{ALPHA_GAIN_INITIAL};
-	double _filter_beta{BETA_GAIN_INITIAL};
+	દ્વિગુણ _filter_alpha{ALPHA_GAIN_INITIAL};
+	દ્વિગુણ _filter_beta{BETA_GAIN_INITIAL};
 
 	// Outlier rejection and filter reset
-	uint32_t _high_deviation_count{0};
-	uint32_t _high_rtt_count{0};
+	uint32_t ઉપલું_deviation_ગણતરી{0};
+	uint32_t ઉપલું_rtt_ગણતરી{0};
 
 	uint8_t _source{};
 };

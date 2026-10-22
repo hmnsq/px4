@@ -1,9 +1,9 @@
-import os
-import re
-import codecs
-import sys
+આયાત os
+આયાત re
+આયાત codecs
+આયાત sys
 
-class SourceScanner(object):
+વર્ગ SourceScanner(object):
     """
     Traverses directory tree, reads all source files, and passes their contents
     to the Parser.
@@ -16,18 +16,18 @@ class SourceScanner(object):
         """
         extensions1 = tuple([".h"])
         extensions2 = tuple([".c"])
-        for srcdir in srcdirs:
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions1):
+        માટે srcdir માં srcdirs:
+            માટે filename માં os.listdir(srcdir):
+                જો filename.endswith(extensions1):
                     path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions2):
+                    જો નહીં self.ScanFile(path, parser):
+                        પાછા ખોટું
+            માટે filename માં os.listdir(srcdir):
+                જો filename.endswith(extensions2):
                     path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-        return True
+                    જો નહીં self.ScanFile(path, parser):
+                        પાછા ખોટું
+        પાછા સાચું
 
     def ScanFile(self, path, parser):
         """
@@ -35,11 +35,11 @@ class SourceScanner(object):
         parser.Parse method.
         """
 
-        with codecs.open(path, 'r', 'utf-8') as f:
-            try:
-                contents = f.read()
-            except:
+        with codecs.open(path, 'r', 'utf-8') ઇવ f:
+            પ્રયાસ:
+                contents = f.પઠ()
+            અપવાદ:
                 contents = ''
                 print('Failed reading file: %s, skipping content.' % path)
                 pass
-        return parser.Parse(contents)
+        પાછા parser.Parse(contents)

@@ -31,10 +31,10 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "Functions.hpp"
+#અન્તર્ભાવ <gtest/gtest.h>
+#અન્તર્ભાવ "Functions.hpp"
 
-using namespace math;
+using નામાકાશ math;
 
 TEST(FunctionsTest, signNoZero)
 {
@@ -49,8 +49,8 @@ TEST(FunctionsTest, signNoZero)
 
 TEST(FunctionsTest, signFromBool)
 {
-	EXPECT_EQ(signFromBool(true), 1);
-	EXPECT_EQ(signFromBool(false), -1);
+	EXPECT_EQ(signFromBool(સાચું), 1);
+	EXPECT_EQ(signFromBool(ખોટું), -1);
 	EXPECT_EQ(signFromBool(100), 1);
 	EXPECT_EQ(signFromBool(-100), 1);
 	EXPECT_EQ(signFromBool(0), -1);
@@ -178,8 +178,8 @@ TEST(FunctionsTest, interpolate)
 
 TEST(FunctionsTest, interpolateNXY)
 {
-	float x[3] = {0.f, .5f, 1.5f};
-	float y[3] = {1.f, 2.f, 3.f};
+	દશાંશ x[3] = {0.f, .5f, 1.5f};
+	દશાંશ y[3] = {1.f, 2.f, 3.f};
 
 	// factor of *2, offset +1
 	EXPECT_FLOAT_EQ(interpolateNXY(-12.f, x, y), 1.f);
@@ -216,25 +216,25 @@ TEST(FunctionsTest, lerp)
 	EXPECT_FLOAT_EQ(lerp(-.4f, .3f, 1.1f), .37f);
 }
 
-TEST(FunctionsTest, countSetBits)
+TEST(FunctionsTest, ગણતરી_Set_Bits)
 {
-	EXPECT_EQ(countSetBits(255), 8);
-	EXPECT_EQ(countSetBits(65535), 16);
-	EXPECT_EQ(countSetBits(0), 0);
-	EXPECT_EQ(countSetBits(0xffffffffu), 32);
-	EXPECT_EQ(countSetBits(754323), 9);
+	EXPECT_EQ(ગણતરી_Set_Bits(255), 8);
+	EXPECT_EQ(ગણતરી_Set_Bits(65535), 16);
+	EXPECT_EQ(ગણતરી_Set_Bits(0), 0);
+	EXPECT_EQ(ગણતરી_Set_Bits(0xffffffffu), 32);
+	EXPECT_EQ(ગણતરી_Set_Bits(754323), 9);
 }
 
-TEST(FunctionsTest, countTrailingZeros)
+TEST(FunctionsTest, ગણતરી_Trailing_Zeros)
 {
-	EXPECT_EQ(countTrailingZeros(1u), 0);
-	EXPECT_EQ(countTrailingZeros(2u), 1);
-	EXPECT_EQ(countTrailingZeros(8u), 3);
-	EXPECT_EQ(countTrailingZeros(256u), 8);
-	EXPECT_EQ(countTrailingZeros(0xffffffffu), 0);
-	EXPECT_EQ(countTrailingZeros(0x80000000u), 31);
-	EXPECT_EQ(countTrailingZeros(0u), 32);
-	EXPECT_EQ(countTrailingZeros((uint8_t)0u), 8);
+	EXPECT_EQ(ગણતરી_Trailing_Zeros(1u), 0);
+	EXPECT_EQ(ગણતરી_Trailing_Zeros(2u), 1);
+	EXPECT_EQ(ગણતરી_Trailing_Zeros(8u), 3);
+	EXPECT_EQ(ગણતરી_Trailing_Zeros(256u), 8);
+	EXPECT_EQ(ગણતરી_Trailing_Zeros(0xffffffffu), 0);
+	EXPECT_EQ(ગણતરી_Trailing_Zeros(0x80000000u), 31);
+	EXPECT_EQ(ગણતરી_Trailing_Zeros(0u), 32);
+	EXPECT_EQ(ગણતરી_Trailing_Zeros((uint8_t)0u), 8);
 }
 
 TEST(FunctionsTest, isFiniteVector3f)

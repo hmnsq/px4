@@ -39,63 +39,63 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#અન્તર્ભાવ <px4_platform_common/defines.h>
+#અન્તર્ભાવ <assert.h>
+#અન્તર્ભાવ <time.h>
+#અન્તર્ભાવ <stdlib.h>
+#અન્તર્ભાવ <math.h>
+#અન્તર્ભાવ <mathlib/math/test/test.hpp>
+#અન્તર્ભાવ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#અન્તર્ભાવ "block/Block.hpp"
+#અન્તર્ભાવ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#અન્તર્ભાવ "matrix/math.hpp"
 
-namespace control
+નામાકાશ control
 {
-template<class Type, size_t M>
-class __EXPORT BlockStats: public Block
+template<વર્ગ Type, size_t M>
+વર્ગ __EXPORT BlockStats: જાહેર Block
 {
 
-public:
+જાહેર:
 // methods
 	BlockStats(SuperBlock *parent,
-		   const char *name) :
+		   અચલ અક્ષર *name) :
 		Block(parent, name),
 		_sum(),
 		_sumSq(),
-		_count(0)
+		ગણતરી_3(0)
 	{}
-	virtual ~BlockStats() = default;
-	void update(const matrix::Vector<Type, M> &u)
+	આભાસી ~BlockStats() = મૂળભૂત;
+	શૂન્ય update(અચલ matrix::Vector<Type, M> &u)
 	{
 		_sum += u;
 		_sumSq += u.emult(u);
-		_count += 1;
+		ગણતરી_3 += 1;
 	}
-	void reset()
+	શૂન્ય reset()
 	{
 		_sum.setZero();
 		_sumSq.setZero();
-		_count = 0;
+		ગણતરી_3 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
+	size_t get_ગણતરી() { પાછા ગણતરી_3; }
+	matrix::Vector<Type, M> getMean() { પાછા _sum / ગણતરી_3; }
 	matrix::Vector<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		પાછા (_sumSq - _sum.emult(_sum) / ગણતરી_3) / ગણતરી_3;
 	}
 	matrix::Vector<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		પાછા getVar().sqrt();
 	}
-private:
+ખાનગી:
 // attributes
 	matrix::Vector<Type, M> _sum;
 	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+	size_t ગણતરી_3;
 };
 
 } // namespace control

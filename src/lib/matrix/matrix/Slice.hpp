@@ -8,23 +8,23 @@
 
 #pragma once
 
-#include <cassert>
-#include <cstdio>
-#include <cmath>
+#અન્તર્ભાવ <cassert>
+#અન્તર્ભાવ <cstdio>
+#અન્તર્ભાવ <cmath>
 
-namespace matrix
+નામાકાશ matrix
 {
 
 template<typename Type, size_t M, size_t N>
-class Matrix;
+વર્ગ Matrix;
 
 template<typename Type, size_t M>
-class Vector;
+વર્ગ Vector;
 
 template <typename MatrixT, typename Type, size_t P, size_t Q, size_t M, size_t N>
-class SliceT
+વર્ગ SliceT
 {
-public:
+જાહેર:
 	using Self = SliceT<MatrixT, Type, P, Q, M, N>;
 
 	SliceT(size_t x0, size_t y0, MatrixT *data) :
@@ -34,358 +34,358 @@ public:
 	{
 		static_assert(P <= M, "Slice rows bigger than backing matrix");
 		static_assert(Q <= N, "Slice cols bigger than backing matrix");
-		assert(x0 + P <= M);
-		assert(y0 + Q <= N);
+		પ્રતિજ્ઞા(x0 + P <= M);
+		પ્રતિજ્ઞા(y0 + Q <= N);
 	}
 
-	SliceT(const Self &other) = default;
+	SliceT(અચલ Self &other) = મૂળભૂત;
 
-	const Type &operator()(size_t i, size_t j) const
+	અચલ Type &operator()(size_t i, size_t j) અચલ
 	{
-		assert(i < P);
-		assert(j < Q);
+		પ્રતિજ્ઞા(i < P);
+		પ્રતિજ્ઞા(j < Q);
 
-		return (*_data)(_x0 + i, _y0 + j);
+		પાછા (*_data)(_x0 + i, _y0 + j);
 	}
 
 	Type &operator()(size_t i, size_t j)
 	{
-		assert(i < P);
-		assert(j < Q);
+		પ્રતિજ્ઞા(i < P);
+		પ્રતિજ્ઞા(j < Q);
 
-		return (*_data)(_x0 + i, _y0 + j);
+		પાછા (*_data)(_x0 + i, _y0 + j);
 	}
 
 	// Separate function needed otherwise the default copy constructor matches before the deep copy implementation
-	Self &operator=(const Self &other)
+	Self &operator=(અચલ Self &other)
 	{
 		// Protect against self-assignment
-		if (this == &other) {
-			return *this;
+		જો (આ == &other) {
+			પાછા *આ;
 		}
 
-		return this->operator=<M, N>(other);
+		પાછા આ->operator=<M, N>(other);
 	}
 
 	template<size_t MM, size_t NN>
-	Self &operator=(const SliceT<Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
+	Self &operator=(અચલ SliceT<Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		Self &self = *this;
+		Self &self = *આ;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
 				self(i, j) = other(i, j);
 			}
 		}
 
-		return self;
+		પાછા self;
 	}
 
 	template<size_t MM, size_t NN>
-	SliceT<MatrixT, Type, P, Q, M, N> &operator=(const SliceT<const Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &operator=(અચલ SliceT<અચલ Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *આ;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
 				self(i, j) = other(i, j);
 			}
 		}
 
-		return self;
+		પાછા self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator=(const Matrix<Type, P, Q> &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &operator=(અચલ Matrix<Type, P, Q> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *આ;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
 				self(i, j) = other(i, j);
 			}
 		}
 
-		return self;
+		પાછા self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator=(const Type &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &operator=(અચલ Type &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *આ;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
 				self(i, j) = other;
 			}
 		}
 
-		return self;
+		પાછા self;
 	}
 
 	template<size_t MM, size_t NN>
-	Matrix<Type, P, Q> operator-(const SliceT<const Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
+	Matrix<Type, P, Q> operator-(અચલ SliceT<અચલ Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		પાછા Matrix<Type, P, Q> {*આ} - other;
 	}
 
 
-	Matrix<Type, P, Q> operator-(const Matrix<Type, P, Q> &other)
+	Matrix<Type, P, Q> operator-(અચલ Matrix<Type, P, Q> &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		પાછા Matrix<Type, P, Q> {*આ} - other;
 	}
 
-	Matrix<Type, P, Q> operator-(const Type &other)
+	Matrix<Type, P, Q> operator-(અચલ Type &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		પાછા Matrix<Type, P, Q> {*આ} - other;
 	}
 
 	template<size_t MM, size_t NN>
-	Matrix<Type, P, Q> operator+(const SliceT<const Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
+	Matrix<Type, P, Q> operator+(અચલ SliceT<અચલ Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		પાછા Matrix<Type, P, Q> {*આ} + other;
 	}
 
-	Matrix<Type, P, Q> operator+(const Matrix<Type, P, Q> &other)
+	Matrix<Type, P, Q> operator+(અચલ Matrix<Type, P, Q> &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		પાછા Matrix<Type, P, Q> {*આ} + other;
 	}
 
-	Matrix<Type, P, Q> operator+(const Type &other)
+	Matrix<Type, P, Q> operator+(અચલ Type &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		પાછા Matrix<Type, P, Q> {*આ} + other;
 	}
 
 	// allow assigning vectors to a slice that are in the axis
 	template <size_t DUMMY = 1> // make this a template function since it only exists for some instantiations
-	SliceT<MatrixT, Type, 1, Q, M, N> &operator=(const Vector<Type, Q> &other)
+	SliceT<MatrixT, Type, 1, Q, M, N> &operator=(અચલ Vector<Type, Q> &other)
 	{
-		SliceT<MatrixT, Type, 1, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, 1, Q, M, N> &self = *આ;
 
-		for (size_t j = 0; j < Q; j++) {
+		માટે (size_t j = 0; j < Q; j++) {
 			self(0, j) = other(j);
 		}
 
-		return self;
+		પાછા self;
 	}
 
 	template<size_t MM, size_t NN>
-	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(const SliceT<MatrixT, Type, P, Q, MM, NN> &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(અચલ SliceT<MatrixT, Type, P, Q, MM, NN> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *આ;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
 
-		return self;
+		પાછા self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(const Matrix<Type, P, Q> &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(અચલ Matrix<Type, P, Q> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *આ;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
 
-		return self;
+		પાછા self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(const Type &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(અચલ Type &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *આ;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
 				self(i, j) += other;
 			}
 		}
 
-		return self;
+		પાછા self;
 	}
 
 	template<size_t MM, size_t NN>
-	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(const SliceT<MatrixT, Type, P, Q, MM, NN> &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(અચલ SliceT<MatrixT, Type, P, Q, MM, NN> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *આ;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
 
-		return self;
+		પાછા self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(const Matrix<Type, P, Q> &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(અચલ Matrix<Type, P, Q> &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *આ;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
 
-		return self;
+		પાછા self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(const Type &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(અચલ Type &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *આ;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
 				self(i, j) -= other;
 			}
 		}
 
-		return self;
+		પાછા self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator*=(const Type &other)
+	SliceT<MatrixT, Type, P, Q, M, N> &operator*=(અચલ Type &other)
 	{
-		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		SliceT<MatrixT, Type, P, Q, M, N> &self = *આ;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
 				self(i, j) *= other;
 			}
 		}
 
-		return self;
+		પાછા self;
 	}
 
-	SliceT<MatrixT, Type, P, Q, M, N> &operator/=(const Type &scalar)
+	SliceT<MatrixT, Type, P, Q, M, N> &operator/=(અચલ Type &scalar)
 	{
-		return operator*=(Type(1) / scalar);
+		પાછા operator*=(Type(1) / scalar);
 	}
 
-	Matrix<Type, P, Q> operator*(const Type &scalar) const
+	Matrix<Type, P, Q> operator*(અચલ Type &scalar) અચલ
 	{
-		return Matrix<Type, P, Q> {*this} * scalar;
+		પાછા Matrix<Type, P, Q> {*આ} * scalar;
 	}
 
-	Matrix<Type, P, Q> operator/(const Type &scalar) const
+	Matrix<Type, P, Q> operator/(અચલ Type &scalar) અચલ
 	{
-		return (*this) * (1 / scalar);
+		પાછા (*આ) * (1 / scalar);
 	}
 
 	template<size_t R, size_t S>
-	const SliceT<MatrixT, Type, R, S, M, N> slice(size_t x0, size_t y0) const
+	અચલ SliceT<MatrixT, Type, R, S, M, N> slice(size_t x0, size_t y0) અચલ
 	{
-		return SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
+		પાછા SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
 	}
 
 	template<size_t R, size_t S>
 	SliceT<MatrixT, Type, R, S, M, N> slice(size_t x0, size_t y0)
 	{
-		return SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
+		પાછા SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
 	}
 
-	void copyTo(Type dst[P * Q]) const
+	શૂન્ય copyTo(Type dst[P * Q]) અચલ
 	{
-		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		અચલ SliceT<MatrixT, Type, P, Q, M, N> &self = *આ;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
 				dst[i * N + j] = self(i, j);
 			}
 		}
 	}
 
-	void copyToColumnMajor(Type dst[P * Q]) const
+	શૂન્ય copyToColumnMajor(Type dst[P * Q]) અચલ
 	{
-		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		અચલ SliceT<MatrixT, Type, P, Q, M, N> &self = *આ;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
 				dst[i + (j * M)] = self(i, j);
 			}
 		}
 	}
 
-	Vector < Type, P < Q ? P : Q > diag() const
+	Vector < Type, P < Q ? P : Q > diag() અચલ
 	{
-		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		અચલ SliceT<MatrixT, Type, P, Q, M, N> &self = *આ;
 		Vector < Type, P < Q ? P : Q > res;
 
-		for (size_t j = 0; j < (P < Q ? P : Q); j++) {
+		માટે (size_t j = 0; j < (P < Q ? P : Q); j++) {
 			res(j) = self(j, j);
 		}
 
-		return res;
+		પાછા res;
 	}
 
 	template<size_t MM, size_t NN>
-	Type dot(const SliceT<MatrixT, Type, P, Q, MM, NN> &other) const
+	Type dot(અચલ SliceT<MatrixT, Type, P, Q, MM, NN> &other) અચલ
 	{
-		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
+		અચલ SliceT<MatrixT, Type, P, Q, M, N> &self = *આ;
 		Type accum(0);
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
 				accum += self(i, j) * other(i, j);
 			}
 		}
 
-		return accum;
+		પાછા accum;
 	}
 
-	Type norm_squared() const
+	Type norm_squared() અચલ
 	{
-		return dot(*this);
+		પાછા dot(*આ);
 	}
 
-	Type norm() const
+	Type norm() અચલ
 	{
-		return std::sqrt(norm_squared());
+		પાછા std::sqrt(norm_squared());
 	}
 
-	bool longerThan(Type testVal) const
+	તાર્કિક longerThan(Type testVal) અચલ
 	{
-		return norm_squared() > testVal * testVal;
+		પાછા norm_squared() > testVal * testVal;
 	}
 
-	Type max() const
+	Type max() અચલ
 	{
-		Type max_val = (*this)(0, 0);
+		Type max_val = (*આ)(0, 0);
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
-				Type val = (*this)(i, j);
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
+				Type val = (*આ)(i, j);
 
-				if (val > max_val) {
+				જો (val > max_val) {
 					max_val = val;
 				}
 			}
 		}
 
-		return max_val;
+		પાછા max_val;
 	}
 
-	Type min() const
+	Type min() અચલ
 	{
-		Type min_val = (*this)(0, 0);
+		Type min_val = (*આ)(0, 0);
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
-				Type val = (*this)(i, j);
+		માટે (size_t i = 0; i < P; i++) {
+			માટે (size_t j = 0; j < Q; j++) {
+				Type val = (*આ)(i, j);
 
-				if (val < min_val) {
+				જો (val < min_val) {
 					min_val = val;
 				}
 			}
 		}
 
-		return min_val;
+		પાછા min_val;
 	}
 
-private:
+ખાનગી:
 	size_t _x0, _y0;
 	MatrixT *_data;
 };
@@ -394,6 +394,6 @@ template <typename Type, size_t P, size_t Q, size_t M, size_t N>
 using Slice = SliceT<Matrix<Type, M, N>, Type, P, Q, M, N>;
 
 template <typename Type, size_t P, size_t Q, size_t M, size_t N>
-using ConstSlice = SliceT<const Matrix<Type, M, N>, Type, P, Q, M, N>;
+using ConstSlice = SliceT<અચલ Matrix<Type, M, N>, Type, P, Q, M, N>;
 
 }

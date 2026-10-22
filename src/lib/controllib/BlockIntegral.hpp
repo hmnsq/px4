@@ -39,14 +39,14 @@
 
 #pragma once
 
-#include "BlockLimitSym.hpp"
+#અન્તર્ભાવ "BlockLimitSym.hpp"
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#અન્તર્ભાવ "block/Block.hpp"
+#અન્તર્ભાવ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#અન્તર્ભાવ "matrix/math.hpp"
 
-namespace control
+નામાકાશ control
 {
 
 /**
@@ -56,23 +56,23 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegral: public SuperBlock
+વર્ગ __EXPORT BlockIntegral: જાહેર SuperBlock
 {
-public:
+જાહેર:
 // methods
-	BlockIntegral(SuperBlock *parent, const char *name) :
+	BlockIntegral(SuperBlock *parent, અચલ અક્ષર *name) :
 		SuperBlock(parent, name),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegral() = default;
-	float update(float input);
+		_limit(આ, "") {}
+	આભાસી ~BlockIntegral() = મૂળભૂત;
+	દશાંશ update(દશાંશ આગત);
 // accessors
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setY(float y) {_y = y;}
-protected:
+	દશાંશ getY() {પાછા _y;}
+	દશાંશ getMax() {પાછા _limit.getMax();}
+	શૂન્ય setY(દશાંશ y) {_y = y;}
+સુરક્ષિત:
 // attributes
-	float _y; /**< previous output */
+	દશાંશ _y; /**< previous output */
 	BlockLimitSym _limit; /**< limiter */
 };
 

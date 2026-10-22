@@ -33,83 +33,83 @@
 
 #pragma once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/sensor_correction.h>
+#અન્તર્ભાવ <px4_platform_common/px4_config.h>
+#અન્તર્ભાવ <px4_platform_common/log.h>
+#અન્તર્ભાવ <uORB/Subscription.hpp>
+#અન્તર્ભાવ <uORB/topics/sensor_correction.h>
 
-namespace calibration
+નામાકાશ calibration
 {
-class Barometer
+વર્ગ Barometer
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+જાહેર:
+	સ્થિર constexpr પૂર્ણાંક MAX_SENSOR_ગણતરી = 4;
 
-	static constexpr uint8_t DEFAULT_PRIORITY = 50;
-	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
+	સ્થિર constexpr uint8_t DEFAULT_PRIORITY = 50;
+	સ્થિર constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
 
-	static constexpr const char *SensorString() { return "BARO"; }
+	સ્થિર constexpr અચલ અક્ષર *SensorString() { પાછા "BARO"; }
 
 	Barometer();
 	explicit Barometer(uint32_t device_id);
-	Barometer(uint32_t device_id, bool external);
+	Barometer(uint32_t device_id, તાર્કિક external);
 
-	~Barometer() = default;
+	~Barometer() = મૂળભૂત;
 
-	void PrintStatus();
+	શૂન્ય PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
-	void set_device_id(uint32_t device_id, bool external);
-	bool set_offset(const float &offset);
+	તાર્કિક set_calibration_index(પૂર્ણાંક calibration_index);
+	શૂન્ય set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
+	શૂન્ય set_device_id(uint32_t device_id, તાર્કિક external);
+	તાર્કિક set_offset(અચલ દશાંશ &offset);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const float &thermal_offset() const { return _thermal_offset; }
+	તાર્કિક calibrated() અચલ { પાછા (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_ગણતરી_2() અચલ { પાછા calibration_ગણતરી; }
+	int8_t calibration_index() અચલ { પાછા _calibration_index; }
+	uint32_t device_id() અચલ { પાછા _device_id; }
+	તાર્કિક enabled() અચલ { પાછા (_priority > 0); }
+	તાર્કિક external() અચલ { પાછા _external; }
+	અચલ દશાંશ &offset() અચલ { પાછા _offset; }
+	અચલ int32_t &priority() અચલ { પાછા _priority; }
+	અચલ દશાંશ &thermal_offset() અચલ { પાછા _thermal_offset; }
 
 	// apply offsets
-	inline float Correct(const float &data) const
+	અંતઃરેખ દશાંશ Correct(અચલ દશાંશ &data) અચલ
 	{
-		return data - _thermal_offset - _offset;
+		પાછા data - _thermal_offset - _offset;
 	}
 
-	inline float Uncorrect(const float &corrected_data) const
+	અંતઃરેખ દશાંશ Uncorrect(અચલ દશાંશ &corrected_data) અચલ
 	{
-		return corrected_data + _thermal_offset + _offset;
+		પાછા corrected_data + _thermal_offset + _offset;
 	}
 
 	// Compute sensor offset from bias (board frame)
-	float BiasCorrectedSensorOffset(const float &bias) const
+	દશાંશ BiasCorrectedSensorOffset(અચલ દશાંશ &bias) અચલ
 	{
-		return bias + _thermal_offset + _offset;
+		પાછા bias + _thermal_offset + _offset;
 	}
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	તાર્કિક ParametersLoad();
+	તાર્કિક ParametersSave(પૂર્ણાંક desired_calibration_index = -1, તાર્કિક force = ખોટું);
+	શૂન્ય ParametersUpdate();
 
-	void Reset();
+	શૂન્ય Reset();
 
-	void SensorCorrectionsUpdate(bool force = false);
+	શૂન્ય SensorCorrectionsUpdate(તાર્કિક force = ખોટું);
 
-private:
+ખાનગી:
 	uORB::Subscription _sensor_correction_sub{ORB_ID(sensor_correction)};
 
-	float _offset{0};
-	float _thermal_offset{0};
+	દશાંશ _offset{0};
+	દશાંશ _thermal_offset{0};
 
 	int8_t _calibration_index{-1};
 	uint32_t _device_id{0};
 	int32_t _priority{-1};
 
-	bool _external{false};
+	તાર્કિક _external{ખોટું};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_ગણતરી{0};
 };
 } // namespace calibration

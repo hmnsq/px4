@@ -33,33 +33,33 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#અન્તર્ભાવ "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gimbal_controls.h>
+#અન્તર્ભાવ <uORB/topics/gimbal_controls.h>
 
 /**
  * Functions: Gimbal_Roll .. Gimbal_Yaw
  */
-class FunctionGimbal : public FunctionProviderBase
+વર્ગ FunctionGimbal : જાહેર FunctionProviderBase
 {
-public:
-	FunctionGimbal() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGimbal(); }
+જાહેર:
+	FunctionGimbal() = મૂળભૂત;
+	સ્થિર FunctionProviderBase *allocate(અચલ Context &context) { પાછા નવું FunctionGimbal(); }
 
-	void update() override
+	શૂન્ય update() override
 	{
 		gimbal_controls_s gimbal_controls;
 
-		if (_topic.update(&gimbal_controls)) {
+		જો (_topic.update(&gimbal_controls)) {
 			_data[0] = gimbal_controls.control[gimbal_controls_s::INDEX_ROLL];
 			_data[1] = gimbal_controls.control[gimbal_controls_s::INDEX_PITCH];
 			_data[2] = gimbal_controls.control[gimbal_controls_s::INDEX_YAW];
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Gimbal_Roll]; }
+	દશાંશ value(OutputFunction func) override { પાછા _data[(પૂર્ણાંક)func - (પૂર્ણાંક)OutputFunction::Gimbal_Roll]; }
 
-private:
+ખાનગી:
 	uORB::Subscription _topic{ORB_ID(gimbal_controls)};
-	float _data[3] { NAN, NAN, NAN };
+	દશાંશ _data[3] { NAN, NAN, NAN };
 };

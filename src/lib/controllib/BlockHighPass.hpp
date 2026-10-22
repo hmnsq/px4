@@ -39,48 +39,48 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#અન્તર્ભાવ <px4_platform_common/defines.h>
+#અન્તર્ભાવ <assert.h>
+#અન્તર્ભાવ <time.h>
+#અન્તર્ભાવ <stdlib.h>
+#અન્તર્ભાવ <math.h>
+#અન્તર્ભાવ <mathlib/math/test/test.hpp>
+#અન્તર્ભાવ <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#અન્તર્ભાવ "block/Block.hpp"
+#અન્તર્ભાવ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#અન્તર્ભાવ "matrix/math.hpp"
 
-namespace control
+નામાકાશ control
 {
 
 /**
  * A high pass filter as described here:
  * http://en.wikipedia.org/wiki/High-pass_filter.
  */
-class __EXPORT BlockHighPass : public Block
+વર્ગ __EXPORT Block_ઉપલું_Pass : જાહેર Block
 {
-public:
+જાહેર:
 // methods
-	BlockHighPass(SuperBlock *parent, const char *name) :
+	Block_ઉપલું_Pass(SuperBlock *parent, અચલ અક્ષર *name) :
 		Block(parent, name),
 		_u(0),
 		_y(0),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(આ, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockHighPass() = default;
-	float update(float input);
+	આભાસી ~Block_ઉપલું_Pass() = મૂળભૂત;
+	દશાંશ update(દશાંશ આગત);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getFCut() {return _fCut.get();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
+	દશાંશ getU() {પાછા _u;}
+	દશાંશ getY() {પાછા _y;}
+	દશાંશ getFCut() {પાછા _fCut.get();}
+	શૂન્ય setU(દશાંશ u) {_u = u;}
+	શૂન્ય setY(દશાંશ y) {_y = y;}
+સુરક્ષિત:
 // attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
+	દશાંશ _u; /**< previous input */
+	દશાંશ _y; /**< previous output */
 	control::BlockParamFloat _fCut; /**< cut-off frequency, Hz */
 };
 

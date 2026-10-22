@@ -31,38 +31,38 @@
  *
  ****************************************************************************/
 
-#include "parameters_remote.h"
+#અન્તર્ભાવ "parameters_remote.h"
 
-#include "uORB/uORBManager.hpp"
+#અન્તર્ભાવ "uORB/uORBManager.hpp"
 
-#include <inttypes.h>
+#અન્તર્ભાવ <inttypes.h>
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/tasks.h>
+#અન્તર્ભાવ <px4_platform_common/log.h>
+#અન્તર્ભાવ <px4_platform_common/tasks.h>
 
 // uORB topics needed to keep parameter server and client in sync
-#include <uORB/topics/parameter_reset_request.h>
-#include <uORB/topics/parameter_set_used_request.h>
-#include <uORB/topics/parameter_set_value_request.h>
-#include <uORB/topics/parameter_set_value_response.h>
+#અન્તર્ભાવ <uORB/topics/parameter_reset_request.h>
+#અન્તર્ભાવ <uORB/topics/parameter_set_used_request.h>
+#અન્તર્ભાવ <uORB/topics/parameter_set_value_request.h>
+#અન્તર્ભાવ <uORB/topics/parameter_set_value_response.h>
 
 // Debug flag
-static bool debug = false;
+સ્થિર તાર્કિક debug = ખોટું;
 
-static struct param_remote_counters param_remote_counters;
+સ્થિર સંરચના param_remote_counters param_remote_counters;
 
 #define TIMEOUT_WAIT 1000
-#define TIMEOUT_COUNT 50
+#define TIMEOUT_ગણતરી 50
 
-static orb_advert_t parameter_set_used_h = nullptr;
-static orb_advert_t param_set_value_req_h = nullptr;
+સ્થિર orb_advert_t parameter_set_used_h = nullptr;
+સ્થિર orb_advert_t param_set_કિંમત_req_h = nullptr;
 
-static orb_sub_t param_set_rsp_fd = ORB_SUB_INVALID;
+સ્થિર orb_sub_t param_set_rsp_fd = ORB_SUB_INVALID;
 
-static px4_task_t sync_thread_tid;
-static const char *sync_thread_name = "param_remote_sync";
+સ્થિર px4_task_t sync_thread_tid;
+સ્થિર અચલ અક્ષર *sync_thread_name = "param_remote_sync";
 
-static int remote_sync_thread(int argc, char *argv[])
+સ્થિર પૂર્ણાંક remote_sync_thread(પૂર્ણાંક argc, અક્ષર *argv[])
 {
 	// This thread gets started by the remote side during PX4 initialization.
 	// We cannot send out the subscribe request immediately because the other
@@ -72,104 +72,104 @@ static int remote_sync_thread(int argc, char *argv[])
 	// side could be missed.
 	usleep(200000);
 
-	orb_advert_t _set_value_rsp_h = nullptr;
+	orb_advert_t set_કિંમત_rsp_h = nullptr;
 
 	orb_sub_t _reset_req_fd  = orb_subscribe(ORB_ID(parameter_reset_request));
-	orb_sub_t _set_value_req_fd = orb_subscribe(ORB_ID(parameter_remote_set_value_request));
+	orb_sub_t set_કિંમત_req_fd = orb_subscribe(ORB_ID(parameter_remote_set_કિંમત_request));
 
-	struct parameter_reset_request_s      _reset_request;
-	struct parameter_set_value_request_s  _set_value_request;
-	struct parameter_set_value_response_s _set_value_response;
+	સંરચના parameter_reset_request_s      _reset_request;
+	સંરચના parameter_set_કિંમત_request_s  set_કિંમત_request;
+	સંરચના parameter_set_કિંમત_response_s set_કિંમત_response;
 
 	px4_pollfd_struct_t fds[2] = { { .fd = _reset_req_fd,  .events = POLLIN },
-		{ .fd = _set_value_req_fd, .events = POLLIN }
+		{ .fd = set_કિંમત_req_fd, .events = POLLIN }
 	};
 
 	PX4_INFO("Starting parameter remote sync thread");
 
-	while (true) {
+	જ્યારે (સાચું) {
 		px4_poll(fds, 2, 1000);
 
-		if (fds[0].revents & POLLIN) {
-			bool updated = true;
+		જો (fds[0].revents & POLLIN) {
+			તાર્કિક updated = સાચું;
 
-			while (updated) {
+			જ્યારે (updated) {
 				orb_copy(ORB_ID(parameter_reset_request), _reset_req_fd, &_reset_request);
 
-				if (debug) {
+				જો (debug) {
 					PX4_INFO("Got parameter_reset_request for %s", param_name(_reset_request.parameter_index));
 				}
 
 				param_remote_counters.reset_received++;
 
-				if (_reset_request.reset_all) {
+				જો (_reset_request.reset_all) {
 					param_reset_all();
 
-				} else {
+				} નહીંતર {
 					param_reset_no_notification(_reset_request.parameter_index);
 
 				}
 
-				(void) orb_check(_reset_req_fd, &updated);
+				(શૂન્ય) orb_check(_reset_req_fd, &updated);
 			}
 		}
 
-		if (fds[1].revents & POLLIN) {
-			bool updated = true;
+		જો (fds[1].revents & POLLIN) {
+			તાર્કિક updated = સાચું;
 
-			while (updated) {
-				orb_copy(ORB_ID(parameter_primary_set_value_request), _set_value_req_fd, &_set_value_request);
+			જ્યારે (updated) {
+				orb_copy(ORB_ID(parameter_primary_set_કિંમત_request), set_કિંમત_req_fd, &set_કિંમત_request);
 
-				if (debug) {
-					PX4_INFO("Got parameter_remote_set_value_request for %s", param_name(_set_value_request.parameter_index));
+				જો (debug) {
+					PX4_INFO("Got parameter_remote_set_value_request for %s", param_name(set_કિંમત_request.parameter_index));
 				}
 
-				param_remote_counters.set_value_request_received++;
+				param_remote_counters.set_કિંમત_request_received++;
 
-				switch (param_type(_set_value_request.parameter_index)) {
-				case PARAM_TYPE_INT32:
-					param_set_no_remote_update(_set_value_request.parameter_index,
-								   (const void *) &_set_value_request.int_value,
-								   false);
-					break;
+				પસંદગી (param_type(set_કિંમત_request.parameter_index)) {
+				સ્થિતિ PARAM_TYPE_INT32:
+					param_set_no_remote_update(set_કિંમત_request.parameter_index,
+								   (અચલ શૂન્ય *) &set_કિંમત_request.int_કિંમત,
+								   ખોટું);
+					તોડો;
 
-				case PARAM_TYPE_FLOAT:
-					param_set_no_remote_update(_set_value_request.parameter_index,
-								   (const void *) &_set_value_request.float_value,
-								   false);
-					break;
+				સ્થિતિ PARAM_TYPE_FLOAT:
+					param_set_no_remote_update(set_કિંમત_request.parameter_index,
+								   (અચલ શૂન્ય *) &set_કિંમત_request.float_કિંમત,
+								   ખોટું);
+					તોડો;
 
-				default:
+				મૂળભૂત:
 					PX4_ERR("Parameter must be either int or float");
-					break;
+					તોડો;
 				}
 
-				_set_value_response.timestamp = hrt_absolute_time();
-				_set_value_response.request_timestamp = _set_value_request.timestamp;
-				_set_value_response.parameter_index = _set_value_request.parameter_index;
+				set_કિંમત_response.timestamp = hrt_absolute_time();
+				set_કિંમત_response.request_timestamp = set_કિંમત_request.timestamp;
+				set_કિંમત_response.parameter_index = set_કિંમત_request.parameter_index;
 
-				if (_set_value_rsp_h == nullptr) {
-					_set_value_rsp_h = orb_advertise(ORB_ID(parameter_remote_set_value_response), &_set_value_response);
+				જો (set_કિંમત_rsp_h == nullptr) {
+					set_કિંમત_rsp_h = orb_advertise(ORB_ID(parameter_remote_set_કિંમત_response), &set_કિંમત_response);
 
-				} else {
-					if (debug) {
-						PX4_INFO("Sending set value response for %s", param_name(_set_value_request.parameter_index));
+				} નહીંતર {
+					જો (debug) {
+						PX4_INFO("Sending set value response for %s", param_name(set_કિંમત_request.parameter_index));
 					}
 
-					orb_publish(ORB_ID(parameter_remote_set_value_response), _set_value_rsp_h, &_set_value_response);
+					orb_publish(ORB_ID(parameter_remote_set_કિંમત_response), set_કિંમત_rsp_h, &set_કિંમત_response);
 				}
 
-				param_remote_counters.set_value_response_sent++;
+				param_remote_counters.set_કિંમત_response_sent++;
 
-				(void) orb_check(_set_value_req_fd, &updated);
+				(શૂન્ય) orb_check(set_કિંમત_req_fd, &updated);
 			}
 		}
 	}
 
-	return 0;
+	પાછા 0;
 }
 
-void param_remote_init()
+શૂન્ય param_remote_init()
 {
 
 	sync_thread_tid = px4_task_spawn_cmd(sync_thread_name,
@@ -177,124 +177,124 @@ void param_remote_init()
 					     SCHED_PRIORITY_PARAMS,
 					     (1024 * 4),
 					     remote_sync_thread,
-					     NULL);
+					     ખાલી);
 
 }
 
-void param_remote_set_used(param_t param)
+શૂન્ય param_remote_set_used(param_t param)
 {
 	// Notify the parameter server that this parameter has been marked as used
-	if (debug) {
+	જો (debug) {
 		PX4_INFO("Requesting server to mark %s as used", param_name(param));
 	}
 
-	struct parameter_set_used_request_s req;
+	સંરચના parameter_set_used_request_s req;
 
 	req.timestamp = hrt_absolute_time();
 
 	req.parameter_index = param;
 
-	if (parameter_set_used_h == nullptr) {
+	જો (parameter_set_used_h == nullptr) {
 		parameter_set_used_h = orb_advertise(ORB_ID(parameter_set_used_request), &req);
 
-	} else {
+	} નહીંતર {
 		orb_publish(ORB_ID(parameter_set_used_request), parameter_set_used_h, &req);
 	}
 
 	param_remote_counters.set_used_sent++;
 }
 
-void param_remote_set_value(param_t param, const void *val)
+શૂન્ય param_remote_set_કિંમત(param_t param, અચલ શૂન્ય *val)
 {
-	bool send_request = true;
-	struct parameter_set_value_request_s req;
+	તાર્કિક send_request = સાચું;
+	સંરચના parameter_set_કિંમત_request_s req;
 	req.timestamp = hrt_absolute_time();
 	req.parameter_index = param;
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
-		req.int_value = *(int32_t *)val;
+	પસંદગી (param_type(param)) {
+	સ્થિતિ PARAM_TYPE_INT32:
+		req.int_કિંમત = *(int32_t *)val;
 
-		if (debug) {
-			PX4_INFO("*** Setting %s to %" PRIi32 " ***", param_name(req.parameter_index), req.int_value);
+		જો (debug) {
+			PX4_INFO("*** Setting %s to %" PRIi32 " ***", param_name(req.parameter_index), req.int_કિંમત);
 		}
 
-		break;
+		તોડો;
 
-	case PARAM_TYPE_FLOAT:
-		req.float_value = *(float *)val;
+	સ્થિતિ PARAM_TYPE_FLOAT:
+		req.float_કિંમત = *(દશાંશ *)val;
 
-		if (debug) {
-			PX4_INFO("*** Setting %s to %f ***", param_name(req.parameter_index), (double) req.float_value);
+		જો (debug) {
+			PX4_INFO("*** Setting %s to %f ***", param_name(req.parameter_index), (દ્વિગુણ) req.float_કિંમત);
 		}
 
-		break;
+		તોડો;
 
-	default:
+	મૂળભૂત:
 		PX4_ERR("Parameter must be either int or float");
-		send_request = false;
-		break;
+		send_request = ખોટું;
+		તોડો;
 	}
 
-	if (!orb_sub_valid(param_set_rsp_fd)) {
-		if (debug) {
+	જો (!orb_sub_valid(param_set_rsp_fd)) {
+		જો (debug) {
 			PX4_INFO("Subscribing to parameter_primary_set_value_response");
 		}
 
-		param_set_rsp_fd = orb_subscribe(ORB_ID(parameter_primary_set_value_response));
+		param_set_rsp_fd = orb_subscribe(ORB_ID(parameter_primary_set_કિંમત_response));
 
-		if (!orb_sub_valid(param_set_rsp_fd)) {
+		જો (!orb_sub_valid(param_set_rsp_fd)) {
 			PX4_ERR("Subscription to parameter_primary_set_value_response failed");
 
-		} else {
-			if (debug) {
+		} નહીંતર {
+			જો (debug) {
 				PX4_INFO("Subscription to parameter_primary_set_value_response succeeded");
 			}
 		}
 	}
 
-	if (send_request) {
-		if (debug) {
+	જો (send_request) {
+		જો (debug) {
 			PX4_INFO("Sending param set value request to primary for %s", param_name(req.parameter_index));
 		}
 
-		if (param_set_value_req_h == nullptr) {
-			param_set_value_req_h = orb_advertise(ORB_ID(parameter_primary_set_value_request), nullptr);
+		જો (param_set_કિંમત_req_h == nullptr) {
+			param_set_કિંમત_req_h = orb_advertise(ORB_ID(parameter_primary_set_કિંમત_request), nullptr);
 		}
 
-		orb_publish(ORB_ID(parameter_primary_set_value_request), param_set_value_req_h, &req);
+		orb_publish(ORB_ID(parameter_primary_set_કિંમત_request), param_set_કિંમત_req_h, &req);
 
-		param_remote_counters.set_value_request_sent++;
+		param_remote_counters.set_કિંમત_request_sent++;
 
 		// Wait for response
-		bool updated = false;
+		તાર્કિક updated = ખોટું;
 
-		if (debug) {
+		જો (debug) {
 			PX4_INFO("Waiting for parameter_client_set_value_response for %s", param_name(req.parameter_index));
 		}
 
 		px4_usleep(TIMEOUT_WAIT);
-		int count = TIMEOUT_COUNT;
+		પૂર્ણાંક ગણતરી = TIMEOUT_ગણતરી;
 
-		while (--count) {
-			(void) orb_check(param_set_rsp_fd, &updated);
+		જ્યારે (--ગણતરી) {
+			(શૂન્ય) orb_check(param_set_rsp_fd, &updated);
 
-			struct parameter_set_value_response_s rsp;
+			સંરચના parameter_set_કિંમત_response_s rsp;
 
-			while (updated) {
+			જ્યારે (updated) {
 
-				orb_copy(ORB_ID(parameter_primary_set_value_response), param_set_rsp_fd, &rsp);
+				orb_copy(ORB_ID(parameter_primary_set_કિંમત_response), param_set_rsp_fd, &rsp);
 
-				if ((rsp.request_timestamp == req.timestamp) && (rsp.parameter_index == req.parameter_index)) {
-					if (debug) {
+				જો ((rsp.request_timestamp == req.timestamp) && (rsp.parameter_index == req.parameter_index)) {
+					જો (debug) {
 						PX4_INFO("Got parameter_primary_set_value_response for %s", param_name(req.parameter_index));
 					}
 
-					param_remote_counters.set_value_response_received++;
-					return;
+					param_remote_counters.set_કિંમત_response_received++;
+					પાછા;
 				}
 
-				(void) orb_check(param_set_rsp_fd, &updated);
+				(શૂન્ય) orb_check(param_set_rsp_fd, &updated);
 			}
 
 			px4_usleep(TIMEOUT_WAIT);
@@ -304,7 +304,7 @@ void param_remote_set_value(param_t param, const void *val)
 	}
 }
 
-void param_remote_get_counters(struct param_remote_counters *cnt)
+શૂન્ય param_remote_get_counters(સંરચના param_remote_counters *cnt)
 {
 	*cnt = param_remote_counters;
 }

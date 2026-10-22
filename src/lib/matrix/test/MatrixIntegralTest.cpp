@@ -31,25 +31,25 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/integration.hpp>
+#અન્તર્ભાવ <gtest/gtest.h>
+#અન્તર્ભાવ <matrix/integration.hpp>
 
-using namespace matrix;
+using નામાકાશ matrix;
 
-Vector<float, 6> f(float t, const Matrix<float, 6, 1> &  /*y*/, const Matrix<float, 3, 1> &  /*u*/)
+Vector<દશાંશ, 6> f(દશાંશ t, અચલ Matrix<દશાંશ, 6, 1> &  /*y*/, અચલ Matrix<દશાંશ, 3, 1> &  /*u*/)
 {
-	float v = -sin(t);
-	return v * ones<float, 6, 1>();
+	દશાંશ v = -sin(t);
+	પાછા v * ones<દશાંશ, 6, 1>();
 }
 
 TEST(MatrixIntegralTest, Integral)
 {
-	Vector<float, 6> y = ones<float, 6, 1>();
-	Vector<float, 3> u = ones<float, 3, 1>();
-	float t0 = 0;
-	float tf = 2;
-	float h = 0.001f;
+	Vector<દશાંશ, 6> y = ones<દશાંશ, 6, 1>();
+	Vector<દશાંશ, 3> u = ones<દશાંશ, 3, 1>();
+	દશાંશ t0 = 0;
+	દશાંશ tf = 2;
+	દશાંશ h = 0.001f;
 	integrate_rk4(f, y, u, t0, tf, h, y);
-	float v = 1 + std::cos(tf) - std::cos(t0);
-	EXPECT_EQ(y, (ones<float, 6, 1>()*v));
+	દશાંશ v = 1 + std::cos(tf) - std::cos(t0);
+	EXPECT_EQ(y, (ones<દશાંશ, 6, 1>()*v));
 }

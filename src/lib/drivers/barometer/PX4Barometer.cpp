@@ -32,9 +32,9 @@
  ****************************************************************************/
 
 
-#include "PX4Barometer.hpp"
+#અન્તર્ભાવ "PX4Barometer.hpp"
 
-#include <lib/drivers/device/Device.hpp>
+#અન્તર્ભાવ <lib/drivers/device/Device.hpp>
 
 PX4Barometer::PX4Barometer(uint32_t device_id)
 {
@@ -42,32 +42,32 @@ PX4Barometer::PX4Barometer(uint32_t device_id)
 	_report.temperature = 15; // if no temperature is set, report the sea level standard temperature of 15°C. As used in VehicleAirData
 }
 
-PX4Barometer::PX4Barometer(uint32_t device_id, bool external)
+PX4Barometer::PX4Barometer(uint32_t device_id, તાર્કિક external)
 {
 	set_device_id(device_id);
 	set_external(external);
 	_report.temperature = 15; // if no temperature is set, report the sea level standard temperature of 15°C. As used in VehicleAirData
 }
 
-void PX4Barometer::set_device_id(uint32_t device_id)
+શૂન્ય PX4Barometer::set_device_id(uint32_t device_id)
 {
 	_report.device_id = device_id;
 
-	if (!_external_forced) {
+	જો (!_external_forced) {
 		_report.is_external = device::device_is_external(device_id);
 	}
 }
 
-void PX4Barometer::set_external(bool external)
+શૂન્ય PX4Barometer::set_external(તાર્કિક external)
 {
 	_report.is_external = external;
-	_external_forced = true;
+	_external_forced = સાચું;
 }
 
-void PX4Barometer::update(const hrt_abstime &timestamp_sample, float pressure)
+શૂન્ય PX4Barometer::update(અચલ hrt_abstime &timestamp_sample, દશાંશ pressure)
 {
-	if (!PX4_ISFINITE(pressure)) {
-		return;
+	જો (!PX4_ISFINITE(pressure)) {
+		પાછા;
 	}
 
 	_report.timestamp_sample = timestamp_sample;
@@ -76,9 +76,9 @@ void PX4Barometer::update(const hrt_abstime &timestamp_sample, float pressure)
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_BARO,
+	જો (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_BARO,
 					_sensor_pub.get_instance(), _report, _stuck)) {
-		return;
+		પાછા;
 	}
 
 	_sensor_pub.publish(_report);

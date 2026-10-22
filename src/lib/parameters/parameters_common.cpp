@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#include <string.h>
+#અન્તર્ભાવ <string.h>
 
 /**
  * @file parameters_common.cpp
@@ -40,7 +40,7 @@
  *
  */
 
-static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(param_info_s);
+સ્થિર constexpr uint16_t param_info_ગણતરી = કદ(px4::parameters) / કદ(param_info_s);
 
 /**
  * Test whether a param_t is value.
@@ -48,119 +48,119 @@ static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(pa
  * @param param			The parameter handle to test.
  * @return			True if the handle is valid.
  */
-static constexpr bool handle_in_range(param_t param) { return (param < param_info_count); }
+સ્થિર constexpr તાર્કિક handle_in_range(param_t param) { પાછા (param < param_info_ગણતરી); }
 
-unsigned param_count()
+unsigned param_ગણતરી()
 {
-	return param_info_count;
+	પાછા param_info_ગણતરી;
 }
 
-int param_get_index(param_t param)
+પૂર્ણાંક param_get_index(param_t param)
 {
-	if (handle_in_range(param)) {
-		return (unsigned)param;
+	જો (handle_in_range(param)) {
+		પાછા (unsigned)param;
 	}
 
-	return -1;
+	પાછા -1;
 }
 
 param_t param_for_index(unsigned index)
 {
-	if (index < param_info_count) {
-		return (param_t)index;
+	જો (index < param_info_ગણતરી) {
+		પાછા (param_t)index;
 	}
 
-	return PARAM_INVALID;
+	પાછા PARAM_INVALID;
 }
 
-const char *param_name(param_t param)
+અચલ અક્ષર *param_name(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters[param].name : nullptr;
+	પાછા handle_in_range(param) ? px4::parameters[param].name : nullptr;
 }
 
 param_type_t param_type(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
+	પાછા handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
 }
 
-bool param_is_volatile(param_t param)
+તાર્કિક param_is_volatile(param_t param)
 {
-	if (handle_in_range(param)) {
-		for (const auto &p : px4::parameters_volatile) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	જો (handle_in_range(param)) {
+		માટે (અચલ auto &p : px4::parameters_volatile) {
+			જો (static_cast<px4::params>(param) == p) {
+				પાછા સાચું;
 			}
 		}
 	}
 
-	return false;
+	પાછા ખોટું;
 }
 
-static bool params_locked = false;
+સ્થિર તાર્કિક params_locked = ખોટું;
 
-bool param_is_readonly(param_t param)
+તાર્કિક param_is_readonly(param_t param)
 {
-	if (params_locked && handle_in_range(param)) {
-		for (const auto &p : px4::parameters_readonly) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	જો (params_locked && handle_in_range(param)) {
+		માટે (અચલ auto &p : px4::parameters_readonly) {
+			જો (static_cast<px4::params>(param) == p) {
+				પાછા સાચું;
 			}
 		}
 	}
 
-	return false;
+	પાછા ખોટું;
 }
 
-void param_lock_readonly()
+શૂન્ય param_lock_readonly()
 {
-	params_locked = true;
+	params_locked = સાચું;
 }
 
 size_t param_size(param_t param)
 {
-	if (handle_in_range(param)) {
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-		case PARAM_TYPE_FLOAT:
-			return 4;
+	જો (handle_in_range(param)) {
+		પસંદગી (param_type(param)) {
+		સ્થિતિ PARAM_TYPE_INT32:
+		સ્થિતિ PARAM_TYPE_FLOAT:
+			પાછા 4;
 
-		default:
-			return 0;
+		મૂળભૂત:
+			પાછા 0;
 		}
 	}
 
-	return 0;
+	પાછા 0;
 }
 
-int
-param_get_system_default_value(param_t param, void *default_val)
+પૂર્ણાંક
+param_get_system_default_કિંમત(param_t param, શૂન્ય *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	જો (!handle_in_range(param)) {
+		પાછા PX4_ERROR;
 	}
 
-	int ret = PX4_OK;
+	પૂર્ણાંક ret = PX4_OK;
 
-	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
+	પસંદગી (param_type(param)) {
+	સ્થિતિ PARAM_TYPE_INT32:
 		memcpy(default_val, &px4::parameters[param].val.i, param_size(param));
-		break;
+		તોડો;
 
-	case PARAM_TYPE_FLOAT:
+	સ્થિતિ PARAM_TYPE_FLOAT:
 		memcpy(default_val, &px4::parameters[param].val.f, param_size(param));
-		break;
+		તોડો;
 
-	default:
+	મૂળભૂત:
 		ret = PX4_ERROR;
-		break;
+		તોડો;
 	}
 
-	return ret;
+	પાછા ret;
 }
 
-int
-param_get_mark_used(param_t param, void *val)
+પૂર્ણાંક
+param_get_mark_used(param_t param, શૂન્ય *val)
 {
 	param_set_used(param);
-	return param_get(param, val);
+	પાછા param_get(param, val);
 }

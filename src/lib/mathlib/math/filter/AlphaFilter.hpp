@@ -42,23 +42,23 @@
 
 #pragma once
 
-#include <float.h>
-#include <stdint.h>
-#include <mathlib/math/Functions.hpp>
+#અન્તર્ભાવ <float.h>
+#અન્તર્ભાવ <stdint.h>
+#અન્તર્ભાવ <mathlib/math/Functions.hpp>
 
-using namespace math;
+using નામાકાશ math;
 
 template <typename T>
-class AlphaFilter
+વર્ગ AlphaFilter
 {
-public:
-	AlphaFilter() = default;
-	explicit AlphaFilter(float sample_interval_s, float time_constant_s) { setParameters(sample_interval_s, time_constant_s); }
+જાહેર:
+	AlphaFilter() = મૂળભૂત;
+	explicit AlphaFilter(દશાંશ sample_interval_s, દશાંશ time_constant_s) { setParameters(sample_interval_s, time_constant_s); }
 	explicit AlphaFilter(uint64_t sample_interval_us, uint64_t time_constant_us) { setParameters(sample_interval_us, time_constant_us); }
-	explicit AlphaFilter(float time_constant_s) : _time_constant(time_constant_s) {};
-	explicit AlphaFilter(uint64_t time_constant_us) : _time_constant(static_cast<float>(time_constant_us) * 1e-6f) {};
+	explicit AlphaFilter(દશાંશ time_constant_s) : _time_constant(time_constant_s) {};
+	explicit AlphaFilter(uint64_t time_constant_us) : _time_constant(static_cast<દશાંશ>(time_constant_us) * 1e-6f) {};
 
-	~AlphaFilter() = default;
+	~AlphaFilter() = મૂળભૂત;
 
 	/**
 	 * Set filter parameters for time abstraction
@@ -66,11 +66,11 @@ public:
 	 * @param sample_interval_s interval between two samples in seconds
 	 * @param time_constant_s filter time constant determining convergence in seconds
 	 */
-	void setParameters(float sample_interval_s, float time_constant_s)
+	શૂન્ય setParameters(દશાંશ sample_interval_s, દશાંશ time_constant_s)
 	{
-		const float denominator = time_constant_s + sample_interval_s;
+		અચલ દશાંશ denominator = time_constant_s + sample_interval_s;
 
-		if (denominator > FLT_EPSILON) {
+		જો (denominator > FLT_EPSILON) {
 			setAlpha(sample_interval_s / denominator);
 		}
 
@@ -81,31 +81,31 @@ public:
 	 * @param sample_interval_us interval between two samples in microseconds
 	 * @param time_constant_us filter time constant determining convergence in microseconds
 	 */
-	void setParameters(uint64_t sample_interval_us, uint64_t time_constant_us)
+	શૂન્ય setParameters(uint64_t sample_interval_us, uint64_t time_constant_us)
 	{
-		setParameters(static_cast<float>(sample_interval_us) * 1e-6f,
-			      static_cast<float>(time_constant_us) * 1e-6f);
+		setParameters(static_cast<દશાંશ>(sample_interval_us) * 1e-6f,
+			      static_cast<દશાંશ>(time_constant_us) * 1e-6f);
 	}
 
-	bool setCutoffFreq(float sample_freq, float cutoff_freq)
+	તાર્કિક setCutoffFreq(દશાંશ sample_freq, દશાંશ cutoff_freq)
 	{
-		if ((sample_freq <= 0.f) || (cutoff_freq <= 0.f) || (cutoff_freq >= sample_freq / 2.f)
+		જો ((sample_freq <= 0.f) || (cutoff_freq <= 0.f) || (cutoff_freq >= sample_freq / 2.f)
 		    || !isFinite(sample_freq) || !isFinite(cutoff_freq)) {
 
 			// Invalid parameters
-			return false;
+			પાછા ખોટું;
 		}
 
 		setParameters(1.f / sample_freq, 1.f / (M_TWOPI_F * cutoff_freq));
-		return true;
+		પાછા સાચું;
 	}
 
-	void setCutoffFreq(float cutoff_freq)
+	શૂન્ય setCutoffFreq(દશાંશ cutoff_freq)
 	{
-		if (cutoff_freq > FLT_EPSILON) {
+		જો (cutoff_freq > FLT_EPSILON) {
 			_time_constant = 1.f / (M_TWOPI_F * cutoff_freq);
 
-		} else {
+		} નહીંતર {
 			_time_constant = 0.f;
 		}
 	}
@@ -115,68 +115,68 @@ public:
 	 *
 	 * @param alpha [0,1] filter weight for the previous state. High value - long time constant.
 	 */
-	void setAlpha(float alpha) { _alpha = alpha; }
+	શૂન્ય setAlpha(દશાંશ alpha) { _alpha = alpha; }
 
 	/**
 	 * Set filter state to an initial value
 	 *
 	 * @param sample new initial value
 	 */
-	void reset(const T &sample) { _filter_state = sample; }
+	શૂન્ય reset(અચલ T &sample) { _filter_state = sample; }
 
 	/**
 	 * Add a new raw value to the filter
 	 *
 	 * @return retrieve the filtered result
 	 */
-	const T &update(const T &sample)
+	અચલ T &update(અચલ T &sample)
 	{
 		_filter_state = updateCalculation(sample);
-		return _filter_state;
+		પાછા _filter_state;
 	}
 
-	const T update(const T &sample, float dt_s)
+	અચલ T update(અચલ T &sample, દશાંશ dt_s)
 	{
 		setParameters(dt_s, _time_constant);
-		return update(sample);
+		પાછા update(sample);
 	}
 
-	const T update(const T &sample, uint64_t dt_us)
+	અચલ T update(અચલ T &sample, uint64_t dt_us)
 	{
-		setParameters(static_cast<float>(dt_us) * 1e-6f, _time_constant);
-		return update(sample);
+		setParameters(static_cast<દશાંશ>(dt_us) * 1e-6f, _time_constant);
+		પાછા update(sample);
 	}
 
-	const T &getState() const { return _filter_state; }
+	અચલ T &getState() અચલ { પાછા _filter_state; }
 	// a time constant of 0 means no filtering, i.e. an infinite cutoff frequency
-	float getCutoffFreq() const { return (_time_constant > FLT_EPSILON) ? 1.f / (M_TWOPI_F * _time_constant) : INFINITY; }
+	દશાંશ getCutoffFreq() અચલ { પાછા (_time_constant > FLT_EPSILON) ? 1.f / (M_TWOPI_F * _time_constant) : INFINITY; }
 
 	// delete mixing seconds with microseconds explicitly -> better compiler error
-	AlphaFilter(uint64_t sample_interval_us, float time_constant_s) = delete;
-	AlphaFilter(float sample_interval_s, uint64_t time_constant_us) = delete;
-	void setParameters(uint64_t sample_interval_us, float time_constant_s) = delete;
-	void setParameters(float sample_interval_s, uint64_t time_constant_us) = delete;
+	AlphaFilter(uint64_t sample_interval_us, દશાંશ time_constant_s) = delete;
+	AlphaFilter(દશાંશ sample_interval_s, uint64_t time_constant_us) = delete;
+	શૂન્ય setParameters(uint64_t sample_interval_us, દશાંશ time_constant_s) = delete;
+	શૂન્ય setParameters(દશાંશ sample_interval_s, uint64_t time_constant_us) = delete;
 
-protected:
-	T updateCalculation(const T &sample);
+સુરક્ષિત:
+	T updateCalculation(અચલ T &sample);
 
-	float _time_constant{0.f};
-	float _alpha{0.f};
+	દશાંશ _time_constant{0.f};
+	દશાંશ _alpha{0.f};
 	T _filter_state{};
 };
 
 template <typename T>
-T AlphaFilter<T>::updateCalculation(const T &sample) { return _filter_state + _alpha * (sample - _filter_state); }
+T AlphaFilter<T>::updateCalculation(અચલ T &sample) { પાછા _filter_state + _alpha * (sample - _filter_state); }
 
 /* Specialization for 3D rotations
  * The filter is computed on the 3-sphere of unit quaternions instead of the cartesian space
  * Additions and subtractions are done using the quaternion multiplication and
  * the error is scaled on the tangent space.
  */
-template <> inline
-matrix::Quatf AlphaFilter<matrix::Quatf>::updateCalculation(const matrix::Quatf &sample)
+template <> અંતઃરેખ
+matrix::Quatf AlphaFilter<matrix::Quatf>::updateCalculation(અચલ matrix::Quatf &sample)
 {
 	matrix::Quatf q_error(_filter_state.inversed() * sample);
 	q_error.canonicalize(); // prevent unwrapping
-	return _filter_state * matrix::Quatf(matrix::AxisAnglef(_alpha * matrix::AxisAnglef(q_error)));
+	પાછા _filter_state * matrix::Quatf(matrix::AxisAnglef(_alpha * matrix::AxisAnglef(q_error)));
 }

@@ -39,17 +39,17 @@
 
 #pragma once
 
-#include <stdint.h>
+#અન્તર્ભાવ <stdint.h>
 
-#include <mathlib/mathlib.h>
-#include <matrix/math.hpp>
-#include <px4_platform_common/defines.h>
+#અન્તર્ભાવ <mathlib/mathlib.h>
+#અન્તર્ભાવ <matrix/math.hpp>
+#અન્તર્ભાવ <px4_platform_common/defines.h>
 
 /**
  * Enum for board and external compass rotations.
  * This enum maps from board attitude to airframe attitude.
  */
-enum Rotation : uint8_t {
+ગણના Rotation : uint8_t {
 	ROTATION_NONE                = 0,
 	ROTATION_YAW_45              = 1,
 	ROTATION_YAW_90              = 2,
@@ -97,13 +97,13 @@ enum Rotation : uint8_t {
 	ROTATION_CUSTOM                  = 100
 };
 
-struct rot_lookup_t {
+સંરચના rot_lookup_t {
 	uint16_t roll;
 	uint16_t pitch;
 	uint16_t yaw;
 };
 
-static constexpr rot_lookup_t rot_lookup[ROTATION_MAX] = {
+સ્થિર constexpr rot_lookup_t rot_lookup[ROTATION_MAX] = {
 	{  0,   0,   0 },
 	{  0,   0,  45 },
 	{  0,   0,  90 },
@@ -150,234 +150,234 @@ static constexpr rot_lookup_t rot_lookup[ROTATION_MAX] = {
 /**
  * Get the rotation matrix
  */
-__EXPORT matrix::Dcmf get_rot_matrix(enum Rotation rot);
+__EXPORT matrix::Dcmf get_rot_matrix(ગણના Rotation rot);
 
 /**
  * Get the rotation quaternion
  */
-__EXPORT matrix::Quatf get_rot_quaternion(enum Rotation rot);
+__EXPORT matrix::Quatf get_rot_quaternion(ગણના Rotation rot);
 
 /**
  * rotate a 3 element int16_t vector in-place
  */
-__EXPORT void rotate_3i(enum Rotation rot, int16_t &x, int16_t &y, int16_t &z);
+__EXPORT શૂન્ય rotate_3i(ગણના Rotation rot, int16_t &x, int16_t &y, int16_t &z);
 
 /**
  * rotate a 3 element float vector in-place
  */
-__EXPORT void rotate_3f(enum Rotation rot, float &x, float &y, float &z);
+__EXPORT શૂન્ય rotate_3f(ગણના Rotation rot, દશાંશ &x, દશાંશ &y, દશાંશ &z);
 
 template<typename T>
-static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
+સ્થિર bool rotate_3(ગણના Rotation rot, T &x, T &y, T &z)
 {
-	switch (rot) {
-	case ROTATION_NONE:
-		return true;
+	પસંદગી (rot) {
+	સ્થિતિ ROTATION_NONE:
+		પાછા true;
 
-	case ROTATION_YAW_90: {
+	સ્થિતિ ROTATION_YAW_90: {
 			T tmp = x;
 			x = math::negate(y);
 			y = tmp;
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_YAW_180: {
+	સ્થિતિ ROTATION_YAW_180: {
 			x = math::negate(x);
 			y = math::negate(y);
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_YAW_270: {
+	સ્થિતિ ROTATION_YAW_270: {
 			T tmp = x;
 			x = y;
 			y = math::negate(tmp);
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_180: {
+	સ્થિતિ ROTATION_ROLL_180: {
 			y = math::negate(y);
 			z = math::negate(z);
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_180_YAW_90:
+	સ્થિતિ ROTATION_ROLL_180_YAW_90:
 
 	// FALLTHROUGH
-	case ROTATION_PITCH_180_YAW_270: {
+	સ્થિતિ ROTATION_PITCH_180_YAW_270: {
 			T tmp = x;
 			x = y;
 			y = tmp;
 			z = math::negate(z);
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_PITCH_180: {
+	સ્થિતિ ROTATION_PITCH_180: {
 			x = math::negate(x);
 			z = math::negate(z);
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_180_YAW_270:
+	સ્થિતિ ROTATION_ROLL_180_YAW_270:
 
 	// FALLTHROUGH
-	case ROTATION_PITCH_180_YAW_90: {
+	સ્થિતિ ROTATION_PITCH_180_YAW_90: {
 			T tmp = x;
 			x = math::negate(y);
 			y = math::negate(tmp);
 			z = math::negate(z);
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_90: {
+	સ્થિતિ ROTATION_ROLL_90: {
 			T tmp = z;
 			z = y;
 			y = math::negate(tmp);
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_90_YAW_90: {
+	સ્થિતિ ROTATION_ROLL_90_YAW_90: {
 			T tmp = x;
 			x = z;
 			z = y;
 			y = tmp;
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_270: {
+	સ્થિતિ ROTATION_ROLL_270: {
 			T tmp = z;
 			z = math::negate(y);
 			y = tmp;
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_270_YAW_90: {
+	સ્થિતિ ROTATION_ROLL_270_YAW_90: {
 			T tmp = x;
 			x = math::negate(z);
 			z = math::negate(y);
 			y = tmp;
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_PITCH_90: {
+	સ્થિતિ ROTATION_PITCH_90: {
 			T tmp = z;
 			z = math::negate(x);
 			x = tmp;
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_PITCH_270: {
+	સ્થિતિ ROTATION_PITCH_270: {
 			T tmp = z;
 			z = x;
 			x = math::negate(tmp);
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_180_PITCH_270: {
+	સ્થિતિ ROTATION_ROLL_180_PITCH_270: {
 			T tmp = z;
 			z = x;
 			x = tmp;
 			y = math::negate(y);
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_90_YAW_270: {
+	સ્થિતિ ROTATION_ROLL_90_YAW_270: {
 			T tmp = x;
 			x = math::negate(z);
 			z = y;
 			y = math::negate(tmp);
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_90_PITCH_90: {
+	સ્થિતિ ROTATION_ROLL_90_PITCH_90: {
 			T tmp = x;
 			x = y;
 			y = math::negate(z);
 			z = math::negate(tmp);
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_180_PITCH_90: {
+	સ્થિતિ ROTATION_ROLL_180_PITCH_90: {
 			T tmp = x;
 			x = math::negate(z);
 			y = math::negate(y);
 			z = math::negate(tmp);
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_270_PITCH_90: {
+	સ્થિતિ ROTATION_ROLL_270_PITCH_90: {
 			T tmp = x;
 			x = math::negate(y);
 			y = z;
 			z = math::negate(tmp);
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_90_PITCH_180: {
+	સ્થિતિ ROTATION_ROLL_90_PITCH_180: {
 			T tmp = y;
 			x = math::negate(x);
 			y = math::negate(z);
 			z = math::negate(tmp);
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_270_PITCH_180: {
+	સ્થિતિ ROTATION_ROLL_270_PITCH_180: {
 			T tmp = y;
 			x = math::negate(x);
 			y = z;
 			z = tmp;
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_90_PITCH_270: {
+	સ્થિતિ ROTATION_ROLL_90_PITCH_270: {
 			T tmp = x;
 			x = math::negate(y);
 			y = math::negate(z);
 			z = tmp;
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_270_PITCH_270: {
+	સ્થિતિ ROTATION_ROLL_270_PITCH_270: {
 			T tmp = x;
 			x = y;
 			y = z;
 			z = tmp;
 		}
 
-		return true;
+		પાછા true;
 
-	case ROTATION_ROLL_90_PITCH_180_YAW_90: {
+	સ્થિતિ ROTATION_ROLL_90_PITCH_180_YAW_90: {
 			T tmp = x;
 			x = z;
 			z = math::negate(y);
 			y = math::negate(tmp);
 		}
 
-		return true;
+		પાછા true;
 
-	default:
-		break;
+	મૂળભૂત:
+		તોડો;
 	}
 
-	return false;
+	પાછા false;
 }

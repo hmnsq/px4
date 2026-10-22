@@ -31,91 +31,91 @@
  *
  ****************************************************************************/
 
-#include "gain_compression.hpp"
+#અન્તર્ભાવ "gain_compression.hpp"
 
 using matrix::Vector3f;
-using namespace time_literals;
+using નામાકાશ time_literals;
 
 GainCompression3d::GainCompression3d()
 {
 	_gain_compression_pub.advertise();
 }
 
-void GainCompression3d::reset()
+શૂન્ય GainCompression3d::reset()
 {
-	for (unsigned i = 0; i < 3; i++) {
+	માટે (unsigned i = 0; i < 3; i++) {
 		_compression_gains[i].reset();
 	}
 
 	_gains.setOne();
 }
 
-void GainCompression3d::setCompressionGainMin(const float gain_min)
+શૂન્ય GainCompression3d::setCompressionGainMin(અચલ દશાંશ gain_min)
 {
-	for (unsigned i = 0; i < 3; i++) {
+	માટે (unsigned i = 0; i < 3; i++) {
 		_compression_gains[i].setCompressionGainMin(gain_min);
 	}
 }
 
-void GainCompression3d::update(const Vector3f &input, const float dt)
+શૂન્ય GainCompression3d::update(અચલ Vector3f &આગત, અચલ દશાંશ dt)
 {
-	if (!_enabled) {
+	જો (!_enabled) {
 		reset();
-		return;
+		પાછા;
 	}
 
 	Vector3f hpf;
 	Vector3f lpf;
-	const float sample_freq = 1.f / math::constrain(dt, 0.125e-3f, 100e-3f); // supports rate loops up to 8kHz
+	અચલ દશાંશ sample_freq = 1.f / math::constrain(dt, 0.125e-3f, 100e-3f); // supports rate loops up to 8kHz
 
-	for (unsigned i = 0; i < 3; i++) {
+	માટે (unsigned i = 0; i < 3; i++) {
 		_compression_gains[i].setLpfCutoffFrequency(sample_freq, _kLpfCutoffFrequency);
 		_compression_gains[i].setHpfCutoffFrequency(sample_freq, _kHpfCutoffFrequency);
 
-		_gains(i) = _compression_gains[i].update(input(i), dt);
+		_gains(i) = _compression_gains[i].update(આગત(i), dt);
 
 		hpf(i) = _compression_gains[i].getSpectralDamperHpf();
 		lpf(i) = _compression_gains[i].getSpectralDamperLpf();
 	}
 
-	const hrt_abstime now = hrt_absolute_time();
+	અચલ hrt_abstime now = hrt_absolute_time();
 
-	if ((now - _time_last_publication) > 100_ms) {
-		gain_compression_s msg;
-		msg.timestamp = now;
-		_gains.copyTo(msg.compression_gains);
-		hpf.copyTo(msg.spectral_damper_hpf);
-		lpf.copyTo(msg.spectral_damper_out);
-		_gain_compression_pub.publish(msg);
+	જો ((now - _time_last_publication) > 100_ms) {
+		gain_compression_s સંદેશ;
+		સંદેશ.timestamp = now;
+		_gains.copyTo(સંદેશ.compression_gains);
+		hpf.copyTo(સંદેશ.spectral_damper_hpf);
+		lpf.copyTo(સંદેશ.spectral_damper_out);
+		_gain_compression_pub.publish(સંદેશ);
 
 		_time_last_publication = now;
 	}
 }
 
-float GainCompression::update(const float input, const float dt)
+દશાંશ GainCompression::update(અચલ દશાંશ આગત, અચલ દશાંશ dt)
 {
-	if (!PX4_ISFINITE(input)) {
-		return _compression_gain;
+	જો (!PX4_ISFINITE(આગત)) {
+		પાછા _compression_gain;
 	}
 
-	if (!_input_initialized) {
+	જો (!આગત_initialized) {
 		// seed the high-pass filter to avoid detecting a step on the first sample after a reset
-		_input_prev = input;
-		_input_initialized = true;
+		આગત_prev = આગત;
+		આગત_initialized = સાચું;
 	}
 
-	_hpf = _alpha_hpf * _hpf + _alpha_hpf * (input - _input_prev);
+	_hpf = _alpha_hpf * _hpf + _alpha_hpf * (આગત - આગત_prev);
 	_lpf.update(_hpf * _hpf);
 
-	_input_prev = input;
+	આગત_prev = આગત;
 
-	const float ka = fmaxf(_compression_gain - _compression_gain_min, 0.f);
-	const float spectral_damping = -_kSpectralDamperGain * ka * _lpf.getState();
+	અચલ દશાંશ ka = fmaxf(_compression_gain - _compression_gain_min, 0.f);
+	અચલ દશાંશ spectral_damping = -_kSpectralDamperGain * ka * _lpf.getState();
 
-	const float leakage = _kLeakageGain * (1.f - _compression_gain);
+	અચલ દશાંશ leakage = _kLeakageGain * (1.f - _compression_gain);
 
-	const float ka_dot = spectral_damping + leakage;
+	અચલ દશાંશ ka_dot = spectral_damping + leakage;
 	_compression_gain = math::constrain(_compression_gain + ka_dot * dt, _compression_gain_min, 1.f);
 
-	return _compression_gain;
+	પાછા _compression_gain;
 }

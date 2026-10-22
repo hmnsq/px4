@@ -37,100 +37,100 @@
  * Test library code
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#અન્તર્ભાવ <stdio.h>
+#અન્તર્ભાવ <math.h>
+#અન્તર્ભાવ <stdlib.h>
 
-#include <px4_platform_common/defines.h>
+#અન્તર્ભાવ <px4_platform_common/defines.h>
 
-#include "test.hpp"
+#અન્તર્ભાવ "test.hpp"
 
-bool __EXPORT equal(float a, float b, float epsilon)
+તાર્કિક __EXPORT equal(દશાંશ a, દશાંશ b, દશાંશ epsilon)
 {
-	float diff = fabsf(a - b);
+	દશાંશ diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	જો (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", દ્વિગુણ(a), દ્વિગુણ(b));
+		પાછા ખોટું;
 
-	} else { return true; }
+	} નહીંતર { પાછા સાચું; }
 }
 
-bool __EXPORT greater_than(float a, float b)
+તાર્કિક __EXPORT greater_than(દશાંશ a, દશાંશ b)
 {
-	if (a > b) {
-		return true;
+	જો (a > b) {
+		પાછા સાચું;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} નહીંતર {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", દ્વિગુણ(a), દ્વિગુણ(b));
+		પાછા ખોટું;
 	}
 }
 
-bool __EXPORT less_than(float a, float b)
+તાર્કિક __EXPORT less_than(દશાંશ a, દશાંશ b)
 {
-	if (a < b) {
-		return true;
+	જો (a < b) {
+		પાછા સાચું;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} નહીંતર {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", દ્વિગુણ(a), દ્વિગુણ(b));
+		પાછા ખોટું;
 	}
 }
 
-bool __EXPORT greater_than_or_equal(float a, float b)
+તાર્કિક __EXPORT greater_than_or_equal(દશાંશ a, દશાંશ b)
 {
-	if (a >= b) {
-		return true;
+	જો (a >= b) {
+		પાછા સાચું;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} નહીંતર {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", દ્વિગુણ(a), દ્વિગુણ(b));
+		પાછા ખોટું;
 	}
 }
 
-bool __EXPORT less_than_or_equal(float a, float b)
+તાર્કિક __EXPORT less_than_or_equal(દશાંશ a, દશાંશ b)
 {
-	if (a <= b) {
-		return true;
+	જો (a <= b) {
+		પાછા સાચું;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} નહીંતર {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", દ્વિગુણ(a), દ્વિગુણ(b));
+		પાછા ખોટું;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+શૂન્ય __EXPORT float2SigExp(અચલ દશાંશ &અંક, દશાંશ &sig, પૂર્ણાંક &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	જો (!PX4_ISFINITE(અંક)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		પાછા;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	જો (fabsf(અંક) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		પાછા;
 	}
 
-	exp = log10f(fabsf(num));
+	exp = log10f(fabsf(અંક));
 
-	if (exp > 0) {
+	જો (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} નહીંતર {
 		exp = floor(exp);
 	}
 
-	sig = num;
+	sig = અંક;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	જો (exp > 0) {
+		માટે (પૂર્ણાંક i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} નહીંતર {
+		માટે (પૂર્ણાંક i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

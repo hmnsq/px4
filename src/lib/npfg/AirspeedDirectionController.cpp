@@ -31,9 +31,9 @@
  *
  ****************************************************************************/
 
-#include "AirspeedDirectionController.hpp"
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
+#અન્તર્ભાવ "AirspeedDirectionController.hpp"
+#અન્તર્ભાવ <matrix/math.hpp>
+#અન્તર્ભાવ <lib/mathlib/mathlib.h>
 
 using matrix::Vector2f;
 AirspeedDirectionController::AirspeedDirectionController()
@@ -41,24 +41,24 @@ AirspeedDirectionController::AirspeedDirectionController()
 	// Constructor
 }
 
-float AirspeedDirectionController::controlHeading(const float heading_sp, const float heading,
-		const float airspeed) const
+દશાંશ AirspeedDirectionController::controlHeading(અચલ દશાંશ heading_sp, અચલ દશાંશ heading,
+		અચલ દશાંશ airspeed) અચલ
 {
 
-	const Vector2f airspeed_vector = Vector2f{cosf(heading), sinf(heading)} * airspeed;
-	const Vector2f airspeed_sp_vector_unit = Vector2f{cosf(heading_sp), sinf(heading_sp)};
+	અચલ Vector2f airspeed_vector = Vector2f{cosf(heading), sinf(heading)} * airspeed;
+	અચલ Vector2f airspeed_sp_vector_unit = Vector2f{cosf(heading_sp), sinf(heading_sp)};
 
-	const float dot_air_vel_err = airspeed_vector.dot(airspeed_sp_vector_unit);
-	const float cross_air_vel_err = airspeed_vector.cross(airspeed_sp_vector_unit);
+	અચલ દશાંશ dot_air_vel_err = airspeed_vector.dot(airspeed_sp_vector_unit);
+	અચલ દશાંશ cross_air_vel_err = airspeed_vector.cross(airspeed_sp_vector_unit);
 
-	if (dot_air_vel_err < 0.0f) {
+	જો (dot_air_vel_err < 0.0f) {
 		// hold max lateral acceleration command above 90 deg heading error
-		return p_gain_ * ((cross_air_vel_err < 0.0f) ? -airspeed : airspeed);
+		પાછા p_gain_ * ((cross_air_vel_err < 0.0f) ? -airspeed : airspeed);
 
-	} else {
+	} નહીંતર {
 		// airspeed/airspeed_ref is used to scale any incremented airspeed reference back to the current airspeed
 		// for acceleration commands in a "feedback" sense (i.e. at the current vehicle airspeed)
 		// todo use airspeed_ref or adapt comment
-		return p_gain_ * cross_air_vel_err;
+		પાછા p_gain_ * cross_air_vel_err;
 	}
 }

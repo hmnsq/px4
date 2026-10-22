@@ -36,20 +36,20 @@
  * Run this test only using make tests TESTFILTER=system_identification
  */
 
-#include <gtest/gtest.h>
-#include <matrix/matrix/math.hpp>
+#અન્તર્ભાવ <gtest/gtest.h>
+#અન્તર્ભાવ <matrix/matrix/math.hpp>
 
-#include "system_identification.hpp"
-#include "test_data.h"
+#અન્તર્ભાવ "system_identification.hpp"
+#અન્તર્ભાવ "test_data.h"
 
-using namespace matrix;
+using નામાકાશ matrix;
 
-class SystemIdentificationTest : public ::testing::Test
+વર્ગ SystemIdentificationTest : જાહેર ::testing::Test
 {
-public:
+જાહેર:
 	SystemIdentificationTest() {};
-	float apply(float sample);
-	void setCoefficients(float a1, float a2, float b0, float b1, float b2)
+	દશાંશ apply(દશાંશ sample);
+	શૂન્ય setCoefficients(દશાંશ a1, દશાંશ a2, દશાંશ b0, દશાંશ b1, દશાંશ b2)
 	{
 		_a1 = a1;
 		_a2 = a2;
@@ -58,50 +58,50 @@ public:
 		_b2 = b2;
 	}
 
-private:
-	float _a1{};
-	float _a2{};
-	float _b0{};
-	float _b1{};
-	float _b2{};
-	float _delay_element_1{};
-	float _delay_element_2{};
+ખાનગી:
+	દશાંશ _a1{};
+	દશાંશ _a2{};
+	દશાંશ _b0{};
+	દશાંશ _b1{};
+	દશાંશ _b2{};
+	દશાંશ _delay_element_1{};
+	દશાંશ _delay_element_2{};
 };
 
-float SystemIdentificationTest::apply(float sample)
+દશાંશ SystemIdentificationTest::apply(દશાંશ sample)
 {
 	// Direct Form II implementation
-	const float delay_element_0{sample - _delay_element_1 *_a1 - _delay_element_2 * _a2};
-	const float output{delay_element_0 *_b0 + _delay_element_1 *_b1 + _delay_element_2 * _b2};
+	અચલ દશાંશ delay_element_0{sample - _delay_element_1 *_a1 - _delay_element_2 * _a2};
+	અચલ દશાંશ output{delay_element_0 *_b0 + _delay_element_1 *_b1 + _delay_element_2 * _b2};
 
 	_delay_element_2 = _delay_element_1;
 	_delay_element_1 = delay_element_0;
 
-	return output;
+	પાછા output;
 }
 
 TEST_F(SystemIdentificationTest, basicTest)
 {
-	constexpr float fs = 800.f;
+	constexpr દશાંશ fs = 800.f;
 
 	SystemIdentification _sys_id;
 	_sys_id.setHpfCutoffFrequency(fs, 0.05f);
 	_sys_id.setLpfCutoffFrequency(fs, 30.f);
 	_sys_id.setForgettingFactor(80.f, 1.f / fs);
 
-	for (int i = 0; i < 5; i++) {
+	માટે (પૂર્ણાંક i = 0; i < 5; i++) {
 		// Fill the buffers with zeros
 		_sys_id.update(0.f, 0.f);
 	}
 
-	for (int i = 0; i < 10; i += 2) {
-		_sys_id.update(float(i), float(i + 1));
+	માટે (પૂર્ણાંક i = 0; i < 10; i += 2) {
+		_sys_id.update(દશાંશ(i), દશાંશ(i + 1));
 	}
 
-	const Vector<float, 5> coefficients = _sys_id.getCoefficients();
-	float data_check[] = {-3.96f, 1.30f, -2.28f, -0.33f, 0.369f};
-	const Vector<float, 5> coefficients_check(data_check);
-	float eps = 1e-2;
+	અચલ Vector<દશાંશ, 5> coefficients = _sys_id.getCoefficients();
+	દશાંશ data_check[] = {-3.96f, 1.30f, -2.28f, -0.33f, 0.369f};
+	અચલ Vector<દશાંશ, 5> coefficients_check(data_check);
+	દશાંશ eps = 1e-2;
 	EXPECT_TRUE((coefficients - coefficients_check).abs().max() < eps);
 	coefficients.print();
 	_sys_id.getVariances().print();
@@ -109,18 +109,18 @@ TEST_F(SystemIdentificationTest, basicTest)
 
 TEST_F(SystemIdentificationTest, resetTest)
 {
-	constexpr float fs = 800.f;
+	constexpr દશાંશ fs = 800.f;
 
 	SystemIdentification _sys_id;
 	_sys_id.setHpfCutoffFrequency(fs, 0.05f);
 	_sys_id.setLpfCutoffFrequency(fs, 30.f);
 	_sys_id.setForgettingFactor(80.f, 1.f / fs);
 
-	for (int i = 0; i < 10; i += 2) {
-		_sys_id.update(float(i), float(i + 1));
+	માટે (પૂર્ણાંક i = 0; i < 10; i += 2) {
+		_sys_id.update(દશાંશ(i), દશાંશ(i + 1));
 	}
 
-	const Vector<float, 5> coefficients = _sys_id.getCoefficients();
+	અચલ Vector<દશાંશ, 5> coefficients = _sys_id.getCoefficients();
 
 	// WHEN: resetting
 	_sys_id.reset();
@@ -131,8 +131,8 @@ TEST_F(SystemIdentificationTest, resetTest)
 
 	// AND WHEN: running the same sequence of inputs-outputs
 
-	for (int i = 0; i < 10; i += 2) {
-		_sys_id.update(float(i), float(i + 1));
+	માટે (પૂર્ણાંક i = 0; i < 10; i += 2) {
+		_sys_id.update(દશાંશ(i), દશાંશ(i + 1));
 	}
 
 	// THEN: the result should be exactly the same
@@ -143,8 +143,8 @@ TEST_F(SystemIdentificationTest, resetTest)
 
 TEST_F(SystemIdentificationTest, simulatedModelTest)
 {
-	constexpr float fs = 200.f;
-	const float gyro_lpf_cutoff = 30.f;
+	constexpr દશાંશ fs = 200.f;
+	અચલ દશાંશ gyro_lpf_cutoff = 30.f;
 
 	SystemIdentification _sys_id;
 	_sys_id.setHpfCutoffFrequency(fs, 0.05f);
@@ -152,29 +152,29 @@ TEST_F(SystemIdentificationTest, simulatedModelTest)
 	_sys_id.setForgettingFactor(60.f, 1.f / fs);
 
 	// Simulated model with integrator
-	const float a1 = -1.77f;
-	const float a2 = 0.77f;
-	const float b0 = 0.3812f;
-	const float b1 = -0.25f;
-	const float b2 = 0.2f;
+	અચલ દશાંશ a1 = -1.77f;
+	અચલ દશાંશ a2 = 0.77f;
+	અચલ દશાંશ b0 = 0.3812f;
+	અચલ દશાંશ b1 = -0.25f;
+	અચલ દશાંશ b2 = 0.2f;
 	setCoefficients(a1, a2, b0, b1, b2);
-	const float u_bias = -0.1f; // constant control offset
-	const float y_bias = 0.2f; // measurement bias
+	અચલ દશાંશ u_bias = -0.1f; // constant control offset
+	અચલ દશાંશ y_bias = 0.2f; // measurement bias
 
-	const float dt = 1.f / fs;
-	const float duration = 2.f;
-	float u = 0.f;
-	float y = 0.f;
+	અચલ દશાંશ dt = 1.f / fs;
+	અચલ દશાંશ duration = 2.f;
+	દશાંશ u = 0.f;
+	દશાંશ y = 0.f;
 
-	for (int i = 0; i < static_cast<int>(duration / dt); i++) {
+	માટે (પૂર્ણાંક i = 0; i < static_cast<પૂર્ણાંક>(duration / dt); i++) {
 
 		// Generate square input signal
-		if (_sys_id.areFiltersInitialized()
+		જો (_sys_id.areFiltersInitialized()
 		    && (i % 30 == 0)) {
-			if (u > 0.f) {
+			જો (u > 0.f) {
 				u = -1.f;
 
-			} else {
+			} નહીંતર {
 				u = 1.f;
 			}
 		}
@@ -182,16 +182,16 @@ TEST_F(SystemIdentificationTest, simulatedModelTest)
 		_sys_id.update(u + u_bias, y + y_bias); // apply new input and previous output
 
 		y = apply(u);
-#if 0
-		const float t = i * dt;
-		printf("%.6f, %.6f, %.6f\n", (double)t, (double)u, (double)y);
+#જો 0
+		અચલ દશાંશ t = i * dt;
+		printf("%.6f, %.6f, %.6f\n", (દ્વિગુણ)t, (દ્વિગુણ)u, (દ્વિગુણ)y);
 #endif
 	}
 
-	const Vector<float, 5> coefficients = _sys_id.getCoefficients();
-	float data_check[] = {a1, a2, b0, b1, b2};
-	const Vector<float, 5> coefficients_check(data_check);
-	float eps = 1e-3;
+	અચલ Vector<દશાંશ, 5> coefficients = _sys_id.getCoefficients();
+	દશાંશ data_check[] = {a1, a2, b0, b1, b2};
+	અચલ Vector<દશાંશ, 5> coefficients_check(data_check);
+	દશાંશ eps = 1e-3;
 	EXPECT_TRUE((coefficients - coefficients_check).abs().max() < eps);
 	coefficients.print();
 	_sys_id.getVariances().print();
@@ -199,44 +199,44 @@ TEST_F(SystemIdentificationTest, simulatedModelTest)
 
 TEST_F(SystemIdentificationTest, realDataTest)
 {
-	static constexpr int n_samples_dt_avg = 100;
-	static constexpr int n_samples_test_data = sizeof(u_data) / sizeof(u_data[0]);
-	float dt_sum = 0.f;
+	સ્થિર constexpr પૂર્ણાંક n_samples_dt_avg = 100;
+	સ્થિર constexpr પૂર્ણાંક n_samples_test_data = કદ(u_data) / કદ(u_data[0]);
+	દશાંશ dt_sum = 0.f;
 
-	for (int i = 1; i <= n_samples_dt_avg; i++) {
+	માટે (પૂર્ણાંક i = 1; i <= n_samples_dt_avg; i++) {
 		dt_sum += t_data[i] - t_data[i - 1];
 	}
 
-	const float dt = dt_sum / n_samples_dt_avg;
-	const float fs = 1.f / dt;
+	અચલ દશાંશ dt = dt_sum / n_samples_dt_avg;
+	અચલ દશાંશ fs = 1.f / dt;
 
-	printf("dt = %.6f fs = %.3f\n", (double)dt, (double)(1.f / dt));
+	printf("dt = %.6f fs = %.3f\n", (દ્વિગુણ)dt, (દ્વિગુણ)(1.f / dt));
 
-	const float gyro_lpf_cutoff = 30.f;
+	અચલ દશાંશ gyro_lpf_cutoff = 30.f;
 
 	SystemIdentification _sys_id;
 	_sys_id.setHpfCutoffFrequency(fs, 0.05f);
 	_sys_id.setLpfCutoffFrequency(fs, gyro_lpf_cutoff);
 	_sys_id.setForgettingFactor(60.f, dt);
 
-	float u = 0.f;
-	float y_prev = 0.f;
+	દશાંશ u = 0.f;
+	દશાંશ y_prev = 0.f;
 
-	for (int i = 0; i < n_samples_test_data; i++) {
+	માટે (પૂર્ણાંક i = 0; i < n_samples_test_data; i++) {
 		u = u_data[i];
 		_sys_id.update(u, y_prev); // apply new input and previous output
 
 		y_prev = y_data[i];
 
-#if 0
-		printf("%.6f, %.6f, %.6f\n", (double)t_data[i], (double)u, (double)y);
+#જો 0
+		printf("%.6f, %.6f, %.6f\n", (દ્વિગુણ)t_data[i], (દ્વિગુણ)u, (દ્વિગુણ)y);
 #endif
 	}
 
-	const Vector<float, 5> coefficients = _sys_id.getCoefficients();
-	float data_check[] = {-1.916f, 0.916, -0.017f, -0.001f, 0.036f};
-	const Vector<float, 5> coefficients_check(data_check);
-	float eps = 1e-3;
+	અચલ Vector<દશાંશ, 5> coefficients = _sys_id.getCoefficients();
+	દશાંશ data_check[] = {-1.916f, 0.916, -0.017f, -0.001f, 0.036f};
+	અચલ Vector<દશાંશ, 5> coefficients_check(data_check);
+	દશાંશ eps = 1e-3;
 	EXPECT_TRUE((coefficients - coefficients_check).abs().max() < eps);
 	coefficients.print();
 	_sys_id.getVariances().print();

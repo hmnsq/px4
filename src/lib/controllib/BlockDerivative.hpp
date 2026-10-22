@@ -39,17 +39,17 @@
 
 #pragma once
 
-#include "BlockLowPass.hpp"
+#અન્તર્ભાવ "BlockLowPass.hpp"
 
-#include <px4_platform_common/defines.h>
-#include <math.h>
+#અન્તર્ભાવ <px4_platform_common/defines.h>
+#અન્તર્ભાવ <math.h>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#અન્તર્ભાવ "block/Block.hpp"
+#અન્તર્ભાવ "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#અન્તર્ભાવ "matrix/math.hpp"
 
-namespace control
+નામાકાશ control
 {
 
 /**
@@ -58,17 +58,17 @@ namespace control
  * This has a built in low pass filter.
  * @see LowPass
  */
-class __EXPORT BlockDerivative : public SuperBlock
+વર્ગ __EXPORT BlockDerivative : જાહેર SuperBlock
 {
-public:
+જાહેર:
 // methods
-	BlockDerivative(SuperBlock *parent, const char *name) :
+	BlockDerivative(SuperBlock *parent, અચલ અક્ષર *name) :
 		SuperBlock(parent, name),
 		_u(0),
-		_initialized(false),
-		_lowPass(this, "LP")
+		_initialized(ખોટું),
+		નીચલું_Pass(આ, "LP")
 	{}
-	virtual ~BlockDerivative() = default;
+	આભાસી ~BlockDerivative() = મૂળભૂત;
 
 	/**
 	 * Update the state and get current derivative
@@ -84,18 +84,18 @@ public:
 	 * @param input the variable to calculate the derivative of
 	 * @return the current derivative
 	 */
-	float update(float input);
+	દશાંશ update(દશાંશ આગત);
 // accessors
-	void setU(float u) {_u = u;}
-	void reset() { _initialized = false; };
-	float getU() {return _u;}
-	float getLP() {return _lowPass.getFCut();}
-	float getO() { return _lowPass.getState(); }
-protected:
+	શૂન્ય setU(દશાંશ u) {_u = u;}
+	શૂન્ય reset() { _initialized = ખોટું; };
+	દશાંશ getU() {પાછા _u;}
+	દશાંશ getLP() {પાછા નીચલું_Pass.getFCut();}
+	દશાંશ getO() { પાછા નીચલું_Pass.getState(); }
+સુરક્ષિત:
 // attributes
-	float _u; /**< previous input */
-	bool _initialized;
-	BlockLowPass _lowPass; /**< low pass filter */
+	દશાંશ _u; /**< previous input */
+	તાર્કિક _initialized;
+	Block_નીચલું_Pass નીચલું_Pass; /**< low pass filter */
 };
 
 } // namespace control

@@ -37,185 +37,185 @@
  * Protected build user space interface to global parameter store.
  */
 #define PARAM_IMPLEMENTATION
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <parameters/px4_parameters.hpp>
-#include <sys/boardctl.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#અન્તર્ભાવ "param.h"
+#અન્તર્ભાવ "parameters_ioctl.h"
+#અન્તર્ભાવ <parameters/px4_parameters.hpp>
+#અન્તર્ભાવ <sys/boardctl.h>
+#અન્તર્ભાવ <px4_platform_common/defines.h>
+#અન્તર્ભાવ <px4_platform_common/log.h>
 
-#include "parameters_common.cpp"
+#અન્તર્ભાવ "parameters_common.cpp"
 
-void
+શૂન્ય
 param_notify_changes()
 {
-	boardctl(PARAMIOCNOTIFY, NULL);
+	boardctl(PARAMIOCNOTIFY, ખાલી);
 }
 
-param_t param_find(const char *name)
+param_t param_find(અચલ અક્ષર *name)
 {
-	paramiocfind_t data = {name, true, PARAM_INVALID};
+	paramiocfind_t data = {name, સાચું, PARAM_INVALID};
 	boardctl(PARAMIOCFIND, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-param_t param_find_no_notification(const char *name)
+param_t param_find_no_notification(અચલ અક્ષર *name)
 {
-	paramiocfind_t data = {name, false, PARAM_INVALID};
+	paramiocfind_t data = {name, ખોટું, PARAM_INVALID};
 	boardctl(PARAMIOCFIND, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-unsigned param_count_used()
+unsigned param_ગણતરી_used()
 {
 	paramioccountused_t data = {0};
 	boardctl(PARAMIOCCOUNTUSED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
 param_t param_for_used_index(unsigned index)
 {
 	paramiocforusedindex_t data = {index, 0};
 	boardctl(PARAMIOCFORUSEDINDEX, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-int param_get_used_index(param_t param)
+પૂર્ણાંક param_get_used_index(param_t param)
 {
 	paramiocgetusedindex_t data = {param, 0};
 	boardctl(PARAMIOCGETUSEDINDEX, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-bool
-param_value_unsaved(param_t param)
+તાર્કિક
+param_કિંમત_unsaved(param_t param)
 {
-	paramiocunsaved_t data = {param, false};
+	paramiocunsaved_t data = {param, ખોટું};
 	boardctl(PARAMIOCUNSAVED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-int
-param_get(param_t param, void *val)
+પૂર્ણાંક
+param_get(param_t param, શૂન્ય *val)
 {
-	paramiocget_t data = {param, false, val, PX4_ERROR};
+	paramiocget_t data = {param, ખોટું, val, PX4_ERROR};
 	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-int
-param_get_default_value(param_t param, void *default_val)
+પૂર્ણાંક
+param_get_default_કિંમત(param_t param, શૂન્ય *default_val)
 {
-	paramiocget_t data = {param, true, default_val, PX4_ERROR};
+	paramiocget_t data = {param, સાચું, default_val, PX4_ERROR};
 	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-void
-param_control_autosave(bool enable)
+શૂન્ય
+param_control_autosave(તાર્કિક enable)
 {
 	paramiocautosave_t data = {enable};
 	boardctl(PARAMIOCAUTOSAVE, reinterpret_cast<unsigned long>(&data));
 }
 
-int param_set(param_t param, const void *val)
+પૂર્ણાંક param_set(param_t param, અચલ શૂન્ય *val)
 {
-	paramiocset_t data = {param, true, val, PX4_ERROR};
+	paramiocset_t data = {param, સાચું, val, PX4_ERROR};
 	boardctl(PARAMIOCSET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-int param_set_no_notification(param_t param, const void *val)
+પૂર્ણાંક param_set_no_notification(param_t param, અચલ શૂન્ય *val)
 {
-	paramiocset_t data = {param, false, val, PX4_ERROR};
+	paramiocset_t data = {param, ખોટું, val, PX4_ERROR};
 	boardctl(PARAMIOCSET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-bool param_used(param_t param)
+તાર્કિક param_used(param_t param)
 {
-	paramiocused_t data = {param, false};
+	paramiocused_t data = {param, ખોટું};
 	boardctl(PARAMIOCUSED, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-void param_set_used(param_t param)
+શૂન્ય param_set_used(param_t param)
 {
 	paramiocsetused_t data = {param};
 	boardctl(PARAMIOCSETUSED, reinterpret_cast<unsigned long>(&data));
 }
 
-int param_set_default_value(param_t param, const void *val)
+પૂર્ણાંક param_set_default_કિંમત(param_t param, અચલ શૂન્ય *val)
 {
 	paramiocsetdefault_t data = {param, val, PX4_ERROR};
 	boardctl(PARAMIOCSETDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-int param_reset(param_t param)
+પૂર્ણાંક param_reset(param_t param)
 {
-	paramiocreset_t data = {param, true, PX4_ERROR};
+	paramiocreset_t data = {param, સાચું, PX4_ERROR};
 	boardctl(PARAMIOCRESET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-int param_reset_no_notification(param_t param)
+પૂર્ણાંક param_reset_no_notification(param_t param)
 {
-	paramiocreset_t data = {param, false, PX4_ERROR};
+	paramiocreset_t data = {param, ખોટું, PX4_ERROR};
 	boardctl(PARAMIOCRESET, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-void
+શૂન્ય
 param_reset_all()
 {
 	paramiocresetgroup_t data = {PARAM_RESET_ALL, nullptr, 0};
 	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
 }
 
-void
-param_reset_excludes(const char *excludes[], int num_excludes)
+શૂન્ય
+param_reset_excludes(અચલ અક્ષર *excludes[], પૂર્ણાંક અંક_excludes)
 {
-	paramiocresetgroup_t data = {PARAM_RESET_EXCLUDES, excludes, num_excludes};
+	paramiocresetgroup_t data = {PARAM_RESET_EXCLUDES, excludes, અંક_excludes};
 	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
 }
 
-void
-param_reset_specific(const char *resets[], int num_resets)
+શૂન્ય
+param_reset_specific(અચલ અક્ષર *resets[], પૂર્ણાંક અંક_resets)
 {
-	paramiocresetgroup_t data = {PARAM_RESET_SPECIFIC, resets, num_resets};
+	paramiocresetgroup_t data = {PARAM_RESET_SPECIFIC, resets, અંક_resets};
 	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
 }
 
-int param_save_default(bool blocking)
+પૂર્ણાંક param_save_default(તાર્કિક blocking)
 {
 	paramiocsavedefault_t data = {blocking, PX4_ERROR};
 	boardctl(PARAMIOCSAVEDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-int
+પૂર્ણાંક
 param_load_default()
 {
 	paramiocloaddefault_t data = {PX4_ERROR};
 	boardctl(PARAMIOCLOADDEFAULT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
-int
-param_export(const char *filename, param_filter_func filter)
+પૂર્ણાંક
+param_export(અચલ અક્ષર *filename, param_filter_func filter)
 {
 	paramiocexport_t data = {filename, PX4_ERROR};
 
-	if (filter) { PX4_ERR("ERROR: filter not supported in userside blob"); }
+	જો (filter) { PX4_ERR("ERROR: filter not supported in userside blob"); }
 
 	boardctl(PARAMIOCEXPORT, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }
 
 uint32_t param_hash_check()
 {
 	paramiochash_t data = {0};
 	boardctl(PARAMIOCHASH, reinterpret_cast<unsigned long>(&data));
-	return data.ret;
+	પાછા data.ret;
 }

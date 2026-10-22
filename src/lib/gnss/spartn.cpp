@@ -37,39 +37,39 @@
  * SPARTN transport-layer implementation.
  */
 
-#include "spartn.h"
+#અન્તર્ભાવ "spartn.h"
 
-namespace gnss
+નામાકાશ gnss
 {
 
-uint32_t spartn_message_crc(const uint8_t *data, size_t len, uint8_t crc_type)
+uint32_t spartn_message_crc(અચલ uint8_t *data, size_t len, uint8_t crc_type)
 {
 	// Use uint64_t so n==32 (CRC-32) does not shift a 32-bit value by 32.
-	const unsigned n = 8u * (static_cast<unsigned>(crc_type) + 1u);
-	const uint64_t poly = (crc_type == 0) ? 0x07ull :
+	અચલ unsigned n = 8u * (static_cast<unsigned>(crc_type) + 1u);
+	અચલ uint64_t poly = (crc_type == 0) ? 0x07ull :
 			      (crc_type == 1) ? 0x1021ull :
 			      (crc_type == 2) ? 0x864CFBull : 0x04C11DB7ull;
-	const uint64_t top = 1ull << n;
-	const uint64_t g = top | poly;
+	અચલ uint64_t ટોચ = 1ull << n;
+	અચલ uint64_t g = ટોચ | poly;
 	uint64_t crc = (crc_type == 3) ? 0xFFFFFFFFull : 0ull;
 
-	for (size_t i = 0; i < len; i++) {
+	માટે (size_t i = 0; i < len; i++) {
 		crc ^= static_cast<uint64_t>(data[i]) << (n - 8);
 
-		for (int b = 0; b < 8; b++) {
+		માટે (પૂર્ણાંક b = 0; b < 8; b++) {
 			crc <<= 1;
 
-			if (crc & top) {
+			જો (crc & ટોચ) {
 				crc ^= g;
 			}
 		}
 	}
 
-	if (crc_type == 3) {
+	જો (crc_type == 3) {
 		crc ^= 0xFFFFFFFFull;
 	}
 
-	return static_cast<uint32_t>(crc & (top - 1ull));
+	પાછા static_cast<uint32_t>(crc & (ટોચ - 1ull));
 }
 
 } // namespace gnss

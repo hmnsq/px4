@@ -42,56 +42,56 @@
 
 #pragma once
 
-#include <mathlib/math/Functions.hpp>
-#include <cmath>
-#include <float.h>
-#include <matrix/math.hpp>
+#અન્તર્ભાવ <mathlib/math/Functions.hpp>
+#અન્તર્ભાવ <cmath>
+#અન્તર્ભાવ <float.h>
+#અન્તર્ભાવ <matrix/math.hpp>
 
-namespace math
+નામાકાશ math
 {
 
 template<typename T>
-class NotchFilter
+વર્ગ NotchFilter
 {
-public:
-	NotchFilter() = default;
-	~NotchFilter() = default;
+જાહેર:
+	NotchFilter() = મૂળભૂત;
+	~NotchFilter() = મૂળભૂત;
 
-	bool setParameters(float sample_freq, float notch_freq, float bandwidth);
+	તાર્કિક setParameters(દશાંશ sample_freq, દશાંશ notch_freq, દશાંશ bandwidth);
 
 	/**
 	 * Add a new raw value to the filter using the Direct Form I
 	 *
 	 * @return retrieve the filtered result
 	 */
-	inline T apply(const T &sample)
+	અંતઃરેખ T apply(અચલ T &sample)
 	{
-		if (!_initialized) {
+		જો (!_initialized) {
 			reset(sample);
-			_initialized = true;
+			_initialized = સાચું;
 		}
 
-		return applyInternal(sample);
+		પાછા applyInternal(sample);
 	}
 
 	// Filter array of samples in place using the direct form I
-	inline void applyArray(T samples[], int num_samples)
+	અંતઃરેખ શૂન્ય applyArray(T samples[], પૂર્ણાંક અંક_samples)
 	{
-		if (!_initialized) {
+		જો (!_initialized) {
 			reset(samples[0]);
-			_initialized = true;
+			_initialized = સાચું;
 		}
 
-		for (int n = 0; n < num_samples; n++) {
+		માટે (પૂર્ણાંક n = 0; n < અંક_samples; n++) {
 			samples[n] = applyInternal(samples[n]);
 		}
 	}
 
-	float getNotchFreq() const { return _notch_freq; }
-	float getBandwidth() const { return _bandwidth; }
+	દશાંશ getNotchFreq() અચલ { પાછા _notch_freq; }
+	દશાંશ getBandwidth() અચલ { પાછા _bandwidth; }
 
 	// Used in unit test only
-	void getCoefficients(float a[3], float b[3]) const
+	શૂન્ય getCoefficients(દશાંશ a[3], દશાંશ b[3]) અચલ
 	{
 		a[0] = 1.f;
 		a[1] = _a1;
@@ -101,16 +101,16 @@ public:
 		b[2] = _b2;
 	}
 
-	float getMagnitudeResponse(float frequency) const
+	દશાંશ getMagnitudeResponse(દશાંશ frequency) અચલ
 	{
-		float w = 2.f * M_PI_F * frequency / _sample_freq;
+		દશાંશ w = 2.f * M_PI_F * frequency / _sample_freq;
 
-		float numerator = _b0 * _b0 + _b1 * _b1 + _b2 * _b2
+		દશાંશ numerator = _b0 * _b0 + _b1 * _b1 + _b2 * _b2
 				  + 2.f * (_b0 * _b1 + _b1 * _b2) * cosf(w) + 2.f * _b0 * _b2 * cosf(2.f * w);
 
-		float denominator = 1.f + _a1 * _a1 + _a2 * _a2 + 2.f * (_a1 + _a1 * _a2) * cosf(w) + 2.f * _a2 * cosf(2.f * w);
+		દશાંશ denominator = 1.f + _a1 * _a1 + _a2 * _a2 + 2.f * (_a1 + _a1 * _a2) * cosf(w) + 2.f * _a2 * cosf(2.f * w);
 
-		return sqrtf(numerator / denominator);
+		પાછા sqrtf(numerator / denominator);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public:
 	 * physical meaning if you use this method to change the filter's coefficients.
 	 * Used for creating clones of a specific filter.
 	 */
-	void setCoefficients(float a[2], float b[3])
+	શૂન્ય setCoefficients(દશાંશ a[2], દશાંશ b[3])
 	{
 		_a1 = a[0];
 		_a2 = a[1];
@@ -128,25 +128,25 @@ public:
 		_b2 = b[2];
 	}
 
-	bool initialized() const { return _initialized; }
+	તાર્કિક initialized() અચલ { પાછા _initialized; }
 
-	void reset() { _initialized = false; }
+	શૂન્ય reset() { _initialized = ખોટું; }
 
-	void reset(const T &sample)
+	શૂન્ય reset(અચલ T &sample)
 	{
-		const T input = isFinite(sample) ? sample : T{};
+		અચલ T આગત = isFinite(sample) ? sample : T{};
 
-		_delay_element_1 = _delay_element_2 = input;
-		_delay_element_output_1 = _delay_element_output_2 = input * (_b0 + _b1 + _b2) / (1 + _a1 + _a2);
+		_delay_element_1 = _delay_element_2 = આગત;
+		_delay_element_output_1 = _delay_element_output_2 = આગત * (_b0 + _b1 + _b2) / (1 + _a1 + _a2);
 
-		if (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
+		જો (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
 			_delay_element_output_1 = _delay_element_output_2 = {};
 		}
 
-		_initialized = true;
+		_initialized = સાચું;
 	}
 
-	void disable()
+	શૂન્ય disable()
 	{
 		// no filtering
 		_notch_freq = 0.f;
@@ -160,17 +160,17 @@ public:
 		_a1 = 0.f;
 		_a2 = 0.f;
 
-		_initialized = false;
+		_initialized = ખોટું;
 	}
 
-protected:
+સુરક્ષિત:
 
 	/**
 	 * Add a new raw value to the filter using the Direct Form I
 	 *
 	 * @return retrieve the filtered result
 	 */
-	inline T applyInternal(const T &sample)
+	અંતઃરેખ T applyInternal(અચલ T &sample)
 	{
 		// Direct Form I implementation
 		T output = _b0 * sample + _b1 * _delay_element_1 + _b2 * _delay_element_2 - _a1 * _delay_element_output_1 - _a2 *
@@ -184,7 +184,7 @@ protected:
 		_delay_element_output_2 = _delay_element_output_1;
 		_delay_element_output_1 = output;
 
-		return output;
+		પાછા output;
 	}
 
 	T _delay_element_1{};
@@ -193,18 +193,18 @@ protected:
 	T _delay_element_output_2{};
 
 	// All the coefficients are normalized by a0, so a0 becomes 1 here
-	float _a1{0.f};
-	float _a2{0.f};
+	દશાંશ _a1{0.f};
+	દશાંશ _a2{0.f};
 
-	float _b0{1.f};
-	float _b1{0.f};
-	float _b2{0.f};
+	દશાંશ _b0{1.f};
+	દશાંશ _b1{0.f};
+	દશાંશ _b2{0.f};
 
-	float _notch_freq{};
-	float _bandwidth{};
-	float _sample_freq{};
+	દશાંશ _notch_freq{};
+	દશાંશ _bandwidth{};
+	દશાંશ _sample_freq{};
 
-	bool _initialized{false};
+	તાર્કિક _initialized{ખોટું};
 };
 
 /**
@@ -214,53 +214,53 @@ protected:
  * conserving the filter's history
  */
 template<typename T>
-bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float bandwidth)
+તાર્કિક NotchFilter<T>::setParameters(દશાંશ sample_freq, દશાંશ notch_freq, દશાંશ bandwidth)
 {
-	if ((sample_freq <= 0.f) || (notch_freq <= 0.f) || (bandwidth <= 0.f) || (notch_freq >= sample_freq / 2)
+	જો ((sample_freq <= 0.f) || (notch_freq <= 0.f) || (bandwidth <= 0.f) || (notch_freq >= sample_freq / 2)
 	    || !isFinite(sample_freq) || !isFinite(notch_freq) || !isFinite(bandwidth)) {
 
 		disable();
-		return false;
+		પાછા ખોટું;
 	}
 
-	const float freq_min = sample_freq * 0.001f;
+	અચલ દશાંશ freq_min = sample_freq * 0.001f;
 
-	const float notch_freq_new = math::max(notch_freq, freq_min);
-	const float bandwidth_new = math::max(bandwidth, freq_min);
+	અચલ દશાંશ notch_freq_new = math::max(notch_freq, freq_min);
+	અચલ દશાંશ bandwidth_new = math::max(bandwidth, freq_min);
 
-	const float sample_freq_diff = fabsf(sample_freq - _sample_freq);
-	const float bandwidth_diff = fabsf(bandwidth_new - _bandwidth);
+	અચલ દશાંશ sample_freq_diff = fabsf(sample_freq - _sample_freq);
+	અચલ દશાંશ bandwidth_diff = fabsf(bandwidth_new - _bandwidth);
 
-	const bool sample_freq_change = (sample_freq_diff > FLT_EPSILON);
-	const bool bandwidth_change = (bandwidth_diff > FLT_EPSILON);
+	અચલ તાર્કિક sample_freq_change = (sample_freq_diff > FLT_EPSILON);
+	અચલ તાર્કિક bandwidth_change = (bandwidth_diff > FLT_EPSILON);
 
-	if (!sample_freq_change && !bandwidth_change) {
-		const float notch_freq_diff = fabsf(notch_freq_new - _notch_freq);
+	જો (!sample_freq_change && !bandwidth_change) {
+		અચલ દશાંશ notch_freq_diff = fabsf(notch_freq_new - _notch_freq);
 
-		if (notch_freq_diff > FLT_EPSILON) {
+		જો (notch_freq_diff > FLT_EPSILON) {
 			// only notch frequency has changed
 			_notch_freq = notch_freq_new;
 
-			const float beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
+			અચલ દશાંશ beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
 
 			_b1 = 2.f * beta * _b0;
 			_a1 = _b1;
 
-			if (notch_freq_diff > _bandwidth) {
+			જો (notch_freq_diff > _bandwidth) {
 				// force reset
-				_initialized = false;
+				_initialized = ખોટું;
 			}
 
-			if (!isFinite(_b1)) {
+			જો (!isFinite(_b1)) {
 				disable();
-				return false;
+				પાછા ખોટું;
 			}
 
-			return true;
+			પાછા સાચું;
 
-		} else {
+		} નહીંતર {
 			// no change, do nothing
-			return true;
+			પાછા સાચું;
 		}
 	}
 
@@ -268,9 +268,9 @@ bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float ba
 	_notch_freq = notch_freq_new;
 	_bandwidth = bandwidth_new;
 
-	const float alpha = tanf(M_PI_F * _bandwidth / _sample_freq);
-	const float beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
-	const float a0_inv = 1.f / (alpha + 1.f);
+	અચલ દશાંશ alpha = tanf(M_PI_F * _bandwidth / _sample_freq);
+	અચલ દશાંશ beta = -cosf(2.f * M_PI_F * _notch_freq / _sample_freq);
+	અચલ દશાંશ a0_inv = 1.f / (alpha + 1.f);
 
 	_b0 = a0_inv;
 	_b1 = 2.f * beta * a0_inv;
@@ -279,20 +279,20 @@ bool NotchFilter<T>::setParameters(float sample_freq, float notch_freq, float ba
 	_a1 = _b1;
 	_a2 = (1.f - alpha) * a0_inv;
 
-	if (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a2)) {
+	જો (!isFinite(_b0) || !isFinite(_b1) || !isFinite(_b2) || !isFinite(_a2)) {
 		disable();
-		return false;
+		પાછા ખોટું;
 	}
 
 	// force reset if bandwidth or sample frequency changed by more than 1%
-	if (bandwidth_diff > 0.01f * _bandwidth) {
-		_initialized = false;
+	જો (bandwidth_diff > 0.01f * _bandwidth) {
+		_initialized = ખોટું;
 
-	} else if (sample_freq_diff > 0.01f * _sample_freq) {
-		_initialized = false;
+	} નહીંતર જો (sample_freq_diff > 0.01f * _sample_freq) {
+		_initialized = ખોટું;
 	}
 
-	return true;
+	પાછા સાચું;
 }
 
 } // namespace math

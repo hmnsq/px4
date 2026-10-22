@@ -37,47 +37,47 @@
  * Vector rotation library
  */
 
-#include "rotation.h"
+#અન્તર્ભાવ "rotation.h"
 
 __EXPORT matrix::Dcmf
-get_rot_matrix(enum Rotation rot)
+get_rot_matrix(ગણના Rotation rot)
 {
-	return matrix::Dcmf{matrix::Eulerf{
-			math::radians((float)rot_lookup[rot].roll),
-			math::radians((float)rot_lookup[rot].pitch),
-			math::radians((float)rot_lookup[rot].yaw)}};
+	પાછા matrix::Dcmf{matrix::Eulerf{
+			math::radians((દશાંશ)rot_lookup[rot].roll),
+			math::radians((દશાંશ)rot_lookup[rot].pitch),
+			math::radians((દશાંશ)rot_lookup[rot].yaw)}};
 }
 
 __EXPORT matrix::Quatf
-get_rot_quaternion(enum Rotation rot)
+get_rot_quaternion(ગણના Rotation rot)
 {
-	return matrix::Quatf{matrix::Eulerf{
-			math::radians((float)rot_lookup[rot].roll),
-			math::radians((float)rot_lookup[rot].pitch),
-			math::radians((float)rot_lookup[rot].yaw)}};
+	પાછા matrix::Quatf{matrix::Eulerf{
+			math::radians((દશાંશ)rot_lookup[rot].roll),
+			math::radians((દશાંશ)rot_lookup[rot].pitch),
+			math::radians((દશાંશ)rot_lookup[rot].yaw)}};
 }
 
-__EXPORT void
-rotate_3i(enum Rotation rot, int16_t &x, int16_t &y, int16_t &z)
+__EXPORT શૂન્ય
+rotate_3i(ગણના Rotation rot, int16_t &x, int16_t &y, int16_t &z)
 {
-	if (!rotate_3(rot, x, y, z)) {
+	જો (!rotate_3(rot, x, y, z)) {
 		// otherwise use full rotation matrix for valid rotations
-		if (rot < ROTATION_MAX) {
-			const matrix::Vector3f r{get_rot_matrix(rot) *matrix::Vector3f{(float)x, (float)y, (float)z}};
-			x = math::constrain(roundf(r(0)), (float)INT16_MIN, (float)INT16_MAX);
-			y = math::constrain(roundf(r(1)), (float)INT16_MIN, (float)INT16_MAX);
-			z = math::constrain(roundf(r(2)), (float)INT16_MIN, (float)INT16_MAX);
+		જો (rot < ROTATION_MAX) {
+			અચલ matrix::Vector3f r{get_rot_matrix(rot) *matrix::Vector3f{(દશાંશ)x, (દશાંશ)y, (દશાંશ)z}};
+			x = math::constrain(roundf(r(0)), (દશાંશ)INT16_MIN, (દશાંશ)INT16_MAX);
+			y = math::constrain(roundf(r(1)), (દશાંશ)INT16_MIN, (દશાંશ)INT16_MAX);
+			z = math::constrain(roundf(r(2)), (દશાંશ)INT16_MIN, (દશાંશ)INT16_MAX);
 		}
 	}
 }
 
-__EXPORT void
-rotate_3f(enum Rotation rot, float &x, float &y, float &z)
+__EXPORT શૂન્ય
+rotate_3f(ગણના Rotation rot, દશાંશ &x, દશાંશ &y, દશાંશ &z)
 {
-	if (!rotate_3(rot, x, y, z)) {
+	જો (!rotate_3(rot, x, y, z)) {
 		// otherwise use full rotation matrix for valid rotations
-		if (rot < ROTATION_MAX) {
-			const matrix::Vector3f r{get_rot_matrix(rot) *matrix::Vector3f{x, y, z}};
+		જો (rot < ROTATION_MAX) {
+			અચલ matrix::Vector3f r{get_rot_matrix(rot) *matrix::Vector3f{x, y, z}};
 			x = r(0);
 			y = r(1);
 			z = r(2);

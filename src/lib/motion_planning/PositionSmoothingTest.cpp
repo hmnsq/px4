@@ -1,6 +1,6 @@
-#include <gtest/gtest.h>
+#અન્તર્ભાવ <gtest/gtest.h>
 
-#include <motion_planning/PositionSmoothing.hpp>
+#અન્તર્ભાવ <motion_planning/PositionSmoothing.hpp>
 
 TEST(PositionSmoothingBasicTest, AllZeroCase)
 {
@@ -12,7 +12,7 @@ TEST(PositionSmoothingBasicTest, AllZeroCase)
 	{Vector3f(), Vector3f(), Vector3f()},
 	Vector3f(),
 	0.f,
-	false,
+	ખોટું,
 	out
 	);
 
@@ -23,22 +23,22 @@ TEST(PositionSmoothingBasicTest, AllZeroCase)
 	EXPECT_EQ(out.unsmoothed_velocity, Vector3f());
 }
 
-static constexpr float MAX_JERK = 4.f;
-static constexpr float MAX_ACCELERATION = 3.f;
+સ્થિર constexpr દશાંશ MAX_JERK = 4.f;
+સ્થિર constexpr દશાંશ MAX_ACCELERATION = 3.f;
 
-static constexpr float MAX_ALLOWED_HOR_ERR = 2.f;
-static constexpr float VERTICAL_ACCEPTANCE_RADIUS = 0.8f;
-static constexpr float CRUISE_SPEED = 5.f;
-static constexpr float MAX_VELOCITY = CRUISE_SPEED;
+સ્થિર constexpr દશાંશ MAX_ALLOWED_HOR_ERR = 2.f;
+સ્થિર constexpr દશાંશ VERTICAL_ACCEPTANCE_RADIUS = 0.8f;
+સ્થિર constexpr દશાંશ CRUISE_SPEED = 5.f;
+સ્થિર constexpr દશાંશ MAX_VELOCITY = CRUISE_SPEED;
 
-static constexpr float HORIZONTAL_TRAJECTORY_GAIN = 0.5f;
-static constexpr float TARGET_ACCEPTANCE_RADIUS = 0.5f;
+સ્થિર constexpr દશાંશ HORIZONTAL_TRAJECTORY_GAIN = 0.5f;
+સ્થિર constexpr દશાંશ TARGET_ACCEPTANCE_RADIUS = 0.5f;
 
 
-class PositionSmoothingTest : public ::testing::Test
+વર્ગ PositionSmoothingTest : જાહેર ::testing::Test
 {
 
-public:
+જાહેર:
 	PositionSmoothing _position_smoothing;
 
 	PositionSmoothingTest()
@@ -55,7 +55,7 @@ public:
 		_position_smoothing.reset({0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {0.f, 0.f, 0.f});
 	}
 
-	static void expectDynamicsLimitsRespected(const PositionSmoothing::PositionSmoothingSetpoints &setpoints)
+	સ્થિર શૂન્ય expectDynamicsLimitsRespected(અચલ PositionSmoothing::PositionSmoothingSetpoints &setpoints)
 	{
 		EXPECT_LE(fabsf(setpoints.velocity(0)), MAX_VELOCITY) << "Velocity in x too high\n";
 		EXPECT_LE(fabsf(setpoints.velocity(1)), MAX_VELOCITY) << "Velocity in y too high\n";
@@ -72,11 +72,11 @@ public:
 
 TEST_F(PositionSmoothingTest, reachesTargetPositionSetpoint)
 {
-	const int N_ITER = 2000;
-	const float DELTA_T = 0.02f;
-	const Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
-	const Vector3f FF_VELOCITY{0.f, 0.f, 0.f};
-	const Vector3f TARGET{12.f, 17.f, 8.f};
+	અચલ પૂર્ણાંક N_ITER = 2000;
+	અચલ દશાંશ DELTA_T = 0.02f;
+	અચલ Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
+	અચલ Vector3f FF_VELOCITY{0.f, 0.f, 0.f};
+	અચલ Vector3f TARGET{12.f, 17.f, 8.f};
 
 	Vector3f waypoints[3] = {INITIAL_POSITION, TARGET, TARGET};
 
@@ -84,23 +84,23 @@ TEST_F(PositionSmoothingTest, reachesTargetPositionSetpoint)
 
 	PositionSmoothing::PositionSmoothingSetpoints out;
 
-	int iteration = 0;
+	પૂર્ણાંક iteration = 0;
 
-	for (; iteration < N_ITER; iteration++) {
+	માટે (; iteration < N_ITER; iteration++) {
 		_position_smoothing.generateSetpoints(
 			position,
 			waypoints,
 			FF_VELOCITY,
 			DELTA_T,
-			false,
+			ખોટું,
 			out
 		);
 		position = out.position;
 		expectDynamicsLimitsRespected(out);
 
-		if (position == TARGET) {
+		જો (position == TARGET) {
 			printf("Converged in %d iterations\n", iteration);
-			break;
+			તોડો;
 		}
 	}
 
@@ -111,11 +111,11 @@ TEST_F(PositionSmoothingTest, reachesTargetPositionSetpoint)
 
 TEST_F(PositionSmoothingTest, reachesTargetVelocityIntegration)
 {
-	const int N_ITER = 2000;
-	const float DELTA_T = 0.02f;
-	const Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
-	const Vector3f FF_VELOCITY{0.f, 0.f, 0.f};
-	const Vector3f TARGET{12.f, 17.f, 8.f};
+	અચલ પૂર્ણાંક N_ITER = 2000;
+	અચલ દશાંશ DELTA_T = 0.02f;
+	અચલ Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
+	અચલ Vector3f FF_VELOCITY{0.f, 0.f, 0.f};
+	અચલ Vector3f TARGET{12.f, 17.f, 8.f};
 
 	Vector3f waypoints[3] = {INITIAL_POSITION, TARGET, TARGET};
 
@@ -123,24 +123,24 @@ TEST_F(PositionSmoothingTest, reachesTargetVelocityIntegration)
 
 	PositionSmoothing::PositionSmoothingSetpoints out;
 
-	int iteration = 0;
+	પૂર્ણાંક iteration = 0;
 
-	for (; iteration < N_ITER; iteration++) {
+	માટે (; iteration < N_ITER; iteration++) {
 		_position_smoothing.generateSetpoints(
 			position,
 			waypoints,
 			FF_VELOCITY,
 			DELTA_T,
-			false,
+			ખોટું,
 			out
 		);
 		position += out.velocity * DELTA_T;
 		expectDynamicsLimitsRespected(out);
 
 
-		if (position == TARGET) {
+		જો (position == TARGET) {
 			printf("Converged in %d iterations\n", iteration);
-			break;
+			તોડો;
 		}
 	}
 
@@ -151,14 +151,14 @@ TEST_F(PositionSmoothingTest, reachesTargetVelocityIntegration)
 
 TEST_F(PositionSmoothingTest, reachesTargetInitialVelocity)
 {
-	const int N_ITER = 20000;
-	const float DELTA_T = 0.02f;
-	const Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
-	const Vector3f TARGET{12.f, 17.f, 8.f};
-	const Vector3f NEXT_TARGET{8.f, 12.f, 80.f};
+	અચલ પૂર્ણાંક N_ITER = 20000;
+	અચલ દશાંશ DELTA_T = 0.02f;
+	અચલ Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
+	અચલ Vector3f TARGET{12.f, 17.f, 8.f};
+	અચલ Vector3f NEXT_TARGET{8.f, 12.f, 80.f};
 
-	const float XY_ACC_RAD = 10.f;
-	const float Z_ACC_RAD = 0.8f;
+	અચલ દશાંશ XY_ACC_RAD = 10.f;
+	અચલ દશાંશ Z_ACC_RAD = 0.8f;
 
 
 	Vector3f waypoints[3] = {INITIAL_POSITION, TARGET, TARGET};
@@ -168,24 +168,24 @@ TEST_F(PositionSmoothingTest, reachesTargetInitialVelocity)
 
 	PositionSmoothing::PositionSmoothingSetpoints out;
 
-	int iteration = 0;
+	પૂર્ણાંક iteration = 0;
 
-	for (; iteration < N_ITER; iteration++) {
+	માટે (; iteration < N_ITER; iteration++) {
 		_position_smoothing.generateSetpoints(
 			position,
 			waypoints,
 			ff_velocity,
 			DELTA_T,
-			false,
+			ખોટું,
 			out
 		);
 		position = out.position;
 		ff_velocity = {0.f, 0.f, 0.f};
 		expectDynamicsLimitsRespected(out);
 
-		if (Vector2f(position.xy() - TARGET.xy()).norm() < XY_ACC_RAD && fabsf(position(2) - TARGET(2)) < Z_ACC_RAD) {
+		જો (Vector2f(position.xy() - TARGET.xy()).norm() < XY_ACC_RAD && fabsf(position(2) - TARGET(2)) < Z_ACC_RAD) {
 			printf("Converged in %d iterations\n", iteration);
-			break;
+			તોડો;
 		}
 	}
 
@@ -200,43 +200,43 @@ TEST_F(PositionSmoothingTest, reachesTargetInitialVelocity)
 // vehicle has to brake and come back to the target instead of drifting away forever.
 TEST_F(PositionSmoothingTest, doesNotDriftPastUnreachedWaypoint)
 {
-	const int N_ITER = 3000; // 60 s at 50 Hz
-	const float DELTA_T = 0.02f;
+	અચલ પૂર્ણાંક N_ITER = 3000; // 60 s at 50 Hz
+	અચલ દશાંશ DELTA_T = 0.02f;
 
-	const Vector3f PREV{0.f, 0.f, 0.f};
-	const Vector3f TARGET{20.f, 0.f, 0.f};
-	const Vector3f NEXT{40.f, 2.f, 0.f}; // near-collinear next leg -> high corner speed -> clear fly-through
+	અચલ Vector3f PREV{0.f, 0.f, 0.f};
+	અચલ Vector3f TARGET{20.f, 0.f, 0.f};
+	અચલ Vector3f NEXT{40.f, 2.f, 0.f}; // near-collinear next leg -> high corner speed -> clear fly-through
 
 	// Triplet stays fixed for the whole run: the navigator never advances past TARGET.
 	Vector3f waypoints[3] = {PREV, TARGET, NEXT};
 
-	const Vector3f u_leg = (TARGET - PREV).unit_or_zero();
-	const float leg_length = (TARGET - PREV).length();
+	અચલ Vector3f u_leg = (TARGET - PREV).unit_or_zero();
+	અચલ દશાંશ leg_length = (TARGET - PREV).length();
 
 	Vector3f position{0.f, 0.f, 0.f};
 	PositionSmoothing::PositionSmoothingSetpoints out;
 
-	bool reached_target = false;
-	bool came_back = false;
-	float max_distance_past_target = 0.f;
+	તાર્કિક reached_target = ખોટું;
+	તાર્કિક came_back = ખોટું;
+	દશાંશ max_distance_past_target = 0.f;
 
-	for (int i = 0; i < N_ITER; i++) {
-		_position_smoothing.generateSetpoints(position, waypoints, Vector3f{}, DELTA_T, false, out);
+	માટે (પૂર્ણાંક i = 0; i < N_ITER; i++) {
+		_position_smoothing.generateSetpoints(position, waypoints, Vector3f{}, DELTA_T, ખોટું, out);
 		position = out.position;
 		expectDynamicsLimitsRespected(out);
 
-		const float along_track = Vector3f(position - PREV) * u_leg;
+		અચલ દશાંશ along_track = Vector3f(position - PREV) * u_leg;
 
-		if (Vector3f(position - TARGET).length() < 1.f) {
-			reached_target = true;
+		જો (Vector3f(position - TARGET).length() < 1.f) {
+			reached_target = સાચું;
 		}
 
-		if (reached_target) {
+		જો (reached_target) {
 			max_distance_past_target = fmaxf(max_distance_past_target, along_track - leg_length);
 
 			// Once the vehicle has gone past the target, the fix must turn it around.
-			if (along_track > leg_length + 1.f && out.velocity * u_leg < -0.1f) {
-				came_back = true;
+			જો (along_track > leg_length + 1.f && out.velocity * u_leg < -0.1f) {
+				came_back = સાચું;
 			}
 		}
 	}
@@ -247,14 +247,14 @@ TEST_F(PositionSmoothingTest, doesNotDriftPastUnreachedWaypoint)
 	EXPECT_LT(max_distance_past_target, 10.f) << "Vehicle drifted too far past the unreached waypoint\n";
 }
 
-class PositionSmoothingStraightLegTest : public ::testing::Test
+વર્ગ PositionSmoothingStraightLegTest : જાહેર ::testing::Test
 {
-public:
+જાહેર:
 	// A descending leg: 100 m horizontal, 50 m down (NED), 6 m/s XY, 1.5 m/s Z
-	static constexpr float XY_SPEED = 6.f;
-	static constexpr float Z_SPEED = 1.5f;
-	const Vector3f START{0.f, 0.f, 0.f};
-	const Vector3f TARGET{100.f, 0.f, 50.f};
+	સ્થિર constexpr દશાંશ XY_SPEED = 6.f;
+	સ્થિર constexpr દશાંશ Z_SPEED = 1.5f;
+	અચલ Vector3f START{0.f, 0.f, 0.f};
+	અચલ Vector3f TARGET{100.f, 0.f, 50.f};
 
 	PositionSmoothing _position_smoothing;
 
@@ -276,34 +276,34 @@ public:
 	{
 		Vector3f waypoints[3] = {START, TARGET, TARGET};
 		PositionSmoothing::PositionSmoothingSetpoints out;
-		_position_smoothing.generateSetpoints(START, waypoints, Vector3f{0.f, 0.f, 0.f}, 0.02f, false, out);
-		return out;
+		_position_smoothing.generateSetpoints(START, waypoints, Vector3f{0.f, 0.f, 0.f}, 0.02f, ખોટું, out);
+		પાછા out;
 	}
 
 	// Fly the leg and return the largest vertical distance from the straight line
-	float flyLegMaxAltitudeError()
+	દશાંશ flyLegMaxAltitudeError()
 	{
 		Vector3f waypoints[3] = {START, TARGET, TARGET};
 		Vector3f position = START;
 		PositionSmoothing::PositionSmoothingSetpoints out;
-		const float slope = (TARGET(2) - START(2)) / (TARGET - START).xy().norm();
-		float max_error = 0.f;
+		અચલ દશાંશ slope = (TARGET(2) - START(2)) / (TARGET - START).xy().norm();
+		દશાંશ max_error = 0.f;
 
-		for (int i = 0; i < 5000 && (TARGET - position).norm() > 0.1f; i++) {
-			_position_smoothing.generateSetpoints(position, waypoints, Vector3f{0.f, 0.f, 0.f}, 0.02f, false, out);
+		માટે (પૂર્ણાંક i = 0; i < 5000 && (TARGET - position).norm() > 0.1f; i++) {
+			_position_smoothing.generateSetpoints(position, waypoints, Vector3f{0.f, 0.f, 0.f}, 0.02f, ખોટું, out);
 			position = out.position;
-			const float z_on_line = START(2) + slope * (position - START).xy().norm();
-			max_error = fmaxf(max_error, fabsf(position(2) - z_on_line));
+			અચલ દશાંશ z_on_લીટી = START(2) + slope * (position - START).xy().norm();
+			max_error = fmaxf(max_error, fabsf(position(2) - z_on_લીટી));
 		}
 
 		EXPECT_LT((TARGET - position).norm(), 0.1f) << "Did not reach the target\n";
-		return max_error;
+		પાછા max_error;
 	}
 };
 
 TEST_F(PositionSmoothingStraightLegTest, velocityPointsAlongTheLeg)
 {
-	const Vector3f vel = firstSetpoint().unsmoothed_velocity;
+	અચલ Vector3f vel = firstSetpoint().unsmoothed_velocity;
 
 	// Parallel to the leg: vz / |vxy| equals the leg slope, the slower Z axis limits XY
 	EXPECT_NEAR(vel(2) / vel.xy().norm(), 0.5f, 1e-3f);

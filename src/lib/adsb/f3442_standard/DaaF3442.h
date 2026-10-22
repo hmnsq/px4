@@ -40,9 +40,9 @@
 
 #pragma once
 
-#include "../DaaHelper.h"
+#અન્તર્ભાવ "../DaaHelper.h"
 
-#include <px4_platform_common/module_params.h>
+#અન્તર્ભાવ <px4_platform_common/module_params.h>
 
 /**
  * @brief ASTM F3442 conflict evaluation.
@@ -51,33 +51,33 @@
  * by aircraft speed and a latency budget (MEDIUM and LOW). The first breached
  * zone in severity order defines the reported conflict level.
  */
-class DaaF3442 : public ModuleParams
+class DaaF3442 : જાહેર ModuleParams
 {
-public:
+જાહેર:
 	DaaF3442();
 
 	// Distance, time-to-min-distance and the F3442 conflict level for one target.
-	uint8_t calculate_daa_stats(const aircraft_state_s &uav_state, const aircraft_state_s &traffic_state,
-				    daa_stats_s &daa_stats) const;
+	uint8_t calculate_daa_stats(અચલ aircraft_state_s &uav_state, અચલ aircraft_state_s &traffic_state,
+				    daa_stats_s &daa_stats) અચલ;
 
 	// True if every component of distance is within the symmetric bounds box.
-	static bool is_in_bounds(const matrix::Vector2f &distance, const matrix::Vector2f &bounds);
+	સ્થિર bool is_in_bounds(અચલ matrix::Vector2f &distance, અચલ matrix::Vector2f &bounds);
 
 	/**
 	 * @brief Expand a base bounds box by |vel| * |latency|.
 	 *
 	 * Result is symmetric so it covers a sudden course change regardless of @p vel sign.
 	 */
-	static void calculate_aircraft_conflict_volume(const matrix::Vector2f &base_bounds, const matrix::Vector2f &vel,
-			const float latency, matrix::Vector2f &output_bounds);
+	સ્થિર શૂન્ય calculate_aircraft_conflict_volume(અચલ matrix::Vector2f &base_bounds, અચલ matrix::Vector2f &vel,
+			અચલ દશાંશ latency, matrix::Vector2f &output_bounds);
 
 	// Sum of the ownship and traffic augmented volumes for a base zone and latency.
-	static void calculate_augmented_boundaries(const matrix::Vector2f &base_bounds, const matrix::Vector2f &uav_vel_hor_vert,
-			const matrix::Vector2f &traffic_vel, const float latency, matrix::Vector2f &augmented_bounds);
+	સ્થિર શૂન્ય calculate_augmented_boundaries(અચલ matrix::Vector2f &base_bounds, અચલ matrix::Vector2f &uav_vel_hor_vert,
+			અચલ matrix::Vector2f &traffic_vel, અચલ દશાંશ latency, matrix::Vector2f &augmented_bounds);
 
 	// Evaluate the four zones in severity order and return the first breach.
-	uint8_t calculate_conflict_level(const matrix::Vector2f &distance, const matrix::Vector2f &uav_vel_hor_vert,
-					 const matrix::Vector2f &traffic_vel) const;
+	uint8_t calculate_conflict_level(અચલ matrix::Vector2f &distance, અચલ matrix::Vector2f &uav_vel_hor_vert,
+					 અચલ matrix::Vector2f &traffic_vel) અચલ;
 
 	/**
 	 * @brief Refresh F3442 zone radii and latency from parameters.
@@ -87,21 +87,21 @@ public:
 	 */
 	bool try_setting_params();
 
-private:
+ખાનગી:
 	// Per-aircraft half-zones (radius, height). They match the parameter defaults and the ASTM
 	// F3442 zones once doubled in calculate_conflict_level(): NMAC = 2 x (153 m, 31 m),
 	// Well-Clear = 2 x (610 m, 77 m). Overwritten by try_setting_params() on activation.
 	matrix::Vector2f _nmac_bounds_m{77.f, 16.f};
 	matrix::Vector2f _wc_bounds_m{305.f, 39.f};
-	float _aug_nmac_latency_s{33.f};
-	float _aug_wc_latency_s{33.f};
+	દશાંશ _aug_nmac_latency_s{33.f};
+	દશાંશ _aug_wc_latency_s{33.f};
 
 	DEFINE_PARAMETERS(
 		(ParamFloat<px4::params::DAA_LVL_CRIT_RAD>) _param_daa_lvl_critical_rad,
 		(ParamFloat<px4::params::DAA_LVL_CRIT_HGT>) _param_daa_lvl_critical_hgt,
-		(ParamFloat<px4::params::DAA_LVL_HIGH_RAD>) _param_daa_lvl_high_rad,
-		(ParamFloat<px4::params::DAA_LVL_HIGH_HGT>) _param_daa_lvl_high_hgt,
+		(ParamFloat<px4::params::DAA_LVL_ઉપલું_RAD>) param_daa_lvl_ઉપલું_rad,
+		(ParamFloat<px4::params::DAA_LVL_ઉપલું_HGT>) param_daa_lvl_ઉપલું_hgt,
 		(ParamInt<px4::params::DAA_LVL_MED_TIME>) _param_daa_lvl_medium_time,
-		(ParamInt<px4::params::DAA_LVL_LOW_TIME>) _param_daa_lvl_low_time
+		(ParamInt<px4::params::DAA_LVL_નીચલું_TIME>) param_daa_lvl_નીચલું_time
 	)
 };

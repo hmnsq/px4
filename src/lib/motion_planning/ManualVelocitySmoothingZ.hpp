@@ -38,86 +38,86 @@
 
 #pragma once
 
-#include <motion_planning/VelocitySmoothing.hpp>
+#અન્તર્ભાવ <motion_planning/VelocitySmoothing.hpp>
 
-class ManualVelocitySmoothingZ final
+વર્ગ ManualVelocitySmoothingZ final
 {
-public:
-	ManualVelocitySmoothingZ() = default;
-	~ManualVelocitySmoothingZ() = default;
+જાહેર:
+	ManualVelocitySmoothingZ() = મૂળભૂત;
+	~ManualVelocitySmoothingZ() = મૂળભૂત;
 
-	void reset(float accel, float vel, float pos);
-	void update(float dt, float velocity_target);
+	શૂન્ય reset(દશાંશ accel, દશાંશ vel, દશાંશ pos);
+	શૂન્ય update(દશાંશ dt, દશાંશ velocity_target);
 
-	void setVelSpFeedback(const float fb) { _velocity_setpoint_feedback = fb; }
+	શૂન્ય setVelSpFeedback(અચલ દશાંશ fb) { _velocity_setpoint_feedback = fb; }
 
-	void setMaxJerk(const float max_jerk)
+	શૂન્ય setMaxJerk(અચલ દશાંશ max_jerk)
 	{
 		_trajectory.setMaxJerk(max_jerk);
 	}
-	void setMaxAccelUp(const float max_accel_up)
+	શૂન્ય setMaxAccelUp(અચલ દશાંશ max_accel_up)
 	{
 		_max_accel_up = max_accel_up;
 	}
-	void setMaxAccelDown(const float max_accel_down)
+	શૂન્ય setMaxAccelDown(અચલ દશાંશ max_accel_down)
 	{
 		_max_accel_down = max_accel_down;
 	}
-	void setMaxVelUp(const float max_vel_up)
+	શૂન્ય setMaxVelUp(અચલ દશાંશ max_vel_up)
 	{
 		_max_vel_up = max_vel_up;
 	}
-	void setMaxVelDown(const float max_vel_down)
+	શૂન્ય setMaxVelDown(અચલ દશાંશ max_vel_down)
 	{
 		_max_vel_down = max_vel_down;
 	}
 
-	float getCurrentJerk() const { return _state.j; }
-	float getCurrentAcceleration() const { return _state.a; }
-	void setCurrentVelocity(const float vel)
+	દશાંશ getCurrentJerk() અચલ { પાછા _state.j; }
+	દશાંશ getCurrentAcceleration() અચલ { પાછા _state.a; }
+	શૂન્ય setCurrentVelocity(અચલ દશાંશ vel)
 	{
 		_state.v = vel;
 		_trajectory.setCurrentVelocity(vel);
 	}
-	float getCurrentVelocity() const { return _state.v; }
-	void setCurrentPosition(const float pos)
+	દશાંશ getCurrentVelocity() અચલ { પાછા _state.v; }
+	શૂન્ય setCurrentPosition(અચલ દશાંશ pos)
 	{
 		_state.x = pos;
 		_trajectory.setCurrentPosition(pos);
 		_position_estimate = pos;
 
-		if (_position_lock_active) {
+		જો (_position_lock_active) {
 			_position_setpoint_locked = pos;
 		}
 	}
-	float getCurrentPosition() const { return _position_setpoint_locked; }
-	void setCurrentPositionEstimate(float pos) { _position_estimate = pos; }
+	દશાંશ getCurrentPosition() અચલ { પાછા _position_setpoint_locked; }
+	શૂન્ય setCurrentPositionEstimate(દશાંશ pos) { _position_estimate = pos; }
 
-private:
-	void resetPositionLock();
-	void updateTrajectories(float dt);
-	void updateTrajConstraints(float vel_target);
-	void checkPositionLock(float velocity_target);
-	void updateTrajDurations(float velocity_target);
+ખાનગી:
+	શૂન્ય resetPositionLock();
+	શૂન્ય updateTrajectories(દશાંશ dt);
+	શૂન્ય updateTrajConstraints(દશાંશ vel_target);
+	શૂન્ય checkPositionLock(દશાંશ velocity_target);
+	શૂન્ય updateTrajDurations(દશાંશ velocity_target);
 
 	VelocitySmoothing _trajectory; ///< Trajectory in z direction
 
-	bool _position_lock_active{false};
+	તાર્કિક _position_lock_active{ખોટું};
 
-	float _position_setpoint_locked{};
+	દશાંશ _position_setpoint_locked{};
 
-	float _velocity_setpoint_feedback{};
-	float _position_estimate{};
+	દશાંશ _velocity_setpoint_feedback{};
+	દશાંશ _position_estimate{};
 
-	struct {
-		float j;
-		float a;
-		float v;
-		float x;
+	સંરચના {
+		દશાંશ j;
+		દશાંશ a;
+		દશાંશ v;
+		દશાંશ x;
 	} _state{};
 
-	float _max_accel_up{0.f};
-	float _max_accel_down{0.f};
-	float _max_vel_up{0.f};
-	float _max_vel_down{0.f};
+	દશાંશ _max_accel_up{0.f};
+	દશાંશ _max_accel_down{0.f};
+	દશાંશ _max_vel_up{0.f};
+	દશાંશ _max_vel_down{0.f};
 };

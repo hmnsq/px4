@@ -31,29 +31,29 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/filter.hpp>
-#include <matrix/Vector.hpp>
+#અન્તર્ભાવ <gtest/gtest.h>
+#અન્તર્ભાવ <matrix/filter.hpp>
+#અન્તર્ભાવ <matrix/Vector.hpp>
 
-using namespace matrix;
+using નામાકાશ matrix;
 
 TEST(MatrixFilterTest, Filter)
 {
-	const size_t n_x = 6;
-	const size_t n_y = 5;
-	SquareMatrix<float, n_x> P = eye<float, n_x>();
-	SquareMatrix<float, n_y> R = eye<float, n_y>();
-	Matrix<float, n_y, n_x> C;
+	અચલ size_t n_x = 6;
+	અચલ size_t n_y = 5;
+	SquareMatrix<દશાંશ, n_x> P = eye<દશાંશ, n_x>();
+	SquareMatrix<દશાંશ, n_y> R = eye<દશાંશ, n_y>();
+	Matrix<દશાંશ, n_y, n_x> C;
 	C.setIdentity();
-	float data[] = {1, 2, 3, 4, 5};
-	Vector<float, n_y> r(data);
+	દશાંશ data[] = {1, 2, 3, 4, 5};
+	Vector<દશાંશ, n_y> r(data);
 
-	Vector<float, n_x> dx;
-	SquareMatrix<float, n_x> dP;
-	float beta = 0;
-	kalman_correct<float, 6, 5>(P, C, R, r, dx, dP, beta);
+	Vector<દશાંશ, n_x> dx;
+	SquareMatrix<દશાંશ, n_x> dP;
+	દશાંશ beta = 0;
+	kalman_correct<દશાંશ, 6, 5>(P, C, R, r, dx, dP, beta);
 
-	float data_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
-	Vector<float, n_x> dx_check(data_check);
+	દશાંશ data_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
+	Vector<દશાંશ, n_x> dx_check(data_check);
 	EXPECT_EQ(dx, dx_check);
 }

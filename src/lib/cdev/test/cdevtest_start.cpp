@@ -37,32 +37,32 @@
  * @author Thomas Gubler <thomasgubler@gmail.com>
  * @author Mark Charlebois <mcharleb@gmail.com>
  */
-#include "cdevtest_example.h"
+#અન્તર્ભાવ "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/tasks.h>
-#include <stdio.h>
-#include <string.h>
+#અન્તર્ભાવ <px4_platform_common/app.h>
+#અન્તર્ભાવ <px4_platform_common/tasks.h>
+#અન્તર્ભાવ <stdio.h>
+#અન્તર્ભાવ <string.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+સ્થિર પૂર્ણાંક daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-extern "C" __EXPORT int cdev_test_main(int argc, char *argv[]);
-int cdev_test_main(int argc, char *argv[])
+બાહ્ય "C" __EXPORT પૂર્ણાંક cdev_test_main(પૂર્ણાંક argc, અક્ષર *argv[]);
+પૂર્ણાંક cdev_test_main(પૂર્ણાંક argc, અક્ષર *argv[])
 {
 
-	if (argc < 2) {
+	જો (argc < 2) {
 		printf("usage: cdevtest {start|stop|status}\n");
-		return 1;
+		પાછા 1;
 	}
 
-	if (!strcmp(argv[1], "start")) {
+	જો (!strcmp(argv[1], "start")) {
 
-		if (CDevExample::appState.isRunning()) {
+		જો (CDevExample::appState.isRunning()) {
 			printf("already running\n");
 			/* this is not an error */
-			return 0;
+			પાછા 0;
 		}
 
 		daemon_task = px4_task_spawn_cmd("cdevtest",
@@ -70,27 +70,27 @@ int cdev_test_main(int argc, char *argv[])
 						 SCHED_PRIORITY_MAX - 5,
 						 2000,
 						 PX4_MAIN,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+						 (argv) ? (અક્ષર *અચલ *)&argv[2] : (અક્ષર *અચલ *)nullptr);
 
-		return 0;
+		પાછા 0;
 	}
 
-	if (!strcmp(argv[1], "stop")) {
+	જો (!strcmp(argv[1], "stop")) {
 		CDevExample::appState.requestExit();
-		return 0;
+		પાછા 0;
 	}
 
-	if (!strcmp(argv[1], "status")) {
-		if (CDevExample::appState.isRunning()) {
+	જો (!strcmp(argv[1], "status")) {
+		જો (CDevExample::appState.isRunning()) {
 			printf("is running\n");
 
-		} else {
+		} નહીંતર {
 			printf("not started\n");
 		}
 
-		return 0;
+		પાછા 0;
 	}
 
 	printf("usage: cdevtest_main {start|stop|status}\n");
-	return 1;
+	પાછા 1;
 }

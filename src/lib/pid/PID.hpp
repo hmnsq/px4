@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include <cmath>
+#અન્તર્ભાવ <cmath>
 
-class PID
+વર્ગ PID
 {
-public:
-	PID() = default;
-	virtual ~PID() = default;
-	void setOutputLimit(const float limit) {setOutputLimit(-limit, limit);}
-	void setOutputLimit(const float lower_limit, const float upper_limit);
-	void setIntegralLimit(const float limit) { _limit_integral = limit; }
-	void setGains(const float P, const float I, const float D);
-	void setSetpoint(const float setpoint) { _setpoint = setpoint; }
-	void setFeedForwardGain(const float feedforward_gain) { _gain_feedforward = feedforward_gain; }
-	float update(const float feedback, const float dt, const bool update_integral = true);
-	float getIntegral() { return _integral; }
-	void resetIntegral() { _integral = 0.f; }
-	void resetDerivative() { _last_feedback = NAN; }
-private:
-	void updateIntegral(float error, const float saturation, const float dt);
-	float updateDerivative(float feedback, const float dt);
+જાહેર:
+	PID() = મૂળભૂત;
+	આભાસી ~PID() = મૂળભૂત;
+	શૂન્ય setOutputLimit(અચલ દશાંશ limit) {setOutputLimit(-limit, limit);}
+	શૂન્ય setOutputLimit(અચલ દશાંશ lower_limit, અચલ દશાંશ upper_limit);
+	શૂન્ય setIntegralLimit(અચલ દશાંશ limit) { _limit_integral = limit; }
+	શૂન્ય setGains(અચલ દશાંશ P, અચલ દશાંશ I, અચલ દશાંશ D);
+	શૂન્ય setSetpoint(અચલ દશાંશ setpoint) { _setpoint = setpoint; }
+	શૂન્ય setFeedForwardGain(અચલ દશાંશ feedforward_gain) { _gain_feedforward = feedforward_gain; }
+	દશાંશ update(અચલ દશાંશ feedback, અચલ દશાંશ dt, અચલ તાર્કિક update_integral = સાચું);
+	દશાંશ getIntegral() { પાછા _integral; }
+	શૂન્ય resetIntegral() { _integral = 0.f; }
+	શૂન્ય resetDerivative() { _last_feedback = NAN; }
+ખાનગી:
+	શૂન્ય updateIntegral(દશાંશ error, અચલ દશાંશ saturation, અચલ દશાંશ dt);
+	દશાંશ updateDerivative(દશાંશ feedback, અચલ દશાંશ dt);
 
-	float _setpoint{0.f}; ///< current setpoint to track
-	float _integral{0.f}; ///< integral state
-	float _last_feedback{NAN};
+	દશાંશ _setpoint{0.f}; ///< current setpoint to track
+	દશાંશ _integral{0.f}; ///< integral state
+	દશાંશ _last_feedback{NAN};
 
 	// Gains, Limits
-	float _gain_feedforward{0.f};
-	float _gain_proportional{0.f};
-	float _gain_integral{0.f};
-	float _gain_derivative{0.f};
-	float _limit_integral{0.f};
-	float _lower_limit_output{0.f};
-	float _upper_limit_output{0.f};
+	દશાંશ _gain_feedforward{0.f};
+	દશાંશ _gain_proportional{0.f};
+	દશાંશ _gain_integral{0.f};
+	દશાંશ _gain_derivative{0.f};
+	દશાંશ _limit_integral{0.f};
+	દશાંશ _lower_limit_output{0.f};
+	દશાંશ _upper_limit_output{0.f};
 };

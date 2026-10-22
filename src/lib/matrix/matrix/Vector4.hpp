@@ -41,32 +41,32 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#અન્તર્ભાવ "Vector.hpp"
 
-namespace matrix
+નામાકાશ matrix
 {
 
 template<typename Type>
-class Vector4 : public Vector<Type, 4>
+વર્ગ Vector4 : જાહેર Vector<Type, 4>
 {
-public:
+જાહેર:
 	using Matrix41 = Matrix<Type, 4, 1>;
 
-	Vector4() = default;
+	Vector4() = મૂળભૂત;
 
-	Vector4(const Matrix41 &other) :
+	Vector4(અચલ Matrix41 &other) :
 		Vector<Type, 4>(other)
 	{
 	}
 
-	explicit Vector4(const Type data_[3]) :
+	explicit Vector4(અચલ Type data_[3]) :
 		Vector<Type, 4>(data_)
 	{
 	}
 
 	Vector4(Type x1, Type x2, Type x3, Type x4)
 	{
-		Vector4 &v(*this);
+		Vector4 &v(*આ);
 		v(0) = x1;
 		v(1) = x2;
 		v(2) = x3;
@@ -74,12 +74,12 @@ public:
 	}
 
 	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 4, 1, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	Vector4(અચલ Slice<Type, 4, 1, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
 	{
 	}
 
 	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 1, 4, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	Vector4(અચલ Slice<Type, 1, 4, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
 	{
 	}
 
@@ -87,43 +87,43 @@ public:
 	 * Override matrix ops so Vector4 type is returned
 	 */
 
-	Vector4 operator+(Vector4 other) const
+	Vector4 operator+(Vector4 other) અચલ
 	{
-		return Matrix41::operator+(other);
+		પાછા Matrix41::operator+(other);
 	}
 
-	Vector4 operator+(Type scalar) const
+	Vector4 operator+(Type scalar) અચલ
 	{
-		return Matrix41::operator+(scalar);
+		પાછા Matrix41::operator+(scalar);
 	}
 
-	Vector4 operator-(Vector4 other) const
+	Vector4 operator-(Vector4 other) અચલ
 	{
-		return Matrix41::operator-(other);
+		પાછા Matrix41::operator-(other);
 	}
 
-	Vector4 operator-(Type scalar) const
+	Vector4 operator-(Type scalar) અચલ
 	{
-		return Matrix41::operator-(scalar);
+		પાછા Matrix41::operator-(scalar);
 	}
 
-	Vector4 operator-() const
+	Vector4 operator-() અચલ
 	{
-		return Matrix41::operator-();
+		પાછા Matrix41::operator-();
 	}
 
-	Vector4 operator*(Type scalar) const
+	Vector4 operator*(Type scalar) અચલ
 	{
-		return Matrix41::operator*(scalar);
+		પાછા Matrix41::operator*(scalar);
 	}
 
-	Type operator*(Vector4 b) const
+	Type operator*(Vector4 b) અચલ
 	{
-		return Vector<Type, 4>::operator*(b);
+		પાછા Vector<Type, 4>::operator*(b);
 	}
 
 };
 
-using Vector4f = Vector4<float>;
+using Vector4f = Vector4<દશાંશ>;
 
 } // namespace matrix
