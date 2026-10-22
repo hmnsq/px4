@@ -45,9 +45,9 @@
 #include "parameters_ioctl.h"
 #include <px4_platform_common/defines.h>
 
-int	param_ioctl(unsigned int cmd, unsigned long arg)
+цео	param_ioctl(unsigned цео cmd, unsigned long arg)
 {
-	int ret = OK;
+	цео ret = OK;
 
 	switch (cmd) {
 	case PARAMIOCNOTIFY: {
@@ -58,10 +58,10 @@ int	param_ioctl(unsigned int cmd, unsigned long arg)
 	case PARAMIOCFIND: {
 			paramiocfind_t *data = (paramiocfind_t *)arg;
 
-			if (data->notification) {
+			ако (data->notification) {
 				data->ret = param_find(data->name);
 
-			} else {
+			} инако {
 				data->ret = param_find_no_notification(data->name);
 			}
 		}
@@ -94,10 +94,10 @@ int	param_ioctl(unsigned int cmd, unsigned long arg)
 	case PARAMIOCGET: {
 			paramiocget_t *data = (paramiocget_t *)arg;
 
-			if (data->deflt) {
+			ако (data->deflt) {
 				data->ret = param_get_default_value(data->param, data->val);
 
-			} else {
+			} инако {
 				data->ret = param_get(data->param, data->val);
 			}
 		}
@@ -112,10 +112,10 @@ int	param_ioctl(unsigned int cmd, unsigned long arg)
 	case PARAMIOCSET: {
 			paramiocset_t *data = (paramiocset_t *)arg;
 
-			if (data->notification) {
+			ако (data->notification) {
 				data->ret = param_set(data->param, data->val);
 
-			} else {
+			} инако {
 				data->ret = param_set_no_notification(data->param, data->val);
 			}
 		}
@@ -142,10 +142,10 @@ int	param_ioctl(unsigned int cmd, unsigned long arg)
 	case PARAMIOCRESET: {
 			paramiocreset_t *data = (paramiocreset_t *)arg;
 
-			if (data->notification) {
+			ако (data->notification) {
 				data->ret = param_reset(data->param);
 
-			} else {
+			} инако {
 				data->ret = param_reset_no_notification(data->param);
 			}
 		}
@@ -154,13 +154,13 @@ int	param_ioctl(unsigned int cmd, unsigned long arg)
 	case PARAMIOCRESETGROUP: {
 			paramiocresetgroup_t *data = (paramiocresetgroup_t *)arg;
 
-			if (data->type == PARAM_RESET_EXCLUDES) {
+			ако (data->type == PARAM_RESET_EXCLUDES) {
 				param_reset_excludes(data->group, data->num_in_group);
 
-			} else if (data->type == PARAM_RESET_SPECIFIC) {
+			} инако ако (data->type == PARAM_RESET_SPECIFIC) {
 				param_reset_specific(data->group, data->num_in_group);
 
-			} else {
+			} инако {
 				param_reset_all();
 			}
 		}
@@ -195,5 +195,5 @@ int	param_ioctl(unsigned int cmd, unsigned long arg)
 		break;
 	}
 
-	return ret;
+	врати ret;
 }

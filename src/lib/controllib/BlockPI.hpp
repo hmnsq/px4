@@ -72,13 +72,13 @@ public:
 	virtual ~BlockPI() = default;
 	float update(float input)
 	{
-		return getKP() * input +
+		врати getKP() * input +
 		       getKI() * getIntegral().update(input);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
+	float getKP() { врати _kP.get(); }
+	float getKI() { врати _kI.get(); }
+	BlockIntegral &getIntegral() { врати _integral; }
 private:
 	BlockIntegral _integral;
 	control::BlockParamFloat _kP;

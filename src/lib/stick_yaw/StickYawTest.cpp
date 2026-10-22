@@ -46,7 +46,7 @@ TEST(StickYawTest, ResetClearsYawspeedFilter)
 	const float dt = 0.01f;
 
 	// GIVEN: the filter charged up by a sustained full-deflection yaw stick
-	for (int i = 0; i < 500; i++) {
+	за (цео i = 0; i < 500; i++) {
 		stick_yaw.generateYawSetpoint(yawspeed_sp, yaw_sp, 1.f, 0.f, dt);
 	}
 
@@ -74,14 +74,14 @@ TEST(StickYawTest, ResetYawspeedClearsChargeButKeepsHeadingLock)
 	// GIVEN: a heading locked at 0 and the yawspeed filter charged by a full-deflection stick
 	stick_yaw.reset(0.f, 0.f);
 
-	for (int i = 0; i < 500; i++) {
+	за (цео i = 0; i < 500; i++) {
 		stick_yaw.generateYawSetpoint(yawspeed_sp, yaw_sp, 1.f, 0.f, dt, 0.f);
 	}
 
 	EXPECT_GT(yawspeed_sp, 0.1f);
 
 	// WHEN: the gesture gate clears the charge and holds the stick input at zero
-	for (int i = 0; i < 5; i++) {
+	за (цео i = 0; i < 5; i++) {
 		stick_yaw.resetYawspeed();
 		stick_yaw.generateYawSetpoint(yawspeed_sp, yaw_sp, 0.f, 0.f, dt, 0.f);
 		EXPECT_EQ(yawspeed_sp, 0.f);
@@ -111,7 +111,7 @@ TEST(StickYawTest, UnaidedYawNanTransitionNoYawJump)
 	// Phase 1: Establish yaw lock at yaw=0 with unaided_yaw=0
 	stick_yaw.reset(0.f, 0.f);
 
-	for (int i = 0; i < 10; i++) {
+	за (цео i = 0; i < 10; i++) {
 		stick_yaw.generateYawSetpoint(yawspeed_sp, yaw_sp, 0.f, 0.f, dt, 0.f);
 	}
 
@@ -120,7 +120,7 @@ TEST(StickYawTest, UnaidedYawNanTransitionNoYawJump)
 	// Phase 2: Simulate EKF yaw correction — yaw jumps to 0.3 rad while
 	// unaided_yaw stays at 0. This creates a yaw_error of 0.3 and triggers
 	// the convergence detector, building up _yaw_correction ≈ 0.3.
-	for (int i = 0; i < 5; i++) {
+	за (цео i = 0; i < 5; i++) {
 		stick_yaw.generateYawSetpoint(yawspeed_sp, yaw_sp, 0.f, 0.3f, dt, 0.f);
 	}
 
@@ -150,14 +150,14 @@ TEST(StickYawTest, UnaidedYawNanToFiniteTransitionResetsYawLock)
 	// Phase 1: Establish yaw lock at yaw=0 with unaided_yaw=0.
 	stick_yaw.reset(0.f, 0.f);
 
-	for (int i = 0; i < 10; i++) {
+	за (цео i = 0; i < 10; i++) {
 		stick_yaw.generateYawSetpoint(yawspeed_sp, yaw_sp, 0.f, 0.f, dt, 0.f);
 	}
 
 	EXPECT_NEAR(yaw_sp, 0.f, 0.01f);
 
 	// Phase 2: Simulate a yaw estimate correction while unaided_yaw is valid.
-	for (int i = 0; i < 20; i++) {
+	за (цео i = 0; i < 20; i++) {
 		stick_yaw.generateYawSetpoint(yawspeed_sp, yaw_sp, 0.f, 0.3f, dt, 0.f);
 	}
 

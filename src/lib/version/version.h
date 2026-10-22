@@ -53,7 +53,7 @@ __BEGIN_DECLS
  */
 static inline const char *px4_board_name(void)
 {
-	return PX4_BOARD_NAME;
+	врати PX4_BOARD_NAME;
 }
 
 /**
@@ -61,7 +61,7 @@ static inline const char *px4_board_name(void)
  */
 static inline const char *px4_board_target_label(void)
 {
-	return PX4_BOARD_LABEL;
+	врати PX4_BOARD_LABEL;
 }
 
 /**
@@ -69,32 +69,32 @@ static inline const char *px4_board_target_label(void)
  */
 static inline const char *px4_board_sub_type(void)
 {
-	return board_get_hw_type_name();
+	врати board_get_hw_type_name();
 }
 
 /**
  * get the board HW version
  */
-static inline int px4_board_hw_version(void)
+static inline цео px4_board_hw_version(void)
 {
-	return board_get_hw_version();
+	врати board_get_hw_version();
 }
 
 /**
  * get the board HW revision
  */
-static inline int px4_board_hw_revision(void)
+static inline цео px4_board_hw_revision(void)
 {
-	return board_get_hw_revision();
+	врати board_get_hw_revision();
 }
 
-#if defined(BOARD_HAS_HW_SPLIT_VERSIONING)
+#ако defined(BOARD_HAS_HW_SPLIT_VERSIONING)
 /**
  * get the base board type
  */
 static inline const char *px4_board_base_type(void)
 {
-	return board_get_hw_base_type_name();
+	врати board_get_hw_base_type_name();
 }
 #endif
 

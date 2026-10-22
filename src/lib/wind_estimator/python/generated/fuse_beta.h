@@ -69,7 +69,7 @@ void FuseBeta(const matrix::Matrix<Scalar, 3, 1>& v_local, const matrix::Matrix<
   const Scalar _tmp22 = Scalar(1.0) / (math::max<Scalar>(_tmp21, epsilon));
 
   // Output terms (4)
-  if (H != nullptr) {
+  ако (H != nullptr) {
     matrix::Matrix<Scalar, 1, 3>& _h = (*H);
 
     _h(0, 0) = _tmp17;
@@ -77,7 +77,7 @@ void FuseBeta(const matrix::Matrix<Scalar, 3, 1>& v_local, const matrix::Matrix<
     _h(0, 2) = 0;
   }
 
-  if (K != nullptr) {
+  ако (K != nullptr) {
     matrix::Matrix<Scalar, 3, 1>& _k = (*K);
 
     _k(0, 0) = _tmp22 * (P(0, 1) * _tmp18 + _tmp19);
@@ -85,13 +85,13 @@ void FuseBeta(const matrix::Matrix<Scalar, 3, 1>& v_local, const matrix::Matrix<
     _k(2, 0) = _tmp22 * (P(2, 0) * _tmp17 + P(2, 1) * _tmp18);
   }
 
-  if (innov_var != nullptr) {
+  ако (innov_var != nullptr) {
     Scalar& _innov_var = (*innov_var);
 
     _innov_var = _tmp21;
   }
 
-  if (innov != nullptr) {
+  ако (innov != nullptr) {
     Scalar& _innov = (*innov);
 
     _innov = -_tmp12 * _tmp15;

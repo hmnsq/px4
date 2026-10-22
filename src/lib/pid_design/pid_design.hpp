@@ -91,8 +91,8 @@ inline matrix::Vector3f computePidGmvc(const matrix::Vector3f &num, const matrix
 	// Translate to PID gains
 	const float nu = lbda + (e1 + 1.f) * (b0 + b1 + b2);
 
-	if (fabsf(nu) < FLT_EPSILON) {
-		return matrix::Vector3f();
+	ако (fabsf(nu) < FLT_EPSILON) {
+		врати matrix::Vector3f();
 	}
 
 	const float kc = -(f1 + 2.f * f2) / nu;
@@ -100,6 +100,6 @@ inline matrix::Vector3f computePidGmvc(const matrix::Vector3f &num, const matrix
 	ki /= 5.f; // This is not part of the original implementation but is required to produce reasonable gains
 	const float kd = -dt * f2 / (f1 + 2.f * f2);
 
-	return matrix::Vector3f(kc, ki, kd);
+	врати matrix::Vector3f(kc, ki, kd);
 }
 } // namespace pid_design

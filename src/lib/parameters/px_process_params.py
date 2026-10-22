@@ -110,7 +110,7 @@ def main():
     args = parser.parse_args()
 
     # Check for valid command
-    if not (args.xml or args.markdown or args.json):
+    ако not (args.xml or args.markdown or args.json):
         print("Error: You need to specify at least one output method!\n")
         parser.print_usage()
         sys.exit(1)
@@ -120,17 +120,17 @@ def main():
     parser = srcparser.SourceParser()
 
     # Scan directories, and parse the files
-    if (args.verbose):
+    ако (args.verbose):
         print("Scanning source path " + str(args.src_path))
 
-    if not scanner.ScanDir(args.src_path, parser):
+    ако not scanner.ScanDir(args.src_path, parser):
         sys.exit(1)
 
-    if not parser.Validate():
+    ако not parser.Validate():
         sys.exit(1)
     param_groups = parser.GetParamGroups()
 
-    if len(param_groups) == 0:
+    ако len(param_groups) == 0:
         print("Warning: no parameters found")
 
 
@@ -138,60 +138,60 @@ def main():
     cur_dir = os.path.dirname(os.path.realpath(__file__))
 
     override_dict = json.loads(args.overrides)
-    if len(override_dict.keys()) > 0:
-        for group in param_groups:
-            for param in group.GetParams():
+    ако len(override_dict.keys()) > 0:
+        за group in param_groups:
+            за param in group.GetParams():
                 name = param.GetName()
-                if name in override_dict.keys():
+                ако name in override_dict.keys():
                     val = str(override_dict[param.GetName()])
                     param.default = val
                     print("OVERRIDING {:s} to {:s}!!!!!".format(name, val))
 
     # Mark readonly parameters
-    if args.readonly_config:
+    ако args.readonly_config:
         all_param_names = set()
-        for group in param_groups:
-            for param in group.GetParams():
+        за group in param_groups:
+            за param in group.GetParams():
                 all_param_names.add(param.GetName())
         readonly_params = readonly_config.load_readonly_params(args.readonly_config, all_param_names)
-        for group in param_groups:
-            for param in group.GetParams():
-                if param.GetName() in readonly_params:
+        за group in param_groups:
+            за param in group.GetParams():
+                ако param.GetName() in readonly_params:
                     param.SetReadonly()
 
     output_files = []
 
     # Output to XML file
-    if args.xml:
-        if args.verbose:
+    ако args.xml:
+        ако args.verbose:
             print("Creating XML file " + args.xml)
         out = xmlout.XMLOutput(param_groups, args.board)
         out.Save(args.xml)
         output_files.append(args.xml)
 
     # Output to Markdown/HTML tables
-    if args.markdown:
-        if args.verbose:
+    ако args.markdown:
+        ако args.verbose:
             print("Creating markdown file " + args.markdown)
         out = markdownout.MarkdownTablesOutput(param_groups)
         out.Save(args.markdown)
         output_files.append(args.markdown)
 
     # Output to JSON file
-    if args.json:
-        if args.verbose:
+    ако args.json:
+        ако args.verbose:
             print("Creating Json file " + args.json)
         cur_dir = os.path.dirname(os.path.realpath(__file__))
         out = jsonout.JsonOutput(param_groups, args.board)
         out.Save(args.json)
         output_files.append(args.json)
 
-    if args.compress:
-        for f in output_files:
-            if args.verbose:
+    ако args.compress:
+        за f in output_files:
+            ако args.verbose:
                 print("Compressing file " + f)
             save_compressed(f)
 
 
-if __name__ == "__main__":
+ако __name__ == "__main__":
     main()

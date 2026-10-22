@@ -76,22 +76,22 @@ void PX4Rangefinder::update(const hrt_abstime &timestamp_sample, const float dis
 	report.signal_quality = quality;
 
 	// if quality is unavailable (-1) set to 0 if distance is outside bounds
-	if (quality < 0) {
-		if ((distance < report.min_distance) || (distance > report.max_distance)) {
+	ако (quality < 0) {
+		ако ((distance < report.min_distance) || (distance > report.max_distance)) {
 			report.signal_quality = 0;
 		}
 	}
 
 	// Update the quaternion in the sample update
-	if (q != nullptr) {
+	ако (q != nullptr) {
 		memcpy(report.q, q, sizeof(float) * q_len);
 	}
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_DISTANCE_SENSOR,
+	ако (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_DISTANCE_SENSOR,
 					_distance_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		врати;
 	}
 
 	_distance_sensor_pub.update();

@@ -41,16 +41,16 @@ namespace
 
 // Helper: assemble cost matrix entries into a row-major buffer. Use INFINITY for
 // missing edges; explicit list of finite (i, j, cost) triples is concise in tests.
-struct Edge { int from, to; float cost; };
+struct Edge { цео from, to; float cost; };
 
-template <int N>
+template <цео N>
 void makeMatrix(float (&m)[N * N], std::initializer_list<Edge> edges)
 {
-	for (int i = 0; i < N * N; ++i) {
+	за (цео i = 0; i < N * N; ++i) {
 		m[i] = INFINITY;
 	}
 
-	for (const auto &e : edges) {
+	за (const auto &e : edges) {
 		m[e.from * N + e.to] = e.cost;
 	}
 }
@@ -59,10 +59,10 @@ void makeMatrix(float (&m)[N * N], std::initializer_list<Edge> edges)
 
 TEST(DijkstraTest, SingleNodeAtGoal)
 {
-	constexpr int N = 1;
+	constexpr цео N = 1;
 	float cost[N * N] = { INFINITY };
 	float best[N];
-	int next[N];
+	цео next[N];
 	bool vis[N];
 
 	ASSERT_TRUE(dijkstra::solveBackward(N, 0, cost, false, best, next, vis));
@@ -73,7 +73,7 @@ TEST(DijkstraTest, SingleNodeAtGoal)
 TEST(DijkstraTest, AsymmetricLineGraphForward)
 {
 	// 0 -> 1 -> 2, going forward is cheap, going backward is expensive.
-	constexpr int N = 3;
+	constexpr цео N = 3;
 	float cost[N * N];
 	makeMatrix<N>(cost, {
 		{0, 1, 1.f},
@@ -83,7 +83,7 @@ TEST(DijkstraTest, AsymmetricLineGraphForward)
 	});
 
 	float best[N];
-	int next[N];
+	цео next[N];
 	bool vis[N];
 
 	ASSERT_TRUE(dijkstra::solveBackward(N, 2, cost, false, best, next, vis));
@@ -100,7 +100,7 @@ TEST(DijkstraTest, AsymmetricLineGraphReverse)
 {
 	// Same matrix as above; with goal = 0, paths must use the expensive back-edges,
 	// confirming the solver respects edge direction (uses cost[i][j] = i -> j, not j -> i).
-	constexpr int N = 3;
+	constexpr цео N = 3;
 	float cost[N * N];
 	makeMatrix<N>(cost, {
 		{0, 1, 1.f},
@@ -110,7 +110,7 @@ TEST(DijkstraTest, AsymmetricLineGraphReverse)
 	});
 
 	float best[N];
-	int next[N];
+	цео next[N];
 	bool vis[N];
 
 	ASSERT_TRUE(dijkstra::solveBackward(N, 0, cost, false, best, next, vis));
@@ -126,7 +126,7 @@ TEST(DijkstraTest, AsymmetricLineGraphReverse)
 TEST(DijkstraTest, TriangleWithBlockedEdge)
 {
 	// Direct edge 0 -> 2 is cheap; remove it and the solver must route via 1.
-	constexpr int N = 3;
+	constexpr цео N = 3;
 	float cost[N * N];
 	makeMatrix<N>(cost, {
 		{0, 1, 1.f},
@@ -135,7 +135,7 @@ TEST(DijkstraTest, TriangleWithBlockedEdge)
 	});
 
 	float best[N];
-	int next[N];
+	цео next[N];
 	bool vis[N];
 
 	ASSERT_TRUE(dijkstra::solveBackward(N, 2, cost, false, best, next, vis));
@@ -153,7 +153,7 @@ TEST(DijkstraTest, GoalUnreachableNoInfiniteLoop)
 {
 	// Two disconnected components: {0, 1} and {2}. Goal = 2, so 0 and 1 must end
 	// up unreachable and the algorithm must not loop.
-	constexpr int N = 3;
+	constexpr цео N = 3;
 	float cost[N * N];
 	makeMatrix<N>(cost, {
 		{0, 1, 1.f},
@@ -161,7 +161,7 @@ TEST(DijkstraTest, GoalUnreachableNoInfiniteLoop)
 	});
 
 	float best[N];
-	int next[N];
+	цео next[N];
 	bool vis[N];
 
 	ASSERT_TRUE(dijkstra::solveBackward(N, 2, cost, false, best, next, vis));
@@ -174,7 +174,7 @@ TEST(DijkstraTest, GoalUnreachableNoInfiniteLoop)
 
 TEST(DijkstraTest, NaNTreatedAsMissingEdge)
 {
-	constexpr int N = 3;
+	constexpr цео N = 3;
 	float cost[N * N];
 	makeMatrix<N>(cost, {
 		{0, 1, 1.f},
@@ -183,7 +183,7 @@ TEST(DijkstraTest, NaNTreatedAsMissingEdge)
 	});
 
 	float best[N];
-	int next[N];
+	цео next[N];
 	bool vis[N];
 
 	ASSERT_TRUE(dijkstra::solveBackward(N, 2, cost, false, best, next, vis));
@@ -193,10 +193,10 @@ TEST(DijkstraTest, NaNTreatedAsMissingEdge)
 
 TEST(DijkstraTest, RejectsInvalidInputs)
 {
-	constexpr int N = 2;
+	constexpr цео N = 2;
 	float cost[N * N] = { INFINITY, 1.f, 1.f, INFINITY };
 	float best[N];
-	int next[N];
+	цео next[N];
 	bool vis[N];
 
 	EXPECT_FALSE(dijkstra::solveBackward(0, 0, cost, false, best, next, vis));
@@ -210,10 +210,10 @@ TEST(DijkstraTest, SymmetricPackedMatchesAsymmetric)
 {
 	// Same undirected weighted graph expressed two ways: full N*N matrix with both
 	// halves filled, and packed upper triangle. Results must match for both layouts.
-	constexpr int N = 5;
+	constexpr цео N = 5;
 
 	// Edges (a, b, w) with a < b.
-	struct UndirEdge { int a, b; float w; };
+	struct UndirEdge { цео a, b; float w; };
 	const UndirEdge edges[] = {
 		{0, 1, 2.f},
 		{0, 2, 4.f},
@@ -225,28 +225,28 @@ TEST(DijkstraTest, SymmetricPackedMatchesAsymmetric)
 
 	float full[N * N];
 
-	for (int i = 0; i < N * N; ++i) { full[i] = INFINITY; }
+	за (цео i = 0; i < N * N; ++i) { full[i] = INFINITY; }
 
-	constexpr int kPacked = N * (N - 1) / 2;
+	constexpr цео kPacked = N * (N - 1) / 2;
 	float packed[kPacked];
 
-	for (int i = 0; i < kPacked; ++i) { packed[i] = INFINITY; }
+	за (цео i = 0; i < kPacked; ++i) { packed[i] = INFINITY; }
 
-	for (const auto &e : edges) {
+	за (const auto &e : edges) {
 		full[e.a * N + e.b] = e.w;
 		full[e.b * N + e.a] = e.w;
 		packed[e.a * (2 * N - e.a - 1) / 2 + (e.b - e.a - 1)] = e.w;
 	}
 
 	float best_full[N], best_pack[N];
-	int next_full[N], next_pack[N];
+	цео next_full[N], next_pack[N];
 	bool vis[N];
 
-	for (int goal = 0; goal < N; ++goal) {
+	за (цео goal = 0; goal < N; ++goal) {
 		ASSERT_TRUE(dijkstra::solveBackward(N, goal, full, false, best_full, next_full, vis));
 		ASSERT_TRUE(dijkstra::solveBackward(N, goal, packed, true, best_pack, next_pack, vis));
 
-		for (int i = 0; i < N; ++i) {
+		за (цео i = 0; i < N; ++i) {
 			EXPECT_FLOAT_EQ(best_full[i], best_pack[i]) << "goal=" << goal << " i=" << i;
 			EXPECT_EQ(next_full[i], next_pack[i]) << "goal=" << goal << " i=" << i;
 		}
@@ -258,7 +258,7 @@ TEST(DijkstraTest, ForwardWalkReachesGoal)
 	// 5-node graph: 0 -> 1 -> 2 -> 3 -> 4, plus a long detour 0 -> 4 directly.
 	// Solving once with goal = 4, then for any start we should reach 4 by following
 	// next_node without re-solving.
-	constexpr int N = 5;
+	constexpr цео N = 5;
 	float cost[N * N];
 	makeMatrix<N>(cost, {
 		{0, 1, 1.f},
@@ -269,15 +269,15 @@ TEST(DijkstraTest, ForwardWalkReachesGoal)
 	});
 
 	float best[N];
-	int next[N];
+	цео next[N];
 	bool vis[N];
 	ASSERT_TRUE(dijkstra::solveBackward(N, 4, cost, false, best, next, vis));
 
-	for (int start = 0; start < N - 1; ++start) {
-		int u = start;
-		int hops = 0;
+	за (цео start = 0; start < N - 1; ++start) {
+		цео u = start;
+		цео hops = 0;
 
-		while (u != 4 && hops < N) {
+		док (u != 4 && hops < N) {
 			ASSERT_GE(next[u], 0) << "stuck at " << u << " from start " << start;
 			u = next[u];
 			++hops;
@@ -300,8 +300,8 @@ TEST(DijkstraTest, SymmetricPairIndex)
 	std::srand(42);
 	size_t idx = 0;
 
-	for (size_t i = 0; i < N; ++i) {
-		for (size_t j = i + 1; j < N; ++j) {
+	за (size_t i = 0; i < N; ++i) {
+		за (size_t j = i + 1; j < N; ++j) {
 			matrix[i][j] = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
 			matrix[j][i] = matrix[i][j]; // symmetric matrix
 			packed[idx++] = matrix[i][j];
@@ -310,8 +310,8 @@ TEST(DijkstraTest, SymmetricPairIndex)
 
 	size_t counter = 0;
 
-	for (size_t i = 0; i < N; ++i) {
-		for (size_t j = i + 1; j < N; ++j) {
+	за (size_t i = 0; i < N; ++i) {
+		за (size_t j = i + 1; j < N; ++j) {
 			counter++;
 			EXPECT_FLOAT_EQ(matrix[i][j], packed[dijkstra::symmetricPairIndex(i, j, N)]);
 			EXPECT_FLOAT_EQ(matrix[i][j], packed[dijkstra::symmetricPairIndex(j, i, N)]);

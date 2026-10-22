@@ -46,7 +46,7 @@ TEST(MatrixUpperRightTriangleTest, UpperRightTriangle)
 
 	SquareMatrix<float, 3> A(data);
 
-	for (size_t i = 0; i < 6; i++) {
+	за (size_t i = 0; i < 6; i++) {
 		EXPECT_FLOAT_EQ(urt[i], A.upper_right_triangle()(i));
 	}
 }

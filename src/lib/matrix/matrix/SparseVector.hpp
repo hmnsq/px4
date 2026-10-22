@@ -26,15 +26,15 @@ private:
 	{
 		constexpr size_t indicies[] {Idxs...};
 
-		for (size_t i = 0; i < N; i++) {
-			for (size_t j = 0; j < i; j++) {
-				if (indicies[i] == indicies[j]) {
-					return true;
+		за (size_t i = 0; i < N; i++) {
+			за (size_t j = 0; j < i; j++) {
+				ако (indicies[i] == indicies[j]) {
+					врати true;
 				}
 			}
 		}
 
-		return false;
+		врати false;
 	}
 
 	static constexpr size_t findMaxIndex()
@@ -42,19 +42,19 @@ private:
 		constexpr size_t indicies[] {Idxs...};
 		size_t maxIndex = 0;
 
-		for (size_t i = 0; i < N; i++) {
-			if (maxIndex < indicies[i]) {
+		за (size_t i = 0; i < N; i++) {
+			ако (maxIndex < indicies[i]) {
 				maxIndex = indicies[i];
 			}
 		}
 
-		return maxIndex;
+		врати maxIndex;
 	}
 
 	static constexpr size_t indexAt(size_t i)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		return indicies[i];
+		врати indicies[i];
 	}
 
 	static_assert(!duplicateIndices(), "Duplicate indices");
@@ -64,36 +64,36 @@ private:
 
 	Type _data[N] {};
 
-	static constexpr int findCompressedIndex(size_t index)
+	static constexpr цео findCompressedIndex(size_t index)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		int compressedIndex = -1;
+		цео compressedIndex = -1;
 
-		for (size_t i = 0; i < N; i++) {
-			if (index == indicies[i]) {
-				compressedIndex = static_cast<int>(i);
+		за (size_t i = 0; i < N; i++) {
+			ако (index == indicies[i]) {
+				compressedIndex = static_cast<цео>(i);
 			}
 		}
 
-		return compressedIndex;
+		врати compressedIndex;
 	}
 
 public:
 	constexpr size_t non_zeros() const
 	{
-		return N;
+		врати N;
 	}
 
 	constexpr size_t index(size_t i) const
 	{
-		return indexAt(i);
+		врати indexAt(i);
 	}
 
 	SparseVector() = default;
 
 	SparseVector(const matrix::Vector<Type, M> &data)
 	{
-		for (size_t i = 0; i < N; i++) {
+		за (size_t i = 0; i < N; i++) {
 			_data[i] = data(indexAt(i));
 		}
 	}
@@ -106,34 +106,34 @@ public:
 	template <size_t i>
 	inline Type at() const
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
+		constexpr цео compressed_index = findCompressedIndex(i);
 		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		врати _data[compressed_index];
 	}
 
 	template <size_t i>
 	inline Type &at()
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
+		constexpr цео compressed_index = findCompressedIndex(i);
 		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		врати _data[compressed_index];
 	}
 
 	inline Type atCompressedIndex(size_t i) const
 	{
 		assert(i < N);
-		return _data[i];
+		врати _data[i];
 	}
 
 	inline Type &atCompressedIndex(size_t i)
 	{
 		assert(i < N);
-		return _data[i];
+		врати _data[i];
 	}
 
 	void setZero()
 	{
-		for (size_t i = 0; i < N; i++) {
+		за (size_t i = 0; i < N; i++) {
 			_data[i] = Type(0);
 		}
 	}
@@ -142,52 +142,52 @@ public:
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
+		за (size_t i = 0; i < N; i++) {
 			accum += _data[i] * other(indexAt(i));
 		}
 
-		return accum;
+		врати accum;
 	}
 
 	matrix::Vector<Type, M> operator+(const matrix::Vector<Type, M> &other) const
 	{
 		matrix::Vector<Type, M> vec = other;
 
-		for (size_t i = 0; i < N; i++) {
+		за (size_t i = 0; i < N; i++) {
 			vec(indexAt(i)) +=  _data[i];
 		}
 
-		return vec;
+		врати vec;
 	}
 
 	SparseVector &operator+=(Type t)
 	{
-		for (size_t i = 0; i < N; i++) {
+		за (size_t i = 0; i < N; i++) {
 			_data[i] += t;
 		}
 
-		return *this;
+		врати *this;
 	}
 
 	Type norm_squared() const
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
+		за (size_t i = 0; i < N; i++) {
 			accum += _data[i] * _data[i];
 		}
 
-		return accum;
+		врати accum;
 	}
 
 	Type norm() const
 	{
-		return std::sqrt(norm_squared());
+		врати std::sqrt(norm_squared());
 	}
 
 	bool longerThan(Type testVal) const
 	{
-		return norm_squared() > testVal * testVal;
+		врати norm_squared() > testVal * testVal;
 	}
 };
 
@@ -197,12 +197,12 @@ matrix::Vector<Type, Q> operator*(const matrix::Matrix<Type, Q, M> &mat,
 {
 	matrix::Vector<Type, Q> res;
 
-	for (size_t i = 0; i < Q; i++) {
+	за (size_t i = 0; i < Q; i++) {
 		const Vector<Type, M> row = mat.row(i);
 		res(i) = vec.dot(row);
 	}
 
-	return res;
+	врати res;
 }
 
 // returns x.T * A * x
@@ -211,17 +211,17 @@ Type quadraticForm(const matrix::SquareMatrix<Type, M> &A, const matrix::SparseV
 {
 	Type res = Type(0);
 
-	for (size_t i = 0; i < x.non_zeros(); i++) {
+	за (size_t i = 0; i < x.non_zeros(); i++) {
 		Type tmp = Type(0);
 
-		for (size_t j = 0; j < x.non_zeros(); j++) {
+		за (size_t j = 0; j < x.non_zeros(); j++) {
 			tmp += A(x.index(i), x.index(j)) * x.atCompressedIndex(j);
 		}
 
 		res += x.atCompressedIndex(i) * tmp;
 	}
 
-	return res;
+	врати res;
 }
 
 template<size_t M, size_t ... Idxs>

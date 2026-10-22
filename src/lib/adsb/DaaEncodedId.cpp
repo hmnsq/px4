@@ -47,24 +47,24 @@
 
 DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
 {
-	if (report.icao_address > 0 && report.icao_address <= kMaxIcaoAddress) {
+	ако (report.icao_address > 0 && report.icao_address <= kMaxIcaoAddress) {
 		PX4_DEBUG("DAA: Unique ID encoding: ICAO.");
-		return {
+		врати {
 			static_cast<uint64_t>(report.icao_address),
 			detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO
 		};
 	}
 
-	if (report.icao_address > kMaxIcaoAddress) {
+	ако (report.icao_address > kMaxIcaoAddress) {
 		PX4_DEBUG("DAA: invalid ICAO address");
 	}
 
-	if (report.flags & transponder_report_s::PX4_ADSB_FLAGS_VALID_CALLSIGN) {
+	ако (report.flags & transponder_report_s::PX4_ADSB_FLAGS_VALID_CALLSIGN) {
 		PX4_DEBUG("DAA: Unique ID encoding: Callsign.");
 		const uint64_t callsign_id = callsign_to_uint64(report.callsign);
 
-		if (callsign_id != 0) {
-			return {
+		ако (callsign_id != 0) {
+			врати {
 				callsign_id,
 				detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN
 			};
@@ -76,19 +76,19 @@ DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
 
 	bool uas_id_valid = false;
 
-	for (int i = 0; i < kUasIdByteLength; ++i) {
-		if (report.uas_id[i] != 0) {
+	за (цео i = 0; i < kUasIdByteLength; ++i) {
+		ако (report.uas_id[i] != 0) {
 			uas_id_valid = true;
 			break;
 		}
 	}
 
-	if (uas_id_valid) {
+	ако (uas_id_valid) {
 		PX4_DEBUG("DAA: Unique ID encoding: UAS id.");
 		const uint64_t uas_id = last_uas_id_bytes_to_uint64(report.uas_id);
 
-		if (uas_id != 0) {
-			return {
+		ако (uas_id != 0) {
+			врати {
 				uas_id,
 				detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID
 			};
@@ -97,7 +97,7 @@ DaaEncodedId DaaEncodedId::from_report(const transponder_report_s &report)
 		PX4_DEBUG("DAA: Failed to convert uas_id to uint64.");
 	}
 
-	return {};
+	врати {};
 }
 
 DaaEncodedId DaaEncodedId::identify_traffic_report(const transponder_report_s &report,
@@ -105,51 +105,51 @@ DaaEncodedId DaaEncodedId::identify_traffic_report(const transponder_report_s &r
 {
 	const DaaEncodedId encoded_id = from_report(report);
 
-	if (encoded_id.id == 0) {
+	ако (encoded_id.id == 0) {
 		PX4_DEBUG("DAA: No valid unique ID, skipping report");
-		return {};
+		врати {};
 	}
 
-	if (is_self_detection(encoded_id, ownship_ids)) {
+	ако (is_self_detection(encoded_id, ownship_ids)) {
 		PX4_DEBUG("DAA: Self detection, skipping report.");
-		return {};
+		врати {};
 	}
 
-	return encoded_id;
+	врати encoded_id;
 }
 
 bool DaaEncodedId::is_self_detection(const DaaEncodedId &encoded_id, const daa_ownship_ids_s &ownship_ids)
 {
 	switch (encoded_id.encoding) {
 	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO: {
-			if (ownship_ids.icao >= 0
+			ако (ownship_ids.icao >= 0
 			    && static_cast<uint32_t>(encoded_id.id) == static_cast<uint32_t>(ownship_ids.icao)) {
 				PX4_DEBUG("DAA: Received own main ICAO.");
-				return true;
+				врати true;
 			}
 
-			if (ownship_ids.icao_2 >= 0
+			ако (ownship_ids.icao_2 >= 0
 			    && static_cast<uint32_t>(encoded_id.id) == static_cast<uint32_t>(ownship_ids.icao_2)) {
 				PX4_DEBUG("DAA: Received own secondary ICAO.");
-				return true;
+				врати true;
 			}
 
 			break;
 		}
 
 	case detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN: {
-			if (encoded_id.id == ownship_ids.callsign) {
+			ако (encoded_id.id == ownship_ids.callsign) {
 				PX4_DEBUG("DAA: Received own Callsign.");
-				return true;
+				врати true;
 			}
 
 			break;
 		}
 
 	case detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
-			if (ownship_ids.uas_id_valid && encoded_id.id == ownship_ids.uas_id) {
+			ако (ownship_ids.uas_id_valid && encoded_id.id == ownship_ids.uas_id) {
 				PX4_DEBUG("DAA: Received own UAS ID.");
-				return true;
+				врати true;
 			}
 
 			break;
@@ -159,12 +159,12 @@ bool DaaEncodedId::is_self_detection(const DaaEncodedId &encoded_id, const daa_o
 		break;
 	}
 
-	return false;
+	врати false;
 }
 
 void DaaEncodedId::to_string(char *buffer, size_t buffer_size) const
 {
-	if (buffer == nullptr || buffer_size == 0) { return; }
+	ако (buffer == nullptr || buffer_size == 0) { врати; }
 
 	memset(buffer, 0, buffer_size);
 
@@ -180,14 +180,14 @@ void DaaEncodedId::to_string(char *buffer, size_t buffer_size) const
 
 			// Keep malformed/custom publishers from injecting control
 			// characters into MAVLink status text.
-			for (char &character : callsign) {
+			за (char &character : callsign) {
 				const uint8_t byte = static_cast<uint8_t>(character);
 
-				if (byte == 0) {
+				ако (byte == 0) {
 					break;
 				}
 
-				if (byte < 0x20 || byte > 0x7e) {
+				ако (byte < 0x20 || byte > 0x7e) {
 					character = '?';
 				}
 			}
@@ -211,30 +211,30 @@ void DaaEncodedId::to_string(char *buffer, size_t buffer_size) const
 
 uint64_t DaaEncodedId::callsign_to_uint64(const char callsign[kCallsignLength])
 {
-	if (callsign == nullptr) {
-		return 0;
+	ако (callsign == nullptr) {
+		врати 0;
 	}
 
 	bool null_terminated = false;
 
-	for (size_t i = 0; i < kCallsignLength; ++i) {
-		if (callsign[i] == '\0') {
+	за (size_t i = 0; i < kCallsignLength; ++i) {
+		ако (callsign[i] == '\0') {
 			null_terminated = true;
 			break;
 		}
 	}
 
-	if (!null_terminated) {
-		return 0;
+	ако (!null_terminated) {
+		врати 0;
 	}
 
 	uint64_t result = 0;
 
-	for (int i = 0; i < kIdEncodingNbBytes && callsign[i] != '\0'; ++i) {
+	за (цео i = 0; i < kIdEncodingNbBytes && callsign[i] != '\0'; ++i) {
 		result |= (static_cast<uint64_t>(static_cast<uint8_t>(callsign[i])) << (i * 8));
 	}
 
-	return result;
+	врати result;
 }
 
 uint64_t DaaEncodedId::callsign_params_to_uint64(const int32_t callsign_part1, const int32_t callsign_part2)
@@ -245,36 +245,36 @@ uint64_t DaaEncodedId::callsign_params_to_uint64(const int32_t callsign_part1, c
 	};
 	char callsign[kCallsignLength] {};
 
-	for (size_t part_idx = 0; part_idx < 2; ++part_idx) {
-		for (size_t char_idx = 0; char_idx < sizeof(uint32_t); ++char_idx) {
+	за (size_t part_idx = 0; part_idx < 2; ++part_idx) {
+		за (size_t char_idx = 0; char_idx < sizeof(uint32_t); ++char_idx) {
 			const unsigned shift = static_cast<unsigned>((sizeof(uint32_t) - char_idx - 1) * 8);
 			callsign[part_idx * sizeof(uint32_t) + char_idx] = static_cast<char>((parts[part_idx] >> shift) & 0xffu);
 		}
 	}
 
-	return callsign_to_uint64(callsign);
+	врати callsign_to_uint64(callsign);
 }
 
 void DaaEncodedId::convert_uint64_callsign_to_str(uint64_t value, char callsign[kCallsignLength])
 {
-	if (callsign == nullptr) {
-		return;
+	ако (callsign == nullptr) {
+		врати;
 	}
 
 	memset(callsign, 0, kCallsignLength);
 
-	const int max_chars = kCallsignLength - 1;
+	const цео max_chars = kCallsignLength - 1;
 
-	if (value == 0) {
+	ако (value == 0) {
 		memset(callsign, '0', max_chars);
 
-	} else {
+	} инако {
 
-		for (int i = 0; i < max_chars; ++i) {
+		за (цео i = 0; i < max_chars; ++i) {
 			char c = (value >> (i * 8)) & 0xFF;
 			callsign[i] = c;
 
-			if (c == 0) {
+			ако (c == 0) {
 				break;
 			}
 		}
@@ -285,37 +285,37 @@ void DaaEncodedId::convert_uint64_callsign_to_str(uint64_t value, char callsign[
 
 uint64_t DaaEncodedId::last_uas_id_bytes_to_uint64(const uint8_t uas_id[kUasIdByteLength])
 {
-	if (uas_id == nullptr) {
-		return 0;
+	ако (uas_id == nullptr) {
+		врати 0;
 	}
 
 	uint64_t uas_id_int = 0;
 
 	// Pack the last kIdEncodingNbBytes bytes into the key.
-	for (int i = 0; i < kIdEncodingNbBytes; ++i) {
+	за (цео i = 0; i < kIdEncodingNbBytes; ++i) {
 		uas_id_int |= static_cast<uint64_t>(uas_id[kUasIdByteLength - kIdEncodingNbBytes + i]) << (i * 8);
 	}
 
-	return uas_id_int;
+	врати uas_id_int;
 }
 
 void DaaEncodedId::convert_uas_id_uint64_to_str(const uint64_t uas_id_int, char uas_id_char_arr[kUtmGuidMsgLength])
 {
-	if (uas_id_char_arr == nullptr) {
-		return;
+	ако (uas_id_char_arr == nullptr) {
+		врати;
 	}
 
 	static constexpr char kHexDigits[] = "0123456789abcdef";
 
-	if (uas_id_int == 0) {
+	ако (uas_id_int == 0) {
 		memset(uas_id_char_arr, '0', kUtmGuidMsgLength - 1);
 
-	} else {
+	} инако {
 
 		// Render the low reduced_uas_id_length bytes as hex.
-		const int reduced_uas_id_length = (kUtmGuidMsgLength - 1) / 2;
+		const цео reduced_uas_id_length = (kUtmGuidMsgLength - 1) / 2;
 
-		for (int i = 0; i < reduced_uas_id_length; ++i) {
+		за (цео i = 0; i < reduced_uas_id_length; ++i) {
 			const uint8_t byte = static_cast<uint8_t>((uas_id_int >>(i * 8)) & 0xFF);
 			uas_id_char_arr[i * 2] = kHexDigits[byte >> 4];
 			uas_id_char_arr[i * 2 + 1] = kHexDigits[byte & 0x0F];
@@ -327,8 +327,8 @@ void DaaEncodedId::convert_uas_id_uint64_to_str(const uint64_t uas_id_int, char 
 
 void DaaEncodedId::convert_icao_uint32_to_hex_str(uint64_t value, char *buffer, size_t buffer_size)
 {
-	if (buffer == nullptr || buffer_size < kIcaoLength) {
-		return;
+	ако (buffer == nullptr || buffer_size < kIcaoLength) {
+		врати;
 	}
 
 	const uint32_t icao_address = static_cast<uint32_t>(value & 0xFFFFFFu);

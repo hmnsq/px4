@@ -60,14 +60,14 @@ static orb_advert_t param_reset_req_h     = nullptr;
 
 static orb_sub_t param_set_rsp_fd = ORB_SUB_INVALID;
 
-static int primary_sync_thread(int argc, char *argv[])
+static цео primary_sync_thread(цео argc, char *argv[])
 {
 	// Need to wait until the uORB and muORB are ready
 	// Check for uORB initialization with get_instance
-	while (uORB::Manager::get_instance() == nullptr) { px4_usleep(100); }
+	док (uORB::Manager::get_instance() == nullptr) { px4_usleep(100); }
 
 	// Check for muORB initialization with get_uorb_communicator
-	while (uORB::Manager::get_instance()->get_uorb_communicator() == nullptr) { px4_usleep(100); }
+	док (uORB::Manager::get_instance()->get_uorb_communicator() == nullptr) { px4_usleep(100); }
 
 	orb_advert_t _set_value_rsp_h = nullptr;
 
@@ -84,16 +84,16 @@ static int primary_sync_thread(int argc, char *argv[])
 
 	PX4_INFO("Starting parameter primary sync thread");
 
-	while (true) {
+	док (true) {
 		px4_poll(fds, 2, 1000);
 
-		if (fds[0].revents & POLLIN) {
+		ако (fds[0].revents & POLLIN) {
 			bool updated = true;
 
-			while (updated) {
+			док (updated) {
 				orb_copy(ORB_ID(parameter_set_used_request), _set_used_req_fd, &_set_used_request);
 
-				if (debug) {
+				ако (debug) {
 					PX4_INFO("Got parameter_set_used_request for %s", param_name(_set_used_request.parameter_index));
 				}
 
@@ -106,13 +106,13 @@ static int primary_sync_thread(int argc, char *argv[])
 
 		}
 
-		if (fds[1].revents & POLLIN) {
+		ако (fds[1].revents & POLLIN) {
 			bool updated = true;
 
-			while (updated) {
+			док (updated) {
 				orb_copy(ORB_ID(parameter_primary_set_value_request), _set_value_req_fd, &_set_value_request);
 
-				if (debug) {
+				ако (debug) {
 					PX4_INFO("Got parameter_primary_set_value_request for %s", param_name(_set_value_request.parameter_index));
 				}
 
@@ -138,10 +138,10 @@ static int primary_sync_thread(int argc, char *argv[])
 				_set_value_response.request_timestamp = _set_value_request.timestamp;
 				_set_value_response.parameter_index = _set_value_request.parameter_index;
 
-				if (_set_value_rsp_h == nullptr) {
+				ако (_set_value_rsp_h == nullptr) {
 					_set_value_rsp_h = orb_advertise(ORB_ID(parameter_primary_set_value_response), &_set_value_response);
 
-				} else {
+				} инако {
 					orb_publish(ORB_ID(parameter_primary_set_value_response), _set_value_rsp_h, &_set_value_response);
 				}
 
@@ -152,7 +152,7 @@ static int primary_sync_thread(int argc, char *argv[])
 		}
 	}
 
-	return 0;
+	врати 0;
 }
 
 void param_primary_init()
@@ -179,7 +179,7 @@ void param_primary_set_value(param_t param, const void *val)
 	case PARAM_TYPE_INT32:
 		req.int_value = *(int32_t *)val;
 
-		if (debug) {
+		ако (debug) {
 			PX4_INFO("*** Setting %s to %d ***", param_name(req.parameter_index), req.int_value);
 		}
 
@@ -188,7 +188,7 @@ void param_primary_set_value(param_t param, const void *val)
 	case PARAM_TYPE_FLOAT:
 		req.float_value = *(float *)val;
 
-		if (debug) {
+		ако (debug) {
 			PX4_INFO("*** Setting %s to %f ***", param_name(req.parameter_index), (double) req.float_value);
 		}
 
@@ -200,29 +200,29 @@ void param_primary_set_value(param_t param, const void *val)
 		break;
 	}
 
-	if (!orb_sub_valid(param_set_rsp_fd)) {
-		if (debug) {
+	ако (!orb_sub_valid(param_set_rsp_fd)) {
+		ако (debug) {
 			PX4_INFO("Subscribing to parameter_client_set_value_response");
 		}
 
 		param_set_rsp_fd = orb_subscribe(ORB_ID(parameter_remote_set_value_response));
 
-		if (!orb_sub_valid(param_set_rsp_fd)) {
+		ако (!orb_sub_valid(param_set_rsp_fd)) {
 			PX4_ERR("Subscription to parameter_remote_set_value_response failed");
 
-		} else {
-			if (debug) {
+		} инако {
+			ако (debug) {
 				PX4_INFO("Subscription to parameter_client_set_value_response succeeded");
 			}
 		}
 	}
 
-	if (send_request) {
-		if (debug) {
+	ако (send_request) {
+		ако (debug) {
 			PX4_INFO("Sending param set request to remote for %s", param_name(req.parameter_index));
 		}
 
-		if (param_set_value_req_h == nullptr) {
+		ако (param_set_value_req_h == nullptr) {
 			param_set_value_req_h = orb_advertise(ORB_ID(parameter_remote_set_value_request), nullptr);
 		}
 
@@ -233,29 +233,29 @@ void param_primary_set_value(param_t param, const void *val)
 		// Wait for response
 		bool updated = false;
 
-		if (debug) {
+		ако (debug) {
 			PX4_INFO("Waiting for parameter_client_set_value_response for %s", param_name(req.parameter_index));
 		}
 
 		px4_usleep(TIMEOUT_WAIT);
-		int count = TIMEOUT_COUNT;
+		цео count = TIMEOUT_COUNT;
 
-		while (--count) {
+		док (--count) {
 			(void) orb_check(param_set_rsp_fd, &updated);
 
 			struct parameter_set_value_response_s rsp;
 
-			while (updated) {
+			док (updated) {
 
 				orb_copy(ORB_ID(parameter_remote_set_value_response), param_set_rsp_fd, &rsp);
 
-				if ((rsp.request_timestamp == req.timestamp) && (rsp.parameter_index == req.parameter_index)) {
-					if (debug) {
+				ако ((rsp.request_timestamp == req.timestamp) && (rsp.parameter_index == req.parameter_index)) {
+					ако (debug) {
 						PX4_INFO("Got parameter_remote_set_value_response for %s", param_name(req.parameter_index));
 					}
 
 					param_primary_counters.set_value_response_received++;
-					return;
+					врати;
 				}
 
 				(void) orb_check(param_set_rsp_fd, &updated);
@@ -270,7 +270,7 @@ void param_primary_set_value(param_t param, const void *val)
 
 static void param_primary_reset_internal(param_t param, bool reset_all)
 {
-	if (debug) {
+	ако (debug) {
 		PX4_INFO("Param reset at primary");
 	}
 
@@ -280,18 +280,18 @@ static void param_primary_reset_internal(param_t param, bool reset_all)
 
 	req.reset_all = reset_all;
 
-	if (reset_all == false) {
+	ако (reset_all == false) {
 		req.parameter_index = param;
 	}
 
-	if (debug) {
+	ако (debug) {
 		PX4_INFO("Sending param reset request to remote");
 	}
 
-	if (param_reset_req_h == nullptr) {
+	ако (param_reset_req_h == nullptr) {
 		param_reset_req_h = orb_advertise(ORB_ID(parameter_reset_request), &req);
 
-	} else {
+	} инако {
 		orb_publish(ORB_ID(parameter_reset_request), param_reset_req_h, &req);
 	}
 

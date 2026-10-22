@@ -54,7 +54,7 @@ void PX4Magnetometer::set_device_id(uint32_t device_id)
 {
 	_device_id = device_id;
 
-	if (!_external_forced) {
+	ако (!_external_forced) {
 		_is_external = device::device_is_external(device_id);
 	}
 }
@@ -104,9 +104,9 @@ void PX4Magnetometer::update(const hrt_abstime &timestamp_sample, float x, float
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_MAG,
+	ако (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_MAG,
 					_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		врати;
 	}
 
 	_sensor_pub.publish(report);

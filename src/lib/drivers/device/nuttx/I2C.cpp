@@ -42,7 +42,7 @@
 
 #include "I2C.hpp"
 
-#if defined(CONFIG_I2C)
+#ако defined(CONFIG_I2C)
 
 #include <px4_platform_common/i2c_spi_buses.h>
 #include <nuttx/i2c/i2c_master.h>
@@ -54,9 +54,9 @@ namespace device
  *  All calls to init() will NOT set the buss frequency
  */
 
-unsigned int I2C::_bus_clocks[PX4_NUMBER_I2C_BUSES] = PX4_I2C_BUS_CLOCK_INIT;
+unsigned цео I2C::_bus_clocks[PX4_NUMBER_I2C_BUSES] = PX4_I2C_BUS_CLOCK_INIT;
 
-I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency) :
+I2C::I2C(uint8_t device_type, const char *name, const цео bus, const uint16_t address, const uint32_t frequency) :
 	CDev(name, nullptr),
 	_frequency(frequency)
 {
@@ -75,44 +75,44 @@ I2C::I2C(const I2CSPIDriverConfig &config)
 
 I2C::~I2C()
 {
-	if (_dev) {
+	ако (_dev) {
 		px4_i2cbus_uninitialize(_dev);
 		_dev = nullptr;
 	}
 }
 
-int
+цео
 I2C::set_bus_clock(unsigned bus, unsigned clock_hz)
 {
-	int index = bus - 1;
+	цео index = bus - 1;
 
-	if (index < 0 || index >= static_cast<int>(sizeof(_bus_clocks) / sizeof(_bus_clocks[0]))) {
-		return -EINVAL;
+	ако (index < 0 || index >= static_cast<цео>(sizeof(_bus_clocks) / sizeof(_bus_clocks[0]))) {
+		врати -EINVAL;
 	}
 
-	if (_bus_clocks[index] > 0) {
+	ако (_bus_clocks[index] > 0) {
 		// DEVICE_DEBUG("overriding clock of %u with %u Hz\n", _bus_clocks[index], clock_hz);
 	}
 
 	_bus_clocks[index] = clock_hz;
 
-	return OK;
+	врати OK;
 }
 
-int
+цео
 I2C::init()
 {
-	int ret = PX4_ERROR;
+	цео ret = PX4_ERROR;
 	unsigned bus_index;
 
-	if (_dev != nullptr) {
-		return PX4_OK;
+	ако (_dev != nullptr) {
+		врати PX4_OK;
 	}
 
 	// attach to the i2c bus
 	_dev = px4_i2cbus_initialize(get_device_bus());
 
-	if (_dev == nullptr) {
+	ако (_dev == nullptr) {
 		DEVICE_DEBUG("failed to init I2C");
 		ret = -ENOENT;
 		goto out;
@@ -124,7 +124,7 @@ I2C::init()
 
 	// abort if the max frequency we allow (the frequency we ask)
 	// is smaller than the bus frequency
-	if (_bus_clocks[bus_index] > _frequency) {
+	ако (_bus_clocks[bus_index] > _frequency) {
 		(void)px4_i2cbus_uninitialize(_dev);
 		_dev = nullptr;
 		DEVICE_LOG("FAIL: too slow for bus #%u: %u KHz, device max: %" PRIu32 " KHz)",
@@ -145,14 +145,14 @@ I2C::init()
 
 	// set the bus frequency on the first access if it has
 	// not been set yet
-	if (_bus_clocks[bus_index] == 0) {
+	ако (_bus_clocks[bus_index] == 0) {
 		_bus_clocks[bus_index] = _frequency;
 	}
 
 	// call the probe function to check whether the device is present
 	ret = probe();
 
-	if (ret != OK) {
+	ако (ret != OK) {
 		DEVICE_DEBUG("probe failed");
 		goto out;
 	}
@@ -160,7 +160,7 @@ I2C::init()
 	// do base class init, which will create device node, etc
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ако (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
 		goto out;
 	}
@@ -171,23 +171,23 @@ I2C::init()
 
 out:
 
-	if ((ret != OK) && (_dev != nullptr)) {
+	ако ((ret != OK) && (_dev != nullptr)) {
 		px4_i2cbus_uninitialize(_dev);
 		_dev = nullptr;
 	}
 
-	return ret;
+	врати ret;
 }
 
-int
+цео
 I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
 {
-	int ret = PX4_ERROR;
+	цео ret = PX4_ERROR;
 	unsigned retry_count = 0;
 
-	if (_dev == nullptr) {
+	ако (_dev == nullptr) {
 		PX4_ERR("I2C device not opened");
-		return PX4_ERROR;
+		врати PX4_ERROR;
 	}
 
 	do {
@@ -196,7 +196,7 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 		i2c_msg_s msgv[2] {};
 		unsigned msgs = 0;
 
-		if (send_len > 0) {
+		ако (send_len > 0) {
 			msgv[msgs].frequency = _bus_clocks[get_device_bus() - 1];
 			msgv[msgs].addr = get_device_address();
 			msgv[msgs].flags = 0;
@@ -205,7 +205,7 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 			msgs++;
 		}
 
-		if (recv_len > 0) {
+		ако (recv_len > 0) {
 			msgv[msgs].frequency = _bus_clocks[get_device_bus() - 1];
 			msgv[msgs].addr = get_device_address();
 			msgv[msgs].flags = I2C_M_READ;
@@ -214,34 +214,34 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 			msgs++;
 		}
 
-		if (msgs == 0) {
-			return -EINVAL;
+		ако (msgs == 0) {
+			врати -EINVAL;
 		}
 
-		int ret_transfer = I2C_TRANSFER(_dev, &msgv[0], msgs);
+		цео ret_transfer = I2C_TRANSFER(_dev, &msgv[0], msgs);
 
-		if (ret_transfer != 0) {
+		ако (ret_transfer != 0) {
 			DEVICE_DEBUG("I2C transfer failed, result %d", ret_transfer);
 			ret = PX4_ERROR;
 
-		} else {
+		} инако {
 			// success
 			ret = PX4_OK;
 			break;
 		}
 
 		// if we have already retried once, and we aren't going to give up, then reset the bus
-		if ((_retries > 0) && (retry_count < _retries)) {
-#if defined(CONFIG_I2C_RESET)
+		ако ((_retries > 0) && (retry_count < _retries)) {
+#ако defined(CONFIG_I2C_RESET)
 			DEVICE_DEBUG("I2C bus: %d, Addr: %X, I2C_RESET %d/%d",
 				     get_device_bus(), get_device_address(), retry_count + 1, _retries);
 			I2C_RESET(_dev);
 #endif // CONFIG_I2C_RESET
 		}
 
-	} while (retry_count++ < _retries);
+	} док (retry_count++ < _retries);
 
-	return ret;
+	врати ret;
 }
 
 } // namespace device

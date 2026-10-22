@@ -186,7 +186,7 @@ __EXPORT extern void		perf_print_counter(perf_counter_t handle);
  * @param handle			The counter to print.
  * @param return			number of bytes written
  */
-__EXPORT extern int		perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle);
+__EXPORT extern цео		perf_print_counter_buffer(char *buffer, цео length, perf_counter_t handle);
 
 /**
  * Print all of the performance counters.

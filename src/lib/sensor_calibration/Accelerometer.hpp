@@ -45,7 +45,7 @@ namespace calibration
 class Accelerometer
 {
 public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+	static constexpr цео MAX_SENSOR_COUNT = 4;
 
 	static constexpr uint8_t DEFAULT_PRIORITY = 50;
 
@@ -54,7 +54,7 @@ public:
 	// and is not thermally managed, so it must not win the vote uncalibrated.
 	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 25;
 
-	static constexpr const char *SensorString() { return "ACC"; }
+	static constexpr const char *SensorString() { врати "ACC"; }
 
 	Accelerometer();
 	explicit Accelerometer(uint32_t device_id);
@@ -64,41 +64,41 @@ public:
 
 	void PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
+	bool set_calibration_index(цео calibration_index);
 	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
 	void set_device_id(uint32_t device_id, bool external);
 	bool set_offset(const matrix::Vector3f &offset);
 	bool set_scale(const matrix::Vector3f &scale);
 	void set_rotation(Rotation rotation);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	bool external() const { return _external; }
-	const matrix::Vector3f &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const matrix::Dcmf &rotation() const { return _rotation; }
-	const Rotation &rotation_enum() const { return _rotation_enum; }
-	const matrix::Vector3f &scale() const { return _scale; }
+	bool calibrated() const { врати (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_count() const { врати _calibration_count; }
+	int8_t calibration_index() const { врати _calibration_index; }
+	uint32_t device_id() const { врати _device_id; }
+	bool enabled() const { врати (_priority > 0); }
+	bool external() const { врати _external; }
+	const matrix::Vector3f &offset() const { врати _offset; }
+	const int32_t &priority() const { врати _priority; }
+	const matrix::Dcmf &rotation() const { врати _rotation; }
+	const Rotation &rotation_enum() const { врати _rotation_enum; }
+	const matrix::Vector3f &scale() const { врати _scale; }
 
 	// apply offsets and scale
 	// rotate corrected measurements from sensor to body frame
 	inline matrix::Vector3f Correct(const matrix::Vector3f &data) const
 	{
-		return _rotation * matrix::Vector3f{(data - _thermal_offset - _offset).emult(_scale)};
+		врати _rotation * matrix::Vector3f{(data - _thermal_offset - _offset).emult(_scale)};
 	}
 
 	// Compute sensor offset from bias (board frame)
 	matrix::Vector3f BiasCorrectedSensorOffset(const matrix::Vector3f &bias) const
 	{
 		// updated calibration offset = existing offset + bias rotated to sensor frame and unscaled
-		return _offset + (_rotation.T() * bias).edivide(_scale);
+		врати _offset + (_rotation.T() * bias).edivide(_scale);
 	}
 
 	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
+	bool ParametersSave(цео desired_calibration_index = -1, bool force = false);
 	void ParametersUpdate();
 
 	void Reset();

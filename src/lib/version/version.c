@@ -37,11 +37,11 @@
 
 #include <string.h>
 
-#if !defined(CONFIG_CDCACM_PRODUCTID)
+#ако !defined(CONFIG_CDCACM_PRODUCTID)
 # define CONFIG_CDCACM_PRODUCTID 0
 #endif
 
-#if defined(__PX4_LINUX)
+#ако defined(__PX4_LINUX)
 #include <sys/utsname.h>
 #endif
 
@@ -60,7 +60,7 @@ enum FIRMWARE_TYPE {
 
 const char *px4_build_uri(void)
 {
-	return STRINGIFY(BUILD_URI);
+	врати STRINGIFY(BUILD_URI);
 }
 
 uint32_t version_tag_to_number(const char *tag)
@@ -72,9 +72,9 @@ uint32_t version_tag_to_number(const char *tag)
 	size_t dash_count = 0;
 	size_t point_count = 0;
 	char version[3] = {0, 0, 0};
-	int firmware_type = FIRMWARE_TYPE_RELEASE;
+	цео firmware_type = FIRMWARE_TYPE_RELEASE;
 
-	for (size_t i = 0; i < strlen(tag); i++) {
+	за (size_t i = 0; i < strlen(tag); i++) {
 		switch (tag[i]) {
 		case '-':
 			dash_count++;
@@ -85,7 +85,7 @@ uint32_t version_tag_to_number(const char *tag)
 			break;
 
 		case 'r':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
+			ако (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
 				firmware_type = FIRMWARE_TYPE_RC;
 
 			}
@@ -97,10 +97,10 @@ uint32_t version_tag_to_number(const char *tag)
 			break;
 
 		case 't':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
+			ако (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
-			} else {
+			} инако {
 				firmware_type = FIRMWARE_TYPE_BETA;
 
 			}
@@ -108,7 +108,7 @@ uint32_t version_tag_to_number(const char *tag)
 			break;
 
 		case 'v':
-			if (i > 0) {
+			ако (i > 0) {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
 			}
@@ -120,24 +120,24 @@ uint32_t version_tag_to_number(const char *tag)
 		}
 	}
 
-	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
+	ако ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
 	    (dash_count == 2 && point_count == 2) ||
 	    (dash_count == 3 && point_count == 4) ||
 	    (dash_count == 4 && point_count == 4)) {
 		firmware_type = FIRMWARE_TYPE_DEV;
 	}
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (buffer_counter > 2) {
+	за (size_t i = 0; i < strlen(tag); i++) {
+		ако (buffer_counter > 2) {
 			continue;
 		}
 
-		if (tag[i] >= '0' && tag[i] <= '9') {
+		ако (tag[i] >= '0' && tag[i] <= '9') {
 			buffer = (buffer == -1) ? 0 : buffer;
 			buffer = buffer * 10 + (tag[i] - '0');
 
-		} else {
-			if (buffer >= 0) {
+		} инако {
+			ако (buffer >= 0) {
 				version[buffer_counter] = buffer;
 				buffer_counter++;
 			}
@@ -146,30 +146,30 @@ uint32_t version_tag_to_number(const char *tag)
 		}
 	}
 
-	if (buffer >= 0) {
+	ако (buffer >= 0) {
 		version[buffer_counter] = buffer;
 		buffer_counter++;
 	}
 
-	if (buffer_counter <= 0) {
+	ако (buffer_counter <= 0) {
 		firmware_type = 0x00;
 	}
 
-	if (buffer_counter == 3 || buffer_counter == 6) {
+	ако (buffer_counter == 3 || buffer_counter == 6) {
 		version_number = ((uint8_t)version[0] << 8 * 3) |
 				 ((uint8_t)version[1] << 8 * 2) |
 				 ((uint8_t)version[2] << 8 * 1) | firmware_type;
 
-	} else {
+	} инако {
 		version_number = 0;
 	}
 
-	return version_number;
+	врати version_number;
 }
 
 uint32_t px4_firmware_version(void)
 {
-	return version_tag_to_number(PX4_GIT_TAG_STR);
+	врати version_tag_to_number(PX4_GIT_TAG_STR);
 }
 
 uint32_t version_tag_to_vendor_version_number(const char *tag)
@@ -181,9 +181,9 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 	char version[6] = {0, 0, 0, 0, 0, 0};
 	size_t dash_count = 0;
 	size_t point_count = 0;
-	int firmware_type = FIRMWARE_TYPE_RELEASE;
+	цео firmware_type = FIRMWARE_TYPE_RELEASE;
 
-	for (size_t i = 0; i < strlen(tag); i++) {
+	за (size_t i = 0; i < strlen(tag); i++) {
 		switch (tag[i]) {
 		case '-':
 			dash_count++;
@@ -194,7 +194,7 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 			break;
 
 		case 'r':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
+			ако (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
 				firmware_type = FIRMWARE_TYPE_RC;
 
 			}
@@ -206,10 +206,10 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 			break;
 
 		case 't':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
+			ако (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
-			} else {
+			} инако {
 				firmware_type = FIRMWARE_TYPE_BETA;
 
 			}
@@ -217,7 +217,7 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 			break;
 
 		case 'v':
-			if (i > 0) {
+			ако (i > 0) {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
 			}
@@ -229,25 +229,25 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 		}
 	}
 
-	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
+	ако ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
 	    (dash_count == 2 && point_count == 2) ||
 	    (dash_count == 3 && point_count == 4) ||
 	    (dash_count == 4 && point_count == 4)) {
 		firmware_type = FIRMWARE_TYPE_DEV;
 	}
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (buffer_counter > 5) {
+	за (size_t i = 0; i < strlen(tag); i++) {
+		ако (buffer_counter > 5) {
 			continue;
 		}
 
-		if (tag[i] >= '0' && tag[i] <= '9') {
+		ако (tag[i] >= '0' && tag[i] <= '9') {
 			buffer = (buffer == -1) ? 0 : buffer;
 			buffer = buffer * 10 + (tag[i] - '0');
 
-		} else {
-			if (buffer >= 0) {
-				if (buffer_counter + 1 == 4 && tag[i] == '-') {
+		} инако {
+			ако (buffer >= 0) {
+				ако (buffer_counter + 1 == 4 && tag[i] == '-') {
 					break;
 				}
 
@@ -259,152 +259,152 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 		}
 	}
 
-	if (buffer >= 0 && (buffer_counter + 1 == 3 || buffer_counter + 1 == 6)) {
+	ако (buffer >= 0 && (buffer_counter + 1 == 3 || buffer_counter + 1 == 6)) {
 		version[buffer_counter] = buffer;
 		buffer_counter++;
 	}
 
-	if (buffer_counter == 6) {
+	ако (buffer_counter == 6) {
 		version_number = ((uint8_t)version[3] << 8 * 3) |
 				 ((uint8_t)version[4] << 8 * 2) |
 				 ((uint8_t)version[5] << 8 * 1) | firmware_type;
 
-	} else if (buffer_counter == 3) {
+	} инако ако (buffer_counter == 3) {
 		version_number = firmware_type;
 
-	} else {
+	} инако {
 		version_number = 0;
 	}
 
-	return version_number;
+	врати version_number;
 }
 
 uint32_t px4_firmware_vendor_version(void)
 {
-	return version_tag_to_vendor_version_number(PX4_GIT_TAG_STR);
+	врати version_tag_to_vendor_version_number(PX4_GIT_TAG_STR);
 }
 
 const char *px4_firmware_git_branch(void)
 {
-	return PX4_GIT_BRANCH_NAME;
+	врати PX4_GIT_BRANCH_NAME;
 }
 
 uint32_t px4_board_version(void)
 {
-#if defined(__PX4_NUTTX)
-	return CONFIG_CDCACM_PRODUCTID;
-#else
-	return 1;
+#ако defined(__PX4_NUTTX)
+	врати CONFIG_CDCACM_PRODUCTID;
+#инако
+	врати 1;
 #endif
 }
 
 uint32_t px4_os_version(void)
 {
-#if defined(__PX4_DARWIN) || defined(__PX4_CYGWIN) || defined(__PX4_QURT)
-	return 0; //TODO: implement version for Darwin, Cygwin, QuRT
+#ако defined(__PX4_DARWIN) || defined(__PX4_CYGWIN) || defined(__PX4_QURT)
+	врати 0; //TODO: implement version for Darwin, Cygwin, QuRT
 #elif defined(__PX4_LINUX)
 	struct utsname name;
 
-	if (uname(&name) == 0) {
+	ако (uname(&name) == 0) {
 		char *c = name.release;
 
 		// cut the part after the first '-'
-		while (*c && *c != '-') {
+		док (*c && *c != '-') {
 			++c;
 		}
 
 		*c = 0;
-		return version_tag_to_number(name.release);
+		врати version_tag_to_number(name.release);
 
-	} else {
-		return 0;
+	} инако {
+		врати 0;
 	}
 
 #elif defined(__PX4_NUTTX)
-	return version_tag_to_number(NUTTX_GIT_TAG_STR);
-#else
+	врати version_tag_to_number(NUTTX_GIT_TAG_STR);
+#инако
 # error "px4_os_version not implemented for current OS"
 #endif
 }
 
 const char *px4_os_version_string(void)
 {
-#if defined(__PX4_NUTTX)
-	return NUTTX_GIT_VERSION_STR;
-#else
-	return NULL;
+#ако defined(__PX4_NUTTX)
+	врати NUTTX_GIT_VERSION_STR;
+#инако
+	врати NULL;
 #endif
 }
 
 const char *px4_os_name(void)
 {
-#if defined(__PX4_DARWIN)
-	return "Darwin";
+#ако defined(__PX4_DARWIN)
+	врати "Darwin";
 #elif defined(__PX4_LINUX)
-	return "Linux";
+	врати "Linux";
 #elif defined(__PX4_QURT)
-	return "QuRT";
+	врати "QuRT";
 #elif defined(__PX4_NUTTX)
-	return "NuttX";
+	врати "NuttX";
 #elif defined(__PX4_CYGWIN)
-	return "Cygwin";
-#else
+	врати "Cygwin";
+#инако
 # error "px4_os_name not implemented for current OS"
 #endif
 }
 
 const char *px4_toolchain_name(void)
 {
-#if defined(__clang__)
-	return "Clang/LLVM";
+#ако defined(__clang__)
+	врати "Clang/LLVM";
 #elif defined(__ICC) || defined(__INTEL_COMPILER)
-	return "Intel ICC";
+	врати "Intel ICC";
 #elif defined(__GNUC__) || defined(__GNUG__)
-	return "GNU GCC";
+	врати "GNU GCC";
 #elif defined(_MSC_VER)
-	return "MS Visual Studio";
-#else
-	return "Unknown";
+	врати "MS Visual Studio";
+#инако
+	врати "Unknown";
 #endif
 }
 
 const char *px4_toolchain_version(void)
 {
 #ifdef __VERSION__
-	return __VERSION__;
-#else
-	return "";
+	врати __VERSION__;
+#инако
+	врати "";
 #endif
 }
 
 const char *px4_firmware_version_string(void)
 {
-	return PX4_GIT_VERSION_STR;
+	врати PX4_GIT_VERSION_STR;
 }
 
 uint64_t px4_firmware_version_binary(void)
 {
-	return PX4_GIT_VERSION_BINARY;
+	врати PX4_GIT_VERSION_BINARY;
 }
 
 
 #ifdef MAVLINK_LIB_GIT_VERSION_BINARY
 uint64_t px4_mavlink_lib_version_binary(void)
 {
-	return MAVLINK_LIB_GIT_VERSION_BINARY;
+	врати MAVLINK_LIB_GIT_VERSION_BINARY;
 }
 #endif /* MAVLINK_LIB_GIT_VERSION_BINARY */
 
 uint64_t px4_os_version_binary(void)
 {
 #ifdef NUTTX_GIT_VERSION_BINARY
-	return NUTTX_GIT_VERSION_BINARY;
-#else
-	return 0;
+	врати NUTTX_GIT_VERSION_BINARY;
+#инако
+	врати 0;
 #endif
 }
 
 const char *px4_firmware_oem_version_string(void)
 {
-	return PX4_GIT_OEM_VERSION_STR;
+	врати PX4_GIT_OEM_VERSION_STR;
 }

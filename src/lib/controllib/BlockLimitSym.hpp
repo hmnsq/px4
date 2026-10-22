@@ -71,7 +71,7 @@ public:
 	virtual ~BlockLimitSym() = default;
 	float update(float input);
 // accessors
-	float getMax() { return _max.get(); }
+	float getMax() { врати _max.get(); }
 protected:
 // attributes
 	control::BlockParamFloat _max;

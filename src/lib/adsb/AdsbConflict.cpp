@@ -40,7 +40,7 @@
 
 bool AdsbConflict::valid_wgs84_coordinates(const double latitude, const double longitude)
 {
-	return PX4_ISFINITE(latitude) && PX4_ISFINITE(longitude)
+	врати PX4_ISFINITE(latitude) && PX4_ISFINITE(longitude)
 	       && fabs(latitude) <= 90.0
 	       && fabs(longitude) <= 180.0;
 }
@@ -51,33 +51,33 @@ bool AdsbConflict::calculate_daa_output(const daa_input_s &daa_input, detect_and
 
 	const matrix::Vector2d traffic_lat_lon{transponder_report.lat, transponder_report.lon};
 
-	if (!valid_wgs84_coordinates(daa_input.uav_lat_lon(0), daa_input.uav_lat_lon(1))
+	ако (!valid_wgs84_coordinates(daa_input.uav_lat_lon(0), daa_input.uav_lat_lon(1))
 	    || !valid_wgs84_coordinates(traffic_lat_lon(0), traffic_lat_lon(1))) {
 		PX4_DEBUG("DAA lib: invalid coordinates");
-		return false;
+		врати false;
 	}
 
-	if (!PX4_ISFINITE(daa_input.uav_alt) || !PX4_ISFINITE(transponder_report.altitude)) {
+	ако (!PX4_ISFINITE(daa_input.uav_alt) || !PX4_ISFINITE(transponder_report.altitude)) {
 		PX4_DEBUG("DAA lib: invalid altitude");
-		return false;
+		врати false;
 	}
 
-	if (!(PX4_ISFINITE(transponder_report.hor_velocity) && transponder_report.hor_velocity >= 0.f
+	ако (!(PX4_ISFINITE(transponder_report.hor_velocity) && transponder_report.hor_velocity >= 0.f
 	      && PX4_ISFINITE(transponder_report.ver_velocity))) {
 		PX4_DEBUG("DAA lib: invalid traffic velocity");
-		return false;
+		врати false;
 	}
 
-	if (!daa_input.uav_vel_ned.isAllFinite()) {
+	ако (!daa_input.uav_vel_ned.isAllFinite()) {
 		PX4_DEBUG("DAA lib: invalid ownship velocity");
-		return false;
+		врати false;
 	}
 
-#if !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
+#ако !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
 
-	if (!PX4_ISFINITE(transponder_report.heading)) {
+	ако (!PX4_ISFINITE(transponder_report.heading)) {
 		PX4_DEBUG("DAA lib: invalid traffic heading");
-		return false;
+		врати false;
 	}
 
 #endif // !CONFIG_NAVIGATOR_ADSB_F3442
@@ -92,13 +92,13 @@ bool AdsbConflict::calculate_daa_output(const daa_input_s &daa_input, detect_and
 	traffic_state.altitude = transponder_report.altitude;
 	traffic_state.heading = transponder_report.heading;
 
-	if (PX4_ISFINITE(transponder_report.heading)) {
+	ако (PX4_ISFINITE(transponder_report.heading)) {
 		traffic_state.velocity_ned = matrix::Vector3f(
 						     cosf(transponder_report.heading) * transponder_report.hor_velocity,
 						     sinf(transponder_report.heading) * transponder_report.hor_velocity,
 						     -transponder_report.ver_velocity);
 
-	} else {
+	} инако {
 		traffic_state.velocity_ned = matrix::Vector3f(transponder_report.hor_velocity, 0.f, -transponder_report.ver_velocity);
 	}
 
@@ -109,10 +109,10 @@ bool AdsbConflict::calculate_daa_output(const daa_input_s &daa_input, detect_and
 	daa_output.aircraft_dist_vert = daa_stats.aircraft_dist_vert;
 	daa_output.expected_min_dist_time = daa_stats.expected_min_dist_time_sec;
 
-	return true;
+	врати true;
 }
 
 bool AdsbConflict::try_updating_params()
 {
-	return _daa.try_setting_params();
+	врати _daa.try_setting_params();
 }

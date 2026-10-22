@@ -67,8 +67,8 @@ public:
 	virtual ~BlockIntegral() = default;
 	float update(float input);
 // accessors
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
+	float getY() {врати _y;}
+	float getMax() {врати _limit.getMax();}
 	void setY(float y) {_y = y;}
 protected:
 // attributes

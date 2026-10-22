@@ -7,25 +7,25 @@ uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a)
 {
 	crc ^= a;
 
-	for (int i = 0; i < 8; ++i) {
-		if (crc & 0x80) {
+	за (цео i = 0; i < 8; ++i) {
+		ако (crc & 0x80) {
 			crc = (crc << 1) ^ 0xD5;
 
-		} else {
+		} инако {
 			crc = crc << 1;
 		}
 	}
 
-	return crc;
+	врати crc;
 }
 
-uint8_t crc8_dvb_s2_buf(uint8_t *buf, int len)
+uint8_t crc8_dvb_s2_buf(uint8_t *buf, цео len)
 {
 	uint8_t crc = 0;
 
-	for (int i = 0; i < len; ++i) {
+	за (цео i = 0; i < len; ++i) {
 		crc = crc8_dvb_s2(crc, buf[i]);
 	}
 
-	return crc;
+	врати crc;
 }

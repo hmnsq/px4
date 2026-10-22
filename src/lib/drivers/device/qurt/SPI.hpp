@@ -46,8 +46,8 @@
 #include <px4_platform_common/spi.h>
 
 // Perhaps not the best place for these but they are only used for the IMU SPI driver on Qurt
-int px4_arch_gpiosetevent(spi_drdy_gpio_t pin, bool r, bool f, bool e, int (*func)(int, void *, void *), void *arg);
-void register_interrupt_callback_initalizer(int (*)(int (*)(int, void *, void *), void *arg));
+цео px4_arch_gpiosetevent(spi_drdy_gpio_t pin, bool r, bool f, bool e, цео (*func)(цео, void *, void *), void *arg);
+void register_interrupt_callback_initalizer(цео (*)(цео (*)(цео, void *, void *), void *arg));
 
 enum spi_mode_e {
 	SPIDEV_MODE0 = 0, /* CPOL=0 CHPHA=0 */
@@ -67,8 +67,8 @@ namespace device __EXPORT
 class __EXPORT SPI : public CDev
 {
 public:
-	typedef int (*_config_spi_bus_func_t)();
-	typedef int (*_spi_transfer_func_t)(int, const uint8_t *, uint8_t *, const unsigned);
+	typedef цео (*_config_spi_bus_func_t)();
+	typedef цео (*_spi_transfer_func_t)(цео, const uint8_t *, uint8_t *, const unsigned);
 
 	static void configure_callbacks(_config_spi_bus_func_t config_func,
 					_spi_transfer_func_t transfer_func)
@@ -88,7 +88,7 @@ protected:
 	 * @param mode		SPI clock/data mode
 	 * @param frequency	SPI clock frequency
 	 */
-	SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency);
+	SPI(uint8_t device_type, const char *name, цео bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency);
 
 	SPI(const I2CSPIDriverConfig &config);
 
@@ -103,12 +103,12 @@ protected:
 		LOCK_NONE		/**< perform no locking, only safe if the bus is entirely private */
 	};
 
-	virtual int	init();
+	virtual цео	init();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	virtual цео	probe() { врати PX4_OK; }
 
 	/**
 	 * Perform a SPI transfer.
@@ -129,7 +129,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(uint8_t *send, uint8_t *recv, unsigned len);
+	цео		transfer(uint8_t *send, uint8_t *recv, unsigned len);
 
 	/**
 	 * Perform a SPI 16 bit transfer.
@@ -150,7 +150,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	цео		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
 
 	/**
 	 * Set the SPI bus frequency
@@ -162,7 +162,7 @@ protected:
 	 * @param frequency	Frequency to set (Hz)
 	 */
 	void		set_frequency(uint32_t frequency) {}
-	uint32_t	get_frequency() { return 0; }
+	uint32_t	get_frequency() { врати 0; }
 
 	/**
 	 * Set the SPI bus locking mode
@@ -175,7 +175,7 @@ protected:
 	void		set_lockmode(enum LockMode mode) {}
 
 private:
-	int 			_fd{-1};
+	цео 			_fd{-1};
 
 	static _config_spi_bus_func_t  _config_spi_bus;
 	static _spi_transfer_func_t    _spi_transfer;

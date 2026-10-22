@@ -43,25 +43,25 @@
 class FunctionServos : public FunctionProviderBase
 {
 public:
-	static_assert(actuator_servos_s::NUM_CONTROLS == (int)OutputFunction::ServoMax - (int)OutputFunction::Servo1 + 1,
+	static_assert(actuator_servos_s::NUM_CONTROLS == (цео)OutputFunction::ServoMax - (цео)OutputFunction::Servo1 + 1,
 		      "Unexpected num servos");
 
 	FunctionServos(const Context &context) :
 		_topic(&context.work_item, ORB_ID(actuator_servos))
 	{
-		for (int i = 0; i < actuator_servos_s::NUM_CONTROLS; ++i) {
+		за (цео i = 0; i < actuator_servos_s::NUM_CONTROLS; ++i) {
 			_data.control[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionServos(context); }
+	static FunctionProviderBase *allocate(const Context &context) { врати new FunctionServos(context); }
 
 	void update() override { _topic.update(&_data); }
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Servo1]; }
+	float value(OutputFunction func) override { врати _data.control[(цео)func - (цео)OutputFunction::Servo1]; }
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { врати &_topic; }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 0.f; }
+	float defaultFailsafeValue(OutputFunction func) const override { врати 0.f; }
 
 private:
 	uORB::SubscriptionCallbackWorkItem _topic;

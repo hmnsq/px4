@@ -80,9 +80,9 @@ public:
 	 */
 	void modifySetpoint(matrix::Vector2f &setpoint_accel, const matrix::Vector2f &setpoint_vel);
 
-	static constexpr int BIN_COUNT =
+	static constexpr цео BIN_COUNT =
 		sizeof(obstacle_distance_s::distances) / sizeof(obstacle_distance_s::distances[0]); // 72
-	static constexpr int BIN_SIZE = 360 / BIN_COUNT; // cannot be lower than 5 degrees, should divide 360 evenly
+	static constexpr цео BIN_SIZE = 360 / BIN_COUNT; // cannot be lower than 5 degrees, should divide 360 evenly
 
 protected:
 	/** Aggregates the sensor data into an internal obstacle map in body frame */
@@ -113,7 +113,7 @@ protected:
 	 * @param setpoint_index, index of the setpoint in the internal obstacle map
 	 * @param vehicle_yaw_angle_rad, vehicle orientation
 	 */
-	void _adaptSetpointDirection(matrix::Vector2f &setpoint_dir, int &setpoint_index, float vehicle_yaw_angle_rad);
+	void _adaptSetpointDirection(matrix::Vector2f &setpoint_dir, цео &setpoint_index, float vehicle_yaw_angle_rad);
 
 	/**
 	 * Constrain the acceleration setpoint based on the distance to the obstacle
@@ -149,7 +149,7 @@ protected:
 	 * @param sensor_range, max range of the sensor in meters
 	 * @param sensor_reading, distance measurement in meters
 	 */
-	bool _enterData(int map_index, float sensor_range, float sensor_reading);
+	bool _enterData(цео map_index, float sensor_range, float sensor_reading);
 
 	bool _checkSetpointDirectionFeasability();
 
@@ -165,7 +165,7 @@ private:
 	bool _was_active{false};		/**< states if the collision prevention interferes with the user input */
 	bool _obstacle_data_present{false};	/**< states if obstacle data is present */
 
-	int _setpoint_index{};			/**< index of the setpoint*/
+	цео _setpoint_index{};			/**< index of the setpoint*/
 	matrix::Vector2f _setpoint_dir{};		/**< direction of the setpoint*/
 
 	float _closest_dist{};			/**< closest distance to an obstacle  */

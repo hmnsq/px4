@@ -70,7 +70,7 @@ using namespace time_literals;
 class OutputModuleInterface : public px4::ScheduledWorkItem, public ModuleParams
 {
 public:
-	static constexpr int MAX_ACTUATORS = PWM_OUTPUT_MAX_CHANNELS;
+	static constexpr цео MAX_ACTUATORS = PWM_OUTPUT_MAX_CHANNELS;
 
 	OutputModuleInterface(const char *name, const px4::wq_config_t &config) :
 		px4::ScheduledWorkItem(name, config),
@@ -106,7 +106,7 @@ public:
 class MixingOutput : public ModuleParams
 {
 public:
-	static constexpr int MAX_ACTUATORS = OutputModuleInterface::MAX_ACTUATORS;
+	static constexpr цео MAX_ACTUATORS = OutputModuleInterface::MAX_ACTUATORS;
 
 	enum class SchedulingPolicy {
 		Disabled, ///< Do not drive scheduling (the module needs to call ScheduleOnInterval() for example)
@@ -133,7 +133,7 @@ public:
 	/**
 	 * Permanently disable an output function
 	 */
-	void disableFunction(int index)
+	void disableFunction(цео index)
 	{
 		_param_handles[index].function = PARAM_INVALID;
 		_need_function_update = true;
@@ -142,11 +142,11 @@ public:
 	/**
 	 * Check if a function is configured, i.e. not set to Disabled and initialized
 	 */
-	bool isFunctionSet(int index) const { return _functions[index] != nullptr; }
+	bool isFunctionSet(цео index) const { врати _functions[index] != nullptr; }
 
-	OutputFunction outputFunction(int index) const { return _function_assignment[index]; }
+	OutputFunction outputFunction(цео index) const { врати _function_assignment[index]; }
 
-	bool isMotor(int index) const { return isFunctionSet(index) && (_function_assignment[index] >= OutputFunction::Motor1) && (_function_assignment[index] <= OutputFunction::Motor12); }
+	bool isMotor(цео index) const { врати isFunctionSet(index) && (_function_assignment[index] >= OutputFunction::Motor1) && (_function_assignment[index] <= OutputFunction::Motor12); }
 
 	/**
 	 * Call this regularly from Run(). It will call interface.updateOutputs().
@@ -169,8 +169,8 @@ public:
 
 	void setMaxTopicUpdateRate(unsigned max_topic_update_interval_us);
 
-	const actuator_armed_s &armed() const { return _armed; }
-	bool isActuatorTestRunning() const { return _actuator_test.inTestMode(); }
+	const actuator_armed_s &armed() const { врати _armed; }
+	bool isActuatorTestRunning() const { врати _actuator_test.inTestMode(); }
 
 	void setAllFailsafeValues(uint16_t value);
 	void setAllDisarmedValues(uint16_t value);
@@ -179,30 +179,30 @@ public:
 	void setAllMaxValues(uint16_t value);
 
 	/** Disarmed values: disarmedValue < minValue needs to hold */
-	uint16_t &disarmedValue(int index) { return _disarmed_value[index]; }
-	uint16_t &minValue(int index) { return _min_value[index]; }
-	uint16_t &centerValue(int index) { return _center_value[index]; }
-	uint16_t &maxValue(int index) { return _max_value[index]; }
+	uint16_t &disarmedValue(цео index) { врати _disarmed_value[index]; }
+	uint16_t &minValue(цео index) { врати _min_value[index]; }
+	uint16_t &centerValue(цео index) { врати _center_value[index]; }
+	uint16_t &maxValue(цео index) { врати _max_value[index]; }
 
-	param_t functionParamHandle(int index) const { return _param_handles[index].function; }
-	param_t disarmedParamHandle(int index) const { return _param_handles[index].disarmed; }
-	param_t minParamHandle(int index) const { return _param_handles[index].min; }
-	param_t centerParamHandle(int index) const { return _param_handles[index].center; }
-	param_t maxParamHandle(int index) const { return _param_handles[index].max; }
+	param_t functionParamHandle(цео index) const { врати _param_handles[index].function; }
+	param_t disarmedParamHandle(цео index) const { врати _param_handles[index].disarmed; }
+	param_t minParamHandle(цео index) const { врати _param_handles[index].min; }
+	param_t centerParamHandle(цео index) const { врати _param_handles[index].center; }
+	param_t maxParamHandle(цео index) const { врати _param_handles[index].max; }
 
 	/**
 	 * Returns the actual failsafe value taking into account the assigned function
 	 */
-	float actualFailsafeValue(int index) const;
+	float actualFailsafeValue(цео index) const;
 
 	void setIgnoreLockdown(bool ignore_lockdown) { _ignore_lockdown = ignore_lockdown; }
 
 	/**
 	 * Set the maximum number of outputs. This can only be used to reduce the maximum.
 	 */
-	void setMaxNumOutputs(uint8_t max_num_outputs) { if (max_num_outputs < _max_num_outputs) { _max_num_outputs = max_num_outputs; } }
+	void setMaxNumOutputs(uint8_t max_num_outputs) { ако (max_num_outputs < _max_num_outputs) { _max_num_outputs = max_num_outputs; } }
 
-	const char *paramPrefix() const { return _param_prefix; }
+	const char *paramPrefix() const { врати _param_prefix; }
 
 	void setLowrateSchedulingInterval(hrt_abstime interval) { _lowrate_schedule_interval = interval; }
 
@@ -211,17 +211,17 @@ public:
 	 * This might change at any time, including while armed (motor failure recovery reverses a motor in
 	 * flight). Drivers that must react to a change should override reversibleMaskChanged().
 	 */
-	uint32_t reversibleOutputs() const { return _reversible_mask; }
+	uint32_t reversibleOutputs() const { врати _reversible_mask; }
 
 protected:
 	void updateParams() override;
-	float output_limit_calc_single(int i, float value) const;
+	float output_limit_calc_single(цео i, float value) const;
 
 private:
 
 	bool isPrearmed() const
 	{
-		return (_armed.prearmed && !_armed.armed) || _armed.in_esc_calibration_mode;
+		врати (_armed.prearmed && !_armed.armed) || _armed.in_esc_calibration_mode;
 	}
 
 	void setAndPublishActuatorOutputs(unsigned num_outputs, actuator_outputs_s &actuator_outputs);
@@ -234,7 +234,7 @@ private:
 
 	void limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updates);
 
-	void output_limit_calc(const bool armed, const int num_channels, const float outputs[MAX_ACTUATORS]);
+	void output_limit_calc(const bool armed, const цео num_channels, const float outputs[MAX_ACTUATORS]);
 
 	struct ParamHandles {
 		param_t function{PARAM_INVALID};
@@ -245,7 +245,7 @@ private:
 		param_t failsafe{PARAM_INVALID};
 	};
 
-	void lock() { do {} while (px4_sem_wait(&_lock) != 0); }
+	void lock() { do {} док (px4_sem_wait(&_lock) != 0); }
 	void unlock() { px4_sem_post(&_lock); }
 
 	px4_sem_t _lock; /**< lock to protect access to work queue changes (includes ScheduleNow calls from another thread) */

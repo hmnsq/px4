@@ -45,7 +45,7 @@ public:
 		assert(i < P);
 		assert(j < Q);
 
-		return (*_data)(_x0 + i, _y0 + j);
+		врати (*_data)(_x0 + i, _y0 + j);
 	}
 
 	Type &operator()(size_t i, size_t j)
@@ -53,18 +53,18 @@ public:
 		assert(i < P);
 		assert(j < Q);
 
-		return (*_data)(_x0 + i, _y0 + j);
+		врати (*_data)(_x0 + i, _y0 + j);
 	}
 
 	// Separate function needed otherwise the default copy constructor matches before the deep copy implementation
 	Self &operator=(const Self &other)
 	{
 		// Protect against self-assignment
-		if (this == &other) {
-			return *this;
+		ако (this == &other) {
+			врати *this;
 		}
 
-		return this->operator=<M, N>(other);
+		врати this->operator=<M, N>(other);
 	}
 
 	template<size_t MM, size_t NN>
@@ -72,13 +72,13 @@ public:
 	{
 		Self &self = *this;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				self(i, j) = other(i, j);
 			}
 		}
 
-		return self;
+		врати self;
 	}
 
 	template<size_t MM, size_t NN>
@@ -86,72 +86,72 @@ public:
 	{
 		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				self(i, j) = other(i, j);
 			}
 		}
 
-		return self;
+		врати self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator=(const Matrix<Type, P, Q> &other)
 	{
 		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				self(i, j) = other(i, j);
 			}
 		}
 
-		return self;
+		врати self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator=(const Type &other)
 	{
 		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				self(i, j) = other;
 			}
 		}
 
-		return self;
+		врати self;
 	}
 
 	template<size_t MM, size_t NN>
 	Matrix<Type, P, Q> operator-(const SliceT<const Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		врати Matrix<Type, P, Q> {*this} - other;
 	}
 
 
 	Matrix<Type, P, Q> operator-(const Matrix<Type, P, Q> &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		врати Matrix<Type, P, Q> {*this} - other;
 	}
 
 	Matrix<Type, P, Q> operator-(const Type &other)
 	{
-		return Matrix<Type, P, Q> {*this} - other;
+		врати Matrix<Type, P, Q> {*this} - other;
 	}
 
 	template<size_t MM, size_t NN>
 	Matrix<Type, P, Q> operator+(const SliceT<const Matrix<Type, MM, NN>, Type, P, Q, MM, NN> &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		врати Matrix<Type, P, Q> {*this} + other;
 	}
 
 	Matrix<Type, P, Q> operator+(const Matrix<Type, P, Q> &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		врати Matrix<Type, P, Q> {*this} + other;
 	}
 
 	Matrix<Type, P, Q> operator+(const Type &other)
 	{
-		return Matrix<Type, P, Q> {*this} + other;
+		врати Matrix<Type, P, Q> {*this} + other;
 	}
 
 	// allow assigning vectors to a slice that are in the axis
@@ -160,11 +160,11 @@ public:
 	{
 		SliceT<MatrixT, Type, 1, Q, M, N> &self = *this;
 
-		for (size_t j = 0; j < Q; j++) {
+		за (size_t j = 0; j < Q; j++) {
 			self(0, j) = other(j);
 		}
 
-		return self;
+		врати self;
 	}
 
 	template<size_t MM, size_t NN>
@@ -172,39 +172,39 @@ public:
 	{
 		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
 
-		return self;
+		врати self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(const Matrix<Type, P, Q> &other)
 	{
 		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				self(i, j) += other(i, j);
 			}
 		}
 
-		return self;
+		врати self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator+=(const Type &other)
 	{
 		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				self(i, j) += other;
 			}
 		}
 
-		return self;
+		врати self;
 	}
 
 	template<size_t MM, size_t NN>
@@ -212,87 +212,87 @@ public:
 	{
 		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
 
-		return self;
+		врати self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(const Matrix<Type, P, Q> &other)
 	{
 		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				self(i, j) -= other(i, j);
 			}
 		}
 
-		return self;
+		врати self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator-=(const Type &other)
 	{
 		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				self(i, j) -= other;
 			}
 		}
 
-		return self;
+		врати self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator*=(const Type &other)
 	{
 		SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				self(i, j) *= other;
 			}
 		}
 
-		return self;
+		врати self;
 	}
 
 	SliceT<MatrixT, Type, P, Q, M, N> &operator/=(const Type &scalar)
 	{
-		return operator*=(Type(1) / scalar);
+		врати operator*=(Type(1) / scalar);
 	}
 
 	Matrix<Type, P, Q> operator*(const Type &scalar) const
 	{
-		return Matrix<Type, P, Q> {*this} * scalar;
+		врати Matrix<Type, P, Q> {*this} * scalar;
 	}
 
 	Matrix<Type, P, Q> operator/(const Type &scalar) const
 	{
-		return (*this) * (1 / scalar);
+		врати (*this) * (1 / scalar);
 	}
 
 	template<size_t R, size_t S>
 	const SliceT<MatrixT, Type, R, S, M, N> slice(size_t x0, size_t y0) const
 	{
-		return SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
+		врати SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
 	}
 
 	template<size_t R, size_t S>
 	SliceT<MatrixT, Type, R, S, M, N> slice(size_t x0, size_t y0)
 	{
-		return SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
+		врати SliceT<MatrixT, Type, R, S, M, N>(x0 + _x0, y0 + _y0, _data);
 	}
 
 	void copyTo(Type dst[P * Q]) const
 	{
 		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				dst[i * N + j] = self(i, j);
 			}
 		}
@@ -302,8 +302,8 @@ public:
 	{
 		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				dst[i + (j * M)] = self(i, j);
 			}
 		}
@@ -314,11 +314,11 @@ public:
 		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
 		Vector < Type, P < Q ? P : Q > res;
 
-		for (size_t j = 0; j < (P < Q ? P : Q); j++) {
+		за (size_t j = 0; j < (P < Q ? P : Q); j++) {
 			res(j) = self(j, j);
 		}
 
-		return res;
+		врати res;
 	}
 
 	template<size_t MM, size_t NN>
@@ -327,62 +327,62 @@ public:
 		const SliceT<MatrixT, Type, P, Q, M, N> &self = *this;
 		Type accum(0);
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				accum += self(i, j) * other(i, j);
 			}
 		}
 
-		return accum;
+		врати accum;
 	}
 
 	Type norm_squared() const
 	{
-		return dot(*this);
+		врати dot(*this);
 	}
 
 	Type norm() const
 	{
-		return std::sqrt(norm_squared());
+		врати std::sqrt(norm_squared());
 	}
 
 	bool longerThan(Type testVal) const
 	{
-		return norm_squared() > testVal * testVal;
+		врати norm_squared() > testVal * testVal;
 	}
 
 	Type max() const
 	{
 		Type max_val = (*this)(0, 0);
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				Type val = (*this)(i, j);
 
-				if (val > max_val) {
+				ако (val > max_val) {
 					max_val = val;
 				}
 			}
 		}
 
-		return max_val;
+		врати max_val;
 	}
 
 	Type min() const
 	{
 		Type min_val = (*this)(0, 0);
 
-		for (size_t i = 0; i < P; i++) {
-			for (size_t j = 0; j < Q; j++) {
+		за (size_t i = 0; i < P; i++) {
+			за (size_t j = 0; j < Q; j++) {
 				Type val = (*this)(i, j);
 
-				if (val < min_val) {
+				ако (val < min_val) {
 					min_val = val;
 				}
 			}
 		}
 
-		return min_val;
+		врати min_val;
 	}
 
 private:

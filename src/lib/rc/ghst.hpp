@@ -82,28 +82,28 @@ struct ghst_frame_t {
 
 // Channel data (1-4)
 typedef struct {
-	unsigned int chan1: 12;
-	unsigned int chan2: 12;
-	unsigned int chan3: 12;
-	unsigned int chan4: 12;
+	unsigned цео chan1: 12;
+	unsigned цео chan2: 12;
+	unsigned цео chan3: 12;
+	unsigned цео chan4: 12;
 } __attribute__((__packed__)) ghstChannelData_t;
 
 // Payload data
 typedef struct {
 	ghstChannelData_t chan1to4;
-	unsigned int chanA: 8;
-	unsigned int chanB: 8;
-	unsigned int chanC: 8;
-	unsigned int chanD: 8;
+	unsigned цео chanA: 8;
+	unsigned цео chanB: 8;
+	unsigned цео chanC: 8;
+	unsigned цео chanD: 8;
 } __attribute__((__packed__)) ghstPayloadData_t;
 
 // Payload data - RSSI frame type
 typedef struct {
 	ghstChannelData_t chan1to4;
-	unsigned int lq: 8;		// link quality
-	unsigned int rssidBm: 8;	// RSSI [dBm]
-	unsigned int rfMode: 8;		// RF mode
-	int txPowerdBm: 8;		// Tx power [dBm]
+	unsigned цео lq: 8;		// link quality
+	unsigned цео rssidBm: 8;	// RSSI [dBm]
+	unsigned цео rfMode: 8;		// RF mode
+	цео txPowerdBm: 8;		// Tx power [dBm]
 } __attribute__((__packed__)) ghstPayloadRssi_t;
 
 // Link statistics for internal transport
@@ -118,7 +118,7 @@ typedef struct {
  * @param uart_fd UART file descriptor
  * @return 0 on success, -errno otherwise
  */
-__EXPORT int ghst_config(int uart_fd);
+__EXPORT цео ghst_config(цео uart_fd);
 
 
 /**
@@ -145,7 +145,7 @@ __EXPORT bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len,
  * @param fuel_in_10mAh Fuel [10 mAh]
  * @return true on success
  */
-__EXPORT bool ghst_send_telemetry_battery_status(int uart_fd, uint16_t voltage_in_10mV,
+__EXPORT bool ghst_send_telemetry_battery_status(цео uart_fd, uint16_t voltage_in_10mV,
 		uint16_t current_in_10mA, uint16_t fuel_in_10mAh);
 
 /**
@@ -156,7 +156,7 @@ __EXPORT bool ghst_send_telemetry_battery_status(int uart_fd, uint16_t voltage_i
  * @param altitude GPS altitude [1m]
  * @return true on success
  */
-__EXPORT bool ghst_send_telemetry_gps1_status(int uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude);
+__EXPORT bool ghst_send_telemetry_gps1_status(цео uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude);
 
 /**
  * Send secondary GPS information
@@ -169,6 +169,6 @@ __EXPORT bool ghst_send_telemetry_gps1_status(int uart_fd, uint32_t latitude, ui
  * @param flags GPS Flags
  * @return true on success
  */
-__EXPORT bool ghst_send_telemetry_gps2_status(int uart_fd, uint16_t ground_speed, uint16_t ground_course,
+__EXPORT bool ghst_send_telemetry_gps2_status(цео uart_fd, uint16_t ground_speed, uint16_t ground_course,
 		uint8_t num_sats, uint16_t home_dist, uint16_t home_dir, uint8_t flags);
 __END_DECLS

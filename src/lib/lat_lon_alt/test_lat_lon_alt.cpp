@@ -108,9 +108,9 @@ TEST(TestLatLonAlt, subLatLonAlt)
 
 TEST(TestLatLonAlt, fromAndToECEF)
 {
-	for (double lat_deg = -90.0; lat_deg <= 90.0; lat_deg += 15.0) {
-		for (double lon_deg = -180.0; lon_deg < 180.0; lon_deg += 45.0) {
-			for (float alt = -500.f; alt < 8000.f; alt += 500.f) {
+	за (double lat_deg = -90.0; lat_deg <= 90.0; lat_deg += 15.0) {
+		за (double lon_deg = -180.0; lon_deg < 180.0; lon_deg += 45.0) {
+			за (float alt = -500.f; alt < 8000.f; alt += 500.f) {
 				LatLonAlt lla(lat_deg, lon_deg, alt);
 
 				LatLonAlt res = LatLonAlt::fromEcef(lla.toEcef());
@@ -140,7 +140,7 @@ TEST(TestLatLonAlt, addDeltaPosMatchesEcefDistance)
 	// Short steps make the curvilinear approximation exact enough to check the radii of curvature
 	const float step = 10.f;
 
-	for (const double latitude_deg : {0.0, 30.0, 47.0, 60.0, 80.0}) {
+	за (const double latitude_deg : {0.0, 30.0, 47.0, 60.0, 80.0}) {
 		const LatLonAlt start(latitude_deg, 8.0, 400.f);
 		const LatLonAlt north = start + Vector3f(step, 0.f, 0.f);
 		const LatLonAlt east = start + Vector3f(0.f, step, 0.f);
