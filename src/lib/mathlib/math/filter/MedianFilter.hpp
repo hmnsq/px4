@@ -40,29 +40,29 @@
 
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#ضمن <stdio.h>
+#ضمن <stdlib.h>
+#ضمن <stdint.h>
+#ضمن <string.h>
 
-namespace math
+نطاق math
 {
 
-template<typename U> struct is_floating_point { static constexpr bool value = false; };
-template<> struct is_floating_point<float> { static constexpr bool value = true; };
-template<> struct is_floating_point<double> { static constexpr bool value = true; };
-template<> struct is_floating_point<long double> { static constexpr bool value = true; };
+template<typename U> بنية is_floating_point { ساكن constexpr منطقي value = خطأ; };
+template<> بنية is_floating_point<عائم> { ساكن constexpr منطقي value = true; };
+template<> بنية is_floating_point<مزدوج> { ساكن constexpr منطقي value = true; };
+template<> بنية is_floating_point<long مزدوج> { ساكن constexpr منطقي value = true; };
 
-template<typename T, int WINDOW = 3>
-class MedianFilter
+template<typename T, صحيح WINDOW = 3>
+صنف MedianFilter
 {
-public:
+عام:
 	static_assert(WINDOW >= 3, "MedianFilter window size must be >= 3");
 	static_assert(WINDOW % 2, "MedianFilter window size must be odd"); // odd
 
-	MedianFilter() = default;
+	MedianFilter() = افتراضي;
 
-	void insert(const T &sample)
+	فراغ داخل_کرو(ثابت T &sample)
 	{
 		_head = (_head + 1) % WINDOW;
 		_buffer[_head] = sample;
@@ -71,46 +71,46 @@ public:
 	T median()
 	{
 		T sorted[WINDOW];
-		memcpy(sorted, _buffer, sizeof(_buffer));
-		qsort(&sorted, WINDOW, sizeof(T), cmp);
+		memcpy(sorted, _buffer, حجم(_buffer));
+		qsort(&sorted, WINDOW, حجم(T), cmp);
 
-		return sorted[WINDOW / 2];
+		أرجع sorted[WINDOW / 2];
 	}
 
-	T apply(const T &sample)
+	T apply(ثابت T &sample)
 	{
-		insert(sample);
-		return median();
+		داخل_کرو(sample);
+		أرجع median();
 	}
 
-private:
+خاص:
 
-	static int cmp(const void *a, const void *b)
+	ساكن صحيح cmp(ثابت فراغ *a, ثابت فراغ *b)
 	{
-		const T va = *(const T *)a;
-		const T vb = *(const T *)b;
+		ثابت T va = *(ثابت T *)a;
+		ثابت T vb = *(ثابت T *)b;
 
-		if constexpr(is_floating_point<T>::value) {
-			if (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
-				return 0;
+		إذا constexpr(is_floating_point<T>::value) {
+			إذا (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
+				أرجع 0;
 
-			} else if (!__builtin_isfinite(va)) {
-				return  1;
+			} وإلا إذا (!__builtin_isfinite(va)) {
+				أرجع  1;
 
-			} else if (!__builtin_isfinite(vb)) {
-				return -1;
+			} وإلا إذا (!__builtin_isfinite(vb)) {
+				أرجع -1;
 			}
 		}
 
-		if (va < vb) {
-			return -1;
+		إذا (va < vb) {
+			أرجع -1;
 		}
 
-		if (va > vb) {
-			return  1;
+		إذا (va > vb) {
+			أرجع  1;
 		}
 
-		return 0;
+		أرجع 0;
 	}
 
 	T _buffer[WINDOW] {};

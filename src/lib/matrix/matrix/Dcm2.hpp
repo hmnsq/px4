@@ -48,16 +48,16 @@
 
 #pragma once
 
-#include "SquareMatrix.hpp"
-#include "Vector2.hpp"
+#ضمن "SquareMatrix.hpp"
+#ضمن "Vector2.hpp"
 
-namespace matrix
+نطاق matrix
 {
 
 template<typename Type>
-class Dcm2 : public SquareMatrix<Type, 2>
+صنف Dcm2 : عام SquareMatrix<Type, 2>
 {
-public:
+عام:
 	/**
 	 * Standard constructor
 	 *
@@ -70,7 +70,7 @@ public:
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm2(const Type data_[2][2]) : SquareMatrix<Type, 2>(data_)
+	explicit Dcm2(ثابت Type data_[2][2]) : SquareMatrix<Type, 2>(data_)
 	{
 	}
 
@@ -79,7 +79,7 @@ public:
 	 *
 	 * @param _data pointer to array
 	 */
-	explicit Dcm2(const Type data_[4]) : SquareMatrix<Type, 2>(data_)
+	explicit Dcm2(ثابت Type data_[4]) : SquareMatrix<Type, 2>(data_)
 	{
 	}
 
@@ -88,7 +88,7 @@ public:
 	 *
 	 * @param other Matrix22 to set dcm to
 	 */
-	Dcm2(const Matrix<Type, 2, 2> &other) : SquareMatrix<Type, 2>(other)
+	Dcm2(ثابت Matrix<Type, 2, 2> &other) : SquareMatrix<Type, 2>(other)
 	{
 	}
 
@@ -100,9 +100,9 @@ public:
 	 *
 	 * @param angle from frame 1 to frame 2 in radians
 	 */
-	Dcm2(const Type angle)
+	Dcm2(ثابت Type angle)
 	{
-		Dcm2 &dcm = *this;
+		Dcm2 &dcm = *هذا;
 		Type sin_angle = std::sin(angle);
 		Type cos_angle = std::cos(angle);
 
@@ -112,17 +112,17 @@ public:
 		dcm(1, 1) = cos_angle;
 	}
 
-	void renormalize()
+	فراغ renormalize()
 	{
 		// renormalize rows
-		for (size_t r = 0; r < 2; r++) {
-			Vector2<Type> rvec(Matrix<Type, 1, 2>(this->row(r)).transpose());
-			this->row(r) = rvec.normalized();
+		لكل (size_t r = 0; r < 2; r++) {
+			Vector2<Type> rvec(Matrix<Type, 1, 2>(هذا->row(r)).transpose());
+			هذا->row(r) = rvec.normalized();
 		}
 	}
 };
 
-using Dcm2f = Dcm2<float>;
-using Dcm2d = Dcm2<double>;
+using Dcm2f = Dcm2<عائم>;
+using Dcm2d = Dcm2<مزدوج>;
 
 } // namespace matrix

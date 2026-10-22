@@ -37,22 +37,22 @@
  */
 
 #ifndef _SYSTEMLIB_PERF_COUNTER_H
-#define _SYSTEMLIB_PERF_COUNTER_H value
+#define _SYSTEMLIB_PERF_COUNTER_H قدر
 
-#include <stdint.h>
-#include <px4_platform_common/defines.h>
+#ضمن <stdint.h>
+#ضمن <px4_platform_common/defines.h>
 
 /**
  * Counter types.
  */
-enum perf_counter_type {
-	PC_COUNT,		/**< count the number of times an event occurs */
+تعداد perf_counter_type {
+	PC_گنتی,		/**< count the number of times an event occurs */
 	PC_ELAPSED,		/**< measure the time elapsed performing an event */
 	PC_INTERVAL		/**< measure the interval between instances of an event */
 };
 
-struct perf_ctr_header;
-typedef struct perf_ctr_header	*perf_counter_t;
+بنية perf_ctr_header;
+تعريفنوع بنية perf_ctr_header	*perf_counter_t;
 
 __BEGIN_DECLS
 
@@ -65,7 +65,7 @@ __BEGIN_DECLS
  *				could not be allocated.
  */
 #ifndef perf_alloc	// perf_alloc might be defined to be NULL in src/modules/px4iofirmware/px4io.h
-__EXPORT extern perf_counter_t	perf_alloc(enum perf_counter_type type, const char *name);
+__EXPORT خارجي perf_counter_t	perf_alloc(تعداد perf_counter_type type, ثابت حرف *name);
 #endif
 
 /**
@@ -76,7 +76,7 @@ __EXPORT extern perf_counter_t	perf_alloc(enum perf_counter_type type, const cha
  * @return			Handle for the counter, or NULL if a counter
  *				could not be allocated.
  */
-__EXPORT extern perf_counter_t	perf_alloc_once(enum perf_counter_type type, const char *name);
+__EXPORT خارجي perf_counter_t	perf_alloc_once(تعداد perf_counter_type type, ثابت حرف *name);
 
 /**
  * Free a counter.
@@ -87,7 +87,7 @@ __EXPORT extern perf_counter_t	perf_alloc_once(enum perf_counter_type type, cons
  *
  * @param handle		The performance counter's handle.
  */
-__EXPORT extern void		perf_free(perf_counter_t handle);
+__EXPORT خارجي فراغ		perf_free(perf_counter_t handle);
 
 /**
  * Count a performance event.
@@ -96,7 +96,7 @@ __EXPORT extern void		perf_free(perf_counter_t handle);
  *
  * @param handle		The handle returned from perf_alloc.
  */
-__EXPORT extern void		perf_count(perf_counter_t handle);
+__EXPORT خارجي فراغ		perf_گنتی(perf_counter_t handle);
 
 /**
  * Begin a performance event.
@@ -105,7 +105,7 @@ __EXPORT extern void		perf_count(perf_counter_t handle);
  *
  * @param handle		The handle returned from perf_alloc.
  */
-__EXPORT extern void		perf_begin(perf_counter_t handle);
+__EXPORT خارجي فراغ		perf_begin(perf_counter_t handle);
 
 /**
  * End a performance event.
@@ -116,7 +116,7 @@ __EXPORT extern void		perf_begin(perf_counter_t handle);
  *
  * @param handle		The handle returned from perf_alloc.
  */
-__EXPORT extern void		perf_end(perf_counter_t handle);
+__EXPORT خارجي فراغ		perf_end(perf_counter_t handle);
 
 /**
  * Register a measurement
@@ -128,7 +128,7 @@ __EXPORT extern void		perf_end(perf_counter_t handle);
  * @param handle		The handle returned from perf_alloc.
  * @param elapsed		The time elapsed. Negative values lead to incrementing the overrun counter.
  */
-__EXPORT extern void		perf_set_elapsed(perf_counter_t handle, int64_t elapsed);
+__EXPORT خارجي فراغ		perf_set_elapsed(perf_counter_t handle, int64_t elapsed);
 
 /**
  * Register a measurement
@@ -140,7 +140,7 @@ __EXPORT extern void		perf_set_elapsed(perf_counter_t handle, int64_t elapsed);
  * @param handle		The handle returned from perf_alloc.
  * @param time			The time for the interval.
  */
-__EXPORT extern void		perf_count_interval(perf_counter_t handle, uint64_t time);
+__EXPORT خارجي فراغ		perf_گنتی_interval(perf_counter_t handle, uint64_t time);
 
 /**
  * Set a counter
@@ -150,7 +150,7 @@ __EXPORT extern void		perf_count_interval(perf_counter_t handle, uint64_t time);
  * @param handle		The handle returned from perf_alloc.
  * @param count			The counter value to be set.
  */
-__EXPORT extern void		perf_set_count(perf_counter_t handle, uint64_t count);
+__EXPORT خارجي فراغ		perf_set_گنتی(perf_counter_t handle, uint64_t گنتی);
 
 /**
  * Cancel a performance event.
@@ -160,7 +160,7 @@ __EXPORT extern void		perf_set_count(perf_counter_t handle, uint64_t count);
  *
  * @param handle		The handle returned from perf_alloc.
  */
-__EXPORT extern void		perf_cancel(perf_counter_t handle);
+__EXPORT خارجي فراغ		perf_cancel(perf_counter_t handle);
 
 /**
  * Reset a performance counter.
@@ -169,14 +169,14 @@ __EXPORT extern void		perf_cancel(perf_counter_t handle);
  *
  * @param handle		The handle returned from perf_alloc.
  */
-__EXPORT extern void		perf_reset(perf_counter_t handle);
+__EXPORT خارجي فراغ		perf_reset(perf_counter_t handle);
 
 /**
  * Print one performance counter to stdout
  *
  * @param handle		The counter to print.
  */
-__EXPORT extern void		perf_print_counter(perf_counter_t handle);
+__EXPORT خارجي فراغ		perf_print_counter(perf_counter_t handle);
 
 /**
  * Print one performance counter to a buffer.
@@ -186,15 +186,15 @@ __EXPORT extern void		perf_print_counter(perf_counter_t handle);
  * @param handle			The counter to print.
  * @param return			number of bytes written
  */
-__EXPORT extern int		perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle);
+__EXPORT خارجي صحيح		perf_print_counter_buffer(حرف *buffer, صحيح length, perf_counter_t handle);
 
 /**
  * Print all of the performance counters.
  */
-__EXPORT extern void		perf_print_all(void);
+__EXPORT خارجي فراغ		perf_print_all(فراغ);
 
 
-typedef void (*perf_callback)(const char *counter_line, void *user);
+تعريفنوع فراغ (*perf_callback)(ثابت حرف *counter_سطر, فراغ *user);
 
 /**
  * Iterate over all performance counters using a callback.
@@ -207,17 +207,17 @@ typedef void (*perf_callback)(const char *counter_line, void *user);
  * @param cb callback method
  * @param user custom argument for the callback
  */
-__EXPORT extern void	perf_iterate_all(perf_callback cb, void *user);
+__EXPORT خارجي فراغ	perf_iterate_all(perf_callback cb, فراغ *user);
 
 /**
  * Print hrt latency counters.
  */
-__EXPORT extern void		perf_print_latency(void);
+__EXPORT خارجي فراغ		perf_print_latency(فراغ);
 
 /**
  * Reset all of the performance counters.
  */
-__EXPORT extern void		perf_reset_all(void);
+__EXPORT خارجي فراغ		perf_reset_all(فراغ);
 
 /**
  * Return current event_count
@@ -225,7 +225,7 @@ __EXPORT extern void		perf_reset_all(void);
  * @param handle		The counter returned from perf_alloc.
  * @return			event_count
  */
-__EXPORT extern uint64_t	perf_event_count(perf_counter_t handle);
+__EXPORT خارجي uint64_t	perf_event_گنتی(perf_counter_t handle);
 
 /**
  * Return current mean
@@ -233,7 +233,7 @@ __EXPORT extern uint64_t	perf_event_count(perf_counter_t handle);
  * @param handle		The handle returned from perf_alloc.
  * @param return		mean
  */
-__EXPORT extern float		perf_mean(perf_counter_t handle);
+__EXPORT خارجي عائم		perf_mean(perf_counter_t handle);
 
 __END_DECLS
 
