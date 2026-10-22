@@ -33,59 +33,59 @@
 
 #pragma once
 
-#include <drivers/drv_hrt.h>
-#include <lib/conversion/rotation.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/sensor_gyro.h>
-#include <uORB/topics/sensor_gyro_fifo.h>
+#شامل <drivers/drv_hrt.h>
+#شامل <lib/conversion/rotation.h>
+#شامل <uORB/PublicationMulti.hpp>
+#شامل <uORB/topics/sensor_gyro.h>
+#شامل <uORB/topics/sensor_gyro_fifo.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#شامل <lib/failure_injection/FailureInjection.hpp>
 
-class PX4Gyroscope
+رده PX4Gyroscope
 {
-public:
-	PX4Gyroscope(uint32_t device_id, enum Rotation rotation = ROTATION_NONE);
-	PX4Gyroscope(uint32_t device_id, enum Rotation rotation, bool external);
+عمومی:
+	PX4Gyroscope(uint32_t device_id, شمارش Rotation rotation = ROTATION_NONE);
+	PX4Gyroscope(uint32_t device_id, شمارش Rotation rotation, منطقی external);
 	~PX4Gyroscope();
 
 
-	void set_device_id(uint32_t device_id);
-	void set_device_type(uint8_t devtype);
-	void set_external(bool external);
-	void set_error_count(uint32_t error_count) { _error_count = error_count; }
-	void set_range(float range) { _range = range; UpdateClipLimit(); }
-	void set_scale(float scale);
-	void set_temperature(float temperature) { _temperature = temperature; }
+	تهی set_device_id(uint32_t device_id);
+	تهی set_device_type(uint8_t devtype);
+	تهی set_external(منطقی external);
+	تهی set_error_شمار(uint32_t error_شمار) { error_شمار_2 = error_شمار; }
+	تهی set_range(اعشاری range) { _range = range; UpdateClipLimit(); }
+	تهی set_scale(اعشاری scale);
+	تهی set_temperature(اعشاری temperature) { _temperature = temperature; }
 
-	void update(const hrt_abstime &timestamp_sample, float x, float y, float z);
+	تهی update(ثابت hrt_abstime &timestamp_sample, اعشاری x, اعشاری y, اعشاری z);
 
-	void updateFIFO(sensor_gyro_fifo_s &sample);
+	تهی updateFIFO(sensor_gyro_fifo_s &sample);
 
-	uint32_t get_device_id() const { return _device_id; }
-	int get_instance() { return _sensor_pub.get_instance(); };
-	int32_t get_max_rate_hz() const { return math::constrain(_imu_gyro_rate_max, static_cast<int32_t>(100), static_cast<int32_t>(4000)); }
+	uint32_t get_device_id() ثابت { بازگشت _device_id; }
+	صحیح get_instance() { بازگشت _sensor_pub.get_instance(); };
+	int32_t get_max_rate_hz() ثابت { بازگشت math::constrain(_imu_gyro_rate_max, static_cast<int32_t>(100), static_cast<int32_t>(4000)); }
 
-private:
-	void UpdateClipLimit();
+خصوصی:
+	تهی UpdateClipLimit();
 
 	uORB::PublicationMulti<sensor_gyro_s> _sensor_pub{ORB_ID(sensor_gyro)};
 	uORB::PublicationMulti<sensor_gyro_fifo_s>  _sensor_fifo_pub{ORB_ID(sensor_gyro_fifo)};
 
 	uint32_t		_device_id{0};
-	const enum Rotation	_rotation;
+	ثابت شمارش Rotation	_rotation;
 
-	bool			_is_external{false};
-	bool			_external_forced{false}; // classification set by the driver, do not re-derive from the device id
+	منطقی			_is_external{نادرست};
+	منطقی			_external_forced{نادرست}; // classification set by the driver, do not re-derive from the device id
 
 	int32_t			_imu_gyro_rate_max{0};
 
-	float			_range{math::radians(2000.f)};
-	float			_scale{1.f};
-	float			_temperature{NAN};
+	اعشاری			_range{math::radians(2000.f)};
+	اعشاری			_scale{1.f};
+	اعشاری			_temperature{NAN};
 
-	float			_clip_limit{_range / _scale};
+	اعشاری			_clip_limit{_range / _scale};
 
-	uint32_t		_error_count{0};
+	uint32_t		error_شمار_2{0};
 
 	int16_t			_last_sample[3] {};
 

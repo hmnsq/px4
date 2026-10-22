@@ -31,29 +31,29 @@
  *
  ****************************************************************************/
 
-#include "odid_bid_storage.hpp"
+#شامل "odid_bid_storage.hpp"
 
-#include <fcntl.h>
-#include <stddef.h>
-#include <string.h>
-#include <unistd.h>
+#شامل <fcntl.h>
+#شامل <stddef.h>
+#شامل <string.h>
+#شامل <unistd.h>
 
 #ifdef __PX4_NUTTX
-#include <nuttx/crc32.h>
-#include <px4_platform_common/px4_manifest.h>
-#else
-#include <crc32.h>
+#شامل <nuttx/crc32.h>
+#شامل <px4_platform_common/px4_manifest.h>
+#وگرنه
+#شامل <crc32.h>
 #endif
 
-namespace open_drone_id
+فضاینام open_drone_id
 {
-namespace
+فضاینام
 {
 
-static constexpr uint32_t ODID_UASID_MAGIC = 0x4449444f; // "ODID"
-static constexpr uint8_t ODID_UASID_RECORD_VERSION = 1;
+ایستا constexpr uint32_t ODID_UASID_MAGIC = 0x4449444f; // "ODID"
+ایستا constexpr uint8_t ODID_UASID_RECORD_VERSION = 1;
 
-struct __attribute__((packed)) UasIdRecord {
+ساختار __attribute__((packed)) UasIdRecord {
 	uint32_t magic;
 	uint8_t version;
 	uint8_t id_type;
@@ -63,190 +63,190 @@ struct __attribute__((packed)) UasIdRecord {
 	uint32_t crc;
 };
 
-class BidStorageBackend
+رده BidStorageBackend
 {
-public:
+عمومی:
 	BidLockInfo get();
-	BidStoreResult checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE]);
+	BidStoreResult checkOrStore(uint8_t ua_type, ثابت uint8_t uas_id[UAS_ID_SIZE]);
 
-private:
-	static bool uasIdIsEmpty(const uint8_t uas_id[UAS_ID_SIZE])
+خصوصی:
+	ایستا منطقی uasIdIsEmpty(ثابت uint8_t uas_id[UAS_ID_SIZE])
 	{
-		for (unsigned i = 0; i < UAS_ID_SIZE; ++i) {
-			if (uas_id[i] != 0) {
-				return false;
+		برای (unsigned i = 0; i < UAS_ID_SIZE; ++i) {
+			اگر (uas_id[i] != 0) {
+				بازگشت نادرست;
 			}
 		}
 
-		return true;
+		بازگشت درست;
 	}
 
-	static uint32_t recordCrc(const UasIdRecord &record)
+	ایستا uint32_t recordCrc(ثابت UasIdRecord &record)
 	{
-		return crc32(reinterpret_cast<const uint8_t *>(&record.version),
+		بازگشت crc32(reinterpret_cast<ثابت uint8_t *>(&record.version),
 			     offsetof(UasIdRecord, crc) - offsetof(UasIdRecord, version));
 	}
 
-	static bool recordValid(const UasIdRecord &record)
+	ایستا منطقی recordValid(ثابت UasIdRecord &record)
 	{
-		return record.magic == ODID_UASID_MAGIC
+		بازگشت record.magic == ODID_UASID_MAGIC
 		       && record.version == ODID_UASID_RECORD_VERSION
-		       && record.id_type == UAS_ID_TYPE_SERIAL_NUMBER
+		       && record.id_type == UAS_ID_TYPE_SERIAL_عدد
 		       && !uasIdIsEmpty(record.uas_id)
 		       && record.crc == recordCrc(record);
 	}
 
 	// Check if the record is all 0xff, which is the erased state of flash.
 	// This is needed to distinguish between an unwritten record and a record that was written with all bytes set to 0 (which would be invalid but not unwritten).
-	static bool recordBlank(const UasIdRecord &record)
+	ایستا منطقی recordBlank(ثابت UasIdRecord &record)
 	{
-		const uint8_t *bytes = reinterpret_cast<const uint8_t *>(&record);
+		ثابت uint8_t *bytes = reinterpret_cast<ثابت uint8_t *>(&record);
 
-		for (unsigned i = 0; i < sizeof(record); ++i) {
-			if (bytes[i] != 0xff) {
-				return false;
+		برای (unsigned i = 0; i < اندازه(record); ++i) {
+			اگر (bytes[i] != 0xff) {
+				بازگشت نادرست;
 			}
 		}
 
-		return true;
+		بازگشت درست;
 	}
 
-	static bool recordMatches(const UasIdRecord &record, const uint8_t uas_id[UAS_ID_SIZE])
+	ایستا منطقی recordMatches(ثابت UasIdRecord &record, ثابت uint8_t uas_id[UAS_ID_SIZE])
 	{
-		return memcmp(record.uas_id, uas_id, UAS_ID_SIZE) == 0;
+		بازگشت memcmp(record.uas_id, uas_id, UAS_ID_SIZE) == 0;
 	}
 
 	// Write the entire buffer to the file descriptor, handling short writes.
-	static bool writeAll(int fd, const void *buffer, size_t size)
+	ایستا منطقی writeAll(صحیح fd, ثابت تهی *buffer, size_t size)
 	{
-		const uint8_t *bytes = static_cast<const uint8_t *>(buffer);
+		ثابت uint8_t *bytes = static_cast<ثابت uint8_t *>(buffer);
 
-		while (size > 0) {
-			const ssize_t written = write(fd, bytes, size);
+		وقتی (size > 0) {
+			ثابت ssize_t written = اكتب(fd, bytes, size);
 
-			if (written <= 0) {
-				return false;
+			اگر (written <= 0) {
+				بازگشت نادرست;
 			}
 
 			bytes += written;
 			size -= written;
 		}
 
-		return true;
+		بازگشت درست;
 	}
 
 };
 
-static_assert(sizeof(UasIdRecord) <= 256, "OpenDroneID UAS ID record must fit in /fs/mtd_id");
+static_assert(اندازه(UasIdRecord) <= 256, "OpenDroneID UAS ID record must fit in /fs/mtd_id");
 
 // The UAS ID storage is only supported on PX4 targets with NuttX and an MTD partition named "ID".
 // On other platforms, the get() method will return StorageUnavailable and the checkOrStore() method will return Unsupported.
 BidLockInfo BidStorageBackend::get()
 {
-#if defined(__PX4_NUTTX)
-	const char *path = nullptr;
+#اگر defined(__PX4_NUTTX)
+	ثابت نویسه *path = nullptr;
 
-	if (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
-		return {BidLockState::StorageUnavailable, {}};
+	اگر (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
+		بازگشت {BidLockState::StorageUnavailable, {}};
 	}
 
-	int fd = open(path, O_RDONLY);
+	صحیح fd = open(path, O_RDONLY);
 
-	if (fd < 0) {
-		return {BidLockState::StorageUnavailable, {}};
+	اگر (fd < 0) {
+		بازگشت {BidLockState::StorageUnavailable, {}};
 	}
 
 	UasIdRecord record{};
 
-	if (read(fd, &record, sizeof(record)) != sizeof(record)) {
+	اگر (اقرأ(fd, &record, اندازه(record)) != اندازه(record)) {
 		close(fd);
-		return {BidLockState::StorageUnavailable, {}};
+		بازگشت {BidLockState::StorageUnavailable, {}};
 	}
 
 	close(fd);
 
-	if (recordValid(record)) {
+	اگر (recordValid(record)) {
 		BidLockInfo info{BidLockState::Locked, {}};
 		info.id.ua_type = record.ua_type;
 		memcpy(info.id.uas_id, record.uas_id, UAS_ID_SIZE);
-		return info;
+		بازگشت info;
 	}
 
-	if (recordBlank(record)) {
-		return {BidLockState::Empty, {}};
+	اگر (recordBlank(record)) {
+		بازگشت {BidLockState::Empty, {}};
 	}
 
-	return {BidLockState::InvalidRecord, {}};
-#else
-	return {BidLockState::Unsupported, {}};
+	بازگشت {BidLockState::InvalidRecord, {}};
+#وگرنه
+	بازگشت {BidLockState::Unsupported, {}};
 #endif
 }
 
 // Check if the given UAS ID matches the stored one, or store it if the storage is empty.
 // The storage is write-once, so once a UAS ID is stored it cannot be changed (except by erasing the flash).
-BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE])
+BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, ثابت uint8_t uas_id[UAS_ID_SIZE])
 {
-	if (uasIdIsEmpty(uas_id)) {
-		return BidStoreResult::InvalidBasicId;
+	اگر (uasIdIsEmpty(uas_id)) {
+		بازگشت BidStoreResult::InvalidBasicId;
 	}
 
-#if defined(__PX4_NUTTX)
-	const char *path = nullptr;
+#اگر defined(__PX4_NUTTX)
+	ثابت نویسه *path = nullptr;
 
-	if (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
-		return BidStoreResult::StorageUnavailable;
+	اگر (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
+		بازگشت BidStoreResult::StorageUnavailable;
 	}
 
-	int fd = open(path, O_RDWR);
+	صحیح fd = open(path, O_RDWR);
 
-	if (fd < 0) {
-		return BidStoreResult::StorageUnavailable;
+	اگر (fd < 0) {
+		بازگشت BidStoreResult::StorageUnavailable;
 	}
 
 	UasIdRecord existing{};
 
-	if (read(fd, &existing, sizeof(existing)) != sizeof(existing)) {
+	اگر (اقرأ(fd, &existing, اندازه(existing)) != اندازه(existing)) {
 		close(fd);
-		return BidStoreResult::StorageUnavailable;
+		بازگشت BidStoreResult::StorageUnavailable;
 	}
 
-	if (recordValid(existing)) {
-		const BidStoreResult result = recordMatches(existing, uas_id)
+	اگر (recordValid(existing)) {
+		ثابت BidStoreResult result = recordMatches(existing, uas_id)
 					      ? BidStoreResult::AlreadyLocked
 					      : BidStoreResult::AlreadyLockedDifferent;
 		close(fd);
-		return result;
+		بازگشت result;
 	}
 
-	if (!recordBlank(existing)) {
+	اگر (!recordBlank(existing)) {
 		close(fd);
-		return BidStoreResult::InvalidRecord;
+		بازگشت BidStoreResult::InvalidRecord;
 	}
 
 	UasIdRecord record{};
 	record.magic = ODID_UASID_MAGIC;
 	record.version = ODID_UASID_RECORD_VERSION;
-	record.id_type = UAS_ID_TYPE_SERIAL_NUMBER;
+	record.id_type = UAS_ID_TYPE_SERIAL_عدد;
 	record.ua_type = ua_type;
 	memcpy(record.uas_id, uas_id, UAS_ID_SIZE);
 	record.crc = recordCrc(record);
 
-	const uint32_t magic = record.magic;
+	ثابت uint32_t magic = record.magic;
 	record.magic = 0xffffffff;
 
-	const bool written = lseek(fd, sizeof(record.magic), SEEK_SET) == static_cast<off_t>(sizeof(record.magic))
-			     && writeAll(fd, reinterpret_cast<const uint8_t *>(&record) + sizeof(record.magic),
-					 sizeof(record) - sizeof(record.magic))
+	ثابت منطقی written = lseek(fd, اندازه(record.magic), SEEK_SET) == static_cast<off_t>(اندازه(record.magic))
+			     && writeAll(fd, reinterpret_cast<ثابت uint8_t *>(&record) + اندازه(record.magic),
+					 اندازه(record) - اندازه(record.magic))
 			     && fsync(fd) == 0
 			     && lseek(fd, 0, SEEK_SET) == 0
-			     && writeAll(fd, &magic, sizeof(magic))
+			     && writeAll(fd, &magic, اندازه(magic))
 			     && fsync(fd) == 0;
 
 	close(fd);
 
-	return written ? BidStoreResult::Stored : BidStoreResult::WriteError;
-#else
-	return BidStoreResult::Unsupported;
+	بازگشت written ? BidStoreResult::Stored : BidStoreResult::WriteError;
+#وگرنه
+	بازگشت BidStoreResult::Unsupported;
 #endif
 }
 
@@ -256,84 +256,84 @@ BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t ua
 BidLockInfo BidStorage::get()
 {
 	BidStorageBackend storage;
-	return storage.get();
+	بازگشت storage.get();
 }
 
-BidStoreResult BidStorage::checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE])
+BidStoreResult BidStorage::checkOrStore(uint8_t ua_type, ثابت uint8_t uas_id[UAS_ID_SIZE])
 {
 	BidStorageBackend storage;
-	return storage.checkOrStore(ua_type, uas_id);
+	بازگشت storage.checkOrStore(ua_type, uas_id);
 }
 
 //
-BidStoreResult BidLock::resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE],
+BidStoreResult BidLock::resolve(uint8_t id_type, uint8_t ua_type, ثابت uint8_t uas_id[UAS_ID_SIZE],
 				UasId &locked_id)
 {
-	if (id_type != UAS_ID_TYPE_SERIAL_NUMBER) {
-		return BidStoreResult::InvalidBasicId;
+	اگر (id_type != UAS_ID_TYPE_SERIAL_عدد) {
+		بازگشت BidStoreResult::InvalidBasicId;
 	}
 
-	if (!_loaded) {
+	اگر (!_loaded) {
 		_info = BidStorage::get();
-		_loaded = true;
+		_loaded = درست;
 	}
 
-	if (_info.locked()) {
+	اگر (_info.locked()) {
 		locked_id = _info.id;
-		return BidStoreResult::AlreadyLocked;
+		بازگشت BidStoreResult::AlreadyLocked;
 	}
 
-	if (_info.state != BidLockState::Empty) {
-		switch (_info.state) {
-		case BidLockState::InvalidRecord:
-			return BidStoreResult::InvalidRecord;
+	اگر (_info.state != BidLockState::Empty) {
+		انتخاب (_info.state) {
+		حالت BidLockState::InvalidRecord:
+			بازگشت BidStoreResult::InvalidRecord;
 
-		case BidLockState::StorageUnavailable:
-			return BidStoreResult::StorageUnavailable;
+		حالت BidLockState::StorageUnavailable:
+			بازگشت BidStoreResult::StorageUnavailable;
 
-		case BidLockState::WriteError:
-			return BidStoreResult::WriteError;
+		حالت BidLockState::WriteError:
+			بازگشت BidStoreResult::WriteError;
 
-		case BidLockState::Unsupported:
-			return BidStoreResult::Unsupported;
+		حالت BidLockState::Unsupported:
+			بازگشت BidStoreResult::Unsupported;
 
-		case BidLockState::Empty:
-		case BidLockState::Locked:
-			break;
+		حالت BidLockState::Empty:
+		حالت BidLockState::Locked:
+			بشکن;
 		}
 	}
 
-	const BidStoreResult result = BidStorage::checkOrStore(ua_type, uas_id);
+	ثابت BidStoreResult result = BidStorage::checkOrStore(ua_type, uas_id);
 
-	switch (result) {
-	case BidStoreResult::Stored:
+	انتخاب (result) {
+	حالت BidStoreResult::Stored:
 		_info.state = BidLockState::Locked;
 		_info.id.ua_type = ua_type;
 		memcpy(_info.id.uas_id, uas_id, UAS_ID_SIZE);
 		locked_id = _info.id;
-		return result;
+		بازگشت result;
 
-	case BidStoreResult::AlreadyLocked:
-	case BidStoreResult::AlreadyLockedDifferent: {
+	حالت BidStoreResult::AlreadyLocked:
+	حالت BidStoreResult::AlreadyLockedDifferent: {
 			_info = BidStorage::get();
 
-			if (_info.locked()) {
+			اگر (_info.locked()) {
 				locked_id = _info.id;
-				return BidStoreResult::AlreadyLocked;
+				بازگشت BidStoreResult::AlreadyLocked;
 			}
 
-			return BidStoreResult::InvalidRecord;
+			بازگشت BidStoreResult::InvalidRecord;
 		}
 
-	case BidStoreResult::InvalidBasicId:
-	case BidStoreResult::StorageUnavailable:
-	case BidStoreResult::InvalidRecord:
-	case BidStoreResult::WriteError:
-	case BidStoreResult::Unsupported:
-		return result;
+	حالت BidStoreResult::InvalidBasicId:
+	حالت BidStoreResult::StorageUnavailable:
+	حالت BidStoreResult::InvalidRecord:
+	حالت BidStoreResult::WriteError:
+	حالت BidStoreResult::Unsupported:
+		بازگشت result;
 	}
 
-	return BidStoreResult::InvalidRecord;
+	بازگشت BidStoreResult::InvalidRecord;
 }
 
 } // namespace open_drone_id

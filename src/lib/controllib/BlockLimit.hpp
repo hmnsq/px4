@@ -39,20 +39,20 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <assert.h>
+#شامل <time.h>
+#شامل <stdlib.h>
+#شامل <math.h>
+#شامل <mathlib/math/test/test.hpp>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+فضاینام control
 {
 
 /**
@@ -60,21 +60,21 @@ namespace control
  * The output of update is the input, bounded
  * by min/max.
  */
-class __EXPORT BlockLimit : public Block
+رده __EXPORT BlockLimit : عمومی Block
 {
-public:
+عمومی:
 // methods
-	BlockLimit(SuperBlock *parent, const char *name) :
+	BlockLimit(SuperBlock *parent, ثابت نویسه *name) :
 		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+		_min(این, "MIN"),
+		_max(این, "MAX")
 	{}
-	virtual ~BlockLimit() = default;
-	float update(float input);
+	مجازی ~BlockLimit() = پیشفرض;
+	اعشاری update(اعشاری درون_داد);
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-protected:
+	اعشاری getMin() { بازگشت _min.get(); }
+	اعشاری getMax() { بازگشت _max.get(); }
+محافظتشده:
 // attributes
 	control::BlockParamFloat _min;
 	control::BlockParamFloat _max;

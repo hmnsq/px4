@@ -37,11 +37,11 @@
  * LED driver to control the onboard LED(s) via ioctl interface.
  */
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/px4_config.h>
-#include <lib/cdev/CDev.hpp>
-#include <drivers/drv_board_led.h>
-#include <stdio.h>
+#شامل <px4_platform_common/log.h>
+#شامل <px4_platform_common/px4_config.h>
+#شامل <lib/cdev/CDev.hpp>
+#شامل <drivers/drv_board_led.h>
+#شامل <stdio.h>
 
 /*
  * Ideally we'd be able to get these from arm_internal.h,
@@ -51,20 +51,20 @@
  * CONFIG_ARCH_LEDS configuration switch.
  */
 __BEGIN_DECLS
-extern void led_init();
-extern void led_on(int led);
-extern void led_off(int led);
-extern void led_toggle(int led);
+بیرونی تهی led_init();
+بیرونی تهی led_on(صحیح led);
+بیرونی تهی led_off(صحیح led);
+بیرونی تهی led_toggle(صحیح led);
 __END_DECLS
 
-class LED : cdev::CDev
+رده LED : cdev::CDev
 {
-public:
+عمومی:
 	LED();
-	~LED() override = default;
+	~LED() override = پیشفرض;
 
-	int	init() override;
-	int	ioctl(cdev::file_t *filp, int cmd, unsigned long arg) override;
+	صحیح	init() override;
+	صحیح	ioctl(cdev::file_t *filp, صحیح cmd, unsigned long arg) override;
 };
 
 LED::LED() : CDev(LED0_DEVICE_PATH)
@@ -73,7 +73,7 @@ LED::LED() : CDev(LED0_DEVICE_PATH)
 	init();
 }
 
-int
+صحیح
 LED::init()
 {
 	PX4_DEBUG("LED::init");
@@ -82,43 +82,43 @@ LED::init()
 
 	led_init();
 
-	return 0;
+	بازگشت 0;
 }
 
-int
-LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
+صحیح
+LED::ioctl(cdev::file_t *filp, صحیح cmd, unsigned long arg)
 {
-	int result = OK;
+	صحیح result = OK;
 
-	switch (cmd) {
-	case LED_ON:
+	انتخاب (cmd) {
+	حالت LED_ON:
 		led_on(arg);
-		break;
+		بشکن;
 
-	case LED_OFF:
+	حالت LED_OFF:
 		led_off(arg);
-		break;
+		بشکن;
 
-	case LED_TOGGLE:
+	حالت LED_TOGGLE:
 		led_toggle(arg);
-		break;
+		بشکن;
 
-	default:
+	پیشفرض:
 		result = CDev::ioctl(filp, cmd, arg);
 	}
 
-	return result;
+	بازگشت result;
 }
 
-namespace
+فضاینام
 {
 LED	*gLED;
 }
 
-void
-drv_led_start(void)
+تهی
+drv_led_start(تهی)
 {
-	if (gLED == nullptr) {
-		gLED = new LED;
+	اگر (gLED == nullptr) {
+		gLED = جدید LED;
 	}
 }

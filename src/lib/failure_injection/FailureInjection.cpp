@@ -31,95 +31,95 @@
  *
  ****************************************************************************/
 
-#include "FailureInjection.hpp"
+#شامل "FailureInjection.hpp"
 
-#if defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
+#اگر defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
 
-#include <parameters/param.h>
-#include <uORB/topics/battery_status.h>
-#include <uORB/topics/sensor_gnss.h>
+#شامل <parameters/param.h>
+#شامل <uORB/topics/battery_status.h>
+#شامل <uORB/topics/sensor_gnss.h>
 
-namespace failure_injection
+فضاینام failure_injection
 {
 
-bool Config::update()
+منطقی Config::update()
 {
 	failure_injection_s cfg;
 
-	if (_sub.update(&cfg)) {
+	اگر (_sub.update(&cfg)) {
 		set(cfg);
-		return true;
+		بازگشت درست;
 	}
 
-	return false;
+	بازگشت نادرست;
 }
 
-void Config::set(const failure_injection_s &cfg)
+تهی Config::set(ثابت failure_injection_s &cfg)
 {
-	_count = (cfg.count <= failure_injection_s::MAX_FAILURES) ? cfg.count : failure_injection_s::MAX_FAILURES;
+	شمار_3 = (cfg.شمار <= failure_injection_s::MAX_FAILURES) ? cfg.شمار : failure_injection_s::MAX_FAILURES;
 
-	for (uint8_t i = 0; i < _count; i++) {
+	برای (uint8_t i = 0; i < شمار_3; i++) {
 		_unit[i] = cfg.unit[i];
 		_instance_mask[i] = cfg.instance_mask[i];
 		_failure_type[i] = static_cast<Mode>(cfg.failure_type[i]);
 	}
 }
 
-Mode Config::mode(uint8_t unit, uint8_t instance) const
+Mode Config::mode(uint8_t unit, uint8_t instance) ثابت
 {
-	for (uint8_t i = 0; i < _count; i++) {
-		if (_unit[i] != unit) {
-			continue;
+	برای (uint8_t i = 0; i < شمار_3; i++) {
+		اگر (_unit[i] != unit) {
+			ادامه;
 		}
 
 		// instance == 0 matches any instance of the unit; otherwise match the
 		// 1-based instance against the bitmask (0xFFFF covers all instances).
-		if (instance == 0 || (instance <= 16 && (_instance_mask[i] & (1u << (instance - 1))))) {
-			return _failure_type[i];
+		اگر (instance == 0 || (instance <= 16 && (_instance_mask[i] & (1u << (instance - 1))))) {
+			بازگشت _failure_type[i];
 		}
 	}
 
-	return Mode::Ok;
+	بازگشت Mode::Ok;
 }
 
-bool process_battery(const Config &config, uint8_t instance, battery_status_s &battery_status)
+منطقی process_battery(ثابت Config &config, uint8_t instance, battery_status_s &battery_status)
 {
-	const Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_BATTERY, instance);
-	static constexpr float trigger_margin = 0.01f; // report remaining charge just below the threshold
+	ثابت Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_BATTERY, instance);
+	ایستا constexpr اعشاری trigger_margin = 0.01f; // report remaining charge just below the threshold
 
-	if (mode == Mode::Off) {
+	اگر (mode == Mode::Off) {
 		// Suppress the publication so the pack reads disconnected.
-		return false;
+		بازگشت نادرست;
 	}
 
-	if (mode != Mode::Wrong) {
-		return true;
+	اگر (mode != Mode::Wrong) {
+		بازگشت درست;
 	}
 
-	static const param_t level_handle = param_find("SYS_FAIL_BAT_LVL");
-	static const param_t low_thr_handle = param_find("BAT_LOW_THR");
-	static const param_t crit_thr_handle = param_find("BAT_CRIT_THR");
-	static const param_t emergen_thr_handle = param_find("BAT_EMERGEN_THR");
+	ایستا ثابت param_t level_handle = param_find("SYS_FAIL_BAT_LVL");
+	ایستا ثابت param_t کم_thr_handle = param_find("BAT_LOW_THR");
+	ایستا ثابت param_t crit_thr_handle = param_find("BAT_CRIT_THR");
+	ایستا ثابت param_t emergen_thr_handle = param_find("BAT_EMERGEN_THR");
 
 	int32_t level = battery_status_s::WARNING_CRITICAL;
 	param_get(level_handle, &level);
 
 	param_t threshold_handle = crit_thr_handle;
 
-	switch (level) {
-	case battery_status_s::WARNING_LOW:
-		threshold_handle = low_thr_handle;
-		break;
+	انتخاب (level) {
+	حالت battery_status_s::WARNING_کم:
+		threshold_handle = کم_thr_handle;
+		بشکن;
 
-	case battery_status_s::WARNING_EMERGENCY:
+	حالت battery_status_s::WARNING_EMERGENCY:
 		threshold_handle = emergen_thr_handle;
-		break;
+		بشکن;
 
-	case battery_status_s::WARNING_CRITICAL:
-	default:
+	حالت battery_status_s::WARNING_CRITICAL:
+	پیشفرض:
 		level = battery_status_s::WARNING_CRITICAL;
 		threshold_handle = crit_thr_handle;
-		break;
+		بشکن;
 	}
 
 	battery_status.warning = level;
@@ -127,101 +127,101 @@ bool process_battery(const Config &config, uint8_t instance, battery_status_s &b
 
 	// Report the remaining charge just below the selected threshold so the
 	// matching stage of the low-battery failsafe triggers.
-	float threshold = 0.f;
+	اعشاری threshold = 0.f;
 	param_get(threshold_handle, &threshold);
 	battery_status.remaining = (threshold > trigger_margin) ? (threshold - trigger_margin) : 0.f;
 
-	return true;
+	بازگشت درست;
 }
 
-bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
+منطقی process_gnss(ثابت Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
 		  Stuck<sensor_gnss_s> &stuck)
 {
-	const Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SENSOR_GPS, uorb_instance + 1);
+	ثابت Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SENSOR_GPS, uorb_instance + 1);
 
 	// Off and Stuck are message-agnostic; run them first so the Stuck cache keeps the
 	// uncorrupted sample and a later Stuck replays a healthy fix.
-	if (!process(mode, sensor_gnss, stuck)) {
-		return false;
+	اگر (!process(mode, sensor_gnss, stuck)) {
+		بازگشت نادرست;
 	}
 
-	if (mode == Mode::Wrong) {
-		static const param_t fix_type_handle = param_find("SYS_FAIL_GPS_WRG");
+	اگر (mode == Mode::Wrong) {
+		ایستا ثابت param_t fix_type_handle = param_find("SYS_FAIL_GPS_WRG");
 
 		int32_t fix_type = sensor_gnss_s::FIX_TYPE_2D;
 		param_get(fix_type_handle, &fix_type);
 		sensor_gnss.fix_type = (uint8_t)fix_type;
 
-		static const param_t jamming_state_handle = param_find("SYS_FAIL_GPS_JAM");
+		ایستا ثابت param_t jamming_state_handle = param_find("SYS_FAIL_GPS_JAM");
 
 		int32_t jamming_state = sensor_gnss_s::JAMMING_STATE_UNKNOWN;
 		param_get(jamming_state_handle, &jamming_state);
 
-		if (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
+		اگر (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
 			sensor_gnss.jamming_state = (uint8_t)jamming_state;
 		}
 	}
 
-	return true;
+	بازگشت درست;
 }
 
-esc_status_s process_esc(const Config &config, const esc_status_s &status)
+esc_status_s process_esc(ثابت Config &config, ثابت esc_status_s &status)
 {
 	esc_status_s result = status;
 
-	for (int i = 0; i < result.esc_count && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
-		const uint8_t function = result.esc[i].actuator_function;
+	برای (صحیح i = 0; i < result.esc_شمار && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
+		ثابت uint8_t function = result.esc[i].actuator_function;
 
-		if (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
-			continue; // not a motor output
+		اگر (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
+			ادامه; // not a motor output
 		}
 
-		const uint8_t instance = function - esc_report_s::ACTUATOR_FUNCTION_MOTOR1 + 1; // 1-based ESC instance
+		ثابت uint8_t instance = function - esc_report_s::ACTUATOR_FUNCTION_MOTOR1 + 1; // 1-based ESC instance
 
-		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_ESC, instance)) {
-		case Mode::Off:
+		انتخاب (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_ESC, instance)) {
+		حالت Mode::Off:
 			result.esc_online_flags &= ~(1u << i);
 			result.esc_armed_flags &= ~(1u << i);
 			result.esc[i] = esc_report_s{};
 			result.esc[i].actuator_function = function;
-			break;
+			بشکن;
 
-		case Mode::Wrong:
+		حالت Mode::Wrong:
 			result.esc[i].esc_voltage *= 0.1f;
 			result.esc[i].esc_current *= 0.1f;
 			result.esc[i].esc_rpm *= 10;
-			break;
+			بشکن;
 
-		default:
-			break;
+		پیشفرض:
+			بشکن;
 		}
 	}
 
-	return result;
+	بازگشت result;
 }
 
-MotorFailureMasks process_motor(const Config &config)
+MotorFailureMasks process_motor(ثابت Config &config)
 {
 	MotorFailureMasks masks{};
 
-	for (int i = 0; i < esc_status_s::CONNECTED_ESC_MAX; i++) {
-		const uint16_t bit = 1u << i;
+	برای (صحیح i = 0; i < esc_status_s::CONNECTED_ESC_MAX; i++) {
+		ثابت uint16_t bit = 1u << i;
 
-		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_MOTOR, i + 1)) {
-		case Mode::Off:
+		انتخاب (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_MOTOR, i + 1)) {
+		حالت Mode::Off:
 			masks.failure_mask |= bit;
-			break;
+			بشکن;
 
-		case Mode::Wrong:
+		حالت Mode::Wrong:
 			masks.stop_mask |= bit;
-			break;
+			بشکن;
 
-		default:
-			break;
+		پیشفرض:
+			بشکن;
 		}
 	}
 
-	return masks;
+	بازگشت masks;
 }
 
 } // namespace failure_injection

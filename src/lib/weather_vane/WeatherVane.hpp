@@ -42,41 +42,41 @@
 
 #pragma once
 
-#include <px4_platform_common/module_params.h>
-#include <matrix/matrix/math.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/vehicle_attitude_setpoint.h>
-#include <uORB/topics/vehicle_local_position.h>
-#include <uORB/topics/vehicle_control_mode.h>
-#include <uORB/topics/vehicle_status.h>
+#شامل <px4_platform_common/module_params.h>
+#شامل <matrix/matrix/math.hpp>
+#شامل <uORB/Subscription.hpp>
+#شامل <uORB/topics/vehicle_attitude_setpoint.h>
+#شامل <uORB/topics/vehicle_local_position.h>
+#شامل <uORB/topics/vehicle_control_mode.h>
+#شامل <uORB/topics/vehicle_status.h>
 
-class WeatherVane : public ModuleParams
+رده WeatherVane : عمومی ModuleParams
 {
-public:
+عمومی:
 	WeatherVane(ModuleParams *parent);
 
-	~WeatherVane() = default;
+	~WeatherVane() = پیشفرض;
 
-	void setNavigatorForceDisabled(bool navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
+	تهی setNavigatorForceDisabled(منطقی navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
 
-	bool isActive() {return _is_active;}
+	منطقی isActive() {بازگشت _is_active;}
 
-	void update();
+	تهی update();
 
-	float getWeathervaneYawrate();
+	اعشاری getWeathervaneYawrate();
 
-private:
+خصوصی:
 	uORB::Subscription _vehicle_attitude_setpoint_sub{ORB_ID(vehicle_attitude_setpoint)};
 	uORB::Subscription _vehicle_local_position_sub{ORB_ID(vehicle_local_position)};
 	uORB::Subscription _vehicle_control_mode_sub{ORB_ID(vehicle_control_mode)};
 	uORB::Subscription _vehicle_status_sub{ORB_ID(vehicle_status)};
 
-	bool _is_active{false};
+	منطقی _is_active{نادرست};
 
 	// local copies of status such that we don't need to copy uORB messages all the time
-	bool _flag_control_manual_enabled{false};
-	bool _flag_control_position_enabled{false};
-	bool _navigator_force_disabled{false};
+	منطقی _flag_control_manual_enabled{نادرست};
+	منطقی _flag_control_position_enabled{نادرست};
+	منطقی _navigator_force_disabled{نادرست};
 
 	DEFINE_PARAMETERS(
 		(ParamBool<px4::params::WV_EN>) _param_wv_en,

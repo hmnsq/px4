@@ -8,181 +8,181 @@
 
 #pragma once
 
-#include "Matrix.hpp"
+#شامل "Matrix.hpp"
 
-namespace matrix
+فضاینام matrix
 {
 
 template<typename Type, size_t M>
-class Vector : public Matrix<Type, M, 1>
+رده Vector : عمومی Matrix<Type, M, 1>
 {
-public:
+عمومی:
 	using MatrixM1 = Matrix<Type, M, 1>;
 
-	Vector() = default;
+	Vector() = پیشفرض;
 
-	Vector(const MatrixM1 &other) :
+	Vector(ثابت MatrixM1 &other) :
 		MatrixM1(other)
 	{
 	}
 
-	explicit Vector(const Type data_[M]) :
+	explicit Vector(ثابت Type data_[M]) :
 		MatrixM1(data_)
 	{
 	}
 
 	template<size_t P, size_t Q>
-	Vector(const Slice<Type, M, 1, P, Q> &slice_in) :
+	Vector(ثابت Slice<Type, M, 1, P, Q> &slice_in) :
 		Matrix<Type, M, 1>(slice_in)
 	{
 	}
 
 	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const Slice<Type, 1, M, P, Q> &slice_in)
+	Vector(ثابت Slice<Type, 1, M, P, Q> &slice_in)
 	{
-		Vector &self(*this);
+		Vector &self(*این);
 
-		for (size_t i = 0; i < M; i++) {
+		برای (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
 
 	template<size_t P, size_t Q>
-	Vector(const ConstSlice<Type, M, 1, P, Q> &slice_in) :
+	Vector(ثابت ConstSlice<Type, M, 1, P, Q> &slice_in) :
 		Matrix<Type, M, 1>(slice_in)
 	{
 	}
 
 	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const ConstSlice<Type, 1, M, P, Q> &slice_in)
+	Vector(ثابت ConstSlice<Type, 1, M, P, Q> &slice_in)
 	{
-		Vector &self(*this);
+		Vector &self(*این);
 
-		for (size_t i = 0; i < M; i++) {
+		برای (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	درونخطی ثابت Type &operator()(size_t i) ثابت
 	{
-		assert(i < M);
+		أكد(i < M);
 
-		const MatrixM1 &v = *this;
-		return v(i, 0);
+		ثابت MatrixM1 &v = *این;
+		بازگشت v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	درونخطی Type &operator()(size_t i)
 	{
-		assert(i < M);
+		أكد(i < M);
 
-		MatrixM1 &v = *this;
-		return v(i, 0);
+		MatrixM1 &v = *این;
+		بازگشت v(i, 0);
 	}
 
-	Type dot(const MatrixM1 &b) const
+	Type dot(ثابت MatrixM1 &b) ثابت
 	{
-		const Vector &a(*this);
+		ثابت Vector &a(*این);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		برای (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		بازگشت r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	درونخطی Type operator*(ثابت MatrixM1 &b) ثابت
 	{
-		const Vector &a(*this);
-		return a.dot(b);
+		ثابت Vector &a(*این);
+		بازگشت a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	درونخطی Vector operator*(Type b) ثابت
 	{
-		return Vector(MatrixM1::operator*(b));
+		بازگشت Vector(MatrixM1::operator*(b));
 	}
 
-	Type norm() const
+	Type norm() ثابت
 	{
-		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		ثابت Vector &a(*این);
+		بازگشت Type(std::sqrt(a.dot(a)));
 	}
 
-	Type norm_squared() const
+	Type norm_squared() ثابت
 	{
-		const Vector &a(*this);
-		return a.dot(a);
+		ثابت Vector &a(*این);
+		بازگشت a.dot(a);
 	}
 
-	inline Type length() const
+	درونخطی Type length() ثابت
 	{
-		return norm();
+		بازگشت norm();
 	}
 
-	inline void normalize()
+	درونخطی تهی normalize()
 	{
-		(*this) /= norm();
+		(*این) /= norm();
 	}
 
-	Vector unit() const
+	Vector unit() ثابت
 	{
-		return (*this) / norm();
+		بازگشت (*این) / norm();
 	}
 
-	Vector unit_or_zero(const Type eps = Type(1e-5)) const
+	Vector unit_or_zero(ثابت Type eps = Type(1e-5)) ثابت
 	{
-		const Type n = norm();
+		ثابت Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		اگر (n > eps) {
+			بازگشت (*این) / n;
 		}
 
-		return Vector();
+		بازگشت Vector();
 	}
 
-	inline Vector normalized() const
+	درونخطی Vector normalized() ثابت
 	{
-		return unit();
+		بازگشت unit();
 	}
 
-	bool longerThan(Type testVal) const
+	منطقی longerThan(Type testVal) ثابت
 	{
-		return norm_squared() > testVal * testVal;
+		بازگشت norm_squared() > testVal * testVal;
 	}
 
-	Vector sqrt() const
+	Vector sqrt() ثابت
 	{
-		const Vector &a(*this);
+		ثابت Vector &a(*این);
 		Vector r;
 
-		for (size_t i = 0; i < M; i++) {
+		برای (size_t i = 0; i < M; i++) {
 			r(i) = Type(std::sqrt(a(i)));
 		}
 
-		return r;
+		بازگشت r;
 	}
 
-	void print() const
+	تهی print() ثابت
 	{
-		(*this).transpose().print();
+		(*این).transpose().print();
 	}
 
-	static size_t size()
+	ایستا size_t size()
 	{
-		return M;
+		بازگشت M;
 	}
 };
 
 template<typename OStream, typename Type, size_t M>
-OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
+OStream &operator<<(OStream &os, ثابت matrix::Vector<Type, M> &vector)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
+	نویسه string[n];
 	vector.transpose().write_string(string, n);
 	os << string;
-	return os;
+	بازگشت os;
 }
 
 } // namespace matrix

@@ -37,59 +37,59 @@
  * Controller library code
  */
 
-#include "Block.hpp"
-#include "BlockParam.hpp"
+#شامل "Block.hpp"
+#شامل "BlockParam.hpp"
 
-#include <cstdio>
-#include <cstring>
+#شامل <cstdio>
+#شامل <cstring>
 
-#include <px4_platform_common/log.h>
+#شامل <px4_platform_common/log.h>
 
-namespace control
+فضاینام control
 {
 
-Block::Block(SuperBlock *parent, const char *name) :
+Block::Block(SuperBlock *parent, ثابت نویسه *name) :
 	_name(name),
 	_parent(parent)
 {
-	if (getParent() != nullptr) {
-		getParent()->getChildren().add(this);
+	اگر (getParent() != nullptr) {
+		getParent()->getChildren().add(این);
 	}
 }
 
-void Block::getName(char *buf, size_t n)
+تهی Block::getName(نویسه *buf, size_t n)
 {
-	if (getParent() == nullptr) {
+	اگر (getParent() == nullptr) {
 		strncpy(buf, _name, n);
 		// ensure string is terminated
 		buf[n - 1] = '\0';
 
-	} else {
-		char parentName[blockNameLengthMax];
+	} وگرنه {
+		نویسه parentName[blockNameLengthMax];
 		getParent()->getName(parentName, n);
 
-		if (!strcmp(_name, "")) {
+		اگر (!strcmp(_name, "")) {
 			strncpy(buf, parentName, n);
 			// ensure string is terminated
 			buf[n - 1] = '\0';
 
-		} else {
+		} وگرنه {
 			snprintf(buf, n, "%s_%s", parentName, _name);
 		}
 	}
 }
 
-void Block::updateParams()
+تهی Block::updateParams()
 {
 	BlockParamBase *param = getParams().getHead();
-	int count = 0;
+	صحیح شمار = 0;
 
-	while (param != nullptr) {
-		if (count++ > maxParamsPerBlock) {
-			char name[blockNameLengthMax];
+	وقتی (param != nullptr) {
+		اگر (شمار++ > maxParamsPerBlock) {
+			نویسه name[blockNameLengthMax];
 			getName(name, blockNameLengthMax);
 			PX4_ERR("exceeded max params for block: %s", name);
-			break;
+			بشکن;
 		}
 
 		//printf("updating param: %s\n", param->getName());
@@ -100,18 +100,18 @@ void Block::updateParams()
 	updateParamsSubclass();
 }
 
-void SuperBlock::setDt(float dt)
+تهی SuperBlock::setDt(اعشاری dt)
 {
 	Block::setDt(dt);
 	Block *child = getChildren().getHead();
-	int count = 0;
+	صحیح شمار = 0;
 
-	while (child != nullptr) {
-		if (count++ > maxChildrenPerBlock) {
-			char name[blockNameLengthMax];
+	وقتی (child != nullptr) {
+		اگر (شمار++ > maxChildrenPerBlock) {
+			نویسه name[blockNameLengthMax];
 			getName(name, blockNameLengthMax);
 			PX4_ERR("exceeded max children for block: %s", name);
-			break;
+			بشکن;
 		}
 
 		child->setDt(dt);
@@ -119,17 +119,17 @@ void SuperBlock::setDt(float dt)
 	}
 }
 
-void SuperBlock::updateChildParams()
+تهی SuperBlock::updateChildParams()
 {
 	Block *child = getChildren().getHead();
-	int count = 0;
+	صحیح شمار = 0;
 
-	while (child != nullptr) {
-		if (count++ > maxChildrenPerBlock) {
-			char name[blockNameLengthMax];
+	وقتی (child != nullptr) {
+		اگر (شمار++ > maxChildrenPerBlock) {
+			نویسه name[blockNameLengthMax];
 			getName(name, blockNameLengthMax);
 			PX4_ERR("exceeded max children for block: %s", name);
-			break;
+			بشکن;
 		}
 
 		child->updateParams();
@@ -139,4 +139,4 @@ void SuperBlock::updateChildParams()
 
 } // namespace control
 
-template class List<control::BlockParamBase *>;
+template رده List<control::BlockParamBase *>;

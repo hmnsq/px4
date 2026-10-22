@@ -31,18 +31,18 @@
  *
  ****************************************************************************/
 
-#include "version.h"
+#شامل "version.h"
 
-#include "build_git_version.h"
+#شامل "build_git_version.h"
 
-#include <string.h>
+#شامل <string.h>
 
-#if !defined(CONFIG_CDCACM_PRODUCTID)
+#اگر !defined(CONFIG_CDCACM_PRODUCTID)
 # define CONFIG_CDCACM_PRODUCTID 0
 #endif
 
-#if defined(__PX4_LINUX)
-#include <sys/utsname.h>
+#اگر defined(__PX4_LINUX)
+#شامل <sys/utsname.h>
 #endif
 
 // dev >= 0
@@ -50,7 +50,7 @@
 // beta >= 128
 // release candidate >= 192
 // release == 255
-enum FIRMWARE_TYPE {
+شمارش FIRMWARE_TYPE {
 	FIRMWARE_TYPE_DEV = 0,
 	FIRMWARE_TYPE_ALPHA = 64,
 	FIRMWARE_TYPE_BETA = 128,
@@ -58,86 +58,86 @@ enum FIRMWARE_TYPE {
 	FIRMWARE_TYPE_RELEASE = 255
 };
 
-const char *px4_build_uri(void)
+ثابت نویسه *px4_build_uri(تهی)
 {
-	return STRINGIFY(BUILD_URI);
+	بازگشت STRINGIFY(BUILD_URI);
 }
 
-uint32_t version_tag_to_number(const char *tag)
+uint32_t version_tag_to_عدد(ثابت نویسه *tag)
 {
-	uint32_t version_number = 0;
+	uint32_t version_عدد = 0;
 
 	int16_t buffer = -1;
 	size_t buffer_counter = 0;
-	size_t dash_count = 0;
-	size_t point_count = 0;
-	char version[3] = {0, 0, 0};
-	int firmware_type = FIRMWARE_TYPE_RELEASE;
+	size_t dash_شمار = 0;
+	size_t point_شمار = 0;
+	نویسه version[3] = {0, 0, 0};
+	صحیح firmware_type = FIRMWARE_TYPE_RELEASE;
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		switch (tag[i]) {
-		case '-':
-			dash_count++;
-			break;
+	برای (size_t i = 0; i < strlen(tag); i++) {
+		انتخاب (tag[i]) {
+		حالت '-':
+			dash_شمار++;
+			بشکن;
 
-		case '.':
-			point_count++;
-			break;
+		حالت '.':
+			point_شمار++;
+			بشکن;
 
-		case 'r':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
+		حالت 'r':
+			اگر (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
 				firmware_type = FIRMWARE_TYPE_RC;
 
 			}
 
-			break;
+			بشکن;
 
-		case 'p':
+		حالت 'p':
 			firmware_type = FIRMWARE_TYPE_ALPHA;
-			break;
+			بشکن;
 
-		case 't':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
+		حالت 't':
+			اگر (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
-			} else {
+			} وگرنه {
 				firmware_type = FIRMWARE_TYPE_BETA;
 
 			}
 
-			break;
+			بشکن;
 
-		case 'v':
-			if (i > 0) {
+		حالت 'v':
+			اگر (i > 0) {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
 			}
 
-			break;
+			بشکن;
 
-		default:
-			break;
+		پیشفرض:
+			بشکن;
 		}
 	}
 
-	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
-	    (dash_count == 2 && point_count == 2) ||
-	    (dash_count == 3 && point_count == 4) ||
-	    (dash_count == 4 && point_count == 4)) {
+	اگر ((dash_شمار == 1 && point_شمار == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
+	    (dash_شمار == 2 && point_شمار == 2) ||
+	    (dash_شمار == 3 && point_شمار == 4) ||
+	    (dash_شمار == 4 && point_شمار == 4)) {
 		firmware_type = FIRMWARE_TYPE_DEV;
 	}
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (buffer_counter > 2) {
-			continue;
+	برای (size_t i = 0; i < strlen(tag); i++) {
+		اگر (buffer_counter > 2) {
+			ادامه;
 		}
 
-		if (tag[i] >= '0' && tag[i] <= '9') {
+		اگر (tag[i] >= '0' && tag[i] <= '9') {
 			buffer = (buffer == -1) ? 0 : buffer;
 			buffer = buffer * 10 + (tag[i] - '0');
 
-		} else {
-			if (buffer >= 0) {
+		} وگرنه {
+			اگر (buffer >= 0) {
 				version[buffer_counter] = buffer;
 				buffer_counter++;
 			}
@@ -146,109 +146,109 @@ uint32_t version_tag_to_number(const char *tag)
 		}
 	}
 
-	if (buffer >= 0) {
+	اگر (buffer >= 0) {
 		version[buffer_counter] = buffer;
 		buffer_counter++;
 	}
 
-	if (buffer_counter <= 0) {
+	اگر (buffer_counter <= 0) {
 		firmware_type = 0x00;
 	}
 
-	if (buffer_counter == 3 || buffer_counter == 6) {
-		version_number = ((uint8_t)version[0] << 8 * 3) |
+	اگر (buffer_counter == 3 || buffer_counter == 6) {
+		version_عدد = ((uint8_t)version[0] << 8 * 3) |
 				 ((uint8_t)version[1] << 8 * 2) |
 				 ((uint8_t)version[2] << 8 * 1) | firmware_type;
 
-	} else {
-		version_number = 0;
+	} وگرنه {
+		version_عدد = 0;
 	}
 
-	return version_number;
+	بازگشت version_عدد;
 }
 
-uint32_t px4_firmware_version(void)
+uint32_t px4_firmware_version(تهی)
 {
-	return version_tag_to_number(PX4_GIT_TAG_STR);
+	بازگشت version_tag_to_عدد(PX4_GIT_TAG_STR);
 }
 
-uint32_t version_tag_to_vendor_version_number(const char *tag)
+uint32_t version_tag_to_vendor_version_عدد(ثابت نویسه *tag)
 {
-	uint32_t version_number = 0;
+	uint32_t version_عدد = 0;
 
 	int16_t buffer = -1;
 	size_t buffer_counter = 0;
-	char version[6] = {0, 0, 0, 0, 0, 0};
-	size_t dash_count = 0;
-	size_t point_count = 0;
-	int firmware_type = FIRMWARE_TYPE_RELEASE;
+	نویسه version[6] = {0, 0, 0, 0, 0, 0};
+	size_t dash_شمار = 0;
+	size_t point_شمار = 0;
+	صحیح firmware_type = FIRMWARE_TYPE_RELEASE;
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		switch (tag[i]) {
-		case '-':
-			dash_count++;
-			break;
+	برای (size_t i = 0; i < strlen(tag); i++) {
+		انتخاب (tag[i]) {
+		حالت '-':
+			dash_شمار++;
+			بشکن;
 
-		case '.':
-			point_count++;
-			break;
+		حالت '.':
+			point_شمار++;
+			بشکن;
 
-		case 'r':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
+		حالت 'r':
+			اگر (i < strlen(tag) - 1 && tag[i + 1] == 'c') {
 				firmware_type = FIRMWARE_TYPE_RC;
 
 			}
 
-			break;
+			بشکن;
 
-		case 'p':
+		حالت 'p':
 			firmware_type = FIRMWARE_TYPE_ALPHA;
-			break;
+			بشکن;
 
-		case 't':
-			if (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
+		حالت 't':
+			اگر (i < strlen(tag) - 1 && tag[i + 1] == 'y') {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
-			} else {
+			} وگرنه {
 				firmware_type = FIRMWARE_TYPE_BETA;
 
 			}
 
-			break;
+			بشکن;
 
-		case 'v':
-			if (i > 0) {
+		حالت 'v':
+			اگر (i > 0) {
 				firmware_type = FIRMWARE_TYPE_DEV;
 
 			}
 
-			break;
+			بشکن;
 
-		default:
-			break;
+		پیشفرض:
+			بشکن;
 		}
 	}
 
-	if ((dash_count == 1 && point_count == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
-	    (dash_count == 2 && point_count == 2) ||
-	    (dash_count == 3 && point_count == 4) ||
-	    (dash_count == 4 && point_count == 4)) {
+	اگر ((dash_شمار == 1 && point_شمار == 2 && firmware_type == FIRMWARE_TYPE_RELEASE) ||
+	    (dash_شمار == 2 && point_شمار == 2) ||
+	    (dash_شمار == 3 && point_شمار == 4) ||
+	    (dash_شمار == 4 && point_شمار == 4)) {
 		firmware_type = FIRMWARE_TYPE_DEV;
 	}
 
-	for (size_t i = 0; i < strlen(tag); i++) {
-		if (buffer_counter > 5) {
-			continue;
+	برای (size_t i = 0; i < strlen(tag); i++) {
+		اگر (buffer_counter > 5) {
+			ادامه;
 		}
 
-		if (tag[i] >= '0' && tag[i] <= '9') {
+		اگر (tag[i] >= '0' && tag[i] <= '9') {
 			buffer = (buffer == -1) ? 0 : buffer;
 			buffer = buffer * 10 + (tag[i] - '0');
 
-		} else {
-			if (buffer >= 0) {
-				if (buffer_counter + 1 == 4 && tag[i] == '-') {
-					break;
+		} وگرنه {
+			اگر (buffer >= 0) {
+				اگر (buffer_counter + 1 == 4 && tag[i] == '-') {
+					بشکن;
 				}
 
 				version[buffer_counter] = buffer;
@@ -259,152 +259,152 @@ uint32_t version_tag_to_vendor_version_number(const char *tag)
 		}
 	}
 
-	if (buffer >= 0 && (buffer_counter + 1 == 3 || buffer_counter + 1 == 6)) {
+	اگر (buffer >= 0 && (buffer_counter + 1 == 3 || buffer_counter + 1 == 6)) {
 		version[buffer_counter] = buffer;
 		buffer_counter++;
 	}
 
-	if (buffer_counter == 6) {
-		version_number = ((uint8_t)version[3] << 8 * 3) |
+	اگر (buffer_counter == 6) {
+		version_عدد = ((uint8_t)version[3] << 8 * 3) |
 				 ((uint8_t)version[4] << 8 * 2) |
 				 ((uint8_t)version[5] << 8 * 1) | firmware_type;
 
-	} else if (buffer_counter == 3) {
-		version_number = firmware_type;
+	} وگرنه اگر (buffer_counter == 3) {
+		version_عدد = firmware_type;
 
-	} else {
-		version_number = 0;
+	} وگرنه {
+		version_عدد = 0;
 	}
 
-	return version_number;
+	بازگشت version_عدد;
 }
 
-uint32_t px4_firmware_vendor_version(void)
+uint32_t px4_firmware_vendor_version(تهی)
 {
-	return version_tag_to_vendor_version_number(PX4_GIT_TAG_STR);
+	بازگشت version_tag_to_vendor_version_عدد(PX4_GIT_TAG_STR);
 }
 
-const char *px4_firmware_git_branch(void)
+ثابت نویسه *px4_firmware_git_branch(تهی)
 {
-	return PX4_GIT_BRANCH_NAME;
+	بازگشت PX4_GIT_BRANCH_NAME;
 }
 
-uint32_t px4_board_version(void)
+uint32_t px4_board_version(تهی)
 {
-#if defined(__PX4_NUTTX)
-	return CONFIG_CDCACM_PRODUCTID;
-#else
-	return 1;
+#اگر defined(__PX4_NUTTX)
+	بازگشت CONFIG_CDCACM_PRODUCTID;
+#وگرنه
+	بازگشت 1;
 #endif
 }
 
-uint32_t px4_os_version(void)
+uint32_t px4_os_version(تهی)
 {
-#if defined(__PX4_DARWIN) || defined(__PX4_CYGWIN) || defined(__PX4_QURT)
-	return 0; //TODO: implement version for Darwin, Cygwin, QuRT
-#elif defined(__PX4_LINUX)
-	struct utsname name;
+#اگر defined(__PX4_DARWIN) || defined(__PX4_CYGWIN) || defined(__PX4_QURT)
+	بازگشت 0; //TODO: implement version for Darwin, Cygwin, QuRT
+#وگرنهاگر defined(__PX4_LINUX)
+	ساختار utsname name;
 
-	if (uname(&name) == 0) {
-		char *c = name.release;
+	اگر (uname(&name) == 0) {
+		نویسه *c = name.release;
 
 		// cut the part after the first '-'
-		while (*c && *c != '-') {
+		وقتی (*c && *c != '-') {
 			++c;
 		}
 
 		*c = 0;
-		return version_tag_to_number(name.release);
+		بازگشت version_tag_to_عدد(name.release);
 
-	} else {
-		return 0;
+	} وگرنه {
+		بازگشت 0;
 	}
 
-#elif defined(__PX4_NUTTX)
-	return version_tag_to_number(NUTTX_GIT_TAG_STR);
-#else
+#وگرنهاگر defined(__PX4_NUTTX)
+	بازگشت version_tag_to_عدد(NUTTX_GIT_TAG_STR);
+#وگرنه
 # error "px4_os_version not implemented for current OS"
 #endif
 }
 
-const char *px4_os_version_string(void)
+ثابت نویسه *px4_os_version_string(تهی)
 {
-#if defined(__PX4_NUTTX)
-	return NUTTX_GIT_VERSION_STR;
-#else
-	return NULL;
+#اگر defined(__PX4_NUTTX)
+	بازگشت NUTTX_GIT_VERSION_STR;
+#وگرنه
+	بازگشت پوچ;
 #endif
 }
 
-const char *px4_os_name(void)
+ثابت نویسه *px4_os_name(تهی)
 {
-#if defined(__PX4_DARWIN)
-	return "Darwin";
-#elif defined(__PX4_LINUX)
-	return "Linux";
-#elif defined(__PX4_QURT)
-	return "QuRT";
-#elif defined(__PX4_NUTTX)
-	return "NuttX";
-#elif defined(__PX4_CYGWIN)
-	return "Cygwin";
-#else
+#اگر defined(__PX4_DARWIN)
+	بازگشت "Darwin";
+#وگرنهاگر defined(__PX4_LINUX)
+	بازگشت "Linux";
+#وگرنهاگر defined(__PX4_QURT)
+	بازگشت "QuRT";
+#وگرنهاگر defined(__PX4_NUTTX)
+	بازگشت "NuttX";
+#وگرنهاگر defined(__PX4_CYGWIN)
+	بازگشت "Cygwin";
+#وگرنه
 # error "px4_os_name not implemented for current OS"
 #endif
 }
 
-const char *px4_toolchain_name(void)
+ثابت نویسه *px4_toolchain_name(تهی)
 {
-#if defined(__clang__)
-	return "Clang/LLVM";
-#elif defined(__ICC) || defined(__INTEL_COMPILER)
-	return "Intel ICC";
-#elif defined(__GNUC__) || defined(__GNUG__)
-	return "GNU GCC";
-#elif defined(_MSC_VER)
-	return "MS Visual Studio";
-#else
-	return "Unknown";
+#اگر defined(__clang__)
+	بازگشت "Clang/LLVM";
+#وگرنهاگر defined(__ICC) || defined(__INTEL_COMPILER)
+	بازگشت "Intel ICC";
+#وگرنهاگر defined(__GNUC__) || defined(__GNUG__)
+	بازگشت "GNU GCC";
+#وگرنهاگر defined(_MSC_VER)
+	بازگشت "MS Visual Studio";
+#وگرنه
+	بازگشت "Unknown";
 #endif
 }
 
-const char *px4_toolchain_version(void)
+ثابت نویسه *px4_toolchain_version(تهی)
 {
 #ifdef __VERSION__
-	return __VERSION__;
-#else
-	return "";
+	بازگشت __VERSION__;
+#وگرنه
+	بازگشت "";
 #endif
 }
 
-const char *px4_firmware_version_string(void)
+ثابت نویسه *px4_firmware_version_string(تهی)
 {
-	return PX4_GIT_VERSION_STR;
+	بازگشت PX4_GIT_VERSION_STR;
 }
 
-uint64_t px4_firmware_version_binary(void)
+uint64_t px4_firmware_version_دودویی(تهی)
 {
-	return PX4_GIT_VERSION_BINARY;
+	بازگشت PX4_GIT_VERSION_دودویی;
 }
 
 
-#ifdef MAVLINK_LIB_GIT_VERSION_BINARY
-uint64_t px4_mavlink_lib_version_binary(void)
+#ifdef MAVLINK_LIB_GIT_VERSION_دودویی
+uint64_t px4_mavlink_lib_version_دودویی(تهی)
 {
-	return MAVLINK_LIB_GIT_VERSION_BINARY;
+	بازگشت MAVLINK_LIB_GIT_VERSION_دودویی;
 }
 #endif /* MAVLINK_LIB_GIT_VERSION_BINARY */
 
-uint64_t px4_os_version_binary(void)
+uint64_t px4_os_version_دودویی(تهی)
 {
-#ifdef NUTTX_GIT_VERSION_BINARY
-	return NUTTX_GIT_VERSION_BINARY;
-#else
-	return 0;
+#ifdef NUTTX_GIT_VERSION_دودویی
+	بازگشت NUTTX_GIT_VERSION_دودویی;
+#وگرنه
+	بازگشت 0;
 #endif
 }
 
-const char *px4_firmware_oem_version_string(void)
+ثابت نویسه *px4_firmware_oem_version_string(تهی)
 {
-	return PX4_GIT_OEM_VERSION_STR;
+	بازگشت PX4_GIT_OEM_VERSION_STR;
 }

@@ -33,30 +33,30 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#شامل "FunctionProviderBase.hpp"
 
-#include <uORB/topics/internal_combustion_engine_control.h>
+#شامل <uORB/topics/internal_combustion_engine_control.h>
 
 /**
  * Functions: ICE...
  */
-class FunctionICEControl : public FunctionProviderBase
+رده FunctionICEControl : عمومی FunctionProviderBase
 {
-public:
+عمومی:
 	FunctionICEControl()
 	{
-		resetAllToDisarmedValue();
+		reset_All_To_Disarmed_مقدار();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionICEControl(); }
+	ایستا FunctionProviderBase *allocate(ثابت Context &context) { بازگشت جدید FunctionICEControl(); }
 
-	void update() override
+	تهی update() override
 	{
 		internal_combustion_engine_control_s internal_combustion_engine_control;
 
 		// map [0, 1] to [-1, 1] which is the interface for non-motor PWM channels
 		// NAN is mapped to disarmed
-		if (_internal_combustion_engine_control_sub.update(&internal_combustion_engine_control)) {
+		اگر (_internal_combustion_engine_control_sub.update(&internal_combustion_engine_control)) {
 			_data[0] = internal_combustion_engine_control.ignition_on * 2.f - 1.f;
 			_data[1] = internal_combustion_engine_control.throttle_control * 2.f - 1.f;
 			_data[2] = internal_combustion_engine_control.choke_control * 2.f - 1.f;
@@ -64,21 +64,21 @@ public:
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::IC_Engine_Ignition]; }
+	اعشاری value(OutputFunction func) override { بازگشت _data[(صحیح)func - (صحیح)OutputFunction::IC_Engine_Ignition]; }
 
-private:
-	static constexpr int num_data_points = 4;
+خصوصی:
+	ایستا constexpr صحیح رقم_data_points = 4;
 
-	void resetAllToDisarmedValue()
+	تهی reset_All_To_Disarmed_مقدار()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
+		برای (صحیح i = 0; i < رقم_data_points; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::IC_Engine_Starter - (int)OutputFunction::IC_Engine_Ignition + 1,
+	static_assert(رقم_data_points == (صحیح)OutputFunction::IC_Engine_Starter - (صحیح)OutputFunction::IC_Engine_Ignition + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _internal_combustion_engine_control_sub{ORB_ID(internal_combustion_engine_control)};
-	float _data[num_data_points] {};
+	اعشاری _data[رقم_data_points] {};
 };

@@ -33,4 +33,4 @@
 
 #pragma once
 
-void events_ioctl_init(void);
+تهی events_ioctl_init(تهی);

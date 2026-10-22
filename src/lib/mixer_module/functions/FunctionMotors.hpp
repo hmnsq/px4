@@ -33,96 +33,96 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#شامل "FunctionProviderBase.hpp"
 
-#include <uORB/topics/actuator_motors.h>
+#شامل <uORB/topics/actuator_motors.h>
 
 /**
  * Functions: Motor1 ... MotorMax
  */
-class FunctionMotors : public FunctionProviderBase
+رده FunctionMotors : عمومی FunctionProviderBase
 {
-public:
-	static_assert(actuator_motors_s::NUM_CONTROLS == (int)OutputFunction::MotorMax - (int)OutputFunction::Motor1 + 1,
+عمومی:
+	static_assert(actuator_motors_s::رقم_CONTROLS == (صحیح)OutputFunction::MotorMax - (صحیح)OutputFunction::Motor1 + 1,
 		      "Unexpected num motors");
 
-	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (int)OutputFunction::Motor1, "Unexpected motor idx");
+	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (صحیح)OutputFunction::Motor1, "Unexpected motor idx");
 
-	FunctionMotors(const Context &context) :
+	FunctionMotors(ثابت Context &context) :
 		_topic(&context.work_item, ORB_ID(actuator_motors)),
 		_thrust_factor(context.thrust_factor)
 	{
-		for (int i = 0; i < actuator_motors_s::NUM_CONTROLS; ++i) {
+		برای (صحیح i = 0; i < actuator_motors_s::رقم_CONTROLS; ++i) {
 			_data.control[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionMotors(context); }
+	ایستا FunctionProviderBase *allocate(ثابت Context &context) { بازگشت جدید FunctionMotors(context); }
 
-	void update() override
+	تهی update() override
 	{
-		if (_topic.update(&_data)) {
-			updateValues(_data.reversible_flags, _thrust_factor, _data.control, actuator_motors_s::NUM_CONTROLS);
+		اگر (_topic.update(&_data)) {
+			update_مقادیر(_data.reversible_flags, _thrust_factor, _data.control, actuator_motors_s::رقم_CONTROLS);
 		}
 	}
 
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Motor1]; }
+	اعشاری value(OutputFunction func) override { بازگشت _data.control[(صحیح)func - (صحیح)OutputFunction::Motor1]; }
 
-#if defined(CONFIG_DRIVERS_UAVCANNODE)
-	bool allowPrearmControl() const override { return true; }
-#else
-	bool allowPrearmControl() const override { return false; }
+#اگر defined(CONFIG_DRIVERS_UAVCANNODE)
+	منطقی allowPrearmControl() ثابت override { بازگشت درست; }
+#وگرنه
+	منطقی allowPrearmControl() ثابت override { بازگشت نادرست; }
 #endif
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { بازگشت &_topic; }
 
-	bool getLatestSampleTimestamp(hrt_abstime &t) const override { t = _data.timestamp_sample; return t != 0; }
+	منطقی getLatestSampleTimestamp(hrt_abstime &t) ثابت override { t = _data.timestamp_sample; بازگشت t != 0; }
 
-	static inline void updateValues(uint32_t reversible, float thrust_factor, float *values, int num_values)
+	ایستا درونخطی تهی update_مقادیر(uint32_t reversible, اعشاری thrust_factor, اعشاری *مقادیر_2, صحیح رقم_مقادیر)
 	{
-		if (thrust_factor > FLT_EPSILON && thrust_factor <= 1.f) {
+		اگر (thrust_factor > FLT_EPSILON && thrust_factor <= 1.f) {
 			// thrust factor
 			//  rel_thrust = factor * x^2 + (1-factor) * x,
-			const float a = thrust_factor;
-			const float b = (1.f - thrust_factor);
+			ثابت اعشاری a = thrust_factor;
+			ثابت اعشاری b = (1.f - thrust_factor);
 
 			// don't recompute for all values (ax^2+bx+c=0)
-			const float tmp1 = b / (2.f * a);
-			const float tmp2 = b * b / (4.f * a * a);
+			ثابت اعشاری tmp1 = b / (2.f * a);
+			ثابت اعشاری tmp2 = b * b / (4.f * a * a);
 
-			for (int i = 0; i < num_values; ++i) {
+			برای (صحیح i = 0; i < رقم_مقادیر; ++i) {
 
-				const float control = values[i];
+				ثابت اعشاری control = مقادیر_2[i];
 
-				if (PX4_ISFINITE(control)) {
-					if (control > FLT_EPSILON) {
-						values[i] = -tmp1 + sqrtf(tmp2 + (control / a));
+				اگر (PX4_ISFINITE(control)) {
+					اگر (control > FLT_EPSILON) {
+						مقادیر_2[i] = -tmp1 + sqrtf(tmp2 + (control / a));
 
-					} else if (control < -FLT_EPSILON) {
-						values[i] =  tmp1 - sqrtf(tmp2 - (control / a));
+					} وگرنه اگر (control < -FLT_EPSILON) {
+						مقادیر_2[i] =  tmp1 - sqrtf(tmp2 - (control / a));
 
 					}
 				}
 			}
 		}
 
-		for (int i = 0; i < num_values; ++i) {
-			if ((reversible & (1u << i)) == 0) {
-				if (values[i] < -FLT_EPSILON) {
-					values[i] = NAN;
+		برای (صحیح i = 0; i < رقم_مقادیر; ++i) {
+			اگر ((reversible & (1u << i)) == 0) {
+				اگر (مقادیر_2[i] < -FLT_EPSILON) {
+					مقادیر_2[i] = NAN;
 
-				} else {
+				} وگرنه {
 					// remap from [0, 1] to [-1, 1]
-					values[i] = values[i] * 2.f - 1.f;
+					مقادیر_2[i] = مقادیر_2[i] * 2.f - 1.f;
 				}
 			}
 		}
 	}
 
-	bool reversible(OutputFunction func) const override { return _data.reversible_flags & (1u << ((int)func - (int)OutputFunction::Motor1)); }
+	منطقی reversible(OutputFunction func) ثابت override { بازگشت _data.reversible_flags & (1u << ((صحیح)func - (صحیح)OutputFunction::Motor1)); }
 
-private:
+خصوصی:
 	uORB::SubscriptionCallbackWorkItem _topic;
 	actuator_motors_s _data{};
-	const float &_thrust_factor;
+	ثابت اعشاری &_thrust_factor;
 };

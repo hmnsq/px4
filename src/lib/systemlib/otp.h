@@ -51,9 +51,9 @@
 
 
 
-#include <unistd.h>
-#include <stdint.h>
-#include <stdio.h>
+#شامل <unistd.h>
+#شامل <stdint.h>
+#شامل <stdio.h>
 
 // possible flash statuses
 #define F_BUSY 1
@@ -62,13 +62,13 @@
 #define F_ERROR_OPERATION 4
 #define F_COMPLETE 5
 
-typedef struct {
-	volatile unsigned long accesscontrol;      // 0x00
-	volatile unsigned long key;     //  0x04
-	volatile unsigned long optionkey;  //  0x08
-	volatile unsigned long status;       // 0x0C
-	volatile unsigned long control;       // 0x10
-	volatile unsigned long optioncontrol;    //0x14
+تعریفنوع ساختار {
+	فرار unsigned long accesscontrol;      // 0x00
+	فرار unsigned long کلید;     //  0x04
+	فرار unsigned long optionkey;  //  0x08
+	فرار unsigned long status;       // 0x0C
+	فرار unsigned long control;       // 0x10
+	فرار unsigned long optioncontrol;    //0x14
 } flash_registers;
 
 #define PERIPH_BASE           ((unsigned long)0x40000000) //Peripheral base address
@@ -91,7 +91,7 @@ typedef struct {
 
 
 
-#pragma pack(push, 1)
+#pragma pack(افزودن, 1)
 
 /*
  * The OTP area is divided into 16 OTP data blocks of 32 bytes and one lock OTP block of 16 bytes.
@@ -101,45 +101,45 @@ typedef struct {
  * contain 0x00 and 0xFF values, otherwise the OTP bytes might not be taken into account correctly.
  */
 
-struct otp {
+ساختار otp {
 	// first 32 bytes =  the '0' Block
-	char		id[4];		///4 bytes < 'P' 'X' '4' '\n'
+	نویسه		id[4];		///4 bytes < 'P' 'X' '4' '\n'
 	uint8_t		id_type;	///1 byte < 0 for USB VID, 1 for generic VID
 	uint32_t	vid;        ///4 bytes
 	uint32_t	pid;        ///4 bytes
-	char        unused[19];  ///19 bytes
+	نویسه        unused[19];  ///19 bytes
 	// Cert-of-Auth is next 4 blocks ie 1-4  ( where zero is first block )
-	char        signature[128];
+	نویسه        signature[128];
 	// insert extras here
 	uint32_t	lock_bytes[4];
 };
 
-struct otp_lock {
+ساختار otp_lock {
 	uint8_t		lock_bytes[16];
 };
-#pragma pack(pop)
+#pragma pack(برداشت)
 
 #define ADDR_F_SIZE		0x1FFF7A22
 
-#pragma pack(push, 1)
-union udid {
+#pragma pack(افزودن, 1)
+اجتماع udid {
 	uint32_t	serial[3];
 	uint8_t  data[12];
 };
-#pragma pack(pop)
+#pragma pack(برداشت)
 
 __BEGIN_DECLS
 
-__EXPORT void F_unlock(void);
-__EXPORT void F_lock(void);
-__EXPORT int val_read(void *dest, volatile const void *src, int bytes);
-__EXPORT int val_write(volatile void *dest, const void *src, int bytes);
-__EXPORT int write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, char *signature);
-__EXPORT int lock_otp(void);
+__EXPORT تهی F_unlock(تهی);
+__EXPORT تهی F_lock(تهی);
+__EXPORT صحیح val_read(تهی *dest, فرار ثابت تهی *src, صحیح bytes);
+__EXPORT صحیح val_write(فرار تهی *dest, ثابت تهی *src, صحیح bytes);
+__EXPORT صحیح write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, نویسه *signature);
+__EXPORT صحیح lock_otp(تهی);
 
 
-__EXPORT int F_write_byte(unsigned long Address, uint8_t Data);
-__EXPORT int F_write_word(unsigned long Address, uint32_t Data);
+__EXPORT صحیح F_write_byte(unsigned long Address, uint8_t Data);
+__EXPORT صحیح F_write_word(unsigned long Address, uint32_t Data);
 
 __END_DECLS
 

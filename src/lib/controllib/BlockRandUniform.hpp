@@ -39,51 +39,51 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <assert.h>
+#شامل <time.h>
+#شامل <stdlib.h>
+#شامل <math.h>
+#شامل <mathlib/math/test/test.hpp>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+فضاینام control
 {
 
 /**
  * A uniform random number generator
  */
-class __EXPORT BlockRandUniform: public Block
+رده __EXPORT BlockRandUniform: عمومی Block
 {
-public:
+عمومی:
 // methods
 	BlockRandUniform(SuperBlock *parent,
-			 const char *name) :
+			 ثابت نویسه *name) :
 		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+		_min(این, "MIN"),
+		_max(این, "MAX")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandUniform() = default;
-	float update()
+	مجازی ~BlockRandUniform() = پیشفرض;
+	اعشاری update()
 	{
-		static float rand_max = static_cast<float>(RAND_MAX);
-		float rand_val = rand();
-		float bounds = getMax() - getMin();
-		return getMin() + (rand_val * bounds) / rand_max;
+		ایستا اعشاری rand_max = static_cast<اعشاری>(RAND_MAX);
+		اعشاری rand_val = rand();
+		اعشاری bounds = getMax() - getMin();
+		بازگشت getMin() + (rand_val * bounds) / rand_max;
 	}
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-private:
+	اعشاری getMin() { بازگشت _min.get(); }
+	اعشاری getMax() { بازگشت _max.get(); }
+خصوصی:
 // attributes
 	control::BlockParamFloat _min;
 	control::BlockParamFloat _max;

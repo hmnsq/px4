@@ -41,46 +41,46 @@
 
 #pragma once
 
-#include <px4_platform_common/module_params.h>
-#include <matrix/matrix/math.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/manual_control_setpoint.h>
-#include <uORB/topics/failsafe_flags.h>
+#شامل <px4_platform_common/module_params.h>
+#شامل <matrix/matrix/math.hpp>
+#شامل <uORB/Subscription.hpp>
+#شامل <uORB/topics/manual_control_setpoint.h>
+#شامل <uORB/topics/failsafe_flags.h>
 
-class Sticks : public ModuleParams
+رده Sticks : عمومی ModuleParams
 {
-public:
+عمومی:
 	Sticks(ModuleParams *parent);
-	~Sticks() = default;
+	~Sticks() = پیشفرض;
 
 	// Checks for updated manual control input & updates internal values
-	bool checkAndUpdateStickInputs();
+	منطقی checkAndUpdateStickInputs();
 
-	bool isAvailable() { return _input_available; };
+	منطقی isAvailable() { بازگشت درون_داد_available; };
 
 	// Helper functions to get stick values more intuitively
-	float getRoll() const { return _positions(0); }
-	float getPitch() const { return _positions(1); }
-	float getYaw() const { return _positions(2); }
-	float getThrottleZeroCentered() const { return _positions(3); }
+	اعشاری getRoll() ثابت { بازگشت _positions(0); }
+	اعشاری getPitch() ثابت { بازگشت _positions(1); }
+	اعشاری getYaw() ثابت { بازگشت _positions(2); }
+	اعشاری getThrottleZeroCentered() ثابت { بازگشت _positions(3); }
 
-	float getRollExpo(float expo = .6f) const { return expoDeadzone(getRoll(), expo, _param_man_deadzone.get()); }
-	float getPitchExpo(float expo = .6f) const { return expoDeadzone(getPitch(), expo, _param_man_deadzone.get()); }
-	float getYawExpo(float expo = .6f) const { return expoDeadzone(getYaw(), expo, _param_man_deadzone.get()); }
-	float getThrottleZeroCenteredExpo(float expo = .6f) const { return expoDeadzone(getThrottleZeroCentered(), expo, _param_man_deadzone.get()); }
+	اعشاری getRollExpo(اعشاری expo = .6f) ثابت { بازگشت expoDeadzone(getRoll(), expo, _param_man_deadzone.get()); }
+	اعشاری getPitchExpo(اعشاری expo = .6f) ثابت { بازگشت expoDeadzone(getPitch(), expo, _param_man_deadzone.get()); }
+	اعشاری getYawExpo(اعشاری expo = .6f) ثابت { بازگشت expoDeadzone(getYaw(), expo, _param_man_deadzone.get()); }
+	اعشاری getThrottleZeroCenteredExpo(اعشاری expo = .6f) ثابت { بازگشت expoDeadzone(getThrottleZeroCentered(), expo, _param_man_deadzone.get()); }
 
-	static float expoDeadzone(float value, float expo, float deadzone);
+	ایستا اعشاری expoDeadzone(اعشاری value, اعشاری expo, اعشاری deadzone);
 
-	const matrix::Vector2f getPitchRoll() { return {getPitch(), getRoll()}; }
-	const matrix::Vector2f getPitchRollExpo() { return {getPitchExpo(), getRollExpo()}; }
+	ثابت matrix::Vector2f getPitchRoll() { بازگشت {getPitch(), getRoll()}; }
+	ثابت matrix::Vector2f getPitchRollExpo() { بازگشت {getPitchExpo(), getRollExpo()}; }
 
-	const matrix::Vector<float, 6> &getAux() const { return _aux_positions; }
+	ثابت matrix::Vector<اعشاری, 6> &getAux() ثابت { بازگشت _aux_positions; }
 
 	/**
 	 * Limit the the horizontal input from a square shaped joystick gimbal to a unit circle
 	 * @param v Vector containing x, y, z axis of the joystick gimbal. x, y get adjusted
 	 */
-	static void limitStickUnitLengthXY(matrix::Vector2f &v);
+	ایستا تهی limitStickUnitLengthXY(matrix::Vector2f &v);
 
 	/**
 	 * Rotate horizontal component of joystick input into the vehicle body orientation
@@ -88,13 +88,13 @@ public:
 	 * @param yaw Current vehicle yaw heading
 	 * @param yaw_setpoint Current yaw setpoint if it's locked else NAN
 	 */
-	static void rotateIntoHeadingFrameXY(matrix::Vector2f &v, const float yaw, const float yaw_setpoint);
+	ایستا تهی rotateIntoHeadingFrameXY(matrix::Vector2f &v, ثابت اعشاری yaw, ثابت اعشاری yaw_setpoint);
 
-private:
-	bool _input_available{false};
+خصوصی:
+	منطقی درون_داد_available{نادرست};
 	matrix::Vector4f _positions; ///< unmodified manual stick inputs roll, pitch, yaw ,throttle
 
-	matrix::Vector<float, 6> _aux_positions;
+	matrix::Vector<اعشاری, 6> _aux_positions;
 
 	uORB::Subscription _manual_control_setpoint_sub{ORB_ID(manual_control_setpoint)};
 	uORB::Subscription _failsafe_flags_sub{ORB_ID(failsafe_flags)};

@@ -33,18 +33,18 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#شامل "FunctionProviderBase.hpp"
 
 /**
  * Functions: Parachute
  */
-class FunctionParachute : public FunctionProviderBase
+رده FunctionParachute : عمومی FunctionProviderBase
 {
-public:
-	FunctionParachute() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionParachute(); }
+عمومی:
+	FunctionParachute() = پیشفرض;
+	ایستا FunctionProviderBase *allocate(ثابت Context &context) { بازگشت جدید FunctionParachute(); }
 
-	void update() override {}
-	float value(OutputFunction func) override { return -1.f; }
-	float defaultFailsafeValue(OutputFunction func) const override { return 1.f; }
+	تهی update() override {}
+	اعشاری value(OutputFunction func) override { بازگشت -1.f; }
+	اعشاری default_Failsafe_مقدار(OutputFunction func) ثابت override { بازگشت 1.f; }
 };

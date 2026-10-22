@@ -45,19 +45,19 @@
 
 #pragma once
 
-#include "ControlAllocation.hpp"
+#شامل "ControlAllocation.hpp"
 
-class ControlAllocationPseudoInverse: public ControlAllocation
+رده ControlAllocationPseudoInverse: عمومی ControlAllocation
 {
-public:
-	ControlAllocationPseudoInverse() = default;
-	virtual ~ControlAllocationPseudoInverse() = default;
+عمومی:
+	ControlAllocationPseudoInverse() = پیشفرض;
+	مجازی ~ControlAllocationPseudoInverse() = پیشفرض;
 
-	void allocate() override;
-	void setEffectivenessMatrix(const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness,
-				    const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
-				    bool update_normalization_scale) override;
-	void setMetricAllocation(bool metric_allocation) { _metric_allocation = metric_allocation; }
+	تهی allocate() override;
+	تهی setEffectivenessMatrix(ثابت matrix::Matrix<اعشاری, رقم_AXES, رقم_ACTUATORS> &effectiveness,
+				    ثابت ActuatorVector &actuator_trim, ثابت ActuatorVector &linearization_point, صحیح رقم_actuators,
+				    منطقی update_normalization_scale) override;
+	تهی setMetricAllocation(منطقی metric_allocation) { _metric_allocation = metric_allocation; }
 
 	/**
 	 * Zero the rows of axes that are (nearly) dependent on higher-priority axes
@@ -66,29 +66,29 @@ public:
 	 *
 	 * @return bitmask over ControlAxis of the dropped axes
 	 */
-	static uint8_t dropDependentAxes(matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness);
+	ایستا uint8_t dropDependentAxes(matrix::Matrix<اعشاری, رقم_AXES, رقم_ACTUATORS> &effectiveness);
 
-protected:
-	matrix::Matrix<float, NUM_ACTUATORS, NUM_AXES> _mix;
+محافظتشده:
+	matrix::Matrix<اعشاری, رقم_ACTUATORS, رقم_AXES> _mix;
 
-	bool _mix_update_needed{false};
-	bool _metric_allocation{false};
+	منطقی _mix_update_needed{نادرست};
+	منطقی _metric_allocation{نادرست};
 
 	/**
 	 * Recalculate pseudo inverse if required.
 	 *
 	 */
-	void updatePseudoInverse();
+	تهی updatePseudoInverse();
 
-private:
+خصوصی:
 	/**
 	 * Minimum independence for a control axis to be kept: squared norm of the unit axis row
 	 * after removing its projection onto the higher-priority axes (sin^2 of the angle to their
 	 * span, unit-free). 1e-2 (~5.7 deg) bounds the pseudo-inverse gain along the axis to ~10x.
 	 */
-	static constexpr float kMinAxisIndependence = 1e-2f;
+	ایستا constexpr اعشاری kMinAxisIndependence = 1e-2f;
 
-	void normalizeControlAllocationMatrix();
-	void updateControlAllocationMatrixScale();
-	bool _normalization_needs_update{false};
+	تهی normalizeControlAllocationMatrix();
+	تهی updateControlAllocationMatrixScale();
+	منطقی _normalization_needs_update{نادرست};
 };

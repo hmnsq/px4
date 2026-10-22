@@ -31,31 +31,31 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <random>
-#include <lib/matrix/matrix/math.hpp>
-#include "WelfordMean.hpp"
+#شامل <gtest/gtest.h>
+#شامل <random>
+#شامل <lib/matrix/matrix/math.hpp>
+#شامل "WelfordMean.hpp"
 
-using namespace math;
+using فضاینام math;
 using matrix::Vector3f;
 
 TEST(WelfordMeanTest, NoisySignal)
 {
-	const float std_dev = 3.f;
-	std::normal_distribution<float> standard_normal_distribution{0.f, std_dev};
+	ثابت اعشاری std_dev = 3.f;
+	std::normal_distribution<اعشاری> standard_normal_distribution{0.f, std_dev};
 	std::default_random_engine random_generator{}; // Pseudo-random generator with constant seed
 	random_generator.seed(42);
-	WelfordMean<float> welford{};
+	WelfordMean<اعشاری> welford{};
 
-	for (int i = 0; i < 1000; i++) {
-		const float noisy_value = standard_normal_distribution(random_generator);
-		welford.update(noisy_value);
+	برای (صحیح i = 0; i < 1000; i++) {
+		ثابت اعشاری noisy_مقدار = standard_normal_distribution(random_generator);
+		welford.update(noisy_مقدار);
 	}
 
 	EXPECT_TRUE(welford.valid());
-	const float mean = welford.mean();
-	const float var = welford.variance();
-	const float var_real = std_dev * std_dev;
+	ثابت اعشاری mean = welford.mean();
+	ثابت اعشاری var = welford.variance();
+	ثابت اعشاری var_real = std_dev * std_dev;
 
 	EXPECT_NEAR(mean, 0.f, 0.7f);
 

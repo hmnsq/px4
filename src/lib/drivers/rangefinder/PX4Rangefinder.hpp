@@ -33,47 +33,47 @@
 
 #pragma once
 
-#include <drivers/drv_hrt.h>
-#include <lib/conversion/rotation.h>
-#include <uORB/PublicationMulti.hpp>
-#include <uORB/topics/distance_sensor.h>
+#شامل <drivers/drv_hrt.h>
+#شامل <lib/conversion/rotation.h>
+#شامل <uORB/PublicationMulti.hpp>
+#شامل <uORB/topics/distance_sensor.h>
 
-#include <lib/failure_injection/FailureInjection.hpp>
+#شامل <lib/failure_injection/FailureInjection.hpp>
 
-class PX4Rangefinder
+رده PX4Rangefinder
 {
-public:
-	PX4Rangefinder(const uint32_t device_id,
-		       const uint8_t device_orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING);
+عمومی:
+	PX4Rangefinder(ثابت uint32_t device_id,
+		       ثابت uint8_t device_orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING);
 	~PX4Rangefinder();
 
 	// Set the MAV_DISTANCE_SENSOR type (LASER, ULTRASOUND, INFRARED, RADAR)
-	void set_rangefinder_type(uint8_t rangefinder_type) { _distance_sensor_pub.get().type = rangefinder_type; };
+	تهی set_rangefinder_type(uint8_t rangefinder_type) { _distance_sensor_pub.get().type = rangefinder_type; };
 
-	void set_device_id(const uint32_t device_id) { _distance_sensor_pub.get().device_id = device_id; };
-	void set_device_type(const uint8_t device_type);
+	تهی set_device_id(ثابت uint32_t device_id) { _distance_sensor_pub.get().device_id = device_id; };
+	تهی set_device_type(ثابت uint8_t device_type);
 
-	void set_fov(const float fov) { set_hfov(fov); set_vfov(fov); }
-	void set_hfov(const float fov) { _distance_sensor_pub.get().h_fov = fov; }
-	void set_vfov(const float fov) { _distance_sensor_pub.get().v_fov = fov; }
+	تهی set_fov(ثابت اعشاری fov) { set_hfov(fov); set_vfov(fov); }
+	تهی set_hfov(ثابت اعشاری fov) { _distance_sensor_pub.get().h_fov = fov; }
+	تهی set_vfov(ثابت اعشاری fov) { _distance_sensor_pub.get().v_fov = fov; }
 
-	void set_max_distance(const float distance) { _distance_sensor_pub.get().max_distance = distance; }
-	void set_min_distance(const float distance) { _distance_sensor_pub.get().min_distance = distance; }
+	تهی set_max_distance(ثابت اعشاری distance) { _distance_sensor_pub.get().max_distance = distance; }
+	تهی set_min_distance(ثابت اعشاری distance) { _distance_sensor_pub.get().min_distance = distance; }
 
-	void set_variance(const float variance) { _distance_sensor_pub.get().variance = variance; }
+	تهی set_variance(ثابت اعشاری variance) { _distance_sensor_pub.get().variance = variance; }
 
-	void set_orientation(const uint8_t device_orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING);
+	تهی set_orientation(ثابت uint8_t device_orientation = distance_sensor_s::ROTATION_DOWNWARD_FACING);
 
-	void set_mode(const uint8_t mode) { _distance_sensor_pub.get().mode = mode; }
+	تهی set_mode(ثابت uint8_t mode) { _distance_sensor_pub.get().mode = mode; }
 
 	// update with quaterion sensor orientation with respect to the vehicle body frame
-	void update(const hrt_abstime &timestamp_sample, const float distance, const int8_t quality = -1, const float *q = nullptr,
+	تهی update(ثابت hrt_abstime &timestamp_sample, ثابت اعشاری distance, ثابت int8_t quality = -1, ثابت اعشاری *q = nullptr,
 		    uint8_t q_len = 4);
 
-	int get_instance() { return _distance_sensor_pub.get_instance(); };
-	uint32_t get_device_id() { return _distance_sensor_pub.get().device_id; };
+	صحیح get_instance() { بازگشت _distance_sensor_pub.get_instance(); };
+	uint32_t get_device_id() { بازگشت _distance_sensor_pub.get().device_id; };
 
-private:
+خصوصی:
 	uORB::PublicationMultiData<distance_sensor_s> _distance_sensor_pub{ORB_ID(distance_sensor)};
 
 	failure_injection::Config _failure_config;

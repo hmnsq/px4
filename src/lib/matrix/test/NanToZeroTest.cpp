@@ -31,23 +31,23 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#شامل <gtest/gtest.h>
+#شامل <matrix/math.hpp>
 
-using namespace matrix;
+using فضاینام matrix;
 
 TEST(NanToZeroTest, NanToZero)
 {
-	const float data[9]     = {-1.f, 0.f, +INFINITY, NAN, 0.f, -INFINITY, 1.f, 0.f, -NAN};
-	const float expected[9] = {-1.f, 0.f, +INFINITY, 0.f, 0.f, -INFINITY, 1.f, 0.f, 0.f};
+	ثابت اعشاری data[9]     = {-1.f, 0.f, +INFINITY, NAN, 0.f, -INFINITY, 1.f, 0.f, -NAN};
+	ثابت اعشاری expected[9] = {-1.f, 0.f, +INFINITY, 0.f, 0.f, -INFINITY, 1.f, 0.f, 0.f};
 
-	Matrix<float, 3, 3> mat(data);
+	Matrix<اعشاری, 3, 3> mat(data);
 	mat.nanToZero();
 
-	const Matrix<float, 3, 3> mat_expected(expected);
+	ثابت Matrix<اعشاری, 3, 3> mat_expected(expected);
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
+	برای (size_t i = 0; i < 3; i++) {
+		برای (size_t j = 0; j < 3; j++) {
 			EXPECT_FLOAT_EQ(mat(i, j), mat_expected(i, j));
 		}
 	}
@@ -55,15 +55,15 @@ TEST(NanToZeroTest, NanToZero)
 
 TEST(NanToZeroTest, NoNanUnchanged)
 {
-	const float data[4] = {-2.5f, 0.f, 3.14f, +INFINITY};
+	ثابت اعشاری data[4] = {-2.5f, 0.f, 3.14f, +INFINITY};
 
-	Matrix<float, 2, 2> mat(data);
+	Matrix<اعشاری, 2, 2> mat(data);
 	mat.nanToZero();
 
-	const Matrix<float, 2, 2> mat_orig(data);
+	ثابت Matrix<اعشاری, 2, 2> mat_orig(data);
 
-	for (size_t i = 0; i < 2; i++) {
-		for (size_t j = 0; j < 2; j++) {
+	برای (size_t i = 0; i < 2; i++) {
+		برای (size_t j = 0; j < 2; j++) {
 			EXPECT_FLOAT_EQ(mat(i, j), mat_orig(i, j));
 		}
 	}

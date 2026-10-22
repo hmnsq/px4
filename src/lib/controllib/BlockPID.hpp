@@ -39,52 +39,52 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <assert.h>
+#شامل <time.h>
+#شامل <stdlib.h>
+#شامل <math.h>
+#شامل <mathlib/math/test/test.hpp>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+فضاینام control
 {
 
 /**
  * A proportional-integral-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPID: public SuperBlock
+رده __EXPORT BlockPID: عمومی SuperBlock
 {
-public:
+عمومی:
 // methods
-	BlockPID(SuperBlock *parent, const char *name) :
+	BlockPID(SuperBlock *parent, ثابت نویسه *name) :
 		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kI(this, "I"),
-		_kD(this, "D")
+		_integral(این, "I"),
+		_derivative(این, "D"),
+		_kP(این, "P"),
+		_kI(این, "I"),
+		_kD(این, "D")
 	{}
-	virtual ~BlockPID() = default;
-	float update(float input)
+	مجازی ~BlockPID() = پیشفرض;
+	اعشاری update(اعشاری درون_داد)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input) +
-		       getKD() * getDerivative().update(input);
+		بازگشت getKP() * درون_داد +
+		       getKI() * getIntegral().update(درون_داد) +
+		       getKD() * getDerivative().update(درون_داد);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	float getKD() { return _kD.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
+	اعشاری getKP() { بازگشت _kP.get(); }
+	اعشاری getKI() { بازگشت _kI.get(); }
+	اعشاری getKD() { بازگشت _kD.get(); }
+	BlockIntegral &getIntegral() { بازگشت _integral; }
+	BlockDerivative &getDerivative() { بازگشت _derivative; }
+خصوصی:
 // attributes
 	BlockIntegral _integral;
 	BlockDerivative _derivative;

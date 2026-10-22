@@ -33,45 +33,45 @@
 
 #pragma once
 
-#include <mixer_module/output_functions.hpp>
+#شامل <mixer_module/output_functions.hpp>
 
-#include <drivers/drv_pwm_output.h>
-#include <uORB/topics/actuator_test.h>
-#include <uORB/topics/actuator_motors.h>
-#include <uORB/topics/actuator_servos_trim.h>
-#include <uORB/Subscription.hpp>
+#شامل <drivers/drv_pwm_output.h>
+#شامل <uORB/topics/actuator_test.h>
+#شامل <uORB/topics/actuator_motors.h>
+#شامل <uORB/topics/actuator_servos_trim.h>
+#شامل <uORB/Subscription.hpp>
 
-static_assert(actuator_test_s::FUNCTION_MOTOR1 == (int)OutputFunction::Motor1, "define mismatch");
-static_assert(actuator_test_s::MAX_NUM_MOTORS == (int)OutputFunction::MotorMax - (int)OutputFunction::Motor1 + 1,
+static_assert(actuator_test_s::FUNCTION_MOTOR1 == (صحیح)OutputFunction::Motor1, "define mismatch");
+static_assert(actuator_test_s::MAX_رقم_MOTORS == (صحیح)OutputFunction::MotorMax - (صحیح)OutputFunction::Motor1 + 1,
 	      "count mismatch");
-static_assert(actuator_test_s::FUNCTION_SERVO1 == (int)OutputFunction::Servo1, "define mismatch");
-static_assert(actuator_test_s::MAX_NUM_SERVOS == (int)OutputFunction::ServoMax - (int)OutputFunction::Servo1 + 1,
+static_assert(actuator_test_s::FUNCTION_SERVO1 == (صحیح)OutputFunction::Servo1, "define mismatch");
+static_assert(actuator_test_s::MAX_رقم_SERVOS == (صحیح)OutputFunction::ServoMax - (صحیح)OutputFunction::Servo1 + 1,
 	      "count mismatch");
 
-class ActuatorTest
+رده ActuatorTest
 {
-public:
-	static constexpr int MAX_ACTUATORS = PWM_OUTPUT_MAX_CHANNELS;
+عمومی:
+	ایستا constexpr صحیح MAX_ACTUATORS = PWM_OUTPUT_MAX_CHANNELS;
 
-	ActuatorTest(const OutputFunction function_assignments[MAX_ACTUATORS]);
+	ActuatorTest(ثابت OutputFunction function_assignments[MAX_ACTUATORS]);
 
-	void reset();
+	تهی reset();
 
-	void update(int num_outputs, float thrust_curve);
+	تهی update(صحیح رقم_outputs, اعشاری thrust_curve);
 
-	void overrideValues(float outputs[MAX_ACTUATORS], int num_outputs);
+	تهی override_مقادیر(اعشاری outputs[MAX_ACTUATORS], صحیح رقم_outputs);
 
-	bool inTestMode() const { return _in_test_mode; }
+	منطقی inTestMode() ثابت { بازگشت _in_test_mode; }
 
-private:
+خصوصی:
 
 	uORB::Subscription _actuator_test_sub{ORB_ID(actuator_test)};
 	uORB::Subscription _actuator_motors_sub{ORB_ID(actuator_motors)};
 	uORB::Subscription _actuator_servos_trim_sub{ORB_ID(actuator_servos_trim)};
-	bool _in_test_mode{false};
+	منطقی _in_test_mode{نادرست};
 	hrt_abstime _next_timeout{0};
 
-	float _current_outputs[MAX_ACTUATORS];
-	bool _output_overridden[MAX_ACTUATORS];
-	const OutputFunction *_function_assignments;
+	اعشاری _current_outputs[MAX_ACTUATORS];
+	منطقی _output_overridden[MAX_ACTUATORS];
+	ثابت OutputFunction *_function_assignments;
 };

@@ -39,85 +39,85 @@
 
 #pragma once
 
-#include <containers/List.hpp>
-#include <controllib/block/BlockParam.hpp>
-#include <cstdint>
+#شامل <containers/List.hpp>
+#شامل <controllib/block/BlockParam.hpp>
+#شامل <cstdint>
 
-namespace control
+فضاینام control
 {
 
-static constexpr uint8_t maxChildrenPerBlock = 100;
-static constexpr uint8_t maxParamsPerBlock = 110;
-static constexpr uint8_t blockNameLengthMax = 40;
+ایستا constexpr uint8_t maxChildrenPerBlock = 100;
+ایستا constexpr uint8_t maxParamsPerBlock = 110;
+ایستا constexpr uint8_t blockNameLengthMax = 40;
 
 // forward declaration
-class BlockParamBase;
-class SuperBlock;
+رده BlockParamBase;
+رده SuperBlock;
 
 /**
  */
-class __EXPORT Block : public ListNode<Block *>
+رده __EXPORT Block : عمومی List_گره<Block *>
 {
-public:
-	friend class BlockParamBase;
+عمومی:
+	friend رده BlockParamBase;
 
-	Block(SuperBlock *parent, const char *name);
-	virtual ~Block() = default;
+	Block(SuperBlock *parent, ثابت نویسه *name);
+	مجازی ~Block() = پیشفرض;
 
 	// no copy, assignment, move, move assignment
-	Block(const Block &) = delete;
-	Block &operator=(const Block &) = delete;
+	Block(ثابت Block &) = delete;
+	Block &operator=(ثابت Block &) = delete;
 	Block(Block &&) = delete;
 	Block &operator=(Block &&) = delete;
 
-	void getName(char *name, size_t n);
+	تهی getName(نویسه *name, size_t n);
 
-	virtual void updateParams();
+	مجازی تهی updateParams();
 
-	virtual void setDt(float dt) { _dt = dt; }
-	float getDt() { return _dt; }
+	مجازی تهی setDt(اعشاری dt) { _dt = dt; }
+	اعشاری getDt() { بازگشت _dt; }
 
-protected:
+محافظتشده:
 
-	virtual void updateParamsSubclass() {}
+	مجازی تهی updateParamsSubclass() {}
 
-	SuperBlock *getParent() { return _parent; }
-	List<BlockParamBase *> &getParams() { return _params; }
+	SuperBlock *getParent() { بازگشت _parent; }
+	List<BlockParamBase *> &getParams() { بازگشت _params; }
 
-	const char *_name;
+	ثابت نویسه *_name;
 	SuperBlock *_parent;
-	float _dt{0.0f};
+	اعشاری _dt{0.0f};
 
 	List<BlockParamBase *> _params;
 };
 
-class __EXPORT SuperBlock :
-	public Block
+رده __EXPORT SuperBlock :
+	عمومی Block
 {
-public:
-	friend class Block;
+عمومی:
+	friend رده Block;
 
-	SuperBlock(SuperBlock *parent, const char *name) : Block(parent, name) {}
-	~SuperBlock() = default;
+	SuperBlock(SuperBlock *parent, ثابت نویسه *name) : Block(parent, name) {}
+	~SuperBlock() = پیشفرض;
 
 	// no copy, assignment, move, move assignment
-	SuperBlock(const SuperBlock &) = delete;
-	SuperBlock &operator=(const SuperBlock &) = delete;
+	SuperBlock(ثابت SuperBlock &) = delete;
+	SuperBlock &operator=(ثابت SuperBlock &) = delete;
 	SuperBlock(SuperBlock &&) = delete;
 	SuperBlock &operator=(SuperBlock &&) = delete;
 
-	void setDt(float dt) override;
+	تهی setDt(اعشاری dt) override;
 
-	void updateParams() override
+	تهی updateParams() override
 	{
 		Block::updateParams();
 
-		if (getChildren().getHead() != nullptr) { updateChildParams(); }
+		اگر (getChildren().getHead() != nullptr) { updateChildParams(); }
 	}
 
-protected:
-	List<Block *> &getChildren() { return _children; }
-	void updateChildParams();
+محافظتشده:
+	List<Block *> &getChildren() { بازگشت _children; }
+	تهی updateChildParams();
 
 	List<Block *> _children;
 };

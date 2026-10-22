@@ -37,100 +37,100 @@
  * Test library code
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#شامل <stdio.h>
+#شامل <math.h>
+#شامل <stdlib.h>
 
-#include <px4_platform_common/defines.h>
+#شامل <px4_platform_common/defines.h>
 
-#include "test.hpp"
+#شامل "test.hpp"
 
-bool __EXPORT equal(float a, float b, float epsilon)
+منطقی __EXPORT equal(اعشاری a, اعشاری b, اعشاری epsilon)
 {
-	float diff = fabsf(a - b);
+	اعشاری diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	اگر (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", دوگانه(a), دوگانه(b));
+		بازگشت نادرست;
 
-	} else { return true; }
+	} وگرنه { بازگشت درست; }
 }
 
-bool __EXPORT greater_than(float a, float b)
+منطقی __EXPORT greater_than(اعشاری a, اعشاری b)
 {
-	if (a > b) {
-		return true;
+	اگر (a > b) {
+		بازگشت درست;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} وگرنه {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", دوگانه(a), دوگانه(b));
+		بازگشت نادرست;
 	}
 }
 
-bool __EXPORT less_than(float a, float b)
+منطقی __EXPORT less_than(اعشاری a, اعشاری b)
 {
-	if (a < b) {
-		return true;
+	اگر (a < b) {
+		بازگشت درست;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} وگرنه {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", دوگانه(a), دوگانه(b));
+		بازگشت نادرست;
 	}
 }
 
-bool __EXPORT greater_than_or_equal(float a, float b)
+منطقی __EXPORT greater_than_or_equal(اعشاری a, اعشاری b)
 {
-	if (a >= b) {
-		return true;
+	اگر (a >= b) {
+		بازگشت درست;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} وگرنه {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", دوگانه(a), دوگانه(b));
+		بازگشت نادرست;
 	}
 }
 
-bool __EXPORT less_than_or_equal(float a, float b)
+منطقی __EXPORT less_than_or_equal(اعشاری a, اعشاری b)
 {
-	if (a <= b) {
-		return true;
+	اگر (a <= b) {
+		بازگشت درست;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} وگرنه {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", دوگانه(a), دوگانه(b));
+		بازگشت نادرست;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+تهی __EXPORT float2SigExp(ثابت اعشاری &رقم, اعشاری &sig, صحیح &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	اگر (!PX4_ISFINITE(رقم)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		بازگشت;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	اگر (fabsf(رقم) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		بازگشت;
 	}
 
-	exp = log10f(fabsf(num));
+	exp = log10f(fabsf(رقم));
 
-	if (exp > 0) {
+	اگر (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} وگرنه {
 		exp = floor(exp);
 	}
 
-	sig = num;
+	sig = رقم;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	اگر (exp > 0) {
+		برای (صحیح i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} وگرنه {
+		برای (صحیح i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

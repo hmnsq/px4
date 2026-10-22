@@ -33,40 +33,40 @@
 
 #pragma once
 
-#include <px4_platform_common/atomic_bitset.h>
-#include "atomic_transaction.h"
-#include "param.h"
-#include <stdlib.h>
+#شامل <px4_platform_common/atomic_bitset.h>
+#شامل "atomic_transaction.h"
+#شامل "param.h"
+#شامل <stdlib.h>
 
 class ParamLayer
 {
-public:
-	static constexpr param_t PARAM_COUNT = sizeof(px4::parameters) / sizeof(param_info_s);
+عمومی:
+	ایستا constexpr param_t PARAM_شمار = اندازه(px4::parameters) / اندازه(param_info_s);
 
 	ParamLayer(ParamLayer *parent = nullptr) : _parent(parent) {}
 
-	ParamLayer(const ParamLayer &) = delete;
-	ParamLayer &operator=(const ParamLayer &) = delete;
+	ParamLayer(ثابت ParamLayer &) = delete;
+	ParamLayer &operator=(ثابت ParamLayer &) = delete;
 	ParamLayer(ParamLayer &&) = delete;
 	ParamLayer &operator=(ParamLayer &&) = delete;
 
 
-	virtual bool store(param_t param, param_value_u value) = 0;
+	مجازی bool store(param_t param, param_مقدار_u مقدار) = 0;
 
-	virtual bool contains(param_t param) const = 0;
+	مجازی bool contains(param_t param) ثابت = 0;
 
-	virtual px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const = 0;
+	مجازی px4::AtomicBitset<PARAM_شمار> containedAsBitset() ثابت = 0;
 
-	virtual param_value_u get(param_t param) const = 0;
+	مجازی param_مقدار_u get(param_t param) ثابت = 0;
 
-	virtual void reset(param_t param) = 0;
+	مجازی تهی reset(param_t param) = 0;
 
-	virtual void refresh(param_t param) = 0;
+	مجازی تهی refresh(param_t param) = 0;
 
-	virtual int size() const = 0;
+	مجازی صحیح size() ثابت = 0;
 
-	virtual int byteSize() const = 0;
+	مجازی صحیح byteSize() ثابت = 0;
 
-protected:
-	ParamLayer *const _parent;
+محافظتشده:
+	ParamLayer *ثابت _parent;
 };

@@ -36,7 +36,7 @@
 namespace bl_update
 {
 
-enum class Result {
+شمارش class Result {
 	Updated,
 	Unchanged,
 	NotSupported,
@@ -55,8 +55,8 @@ enum class Result {
  * already holds that image. Other tasks do not run while flash is erased
  * and programmed.
  */
-Result flash(const char *path);
+Result flash(ثابت نویسه *path);
 
-const char *result_str(Result result);
+ثابت نویسه *result_str(Result result);
 
 } // namespace bl_update

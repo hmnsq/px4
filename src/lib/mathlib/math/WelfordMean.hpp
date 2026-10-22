@@ -39,64 +39,64 @@
 
 #pragma once
 
-#include <lib/mathlib/mathlib.h>
+#شامل <lib/mathlib/mathlib.h>
 
-namespace math
+فضاینام math
 {
 
-template <typename Type = float>
-class WelfordMean
+template <typename Type = اعشاری>
+رده WelfordMean
 {
-public:
+عمومی:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const Type &new_value)
+	منطقی update(ثابت Type &new_مقدار)
 	{
-		if (_count == 0) {
+		اگر (شمار_3 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
-			return false;
+			شمار_3 = 1;
+			_mean = new_مقدار;
+			بازگشت نادرست;
 
-		} else if (_count == UINT16_MAX) {
+		} وگرنه اگر (شمار_3 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / شمار_3;
 			_M2_accum = 0;
 
-			_count = 1;
+			شمار_3 = 1;
 
-		} else {
-			_count++;
+		} وگرنه {
+			شمار_3++;
 		}
 
 		// mean accumulates the mean of the entire dataset
 		// delta can be very small compared to the mean, use algorithm to minimise numerical error
-		const Type delta{new_value - _mean};
-		const Type mean_change = delta / _count;
+		ثابت Type delta{new_مقدار - _mean};
+		ثابت Type mean_change = delta / شمار_3;
 		_mean = kahanSummation(_mean, mean_change, _mean_accum);
 
 		// M2 aggregates the squared distance from the mean
 		// count aggregates the number of samples seen so far
-		const Type M2_change = delta * (new_value - _mean);
+		ثابت Type M2_change = delta * (new_مقدار - _mean);
 		_M2 = kahanSummation(_M2, M2_change, _M2_accum);
 
 		// protect against floating point precision causing negative variances
 		_M2 = math::max(_M2, 0.f);
 
-		if (!PX4_ISFINITE(_mean) || !PX4_ISFINITE(_M2)) {
+		اگر (!PX4_ISFINITE(_mean) || !PX4_ISFINITE(_M2)) {
 			reset();
-			return false;
+			بازگشت نادرست;
 		}
 
-		return valid();
+		بازگشت valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	منطقی valid() ثابت { بازگشت شمار_3 > 2; }
+	auto شمار() ثابت { بازگشت شمار_3; }
 
-	void reset()
+	تهی reset()
 	{
-		_count = 0;
+		شمار_3 = 0;
 		_mean = 0;
 		_M2 = 0;
 
@@ -104,22 +104,22 @@ public:
 		_M2_accum = 0;
 	}
 
-	Type mean() const { return _mean; }
-	Type variance() const { return _M2 / (_count - 1); }
-	Type standard_deviation() const { return std::sqrt(variance()); }
+	Type mean() ثابت { بازگشت _mean; }
+	Type variance() ثابت { بازگشت _M2 / (شمار_3 - 1); }
+	Type standard_deviation() ثابت { بازگشت std::sqrt(variance()); }
 
-private:
+خصوصی:
 
 	// Use Kahan summation algorithm to get the sum of "sum_previous" and "input".
 	// This function relies on the caller to be responsible for keeping a copy of
 	// "accumulator" and passing this value at the next iteration.
 	// Ref: https://en.wikipedia.org/wiki/Kahan_summation_algorithm
-	inline Type kahanSummation(Type sum_previous, Type input, Type &accumulator)
+	درونخطی Type kahanSummation(Type sum_previous, Type درون_داد, Type &accumulator)
 	{
-		const Type y = input - accumulator;
-		const Type t = sum_previous + y;
+		ثابت Type y = درون_داد - accumulator;
+		ثابت Type t = sum_previous + y;
 		accumulator = (t - sum_previous) - y;
-		return t;
+		بازگشت t;
 	}
 
 	Type _mean{};
@@ -128,7 +128,7 @@ private:
 	Type _mean_accum{};  ///< kahan summation algorithm accumulator for mean
 	Type _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t شمار_3{0};
 };
 
 } // namespace math

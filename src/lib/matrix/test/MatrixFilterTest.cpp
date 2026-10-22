@@ -31,29 +31,29 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/filter.hpp>
-#include <matrix/Vector.hpp>
+#شامل <gtest/gtest.h>
+#شامل <matrix/filter.hpp>
+#شامل <matrix/Vector.hpp>
 
-using namespace matrix;
+using فضاینام matrix;
 
 TEST(MatrixFilterTest, Filter)
 {
-	const size_t n_x = 6;
-	const size_t n_y = 5;
-	SquareMatrix<float, n_x> P = eye<float, n_x>();
-	SquareMatrix<float, n_y> R = eye<float, n_y>();
-	Matrix<float, n_y, n_x> C;
+	ثابت size_t n_x = 6;
+	ثابت size_t n_y = 5;
+	SquareMatrix<اعشاری, n_x> P = eye<اعشاری, n_x>();
+	SquareMatrix<اعشاری, n_y> R = eye<اعشاری, n_y>();
+	Matrix<اعشاری, n_y, n_x> C;
 	C.setIdentity();
-	float data[] = {1, 2, 3, 4, 5};
-	Vector<float, n_y> r(data);
+	اعشاری data[] = {1, 2, 3, 4, 5};
+	Vector<اعشاری, n_y> r(data);
 
-	Vector<float, n_x> dx;
-	SquareMatrix<float, n_x> dP;
-	float beta = 0;
-	kalman_correct<float, 6, 5>(P, C, R, r, dx, dP, beta);
+	Vector<اعشاری, n_x> dx;
+	SquareMatrix<اعشاری, n_x> dP;
+	اعشاری beta = 0;
+	kalman_correct<اعشاری, 6, 5>(P, C, R, r, dx, dP, beta);
 
-	float data_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
-	Vector<float, n_x> dx_check(data_check);
+	اعشاری data_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
+	Vector<اعشاری, n_x> dx_check(data_check);
 	EXPECT_EQ(dx, dx_check);
 }

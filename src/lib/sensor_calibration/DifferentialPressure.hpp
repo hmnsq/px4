@@ -33,48 +33,48 @@
 
 #pragma once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#شامل <px4_platform_common/px4_config.h>
+#شامل <px4_platform_common/defines.h>
+#شامل <px4_platform_common/log.h>
 
-#include <inttypes.h>
-#include <math.h>
+#شامل <inttypes.h>
+#شامل <math.h>
 
-namespace calibration
+فضاینام calibration
 {
-class DifferentialPressure
+رده DifferentialPressure
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 3; ///< also the airspeed selector's sensor limit
+عمومی:
+	ایستا constexpr صحیح MAX_SENSOR_شمار = 3; ///< also the airspeed selector's sensor limit
 
-	static constexpr const char *SensorString() { return "DPRES"; }
+	ایستا constexpr ثابت نویسه *SensorString() { بازگشت "DPRES"; }
 
 	DifferentialPressure();
 	explicit DifferentialPressure(uint32_t device_id);
 
-	~DifferentialPressure() = default;
+	~DifferentialPressure() = پیشفرض;
 
-	void PrintStatus();
+	تهی PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id);
-	bool set_offset(const float &offset);
+	منطقی set_calibration_index(صحیح calibration_index);
+	تهی set_device_id(uint32_t device_id);
+	منطقی set_offset(ثابت اعشاری &offset);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
+	منطقی calibrated() ثابت { بازگشت (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_شمار_2() ثابت { بازگشت calibration_شمار; }
+	int8_t calibration_index() ثابت { بازگشت _calibration_index; }
+	uint32_t device_id() ثابت { بازگشت _device_id; }
+	منطقی external() ثابت { بازگشت _external; }
+	ثابت اعشاری &offset() ثابت { بازگشت _offset; }
 
 	/// remove the zero offset from a raw differential pressure reading [Pa]
-	inline float Correct(const float &data) const { return data - _offset; }
+	درونخطی اعشاری Correct(ثابت اعشاری &data) ثابت { بازگشت data - _offset; }
 
-	inline float Uncorrect(const float &corrected_data) const { return corrected_data + _offset; }
+	درونخطی اعشاری Uncorrect(ثابت اعشاری &corrected_data) ثابت { بازگشت corrected_data + _offset; }
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	منطقی ParametersLoad();
+	منطقی ParametersSave(صحیح desired_calibration_index = -1, منطقی force = نادرست);
+	تهی ParametersUpdate();
 
 	/**
 	 * Take over the offset left in SENS_DPRES_OFF, using slot 0.
@@ -82,23 +82,23 @@ public:
 	 *
 	 * @return true if the offset was adopted (the caller should save)
 	 */
-	bool AdoptLegacyOffset();
+	منطقی AdoptLegacyOffset();
 
 	/** mirror slot 0's offset into SENS_DPRES_OFF for ground stations that still read it */
-	void UpdateLegacyOffset() const;
+	تهی UpdateLegacyOffset() ثابت;
 
-	void Reset();
+	تهی Reset();
 
-private:
-	static constexpr int kLegacyIndex{0};
-	static constexpr const char *kLegacyOffsetParam{"SENS_DPRES_OFF"};
+خصوصی:
+	ایستا constexpr صحیح kLegacyIndex{0};
+	ایستا constexpr ثابت نویسه *kLegacyOffsetParam{"SENS_DPRES_OFF"};
 
-	float _offset{0};
+	اعشاری _offset{0};
 
 	int8_t _calibration_index{-1};
 	uint32_t _device_id{0};
-	uint8_t _calibration_count{0};
+	uint8_t calibration_شمار{0};
 
-	bool _external{false};
+	منطقی _external{نادرست};
 };
 } // namespace calibration

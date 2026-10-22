@@ -33,83 +33,83 @@
 
 #pragma once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/sensor_correction.h>
+#شامل <px4_platform_common/px4_config.h>
+#شامل <px4_platform_common/log.h>
+#شامل <uORB/Subscription.hpp>
+#شامل <uORB/topics/sensor_correction.h>
 
-namespace calibration
+فضاینام calibration
 {
-class Barometer
+رده Barometer
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+عمومی:
+	ایستا constexpr صحیح MAX_SENSOR_شمار = 4;
 
-	static constexpr uint8_t DEFAULT_PRIORITY = 50;
-	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
+	ایستا constexpr uint8_t DEFAULT_PRIORITY = 50;
+	ایستا constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
 
-	static constexpr const char *SensorString() { return "BARO"; }
+	ایستا constexpr ثابت نویسه *SensorString() { بازگشت "BARO"; }
 
 	Barometer();
 	explicit Barometer(uint32_t device_id);
-	Barometer(uint32_t device_id, bool external);
+	Barometer(uint32_t device_id, منطقی external);
 
-	~Barometer() = default;
+	~Barometer() = پیشفرض;
 
-	void PrintStatus();
+	تهی PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
-	void set_device_id(uint32_t device_id, bool external);
-	bool set_offset(const float &offset);
+	منطقی set_calibration_index(صحیح calibration_index);
+	تهی set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
+	تهی set_device_id(uint32_t device_id, منطقی external);
+	منطقی set_offset(ثابت اعشاری &offset);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const float &thermal_offset() const { return _thermal_offset; }
+	منطقی calibrated() ثابت { بازگشت (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_شمار_2() ثابت { بازگشت calibration_شمار; }
+	int8_t calibration_index() ثابت { بازگشت _calibration_index; }
+	uint32_t device_id() ثابت { بازگشت _device_id; }
+	منطقی enabled() ثابت { بازگشت (_priority > 0); }
+	منطقی external() ثابت { بازگشت _external; }
+	ثابت اعشاری &offset() ثابت { بازگشت _offset; }
+	ثابت int32_t &priority() ثابت { بازگشت _priority; }
+	ثابت اعشاری &thermal_offset() ثابت { بازگشت _thermal_offset; }
 
 	// apply offsets
-	inline float Correct(const float &data) const
+	درونخطی اعشاری Correct(ثابت اعشاری &data) ثابت
 	{
-		return data - _thermal_offset - _offset;
+		بازگشت data - _thermal_offset - _offset;
 	}
 
-	inline float Uncorrect(const float &corrected_data) const
+	درونخطی اعشاری Uncorrect(ثابت اعشاری &corrected_data) ثابت
 	{
-		return corrected_data + _thermal_offset + _offset;
+		بازگشت corrected_data + _thermal_offset + _offset;
 	}
 
 	// Compute sensor offset from bias (board frame)
-	float BiasCorrectedSensorOffset(const float &bias) const
+	اعشاری BiasCorrectedSensorOffset(ثابت اعشاری &bias) ثابت
 	{
-		return bias + _thermal_offset + _offset;
+		بازگشت bias + _thermal_offset + _offset;
 	}
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	منطقی ParametersLoad();
+	منطقی ParametersSave(صحیح desired_calibration_index = -1, منطقی force = نادرست);
+	تهی ParametersUpdate();
 
-	void Reset();
+	تهی Reset();
 
-	void SensorCorrectionsUpdate(bool force = false);
+	تهی SensorCorrectionsUpdate(منطقی force = نادرست);
 
-private:
+خصوصی:
 	uORB::Subscription _sensor_correction_sub{ORB_ID(sensor_correction)};
 
-	float _offset{0};
-	float _thermal_offset{0};
+	اعشاری _offset{0};
+	اعشاری _thermal_offset{0};
 
 	int8_t _calibration_index{-1};
 	uint32_t _device_id{0};
 	int32_t _priority{-1};
 
-	bool _external{false};
+	منطقی _external{نادرست};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_شمار{0};
 };
 } // namespace calibration

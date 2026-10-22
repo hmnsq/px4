@@ -31,201 +31,201 @@
  *
  ****************************************************************************/
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <lib/conversion/rotation.h>
-#include <lib/mathlib/mathlib.h>
-#include <lib/parameters/param.h>
+#شامل <px4_platform_common/px4_config.h>
+#شامل <px4_platform_common/log.h>
+#شامل <lib/conversion/rotation.h>
+#شامل <lib/mathlib/mathlib.h>
+#شامل <lib/parameters/param.h>
 
 using math::radians;
 using matrix::Eulerf;
 using matrix::Dcmf;
 using matrix::Vector3f;
 
-namespace calibration
+فضاینام calibration
 {
 
-static constexpr int MAX_SENSOR_COUNT = 4; // TODO: per sensor?
+ایستا constexpr صحیح MAX_SENSOR_شمار = 4; // TODO: per sensor?
 
-int8_t FindCurrentCalibrationIndex(const char *sensor_type, uint32_t device_id)
+int8_t FindCurrentCalibrationIndex(ثابت نویسه *sensor_type, uint32_t device_id)
 {
-	if (device_id == 0) {
-		return -1;
+	اگر (device_id == 0) {
+		بازگشت -1;
 	}
 
-	for (unsigned i = 0; i < MAX_SENSOR_COUNT; ++i) {
-		char str[20] {};
-		snprintf(str, sizeof(str), "CAL_%s%u_ID", sensor_type, i);
+	برای (unsigned i = 0; i < MAX_SENSOR_شمار; ++i) {
+		نویسه str[20] {};
+		snprintf(str, اندازه(str), "CAL_%s%u_ID", sensor_type, i);
 
 		int32_t device_id_val = 0;
 
 		param_t param_handle = param_find_no_notification(str);
 
-		if (param_handle == PARAM_INVALID) {
-			continue;
+		اگر (param_handle == PARAM_INVALID) {
+			ادامه;
 		}
 
 		// find again and get value, but this time mark it active
-		if (param_get(param_find(str), &device_id_val) != OK) {
-			continue;
+		اگر (param_get(param_find(str), &device_id_val) != OK) {
+			ادامه;
 		}
 
-		if ((uint32_t)device_id_val == device_id) {
-			return i;
+		اگر ((uint32_t)device_id_val == device_id) {
+			بازگشت i;
 		}
 	}
 
-	return -1;
+	بازگشت -1;
 }
 
-int8_t FindAvailableCalibrationIndex(const char *sensor_type, uint32_t device_id, int8_t preferred_index)
+int8_t FindAvailableCalibrationIndex(ثابت نویسه *sensor_type, uint32_t device_id, int8_t preferred_index)
 {
 	// if this device is already using a calibration slot then keep it
-	int calibration_index = FindCurrentCalibrationIndex(sensor_type, device_id);
+	صحیح calibration_index = FindCurrentCalibrationIndex(sensor_type, device_id);
 
-	if (calibration_index >= 0) {
-		return calibration_index;
+	اگر (calibration_index >= 0) {
+		بازگشت calibration_index;
 	}
 
 
 	// device isn't currently using a calibration slot, select user preference (preferred_index)
 	//  if available, otherwise use the first available slot
-	uint32_t cal_device_ids[MAX_SENSOR_COUNT] {};
+	uint32_t cal_device_ids[MAX_SENSOR_شمار] {};
 
-	for (unsigned i = 0; i < MAX_SENSOR_COUNT; ++i) {
-		char str[20] {};
-		snprintf(str, sizeof(str), "CAL_%s%u_ID", sensor_type, i);
+	برای (unsigned i = 0; i < MAX_SENSOR_شمار; ++i) {
+		نویسه str[20] {};
+		snprintf(str, اندازه(str), "CAL_%s%u_ID", sensor_type, i);
 		int32_t device_id_val = 0;
 
-		if (param_get(param_find_no_notification(str), &device_id_val) == PX4_OK) {
+		اگر (param_get(param_find_no_notification(str), &device_id_val) == PX4_OK) {
 			cal_device_ids[i] = device_id_val;
 		}
 	}
 
 	// use preferred_index if it's available
-	if ((preferred_index >= 0) && (preferred_index < MAX_SENSOR_COUNT)
+	اگر ((preferred_index >= 0) && (preferred_index < MAX_SENSOR_شمار)
 	    && (cal_device_ids[preferred_index] == 0)) {
 
 		calibration_index = preferred_index;
 
-	} else {
+	} وگرنه {
 		// otherwise select first available slot
-		for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-			if (cal_device_ids[i] == 0) {
+		برای (صحیح i = 0; i < MAX_SENSOR_شمار; i++) {
+			اگر (cal_device_ids[i] == 0) {
 				calibration_index = i;
-				break;
+				بشکن;
 			}
 		}
 	}
 
-	if (calibration_index == -1) {
+	اگر (calibration_index == -1) {
 		PX4_ERR("no %s calibration slots available", sensor_type);
 	}
 
-	return calibration_index;
+	بازگشت calibration_index;
 }
 
-int32_t GetCalibrationParamInt32(const char *sensor_type, const char *cal_type, uint8_t instance)
+int32_t GetCalibrationParamInt32(ثابت نویسه *sensor_type, ثابت نویسه *cal_type, uint8_t instance)
 {
 	// eg CAL_MAGn_ID/CAL_MAGn_ROT
-	char str[20] {};
-	snprintf(str, sizeof(str), "CAL_%s%" PRIu8 "_%s", sensor_type, instance, cal_type);
+	نویسه str[20] {};
+	snprintf(str, اندازه(str), "CAL_%s%" PRIu8 "_%s", sensor_type, instance, cal_type);
 
 	int32_t value = 0;
 
-	if (param_get(param_find(str), &value) != 0) {
+	اگر (param_get(param_find(str), &value) != 0) {
 		PX4_ERR("failed to get %s", str);
 	}
 
-	return value;
+	بازگشت value;
 }
 
-float GetCalibrationParamFloat(const char *sensor_type, const char *cal_type, uint8_t instance)
+اعشاری GetCalibrationParamFloat(ثابت نویسه *sensor_type, ثابت نویسه *cal_type, uint8_t instance)
 {
 	// eg CAL_BAROn_OFF
-	char str[20] {};
-	snprintf(str, sizeof(str), "CAL_%s%" PRIu8 "_%s", sensor_type, instance, cal_type);
+	نویسه str[20] {};
+	snprintf(str, اندازه(str), "CAL_%s%" PRIu8 "_%s", sensor_type, instance, cal_type);
 
-	float value = NAN;
+	اعشاری value = NAN;
 
-	if (param_get(param_find(str), &value) != 0) {
+	اگر (param_get(param_find(str), &value) != 0) {
 		PX4_ERR("failed to get %s", str);
 	}
 
-	return value;
+	بازگشت value;
 }
 
-Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance)
+Vector3f GetCalibrationParamsVector3f(ثابت نویسه *sensor_type, ثابت نویسه *cal_type, uint8_t instance)
 {
-	Vector3f values{0.f, 0.f, 0.f};
+	Vector3f مقادیر_2{0.f, 0.f, 0.f};
 
-	char str[20] {};
+	نویسه str[20] {};
 
-	for (int axis = 0; axis < 3; axis++) {
-		char axis_char = 'X' + axis;
+	برای (صحیح axis = 0; axis < 3; axis++) {
+		نویسه axis_char = 'X' + axis;
 
 		// eg CAL_MAGn_{X,Y,Z}OFF
-		snprintf(str, sizeof(str), "CAL_%s%" PRIu8 "_%c%s", sensor_type, instance, axis_char, cal_type);
+		snprintf(str, اندازه(str), "CAL_%s%" PRIu8 "_%c%s", sensor_type, instance, axis_char, cal_type);
 
-		if (param_get(param_find(str), &values(axis)) != 0) {
+		اگر (param_get(param_find(str), &مقادیر_2(axis)) != 0) {
 			PX4_ERR("failed to get %s", str);
 		}
 	}
 
-	return values;
+	بازگشت مقادیر_2;
 }
 
-bool SetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance, Vector3f values)
+منطقی SetCalibrationParamsVector3f(ثابت نویسه *sensor_type, ثابت نویسه *cal_type, uint8_t instance, Vector3f مقادیر_2)
 {
-	int ret = PX4_OK;
-	char str[20] {};
+	صحیح ret = PX4_OK;
+	نویسه str[20] {};
 
-	for (int axis = 0; axis < 3; axis++) {
-		char axis_char = 'X' + axis;
+	برای (صحیح axis = 0; axis < 3; axis++) {
+		نویسه axis_char = 'X' + axis;
 
 		// eg CAL_MAGn_{X,Y,Z}OFF
-		snprintf(str, sizeof(str), "CAL_%s%" PRIu8 "_%c%s", sensor_type, instance, axis_char, cal_type);
+		snprintf(str, اندازه(str), "CAL_%s%" PRIu8 "_%c%s", sensor_type, instance, axis_char, cal_type);
 
-		if (param_set_no_notification(param_find(str), &values(axis)) != 0) {
-			PX4_ERR("failed to set %s = %.4f", str, (double)values(axis));
+		اگر (param_set_no_notification(param_find(str), &مقادیر_2(axis)) != 0) {
+			PX4_ERR("failed to set %s = %.4f", str, (دوگانه)مقادیر_2(axis));
 			ret = PX4_ERROR;
 		}
 	}
 
-	return ret == PX4_OK;
+	بازگشت ret == PX4_OK;
 }
 
 Eulerf GetSensorLevelAdjustment()
 {
-	float x_offset = 0.f;
-	float y_offset = 0.f;
-	float z_offset = 0.f;
+	اعشاری x_offset = 0.f;
+	اعشاری y_offset = 0.f;
+	اعشاری z_offset = 0.f;
 	param_get(param_find("SENS_BOARD_X_OFF"), &x_offset);
 	param_get(param_find("SENS_BOARD_Y_OFF"), &y_offset);
 	param_get(param_find("SENS_BOARD_Z_OFF"), &z_offset);
 
-	return Eulerf{radians(x_offset), radians(y_offset), radians(z_offset)};
+	بازگشت Eulerf{radians(x_offset), radians(y_offset), radians(z_offset)};
 }
 
-enum Rotation GetBoardRotation()
+شمارش Rotation GetBoardRotation()
 {
 	// get transformation matrix from sensor/board to body frame
 	int32_t board_rot = -1;
 	param_get(param_find("SENS_BOARD_ROT"), &board_rot);
 
-	if (board_rot >= 0 && board_rot < Rotation::ROTATION_MAX) {
-		return static_cast<enum Rotation>(board_rot);
+	اگر (board_rot >= 0 && board_rot < Rotation::ROTATION_MAX) {
+		بازگشت static_cast<شمارش Rotation>(board_rot);
 
-	} else {
+	} وگرنه {
 		PX4_ERR("invalid SENS_BOARD_ROT: %" PRId32, board_rot);
 	}
 
-	return Rotation::ROTATION_NONE;
+	بازگشت Rotation::ROTATION_NONE;
 }
 
 Dcmf GetBoardRotationMatrix()
 {
-	return get_rot_matrix(GetBoardRotation());
+	بازگشت get_rot_matrix(GetBoardRotation());
 }
 
 } // namespace calibration

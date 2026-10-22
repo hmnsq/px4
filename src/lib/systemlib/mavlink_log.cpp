@@ -38,41 +38,41 @@
  * @author Lorenz Meier <lorenz@px4.io>
  */
 
-#include <drivers/drv_hrt.h>
-#include <px4_platform_common/posix.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
+#شامل <drivers/drv_hrt.h>
+#شامل <px4_platform_common/posix.h>
+#شامل <string.h>
+#شامل <stdlib.h>
+#شامل <stdio.h>
+#شامل <stdarg.h>
 
-#include <uORB/topics/mavlink_log.h>
-#include "mavlink_log.h"
+#شامل <uORB/topics/mavlink_log.h>
+#شامل "mavlink_log.h"
 
-__EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, const char *fmt, ...)
+__EXPORT تهی mavlink_vasprintf(صحیح severity, orb_advert_t *mavlink_log_pub, ثابت نویسه *fmt, ...)
 {
 	// TODO: add compile check for maxlen
 
-	if (!fmt) {
-		return;
+	اگر (!fmt) {
+		بازگشت;
 	}
 
-	if (mavlink_log_pub == nullptr) {
-		return;
+	اگر (mavlink_log_pub == nullptr) {
+		بازگشت;
 	}
 
-	mavlink_log_s log_msg;
-	log_msg.severity = severity;
-	log_msg.timestamp = hrt_absolute_time();
+	mavlink_log_s log_پیام;
+	log_پیام.severity = severity;
+	log_پیام.timestamp = hrt_absolute_time();
 
 	va_list ap;
 	va_start(ap, fmt);
-	vsnprintf((char *)log_msg.text, sizeof(log_msg.text), fmt, ap);
+	vsnprintf((نویسه *)log_پیام.text, اندازه(log_پیام.text), fmt, ap);
 	va_end(ap);
 
-	if (*mavlink_log_pub != nullptr) {
-		orb_publish(ORB_ID(mavlink_log), *mavlink_log_pub, &log_msg);
+	اگر (*mavlink_log_pub != nullptr) {
+		orb_publish(ORB_ID(mavlink_log), *mavlink_log_pub, &log_پیام);
 
-	} else {
-		*mavlink_log_pub = orb_advertise(ORB_ID(mavlink_log), &log_msg);
+	} وگرنه {
+		*mavlink_log_pub = orb_advertise(ORB_ID(mavlink_log), &log_پیام);
 	}
 }

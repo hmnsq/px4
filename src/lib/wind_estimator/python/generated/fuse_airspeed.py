@@ -6,12 +6,12 @@
 
 # pylint: disable=too-many-locals,too-many-lines,too-many-statements,unused-argument,unused-import
 
-import math
-import typing as T
+واردکن math
+واردکن typing بهعنوان T
 
-import numpy
+واردکن numpy
 
-import sym
+واردکن sym
 
 
 def fuse_airspeed(v_local, state, P, airspeed, R, epsilon):
@@ -39,19 +39,19 @@ def fuse_airspeed(v_local, state, P, airspeed, R, epsilon):
     # Total ops: 56
 
     # Input arrays
-    if v_local.shape == (3,):
+    اگر v_local.shape == (3,):
         v_local = v_local.reshape((3, 1))
-    elif v_local.shape != (3, 1):
-        raise IndexError(
+    وگرنهاگر v_local.shape != (3, 1):
+        بالاببر IndexError(
             "v_local is expected to have shape (3, 1) or (3,); instead had shape {}".format(
                 v_local.shape
             )
         )
 
-    if state.shape == (3,):
+    اگر state.shape == (3,):
         state = state.reshape((3, 1))
-    elif state.shape != (3, 1):
-        raise IndexError(
+    وگرنهاگر state.shape != (3, 1):
+        بالاببر IndexError(
             "state is expected to have shape (3, 1) or (3,); instead had shape {}".format(
                 state.shape
             )
@@ -86,4 +86,4 @@ def fuse_airspeed(v_local, state, P, airspeed, R, epsilon):
     _K[2] = _tmp10 * (-P[2, 0] * _tmp4 - P[2, 1] * _tmp5 + _tmp8)
     _innov_var = _tmp9
     _innov = -_tmp2 * state[2, 0] + airspeed
-    return _H, _K, _innov_var, _innov
+    بازگشت _H, _K, _innov_var, _innov

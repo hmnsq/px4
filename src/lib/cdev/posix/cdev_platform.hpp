@@ -1,35 +1,35 @@
 
 #pragma once
 
-#include <inttypes.h>
-#include <string.h>
+#شامل <inttypes.h>
+#شامل <string.h>
 
 #define ATOMIC_ENTER lock()
 #define ATOMIC_LEAVE unlock()
 
-namespace cdev
+فضاینام cdev
 {
 
-struct file_operations {
-	void *op;
+ساختار file_operations {
+	تهی *op;
 };
 
-using px4_file_operations_t = struct file_operations;
+using px4_file_operations_t = ساختار file_operations;
 using mode_t = uint32_t;
 
-class CDev;
+رده CDev;
 
-struct file_t {
-	int f_oflags{0};
-	void *f_priv{nullptr};
+ساختار file_t {
+	صحیح f_oflags{0};
+	تهی *f_priv{nullptr};
 	CDev *cdev{nullptr};
 
-	file_t() = default;
-	file_t(int f, CDev *c) : f_oflags(f), cdev(c) {}
+	file_t() = پیشفرض;
+	file_t(صحیح f, CDev *c) : f_oflags(f), cdev(c) {}
 };
 
 } // namespace cdev
 
-extern "C" __EXPORT int register_driver(const char *name, const cdev::px4_file_operations_t *fops,
-					cdev::mode_t mode, void *data);
-extern "C" __EXPORT int unregister_driver(const char *path);
+بیرونی "C" __EXPORT صحیح register_driver(ثابت نویسه *name, ثابت cdev::px4_file_operations_t *fops,
+					cdev::mode_t mode, تهی *data);
+بیرونی "C" __EXPORT صحیح unregister_driver(ثابت نویسه *path);

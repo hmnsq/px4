@@ -39,48 +39,48 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <assert.h>
+#شامل <time.h>
+#شامل <stdlib.h>
+#شامل <math.h>
+#شامل <mathlib/math/test/test.hpp>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+فضاینام control
 {
 
 /**
  * A high pass filter as described here:
  * http://en.wikipedia.org/wiki/High-pass_filter.
  */
-class __EXPORT BlockHighPass : public Block
+رده __EXPORT Block_بالا_Pass : عمومی Block
 {
-public:
+عمومی:
 // methods
-	BlockHighPass(SuperBlock *parent, const char *name) :
+	Block_بالا_Pass(SuperBlock *parent, ثابت نویسه *name) :
 		Block(parent, name),
 		_u(0),
 		_y(0),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(این, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockHighPass() = default;
-	float update(float input);
+	مجازی ~Block_بالا_Pass() = پیشفرض;
+	اعشاری update(اعشاری درون_داد);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getFCut() {return _fCut.get();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
+	اعشاری getU() {بازگشت _u;}
+	اعشاری getY() {بازگشت _y;}
+	اعشاری getFCut() {بازگشت _fCut.get();}
+	تهی setU(اعشاری u) {_u = u;}
+	تهی setY(اعشاری y) {_y = y;}
+محافظتشده:
 // attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
+	اعشاری _u; /**< previous input */
+	اعشاری _y; /**< previous output */
 	control::BlockParamFloat _fCut; /**< cut-off frequency, Hz */
 };
 

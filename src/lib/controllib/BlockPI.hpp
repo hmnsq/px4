@@ -39,47 +39,47 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <assert.h>
+#شامل <time.h>
+#شامل <stdlib.h>
+#شامل <math.h>
+#شامل <mathlib/math/test/test.hpp>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+فضاینام control
 {
 
 /**
  * A proportional-integral controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPI: public SuperBlock
+رده __EXPORT BlockPI: عمومی SuperBlock
 {
-public:
+عمومی:
 // methods
-	BlockPI(SuperBlock *parent, const char *name) :
+	BlockPI(SuperBlock *parent, ثابت نویسه *name) :
 		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_kP(this, "P"),
-		_kI(this, "I")
+		_integral(این, "I"),
+		_kP(این, "P"),
+		_kI(این, "I")
 	{}
-	virtual ~BlockPI() = default;
-	float update(float input)
+	مجازی ~BlockPI() = پیشفرض;
+	اعشاری update(اعشاری درون_داد)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input);
+		بازگشت getKP() * درون_داد +
+		       getKI() * getIntegral().update(درون_داد);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-private:
+	اعشاری getKP() { بازگشت _kP.get(); }
+	اعشاری getKI() { بازگشت _kI.get(); }
+	BlockIntegral &getIntegral() { بازگشت _integral; }
+خصوصی:
 	BlockIntegral _integral;
 	control::BlockParamFloat _kP;
 	control::BlockParamFloat _kI;

@@ -41,17 +41,17 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <matrix/SquareMatrix.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <matrix/SquareMatrix.hpp>
 
-namespace math
+فضاینام math
 {
 
 template<typename T>
-class SecondOrderReferenceModel
+رده SecondOrderReferenceModel
 {
-public:
-	SecondOrderReferenceModel() = default;
+عمومی:
+	SecondOrderReferenceModel() = پیشفرض;
 
 	/**
 	 * Construct with system parameters
@@ -59,7 +59,7 @@ public:
 	 * @param[in] natural_freq The desired natural frequency of the system [rad/s]
 	 * @param[in] damping_ratio The desired damping ratio of the system
 	 */
-	SecondOrderReferenceModel(const float natural_freq, const float damping_ratio)
+	SecondOrderReferenceModel(ثابت اعشاری natural_freq, ثابت اعشاری damping_ratio)
 	{
 		setParameters(natural_freq, damping_ratio);
 	}
@@ -67,7 +67,7 @@ public:
 	/**
 	 * Enumeration for available time discretization methods
 	 */
-	enum DiscretizationMethod {
+	شمارش DiscretizationMethod {
 		kForwardEuler,
 		kBilinear
 	};
@@ -75,7 +75,7 @@ public:
 	/**
 	 * Set the time discretization method used for state integration
 	 */
-	void setDiscretizationMethod(const DiscretizationMethod method) { discretization_method_ = method; }
+	تهی setDiscretizationMethod(ثابت DiscretizationMethod method) { discretization_method_ = method; }
 
 	/**
 	 * Set the system parameters
@@ -87,9 +87,9 @@ public:
 	 * @param[in] damping_ratio The desired damping ratio of the system
 	 * @return Whether or not the param set was successful
 	 */
-	bool setParameters(const float natural_freq, const float damping_ratio)
+	منطقی setParameters(ثابت اعشاری natural_freq, ثابت اعشاری damping_ratio)
 	{
-		if (natural_freq < FLT_EPSILON || damping_ratio < FLT_EPSILON) {
+		اگر (natural_freq < FLT_EPSILON || damping_ratio < FLT_EPSILON) {
 
 			// Deadzone the resulting constants (will result in zero filter acceleration)
 			spring_constant_ = FLT_EPSILON;
@@ -100,7 +100,7 @@ public:
 			max_time_step_ = INFINITY;
 
 			// Fail
-			return false;
+			بازگشت نادرست;
 		}
 
 		// Note these are "effective" coefficients, as mass coefficient is considered baked in
@@ -112,23 +112,23 @@ public:
 		// Based on *conservative nyquist frequency via kSampleRateMultiplier >= 2
 		max_time_step_ = 2.0f * M_PI_F / (cutoff_freq_ * kSampleRateMultiplier);
 
-		return true;
+		بازگشت درست;
 	}
 
 	/**
 	 * @return System state [units]
 	 */
-	const T &getState() const { return filter_state_; }
+	ثابت T &getState() ثابت { بازگشت filter_state_; }
 
 	/**
 	 * @return System rate [units/s]
 	 */
-	const T &getRate() const { return filter_rate_; }
+	ثابت T &getRate() ثابت { بازگشت filter_rate_; }
 
 	/**
 	 * @return System acceleration [units/s^2]
 	 */
-	const T &getAccel() const { return filter_accel_; }
+	ثابت T &getAccel() ثابت { بازگشت filter_accel_; }
 
 	/**
 	 * Update the system states
@@ -139,12 +139,12 @@ public:
 	 * @param[in] state_sample New state sample [units]
 	 * @param[in] rate_sample New rate sample, if provided, otherwise defaults to zero(s) [units/s]
 	 */
-	void update(const float time_step, const T &state_sample, const T &rate_sample = T())
+	تهی update(ثابت اعشاری time_step, ثابت T &state_sample, ثابت T &rate_sample = T())
 	{
-		if ((time_step > max_time_step_) || (time_step < 0.0f)) {
+		اگر ((time_step > max_time_step_) || (time_step < 0.0f)) {
 			// time step is too large or is negative, reset the filter
 			reset(state_sample, rate_sample);
-			return;
+			بازگشت;
 		}
 
 		// take a step forward from the last state (and input), update the filter states
@@ -164,7 +164,7 @@ public:
 	 * @param[in] state Initial state [units]
 	 * @param[in] rate Initial rate, if provided, otherwise defaults to zero(s) [units/s]
 	 */
-	void reset(const T &state, const T &rate = T())
+	تهی reset(ثابت T &state, ثابت T &rate = T())
 	{
 		filter_state_ = state;
 		filter_rate_ = rate;
@@ -174,19 +174,19 @@ public:
 		last_rate_sample_ = rate;
 	}
 
-private:
+خصوصی:
 
 	// A conservative multiplier (>=2) on sample frequency to bound the maximum time step
-	static constexpr float kSampleRateMultiplier = 4.0f;
+	ایستا constexpr اعشاری kSampleRateMultiplier = 4.0f;
 
 	// (effective, no mass) Spring constant for second order system [s^-2]
-	float spring_constant_{FLT_EPSILON};
+	اعشاری spring_constant_{FLT_EPSILON};
 
 	// (effective, no mass) Damping coefficient for second order system [s^-1]
-	float damping_coefficient_{FLT_EPSILON};
+	اعشاری damping_coefficient_{FLT_EPSILON};
 
 	// cutoff frequency [rad/s]
-	float cutoff_freq_{FLT_EPSILON};
+	اعشاری cutoff_freq_{FLT_EPSILON};
 
 	T filter_state_{}; // [units]
 	T filter_rate_{}; // [units/s]
@@ -198,7 +198,7 @@ private:
 	T last_rate_sample_{}; // [units/s]
 
 	// Maximum time step [s]
-	float max_time_step_{INFINITY};
+	اعشاری max_time_step_{INFINITY};
 
 	// The selected time discretization method used for state integration
 	DiscretizationMethod discretization_method_{kBilinear};
@@ -210,10 +210,10 @@ private:
 	 * @param[in] damping_ratio The desired damping ratio of the system
 	 * @return Cutoff frequency [rad/s]
 	 */
-	float calculateCutoffFrequency(const float natural_freq, const float damping_ratio)
+	اعشاری calculateCutoffFrequency(ثابت اعشاری natural_freq, ثابت اعشاری damping_ratio)
 	{
-		const float damping_ratio_squared = damping_ratio * damping_ratio;
-		return natural_freq * sqrtf(1.0f - 2.0f * damping_ratio_squared + sqrtf(4.0f * damping_ratio_squared *
+		ثابت اعشاری damping_ratio_squared = damping_ratio * damping_ratio;
+		بازگشت natural_freq * sqrtf(1.0f - 2.0f * damping_ratio_squared + sqrtf(4.0f * damping_ratio_squared *
 					    damping_ratio_squared - 4.0f * damping_ratio_squared + 2.0f));
 	}
 
@@ -224,16 +224,16 @@ private:
 	 * @param[in] state_sample [units]
 	 * @param[in] rate_sample [units/s]
 	 */
-	void integrateStates(const float time_step, const T &state_sample, const T &rate_sample)
+	تهی integrateStates(ثابت اعشاری time_step, ثابت T &state_sample, ثابت T &rate_sample)
 	{
-		switch (discretization_method_) {
-		case DiscretizationMethod::kForwardEuler: {
+		انتخاب (discretization_method_) {
+		حالت DiscretizationMethod::kForwardEuler: {
 				// forward-Euler discretization
 				integrateStatesForwardEuler(time_step, state_sample, rate_sample);
-				break;
+				بشکن;
 			}
 
-		default: {
+		پیشفرض: {
 				// default to bilinear transform
 				integrateStatesBilinear(time_step, state_sample, rate_sample);
 			}
@@ -247,7 +247,7 @@ private:
 	 * @param[in] state_sample [units]
 	 * @param[in] rate_sample [units/s]
 	 */
-	void integrateStatesForwardEuler(const float time_step, const T &state_sample, const T &rate_sample)
+	تهی integrateStatesForwardEuler(ثابت اعشاری time_step, ثابت T &state_sample, ثابت T &rate_sample)
 	{
 		// general notation for what follows:
 		// c: continuous
@@ -260,7 +260,7 @@ private:
 		// Ac = [ 0   1 ]
 		//      [-Kx -Kv]
 		// Ad = I + Ac * T
-		matrix::SquareMatrix<float, 2> state_matrix;
+		matrix::SquareMatrix<اعشاری, 2> state_matrix;
 		state_matrix(0, 0) = 1.0f;
 		state_matrix(0, 1) = time_step;
 		state_matrix(1, 0) = -spring_constant_ * time_step;
@@ -270,14 +270,14 @@ private:
 		// Bc = [0  0 ]
 		//      [Kx Kv]
 		// Bd = Bc * T
-		matrix::SquareMatrix<float, 2> input_matrix;
-		input_matrix(0, 0) = 0.0f;
-		input_matrix(0, 1) = 0.0f;
-		input_matrix(1, 0) = spring_constant_ * time_step;
-		input_matrix(1, 1) = damping_coefficient_ * time_step;
+		matrix::SquareMatrix<اعشاری, 2> درون_داد_matrix;
+		درون_داد_matrix(0, 0) = 0.0f;
+		درون_داد_matrix(0, 1) = 0.0f;
+		درون_داد_matrix(1, 0) = spring_constant_ * time_step;
+		درون_داد_matrix(1, 1) = damping_coefficient_ * time_step;
 
 		// discrete state transition
-		transitionStates(state_matrix, input_matrix, state_sample, rate_sample);
+		transitionStates(state_matrix, درون_داد_matrix, state_sample, rate_sample);
 	}
 
 	/**
@@ -287,10 +287,10 @@ private:
 	 * @param[in] state_sample [units]
 	 * @param[in] rate_sample [units/s]
 	 */
-	void integrateStatesBilinear(const float time_step, const T &state_sample, const T &rate_sample)
+	تهی integrateStatesBilinear(ثابت اعشاری time_step, ثابت T &state_sample, ثابت T &rate_sample)
 	{
-		const float time_step_squared = time_step * time_step;
-		const float inv_denominator = 1.0f / (0.25f * spring_constant_ * time_step_squared + 0.5f * damping_coefficient_ *
+		ثابت اعشاری time_step_squared = time_step * time_step;
+		ثابت اعشاری inv_denominator = 1.0f / (0.25f * spring_constant_ * time_step_squared + 0.5f * damping_coefficient_ *
 						      time_step + 1.0f);
 
 		// general notation for what follows:
@@ -304,7 +304,7 @@ private:
 		// Ac = [ 0   1 ]
 		//      [-Kx -Kv]
 		// Ad = (I + 1/2 * Ac * T) * (I - 1/2 * Ac * T)^-1
-		matrix::SquareMatrix<float, 2> state_matrix;
+		matrix::SquareMatrix<اعشاری, 2> state_matrix;
 		state_matrix(0, 0) = -0.25f * spring_constant_ * time_step_squared + 0.5f * damping_coefficient_ * time_step + 1.0f;
 		state_matrix(0, 1) = time_step;
 		state_matrix(1, 0) = -spring_constant_ * time_step;
@@ -315,15 +315,15 @@ private:
 		// Bc = [0  0 ]
 		//      [Kx Kv]
 		// Bd = Ac^-1 * (Ad - I) * Bc
-		matrix::SquareMatrix<float, 2> input_matrix;
-		input_matrix(0, 0) = 0.5f * spring_constant_ * time_step_squared;
-		input_matrix(0, 1) = 0.5f * damping_coefficient_ * time_step_squared;
-		input_matrix(1, 0) = spring_constant_ * time_step;
-		input_matrix(1, 1) = damping_coefficient_ * time_step;
-		input_matrix *= inv_denominator;
+		matrix::SquareMatrix<اعشاری, 2> درون_داد_matrix;
+		درون_داد_matrix(0, 0) = 0.5f * spring_constant_ * time_step_squared;
+		درون_داد_matrix(0, 1) = 0.5f * damping_coefficient_ * time_step_squared;
+		درون_داد_matrix(1, 0) = spring_constant_ * time_step;
+		درون_داد_matrix(1, 1) = damping_coefficient_ * time_step;
+		درون_داد_matrix *= inv_denominator;
 
 		// discrete state transition
-		transitionStates(state_matrix, input_matrix, state_sample, rate_sample);
+		transitionStates(state_matrix, درون_داد_matrix, state_sample, rate_sample);
 	}
 
 	/**
@@ -334,13 +334,13 @@ private:
 	 * @param[in] state_sample [units]
 	 * @param[in] rate_sample [units/s]
 	 */
-	void transitionStates(const matrix::SquareMatrix<float, 2> &state_matrix,
-			      const matrix::SquareMatrix<float, 2> &input_matrix, const T &state_sample, const T &rate_sample)
+	تهی transitionStates(ثابت matrix::SquareMatrix<اعشاری, 2> &state_matrix,
+			      ثابت matrix::SquareMatrix<اعشاری, 2> &درون_داد_matrix, ثابت T &state_sample, ثابت T &rate_sample)
 	{
-		const T new_state = state_matrix(0, 0) * filter_state_ + state_matrix(0, 1) * filter_rate_ + input_matrix(0,
-				    0) * state_sample + input_matrix(0, 1) * rate_sample;
-		const T new_rate = state_matrix(1, 0) * filter_state_ + state_matrix(1, 1) * filter_rate_ + input_matrix(1,
-				   0) * state_sample + input_matrix(1, 1) * rate_sample;
+		ثابت T new_state = state_matrix(0, 0) * filter_state_ + state_matrix(0, 1) * filter_rate_ + درون_داد_matrix(0,
+				    0) * state_sample + درون_داد_matrix(0, 1) * rate_sample;
+		ثابت T new_rate = state_matrix(1, 0) * filter_state_ + state_matrix(1, 1) * filter_rate_ + درون_داد_matrix(1,
+				   0) * state_sample + درون_داد_matrix(1, 1) * rate_sample;
 		filter_state_ = new_state;
 		filter_rate_ = new_rate;
 	}
@@ -351,11 +351,11 @@ private:
 	 * @param[in] state_sample [units]
 	 * @param[in] rate_sample [units/s]
 	 */
-	T calculateInstantaneousAcceleration(const T &state_sample, const T &rate_sample) const
+	T calculateInstantaneousAcceleration(ثابت T &state_sample, ثابت T &rate_sample) ثابت
 	{
-		const T state_error = state_sample - filter_state_;
-		const T rate_error = rate_sample - filter_rate_;
-		return state_error * spring_constant_ + rate_error * damping_coefficient_;
+		ثابت T state_error = state_sample - filter_state_;
+		ثابت T rate_error = rate_sample - filter_rate_;
+		بازگشت state_error * spring_constant_ + rate_error * damping_coefficient_;
 	}
 };
 

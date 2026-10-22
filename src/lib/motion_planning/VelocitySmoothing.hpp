@@ -33,11 +33,11 @@
 
 #pragma once
 
-struct Trajectory {
-	float j; //< jerk
-	float a; //< acceleration
-	float v; //< velocity
-	float x; //< position
+ساختار Trajectory {
+	اعشاری j; //< jerk
+	اعشاری a; //< acceleration
+	اعشاری v; //< velocity
+	اعشاری x; //< position
 };
 
 /**
@@ -58,11 +58,11 @@ struct Trajectory {
  *        ;
  *   ----"
  */
-class VelocitySmoothing
+رده VelocitySmoothing
 {
-public:
-	VelocitySmoothing(float initial_accel = 0.f, float initial_vel = 0.f, float initial_pos = 0.f);
-	~VelocitySmoothing() = default;
+عمومی:
+	VelocitySmoothing(اعشاری initial_accel = 0.f, اعشاری initial_vel = 0.f, اعشاری initial_pos = 0.f);
+	~VelocitySmoothing() = پیشفرض;
 
 	/**
 	 * Reset the state.
@@ -70,14 +70,14 @@ public:
 	 * @param vel Current velocity
 	 * @param pos Current position
 	 */
-	void reset(float accel, float vel, float pos);
+	تهی reset(اعشاری accel, اعشاری vel, اعشاری pos);
 
 	/**
 	 * Compute T1, T2, T3 depending on the current state and velocity setpoint. This should be called on every cycle
 	 * and before updateTraj().
 	 * @param vel_setpoint velocity setpoint input
 	 */
-	void updateDurations(float vel_setpoint);
+	تهی updateDurations(اعشاری vel_setpoint);
 
 	/**
 	 * Generate the trajectory (acceleration, velocity and position) by integrating the current jerk
@@ -85,32 +85,32 @@ public:
 	 * @param time_stretch (optional) used to scale the integration period. This can be used to slow down
 	 * or fast-forward the trajectory
 	 */
-	void updateTraj(float dt, float time_stretch = 1.f);
+	تهی updateTraj(اعشاری dt, اعشاری time_stretch = 1.f);
 
 	/**
 	 * Getters and setters
 	 */
-	float getMaxJerk() const { return _max_jerk; }
-	void setMaxJerk(float max_jerk) { _max_jerk = max_jerk; }
+	اعشاری getMaxJerk() ثابت { بازگشت _max_jerk; }
+	تهی setMaxJerk(اعشاری max_jerk) { _max_jerk = max_jerk; }
 
-	float getMaxAccel() const { return _max_accel; }
-	void setMaxAccel(float max_accel) { _max_accel = max_accel; }
+	اعشاری getMaxAccel() ثابت { بازگشت _max_accel; }
+	تهی setMaxAccel(اعشاری max_accel) { _max_accel = max_accel; }
 
-	float getMaxVel() const { return _max_vel; }
-	void setMaxVel(float max_vel) { _max_vel = max_vel; }
+	اعشاری getMaxVel() ثابت { بازگشت _max_vel; }
+	تهی setMaxVel(اعشاری max_vel) { _max_vel = max_vel; }
 
-	float getCurrentJerk() const { return _state.j; }
-	void setCurrentAcceleration(const float accel) { _state.a = _state_init.a = accel; }
-	float getCurrentAcceleration() const { return _state.a; }
-	void setCurrentVelocity(const float vel) { _state.v = _state_init.v = vel; }
-	float getCurrentVelocity() const { return _state.v; }
-	void setCurrentPosition(const float pos) { _state.x = _state_init.x = pos; }
-	float getCurrentPosition() const { return _state.x; }
+	اعشاری getCurrentJerk() ثابت { بازگشت _state.j; }
+	تهی setCurrentAcceleration(ثابت اعشاری accel) { _state.a = _state_init.a = accel; }
+	اعشاری getCurrentAcceleration() ثابت { بازگشت _state.a; }
+	تهی setCurrentVelocity(ثابت اعشاری vel) { _state.v = _state_init.v = vel; }
+	اعشاری getCurrentVelocity() ثابت { بازگشت _state.v; }
+	تهی setCurrentPosition(ثابت اعشاری pos) { _state.x = _state_init.x = pos; }
+	اعشاری getCurrentPosition() ثابت { بازگشت _state.x; }
 
-	float getT1() const { return _T1; }
-	float getT2() const { return _T2; }
-	float getT3() const { return _T3; }
-	float getTotalTime() const { return _T1 + _T2 + _T3; }
+	اعشاری getT1() ثابت { بازگشت _T1; }
+	اعشاری getT2() ثابت { بازگشت _T2; }
+	اعشاری getT3() ثابت { بازگشت _T3; }
+	اعشاری getTotalTime() ثابت { بازگشت _T1 + _T2 + _T3; }
 
 	/**
 	 * Synchronize several trajectories to have the same total time. This is required to generate
@@ -119,63 +119,63 @@ public:
 	 * @param traj an array of VelocitySmoothing objects
 	 * @param n_traj the number of trajectories to be synchronized
 	 */
-	static void timeSynchronization(VelocitySmoothing *traj, int n_traj);
+	ایستا تهی timeSynchronization(VelocitySmoothing *traj, صحیح n_traj);
 
-private:
+خصوصی:
 
 	/**
 	 * Compute T1, T2, T3 depending on the current state and velocity setpoint.
 	 * Minimize the total time of the trajectory
 	 */
-	void updateDurationsMinimizeTotalTime();
+	تهی updateDurationsMinimizeTotalTime();
 
 	/**
 	 * Compute T1, T2, T3 depending on the current state and velocity setpoint.
 	 * @param T123 desired total time of the trajectory
 	 */
-	void updateDurationsGivenTotalTime(float T123);
+	تهی updateDurationsGivenTotalTime(اعشاری T123);
 
 	/**
 	 * Compute the direction of the jerk to be applied in order to drive the current state
 	 * to the desired one
 	 */
-	int computeDirection() const;
+	صحیح computeDirection() ثابت;
 
 	/**
 	 * Compute the velocity at which the trajectory will be if the maximum jerk is applied
 	 * during the time required to cancel the current acceleration
 	 */
-	float computeVelAtZeroAcc() const;
+	اعشاری computeVelAtZeroAcc() ثابت;
 
 	/**
 	 * Compute increasing acceleration time
 	 */
-	inline float computeT1(float a0, float v3, float j_max, float a_max) const;
+	درونخطی اعشاری computeT1(اعشاری a0, اعشاری v3, اعشاری j_max, اعشاری a_max) ثابت;
 
 	/**
 	 * Compute increasing acceleration time using total time constraint
 	 */
-	inline float computeT1(float T123, float a0, float v3, float j_max, float a_max) const;
+	درونخطی اعشاری computeT1(اعشاری T123, اعشاری a0, اعشاری v3, اعشاری j_max, اعشاری a_max) ثابت;
 
 	/**
 	 * Saturate T1 in order to respect the maximum acceleration constraint
 	 */
-	inline float saturateT1ForAccel(float a0, float j_max, float T1, float a_max) const;
+	درونخطی اعشاری saturateT1ForAccel(اعشاری a0, اعشاری j_max, اعشاری T1, اعشاری a_max) ثابت;
 
 	/**
 	 * Compute constant acceleration time
 	 */
-	inline float computeT2(float T1, float T3, float a0, float v3, float j_max) const;
+	درونخطی اعشاری computeT2(اعشاری T1, اعشاری T3, اعشاری a0, اعشاری v3, اعشاری j_max) ثابت;
 
 	/**
 	 * Compute constant acceleration time using total time constraint
 	 */
-	inline float computeT2(float T123, float T1, float T3) const;
+	درونخطی اعشاری computeT2(اعشاری T123, اعشاری T1, اعشاری T3) ثابت;
 
 	/**
 	 * Compute decreasing acceleration time
 	 */
-	inline float computeT3(float T1, float a0, float j_max) const;
+	درونخطی اعشاری computeT3(اعشاری T1, اعشاری a0, اعشاری j_max) ثابت;
 
 	/**
 	 * Compute the jerk, acceleration, velocity and position
@@ -187,27 +187,27 @@ private:
 	 * @param t current time
 	 * @param d direction
 	 */
-	inline Trajectory evaluatePoly(float j, float a0, float v0, float x0, float t, int d) const;
+	درونخطی Trajectory evaluatePoly(اعشاری j, اعشاری a0, اعشاری v0, اعشاری x0, اعشاری t, صحیح d) ثابت;
 
-	/* Input */
-	float _vel_sp{0.f};
+	/*درون داد*/
+	اعشاری _vel_sp{0.f};
 
 	/* Constraints */
-	float _max_jerk{0.f};
-	float _max_accel{0.f};
-	float _max_vel{0.f};
+	اعشاری _max_jerk{0.f};
+	اعشاری _max_accel{0.f};
+	اعشاری _max_vel{0.f};
 
 	/* State (previous setpoints) */
 	Trajectory _state{};
-	int _direction{0};
+	صحیح _direction{0};
 
 	/* Initial conditions */
 	Trajectory _state_init{};
 
 	/* Duration of each phase */
-	float _T1{0.f}; ///< Increasing acceleration [s]
-	float _T2{0.f}; ///< Constant acceleration [s]
-	float _T3{0.f}; ///< Decreasing acceleration [s]
+	اعشاری _T1{0.f}; ///< Increasing acceleration [s]
+	اعشاری _T2{0.f}; ///< Constant acceleration [s]
+	اعشاری _T3{0.f}; ///< Decreasing acceleration [s]
 
-	float _local_time{0.f}; ///< Current local time
+	اعشاری _local_time{0.f}; ///< Current local time
 };

@@ -37,32 +37,32 @@
  * @author Thomas Gubler <thomasgubler@gmail.com>
  * @author Mark Charlebois <mcharleb@gmail.com>
  */
-#include "cdevtest_example.h"
+#شامل "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/tasks.h>
-#include <stdio.h>
-#include <string.h>
+#شامل <px4_platform_common/app.h>
+#شامل <px4_platform_common/tasks.h>
+#شامل <stdio.h>
+#شامل <string.h>
 
-static int daemon_task;             /* Handle of deamon task / thread */
+ایستا صحیح daemon_task;             /* Handle of deamon task / thread */
 
 //using namespace px4;
 
-extern "C" __EXPORT int cdev_test_main(int argc, char *argv[]);
-int cdev_test_main(int argc, char *argv[])
+بیرونی "C" __EXPORT صحیح cdev_test_main(صحیح argc, نویسه *argv[]);
+صحیح cdev_test_main(صحیح argc, نویسه *argv[])
 {
 
-	if (argc < 2) {
+	اگر (argc < 2) {
 		printf("usage: cdevtest {start|stop|status}\n");
-		return 1;
+		بازگشت 1;
 	}
 
-	if (!strcmp(argv[1], "start")) {
+	اگر (!strcmp(argv[1], "start")) {
 
-		if (CDevExample::appState.isRunning()) {
+		اگر (CDevExample::appState.isRunning()) {
 			printf("already running\n");
 			/* this is not an error */
-			return 0;
+			بازگشت 0;
 		}
 
 		daemon_task = px4_task_spawn_cmd("cdevtest",
@@ -70,27 +70,27 @@ int cdev_test_main(int argc, char *argv[])
 						 SCHED_PRIORITY_MAX - 5,
 						 2000,
 						 PX4_MAIN,
-						 (argv) ? (char *const *)&argv[2] : (char *const *)nullptr);
+						 (argv) ? (نویسه *ثابت *)&argv[2] : (نویسه *ثابت *)nullptr);
 
-		return 0;
+		بازگشت 0;
 	}
 
-	if (!strcmp(argv[1], "stop")) {
+	اگر (!strcmp(argv[1], "stop")) {
 		CDevExample::appState.requestExit();
-		return 0;
+		بازگشت 0;
 	}
 
-	if (!strcmp(argv[1], "status")) {
-		if (CDevExample::appState.isRunning()) {
+	اگر (!strcmp(argv[1], "status")) {
+		اگر (CDevExample::appState.isRunning()) {
 			printf("is running\n");
 
-		} else {
+		} وگرنه {
 			printf("not started\n");
 		}
 
-		return 0;
+		بازگشت 0;
 	}
 
 	printf("usage: cdevtest_main {start|stop|status}\n");
-	return 1;
+	بازگشت 1;
 }

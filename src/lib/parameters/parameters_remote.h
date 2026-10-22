@@ -33,18 +33,18 @@
 
 #pragma once
 
-#include "param.h"
+#شامل "param.h"
 
-struct param_remote_counters {
-	uint32_t set_value_request_received;
-	uint32_t set_value_response_sent;
+ساختار param_remote_counters {
+	uint32_t set_مقدار_request_received;
+	uint32_t set_مقدار_response_sent;
 	uint32_t reset_received;
-	uint32_t set_value_request_sent;
-	uint32_t set_value_response_received;
+	uint32_t set_مقدار_request_sent;
+	uint32_t set_مقدار_response_received;
 	uint32_t set_used_sent;
 };
 
-void param_remote_init();
-void param_remote_set_used(param_t param);
-void param_remote_set_value(param_t param, const void *val);
-void param_remote_get_counters(struct param_remote_counters *cnt);
+تهی param_remote_init();
+تهی param_remote_set_used(param_t param);
+تهی param_remote_set_مقدار(param_t param, ثابت تهی *val);
+تهی param_remote_get_counters(ساختار param_remote_counters *cnt);

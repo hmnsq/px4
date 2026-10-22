@@ -40,21 +40,21 @@
  *       that is supplied.  Should we just depend on the bus knowing?
  */
 
-#include "I2C.hpp"
+#شامل "I2C.hpp"
 
-#if defined(CONFIG_I2C)
+#اگر defined(CONFIG_I2C)
 
 #ifdef __PX4_LINUX
 
-#include <linux/i2c.h>
-#include <linux/i2c-dev.h>
+#شامل <linux/i2c.h>
+#شامل <linux/i2c-dev.h>
 
-#include <px4_platform_common/i2c_spi_buses.h>
+#شامل <px4_platform_common/i2c_spi_buses.h>
 
-namespace device
+فضاینام device
 {
 
-I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency) :
+I2C::I2C(uint8_t device_type, ثابت نویسه *name, ثابت صحیح bus, ثابت uint16_t address, ثابت uint32_t frequency) :
 	CDev(name, nullptr)
 {
 	// fill in _device_id fields for a I2C device
@@ -64,7 +64,7 @@ I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t ad
 	_device_id.devid_s.address = address;
 }
 
-I2C::I2C(const I2CSPIDriverConfig &config)
+I2C::I2C(ثابت I2CSPIDriverConfig &config)
 	: I2C(config.devid_driver_index, config.module_name, config.bus, config.i2c_address, config.bus_frequency)
 {
 	set_external(config.external);
@@ -72,46 +72,46 @@ I2C::I2C(const I2CSPIDriverConfig &config)
 
 I2C::~I2C()
 {
-	if (_fd >= 0) {
+	اگر (_fd >= 0) {
 		::close(_fd);
 		_fd = -1;
 	}
 }
 
-int
+صحیح
 I2C::init()
 {
-	int ret = PX4_ERROR;
+	صحیح ret = PX4_ERROR;
 
-	if (_fd >= 0) {
-		return PX4_OK;
+	اگر (_fd >= 0) {
+		بازگشت PX4_OK;
 	}
 
 	// Open the actual I2C device
-	char dev_path[16] {};
-	snprintf(dev_path, sizeof(dev_path), "/dev/i2c-%i", get_device_bus());
+	نویسه dev_path[16] {};
+	snprintf(dev_path, اندازه(dev_path), "/dev/i2c-%i", get_device_bus());
 	_fd = ::open(dev_path, O_RDWR);
 
-	if (_fd < 0) {
+	اگر (_fd < 0) {
 		DEVICE_DEBUG("failed to init I2C");
 		ret = -ENOENT;
-		goto out;
+		برو out;
 	}
 
 	// call the probe function to check whether the device is present
 	ret = probe();
 
-	if (ret != OK) {
+	اگر (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		goto out;
+		برو out;
 	}
 
 	// do base class init, which will create device node, etc
 	ret = CDev::init();
 
-	if (ret != OK) {
+	اگر (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		goto out;
+		برو out;
 	}
 
 	// tell the world where we are
@@ -119,32 +119,32 @@ I2C::init()
 
 out:
 
-	if ((ret != OK) && !(_fd < 0)) {
+	اگر ((ret != OK) && !(_fd < 0)) {
 		::close(_fd);
 		_fd = -1;
 	}
 
-	return ret;
+	بازگشت ret;
 }
 
-int
-I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
+صحیح
+I2C::transfer(ثابت uint8_t *send, ثابت unsigned send_len, uint8_t *recv, ثابت unsigned recv_len)
 {
-	int ret = PX4_ERROR;
-	unsigned retry_count = 0;
+	صحیح ret = PX4_ERROR;
+	unsigned retry_شمار = 0;
 
-	if (_fd < 0) {
+	اگر (_fd < 0) {
 		PX4_ERR("I2C device not opened");
-		return PX4_ERROR;
+		بازگشت PX4_ERROR;
 	}
 
-	do {
+	انجامبده {
 		DEVICE_DEBUG("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
 		unsigned msgs = 0;
-		struct i2c_msg msgv[2] {};
+		ساختار i2c_پیام msgv[2] {};
 
-		if (send_len > 0) {
+		اگر (send_len > 0) {
 			msgv[msgs].addr = get_device_address();
 			msgv[msgs].flags = 0;
 			msgv[msgs].buf = const_cast<uint8_t *>(send);
@@ -152,7 +152,7 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 			msgs++;
 		}
 
-		if (recv_len > 0) {
+		اگر (recv_len > 0) {
 			msgv[msgs].addr = get_device_address();
 			msgv[msgs].flags = I2C_M_RD;
 			msgv[msgs].buf = recv;
@@ -160,29 +160,29 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 			msgs++;
 		}
 
-		if (msgs == 0) {
-			return -EINVAL;
+		اگر (msgs == 0) {
+			بازگشت -EINVAL;
 		}
 
 		i2c_rdwr_ioctl_data packets{};
 		packets.msgs  = msgv;
 		packets.nmsgs = msgs;
 
-		int ret_ioctl = ::ioctl(_fd, I2C_RDWR, (unsigned long)&packets);
+		صحیح ret_ioctl = ::ioctl(_fd, I2C_RDWR, (unsigned long)&packets);
 
-		if (ret_ioctl == -1) {
+		اگر (ret_ioctl == -1) {
 			DEVICE_DEBUG("I2C transfer failed");
 			ret = PX4_ERROR;
 
-		} else {
+		} وگرنه {
 			// success
 			ret = PX4_OK;
-			break;
+			بشکن;
 		}
 
-	} while (retry_count++ < _retries);
+	} وقتی (retry_شمار++ < _retries);
 
-	return ret;
+	بازگشت ret;
 }
 
 } // namespace device

@@ -37,20 +37,20 @@
  *
  * @author Mark Charlebois <charlebm@gmail.com>
  */
-#include "cdevtest_example.h"
+#شامل "cdevtest_example.h"
 
-#include <px4_platform_common/app.h>
-#include <px4_platform_common/init.h>
-#include <stdio.h>
+#شامل <px4_platform_common/app.h>
+#شامل <px4_platform_common/init.h>
+#شامل <stdio.h>
 
-int PX4_MAIN(int argc, char **argv)
+صحیح PX4_MAIN(صحیح argc, نویسه **argv)
 {
 	px4::init(argc, argv, "cdevtest");
 
 	printf("cdevtest\n");
 	CDevExample cdevtest;
-	cdevtest.main();
+	cdevtest.اصلی();
 
 	printf("goodbye\n");
-	return 0;
+	بازگشت 0;
 }

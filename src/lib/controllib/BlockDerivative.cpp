@@ -37,34 +37,34 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#شامل <math.h>
+#شامل <float.h>
 
-#include "blocks.hpp"
+#شامل "blocks.hpp"
 
-namespace control
+فضاینام control
 {
 
-float BlockDerivative::update(float input)
+اعشاری BlockDerivative::update(اعشاری درون_داد)
 {
-	float output;
+	اعشاری output;
 
-	if (_initialized) {
-		output = _lowPass.update((input - getU()) / getDt());
+	اگر (_initialized) {
+		output = کم_Pass.update((درون_داد - getU()) / getDt());
 
-	} else {
+	} وگرنه {
 		// if this is the first call to update
 		// we have no valid derivative
 		// and so we use the assumption the
 		// input value is not changing much,
 		// which is the best we can do here.
-		_lowPass.update(0.0f);
+		کم_Pass.update(0.0f);
 		output = 0.0f;
-		_initialized = true;
+		_initialized = درست;
 	}
 
-	setU(input);
-	return output;
+	setU(درون_داد);
+	بازگشت output;
 }
 
 } // namespace control

@@ -39,63 +39,63 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <assert.h>
+#شامل <time.h>
+#شامل <stdlib.h>
+#شامل <math.h>
+#شامل <mathlib/math/test/test.hpp>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+فضاینام control
 {
-template<class Type, size_t M>
-class __EXPORT BlockStats: public Block
+template<رده Type, size_t M>
+رده __EXPORT BlockStats: عمومی Block
 {
 
-public:
+عمومی:
 // methods
 	BlockStats(SuperBlock *parent,
-		   const char *name) :
+		   ثابت نویسه *name) :
 		Block(parent, name),
 		_sum(),
 		_sumSq(),
-		_count(0)
+		شمار_3(0)
 	{}
-	virtual ~BlockStats() = default;
-	void update(const matrix::Vector<Type, M> &u)
+	مجازی ~BlockStats() = پیشفرض;
+	تهی update(ثابت matrix::Vector<Type, M> &u)
 	{
 		_sum += u;
 		_sumSq += u.emult(u);
-		_count += 1;
+		شمار_3 += 1;
 	}
-	void reset()
+	تهی reset()
 	{
 		_sum.setZero();
 		_sumSq.setZero();
-		_count = 0;
+		شمار_3 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
+	size_t get_شمار() { بازگشت شمار_3; }
+	matrix::Vector<Type, M> getMean() { بازگشت _sum / شمار_3; }
 	matrix::Vector<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		بازگشت (_sumSq - _sum.emult(_sum) / شمار_3) / شمار_3;
 	}
 	matrix::Vector<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		بازگشت getVar().sqrt();
 	}
-private:
+خصوصی:
 // attributes
 	matrix::Vector<Type, M> _sum;
 	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+	size_t شمار_3;
 };
 
 } // namespace control

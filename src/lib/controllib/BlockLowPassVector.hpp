@@ -39,56 +39,56 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
+#شامل <assert.h>
+#شامل <time.h>
+#شامل <stdlib.h>
+#شامل <math.h>
+#شامل <mathlib/math/test/test.hpp>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#شامل "block/Block.hpp"
+#شامل "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#شامل "matrix/math.hpp"
 
-namespace control
+فضاینام control
 {
 
-template<class Type, size_t M>
-class __EXPORT BlockLowPassVector: public Block
+template<رده Type, size_t M>
+رده __EXPORT Block_کم_Pass_Vector: عمومی Block
 {
-public:
+عمومی:
 // methods
-	BlockLowPassVector(SuperBlock *parent,
-			   const char *name) :
+	Block_کم_Pass_Vector(SuperBlock *parent,
+			   ثابت نویسه *name) :
 		Block(parent, name),
 		_state(),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(این, "") // only one parameter, no need to name
 	{
-		for (size_t i = 0; i < M; i++) {
+		برای (size_t i = 0; i < M; i++) {
 			_state(i) = 0.0f / 0.0f;
 		}
 	}
-	virtual ~BlockLowPassVector() = default;
-	matrix::Vector<Type, M> update(const matrix::Matrix<Type, M, 1> &input)
+	مجازی ~Block_کم_Pass_Vector() = پیشفرض;
+	matrix::Vector<Type, M> update(ثابت matrix::Matrix<Type, M, 1> &درون_داد)
 	{
-		for (size_t i = 0; i < M; i++) {
-			if (!PX4_ISFINITE(getState()(i))) {
-				setState(input);
+		برای (size_t i = 0; i < M; i++) {
+			اگر (!PX4_ISFINITE(getState()(i))) {
+				setState(درون_داد);
 			}
 		}
 
-		float b = 2 * M_PI_F * getFCut() * getDt();
-		float a = b / (1 + b);
-		setState(input * a + getState() * (1 - a));
-		return getState();
+		اعشاری b = 2 * M_PI_F * getFCut() * getDt();
+		اعشاری a = b / (1 + b);
+		setState(درون_داد * a + getState() * (1 - a));
+		بازگشت getState();
 	}
 // accessors
-	matrix::Vector<Type, M> getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(const matrix::Vector<Type, M> &state) { _state = state; }
-private:
+	matrix::Vector<Type, M> getState() { بازگشت _state; }
+	اعشاری getFCut() { بازگشت _fCut.get(); }
+	تهی setState(ثابت matrix::Vector<Type, M> &state) { _state = state; }
+خصوصی:
 // attributes
 	matrix::Vector<Type, M> _state;
 	control::BlockParamFloat _fCut;

@@ -73,14 +73,14 @@
  */
 
 #pragma once
-#include <matrix/math.hpp>
-#include <mathlib/mathlib.h>
-#include <px4_platform_common/module_params.h>
-#include <uORB/topics/pure_pursuit_status.h>
+#شامل <matrix/math.hpp>
+#شامل <mathlib/mathlib.h>
+#شامل <px4_platform_common/module_params.h>
+#شامل <uORB/topics/pure_pursuit_status.h>
 
-using namespace matrix;
+using فضاینام matrix;
 
-namespace PurePursuit
+فضاینام PurePursuit
 {
 /**
  * @brief Return bearing towards the intersection point between a circle with a radius of
@@ -99,7 +99,7 @@ namespace PurePursuit
  * @param vehicle_speed Vehicle speed [m/s].
  * @return Target bearing [rad]
  */
-float calcTargetBearing(pure_pursuit_status_s &pure_pursuit_status, float lookahead_gain, float lookahead_max,
-			float lookahead_min, const Vector2f &curr_wp_ned, const Vector2f &prev_wp_ned, const Vector2f &curr_pos_ned,
-			float vehicle_speed);
+اعشاری calcTargetBearing(pure_pursuit_status_s &pure_pursuit_status, اعشاری lookahead_gain, اعشاری lookahead_max,
+			اعشاری lookahead_min, ثابت Vector2f &curr_wp_ned, ثابت Vector2f &prev_wp_ned, ثابت Vector2f &curr_pos_ned,
+			اعشاری vehicle_speed);
 }

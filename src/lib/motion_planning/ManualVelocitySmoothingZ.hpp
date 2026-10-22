@@ -38,86 +38,86 @@
 
 #pragma once
 
-#include <motion_planning/VelocitySmoothing.hpp>
+#شامل <motion_planning/VelocitySmoothing.hpp>
 
-class ManualVelocitySmoothingZ final
+رده ManualVelocitySmoothingZ final
 {
-public:
-	ManualVelocitySmoothingZ() = default;
-	~ManualVelocitySmoothingZ() = default;
+عمومی:
+	ManualVelocitySmoothingZ() = پیشفرض;
+	~ManualVelocitySmoothingZ() = پیشفرض;
 
-	void reset(float accel, float vel, float pos);
-	void update(float dt, float velocity_target);
+	تهی reset(اعشاری accel, اعشاری vel, اعشاری pos);
+	تهی update(اعشاری dt, اعشاری velocity_target);
 
-	void setVelSpFeedback(const float fb) { _velocity_setpoint_feedback = fb; }
+	تهی setVelSpFeedback(ثابت اعشاری fb) { _velocity_setpoint_feedback = fb; }
 
-	void setMaxJerk(const float max_jerk)
+	تهی setMaxJerk(ثابت اعشاری max_jerk)
 	{
 		_trajectory.setMaxJerk(max_jerk);
 	}
-	void setMaxAccelUp(const float max_accel_up)
+	تهی setMaxAccelUp(ثابت اعشاری max_accel_up)
 	{
 		_max_accel_up = max_accel_up;
 	}
-	void setMaxAccelDown(const float max_accel_down)
+	تهی setMaxAccelDown(ثابت اعشاری max_accel_down)
 	{
 		_max_accel_down = max_accel_down;
 	}
-	void setMaxVelUp(const float max_vel_up)
+	تهی setMaxVelUp(ثابت اعشاری max_vel_up)
 	{
 		_max_vel_up = max_vel_up;
 	}
-	void setMaxVelDown(const float max_vel_down)
+	تهی setMaxVelDown(ثابت اعشاری max_vel_down)
 	{
 		_max_vel_down = max_vel_down;
 	}
 
-	float getCurrentJerk() const { return _state.j; }
-	float getCurrentAcceleration() const { return _state.a; }
-	void setCurrentVelocity(const float vel)
+	اعشاری getCurrentJerk() ثابت { بازگشت _state.j; }
+	اعشاری getCurrentAcceleration() ثابت { بازگشت _state.a; }
+	تهی setCurrentVelocity(ثابت اعشاری vel)
 	{
 		_state.v = vel;
 		_trajectory.setCurrentVelocity(vel);
 	}
-	float getCurrentVelocity() const { return _state.v; }
-	void setCurrentPosition(const float pos)
+	اعشاری getCurrentVelocity() ثابت { بازگشت _state.v; }
+	تهی setCurrentPosition(ثابت اعشاری pos)
 	{
 		_state.x = pos;
 		_trajectory.setCurrentPosition(pos);
 		_position_estimate = pos;
 
-		if (_position_lock_active) {
+		اگر (_position_lock_active) {
 			_position_setpoint_locked = pos;
 		}
 	}
-	float getCurrentPosition() const { return _position_setpoint_locked; }
-	void setCurrentPositionEstimate(float pos) { _position_estimate = pos; }
+	اعشاری getCurrentPosition() ثابت { بازگشت _position_setpoint_locked; }
+	تهی setCurrentPositionEstimate(اعشاری pos) { _position_estimate = pos; }
 
-private:
-	void resetPositionLock();
-	void updateTrajectories(float dt);
-	void updateTrajConstraints(float vel_target);
-	void checkPositionLock(float velocity_target);
-	void updateTrajDurations(float velocity_target);
+خصوصی:
+	تهی resetPositionLock();
+	تهی updateTrajectories(اعشاری dt);
+	تهی updateTrajConstraints(اعشاری vel_target);
+	تهی checkPositionLock(اعشاری velocity_target);
+	تهی updateTrajDurations(اعشاری velocity_target);
 
 	VelocitySmoothing _trajectory; ///< Trajectory in z direction
 
-	bool _position_lock_active{false};
+	منطقی _position_lock_active{نادرست};
 
-	float _position_setpoint_locked{};
+	اعشاری _position_setpoint_locked{};
 
-	float _velocity_setpoint_feedback{};
-	float _position_estimate{};
+	اعشاری _velocity_setpoint_feedback{};
+	اعشاری _position_estimate{};
 
-	struct {
-		float j;
-		float a;
-		float v;
-		float x;
+	ساختار {
+		اعشاری j;
+		اعشاری a;
+		اعشاری v;
+		اعشاری x;
 	} _state{};
 
-	float _max_accel_up{0.f};
-	float _max_accel_down{0.f};
-	float _max_vel_up{0.f};
-	float _max_vel_down{0.f};
+	اعشاری _max_accel_up{0.f};
+	اعشاری _max_accel_down{0.f};
+	اعشاری _max_vel_up{0.f};
+	اعشاری _max_vel_down{0.f};
 };

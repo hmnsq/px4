@@ -39,15 +39,15 @@
  */
 
 #pragma once
-#include <lib/slew_rate/SlewRate.hpp>
-#include <lib/slew_rate/SlewRateYaw.hpp>
-#include <lib/pid/PID.hpp>
-#include <matrix/matrix/math.hpp>
-#include <uORB/topics/position_setpoint_triplet.h>
-#include <lib/geo/geo.h>
+#شامل <lib/slew_rate/SlewRate.hpp>
+#شامل <lib/slew_rate/SlewRateYaw.hpp>
+#شامل <lib/pid/PID.hpp>
+#شامل <matrix/matrix/math.hpp>
+#شامل <uORB/topics/position_setpoint_triplet.h>
+#شامل <lib/geo/geo.h>
 
-using namespace matrix;
-namespace RoverControl
+using فضاینام matrix;
+فضاینام RoverControl
 {
 /**
  * Applies acceleration/deceleration slew rate to a throttle setpoint.
@@ -60,8 +60,8 @@ namespace RoverControl
  * @param dt Time since last update [s]
  * @return Motor Setpoint [-1, 1]
  */
-float throttleControl(SlewRate<float> &motor_setpoint, float throttle_setpoint, float current_motor_setpoint,
-		      float max_accel, float max_decel, float max_thr_spd, float dt);
+اعشاری throttleControl(SlewRate<اعشاری> &motor_setpoint, اعشاری throttle_setpoint, اعشاری current_motor_setpoint,
+		      اعشاری max_accel, اعشاری max_decel, اعشاری max_thr_spd, اعشاری dt);
 
 /**
  * Applies yaw rate slew rate to a yaw setpoint and calculates the necessary yaw rate setpoint
@@ -74,8 +74,8 @@ float throttleControl(SlewRate<float> &motor_setpoint, float throttle_setpoint, 
  * @param dt Time since last update [s]
  * @return Yaw rate setpoint [rad/s]
  */
-float attitudeControl(SlewRateYaw<float> &adjusted_yaw_setpoint, PID &pid_yaw, float yaw_slew_rate,
-		      float vehicle_yaw, float yaw_setpoint, float dt);
+اعشاری attitudeControl(SlewRateYaw<اعشاری> &adjusted_yaw_setpoint, PID &pid_yaw, اعشاری yaw_slew_rate,
+		      اعشاری vehicle_yaw, اعشاری yaw_setpoint, اعشاری dt);
 /**
  * Applies acceleration/deceleration slew rate to a speed setpoint and calculates the necessary throttle setpoint
  * using a feed forward term and PID controller.
@@ -89,8 +89,8 @@ float attitudeControl(SlewRateYaw<float> &adjusted_yaw_setpoint, PID &pid_yaw, f
  * @param dt Time since last update [s]
  * @return Throttle setpoint [-1, 1]
  */
-float speedControl(SlewRate<float> &speed_with_rate_limit, PID &pid_speed, float speed_setpoint,
-		   float vehicle_speed, float max_accel, float max_decel, float max_thr_speed, float dt);
+اعشاری speedControl(SlewRate<اعشاری> &speed_with_rate_limit, PID &pid_speed, اعشاری speed_setpoint,
+		   اعشاری vehicle_speed, اعشاری max_accel, اعشاری max_decel, اعشاری max_thr_speed, اعشاری dt);
 
 /**
  * Applies yaw acceleration slew rate to a yaw rate setpoint and calculates the necessary speed diff setpoint
@@ -108,10 +108,10 @@ float speedControl(SlewRate<float> &speed_with_rate_limit, PID &pid_speed, float
  * @param dt Time since last update [s].
  * @return Normalized speed difference setpoint [-1, 1].
  */
-float rateControl(SlewRate<float> &adjusted_yaw_rate_setpoint, PID &pid_yaw_rate,
-		  float yaw_rate_setpoint, float vehicle_yaw_rate, float max_thr_speed, float yaw_rate_corr, float max_yaw_accel,
-		  float max_yaw_decel,
-		  float wheel_track, float dt);
+اعشاری rateControl(SlewRate<اعشاری> &adjusted_yaw_rate_setpoint, PID &pid_yaw_rate,
+		  اعشاری yaw_rate_setpoint, اعشاری vehicle_yaw_rate, اعشاری max_thr_speed, اعشاری yaw_rate_corr, اعشاری max_yaw_accel,
+		  اعشاری max_yaw_decel,
+		  اعشاری wheel_track, اعشاری dt);
 
 /**
  * Projects positionSetpointTriplet waypoints from global to ned frame.
@@ -122,7 +122,7 @@ float rateControl(SlewRate<float> &adjusted_yaw_rate_setpoint, PID &pid_yaw_rate
  * @param curr_pos Current position of the rover in global frame
  * @param global_ned_proj_ref Global to ned projection
  */
-void globalToLocalSetpointTriplet(Vector2f &curr_wp_ned, Vector2f &prev_wp_ned, Vector2f &next_wp_ned,
+تهی globalToLocalSetpointTriplet(Vector2f &curr_wp_ned, Vector2f &prev_wp_ned, Vector2f &next_wp_ned,
 				  position_setpoint_triplet_s position_setpoint_triplet, Vector2f &curr_pos_ned,
 				  MapProjection &global_ned_proj_ref);
 
@@ -133,6 +133,6 @@ void globalToLocalSetpointTriplet(Vector2f &curr_wp_ned, Vector2f &prev_wp_ned, 
  * @param next_wp_ned Next waypoint in NED frame
  * @return Waypoint transition angle [rad]
  */
-float calcWaypointTransitionAngle(Vector2f &prev_wp_ned, Vector2f &curr_wp_ned, Vector2f &next_wp_ned);
+اعشاری calcWaypointTransitionAngle(Vector2f &prev_wp_ned, Vector2f &curr_wp_ned, Vector2f &next_wp_ned);
 
 }

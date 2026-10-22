@@ -57,12 +57,12 @@
 
 #pragma once
 
-#include <matrix/matrix/math.hpp>
+#شامل <matrix/matrix/math.hpp>
 
 template<size_t N, size_t M, size_t D>
-class ArxRls final
+رده ArxRls final
 {
-public:
+عمومی:
 	ArxRls()
 	{
 		static_assert(N >= M, "The transfer function needs to be proper");
@@ -70,26 +70,26 @@ public:
 		reset();
 	}
 
-	~ArxRls() = default;
+	~ArxRls() = پیشفرض;
 
-	void setForgettingFactor(float time_constant, float dt) { _lambda = 1.f - dt / time_constant; }
-	void setForgettingFactor(float lambda) { _lambda = lambda; }
+	تهی setForgettingFactor(اعشاری time_constant, اعشاری dt) { _lambda = 1.f - dt / time_constant; }
+	تهی setForgettingFactor(اعشاری lambda) { _lambda = lambda; }
 
 	/*
 	 * return the vector of estimated parameters
 	 * [a_1 .. a_n b_0 .. b_m]'
 	 */
-	const matrix::Vector < float, N + M + 1 > &getCoefficients() const { return _theta_hat; }
-	const matrix::Vector < float, N + M + 1 > getVariances() const { return _P.diag(); }
-	float getInnovation() const { return _innovation; }
-	const matrix::Vector < float, N + M + 1 > &getDiffEstimate() const { return _diff_theta_hat; }
+	ثابت matrix::Vector < اعشاری, N + M + 1 > &getCoefficients() ثابت { بازگشت _theta_hat; }
+	ثابت matrix::Vector < اعشاری, N + M + 1 > getVariances() ثابت { بازگشت _P.diag(); }
+	اعشاری getInnovation() ثابت { بازگشت _innovation; }
+	ثابت matrix::Vector < اعشاری, N + M + 1 > &getDiffEstimate() ثابت { بازگشت _diff_theta_hat; }
 
-	void reset(const matrix::Vector < float, N + M + 1 > &theta_init = {})
+	تهی reset(ثابت matrix::Vector < اعشاری, N + M + 1 > &theta_init = {})
 	{
 		/* _P.uncorrelateCovarianceSetVariance<N + M + 1>(0, 10e3f); // does not work */
 		_P.setZero();
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
+		برای (size_t i = 0; i < (N + M + 1); i++) {
 			_P(i, i) = 10e3f;
 		}
 
@@ -97,11 +97,11 @@ public:
 
 		_theta_hat = theta_init;
 
-		for (size_t i = 0; i < M + D + 1; i++) {
+		برای (size_t i = 0; i < M + D + 1; i++) {
 			_u[i] = 0.f;
 		}
 
-		for (size_t i = 0; i < N + 1; i++) {
+		برای (size_t i = 0; i < N + 1; i++) {
 			_y[i] = 0.f;
 		}
 
@@ -109,100 +109,100 @@ public:
 		_innovation = 0.f;
 	}
 
-	void update(float u, float y)
+	تهی update(اعشاری u, اعشاری y)
 	{
-		const matrix::Vector < float, N + M + 1 > theta_prev = _theta_hat;
+		ثابت matrix::Vector < اعشاری, N + M + 1 > theta_prev = _theta_hat;
 
-		addInputOutput(u, y);
+		add_درون_داد_Output(u, y);
 
-		if (!isBufferFull()) {
+		اگر (!isBufferFull()) {
 			// Do not start to update the RLS algorithm when the
 			// buffer still contains zeros
-			return;
+			بازگشت;
 		}
 
-		const matrix::Vector < float, N + M + 1 > phi = constructDesignVector();
-		const matrix::Matrix < float, 1, N + M + 1 > phi_t = phi.transpose();
+		ثابت matrix::Vector < اعشاری, N + M + 1 > phi = constructDesignVector();
+		ثابت matrix::Matrix < اعشاری, 1, N + M + 1 > phi_t = phi.transpose();
 
 		_P = (_P - _P * phi * phi_t * _P / (_lambda + (phi_t * _P * phi)(0, 0))) / _lambda;
 		_innovation = _y[N] - (phi_t * _theta_hat)(0, 0);
 		_theta_hat = _theta_hat + _P * phi * _innovation;
 
-		for (size_t i = 0; i < N + M + 1; i++) {
+		برای (size_t i = 0; i < N + M + 1; i++) {
 			_diff_theta_hat(i) = fabsf(_theta_hat(i) - theta_prev(i));
 		}
 
 		/* fixCovarianceErrors(); // TODO: this could help against ill-conditioned matrix but needs more testing*/
 	}
 
-private:
-	void addInputOutput(float u, float y)
+خصوصی:
+	تهی add_درون_داد_Output(اعشاری u, اعشاری y)
 	{
 		shiftRegisters();
 		_u[M + D] = u;
 		_y[N] = y;
 
-		if (!isBufferFull()) {
+		اگر (!isBufferFull()) {
 			_nb_samples++;
 		}
 	}
 
-	void shiftRegisters()
+	تهی shiftRegisters()
 	{
-		for (size_t i = 0; i < N; i++) {
+		برای (size_t i = 0; i < N; i++) {
 			_y[i] = _y[i + 1];
 		}
 
-		for (size_t i = 0; i < (M + D); i++) {
+		برای (size_t i = 0; i < (M + D); i++) {
 			_u[i] = _u[i + 1];
 		}
 	}
 
-	bool isBufferFull() const { return _nb_samples > (M + N + D); }
+	منطقی isBufferFull() ثابت { بازگشت _nb_samples > (M + N + D); }
 
-	matrix::Vector < float, N + M + 1 > constructDesignVector() const
+	matrix::Vector < اعشاری, N + M + 1 > constructDesignVector() ثابت
 	{
-		matrix::Vector < float, N + M + 1 > phi;
+		matrix::Vector < اعشاری, N + M + 1 > phi;
 
-		for (size_t i = 0; i < N; i++) {
+		برای (size_t i = 0; i < N; i++) {
 			phi(i) = -_y[N - i - 1];
 		}
 
-		int j = 0;
+		صحیح j = 0;
 
-		for (size_t i = N; i < (N + M + 1); i++) {
+		برای (size_t i = N; i < (N + M + 1); i++) {
 			phi(i) = _u[M - j];
 			j++;
 		}
 
-		return phi;
+		بازگشت phi;
 	}
 
-	void fixCovarianceErrors()
+	تهی fixCovarianceErrors()
 	{
-		float max_var = 0.f;
+		اعشاری max_var = 0.f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) > max_var) {
+		برای (size_t i = 0; i < (N + M + 1); i++) {
+			اگر (_P(i, i) > max_var) {
 				max_var = _P(i, i);
 			}
 		}
 
-		const float min_var_allowed = max_var * 0.1f;
+		ثابت اعشاری min_var_allowed = max_var * 0.1f;
 
-		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) < min_var_allowed) {
+		برای (size_t i = 0; i < (N + M + 1); i++) {
+			اگر (_P(i, i) < min_var_allowed) {
 				_P(i, i) = min_var_allowed;
 			}
 		}
 	}
 
-	matrix::SquareMatrix < float, N + M + 1 > _P;
-	matrix::Vector < float, N + M + 1 > _theta_hat;
-	matrix::Vector < float, N + M + 1 > _diff_theta_hat;
-	float _innovation{};
-	float _u[M + D + 1] {};
-	float _y[N + 1] {};
+	matrix::SquareMatrix < اعشاری, N + M + 1 > _P;
+	matrix::Vector < اعشاری, N + M + 1 > _theta_hat;
+	matrix::Vector < اعشاری, N + M + 1 > _diff_theta_hat;
+	اعشاری _innovation{};
+	اعشاری _u[M + D + 1] {};
+	اعشاری _y[N + 1] {};
 	unsigned _nb_samples{0};
-	float _lambda{1.f};
+	اعشاری _lambda{1.f};
 };

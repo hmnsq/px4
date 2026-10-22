@@ -51,65 +51,65 @@
  * CCASSERT(predicate) Will generate a compile time error it the
  * predicate is false
  */
-#include <assert.h>
+#شامل <assert.h>
 
 #ifndef _PX4_MACROS_H
 #define _PX4_MACROS_H
 
 
-#if !defined(arraySize)
-#define arraySize(a) (sizeof((a))/sizeof((a[0])))
+#اگر !defined(arraySize)
+#define arraySize(a) (اندازه((a))/اندازه((a[0])))
 #endif
 
-#if !defined(NO_BLOAT)
-#if defined(__BASE_FILE__)
+#اگر !defined(NO_BLOAT)
+#اگر defined(__BASE_FILE__)
 #define _FILE_NAME_ __BASE_FILE__
-#else
+#وگرنه
 #define _FILE_NAME_ __FILE__
 #endif
-#else
+#وگرنه
 #define _FILE_NAME_ ""
 #endif
 
-#if !defined(INVALID_CASE)
+#اگر !defined(INVALID_CASE)
 #define INVALID_CASE(c) printf("Invalid Case %d, %s:%d",(c),__BASE_FILE__,__LINE__) /* todo use PANIC */
 #endif
 
-#if !defined(UNUSED)
-#define UNUSED(var) (void)(var)
+#اگر !defined(UNUSED)
+#define UNUSED(var) (تهی)(var)
 #endif
 
-#if !defined(CAT)
-#if !defined(_CAT)
+#اگر !defined(CAT)
+#اگر !defined(_CAT)
 #define _CAT(a, b) a ## b
 #endif
 #define CAT(a, b) _CAT(a, b)
 #endif
 
-#if !defined(FREEZE_STR)
+#اگر !defined(FREEZE_STR)
 #  define FREEZE_STR(s) #s
 #endif
 
-#if !defined(STRINGIFY)
+#اگر !defined(STRINGIFY)
 #define STRINGIFY(s) FREEZE_STR(s)
 #endif
 
-#if !defined(CCASSERT)
-#if defined(static_assert)
+#اگر !defined(CCASSERT)
+#اگر defined(static_assert)
 #		define CCASSERT(predicate) static_assert(predicate, STRINGIFY(predicate))
-#	else
-#		define CCASSERT(predicate) _x_CCASSERT_LINE(predicate, __LINE__)
-#		if !defined(_x_CCASSERT_LINE)
-#			define _x_CCASSERT_LINE(predicate, line) typedef char CAT(constraint_violated_on_line_,line)[2*((predicate)!=0)-1] __attribute__ ((unused)) ;
+#	وگرنه
+#		define CCASSERT(predicate) x_CCASSERT_سطر(predicate, __LINE__)
+#		اگر !defined(x_CCASSERT_سطر)
+#			define x_CCASSERT_سطر(predicate, سطر) تعریفنوع نویسه CAT(constraint_violated_on_سطر,سطر)[2*((predicate)!=0)-1] __attribute__ ((unused)) ;
 #		endif
 #	endif
 #endif
 
-#if !defined(DO_PRAGMA)
+#اگر !defined(DO_PRAGMA)
 #  define DO_PRAGMA(x) _Pragma (#x)
 #endif
 
-#if !defined(TODO)
+#اگر !defined(TODO)
 #  define TODO(x) DO_PRAGMA(message ("TODO - " #x))
 #endif
 

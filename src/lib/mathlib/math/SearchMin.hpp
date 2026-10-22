@@ -40,32 +40,32 @@
 
 #pragma once
 
-namespace math
+فضاینام math
 {
-static constexpr double GOLDEN_RATIO = 1.6180339887; //(sqrt(5)+1)/2
+ایستا constexpr دوگانه GOLDEN_RATIO = 1.6180339887; //(sqrt(5)+1)/2
 
 // Type-safe abs
 template<typename _Tp>
 _Tp abs_t(_Tp val)
 {
-	return ((val > (_Tp)0) ? val : -val);
+	بازگشت ((val > (_Tp)0) ? val : -val);
 }
 
 // golden section search to find extremeum for function with minimum
 template<typename _Tp>
-inline const _Tp goldensection(const _Tp &arg1, const _Tp &arg2, _Tp(*fun)(_Tp), const _Tp &tol)
+درونخطی ثابت _Tp goldensection(ثابت _Tp &arg1, ثابت _Tp &arg2, _Tp(*fun)(_Tp), ثابت _Tp &tol)
 {
 	_Tp a = arg1;
 	_Tp b = arg2;
 	_Tp c = b - (b - a) / GOLDEN_RATIO;
 	_Tp d = a + (b - a) / GOLDEN_RATIO;
 
-	while (abs_t(c - d) > tol) {
+	وقتی (abs_t(c - d) > tol) {
 
-		if (fun(c) < fun(d)) {
+		اگر (fun(c) < fun(d)) {
 			b = d;
 
-		} else {
+		} وگرنه {
 			a = c;
 		}
 
@@ -74,6 +74,6 @@ inline const _Tp goldensection(const _Tp &arg1, const _Tp &arg2, _Tp(*fun)(_Tp),
 
 	}
 
-	return ((b + a) / (_Tp)2);
+	بازگشت ((b + a) / (_Tp)2);
 }
 }

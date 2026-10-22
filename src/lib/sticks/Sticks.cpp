@@ -35,21 +35,21 @@
  * @file Sticks.cpp
  */
 
-#include "Sticks.hpp"
+#شامل "Sticks.hpp"
 
-using namespace time_literals;
-using namespace matrix;
+using فضاینام time_literals;
+using فضاینام matrix;
 
 Sticks::Sticks(ModuleParams *parent) :
 	ModuleParams(parent)
 {}
 
-bool Sticks::checkAndUpdateStickInputs()
+منطقی Sticks::checkAndUpdateStickInputs()
 {
 	// Sticks are rescaled linearly and exponentially to [-1,1]
 	manual_control_setpoint_s manual_control_setpoint;
 
-	if (_manual_control_setpoint_sub.update(&manual_control_setpoint)) {
+	اگر (_manual_control_setpoint_sub.update(&manual_control_setpoint)) {
 		_positions(0) = manual_control_setpoint.roll;
 		_positions(1) = manual_control_setpoint.pitch;
 		_positions(2) = manual_control_setpoint.yaw;
@@ -63,42 +63,42 @@ bool Sticks::checkAndUpdateStickInputs()
 		_aux_positions(5) = manual_control_setpoint.aux6;
 
 		// valid stick inputs are required
-		_input_available = manual_control_setpoint.valid && _positions.isAllFinite();
+		درون_داد_available = manual_control_setpoint.valid && _positions.isAllFinite();
 
-	} else {
+	} وگرنه {
 		failsafe_flags_s failsafe_flags;
 
-		if (_failsafe_flags_sub.update(&failsafe_flags)) {
-			if (failsafe_flags.manual_control_signal_lost) {
-				_input_available = false;
+		اگر (_failsafe_flags_sub.update(&failsafe_flags)) {
+			اگر (failsafe_flags.manual_control_signal_lost) {
+				درون_داد_available = نادرست;
 			}
 		}
 	}
 
-	if (!_input_available) {
+	اگر (!درون_داد_available) {
 		// Timeout: set all sticks to zero
 		_positions.zero();
 	}
 
-	return _input_available;
+	بازگشت درون_داد_available;
 }
 
-float Sticks::expoDeadzone(float value, float expo, float deadzone)
+اعشاری Sticks::expoDeadzone(اعشاری value, اعشاری expo, اعشاری deadzone)
 {
-	return math::expo(math::deadzone(value, deadzone), expo);
+	بازگشت math::expo(math::deadzone(value, deadzone), expo);
 }
 
-void Sticks::limitStickUnitLengthXY(Vector2f &v)
+تهی Sticks::limitStickUnitLengthXY(Vector2f &v)
 {
-	const float vl = v.length();
+	ثابت اعشاری vl = v.length();
 
-	if (vl > 1.0f) {
+	اگر (vl > 1.0f) {
 		v /= vl;
 	}
 }
 
-void Sticks::rotateIntoHeadingFrameXY(Vector2f &v, const float yaw, const float yaw_setpoint)
+تهی Sticks::rotateIntoHeadingFrameXY(Vector2f &v, ثابت اعشاری yaw, ثابت اعشاری yaw_setpoint)
 {
-	const float yaw_rotate = PX4_ISFINITE(yaw_setpoint) ? yaw_setpoint : yaw;
+	ثابت اعشاری yaw_rotate = PX4_ISFINITE(yaw_setpoint) ? yaw_setpoint : yaw;
 	v = Dcm2f(yaw_rotate) * v;
 }

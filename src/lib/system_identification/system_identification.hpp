@@ -39,64 +39,64 @@
 
 #pragma once
 
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
-#include <matrix/matrix/math.hpp>
-#include <mathlib/mathlib.h>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
-#include <px4_platform_common/defines.h>
+#شامل <lib/mathlib/math/filter/AlphaFilter.hpp>
+#شامل <matrix/matrix/math.hpp>
+#شامل <mathlib/mathlib.h>
+#شامل <mathlib/math/filter/LowPassFilter2p.hpp>
+#شامل <px4_platform_common/defines.h>
 
-#include "arx_rls.hpp"
+#شامل "arx_rls.hpp"
 
-class SystemIdentification final
+رده SystemIdentification final
 {
-public:
-	SystemIdentification() = default;
-	~SystemIdentification() = default;
+عمومی:
+	SystemIdentification() = پیشفرض;
+	~SystemIdentification() = پیشفرض;
 
-	void reset(const matrix::Vector<float, 5> &id_state_init = {});
-	void update(float u, float y); // update filters and model
-	void update(); // update model only (to be called after updateFilters)
-	void updateFilters(float u, float y);
-	bool areFiltersInitialized() const { return _are_filters_initialized; }
-	void updateFitness();
-	const matrix::Vector<float, 5> &getCoefficients() const { return _rls.getCoefficients(); }
-	const matrix::Vector<float, 5> getVariances() const { return _rls.getVariances(); }
-	const matrix::Vector<float, 5> &getDiffEstimate() const { return _rls.getDiffEstimate(); }
-	float getFitness() const { return _fitness_lpf.getState(); }
-	float getInnovation() const { return _rls.getInnovation(); }
+	تهی reset(ثابت matrix::Vector<اعشاری, 5> &id_state_init = {});
+	تهی update(اعشاری u, اعشاری y); // update filters and model
+	تهی update(); // update model only (to be called after updateFilters)
+	تهی updateFilters(اعشاری u, اعشاری y);
+	منطقی areFiltersInitialized() ثابت { بازگشت _are_filters_initialized; }
+	تهی updateFitness();
+	ثابت matrix::Vector<اعشاری, 5> &getCoefficients() ثابت { بازگشت _rls.getCoefficients(); }
+	ثابت matrix::Vector<اعشاری, 5> getVariances() ثابت { بازگشت _rls.getVariances(); }
+	ثابت matrix::Vector<اعشاری, 5> &getDiffEstimate() ثابت { بازگشت _rls.getDiffEstimate(); }
+	اعشاری getFitness() ثابت { بازگشت _fitness_lpf.getState(); }
+	اعشاری getInnovation() ثابت { بازگشت _rls.getInnovation(); }
 
-	void setLpfCutoffFrequency(float sample_freq, float cutoff)
+	تهی setLpfCutoffFrequency(اعشاری sample_freq, اعشاری cutoff)
 	{
 		_u_lpf.set_cutoff_frequency(sample_freq, cutoff);
 		_y_lpf.set_cutoff_frequency(sample_freq, cutoff);
 	}
-	void setHpfCutoffFrequency(float sample_freq, float cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
+	تهی setHpfCutoffFrequency(اعشاری sample_freq, اعشاری cutoff) { _alpha_hpf = sample_freq / (sample_freq + 2.f * M_PI_F * cutoff); }
 
-	void setForgettingFactor(float time_constant, float dt) { _rls.setForgettingFactor(time_constant, dt); }
-	void setFitnessLpfTimeConstant(float time_constant, float dt)
+	تهی setForgettingFactor(اعشاری time_constant, اعشاری dt) { _rls.setForgettingFactor(time_constant, dt); }
+	تهی setFitnessLpfTimeConstant(اعشاری time_constant, اعشاری dt)
 	{
 		_fitness_lpf.setParameters(dt, time_constant);
 		_dt = dt;
 	}
 
-	float getFilteredInputData() const { return _u_hpf; }
-	float getFilteredOutputData() const { return _y_hpf; }
+	اعشاری get_Filtered_درون_داد_Data() ثابت { بازگشت _u_hpf; }
+	اعشاری getFilteredOutputData() ثابت { بازگشت _y_hpf; }
 
-private:
+خصوصی:
 	ArxRls<2, 2, 1> _rls;
-	math::LowPassFilter2p<float> _u_lpf{400.f, 30.f};
-	math::LowPassFilter2p<float> _y_lpf{400.f, 30.f};
+	math::کم_Pass_Filter2p<اعشاری> _u_lpf{400.f, 30.f};
+	math::کم_Pass_Filter2p<اعشاری> _y_lpf{400.f, 30.f};
 
 	//TODO: replace by HighPassFilter class
-	float _alpha_hpf{0.f};
-	float _u_hpf{0.f};
-	float _y_hpf{0.f};
+	اعشاری _alpha_hpf{0.f};
+	اعشاری _u_hpf{0.f};
+	اعشاری _y_hpf{0.f};
 
-	float _u_prev{0.f};
-	float _y_prev{0.f};
+	اعشاری _u_prev{0.f};
+	اعشاری _y_prev{0.f};
 
-	bool _are_filters_initialized{false};
+	منطقی _are_filters_initialized{نادرست};
 
-	AlphaFilter<float> _fitness_lpf;
-	float _dt{0.1f};
+	AlphaFilter<اعشاری> _fitness_lpf;
+	اعشاری _dt{0.1f};
 };

@@ -39,13 +39,13 @@
  * @author Lorenz Meier <lm@inf.ethz.ch>
  */
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <cmath>
-#include "st24.h"
-#include "common_rc.h"
+#شامل <stdbool.h>
+#شامل <stdio.h>
+#شامل <cmath>
+#شامل "st24.h"
+#شامل "common_rc.h"
 
-const char *decode_states[] = {"UNSYNCED",
+ثابت نویسه *decode_states[] = {"UNSYNCED",
 			       "GOT_STX1",
 			       "GOT_STX2",
 			       "GOT_LEN",
@@ -62,29 +62,29 @@ const char *decode_states[] = {"UNSYNCED",
 
 /* pre-calculate the floating point stuff as far as possible at compile time */
 #define ST24_SCALE_FACTOR ((ST24_TARGET_MAX - ST24_TARGET_MIN) / (ST24_RANGE_MAX - ST24_RANGE_MIN))
-#define ST24_SCALE_OFFSET (int)(ST24_TARGET_MIN - (ST24_SCALE_FACTOR * ST24_RANGE_MIN + 0.5f))
+#define ST24_SCALE_OFFSET (صحیح)(ST24_TARGET_MIN - (ST24_SCALE_FACTOR * ST24_RANGE_MIN + 0.5f))
 
-static enum ST24_DECODE_STATE _decode_state = ST24_DECODE_STATE_UNSYNCED;
-static uint8_t _rxlen;
+ایستا شمارش ST24_DECODE_STATE _decode_state = ST24_DECODE_STATE_UNSYNCED;
+ایستا uint8_t _rxlen;
 
-static ReceiverFcPacket &_rxpacket = rc_decode_buf._strxpacket;
+ایستا ReceiverFcPacket &_rxpacket = rc_decode_buf._strxpacket;
 
 uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len)
 {
 	uint8_t i, crc ;
 	crc = 0;
 
-	while (len--) {
-		for (i = 0x80; i != 0; i >>= 1) {
-			if ((crc & 0x80) != 0) {
+	وقتی (len--) {
+		برای (i = 0x80; i != 0; i >>= 1) {
+			اگر ((crc & 0x80) != 0) {
 				crc <<= 1;
 				crc ^= 0x07;
 
-			} else {
+			} وگرنه {
 				crc <<= 1;
 			}
 
-			if ((*ptr & i) != 0) {
+			اگر ((*ptr & i) != 0) {
 				crc ^= 0x07;
 			}
 		}
@@ -92,93 +92,93 @@ uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len)
 		ptr++;
 	}
 
-	return (crc);
+	بازگشت (crc);
 }
 
 
-int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *channel_count, uint16_t *channels,
-		uint16_t max_chan_count)
+صحیح st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_شمار, uint16_t *channel_شمار, uint16_t *channels,
+		uint16_t max_chan_شمار)
 {
-	int ret = 1;
+	صحیح ret = 1;
 
-	switch (_decode_state) {
-	case ST24_DECODE_STATE_UNSYNCED:
-		if (byte == ST24_STX1) {
+	انتخاب (_decode_state) {
+	حالت ST24_DECODE_STATE_UNSYNCED:
+		اگر (byte == ST24_STX1) {
 			_decode_state = ST24_DECODE_STATE_GOT_STX1;
 
-		} else {
+		} وگرنه {
 			ret = 3;
 		}
 
-		break;
+		بشکن;
 
-	case ST24_DECODE_STATE_GOT_STX1:
-		if (byte == ST24_STX2) {
+	حالت ST24_DECODE_STATE_GOT_STX1:
+		اگر (byte == ST24_STX2) {
 			_decode_state = ST24_DECODE_STATE_GOT_STX2;
 
-		} else {
+		} وگرنه {
 			_decode_state = ST24_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		بشکن;
 
-	case ST24_DECODE_STATE_GOT_STX2:
+	حالت ST24_DECODE_STATE_GOT_STX2:
 
 		/* ensure no data overflow failure or hack is possible */
-		if ((unsigned)byte >= sizeof(_rxpacket.type) + sizeof(_rxpacket.crc8)
-		    && (unsigned)byte <= sizeof(_rxpacket.type) + sizeof(_rxpacket.st24_data) + sizeof(_rxpacket.crc8)) {
+		اگر ((unsigned)byte >= اندازه(_rxpacket.type) + اندازه(_rxpacket.crc8)
+		    && (unsigned)byte <= اندازه(_rxpacket.type) + اندازه(_rxpacket.st24_data) + اندازه(_rxpacket.crc8)) {
 			_rxpacket.length = byte;
 			_rxlen = 0;
 			_decode_state = ST24_DECODE_STATE_GOT_LEN;
 
-		} else {
+		} وگرنه {
 			_decode_state = ST24_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		بشکن;
 
-	case ST24_DECODE_STATE_GOT_LEN:
+	حالت ST24_DECODE_STATE_GOT_LEN:
 		_rxpacket.type = byte;
 		_rxlen++;
 		_decode_state = (_rxlen == (_rxpacket.length - 1)) ? ST24_DECODE_STATE_GOT_DATA : ST24_DECODE_STATE_GOT_TYPE;
-		break;
+		بشکن;
 
-	case ST24_DECODE_STATE_GOT_TYPE:
+	حالت ST24_DECODE_STATE_GOT_TYPE:
 		_rxpacket.st24_data[_rxlen - 1] = byte;
 		_rxlen++;
 
-		if (_rxlen == (_rxpacket.length - 1)) {
+		اگر (_rxlen == (_rxpacket.length - 1)) {
 			_decode_state = ST24_DECODE_STATE_GOT_DATA;
 		}
 
-		break;
+		بشکن;
 
-	case ST24_DECODE_STATE_GOT_DATA:
+	حالت ST24_DECODE_STATE_GOT_DATA:
 		_rxpacket.crc8 = byte;
 		_rxlen++;
 
-		if (st24_common_crc8((uint8_t *) & (_rxpacket.length), _rxlen) == _rxpacket.crc8) {
+		اگر (st24_common_crc8((uint8_t *) & (_rxpacket.length), _rxlen) == _rxpacket.crc8) {
 
 			ret = 0;
 
 			/* decode the actual packet */
 
-			switch (_rxpacket.type) {
+			انتخاب (_rxpacket.type) {
 
-			case ST24_PACKET_TYPE_CHANNELDATA12: {
+			حالت ST24_PACKET_TYPE_CHANNELDATA12: {
 					ChannelData12 *d = (ChannelData12 *)_rxpacket.st24_data;
 
 					// Scale from 0..255 to 100%.
 					*rssi = d->rssi * (100.0f / 255.0f);
-					*lost_count = d->lost_count;
+					*lost_شمار = d->lost_شمار;
 
 					/* this can lead to rounding of the strides */
-					*channel_count = (max_chan_count < 12) ? max_chan_count : 12;
+					*channel_شمار = (max_chan_شمار < 12) ? max_chan_شمار : 12;
 
-					unsigned stride_count = (*channel_count * 3) / 2;
+					unsigned stride_شمار = (*channel_شمار * 3) / 2;
 					unsigned chan_index = 0;
 
-					for (unsigned i = 0; i < stride_count; i += 3) {
+					برای (unsigned i = 0; i < stride_شمار; i += 3) {
 						channels[chan_index] = ((uint16_t)d->channel[i] << 4);
 						channels[chan_index] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
 						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
@@ -192,22 +192,22 @@ int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *chan
 						chan_index++;
 					}
 				}
-				break;
+				بشکن;
 
-			case ST24_PACKET_TYPE_CHANNELDATA24: {
+			حالت ST24_PACKET_TYPE_CHANNELDATA24: {
 					ChannelData24 *d = (ChannelData24 *)&_rxpacket.st24_data;
 
 					// Scale from 0..255 to 100%.
 					*rssi = d->rssi * (100.0f / 255.0f);
-					*lost_count = d->lost_count;
+					*lost_شمار = d->lost_شمار;
 
 					/* this can lead to rounding of the strides */
-					*channel_count = (max_chan_count < 24) ? max_chan_count : 24;
+					*channel_شمار = (max_chan_شمار < 24) ? max_chan_شمار : 24;
 
-					unsigned stride_count = (*channel_count * 3) / 2;
+					unsigned stride_شمار = (*channel_شمار * 3) / 2;
 					unsigned chan_index = 0;
 
-					for (unsigned i = 0; i < stride_count; i += 3) {
+					برای (unsigned i = 0; i < stride_شمار; i += 3) {
 						channels[chan_index] = ((uint16_t)d->channel[i] << 4);
 						channels[chan_index] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
 						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
@@ -221,29 +221,29 @@ int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *chan
 						chan_index++;
 					}
 				}
-				break;
+				بشکن;
 
-			case ST24_PACKET_TYPE_TRANSMITTERGPSDATA: {
+			حالت ST24_PACKET_TYPE_TRANSMITTERGPSDATA: {
 
 					// ReceiverFcPacket* d = (ReceiverFcPacket*)&_rxpacket.st24_data;
 					/* we silently ignore this data for now, as it is unused */
 					ret = 5;
 				}
-				break;
+				بشکن;
 
-			default:
+			پیشفرض:
 				ret = 2;
-				break;
+				بشکن;
 			}
 
-		} else {
+		} وگرنه {
 			/* decoding failed */
 			ret = 4;
 		}
 
 		_decode_state = ST24_DECODE_STATE_UNSYNCED;
-		break;
+		بشکن;
 	}
 
-	return ret;
+	بازگشت ret;
 }

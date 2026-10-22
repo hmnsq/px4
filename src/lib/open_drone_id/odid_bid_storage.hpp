@@ -33,21 +33,21 @@
 
 #pragma once
 
-#include <stdint.h>
+#شامل <stdint.h>
 
-namespace open_drone_id
+فضاینام open_drone_id
 {
 
-static constexpr uint8_t UAS_ID_SIZE = 20;
-static constexpr uint8_t UAS_ID_TYPE_SERIAL_NUMBER = 1;
-static constexpr int32_t UAS_ID_MODE_LOCK_FIRST_BASIC_ID = 1;
+ایستا constexpr uint8_t UAS_ID_SIZE = 20;
+ایستا constexpr uint8_t UAS_ID_TYPE_SERIAL_عدد = 1;
+ایستا constexpr int32_t UAS_ID_MODE_LOCK_FIRST_BASIC_ID = 1;
 
-struct UasId {
+ساختار UasId {
 	uint8_t ua_type{0};
 	uint8_t uas_id[UAS_ID_SIZE] {};
 };
 
-enum class BidLockState {
+شمارش رده BidLockState {
 	Empty,
 	Locked,
 	InvalidRecord,
@@ -56,14 +56,14 @@ enum class BidLockState {
 	Unsupported,
 };
 
-struct BidLockInfo {
+ساختار BidLockInfo {
 	BidLockState state{BidLockState::Unsupported};
 	UasId id{};
 
-	bool locked() const { return state == BidLockState::Locked; }
+	منطقی locked() ثابت { بازگشت state == BidLockState::Locked; }
 };
 
-enum class BidStoreResult {
+شمارش رده BidStoreResult {
 	Stored,
 	AlreadyLocked,
 	AlreadyLockedDifferent,
@@ -74,21 +74,21 @@ enum class BidStoreResult {
 	Unsupported,
 };
 
-class BidStorage
+رده BidStorage
 {
-public:
-	static BidLockInfo get();
-	static BidStoreResult checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE]);
+عمومی:
+	ایستا BidLockInfo get();
+	ایستا BidStoreResult checkOrStore(uint8_t ua_type, ثابت uint8_t uas_id[UAS_ID_SIZE]);
 };
 
-class BidLock
+رده BidLock
 {
-public:
-	BidStoreResult resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE], UasId &locked_id);
+عمومی:
+	BidStoreResult resolve(uint8_t id_type, uint8_t ua_type, ثابت uint8_t uas_id[UAS_ID_SIZE], UasId &locked_id);
 
-private:
+خصوصی:
 	BidLockInfo _info{};
-	bool _loaded{false};
+	منطقی _loaded{نادرست};
 };
 
 } // namespace open_drone_id
