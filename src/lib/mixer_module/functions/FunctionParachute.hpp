@@ -33,18 +33,18 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#अन्तर्भाव "FunctionProviderBase.hpp"
 
 /**
  * Functions: Parachute
  */
-class FunctionParachute : public FunctionProviderBase
+वग्ग FunctionParachute : सार्वजनिक FunctionProviderBase
 {
-public:
-	FunctionParachute() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionParachute(); }
+सार्वजनिक:
+	FunctionParachute() = स्वभाव;
+	स्थिर FunctionProviderBase *allocate(ध्रुव Context &context) { पटिनिवत्त नूतन FunctionParachute(); }
 
-	void update() override {}
-	float value(OutputFunction func) override { return -1.f; }
-	float defaultFailsafeValue(OutputFunction func) const override { return 1.f; }
+	शून्य update() override {}
+	भिन्न value(OutputFunction func) override { पटिनिवत्त -1.f; }
+	भिन्न default_Failsafe_मानम्(OutputFunction func) ध्रुव override { पटिनिवत्त 1.f; }
 };

@@ -31,30 +31,30 @@
  *
  ****************************************************************************/
 
-#include "HeadingSmoothing.hpp"
+#अन्तर्भाव "HeadingSmoothing.hpp"
 
 HeadingSmoothing::HeadingSmoothing()
 {
 	_velocity_smoothing.setMaxVel(M_TWOPI_F); // "velocity" is heading. 2Pi limit is needed for correct angle wrapping
 }
 
-void HeadingSmoothing::reset(const float heading, const float heading_rate)
+शून्य HeadingSmoothing::reset(ध्रुव भिन्न heading, ध्रुव भिन्न heading_rate)
 {
 	_velocity_smoothing.setCurrentVelocity(matrix::wrap_pi(heading));
 
-	if (PX4_ISFINITE(heading_rate)) {
+	सचे (PX4_ISFINITE(heading_rate)) {
 		_velocity_smoothing.setCurrentAcceleration(heading_rate);
 	}
 }
 
-void HeadingSmoothing::update(const float heading_setpoint, const float time_elapsed)
+शून्य HeadingSmoothing::update(ध्रुव भिन्न heading_setpoint, ध्रुव भिन्न time_elapsed)
 {
-	const float delta_heading_wrapped = matrix::wrap_pi(heading_setpoint - getSmoothedHeading());
-	const float unwrapped_heading_setpoint = delta_heading_wrapped + getSmoothedHeading();
+	ध्रुव भिन्न delta_heading_wrapped = matrix::wrap_pi(heading_setpoint - getSmoothedHeading());
+	ध्रुव भिन्न unwrapped_heading_setpoint = delta_heading_wrapped + getSmoothedHeading();
 
 	_velocity_smoothing.updateDurations(unwrapped_heading_setpoint);
 	_velocity_smoothing.updateTraj(time_elapsed);
 
-	const float wrapped_current_heading = matrix::wrap_pi(getSmoothedHeading());
+	ध्रुव भिन्न wrapped_current_heading = matrix::wrap_pi(getSmoothedHeading());
 	_velocity_smoothing.setCurrentVelocity(wrapped_current_heading);
 }

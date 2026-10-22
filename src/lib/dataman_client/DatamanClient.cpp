@@ -35,7 +35,7 @@
  * @file DatamanClient.cpp
  */
 
-#include <dataman_client/DatamanClient.hpp>
+#अन्तर्भाव <dataman_client/DatamanClient.hpp>
 
 DatamanClient::DatamanClient()
 {
@@ -44,10 +44,10 @@ DatamanClient::DatamanClient()
 	_dataman_request_pub.advertise();
 	_dataman_response_sub = orb_subscribe(ORB_ID(dataman_response));
 
-	if (!orb_sub_valid(_dataman_response_sub)) {
+	सचे (!orb_sub_valid(_dataman_response_sub)) {
 		PX4_ERR("Failed to subscribe (%i)", errno);
 
-	} else {
+	} अञ्ञथा {
 		// make sure we don't get any stale response by doing an orb_copy
 		dataman_response_s response{};
 		orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
@@ -62,13 +62,13 @@ DatamanClient::DatamanClient()
 		request.request_type = DM_GET_ID;
 		request.client_id = CLIENT_ID_NOT_SET;
 
-		bool success = syncHandler(request, response, timestamp, 1000_ms);
+		तार्किक success = syncHandler(request, response, timestamp, 1000_ms);
 
-		if (success && (response.client_id > CLIENT_ID_NOT_SET)) {
+		सचे (success && (response.client_id > CLIENT_ID_NOT_SET)) {
 
 			_client_id = response.client_id;
 
-		} else {
+		} अञ्ञथा {
 			PX4_ERR("Failed to get client ID!");
 		}
 	}
@@ -78,15 +78,15 @@ DatamanClient::~DatamanClient()
 {
 	perf_free(_sync_perf);
 
-	if (orb_sub_valid(_dataman_response_sub)) {
+	सचे (orb_sub_valid(_dataman_response_sub)) {
 		orb_unsubscribe(_dataman_response_sub);
 	}
 }
 
-bool DatamanClient::syncHandler(const dataman_request_s &request, dataman_response_s &response,
-				const hrt_abstime &start_time, hrt_abstime timeout)
+तार्किक DatamanClient::syncHandler(ध्रुव dataman_request_s &request, dataman_response_s &response,
+				ध्रुव hrt_abstime &start_time, hrt_abstime timeout)
 {
-	bool response_received = false;
+	तार्किक response_received = मिच्छा;
 	int32_t ret = 0;
 	hrt_abstime time_elapsed = hrt_elapsed_time(&start_time);
 	perf_begin(_sync_perf);
@@ -94,43 +94,43 @@ bool DatamanClient::syncHandler(const dataman_request_s &request, dataman_respon
 
 	_dataman_request_pub.publish(request);
 
-	while (!response_received && (time_elapsed < timeout)) {
+	याव (!response_received && (time_elapsed < timeout)) {
 
 		uint32_t timeout_ms = 100;
 		ret = px4_poll(&_fds, 1, timeout_ms);
 
-		if (ret < 0) {
+		सचे (ret < 0) {
 			PX4_ERR("px4_poll returned error: %" PRIu32, ret);
-			break;
+			भङ्ग;
 
-		} else if (ret == 0) {
+		} अञ्ञथा सचे (ret == 0) {
 
 			// No response received, send new request
 			_dataman_request_pub.publish(request);
 
-		} else {
+		} अञ्ञथा {
 
-			bool updated = false;
+			तार्किक updated = मिच्छा;
 			orb_check(_dataman_response_sub, &updated);
 
-			if (updated) {
+			सचे (updated) {
 				orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
 
-				if (response.client_id == request.client_id) {
+				सचे (response.client_id == request.client_id) {
 
-					if ((response.request_type == request.request_type) &&
+					सचे ((response.request_type == request.request_type) &&
 					    (response.item == request.item) &&
 					    (response.index == request.index)) {
-						response_received = true;
-						break;
+						response_received = सच्च;
+						भङ्ग;
 					}
 
-				} else if (request.client_id == CLIENT_ID_NOT_SET) {
+				} अञ्ञथा सचे (request.client_id == CLIENT_ID_NOT_SET) {
 
 					// validate timestamp from response.data
-					if (0 == memcmp(&(request.timestamp), &(response.data), sizeof(hrt_abstime))) {
-						response_received = true;
-						break;
+					सचे (0 == memcmp(&(request.timestamp), &(response.data), परिमाण(hrt_abstime))) {
+						response_received = सच्च;
+						भङ्ग;
 					}
 				}
 			}
@@ -141,22 +141,22 @@ bool DatamanClient::syncHandler(const dataman_request_s &request, dataman_respon
 
 	perf_end(_sync_perf);
 
-	if (!response_received && ret >= 0) {
+	सचे (!response_received && ret >= 0) {
 		PX4_ERR("timeout after %" PRIu32 " ms!", static_cast<uint32_t>(timeout / 1000));
 	}
 
-	return response_received;
+	पटिनिवत्त response_received;
 }
 
-bool DatamanClient::readSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
+तार्किक DatamanClient::readSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	सचे (_client_id == CLIENT_ID_NOT_SET) {
+		पटिनिवत्त मिच्छा;
 	}
 
-	if (length > g_per_item_size[item]) {
+	सचे (length > g_per_item_size[item]) {
 		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+		पटिनिवत्त मिच्छा;
 	}
 
 	hrt_abstime timestamp = hrt_absolute_time();
@@ -170,33 +170,33 @@ bool DatamanClient::readSync(dm_item_t item, uint32_t index, uint8_t *buffer, ui
 	request.item = static_cast<uint8_t>(item);
 
 	dataman_response_s response{};
-	bool success = syncHandler(request, response, timestamp, timeout);
+	तार्किक success = syncHandler(request, response, timestamp, timeout);
 
-	if (success) {
+	सचे (success) {
 
-		if (response.status != dataman_response_s::STATUS_SUCCESS) {
+		सचे (response.status != dataman_response_s::STATUS_SUCCESS) {
 
-			success = false;
+			success = मिच्छा;
 			PX4_ERR("readSync failed! status=%" PRIu8 ", item=%" PRIu8 ", index=%" PRIu32 ", length=%" PRIu32,
 				response.status, static_cast<uint8_t>(item), index, length);
 
-		} else {
+		} अञ्ञथा {
 			memcpy(buffer, response.data, length);
 		}
 	}
 
-	return success;
+	पटिनिवत्त success;
 }
 
-bool DatamanClient::writeSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
+तार्किक DatamanClient::writeSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	सचे (_client_id == CLIENT_ID_NOT_SET) {
+		पटिनिवत्त मिच्छा;
 	}
 
-	if (length > g_per_item_size[item]) {
+	सचे (length > g_per_item_size[item]) {
 		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+		पटिनिवत्त मिच्छा;
 	}
 
 	hrt_abstime timestamp = hrt_absolute_time();
@@ -212,25 +212,25 @@ bool DatamanClient::writeSync(dm_item_t item, uint32_t index, uint8_t *buffer, u
 	memcpy(request.data, buffer, length);
 
 	dataman_response_s response{};
-	bool success = syncHandler(request, response, timestamp, timeout);
+	तार्किक success = syncHandler(request, response, timestamp, timeout);
 
-	if (success) {
+	सचे (success) {
 
-		if (response.status != dataman_response_s::STATUS_SUCCESS) {
+		सचे (response.status != dataman_response_s::STATUS_SUCCESS) {
 
-			success = false;
+			success = मिच्छा;
 			PX4_ERR("writeSync failed! status=%" PRIu8 ", item=%" PRIu8 ", index=%" PRIu32 ", length=%" PRIu32,
 				response.status, static_cast<uint8_t>(item), index, length);
 		}
 	}
 
-	return success;
+	पटिनिवत्त success;
 }
 
-bool DatamanClient::clearSync(dm_item_t item, hrt_abstime timeout)
+तार्किक DatamanClient::clearSync(dm_item_t item, hrt_abstime timeout)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	सचे (_client_id == CLIENT_ID_NOT_SET) {
+		पटिनिवत्त मिच्छा;
 	}
 
 	hrt_abstime timestamp = hrt_absolute_time();
@@ -242,53 +242,53 @@ bool DatamanClient::clearSync(dm_item_t item, hrt_abstime timeout)
 	request.item = static_cast<uint8_t>(item);
 
 	dataman_response_s response{};
-	bool success = syncHandler(request, response, timestamp, timeout);
+	तार्किक success = syncHandler(request, response, timestamp, timeout);
 
-	if (success) {
+	सचे (success) {
 
-		if (response.status != dataman_response_s::STATUS_SUCCESS) {
+		सचे (response.status != dataman_response_s::STATUS_SUCCESS) {
 
-			success = false;
+			success = मिच्छा;
 			PX4_ERR("clearSync failed! status=%" PRIu8 ", item=%" PRIu8,
 				response.status, static_cast<uint8_t>(item));
 		}
 	}
 
-	return success;
+	पटिनिवत्त success;
 }
 
-void DatamanClient::clearPendingResponse()
+शून्य DatamanClient::clearPendingResponse()
 {
-	if (_dataman_response_sub < 0) {
-		return;
+	सचे (_dataman_response_sub < 0) {
+		पटिनिवत्त;
 	}
 
 	// Drain queued replies first so a response from an aborted or timed-out
 	// operation cannot be matched to the next request.
-	bool updated = false;
+	तार्किक updated = मिच्छा;
 	orb_check(_dataman_response_sub, &updated);
 
-	while (updated) {
+	याव (updated) {
 		dataman_response_s response{};
 		orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
 		orb_check(_dataman_response_sub, &updated);
 	}
 }
 
-bool DatamanClient::readAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length)
+तार्किक DatamanClient::readAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	सचे (_client_id == CLIENT_ID_NOT_SET) {
+		पटिनिवत्त मिच्छा;
 	}
 
-	if (length > g_per_item_size[item]) {
+	सचे (length > g_per_item_size[item]) {
 		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+		पटिनिवत्त मिच्छा;
 	}
 
-	bool success = false;
+	तार्किक success = मिच्छा;
 
-	if (_state == State::Idle) {
+	सचे (_state == State::Idle) {
 		// Drop any queued stale replies before publishing a fresh async request.
 		clearPendingResponse();
 
@@ -313,26 +313,26 @@ bool DatamanClient::readAsync(dm_item_t item, uint32_t index, uint8_t *buffer, u
 
 		_dataman_request_pub.publish(request);
 
-		success = true;
+		success = सच्च;
 	}
 
-	return success;
+	पटिनिवत्त success;
 }
 
-bool DatamanClient::writeAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length)
+तार्किक DatamanClient::writeAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	सचे (_client_id == CLIENT_ID_NOT_SET) {
+		पटिनिवत्त मिच्छा;
 	}
 
-	if (length > g_per_item_size[item]) {
+	सचे (length > g_per_item_size[item]) {
 		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+		पटिनिवत्त मिच्छा;
 	}
 
-	bool success = false;
+	तार्किक success = मिच्छा;
 
-	if (_state == State::Idle) {
+	सचे (_state == State::Idle) {
 		// Drop any queued stale replies before publishing a fresh async request.
 		clearPendingResponse();
 
@@ -359,21 +359,21 @@ bool DatamanClient::writeAsync(dm_item_t item, uint32_t index, uint8_t *buffer, 
 
 		_dataman_request_pub.publish(request);
 
-		success = true;
+		success = सच्च;
 	}
 
-	return success;
+	पटिनिवत्त success;
 }
 
-bool DatamanClient::clearAsync(dm_item_t item)
+तार्किक DatamanClient::clearAsync(dm_item_t item)
 {
-	if (_client_id == CLIENT_ID_NOT_SET) {
-		return false;
+	सचे (_client_id == CLIENT_ID_NOT_SET) {
+		पटिनिवत्त मिच्छा;
 	}
 
-	bool success = false;
+	तार्किक success = मिच्छा;
 
-	if (_state == State::Idle) {
+	सचे (_state == State::Idle) {
 		// Drop any queued stale replies before publishing a fresh async request.
 		clearPendingResponse();
 
@@ -394,36 +394,36 @@ bool DatamanClient::clearAsync(dm_item_t item)
 
 		_dataman_request_pub.publish(request);
 
-		success = true;
+		success = सच्च;
 	}
 
-	return success;
+	पटिनिवत्त success;
 }
 
-void DatamanClient::update()
+शून्य DatamanClient::update()
 {
-	if (_state == State::RequestSent) {
+	सचे (_state == State::RequestSent) {
 
-		bool updated = false;
+		तार्किक updated = मिच्छा;
 		orb_check(_dataman_response_sub, &updated);
 
 		dataman_response_s response;
 
-		if (updated) {
+		सचे (updated) {
 			orb_copy(ORB_ID(dataman_response), _dataman_response_sub, &response);
 
-			if ((response.client_id == _client_id) &&
+			सचे ((response.client_id == _client_id) &&
 			    (response.request_type == _active_request.request_type) &&
 			    (response.item == _active_request.item) &&
 			    (response.index == _active_request.index)) {
 
-				if (response.request_type == DM_READ) {
+				सचे (response.request_type == DM_READ) {
 					memcpy(_active_request.buffer, response.data, _active_request.length);
 				}
 
 				_response_status = response.status;
 
-				if (_response_status != dataman_response_s::STATUS_SUCCESS) {
+				सचे (_response_status != dataman_response_s::STATUS_SUCCESS) {
 
 					PX4_ERR("Async request type %" PRIu8 " failed! status=%" PRIu8 " item=%" PRIu8 " index=%" PRIu32,
 						response.request_type, response.status, static_cast<uint8_t>(_active_request.item), _active_request.index);
@@ -433,10 +433,10 @@ void DatamanClient::update()
 			}
 		}
 
-		if (_state == State::RequestSent) {
+		सचे (_state == State::RequestSent) {
 
 			/* Retry the request if there is no answer */
-			if (((_active_request.request_type != DM_CLEAR) && (hrt_elapsed_time(&_active_request.timestamp) > 100_ms)) ||
+			सचे (((_active_request.request_type != DM_CLEAR) && (hrt_elapsed_time(&_active_request.timestamp) > 100_ms)) ||
 			    (hrt_elapsed_time(&_active_request.timestamp) > 1000_ms)
 			   ) {
 
@@ -452,7 +452,7 @@ void DatamanClient::update()
 				request.request_type = static_cast<uint8_t>(_active_request.request_type);
 				request.item = static_cast<uint8_t>(_active_request.item);
 
-				if (_active_request.request_type == DM_WRITE) {
+				सचे (_active_request.request_type == DM_WRITE) {
 					memcpy(request.data, _active_request.buffer, _active_request.length);
 				}
 
@@ -464,42 +464,42 @@ void DatamanClient::update()
 	}
 }
 
-bool DatamanClient::lastOperationCompleted(bool &success)
+तार्किक DatamanClient::lastOperationCompleted(तार्किक &success)
 {
-	bool completed = false;
-	success = false;
+	तार्किक completed = मिच्छा;
+	success = मिच्छा;
 
-	if (_state == State::ResponseReceived) {
+	सचे (_state == State::ResponseReceived) {
 
-		if (_response_status == dataman_response_s::STATUS_SUCCESS) {
-			success = true;
+		सचे (_response_status == dataman_response_s::STATUS_SUCCESS) {
+			success = सच्च;
 		}
 
 		_state = State::Idle;
-		completed = true;
+		completed = सच्च;
 	}
 
-	return completed;
+	पटिनिवत्त completed;
 }
 
-void DatamanClient::abortCurrentOperation()
+शून्य DatamanClient::abortCurrentOperation()
 {
 	_state = State::Idle;
 }
 
-DatamanCache::DatamanCache(const char *cache_miss_perf_counter_name, uint32_t num_items)
-	: _cache_miss_perf(perf_alloc(PC_COUNT, cache_miss_perf_counter_name))
+DatamanCache::DatamanCache(ध्रुव वर्ण *cache_miss_perf_counter_name, uint32_t अङ्कः_वस्तूनि)
+	: _cache_miss_perf(perf_alloc(PC_गणनम्, cache_miss_perf_counter_name))
 {
-	if (num_items == 0) {
-		return;
+	सचे (अङ्कः_वस्तूनि == 0) {
+		पटिनिवत्त;
 	}
 
-	_items = new Item[num_items] {};
+	वस्तूनि = नूतन Item[अङ्कः_वस्तूनि] {};
 
-	if (_items != nullptr) {
-		_num_items = num_items;
+	सचे (वस्तूनि != nullptr) {
+		अङ्कः_वस्तूनि_2 = अङ्कः_वस्तूनि;
 
-	} else {
+	} अञ्ञथा {
 		PX4_ERR("alloc failed");
 	}
 }
@@ -507,246 +507,246 @@ DatamanCache::DatamanCache(const char *cache_miss_perf_counter_name, uint32_t nu
 DatamanCache::~DatamanCache()
 {
 	_client.abortCurrentOperation();
-	delete[] _items;
+	delete[] वस्तूनि;
 	perf_free(_cache_miss_perf);
 }
 
-void DatamanCache::resize(uint32_t num_items)
+शून्य DatamanCache::resize(uint32_t अङ्कः_वस्तूनि)
 {
-	if (num_items == 0) {
+	सचे (अङ्कः_वस्तूनि == 0) {
 		// Allow callers to explicitly disable caching while leaving the DatamanClient usable.
 		_client.abortCurrentOperation();
-		delete[] _items;
-		_items = nullptr;
+		delete[] वस्तूनि;
+		वस्तूनि = nullptr;
 		resetCacheState();
-		_num_items = 0;
-		return;
+		अङ्कः_वस्तूनि_2 = 0;
+		पटिनिवत्त;
 	}
 
-	Item *new_items = new Item[num_items] {};
+	Item *new_वस्तूनि = नूतन Item[अङ्कः_वस्तूनि] {};
 
-	if (new_items != nullptr) {
+	सचे (new_वस्तूनि != nullptr) {
 		_client.abortCurrentOperation();
 
-		uint32_t num_min = num_items < _num_items ? num_items : _num_items;
+		uint32_t अङ्कः_min = अङ्कः_वस्तूनि < अङ्कः_वस्तूनि_2 ? अङ्कः_वस्तूनि : अङ्कः_वस्तूनि_2;
 
-		for (uint32_t i = 0; i < num_min; ++i) {
-			new_items[i] = _items[i];
+		अत्थाय (uint32_t i = 0; i < अङ्कः_min; ++i) {
+			new_वस्तूनि[i] = वस्तूनि[i];
 
-			if (new_items[i].cache_state == State::RequestSent) {
-				new_items[i].cache_state = State::RequestPrepared;
+			सचे (new_वस्तूनि[i].cache_state == State::RequestSent) {
+				new_वस्तूनि[i].cache_state = State::RequestPrepared;
 			}
 		}
 
-		delete[] _items;
-		_items = new_items;
-		_num_items = num_items;
+		delete[] वस्तूनि;
+		वस्तूनि = new_वस्तूनि;
+		अङ्कः_वस्तूनि_2 = अङ्कः_वस्तूनि;
 
 		// ensure new bounds are respected after resize
-		_load_index = (_load_index < _num_items) ? _load_index : 0;
-		_update_index = (_update_index < _num_items) ? _update_index : 0;
-		_item_counter = (_item_counter < _num_items) ? _item_counter : _num_items;
+		_load_index = (_load_index < अङ्कः_वस्तूनि_2) ? _load_index : 0;
+		_update_index = (_update_index < अङ्कः_वस्तूनि_2) ? _update_index : 0;
+		_item_counter = (_item_counter < अङ्कः_वस्तूनि_2) ? _item_counter : अङ्कः_वस्तूनि_2;
 
-	} else {
+	} अञ्ञथा {
 		PX4_ERR("alloc failed");
 	}
 }
 
-bool DatamanCache::load(dm_item_t item, uint32_t index)
+तार्किक DatamanCache::load(dm_item_t item, uint32_t index)
 {
-	if (!_items) {
-		return false;
+	सचे (!वस्तूनि) {
+		पटिनिवत्त मिच्छा;
 	}
 
-	bool success = false;
-	bool duplicate = false;
+	तार्किक success = मिच्छा;
+	तार्किक duplicate = मिच्छा;
 
 	//Prevent duplicates
-	for (uint32_t i = 0; i < _num_items; ++i) {
+	अत्थाय (uint32_t i = 0; i < अङ्कः_वस्तूनि_2; ++i) {
 
-		if (_items[i].cache_state != State::Idle &&
-		    _items[i].cache_state != State::Error &&
-		    _items[i].response.item == item &&
-		    _items[i].response.index == index) {
-			duplicate = true;
-			break;
+		सचे (वस्तूनि[i].cache_state != State::Idle &&
+		    वस्तूनि[i].cache_state != State::Error &&
+		    वस्तूनि[i].response.item == item &&
+		    वस्तूनि[i].response.index == index) {
+			duplicate = सच्च;
+			भङ्ग;
 		}
 	}
 
-	if (!duplicate && (_item_counter < _num_items)) {
+	सचे (!duplicate && (_item_counter < अङ्कः_वस्तूनि_2)) {
 
-		_items[_load_index].cache_state = State::RequestPrepared;
-		_items[_load_index].response.item = item;
-		_items[_load_index].response.index = index;
+		वस्तूनि[_load_index].cache_state = State::RequestPrepared;
+		वस्तूनि[_load_index].response.item = item;
+		वस्तूनि[_load_index].response.index = index;
 
-		_load_index = (_load_index + 1) % _num_items;
+		_load_index = (_load_index + 1) % अङ्कः_वस्तूनि_2;
 
 		++_item_counter;
 
-		success = true;
+		success = सच्च;
 	}
 
-	return success;
+	पटिनिवत्त success;
 }
 
-bool DatamanCache::loadWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
+तार्किक DatamanCache::loadWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
 {
-	if (length > g_per_item_size[item]) {
+	सचे (length > g_per_item_size[item]) {
 		PX4_ERR("Length %" PRIu32 " can't fit in data size for item %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+		पटिनिवत्त मिच्छा;
 	}
 
-	bool success = false;
-	bool item_found = false;
+	तार्किक success = मिच्छा;
+	तार्किक item_found = मिच्छा;
 
-	if (_items) {
-		for (uint32_t i = 0; i < _num_items; ++i) {
-			if ((_items[i].response.item == item) &&
-			    (_items[i].response.index == index)) {
-				item_found = true;
+	सचे (वस्तूनि) {
+		अत्थाय (uint32_t i = 0; i < अङ्कः_वस्तूनि_2; ++i) {
+			सचे ((वस्तूनि[i].response.item == item) &&
+			    (वस्तूनि[i].response.index == index)) {
+				item_found = सच्च;
 
-				if (_items[i].cache_state == State::ResponseReceived) {
-					memcpy(buffer, _items[i].response.data, length);
-					success = true;
-					break;
+				सचे (वस्तूनि[i].cache_state == State::ResponseReceived) {
+					memcpy(buffer, वस्तूनि[i].response.data, length);
+					success = सच्च;
+					भङ्ग;
 				}
 			}
 		}
 	}
 
-	if (!success) {
-		perf_count(_cache_miss_perf);
+	सचे (!success) {
+		perf_गणनम्(_cache_miss_perf);
 	}
 
-	if (!success && (timeout > 0)) {
+	सचे (!success && (timeout > 0)) {
 		success = _client.readSync(item, index, buffer, length, timeout);
 
 		// Cache the item if not found already (it could be in the process of being loaded)
-		if (success && !item_found && _items && (_item_counter < _num_items)) {
-			_items[_load_index].cache_state = State::ResponseReceived;
-			_items[_load_index].response.item = item;
-			_items[_load_index].response.index = index;
-			memcpy(_items[_load_index].response.data, buffer, length);
+		सचे (success && !item_found && वस्तूनि && (_item_counter < अङ्कः_वस्तूनि_2)) {
+			वस्तूनि[_load_index].cache_state = State::ResponseReceived;
+			वस्तूनि[_load_index].response.item = item;
+			वस्तूनि[_load_index].response.index = index;
+			memcpy(वस्तूनि[_load_index].response.data, buffer, length);
 
-			_load_index = (_load_index + 1) % _num_items;
+			_load_index = (_load_index + 1) % अङ्कः_वस्तूनि_2;
 
 			++_item_counter; // Still increase the counter here
 		}
 	}
 
-	return success;
+	पटिनिवत्त success;
 }
 
-bool DatamanCache::writeWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
+तार्किक DatamanCache::writeWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout)
 {
-	if (length > g_per_item_size[item]) {
+	सचे (length > g_per_item_size[item]) {
 		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+		पटिनिवत्त मिच्छा;
 	}
 
-	bool success = _client.writeSync(item, index, buffer, length, timeout);
+	तार्किक success = _client.writeSync(item, index, buffer, length, timeout);
 
-	if (success && _items) {
-		for (uint32_t i = 0; i < _num_items; ++i) {
-			if ((_items[i].response.item == item) &&
-			    (_items[i].response.index == index) &&
-			    ((_items[i].cache_state == State::ResponseReceived) ||
-			     (_items[i].cache_state == State::RequestPrepared))) {
+	सचे (success && वस्तूनि) {
+		अत्थाय (uint32_t i = 0; i < अङ्कः_वस्तूनि_2; ++i) {
+			सचे ((वस्तूनि[i].response.item == item) &&
+			    (वस्तूनि[i].response.index == index) &&
+			    ((वस्तूनि[i].cache_state == State::ResponseReceived) ||
+			     (वस्तूनि[i].cache_state == State::RequestPrepared))) {
 
-				memcpy(_items[i].response.data, buffer, length);
-				_items[i].cache_state = State::ResponseReceived;
-				break;
+				memcpy(वस्तूनि[i].response.data, buffer, length);
+				वस्तूनि[i].cache_state = State::ResponseReceived;
+				भङ्ग;
 			}
 		}
 	}
 
-	return success;
+	पटिनिवत्त success;
 }
 
-bool DatamanCache::updateCachedItem(dm_item_t item, uint32_t index, const uint8_t *buffer, uint32_t length)
+तार्किक DatamanCache::updateCachedItem(dm_item_t item, uint32_t index, ध्रुव uint8_t *buffer, uint32_t length)
 {
-	if (!_items || buffer == nullptr || _num_items == 0) {
-		return false;
+	सचे (!वस्तूनि || buffer == nullptr || अङ्कः_वस्तूनि_2 == 0) {
+		पटिनिवत्त मिच्छा;
 	}
 
-	if (length > g_per_item_size[item]) {
+	सचे (length > g_per_item_size[item]) {
 		PX4_ERR("Length  %" PRIu32 " can't fit in data size for item  %" PRIi8, length, static_cast<uint8_t>(item));
-		return false;
+		पटिनिवत्त मिच्छा;
 	}
 
 	// Only patch data that is fully received and stable. Slots in other states are skipped:
 	// an in-flight async read will fetch the new SD card data shortly anyway, and invalidated
 	// slots can still carry a stale key match for the same item/index.
-	for (uint32_t i = 0; i < _num_items; ++i) {
-		if ((_items[i].response.item == item) && (_items[i].response.index == index)
-		    && (_items[i].cache_state == State::ResponseReceived)) {
-			memcpy(_items[i].response.data, buffer, length);
-			return true;
+	अत्थाय (uint32_t i = 0; i < अङ्कः_वस्तूनि_2; ++i) {
+		सचे ((वस्तूनि[i].response.item == item) && (वस्तूनि[i].response.index == index)
+		    && (वस्तूनि[i].cache_state == State::ResponseReceived)) {
+			memcpy(वस्तूनि[i].response.data, buffer, length);
+			पटिनिवत्त सच्च;
 		}
 	}
 
-	return false;
+	पटिनिवत्त मिच्छा;
 }
 
-void DatamanCache::update()
+शून्य DatamanCache::update()
 {
-	if (_item_counter > 0) {
+	सचे (_item_counter > 0) {
 
 		_client.update();
 
-		bool success = false;
-		bool response_success = false;
+		तार्किक success = मिच्छा;
+		तार्किक response_success = मिच्छा;
 
-		switch (_items[_update_index].cache_state) {
-		case State::Idle:
-			break;
+		विकल्प (वस्तूनि[_update_index].cache_state) {
+		पक्ष State::Idle:
+			भङ्ग;
 
-		case State::ResponseReceived:
+		पक्ष State::ResponseReceived:
 			// Skip it
 			changeUpdateIndex();
-			break;
+			भङ्ग;
 
-		case State::RequestPrepared:
+		पक्ष State::RequestPrepared:
 
-			success = _client.readAsync(static_cast<dm_item_t>(_items[_update_index].response.item),
-						    _items[_update_index].response.index,
-						    _items[_update_index].response.data,
-						    g_per_item_size[_items[_update_index].response.item]);
+			success = _client.readAsync(static_cast<dm_item_t>(वस्तूनि[_update_index].response.item),
+						    वस्तूनि[_update_index].response.index,
+						    वस्तूनि[_update_index].response.data,
+						    g_per_item_size[वस्तूनि[_update_index].response.item]);
 
-			if (success) {
-				_items[_update_index].cache_state = State::RequestSent;
+			सचे (success) {
+				वस्तूनि[_update_index].cache_state = State::RequestSent;
 
-			} else {
-				_items[_update_index].cache_state = State::Error;
+			} अञ्ञथा {
+				वस्तूनि[_update_index].cache_state = State::Error;
 			}
 
-			break;
+			भङ्ग;
 
-		case State::RequestSent:
+		पक्ष State::RequestSent:
 
-			if (_client.lastOperationCompleted(response_success)) {
+			सचे (_client.lastOperationCompleted(response_success)) {
 
-				if (response_success) {
+				सचे (response_success) {
 
-					_items[_update_index].cache_state = State::ResponseReceived;
+					वस्तूनि[_update_index].cache_state = State::ResponseReceived;
 					changeUpdateIndex();
 
-				} else {
-					_items[_update_index].cache_state = State::Error;
+				} अञ्ञथा {
+					वस्तूनि[_update_index].cache_state = State::Error;
 				}
 			}
 
-			break;
+			भङ्ग;
 
-		case State::Error:
+		पक्ष State::Error:
 			// Handled below
-			break;
+			भङ्ग;
 		}
 
-		if (_items[_update_index].cache_state == State::Error) {
+		सचे (वस्तूनि[_update_index].cache_state == State::Error) {
 			PX4_ERR("Caching: item %" PRIu8 ", index %" PRIu32", status %" PRIu8,
-				_items[_update_index].response.item, _items[_update_index].response.index,
-				_items[_update_index].response.status);
+				वस्तूनि[_update_index].response.item, वस्तूनि[_update_index].response.index,
+				वस्तूनि[_update_index].response.status);
 
 			changeUpdateIndex();
 		}
@@ -754,34 +754,34 @@ void DatamanCache::update()
 	}
 }
 
-void DatamanCache::resetCacheState()
+शून्य DatamanCache::resetCacheState()
 {
 	_update_index = 0;
 	_item_counter = 0;
 	_load_index = 0;
 }
 
-void DatamanCache::invalidate()
+शून्य DatamanCache::invalidate()
 {
-	for (uint32_t i = 0; i < _num_items; ++i) {
-		_items[i].cache_state = State::Idle;
+	अत्थाय (uint32_t i = 0; i < अङ्कः_वस्तूनि_2; ++i) {
+		वस्तूनि[i].cache_state = State::Idle;
 	}
 
 	resetCacheState();
 	_client.abortCurrentOperation();
 }
 
-inline void DatamanCache::changeUpdateIndex()
+अन्तःस्थ शून्य DatamanCache::changeUpdateIndex()
 {
-	if (_num_items == 0) {
+	सचे (अङ्कः_वस्तूनि_2 == 0) {
 		_update_index = 0;
 		_item_counter = 0;
-		return;
+		पटिनिवत्त;
 	}
 
-	_update_index = (_update_index + 1) % _num_items;
+	_update_index = (_update_index + 1) % अङ्कः_वस्तूनि_2;
 
-	if (_item_counter > 0) {
+	सचे (_item_counter > 0) {
 		--_item_counter;
 	}
 }

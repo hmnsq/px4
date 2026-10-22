@@ -31,57 +31,57 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "AdsbConflict.h"
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव "AdsbConflict.h"
 
-#include <parameters/param.h>
+#अन्तर्भाव <parameters/param.h>
 
-#include <lib/geo/geo.h>
-#include <lib/mathlib/mathlib.h>
-#include <limits>
+#अन्तर्भाव <lib/geo/geo.h>
+#अन्तर्भाव <lib/mathlib/mathlib.h>
+#अन्तर्भाव <limits>
 
-struct RelativeTrafficScenario {
-	float distance_m;
-	float bearing_rad;
-	float altitude_offset_m;
-	float heading_rad;
-	float hor_speed_m_s;
-	float ver_speed_up_m_s;
+संरचना RelativeTrafficScenario {
+	भिन्न distance_m;
+	भिन्न bearing_rad;
+	भिन्न altitude_offset_m;
+	भिन्न heading_rad;
+	भिन्न hor_speed_m_s;
+	भिन्न ver_speed_up_m_s;
 };
 
-class AdsbConflictTest : public ::testing::Test
+वग्ग AdsbConflictTest : सार्वजनिक ::testing::Test
 {
-protected:
-	const matrix::Vector2d uav_lat_lon_{32.617013, -96.490564};
-	const float uav_alt_{1000.f};
-	const matrix::Vector3f stationary_uav_vel_ned_{0.f, 0.f, 0.f};
+रक्षित:
+	ध्रुव matrix::Vector2d uav_lat_lon_{32.617013, -96.490564};
+	ध्रुव भिन्न uav_alt_{1000.f};
+	ध्रुव matrix::Vector3f stationary_uav_vel_ned_{0.f, 0.f, 0.f};
 
-	void SetUp() override
+	शून्य SetUp() override
 	{
-		param_control_autosave(false);
+		param_control_autosave(मिच्छा);
 		param_reset_all();
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#सचे defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 		set_f3442_params(20.f, 10.f, 100.f, 50.f, 30, 40);
-#else
+#अञ्ञथा
 		set_crosstrack_params(500.f, 500.f, 60);
 #endif // CONFIG_NAVIGATOR_ADSB_F3442
 	}
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
-	void set_f3442_params(float nmac_radius, float nmac_height, float wc_radius,
-			      float wc_height, int nmac_latency_s, int wc_latency_s)
+#सचे defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+	शून्य set_f3442_params(भिन्न nmac_radius, भिन्न nmac_height, भिन्न wc_radius,
+			      भिन्न wc_height, पूर्णाङ्क nmac_latency_s, पूर्णाङ्क wc_latency_s)
 	{
 		param_set(param_handle(px4::params::DAA_LVL_CRIT_RAD), &nmac_radius);
 		param_set(param_handle(px4::params::DAA_LVL_CRIT_HGT), &nmac_height);
-		param_set(param_handle(px4::params::DAA_LVL_HIGH_RAD), &wc_radius);
-		param_set(param_handle(px4::params::DAA_LVL_HIGH_HGT), &wc_height);
+		param_set(param_handle(px4::params::DAA_LVL_उच्चः_RAD), &wc_radius);
+		param_set(param_handle(px4::params::DAA_LVL_उच्चः_HGT), &wc_height);
 		param_set(param_handle(px4::params::DAA_LVL_MED_TIME), &nmac_latency_s);
-		param_set(param_handle(px4::params::DAA_LVL_LOW_TIME), &wc_latency_s);
+		param_set(param_handle(px4::params::DAA_LVL_नीचः_TIME), &wc_latency_s);
 	}
 #endif // CONFIG_NAVIGATOR_ADSB_F3442
 
-	void set_crosstrack_params(float horizontal_separation_m,
-				   float vertical_separation_m, int collision_time_s)
+	शून्य set_crosstrack_params(भिन्न horizontal_separation_m,
+				   भिन्न vertical_separation_m, पूर्णाङ्क collision_time_s)
 	{
 		param_set(param_handle(px4::params::NAV_TRAFF_A_HOR), &horizontal_separation_m);
 		param_set(param_handle(px4::params::NAV_TRAFF_A_VER), &vertical_separation_m);
@@ -89,7 +89,7 @@ protected:
 	}
 
 	// Build a traffic report from a relative encounter against the fixed ownship state.
-	transponder_report_s create_relative_report(const RelativeTrafficScenario &scenario)
+	transponder_report_s create_relative_report(ध्रुव RelativeTrafficScenario &scenario)
 	{
 		transponder_report_s report{};
 		report.timestamp = hrt_absolute_time();
@@ -99,82 +99,82 @@ protected:
 		report.heading = scenario.heading_rad;
 		report.hor_velocity = scenario.hor_speed_m_s;
 		report.ver_velocity = scenario.ver_speed_up_m_s;
-		return report;
+		पटिनिवत्त report;
 	}
 
-	daa_input_s create_daa_input(const matrix::Vector2d &uav_lat_lon, const float uav_alt,
-				     const matrix::Vector3f &uav_vel_ned, const transponder_report_s &report) const
+	daa_निवेशः_s create_daa_निवेशः(ध्रुव matrix::Vector2d &uav_lat_lon, ध्रुव भिन्न uav_alt,
+				     ध्रुव matrix::Vector3f &uav_vel_ned, ध्रुव transponder_report_s &report) ध्रुव
 	{
-		daa_input_s daa_input{};
-		daa_input.uav_lat_lon = uav_lat_lon;
-		daa_input.uav_alt = uav_alt;
-		daa_input.uav_vel_ned = uav_vel_ned;
-		daa_input.transponder_report = report;
-		return daa_input;
+		daa_निवेशः_s daa_निवेशः{};
+		daa_निवेशः.uav_lat_lon = uav_lat_lon;
+		daa_निवेशः.uav_alt = uav_alt;
+		daa_निवेशः.uav_vel_ned = uav_vel_ned;
+		daa_निवेशः.transponder_report = report;
+		पटिनिवत्त daa_निवेशः;
 	}
 };
 
 TEST_F(AdsbConflictTest, RejectsInvalidAircraftState)
 {
 	AdsbConflict adsb_conflict;
-	const RelativeTrafficScenario valid_traffic{200.f, math::radians(90.f), 0.f, 0.f, 30.f, 0.f};
+	ध्रुव RelativeTrafficScenario valid_traffic{200.f, math::radians(90.f), 0.f, 0.f, 30.f, 0.f};
 
 	detect_and_avoid_s daa_output{};
 	transponder_report_s report = create_relative_report(valid_traffic);
-	const float nan = std::numeric_limits<float>::quiet_NaN();
-	const double nan_d = std::numeric_limits<double>::quiet_NaN();
-	const float inf = std::numeric_limits<float>::infinity();
+	ध्रुव भिन्न nan = std::numeric_limits<भिन्न>::quiet_NaN();
+	ध्रुव द्विगुण nan_d = std::numeric_limits<द्विगुण>::quiet_NaN();
+	ध्रुव भिन्न inf = std::numeric_limits<भिन्न>::infinity();
 
 	// non-finite ownship coordinate
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(matrix::Vector2d(nan_d, uav_lat_lon_(1)), uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_निवेशः(matrix::Vector2d(nan_d, uav_lat_lon_(1)), uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(matrix::Vector2d(uav_lat_lon_(0), nan_d), uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_निवेशः(matrix::Vector2d(uav_lat_lon_(0), nan_d), uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(matrix::Vector2d(90.1, uav_lat_lon_(1)), uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_निवेशः(matrix::Vector2d(90.1, uav_lat_lon_(1)), uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(matrix::Vector2d(uav_lat_lon_(0), -180.1), uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_निवेशः(matrix::Vector2d(uav_lat_lon_(0), -180.1), uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 
 	report.lat = nan_d;
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_निवेशः(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 	report = create_relative_report(valid_traffic);
 	report.lon = 180.1;
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_निवेशः(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 
 	report = create_relative_report(valid_traffic);
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, nan,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_निवेशः(uav_lat_lon_, nan,
 			stationary_uav_vel_ned_, report), daa_output));
 	report.altitude = inf;
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_निवेशः(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 
 	report = create_relative_report(valid_traffic);
 	report.hor_velocity = inf;
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_निवेशः(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 	report.hor_velocity = -1.f;
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_निवेशः(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 
 	report = create_relative_report(valid_traffic);
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_निवेशः(uav_lat_lon_, uav_alt_,
 			matrix::Vector3f(0.f, nan, 0.f), report), daa_output));
 }
 
-#if !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
+#सचे !defined(CONFIG_NAVIGATOR_ADSB_F3442) || !CONFIG_NAVIGATOR_ADSB_F3442
 TEST_F(AdsbConflictTest, CrosstrackRejectsNonFiniteTrafficHeading)
 {
 	AdsbConflict adsb_conflict;
-	const RelativeTrafficScenario approaching_traffic{200.f, math::radians(90.f), 0.f, math::radians(270.f), 30.f, 0.f};
+	ध्रुव RelativeTrafficScenario approaching_traffic{200.f, math::radians(90.f), 0.f, math::radians(270.f), 30.f, 0.f};
 
 	detect_and_avoid_s daa_output{};
 	transponder_report_s report = create_relative_report(approaching_traffic);
-	const float nan = std::numeric_limits<float>::quiet_NaN();
+	ध्रुव भिन्न nan = std::numeric_limits<भिन्न>::quiet_NaN();
 
 	report.heading = nan;
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_निवेशः(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 }
 #endif // !CONFIG_NAVIGATOR_ADSB_F3442
@@ -183,13 +183,13 @@ TEST_F(AdsbConflictTest, CrosstrackRejectsNonFiniteTrafficHeading)
 TEST_F(AdsbConflictTest, UsesBuiltStandardForParamValidation)
 {
 	AdsbConflict adsb_conflict;
-	constexpr float invalid_bound{-1.f};
+	constexpr भिन्न invalid_bound{-1.f};
 
 	EXPECT_TRUE(adsb_conflict.try_updating_params());
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#सचे defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	set_f3442_params(invalid_bound, 10.f, 100.f, 50.f, 30, 40);
-#else
+#अञ्ञथा
 	set_crosstrack_params(invalid_bound, 500.f, 60);
 #endif // CONFIG_NAVIGATOR_ADSB_F3442
 
@@ -200,21 +200,21 @@ TEST_F(AdsbConflictTest, UsesBuiltStandardForParamValidation)
 TEST_F(AdsbConflictTest, DelegatesToBuiltStandardAndForwardsOutput)
 {
 	AdsbConflict adsb_conflict;
-	const RelativeTrafficScenario approaching_traffic{19.f, math::radians(90.f), 9.f, math::radians(270.f), 5.f, 0.f};
-	const transponder_report_s report = create_relative_report(approaching_traffic);
+	ध्रुव RelativeTrafficScenario approaching_traffic{19.f, math::radians(90.f), 9.f, math::radians(270.f), 5.f, 0.f};
+	ध्रुव transponder_report_s report = create_relative_report(approaching_traffic);
 
 	detect_and_avoid_s daa_output{};
 
 	ASSERT_TRUE(adsb_conflict.try_updating_params());
-	ASSERT_TRUE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	ASSERT_TRUE(adsb_conflict.calculate_daa_output(create_daa_निवेशः(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#सचे defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	EXPECT_EQ(daa_output.conflict_level, detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL);
 	EXPECT_NEAR(daa_output.aircraft_dist_hor, approaching_traffic.distance_m, 0.1f);
 	EXPECT_NEAR(daa_output.aircraft_dist_vert, approaching_traffic.altitude_offset_m, 0.1f);
-#else
-	EXPECT_EQ(daa_output.conflict_level, detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH);
+#अञ्ञथा
+	EXPECT_EQ(daa_output.conflict_level, detect_and_avoid_s::DAA_CONFLICT_LVL_उच्चः);
 	EXPECT_NEAR(daa_output.aircraft_dist_vert, approaching_traffic.altitude_offset_m, 0.1f);
 	EXPECT_LT(fabsf(daa_output.aircraft_dist_hor), 500.f);
 #endif // CONFIG_NAVIGATOR_ADSB_F3442

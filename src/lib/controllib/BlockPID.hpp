@@ -39,52 +39,52 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
 /**
  * A proportional-integral-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPID: public SuperBlock
+वग्ग __EXPORT BlockPID: सार्वजनिक SuperBlock
 {
-public:
+सार्वजनिक:
 // methods
-	BlockPID(SuperBlock *parent, const char *name) :
+	BlockPID(SuperBlock *parent, ध्रुव वर्ण *name) :
 		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kI(this, "I"),
-		_kD(this, "D")
+		_integral(एतत्, "I"),
+		_derivative(एतत्, "D"),
+		_kP(एतत्, "P"),
+		_kI(एतत्, "I"),
+		_kD(एतत्, "D")
 	{}
-	virtual ~BlockPID() = default;
-	float update(float input)
+	आभास ~BlockPID() = स्वभाव;
+	भिन्न update(भिन्न निवेशः)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input) +
-		       getKD() * getDerivative().update(input);
+		पटिनिवत्त getKP() * निवेशः +
+		       getKI() * getIntegral().update(निवेशः) +
+		       getKD() * getDerivative().update(निवेशः);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	float getKD() { return _kD.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
+	भिन्न getKP() { पटिनिवत्त _kP.get(); }
+	भिन्न getKI() { पटिनिवत्त _kI.get(); }
+	भिन्न getKD() { पटिनिवत्त _kD.get(); }
+	BlockIntegral &getIntegral() { पटिनिवत्त _integral; }
+	BlockDerivative &getDerivative() { पटिनिवत्त _derivative; }
+गुप्त:
 // attributes
 	BlockIntegral _integral;
 	BlockDerivative _derivative;

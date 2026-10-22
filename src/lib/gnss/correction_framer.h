@@ -66,28 +66,28 @@
 
 #pragma once
 
-#include <px4_boardconfig.h> // CONFIG_GPS_SPARTN
+#अन्तर्भाव <px4_boardconfig.h> // CONFIG_GPS_SPARTN
 
-#include <cstdint>
-#include <cstddef>
+#अन्तर्भाव <cstdint>
+#अन्तर्भाव <cstddef>
 
-#include "rtcm.h"
-#include "ubx.h"
+#अन्तर्भाव "rtcm.h"
+#अन्तर्भाव "ubx.h"
 
-#if defined(CONFIG_GPS_SPARTN)
+#सचे defined(CONFIG_GPS_SPARTN)
 # include "spartn.h"
 #endif
 
 namespace gnss
 {
 
-enum class CorrectionProtocol : uint8_t {
+गणना class CorrectionProtocol : uint8_t {
 	Rtcm3,
 	Spartn,
 	Ubx,
 };
 
-struct CorrectionFramerStats {
+संरचना CorrectionFramerStats {
 	uint32_t messages_parsed;   ///< Frames successfully parsed and consumed
 	uint32_t crc_errors;        ///< Frames rejected by their CRC / checksum
 	uint32_t bytes_discarded;   ///< Bytes discarded while searching for a frame
@@ -99,20 +99,20 @@ struct CorrectionFramerStats {
 
 class CorrectionFramer
 {
-public:
-	static constexpr size_t MAX_FRAME_LEN =
-#if defined(CONFIG_GPS_SPARTN)
+सार्वजनिक:
+	स्थिर constexpr size_t MAX_FRAME_LEN =
+#सचे defined(CONFIG_GPS_SPARTN)
 		(SPARTN_MAX_FRAME_LEN > RTCM3_MAX_FRAME_LEN)
 		? ((SPARTN_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? SPARTN_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN)
 		: ((RTCM3_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? RTCM3_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN);
-#else
+#अञ्ञथा
 		(RTCM3_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? RTCM3_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN;
 #endif
 
 	// Enough for 2 max-size frames to handle overlap
-	static constexpr size_t BUFFER_SIZE = MAX_FRAME_LEN * 2;
+	स्थिर constexpr size_t BUFFER_SIZE = MAX_FRAME_LEN * 2;
 
-	CorrectionFramer() = default;
+	CorrectionFramer() = स्वभाव;
 
 	/**
 	 * Add data to the framer buffer.
@@ -121,7 +121,7 @@ public:
 	 * @param len  Number of bytes to add
 	 * @return     Number of bytes actually added (may be less if the buffer is full)
 	 */
-	size_t addData(const uint8_t *data, size_t len);
+	size_t addData(ध्रुव uint8_t *data, size_t len);
 
 	/**
 	 * Get a pointer to the next complete frame without consuming it.
@@ -135,40 +135,40 @@ public:
 	 * @return             Pointer to the frame, or nullptr if no complete valid
 	 *                     frame is available
 	 */
-	const uint8_t *getNextMessage(size_t *out_len, CorrectionProtocol *out_protocol = nullptr);
+	ध्रुव uint8_t *getNextMessage(size_t *out_len, CorrectionProtocol *out_protocol = nullptr);
 
 	/**
 	 * Consume (remove) the frame returned by the preceding getNextMessage().
 	 *
 	 * @param len Number of bytes to remove, as returned by getNextMessage()
 	 */
-	void consumeMessage(size_t len);
+	शून्य consumeMessage(size_t len);
 
-	size_t bufferedBytes() const { return _buffer_len; }
+	size_t bufferedBytes() ध्रुव { पटिनिवत्त _buffer_len; }
 
-	CorrectionFramerStats getStats() const
+	CorrectionFramerStats getStats() ध्रुव
 	{
-		return {_messages_parsed, _crc_errors, _bytes_discarded, _total_frame_bytes,
+		पटिनिवत्त {_messages_parsed, _crc_errors, _bytes_discarded, _total_frame_bytes,
 			_rtcm3_messages, _spartn_messages, _ubx_messages};
 	}
 
-private:
-	enum class Probe {
+गुप्त:
+	गणना class Probe {
 		NeedMoreData,  ///< Could still become a valid frame, wait for more bytes
 		InvalidHeader, ///< Cannot be a frame start
 		CrcError,      ///< Frame is complete but failed its CRC / checksum
 		Complete,
 	};
 
-	static bool isPreamble(uint8_t byte);
+	स्थिर bool isPreamble(uint8_t byte);
 
-	Probe probeRtcm3(size_t *frame_len) const;
-	Probe probeUbx(size_t *frame_len) const;
-#if defined(CONFIG_GPS_SPARTN)
-	Probe probeSpartn(size_t *frame_len) const;
+	Probe probeRtcm3(size_t *frame_len) ध्रुव;
+	Probe probeUbx(size_t *frame_len) ध्रुव;
+#सचे defined(CONFIG_GPS_SPARTN)
+	Probe probeSpartn(size_t *frame_len) ध्रुव;
 #endif
 
-	void discardBytes(size_t count);
+	शून्य discardBytes(size_t गणनम्);
 
 	uint8_t  _buffer[BUFFER_SIZE] {};
 	size_t   _buffer_len {0};

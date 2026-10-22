@@ -37,100 +37,100 @@
  * Test library code
  */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
+#अन्तर्भाव <stdio.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <stdlib.h>
 
-#include <px4_platform_common/defines.h>
+#अन्तर्भाव <px4_platform_common/defines.h>
 
-#include "test.hpp"
+#अन्तर्भाव "test.hpp"
 
-bool __EXPORT equal(float a, float b, float epsilon)
+तार्किक __EXPORT equal(भिन्न a, भिन्न b, भिन्न epsilon)
 {
-	float diff = fabsf(a - b);
+	भिन्न diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	सचे (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", द्विगुण(a), द्विगुण(b));
+		पटिनिवत्त मिच्छा;
 
-	} else { return true; }
+	} अञ्ञथा { पटिनिवत्त सच्च; }
 }
 
-bool __EXPORT greater_than(float a, float b)
+तार्किक __EXPORT greater_than(भिन्न a, भिन्न b)
 {
-	if (a > b) {
-		return true;
+	सचे (a > b) {
+		पटिनिवत्त सच्च;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} अञ्ञथा {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", द्विगुण(a), द्विगुण(b));
+		पटिनिवत्त मिच्छा;
 	}
 }
 
-bool __EXPORT less_than(float a, float b)
+तार्किक __EXPORT less_than(भिन्न a, भिन्न b)
 {
-	if (a < b) {
-		return true;
+	सचे (a < b) {
+		पटिनिवत्त सच्च;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} अञ्ञथा {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", द्विगुण(a), द्विगुण(b));
+		पटिनिवत्त मिच्छा;
 	}
 }
 
-bool __EXPORT greater_than_or_equal(float a, float b)
+तार्किक __EXPORT greater_than_or_equal(भिन्न a, भिन्न b)
 {
-	if (a >= b) {
-		return true;
+	सचे (a >= b) {
+		पटिनिवत्त सच्च;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} अञ्ञथा {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", द्विगुण(a), द्विगुण(b));
+		पटिनिवत्त मिच्छा;
 	}
 }
 
-bool __EXPORT less_than_or_equal(float a, float b)
+तार्किक __EXPORT less_than_or_equal(भिन्न a, भिन्न b)
 {
-	if (a <= b) {
-		return true;
+	सचे (a <= b) {
+		पटिनिवत्त सच्च;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} अञ्ञथा {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", द्विगुण(a), द्विगुण(b));
+		पटिनिवत्त मिच्छा;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+शून्य __EXPORT float2SigExp(ध्रुव भिन्न &अङ्कः, भिन्न &sig, पूर्णाङ्क &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	सचे (!PX4_ISFINITE(अङ्कः)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		पटिनिवत्त;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	सचे (fabsf(अङ्कः) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		पटिनिवत्त;
 	}
 
-	exp = log10f(fabsf(num));
+	exp = log10f(fabsf(अङ्कः));
 
-	if (exp > 0) {
+	सचे (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} अञ्ञथा {
 		exp = floor(exp);
 	}
 
-	sig = num;
+	sig = अङ्कः;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	सचे (exp > 0) {
+		अत्थाय (पूर्णाङ्क i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} अञ्ञथा {
+		अत्थाय (पूर्णाङ्क i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

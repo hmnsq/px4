@@ -60,23 +60,23 @@
 #define PX4_COURSETOAIRSPEEDREFMAPPER_HPP
 
 
-#include <matrix/math.hpp>
-#include <lib/mathlib/mathlib.h>
+#अन्तर्भाव <matrix/math.hpp>
+#अन्तर्भाव <lib/mathlib/mathlib.h>
 
-class CourseToAirspeedRefMapper
+वग्ग CourseToAirspeedRefMapper
 {
-public:
+सार्वजनिक:
 
 	CourseToAirspeedRefMapper() {};
 
-	~CourseToAirspeedRefMapper() = default;
+	~CourseToAirspeedRefMapper() = स्वभाव;
 
-	float mapCourseSetpointToHeadingSetpoint(const float bearing_setpoint,
-			const matrix::Vector2f &wind_vel, float airspeed_sp) const;
-	float getMinAirspeedForCurrentBearing(const float bearing_setpoint,
-					      const matrix::Vector2f &wind_vel, float max_airspeed, float min_ground_speed) const;
+	भिन्न mapCourseSetpointToHeadingSetpoint(ध्रुव भिन्न bearing_setpoint,
+			ध्रुव matrix::Vector2f &wind_vel, भिन्न airspeed_sp) ध्रुव;
+	भिन्न getMinAirspeedForCurrentBearing(ध्रुव भिन्न bearing_setpoint,
+					      ध्रुव matrix::Vector2f &wind_vel, भिन्न max_airspeed, भिन्न min_ground_speed) ध्रुव;
 
-private:
+गुप्त:
 	/*
 	 * Projection of the air velocity vector onto the bearing line considering
 	 * a connected wind triangle.
@@ -85,7 +85,7 @@ private:
 	 * @param[in] wind_cross_bearing 2D cross product of wind velocity and bearing vector [m/s]
 	 * @return Projection of air velocity vector on bearing vector [m/s]
 	 */
-	float projectAirspOnBearing(const float airspeed, const float wind_cross_bearing) const;
+	भिन्न projectAirspOnBearing(ध्रुव भिन्न airspeed, ध्रुव भिन्न wind_cross_bearing) ध्रुव;
 	/*
 	 * Check for binary bearing feasibility.
 	 *
@@ -95,8 +95,8 @@ private:
 	 * @param[in] wind_speed Wind speed [m/s]
 	 * @return Binary bearing feasibility: 1 if feasible, 0 if infeasible
 	 */
-	int bearingIsFeasible(const float wind_cross_bearing, const float wind_dot_bearing, const float airspeed,
-			      const float wind_speed) const;
+	पूर्णाङ्क bearingIsFeasible(ध्रुव भिन्न wind_cross_bearing, ध्रुव भिन्न wind_dot_bearing, ध्रुव भिन्न airspeed,
+			      ध्रुव भिन्न wind_speed) ध्रुव;
 	/*
 	 * Air velocity solution for a given wind velocity and bearing vector assuming
 	 * a "high speed" (not backwards) solution in the excess wind case.
@@ -106,8 +106,8 @@ private:
 	 * @param[in] bearing_vec Bearing vector
 	 * @return Air velocity reference vector [m/s]
 	 */
-	matrix::Vector2f solveWindTriangle(const float wind_cross_bearing, const float airsp_dot_bearing,
-					   const matrix::Vector2f &bearing_vec) const;
+	matrix::Vector2f solveWindTriangle(ध्रुव भिन्न wind_cross_bearing, ध्रुव भिन्न airsp_dot_bearing,
+					   ध्रुव matrix::Vector2f &bearing_vec) ध्रुव;
 	/*
 	 * Air velocity solution for an infeasible bearing.
 	 *
@@ -117,8 +117,8 @@ private:
 	 * @param[in] airspeed Vehicle true airspeed [m/s]
 	 * @return Air velocity vector [m/s]
 	 */
-	matrix::Vector2f infeasibleAirVelRef(const matrix::Vector2f &wind_vel, const matrix::Vector2f &bearing_vec,
-					     const float wind_speed, const float airspeed) const;
+	matrix::Vector2f infeasibleAirVelRef(ध्रुव matrix::Vector2f &wind_vel, ध्रुव matrix::Vector2f &bearing_vec,
+					     ध्रुव भिन्न wind_speed, ध्रुव भिन्न airspeed) ध्रुव;
 };
 
 #endif //PX4_COURSETOAIRSPEEDREFMAPPER_HPP

@@ -33,61 +33,61 @@
 
 #pragma once
 
-#include "ParamLayer.h"
+#अन्तर्भाव "ParamLayer.h"
 
-class ConstLayer : public ParamLayer
+class ConstLayer : सार्वजनिक ParamLayer
 {
-public:
+सार्वजनिक:
 
-	ConstLayer() = default;
+	ConstLayer() = स्वभाव;
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_मानम्_u मानम्) override
 	{
-		return false;
+		पटिनिवत्त false;
 	}
 
-	bool contains(param_t param) const override
+	bool contains(param_t param) ध्रुव override
 	{
-		return param < PARAM_COUNT;
+		पटिनिवत्त param < PARAM_गणनम्;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_गणनम्> containedAsBitset() ध्रुव override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
+		px4::AtomicBitset<PARAM_गणनम्> set;
 
-		for (int i = 0; i < PARAM_COUNT; i++) {
+		अत्थाय (पूर्णाङ्क i = 0; i < PARAM_गणनम्; i++) {
 			set.set(i);
 		}
 
-		return set;
+		पटिनिवत्त set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_मानम्_u get(param_t param) ध्रुव override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		सचे (param >= PARAM_गणनम्) {
+			पटिनिवत्त {0};
 		}
 
-		return px4::parameters[param].val;
+		पटिनिवत्त px4::parameters[param].val;
 	}
 
-	void reset(param_t param) override
+	शून्य reset(param_t param) override
 	{
 		// Do nothing
 	}
 
-	void refresh(param_t param) override
+	शून्य refresh(param_t param) override
 	{
 		// Do nothing
 	}
 
-	int size() const override
+	पूर्णाङ्क size() ध्रुव override
 	{
-		return PARAM_COUNT;
+		पटिनिवत्त PARAM_गणनम्;
 	}
 
-	int byteSize() const override
+	पूर्णाङ्क byteSize() ध्रुव override
 	{
-		return PARAM_COUNT * sizeof(param_info_s);
+		पटिनिवत्त PARAM_गणनम् * परिमाण(param_info_s);
 	}
 };

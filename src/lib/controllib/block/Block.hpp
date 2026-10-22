@@ -39,85 +39,85 @@
 
 #pragma once
 
-#include <containers/List.hpp>
-#include <controllib/block/BlockParam.hpp>
-#include <cstdint>
+#अन्तर्भाव <containers/List.hpp>
+#अन्तर्भाव <controllib/block/BlockParam.hpp>
+#अन्तर्भाव <cstdint>
 
-namespace control
+नामाकाश control
 {
 
-static constexpr uint8_t maxChildrenPerBlock = 100;
-static constexpr uint8_t maxParamsPerBlock = 110;
-static constexpr uint8_t blockNameLengthMax = 40;
+स्थिर constexpr uint8_t maxChildrenPerBlock = 100;
+स्थिर constexpr uint8_t maxParamsPerBlock = 110;
+स्थिर constexpr uint8_t blockNameLengthMax = 40;
 
 // forward declaration
-class BlockParamBase;
-class SuperBlock;
+वग्ग BlockParamBase;
+वग्ग SuperBlock;
 
 /**
  */
-class __EXPORT Block : public ListNode<Block *>
+वग्ग __EXPORT Block : सार्वजनिक List_ग्रन्थिः<Block *>
 {
-public:
-	friend class BlockParamBase;
+सार्वजनिक:
+	friend वग्ग BlockParamBase;
 
-	Block(SuperBlock *parent, const char *name);
-	virtual ~Block() = default;
+	Block(SuperBlock *parent, ध्रुव वर्ण *name);
+	आभास ~Block() = स्वभाव;
 
 	// no copy, assignment, move, move assignment
-	Block(const Block &) = delete;
-	Block &operator=(const Block &) = delete;
+	Block(ध्रुव Block &) = delete;
+	Block &operator=(ध्रुव Block &) = delete;
 	Block(Block &&) = delete;
 	Block &operator=(Block &&) = delete;
 
-	void getName(char *name, size_t n);
+	शून्य getName(वर्ण *name, size_t n);
 
-	virtual void updateParams();
+	आभास शून्य updateParams();
 
-	virtual void setDt(float dt) { _dt = dt; }
-	float getDt() { return _dt; }
+	आभास शून्य setDt(भिन्न dt) { _dt = dt; }
+	भिन्न getDt() { पटिनिवत्त _dt; }
 
-protected:
+रक्षित:
 
-	virtual void updateParamsSubclass() {}
+	आभास शून्य updateParamsSubclass() {}
 
-	SuperBlock *getParent() { return _parent; }
-	List<BlockParamBase *> &getParams() { return _params; }
+	SuperBlock *getParent() { पटिनिवत्त _parent; }
+	List<BlockParamBase *> &getParams() { पटिनिवत्त _params; }
 
-	const char *_name;
+	ध्रुव वर्ण *_name;
 	SuperBlock *_parent;
-	float _dt{0.0f};
+	भिन्न _dt{0.0f};
 
 	List<BlockParamBase *> _params;
 };
 
-class __EXPORT SuperBlock :
-	public Block
+वग्ग __EXPORT SuperBlock :
+	सार्वजनिक Block
 {
-public:
-	friend class Block;
+सार्वजनिक:
+	friend वग्ग Block;
 
-	SuperBlock(SuperBlock *parent, const char *name) : Block(parent, name) {}
-	~SuperBlock() = default;
+	SuperBlock(SuperBlock *parent, ध्रुव वर्ण *name) : Block(parent, name) {}
+	~SuperBlock() = स्वभाव;
 
 	// no copy, assignment, move, move assignment
-	SuperBlock(const SuperBlock &) = delete;
-	SuperBlock &operator=(const SuperBlock &) = delete;
+	SuperBlock(ध्रुव SuperBlock &) = delete;
+	SuperBlock &operator=(ध्रुव SuperBlock &) = delete;
 	SuperBlock(SuperBlock &&) = delete;
 	SuperBlock &operator=(SuperBlock &&) = delete;
 
-	void setDt(float dt) override;
+	शून्य setDt(भिन्न dt) override;
 
-	void updateParams() override
+	शून्य updateParams() override
 	{
 		Block::updateParams();
 
-		if (getChildren().getHead() != nullptr) { updateChildParams(); }
+		सचे (getChildren().getHead() != nullptr) { updateChildParams(); }
 	}
 
-protected:
-	List<Block *> &getChildren() { return _children; }
-	void updateChildParams();
+रक्षित:
+	List<Block *> &getChildren() { पटिनिवत्त _children; }
+	शून्य updateChildParams();
 
 	List<Block *> _children;
 };

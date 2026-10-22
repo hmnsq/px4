@@ -33,92 +33,92 @@
 
 #pragma once
 
-#include <px4_platform_common/atomic_bitset.h>
-#include "ParamLayer.h"
+#अन्तर्भाव <px4_platform_common/atomic_bitset.h>
+#अन्तर्भाव "ParamLayer.h"
 
-class ExhaustiveLayer : public ParamLayer
+class ExhaustiveLayer : सार्वजनिक ParamLayer
 {
-public:
+सार्वजनिक:
 	ExhaustiveLayer(ParamLayer *parent) : ParamLayer(parent)
 	{
 		// refresh all values
-		for (param_t i = 0; i < PARAM_COUNT; i++) {
-			_values[i] = parent->get(i);
+		अत्थाय (param_t i = 0; i < PARAM_गणनम्; i++) {
+			मानानि_3[i] = parent->get(i);
 		}
 	}
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_मानम्_u मानम्) override
 	{
-		if (param >= PARAM_COUNT) {
-			return false;
+		सचे (param >= PARAM_गणनम्) {
+			पटिनिवत्त false;
 		}
 
 		{
-			const AtomicTransaction transaction;
-			_values[param] = value;
+			ध्रुव AtomicTransaction transaction;
+			मानानि_3[param] = मानम्;
 			_ownership_set.set(param);
 		}
 
-		return true;
+		पटिनिवत्त true;
 	}
 
-	bool contains(param_t param) const override
+	bool contains(param_t param) ध्रुव override
 	{
-		return param < PARAM_COUNT && _ownership_set[param];
+		पटिनिवत्त param < PARAM_गणनम् && _ownership_set[param];
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_गणनम्> containedAsBitset() ध्रुव override
 	{
-		return _ownership_set;
+		पटिनिवत्त _ownership_set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_मानम्_u get(param_t param) ध्रुव override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		सचे (param >= PARAM_गणनम्) {
+			पटिनिवत्त {0};
 		}
 
-		const AtomicTransaction transaction;
+		ध्रुव AtomicTransaction transaction;
 		// We assume to have the correct values for all params, even without ownership.
 		// We expect that refresh was called when underlying defaults changed
-		return _values[param];
+		पटिनिवत्त मानानि_3[param];
 	}
 
-	void reset(param_t param) override
+	शून्य reset(param_t param) override
 	{
-		if (param >= PARAM_COUNT) {
-			return;
+		सचे (param >= PARAM_गणनम्) {
+			पटिनिवत्त;
 		}
 
-		const AtomicTransaction transaction;
-		_values[param] = _parent->get(param);
+		ध्रुव AtomicTransaction transaction;
+		मानानि_3[param] = _parent->get(param);
 		_ownership_set.set(param, false);
 	}
 
-	void refresh(param_t param) override
+	शून्य refresh(param_t param) override
 	{
 		_parent->refresh(param);
 		// in case we don't have ownership, and it changed below, we have to refresh our cache.
 		{
-			const AtomicTransaction transaction;
+			ध्रुव AtomicTransaction transaction;
 
-			if (!contains(param)) {
-				_values[param] = _parent->get(param);
+			सचे (!contains(param)) {
+				मानानि_3[param] = _parent->get(param);
 			}
 		}
 	}
 
-	int size() const override
+	पूर्णाङ्क size() ध्रुव override
 	{
-		return _ownership_set.count();
+		पटिनिवत्त _ownership_set.गणनम्();
 	}
 
-	int byteSize() const override
+	पूर्णाङ्क byteSize() ध्रुव override
 	{
-		return PARAM_COUNT * sizeof(param_value_u);
+		पटिनिवत्त PARAM_गणनम् * परिमाण(param_मानम्_u);
 	}
 
-private:
-	param_value_u _values[PARAM_COUNT];
-	px4::AtomicBitset<PARAM_COUNT> _ownership_set;
+गुप्त:
+	param_मानम्_u मानानि_3[PARAM_गणनम्];
+	px4::AtomicBitset<PARAM_गणनम्> _ownership_set;
 };
