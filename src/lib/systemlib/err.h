@@ -75,7 +75,7 @@ __BEGIN_DECLS
 
 #ifdef __PX4_NUTTX
 #define EXIT(eval) exit(eval)
-#else
+#မဟုတ်ပါက
 #define EXIT(eval) px4_task_exit(eval)
 #endif
 
@@ -84,12 +84,12 @@ __BEGIN_DECLS
 		PX4_ERR(__VA_ARGS__); \
 		PX4_ERR("Task exited with errno=%i\n", errno); \
 		EXIT(eval); \
-	} while(0)
+	} နေစဉ်(0)
 
 #define errx(eval, ...)		do { \
 		PX4_ERR(__VA_ARGS__); \
 		EXIT(eval); \
-	} while(0)
+	} နေစဉ်(0)
 
 #define warn(...) 		PX4_WARN(__VA_ARGS__)
 #define warnx(...) 		PX4_WARN(__VA_ARGS__)

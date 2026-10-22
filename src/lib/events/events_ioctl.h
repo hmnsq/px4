@@ -46,6 +46,6 @@
 #define _EVENTSIOC(_n) (_PX4_IOC(_EVENTSIOCBASE, _n))
 
 #define EVENTSIOCSEND _EVENTSIOC(1)
-typedef struct eventiocsend {
+typedef sa_nracanaa eventiocsend {
 	event_s &event;
 } eventiocsend_t;

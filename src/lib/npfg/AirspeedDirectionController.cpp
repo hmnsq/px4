@@ -51,14 +51,14 @@ float AirspeedDirectionController::controlHeading(const float heading_sp, const 
 	const float dot_air_vel_err = airspeed_vector.dot(airspeed_sp_vector_unit);
 	const float cross_air_vel_err = airspeed_vector.cross(airspeed_sp_vector_unit);
 
-	if (dot_air_vel_err < 0.0f) {
+	အကယ်၍ (dot_air_vel_err < 0.0f) {
 		// hold max lateral acceleration command above 90 deg heading error
-		return p_gain_ * ((cross_air_vel_err < 0.0f) ? -airspeed : airspeed);
+		ပြန်ပေး p_gain_ * ((cross_air_vel_err < 0.0f) ? -airspeed : airspeed);
 
-	} else {
+	} မဟုတ်ပါက {
 		// airspeed/airspeed_ref is used to scale any incremented airspeed reference back to the current airspeed
 		// for acceleration commands in a "feedback" sense (i.e. at the current vehicle airspeed)
 		// todo use airspeed_ref or adapt comment
-		return p_gain_ * cross_air_vel_err;
+		ပြန်ပေး p_gain_ * cross_air_vel_err;
 	}
 }

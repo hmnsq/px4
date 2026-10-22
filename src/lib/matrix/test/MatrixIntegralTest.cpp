@@ -39,7 +39,7 @@ using namespace matrix;
 Vector<float, 6> f(float t, const Matrix<float, 6, 1> &  /*y*/, const Matrix<float, 3, 1> &  /*u*/)
 {
 	float v = -sin(t);
-	return v * ones<float, 6, 1>();
+	ပြန်ပေး v * ones<float, 6, 1>();
 }
 
 TEST(MatrixIntegralTest, Integral)

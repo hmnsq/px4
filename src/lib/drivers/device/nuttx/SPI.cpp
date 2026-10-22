@@ -40,7 +40,7 @@
 
 #include "SPI.hpp"
 
-#if defined(CONFIG_SPI)
+#အကယ်၍ defined(CONFIG_SPI)
 
 #include <px4_platform_common/i2c_spi_buses.h>
 #include <px4_platform_common/px4_config.h>
@@ -53,7 +53,7 @@
 namespace device
 {
 
-SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
+SPI::SPI(uint8_t device_type, const var_na *name, ကိန်းပြည့် bus, uint32_t device, ga_nanaa spi_mode_e mode, uint32_t frequency) :
 	CDev(name, nullptr),
 	_device(device),
 	_mode(mode),
@@ -66,7 +66,7 @@ SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum s
 	// Use the 2. LSB byte as SPI address, which is non-zero for multiple instances of the same device on a bus
 	_device_id.devid_s.address = (uint8_t)(device >> 8);
 
-	if (!px4_spi_bus_requires_locking(bus)) {
+	အကယ်၍ (!px4_spi_bus_requires_locking(bus)) {
 		_locking_mode = LOCK_NONE;
 	}
 }
@@ -83,58 +83,58 @@ SPI::~SPI()
 	// XXX no way to let go of the bus...
 }
 
-int
+ကိန်းပြည့်
 SPI::init()
 {
 	/* attach to the spi bus */
-	if (_dev == nullptr) {
-		int bus = get_device_bus();
+	အကယ်၍ (_dev == nullptr) {
+		ကိန်းပြည့် bus = get_device_bus();
 
-		if (!board_has_bus(BOARD_SPI_BUS, bus)) {
-			return -ENOENT;
+		အကယ်၍ (!board_has_bus(BOARD_SPI_BUS, bus)) {
+			ပြန်ပေး -ENOENT;
 		}
 
 		_dev = px4_spibus_initialize(bus);
 	}
 
-	if (_dev == nullptr) {
+	အကယ်၍ (_dev == nullptr) {
 		DEVICE_DEBUG("failed to init SPI");
-		return -ENOENT;
+		ပြန်ပေး -ENOENT;
 	}
 
 	/* deselect device to ensure high to low transition of pin select */
 	SPI_SELECT(_dev, _device, false);
 
 	/* call the probe function to check whether the device is present */
-	int ret = probe();
+	ကိန်းပြည့် ret = probe();
 
-	if (ret != OK) {
+	အကယ်၍ (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		return ret;
+		ပြန်ပေး ret;
 	}
 
 	/* do base class init, which will create the device node, etc. */
 	ret = CDev::init();
 
-	if (ret != OK) {
+	အကယ်၍ (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		return ret;
+		ပြန်ပေး ret;
 	}
 
 	/* tell the world where we are */
 	DEVICE_DEBUG("on SPI bus %d at %"  PRId32 " (%"  PRId32 " KHz)", get_device_bus(), PX4_SPI_DEV_ID(_device),
 		     _frequency / 1000);
 
-	return PX4_OK;
+	ပြန်ပေး PX4_OK;
 }
 
-int
+ကိန်းပြည့်
 SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 {
-	int result;
+	ကိန်းပြည့် result;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	အကယ်၍ ((send == nullptr) && (recv == nullptr)) {
+		ပြန်ပေး -EINVAL;
 	}
 
 	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
@@ -142,28 +142,28 @@ SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 	/* lock the bus as required */
 	switch (mode) {
 	default:
-	case LOCK_PREEMPTION: {
+	pak_sa LOCK_PREEMPTION: {
 			irqstate_t state = px4_enter_critical_section();
 			result = _transfer(send, recv, len);
 			px4_leave_critical_section(state);
 		}
-		break;
+		bha_nga;
 
-	case LOCK_THREADS:
+	pak_sa LOCK_THREADS:
 		SPI_LOCK(_dev, true);
 		result = _transfer(send, recv, len);
 		SPI_LOCK(_dev, false);
-		break;
+		bha_nga;
 
-	case LOCK_NONE:
+	pak_sa LOCK_NONE:
 		result = _transfer(send, recv, len);
-		break;
+		bha_nga;
 	}
 
-	return result;
+	ပြန်ပေး result;
 }
 
-int
+ကိန်းပြည့်
 SPI::_transfer(uint8_t *send, uint8_t *recv, unsigned len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
@@ -177,16 +177,16 @@ SPI::_transfer(uint8_t *send, uint8_t *recv, unsigned len)
 	/* and clean up */
 	SPI_SELECT(_dev, _device, false);
 
-	return PX4_OK;
+	ပြန်ပေး PX4_OK;
 }
 
-int
+ကိန်းပြည့်
 SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 {
-	int result;
+	ကိန်းပြည့် result;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	အကယ်၍ ((send == nullptr) && (recv == nullptr)) {
+		ပြန်ပေး -EINVAL;
 	}
 
 	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
@@ -194,28 +194,28 @@ SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 	/* lock the bus as required */
 	switch (mode) {
 	default:
-	case LOCK_PREEMPTION: {
+	pak_sa LOCK_PREEMPTION: {
 			irqstate_t state = px4_enter_critical_section();
 			result = _transferhword(send, recv, len);
 			px4_leave_critical_section(state);
 		}
-		break;
+		bha_nga;
 
-	case LOCK_THREADS:
+	pak_sa LOCK_THREADS:
 		SPI_LOCK(_dev, true);
 		result = _transferhword(send, recv, len);
 		SPI_LOCK(_dev, false);
-		break;
+		bha_nga;
 
-	case LOCK_NONE:
+	pak_sa LOCK_NONE:
 		result = _transferhword(send, recv, len);
-		break;
+		bha_nga;
 	}
 
-	return result;
+	ပြန်ပေး result;
 }
 
-int
+ကိန်းပြည့်
 SPI::_transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
@@ -229,7 +229,7 @@ SPI::_transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 	/* and clean up */
 	SPI_SELECT(_dev, _device, false);
 
-	return PX4_OK;
+	ပြန်ပေး PX4_OK;
 }
 
 } // namespace device

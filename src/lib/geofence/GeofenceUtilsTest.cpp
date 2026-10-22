@@ -55,8 +55,8 @@ TEST(GeofenceUtilsTest, SegmentsCross)
 	EXPECT_EQ(SS::Cross, geofence_utils::segmentsIntersect(0, 0, 0, 100, -1, 1, 100, 1));
 
 	// Crossing at very shallow angle - not a problem in fixed point
-	const int D = 10'000'000;  // 100 km
-	const int d = 1;           // 1 cm
+	const ကိန်းပြည့် D = 10'000'000;  // 100 km
+	const ကိန်းပြည့် d = 1;           // 1 cm
 	EXPECT_EQ(SS::Cross, geofence_utils::segmentsIntersect(0, 0, D, 0, 0, -d, D, d));
 }
 
@@ -87,8 +87,8 @@ TEST(GeofenceUtilsTest, SegmentsDisjoint)
 	EXPECT_EQ(SS::Disjoint, geofence_utils::segmentsIntersect(0, 0, 300, 0, 1000, 1000, 4000, 2000));
 }
 
-struct SegmentIntersectionCase {
-	const char *name;
+sa_nracanaa SegmentIntersectionCase {
+	const var_na *name;
 	Vector2d a, b, c, d;
 	bool intersects;
 };
@@ -134,8 +134,8 @@ TEST_P(GeofenceSegmentIntersectionTest, SegmentsIntersectInclusive)
 	const auto &test = GetParam();
 
 	// Reversing endpoints or swapping the segments must not change the answer.
-	for (bool reverse_ab : {false, true}) {
-		for (bool reverse_cd : {false, true}) {
+	အတွက် (bool reverse_ab : {false, true}) {
+		အတွက် (bool reverse_cd : {false, true}) {
 			const auto &a = reverse_ab ? test.b : test.a;
 			const auto &b = reverse_ab ? test.a : test.b;
 			const auto &c = reverse_cd ? test.d : test.c;
@@ -151,13 +151,13 @@ INSTANTIATE_TEST_SUITE_P(GeofenceUtils, GeofenceSegmentIntersectionTest,
 			 ::testing::ValuesIn(kSegmentIntersectionCases),
 			 [](const ::testing::TestParamInfo<SegmentIntersectionCase> &test_info)
 {
-	return test_info.param.name;
+	ပြန်ပေး test_info.param.name;
 });
 
-struct PointSegmentDistanceCase {
-	const char *name;
+sa_nracanaa PointSegmentDistanceCase {
+	const var_na *name;
 	Vector2d point, a, b;
-	double distance_squared;
+	dviguu_na distance_squared;
 };
 
 static const PointSegmentDistanceCase kPointSegmentDistanceCases[] = {
@@ -191,7 +191,7 @@ INSTANTIATE_TEST_SUITE_P(GeofenceUtils, GeofencePointSegmentDistanceTest,
 			 ::testing::ValuesIn(kPointSegmentDistanceCases),
 			 [](const ::testing::TestParamInfo<PointSegmentDistanceCase> &test_info)
 {
-	return test_info.param.name;
+	ပြန်ပေး test_info.param.name;
 });
 
 TEST(GeofenceUtilsTest, PolygonIsCCW)
@@ -206,21 +206,21 @@ TEST(GeofenceUtilsTest, PolygonIsCCW)
 // (inside disallowed), under both polygon winding orders.
 // ===========================================================================
 
-constexpr int kMaxN = 8;
+constexpr ကိန်းပြည့် kMaxN = 8;
 
 // Check segment/polygon interior intersection under both winding direction &
 // both zone types. Note that the used lineSegmentIntersectsPolygon first adds
 // the polygon to the internal representation which canonicalises orientation.
 // So the internal convention (left = illegal) should hold, this is also what we
 // test here.
-void expectSegmentVsPolygon(const Vector2f *vertices, int n,
+void expectSegmentVsPolygon(const Vector2f *vertices, ကိန်းပြည့် n,
 			    const Vector2f &a, const Vector2f &b,
 			    bool intersects_inclusion, bool intersects_exclusion)
 {
 	ASSERT_LE(n, kMaxN);
 	Vector2f rev[kMaxN];
 
-	for (int i = 0; i < n; ++i) { rev[i] = vertices[n - 1 - i]; }
+	အတွက် (ကိန်းပြည့် i = 0; i < n; ++i) { rev[i] = vertices[n - 1 - i]; }
 
 	EXPECT_EQ(intersects_inclusion, geofence_utils::lineSegmentIntersectsPolygon(a, b, vertices, n, true));
 	EXPECT_EQ(intersects_exclusion, geofence_utils::lineSegmentIntersectsPolygon(a, b, vertices, n, false));

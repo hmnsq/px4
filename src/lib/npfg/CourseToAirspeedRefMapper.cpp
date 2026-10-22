@@ -44,16 +44,16 @@ CourseToAirspeedRefMapper::mapCourseSetpointToHeadingSetpoint(const float bearin
 
 	Vector2f air_vel_ref;
 
-	if (bearingIsFeasible(wind_cross_bearing, wind_dot_bearing, airspeed_sp, wind_vel.norm())) {
+	အကယ်၍ (bearingIsFeasible(wind_cross_bearing, wind_dot_bearing, airspeed_sp, wind_vel.norm())) {
 
 		const float airsp_dot_bearing = projectAirspOnBearing(airspeed_sp, wind_cross_bearing);
 		air_vel_ref = solveWindTriangle(wind_cross_bearing, airsp_dot_bearing, bearing_vector);
 
-	} else {
+	} မဟုတ်ပါက {
 		air_vel_ref = infeasibleAirVelRef(wind_vel, bearing_vector, wind_vel.norm(), airspeed_sp);
 	}
 
-	return atan2f(air_vel_ref(1), air_vel_ref(0));
+	ပြန်ပေး atan2f(air_vel_ref(1), air_vel_ref(0));
 }
 
 float
@@ -68,14 +68,14 @@ CourseToAirspeedRefMapper::getMinAirspeedForCurrentBearing(const float bearing_s
 
 	float airspeed_min = 0.f; // return 0 if no min airspeed is necessary
 
-	if (wind_along_bearing_is_below_min_ground_speed) {
+	အကယ်၍ (wind_along_bearing_is_below_min_ground_speed) {
 		// airspeed required to achieve minimum ground speed along bearing vector (5.18)
 		airspeed_min = sqrtf((min_ground_speed - wind_dot_bearing) * (min_ground_speed - wind_dot_bearing) +
 				     wind_cross_bearing * wind_cross_bearing);
 
 	}
 
-	return math::min(airspeed_min, airspeed_max);
+	ပြန်ပေး math::min(airspeed_min, airspeed_max);
 }
 
 float CourseToAirspeedRefMapper::projectAirspOnBearing(const float airspeed_true, const float wind_cross_bearing) const
@@ -85,13 +85,13 @@ float CourseToAirspeedRefMapper::projectAirspOnBearing(const float airspeed_true
 	// otherwise the return will be erroneous
 
 	// 3.5.8
-	return sqrtf(math::max(airspeed_true * airspeed_true - wind_cross_bearing * wind_cross_bearing, 0.0f));
+	ပြန်ပေး sqrtf(math::max(airspeed_true * airspeed_true - wind_cross_bearing * wind_cross_bearing, 0.0f));
 }
 
-int CourseToAirspeedRefMapper::bearingIsFeasible(const float wind_cross_bearing, const float wind_dot_bearing,
+ကိန်းပြည့် CourseToAirspeedRefMapper::bearingIsFeasible(const float wind_cross_bearing, const float wind_dot_bearing,
 		const float airspeed, const float wind_speed) const
 {
-	return (fabsf(wind_cross_bearing) < airspeed) && ((wind_dot_bearing > 0.0f) || (wind_speed < airspeed));
+	ပြန်ပေး (fabsf(wind_cross_bearing) < airspeed) && ((wind_dot_bearing > 0.0f) || (wind_speed < airspeed));
 }
 
 matrix::Vector2f
@@ -99,7 +99,7 @@ CourseToAirspeedRefMapper::solveWindTriangle(const float wind_cross_bearing, con
 		const Vector2f &bearing_vec) const
 {
 	// essentially a 2D rotation with the speeds (magnitudes) baked in
-	return Vector2f{airsp_dot_bearing * bearing_vec(0) - wind_cross_bearing * bearing_vec(1),
+	ပြန်ပေး Vector2f{airsp_dot_bearing * bearing_vec(0) - wind_cross_bearing * bearing_vec(1),
 			wind_cross_bearing * bearing_vec(0) + airsp_dot_bearing * bearing_vec(1)};
 }
 
@@ -110,5 +110,5 @@ matrix::Vector2f CourseToAirspeedRefMapper::infeasibleAirVelRef(const Vector2f &
 	// it is assumed that bearing feasibility is checked and found infeasible (e.g. bearingIsFeasible() = false) prior to entering this method
 	// otherwise the normalization of the air velocity vector could have a division by zero
 	Vector2f air_vel_ref = sqrtf(math::max(wind_speed * wind_speed - airspeed * airspeed, 0.0f)) * bearing_vec - wind_vel;
-	return air_vel_ref.normalized() * airspeed;
+	ပြန်ပေး air_vel_ref.normalized() * airspeed;
 }

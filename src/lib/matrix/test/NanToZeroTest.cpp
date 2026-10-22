@@ -46,8 +46,8 @@ TEST(NanToZeroTest, NanToZero)
 
 	const Matrix<float, 3, 3> mat_expected(expected);
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
+	အတွက် (size_t i = 0; i < 3; i++) {
+		အတွက် (size_t j = 0; j < 3; j++) {
 			EXPECT_FLOAT_EQ(mat(i, j), mat_expected(i, j));
 		}
 	}
@@ -62,8 +62,8 @@ TEST(NanToZeroTest, NoNanUnchanged)
 
 	const Matrix<float, 2, 2> mat_orig(data);
 
-	for (size_t i = 0; i < 2; i++) {
-		for (size_t j = 0; j < 2; j++) {
+	အတွက် (size_t i = 0; i < 2; i++) {
+		အတွက် (size_t j = 0; j < 2; j++) {
 			EXPECT_FLOAT_EQ(mat(i, j), mat_orig(i, j));
 		}
 	}

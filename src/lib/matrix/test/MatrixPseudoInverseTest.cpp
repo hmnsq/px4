@@ -87,7 +87,7 @@ TEST(MatrixPseudoInverseTest, PseudoInverse)
 	A_large.setIdentity();
 	Matrix < float, n_large - 1, n_large > A_large_I;
 
-	for (size_t i = 0; i < n_large; i++) {
+	အတွက် (size_t i = 0; i < n_large; i++) {
 		EXPECT_TRUE(geninv(A_large, A_large_I));
 		EXPECT_EQ(A_large, A_large_I.T());
 	}

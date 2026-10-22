@@ -53,23 +53,23 @@ uint32_t spartn_message_crc(const uint8_t *data, size_t len, uint8_t crc_type)
 	const uint64_t g = top | poly;
 	uint64_t crc = (crc_type == 3) ? 0xFFFFFFFFull : 0ull;
 
-	for (size_t i = 0; i < len; i++) {
+	အတွက် (size_t i = 0; i < len; i++) {
 		crc ^= static_cast<uint64_t>(data[i]) << (n - 8);
 
-		for (int b = 0; b < 8; b++) {
+		အတွက် (ကိန်းပြည့် b = 0; b < 8; b++) {
 			crc <<= 1;
 
-			if (crc & top) {
+			အကယ်၍ (crc & top) {
 				crc ^= g;
 			}
 		}
 	}
 
-	if (crc_type == 3) {
+	အကယ်၍ (crc_type == 3) {
 		crc ^= 0xFFFFFFFFull;
 	}
 
-	return static_cast<uint32_t>(crc & (top - 1ull));
+	ပြန်ပေး static_cast<uint32_t>(crc & (top - 1ull));
 }
 
 } // namespace gnss

@@ -36,13 +36,13 @@
 
 #include <lib/drivers/device/Device.hpp>
 
-PX4Magnetometer::PX4Magnetometer(uint32_t device_id, enum Rotation rotation) :
+PX4Magnetometer::PX4Magnetometer(uint32_t device_id, ga_nanaa Rotation rotation) :
 	PX4Magnetometer(device_id, rotation, device::device_is_external(device_id))
 {
 	_external_forced = false;
 }
 
-PX4Magnetometer::PX4Magnetometer(uint32_t device_id, enum Rotation rotation, bool external) :
+PX4Magnetometer::PX4Magnetometer(uint32_t device_id, ga_nanaa Rotation rotation, bool external) :
 	_device_id{device_id},
 	_rotation{rotation},
 	_is_external{external},
@@ -54,7 +54,7 @@ void PX4Magnetometer::set_device_id(uint32_t device_id)
 {
 	_device_id = device_id;
 
-	if (!_external_forced) {
+	အကယ်၍ (!_external_forced) {
 		_is_external = device::device_is_external(device_id);
 	}
 }
@@ -73,7 +73,7 @@ PX4Magnetometer::~PX4Magnetometer()
 void PX4Magnetometer::set_device_type(uint8_t devtype)
 {
 	// current DeviceStructure
-	union device::Device::DeviceId device_id;
+	sa_ngha device::Device::DeviceId device_id;
 	device_id.devid = _device_id;
 
 	// update to new device type
@@ -104,9 +104,9 @@ void PX4Magnetometer::update(const hrt_abstime &timestamp_sample, float x, float
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_MAG,
+	အကယ်၍ (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_MAG,
 					_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		ပြန်ပေး;
 	}
 
 	_sensor_pub.publish(report);

@@ -56,7 +56,7 @@ TEST_F(MedianFilterTest, test3f_simple)
 {
 	MedianFilter<float, 3> median_filter3;
 
-	for (int i = 0; i < 3; i++) {
+	အတွက် (ကိန်းပြည့် i = 0; i < 3; i++) {
 		median_filter3.insert(i);
 	}
 
@@ -67,7 +67,7 @@ TEST_F(MedianFilterTest, test3f_100)
 {
 	MedianFilter<float, 3> median_filter3;
 
-	for (int i = 0; i < 100; i++) {
+	အတွက် (ကိန်းပြည့် i = 0; i < 100; i++) {
 		EXPECT_EQ(median_filter3.apply(i), max(0, i - 1));
 	}
 }
@@ -76,7 +76,7 @@ TEST_F(MedianFilterTest, test5u_simple)
 {
 	MedianFilter<uint16_t, 5> median_filter5;
 
-	for (int i = 0; i < 5; i++) {
+	အတွက် (ကိန်းပြည့် i = 0; i < 5; i++) {
 		median_filter5.insert(i);
 	}
 
@@ -87,7 +87,7 @@ TEST_F(MedianFilterTest, test5i_100)
 {
 	MedianFilter<uint16_t, 5> median_filter5;
 
-	for (int i = 0; i < 100; i++) {
+	အတွက် (ကိန်းပြည့် i = 0; i < 100; i++) {
 		EXPECT_EQ(median_filter5.apply(i), max(0, i - 2));
 	}
 }

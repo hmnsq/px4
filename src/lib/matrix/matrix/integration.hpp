@@ -6,7 +6,7 @@ namespace matrix
 {
 
 template<typename Type, size_t M, size_t N>
-int integrate_rk4(
+ကိန်းပြည့် integrate_rk4(
 	Vector<Type, M> (*f)(Type, const Matrix<Type, M, 1> &x, const Matrix<Type, N, 1> &u),
 	const Matrix<Type, M, 1> &y0,
 	const Matrix<Type, N, 1> &u,
@@ -22,13 +22,13 @@ int integrate_rk4(
 	Type h = h0;
 	Vector<Type, M> k1, k2, k3, k4;
 
-	if (tf < t0) { return -1; } // make sure t1 > t0
+	အကယ်၍ (tf < t0) { ပြန်ပေး -1; } // make sure t1 > t0
 
-	while (t1 < tf) {
-		if (t1 + h0 < tf) {
+	နေစဉ် (t1 < tf) {
+		အကယ်၍ (t1 + h0 < tf) {
 			h = h0;
 
-		} else {
+		} မဟုတ်ပါက {
 			h = tf - t1;
 		}
 
@@ -40,7 +40,7 @@ int integrate_rk4(
 		t1 += h;
 	}
 
-	return 0;
+	ပြန်ပေး 0;
 }
 
 } // namespace matrix

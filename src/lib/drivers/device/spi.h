@@ -36,6 +36,6 @@
 #include "nuttx/SPI.hpp"
 #elif defined(__PX4_QURT)
 #include "qurt/SPI.hpp"
-#else
+#မဟုတ်ပါက
 #include "posix/SPI.hpp"
 #endif

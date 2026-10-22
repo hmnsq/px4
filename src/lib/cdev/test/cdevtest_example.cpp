@@ -54,31 +54,31 @@ px4::AppState CDevExample::appState;
 
 static bool g_exit = false;
 
-static int writer_main(int argc, char *argv[])
+static ကိန်းပြည့် writer_main(ကိန်းပြည့် argc, var_na *argv[])
 {
-	char buf[1];
+	var_na buf[1];
 
-	int fd = px4_open(TESTDEV, PX4_F_WRONLY);
+	ကိန်းပြည့် fd = px4_open(TESTDEV, PX4_F_WRONLY);
 
-	if (fd < 0) {
+	အကယ်၍ (fd < 0) {
 		PX4_INFO("Writer: Open failed %d", fd);
-		return PX4_ERROR;
+		ပြန်ပေး PX4_ERROR;
 	}
 
-	int ret = 0;
-	int i = 0;
+	ကိန်းပြည့် ret = 0;
+	ကိန်းပြည့် i = 0;
 
-	while (!g_exit) {
+	နေစဉ် (!g_exit) {
 		// Wait for 2 seconds
 		PX4_INFO("Writer: Sleeping for 2 sec");
 		ret = px4_sleep(2);
 
-		if (ret < 0) {
+		အကယ်၍ (ret < 0) {
 			PX4_INFO("Writer: sleep failed %d %d", ret, errno);
-			return ret;
+			ပြန်ပေး ret;
 		}
 
-		buf[0] = 'A' + (char)(i % 26);
+		buf[0] = 'A' + (var_na)(i % 26);
 		PX4_INFO("Writer: writing char '%c'", buf[0]);
 		ret = px4_write(fd, buf, 1);
 		++i;
@@ -86,7 +86,7 @@ static int writer_main(int argc, char *argv[])
 
 	px4_close(fd);
 	PX4_INFO("Writer: stopped");
-	return ret;
+	ပြန်ပေး ret;
 }
 
 class PrivData
@@ -108,56 +108,56 @@ public:
 
 	~CDevNode() override = default;
 
-	int open(cdev::file_t *handlep) override;
-	int close(cdev::file_t *handlep) override;
-	ssize_t write(cdev::file_t *handlep, const char *buffer, size_t buflen) override;
-	ssize_t read(cdev::file_t *handlep, char *buffer, size_t buflen) override;
+	ကိန်းပြည့် open(cdev::file_t *handlep) override;
+	ကိန်းပြည့် close(cdev::file_t *handlep) override;
+	ssize_t write(cdev::file_t *handlep, const var_na *buffer, size_t buflen) override;
+	ssize_t read(cdev::file_t *handlep, var_na *buffer, size_t buflen) override;
 private:
 	bool _is_open_for_write;
 	size_t _write_offset;
-	char     _buf[1000];
+	var_na     _buf[1000];
 };
 
-int CDevNode::open(cdev::file_t *handlep)
+ကိန်းပြည့် CDevNode::open(cdev::file_t *handlep)
 {
 	// Only allow one writer
-	if (_is_open_for_write && (handlep->f_oflags & PX4_F_WRONLY)) {
+	အကယ်၍ (_is_open_for_write && (handlep->f_oflags & PX4_F_WRONLY)) {
 		errno = EBUSY;
-		return -1;
+		ပြန်ပေး -1;
 	}
 
-	int ret = CDev::open(handlep);
+	ကိန်းပြည့် ret = CDev::open(handlep);
 
-	if (ret != 0) {
-		return ret;
+	အကယ်၍ (ret != 0) {
+		ပြန်ပေး ret;
 	}
 
 	handlep->f_priv = new PrivData;
 
-	if (_is_open_for_write && (handlep->f_oflags & PX4_F_WRONLY)) {
+	အကယ်၍ (_is_open_for_write && (handlep->f_oflags & PX4_F_WRONLY)) {
 		_is_open_for_write = true;
 	}
 
-	return 0;
+	ပြန်ပေး 0;
 }
 
-int CDevNode::close(cdev::file_t *handlep)
+ကိန်းပြည့် CDevNode::close(cdev::file_t *handlep)
 {
 	delete (PrivData *)handlep->f_priv;
 	handlep->f_priv = nullptr;
 	CDev::close(handlep);
 
 	// Enable a new writer of the device is re-opened for write
-	if ((handlep->f_oflags & PX4_F_WRONLY) && _is_open_for_write) {
+	အကယ်၍ ((handlep->f_oflags & PX4_F_WRONLY) && _is_open_for_write) {
 		_is_open_for_write = false;
 	}
 
-	return 0;
+	ပြန်ပေး 0;
 }
 
-ssize_t CDevNode::write(cdev::file_t *handlep, const char *buffer, size_t buflen)
+ssize_t CDevNode::write(cdev::file_t *handlep, const var_na *buffer, size_t buflen)
 {
-	for (size_t i = 0; i < buflen && _write_offset < 1000; i++) {
+	အတွက် (size_t i = 0; i < buflen && _write_offset < 1000; i++) {
 		_buf[_write_offset] = buffer[i];
 		_write_offset++;
 	}
@@ -165,37 +165,37 @@ ssize_t CDevNode::write(cdev::file_t *handlep, const char *buffer, size_t buflen
 	// ignore what was written, but let pollers know something was written
 	poll_notify(POLLIN);
 
-	return buflen;
+	ပြန်ပေး buflen;
 }
 
-ssize_t CDevNode::read(cdev::file_t *handlep, char *buffer, size_t buflen)
+ssize_t CDevNode::read(cdev::file_t *handlep, var_na *buffer, size_t buflen)
 {
 	PrivData *p = (PrivData *)handlep->f_priv;
 	ssize_t chars_read = 0;
 	PX4_INFO("read %zu write %zu", p->_read_offset, _write_offset);
 
-	for (size_t i = 0; i < buflen && (p->_read_offset < _write_offset); i++) {
+	အတွက် (size_t i = 0; i < buflen && (p->_read_offset < _write_offset); i++) {
 		buffer[i] = _buf[p->_read_offset];
 		p->_read_offset++;
 		chars_read++;
 	}
 
-	return chars_read;
+	ပြန်ပေး chars_read;
 }
 
 CDevExample::~CDevExample()
 {
-	if (_node) {
+	အကယ်၍ (_node) {
 		delete _node;
 		_node = nullptr;
 	}
 }
 
-int CDevExample::do_poll(int fd, int timeout, int iterations, int delayms_after_poll)
+ကိန်းပြည့် CDevExample::do_poll(ကိန်းပြည့် fd, ကိန်းပြည့် timeout, ကိန်းပြည့် iterations, ကိန်းပြည့် delayms_after_poll)
 {
-	int pollret, readret;
-	int loop_count = 0;
-	char readbuf[10];
+	ကိန်းပြည့် pollret, readret;
+	ကိန်းပြည့် loop_count = 0;
+	var_na readbuf[10];
 	px4_pollfd_struct_t fds[1];
 
 	fds[0].fd = fd;
@@ -205,66 +205,66 @@ int CDevExample::do_poll(int fd, int timeout, int iterations, int delayms_after_
 	bool mustblock = (timeout < 0);
 
 	// Test indefinte blocking poll
-	while ((!appState.exitRequested()) && (loop_count < iterations)) {
+	နေစဉ် ((!appState.exitRequested()) && (loop_count < iterations)) {
 		pollret = px4_poll(fds, 1, timeout);
 
-		if (pollret < 0) {
+		အကယ်၍ (pollret < 0) {
 			PX4_ERR("Reader: px4_poll failed %d FAIL", pollret);
 			goto fail;
 		}
 
 		PX4_INFO("Reader: px4_poll returned %d", pollret);
 
-		if (pollret) {
+		အကယ်၍ (pollret) {
 			readret = px4_read(fd, readbuf, 10);
 
-			if (readret != 1) {
-				if (mustblock) {
+			အကယ်၍ (readret != 1) {
+				အကယ်၍ (mustblock) {
 					PX4_ERR("Reader:     read failed %d FAIL", readret);
 					goto fail;
 
-				} else {
+				} မဟုတ်ပါက {
 					PX4_INFO("Reader:     read failed %d FAIL", readret);
 				}
 
-			} else {
+			} မဟုတ်ပါက {
 				readbuf[readret] = '\0';
 				PX4_INFO("Reader: px4_poll     returned %d, read '%s' PASS", pollret, readbuf);
 			}
 		}
 
-		if (delayms_after_poll) {
+		အကယ်၍ (delayms_after_poll) {
 			px4_usleep(delayms_after_poll * 1000);
 		}
 
 		loop_count++;
 	}
 
-	return 0;
+	ပြန်ပေး 0;
 fail:
-	return 1;
+	ပြန်ပေး 1;
 }
-int CDevExample::main()
+ကိန်းပြည့် CDevExample::main()
 {
 	appState.setRunning(true);
 
 	_node = new CDevNode();
 
-	if (_node == nullptr) {
+	အကယ်၍ (_node == nullptr) {
 		PX4_INFO("Failed to allocate CDevNode");
-		return -ENOMEM;
+		ပြန်ပေး -ENOMEM;
 	}
 
-	if (_node->init() != PX4_OK) {
+	အကယ်၍ (_node->init() != PX4_OK) {
 		PX4_INFO("Failed to init CDevNode");
-		return 1;
+		ပြန်ပေး 1;
 	}
 
-	int fd = px4_open(TESTDEV, PX4_F_RDONLY);
+	ကိန်းပြည့် fd = px4_open(TESTDEV, PX4_F_RDONLY);
 
-	if (fd < 0) {
+	အကယ်၍ (fd < 0) {
 		PX4_INFO("Open failed %d", fd);
-		return PX4_ERROR;
+		ပြန်ပေး PX4_ERROR;
 	}
 
 	// Start a task that will write something in 4 seconds
@@ -273,28 +273,20 @@ int CDevExample::main()
 				 SCHED_PRIORITY_MAX - 6,
 				 2000,
 				 writer_main,
-				 (char *const *)nullptr);
+				 (var_na *const *)nullptr);
 
-	int ret = 0;
+	ကိန်းပြည့် ret = 0;
 
 	PX4_INFO("TEST: BLOCKING POLL ---------------");
 
-	if (do_poll(fd, -1, 3, 0)) {
+	အကယ်၍ (do_poll(fd, -1, 3, 0)) {
 		ret = 1;
 		goto fail2;
 	}
 
 	PX4_INFO("TEST: ZERO TIMEOUT POLL -----------");
 
-	if (do_poll(fd, 0, 3, 0)) {
-		ret = 1;
-		goto fail2;
-		goto fail2;
-	}
-
-	PX4_INFO("TEST: ZERO TIMEOUT POLL -----------");
-
-	if (do_poll(fd, 0, 3, 0)) {
+	အကယ်၍ (do_poll(fd, 0, 3, 0)) {
 		ret = 1;
 		goto fail2;
 		goto fail2;
@@ -302,21 +294,29 @@ int CDevExample::main()
 
 	PX4_INFO("TEST: ZERO TIMEOUT POLL -----------");
 
-	if (do_poll(fd, 0, 3, 0)) {
+	အကယ်၍ (do_poll(fd, 0, 3, 0)) {
+		ret = 1;
+		goto fail2;
+		goto fail2;
+	}
+
+	PX4_INFO("TEST: ZERO TIMEOUT POLL -----------");
+
+	အကယ်၍ (do_poll(fd, 0, 3, 0)) {
 		ret = 1;
 		goto fail2;
 	}
 
 	PX4_INFO("TEST: 100ms TIMEOUT POLL -----------");
 
-	if (do_poll(fd, 0, 30, 100)) {
+	အကယ်၍ (do_poll(fd, 0, 30, 100)) {
 		ret = 1;
 		goto fail2;
 	}
 
 	PX4_INFO("TEST: 1 SEC TIMOUT POLL ------------");
 
-	if (do_poll(fd, 1000, 3, 0)) {
+	အကယ်၍ (do_poll(fd, 1000, 3, 0)) {
 		ret = 1;
 		goto fail2;
 	}
@@ -327,5 +327,5 @@ fail2:
 	px4_close(fd);
 	PX4_INFO("TEST: waiting for writer to stop");
 	px4_sleep(3);
-	return ret;
+	ပြန်ပေး ret;
 }

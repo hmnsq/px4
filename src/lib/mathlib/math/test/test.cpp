@@ -49,88 +49,88 @@ bool __EXPORT equal(float a, float b, float epsilon)
 {
 	float diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	အကယ်၍ (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ပြန်ပေး false;
 
-	} else { return true; }
+	} မဟုတ်ပါက { ပြန်ပေး true; }
 }
 
 bool __EXPORT greater_than(float a, float b)
 {
-	if (a > b) {
-		return true;
+	အကယ်၍ (a > b) {
+		ပြန်ပေး true;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} မဟုတ်ပါက {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ပြန်ပေး false;
 	}
 }
 
 bool __EXPORT less_than(float a, float b)
 {
-	if (a < b) {
-		return true;
+	အကယ်၍ (a < b) {
+		ပြန်ပေး true;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} မဟုတ်ပါက {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ပြန်ပေး false;
 	}
 }
 
 bool __EXPORT greater_than_or_equal(float a, float b)
 {
-	if (a >= b) {
-		return true;
+	အကယ်၍ (a >= b) {
+		ပြန်ပေး true;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} မဟုတ်ပါက {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ပြန်ပေး false;
 	}
 }
 
 bool __EXPORT less_than_or_equal(float a, float b)
 {
-	if (a <= b) {
-		return true;
+	အကယ်၍ (a <= b) {
+		ပြန်ပေး true;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} မဟုတ်ပါက {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		ပြန်ပေး false;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+void __EXPORT float2SigExp(const float &num, float &sig, ကိန်းပြည့် &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	အကယ်၍ (!PX4_ISFINITE(num)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		ပြန်ပေး;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	အကယ်၍ (fabsf(num) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		ပြန်ပေး;
 	}
 
 	exp = log10f(fabsf(num));
 
-	if (exp > 0) {
+	အကယ်၍ (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} မဟုတ်ပါက {
 		exp = floor(exp);
 	}
 
 	sig = num;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	အကယ်၍ (exp > 0) {
+		အတွက် (ကိန်းပြည့် i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} မဟုတ်ပါက {
+		အတွက် (ကိန်းပြည့် i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

@@ -78,7 +78,7 @@ public:
 		quadx_geometry.rotors[2].moment_ratio = 1.f;
 		quadx_geometry.rotors[3].moment_ratio = -1.f;
 
-		for (int i = 0; i < 4; ++i) {
+		အတွက် (ကိန်းပြည့် i = 0; i < 4; ++i) {
 			quadx_geometry.rotors[i].axis = Vector3f(0.f, 0.f, -1.f); // thrust downwards
 			quadx_geometry.rotors[i].thrust_coef = 1.f;
 			quadx_geometry.rotors[i].tilt_index = -1;
@@ -86,7 +86,7 @@ public:
 
 		// Compute actuator effectiveness
 		ActuatorEffectiveness::Configuration actuator_configuration{};
-		int num_actuators = ActuatorEffectivenessRotors::computeEffectivenessMatrix(quadx_geometry,
+		ကိန်းပြည့် num_actuators = ActuatorEffectivenessRotors::computeEffectivenessMatrix(quadx_geometry,
 				    actuator_configuration.effectiveness_matrices[0],
 				    actuator_configuration.num_actuators_matrix[0]);
 		EXPECT_EQ(num_actuators, NUM_ACTUATORS);
@@ -114,7 +114,7 @@ public:
 		control_setpoint(ControlAllocation::ControlAxis::THRUST_Z) = thrust;
 		_control_allocation.setControlSetpoint(control_setpoint);
 		_control_allocation.allocate();
-		return getQuadOutputs();
+		ပြန်ပေး getQuadOutputs();
 	}
 
 	Vector4f getQuadOutputs()
@@ -126,7 +126,7 @@ public:
 			(Vector<float, NUM_UNUSED_ACTUATORS>(actuator_setpoint.slice<NUM_UNUSED_ACTUATORS, 1>(4, 0))),
 			(Vector<float, NUM_UNUSED_ACTUATORS>())
 		);
-		return Vector4f(actuator_setpoint.slice<4, 1>(0, 0));
+		ပြန်ပေး Vector4f(actuator_setpoint.slice<4, 1>(0, 0));
 	}
 };
 
@@ -141,7 +141,7 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, Zero)
 
 TEST_F(ControlAllocationSequentialDesaturationTestQuadX, CollectiveThrust)
 {
-	for (float thrust = 0.f; thrust <= (1.f + FLT_EPSILON); thrust += .1f) {
+	အတွက် (float thrust = 0.f; thrust <= (1.f + FLT_EPSILON); thrust += .1f) {
 		EXPECT_EQ(allocate(0.f, 0.f, 0.f, -thrust), Vector4f(thrust, thrust, thrust, thrust));
 	}
 }
@@ -493,17 +493,17 @@ TEST(ControlAllocationSequentialDesaturationTest, AirmodeDisabledNeverAddsThrust
 		ActuatorEffectiveness::EffectivenessMatrix effectiveness;
 		effectiveness.setZero();
 
-		for (int i = 0; i < 6; i++) {
-			if (stopped_mask & (1u << i)) {
+		အတွက် (ကိန်းပြည့် i = 0; i < 6; i++) {
+			အကယ်၍ (stopped_mask & (1u << i)) {
 				continue;
 			}
 
-			for (int axis = 0; axis < 6; axis++) {
+			အတွက် (ကိန်းပြည့် axis = 0; axis < 6; axis++) {
 				effectiveness(axis, i) = intact[axis][i];
 			}
 		}
 
-		return effectiveness;
+		ပြန်ပေး effectiveness;
 	};
 
 	ControlAllocationSequentialDesaturation allocator;
@@ -536,7 +536,7 @@ TEST(ControlAllocationSequentialDesaturationTest, AirmodeDisabledNeverAddsThrust
 
 	const auto &actuator_sp = allocator.getActuatorSetpoint();
 
-	for (int i = 0; i < ActuatorEffectiveness::NUM_ACTUATORS; ++i) {
+	အတွက် (ကိန်းပြည့် i = 0; i < ActuatorEffectiveness::NUM_ACTUATORS; ++i) {
 		EXPECT_LT(actuator_sp(i), 0.1f) << "motor " << i;
 	}
 }

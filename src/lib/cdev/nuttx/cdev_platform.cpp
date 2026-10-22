@@ -54,13 +54,13 @@ namespace cdev
  * The standard NuttX operation dispatch table can't call C++ member functions
  * directly, so we have to bounce them through this dispatch table.
  */
-static int	cdev_open(file_t *filp);
-static int	cdev_close(file_t *filp);
-static ssize_t	cdev_read(file_t *filp, char *buffer, size_t buflen);
-static ssize_t	cdev_write(file_t *filp, const char *buffer, size_t buflen);
-static off_t	cdev_seek(file_t *filp, off_t offset, int whence);
-static int	cdev_ioctl(file_t *filp, int cmd, unsigned long arg);
-static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
+static ကိန်းပြည့်	cdev_open(file_t *filp);
+static ကိန်းပြည့်	cdev_close(file_t *filp);
+static ssize_t	cdev_read(file_t *filp, var_na *buffer, size_t buflen);
+static ssize_t	cdev_write(file_t *filp, const var_na *buffer, size_t buflen);
+static off_t	cdev_seek(file_t *filp, off_t offset, ကိန်းပြည့် whence);
+static ကိန်းပြည့်	cdev_ioctl(file_t *filp, ကိန်းပြည့် cmd, unsigned long arg);
+static ကိန်းပြည့်	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
 
 /**
  * Character device indirection table.
@@ -71,7 +71,7 @@ static int	cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup);
  * Note that we use the GNU extension syntax here because we don't get designated
  * initialisers in gcc 4.6.
  */
-static const struct file_operations g_fops = {
+static const sa_nracanaa file_operations g_fops = {
 open	: cdev_open,
 close	: cdev_close,
 read	: cdev_read,
@@ -84,86 +84,86 @@ unlink	: nullptr
 #endif
 };
 
-const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { return g_fops; }
+const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { ပြန်ပေး g_fops; }
 
-static int
+static ကိန်းပြည့်
 cdev_open(file_t *filp)
 {
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->open(filp);
+	ပြန်ပေး cdev->open(filp);
 }
 
-static int
+static ကိန်းပြည့်
 cdev_close(file_t *filp)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	အကယ်၍ ((filp->f_inode->i_crefs) == 0) {
+		ပြန်ပေး -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->close(filp);
+	ပြန်ပေး cdev->close(filp);
 }
 
 static ssize_t
-cdev_read(file_t *filp, char *buffer, size_t buflen)
+cdev_read(file_t *filp, var_na *buffer, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	အကယ်၍ ((filp->f_inode->i_crefs) == 0) {
+		ပြန်ပေး -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->read(filp, buffer, buflen);
+	ပြန်ပေး cdev->read(filp, buffer, buflen);
 }
 
 static ssize_t
-cdev_write(file_t *filp, const char *buffer, size_t buflen)
+cdev_write(file_t *filp, const var_na *buffer, size_t buflen)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	အကယ်၍ ((filp->f_inode->i_crefs) == 0) {
+		ပြန်ပေး -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->write(filp, buffer, buflen);
+	ပြန်ပေး cdev->write(filp, buffer, buflen);
 }
 
 static off_t
-cdev_seek(file_t *filp, off_t offset, int whence)
+cdev_seek(file_t *filp, off_t offset, ကိန်းပြည့် whence)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	အကယ်၍ ((filp->f_inode->i_crefs) == 0) {
+		ပြန်ပေး -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->seek(filp, offset, whence);
+	ပြန်ပေး cdev->seek(filp, offset, whence);
 }
 
-static int
-cdev_ioctl(file_t *filp, int cmd, unsigned long arg)
+static ကိန်းပြည့်
+cdev_ioctl(file_t *filp, ကိန်းပြည့် cmd, unsigned long arg)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	အကယ်၍ ((filp->f_inode->i_crefs) == 0) {
+		ပြန်ပေး -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->ioctl(filp, cmd, arg);
+	ပြန်ပေး cdev->ioctl(filp, cmd, arg);
 }
 
-static int
+static ကိန်းပြည့်
 cdev_poll(file_t *filp, px4_pollfd_struct_t *fds, bool setup)
 {
-	if ((filp->f_inode->i_crefs) == 0) {
-		return -ENODEV;
+	အကယ်၍ ((filp->f_inode->i_crefs) == 0) {
+		ပြန်ပေး -ENODEV;
 	}
 
 	cdev::CDev *cdev = (cdev::CDev *)(filp->f_inode->i_private);
 
-	return cdev->poll(filp, fds, setup);
+	ပြန်ပေး cdev->poll(filp, fds, setup);
 }
 
 } // namespace cdev

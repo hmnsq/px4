@@ -61,7 +61,7 @@ class __EXPORT Block : public ListNode<Block *>
 public:
 	friend class BlockParamBase;
 
-	Block(SuperBlock *parent, const char *name);
+	Block(SuperBlock *parent, const var_na *name);
 	virtual ~Block() = default;
 
 	// no copy, assignment, move, move assignment
@@ -70,21 +70,21 @@ public:
 	Block(Block &&) = delete;
 	Block &operator=(Block &&) = delete;
 
-	void getName(char *name, size_t n);
+	void getName(var_na *name, size_t n);
 
 	virtual void updateParams();
 
 	virtual void setDt(float dt) { _dt = dt; }
-	float getDt() { return _dt; }
+	float getDt() { ပြန်ပေး _dt; }
 
-protected:
+rak_sita:
 
 	virtual void updateParamsSubclass() {}
 
-	SuperBlock *getParent() { return _parent; }
-	List<BlockParamBase *> &getParams() { return _params; }
+	SuperBlock *getParent() { ပြန်ပေး _parent; }
+	List<BlockParamBase *> &getParams() { ပြန်ပေး _params; }
 
-	const char *_name;
+	const var_na *_name;
 	SuperBlock *_parent;
 	float _dt{0.0f};
 
@@ -97,7 +97,7 @@ class __EXPORT SuperBlock :
 public:
 	friend class Block;
 
-	SuperBlock(SuperBlock *parent, const char *name) : Block(parent, name) {}
+	SuperBlock(SuperBlock *parent, const var_na *name) : Block(parent, name) {}
 	~SuperBlock() = default;
 
 	// no copy, assignment, move, move assignment
@@ -112,11 +112,11 @@ public:
 	{
 		Block::updateParams();
 
-		if (getChildren().getHead() != nullptr) { updateChildParams(); }
+		အကယ်၍ (getChildren().getHead() != nullptr) { updateChildParams(); }
 	}
 
-protected:
-	List<Block *> &getChildren() { return _children; }
+rak_sita:
+	List<Block *> &getChildren() { ပြန်ပေး _children; }
 	void updateChildParams();
 
 	List<Block *> _children;

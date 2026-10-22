@@ -46,23 +46,23 @@ namespace gnss
 
 bool CorrectionFramer::isPreamble(uint8_t byte)
 {
-	if (byte == RTCM3_PREAMBLE) {
-		return true;
+	အကယ်၍ (byte == RTCM3_PREAMBLE) {
+		ပြန်ပေး true;
 	}
 
-	if (byte == UBX_SYNC1) {
-		return true;
+	အကယ်၍ (byte == UBX_SYNC1) {
+		ပြန်ပေး true;
 	}
 
-#if defined(CONFIG_GPS_SPARTN)
+#အကယ်၍ defined(CONFIG_GPS_SPARTN)
 
-	if (byte == SPARTN_PREAMBLE) {
-		return true;
+	အကယ်၍ (byte == SPARTN_PREAMBLE) {
+		ပြန်ပေး true;
 	}
 
 #endif
 
-	return false;
+	ပြန်ပေး false;
 }
 
 size_t CorrectionFramer::addData(const uint8_t *data, size_t len)
@@ -70,19 +70,19 @@ size_t CorrectionFramer::addData(const uint8_t *data, size_t len)
 	const size_t space_available = BUFFER_SIZE - _buffer_len;
 	const size_t to_copy = (len < space_available) ? len : space_available;
 
-	if (to_copy > 0) {
+	အကယ်၍ (to_copy > 0) {
 		memcpy(&_buffer[_buffer_len], data, to_copy);
 		_buffer_len += to_copy;
 	}
 
-	return to_copy;
+	ပြန်ပေး to_copy;
 }
 
 CorrectionFramer::Probe CorrectionFramer::probeRtcm3(size_t *frame_len) const
 {
 	// Need at least the header to read the length
-	if (_buffer_len < RTCM3_HEADER_LEN) {
-		return Probe::NeedMoreData;
+	အကယ်၍ (_buffer_len < RTCM3_HEADER_LEN) {
+		ပြန်ပေး Probe::NeedMoreData;
 	}
 
 	// The 10-bit field cannot exceed RTCM3_MAX_PAYLOAD_LEN, so the length alone
@@ -90,8 +90,8 @@ CorrectionFramer::Probe CorrectionFramer::probeRtcm3(size_t *frame_len) const
 	const size_t payload_len = rtcm3_payload_length(_buffer);
 	const size_t len = RTCM3_HEADER_LEN + payload_len + RTCM3_CRC_LEN;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	အကယ်၍ (_buffer_len < len) {
+		ပြန်ပေး Probe::NeedMoreData;
 	}
 
 	const uint32_t calculated_crc = rtcm3_crc24q(_buffer, RTCM3_HEADER_LEN + payload_len);
@@ -99,27 +99,27 @@ CorrectionFramer::Probe CorrectionFramer::probeRtcm3(size_t *frame_len) const
 				      (static_cast<uint32_t>(_buffer[len - 2]) << 8) |
 				      _buffer[len - 1];
 
-	if (calculated_crc != received_crc) {
-		return Probe::CrcError;
+	အကယ်၍ (calculated_crc != received_crc) {
+		ပြန်ပေး Probe::CrcError;
 	}
 
 	*frame_len = len;
-	return Probe::Complete;
+	ပြန်ပေး Probe::Complete;
 }
 
 CorrectionFramer::Probe CorrectionFramer::probeUbx(size_t *frame_len) const
 {
 	// Need sync1 + sync2 at minimum to reject a false preamble quickly
-	if (_buffer_len < 2) {
-		return Probe::NeedMoreData;
+	အကယ်၍ (_buffer_len < 2) {
+		ပြန်ပေး Probe::NeedMoreData;
 	}
 
-	if (_buffer[1] != UBX_SYNC2) {
-		return Probe::InvalidHeader;
+	အကယ်၍ (_buffer[1] != UBX_SYNC2) {
+		ပြန်ပေး Probe::InvalidHeader;
 	}
 
-	if (_buffer_len < UBX_HEADER_LEN) {
-		return Probe::NeedMoreData;
+	အကယ်၍ (_buffer_len < UBX_HEADER_LEN) {
+		ပြန်ပေး Probe::NeedMoreData;
 	}
 
 	const size_t payload_len = static_cast<size_t>(_buffer[4]) |
@@ -127,14 +127,14 @@ CorrectionFramer::Probe CorrectionFramer::probeUbx(size_t *frame_len) const
 
 	// Protocol allows larger payloads; reject beyond the injection cap so a
 	// garbage length cannot pin the buffer waiting for thousands of bytes.
-	if (payload_len > UBX_MAX_PAYLOAD_LEN) {
-		return Probe::InvalidHeader;
+	အကယ်၍ (payload_len > UBX_MAX_PAYLOAD_LEN) {
+		ပြန်ပေး Probe::InvalidHeader;
 	}
 
 	const size_t len = UBX_HEADER_LEN + payload_len + UBX_CK_LEN;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	အကယ်၍ (_buffer_len < len) {
+		ပြန်ပေး Probe::NeedMoreData;
 	}
 
 	// CK_A/CK_B cover Class..end of payload (not the sync bytes)
@@ -142,20 +142,20 @@ CorrectionFramer::Probe CorrectionFramer::probeUbx(size_t *frame_len) const
 	uint8_t ck_b = 0;
 	ubx_checksum(&_buffer[2], UBX_HEADER_LEN - 2 + payload_len, &ck_a, &ck_b);
 
-	if ((ck_a != _buffer[len - 2]) || (ck_b != _buffer[len - 1])) {
-		return Probe::CrcError;
+	အကယ်၍ ((ck_a != _buffer[len - 2]) || (ck_b != _buffer[len - 1])) {
+		ပြန်ပေး Probe::CrcError;
 	}
 
 	*frame_len = len;
-	return Probe::Complete;
+	ပြန်ပေး Probe::Complete;
 }
 
-#if defined(CONFIG_GPS_SPARTN)
+#အကယ်၍ defined(CONFIG_GPS_SPARTN)
 CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *frame_len) const
 {
 	// Need TF002..TF006 to read the length and CRC type
-	if (_buffer_len < SPARTN_FRAME_START_LEN) {
-		return Probe::NeedMoreData;
+	အကယ်၍ (_buffer_len < SPARTN_FRAME_START_LEN) {
+		ပြန်ပေး Probe::NeedMoreData;
 	}
 
 	const uint8_t b1 = _buffer[1];
@@ -165,8 +165,8 @@ CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *frame_len) const
 	// TF002 is the only header field with a checkable range. The 10-bit length
 	// spans its full range and TF006 is a 4-bit CRC over a non-byte-aligned
 	// field, so this is the only cheap guard before the message CRC.
-	if (!spartn_message_type_defined(b1 >> 1)) {
-		return Probe::InvalidHeader;
+	အကယ်၍ (!spartn_message_type_defined(b1 >> 1)) {
+		ပြန်ပေး Probe::InvalidHeader;
 	}
 
 	const uint16_t payload_len = static_cast<uint16_t>(((b1 & 0x01) << 9) | (b2 << 1) | (b3 >> 7));
@@ -175,20 +175,20 @@ CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *frame_len) const
 	const size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
 
 	// TF008 (time tag type) sets the description block length
-	if (_buffer_len < SPARTN_FRAME_START_LEN + 1) {
-		return Probe::NeedMoreData;
+	အကယ်၍ (_buffer_len < SPARTN_FRAME_START_LEN + 1) {
+		ပြန်ပေး Probe::NeedMoreData;
 	}
 
 	const bool time_tag_32bit = ((_buffer[4] >> 3) & 0x01) != 0;
 	const size_t desc_len = spartn_desc_length_bytes(eaf, time_tag_32bit);
 
-	if (_buffer_len < SPARTN_FRAME_START_LEN + desc_len) {
-		return Probe::NeedMoreData;
+	အကယ်၍ (_buffer_len < SPARTN_FRAME_START_LEN + desc_len) {
+		ပြန်ပေး Probe::NeedMoreData;
 	}
 
 	size_t auth_bytes = 0;
 
-	if (eaf) {
+	အကယ်၍ (eaf) {
 		// TF014/TF015 occupy the low 6 bits of the last description byte
 		const uint8_t last = _buffer[SPARTN_FRAME_START_LEN + desc_len - 1];
 		auth_bytes = spartn_auth_length_bytes(true, (last >> 3) & 0x07, last & 0x07);
@@ -196,8 +196,8 @@ CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *frame_len) const
 
 	const size_t len = SPARTN_FRAME_START_LEN + desc_len + payload_len + auth_bytes + crc_bytes;
 
-	if (_buffer_len < len) {
-		return Probe::NeedMoreData;
+	အကယ်၍ (_buffer_len < len) {
+		ပြန်ပေး Probe::NeedMoreData;
 	}
 
 	// Message CRC (TF018) covers TF002..TF017
@@ -205,87 +205,87 @@ CorrectionFramer::Probe CorrectionFramer::probeSpartn(size_t *frame_len) const
 	const uint32_t calculated_crc = spartn_message_crc(&_buffer[1], core_len, crc_type);
 	uint32_t received_crc = 0;
 
-	for (size_t i = 0; i < crc_bytes; i++) {
+	အတွက် (size_t i = 0; i < crc_bytes; i++) {
 		received_crc = (received_crc << 8) | _buffer[len - crc_bytes + i];
 	}
 
-	if (calculated_crc != received_crc) {
-		return Probe::CrcError;
+	အကယ်၍ (calculated_crc != received_crc) {
+		ပြန်ပေး Probe::CrcError;
 	}
 
 	*frame_len = len;
-	return Probe::Complete;
+	ပြန်ပေး Probe::Complete;
 }
 #endif // CONFIG_GPS_SPARTN
 
 const uint8_t *CorrectionFramer::getNextMessage(size_t *out_len, CorrectionProtocol *out_protocol)
 {
-	while (_buffer_len > 0) {
+	နေစဉ် (_buffer_len > 0) {
 		// Drop everything that cannot start a frame of any supported protocol
 		size_t to_drop = 0;
 
-		while ((to_drop < _buffer_len) && !isPreamble(_buffer[to_drop])) {
+		နေစဉ် ((to_drop < _buffer_len) && !isPreamble(_buffer[to_drop])) {
 			to_drop++;
 		}
 
-		if (to_drop > 0) {
+		အကယ်၍ (to_drop > 0) {
 			_bytes_discarded += to_drop;
 			discardBytes(to_drop);
 		}
 
-		if (_buffer_len == 0) {
-			return nullptr;
+		အကယ်၍ (_buffer_len == 0) {
+			ပြန်ပေး nullptr;
 		}
 
 		size_t frame_len = 0;
 		CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
 		Probe result;
 
-		if (_buffer[0] == UBX_SYNC1) {
+		အကယ်၍ (_buffer[0] == UBX_SYNC1) {
 			protocol = CorrectionProtocol::Ubx;
 			result = probeUbx(&frame_len);
 
-#if defined(CONFIG_GPS_SPARTN)
+#အကယ်၍ defined(CONFIG_GPS_SPARTN)
 
-		} else if (_buffer[0] == SPARTN_PREAMBLE) {
+		} မဟုတ်ပါက အကယ်၍ (_buffer[0] == SPARTN_PREAMBLE) {
 			protocol = CorrectionProtocol::Spartn;
 			result = probeSpartn(&frame_len);
 
 #endif
 
-		} else {
+		} မဟုတ်ပါက {
 			// RTCM3 preamble (isPreamble already filtered other bytes)
 			protocol = CorrectionProtocol::Rtcm3;
 			result = probeRtcm3(&frame_len);
 		}
 
 		switch (result) {
-		case Probe::NeedMoreData:
-			return nullptr;
+		pak_sa Probe::NeedMoreData:
+			ပြန်ပေး nullptr;
 
-		case Probe::InvalidHeader:
+		pak_sa Probe::InvalidHeader:
 			_bytes_discarded++;
 			discardBytes(1);
 			continue;
 
-		case Probe::CrcError:
+		pak_sa Probe::CrcError:
 			_crc_errors++;
 			discardBytes(1);
 			continue;
 
-		case Probe::Complete:
+		pak_sa Probe::Complete:
 			_pending_protocol = protocol;
 			*out_len = frame_len;
 
-			if (out_protocol != nullptr) {
+			အကယ်၍ (out_protocol != nullptr) {
 				*out_protocol = protocol;
 			}
 
-			return _buffer;
+			ပြန်ပေး _buffer;
 		}
 	}
 
-	return nullptr;
+	ပြန်ပေး nullptr;
 }
 
 void CorrectionFramer::consumeMessage(size_t len)
@@ -295,26 +295,26 @@ void CorrectionFramer::consumeMessage(size_t len)
 	_total_frame_bytes += len;
 
 	switch (_pending_protocol) {
-	case CorrectionProtocol::Rtcm3:
+	pak_sa CorrectionProtocol::Rtcm3:
 		_rtcm3_messages++;
-		break;
+		bha_nga;
 
-	case CorrectionProtocol::Spartn:
+	pak_sa CorrectionProtocol::Spartn:
 		_spartn_messages++;
-		break;
+		bha_nga;
 
-	case CorrectionProtocol::Ubx:
+	pak_sa CorrectionProtocol::Ubx:
 		_ubx_messages++;
-		break;
+		bha_nga;
 	}
 }
 
 void CorrectionFramer::discardBytes(size_t count)
 {
-	if (count >= _buffer_len) {
+	အကယ်၍ (count >= _buffer_len) {
 		_buffer_len = 0;
 
-	} else {
+	} မဟုတ်ပါက {
 		memmove(_buffer, &_buffer[count], _buffer_len - count);
 		_buffer_len -= count;
 	}

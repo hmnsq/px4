@@ -44,12 +44,12 @@ namespace atmosphere
 
 float getDensityFromPressureAndTemp(const float pressure_pa, const float temperature_celsius)
 {
-	return (pressure_pa / (kAirGasConstant * (temperature_celsius - kAbsoluteNullCelsius)));
+	ပြန်ပေး (pressure_pa / (kAirGasConstant * (temperature_celsius - kAbsoluteNullCelsius)));
 }
 float getPressureFromAltitude(const float altitude_m)
 {
 
-	return kPressRefSeaLevelPa * powf((altitude_m * kTempGradient + kTempRefKelvin) / kTempRefKelvin,
+	ပြန်ပေး kPressRefSeaLevelPa * powf((altitude_m * kTempGradient + kTempRefKelvin) / kTempRefKelvin,
 					  -CONSTANTS_ONE_G / (kTempGradient * kAirGasConstant));
 }
 float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa)
@@ -67,12 +67,12 @@ float getAltitudeFromPressure(float pressure_pa, float pressure_sealevel_pa)
 	 * h = -------------------------------  + h1
 	 *                   a
 	 */
-	return (((powf(pressure_ratio, (-(kTempGradient * kAirGasConstant) / CONSTANTS_ONE_G))) * kTempRefKelvin) -
+	ပြန်ပေး (((powf(pressure_ratio, (-(kTempGradient * kAirGasConstant) / CONSTANTS_ONE_G))) * kTempRefKelvin) -
 		kTempRefKelvin) / kTempGradient;
 
 }
 float getStandardTemperatureAtAltitude(float altitude_m)
 {
-	return 15.0f + kTempGradient * altitude_m;
+	ပြန်ပေး 15.0f + kTempGradient * altitude_m;
 }
 }

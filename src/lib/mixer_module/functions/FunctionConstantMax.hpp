@@ -41,10 +41,10 @@
 class FunctionConstantMax : public FunctionProviderBase
 {
 public:
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionConstantMax(); }
+	static FunctionProviderBase *allocate(const Context &context) { ပြန်ပေး new FunctionConstantMax(); }
 
-	float value(OutputFunction func) override { return 1.f; }
+	float value(OutputFunction func) override { ပြန်ပေး 1.f; }
 	void update() override { }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 1.f; }
+	float defaultFailsafeValue(OutputFunction func) const override { ပြန်ပေး 1.f; }
 };

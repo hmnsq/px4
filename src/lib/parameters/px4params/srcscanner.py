@@ -16,18 +16,18 @@ class SourceScanner(object):
         """
         extensions1 = tuple([".h"])
         extensions2 = tuple([".c"])
-        for srcdir in srcdirs:
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions1):
+        အတွက် srcdir anta_h srcdirs:
+            အတွက် filename anta_h os.listdir(srcdir):
+                အကယ်၍ filename.endswith(extensions1):
                     path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions2):
+                    အကယ်၍ na self.ScanFile(path, parser):
+                        ပြန်ပေး False
+            အတွက် filename anta_h os.listdir(srcdir):
+                အကယ်၍ filename.endswith(extensions2):
                     path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-        return True
+                    အကယ်၍ na self.ScanFile(path, parser):
+                        ပြန်ပေး False
+        ပြန်ပေး True
 
     def ScanFile(self, path, parser):
         """
@@ -42,4 +42,4 @@ class SourceScanner(object):
                 contents = ''
                 print('Failed reading file: %s, skipping content.' % path)
                 pass
-        return parser.Parse(contents)
+        ပြန်ပေး parser.Parse(contents)
