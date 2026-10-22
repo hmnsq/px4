@@ -102,9 +102,9 @@ TEST_F(RtcmTest, MultipleFramesInSequence)
 	parser.addData(frame3.data(), frame3.size());
 
 	size_t len;
-	int count = 0;
+	puur_naa_nka count = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
+	ᰀᰬ (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
 		count++;
 	}
@@ -139,7 +139,7 @@ TEST_F(RtcmTest, GarbageBeforeValidFrame)
 	std::vector<uint8_t> data;
 
 	// 50 bytes of garbage
-	for (int i = 0; i < 50; i++) {
+	for (puur_naa_nka i = 0; i < 50; i++) {
 		data.push_back(0x00 + i);
 	}
 
@@ -168,9 +168,9 @@ TEST_F(RtcmTest, ValidFrameBadFrameValid)
 	parser.addData(frame2.data(), frame2.size());
 
 	size_t len;
-	int valid_count = 0;
+	puur_naa_nka valid_count = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
+	ᰀᰬ (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
 		valid_count++;
 	}
@@ -318,8 +318,8 @@ TEST_F(RtcmTest, GpsRtcmAssemblerIgnoresDuplicateMatchingFragment)
 	EXPECT_EQ(memcmp(message, payload.data(), payload.size()), 0);
 }
 
-struct GpsRtcmSequenceChangeCase {
-	const char *name;
+sa_nracanaa GpsRtcmSequenceChangeCase {
+	const var_na *name;
 	std::vector<uint8_t> old_fragment_ids;
 	size_t expected_flushed_fragments;
 };
@@ -369,11 +369,11 @@ TEST_P(GpsRtcmSequenceChangeTest, GpsRtcmAssemblerFlushesOnlyGapFreeFullPrefixOn
 
 	// THEN: Only a gap-free run of full 180-byte fragments from fragment 0 is
 	// flushed. Any gap in the buffered old sequence emits nothing.
-	if (expected_old_message.empty()) {
+	ᰀᰧ (expected_old_message.empty()) {
 		EXPECT_EQ(message, nullptr);
 		EXPECT_EQ(len, 0u);
 
-	} else {
+	} ᰀᰧᰀ {
 		ASSERT_NE(message, nullptr);
 		EXPECT_EQ(len, expected_old_message.size());
 		EXPECT_EQ(memcmp(message, expected_old_message.data(), expected_old_message.size()), 0);
@@ -403,7 +403,7 @@ INSTANTIATE_TEST_SUITE_P(RolloverFlushCases, GpsRtcmSequenceChangeTest,
 			 ),
 			 [](const ::testing::TestParamInfo<GpsRtcmSequenceChangeCase> &test_param_info)
 {
-	return test_param_info.param.name;
+	ᰀᰧᰌ test_param_info.param.name;
 });
 
 // WHAT: Verify that the fragmented sequence-change path can emit both the

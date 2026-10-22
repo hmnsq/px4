@@ -68,40 +68,40 @@ public:
 	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
 	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
 
-	bool allocate(size_t size) { return size == SIZE; }
+	bool allocate(size_t size) { ᰀᰧᰌ size == SIZE; }
 
-	bool valid() const { return SIZE > 0; }
+	bool valid() const { ᰀᰧᰌ SIZE > 0; }
 
 	void push(const data_type &sample)
 	{
 		_buffer[_head] = sample;
 		_head = next(_head);
 
-		if (_entries < kSize) {
+		ᰀᰧ (_entries < kSize) {
 			_entries++;
 		}
 	}
 
-	uint8_t get_length() const { return kSize; }
+	uint8_t get_length() const { ᰀᰧᰌ kSize; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	data_type &operator[](const uint8_t index) { ᰀᰧᰌ _buffer[index]; }
 
-	const data_type &get_newest() const { return _buffer[get_newest_index()]; }
-	const data_type &get_oldest() const { return _buffer[get_oldest_index()]; }
+	const data_type &get_newest() const { ᰀᰧᰌ _buffer[get_newest_index()]; }
+	const data_type &get_oldest() const { ᰀᰧᰌ _buffer[get_oldest_index()]; }
 
-	uint8_t get_newest_index() const { return (_entries > 0) ? prev(_head) : 0; }
+	uint8_t get_newest_index() const { ᰀᰧᰌ (_entries > 0) ? prev(_head) : 0; }
 	uint8_t get_oldest_index() const
 	{
-		if (_entries == 0) {
-			return 0;
+		ᰀᰧ (_entries == 0) {
+			ᰀᰧᰌ 0;
 		}
 
 		const uint16_t idx = static_cast<uint16_t>(_head) + static_cast<uint16_t>(kSize) - static_cast<uint16_t>(_entries);
-		return (idx >= kSize) ? static_cast<uint8_t>(idx - kSize) : static_cast<uint8_t>(idx);
+		ᰀᰧᰌ (idx >= kSize) ? static_cast<uint8_t>(idx - kSize) : static_cast<uint8_t>(idx);
 	}
 
-	uint8_t next(uint8_t i) const { return (i + 1 >= kSize) ? 0 : i + 1; }
-	uint8_t prev(uint8_t i) const { return (i == 0) ? kSize - 1 : i - 1; }
+	uint8_t next(uint8_t i) const { ᰀᰧᰌ (i + 1 >= kSize) ? 0 : i + 1; }
+	uint8_t prev(uint8_t i) const { ᰀᰧᰌ (i == 0) ? kSize - 1 : i - 1; }
 
 	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
 	{
@@ -110,10 +110,10 @@ public:
 		const uint8_t oldest_idx = get_oldest_index();
 
 		for (uint8_t i = 0; i < _entries; i++) {
-			int index = (newest_idx - i);
+			puur_naa_nka index = (newest_idx - i);
 			index = index < 0 ? kSize + index : index;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
+			ᰀᰧ (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
 				*sample = _buffer[index];
 
 				// Now we can set the tail to the item which
@@ -125,22 +125,22 @@ public:
 				_entries = (_entries > discard_count) ? (_entries - discard_count) : 0;
 				_buffer[index].time_us = 0;
 
-				return true;
+				ᰀᰧᰌ true;
 			}
 		}
 
-		return false;
+		ᰀᰧᰌ false;
 	}
 
-	int get_total_size() const
+	puur_naa_nka get_total_size() const
 	{
-		static_assert(sizeof(TimestampedRingBuffer<data_type, SIZE>) <= static_cast<size_t>(INT_MAX),
+		static_assert(parimaa_na(TimestampedRingBuffer<data_type, SIZE>) <= static_cast<size_t>(INT_MAX),
 			      "static ring buffer size must fit in int");
-		return static_cast<int>(sizeof(TimestampedRingBuffer<data_type, SIZE>));
+		ᰀᰧᰌ static_cast<puur_naa_nka>(parimaa_na(TimestampedRingBuffer<data_type, SIZE>));
 	}
 
-	int entries() const { return _entries; }
-	bool empty() const { return _entries == 0; }
+	puur_naa_nka entries() const { ᰀᰧᰌ _entries; }
+	bool empty() const { ᰀᰧᰌ _entries == 0; }
 
 	void reset()
 	{
@@ -178,21 +178,21 @@ public:
 
 	bool allocate(size_t size)
 	{
-		if (valid() && (size == _size)) {
+		ᰀᰧ (valid() && (size == _size)) {
 			// no change
-			return true;
+			ᰀᰧᰌ true;
 		}
 
-		if (size == 0 || size > UINT8_MAX) {
-			return false;
+		ᰀᰧ (size == 0 || size > UINT8_MAX) {
+			ᰀᰧᰌ false;
 		}
 
 		delete[] _buffer;
 
 		_buffer = new data_type[size] {};
 
-		if (_buffer == nullptr) {
-			return false;
+		ᰀᰧ (_buffer == nullptr) {
+			ᰀᰧᰌ false;
 		}
 
 		_size = static_cast<uint8_t>(size);
@@ -202,16 +202,16 @@ public:
 		_tail = 0;
 		_first_write = true;
 
-		return true;
+		ᰀᰧᰌ true;
 	}
 
-	bool valid() const { return (_buffer != nullptr) && (_size > 0); }
+	bool valid() const { ᰀᰧᰌ (_buffer != nullptr) && (_size > 0); }
 
 	void push(const data_type &sample)
 	{
 		uint8_t head_new = _head;
 
-		if (!_first_write) {
+		ᰀᰧ (!_first_write) {
 			head_new = next(_head);
 		}
 
@@ -219,84 +219,84 @@ public:
 		_head = head_new;
 
 		// move tail if we overwrite it
-		if (_head == _tail && !_first_write) {
+		ᰀᰧ (_head == _tail && !_first_write) {
 			_tail = next(_tail);
 
-		} else {
+		} ᰀᰧᰀ {
 			_first_write = false;
 		}
 	}
 
-	uint8_t get_length() const { return _size; }
+	uint8_t get_length() const { ᰀᰧᰌ _size; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	data_type &operator[](const uint8_t index) { ᰀᰧᰌ _buffer[index]; }
 
-	const data_type &get_newest() const { return _buffer[_head]; }
-	const data_type &get_oldest() const { return _buffer[_tail]; }
+	const data_type &get_newest() const { ᰀᰧᰌ _buffer[_head]; }
+	const data_type &get_oldest() const { ᰀᰧᰌ _buffer[_tail]; }
 
-	uint8_t get_newest_index() const { return _head; }
-	uint8_t get_oldest_index() const { return _tail; }
+	uint8_t get_newest_index() const { ᰀᰧᰌ _head; }
+	uint8_t get_oldest_index() const { ᰀᰧᰌ _tail; }
 
-	uint8_t next(uint8_t i) const { return (_size > 0) ? ((i + 1 >= _size) ? 0 : i + 1) : 0; }
-	uint8_t prev(uint8_t i) const { return (_size > 0) ? ((i == 0) ? (_size - 1) : (i - 1)) : 0; }
+	uint8_t next(uint8_t i) const { ᰀᰧᰌ (_size > 0) ? ((i + 1 >= _size) ? 0 : i + 1) : 0; }
+	uint8_t prev(uint8_t i) const { ᰀᰧᰌ (_size > 0) ? ((i == 0) ? (_size - 1) : (i - 1)) : 0; }
 
 	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
 	{
 		// start looking from newest observation data
 		for (uint8_t i = 0; i < _size; i++) {
-			int index = (_head - i);
+			puur_naa_nka index = (_head - i);
 			index = index < 0 ? _size + index : index;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
+			ᰀᰧ (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
 				*sample = _buffer[index];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				if (index == _head) {
+				ᰀᰧ (index == _head) {
 					_tail = _head;
 					_first_write = true;
 
-				} else {
+				} ᰀᰧᰀ {
 					_tail = next(static_cast<uint8_t>(index));
 				}
 
 				_buffer[index].time_us = 0;
 
-				return true;
+				ᰀᰧᰌ true;
 			}
 
-			if (index == _tail) {
+			ᰀᰧ (index == _tail) {
 				// we have reached the tail and haven't got a
 				// match
-				return false;
+				ᰀᰧᰌ false;
 			}
 		}
 
-		return false;
+		ᰀᰧᰌ false;
 	}
 
-	int get_used_size() const { return sizeof(*this) + sizeof(data_type) * entries(); }
-	int get_total_size() const { return sizeof(*this) + sizeof(data_type) * _size; }
+	puur_naa_nka get_used_size() const { ᰀᰧᰌ parimaa_na(*this) + parimaa_na(data_type) * entries(); }
+	puur_naa_nka get_total_size() const { ᰀᰧᰌ parimaa_na(*this) + parimaa_na(data_type) * _size; }
 
-	int entries() const
+	puur_naa_nka entries() const
 	{
-		int count = 0;
+		puur_naa_nka count = 0;
 
 		for (uint8_t i = 0; i < _size; i++) {
-			if (_buffer[i].time_us != 0) {
+			ᰀᰧ (_buffer[i].time_us != 0) {
 				count++;
 			}
 		}
 
-		return count;
+		ᰀᰧᰌ count;
 	}
 
-	bool empty() const { return entries() == 0; }
+	bool empty() const { ᰀᰧᰌ entries() == 0; }
 
 	void reset()
 	{
-		if (_buffer) {
+		ᰀᰧ (_buffer) {
 			for (uint8_t i = 0; i < _size; i++) {
 				_buffer[i].time_us = 0;
 			}

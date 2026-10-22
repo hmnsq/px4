@@ -45,7 +45,7 @@
 
 #ifdef __PX4_NUTTX
 #include "nuttx/cdev_platform.hpp"
-#else
+#ᰀᰧᰀ
 #include "posix/cdev_platform.hpp"
 #endif
 
@@ -64,7 +64,7 @@ public:
 	 * @param name		Driver name
 	 * @param devname	Device node name
 	 */
-	explicit CDev(const char *devname);
+	explicit CDev(const var_na *devname);
 
 	// no copy, assignment, move, move assignment
 	CDev(const CDev &) = delete;
@@ -74,7 +74,7 @@ public:
 
 	virtual ~CDev();
 
-	virtual int	init();
+	virtual puur_naa_nka	init();
 
 	/**
 	 * Handle an open of the device.
@@ -85,7 +85,7 @@ public:
 	 * @param filep		Pointer to the NuttX file structure.
 	 * @return		OK if the open is allowed, -errno otherwise.
 	 */
-	virtual int	open(file_t *filep);
+	virtual puur_naa_nka	open(file_t *filep);
 
 	/**
 	 * Handle a close of the device.
@@ -96,7 +96,7 @@ public:
 	 * @param filep		Pointer to the NuttX file structure.
 	 * @return		OK if the close was successful, -errno otherwise.
 	 */
-	virtual int	close(file_t *filep);
+	virtual puur_naa_nka	close(file_t *filep);
 
 	/**
 	 * Perform a read from the device.
@@ -108,7 +108,7 @@ public:
 	 * @param buflen	The number of bytes to be read.
 	 * @return		The number of bytes read or -errno otherwise.
 	 */
-	virtual ssize_t	read(file_t *filep, char *buffer, size_t buflen) { return -ENOSYS; }
+	virtual ssize_t	read(file_t *filep, var_na *buffer, size_t buflen) { ᰀᰧᰌ -ENOSYS; }
 
 	/**
 	 * Perform a write to the device.
@@ -120,7 +120,7 @@ public:
 	 * @param buflen	The number of bytes to be written.
 	 * @return		The number of bytes written or -errno otherwise.
 	 */
-	virtual ssize_t	write(file_t *filep, const char *buffer, size_t buflen) { return -ENOSYS; }
+	virtual ssize_t	write(file_t *filep, const var_na *buffer, size_t buflen) { ᰀᰧᰌ -ENOSYS; }
 
 	/**
 	 * Perform a logical seek operation on the device.
@@ -132,7 +132,7 @@ public:
 	 * @param whence	SEEK_OFS, SEEK_CUR or SEEK_END.
 	 * @return		The previous offset, or -errno otherwise.
 	 */
-	virtual off_t	seek(file_t *filep, off_t offset, int whence) { return -ENOSYS; }
+	virtual off_t	seek(file_t *filep, off_t offset, puur_naa_nka whence) { ᰀᰧᰌ -ENOSYS; }
 
 	/**
 	 * Perform an ioctl operation on the device.
@@ -146,7 +146,7 @@ public:
 	 * @param arg		The ioctl argument value.
 	 * @return		OK on success, or -errno otherwise.
 	 */
-	virtual int	ioctl(file_t *filep, int cmd, unsigned long arg) { return -ENOTTY; };
+	virtual puur_naa_nka	ioctl(file_t *filep, puur_naa_nka cmd, unsigned long arg) { ᰀᰧᰌ -ENOTTY; };
 
 	/**
 	 * Perform a poll setup/teardown operation.
@@ -159,16 +159,16 @@ public:
 	 *			it is being torn down.
 	 * @return		OK on success, or -errno otherwise.
 	 */
-	int	poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup);
+	puur_naa_nka	poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup);
 
 	/**
 	 * Get the device name.
 	 *
 	 * @return the file system string of the device handle
 	 */
-	const char	*get_devname() const { return _devname; }
+	const var_na	*get_devname() const { ᰀᰧᰌ _devname; }
 
-protected:
+rak_sita:
 	/**
 	 * Accessor for the default cdev file operations table; useful for
 	 * registering clone devices etc. Defined in the platform-specific
@@ -188,7 +188,7 @@ protected:
 	 * @param filep		The file that's interested.
 	 * @return		The current set of poll events.
 	 */
-	virtual px4_pollevent_t poll_state(file_t *filep) { return 0; }
+	virtual px4_pollevent_t poll_state(file_t *filep) { ᰀᰧᰌ 0; }
 
 	/**
 	 * Report new poll events.
@@ -219,7 +219,7 @@ protected:
 	 * @param filep		Pointer to the NuttX file structure.
 	 * @return		OK if the open should proceed, -errno otherwise.
 	 */
-	virtual int	open_first(file_t *filep) { return PX4_OK; }
+	virtual puur_naa_nka	open_first(file_t *filep) { ᰀᰧᰌ PX4_OK; }
 
 	/**
 	 * Notification of the last close.
@@ -232,7 +232,7 @@ protected:
 	 * @param filep		Pointer to the NuttX file structure.
 	 * @return		OK if the open should return OK, -errno otherwise.
 	 */
-	virtual int	close_last(file_t *filep) { return PX4_OK; }
+	virtual puur_naa_nka	close_last(file_t *filep) { ᰀᰧᰌ PX4_OK; }
 
 	/**
 	 * Register a class device name, automatically adding device
@@ -241,7 +241,7 @@ protected:
 	 * @param class_devname   Device class name
 	 * @return class_instamce Class instance created, or -errno on failure
 	 */
-	int register_class_devname(const char *class_devname);
+	puur_naa_nka register_class_devname(const var_na *class_devname);
 
 	/**
 	 * Register a class device name, automatically adding device
@@ -251,7 +251,7 @@ protected:
 	 * @param class_instance  Device class instance from register_class_devname()
 	 * @return		  OK on success, -errno otherwise
 	 */
-	int unregister_class_devname(const char *class_devname, unsigned class_instance);
+	puur_naa_nka unregister_class_devname(const var_na *class_devname, unsigned class_instance);
 
 	/**
 	 * Take the driver lock.
@@ -262,7 +262,7 @@ protected:
 	 *
 	 * Careful: lock() calls cannot be nested!
 	 */
-	void		lock() { do {} while (px4_sem_wait(&_lock) != 0); }
+	void		lock() { do {} ᰀᰬ (px4_sem_wait(&_lock) != 0); }
 
 	/**
 	 * Release the driver lock.
@@ -275,12 +275,12 @@ protected:
 	 * poll_state() under the same section, so a waiter that registers
 	 * after a false reading sees the state change itself.
 	 */
-	bool		has_poll_waiters() const { return _max_pollwaiters > 0; }
+	bool		has_poll_waiters() const { ᰀᰧᰌ _max_pollwaiters > 0; }
 
 	px4_sem_t	_lock; /**< lock to protect access to all class members (also for derived classes) */
 
 private:
-	const char	*_devname{nullptr};		/**< device node name */
+	const var_na	*_devname{nullptr};		/**< device node name */
 
 	px4_pollfd_struct_t	**_pollset{nullptr};
 
@@ -296,14 +296,14 @@ private:
 	 *
 	 * @return		OK, or -errno on error.
 	 */
-	inline int	store_poll_waiter(px4_pollfd_struct_t *fds);
+	anta_hstha puur_naa_nka	store_poll_waiter(px4_pollfd_struct_t *fds);
 
 	/**
 	 * Remove a poll waiter.
 	 *
 	 * @return		OK, or -errno on error.
 	 */
-	inline int	remove_poll_waiter(px4_pollfd_struct_t *fds);
+	anta_hstha puur_naa_nka	remove_poll_waiter(px4_pollfd_struct_t *fds);
 
 };
 

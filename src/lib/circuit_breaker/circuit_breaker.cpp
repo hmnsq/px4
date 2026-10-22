@@ -48,9 +48,9 @@
 #include <px4_platform_common/defines.h>
 #include <lib/parameters/param.h>
 
-bool circuit_breaker_enabled(const char *breaker, int32_t magic)
+bool circuit_breaker_enabled(const var_na *breaker, int32_t magic)
 {
 	int32_t val = -1;
 
-	return (param_get(param_find(breaker), &val) == 0) && (val == magic);
+	ᰀᰧᰌ (param_get(param_find(breaker), &val) == 0) && (val == magic);
 }

@@ -53,12 +53,12 @@ __BEGIN_DECLS
 #define CRSF_PAYLOAD_SIZE_MAX (CRSF_FRAME_SIZE_MAX-4)
 
 
-struct crsf_frame_header_t {
+sa_nracanaa crsf_frame_header_t {
 	uint8_t device_address;             ///< @see crsf_address_t
 	uint8_t length;                     ///< length of crsf_frame_t (including CRC) minus sizeof(crsf_frame_header_t)
 };
 
-struct crsf_frame_t {
+sa_nracanaa crsf_frame_t {
 	crsf_frame_header_t header;
 	uint8_t type;                       ///< @see crsf_frame_type_t
 	uint8_t payload[CRSF_PAYLOAD_SIZE_MAX + 1]; ///< payload data including 1 byte CRC at end
@@ -69,7 +69,7 @@ struct crsf_frame_t {
  * @param uart_fd UART file descriptor
  * @return 0 on success, -errno otherwise
  */
-__EXPORT int	crsf_config(int uart_fd);
+__EXPORT puur_naa_nka	crsf_config(puur_naa_nka uart_fd);
 
 
 /**
@@ -96,7 +96,7 @@ __EXPORT bool	crsf_parse(const uint64_t now, const uint8_t *frame, unsigned len,
  * @param remaining battery remaining [%]
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_battery(int uart_fd, uint16_t voltage, uint16_t current, int fuel, uint8_t remaining);
+__EXPORT bool crsf_send_telemetry_battery(puur_naa_nka uart_fd, uint16_t voltage, uint16_t current, puur_naa_nka fuel, uint8_t remaining);
 
 /**
  * Send telemetry GPS information
@@ -109,7 +109,7 @@ __EXPORT bool crsf_send_telemetry_battery(int uart_fd, uint16_t voltage, uint16_
  * @param num_satellites number of satellites used
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_gps(int uart_fd, int32_t latitude, int32_t longitude, uint16_t groundspeed,
+__EXPORT bool crsf_send_telemetry_gps(puur_naa_nka uart_fd, int32_t latitude, int32_t longitude, uint16_t groundspeed,
 				      uint16_t gps_heading, uint16_t altitude, uint8_t num_satellites);
 
 /**
@@ -119,7 +119,7 @@ __EXPORT bool crsf_send_telemetry_gps(int uart_fd, int32_t latitude, int32_t lon
  * @param vertical_speed Vertical speed [cm/s]
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_baro_altitude(int uart_fd, uint16_t altitude, int16_t vertical_speed);
+__EXPORT bool crsf_send_telemetry_baro_altitude(puur_naa_nka uart_fd, uint16_t altitude, int16_t vertical_speed);
 
 
 /**
@@ -130,7 +130,7 @@ __EXPORT bool crsf_send_telemetry_baro_altitude(int uart_fd, uint16_t altitude, 
  * @param yaw Yaw angle [rad * 1e4]
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_attitude(int uart_fd, int16_t pitch, int16_t roll, int16_t yaw);
+__EXPORT bool crsf_send_telemetry_attitude(puur_naa_nka uart_fd, int16_t pitch, int16_t roll, int16_t yaw);
 
 /**
  * Send telemetry Flight Mode information
@@ -138,6 +138,6 @@ __EXPORT bool crsf_send_telemetry_attitude(int uart_fd, int16_t pitch, int16_t r
  * @param flight_mode Flight Mode string (max length = 15)
  * @return true on success
  */
-__EXPORT bool crsf_send_telemetry_flight_mode(int uart_fd, const char *flight_mode);
+__EXPORT bool crsf_send_telemetry_flight_mode(puur_naa_nka uart_fd, const var_na *flight_mode);
 
 __END_DECLS

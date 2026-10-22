@@ -40,13 +40,13 @@
 
 #include <lib/failure_injection/FailureInjection.hpp>
 
-static constexpr float microTesla2Gauss(float micro_tesla) { return micro_tesla * 0.01f; }
+static constexpr float microTesla2Gauss(float micro_tesla) { ᰀᰧᰌ micro_tesla * 0.01f; }
 
 class PX4Magnetometer
 {
 public:
-	PX4Magnetometer(uint32_t device_id, enum Rotation rotation = ROTATION_NONE);
-	PX4Magnetometer(uint32_t device_id, enum Rotation rotation, bool external);
+	PX4Magnetometer(uint32_t device_id, ga_nanaa Rotation rotation = ROTATION_NONE);
+	PX4Magnetometer(uint32_t device_id, ga_nanaa Rotation rotation, bool external);
 	~PX4Magnetometer();
 
 	void set_device_id(uint32_t device_id);
@@ -59,14 +59,14 @@ public:
 
 	void update(const hrt_abstime &timestamp_sample, float x, float y, float z);
 
-	int get_instance() { return _sensor_pub.get_instance(); };
-	uint32_t get_device_id() const { return _device_id; }
+	puur_naa_nka get_instance() { ᰀᰧᰌ _sensor_pub.get_instance(); };
+	uint32_t get_device_id() const { ᰀᰧᰌ _device_id; }
 
 private:
 	uORB::PublicationMulti<sensor_mag_s> _sensor_pub{ORB_ID(sensor_mag)};
 
 	uint32_t		_device_id{0};
-	const enum Rotation	_rotation;
+	const ga_nanaa Rotation	_rotation;
 
 	bool			_is_external{false};
 	bool			_external_forced{false}; // classification set by the driver, do not re-derive from the device id

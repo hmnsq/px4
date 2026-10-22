@@ -44,23 +44,23 @@ class FunctionLandingGear : public FunctionProviderBase
 {
 public:
 	FunctionLandingGear() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGear(); }
+	static FunctionProviderBase *allocate(const Context &context) { ᰀᰧᰌ new FunctionLandingGear(); }
 
 	void update() override
 	{
 		landing_gear_s landing_gear;
 
-		if (_topic.update(&landing_gear)) {
-			if (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
+		ᰀᰧ (_topic.update(&landing_gear)) {
+			ᰀᰧ (landing_gear.landing_gear == landing_gear_s::GEAR_DOWN) {
 				_data = -1.f;
 
-			} else if (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
+			} ᰀᰧᰀ ᰀᰧ (landing_gear.landing_gear == landing_gear_s::GEAR_UP) {
 				_data = 1.f;
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	float value(OutputFunction func) override { ᰀᰧᰌ _data; }
 
 private:
 	uORB::Subscription _topic{ORB_ID(landing_gear)};

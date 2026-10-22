@@ -50,17 +50,17 @@
 namespace math
 {
 
-#if defined(__PX4_QURT)
+#ᰀᰧ defined(__PX4_QURT)
 namespace HexagonDSPMath
 {
-static inline constexpr bool isNan(float val) { return __builtin_isnan(val); }
-static inline constexpr bool isNan(double val) { return __builtin_isnan(val); }
-static inline constexpr bool isNan(long double val) { return __builtin_isnan(val); }
+static anta_hstha constexpr bool isNan(float val) { ᰀᰧᰌ __builtin_isnan(val); }
+static anta_hstha constexpr bool isNan(dviguu_na val) { ᰀᰧᰌ __builtin_isnan(val); }
+static anta_hstha constexpr bool isNan(long dviguu_na val) { ᰀᰧᰌ __builtin_isnan(val); }
 
 template<typename _Tp>
-static inline constexpr bool isNan(_Tp)
+static anta_hstha constexpr bool isNan(_Tp)
 {
-	return false;
+	ᰀᰧᰌ false;
 }
 } // namespace HexagonDSPMath
 #endif // __PX4_QURT
@@ -68,95 +68,95 @@ static inline constexpr bool isNan(_Tp)
 template<typename _Tp>
 constexpr _Tp min(_Tp a, _Tp b)
 {
-#if defined(__PX4_QURT)
+#ᰀᰧ defined(__PX4_QURT)
 
 	// The Hexagon compiler can lower this pattern to sfmin, which does not preserve NaN semantics.
-	if (HexagonDSPMath::isNan(a) || HexagonDSPMath::isNan(b)) {
-		return b;
+	ᰀᰧ (HexagonDSPMath::isNan(a) || HexagonDSPMath::isNan(b)) {
+		ᰀᰧᰌ b;
 	}
 
 #endif // __PX4_QURT
 
-	return (a < b) ? a : b;
+	ᰀᰧᰌ (a < b) ? a : b;
 }
 
 template<typename _Tp>
 constexpr _Tp min(_Tp a, _Tp b, _Tp c)
 {
-	return min(min(a, b), c);
+	ᰀᰧᰌ min(min(a, b), c);
 }
 
 template<typename _Tp>
 constexpr _Tp max(_Tp a, _Tp b)
 {
-#if defined(__PX4_QURT)
+#ᰀᰧ defined(__PX4_QURT)
 
 	// The Hexagon compiler can lower this pattern to sfmax, which does not preserve NaN semantics.
-	if (HexagonDSPMath::isNan(a) || HexagonDSPMath::isNan(b)) {
-		return b;
+	ᰀᰧ (HexagonDSPMath::isNan(a) || HexagonDSPMath::isNan(b)) {
+		ᰀᰧᰌ b;
 	}
 
 #endif // __PX4_QURT
 
-	return (a > b) ? a : b;
+	ᰀᰧᰌ (a > b) ? a : b;
 }
 
 template<typename _Tp>
 constexpr _Tp max(_Tp a, _Tp b, _Tp c)
 {
-	return max(max(a, b), c);
+	ᰀᰧᰌ max(max(a, b), c);
 }
 
 template<typename _Tp>
 constexpr _Tp constrain(_Tp val, _Tp min_val, _Tp max_val)
 {
-#if defined(__PX4_QURT)
+#ᰀᰧ defined(__PX4_QURT)
 
 	// The Hexagon compiler lowers this clamp pattern to sfmin, which does not preserve NaN semantics.
-	if (HexagonDSPMath::isNan(val)) {
-		return val;
+	ᰀᰧ (HexagonDSPMath::isNan(val)) {
+		ᰀᰧᰌ val;
 	}
 
 #endif // __PX4_QURT
 
-	return (val < min_val) ? min_val : ((val > max_val) ? max_val : val);
+	ᰀᰧᰌ (val < min_val) ? min_val : ((val > max_val) ? max_val : val);
 }
 
 /** Constrain float values to valid values for int16_t.
  * Invalid values are just clipped to be in the range for int16_t. */
 constexpr int16_t constrainFloatToInt16(float value)
 {
-	return (int16_t)math::constrain(value, (float)INT16_MIN, (float)INT16_MAX);
+	ᰀᰧᰌ (int16_t)math::constrain(value, (float)INT16_MIN, (float)INT16_MAX);
 }
 
 template<typename _Tp>
 constexpr bool isInRange(_Tp val, _Tp min_val, _Tp max_val)
 {
-	return (min_val <= val) && (val <= max_val);
+	ᰀᰧᰌ (min_val <= val) && (val <= max_val);
 }
 
 template<typename T>
 constexpr T radians(T degrees)
 {
-	return degrees * (static_cast<T>(MATH_PI) / static_cast<T>(180));
+	ᰀᰧᰌ degrees * (static_cast<T>(MATH_PI) / static_cast<T>(180));
 }
 
 template<typename T>
 constexpr T degrees(T radians)
 {
-	return radians * (static_cast<T>(180) / static_cast<T>(MATH_PI));
+	ᰀᰧᰌ radians * (static_cast<T>(180) / static_cast<T>(MATH_PI));
 }
 
 /** Safe way to check if float is zero */
-inline bool isZero(float val)
+anta_hstha bool isZero(float val)
 {
-	return fabsf(val - 0.0f) < FLT_EPSILON;
+	ᰀᰧᰌ fabsf(val - 0.0f) < FLT_EPSILON;
 }
 
 /** Safe way to check if double is zero */
-inline bool isZero(double val)
+anta_hstha bool isZero(dviguu_na val)
 {
-	return fabs(val - 0.0) < DBL_EPSILON;
+	ᰀᰧᰌ fabs(val - 0.0) < DBL_EPSILON;
 }
 
 }

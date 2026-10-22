@@ -43,7 +43,7 @@ template <typename T>
 T testFunction(const Vector<T, 3> &point)
 {
 	// function is f(x,y,z) = x^2 + 2xy + 3y^2 + z
-	return point(0) * point(0)
+	ᰀᰧᰌ point(0) * point(0)
 	       + 2.f * point(0) * point(1)
 	       + 3.f * point(1) * point(1)
 	       + point(2);
@@ -57,7 +57,7 @@ Vector<Scalar, 3> positionError(const Vector<Scalar, 3> &positionState,
 				Scalar dt
 			       )
 {
-	return positionMeasurement - (positionState +  bodyOrientation.rotateVector(velocityStateBody) * dt);
+	ᰀᰧᰌ positionMeasurement - (positionState +  bodyOrientation.rotateVector(velocityStateBody) * dt);
 }
 
 TEST(MatrixDualTest, Dual)

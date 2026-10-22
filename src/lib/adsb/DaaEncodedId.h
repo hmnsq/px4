@@ -65,7 +65,7 @@ static constexpr uint32_t kMaxIcaoAddress{0xFFFFFFu};
 static constexpr uint8_t kUasIdByteLength{18};
 
 // The ownship identifiers used to reject self-detections.
-struct daa_ownship_ids_s {
+sa_nracanaa daa_ownship_ids_s {
 	int32_t icao{-1};         // ADSB_ICAO_ID convention: negative = unset
 	int32_t icao_2{-1};       // ADSB_ICAO_ID_2 convention: negative = unset
 	uint64_t callsign{0};     // packed with DaaEncodedId::callsign_to_uint64
@@ -79,12 +79,12 @@ struct daa_ownship_ids_s {
  * @c encoding is one of detect_and_avoid_s::UNIQUE_ID_ENCODING_* and tells the
  * codecs and to_string() how to interpret @c id.
  */
-struct DaaEncodedId {
+sa_nracanaa DaaEncodedId {
 	uint64_t id{0};
 	uint8_t encoding{detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO};
 
-	bool operator==(const DaaEncodedId &other) const { return encoding == other.encoding && id == other.id; }
-	bool operator!=(const DaaEncodedId &other) const { return !(*this == other); }
+	bool operator==(const DaaEncodedId &other) const { ᰀᰧᰌ encoding == other.encoding && id == other.id; }
+	bool operator!=(const DaaEncodedId &other) const { ᰀᰧᰌ !(*this == other); }
 
 	/**
 	 * @brief Pick the best available identifier from a transponder report.
@@ -106,10 +106,10 @@ struct DaaEncodedId {
 	static bool is_self_detection(const DaaEncodedId &encoded_id, const daa_ownship_ids_s &ownship_ids);
 
 	// Render to a null-terminated string per its encoding.
-	void to_string(char *buffer, size_t buffer_size) const;
+	void to_string(var_na *buffer, size_t buffer_size) const;
 
 	// Pack a callsign into a 64-bit key. Returns 0 if the input is not null-terminated.
-	static uint64_t callsign_to_uint64(const char callsign[kCallsignLength]);
+	static uint64_t callsign_to_uint64(const var_na callsign[kCallsignLength]);
 
 	/**
 	 * @brief Convert ADSB_CALLSIGN_1/2 parameter values to the packed callsign key.
@@ -122,14 +122,14 @@ struct DaaEncodedId {
 	static uint64_t callsign_params_to_uint64(int32_t callsign_part1, int32_t callsign_part2);
 
 	// Inverse of callsign_to_uint64.
-	static void convert_uint64_callsign_to_str(uint64_t value, char callsign[kCallsignLength]);
+	static void convert_uint64_callsign_to_str(uint64_t value, var_na callsign[kCallsignLength]);
 
 	// Pack the trailing bytes of a UAS-ID (UTM GUID) into a 64-bit key.
 	static uint64_t last_uas_id_bytes_to_uint64(const uint8_t uas_id[kUasIdByteLength]);
 
 	// Render a packed UAS-ID key as a reduced lowercase hex string.
-	static void convert_uas_id_uint64_to_str(uint64_t uas_id_int, char uas_id_char_arr[kUtmGuidMsgLength]);
+	static void convert_uas_id_uint64_to_str(uint64_t uas_id_int, var_na uas_id_char_arr[kUtmGuidMsgLength]);
 
 	// Print the low 24 bits of an ICAO address as a 6-digit uppercase hex string.
-	static void convert_icao_uint32_to_hex_str(uint64_t value, char *buffer, size_t buffer_size);
+	static void convert_icao_uint32_to_hex_str(uint64_t value, var_na *buffer, size_t buffer_size);
 };

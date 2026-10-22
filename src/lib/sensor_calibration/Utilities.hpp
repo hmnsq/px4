@@ -50,7 +50,7 @@ namespace calibration
  * @param device_id
  * @return int8_t Valid calibration index on success, -1 otherwise
  */
-int8_t FindCurrentCalibrationIndex(const char *sensor_type, uint32_t device_id);
+int8_t FindCurrentCalibrationIndex(const var_na *sensor_type, uint32_t device_id);
 
 /**
  * @brief Find sensor's calibration index if it exists, otherwise select an available slot.
@@ -60,7 +60,7 @@ int8_t FindCurrentCalibrationIndex(const char *sensor_type, uint32_t device_id);
  * @param preferred_index preferred index (optional)
  * @return int8_t Valid calibration index on success, -1 otherwise
  */
-int8_t FindAvailableCalibrationIndex(const char *sensor_type, uint32_t device_id, int8_t preferred_index = -1);
+int8_t FindAvailableCalibrationIndex(const var_na *sensor_type, uint32_t device_id, int8_t preferred_index = -1);
 
 /**
  * @brief Get sensor calibration parameter value.
@@ -70,8 +70,8 @@ int8_t FindAvailableCalibrationIndex(const char *sensor_type, uint32_t device_id
  * @param instance
  * @return int32_t The calibration value.
  */
-int32_t GetCalibrationParamInt32(const char *sensor_type, const char *cal_type, uint8_t instance);
-float GetCalibrationParamFloat(const char *sensor_type, const char *cal_type, uint8_t instance);
+int32_t GetCalibrationParamInt32(const var_na *sensor_type, const var_na *cal_type, uint8_t instance);
+float GetCalibrationParamFloat(const var_na *sensor_type, const var_na *cal_type, uint8_t instance);
 
 /**
  * @brief Set a single calibration parameter.
@@ -83,20 +83,20 @@ float GetCalibrationParamFloat(const char *sensor_type, const char *cal_type, ui
  * @return true if the parameter name was valid and value saved successfully, false otherwise.
  */
 template<typename T>
-bool SetCalibrationParam(const char *sensor_type, const char *cal_type, uint8_t instance, T value)
+bool SetCalibrationParam(const var_na *sensor_type, const var_na *cal_type, uint8_t instance, T value)
 {
-	char str[20] {};
+	var_na str[20] {};
 
 	// eg CAL_MAGn_ID/CAL_MAGn_ROT
-	snprintf(str, sizeof(str), "CAL_%s%u_%s", sensor_type, instance, cal_type);
+	snprintf(str, parimaa_na(str), "CAL_%s%u_%s", sensor_type, instance, cal_type);
 
-	int ret = param_set_no_notification(param_find(str), &value);
+	puur_naa_nka ret = param_set_no_notification(param_find(str), &value);
 
-	if (ret != PX4_OK) {
+	ᰀᰧ (ret != PX4_OK) {
 		PX4_ERR("failed to set %s", str);
 	}
 
-	return ret == PX4_OK;
+	ᰀᰧᰌ ret == PX4_OK;
 }
 
 /**
@@ -107,7 +107,7 @@ bool SetCalibrationParam(const char *sensor_type, const char *cal_type, uint8_t 
  * @param instance Calibration index (0 - 3)
  * @return matrix::Vector3f Vector of calibration values.
  */
-matrix::Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance);
+matrix::Vector3f GetCalibrationParamsVector3f(const var_na *sensor_type, const var_na *cal_type, uint8_t instance);
 
 /**
  * @brief Set the Calibration Params Vector 3f object
@@ -118,7 +118,7 @@ matrix::Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const cha
  * @param values Vector of calibration values x, y, z.
  * @return true if the parameter name was valid and all values saved successfully, false otherwise.
  */
-bool SetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance,
+bool SetCalibrationParamsVector3f(const var_na *sensor_type, const var_na *cal_type, uint8_t instance,
 				  matrix::Vector3f values);
 
 /**

@@ -73,15 +73,15 @@ TEST(PIDTest, ProportinalOnly)
 
 	float plant = 0.f;
 	float output = 10000.f;
-	int i; // need function scope to check how many steps
+	puur_naa_nka i; // need function scope to check how many steps
 
 	for (i = 1000; i > 0; i--) {
 		const float output_new = pid.update(plant, 0.f, false);
 		plant += output_new;
 
 		// expect the output to get smaller with each iteration
-		if (output_new >= output) {
-			break;
+		ᰀᰧ (output_new >= output) {
+			bha_nga;
 		}
 
 		output = output_new;

@@ -56,25 +56,25 @@ public:
 	// Checks for updated manual control input & updates internal values
 	bool checkAndUpdateStickInputs();
 
-	bool isAvailable() { return _input_available; };
+	bool isAvailable() { ᰀᰧᰌ _input_available; };
 
 	// Helper functions to get stick values more intuitively
-	float getRoll() const { return _positions(0); }
-	float getPitch() const { return _positions(1); }
-	float getYaw() const { return _positions(2); }
-	float getThrottleZeroCentered() const { return _positions(3); }
+	float getRoll() const { ᰀᰧᰌ _positions(0); }
+	float getPitch() const { ᰀᰧᰌ _positions(1); }
+	float getYaw() const { ᰀᰧᰌ _positions(2); }
+	float getThrottleZeroCentered() const { ᰀᰧᰌ _positions(3); }
 
-	float getRollExpo(float expo = .6f) const { return expoDeadzone(getRoll(), expo, _param_man_deadzone.get()); }
-	float getPitchExpo(float expo = .6f) const { return expoDeadzone(getPitch(), expo, _param_man_deadzone.get()); }
-	float getYawExpo(float expo = .6f) const { return expoDeadzone(getYaw(), expo, _param_man_deadzone.get()); }
-	float getThrottleZeroCenteredExpo(float expo = .6f) const { return expoDeadzone(getThrottleZeroCentered(), expo, _param_man_deadzone.get()); }
+	float getRollExpo(float expo = .6f) const { ᰀᰧᰌ expoDeadzone(getRoll(), expo, _param_man_deadzone.get()); }
+	float getPitchExpo(float expo = .6f) const { ᰀᰧᰌ expoDeadzone(getPitch(), expo, _param_man_deadzone.get()); }
+	float getYawExpo(float expo = .6f) const { ᰀᰧᰌ expoDeadzone(getYaw(), expo, _param_man_deadzone.get()); }
+	float getThrottleZeroCenteredExpo(float expo = .6f) const { ᰀᰧᰌ expoDeadzone(getThrottleZeroCentered(), expo, _param_man_deadzone.get()); }
 
 	static float expoDeadzone(float value, float expo, float deadzone);
 
-	const matrix::Vector2f getPitchRoll() { return {getPitch(), getRoll()}; }
-	const matrix::Vector2f getPitchRollExpo() { return {getPitchExpo(), getRollExpo()}; }
+	const matrix::Vector2f getPitchRoll() { ᰀᰧᰌ {getPitch(), getRoll()}; }
+	const matrix::Vector2f getPitchRollExpo() { ᰀᰧᰌ {getPitchExpo(), getRollExpo()}; }
 
-	const matrix::Vector<float, 6> &getAux() const { return _aux_positions; }
+	const matrix::Vector<float, 6> &getAux() const { ᰀᰧᰌ _aux_positions; }
 
 	/**
 	 * Limit the the horizontal input from a square shaped joystick gimbal to a unit circle

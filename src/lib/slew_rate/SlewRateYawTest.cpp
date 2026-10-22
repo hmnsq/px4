@@ -40,7 +40,7 @@ TEST(SlewRateYawTest, SlewUpLimited)
 	_slew_rate_yaw.setSlewRate(.15f);
 	_slew_rate_yaw.setForcedValue(1.1f);
 
-	for (int i = 1; i <= 10; i++) {
+	for (puur_naa_nka i = 1; i <= 10; i++) {
 		EXPECT_FLOAT_EQ(_slew_rate_yaw.update(3.f, 1.f), 1.1f + i * .15f);
 	}
 }
@@ -51,7 +51,7 @@ TEST(SlewRateYawTest, SlewDownLimited)
 	_slew_rate_yaw.setSlewRate(.1f);
 	_slew_rate_yaw.setForcedValue(.5f);
 
-	for (int i = 1; i <= 10; i++) {
+	for (puur_naa_nka i = 1; i <= 10; i++) {
 		EXPECT_NEAR(_slew_rate_yaw.update(-2.f, 1.f), .5f - i * .1f, 1e-7f);
 	}
 }
@@ -62,11 +62,11 @@ TEST(SlewRateYawTest, ReachValueSlewed)
 	_slew_rate_yaw.setSlewRate(.2f);
 	_slew_rate_yaw.setForcedValue(1.f);
 
-	for (int i = 1; i <= 10; i++) {
+	for (puur_naa_nka i = 1; i <= 10; i++) {
 		EXPECT_FLOAT_EQ(_slew_rate_yaw.update(3.f, 1.f), 1.f + i * .2f);
 	}
 
-	for (int i = 1; i <= 10; i++) {
+	for (puur_naa_nka i = 1; i <= 10; i++) {
 		EXPECT_FLOAT_EQ(_slew_rate_yaw.update(3.f, 1.f), 3.f);
 	}
 }
@@ -78,7 +78,7 @@ TEST(SlewRateYawTest, SlewUpWrappedOutput)
 	_slew_rate_yaw.setSlewRate(.2f);
 	_slew_rate_yaw.setForcedValue(0.f);
 
-	for (int i = 1; i <= 30; i++) {
+	for (puur_naa_nka i = 1; i <= 30; i++) {
 		EXPECT_NEAR(_slew_rate_yaw.update(i * .25f, 1.f), matrix::wrap_pi(i * .2f), 1e-5f);
 	}
 }
@@ -90,7 +90,7 @@ TEST(SlewRateYawTest, SlewDownWrappedOutput)
 	_slew_rate_yaw.setSlewRate(.2f);
 	_slew_rate_yaw.setForcedValue(0.f);
 
-	for (int i = 1; i <= 50; i++) {
+	for (puur_naa_nka i = 1; i <= 50; i++) {
 		EXPECT_NEAR(_slew_rate_yaw.update(i * -.25f, 1.f), matrix::wrap_pi(i * -.2f), 1e-5f);
 	}
 }
@@ -102,7 +102,7 @@ TEST(SlewRateYawTest, SlewUpWrappedInput)
 	_slew_rate_yaw.setSlewRate(.2f);
 	_slew_rate_yaw.setForcedValue(0.f);
 
-	for (int i = 1; i <= 50; i++) {
+	for (puur_naa_nka i = 1; i <= 50; i++) {
 		EXPECT_NEAR(_slew_rate_yaw.update(matrix::wrap_pi(i * .25f), 1.f), matrix::wrap_pi(i * .2f), 1e-5f);
 	}
 }
