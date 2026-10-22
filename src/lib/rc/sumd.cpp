@@ -39,12 +39,12 @@
  * @author Marco Bauer <marco@wtns.de>
  */
 
-#include <stdbool.h>
-#include <stdio.h>
-#include "sumd.h"
-#include "common_rc.h"
+#अन्तर्भाव <stdbool.h>
+#अन्तर्भाव <stdio.h>
+#अन्तर्भाव "sumd.h"
+#अन्तर्भाव "common_rc.h"
 
-enum SUMD_DECODE_STATE {
+गणना SUMD_DECODE_STATE {
 	SUMD_DECODE_STATE_UNSYNCED = 0,
 	SUMD_DECODE_STATE_GOT_HEADER,
 	SUMD_DECODE_STATE_GOT_STATE,
@@ -69,9 +69,9 @@ const char *decode_states[] = {"UNSYNCED",
 
 uint8_t 	_crc8 	= 0x00;
 uint16_t 	_crc16 = 0x0000;
-bool 		_sumd 		= true;
-bool		_crcOK		= false;
-bool		_debug		= false;
+तार्किक 		_sumd 		= सत्य;
+तार्किक		_crcOK		= असत्य;
+तार्किक		_debug		= असत्य;
 
 
 /* define range mapping here, -+100% -> 1000..2000 */
@@ -83,230 +83,230 @@ bool		_debug		= false;
 
 /* pre-calculate the floating point stuff as far as possible at compile time */
 #define SUMD_SCALE_FACTOR ((SUMD_TARGET_MAX - SUMD_TARGET_MIN) / (SUMD_RANGE_MAX - SUMD_RANGE_MIN))
-#define SUMD_SCALE_OFFSET (int)(SUMD_TARGET_MIN - (SUMD_SCALE_FACTOR * SUMD_RANGE_MIN + 0.5f))
+#define SUMD_SCALE_OFFSET (पूर्णाङ्क)(SUMD_TARGET_MIN - (SUMD_SCALE_FACTOR * SUMD_RANGE_MIN + 0.5f))
 
-static enum SUMD_DECODE_STATE _decode_state = SUMD_DECODE_STATE_UNSYNCED;
-static uint8_t _rxlen;
+स्थिर गणना SUMD_DECODE_STATE _decode_state = SUMD_DECODE_STATE_UNSYNCED;
+स्थिर uint8_t _rxlen;
 
-static ReceiverFcPacketHoTT &_rxpacket = rc_decode_buf._hottrxpacket;
+स्थिर ReceiverFcPacketHoTT &_rxpacket = rc_decode_buf._hottrxpacket;
 
 uint16_t sumd_crc16(uint16_t crc, uint8_t value)
 {
-	int i;
+	पूर्णाङ्क i;
 	crc ^= (uint16_t)value << 8;
 
-	for (i = 0; i < 8; i++) {
+	प्रति (i = 0; i < 8; i++) {
 		crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : (crc << 1);
 	}
 
-	return crc;
+	प्रत्यागम crc;
 }
 
 uint8_t sumd_crc8(uint8_t crc, uint8_t value)
 {
 	crc += value;
-	return crc;
+	प्रत्यागम crc;
 }
 
-int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channel_count, uint16_t *channels,
-		uint16_t max_chan_count, bool *failsafe)
+पूर्णाङ्क sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_गिनती, uint16_t *channel_गिनती, uint16_t *channels,
+		uint16_t max_chan_गिनती, तार्किक *failsafe)
 {
 
-	int ret = 1;
+	पूर्णाङ्क ret = 1;
 
-	switch (_decode_state) {
-	case SUMD_DECODE_STATE_UNSYNCED:
-		if (_debug) {
+	विकल्प (_decode_state) {
+	पक्ष SUMD_DECODE_STATE_UNSYNCED:
+		यदि (_debug) {
 			printf(" SUMD_DECODE_STATE_UNSYNCED \n") ;
 		}
 
-		if (byte == SUMD_HEADER_ID) {
+		यदि (byte == SUMD_HEADER_ID) {
 			_rxpacket.header = byte;
-			_sumd = true;
+			_sumd = सत्य;
 			_rxlen = 0;
 			_crc16 = 0x0000;
 			_crc8 = 0x00;
-			_crcOK = false;
+			_crcOK = असत्य;
 			_crc16 = sumd_crc16(_crc16, byte);
 			_crc8 = sumd_crc8(_crc8, byte);
 			_decode_state = SUMD_DECODE_STATE_GOT_HEADER;
 
-			if (_debug) {
+			यदि (_debug) {
 				printf(" SUMD_DECODE_STATE_GOT_HEADER: %x \n", byte) ;
 			}
 
-		} else {
+		} अन्यथा {
 			ret = 3;
 		}
 
-		break;
+		भङ्ग;
 
-	case SUMD_DECODE_STATE_GOT_HEADER:
-		if (byte == SUMD_ID_SUMD || byte == SUMD_ID_FAILSAFE || byte == SUMD_ID_SUMH) {
+	पक्ष SUMD_DECODE_STATE_GOT_HEADER:
+		यदि (byte == SUMD_ID_SUMD || byte == SUMD_ID_FAILSAFE || byte == SUMD_ID_SUMH) {
 			_rxpacket.status = byte;
 
-			if (byte == SUMD_ID_SUMH) {
-				_sumd = false;
+			यदि (byte == SUMD_ID_SUMH) {
+				_sumd = असत्य;
 			}
 
-			if (_sumd) {
+			यदि (_sumd) {
 				_crc16 = sumd_crc16(_crc16, byte);
 
-			} else {
+			} अन्यथा {
 				_crc8 = sumd_crc8(_crc8, byte);
 			}
 
 			_decode_state = SUMD_DECODE_STATE_GOT_STATE;
 
-			if (_debug) {
+			यदि (_debug) {
 				printf(" SUMD_DECODE_STATE_GOT_STATE: %x \n", byte) ;
 			}
 
-		} else {
+		} अन्यथा {
 			_decode_state = SUMD_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		भङ्ग;
 
-	case SUMD_DECODE_STATE_GOT_STATE:
-		if (byte >= 2 && byte <= SUMD_MAX_CHANNELS) {
+	पक्ष SUMD_DECODE_STATE_GOT_STATE:
+		यदि (byte >= 2 && byte <= SUMD_MAX_CHANNELS) {
 			_rxpacket.length = byte;
 
-			if (_sumd) {
+			यदि (_sumd) {
 				_crc16 = sumd_crc16(_crc16, byte);
 
-			} else {
+			} अन्यथा {
 				_crc8 = sumd_crc8(_crc8, byte);
 			}
 
 			_rxlen++;
 			_decode_state = SUMD_DECODE_STATE_GOT_LEN;
 
-			if (_debug) {
+			यदि (_debug) {
 				printf(" SUMD_DECODE_STATE_GOT_LEN: %x (%d) \n", byte, byte) ;
 			}
 
-		} else {
+		} अन्यथा {
 			_decode_state = SUMD_DECODE_STATE_UNSYNCED;
 		}
 
-		break;
+		भङ्ग;
 
-	case SUMD_DECODE_STATE_GOT_LEN:
+	पक्ष SUMD_DECODE_STATE_GOT_LEN:
 		_rxpacket.sumd_data[_rxlen] = byte;
 
-		if (_sumd) {
+		यदि (_sumd) {
 			_crc16 = sumd_crc16(_crc16, byte);
 
-		} else {
+		} अन्यथा {
 			_crc8 = sumd_crc8(_crc8, byte);
 		}
 
 		_rxlen++;
 
-		if (_rxlen <= ((_rxpacket.length * 2))) {
-			if (_debug) {
+		यदि (_rxlen <= ((_rxpacket.length * 2))) {
+			यदि (_debug) {
 				printf(" SUMD_DECODE_STATE_GOT_DATA[%d]: %x\n", _rxlen - 2, byte) ;
 			}
 
-		} else {
+		} अन्यथा {
 			_decode_state = SUMD_DECODE_STATE_GOT_DATA;
 
-			if (_debug) {
+			यदि (_debug) {
 				printf(" SUMD_DECODE_STATE_GOT_DATA -- finish --\n") ;
 			}
 
 		}
 
-		break;
+		भङ्ग;
 
-	case SUMD_DECODE_STATE_GOT_DATA:
-		_rxpacket.crc16_high = byte;
+	पक्ष SUMD_DECODE_STATE_GOT_DATA:
+		_rxpacket.crc16_ऊपरी = byte;
 
-		if (_debug) {
+		यदि (_debug) {
 			printf(" SUMD_DECODE_STATE_GOT_CRC16[1]: %x   [%x]\n", byte, ((_crc16 >> 8) & 0xff)) ;
 		}
 
-		if (_sumd) {
+		यदि (_sumd) {
 			_decode_state = SUMD_DECODE_STATE_GOT_CRC;
 
-		} else {
+		} अन्यथा {
 			_decode_state = SUMD_DECODE_STATE_GOT_CRC16_BYTE_1;
 		}
 
-		break;
+		भङ्ग;
 
-	case SUMD_DECODE_STATE_GOT_CRC16_BYTE_1:
-		_rxpacket.crc16_low = byte;
+	पक्ष SUMD_DECODE_STATE_GOT_CRC16_BYTE_1:
+		_rxpacket.crc16_निचला = byte;
 
-		if (_debug) {
+		यदि (_debug) {
 			printf(" SUMD_DECODE_STATE_GOT_CRC16[2]: %x   [%x]\n", byte, (_crc16 & 0xff)) ;
 		}
 
 		_decode_state = SUMD_DECODE_STATE_GOT_CRC16_BYTE_2;
 
-		break;
+		भङ्ग;
 
-	case SUMD_DECODE_STATE_GOT_CRC16_BYTE_2:
+	पक्ष SUMD_DECODE_STATE_GOT_CRC16_BYTE_2:
 		_rxpacket.telemetry = byte;
 
-		if (_debug) {
+		यदि (_debug) {
 			printf(" SUMD_DECODE_STATE_GOT_SUMH_TELEMETRY: %x\n", byte) ;
 		}
 
 		_decode_state = SUMD_DECODE_STATE_GOT_CRC;
 
-		break;
+		भङ्ग;
 
-	case SUMD_DECODE_STATE_GOT_CRC:
-		if (_sumd) {
-			_rxpacket.crc16_low = byte;
+	पक्ष SUMD_DECODE_STATE_GOT_CRC:
+		यदि (_sumd) {
+			_rxpacket.crc16_निचला = byte;
 
-			if (_debug) {
+			यदि (_debug) {
 				printf(" SUMD_DECODE_STATE_GOT_CRC[2]: %x   [%x]\n\n", byte, (_crc16 & 0xff)) ;
 			}
 
-			if (_crc16 == (uint16_t)(_rxpacket.crc16_high << 8) + _rxpacket.crc16_low) {
-				_crcOK = true;
+			यदि (_crc16 == (uint16_t)(_rxpacket.crc16_ऊपरी << 8) + _rxpacket.crc16_निचला) {
+				_crcOK = सत्य;
 			}
 
-		} else {
+		} अन्यथा {
 			_rxpacket.crc8 = byte;
 
-			if (_debug) {
+			यदि (_debug) {
 				printf(" SUMD_DECODE_STATE_GOT_CRC8_SUMH: %x   [%x]\n\n", byte, _crc8) ;
 			}
 
-			if (_crc8 == _rxpacket.crc8) {
-				_crcOK = true;
+			यदि (_crc8 == _rxpacket.crc8) {
+				_crcOK = सत्य;
 			}
 		}
 
-		if (_crcOK) {
-			if (_debug) {
+		यदि (_crcOK) {
+			यदि (_debug) {
 				printf(" CRC - OK \n") ;
 			}
 
-			if (_sumd) {
-				if (_debug) {
+			यदि (_sumd) {
+				यदि (_debug) {
 					printf(" Got valid SUMD Packet\n") ;
 				}
 
-			} else {
-				if (_debug) {
+			} अन्यथा {
+				यदि (_debug) {
 					printf(" Got valid SUMH Packet\n") ;
 				}
 
 			}
 
-			if (_debug) {
+			यदि (_debug) {
 				printf(" RXLEN: %d  [Chans: %d] \n\n", _rxlen - 1, (_rxlen - 1) / 2) ;
 			}
 
 			ret = 0;
 			unsigned i;
-			uint8_t _cnt = *rx_count + 1;
-			*rx_count = _cnt;
+			uint8_t _cnt = *rx_गिनती + 1;
+			*rx_गिनती = _cnt;
 
 			*rssi = 100;
 
@@ -314,11 +314,11 @@ int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channe
 			*failsafe = (_rxpacket.status == SUMD_ID_FAILSAFE);
 
 			/* received Channels */
-			if ((uint16_t)_rxpacket.length > max_chan_count) {
-				_rxpacket.length = (uint8_t) max_chan_count;
+			यदि ((uint16_t)_rxpacket.length > max_chan_गिनती) {
+				_rxpacket.length = (uint8_t) max_chan_गिनती;
 			}
 
-			*channel_count = (uint16_t)_rxpacket.length;
+			*channel_गिनती = (uint16_t)_rxpacket.length;
 
 			/* decode the actual packet */
 			/* reorder first 4 channels */
@@ -335,8 +335,8 @@ int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channe
 			/* we start at channel 5(index 4) */
 			unsigned chan_index = 4;
 
-			for (i = 4; i < _rxpacket.length; i++) {
-				if (_debug) {
+			प्रति (i = 4; i < _rxpacket.length; i++) {
+				यदि (_debug) {
 					printf("ch[%d] : %x %x [ %x    %d ]\n", i + 1, _rxpacket.sumd_data[i * 2 + 1], _rxpacket.sumd_data[i * 2 + 2],
 					       ((_rxpacket.sumd_data[i * 2 + 1] << 8) | _rxpacket.sumd_data[i * 2 + 2]) >> 3,
 					       ((_rxpacket.sumd_data[i * 2 + 1] << 8) | _rxpacket.sumd_data[i * 2 + 2]) >> 3);
@@ -349,19 +349,19 @@ int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channe
 				chan_index++;
 			}
 
-		} else {
+		} अन्यथा {
 			/* decoding failed */
 			ret = 4;
 
-			if (_debug) {
+			यदि (_debug) {
 				printf(" CRC - fail \n") ;
 			}
 
 		}
 
 		_decode_state = SUMD_DECODE_STATE_UNSYNCED;
-		break;
+		भङ्ग;
 	}
 
-	return ret;
+	प्रत्यागम ret;
 }

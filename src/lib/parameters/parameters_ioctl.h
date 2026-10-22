@@ -40,125 +40,125 @@
 #pragma once
 
 #define PARAM_IMPLEMENTATION
-#include "param.h"
-#include <px4_platform/board_ctrl.h>
-#include <px4_platform_common/defines.h>
+#अन्तर्भाव "param.h"
+#अन्तर्भाव <px4_platform/board_ctrl.h>
+#अन्तर्भाव <px4_platform_common/defines.h>
 
 #define _PARAMIOC(_n) (_PX4_IOC(_PARAMIOCBASE, _n))
 
 #define PARAMIOCNOTIFY	_PARAMIOC(1)
 
 #define PARAMIOCFIND	_PARAMIOC(2)
-typedef struct paramiocfind {
-	const char *name;
-	const bool notification;
+प्रकारनिर्देश संरचना paramiocfind {
+	ध्रुव वर्ण *name;
+	ध्रुव bool notification;
 	param_t ret;
 } paramiocfind_t;
 
 
 #define PARAMIOCCOUNTUSED	_PARAMIOC(3)
-typedef struct paramioccountused {
+प्रकारनिर्देश संरचना paramioccountused {
 	unsigned ret;
 } paramioccountused_t;
 
 #define PARAMIOCFORUSEDINDEX	_PARAMIOC(4)
-typedef struct paramiocforusedindex {
-	const unsigned index;
+प्रकारनिर्देश संरचना paramiocforusedindex {
+	ध्रुव unsigned index;
 	param_t ret;
 } paramiocforusedindex_t;
 
 #define PARAMIOCGETUSEDINDEX	_PARAMIOC(5)
-typedef struct paramiocgetusedindex {
-	const param_t param;
+प्रकारनिर्देश संरचना paramiocgetusedindex {
+	ध्रुव param_t param;
 	unsigned ret;
 } paramiocgetusedindex_t;
 
 #define PARAMIOCUNSAVED	_PARAMIOC(6)
-typedef struct paramiocunsaved {
-	const param_t param;
+प्रकारनिर्देश संरचना paramiocunsaved {
+	ध्रुव param_t param;
 	bool ret;
 } paramiocunsaved_t;
 
 #define PARAMIOCGET	_PARAMIOC(7)
-typedef struct paramiocget {
-	const param_t param;
-	const bool deflt;
-	void *const val;
-	int ret;
+प्रकारनिर्देश संरचना paramiocget {
+	ध्रुव param_t param;
+	ध्रुव bool deflt;
+	शून्य *ध्रुव val;
+	पूर्णाङ्क ret;
 } paramiocget_t;
 
 #define PARAMIOCAUTOSAVE	_PARAMIOC(8)
-typedef struct paramiocautosave {
-	const bool enable;
+प्रकारनिर्देश संरचना paramiocautosave {
+	ध्रुव bool enable;
 } paramiocautosave_t;
 
 #define PARAMIOCSET	_PARAMIOC(9)
-typedef struct paramiocset {
-	const param_t param;
-	const bool notification;
-	const void *val;
-	int ret;
+प्रकारनिर्देश संरचना paramiocset {
+	ध्रुव param_t param;
+	ध्रुव bool notification;
+	ध्रुव शून्य *val;
+	पूर्णाङ्क ret;
 } paramiocset_t;
 
 #define PARAMIOCUSED	_PARAMIOC(10)
-typedef struct paramiocused {
-	const param_t param;
+प्रकारनिर्देश संरचना paramiocused {
+	ध्रुव param_t param;
 	bool ret;
 } paramiocused_t;
 
 #define PARAMIOCSETUSED	_PARAMIOC(11)
-typedef struct paramiocsetused {
-	const param_t param;
+प्रकारनिर्देश संरचना paramiocsetused {
+	ध्रुव param_t param;
 } paramiocsetused_t;
 
 #define PARAMIOCSETDEFAULT	_PARAMIOC(12)
-typedef struct paramiocsetdefault {
-	const param_t param;
-	const void *val;
-	int ret;
+प्रकारनिर्देश संरचना paramiocsetdefault {
+	ध्रुव param_t param;
+	ध्रुव शून्य *val;
+	पूर्णाङ्क ret;
 } paramiocsetdefault_t;
 
 #define PARAMIOCRESET	_PARAMIOC(13)
-typedef struct paramiocreset {
-	const param_t param;
-	const bool notification;
-	int ret;
+प्रकारनिर्देश संरचना paramiocreset {
+	ध्रुव param_t param;
+	ध्रुव bool notification;
+	पूर्णाङ्क ret;
 } paramiocreset_t;
 
 #define PARAMIOCRESETGROUP	_PARAMIOC(14)
-typedef enum {
+प्रकारनिर्देश गणना {
 	PARAM_RESET_ALL,
 	PARAM_RESET_EXCLUDES,
 	PARAM_RESET_SPECIFIC
 } param_reset_type_t;
 
-typedef struct paramiocresetgroup {
+प्रकारनिर्देश संरचना paramiocresetgroup {
 	param_reset_type_t type;
-	const char **group;
-	const int num_in_group;
+	ध्रुव वर्ण **group;
+	ध्रुव पूर्णाङ्क अंक_in_group;
 } paramiocresetgroup_t;
 
 #define PARAMIOCSAVEDEFAULT	_PARAMIOC(15)
-typedef struct paramiocsavedefault {
+प्रकारनिर्देश संरचना paramiocsavedefault {
 	bool blocking;
-	int ret;
+	पूर्णाङ्क ret;
 } paramiocsavedefault_t;
 
 #define PARAMIOCLOADDEFAULT	_PARAMIOC(16)
-typedef struct paramiocloaddefault {
-	int ret;
+प्रकारनिर्देश संरचना paramiocloaddefault {
+	पूर्णाङ्क ret;
 } paramiocloaddefault_t;
 
 
 #define PARAMIOCEXPORT	_PARAMIOC(17)
-typedef struct paramiocexport {
-	const char *filename;
-	int ret;
+प्रकारनिर्देश संरचना paramiocexport {
+	ध्रुव वर्ण *filename;
+	पूर्णाङ्क ret;
 } paramiocexport_t;
 
 #define PARAMIOCHASH	_PARAMIOC(18)
-typedef struct paramiochash {
+प्रकारनिर्देश संरचना paramiochash {
 	uint32_t ret;
 } paramiochash_t;
 
-int param_ioctl(unsigned int cmd, unsigned long arg);
+पूर्णाङ्क param_ioctl(unsigned पूर्णाङ्क cmd, unsigned long arg);

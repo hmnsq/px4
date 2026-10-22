@@ -1,15 +1,15 @@
-import ctypes
-from enum import Enum
+आनयन ctypes
+तः enum आनयन Enum
 
 
 # Note: this implementation directly follows the heatshrink_encoder.c code
 # (it's neither expected to be very efficient, nor is it pythonic)
 
 # Enum
-class HSE_state(ctypes.c_int):
+वर्ग HSE_state(ctypes.c_int):
     HSES_NOT_FULL = 0
     HSES_FILLED = 1
-    HSES_SEARCH = 2
+    HSES_खोज = 2
     HSES_YIELD_TAG_BIT = 3
     HSES_YIELD_LITERAL = 4
     HSES_YIELD_BR_INDEX = 5
@@ -28,7 +28,7 @@ HEATSHRINK_BACKREF_MARKER = 0x00
 
 
 # Structs
-class output_info(ctypes.Structure):
+वर्ग output_info(ctypes.Structure):
     _fields_ = [
         ("buf", ctypes.POINTER(ctypes.c_uint8)),
         ("buf_size", ctypes.c_size_t),
@@ -38,36 +38,36 @@ class output_info(ctypes.Structure):
 
 # Functions
 def add_tag_bit(hse, oi, tag):
-    push_bits(hse, 1, tag, oi)
+    धकेलो_bits(hse, 1, tag, oi)
 
 
-def push_bits(hse, count, bits, oi):
-    assert count <= 8
+def धकेलो_bits(hse, गिनती, bits, oi):
+    प्रतिज्ञा गिनती <= 8
     current_byte = ctypes.c_uint8(hse.current_byte)
     bit_index = ctypes.c_uint8(hse.bit_index)
-    for i in range(count - 1, -1, -1):
+    प्रति i अन्तः range(गिनती - 1, -1, -1):
         bit = bits & (1 << i)
-        if bit:
-            current_byte.value |= bit_index.value
-        bit_index.value >>= 1
-        if bit_index.value == 0:
-            bit_index.value = 0x80
-            oi.buf[oi.output_size[0]] = current_byte.value
+        यदि bit:
+            current_byte.मूल्य |= bit_index.मूल्य
+        bit_index.मूल्य >>= 1
+        यदि bit_index.मूल्य == 0:
+            bit_index.मूल्य = 0x80
+            oi.buf[oi.output_size[0]] = current_byte.मूल्य
             oi.output_size[0] += 1
-            current_byte.value = 0
-    hse.current_byte = current_byte.value
-    hse.bit_index = bit_index.value
+            current_byte.मूल्य = 0
+    hse.current_byte = current_byte.मूल्य
+    hse.bit_index = bit_index.मूल्य
 
 
-def push_literal_byte(hse, oi):
+def धकेलो_literal_byte(hse, oi):
     processed_offset = hse.match_scan_index - 1
-    input_offset = get_input_offset(hse) + processed_offset
-    c = hse.buffer[input_offset]
-    push_bits(hse, 8, c, oi)
+    निवेश_offset = get_निवेश_offset(hse) + processed_offset
+    c = hse.buffer[निवेश_offset]
+    धकेलो_bits(hse, 8, c, oi)
 
 
 # Define necessary structures and enums
-class heatshrink_encoder(ctypes.Structure):
+वर्ग heatshrink_encoder(ctypes.Structure):
     _fields_ = [
         ("input_size", ctypes.c_uint16),
         ("match_scan_index", ctypes.c_uint16),
@@ -84,99 +84,99 @@ class heatshrink_encoder(ctypes.Structure):
     ]
 
     def __init__(self, window_size=8, lookahead_size=4):
-        super().__init__()
+        पर().__init__()
         self.window_size = window_size
         self.lookahead_size = lookahead_size
-        self.search_index = hs_index(window_size)
+        self.खोज_index = hs_index(window_size)
         self.buffer = (ctypes.c_uint8 * (2 << window_size))()
         self.bit_index = 0x80
 
 
-class hs_index(ctypes.Structure):
+वर्ग hs_index(ctypes.Structure):
     _fields_ = [("index", ctypes.POINTER(ctypes.c_int16))]
 
     def __init__(self, window_size):
-        super().__init__()
+        पर().__init__()
         self.index = (ctypes.c_int16 * (2 << window_size))()
 
 
-class HSE_sink_res(Enum):
+वर्ग HSE_sink_res(Enum):
     HSER_SINK_OK = 0
     HSER_SINK_ERROR_NULL = -1
     HSER_SINK_ERROR_MISUSE = -2
 
 
-class HSE_poll_res(Enum):
+वर्ग HSE_poll_res(Enum):
     HSER_POLL_EMPTY = 0
     HSER_POLL_MORE = 1
     HSER_POLL_ERROR_NULL = -1
     HSER_POLL_ERROR_MISUSE = -2
 
 
-class HSE_finish_res(Enum):
+वर्ग HSE_finish_res(Enum):
     HSER_FINISH_DONE = 0
     HSER_FINISH_MORE = 1
     HSER_FINISH_ERROR_NULL = -1
 
 
 def is_finishing(hse):
-    return hse.flags & FLAG_IS_FINISHING
+    प्रत्यागम hse.flags & FLAG_IS_FINISHING
 
 
 def can_take_byte(oi):
-    return oi.output_size[0] < oi.buf_size
+    प्रत्यागम oi.output_size[0] < oi.buf_size
 
 
-def get_input_buffer_size(hse):
-    return 1 << hse.window_size
+def get_निवेश_buffer_size(hse):
+    प्रत्यागम 1 << hse.window_size
 
 
 def get_lookahead_size(hse):
-    return 1 << hse.lookahead_size
+    प्रत्यागम 1 << hse.lookahead_size
 
 
-def get_input_offset(hse):
-    return get_input_buffer_size(hse)
+def get_निवेश_offset(hse):
+    प्रत्यागम get_निवेश_buffer_size(hse)
 
 
-def heatshrink_encoder_sink(hse, in_buf, size, input_size):
-    if hse is None or in_buf is None or input_size is None:
-        return HSE_sink_res.HSER_SINK_ERROR_NULL
+def heatshrink_encoder_sink(hse, in_buf, size, निवेश_size):
+    यदि hse is None वा in_buf is None वा निवेश_size is None:
+        प्रत्यागम HSE_sink_res.HSER_SINK_ERROR_NULL
 
-    if is_finishing(hse):
-        return HSE_sink_res.HSER_SINK_ERROR_MISUSE
+    यदि is_finishing(hse):
+        प्रत्यागम HSE_sink_res.HSER_SINK_ERROR_MISUSE
 
-    if hse.state != HSE_state.HSES_NOT_FULL:
-        return HSE_sink_res.HSER_SINK_ERROR_MISUSE
+    यदि hse.state != HSE_state.HSES_NOT_FULL:
+        प्रत्यागम HSE_sink_res.HSER_SINK_ERROR_MISUSE
 
-    write_offset = get_input_offset(hse) + hse.input_size
-    ibs = get_input_buffer_size(hse)
-    rem = ibs - hse.input_size
+    write_offset = get_निवेश_offset(hse) + hse.निवेश_size
+    ibs = get_निवेश_buffer_size(hse)
+    rem = ibs - hse.निवेश_size
     cp_sz = min(rem, size)
 
-    for i in range(cp_sz):
+    प्रति i अन्तः range(cp_sz):
         hse.buffer[write_offset + i] = in_buf[i]
-    input_size.value = cp_sz
-    hse.input_size += cp_sz
+    निवेश_size.मूल्य = cp_sz
+    hse.निवेश_size += cp_sz
 
-    if cp_sz == rem:
+    यदि cp_sz == rem:
         hse.state = HSE_state.HSES_FILLED
 
-    return HSE_sink_res.HSER_SINK_OK
+    प्रत्यागम HSE_sink_res.HSER_SINK_OK
 
 
 def do_indexing(hse):
     # Build an index array I that contains flattened linked lists
     # for the previous instances of every byte in the buffer.
 
-    hsi = hse.search_index
+    hsi = hse.खोज_index
     last = [0xffff] * 256
     buf = hse.buffer
     index = hsi.index
-    input_offset = get_input_offset(hse)
-    end = input_offset + hse.input_size
+    निवेश_offset = get_निवेश_offset(hse)
+    end = निवेश_offset + hse.निवेश_size
 
-    for i in range(0, end):
+    प्रति i अन्तः range(0, end):
         v = buf[i]
         lv = last[v]
         index[i] = lv
@@ -184,11 +184,11 @@ def do_indexing(hse):
 
 
 def heatshrink_encoder_poll(hse, out_buf, out_buf_size, output_size):
-    if hse is None or out_buf is None or output_size is None:
-        return HSE_poll_res.HSER_POLL_ERROR_NULL
+    यदि hse is None वा out_buf is None वा output_size is None:
+        प्रत्यागम HSE_poll_res.HSER_POLL_ERROR_NULL
 
-    if out_buf_size == 0:
-        return HSE_poll_res.HSER_POLL_ERROR_MISUSE
+    यदि out_buf_size == 0:
+        प्रत्यागम HSE_poll_res.HSER_POLL_ERROR_MISUSE
 
     output_size[0] = 0
     oi = output_info()
@@ -196,71 +196,71 @@ def heatshrink_encoder_poll(hse, out_buf, out_buf_size, output_size):
     oi.buf_size = out_buf_size
     oi.output_size = output_size
 
-    while True:
+    यावत् सत्य:
         in_state = hse.state
-        if in_state == HSE_state.HSES_NOT_FULL:
-            return HSE_poll_res.HSER_POLL_EMPTY
-        elif in_state == HSE_state.HSES_DONE:
-            return HSE_poll_res.HSER_POLL_EMPTY
-        elif in_state == HSE_state.HSES_FILLED:
+        यदि in_state == HSE_state.HSES_NOT_FULL:
+            प्रत्यागम HSE_poll_res.HSER_POLL_EMPTY
+        नोचेद्यदि in_state == HSE_state.HSES_DONE:
+            प्रत्यागम HSE_poll_res.HSER_POLL_EMPTY
+        नोचेद्यदि in_state == HSE_state.HSES_FILLED:
             do_indexing(hse)
-            hse.state = HSE_state.HSES_SEARCH
-        elif in_state == HSE_state.HSES_SEARCH:
-            hse.state = st_step_search(hse)
-        elif in_state == HSE_state.HSES_YIELD_TAG_BIT:
+            hse.state = HSE_state.HSES_खोज
+        नोचेद्यदि in_state == HSE_state.HSES_खोज:
+            hse.state = st_step_खोज(hse)
+        नोचेद्यदि in_state == HSE_state.HSES_YIELD_TAG_BIT:
             hse.state = st_yield_tag_bit(hse, oi)
-        elif in_state == HSE_state.HSES_YIELD_LITERAL:
+        नोचेद्यदि in_state == HSE_state.HSES_YIELD_LITERAL:
             hse.state = st_yield_literal(hse, oi)
-        elif in_state == HSE_state.HSES_YIELD_BR_INDEX:
+        नोचेद्यदि in_state == HSE_state.HSES_YIELD_BR_INDEX:
             hse.state = st_yield_br_index(hse, oi)
-        elif in_state == HSE_state.HSES_YIELD_BR_LENGTH:
+        नोचेद्यदि in_state == HSE_state.HSES_YIELD_BR_LENGTH:
             hse.state = st_yield_br_length(hse, oi)
-        elif in_state == HSE_state.HSES_SAVE_BACKLOG:
+        नोचेद्यदि in_state == HSE_state.HSES_SAVE_BACKLOG:
             hse.state = st_save_backlog(hse)
-        elif in_state == HSE_state.HSES_FLUSH_BITS:
+        नोचेद्यदि in_state == HSE_state.HSES_FLUSH_BITS:
             hse.state = st_flush_bit_buffer(hse, oi)
-        else:
-            return HSE_poll_res.HSER_POLL_ERROR_MISUSE
+        अन्यथा:
+            प्रत्यागम HSE_poll_res.HSER_POLL_ERROR_MISUSE
 
-        if hse.state == in_state:
-            if oi.output_size == oi.buf_size:
-                return HSE_poll_res.HSER_POLL_MORE
+        यदि hse.state == in_state:
+            यदि oi.output_size == oi.buf_size:
+                प्रत्यागम HSE_poll_res.HSER_POLL_MORE
 
 
 def heatshrink_encoder_finish(hse):
     hse.flags |= FLAG_IS_FINISHING
-    if hse.state == HSE_state.HSES_NOT_FULL:
+    यदि hse.state == HSE_state.HSES_NOT_FULL:
         hse.state = HSE_state.HSES_FILLED
-    if hse.state == HSE_state.HSES_DONE:
-        return HSE_finish_res.HSER_FINISH_DONE
-    return HSE_finish_res.HSER_FINISH_MORE
+    यदि hse.state == HSE_state.HSES_DONE:
+        प्रत्यागम HSE_finish_res.HSER_FINISH_DONE
+    प्रत्यागम HSE_finish_res.HSER_FINISH_MORE
 
 
-def st_step_search(hse):
-    window_length = get_input_buffer_size(hse)
+def st_step_खोज(hse):
+    window_length = get_निवेश_buffer_size(hse)
     lookahead_sz = get_lookahead_size(hse)
     msi = hse.match_scan_index
 
     fin = is_finishing(hse)
-    if msi > hse.input_size - (1 if fin else lookahead_sz):
-        return HSE_state.HSES_FLUSH_BITS if fin else HSE_state.HSES_SAVE_BACKLOG
+    यदि msi > hse.निवेश_size - (1 यदि fin अन्यथा lookahead_sz):
+        प्रत्यागम HSE_state.HSES_FLUSH_BITS यदि fin अन्यथा HSE_state.HSES_SAVE_BACKLOG
 
-    input_offset = get_input_offset(hse)
-    end = input_offset + msi
+    निवेश_offset = get_निवेश_offset(hse)
+    end = निवेश_offset + msi
     start = end - window_length
 
-    max_possible = lookahead_sz if hse.input_size - msi >= lookahead_sz else hse.input_size - msi
+    max_possible = lookahead_sz यदि hse.निवेश_size - msi >= lookahead_sz अन्यथा hse.निवेश_size - msi
 
     match_pos, match_length = find_longest_match(hse, start, end, max_possible)
 
-    if match_pos == MATCH_NOT_FOUND:
+    यदि match_pos == MATCH_NOT_FOUND:
         hse.match_scan_index += 1
         hse.match_length = 0
-        return HSE_state.HSES_YIELD_TAG_BIT
-    else:
+        प्रत्यागम HSE_state.HSES_YIELD_TAG_BIT
+    अन्यथा:
         hse.match_pos = match_pos
         hse.match_length = match_length
-        return HSE_state.HSES_YIELD_TAG_BIT
+        प्रत्यागम HSE_state.HSES_YIELD_TAG_BIT
 
 
 def find_longest_match(hse, start, end, maxlen):
@@ -271,151 +271,151 @@ def find_longest_match(hse, start, end, maxlen):
 
     needlepoint = end
 
-    pos = hse.search_index.index[end]
+    pos = hse.खोज_index.index[end]
     buf_needlepoint_maxlen = buf[needlepoint + match_maxlen]
-    while pos >= start:
+    यावत् pos >= start:
 
-        if buf[pos + match_maxlen] != buf_needlepoint_maxlen:
-            pos = hse.search_index.index[pos]
-            continue
+        यदि buf[pos + match_maxlen] != buf_needlepoint_maxlen:
+            pos = hse.खोज_index.index[pos]
+            अनुवर्त
 
         length = 1
-        for length in range(1, maxlen):
-            if buf[pos + length] != buf[needlepoint + length]:
-                break
-        if length > match_maxlen:
+        प्रति length अन्तः range(1, maxlen):
+            यदि buf[pos + length] != buf[needlepoint + length]:
+                भङ्ग
+        यदि length > match_maxlen:
             match_maxlen = length
             match_index = pos
             buf_needlepoint_maxlen = buf[needlepoint + match_maxlen]
-            if length == maxlen:
-                break  # won't find better
+            यदि length == maxlen:
+                भङ्ग  # won't find better
 
-        pos = hse.search_index.index[pos]
+        pos = hse.खोज_index.index[pos]
 
     break_even_point = 1 + hse.window_size + hse.lookahead_size
 
-    if match_maxlen > (break_even_point // 8):
-        return end - match_index, match_maxlen
-    return MATCH_NOT_FOUND, 0
+    यदि match_maxlen > (break_even_point // 8):
+        प्रत्यागम end - match_index, match_maxlen
+    प्रत्यागम MATCH_NOT_FOUND, 0
 
 
-def push_outgoing_bits(hse, oi):
-    if hse.outgoing_bits_count > 8:
-        count = 8
-        bits = hse.outgoing_bits >> (hse.outgoing_bits_count - 8)
-    else:
-        count = hse.outgoing_bits_count
+def धकेलो_outgoing_bits(hse, oi):
+    यदि hse.outgoing_bits_गिनती > 8:
+        गिनती = 8
+        bits = hse.outgoing_bits >> (hse.outgoing_bits_गिनती - 8)
+    अन्यथा:
+        गिनती = hse.outgoing_bits_गिनती
         bits = hse.outgoing_bits
 
-    if count > 0:
-        push_bits(hse, count, bits, oi)
-        hse.outgoing_bits_count -= count
-    return count
+    यदि गिनती > 0:
+        धकेलो_bits(hse, गिनती, bits, oi)
+        hse.outgoing_bits_गिनती -= गिनती
+    प्रत्यागम गिनती
 
 
 def st_yield_tag_bit(hse, oi):
-    if can_take_byte(oi):
-        if hse.match_length == 0:
+    यदि can_take_byte(oi):
+        यदि hse.match_length == 0:
             add_tag_bit(hse, oi, HEATSHRINK_LITERAL_MARKER)
-            return HSE_state.HSES_YIELD_LITERAL
-        else:
+            प्रत्यागम HSE_state.HSES_YIELD_LITERAL
+        अन्यथा:
             add_tag_bit(hse, oi, HEATSHRINK_BACKREF_MARKER)
             hse.outgoing_bits = hse.match_pos - 1
-            hse.outgoing_bits_count = hse.window_size
-            return HSE_state.HSES_YIELD_BR_INDEX
-    else:
-        return HSE_state.HSES_YIELD_TAG_BIT
+            hse.outgoing_bits_गिनती = hse.window_size
+            प्रत्यागम HSE_state.HSES_YIELD_BR_INDEX
+    अन्यथा:
+        प्रत्यागम HSE_state.HSES_YIELD_TAG_BIT
 
 
 def st_yield_literal(hse, oi):
-    if can_take_byte(oi):
-        push_literal_byte(hse, oi)
-        return HSE_state.HSES_SEARCH
-    else:
-        return HSE_state.HSES_YIELD_LITERAL
+    यदि can_take_byte(oi):
+        धकेलो_literal_byte(hse, oi)
+        प्रत्यागम HSE_state.HSES_खोज
+    अन्यथा:
+        प्रत्यागम HSE_state.HSES_YIELD_LITERAL
 
 
 def st_yield_br_index(hse, oi):
-    if can_take_byte(oi):
-        if push_outgoing_bits(hse, oi) > 0:
-            return HSE_state.HSES_YIELD_BR_INDEX
-        else:
+    यदि can_take_byte(oi):
+        यदि धकेलो_outgoing_bits(hse, oi) > 0:
+            प्रत्यागम HSE_state.HSES_YIELD_BR_INDEX
+        अन्यथा:
             hse.outgoing_bits = hse.match_length - 1
-            hse.outgoing_bits_count = hse.lookahead_size
-            return HSE_state.HSES_YIELD_BR_LENGTH
-    else:
-        return HSE_state.HSES_YIELD_BR_INDEX
+            hse.outgoing_bits_गिनती = hse.lookahead_size
+            प्रत्यागम HSE_state.HSES_YIELD_BR_LENGTH
+    अन्यथा:
+        प्रत्यागम HSE_state.HSES_YIELD_BR_INDEX
 
 
 def st_yield_br_length(hse, oi):
-    if can_take_byte(oi):
-        if push_outgoing_bits(hse, oi) > 0:
-            return HSE_state.HSES_YIELD_BR_LENGTH
-        else:
+    यदि can_take_byte(oi):
+        यदि धकेलो_outgoing_bits(hse, oi) > 0:
+            प्रत्यागम HSE_state.HSES_YIELD_BR_LENGTH
+        अन्यथा:
             hse.match_scan_index += hse.match_length
             hse.match_length = 0
-            return HSE_state.HSES_SEARCH
-    else:
-        return HSE_state.HSES_YIELD_BR_LENGTH
+            प्रत्यागम HSE_state.HSES_खोज
+    अन्यथा:
+        प्रत्यागम HSE_state.HSES_YIELD_BR_LENGTH
 
 
 def st_save_backlog(hse):
     save_backlog(hse)
-    return HSE_state.HSES_NOT_FULL
+    प्रत्यागम HSE_state.HSES_NOT_FULL
 
 
 def st_flush_bit_buffer(hse, oi):
-    if hse.bit_index == 0x80:
-        return HSE_state.HSES_DONE
-    elif can_take_byte(oi):
+    यदि hse.bit_index == 0x80:
+        प्रत्यागम HSE_state.HSES_DONE
+    नोचेद्यदि can_take_byte(oi):
         oi.buf[oi.output_size[0]] = hse.current_byte
         oi.output_size[0] += 1
-        return HSE_state.HSES_DONE
-    else:
-        return HSE_state.HSES_FLUSH_BITS
+        प्रत्यागम HSE_state.HSES_DONE
+    अन्यथा:
+        प्रत्यागम HSE_state.HSES_FLUSH_BITS
 
 
 def save_backlog(hse):
-    input_buf_sz = get_input_buffer_size(hse)
+    निवेश_buf_sz = get_निवेश_buffer_size(hse)
 
     msi = hse.match_scan_index
 
-    rem = input_buf_sz - msi  # unprocessed bytes
-    shift_sz = input_buf_sz + rem
+    rem = निवेश_buf_sz - msi  # unprocessed bytes
+    shift_sz = निवेश_buf_sz + rem
 
-    for i in range(shift_sz):
-        hse.buffer[i] = hse.buffer[input_buf_sz - rem + i]
+    प्रति i अन्तः range(shift_sz):
+        hse.buffer[i] = hse.buffer[निवेश_buf_sz - rem + i]
 
     hse.match_scan_index = 0
-    hse.input_size -= input_buf_sz - rem
+    hse.निवेश_size -= निवेश_buf_sz - rem
 
 
 def encode(data, window_size, lookahead_size):
     hse = heatshrink_encoder(window_size, lookahead_size)
-    input_buf = (ctypes.c_uint8 * len(data))()
-    for i, d in enumerate(data):
-        input_buf[i] = d
-    in_size = len(input_buf)
+    निवेश_buf = (ctypes.c_uint8 * len(data))()
+    प्रति i, d अन्तः enumerate(data):
+        निवेश_buf[i] = d
+    in_size = len(निवेश_buf)
 
     out_buf_size = 4 * in_size  # set output buffer size a bit larger
     out_buf = (ctypes.c_uint8 * out_buf_size)()
 
     sunk = 0
     ret = []
-    while sunk < in_size:
-        input_size = ctypes.c_size_t(in_size)
-        heatshrink_encoder_sink(hse, input_buf, in_size - sunk, input_size)
-        input_buf = input_buf[input_size.value:]
-        sunk += input_size.value
-        if sunk == in_size:
+    यावत् sunk < in_size:
+        निवेश_size = ctypes.c_size_t(in_size)
+        heatshrink_encoder_sink(hse, निवेश_buf, in_size - sunk, निवेश_size)
+        निवेश_buf = निवेश_buf[निवेश_size.मूल्य:]
+        sunk += निवेश_size.मूल्य
+        यदि sunk == in_size:
             heatshrink_encoder_finish(hse)
 
         poll_res = HSE_poll_res.HSER_POLL_MORE
-        while poll_res == HSE_poll_res.HSER_POLL_MORE:
+        यावत् poll_res == HSE_poll_res.HSER_POLL_MORE:
             output_size = (ctypes.c_size_t * 1)()
             poll_res = heatshrink_encoder_poll(hse, out_buf, out_buf_size, output_size)
             ret += list(out_buf)[0:output_size[0]]
 
-        if sunk == in_size:
+        यदि sunk == in_size:
             heatshrink_encoder_finish(hse)
-    return ret
+    प्रत्यागम ret
