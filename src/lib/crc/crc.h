@@ -74,7 +74,7 @@
  *
  ****************************************************************************/
 
-uint16_t crc16_add(uint16_t crc, uint8_t value);
+uint16_t crc16_add(uint16_t crc, uint8_t मूल्य);
 
 /****************************************************************************
  * Name: crc16_signature
@@ -94,7 +94,7 @@ uint16_t crc16_add(uint16_t crc, uint8_t value);
  ****************************************************************************/
 
 uint16_t crc16_signature(uint16_t initial, size_t length,
-			 const uint8_t *bytes);
+			 ध्रुव uint8_t *bytes);
 
 /****************************************************************************
  * Name: crc32_signature
@@ -114,7 +114,7 @@ uint16_t crc16_signature(uint16_t initial, size_t length,
  ****************************************************************************/
 
 uint32_t crc32_signature(uint32_t acc, size_t length,
-			 const uint8_t *bytes);
+			 ध्रुव uint8_t *bytes);
 
 
 /****************************************************************************
@@ -134,4 +134,4 @@ uint32_t crc32_signature(uint32_t acc, size_t length,
  *
  ****************************************************************************/
 
-uint64_t crc64_add_word(uint64_t crc, uint32_t value);
+uint64_t crc64_add_word(uint64_t crc, uint32_t मूल्य);

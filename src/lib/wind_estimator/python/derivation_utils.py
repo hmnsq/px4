@@ -34,11 +34,11 @@ Description:
     Common functions used for the derivation of most estimators
 """
 
-from symforce import symbolic as sm
-from symforce import geo
-from symforce import typing as T
+तः symforce आनयन symbolic इव sm
+तः symforce आनयन geo
+तः symforce आनयन typing इव T
 
-import re
+आनयन re
 
 # q: quaternion describing rotation from frame 1 to frame 2
 # returns a rotation matrix derived form q which describes the same
@@ -53,22 +53,22 @@ def quat_to_rot(q):
                   [2*(q1*q2 + q0*q3), q0**2 - q1**2 + q2**2 - q3**2, 2*(q2*q3 - q0*q1)],
                    [2*(q1*q3-q0*q2), 2*(q2*q3 + q0*q1), q0**2 - q1**2 - q2**2 + q3**2]])
 
-    return Rot
+    प्रत्यागम Rot
 
 def sign_no_zero(x) -> T.Scalar:
     """
     Returns -1 if x is negative, 1 if x is positive, and 1 if x is zero
     """
-    return 2 * sm.Min(sm.sign(x), 0) + 1
+    प्रत्यागम 2 * sm.Min(sm.sign(x), 0) + 1
 
-def add_epsilon_sign(expr, var, eps):
+def add_epsilon_sign(व्यंजक, var, eps):
     # Avoids a singularity at 0 while keeping the derivative correct
-    return expr.subs(var, var + eps * sign_no_zero(var))
+    प्रत्यागम व्यंजक.subs(var, var + eps * sign_no_zero(var))
 
 def generate_px4_function(function_name, output_names):
-    from symforce.codegen import Codegen, CppConfig
-    import os
-    import fileinput
+    तः symforce.codegen आनयन Codegen, CppConfig
+    आनयन os
+    आनयन fileinput
 
     codegen = Codegen.function(
             function_name,
@@ -76,27 +76,27 @@ def generate_px4_function(function_name, output_names):
             config=CppConfig())
     metadata = codegen.generate_function(
             output_dir="generated",
-            skip_directory_nesting=True)
+            skip_directory_nesting=सत्य)
 
     print("Files generated in {}:\n".format(metadata.output_dir))
-    for f in metadata.generated_files:
+    प्रति f अन्तः metadata.generated_files:
         print("  |- {}".format(os.path.relpath(f, metadata.output_dir)))
 
     # Replace cstdlib and Eigen functions by PX4 equivalents
-    with fileinput.FileInput(os.path.abspath(metadata.generated_files[0]), inplace=True, backup='.bak') as file:
-        for line in file:
-            line = line.replace("std::max", "math::max")
-            line = line.replace("std::min", "math::min")
-            line = line.replace("Eigen", "matrix")
-            line = line.replace("matrix/Dense", "matrix/math.hpp")
+    with fileinput.File_निवेश(os.path.abspath(metadata.generated_files[0]), inplace=सत्य, backup='.bak') इव file:
+        प्रति पंक्ति अन्तः file:
+            पंक्ति = पंक्ति.replace("std::max", "math::max")
+            पंक्ति = पंक्ति.replace("std::min", "math::min")
+            पंक्ति = पंक्ति.replace("Eigen", "matrix")
+            पंक्ति = पंक्ति.replace("matrix/Dense", "matrix/math.hpp")
 
             # don't allow underscore + uppercase identifier naming (always reserved for any use)
-            line = re.sub(r'_([A-Z])', lambda x: '_' + x.group(1).lower(), line)
+            पंक्ति = re.sub(r'_([A-Z])', अनामन् x: '_' + x.group(1).lower(), पंक्ति)
 
-            print(line, end='')
+            print(पंक्ति, end='')
 
 def generate_python_function(function_name, output_names):
-    from symforce.codegen import Codegen, PythonConfig
+    तः symforce.codegen आनयन Codegen, PythonConfig
     codegen = Codegen.function(
             function_name,
             output_names=output_names,
@@ -104,4 +104,4 @@ def generate_python_function(function_name, output_names):
 
     metadata = codegen.generate_function(
             output_dir="generated",
-            skip_directory_nesting=True)
+            skip_directory_nesting=सत्य)

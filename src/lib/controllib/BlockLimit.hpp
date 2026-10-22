@@ -39,20 +39,20 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
 /**
@@ -60,21 +60,21 @@ namespace control
  * The output of update is the input, bounded
  * by min/max.
  */
-class __EXPORT BlockLimit : public Block
+वर्ग __EXPORT BlockLimit : सार्वजनिक Block
 {
-public:
+सार्वजनिक:
 // methods
-	BlockLimit(SuperBlock *parent, const char *name) :
+	BlockLimit(SuperBlock *parent, ध्रुव वर्ण *name) :
 		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+		_min(एतत्, "MIN"),
+		_max(एतत्, "MAX")
 	{}
-	virtual ~BlockLimit() = default;
-	float update(float input);
+	आभास ~BlockLimit() = स्वभाव;
+	भिन्न update(भिन्न निवेश);
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-protected:
+	भिन्न getMin() { प्रत्यागम _min.get(); }
+	भिन्न getMax() { प्रत्यागम _max.get(); }
+रक्षित:
 // attributes
 	control::BlockParamFloat _min;
 	control::BlockParamFloat _max;

@@ -33,56 +33,56 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#अन्तर्भाव "FunctionProviderBase.hpp"
 
-#include <math.h>
-#include <uORB/topics/vehicle_command.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <uORB/topics/vehicle_command.h>
 
 /**
  * Functions: Peripheral_via_Actuator_Set1 ... Peripheral_via_Actuator_Set6
  */
-class FunctionActuatorSet : public FunctionProviderBase
+वर्ग FunctionActuatorSet : सार्वजनिक FunctionProviderBase
 {
-public:
+सार्वजनिक:
 	FunctionActuatorSet()
 	{
-		for (int i = 0; i < max_num_actuators; ++i) {
+		प्रति (पूर्णाङ्क i = 0; i < max_अंक_actuators; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionActuatorSet(); }
+	स्थिर FunctionProviderBase *allocate(ध्रुव Context &context) { प्रत्यागम नूतन FunctionActuatorSet(); }
 
-	void update() override
+	शून्य update() override
 	{
 		vehicle_command_s vehicle_command;
 
-		while (_topic.update(&vehicle_command)) {
-			if (vehicle_command.command == vehicle_command_s::VEHICLE_CMD_DO_SET_ACTUATOR) {
-				int index = static_cast<int>(lroundf(vehicle_command.param7));
+		यावत् (_topic.update(&vehicle_command)) {
+			यदि (vehicle_command.command == vehicle_command_s::VEHICLE_CMD_DO_SET_ACTUATOR) {
+				पूर्णाङ्क index = static_cast<पूर्णाङ्क>(lroundf(vehicle_command.param7));
 
-				if (index == 0) {
-					if (PX4_ISFINITE(vehicle_command.param1)) { _data[0] = vehicle_command.param1; }
+				यदि (index == 0) {
+					यदि (PX4_ISFINITE(vehicle_command.param1)) { _data[0] = vehicle_command.param1; }
 
-					if (PX4_ISFINITE(vehicle_command.param2)) {_data[1] = vehicle_command.param2; }
+					यदि (PX4_ISFINITE(vehicle_command.param2)) {_data[1] = vehicle_command.param2; }
 
-					if (PX4_ISFINITE(vehicle_command.param3)) {_data[2] = vehicle_command.param3; }
+					यदि (PX4_ISFINITE(vehicle_command.param3)) {_data[2] = vehicle_command.param3; }
 
-					if (PX4_ISFINITE(vehicle_command.param4)) {_data[3] = vehicle_command.param4; }
+					यदि (PX4_ISFINITE(vehicle_command.param4)) {_data[3] = vehicle_command.param4; }
 
-					if (PX4_ISFINITE(vehicle_command.param5)) {_data[4] = vehicle_command.param5; }
+					यदि (PX4_ISFINITE(vehicle_command.param5)) {_data[4] = vehicle_command.param5; }
 
-					if (PX4_ISFINITE(vehicle_command.param6)) {_data[5] = vehicle_command.param6; }
+					यदि (PX4_ISFINITE(vehicle_command.param6)) {_data[5] = vehicle_command.param6; }
 				}
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Peripheral_via_Actuator_Set1]; }
+	भिन्न value(OutputFunction func) override { प्रत्यागम _data[(पूर्णाङ्क)func - (पूर्णाङ्क)OutputFunction::Peripheral_via_Actuator_Set1]; }
 
-private:
-	static constexpr int max_num_actuators = 6;
+गुप्त:
+	स्थिर constexpr पूर्णाङ्क max_अंक_actuators = 6;
 
 	uORB::Subscription _topic{ORB_ID(vehicle_command)};
-	float _data[max_num_actuators] {};
+	भिन्न _data[max_अंक_actuators] {};
 };
