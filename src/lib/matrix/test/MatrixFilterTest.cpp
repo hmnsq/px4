@@ -31,29 +31,29 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/filter.hpp>
-#include <matrix/Vector.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/filter.hpp>
+#ضمن <matrix/Vector.hpp>
 
-using namespace matrix;
+using نطاق matrix;
 
 TEST(MatrixFilterTest, Filter)
 {
-	const size_t n_x = 6;
-	const size_t n_y = 5;
-	SquareMatrix<float, n_x> P = eye<float, n_x>();
-	SquareMatrix<float, n_y> R = eye<float, n_y>();
-	Matrix<float, n_y, n_x> C;
+	ثابت size_t n_x = 6;
+	ثابت size_t n_y = 5;
+	SquareMatrix<عائم, n_x> P = eye<عائم, n_x>();
+	SquareMatrix<عائم, n_y> R = eye<عائم, n_y>();
+	Matrix<عائم, n_y, n_x> C;
 	C.setIdentity();
-	float data[] = {1, 2, 3, 4, 5};
-	Vector<float, n_y> r(data);
+	عائم data[] = {1, 2, 3, 4, 5};
+	Vector<عائم, n_y> r(data);
 
-	Vector<float, n_x> dx;
-	SquareMatrix<float, n_x> dP;
-	float beta = 0;
-	kalman_correct<float, 6, 5>(P, C, R, r, dx, dP, beta);
+	Vector<عائم, n_x> dx;
+	SquareMatrix<عائم, n_x> dP;
+	عائم beta = 0;
+	kalman_correct<عائم, 6, 5>(P, C, R, r, dx, dP, beta);
 
-	float data_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
-	Vector<float, n_x> dx_check(data_check);
+	عائم data_check[] = {0.5, 1, 1.5, 2, 2.5, 0};
+	Vector<عائم, n_x> dx_check(data_check);
 	EXPECT_EQ(dx, dx_check);
 }

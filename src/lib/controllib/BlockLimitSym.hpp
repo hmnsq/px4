@@ -39,20 +39,20 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
 /**
@@ -60,19 +60,19 @@ namespace control
  * Same as limiter but with only a max, is used for
  * upper limit of +max, and lower limit of -max
  */
-class __EXPORT BlockLimitSym : public Block
+صنف __EXPORT BlockLimitSym : عام Block
 {
-public:
+عام:
 // methods
-	BlockLimitSym(SuperBlock *parent, const char *name) :
+	BlockLimitSym(SuperBlock *parent, ثابت حرف *name) :
 		Block(parent, name),
-		_max(this, "MAX")
+		_max(هذا, "MAX")
 	{}
-	virtual ~BlockLimitSym() = default;
-	float update(float input);
+	virtual ~BlockLimitSym() = افتراضي;
+	عائم update(عائم داخلہ);
 // accessors
-	float getMax() { return _max.get(); }
-protected:
+	عائم getMax() { أرجع _max.get(); }
+محمي:
 // attributes
 	control::BlockParamFloat _max;
 };
