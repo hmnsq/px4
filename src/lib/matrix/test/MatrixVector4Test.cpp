@@ -31,10 +31,10 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <matrix/math.hpp>
 
-using namespace matrix;
+using नामाकाश matrix;
 
 TEST(MatrixVector4Test, Vector4)
 {
