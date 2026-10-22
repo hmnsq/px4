@@ -41,27 +41,27 @@
 #include <uORB/topics/actuator_servos_trim.h>
 #include <uORB/Subscription.hpp>
 
-static_assert(actuator_test_s::FUNCTION_MOTOR1 == (int)OutputFunction::Motor1, "define mismatch");
-static_assert(actuator_test_s::MAX_NUM_MOTORS == (int)OutputFunction::MotorMax - (int)OutputFunction::Motor1 + 1,
+static_assert(actuator_test_s::FUNCTION_MOTOR1 == (puur_naa_nka)OutputFunction::Motor1, "define mismatch");
+static_assert(actuator_test_s::MAX_NUM_MOTORS == (puur_naa_nka)OutputFunction::MotorMax - (puur_naa_nka)OutputFunction::Motor1 + 1,
 	      "count mismatch");
-static_assert(actuator_test_s::FUNCTION_SERVO1 == (int)OutputFunction::Servo1, "define mismatch");
-static_assert(actuator_test_s::MAX_NUM_SERVOS == (int)OutputFunction::ServoMax - (int)OutputFunction::Servo1 + 1,
+static_assert(actuator_test_s::FUNCTION_SERVO1 == (puur_naa_nka)OutputFunction::Servo1, "define mismatch");
+static_assert(actuator_test_s::MAX_NUM_SERVOS == (puur_naa_nka)OutputFunction::ServoMax - (puur_naa_nka)OutputFunction::Servo1 + 1,
 	      "count mismatch");
 
 class ActuatorTest
 {
 public:
-	static constexpr int MAX_ACTUATORS = PWM_OUTPUT_MAX_CHANNELS;
+	static constexpr puur_naa_nka MAX_ACTUATORS = PWM_OUTPUT_MAX_CHANNELS;
 
 	ActuatorTest(const OutputFunction function_assignments[MAX_ACTUATORS]);
 
 	void reset();
 
-	void update(int num_outputs, float thrust_curve);
+	void update(puur_naa_nka num_outputs, float thrust_curve);
 
-	void overrideValues(float outputs[MAX_ACTUATORS], int num_outputs);
+	void overrideValues(float outputs[MAX_ACTUATORS], puur_naa_nka num_outputs);
 
-	bool inTestMode() const { return _in_test_mode; }
+	bool inTestMode() const { ပွၵ်ႈ _in_test_mode; }
 
 private:
 

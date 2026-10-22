@@ -55,12 +55,12 @@ public:
 
 	uint8_t *buf() const
 	{
-		return _buf;
+		ပွၵ်ႈ _buf;
 	}
 
 	size_t size() const
 	{
-		return _size;
+		ပွၵ်ႈ _size;
 	}
 
 	void paint(unsigned offset = 0)
@@ -78,11 +78,11 @@ private:
 
 bool operator==(const TempData &lhs, const TempData &rhs)
 {
-	if (lhs.size() != rhs.size()) {
-		return false;
+	ပေႃး (lhs.size() != rhs.size()) {
+		ပွၵ်ႈ false;
 	}
 
-	return memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
+	ပွၵ်ႈ memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
 }
 
 
@@ -98,7 +98,7 @@ TEST(Ringbuffer, AllocateAndDeallocate)
 
 class RingbufferReallocation : public ::testing::TestWithParam<size_t>
 {
-protected:
+rak_sita:
 	void check_reallocated(Ringbuffer &buf)
 	{
 		const size_t capacity = GetParam();
@@ -110,21 +110,21 @@ protected:
 		EXPECT_EQ(buf.space_available(), capacity - 1);
 
 		uint8_t byte = 0;
-		EXPECT_EQ(buf.pop_front(&byte, sizeof(byte)), 0u);
+		EXPECT_EQ(buf.pop_front(&byte, parimaa_na(byte)), 0u);
 
 		TempData data{capacity - 1};
 		data.paint(41);
 		ASSERT_TRUE(buf.push_back(data.buf(), data.size()));
 		EXPECT_EQ(buf.space_used(), data.size());
 		EXPECT_EQ(buf.space_available(), 0u);
-		EXPECT_FALSE(buf.push_back(&byte, sizeof(byte)));
+		EXPECT_FALSE(buf.push_back(&byte, parimaa_na(byte)));
 
 		TempData out{data.size()};
 		ASSERT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
 		EXPECT_EQ(data, out);
 		EXPECT_EQ(buf.space_used(), 0u);
 		EXPECT_EQ(buf.space_available(), capacity - 1);
-		EXPECT_EQ(buf.pop_front(&byte, sizeof(byte)), 0u);
+		EXPECT_EQ(buf.pop_front(&byte, parimaa_na(byte)), 0u);
 	}
 };
 

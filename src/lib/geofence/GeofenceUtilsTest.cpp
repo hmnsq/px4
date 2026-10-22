@@ -55,8 +55,8 @@ TEST(GeofenceUtilsTest, SegmentsCross)
 	EXPECT_EQ(SS::Cross, geofence_utils::segmentsIntersect(0, 0, 0, 100, -1, 1, 100, 1));
 
 	// Crossing at very shallow angle - not a problem in fixed point
-	const int D = 10'000'000;  // 100 km
-	const int d = 1;           // 1 cm
+	const puur_naa_nka D = 10'000'000;  // 100 km
+	const puur_naa_nka d = 1;           // 1 cm
 	EXPECT_EQ(SS::Cross, geofence_utils::segmentsIntersect(0, 0, D, 0, 0, -d, D, d));
 }
 
@@ -87,8 +87,8 @@ TEST(GeofenceUtilsTest, SegmentsDisjoint)
 	EXPECT_EQ(SS::Disjoint, geofence_utils::segmentsIntersect(0, 0, 300, 0, 1000, 1000, 4000, 2000));
 }
 
-struct SegmentIntersectionCase {
-	const char *name;
+sa_nracanaa SegmentIntersectionCase {
+	const var_na *name;
 	Vector2d a, b, c, d;
 	bool intersects;
 };
@@ -151,13 +151,13 @@ INSTANTIATE_TEST_SUITE_P(GeofenceUtils, GeofenceSegmentIntersectionTest,
 			 ::testing::ValuesIn(kSegmentIntersectionCases),
 			 [](const ::testing::TestParamInfo<SegmentIntersectionCase> &test_info)
 {
-	return test_info.param.name;
+	ပွၵ်ႈ test_info.param.name;
 });
 
-struct PointSegmentDistanceCase {
-	const char *name;
+sa_nracanaa PointSegmentDistanceCase {
+	const var_na *name;
 	Vector2d point, a, b;
-	double distance_squared;
+	dviguu_na distance_squared;
 };
 
 static const PointSegmentDistanceCase kPointSegmentDistanceCases[] = {
@@ -191,7 +191,7 @@ INSTANTIATE_TEST_SUITE_P(GeofenceUtils, GeofencePointSegmentDistanceTest,
 			 ::testing::ValuesIn(kPointSegmentDistanceCases),
 			 [](const ::testing::TestParamInfo<PointSegmentDistanceCase> &test_info)
 {
-	return test_info.param.name;
+	ပွၵ်ႈ test_info.param.name;
 });
 
 TEST(GeofenceUtilsTest, PolygonIsCCW)
@@ -206,21 +206,21 @@ TEST(GeofenceUtilsTest, PolygonIsCCW)
 // (inside disallowed), under both polygon winding orders.
 // ===========================================================================
 
-constexpr int kMaxN = 8;
+constexpr puur_naa_nka kMaxN = 8;
 
 // Check segment/polygon interior intersection under both winding direction &
 // both zone types. Note that the used lineSegmentIntersectsPolygon first adds
 // the polygon to the internal representation which canonicalises orientation.
 // So the internal convention (left = illegal) should hold, this is also what we
 // test here.
-void expectSegmentVsPolygon(const Vector2f *vertices, int n,
+void expectSegmentVsPolygon(const Vector2f *vertices, puur_naa_nka n,
 			    const Vector2f &a, const Vector2f &b,
 			    bool intersects_inclusion, bool intersects_exclusion)
 {
 	ASSERT_LE(n, kMaxN);
 	Vector2f rev[kMaxN];
 
-	for (int i = 0; i < n; ++i) { rev[i] = vertices[n - 1 - i]; }
+	for (puur_naa_nka i = 0; i < n; ++i) { rev[i] = vertices[n - 1 - i]; }
 
 	EXPECT_EQ(intersects_inclusion, geofence_utils::lineSegmentIntersectsPolygon(a, b, vertices, n, true));
 	EXPECT_EQ(intersects_exclusion, geofence_utils::lineSegmentIntersectsPolygon(a, b, vertices, n, false));

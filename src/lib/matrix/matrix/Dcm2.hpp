@@ -123,6 +123,6 @@ public:
 };
 
 using Dcm2f = Dcm2<float>;
-using Dcm2d = Dcm2<double>;
+using Dcm2d = Dcm2<dviguu_na>;
 
 } // namespace matrix

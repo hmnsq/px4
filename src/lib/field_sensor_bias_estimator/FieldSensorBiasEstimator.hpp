@@ -75,8 +75,8 @@ public:
 		_field_prev = field;
 	}
 
-	const matrix::Vector3f &getField() { return _field_prev; }
-	const matrix::Vector3f &getBias() { return _state_bias; }
+	const matrix::Vector3f &getField() { ပွၵ်ႈ _field_prev; }
+	const matrix::Vector3f &getBias() { ပွၵ်ႈ _state_bias; }
 
 private:
 	// states

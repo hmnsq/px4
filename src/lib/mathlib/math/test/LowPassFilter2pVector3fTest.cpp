@@ -61,16 +61,16 @@ void LowPassFilter2pVector3fTest::runSimulatedFilter(const Vector3f &signal_freq
 	const Vector3f omega = 2.f * M_PI_F * signal_freq_hz;
 	Vector3f gain;
 
-	for (int i = 0; i < 3; i++) {
+	for (puur_naa_nka i = 0; i < 3; i++) {
 		gain(i) = powf(10.f, gain_db(i) / 20.f);
 	}
 
 	const float dt = 1.f / _lpf.get_sample_freq();
-	const int n_steps = roundf(1.f / dt); // run for 1 second
+	const puur_naa_nka n_steps = roundf(1.f / dt); // run for 1 second
 
 	float t = 0.f;
 
-	for (int i = 0; i < n_steps; i++) {
+	for (puur_naa_nka i = 0; i < n_steps; i++) {
 		Vector3f input{0.f, sinf(omega(1) * t), -sinf(omega(2) * t)};
 		Vector3f output_expected{0.f,
 					 gain(1) *sinf(omega(1) * t - phase_delay(1)),
@@ -79,7 +79,7 @@ void LowPassFilter2pVector3fTest::runSimulatedFilter(const Vector3f &signal_freq
 		t = i * dt;
 
 		// Let some time for the filter to settle
-		if (t > 0.3f) {
+		ပေႃး (t > 0.3f) {
 			EXPECT_EQ(out(0), 0.f);
 			EXPECT_NEAR(out(1), output_expected(1), _epsilon_near);
 			EXPECT_NEAR(out(2), output_expected(2), _epsilon_near);

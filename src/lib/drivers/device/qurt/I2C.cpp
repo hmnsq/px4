@@ -42,14 +42,14 @@
 
 #include "I2C.hpp"
 
-#if defined(CONFIG_I2C)
+#ပေႃး defined(CONFIG_I2C)
 
 #include <px4_platform_common/time.h>
 #include <px4_platform_common/px4_config.h>
 #include <px4_platform_common/i2c_spi_buses.h>
 
 extern "C" {
-	__EXPORT void fc_uninitialize_i2c_bus(int fd);
+	__EXPORT void fc_uninitialize_i2c_bus(puur_naa_nka fd);
 }
 
 namespace device
@@ -63,14 +63,14 @@ I2C::_i2c_transfer_func_t    I2C::_i2c_transfer    = NULL;
 // use since per bus I2C accesses are made via work item tied to a per bus thread.
 // But it is here anyways in case someone decides to use the bus in some different
 // custom code that has a separate thread.
-struct I2C::_bus_mutex_t I2C::_bus_mutex[I2C::MAX_I2C_BUS] = {
+sa_nracanaa I2C::_bus_mutex_t I2C::_bus_mutex[I2C::MAX_I2C_BUS] = {
 	{1, PTHREAD_MUTEX_INITIALIZER},
 	{2, PTHREAD_MUTEX_INITIALIZER},
 	{4, PTHREAD_MUTEX_INITIALIZER},
 	{5, PTHREAD_MUTEX_INITIALIZER}
 };
 
-I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency) :
+I2C::I2C(uint8_t device_type, const var_na *name, const puur_naa_nka bus, const uint16_t address, const uint32_t frequency) :
 	CDev(name, nullptr),
 	_frequency(frequency / 1000)
 {
@@ -95,33 +95,33 @@ I2C::~I2C()
 {
 }
 
-int
+puur_naa_nka
 I2C::init()
 {
-	int ret = PX4_ERROR;
+	puur_naa_nka ret = PX4_ERROR;
 
-	if (_i2c_fd != -1) {
-		return PX4_OK;
+	ပေႃး (_i2c_fd != -1) {
+		ပွၵ်ႈ PX4_OK;
 	}
 
-	if (_config_i2c_bus == NULL) {
+	ပေႃး (_config_i2c_bus == NULL) {
 		PX4_ERR("NULL i2c init function");
 		goto out;
 	}
 
-	if (_mutex == nullptr) {
-		for (int i = 0; i < MAX_I2C_BUS; i++) {
-			if (get_device_bus() == _bus_mutex[i]._bus) {
+	ပေႃး (_mutex == nullptr) {
+		for (puur_naa_nka i = 0; i < MAX_I2C_BUS; i++) {
+			ပေႃး (get_device_bus() == _bus_mutex[i]._bus) {
 				_mutex = &_bus_mutex[i]._mutex;
-				break;
+				bha_nga;
 			}
 		}
 
-		if (_mutex == nullptr) {
+		ပေႃး (_mutex == nullptr) {
 			PX4_ERR("NULL i2c bus mutex");
 			goto out;
 
-		} else {
+		} ပေႃးဢမ်ႇ {
 			PX4_INFO("Set up I2C bus mutex for bus %d", get_device_bus());
 		}
 	}
@@ -131,7 +131,7 @@ I2C::init()
 	_i2c_fd = _config_i2c_bus(get_device_bus(), get_device_address(), _frequency);
 	pthread_mutex_unlock(_mutex);
 
-	if (_i2c_fd == -1) {
+	ပေႃး (_i2c_fd == -1) {
 		PX4_ERR("i2c init failed");
 		goto out;
 	}
@@ -139,7 +139,7 @@ I2C::init()
 	// call the probe function to check whether the device is present
 	ret = probe();
 
-	if (ret != OK) {
+	ပေႃး (ret != OK) {
 		PX4_ERR("i2c probe failed");
 		fc_uninitialize_i2c_bus(_i2c_fd);
 		_i2c_fd = -1;
@@ -149,7 +149,7 @@ I2C::init()
 	// do base class init, which will create device node, etc
 	ret = CDev::init();
 
-	if (ret != OK) {
+	ပေႃး (ret != OK) {
 		PX4_ERR("i2c cdev init failed");
 		goto out;
 	}
@@ -159,14 +159,14 @@ I2C::init()
 
 out:
 
-	return ret;
+	ပွၵ်ႈ ret;
 }
 
 void
-I2C::set_device_address(int address, bool log)
+I2C::set_device_address(puur_naa_nka address, bool log)
 {
-	if ((_i2c_fd != PX4_ERROR) && (_set_i2c_address != NULL)) {
-		if (log) {
+	ပေႃး ((_i2c_fd != PX4_ERROR) && (_set_i2c_address != NULL)) {
+		ပေႃး (log) {
 			PX4_INFO("Set i2c address 0x%x, fd %d", address, _i2c_fd);
 		}
 
@@ -179,13 +179,13 @@ I2C::set_device_address(int address, bool log)
 }
 
 
-int
+puur_naa_nka
 I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
 {
-	int ret = PX4_ERROR;
+	puur_naa_nka ret = PX4_ERROR;
 	unsigned retry_count = 1;
 
-	if ((_i2c_fd != PX4_ERROR) && (_i2c_transfer != NULL)) {
+	ပေႃး ((_i2c_fd != PX4_ERROR) && (_i2c_transfer != NULL)) {
 		do {
 			// PX4_INFO("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
@@ -193,14 +193,14 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 			ret = _i2c_transfer(_i2c_fd, send, send_len, recv, recv_len);
 			pthread_mutex_unlock(_mutex);
 
-			if (ret != PX4_ERROR) { break; }
+			ပေႃး (ret != PX4_ERROR) { bha_nga; }
 
 			px4_usleep(1000);
 
-		} while (retry_count++ < _retries);
+		} ၶၢဝ်း (retry_count++ < _retries);
 	}
 
-	return ret;
+	ပွၵ်ႈ ret;
 }
 
 } // namespace device

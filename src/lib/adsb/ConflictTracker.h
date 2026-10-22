@@ -53,30 +53,30 @@
 
 static constexpr uint8_t kDaaMaxTraffic{5};
 
-struct conflict_info_s {
+sa_nracanaa conflict_info_s {
 	DaaEncodedId encoded_id{};
 	hrt_abstime latest_update_timestamp{0};
 	uint8_t conflict_level{detect_and_avoid_s::DAA_CONFLICT_LVL_NONE};
 	float aircraft_dist{0.f}; // Distance to aircraft = sqrtf(dist_hor^2 + dist_vert^2)
 };
 
-enum class RemoveBufferCause : uint8_t {
+ga_nanaa class RemoveBufferCause : uint8_t {
 	kStaleConflict = 0,
 	kBufferFull = 1
 };
 
-enum class IgnoreTrafficCause : uint8_t {
+ga_nanaa class IgnoreTrafficCause : uint8_t {
 	kBufferFull = 0
 };
 
-enum class ConflictTrackerChangeType : uint8_t {
+ga_nanaa class ConflictTrackerChangeType : uint8_t {
 	kConflictAdded = 0,
 	kConflictLevelChanged = 1,
 	kConflictRemoved = 2,
 	kReportIgnored = 3
 };
 
-struct conflict_tracker_change_s {
+sa_nracanaa conflict_tracker_change_s {
 	ConflictTrackerChangeType type{ConflictTrackerChangeType::kConflictAdded};
 	conflict_info_s conflict{};	// the affected entry (for kConflictRemoved: the removed entry)
 	uint8_t previous_level{detect_and_avoid_s::DAA_CONFLICT_LVL_NONE};	// kConflictLevelChanged only
@@ -123,18 +123,18 @@ public:
 	void refresh_most_urgent();
 
 	// Cached value; only refresh_most_urgent() and clear() update it.
-	const conflict_info_s &most_urgent() const { return _most_urgent; }
+	const conflict_info_s &most_urgent() const { ပွၵ်ႈ _most_urgent; }
 
 	// Highest-priority conflict in the buffer, or id=0 when empty.
 	conflict_info_s find_most_urgent() const;
 
-	bool contains(const DaaEncodedId &encoded_id) const { return find_conflict_idx(encoded_id) >= 0; }
+	bool contains(const DaaEncodedId &encoded_id) const { ပွၵ်ႈ find_conflict_idx(encoded_id) >= 0; }
 
 	// Tracked entry for encoded_id, or id=0 when not tracked.
 	conflict_info_s get_conflict(const DaaEncodedId &encoded_id) const;
 
-	size_t size() const { return _buffer.size(); }
-	bool empty() const { return _buffer.empty(); }
+	size_t size() const { ပွၵ်ႈ _buffer.size(); }
+	bool empty() const { ပွၵ်ႈ _buffer.empty(); }
 
 	// Priority rules: higher conflict level first, ties broken by aircraft distance.
 	// Public so the priority policy can be unit tested directly.
@@ -142,7 +142,7 @@ public:
 	static bool is_conflict_less_important(const conflict_info_s &new_conflict, const conflict_info_s &base_conflict);
 
 private:
-	enum class ConflictPriority : uint8_t {
+	ga_nanaa class ConflictPriority : uint8_t {
 		kMostUrgent,
 		kLeastUrgent
 	};
@@ -157,17 +157,17 @@ private:
 	 *
 	 * Emits kConflictLevelChanged when the level differs from the stored entry.
 	 */
-	bool update_conflict(const conflict_info_s &conflict, const int conflict_idx, conflict_tracker_changes_s &changes);
+	bool update_conflict(const conflict_info_s &conflict, const puur_naa_nka conflict_idx, conflict_tracker_changes_s &changes);
 
 	/** @brief Return the index of the most or least urgent entry, or -1 if the buffer is empty. */
-	int find_conflict_idx_by_priority(const ConflictPriority priority) const;
+	puur_naa_nka find_conflict_idx_by_priority(const ConflictPriority priority) const;
 
 	/** @brief Return the buffer index of @p encoded_id, or -1 if not tracked. */
-	int find_conflict_idx(const DaaEncodedId &encoded_id) const;
+	puur_naa_nka find_conflict_idx(const DaaEncodedId &encoded_id) const;
 
 	void reset_most_urgent();
 
-	bool is_valid_idx(const int idx) const { return idx >= 0 && idx < static_cast<int>(_buffer.size()); }
+	bool is_valid_idx(const puur_naa_nka idx) const { ပွၵ်ႈ idx >= 0 && idx < static_cast<puur_naa_nka>(_buffer.size()); }
 
 	px4::Array<conflict_info_s, kDaaMaxTraffic> _buffer{};
 	conflict_info_s _most_urgent{};

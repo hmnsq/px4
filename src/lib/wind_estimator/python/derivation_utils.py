@@ -34,9 +34,9 @@ Description:
     Common functions used for the derivation of most estimators
 """
 
-from symforce import symbolic as sm
-from symforce import geo
-from symforce import typing as T
+ta_h symforce import symbolic as sm
+ta_h symforce import geo
+ta_h symforce import typing as T
 
 import re
 
@@ -53,20 +53,20 @@ def quat_to_rot(q):
                   [2*(q1*q2 + q0*q3), q0**2 - q1**2 + q2**2 - q3**2, 2*(q2*q3 - q0*q1)],
                    [2*(q1*q3-q0*q2), 2*(q2*q3 + q0*q1), q0**2 - q1**2 - q2**2 + q3**2]])
 
-    return Rot
+    ပွၵ်ႈ Rot
 
 def sign_no_zero(x) -> T.Scalar:
     """
     Returns -1 if x is negative, 1 if x is positive, and 1 if x is zero
     """
-    return 2 * sm.Min(sm.sign(x), 0) + 1
+    ပွၵ်ႈ 2 * sm.Min(sm.sign(x), 0) + 1
 
 def add_epsilon_sign(expr, var, eps):
     # Avoids a singularity at 0 while keeping the derivative correct
-    return expr.subs(var, var + eps * sign_no_zero(var))
+    ပွၵ်ႈ expr.subs(var, var + eps * sign_no_zero(var))
 
 def generate_px4_function(function_name, output_names):
-    from symforce.codegen import Codegen, CppConfig
+    ta_h symforce.codegen import Codegen, CppConfig
     import os
     import fileinput
 
@@ -79,12 +79,12 @@ def generate_px4_function(function_name, output_names):
             skip_directory_nesting=True)
 
     print("Files generated in {}:\n".format(metadata.output_dir))
-    for f in metadata.generated_files:
+    for f anta_h metadata.generated_files:
         print("  |- {}".format(os.path.relpath(f, metadata.output_dir)))
 
     # Replace cstdlib and Eigen functions by PX4 equivalents
     with fileinput.FileInput(os.path.abspath(metadata.generated_files[0]), inplace=True, backup='.bak') as file:
-        for line in file:
+        for line anta_h file:
             line = line.replace("std::max", "math::max")
             line = line.replace("std::min", "math::min")
             line = line.replace("Eigen", "matrix")
@@ -96,7 +96,7 @@ def generate_px4_function(function_name, output_names):
             print(line, end='')
 
 def generate_python_function(function_name, output_names):
-    from symforce.codegen import Codegen, PythonConfig
+    ta_h symforce.codegen import Codegen, PythonConfig
     codegen = Codegen.function(
             function_name,
             output_names=output_names,

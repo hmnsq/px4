@@ -93,15 +93,15 @@ uint16_t crc16_add(uint16_t crc, uint8_t value)
 	crc ^= (uint16_t)((uint16_t) value << 8u);
 
 	for (i = 0; i < 8; i++) {
-		if (crc & (1u << 15u)) {
+		ပေႃး (crc & (1u << 15u)) {
 			crc = (uint16_t)((crc << 1u) ^ poly);
 
-		} else {
+		} ပေႃးဢမ်ႇ {
 			crc = (uint16_t)(crc << 1u);
 		}
 	}
 
-	return crc;
+	ပွၵ်ႈ crc;
 }
 
 /****************************************************************************
@@ -129,7 +129,7 @@ uint16_t crc16_signature(uint16_t initial, size_t length, const uint8_t *bytes)
 		initial = crc16_add(initial, bytes[i]);
 	}
 
-	return initial ^ CRC16_OUTPUT_XOR;
+	ပွၵ်ႈ initial ^ CRC16_OUTPUT_XOR;
 }
 
 /****************************************************************************
@@ -159,14 +159,14 @@ uint32_t crc32_signature(uint32_t acc, size_t length, const uint8_t *bytes)
 		acc ^= bytes[i];
 		w = bits;
 
-		while (w--) {
+		ၶၢဝ်း (w--) {
 			const uint32_t xor = -(acc & 1);
 			acc >>= 1;
 			acc ^= (poly & xor);
 		}
 	}
 
-	return acc;
+	ပွၵ်ႈ acc;
 }
 
 
@@ -198,14 +198,14 @@ uint64_t crc64_add_word(uint64_t crc, uint32_t value)
 		crc ^= (uint64_t) byte << 56u;
 
 		for (i = 0; i < 8; i++) {
-			if (crc & (1ull << 63u)) {
+			ပေႃး (crc & (1ull << 63u)) {
 				crc = (uint64_t)(crc << 1u) ^ poly;
 
-			} else {
+			} ပေႃးဢမ်ႇ {
 				crc = (uint64_t)(crc << 1u);
 			}
 		}
 	}
 
-	return crc;
+	ပွၵ်ႈ crc;
 }

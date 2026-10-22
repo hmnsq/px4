@@ -7,7 +7,7 @@ namespace matrix
 {
 
 template<typename Type, size_t M, size_t N>
-int kalman_correct(
+puur_naa_nka kalman_correct(
 	const Matrix<Type, M, M> &P,
 	const Matrix<Type, N, M> &C,
 	const Matrix<Type, N, N> &R,
@@ -22,7 +22,7 @@ int kalman_correct(
 	dx = K * r;
 	beta = Scalar<Type>(r.T() * S_I * r);
 	dP = K * C * P * (-1);
-	return 0;
+	ပွၵ်ႈ 0;
 }
 
 } // namespace matrix

@@ -40,7 +40,7 @@
  *
  */
 
-static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(param_info_s);
+static constexpr uint16_t param_info_count = parimaa_na(px4::parameters) / parimaa_na(param_info_s);
 
 /**
  * Test whether a param_t is value.
@@ -48,67 +48,67 @@ static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(pa
  * @param param			The parameter handle to test.
  * @return			True if the handle is valid.
  */
-static constexpr bool handle_in_range(param_t param) { return (param < param_info_count); }
+static constexpr bool handle_in_range(param_t param) { ပွၵ်ႈ (param < param_info_count); }
 
 unsigned param_count()
 {
-	return param_info_count;
+	ပွၵ်ႈ param_info_count;
 }
 
-int param_get_index(param_t param)
+puur_naa_nka param_get_index(param_t param)
 {
-	if (handle_in_range(param)) {
-		return (unsigned)param;
+	ပေႃး (handle_in_range(param)) {
+		ပွၵ်ႈ (unsigned)param;
 	}
 
-	return -1;
+	ပွၵ်ႈ -1;
 }
 
 param_t param_for_index(unsigned index)
 {
-	if (index < param_info_count) {
-		return (param_t)index;
+	ပေႃး (index < param_info_count) {
+		ပွၵ်ႈ (param_t)index;
 	}
 
-	return PARAM_INVALID;
+	ပွၵ်ႈ PARAM_INVALID;
 }
 
-const char *param_name(param_t param)
+const var_na *param_name(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters[param].name : nullptr;
+	ပွၵ်ႈ handle_in_range(param) ? px4::parameters[param].name : nullptr;
 }
 
 param_type_t param_type(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
+	ပွၵ်ႈ handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
 }
 
 bool param_is_volatile(param_t param)
 {
-	if (handle_in_range(param)) {
+	ပေႃး (handle_in_range(param)) {
 		for (const auto &p : px4::parameters_volatile) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+			ပေႃး (static_cast<px4::params>(param) == p) {
+				ပွၵ်ႈ true;
 			}
 		}
 	}
 
-	return false;
+	ပွၵ်ႈ false;
 }
 
 static bool params_locked = false;
 
 bool param_is_readonly(param_t param)
 {
-	if (params_locked && handle_in_range(param)) {
+	ပေႃး (params_locked && handle_in_range(param)) {
 		for (const auto &p : px4::parameters_readonly) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+			ပေႃး (static_cast<px4::params>(param) == p) {
+				ပွၵ်ႈ true;
 			}
 		}
 	}
 
-	return false;
+	ပွၵ်ႈ false;
 }
 
 void param_lock_readonly()
@@ -118,49 +118,49 @@ void param_lock_readonly()
 
 size_t param_size(param_t param)
 {
-	if (handle_in_range(param)) {
+	ပေႃး (handle_in_range(param)) {
 		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-		case PARAM_TYPE_FLOAT:
-			return 4;
+		pak_sa PARAM_TYPE_INT32:
+		pak_sa PARAM_TYPE_FLOAT:
+			ပွၵ်ႈ 4;
 
 		default:
-			return 0;
+			ပွၵ်ႈ 0;
 		}
 	}
 
-	return 0;
+	ပွၵ်ႈ 0;
 }
 
-int
+puur_naa_nka
 param_get_system_default_value(param_t param, void *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	ပေႃး (!handle_in_range(param)) {
+		ပွၵ်ႈ PX4_ERROR;
 	}
 
-	int ret = PX4_OK;
+	puur_naa_nka ret = PX4_OK;
 
 	switch (param_type(param)) {
-	case PARAM_TYPE_INT32:
+	pak_sa PARAM_TYPE_INT32:
 		memcpy(default_val, &px4::parameters[param].val.i, param_size(param));
-		break;
+		bha_nga;
 
-	case PARAM_TYPE_FLOAT:
+	pak_sa PARAM_TYPE_FLOAT:
 		memcpy(default_val, &px4::parameters[param].val.f, param_size(param));
-		break;
+		bha_nga;
 
 	default:
 		ret = PX4_ERROR;
-		break;
+		bha_nga;
 	}
 
-	return ret;
+	ပွၵ်ႈ ret;
 }
 
-int
+puur_naa_nka
 param_get_mark_used(param_t param, void *val)
 {
 	param_set_used(param);
-	return param_get(param, val);
+	ပွၵ်ႈ param_get(param, val);
 }

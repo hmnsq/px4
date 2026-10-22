@@ -46,12 +46,12 @@
 
 __BEGIN_DECLS
 
-enum AIRSPEED_SENSOR_MODEL {
+ga_nanaa AIRSPEED_SENSOR_MODEL {
 	AIRSPEED_SENSOR_MODEL_MEMBRANE = 0,
 	AIRSPEED_SENSOR_MODEL_SDP3X,
 };
 
-enum AIRSPEED_COMPENSATION_MODEL {
+ga_nanaa AIRSPEED_COMPENSATION_MODEL {
 	AIRSPEED_COMPENSATION_MODEL_PITOT = 0,
 	AIRSPEED_COMPENSATION_MODEL_NO_PITOT = 1,
 	AIRSPEED_COMPENSATION_TUBE_PRESSURE_LOSS = 2
@@ -68,8 +68,8 @@ enum AIRSPEED_COMPENSATION_MODEL {
  * @param static_pressure pressure at the side of the tube/airplane
  * @return indicated airspeed in m/s
  */
-__EXPORT float calc_IAS_corrected(enum AIRSPEED_COMPENSATION_MODEL pmodel,
-				  enum AIRSPEED_SENSOR_MODEL smodel,
+__EXPORT float calc_IAS_corrected(ga_nanaa AIRSPEED_COMPENSATION_MODEL pmodel,
+				  ga_nanaa AIRSPEED_SENSOR_MODEL smodel,
 				  float tube_len, float tube_dia_mm, float differential_pressure, float pressure_ambient, float temperature_celsius);
 
 /**

@@ -60,17 +60,17 @@ class __EXPORT BlockIntegral: public SuperBlock
 {
 public:
 // methods
-	BlockIntegral(SuperBlock *parent, const char *name) :
+	BlockIntegral(SuperBlock *parent, const var_na *name) :
 		SuperBlock(parent, name),
 		_y(0),
 		_limit(this, "") {}
 	virtual ~BlockIntegral() = default;
 	float update(float input);
 // accessors
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
+	float getY() {ပွၵ်ႈ _y;}
+	float getMax() {ပွၵ်ႈ _limit.getMax();}
 	void setY(float y) {_y = y;}
-protected:
+rak_sita:
 // attributes
 	float _y; /**< previous output */
 	BlockLimitSym _limit; /**< limiter */

@@ -55,7 +55,7 @@ conflict_info_s make_conflict(const uint64_t icao_id, const uint8_t conflict_lev
 	conflict.conflict_level = conflict_level;
 	conflict.aircraft_dist = aircraft_dist;
 	conflict.latest_update_timestamp = timestamp;
-	return conflict;
+	ပွၵ်ႈ conflict;
 }
 
 } // namespace

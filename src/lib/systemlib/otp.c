@@ -53,70 +53,70 @@
 #include "err.h"   // warnx
 #include <assert.h>
 
-int val_read(void *dest, volatile const void *src, int bytes)
+puur_naa_nka val_read(void *dest, ca_ncala const void *src, puur_naa_nka bytes)
 {
 
-	int i;
+	puur_naa_nka i;
 
 	for (i = 0; i < bytes / 4; i++) {
-		*(((volatile unsigned *)dest) + i) = *(((volatile unsigned *)src) + i);
+		*(((ca_ncala unsigned *)dest) + i) = *(((ca_ncala unsigned *)src) + i);
 	}
 
-	return i * 4;
+	ပွၵ်ႈ i * 4;
 }
 
 
-int write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, char *signature)
+puur_naa_nka write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, var_na *signature)
 {
 
 	warnx("write_otp: PX4 / %02X / %02lX / %02lX  / ... etc  \n", id_type, (unsigned long)vid, (unsigned long)pid);
 
-	int errors = 0;
+	puur_naa_nka errors = 0;
 
 	// descriptor
-	if (F_write_byte(ADDR_OTP_START, 'P')) {
+	ပေႃး (F_write_byte(ADDR_OTP_START, 'P')) {
 		errors++;
 	}
 
 	//  write the 'P' from PX4. to first byte in OTP
-	if (F_write_byte(ADDR_OTP_START + 1, 'X')) {
+	ပေႃး (F_write_byte(ADDR_OTP_START + 1, 'X')) {
 		errors++;        //  write the 'P' from PX4. to first byte in OTP
 	}
 
-	if (F_write_byte(ADDR_OTP_START + 2, '4')) {
+	ပေႃး (F_write_byte(ADDR_OTP_START + 2, '4')) {
 		errors++;
 	}
 
-	if (F_write_byte(ADDR_OTP_START + 3, '\0')) {
+	ပေႃး (F_write_byte(ADDR_OTP_START + 3, '\0')) {
 		errors++;
 	}
 
 	//id_type
-	if (F_write_byte(ADDR_OTP_START + 4, id_type)) {
+	ပေႃး (F_write_byte(ADDR_OTP_START + 4, id_type)) {
 		errors++;
 	}
 
 	// vid and pid are 4 bytes each
-	if (F_write_word(ADDR_OTP_START + 5, vid)) {
+	ပေႃး (F_write_word(ADDR_OTP_START + 5, vid)) {
 		errors++;
 	}
 
-	if (F_write_word(ADDR_OTP_START + 9, pid)) {
+	ပေႃး (F_write_word(ADDR_OTP_START + 9, pid)) {
 		errors++;
 	}
 
 	// leave some 19 bytes of space, and go to the next block...
 	// then the auth sig starts
-	for (int i = 0 ; i < 128 ; i++) {
-		if (F_write_byte(ADDR_OTP_START + 32 + i, signature[i])) {
+	for (puur_naa_nka i = 0 ; i < 128 ; i++) {
+		ပေႃး (F_write_byte(ADDR_OTP_START + 32 + i, signature[i])) {
 			errors++;
 		}
 	}
 
-	return errors;
+	ပွၵ်ႈ errors;
 }
 
-int lock_otp(void)
+puur_naa_nka lock_otp(void)
 {
 	//determine the required locking size - can only write full lock bytes */
 //	int size = sizeof(struct otp) / 32;
@@ -129,46 +129,46 @@ int lock_otp(void)
 	//XXX add the actual call here to write the OTP_LOCK bytes only at final stage
 	// val_copy(lock_ptr, &otp_lock_mem, sizeof(otp_lock_mem));
 
-	int locksize = 5;
+	puur_naa_nka locksize = 5;
 
-	int errors = 0;
+	puur_naa_nka errors = 0;
 
 	// or just realise it's exctly 5x 32byte blocks we need to lock.  1 block for ID,type,vid,pid, and 4 blocks for certificate, which is 128 bytes.
-	for (int i = 0 ; i < locksize ; i++) {
-		if (F_write_byte(ADDR_OTP_LOCK_START + i, OTP_LOCK_LOCKED)) {
+	for (puur_naa_nka i = 0 ; i < locksize ; i++) {
+		ပေႃး (F_write_byte(ADDR_OTP_LOCK_START + i, OTP_LOCK_LOCKED)) {
 			errors++;
 		}
 	}
 
-	return errors;
+	ပွၵ်ႈ errors;
 }
 
 // COMPLETE, BUSY, or other flash error?
-static int F_GetStatus(void)
+static puur_naa_nka F_GetStatus(void)
 {
-	int fs = F_COMPLETE;
+	puur_naa_nka fs = F_COMPLETE;
 
-	if ((FLASH->status & F_BSY) == F_BSY) { fs = F_BUSY; } else {
+	ပေႃး ((FLASH->status & F_BSY) == F_BSY) { fs = F_BUSY; } ပေႃးဢမ်ႇ {
 
-		if ((FLASH->status & F_WRPERR) != (uint32_t)0x00) { fs = F_ERROR_WRP; } else {
+		ပေႃး ((FLASH->status & F_WRPERR) != (uint32_t)0x00) { fs = F_ERROR_WRP; } ပေႃးဢမ်ႇ {
 
-			if ((FLASH->status & (uint32_t)0xEF) != (uint32_t)0x00) { fs = F_ERROR_PROGRAM; } else {
+			ပေႃး ((FLASH->status & (uint32_t)0xEF) != (uint32_t)0x00) { fs = F_ERROR_PROGRAM; } ပေႃးဢမ်ႇ {
 
-				if ((FLASH->status & F_OPERR) != (uint32_t)0x00) { fs = F_ERROR_OPERATION; } else {
+				ပေႃး ((FLASH->status & F_OPERR) != (uint32_t)0x00) { fs = F_ERROR_OPERATION; } ပေႃးဢမ်ႇ {
 					fs = F_COMPLETE;
 				}
 			}
 		}
 	}
 
-	return fs;
+	ပွၵ်ႈ fs;
 }
 
 
 // enable FLASH Registers
 void F_unlock(void)
 {
-	if ((FLASH->control & F_CR_LOCK) != 0) {
+	ပေႃး ((FLASH->control & F_CR_LOCK) != 0) {
 		FLASH->key = F_KEY1;
 		FLASH->key = F_KEY2;
 	}
@@ -181,24 +181,24 @@ void F_lock(void)
 }
 
 // flash write word.
-int F_write_word(unsigned long Address, uint32_t Data)
+puur_naa_nka F_write_word(unsigned long Address, uint32_t Data)
 {
-	unsigned char octet[4] = {0, 0, 0, 0};
+	unsigned var_na octet[4] = {0, 0, 0, 0};
 
-	int ret = 0;
+	puur_naa_nka ret = 0;
 
-	for (int i = 0; i < 4; i++) {
+	for (puur_naa_nka i = 0; i < 4; i++) {
 		octet[i] = (Data >> (i * 8)) & 0xFF;
 		ret = F_write_byte(Address + i, octet[i]);
 	}
 
-	return ret;
+	ပွၵ်ႈ ret;
 }
 
 // flash write byte
-int F_write_byte(unsigned long Address, uint8_t Data)
+puur_naa_nka F_write_byte(unsigned long Address, uint8_t Data)
 {
-	volatile int status = F_COMPLETE;
+	ca_ncala puur_naa_nka status = F_COMPLETE;
 
 	//warnx("F_write_byte: %08X %02d", Address , Data ) ;
 
@@ -208,25 +208,25 @@ int F_write_byte(unsigned long Address, uint8_t Data)
 	//Wait for FLASH operation to complete by polling on BUSY flag.
 	status = F_GetStatus();
 
-	while (status == F_BUSY) { status = F_GetStatus();}
+	ၶၢဝ်း (status == F_BUSY) { status = F_GetStatus();}
 
-	if (status == F_COMPLETE) {
+	ပေႃး (status == F_COMPLETE) {
 		//if the previous operation is completed, proceed to program the new data
 		FLASH->control &= CR_PSIZE_MASK;
 		FLASH->control |= F_PSIZE_BYTE;
 		FLASH->control |= F_CR_PG;
 
-		*(volatile uint8_t *)Address = Data;
+		*(ca_ncala uint8_t *)Address = Data;
 
 		//Wait for FLASH operation to complete by polling on BUSY flag.
 		status = F_GetStatus();
 
-		while (status == F_BUSY) { status = F_GetStatus();}
+		ၶၢဝ်း (status == F_BUSY) { status = F_GetStatus();}
 
 		//if the program operation is completed, disable the PG Bit
 		FLASH->control &= (~F_CR_PG);
 	}
 
 	//Return the Program Status
-	return !(status == F_COMPLETE);
+	ပွၵ်ႈ !(status == F_COMPLETE);
 }

@@ -47,20 +47,20 @@
 
 #include <nuttx/progmem.h>
 
-#if defined(BL_UPDATE_WATCHDOG)
+#ပေႃး defined(BL_UPDATE_WATCHDOG)
 #  include <drivers/drv_watchdog.h>
-#else
+#ပေႃးဢမ်ႇ
 #  define watchdog_pet()
 #endif
 
-#if defined(CONFIG_ARCH_CHIP_STM32H7)
+#ပေႃး defined(CONFIG_ARCH_CHIP_STM32H7)
 #  define BL_FILE_SIZE_LIMIT	128*1024
 #  define STM_RAM_BASE        STM32_AXISRAM_BASE
 #  define PAGE_SIZE_MATTERS   1
 #elif defined(CONFIG_ARCH_CHIP_STM32F7)
 #  define BL_FILE_SIZE_LIMIT	32*1024
 #  define STM_RAM_BASE        STM32_SRAM_BASE
-#else
+#ပေႃးဢမ်ႇ
 #  define BL_FILE_SIZE_LIMIT  16384
 #  define STM_RAM_BASE        STM32_SRAM_BASE
 #endif
@@ -68,15 +68,15 @@
 namespace bl_update
 {
 
-#if defined (CONFIG_STM32_STM32F4XXX) || defined (CONFIG_ARCH_CHIP_STM32F7) || \
+#ပေႃး defined (CONFIG_STM32_STM32F4XXX) || defined (CONFIG_ARCH_CHIP_STM32F7) || \
     defined (CONFIG_ARCH_CHIP_STM32H7)
 
 static Result write_flash(const uint8_t *buf, size_t image_size)
 {
 	uint8_t *base = (uint8_t *) PX4_FLASH_BASE;
 
-	if (memcmp(base, buf, image_size) == 0) {
-		return Result::Unchanged;
+	ပေႃး (memcmp(base, buf, image_size) == 0) {
+		ပွၵ်ႈ Result::Unchanged;
 	}
 
 	/* prevent other tasks from running while we do this */
@@ -98,53 +98,53 @@ static Result write_flash(const uint8_t *buf, size_t image_size)
 
 	sched_unlock();
 
-	if (size != (ssize_t) image_size) {
-		return erased ? Result::ProgramFailed : Result::EraseFailed;
+	ပေႃး (size != (ssize_t) image_size) {
+		ပွၵ်ႈ erased ? Result::ProgramFailed : Result::EraseFailed;
 	}
 
-	if (memcmp(base, buf, image_size) != 0) {
-		return Result::VerifyFailed;
+	ပေႃး (memcmp(base, buf, image_size) != 0) {
+		ပွၵ်ႈ Result::VerifyFailed;
 	}
 
-	return Result::Updated;
+	ပွၵ်ႈ Result::Updated;
 }
 
-Result flash(const char *path)
+Result flash(const var_na *path)
 {
-	int fd = open(path, O_RDONLY);
+	puur_naa_nka fd = open(path, O_RDONLY);
 
-	if (fd < 0) {
-		return Result::OpenFailed;
+	ပေႃး (fd < 0) {
+		ပွၵ်ႈ Result::OpenFailed;
 	}
 
-	struct stat s;
+	sa_nracanaa stat s;
 
-	if (fstat(fd, &s) != 0) {
+	ပေႃး (fstat(fd, &s) != 0) {
 		close(fd);
-		return Result::OpenFailed;
+		ပွၵ်ႈ Result::OpenFailed;
 	}
 
-	if (s.st_size > BL_FILE_SIZE_LIMIT) {
+	ပေႃး (s.st_size > BL_FILE_SIZE_LIMIT) {
 		close(fd);
-		return Result::TooLarge;
+		ပွၵ်ႈ Result::TooLarge;
 	}
 
 	const size_t file_size = s.st_size;
 
 	/* up_progmem_write() rejects a size that is not a multiple of its
 	 * program unit, and by then the old bootloader is erased. */
-#if defined(PAGE_SIZE_MATTERS)
+#ပေႃး defined(PAGE_SIZE_MATTERS)
 	const size_t align_mask = up_progmem_pagesize(0) - 1;
-#else
-	const size_t align_mask = sizeof(uint32_t) - 1;
+#ပေႃးဢမ်ႇ
+	const size_t align_mask = parimaa_na(uint32_t) - 1;
 #endif
 	const size_t image_size = (file_size + align_mask) & ~align_mask;
 
 	uint8_t *buf = (uint8_t *)malloc(image_size);
 
-	if (buf == nullptr) {
+	ပေႃး (buf == nullptr) {
 		close(fd);
-		return Result::NoMemory;
+		ပွၵ်ႈ Result::NoMemory;
 	}
 
 	memset(buf, 0xff, image_size);
@@ -152,73 +152,73 @@ Result flash(const char *path)
 	const ssize_t bytes_read = read(fd, buf, file_size);
 	close(fd);
 
-	if (bytes_read != (ssize_t) file_size) {
+	ပေႃး (bytes_read != (ssize_t) file_size) {
 		free(buf);
-		return Result::ReadFailed;
+		ပွၵ်ႈ Result::ReadFailed;
 	}
 
 	const uint32_t *hdr = (const uint32_t *)buf;
 
-	if ((hdr[0] < STM_RAM_BASE) ||			/* stack not below RAM */
+	ပေႃး ((hdr[0] < STM_RAM_BASE) ||			/* stack not below RAM */
 	    (hdr[0] > (STM_RAM_BASE + (128 * 1024))) ||	/* stack not above RAM */
 	    (hdr[1] < PX4_FLASH_BASE) ||			/* entrypoint not below flash */
 	    ((hdr[1] - PX4_FLASH_BASE) > BL_FILE_SIZE_LIMIT)) {	/* entrypoint not outside bootloader */
 		free(buf);
-		return Result::InvalidImage;
+		ပွၵ်ႈ Result::InvalidImage;
 	}
 
 	const Result result = write_flash(buf, image_size);
 	free(buf);
-	return result;
+	ပွၵ်ႈ result;
 }
 
-#else
+#ပေႃးဢမ်ႇ
 
-Result flash(const char *path)
+Result flash(const var_na *path)
 {
-	return Result::NotSupported;
+	ပွၵ်ႈ Result::NotSupported;
 }
 
 #endif
 
-const char *result_str(Result result)
+const var_na *result_str(Result result)
 {
 	switch (result) {
-	case Result::Updated:
-		return "bootloader updated";
+	pak_sa Result::Updated:
+		ပွၵ်ႈ "bootloader updated";
 
-	case Result::Unchanged:
-		return "bootloader unchanged";
+	pak_sa Result::Unchanged:
+		ပွၵ်ႈ "bootloader unchanged";
 
-	case Result::NotSupported:
-		return "not supported on this hardware";
+	pak_sa Result::NotSupported:
+		ပွၵ်ႈ "not supported on this hardware";
 
-	case Result::OpenFailed:
-		return "cannot open bootloader file";
+	pak_sa Result::OpenFailed:
+		ပွၵ်ႈ "cannot open bootloader file";
 
-	case Result::TooLarge:
-		return "bootloader file too large";
+	pak_sa Result::TooLarge:
+		ပွၵ်ႈ "bootloader file too large";
 
-	case Result::NoMemory:
-		return "out of memory";
+	pak_sa Result::NoMemory:
+		ပွၵ်ႈ "out of memory";
 
-	case Result::ReadFailed:
-		return "bootloader file read error";
+	pak_sa Result::ReadFailed:
+		ပွၵ်ႈ "bootloader file read error";
 
-	case Result::InvalidImage:
-		return "not a bootloader image";
+	pak_sa Result::InvalidImage:
+		ပွၵ်ႈ "not a bootloader image";
 
-	case Result::EraseFailed:
-		return "flash erase failed, retry before rebooting";
+	pak_sa Result::EraseFailed:
+		ပွၵ်ႈ "flash erase failed, retry before rebooting";
 
-	case Result::ProgramFailed:
-		return "flash program failed, retry before rebooting";
+	pak_sa Result::ProgramFailed:
+		ပွၵ်ႈ "flash program failed, retry before rebooting";
 
-	case Result::VerifyFailed:
-		return "verify failed, retry before rebooting";
+	pak_sa Result::VerifyFailed:
+		ပွၵ်ႈ "verify failed, retry before rebooting";
 	}
 
-	return "unknown error";
+	ပွၵ်ႈ "unknown error";
 }
 
 } // namespace bl_update

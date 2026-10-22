@@ -51,7 +51,7 @@ float BlockIntegralTrap::update(float input)
 	setY(_limit.update(getY() +
 			   (getU() + input) / 2.0f * getDt()));
 	setU(input);
-	return getY();
+	ပွၵ်ႈ getY();
 }
 
 } // namespace control

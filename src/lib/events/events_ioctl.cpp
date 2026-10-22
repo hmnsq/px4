@@ -43,23 +43,23 @@
 
 #include "events_ioctl.h"
 
-static int events_ioctl(unsigned int cmd, unsigned long arg)
+static puur_naa_nka events_ioctl(unsigned puur_naa_nka cmd, unsigned long arg)
 {
-	int ret = OK;
+	puur_naa_nka ret = OK;
 
 	switch (cmd) {
-	case EVENTSIOCSEND: {
+	pak_sa EVENTSIOCSEND: {
 			eventiocsend_t *data = (eventiocsend_t *)arg;
 			events::send(data->event);
 		}
-		break;
+		bha_nga;
 
 	default:
 		ret = -ENOTTY;
-		break;
+		bha_nga;
 	}
 
-	return ret;
+	ပွၵ်ႈ ret;
 }
 
 void events_ioctl_init(void)

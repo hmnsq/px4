@@ -85,7 +85,7 @@ public:
 	using ActuatorVector = matrix::Vector<float, NUM_ACTUATORS>;
 	using ActuatorBitmask = ActuatorEffectiveness::ActuatorBitmask;
 
-	enum ControlAxis {
+	ga_nanaa ControlAxis {
 		ROLL = 0,
 		PITCH,
 		YAW,
@@ -114,7 +114,7 @@ public:
 	 * @param B Effectiveness matrix
 	 */
 	virtual void setEffectivenessMatrix(const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness,
-					    const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
+					    const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, puur_naa_nka num_actuators,
 					    bool update_normalization_scale);
 
 	/**
@@ -122,7 +122,7 @@ public:
 	 *
 	 * @return Actuator vector
 	 */
-	const ActuatorVector &getActuatorSetpoint() const { return _actuator_sp; }
+	const ActuatorVector &getActuatorSetpoint() const { ပွၵ်ႈ _actuator_sp; }
 
 	/**
 	 * Set the desired control vector
@@ -136,7 +136,7 @@ public:
 	 *
 	 * @return Control vector
 	 */
-	const matrix::Vector<float, NUM_AXES> &getControlSetpoint() const { return _control_sp; }
+	const matrix::Vector<float, NUM_AXES> &getControlSetpoint() const { ပွၵ်ႈ _control_sp; }
 
 	/**
 	 * Get the allocated control vector
@@ -149,7 +149,7 @@ public:
 		// Covert back to zero to represent physical thrust.
 		ActuatorVector actuator_sp{_actuator_sp};
 		actuator_sp.nanToZero();
-		return (_effectiveness * (actuator_sp - _actuator_trim)).emult(_control_allocation_scale);
+		ပွၵ်ႈ (_effectiveness * (actuator_sp - _actuator_trim)).emult(_control_allocation_scale);
 	}
 
 	/**
@@ -157,7 +157,7 @@ public:
 	 *
 	 * @return Effectiveness matrix
 	 */
-	const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &getEffectivenessMatrix() const { return _effectiveness; }
+	const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &getEffectivenessMatrix() const { ပွၵ်ႈ _effectiveness; }
 
 	/**
 	 * Set the minimum actuator values
@@ -171,7 +171,7 @@ public:
 	 *
 	 * @return Minimum actuator values
 	 */
-	const ActuatorVector &getActuatorMin() const { return _actuator_min; }
+	const ActuatorVector &getActuatorMin() const { ပွၵ်ႈ _actuator_min; }
 
 	/**
 	 * Set the maximum actuator values
@@ -185,7 +185,7 @@ public:
 	 *
 	 * @return Maximum actuator values
 	 */
-	const ActuatorVector &getActuatorMax() const { return _actuator_max; }
+	const ActuatorVector &getActuatorMax() const { ပွၵ်ႈ _actuator_max; }
 
 	/**
 	 * Set the current actuator setpoint.
@@ -240,8 +240,8 @@ public:
 	 */
 	void applyNanToActuators(ActuatorBitmask nan_actuators_mask)
 	{
-		for (int i = 0; i < _num_actuators; i++) {
-			if (nan_actuators_mask & (1u << i)) {
+		for (puur_naa_nka i = 0; i < _num_actuators; i++) {
+			ပေႃး (nan_actuators_mask & (1u << i)) {
 				_actuator_sp(i) = NAN;
 			}
 		}
@@ -249,15 +249,15 @@ public:
 
 	virtual void updateParameters() {}
 
-	int numConfiguredActuators() const { return _num_actuators; }
+	puur_naa_nka numConfiguredActuators() const { ပွၵ်ႈ _num_actuators; }
 
 	void setNormalizeRPY(bool normalize_rpy) { _normalize_rpy = normalize_rpy; }
 
 	/// Axes (bitmask over ControlAxis) dropped from the effectiveness matrix as not independently
 	/// achievable, e.g. yaw when collinear with roll after a motor failure
-	uint8_t getDroppedAxes() const { return _dropped_axes; }
+	uint8_t getDroppedAxes() const { ပွၵ်ႈ _dropped_axes; }
 
-protected:
+rak_sita:
 	friend class ControlAllocator; // for _actuator_sp
 
 	matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> _effectiveness;  ///< Effectiveness matrix
@@ -270,7 +270,7 @@ protected:
 	ActuatorVector _actuator_sp;  	///< Actuator setpoint
 	matrix::Vector<float, NUM_AXES> _control_sp;   		///< Control setpoint
 	matrix::Vector<float, NUM_AXES> _control_trim; 		///< Control at trim actuator values
-	int _num_actuators{0};
+	puur_naa_nka _num_actuators{0};
 	bool _normalize_rpy{false};				///< if true, normalize roll, pitch and yaw columns
 	bool _had_actuator_failure{false};
 	uint8_t _dropped_axes{0};				///< bitmask over ControlAxis
