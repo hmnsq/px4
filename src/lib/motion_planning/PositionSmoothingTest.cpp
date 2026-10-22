@@ -72,7 +72,7 @@ public:
 
 TEST_F(PositionSmoothingTest, reachesTargetPositionSetpoint)
 {
-	const int N_ITER = 2000;
+	const số_nguyên N_ITER = 2000;
 	const float DELTA_T = 0.02f;
 	const Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
 	const Vector3f FF_VELOCITY{0.f, 0.f, 0.f};
@@ -84,9 +84,9 @@ TEST_F(PositionSmoothingTest, reachesTargetPositionSetpoint)
 
 	PositionSmoothing::PositionSmoothingSetpoints out;
 
-	int iteration = 0;
+	số_nguyên iteration = 0;
 
-	for (; iteration < N_ITER; iteration++) {
+	cho (; iteration < N_ITER; iteration++) {
 		_position_smoothing.generateSetpoints(
 			position,
 			waypoints,
@@ -98,7 +98,7 @@ TEST_F(PositionSmoothingTest, reachesTargetPositionSetpoint)
 		position = out.position;
 		expectDynamicsLimitsRespected(out);
 
-		if (position == TARGET) {
+		nếu (position == TARGET) {
 			printf("Converged in %d iterations\n", iteration);
 			break;
 		}
@@ -111,7 +111,7 @@ TEST_F(PositionSmoothingTest, reachesTargetPositionSetpoint)
 
 TEST_F(PositionSmoothingTest, reachesTargetVelocityIntegration)
 {
-	const int N_ITER = 2000;
+	const số_nguyên N_ITER = 2000;
 	const float DELTA_T = 0.02f;
 	const Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
 	const Vector3f FF_VELOCITY{0.f, 0.f, 0.f};
@@ -123,9 +123,9 @@ TEST_F(PositionSmoothingTest, reachesTargetVelocityIntegration)
 
 	PositionSmoothing::PositionSmoothingSetpoints out;
 
-	int iteration = 0;
+	số_nguyên iteration = 0;
 
-	for (; iteration < N_ITER; iteration++) {
+	cho (; iteration < N_ITER; iteration++) {
 		_position_smoothing.generateSetpoints(
 			position,
 			waypoints,
@@ -138,7 +138,7 @@ TEST_F(PositionSmoothingTest, reachesTargetVelocityIntegration)
 		expectDynamicsLimitsRespected(out);
 
 
-		if (position == TARGET) {
+		nếu (position == TARGET) {
 			printf("Converged in %d iterations\n", iteration);
 			break;
 		}
@@ -151,7 +151,7 @@ TEST_F(PositionSmoothingTest, reachesTargetVelocityIntegration)
 
 TEST_F(PositionSmoothingTest, reachesTargetInitialVelocity)
 {
-	const int N_ITER = 20000;
+	const số_nguyên N_ITER = 20000;
 	const float DELTA_T = 0.02f;
 	const Vector3f INITIAL_POSITION{0.f, 0.f, 0.f};
 	const Vector3f TARGET{12.f, 17.f, 8.f};
@@ -168,9 +168,9 @@ TEST_F(PositionSmoothingTest, reachesTargetInitialVelocity)
 
 	PositionSmoothing::PositionSmoothingSetpoints out;
 
-	int iteration = 0;
+	số_nguyên iteration = 0;
 
-	for (; iteration < N_ITER; iteration++) {
+	cho (; iteration < N_ITER; iteration++) {
 		_position_smoothing.generateSetpoints(
 			position,
 			waypoints,
@@ -183,7 +183,7 @@ TEST_F(PositionSmoothingTest, reachesTargetInitialVelocity)
 		ff_velocity = {0.f, 0.f, 0.f};
 		expectDynamicsLimitsRespected(out);
 
-		if (Vector2f(position.xy() - TARGET.xy()).norm() < XY_ACC_RAD && fabsf(position(2) - TARGET(2)) < Z_ACC_RAD) {
+		nếu (Vector2f(position.xy() - TARGET.xy()).norm() < XY_ACC_RAD && fabsf(position(2) - TARGET(2)) < Z_ACC_RAD) {
 			printf("Converged in %d iterations\n", iteration);
 			break;
 		}
@@ -200,7 +200,7 @@ TEST_F(PositionSmoothingTest, reachesTargetInitialVelocity)
 // vehicle has to brake and come back to the target instead of drifting away forever.
 TEST_F(PositionSmoothingTest, doesNotDriftPastUnreachedWaypoint)
 {
-	const int N_ITER = 3000; // 60 s at 50 Hz
+	const số_nguyên N_ITER = 3000; // 60 s at 50 Hz
 	const float DELTA_T = 0.02f;
 
 	const Vector3f PREV{0.f, 0.f, 0.f};
@@ -220,22 +220,22 @@ TEST_F(PositionSmoothingTest, doesNotDriftPastUnreachedWaypoint)
 	bool came_back = false;
 	float max_distance_past_target = 0.f;
 
-	for (int i = 0; i < N_ITER; i++) {
+	cho (số_nguyên i = 0; i < N_ITER; i++) {
 		_position_smoothing.generateSetpoints(position, waypoints, Vector3f{}, DELTA_T, false, out);
 		position = out.position;
 		expectDynamicsLimitsRespected(out);
 
 		const float along_track = Vector3f(position - PREV) * u_leg;
 
-		if (Vector3f(position - TARGET).length() < 1.f) {
+		nếu (Vector3f(position - TARGET).length() < 1.f) {
 			reached_target = true;
 		}
 
-		if (reached_target) {
+		nếu (reached_target) {
 			max_distance_past_target = fmaxf(max_distance_past_target, along_track - leg_length);
 
 			// Once the vehicle has gone past the target, the fix must turn it around.
-			if (along_track > leg_length + 1.f && out.velocity * u_leg < -0.1f) {
+			nếu (along_track > leg_length + 1.f && out.velocity * u_leg < -0.1f) {
 				came_back = true;
 			}
 		}
@@ -277,7 +277,7 @@ public:
 		Vector3f waypoints[3] = {START, TARGET, TARGET};
 		PositionSmoothing::PositionSmoothingSetpoints out;
 		_position_smoothing.generateSetpoints(START, waypoints, Vector3f{0.f, 0.f, 0.f}, 0.02f, false, out);
-		return out;
+		trả_về out;
 	}
 
 	// Fly the leg and return the largest vertical distance from the straight line
@@ -289,7 +289,7 @@ public:
 		const float slope = (TARGET(2) - START(2)) / (TARGET - START).xy().norm();
 		float max_error = 0.f;
 
-		for (int i = 0; i < 5000 && (TARGET - position).norm() > 0.1f; i++) {
+		cho (số_nguyên i = 0; i < 5000 && (TARGET - position).norm() > 0.1f; i++) {
 			_position_smoothing.generateSetpoints(position, waypoints, Vector3f{0.f, 0.f, 0.f}, 0.02f, false, out);
 			position = out.position;
 			const float z_on_line = START(2) + slope * (position - START).xy().norm();
@@ -297,7 +297,7 @@ public:
 		}
 
 		EXPECT_LT((TARGET - position).norm(), 0.1f) << "Did not reach the target\n";
-		return max_error;
+		trả_về max_error;
 	}
 };
 

@@ -59,25 +59,25 @@ public:
 	StubParamLayer() : ParamLayer(nullptr) {}
 	virtual ~StubParamLayer() = default;
 
-	bool store(param_t, param_value_u) override { return false; }
-	bool contains(param_t) const override { return false; }
+	bool store(param_t, param_value_u) override { trả_về false; }
+	bool contains(param_t) const override { trả_về false; }
 
 	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
 	{
-		return px4::AtomicBitset<PARAM_COUNT>();
+		trả_về px4::AtomicBitset<PARAM_COUNT>();
 	}
 
 	param_value_u get(param_t) const override
 	{
 		param_value_u v{};
 		v.i = 0;
-		return v;
+		trả_về v;
 	}
 
 	void reset(param_t) override {}
 	void refresh(param_t) override {}
-	int size() const override { return 0; }
-	int byteSize() const override { return 0; }
+	số_nguyên size() const override { trả_về 0; }
+	số_nguyên byteSize() const override { trả_về 0; }
 };
 
 class DynamicSparseLayerConcurrentTest : public ::testing::Test
@@ -91,14 +91,14 @@ protected:
 // this safely stresses the read-side during buffer reallocation.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 {
-	for (int rep = 0; rep < 50; rep++) {
+	cho (số_nguyên rep = 0; rep < 50; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/2, /*n_grow=*/1);
 
-		constexpr int NUM_PARAMS = 100;
+		constexpr số_nguyên NUM_PARAMS = 100;
 		std::atomic<bool> stop{false};
 
 		std::thread writer([&]() {
-			for (int i = 0; i < NUM_PARAMS; i++) {
+			cho (số_nguyên i = 0; i < NUM_PARAMS; i++) {
 				param_value_u v{};
 				v.i = i * 10;
 				layer.store(static_cast<param_t>(i), v);
@@ -109,12 +109,12 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 
 		std::vector<std::thread> readers;
 
-		for (int r = 0; r < 4; r++) {
+		cho (số_nguyên r = 0; r < 4; r++) {
 			readers.emplace_back([&]() {
-				while (!stop.load(std::memory_order_acquire)) {
-					int current_size = layer.size();
+				trong_khi (!stop.load(std::memory_order_acquire)) {
+					số_nguyên current_size = layer.size();
 
-					for (int i = 0; i < current_size && i < NUM_PARAMS; i++) {
+					cho (số_nguyên i = 0; i < current_size && i < NUM_PARAMS; i++) {
 						layer.contains(static_cast<param_t>(i));
 						layer.get(static_cast<param_t>(i));
 					}
@@ -124,11 +124,11 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 
 		writer.join();
 
-		for (auto &t : readers) {
+		cho (auto &t : readers) {
 			t.join();
 		}
 
-		for (int i = 0; i < NUM_PARAMS; i++) {
+		cho (số_nguyên i = 0; i < NUM_PARAMS; i++) {
 			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
 			param_value_u v = layer.get(static_cast<param_t>(i));
@@ -146,20 +146,20 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 // This test validates concurrent store correctness.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
 {
-	constexpr int PARAMS_PER_WRITER = 50;
-	constexpr int NUM_WRITERS = 4;
-	constexpr int TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
+	constexpr số_nguyên PARAMS_PER_WRITER = 50;
+	constexpr số_nguyên NUM_WRITERS = 4;
+	constexpr số_nguyên TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
 
-	for (int rep = 0; rep < 20; rep++) {
+	cho (số_nguyên rep = 0; rep < 20; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/TOTAL, /*n_grow=*/1);
 
 		std::vector<std::thread> writers;
 
-		for (int w = 0; w < NUM_WRITERS; w++) {
+		cho (số_nguyên w = 0; w < NUM_WRITERS; w++) {
 			writers.emplace_back([&layer, w]() {
-				int base = w * PARAMS_PER_WRITER;
+				số_nguyên base = w * PARAMS_PER_WRITER;
 
-				for (int i = 0; i < PARAMS_PER_WRITER; i++) {
+				cho (số_nguyên i = 0; i < PARAMS_PER_WRITER; i++) {
 					param_value_u v{};
 					v.i = (base + i) * 10;
 					layer.store(static_cast<param_t>(base + i), v);
@@ -167,13 +167,13 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
 			});
 		}
 
-		for (auto &t : writers) {
+		cho (auto &t : writers) {
 			t.join();
 		}
 
 		ASSERT_EQ(layer.size(), TOTAL) << "rep=" << rep;
 
-		for (int i = 0; i < TOTAL; i++) {
+		cho (số_nguyên i = 0; i < TOTAL; i++) {
 			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
 			param_value_u v = layer.get(static_cast<param_t>(i));
@@ -186,21 +186,21 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
 // Combined stress: writers store while readers access concurrently.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 {
-	constexpr int PARAMS_PER_WRITER = 50;
-	constexpr int NUM_WRITERS = 2;
-	constexpr int TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
+	constexpr số_nguyên PARAMS_PER_WRITER = 50;
+	constexpr số_nguyên NUM_WRITERS = 2;
+	constexpr số_nguyên TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
 
-	for (int rep = 0; rep < 20; rep++) {
+	cho (số_nguyên rep = 0; rep < 20; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/2, /*n_grow=*/1);
 		std::atomic<bool> stop{false};
 
 		std::vector<std::thread> writers;
 
-		for (int w = 0; w < NUM_WRITERS; w++) {
+		cho (số_nguyên w = 0; w < NUM_WRITERS; w++) {
 			writers.emplace_back([&layer, w]() {
-				int base = w * PARAMS_PER_WRITER;
+				số_nguyên base = w * PARAMS_PER_WRITER;
 
-				for (int i = 0; i < PARAMS_PER_WRITER; i++) {
+				cho (số_nguyên i = 0; i < PARAMS_PER_WRITER; i++) {
 					param_value_u v{};
 					v.i = (base + i) * 10;
 					layer.store(static_cast<param_t>(base + i), v);
@@ -210,12 +210,12 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 
 		std::vector<std::thread> readers;
 
-		for (int r = 0; r < 4; r++) {
+		cho (số_nguyên r = 0; r < 4; r++) {
 			readers.emplace_back([&]() {
-				while (!stop.load(std::memory_order_acquire)) {
-					int current_size = layer.size();
+				trong_khi (!stop.load(std::memory_order_acquire)) {
+					số_nguyên current_size = layer.size();
 
-					for (int i = 0; i < current_size && i < TOTAL; i++) {
+					cho (số_nguyên i = 0; i < current_size && i < TOTAL; i++) {
 						layer.contains(static_cast<param_t>(i));
 						layer.get(static_cast<param_t>(i));
 					}
@@ -223,19 +223,19 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 			});
 		}
 
-		for (auto &t : writers) {
+		cho (auto &t : writers) {
 			t.join();
 		}
 
 		stop.store(true, std::memory_order_release);
 
-		for (auto &t : readers) {
+		cho (auto &t : readers) {
 			t.join();
 		}
 
 		ASSERT_EQ(layer.size(), TOTAL) << "rep=" << rep;
 
-		for (int i = 0; i < TOTAL; i++) {
+		cho (số_nguyên i = 0; i < TOTAL; i++) {
 			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
 			param_value_u v = layer.get(static_cast<param_t>(i));

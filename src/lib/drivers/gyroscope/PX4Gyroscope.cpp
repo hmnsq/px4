@@ -43,25 +43,25 @@ static constexpr int32_t sum(const int16_t samples[], uint8_t len)
 {
 	int32_t sum = 0;
 
-	for (int n = 0; n < len; n++) {
+	cho (số_nguyên n = 0; n < len; n++) {
 		sum += samples[n];
 	}
 
-	return sum;
+	trả_về sum;
 }
 
 static constexpr uint8_t clipping(const int16_t samples[], uint8_t len, int16_t clip_limit)
 {
 	unsigned clip_count = 0;
 
-	for (int n = 0; n < len; n++) {
+	cho (số_nguyên n = 0; n < len; n++) {
 		// symmetric about zero: rotation negates samples and |INT16_MIN| = INT16_MAX + 1
-		if ((samples[n] <= -clip_limit) || (samples[n] >= clip_limit)) {
+		nếu ((samples[n] <= -clip_limit) || (samples[n] >= clip_limit)) {
 			clip_count++;
 		}
 	}
 
-	return clip_count;
+	trả_về clip_count;
 }
 
 PX4Gyroscope::PX4Gyroscope(uint32_t device_id, enum Rotation rotation) :
@@ -86,7 +86,7 @@ void PX4Gyroscope::set_device_id(uint32_t device_id)
 {
 	_device_id = device_id;
 
-	if (!_external_forced) {
+	nếu (!_external_forced) {
 		_is_external = device::device_is_external(device_id);
 	}
 }
@@ -118,11 +118,11 @@ void PX4Gyroscope::set_device_type(uint8_t devtype)
 
 void PX4Gyroscope::set_scale(float scale)
 {
-	if (fabsf(scale - _scale) > FLT_EPSILON) {
+	nếu (fabsf(scale - _scale) > FLT_EPSILON) {
 		// rescale last sample on scale change
 		float rescale = _scale / scale;
 
-		for (auto &s : _last_sample) {
+		cho (auto &s : _last_sample) {
 			s = roundf(s * rescale);
 		}
 
@@ -155,9 +155,9 @@ void PX4Gyroscope::update(const hrt_abstime &timestamp_sample, float x, float y,
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
+	nếu (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
 					_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		trả_về;
 	}
 
 	_sensor_pub.publish(report);
@@ -166,7 +166,7 @@ void PX4Gyroscope::update(const hrt_abstime &timestamp_sample, float x, float y,
 void PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
 {
 	// rotate all raw samples and publish fifo
-	for (int n = 0; n < sample.samples; n++) {
+	cho (số_nguyên n = 0; n < sample.samples; n++) {
 		rotate_3i(_rotation, sample.x[n], sample.y[n], sample.z[n]);
 	}
 
@@ -177,9 +177,9 @@ void PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
+	nếu (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
 					_sensor_pub.get_instance(), sample, _stuck_fifo)) {
-		return;
+		trả_về;
 	}
 
 	_sensor_fifo_pub.publish(sample);
@@ -214,9 +214,9 @@ void PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
 	report.samples = N;
 	report.timestamp = hrt_absolute_time();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
+	nếu (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
 					_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		trả_về;
 	}
 
 	_sensor_pub.publish(report);

@@ -114,7 +114,7 @@ public:
 	 * @param B Effectiveness matrix
 	 */
 	virtual void setEffectivenessMatrix(const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness,
-					    const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
+					    const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, số_nguyên num_actuators,
 					    bool update_normalization_scale);
 
 	/**
@@ -122,7 +122,7 @@ public:
 	 *
 	 * @return Actuator vector
 	 */
-	const ActuatorVector &getActuatorSetpoint() const { return _actuator_sp; }
+	const ActuatorVector &getActuatorSetpoint() const { trả_về _actuator_sp; }
 
 	/**
 	 * Set the desired control vector
@@ -136,7 +136,7 @@ public:
 	 *
 	 * @return Control vector
 	 */
-	const matrix::Vector<float, NUM_AXES> &getControlSetpoint() const { return _control_sp; }
+	const matrix::Vector<float, NUM_AXES> &getControlSetpoint() const { trả_về _control_sp; }
 
 	/**
 	 * Get the allocated control vector
@@ -149,7 +149,7 @@ public:
 		// Covert back to zero to represent physical thrust.
 		ActuatorVector actuator_sp{_actuator_sp};
 		actuator_sp.nanToZero();
-		return (_effectiveness * (actuator_sp - _actuator_trim)).emult(_control_allocation_scale);
+		trả_về (_effectiveness * (actuator_sp - _actuator_trim)).emult(_control_allocation_scale);
 	}
 
 	/**
@@ -157,7 +157,7 @@ public:
 	 *
 	 * @return Effectiveness matrix
 	 */
-	const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &getEffectivenessMatrix() const { return _effectiveness; }
+	const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &getEffectivenessMatrix() const { trả_về _effectiveness; }
 
 	/**
 	 * Set the minimum actuator values
@@ -171,7 +171,7 @@ public:
 	 *
 	 * @return Minimum actuator values
 	 */
-	const ActuatorVector &getActuatorMin() const { return _actuator_min; }
+	const ActuatorVector &getActuatorMin() const { trả_về _actuator_min; }
 
 	/**
 	 * Set the maximum actuator values
@@ -185,7 +185,7 @@ public:
 	 *
 	 * @return Maximum actuator values
 	 */
-	const ActuatorVector &getActuatorMax() const { return _actuator_max; }
+	const ActuatorVector &getActuatorMax() const { trả_về _actuator_max; }
 
 	/**
 	 * Set the current actuator setpoint.
@@ -240,8 +240,8 @@ public:
 	 */
 	void applyNanToActuators(ActuatorBitmask nan_actuators_mask)
 	{
-		for (int i = 0; i < _num_actuators; i++) {
-			if (nan_actuators_mask & (1u << i)) {
+		cho (số_nguyên i = 0; i < _num_actuators; i++) {
+			nếu (nan_actuators_mask & (1u << i)) {
 				_actuator_sp(i) = NAN;
 			}
 		}
@@ -249,13 +249,13 @@ public:
 
 	virtual void updateParameters() {}
 
-	int numConfiguredActuators() const { return _num_actuators; }
+	số_nguyên numConfiguredActuators() const { trả_về _num_actuators; }
 
 	void setNormalizeRPY(bool normalize_rpy) { _normalize_rpy = normalize_rpy; }
 
 	/// Axes (bitmask over ControlAxis) dropped from the effectiveness matrix as not independently
 	/// achievable, e.g. yaw when collinear with roll after a motor failure
-	uint8_t getDroppedAxes() const { return _dropped_axes; }
+	uint8_t getDroppedAxes() const { trả_về _dropped_axes; }
 
 protected:
 	friend class ControlAllocator; // for _actuator_sp
@@ -270,7 +270,7 @@ protected:
 	ActuatorVector _actuator_sp;  	///< Actuator setpoint
 	matrix::Vector<float, NUM_AXES> _control_sp;   		///< Control setpoint
 	matrix::Vector<float, NUM_AXES> _control_trim; 		///< Control at trim actuator values
-	int _num_actuators{0};
+	số_nguyên _num_actuators{0};
 	bool _normalize_rpy{false};				///< if true, normalize roll, pitch and yaw columns
 	bool _had_actuator_failure{false};
 	uint8_t _dropped_axes{0};				///< bitmask over ControlAxis

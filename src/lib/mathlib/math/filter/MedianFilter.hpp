@@ -53,7 +53,7 @@ template<> struct is_floating_point<float> { static constexpr bool value = true;
 template<> struct is_floating_point<double> { static constexpr bool value = true; };
 template<> struct is_floating_point<long double> { static constexpr bool value = true; };
 
-template<typename T, int WINDOW = 3>
+template<typename T, số_nguyên WINDOW = 3>
 class MedianFilter
 {
 public:
@@ -74,43 +74,43 @@ public:
 		memcpy(sorted, _buffer, sizeof(_buffer));
 		qsort(&sorted, WINDOW, sizeof(T), cmp);
 
-		return sorted[WINDOW / 2];
+		trả_về sorted[WINDOW / 2];
 	}
 
 	T apply(const T &sample)
 	{
 		insert(sample);
-		return median();
+		trả_về median();
 	}
 
 private:
 
-	static int cmp(const void *a, const void *b)
+	static số_nguyên cmp(const void *a, const void *b)
 	{
 		const T va = *(const T *)a;
 		const T vb = *(const T *)b;
 
-		if constexpr(is_floating_point<T>::value) {
-			if (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
-				return 0;
+		nếu constexpr(is_floating_point<T>::value) {
+			nếu (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
+				trả_về 0;
 
-			} else if (!__builtin_isfinite(va)) {
-				return  1;
+			} không_thì nếu (!__builtin_isfinite(va)) {
+				trả_về  1;
 
-			} else if (!__builtin_isfinite(vb)) {
-				return -1;
+			} không_thì nếu (!__builtin_isfinite(vb)) {
+				trả_về -1;
 			}
 		}
 
-		if (va < vb) {
-			return -1;
+		nếu (va < vb) {
+			trả_về -1;
 		}
 
-		if (va > vb) {
-			return  1;
+		nếu (va > vb) {
+			trả_về  1;
 		}
 
-		return 0;
+		trả_về 0;
 	}
 
 	T _buffer[WINDOW] {};

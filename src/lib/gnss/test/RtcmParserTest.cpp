@@ -102,9 +102,9 @@ TEST_F(RtcmTest, MultipleFramesInSequence)
 	parser.addData(frame3.data(), frame3.size());
 
 	size_t len;
-	int count = 0;
+	số_nguyên count = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
+	trong_khi (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
 		count++;
 	}
@@ -117,7 +117,7 @@ TEST_F(RtcmTest, FrameArrivesInChunks)
 	auto frame = buildValidFrame(1005, {0x01, 0x02, 0x03, 0x04, 0x05});
 
 	// Feed one byte at a time
-	for (size_t i = 0; i < frame.size() - 1; i++) {
+	cho (size_t i = 0; i < frame.size() - 1; i++) {
 		parser.addData(&frame[i], 1);
 		size_t len;
 		EXPECT_EQ(parser.getNextMessage(&len), nullptr);
@@ -139,7 +139,7 @@ TEST_F(RtcmTest, GarbageBeforeValidFrame)
 	std::vector<uint8_t> data;
 
 	// 50 bytes of garbage
-	for (int i = 0; i < 50; i++) {
+	cho (số_nguyên i = 0; i < 50; i++) {
 		data.push_back(0x00 + i);
 	}
 
@@ -168,9 +168,9 @@ TEST_F(RtcmTest, ValidFrameBadFrameValid)
 	parser.addData(frame2.data(), frame2.size());
 
 	size_t len;
-	int valid_count = 0;
+	số_nguyên valid_count = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
+	trong_khi (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
 		valid_count++;
 	}
@@ -343,7 +343,7 @@ TEST_P(GpsRtcmSequenceChangeTest, GpsRtcmAssemblerFlushesOnlyGapFreeFullPrefixOn
 
 	// GIVEN: A buffered old sequence with full-sized fragments as described by
 	// the parameter set, followed by a new sequence that starts with fragment 0.
-	for (const uint8_t fragment_id : param.old_fragment_ids) {
+	cho (const uint8_t fragment_id : param.old_fragment_ids) {
 		old_fragments[fragment_id].resize(GPS_RTCM_MAX_FRAGMENT_LEN);
 		std::iota(old_fragments[fragment_id].begin(), old_fragments[fragment_id].end(),
 			  static_cast<uint8_t>(0x20 + fragment_id * 0x10));
@@ -356,7 +356,7 @@ TEST_P(GpsRtcmSequenceChangeTest, GpsRtcmAssemblerFlushesOnlyGapFreeFullPrefixOn
 
 	std::vector<uint8_t> expected_old_message;
 
-	for (size_t fragment_id = 0; fragment_id < param.expected_flushed_fragments; fragment_id++) {
+	cho (size_t fragment_id = 0; fragment_id < param.expected_flushed_fragments; fragment_id++) {
 		expected_old_message.insert(expected_old_message.end(), old_fragments[fragment_id].begin(), old_fragments[fragment_id].end());
 	}
 
@@ -369,11 +369,11 @@ TEST_P(GpsRtcmSequenceChangeTest, GpsRtcmAssemblerFlushesOnlyGapFreeFullPrefixOn
 
 	// THEN: Only a gap-free run of full 180-byte fragments from fragment 0 is
 	// flushed. Any gap in the buffered old sequence emits nothing.
-	if (expected_old_message.empty()) {
+	nếu (expected_old_message.empty()) {
 		EXPECT_EQ(message, nullptr);
 		EXPECT_EQ(len, 0u);
 
-	} else {
+	} không_thì {
 		ASSERT_NE(message, nullptr);
 		EXPECT_EQ(len, expected_old_message.size());
 		EXPECT_EQ(memcmp(message, expected_old_message.data(), expected_old_message.size()), 0);
@@ -403,7 +403,7 @@ INSTANTIATE_TEST_SUITE_P(RolloverFlushCases, GpsRtcmSequenceChangeTest,
 			 ),
 			 [](const ::testing::TestParamInfo<GpsRtcmSequenceChangeCase> &test_param_info)
 {
-	return test_param_info.param.name;
+	trả_về test_param_info.param.name;
 });
 
 // WHAT: Verify that the fragmented sequence-change path can emit both the
@@ -520,7 +520,7 @@ TEST_F(RtcmTest, GpsRtcmAssemblerCompletesOnFourthFullFragment)
 	size_t len = 0;
 
 	// WHEN: The first three full fragments arrive.
-	for (uint8_t fragment = 0; fragment < GPS_RTCM_MAX_FRAGMENTS - 1; fragment++) {
+	cho (uint8_t fragment = 0; fragment < GPS_RTCM_MAX_FRAGMENTS - 1; fragment++) {
 		EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, fragment, 3),
 						       &payload[fragment * GPS_RTCM_MAX_FRAGMENT_LEN], GPS_RTCM_MAX_FRAGMENT_LEN, 10 + fragment, len),
 			  nullptr);

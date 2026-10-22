@@ -45,7 +45,7 @@ namespace mode_util
  */
 static inline uint32_t getValidNavStates(uint32_t mode_not_supported = 0)
 {
-	return ((1u << vehicle_status_s::NAVIGATION_STATE_MANUAL) |
+	trả_về ((1u << vehicle_status_s::NAVIGATION_STATE_MANUAL) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_ALTCTL) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_ALTITUDE_CRUISE) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_MANUAL_PARKING) |
@@ -112,16 +112,16 @@ inline const char *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX]
  */
 static inline const char *nav_state_name(uint8_t nav_state, uint8_t vehicle_type)
 {
-	if (nav_state >= vehicle_status_s::NAVIGATION_STATE_MAX) {
-		return "(unknown)";
+	nếu (nav_state >= vehicle_status_s::NAVIGATION_STATE_MAX) {
+		trả_về "(unknown)";
 	}
 
-	if (nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL
+	nếu (nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL
 	    && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		return "Cruise";
+		trả_về "Cruise";
 	}
 
-	return nav_state_names[nav_state];
+	trả_về nav_state_names[nav_state];
 }
 
 /**
@@ -130,29 +130,29 @@ static inline const char *nav_state_name(uint8_t nav_state, uint8_t vehicle_type
 static inline bool isAdvanced(uint8_t nav_state)
 {
 	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL: return false;
+	case vehicle_status_s::NAVIGATION_STATE_ALTCTL: trả_về false;
 
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL: return false;
+	case vehicle_status_s::NAVIGATION_STATE_POSCTL: trả_về false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL1: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL1: trả_về false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL2: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL2: trả_về false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL3: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL3: trả_về false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL4: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL4: trả_về false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL5: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL5: trả_về false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL6: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL6: trả_về false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL7: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL7: trả_về false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL8: return false;
+	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL8: trả_về false;
 
 	}
 
-	return true;
+	trả_về true;
 }
 
 } // namespace mode_util

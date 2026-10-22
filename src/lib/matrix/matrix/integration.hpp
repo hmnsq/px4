@@ -6,7 +6,7 @@ namespace matrix
 {
 
 template<typename Type, size_t M, size_t N>
-int integrate_rk4(
+số_nguyên integrate_rk4(
 	Vector<Type, M> (*f)(Type, const Matrix<Type, M, 1> &x, const Matrix<Type, N, 1> &u),
 	const Matrix<Type, M, 1> &y0,
 	const Matrix<Type, N, 1> &u,
@@ -22,13 +22,13 @@ int integrate_rk4(
 	Type h = h0;
 	Vector<Type, M> k1, k2, k3, k4;
 
-	if (tf < t0) { return -1; } // make sure t1 > t0
+	nếu (tf < t0) { trả_về -1; } // make sure t1 > t0
 
-	while (t1 < tf) {
-		if (t1 + h0 < tf) {
+	trong_khi (t1 < tf) {
+		nếu (t1 + h0 < tf) {
 			h = h0;
 
-		} else {
+		} không_thì {
 			h = tf - t1;
 		}
 
@@ -40,7 +40,7 @@ int integrate_rk4(
 		t1 += h;
 	}
 
-	return 0;
+	trả_về 0;
 }
 
 } // namespace matrix

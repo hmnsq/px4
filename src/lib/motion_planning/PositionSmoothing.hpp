@@ -125,7 +125,7 @@ public:
 	 */
 	void reset(const Vector3f &acceleration, const Vector3f &velocity, const Vector3f &position)
 	{
-		for (size_t i = 0; i < 3; i++) {
+		cho (size_t i = 0; i < 3; i++) {
 			_trajectory[i].reset(acceleration(i), velocity(i), position(i));
 		}
 	}
@@ -135,7 +135,7 @@ public:
 	 */
 	inline float getCurrentAccelerationX() const
 	{
-		return _trajectory[0].getCurrentAcceleration();
+		trả_về _trajectory[0].getCurrentAcceleration();
 	}
 
 	/**
@@ -143,7 +143,7 @@ public:
 	 */
 	inline float getCurrentAccelerationY() const
 	{
-		return _trajectory[1].getCurrentAcceleration();
+		trả_về _trajectory[1].getCurrentAcceleration();
 	}
 
 	/**
@@ -151,7 +151,7 @@ public:
 	 */
 	inline float getCurrentAccelerationZ() const
 	{
-		return _trajectory[2].getCurrentAcceleration();
+		trả_về _trajectory[2].getCurrentAcceleration();
 	}
 
 	/**
@@ -159,7 +159,7 @@ public:
 	 */
 	inline Vector3f getCurrentAcceleration() const
 	{
-		return {getCurrentAccelerationX(), getCurrentAccelerationY(), getCurrentAccelerationZ()};
+		trả_về {getCurrentAccelerationX(), getCurrentAccelerationY(), getCurrentAccelerationZ()};
 	}
 
 	/**
@@ -167,7 +167,7 @@ public:
 	 */
 	inline Vector2f getCurrentAccelerationXY() const
 	{
-		return {getCurrentAccelerationX(), getCurrentAccelerationY()};
+		trả_về {getCurrentAccelerationX(), getCurrentAccelerationY()};
 	}
 
 	/**
@@ -175,7 +175,7 @@ public:
 	 */
 	inline float getCurrentVelocityX() const
 	{
-		return _trajectory[0].getCurrentVelocity();
+		trả_về _trajectory[0].getCurrentVelocity();
 	}
 
 	/**
@@ -183,7 +183,7 @@ public:
 	 */
 	inline float getCurrentVelocityY() const
 	{
-		return _trajectory[1].getCurrentVelocity();
+		trả_về _trajectory[1].getCurrentVelocity();
 	}
 
 	/**
@@ -191,7 +191,7 @@ public:
 	 */
 	inline float getCurrentVelocityZ() const
 	{
-		return _trajectory[2].getCurrentVelocity();
+		trả_về _trajectory[2].getCurrentVelocity();
 	}
 
 	/**
@@ -199,7 +199,7 @@ public:
 	 */
 	inline Vector3f getCurrentVelocity() const
 	{
-		return {getCurrentVelocityX(), getCurrentVelocityY(), getCurrentVelocityZ()};
+		trả_về {getCurrentVelocityX(), getCurrentVelocityY(), getCurrentVelocityZ()};
 	}
 
 	/**
@@ -207,7 +207,7 @@ public:
 	 */
 	inline Vector2f getCurrentVelocityXY() const
 	{
-		return {getCurrentVelocityX(), getCurrentVelocityY()};
+		trả_về {getCurrentVelocityX(), getCurrentVelocityY()};
 	}
 
 	/**
@@ -215,7 +215,7 @@ public:
 	 */
 	inline float getCurrentPositionX() const
 	{
-		return _trajectory[0].getCurrentPosition();
+		trả_về _trajectory[0].getCurrentPosition();
 	}
 
 	/**
@@ -223,7 +223,7 @@ public:
 	 */
 	inline float getCurrentPositionY() const
 	{
-		return _trajectory[1].getCurrentPosition();
+		trả_về _trajectory[1].getCurrentPosition();
 	}
 
 	/**
@@ -231,7 +231,7 @@ public:
 	 */
 	inline float getCurrentPositionZ() const
 	{
-		return _trajectory[2].getCurrentPosition();
+		trả_về _trajectory[2].getCurrentPosition();
 	}
 
 	/**
@@ -239,7 +239,7 @@ public:
 	 */
 	inline Vector3f getCurrentPosition() const
 	{
-		return {getCurrentPositionX(), getCurrentPositionY(), getCurrentPositionZ()};
+		trả_về {getCurrentPositionX(), getCurrentPositionY(), getCurrentPositionZ()};
 	}
 
 	/**
@@ -382,8 +382,8 @@ public:
 	 */
 	void forceSetPosition(const Vector3f &position)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(position(i))) {
+		cho (size_t i = 0; i < 3; i++) {
+			nếu (PX4_ISFINITE(position(i))) {
 				_trajectory[i].setCurrentPosition(position(i));
 			}
 		}
@@ -397,8 +397,8 @@ public:
 	 */
 	void forceSetVelocity(const Vector3f &velocity)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(velocity(i))) {
+		cho (size_t i = 0; i < 3; i++) {
+			nếu (PX4_ISFINITE(velocity(i))) {
 				_trajectory[i].setCurrentVelocity(velocity(i));
 			}
 		}
@@ -412,8 +412,8 @@ public:
 	 */
 	void forceSetAcceleration(const Vector3f &acceleration)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(acceleration(i))) {
+		cho (size_t i = 0; i < 3; i++) {
+			nếu (PX4_ISFINITE(acceleration(i))) {
 				_trajectory[i].setCurrentAcceleration(acceleration(i));
 			}
 		}

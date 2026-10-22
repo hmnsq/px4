@@ -54,25 +54,25 @@ BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_pref
 {
 	char fullname[blockNameLengthMax];
 
-	if (parent == nullptr) {
+	nếu (parent == nullptr) {
 		strncpy(fullname, name, blockNameLengthMax - 1);
 		fullname[sizeof(fullname) - 1] = '\0';
 
-	} else {
+	} không_thì {
 		char parentName[blockNameLengthMax];
 		parent->getName(parentName, blockNameLengthMax);
 
-		if (strcmp(name, "") == 0) {
+		nếu (strcmp(name, "") == 0) {
 			strncpy(fullname, parentName, blockNameLengthMax);
 			// ensure string is terminated
 			fullname[sizeof(fullname) - 1] = '\0';
 
-		} else if (parent_prefix) {
-			if (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
+		} không_thì nếu (parent_prefix) {
+			nếu (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
 				PX4_ERR("param too long: %s", name);
 			}
 
-		} else {
+		} không_thì {
 			strncpy(fullname, name, blockNameLengthMax);
 			// ensure string is terminated
 			fullname[sizeof(fullname) - 1] = '\0';
@@ -83,7 +83,7 @@ BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_pref
 
 	_handle = param_find(fullname);
 
-	if (_handle == PARAM_INVALID) {
+	nếu (_handle == PARAM_INVALID) {
 		PX4_ERR("error finding param: %s", fullname);
 	}
 };
@@ -100,16 +100,16 @@ template <>
 bool BlockParam<bool>::update()
 {
 	int32_t tmp = 0;
-	int ret = param_get(_handle, &tmp);
+	số_nguyên ret = param_get(_handle, &tmp);
 
-	if (tmp == 1) {
+	nếu (tmp == 1) {
 		_val = true;
 
-	} else {
+	} không_thì {
 		_val = false;
 	}
 
-	return (ret == PX4_OK);
+	trả_về (ret == PX4_OK);
 }
 
 template <>

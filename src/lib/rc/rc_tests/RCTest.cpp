@@ -16,13 +16,13 @@
 #include <lib/rc/crsf.h>
 #include <lib/rc/ghst.hpp>
 
-#if defined(CONFIG_ARCH_BOARD_PX4_SITL)
+#nếu defined(CONFIG_ARCH_BOARD_PX4_SITL)
 #define TEST_DATA_PATH "./test_data/"
-#else
+#không_thì
 #define TEST_DATA_PATH CONFIG_BOARD_ROOT_PATH
 #endif
 
-extern "C" __EXPORT int rc_tests_main(int argc, char *argv[]);
+extern "C" __EXPORT số_nguyên rc_tests_main(số_nguyên argc, char *argv[]);
 
 class RCTest : public UnitTest
 {
@@ -56,7 +56,7 @@ bool RCTest::run_tests()
 	ut_run_test(st24Test);
 	ut_run_test(sumdTest);
 
-	return (_tests_failed == 0);
+	trả_về (_tests_failed == 0);
 }
 
 bool RCTest::crsfTest()
@@ -68,31 +68,31 @@ bool RCTest::crsfTest()
 	ut_test(fp);
 	//PX4_INFO("loading data from: %s", filepath);
 
-	const int line_size = 500;
+	const số_nguyên line_size = 500;
 	char line[line_size];
 	bool has_decoded_values = false;
-	const int max_channels = 16;
+	const số_nguyên max_channels = 16;
 	uint16_t rc_values[max_channels];
 	uint16_t num_values = 0;
-	int line_counter = 1;
+	số_nguyên line_counter = 1;
 
-	while (fgets(line, line_size, fp) != nullptr)  {
+	trong_khi (fgets(line, line_size, fp) != nullptr)  {
 
-		if (strncmp(line, "INPUT ", 6) == 0) {
+		nếu (strncmp(line, "INPUT ", 6) == 0) {
 
-			if (has_decoded_values) {
+			nếu (has_decoded_values) {
 				PX4_ERR("Parser decoded values that are not in the test file (line=%i)", line_counter);
-				return false;
+				trả_về false;
 			}
 
 			// read the values
 			const char *file_buffer = line + 6;
-			int frame_len = 0;
+			số_nguyên frame_len = 0;
 			uint8_t frame[300];
-			int offset;
-			int number;
+			số_nguyên offset;
+			số_nguyên number;
 
-			while (sscanf(file_buffer, "%x, %n", &number, &offset) > 0) {
+			trong_khi (sscanf(file_buffer, "%x, %n", &number, &offset) > 0) {
 				frame[frame_len++] = number;
 				file_buffer += offset;
 			}
@@ -102,27 +102,27 @@ bool RCTest::crsfTest()
 
 			bool result = crsf_parse(now, frame, frame_len, rc_values, &num_values, max_channels);
 
-			if (result) {
+			nếu (result) {
 				has_decoded_values = true;
 			}
 
-		} else if (strncmp(line, "DECODED ", 8) == 0) {
+		} không_thì nếu (strncmp(line, "DECODED ", 8) == 0) {
 
-			if (!has_decoded_values) {
+			nếu (!has_decoded_values) {
 				PX4_ERR("Test file contains decoded values but the parser did not decode anything (line=%i)", line_counter);
-				return false;
+				trả_về false;
 			}
 
 			// read the values
 			const char *file_buffer = line + 8;
-			int offset;
-			int expected_rc_value;
-			int expected_num_channels = 0;
+			số_nguyên offset;
+			số_nguyên expected_rc_value;
+			số_nguyên expected_num_channels = 0;
 
-			while (sscanf(file_buffer, "%x, %n", &expected_rc_value, &offset) > 0) {
+			trong_khi (sscanf(file_buffer, "%x, %n", &expected_rc_value, &offset) > 0) {
 
 				// allow a small difference
-				if (abs(expected_rc_value - (int)rc_values[expected_num_channels]) > 10) {
+				nếu (abs(expected_rc_value - (số_nguyên)rc_values[expected_num_channels]) > 10) {
 					PX4_ERR("File line: %i, channel: %i", line_counter, expected_num_channels);
 					ut_compare("Wrong decoded channel", expected_rc_value, rc_values[expected_num_channels]);
 				}
@@ -131,7 +131,7 @@ bool RCTest::crsfTest()
 				++expected_num_channels;
 			}
 
-			if (expected_num_channels != num_values) {
+			nếu (expected_num_channels != num_values) {
 				PX4_ERR("File line: %d", line_counter);
 				ut_compare("Unexpected number of decoded channels", expected_num_channels, num_values);
 			}
@@ -142,7 +142,7 @@ bool RCTest::crsfTest()
 		++line_counter;
 	}
 
-	return true;
+	trả_về true;
 }
 
 bool RCTest::ghstTest()
@@ -153,34 +153,34 @@ bool RCTest::ghstTest()
 
 	ut_test(fp);
 
-	int uart_fd = -1;
-	const int line_size = 500;
+	số_nguyên uart_fd = -1;
+	const số_nguyên line_size = 500;
 	char line[line_size];
 	bool has_decoded_values = false;
-	const int max_channels = 16;
+	const số_nguyên max_channels = 16;
 	uint16_t rc_values[max_channels];
 	uint16_t num_values = 0;
-	int line_counter = 1;
+	số_nguyên line_counter = 1;
 	ghstLinkStatistics_t link_stats;
 	ghst_config(uart_fd);
 
-	while (fgets(line, line_size, fp) != nullptr)  {
+	trong_khi (fgets(line, line_size, fp) != nullptr)  {
 
-		if (strncmp(line, "INPUT ", 6) == 0) {
+		nếu (strncmp(line, "INPUT ", 6) == 0) {
 
-			if (has_decoded_values) {
+			nếu (has_decoded_values) {
 				PX4_ERR("Parser decoded values that are not in the test file (line=%i)", line_counter);
-				return false;
+				trả_về false;
 			}
 
 			// read the values
 			const char *file_buffer = line + 6;
-			int frame_len = 0;
+			số_nguyên frame_len = 0;
 			uint8_t frame[300];
-			int offset;
-			int number;
+			số_nguyên offset;
+			số_nguyên number;
 
-			while (sscanf(file_buffer, "%x, %n", &number, &offset) > 0) {
+			trong_khi (sscanf(file_buffer, "%x, %n", &number, &offset) > 0) {
 				frame[frame_len++] = number;
 				file_buffer += offset;
 			}
@@ -190,27 +190,27 @@ bool RCTest::ghstTest()
 
 			bool result = ghst_parse(now, frame, frame_len, rc_values, &link_stats, &num_values, max_channels);
 
-			if (result) {
+			nếu (result) {
 				has_decoded_values = true;
 			}
 
-		} else if (strncmp(line, "DECODED ", 8) == 0) {
+		} không_thì nếu (strncmp(line, "DECODED ", 8) == 0) {
 
-			if (!has_decoded_values) {
+			nếu (!has_decoded_values) {
 				PX4_ERR("Test file contains decoded values but the parser did not decode anything (line=%i)", line_counter);
-				return false;
+				trả_về false;
 			}
 
 			// read the values
 			const char *file_buffer = line + 8;
-			int offset;
-			int expected_rc_value;
-			int expected_num_channels = 0;
+			số_nguyên offset;
+			số_nguyên expected_rc_value;
+			số_nguyên expected_num_channels = 0;
 
-			while (sscanf(file_buffer, "%x, %n", &expected_rc_value, &offset) > 0) {
+			trong_khi (sscanf(file_buffer, "%x, %n", &expected_rc_value, &offset) > 0) {
 
 				// allow a small difference
-				if (abs(expected_rc_value - (int)rc_values[expected_num_channels]) > 10) {
+				nếu (abs(expected_rc_value - (số_nguyên)rc_values[expected_num_channels]) > 10) {
 					PX4_ERR("File line: %i, channel: %i", line_counter, expected_num_channels);
 					ut_compare("Wrong decoded channel", expected_rc_value, rc_values[expected_num_channels]);
 				}
@@ -219,7 +219,7 @@ bool RCTest::ghstTest()
 				++expected_num_channels;
 			}
 
-			if (expected_num_channels != num_values) {
+			nếu (expected_num_channels != num_values) {
 				PX4_ERR("File line: %d", line_counter);
 				ut_compare("Unexpected number of decoded channels", expected_num_channels, num_values);
 			}
@@ -230,27 +230,27 @@ bool RCTest::ghstTest()
 		++line_counter;
 	}
 
-	return true;
+	trả_về true;
 }
 
 bool RCTest::dsmTest10Ch()
 {
-	return dsmTest(TEST_DATA_PATH "dsm_x_data.txt", 10, 2, 1500);
+	trả_về dsmTest(TEST_DATA_PATH "dsm_x_data.txt", 10, 2, 1500);
 }
 
 bool RCTest::dsmTest16Ch()
 {
-	return dsmTest(TEST_DATA_PATH "dsm_x_dx9_data.txt", 16, 1, 1500);
+	trả_về dsmTest(TEST_DATA_PATH "dsm_x_dx9_data.txt", 16, 1, 1500);
 }
 
 bool RCTest::dsmTest22msDSMX16Ch()
 {
-	return dsmTest(TEST_DATA_PATH "dsm_x_dx9_px4_binding_data.txt", 16, 1, 1499);
+	trả_về dsmTest(TEST_DATA_PATH "dsm_x_dx9_px4_binding_data.txt", 16, 1, 1499);
 }
 
 bool RCTest::dsmTestOrangeDsmx()
 {
-	return dsmTest(TEST_DATA_PATH "orangerx_dsmx_12.txt", 12, 1, 1499);
+	trả_về dsmTest(TEST_DATA_PATH "orangerx_dsmx_12.txt", 12, 1, 1499);
 }
 
 bool RCTest::dsmTest(const char *filepath, unsigned expected_chancount, unsigned expected_dropcount, unsigned chan0)
@@ -263,10 +263,10 @@ bool RCTest::dsmTest(const char *filepath, unsigned expected_chancount, unsigned
 
 	float f;
 	unsigned x;
-	int ret;
+	số_nguyên ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
+	cho (unsigned i = 0; i < 20; i++) {
 		char buf[200];
 		(void)fgets(buf, sizeof(buf), fp);
 	}
@@ -279,14 +279,14 @@ bool RCTest::dsmTest(const char *filepath, unsigned expected_chancount, unsigned
 	unsigned dsm_frame_drops = 0;
 	uint16_t max_channels = sizeof(rc_values) / sizeof(rc_values[0]);
 
-	int count = 0;
+	số_nguyên count = 0;
 	unsigned last_drop = 0;
 
 	dsm_proto_init();
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	trong_khi (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		nếu (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
@@ -298,21 +298,21 @@ bool RCTest::dsmTest(const char *filepath, unsigned expected_chancount, unsigned
 		bool result = dsm_parse(f * 1e6f, &frame[0], len, rc_values, &num_values,
 					&dsm_11_bit, &dsm_frame_drops, nullptr, max_channels);
 
-		if (result) {
-			if (count > (16 * 20)) { // need to process enough data to have full channel count
+		nếu (result) {
+			nếu (count > (16 * 20)) { // need to process enough data to have full channel count
 				ut_compare("num_values == expected_chancount", num_values, expected_chancount);
 			}
 
-			ut_test(abs((int)chan0 - (int)rc_values[0]) < 30);
+			ut_test(abs((số_nguyên)chan0 - (số_nguyên)rc_values[0]) < 30);
 
 			//PX4_INFO("decoded packet with %d channels and %s encoding:", num_values, (dsm_11_bit) ? "11 bit" : "10 bit");
 
-			for (unsigned i = 0; i < num_values; i++) {
+			cho (unsigned i = 0; i < num_values; i++) {
 				//PX4_INFO("chan #%u:\t%d", i, (int)rc_values[i]);
 			}
 		}
 
-		if (last_drop != (dsm_frame_drops)) {
+		nếu (last_drop != (dsm_frame_drops)) {
 			//PX4_INFO("frame dropped, now #%d", (dsm_frame_drops));
 			last_drop = dsm_frame_drops;
 		}
@@ -328,7 +328,7 @@ bool RCTest::dsmTest(const char *filepath, unsigned expected_chancount, unsigned
 	//PX4_INFO("drop: %d", (int)last_drop);
 	ut_compare("last_drop == expected_dropcount", last_drop, expected_dropcount);
 
-	return true;
+	trả_về true;
 }
 
 bool RCTest::sbus2Test()
@@ -343,10 +343,10 @@ bool RCTest::sbus2Test()
 
 	float f;
 	unsigned x;
-	int ret;
+	số_nguyên ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
+	cho (unsigned i = 0; i < 20; i++) {
 		char buf[200];
 		(void)fgets(buf, sizeof(buf), fp);
 	}
@@ -363,9 +363,9 @@ bool RCTest::sbus2Test()
 
 	unsigned last_drop = 0;
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	trong_khi (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		nếu (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
@@ -380,13 +380,13 @@ bool RCTest::sbus2Test()
 		bool result = sbus_parse(now, &frame[0], len, rc_values, &num_values,
 					 &sbus_failsafe, &sbus_frame_drop, &sbus_frame_drops, max_channels);
 
-		if (result) {
+		nếu (result) {
 			//PX4_INFO("decoded packet");
 		}
 
 		// }
 
-		if (last_drop != (sbus_frame_drops + sbus_frame_resets)) {
+		nếu (last_drop != (sbus_frame_drops + sbus_frame_resets)) {
 			PX4_WARN("frame dropped, now #%d", (sbus_frame_drops + sbus_frame_resets));
 			last_drop = sbus_frame_drops + sbus_frame_resets;
 		}
@@ -395,7 +395,7 @@ bool RCTest::sbus2Test()
 
 	ut_test(ret == EOF);
 
-	return true;
+	trả_về true;
 }
 
 bool RCTest::st24MalformedLengthTest()
@@ -406,28 +406,28 @@ bool RCTest::st24MalformedLengthTest()
 	uint16_t channels[24] {};
 	const uint8_t invalid_lengths[] {0, 1};
 
-	for (const uint8_t invalid_length : invalid_lengths) {
+	cho (const uint8_t invalid_length : invalid_lengths) {
 		const uint8_t prefix[] {ST24_STX1, ST24_STX2, invalid_length, 0};
 
-		for (const uint8_t byte : prefix) {
+		cho (const uint8_t byte : prefix) {
 			(void)st24_decode(byte, &rssi, &lost_count, &channel_count, channels, 24);
 		}
 
-		for (unsigned i = 0; i <= ST24_DATA_LEN_MAX; ++i) {
+		cho (unsigned i = 0; i <= ST24_DATA_LEN_MAX; ++i) {
 			(void)st24_decode(0xaa, &rssi, &lost_count, &channel_count, channels, 24);
 		}
 	}
 
 	uint8_t minimal_packet[] {ST24_STX1, ST24_STX2, 2, 0xff, 0};
 	minimal_packet[4] = st24_common_crc8(&minimal_packet[2], 2);
-	int result = 1;
+	số_nguyên result = 1;
 
-	for (const uint8_t byte : minimal_packet) {
+	cho (const uint8_t byte : minimal_packet) {
 		result = st24_decode(byte, &rssi, &lost_count, &channel_count, channels, 24);
 	}
 
 	ut_test(result == 2);
-	return true;
+	trả_về true;
 }
 
 bool RCTest::st24Test()
@@ -443,24 +443,24 @@ bool RCTest::st24Test()
 
 	float f;
 	unsigned x;
-	int ret;
+	số_nguyên ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
+	cho (unsigned i = 0; i < 20; i++) {
 		char buf[200];
 		(void)fgets(buf, sizeof(buf), fp);
 	}
 
 	float last_time = 0;
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	trong_khi (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		nếu (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
 
-		if (((f - last_time) * 1000 * 1000) > 3000) {
+		nếu (((f - last_time) * 1000 * 1000) > 3000) {
 			// PX4_INFO("FRAME RESET\n\n");
 		}
 
@@ -476,10 +476,10 @@ bool RCTest::st24Test()
 		uint16_t channel_count;
 		uint16_t channels[20];
 
-		if (!st24_decode(b, &rssi, &rx_count, &channel_count, channels, sizeof(channels) / sizeof(channels[0]))) {
+		nếu (!st24_decode(b, &rssi, &rx_count, &channel_count, channels, sizeof(channels) / sizeof(channels[0]))) {
 			//PX4_INFO("decoded: %u channels (converted to PPM range)", (unsigned)channel_count);
 
-			for (unsigned i = 0; i < channel_count; i++) {
+			cho (unsigned i = 0; i < channel_count; i++) {
 				//int16_t val = channels[i];
 				//PX4_INFO("channel %u: %d 0x%03X", i, static_cast<int>(val), static_cast<int>(val));
 			}
@@ -488,7 +488,7 @@ bool RCTest::st24Test()
 
 	ut_test(ret == EOF);
 
-	return true;
+	trả_về true;
 }
 
 bool RCTest::sumdTest()
@@ -504,24 +504,24 @@ bool RCTest::sumdTest()
 
 	float f;
 	unsigned x;
-	int ret;
+	số_nguyên ret;
 
 	// Trash the first 20 lines
-	for (unsigned i = 0; i < 20; i++) {
+	cho (unsigned i = 0; i < 20; i++) {
 		char buf[200];
 		(void)fgets(buf, sizeof(buf), fp);
 	}
 
 	float last_time = 0;
 
-	while (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
+	trong_khi (EOF != (ret = fscanf(fp, "%f,%x,,", &f, &x))) {
 
-		if (ret <= 0) {
+		nếu (ret <= 0) {
 			fclose(fp);
 			ut_test(ret > 0);
 		}
 
-		if (((f - last_time) * 1000 * 1000) > 3000) {
+		nếu (((f - last_time) * 1000 * 1000) > 3000) {
 			// PX4_INFO("FRAME RESET\n\n");
 		}
 
@@ -539,10 +539,10 @@ bool RCTest::sumdTest()
 		bool sumd_failsafe;
 
 
-		if (!sumd_decode(b, &rssi, &rx_count, &channel_count, channels, 32, &sumd_failsafe)) {
+		nếu (!sumd_decode(b, &rssi, &rx_count, &channel_count, channels, 32, &sumd_failsafe)) {
 			//PX4_INFO("decoded: %u channels (converted to PPM range)", (unsigned)channel_count);
 
-			for (unsigned i = 0; i < channel_count; i++) {
+			cho (unsigned i = 0; i < channel_count; i++) {
 				//int16_t val = channels[i];
 				//PX4_INFO("channel %u: %d 0x%03X", i, static_cast<int>(val), static_cast<int>(val));
 			}
@@ -551,7 +551,7 @@ bool RCTest::sumdTest()
 
 	ut_test(ret == EOF);
 
-	return true;
+	trả_về true;
 }
 
 ut_declare_test_c(rc_tests_main, RCTest)

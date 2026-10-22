@@ -110,17 +110,17 @@ Matrix<float, 6, 16> surveyedHexarotor(uint16_t stopped_mask)
 	Matrix<float, 6, 16> effectiveness;
 	effectiveness.setZero();
 
-	for (int i = 0; i < 6; i++) {
-		if (stopped_mask & (1u << i)) {
+	cho (số_nguyên i = 0; i < 6; i++) {
+		nếu (stopped_mask & (1u << i)) {
 			continue;
 		}
 
-		for (int axis = 0; axis < 6; axis++) {
+		cho (số_nguyên axis = 0; axis < 6; axis++) {
 			effectiveness(axis, i) = kSurveyedHexarotor[axis][i];
 		}
 	}
 
-	return effectiveness;
+	trả_về effectiveness;
 }
 
 struct Rotor {
@@ -130,14 +130,14 @@ struct Rotor {
 };
 
 // upward rotors as in ActuatorEffectivenessRotors
-Matrix<float, 6, 16> planarRotors(const Rotor *rotors, int count, uint16_t stopped_mask = 0)
+Matrix<float, 6, 16> planarRotors(const Rotor *rotors, số_nguyên count, uint16_t stopped_mask = 0)
 {
 	constexpr float ct = 6.5f;
 	Matrix<float, 6, 16> effectiveness;
 	effectiveness.setZero();
 
-	for (int i = 0; i < count; i++) {
-		if (stopped_mask & (1u << i)) {
+	cho (số_nguyên i = 0; i < count; i++) {
+		nếu (stopped_mask & (1u << i)) {
 			continue;
 		}
 
@@ -147,7 +147,7 @@ Matrix<float, 6, 16> planarRotors(const Rotor *rotors, int count, uint16_t stopp
 		effectiveness(5, i) = -ct;
 	}
 
-	return effectiveness;
+	trả_về effectiveness;
 }
 
 // In-tree geometries 4001_quad_x, 6001_hexa_x, 8001_octo_x
@@ -174,7 +174,7 @@ TEST(ControlAllocationPseudoInverseTest, DropDependentAxesKeepsIndependentGeomet
 		planarRotors(kOctoX, 8, (1u << 0) | (1u << 1)),
 	};
 
-	for (const auto &original : independent) {
+	cho (const auto &original : independent) {
 		Matrix<float, 6, 16> effectiveness = original;
 		EXPECT_EQ(ControlAllocationPseudoInverse::dropDependentAxes(effectiveness), 0);
 		EXPECT_EQ(effectiveness, original);
@@ -192,13 +192,13 @@ TEST(ControlAllocationPseudoInverseTest, DropDependentAxesDropsYawCollinearWithR
 		planarRotors(kHexaX, 6, (1u << 2) | (1u << 3)),
 	};
 
-	for (const auto &original : reduced) {
+	cho (const auto &original : reduced) {
 		Matrix<float, 6, 16> effectiveness = original;
 		const uint8_t dropped = ControlAllocationPseudoInverse::dropDependentAxes(effectiveness);
 		EXPECT_EQ(dropped, 1u << ControlAllocation::YAW);
 
-		for (int axis = 0; axis < 6; axis++) {
-			for (int i = 0; i < 16; i++) {
+		cho (số_nguyên axis = 0; axis < 6; axis++) {
+			cho (số_nguyên i = 0; i < 16; i++) {
 				const float expected = (axis == ControlAllocation::YAW) ? 0.f : original(axis, i);
 				EXPECT_FLOAT_EQ(effectiveness(axis, i), expected);
 			}
@@ -239,7 +239,7 @@ TEST(ControlAllocationPseudoInverseTest, DroppedAxisIsUnallocatedOthersExact)
 	EXPECT_NEAR(allocated(ControlAllocation::THRUST_Z), -0.001f, 1e-4f);
 	EXPECT_FLOAT_EQ(allocated(ControlAllocation::YAW), 0.f);
 
-	for (int i = 0; i < 16; i++) {
+	cho (số_nguyên i = 0; i < 16; i++) {
 		EXPECT_LT(fabsf(method.getActuatorSetpoint()(i)), 0.01f) << "actuator " << i;
 	}
 }

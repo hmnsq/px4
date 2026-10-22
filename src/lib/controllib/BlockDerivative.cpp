@@ -49,10 +49,10 @@ float BlockDerivative::update(float input)
 {
 	float output;
 
-	if (_initialized) {
+	nếu (_initialized) {
 		output = _lowPass.update((input - getU()) / getDt());
 
-	} else {
+	} không_thì {
 		// if this is the first call to update
 		// we have no valid derivative
 		// and so we use the assumption the
@@ -64,7 +64,7 @@ float BlockDerivative::update(float input)
 	}
 
 	setU(input);
-	return output;
+	trả_về output;
 }
 
 } // namespace control

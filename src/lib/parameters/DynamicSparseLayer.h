@@ -93,7 +93,7 @@
 class DynamicSparseLayer : public ParamLayer
 {
 public:
-	DynamicSparseLayer(ParamLayer *parent, int n_prealloc = 32, int n_grow = 4) : ParamLayer(parent),
+	DynamicSparseLayer(ParamLayer *parent, số_nguyên n_prealloc = 32, số_nguyên n_grow = 4) : ParamLayer(parent),
 		_n_slots(n_prealloc),
 		// _grow() only terminates if every grow adds at least one slot, so clamp
 		// _n_grow to >= 1. The assert flags the misconfiguration in debug builds;
@@ -104,13 +104,13 @@ public:
 
 		Slot *slots = (Slot *)malloc(sizeof(Slot) * n_prealloc);
 
-		if (slots == nullptr) {
+		nếu (slots == nullptr) {
 			PX4_ERR("Failed to allocate memory for dynamic sparse layer");
 			_n_slots = 0;
-			return;
+			trả_về;
 		}
 
-		for (int i = 0; i < _n_slots; i++) {
+		cho (số_nguyên i = 0; i < _n_slots; i++) {
 			slots[i] = {UINT16_MAX, param_value_u{}};
 		}
 
@@ -144,30 +144,30 @@ public:
 		// carry a decision across a grow: we re-read _slots, re-search, and
 		// re-check capacity from scratch on every iteration. Without a grow this
 		// loop body runs exactly once.
-		while (true) {
+		trong_khi (true) {
 			Slot *slots = _slots.load();
-			const int index = _getIndex(param);
+			const số_nguyên index = _getIndex(param);
 
-			if (index < _next_slot) {
+			nếu (index < _next_slot) {
 				// The param already has an override: update it in place.
 				slots[index].value = value;
-				return true;
+				trả_về true;
 			}
 
-			if (_next_slot < _n_slots) {
+			nếu (_next_slot < _n_slots) {
 				// New param and there is a free slot: append it and re-sort so
 				// _getIndex() can keep binary-searching. This branch holds the
 				// lock throughout (no _grow), so the read-then-append is atomic.
 				slots[_next_slot++] = {param, value};
 				_sort();
-				return true;
+				trả_về true;
 			}
 
 			// New param but the array is full: grow and loop to retry. _grow()
 			// returns false only if allocation failed, in which case the store
 			// fails.
-			if (!_grow(transaction)) {
-				return false;
+			nếu (!_grow(transaction)) {
+				trả_về false;
 			}
 		}
 	}
@@ -177,7 +177,7 @@ public:
 		// Reader: hold the lock for the whole lookup so we never read _slots /
 		// _next_slot while a writer (store/_grow/reset) is mutating them.
 		const AtomicTransaction transaction;
-		return _getIndex(param) < _next_slot;
+		trả_về _getIndex(param) < _next_slot;
 	}
 
 	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
@@ -186,11 +186,11 @@ public:
 		const AtomicTransaction transaction;
 		Slot *slots = _slots.load();
 
-		for (int i = 0; i < _next_slot; i++) {
+		cho (số_nguyên i = 0; i < _next_slot; i++) {
 			set.set(slots[i].param);
 		}
 
-		return set;
+		trả_về set;
 	}
 
 	param_value_u get(param_t param) const override
@@ -199,23 +199,23 @@ public:
 		const AtomicTransaction transaction;
 		Slot *slots = _slots.load();
 
-		const int index = _getIndex(param);
+		const số_nguyên index = _getIndex(param);
 
-		if (index < _next_slot) { // exists in our data structure
-			return slots[index].value;
+		nếu (index < _next_slot) { // exists in our data structure
+			trả_về slots[index].value;
 		}
 
 		// Not overridden here: defer to the layer below us.
-		return _parent->get(param);
+		trả_về _parent->get(param);
 	}
 
 	void reset(param_t param) override
 	{
 		const AtomicTransaction transaction;
-		int index = _getIndex(param);
+		số_nguyên index = _getIndex(param);
 		Slot *slots = _slots.load();
 
-		if (index < _next_slot) {
+		nếu (index < _next_slot) {
 			slots[index] = {UINT16_MAX, param_value_u{}};
 			_sort();
 			_next_slot--;
@@ -227,16 +227,16 @@ public:
 		_parent->refresh(param);
 	}
 
-	int size() const override
+	số_nguyên size() const override
 	{
 		const AtomicTransaction transaction;
-		return _next_slot;
+		trả_về _next_slot;
 	}
 
-	int byteSize() const override
+	số_nguyên byteSize() const override
 	{
 		const AtomicTransaction transaction;
-		return _n_slots * sizeof(Slot);
+		trả_về _n_slots * sizeof(Slot);
 	}
 
 private:
@@ -245,9 +245,9 @@ private:
 		param_value_u value;
 	};
 
-	static int _slotCompare(const void *a, const void *b)
+	static số_nguyên _slotCompare(const void *a, const void *b)
 	{
-		return ((int)((Slot *)a)->param) - ((int)((Slot *)b)->param);
+		trả_về ((số_nguyên)((Slot *)a)->param) - ((số_nguyên)((Slot *)b)->param);
 	}
 
 	// Keep the array sorted by param ascending. Sentinels (param == UINT16_MAX)
@@ -261,27 +261,27 @@ private:
 	// Binary-search the sorted valid range for `param`. Returns its index if
 	// found, or `_next_slot` (the "not found" sentinel, == past-the-end of the
 	// valid range) otherwise. Caller must hold the lock.
-	int _getIndex(param_t param) const
+	số_nguyên _getIndex(param_t param) const
 	{
-		int left = 0;
-		int right = _next_slot - 1;
+		số_nguyên left = 0;
+		số_nguyên right = _next_slot - 1;
 		Slot *slots = _slots.load();
 
-		while (left <= right) {
-			int mid = (left + right) / 2;
+		trong_khi (left <= right) {
+			số_nguyên mid = (left + right) / 2;
 
-			if (slots[mid].param == param) {
-				return mid;
+			nếu (slots[mid].param == param) {
+				trả_về mid;
 
-			} else if (slots[mid].param < param) {
+			} không_thì nếu (slots[mid].param < param) {
 				left = mid + 1;
 
-			} else {
+			} không_thì {
 				right = mid - 1;
 			}
 		}
 
-		return _next_slot;
+		trả_về _next_slot;
 	}
 
 	// Called by store() with the lock held when the array is full. Replaces
@@ -290,9 +290,9 @@ private:
 	// this releases the lock around the allocation - see below.
 	bool _grow(AtomicTransaction &transaction)
 	{
-		if (_n_slots == 0) {
+		nếu (_n_slots == 0) {
 			// Construction failed to allocate; there is no buffer to grow.
-			return false;
+			trả_về false;
 		}
 
 		// Loop until there is room. Each iteration either grows the buffer
@@ -303,20 +303,20 @@ private:
 		// passes that there is permanent room. Hence this terminates in at most
 		// ~PARAM_COUNT/_n_grow iterations even under contention; only a malloc
 		// failure aborts early.
-		while (_next_slot >= _n_slots) {
+		trong_khi (_next_slot >= _n_slots) {
 			// Snapshot the size we are allocating for. We must drop the lock
 			// around malloc()/free(): on NuttX the lock disables interrupts and
 			// the allocator can't run there; on POSIX the allocator takes its own
 			// locks. This unlock..lock pair is the ONLY window in the whole class
 			// where another thread can change our members underneath us.
-			const int alloc_n_slots = _n_slots;
+			const số_nguyên alloc_n_slots = _n_slots;
 
 			transaction.unlock();
 			Slot *new_slots = (Slot *) malloc(sizeof(Slot) * (alloc_n_slots + _n_grow));
 			transaction.lock();
 
-			if (new_slots == nullptr) {
-				return false;
+			nếu (new_slots == nullptr) {
+				trả_về false;
 			}
 
 			// Back under the lock: did another writer grow the buffer while we
@@ -328,7 +328,7 @@ private:
 			// A pointer compare would then pass while _n_slots has moved on, and
 			// the memcpy below would copy _n_slots entries into our buffer that was
 			// only sized for alloc_n_slots - a heap overflow.
-			if (_n_slots != alloc_n_slots) {
+			nếu (_n_slots != alloc_n_slots) {
 				// Someone else already grew it. Our buffer is now the wrong size;
 				// throw it away. This is progress, not a failure, so the loop just
 				// re-evaluates: there may already be room, or we grow again.
@@ -342,7 +342,7 @@ private:
 			Slot *previous_slots = _slots.load();
 			memcpy(new_slots, previous_slots, sizeof(Slot) * _n_slots);
 
-			for (int i = _n_slots; i < _n_slots + _n_grow; i++) {
+			cho (số_nguyên i = _n_slots; i < _n_slots + _n_grow; i++) {
 				new_slots[i] = {UINT16_MAX, param_value_u{}};
 			}
 
@@ -357,12 +357,12 @@ private:
 			transaction.lock();
 		}
 
-		return _next_slot < _n_slots;
+		trả_về _next_slot < _n_slots;
 	}
 
 	// All three guarded by the AtomicTransaction mutex (see class comment).
-	int _next_slot = 0;        // number of valid entries, all in _slots[0.._next_slot)
-	int _n_slots = 0;          // capacity: total entries _slots points to
-	const int _n_grow;         // how many slots to add per grow
+	số_nguyên _next_slot = 0;        // number of valid entries, all in _slots[0.._next_slot)
+	số_nguyên _n_slots = 0;          // capacity: total entries _slots points to
+	const số_nguyên _n_grow;         // how many slots to add per grow
 	px4::atomic<Slot *> _slots{nullptr}; // the array; atomic only for the unlock-around-malloc window in _grow()
 };

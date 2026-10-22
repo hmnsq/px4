@@ -73,30 +73,30 @@ public:
 	float update()
 	{
 		static float V1, V2, S;
-		static int phase = 0;
+		static số_nguyên phase = 0;
 		float X;
 
-		if (phase == 0) {
+		nếu (phase == 0) {
 			do {
 				float U1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 				float U2 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 				V1 = 2 * U1 - 1;
 				V2 = 2 * U2 - 1;
 				S = V1 * V1 + V2 * V2;
-			} while (S >= 1 || fabsf(S) < 1e-8f);
+			} trong_khi (S >= 1 || fabsf(S) < 1e-8f);
 
 			X = V1 * float(sqrtf(-2 * float(logf(S)) / S));
 
-		} else {
+		} không_thì {
 			X = V2 * float(sqrtf(-2 * float(logf(S)) / S));
 		}
 
 		phase = 1 - phase;
-		return X * getStdDev() + getMean();
+		trả_về X * getStdDev() + getMean();
 	}
 // accessors
-	float getMean() { return _mean.get(); }
-	float getStdDev() { return _stdDev.get(); }
+	float getMean() { trả_về _mean.get(); }
+	float getStdDev() { trả_về _stdDev.get(); }
 private:
 // attributes
 	control::BlockParamFloat _mean;

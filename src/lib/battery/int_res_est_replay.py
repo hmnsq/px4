@@ -11,20 +11,20 @@ import numpy as np
 import argparse
 
 def getData(log, topic_name, variable_name, instance=0):
-    for elem in log.data_list:
-        if elem.name == topic_name and instance == elem.multi_id:
-            return elem.data[variable_name]
-    return np.array([])
+    cho elem in log.data_list:
+        nếu elem.name == topic_name and instance == elem.multi_id:
+            trả_về elem.data[variable_name]
+    trả_về np.array([])
 
 def us2s(time_us):
-    return time_us * 1e-6
+    trả_về time_us * 1e-6
 
 def getParam(log, param_name):
-    if param_name in log.initial_parameters:
-        return log.initial_parameters[param_name]
-    else:
+    nếu param_name in log.initial_parameters:
+        trả_về log.initial_parameters[param_name]
+    không_thì:
         print(f"Parameter {param_name} not found in log.")
-    return None
+    trả_về None
 
 def rls_update(theta, P, x, V, I, lam):
     gamma = P @ x / (lam + x.T @ P @ x)
@@ -32,11 +32,11 @@ def rls_update(theta, P, x, V, I, lam):
     data_cov = x.T @ P @ x
     theta_temp = theta + gamma * error
     P_temp = (P - gamma @ x.T @ P) / lam
-    if (abs(np.linalg.norm(P)) < abs(np.linalg.norm(P_temp))):
+    nếu (abs(np.linalg.norm(P)) < abs(np.linalg.norm(P_temp))):
         theta_corr = np.array([V + theta[1] * I, theta[1]]) # Correct OCV estimation
         P_corr = P
-        return theta_corr, P_corr, error, data_cov, 0, 0
-    return theta_temp, P_temp, error, data_cov, gamma[0], gamma[1]
+        trả_về theta_corr, P_corr, error, data_cov, 0, 0
+    trả_về theta_temp, P_temp, error, data_cov, gamma[0], gamma[1]
 
 def main(log_name, n_cells, full_cell, empty_cell, lam):
     log = ULog(log_name)
@@ -49,17 +49,17 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
     print(f"Extracted from log - BAT1_N_CELLS: {log_n_cells}, BAT1_V_CHARGED: {log_full_cell}, BAT1_V_EMPTY: {log_empty_cell}")
 
     # Use log parameters unless overridden
-    if n_cells is None:
+    nếu n_cells is None:
         n_cells = log_n_cells
-    else:
+    không_thì:
         print(f"Using override for n_cells: {n_cells}")
-    if full_cell is None:
+    nếu full_cell is None:
         full_cell = log_full_cell
-    else:
+    không_thì:
         print(f"Using override for full_cell: {full_cell}")
-    if empty_cell is None:
+    nếu empty_cell is None:
         empty_cell = log_empty_cell
-    else:
+    không_thì:
         print(f"Using override for empty_cell: {empty_cell}")
 
     # Debug information for final parameter values
@@ -70,9 +70,9 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
     V = getData(log, 'battery_status', 'voltage_v')
     remaining = getData(log, 'battery_status', 'remaining')
 
-    if not timestamps.size or not I.size or not V.size or not remaining.size:
+    nếu not timestamps.size or not I.size or not V.size or not remaining.size:
         print("Error: Incomplete data.")
-        return
+        trả_về
 
     # Initializations
     theta = np.array([[V[0] + 0.005 * n_cells * I[0]], [0.005 * n_cells]])  # Initial VOC and R
@@ -94,7 +94,7 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
     gamma_voc_hist = np.zeros_like(I)
     gamma_r_hist = np.zeros_like(I)
 
-    for index in range(len(I)):
+    cho index in range(len(I)):
         # RLS algorithm
         x = np.array([[1.0], [-I[index]]]) # Input vector
         theta, P, error, data_cov, gamma_voc_hist[index], gamma_r_hist[index] = rls_update(theta, P, x, V[index], I[index], lam) # Run RLS
@@ -197,7 +197,7 @@ def main(log_name, n_cells, full_cell, empty_cell, lam):
 
     plt.show()
 
-if __name__ == "__main__":
+nếu __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Estimate battery parameters from ulog file.')
     parser.add_argument('-f', type = str,   required = True,  help = 'Full path to ulog file')
     parser.add_argument('-c', type = float, required = False, help = 'Number of cells in battery')

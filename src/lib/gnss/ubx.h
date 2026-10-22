@@ -83,7 +83,7 @@ inline void ubx_checksum(const uint8_t *data, size_t len, uint8_t *ck_a, uint8_t
 	uint8_t a = 0;
 	uint8_t b = 0;
 
-	for (size_t i = 0; i < len; i++) {
+	cho (size_t i = 0; i < len; i++) {
 		a = static_cast<uint8_t>(a + data[i]);
 		b = static_cast<uint8_t>(b + a);
 	}

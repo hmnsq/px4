@@ -57,7 +57,7 @@ void DifferentialPressure::set_device_id(uint32_t device_id)
 {
 	const bool external = device::device_is_external(device_id);
 
-	if (_device_id != device_id || _external != external) {
+	nếu (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -70,75 +70,75 @@ void DifferentialPressure::set_device_id(uint32_t device_id)
 
 bool DifferentialPressure::set_offset(const float &offset)
 {
-	if (fabsf(_offset - offset) > 0.01f) {
-		if (PX4_ISFINITE(offset)) {
+	nếu (fabsf(_offset - offset) > 0.01f) {
+		nếu (PX4_ISFINITE(offset)) {
 			_offset = offset;
 			_calibration_count++;
-			return true;
+			trả_về true;
 		}
 	}
 
-	return false;
+	trả_về false;
 }
 
-bool DifferentialPressure::set_calibration_index(int calibration_index)
+bool DifferentialPressure::set_calibration_index(số_nguyên calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	nếu ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
 		_calibration_index = calibration_index;
-		return true;
+		trả_về true;
 	}
 
-	return false;
+	trả_về false;
 }
 
 void DifferentialPressure::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	nếu (_device_id == 0) {
+		trả_về;
 	}
 
 	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	nếu (_calibration_index == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
+	} không_thì {
 		ParametersLoad();
 	}
 }
 
 bool DifferentialPressure::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	nếu (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
 		// CAL_DPRESx_OFF
 		set_offset(GetCalibrationParamFloat(SensorString(), "OFF", _calibration_index));
 
-		return true;
+		trả_về true;
 	}
 
-	return false;
+	trả_về false;
 }
 
 bool DifferentialPressure::AdoptLegacyOffset()
 {
-	if ((_device_id == 0) || calibrated()) {
-		return false;
+	nếu ((_device_id == 0) || calibrated()) {
+		trả_về false;
 	}
 
 	// slot 0 must still be free, otherwise another sensor already owns the legacy offset
-	if (GetCalibrationParamInt32(SensorString(), "ID", kLegacyIndex) != 0) {
-		return false;
+	nếu (GetCalibrationParamInt32(SensorString(), "ID", kLegacyIndex) != 0) {
+		trả_về false;
 	}
 
 	float legacy_offset = 0.f;
 
-	if (param_get(param_find(kLegacyOffsetParam), &legacy_offset) != PX4_OK) {
-		return false;
+	nếu (param_get(param_find(kLegacyOffsetParam), &legacy_offset) != PX4_OK) {
+		trả_về false;
 	}
 
-	if (!PX4_ISFINITE(legacy_offset) || (fabsf(legacy_offset) < FLT_EPSILON)) {
-		return false;
+	nếu (!PX4_ISFINITE(legacy_offset) || (fabsf(legacy_offset) < FLT_EPSILON)) {
+		trả_về false;
 	}
 
 	_offset = legacy_offset;
@@ -146,21 +146,21 @@ bool DifferentialPressure::AdoptLegacyOffset()
 
 	PX4_INFO("%s %" PRIu32 " adopted %s %.3f Pa", SensorString(), _device_id, kLegacyOffsetParam, (double)_offset);
 
-	return true;
+	trả_về true;
 }
 
 void DifferentialPressure::UpdateLegacyOffset() const
 {
 	// keep SENS_DPRES_OFF in step with slot 0 so that ground stations reading it can still tell
 	// whether airspeed has been calibrated
-	if (_calibration_index != kLegacyIndex) {
-		return;
+	nếu (_calibration_index != kLegacyIndex) {
+		trả_về;
 	}
 
 	const param_t handle = param_find(kLegacyOffsetParam);
 
-	if (handle == PARAM_INVALID) {
-		return;
+	nếu (handle == PARAM_INVALID) {
+		trả_về;
 	}
 
 	float offset = _offset;
@@ -176,25 +176,25 @@ void DifferentialPressure::Reset()
 	_calibration_count = 0;
 }
 
-bool DifferentialPressure::ParametersSave(int desired_calibration_index, bool force)
+bool DifferentialPressure::ParametersSave(số_nguyên desired_calibration_index, bool force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	nếu (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
 		_calibration_index = desired_calibration_index;
 
-	} else if (!force || (_calibration_index < 0)
+	} không_thì nếu (!force || (_calibration_index < 0)
 		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
 		int8_t calibration_index_prev = _calibration_index;
 		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		nếu (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
 				 calibration_index_prev, _calibration_index);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	nếu (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
 		// save calibration
 		bool success = true;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
@@ -202,13 +202,13 @@ bool DifferentialPressure::ParametersSave(int desired_calibration_index, bool fo
 
 		UpdateLegacyOffset();
 
-		return success;
+		trả_về success;
 	}
 
 	// index 3 is possible: FindAvailableCalibrationIndex() searches four slots, we define three
 	PX4_ERR("%s %" PRIu32 " no free calibration slot (got %" PRIi8 ")", SensorString(), _device_id, _calibration_index);
 
-	return false;
+	trả_về false;
 }
 
 void DifferentialPressure::PrintStatus()

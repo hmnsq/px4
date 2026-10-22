@@ -49,7 +49,7 @@ namespace gnss
 {
 
 // A protocol's bit in a set of accepted protocols
-constexpr uint8_t protocol_bit(CorrectionProtocol protocol) { return 1u << static_cast<uint8_t>(protocol); }
+constexpr uint8_t protocol_bit(CorrectionProtocol protocol) { trả_về 1u << static_cast<uint8_t>(protocol); }
 
 // Writes corrections to a receiver as they are published, from the serial port's work queue. A driver's reader thread
 // blocks on the UART between epochs, so injecting from it would hold corrections back by up to one output interval.
@@ -91,7 +91,7 @@ public:
 	void stop();
 
 	// rtcm_corrections instance in use, -1 for none
-	int8_t selected_instance() const { return _selected_instance.load(); }
+	int8_t selected_instance() const { trả_về _selected_instance.load(); }
 	// Frames written per second over the last window. Owner thread only.
 	float injection_rate_hz();
 	void print_status() const;
@@ -111,7 +111,7 @@ private:
 	pthread_mutex_t _mutex = PTHREAD_MUTEX_INITIALIZER;
 	// Guarded by _mutex
 	bool _active{false};
-	int _fd{-1};	// opened and closed on the work queue
+	số_nguyên _fd{-1};	// opened and closed on the work queue
 	bool _write_error_reported{false};
 	Config _config{};
 	hrt_abstime _last_chunk_time{0};

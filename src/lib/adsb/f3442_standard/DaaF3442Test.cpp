@@ -61,7 +61,7 @@ protected:
 	}
 
 	void set_f3442_params(float nmac_radius, float nmac_height, float wc_radius, float wc_height,
-			      int nmac_latency_s, int wc_latency_s)
+			      số_nguyên nmac_latency_s, số_nguyên wc_latency_s)
 	{
 		param_set(param_handle(px4::params::DAA_LVL_CRIT_RAD), &nmac_radius);
 		param_set(param_handle(px4::params::DAA_LVL_CRIT_HGT), &nmac_height);
@@ -79,8 +79,8 @@ TEST_F(DaaF3442Test, RejectsInvalidParams)
 		float nmac_height;
 		float wc_radius;
 		float wc_height;
-		int nmac_latency_s;
-		int wc_latency_s;
+		số_nguyên nmac_latency_s;
+		số_nguyên wc_latency_s;
 		bool expected_result;
 	};
 
@@ -88,8 +88,8 @@ TEST_F(DaaF3442Test, RejectsInvalidParams)
 	constexpr float valid_nmac_height_m = 10.f;
 	constexpr float valid_wc_radius_m = 20.f;
 	constexpr float valid_wc_height_m = 20.f;
-	constexpr int valid_nmac_latency_s = 5;
-	constexpr int valid_wc_latency_s = 5;
+	constexpr số_nguyên valid_nmac_latency_s = 5;
+	constexpr số_nguyên valid_wc_latency_s = 5;
 	const float nan = std::numeric_limits<float>::quiet_NaN();
 	const float inf = std::numeric_limits<float>::infinity();
 
@@ -109,7 +109,7 @@ TEST_F(DaaF3442Test, RejectsInvalidParams)
 			{valid_nmac_radius_m, valid_nmac_height_m, valid_wc_radius_m, valid_wc_height_m, valid_nmac_latency_s + 1, valid_wc_latency_s, false},
 		}};
 
-	for (size_t i = 0; i < cases.size(); ++i) {
+	cho (size_t i = 0; i < cases.size(); ++i) {
 		const ParamCase &test_case = cases[i];
 		SCOPED_TRACE(i);
 
@@ -129,15 +129,15 @@ TEST_F(DaaF3442Test, RejectsNonHierarchicalBounds)
 		float wc_height;
 	};
 
-	constexpr int nmac_latency_s = 30;
-	constexpr int wc_latency_s = 30;
+	constexpr số_nguyên nmac_latency_s = 30;
+	constexpr số_nguyên wc_latency_s = 30;
 	const std::array<HierarchyCase, 3> cases{{
 			{20.f, 10.f, 19.f, 10.f},
 			{20.f, 10.f, 20.f, 9.f},
 			{200.f, 100.f, 100.f, 50.f},
 		}};
 
-	for (size_t i = 0; i < cases.size(); ++i) {
+	cho (size_t i = 0; i < cases.size(); ++i) {
 		const HierarchyCase &test_case = cases[i];
 		SCOPED_TRACE(i);
 
@@ -213,8 +213,8 @@ TEST_F(DaaF3442Test, CalculateConflictLevelRespectsPriorityOrder)
 	constexpr float nmac_height_m = 10.f;
 	constexpr float wc_radius_m = 100.f;
 	constexpr float wc_height_m = 50.f;
-	constexpr int nmac_latency_s = 30;
-	constexpr int wc_latency_s = 40;
+	constexpr số_nguyên nmac_latency_s = 30;
+	constexpr số_nguyên wc_latency_s = 40;
 	set_f3442_params(nmac_radius_m, nmac_height_m, wc_radius_m, wc_height_m, nmac_latency_s, wc_latency_s);
 	ASSERT_TRUE(daa.try_setting_params());
 
@@ -261,8 +261,8 @@ TEST_F(DaaF3442Test, CalculateDaaStatsReportsExpectedGeometryAndLevel)
 	constexpr float nmac_height_m = 10.f;
 	constexpr float wc_radius_m = 100.f;
 	constexpr float wc_height_m = 50.f;
-	constexpr int nmac_latency_s = 30;
-	constexpr int wc_latency_s = 40;
+	constexpr số_nguyên nmac_latency_s = 30;
+	constexpr số_nguyên wc_latency_s = 40;
 	set_f3442_params(nmac_radius_m, nmac_height_m, wc_radius_m, wc_height_m, nmac_latency_s, wc_latency_s);
 	ASSERT_TRUE(daa.try_setting_params());
 

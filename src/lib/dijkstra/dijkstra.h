@@ -86,13 +86,13 @@ static constexpr float kUnreachable = INFINITY;
  */
 inline size_t symmetricPairIndex(size_t i, size_t j, const size_t num_nodes)
 {
-	if (i > j) {
+	nếu (i > j) {
 		const size_t tmp = i;
 		i = j;
 		j = tmp;
 	}
 
-	return i * (2 * num_nodes - i - 1) / 2 + (j - i - 1);
+	trả_về i * (2 * num_nodes - i - 1) / 2 + (j - i - 1);
 }
 
 /**
@@ -117,7 +117,7 @@ inline size_t symmetricPairIndex(size_t i, size_t j, const size_t num_nodes)
  *         false otherwise. A `true` return does not imply that goal is
  *         reachable from any particular node — check best_cost[i] for that.
  */
-bool solveBackward(const int num_nodes, const int goal, const float *cost, const bool symmetric,
-		   float *best_cost, int *next_node, bool *visited);
+bool solveBackward(const số_nguyên num_nodes, const số_nguyên goal, const float *cost, const bool symmetric,
+		   float *best_cost, số_nguyên *next_node, bool *visited);
 
 } // namespace dijkstra

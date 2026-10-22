@@ -43,9 +43,9 @@
 
 #include "events_ioctl.h"
 
-static int events_ioctl(unsigned int cmd, unsigned long arg)
+static số_nguyên events_ioctl(unsigned số_nguyên cmd, unsigned long arg)
 {
-	int ret = OK;
+	số_nguyên ret = OK;
 
 	switch (cmd) {
 	case EVENTSIOCSEND: {
@@ -59,7 +59,7 @@ static int events_ioctl(unsigned int cmd, unsigned long arg)
 		break;
 	}
 
-	return ret;
+	trả_về ret;
 }
 
 void events_ioctl_init(void)

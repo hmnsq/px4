@@ -70,7 +70,7 @@ public:
 	{
 		const float denominator = time_constant_s + sample_interval_s;
 
-		if (denominator > FLT_EPSILON) {
+		nếu (denominator > FLT_EPSILON) {
 			setAlpha(sample_interval_s / denominator);
 		}
 
@@ -89,23 +89,23 @@ public:
 
 	bool setCutoffFreq(float sample_freq, float cutoff_freq)
 	{
-		if ((sample_freq <= 0.f) || (cutoff_freq <= 0.f) || (cutoff_freq >= sample_freq / 2.f)
+		nếu ((sample_freq <= 0.f) || (cutoff_freq <= 0.f) || (cutoff_freq >= sample_freq / 2.f)
 		    || !isFinite(sample_freq) || !isFinite(cutoff_freq)) {
 
 			// Invalid parameters
-			return false;
+			trả_về false;
 		}
 
 		setParameters(1.f / sample_freq, 1.f / (M_TWOPI_F * cutoff_freq));
-		return true;
+		trả_về true;
 	}
 
 	void setCutoffFreq(float cutoff_freq)
 	{
-		if (cutoff_freq > FLT_EPSILON) {
+		nếu (cutoff_freq > FLT_EPSILON) {
 			_time_constant = 1.f / (M_TWOPI_F * cutoff_freq);
 
-		} else {
+		} không_thì {
 			_time_constant = 0.f;
 		}
 	}
@@ -132,24 +132,24 @@ public:
 	const T &update(const T &sample)
 	{
 		_filter_state = updateCalculation(sample);
-		return _filter_state;
+		trả_về _filter_state;
 	}
 
 	const T update(const T &sample, float dt_s)
 	{
 		setParameters(dt_s, _time_constant);
-		return update(sample);
+		trả_về update(sample);
 	}
 
 	const T update(const T &sample, uint64_t dt_us)
 	{
 		setParameters(static_cast<float>(dt_us) * 1e-6f, _time_constant);
-		return update(sample);
+		trả_về update(sample);
 	}
 
-	const T &getState() const { return _filter_state; }
+	const T &getState() const { trả_về _filter_state; }
 	// a time constant of 0 means no filtering, i.e. an infinite cutoff frequency
-	float getCutoffFreq() const { return (_time_constant > FLT_EPSILON) ? 1.f / (M_TWOPI_F * _time_constant) : INFINITY; }
+	float getCutoffFreq() const { trả_về (_time_constant > FLT_EPSILON) ? 1.f / (M_TWOPI_F * _time_constant) : INFINITY; }
 
 	// delete mixing seconds with microseconds explicitly -> better compiler error
 	AlphaFilter(uint64_t sample_interval_us, float time_constant_s) = delete;
@@ -166,7 +166,7 @@ protected:
 };
 
 template <typename T>
-T AlphaFilter<T>::updateCalculation(const T &sample) { return _filter_state + _alpha * (sample - _filter_state); }
+T AlphaFilter<T>::updateCalculation(const T &sample) { trả_về _filter_state + _alpha * (sample - _filter_state); }
 
 /* Specialization for 3D rotations
  * The filter is computed on the 3-sphere of unit quaternions instead of the cartesian space
@@ -178,5 +178,5 @@ matrix::Quatf AlphaFilter<matrix::Quatf>::updateCalculation(const matrix::Quatf 
 {
 	matrix::Quatf q_error(_filter_state.inversed() * sample);
 	q_error.canonicalize(); // prevent unwrapping
-	return _filter_state * matrix::Quatf(matrix::AxisAnglef(_alpha * matrix::AxisAnglef(q_error)));
+	trả_về _filter_state * matrix::Quatf(matrix::AxisAnglef(_alpha * matrix::AxisAnglef(q_error)));
 }

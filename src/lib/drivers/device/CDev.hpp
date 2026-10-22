@@ -70,7 +70,7 @@ public:
 
 	virtual ~CDev() = default;
 
-	virtual int	init();
+	virtual số_nguyên	init();
 
 	/**
 	 * Perform an ioctl operation on the device.
@@ -80,7 +80,7 @@ public:
 	 * @param arg		The ioctl argument value.
 	 * @return		OK on success, or -errno otherwise.
 	 */
-	virtual int	ioctl(file_t *filep, int cmd, unsigned long arg) { return -ENOTTY; }
+	virtual số_nguyên	ioctl(file_t *filep, số_nguyên cmd, unsigned long arg) { trả_về -ENOTTY; }
 
 };
 

@@ -53,7 +53,7 @@ TEST_F(ArxRlsTest, test211)
 {
 	ArxRls<2, 1, 1> _rls;
 
-	for (int i = 0; i < (2 + 1 + 1); i++) {
+	cho (số_nguyên i = 0; i < (2 + 1 + 1); i++) {
 		// Fill the buffers with zeros
 		_rls.update(0.f, 0.f);
 	}
@@ -71,7 +71,7 @@ TEST_F(ArxRlsTest, test221)
 {
 	ArxRls<2, 2, 1> _rls;
 
-	for (int i = 0; i < (2 + 2 + 1); i++) {
+	cho (số_nguyên i = 0; i < (2 + 2 + 1); i++) {
 		// Fill the buffers with zeros
 		_rls.update(0.f, 0.f);
 	}

@@ -48,67 +48,67 @@ static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(pa
  * @param param			The parameter handle to test.
  * @return			True if the handle is valid.
  */
-static constexpr bool handle_in_range(param_t param) { return (param < param_info_count); }
+static constexpr bool handle_in_range(param_t param) { trả_về (param < param_info_count); }
 
 unsigned param_count()
 {
-	return param_info_count;
+	trả_về param_info_count;
 }
 
-int param_get_index(param_t param)
+số_nguyên param_get_index(param_t param)
 {
-	if (handle_in_range(param)) {
-		return (unsigned)param;
+	nếu (handle_in_range(param)) {
+		trả_về (unsigned)param;
 	}
 
-	return -1;
+	trả_về -1;
 }
 
 param_t param_for_index(unsigned index)
 {
-	if (index < param_info_count) {
-		return (param_t)index;
+	nếu (index < param_info_count) {
+		trả_về (param_t)index;
 	}
 
-	return PARAM_INVALID;
+	trả_về PARAM_INVALID;
 }
 
 const char *param_name(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters[param].name : nullptr;
+	trả_về handle_in_range(param) ? px4::parameters[param].name : nullptr;
 }
 
 param_type_t param_type(param_t param)
 {
-	return handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
+	trả_về handle_in_range(param) ? px4::parameters_type[param] : PARAM_TYPE_UNKNOWN;
 }
 
 bool param_is_volatile(param_t param)
 {
-	if (handle_in_range(param)) {
-		for (const auto &p : px4::parameters_volatile) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	nếu (handle_in_range(param)) {
+		cho (const auto &p : px4::parameters_volatile) {
+			nếu (static_cast<px4::params>(param) == p) {
+				trả_về true;
 			}
 		}
 	}
 
-	return false;
+	trả_về false;
 }
 
 static bool params_locked = false;
 
 bool param_is_readonly(param_t param)
 {
-	if (params_locked && handle_in_range(param)) {
-		for (const auto &p : px4::parameters_readonly) {
-			if (static_cast<px4::params>(param) == p) {
-				return true;
+	nếu (params_locked && handle_in_range(param)) {
+		cho (const auto &p : px4::parameters_readonly) {
+			nếu (static_cast<px4::params>(param) == p) {
+				trả_về true;
 			}
 		}
 	}
 
-	return false;
+	trả_về false;
 }
 
 void param_lock_readonly()
@@ -118,28 +118,28 @@ void param_lock_readonly()
 
 size_t param_size(param_t param)
 {
-	if (handle_in_range(param)) {
+	nếu (handle_in_range(param)) {
 		switch (param_type(param)) {
 		case PARAM_TYPE_INT32:
 		case PARAM_TYPE_FLOAT:
-			return 4;
+			trả_về 4;
 
 		default:
-			return 0;
+			trả_về 0;
 		}
 	}
 
-	return 0;
+	trả_về 0;
 }
 
-int
+số_nguyên
 param_get_system_default_value(param_t param, void *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	nếu (!handle_in_range(param)) {
+		trả_về PX4_ERROR;
 	}
 
-	int ret = PX4_OK;
+	số_nguyên ret = PX4_OK;
 
 	switch (param_type(param)) {
 	case PARAM_TYPE_INT32:
@@ -155,12 +155,12 @@ param_get_system_default_value(param_t param, void *default_val)
 		break;
 	}
 
-	return ret;
+	trả_về ret;
 }
 
-int
+số_nguyên
 param_get_mark_used(param_t param, void *val)
 {
 	param_set_used(param);
-	return param_get(param, val);
+	trả_về param_get(param, val);
 }

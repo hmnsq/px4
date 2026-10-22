@@ -42,7 +42,7 @@ public:
 	{
 		Vector &self(*this);
 
-		for (size_t i = 0; i < M; i++) {
+		cho (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
@@ -58,7 +58,7 @@ public:
 	{
 		Vector &self(*this);
 
-		for (size_t i = 0; i < M; i++) {
+		cho (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
@@ -68,7 +68,7 @@ public:
 		assert(i < M);
 
 		const MatrixM1 &v = *this;
-		return v(i, 0);
+		trả_về v(i, 0);
 	}
 
 	inline Type &operator()(size_t i)
@@ -76,7 +76,7 @@ public:
 		assert(i < M);
 
 		MatrixM1 &v = *this;
-		return v(i, 0);
+		trả_về v(i, 0);
 	}
 
 	Type dot(const MatrixM1 &b) const
@@ -84,39 +84,39 @@ public:
 		const Vector &a(*this);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		cho (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		trả_về r;
 	}
 
 	inline Type operator*(const MatrixM1 &b) const
 	{
 		const Vector &a(*this);
-		return a.dot(b);
+		trả_về a.dot(b);
 	}
 
 	inline Vector operator*(Type b) const
 	{
-		return Vector(MatrixM1::operator*(b));
+		trả_về Vector(MatrixM1::operator*(b));
 	}
 
 	Type norm() const
 	{
 		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		trả_về Type(std::sqrt(a.dot(a)));
 	}
 
 	Type norm_squared() const
 	{
 		const Vector &a(*this);
-		return a.dot(a);
+		trả_về a.dot(a);
 	}
 
 	inline Type length() const
 	{
-		return norm();
+		trả_về norm();
 	}
 
 	inline void normalize()
@@ -126,28 +126,28 @@ public:
 
 	Vector unit() const
 	{
-		return (*this) / norm();
+		trả_về (*this) / norm();
 	}
 
 	Vector unit_or_zero(const Type eps = Type(1e-5)) const
 	{
 		const Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		nếu (n > eps) {
+			trả_về (*this) / n;
 		}
 
-		return Vector();
+		trả_về Vector();
 	}
 
 	inline Vector normalized() const
 	{
-		return unit();
+		trả_về unit();
 	}
 
 	bool longerThan(Type testVal) const
 	{
-		return norm_squared() > testVal * testVal;
+		trả_về norm_squared() > testVal * testVal;
 	}
 
 	Vector sqrt() const
@@ -155,11 +155,11 @@ public:
 		const Vector &a(*this);
 		Vector r;
 
-		for (size_t i = 0; i < M; i++) {
+		cho (size_t i = 0; i < M; i++) {
 			r(i) = Type(std::sqrt(a(i)));
 		}
 
-		return r;
+		trả_về r;
 	}
 
 	void print() const
@@ -169,7 +169,7 @@ public:
 
 	static size_t size()
 	{
-		return M;
+		trả_về M;
 	}
 };
 
@@ -182,7 +182,7 @@ OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
 	char string[n];
 	vector.transpose().write_string(string, n);
 	os << string;
-	return os;
+	trả_về os;
 }
 
 } // namespace matrix

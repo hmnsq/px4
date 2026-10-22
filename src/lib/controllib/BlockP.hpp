@@ -70,10 +70,10 @@ public:
 	virtual ~BlockP() = default;
 	float update(float input)
 	{
-		return getKP() * input;
+		trả_về getKP() * input;
 	}
 // accessors
-	float getKP() { return _kP.get(); }
+	float getKP() { trả_về _kP.get(); }
 protected:
 	control::BlockParamFloat _kP;
 };

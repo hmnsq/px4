@@ -72,25 +72,25 @@ public:
 		_max_vel_down = max_vel_down;
 	}
 
-	float getCurrentJerk() const { return _state.j; }
-	float getCurrentAcceleration() const { return _state.a; }
+	float getCurrentJerk() const { trả_về _state.j; }
+	float getCurrentAcceleration() const { trả_về _state.a; }
 	void setCurrentVelocity(const float vel)
 	{
 		_state.v = vel;
 		_trajectory.setCurrentVelocity(vel);
 	}
-	float getCurrentVelocity() const { return _state.v; }
+	float getCurrentVelocity() const { trả_về _state.v; }
 	void setCurrentPosition(const float pos)
 	{
 		_state.x = pos;
 		_trajectory.setCurrentPosition(pos);
 		_position_estimate = pos;
 
-		if (_position_lock_active) {
+		nếu (_position_lock_active) {
 			_position_setpoint_locked = pos;
 		}
 	}
-	float getCurrentPosition() const { return _position_setpoint_locked; }
+	float getCurrentPosition() const { trả_về _position_setpoint_locked; }
 	void setCurrentPositionEstimate(float pos) { _position_estimate = pos; }
 
 private:

@@ -53,28 +53,28 @@ CDev::CDev(const char *name, const char *devname) :
 {
 }
 
-int CDev::init()
+số_nguyên CDev::init()
 {
 	PX4_DEBUG("CDev::init");
 
 	// base class init first
-	int ret = Device::init();
+	số_nguyên ret = Device::init();
 
-	if (ret != PX4_OK) {
+	nếu (ret != PX4_OK) {
 		goto out;
 	}
 
 	// now register the driver
-	if (get_devname() != nullptr) {
+	nếu (get_devname() != nullptr) {
 		ret = cdev::CDev::init();
 
-		if (ret != PX4_OK) {
+		nếu (ret != PX4_OK) {
 			goto out;
 		}
 	}
 
 out:
-	return ret;
+	trả_về ret;
 }
 
 } // namespace device

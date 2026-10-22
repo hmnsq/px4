@@ -20,16 +20,16 @@ using mode_t = uint32_t;
 class CDev;
 
 struct file_t {
-	int f_oflags{0};
+	số_nguyên f_oflags{0};
 	void *f_priv{nullptr};
 	CDev *cdev{nullptr};
 
 	file_t() = default;
-	file_t(int f, CDev *c) : f_oflags(f), cdev(c) {}
+	file_t(số_nguyên f, CDev *c) : f_oflags(f), cdev(c) {}
 };
 
 } // namespace cdev
 
-extern "C" __EXPORT int register_driver(const char *name, const cdev::px4_file_operations_t *fops,
+extern "C" __EXPORT số_nguyên register_driver(const char *name, const cdev::px4_file_operations_t *fops,
 					cdev::mode_t mode, void *data);
-extern "C" __EXPORT int unregister_driver(const char *path);
+extern "C" __EXPORT số_nguyên unregister_driver(const char *path);

@@ -51,22 +51,22 @@ void project_distance_on_horizontal_plane(float &distance, const float yaw, cons
 	distance *= horizontal_projection_scale;
 }
 
-int get_bin_at_angle(float bin_width, float angle)
+số_nguyên get_bin_at_angle(float bin_width, float angle)
 {
-	int bin_at_angle = (int)round(matrix::wrap(angle, 0.f, 360.f) / bin_width);
-	return wrap_bin(bin_at_angle, 360 / bin_width);
+	số_nguyên bin_at_angle = (số_nguyên)round(matrix::wrap(angle, 0.f, 360.f) / bin_width);
+	trả_về wrap_bin(bin_at_angle, 360 / bin_width);
 }
 
-float get_lower_bound_angle(int bin, float bin_width, float angle_offset)
+float get_lower_bound_angle(số_nguyên bin, float bin_width, float angle_offset)
 {
 	bin = wrap_bin(bin, 360 / bin_width);
-	return wrap_360(bin * bin_width + angle_offset - bin_width / 2.f);
+	trả_về wrap_360(bin * bin_width + angle_offset - bin_width / 2.f);
 }
 
-int get_offset_bin_index(int bin, float bin_width, float angle_offset)
+số_nguyên get_offset_bin_index(số_nguyên bin, float bin_width, float angle_offset)
 {
-	int offset = get_bin_at_angle(bin_width, angle_offset);
-	return wrap_bin(bin - offset, 360 / bin_width);
+	số_nguyên offset = get_bin_at_angle(bin_width, angle_offset);
+	trả_về wrap_bin(bin - offset, 360 / bin_width);
 }
 
 float sensor_orientation_to_yaw_offset(const SensorOrientation orientation, const float q[4])
@@ -107,24 +107,24 @@ float sensor_orientation_to_yaw_offset(const SensorOrientation orientation, cons
 		break;
 
 	case SensorOrientation::ROTATION_CUSTOM:
-		if (q != nullptr) {
+		nếu (q != nullptr) {
 			offset = Eulerf(Quatf(q)).psi();
 		}
 
 		break;
 	}
 
-	return offset;
+	trả_về offset;
 }
 
-int wrap_bin(int bin, int bin_count)
+số_nguyên wrap_bin(số_nguyên bin, số_nguyên bin_count)
 {
-	return (bin + bin_count) % bin_count;
+	trả_về (bin + bin_count) % bin_count;
 }
 
 float wrap_360(const float angle)
 {
-	return matrix::wrap(angle, 0.0f, 360.0f);
+	trả_về matrix::wrap(angle, 0.0f, 360.0f);
 }
 
 } // ObstacleMath

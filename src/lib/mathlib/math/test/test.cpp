@@ -49,88 +49,88 @@ bool __EXPORT equal(float a, float b, float epsilon)
 {
 	float diff = fabsf(a - b);
 
-	if (diff > epsilon) {
+	nếu (diff > epsilon) {
 		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		trả_về false;
 
-	} else { return true; }
+	} không_thì { trả_về true; }
 }
 
 bool __EXPORT greater_than(float a, float b)
 {
-	if (a > b) {
-		return true;
+	nếu (a > b) {
+		trả_về true;
 
-	} else {
+	} không_thì {
 		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		trả_về false;
 	}
 }
 
 bool __EXPORT less_than(float a, float b)
 {
-	if (a < b) {
-		return true;
+	nếu (a < b) {
+		trả_về true;
 
-	} else {
+	} không_thì {
 		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		trả_về false;
 	}
 }
 
 bool __EXPORT greater_than_or_equal(float a, float b)
 {
-	if (a >= b) {
-		return true;
+	nếu (a >= b) {
+		trả_về true;
 
-	} else {
+	} không_thì {
 		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		trả_về false;
 	}
 }
 
 bool __EXPORT less_than_or_equal(float a, float b)
 {
-	if (a <= b) {
-		return true;
+	nếu (a <= b) {
+		trả_về true;
 
-	} else {
+	} không_thì {
 		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		trả_về false;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+void __EXPORT float2SigExp(const float &num, float &sig, số_nguyên &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	nếu (!PX4_ISFINITE(num)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		trả_về;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	nếu (fabsf(num) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		trả_về;
 	}
 
 	exp = log10f(fabsf(num));
 
-	if (exp > 0) {
+	nếu (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} không_thì {
 		exp = floor(exp);
 	}
 
 	sig = num;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	nếu (exp > 0) {
+		cho (số_nguyên i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} không_thì {
+		cho (số_nguyên i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

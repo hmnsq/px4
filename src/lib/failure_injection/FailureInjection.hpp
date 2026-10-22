@@ -75,7 +75,7 @@ struct MotorFailureMasks {
 	uint16_t failure_mask{0}; ///< motor off: reported as failed motors, removed from the allocation
 };
 
-#if defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
+#nếu defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
 
 class Config
 {
@@ -99,7 +99,7 @@ public:
 	Mode mode(uint8_t unit, uint8_t instance) const;
 
 	/** True if any failure is currently active (free no-failure early-out). */
-	bool any_active() const { return _count > 0; }
+	bool any_active() const { trả_về _count > 0; }
 
 private:
 	uORB::Subscription _sub{ORB_ID(failure_injection)};
@@ -144,30 +144,30 @@ bool process(Mode mode, MsgT &msg, Stuck<MsgT> &stuck)
 {
 	switch (mode) {
 	case Mode::Off:
-		return false;
+		trả_về false;
 
 	case Mode::Stuck:
-		if (stuck.valid) {
+		nếu (stuck.valid) {
 			const uint64_t timestamp = msg.timestamp;
 
-			if constexpr(has_timestamp_sample<MsgT>::value) {
+			nếu constexpr(has_timestamp_sample<MsgT>::value) {
 				const uint64_t timestamp_sample = msg.timestamp_sample;
 				msg = stuck.value;
 				msg.timestamp_sample = timestamp_sample;
 
-			} else {
+			} không_thì {
 				msg = stuck.value;
 			}
 
 			msg.timestamp = timestamp;
 		}
 
-		return true;
+		trả_về true;
 
 	default:
 		stuck.value = msg;
 		stuck.valid = true;
-		return true;
+		trả_về true;
 	}
 }
 
@@ -177,7 +177,7 @@ bool process(Mode mode, MsgT &msg, Stuck<MsgT> &stuck)
 template<typename MsgT>
 bool process(const Config &config, uint8_t unit, uint8_t uorb_instance, MsgT &msg, Stuck<MsgT> &stuck)
 {
-	return process(config.mode(unit, uorb_instance + 1), msg, stuck);
+	trả_về process(config.mode(unit, uorb_instance + 1), msg, stuck);
 }
 
 /**
@@ -187,13 +187,13 @@ bool process(const Config &config, uint8_t unit, uint8_t uorb_instance, MsgT &ms
  */
 inline bool process(Mode mode)
 {
-	return mode != Mode::Off;
+	trả_về mode != Mode::Off;
 }
 
 /** Convenience overload, same 0-based to 1-based instance mapping as the generic process(). */
 inline bool process(const Config &config, uint8_t unit, uint8_t uorb_instance)
 {
-	return process(config.mode(unit, uorb_instance + 1));
+	trả_về process(config.mode(unit, uorb_instance + 1));
 }
 
 /**
@@ -237,15 +237,15 @@ esc_status_s process_esc(const Config &config, const esc_status_s &status);
  */
 MotorFailureMasks process_motor(const Config &config);
 
-#else // !CONFIG_MODULES_FAILURE_INJECTION_MANAGER
+#không_thì // !CONFIG_MODULES_FAILURE_INJECTION_MANAGER
 
 class Config
 {
 public:
-	bool update() { return false; }
+	bool update() { trả_về false; }
 	void set(const failure_injection_s &) {}
-	Mode mode(uint8_t, uint8_t) const { return Mode::Ok; }
-	bool any_active() const { return false; }
+	Mode mode(uint8_t, uint8_t) const { trả_về Mode::Ok; }
+	bool any_active() const { trả_về false; }
 };
 
 template<typename MsgT>
@@ -253,22 +253,22 @@ struct Stuck {
 };
 
 template<typename MsgT>
-bool process(Mode, MsgT &, Stuck<MsgT> &) { return true; }
+bool process(Mode, MsgT &, Stuck<MsgT> &) { trả_về true; }
 
 template<typename MsgT>
-bool process(const Config &, uint8_t, uint8_t, MsgT &, Stuck<MsgT> &) { return true; }
+bool process(const Config &, uint8_t, uint8_t, MsgT &, Stuck<MsgT> &) { trả_về true; }
 
-inline bool process(Mode) { return true; }
+inline bool process(Mode) { trả_về true; }
 
-inline bool process(const Config &, uint8_t, uint8_t) { return true; }
+inline bool process(const Config &, uint8_t, uint8_t) { trả_về true; }
 
-inline bool process_battery(const Config &, uint8_t, battery_status_s &) { return true; }
+inline bool process_battery(const Config &, uint8_t, battery_status_s &) { trả_về true; }
 
-inline bool process_gnss(const Config &, uint8_t, sensor_gnss_s &, Stuck<sensor_gnss_s> &) { return true; }
+inline bool process_gnss(const Config &, uint8_t, sensor_gnss_s &, Stuck<sensor_gnss_s> &) { trả_về true; }
 
-inline esc_status_s process_esc(const Config &, const esc_status_s &status) { return status; }
+inline esc_status_s process_esc(const Config &, const esc_status_s &status) { trả_về status; }
 
-inline MotorFailureMasks process_motor(const Config &) { return {}; }
+inline MotorFailureMasks process_motor(const Config &) { trả_về {}; }
 
 #endif // CONFIG_MODULES_FAILURE_INJECTION_MANAGER
 

@@ -74,16 +74,16 @@ public:
 	virtual ~BlockPID() = default;
 	float update(float input)
 	{
-		return getKP() * input +
+		trả_về getKP() * input +
 		       getKI() * getIntegral().update(input) +
 		       getKD() * getDerivative().update(input);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	float getKD() { return _kD.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-	BlockDerivative &getDerivative() { return _derivative; }
+	float getKP() { trả_về _kP.get(); }
+	float getKI() { trả_về _kI.get(); }
+	float getKD() { trả_về _kD.get(); }
+	BlockIntegral &getIntegral() { trả_về _integral; }
+	BlockDerivative &getDerivative() { trả_về _derivative; }
 private:
 // attributes
 	BlockIntegral _integral;

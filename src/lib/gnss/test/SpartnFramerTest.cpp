@@ -81,11 +81,11 @@ protected:
 		const uint32_t crc = spartn_message_crc(&frame[1], frame.size() - 1, crc_type);
 		const size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
 
-		for (int i = static_cast<int>(crc_bytes) - 1; i >= 0; i--) {
+		cho (số_nguyên i = static_cast<số_nguyên>(crc_bytes) - 1; i >= 0; i--) {
 			frame.push_back(static_cast<uint8_t>((crc >>(8 * i)) & 0xFF));
 		}
 
-		return frame;
+		trả_về frame;
 	}
 
 	// Build a well-formed RTCM3 frame with a deterministic pseudo-random payload.
@@ -96,9 +96,9 @@ protected:
 		frame.push_back(static_cast<uint8_t>((payload_len >> 8) & 0x03));
 		frame.push_back(static_cast<uint8_t>(payload_len & 0xFF));
 
-		std::uniform_int_distribution<int> byte(0, 255);
+		std::uniform_int_distribution<số_nguyên> byte(0, 255);
 
-		for (size_t i = 0; i < payload_len; i++) {
+		cho (size_t i = 0; i < payload_len; i++) {
 			frame.push_back(static_cast<uint8_t>(byte(rng)));
 		}
 
@@ -106,7 +106,7 @@ protected:
 		frame.push_back((crc >> 16) & 0xFF);
 		frame.push_back((crc >> 8) & 0xFF);
 		frame.push_back(crc & 0xFF);
-		return frame;
+		trả_về frame;
 	}
 };
 
@@ -158,10 +158,10 @@ TEST_F(SpartnTest, MultipleFrames)
 	stream.insert(stream.end(), f2.begin(), f2.end());
 	parser.addData(stream.data(), stream.size());
 
-	int count = 0;
+	số_nguyên count = 0;
 	size_t len = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
+	trong_khi (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
 		count++;
 	}
@@ -174,7 +174,7 @@ TEST_F(SpartnTest, ChunkedArrival)
 {
 	auto frame = buildFrame(0, 1, {0x10, 0x20, 0x30});
 
-	for (size_t i = 0; i < frame.size(); i++) {
+	cho (size_t i = 0; i < frame.size(); i++) {
 		parser.addData(&frame[i], 1);
 	}
 
@@ -249,7 +249,7 @@ TEST_F(SpartnTest, RejectsReservedMessageType)
 TEST_F(SpartnTest, RtcmStreamIsNeverFramedAsSpartn)
 {
 	std::mt19937 rng(1);
-	std::uniform_int_distribution<int> payload_len(60, 500);
+	std::uniform_int_distribution<số_nguyên> payload_len(60, 500);
 
 	size_t frames_in = 0;
 	size_t frames_out = 0;
@@ -257,20 +257,20 @@ TEST_F(SpartnTest, RtcmStreamIsNeverFramedAsSpartn)
 	std::vector<uint8_t> stream;
 
 	// ~1 MB of RTCM3, about 17 min of a 1 kB/s RTK correction stream
-	while (generated < 1000000) {
+	trong_khi (generated < 1000000) {
 		auto frame = buildRtcmFrame(rng, payload_len(rng));
 		generated += frame.size();
 		frames_in++;
 		stream.insert(stream.end(), frame.begin(), frame.end());
 
 		// Feed in MAVLink GPS_RTCM_DATA sized chunks
-		while (stream.size() >= 180) {
+		trong_khi (stream.size() >= 180) {
 			parser.addData(stream.data(), 180);
 
 			size_t len = 0;
 			CorrectionProtocol protocol = CorrectionProtocol::Spartn;
 
-			while (parser.getNextMessage(&len, &protocol) != nullptr) {
+			trong_khi (parser.getNextMessage(&len, &protocol) != nullptr) {
 				EXPECT_EQ(protocol, CorrectionProtocol::Rtcm3);
 				parser.consumeMessage(len);
 				frames_out++;

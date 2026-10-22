@@ -83,8 +83,8 @@ struct DaaEncodedId {
 	uint64_t id{0};
 	uint8_t encoding{detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO};
 
-	bool operator==(const DaaEncodedId &other) const { return encoding == other.encoding && id == other.id; }
-	bool operator!=(const DaaEncodedId &other) const { return !(*this == other); }
+	bool operator==(const DaaEncodedId &other) const { trả_về encoding == other.encoding && id == other.id; }
+	bool operator!=(const DaaEncodedId &other) const { trả_về !(*this == other); }
 
 	/**
 	 * @brief Pick the best available identifier from a transponder report.

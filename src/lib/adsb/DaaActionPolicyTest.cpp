@@ -51,15 +51,15 @@ namespace
 daa_action_params_s params_for_all_levels(const int32_t action_param)
 {
 	daa_action_params_s params{};
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#nếu defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	params.lvl_low_act = action_param;
 	params.lvl_med_act = action_param;
 	params.lvl_high_act = action_param;
 	params.lvl_crit_act = action_param;
-#else
+#không_thì
 	params.traff_avoid = action_param;
 #endif // CONFIG_NAVIGATOR_ADSB_F3442
-	return params;
+	trả_về params;
 }
 
 // Navigation state groups by the weakest DAA action allowed to escalate above them.
@@ -117,29 +117,29 @@ struct escalation_case_s {
 
 void check_escalation_matrix(const escalation_case_s &test_case)
 {
-	for (const uint8_t nav_state : kStatesEnableHold) {
+	cho (const uint8_t nav_state : kStatesEnableHold) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.hold_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.hold_allowed) << "action " << (số_nguyên)test_case.action << " nav_state " << (số_nguyên)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesEnableRtl) {
+	cho (const uint8_t nav_state : kStatesEnableRtl) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.rtl_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.rtl_allowed) << "action " << (số_nguyên)test_case.action << " nav_state " << (số_nguyên)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesEnableLand) {
+	cho (const uint8_t nav_state : kStatesEnableLand) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.land_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.land_allowed) << "action " << (số_nguyên)test_case.action << " nav_state " << (số_nguyên)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesEnableTermination) {
+	cho (const uint8_t nav_state : kStatesEnableTermination) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.terminate_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.terminate_allowed) << "action " << (số_nguyên)test_case.action << " nav_state " << (số_nguyên)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesNeverEnable) {
+	cho (const uint8_t nav_state : kStatesNeverEnable) {
 		EXPECT_FALSE(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state))
-				<< "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+				<< "action " << (số_nguyên)test_case.action << " nav_state " << (số_nguyên)nav_state;
 	}
 }
 
@@ -185,11 +185,11 @@ TEST(DaaActionPolicyTest, ActionParamMappingUsesParameterNumbering)
 		{5, DaaAction::kTerminate},
 	};
 
-	for (const action_param_case_s &test_case : cases) {
+	cho (const action_param_case_s &test_case : cases) {
 		EXPECT_EQ(DaaActionPolicy::action_param_to_daa_action(test_case.param), test_case.action)
 				<< "param " << test_case.param;
 		EXPECT_EQ(DaaActionPolicy::daa_action_to_action_param(test_case.action), test_case.param)
-				<< "action " << static_cast<int>(test_case.action);
+				<< "action " << static_cast<số_nguyên>(test_case.action);
 	}
 
 	// out-of-range -> Disabled
@@ -220,7 +220,7 @@ TEST(DaaActionPolicyTest, NoActionForInvalidLevels)
 		  DaaAction::kDisabled);
 }
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#nếu defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 TEST(DaaActionPolicyTest, F3442FallbackUsesGuaranteedBreachedZones)
 {
 	daa_action_params_s params{};
@@ -247,13 +247,13 @@ TEST(DaaActionPolicyTest, F3442FallbackUsesGuaranteedBreachedZones)
 	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL,
 			params_for_all_levels(0)), DaaAction::kDisabled);
 }
-#else
+#không_thì
 // Crosstrack maps every level through the single NAV_TRAFF_AVOID action.
 TEST(DaaActionPolicyTest, CrosstrackSingleActionMapping)
 {
 	const daa_action_params_s params = params_for_all_levels(3); // Land
 
-	for (uint8_t level = detect_and_avoid_s::DAA_CONFLICT_LVL_LOW;
+	cho (uint8_t level = detect_and_avoid_s::DAA_CONFLICT_LVL_LOW;
 	     level <= detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL; ++level) {
 		EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(level, params), DaaAction::kLandMode);
 	}

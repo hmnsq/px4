@@ -18,10 +18,10 @@ compress = args.compress
 version_file = args.version_file
 
 version_dir = ''
-if version_file is not None:
-    for line in open(version_file, "r"):
+nếu version_file is not None:
+    cho line in open(version_file, "r"):
         version_search = re.search(r'PX4_GIT_TAG_OR_BRANCH_NAME\s+"(.+)"', line)
-        if version_search:
+        nếu version_search:
             version_dir = version_search.group(1)
             break
 
@@ -38,37 +38,37 @@ component_general['version'] = 1
 
 def create_table():
     a = []
-    for i in range(256):
+    cho i in range(256):
         k = i
-        for j in range(8):
-            if k & 1:
+        cho j in range(8):
+            nếu k & 1:
                 k ^= 0x1db710640
             k >>= 1
         a.append(k)
-    return a
+    trả_về a
 
 # MAVLink's CRC32
 def crc_update(buf, crc_table, crc):
-    for k in buf:
+    cho k in buf:
         crc = (crc >> 8) ^ crc_table[(crc & 0xff) ^ k]
-    return crc
+    trả_về crc
 
 crc_table = create_table()
 
 metadata_types = []
-for metadata_type_tuple in args.type:
+cho metadata_type_tuple in args.type:
     type_id, metadata_file, uri, fallback_uri, translation_uri = metadata_type_tuple.split(',')
     file_crc = 0
-    for line in open(metadata_file, "rb"):
+    cho line in open(metadata_file, "rb"):
         file_crc = crc_update(line, crc_table, file_crc)
     json_type = {
-            'type': int(type_id),
+            'type': số_nguyên(type_id),
             'uri': uri.replace('{version}', version_dir),
             'fileCrc': file_crc,
             }
-    if len(fallback_uri) > 0:
+    nếu len(fallback_uri) > 0:
         json_type['uriFallback'] = fallback_uri.replace('{version}', version_dir)
-    if len(translation_uri) > 0:
+    nếu len(translation_uri) > 0:
         json_type['translationUri'] = translation_uri
     metadata_types.append(json_type)
 component_general['metadataTypes'] = metadata_types
@@ -76,5 +76,5 @@ component_general['metadataTypes'] = metadata_types
 with open(filename, 'w') as outfile:
     json.dump(component_general, outfile, sort_keys=True)
 
-if compress:
+nếu compress:
     save_compressed(filename)

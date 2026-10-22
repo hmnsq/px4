@@ -72,8 +72,8 @@ public:
 	virtual ~BlockLimit() = default;
 	float update(float input);
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
+	float getMin() { trả_về _min.get(); }
+	float getMax() { trả_về _max.get(); }
 protected:
 // attributes
 	control::BlockParamFloat _min;

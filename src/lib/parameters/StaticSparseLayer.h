@@ -36,13 +36,13 @@
 #include <stdlib.h>
 #include "ParamLayer.h"
 
-template <int N_SLOTS>
+template <số_nguyên N_SLOTS>
 class StaticSparseLayer : public ParamLayer
 {
 public:
 	StaticSparseLayer(ParamLayer *parent) : ParamLayer(parent)
 	{
-		for (int i = 0; i < N_SLOTS; i++) {
+		cho (số_nguyên i = 0; i < N_SLOTS; i++) {
 			_slots[i] = {UINT16_MAX, param_value_u{}};
 		}
 	}
@@ -52,26 +52,26 @@ public:
 	bool store(param_t param, param_value_u value) override
 	{
 		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		const số_nguyên index = _getIndex(param);
 
-		if (index < _next_slot) { // already exists
+		nếu (index < _next_slot) { // already exists
 			_slots[index].value = value;
 
-		} else if (_next_slot < N_SLOTS) {
+		} không_thì nếu (_next_slot < N_SLOTS) {
 			_slots[_next_slot++] = {param, value};
 			_sort();
 
-		} else {
-			return false;
+		} không_thì {
+			trả_về false;
 		}
 
-		return true;
+		trả_về true;
 	}
 
 	bool contains(param_t param) const override
 	{
 		const AtomicTransaction transaction;
-		return _getIndex(param) < _next_slot;
+		trả_về _getIndex(param) < _next_slot;
 	}
 
 	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
@@ -79,31 +79,31 @@ public:
 		px4::AtomicBitset<PARAM_COUNT> set;
 		const AtomicTransaction transaction;
 
-		for (int i = 0; i < _next_slot; i++) {
+		cho (số_nguyên i = 0; i < _next_slot; i++) {
 			set.set(_slots[i].param);
 		}
 
-		return set;
+		trả_về set;
 	}
 
 	param_value_u get(param_t param) const override
 	{
 		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		const số_nguyên index = _getIndex(param);
 
-		if (index < _next_slot) { // exists in this layer
-			return _slots[index].value;
+		nếu (index < _next_slot) { // exists in this layer
+			trả_về _slots[index].value;
 		}
 
-		return _parent->get(param);
+		trả_về _parent->get(param);
 	}
 
 	void reset(param_t param) override
 	{
 		const AtomicTransaction transaction;
-		int index = _getIndex(param);
+		số_nguyên index = _getIndex(param);
 
-		if (index < _next_slot) {
+		nếu (index < _next_slot) {
 			_slots[index] = {UINT16_MAX, param_value_u{}};
 			_sort();
 			_next_slot--;
@@ -115,14 +115,14 @@ public:
 		_parent->refresh(param);
 	}
 
-	int size() const override
+	số_nguyên size() const override
 	{
-		return _next_slot;
+		trả_về _next_slot;
 	}
 
-	int byteSize() const override
+	số_nguyên byteSize() const override
 	{
-		return N_SLOTS * sizeof(Slot);
+		trả_về N_SLOTS * sizeof(Slot);
 	}
 
 private:
@@ -131,9 +131,9 @@ private:
 		param_value_u value;
 	};
 
-	static int _slotCompare(const void *a, const void *b)
+	static số_nguyên _slotCompare(const void *a, const void *b)
 	{
-		return ((int)((Slot *)a)->param) - ((int)((Slot *)b)->param);
+		trả_về ((số_nguyên)((Slot *)a)->param) - ((số_nguyên)((Slot *)b)->param);
 	}
 
 	void _sort()
@@ -141,28 +141,28 @@ private:
 		qsort(_slots, N_SLOTS, sizeof(Slot), &_slotCompare);
 	}
 
-	int _getIndex(param_t param) const
+	số_nguyên _getIndex(param_t param) const
 	{
-		int left = 0;
-		int right = _next_slot - 1;
+		số_nguyên left = 0;
+		số_nguyên right = _next_slot - 1;
 
-		while (left <= right) {
-			int mid = (left + right) / 2;
+		trong_khi (left <= right) {
+			số_nguyên mid = (left + right) / 2;
 
-			if (_slots[mid].param == param) {
-				return mid;
+			nếu (_slots[mid].param == param) {
+				trả_về mid;
 
-			} else if (_slots[mid].param < param) {
+			} không_thì nếu (_slots[mid].param < param) {
 				left = mid + 1;
 
-			} else {
+			} không_thì {
 				right = mid - 1;
 			}
 		}
 
-		return _next_slot;
+		trả_về _next_slot;
 	}
 
 	Slot _slots[N_SLOTS];
-	int _next_slot = 0;
+	số_nguyên _next_slot = 0;
 };
