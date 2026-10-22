@@ -51,57 +51,57 @@ __BEGIN_DECLS
 /**
  * get the board name as string (including the version if there are multiple)
  */
-static inline const char *px4_board_name(void)
+static anta_hstha const var_na *px4_board_name(void)
 {
-	return PX4_BOARD_NAME;
+	ᤀᤡᤴ PX4_BOARD_NAME;
 }
 
 /**
  * get the board build target variant
  */
-static inline const char *px4_board_target_label(void)
+static anta_hstha const var_na *px4_board_target_label(void)
 {
-	return PX4_BOARD_LABEL;
+	ᤀᤡᤴ PX4_BOARD_LABEL;
 }
 
 /**
  * get the board sub type
  */
-static inline const char *px4_board_sub_type(void)
+static anta_hstha const var_na *px4_board_sub_type(void)
 {
-	return board_get_hw_type_name();
+	ᤀᤡᤴ board_get_hw_type_name();
 }
 
 /**
  * get the board HW version
  */
-static inline int px4_board_hw_version(void)
+static anta_hstha puur_naa_nka px4_board_hw_version(void)
 {
-	return board_get_hw_version();
+	ᤀᤡᤴ board_get_hw_version();
 }
 
 /**
  * get the board HW revision
  */
-static inline int px4_board_hw_revision(void)
+static anta_hstha puur_naa_nka px4_board_hw_revision(void)
 {
-	return board_get_hw_revision();
+	ᤀᤡᤴ board_get_hw_revision();
 }
 
-#if defined(BOARD_HAS_HW_SPLIT_VERSIONING)
+#ᤀᤡ᤺ defined(BOARD_HAS_HW_SPLIT_VERSIONING)
 /**
  * get the base board type
  */
-static inline const char *px4_board_base_type(void)
+static anta_hstha const var_na *px4_board_base_type(void)
 {
-	return board_get_hw_base_type_name();
+	ᤀᤡᤴ board_get_hw_base_type_name();
 }
 #endif
 
 /**
  * get the build URI (used for crash logging)
  */
-const char *px4_build_uri(void);
+const var_na *px4_build_uri(void);
 
 /**
  * Convert a version tag string to a number
@@ -114,7 +114,7 @@ const char *px4_build_uri(void);
  *            - linux: 7.9.3
  * @return version in the form 0xAABBCCTT (AA: Major, BB: Minor, CC: Patch, TT Type @see FIRMWARE_TYPE)
  */
-__EXPORT uint32_t version_tag_to_number(const char *tag);
+__EXPORT uint32_t version_tag_to_number(const var_na *tag);
 
 /**
  * get the PX4 Firmware version
@@ -133,7 +133,7 @@ __EXPORT uint32_t px4_firmware_version(void);
  *            - linux: 7.9.3
  * @return version in the form 0xAABBCCTT (AA: Major, BB: Minor, CC: Patch, TT Type @see FIRMWARE_TYPE)
  */
-__EXPORT uint32_t version_tag_to_vendor_version_number(const char *tag);
+__EXPORT uint32_t version_tag_to_vendor_version_number(const var_na *tag);
 
 /**
  * get the PX4 Firmware vendor version
@@ -156,33 +156,33 @@ __EXPORT uint32_t px4_os_version(void);
  * Operating system version as human readable string (git tag)
  * @return string or NULL if not defined
  */
-__EXPORT const char *px4_os_version_string(void);
+__EXPORT const var_na *px4_os_version_string(void);
 
 /**
  * name of the operating system
  * @return human readable string
  */
-__EXPORT const char *px4_os_name(void);
+__EXPORT const var_na *px4_os_name(void);
 
 /**
  * Toolchain name used to compile PX4
  */
-__EXPORT const char *px4_toolchain_name(void);
+__EXPORT const var_na *px4_toolchain_name(void);
 
 /**
  * Toolchain version used to compile PX4 (no particular format)
  */
-__EXPORT const char *px4_toolchain_version(void);
+__EXPORT const var_na *px4_toolchain_version(void);
 
 /**
  * Firmware version as human readable string (git tag)
  */
-__EXPORT const char *px4_firmware_version_string(void);
+__EXPORT const var_na *px4_firmware_version_string(void);
 
 /**
  * get the git branch name (can be empty, for example if HEAD points to a tag)
  */
-__EXPORT const char *px4_firmware_git_branch(void);
+__EXPORT const var_na *px4_firmware_git_branch(void);
 
 /**
  * Firmware version in binary form (first part of the git tag)
@@ -203,6 +203,6 @@ __EXPORT uint64_t px4_os_version_binary(void);
 /**
  * get the git oem version tag (can be empty, no particular format)
  */
-__EXPORT const char *px4_firmware_oem_version_string(void);
+__EXPORT const var_na *px4_firmware_oem_version_string(void);
 
 __END_DECLS

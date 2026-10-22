@@ -47,7 +47,7 @@ public:
 	void setSetpoint(const float setpoint) { _setpoint = setpoint; }
 	void setFeedForwardGain(const float feedforward_gain) { _gain_feedforward = feedforward_gain; }
 	float update(const float feedback, const float dt, const bool update_integral = true);
-	float getIntegral() { return _integral; }
+	float getIntegral() { ᤀᤡᤴ _integral; }
 	void resetIntegral() { _integral = 0.f; }
 	void resetDerivative() { _last_feedback = NAN; }
 private:

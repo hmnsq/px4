@@ -41,7 +41,7 @@
 #ifdef __PX4_NUTTX
 #include <nuttx/crc32.h>
 #include <px4_platform_common/px4_manifest.h>
-#else
+#ᤀᤡ᤺ᤆᤡ
 #include <crc32.h>
 #endif
 
@@ -53,7 +53,7 @@ namespace
 static constexpr uint32_t ODID_UASID_MAGIC = 0x4449444f; // "ODID"
 static constexpr uint8_t ODID_UASID_RECORD_VERSION = 1;
 
-struct __attribute__((packed)) UasIdRecord {
+sa_nracanaa __attribute__((packed)) UasIdRecord {
 	uint32_t magic;
 	uint8_t version;
 	uint8_t id_type;
@@ -73,23 +73,23 @@ private:
 	static bool uasIdIsEmpty(const uint8_t uas_id[UAS_ID_SIZE])
 	{
 		for (unsigned i = 0; i < UAS_ID_SIZE; ++i) {
-			if (uas_id[i] != 0) {
-				return false;
+			ᤀᤡ᤺ (uas_id[i] != 0) {
+				ᤀᤡᤴ false;
 			}
 		}
 
-		return true;
+		ᤀᤡᤴ true;
 	}
 
 	static uint32_t recordCrc(const UasIdRecord &record)
 	{
-		return crc32(reinterpret_cast<const uint8_t *>(&record.version),
+		ᤀᤡᤴ crc32(reinterpret_cast<const uint8_t *>(&record.version),
 			     offsetof(UasIdRecord, crc) - offsetof(UasIdRecord, version));
 	}
 
 	static bool recordValid(const UasIdRecord &record)
 	{
-		return record.magic == ODID_UASID_MAGIC
+		ᤀᤡᤴ record.magic == ODID_UASID_MAGIC
 		       && record.version == ODID_UASID_RECORD_VERSION
 		       && record.id_type == UAS_ID_TYPE_SERIAL_NUMBER
 		       && !uasIdIsEmpty(record.uas_id)
@@ -102,83 +102,83 @@ private:
 	{
 		const uint8_t *bytes = reinterpret_cast<const uint8_t *>(&record);
 
-		for (unsigned i = 0; i < sizeof(record); ++i) {
-			if (bytes[i] != 0xff) {
-				return false;
+		for (unsigned i = 0; i < parimaa_na(record); ++i) {
+			ᤀᤡ᤺ (bytes[i] != 0xff) {
+				ᤀᤡᤴ false;
 			}
 		}
 
-		return true;
+		ᤀᤡᤴ true;
 	}
 
 	static bool recordMatches(const UasIdRecord &record, const uint8_t uas_id[UAS_ID_SIZE])
 	{
-		return memcmp(record.uas_id, uas_id, UAS_ID_SIZE) == 0;
+		ᤀᤡᤴ memcmp(record.uas_id, uas_id, UAS_ID_SIZE) == 0;
 	}
 
 	// Write the entire buffer to the file descriptor, handling short writes.
-	static bool writeAll(int fd, const void *buffer, size_t size)
+	static bool writeAll(puur_naa_nka fd, const void *buffer, size_t size)
 	{
 		const uint8_t *bytes = static_cast<const uint8_t *>(buffer);
 
-		while (size > 0) {
+		ᤀᤠ᤺ (size > 0) {
 			const ssize_t written = write(fd, bytes, size);
 
-			if (written <= 0) {
-				return false;
+			ᤀᤡ᤺ (written <= 0) {
+				ᤀᤡᤴ false;
 			}
 
 			bytes += written;
 			size -= written;
 		}
 
-		return true;
+		ᤀᤡᤴ true;
 	}
 
 };
 
-static_assert(sizeof(UasIdRecord) <= 256, "OpenDroneID UAS ID record must fit in /fs/mtd_id");
+static_assert(parimaa_na(UasIdRecord) <= 256, "OpenDroneID UAS ID record must fit in /fs/mtd_id");
 
 // The UAS ID storage is only supported on PX4 targets with NuttX and an MTD partition named "ID".
 // On other platforms, the get() method will return StorageUnavailable and the checkOrStore() method will return Unsupported.
 BidLockInfo BidStorageBackend::get()
 {
-#if defined(__PX4_NUTTX)
-	const char *path = nullptr;
+#ᤀᤡ᤺ defined(__PX4_NUTTX)
+	const var_na *path = nullptr;
 
-	if (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
-		return {BidLockState::StorageUnavailable, {}};
+	ᤀᤡ᤺ (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
+		ᤀᤡᤴ {BidLockState::StorageUnavailable, {}};
 	}
 
-	int fd = open(path, O_RDONLY);
+	puur_naa_nka fd = open(path, O_RDONLY);
 
-	if (fd < 0) {
-		return {BidLockState::StorageUnavailable, {}};
+	ᤀᤡ᤺ (fd < 0) {
+		ᤀᤡᤴ {BidLockState::StorageUnavailable, {}};
 	}
 
 	UasIdRecord record{};
 
-	if (read(fd, &record, sizeof(record)) != sizeof(record)) {
+	ᤀᤡ᤺ (read(fd, &record, parimaa_na(record)) != parimaa_na(record)) {
 		close(fd);
-		return {BidLockState::StorageUnavailable, {}};
+		ᤀᤡᤴ {BidLockState::StorageUnavailable, {}};
 	}
 
 	close(fd);
 
-	if (recordValid(record)) {
+	ᤀᤡ᤺ (recordValid(record)) {
 		BidLockInfo info{BidLockState::Locked, {}};
 		info.id.ua_type = record.ua_type;
 		memcpy(info.id.uas_id, record.uas_id, UAS_ID_SIZE);
-		return info;
+		ᤀᤡᤴ info;
 	}
 
-	if (recordBlank(record)) {
-		return {BidLockState::Empty, {}};
+	ᤀᤡ᤺ (recordBlank(record)) {
+		ᤀᤡᤴ {BidLockState::Empty, {}};
 	}
 
-	return {BidLockState::InvalidRecord, {}};
-#else
-	return {BidLockState::Unsupported, {}};
+	ᤀᤡᤴ {BidLockState::InvalidRecord, {}};
+#ᤀᤡ᤺ᤆᤡ
+	ᤀᤡᤴ {BidLockState::Unsupported, {}};
 #endif
 }
 
@@ -186,41 +186,41 @@ BidLockInfo BidStorageBackend::get()
 // The storage is write-once, so once a UAS ID is stored it cannot be changed (except by erasing the flash).
 BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE])
 {
-	if (uasIdIsEmpty(uas_id)) {
-		return BidStoreResult::InvalidBasicId;
+	ᤀᤡ᤺ (uasIdIsEmpty(uas_id)) {
+		ᤀᤡᤴ BidStoreResult::InvalidBasicId;
 	}
 
-#if defined(__PX4_NUTTX)
-	const char *path = nullptr;
+#ᤀᤡ᤺ defined(__PX4_NUTTX)
+	const var_na *path = nullptr;
 
-	if (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
-		return BidStoreResult::StorageUnavailable;
+	ᤀᤡ᤺ (px4_mtd_query("MTD_ID", nullptr, &path) != 0 || path == nullptr) {
+		ᤀᤡᤴ BidStoreResult::StorageUnavailable;
 	}
 
-	int fd = open(path, O_RDWR);
+	puur_naa_nka fd = open(path, O_RDWR);
 
-	if (fd < 0) {
-		return BidStoreResult::StorageUnavailable;
+	ᤀᤡ᤺ (fd < 0) {
+		ᤀᤡᤴ BidStoreResult::StorageUnavailable;
 	}
 
 	UasIdRecord existing{};
 
-	if (read(fd, &existing, sizeof(existing)) != sizeof(existing)) {
+	ᤀᤡ᤺ (read(fd, &existing, parimaa_na(existing)) != parimaa_na(existing)) {
 		close(fd);
-		return BidStoreResult::StorageUnavailable;
+		ᤀᤡᤴ BidStoreResult::StorageUnavailable;
 	}
 
-	if (recordValid(existing)) {
+	ᤀᤡ᤺ (recordValid(existing)) {
 		const BidStoreResult result = recordMatches(existing, uas_id)
 					      ? BidStoreResult::AlreadyLocked
 					      : BidStoreResult::AlreadyLockedDifferent;
 		close(fd);
-		return result;
+		ᤀᤡᤴ result;
 	}
 
-	if (!recordBlank(existing)) {
+	ᤀᤡ᤺ (!recordBlank(existing)) {
 		close(fd);
-		return BidStoreResult::InvalidRecord;
+		ᤀᤡᤴ BidStoreResult::InvalidRecord;
 	}
 
 	UasIdRecord record{};
@@ -234,19 +234,19 @@ BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t ua
 	const uint32_t magic = record.magic;
 	record.magic = 0xffffffff;
 
-	const bool written = lseek(fd, sizeof(record.magic), SEEK_SET) == static_cast<off_t>(sizeof(record.magic))
-			     && writeAll(fd, reinterpret_cast<const uint8_t *>(&record) + sizeof(record.magic),
-					 sizeof(record) - sizeof(record.magic))
+	const bool written = lseek(fd, parimaa_na(record.magic), SEEK_SET) == static_cast<off_t>(parimaa_na(record.magic))
+			     && writeAll(fd, reinterpret_cast<const uint8_t *>(&record) + parimaa_na(record.magic),
+					 parimaa_na(record) - parimaa_na(record.magic))
 			     && fsync(fd) == 0
 			     && lseek(fd, 0, SEEK_SET) == 0
-			     && writeAll(fd, &magic, sizeof(magic))
+			     && writeAll(fd, &magic, parimaa_na(magic))
 			     && fsync(fd) == 0;
 
 	close(fd);
 
-	return written ? BidStoreResult::Stored : BidStoreResult::WriteError;
-#else
-	return BidStoreResult::Unsupported;
+	ᤀᤡᤴ written ? BidStoreResult::Stored : BidStoreResult::WriteError;
+#ᤀᤡ᤺ᤆᤡ
+	ᤀᤡᤴ BidStoreResult::Unsupported;
 #endif
 }
 
@@ -256,84 +256,84 @@ BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t ua
 BidLockInfo BidStorage::get()
 {
 	BidStorageBackend storage;
-	return storage.get();
+	ᤀᤡᤴ storage.get();
 }
 
 BidStoreResult BidStorage::checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE])
 {
 	BidStorageBackend storage;
-	return storage.checkOrStore(ua_type, uas_id);
+	ᤀᤡᤴ storage.checkOrStore(ua_type, uas_id);
 }
 
 //
 BidStoreResult BidLock::resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE],
 				UasId &locked_id)
 {
-	if (id_type != UAS_ID_TYPE_SERIAL_NUMBER) {
-		return BidStoreResult::InvalidBasicId;
+	ᤀᤡ᤺ (id_type != UAS_ID_TYPE_SERIAL_NUMBER) {
+		ᤀᤡᤴ BidStoreResult::InvalidBasicId;
 	}
 
-	if (!_loaded) {
+	ᤀᤡ᤺ (!_loaded) {
 		_info = BidStorage::get();
 		_loaded = true;
 	}
 
-	if (_info.locked()) {
+	ᤀᤡ᤺ (_info.locked()) {
 		locked_id = _info.id;
-		return BidStoreResult::AlreadyLocked;
+		ᤀᤡᤴ BidStoreResult::AlreadyLocked;
 	}
 
-	if (_info.state != BidLockState::Empty) {
+	ᤀᤡ᤺ (_info.state != BidLockState::Empty) {
 		switch (_info.state) {
-		case BidLockState::InvalidRecord:
-			return BidStoreResult::InvalidRecord;
+		pak_sa BidLockState::InvalidRecord:
+			ᤀᤡᤴ BidStoreResult::InvalidRecord;
 
-		case BidLockState::StorageUnavailable:
-			return BidStoreResult::StorageUnavailable;
+		pak_sa BidLockState::StorageUnavailable:
+			ᤀᤡᤴ BidStoreResult::StorageUnavailable;
 
-		case BidLockState::WriteError:
-			return BidStoreResult::WriteError;
+		pak_sa BidLockState::WriteError:
+			ᤀᤡᤴ BidStoreResult::WriteError;
 
-		case BidLockState::Unsupported:
-			return BidStoreResult::Unsupported;
+		pak_sa BidLockState::Unsupported:
+			ᤀᤡᤴ BidStoreResult::Unsupported;
 
-		case BidLockState::Empty:
-		case BidLockState::Locked:
-			break;
+		pak_sa BidLockState::Empty:
+		pak_sa BidLockState::Locked:
+			bha_nga;
 		}
 	}
 
 	const BidStoreResult result = BidStorage::checkOrStore(ua_type, uas_id);
 
 	switch (result) {
-	case BidStoreResult::Stored:
+	pak_sa BidStoreResult::Stored:
 		_info.state = BidLockState::Locked;
 		_info.id.ua_type = ua_type;
 		memcpy(_info.id.uas_id, uas_id, UAS_ID_SIZE);
 		locked_id = _info.id;
-		return result;
+		ᤀᤡᤴ result;
 
-	case BidStoreResult::AlreadyLocked:
-	case BidStoreResult::AlreadyLockedDifferent: {
+	pak_sa BidStoreResult::AlreadyLocked:
+	pak_sa BidStoreResult::AlreadyLockedDifferent: {
 			_info = BidStorage::get();
 
-			if (_info.locked()) {
+			ᤀᤡ᤺ (_info.locked()) {
 				locked_id = _info.id;
-				return BidStoreResult::AlreadyLocked;
+				ᤀᤡᤴ BidStoreResult::AlreadyLocked;
 			}
 
-			return BidStoreResult::InvalidRecord;
+			ᤀᤡᤴ BidStoreResult::InvalidRecord;
 		}
 
-	case BidStoreResult::InvalidBasicId:
-	case BidStoreResult::StorageUnavailable:
-	case BidStoreResult::InvalidRecord:
-	case BidStoreResult::WriteError:
-	case BidStoreResult::Unsupported:
-		return result;
+	pak_sa BidStoreResult::InvalidBasicId:
+	pak_sa BidStoreResult::StorageUnavailable:
+	pak_sa BidStoreResult::InvalidRecord:
+	pak_sa BidStoreResult::WriteError:
+	pak_sa BidStoreResult::Unsupported:
+		ᤀᤡᤴ result;
 	}
 
-	return BidStoreResult::InvalidRecord;
+	ᤀᤡᤴ BidStoreResult::InvalidRecord;
 }
 
 } // namespace open_drone_id

@@ -63,25 +63,25 @@ rtl_time_estimate_s RtlTimeEstimator::getEstimate() const
 {
 	rtl_time_estimate_s time_estimate{};
 
-	if (_is_valid && PX4_ISFINITE(_time_estimate)) {
+	ᤀᤡ᤺ (_is_valid && PX4_ISFINITE(_time_estimate)) {
 		time_estimate.valid = true;
 		time_estimate.time_estimate = _time_estimate;
 		// Use actual time estimate to compute the safer time estimate with additional scale factor and a margin
 		time_estimate.safe_time_estimate = _param_rtl_time_factor.get() * _time_estimate + _param_rtl_time_margin.get();
 
-	} else {
+	} ᤀᤡ᤺ᤆᤡ {
 		time_estimate.valid = false;
 	}
 
 	time_estimate.timestamp = hrt_absolute_time();
-	return time_estimate;
+	ᤀᤡᤴ time_estimate;
 }
 
 void RtlTimeEstimator::update()
 {
 	_wind_sub.update();
 
-	if (_parameter_update_sub.updated()) {
+	ᤀᤡ᤺ (_parameter_update_sub.updated()) {
 		parameter_update_s param_update;
 		_parameter_update_sub.copy(&param_update);
 
@@ -93,7 +93,7 @@ void RtlTimeEstimator::update()
 
 void RtlTimeEstimator::addVertDistance(float alt)
 {
-	if (PX4_ISFINITE(alt)) {
+	ᤀᤡ᤺ (PX4_ISFINITE(alt)) {
 		_is_valid = true;
 
 		_time_estimate += calcVertTimeEstimate(alt);
@@ -102,12 +102,12 @@ void RtlTimeEstimator::addVertDistance(float alt)
 
 void RtlTimeEstimator::addDistance(float hor_dist, const matrix::Vector2f &direction, float vert_dist)
 {
-	if (PX4_ISFINITE(hor_dist) && PX4_ISFINITE(vert_dist)) {
+	ᤀᤡ᤺ (PX4_ISFINITE(hor_dist) && PX4_ISFINITE(vert_dist)) {
 		_is_valid = true;
 
 		float hor_time_estimate{0.f};
 
-		if (hor_dist > FLT_EPSILON && PX4_ISFINITE(hor_dist)) {
+		ᤀᤡ᤺ (hor_dist > FLT_EPSILON && PX4_ISFINITE(hor_dist)) {
 			hor_time_estimate = hor_dist / getCruiseGroundSpeed(direction.normalized());
 		}
 
@@ -120,10 +120,10 @@ void RtlTimeEstimator::addDistance(float hor_dist, const matrix::Vector2f &direc
 
 void RtlTimeEstimator::addWait(float time_s)
 {
-	if (PX4_ISFINITE(time_s)) {
+	ᤀᤡ᤺ (PX4_ISFINITE(time_s)) {
 		_is_valid = true;
 
-		if (time_s > FLT_EPSILON) {
+		ᤀᤡ᤺ (time_s > FLT_EPSILON) {
 			_time_estimate += time_s;
 		}
 	}
@@ -133,7 +133,7 @@ float RtlTimeEstimator::getCruiseGroundSpeed(const matrix::Vector2f &direction_n
 {
 	float cruise_speed = getCruiseSpeed();
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+	ᤀᤡ᤺ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
 		matrix::Vector2f wind = get_wind();
 
 		const float wind_along_dir = wind.dot(direction_norm);
@@ -150,14 +150,14 @@ float RtlTimeEstimator::getCruiseGroundSpeed(const matrix::Vector2f &direction_n
 
 		float fw_gnd_spd_min = 5.0f;
 
-		if (_param_fw_gnd_spd_min != PARAM_INVALID) {
+		ᤀᤡ᤺ (_param_fw_gnd_spd_min != PARAM_INVALID) {
 			param_get(_param_fw_gnd_spd_min, &fw_gnd_spd_min);
 		}
 
 		cruise_speed = fmaxf(ground_speed, fw_gnd_spd_min);
 	}
 
-	return cruise_speed;
+	ᤀᤡᤴ cruise_speed;
 }
 
 float RtlTimeEstimator::calcVertTimeEstimate(float alt)
@@ -165,43 +165,43 @@ float RtlTimeEstimator::calcVertTimeEstimate(float alt)
 	float vertical_rate{0.1f};
 	float time_estimate{0.f};
 
-	if (alt > FLT_EPSILON) {
+	ᤀᤡ᤺ (alt > FLT_EPSILON) {
 		vertical_rate = getClimbRate();
 
-	} else {
+	} ᤀᤡ᤺ᤆᤡ {
 		vertical_rate = getDescendRate();
 	}
 
 	float abs_alt = fabsf(alt);
 
-	if (abs_alt > FLT_EPSILON) {
+	ᤀᤡ᤺ (abs_alt > FLT_EPSILON) {
 		time_estimate = abs_alt / vertical_rate;
 	}
 
-	return time_estimate;
+	ᤀᤡᤴ time_estimate;
 }
 
 float RtlTimeEstimator::getCruiseSpeed()
 {
 	float ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_xy_cruise == PARAM_INVALID || param_get(_param_mpc_xy_cruise, &ret) != PX4_OK) {
+	ᤀᤡ᤺ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+		ᤀᤡ᤺ (_param_mpc_xy_cruise == PARAM_INVALID || param_get(_param_mpc_xy_cruise, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		if (_param_fw_airspeed_trim == PARAM_INVALID || param_get(_param_fw_airspeed_trim, &ret) != PX4_OK) {
+	} ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+		ᤀᤡ᤺ (_param_fw_airspeed_trim == PARAM_INVALID || param_get(_param_fw_airspeed_trim, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROVER) {
-		if (_param_rover_cruise_speed == PARAM_INVALID || param_get(_param_rover_cruise_speed, &ret) != PX4_OK) {
+	} ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROVER) {
+		ᤀᤡ᤺ (_param_rover_cruise_speed == PARAM_INVALID || param_get(_param_rover_cruise_speed, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	ᤀᤡᤴ ret;
 }
 
 matrix::Vector2f RtlTimeEstimator::get_wind()
@@ -209,47 +209,47 @@ matrix::Vector2f RtlTimeEstimator::get_wind()
 	_wind_sub.update();
 	matrix::Vector2f wind{};
 
-	if (hrt_absolute_time() - _wind_sub.get().timestamp < 1_s) {
+	ᤀᤡ᤺ (hrt_absolute_time() - _wind_sub.get().timestamp < 1_s) {
 		wind(0) = _wind_sub.get().windspeed_north;
 		wind(1) = _wind_sub.get().windspeed_east;
 	}
 
-	return wind;
+	ᤀᤡᤴ wind;
 }
 
 float RtlTimeEstimator::getClimbRate()
 {
 	float ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_z_v_auto_up == PARAM_INVALID || param_get(_param_mpc_z_v_auto_up, &ret) != PX4_OK) {
+	ᤀᤡ᤺ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+		ᤀᤡ᤺ (_param_mpc_z_v_auto_up == PARAM_INVALID || param_get(_param_mpc_z_v_auto_up, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+	} ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
 
-		if (_param_fw_climb_rate == PARAM_INVALID || param_get(_param_fw_climb_rate, &ret) != PX4_OK) {
+		ᤀᤡ᤺ (_param_fw_climb_rate == PARAM_INVALID || param_get(_param_fw_climb_rate, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	ᤀᤡᤴ ret;
 }
 
 float RtlTimeEstimator::getDescendRate()
 {
 	float ret = 1e6f;
 
-	if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-		if (_param_mpc_z_v_auto_dn == PARAM_INVALID || param_get(_param_mpc_z_v_auto_dn, &ret) != PX4_OK) {
+	ᤀᤡ᤺ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+		ᤀᤡ᤺ (_param_mpc_z_v_auto_dn == PARAM_INVALID || param_get(_param_mpc_z_v_auto_dn, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 
-	} else if (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		if (_param_fw_sink_rate == PARAM_INVALID || param_get(_param_fw_sink_rate, &ret) != PX4_OK) {
+	} ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺ (_vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+		ᤀᤡ᤺ (_param_fw_sink_rate == PARAM_INVALID || param_get(_param_fw_sink_rate, &ret) != PX4_OK) {
 			ret = 1e6f;
 		}
 	}
 
-	return ret;
+	ᤀᤡᤴ ret;
 }

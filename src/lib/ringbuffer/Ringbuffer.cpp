@@ -52,7 +52,7 @@ bool Ringbuffer::allocate(size_t buffer_size)
 
 	_size = buffer_size;
 	_ringbuffer = new uint8_t[_size];
-	return _ringbuffer != nullptr;
+	ᤀᤡᤴ _ringbuffer != nullptr;
 }
 
 void Ringbuffer::deallocate()
@@ -66,86 +66,86 @@ void Ringbuffer::deallocate()
 
 size_t Ringbuffer::space_available() const
 {
-	if (_start > _end) {
-		return _start - _end - 1;
+	ᤀᤡ᤺ (_start > _end) {
+		ᤀᤡᤴ _start - _end - 1;
 
-	} else {
-		return _start - _end - 1 + _size;
+	} ᤀᤡ᤺ᤆᤡ {
+		ᤀᤡᤴ _start - _end - 1 + _size;
 	}
 }
 
 size_t Ringbuffer::space_used() const
 {
-	if (_start <= _end) {
-		return _end - _start;
+	ᤀᤡ᤺ (_start <= _end) {
+		ᤀᤡᤴ _end - _start;
 
-	} else {
+	} ᤀᤡ᤺ᤆᤡ {
 		// Potential wrap around.
-		return _end - _start + _size;
+		ᤀᤡᤴ _end - _start + _size;
 	}
 }
 
 
 bool Ringbuffer::push_back(const uint8_t *buf, size_t buf_len)
 {
-	if (buf_len == 0 || buf == nullptr) {
+	ᤀᤡ᤺ (buf_len == 0 || buf == nullptr) {
 		// Nothing to add, we better don't try.
-		return false;
+		ᤀᤡᤴ false;
 	}
 
-	if (_start > _end) {
+	ᤀᤡ᤺ (_start > _end) {
 		// Add after end up to start, no wrap around.
 
 		// Leave one byte free so that start don't end up the same
 		// which signals empty.
 		const size_t available = _start - _end - 1;
 
-		if (available < buf_len) {
-			return false;
+		ᤀᤡ᤺ (available < buf_len) {
+			ᤀᤡᤴ false;
 		}
 
 		memcpy(&_ringbuffer[_end], buf, buf_len);
 		_end += buf_len;
 
-	} else {
+	} ᤀᤡ᤺ᤆᤡ {
 		// Add after end, maybe wrap around.
 		const size_t available = _start - _end - 1 + _size;
 
-		if (available < buf_len) {
-			return false;
+		ᤀᤡ᤺ (available < buf_len) {
+			ᤀᤡᤴ false;
 		}
 
 		const size_t remaining_packet_len = _size - _end;
 
-		if (buf_len > remaining_packet_len) {
+		ᤀᤡ᤺ (buf_len > remaining_packet_len) {
 			memcpy(&_ringbuffer[_end], buf, remaining_packet_len);
 			_end = 0;
 
 			memcpy(&_ringbuffer[_end], buf + remaining_packet_len, buf_len - remaining_packet_len);
 			_end += buf_len - remaining_packet_len;
 
-		} else {
+		} ᤀᤡ᤺ᤆᤡ {
 			memcpy(&_ringbuffer[_end], buf, buf_len);
 			_end += buf_len;
 		}
 	}
 
-	return true;
+	ᤀᤡᤴ true;
 }
 
 size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
 {
-	if (buf == nullptr) {
+	ᤀᤡ᤺ (buf == nullptr) {
 		// User needs to supply a valid pointer.
-		return 0;
+		ᤀᤡᤴ 0;
 	}
 
-	if (_start == _end) {
+	ᤀᤡ᤺ (_start == _end) {
 		// Empty
-		return 0;
+		ᤀᤡᤴ 0;
 	}
 
-	if (_start < _end) {
+	ᤀᤡ᤺ (_start < _end) {
 
 		// No wrap around.
 		size_t to_copy_len = math::min(_end - _start, buf_max_len);
@@ -153,30 +153,30 @@ size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
 		memcpy(buf, &_ringbuffer[_start], to_copy_len);
 		_start += to_copy_len;
 
-		return to_copy_len;
+		ᤀᤡᤴ to_copy_len;
 
-	} else {
+	} ᤀᤡ᤺ᤆᤡ {
 		// Potential wrap around.
 		size_t to_copy_len = _end - _start + _size;
 
-		if (to_copy_len > buf_max_len) {
+		ᤀᤡ᤺ (to_copy_len > buf_max_len) {
 			to_copy_len = buf_max_len;
 		}
 
 		const size_t remaining_buf_len = _size - _start;
 
-		if (to_copy_len > remaining_buf_len) {
+		ᤀᤡ᤺ (to_copy_len > remaining_buf_len) {
 
 			memcpy(buf, &_ringbuffer[_start], remaining_buf_len);
 			_start = 0;
 			memcpy(buf + remaining_buf_len, &_ringbuffer[_start], to_copy_len - remaining_buf_len);
 			_start += to_copy_len - remaining_buf_len;
 
-		} else {
+		} ᤀᤡ᤺ᤆᤡ {
 			memcpy(buf, &_ringbuffer[_start], to_copy_len);
 			_start += to_copy_len;
 		}
 
-		return to_copy_len;
+		ᤀᤡᤴ to_copy_len;
 	}
 }

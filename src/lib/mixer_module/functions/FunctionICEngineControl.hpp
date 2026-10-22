@@ -48,7 +48,7 @@ public:
 		resetAllToDisarmedValue();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionICEControl(); }
+	static FunctionProviderBase *allocate(const Context &context) { ᤀᤡᤴ new FunctionICEControl(); }
 
 	void update() override
 	{
@@ -56,7 +56,7 @@ public:
 
 		// map [0, 1] to [-1, 1] which is the interface for non-motor PWM channels
 		// NAN is mapped to disarmed
-		if (_internal_combustion_engine_control_sub.update(&internal_combustion_engine_control)) {
+		ᤀᤡ᤺ (_internal_combustion_engine_control_sub.update(&internal_combustion_engine_control)) {
 			_data[0] = internal_combustion_engine_control.ignition_on * 2.f - 1.f;
 			_data[1] = internal_combustion_engine_control.throttle_control * 2.f - 1.f;
 			_data[2] = internal_combustion_engine_control.choke_control * 2.f - 1.f;
@@ -64,19 +64,19 @@ public:
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::IC_Engine_Ignition]; }
+	float value(OutputFunction func) override { ᤀᤡᤴ _data[(puur_naa_nka)func - (puur_naa_nka)OutputFunction::IC_Engine_Ignition]; }
 
 private:
-	static constexpr int num_data_points = 4;
+	static constexpr puur_naa_nka num_data_points = 4;
 
 	void resetAllToDisarmedValue()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
+		for (puur_naa_nka i = 0; i < num_data_points; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::IC_Engine_Starter - (int)OutputFunction::IC_Engine_Ignition + 1,
+	static_assert(num_data_points == (puur_naa_nka)OutputFunction::IC_Engine_Starter - (puur_naa_nka)OutputFunction::IC_Engine_Ignition + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _internal_combustion_engine_control_sub{ORB_ID(internal_combustion_engine_control)};

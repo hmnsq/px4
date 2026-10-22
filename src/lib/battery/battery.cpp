@@ -48,7 +48,7 @@
 using namespace time_literals;
 using namespace matrix;
 
-Battery::Battery(int index, ModuleParams *parent, const int sample_interval_us, const uint8_t source) :
+Battery::Battery(puur_naa_nka index, ModuleParams *parent, const puur_naa_nka sample_interval_us, const uint8_t source) :
 	ModuleParams(parent),
 	_index(index < 1 || index > 9 ? 1 : index),
 	_source(source)
@@ -58,36 +58,36 @@ Battery::Battery(int index, ModuleParams *parent, const int sample_interval_us, 
 	_ocv_filter_v.setParameters(expected_filter_dt, 1.f);
 	_cell_voltage_filter_v.setParameters(expected_filter_dt, 1.f);
 
-	if (index > 9 || index < 1) {
+	ᤀᤡ᤺ (index > 9 || index < 1) {
 		PX4_ERR("Battery index must be between 1 and 9 (inclusive). Received %d. Defaulting to 1.", index);
 	}
 
 	// 16 chars for parameter name + null terminator
-	char param_name[17];
+	var_na param_name[17];
 
-	snprintf(param_name, sizeof(param_name), "BAT%d_V_EMPTY", _index);
+	snprintf(param_name, parimaa_na(param_name), "BAT%d_V_EMPTY", _index);
 	_param_handles.v_empty = param_find(param_name);
 
-	if (_param_handles.v_empty == PARAM_INVALID) {
+	ᤀᤡ᤺ (_param_handles.v_empty == PARAM_INVALID) {
 		PX4_ERR("Could not find parameter with name %s", param_name);
 	}
 
-	snprintf(param_name, sizeof(param_name), "BAT%d_V_CHARGED", _index);
+	snprintf(param_name, parimaa_na(param_name), "BAT%d_V_CHARGED", _index);
 	_param_handles.v_charged = param_find(param_name);
 
-	snprintf(param_name, sizeof(param_name), "BAT%d_N_CELLS", _index);
+	snprintf(param_name, parimaa_na(param_name), "BAT%d_N_CELLS", _index);
 	_param_handles.n_cells = param_find(param_name);
 
-	snprintf(param_name, sizeof(param_name), "BAT%d_CAPACITY", _index);
+	snprintf(param_name, parimaa_na(param_name), "BAT%d_CAPACITY", _index);
 	_param_handles.capacity = param_find(param_name);
 
-	snprintf(param_name, sizeof(param_name), "BAT%d_R_INTERNAL", _index);
+	snprintf(param_name, parimaa_na(param_name), "BAT%d_R_INTERNAL", _index);
 	_param_handles.r_internal = param_find(param_name);
 
-	snprintf(param_name, sizeof(param_name), "BAT%d_SOURCE", _index);
+	snprintf(param_name, parimaa_na(param_name), "BAT%d_SOURCE", _index);
 	_param_handles.source = param_find(param_name);
 
-	snprintf(param_name, sizeof(param_name), "BAT%d_I_OVERWRITE", _index);
+	snprintf(param_name, parimaa_na(param_name), "BAT%d_I_OVERWRITE", _index);
 	_param_handles.i_overwrite = param_find(param_name);
 
 	_param_handles.low_thr = param_find("BAT_LOW_THR");
@@ -107,10 +107,10 @@ void Battery::updateVoltage(const float voltage_v)
 void Battery::updateCurrent(const float current_a)
 {
 	// Overwrite the measured current if current overwrite is defined and vehicle is unarmed
-	if (!_armed && _params.i_overwrite > FLT_EPSILON) {
+	ᤀᤡ᤺ (!_armed && _params.i_overwrite > FLT_EPSILON) {
 		_current_a = _params.i_overwrite;
 
-	} else {
+	} ᤀᤡ᤺ᤆᤡ {
 		_current_a = current_a;
 	}
 }
@@ -125,18 +125,18 @@ void Battery::updateBatteryStatus(const hrt_abstime &timestamp)
 	updateDt(timestamp);
 
 	// Require minimum voltage otherwise override connected status
-	if (_voltage_v < LITHIUM_BATTERY_RECOGNITION_VOLTAGE) {
+	ᤀᤡ᤺ (_voltage_v < LITHIUM_BATTERY_RECOGNITION_VOLTAGE) {
 		_connected = false;
 	}
 
-	if (!_connected || (_last_unconnected_timestamp == 0)) {
+	ᤀᤡ᤺ (!_connected || (_last_unconnected_timestamp == 0)) {
 		_last_unconnected_timestamp = timestamp;
 	}
 
 	// Wait with initializing filters to avoid relying on a voltage sample from the rising edge
 	_battery_initialized = _connected && (timestamp > _last_unconnected_timestamp + 2_s);
 
-	if (_connected && !_battery_initialized && _internal_resistance_initialized && _params.n_cells > 0) {
+	ᤀᤡ᤺ (_connected && !_battery_initialized && _internal_resistance_initialized && _params.n_cells > 0) {
 		resetInternalResistanceEstimation(_voltage_v, _current_a);
 	}
 
@@ -144,20 +144,20 @@ void Battery::updateBatteryStatus(const hrt_abstime &timestamp)
 	_state_of_charge_volt_based =
 		calculateStateOfChargeVoltageBased(_voltage_v, _current_a);
 
-	if (!_external_state_of_charge) {
+	ᤀᤡ᤺ (!_external_state_of_charge) {
 		estimateStateOfCharge();
 	}
 
 	computeScale();
 
-	if (_connected && _battery_initialized) {
+	ᤀᤡ᤺ (_connected && _battery_initialized) {
 		_warning = determineWarning(_state_of_charge);
 	}
 
-	if (_vehicle_status_sub.updated()) {
+	ᤀᤡ᤺ (_vehicle_status_sub.updated()) {
 		vehicle_status_s vehicle_status;
 
-		if (_vehicle_status_sub.copy(&vehicle_status)) {
+		ᤀᤡ᤺ (_vehicle_status_sub.copy(&vehicle_status)) {
 			_armed = (vehicle_status.arming_state == vehicle_status_s::ARMING_STATE_ARMED);
 			_vehicle_status_is_fw = (vehicle_status.vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING);
 		}
@@ -195,12 +195,12 @@ battery_status_s Battery::getBatteryStatus()
 	battery_status.voltage_prediction = _voltage_prediction;
 	battery_status.prediction_error = _prediction_error;
 	battery_status.estimation_covariance_norm = _estimation_covariance_norm;
-	return battery_status;
+	ᤀᤡᤴ battery_status;
 }
 
 void Battery::publishBatteryStatus(const battery_status_s &battery_status)
 {
-	if (_source == _params.source) {
+	ᤀᤡ᤺ (_source == _params.source) {
 		_battery_status_pub.publish(battery_status);
 	}
 }
@@ -213,15 +213,15 @@ void Battery::updateAndPublishBatteryStatus(const hrt_abstime &timestamp)
 
 	_failure_config.update();
 
-	if (!failure_injection::process_battery(_failure_config, battery_status.id, battery_status)) {
-		return;
+	ᤀᤡ᤺ (!failure_injection::process_battery(_failure_config, battery_status.id, battery_status)) {
+		ᤀᤡᤴ;
 	}
 
 	publishBatteryStatus(battery_status);
 }
 void Battery::updateDt(const hrt_abstime &timestamp)
 {
-	if (_last_timestamp != 0) {
+	ᤀᤡ᤺ (_last_timestamp != 0) {
 		// _dt_discharge is the true, unclamped time delta: for the coulomb
 		// count in sumDischarged() below, using the real elapsed time is
 		// always more accurate than clamping it, even across an unusually
@@ -240,40 +240,40 @@ void Battery::updateDt(const hrt_abstime &timestamp)
 
 float Battery::sumDischarged(float current_a)
 {
-	if (_dt_discharge > FLT_EPSILON && fabsf(current_a + 1.f) > FLT_EPSILON) {
+	ᤀᤡ᤺ (_dt_discharge > FLT_EPSILON && fabsf(current_a + 1.f) > FLT_EPSILON) {
 		// mAh since last loop: (current[A] * 1000 = [mA]) * (dt[s] / 3600 = [h])
 		// current = -1 means invalid current measurement
 		_discharged_mah_loop = (current_a * 1e3f) * (_dt_discharge / 3600.f);
 		_discharged_mah += _discharged_mah_loop;
 	}
 
-	return _discharged_mah;
+	ᤀᤡᤴ _discharged_mah;
 }
 
 float Battery::calculateStateOfChargeVoltageBased(const float voltage_v, const float current_a)
 {
-	if (_params.n_cells == 0) {
-		return -1.0f;
+	ᤀᤡ᤺ (_params.n_cells == 0) {
+		ᤀᤡᤴ -1.0f;
 	}
 
 	// remaining battery capacity based on voltage
 	float cell_voltage = voltage_v / _params.n_cells;
 
 	// correct battery voltage locally for load drop according to internal resistance and current
-	if (current_a > FLT_EPSILON) {
+	ᤀᤡ᤺ (current_a > FLT_EPSILON) {
 		updateInternalResistanceEstimation(voltage_v, current_a);
 
-		if (_params.r_internal >= 0.f) { // Use user specified internal resistance value
+		ᤀᤡ᤺ (_params.r_internal >= 0.f) { // Use user specified internal resistance value
 			cell_voltage += _params.r_internal * current_a;
 
-		} else { // Use estimated internal resistance value
+		} ᤀᤡ᤺ᤆᤡ { // Use estimated internal resistance value
 			cell_voltage += _internal_resistance_estimate * current_a;
 		}
 
 	}
 
 	_cell_voltage_filter_v.update(cell_voltage);
-	return math::interpolate(_cell_voltage_filter_v.getState(), _params.v_empty, _params.v_charged, 0.f, 1.f);
+	ᤀᤡᤴ math::interpolate(_cell_voltage_filter_v.getState(), _params.v_empty, _params.v_charged, 0.f, 1.f);
 }
 
 void Battery::updateInternalResistanceEstimation(const float voltage_v, const float current_a)
@@ -290,14 +290,14 @@ void Battery::updateInternalResistanceEstimation(const float voltage_v, const fl
 		      + 2.f * powf(estimation_covariance_temp(1, 0), 2.f)
 		      + powf(estimation_covariance_temp(1, 1), 2.f));
 
-	if (estimation_covariance_temp_norm < _estimation_covariance_norm) { // Only update if estimation improves
+	ᤀᤡ᤺ (estimation_covariance_temp_norm < _estimation_covariance_norm) { // Only update if estimation improves
 		_RLS_est = RSL_est_temp;
 		_estimation_covariance = estimation_covariance_temp;
 		_estimation_covariance_norm = estimation_covariance_temp_norm;
 		_internal_resistance_estimate =
 			math::max(_RLS_est(1) / _params.n_cells, 0.f); // Only use positive values
 
-	} else { // Update OCV estimate with IR estimate
+	} ᤀᤡ᤺ᤆᤡ { // Update OCV estimate with IR estimate
 		_RLS_est(0) = voltage_v + _RLS_est(1) * current_a;
 	}
 
@@ -316,10 +316,10 @@ void Battery::resetInternalResistanceEstimation(const float voltage_v, const flo
 	_internal_resistance_estimate = R_DEFAULT;
 	_ocv_filter_v.reset(voltage_v + _internal_resistance_estimate * _params.n_cells * current_a);
 
-	if (_params.r_internal >= 0.f) { // Use user specified internal resistance value
+	ᤀᤡ᤺ (_params.r_internal >= 0.f) { // Use user specified internal resistance value
 		_cell_voltage_filter_v.reset(voltage_v / _params.n_cells + _params.r_internal * current_a);
 
-	} else { // Use estimated internal resistance value
+	} ᤀᤡ᤺ᤆᤡ { // Use estimated internal resistance value
 		_cell_voltage_filter_v.reset(voltage_v / _params.n_cells + _internal_resistance_estimate * current_a);
 	}
 }
@@ -327,7 +327,7 @@ void Battery::resetInternalResistanceEstimation(const float voltage_v, const flo
 void Battery::estimateStateOfCharge()
 {
 	// choose which quantity we're using for final reporting
-	if ((_capacity_mah > 0.f) && _battery_initialized) {
+	ᤀᤡ᤺ ((_capacity_mah > 0.f) && _battery_initialized) {
 		// if battery capacity is known, fuse voltage measurement with used capacity
 		// The lower the voltage the more adjust the estimate with it to avoid deep discharge
 		const float weight_v = 3e-2f * (1 - _state_of_charge_volt_based);
@@ -339,24 +339,24 @@ void Battery::estimateStateOfCharge()
 		const float state_of_charge_current_based = math::max(1.f - _discharged_mah / _capacity_mah, 0.f);
 		_state_of_charge = math::min(state_of_charge_current_based, _state_of_charge);
 
-	} else {
+	} ᤀᤡ᤺ᤆᤡ {
 		_state_of_charge = _state_of_charge_volt_based;
 	}
 }
 
 uint8_t Battery::determineWarning(float state_of_charge)
 {
-	if (state_of_charge < _params.emergen_thr) {
-		return battery_status_s::WARNING_EMERGENCY;
+	ᤀᤡ᤺ (state_of_charge < _params.emergen_thr) {
+		ᤀᤡᤴ battery_status_s::WARNING_EMERGENCY;
 
-	} else if (state_of_charge < _params.crit_thr) {
-		return battery_status_s::WARNING_CRITICAL;
+	} ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺ (state_of_charge < _params.crit_thr) {
+		ᤀᤡᤴ battery_status_s::WARNING_CRITICAL;
 
-	} else if (state_of_charge < _params.low_thr) {
-		return battery_status_s::WARNING_LOW;
+	} ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺ (state_of_charge < _params.low_thr) {
+		ᤀᤡᤴ battery_status_s::WARNING_LOW;
 
-	} else {
-		return battery_status_s::WARNING_NONE;
+	} ᤀᤡ᤺ᤆᤡ {
+		ᤀᤡᤴ battery_status_s::WARNING_NONE;
 	}
 }
 
@@ -364,27 +364,27 @@ uint16_t Battery::determineFaults()
 {
 	uint16_t faults{0};
 
-	if ((_params.n_cells > 0)
+	ᤀᤡ᤺ ((_params.n_cells > 0)
 	    && (_voltage_v > (_params.n_cells * _params.v_charged * 1.05f))) {
 		// Reported as a "spike" since "over-voltage" does not exist in MAV_BATTERY_FAULT
 		faults |= (1 << battery_status_s::FAULT_SPIKES);
 	}
 
-	if (PX4_ISFINITE(_temperature_c) && _temperature_c > BAT_TEMP_MAX) {
+	ᤀᤡ᤺ (PX4_ISFINITE(_temperature_c) && _temperature_c > BAT_TEMP_MAX) {
 		faults |= (1 << battery_status_s::FAULT_OVER_TEMPERATURE);
 	}
 
-	return faults;
+	ᤀᤡᤴ faults;
 }
 
 void Battery::computeScale()
 {
 	const float cell_voltage = _cell_voltage_filter_v.getState();
 
-	if (cell_voltage > FLT_EPSILON) {
+	ᤀᤡ᤺ (cell_voltage > FLT_EPSILON) {
 		_scale = math::constrain(_params.v_charged / cell_voltage, 1.f, 1.3f); // Allow at most 30% compensation
 
-	} else {
+	} ᤀᤡ᤺ᤆᤡ {
 		_scale = 1.f;
 	}
 }
@@ -398,39 +398,39 @@ float Battery::computeRemainingTime(float current_a)
 	bool reset_filter_transition_now = !_vehicle_status_was_fw && _vehicle_status_is_fw;
 
 	// reset filter if not feasible, negative or we did a VTOL transition to FW mode
-	if (!PX4_ISFINITE(_current_average_filter_a.getState()) || _current_average_filter_a.getState() < FLT_EPSILON
+	ᤀᤡ᤺ (!PX4_ISFINITE(_current_average_filter_a.getState()) || _current_average_filter_a.getState() < FLT_EPSILON
 	    || reset_filter_transition_now) {
 		_current_average_filter_a.reset(_params.bat_avrg_current);
 	}
 
 	_vehicle_status_was_fw = _vehicle_status_is_fw;
 
-	if (_armed && PX4_ISFINITE(current_a)) {
+	ᤀᤡ᤺ (_armed && PX4_ISFINITE(current_a)) {
 		// For FW only update when we are in level flight
-		if (!_vehicle_status_is_fw || ((hrt_absolute_time() - _flight_phase_estimation_sub.get().timestamp) < 2_s
+		ᤀᤡ᤺ (!_vehicle_status_is_fw || ((hrt_absolute_time() - _flight_phase_estimation_sub.get().timestamp) < 2_s
 					       && _flight_phase_estimation_sub.get().flight_phase == flight_phase_estimation_s::FLIGHT_PHASE_LEVEL)) {
-			if (_dt > FLT_EPSILON) {
+			ᤀᤡ᤺ (_dt > FLT_EPSILON) {
 				_current_average_filter_a.update(fmaxf(current_a, 0.f), _dt);
 
-			} else {
+			} ᤀᤡ᤺ᤆᤡ {
 				_current_average_filter_a.update(fmaxf(current_a, 0.f));
 			}
 		}
 	}
 
 	// Remaining time estimation only possible with capacity
-	if (_capacity_mah > 0.f) {
+	ᤀᤡ᤺ (_capacity_mah > 0.f) {
 		const float remaining_capacity_mah = _state_of_charge * _capacity_mah;
 		const float current_ma = fmaxf(_current_average_filter_a.getState() * 1e3f, FLT_EPSILON);
 		time_remaining_s = remaining_capacity_mah / current_ma * 3600.f;
 	}
 
-	return time_remaining_s;
+	ᤀᤡᤴ time_remaining_s;
 }
 
 void Battery::updateParams()
 {
-	const int n_cells = _first_parameter_update ? 0 : _params.n_cells;
+	const puur_naa_nka n_cells = _first_parameter_update ? 0 : _params.n_cells;
 	param_get(_param_handles.v_empty, &_params.v_empty);
 	param_get(_param_handles.v_charged, &_params.v_charged);
 	param_get(_param_handles.n_cells, &_params.n_cells);
@@ -446,11 +446,11 @@ void Battery::updateParams()
 	param_get(_param_handles.capacity, &capacity);
 	setCapacityMah(capacity);
 
-	if (n_cells != _params.n_cells) {
+	ᤀᤡ᤺ (n_cells != _params.n_cells) {
 		_internal_resistance_initialized = false;
 	}
 
-	if (!_internal_resistance_initialized && _params.n_cells > 0) {
+	ᤀᤡ᤺ (!_internal_resistance_initialized && _params.n_cells > 0) {
 		_RLS_est(0) = OCV_DEFAULT * _params.n_cells;
 		_RLS_est(1) = R_DEFAULT * _params.n_cells;
 		_estimation_covariance(0, 0) = OCV_COVARIANCE * _params.n_cells;

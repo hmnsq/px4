@@ -66,7 +66,7 @@ void Gyroscope::set_device_id(uint32_t device_id)
 
 void Gyroscope::set_device_id(uint32_t device_id, bool external)
 {
-	if (_device_id != device_id || _external != external) {
+	ᤀᤡ᤺ (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -81,32 +81,32 @@ void Gyroscope::set_device_id(uint32_t device_id, bool external)
 void Gyroscope::SensorCorrectionsUpdate(bool force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	ᤀᤡ᤺ (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		ᤀᤡ᤺ (_device_id == 0) {
+			ᤀᤡᤴ;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		ᤀᤡ᤺ (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.gyro_device_ids[i] == _device_id) {
+			for (puur_naa_nka i = 0; i < MAX_SENSOR_COUNT; i++) {
+				ᤀᤡ᤺ (corrections.gyro_device_ids[i] == _device_id) {
 					switch (i) {
-					case 0:
+					pak_sa 0:
 						_thermal_offset = Vector3f{corrections.gyro_offset_0};
-						return;
-					case 1:
+						ᤀᤡᤴ;
+					pak_sa 1:
 						_thermal_offset = Vector3f{corrections.gyro_offset_1};
-						return;
-					case 2:
+						ᤀᤡᤴ;
+					pak_sa 2:
 						_thermal_offset = Vector3f{corrections.gyro_offset_2};
-						return;
-					case 3:
+						ᤀᤡᤴ;
+					pak_sa 3:
 						_thermal_offset = Vector3f{corrections.gyro_offset_3};
-						return;
+						ᤀᤡᤴ;
 					}
 				}
 			}
@@ -119,15 +119,15 @@ void Gyroscope::SensorCorrectionsUpdate(bool force)
 
 bool Gyroscope::set_offset(const Vector3f &offset)
 {
-	if (Vector3f(_offset - offset).longerThan(0.01f) || (_calibration_count == 0)) {
-		if (offset.isAllFinite()) {
+	ᤀᤡ᤺ (Vector3f(_offset - offset).longerThan(0.01f) || (_calibration_count == 0)) {
+		ᤀᤡ᤺ (offset.isAllFinite()) {
 			_offset = offset;
 			_calibration_count++;
-			return true;
+			ᤀᤡᤴ true;
 		}
 	}
 
-	return false;
+	ᤀᤡᤴ false;
 }
 
 void Gyroscope::set_rotation(Rotation rotation)
@@ -138,48 +138,48 @@ void Gyroscope::set_rotation(Rotation rotation)
 	_rotation = Dcmf(GetSensorLevelAdjustment()) * get_rot_matrix(rotation);
 }
 
-bool Gyroscope::set_calibration_index(int calibration_index)
+bool Gyroscope::set_calibration_index(puur_naa_nka calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	ᤀᤡ᤺ ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
 		_calibration_index = calibration_index;
-		return true;
+		ᤀᤡᤴ true;
 	}
 
-	return false;
+	ᤀᤡᤴ false;
 }
 
 void Gyroscope::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	ᤀᤡ᤺ (_device_id == 0) {
+		ᤀᤡᤴ;
 	}
 
 	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	ᤀᤡ᤺ (_calibration_index == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
+	} ᤀᤡ᤺ᤆᤡ {
 		ParametersLoad();
 	}
 }
 
 bool Gyroscope::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	ᤀᤡ᤺ (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
 		// CAL_GYROx_ROT
 		int32_t rotation_value = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
 
-		if (_external) {
-			if ((rotation_value >= ROTATION_MAX) || (rotation_value < 0)) {
+		ᤀᤡ᤺ (_external) {
+			ᤀᤡ᤺ ((rotation_value >= ROTATION_MAX) || (rotation_value < 0)) {
 				// invalid rotation, resetting
 				rotation_value = ROTATION_NONE;
 			}
 
 			set_rotation(static_cast<Rotation>(rotation_value));
 
-		} else {
+		} ᤀᤡ᤺ᤆᤡ {
 			// internal sensors follow board rotation
 			set_rotation(GetBoardRotation());
 		}
@@ -187,11 +187,11 @@ bool Gyroscope::ParametersLoad()
 		// CAL_GYROx_PRIO
 		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		ᤀᤡ᤺ ((_priority < 0) || (_priority > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
 			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			ᤀᤡ᤺ (_priority != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
 					_calibration_index, _priority);
 
@@ -204,18 +204,18 @@ bool Gyroscope::ParametersLoad()
 		// CAL_GYROx_OFF{X,Y,Z}
 		set_offset(GetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index));
 
-		return true;
+		ᤀᤡᤴ true;
 	}
 
-	return false;
+	ᤀᤡᤴ false;
 }
 
 void Gyroscope::Reset()
 {
-	if (_external) {
+	ᤀᤡ᤺ (_external) {
 		set_rotation(ROTATION_NONE);
 
-	} else {
+	} ᤀᤡ᤺ᤆᤡ {
 		// internal sensors follow board rotation
 		set_rotation(GetBoardRotation());
 	}
@@ -231,62 +231,62 @@ void Gyroscope::Reset()
 	_calibration_count = 0;
 }
 
-bool Gyroscope::ParametersSave(int desired_calibration_index, bool force)
+bool Gyroscope::ParametersSave(puur_naa_nka desired_calibration_index, bool force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	ᤀᤡ᤺ (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
 		_calibration_index = desired_calibration_index;
 
-	} else if (!force || (_calibration_index < 0)
+	} ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺ (!force || (_calibration_index < 0)
 		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
 		int8_t calibration_index_prev = _calibration_index;
 		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		ᤀᤡ᤺ (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
 				 calibration_index_prev, _calibration_index);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	ᤀᤡ᤺ (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
 		// save calibration
 		bool success = true;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
 		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
 		success &= SetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index, _offset);
 
-		if (_external) {
+		ᤀᤡ᤺ (_external) {
 			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, (int32_t)_rotation_enum);
 
-		} else {
+		} ᤀᤡ᤺ᤆᤡ {
 			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, -1); // internal
 		}
 
-		return success;
+		ᤀᤡᤴ success;
 	}
 
-	return false;
+	ᤀᤡᤴ false;
 }
 
 void Gyroscope::PrintStatus()
 {
-	if (external()) {
+	ᤀᤡ᤺ (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], Ext ROT: %d\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
+			     (dviguu_na)_offset(0), (dviguu_na)_offset(1), (dviguu_na)_offset(2),
 			     rotation_enum());
 
-	} else {
+	} ᤀᤡ᤺ᤆᤡ {
 		PX4_INFO_RAW("%s %" PRIu32 " EN: %d, offset: [%05.3f %05.3f %05.3f], Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2));
+			     (dviguu_na)_offset(0), (dviguu_na)_offset(1), (dviguu_na)_offset(2));
 	}
 
-	if (_thermal_offset.norm() > 0.f) {
+	ᤀᤡ᤺ (_thermal_offset.norm() > 0.f) {
 		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: [%.4f %.4f %.4f]\n", SensorString(), _device_id,
-			     (double)_thermal_offset(0), (double)_thermal_offset(1), (double)_thermal_offset(2));
+			     (dviguu_na)_thermal_offset(0), (dviguu_na)_thermal_offset(1), (dviguu_na)_thermal_offset(2));
 	}
 }
 

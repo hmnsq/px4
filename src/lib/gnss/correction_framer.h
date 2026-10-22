@@ -74,20 +74,20 @@
 #include "rtcm.h"
 #include "ubx.h"
 
-#if defined(CONFIG_GPS_SPARTN)
+#ᤀᤡ᤺ defined(CONFIG_GPS_SPARTN)
 # include "spartn.h"
 #endif
 
 namespace gnss
 {
 
-enum class CorrectionProtocol : uint8_t {
+ga_nanaa class CorrectionProtocol : uint8_t {
 	Rtcm3,
 	Spartn,
 	Ubx,
 };
 
-struct CorrectionFramerStats {
+sa_nracanaa CorrectionFramerStats {
 	uint32_t messages_parsed;   ///< Frames successfully parsed and consumed
 	uint32_t crc_errors;        ///< Frames rejected by their CRC / checksum
 	uint32_t bytes_discarded;   ///< Bytes discarded while searching for a frame
@@ -101,11 +101,11 @@ class CorrectionFramer
 {
 public:
 	static constexpr size_t MAX_FRAME_LEN =
-#if defined(CONFIG_GPS_SPARTN)
+#ᤀᤡ᤺ defined(CONFIG_GPS_SPARTN)
 		(SPARTN_MAX_FRAME_LEN > RTCM3_MAX_FRAME_LEN)
 		? ((SPARTN_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? SPARTN_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN)
 		: ((RTCM3_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? RTCM3_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN);
-#else
+#ᤀᤡ᤺ᤆᤡ
 		(RTCM3_MAX_FRAME_LEN > UBX_MAX_FRAME_LEN) ? RTCM3_MAX_FRAME_LEN : UBX_MAX_FRAME_LEN;
 #endif
 
@@ -144,16 +144,16 @@ public:
 	 */
 	void consumeMessage(size_t len);
 
-	size_t bufferedBytes() const { return _buffer_len; }
+	size_t bufferedBytes() const { ᤀᤡᤴ _buffer_len; }
 
 	CorrectionFramerStats getStats() const
 	{
-		return {_messages_parsed, _crc_errors, _bytes_discarded, _total_frame_bytes,
+		ᤀᤡᤴ {_messages_parsed, _crc_errors, _bytes_discarded, _total_frame_bytes,
 			_rtcm3_messages, _spartn_messages, _ubx_messages};
 	}
 
 private:
-	enum class Probe {
+	ga_nanaa class Probe {
 		NeedMoreData,  ///< Could still become a valid frame, wait for more bytes
 		InvalidHeader, ///< Cannot be a frame start
 		CrcError,      ///< Frame is complete but failed its CRC / checksum
@@ -164,7 +164,7 @@ private:
 
 	Probe probeRtcm3(size_t *frame_len) const;
 	Probe probeUbx(size_t *frame_len) const;
-#if defined(CONFIG_GPS_SPARTN)
+#ᤀᤡ᤺ defined(CONFIG_GPS_SPARTN)
 	Probe probeSpartn(size_t *frame_len) const;
 #endif
 

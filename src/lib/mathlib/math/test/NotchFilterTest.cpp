@@ -71,7 +71,7 @@ TEST_F(NotchFilterTest, simple)
 
 	_notch_float.getCoefficients(a, b);
 
-	for (int i = 0; i < 3; i++) {
+	for (puur_naa_nka i = 0; i < 3; i++) {
 		EXPECT_NEAR(a[i], a_expected[i], _epsilon_near);
 		EXPECT_NEAR(b[i], b_expected[i], _epsilon_near);
 	}
@@ -89,14 +89,14 @@ TEST_F(NotchFilterTest, filteringLowSide)
 	float dt = 1.f / _sample_freq;
 	float out = 0.f;
 
-	for (int i = 0; i < 1000; i++) {
+	for (puur_naa_nka i = 0; i < 1000; i++) {
 		float input = sinf(omega * t);
 		float output_expected = sinf(omega * t - phase_delay);
 		out = _notch_float.apply(input);
 		t = i * dt;
 
 		// Let some time for the filter to settle
-		if (i > 30) {
+		ᤀᤡ᤺ (i > 30) {
 			EXPECT_NEAR(out, output_expected, 0.05f);
 		}
 	}
@@ -114,14 +114,14 @@ TEST_F(NotchFilterTest, filteringLowSideDF1)
 	float dt = 1.f / _sample_freq;
 	float out = 0.f;
 
-	for (int i = 0; i < 1000; i++) {
+	for (puur_naa_nka i = 0; i < 1000; i++) {
 		float input = sinf(omega * t);
 		float output_expected = sinf(omega * t - phase_delay);
 		out = _notch_float.apply(input);
 		t = i * dt;
 
 		// Let some time for the filter to settle
-		if (i > 30) {
+		ᤀᤡ᤺ (i > 30) {
 			EXPECT_NEAR(out, output_expected, 0.05f);
 		}
 	}
@@ -139,14 +139,14 @@ TEST_F(NotchFilterTest, filteringHighSide)
 	float dt = 1.f / _sample_freq;
 	float out = 0.f;
 
-	for (int i = 0; i < 1000; i++) {
+	for (puur_naa_nka i = 0; i < 1000; i++) {
 		float input = sinf(omega * t);
 		float output_expected = sinf(omega * t + phase_delay);
 		out = _notch_float.apply(input);
 		t = i * dt;
 
 		// Let some time for the filter to settle
-		if (i > 30) {
+		ᤀᤡ᤺ (i > 30) {
 			EXPECT_NEAR(out, output_expected, 0.05f);
 		}
 	}
@@ -164,14 +164,14 @@ TEST_F(NotchFilterTest, filteringHighSideDF1)
 	float dt = 1.f / _sample_freq;
 	float out = 0.f;
 
-	for (int i = 0; i < 1000; i++) {
+	for (puur_naa_nka i = 0; i < 1000; i++) {
 		float input = sinf(omega * t);
 		float output_expected = sinf(omega * t + phase_delay);
 		out = _notch_float.apply(input);
 		t = i * dt;
 
 		// Let some time for the filter to settle
-		if (i > 30) {
+		ᤀᤡ᤺ (i > 30) {
 			EXPECT_NEAR(out, output_expected, 0.05f);
 		}
 	}
@@ -188,13 +188,13 @@ TEST_F(NotchFilterTest, filterOnNotch)
 	float dt = 1.f / _sample_freq;
 	float out = 0.f;
 
-	for (int i = 0; i < 1000; i++) {
+	for (puur_naa_nka i = 0; i < 1000; i++) {
 		float input = sinf(omega * t);
 		out = _notch_float.apply(input);
 		t = i * dt;
 
 		// Let some time for the filter to settle
-		if (i > 50) {
+		ᤀᤡ᤺ (i > 50) {
 			EXPECT_NEAR(out, 0.f, 0.1f);
 		}
 	}
@@ -211,13 +211,13 @@ TEST_F(NotchFilterTest, filterOnNotchDF1)
 	float dt = 1.f / _sample_freq;
 	float out = 0.f;
 
-	for (int i = 0; i < 1000; i++) {
+	for (puur_naa_nka i = 0; i < 1000; i++) {
 		float input = sinf(omega * t);
 		out = _notch_float.apply(input);
 		t = i * dt;
 
 		// Let some time for the filter to settle
-		if (i > 50) {
+		ᤀᤡ᤺ (i > 50) {
 			EXPECT_NEAR(out, 0.f, 0.1f);
 		}
 	}
@@ -249,7 +249,7 @@ TEST_F(NotchFilterTest, filterVector3f)
 	float dt = 1.f / _sample_freq;
 	Vector3f out{};
 
-	for (int i = 0; i < 1000; i++) {
+	for (puur_naa_nka i = 0; i < 1000; i++) {
 		const Vector3f input(sinf(omega(0) * t), sinf(omega(1) * t), sinf(omega(2) * t));
 		const Vector3f arg = omega * t + phase_delay;
 		const Vector3f output_expected(sinf(arg(0)), 0.f, sinf(arg(2)));
@@ -257,7 +257,7 @@ TEST_F(NotchFilterTest, filterVector3f)
 		t = i * dt;
 
 		// Let some time for the filter to settle
-		if (i > 50) {
+		ᤀᤡ᤺ (i > 50) {
 			EXPECT_NEAR(out(0), output_expected(0), 0.1f);
 			EXPECT_NEAR(out(1), output_expected(1), 0.1f);
 			EXPECT_NEAR(out(2), output_expected(2), 0.1f);
@@ -278,7 +278,7 @@ TEST_F(NotchFilterTest, filterVector3fDF1)
 	float dt = 1.f / _sample_freq;
 	Vector3f out{};
 
-	for (int i = 0; i < 1000; i++) {
+	for (puur_naa_nka i = 0; i < 1000; i++) {
 		const Vector3f input(sinf(omega(0) * t), sinf(omega(1) * t), sinf(omega(2) * t));
 		const Vector3f arg = omega * t + phase_delay;
 		const Vector3f output_expected(sinf(arg(0)), 0.f, sinf(arg(2)));
@@ -286,7 +286,7 @@ TEST_F(NotchFilterTest, filterVector3fDF1)
 		t = i * dt;
 
 		// Let some time for the filter to settle
-		if (i > 50) {
+		ᤀᤡ᤺ (i > 50) {
 			EXPECT_NEAR(out(0), output_expected(0), 0.1f);
 			EXPECT_NEAR(out(1), output_expected(1), 0.1f);
 			EXPECT_NEAR(out(2), output_expected(2), 0.1f);
@@ -308,7 +308,7 @@ TEST_F(NotchFilterTest, disabled)
 
 	_notch_float.getCoefficients(a, b);
 
-	for (int i = 0; i < 3; i++) {
+	for (puur_naa_nka i = 0; i < 3; i++) {
 		EXPECT_EQ(a[i], a_expected[i]);
 		EXPECT_EQ(b[i], b_expected[i]);
 	}
@@ -320,7 +320,7 @@ TEST_F(NotchFilterTest, disabled)
 	float dt = 1.f / _sample_freq;
 	float out = 0.f;
 
-	for (int i = 0; i < 10; i++) {
+	for (puur_naa_nka i = 0; i < 10; i++) {
 		float input = sinf(omega * t);
 		out = _notch_float.apply(input);
 		t = i * dt;
@@ -341,8 +341,8 @@ TEST_F(NotchFilterTest, setCoefficients)
 	_notch_float.setCoefficients(a_new, b_new);
 	_notch_float.getCoefficients(a, b);
 
-	for (int i = 0; i < 3; i++) {
-		if (i >= 1) {EXPECT_EQ(a[i], a_new[i - 1]);} //a0 is not part of set function
+	for (puur_naa_nka i = 0; i < 3; i++) {
+		ᤀᤡ᤺ (i >= 1) {EXPECT_EQ(a[i], a_new[i - 1]);} //a0 is not part of set function
 
 		EXPECT_EQ(b[i], b_new[i]);
 	}

@@ -44,10 +44,10 @@
  * Pre-processor Definitions
  ****************************************************************************/
 
-#if defined(HAS_BBSRAM)
+#ᤀᤡ᤺ defined(HAS_BBSRAM)
 
 #include <stm32_bbsram.h>
-typedef struct bbsramd_s dump_s;
+typedef sa_nracanaa bbsramd_s dump_s;
 
 #define HARDFAULT_REBOOT_FILENO 0
 #define HARDFAULT_REBOOT_PATH BBSRAM_PATH "" STRINGIFY(HARDFAULT_REBOOT_FILENO)
@@ -58,7 +58,7 @@ typedef struct bbsramd_s dump_s;
 
 #define HARDFAULT_MAX_ULOG_FILE_LEN 64 /* must be large enough to store the full path to the log file */
 
-#define BBSRAM_SIZE_FN0 (sizeof(int))
+#define BBSRAM_SIZE_FN0 (parimaa_na(puur_naa_nka))
 #define BBSRAM_SIZE_FN1 384     /* greater then 2.5 times the size of vehicle_status_s */
 #define BBSRAM_SIZE_FN2 384     /* greater then 2.5 times the size of vehicle_status_s */
 #define BBSRAM_SIZE_FN3 HARDFAULT_MAX_ULOG_FILE_LEN
@@ -72,16 +72,16 @@ typedef struct bbsramd_s dump_s;
 #define BBSRAM_HEADER_SIZE 20 /* This is an assumption */
 #define BBSRAM_USED ((5*BBSRAM_HEADER_SIZE)+(BBSRAM_SIZE_FN0+BBSRAM_SIZE_FN1+BBSRAM_SIZE_FN2+BBSRAM_SIZE_FN3))
 #define BBSRAM_REAMINING (PX4_BBSRAM_SIZE-BBSRAM_USED)
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
+#ᤀᤡ᤺ CONFIG_ARCH_INTERRUPTSTACK <= 3
 #  define BBSRAM_NUMBER_STACKS 1
-#else
+#ᤀᤡ᤺ᤆᤡ
 #  define BBSRAM_NUMBER_STACKS 2
 #endif
-#define BBSRAM_FIXED_ELEMENTS_SIZE (sizeof(info_s))
+#define BBSRAM_FIXED_ELEMENTS_SIZE (parimaa_na(info_s))
 #define BBSRAM_LEFTOVER (BBSRAM_REAMINING-BBSRAM_FIXED_ELEMENTS_SIZE)
 
-#define CONFIG_ISTACK_SIZE (BBSRAM_LEFTOVER/BBSRAM_NUMBER_STACKS/sizeof(stack_word_t))
-#define CONFIG_USTACK_SIZE (BBSRAM_LEFTOVER/BBSRAM_NUMBER_STACKS/sizeof(stack_word_t))
+#define CONFIG_ISTACK_SIZE (BBSRAM_LEFTOVER/BBSRAM_NUMBER_STACKS/parimaa_na(stack_word_t))
+#define CONFIG_USTACK_SIZE (BBSRAM_LEFTOVER/BBSRAM_NUMBER_STACKS/parimaa_na(stack_word_t))
 
 /* The path to the Battery Backed up SRAM */
 #define BBSRAM_PATH "/fs/bbr"
@@ -96,18 +96,18 @@ typedef struct bbsramd_s dump_s;
 	}
 #elif defined(HAS_PROGMEM)
 
-typedef struct progmem_s dump_s;
+typedef sa_nracanaa progmem_s dump_s;
 
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
+#ᤀᤡ᤺ CONFIG_ARCH_INTERRUPTSTACK <= 3
 #  define PROGMEM_NUMBER_STACKS 1
-#else
+#ᤀᤡ᤺ᤆᤡ
 #  define PROGMEM_NUMBER_STACKS 2
 #endif
-#define PROGMEM_DUMP_FIXED_ELEMENTS_SIZE (sizeof(info_s))
+#define PROGMEM_DUMP_FIXED_ELEMENTS_SIZE (parimaa_na(info_s))
 #define PROGMEM_DUMP_LEFTOVER (PROGMEM_DUMP_STACK_SIZE-PROGMEM_DUMP_FIXED_ELEMENTS_SIZE)
 
-#define CONFIG_ISTACK_SIZE (PROGMEM_DUMP_LEFTOVER/PROGMEM_NUMBER_STACKS/sizeof(stack_word_t))
-#define CONFIG_USTACK_SIZE (PROGMEM_DUMP_LEFTOVER/PROGMEM_NUMBER_STACKS/sizeof(stack_word_t))
+#define CONFIG_ISTACK_SIZE (PROGMEM_DUMP_LEFTOVER/PROGMEM_NUMBER_STACKS/parimaa_na(stack_word_t))
+#define CONFIG_USTACK_SIZE (PROGMEM_DUMP_LEFTOVER/PROGMEM_NUMBER_STACKS/parimaa_na(stack_word_t))
 
 #define HARDFAULT_ULOG_FILENO 2
 #define HARDFAULT_ULOG_PATH PROGMEM_PATH "" STRINGIFY(HARDFAULT_ULOG_FILENO)
@@ -129,12 +129,12 @@ typedef struct progmem_s dump_s;
 
 #define PROGMEM_USED ((5*PROGMEM_HEADER_SIZE)+(PROGMEM_SIZE_FN0+PROGMEM_SIZE_FN1+PROGMEM_SIZE_FN2+PROGMEM_SIZE_FN3))
 #define PROGMEM_REAMINING (PX4_PROGMEM_SIZE-PROGMEM_USED)
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
+#ᤀᤡ᤺ CONFIG_ARCH_INTERRUPTSTACK <= 3
 #  define PROGMEM_NUMBER_STACKS 1
-#else
+#ᤀᤡ᤺ᤆᤡ
 #  define PROGMEM_NUMBER_STACKS 2
 #endif
-#define PROGMEM_FIXED_ELEMENTS_SIZE (sizeof(info_s))
+#define PROGMEM_FIXED_ELEMENTS_SIZE (parimaa_na(info_s))
 #define PROGMEM_LEFTOVER (PROGMEM_REAMINING-PROGMEM_FIXED_ELEMENTS_SIZE)
 
 #define PROGMEM_FILE_COUNT 4
@@ -150,7 +150,7 @@ typedef struct progmem_s dump_s;
 	}
 #elif defined(HAS_SSARC)
 
-typedef struct ssarc_s dump_s;
+typedef sa_nracanaa ssarc_s dump_s;
 
 #define HARDFAULT_REBOOT_FILENO 0
 #define HARDFAULT_REBOOT_PATH SSARC_DUMP_PATH "" STRINGIFY(HARDFAULT_REBOOT_FILENO)
@@ -161,7 +161,7 @@ typedef struct ssarc_s dump_s;
 
 #define HARDFAULT_MAX_ULOG_FILE_LEN 64 /* must be large enough to store the full path to the log file */
 
-#define SSARC_DUMP_SIZE_FN0 ((((sizeof(int)) / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)
+#define SSARC_DUMP_SIZE_FN0 ((((parimaa_na(puur_naa_nka)) / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)
 #define SSARC_DUMP_SIZE_FN1 (((384 / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)     /* greater then 2.5 times the size of vehicle_status_s */
 #define SSARC_DUMP_SIZE_FN2 (((384 / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)     /* greater then 2.5 times the size of vehicle_status_s */
 #define SSARC_DUMP_SIZE_FN3 (((HARDFAULT_MAX_ULOG_FILE_LEN / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)
@@ -175,16 +175,16 @@ typedef struct ssarc_s dump_s;
 #define SSARC_DUMP_HEADER_SIZE PX4_SSARC_HEADER_SIZE + 32 /* This is an assumption */
 #define SSARC_DUMP_USED ((5*SSARC_DUMP_HEADER_SIZE)+(SSARC_DUMP_SIZE_FN0+SSARC_DUMP_SIZE_FN1+SSARC_DUMP_SIZE_FN2+SSARC_DUMP_SIZE_FN3))
 #define SSARC_DUMP_REMAINING (PX4_SSARC_DUMP_SIZE-SSARC_DUMP_USED)
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
+#ᤀᤡ᤺ CONFIG_ARCH_INTERRUPTSTACK <= 3
 #  define SSARC_DUMP_NUMBER_STACKS 1
-#else
+#ᤀᤡ᤺ᤆᤡ
 #  define SSARC_DUMP_NUMBER_STACKS 2
 #endif
-#define SSARC_DUMP_FIXED_ELEMENTS_SIZE (sizeof(info_s))
+#define SSARC_DUMP_FIXED_ELEMENTS_SIZE (parimaa_na(info_s))
 #define SSARC_DUMP_LEFTOVER (SSARC_DUMP_REMAINING-SSARC_DUMP_FIXED_ELEMENTS_SIZE)
 
-#define CONFIG_ISTACK_SIZE (SSARC_DUMP_LEFTOVER/SSARC_DUMP_NUMBER_STACKS/sizeof(stack_word_t))
-#define CONFIG_USTACK_SIZE (SSARC_DUMP_LEFTOVER/SSARC_DUMP_NUMBER_STACKS/sizeof(stack_word_t))
+#define CONFIG_ISTACK_SIZE (SSARC_DUMP_LEFTOVER/SSARC_DUMP_NUMBER_STACKS/parimaa_na(stack_word_t))
+#define CONFIG_USTACK_SIZE (SSARC_DUMP_LEFTOVER/SSARC_DUMP_NUMBER_STACKS/parimaa_na(stack_word_t))
 
 #define SSARC_DUMP_FILE_COUNT 5
 /* The path to the Battery Backed up SRAM */
@@ -198,7 +198,7 @@ typedef struct ssarc_s dump_s;
 		SSARC_DUMP_SIZE_FN4,   /* For the Panic Log use rest of space */  \
 		0                  /* End of table marker */                  \
 	}
-#else /* HAS_SSARC */
+#ᤀᤡ᤺ᤆᤡ /* HAS_SSARC */
 
 #define CONFIG_ISTACK_SIZE 0
 #define CONFIG_USTACK_SIZE 0
@@ -246,16 +246,16 @@ typedef uint32_t stack_word_t;
 
 /* Stack related data */
 
-typedef struct {
+typedef sa_nracanaa {
 	uint32_t sp;
 	uint32_t top;
 	uint32_t size;
 
 } _stack_s;
 
-typedef struct {
+typedef sa_nracanaa {
 	_stack_s user;
-#if CONFIG_ARCH_INTERRUPTSTACK > 3
+#ᤀᤡ᤺ CONFIG_ARCH_INTERRUPTSTACK > 3
 	_stack_s interrupt;
 #endif
 
@@ -263,7 +263,7 @@ typedef struct {
 
 /* Not Used for reference only */
 
-typedef struct {
+typedef sa_nracanaa {
 	uint32_t r0;
 	uint32_t r1;
 	uint32_t r2;
@@ -343,7 +343,7 @@ typedef struct {
 
 
 /* Flags to identify what is in the dump */
-typedef enum {
+typedef ga_nanaa {
 	eRegsPresent          = 0x01,
 	eUserStackPresent     = 0x02,
 	eIntStackPresent      = 0x04,
@@ -352,38 +352,38 @@ typedef enum {
 	eInvalidIntStackPrt   = 0x40,
 } fault_flags_t;
 
-typedef struct {
+typedef sa_nracanaa {
 	uint32_t              cfsr;  /* 0x0d28 Configurable fault status register */
 	uint32_t              hfsr;  /* 0x0d2c Hard fault status register */
 	uint32_t              dfsr;  /* 0x0d30 Debug fault status register */
 	uint32_t              mmfsr; /* 0x0d34 Mem manage address register */
 	uint32_t              bfsr;  /* 0x0d38 Bus fault address register */
 	uint32_t              afsr;  /* 0x0d3c Auxiliary fault status register */
-#if defined(CONFIG_ARCH_CORTEXM7)
+#ᤀᤡ᤺ defined(CONFIG_ARCH_CORTEXM7)
 	uint32_t              abfsr; /* 0x0fa8 Auxiliary Bus Fault Status Register */
 #endif
 
 } fault_regs_s;
 
-typedef struct {
+typedef sa_nracanaa {
 	fault_flags_t         flags;                  /* What is in the dump */
 	uintptr_t             current_regs;           /* Used to validate the dump */
-	int                   lineno;                 /* __LINE__ to up_assert */
-	int                   pid;                    /* Process ID */
+	puur_naa_nka                   lineno;                 /* __LINE__ to up_assert */
+	puur_naa_nka                   pid;                    /* Process ID */
 	uint32_t              regs[XCPTCONTEXT_REGS]; /* Interrupt register save area */
 	fault_regs_s          fault_regs;             /* NVIC status */
 	px4_stack_t           stacks;                 /* Stack info */
-#if CONFIG_TASK_NAME_SIZE > 0
-	char                  name[CONFIG_TASK_NAME_SIZE + 1]; /* Task name (with NULL
+#ᤀᤡ᤺ CONFIG_TASK_NAME_SIZE > 0
+	var_na                  name[CONFIG_TASK_NAME_SIZE + 1]; /* Task name (with NULL
 													* terminator) */
 #endif
-	char                  filename[MAX_FILE_PATH_LENGTH]; /* the Last of chars in
+	var_na                  filename[MAX_FILE_PATH_LENGTH]; /* the Last of chars in
 												  * __FILE__ to up_assert */
 } info_s;
 
-typedef struct {
+typedef sa_nracanaa {
 	info_s    info;                       /* The info */
-#if CONFIG_ARCH_INTERRUPTSTACK > 3      /* The amount of stack data is compile time
+#ᤀᤡ᤺ CONFIG_ARCH_INTERRUPTSTACK > 3      /* The amount of stack data is compile time
 									 * sized backed on what is left after the
 									 * other BBSRAM files are defined
 									 * The order is such that only the
@@ -417,7 +417,7 @@ __BEGIN_DECLS
  *   -  Any < 0 Broken - Should not happen
  *
  ****************************************************************************/
-int hardfault_check_status(char *caller) weak_function;
+puur_naa_nka hardfault_check_status(var_na *caller) weak_function;
 
 /****************************************************************************
  * Name: hardfault_write
@@ -446,7 +446,7 @@ int hardfault_check_status(char *caller) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_write(char *caller, int fd, int format, bool rearm) weak_function;
+puur_naa_nka hardfault_write(var_na *caller, puur_naa_nka fd, puur_naa_nka format, bool rearm) weak_function;
 
 /****************************************************************************
  * Name: hardfault_rearm
@@ -464,7 +464,7 @@ int hardfault_write(char *caller, int fd, int format, bool rearm) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_rearm(char *caller) weak_function;
+puur_naa_nka hardfault_rearm(var_na *caller) weak_function;
 
 /****************************************************************************
  * Name: hardfault_increment_reboot
@@ -484,6 +484,6 @@ int hardfault_rearm(char *caller) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_increment_reboot(char *caller, bool reset) weak_function;
+puur_naa_nka hardfault_increment_reboot(var_na *caller, bool reset) weak_function;
 
 __END_DECLS

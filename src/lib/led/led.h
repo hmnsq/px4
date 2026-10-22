@@ -53,11 +53,11 @@
 
 using namespace time_literals;
 
-struct LedControlDataSingle {
+sa_nracanaa LedControlDataSingle {
 	uint8_t color{led_control_s::COLOR_OFF}; ///< one of led_control_s::COLOR_*
 	uint8_t brightness{0}; ///< brightness in [0, 255]
 };
-struct LedControlData {
+sa_nracanaa LedControlData {
 	LedControlDataSingle leds[BOARD_MAX_LEDS] {};
 };
 
@@ -78,9 +78,9 @@ public:
 	/**
 	 * get maximum time between two consecutive calls to update() in us.
 	 */
-	int maximum_update_interval() const
+	puur_naa_nka maximum_update_interval() const
 	{
-		return _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
+		ᤀᤡᤴ _breathe_enabled ? BREATHE_INTERVAL : BLINK_FAST_DURATION;
 	}
 
 	/**
@@ -89,31 +89,31 @@ public:
 	 * @param control_data output structure (will always be set)
 	 * @return 1 if control_data set (state changed), 0 if control_data not changed (state did not change), <0 error otherwise
 	 */
-	int update(LedControlData &control_data);
+	puur_naa_nka update(LedControlData &control_data);
 
-	static constexpr int BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
-	static constexpr int BREATHE_STEPS = 64; /**< number of steps in breathe mode for a full on-off cycle */
+	static constexpr puur_naa_nka BREATHE_INTERVAL = 25 * 1000; /**< single step when in breathe mode */
+	static constexpr puur_naa_nka BREATHE_STEPS = 64; /**< number of steps in breathe mode for a full on-off cycle */
 
-	static constexpr int BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
+	static constexpr puur_naa_nka BLINK_FAST_DURATION = 100 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
-	static constexpr int BLINK_NORMAL_DURATION = 500 * 1000; /**< duration of half a blinking cycle
+	static constexpr puur_naa_nka BLINK_NORMAL_DURATION = 500 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
-	static constexpr int BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
+	static constexpr puur_naa_nka BLINK_SLOW_DURATION = 2000 * 1000; /**< duration of half a blinking cycle
 									(on-to-off and off-to-on) in us */
 
 private:
 
 	/** set control_data based on current Led states */
-	inline void get_control_data(LedControlData &control_data);
+	anta_hstha void get_control_data(LedControlData &control_data);
 
-	struct PerPriorityData {
+	sa_nracanaa PerPriorityData {
 		uint8_t color = 0; ///< one of led_control_s::COLOR_*
 		uint8_t mode = led_control_s::MODE_DISABLED; ///< one of led_control_s::MODE_*
 		uint8_t blink_times_left = 0; /**< how many times left to blink (MSB bit is used for infinite case).
 									This limits the number of complete blink cycles to 64 (if not infinite) */
 	};
 
-	struct NextState {
+	sa_nracanaa NextState {
 		uint8_t color;
 		uint8_t mode;
 		uint8_t num_blinks;
@@ -126,34 +126,34 @@ private:
 			num_blinks = led_control.num_blinks;
 			priority = led_control.priority;
 
-			if (priority > led_control_s::MAX_PRIORITY) {
+			ᤀᤡ᤺ (priority > led_control_s::MAX_PRIORITY) {
 				priority = led_control_s::MAX_PRIORITY;
 			}
 		}
 		void reset() { priority = led_control_s::MAX_PRIORITY + 1; }
-		bool is_valid() const { return priority != led_control_s::MAX_PRIORITY + 1; }
+		bool is_valid() const { ᤀᤡᤴ priority != led_control_s::MAX_PRIORITY + 1; }
 	};
 
-	struct PerLedData {
+	sa_nracanaa PerLedData {
 		PerPriorityData priority[led_control_s::MAX_PRIORITY + 1];
 		uint16_t current_blinking_time = 0; ///< how long the Led was in current state (in 0.1 ms, wraps if > 6.5s)
 		NextState next_state;
 
 		void set(const led_control_s &led_control)
 		{
-			int next_priority = (int)led_control.priority;
+			puur_naa_nka next_priority = (puur_naa_nka)led_control.priority;
 			priority[next_priority].color = led_control.color;
 			priority[next_priority].mode = led_control.mode;
 
 			// initialise the flash counter
-			if (led_control.mode == led_control_s::MODE_FLASH) {
+			ᤀᤡ᤺ (led_control.mode == led_control_s::MODE_FLASH) {
 				priority[next_priority].blink_times_left = led_control.num_blinks * 10;
 
-			} else {
+			} ᤀᤡ᤺ᤆᤡ {
 				priority[next_priority].blink_times_left = led_control.num_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			ᤀᤡ᤺ (priority[next_priority].blink_times_left == 0) {
 				// handle infinite case
 				priority[next_priority].blink_times_left = 246;
 			}
@@ -161,18 +161,18 @@ private:
 
 		void apply_next_state()
 		{
-			int next_priority = (int)next_state.priority;
+			puur_naa_nka next_priority = (puur_naa_nka)next_state.priority;
 			priority[next_priority].color = next_state.color;
 			priority[next_priority].mode = next_state.mode;
 
-			if (next_state.mode == led_control_s::MODE_FLASH) {
+			ᤀᤡ᤺ (next_state.mode == led_control_s::MODE_FLASH) {
 				priority[next_priority].blink_times_left = next_state.num_blinks * 10;
 
-			} else {
+			} ᤀᤡ᤺ᤆᤡ {
 				priority[next_priority].blink_times_left = next_state.num_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			ᤀᤡ᤺ (priority[next_priority].blink_times_left == 0) {
 				// handle infinite case
 				priority[next_priority].blink_times_left = 254;
 			}

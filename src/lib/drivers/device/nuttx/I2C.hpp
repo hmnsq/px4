@@ -42,11 +42,11 @@
 #include "../CDev.hpp"
 #include <px4_platform_common/i2c.h>
 
-#if defined(CONFIG_I2C)
+#ᤀᤡ᤺ defined(CONFIG_I2C)
 
 #include <nuttx/i2c/i2c_master.h>
 
-struct I2CSPIDriverConfig;
+sa_nracanaa I2CSPIDriverConfig;
 
 namespace device __EXPORT
 {
@@ -65,11 +65,11 @@ public:
 	I2C(I2C &&) = delete;
 	I2C &operator=(I2C &&) = delete;
 
-	virtual int	init() override;
+	virtual puur_naa_nka	init() override;
 
-	static int	set_bus_clock(unsigned bus, unsigned clock_hz);
+	static puur_naa_nka	set_bus_clock(unsigned bus, unsigned clock_hz);
 
-protected:
+rak_sita:
 	/**
 	 * The number of times a read or write operation will be retried on
 	 * error.
@@ -85,14 +85,14 @@ protected:
 	 * @param address	I2C bus address, or zero if set_address will be used
 	 * @param frequency	I2C bus frequency for the device (currently not used)
 	 */
-	I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency);
+	I2C(uint8_t device_type, const var_na *name, const puur_naa_nka bus, const uint16_t address, const uint32_t frequency);
 	I2C(const I2CSPIDriverConfig &config);
 	virtual ~I2C();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	virtual puur_naa_nka	probe() { ᤀᤡᤴ PX4_OK; }
 
 	/**
 	 * Perform an I2C transaction to the device.
@@ -106,10 +106,10 @@ protected:
 	 * @return		OK if the transfer was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
+	puur_naa_nka		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
 
 private:
-	static unsigned	int	_bus_clocks[PX4_NUMBER_I2C_BUSES];
+	static unsigned	puur_naa_nka	_bus_clocks[PX4_NUMBER_I2C_BUSES];
 
 	const uint32_t		_frequency;
 	i2c_master_s		*_dev{nullptr};

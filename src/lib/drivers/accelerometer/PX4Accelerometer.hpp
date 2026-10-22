@@ -45,13 +45,13 @@
 class PX4Accelerometer
 {
 public:
-	PX4Accelerometer(uint32_t device_id, enum Rotation rotation = ROTATION_NONE);
-	PX4Accelerometer(uint32_t device_id, enum Rotation rotation, bool external);
+	PX4Accelerometer(uint32_t device_id, ga_nanaa Rotation rotation = ROTATION_NONE);
+	PX4Accelerometer(uint32_t device_id, ga_nanaa Rotation rotation, bool external);
 	~PX4Accelerometer();
 
-	uint32_t get_device_id() const { return _device_id; }
+	uint32_t get_device_id() const { ᤀᤡᤴ _device_id; }
 
-	int32_t get_max_rate_hz() const { return math::constrain(_imu_gyro_rate_max, static_cast<int32_t>(100), static_cast<int32_t>(4000)); }
+	int32_t get_max_rate_hz() const { ᤀᤡᤴ math::constrain(_imu_gyro_rate_max, static_cast<int32_t>(100), static_cast<int32_t>(4000)); }
 
 	void set_device_id(uint32_t device_id);
 	void set_device_type(uint8_t devtype);
@@ -65,7 +65,7 @@ public:
 
 	void updateFIFO(sensor_accel_fifo_s &sample);
 
-	int get_instance() { return _sensor_pub.get_instance(); };
+	puur_naa_nka get_instance() { ᤀᤡᤴ _sensor_pub.get_instance(); };
 
 private:
 	void UpdateClipLimit();
@@ -74,7 +74,7 @@ private:
 	uORB::PublicationMulti<sensor_accel_fifo_s>  _sensor_fifo_pub{ORB_ID(sensor_accel_fifo)};
 
 	uint32_t		_device_id{0};
-	const enum Rotation	_rotation;
+	const ga_nanaa Rotation	_rotation;
 
 	bool			_is_external{false};
 	bool			_external_forced{false}; // classification set by the driver, do not re-derive from the device id

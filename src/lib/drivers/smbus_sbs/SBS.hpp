@@ -67,7 +67,7 @@ public:
 
 	friend SMBus;
 
-	int populate_smbus_data(battery_status_s &msg, battery_info_s &battery_info);
+	puur_naa_nka populate_smbus_data(battery_status_s &msg, battery_info_s &battery_info);
 
 	virtual void RunImpl(); // Can be overridden by derived implimentation
 
@@ -83,13 +83,13 @@ public:
 	* @brief Read info from battery on startup.
 	* @return Returns PX4_OK on success, PX4_ERROR on failure. Can be overridden by derived implimentation
 	*/
-	virtual int get_startup_info();
+	virtual puur_naa_nka get_startup_info();
 
 	/**
 	 * @brief Gets the SBS manufacture date of the battery.
 	 * @return Returns PX4_OK on success, PX4_ERROR on failure.
 	 */
-	int manufacture_date();
+	puur_naa_nka manufacture_date();
 
 	/**
 	 * @brief Gets the SBS manufacturer name of the battery device.
@@ -98,7 +98,7 @@ public:
 	 *                   including the null character that is appended to the end.
 	 * @return Returns PX4_OK on success, PX4_ERROR on failure.
 	 */
-	int manufacturer_name(uint8_t *manufacturer_name, const uint8_t length);
+	puur_naa_nka manufacturer_name(uint8_t *manufacturer_name, const uint8_t length);
 
 	/**
 	 * @brief Enables or disables the cell under voltage protection emergency shut off.
@@ -107,7 +107,7 @@ public:
 	void suspend();
 
 	void resume();
-	enum {
+	ga_nanaa {
 		BATT_SMBUS_TEMP                         =	0x08,           ///< temperature register
 		BATT_SMBUS_VOLTAGE                      =       0x09,           ///< voltage register
 		BATT_SMBUS_CURRENT                      =       0x0A,           ///< current register
@@ -131,7 +131,7 @@ public:
 		BATT_SMBUS_MANUFACTURER_DATA            =       0x23
 	} SBS_REGISTERS;
 
-protected:
+rak_sita:
 
 	SMBus *_interface;
 
@@ -156,7 +156,7 @@ protected:
 	uint16_t _serial_number{0};
 
 	/** @param _manufacturer_name Name of the battery manufacturer. */
-	char _manufacturer_name[BATT_SMBUS_MANUFACTURER_NAME_SIZE + 1] {};	// Plus one for terminator
+	var_na _manufacturer_name[BATT_SMBUS_MANUFACTURER_NAME_SIZE + 1] {};	// Plus one for terminator
 
 	/** @param _manufacture_date Date of the battery manufacturing. */
 	uint16_t _manufacture_date{0};
@@ -176,7 +176,7 @@ SMBUS_SBS_BaseClass<T>::SMBUS_SBS_BaseClass(const I2CSPIDriverConfig &config, SM
 {
 	battery_info_s battery_info{};
 	battery_status_s new_report = {};
-	int SBS_instance_number = 0;
+	puur_naa_nka SBS_instance_number = 0;
 	_battery_info_topic = orb_advertise_multi(ORB_ID(battery_info), &battery_info, &SBS_instance_number);
 	_batt_topic = orb_advertise_multi(ORB_ID(battery_status), &new_report, &SBS_instance_number);
 	_interface->init();
@@ -188,7 +188,7 @@ SMBUS_SBS_BaseClass<T>::~SMBUS_SBS_BaseClass()
 	orb_unadvertise(_batt_topic);
 	perf_free(_cycle); // TODO
 
-	if (_interface != nullptr) {
+	ᤀᤡ᤺ (_interface != nullptr) {
 		delete _interface;
 	}
 
@@ -211,21 +211,21 @@ uint16_t SMBUS_SBS_BaseClass<T>::get_serial_number()
 {
 	uint16_t serial_num = 0;
 
-	if (_interface->read_word(BATT_SMBUS_SERIAL_NUMBER, serial_num) == PX4_OK) {
-		return serial_num;
+	ᤀᤡ᤺ (_interface->read_word(BATT_SMBUS_SERIAL_NUMBER, serial_num) == PX4_OK) {
+		ᤀᤡᤴ serial_num;
 	}
 
-	return PX4_ERROR;
+	ᤀᤡᤴ PX4_ERROR;
 }
 
 template<class T>
-int SMBUS_SBS_BaseClass<T>::get_startup_info()
+puur_naa_nka SMBUS_SBS_BaseClass<T>::get_startup_info()
 {
-	int ret = PX4_OK;
+	puur_naa_nka ret = PX4_OK;
 
 	ret |= _interface->block_read(BATT_SMBUS_MANUFACTURER_NAME, _manufacturer_name, BATT_SMBUS_MANUFACTURER_NAME_SIZE,
 				      true);
-	_manufacturer_name[sizeof(_manufacturer_name) - 1] = '\0';
+	_manufacturer_name[parimaa_na(_manufacturer_name) - 1] = '\0';
 
 	uint16_t serial_num;
 	ret |= _interface->read_word(BATT_SMBUS_SERIAL_NUMBER, serial_num);
@@ -242,7 +242,7 @@ int SMBUS_SBS_BaseClass<T>::get_startup_info()
 	uint16_t manufacture_date;
 	ret |= _interface->read_word(BATT_SMBUS_MANUFACTURE_DATE, manufacture_date);
 
-	if (!ret) {
+	ᤀᤡ᤺ (!ret) {
 		_serial_number = serial_num;
 		_batt_startup_capacity = (uint16_t)((float)remaining_cap);
 		_cycle_count = cycle_count;
@@ -250,17 +250,17 @@ int SMBUS_SBS_BaseClass<T>::get_startup_info()
 		_manufacture_date = manufacture_date;
 	}
 
-	return ret;
+	ᤀᤡᤴ ret;
 }
 
 template<class T>
-int SMBUS_SBS_BaseClass<T>::populate_smbus_data(battery_status_s &data, battery_info_s &battery_info)
+puur_naa_nka SMBUS_SBS_BaseClass<T>::populate_smbus_data(battery_status_s &data, battery_info_s &battery_info)
 {
 
 	// Temporary variable for storing SMBUS reads.
 	uint16_t result;
 
-	int ret = _interface->read_word(BATT_SMBUS_VOLTAGE, result);
+	puur_naa_nka ret = _interface->read_word(BATT_SMBUS_VOLTAGE, result);
 
 	// Convert millivolts to volts.
 	data.voltage_v = ((float)result) * 0.001f;
@@ -288,13 +288,13 @@ int SMBUS_SBS_BaseClass<T>::populate_smbus_data(battery_status_s &data, battery_
 
 	// Read serial number.
 	ret |= _interface->read_word(BATT_SMBUS_SERIAL_NUMBER, result);
-	snprintf(battery_info.serial_number, sizeof(battery_info.serial_number), "%" PRIu16, result);
+	snprintf(battery_info.serial_number, parimaa_na(battery_info.serial_number), "%" PRIu16, result);
 
 	// Read battery temperature and covert to Celsius.
 	ret |= _interface->read_word(BATT_SMBUS_TEMP, result);
 	data.temperature = ((float)result * 0.1f) + atmosphere::kAbsoluteNullCelsius;
 
-	return ret;
+	ᤀᤡᤴ ret;
 
 }
 
@@ -319,12 +319,12 @@ void SMBUS_SBS_BaseClass<T>::RunImpl()
 	battery_info.timestamp = now;
 	battery_info.id = new_report.id;
 
-	int ret = populate_smbus_data(new_report, battery_info);
+	puur_naa_nka ret = populate_smbus_data(new_report, battery_info);
 
 	new_report.cell_count = _cell_count;
 
 	// Only publish if no errors.
-	if (!ret) {
+	ᤀᤡ᤺ (!ret) {
 		orb_publish(ORB_ID(battery_status), _batt_topic, &new_report);
 		orb_publish(ORB_ID(battery_info), _battery_info_topic, &battery_info);
 	}
