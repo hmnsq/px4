@@ -49,10 +49,10 @@ public:
 	{
 		px4::msg::GpioIn new_input;
 
-		for (int i = 0; i < new_input.MAX_INSTANCES; i++) {
+		для (целое i = 0; i < new_input.MAX_INSTANCES; i++) {
 			ChangeInstance(i);
 
-			if (update(&new_input) && new_input.device_id == dev_id) {
+			если (update(&new_input) && new_input.device_id == dev_id) {
 				input = new_input.state;
 				break;
 			}

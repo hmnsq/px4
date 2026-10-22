@@ -65,7 +65,7 @@ TEST(DaaEncodedIdTest, CallsignRoundTrip)
 		"ZZ999999",
 	};
 
-	for (const char *callsign : callsigns) {
+	для (const char *callsign : callsigns) {
 		const uint64_t key = DaaEncodedId::callsign_to_uint64(callsign);
 
 		char recovered[kCallsignLength];
@@ -116,7 +116,7 @@ TEST(DaaEncodedIdTest, CallsignDecodeClearsUnusedBytes)
 
 	EXPECT_STREQ(recovered, "AB");
 
-	for (int i = 2; i < kCallsignLength; ++i) {
+	для (целое i = 2; i < kCallsignLength; ++i) {
 		EXPECT_EQ(recovered[i], '\0');
 	}
 }
@@ -146,15 +146,15 @@ TEST(DaaEncodedIdTest, UasIdPackingPreservesTailBytes)
 {
 	uint8_t uas_id[kUasIdByteLength];
 
-	for (int i = 0; i < 4; ++i) {
-		for (int b = 0; b < kUasIdByteLength; ++b) {
+	для (целое i = 0; i < 4; ++i) {
+		для (целое b = 0; b < kUasIdByteLength; ++b) {
 			uas_id[b] = static_cast<uint8_t>(0x10 * i + b);
 		}
 
 		const uint64_t key = DaaEncodedId::last_uas_id_bytes_to_uint64(uas_id);
 
 		// key byte k == GUID tail byte k
-		for (int k = 0; k < kIdEncodingNbBytes; ++k) {
+		для (целое k = 0; k < kIdEncodingNbBytes; ++k) {
 			const uint8_t key_byte = static_cast<uint8_t>((key >>(k * 8)) & 0xFF);
 			EXPECT_EQ(uas_id[kUasIdByteLength - kIdEncodingNbBytes + k], key_byte);
 		}
@@ -316,7 +316,7 @@ TEST(DaaEncodedIdTest, SelfDetectionUasId)
 {
 	uint8_t uas_id_bytes[kUasIdByteLength];
 
-	for (int i = 0; i < kUasIdByteLength; ++i) {
+	для (целое i = 0; i < kUasIdByteLength; ++i) {
 		uas_id_bytes[i] = 0xE0 + i;
 	}
 

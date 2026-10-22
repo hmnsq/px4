@@ -43,9 +43,9 @@
 
 #include "events_ioctl.h"
 
-static int events_ioctl(unsigned int cmd, unsigned long arg)
+static целое events_ioctl(unsigned целое cmd, unsigned long arg)
 {
-	int ret = OK;
+	целое ret = OK;
 
 	switch (cmd) {
 	case EVENTSIOCSEND: {
@@ -59,7 +59,7 @@ static int events_ioctl(unsigned int cmd, unsigned long arg)
 		break;
 	}
 
-	return ret;
+	вернуть ret;
 }
 
 void events_ioctl_init(void)

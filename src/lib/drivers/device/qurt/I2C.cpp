@@ -42,14 +42,14 @@
 
 #include "I2C.hpp"
 
-#if defined(CONFIG_I2C)
+#если defined(CONFIG_I2C)
 
 #include <px4_platform_common/time.h>
 #include <px4_platform_common/px4_config.h>
 #include <px4_platform_common/i2c_spi_buses.h>
 
 extern "C" {
-	__EXPORT void fc_uninitialize_i2c_bus(int fd);
+	__EXPORT void fc_uninitialize_i2c_bus(целое fd);
 }
 
 namespace device
@@ -70,7 +70,7 @@ struct I2C::_bus_mutex_t I2C::_bus_mutex[I2C::MAX_I2C_BUS] = {
 	{5, PTHREAD_MUTEX_INITIALIZER}
 };
 
-I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency) :
+I2C::I2C(uint8_t device_type, const char *name, const целое bus, const uint16_t address, const uint32_t frequency) :
 	CDev(name, nullptr),
 	_frequency(frequency / 1000)
 {
@@ -95,33 +95,33 @@ I2C::~I2C()
 {
 }
 
-int
+целое
 I2C::init()
 {
-	int ret = PX4_ERROR;
+	целое ret = PX4_ERROR;
 
-	if (_i2c_fd != -1) {
-		return PX4_OK;
+	если (_i2c_fd != -1) {
+		вернуть PX4_OK;
 	}
 
-	if (_config_i2c_bus == NULL) {
+	если (_config_i2c_bus == NULL) {
 		PX4_ERR("NULL i2c init function");
 		goto out;
 	}
 
-	if (_mutex == nullptr) {
-		for (int i = 0; i < MAX_I2C_BUS; i++) {
-			if (get_device_bus() == _bus_mutex[i]._bus) {
+	если (_mutex == nullptr) {
+		для (целое i = 0; i < MAX_I2C_BUS; i++) {
+			если (get_device_bus() == _bus_mutex[i]._bus) {
 				_mutex = &_bus_mutex[i]._mutex;
 				break;
 			}
 		}
 
-		if (_mutex == nullptr) {
+		если (_mutex == nullptr) {
 			PX4_ERR("NULL i2c bus mutex");
 			goto out;
 
-		} else {
+		} иначе {
 			PX4_INFO("Set up I2C bus mutex for bus %d", get_device_bus());
 		}
 	}
@@ -131,7 +131,7 @@ I2C::init()
 	_i2c_fd = _config_i2c_bus(get_device_bus(), get_device_address(), _frequency);
 	pthread_mutex_unlock(_mutex);
 
-	if (_i2c_fd == -1) {
+	если (_i2c_fd == -1) {
 		PX4_ERR("i2c init failed");
 		goto out;
 	}
@@ -139,7 +139,7 @@ I2C::init()
 	// call the probe function to check whether the device is present
 	ret = probe();
 
-	if (ret != OK) {
+	если (ret != OK) {
 		PX4_ERR("i2c probe failed");
 		fc_uninitialize_i2c_bus(_i2c_fd);
 		_i2c_fd = -1;
@@ -149,7 +149,7 @@ I2C::init()
 	// do base class init, which will create device node, etc
 	ret = CDev::init();
 
-	if (ret != OK) {
+	если (ret != OK) {
 		PX4_ERR("i2c cdev init failed");
 		goto out;
 	}
@@ -159,14 +159,14 @@ I2C::init()
 
 out:
 
-	return ret;
+	вернуть ret;
 }
 
 void
-I2C::set_device_address(int address, bool log)
+I2C::set_device_address(целое address, bool log)
 {
-	if ((_i2c_fd != PX4_ERROR) && (_set_i2c_address != NULL)) {
-		if (log) {
+	если ((_i2c_fd != PX4_ERROR) && (_set_i2c_address != NULL)) {
+		если (log) {
 			PX4_INFO("Set i2c address 0x%x, fd %d", address, _i2c_fd);
 		}
 
@@ -179,13 +179,13 @@ I2C::set_device_address(int address, bool log)
 }
 
 
-int
+целое
 I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
 {
-	int ret = PX4_ERROR;
+	целое ret = PX4_ERROR;
 	unsigned retry_count = 1;
 
-	if ((_i2c_fd != PX4_ERROR) && (_i2c_transfer != NULL)) {
+	если ((_i2c_fd != PX4_ERROR) && (_i2c_transfer != NULL)) {
 		do {
 			// PX4_INFO("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
@@ -193,14 +193,14 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 			ret = _i2c_transfer(_i2c_fd, send, send_len, recv, recv_len);
 			pthread_mutex_unlock(_mutex);
 
-			if (ret != PX4_ERROR) { break; }
+			если (ret != PX4_ERROR) { break; }
 
 			px4_usleep(1000);
 
-		} while (retry_count++ < _retries);
+		} пока (retry_count++ < _retries);
 	}
 
-	return ret;
+	вернуть ret;
 }
 
 } // namespace device

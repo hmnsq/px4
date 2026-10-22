@@ -43,14 +43,14 @@
 #include <px4_platform_common/init.h>
 #include <stdio.h>
 
-int PX4_MAIN(int argc, char **argv)
+целое PX4_MAIN(целое argc, char **argv)
 {
 	px4::init(argc, argv, "cdevtest");
 
 	printf("cdevtest\n");
 	CDevExample cdevtest;
-	cdevtest.main();
+	cdevtest.основной();
 
 	printf("goodbye\n");
-	return 0;
+	вернуть 0;
 }

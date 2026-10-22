@@ -45,15 +45,15 @@ using matrix::Vector3f;
 namespace calibration
 {
 
-static constexpr int MAX_SENSOR_COUNT = 4; // TODO: per sensor?
+static constexpr целое MAX_SENSOR_COUNT = 4; // TODO: per sensor?
 
 int8_t FindCurrentCalibrationIndex(const char *sensor_type, uint32_t device_id)
 {
-	if (device_id == 0) {
-		return -1;
+	если (device_id == 0) {
+		вернуть -1;
 	}
 
-	for (unsigned i = 0; i < MAX_SENSOR_COUNT; ++i) {
+	для (unsigned i = 0; i < MAX_SENSOR_COUNT; ++i) {
 		char str[20] {};
 		snprintf(str, sizeof(str), "CAL_%s%u_ID", sensor_type, i);
 
@@ -61,30 +61,30 @@ int8_t FindCurrentCalibrationIndex(const char *sensor_type, uint32_t device_id)
 
 		param_t param_handle = param_find_no_notification(str);
 
-		if (param_handle == PARAM_INVALID) {
+		если (param_handle == PARAM_INVALID) {
 			continue;
 		}
 
 		// find again and get value, but this time mark it active
-		if (param_get(param_find(str), &device_id_val) != OK) {
+		если (param_get(param_find(str), &device_id_val) != OK) {
 			continue;
 		}
 
-		if ((uint32_t)device_id_val == device_id) {
-			return i;
+		если ((uint32_t)device_id_val == device_id) {
+			вернуть i;
 		}
 	}
 
-	return -1;
+	вернуть -1;
 }
 
 int8_t FindAvailableCalibrationIndex(const char *sensor_type, uint32_t device_id, int8_t preferred_index)
 {
 	// if this device is already using a calibration slot then keep it
-	int calibration_index = FindCurrentCalibrationIndex(sensor_type, device_id);
+	целое calibration_index = FindCurrentCalibrationIndex(sensor_type, device_id);
 
-	if (calibration_index >= 0) {
-		return calibration_index;
+	если (calibration_index >= 0) {
+		вернуть calibration_index;
 	}
 
 
@@ -92,37 +92,37 @@ int8_t FindAvailableCalibrationIndex(const char *sensor_type, uint32_t device_id
 	//  if available, otherwise use the first available slot
 	uint32_t cal_device_ids[MAX_SENSOR_COUNT] {};
 
-	for (unsigned i = 0; i < MAX_SENSOR_COUNT; ++i) {
+	для (unsigned i = 0; i < MAX_SENSOR_COUNT; ++i) {
 		char str[20] {};
 		snprintf(str, sizeof(str), "CAL_%s%u_ID", sensor_type, i);
 		int32_t device_id_val = 0;
 
-		if (param_get(param_find_no_notification(str), &device_id_val) == PX4_OK) {
+		если (param_get(param_find_no_notification(str), &device_id_val) == PX4_OK) {
 			cal_device_ids[i] = device_id_val;
 		}
 	}
 
 	// use preferred_index if it's available
-	if ((preferred_index >= 0) && (preferred_index < MAX_SENSOR_COUNT)
+	если ((preferred_index >= 0) && (preferred_index < MAX_SENSOR_COUNT)
 	    && (cal_device_ids[preferred_index] == 0)) {
 
 		calibration_index = preferred_index;
 
-	} else {
+	} иначе {
 		// otherwise select first available slot
-		for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-			if (cal_device_ids[i] == 0) {
+		для (целое i = 0; i < MAX_SENSOR_COUNT; i++) {
+			если (cal_device_ids[i] == 0) {
 				calibration_index = i;
 				break;
 			}
 		}
 	}
 
-	if (calibration_index == -1) {
+	если (calibration_index == -1) {
 		PX4_ERR("no %s calibration slots available", sensor_type);
 	}
 
-	return calibration_index;
+	вернуть calibration_index;
 }
 
 int32_t GetCalibrationParamInt32(const char *sensor_type, const char *cal_type, uint8_t instance)
@@ -133,11 +133,11 @@ int32_t GetCalibrationParamInt32(const char *sensor_type, const char *cal_type, 
 
 	int32_t value = 0;
 
-	if (param_get(param_find(str), &value) != 0) {
+	если (param_get(param_find(str), &value) != 0) {
 		PX4_ERR("failed to get %s", str);
 	}
 
-	return value;
+	вернуть value;
 }
 
 float GetCalibrationParamFloat(const char *sensor_type, const char *cal_type, uint8_t instance)
@@ -148,11 +148,11 @@ float GetCalibrationParamFloat(const char *sensor_type, const char *cal_type, ui
 
 	float value = NAN;
 
-	if (param_get(param_find(str), &value) != 0) {
+	если (param_get(param_find(str), &value) != 0) {
 		PX4_ERR("failed to get %s", str);
 	}
 
-	return value;
+	вернуть value;
 }
 
 Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance)
@@ -161,38 +161,38 @@ Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const char *cal_t
 
 	char str[20] {};
 
-	for (int axis = 0; axis < 3; axis++) {
+	для (целое axis = 0; axis < 3; axis++) {
 		char axis_char = 'X' + axis;
 
 		// eg CAL_MAGn_{X,Y,Z}OFF
 		snprintf(str, sizeof(str), "CAL_%s%" PRIu8 "_%c%s", sensor_type, instance, axis_char, cal_type);
 
-		if (param_get(param_find(str), &values(axis)) != 0) {
+		если (param_get(param_find(str), &values(axis)) != 0) {
 			PX4_ERR("failed to get %s", str);
 		}
 	}
 
-	return values;
+	вернуть values;
 }
 
 bool SetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance, Vector3f values)
 {
-	int ret = PX4_OK;
+	целое ret = PX4_OK;
 	char str[20] {};
 
-	for (int axis = 0; axis < 3; axis++) {
+	для (целое axis = 0; axis < 3; axis++) {
 		char axis_char = 'X' + axis;
 
 		// eg CAL_MAGn_{X,Y,Z}OFF
 		snprintf(str, sizeof(str), "CAL_%s%" PRIu8 "_%c%s", sensor_type, instance, axis_char, cal_type);
 
-		if (param_set_no_notification(param_find(str), &values(axis)) != 0) {
+		если (param_set_no_notification(param_find(str), &values(axis)) != 0) {
 			PX4_ERR("failed to set %s = %.4f", str, (double)values(axis));
 			ret = PX4_ERROR;
 		}
 	}
 
-	return ret == PX4_OK;
+	вернуть ret == PX4_OK;
 }
 
 Eulerf GetSensorLevelAdjustment()
@@ -204,7 +204,7 @@ Eulerf GetSensorLevelAdjustment()
 	param_get(param_find("SENS_BOARD_Y_OFF"), &y_offset);
 	param_get(param_find("SENS_BOARD_Z_OFF"), &z_offset);
 
-	return Eulerf{radians(x_offset), radians(y_offset), radians(z_offset)};
+	вернуть Eulerf{radians(x_offset), radians(y_offset), radians(z_offset)};
 }
 
 enum Rotation GetBoardRotation()
@@ -213,19 +213,19 @@ enum Rotation GetBoardRotation()
 	int32_t board_rot = -1;
 	param_get(param_find("SENS_BOARD_ROT"), &board_rot);
 
-	if (board_rot >= 0 && board_rot < Rotation::ROTATION_MAX) {
-		return static_cast<enum Rotation>(board_rot);
+	если (board_rot >= 0 && board_rot < Rotation::ROTATION_MAX) {
+		вернуть static_cast<enum Rotation>(board_rot);
 
-	} else {
+	} иначе {
 		PX4_ERR("invalid SENS_BOARD_ROT: %" PRId32, board_rot);
 	}
 
-	return Rotation::ROTATION_NONE;
+	вернуть Rotation::ROTATION_NONE;
 }
 
 Dcmf GetBoardRotationMatrix()
 {
-	return get_rot_matrix(GetBoardRotation());
+	вернуть get_rot_matrix(GetBoardRotation());
 }
 
 } // namespace calibration

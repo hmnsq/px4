@@ -53,7 +53,7 @@ template<> struct is_floating_point<float> { static constexpr bool value = true;
 template<> struct is_floating_point<double> { static constexpr bool value = true; };
 template<> struct is_floating_point<long double> { static constexpr bool value = true; };
 
-template<typename T, int WINDOW = 3>
+template<typename T, целое WINDOW = 3>
 class MedianFilter
 {
 public:
@@ -74,43 +74,43 @@ public:
 		memcpy(sorted, _buffer, sizeof(_buffer));
 		qsort(&sorted, WINDOW, sizeof(T), cmp);
 
-		return sorted[WINDOW / 2];
+		вернуть sorted[WINDOW / 2];
 	}
 
 	T apply(const T &sample)
 	{
 		insert(sample);
-		return median();
+		вернуть median();
 	}
 
 private:
 
-	static int cmp(const void *a, const void *b)
+	static целое cmp(const void *a, const void *b)
 	{
 		const T va = *(const T *)a;
 		const T vb = *(const T *)b;
 
-		if constexpr(is_floating_point<T>::value) {
-			if (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
-				return 0;
+		если constexpr(is_floating_point<T>::value) {
+			если (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
+				вернуть 0;
 
-			} else if (!__builtin_isfinite(va)) {
-				return  1;
+			} иначе если (!__builtin_isfinite(va)) {
+				вернуть  1;
 
-			} else if (!__builtin_isfinite(vb)) {
-				return -1;
+			} иначе если (!__builtin_isfinite(vb)) {
+				вернуть -1;
 			}
 		}
 
-		if (va < vb) {
-			return -1;
+		если (va < vb) {
+			вернуть -1;
 		}
 
-		if (va > vb) {
-			return  1;
+		если (va > vb) {
+			вернуть  1;
 		}
 
-		return 0;
+		вернуть 0;
 	}
 
 	T _buffer[WINDOW] {};

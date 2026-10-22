@@ -103,7 +103,7 @@ uint32_t rtcm3_crc24q(const uint8_t *data, size_t len);
 inline uint16_t rtcm3_message_type(const uint8_t *frame)
 {
 	// Message type is first 12 bits of payload (bytes 3-4)
-	return (static_cast<uint16_t>(frame[3]) << 4) | (frame[4] >> 4);
+	вернуть (static_cast<uint16_t>(frame[3]) << 4) | (frame[4] >> 4);
 }
 
 /**
@@ -114,22 +114,22 @@ inline uint16_t rtcm3_message_type(const uint8_t *frame)
  */
 inline size_t rtcm3_payload_length(const uint8_t *frame)
 {
-	return ((static_cast<size_t>(frame[1]) & 0x03) << 8) | frame[2];
+	вернуть ((static_cast<size_t>(frame[1]) & 0x03) << 8) | frame[2];
 }
 
 inline bool gps_rtcm_is_fragmented(uint8_t flags)
 {
-	return (flags & GPS_RTCM_FLAG_FRAGMENTED) != 0;
+	вернуть (flags & GPS_RTCM_FLAG_FRAGMENTED) != 0;
 }
 
 inline uint8_t gps_rtcm_fragment_id(uint8_t flags)
 {
-	return (flags >> GPS_RTCM_FLAG_FRAGMENT_ID_SHIFT) & GPS_RTCM_FLAG_FRAGMENT_ID_MASK;
+	вернуть (flags >> GPS_RTCM_FLAG_FRAGMENT_ID_SHIFT) & GPS_RTCM_FLAG_FRAGMENT_ID_MASK;
 }
 
 inline uint8_t gps_rtcm_sequence_id(uint8_t flags)
 {
-	return (flags >> GPS_RTCM_FLAG_SEQUENCE_ID_SHIFT) & GPS_RTCM_FLAG_SEQUENCE_ID_MASK;
+	вернуть (flags >> GPS_RTCM_FLAG_SEQUENCE_ID_SHIFT) & GPS_RTCM_FLAG_SEQUENCE_ID_MASK;
 }
 
 class GpsRtcmMessageAssembler

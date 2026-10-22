@@ -42,7 +42,7 @@
 #include "../CDev.hpp"
 #include <px4_platform_common/spi.h>
 
-#if defined(CONFIG_SPI)
+#если defined(CONFIG_SPI)
 
 #ifdef __PX4_LINUX
 
@@ -87,7 +87,7 @@ protected:
 	 * @param mode		SPI clock/data mode
 	 * @param frequency	SPI clock frequency
 	 */
-	SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency);
+	SPI(uint8_t device_type, const char *name, целое bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency);
 
 	SPI(const I2CSPIDriverConfig &config);
 
@@ -102,12 +102,12 @@ protected:
 		LOCK_NONE		/**< perform no locking, only safe if the bus is entirely private */
 	};
 
-	virtual int	init() override;
+	virtual целое	init() override;
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	virtual целое	probe() { вернуть PX4_OK; }
 
 	/**
 	 * Perform a SPI transfer.
@@ -128,7 +128,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(uint8_t *send, uint8_t *recv, unsigned len);
+	целое		transfer(uint8_t *send, uint8_t *recv, unsigned len);
 
 	/**
 	 * Perform a SPI 16 bit transfer.
@@ -149,7 +149,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	целое		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
 
 	/**
 	 * Set the SPI bus frequency
@@ -161,7 +161,7 @@ protected:
 	 * @param frequency	Frequency to set (Hz)
 	 */
 	void		set_frequency(uint32_t frequency) { _frequency = frequency; }
-	uint32_t	get_frequency() { return _frequency; }
+	uint32_t	get_frequency() { вернуть _frequency; }
 
 	/**
 	 * Set the SPI bus locking mode
@@ -177,20 +177,20 @@ private:
 	uint32_t		_device;
 	enum spi_mode_e		_mode;
 	uint32_t		_frequency;
-	int 			_fd{-1};
+	целое 			_fd{-1};
 
 	LockMode		_locking_mode{LOCK_THREADS};	/**< selected locking mode */
 
 protected:
-	int	_transfer(uint8_t *send, uint8_t *recv, unsigned len);
+	целое	_transfer(uint8_t *send, uint8_t *recv, unsigned len);
 
-	int	_transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	целое	_transferhword(uint16_t *send, uint16_t *recv, unsigned len);
 
 };
 
 } // namespace device
 
-#else
+#иначе
 
 enum spi_mode_e {
 	SPIDEV_MODE0 = 0, /* CPOL=0 CHPHA=0 */

@@ -192,7 +192,7 @@ public:
 	 *
 	 * @return float direct height rate setpoint [m/s]
 	 */
-	float getHeightRateSetpointDirect() const {return _height_rate_setpoint_direct; }
+	float getHeightRateSetpointDirect() const {вернуть _height_rate_setpoint_direct; }
 
 
 private:
@@ -334,25 +334,25 @@ public:
 	 *
 	 * @return Ratio of detected underspeed [0,1].
 	 */
-	float getUnderspeedRatio() const {return _ratio_undersped;}
+	float getUnderspeedRatio() const {вернуть _ratio_undersped;}
 	/**
 	 * @brief Get the throttle setpoint.
 	 *
 	 * @return throttle setpoint.
 	 */
-	float getThrottleSetpoint() const {return _throttle_setpoint;}
+	float getThrottleSetpoint() const {вернуть _throttle_setpoint;}
 	/**
 	 * @brief Get the pitch setpoint.
 	 *
 	 * @return The commanded absolute pitch angle [rad].
 	 */
-	float getPitchSetpoint() const {return _pitch_setpoint;}
+	float getPitchSetpoint() const {вернуть _pitch_setpoint;}
 	/**
 	 * @brief Get the Debug Output
 	 *
 	 * @return the debug output struct.
 	 */
-	const DebugOutput &getDebugOutput() const { return _debug_output; }
+	const DebugOutput &getDebugOutput() const { вернуть _debug_output; }
 
 private:
 	// Allows the regression test to pre-corrupt _pitch_integ_state and verify the
@@ -413,7 +413,7 @@ private:
 	 * @param val is the current control setpoint and estimate.
 	 * @return error value
 	 */
-	static constexpr float _getControlError(TECSControl::ControlValues val) {return (val.setpoint - val.estimate);}
+	static constexpr float _getControlError(TECSControl::ControlValues val) {вернуть (val.setpoint - val.estimate);}
 	/**
 	 * @brief Calculate specific total energy rate limits.
 	 *
@@ -427,7 +427,7 @@ private:
 	 * @param[in] limit is the specific total energy rate limits in [m²/s³].
 	 * @return throttle per specific total energy rate [s³/m²].
 	 */
-	static float _steRateToThrottle(const STERateLimit &limit) { return 1.0f / (limit.STE_rate_max - limit.STE_rate_min); }
+	static float _steRateToThrottle(const STERateLimit &limit) { вернуть 1.0f / (limit.STE_rate_max - limit.STE_rate_min); }
 	/**
 	 * @brief calculate airspeed control proportional output.
 	 *
@@ -684,7 +684,7 @@ public:
 	TECS(TECS &&) = delete;
 	TECS &operator=(TECS &&) = delete;
 
-	const DebugOutput &getStatus() const { return _debug_status; }
+	const DebugOutput &getStatus() const { вернуть _debug_status; }
 
 	/**
 	 * Set the airspeed enable state
@@ -770,15 +770,15 @@ public:
 	/**
 	 * Returns the absolute pitch setpoint [rad]
 	 */
-	float get_pitch_setpoint() const {return _control.getPitchSetpoint();}
-	float get_throttle_setpoint() const {return _control.getThrottleSetpoint();}
+	float get_pitch_setpoint() const {вернуть _control.getPitchSetpoint();}
+	float get_throttle_setpoint() const {вернуть _control.getThrottleSetpoint();}
 
 	/**
 	 * Returns the altitude tracking time constant
 	 */
-	float get_altitude_error_time_constant() const { return 1.0f / _control_param.altitude_error_gain; }
+	float get_altitude_error_time_constant() const { вернуть 1.0f / _control_param.altitude_error_gain; }
 
-	float get_underspeed_ratio() const { return _control.getUnderspeedRatio(); }
+	float get_underspeed_ratio() const { вернуть _control.getUnderspeedRatio(); }
 
 private:
 	/**

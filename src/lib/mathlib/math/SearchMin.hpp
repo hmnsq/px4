@@ -48,7 +48,7 @@ static constexpr double GOLDEN_RATIO = 1.6180339887; //(sqrt(5)+1)/2
 template<typename _Tp>
 _Tp abs_t(_Tp val)
 {
-	return ((val > (_Tp)0) ? val : -val);
+	вернуть ((val > (_Tp)0) ? val : -val);
 }
 
 // golden section search to find extremeum for function with minimum
@@ -60,12 +60,12 @@ inline const _Tp goldensection(const _Tp &arg1, const _Tp &arg2, _Tp(*fun)(_Tp),
 	_Tp c = b - (b - a) / GOLDEN_RATIO;
 	_Tp d = a + (b - a) / GOLDEN_RATIO;
 
-	while (abs_t(c - d) > tol) {
+	пока (abs_t(c - d) > tol) {
 
-		if (fun(c) < fun(d)) {
+		если (fun(c) < fun(d)) {
 			b = d;
 
-		} else {
+		} иначе {
 			a = c;
 		}
 
@@ -74,6 +74,6 @@ inline const _Tp goldensection(const _Tp &arg1, const _Tp &arg2, _Tp(*fun)(_Tp),
 
 	}
 
-	return ((b + a) / (_Tp)2);
+	вернуть ((b + a) / (_Tp)2);
 }
 }

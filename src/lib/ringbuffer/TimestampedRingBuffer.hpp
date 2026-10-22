@@ -68,40 +68,40 @@ public:
 	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
 	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
 
-	bool allocate(size_t size) { return size == SIZE; }
+	bool allocate(size_t size) { вернуть size == SIZE; }
 
-	bool valid() const { return SIZE > 0; }
+	bool valid() const { вернуть SIZE > 0; }
 
 	void push(const data_type &sample)
 	{
 		_buffer[_head] = sample;
 		_head = next(_head);
 
-		if (_entries < kSize) {
+		если (_entries < kSize) {
 			_entries++;
 		}
 	}
 
-	uint8_t get_length() const { return kSize; }
+	uint8_t get_length() const { вернуть kSize; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	data_type &operator[](const uint8_t index) { вернуть _buffer[index]; }
 
-	const data_type &get_newest() const { return _buffer[get_newest_index()]; }
-	const data_type &get_oldest() const { return _buffer[get_oldest_index()]; }
+	const data_type &get_newest() const { вернуть _buffer[get_newest_index()]; }
+	const data_type &get_oldest() const { вернуть _buffer[get_oldest_index()]; }
 
-	uint8_t get_newest_index() const { return (_entries > 0) ? prev(_head) : 0; }
+	uint8_t get_newest_index() const { вернуть (_entries > 0) ? prev(_head) : 0; }
 	uint8_t get_oldest_index() const
 	{
-		if (_entries == 0) {
-			return 0;
+		если (_entries == 0) {
+			вернуть 0;
 		}
 
 		const uint16_t idx = static_cast<uint16_t>(_head) + static_cast<uint16_t>(kSize) - static_cast<uint16_t>(_entries);
-		return (idx >= kSize) ? static_cast<uint8_t>(idx - kSize) : static_cast<uint8_t>(idx);
+		вернуть (idx >= kSize) ? static_cast<uint8_t>(idx - kSize) : static_cast<uint8_t>(idx);
 	}
 
-	uint8_t next(uint8_t i) const { return (i + 1 >= kSize) ? 0 : i + 1; }
-	uint8_t prev(uint8_t i) const { return (i == 0) ? kSize - 1 : i - 1; }
+	uint8_t next(uint8_t i) const { вернуть (i + 1 >= kSize) ? 0 : i + 1; }
+	uint8_t prev(uint8_t i) const { вернуть (i == 0) ? kSize - 1 : i - 1; }
 
 	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
 	{
@@ -109,11 +109,11 @@ public:
 		const uint8_t newest_idx = get_newest_index();
 		const uint8_t oldest_idx = get_oldest_index();
 
-		for (uint8_t i = 0; i < _entries; i++) {
-			int index = (newest_idx - i);
+		для (uint8_t i = 0; i < _entries; i++) {
+			целое index = (newest_idx - i);
 			index = index < 0 ? kSize + index : index;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
+			если (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
 				*sample = _buffer[index];
 
 				// Now we can set the tail to the item which
@@ -125,26 +125,26 @@ public:
 				_entries = (_entries > discard_count) ? (_entries - discard_count) : 0;
 				_buffer[index].time_us = 0;
 
-				return true;
+				вернуть true;
 			}
 		}
 
-		return false;
+		вернуть false;
 	}
 
-	int get_total_size() const
+	целое get_total_size() const
 	{
 		static_assert(sizeof(TimestampedRingBuffer<data_type, SIZE>) <= static_cast<size_t>(INT_MAX),
 			      "static ring buffer size must fit in int");
-		return static_cast<int>(sizeof(TimestampedRingBuffer<data_type, SIZE>));
+		вернуть static_cast<целое>(sizeof(TimestampedRingBuffer<data_type, SIZE>));
 	}
 
-	int entries() const { return _entries; }
-	bool empty() const { return _entries == 0; }
+	целое entries() const { вернуть _entries; }
+	bool empty() const { вернуть _entries == 0; }
 
 	void reset()
 	{
-		for (uint8_t i = 0; i < kSize; i++) {
+		для (uint8_t i = 0; i < kSize; i++) {
 			_buffer[i].time_us = 0;
 		}
 
@@ -178,21 +178,21 @@ public:
 
 	bool allocate(size_t size)
 	{
-		if (valid() && (size == _size)) {
+		если (valid() && (size == _size)) {
 			// no change
-			return true;
+			вернуть true;
 		}
 
-		if (size == 0 || size > UINT8_MAX) {
-			return false;
+		если (size == 0 || size > UINT8_MAX) {
+			вернуть false;
 		}
 
 		delete[] _buffer;
 
 		_buffer = new data_type[size] {};
 
-		if (_buffer == nullptr) {
-			return false;
+		если (_buffer == nullptr) {
+			вернуть false;
 		}
 
 		_size = static_cast<uint8_t>(size);
@@ -202,16 +202,16 @@ public:
 		_tail = 0;
 		_first_write = true;
 
-		return true;
+		вернуть true;
 	}
 
-	bool valid() const { return (_buffer != nullptr) && (_size > 0); }
+	bool valid() const { вернуть (_buffer != nullptr) && (_size > 0); }
 
 	void push(const data_type &sample)
 	{
 		uint8_t head_new = _head;
 
-		if (!_first_write) {
+		если (!_first_write) {
 			head_new = next(_head);
 		}
 
@@ -219,85 +219,85 @@ public:
 		_head = head_new;
 
 		// move tail if we overwrite it
-		if (_head == _tail && !_first_write) {
+		если (_head == _tail && !_first_write) {
 			_tail = next(_tail);
 
-		} else {
+		} иначе {
 			_first_write = false;
 		}
 	}
 
-	uint8_t get_length() const { return _size; }
+	uint8_t get_length() const { вернуть _size; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	data_type &operator[](const uint8_t index) { вернуть _buffer[index]; }
 
-	const data_type &get_newest() const { return _buffer[_head]; }
-	const data_type &get_oldest() const { return _buffer[_tail]; }
+	const data_type &get_newest() const { вернуть _buffer[_head]; }
+	const data_type &get_oldest() const { вернуть _buffer[_tail]; }
 
-	uint8_t get_newest_index() const { return _head; }
-	uint8_t get_oldest_index() const { return _tail; }
+	uint8_t get_newest_index() const { вернуть _head; }
+	uint8_t get_oldest_index() const { вернуть _tail; }
 
-	uint8_t next(uint8_t i) const { return (_size > 0) ? ((i + 1 >= _size) ? 0 : i + 1) : 0; }
-	uint8_t prev(uint8_t i) const { return (_size > 0) ? ((i == 0) ? (_size - 1) : (i - 1)) : 0; }
+	uint8_t next(uint8_t i) const { вернуть (_size > 0) ? ((i + 1 >= _size) ? 0 : i + 1) : 0; }
+	uint8_t prev(uint8_t i) const { вернуть (_size > 0) ? ((i == 0) ? (_size - 1) : (i - 1)) : 0; }
 
 	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
 	{
 		// start looking from newest observation data
-		for (uint8_t i = 0; i < _size; i++) {
-			int index = (_head - i);
+		для (uint8_t i = 0; i < _size; i++) {
+			целое index = (_head - i);
 			index = index < 0 ? _size + index : index;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
+			если (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
 				*sample = _buffer[index];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				if (index == _head) {
+				если (index == _head) {
 					_tail = _head;
 					_first_write = true;
 
-				} else {
+				} иначе {
 					_tail = next(static_cast<uint8_t>(index));
 				}
 
 				_buffer[index].time_us = 0;
 
-				return true;
+				вернуть true;
 			}
 
-			if (index == _tail) {
+			если (index == _tail) {
 				// we have reached the tail and haven't got a
 				// match
-				return false;
+				вернуть false;
 			}
 		}
 
-		return false;
+		вернуть false;
 	}
 
-	int get_used_size() const { return sizeof(*this) + sizeof(data_type) * entries(); }
-	int get_total_size() const { return sizeof(*this) + sizeof(data_type) * _size; }
+	целое get_used_size() const { вернуть sizeof(*this) + sizeof(data_type) * entries(); }
+	целое get_total_size() const { вернуть sizeof(*this) + sizeof(data_type) * _size; }
 
-	int entries() const
+	целое entries() const
 	{
-		int count = 0;
+		целое count = 0;
 
-		for (uint8_t i = 0; i < _size; i++) {
-			if (_buffer[i].time_us != 0) {
+		для (uint8_t i = 0; i < _size; i++) {
+			если (_buffer[i].time_us != 0) {
 				count++;
 			}
 		}
 
-		return count;
+		вернуть count;
 	}
 
-	bool empty() const { return entries() == 0; }
+	bool empty() const { вернуть entries() == 0; }
 
 	void reset()
 	{
-		if (_buffer) {
-			for (uint8_t i = 0; i < _size; i++) {
+		если (_buffer) {
+			для (uint8_t i = 0; i < _size; i++) {
 				_buffer[i].time_us = 0;
 			}
 

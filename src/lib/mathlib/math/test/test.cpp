@@ -49,88 +49,88 @@ bool __EXPORT equal(float a, float b, float epsilon)
 {
 	float diff = fabsf(a - b);
 
-	if (diff > epsilon) {
+	если (diff > epsilon) {
 		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		вернуть false;
 
-	} else { return true; }
+	} иначе { вернуть true; }
 }
 
 bool __EXPORT greater_than(float a, float b)
 {
-	if (a > b) {
-		return true;
+	если (a > b) {
+		вернуть true;
 
-	} else {
+	} иначе {
 		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		вернуть false;
 	}
 }
 
 bool __EXPORT less_than(float a, float b)
 {
-	if (a < b) {
-		return true;
+	если (a < b) {
+		вернуть true;
 
-	} else {
+	} иначе {
 		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		вернуть false;
 	}
 }
 
 bool __EXPORT greater_than_or_equal(float a, float b)
 {
-	if (a >= b) {
-		return true;
+	если (a >= b) {
+		вернуть true;
 
-	} else {
+	} иначе {
 		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		вернуть false;
 	}
 }
 
 bool __EXPORT less_than_or_equal(float a, float b)
 {
-	if (a <= b) {
-		return true;
+	если (a <= b) {
+		вернуть true;
 
-	} else {
+	} иначе {
 		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+		вернуть false;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+void __EXPORT float2SigExp(const float &num, float &sig, целое &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	если (!PX4_ISFINITE(num)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		вернуть;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	если (fabsf(num) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		вернуть;
 	}
 
 	exp = log10f(fabsf(num));
 
-	if (exp > 0) {
+	если (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} иначе {
 		exp = floor(exp);
 	}
 
 	sig = num;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	если (exp > 0) {
+		для (целое i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} иначе {
+		для (целое i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

@@ -43,32 +43,32 @@ public:
 
 	bool store(param_t param, param_value_u value) override
 	{
-		return false;
+		вернуть false;
 	}
 
 	bool contains(param_t param) const override
 	{
-		return param < PARAM_COUNT;
+		вернуть param < PARAM_COUNT;
 	}
 
 	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
 	{
 		px4::AtomicBitset<PARAM_COUNT> set;
 
-		for (int i = 0; i < PARAM_COUNT; i++) {
+		для (целое i = 0; i < PARAM_COUNT; i++) {
 			set.set(i);
 		}
 
-		return set;
+		вернуть set;
 	}
 
 	param_value_u get(param_t param) const override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		если (param >= PARAM_COUNT) {
+			вернуть {0};
 		}
 
-		return px4::parameters[param].val;
+		вернуть px4::parameters[param].val;
 	}
 
 	void reset(param_t param) override
@@ -81,13 +81,13 @@ public:
 		// Do nothing
 	}
 
-	int size() const override
+	целое size() const override
 	{
-		return PARAM_COUNT;
+		вернуть PARAM_COUNT;
 	}
 
-	int byteSize() const override
+	целое byteSize() const override
 	{
-		return PARAM_COUNT * sizeof(param_info_s);
+		вернуть PARAM_COUNT * sizeof(param_info_s);
 	}
 };

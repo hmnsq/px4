@@ -40,7 +40,7 @@ import sys
 
 from rosidl_adapter.msg import convert_msg_to_idl
 
-if __name__ == '__main__':
+если __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description=f'Convert px4 .msg files to .idl')
     parser.add_argument(
@@ -54,14 +54,14 @@ if __name__ == '__main__':
     real_print = builtins.print
 
     def quiet_print(*pargs, **kwargs):
-        if pargs and isinstance(pargs[0], str) and \
+        если pargs and isinstance(pargs[0], str) and \
                 pargs[0].startswith(('Reading input file:', 'Writing output file:')):
-            return
+            вернуть
         real_print(*pargs, **kwargs)
 
     builtins.print = quiet_print
     try:
-        for interface_file in args.interface_files:
+        для interface_file in args.interface_files:
             interface_file = pathlib.Path(interface_file)
             package_dir = interface_file.parent.absolute()
 

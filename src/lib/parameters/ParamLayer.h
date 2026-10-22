@@ -63,9 +63,9 @@ public:
 
 	virtual void refresh(param_t param) = 0;
 
-	virtual int size() const = 0;
+	virtual целое size() const = 0;
 
-	virtual int byteSize() const = 0;
+	virtual целое byteSize() const = 0;
 
 protected:
 	ParamLayer *const _parent;

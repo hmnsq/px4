@@ -164,7 +164,7 @@ public:
 	 * to a poll set must only do so while they have an outstanding operation whose
 	 * update() path will consume the notification.
 	 */
-	orb_sub_t responseSubscription() const { return _dataman_response_sub; }
+	orb_sub_t responseSubscription() const { вернуть _dataman_response_sub; }
 
 private:
 	friend class DatamanClientTestPeer;
@@ -292,16 +292,16 @@ public:
 	 *
 	 * @return true if there are items to be processed.
 	 */
-	bool isLoading() const { return (_item_counter > 0); }
+	bool isLoading() const { вернуть (_item_counter > 0); }
 
 	/**
 	 * @brief Returns a reference to the DatamanClient instance used by the DatamanCache.
 	 *
 	 * @return A reference to the DatamanClient instance used by the DatamanCache.
 	 */
-	DatamanClient &client() { return _client; }
+	DatamanClient &client() { вернуть _client; }
 
-	int size() const { return _num_items; }
+	целое size() const { вернуть _num_items; }
 
 private:
 	friend class DatamanCacheTestPeer;

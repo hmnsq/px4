@@ -33,7 +33,7 @@
 
 #include "FailureInjection.hpp"
 
-#if defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
+#если defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
 
 #include <parameters/param.h>
 #include <uORB/topics/battery_status.h>
@@ -46,19 +46,19 @@ bool Config::update()
 {
 	failure_injection_s cfg;
 
-	if (_sub.update(&cfg)) {
+	если (_sub.update(&cfg)) {
 		set(cfg);
-		return true;
+		вернуть true;
 	}
 
-	return false;
+	вернуть false;
 }
 
 void Config::set(const failure_injection_s &cfg)
 {
 	_count = (cfg.count <= failure_injection_s::MAX_FAILURES) ? cfg.count : failure_injection_s::MAX_FAILURES;
 
-	for (uint8_t i = 0; i < _count; i++) {
+	для (uint8_t i = 0; i < _count; i++) {
 		_unit[i] = cfg.unit[i];
 		_instance_mask[i] = cfg.instance_mask[i];
 		_failure_type[i] = static_cast<Mode>(cfg.failure_type[i]);
@@ -67,19 +67,19 @@ void Config::set(const failure_injection_s &cfg)
 
 Mode Config::mode(uint8_t unit, uint8_t instance) const
 {
-	for (uint8_t i = 0; i < _count; i++) {
-		if (_unit[i] != unit) {
+	для (uint8_t i = 0; i < _count; i++) {
+		если (_unit[i] != unit) {
 			continue;
 		}
 
 		// instance == 0 matches any instance of the unit; otherwise match the
 		// 1-based instance against the bitmask (0xFFFF covers all instances).
-		if (instance == 0 || (instance <= 16 && (_instance_mask[i] & (1u << (instance - 1))))) {
-			return _failure_type[i];
+		если (instance == 0 || (instance <= 16 && (_instance_mask[i] & (1u << (instance - 1))))) {
+			вернуть _failure_type[i];
 		}
 	}
 
-	return Mode::Ok;
+	вернуть Mode::Ok;
 }
 
 bool process_battery(const Config &config, uint8_t instance, battery_status_s &battery_status)
@@ -87,13 +87,13 @@ bool process_battery(const Config &config, uint8_t instance, battery_status_s &b
 	const Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_BATTERY, instance);
 	static constexpr float trigger_margin = 0.01f; // report remaining charge just below the threshold
 
-	if (mode == Mode::Off) {
+	если (mode == Mode::Off) {
 		// Suppress the publication so the pack reads disconnected.
-		return false;
+		вернуть false;
 	}
 
-	if (mode != Mode::Wrong) {
-		return true;
+	если (mode != Mode::Wrong) {
+		вернуть true;
 	}
 
 	static const param_t level_handle = param_find("SYS_FAIL_BAT_LVL");
@@ -131,7 +131,7 @@ bool process_battery(const Config &config, uint8_t instance, battery_status_s &b
 	param_get(threshold_handle, &threshold);
 	battery_status.remaining = (threshold > trigger_margin) ? (threshold - trigger_margin) : 0.f;
 
-	return true;
+	вернуть true;
 }
 
 bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
@@ -141,11 +141,11 @@ bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &se
 
 	// Off and Stuck are message-agnostic; run them first so the Stuck cache keeps the
 	// uncorrupted sample and a later Stuck replays a healthy fix.
-	if (!process(mode, sensor_gnss, stuck)) {
-		return false;
+	если (!process(mode, sensor_gnss, stuck)) {
+		вернуть false;
 	}
 
-	if (mode == Mode::Wrong) {
+	если (mode == Mode::Wrong) {
 		static const param_t fix_type_handle = param_find("SYS_FAIL_GPS_WRG");
 
 		int32_t fix_type = sensor_gnss_s::FIX_TYPE_2D;
@@ -157,22 +157,22 @@ bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &se
 		int32_t jamming_state = sensor_gnss_s::JAMMING_STATE_UNKNOWN;
 		param_get(jamming_state_handle, &jamming_state);
 
-		if (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
+		если (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
 			sensor_gnss.jamming_state = (uint8_t)jamming_state;
 		}
 	}
 
-	return true;
+	вернуть true;
 }
 
 esc_status_s process_esc(const Config &config, const esc_status_s &status)
 {
 	esc_status_s result = status;
 
-	for (int i = 0; i < result.esc_count && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
+	для (целое i = 0; i < result.esc_count && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
 		const uint8_t function = result.esc[i].actuator_function;
 
-		if (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
+		если (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
 			continue; // not a motor output
 		}
 
@@ -197,14 +197,14 @@ esc_status_s process_esc(const Config &config, const esc_status_s &status)
 		}
 	}
 
-	return result;
+	вернуть result;
 }
 
 MotorFailureMasks process_motor(const Config &config)
 {
 	MotorFailureMasks masks{};
 
-	for (int i = 0; i < esc_status_s::CONNECTED_ESC_MAX; i++) {
+	для (целое i = 0; i < esc_status_s::CONNECTED_ESC_MAX; i++) {
 		const uint16_t bit = 1u << i;
 
 		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_MOTOR, i + 1)) {
@@ -221,7 +221,7 @@ MotorFailureMasks process_motor(const Config &config)
 		}
 	}
 
-	return masks;
+	вернуть masks;
 }
 
 } // namespace failure_injection

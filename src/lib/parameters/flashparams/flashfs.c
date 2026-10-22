@@ -56,7 +56,7 @@
 #include <nuttx/progmem.h>
 #include <board_config.h>
 
-#if defined(CONFIG_ARCH_HAVE_PROGMEM) || defined(BOARD_USE_EXTERNAL_FLASH)
+#если defined(CONFIG_ARCH_HAVE_PROGMEM) || defined(BOARD_USE_EXTERNAL_FLASH)
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -115,7 +115,7 @@ static uint8_t *working_buffer;
 static size_t working_buffer_size;
 static bool working_buffer_static;
 static sector_descriptor_t *sector_map;
-static int last_erased;
+static целое last_erased;
 
 /****************************************************************************
  * Public Data
@@ -144,7 +144,7 @@ const flash_file_token_t parameters_legacy_token = {
 
 void parameter_flashfs_free(void)
 {
-	if (!working_buffer_static && working_buffer != NULL) {
+	если (!working_buffer_static && working_buffer != NULL) {
 		free(working_buffer);
 		working_buffer = NULL;
 		working_buffer_size = 0;
@@ -167,9 +167,9 @@ void parameter_flashfs_free(void)
  *
  ****************************************************************************/
 
-static inline int blank_flash(uint32_t *pf)
+static inline целое blank_flash(uint32_t *pf)
 {
-	return *pf == BlankSig;
+	вернуть *pf == BlankSig;
 }
 
 /****************************************************************************
@@ -194,13 +194,13 @@ static bool blank_check(flash_entry_header_t *pf,
 	uint32_t *pm = (uint32_t *) pf;
 	new_size /= sizeof(uint32_t);
 
-	while (new_size-- && rv) {
-		if (!blank_flash(pm++)) {
+	пока (new_size-- && rv) {
+		если (!blank_flash(pm++)) {
 			rv = false;
 		}
 	}
 
-	return rv;
+	вернуть rv;
 }
 
 /****************************************************************************
@@ -219,9 +219,9 @@ static bool blank_check(flash_entry_header_t *pf,
  *
  ****************************************************************************/
 
-static inline int valid_magic(h_magic_t *pm)
+static inline целое valid_magic(h_magic_t *pm)
 {
-	return *pm == MagicSig;
+	вернуть *pm == MagicSig;
 }
 
 /****************************************************************************
@@ -239,9 +239,9 @@ static inline int valid_magic(h_magic_t *pm)
  *
  ****************************************************************************/
 
-static inline int blank_entry(flash_entry_header_t *fi)
+static inline целое blank_entry(flash_entry_header_t *fi)
 {
-	return fi->magic == BlankSig  &&  fi->flag == BlankEntry;
+	вернуть fi->magic == BlankSig  &&  fi->flag == BlankEntry;
 }
 
 /****************************************************************************
@@ -259,9 +259,9 @@ static inline int blank_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline int valid_entry(flash_entry_header_t *fi)
+static inline целое valid_entry(flash_entry_header_t *fi)
 {
-	return (fi->flag & MaskEntry) == ValidEntry;
+	вернуть (fi->flag & MaskEntry) == ValidEntry;
 }
 
 /****************************************************************************
@@ -279,9 +279,9 @@ static inline int valid_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline int entry_size_adjust(flash_entry_header_t *fi)
+static inline целое entry_size_adjust(flash_entry_header_t *fi)
 {
-	return fi->flag & SizeMask;
+	вернуть fi->flag & SizeMask;
 }
 
 /****************************************************************************
@@ -303,7 +303,7 @@ static inline int entry_size_adjust(flash_entry_header_t *fi)
 static inline flash_entry_header_t *next_entry(flash_entry_header_t *fi)
 {
 	uint8_t *pb = (uint8_t *)fi;
-	return (flash_entry_header_t *)(pb + fi->size);
+	вернуть (flash_entry_header_t *)(pb + fi->size);
 }
 
 /****************************************************************************
@@ -323,7 +323,7 @@ static inline flash_entry_header_t *next_entry(flash_entry_header_t *fi)
 
 static inline uint8_t *entry_data(flash_entry_header_t *fi)
 {
-	return ((uint8_t *)fi) + sizeof(flash_entry_header_t);
+	вернуть ((uint8_t *)fi) + sizeof(flash_entry_header_t);
 }
 
 /****************************************************************************
@@ -343,7 +343,7 @@ static inline uint8_t *entry_data(flash_entry_header_t *fi)
 
 static inline data_size_t entry_data_length(flash_entry_header_t *fi)
 {
-	return fi->size - (sizeof(flash_entry_header_t) + entry_size_adjust(fi));
+	вернуть fi->size - (sizeof(flash_entry_header_t) + entry_size_adjust(fi));
 }
 
 /****************************************************************************
@@ -364,7 +364,7 @@ static inline data_size_t entry_data_length(flash_entry_header_t *fi)
 
 static inline const uint8_t *entry_crc_start(flash_entry_header_t *fi)
 {
-	return (const uint8_t *)&fi->size;
+	вернуть (const uint8_t *)&fi->size;
 }
 
 /****************************************************************************
@@ -385,70 +385,70 @@ static inline const uint8_t *entry_crc_start(flash_entry_header_t *fi)
 
 static inline data_size_t entry_crc_length(flash_entry_header_t *fi)
 {
-	return fi->size - offsetof(flash_entry_header_t, size);
+	вернуть fi->size - offsetof(flash_entry_header_t, size);
 }
 
 /* The parameter sector can be the last one on the chip, so no header
  * field may be read until the whole header is known to lie inside it. */
 static inline bool header_fits(flash_entry_header_t *pf, h_magic_t *pe)
 {
-	return pf + 1 <= (flash_entry_header_t *)pe;
+	вернуть pf + 1 <= (flash_entry_header_t *)pe;
 }
 
 static bool crc_header_ok(flash_entry_header_t *pf, h_magic_t *pe)
 {
-	if (!header_fits(pf, pe)) {
-		return false;
+	если (!header_fits(pf, pe)) {
+		вернуть false;
 	}
 
-	if (pf->size < sizeof(flash_entry_header_t)) {
-		return false;
+	если (pf->size < sizeof(flash_entry_header_t)) {
+		вернуть false;
 	}
 
 	const uint8_t *crc_start = entry_crc_start(pf);
 	data_size_t crc_length = entry_crc_length(pf);
 
-	if (crc_start + crc_length > (uint8_t *)pe) {
-		return false;
+	если (crc_start + crc_length > (uint8_t *)pe) {
+		вернуть false;
 	}
 
-	return pf->crc == crc32(crc_start, crc_length);
+	вернуть pf->crc == crc32(crc_start, crc_length);
 }
 
 /* The walkers stop at the last word of a sector and reject a record that
  * ends beyond it, so nothing may be written into that word. */
-static inline size_t sector_usable(int s)
+static inline size_t sector_usable(целое s)
 {
-	return sector_map[s].size - sizeof(h_magic_t);
+	вернуть sector_map[s].size - sizeof(h_magic_t);
 }
 
-static bool slot_is_free(flash_entry_header_t *pf, int s, size_t required)
+static bool slot_is_free(flash_entry_header_t *pf, целое s, size_t required)
 {
 	uint8_t *begin = (uint8_t *)sector_map[s].address;
 	uint8_t *end = begin + sector_usable(s);
 
-	if ((uint8_t *)pf < begin || required == 0 || (uint8_t *)pf + required > end) {
-		return false;
+	если ((uint8_t *)pf < begin || required == 0 || (uint8_t *)pf + required > end) {
+		вернуть false;
 	}
 
 	/* Entries start on a flash row. up_progmem_write only asserts that in
 	 * debug builds, so a slot found by the word-wise scan behind a torn
 	 * record would otherwise be programmed misaligned. */
-	if (((uintptr_t)pf & SizeMask) != 0) {
-		return false;
+	если (((uintptr_t)pf & SizeMask) != 0) {
+		вернуть false;
 	}
 
-	return blank_entry(pf) && blank_check(pf, required);
+	вернуть blank_entry(pf) && blank_check(pf, required);
 }
 
-static int for_each_valid_entry(flash_file_token_t token,
-				int (*cb)(flash_entry_header_t *pf, void *arg),
+static целое for_each_valid_entry(flash_file_token_t token,
+				целое (*cb)(flash_entry_header_t *pf, void *arg),
 				void *arg);
 
-static int stop_at_first(flash_entry_header_t *pf, void *arg)
+static целое stop_at_first(flash_entry_header_t *pf, void *arg)
 {
 	*(flash_entry_header_t **)arg = pf;
-	return -ECANCELED;
+	вернуть -ECANCELED;
 }
 
 /* Oldest valid entry for token, or NULL. */
@@ -456,7 +456,7 @@ static flash_entry_header_t *find_entry(flash_file_token_t token)
 {
 	flash_entry_header_t *pf = NULL;
 	for_each_valid_entry(token, stop_at_first, &pf);
-	return pf;
+	вернуть pf;
 }
 
 /****************************************************************************
@@ -471,26 +471,26 @@ static flash_entry_header_t *find_entry(flash_file_token_t token)
 
 static flash_entry_header_t *find_append(size_t required)
 {
-	if (sector_map == NULL || required == 0) {
-		return NULL;
+	если (sector_map == NULL || required == 0) {
+		вернуть NULL;
 	}
 
 	flash_entry_header_t *last = NULL;
-	int last_s = -1;
+	целое last_s = -1;
 
-	for (int s = 0; sector_map[s].address; s++) {
+	для (целое s = 0; sector_map[s].address; s++) {
 		h_magic_t *pmagic = (h_magic_t *) sector_map[s].address;
 		h_magic_t *pe = pmagic + (sector_map[s].size / sizeof(h_magic_t)) - 1;
 
-		while (pmagic < pe) {
-			if (!valid_magic(pmagic)) {
+		пока (pmagic < pe) {
+			если (!valid_magic(pmagic)) {
 				pmagic++;
 				continue;
 			}
 
 			flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-			if (crc_header_ok(pf, pe)) {
+			если (crc_header_ok(pf, pe)) {
 				last = pf;
 				last_s = s;
 				pmagic = (h_magic_t *) next_entry(pf);
@@ -499,55 +499,55 @@ static flash_entry_header_t *find_append(size_t required)
 				/* Same stop rule as for_each_valid_entry: a record behind a
 				 * blank header is invisible to replay, so it must not anchor
 				 * the append point either. */
-				if (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
+				если (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
 					break;
 				}
 
-			} else {
+			} иначе {
 				pmagic++;
 			}
 		}
 	}
 
-	const int start_s = (last == NULL) ? 0 : last_s;
+	const целое start_s = (last == NULL) ? 0 : last_s;
 	h_magic_t *pmagic = (last == NULL)
 			    ? (h_magic_t *) sector_map[0].address
 			    : (h_magic_t *) next_entry(last);
 
-	for (int s = start_s; sector_map[s].address; s++) {
-		if (s != start_s) {
+	для (целое s = start_s; sector_map[s].address; s++) {
+		если (s != start_s) {
 			pmagic = (h_magic_t *) sector_map[s].address;
 		}
 
 		h_magic_t *pe = (h_magic_t *) sector_map[s].address
 				+ (sector_map[s].size / sizeof(h_magic_t)) - 1;
 
-		if ((uint8_t *)pmagic < (uint8_t *)sector_map[s].address
+		если ((uint8_t *)pmagic < (uint8_t *)sector_map[s].address
 		    || (uint8_t *)pmagic >= (uint8_t *)sector_map[s].address + sector_map[s].size) {
-			if (s == start_s) {
+			если (s == start_s) {
 				continue;
 			}
 
 			pmagic = (h_magic_t *) sector_map[s].address;
 		}
 
-		while (pmagic < pe) {
+		пока (pmagic < pe) {
 			flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-			if (valid_magic(pmagic) && crc_header_ok(pf, pe)) {
+			если (valid_magic(pmagic) && crc_header_ok(pf, pe)) {
 				pmagic = (h_magic_t *) next_entry(pf);
 				continue;
 			}
 
-			if (slot_is_free(pf, s, required)) {
-				return pf;
+			если (slot_is_free(pf, s, required)) {
+				вернуть pf;
 			}
 
 			pmagic++;
 		}
 	}
 
-	return NULL;
+	вернуть NULL;
 }
 
 /****************************************************************************
@@ -561,39 +561,39 @@ static flash_entry_header_t *find_append(size_t required)
  *
  ****************************************************************************/
 
-static int for_each_valid_entry(flash_file_token_t token,
-				int (*cb)(flash_entry_header_t *pf, void *arg),
+static целое for_each_valid_entry(flash_file_token_t token,
+				целое (*cb)(flash_entry_header_t *pf, void *arg),
 				void *arg)
 {
-	int n = 0;
+	целое n = 0;
 
-	if (sector_map == NULL) {
-		return -ENXIO;
+	если (sector_map == NULL) {
+		вернуть -ENXIO;
 	}
 
-	for (int s = 0; sector_map[s].address; s++) {
+	для (целое s = 0; sector_map[s].address; s++) {
 
 		h_magic_t *pmagic = (h_magic_t *) sector_map[s].address;
 		h_magic_t *pe = pmagic + (sector_map[s].size / sizeof(h_magic_t)) - 1;
 
 cont:
 
-		while (pmagic < pe && !valid_magic(pmagic)) {
+		пока (pmagic < pe && !valid_magic(pmagic)) {
 			pmagic++;
 		}
 
-		if (pmagic >= pe) { continue; }
+		если (pmagic >= pe) { continue; }
 
 		flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-		if (crc_header_ok(pf, pe)) {
+		если (crc_header_ok(pf, pe)) {
 
-			if (valid_entry(pf) && pf->file_token.t == token.t) {
-				if (cb != NULL) {
-					int rv = cb(pf, arg);
+			если (valid_entry(pf) && pf->file_token.t == token.t) {
+				если (cb != NULL) {
+					целое rv = cb(pf, arg);
 
-					if (rv < 0) {
-						return rv;
+					если (rv < 0) {
+						вернуть rv;
 					}
 				}
 
@@ -603,18 +603,18 @@ cont:
 			pf = next_entry(pf);
 			pmagic = (h_magic_t *) pf;
 
-			if (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
+			если (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
 				continue;
 			}
 
-		} else {
+		} иначе {
 			pmagic++;
 		}
 
 		goto cont;
 	}
 
-	return n;
+	вернуть n;
 }
 
 /****************************************************************************
@@ -635,29 +635,29 @@ cont:
  *
  ****************************************************************************/
 
-static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
+static целое erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
 {
-	int rv = 0;
-#if defined(BOARD_USE_EXTERNAL_FLASH)
+	целое rv = 0;
+#если defined(BOARD_USE_EXTERNAL_FLASH)
 	ssize_t block = up_progmem_ext_getpage((size_t)pf);
-#else
+#иначе
 	ssize_t block = up_progmem_getpage((size_t)pf);
 #endif
 
-	if (block > 0 && block == sm->page) {
+	если (block > 0 && block == sm->page) {
 		last_erased = sm->page;
-#if defined(BOARD_USE_EXTERNAL_FLASH)
+#если defined(BOARD_USE_EXTERNAL_FLASH)
 		ssize_t size = up_progmem_ext_eraseblock(block);
-#else
+#иначе
 		ssize_t size = up_progmem_eraseblock(block);
 #endif
 
-		if (size < 0 || size != (ssize_t)sm->size) {
+		если (size < 0 || size != (ssize_t)sm->size) {
 			rv = size;
 		}
 	}
 
-	return rv;
+	вернуть rv;
 }
 
 /****************************************************************************
@@ -683,24 +683,24 @@ static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
  *
  ****************************************************************************/
 
-int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
+целое parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
 			   *buf_size)
 {
-	int rv = -ENXIO;
+	целое rv = -ENXIO;
 
-	if (sector_map) {
+	если (sector_map) {
 
 		rv = -ENOENT;
 		flash_entry_header_t *pf = find_entry(token);
 
-		if (pf) {
+		если (pf) {
 			(*buffer) = entry_data(pf);
 			rv = entry_data_length(pf);
 			*buf_size = rv;
 		}
 	}
 
-	return rv;
+	вернуть rv;
 }
 
 /****************************************************************************
@@ -712,24 +712,24 @@ int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
  *
  ****************************************************************************/
 
-int parameter_flashfs_blank(void)
+целое parameter_flashfs_blank(void)
 {
-	if (sector_map == NULL) {
-		return -ENXIO;
+	если (sector_map == NULL) {
+		вернуть -ENXIO;
 	}
 
-	for (int s = 0; sector_map[s].address; s++) {
+	для (целое s = 0; sector_map[s].address; s++) {
 		uint32_t *pm = (uint32_t *) sector_map[s].address;
 		uint32_t *pe = pm + (sector_map[s].size / sizeof(uint32_t));
 
-		while (pm < pe) {
-			if (!blank_flash(pm++)) {
-				return 0;
+		пока (pm < pe) {
+			если (!blank_flash(pm++)) {
+				вернуть 0;
 			}
 		}
 	}
 
-	return 1;
+	вернуть 1;
 }
 
 /****************************************************************************
@@ -750,12 +750,12 @@ int parameter_flashfs_blank(void)
  *
  ****************************************************************************/
 
-int
+целое
 parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_size)
 {
-	int rv = -ENXIO;
+	целое rv = -ENXIO;
 
-	if (sector_map) {
+	если (sector_map) {
 
 		rv = 0;
 
@@ -766,15 +766,15 @@ parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_si
 		size_t  size_adjust = ((total_size + alignment) & ~alignment) - total_size;
 		total_size += size_adjust;
 
-		if (total_size > UINT16_MAX) {
-			return -EFBIG;
+		если (total_size > UINT16_MAX) {
+			вернуть -EFBIG;
 		}
 
 		/* Append after the last CRC-valid record. Compaction is the caller's job. */
 		flash_entry_header_t *pf = find_append(total_size);
 
-		if (pf == 0) {
-			return -ENOSPC;
+		если (pf == 0) {
+			вернуть -ENOSPC;
 		}
 
 		flash_entry_header_t *pn = (flash_entry_header_t *)(buffer - sizeof(flash_entry_header_t));
@@ -783,24 +783,24 @@ parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_si
 		pn->flag = ValidEntry + size_adjust;
 		pn->size = total_size;
 
-		for (size_t a = 0; a < size_adjust; a++) {
+		для (size_t a = 0; a < size_adjust; a++) {
 			buffer[buf_size + a] = (uint8_t)BlankSig;
 		}
 
 		pn->crc = crc32(entry_crc_start(pn), entry_crc_length(pn));
-#if defined(BOARD_USE_EXTERNAL_FLASH)
+#если defined(BOARD_USE_EXTERNAL_FLASH)
 		rv = up_progmem_ext_write((size_t) pf, pn, pn->size);
-#else
+#иначе
 		rv = up_progmem_write((size_t) pf, pn, pn->size);
 #endif
-		int system_bytes = (sizeof(flash_entry_header_t) + size_adjust);
+		целое system_bytes = (sizeof(flash_entry_header_t) + size_adjust);
 
-		if (rv >= system_bytes) {
+		если (rv >= system_bytes) {
 			rv -= system_bytes;
 		}
 	}
 
-	return rv;
+	вернуть rv;
 }
 
 /****************************************************************************
@@ -812,16 +812,16 @@ struct walk_pack {
 	void *arg;
 };
 
-static int walk_one(flash_entry_header_t *pf, void *arg)
+static целое walk_one(flash_entry_header_t *pf, void *arg)
 {
 	struct walk_pack *w = (struct walk_pack *)arg;
-	return w->cb(entry_data(pf), entry_data_length(pf), w->arg);
+	вернуть w->cb(entry_data(pf), entry_data_length(pf), w->arg);
 }
 
-int parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb cb, void *arg)
+целое parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb cb, void *arg)
 {
 	struct walk_pack w = { cb, arg };
-	return for_each_valid_entry(token, walk_one, &w);
+	вернуть for_each_valid_entry(token, walk_one, &w);
 }
 
 /****************************************************************************
@@ -830,48 +830,48 @@ int parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb c
 
 size_t parameter_flashfs_max_payload(void)
 {
-	if (sector_map == NULL) {
-		return 0;
+	если (sector_map == NULL) {
+		вернуть 0;
 	}
 
 	size_t max_total = 0;
 
-	for (int s = 0; sector_map[s].address; s++) {
-		if (sector_usable(s) > max_total) {
+	для (целое s = 0; sector_map[s].address; s++) {
+		если (sector_usable(s) > max_total) {
 			max_total = sector_usable(s);
 		}
 	}
 
 	/* h_size_t holds the record size */
-	if (max_total > UINT16_MAX) {
+	если (max_total > UINT16_MAX) {
 		max_total = UINT16_MAX;
 	}
 
 	max_total &= ~(size_t)SizeMask;
 
-	if (max_total <= sizeof(flash_entry_header_t)) {
-		return 0;
+	если (max_total <= sizeof(flash_entry_header_t)) {
+		вернуть 0;
 	}
 
-	return max_total - sizeof(flash_entry_header_t);
+	вернуть max_total - sizeof(flash_entry_header_t);
 }
 
-int parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_size)
+целое parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_size)
 {
-	if (sector_map == NULL) {
-		return -ENXIO;
+	если (sector_map == NULL) {
+		вернуть -ENXIO;
 	}
 
 	flash_entry_header_t *first = find_entry(token);
 
-	if (first == NULL) {
-		return 0;
+	если (first == NULL) {
+		вернуть 0;
 	}
 
 	/* Dead records ahead of the live data (a torn write, or the erased
 	 * prefix the single-snapshot writer left) only go away with an erase. */
-	if ((uintptr_t)first != (uintptr_t)sector_map[0].address) {
-		return 1;
+	если ((uintptr_t)first != (uintptr_t)sector_map[0].address) {
+		вернуть 1;
 	}
 
 	/* Keep room after the log for a burst the size of the snapshot
@@ -881,24 +881,24 @@ int parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_si
 	const size_t snapshot_total = (snapshot_size + sizeof(flash_entry_header_t) + align) & ~align;
 	const size_t headroom = snapshot_total > 8192 ? snapshot_total : 8192;
 
-	if (find_append(headroom) != NULL) {
-		return 0;
+	если (find_append(headroom) != NULL) {
+		вернуть 0;
 	}
 
 	/* Compaction leaves the snapshot at the start of sector 0 and every
 	 * other sector blank. Erase only if that layout has the room this one
 	 * lacks, or every boot would pay the erase for nothing. */
-	if (sector_usable(0) >= snapshot_total + headroom) {
-		return 1;
+	если (sector_usable(0) >= snapshot_total + headroom) {
+		вернуть 1;
 	}
 
-	for (int s = 1; sector_map[s].address; s++) {
-		if (sector_usable(s) >= headroom) {
-			return 1;
+	для (целое s = 1; sector_map[s].address; s++) {
+		если (sector_usable(s) >= headroom) {
+			вернуть 1;
 		}
 	}
 
-	return 0;
+	вернуть 0;
 }
 
 /****************************************************************************
@@ -923,15 +923,15 @@ int parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_si
  *
  ****************************************************************************/
 
-int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *buf_size)
+целое parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *buf_size)
 {
-	int rv = -ENXIO;
+	целое rv = -ENXIO;
 
-	if (sector_map) {
+	если (sector_map) {
 
 		rv = -ENOMEM;
 
-		if (!working_buffer_static) {
+		если (!working_buffer_static) {
 
 			/* parameter_flashfs_write pads the entry to a word in place */
 			working_buffer_size = *buf_size + sizeof(flash_entry_header_t) + SizeMask;
@@ -941,11 +941,11 @@ int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *
 
 		/* Allocation failed or not provided */
 
-		if (working_buffer == NULL) {
+		если (working_buffer == NULL) {
 
 			working_buffer_size = 0;
 
-		} else {
+		} иначе {
 
 			/* We have a buffer reserve space and init it */
 			*buffer = &working_buffer[sizeof(flash_entry_header_t)];
@@ -956,7 +956,7 @@ int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *
 		}
 	}
 
-	return rv;
+	вернуть rv;
 }
 
 /****************************************************************************
@@ -973,25 +973,25 @@ int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *
  *
  ****************************************************************************/
 
-int parameter_flashfs_erase(void)
+целое parameter_flashfs_erase(void)
 {
-	int rv = -ENXIO;
+	целое rv = -ENXIO;
 
-	if (sector_map) {
+	если (sector_map) {
 		rv = 0;
 
-		for (int s = 0; sector_map[s].address; s++) {
-			int sz = erase_sector(&sector_map[s], (flash_entry_header_t *)sector_map[s].address);
+		для (целое s = 0; sector_map[s].address; s++) {
+			целое sz = erase_sector(&sector_map[s], (flash_entry_header_t *)sector_map[s].address);
 
-			if (sz != 0) {
-				return sz;
+			если (sz != 0) {
+				вернуть sz;
 			}
 
 			rv += sector_map[s].size;
 		}
 	}
 
-	return rv;
+	вернуть rv;
 }
 
 /****************************************************************************
@@ -1022,13 +1022,13 @@ int parameter_flashfs_erase(void)
  *
  ****************************************************************************/
 
-int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16_t size)
+целое parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16_t size)
 {
-	int rv = 0;
+	целое rv = 0;
 	sector_map = fconfig;
 	working_buffer_static = buffer != NULL;
 
-	if (!working_buffer_static) {
+	если (!working_buffer_static) {
 		size = 0;
 	}
 
@@ -1042,10 +1042,10 @@ int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16
 	 * reports -EILSEQ. Erasing here would hide a successful retry after
 	 * a torn write. */
 
-	return rv;
+	вернуть rv;
 }
 
-#if defined(FLASH_UNIT_TEST)
+#если defined(FLASH_UNIT_TEST)
 
 static sector_descriptor_t  test_sector_map[] = {
 	{1, 16 * 1024, 0x08004000},
@@ -1064,18 +1064,18 @@ __EXPORT void test(void)
 
 	parameter_flashfs_init(test_sector_map, buffer, largest_block);
 
-	for (int t = 0; t < sizeof(test_buf); t++) {
+	для (целое t = 0; t < sizeof(test_buf); t++) {
 		test_buf[t] = (uint8_t) t;
 	}
 
-	int er = parameter_flashfs_erase();
+	целое er = parameter_flashfs_erase();
 	uint8_t *fbuffer;
 	size_t buf_size;
-	int written = 0;
-	int read = 0;
-	int rv = 0;
+	целое written = 0;
+	целое read = 0;
+	целое rv = 0;
 
-	for (int a = 0; a <= 4; a++) {
+	для (целое a = 0; a <= 4; a++) {
 		parameter_flashfs_erase();
 		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
 		memcpy(fbuffer, test_buf, a);
@@ -1084,15 +1084,15 @@ __EXPORT void test(void)
 		read = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
 		parameter_flashfs_free();
 
-		if (read != written) {
-			static volatile int j;
+		если (read != written) {
+			static volatile целое j;
 			j++;
 		}
 	}
 
-	int block = 2048;
+	целое block = 2048;
 
-	for (int a = 0; a <= 8; a++) {
+	для (целое a = 0; a <= 8; a++) {
 		parameter_flashfs_erase();
 		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
 		memcpy(fbuffer, test_buf, block);
@@ -1101,8 +1101,8 @@ __EXPORT void test(void)
 		read = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
 		parameter_flashfs_free();
 
-		if (read != written) {
-			static volatile int j;
+		если (read != written) {
+			static volatile целое j;
 			j++;
 		}
 

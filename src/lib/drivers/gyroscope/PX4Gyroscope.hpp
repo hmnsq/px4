@@ -61,9 +61,9 @@ public:
 
 	void updateFIFO(sensor_gyro_fifo_s &sample);
 
-	uint32_t get_device_id() const { return _device_id; }
-	int get_instance() { return _sensor_pub.get_instance(); };
-	int32_t get_max_rate_hz() const { return math::constrain(_imu_gyro_rate_max, static_cast<int32_t>(100), static_cast<int32_t>(4000)); }
+	uint32_t get_device_id() const { вернуть _device_id; }
+	целое get_instance() { вернуть _sensor_pub.get_instance(); };
+	int32_t get_max_rate_hz() const { вернуть math::constrain(_imu_gyro_rate_max, static_cast<int32_t>(100), static_cast<int32_t>(4000)); }
 
 private:
 	void UpdateClipLimit();

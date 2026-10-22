@@ -67,7 +67,7 @@ public:
 
 	friend SMBus;
 
-	int populate_smbus_data(battery_status_s &msg, battery_info_s &battery_info);
+	целое populate_smbus_data(battery_status_s &msg, battery_info_s &battery_info);
 
 	virtual void RunImpl(); // Can be overridden by derived implimentation
 
@@ -83,13 +83,13 @@ public:
 	* @brief Read info from battery on startup.
 	* @return Returns PX4_OK on success, PX4_ERROR on failure. Can be overridden by derived implimentation
 	*/
-	virtual int get_startup_info();
+	virtual целое get_startup_info();
 
 	/**
 	 * @brief Gets the SBS manufacture date of the battery.
 	 * @return Returns PX4_OK on success, PX4_ERROR on failure.
 	 */
-	int manufacture_date();
+	целое manufacture_date();
 
 	/**
 	 * @brief Gets the SBS manufacturer name of the battery device.
@@ -98,7 +98,7 @@ public:
 	 *                   including the null character that is appended to the end.
 	 * @return Returns PX4_OK on success, PX4_ERROR on failure.
 	 */
-	int manufacturer_name(uint8_t *manufacturer_name, const uint8_t length);
+	целое manufacturer_name(uint8_t *manufacturer_name, const uint8_t length);
 
 	/**
 	 * @brief Enables or disables the cell under voltage protection emergency shut off.
@@ -176,7 +176,7 @@ SMBUS_SBS_BaseClass<T>::SMBUS_SBS_BaseClass(const I2CSPIDriverConfig &config, SM
 {
 	battery_info_s battery_info{};
 	battery_status_s new_report = {};
-	int SBS_instance_number = 0;
+	целое SBS_instance_number = 0;
 	_battery_info_topic = orb_advertise_multi(ORB_ID(battery_info), &battery_info, &SBS_instance_number);
 	_batt_topic = orb_advertise_multi(ORB_ID(battery_status), &new_report, &SBS_instance_number);
 	_interface->init();
@@ -188,7 +188,7 @@ SMBUS_SBS_BaseClass<T>::~SMBUS_SBS_BaseClass()
 	orb_unadvertise(_batt_topic);
 	perf_free(_cycle); // TODO
 
-	if (_interface != nullptr) {
+	если (_interface != nullptr) {
 		delete _interface;
 	}
 
@@ -211,17 +211,17 @@ uint16_t SMBUS_SBS_BaseClass<T>::get_serial_number()
 {
 	uint16_t serial_num = 0;
 
-	if (_interface->read_word(BATT_SMBUS_SERIAL_NUMBER, serial_num) == PX4_OK) {
-		return serial_num;
+	если (_interface->read_word(BATT_SMBUS_SERIAL_NUMBER, serial_num) == PX4_OK) {
+		вернуть serial_num;
 	}
 
-	return PX4_ERROR;
+	вернуть PX4_ERROR;
 }
 
 template<class T>
-int SMBUS_SBS_BaseClass<T>::get_startup_info()
+целое SMBUS_SBS_BaseClass<T>::get_startup_info()
 {
-	int ret = PX4_OK;
+	целое ret = PX4_OK;
 
 	ret |= _interface->block_read(BATT_SMBUS_MANUFACTURER_NAME, _manufacturer_name, BATT_SMBUS_MANUFACTURER_NAME_SIZE,
 				      true);
@@ -242,7 +242,7 @@ int SMBUS_SBS_BaseClass<T>::get_startup_info()
 	uint16_t manufacture_date;
 	ret |= _interface->read_word(BATT_SMBUS_MANUFACTURE_DATE, manufacture_date);
 
-	if (!ret) {
+	если (!ret) {
 		_serial_number = serial_num;
 		_batt_startup_capacity = (uint16_t)((float)remaining_cap);
 		_cycle_count = cycle_count;
@@ -250,17 +250,17 @@ int SMBUS_SBS_BaseClass<T>::get_startup_info()
 		_manufacture_date = manufacture_date;
 	}
 
-	return ret;
+	вернуть ret;
 }
 
 template<class T>
-int SMBUS_SBS_BaseClass<T>::populate_smbus_data(battery_status_s &data, battery_info_s &battery_info)
+целое SMBUS_SBS_BaseClass<T>::populate_smbus_data(battery_status_s &data, battery_info_s &battery_info)
 {
 
 	// Temporary variable for storing SMBUS reads.
 	uint16_t result;
 
-	int ret = _interface->read_word(BATT_SMBUS_VOLTAGE, result);
+	целое ret = _interface->read_word(BATT_SMBUS_VOLTAGE, result);
 
 	// Convert millivolts to volts.
 	data.voltage_v = ((float)result) * 0.001f;
@@ -294,7 +294,7 @@ int SMBUS_SBS_BaseClass<T>::populate_smbus_data(battery_status_s &data, battery_
 	ret |= _interface->read_word(BATT_SMBUS_TEMP, result);
 	data.temperature = ((float)result * 0.1f) + atmosphere::kAbsoluteNullCelsius;
 
-	return ret;
+	вернуть ret;
 
 }
 
@@ -319,12 +319,12 @@ void SMBUS_SBS_BaseClass<T>::RunImpl()
 	battery_info.timestamp = now;
 	battery_info.id = new_report.id;
 
-	int ret = populate_smbus_data(new_report, battery_info);
+	целое ret = populate_smbus_data(new_report, battery_info);
 
 	new_report.cell_count = _cell_count;
 
 	// Only publish if no errors.
-	if (!ret) {
+	если (!ret) {
 		orb_publish(ORB_ID(battery_status), _batt_topic, &new_report);
 		orb_publish(ORB_ID(battery_info), _battery_info_topic, &battery_info);
 	}

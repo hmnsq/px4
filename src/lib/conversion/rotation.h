@@ -172,7 +172,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 {
 	switch (rot) {
 	case ROTATION_NONE:
-		return true;
+		вернуть true;
 
 	case ROTATION_YAW_90: {
 			T tmp = x;
@@ -180,14 +180,14 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			y = tmp;
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_YAW_180: {
 			x = math::negate(x);
 			y = math::negate(y);
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_YAW_270: {
 			T tmp = x;
@@ -195,14 +195,14 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			y = math::negate(tmp);
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_180: {
 			y = math::negate(y);
 			z = math::negate(z);
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_180_YAW_90:
 
@@ -214,14 +214,14 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			z = math::negate(z);
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_PITCH_180: {
 			x = math::negate(x);
 			z = math::negate(z);
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_180_YAW_270:
 
@@ -233,7 +233,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			z = math::negate(z);
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_90: {
 			T tmp = z;
@@ -241,7 +241,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			y = math::negate(tmp);
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_90_YAW_90: {
 			T tmp = x;
@@ -250,7 +250,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			y = tmp;
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_270: {
 			T tmp = z;
@@ -258,7 +258,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			y = tmp;
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_270_YAW_90: {
 			T tmp = x;
@@ -267,7 +267,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			y = tmp;
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_PITCH_90: {
 			T tmp = z;
@@ -275,7 +275,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			x = tmp;
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_PITCH_270: {
 			T tmp = z;
@@ -283,7 +283,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			x = math::negate(tmp);
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_180_PITCH_270: {
 			T tmp = z;
@@ -292,7 +292,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			y = math::negate(y);
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_90_YAW_270: {
 			T tmp = x;
@@ -301,7 +301,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			y = math::negate(tmp);
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_90_PITCH_90: {
 			T tmp = x;
@@ -310,7 +310,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			z = math::negate(tmp);
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_180_PITCH_90: {
 			T tmp = x;
@@ -319,7 +319,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			z = math::negate(tmp);
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_270_PITCH_90: {
 			T tmp = x;
@@ -328,7 +328,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			z = math::negate(tmp);
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_90_PITCH_180: {
 			T tmp = y;
@@ -337,7 +337,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			z = math::negate(tmp);
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_270_PITCH_180: {
 			T tmp = y;
@@ -346,7 +346,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			z = tmp;
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_90_PITCH_270: {
 			T tmp = x;
@@ -355,7 +355,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			z = tmp;
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_270_PITCH_270: {
 			T tmp = x;
@@ -364,7 +364,7 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			z = tmp;
 		}
 
-		return true;
+		вернуть true;
 
 	case ROTATION_ROLL_90_PITCH_180_YAW_90: {
 			T tmp = x;
@@ -373,11 +373,11 @@ static bool rotate_3(enum Rotation rot, T &x, T &y, T &z)
 			y = math::negate(tmp);
 		}
 
-		return true;
+		вернуть true;
 
 	default:
 		break;
 	}
 
-	return false;
+	вернуть false;
 }

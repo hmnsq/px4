@@ -47,9 +47,9 @@
 #include <parameters/px4_parameters.hpp>
 #include <lib/tinybson/tinybson.h>
 
-#if defined(__PX4_NUTTX)
+#если defined(__PX4_NUTTX)
 #include <nuttx/crc32.h>
-#else
+#иначе
 #include <crc32.h>
 #endif
 #include <float.h>
@@ -83,16 +83,16 @@ using namespace time_literals;
 /* Include functions common to user and kernel sides */
 #include "parameters_common.cpp"
 
-#if defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
+#если defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
 #include <px4_platform/board_ctrl.h>
 #include "parameters_ioctl.h"
 #endif
 
-#if defined(FLASH_BASED_PARAMS)
+#если defined(FLASH_BASED_PARAMS)
 #include "flashparams/flashparams.h"
-#else
-inline static int flash_param_save(param_filter_func filter) { return -1; }
-inline static int flash_param_import() { return -1; }
+#иначе
+inline static целое flash_param_save(param_filter_func filter) { вернуть -1; }
+inline static целое flash_param_import() { вернуть -1; }
 #endif
 
 static char *param_default_file = nullptr;
@@ -115,9 +115,9 @@ static DynamicSparseLayer runtime_defaults{&firmware_defaults};
 DynamicSparseLayer user_config{&runtime_defaults};
 
 /** parameter update topic handle */
-#if not defined(CONFIG_PARAM_REMOTE)
+#если not defined(CONFIG_PARAM_REMOTE)
 static orb_advert_t param_topic = nullptr;
-static unsigned int param_instance = 0;
+static unsigned целое param_instance = 0;
 #endif
 
 static perf_counter_t param_export_perf;
@@ -129,10 +129,10 @@ static pthread_mutex_t file_mutex  =
 	PTHREAD_MUTEX_INITIALIZER; ///< this protects against concurrent param saves (file or flash access).
 
 // Support for remote parameter node
-#if defined(CONFIG_PARAM_PRIMARY)
+#если defined(CONFIG_PARAM_PRIMARY)
 # include "parameters_primary.h"
 #endif // CONFIG_PARAM_PRIMARY
-#if defined(CONFIG_PARAM_REMOTE)
+#если defined(CONFIG_PARAM_REMOTE)
 # include "parameters_remote.h"
 #endif // CONFIG_PARAM_REMOTE
 
@@ -149,19 +149,19 @@ param_init()
 	param_get_perf = perf_alloc(PC_COUNT, "param: get");
 	param_set_perf = perf_alloc(PC_ELAPSED, "param: set");
 
-#if defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
+#если defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
 	px4_register_boardct_ioctl(_PARAMIOCBASE, param_ioctl);
 #endif
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#если defined(CONFIG_PARAM_PRIMARY)
 	param_primary_init();
 #endif // CONFIG_PARAM_PRIMARY
 
-#if defined(CONFIG_PARAM_REMOTE)
+#если defined(CONFIG_PARAM_REMOTE)
 	param_remote_init();
 #endif // CONFIG_PARAM_REMOTE
 
-#if not defined(CONFIG_PARAM_REMOTE)
+#если not defined(CONFIG_PARAM_REMOTE)
 	autosave_instance = new ParamAutosave();
 #endif
 }
@@ -172,7 +172,7 @@ param_notify_changes()
 {
 // Don't send if this is a remote node. Only the primary
 // sends out update notices
-#if not defined(CONFIG_PARAM_REMOTE)
+#если not defined(CONFIG_PARAM_REMOTE)
 	parameter_update_s pup {};
 	pup.instance = param_instance++;
 	pup.get_count = perf_event_count(param_get_perf);
@@ -184,10 +184,10 @@ param_notify_changes()
 	pup.custom_default = runtime_defaults.size();
 	pup.timestamp = hrt_absolute_time();
 
-	if (param_topic == nullptr) {
+	если (param_topic == nullptr) {
 		param_topic = orb_advertise(ORB_ID(parameter_update), &pup);
 
-	} else {
+	} иначе {
 		orb_publish(ORB_ID(parameter_update), param_topic, &pup);
 	}
 
@@ -204,60 +204,60 @@ static param_t param_find_internal(const char *name, bool notification)
 
 	/* perform a binary search of the known parameters */
 
-	while (front <= last) {
+	пока (front <= last) {
 		middle = front + (last - front) / 2;
-		int ret = strcmp(name, param_name(middle));
+		целое ret = strcmp(name, param_name(middle));
 
-		if (ret == 0) {
-			if (notification) {
+		если (ret == 0) {
+			если (notification) {
 				param_set_used(middle);
 			}
 
-			return middle;
+			вернуть middle;
 
-		} else if (middle == front) {
+		} иначе если (middle == front) {
 			/* An end point has been hit, but there has been no match */
 			break;
 
-		} else if (ret < 0) {
+		} иначе если (ret < 0) {
 			last = middle;
 
-		} else {
+		} иначе {
 			front = middle;
 		}
 	}
 
 	/* not found */
-	return PARAM_INVALID;
+	вернуть PARAM_INVALID;
 }
 
 param_t param_find(const char *name)
 {
-	return param_find_internal(name, true);
+	вернуть param_find_internal(name, true);
 }
 
 param_t param_find_no_notification(const char *name)
 {
-	return param_find_internal(name, false);
+	вернуть param_find_internal(name, false);
 }
 
 unsigned param_count_used()
 {
-	return params_active.count();
+	вернуть params_active.count();
 }
 
 param_t param_for_used_index(unsigned index)
 {
 	// walk all params and count used params
-	if (index < param_info_count) {
+	если (index < param_info_count) {
 		unsigned used_count = 0;
 
-		for (int i = 0; i < params_active.size(); i++) {
-			if (params_active[i]) {
+		для (целое i = 0; i < params_active.size(); i++) {
+			если (params_active[i]) {
 				// we found the right used count,
 				//  return the param value
-				if (index == used_count) {
-					return static_cast<param_t>(i);
+				если (index == used_count) {
+					вернуть static_cast<param_t>(i);
 				}
 
 				used_count++;
@@ -265,144 +265,144 @@ param_t param_for_used_index(unsigned index)
 		}
 	}
 
-	return PARAM_INVALID;
+	вернуть PARAM_INVALID;
 }
 
-int param_get_used_index(param_t param)
+целое param_get_used_index(param_t param)
 {
 	/* this tests for out of bounds and does a constant time lookup */
-	if (!param_used(param)) {
-		return -1;
+	если (!param_used(param)) {
+		вернуть -1;
 	}
 
 	/* walk all params and count, now knowing that it has a valid index */
-	int used_count = 0;
+	целое used_count = 0;
 
-	for (int i = 0; i < params_active.size(); i++) {
-		if (params_active[i]) {
+	для (целое i = 0; i < params_active.size(); i++) {
+		если (params_active[i]) {
 
-			if (param == i) {
-				return used_count;
+			если (param == i) {
+				вернуть used_count;
 			}
 
 			used_count++;
 		}
 	}
 
-	return -1;
+	вернуть -1;
 }
 
 bool
 param_value_unsaved(param_t param)
 {
-	return handle_in_range(param) ? (params_unsaved[param] || params_saving[param]) : false;
+	вернуть handle_in_range(param) ? (params_unsaved[param] || params_saving[param]) : false;
 }
 
-int
+целое
 param_get(param_t param, void *val)
 {
 	perf_count(param_get_perf);
 
-	if (!handle_in_range(param)) {
+	если (!handle_in_range(param)) {
 		PX4_ERR("get: param %" PRId16 " invalid", param);
-		return PX4_ERROR;
+		вернуть PX4_ERROR;
 	}
 
-	if (!params_active[param]) {
+	если (!params_active[param]) {
 		PX4_DEBUG("get: param %" PRId16 " (%s) not active", param, param_name(param));
 	}
 
-	int result = PX4_ERROR;
+	целое result = PX4_ERROR;
 
-	if (val) {
+	если (val) {
 
 		auto retrieve_value = user_config.get(param);
 
 		switch (param_type(param)) {
 		case PARAM_TYPE_INT32:
 			memcpy(val, &retrieve_value.i, sizeof(retrieve_value.i));
-			return PX4_OK;
+			вернуть PX4_OK;
 
 		case PARAM_TYPE_FLOAT:
 			memcpy(val, &retrieve_value.f, sizeof(retrieve_value.f));
-			return PX4_OK;
+			вернуть PX4_OK;
 		}
 	}
 
-	return result;
+	вернуть result;
 }
 
-int
+целое
 param_get_default_value_internal(param_t param, void *default_val)
 {
-	if (!handle_in_range(param)) {
+	если (!handle_in_range(param)) {
 		PX4_ERR("get default value: param %d invalid", param);
-		return PX4_ERROR;
+		вернуть PX4_ERROR;
 	}
 
-	if (default_val) {
+	если (default_val) {
 		switch (param_type(param)) {
 		case PARAM_TYPE_INT32: {
 				int32_t val = runtime_defaults.get(param).i;
 				memcpy(default_val, &val, sizeof(val));
-				return PX4_OK;
+				вернуть PX4_OK;
 			}
 
 		case PARAM_TYPE_FLOAT: {
 				float val = runtime_defaults.get(param).f;
 				memcpy(default_val, &val, sizeof(val));
-				return PX4_OK;
+				вернуть PX4_OK;
 			}
 		}
 	}
 
-	return PX4_ERROR;
+	вернуть PX4_ERROR;
 }
 
-int
+целое
 param_get_default_value(param_t param, void *default_val)
 {
-	if (!handle_in_range(param)) {
-		return PX4_ERROR;
+	если (!handle_in_range(param)) {
+		вернуть PX4_ERROR;
 	}
 
-	int ret = param_get_default_value_internal(param, default_val);
-	return ret;
+	целое ret = param_get_default_value_internal(param, default_val);
+	вернуть ret;
 }
 
 bool param_value_is_default(param_t param)
 {
-	if (!handle_in_range(param)) {
-		return true;
+	если (!handle_in_range(param)) {
+		вернуть true;
 	}
 
-	if (!user_config.contains(param)) {
+	если (!user_config.contains(param)) {
 		// if user config does not contain it, consider it default.
-		return true;
+		вернуть true;
 
-	} else {
+	} иначе {
 		// compare with default value
 		const param_value_u user_config_value = user_config.get(param);
 		const param_value_u runtime_default_value = runtime_defaults.get(param);
 
 		switch (param_type(param)) {
 		case PARAM_TYPE_INT32: {
-				return user_config_value.i == runtime_default_value.i;
+				вернуть user_config_value.i == runtime_default_value.i;
 			}
 
 		case PARAM_TYPE_FLOAT: {
-				return fabsf(user_config_value.f - runtime_default_value.f) < FLT_EPSILON;
+				вернуть fabsf(user_config_value.f - runtime_default_value.f) < FLT_EPSILON;
 			}
 		}
 	}
 
-	return true;
+	вернуть true;
 }
 
 static void
 param_autosave()
 {
-	if (autosave_instance) {
+	если (autosave_instance) {
 		autosave_instance->request();
 	}
 }
@@ -410,31 +410,31 @@ param_autosave()
 void
 param_control_autosave(bool enable)
 {
-	if (autosave_instance) {
+	если (autosave_instance) {
 		autosave_instance->enable(enable);
 	}
 }
 
-static int
+static целое
 param_set_internal(param_t param, const void *val, bool mark_saved, bool notify_changes, bool update_remote = true,
 		   bool autosave = true)
 {
-	if (!handle_in_range(param)) {
+	если (!handle_in_range(param)) {
 		PX4_ERR("set invalid param %d", param);
-		return PX4_ERROR;
+		вернуть PX4_ERROR;
 	}
 
-	if (val == nullptr) {
+	если (val == nullptr) {
 		PX4_ERR("set invalid value");
-		return PX4_ERROR;
+		вернуть PX4_ERROR;
 	}
 
-	if (param_is_readonly(param)) {
+	если (param_is_readonly(param)) {
 		PX4_WARN("param %s is read-only", param_name(param));
-		return PX4_ERROR;
+		вернуть PX4_ERROR;
 	}
 
-	int result = -1;
+	целое result = -1;
 	bool param_changed = false;
 	perf_begin(param_set_perf);
 
@@ -458,35 +458,35 @@ param_set_internal(param_t param, const void *val, bool mark_saved, bool notify_
 		}
 	}
 
-	if (user_config.store(param, new_value)) {
-		if (param_changed) {
+	если (user_config.store(param, new_value)) {
+		если (param_changed) {
 			params_unsaved.set(param, !mark_saved);
 		}
 
 		result = PX4_OK;
 
-	} else {
+	} иначе {
 		PX4_ERR("param_set failed to store param %s", param_name(param));
 		result = PX4_ERROR;
 	}
 
-	if ((result == PX4_OK) && param_changed && !mark_saved && autosave) { // this is false when importing parameters
+	если ((result == PX4_OK) && param_changed && !mark_saved && autosave) { // this is false when importing parameters
 		param_autosave();
 	}
 
 	// If this is the parameter server, make sure that the remote is updated
-#if defined(CONFIG_PARAM_PRIMARY)
+#если defined(CONFIG_PARAM_PRIMARY)
 
-	if (param_changed && update_remote) {
+	если (param_changed && update_remote) {
 		param_primary_set_value(param, val);
 	}
 
 #endif
 
 	// If this is the parameter remote, make sure that the primary is updated
-#if defined(CONFIG_PARAM_REMOTE)
+#если defined(CONFIG_PARAM_REMOTE)
 
-	if (param_changed && update_remote) {
+	если (param_changed && update_remote) {
 		param_remote_set_value(param, val);
 	}
 
@@ -498,17 +498,17 @@ param_set_internal(param_t param, const void *val, bool mark_saved, bool notify_
 	 * If we set something, now that we have unlocked, go ahead and advertise that
 	 * a thing has been set.
 	 */
-	if ((result == PX4_OK) && param_changed && notify_changes) {
+	если ((result == PX4_OK) && param_changed && notify_changes) {
 		param_notify_changes();
 	}
 
-	return result;
+	вернуть result;
 }
 
-#if defined(FLASH_BASED_PARAMS)
-int param_set_external(param_t param, const void *val, bool mark_saved, bool notify_changes)
+#если defined(FLASH_BASED_PARAMS)
+целое param_set_external(param_t param, const void *val, bool mark_saved, bool notify_changes)
 {
-	return param_set_internal(param, val, mark_saved, notify_changes);
+	вернуть param_set_internal(param, val, mark_saved, notify_changes);
 }
 
 void param_get_external(param_t param, void *val)
@@ -517,36 +517,36 @@ void param_get_external(param_t param, void *val)
 }
 #endif
 
-int param_set(param_t param, const void *val)
+целое param_set(param_t param, const void *val)
 {
-	return param_set_internal(param, val, false, true);
+	вернуть param_set_internal(param, val, false, true);
 }
 
-int param_set_no_notification(param_t param, const void *val)
+целое param_set_no_notification(param_t param, const void *val)
 {
-	return param_set_internal(param, val, false, false);
+	вернуть param_set_internal(param, val, false, false);
 }
 
-int param_set_no_remote_update(param_t param, const void *val, bool notify)
+целое param_set_no_remote_update(param_t param, const void *val, bool notify)
 {
-	return param_set_internal(param, val, false, notify, false);
+	вернуть param_set_internal(param, val, false, notify, false);
 }
 
 bool param_used(param_t param)
 {
-	if (handle_in_range(param)) {
-		return params_active[param];
+	если (handle_in_range(param)) {
+		вернуть params_active[param];
 	}
 
-	return false;
+	вернуть false;
 }
 
 void param_set_used(param_t param)
 {
-	if (handle_in_range(param)) {
-#if defined(CONFIG_PARAM_REMOTE)
+	если (handle_in_range(param)) {
+#если defined(CONFIG_PARAM_REMOTE)
 
-		if (!param_used(param)) {
+		если (!param_used(param)) {
 			param_remote_set_used(param);
 		}
 
@@ -556,24 +556,24 @@ void param_set_used(param_t param)
 	}
 }
 
-int param_set_default_value(param_t param, const void *val)
+целое param_set_default_value(param_t param, const void *val)
 {
-	if (!handle_in_range(param)) {
+	если (!handle_in_range(param)) {
 		PX4_ERR("set default value invalid param %d", param);
-		return PX4_ERROR;
+		вернуть PX4_ERROR;
 	}
 
-	if (val == nullptr) {
+	если (val == nullptr) {
 		PX4_ERR("set default value invalid value");
-		return PX4_ERROR;
+		вернуть PX4_ERROR;
 	}
 
-	if (param_is_readonly(param)) {
+	если (param_is_readonly(param)) {
 		PX4_WARN("param %s is read-only", param_name(param));
-		return PX4_ERROR;
+		вернуть PX4_ERROR;
 	}
 
-	int result = PX4_ERROR;
+	целое result = PX4_ERROR;
 
 
 	// check if param being set to default value
@@ -596,12 +596,12 @@ int param_set_default_value(param_t param, const void *val)
 		}
 	}
 
-	if (setting_to_static_default) {
+	если (setting_to_static_default) {
 		runtime_defaults.reset(param);
 
 		result = PX4_OK;
 
-	} else {
+	} иначе {
 		param_value_u new_value{};
 
 		switch (param_type(param)) {
@@ -619,83 +619,83 @@ int param_set_default_value(param_t param, const void *val)
 			break;
 		}
 
-		if (runtime_defaults.store(param, new_value)) {
+		если (runtime_defaults.store(param, new_value)) {
 			user_config.refresh(param);
 			result = PX4_OK;
 
-		} else {
+		} иначе {
 			result = PX4_ERROR;
 		}
 	}
 
 
-	if ((result == PX4_OK) && param_used(param)) {
+	если ((result == PX4_OK) && param_used(param)) {
 		// send notification if param is already in use
 		param_notify_changes();
 	}
 
-	return result;
+	вернуть result;
 }
 
-static int param_reset_internal(param_t param, bool notify = true, bool autosave = true)
+static целое param_reset_internal(param_t param, bool notify = true, bool autosave = true)
 {
-#if defined(CONFIG_PARAM_REMOTE)
+#если defined(CONFIG_PARAM_REMOTE)
 	// Remote doesn't support reset
-	return false;
+	вернуть false;
 #endif
 
-	if (param_is_readonly(param)) {
-		return 0;  // silently skip — param_reset_all loops over all params
+	если (param_is_readonly(param)) {
+		вернуть 0;  // silently skip — param_reset_all loops over all params
 	}
 
 	bool param_found = user_config.contains(param);
 
-	if (handle_in_range(param)) {
+	если (handle_in_range(param)) {
 		user_config.reset(param);
 	}
 
-	if (param_found) {
+	если (param_found) {
 		/* Persist the reset. Flash-param saves append only unsaved params,
 		 * so a reset has to show up as a tombstone or replay keeps the
 		 * previous override. */
 		params_unsaved.set(param, true);
 	}
 
-	if (autosave) {
+	если (autosave) {
 		param_autosave();
 	}
 
-	if (param_found && notify) {
+	если (param_found && notify) {
 		param_notify_changes();
 	}
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#если defined(CONFIG_PARAM_PRIMARY)
 	param_primary_reset(param);
 #endif
 
-	return param_found;
+	вернуть param_found;
 }
 
-int param_reset(param_t param) { return param_reset_internal(param, true); }
-int param_reset_no_notification(param_t param) { return param_reset_internal(param, false); }
+целое param_reset(param_t param) { вернуть param_reset_internal(param, true); }
+целое param_reset_no_notification(param_t param) { вернуть param_reset_internal(param, false); }
 
 static void
 param_reset_all_internal(bool auto_save)
 {
-#if defined(CONFIG_PARAM_REMOTE)
+#если defined(CONFIG_PARAM_REMOTE)
 	// Remote doesn't support reset
-	return;
+	вернуть;
 #endif
 
-	for (param_t param = 0; handle_in_range(param); param++) {
+	для (param_t param = 0; handle_in_range(param); param++) {
 		param_reset_internal(param, false, false);
 	}
 
-	if (auto_save) {
+	если (auto_save) {
 		param_autosave();
 	}
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#если defined(CONFIG_PARAM_PRIMARY)
 	param_primary_reset_all();
 #endif
 
@@ -709,16 +709,16 @@ param_reset_all()
 }
 
 void
-param_reset_excludes(const char *excludes[], int num_excludes)
+param_reset_excludes(const char *excludes[], целое num_excludes)
 {
-	for (param_t param = 0; handle_in_range(param); param++) {
+	для (param_t param = 0; handle_in_range(param); param++) {
 		const char *name = param_name(param);
 		bool exclude = false;
 
-		for (int index = 0; index < num_excludes; index ++) {
-			int len = strlen(excludes[index]);
+		для (целое index = 0; index < num_excludes; index ++) {
+			целое len = strlen(excludes[index]);
 
-			if ((excludes[index][len - 1] == '*'
+			если ((excludes[index][len - 1] == '*'
 			     && strncmp(name, excludes[index], len - 1) == 0)
 			    || strcmp(name, excludes[index]) == 0) {
 
@@ -727,23 +727,23 @@ param_reset_excludes(const char *excludes[], int num_excludes)
 			}
 		}
 
-		if (!exclude) {
+		если (!exclude) {
 			param_reset(param);
 		}
 	}
 }
 
 void
-param_reset_specific(const char *resets[], int num_resets)
+param_reset_specific(const char *resets[], целое num_resets)
 {
-	for (param_t param = 0; handle_in_range(param); param++) {
+	для (param_t param = 0; handle_in_range(param); param++) {
 		const char *name = param_name(param);
 		bool reset = false;
 
-		for (int index = 0; index < num_resets; index++) {
-			int len = strlen(resets[index]);
+		для (целое index = 0; index < num_resets; index++) {
+			целое len = strlen(resets[index]);
 
-			if ((resets[index][len - 1] == '*'
+			если ((resets[index][len - 1] == '*'
 			     && strncmp(name, resets[index], len - 1) == 0)
 			    || strcmp(name, resets[index]) == 0) {
 
@@ -752,148 +752,148 @@ param_reset_specific(const char *resets[], int num_resets)
 			}
 		}
 
-		if (reset) {
+		если (reset) {
 			param_reset(param);
 		}
 	}
 }
 
-int
+целое
 param_set_default_file(const char *filename)
 {
-	if (filename && param_backup_file && strcmp(filename, param_backup_file) == 0) {
+	если (filename && param_backup_file && strcmp(filename, param_backup_file) == 0) {
 		PX4_ERR("default file can't be the same as the backup file %s", filename);
-		return PX4_ERROR;
+		вернуть PX4_ERROR;
 	}
 
 #ifdef FLASH_BASED_PARAMS
 	// the default for flash-based params is always the FLASH
 	(void)filename;
-#else
+#иначе
 
-	if (param_default_file != nullptr) {
+	если (param_default_file != nullptr) {
 		// we assume this is not in use by some other thread
 		free(param_default_file);
 		param_default_file = nullptr;
 	}
 
-	if (filename) {
+	если (filename) {
 		param_default_file = strdup(filename);
 	}
 
 #endif /* FLASH_BASED_PARAMS */
 
-	return 0;
+	вернуть 0;
 }
 
 const char *param_get_default_file()
 {
-	return param_default_file;
+	вернуть param_default_file;
 }
 
-int param_set_backup_file(const char *filename)
+целое param_set_backup_file(const char *filename)
 {
-	if (filename && param_default_file && strcmp(filename, param_default_file) == 0) {
+	если (filename && param_default_file && strcmp(filename, param_default_file) == 0) {
 		PX4_ERR("backup file can't be the same as the default file %s", filename);
-		return PX4_ERROR;
+		вернуть PX4_ERROR;
 	}
 
-	if (param_backup_file != nullptr) {
+	если (param_backup_file != nullptr) {
 		// we assume this is not in use by some other thread
 		free(param_backup_file);
 		param_backup_file = nullptr;
 	}
 
-	if (filename) {
+	если (filename) {
 		param_backup_file = strdup(filename);
 
-	} else {
+	} иначе {
 		param_backup_file = nullptr; // backup disabled
 	}
 
-	return 0;
+	вернуть 0;
 }
 
 const char *param_get_backup_file()
 {
-	return param_backup_file;
+	вернуть param_backup_file;
 }
 
-static int param_export_internal(int fd, param_filter_func filter);
-static int param_verify(int fd);
+static целое param_export_internal(целое fd, param_filter_func filter);
+static целое param_verify(целое fd);
 
-int param_save_default(bool blocking)
+целое param_save_default(bool blocking)
 {
 	PX4_DEBUG("param_save_default");
 
 	// take the file lock
-	if (blocking) {
+	если (blocking) {
 		pthread_mutex_lock(&file_mutex);
 
-	} else {
-		if (pthread_mutex_trylock(&file_mutex) != 0) {
+	} иначе {
+		если (pthread_mutex_trylock(&file_mutex) != 0) {
 			PX4_DEBUG("param_save_default: file lock failed (already locked)");
-			return -EWOULDBLOCK;
+			вернуть -EWOULDBLOCK;
 		}
 	}
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	целое shutdown_lock_ret = px4_shutdown_lock();
 
-	if (shutdown_lock_ret != 0) {
+	если (shutdown_lock_ret != 0) {
 		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
 	}
 
-	int res = PX4_ERROR;
+	целое res = PX4_ERROR;
 	const char *filename = param_get_default_file();
 
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (params_unsaved[param]) {
+	для (param_t param = 0; handle_in_range(param); param++) {
+		если (params_unsaved[param]) {
 			params_saving.set(param, true);
 			params_unsaved.set(param, false);
 		}
 	}
 
-	if (filename) {
-		static constexpr int MAX_ATTEMPTS = 3;
+	если (filename) {
+		static constexpr целое MAX_ATTEMPTS = 3;
 
-		for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+		для (целое attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 			// write parameters to file
-			int fd = ::open(filename, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
+			целое fd = ::open(filename, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
 
-			if (fd > -1) {
+			если (fd > -1) {
 				perf_begin(param_export_perf);
 				res = param_export_internal(fd, nullptr);
 				perf_end(param_export_perf);
 				::close(fd);
 
-				if (res == PX4_OK) {
+				если (res == PX4_OK) {
 					// reopen file to verify
-					int fd_verify = ::open(filename, O_RDONLY, PX4_O_MODE_666);
+					целое fd_verify = ::open(filename, O_RDONLY, PX4_O_MODE_666);
 					res = param_verify(fd_verify) || lseek(fd_verify, 0, SEEK_SET) || param_verify(fd_verify);
 					::close(fd_verify);
 				}
 			}
 
-			if (res == PX4_OK) {
+			если (res == PX4_OK) {
 				break;
 
-			} else {
+			} иначе {
 				PX4_ERR("parameter export to %s failed (%d) attempt %d", filename, res, attempt);
 				px4_usleep(10000); // wait at least 10 milliseconds before trying again
 			}
 		}
 
-	} else {
+	} иначе {
 		perf_begin(param_export_perf);
 		res = flash_param_save(nullptr);
 		perf_end(param_export_perf);
 	}
 
-	if (res != PX4_OK) {
+	если (res != PX4_OK) {
 		PX4_ERR("param export failed (%d)", res);
 
-		for (param_t param = 0; handle_in_range(param); param++) {
-			if (params_saving[param]) {
+		для (param_t param = 0; handle_in_range(param); param++) {
+			если (params_saving[param]) {
 				params_unsaved.set(param, true);
 			}
 		}
@@ -901,21 +901,21 @@ int param_save_default(bool blocking)
 
 	params_saving.reset();
 
-	if (res == PX4_OK) {
+	если (res == PX4_OK) {
 		// backup file
-		if (param_backup_file) {
-			int fd_backup_file = ::open(param_backup_file, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
+		если (param_backup_file) {
+			целое fd_backup_file = ::open(param_backup_file, O_WRONLY | O_CREAT | O_TRUNC, PX4_O_MODE_666);
 
-			if (fd_backup_file > -1) {
-				int backup_export_ret = param_export_internal(fd_backup_file, nullptr);
+			если (fd_backup_file > -1) {
+				целое backup_export_ret = param_export_internal(fd_backup_file, nullptr);
 				::close(fd_backup_file);
 
-				if (backup_export_ret != 0) {
+				если (backup_export_ret != 0) {
 					PX4_ERR("backup parameter export to %s failed (%d)", param_backup_file, backup_export_ret);
 
-				} else {
+				} иначе {
 					// verify export
-					int fd_verify = ::open(param_backup_file, O_RDONLY, PX4_O_MODE_666);
+					целое fd_verify = ::open(param_backup_file, O_RDONLY, PX4_O_MODE_666);
 					param_verify(fd_verify);
 					::close(fd_verify);
 				}
@@ -925,83 +925,83 @@ int param_save_default(bool blocking)
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	если (shutdown_lock_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return res;
+	вернуть res;
 }
 
 /**
  * @return 0 on success, 1 if all params have not yet been stored, -1 if device open failed, -2 if writing parameters failed
  */
-int
+целое
 param_load_default()
 {
-	int res = 0;
+	целое res = 0;
 	const char *filename = param_get_default_file();
 
-	if (!filename) {
-		return param_load(-1);
+	если (!filename) {
+		вернуть param_load(-1);
 	}
 
-	int fd_load = ::open(filename, O_RDONLY);
+	целое fd_load = ::open(filename, O_RDONLY);
 
-	if (fd_load < 0) {
+	если (fd_load < 0) {
 		/* no parameter file is OK, otherwise this is an error */
-		if (errno != ENOENT) {
+		если (errno != ENOENT) {
 			PX4_ERR("open '%s' for reading failed", filename);
-			return -1;
+			вернуть -1;
 		}
 
-		return 1;
+		вернуть 1;
 	}
 
-	int result = param_load(fd_load);
+	целое result = param_load(fd_load);
 	::close(fd_load);
 
-	if (result == 1) {
+	если (result == 1) {
 		/* blank file: nothing stored yet */
-		return 1;
+		вернуть 1;
 	}
 
-	if (result != 0) {
+	если (result != 0) {
 		PX4_ERR("error reading parameters from '%s'", filename);
-		return -2;
+		вернуть -2;
 	}
 
-	return res;
+	вернуть res;
 }
 
-static int param_verify_callback(bson_decoder_t decoder, bson_node_t node)
+static целое param_verify_callback(bson_decoder_t decoder, bson_node_t node)
 {
-	if (node->type == BSON_EOO) {
-		return 0;
+	если (node->type == BSON_EOO) {
+		вернуть 0;
 	}
 
 	// find the parameter this node represents
 	param_t param = param_find_no_notification(node->name);
 
-	if (param == PARAM_INVALID) {
+	если (param == PARAM_INVALID) {
 		PX4_ERR("verify: invalid parameter '%s'", node->name);
-		return -1;
+		вернуть -1;
 	}
 
 	// handle verifying the parameter from the node
 	switch (node->type) {
 	case BSON_INT32: {
-			if (param_type(param) != PARAM_TYPE_INT32) {
+			если (param_type(param) != PARAM_TYPE_INT32) {
 				PX4_ERR("verify: invalid param type %d for '%s' (BSON_INT32)", param_type(param), node->name);
-				return -1;
+				вернуть -1;
 			}
 
 			int32_t value;
 
-			if (param_get(param, &value) == 0) {
-				if (value == node->i32) {
-					return 1; // valid
+			если (param_get(param, &value) == 0) {
+				если (value == node->i32) {
+					вернуть 1; // valid
 
-				} else {
+				} иначе {
 					PX4_ERR("verify: '%s' invalid BSON value %" PRIi32 "(expected %" PRIi32 ")", node->name, node->i32, value);
 				}
 			}
@@ -1009,18 +1009,18 @@ static int param_verify_callback(bson_decoder_t decoder, bson_node_t node)
 		break;
 
 	case BSON_DOUBLE: {
-			if (param_type(param) != PARAM_TYPE_FLOAT) {
+			если (param_type(param) != PARAM_TYPE_FLOAT) {
 				PX4_ERR("verify: invalid param type %d for '%s' (BSON_DOUBLE)", param_type(param), node->name);
-				return -1;
+				вернуть -1;
 			}
 
 			float value;
 
-			if (param_get(param, &value) == 0) {
-				if (fabsf(value - (float)node->d) <= FLT_EPSILON) {
-					return 1; // valid
+			если (param_get(param, &value) == 0) {
+				если (fabsf(value - (float)node->d) <= FLT_EPSILON) {
+					вернуть 1; // valid
 
-				} else {
+				} иначе {
 					PX4_ERR("verify: '%s' invalid BSON value %.3f (expected %.3f)", node->name, node->d, (double)value);
 				}
 			}
@@ -1031,78 +1031,78 @@ static int param_verify_callback(bson_decoder_t decoder, bson_node_t node)
 		PX4_ERR("verify: '%s' invalid node type %d", node->name, node->type);
 	}
 
-	return -1;
+	вернуть -1;
 }
 
-static int param_verify(int fd)
+static целое param_verify(целое fd)
 {
 	PX4_DEBUG("param_verify");
 
-	if (fd < 0) {
-		return -1;
+	если (fd < 0) {
+		вернуть -1;
 	}
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	если (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("verify: seek failed");
-		return -1;
+		вернуть -1;
 	}
 
 	bson_decoder_s decoder{};
 
-	if (bson_decoder_init_file(&decoder, fd, param_verify_callback) == 0) {
-		int result = -1;
+	если (bson_decoder_init_file(&decoder, fd, param_verify_callback) == 0) {
+		целое result = -1;
 
 		do {
 			result = bson_decoder_next(&decoder);
 
-		} while (result > 0);
+		} пока (result > 0);
 
-		if (result == 0) {
-			if (decoder.total_document_size != decoder.total_decoded_size) {
+		если (result == 0) {
+			если (decoder.total_document_size != decoder.total_decoded_size) {
 				PX4_ERR("BSON document size (%" PRId32 ") doesn't match bytes decoded (%" PRId32 ")", decoder.total_document_size,
 					decoder.total_decoded_size);
 
-			} else {
-				return 0;
+			} иначе {
+				вернуть 0;
 			}
 
-		} else if (result == -ENODATA) {
+		} иначе если (result == -ENODATA) {
 			PX4_ERR("verify: no BSON data");
 
-		} else {
+		} иначе {
 			PX4_ERR("verify: failed (%d)", result);
 		}
 	}
 
-	return -1;
+	вернуть -1;
 }
 
-int
+целое
 param_export(const char *filename, param_filter_func filter)
 {
 	PX4_DEBUG("param_export");
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	целое shutdown_lock_ret = px4_shutdown_lock();
 
-	if (shutdown_lock_ret != 0) {
+	если (shutdown_lock_ret != 0) {
 		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
 	}
 
 	// take the file lock
-	if (pthread_mutex_trylock(&file_mutex) != 0) {
+	если (pthread_mutex_trylock(&file_mutex) != 0) {
 		PX4_ERR("param_export: file lock failed (already locked)");
-		return PX4_ERROR;
+		вернуть PX4_ERROR;
 	}
 
-	int fd = ::open(filename, O_RDWR | O_CREAT, PX4_O_MODE_666);
-	int result = PX4_ERROR;
+	целое fd = ::open(filename, O_RDWR | O_CREAT, PX4_O_MODE_666);
+	целое result = PX4_ERROR;
 
 	perf_begin(param_export_perf);
 
-	if (fd > -1) {
+	если (fd > -1) {
 		result = param_export_internal(fd, filter);
 
-	} else {
+	} иначе {
 		result = flash_param_save(filter);
 	}
 
@@ -1110,34 +1110,34 @@ param_export(const char *filename, param_filter_func filter)
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	если (shutdown_lock_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return result;
+	вернуть result;
 }
 
 // internal parameter export, caller is responsible for locking
-static int param_export_internal(int fd, param_filter_func filter)
+static целое param_export_internal(целое fd, param_filter_func filter)
 {
 	PX4_DEBUG("param_export_internal");
 	const auto changed_params = user_config.containedAsBitset();
 
-	int result = -1;
+	целое result = -1;
 	bson_encoder_s encoder{};
 	uint8_t bson_buffer[256];
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	если (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("export seek failed %d", errno);
-		return -1;
+		вернуть -1;
 	}
 
-	if (bson_encoder_init_buf_file(&encoder, fd, &bson_buffer, sizeof(bson_buffer)) != 0) {
+	если (bson_encoder_init_buf_file(&encoder, fd, &bson_buffer, sizeof(bson_buffer)) != 0) {
 		goto out;
 	}
 
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (!changed_params[param] || (filter && !filter(param))) {
+	для (param_t param = 0; handle_in_range(param); param++) {
+		если (!changed_params[param] || (filter && !filter(param))) {
 			continue;
 		}
 
@@ -1147,7 +1147,7 @@ static int param_export_internal(int fd, param_filter_func filter)
 		// don't export default values
 		switch (param_type(param)) {
 		case PARAM_TYPE_INT32:
-			if (user_config_value.i == runtime_default_value.i) {
+			если (user_config_value.i == runtime_default_value.i) {
 				PX4_DEBUG("skipping %s %" PRIi32 " export", param_name(param), runtime_default_value.i);
 				continue;
 			}
@@ -1155,7 +1155,7 @@ static int param_export_internal(int fd, param_filter_func filter)
 			break;
 
 		case PARAM_TYPE_FLOAT:
-			if (fabsf(user_config_value.f - runtime_default_value.f) <= FLT_EPSILON) {
+			если (fabsf(user_config_value.f - runtime_default_value.f) <= FLT_EPSILON) {
 				PX4_DEBUG("skipping %s %.3f export", param_name(param), (double)runtime_default_value.f);
 				continue;
 			}
@@ -1170,9 +1170,9 @@ static int param_export_internal(int fd, param_filter_func filter)
 		switch (param_type(param)) {
 		case PARAM_TYPE_INT32: {
 				const int32_t i = user_config_value.i;
-				PX4_DEBUG("exporting: %s (%d) size: %lu val: %" PRIi32, name, param, (long unsigned int)size, i);
+				PX4_DEBUG("exporting: %s (%d) size: %lu val: %" PRIi32, name, param, (long unsigned целое)size, i);
 
-				if (bson_encoder_append_int32(&encoder, name, i) != 0) {
+				если (bson_encoder_append_int32(&encoder, name, i) != 0) {
 					PX4_ERR("BSON append failed for '%s'", name);
 					goto out;
 				}
@@ -1181,9 +1181,9 @@ static int param_export_internal(int fd, param_filter_func filter)
 
 		case PARAM_TYPE_FLOAT: {
 				const double f = (double)user_config_value.f;
-				PX4_DEBUG("exporting: %s (%d) size: %lu val: %.3f", name, param, (long unsigned int)size, (double)f);
+				PX4_DEBUG("exporting: %s (%d) size: %lu val: %.3f", name, param, (long unsigned целое)size, (double)f);
 
-				if (bson_encoder_append_double(&encoder, name, f) != 0) {
+				если (bson_encoder_append_double(&encoder, name, f) != 0) {
 					PX4_ERR("BSON append failed for '%s'", name);
 					goto out;
 				}
@@ -1199,34 +1199,34 @@ static int param_export_internal(int fd, param_filter_func filter)
 
 out:
 
-	if (result == 0) {
-		if (bson_encoder_fini(&encoder) != PX4_OK) {
+	если (result == 0) {
+		если (bson_encoder_fini(&encoder) != PX4_OK) {
 			PX4_ERR("BSON encoder finalize failed");
 			result = -1;
 		}
 	}
 
-	return result;
+	вернуть result;
 }
 
-#if defined(FLASH_BASED_PARAMS)
+#если defined(FLASH_BASED_PARAMS)
 // A file is never the flash backend's store, so what an import changes is unsaved until a delta carries it.
 // As on the file backend, the import itself does not save.
 static constexpr bool file_import_is_saved = false;
-#else
+#иначе
 static constexpr bool file_import_is_saved = true;
 #endif
 
-static int
+static целое
 param_import_callback(bson_decoder_t decoder, bson_node_t node)
 {
 	/*
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	если (node->type == BSON_EOO) {
 		PX4_DEBUG("end of parameters");
-		return 0;
+		вернуть 0;
 	}
 
 	// A tombstone has no value. The decoder leaves the previous node's in the union and the translations
@@ -1234,16 +1234,16 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
 
 	// if we do param_set() directly in the translation, set PARAM_SKIP_IMPORT as return value and return here
-	if (!tombstone && param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
-		return 1;
+	если (!tombstone && param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+		вернуть 1;
 	}
 
 	// Find the parameter this node represents.  If we don't know it, ignore the node.
 	param_t param = param_find_no_notification(node->name);
 
-	if (param == PARAM_INVALID) {
+	если (param == PARAM_INVALID) {
 		PX4_WARN("ignoring unrecognised parameter '%s'", node->name);
-		return 1;
+		вернуть 1;
 	}
 
 	// Handle setting the parameter from the node
@@ -1251,27 +1251,27 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	case BSON_nullptr:
 	case BSON_UNDEFINED:
 		param_reset_internal(param, true, false);
-		return 1;
+		вернуть 1;
 
 	case BSON_INT32: {
-			if (param_type(param) == PARAM_TYPE_INT32) {
+			если (param_type(param) == PARAM_TYPE_INT32) {
 				int32_t i = node->i32;
 				param_set_internal(param, &i, file_import_is_saved, true, true, false);
 				PX4_DEBUG("Imported %s with value %" PRIi32, param_name(param), i);
 
-			} else {
+			} иначе {
 				PX4_WARN("unexpected type for %s", node->name);
 			}
 		}
 		break;
 
 	case BSON_DOUBLE: {
-			if (param_type(param) == PARAM_TYPE_FLOAT) {
+			если (param_type(param) == PARAM_TYPE_FLOAT) {
 				float f = node->d;
 				param_set_internal(param, &f, file_import_is_saved, true, true, false);
 				PX4_DEBUG("Imported %s with value %f", param_name(param), (double)f);
 
-			} else {
+			} иначе {
 				PX4_WARN("unexpected type for %s", node->name);
 			}
 		}
@@ -1282,11 +1282,11 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	}
 
 	// don't return zero, that means EOF
-	return 1;
+	вернуть 1;
 }
 
-static int
-param_import_internal(int fd)
+static целое
+param_import_internal(целое fd)
 {
 	/* blank source (nothing stored yet): an empty file, or zeroed/erased
 	 * storage where the BSON document length would be. Unlike the flash
@@ -1301,65 +1301,65 @@ param_import_internal(int fd)
 	 * report no meaningful size and fall through to the content check. */
 	struct stat st;
 
-	if (fstat(fd, &st) == 0 && S_ISREG(st.st_mode) && st.st_size == 0) {
-		return 1;
+	если (fstat(fd, &st) == 0 && S_ISREG(st.st_mode) && st.st_size == 0) {
+		вернуть 1;
 	}
 
 	int32_t doc_size = 0;
 	ssize_t len = read(fd, &doc_size, sizeof(doc_size));
 
-	if (len == 0 || (len == (ssize_t)sizeof(doc_size) && (doc_size == 0 || doc_size == -1))) {
-		return 1;
+	если (len == 0 || (len == (ssize_t)sizeof(doc_size) && (doc_size == 0 || doc_size == -1))) {
+		вернуть 1;
 	}
 
-	if (lseek(fd, 0, SEEK_SET) != 0) {
+	если (lseek(fd, 0, SEEK_SET) != 0) {
 		PX4_ERR("import lseek failed (%d)", errno);
-		return -1;
+		вернуть -1;
 	}
 
-	static constexpr int MAX_ATTEMPTS = 3;
+	static constexpr целое MAX_ATTEMPTS = 3;
 
-	for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+	для (целое attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 		bson_decoder_s decoder{};
 
-		if (bson_decoder_init_file(&decoder, fd, param_import_callback) == 0) {
-			int result = -1;
+		если (bson_decoder_init_file(&decoder, fd, param_import_callback) == 0) {
+			целое result = -1;
 
 			do {
 				result = bson_decoder_next(&decoder);
 
-			} while (result > 0);
+			} пока (result > 0);
 
-			if (result == 0) {
-				if (decoder.total_document_size == decoder.total_decoded_size) {
+			если (result == 0) {
+				если (decoder.total_document_size == decoder.total_decoded_size) {
 					PX4_INFO("BSON document size %" PRId32 " bytes, decoded %" PRId32 " bytes (INT32:%" PRIu16 ", FLOAT:%" PRIu16 ")",
 						 decoder.total_document_size, decoder.total_decoded_size,
 						 decoder.count_node_int32, decoder.count_node_double);
 
-					return 0;
+					вернуть 0;
 
-				} else {
+				} иначе {
 					PX4_ERR("BSON document size (%" PRId32 ") doesn't match bytes decoded (%" PRId32 ")",
 						decoder.total_document_size, decoder.total_decoded_size);
 				}
 
-			} else if (result == -ENODATA) {
+			} иначе если (result == -ENODATA) {
 				// silently retry as a precaution unless this is our last attempt
-				if (attempt == MAX_ATTEMPTS) {
+				если (attempt == MAX_ATTEMPTS) {
 					PX4_DEBUG("BSON: no data");
-					return 0;
+					вернуть 0;
 				}
 
-			} else {
+			} иначе {
 				PX4_ERR("param import failed (%d) attempt %d", result, attempt);
 			}
 
-		} else {
+		} иначе {
 			PX4_ERR("param import bson decoder init failed (attempt %d)", attempt);
 		}
 
-		if (attempt != MAX_ATTEMPTS) {
-			if (lseek(fd, 0, SEEK_SET) != 0) {
+		если (attempt != MAX_ATTEMPTS) {
+			если (lseek(fd, 0, SEEK_SET) != 0) {
 				PX4_ERR("import lseek failed (%d)", errno);
 			}
 
@@ -1367,85 +1367,85 @@ param_import_internal(int fd)
 		}
 	}
 
-	return -1;
+	вернуть -1;
 }
 
-#if defined(FLASH_BASED_PARAMS)
-static int flash_backend_locked(int (*op)())
+#если defined(FLASH_BASED_PARAMS)
+static целое flash_backend_locked(целое (*op)())
 {
 	/* Same order as param_save_default: mutex then shutdown lock. Autosave
 	 * uses a trylock, so a compact holds it off the flash programming. */
 	pthread_mutex_lock(&file_mutex);
 
-	int shutdown_lock_ret = px4_shutdown_lock();
+	целое shutdown_lock_ret = px4_shutdown_lock();
 
-	if (shutdown_lock_ret != 0) {
+	если (shutdown_lock_ret != 0) {
 		PX4_ERR("px4_shutdown_lock() failed (%i)", shutdown_lock_ret);
 	}
 
-	int result = op();
+	целое result = op();
 
 	pthread_mutex_unlock(&file_mutex);
 
-	if (shutdown_lock_ret == 0) {
+	если (shutdown_lock_ret == 0) {
 		px4_shutdown_unlock();
 	}
 
-	return result;
+	вернуть result;
 }
 
-static int flash_load_locked()
+static целое flash_load_locked()
 {
 	/* Reset under the lock so a pending autosave cannot append tombstones
 	 * of the just-cleared RAM before import/compact run. */
 	param_reset_all_internal(false);
-	int result = flash_param_import();
+	целое result = flash_param_import();
 
-	if (result == 0 || result == 1) {
+	если (result == 0 || result == 1) {
 		params_unsaved.reset();
 	}
 
-	return result;
+	вернуть result;
 }
 #endif
 
-int
-param_import(int fd)
+целое
+param_import(целое fd)
 {
-	if (fd < 0) {
-#if defined(FLASH_BASED_PARAMS)
-		return flash_backend_locked(flash_param_import);
-#else
-		return flash_param_import();
+	если (fd < 0) {
+#если defined(FLASH_BASED_PARAMS)
+		вернуть flash_backend_locked(flash_param_import);
+#иначе
+		вернуть flash_param_import();
 #endif
 	}
 
-	return param_import_internal(fd);
+	вернуть param_import_internal(fd);
 }
 
-int
-param_load(int fd)
+целое
+param_load(целое fd)
 {
-	if (fd < 0) {
-#if defined(FLASH_BASED_PARAMS)
-		return flash_backend_locked(flash_load_locked);
-#else
-		return PX4_ERROR;
+	если (fd < 0) {
+#если defined(FLASH_BASED_PARAMS)
+		вернуть flash_backend_locked(flash_load_locked);
+#иначе
+		вернуть PX4_ERROR;
 #endif
 	}
 
 	param_reset_all_internal(false);
-	int result = param_import_internal(fd);
+	целое result = param_import_internal(fd);
 
-#if !defined(FLASH_BASED_PARAMS)
+#если !defined(FLASH_BASED_PARAMS)
 
-	if (result >= 0) {
+	если (result >= 0) {
 		params_unsaved.reset();
 	}
 
 #endif
 
-	return result;
+	вернуть result;
 }
 
 void
@@ -1453,14 +1453,14 @@ param_foreach(void (*func)(void *arg, param_t param), void *arg, bool only_chang
 {
 	param_t	param;
 
-	for (param = 0; handle_in_range(param); param++) {
+	для (param = 0; handle_in_range(param); param++) {
 
 		/* if requested, skip unchanged values */
-		if (only_changed && (!user_config.contains(param))) {
+		если (only_changed && (!user_config.contains(param))) {
 			continue;
 		}
 
-		if (only_used && !param_used(param)) {
+		если (only_used && !param_used(param)) {
 			continue;
 		}
 
@@ -1473,8 +1473,8 @@ uint32_t param_hash_check()
 	uint32_t param_hash = 0;
 
 	/* compute the CRC32 over all string param names and 4 byte values */
-	for (param_t param = 0; handle_in_range(param); param++) {
-		if (!param_used(param) || param_is_volatile(param)) {
+	для (param_t param = 0; handle_in_range(param); param++) {
+		если (!param_used(param) || param_is_volatile(param)) {
 			continue;
 		}
 
@@ -1485,7 +1485,7 @@ uint32_t param_hash_check()
 		param_hash = crc32part((const uint8_t *)val, param_size(param), param_hash);
 	}
 
-	return param_hash;
+	вернуть param_hash;
 }
 
 void param_print_status()
@@ -1495,11 +1495,11 @@ void param_print_status()
 #ifndef FLASH_BASED_PARAMS
 	const char *filename = param_get_default_file();
 
-	if (filename != nullptr) {
+	если (filename != nullptr) {
 		PX4_INFO("file: %s", param_get_default_file());
 	}
 
-	if (param_backup_file) {
+	если (param_backup_file) {
 		PX4_INFO("backup file: %s", param_backup_file);
 	}
 
@@ -1512,12 +1512,12 @@ void param_print_status()
 	PX4_INFO("storage array (custom defaults): %d/%d elements (%zu bytes total)",
 		 runtime_defaults.size(), firmware_defaults.size(), (size_t)runtime_defaults.byteSize());
 
-	if (autosave_instance) {
+	если (autosave_instance) {
 		PX4_INFO("auto save: %s", autosave_instance->enabled() ? "on" : "off");
 
 		hrt_abstime last_autosave = autosave_instance->lastAutosave();
 
-		if (last_autosave > 0) {
+		если (last_autosave > 0) {
 			PX4_INFO("last auto save: %.3f seconds ago", hrt_elapsed_time(&last_autosave) * 1e-6);
 		}
 	}
@@ -1527,7 +1527,7 @@ void param_print_status()
 	perf_print_counter(param_get_perf);
 	perf_print_counter(param_set_perf);
 
-#if defined(CONFIG_PARAM_PRIMARY)
+#если defined(CONFIG_PARAM_PRIMARY)
 	struct param_primary_counters counts;
 	param_primary_get_counters(&counts);
 	PX4_INFO("set value requests received: %" PRIu32 ", set value responses sent: %" PRIu32,
@@ -1538,7 +1538,7 @@ void param_print_status()
 		 counts.reset_sent, counts.set_used_received);
 #endif
 
-#if defined(CONFIG_PARAM_REMOTE)
+#если defined(CONFIG_PARAM_REMOTE)
 	struct param_remote_counters counts;
 	param_remote_get_counters(&counts);
 	PX4_INFO("set value requests received: %" PRIu32 ", set value responses sent: %" PRIu32,

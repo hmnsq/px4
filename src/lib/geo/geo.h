@@ -123,10 +123,10 @@ void get_vector_to_next_waypoint_fast(double lat_now, double lon_now, double lat
 void add_vector_to_global_position(double lat_now, double lon_now, float v_n, float v_e, double *lat_res,
 				   double *lon_res);
 
-int get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat_now, double lon_now,
+целое get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat_now, double lon_now,
 			 double lat_start, double lon_start, double lat_end, double lon_end);
 
-int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_now, double lon_now,
+целое get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_now, double lon_now,
 			double lat_center, double lon_center,
 			float radius, float arc_start_bearing, float arc_sweep);
 
@@ -187,22 +187,22 @@ public:
 	/**
 	 * @return true, if the map reference has been initialized before
 	 */
-	bool isInitialized() const { return _ref_init_done; };
+	bool isInitialized() const { вернуть _ref_init_done; };
 
 	/**
 	 * @return the timestamp of the reference which the map projection was initialized with
 	 */
-	uint64_t getProjectionReferenceTimestamp() const { return _ref_timestamp; };
+	uint64_t getProjectionReferenceTimestamp() const { вернуть _ref_timestamp; };
 
 	/**
 	 * @return the projection reference latitude in degrees
 	 */
-	double getProjectionReferenceLat() const { return math::degrees(_ref_lat); };
+	double getProjectionReferenceLat() const { вернуть math::degrees(_ref_lat); };
 
 	/**
 	 * @return the projection reference longitude in degrees
 	 */
-	double getProjectionReferenceLon() const { return math::degrees(_ref_lon); };
+	double getProjectionReferenceLon() const { вернуть math::degrees(_ref_lon); };
 
 	/**
 	 * Transform a point in the geographic coordinate system to the local
@@ -225,7 +225,7 @@ public:
 	{
 		matrix::Vector2f res;
 		project(lat, lon, res(0), res(1));
-		return res;
+		вернуть res;
 	}
 
 	/**

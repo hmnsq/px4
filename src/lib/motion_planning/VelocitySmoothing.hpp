@@ -90,27 +90,27 @@ public:
 	/**
 	 * Getters and setters
 	 */
-	float getMaxJerk() const { return _max_jerk; }
+	float getMaxJerk() const { вернуть _max_jerk; }
 	void setMaxJerk(float max_jerk) { _max_jerk = max_jerk; }
 
-	float getMaxAccel() const { return _max_accel; }
+	float getMaxAccel() const { вернуть _max_accel; }
 	void setMaxAccel(float max_accel) { _max_accel = max_accel; }
 
-	float getMaxVel() const { return _max_vel; }
+	float getMaxVel() const { вернуть _max_vel; }
 	void setMaxVel(float max_vel) { _max_vel = max_vel; }
 
-	float getCurrentJerk() const { return _state.j; }
+	float getCurrentJerk() const { вернуть _state.j; }
 	void setCurrentAcceleration(const float accel) { _state.a = _state_init.a = accel; }
-	float getCurrentAcceleration() const { return _state.a; }
+	float getCurrentAcceleration() const { вернуть _state.a; }
 	void setCurrentVelocity(const float vel) { _state.v = _state_init.v = vel; }
-	float getCurrentVelocity() const { return _state.v; }
+	float getCurrentVelocity() const { вернуть _state.v; }
 	void setCurrentPosition(const float pos) { _state.x = _state_init.x = pos; }
-	float getCurrentPosition() const { return _state.x; }
+	float getCurrentPosition() const { вернуть _state.x; }
 
-	float getT1() const { return _T1; }
-	float getT2() const { return _T2; }
-	float getT3() const { return _T3; }
-	float getTotalTime() const { return _T1 + _T2 + _T3; }
+	float getT1() const { вернуть _T1; }
+	float getT2() const { вернуть _T2; }
+	float getT3() const { вернуть _T3; }
+	float getTotalTime() const { вернуть _T1 + _T2 + _T3; }
 
 	/**
 	 * Synchronize several trajectories to have the same total time. This is required to generate
@@ -119,7 +119,7 @@ public:
 	 * @param traj an array of VelocitySmoothing objects
 	 * @param n_traj the number of trajectories to be synchronized
 	 */
-	static void timeSynchronization(VelocitySmoothing *traj, int n_traj);
+	static void timeSynchronization(VelocitySmoothing *traj, целое n_traj);
 
 private:
 
@@ -139,7 +139,7 @@ private:
 	 * Compute the direction of the jerk to be applied in order to drive the current state
 	 * to the desired one
 	 */
-	int computeDirection() const;
+	целое computeDirection() const;
 
 	/**
 	 * Compute the velocity at which the trajectory will be if the maximum jerk is applied
@@ -187,7 +187,7 @@ private:
 	 * @param t current time
 	 * @param d direction
 	 */
-	inline Trajectory evaluatePoly(float j, float a0, float v0, float x0, float t, int d) const;
+	inline Trajectory evaluatePoly(float j, float a0, float v0, float x0, float t, целое d) const;
 
 	/* Input */
 	float _vel_sp{0.f};
@@ -199,7 +199,7 @@ private:
 
 	/* State (previous setpoints) */
 	Trajectory _state{};
-	int _direction{0};
+	целое _direction{0};
 
 	/* Initial conditions */
 	Trajectory _state_init{};

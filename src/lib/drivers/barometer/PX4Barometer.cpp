@@ -53,7 +53,7 @@ void PX4Barometer::set_device_id(uint32_t device_id)
 {
 	_report.device_id = device_id;
 
-	if (!_external_forced) {
+	если (!_external_forced) {
 		_report.is_external = device::device_is_external(device_id);
 	}
 }
@@ -66,8 +66,8 @@ void PX4Barometer::set_external(bool external)
 
 void PX4Barometer::update(const hrt_abstime &timestamp_sample, float pressure)
 {
-	if (!PX4_ISFINITE(pressure)) {
-		return;
+	если (!PX4_ISFINITE(pressure)) {
+		вернуть;
 	}
 
 	_report.timestamp_sample = timestamp_sample;
@@ -76,9 +76,9 @@ void PX4Barometer::update(const hrt_abstime &timestamp_sample, float pressure)
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_BARO,
+	если (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_BARO,
 					_sensor_pub.get_instance(), _report, _stuck)) {
-		return;
+		вернуть;
 	}
 
 	_sensor_pub.publish(_report);

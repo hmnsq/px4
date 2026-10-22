@@ -60,12 +60,12 @@ public:
 
 	void setZero() { _latitude_rad = 0.0; _longitude_rad = 0.0; _altitude = 0.f; }
 
-	double latitude_deg() const { return math::degrees(latitude_rad()); }
-	double longitude_deg() const { return math::degrees(longitude_rad()); }
+	double latitude_deg() const { вернуть math::degrees(latitude_rad()); }
+	double longitude_deg() const { вернуть math::degrees(longitude_rad()); }
 
-	const double &latitude_rad() const { return _latitude_rad; }
-	const double &longitude_rad() const { return _longitude_rad; }
-	float altitude() const { return _altitude; }
+	const double &latitude_rad() const { вернуть _latitude_rad; }
+	const double &longitude_rad() const { вернуть _longitude_rad; }
+	float altitude() const { вернуть _altitude; }
 
 	void setLatitudeDeg(const double &latitude_deg) { _latitude_rad = math::radians(latitude_deg); }
 	void setLongitudeDeg(const double &longitude_deg) { _longitude_rad = math::radians(longitude_deg); }
@@ -88,8 +88,8 @@ public:
 	void operator=(const LatLonAlt &lla)
 	{
 		// Protect against self-assignment
-		if (this == &lla) {
-			return;
+		если (this == &lla) {
+			вернуть;
 		}
 
 		_latitude_rad = lla.latitude_rad();
@@ -122,7 +122,7 @@ public:
 			const double sin_lat2 = sin_lat * sin_lat;
 			const double g = gravity_equator * (1.0 + somigliana_coefficient * sin_lat2)
 					 / std::sqrt(1.0 - eccentricity2 * sin_lat2);
-			return static_cast<float>(g);
+			вернуть static_cast<float>(g);
 		}
 	};
 

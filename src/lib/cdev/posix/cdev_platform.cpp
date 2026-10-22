@@ -43,7 +43,7 @@
 #include <stdlib.h>
 
 static const cdev::px4_file_operations_t g_fops = {};
-const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { return g_fops; }
+const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { вернуть g_fops; }
 
 pthread_mutex_t devmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t filemutex = PTHREAD_MUTEX_INITIALIZER;
@@ -79,7 +79,7 @@ public:
 	{
 		// ignore what was written, but let pollers know something was written
 		poll_notify(POLLIN);
-		return buflen;
+		вернуть buflen;
 	}
 };
 
@@ -87,54 +87,54 @@ static cdev::CDev *getDev(const char *path)
 {
 	pthread_mutex_lock(&devmutex);
 
-	for (const auto &dev : devmap) {
-		if (dev && (strcmp(dev->name, path) == 0)) {
+	для (const auto &dev : devmap) {
+		если (dev && (strcmp(dev->name, path) == 0)) {
 			pthread_mutex_unlock(&devmutex);
-			return dev->cdev;
+			вернуть dev->cdev;
 		}
 	}
 
 	pthread_mutex_unlock(&devmutex);
 
-	return nullptr;
+	вернуть nullptr;
 }
 
-static cdev::CDev *getFile(int fd)
+static cdev::CDev *getFile(целое fd)
 {
 	pthread_mutex_lock(&filemutex);
 	cdev::CDev *dev = nullptr;
 
-	if (fd < PX4_MAX_FD && fd >= 0) {
+	если (fd < PX4_MAX_FD && fd >= 0) {
 		dev = filemap[fd].cdev;
 	}
 
 	pthread_mutex_unlock(&filemutex);
-	return dev;
+	вернуть dev;
 }
 
 extern "C" {
 
-	int register_driver(const char *name, const cdev::px4_file_operations_t *fops, cdev::mode_t mode, void *data)
+	целое register_driver(const char *name, const cdev::px4_file_operations_t *fops, cdev::mode_t mode, void *data)
 	{
 		PX4_DEBUG("CDev::register_driver %s", name);
-		int ret = -ENOSPC;
+		целое ret = -ENOSPC;
 
-		if (name == nullptr || data == nullptr) {
-			return -EINVAL;
+		если (name == nullptr || data == nullptr) {
+			вернуть -EINVAL;
 		}
 
 		pthread_mutex_lock(&devmutex);
 
 		// Make sure the device does not already exist
-		for (const auto &dev : devmap) {
-			if (dev && (strcmp(dev->name, name) == 0)) {
+		для (const auto &dev : devmap) {
+			если (dev && (strcmp(dev->name, name) == 0)) {
 				pthread_mutex_unlock(&devmutex);
-				return -EEXIST;
+				вернуть -EEXIST;
 			}
 		}
 
-		for (auto &dev : devmap) {
-			if (dev == nullptr) {
+		для (auto &dev : devmap) {
+			если (dev == nullptr) {
 				dev = new px4_dev_t(name, (cdev::CDev *)data);
 				PX4_DEBUG("Registered DEV %s", name);
 				ret = PX4_OK;
@@ -144,26 +144,26 @@ extern "C" {
 
 		pthread_mutex_unlock(&devmutex);
 
-		if (ret != PX4_OK) {
+		если (ret != PX4_OK) {
 			PX4_ERR("No free devmap entries - increase devmap size");
 		}
 
-		return ret;
+		вернуть ret;
 	}
 
-	int unregister_driver(const char *name)
+	целое unregister_driver(const char *name)
 	{
 		PX4_DEBUG("CDev::unregister_driver %s", name);
-		int ret = -EINVAL;
+		целое ret = -EINVAL;
 
-		if (name == nullptr) {
-			return -EINVAL;
+		если (name == nullptr) {
+			вернуть -EINVAL;
 		}
 
 		pthread_mutex_lock(&devmutex);
 
-		for (auto &dev : devmap) {
-			if (dev && (strcmp(name, dev->name) == 0)) {
+		для (auto &dev : devmap) {
+			если (dev && (strcmp(name, dev->name) == 0)) {
 				delete dev;
 				dev = nullptr;
 				PX4_DEBUG("Unregistered DEV %s", name);
@@ -174,23 +174,23 @@ extern "C" {
 
 		pthread_mutex_unlock(&devmutex);
 
-		return ret;
+		вернуть ret;
 	}
 
-	int px4_open(const char *path, int flags, ...)
+	целое px4_open(const char *path, целое flags, ...)
 	{
 		PX4_DEBUG("px4_open");
 		cdev::CDev *dev = getDev(path);
-		int ret = 0;
-		int i;
+		целое ret = 0;
+		целое i;
 		mode_t mode;
 
-		if (!dev && (flags & PX4_F_WRONLY) != 0 &&
+		если (!dev && (flags & PX4_F_WRONLY) != 0 &&
 		    strncmp(path, "/obj/", 5) != 0 &&
 		    strncmp(path, "/dev/", 5) != 0) {
 			va_list p;
 			va_start(p, flags);
-			mode = va_arg(p, int);
+			mode = va_arg(p, целое);
 			va_end(p);
 
 			// Create the file
@@ -199,11 +199,11 @@ extern "C" {
 			register_driver(path, nullptr, 0666, (void *)dev);
 		}
 
-		if (dev) {
+		если (dev) {
 			pthread_mutex_lock(&filemutex);
 
-			for (i = 0; i < PX4_MAX_FD; ++i) {
-				if (filemap[i].cdev == nullptr) {
+			для (i = 0; i < PX4_MAX_FD; ++i) {
+				если (filemap[i].cdev == nullptr) {
 					filemap[i] = cdev::file_t(flags, dev);
 					break;
 				}
@@ -211,19 +211,19 @@ extern "C" {
 
 			pthread_mutex_unlock(&filemutex);
 
-			if (i < PX4_MAX_FD) {
+			если (i < PX4_MAX_FD) {
 				ret = dev->open(&filemap[i]);
 
-			} else {
+			} иначе {
 
 				const unsigned NAMELEN = 32;
 				char thread_name[NAMELEN] {};
 
 				PX4_WARN("%s: exceeded maximum number of file descriptors, accessing %s", thread_name, path);
 #ifndef __PX4_QURT
-				int nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
+				целое nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
 
-				if (nret || thread_name[0] == 0) {
+				если (nret || thread_name[0] == 0) {
 					PX4_WARN("failed getting thread name");
 				}
 
@@ -232,26 +232,26 @@ extern "C" {
 				ret = -ENOENT;
 			}
 
-		} else {
+		} иначе {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		если (ret < 0) {
 			errno = -ret;
-			return -1;
+			вернуть -1;
 		}
 
 		PX4_DEBUG("px4_open fd = %d", i);
-		return i;
+		вернуть i;
 	}
 
-	int px4_close(int fd)
+	целое px4_close(целое fd)
 	{
-		int ret;
+		целое ret;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		если (dev) {
 			pthread_mutex_lock(&filemutex);
 			ret = dev->close(&filemap[fd]);
 
@@ -260,94 +260,94 @@ extern "C" {
 			pthread_mutex_unlock(&filemutex);
 			PX4_DEBUG("px4_close fd = %d", fd);
 
-		} else {
+		} иначе {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		если (ret < 0) {
 			ret = PX4_ERROR;
 		}
 
-		return ret;
+		вернуть ret;
 	}
 
-	ssize_t px4_read(int fd, void *buffer, size_t buflen)
+	ssize_t px4_read(целое fd, void *buffer, size_t buflen)
 	{
-		int ret;
+		целое ret;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		если (dev) {
 			PX4_DEBUG("px4_read fd = %d", fd);
 			ret = dev->read(&filemap[fd], (char *)buffer, buflen);
 
-		} else {
+		} иначе {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		если (ret < 0) {
 			ret = PX4_ERROR;
 		}
 
-		return ret;
+		вернуть ret;
 	}
 
-	ssize_t px4_write(int fd, const void *buffer, size_t buflen)
+	ssize_t px4_write(целое fd, const void *buffer, size_t buflen)
 	{
-		int ret;
+		целое ret;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		если (dev) {
 			PX4_DEBUG("px4_write fd = %d", fd);
 			ret = dev->write(&filemap[fd], (const char *)buffer, buflen);
 
-		} else {
+		} иначе {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		если (ret < 0) {
 			ret = PX4_ERROR;
 		}
 
-		return ret;
+		вернуть ret;
 	}
 
-	int px4_ioctl(int fd, int cmd, unsigned long arg)
+	целое px4_ioctl(целое fd, целое cmd, unsigned long arg)
 	{
 		PX4_DEBUG("px4_ioctl fd = %d", fd);
-		int ret = 0;
+		целое ret = 0;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		если (dev) {
 			ret = dev->ioctl(&filemap[fd], cmd, arg);
 
-		} else {
+		} иначе {
 			ret = -EINVAL;
 		}
 
-		return ret;
+		вернуть ret;
 	}
 
-	int px4_poll(px4_pollfd_struct_t *fds, unsigned int nfds, int timeout)
+	целое px4_poll(px4_pollfd_struct_t *fds, unsigned целое nfds, целое timeout)
 	{
-		if (nfds == 0) {
+		если (nfds == 0) {
 			PX4_WARN("px4_poll with no fds");
-			return -1;
+			вернуть -1;
 		}
 
 		px4_sem_t sem;
-		int count = 0;
-		int ret = -1;
+		целое count = 0;
+		целое ret = -1;
 
 		const unsigned NAMELEN = 32;
 		char thread_name[NAMELEN] {};
 
 #ifndef __PX4_QURT
-		int nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
+		целое nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
 
-		if (nret || thread_name[0] == 0) {
+		если (nret || thread_name[0] == 0) {
 			PX4_WARN("failed getting thread name");
 		}
 
@@ -363,7 +363,7 @@ extern "C" {
 		// Go through all fds and check them for a pollable state
 		bool fd_pollable = false;
 
-		for (unsigned int i = 0; i < nfds; ++i) {
+		для (unsigned целое i = 0; i < nfds; ++i) {
 			fds[i].sem     = &sem;
 			fds[i].revents = 0;
 			fds[i].priv    = nullptr;
@@ -371,16 +371,16 @@ extern "C" {
 			cdev::CDev *dev = getFile(fds[i].fd);
 
 			// If fd is valid
-			if (dev) {
+			если (dev) {
 				PX4_DEBUG("%s: px4_poll: CDev->poll(setup) %d", thread_name, fds[i].fd);
 				ret = dev->poll(&filemap[fds[i].fd], &fds[i], true);
 
-				if (ret < 0) {
+				если (ret < 0) {
 					PX4_WARN("%s: px4_poll() error: %s", thread_name, strerror(errno));
 					break;
 				}
 
-				if (ret >= 0) {
+				если (ret >= 0) {
 					fd_pollable = true;
 				}
 			}
@@ -388,17 +388,17 @@ extern "C" {
 
 		// If any FD can be polled, lock the semaphore and
 		// check for new data
-		if (fd_pollable) {
-			if (timeout > 0) {
+		если (fd_pollable) {
+			если (timeout > 0) {
 				// Get the current time
 				struct timespec ts;
-#if defined(__PX4_DARWIN) && !defined(ENABLE_LOCKSTEP_SCHEDULER)
+#если defined(__PX4_DARWIN) && !defined(ENABLE_LOCKSTEP_SCHEDULER)
 				// macOS has no pthread_condattr_setclock(), so px4_sem_t's condition
 				// variable waits on CLOCK_REALTIME (px4_sem_init()). Use that clock here
 				// too. CLOCK_MONOTONIC counts from boot, so the deadline would land
 				// decades in the past and px4_sem_timedwait() would return immediately.
 				px4_clock_gettime(CLOCK_REALTIME, &ts);
-#else
+#иначе
 				// Note, we can't actually use CLOCK_MONOTONIC on macOS
 				// but that's hidden and implemented in px4_clock_gettime.
 				px4_clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -413,31 +413,31 @@ extern "C" {
 
 				ret = px4_sem_timedwait(&sem, &ts);
 
-				if (ret && errno != ETIMEDOUT) {
+				если (ret && errno != ETIMEDOUT) {
 					PX4_WARN("%s: px4_poll() sem error: %s", thread_name, strerror(errno));
 				}
 
-			} else if (timeout < 0) {
+			} иначе если (timeout < 0) {
 				px4_sem_wait(&sem);
 			}
 
 			// We have waited now (or not, depending on timeout),
 			// go through all fds and count how many have data
-			for (unsigned int i = 0; i < nfds; ++i) {
+			для (unsigned целое i = 0; i < nfds; ++i) {
 
 				cdev::CDev *dev = getFile(fds[i].fd);
 
 				// If fd is valid
-				if (dev) {
+				если (dev) {
 					PX4_DEBUG("%s: px4_poll: CDev->poll(teardown) %d", thread_name, fds[i].fd);
 					ret = dev->poll(&filemap[fds[i].fd], &fds[i], false);
 
-					if (ret < 0) {
+					если (ret < 0) {
 						PX4_WARN("%s: px4_poll() 2nd poll fail", thread_name);
 						break;
 					}
 
-					if (fds[i].revents) {
+					если (fds[i].revents) {
 						count += 1;
 					}
 				}
@@ -448,18 +448,18 @@ extern "C" {
 
 		// Return the positive count if present,
 		// return the negative error number if failed
-		return (count) ? count : ret;
+		вернуть (count) ? count : ret;
 	}
 
-	int px4_access(const char *pathname, int mode)
+	целое px4_access(const char *pathname, целое mode)
 	{
-		if (mode != F_OK) {
+		если (mode != F_OK) {
 			errno = EINVAL;
-			return -1;
+			вернуть -1;
 		}
 
 		cdev::CDev *dev = getDev(pathname);
-		return (dev != nullptr) ? 0 : -1;
+		вернуть (dev != nullptr) ? 0 : -1;
 	}
 
 	void px4_show_files()
@@ -468,8 +468,8 @@ extern "C" {
 
 		pthread_mutex_lock(&devmutex);
 
-		for (const auto &dev : devmap) {
-			if (dev) {
+		для (const auto &dev : devmap) {
+			если (dev) {
 				PX4_INFO_RAW("   %s\n", dev->name);
 			}
 		}
