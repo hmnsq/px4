@@ -39,25 +39,25 @@
  * mountpoints.
  */
 
-#include <gtest/gtest.h>
-#include "correction_framer.h"
+#ضمن <gtest/gtest.h>
+#ضمن "correction_framer.h"
 
-#include <vector>
-#include <cstring>
-#include <random>
+#ضمن <vector>
+#ضمن <cstring>
+#ضمن <random>
 
-using namespace gnss;
+using نطاق gnss;
 
-class UbxTest : public ::testing::Test
+صنف UbxTest : عام ::testing::Test
 {
-protected:
+محمي:
 	CorrectionFramer parser;
 
 	// Build a valid UBX frame (class/id arbitrary; content not decoded).
 	std::vector<uint8_t> buildUbxFrame(uint8_t msg_class, uint8_t msg_id,
-					   const std::vector<uint8_t> &payload)
+					   ثابت std::vector<uint8_t> &payload)
 	{
-		const size_t payload_len = payload.size();
+		ثابت size_t payload_len = payload.size();
 		std::vector<uint8_t> frame;
 		frame.push_back(UBX_SYNC1);
 		frame.push_back(UBX_SYNC2);
@@ -72,7 +72,7 @@ protected:
 		ubx_checksum(&frame[2], UBX_HEADER_LEN - 2 + payload_len, &ck_a, &ck_b);
 		frame.push_back(ck_a);
 		frame.push_back(ck_b);
-		return frame;
+		أرجع frame;
 	}
 
 	std::vector<uint8_t> buildRtcmFrame(std::mt19937 &rng, size_t payload_len)
@@ -82,24 +82,24 @@ protected:
 		frame.push_back(static_cast<uint8_t>((payload_len >> 8) & 0x03));
 		frame.push_back(static_cast<uint8_t>(payload_len & 0xFF));
 
-		std::uniform_int_distribution<int> byte(0, 255);
+		std::uniform_int_distribution<صحيح> byte(0, 255);
 
-		for (size_t i = 0; i < payload_len; i++) {
+		لكل (size_t i = 0; i < payload_len; i++) {
 			frame.push_back(static_cast<uint8_t>(byte(rng)));
 		}
 
-		const uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
+		ثابت uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
 		frame.push_back((crc >> 16) & 0xFF);
 		frame.push_back((crc >> 8) & 0xFF);
 		frame.push_back(crc & 0xFF);
-		return frame;
+		أرجع frame;
 	}
 
-#if defined(CONFIG_GPS_SPARTN)
-	std::vector<uint8_t> buildSpartnFrame(uint8_t msg_type, const std::vector<uint8_t> &payload,
+#𐤀𐤌 defined(CONFIG_GPS_SPARTN)
+	std::vector<uint8_t> buildSpartnFrame(uint8_t msg_type, ثابت std::vector<uint8_t> &payload,
 					      uint8_t crc_type = 0)
 	{
-		const size_t payload_len = payload.size();
+		ثابت size_t payload_len = payload.size();
 		std::vector<uint8_t> frame;
 		frame.push_back(SPARTN_PREAMBLE);
 
@@ -118,14 +118,14 @@ protected:
 
 		frame.insert(frame.end(), payload.begin(), payload.end());
 
-		const uint32_t crc = spartn_message_crc(&frame[1], frame.size() - 1, crc_type);
-		const size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
+		ثابت uint32_t crc = spartn_message_crc(&frame[1], frame.size() - 1, crc_type);
+		ثابت size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
 
-		for (int i = static_cast<int>(crc_bytes) - 1; i >= 0; i--) {
+		لكل (صحيح i = static_cast<صحيح>(crc_bytes) - 1; i >= 0; i--) {
 			frame.push_back(static_cast<uint8_t>((crc >>(8 * i)) & 0xFF));
 		}
 
-		return frame;
+		أرجع frame;
 	}
 #endif
 };
@@ -138,10 +138,10 @@ protected:
 // 8-bit Fletcher: a runs 5,6,6,6 and b runs 5,11,17,23 → CK_A=0x06, CK_B=0x17.
 TEST_F(UbxTest, ChecksumKnownVector)
 {
-	const uint8_t covered[] = {0x05, 0x01, 0x00, 0x00};
+	ثابت uint8_t covered[] = {0x05, 0x01, 0x00, 0x00};
 	uint8_t ck_a = 0;
 	uint8_t ck_b = 0;
-	ubx_checksum(covered, sizeof(covered), &ck_a, &ck_b);
+	ubx_checksum(covered, حجم(covered), &ck_a, &ck_b);
 	EXPECT_EQ(ck_a, 0x06u);
 	EXPECT_EQ(ck_b, 0x17u);
 }
@@ -158,7 +158,7 @@ TEST_F(UbxTest, SingleMinimalFrame)
 
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-	const uint8_t *msg = parser.getNextMessage(&len, &protocol);
+	ثابت uint8_t *msg = parser.getNextMessage(&len, &protocol);
 	ASSERT_NE(msg, nullptr);
 	EXPECT_EQ(protocol, CorrectionProtocol::Ubx);
 	EXPECT_EQ(len, frame.size());
@@ -190,10 +190,10 @@ TEST_F(UbxTest, MultipleFrames)
 	stream.insert(stream.end(), f2.begin(), f2.end());
 	parser.addData(stream.data(), stream.size());
 
-	int count = 0;
+	صحيح count = 0;
 	size_t len = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
+	طالما (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
 		count++;
 	}
@@ -206,7 +206,7 @@ TEST_F(UbxTest, ChunkedArrival)
 {
 	auto frame = buildUbxFrame(0x13, 0x01, {0x10, 0x20, 0x30, 0x40});
 
-	for (size_t i = 0; i < frame.size(); i++) {
+	لكل (size_t i = 0; i < frame.size(); i++) {
 		parser.addData(&frame[i], 1);
 		// No complete frame until the last byte
 	}
@@ -306,7 +306,7 @@ TEST_F(UbxTest, MgaThenRtcm3)
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
 
-	while (parser.getNextMessage(&len, &protocol) != nullptr) {
+	طالما (parser.getNextMessage(&len, &protocol) != nullptr) {
 		seen.push_back(protocol);
 		parser.consumeMessage(len);
 	}
@@ -320,7 +320,7 @@ TEST_F(UbxTest, MgaThenRtcm3)
 	EXPECT_EQ(parser.getStats().crc_errors, 0u);
 }
 
-#if defined(CONFIG_GPS_SPARTN)
+#𐤀𐤌 defined(CONFIG_GPS_SPARTN)
 TEST_F(UbxTest, MgaThenSpartn)
 {
 	auto mga = buildUbxFrame(0x13, 0x00, {0xDE, 0xAD});
@@ -338,7 +338,7 @@ TEST_F(UbxTest, MgaThenSpartn)
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
 
-	while (parser.getNextMessage(&len, &protocol) != nullptr) {
+	طالما (parser.getNextMessage(&len, &protocol) != nullptr) {
 		seen.push_back(protocol);
 		parser.consumeMessage(len);
 	}
@@ -371,7 +371,7 @@ TEST_F(UbxTest, RtcmPayloadStrayB5IsNotFramedAsUbx)
 	frame.push_back(0x00);
 	frame.push_back(static_cast<uint8_t>(payload.size()));
 	frame.insert(frame.end(), payload.begin(), payload.end());
-	const uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
+	ثابت uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
 	frame.push_back((crc >> 16) & 0xFF);
 	frame.push_back((crc >> 8) & 0xFF);
 	frame.push_back(crc & 0xFF);

@@ -35,22 +35,22 @@
  * @file tunes.cpp
  */
 
-#include "tunes.h"
+#ضمن "tunes.h"
 
-#include <px4_platform_common/log.h>
+#ضمن <px4_platform_common/log.h>
 
-#include <lib/circuit_breaker/circuit_breaker.h>
+#ضمن <lib/circuit_breaker/circuit_breaker.h>
 
-#include <math.h>
-#include <ctype.h>
-#include <errno.h>
+#ضمن <math.h>
+#ضمن <ctype.h>
+#ضمن <errno.h>
 
 #define BEAT_TIME_CONVERSION_MS (60 * 1000 * 4)
 #define BEAT_TIME_CONVERSION_US (BEAT_TIME_CONVERSION_MS * 1000)
 #define BEAT_TIME_CONVERSION    BEAT_TIME_CONVERSION_US
 
 // semitone offsets from C for the characters 'A'-'G'
-const uint8_t Tunes::_note_tab[] = {9, 11, 0, 2, 4, 5, 7};
+ثابت uint8_t Tunes::_note_tab[] = {9, 11, 0, 2, 4, 5, 7};
 
 Tunes::Tunes(unsigned default_note_length, NoteMode default_note_mode,
 	     unsigned default_octave, unsigned default_tempo):
@@ -59,21 +59,21 @@ Tunes::Tunes(unsigned default_note_length, NoteMode default_note_mode,
 	_default_octave(default_octave),
 	_default_tempo(default_tempo)
 {
-	if (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_KEY)) {
+	𐤀𐤌 (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_KEY)) {
 		_tunes_disabled = true;
 	}
 
-	reset(false);
+	reset(خطأ);
 }
 
-void Tunes::reset(bool repeat_flag)
+فراغ Tunes::reset(منطقي repeat_flag)
 {
 	// reset pointer
-	if (!repeat_flag)	{
+	𐤀𐤌 (!repeat_flag)	{
 		_tune = nullptr;
 		_next_tune = nullptr;
 
-	} else {
+	} وإلا {
 		_tune = _tune_start_ptr;
 		_next_tune = _tune;
 	}
@@ -85,73 +85,73 @@ void Tunes::reset(bool repeat_flag)
 	_tempo       = _default_tempo;
 }
 
-Tunes::ControlResult Tunes::set_control(const tune_control_s &tune_control)
+Tunes::ControlResult Tunes::set_control(ثابت tune_control_s &tune_control)
 {
 	// Sanity check
-	if (tune_control.tune_id >= _default_tunes_size) {
-		return ControlResult::InvalidTune;
+	𐤀𐤌 (tune_control.tune_id >= _default_tunes_size) {
+		أرجع ControlResult::InvalidTune;
 	}
 
 	// Accept new tune or a stop?
-	if (_tune == nullptr ||  	   // No tune is currently being played
+	𐤀𐤌 (_tune == nullptr ||  	   // No tune is currently being played
 	    tune_control.tune_override ||  // Override interrupts everything
 	    _default_tunes_interruptable[_current_tune_id]) {
 
 		// Check if this exact tune is already being played back
-		if (tune_control.tune_id != static_cast<int>(TuneID::CUSTOM) &&
+		𐤀𐤌 (tune_control.tune_id != static_cast<صحيح>(TuneID::CUSTOM) &&
 		    _tune == _default_tunes[tune_control.tune_id]) {
-			return ControlResult::AlreadyPlaying; // Nothing to do
+			أرجع ControlResult::AlreadyPlaying; // Nothing to do
 		}
 
 		// Reset repeat flag. Can jump to true again while tune is being parsed later
-		_repeat = false;
+		_repeat = خطأ;
 
 		// Reset octave, tempo etc.
 		reset(_repeat);
 
 		// Volume will remain valid for the entire tune, unless interrupted.
-		if (tune_control.volume <= tune_control_s::VOLUME_LEVEL_MAX) {
+		𐤀𐤌 (tune_control.volume <= tune_control_s::VOLUME_LEVEL_MAX) {
 			_volume = tune_control.volume;
 
-		} else {
+		} وإلا {
 			_volume = tune_control_s::VOLUME_LEVEL_MAX;
 		}
 
 
 		// Special treatment for custom tunes
-		if (tune_control.tune_id == static_cast<int>(TuneID::CUSTOM)) {
+		𐤀𐤌 (tune_control.tune_id == static_cast<صحيح>(TuneID::CUSTOM)) {
 			_using_custom_msg = true;
 			_frequency        = (unsigned)tune_control.frequency;
 			_duration         = (unsigned)tune_control.duration;
 			_silence          = (unsigned)tune_control.silence;
 
-		} else {
-			_using_custom_msg = false;
+		} وإلا {
+			_using_custom_msg = خطأ;
 			_tune             = _default_tunes[tune_control.tune_id];
 			_tune_start_ptr   = _tune;
 			_next_tune        = _tune;
 		}
 
 		_current_tune_id = tune_control.tune_id;
-		return ControlResult::Success;
+		أرجع ControlResult::Success;
 	}
 
-	return ControlResult::WouldInterrupt;
+	أرجع ControlResult::WouldInterrupt;
 }
 
-void Tunes::set_string(const char *const string, uint8_t volume)
+فراغ Tunes::set_string(ثابت حرف *ثابت string, uint8_t volume)
 {
 	// Only play new tune if nothing is being played currently.
-	if (_tune == nullptr) {
+	𐤀𐤌 (_tune == nullptr) {
 		// Set tune string the first time.
 		_tune           = string;
 		_tune_start_ptr = string;
 		_next_tune      = _tune;
 
-		if (volume <= tune_control_s::VOLUME_LEVEL_MAX) {
+		𐤀𐤌 (volume <= tune_control_s::VOLUME_LEVEL_MAX) {
 			_volume = volume;
 
-		} else {
+		} وإلا {
 			_volume = tune_control_s::VOLUME_LEVEL_MAX;
 		}
 	}
@@ -159,215 +159,215 @@ void Tunes::set_string(const char *const string, uint8_t volume)
 
 Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsigned &silence, uint8_t &volume)
 {
-	if (_tunes_disabled) {
+	𐤀𐤌 (_tunes_disabled) {
 		frequency = 0;
 		duration = 0;
 		silence = 0;
 		volume = 0;
-		return Tunes::Status::Stop;
+		أرجع Tunes::Status::Stop;
 	}
 
 	Tunes::Status ret = get_next_note(frequency, duration, silence);
 
 	// Check if note should not be heard -> adjust volume to 0 to be safe.
-	if (frequency == 0 || duration == 0) {
+	𐤀𐤌 (frequency == 0 || duration == 0) {
 		volume = 0;
 
-	} else {
+	} وإلا {
 		volume = _volume;
 	}
 
-	return ret;
+	أرجع ret;
 }
 
 Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsigned &silence)
 {
-	if (_tunes_disabled) {
+	𐤀𐤌 (_tunes_disabled) {
 		frequency = 0;
 		duration = 0;
 		silence = 0;
-		return Tunes::Status::Stop;
+		أرجع Tunes::Status::Stop;
 	}
 
 	// Return the values for frequency and duration if the custom msg was received.
-	if (_using_custom_msg) {
-		_using_custom_msg = false;
+	𐤀𐤌 (_using_custom_msg) {
+		_using_custom_msg = خطأ;
 		duration  = _duration;
 		frequency = _frequency;
 		silence   = _silence;
-		return Tunes::Status::Continue;
+		أرجع Tunes::Status::Continue;
 	}
 
 	// Make sure we still have a tune.
-	if ((_next_tune == nullptr) || (_tune == nullptr)) {
-		return tune_error();
+	𐤀𐤌 ((_next_tune == nullptr) || (_tune == nullptr)) {
+		أرجع tune_error();
 	}
 
 	// Parse characters out of the string until we have resolved a note.
 	unsigned note = 0;
 	unsigned note_length = _note_length;
 
-	while (note == 0) {
+	طالما (note == 0) {
 		// we always need at least one character from the string.
-		int c = next_char();
+		صحيح c = next_char();
 
-		if (c == 0) {
+		𐤀𐤌 (c == 0) {
 			silence = 0;
-			return tune_end();
+			أرجع tune_end();
 		}
 
 		_next_tune++;
 
-		switch (c) {
+		بدل (c) {
 
-		case 'V':	// Select volume.
+		حالة 'V':	// Select volume.
 			// Consume volume if specified in tune but ignore
 			// MML compatibility
 			next_number();
-			break;
+			اكسر;
 
-		case 'L':	// Select note length.
+		حالة 'L':	// Select note length.
 			_note_length = next_number();
 
-			if (_note_length < 1) {
-				return tune_error();
+			𐤀𐤌 (_note_length < 1) {
+				أرجع tune_error();
 			}
 
-			break;
+			اكسر;
 
-		case 'O':	// Select octave.
+		حالة 'O':	// Select octave.
 			_octave = next_number();
 
-			if (_octave > 6) {
+			𐤀𐤌 (_octave > 6) {
 				_octave = 6;
 			}
 
-			break;
+			اكسر;
 
-		case '<':	// Decrease octave.
-			if (_octave > 0) {
+		حالة '<':	// Decrease octave.
+			𐤀𐤌 (_octave > 0) {
 				_octave--;
 			}
 
-			break;
+			اكسر;
 
-		case '>':	// Increase octave.
-			if (_octave < 6) {
+		حالة '>':	// Increase octave.
+			𐤀𐤌 (_octave < 6) {
 				_octave++;
 			}
 
-			break;
+			اكسر;
 
-		case 'M':	// Select inter-note gap.
+		حالة 'M':	// Select inter-note gap.
 			c = next_char();
 
-			if (c == 0) {
-				return tune_error();
+			𐤀𐤌 (c == 0) {
+				أرجع tune_error();
 			}
 
 			_next_tune++;
 
-			switch (c) {
-			case 'N':
+			بدل (c) {
+			حالة 'N':
 				_note_mode = NoteMode::NORMAL;
-				break;
+				اكسر;
 
-			case 'L':
+			حالة 'L':
 				_note_mode = NoteMode::LEGATO;
-				break;
+				اكسر;
 
-			case 'S':
+			حالة 'S':
 				_note_mode = NoteMode::STACCATO;
-				break;
+				اكسر;
 
-			case 'F':
-				_repeat = false;
-				break;
+			حالة 'F':
+				_repeat = خطأ;
+				اكسر;
 
-			case 'B':
+			حالة 'B':
 				_repeat = true;
-				break;
+				اكسر;
 
-			default:
-				return tune_error();
+			افتراضي:
+				أرجع tune_error();
 			}
 
-			break;
+			اكسر;
 
-		case 'P':	// Pause for a note length.
-		case 'R':
+		حالة 'P':	// Pause for a note length.
+		حالة 'R':
 			frequency = 0;
 			duration = 0;
 			note_length = next_number();
 			silence = rest_duration(note_length, next_dots());
-			return Tunes::Status::Continue;
+			أرجع Tunes::Status::Continue;
 
-		case 'T': {	// Change tempo.
+		حالة 'T': {	// Change tempo.
 				unsigned nt = next_number();
 
-				if ((nt >= 32) && (nt <= 255)) {
+				𐤀𐤌 ((nt >= 32) && (nt <= 255)) {
 					_tempo = nt;
 
-				} else {
-					return tune_error();
+				} وإلا {
+					أرجع tune_error();
 				}
 
-				break;
+				اكسر;
 			}
 
-		case 'N':	// Play an arbitrary note.
+		حالة 'N':	// Play an arbitrary note.
 			note = next_number();
 
-			if (note > 84) {
-				return tune_error();
+			𐤀𐤌 (note > 84) {
+				أرجع tune_error();
 			}
 
-			if (note == 0) {
+			𐤀𐤌 (note == 0) {
 				// This is a rest - pause for the current note length.
 				silence = rest_duration(_note_length, next_dots());
-				return Tunes::Status::Continue;
+				أرجع Tunes::Status::Continue;
 			}
 
-			break;
+			اكسر;
 
-		case 'A'...'G':	// Play a note in the current octave.
+		حالة 'A'...'G':	// Play a note in the current octave.
 			note = _note_tab[c - 'A'] + (_octave * 12) + 1;
 			c = next_char();
 
-			switch (c) {
-			case '#':	// Up a semitone.
-			case '+':
-				if (note < 84) {
+			بدل (c) {
+			حالة '#':	// Up a semitone.
+			حالة '+':
+				𐤀𐤌 (note < 84) {
 					note++;
 				}
 
 				_next_tune++;
-				break;
+				اكسر;
 
-			case '-':	// Down a semitone.
-				if (note > 1) {
+			حالة '-':	// Down a semitone.
+				𐤀𐤌 (note > 1) {
 					note--;
 				}
 
 				_next_tune++;
-				break;
+				اكسر;
 
-			default:
+			افتراضي:
 				// 0 / No next char here is OK.
-				break;
+				اكسر;
 			}
 
 			// Shorthand length notation.
 			note_length = next_number();
 
-			if (note_length == 0) {
+			𐤀𐤌 (note_length == 0) {
 				note_length = _note_length;
 			}
 
-			break;
+			اكسر;
 
-		default:
-			return tune_error();
+		افتراضي:
+			أرجع tune_error();
 		}
 	}
 
@@ -376,91 +376,91 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 
 	// Compute the note frequency.
 	frequency = note_to_frequency(note);
-	return Tunes::Status::Continue;
+	أرجع Tunes::Status::Continue;
 }
 
 Tunes::Status Tunes::tune_end()
 {
-	if (_tunes_disabled) {
-		return Tunes::Status::Stop;
+	𐤀𐤌 (_tunes_disabled) {
+		أرجع Tunes::Status::Stop;
 	}
 
 	// Restore intial parameters.
 	reset(_repeat);
 
 	// Stop or restart the tune.
-	if (_repeat) {
-		return Tunes::Status::Continue;
+	𐤀𐤌 (_repeat) {
+		أرجع Tunes::Status::Continue;
 
-	} else {
-		return Tunes::Status::Stop;
+	} وإلا {
+		أرجع Tunes::Status::Stop;
 	}
 }
 
 Tunes::Status Tunes::tune_error()
 {
-	if (_tunes_disabled) {
-		return Tunes::Status::Stop;
+	𐤀𐤌 (_tunes_disabled) {
+		أرجع Tunes::Status::Stop;
 	}
 
 	// The tune appears to be bad (unexpected EOF, bad character, etc.).
-	if (_next_tune != nullptr) {
+	𐤀𐤌 (_next_tune != nullptr) {
 		PX4_WARN("Tune error at: %s", _next_tune);
 	}
 
-	_repeat = false;	// Don't loop on error.
+	_repeat = خطأ;	// Don't loop on error.
 	reset(_repeat);
-	return Tunes::Status::Error;
+	أرجع Tunes::Status::Error;
 }
 
-uint32_t Tunes::note_to_frequency(unsigned note) const
+uint32_t Tunes::note_to_frequency(unsigned note) ثابت
 {
 	// Compute the frequency (Hz).
-	return (unsigned)(880.0f * powf(2.0f, ((int)note - 46) / 12.0f));
+	أرجع (unsigned)(880.0f * powf(2.0f, ((صحيح)note - 46) / 12.0f));
 }
 
-unsigned Tunes::note_duration(unsigned &silence, unsigned note_length, unsigned dots) const
+unsigned Tunes::note_duration(unsigned &silence, unsigned note_length, unsigned dots) ثابت
 {
 	unsigned whole_note_period = BEAT_TIME_CONVERSION / _tempo;
 
-	if (note_length == 0) {
+	𐤀𐤌 (note_length == 0) {
 		note_length = 1;
 	}
 
 	unsigned note_period = whole_note_period / note_length;
 
-	switch (_note_mode) {
-	case NoteMode::NORMAL:
+	بدل (_note_mode) {
+	حالة NoteMode::NORMAL:
 		silence = note_period / 8;
-		break;
+		اكسر;
 
-	case NoteMode::STACCATO:
+	حالة NoteMode::STACCATO:
 		silence = note_period / 4;
-		break;
+		اكسر;
 
-	case NoteMode::LEGATO:
-	default:
+	حالة NoteMode::LEGATO:
+	افتراضي:
 		silence = 0;
-		break;
+		اكسر;
 	}
 
 	note_period -= silence;
 
 	unsigned dot_extension = note_period / 2;
 
-	while (dots--) {
+	طالما (dots--) {
 		note_period += dot_extension;
 		dot_extension /= 2;
 	}
 
-	return note_period;
+	أرجع note_period;
 }
 
-unsigned Tunes::rest_duration(unsigned rest_length, unsigned dots) const
+unsigned Tunes::rest_duration(unsigned rest_length, unsigned dots) ثابت
 {
 	unsigned whole_note_period = BEAT_TIME_CONVERSION / _tempo;
 
-	if (rest_length == 0) {
+	𐤀𐤌 (rest_length == 0) {
 		rest_length = 1;
 	}
 
@@ -468,33 +468,33 @@ unsigned Tunes::rest_duration(unsigned rest_length, unsigned dots) const
 
 	unsigned dot_extension = rest_period / 2;
 
-	while (dots--) {
+	طالما (dots--) {
 		rest_period += dot_extension;
 		dot_extension /= 2;
 	}
 
-	return rest_period;
+	أرجع rest_period;
 }
 
-int Tunes::next_char()
+صحيح Tunes::next_char()
 {
-	while (isspace(*_next_tune)) {
+	طالما (isspace(*_next_tune)) {
 		_next_tune++;
 	}
 
-	return toupper(*_next_tune);
+	أرجع toupper(*_next_tune);
 }
 
 unsigned Tunes::next_number()
 {
 	unsigned number = 0;
-	int next_character;
+	صحيح next_character;
 
-	for (;;) {
+	لكل (;;) {
 		next_character = next_char();
 
-		if (!isdigit(next_character)) {
-			return number;
+		𐤀𐤌 (!isdigit(next_character)) {
+			أرجع number;
 		}
 
 		_next_tune++;
@@ -506,10 +506,10 @@ unsigned Tunes::next_dots()
 {
 	unsigned dots = 0;
 
-	while (next_char() == '.') {
+	طالما (next_char() == '.') {
 		_next_tune++;
 		dots++;
 	}
 
-	return dots;
+	أرجع dots;
 }

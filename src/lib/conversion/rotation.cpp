@@ -37,47 +37,47 @@
  * Vector rotation library
  */
 
-#include "rotation.h"
+#ضمن "rotation.h"
 
 __EXPORT matrix::Dcmf
-get_rot_matrix(enum Rotation rot)
+get_rot_matrix(تعداد Rotation rot)
 {
-	return matrix::Dcmf{matrix::Eulerf{
-			math::radians((float)rot_lookup[rot].roll),
-			math::radians((float)rot_lookup[rot].pitch),
-			math::radians((float)rot_lookup[rot].yaw)}};
+	أرجع matrix::Dcmf{matrix::Eulerf{
+			math::radians((عائم)rot_lookup[rot].roll),
+			math::radians((عائم)rot_lookup[rot].pitch),
+			math::radians((عائم)rot_lookup[rot].yaw)}};
 }
 
 __EXPORT matrix::Quatf
-get_rot_quaternion(enum Rotation rot)
+get_rot_quaternion(تعداد Rotation rot)
 {
-	return matrix::Quatf{matrix::Eulerf{
-			math::radians((float)rot_lookup[rot].roll),
-			math::radians((float)rot_lookup[rot].pitch),
-			math::radians((float)rot_lookup[rot].yaw)}};
+	أرجع matrix::Quatf{matrix::Eulerf{
+			math::radians((عائم)rot_lookup[rot].roll),
+			math::radians((عائم)rot_lookup[rot].pitch),
+			math::radians((عائم)rot_lookup[rot].yaw)}};
 }
 
-__EXPORT void
-rotate_3i(enum Rotation rot, int16_t &x, int16_t &y, int16_t &z)
+__EXPORT فراغ
+rotate_3i(تعداد Rotation rot, int16_t &x, int16_t &y, int16_t &z)
 {
-	if (!rotate_3(rot, x, y, z)) {
+	𐤀𐤌 (!rotate_3(rot, x, y, z)) {
 		// otherwise use full rotation matrix for valid rotations
-		if (rot < ROTATION_MAX) {
-			const matrix::Vector3f r{get_rot_matrix(rot) *matrix::Vector3f{(float)x, (float)y, (float)z}};
-			x = math::constrain(roundf(r(0)), (float)INT16_MIN, (float)INT16_MAX);
-			y = math::constrain(roundf(r(1)), (float)INT16_MIN, (float)INT16_MAX);
-			z = math::constrain(roundf(r(2)), (float)INT16_MIN, (float)INT16_MAX);
+		𐤀𐤌 (rot < ROTATION_MAX) {
+			ثابت matrix::Vector3f r{get_rot_matrix(rot) *matrix::Vector3f{(عائم)x, (عائم)y, (عائم)z}};
+			x = math::constrain(roundf(r(0)), (عائم)INT16_MIN, (عائم)INT16_MAX);
+			y = math::constrain(roundf(r(1)), (عائم)INT16_MIN, (عائم)INT16_MAX);
+			z = math::constrain(roundf(r(2)), (عائم)INT16_MIN, (عائم)INT16_MAX);
 		}
 	}
 }
 
-__EXPORT void
-rotate_3f(enum Rotation rot, float &x, float &y, float &z)
+__EXPORT فراغ
+rotate_3f(تعداد Rotation rot, عائم &x, عائم &y, عائم &z)
 {
-	if (!rotate_3(rot, x, y, z)) {
+	𐤀𐤌 (!rotate_3(rot, x, y, z)) {
 		// otherwise use full rotation matrix for valid rotations
-		if (rot < ROTATION_MAX) {
-			const matrix::Vector3f r{get_rot_matrix(rot) *matrix::Vector3f{x, y, z}};
+		𐤀𐤌 (rot < ROTATION_MAX) {
+			ثابت matrix::Vector3f r{get_rot_matrix(rot) *matrix::Vector3f{x, y, z}};
 			x = r(0);
 			y = r(1);
 			z = r(2);

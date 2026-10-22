@@ -33,31 +33,31 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ضمن "FunctionProviderBase.hpp"
 
-#include <uORB/topics/landing_gear_wheel.h>
+#ضمن <uORB/topics/landing_gear_wheel.h>
 
 /**
  * Functions: Landing_Gear_Wheel
  */
-class FunctionLandingGearWheel : public FunctionProviderBase
+صنف FunctionLandingGearWheel : عام FunctionProviderBase
 {
-public:
-	FunctionLandingGearWheel() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionLandingGearWheel(); }
+عام:
+	FunctionLandingGearWheel() = افتراضي;
+	ساكن FunctionProviderBase *allocate(ثابت Context &context) { أرجع جديد FunctionLandingGearWheel(); }
 
-	void update() override
+	فراغ update() override
 	{
 		landing_gear_wheel_s landing_gear_wheel;
 
-		if (_topic.update(&landing_gear_wheel)) {
+		𐤀𐤌 (_topic.update(&landing_gear_wheel)) {
 			_data = landing_gear_wheel.normalized_wheel_setpoint;
 		}
 	}
 
-	float value(OutputFunction func) override { return _data; }
+	عائم value(OutputFunction func) override { أرجع _data; }
 
-private:
+خاص:
 	uORB::Subscription _topic{ORB_ID(landing_gear_wheel)};
-	float _data{0.f};
+	عائم _data{0.f};
 };

@@ -33,29 +33,29 @@
 
 #pragma once
 
-#include "FunctionProviderBase.hpp"
+#ضمن "FunctionProviderBase.hpp"
 
-#include <uORB/topics/manual_control_setpoint.h>
+#ضمن <uORB/topics/manual_control_setpoint.h>
 
 /**
  * Functions: RC_Roll .. RCAUX_Max
  */
-class FunctionManualRC : public FunctionProviderBase
+صنف FunctionManualRC : عام FunctionProviderBase
 {
-public:
+عام:
 	FunctionManualRC()
 	{
 		resetAllToDisarmedValue();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionManualRC(); }
+	ساكن FunctionProviderBase *allocate(ثابت Context &context) { أرجع جديد FunctionManualRC(); }
 
-	void update() override
+	فراغ update() override
 	{
 		manual_control_setpoint_s manual_control_setpoint;
 
-		if (_topic.update(&manual_control_setpoint)) {
-			if (manual_control_setpoint.valid) {
+		𐤀𐤌 (_topic.update(&manual_control_setpoint)) {
+			𐤀𐤌 (manual_control_setpoint.valid) {
 				_data[0] = manual_control_setpoint.roll;
 				_data[1] = manual_control_setpoint.pitch;
 				_data[2] = manual_control_setpoint.throttle;
@@ -68,27 +68,27 @@ public:
 				_data[9] = manual_control_setpoint.aux5;
 				_data[10] = manual_control_setpoint.aux6;
 
-			} else {
+			} وإلا {
 				resetAllToDisarmedValue();
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::RC_Roll]; }
+	عائم value(OutputFunction func) override { أرجع _data[(صحيح)func - (صحيح)OutputFunction::RC_Roll]; }
 
-private:
-	static constexpr int num_data_points = 11;
+خاص:
+	ساكن constexpr صحيح num_data_points = 11;
 
-	void resetAllToDisarmedValue()
+	فراغ resetAllToDisarmedValue()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
+		لكل (صحيح i = 0; i < num_data_points; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
+	static_assert(num_data_points == (صحيح)OutputFunction::RC_AUXMax - (صحيح)OutputFunction::RC_Roll + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _topic{ORB_ID(manual_control_setpoint)};
-	float _data[num_data_points] {};
+	عائم _data[num_data_points] {};
 };

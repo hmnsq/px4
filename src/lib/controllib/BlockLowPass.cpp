@@ -37,24 +37,24 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#ضمن <math.h>
+#ضمن <float.h>
 
-#include "blocks.hpp"
+#ضمن "blocks.hpp"
 
-namespace control
+نطاق control
 {
 
-float BlockLowPass::update(float input)
+عائم BlockLowPass::update(عائم input)
 {
-	if (!PX4_ISFINITE(getState())) {
+	𐤀𐤌 (!PX4_ISFINITE(getState())) {
 		setState(input);
 	}
 
-	float b = 2 * M_PI_F * getFCut() * getDt();
-	float a = b / (1 + b);
+	عائم b = 2 * M_PI_F * getFCut() * getDt();
+	عائم a = b / (1 + b);
 	setState(a * input + (1 - a)*getState());
-	return getState();
+	أرجع getState();
 }
 
 } // namespace control

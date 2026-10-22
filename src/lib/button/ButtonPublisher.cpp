@@ -38,16 +38,16 @@
  *
  */
 
-#include <button/ButtonPublisher.hpp>
+#ضمن <button/ButtonPublisher.hpp>
 
-using namespace time_literals;
+using نطاق time_literals;
 
 ButtonPublisher::ButtonPublisher()
 {
 	_safety_button_pub.advertise();
 }
 
-void ButtonPublisher::safetyButtonTriggerEvent()
+فراغ ButtonPublisher::safetyButtonTriggerEvent()
 {
 
 
@@ -58,7 +58,7 @@ void ButtonPublisher::safetyButtonTriggerEvent()
 	_safety_button_pub.publish(safety_button);
 }
 
-void ButtonPublisher::pairingButtonTriggerEvent()
+فراغ ButtonPublisher::pairingButtonTriggerEvent()
 {
 	vehicle_command_s vcmd{};
 	vcmd.command = vehicle_command_s::VEHICLE_CMD_START_RX_PAIR;

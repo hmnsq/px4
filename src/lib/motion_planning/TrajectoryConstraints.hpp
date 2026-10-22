@@ -33,29 +33,29 @@
 
 #pragma once
 
-#include <px4_defines.h>
+#ضمن <px4_defines.h>
 
-#include <matrix/math.hpp>
-#include <mathlib/mathlib.h>
+#ضمن <matrix/math.hpp>
+#ضمن <mathlib/mathlib.h>
 
-namespace math
+نطاق math
 {
-namespace trajectory
+نطاق trajectory
 {
 using matrix::Vector3f;
 using matrix::Vector2f;
 
-struct VehicleDynamicLimits {
-	float z_accept_rad;
-	float xy_accept_rad;
+بنية VehicleDynamicLimits {
+	عائم z_accept_rad;
+	عائم xy_accept_rad;
 
-	float max_acc_xy;
-	float max_jerk;
+	عائم max_acc_xy;
+	عائم max_jerk;
 
-	float max_speed_xy;
+	عائم max_speed_xy;
 
 	// TODO: remove this
-	float max_acc_xy_radius_scale;
+	عائم max_acc_xy_radius_scale;
 };
 
 /*
@@ -67,33 +67,33 @@ struct VehicleDynamicLimits {
  * the real acceptance radius is smaller.
  *
  */
-inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, const Vector3f &target,
-		const Vector3f &next_target, float exit_speed, const VehicleDynamicLimits &config)
+مضمن عائم computeStartXYSpeedFromWaypoints(ثابت Vector3f &start_position, ثابت Vector3f &target,
+		ثابت Vector3f &next_target, عائم exit_speed, ثابت VehicleDynamicLimits &config)
 {
-	const float distance_target_next = (target - next_target).xy().norm();
+	ثابت عائم distance_target_next = (target - next_target).xy().norm();
 
-	const bool target_next_different = distance_target_next  > 0.001f;
-	const bool waypoint_overlap = distance_target_next < config.xy_accept_rad;
+	ثابت منطقي target_next_different = distance_target_next  > 0.001f;
+	ثابت منطقي waypoint_overlap = distance_target_next < config.xy_accept_rad;
 
-	float speed_at_target = 0.0f;
+	عائم speed_at_target = 0.0f;
 
-	if (target_next_different &&
+	𐤀𐤌 (target_next_different &&
 	    !waypoint_overlap
 	   ) {
 		// rounding can push the dot product of two unit vectors past 1, which acosf turns into NaN
-		const float cos_alpha = constrain(Vector2f((target - start_position).xy()).unit_or_zero().dot(
+		ثابت عائم cos_alpha = constrain(Vector2f((target - start_position).xy()).unit_or_zero().dot(
 				Vector2f((target - next_target).xy()).unit_or_zero()), -1.f, 1.f);
-		const float alpha = acosf(cos_alpha);
-		const float safe_alpha = constrain(alpha, 0.f, M_PI_F - FLT_EPSILON);
-		float accel_tmp = config.max_acc_xy_radius_scale * config.max_acc_xy;
-		float max_speed_in_turn = computeMaxSpeedInWaypoint(safe_alpha, accel_tmp, config.xy_accept_rad);
+		ثابت عائم alpha = acosf(cos_alpha);
+		ثابت عائم safe_alpha = constrain(alpha, 0.f, M_PI_F - FLT_EPSILON);
+		عائم accel_tmp = config.max_acc_xy_radius_scale * config.max_acc_xy;
+		عائم max_speed_in_turn = computeMaxSpeedInWaypoint(safe_alpha, accel_tmp, config.xy_accept_rad);
 		speed_at_target = min(max_speed_in_turn, exit_speed, config.max_speed_xy);
 	}
 
-	float start_to_target = (start_position - target).xy().norm();
-	float max_speed = computeMaxSpeedFromDistance(config.max_jerk, config.max_acc_xy, start_to_target, speed_at_target);
+	عائم start_to_target = (start_position - target).xy().norm();
+	عائم max_speed = computeMaxSpeedFromDistance(config.max_jerk, config.max_acc_xy, start_to_target, speed_at_target);
 
-	return min(config.max_speed_xy, max_speed);
+	أرجع min(config.max_speed_xy, max_speed);
 }
 
 /*
@@ -106,22 +106,22 @@ inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, co
  *
  * @return the maximum speed at waypoint[0] which allows it to follow the trajectory while respecting the dynamic limits
  */
-template <int N>
-float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDynamicLimits &config)
+template <صحيح N>
+عائم computeXYSpeedFromWaypoints(ثابت Vector3f waypoints[N], ثابت VehicleDynamicLimits &config)
 {
 	static_assert(N >= 2, "Need at least 2 points to compute speed");
 
-	float max_speed = 0.f;
+	عائم max_speed = 0.f;
 
 	// go backwards through the waypoints
-	for (int i = (N - 2); i >= 0; i--) {
+	لكل (صحيح i = (N - 2); i >= 0; i--) {
 		max_speed = computeStartXYSpeedFromWaypoints(waypoints[i],
 				waypoints[i + 1],
 				waypoints[min(i + 2, N - 1)],
 				max_speed, config);
 	}
 
-	return max_speed;
+	أرجع max_speed;
 }
 
 /*
@@ -132,18 +132,18 @@ float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDyna
  * only the XY components are scaled down to avoid affecting
  * Z in case of numerical issues
  */
-inline void clampToXYNorm(Vector3f &target, float max_xy_norm, float accuracy = FLT_EPSILON)
+مضمن فراغ clampToXYNorm(Vector3f &target, عائم max_xy_norm, عائم accuracy = FLT_EPSILON)
 {
-	const float xynorm = target.xy().norm();
-	const float scale_factor = (xynorm > FLT_EPSILON)
+	ثابت عائم xynorm = target.xy().norm();
+	ثابت عائم scale_factor = (xynorm > FLT_EPSILON)
 				   ? max_xy_norm / xynorm
 				   : 1.f;
 
-	if (scale_factor < 1.f) {
-		if (max_xy_norm < accuracy && xynorm < accuracy) {
+	𐤀𐤌 (scale_factor < 1.f) {
+		𐤀𐤌 (max_xy_norm < accuracy && xynorm < accuracy) {
 			target.xy() = Vector2f(target) * scale_factor;
 
-		} else {
+		} وإلا {
 			target *= scale_factor;
 		}
 	}
@@ -157,18 +157,18 @@ inline void clampToXYNorm(Vector3f &target, float max_xy_norm, float accuracy = 
  * only the Z component is scaled down to avoid affecting
  * XY in case of numerical issues
  */
-inline void clampToZNorm(Vector3f &target, float max_z_norm, float accuracy = FLT_EPSILON)
+مضمن فراغ clampToZNorm(Vector3f &target, عائم max_z_norm, عائم accuracy = FLT_EPSILON)
 {
-	const float znorm = fabs(target(2));
-	const float scale_factor = (znorm > FLT_EPSILON)
+	ثابت عائم znorm = fabs(target(2));
+	ثابت عائم scale_factor = (znorm > FLT_EPSILON)
 				   ? max_z_norm / znorm
 				   : 1.f;
 
-	if (scale_factor < 1.f) {
-		if (max_z_norm < accuracy && znorm < accuracy) {
+	𐤀𐤌 (scale_factor < 1.f) {
+		𐤀𐤌 (max_z_norm < accuracy && znorm < accuracy) {
 			target(2) *= scale_factor;
 
-		} else {
+		} وإلا {
 			target *= scale_factor;
 		}
 	}

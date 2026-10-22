@@ -36,17 +36,17 @@
  * Tests for system timing hysteresis.
  */
 
-#include <gtest/gtest.h>
+#ضمن <gtest/gtest.h>
 
-#include "hysteresis.h"
+#ضمن "hysteresis.h"
 
 
-static constexpr hrt_abstime SOME_START_TIME = 1558359616134000llu;
+ساكن constexpr hrt_abstime SOME_START_TIME = 1558359616134000llu;
 
 
 TEST(Hysteresis, InitFalse)
 {
-	systemlib::Hysteresis hysteresis(false);
+	systemlib::Hysteresis hysteresis(خطأ);
 	EXPECT_FALSE(hysteresis.get_state());
 }
 
@@ -61,13 +61,13 @@ TEST(Hysteresis, Zero)
 	hrt_abstime time_us = SOME_START_TIME;
 
 	// Default is 0 hysteresis.
-	systemlib::Hysteresis hysteresis(false);
+	systemlib::Hysteresis hysteresis(خطأ);
 	EXPECT_FALSE(hysteresis.get_state());
 
 	// Change and see result immediately.
 	hysteresis.set_state_and_update(true, time_us);
 	EXPECT_TRUE(hysteresis.get_state());
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.set_state_and_update(خطأ, time_us);
 	EXPECT_FALSE(hysteresis.get_state());
 	hysteresis.set_state_and_update(true, time_us);
 	EXPECT_TRUE(hysteresis.get_state());
@@ -82,8 +82,8 @@ TEST(Hysteresis, ChangeAfterTime)
 {
 	hrt_abstime time_us = SOME_START_TIME;
 
-	systemlib::Hysteresis hysteresis(false);
-	hysteresis.set_hysteresis_time_from(false, 5000);
+	systemlib::Hysteresis hysteresis(خطأ);
+	hysteresis.set_hysteresis_time_from(خطأ, 5000);
 	hysteresis.set_hysteresis_time_from(true, 3000);
 
 	// Change to true.
@@ -97,7 +97,7 @@ TEST(Hysteresis, ChangeAfterTime)
 	EXPECT_TRUE(hysteresis.get_state());
 
 	// Change back to false.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.set_state_and_update(خطأ, time_us);
 	EXPECT_TRUE(hysteresis.get_state());
 	time_us += 1000;
 	hysteresis.update(time_us);
@@ -111,9 +111,9 @@ TEST(Hysteresis, HysteresisChanged)
 {
 	hrt_abstime time_us = SOME_START_TIME;
 
-	systemlib::Hysteresis hysteresis(false);
+	systemlib::Hysteresis hysteresis(خطأ);
 	hysteresis.set_hysteresis_time_from(true, 2000);
-	hysteresis.set_hysteresis_time_from(false, 5000);
+	hysteresis.set_hysteresis_time_from(خطأ, 5000);
 
 	// Change to true.
 	hysteresis.set_state_and_update(true, time_us);
@@ -129,7 +129,7 @@ TEST(Hysteresis, HysteresisChanged)
 	hysteresis.set_hysteresis_time_from(true, 10000);
 
 	// Change back to false.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.set_state_and_update(خطأ, time_us);
 	EXPECT_TRUE(hysteresis.get_state());
 	time_us += 7000;
 	hysteresis.update(time_us);
@@ -143,9 +143,9 @@ TEST(Hysteresis, ChangeAfterMultipleSets)
 {
 	hrt_abstime time_us = SOME_START_TIME;
 
-	systemlib::Hysteresis hysteresis(false);
+	systemlib::Hysteresis hysteresis(خطأ);
 	hysteresis.set_hysteresis_time_from(true, 5000);
-	hysteresis.set_hysteresis_time_from(false, 5000);
+	hysteresis.set_hysteresis_time_from(خطأ, 5000);
 
 	// Change to true.
 	hysteresis.set_state_and_update(true, time_us);
@@ -158,13 +158,13 @@ TEST(Hysteresis, ChangeAfterMultipleSets)
 	EXPECT_TRUE(hysteresis.get_state());
 
 	// Change to false.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.set_state_and_update(خطأ, time_us);
 	EXPECT_TRUE(hysteresis.get_state());
 	time_us += 3000;
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.set_state_and_update(خطأ, time_us);
 	EXPECT_TRUE(hysteresis.get_state());
 	time_us += 3000;
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.set_state_and_update(خطأ, time_us);
 	EXPECT_FALSE(hysteresis.get_state());
 }
 
@@ -172,8 +172,8 @@ TEST(Hysteresis, TakeChangeBack)
 {
 	hrt_abstime time_us = SOME_START_TIME;
 
-	systemlib::Hysteresis hysteresis(false);
-	hysteresis.set_hysteresis_time_from(false, 5000);
+	systemlib::Hysteresis hysteresis(خطأ);
+	hysteresis.set_hysteresis_time_from(خطأ, 5000);
 
 	// Change to true.
 	hysteresis.set_state_and_update(true, time_us);
@@ -182,7 +182,7 @@ TEST(Hysteresis, TakeChangeBack)
 	hysteresis.update(time_us);
 	EXPECT_FALSE(hysteresis.get_state());
 	// Change your mind to false.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.set_state_and_update(خطأ, time_us);
 	EXPECT_FALSE(hysteresis.get_state());
 	time_us += 6000;
 	hysteresis.update(time_us);
@@ -199,6 +199,6 @@ TEST(Hysteresis, TakeChangeBack)
 	EXPECT_TRUE(hysteresis.get_state());
 
 	// The other directory is immediate.
-	hysteresis.set_state_and_update(false, time_us);
+	hysteresis.set_state_and_update(خطأ, time_us);
 	EXPECT_FALSE(hysteresis.get_state());
 }

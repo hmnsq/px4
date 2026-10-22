@@ -34,11 +34,11 @@ Description:
     Derivation of a wind and airspeed scale (EKF) estimator using SymForce
 """
 
-import symforce
+استورد symforce
 symforce.set_epsilon_to_symbol()
 
-import symforce.symbolic as sf
-from derivation_utils import *
+استورد symforce.symbolic كـ sf
+من derivation_utils استورد *
 
 def fuse_airspeed(
         v_local: sf.V3,
@@ -59,7 +59,7 @@ def fuse_airspeed(
 
     K = P * H.T / sm.Max(innov_var, epsilon)
 
-    return (H, K, innov_var, innov)
+    أرجع (H, K, innov_var, innov)
 
 def fuse_beta(
         v_local: sf.V3,
@@ -84,7 +84,7 @@ def fuse_beta(
 
     K = P * H.T / sm.Max(innov_var, epsilon)
 
-    return (H, K, innov_var, innov)
+    أرجع (H, K, innov_var, innov)
 
 def init_wind_using_airspeed(
         v_local: sf.V3,
@@ -114,7 +114,7 @@ def init_wind_using_airspeed(
     P = P.subs({sideslip: 0.0})
     wind = wind.subs({sideslip: 0.0})
 
-    return (wind, P)
+    أرجع (wind, P)
 
 generate_px4_function(fuse_airspeed, output_names=["H", "K", "innov_var", "innov"])
 generate_px4_function(fuse_beta, output_names=["H", "K", "innov_var", "innov"])

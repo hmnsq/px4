@@ -1,10 +1,10 @@
 #pragma once
 
-#include <cmath>
+#ضمن <cmath>
 
-#include <px4_platform_common/defines.h>
+#ضمن <px4_platform_common/defines.h>
 
-namespace matrix
+نطاق matrix
 {
 
 /**
@@ -19,28 +19,28 @@ namespace matrix
  * @return true if the two values are considered equal, false otherwise
  */
 template<typename Type>
-bool isEqualF(const Type x, const Type y, const Type eps = Type(1e-4f))
+منطقي isEqualF(ثابت Type x, ثابت Type y, ثابت Type eps = Type(1e-4f))
 {
-	return (std::fabs(x - y) <= eps)
+	أرجع (std::fabs(x - y) <= eps)
 	       || (std::isnan(x) && std::isnan(y))
 	       || (std::isinf(x) && std::isinf(y) && std::isnan(x - y));
 }
 
-namespace detail
+نطاق detail
 {
 
 template<typename Floating>
 Floating wrap_floating(Floating x, Floating low, Floating high)
 {
 	// already in range
-	if (low <= x && x < high) {
-		return x;
+	𐤀𐤌 (low <= x && x < high) {
+		أرجع x;
 	}
 
-	const auto range = high - low;
-	const auto inv_range = Floating(1) / range; // should evaluate at compile time, multiplies below at runtime
-	const auto num_wraps = std::floor((x - low) * inv_range);
-	return x - range * num_wraps;
+	ثابت auto range = high - low;
+	ثابت auto inv_range = Floating(1) / range; // should evaluate at compile time, multiplies below at runtime
+	ثابت auto num_wraps = std::floor((x - low) * inv_range);
+	أرجع x - range * num_wraps;
 }
 
 } // namespace detail
@@ -53,9 +53,9 @@ Floating wrap_floating(Floating x, Floating low, Floating high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline float wrap(float x, float low, float high)
+مضمن عائم wrap(عائم x, عائم low, عائم high)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	أرجع matrix::detail::wrap_floating(x, low, high);
 }
 
 /**
@@ -66,9 +66,9 @@ inline float wrap(float x, float low, float high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline double wrap(double x, double low, double high)
+مضمن مزدوج wrap(مزدوج x, مزدوج low, مزدوج high)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	أرجع matrix::detail::wrap_floating(x, low, high);
 }
 
 /**
@@ -82,13 +82,13 @@ inline double wrap(double x, double low, double high)
 template<typename Integer>
 Integer wrap(Integer x, Integer low, Integer high)
 {
-	const auto range = high - low;
+	ثابت auto range = high - low;
 
-	if (x < low) {
+	𐤀𐤌 (x < low) {
 		x += range * ((low - x) / range + 1);
 	}
 
-	return low + (x - low) % range;
+	أرجع low + (x - low) % range;
 }
 
 /**
@@ -97,7 +97,7 @@ Integer wrap(Integer x, Integer low, Integer high)
 template<typename Type>
 Type wrap_pi(Type x)
 {
-	return wrap(x, Type(-M_PI), Type(M_PI));
+	أرجع wrap(x, Type(-M_PI), Type(M_PI));
 }
 
 /**
@@ -106,7 +106,7 @@ Type wrap_pi(Type x)
 template<typename Type>
 Type wrap_2pi(Type x)
 {
-	return wrap(x, Type(0), Type((2 * M_PI)));
+	أرجع wrap(x, Type(0), Type((2 * M_PI)));
 }
 
 /**
@@ -119,9 +119,9 @@ Type wrap_2pi(Type x)
  * @return New unwrapped value
  */
 template<typename Type>
-Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high)
+Type unwrap(ثابت Type last_x, ثابت Type new_x, ثابت Type low, ثابت Type high)
 {
-	return last_x + wrap(new_x - last_x, low, high);
+	أرجع last_x + wrap(new_x - last_x, low, high);
 }
 
 /**
@@ -132,9 +132,9 @@ Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high
  * @return New unwrapped angle [rad]
  */
 template<typename Type>
-Type unwrap_pi(const Type last_angle, const Type new_angle)
+Type unwrap_pi(ثابت Type last_angle, ثابت Type new_angle)
 {
-	return unwrap(last_angle, new_angle, Type(-M_PI), Type(M_PI));
+	أرجع unwrap(last_angle, new_angle, Type(-M_PI), Type(M_PI));
 }
 
 /**
@@ -144,9 +144,9 @@ Type unwrap_pi(const Type last_angle, const Type new_angle)
  * @return -1 if val < 0, 0 if val == 0, 1 if val > 0
  */
 template<typename T>
-int sign(T val)
+صحيح sign(T val)
 {
-	return (T(0) < val) - (val < T(0));
+	أرجع (T(0) < val) - (val < T(0));
 }
 
 } // namespace matrix

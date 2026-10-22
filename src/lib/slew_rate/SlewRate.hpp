@@ -41,34 +41,34 @@
 
 #pragma once
 
-#include <mathlib/mathlib.h>
-#include <matrix/math.hpp>
+#ضمن <mathlib/mathlib.h>
+#ضمن <matrix/math.hpp>
 
 template<typename Type>
-class SlewRate
+صنف SlewRate
 {
-public:
-	SlewRate() = default;
+عام:
+	SlewRate() = افتراضي;
 	SlewRate(Type initial_value) { setForcedValue(initial_value); }
-	~SlewRate() = default;
+	~SlewRate() = افتراضي;
 
 	/**
 	 * Set maximum rate of change for the value
 	 * @param slew_rate maximum rate of change
 	 */
-	void setSlewRate(const Type slew_rate) { _slew_rate = slew_rate; }
+	فراغ setSlewRate(ثابت Type slew_rate) { _slew_rate = slew_rate; }
 
 	/**
 	 * Set value ignoring slew rate for initialization purpose
 	 * @param value new applied value
 	 */
-	void setForcedValue(const Type value) { _value = value; }
+	فراغ setForcedValue(ثابت Type value) { _value = value; }
 
 	/**
 	 * Get value from last update of the slew rate
 	 * @return current value the slew rate is at
 	 */
-	Type getState() const { return _value; }
+	Type getState() ثابت { أرجع _value; }
 
 	/**
 	 * Update slewrate
@@ -76,17 +76,17 @@ public:
 	 * @param deltatime time in seconds since last update
 	 * @return actual value that complies with the slew rate
 	 */
-	Type update(const Type new_value, const float deltatime)
+	Type update(ثابت Type new_value, ثابت عائم deltatime)
 	{
 		// Limit the rate of change of the value
-		const Type dvalue_desired = new_value - _value;
-		const Type dvalue_max = _slew_rate * deltatime;
-		const Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
+		ثابت Type dvalue_desired = new_value - _value;
+		ثابت Type dvalue_max = _slew_rate * deltatime;
+		ثابت Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
 		_value += dvalue;
-		return _value;
+		أرجع _value;
 	}
 
-protected:
+محمي:
 	Type _slew_rate{}; ///< maximum rate of change for the value
 	Type _value{}; ///< state to keep last value of the slew rate
 };

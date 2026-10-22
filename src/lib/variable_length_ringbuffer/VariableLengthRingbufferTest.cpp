@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <stdint.h>
-#include <string.h>
+#ضمن <gtest/gtest.h>
+#ضمن <stdint.h>
+#ضمن <string.h>
 
 
-#include "VariableLengthRingbuffer.hpp"
+#ضمن "VariableLengthRingbuffer.hpp"
 
-class TempData
+صنف TempData
 {
-public:
+عام:
 	TempData(size_t len)
 	{
 		_size = len;
-		_buf = new uint8_t[_size];
+		_buf = جديد uint8_t[_size];
 	}
 
 	~TempData()
@@ -53,36 +53,36 @@ public:
 		_buf = nullptr;
 	}
 
-	uint8_t *buf() const
+	uint8_t *buf() ثابت
 	{
-		return _buf;
+		أرجع _buf;
 	}
 
-	size_t size() const
+	size_t size() ثابت
 	{
-		return _size;
+		أرجع _size;
 	}
 
-	void paint(unsigned offset = 0)
+	فراغ paint(unsigned offset = 0)
 	{
-		for (size_t i = 0; i < _size; ++i) {
+		لكل (size_t i = 0; i < _size; ++i) {
 			_buf[i] = (uint8_t)((i + offset) % UINT8_MAX);
 		}
 	}
 
-private:
+خاص:
 	uint8_t *_buf {nullptr};
 	size_t _size{0};
 
 };
 
-bool operator==(const TempData &lhs, const TempData &rhs)
+منطقي operator==(ثابت TempData &lhs, ثابت TempData &rhs)
 {
-	if (lhs.size() != rhs.size()) {
-		return false;
+	𐤀𐤌 (lhs.size() != rhs.size()) {
+		أرجع خطأ;
 	}
 
-	return memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
+	أرجع memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
 }
 
 
@@ -150,7 +150,7 @@ TEST(VariableLengthRingbuffer, PushAndPopSeveral)
 	data.paint();
 
 	// 4 should fit
-	for (unsigned i = 0; i < 4; ++i) {
+	لكل (unsigned i = 0; i < 4; ++i) {
 		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
 	}
 
@@ -158,7 +158,7 @@ TEST(VariableLengthRingbuffer, PushAndPopSeveral)
 	EXPECT_FALSE(buf.push_back(data.buf(), data.size()));
 
 	// Take 4 back out
-	for (unsigned i = 0; i < 4; ++i) {
+	لكل (unsigned i = 0; i < 4; ++i) {
 		TempData out{20};
 		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), data.size());
 		EXPECT_EQ(data, out);
