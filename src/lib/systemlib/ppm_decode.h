@@ -39,7 +39,7 @@
 
 #pragma once
 
-#include <drivers/drv_hrt.h>
+#अन्तर्भाव <drivers/drv_hrt.h>
 
 /**
  * Maximum number of channels that we will decode.
@@ -56,9 +56,9 @@ __BEGIN_DECLS
 /*
  * PPM decoder state
  */
-__EXPORT extern uint16_t	ppm_buffer[PPM_MAX_CHANNELS];	/**< decoded PPM channel values */
-__EXPORT extern uint16_t	ppm_frame_length;				/**< length of the decoded PPM frame (includes gap) */
-__EXPORT extern unsigned	ppm_decoded_channels;	/**< count of decoded channels */
-__EXPORT extern hrt_abstime	ppm_last_valid_decode;	/**< timestamp of the last valid decode */
+__EXPORT बाह्य uint16_t	ppm_buffer[PPM_MAX_CHANNELS];	/**< decoded PPM channel values */
+__EXPORT बाह्य uint16_t	ppm_frame_length;				/**< length of the decoded PPM frame (includes gap) */
+__EXPORT बाह्य unsigned	ppm_decoded_channels;	/**< count of decoded channels */
+__EXPORT बाह्य hrt_abstime	ppm_last_valid_decode;	/**< timestamp of the last valid decode */
 
 __END_DECLS
